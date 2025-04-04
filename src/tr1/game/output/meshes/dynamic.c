@@ -1,11 +1,11 @@
-#include "game/output/meshes.h"
+#include "game/output/meshes/dynamic.h"
+
+#include "game/output/meshes/common.h"
 
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
 
 #include <string.h>
-
-static OUTPUT_SHADER *m_Shader = nullptr;
 
 static struct {
     GLuint vao;
@@ -15,9 +15,11 @@ static struct {
     size_t vertex_count;
 } m_Priv;
 
-void Output_Meshes_Init(void)
+static OUTPUT_SHADER *m_Shader = nullptr;
+
+void Output_Meshes_InitDynamic(void)
 {
-    m_Shader = Output_Shader_Create("shaders/meshes.glsl");
+    m_Shader = Output_Meshes_GetShader();
 
     glGenVertexArrays(1, &m_Priv.vao);
     glBindVertexArray(m_Priv.vao);
@@ -60,7 +62,7 @@ void Output_Meshes_Init(void)
         (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, shade));
 }
 
-void Output_Meshes_Shutdown(void)
+void Output_Meshes_ShutdownDynamic(void)
 {
     Memory_FreePointer(&m_Priv.vbo_data);
     if (m_Priv.vao != 0) {
@@ -71,25 +73,6 @@ void Output_Meshes_Shutdown(void)
         glDeleteBuffers(1, &m_Priv.vbo);
         m_Priv.vbo = 0;
     }
-
-    Output_Shader_Free(m_Shader);
-    m_Shader = nullptr;
-}
-
-void Output_Meshes_RenderBegin(void)
-{
-    Output_Shader_UploadCommonUniforms(m_Shader);
-    Output_Shader_UploadProjectionMatrix(m_Shader);
-}
-
-OUTPUT_SHADER *Output_Meshes_GetShader(void)
-{
-    return m_Shader;
-}
-
-void Output_Meshes_UploadProjectionMatrix(void)
-{
-    Output_Shader_UploadProjectionMatrix(m_Shader);
 }
 
 void Output_Meshes_AddVertices(

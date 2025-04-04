@@ -4,9 +4,9 @@
 #include <libtrx/game/output/types.h>
 #include <libtrx/game/rooms/types.h>
 
-void Output_Rooms_Init(void);
-void Output_Rooms_Shutdown(void);
-void Output_Rooms_ObserveLevelLoad(void);
+void Output_Meshes_InitRooms(void);
+void Output_Meshes_ShutdownRooms(void);
+void Output_Meshes_ObserveLevelLoadRooms(void);
 
-void Output_Rooms_RenderRoom(
+void Output_Meshes_RenderRoomMesh(
     const MATRIX *matrix, RGB_F tint, const ROOM *room);

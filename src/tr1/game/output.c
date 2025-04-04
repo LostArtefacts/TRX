@@ -1,8 +1,9 @@
 #include "game/output.h"
 
-#include "game/output/meshes.h"
-#include "game/output/objects.h"
-#include "game/output/rooms.h"
+#include "game/output/meshes/common.h"
+#include "game/output/meshes/dynamic.h"
+#include "game/output/meshes/objects.h"
+#include "game/output/meshes/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/output/utils.h"
@@ -698,15 +699,11 @@ bool Output_Init(void)
     Output_Textures_Init();
     Output_Sprites_Init();
     Output_Meshes_Init();
-    Output_Rooms_Init();
-    Output_Objects_Init();
     return true;
 }
 
 void Output_Shutdown(void)
 {
-    Output_Objects_Shutdown();
-    Output_Rooms_Shutdown();
     Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();
@@ -774,13 +771,12 @@ void Output_ObserveLevelLoad(void)
     M_DownloadTextures(Output_GetTexturePageCount());
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
-    Output_Rooms_ObserveLevelLoad();
-    Output_Objects_ObserveLevelLoad();
+    Output_Meshes_ObserveLevelLoad();
 }
 
 void Output_ObserveLevelUnload(void)
 {
-    Output_Objects_ObserveLevelUnload();
+    Output_Meshes_ObserveLevelUnload();
 }
 
 void Output_ObserveFOVChange(void)
@@ -855,7 +851,7 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
 
     M_DisableDepthTest();
     Output_RememberState();
-    Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
+    Output_Meshes_RenderObjectMesh(g_MatrixPtr, Output_GetTint(), mesh);
     Output_RestoreState();
     M_EnableDepthTest();
 }
@@ -864,7 +860,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
 {
     M_Flush();
     Output_RememberState();
-    Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
+    Output_Meshes_RenderObjectMesh(g_MatrixPtr, Output_GetTint(), mesh);
     Output_RestoreState();
 
     if (g_Config.rendering.enable_debug_spheres) {
@@ -895,7 +891,7 @@ void Output_DrawRoomMesh(ROOM *const room)
         room->bound_left, room->bound_bottom,
         room->bound_right - room->bound_left,
         room->bound_bottom - room->bound_top);
-    Output_Rooms_RenderRoom(g_MatrixPtr, Output_GetTint(), room);
+    Output_Meshes_RenderRoomMesh(g_MatrixPtr, Output_GetTint(), room);
     Output_DisableScissor();
     Output_RestoreState();
 }

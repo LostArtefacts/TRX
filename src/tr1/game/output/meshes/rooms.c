@@ -1,7 +1,7 @@
-#include "game/output/rooms.h"
+#include "game/output/meshes/rooms.h"
 
 #include "game/output.h"
-#include "game/output/meshes.h"
+#include "game/output/meshes/common.h"
 #include "game/output/textures.h"
 #include "game/output/utils.h"
 #include "game/random.h"
@@ -264,7 +264,7 @@ static void M_FreeBuffers(void)
     Memory_FreePointer(&m_Priv.batches);
 }
 
-void Output_Rooms_Init(void)
+void Output_Meshes_InitRooms(void)
 {
     m_Shader = Output_Meshes_GetShader();
     for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
@@ -274,18 +274,18 @@ void Output_Rooms_Init(void)
     }
 }
 
-void Output_Rooms_Shutdown(void)
+void Output_Meshes_ShutdownRooms(void)
 {
     M_FreeBuffers();
 }
 
-void Output_Rooms_ObserveLevelLoad(void)
+void Output_Meshes_ObserveLevelLoadRooms(void)
 {
     M_FreeBuffers();
     M_PrepareBuffers();
 }
 
-void Output_Rooms_RenderRoom(
+void Output_Meshes_RenderRoomMesh(
     const MATRIX *const matrix, const RGB_F tint, const ROOM *const room)
 {
     const M_BATCH *const batch = M_GetBatch(room);

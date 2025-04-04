@@ -1,5 +1,7 @@
+#include "game/output/meshes/objects.h"
+
 #include "game/output.h"
-#include "game/output/meshes.h"
+#include "game/output/meshes/common.h"
 #include "game/output/textures.h"
 #include "game/output/utils.h"
 
@@ -340,27 +342,27 @@ static void M_FreeBuffers(void)
     Memory_FreePointer(&m_Priv.batches);
 }
 
-void Output_Objects_Init(void)
+void Output_Meshes_InitObjects(void)
 {
     m_Shader = Output_Meshes_GetShader();
 }
 
-void Output_Objects_Shutdown(void)
+void Output_Meshes_ShutdownObjects(void)
 {
     M_FreeBuffers();
 }
 
-void Output_Objects_ObserveLevelLoad(void)
+void Output_Meshes_ObserveLevelLoadObjects(void)
 {
     M_PrepareBuffers();
 }
 
-void Output_Objects_ObserveLevelUnload(void)
+void Output_Meshes_ObserveLevelUnloadObjects(void)
 {
     M_FreeBuffers();
 }
 
-void Output_Objects_ObserveMeshSwap(
+void Output_Meshes_ObserveObjectMeshSwap(
     const OBJECT_MESH *const mesh_1, const OBJECT_MESH *const mesh_2)
 {
     if (m_Priv.geom_vbo_data == nullptr) {
@@ -372,11 +374,11 @@ void Output_Objects_ObserveMeshSwap(
     const M_BATCH batch_tmp = *batch_1;
     *batch_1 = *batch_2;
     *batch_2 = batch_tmp;
-    Output_Objects_ObserveMeshUpdate(mesh_1);
-    Output_Objects_ObserveMeshUpdate(mesh_2);
+    Output_Meshes_ObserveObjectMeshUpdate(mesh_1);
+    Output_Meshes_ObserveObjectMeshUpdate(mesh_2);
 }
 
-void Output_Objects_ObserveMeshUpdate(const OBJECT_MESH *const mesh)
+void Output_Meshes_ObserveObjectMeshUpdate(const OBJECT_MESH *const mesh)
 {
     if (m_Priv.geom_vbo_data == nullptr) {
         return;
@@ -393,7 +395,7 @@ void Output_Objects_ObserveMeshUpdate(const OBJECT_MESH *const mesh)
     GFX_GL_CheckError();
 }
 
-void Output_Objects_RenderMesh(
+void Output_Meshes_RenderObjectMesh(
     const MATRIX *const matrix, const RGB_F tint, const OBJECT_MESH *const mesh)
 {
     const M_BATCH *const batch = M_GetBatch(mesh);
