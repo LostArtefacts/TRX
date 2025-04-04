@@ -97,10 +97,10 @@ void main(void) {
         float shade = gShade;
         shade = shadeFog(shade, gWorldPos.z, uFog);
         texColor.rgb = applyShade(texColor.rgb, shade);
+        texColor.rgb *= uGlobalTint;
     }
 
     texColor.rgb *= uBrightnessMultiplier;
-    texColor.rgb *= uGlobalTint;
     outColor = vec4(texColor.rgb, gColor.a);
 }
 #endif
