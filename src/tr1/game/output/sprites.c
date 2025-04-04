@@ -5,7 +5,6 @@
 #include "game/output/textures.h"
 #include "game/output/utils.h"
 #include "game/room.h"
-#include "specific/s_output.h"
 
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/log.h>
