@@ -28,11 +28,7 @@
 #include <string.h>
 
 #define MAX_LIGHTNINGS 64
-#define CLIP_VERTCOUNT_SCALE 4
 #define MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
-#define VBUF_VISIBLE(a, b, c)                                                  \
-    (((a).ys - (b).ys) * ((c).xs - (b).xs)                                     \
-     >= ((c).ys - (b).ys) * ((a).xs - (b).xs))
 
 typedef struct {
     XYZ_32 pos_0;
@@ -50,8 +46,6 @@ static bool m_IsShadeEffect = false;
 static int32_t m_Time = 0;
 static int32_t m_AnimatedTexturesOffset = 0;
 
-static PHD_VBUF *m_VBuf = nullptr;
-static TEXTURE_UV *m_EnvMapUV = nullptr;
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGB_F m_WaterColor = {};
@@ -100,7 +94,6 @@ static void M_ReleaseSurfaces(void);
 static void M_Flush(void);
 static void M_FlipScreen(void);
 
-static void M_DrawBackdropSurface(void);
 static void M_DrawTriangleFan(
     const GFX_3D_VERTEX *vertices, int32_t vertex_count);
 static void M_DrawTriangleStrip(
@@ -111,8 +104,8 @@ static void M_Draw2DQuad(
 static void M_DrawSphere(XYZ_32 pos, int32_t radius);
 static void M_DrawLightningSegment(const LIGHTNING *const lightning);
 static void M_DrawSprite(
-    int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z, int32_t sprnum,
-    int32_t shade);
+    int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z,
+    int32_t sprite_idx, int16_t shade);
 
 static inline float M_GetUV(const uint16_t uv)
 {
@@ -252,10 +245,6 @@ static void M_FlipScreen(void)
 
 static void M_DrawBackdropSurface(void)
 {
-    if (m_PictureSurface == nullptr) {
-        return;
-    }
-    GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
 static void M_DrawTriangleFan(
@@ -413,14 +402,14 @@ static void M_DrawLightningSegment(const LIGHTNING *const lightning)
 }
 
 static void M_DrawSprite(
-    int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z, int32_t sprnum,
-    int32_t shade)
+    const int16_t x1, const int16_t y1, const int16_t x2, const int32_t y2,
+    const int32_t z, const int32_t sprite_idx, const int16_t shade)
 {
     const int32_t vertex_count = 4;
     GFX_3D_VERTEX vertices[vertex_count];
 
     const float multiplier = g_Config.visuals.brightness / 16.0f;
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     float vshade = (MAX_LIGHTING - shade) * multiplier;
     CLAMPG(vshade, 255.0f);
 
@@ -502,12 +491,6 @@ void Output_Shutdown(void)
     Memory_FreePointer(&m_BackdropImagePath);
 }
 
-void Output_ReserveVertexBuffer(const size_t size)
-{
-    m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
-    m_EnvMapUV = GameBuf_Alloc(size * sizeof(TEXTURE_UV), GBUF_VERTEX_BUFFER);
-}
-
 void Output_SetWindowSize(int32_t width, int32_t height)
 {
     GFX_Context_SetWindowSize(width, height);
@@ -585,7 +568,6 @@ void Output_BeginScene(void)
 
     GFX_Context_Clear();
     GFX_Track_Reset();
-    M_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
         m_Renderer3D, g_Config.rendering.texture_filter);
@@ -622,11 +604,6 @@ bool Output_IsSkyboxEnabled(void)
 
 void Output_DrawSkybox(const OBJECT_MESH *const mesh)
 {
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdRight = Viewport_GetMaxX();
-    g_PhdBottom = Viewport_GetMaxY();
-
     M_DisableDepthTest();
     Output_RememberState();
     Output_Meshes_RenderObjectMesh(g_MatrixPtr, Output_GetTint(), mesh);
@@ -643,11 +620,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
 
     if (g_Config.rendering.enable_debug_spheres) {
         M_DrawSphere(
-            (XYZ_32) {
-                .x = mesh->center.x,
-                .y = mesh->center.y,
-                .z = mesh->center.z,
-            },
+            (XYZ_32) { mesh->center.x, mesh->center.y, mesh->center.z },
             mesh->radius);
     }
     M_Flush();
@@ -842,12 +815,12 @@ int32_t Output_GetDrawDistMax(void)
     return m_DrawDistMax;
 }
 
-void Output_SetDrawDistFade(int32_t dist)
+void Output_SetDrawDistFade(const int32_t dist)
 {
     m_DrawDistFade = dist;
 }
 
-void Output_SetDrawDistMax(int32_t dist)
+void Output_SetDrawDistMax(const int32_t dist)
 {
     m_DrawDistMax = dist;
 
@@ -858,7 +831,7 @@ void Output_SetDrawDistMax(int32_t dist)
     g_FltResZBuf = 0.005 + res_z / near_z;
 }
 
-void Output_SetWaterColor(const RGB_F *color)
+void Output_SetWaterColor(const RGB_F *const color)
 {
     m_WaterColor.r = color->r;
     m_WaterColor.g = color->g;
@@ -912,21 +885,24 @@ void Output_DrawSprite(
 }
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color)
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 color)
 {
     M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
-    RGBA_8888 bl, RGBA_8888 br)
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const RGBA_8888 br)
 {
     M_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenFrame(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
-    RGBA_8888 col_light, int32_t thickness_i)
+    int32_t sx, int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 col_dark, const RGBA_8888 col_light,
+    const int32_t thickness_i)
 {
     const float scale = Viewport_GetHeight() / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
@@ -998,8 +974,9 @@ void Output_DrawScreenFrame(
 }
 
 void Output_DrawGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
-    RGBA_8888 bl, RGBA_8888 br, int32_t thickness_i)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 tl,
+    const RGBA_8888 tr, const RGBA_8888 bl, const RGBA_8888 br,
+    const int32_t thickness_i)
 {
     const float scale = Viewport_GetHeight() / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
@@ -1049,8 +1026,8 @@ void Output_DrawGradientScreenBox(
 }
 
 void Output_DrawCentreGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
-    RGBA_8888 center, int32_t thickness_i)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 edge,
+    const RGBA_8888 center, const int32_t thickness_i)
 {
     const float scale = Viewport_GetHeight() / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
@@ -1112,38 +1089,42 @@ void Output_DrawCentreGradientScreenBox(
     M_DrawTriangleStrip(vertices, 18);
 }
 
-void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
+void Output_DrawScreenFBox(
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h)
 {
     RGBA_8888 color = { 0, 0, 0, 128 };
     M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenSprite(
-    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
-    int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
+    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade,
+    const uint16_t flags, const int32_t page)
 {
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     const int32_t x0 = sx + (scale_h * sprite->x0 / PHD_ONE);
     const int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     const int32_t y0 = sy + (scale_v * sprite->y0 / PHD_ONE);
     const int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth()
         && y0 < Viewport_GetHeight()) {
-        M_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, 0);
+        M_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, 0);
     }
 }
 
 void Output_DrawUISprite(
-    int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade)
+    const int32_t x, const int32_t y, const int32_t scale,
+    const int16_t sprite_idx, const int16_t shade)
 {
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     const int32_t x0 = x + (scale * sprite->x0 >> 16);
     const int32_t x1 = x + (scale * sprite->x1 >> 16);
     const int32_t y0 = y + (scale * sprite->y0 >> 16);
     const int32_t y1 = y + (scale * sprite->y1 >> 16);
     if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
         && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
-        M_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, shade);
+        M_DrawSprite(
+            x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
     }
 }
 
@@ -1190,7 +1171,7 @@ void Output_DrawLightningSegment(
     m_LightningCount++;
 }
 
-void Output_SetupBelowWater(bool underwater)
+void Output_SetupBelowWater(const bool underwater)
 {
     m_IsWaterEffect = true;
     m_IsWibbleEffect = !underwater;
@@ -1200,7 +1181,7 @@ void Output_SetupBelowWater(bool underwater)
     Output_RestoreState();
 }
 
-void Output_SetupAboveWater(bool underwater)
+void Output_SetupAboveWater(const bool underwater)
 {
     m_IsWaterEffect = false;
     m_IsWibbleEffect = underwater;
@@ -1231,21 +1212,16 @@ void Output_RotateLight(const int16_t pitch, const int16_t yaw)
     const int32_t sp = Math_Sin(pitch);
     const int32_t cy = Math_Cos(yaw);
     const int32_t sy = Math_Sin(yaw);
-    const int32_t ls_x = TRIGMULT2(cp, sy);
-    const int32_t ls_y = -sp;
-    const int32_t ls_z = TRIGMULT2(cp, cy);
-    m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
-                        + g_W2VMatrix._02 * ls_z)
-        >> W2V_SHIFT;
-    m_LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
-                        + g_W2VMatrix._12 * ls_z)
-        >> W2V_SHIFT;
-    m_LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
-                        + g_W2VMatrix._22 * ls_z)
-        >> W2V_SHIFT;
+    const int32_t x = TRIGMULT2(cp, sy);
+    const int32_t y = -sp;
+    const int32_t z = TRIGMULT2(cp, cy);
+    const MATRIX *const m = &g_W2VMatrix;
+    m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
+    m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
+    m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
 }
 
-void Output_DrawBlackRectangle(int32_t opacity)
+void Output_DrawBlackRectangle(const int32_t opacity)
 {
     int32_t sx = 0;
     int32_t sy = 0;
@@ -1261,7 +1237,10 @@ void Output_DrawBlackRectangle(int32_t opacity)
 
 void Output_DrawBackground(void)
 {
-    // already handled in Output_BeginScene
+    if (m_PictureSurface == nullptr) {
+        return;
+    }
+    GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
 void Output_DrawPolyList(void)
@@ -1293,16 +1272,6 @@ void Output_ApplyFOV(void)
     if (s != 0) {
         g_PhdPersp *= c;
         g_PhdPersp /= s;
-    }
-}
-
-void Output_ApplyTint(float *r, float *g, float *b)
-{
-    const RGB_F tint = Output_GetTint();
-    if (m_IsShadeEffect) {
-        *r *= tint.r;
-        *g *= tint.g;
-        *b *= tint.b;
     }
 }
 
@@ -1420,7 +1389,7 @@ int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
     return 0;
 }
 
-void Output_LightRoomVertices(const ROOM *room)
+void Output_LightRoomVertices(const ROOM *const room)
 {
     // TODO: remove
     ASSERT_FAIL();
