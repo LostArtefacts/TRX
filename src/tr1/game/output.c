@@ -6,10 +6,11 @@
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
+#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
+#include "specific/s_shell.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
@@ -17,10 +18,19 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/output.h>
+#include <libtrx/gfx/gl/track.h>
+#include <libtrx/gfx/gl/utils.h>
+#include <libtrx/log.h>
 #include <libtrx/memory.h>
 
+#include <string.h>
+
 #define MAX_LIGHTNINGS 64
-#define PHD_IONE (PHD_ONE / 4)
+#define CLIP_VERTCOUNT_SCALE 4
+#define MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
+#define VBUF_VISIBLE(a, b, c)                                                  \
+    (((a).ys - (b).ys) * ((c).xs - (b).xs)                                     \
+     >= ((c).ys - (b).ys) * ((a).xs - (b).xs))
 
 typedef struct {
     struct {
@@ -54,6 +64,17 @@ static XYZ_32 m_LsVectorView = {};
 
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
+static int32_t m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
+
+static GFX_2D_RENDERER *m_Renderer2D = nullptr;
+static GFX_3D_RENDERER *m_Renderer3D = nullptr;
+static bool m_IsTextureMode = false;
+static int32_t m_SelectedTexture = -1;
+
+static int32_t m_SurfaceWidth = 0;
+static int32_t m_SurfaceHeight = 0;
+static GFX_2D_SURFACE *m_PictureSurface = nullptr;
+static GFX_2D_SURFACE *m_TextureSurfaces[GFX_MAX_TEXTURES] = { nullptr };
 
 static char *m_BackdropImagePath = nullptr;
 static const char *m_ImageExtensions[] = {
@@ -69,68 +90,260 @@ static struct {
     GLint bound_polygon_mode[2];
 } m_CachedState;
 
-static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
-static uint16_t M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
+static inline float M_GetUV(uint16_t uv);
+static void M_SelectTexture(int32_t texture_num);
+static void M_EnableDepthWrites(void);
+static void M_DisableDepthWrites(void);
+static void M_EnableDepthTest(void);
+static void M_DisableDepthTest(void);
+static void M_EnableTextureMode(void);
+static void M_DisableTextureMode(void);
+static void M_DownloadBackdropSurface(const IMAGE *image);
+static void M_DownloadTextures(int32_t pages);
+static void M_ReleaseTextures(void);
+static void M_ReleaseSurfaces(void);
+static int32_t M_VisibleZClip(
+    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3);
+static int32_t M_ZedClipper(
+    int32_t vertex_count, const PHD_VBUF *vns[], GFX_3D_VERTEX *vertices);
+static uint16_t M_CalcVertex(PHD_VBUF *vbuf, XYZ_16 pos);
 static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
+static void M_Flush(void);
+static void M_FlipScreen(void);
+static void M_SetBlendingMode(GFX_BLEND_MODE blend_mode);
 
-static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
+static void M_DrawBackdropSurface(void);
+static void M_DrawTriangleFan(
+    const GFX_3D_VERTEX *vertices, int32_t vertex_count);
+static void M_DrawTriangleStrip(
+    const GFX_3D_VERTEX *vertices, int32_t vertex_count);
+static void M_Draw2DQuad(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br);
+static void M_DrawFlatTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGBA_8888 color);
+static void M_DrawSphere(XYZ_32 pos, int32_t radius);
+static void M_Draw3DFrame(const XYZ_32 vert[4], RGBA_8888 color);
+static void M_DrawShadow(
+    const PHD_VBUF *vbufs, int32_t clip, int32_t vertex_count);
+static void M_DrawLightningSegment(
+    int32_t x1, int32_t y1, int32_t z1, int32_t thickness1, int32_t x2,
+    int32_t y2, int32_t z2, int32_t thickness2);
+static void M_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z, int32_t sprnum,
+    int32_t shade);
+
+static inline float M_GetUV(const uint16_t uv)
 {
-    bool wireframe_state = GFX_Context_GetWireframeMode();
-    GFX_Context_SetWireframeMode(true);
+    return g_Config.rendering.pretty_pixels
+            && g_Config.rendering.texture_filter == GFX_TF_NN
+        ? uv / 65536.0f
+        : ((uv & 0xFF00) + 127) / 65536.0f;
+}
 
-    RGBA_8888 color = { .r = 255, .g = 255, .b = 255, .a = 128 };
-    if (wireframe_state) {
-        color = (RGBA_8888) { .r = 0, .g = 0, .b = 0, .a = 128 };
+static void M_SelectTexture(const int32_t texture_num)
+{
+    if (texture_num == m_SelectedTexture) {
+        return;
     }
+    if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
+        LOG_ERROR("ERROR: Attempt to select unloaded texture");
+        return;
+    }
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
+    m_SelectedTexture = texture_num;
+}
 
-    S_Output_DisableTextureMode();
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+static void M_EnableDepthWrites(void)
+{
+    GFX_3D_Renderer_SetDepthWritesEnabled(m_Renderer3D, true);
+}
 
-    // More subdivisions means smoother spheres.
-    const int32_t subdivisions = 12;
-    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
-    int32_t index = 0;
+static void M_DisableDepthWrites(void)
+{
+    GFX_3D_Renderer_SetDepthWritesEnabled(m_Renderer3D, false);
+}
 
-    for (int32_t i = 0; i <= subdivisions; i++) {
-        const float theta = (M_PI * i) / subdivisions; // Latitude angle
-        const float sin_theta = sinf(theta);
-        const float cos_theta = cosf(theta);
+static void M_EnableDepthTest(void)
+{
+    GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, true);
+}
 
-        for (int32_t j = 0; j <= subdivisions; j++) {
-            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
-            const float sin_phi = sinf(phi);
-            const float cos_phi = cosf(phi);
+static void M_DisableDepthTest(void)
+{
+    GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, false);
+}
 
-            // Convert spherical coordinates to 3D points.
-            XYZ_16 vertex_pos = {
-                .x = pos.x + radius * cos_phi * sin_theta,
-                .y = pos.y + radius * cos_theta,
-                .z = pos.z + radius * sin_phi * sin_theta,
+static void M_EnableTextureMode(void)
+{
+    if (!m_IsTextureMode) {
+        m_IsTextureMode = true;
+        GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
+    }
+}
+
+static void M_DisableTextureMode(void)
+{
+    if (m_IsTextureMode) {
+        m_IsTextureMode = false;
+        GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
+    }
+}
+
+static void M_DownloadBackdropSurface(const IMAGE *const image)
+{
+    GFX_2D_Surface_Free(m_PictureSurface);
+    m_PictureSurface = nullptr;
+    if (image == nullptr) {
+        return;
+    }
+    m_PictureSurface = GFX_2D_Surface_CreateFromImage(image);
+    GFX_2D_Renderer_Upload(
+        m_Renderer2D, &m_PictureSurface->desc, m_PictureSurface->buffer);
+}
+
+static void M_DownloadTextures(const int32_t pages)
+{
+    if (pages > GFX_MAX_TEXTURES) {
+        Shell_ExitSystem("Attempt to download more than texture page limit");
+    }
+    M_ReleaseTextures();
+
+    for (int32_t i = 0; i < pages; i++) {
+        if (m_TextureSurfaces[i] == nullptr) {
+            const GFX_2D_SURFACE_DESC surface_desc = {
+                .width = TEXTURE_PAGE_WIDTH,
+                .height = TEXTURE_PAGE_HEIGHT,
             };
+            m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
+        }
+        GFX_2D_SURFACE *const surface = m_TextureSurfaces[i];
+        RGBA_8888 *const output_ptr = (RGBA_8888 *)surface->buffer;
+        const RGBA_8888 *const input_ptr = Output_GetTexturePage32(i);
+        memcpy(
+            output_ptr, input_ptr,
+            surface->desc.width * surface->desc.height * sizeof(RGBA_8888));
+        m_TextureMap[i] = GFX_3D_Renderer_RegisterTexturePage(
+            m_Renderer3D, output_ptr, surface->desc.width,
+            surface->desc.height);
+    }
+}
 
-            M_CalcVertex(&vertices[index], vertex_pos);
-            vertices[index].g = HIGH_LIGHT;
-            index++;
+static void M_ReleaseTextures(void)
+{
+    if (m_Renderer3D == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
+        if (m_TextureMap[i] != GFX_NO_TEXTURE) {
+            GFX_3D_Renderer_UnregisterTexturePage(
+                m_Renderer3D, m_TextureMap[i]);
+            m_TextureMap[i] = GFX_NO_TEXTURE;
         }
     }
+    m_SelectedTexture = -1;
+}
 
-    for (int32_t i = 0; i < subdivisions; i++) {
-        for (int32_t j = 0; j < subdivisions; j++) {
-            const int32_t index_0 = i * (subdivisions + 1) + j;
-            const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
-            const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
-            const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
-            S_Output_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_1], &vertices[index_2],
-                color);
-            S_Output_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_2], &vertices[index_3],
-                color);
+static void M_ReleaseSurfaces(void)
+{
+    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
+        if (m_TextureSurfaces[i] != nullptr) {
+            GFX_2D_Surface_Free(m_TextureSurfaces[i]);
+            m_TextureSurfaces[i] = nullptr;
         }
     }
+    if (m_PictureSurface != nullptr) {
+        GFX_2D_Surface_Free(m_PictureSurface);
+        m_PictureSurface = nullptr;
+    }
+}
 
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
-    GFX_Context_SetWireframeMode(wireframe_state);
+static int32_t M_VisibleZClip(
+    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
+    const PHD_VBUF *const vn3)
+{
+    double v1x = vn1->xv;
+    double v1y = vn1->yv;
+    double v1z = vn1->zv;
+    double v2x = vn2->xv;
+    double v2y = vn2->yv;
+    double v2z = vn2->zv;
+    double v3x = vn3->xv;
+    double v3y = vn3->yv;
+    double v3z = vn3->zv;
+    double a = v3y * v1x - v1y * v3x;
+    double b = v3x * v1z - v1x * v3z;
+    double c = v3z * v1y - v1z * v3y;
+    return a * v2z + b * v2y + c * v2x < 0.0;
+}
+
+static int32_t M_ZedClipper(
+    const int32_t vertex_count, const PHD_VBUF *vns[],
+    GFX_3D_VERTEX *const vertices)
+{
+    const float multiplier = g_Config.visuals.brightness / 16.0f;
+    const float near_z = Output_GetNearZ();
+    const float persp_o_near_z = (double)g_PhdPersp / near_z;
+
+    GFX_3D_VERTEX *v = &vertices[0];
+    int32_t current = 0;
+    int32_t prev = vertex_count - 1;
+    for (int32_t i = 0; i < vertex_count; i++) {
+        const PHD_VBUF *vn0 = vns[current];
+        const PHD_VBUF *vn1 = vns[prev];
+        const int32_t diff0 = near_z - vn0->zv;
+        const int32_t diff1 = near_z - vn1->zv;
+        if ((diff0 | diff1) >= 0) {
+            goto loop_end;
+        }
+
+        if ((diff0 ^ diff1) < 0) {
+            const double clip = diff0 / (vn1->zv - vn0->zv);
+            v->x = (vn0->xv + (vn1->xv - vn0->xv) * clip) * persp_o_near_z
+                + Viewport_GetCenterX();
+            v->y = (vn0->yv + (vn1->yv - vn0->yv) * clip) * persp_o_near_z
+                + Viewport_GetCenterY();
+            v->z = MAP_DEPTH(vn0->zv + (vn1->zv - vn0->zv) * clip);
+
+            v->w = 1.0f / near_z;
+            v->s = M_GetUV(vn0->u) + (M_GetUV(vn1->u) - M_GetUV(vn0->u)) * clip;
+            v->t = M_GetUV(vn0->v) + (M_GetUV(vn1->v) - M_GetUV(vn0->v)) * clip;
+            v->tex_coord[2] = vn0->tex_coord[2]
+                + (vn1->tex_coord[2] - vn0->tex_coord[2]) * clip;
+            v->tex_coord[3] = vn0->tex_coord[3]
+                + (vn1->tex_coord[3] - vn0->tex_coord[3]) * clip;
+
+            v->r = v->g = v->b =
+                (MAX_LIGHTING - (vn0->g + (vn1->g - vn0->g) * clip))
+                * multiplier;
+            Output_ApplyTint(&v->r, &v->g, &v->b);
+
+            v++;
+        }
+
+        if (diff0 < 0) {
+            v->x = vn0->xs;
+            v->y = vn0->ys;
+            v->z = MAP_DEPTH(vn0->zv);
+
+            v->w = 1.0f / vn0->zv;
+            v->s = M_GetUV(vn0->u);
+            v->t = M_GetUV(vn0->v);
+            v->tex_coord[2] = vn0->tex_coord[2];
+            v->tex_coord[3] = vn0->tex_coord[3];
+
+            v->r = v->g = v->b = (MAX_LIGHTING - vn0->g) * multiplier;
+            Output_ApplyTint(&v->r, &v->g, &v->b);
+
+            v++;
+        }
+
+    loop_end:
+        prev = current++;
+    }
+
+    const int32_t count = v - vertices;
+    return count < 3 ? 0 : count;
 }
 
 static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
@@ -190,22 +403,325 @@ static bool M_CalcObjectVertices(
     const XYZ_16 *const vertices, const int16_t count)
 {
     uint16_t total_clip = 0xFFFF;
-    for (int i = 0; i < count; i++) {
+    for (int32_t i = 0; i < count; i++) {
         total_clip &= M_CalcVertex(&m_VBuf[i], vertices[i]);
     }
 
     return total_clip == 0;
 }
 
+static void M_Flush(void)
+{
+    GFX_3D_Renderer_Flush(m_Renderer3D);
+}
+
+static void M_FlipScreen(void)
+{
+    GFX_Context_SwapBuffers();
+    m_SelectedTexture = -1;
+}
+
+static void M_SetBlendingMode(const GFX_BLEND_MODE blend_mode)
+{
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, blend_mode);
+}
+
+static void M_DrawBackdropSurface(void)
+{
+    if (m_PictureSurface == nullptr) {
+        return;
+    }
+    GFX_2D_Renderer_Render(m_Renderer2D);
+}
+
+static void M_DrawTriangleFan(
+    const GFX_3D_VERTEX *const vertices, const int32_t vertex_count)
+{
+    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
+}
+
+static void M_DrawTriangleStrip(
+    const GFX_3D_VERTEX *const vertices, const int32_t vertex_count)
+{
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
+}
+
+static void M_Draw2DQuad(
+    const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2,
+    const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const RGBA_8888 br)
+{
+    int32_t vertex_count = 4;
+    GFX_3D_VERTEX vertices[vertex_count];
+
+#define SET(vtx_idx, x_, y_, z_, color)                                        \
+    vertices[vtx_idx].x = x_, vertices[vtx_idx].y = y_,                        \
+    vertices[vtx_idx].z = 1.0f, vertices[vtx_idx].r = color.r;                 \
+    vertices[vtx_idx].g = color.g;                                             \
+    vertices[vtx_idx].b = color.b;                                             \
+    vertices[vtx_idx].a = color.a;
+    SET(0, x1, y1, 1.0f, tl);
+    SET(1, x2, y1, 1.0f, tr);
+    SET(2, x2, y2, 1.0f, br);
+    SET(3, x1, y2, 1.0f, bl);
+#undef SET
+
+    M_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    M_DrawTriangleFan(vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+}
+
+static void M_DrawFlatTriangle(
+    PHD_VBUF *const vn1, PHD_VBUF *const vn2, PHD_VBUF *const vn3,
+    const RGBA_8888 color)
+{
+    int32_t vertex_count = 3;
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    const PHD_VBUF *src_vbuf[3];
+
+    src_vbuf[0] = vn1;
+    src_vbuf[1] = vn2;
+    src_vbuf[2] = vn3;
+
+    if (vn3->clip & vn2->clip & vn1->clip) {
+        return;
+    }
+
+    const float multiplier = g_Config.visuals.brightness / (16.0f * 255.0f);
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
+        const float light = (MAX_LIGHTING - src_vbuf[i]->g) * multiplier;
+        vertices[i].r = color.r * light;
+        vertices[i].g = color.g * light;
+        vertices[i].b = color.b * light;
+        vertices[i].a = color.a;
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+    }
+
+    if ((vn1->clip | vn2->clip | vn3->clip) >= 0) {
+        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
+            return;
+        }
+    } else {
+        if (!M_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        vertex_count = M_ZedClipper(vertex_count, src_vbuf, vertices);
+        if (vertex_count == 0) {
+            return;
+        }
+        for (int32_t i = 0; i < vertex_count; i++) {
+            vertices[i].r *= color.r / 255.0f;
+            vertices[i].g *= color.g / 255.0f;
+            vertices[i].b *= color.b / 255.0f;
+            vertices[i].a = color.a;
+        }
+    }
+
+    if (vertex_count == 0) {
+        return;
+    }
+
+    M_DrawTriangleFan(vertices, vertex_count);
+}
+
+static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
+{
+    bool wireframe_state = GFX_Context_GetWireframeMode();
+    GFX_Context_SetWireframeMode(true);
+
+    const RGBA_8888 color_black = { 0, 0, 0, 128 };
+    const RGBA_8888 color_white = { 255, 255, 255, 128 };
+    const RGBA_8888 color = wireframe_state ? color_black : color_white;
+
+    // More subdivisions means smoother spheres.
+    const int32_t subdivisions = 12;
+    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
+    int32_t index = 0;
+
+    for (int32_t i = 0; i <= subdivisions; i++) {
+        const float theta = (M_PI * i) / subdivisions; // Latitude angle
+        const float sin_theta = sinf(theta);
+        const float cos_theta = cosf(theta);
+
+        for (int32_t j = 0; j <= subdivisions; j++) {
+            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
+            const float sin_phi = sinf(phi);
+            const float cos_phi = cosf(phi);
+
+            // Convert spherical coordinates to 3D points.
+            XYZ_16 vertex_pos = {
+                .x = pos.x + radius * cos_phi * sin_theta,
+                .y = pos.y + radius * cos_theta,
+                .z = pos.z + radius * sin_phi * sin_theta,
+            };
+
+            M_CalcVertex(&vertices[index], vertex_pos);
+            vertices[index].g = HIGH_LIGHT;
+            index++;
+        }
+    }
+
+    M_DisableTextureMode();
+    M_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+    for (int32_t i = 0; i < subdivisions; i++) {
+        for (int32_t j = 0; j < subdivisions; j++) {
+            const int32_t index_0 = i * (subdivisions + 1) + j;
+            const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
+            const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
+            const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
+            M_DrawFlatTriangle(
+                &vertices[index_0], &vertices[index_1], &vertices[index_2],
+                color);
+            M_DrawFlatTriangle(
+                &vertices[index_0], &vertices[index_2], &vertices[index_3],
+                color);
+        }
+    }
+    M_SetBlendingMode(GFX_BLEND_MODE_OFF);
+    GFX_Context_SetWireframeMode(wireframe_state);
+}
+
+static void M_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
+{
+    Output_Draw3DLine(vert[0], vert[1], color);
+    Output_Draw3DLine(vert[1], vert[2], color);
+    Output_Draw3DLine(vert[2], vert[3], color);
+    Output_Draw3DLine(vert[3], vert[0], color);
+}
+
+static void M_DrawShadow(
+    const PHD_VBUF *const vbufs, const int32_t clip, const int32_t vertex_count)
+{
+    GFX_3D_VERTEX vertices[vertex_count];
+
+    for (int32_t i = 0; i < vertex_count; i++) {
+        GFX_3D_VERTEX *const vertex = &vertices[i];
+        const PHD_VBUF *const vbuf = &vbufs[i];
+        vertex->x = vbuf->xs;
+        vertex->y = vbuf->ys;
+        vertex->z = MAP_DEPTH(vbuf->zv - (12 << W2V_SHIFT));
+        vertex->b = 0.0f;
+        vertex->g = 0.0f;
+        vertex->r = 0.0f;
+        vertex->a = 128.0f;
+    }
+
+    M_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    M_DrawTriangleFan(vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+}
+
+static void M_DrawLightningSegment(
+    int32_t x1, int32_t y1, int32_t z1, int32_t thickness1, int32_t x2,
+    int32_t y2, int32_t z2, int32_t thickness2)
+{
+    const int32_t vertex_count = 8;
+    const RGB_F blue = { 0.0f, 0.0f, 255.0f };
+    const RGB_F white = { 255.0f, 255.0f, 255.0f };
+    GFX_3D_VERTEX vertices[vertex_count];
+
+#define SET(vtx_idx, x_, y_, z_, color)                                        \
+    vertices[vtx_idx].x = x_;                                                  \
+    vertices[vtx_idx].y = y_;                                                  \
+    vertices[vtx_idx].z = MAP_DEPTH(z_);                                       \
+    vertices[vtx_idx].r = color.r;                                             \
+    vertices[vtx_idx].g = color.g;                                             \
+    vertices[vtx_idx].b = color.b;                                             \
+    vertices[vtx_idx].a = 128.0f;
+    // clang-format off
+    SET(0, x1,                  y1, z1, blue);
+    SET(1, x1 + thickness1 / 2, y1, z1, white);
+    SET(2, x2 + thickness2 / 2, y2, z2, white);
+    SET(3, x2,                  y2, z2, blue);
+    SET(4, x1 + thickness1 / 2, y1, z1, white);
+    SET(5, x1 + thickness1,     y1, z1, blue);
+    SET(6, x2 + thickness2,     y2, z2, blue);
+    SET(7, x2 + thickness2 / 2, y2, z2, white);
+    // clang-format on
+#undef SET
+
+    M_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    M_DrawTriangleFan(&vertices[0], 4);
+    M_DrawTriangleFan(&vertices[4], 4);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+}
+
+static void M_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z, int32_t sprnum,
+    int32_t shade)
+{
+    const int32_t vertex_count = 4;
+    GFX_3D_VERTEX vertices[vertex_count];
+
+    const float multiplier = g_Config.visuals.brightness / 16.0f;
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
+    float vshade = (MAX_LIGHTING - shade) * multiplier;
+    CLAMPG(vshade, 255.0f);
+
+    const float u0 = (sprite->offset & 0xFF) / 256.0f;
+    const float v0 = (sprite->offset >> 8) / 256.0f;
+    const float u1 = (sprite->width >> 8) / 256.0f + u0;
+    const float v1 = (sprite->height >> 8) / 256.0f + v0;
+    const float vz = MAP_DEPTH(z);
+    const float rhw = 1.0f / z;
+
+#define SET(vtx_idx, x_, y_, z_, u_, v_)                                       \
+    vertices[vtx_idx].x = x_;                                                  \
+    vertices[vtx_idx].y = y_;                                                  \
+    vertices[vtx_idx].z = z_;                                                  \
+    vertices[vtx_idx].s = u_;                                                  \
+    vertices[vtx_idx].t = v_;                                                  \
+    vertices[vtx_idx].tex_coord[2] = 1.0;                                      \
+    vertices[vtx_idx].tex_coord[3] = 1.0;                                      \
+    vertices[vtx_idx].w = rhw;                                                 \
+    vertices[vtx_idx].r = vshade;                                              \
+    vertices[vtx_idx].g = vshade;                                              \
+    vertices[vtx_idx].b = vshade;
+
+    SET(0, x1, y1, vz, u0, v0);
+    SET(1, x2, y1, vz, u1, v0);
+    SET(2, x2, y2, vz, u1, v1);
+    SET(3, x1, y2, vz, u0, v1);
+#undef SET
+
+    if (m_TextureMap[sprite->tex_page] != GFX_NO_TEXTURE) {
+        M_EnableTextureMode();
+        M_SelectTexture(sprite->tex_page);
+        M_DrawTriangleFan(vertices, vertex_count);
+    } else {
+        M_DisableTextureMode();
+        M_DrawTriangleFan(vertices, vertex_count);
+    }
+}
+
 bool Output_Init(void)
 {
-    const bool result = S_Output_Init();
+    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
+        m_TextureMap[i] = GFX_NO_TEXTURE;
+        m_TextureSurfaces[i] = nullptr;
+    }
+
+    m_Renderer2D = GFX_2D_Renderer_Create();
+    m_Renderer3D = GFX_3D_Renderer_Create();
+
+    Output_ApplyRenderSettings();
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
+    GFX_3D_Renderer_SetAlphaThreshold(m_Renderer3D, 0.0);
+    GFX_3D_Renderer_SetAlphaPointDiscard(m_Renderer3D, true);
+
     Output_Textures_Init();
     Output_Sprites_Init();
     Output_Meshes_Init();
     Output_Rooms_Init();
     Output_Objects_Init();
-    return result;
+    return true;
 }
 
 void Output_Shutdown(void)
@@ -215,7 +731,19 @@ void Output_Shutdown(void)
     Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();
-    S_Output_Shutdown();
+
+    M_ReleaseTextures();
+    M_ReleaseSurfaces();
+
+    if (m_Renderer2D != nullptr) {
+        GFX_2D_Renderer_Destroy(m_Renderer2D);
+        m_Renderer2D = nullptr;
+    }
+    if (m_Renderer3D != nullptr) {
+        GFX_3D_Renderer_Destroy(m_Renderer3D);
+        m_Renderer3D = nullptr;
+    }
+    GFX_Context_Detach();
     Memory_FreePointer(&m_BackdropImagePath);
 }
 
@@ -225,23 +753,46 @@ void Output_ReserveVertexBuffer(const size_t size)
     m_EnvMapUV = GameBuf_Alloc(size * sizeof(TEXTURE_UV), GBUF_VERTEX_BUFFER);
 }
 
-void Output_SetWindowSize(int width, int height)
+void Output_SetWindowSize(int32_t width, int32_t height)
 {
-    S_Output_SetWindowSize(width, height);
+    GFX_Context_SetWindowSize(width, height);
 }
 
 void Output_ApplyRenderSettings(void)
 {
     Output_Textures_ApplyRenderSettings();
-    S_Output_ApplyRenderSettings();
-    if (m_BackdropImagePath) {
+
+    if (m_Renderer3D == nullptr) {
+        return;
+    }
+
+    if (m_PictureSurface != nullptr
+        && (Screen_GetResWidth() != m_SurfaceWidth
+            || Screen_GetResHeight() != m_SurfaceHeight)) {
+        GFX_2D_Surface_Free(m_PictureSurface);
+        m_PictureSurface = nullptr;
+    }
+
+    m_SurfaceWidth = Screen_GetResWidth();
+    m_SurfaceHeight = Screen_GetResHeight();
+
+    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+    GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
+    GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
+    GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
+    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
+    GFX_3D_Renderer_SetAnisotropyFilter(
+        m_Renderer3D, g_Config.rendering.anisotropy_filter);
+
+    if (m_BackdropImagePath != nullptr) {
         Output_LoadBackgroundFromFile(m_BackdropImagePath);
     }
 }
 
 void Output_ObserveLevelLoad(void)
 {
-    S_Output_DownloadTextures(Output_GetTexturePageCount());
+    M_DownloadTextures(Output_GetTexturePageCount());
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
     Output_Rooms_ObserveLevelLoad();
@@ -259,17 +810,12 @@ void Output_ObserveFOVChange(void)
     Output_Sprites_UploadProjectionMatrix();
 }
 
-void Output_DrawBlack(void)
-{
-    Output_DrawBlackRectangle(255);
-}
-
 void Output_FlushTranslucentObjects(void)
 {
     // draw transparent lightnings as last in the 3D geometry pipeline
     for (int32_t i = 0; i < m_LightningCount; i++) {
         const LIGHTNING *const lightning = &m_LightningTable[i];
-        S_Output_DrawLightningSegment(
+        M_DrawLightningSegment(
             lightning->edges[0].pos.x, lightning->edges[0].pos.y,
             lightning->edges[0].pos.z, lightning->edges[0].thickness,
             lightning->edges[1].pos.x, lightning->edges[1].pos.y,
@@ -285,52 +831,32 @@ void Output_BeginScene(void)
     Output_RememberState();
     Output_Sprites_RenderBegin();
     Output_Meshes_RenderBegin();
-    S_Output_RenderBegin();
+
+    GFX_Context_Clear();
+    GFX_Track_Reset();
+    M_DrawBackdropSurface();
+    GFX_3D_Renderer_RenderBegin(m_Renderer3D);
+    GFX_3D_Renderer_SetTextureFilter(
+        m_Renderer3D, g_Config.rendering.texture_filter);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
     m_LightningCount = 0;
 }
 
 void Output_EndScene(void)
 {
-    S_Output_DisableDepthTest();
-    S_Output_ClearDepthBuffer();
+    M_DisableDepthTest();
+    Output_ClearDepthBuffer();
     Overlay_DrawFPSInfo();
-    S_Output_EnableDepthTest();
-    S_Output_RenderEnd();
-    S_Output_FlipScreen();
+    M_EnableDepthTest();
+    GFX_3D_Renderer_RenderEnd(m_Renderer3D);
+    M_FlipScreen();
     Shell_ProcessEvents();
     g_FPSCounter++;
 }
 
 void Output_ClearDepthBuffer(void)
 {
-    S_Output_ClearDepthBuffer();
-}
-
-void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
-{
-    S_Output_Flush();
-    Output_RememberState();
-    Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
-    Output_RestoreState();
-
-    if (g_Config.rendering.enable_debug_spheres) {
-        M_DrawSphere(
-            (XYZ_32) {
-                .x = mesh->center.x,
-                .y = mesh->center.y,
-                .z = mesh->center.z,
-            },
-            mesh->radius);
-    }
-    S_Output_Flush();
-}
-
-void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
-{
-    Matrix_Push();
-    Matrix_Interpolate();
-    Output_DrawObjectMesh(mesh, clip);
-    Matrix_Pop();
+    GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
 void Output_SetSkyboxEnabled(const bool enabled)
@@ -350,11 +876,38 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     g_PhdRight = Viewport_GetMaxX();
     g_PhdBottom = Viewport_GetMaxY();
 
-    S_Output_DisableDepthTest();
+    M_DisableDepthTest();
     Output_RememberState();
     Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
     Output_RestoreState();
-    S_Output_EnableDepthTest();
+    M_EnableDepthTest();
+}
+
+void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
+{
+    M_Flush();
+    Output_RememberState();
+    Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
+    Output_RestoreState();
+
+    if (g_Config.rendering.enable_debug_spheres) {
+        M_DrawSphere(
+            (XYZ_32) {
+                .x = mesh->center.x,
+                .y = mesh->center.y,
+                .z = mesh->center.z,
+            },
+            mesh->radius);
+    }
+    M_Flush();
+}
+
+void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
+{
+    Matrix_Push();
+    Matrix_Interpolate();
+    Output_DrawObjectMesh(mesh, clip);
+    Matrix_Pop();
 }
 
 void Output_DrawRoomMesh(ROOM *const room)
@@ -372,7 +925,7 @@ void Output_DrawRoomMesh(ROOM *const room)
 
 void Output_DrawRoomPortals(const ROOM *const room)
 {
-    S_Output_DisableDepthTest();
+    M_DisableDepthTest();
     const RGBA_8888 portal_color = { 0, 0, 255, 255 };
     for (int32_t i = 0; i < room->portals->count; i++) {
         const PORTAL *const portal = &room->portals->portal[i];
@@ -382,17 +935,17 @@ void Output_DrawRoomPortals(const ROOM *const room)
             { portal->vertex[2].x, portal->vertex[2].y, portal->vertex[2].z },
             { portal->vertex[3].x, portal->vertex[3].y, portal->vertex[3].z },
         };
-        Output_Draw3DFrame(vertices, portal_color);
+        M_Draw3DFrame(vertices, portal_color);
     }
-    S_Output_EnableDepthTest();
+    M_EnableDepthTest();
 }
 
 void Output_DrawRoomTriggers(const ROOM *const room)
 {
 #define DRAW_TRI(a, b, c, color)                                               \
     do {                                                                       \
-        S_Output_DrawFlatTriangle(a, b, c, color);                             \
-        S_Output_DrawFlatTriangle(c, b, a, color);                             \
+        M_DrawFlatTriangle(a, b, c, color);                                    \
+        M_DrawFlatTriangle(c, b, a, color);                                    \
     } while (0)
 #define DRAW_QUAD(a, b, c, d, color)                                           \
     do {                                                                       \
@@ -405,9 +958,9 @@ void Output_DrawRoomTriggers(const ROOM *const room)
 
     m_IsWaterEffect = false;
     m_IsShadeEffect = false;
-    S_Output_DisableTextureMode();
-    S_Output_DisableDepthWrites();
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+    M_DisableTextureMode();
+    M_DisableDepthWrites();
+    M_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
     for (int32_t z = 0; z < room->size.z; z++) {
         for (int32_t x = 0; x < room->size.x; x++) {
             const SECTOR *sector = Room_GetUnitSector(room, x, z);
@@ -444,8 +997,8 @@ void Output_DrawRoomTriggers(const ROOM *const room)
         }
     }
 
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
-    S_Output_EnableDepthWrites();
+    M_SetBlendingMode(GFX_BLEND_MODE_OFF);
+    M_EnableDepthWrites();
 
 #undef DRAW_TRI
 #undef DRAW_QUAD
@@ -502,8 +1055,7 @@ void Output_DrawShadow(
         bool visible = (int32_t)(c1 - c2) >= 0;
 
         if (!clip_and && clip_positive && visible) {
-            S_Output_DrawShadow(
-                &m_VBuf[0], clip_or ? 1 : 0, shadow.vertex_count);
+            M_DrawShadow(&m_VBuf[0], clip_or ? 1 : 0, shadow.vertex_count);
         }
     }
 
@@ -597,70 +1149,257 @@ void Output_DrawSprite(
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color)
 {
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
+    M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br)
 {
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
+    M_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_Draw3DLine(
     const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
 {
-    PHD_VBUF vbuf[2];
+    PHD_VBUF vn0, vn1;
     uint16_t total_clip = 0xFFFF;
     total_clip &= M_CalcVertex(
-        &vbuf[0], (XYZ_16) { .x = pos_0.x, .y = pos_0.y, .z = pos_0.z });
+        &vn0, (XYZ_16) { .x = pos_0.x, .y = pos_0.y, .z = pos_0.z });
     total_clip &= M_CalcVertex(
-        &vbuf[1], (XYZ_16) { .x = pos_1.x, .y = pos_1.y, .z = pos_1.z });
-    S_Output_Draw3DLine(&vbuf[0], &vbuf[1], color);
-}
+        &vn1, (XYZ_16) { .x = pos_1.x, .y = pos_1.y, .z = pos_1.z });
 
-void Output_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
-{
-    Output_Draw3DLine(vert[0], vert[1], color);
-    Output_Draw3DLine(vert[1], vert[2], color);
-    Output_Draw3DLine(vert[2], vert[3], color);
-    Output_Draw3DLine(vert[3], vert[0], color);
+    int32_t vertex_count = 2;
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+
+    const PHD_VBUF *src_vbuf[2] = { &vn0, &vn1 };
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
+        vertices[i].r = color.r;
+        vertices[i].g = color.g;
+        vertices[i].b = color.b;
+        vertices[i].a = color.a;
+    }
+
+    if ((src_vbuf[0]->clip | src_vbuf[1]->clip) < 0) {
+        vertex_count = M_ZedClipper(vertex_count, src_vbuf, vertices);
+        if (vertex_count == 0) {
+            return;
+        }
+        for (int32_t i = 0; i < vertex_count; i++) {
+            vertices[i].r = color.r;
+            vertices[i].g = color.g;
+            vertices[i].b = color.b;
+            vertices[i].a = color.a;
+        }
+    }
+
+    if (vertex_count == 0) {
+        return;
+    }
+
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
+    M_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
 void Output_DrawScreenFrame(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
-    RGBA_8888 colLight, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
+    RGBA_8888 col_light, int32_t thickness_i)
 {
-    float scale = Viewport_GetHeight() / 480.0;
-    S_Output_DrawScreenFrame(
-        sx - scale, sy - scale, w, h, colDark, colLight,
-        thickness * scale / 2.0f);
+    const float scale = Viewport_GetHeight() / 480.0;
+    const float thickness = thickness_i * scale / 2.0f;
+    sx -= scale;
+    sy -= scale;
+
+#define SB_NUM_VERTS_DARK 12
+#define SB_NUM_VERTS_LIGHT 10
+    GFX_3D_VERTEX vertices[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+    GFX_3D_VERTEX *const dark_vertices = vertices;
+    GFX_3D_VERTEX *const light_vertices = vertices + SB_NUM_VERTS_DARK;
+    const float sxf = sx + thickness;
+    const float syf = sy + thickness;
+    const float hf = h;
+    const float wf = w;
+
+#define SET(i, x_, y_)                                                         \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;
+    // clang-format off
+    // Top Left Dark edge
+    SET(0,  sxf,                         syf + hf - thickness);
+    SET(1,  sxf + thickness,             syf + hf - thickness);
+    SET(2,  sxf,                         syf);
+    SET(3,  sxf + thickness,             syf + thickness);
+    SET(4,  sxf + wf - thickness,        syf);
+    SET(5,  sxf + wf - thickness,        syf + thickness);
+    // Bottom Right Dark set
+    SET(6,  sxf + wf + thickness,        syf - thickness);
+    SET(7,  sxf + wf,                    syf - thickness);
+    SET(8,  sxf + wf + thickness,        syf + hf + thickness);
+    SET(9,  sxf + wf,                    syf + hf);
+    SET(10, sxf - thickness,             syf + hf + thickness);
+    SET(11, sxf - thickness,             syf + hf);
+    // Light box
+    SET(12, sxf - thickness,             syf + hf);
+    SET(13, sxf - thickness + thickness, syf + hf - thickness);
+    SET(14, sxf - thickness,             syf - thickness);
+    SET(15, sxf,                         syf);
+    SET(16, sxf + wf,                    syf - thickness);
+    SET(17, sxf + wf - thickness,        syf);
+    SET(18, sxf + wf,                    syf + hf);
+    SET(19, sxf + wf - thickness,        syf + hf - thickness);
+    SET(20, sxf - thickness,             syf + hf);
+    SET(21, sxf - thickness + thickness, syf + hf - thickness);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
+    }
+    for (int32_t i = 0; i < SB_NUM_VERTS_DARK; i++) {
+        dark_vertices[i].r = col_dark.r;
+        dark_vertices[i].g = col_dark.g;
+        dark_vertices[i].b = col_dark.b;
+        dark_vertices[i].a = col_dark.a;
+    }
+    for (int32_t i = 0; i < SB_NUM_VERTS_LIGHT; i++) {
+        light_vertices[i].r = col_light.r;
+        light_vertices[i].g = col_light.g;
+        light_vertices[i].b = col_light.b;
+        light_vertices[i].a = col_light.a;
+    }
+    M_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
 }
 
 void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
-    RGBA_8888 bl, RGBA_8888 br, int32_t thickness)
+    RGBA_8888 bl, RGBA_8888 br, int32_t thickness_i)
 {
-    float scale = Viewport_GetHeight() / 480.0;
-    S_Output_4ColourTextBox(
-        sx - scale, sy - scale, w + scale, h + scale, tl, tr, bl, br,
-        thickness * scale / 2.0f);
+    const float scale = Viewport_GetHeight() / 480.0;
+    const float thickness = thickness_i * scale / 2.0f;
+    sx -= scale;
+    sy -= scale;
+    w += scale;
+    h += scale;
+
+    //  0                 2
+    //   *               &
+    //    1             3
+    //
+    //    7             5
+    //   #               @
+    //  6                 4
+    GFX_3D_VERTEX vertices[10];
+
+#define SET(i, x_, y_, color)                                                  \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;                                                        \
+    vertices[i].r = color.r;                                                   \
+    vertices[i].g = color.g;                                                   \
+    vertices[i].b = color.b;                                                   \
+    vertices[i].a = color.a;
+    // clang-format off
+    SET(0, sx - thickness,     sy - thickness,     tl);
+    SET(1, sx + thickness,     sy + thickness,     tl);
+    SET(2, sx + w + thickness, sy - thickness,     tr);
+    SET(3, sx + w - thickness, sy + thickness,     tr);
+    SET(4, sx + w + thickness, sy + h + thickness, br);
+    SET(5, sx + w - thickness, sy + h - thickness, br);
+    SET(6, sx - thickness,     sy + h + thickness, bl);
+    SET(7, sx + thickness,     sy + h - thickness, bl);
+    SET(8, sx - thickness,     sy - thickness,     tl);
+    SET(9, sx + thickness,     sy + thickness,     tl);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < 10; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
+    }
+    M_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, 10);
 }
 
 void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
-    RGBA_8888 center, int32_t thickness)
+    RGBA_8888 center, int32_t thickness_i)
 {
-    float scale = Viewport_GetHeight() / 480.0;
-    S_Output_2ToneColourTextBox(
-        sx - scale, sy - scale, w + scale, h + scale, edge, center,
-        thickness * scale / 2.0f);
+    const float scale = Viewport_GetHeight() / 480.0;
+    const float thickness = thickness_i * scale / 2.0f;
+    sx -= scale;
+    sy -= scale;
+    w += scale;
+    h += scale;
+
+    //  0        2        4
+    //   *               &
+    //    1      3      5
+    //
+    // 14 15            7 6
+    //
+    //    13    10      9
+    //   #               @
+    // 12       11        8
+
+    const int32_t half_w = w / 2;
+    const int32_t half_h = h / 2;
+    GFX_3D_VERTEX vertices[18];
+
+#define SET(i, x_, y_, color)                                                  \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;                                                        \
+    vertices[i].r = color.r;                                                   \
+    vertices[i].g = color.g;                                                   \
+    vertices[i].b = color.b;                                                   \
+    vertices[i].a = color.a;
+    // clang-format off
+    SET(0, sx - thickness,     sy - thickness,     edge);
+    SET(1, sx + thickness,     sy + thickness,     edge);
+    SET(2, sx + half_w,        sy - thickness,     center);
+    SET(3, sx + half_w,        sy + thickness,     center);
+    SET(4, sx + w + thickness, sy - thickness,     edge);
+    SET(5, sx + w - thickness, sy + thickness,     edge);
+    SET(6, sx + w + thickness, sy + half_h,        center);
+    SET(7, sx + w - thickness, sy + half_h,        center);
+    SET(8, sx + w + thickness, sy + h + thickness, edge);
+    SET(9, sx + w - thickness, sy + h - thickness, edge);
+    SET(10, sx + half_w,       sy + h + thickness, center);
+    SET(11, sx + half_w,       sy + h - thickness, center);
+    SET(12, sx - thickness,    sy + h + thickness, edge);
+    SET(13, sx + thickness,    sy + h - thickness, edge);
+    SET(14, sx - thickness,    sy + half_h,        center);
+    SET(15, sx + thickness,    sy + half_h,        center);
+    SET(16, sx - thickness,    sy - thickness,     edge);
+    SET(17, sx + thickness,    sy + thickness,     edge);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < 18; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
+    }
+    M_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, 18);
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
     RGBA_8888 color = { 0, 0, 0, 128 };
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
+    M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenSprite(
@@ -674,7 +1413,7 @@ void Output_DrawScreenSprite(
     const int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth()
         && y0 < Viewport_GetHeight()) {
-        S_Output_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, 0);
+        M_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, 0);
     }
 }
 
@@ -707,7 +1446,7 @@ void Output_DrawSpriteRel(
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
-        S_Output_DrawSprite(x0, y0, x1, y1, zv, sprnum, shade);
+        M_DrawSprite(x0, y0, x1, y1, zv, sprnum, shade);
     }
 }
 
@@ -721,8 +1460,7 @@ void Output_DrawUISprite(
     const int32_t y1 = y + (scale * sprite->y1 >> 16);
     if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
         && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
-        S_Output_DrawSprite(
-            x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, shade);
+        M_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, shade);
     }
 }
 
@@ -739,7 +1477,7 @@ bool Output_LoadBackgroundFromFile(const char *const path)
     if (img == nullptr) {
         return false;
     }
-    S_Output_DownloadBackdropSurface(img);
+    M_DownloadBackdropSurface(img);
     Image_Free(img);
     return true;
 }
@@ -752,7 +1490,7 @@ void Output_LoadBackgroundFromObject(void)
 
 void Output_UnloadBackground(void)
 {
-    S_Output_DownloadBackdropSurface(nullptr);
+    M_DownloadBackdropSurface(nullptr);
     Memory_FreePointer(&m_BackdropImagePath);
 }
 
@@ -810,7 +1548,7 @@ void Output_SetupAboveWater(bool underwater)
 
 void Output_AnimateTextures(const int32_t num_frames)
 {
-    m_Time = (m_Time + num_frames);
+    m_Time += num_frames;
     m_AnimatedTexturesOffset += num_frames;
     bool update = false;
     while (m_AnimatedTexturesOffset > 5) {
@@ -823,15 +1561,15 @@ void Output_AnimateTextures(const int32_t num_frames)
     }
 }
 
-void Output_RotateLight(int16_t pitch, int16_t yaw)
+void Output_RotateLight(const int16_t pitch, const int16_t yaw)
 {
-    int32_t cp = Math_Cos(pitch);
-    int32_t sp = Math_Sin(pitch);
-    int32_t cy = Math_Cos(yaw);
-    int32_t sy = Math_Sin(yaw);
-    int32_t ls_x = TRIGMULT2(cp, sy);
-    int32_t ls_y = -sp;
-    int32_t ls_z = TRIGMULT2(cp, cy);
+    const int32_t cp = Math_Cos(pitch);
+    const int32_t sp = Math_Sin(pitch);
+    const int32_t cy = Math_Cos(yaw);
+    const int32_t sy = Math_Sin(yaw);
+    const int32_t ls_x = TRIGMULT2(cp, sy);
+    const int32_t ls_y = -sp;
+    const int32_t ls_z = TRIGMULT2(cp, cy);
     m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
                         + g_W2VMatrix._02 * ls_z)
         >> W2V_SHIFT;
@@ -851,21 +1589,21 @@ void Output_DrawBlackRectangle(int32_t opacity)
     int32_t sh = Viewport_GetHeight();
 
     RGBA_8888 background = { 0, 0, 0, opacity };
-    S_Output_DisableDepthTest();
-    S_Output_ClearDepthBuffer();
+    M_DisableDepthTest();
+    Output_ClearDepthBuffer();
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
-    S_Output_EnableDepthTest();
+    M_EnableDepthTest();
 }
 
 void Output_DrawBackground(void)
 {
-    // already handled in S_Output_RenderBegin
+    // already handled in Output_BeginScene
 }
 
 void Output_DrawPolyList(void)
 {
     // force flush the vertex stream
-    S_Output_ClearDepthBuffer();
+    Output_ClearDepthBuffer();
 }
 
 void Output_ApplyFOV(void)
@@ -918,7 +1656,7 @@ bool Output_MakeScreenshot(const char *const path)
     return true;
 }
 
-int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
+int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 {
     if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
         return 0;
@@ -931,44 +1669,29 @@ int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
     int32_t z_min = bounds->min.z;
     int32_t z_max = bounds->max.z;
 
-    XYZ_32 vtx[8];
-    vtx[0].x = x_min;
-    vtx[0].y = y_min;
-    vtx[0].z = z_min;
-    vtx[1].x = x_max;
-    vtx[1].y = y_min;
-    vtx[1].z = z_min;
-    vtx[2].x = x_max;
-    vtx[2].y = y_max;
-    vtx[2].z = z_min;
-    vtx[3].x = x_min;
-    vtx[3].y = y_max;
-    vtx[3].z = z_min;
-    vtx[4].x = x_min;
-    vtx[4].y = y_min;
-    vtx[4].z = z_max;
-    vtx[5].x = x_max;
-    vtx[5].y = y_min;
-    vtx[5].z = z_max;
-    vtx[6].x = x_max;
-    vtx[6].y = y_max;
-    vtx[6].z = z_max;
-    vtx[7].x = x_min;
-    vtx[7].y = y_max;
-    vtx[7].z = z_max;
+    const XYZ_32 vtx[8] = {
+        { .x = x_min, .y = y_min, .z = z_min },
+        { .x = x_max, .y = y_min, .z = z_min },
+        { .x = x_max, .y = y_max, .z = z_min },
+        { .x = x_min, .y = y_max, .z = z_min },
+        { .x = x_min, .y = y_min, .z = z_max },
+        { .x = x_max, .y = y_min, .z = z_max },
+        { .x = x_max, .y = y_max, .z = z_max },
+        { .x = x_min, .y = y_max, .z = z_max },
+    };
 
-    int num_z = 0;
+    int32_t num_z = 0;
     x_min = 0x3FFFFFFF;
     y_min = 0x3FFFFFFF;
     x_max = -0x3FFFFFFF;
     y_max = -0x3FFFFFFF;
 
-    for (int i = 0; i < 8; i++) {
+    for (int32_t i = 0; i < 8; i++) {
         int32_t zv = g_MatrixPtr->_20 * vtx[i].x + g_MatrixPtr->_21 * vtx[i].y
             + g_MatrixPtr->_22 * vtx[i].z + g_MatrixPtr->_23;
 
         if (zv > Output_GetNearZ() && zv < Output_GetFarZ()) {
-            ++num_z;
+            num_z++;
             int32_t zp = zv / g_PhdPersp;
             int32_t xv =
                 (g_MatrixPtr->_00 * vtx[i].x + g_MatrixPtr->_01 * vtx[i].y
@@ -998,8 +1721,8 @@ int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
     y_min += Viewport_GetCenterY();
     y_max += Viewport_GetCenterY();
 
-    if (!num_z || x_min > g_PhdRight || y_min > g_PhdBottom || x_max < g_PhdLeft
-        || y_max < g_PhdTop) {
+    if (num_z == 0 || x_min > g_PhdRight || y_min > g_PhdBottom
+        || x_max < g_PhdLeft || y_max < g_PhdTop) {
         return 0; // out of screen
     }
 
@@ -1143,4 +1866,9 @@ void Output_RestoreState(void)
     glBindTexture(GL_TEXTURE_2D, m_CachedState.bound_texture);
     glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
     GFX_GL_CheckError();
+}
+
+float Output_AdjustUV(const uint16_t uv)
+{
+    return M_GetUV(uv);
 }

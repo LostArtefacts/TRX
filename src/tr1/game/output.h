@@ -12,7 +12,7 @@ bool Output_Init(void);
 void Output_Shutdown(void);
 void Output_ReserveVertexBuffer(size_t size);
 
-void Output_SetWindowSize(int width, int height);
+void Output_SetWindowSize(int32_t width, int32_t height);
 void Output_ApplyRenderSettings(void);
 void Output_ObserveLevelLoad(void);
 void Output_ObserveLevelUnload(void);
@@ -30,16 +30,13 @@ void Output_SetWaterColor(const RGB_F *color);
 void Output_BeginScene(void);
 void Output_EndScene(void);
 
-void Output_DrawBlack(void);
 void Output_ClearDepthBuffer(void);
-
-void Output_DrawObjectMesh(const OBJECT_MESH *mesh, int32_t clip);
-void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, int32_t clip);
-
 void Output_SetSkyboxEnabled(bool enabled);
 bool Output_IsSkyboxEnabled(void);
-void Output_DrawSkybox(const OBJECT_MESH *mesh);
 
+void Output_DrawSkybox(const OBJECT_MESH *mesh);
+void Output_DrawObjectMesh(const OBJECT_MESH *mesh, int32_t clip);
+void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, int32_t clip);
 void Output_DrawRoomMesh(ROOM *mesh);
 void Output_DrawRoomPortals(const ROOM *room);
 void Output_DrawRoomTriggers(const ROOM *room);
@@ -48,7 +45,6 @@ void Output_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width);
 void Output_Draw3DLine(XYZ_32 pos_0, XYZ_32 pos_1, RGBA_8888 color);
-void Output_Draw3DFrame(const XYZ_32 vert[4], RGBA_8888 color);
 void Output_FlushTranslucentObjects(void);
 
 void Output_DrawScreenFlatQuad(
@@ -87,7 +83,6 @@ void Output_ApplyFOV(void);
 void Output_ApplyTint(float *r, float *g, float *b);
 RGB_F Output_GetTint(void);
 
-void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
 
 bool Output_GetWaterEffect(void);

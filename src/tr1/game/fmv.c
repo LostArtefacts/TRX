@@ -2,11 +2,11 @@
 
 #include "game/input.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/types.h"
-#include "specific/s_output.h"
 #include "specific/s_shell.h"
 
 #include <libtrx/config.h>
@@ -58,13 +58,12 @@ static void M_ClearSurface(void *const surface, void *const user_data)
 
 static void M_RenderBegin(void *surface, void *const user_data)
 {
-    S_Output_RenderBegin();
+    Output_BeginScene();
 }
 
 static void M_RenderEnd(void *surface, void *const user_data)
 {
-    S_Output_RenderEnd();
-    S_Output_FlipScreen();
+    Output_EndScene();
 }
 
 static void *M_LockSurface(void *const surface, void *const user_data)
@@ -130,7 +129,7 @@ static bool M_Play(const char *const file_path)
 
     Audio_Init();
     GFX_2D_Renderer_Destroy(renderer_2d);
-    S_Output_ApplyRenderSettings();
+    Output_ApplyRenderSettings();
 
     return true;
 }
