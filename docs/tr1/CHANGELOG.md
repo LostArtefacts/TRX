@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
 - fixed anisotropy filter causing black lines (#902)
-- fixed most cases of mesh faces not being drawn under some circumstances (#2452, #2438)
+- fixed mesh faces not being drawn under some circumstances (#2452, #2438)
+- fixed objects disappearing too early around screen edges (#2005)
 - fixed trapezoid filter warping on faces close to the camera (#2629, regression from 4.9)
 - fixed Mac builds crashing upon start (regression from 4.9)
 - improved rendering performance

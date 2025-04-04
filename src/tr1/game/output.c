@@ -1291,80 +1291,8 @@ bool Output_MakeScreenshot(const char *const path)
 
 int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 {
-    if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
-        return 0;
-    }
-
-    int32_t x_min = bounds->min.x;
-    int32_t x_max = bounds->max.x;
-    int32_t y_min = bounds->min.y;
-    int32_t y_max = bounds->max.y;
-    int32_t z_min = bounds->min.z;
-    int32_t z_max = bounds->max.z;
-
-    const XYZ_32 vtx[8] = {
-        { .x = x_min, .y = y_min, .z = z_min },
-        { .x = x_max, .y = y_min, .z = z_min },
-        { .x = x_max, .y = y_max, .z = z_min },
-        { .x = x_min, .y = y_max, .z = z_min },
-        { .x = x_min, .y = y_min, .z = z_max },
-        { .x = x_max, .y = y_min, .z = z_max },
-        { .x = x_max, .y = y_max, .z = z_max },
-        { .x = x_min, .y = y_max, .z = z_max },
-    };
-
-    int32_t num_z = 0;
-    x_min = 0x3FFFFFFF;
-    y_min = 0x3FFFFFFF;
-    x_max = -0x3FFFFFFF;
-    y_max = -0x3FFFFFFF;
-
-    for (int32_t i = 0; i < 8; i++) {
-        int32_t zv = g_MatrixPtr->_20 * vtx[i].x + g_MatrixPtr->_21 * vtx[i].y
-            + g_MatrixPtr->_22 * vtx[i].z + g_MatrixPtr->_23;
-
-        if (zv > Output_GetNearZ() && zv < Output_GetFarZ()) {
-            num_z++;
-            int32_t zp = zv / g_PhdPersp;
-            int32_t xv =
-                (g_MatrixPtr->_00 * vtx[i].x + g_MatrixPtr->_01 * vtx[i].y
-                 + g_MatrixPtr->_02 * vtx[i].z + g_MatrixPtr->_03)
-                / zp;
-            int32_t yv =
-                (g_MatrixPtr->_10 * vtx[i].x + g_MatrixPtr->_11 * vtx[i].y
-                 + g_MatrixPtr->_12 * vtx[i].z + g_MatrixPtr->_13)
-                / zp;
-
-            if (x_min > xv) {
-                x_min = xv;
-            } else if (x_max < xv) {
-                x_max = xv;
-            }
-
-            if (y_min > yv) {
-                y_min = yv;
-            } else if (y_max < yv) {
-                y_max = yv;
-            }
-        }
-    }
-
-    x_min += Viewport_GetCenterX();
-    x_max += Viewport_GetCenterX();
-    y_min += Viewport_GetCenterY();
-    y_max += Viewport_GetCenterY();
-
-    if (num_z == 0 || x_min > g_PhdRight || y_min > g_PhdBottom
-        || x_max < g_PhdLeft || y_max < g_PhdTop) {
-        return 0; // out of screen
-    }
-
-    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > Viewport_GetMaxX()
-        || y_max > Viewport_GetMaxY()) {
-        return -1; // clipped
-    }
-
-    return 1; // fully on screen
+    // TODO: remove
+    return 1;
 }
 
 int32_t Output_CalcFogShade(const int32_t depth)
