@@ -18,11 +18,14 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/memory.h>
 
 #include <stdio.h>
 #include <string.h>
 
 #define SAVE_CREATURE (1 << 7)
+#define SAVEGAME_LEGACY_TOTAL_SIZE (1170 + 6272) // header + OG buffer size
+#define SAVEGAME_LEGACY_TITLE_SIZE 75
 
 #define SPECIAL_READ_WRITES                                                    \
     SPECIAL_READ_WRITE(S8, int8_t)                                             \
@@ -32,21 +35,30 @@
     SPECIAL_READ_WRITE(U16, uint16_t)                                          \
     SPECIAL_READ_WRITE(U32, uint32_t)
 
+#pragma pack(push, 1)
+typedef struct {
+    uint8_t num_pickup[2];
+    uint8_t num_puzzle[4];
+    uint8_t num_key[4];
+    uint16_t reserved;
+} SAVEGAME_LEGACY_ITEM_STATS;
+#pragma pack(pop)
+
 static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
 static uint32_t m_ReqFlags1[MAX_REQUESTER_ITEMS];
 static uint32_t m_ReqFlags2[MAX_REQUESTER_ITEMS];
 
-static void M_Reset(void);
+static void M_Reset(char *buffer);
 
 static void M_Read(void *ptr, size_t size);
 #undef SPECIAL_READ_WRITE
 #define SPECIAL_READ_WRITE(name, type) static type M_Read##name(void);
 SPECIAL_READ_WRITES
 static void M_Skip(size_t size);
-static void M_ReadResumeInfo(MYFILE *fp, RESUME_INFO *resume);
-static void M_ReadResumeInfos(MYFILE *fp);
-static void M_ReadStats(MYFILE *fp, LEVEL_STATS *const stats);
+static void M_ReadResumeInfo(RESUME_INFO *resume);
+static void M_ReadResumeInfos(void);
+static void M_ReadStats(LEVEL_STATS *const stats);
 static void M_ReadItems(void);
 static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLaraArm(LARA_ARM *arm);
@@ -57,24 +69,24 @@ static void M_Write(const void *ptr, size_t size);
 #undef SPECIAL_READ_WRITE
 #define SPECIAL_READ_WRITE(name, type) static void M_Write##name(type value);
 SPECIAL_READ_WRITES
-static void M_WriteResumeInfo(MYFILE *fp, const RESUME_INFO *resume);
-static void M_WriteResumeInfos(MYFILE *fp);
-static void M_WriteStats(MYFILE *fp, const LEVEL_STATS *stats);
+static void M_WriteResumeInfo(const RESUME_INFO *resume);
+static void M_WriteResumeInfos(void);
+static void M_WriteStats(const LEVEL_STATS *stats);
 static void M_WriteItems(void);
 static void M_WriteLara(const LARA_INFO *lara);
 static void M_WriteLaraArm(const LARA_ARM *arm);
 static void M_WriteAmmoInfo(const AMMO_INFO *ammo_info);
 static void M_WriteFlares(void);
 
-static void M_Reset(void)
+static void M_Reset(char *const buffer)
 {
     m_BufPos = 0;
-    m_BufPtr = g_SaveGame.buffer;
+    m_BufPtr = buffer;
 }
 
 static void M_Read(void *const ptr, const size_t size)
 {
-    ASSERT(m_BufPos + size <= MAX_SG_BUFFER_SIZE);
+    ASSERT(m_BufPos + size <= SAVEGAME_LEGACY_TOTAL_SIZE);
     m_BufPos += size;
     memcpy(ptr, m_BufPtr, size);
     m_BufPtr += size;
@@ -104,23 +116,23 @@ static void M_Skip(const size_t size)
     m_BufPtr += size;
 }
 
-static void M_ReadResumeInfo(MYFILE *const fp, RESUME_INFO *const resume)
+static void M_ReadResumeInfo(RESUME_INFO *const resume)
 {
-    resume->pistol_ammo = File_ReadU16(fp);
-    resume->magnum_ammo = File_ReadU16(fp);
-    resume->uzi_ammo = File_ReadU16(fp);
-    resume->shotgun_ammo = File_ReadU16(fp);
-    resume->m16_ammo = File_ReadU16(fp);
-    resume->grenade_ammo = File_ReadU16(fp);
-    resume->harpoon_ammo = File_ReadU16(fp);
-    resume->small_medipacks = File_ReadU8(fp);
-    resume->large_medipacks = File_ReadU8(fp);
-    resume->reserved1 = File_ReadU8(fp);
-    resume->flares = File_ReadU8(fp);
-    resume->gun_status = File_ReadU8(fp);
-    resume->gun_type = File_ReadU8(fp);
+    resume->pistol_ammo = M_ReadU16();
+    resume->magnum_ammo = M_ReadU16();
+    resume->uzi_ammo = M_ReadU16();
+    resume->shotgun_ammo = M_ReadU16();
+    resume->m16_ammo = M_ReadU16();
+    resume->grenade_ammo = M_ReadU16();
+    resume->harpoon_ammo = M_ReadU16();
+    resume->small_medipacks = M_ReadU8();
+    resume->large_medipacks = M_ReadU8();
+    resume->reserved1 = M_ReadU8();
+    resume->flares = M_ReadU8();
+    resume->gun_status = M_ReadU8();
+    resume->gun_type = M_ReadU8();
 
-    const uint16_t flags = File_ReadU16(fp);
+    const uint16_t flags = M_ReadU16();
     // clang-format off
     resume->available     = (flags & 0x01) ? 1 : 0;
     resume->has_pistols   = (flags & 0x02) ? 1 : 0;
@@ -132,33 +144,33 @@ static void M_ReadResumeInfo(MYFILE *const fp, RESUME_INFO *const resume)
     resume->has_harpoon   = (flags & 0x80) ? 1 : 0;
     // clang-format on
 
-    File_ReadU16(fp);
-    M_ReadStats(fp, &resume->stats);
+    M_Skip(sizeof(uint16_t));
+    M_ReadStats(&resume->stats);
 }
 
-static void M_ReadResumeInfos(MYFILE *const fp)
+static void M_ReadResumeInfos(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < 24; i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
-            M_ReadResumeInfo(fp, Savegame_GetCurrentInfo(level));
+            M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
         } else {
             RESUME_INFO dummy_resume_info;
-            M_ReadResumeInfo(fp, &dummy_resume_info);
+            M_ReadResumeInfo(&dummy_resume_info);
         }
     }
 }
 
-static void M_ReadStats(MYFILE *const fp, LEVEL_STATS *const stats)
+static void M_ReadStats(LEVEL_STATS *const stats)
 {
-    stats->timer = File_ReadU32(fp);
-    stats->ammo_used = File_ReadU32(fp);
-    stats->ammo_hits = File_ReadU32(fp);
-    stats->distance = File_ReadU32(fp);
-    stats->kills = File_ReadU16(fp);
-    stats->secret_flags = File_ReadU8(fp);
-    stats->medipacks = File_ReadU8(fp);
+    stats->timer = M_ReadU32();
+    stats->ammo_used = M_ReadU32();
+    stats->ammo_hits = M_ReadU32();
+    stats->distance = M_ReadU32();
+    stats->kills = M_ReadU16();
+    stats->secret_flags = M_ReadU8();
+    stats->medipacks = M_ReadU8();
 }
 
 static void M_ReadItems(void)
@@ -395,7 +407,7 @@ static void M_ReadFlares(void)
 static void M_Write(const void *ptr, const size_t size)
 {
     m_BufPos += size;
-    if (m_BufPos >= MAX_SG_BUFFER_SIZE) {
+    if (m_BufPos >= SAVEGAME_LEGACY_TOTAL_SIZE) {
         Shell_ExitSystem("Savegame is too big to fit in buffer");
     }
 
@@ -403,22 +415,22 @@ static void M_Write(const void *ptr, const size_t size)
     m_BufPtr += size;
 }
 
-static void M_WriteResumeInfo(MYFILE *const fp, const RESUME_INFO *const resume)
+static void M_WriteResumeInfo(const RESUME_INFO *const resume)
 {
     ASSERT(resume != nullptr);
-    File_WriteU16(fp, resume->pistol_ammo);
-    File_WriteU16(fp, resume->magnum_ammo);
-    File_WriteU16(fp, resume->uzi_ammo);
-    File_WriteU16(fp, resume->shotgun_ammo);
-    File_WriteU16(fp, resume->m16_ammo);
-    File_WriteU16(fp, resume->grenade_ammo);
-    File_WriteU16(fp, resume->harpoon_ammo);
-    File_WriteU8(fp, resume->small_medipacks);
-    File_WriteU8(fp, resume->large_medipacks);
-    File_WriteU8(fp, resume->reserved1);
-    File_WriteU8(fp, resume->flares);
-    File_WriteU8(fp, resume->gun_status);
-    File_WriteU8(fp, resume->gun_type);
+    M_WriteU16(resume->pistol_ammo);
+    M_WriteU16(resume->magnum_ammo);
+    M_WriteU16(resume->uzi_ammo);
+    M_WriteU16(resume->shotgun_ammo);
+    M_WriteU16(resume->m16_ammo);
+    M_WriteU16(resume->grenade_ammo);
+    M_WriteU16(resume->harpoon_ammo);
+    M_WriteU8(resume->small_medipacks);
+    M_WriteU8(resume->large_medipacks);
+    M_WriteU8(resume->reserved1);
+    M_WriteU8(resume->flares);
+    M_WriteU8(resume->gun_status);
+    M_WriteU8(resume->gun_type);
 
     uint16_t flags = 0;
     // clang-format off
@@ -431,35 +443,35 @@ static void M_WriteResumeInfo(MYFILE *const fp, const RESUME_INFO *const resume)
     if (resume->has_grenade) { flags |= 0x40; }
     if (resume->has_harpoon) { flags |= 0x80; }
     // clang-format on
-    File_WriteU16(fp, flags);
+    M_WriteU16(flags);
 
-    File_WriteU16(fp, 0);
-    M_WriteStats(fp, &resume->stats);
+    M_WriteU16(0);
+    M_WriteStats(&resume->stats);
 }
 
-static void M_WriteResumeInfos(MYFILE *const fp)
+static void M_WriteResumeInfos(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < 24; i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
-            M_WriteResumeInfo(fp, Savegame_GetCurrentInfo(level));
+            M_WriteResumeInfo(Savegame_GetCurrentInfo(level));
         } else {
             const RESUME_INFO null_resume_info = {};
-            M_WriteResumeInfo(fp, &null_resume_info);
+            M_WriteResumeInfo(&null_resume_info);
         }
     }
 }
 
-static void M_WriteStats(MYFILE *const fp, const LEVEL_STATS *const stats)
+static void M_WriteStats(const LEVEL_STATS *const stats)
 {
-    File_WriteU32(fp, stats->timer);
-    File_WriteU32(fp, stats->ammo_used);
-    File_WriteU32(fp, stats->ammo_hits);
-    File_WriteU32(fp, stats->distance);
-    File_WriteU16(fp, stats->kills);
-    File_WriteU8(fp, stats->secret_flags);
-    File_WriteU8(fp, stats->medipacks);
+    M_WriteU32(stats->timer);
+    M_WriteU32(stats->ammo_used);
+    M_WriteU32(stats->ammo_hits);
+    M_WriteU32(stats->distance);
+    M_WriteU16(stats->kills);
+    M_WriteU8(stats->secret_flags);
+    M_WriteU8(stats->medipacks);
 }
 
 static void M_WriteItems(void)
@@ -876,25 +888,39 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->gun_status = LGS_ARMLESS;
 }
 
-void CreateSaveGameInfo(void)
+void S_SaveGame(MYFILE *const fp)
 {
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    Savegame_PersistGameToCurrentInfo(current_level);
+    char *buffer = Memory_Alloc(SAVEGAME_LEGACY_TOTAL_SIZE);
+    M_Reset(buffer);
 
-    // TODO: refactor me!
-    g_SaveGame.num_pickup[0] = Inv_RequestItem(O_PICKUP_ITEM_1);
-    g_SaveGame.num_pickup[1] = Inv_RequestItem(O_PICKUP_ITEM_2);
-    g_SaveGame.num_puzzle[0] = Inv_RequestItem(O_PUZZLE_ITEM_1);
-    g_SaveGame.num_puzzle[1] = Inv_RequestItem(O_PUZZLE_ITEM_2);
-    g_SaveGame.num_puzzle[2] = Inv_RequestItem(O_PUZZLE_ITEM_3);
-    g_SaveGame.num_puzzle[3] = Inv_RequestItem(O_PUZZLE_ITEM_4);
-    g_SaveGame.num_key[0] = Inv_RequestItem(O_KEY_ITEM_1);
-    g_SaveGame.num_key[1] = Inv_RequestItem(O_KEY_ITEM_2);
-    g_SaveGame.num_key[2] = Inv_RequestItem(O_KEY_ITEM_3);
-    g_SaveGame.num_key[3] = Inv_RequestItem(O_KEY_ITEM_4);
+    const GF_LEVEL *const current_level = GF_GetCurrentLevel();
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(current_level);
 
-    M_Reset();
-    memset(g_SaveGame.buffer, 0, MAX_SG_BUFFER_SIZE);
+    char title[SAVEGAME_LEGACY_TITLE_SIZE];
+    snprintf(title, SAVEGAME_LEGACY_TITLE_SIZE, "%s", current_level->title);
+    M_Write(title, SAVEGAME_LEGACY_TITLE_SIZE);
+    M_WriteS32(Savegame_GetCounter());
+
+    M_WriteResumeInfos();
+    M_WriteStats(&current_info->stats);
+    M_WriteS16(current_level->num);
+    M_WriteU8(Game_IsBonusFlagSet(GBF_NGPLUS) ? 1 : 0);
+
+    const SAVEGAME_LEGACY_ITEM_STATS item_stats = {
+        .num_pickup[0] = Inv_RequestItem(O_PICKUP_ITEM_1),
+        .num_pickup[1] = Inv_RequestItem(O_PICKUP_ITEM_2),
+        .num_puzzle[0] = Inv_RequestItem(O_PUZZLE_ITEM_1),
+        .num_puzzle[1] = Inv_RequestItem(O_PUZZLE_ITEM_2),
+        .num_puzzle[2] = Inv_RequestItem(O_PUZZLE_ITEM_3),
+        .num_puzzle[3] = Inv_RequestItem(O_PUZZLE_ITEM_4),
+        .num_key[0] = Inv_RequestItem(O_KEY_ITEM_1),
+        .num_key[1] = Inv_RequestItem(O_KEY_ITEM_2),
+        .num_key[2] = Inv_RequestItem(O_KEY_ITEM_3),
+        .num_key[3] = Inv_RequestItem(O_KEY_ITEM_4),
+        .reserved = 0,
+    };
+    M_Write(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
 
     M_WriteS32(Room_GetFlipStatus());
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
@@ -927,24 +953,51 @@ void CreateSaveGameInfo(void)
     M_WriteS32(g_IsMonkAngry);
 
     M_WriteFlares();
+
+    File_WriteData(fp, buffer, SAVEGAME_LEGACY_TOTAL_SIZE);
+    Memory_FreePointer(&buffer);
 }
 
-void ExtractSaveGameInfo(void)
+void S_LoadGame(MYFILE *const fp)
 {
+    char *buffer = Memory_Alloc(File_Size(fp));
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_ReadData(fp, buffer, File_Size(fp));
+
+    M_Reset(buffer);
+    M_Skip(SAVEGAME_LEGACY_TITLE_SIZE);
+    M_Skip(sizeof(int32_t)); // save counter
+
+    M_ReadResumeInfos();
+    {
+        LEVEL_STATS current_stats = {};
+        M_ReadStats(&current_stats);
+        const int16_t current_level = M_ReadS16();
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, current_level);
+        RESUME_INFO *const current_info = Savegame_GetCurrentInfo(level);
+        current_info->stats = current_stats;
+    }
+
+    const bool is_ng_plus = M_ReadU8() != 0;
+    if (is_ng_plus) {
+        Game_SetBonusFlag(GBF_NGPLUS);
+    }
+
+    SAVEGAME_LEGACY_ITEM_STATS item_stats = {};
+    M_Read(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
+
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     Lara_InitialiseInventory(current_level);
-    Inv_AddItemNTimes(O_PICKUP_ITEM_1, g_SaveGame.num_pickup[0]);
-    Inv_AddItemNTimes(O_PICKUP_ITEM_2, g_SaveGame.num_pickup[1]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, g_SaveGame.num_puzzle[0]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, g_SaveGame.num_puzzle[1]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, g_SaveGame.num_puzzle[2]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, g_SaveGame.num_puzzle[3]);
-    Inv_AddItemNTimes(O_KEY_ITEM_1, g_SaveGame.num_key[0]);
-    Inv_AddItemNTimes(O_KEY_ITEM_2, g_SaveGame.num_key[1]);
-    Inv_AddItemNTimes(O_KEY_ITEM_3, g_SaveGame.num_key[2]);
-    Inv_AddItemNTimes(O_KEY_ITEM_4, g_SaveGame.num_key[3]);
-
-    M_Reset();
+    Inv_AddItemNTimes(O_PICKUP_ITEM_1, item_stats.num_pickup[0]);
+    Inv_AddItemNTimes(O_PICKUP_ITEM_2, item_stats.num_pickup[1]);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, item_stats.num_puzzle[0]);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, item_stats.num_puzzle[1]);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, item_stats.num_puzzle[2]);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, item_stats.num_puzzle[3]);
+    Inv_AddItemNTimes(O_KEY_ITEM_1, item_stats.num_key[0]);
+    Inv_AddItemNTimes(O_KEY_ITEM_2, item_stats.num_key[1]);
+    Inv_AddItemNTimes(O_KEY_ITEM_3, item_stats.num_key[2]);
+    Inv_AddItemNTimes(O_KEY_ITEM_4, item_stats.num_key[3]);
 
     if (M_ReadS32()) {
         Room_FlipMap();
@@ -989,66 +1042,6 @@ void ExtractSaveGameInfo(void)
     g_IsMonkAngry = M_ReadS32();
 
     M_ReadFlares();
-}
 
-void S_SaveGame(MYFILE *const fp)
-{
-    CreateSaveGameInfo();
-
-    const GF_LEVEL *const current_level = GF_GetCurrentLevel();
-    const RESUME_INFO *const current_info =
-        Savegame_GetCurrentInfo(current_level);
-
-    char title[75];
-    snprintf(title, 75, "%s", current_level->title);
-    File_WriteData(fp, title, 75);
-    File_WriteS32(fp, Savegame_GetCounter());
-    M_WriteResumeInfos(fp);
-    M_WriteStats(fp, &current_info->stats);
-    File_WriteS16(fp, current_level->num);
-    File_WriteU8(fp, Game_IsBonusFlagSet(GBF_NGPLUS) ? 1 : 0);
-    for (int32_t i = 0; i < 2; i++) {
-        File_WriteU8(fp, g_SaveGame.num_pickup[i]);
-    }
-    for (int32_t i = 0; i < 4; i++) {
-        File_WriteU8(fp, g_SaveGame.num_puzzle[i]);
-    }
-    for (int32_t i = 0; i < 4; i++) {
-        File_WriteU8(fp, g_SaveGame.num_key[i]);
-    }
-    File_WriteS16(fp, 0);
-    File_WriteData(fp, g_SaveGame.buffer, MAX_SG_BUFFER_SIZE);
-}
-
-void S_LoadGame(MYFILE *const fp)
-{
-    File_Skip(fp, 75);
-    File_Skip(fp, 4);
-    M_ReadResumeInfos(fp);
-    {
-        LEVEL_STATS current_stats = {};
-        M_ReadStats(fp, &current_stats);
-        const int16_t current_level = File_ReadS16(fp);
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, current_level);
-        RESUME_INFO *const current_info = Savegame_GetCurrentInfo(level);
-        current_info->stats = current_stats;
-    }
-
-    const bool is_ng_plus = File_ReadU8(fp) != 0;
-    if (is_ng_plus) {
-        Game_SetBonusFlag(GBF_NGPLUS);
-    }
-    for (int32_t i = 0; i < 2; i++) {
-        g_SaveGame.num_pickup[i] = File_ReadU8(fp);
-    }
-    for (int32_t i = 0; i < 4; i++) {
-        g_SaveGame.num_puzzle[i] = File_ReadU8(fp);
-    }
-    for (int32_t i = 0; i < 4; i++) {
-        g_SaveGame.num_key[i] = File_ReadU8(fp);
-    }
-    File_ReadS16(fp);
-    File_ReadData(fp, g_SaveGame.buffer, MAX_SG_BUFFER_SIZE);
-
-    ExtractSaveGameInfo();
+    Memory_FreePointer(&buffer);
 }

@@ -27,9 +27,6 @@ int32_t Savegame_GetLevelNumber(int32_t slot_idx);
 int32_t Savegame_GetCounter(void);
 int32_t Savegame_GetTotalCount(void);
 
-void CreateSaveGameInfo(void);
-void ExtractSaveGameInfo(void);
-
 void S_SaveGame(MYFILE *fp);
 void S_LoadGame(MYFILE *fp);
 
