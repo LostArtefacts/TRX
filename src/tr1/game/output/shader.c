@@ -86,6 +86,11 @@ void Output_Shader_Free(OUTPUT_SHADER *const shader)
     Memory_Free(shader);
 }
 
+void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
+{
+    GFX_GL_Program_Bind(&shader->program);
+}
+
 void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
 {
     GFX_GL_Program_Bind(&shader->program);

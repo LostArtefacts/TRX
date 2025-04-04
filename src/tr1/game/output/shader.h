@@ -7,6 +7,7 @@ typedef struct OUTPUT_SHADER OUTPUT_SHADER;
 
 OUTPUT_SHADER *Output_Shader_Create(const char *path);
 void Output_Shader_Free(OUTPUT_SHADER *shader);
+void Output_Shader_Bind(const OUTPUT_SHADER *shader);
 void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *shader);
 void Output_Shader_UploadProjectionMatrix(const OUTPUT_SHADER *shader);
 

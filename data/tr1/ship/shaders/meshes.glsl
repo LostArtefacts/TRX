@@ -1,10 +1,3 @@
-#define NEUTRAL_SHADE 0x1000
-
-#define VERT_NO_CAUSTICS 0x01
-#define VERT_FLAT_SHADED 0x02
-#define VERT_REFLECTIVE  0x04
-#define VERT_NO_LIGHTING 0x08
-
 #ifdef VERTEX
 
 uniform int uTime;
@@ -108,6 +101,6 @@ void main(void) {
 
     texColor.rgb *= uBrightnessMultiplier;
     texColor.rgb *= uGlobalTint;
-    outColor = vec4(texColor.rgb, 1.0);
+    outColor = vec4(texColor.rgb, gColor.a);
 }
 #endif
