@@ -5,10 +5,11 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/savegame.h>
 
-#define SAVEGAME_CURRENT_VERSION -1
+#define SAVEGAME_CURRENT_VERSION 0
 
 typedef enum {
     VERSION_LEGACY = -1,
+    VERSION_0 = 0,
 } SAVEGAME_VERSION;
 
 typedef struct {

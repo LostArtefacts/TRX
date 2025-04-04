@@ -2,6 +2,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/inventory.h"
+#include "game/lara/misc.h"
 #include "game/requester.h"
 #include "game/savegame.h"
 #include "global/vars.h"
@@ -10,6 +11,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/savegame.h>
 #include <libtrx/log.h>
@@ -17,7 +19,8 @@
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
-#define MAX_STRATEGIES 1
+#define MAX_STRATEGIES 2
+#define SAVES_DIR "saves"
 
 static STATS_COMMON *m_DefaultStats = nullptr;
 static RESUME_INFO *m_ResumeInfos = nullptr;
@@ -136,13 +139,15 @@ static void M_LoadPostprocess(void)
         if (obj->save_flags != 0) {
             item->flags &= 0xFF00;
         }
-
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
-        }
     }
 
     MovableBlock_SetupFloor();
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->burn) {
+        lara->burn = 0;
+        Lara_CatchFire();
+    }
 }
 
 void Savegame_RegisterStrategy(const SAVEGAME_STRATEGY strategy)
@@ -206,6 +211,7 @@ void Savegame_ScanSavedGames(void)
     m_SavedGames = 0;
     m_NewestSlot = -1;
 
+    M_ScanSavedGamesDir(SAVES_DIR);
     M_ScanSavedGamesDir(".");
 
     for (int32_t i = 0; i < m_SaveSlots; i++) {
@@ -530,6 +536,8 @@ bool Savegame_Save(const int32_t slot_idx)
     bool result = false;
     Savegame_BindSlot(slot_idx);
 
+    File_CreateDirectory(SAVES_DIR);
+
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     const char *const level_title = current_level->title;
 
@@ -547,7 +555,8 @@ bool Savegame_Save(const int32_t slot_idx)
 
         char *file_name =
             String_Format(strategy.get_save_file_pattern_func(), slot_idx);
-        MYFILE *const fp = File_Open(file_name, FILE_OPEN_WRITE);
+        char *full_path = String_Format("%s/%s", SAVES_DIR, file_name);
+        MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
         if (fp != nullptr) {
             strategy.save_to_file_func(fp);
             savegame_info->format = strategy.format;
@@ -562,6 +571,7 @@ bool Savegame_Save(const int32_t slot_idx)
         }
 
         Memory_FreePointer(&file_name);
+        Memory_FreePointer(&full_path);
     }
 
     if (result) {

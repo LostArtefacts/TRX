@@ -82,7 +82,7 @@ static bool M_LoadFromFile(MYFILE *fp);
 static SAVEGAME_STRATEGY m_Strategy = {
     // clang-format off
     .allow_load = true,
-    .allow_save = true,
+    .allow_save = false,
     .format = SAVEGAME_FORMAT_LEGACY,
     .get_save_file_pattern_func = M_GetSaveFilePattern,
     .fill_info_func = M_FillInfo,
@@ -281,6 +281,10 @@ static void M_ReadItems(void)
         case O_LIFT:
             M_Read(item->data, sizeof(LIFT_INFO));
             break;
+        }
+
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
 }
@@ -850,11 +854,6 @@ static bool M_LoadFromFile(MYFILE *const fp)
         weapon_item->goal_anim_state = M_ReadS16();
         weapon_item->status = IS_ACTIVE;
         weapon_item->room_num = NO_ROOM;
-    }
-
-    if (g_Lara.burn) {
-        g_Lara.burn = 0;
-        Lara_CatchFire();
     }
 
     Room_SetFlipEffect(M_ReadS32());

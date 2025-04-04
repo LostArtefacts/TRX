@@ -266,6 +266,7 @@ sources = [
   'game/room.c',
   'game/room_draw.c',
   'game/savegame/common.c',
+  'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   'game/scaler.c',
   'game/shell/common.c',
