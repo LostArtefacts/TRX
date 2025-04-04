@@ -53,7 +53,7 @@ static GF_COMMAND M_Control(INV_RING *ring);
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
-    if (!g_SaveGame.bonus_flag) {
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         InvRing_ShowItemQuantity(fmt, qty);
     }
 }

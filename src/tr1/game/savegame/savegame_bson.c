@@ -125,7 +125,7 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
-        .flags = g_GameInfo.bonus_flag,
+        .flags = Game_GetBonusFlag(),
         .counter = g_SaveCounter,
         .level_num = level->num,
         .title_size = strlen(level->title),
@@ -404,7 +404,8 @@ static bool M_LoadMisc(
         LOG_ERROR("Malformed save: invalid or missing misc info");
         return false;
     }
-    game_info->bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
+    const int32_t bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
+    Game_SetBonusFlag(bonus_flag);
     if (header_version >= VERSION_4) {
         game_info->bonus_level_unlock =
             JSON_ObjectGetBool(misc_obj, "bonus_level_unlock", 0);
@@ -1035,7 +1036,7 @@ static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info)
 {
     ASSERT(game_info != nullptr);
     JSON_OBJECT *misc_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(misc_obj, "bonus_flag", game_info->bonus_flag);
+    JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
     JSON_ObjectAppendBool(
         misc_obj, "bonus_level_unlock", game_info->bonus_level_unlock);
     JSON_ObjectAppendInt(misc_obj, "death_count", game_info->death_count);

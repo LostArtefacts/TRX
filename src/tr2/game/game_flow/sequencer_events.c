@@ -165,7 +165,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     const GF_LEVEL *const next_level = GF_GetLevelAfter(current_level);
 
     if (current_level == GF_GetLastLevel()) {
-        g_SaveGame.bonus_flag = true;
+        Game_SetBonusFlag(GBF_NGPLUS);
     }
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);

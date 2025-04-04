@@ -584,7 +584,7 @@ static void M_BarDrawEnemy(void)
     const OBJECT *const obj = Object_Get(g_Lara.target->object_id);
     m_EnemyBar.value = g_Lara.target->hit_points;
     m_EnemyBar.max_value =
-        obj->hit_points * ((g_GameInfo.bonus_flag & GBF_NGPLUS) ? 2 : 1);
+        obj->hit_points * (Game_IsBonusFlagSet(GBF_NGPLUS) ? 2 : 1);
     CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
     Overlay_BarDraw(&m_EnemyBar, RSR_BAR);
@@ -620,8 +620,7 @@ static void M_DrawAmmoInfo(void)
 
     double scale_ammo_to_bar = g_Config.ui.bar_scale / g_Config.ui.text_scale;
 
-    if (g_Lara.gun_status != LGS_READY
-        || (g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+    if (g_Lara.gun_status != LGS_READY || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         M_RemoveAmmoText();
         return;
     }

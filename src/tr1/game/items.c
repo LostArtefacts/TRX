@@ -11,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
@@ -92,7 +93,7 @@ void Item_Initialise(int16_t item_num)
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     item->floor = sector->floor.height;
 
-    if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
         item->hit_points *= 2;
     }
     if (obj->initialise_func) {

@@ -91,11 +91,6 @@ typedef enum {
 } BAR_TYPE;
 
 typedef enum {
-    GBF_NGPLUS = 1 << 0,
-    GBF_JAPANESE = 1 << 1,
-} GAME_BONUS_FLAG;
-
-typedef enum {
     PASSPORT_MODE_BROWSE = 0,
     PASSPORT_MODE_LOAD_GAME = 1,
     PASSPORT_MODE_SELECT_LEVEL = 2,
@@ -166,7 +161,6 @@ typedef struct {
     RESUME_INFO *current;
     int32_t death_count;
 
-    uint8_t bonus_flag;
     bool bonus_level_unlock;
     int16_t save_initial_version;
     PASSPORT_MODE passport_selection;

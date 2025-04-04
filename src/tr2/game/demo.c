@@ -30,7 +30,7 @@ typedef struct {
     TEXTSTRING *text;
 
     struct {
-        bool bonus_flag;
+        GAME_BONUS_FLAG bonus_flag;
     } old_config;
 } M_PRIV;
 
@@ -44,13 +44,13 @@ static void M_RestoreConfig(M_PRIV *p);
 
 static void M_PrepareConfig(M_PRIV *const p)
 {
-    p->old_config.bonus_flag = g_SaveGame.bonus_flag;
-    g_SaveGame.bonus_flag = false;
+    p->old_config.bonus_flag = Game_GetBonusFlag();
+    Game_SetBonusFlag(GBF_NONE);
 }
 
 static void M_RestoreConfig(M_PRIV *const p)
 {
-    g_SaveGame.bonus_flag = p->old_config.bonus_flag;
+    Game_SetBonusFlag(p->old_config.bonus_flag);
 }
 
 bool Demo_GetInput(void)

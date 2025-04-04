@@ -12,6 +12,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
@@ -196,7 +197,7 @@ void Gun_Rifle_FireHarpoon(void)
     item->status = IS_ACTIVE;
 
     g_Lara.harpoon_ammo.ammo--;
-    if (g_SaveGame.bonus_flag
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)
         && (g_Lara.harpoon_ammo.ammo % HARPOON_RECOIL) == 0) {
         g_Lara.harpoon_ammo.ammo += HARPOON_RECOIL;
     }
@@ -237,7 +238,7 @@ void Gun_Rifle_FireGrenade(void)
     Item_AddActive(item_num);
     item->status = IS_ACTIVE;
 
-    if (!g_SaveGame.bonus_flag) {
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         g_Lara.grenade_ammo.ammo--;
     }
     Stats_AddAmmoUsed();

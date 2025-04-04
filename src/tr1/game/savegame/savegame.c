@@ -186,7 +186,7 @@ static void M_LoadPostprocess(void)
 
     MovableBlock_SetupFloor();
 
-    if (g_GameInfo.bonus_flag) {
+    if (Game_GetBonusFlag() != GBF_NONE) {
         g_Config.profile.new_game_plus_unlock = true;
     }
 
@@ -343,7 +343,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         current->gun_status = LGS_ARMLESS;
     }
 
-    if ((g_GameInfo.bonus_flag & GBF_NGPLUS) && level != GF_GetGymLevel()) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
         current->flags.got_pistols = 1;
         current->flags.got_shotgun = 1;
         current->flags.got_magnums = 1;
