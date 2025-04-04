@@ -1,9 +1,9 @@
 #include "game/gym.h"
 
-#include "decomp/savegame.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/music.h"
+#include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 

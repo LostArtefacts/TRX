@@ -1,6 +1,5 @@
 #include "game/demo.h"
 
-#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -14,6 +13,7 @@
 #include "game/overlay.h"
 #include "game/random.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "game/stats.h"
 #include "game/text.h"

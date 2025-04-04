@@ -1,7 +1,6 @@
 #include "game/overlay.h"
 
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -11,6 +10,7 @@
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
+#include "game/savegame.h"
 #include "game/scaler.h"
 #include "game/text.h"
 #include "game/viewport.h"

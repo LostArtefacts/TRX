@@ -55,7 +55,6 @@ extern bool g_IsMonkAngry;
 extern uint16_t g_SoundOptionLine;
 extern int32_t g_HealthBarTimer;
 extern int32_t g_LevelComplete;
-extern SAVEGAME_INFO g_SaveGame;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern CREATURE *g_BaddieSlots;

@@ -1,5 +1,4 @@
 #include "decomp/flares.h"
-#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/creature.h"
 #include "game/game.h"
@@ -8,6 +7,7 @@
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/utils.h>

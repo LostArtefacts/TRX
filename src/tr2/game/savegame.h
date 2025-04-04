@@ -1,12 +1,8 @@
 #pragma once
 
 #include "game/game_flow/types.h"
-#include "global/types.h"
 
-#include <libtrx/filesystem.h>
 #include <libtrx/game/savegame.h>
-
-#include <stddef.h>
 
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
@@ -29,9 +25,6 @@ int32_t Savegame_GetTotalCount(void);
 
 void Savegame_ProcessItemsBeforeSave(void);
 void Savegame_ProcessItemsBeforeLoad(void);
-
-void S_SaveGame(MYFILE *fp);
-void S_LoadGame(MYFILE *fp);
 
 void Savegame_SetDefaultStats(const GF_LEVEL *level, STATS_COMMON stats);
 STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);

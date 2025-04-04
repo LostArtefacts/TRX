@@ -1,7 +1,6 @@
 #include "game/shell/common.h"
 
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/console/common.h"
 #include "game/demo.h"
@@ -19,6 +18,7 @@
 #include "game/phase.h"
 #include "game/random.h"
 #include "game/render/common.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/viewport.h"

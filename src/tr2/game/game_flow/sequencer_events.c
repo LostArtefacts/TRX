@@ -1,5 +1,4 @@
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/fmv.h"
 #include "game/game.h"
@@ -9,6 +8,7 @@
 #include "game/music.h"
 #include "game/output.h"
 #include "game/phase.h"
+#include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 

@@ -1,7 +1,6 @@
 #include "game/game.h"
 
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/demo.h"
 #include "game/effects.h"
@@ -17,6 +16,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room_draw.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"

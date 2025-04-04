@@ -1,4 +1,4 @@
-#include "decomp/savegame.h"
+#include "game/savegame/savegame_legacy.h"
 
 #include "game/camera.h"
 #include "game/game.h"
@@ -11,6 +11,7 @@
 #include "game/objects/general/lift.h"
 #include "game/requester.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -45,8 +46,6 @@ typedef struct {
 
 static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
-static uint32_t m_ReqFlags1[MAX_REQUESTER_ITEMS];
-static uint32_t m_ReqFlags2[MAX_REQUESTER_ITEMS];
 
 static void M_Reset(char *buffer);
 
@@ -643,236 +642,7 @@ static void M_WriteFlares(void)
     }
 }
 
-void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
-{
-    RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
-    memset(current, 0, sizeof(RESUME_INFO));
-}
-
-void Savegame_InitCurrentInfo(void)
-{
-    if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        return;
-    }
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        Savegame_ResetCurrentInfo(level);
-        Savegame_ApplyLogicToCurrentInfo(level);
-        Savegame_GetCurrentInfo(level)->available = 0;
-    }
-
-    if (GF_GetGymLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetGymLevel())->available = 1;
-    }
-    if (GF_GetFirstLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetFirstLevel())->available = 1;
-    }
-    Game_SetBonusFlag(GBF_NONE);
-}
-
-void Savegame_CarryCurrentInfoToNextLevel(
-    const GF_LEVEL *const src_level, const GF_LEVEL *const dst_level)
-{
-    LOG_INFO(
-        "Copying resume info from level #%d to level #%d", src_level->num,
-        dst_level->num);
-    RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
-    RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
-    memcpy(dst_resume, src_resume, sizeof(RESUME_INFO));
-}
-
-void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
-{
-    RESUME_INFO *resume = Savegame_GetCurrentInfo(level);
-    if (resume == nullptr) {
-        return;
-    }
-
-    resume->has_pistols = 1;
-    resume->gun_type = LGT_PISTOLS;
-    resume->pistol_ammo = 1000;
-
-    if (level == GF_GetGymLevel()) {
-        resume->available = 1;
-
-        resume->has_pistols = 0;
-        resume->has_shotgun = 0;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_harpoon = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
-
-        resume->pistol_ammo = 0;
-        resume->shotgun_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->harpoon_ammo = 0;
-        resume->m16_ammo = 0;
-        resume->grenade_ammo = 0;
-
-        resume->flares = 0;
-        resume->large_medipacks = 0;
-        resume->small_medipacks = 0;
-        resume->gun_type = LGT_UNARMED;
-        resume->gun_status = LGS_ARMLESS;
-    } else if (level == GF_GetFirstLevel()) {
-        resume->available = 1;
-
-        resume->has_pistols = 1;
-        resume->has_shotgun = 1;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_harpoon = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
-
-        resume->shotgun_ammo = 2 * SHOTGUN_AMMO_CLIP;
-        resume->magnum_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->harpoon_ammo = 0;
-        resume->m16_ammo = 0;
-        resume->grenade_ammo = 0;
-
-        resume->flares = 2;
-        resume->small_medipacks = 1;
-        resume->large_medipacks = 1;
-        resume->gun_status = LGS_ARMLESS;
-    }
-
-    if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        resume->has_pistols = 1;
-        resume->has_shotgun = 1;
-        resume->has_magnums = 1;
-        resume->has_uzis = 1;
-        resume->has_grenade = 1;
-        resume->has_harpoon = 1;
-        resume->has_m16 = 1;
-        resume->has_grenade = 1;
-
-        resume->shotgun_ammo = 10000;
-        resume->magnum_ammo = 10000;
-        resume->uzi_ammo = 10000;
-        resume->harpoon_ammo = 10000;
-        resume->m16_ammo = 10000;
-        resume->grenade_ammo = 10000;
-
-        resume->flares = -1;
-        resume->gun_type = LGT_GRENADE;
-    }
-
-    if (g_GF_RemoveWeapons) {
-        resume->has_pistols = 0;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_shotgun = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
-        resume->has_harpoon = 0;
-        resume->gun_type = LGT_UNARMED;
-        resume->gun_status = LGS_ARMLESS;
-        g_GF_RemoveWeapons = false;
-    }
-
-    if (g_GF_RemoveAmmo) {
-        resume->m16_ammo = 0;
-        resume->grenade_ammo = 0;
-        resume->harpoon_ammo = 0;
-        resume->shotgun_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->pistol_ammo = 0;
-        resume->flares = 0;
-        resume->large_medipacks = 0;
-        resume->small_medipacks = 0;
-        g_GF_RemoveAmmo = false;
-    }
-
-    const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
-    resume->stats.max_secret_count = default_stats.max_secret_count;
-}
-
-void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
-{
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-
-    resume->available = 1;
-
-    if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        resume->has_pistols = 1;
-        resume->pistol_ammo = 1000;
-    } else {
-        resume->has_pistols = 0;
-        resume->pistol_ammo = 1000;
-    }
-
-    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        resume->has_shotgun = 1;
-        resume->shotgun_ammo = g_Lara.shotgun_ammo.ammo;
-    } else {
-        resume->has_shotgun = 0;
-        resume->shotgun_ammo =
-            Inv_RequestItem(O_SHOTGUN_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
-    }
-
-    if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        resume->has_magnums = 1;
-        resume->magnum_ammo = g_Lara.magnum_ammo.ammo;
-    } else {
-        resume->has_magnums = 0;
-        resume->magnum_ammo =
-            Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
-    }
-
-    if (Inv_RequestItem(O_UZI_ITEM)) {
-        resume->has_uzis = 1;
-        resume->uzi_ammo = g_Lara.uzi_ammo.ammo;
-    } else {
-        resume->has_uzis = 0;
-        resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
-    }
-
-    if (Inv_RequestItem(O_M16_ITEM)) {
-        resume->has_m16 = 1;
-        resume->m16_ammo = g_Lara.m16_ammo.ammo;
-    } else {
-        resume->has_m16 = 0;
-        resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
-    }
-
-    if (Inv_RequestItem(O_HARPOON_ITEM)) {
-        resume->has_harpoon = 1;
-        resume->harpoon_ammo = g_Lara.harpoon_ammo.ammo;
-    } else {
-        resume->has_harpoon = 0;
-        resume->harpoon_ammo =
-            Inv_RequestItem(O_HARPOON_AMMO_ITEM) * HARPOON_AMMO_QTY;
-    }
-
-    if (Inv_RequestItem(O_GRENADE_ITEM)) {
-        resume->has_grenade = 1;
-        resume->grenade_ammo = g_Lara.grenade_ammo.ammo;
-    } else {
-        resume->has_grenade = 0;
-        resume->grenade_ammo =
-            Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
-    }
-
-    resume->flares = Inv_RequestItem(O_FLARE_ITEM);
-    resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
-    resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
-
-    if (g_Lara.gun_type == LGT_FLARE) {
-        resume->gun_type = g_Lara.last_gun_type;
-    } else {
-        resume->gun_type = g_Lara.gun_type;
-    }
-    resume->gun_status = LGS_ARMLESS;
-}
-
-void S_SaveGame(MYFILE *const fp)
+void Savegame_Legacy_SaveToFile(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(SAVEGAME_LEGACY_TOTAL_SIZE);
     M_Reset(buffer);
@@ -942,7 +712,7 @@ void S_SaveGame(MYFILE *const fp)
     Memory_FreePointer(&buffer);
 }
 
-void S_LoadGame(MYFILE *const fp)
+void Savegame_Legacy_LoadFromFile(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);

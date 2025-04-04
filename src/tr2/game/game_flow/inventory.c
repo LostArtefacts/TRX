@@ -1,9 +1,9 @@
 #include "game/game_flow/inventory.h"
 
-#include "decomp/savegame.h"
 #include "game/gun/gun.h"
 #include "game/inventory.h"
 #include "game/overlay.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 static int8_t m_SecretInvItems[O_NUMBER_OF] = {};
