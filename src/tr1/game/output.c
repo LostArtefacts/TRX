@@ -1133,39 +1133,6 @@ void Output_DrawScreenSprite(
     }
 }
 
-void Output_DrawSpriteRel(
-    int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
-{
-    int32_t zv = g_MatrixPtr->_20 * x + g_MatrixPtr->_21 * y
-        + g_MatrixPtr->_22 * z + g_MatrixPtr->_23;
-    if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
-        return;
-    }
-
-    int32_t xv = g_MatrixPtr->_00 * x + g_MatrixPtr->_01 * y
-        + g_MatrixPtr->_02 * z + g_MatrixPtr->_03;
-    int32_t yv = g_MatrixPtr->_10 * x + g_MatrixPtr->_11 * y
-        + g_MatrixPtr->_12 * z + g_MatrixPtr->_13;
-    int32_t zp = zv / g_PhdPersp;
-
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
-    const int32_t x0 =
-        Viewport_GetCenterX() + (xv + (sprite->x0 << W2V_SHIFT)) / zp;
-    const int32_t y0 =
-        Viewport_GetCenterY() + (yv + (sprite->y0 << W2V_SHIFT)) / zp;
-    const int32_t x1 =
-        Viewport_GetCenterX() + (xv + (sprite->y0 << W2V_SHIFT)) / zp;
-    const int32_t y1 =
-        Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
-        && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
-        int32_t depth = zv >> W2V_SHIFT;
-        shade += Output_CalcFogShade(depth);
-        CLAMPG(shade, 0x1FFF);
-        M_DrawSprite(x0, y0, x1, y1, zv, sprnum, shade);
-    }
-}
-
 void Output_DrawUISprite(
     int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade)
 {
