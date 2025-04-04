@@ -56,6 +56,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     case GFSC_SAVED:
         GF_InventoryModifier_Scan(level);
+        // reset current info to the defaults so that we do not do
+        // Item_GlobalReplace in the inventory initialization routines too early
+        Savegame_InitCurrentInfo();
         break;
 
     case GFSC_SELECT: {

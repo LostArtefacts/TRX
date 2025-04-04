@@ -310,6 +310,7 @@ as Notepad.
 - added Linux builds
 - added macOS builds
 - added .jpeg/.png screenshots
+- added BSON savegame support, removing the limits imposed by the OG 8KB file size, so allowing for storing more data and offering improved feature support
 - added ability to skip FMVs with both the Action key
 - added ability to skip end credits with the Action and Escape keys
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels

@@ -4,6 +4,7 @@
 
     "main_menu_picture": "data/images/title_eu.png",
     "savegame_fmt_legacy": "savegame.%d",
+    "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},

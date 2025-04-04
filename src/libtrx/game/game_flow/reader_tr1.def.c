@@ -228,15 +228,8 @@ static void M_LoadLevelItemDrops(
 
 static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
 {
-    const char *tmp_s;
     double tmp_d;
     JSON_ARRAY *tmp_arr;
-
-    tmp_s = JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
-    if (tmp_s == JSON_INVALID_STRING) {
-        Shell_ExitSystem("'savegame_fmt_bson' must be a string");
-    }
-    gf->savegame_fmt_bson = Memory_DupStr(tmp_s);
 
     tmp_d = JSON_ObjectGetDouble(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
