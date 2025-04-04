@@ -115,14 +115,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         const int16_t slot_num = Savegame_GetBoundSlot();
         if (!Savegame_Load(slot_num)) {
             LOG_ERROR("Failed to load save file!");
-            Game_SetCurrentLevel(nullptr);
-            GF_SetCurrentLevel(nullptr);
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         break;
 
     default:
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }

@@ -1,5 +1,3 @@
-#include "game/savegame/savegame_legacy.h"
-
 #include "game/camera.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -75,6 +73,23 @@ static void M_WriteLara(const LARA_INFO *lara);
 static void M_WriteLaraArm(const LARA_ARM *arm);
 static void M_WriteAmmoInfo(const AMMO_INFO *ammo_info);
 static void M_WriteFlares(void);
+
+static const char *M_GetSaveFilePattern(void);
+static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
+static void M_SaveToFile(MYFILE *fp);
+static bool M_LoadFromFile(MYFILE *fp);
+
+static SAVEGAME_STRATEGY m_Strategy = {
+    // clang-format off
+    .allow_load = true,
+    .allow_save = true,
+    .format = SAVEGAME_FORMAT_LEGACY,
+    .get_save_file_pattern_func = M_GetSaveFilePattern,
+    .fill_info_func = M_FillInfo,
+    .load_from_file_func = M_LoadFromFile,
+    .save_to_file_func = M_SaveToFile,
+    // clang-format on
+};
 
 static void M_Reset(char *const buffer)
 {
@@ -642,7 +657,58 @@ static void M_WriteFlares(void)
     }
 }
 
-void Savegame_Legacy_SaveToFile(MYFILE *const fp)
+static const char *M_GetSaveFilePattern(void)
+{
+    return g_GameFlow.savegame_fmt_legacy;
+}
+
+static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
+{
+    char level_title[75];
+    File_ReadData(fp, level_title, 75);
+    savegame_info->level_title = Memory_DupStr(level_title);
+    savegame_info->counter = File_ReadS32(fp);
+
+    for (int32_t i = 0; i < 24; i++) {
+        File_Skip(fp, sizeof(uint16_t)); // pistol ammo
+        File_Skip(fp, sizeof(uint16_t)); // magnum ammo
+        File_Skip(fp, sizeof(uint16_t)); // uzi ammo
+        File_Skip(fp, sizeof(uint16_t)); // shotgun ammo
+        File_Skip(fp, sizeof(uint16_t)); // m16 ammo
+        File_Skip(fp, sizeof(uint16_t)); // grenade ammo
+        File_Skip(fp, sizeof(uint16_t)); // harpoon ammo
+        File_Skip(fp, sizeof(uint8_t)); // small medis
+        File_Skip(fp, sizeof(uint8_t)); // big medis
+        File_Skip(fp, sizeof(uint8_t)); // reserved
+        File_Skip(fp, sizeof(uint8_t)); // flares
+        File_Skip(fp, sizeof(int8_t)); // gun status
+        File_Skip(fp, sizeof(int8_t)); // gun type
+        File_Skip(fp, sizeof(uint16_t)); // flags
+        File_Skip(fp, sizeof(uint16_t)); // unused
+        File_Skip(fp, sizeof(uint32_t)); // timer
+        File_Skip(fp, sizeof(uint32_t)); // ammo used
+        File_Skip(fp, sizeof(uint32_t)); // hits
+        File_Skip(fp, sizeof(uint32_t)); // distance
+        File_Skip(fp, sizeof(uint16_t)); // kills
+        File_Skip(fp, sizeof(uint8_t)); // secret flags
+        File_Skip(fp, sizeof(uint8_t)); // medis used
+    }
+
+    File_Skip(fp, sizeof(uint32_t)); // timer
+    File_Skip(fp, sizeof(uint32_t)); // ammo used
+    File_Skip(fp, sizeof(uint32_t)); // hits
+    File_Skip(fp, sizeof(uint32_t)); // distance
+    File_Skip(fp, sizeof(uint16_t)); // kills
+    File_Skip(fp, sizeof(uint8_t)); // secret flags
+    File_Skip(fp, sizeof(uint8_t)); // medis used
+
+    savegame_info->level_num = File_ReadS16(fp);
+    savegame_info->initial_version = VERSION_LEGACY;
+
+    return true;
+}
+
+static void M_SaveToFile(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(SAVEGAME_LEGACY_TOTAL_SIZE);
     M_Reset(buffer);
@@ -712,7 +778,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *const fp)
     Memory_FreePointer(&buffer);
 }
 
-void Savegame_Legacy_LoadFromFile(MYFILE *const fp)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
@@ -798,4 +864,7 @@ void Savegame_Legacy_LoadFromFile(MYFILE *const fp)
     M_ReadFlares();
 
     Memory_FreePointer(&buffer);
+    return true;
 }
+
+REGISTER_SAVEGAME_STRATEGY(m_Strategy)

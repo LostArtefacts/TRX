@@ -2,10 +2,43 @@
 
 #include "game/game_flow/types.h"
 
+#include <libtrx/filesystem.h>
 #include <libtrx/game/savegame.h>
+
+#define SAVEGAME_CURRENT_VERSION -1
+
+typedef enum {
+    VERSION_LEGACY = -1,
+} SAVEGAME_VERSION;
+
+typedef enum {
+    SAVEGAME_FORMAT_INVALID = 0,
+    SAVEGAME_FORMAT_LEGACY = 1,
+    SAVEGAME_FORMAT_BSON = 2,
+} SAVEGAME_FORMAT;
+
+typedef struct {
+    SAVEGAME_FORMAT format;
+    char *full_path;
+    int32_t counter;
+    int32_t level_num;
+    char *level_title;
+    int16_t initial_version;
+} SAVEGAME_INFO;
+
+typedef struct {
+    bool allow_load;
+    bool allow_save;
+    SAVEGAME_FORMAT format;
+    const char *(*get_save_file_pattern_func)(void);
+    bool (*fill_info_func)(MYFILE *fp, SAVEGAME_INFO *info);
+    bool (*load_from_file_func)(MYFILE *fp);
+    void (*save_to_file_func)(MYFILE *fp);
+} SAVEGAME_STRATEGY;
 
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
+void Savegame_RegisterStrategy(SAVEGAME_STRATEGY strategy);
 
 void Savegame_InitCurrentInfo(void);
 
@@ -22,9 +55,17 @@ void Savegame_HighlightNewestSlot(void);
 int32_t Savegame_GetLevelNumber(int32_t slot_idx);
 int32_t Savegame_GetCounter(void);
 int32_t Savegame_GetTotalCount(void);
+SAVEGAME_VERSION Savegame_GetInitialVersion(void);
+void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
 
 void Savegame_ProcessItemsBeforeSave(void);
 void Savegame_ProcessItemsBeforeLoad(void);
 
 void Savegame_SetDefaultStats(const GF_LEVEL *level, STATS_COMMON stats);
 STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);
+
+#define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
+    __attribute__((__constructor__)) static void M_Register(void)              \
+    {                                                                          \
+        Savegame_RegisterStrategy(strategy_);                                  \
+    }
