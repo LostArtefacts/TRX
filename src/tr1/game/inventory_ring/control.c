@@ -96,7 +96,7 @@ static void M_RemoveExamineOverlay(void)
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
-    if (!(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         InvRing_ShowItemQuantity(fmt, qty);
     }
 }

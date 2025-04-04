@@ -307,7 +307,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem)
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
 {
     if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED
-        && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+        && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
         g_GameInfo.remove_guns = true;
     }
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -316,7 +316,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo)
 {
     if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED
-        && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+        && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
         g_GameInfo.remove_ammo = true;
     }
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -369,7 +369,7 @@ void GF_PreSequenceHook(
     g_GameInfo.remove_ammo = false;
     g_GameInfo.remove_medipacks = false;
     if (seq_ctx == GFSC_SAVED) {
-        g_GameInfo.bonus_flag = false;
+        Game_SetBonusFlag(GBF_NONE);
     }
 }
 

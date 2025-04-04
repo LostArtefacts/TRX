@@ -10,6 +10,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
@@ -122,7 +123,8 @@ void Item_Initialise(const int16_t item_num)
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     item->floor = sector->floor.height;
 
-    if (g_SaveGame.bonus_flag && GF_GetCurrentLevel()->type != GFL_DEMO) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)
+        && GF_GetCurrentLevel()->type != GFL_DEMO) {
         item->hit_points *= 2;
     }
 

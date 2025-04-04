@@ -13,6 +13,7 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -206,7 +207,7 @@ int32_t Gun_FireWeapon(
     AMMO_INFO *const ammo = Gun_GetAmmoInfo(weapon_type);
     ASSERT(ammo != nullptr);
 
-    if (ammo == &g_Lara.pistol_ammo || g_SaveGame.bonus_flag) {
+    if (ammo == &g_Lara.pistol_ammo || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         ammo->ammo = 1000;
     }
 

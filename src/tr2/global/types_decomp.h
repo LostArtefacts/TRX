@@ -133,7 +133,6 @@ typedef struct {
     int32_t counter;
     int32_t level_num;
     char *level_title;
-    bool bonus_flag;
     uint8_t num_pickup[2];
     uint8_t num_puzzle[4];
     uint8_t num_key[4];

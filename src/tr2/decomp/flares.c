@@ -12,6 +12,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
@@ -258,7 +259,7 @@ void Flare_Draw(void)
         frame_num = LF_FL_DRAW;
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
         Flare_DrawMeshes();
-        if (!g_SaveGame.bonus_flag) {
+        if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
             Inv_RemoveItem(O_FLARES_ITEM);
         }
     } else if (frame_num >= LF_FL_IGNITE && frame_num <= LF_FL_2_HOLD - 2) {

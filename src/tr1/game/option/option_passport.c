@@ -578,19 +578,19 @@ static void M_NewGame(void)
             if (select > 0) {
                 switch (select - 1) {
                 case 0:
-                    g_GameInfo.bonus_flag = 0;
+                    Game_SetBonusFlag(GBF_NONE);
                     break;
                 case 1:
-                    g_GameInfo.bonus_flag = GBF_NGPLUS;
+                    Game_SetBonusFlag(GBF_NGPLUS);
                     break;
                 case 2:
-                    g_GameInfo.bonus_flag = GBF_JAPANESE;
+                    Game_SetBonusFlag(GBF_JAPANESE);
                     break;
                 case 3:
-                    g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    Game_SetBonusFlag(GBF_JAPANESE | GBF_NGPLUS);
                     break;
                 default:
-                    g_GameInfo.bonus_flag = 0;
+                    Game_SetBonusFlag(GBF_NONE);
                     break;
                 }
                 g_GameInfo.bonus_level_unlock = false;

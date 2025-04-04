@@ -375,7 +375,10 @@ static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
     resume_info->stats.secret_flags = temp_secret_flags;
     Stats_UpdateSecrets(&resume_info->stats);
     resume_info->stats.pickup_count = M_ReadU8();
-    game_info->bonus_flag = M_ReadU8();
+    const bool is_ng_plus = M_ReadU8() != 0;
+    if (is_ng_plus) {
+        Game_SetBonusFlag(GBF_NGPLUS);
+    }
     game_info->death_count = -1;
 }
 

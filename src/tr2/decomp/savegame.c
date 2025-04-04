@@ -655,7 +655,7 @@ void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
 
 void Savegame_InitCurrentInfo(void)
 {
-    if (g_SaveGame.bonus_flag) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
         return;
     }
 
@@ -673,7 +673,7 @@ void Savegame_InitCurrentInfo(void)
     if (GF_GetFirstLevel() != nullptr) {
         Savegame_GetCurrentInfo(GF_GetFirstLevel())->available = 1;
     }
-    g_SaveGame.bonus_flag = 0;
+    Game_SetBonusFlag(GBF_NONE);
 }
 
 void Savegame_CarryCurrentInfoToNextLevel(
@@ -746,7 +746,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->gun_status = LGS_ARMLESS;
     }
 
-    if (g_SaveGame.bonus_flag && level != GF_GetGymLevel()) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
         resume->has_pistols = 1;
         resume->has_shotgun = 1;
         resume->has_magnums = 1;
@@ -1006,7 +1006,7 @@ void S_SaveGame(MYFILE *const fp)
     M_WriteResumeInfos(fp);
     M_WriteStats(fp, &current_info->stats);
     File_WriteS16(fp, current_level->num);
-    File_WriteU8(fp, g_SaveGame.bonus_flag);
+    File_WriteU8(fp, Game_IsBonusFlagSet(GBF_NGPLUS) ? 1 : 0);
     for (int32_t i = 0; i < 2; i++) {
         File_WriteU8(fp, g_SaveGame.num_pickup[i]);
     }
@@ -1034,7 +1034,10 @@ void S_LoadGame(MYFILE *const fp)
         current_info->stats = current_stats;
     }
 
-    g_SaveGame.bonus_flag = File_ReadU8(fp);
+    const bool is_ng_plus = File_ReadU8(fp) != 0;
+    if (is_ng_plus) {
+        Game_SetBonusFlag(GBF_NGPLUS);
+    }
     for (int32_t i = 0; i < 2; i++) {
         g_SaveGame.num_pickup[i] = File_ReadU8(fp);
     }

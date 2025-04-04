@@ -241,9 +241,9 @@ bool Lara_Cheat_GiveAllGuns(void)
     Inv_AddItem(O_MAGNUM_ITEM);
     Inv_AddItem(O_UZI_ITEM);
     Inv_AddItem(O_SHOTGUN_ITEM);
-    g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
-    g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
-    g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+    g_Lara.shotgun.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 300;
+    g_Lara.magnums.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 1000;
+    g_Lara.uzis.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 2000;
 
     Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
@@ -261,17 +261,17 @@ bool Lara_Cheat_GiveAllItems(void)
     if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
         Inv_AddItem(O_SHOTGUN_ITEM);
     }
-    g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
+    g_Lara.shotgun.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 300;
 
     if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
         Inv_AddItem(O_MAGNUM_ITEM);
     }
-    g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
+    g_Lara.magnums.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 1000;
 
     if (!Inv_RequestItem(O_UZI_ITEM)) {
         Inv_AddItem(O_UZI_ITEM);
     }
-    g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+    g_Lara.uzis.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 2000;
 
     for (int i = 0; i < 10; i++) {
         if (Inv_RequestItem(O_MEDI_ITEM) < 240) {

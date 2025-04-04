@@ -395,21 +395,21 @@ int32_t Gun_FireWeapon(
     switch (weapon_type) {
     case LGT_MAGNUMS:
         ammo = &g_Lara.magnums;
-        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
         ammo = &g_Lara.uzis;
-        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
         ammo = &g_Lara.shotgun;
-        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
@@ -478,7 +478,7 @@ int32_t Gun_FireWeapon(
         vdest.z = vsrc.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
         Gun_HitTarget(
             target, &vdest,
-            winfo->damage * (g_GameInfo.bonus_flag & GBF_JAPANESE ? 2 : 1));
+            winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
 

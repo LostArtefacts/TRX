@@ -259,7 +259,7 @@ static void M_DrawAirBar(void)
 static void M_DrawAmmoInfo(void)
 {
     if (g_Lara.gun_status != LGS_READY || g_OverlayStatus <= 0
-        || g_SaveGame.bonus_flag) {
+        || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         if (m_AmmoTextInfo != nullptr) {
             Text_Remove(m_AmmoTextInfo);
             m_AmmoTextInfo = nullptr;
