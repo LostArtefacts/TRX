@@ -54,7 +54,6 @@ static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
-static size_t M_CalculateMaxVertices(void);
 
 static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
 {
@@ -261,10 +260,6 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level);
 
-    const size_t max_vertices = M_CalculateMaxVertices();
-    LOG_INFO("Maximum vertices: %d", max_vertices);
-    Output_ReserveVertexBuffer(max_vertices);
-
     Level_LoadTextures();
     Level_LoadTexturePages();
     Level_LoadPalettes();
@@ -318,41 +313,6 @@ static void M_MarkWaterEdgeVertices(void)
     }
 
     Benchmark_End(&benchmark, nullptr);
-}
-
-static size_t M_CalculateMaxVertices(void)
-{
-    BENCHMARK benchmark = Benchmark_Start();
-    int32_t max_vertices = 0;
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        const OBJECT *const obj = Object_Get(i);
-        if (!obj->loaded) {
-            continue;
-        }
-
-        for (int32_t j = 0; j < obj->mesh_count; j++) {
-            const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + j);
-            max_vertices = MAX(max_vertices, mesh->num_vertices);
-        }
-    }
-
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
-        const STATIC_OBJECT_3D *obj = Object_Get3DStatic(i);
-        if (!obj->loaded) {
-            continue;
-        }
-
-        const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
-        max_vertices = MAX(max_vertices, mesh->num_vertices);
-    }
-
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        max_vertices = MAX(max_vertices, room->mesh.num_vertices);
-    }
-
-    Benchmark_End(&benchmark, nullptr);
-    return max_vertices;
 }
 
 void Level_Load(const GF_LEVEL *const level)

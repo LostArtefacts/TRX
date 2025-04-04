@@ -10,7 +10,6 @@
 
 bool Output_Init(void);
 void Output_Shutdown(void);
-void Output_ReserveVertexBuffer(size_t size);
 
 void Output_SetWindowSize(int32_t width, int32_t height);
 void Output_ApplyRenderSettings(void);
@@ -75,7 +74,6 @@ void Output_SetupAboveWater(bool underwater);
 void Output_AnimateTextures(int32_t num_frames);
 
 void Output_ApplyFOV(void);
-void Output_ApplyTint(float *r, float *g, float *b);
 RGB_F Output_GetTint(void);
 
 bool Output_MakeScreenshot(const char *path);
