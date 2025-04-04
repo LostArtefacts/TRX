@@ -1,11 +1,11 @@
 #include "game/ui/widgets/stats_dialog.h"
 
-#include "decomp/savegame.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/gym.h"
 #include "game/input.h"
+#include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 

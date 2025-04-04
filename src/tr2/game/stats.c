@@ -1,10 +1,10 @@
 #include "game/stats.h"
 
-#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/objects/vars.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/log.h>

@@ -1,6 +1,5 @@
 #include "game/lara/control.h"
 
-#include "decomp/savegame.h"
 #include "decomp/skidoo.h"
 #include "game/camera.h"
 #include "game/creature.h"
@@ -18,6 +17,7 @@
 #include "game/lara/state.h"
 #include "game/music.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"

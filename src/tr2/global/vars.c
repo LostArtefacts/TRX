@@ -54,7 +54,6 @@ bool g_IsMonkAngry;
 uint16_t g_SoundOptionLine;
 int32_t g_HealthBarTimer;
 int32_t g_LevelComplete;
-SAVEGAME_INFO g_SaveGame = {};
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 CREATURE *g_BaddieSlots = nullptr;

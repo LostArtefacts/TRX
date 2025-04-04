@@ -1,6 +1,5 @@
 #include "game/inventory_ring/control.h"
 
-#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/demo.h"
 #include "game/game.h"
@@ -15,6 +14,7 @@
 #include "game/option/option.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
