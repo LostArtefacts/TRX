@@ -424,6 +424,8 @@ void Output_Meshes_RenderObjectMesh(
     glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetObjectUVWsTexture());
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetAtlasSizesTexture());
     GFX_GL_CheckError();
 
     Output_Shader_UploadWibbleEffect(m_Shader, false);

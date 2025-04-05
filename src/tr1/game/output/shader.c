@@ -11,6 +11,7 @@
 typedef enum {
     M_UNIFORM_TIME,
     M_UNIFORM_TEX_ATLAS,
+    M_UNIFORM_TEX_ATLAS_SIZES,
     M_UNIFORM_TEX_UVW,
     M_UNIFORM_TEX_ENV_MAP,
     M_UNIFORM_SMOOTHING_ENABLED,
@@ -51,6 +52,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     const char *const uniform_names[] = {
         [M_UNIFORM_TIME] = "uTime",
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
+        [M_UNIFORM_TEX_ATLAS_SIZES] = "uAtlasSizes",
         [M_UNIFORM_TEX_UVW] = "uUVW",
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
@@ -77,6 +79,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     glUniform1i(shader->uniforms[M_UNIFORM_TEX_ATLAS], 0);
     glUniform1i(shader->uniforms[M_UNIFORM_TEX_UVW], 1);
     glUniform1i(shader->uniforms[M_UNIFORM_TEX_ENV_MAP], 2);
+    glUniform1i(shader->uniforms[M_UNIFORM_TEX_ATLAS_SIZES], 3);
     return shader;
 }
 

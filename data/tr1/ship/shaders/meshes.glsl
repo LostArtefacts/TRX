@@ -2,6 +2,7 @@
 
 uniform int uTime;
 uniform samplerBuffer uUVW; // texture u, v, layer
+uniform samplerBuffer uAtlasSizes; // texture x, y, w, h
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
 uniform mat4 uMatModelView;
@@ -21,6 +22,7 @@ out vec3 gNormal;
 flat out int gFlags;
 flat out int gTexLayer;
 out vec2 gTexUV;
+flat out vec4 gAtlasSize;
 out vec2 gTrapezoidRatios;
 out float gShade;
 out vec4 gColor;
@@ -36,6 +38,7 @@ void main(void) {
     }
 
     vec3 uvw = texelFetch(uUVW, int(inUVWIdx)).xyz;
+    gAtlasSize = texelFetch(uAtlasSizes, int(inUVWIdx / 4));
     gFlags = inFlags;
     gTexLayer = int(uvw.z);
     gTexUV = uvw.xy;
@@ -67,17 +70,25 @@ in vec3 gNormal;
 flat in int gFlags;
 flat in int gTexLayer;
 in vec2 gTexUV;
+flat in vec4 gAtlasSize;
 in float gShade;
 in vec4 gColor;
 in vec2 gTrapezoidRatios;
 out vec4 outColor;
 
+vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
+{
+    float epsilon = 0.5 / 256.0;
+    return clamp(uv, atlasSize.xy + epsilon, atlasSize.zw - epsilon);
+}
+
 void main(void) {
     vec4 texColor = gColor;
     vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
     if (uTrapezoidFilterEnabled) {
-        texCoords.xy /= gTrapezoidRatios.xy;
+        texCoords.xy /= gTrapezoidRatios;
     }
+    texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
 
     if ((gFlags & VERT_FLAT_SHADED) == 0 && texCoords.z >= 0) {
         if (uAlphaDiscardEnabled && uSmoothingEnabled && discardTranslucent(uTexAtlas, texCoords)) {

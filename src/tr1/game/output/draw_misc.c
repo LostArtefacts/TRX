@@ -16,16 +16,7 @@ static struct {
 } m_CachedState;
 
 static bool m_IsSkyboxEnabled = false;
-static inline float M_GetUV(uint16_t uv);
 static void M_DrawSphere(XYZ_32 pos, int32_t radius);
-
-static inline float M_GetUV(const uint16_t uv)
-{
-    return g_Config.rendering.pretty_pixels
-            && g_Config.rendering.texture_filter == GFX_TF_NN
-        ? uv / 65536.0f
-        : ((uv & 0xFF00) + 127) / 65536.0f;
-}
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 {
@@ -90,11 +81,6 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
     Output_Meshes_DrawTriangles(vertex_count, vertices);
     glBlendFunc(GL_ONE, GL_ZERO);
     glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
-}
-
-float Output_AdjustUV(const uint16_t uv)
-{
-    return M_GetUV(uv);
 }
 
 void Output_SetSkyboxEnabled(const bool enabled)
