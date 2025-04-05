@@ -89,6 +89,5 @@ void Output_DisableScissor(void);
 void Output_RememberState(void);
 void Output_RestoreState(void);
 
-float Output_AdjustUV(uint16_t uv);
 int32_t Output_GetLightDivider(void);
 XYZ_32 Output_GetLightVectorView(void);

@@ -8,6 +8,12 @@
 
 #include <stdlib.h>
 
+#pragma pack(push, 1)
+typedef struct {
+    float x0, y0, x1, y1;
+} M_ATLAS_SIZE;
+#pragma pack(pop)
+
 typedef struct {
     int32_t index;
     int32_t count;
@@ -45,6 +51,11 @@ static struct {
     GLuint tex_env_map;
     M_TEXTURE_DATA objects;
     M_TEXTURE_DATA sprites;
+    struct {
+        GLuint tex;
+        GLuint tbo;
+        M_ATLAS_SIZE *data;
+    } atlas_sizes;
 } m_Priv = {};
 
 static int M_CompareAnimationRange(const void *const a, const void *const b)
@@ -170,13 +181,33 @@ static void M_FreeTextureData(M_TEXTURE_DATA *const data)
     }
 }
 
+static void M_FillAtlasSize(const int32_t i)
+{
+    M_ATLAS_SIZE *size = &m_Priv.atlas_sizes.data[i];
+    const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
+    size->x0 = texture->uv[0].u;
+    size->y0 = texture->uv[0].v;
+    size->x1 = texture->uv[0].u;
+    size->y1 = texture->uv[0].v;
+    for (int32_t j = 1; j < 3; j++) {
+        size->x0 = MIN(size->x0, texture->uv[j].u);
+        size->y0 = MIN(size->y0, texture->uv[j].v);
+        size->x1 = MAX(size->x1, texture->uv[j].u);
+        size->y1 = MAX(size->y1, texture->uv[j].v);
+    }
+    size->x0 /= 65535.0;
+    size->y0 /= 65535.0;
+    size->x1 /= 65535.0;
+    size->y1 /= 65535.0;
+}
+
 static void M_FillObjectUVW(const int32_t i)
 {
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
     M_UVW *const corners = m_Priv.objects.uvw[i].corners;
     for (int32_t j = 0; j < 4; j++) {
-        corners[j].u = Output_AdjustUV(texture->uv[j].u);
-        corners[j].v = Output_AdjustUV(texture->uv[j].v);
+        corners[j].u = texture->uv[j].u / 65535.0f;
+        corners[j].v = texture->uv[j].v / 65535.0f;
         corners[j].w = texture->tex_page;
     }
 }
@@ -245,6 +276,19 @@ static void M_UploadObjectAnimatedUVWs(const M_ANIMATION_RANGES *const source)
             range->count * sizeof(M_UVW_PACK),
             m_Priv.objects.uvw + range->index);
     }
+
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.atlas_sizes.tbo);
+    for (int32_t i = 0; i < source->range_count; i++) {
+        const M_ANIMATION_RANGE *const range = &source->ranges[i];
+        for (int32_t j = 0; j < range->count; j++) {
+            M_FillAtlasSize(range->index + j);
+        }
+        GFX_TRACK_DATA(
+            glBufferSubData, GL_TEXTURE_BUFFER,
+            range->index * sizeof(M_ATLAS_SIZE),
+            range->count * sizeof(M_ATLAS_SIZE),
+            m_Priv.atlas_sizes.data + range->index);
+    }
 }
 
 static void M_UploadSpriteAnimatedUVWs(const M_ANIMATION_RANGES *const source)
@@ -304,6 +348,24 @@ static void M_PrepareEnvMap(void)
     GFX_GL_CheckError();
 }
 
+static void M_PrepareAtlasSizes(void)
+{
+    glGenBuffers(1, &m_Priv.atlas_sizes.tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.atlas_sizes.tbo);
+    glGenTextures(1, &m_Priv.atlas_sizes.tex);
+    glBindTexture(GL_TEXTURE_BUFFER, m_Priv.atlas_sizes.tex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_Priv.atlas_sizes.tbo);
+    const int32_t count = Output_GetObjectTextureCount();
+    m_Priv.atlas_sizes.data =
+        Memory_Realloc(m_Priv.atlas_sizes.data, count * sizeof(M_ATLAS_SIZE));
+    for (int32_t i = 0; i < count; i++) {
+        M_FillAtlasSize(i);
+    }
+    GFX_TRACK_DATA(
+        glBufferData, GL_TEXTURE_BUFFER, count * sizeof(M_ATLAS_SIZE),
+        m_Priv.atlas_sizes.data, GL_DYNAMIC_DRAW);
+}
+
 static void M_UploadAtlas(void)
 {
     glGenTextures(1, &m_Priv.tex_atlas);
@@ -335,6 +397,10 @@ static void M_UploadAtlas(void)
             GL_RGBA, GL_UNSIGNED_BYTE, input_ptr);
     }
     GFX_GL_CheckError();
+
+    M_PrepareAtlasSizes();
+
+    GFX_GL_CheckError();
 }
 
 static void M_FreeLevelData(void)
@@ -347,6 +413,15 @@ static void M_FreeLevelData(void)
         glDeleteTextures(1, &m_Priv.tex_atlas);
         m_Priv.tex_atlas = 0;
     }
+    if (m_Priv.atlas_sizes.tex != 0) {
+        glDeleteTextures(1, &m_Priv.atlas_sizes.tex);
+        m_Priv.atlas_sizes.tex = 0;
+    }
+    if (m_Priv.atlas_sizes.tbo != 0) {
+        glDeleteBuffers(1, &m_Priv.atlas_sizes.tbo);
+        m_Priv.atlas_sizes.tbo = 0;
+    }
+    Memory_FreePointer(&m_Priv.atlas_sizes.data);
     Memory_FreePointer(&m_AnimationRanges.objects.ranges);
     Memory_FreePointer(&m_AnimationRanges.sprites.ranges);
 }
@@ -421,6 +496,11 @@ GLuint Output_Textures_GetSpriteUVWsTexture(void)
 GLuint Output_Textures_GetAtlasTexture(void)
 {
     return m_Priv.tex_atlas;
+}
+
+GLuint Output_Textures_GetAtlasSizesTexture(void)
+{
+    return m_Priv.atlas_sizes.tex;
 }
 
 GLuint Output_Textures_GetEnvMapTexture(void)
