@@ -62,8 +62,12 @@ void Object_DrawUnclippedItem(const ITEM *const item)
 
 void Object_DrawSpriteItem(const ITEM *const item)
 {
+    SHADE shade = item->shade;
+    if (shade.value_1 < 0) {
+        shade.value_1 = HIGH_LIGHT;
+    }
     Output_CalculateStaticMeshLight(
-        item->interp.result.pos, item->shade, Room_Get(item->room_num));
+        item->interp.result.pos, shade, Room_Get(item->room_num));
 
     const OBJECT *const obj = Object_Get(item->object_id);
 
