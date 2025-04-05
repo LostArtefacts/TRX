@@ -5,6 +5,7 @@
 - fixed trapezoid filter warping on faces close to the camera (#2629, regression from 4.9)
 - fixed Mac builds crashing upon start (regression from 4.9)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 4.9)
+- fixed being stuck on the Restart Level page if using save crystals and F5 is pressed when no saves are present (#2700, regression from 4.8.2)
 - improved rendering performance
 
 ## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
