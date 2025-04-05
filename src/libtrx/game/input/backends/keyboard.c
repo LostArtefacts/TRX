@@ -299,7 +299,8 @@ static bool M_Key(const INPUT_LAYOUT layout, const INPUT_ROLE role)
         return false;
     }
 #ifdef _WIN32
-    if (scancode == SDL_SCANCODE_F4 && KEY_DOWN(SDL_SCANCODE_LALT)) {
+    if (scancode == SDL_SCANCODE_F4
+        && (KEY_DOWN(SDL_SCANCODE_LALT) || KEY_DOWN(SDL_SCANCODE_RALT))) {
         return false;
     }
 #endif

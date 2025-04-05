@@ -2,6 +2,7 @@
 - fixed anisotropy filter causing black lines on some GPUs (#902)
 - fixed mesh faces not being drawn under some circumstances (#2452, #2438)
 - fixed objects disappearing too early around screen edges (#2005)
+- fixed the trapezoid filter being toggled if Alt-F4 (either left or right) is used to close the game (#2690)
 - fixed trapezoid filter warping on faces close to the camera (#2629, regression from 4.9)
 - fixed Mac builds crashing upon start (regression from 4.9)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 4.9)
