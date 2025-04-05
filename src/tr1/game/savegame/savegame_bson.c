@@ -1509,7 +1509,9 @@ cleanup:
     return ret;
 }
 
-void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
+void Savegame_BSON_SaveToFile(
+    MYFILE *const fp, GAME_INFO *const game_info,
+    SAVEGAME_INFO *const savegame_info)
 {
     ASSERT(game_info != nullptr);
 
@@ -1536,6 +1538,8 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     JSON_VALUE *root = JSON_ValueFromObject(root_obj);
     M_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);
     JSON_ValueFree(root);
+
+    savegame_info->features.restart = true;
 }
 
 bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)

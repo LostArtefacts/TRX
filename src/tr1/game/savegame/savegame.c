@@ -38,7 +38,8 @@ typedef struct {
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
     bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
-    void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
+    void (*save_to_file)(
+        MYFILE *fp, GAME_INFO *game_info, SAVEGAME_INFO *savegame_info);
     bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
 
@@ -540,7 +541,7 @@ bool Savegame_Save(const int32_t slot_num)
             MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp != nullptr) {
                 g_SaveCounter++;
-                strategy->save_to_file(fp, game_info);
+                strategy->save_to_file(fp, game_info, savegame_info);
                 savegame_info->format = strategy->format;
                 Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
