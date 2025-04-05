@@ -77,7 +77,7 @@ void Object_DrawSpriteItem(const ITEM *const item)
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z,
         Object_Get(item->object_id)->mesh_idx - item->frame_num,
-        item->shade.value_1);
+        item->shade.value_1 < 0 ? HIGH_LIGHT : item->shade.value_1);
 }
 
 void Object_DrawPickupItem(const ITEM *const item)

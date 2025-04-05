@@ -6,6 +6,7 @@
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
 - fixed the console opening when remapping its key (#2641)
+- fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
 
 ## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
