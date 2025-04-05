@@ -11,21 +11,6 @@ typedef enum {
     VERSION_LEGACY = -1,
 } SAVEGAME_VERSION;
 
-typedef enum {
-    SAVEGAME_FORMAT_INVALID = 0,
-    SAVEGAME_FORMAT_LEGACY = 1,
-    SAVEGAME_FORMAT_BSON = 2,
-} SAVEGAME_FORMAT;
-
-typedef struct {
-    SAVEGAME_FORMAT format;
-    char *full_path;
-    int32_t counter;
-    int32_t level_num;
-    char *level_title;
-    int16_t initial_version;
-} SAVEGAME_INFO;
-
 typedef struct {
     bool allow_load;
     bool allow_save;
