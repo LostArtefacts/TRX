@@ -736,7 +736,8 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             m_State.active_page = -1;
         } else if (g_InputDB.menu_back) {
             if (g_InvMode != INV_DEATH_MODE
-                && m_State.mode == PASSPORT_MODE_BROWSE) {
+                && (m_State.mode == PASSPORT_MODE_BROWSE
+                    || m_State.mode == PASSPORT_MODE_RESTART)) {
                 M_Close(inv_item);
                 m_State.active_page = -1;
             } else {
