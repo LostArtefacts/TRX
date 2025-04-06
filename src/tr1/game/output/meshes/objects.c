@@ -421,7 +421,7 @@ void Output_Meshes_RenderObjectMesh(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetObjectUVWsTexture());
+    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetUVWsTexture());
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
     glActiveTexture(GL_TEXTURE3);
