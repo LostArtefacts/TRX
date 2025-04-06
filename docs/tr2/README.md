@@ -325,6 +325,7 @@ as Notepad.
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)
 - expanded maximum texture pages from 32 to 128
 - expanded the number of static mesh slots from 50 to 256
+- expanded maximum number of items (moveables) from 256 to 10240 (1024 remains the limit for triggered items)
 - ported audio decoding library to ffmpeg
 - ported video decoding library to ffmpeg
 - ported input backend to SDL

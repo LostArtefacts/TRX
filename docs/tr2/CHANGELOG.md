@@ -10,6 +10,7 @@
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
 - changed the number of static mesh slots from 50 to 256 (#2734)
+- changed the maximum number of items (moveables) per level from 256 to 10240 (1024 remains the limit for triggered items) (#1794)
 - fixed the inability to completely mute the sounds, even at sound volume 0 (#2722)
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
