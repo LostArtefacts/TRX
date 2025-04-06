@@ -34,13 +34,6 @@ typedef struct {
     M_UVW corners[4];
 } M_UVW_PACK;
 
-typedef struct {
-    GLuint tbo; // buffer to hold UV data
-    GLuint tex; // texture to hold UV buffer
-    int32_t count;
-    M_UVW_PACK *uvw;
-} M_TEXTURE_DATA;
-
 static struct {
     M_ANIMATION_RANGES objects;
     M_ANIMATION_RANGES sprites;
@@ -49,12 +42,24 @@ static struct {
 static struct {
     GLuint tex_atlas;
     GLuint tex_env_map;
-    M_TEXTURE_DATA objects;
-    M_TEXTURE_DATA sprites;
+
+    struct {
+        GLuint tbo; // buffer to hold UV data
+        GLuint tex; // texture to hold UV buffer
+        int32_t count;
+        int32_t count_objects;
+        int32_t count_sprites;
+        M_UVW_PACK *data;
+        M_UVW_PACK *data_objects;
+        M_UVW_PACK *data_sprites;
+    } uvws;
+
     struct {
         GLuint tex;
         GLuint tbo;
         M_ATLAS_SIZE *data;
+        M_ATLAS_SIZE *data_objects;
+        M_ATLAS_SIZE *data_sprites;
     } atlas_sizes;
 } m_Priv = {};
 
@@ -169,21 +174,9 @@ static void M_PrepareAnimationRanges(void)
     M_PrepareSpriteAnimationRanges();
 }
 
-static void M_FreeTextureData(M_TEXTURE_DATA *const data)
+static void M_FillAtlasObjectSize(const int32_t i)
 {
-    if (data->tbo != 0) {
-        glDeleteBuffers(1, &data->tbo);
-        data->tbo = 0;
-    }
-    if (data->tex != 0) {
-        glDeleteTextures(1, &data->tex);
-        data->tex = 0;
-    }
-}
-
-static void M_FillAtlasSize(const int32_t i)
-{
-    M_ATLAS_SIZE *size = &m_Priv.atlas_sizes.data[i];
+    M_ATLAS_SIZE *const size = &m_Priv.atlas_sizes.data_objects[i];
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
     size->x0 = texture->uv[0].u;
     size->y0 = texture->uv[0].v;
@@ -201,10 +194,25 @@ static void M_FillAtlasSize(const int32_t i)
     size->y1 /= 65535.0;
 }
 
+static void M_FillAtlasSpriteSize(const int32_t i)
+{
+    M_ATLAS_SIZE *const size = &m_Priv.atlas_sizes.data_sprites[i];
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(i);
+    const float adj = 0.1 / 256.0f;
+    const float u0 = (sprite->offset & 0xFF) / 256.0f + adj;
+    const float v0 = (sprite->offset >> 8) / 256.0f + adj;
+    const float u1 = u0 + (sprite->width >> 8) / 256.0f - 2 * adj;
+    const float v1 = v0 + (sprite->height >> 8) / 256.0f - 2 * adj;
+    size->x0 = u0;
+    size->y0 = v0;
+    size->x1 = u1;
+    size->y1 = v1;
+}
+
 static void M_FillObjectUVW(const int32_t i)
 {
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
-    M_UVW *const corners = m_Priv.objects.uvw[i].corners;
+    M_UVW *const corners = m_Priv.uvws.data_objects[i].corners;
     for (int32_t j = 0; j < 4; j++) {
         corners[j].u = texture->uv[j].u / 65535.0f;
         corners[j].v = texture->uv[j].v / 65535.0f;
@@ -220,7 +228,7 @@ static void M_FillSpriteUVW(const int32_t i)
     const float v0 = (sprite->offset >> 8) / 256.0f + adj;
     const float u1 = u0 + (sprite->width >> 8) / 256.0f - 2 * adj;
     const float v1 = v0 + (sprite->height >> 8) / 256.0f - 2 * adj;
-    M_UVW *const corners = m_Priv.sprites.uvw[i].corners;
+    M_UVW *const corners = m_Priv.uvws.data_sprites[i].corners;
     // clang-format off
     corners[0].u = u0; corners[0].v = v0; corners[0].w = sprite->tex_page;
     corners[1].u = u1; corners[1].v = v0; corners[1].w = sprite->tex_page;
@@ -243,97 +251,103 @@ static void M_FillSpriteUVWs(void)
     }
 }
 
-static void M_UploadTextureData(const M_TEXTURE_DATA *const data)
+static void M_UploadUVWs(void)
 {
-    glBindBuffer(GL_TEXTURE_BUFFER, data->tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.uvws.tbo);
     GFX_TRACK_DATA(
-        glBufferData, GL_TEXTURE_BUFFER, data->count * sizeof(M_UVW_PACK),
-        data->uvw, GL_DYNAMIC_DRAW);
+        glBufferData, GL_TEXTURE_BUFFER, m_Priv.uvws.count * sizeof(M_UVW_PACK),
+        m_Priv.uvws.data, GL_DYNAMIC_DRAW);
     GFX_GL_CheckError();
-}
-
-static void M_UploadObjectUVWs(void)
-{
-    M_UploadTextureData(&m_Priv.objects);
-}
-
-static void M_UploadSpriteUVWs(void)
-{
-    M_UploadTextureData(&m_Priv.sprites);
 }
 
 static void M_UploadObjectAnimatedUVWs(const M_ANIMATION_RANGES *const source)
 {
-    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.objects.tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.uvws.tbo);
     for (int32_t i = 0; i < source->range_count; i++) {
         const M_ANIMATION_RANGE *const range = &source->ranges[i];
         for (int32_t j = 0; j < range->count; j++) {
             M_FillObjectUVW(range->index + j);
         }
+        const M_UVW_PACK *const source =
+            m_Priv.uvws.data_objects + range->index;
         GFX_TRACK_DATA(
             glBufferSubData, GL_TEXTURE_BUFFER,
-            range->index * sizeof(M_UVW_PACK),
-            range->count * sizeof(M_UVW_PACK),
-            m_Priv.objects.uvw + range->index);
+            (source - m_Priv.uvws.data) * sizeof(M_UVW_PACK),
+            range->count * sizeof(M_UVW_PACK), source);
     }
 
     glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.atlas_sizes.tbo);
     for (int32_t i = 0; i < source->range_count; i++) {
         const M_ANIMATION_RANGE *const range = &source->ranges[i];
         for (int32_t j = 0; j < range->count; j++) {
-            M_FillAtlasSize(range->index + j);
+            M_FillAtlasObjectSize(range->index + j);
         }
+        const M_ATLAS_SIZE *const source =
+            m_Priv.atlas_sizes.data_objects + range->index;
         GFX_TRACK_DATA(
             glBufferSubData, GL_TEXTURE_BUFFER,
-            range->index * sizeof(M_ATLAS_SIZE),
-            range->count * sizeof(M_ATLAS_SIZE),
-            m_Priv.atlas_sizes.data + range->index);
+            (source - m_Priv.atlas_sizes.data) * sizeof(M_ATLAS_SIZE),
+            range->count * sizeof(M_ATLAS_SIZE), source);
     }
 }
 
 static void M_UploadSpriteAnimatedUVWs(const M_ANIMATION_RANGES *const source)
 {
-    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.sprites.tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.uvws.tbo);
     for (int32_t i = 0; i < source->range_count; i++) {
         const M_ANIMATION_RANGE *const range = &source->ranges[i];
         for (int32_t j = 0; j < range->count; j++) {
             M_FillSpriteUVW(range->index + j);
         }
+        const M_UVW_PACK *const source =
+            m_Priv.uvws.data_sprites + range->index;
         GFX_TRACK_DATA(
             glBufferSubData, GL_TEXTURE_BUFFER,
-            range->index * sizeof(M_UVW_PACK),
-            range->count * sizeof(M_UVW_PACK),
-            m_Priv.sprites.uvw + range->index);
+            (source - m_Priv.uvws.data) * sizeof(M_UVW_PACK),
+            range->count * sizeof(M_UVW_PACK), source);
+    }
+
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.atlas_sizes.tbo);
+    for (int32_t i = 0; i < source->range_count; i++) {
+        const M_ANIMATION_RANGE *const range = &source->ranges[i];
+        for (int32_t j = 0; j < range->count; j++) {
+            M_FillAtlasSpriteSize(range->index + j);
+        }
+        const M_ATLAS_SIZE *const source =
+            m_Priv.atlas_sizes.data_sprites + range->index;
+        GFX_TRACK_DATA(
+            glBufferSubData, GL_TEXTURE_BUFFER,
+            (source - m_Priv.atlas_sizes.data) * sizeof(M_ATLAS_SIZE),
+            range->count * sizeof(M_ATLAS_SIZE), source);
     }
 }
 
-static void M_PrepareTextureData(M_TEXTURE_DATA *const data, const size_t count)
+static void M_PrepareUVWBuffers(void)
 {
-    data->count = count;
-    data->uvw = Memory_Alloc(data->count * sizeof(M_UVW_PACK));
+    m_Priv.uvws.count_objects = Output_GetObjectTextureCount();
+    m_Priv.uvws.count_sprites = Output_GetSpriteTextureCount();
+    m_Priv.uvws.count = m_Priv.uvws.count_objects + m_Priv.uvws.count_sprites;
+    m_Priv.uvws.data = Memory_Alloc(m_Priv.uvws.count * sizeof(M_UVW_PACK));
+    m_Priv.uvws.data_objects = m_Priv.uvws.data;
+    m_Priv.uvws.data_sprites = m_Priv.uvws.data + m_Priv.uvws.count_objects;
 
-    glGenBuffers(1, &data->tbo);
-    glBindBuffer(GL_TEXTURE_BUFFER, data->tbo);
+    glGenBuffers(1, &m_Priv.uvws.tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.uvws.tbo);
 
     GLint limit;
     glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &limit);
-    ASSERT(data->count * sizeof(M_UVW_PACK) <= (size_t)limit);
+    ASSERT(m_Priv.uvws.count * sizeof(M_UVW_PACK) <= (size_t)limit);
 
-    glGenTextures(1, &data->tex);
-    glBindTexture(GL_TEXTURE_BUFFER, data->tex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, data->tbo);
+    glGenTextures(1, &m_Priv.uvws.tex);
+    glBindTexture(GL_TEXTURE_BUFFER, m_Priv.uvws.tex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_Priv.uvws.tbo);
     GFX_GL_CheckError();
 }
 
-static void M_PrepareObjectUVWs(void)
+static void M_PrepareUVWs(void)
 {
-    M_PrepareTextureData(&m_Priv.objects, Output_GetObjectTextureCount());
+    M_PrepareUVWBuffers();
     M_FillObjectUVWs();
-}
-
-static void M_PrepareSpriteUVWs(void)
-{
-    M_PrepareTextureData(&m_Priv.sprites, Output_GetSpriteTextureCount());
     M_FillSpriteUVWs();
 }
 
@@ -355,11 +369,18 @@ static void M_PrepareAtlasSizes(void)
     glGenTextures(1, &m_Priv.atlas_sizes.tex);
     glBindTexture(GL_TEXTURE_BUFFER, m_Priv.atlas_sizes.tex);
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_Priv.atlas_sizes.tbo);
-    const int32_t count = Output_GetObjectTextureCount();
+    const int32_t count_objects = Output_GetObjectTextureCount();
+    const int32_t count_sprites = Output_GetSpriteTextureCount();
+    const int32_t count = count_objects + count_sprites;
     m_Priv.atlas_sizes.data =
         Memory_Realloc(m_Priv.atlas_sizes.data, count * sizeof(M_ATLAS_SIZE));
-    for (int32_t i = 0; i < count; i++) {
-        M_FillAtlasSize(i);
+    m_Priv.atlas_sizes.data_objects = m_Priv.atlas_sizes.data;
+    m_Priv.atlas_sizes.data_sprites = m_Priv.atlas_sizes.data + count_objects;
+    for (int32_t i = 0; i < count_objects; i++) {
+        M_FillAtlasObjectSize(i);
+    }
+    for (int32_t i = 0; i < count_sprites; i++) {
+        M_FillAtlasSpriteSize(i);
     }
     GFX_TRACK_DATA(
         glBufferData, GL_TEXTURE_BUFFER, count * sizeof(M_ATLAS_SIZE),
@@ -407,8 +428,14 @@ static void M_FreeLevelData(void)
 {
     glBindTexture(GL_TEXTURE_BUFFER, 0);
     glBindBuffer(GL_TEXTURE_BUFFER, 0);
-    M_FreeTextureData(&m_Priv.objects);
-    M_FreeTextureData(&m_Priv.sprites);
+    if (m_Priv.uvws.tbo != 0) {
+        glDeleteBuffers(1, &m_Priv.uvws.tbo);
+        m_Priv.uvws.tbo = 0;
+    }
+    if (m_Priv.uvws.tex != 0) {
+        glDeleteTextures(1, &m_Priv.uvws.tex);
+        m_Priv.uvws.tex = 0;
+    }
     if (m_Priv.tex_atlas != 0) {
         glDeleteTextures(1, &m_Priv.tex_atlas);
         m_Priv.tex_atlas = 0;
@@ -444,10 +471,8 @@ void Output_Textures_ObserveLevelLoad(void)
 {
     M_FreeLevelData();
     M_PrepareAnimationRanges();
-    M_PrepareObjectUVWs();
-    M_PrepareSpriteUVWs();
-    M_UploadObjectUVWs();
-    M_UploadSpriteUVWs();
+    M_PrepareUVWs();
+    M_UploadUVWs();
     M_UploadAtlas();
 }
 
@@ -475,22 +500,15 @@ void Output_Textures_UpdateEnvironmentMap(void)
 
 void Output_Textures_CycleAnimations(void)
 {
-    if (m_Priv.sprites.tex != 0) {
+    if (m_Priv.uvws.tex != 0) {
         M_UploadSpriteAnimatedUVWs(&m_AnimationRanges.sprites);
-    }
-    if (m_Priv.objects.tex != 0) {
         M_UploadObjectAnimatedUVWs(&m_AnimationRanges.objects);
     }
 }
 
-GLuint Output_Textures_GetObjectUVWsTexture(void)
+GLuint Output_Textures_GetUVWsTexture(void)
 {
-    return m_Priv.objects.tex;
-}
-
-GLuint Output_Textures_GetSpriteUVWsTexture(void)
-{
-    return m_Priv.sprites.tex;
+    return m_Priv.uvws.tex;
 }
 
 GLuint Output_Textures_GetAtlasTexture(void)
@@ -508,11 +526,18 @@ GLuint Output_Textures_GetEnvMapTexture(void)
     return m_Priv.tex_env_map;
 }
 
+int32_t Output_Textures_GetSpritesUVWsBase(void)
+{
+    const size_t num = sizeof(M_UVW_PACK) / sizeof(M_UVW);
+    ASSERT(num == 4);
+    return m_Priv.uvws.count_objects * num;
+}
+
 void Output_Textures_ApplyRenderSettings(void)
 {
     // re-adjust UVs when the bilinear filter is toggled.
-    if (m_Priv.objects.tex != 0) {
+    if (m_Priv.uvws.tex != 0) {
         M_FillObjectUVWs();
-        M_UploadObjectUVWs();
+        M_UploadUVWs();
     }
 }

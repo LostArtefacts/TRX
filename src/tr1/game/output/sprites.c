@@ -71,10 +71,8 @@ static void M_MakeQuad(
 
     for (int32_t k = 0; k < 4; k++) {
         out_quad[k].pos = (XYZ_F) { .x = pos.x, .y = pos.y, .z = pos.z };
-    }
-
-    for (int32_t k = 0; k < 4; k++) {
-        out_quad[k].uvw_idx = sprite_idx * 4 + k;
+        out_quad[k].uvw_idx =
+            Output_Textures_GetSpritesUVWsBase() + sprite_idx * 4 + k;
     }
 
     out_quad[0].displacement.x = sprite->x0;
@@ -194,7 +192,7 @@ static void M_DrawBuffer(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteUVWsTexture());
+    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetUVWsTexture());
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
     GFX_GL_CheckError();
