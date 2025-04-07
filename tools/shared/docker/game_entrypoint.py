@@ -53,7 +53,7 @@ class PackageOptions(BaseOptions):
             return [
                 (
                     self.build_root / f"TR{self.tr_version}X",
-                    "TR{self.tr_version}X",
+                    f"TR{self.tr_version}X",
                 )
             ]
 
