@@ -83,7 +83,7 @@ static void M_ReadAmmoInfo(AMMO_INFO *ammo_info);
 static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLOT(LOT_INFO *lot);
 static void M_SetCurrentPosition(int32_t level_num);
-static void M_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info);
+static void M_ReadResumeInfo(MYFILE *fp);
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
@@ -330,7 +330,7 @@ static void M_SetCurrentPosition(const int32_t level_num)
     }
 }
 
-static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
+static void M_ReadResumeInfo(MYFILE *const fp)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
@@ -424,10 +424,8 @@ bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
+bool Savegame_Legacy_LoadFromFile(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
@@ -441,7 +439,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfo(fp, game_info);
+    M_ReadResumeInfo(fp);
     g_Lara.holsters_gun_type = LGT_UNKNOWN;
     g_Lara.back_gun_type = LGT_UNKNOWN;
 
@@ -559,10 +557,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
     return true;
 }
 
-bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp)
 {
-    ASSERT(game_info != nullptr);
-
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
@@ -570,7 +566,7 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfo(fp, game_info);
+    M_ReadResumeInfo(fp);
 
     Memory_FreePointer(&buffer);
     return true;
