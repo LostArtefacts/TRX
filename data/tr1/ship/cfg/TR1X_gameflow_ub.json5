@@ -14,6 +14,7 @@
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",
+        "data/injections/bubbles.bin",
         "data/injections/lara_animations.bin",
         "data/injections/uzi_sfx.bin",
         "data/injections/explosion.bin",
