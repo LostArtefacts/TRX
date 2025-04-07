@@ -12,12 +12,14 @@ layout(location = 1) in vec2 inDisplacement;
 layout(location = 2) in int inUVWIdx;
 layout(location = 3) in float inShade;
 
+out vec4 gWorldPos;
 out vec2 gTexUV;
 flat out int gTexLayer;
 out float gShade;
 
 void main(void) {
     vec4 centerEyeSpace = uMatModelView * vec4(inPosition, 1.0);
+    gWorldPos = centerEyeSpace;
     centerEyeSpace.xy += inDisplacement;
     gl_Position = uMatProjection * centerEyeSpace;
 
@@ -39,7 +41,9 @@ uniform sampler2D uTexEnvMap;
 uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;
+uniform vec2 uFog; // x = fog start, y = fog end
 
+in vec4 gWorldPos;
 in vec2 gTexUV;
 flat in int gTexLayer;
 in float gShade;
@@ -56,9 +60,11 @@ void main(void) {
         discard;
     }
 
-    texColor.rgb *= 2.0 - (gShade / NEUTRAL_SHADE);
-    texColor.rgb *= uBrightnessMultiplier;
+    float shade = gShade;
+    shade = shadeFog(shade, gWorldPos.z, uFog);
+    texColor.rgb = applyShade(texColor.rgb, shade);
     texColor.rgb *= uGlobalTint;
+    texColor.rgb *= uBrightnessMultiplier;
     outColor = vec4(texColor.rgb, 1.0);
 }
 #endif
