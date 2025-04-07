@@ -171,7 +171,6 @@ static void M_SaveRaw(MYFILE *const fp, const JSON_VALUE *const root)
     File_WriteData(fp, &header, sizeof(header));
     File_WriteData(fp, level->title, strlen(level->title));
     File_WriteData(fp, compressed, compressed_size);
-    File_WriteData(fp, g_TRXVersion, strlen(g_TRXVersion));
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);
@@ -279,6 +278,7 @@ static JSON_VALUE *M_ParseFromBuffer(
 static JSON_OBJECT *M_DumpMisc(void)
 {
     JSON_OBJECT *const misc_obj = JSON_ObjectNew();
+    JSON_ObjectAppendString(misc_obj, "game_version", g_TRXVersion);
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
     JSON_ObjectAppendBool(misc_obj, "are_monks_angry", g_IsMonkAngry);
     return misc_obj;
