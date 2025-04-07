@@ -34,8 +34,8 @@ remains distinct for each game.
 "savegame_fmt_bson": "save_tr1_%02d.dat",
 "demo_delay": 16,
 "water_color": [0.45, 1.0, 1.0],
-"draw_distance_fade": 22.0,
-"draw_distance_max": 30.0,
+"fog_start": 22.0,
+"fog_end": 30.0,
 "injections": [
     "data/global_injection1.bin",
     "data/global_injection2.bin",
@@ -98,7 +98,7 @@ remains distinct for each game.
   <tr valign="top">
     <td>
       <a name="draw-distance-fade"></a>
-      <code>draw_distance_fade</code>
+      <code>fog_start</code>
     </td>
     <td>Double<strong>*</strong></td>
     <td>
@@ -113,7 +113,7 @@ remains distinct for each game.
   <tr valign="top">
     <td>
       <a name="draw-distance-max"></a>
-      <code>draw_distance_max</code>
+      <code>fog_end</code>
     </td>
     <td>Double<strong>*</strong></td>
     <td>
@@ -424,8 +424,8 @@ Following are each of the properties available within a level.
     "music_track": 57,
     "lara_type": 0,
     "water_color": [0.7, 0.5, 0.85],
-    "draw_distance_fade": 34.0,
-    "draw_distance_max": 50.0,
+    "fog_start": 34.0,
+    "fog_end": 50.0,
     "unobtainable_pickups": 1,
     "unobtainable_kills": 1,
     "inherit_injections": false,
@@ -517,7 +517,7 @@ Following are each of the properties available within a level.
     <td colspan="2">The ambient music track ID.</td>
   </tr>
   <tr valign="top">
-    <td><code>draw_distance_fade</code><strong>¹</strong></td>
+    <td><code>fog_start</code><strong>¹</strong></td>
     <td>Double</td>
     <td colspan="2">
       Can be customized per level. See <a href="#draw-distance-fade">above</a>
@@ -525,7 +525,7 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>draw_distance_max</code><strong>¹</strong></td>
+    <td><code>fog_end</code><strong>¹</strong></td>
     <td>Double</td>
     <td colspan="2">
       Can be customized per level. See <a href="#draw-distance-max">above</a>

@@ -6,8 +6,6 @@
     "savegame_fmt_bson": "save_tmp_%02d.dat",
     "demo_delay": 0,
     "water_color": [0.45, 1.0, 1.0],
-    "draw_distance_fade": 22.0,
-    "draw_distance_max": 30.0,
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",

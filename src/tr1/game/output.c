@@ -1,5 +1,6 @@
 #include "game/output.h"
 
+#include "game/level.h"
 #include "game/output/meshes/common.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
@@ -383,9 +384,17 @@ void Output_SetWindowSize(int32_t width, int32_t height)
     GFX_Context_SetWindowSize(width, height);
 }
 
+void Output_ApplyLevelSettings(void)
+{
+    Output_SetDrawDistFade(Level_GetFogStart() * WALL_L);
+    Output_SetDrawDistMax(Level_GetFogEnd() * WALL_L);
+    LOG_INFO("%f %f", Level_GetFogStart(), Level_GetFogEnd());
+}
+
 void Output_ApplyRenderSettings(void)
 {
     Output_Textures_ApplyRenderSettings();
+    Output_ApplyLevelSettings();
 
     if (m_Renderer3D == nullptr) {
         return;
@@ -421,6 +430,8 @@ void Output_ObserveLevelLoad(void)
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
     Output_Meshes_ObserveLevelLoad();
+
+    Output_ApplyLevelSettings();
 }
 
 void Output_ObserveLevelUnload(void)

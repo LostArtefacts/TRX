@@ -328,12 +328,24 @@ void Level_Load(const GF_LEVEL *const level)
     Inject_Cleanup();
 
     Output_SetWaterColor(&level->settings.water_color);
-    Output_SetDrawDistFade(level->settings.draw_distance_fade * WALL_L);
-    Output_SetDrawDistMax(level->settings.draw_distance_max * WALL_L);
     Output_SetSkyboxEnabled(
         g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
 
     Benchmark_End(&benchmark, nullptr);
+}
+
+float Level_GetFogStart(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    const float result = level != nullptr ? level->settings.fog_start : 0.0f;
+    return result > 0 ? result : g_Config.visuals.fog_start;
+}
+
+float Level_GetFogEnd(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    const float result = level != nullptr ? level->settings.fog_end : 0.0f;
+    return result > 0 ? result : g_Config.visuals.fog_end;
 }
 
 void Level_Unload(void)
