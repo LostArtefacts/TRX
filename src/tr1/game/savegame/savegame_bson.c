@@ -23,6 +23,7 @@
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
+#include <libtrx/version.h>
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -1031,6 +1032,7 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
 static JSON_OBJECT *M_DumpMisc(void)
 {
     JSON_OBJECT *misc_obj = JSON_ObjectNew();
+    JSON_ObjectAppendString(misc_obj, "game_version", g_TRXVersion);
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
 
     const GF_LEVEL *const level = Game_GetCurrentLevel();
