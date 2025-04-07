@@ -47,7 +47,6 @@ typedef enum {
     OPTION_RENDER_MODE,
     OPTION_RESOLUTION,
     OPTION_TRAPEZOID_FILTER,
-    OPTION_PRETTY_PIXELS,
     OPTION_REFLECTIONS,
     OPTION_NUMBER_OF,
     OPTION_MIN = OPTION_FPS,
@@ -86,7 +85,6 @@ static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
     { OPTION_RESOLUTION, GS_ID(DETAIL_RESOLUTION),
       GS_ID(DETAIL_RESOLUTION_FMT) },
     { OPTION_TRAPEZOID_FILTER, GS_ID(DETAIL_TRAPEZOID_FILTER), GS_ID(MISC_ON) },
-    { OPTION_PRETTY_PIXELS, GS_ID(DETAIL_PRETTY_PIXELS), GS_ID(MISC_ON) },
     { OPTION_REFLECTIONS, GS_ID(DETAIL_REFLECTIONS), GS_ID(MISC_ON) },
     // end
     { OPTION_NUMBER_OF, 0, 0 },
@@ -305,10 +303,6 @@ static void M_UpdateArrows(
         m_HideArrowLeft = !g_Config.rendering.enable_trapezoid_filter;
         m_HideArrowRight = g_Config.rendering.enable_trapezoid_filter;
         break;
-    case OPTION_PRETTY_PIXELS:
-        m_HideArrowLeft = !g_Config.rendering.pretty_pixels;
-        m_HideArrowRight = g_Config.rendering.pretty_pixels;
-        break;
     case OPTION_REFLECTIONS:
         m_HideArrowLeft = !g_Config.visuals.enable_reflections;
         m_HideArrowRight = g_Config.visuals.enable_reflections;
@@ -452,12 +446,6 @@ static void M_ChangeTextOption(
         break;
     }
 
-    case OPTION_PRETTY_PIXELS: {
-        bool is_enabled = g_Config.rendering.pretty_pixels;
-        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
-        break;
-    }
-
     case OPTION_REFLECTIONS: {
         bool is_enabled = g_Config.visuals.enable_reflections;
         Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
@@ -576,13 +564,6 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             }
             break;
 
-        case OPTION_PRETTY_PIXELS:
-            if (!g_Config.rendering.pretty_pixels) {
-                g_Config.rendering.pretty_pixels = true;
-                reset = OPTION_PRETTY_PIXELS;
-            }
-            break;
-
         case OPTION_REFLECTIONS:
             if (!g_Config.visuals.enable_reflections) {
                 g_Config.visuals.enable_reflections = true;
@@ -672,13 +653,6 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             if (g_Config.rendering.enable_trapezoid_filter) {
                 g_Config.rendering.enable_trapezoid_filter = false;
                 reset = OPTION_TRAPEZOID_FILTER;
-            }
-            break;
-
-        case OPTION_PRETTY_PIXELS:
-            if (g_Config.rendering.pretty_pixels) {
-                g_Config.rendering.pretty_pixels = false;
-                reset = OPTION_PRETTY_PIXELS;
             }
             break;
 

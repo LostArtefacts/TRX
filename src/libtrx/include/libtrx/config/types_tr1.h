@@ -216,7 +216,6 @@ typedef struct {
         bool enable_vsync;
         bool enable_fps_counter;
         float anisotropy_filter;
-        bool pretty_pixels;
         SCREENSHOT_FORMAT screenshot_format;
     } rendering;
 

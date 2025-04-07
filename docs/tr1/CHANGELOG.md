@@ -10,6 +10,7 @@
 - fixed being stuck on the Restart Level page if using save crystals and F5 is pressed when no saves are present (#2700, regression from 4.8.2)
 - fixed being stuck on the Exit to Title page if using save crystals and a new save is made when there were previously none, and then F5 is pressed (#2700, regression from 4.9)
 - improved rendering performance
+- removed the pretty pixels options (it's now always enabled, #2258)
 
 ## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
 - added quadrilateral interpolation (#354)

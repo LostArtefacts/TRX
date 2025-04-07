@@ -356,7 +356,6 @@
         "DETAIL_FBO_FILTER": "FBO filter",
         "DETAIL_FLOAT_FMT": "%.1f",
         "DETAIL_FPS": "FPS",
-        "DETAIL_PRETTY_PIXELS": "Pretty pixels",
         "DETAIL_REFLECTIONS": "Reflections",
         "DETAIL_RENDER_MODE": "Render mode",
         "DETAIL_RENDER_MODE_FBO": "Framebuffer",
