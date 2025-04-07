@@ -201,8 +201,8 @@ static void M_FillAtlasSpriteSize(const int32_t i)
     const float adj = 0.1 / 256.0f;
     const float u0 = (sprite->offset & 0xFF) / 256.0f + adj;
     const float v0 = (sprite->offset >> 8) / 256.0f + adj;
-    const float u1 = u0 + (sprite->width >> 8) / 256.0f - 2 * adj;
-    const float v1 = v0 + (sprite->height >> 8) / 256.0f - 2 * adj;
+    const float u1 = u0 + sprite->width / 65536.0f - 2 * adj;
+    const float v1 = v0 + sprite->height / 65536.0f - 2 * adj;
     size->x0 = u0;
     size->y0 = v0;
     size->x1 = u1;
@@ -226,8 +226,8 @@ static void M_FillSpriteUVW(const int32_t i)
     const float adj = 0.1 / 256.0f;
     const float u0 = (sprite->offset & 0xFF) / 256.0f + adj;
     const float v0 = (sprite->offset >> 8) / 256.0f + adj;
-    const float u1 = u0 + (sprite->width >> 8) / 256.0f - 2 * adj;
-    const float v1 = v0 + (sprite->height >> 8) / 256.0f - 2 * adj;
+    const float u1 = u0 + sprite->width / 65536.0f - 2 * adj;
+    const float v1 = v0 + sprite->height / 65536.0f - 2 * adj;
     M_UVW *const corners = m_Priv.uvws.data_sprites[i].corners;
     // clang-format off
     corners[0].u = u0; corners[0].v = v0; corners[0].w = sprite->tex_page;
