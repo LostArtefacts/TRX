@@ -60,8 +60,7 @@ static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out);
 static bool M_LoadResumeInfo(JSON_ARRAY *levels_arr, uint16_t header_version);
 static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *start_arr);
 static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr);
-static bool M_LoadMisc(
-    JSON_OBJECT *misc_obj, GAME_INFO *game_info, uint16_t header_version);
+static bool M_LoadMisc(JSON_OBJECT *misc_obj, uint16_t header_version);
 static bool M_LoadInventory(JSON_OBJECT *inv_obj);
 static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj);
 static bool M_LoadCameras(JSON_ARRAY *cameras_arr);
@@ -75,7 +74,7 @@ static bool M_LoadLara(
 static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj);
 static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr);
 static JSON_ARRAY *M_DumpResumeInfo(void);
-static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info);
+static JSON_OBJECT *M_DumpMisc(void);
 static JSON_OBJECT *M_DumpInventory(void);
 static JSON_OBJECT *M_DumpFlipmaps(void);
 static JSON_ARRAY *M_DumpCameras(void);
@@ -394,9 +393,8 @@ static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr)
 }
 
 static bool M_LoadMisc(
-    JSON_OBJECT *misc_obj, GAME_INFO *game_info, uint16_t header_version)
+    JSON_OBJECT *const misc_obj, const uint16_t header_version)
 {
-    ASSERT(game_info != nullptr);
     if (!misc_obj) {
         LOG_ERROR("Malformed save: invalid or missing misc info");
         return false;
@@ -1030,9 +1028,8 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
     return resume_arr;
 }
 
-static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info)
+static JSON_OBJECT *M_DumpMisc(void)
 {
-    ASSERT(game_info != nullptr);
     JSON_OBJECT *misc_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
 
@@ -1389,10 +1386,8 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     return ret;
 }
 
-bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
+bool Savegame_BSON_LoadFromFile(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     bool ret = false;
 
     int32_t version;
@@ -1419,8 +1414,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
     }
 
-    if (!M_LoadMisc(
-            JSON_ObjectGetObject(root_obj, "misc"), game_info, version)) {
+    if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"), version)) {
         goto cleanup;
     }
 
@@ -1470,10 +1464,8 @@ cleanup:
     return ret;
 }
 
-bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     bool ret = false;
 
     int32_t version;
@@ -1508,11 +1500,8 @@ cleanup:
 }
 
 void Savegame_BSON_SaveToFile(
-    MYFILE *const fp, GAME_INFO *const game_info,
-    SAVEGAME_INFO *const savegame_info)
+    MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 {
-    ASSERT(game_info != nullptr);
-
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     JSON_OBJECT *root_obj = JSON_ObjectNew();
 
@@ -1520,7 +1509,7 @@ void Savegame_BSON_SaveToFile(
     JSON_ObjectAppendInt(root_obj, "save_counter", g_SaveCounter);
     JSON_ObjectAppendInt(root_obj, "level_num", current_level->num);
 
-    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc(game_info));
+    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
     JSON_ObjectAppendArray(root_obj, "current_info", M_DumpResumeInfo());
     JSON_ObjectAppendObject(root_obj, "inventory", M_DumpInventory());
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());

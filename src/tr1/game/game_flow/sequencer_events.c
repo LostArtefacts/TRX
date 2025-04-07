@@ -88,8 +88,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             // select level feature
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
-                Savegame_LoadOnlyResumeInfo(
-                    g_GameInfo.select_save_slot, &g_GameInfo);
+                Savegame_LoadOnlyResumeInfo(g_GameInfo.select_save_slot);
                 const GF_LEVEL *tmp_level = level;
                 while (tmp_level != nullptr) {
                     Savegame_ResetCurrentInfo(tmp_level);

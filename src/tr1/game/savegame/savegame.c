@@ -36,10 +36,9 @@ typedef struct {
     SAVEGAME_FORMAT format;
     const char *(*get_save_filename_pattern)(void);
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
-    bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
-    bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
-    void (*save_to_file)(
-        MYFILE *fp, GAME_INFO *game_info, SAVEGAME_INFO *savegame_info);
+    bool (*load_from_file)(MYFILE *fp);
+    bool (*load_only_resume_info)(MYFILE *fp);
+    void (*save_to_file)(MYFILE *fp, SAVEGAME_INFO *savegame_info);
     bool (*update_death_counters)(MYFILE *fp, int32_t death_count);
 } SAVEGAME_STRATEGY;
 
@@ -486,7 +485,6 @@ bool Savegame_IsSlotFree(const int32_t slot_num)
 
 bool Savegame_Load(const int32_t slot_num)
 {
-    GAME_INFO *const game_info = &g_GameInfo;
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     ASSERT(savegame_info->format != 0);
 
@@ -498,7 +496,7 @@ bool Savegame_Load(const int32_t slot_num)
         if (savegame_info->format == strategy->format) {
             MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
             if (fp) {
-                ret = strategy->load_from_file(fp, game_info);
+                ret = strategy->load_from_file(fp);
                 File_Close(fp);
             }
             break;
@@ -517,7 +515,6 @@ bool Savegame_Load(const int32_t slot_num)
 
 bool Savegame_Save(const int32_t slot_num)
 {
-    GAME_INFO *const game_info = &g_GameInfo;
     bool ret = false;
     Savegame_BindSlot(slot_num);
 
@@ -547,7 +544,7 @@ bool Savegame_Save(const int32_t slot_num)
             MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp != nullptr) {
                 g_SaveCounter++;
-                strategy->save_to_file(fp, game_info, savegame_info);
+                strategy->save_to_file(fp, savegame_info);
                 savegame_info->format = strategy->format;
                 Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
@@ -602,9 +599,8 @@ bool Savegame_UpdateDeathCounters(
     return ret;
 }
 
-bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
+bool Savegame_LoadOnlyResumeInfo(int32_t slot_num)
 {
-    ASSERT(game_info != nullptr);
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     ASSERT(savegame_info->format != 0);
 
@@ -614,7 +610,7 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
         if (savegame_info->format == strategy->format) {
             MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
             if (fp) {
-                ret = strategy->load_only_resume_info(fp, game_info);
+                ret = strategy->load_only_resume_info(fp);
                 File_Close(fp);
             }
             break;
