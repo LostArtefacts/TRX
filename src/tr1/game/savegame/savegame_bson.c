@@ -406,7 +406,11 @@ static bool M_LoadMisc(
     if (header_version >= VERSION_4) {
         game_info->bonus_level_unlock =
             JSON_ObjectGetBool(misc_obj, "bonus_level_unlock", 0);
-        game_info->death_count = JSON_ObjectGetInt(misc_obj, "death_count", -1);
+
+        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        resume->stats.death_count =
+            JSON_ObjectGetInt(misc_obj, "death_count", -1);
     }
     return true;
 }
@@ -1036,7 +1040,10 @@ static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info)
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
     JSON_ObjectAppendBool(
         misc_obj, "bonus_level_unlock", game_info->bonus_level_unlock);
-    JSON_ObjectAppendInt(misc_obj, "death_count", game_info->death_count);
+
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    JSON_ObjectAppendInt(misc_obj, "death_count", resume->stats.death_count);
     return misc_obj;
 }
 
@@ -1537,7 +1544,8 @@ void Savegame_BSON_SaveToFile(
     savegame_info->features.restart = true;
 }
 
-bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
+bool Savegame_BSON_UpdateDeathCounters(
+    MYFILE *const fp, const int32_t death_count)
 {
     bool result = false;
     int32_t version;
@@ -1554,7 +1562,7 @@ bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
     JSON_ObjectEvictKey(misc_obj, "death_count");
-    JSON_ObjectAppendInt(misc_obj, "death_count", game_info->death_count);
+    JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
 
     File_Seek(fp, 0, FILE_SEEK_SET);
     M_SaveRaw(fp, root, version);

@@ -273,11 +273,7 @@ void Lara_Control(void)
         item->hit_points = -1;
         if (!g_Lara.death_timer) {
             Music_Stop();
-            g_GameInfo.death_count++;
-            if (Savegame_GetBoundSlot() != -1) {
-                Savegame_UpdateDeathCounters(
-                    Savegame_GetBoundSlot(), &g_GameInfo);
-            }
+            Stats_AddDeath();
         }
         g_Lara.death_timer++;
         // make sure the enemy healthbar is no longer rendered. If g_Lara later
