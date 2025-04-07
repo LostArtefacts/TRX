@@ -44,8 +44,11 @@ typedef struct {
 
 static int32_t m_SaveSlots = 0;
 static int16_t m_NewestSlot = -1;
+static int32_t m_SaveCounter = 0;
+static int32_t m_SavedGames = 0;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 static RESUME_INFO *m_ResumeInfo = nullptr;
+static SAVEGAME_VERSION m_InitialVersion = VERSION_LEGACY;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
@@ -508,7 +511,7 @@ bool Savegame_Load(const int32_t slot_num)
         M_LoadPostprocess();
     }
 
-    g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;
+    m_InitialVersion = m_SavegameInfo[slot_num].initial_version;
 
     return ret;
 }
@@ -534,6 +537,8 @@ bool Savegame_Save(const int32_t slot_num)
 
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     const bool was_slot_empty = savegame_info->full_path == nullptr;
+
+    m_SaveCounter++;
     const SAVEGAME_STRATEGY *strategy = m_Strategies;
     while (strategy->format != 0) {
         if (strategy->allow_save && strategy->save_to_file != nullptr) {
@@ -543,12 +548,11 @@ bool Savegame_Save(const int32_t slot_num)
 
             MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp != nullptr) {
-                g_SaveCounter++;
                 strategy->save_to_file(fp, savegame_info);
                 savegame_info->format = strategy->format;
                 Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
-                savegame_info->counter = g_SaveCounter;
+                savegame_info->counter = m_SaveCounter;
                 savegame_info->level_num = current_level->num;
                 savegame_info->level_title = level_title != nullptr
                     ? Memory_DupStr(level_title)
@@ -566,9 +570,11 @@ bool Savegame_Save(const int32_t slot_num)
     if (ret) {
         m_NewestSlot = slot_num;
         if (was_slot_empty) {
-            g_SavedGamesCount++;
+            m_SavedGames++;
         }
         Savegame_HighlightNewestSlot();
+    } else {
+        m_SaveCounter--;
     }
 
     return ret;
@@ -618,7 +624,7 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num)
         strategy++;
     }
 
-    g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;
+    m_InitialVersion = m_SavegameInfo[slot_num].initial_version;
 
     return ret;
 }
@@ -628,8 +634,8 @@ void Savegame_ScanSavedGames(void)
     BENCHMARK benchmark = Benchmark_Start();
     M_ClearSlots();
 
-    g_SaveCounter = 0;
-    g_SavedGamesCount = 0;
+    m_SaveCounter = 0;
+    m_SavedGames = 0;
     m_NewestSlot = -1;
 
     M_ScanSavedGamesDir(SAVES_DIR);
@@ -638,11 +644,11 @@ void Savegame_ScanSavedGames(void)
     for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
         if (savegame_info->level_title != nullptr) {
-            if (savegame_info->counter > g_SaveCounter) {
-                g_SaveCounter = savegame_info->counter;
+            if (savegame_info->counter > m_SaveCounter) {
+                m_SaveCounter = savegame_info->counter;
                 m_NewestSlot = i;
             }
-            g_SavedGamesCount++;
+            m_SavedGames++;
         }
     }
     Benchmark_End(&benchmark, nullptr);
@@ -719,4 +725,24 @@ bool Savegame_RestartAvailable(int32_t slot_num)
 
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     return savegame_info->features.restart;
+}
+
+SAVEGAME_VERSION Savegame_GetInitialVersion(void)
+{
+    return m_InitialVersion;
+}
+
+void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
+{
+    m_InitialVersion = version;
+}
+
+int32_t Savegame_GetCounter(void)
+{
+    return m_SaveCounter;
+}
+
+int32_t Savegame_GetTotalCount(void)
+{
+    return m_SavedGames;
 }

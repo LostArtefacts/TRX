@@ -158,7 +158,6 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    int16_t save_initial_version;
     PASSPORT_MODE passport_selection;
     int32_t select_save_slot;
     int32_t select_level_num;
