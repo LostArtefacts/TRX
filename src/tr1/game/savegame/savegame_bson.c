@@ -404,9 +404,6 @@ static bool M_LoadMisc(
     const int32_t bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
     Game_SetBonusFlag(bonus_flag);
     if (header_version >= VERSION_4) {
-        game_info->bonus_level_unlock =
-            JSON_ObjectGetBool(misc_obj, "bonus_level_unlock", 0);
-
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
         resume->stats.death_count =
@@ -1038,8 +1035,6 @@ static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info)
     ASSERT(game_info != nullptr);
     JSON_OBJECT *misc_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
-    JSON_ObjectAppendBool(
-        misc_obj, "bonus_level_unlock", game_info->bonus_level_unlock);
 
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
