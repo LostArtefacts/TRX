@@ -3,6 +3,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
+#include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
@@ -241,8 +242,11 @@ static void M_AddCommonRows(
 
 static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
 {
-    const STATS_COMMON *stats =
-        (STATS_COMMON *)&g_GameInfo.current[self->args.level_num].stats;
+    const GF_LEVEL *const current_level =
+        GF_GetLevel(GFLT_MAIN, self->args.level_num);
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(current_level);
+    const STATS_COMMON *const stats = (STATS_COMMON *)&current_info->stats;
     M_AddCommonRows(self, stats, &g_GameInfo);
 }
 
@@ -264,7 +268,10 @@ static void M_UpdateTimerRow(UI_STATS_DIALOG *const self)
             continue;
         }
         char buf[50];
-        M_FormatTime(buf, g_GameInfo.current[self->args.level_num].stats.timer);
+        const GF_LEVEL *const level =
+            GF_GetLevel(GFLT_MAIN, self->args.level_num);
+        const RESUME_INFO *const current_info = Savegame_GetCurrentInfo(level);
+        M_FormatTime(buf, current_info->stats.timer);
         UI_Label_ChangeText(self->rows[i].value_label, buf);
         return;
     }
