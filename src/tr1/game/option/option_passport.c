@@ -229,7 +229,8 @@ static void M_SetPage(
 
 static void M_DeterminePages(void)
 {
-    const bool has_saves = g_SavedGamesCount > 0 && Savegame_GetSlotCount() > 0;
+    const bool has_saves =
+        Savegame_GetTotalCount() > 0 && Savegame_GetSlotCount() > 0;
 
     switch (g_InvMode) {
     case INV_TITLE_MODE:
@@ -568,7 +569,7 @@ static void M_NewGame(void)
             g_InputDB = (INPUT_STATE) {};
             m_State.mode = PASSPORT_MODE_NEW_GAME;
         } else {
-            g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
+            Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
             g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
         }
     } else if (m_State.mode == PASSPORT_MODE_NEW_GAME) {
@@ -593,7 +594,7 @@ static void M_NewGame(void)
                     break;
                 }
                 g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
-                g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
+                Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
             } else if (
                 g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
                 && g_InvMode != INV_LOAD_MODE) {

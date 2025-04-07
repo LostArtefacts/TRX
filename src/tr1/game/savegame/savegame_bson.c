@@ -109,7 +109,7 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 
     SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
-        .initial_version = g_GameInfo.save_initial_version,
+        .initial_version = Savegame_GetInitialVersion(),
         .version = version,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
@@ -122,7 +122,7 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag(),
-        .counter = g_SaveCounter,
+        .counter = Savegame_GetCounter(),
         .level_num = level->num,
         .title_size = strlen(level->title),
     };
@@ -1506,7 +1506,7 @@ void Savegame_BSON_SaveToFile(
     JSON_OBJECT *root_obj = JSON_ObjectNew();
 
     JSON_ObjectAppendString(root_obj, "level_title", current_level->title);
-    JSON_ObjectAppendInt(root_obj, "save_counter", g_SaveCounter);
+    JSON_ObjectAppendInt(root_obj, "save_counter", Savegame_GetCounter());
     JSON_ObjectAppendInt(root_obj, "level_num", current_level->num);
 
     JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());

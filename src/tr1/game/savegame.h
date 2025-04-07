@@ -64,3 +64,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
 
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);
+
+SAVEGAME_VERSION Savegame_GetInitialVersion(void);
+void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
+int32_t Savegame_GetCounter(void);
+int32_t Savegame_GetTotalCount(void);
