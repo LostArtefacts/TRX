@@ -9,8 +9,8 @@ static void M_LoadLevelItemDrops(
 
 static GF_LEVEL_SETTINGS m_DefaultSettings = {
     .water_color = { .r = 0.6, .g = 0.7, .b = 1.0 },
-    .draw_distance_fade = 12.0f,
-    .draw_distance_max = 20.0f,
+    .fog_start = -1,
+    .fog_end = -1,
 };
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
@@ -105,18 +105,18 @@ static void M_LoadSettings(
     JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
 {
     {
-        const double value = JSON_ObjectGetDouble(
-            obj, "draw_distance_fade", JSON_INVALID_NUMBER);
+        const double value =
+            JSON_ObjectGetDouble(obj, "fog_start", JSON_INVALID_NUMBER);
         if (value != JSON_INVALID_NUMBER) {
-            settings->draw_distance_fade = value;
+            settings->fog_start = value;
         }
     }
 
     {
         const double value =
-            JSON_ObjectGetDouble(obj, "draw_distance_max", JSON_INVALID_NUMBER);
+            JSON_ObjectGetDouble(obj, "fog_end", JSON_INVALID_NUMBER);
         if (value != JSON_INVALID_NUMBER) {
-            settings->draw_distance_max = value;
+            settings->fog_end = value;
         }
     }
 

@@ -99,6 +99,9 @@ typedef struct {
         bool fix_animated_sprites;
         bool fix_texture_issues;
         bool enable_ps1_crystals;
+
+        int32_t fog_start;
+        int32_t fog_end;
     } visuals;
 
     struct {

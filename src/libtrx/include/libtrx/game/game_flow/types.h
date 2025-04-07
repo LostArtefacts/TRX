@@ -80,8 +80,8 @@ typedef struct {
 typedef struct {
 #if TR_VERSION == 1
     RGB_F water_color;
-    float draw_distance_fade;
-    float draw_distance_max;
+    float fog_start;
+    float fog_end;
 #elif TR_VERSION == 2
     char *sfx_path;
 #endif
