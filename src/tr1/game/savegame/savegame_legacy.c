@@ -378,7 +378,7 @@ static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
     if (is_ng_plus) {
         Game_SetBonusFlag(GBF_NGPLUS);
     }
-    game_info->death_count = -1;
+    resume_info->stats.death_count = -1;
 }
 
 const char *Savegame_Legacy_GetSaveFilePattern(void)
@@ -574,10 +574,4 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
 
     Memory_FreePointer(&buffer);
     return true;
-}
-
-bool Savegame_Legacy_UpdateDeathCounters(
-    MYFILE *const fp, GAME_INFO *const game_info)
-{
-    return false;
 }

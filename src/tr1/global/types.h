@@ -158,8 +158,6 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    int32_t death_count;
-
     bool bonus_level_unlock;
     int16_t save_initial_version;
     PASSPORT_MODE passport_selection;

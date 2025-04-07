@@ -40,7 +40,7 @@ typedef struct {
     bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
     void (*save_to_file)(
         MYFILE *fp, GAME_INFO *game_info, SAVEGAME_INFO *savegame_info);
-    bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
+    bool (*update_death_counters)(MYFILE *fp, int32_t death_count);
 } SAVEGAME_STRATEGY;
 
 static int32_t m_SaveSlots = 0;
@@ -69,7 +69,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .load_from_file = Savegame_Legacy_LoadFromFile,
         .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
         .save_to_file = nullptr,
-        .update_death_counters = Savegame_Legacy_UpdateDeathCounters,
+        .update_death_counters = nullptr,
     },
     { 0 },
 };
@@ -284,7 +284,6 @@ void Savegame_ProcessItemsBeforeSave(void)
 
 void Savegame_InitCurrentInfo(void)
 {
-    g_GameInfo.death_count = 0;
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
@@ -578,9 +577,9 @@ bool Savegame_Save(const int32_t slot_num)
     return ret;
 }
 
-bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
+bool Savegame_UpdateDeathCounters(
+    const int32_t slot_num, const int32_t death_count)
 {
-    ASSERT(game_info != nullptr);
     ASSERT(slot_num >= 0);
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     ASSERT(savegame_info->format != 0);
@@ -588,11 +587,12 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
     bool ret = false;
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
-        if (savegame_info->format == strategy->format) {
+        if (savegame_info->format == strategy->format
+            && strategy->update_death_counters != nullptr) {
             MYFILE *fp =
                 File_Open(savegame_info->full_path, FILE_OPEN_READ_WRITE);
             if (fp) {
-                ret = strategy->update_death_counters(fp, game_info);
+                ret = strategy->update_death_counters(fp, death_count);
                 File_Close(fp);
             } else
                 break;

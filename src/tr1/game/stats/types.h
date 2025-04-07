@@ -14,6 +14,7 @@ typedef struct STATS_COMMON {
     uint32_t ammo_used;
     double medipacks_used;
     uint32_t distance_travelled;
+    int32_t death_count;
 } STATS_COMMON;
 
 typedef struct {
