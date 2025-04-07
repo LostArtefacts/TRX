@@ -38,6 +38,8 @@ typedef enum {
 
 typedef enum {
     OPTION_FPS,
+    OPTION_FOG_START,
+    OPTION_FOG_END,
     OPTION_TEXTURE_FILTER,
     OPTION_FBO_FILTER,
     OPTION_VSYNC,
@@ -72,7 +74,9 @@ typedef struct {
 } GRAPHICS_MENU;
 
 static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
-    { OPTION_FPS, GS_ID(DETAIL_FPS), GS_ID(DETAIL_DECIMAL_FMT) },
+    { OPTION_FPS, GS_ID(DETAIL_FPS), GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_FOG_START, GS_ID(DETAIL_FOG_START), GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_FOG_END, GS_ID(DETAIL_FOG_END), GS_ID(DETAIL_INTEGER_FMT) },
     { OPTION_TEXTURE_FILTER, GS_ID(DETAIL_TEXTURE_FILTER), GS_ID(MISC_OFF) },
     { OPTION_FBO_FILTER, GS_ID(DETAIL_FBO_FILTER), GS_ID(MISC_OFF) },
     { OPTION_VSYNC, GS_ID(DETAIL_VSYNC), GS_ID(MISC_ON) },
@@ -265,6 +269,14 @@ static void M_UpdateArrows(
         m_HideArrowLeft = g_Config.rendering.fps == 30;
         m_HideArrowRight = g_Config.rendering.fps == 60;
         break;
+    case OPTION_FOG_START:
+        m_HideArrowLeft = g_Config.visuals.fog_start <= 1;
+        m_HideArrowRight = g_Config.visuals.fog_start >= 100;
+        break;
+    case OPTION_FOG_END:
+        m_HideArrowLeft = g_Config.visuals.fog_end <= 1;
+        m_HideArrowRight = g_Config.visuals.fog_end >= 100;
+        break;
     case OPTION_TEXTURE_FILTER:
         m_HideArrowLeft = g_Config.rendering.texture_filter == GFX_TF_FIRST;
         m_HideArrowRight = g_Config.rendering.texture_filter == GFX_TF_LAST;
@@ -381,7 +393,17 @@ static void M_ChangeTextOption(
 
     switch (row->option_name) {
     case OPTION_FPS:
-        sprintf(buf, GS(DETAIL_DECIMAL_FMT), g_Config.rendering.fps);
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.rendering.fps);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_FOG_START:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.fog_start);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_FOG_END:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.fog_end);
         Text_ChangeText(value_text, buf);
         break;
 
@@ -492,6 +514,16 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             reset = OPTION_FPS;
             break;
 
+        case OPTION_FOG_START:
+            g_Config.visuals.fog_start++;
+            reset = OPTION_FOG_START;
+            break;
+
+        case OPTION_FOG_END:
+            g_Config.visuals.fog_end++;
+            reset = OPTION_FOG_END;
+            break;
+
         case OPTION_TEXTURE_FILTER:
             if (g_Config.rendering.texture_filter != GFX_TF_LAST) {
                 g_Config.rendering.texture_filter++;
@@ -582,6 +614,16 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
         case OPTION_FPS:
             g_Config.rendering.fps = 30;
             reset = OPTION_FPS;
+            break;
+
+        case OPTION_FOG_START:
+            g_Config.visuals.fog_start--;
+            reset = OPTION_FOG_START;
+            break;
+
+        case OPTION_FOG_END:
+            g_Config.visuals.fog_end--;
+            reset = OPTION_FOG_END;
             break;
 
         case OPTION_TEXTURE_FILTER:
