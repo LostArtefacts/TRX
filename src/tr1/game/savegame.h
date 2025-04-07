@@ -38,6 +38,7 @@ void Savegame_Shutdown(void);
 bool Savegame_IsInitialised(void);
 
 void Savegame_InitCurrentInfo(void);
+void Savegame_SetCurrentInfo(int32_t current_slot, int32_t src_slot);
 
 int32_t Savegame_GetLevelNumber(int32_t slot_num);
 

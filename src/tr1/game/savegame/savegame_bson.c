@@ -57,12 +57,9 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version);
 static JSON_VALUE *M_ParseFromBuffer(
     const char *buffer, size_t buffer_size, int32_t *version_out);
 static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out);
-static bool M_LoadResumeInfo(
-    JSON_ARRAY *levels_arr, RESUME_INFO *resume_info, uint16_t header_version);
-static bool M_LoadDiscontinuedStartInfo(
-    JSON_ARRAY *start_arr, GAME_INFO *game_info);
-static bool M_LoadDiscontinuedEndInfo(
-    JSON_ARRAY *end_arr, GAME_INFO *game_info);
+static bool M_LoadResumeInfo(JSON_ARRAY *levels_arr, uint16_t header_version);
+static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *start_arr);
+static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr);
 static bool M_LoadMisc(
     JSON_OBJECT *misc_obj, GAME_INFO *game_info, uint16_t header_version);
 static bool M_LoadInventory(JSON_OBJECT *inv_obj);
@@ -77,7 +74,7 @@ static bool M_LoadLara(
     JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version);
 static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj);
 static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr);
-static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *game_info);
+static JSON_ARRAY *M_DumpResumeInfo(void);
 static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info);
 static JSON_OBJECT *M_DumpInventory(void);
 static JSON_OBJECT *M_DumpFlipmaps(void);
@@ -224,9 +221,8 @@ static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out)
 }
 
 static bool M_LoadResumeInfo(
-    JSON_ARRAY *resume_arr, RESUME_INFO *resume_info, uint16_t header_version)
+    JSON_ARRAY *const resume_arr, const uint16_t header_version)
 {
-    ASSERT(resume_info != nullptr);
     if (!resume_arr) {
         LOG_ERROR("Malformed save: invalid or missing resume array");
         return false;
@@ -243,7 +239,9 @@ static bool M_LoadResumeInfo(
             LOG_ERROR("Malformed save: invalid resume info");
             return false;
         }
-        RESUME_INFO *resume = &resume_info[i];
+
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         resume->lara_hitpoints = JSON_ObjectGetInt(
             resume_obj, "lara_hitpoints",
             g_Config.gameplay.start_lara_hitpoints);
@@ -303,13 +301,10 @@ static bool M_LoadResumeInfo(
     return true;
 }
 
-static bool M_LoadDiscontinuedStartInfo(
-    JSON_ARRAY *start_arr, GAME_INFO *game_info)
+static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *const start_arr)
 {
     // This function solely exists for backward compatibility with 2.6 and 2.7
     // saves.
-    ASSERT(game_info != nullptr);
-    ASSERT(game_info->current != nullptr);
     if (!start_arr) {
         LOG_ERROR(
             "Malformed save: invalid or missing discontinued start array");
@@ -327,7 +322,8 @@ static bool M_LoadDiscontinuedStartInfo(
             LOG_ERROR("Malformed save: invalid discontinued start info");
             return false;
         }
-        RESUME_INFO *start = &game_info->current[i];
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const start = Savegame_GetCurrentInfo(level);
         start->lara_hitpoints = JSON_ObjectGetInt(
             start_obj, "lara_hitpoints",
             g_Config.gameplay.start_lara_hitpoints);
@@ -356,12 +352,10 @@ static bool M_LoadDiscontinuedStartInfo(
     return true;
 }
 
-static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr, GAME_INFO *game_info)
+static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr)
 {
     // This function solely exists for backward compatibility with 2.6 and 2.7
     // saves.
-    ASSERT(game_info != nullptr);
-    ASSERT(game_info->current != nullptr);
     if (!end_arr) {
         LOG_ERROR("Malformed save: invalid or missing resume info array");
         return false;
@@ -378,7 +372,10 @@ static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr, GAME_INFO *game_info)
             LOG_ERROR("Malformed save: invalid resume info");
             return false;
         }
-        LEVEL_STATS *end = &game_info->current[i].stats;
+
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        LEVEL_STATS *const end = &resume->stats;
         end->timer = JSON_ObjectGetInt(end_obj, "timer", end->timer);
         end->secret_flags =
             JSON_ObjectGetInt(end_obj, "secrets", end->secret_flags);
@@ -979,12 +976,12 @@ static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr)
     return true;
 }
 
-static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *resume_info)
+static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *resume_arr = JSON_ArrayNew();
-    ASSERT(resume_info != nullptr);
     for (int i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
-        RESUME_INFO *resume = &resume_info[i];
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         JSON_OBJECT *resume_obj = JSON_ObjectNew();
         JSON_ObjectAppendInt(
             resume_obj, "lara_hitpoints", resume->lara_hitpoints);
@@ -1405,18 +1402,17 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadResumeInfo(
-            JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
-            version)) {
+            JSON_ObjectGetArray(root_obj, "current_info"), version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. "
             "Checking if save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!M_LoadDiscontinuedStartInfo(
-                JSON_ObjectGetArray(root_obj, "start_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "start_info"))) {
             goto cleanup;
         }
         if (!M_LoadDiscontinuedEndInfo(
-                JSON_ObjectGetArray(root_obj, "end_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "end_info"))) {
             goto cleanup;
         }
     }
@@ -1487,18 +1483,17 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadResumeInfo(
-            JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
-            version)) {
+            JSON_ObjectGetArray(root_obj, "current_info"), version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. Checking if "
             "save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!M_LoadDiscontinuedStartInfo(
-                JSON_ObjectGetArray(root_obj, "start_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "start_info"))) {
             goto cleanup;
         }
         if (!M_LoadDiscontinuedEndInfo(
-                JSON_ObjectGetArray(root_obj, "end_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "end_info"))) {
             goto cleanup;
         }
     }
@@ -1524,8 +1519,7 @@ void Savegame_BSON_SaveToFile(
     JSON_ObjectAppendInt(root_obj, "level_num", current_level->num);
 
     JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc(game_info));
-    JSON_ObjectAppendArray(
-        root_obj, "current_info", M_DumpResumeInfo(game_info->current));
+    JSON_ObjectAppendArray(root_obj, "current_info", M_DumpResumeInfo());
     JSON_ObjectAppendObject(root_obj, "inventory", M_DumpInventory());
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());

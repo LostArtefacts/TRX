@@ -325,14 +325,13 @@ static void M_SetCurrentPosition(const int32_t level_num)
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
         if (level->type == GFL_CURRENT) {
-            g_GameInfo.current[current_level->num] = g_GameInfo.current[i];
+            Savegame_SetCurrentInfo(current_level->num, i);
         }
     }
 }
 
 static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
 {
-    ASSERT(game_info->current != nullptr);
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];

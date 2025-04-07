@@ -46,6 +46,7 @@ typedef struct {
 static int32_t m_SaveSlots = 0;
 static int16_t m_NewestSlot = -1;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
+static RESUME_INFO *m_ResumeInfo = nullptr;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
@@ -195,7 +196,7 @@ static void M_LoadPostprocess(void)
 
 void Savegame_Init(void)
 {
-    g_GameInfo.current = Memory_Alloc(
+    m_ResumeInfo = Memory_Alloc(
         sizeof(RESUME_INFO)
         * (GF_GetLevelTable(GFLT_MAIN)->count
            + (GF_GetLevelTable(GFLT_DEMOS)->count >= 0 ? 1 : 0)));
@@ -229,11 +230,12 @@ void Savegame_Init(void)
 
 RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 {
+    ASSERT(m_ResumeInfo != nullptr);
     ASSERT(level != nullptr);
     if (GF_GetLevelTableType(level->type) == GFLT_MAIN) {
-        return &g_GameInfo.current[level->num];
+        return &m_ResumeInfo[level->num];
     } else if (level->type == GFL_DEMO) {
-        return &g_GameInfo.current[GF_GetLevelTable(GFLT_MAIN)->count];
+        return &m_ResumeInfo[GF_GetLevelTable(GFLT_MAIN)->count];
     }
     LOG_WARNING(
         "Warning: unable to get resume info for level %d (type=%s)", level->num,
@@ -241,11 +243,16 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
     return nullptr;
 }
 
+void Savegame_SetCurrentInfo(const int32_t current_slot, const int32_t src_slot)
+{
+    m_ResumeInfo[current_slot] = m_ResumeInfo[src_slot];
+}
+
 void Savegame_Shutdown(void)
 {
     M_ClearSlots();
     Memory_FreePointer(&m_SavegameInfo);
-    Memory_FreePointer(&g_GameInfo.current);
+    Memory_FreePointer(&m_ResumeInfo);
 }
 
 bool Savegame_IsInitialised(void)
@@ -524,7 +531,7 @@ bool Savegame_Save(const int32_t slot_num)
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
         if (level->type == GFL_CURRENT) {
-            game_info->current[i] = game_info->current[current_level->num];
+            Savegame_SetCurrentInfo(i, current_level->num);
         }
     }
     const char *const level_title = Game_GetCurrentLevel()->title;

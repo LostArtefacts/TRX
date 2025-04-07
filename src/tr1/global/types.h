@@ -158,7 +158,6 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    RESUME_INFO *current;
     int32_t death_count;
 
     bool bonus_level_unlock;
