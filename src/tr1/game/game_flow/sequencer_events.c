@@ -219,7 +219,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
         g_Config.profile.new_game_plus_unlock = true;
         Config_Write();
     }
-    g_GameInfo.bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
+    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
     // play specific level
     if (g_GameInfo.select_level_num != -1) {
@@ -242,7 +242,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     Savegame_CarryCurrentInfoToNextLevel(current_level, next_level);
     Savegame_ApplyLogicToCurrentInfo(next_level);
 
-    if (next_level->type == GFL_BONUS && !g_GameInfo.bonus_level_unlock) {
+    if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {

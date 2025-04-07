@@ -172,8 +172,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
     resume->available = 0;
-    g_Config.profile.bonus_level_unlock =
-        Stats_CheckAllSecretsCollected(GFL_NORMAL);
+    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
     if (next_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);
@@ -181,7 +180,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-    if (next_level->type == GFL_BONUS && !g_Config.profile.bonus_level_unlock) {
+    if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {
