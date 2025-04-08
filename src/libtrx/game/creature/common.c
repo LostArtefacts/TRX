@@ -1,5 +1,6 @@
 #include "game/creature.h"
 #include "game/lara/common.h"
+#include "game/objects/vars.h"
 #include "game/random.h"
 #include "game/rooms.h"
 #include "log.h"
@@ -16,6 +17,7 @@
 #elif TR_VERSION >= 2
     #define M_HEAD_ARC 0x3000 // = 12288
 #endif
+#define M_MAX_X_ROT (20 * DEG_1) // = 3640
 
 static ITEM *M_ChooseEnemy(const ITEM *item);
 static bool M_SwitchToWater(
@@ -520,6 +522,267 @@ void Creature_Collision(
         item, coll,
         (TR_VERSION >= 2 || item->hit_points > 0) ? coll->enable_hit : false,
         false);
+}
+
+bool Creature_Animate(
+    const int16_t item_num, const int16_t angle, const int16_t tilt)
+{
+    ITEM *const item = Item_Get(item_num);
+    const CREATURE *const creature = item->data;
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (creature == nullptr) {
+        return false;
+    }
+
+    const LOT_INFO *const lot = &creature->lot;
+    const XYZ_32 old = item->pos;
+
+    const int16_t *const zone = Box_GetLotZone(lot);
+
+    if (TR_VERSION >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
+        int16_t room_num = item->room_num;
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        if (room_num != item->room_num) {
+            Item_NewRoom(item_num, room_num);
+        }
+    }
+
+    Item_Animate(item);
+    if (item->status == IS_DEACTIVATED) {
+        Creature_Die(item_num, false);
+        return false;
+    }
+
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    int32_t y = item->pos.y + bounds->min.y;
+
+    int16_t room_num = item->room_num;
+    Room_GetSector(old.x, y, old.z, &room_num);
+    const SECTOR *sector =
+        Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+    int32_t height = Box_GetBox(sector->box)->height;
+    int16_t next_box = lot->node[sector->box].exit_box;
+    int32_t next_height =
+        next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
+
+    const int32_t box_height = Box_GetBox(item->box_num)->height;
+    if (sector->box == NO_BOX || zone[item->box_num] != zone[sector->box]
+        || box_height - height > lot->step || box_height - height < lot->drop) {
+        const int32_t pos_x = item->pos.x >> WALL_SHIFT;
+        const int32_t shift_x = old.x >> WALL_SHIFT;
+        const int32_t shift_z = old.z >> WALL_SHIFT;
+
+        if (pos_x < shift_x) {
+            item->pos.x = old.x & (~(WALL_L - 1));
+        } else if (pos_x > shift_x) {
+            item->pos.x = old.x | (WALL_L - 1);
+        }
+
+        if (pos_x < shift_z) {
+            item->pos.z = old.z & (~(WALL_L - 1));
+        } else if (pos_x > shift_z) {
+            item->pos.z = old.z | (WALL_L - 1);
+        }
+
+        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        height = Box_GetBox(sector->box)->height;
+        next_box = lot->node[sector->box].exit_box;
+        next_height =
+            next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
+    }
+
+    const int32_t x = item->pos.x;
+    const int32_t z = item->pos.z;
+    const int32_t pos_x = x & (WALL_L - 1);
+    const int32_t pos_z = z & (WALL_L - 1);
+    int32_t shift_x = 0;
+    int32_t shift_z = 0;
+    const int32_t radius = obj->radius;
+
+    if (pos_z < radius) {
+        if (Box_BadFloor(
+                x, y, z - radius, height, next_height, room_num, lot)) {
+            shift_z = radius - pos_z;
+        }
+
+        if (pos_x < radius) {
+            if (Box_BadFloor(
+                    x - radius, y, z, height, next_height, room_num, lot)) {
+                shift_x = radius - pos_x;
+            } else if (
+                !shift_z
+                && Box_BadFloor(
+                    x - radius, y, z - radius, height, next_height, room_num,
+                    lot)) {
+                if (item->rot.y > -DEG_135 && item->rot.y < DEG_45) {
+                    shift_z = radius - pos_z;
+                } else {
+                    shift_x = radius - pos_x;
+                }
+            }
+        } else if (pos_x > WALL_L - radius) {
+            if (Box_BadFloor(
+                    x + radius, y, z, height, next_height, room_num, lot)) {
+                shift_x = WALL_L - radius - pos_x;
+            } else if (
+                !shift_z
+                && Box_BadFloor(
+                    x + radius, y, z - radius, height, next_height, room_num,
+                    lot)) {
+                if (item->rot.y > -DEG_45 && item->rot.y < DEG_135) {
+                    shift_z = radius - pos_z;
+                } else {
+                    shift_x = WALL_L - radius - pos_x;
+                }
+            }
+        }
+    } else if (pos_z > WALL_L - radius) {
+        if (Box_BadFloor(
+                x, y, z + radius, height, next_height, room_num, lot)) {
+            shift_z = WALL_L - radius - pos_z;
+        }
+
+        if (pos_x < radius) {
+            if (Box_BadFloor(
+                    x - radius, y, z, height, next_height, room_num, lot)) {
+                shift_x = radius - pos_x;
+            } else if (
+                !shift_z
+                && Box_BadFloor(
+                    x - radius, y, z + radius, height, next_height, room_num,
+                    lot)) {
+                if (item->rot.y > -DEG_45 && item->rot.y < DEG_135) {
+                    shift_x = radius - pos_x;
+                } else {
+                    shift_z = WALL_L - radius - pos_z;
+                }
+            }
+        } else if (pos_x > WALL_L - radius) {
+            if (Box_BadFloor(
+                    x + radius, y, z, height, next_height, room_num, lot)) {
+                shift_x = WALL_L - radius - pos_x;
+            } else if (
+                !shift_z
+                && Box_BadFloor(
+                    x + radius, y, z + radius, height, next_height, room_num,
+                    lot)) {
+                if (item->rot.y > -DEG_135 && item->rot.y < DEG_45) {
+                    shift_x = WALL_L - radius - pos_x;
+                } else {
+                    shift_z = WALL_L - radius - pos_z;
+                }
+            }
+        }
+    } else if (pos_x < radius) {
+        if (Box_BadFloor(
+                x - radius, y, z, height, next_height, room_num, lot)) {
+            shift_x = radius - pos_x;
+        }
+    } else if (pos_x > WALL_L - radius) {
+        if (Box_BadFloor(
+                x + radius, y, z, height, next_height, room_num, lot)) {
+            shift_x = WALL_L - radius - pos_x;
+        }
+    }
+
+    item->pos.x += shift_x;
+    item->pos.z += shift_z;
+
+    if (shift_x || shift_z) {
+        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        item->rot.y += angle;
+        Creature_Tilt(item, tilt * 2);
+    }
+
+    if (Creature_CheckBaddieOverlap(item_num)) {
+        item->pos = old;
+        return true;
+    }
+
+    if (lot->fly) {
+        int32_t dy = creature->target.y - item->pos.y;
+        CLAMP(dy, -lot->fly, lot->fly);
+
+        height = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
+        if (item->pos.y + dy <= height) {
+            const int32_t ceiling =
+                Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
+            int32_t min_y = bounds->min.y;
+            switch (item->object_id) {
+#if TR_VERSION == 1
+            case O_ALLIGATOR:
+                min_y = 0;
+                break;
+#elif TR_VERSION == 2
+            case O_SHARK:
+                min_y = 128;
+                break;
+#endif
+            default:
+                break;
+            }
+            if (item->pos.y + min_y + dy < ceiling) {
+                if (item->pos.y + min_y < ceiling) {
+                    item->pos.x = old.x;
+                    item->pos.z = old.z;
+                    dy = lot->fly;
+                } else {
+                    dy = 0;
+                }
+            }
+        } else if (item->pos.y <= height) {
+            item->pos.y = height;
+            dy = 0;
+        } else {
+            item->pos.x = old.x;
+            item->pos.z = old.z;
+            dy = -lot->fly;
+        }
+
+        item->pos.y += dy;
+        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
+
+        int16_t angle = item->speed ? Math_Atan(item->speed, -dy) : 0;
+        if (TR_VERSION >= 2) {
+            CLAMP(angle, -M_MAX_X_ROT, M_MAX_X_ROT);
+        }
+
+        if (angle < item->rot.x - DEG_1) {
+            item->rot.x -= DEG_1;
+        } else if (angle > item->rot.x + DEG_1) {
+            item->rot.x += DEG_1;
+        } else {
+            item->rot.x = angle;
+        }
+    } else {
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        item->floor =
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+
+        if (item->pos.y > item->floor) {
+            item->pos.y = item->floor;
+        } else if (item->floor - item->pos.y > STEP_L / 4) {
+            item->pos.y += STEP_L / 4;
+        } else if (item->pos.y < item->floor) {
+            item->pos.y = item->floor;
+        }
+        item->rot.x = 0;
+    }
+
+    if (TR_VERSION >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
+        Room_GetSector(
+            item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z, &room_num);
+        if (Room_Get(room_num)->flags & RF_UNDERWATER) {
+            item->hit_points = 0;
+        }
+    }
+
+    if (item->room_num != room_num) {
+        Item_NewRoom(item_num, room_num);
+    }
+    return true;
 }
 
 int16_t Creature_Effect(

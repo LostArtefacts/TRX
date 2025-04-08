@@ -21,7 +21,6 @@ int32_t Item_GetDistance(const ITEM *item, const XYZ_32 *target);
 
 bool Item_IsTriggerActive(ITEM *item);
 
-const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item);
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate);
 
 void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);

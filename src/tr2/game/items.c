@@ -359,7 +359,7 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
     return final * 10;
 }
 
-BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
+const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
 {
     int32_t rate;
     ANIM_FRAME *frames[2];
