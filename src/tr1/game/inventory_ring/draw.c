@@ -168,8 +168,8 @@ void InvRing_Draw(INV_RING *const ring)
             || ring->motion.status == RNG_CLOSING_ITEM)) {
         const INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
         switch (inv_item->object_id) {
-        case O_MEDI_OPTION:
-        case O_BIGMEDI_OPTION:
+        case O_SMALL_MEDIPACK_OPTION:
+        case O_LARGE_MEDIPACK_OPTION:
             if (g_Config.ui.enable_game_ui) {
                 Overlay_BarDrawHealth();
             }

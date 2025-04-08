@@ -274,11 +274,11 @@ bool Lara_Cheat_GiveAllItems(void)
     g_Lara.uzi_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 2000;
 
     for (int i = 0; i < 10; i++) {
-        if (Inv_RequestItem(O_MEDI_ITEM) < 240) {
-            Inv_AddItem(O_MEDI_ITEM);
+        if (Inv_RequestItem(O_SMALL_MEDIPACK_ITEM) < 240) {
+            Inv_AddItem(O_SMALL_MEDIPACK_ITEM);
         }
-        if (Inv_RequestItem(O_BIGMEDI_ITEM) < 240) {
-            Inv_AddItem(O_BIGMEDI_ITEM);
+        if (Inv_RequestItem(O_LARGE_MEDIPACK_ITEM) < 240) {
+            Inv_AddItem(O_LARGE_MEDIPACK_ITEM);
         }
     }
 

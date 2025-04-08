@@ -163,8 +163,8 @@ static bool M_IsValidItemObject(
         case O_PUZZLE_DONE_4: return initial_obj_id == O_PUZZLE_HOLE_4;
         // pickups
         case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ANIM;
-        case O_SG_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
-        case O_MAG_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
+        case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
+        case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
         // dual-state animals
         case O_ALLIGATOR: return initial_obj_id == O_CROCODILE;

@@ -424,7 +424,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         current->flags.has_magnums = 1;
     } else {
         current->magnum_ammo =
-            Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
+            Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
         current->flags.has_magnums = 0;
     }
 
@@ -441,12 +441,12 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         current->flags.has_shotgun = 1;
     } else {
         current->shotgun_ammo =
-            Inv_RequestItem(O_SG_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
+            Inv_RequestItem(O_SHOTGUN_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
         current->flags.has_shotgun = 0;
     }
 
-    current->small_medipacks = Inv_RequestItem(O_MEDI_ITEM);
-    current->large_medipacks = Inv_RequestItem(O_BIGMEDI_ITEM);
+    current->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
+    current->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
     current->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
 
     current->equipped_gun_type = g_Lara.gun_type;

@@ -392,28 +392,28 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         }
         break;
 
-    case O_MEDI_ITEM:
-    case O_MEDI_OPTION:
+    case O_SMALL_MEDIPACK_ITEM:
+    case O_SMALL_MEDIPACK_OPTION:
         if (g_LaraItem->hit_points <= 0
             || g_LaraItem->hit_points >= LARA_MAX_HITPOINTS) {
             return;
         }
         g_LaraItem->hit_points += LARA_MAX_HITPOINTS / 2;
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
-        Inv_RemoveItem(O_MEDI_ITEM);
+        Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
         Stats_AddMedipacksUsed(.5);
         break;
 
-    case O_BIGMEDI_ITEM:
-    case O_BIGMEDI_OPTION:
+    case O_LARGE_MEDIPACK_ITEM:
+    case O_LARGE_MEDIPACK_OPTION:
         if (g_LaraItem->hit_points <= 0
             || g_LaraItem->hit_points >= LARA_MAX_HITPOINTS) {
             return;
         }
         g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_MAX_HITPOINTS;
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
-        Inv_RemoveItem(O_BIGMEDI_ITEM);
+        Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
         Stats_AddMedipacksUsed(1);
         break;
@@ -577,11 +577,11 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
             g_Lara.magnum_ammo.ammo = resume->magnum_ammo;
-            Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+            Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         } else {
             int32_t ammo = resume->magnum_ammo / MAGNUM_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
-                Inv_AddItem(O_MAG_AMMO_ITEM);
+                Inv_AddItem(O_MAGNUM_AMMO_ITEM);
             }
             g_Lara.magnum_ammo.ammo = 0;
         }
@@ -601,11 +601,11 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
             g_Lara.shotgun_ammo.ammo = resume->shotgun_ammo;
-            Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+            Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
         } else {
             int32_t ammo = resume->shotgun_ammo / SHOTGUN_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
-                Inv_AddItem(O_SG_AMMO_ITEM);
+                Inv_AddItem(O_SHOTGUN_AMMO_ITEM);
             }
             g_Lara.shotgun_ammo.ammo = 0;
         }
@@ -615,11 +615,11 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         }
 
         for (int i = 0; i < resume->small_medipacks; i++) {
-            Inv_AddItem(O_MEDI_ITEM);
+            Inv_AddItem(O_SMALL_MEDIPACK_ITEM);
         }
 
         for (int i = 0; i < resume->large_medipacks; i++) {
-            Inv_AddItem(O_BIGMEDI_ITEM);
+            Inv_AddItem(O_LARGE_MEDIPACK_ITEM);
         }
 
         g_Lara.gun_status = resume->gun_status;
