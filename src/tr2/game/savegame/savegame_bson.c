@@ -369,11 +369,11 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         JSON_ObjectAppendInt(resume_obj, "ammo_hits", resume->stats.ammo_hits);
         JSON_ObjectAppendInt(resume_obj, "ammo_used", resume->stats.ammo_used);
         JSON_ObjectAppendInt(
-            resume_obj, "distance_travelled", resume->stats.distance);
-        JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kills);
+            resume_obj, "distance_travelled", resume->stats.distance_travelled);
+        JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kill_count);
         JSON_ObjectAppendInt(resume_obj, "secrets", resume->stats.secret_flags);
         JSON_ObjectAppendDouble(
-            resume_obj, "medipacks_used", resume->stats.medipacks);
+            resume_obj, "medipacks_used", resume->stats.medipacks_used);
         JSON_ObjectAppendInt(
             resume_obj, "max_secrets", resume->stats.max_secret_count);
         JSON_ArrayAppendObject(resume_arr, resume_obj);
@@ -432,13 +432,13 @@ static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
         resume->stats.timer = JSON_ObjectGetInt(resume_obj, "timer", 0);
         resume->stats.ammo_hits = JSON_ObjectGetInt(resume_obj, "ammo_hits", 0);
         resume->stats.ammo_used = JSON_ObjectGetInt(resume_obj, "ammo_used", 0);
-        resume->stats.distance =
+        resume->stats.distance_travelled =
             JSON_ObjectGetInt(resume_obj, "distance_travelled", 0);
-        resume->stats.kills = JSON_ObjectGetInt(resume_obj, "kills", 0);
+        resume->stats.kill_count = JSON_ObjectGetInt(resume_obj, "kills", 0);
         resume->stats.secret_flags =
             JSON_ObjectGetInt(resume_obj, "secrets", 0);
-        resume->stats.medipacks =
-            JSON_ObjectGetInt(resume_obj, "medipacks_used", 0);
+        resume->stats.medipacks_used =
+            JSON_ObjectGetDouble(resume_obj, "medipacks_used", 0);
         resume->stats.max_secret_count =
             JSON_ObjectGetInt(resume_obj, "max_secrets", 0);
     }

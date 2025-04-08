@@ -117,7 +117,7 @@ static void M_AddRowFromRole(
         break;
 
     case M_ROW_KILLS:
-        sprintf(buf, GS(STATS_BASIC_FMT), stats->kills);
+        sprintf(buf, GS(STATS_BASIC_FMT), stats->kill_count);
         M_AddRow(self, role, GS(STATS_KILLS), buf);
         break;
 
@@ -132,16 +132,12 @@ static void M_AddRowFromRole(
         break;
 
     case M_ROW_MEDIPACKS:
-        if ((stats->medipacks & 1) != 0) {
-            sprintf(buf, "%d.5", stats->medipacks >> 1);
-        } else {
-            sprintf(buf, "%d.0", stats->medipacks >> 1);
-        }
+        sprintf(buf, GS(DETAIL_FLOAT_FMT), stats->medipacks_used);
         M_AddRow(self, role, GS(STATS_MEDIPACKS_USED), buf);
         break;
 
     case M_ROW_DISTANCE_TRAVELED:
-        const int32_t distance = stats->distance / 445;
+        const int32_t distance = stats->distance_travelled / 445;
         if (distance < 1000) {
             sprintf(buf, "%dm", distance);
         } else {

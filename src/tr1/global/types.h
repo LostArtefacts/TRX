@@ -1,6 +1,5 @@
 #pragma once
 
-#include "game/stats/types.h"
 #include "global/const.h"
 
 #include <libtrx/game/anims.h>
@@ -21,6 +20,7 @@
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound/enum.h>
 #include <libtrx/game/sound/ids.h>
+#include <libtrx/game/stats/types.h>
 #include <libtrx/game/text.h>
 #include <libtrx/game/types.h>
 

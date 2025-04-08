@@ -180,10 +180,10 @@ static void M_ReadStats(LEVEL_STATS *const stats)
     stats->timer = M_ReadU32();
     stats->ammo_used = M_ReadU32();
     stats->ammo_hits = M_ReadU32();
-    stats->distance = M_ReadU32();
-    stats->kills = M_ReadU16();
+    stats->distance_travelled = M_ReadU32();
+    stats->kill_count = M_ReadU16();
     stats->secret_flags = M_ReadU8();
-    stats->medipacks = M_ReadU8();
+    stats->medipacks_used = M_ReadU8() / 2.0f;
 }
 
 static void M_ReadItems(void)
@@ -468,10 +468,10 @@ static void M_WriteStats(const LEVEL_STATS *const stats)
     M_WriteU32(stats->timer);
     M_WriteU32(stats->ammo_used);
     M_WriteU32(stats->ammo_hits);
-    M_WriteU32(stats->distance);
-    M_WriteU16(stats->kills);
-    M_WriteU8(stats->secret_flags);
-    M_WriteU8(stats->medipacks);
+    M_WriteU32(stats->distance_travelled);
+    M_WriteU16(stats->kill_count);
+    M_WriteU8(stats->secret_flags & 0xFF);
+    M_WriteU8(stats->medipacks_used * 2);
 }
 
 static void M_WriteItems(void)

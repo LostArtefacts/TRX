@@ -171,7 +171,7 @@ WEAPON_INFO g_Weapons[] = {
 };
 
 int16_t g_FinalBossActive;
-int16_t g_FinalLevelCount;
+uint16_t g_FinalLevelCount;
 int16_t g_FinalBossCount;
 int16_t g_FinalBossItem[5];
 
