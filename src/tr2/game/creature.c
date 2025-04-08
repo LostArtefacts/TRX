@@ -1,20 +1,10 @@
 #include "game/creature.h"
 
 #include "game/box.h"
-#include "game/camera.h"
-#include "game/effects.h"
 #include "game/gun/gun_misc.h"
-#include "game/items.h"
-#include "game/lara/misc.h"
 #include "game/los.h"
-#include "game/lot.h"
-#include "game/objects/common.h"
-#include "game/objects/vars.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/spawn.h"
-#include "global/const.h"
-#include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/common.h>
@@ -28,6 +18,7 @@ int32_t Creature_ShootAtLara(
     ITEM *const item, const AI_INFO *const info, const BITE *const gun,
     const int16_t extra_rotation, const int32_t damage)
 {
+    const ITEM *const lara_item = Lara_GetItem();
     const CREATURE *const creature = item->data;
     ITEM *const target_item = creature->enemy;
 
@@ -55,7 +46,7 @@ int32_t Creature_ShootAtLara(
     }
 
     int16_t effect_num = NO_EFFECT;
-    if (target_item == g_LaraItem) {
+    if (target_item == lara_item) {
         if (is_hit) {
             effect_num = Creature_Effect(item, gun, Spawn_GunHit);
             Item_TakeDamage(target_item, damage, true);
