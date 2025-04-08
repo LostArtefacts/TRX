@@ -25,63 +25,6 @@
 #define M_SHOOT_TARGETING_SPEED 300
 #define M_SHOOT_HIT_CHANCE 0x2000
 
-int32_t Creature_Vault(
-    const int16_t item_num, const int16_t angle, int32_t vault,
-    const int32_t shift)
-{
-    ITEM *const item = Item_Get(item_num);
-    const int16_t room_num = item->room_num;
-    const XYZ_32 old = item->pos;
-
-    Creature_Animate(item_num, angle, 0);
-
-    if (item->floor > old.y + STEP_L * 7 / 2) {
-        vault = -4;
-    } else if (item->pos.y > old.y - STEP_L * 3 / 2) {
-        return 0;
-    } else if (item->pos.y > old.y - STEP_L * 5 / 2) {
-        vault = 2;
-    } else if (item->pos.y > old.y - STEP_L * 7 / 2) {
-        vault = 3;
-    } else {
-        vault = 4;
-    }
-
-    const int32_t old_x_sector = old.x >> WALL_SHIFT;
-    const int32_t old_z_sector = old.z >> WALL_SHIFT;
-    const int32_t x_sector = item->pos.x >> WALL_SHIFT;
-    const int32_t z_sector = item->pos.z >> WALL_SHIFT;
-    if (old_z_sector == z_sector) {
-        if (old_x_sector == x_sector) {
-            return 0;
-        }
-
-        if (old_x_sector >= x_sector) {
-            item->rot.y = -DEG_90;
-            item->pos.x = (old_x_sector << WALL_SHIFT) + shift;
-        } else {
-            item->rot.y = DEG_90;
-            item->pos.x = (x_sector << WALL_SHIFT) - shift;
-        }
-    } else if (old_x_sector == x_sector) {
-        if (old_z_sector >= z_sector) {
-            item->rot.y = -DEG_180;
-            item->pos.z = (old_z_sector << WALL_SHIFT) + shift;
-        } else {
-            item->rot.y = 0;
-            item->pos.z = (z_sector << WALL_SHIFT) - shift;
-        }
-    }
-
-    item->floor = old.y;
-    item->pos.y = old.y;
-
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
-    return vault;
-}
-
 void Creature_Kill(
     ITEM *const item, const int32_t kill_anim, const int32_t kill_state,
     const int32_t lara_kill_state)

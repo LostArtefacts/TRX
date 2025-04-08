@@ -22,7 +22,10 @@ bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
 bool Creature_CheckBaddieOverlap(int16_t item_num);
 void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
+
 void Creature_Die(int16_t item_num, bool explode);
+int32_t Creature_Vault(
+    int16_t item_num, int16_t angle, int32_t vault, int32_t shift);
 
 extern bool Creature_IsHostile(const ITEM *item);
 
