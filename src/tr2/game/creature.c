@@ -21,8 +21,6 @@
 #include <libtrx/utils.h>
 
 #define MAX_X_ROT (20 * DEG_1) // = 3640
-#define MAX_HEAD_CHANGE (5 * DEG_1) // = 910
-#define HEAD_ARC 0x3000 // = 12288
 #define FLOAT_SPEED 32
 #define TARGET_TOLERANCE 0x400000
 
@@ -356,20 +354,6 @@ bool Creature_Animate(
         Item_NewRoom(item_num, room_num);
     }
     return true;
-}
-
-void Creature_Neck(ITEM *const item, const int16_t required)
-{
-    CREATURE *const creature = item->data;
-    if (creature == nullptr) {
-        return;
-    }
-
-    int16_t change = required - creature->neck_rotation;
-    CLAMP(change, -MAX_HEAD_CHANGE, MAX_HEAD_CHANGE);
-
-    creature->neck_rotation += change;
-    CLAMP(creature->neck_rotation, -HEAD_ARC, HEAD_ARC);
 }
 
 void Creature_Float(const int16_t item_num)

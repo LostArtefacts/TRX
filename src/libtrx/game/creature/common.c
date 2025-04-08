@@ -448,6 +448,20 @@ void Creature_Head(ITEM *const item, const int16_t required)
     CLAMP(creature->head_rotation, -M_HEAD_ARC, M_HEAD_ARC);
 }
 
+void Creature_Neck(ITEM *const item, const int16_t required)
+{
+    CREATURE *const creature = item->data;
+    if (creature == nullptr) {
+        return;
+    }
+
+    int16_t change = required - creature->neck_rotation;
+    CLAMP(change, -M_MAX_HEAD_CHANGE, M_MAX_HEAD_CHANGE);
+
+    creature->neck_rotation += change;
+    CLAMP(creature->neck_rotation, -M_HEAD_ARC, M_HEAD_ARC);
+}
+
 int16_t Creature_Effect(
     const ITEM *const item, const BITE *const bite,
     int16_t (*const spawn)(
