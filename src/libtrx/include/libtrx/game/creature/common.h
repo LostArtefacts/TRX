@@ -3,10 +3,10 @@
 #include "../collision.h"
 #include "./types.h"
 
+void Creature_Initialise(int16_t item_num);
 bool Creature_Activate(int16_t item_num);
 bool Creature_IsHostile(const ITEM *item);
 
-extern void Creature_Initialise(int16_t item_num);
 extern void Creature_Collision(
     int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 extern void Creature_AIInfo(ITEM *item, AI_INFO *info);
