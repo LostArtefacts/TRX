@@ -189,7 +189,7 @@ sources = [
   'game/random.c',
   'game/rooms/common.c',
   'game/rooms/draw.c',
-  'game/savegame.c',
+  'game/savegame/common.c',
   'game/shell/common.c',
   'game/shell/main.c',
   'game/sound.c',
