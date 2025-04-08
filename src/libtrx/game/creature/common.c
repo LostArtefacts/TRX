@@ -1,3 +1,4 @@
+#include "game/camera/vars.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/los.h"
@@ -854,6 +855,47 @@ bool Creature_Animate(
         Item_NewRoom(item_num, room_num);
     }
     return true;
+}
+
+void Creature_SpecialKill(
+    ITEM *const item, const int32_t kill_anim, const int32_t kill_state,
+    const int32_t lara_kill_state)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    ITEM *const lara_item = Lara_GetItem();
+
+    Item_SwitchToAnim(item, kill_anim, 0);
+    item->current_anim_state = kill_state;
+
+#if TR_VERSION == 2
+    Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LA_EXTRA_BREATH;
+#endif
+    lara_item->goal_anim_state = lara_kill_state;
+    lara_item->pos = item->pos;
+    lara_item->rot = item->rot;
+    lara_item->fall_speed = 0;
+    lara_item->gravity = 0;
+    lara_item->speed = 0;
+
+    int16_t room_num = item->room_num;
+    if (room_num != lara_item->room_num) {
+        Item_NewRoom(lara->item_num, room_num);
+    }
+
+    Item_Animate(lara_item);
+
+    lara_item->goal_anim_state = lara_kill_state;
+    lara_item->current_anim_state = lara_kill_state;
+#if TR_VERSION == 2
+    lara->extra_anim = 1;
+#endif
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+    lara->hit_direction = -1;
+    lara->air = -1;
+
+    g_Camera.pos.room_num = lara_item->room_num;
 }
 
 void Creature_Die(const int16_t item_num, const bool explode)

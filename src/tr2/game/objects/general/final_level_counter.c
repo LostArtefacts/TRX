@@ -78,7 +78,7 @@ static void M_PrepareCutscene(const int16_t item_num)
     g_Lara.water_status = LWS_ABOVE_WATER;
 
     ITEM *const item = Item_Get(item_num);
-    Creature_Kill(item, 0, 0, LA_EXTRA_FINAL_ANIM);
+    Creature_SpecialKill(item, 0, 0, LA_EXTRA_FINAL_ANIM);
 
     Camera_InvokeCinematic(item, 428, 0);
 }
