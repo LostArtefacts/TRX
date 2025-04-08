@@ -53,3 +53,4 @@ void Item_PlayAnimSFX(const ITEM *item, const ANIM_COMMAND_EFFECT_DATA *data);
 
 bool Item_TestBoundsCollide(
     const ITEM *src_item, const ITEM *dst_item, int32_t radius);
+extern const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item);
