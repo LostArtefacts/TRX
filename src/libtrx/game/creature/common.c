@@ -447,3 +447,14 @@ void Creature_Head(ITEM *const item, const int16_t required)
     creature->head_rotation += change;
     CLAMP(creature->head_rotation, -M_HEAD_ARC, M_HEAD_ARC);
 }
+
+int16_t Creature_Effect(
+    const ITEM *const item, const BITE *const bite,
+    int16_t (*const spawn)(
+        int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
+        int16_t room_num))
+{
+    XYZ_32 pos = { .x = bite->x, .y = bite->y, .z = bite->z };
+    Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
+    return spawn(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
+}

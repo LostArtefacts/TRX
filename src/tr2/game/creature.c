@@ -414,18 +414,6 @@ void Creature_Underwater(ITEM *const item, const int32_t depth)
     }
 }
 
-int16_t Creature_Effect(
-    const ITEM *const item, const BITE *const bite,
-    int16_t (*const spawn)(
-        int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
-        int16_t room_num))
-{
-    XYZ_32 pos = bite->pos;
-    Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
-    return (*spawn)(
-        pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
-}
-
 int32_t Creature_Vault(
     const int16_t item_num, const int16_t angle, int32_t vault,
     const int32_t shift)

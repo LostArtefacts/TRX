@@ -37,7 +37,12 @@ typedef struct {
     int32_t y;
     int32_t z;
 #else
-    XYZ_32 pos;
+    union {
+        struct {
+            int32_t x, y, z;
+        };
+        XYZ_32 pos;
+    };
 #endif
     int32_t mesh_num;
 } BITE;

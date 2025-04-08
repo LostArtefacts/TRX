@@ -18,21 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-int16_t Creature_Effect(
-    const ITEM *const item, const BITE *const bite,
-    int16_t (*spawn)(
-        int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
-        int16_t room_num))
-{
-    XYZ_32 pos = {
-        .x = bite->x,
-        .y = bite->y,
-        .z = bite->z,
-    };
-    Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
-    return spawn(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
-}
-
 bool Creature_CheckBaddieOverlap(int16_t item_num)
 {
     const ITEM *item = Item_Get(item_num);
