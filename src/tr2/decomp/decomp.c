@@ -166,7 +166,7 @@ void InitialiseGameFlags(void)
     Output_SetSunsetTimer(0);
     g_LevelComplete = false;
     g_DetonateAllMines = false;
-    g_IsMonkAngry = false;
+    Creature_SetAlliesHostile(false);
 }
 
 void GetCarriedItems(void)

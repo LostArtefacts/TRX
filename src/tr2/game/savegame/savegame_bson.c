@@ -276,7 +276,8 @@ static JSON_OBJECT *M_DumpMisc(void)
     JSON_OBJECT *const misc_obj = JSON_ObjectNew();
     JSON_ObjectAppendString(misc_obj, "game_version", g_TRXVersion);
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
-    JSON_ObjectAppendBool(misc_obj, "are_monks_angry", g_IsMonkAngry);
+    JSON_ObjectAppendBool(
+        misc_obj, "are_monks_angry", Creature_AreAlliesHostile());
     return misc_obj;
 }
 
@@ -289,7 +290,8 @@ static bool M_LoadMisc(JSON_OBJECT *const misc_obj)
 
     const int32_t bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
     Game_SetBonusFlag(bonus_flag);
-    g_IsMonkAngry = JSON_ObjectGetBool(misc_obj, "are_monks_angry", 0);
+    const bool hostile = JSON_ObjectGetBool(misc_obj, "are_monks_angry", false);
+    Creature_SetAlliesHostile(hostile);
     return true;
 }
 

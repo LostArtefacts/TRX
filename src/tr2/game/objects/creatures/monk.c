@@ -113,7 +113,8 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case MONK_STATE_WAIT_1:
             creature->flags &= 0xFFF;
-            if (!g_IsMonkAngry && info.ahead != 0 && g_Lara.target == item) {
+            if (!Creature_AreAlliesHostile() && info.ahead != 0
+                && g_Lara.target == item) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else if (creature->mood == MOOD_ESCAPE) {
@@ -137,7 +138,8 @@ static void M_Control(const int16_t item_num)
 
         case MONK_STATE_WAIT_2:
             creature->flags &= 0xFFF;
-            if (!g_IsMonkAngry && info.ahead != 0 && g_Lara.target == item) {
+            if (!Creature_AreAlliesHostile() && info.ahead != 0
+                && g_Lara.target == item) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else if (creature->mood == MOOD_ESCAPE) {
@@ -161,7 +163,7 @@ static void M_Control(const int16_t item_num)
         case MONK_STATE_WALK:
             creature->maximum_turn = MONK_WALK_TURN;
             if (creature->mood == MOOD_BORED) {
-                if (!g_IsMonkAngry && info.ahead != 0
+                if (!Creature_AreAlliesHostile() && info.ahead != 0
                     && g_Lara.target == item) {
                     if (Random_GetControl() < 0x4000) {
                         item->goal_anim_state = MONK_STATE_WAIT_1;
@@ -185,7 +187,7 @@ static void M_Control(const int16_t item_num)
         case MONK_STATE_RUN:
             creature->flags &= 0xFFF;
             creature->maximum_turn = MONK_RUN_TURN;
-            if (g_IsMonkAngry) {
+            if (Creature_AreAlliesHostile()) {
                 creature->maximum_turn = MONK_RUN_TURN_FAST;
             }
             tilt = angle / 4;

@@ -29,6 +29,8 @@ void Creature_Die(int16_t item_num, bool explode);
 int32_t Creature_Vault(
     int16_t item_num, int16_t angle, int32_t vault, int32_t shift);
 
+bool Creature_AreAlliesHostile(void);
+void Creature_SetAlliesHostile(bool enable);
 extern bool Creature_IsHostile(const ITEM *item);
 
 int16_t Creature_Effect(

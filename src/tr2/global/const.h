@@ -150,7 +150,6 @@
 #define FOG_START (12 * WALL_L) // = 12288
 #define FOG_END (20 * WALL_L) // = 20480
 
-#define NUM_SLOTS 5
 #define PITCH_SHIFT 4
 
 #define IDS_DX5_REQUIRED 1

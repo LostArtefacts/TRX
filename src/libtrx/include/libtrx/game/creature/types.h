@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../items.h"
-#include "../pathing.h"
+#include "../pathing/types.h"
 #include "./enum.h"
 
 typedef struct {

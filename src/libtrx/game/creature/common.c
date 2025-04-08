@@ -3,7 +3,7 @@
 #include "game/lara/common.h"
 #include "game/los.h"
 #include "game/objects/vars.h"
-#include "game/pathing/lot.h"
+#include "game/pathing.h"
 #include "game/random.h"
 #include "game/rooms.h"
 #include "log.h"
@@ -14,6 +14,7 @@
 #define M_ATTACK_RANGE SQUARE(WALL_L * 3) // = 0x900000 = 9437184
 #define M_ESCAPE_CHANCE 2048
 #define M_RECOVER_CHANCE 256
+#define M_TARGET_TOLERANCE 0x400000
 #define M_MAX_TILT (3 * DEG_1) // = 546
 #define M_MAX_HEAD_CHANGE (5 * DEG_1) // = 910
 #if TR_VERSION == 1
@@ -22,6 +23,8 @@
     #define M_HEAD_ARC 0x3000 // = 12288
 #endif
 #define M_MAX_X_ROT (20 * DEG_1) // = 3640
+
+static bool m_AlliesHostile = false;
 
 static ITEM *M_ChooseEnemy(const ITEM *item);
 static bool M_SwitchToWater(
@@ -32,9 +35,75 @@ static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
 
 #if TR_VERSION == 1
 extern void Carrier_TestItemDrops(int16_t item_num);
-#elif TR_VERSION == 2
-extern void Creature_GetBaddieTarget(int16_t item_num, bool goody);
 #endif
+
+static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    ITEM *const item = Item_Get(item_num);
+    CREATURE *const creature = item->data;
+
+    ITEM *best_item = nullptr;
+    int32_t best_distance = INT32_MAX;
+    for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
+        const int16_t target_item_num = LOT_GetBaddieSlot(i)->item_num;
+        if (target_item_num == NO_ITEM || target_item_num == item_num) {
+            continue;
+        }
+
+        ITEM *const target = Item_Get(target_item_num);
+        const GAME_OBJECT_ID obj_id = target->object_id;
+#if TR_VERSION == 2
+        if (goody && obj_id != O_BANDIT_1 && obj_id != O_BANDIT_2) {
+            continue;
+        } else if (!goody && obj_id != O_MONK_1 && obj_id != O_MONK_2) {
+            continue;
+        }
+#endif
+
+        const int32_t dx = (target->pos.x - item->pos.x) >> 6;
+        const int32_t dy = (target->pos.y - item->pos.y) >> 6;
+        const int32_t dz = (target->pos.z - item->pos.z) >> 6;
+        const int32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+        if (distance < best_distance) {
+            best_item = target;
+            best_distance = distance;
+        }
+    }
+
+    if (best_item == nullptr) {
+        if (!goody || Creature_AreAlliesHostile()) {
+            creature->enemy = lara_item;
+        } else {
+            creature->enemy = nullptr;
+        }
+        return;
+    }
+
+    if (!goody || Creature_AreAlliesHostile()) {
+        const int32_t dx = (lara_item->pos.x - item->pos.x) >> 6;
+        const int32_t dy = (lara_item->pos.y - item->pos.y) >> 6;
+        const int32_t dz = (lara_item->pos.z - item->pos.z) >> 6;
+        const int32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+        if (distance < best_distance) {
+            best_item = lara_item;
+            best_distance = distance;
+        }
+    }
+
+    const ITEM *const target = creature->enemy;
+    if (target == nullptr || target->status != IS_ACTIVE) {
+        creature->enemy = best_item;
+    } else {
+        const int32_t dx = (target->pos.x - item->pos.x) >> 6;
+        const int32_t dy = (target->pos.y - item->pos.y) >> 6;
+        const int32_t dz = (target->pos.z - item->pos.z) >> 6;
+        const int32_t distance = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
+        if (distance < best_distance + M_TARGET_TOLERANCE) {
+            creature->enemy = best_item;
+        }
+    }
+}
 
 static ITEM *M_ChooseEnemy(const ITEM *const item)
 {
@@ -43,12 +112,12 @@ static ITEM *M_ChooseEnemy(const ITEM *const item)
 #if TR_VERSION == 2
     case O_BANDIT_1:
     case O_BANDIT_2:
-        Creature_GetBaddieTarget(creature->item_num, false);
+        M_GetBaddieTarget(creature->item_num, false);
         break;
 
     case O_MONK_1:
     case O_MONK_2:
-        Creature_GetBaddieTarget(creature->item_num, true);
+        M_GetBaddieTarget(creature->item_num, true);
         break;
 #endif
 
@@ -1013,6 +1082,16 @@ int32_t Creature_Vault(
         Item_NewRoom(item_num, room_num);
     }
     return vault;
+}
+
+bool Creature_AreAlliesHostile(void)
+{
+    return m_AlliesHostile;
+}
+
+void Creature_SetAlliesHostile(bool enable)
+{
+    m_AlliesHostile = enable;
 }
 
 int16_t Creature_Effect(

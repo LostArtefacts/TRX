@@ -51,7 +51,6 @@ extern int32_t g_PhdWinRight;
 extern int32_t g_SurfaceCount;
 extern SORT_ITEM *g_Sort3DPtr;
 extern bool g_IsDemoLoaded;
-extern bool g_IsMonkAngry;
 extern uint16_t g_SoundOptionLine;
 extern int32_t g_HealthBarTimer;
 extern int32_t g_LevelComplete;

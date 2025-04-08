@@ -6,7 +6,7 @@
 #define PHD_ONE 0x10000
 
 #define MAX_REQLINES 18
-#define NUM_SLOTS 32
+#define LOT_SLOT_COUNT 32
 #define MAX_SECRETS 16
 #define LARA_MAX_HITPOINTS 1000
 #define LARA_MAX_AIR 1800
