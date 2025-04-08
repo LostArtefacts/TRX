@@ -1,6 +1,12 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
 - added an ability to customize the fog distances (#634)
-- added an ability to customize the water color (#1532)
+- added an ability to customize the water color (#1532)  
+    Reference:
+    Version | Red | Green | Blue | Hex
+    ------- | --- | ----- | ---- | -------
+    TombATI | 115 | 255   | 255  | ![#73FFFF](https://placehold.co/15x15/73FFFF/73FFFF.png) `#73FFFF`
+    PS1     | 77  | 255   | 255  | ![#4DFFFF](https://placehold.co/15x15/4DFFFF/4DFFFF.png) `#4DFFFF`
+    DOS     | 153 | 179   | 255  | ![#99B3FF](https://placehold.co/15x15/99B3FF/99B3FF.png) `#99B3FF`
 - changed the `draw_distance_min` and `draw_distance_max` to `fog_start` and `fog_end`
 - fixed the bilinear filter to not readjust the UVs (#2258)
 - fixed anisotropy filter causing black lines on certain GPUs (#902)
