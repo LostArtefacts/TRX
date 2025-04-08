@@ -15,6 +15,7 @@ void Creature_Tilt(ITEM *item, int16_t angle);
 void Creature_Head(ITEM *item, int16_t required);
 void Creature_Neck(ITEM *item, int16_t required);
 
+bool Creature_CheckBaddieOverlap(int16_t item_num);
 void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 extern bool Creature_IsHostile(const ITEM *item);

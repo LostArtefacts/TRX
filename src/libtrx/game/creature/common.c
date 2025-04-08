@@ -462,6 +462,38 @@ void Creature_Neck(ITEM *const item, const int16_t required)
     CLAMP(creature->neck_rotation, -M_HEAD_ARC, M_HEAD_ARC);
 }
 
+bool Creature_CheckBaddieOverlap(const int16_t item_num)
+{
+    const ITEM *item = Item_Get(item_num);
+
+    const int32_t x = item->pos.x;
+    const int32_t y = item->pos.y;
+    const int32_t z = item->pos.z;
+    const int32_t radius = SQUARE(Object_Get(item->object_id)->radius);
+
+    int16_t link = Room_Get(item->room_num)->item_num;
+    while (link != NO_ITEM && link != item_num) {
+        item = Item_Get(link);
+        if (item != Lara_GetItem() && item->status == IS_ACTIVE
+            && item->speed != 0) {
+            const XYZ_32 delta = {
+                item->pos.x - x,
+                item->pos.y - y,
+                item->pos.z - z,
+            };
+            const int32_t distance =
+                SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z);
+            if (distance < radius) {
+                return true;
+            }
+        }
+
+        link = item->next_item;
+    }
+
+    return false;
+}
+
 void Creature_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {

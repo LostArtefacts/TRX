@@ -4,7 +4,6 @@
 
 #include <libtrx/game/creature.h>
 
-int32_t Creature_CheckBaddieOverlap(int16_t item_num);
 void Creature_Die(int16_t item_num, bool explode);
 void Creature_Float(int16_t item_num);
 void Creature_Underwater(ITEM *item, int32_t depth);
