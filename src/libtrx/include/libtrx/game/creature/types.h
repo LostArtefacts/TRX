@@ -13,9 +13,7 @@ typedef struct {
     MOOD_TYPE mood;
     LOT_INFO lot;
     XYZ_32 target;
-#if TR_VERSION == 2
     ITEM *enemy;
-#endif
 } CREATURE;
 
 typedef struct {

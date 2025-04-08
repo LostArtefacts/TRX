@@ -34,78 +34,6 @@
 #define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 8) // = 0x4000000 = 67108864
 #define CREATURE_SHOOT_HIT_CHANCE 0x2000
 
-void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
-{
-    CREATURE *const creature = (CREATURE *)item->data;
-    if (creature == nullptr) {
-        return;
-    }
-
-    switch (item->object_id) {
-    case O_BANDIT_1:
-    case O_BANDIT_2:
-        Creature_GetBaddieTarget(creature->item_num, false);
-        break;
-
-    case O_MONK_1:
-    case O_MONK_2:
-        Creature_GetBaddieTarget(creature->item_num, true);
-        break;
-
-    default:
-        creature->enemy = g_LaraItem;
-        break;
-    }
-
-    ITEM *enemy = creature->enemy;
-    if (enemy == nullptr) {
-        enemy = g_LaraItem;
-    }
-
-    const int16_t *const zone = Box_GetLotZone(&creature->lot);
-
-    {
-        const ROOM *const room = Room_Get(item->room_num);
-        item->box_num =
-            Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
-        info->zone_num = zone[item->box_num];
-    }
-
-    {
-        const ROOM *const room = Room_Get(enemy->room_num);
-        enemy->box_num =
-            Room_GetWorldSector(room, enemy->pos.x, enemy->pos.z)->box;
-        info->enemy_zone_num = zone[enemy->box_num];
-    }
-
-    if (((Box_GetBox(enemy->box_num)->overlap_index & creature->lot.block_mask)
-         != 0)
-        || (creature->lot.node[item->box_num].search_num
-            == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
-        info->enemy_zone_num |= BOX_BLOCKED;
-    }
-
-    const OBJECT *const obj = Object_Get(item->object_id);
-    const int32_t z = enemy->pos.z
-        - ((obj->pivot_length * Math_Cos(item->rot.y)) >> W2V_SHIFT)
-        - item->pos.z;
-    const int32_t x = enemy->pos.x
-        - ((obj->pivot_length * Math_Sin(item->rot.y)) >> W2V_SHIFT)
-        - item->pos.x;
-    int16_t angle = Math_Atan(z, x);
-    if (creature->enemy != nullptr) {
-        info->distance = SQUARE(x) + SQUARE(z);
-    } else {
-        info->distance = 0x7FFFFFFF;
-    }
-
-    info->angle = angle - item->rot.y;
-    info->enemy_facing = angle - enemy->rot.y + DEG_180;
-    info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
-    info->bite = info->ahead && enemy->hit_points > 0
-        && ABS(enemy->pos.y - item->pos.y) <= STEP_L;
-}
-
 void Creature_Mood(
     const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
@@ -801,7 +729,7 @@ void Creature_Kill(
     g_Camera.pos.room_num = g_LaraItem->room_num;
 }
 
-void Creature_GetBaddieTarget(const int16_t item_num, const int32_t goody)
+void Creature_GetBaddieTarget(const int16_t item_num, const bool goody)
 {
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->data;
