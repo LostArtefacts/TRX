@@ -63,6 +63,9 @@ static GLvoid GLAPIENTRY M_GLDebug(
     const GLenum severity, const GLsizei length, const GLchar *const message,
     const void *const user_param)
 {
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) {
+        return;
+    }
     LOG_INFO("%d %s", source, message);
 }
 
