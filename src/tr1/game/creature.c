@@ -18,38 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-bool Creature_CheckBaddieOverlap(int16_t item_num)
-{
-    const ITEM *item = Item_Get(item_num);
-
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
-    const int32_t radius = SQUARE(Object_Get(item->object_id)->radius);
-
-    int16_t link = Room_Get(item->room_num)->item_num;
-    do {
-        item = Item_Get(link);
-
-        if (link == item_num) {
-            return false;
-        }
-
-        if (item != g_LaraItem && item->status == IS_ACTIVE
-            && item->speed != 0) {
-            int32_t distance = SQUARE(item->pos.x - x) + SQUARE(item->pos.y - y)
-                + SQUARE(item->pos.z - z);
-            if (distance < radius) {
-                return true;
-            }
-        }
-
-        link = item->next_item;
-    } while (link != NO_ITEM);
-
-    return false;
-}
-
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
 {
     ITEM *const item = Item_Get(item_num);

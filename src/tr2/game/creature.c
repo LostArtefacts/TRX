@@ -29,34 +29,6 @@
 #define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 8) // = 0x4000000 = 67108864
 #define CREATURE_SHOOT_HIT_CHANCE 0x2000
 
-int32_t Creature_CheckBaddieOverlap(const int16_t item_num)
-{
-    const ITEM *item = Item_Get(item_num);
-
-    const int32_t x = item->pos.x;
-    const int32_t y = item->pos.y;
-    const int32_t z = item->pos.z;
-    const int32_t radius = SQUARE(Object_Get(item->object_id)->radius);
-
-    int16_t link = Room_Get(item->room_num)->item_num;
-    while (link != NO_ITEM && link != item_num) {
-        item = Item_Get(link);
-        if (item != g_LaraItem && item->status == IS_ACTIVE
-            && item->speed != 0) {
-            const int32_t distance =
-                (SQUARE(item->pos.z - z) + SQUARE(item->pos.y - y)
-                 + SQUARE(item->pos.x - x));
-            if (distance < radius) {
-                return true;
-            }
-        }
-
-        link = item->next_item;
-    }
-
-    return false;
-}
-
 void Creature_Die(const int16_t item_num, const bool explode)
 {
     ITEM *const item = Item_Get(item_num);
