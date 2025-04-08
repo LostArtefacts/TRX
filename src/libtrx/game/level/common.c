@@ -934,6 +934,7 @@ void Level_ReadSpriteSequences(VFILE *const file)
             OBJECT *const obj = Object_Get(object_id);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx;
+            obj->anim_idx = NO_ANIM;
             obj->loaded = true;
         } else if (object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS) {
             STATIC_OBJECT_2D *const obj =

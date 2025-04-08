@@ -28,6 +28,7 @@
         }                                                                      \
     } while (0)
 
+static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};
 
 void Item_Control(void)
@@ -411,28 +412,27 @@ bool Item_IsTriggerActive(ITEM *item)
 
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
 {
-    ANIM_FRAME *frmptr[2];
+    ANIM_FRAME *frames[2];
     int32_t rate;
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (frac <= rate / 2) {
-        return frmptr[0];
-    } else {
-        return frmptr[1];
-    }
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    return frames[(frac > rate / 2) ? 1 : 0];
 }
 
 const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
 {
     int32_t rate;
-    ANIM_FRAME *frmptr[2];
-
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (!frac) {
-        return &frmptr[0]->bounds;
+    ANIM_FRAME *frames[2];
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    if (frames[0] == nullptr) {
+        return &m_NullBounds;
     }
 
-    const BOUNDS_16 *const a = &frmptr[0]->bounds;
-    const BOUNDS_16 *const b = &frmptr[1]->bounds;
+    if (frac == 0) {
+        return &frames[0]->bounds;
+    }
+
+    const BOUNDS_16 *const a = &frames[0]->bounds;
+    const BOUNDS_16 *const b = &frames[1]->bounds;
     BOUNDS_16 *const result = &m_InterpolatedBounds;
 
     result->min.x = a->min.x + (((b->min.x - a->min.x) * frac) / rate);
@@ -444,9 +444,13 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
     return result;
 }
 
-int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
+int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);
+    if (anim->frame_ptr == nullptr) {
+        frames[0] = nullptr;
+        return 0;
+    }
 
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
@@ -454,8 +458,8 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
     const int32_t second_key_frame_num = first_key_frame_num + 1;
 
-    frmptr[0] = &anim->frame_ptr[first_key_frame_num];
-    frmptr[1] = &anim->frame_ptr[second_key_frame_num];
+    frames[0] = &anim->frame_ptr[first_key_frame_num];
+    frames[1] = &anim->frame_ptr[second_key_frame_num];
 
     const int32_t key_frame_shift = cur_frame_num % key_frame_span;
     const int32_t numerator = key_frame_shift;

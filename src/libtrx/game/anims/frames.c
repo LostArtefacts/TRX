@@ -201,7 +201,7 @@ void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
     // so ensure everything that's loaded is configured as such.
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
-        if (obj->loaded && obj->mesh_count >= 0 && obj->anim_idx == -1
+        if (obj->loaded && obj->mesh_count >= 0 && obj->anim_idx == NO_ANIM
             && obj->frame_base == nullptr) {
             obj->frame_base = M_FindFrameBase(obj->frame_ofs);
         }

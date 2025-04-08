@@ -301,7 +301,11 @@ void Item_SwitchToObjAnim(
     const GAME_OBJECT_ID obj_id)
 {
     const OBJECT *const obj = Object_Get(obj_id);
-    item->anim_num = obj->anim_idx + anim_idx;
+    if (obj->anim_idx == NO_ANIM) {
+        item->anim_num = NO_ANIM;
+    } else {
+        item->anim_num = obj->anim_idx + anim_idx;
+    }
 
     const ANIM *const anim = Item_GetAnim(item);
     if (frame < 0) {
