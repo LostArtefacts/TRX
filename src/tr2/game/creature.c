@@ -21,37 +21,10 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-#define FLOAT_SPEED 32
 #define TARGET_TOLERANCE 0x400000
 
 #define CREATURE_SHOOT_TARGETING_SPEED 300
 #define CREATURE_SHOOT_HIT_CHANCE 0x2000
-
-void Creature_Float(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-
-    item->hit_points = DONT_TARGET;
-    item->rot.x = 0;
-
-    const int32_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    if (item->pos.y > wh) {
-        item->pos.y -= FLOAT_SPEED;
-    } else if (item->pos.y < wh) {
-        item->pos.y = wh;
-    }
-
-    Item_Animate(item);
-
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
-}
 
 void Creature_Underwater(ITEM *const item, const int32_t depth)
 {
