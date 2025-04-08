@@ -18,16 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-void Creature_Die(const int16_t item_num, const bool explode)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->collidable = 0;
-    item->hit_points = DONT_TARGET;
-    LOT_DisableBaddieAI(item_num);
-    Item_RemoveActive(item_num);
-    Carrier_TestItemDrops(item_num);
-}
-
 bool Creature_ShootAtLara(
     ITEM *item, int32_t distance, BITE *gun, int16_t extra_rotation,
     int16_t damage)
