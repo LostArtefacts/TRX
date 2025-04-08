@@ -28,26 +28,6 @@ void Creature_Die(const int16_t item_num, const bool explode)
     Carrier_TestItemDrops(item_num);
 }
 
-bool Creature_CanTargetEnemy(ITEM *item, AI_INFO *info)
-{
-    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
-        return false;
-    }
-
-    GAME_VECTOR start;
-    start.x = item->pos.x;
-    start.y = item->pos.y - STEP_L * 3;
-    start.z = item->pos.z;
-    start.room_num = item->room_num;
-
-    GAME_VECTOR target;
-    target.x = g_LaraItem->pos.x;
-    target.y = g_LaraItem->pos.y - STEP_L * 3;
-    target.z = g_LaraItem->pos.z;
-
-    return LOS_Check(&start, &target);
-}
-
 bool Creature_ShootAtLara(
     ITEM *item, int32_t distance, BITE *gun, int16_t extra_rotation,
     int16_t damage)
