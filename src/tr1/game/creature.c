@@ -18,39 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-int16_t Creature_Turn(ITEM *item, int16_t maximum_turn)
-{
-    CREATURE *creature = item->data;
-    if (!creature) {
-        return 0;
-    }
-
-    if (!item->speed || !maximum_turn) {
-        return 0;
-    }
-
-    int32_t x = creature->target.x - item->pos.x;
-    int32_t z = creature->target.z - item->pos.z;
-    int16_t angle = Math_Atan(z, x) - item->rot.y;
-    int32_t range = (item->speed << 14) / maximum_turn;
-
-    if (angle > FRONT_ARC || angle < -FRONT_ARC) {
-        if (SQUARE(x) + SQUARE(z) < SQUARE(range)) {
-            maximum_turn >>= 1;
-        }
-    }
-
-    if (angle > maximum_turn) {
-        angle = maximum_turn;
-    } else if (angle < -maximum_turn) {
-        angle = -maximum_turn;
-    }
-
-    item->rot.y += angle;
-
-    return angle;
-}
-
 void Creature_Tilt(ITEM *item, int16_t angle)
 {
     angle = angle * 4 - item->rot.z;

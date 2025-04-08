@@ -359,29 +359,6 @@ bool Creature_Animate(
     return true;
 }
 
-int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
-{
-    const CREATURE *const creature = item->data;
-    if (creature == nullptr || item->speed == 0 || max_turn == 0) {
-        return 0;
-    }
-
-    const int32_t dx = creature->target.x - item->pos.x;
-    const int32_t dz = creature->target.z - item->pos.z;
-
-    int16_t angle = Math_Atan(dz, dx) - item->rot.y;
-    if (angle > FRONT_ARC || angle < -FRONT_ARC) {
-        const int32_t range = (item->speed << 14) / max_turn;
-        if (SQUARE(dx) + SQUARE(dz) < SQUARE(range)) {
-            max_turn /= 2;
-        }
-    }
-
-    CLAMP(angle, -max_turn, max_turn);
-    item->rot.y += angle;
-    return angle;
-}
-
 void Creature_Tilt(ITEM *const item, int16_t angle)
 {
     angle = 4 * angle - item->rot.z;
