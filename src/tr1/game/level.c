@@ -327,25 +327,37 @@ void Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Output_SetWaterColor(&level->settings.water_color);
     Output_SetSkyboxEnabled(
         g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
 
     Benchmark_End(&benchmark, nullptr);
 }
 
+RGB_888 Level_GetWaterColor(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.water_color.is_present) {
+        return level->settings.water_color.value;
+    }
+    return g_Config.visuals.water_color;
+}
+
 float Level_GetFogStart(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
-    const float result = level != nullptr ? level->settings.fog_start : 0.0f;
-    return result > 0 ? result : g_Config.visuals.fog_start;
+    if (level != nullptr && level->settings.fog_start.is_present) {
+        return level->settings.fog_start.value;
+    }
+    return g_Config.visuals.fog_start;
 }
 
 float Level_GetFogEnd(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
-    const float result = level != nullptr ? level->settings.fog_end : 0.0f;
-    return result > 0 ? result : g_Config.visuals.fog_end;
+    if (level != nullptr && level->settings.fog_end.is_present) {
+        return level->settings.fog_end.value;
+    }
+    return g_Config.visuals.fog_end;
 }
 
 void Level_Unload(void)

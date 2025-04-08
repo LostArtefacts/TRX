@@ -1,5 +1,6 @@
 #include "config/file.h"
 
+#include "colors.h"
 #include "debug.h"
 #include "filesystem.h"
 #include "game/console/history.h"
@@ -244,6 +245,27 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             *(int *)opt->target = ConfigFile_ReadEnum(
                 root_obj, M_ResolveOptionName(opt->name),
                 *(int *)opt->default_value, opt->param);
+            break;
+
+        case COT_RGB888: {
+            JSON_VALUE *const value =
+                JSON_ObjectGetValue(root_obj, M_ResolveOptionName(opt->name));
+            bool success = false;
+            if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
+                const uint32_t rgb_value =
+                    JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
+                ASSERT(rgb_value != JSON_INVALID_NUMBER);
+                RGB_888 *const target = (RGB_888 *)opt->target;
+                target->r = (rgb_value >> 0) & 0xFF;
+                target->g = (rgb_value >> 8) & 0xFF;
+                target->b = (rgb_value >> 16) & 0xFF;
+                success = true;
+            }
+            if (!success) {
+                *(RGB_888 *)opt->target = *(RGB_888 *)opt->default_value;
+            }
+            break;
+        }
         }
         opt++;
     }
@@ -282,6 +304,14 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 root_obj, M_ResolveOptionName(opt->name), *(int *)opt->target,
                 (const char *)opt->param);
             break;
+
+        case COT_RGB888: {
+            const RGB_888 *const color = (RGB_888 *)opt->target;
+            JSON_ObjectAppendInt(
+                root_obj, M_ResolveOptionName(opt->name),
+                color->r | (color->g << 8) | (color->b << 16));
+            break;
+        }
         }
         opt++;
     }

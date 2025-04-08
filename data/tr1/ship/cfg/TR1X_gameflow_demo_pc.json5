@@ -9,7 +9,6 @@
     "savegame_fmt_legacy": "save_demo_pc.%d",
     "savegame_fmt_bson": "save_demo_pc_%02d.dat",
     "demo_delay": 16,
-    "water_color": [0.45, 1.0, 1.0],
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",

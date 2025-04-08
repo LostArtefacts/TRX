@@ -7,12 +7,6 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent);
 static void M_LoadLevelItemDrops(
     JSON_OBJECT *obj, const GAME_FLOW *gf, GF_LEVEL *level);
 
-static GF_LEVEL_SETTINGS m_DefaultSettings = {
-    .water_color = { .r = 0.6, .g = 0.7, .b = 1.0 },
-    .fog_start = -1,
-    .fog_end = -1,
-};
-
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
     // Events without arguments
@@ -108,7 +102,8 @@ static void M_LoadSettings(
         const double value =
             JSON_ObjectGetDouble(obj, "fog_start", JSON_INVALID_NUMBER);
         if (value != JSON_INVALID_NUMBER) {
-            settings->fog_start = value;
+            settings->fog_start.is_present = true;
+            settings->fog_start.value = value;
         }
     }
 
@@ -116,19 +111,28 @@ static void M_LoadSettings(
         const double value =
             JSON_ObjectGetDouble(obj, "fog_end", JSON_INVALID_NUMBER);
         if (value != JSON_INVALID_NUMBER) {
-            settings->fog_end = value;
+            settings->fog_end.is_present = true;
+            settings->fog_end.value = value;
         }
     }
 
     {
         JSON_ARRAY *const tmp_arr = JSON_ObjectGetArray(obj, "water_color");
         if (tmp_arr != nullptr) {
-            settings->water_color.r =
-                JSON_ArrayGetDouble(tmp_arr, 0, settings->water_color.r);
-            settings->water_color.g =
-                JSON_ArrayGetDouble(tmp_arr, 1, settings->water_color.g);
-            settings->water_color.b =
-                JSON_ArrayGetDouble(tmp_arr, 2, settings->water_color.b);
+            const RGB_F color = {
+                JSON_ArrayGetDouble(tmp_arr, 0, JSON_INVALID_NUMBER),
+                JSON_ArrayGetDouble(tmp_arr, 1, JSON_INVALID_NUMBER),
+                JSON_ArrayGetDouble(tmp_arr, 2, JSON_INVALID_NUMBER),
+            };
+            if (color.r != JSON_INVALID_NUMBER && color.g != JSON_INVALID_NUMBER
+                && color.b != JSON_INVALID_NUMBER) {
+                settings->water_color.is_present = true;
+                settings->water_color.value = (RGB_888) {
+                    color.r * 255.0f,
+                    color.g * 255.0f,
+                    color.b * 255.0f,
+                };
+            }
         }
     }
 }
@@ -237,7 +241,6 @@ static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     }
     gf->demo_delay = tmp_d;
 
-    gf->settings = m_DefaultSettings;
     M_LoadSettings(obj, &gf->settings);
 
     gf->enable_tr2_item_drops =

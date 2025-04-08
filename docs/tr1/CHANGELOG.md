@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
 - added an ability to customize the fog distances (#634)
+- added an ability to customize the water color (#1532)
 - changed the `draw_distance_min` and `draw_distance_max` to `fog_start` and `fog_end`
 - fixed the bilinear filter to not readjust the UVs (#2258)
 - fixed anisotropy filter causing black lines on certain GPUs (#902)

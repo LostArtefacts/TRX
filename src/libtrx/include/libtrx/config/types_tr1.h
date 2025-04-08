@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../game/output/types.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
 #include "../screenshot.h"
@@ -100,6 +101,7 @@ typedef struct {
         bool fix_texture_issues;
         bool enable_ps1_crystals;
 
+        RGB_888 water_color;
         int32_t fog_start;
         int32_t fog_end;
     } visuals;

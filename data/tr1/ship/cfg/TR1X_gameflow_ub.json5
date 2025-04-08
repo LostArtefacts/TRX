@@ -8,7 +8,6 @@
     "savegame_fmt_legacy": "saveuba.%d",
     "savegame_fmt_bson": "save_trub_%02d.dat",
     "demo_delay": 16,
-    "water_color": [0.45, 1.0, 1.0],
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",

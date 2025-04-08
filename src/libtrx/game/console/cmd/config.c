@@ -1,5 +1,6 @@
 #include "game/console/cmd/config.h"
 
+#include "colors.h"
 #include "config.h"
 #include "debug.h"
 #include "enum_map.h"
@@ -116,6 +117,13 @@ bool Console_Cmd_Config_GetCurrentValue(
             target, target_size, "%s",
             EnumMap_ToString(option->param, *(int32_t *)option->target));
         break;
+    case COT_RGB888: {
+        const RGB_888 *color = option->target;
+        snprintf(
+            target, target_size, "%02hhx%02hhx%02hhx", color->r, color->g,
+            color->b);
+        break;
+    }
     }
     return true;
 }
@@ -171,6 +179,18 @@ bool Console_Cmd_Config_SetCurrentValue(
             EnumMap_Get(option->param, new_value, -1);
         if (new_value_typed != -1) {
             *(int32_t *)option->target = new_value_typed;
+            return true;
+        }
+        break;
+    }
+
+    case COT_RGB888: {
+        uint8_t r, g, b;
+        if (sscanf(new_value, "%02hhx%02hhx%02hhx", &r, &g, &b) == 3) {
+            RGB_888 *const color = (RGB_888 *)option->target;
+            color->r = r;
+            color->g = g;
+            color->b = b;
             return true;
         }
         break;
