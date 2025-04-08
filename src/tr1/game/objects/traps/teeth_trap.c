@@ -12,12 +12,12 @@ typedef enum {
     TEETH_TRAP_STATE_NASTY = 1,
 } TEETH_TRAP_STATE;
 
-static BITE m_Teeth1A = { -23, 0, -1718, 0 };
-static BITE m_Teeth1B = { 71, 0, -1718, 1 };
-static BITE m_Teeth2A = { -23, 10, -1718, 0 };
-static BITE m_Teeth2B = { 71, 10, -1718, 1 };
-static BITE m_Teeth3A = { -23, -10, -1718, 0 };
-static BITE m_Teeth3B = { 71, -10, -1718, 1 };
+static BITE m_Teeth1A = { .pos = { -23, 0, -1718 }, .mesh_num = 0 };
+static BITE m_Teeth1B = { .pos = { 71, 0, -1718 }, .mesh_num = 1 };
+static BITE m_Teeth2A = { .pos = { -23, 10, -1718 }, .mesh_num = 0 };
+static BITE m_Teeth2B = { .pos = { 71, 10, -1718 }, .mesh_num = 1 };
+static BITE m_Teeth3A = { .pos = { -23, -10, -1718 }, .mesh_num = 0 };
+static BITE m_Teeth3B = { .pos = { 71, -10, -1718 }, .mesh_num = 1 };
 
 static void M_BiteEffect(ITEM *item, BITE *bite);
 static void M_Setup(OBJECT *obj);
@@ -25,11 +25,7 @@ static void M_Control(int16_t item_num);
 
 static void M_BiteEffect(ITEM *item, BITE *bite)
 {
-    XYZ_32 pos = {
-        .x = bite->x,
-        .y = bite->y,
-        .z = bite->z,
-    };
+    XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     Spawn_Blood(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
 }

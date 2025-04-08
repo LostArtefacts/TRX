@@ -34,8 +34,8 @@ typedef enum {
     SKATE_KID_STATE_DEATH = 5,
 } SKATE_KID_STATE;
 
-static BITE m_KidGun1 = { 0, 150, 34, 7 };
-static BITE m_KidGun2 = { 0, 150, 37, 4 };
+static BITE m_KidGun1 = { .pos = { 0, 150, 34 }, .mesh_num = 7 };
+static BITE m_KidGun2 = { .pos = { 0, 150, 37 }, .mesh_num = 4 };
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);

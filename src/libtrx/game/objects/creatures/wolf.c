@@ -51,11 +51,7 @@ typedef enum {
     WOLF_ANIM_DEATH = 20,
 } WOLF_ANIM;
 
-#if TR_VERSION == 1
-static BITE m_WolfJawBite = { 0, -14, 174, 6 };
-#else
 static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
-#endif
 
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);

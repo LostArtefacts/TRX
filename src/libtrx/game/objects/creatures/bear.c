@@ -47,11 +47,7 @@ typedef enum {
     // clang-format on
 } BEAR_STATE;
 
-#if TR_VERSION == 1
-static BITE m_BearHeadBite = { 0, 96, 335, 14 };
-#else
 static BITE m_BearHeadBite = { .pos = { 0, 96, 335 }, .mesh_num = 14 };
-#endif
 
 static void M_Control(int16_t item_num);
 

@@ -50,7 +50,7 @@ typedef enum {
     ALLIGATOR_STATE_DEATH = 3,
 } ALLIGATOR_STATE;
 
-static BITE m_CrocodileBite = { 5, -21, 467, 9 };
+static BITE m_CrocodileBite = { .pos = { 5, -21, 467 }, .mesh_num = 9 };
 
 static void M_SetupCrocodile(OBJECT *obj);
 static void M_SetupAlligator(OBJECT *obj);

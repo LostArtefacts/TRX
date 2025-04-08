@@ -40,7 +40,7 @@ typedef enum {
     NATLA_STATE_DEATH = 9,
 } NATLA_STATE;
 
-static BITE m_NatlaGun = { 5, 220, 7, 4 };
+static BITE m_NatlaGun = { .pos = { 5, 220, 7 }, .mesh_num = 4 };
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);

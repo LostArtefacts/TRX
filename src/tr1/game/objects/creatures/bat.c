@@ -25,7 +25,7 @@ typedef enum {
     BAT_STATE_DEATH = 5,
 } BAT_STATE;
 
-static BITE m_BatBite = { 0, 16, 45, 4 };
+static BITE m_BatBite = { .pos = { 0, 16, 45 }, .mesh_num = 4 };
 
 static void M_FixEmbeddedPosition(int16_t item_num);
 static void M_Setup(OBJECT *obj);
