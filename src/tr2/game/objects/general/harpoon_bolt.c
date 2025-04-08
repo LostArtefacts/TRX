@@ -62,6 +62,9 @@ static void M_Control(const int16_t item_num)
         }
 
         const ANIM_FRAME *const frame = Item_GetBestFrame(target_item);
+        if (frame == nullptr) {
+            continue;
+        }
         const BOUNDS_16 *const bounds = &frame->bounds;
 
         const int32_t cdy = item->pos.y - target_item->pos.y;
