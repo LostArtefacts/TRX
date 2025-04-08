@@ -23,6 +23,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun/const.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/memory.h>
@@ -135,7 +136,7 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
 
     case O_SHOTGUN_AMMO_OPTION:
-        InvRing_ShowItemQuantity("%d", qty * NUM_SG_SHELLS);
+        InvRing_ShowItemQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
         break;
 
     case O_MAGNUM_AMMO_OPTION:

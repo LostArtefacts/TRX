@@ -11,6 +11,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/gun/const.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/savegame.h>
