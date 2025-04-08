@@ -18,60 +18,11 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-#define MAX_CREATURE_DISTANCE (WALL_L * 30)
-
 static bool M_SwitchToWater(
     int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
 static bool M_SwitchToLand(
     int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
 static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
-
-void Creature_AIInfo(ITEM *item, AI_INFO *info)
-{
-    CREATURE *creature = item->data;
-    if (!creature) {
-        return;
-    }
-
-    const int16_t *const zone = Box_GetLotZone(&creature->lot);
-
-    const ROOM *room = Room_Get(item->room_num);
-    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
-    info->zone_num = zone[item->box_num];
-
-    room = Room_Get(g_LaraItem->room_num);
-    g_LaraItem->box_num =
-        Room_GetWorldSector(room, g_LaraItem->pos.x, g_LaraItem->pos.z)->box;
-    info->enemy_zone = zone[g_LaraItem->box_num];
-
-    if (Box_GetBox(g_LaraItem->box_num)->overlap_index
-        & creature->lot.block_mask) {
-        info->enemy_zone |= BOX_BLOCKED;
-    } else if (
-        creature->lot.node[item->box_num].search_num
-        == (creature->lot.search_num | BOX_BLOCKED_SEARCH)) {
-        info->enemy_zone |= BOX_BLOCKED;
-    }
-
-    const OBJECT *const obj = Object_Get(item->object_id);
-    int32_t z = g_LaraItem->pos.z
-        - ((Math_Cos(item->rot.y) * obj->pivot_length) >> W2V_SHIFT)
-        - item->pos.z;
-    int32_t x = g_LaraItem->pos.x
-        - ((Math_Sin(item->rot.y) * obj->pivot_length) >> W2V_SHIFT)
-        - item->pos.x;
-
-    PHD_ANGLE angle = Math_Atan(z, x);
-    info->distance = SQUARE(x) + SQUARE(z);
-    if (ABS(x) > MAX_CREATURE_DISTANCE || ABS(z) > MAX_CREATURE_DISTANCE) {
-        info->distance = SQUARE(MAX_CREATURE_DISTANCE);
-    }
-    info->angle = angle - item->rot.y;
-    info->enemy_facing = angle - g_LaraItem->rot.y + DEG_180;
-    info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
-    info->bite = info->ahead && (g_LaraItem->pos.y > item->pos.y - STEP_L)
-        && (g_LaraItem->pos.y < item->pos.y + STEP_L);
-}
 
 void Creature_Mood(
     const ITEM *const item, const AI_INFO *const info, const bool violent)
