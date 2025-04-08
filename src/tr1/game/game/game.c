@@ -48,10 +48,11 @@ void Game_ProcessInput(void)
         }
     }
 
-    if (g_InputDB.use_small_medi && Inv_RequestItem(O_MEDI_OPTION)) {
-        Lara_UseItem(O_MEDI_OPTION);
-    } else if (g_InputDB.use_big_medi && Inv_RequestItem(O_BIGMEDI_OPTION)) {
-        Lara_UseItem(O_BIGMEDI_OPTION);
+    if (g_InputDB.use_small_medi && Inv_RequestItem(O_SMALL_MEDIPACK_OPTION)) {
+        Lara_UseItem(O_SMALL_MEDIPACK_OPTION);
+    } else if (
+        g_InputDB.use_big_medi && Inv_RequestItem(O_LARGE_MEDIPACK_OPTION)) {
+        Lara_UseItem(O_LARGE_MEDIPACK_OPTION);
     }
 
     if (g_Config.input.enable_buffering && Game_IsPlaying()) {

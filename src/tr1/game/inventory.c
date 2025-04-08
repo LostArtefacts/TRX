@@ -52,24 +52,24 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 
     case O_SHOTGUN_ITEM:
     case O_SHOTGUN_OPTION:
-        for (int32_t i = Inv_RequestItem(O_SG_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_SG_AMMO_ITEM);
+        for (int32_t i = Inv_RequestItem(O_SHOTGUN_AMMO_ITEM); i > 0; i--) {
+            Inv_RemoveItem(O_SHOTGUN_AMMO_ITEM);
             Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         }
         Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Shotgun);
-        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
         return false;
 
     case O_MAGNUM_ITEM:
     case O_MAGNUM_OPTION:
-        for (int32_t i = Inv_RequestItem(O_MAG_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_MAG_AMMO_ITEM);
+        for (int32_t i = Inv_RequestItem(O_MAGNUM_AMMO_ITEM); i > 0; i--) {
+            Inv_RemoveItem(O_MAGNUM_AMMO_ITEM);
             Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         }
         Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Magnum);
-        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         return false;
 
     case O_UZI_ITEM:
@@ -83,8 +83,8 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return false;
 
-    case O_SG_AMMO_ITEM:
-    case O_SG_AMMO_OPTION:
+    case O_SHOTGUN_AMMO_ITEM:
+    case O_SHOTGUN_AMMO_OPTION:
         if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         } else {
@@ -92,8 +92,8 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         }
         return false;
 
-    case O_MAG_AMMO_ITEM:
-    case O_MAG_AMMO_OPTION:
+    case O_MAGNUM_AMMO_ITEM:
+    case O_MAGNUM_AMMO_OPTION:
         if (Inv_RequestItem(O_MAGNUM_ITEM)) {
             Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         } else {
@@ -110,13 +110,13 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         }
         return false;
 
-    case O_MEDI_ITEM:
-    case O_MEDI_OPTION:
+    case O_SMALL_MEDIPACK_ITEM:
+    case O_SMALL_MEDIPACK_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Medi);
         return true;
 
-    case O_BIGMEDI_ITEM:
-    case O_BIGMEDI_OPTION:
+    case O_LARGE_MEDIPACK_ITEM:
+    case O_LARGE_MEDIPACK_OPTION:
         Inv_InsertItem(&g_InvRing_Item_BigMedi);
         return true;
 

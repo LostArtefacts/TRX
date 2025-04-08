@@ -134,17 +134,17 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         M_ShowAmmoQuantity("%5d C", g_Lara.uzi_ammo.ammo);
         break;
 
-    case O_SG_AMMO_OPTION:
+    case O_SHOTGUN_AMMO_OPTION:
         InvRing_ShowItemQuantity("%d", qty * NUM_SG_SHELLS);
         break;
 
-    case O_MAG_AMMO_OPTION:
+    case O_MAGNUM_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:
         InvRing_ShowItemQuantity("%d", qty * 2);
         break;
 
-    case O_MEDI_OPTION:
-    case O_BIGMEDI_OPTION:
+    case O_SMALL_MEDIPACK_OPTION:
+    case O_LARGE_MEDIPACK_OPTION:
         Overlay_BarSetHealthTimer(40);
         if (qty > 1) {
             InvRing_ShowItemQuantity("%d", qty);
@@ -175,8 +175,8 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
     }
 
-    if (inv_item->object_id == O_MEDI_OPTION
-        || inv_item->object_id == O_BIGMEDI_OPTION) {
+    if (inv_item->object_id == O_SMALL_MEDIPACK_OPTION
+        || inv_item->object_id == O_LARGE_MEDIPACK_OPTION) {
         if (g_Config.ui.healthbar_location == BL_TOP_LEFT) {
             InvRing_HideArrow(INV_RING_ARROW_TL, true);
         } else if (g_Config.ui.healthbar_location == BL_TOP_RIGHT) {
@@ -316,8 +316,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_SHOTGUN_OPTION:
     case O_MAGNUM_OPTION:
     case O_UZI_OPTION:
-    case O_MEDI_OPTION:
-    case O_BIGMEDI_OPTION:
+    case O_SMALL_MEDIPACK_OPTION:
+    case O_LARGE_MEDIPACK_OPTION:
     case O_KEY_OPTION_1:
     case O_KEY_OPTION_2:
     case O_KEY_OPTION_3:

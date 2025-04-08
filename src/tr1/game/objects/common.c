@@ -140,7 +140,7 @@ void Object_DrawPickupItem(const ITEM *const item)
         case O_SHOTGUN_OPTION:
         case O_MAGNUM_OPTION:
         case O_UZI_OPTION:
-        case O_MAG_AMMO_OPTION:
+        case O_MAGNUM_AMMO_OPTION:
         case O_UZI_AMMO_OPTION:
         case O_EXPLOSIVE_OPTION:
         case O_LEADBAR_OPTION:
@@ -150,9 +150,9 @@ void Object_DrawPickupItem(const ITEM *const item)
             // Ignore the sprite and just position based upon the anim.
             offset = item->pos.y + (min_y - anim_y) / 2;
             break;
-        case O_MEDI_OPTION:
-        case O_BIGMEDI_OPTION:
-        case O_SG_AMMO_OPTION:
+        case O_SMALL_MEDIPACK_OPTION:
+        case O_LARGE_MEDIPACK_OPTION:
+        case O_SHOTGUN_AMMO_OPTION:
         case O_PUZZLE_OPTION_1:
         case O_PUZZLE_OPTION_2:
         case O_PUZZLE_OPTION_3:
