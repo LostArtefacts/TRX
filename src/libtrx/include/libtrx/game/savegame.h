@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include "./savegame/types.h"
 
 typedef enum {
     SAVEGAME_STAGE_BEFORE_LOAD,

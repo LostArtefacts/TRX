@@ -171,11 +171,11 @@ void Savegame_Init(void)
     for (int32_t i = 0; i < level_table->count; i++) {
         RESUME_INFO *const resume_info =
             Savegame_GetCurrentInfo(&level_table->levels[i]);
-        resume_info->available = 1;
-        resume_info->has_pistols = 1;
+        resume_info->flags.available = 1;
+        resume_info->flags.has_pistols = 1;
         resume_info->pistol_ammo = 1000;
         resume_info->gun_status = LGS_ARMLESS;
-        resume_info->gun_type = LGT_PISTOLS;
+        resume_info->equipped_gun_type = LGT_PISTOLS;
     }
 }
 
@@ -313,14 +313,14 @@ void Savegame_InitCurrentInfo(void)
         const GF_LEVEL *const level = &level_table->levels[i];
         Savegame_ResetCurrentInfo(level);
         Savegame_ApplyLogicToCurrentInfo(level);
-        Savegame_GetCurrentInfo(level)->available = 0;
+        Savegame_GetCurrentInfo(level)->flags.available = 0;
     }
 
     if (GF_GetGymLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetGymLevel())->available = 1;
+        Savegame_GetCurrentInfo(GF_GetGymLevel())->flags.available = 1;
     }
     if (GF_GetFirstLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetFirstLevel())->available = 1;
+        Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = 1;
     }
     Game_SetBonusFlag(GBF_NONE);
 }
@@ -332,20 +332,20 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         return;
     }
 
-    resume->has_pistols = 1;
-    resume->gun_type = LGT_PISTOLS;
+    resume->flags.has_pistols = 1;
+    resume->equipped_gun_type = LGT_PISTOLS;
     resume->pistol_ammo = 1000;
 
     if (level == GF_GetGymLevel()) {
-        resume->available = 1;
+        resume->flags.available = 1;
 
-        resume->has_pistols = 0;
-        resume->has_shotgun = 0;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_harpoon = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
+        resume->flags.has_pistols = 0;
+        resume->flags.has_shotgun = 0;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_harpoon = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
 
         resume->pistol_ammo = 0;
         resume->shotgun_ammo = 0;
@@ -358,18 +358,18 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flares = 0;
         resume->large_medipacks = 0;
         resume->small_medipacks = 0;
-        resume->gun_type = LGT_UNARMED;
+        resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     } else if (level == GF_GetFirstLevel()) {
-        resume->available = 1;
+        resume->flags.available = 1;
 
-        resume->has_pistols = 1;
-        resume->has_shotgun = 1;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_harpoon = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
+        resume->flags.has_pistols = 1;
+        resume->flags.has_shotgun = 1;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_harpoon = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
 
         resume->shotgun_ammo = 2 * SHOTGUN_AMMO_CLIP;
         resume->magnum_ammo = 0;
@@ -385,14 +385,14 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        resume->has_pistols = 1;
-        resume->has_shotgun = 1;
-        resume->has_magnums = 1;
-        resume->has_uzis = 1;
-        resume->has_grenade = 1;
-        resume->has_harpoon = 1;
-        resume->has_m16 = 1;
-        resume->has_grenade = 1;
+        resume->flags.has_pistols = 1;
+        resume->flags.has_shotgun = 1;
+        resume->flags.has_magnums = 1;
+        resume->flags.has_uzis = 1;
+        resume->flags.has_grenade = 1;
+        resume->flags.has_harpoon = 1;
+        resume->flags.has_m16 = 1;
+        resume->flags.has_grenade = 1;
 
         resume->shotgun_ammo = 10000;
         resume->magnum_ammo = 10000;
@@ -402,18 +402,18 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->grenade_ammo = 10000;
 
         resume->flares = -1;
-        resume->gun_type = LGT_GRENADE;
+        resume->equipped_gun_type = LGT_GRENADE;
     }
 
     if (g_GF_RemoveWeapons) {
-        resume->has_pistols = 0;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_shotgun = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
-        resume->has_harpoon = 0;
-        resume->gun_type = LGT_UNARMED;
+        resume->flags.has_pistols = 0;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_shotgun = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
+        resume->flags.has_harpoon = 0;
+        resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
         g_GF_RemoveWeapons = false;
     }
@@ -457,64 +457,64 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    resume->available = 1;
+    resume->flags.available = 1;
 
     if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        resume->has_pistols = 1;
+        resume->flags.has_pistols = 1;
         resume->pistol_ammo = 1000;
     } else {
-        resume->has_pistols = 0;
+        resume->flags.has_pistols = 0;
         resume->pistol_ammo = 1000;
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        resume->has_shotgun = 1;
+        resume->flags.has_shotgun = 1;
         resume->shotgun_ammo = g_Lara.shotgun_ammo.ammo;
     } else {
-        resume->has_shotgun = 0;
+        resume->flags.has_shotgun = 0;
         resume->shotgun_ammo =
             Inv_RequestItem(O_SHOTGUN_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        resume->has_magnums = 1;
+        resume->flags.has_magnums = 1;
         resume->magnum_ammo = g_Lara.magnum_ammo.ammo;
     } else {
-        resume->has_magnums = 0;
+        resume->flags.has_magnums = 0;
         resume->magnum_ammo =
             Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
-        resume->has_uzis = 1;
+        resume->flags.has_uzis = 1;
         resume->uzi_ammo = g_Lara.uzi_ammo.ammo;
     } else {
-        resume->has_uzis = 0;
+        resume->flags.has_uzis = 0;
         resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_M16_ITEM)) {
-        resume->has_m16 = 1;
+        resume->flags.has_m16 = 1;
         resume->m16_ammo = g_Lara.m16_ammo.ammo;
     } else {
-        resume->has_m16 = 0;
+        resume->flags.has_m16 = 0;
         resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_HARPOON_ITEM)) {
-        resume->has_harpoon = 1;
+        resume->flags.has_harpoon = 1;
         resume->harpoon_ammo = g_Lara.harpoon_ammo.ammo;
     } else {
-        resume->has_harpoon = 0;
+        resume->flags.has_harpoon = 0;
         resume->harpoon_ammo =
             Inv_RequestItem(O_HARPOON_AMMO_ITEM) * HARPOON_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_GRENADE_ITEM)) {
-        resume->has_grenade = 1;
+        resume->flags.has_grenade = 1;
         resume->grenade_ammo = g_Lara.grenade_ammo.ammo;
     } else {
-        resume->has_grenade = 0;
+        resume->flags.has_grenade = 0;
         resume->grenade_ammo =
             Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
     }
@@ -524,9 +524,9 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
 
     if (g_Lara.gun_type == LGT_FLARE) {
-        resume->gun_type = g_Lara.last_gun_type;
+        resume->equipped_gun_type = g_Lara.last_gun_type;
     } else {
-        resume->gun_type = g_Lara.gun_type;
+        resume->equipped_gun_type = g_Lara.gun_type;
     }
     resume->gun_status = LGS_ARMLESS;
 }

@@ -9,7 +9,6 @@
 #include <libtrx/game/items.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/rooms/types.h>
-#include <libtrx/game/stats/types.h>
 #include <libtrx/game/text.h>
 #include <libtrx/game/types.h>
 
@@ -80,33 +79,6 @@ typedef enum {
     DRAW_OPAQUE    = 0,
     DRAW_COLOR_KEY = 1,
 } DRAW_TYPE;
-
-typedef struct {
-    uint16_t pistol_ammo;
-    uint16_t magnum_ammo;
-    uint16_t uzi_ammo;
-    uint16_t shotgun_ammo;
-    uint16_t m16_ammo;
-    uint16_t grenade_ammo;
-    uint16_t harpoon_ammo;
-    uint8_t small_medipacks;
-    uint8_t large_medipacks;
-    uint8_t reserved1;
-    uint8_t flares;
-    uint8_t gun_status;
-    uint8_t gun_type;
-    uint16_t available:   1; // 0x01 1
-    uint16_t has_pistols: 1; // 0x02 2
-    uint16_t has_magnums: 1; // 0x04 4
-    uint16_t has_uzis:    1; // 0x08 8
-    uint16_t has_shotgun: 1; // 0x10 16
-    uint16_t has_m16:     1; // 0x20 32
-    uint16_t has_grenade: 1; // 0x40 64
-    uint16_t has_harpoon: 1; // 0x80 128
-    uint16_t pad : 8;
-    uint16_t reserved2;
-    LEVEL_STATS stats;
-} RESUME_INFO;
 
 typedef struct {
     int16_t lock_angles[4];

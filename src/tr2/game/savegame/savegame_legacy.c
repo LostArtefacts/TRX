@@ -140,21 +140,21 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
     resume->harpoon_ammo = M_ReadU16();
     resume->small_medipacks = M_ReadU8();
     resume->large_medipacks = M_ReadU8();
-    resume->reserved1 = M_ReadU8();
+    M_Skip(sizeof(uint8_t)); // legacy reserved value
     resume->flares = M_ReadU8();
     resume->gun_status = M_ReadU8();
-    resume->gun_type = M_ReadU8();
+    resume->equipped_gun_type = M_ReadU8();
 
     const uint16_t flags = M_ReadU16();
     // clang-format off
-    resume->available     = (flags & 0x01) ? 1 : 0;
-    resume->has_pistols   = (flags & 0x02) ? 1 : 0;
-    resume->has_magnums   = (flags & 0x04) ? 1 : 0;
-    resume->has_uzis      = (flags & 0x08) ? 1 : 0;
-    resume->has_shotgun   = (flags & 0x10) ? 1 : 0;
-    resume->has_m16       = (flags & 0x20) ? 1 : 0;
-    resume->has_grenade   = (flags & 0x40) ? 1 : 0;
-    resume->has_harpoon   = (flags & 0x80) ? 1 : 0;
+    resume->flags.available     = (flags & 0x01) ? 1 : 0;
+    resume->flags.has_pistols   = (flags & 0x02) ? 1 : 0;
+    resume->flags.has_magnums   = (flags & 0x04) ? 1 : 0;
+    resume->flags.has_uzis      = (flags & 0x08) ? 1 : 0;
+    resume->flags.has_shotgun   = (flags & 0x10) ? 1 : 0;
+    resume->flags.has_m16       = (flags & 0x20) ? 1 : 0;
+    resume->flags.has_grenade   = (flags & 0x40) ? 1 : 0;
+    resume->flags.has_harpoon   = (flags & 0x80) ? 1 : 0;
     // clang-format on
 
     M_Skip(sizeof(uint16_t));
@@ -427,21 +427,21 @@ static void M_WriteResumeInfo(const RESUME_INFO *const resume)
     M_WriteU16(resume->harpoon_ammo);
     M_WriteU8(resume->small_medipacks);
     M_WriteU8(resume->large_medipacks);
-    M_WriteU8(resume->reserved1);
+    M_WriteU8(0); // legacy reserved value
     M_WriteU8(resume->flares);
     M_WriteU8(resume->gun_status);
-    M_WriteU8(resume->gun_type);
+    M_WriteU8(resume->equipped_gun_type);
 
     uint16_t flags = 0;
     // clang-format off
-    if (resume->available)   { flags |= 0x01; }
-    if (resume->has_pistols) { flags |= 0x02; }
-    if (resume->has_magnums) { flags |= 0x04; }
-    if (resume->has_uzis)    { flags |= 0x08; }
-    if (resume->has_shotgun) { flags |= 0x10; }
-    if (resume->has_m16)     { flags |= 0x20; }
-    if (resume->has_grenade) { flags |= 0x40; }
-    if (resume->has_harpoon) { flags |= 0x80; }
+    if (resume->flags.available)   { flags |= 0x01; }
+    if (resume->flags.has_pistols) { flags |= 0x02; }
+    if (resume->flags.has_magnums) { flags |= 0x04; }
+    if (resume->flags.has_uzis)    { flags |= 0x08; }
+    if (resume->flags.has_shotgun) { flags |= 0x10; }
+    if (resume->flags.has_m16)     { flags |= 0x20; }
+    if (resume->flags.has_grenade) { flags |= 0x40; }
+    if (resume->flags.has_harpoon) { flags |= 0x80; }
     // clang-format on
     M_WriteU16(flags);
 

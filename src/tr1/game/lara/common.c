@@ -545,10 +545,10 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
     if (resume != nullptr) {
         if (g_GameInfo.remove_guns) {
-            resume->flags.got_pistols = 0;
-            resume->flags.got_shotgun = 0;
-            resume->flags.got_magnums = 0;
-            resume->flags.got_uzis = 0;
+            resume->flags.has_pistols = 0;
+            resume->flags.has_shotgun = 0;
+            resume->flags.has_magnums = 0;
+            resume->flags.has_uzis = 0;
             resume->equipped_gun_type = LGT_UNARMED;
             resume->holsters_gun_type = LGT_UNARMED;
             resume->back_gun_type = LGT_UNARMED;
@@ -566,15 +566,15 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         }
 
         if (g_GameInfo.remove_medipacks) {
-            resume->num_medis = 0;
-            resume->num_big_medis = 0;
+            resume->small_medipacks = 0;
+            resume->large_medipacks = 0;
         }
 
-        if (resume->flags.got_pistols) {
+        if (resume->flags.has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);
         }
 
-        if (resume->flags.got_magnums) {
+        if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
             g_Lara.magnums.ammo = resume->magnum_ammo;
             Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
@@ -586,7 +586,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             g_Lara.magnums.ammo = 0;
         }
 
-        if (resume->flags.got_uzis) {
+        if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
             g_Lara.uzis.ammo = resume->uzi_ammo;
             Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
@@ -598,7 +598,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             g_Lara.uzis.ammo = 0;
         }
 
-        if (resume->flags.got_shotgun) {
+        if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
             g_Lara.shotgun.ammo = resume->shotgun_ammo;
             Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
@@ -614,11 +614,11 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             Inv_AddItem(O_SCION_ITEM_1);
         }
 
-        for (int i = 0; i < resume->num_medis; i++) {
+        for (int i = 0; i < resume->small_medipacks; i++) {
             Inv_AddItem(O_MEDI_ITEM);
         }
 
-        for (int i = 0; i < resume->num_big_medis; i++) {
+        for (int i = 0; i < resume->large_medipacks; i++) {
             Inv_AddItem(O_BIGMEDI_ITEM);
         }
 

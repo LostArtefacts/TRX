@@ -249,8 +249,8 @@ static bool M_LoadResumeInfo(
         resume->magnum_ammo = JSON_ObjectGetInt(resume_obj, "magnum_ammo", 0);
         resume->uzi_ammo = JSON_ObjectGetInt(resume_obj, "uzi_ammo", 0);
         resume->shotgun_ammo = JSON_ObjectGetInt(resume_obj, "shotgun_ammo", 0);
-        resume->num_medis = JSON_ObjectGetInt(resume_obj, "num_medis", 0);
-        resume->num_big_medis =
+        resume->small_medipacks = JSON_ObjectGetInt(resume_obj, "num_medis", 0);
+        resume->large_medipacks =
             JSON_ObjectGetInt(resume_obj, "num_big_medis", 0);
         resume->num_scions = JSON_ObjectGetInt(resume_obj, "num_scions", 0);
         resume->gun_status = JSON_ObjectGetInt(resume_obj, "gun_status", 0);
@@ -262,12 +262,12 @@ static bool M_LoadResumeInfo(
             JSON_ObjectGetInt(resume_obj, "back_gun_type", LGT_UNKNOWN);
         resume->flags.available =
             JSON_ObjectGetBool(resume_obj, "available", 0);
-        resume->flags.got_pistols =
+        resume->flags.has_pistols =
             JSON_ObjectGetBool(resume_obj, "got_pistols", 0);
-        resume->flags.got_magnums =
+        resume->flags.has_magnums =
             JSON_ObjectGetBool(resume_obj, "got_magnums", 0);
-        resume->flags.got_uzis = JSON_ObjectGetBool(resume_obj, "got_uzis", 0);
-        resume->flags.got_shotgun =
+        resume->flags.has_uzis = JSON_ObjectGetBool(resume_obj, "got_uzis", 0);
+        resume->flags.has_shotgun =
             JSON_ObjectGetBool(resume_obj, "got_shotgun", 0);
         resume->flags.costume = JSON_ObjectGetBool(resume_obj, "costume", 0);
 
@@ -331,8 +331,9 @@ static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *const start_arr)
         start->magnum_ammo = JSON_ObjectGetInt(start_obj, "magnum_ammo", 0);
         start->uzi_ammo = JSON_ObjectGetInt(start_obj, "uzi_ammo", 0);
         start->shotgun_ammo = JSON_ObjectGetInt(start_obj, "shotgun_ammo", 0);
-        start->num_medis = JSON_ObjectGetInt(start_obj, "num_medis", 0);
-        start->num_big_medis = JSON_ObjectGetInt(start_obj, "num_big_medis", 0);
+        start->small_medipacks = JSON_ObjectGetInt(start_obj, "num_medis", 0);
+        start->large_medipacks =
+            JSON_ObjectGetInt(start_obj, "num_big_medis", 0);
         start->num_scions = JSON_ObjectGetInt(start_obj, "num_scions", 0);
         start->gun_status = JSON_ObjectGetInt(start_obj, "gun_status", 0);
         start->equipped_gun_type =
@@ -340,12 +341,12 @@ static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *const start_arr)
         start->holsters_gun_type = LGT_UNKNOWN;
         start->back_gun_type = LGT_UNKNOWN;
         start->flags.available = JSON_ObjectGetBool(start_obj, "available", 0);
-        start->flags.got_pistols =
+        start->flags.has_pistols =
             JSON_ObjectGetBool(start_obj, "got_pistols", 0);
-        start->flags.got_magnums =
+        start->flags.has_magnums =
             JSON_ObjectGetBool(start_obj, "got_magnums", 0);
-        start->flags.got_uzis = JSON_ObjectGetBool(start_obj, "got_uzis", 0);
-        start->flags.got_shotgun =
+        start->flags.has_uzis = JSON_ObjectGetBool(start_obj, "got_uzis", 0);
+        start->flags.has_shotgun =
             JSON_ObjectGetBool(start_obj, "got_shotgun", 0);
         start->flags.costume = JSON_ObjectGetBool(start_obj, "costume", 0);
     }
@@ -989,9 +990,9 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         JSON_ObjectAppendInt(resume_obj, "magnum_ammo", resume->magnum_ammo);
         JSON_ObjectAppendInt(resume_obj, "uzi_ammo", resume->uzi_ammo);
         JSON_ObjectAppendInt(resume_obj, "shotgun_ammo", resume->shotgun_ammo);
-        JSON_ObjectAppendInt(resume_obj, "num_medis", resume->num_medis);
+        JSON_ObjectAppendInt(resume_obj, "num_medis", resume->small_medipacks);
         JSON_ObjectAppendInt(
-            resume_obj, "num_big_medis", resume->num_big_medis);
+            resume_obj, "num_big_medis", resume->large_medipacks);
         JSON_ObjectAppendInt(resume_obj, "num_scions", resume->num_scions);
         JSON_ObjectAppendInt(resume_obj, "gun_status", resume->gun_status);
         JSON_ObjectAppendInt(resume_obj, "gun_type", resume->equipped_gun_type);
@@ -1001,12 +1002,12 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
             resume_obj, "back_gun_type", resume->back_gun_type);
         JSON_ObjectAppendBool(resume_obj, "available", resume->flags.available);
         JSON_ObjectAppendBool(
-            resume_obj, "got_pistols", resume->flags.got_pistols);
+            resume_obj, "got_pistols", resume->flags.has_pistols);
         JSON_ObjectAppendBool(
-            resume_obj, "got_magnums", resume->flags.got_magnums);
-        JSON_ObjectAppendBool(resume_obj, "got_uzis", resume->flags.got_uzis);
+            resume_obj, "got_magnums", resume->flags.has_magnums);
+        JSON_ObjectAppendBool(resume_obj, "got_uzis", resume->flags.has_uzis);
         JSON_ObjectAppendBool(
-            resume_obj, "got_shotgun", resume->flags.got_shotgun);
+            resume_obj, "got_shotgun", resume->flags.has_shotgun);
         JSON_ObjectAppendBool(resume_obj, "costume", resume->flags.costume);
         JSON_ObjectAppendInt(resume_obj, "timer", resume->stats.timer);
         JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kill_count);

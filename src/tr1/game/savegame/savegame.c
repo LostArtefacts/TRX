@@ -211,13 +211,13 @@ void Savegame_Init(void)
             Savegame_GetCurrentInfo(&level_table->levels[i]);
         resume_info->flags.available = 1;
         resume_info->flags.costume = 0;
-        resume_info->num_medis = 0;
-        resume_info->num_big_medis = 0;
+        resume_info->small_medipacks = 0;
+        resume_info->large_medipacks = 0;
         resume_info->num_scions = 0;
-        resume_info->flags.got_pistols = 1;
-        resume_info->flags.got_shotgun = 0;
-        resume_info->flags.got_magnums = 0;
-        resume_info->flags.got_uzis = 0;
+        resume_info->flags.has_pistols = 1;
+        resume_info->flags.has_shotgun = 0;
+        resume_info->flags.has_magnums = 0;
+        resume_info->flags.has_uzis = 0;
         resume_info->pistol_ammo = 1000;
         resume_info->shotgun_ammo = 0;
         resume_info->magnum_ammo = 0;
@@ -314,17 +314,17 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     if (level == GF_GetGymLevel()) {
         current->flags.available = 1;
         current->flags.costume = 1;
-        current->num_medis = 0;
-        current->num_big_medis = 0;
+        current->small_medipacks = 0;
+        current->large_medipacks = 0;
         current->num_scions = 0;
         current->pistol_ammo = 0;
         current->shotgun_ammo = 0;
         current->magnum_ammo = 0;
         current->uzi_ammo = 0;
-        current->flags.got_pistols = 0;
-        current->flags.got_shotgun = 0;
-        current->flags.got_magnums = 0;
-        current->flags.got_uzis = 0;
+        current->flags.has_pistols = 0;
+        current->flags.has_shotgun = 0;
+        current->flags.has_magnums = 0;
+        current->flags.has_uzis = 0;
         current->equipped_gun_type = LGT_UNARMED;
         current->holsters_gun_type = LGT_UNARMED;
         current->back_gun_type = LGT_UNARMED;
@@ -334,17 +334,17 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     if (level == GF_GetFirstLevel()) {
         current->flags.available = 1;
         current->flags.costume = 0;
-        current->num_medis = 0;
-        current->num_big_medis = 0;
+        current->small_medipacks = 0;
+        current->large_medipacks = 0;
         current->num_scions = 0;
         current->pistol_ammo = 1000;
         current->shotgun_ammo = 0;
         current->magnum_ammo = 0;
         current->uzi_ammo = 0;
-        current->flags.got_pistols = 1;
-        current->flags.got_shotgun = 0;
-        current->flags.got_magnums = 0;
-        current->flags.got_uzis = 0;
+        current->flags.has_pistols = 1;
+        current->flags.has_shotgun = 0;
+        current->flags.has_magnums = 0;
+        current->flags.has_uzis = 0;
         current->equipped_gun_type = LGT_PISTOLS;
         current->holsters_gun_type = LGT_PISTOLS;
         current->back_gun_type = LGT_UNARMED;
@@ -352,10 +352,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        current->flags.got_pistols = 1;
-        current->flags.got_shotgun = 1;
-        current->flags.got_magnums = 1;
-        current->flags.got_uzis = 1;
+        current->flags.has_pistols = 1;
+        current->flags.has_shotgun = 1;
+        current->flags.has_magnums = 1;
+        current->flags.has_uzis = 1;
         current->shotgun_ammo = 1234;
         current->magnum_ammo = 1234;
         current->uzi_ammo = 1234;
@@ -374,11 +374,11 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
             current->holsters_gun_type = current->equipped_gun_type;
             break;
         case LGT_SHOTGUN:
-            if (current->flags.got_pistols) {
+            if (current->flags.has_pistols) {
                 current->holsters_gun_type = LGT_PISTOLS;
-            } else if (current->flags.got_magnums) {
+            } else if (current->flags.has_magnums) {
                 current->holsters_gun_type = LGT_MAGNUMS;
-            } else if (current->flags.got_uzis) {
+            } else if (current->flags.has_uzis) {
                 current->holsters_gun_type = LGT_UZIS;
             } else {
                 current->holsters_gun_type = LGT_UNARMED;
@@ -390,7 +390,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         }
     }
     if (current->back_gun_type == LGT_UNKNOWN) {
-        if (current->flags.got_shotgun) {
+        if (current->flags.has_shotgun) {
             current->back_gun_type = LGT_SHOTGUN;
         } else {
             current->back_gun_type = LGT_UNARMED;
@@ -426,39 +426,39 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
     current->pistol_ammo = 1000;
     if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        current->flags.got_pistols = 1;
+        current->flags.has_pistols = 1;
     } else {
-        current->flags.got_pistols = 0;
+        current->flags.has_pistols = 0;
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
         current->magnum_ammo = g_Lara.magnums.ammo;
-        current->flags.got_magnums = 1;
+        current->flags.has_magnums = 1;
     } else {
         current->magnum_ammo =
             Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
-        current->flags.got_magnums = 0;
+        current->flags.has_magnums = 0;
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
         current->uzi_ammo = g_Lara.uzis.ammo;
-        current->flags.got_uzis = 1;
+        current->flags.has_uzis = 1;
     } else {
         current->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
-        current->flags.got_uzis = 0;
+        current->flags.has_uzis = 0;
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
         current->shotgun_ammo = g_Lara.shotgun.ammo;
-        current->flags.got_shotgun = 1;
+        current->flags.has_shotgun = 1;
     } else {
         current->shotgun_ammo =
             Inv_RequestItem(O_SG_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
-        current->flags.got_shotgun = 0;
+        current->flags.has_shotgun = 0;
     }
 
-    current->num_medis = Inv_RequestItem(O_MEDI_ITEM);
-    current->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
+    current->small_medipacks = Inv_RequestItem(O_MEDI_ITEM);
+    current->large_medipacks = Inv_RequestItem(O_BIGMEDI_ITEM);
     current->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
 
     current->equipped_gun_type = g_Lara.gun_type;
