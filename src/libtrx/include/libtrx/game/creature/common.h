@@ -18,7 +18,8 @@ extern bool Creature_IsHostile(const ITEM *item);
 extern void Creature_Collision(
     int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 extern bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
-extern int16_t Creature_Effect(
+
+int16_t Creature_Effect(
     const ITEM *item, const BITE *bite,
     int16_t (*spawn)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
