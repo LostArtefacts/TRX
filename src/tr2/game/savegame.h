@@ -5,23 +5,6 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/savegame.h>
 
-#define SAVEGAME_CURRENT_VERSION 0
-
-typedef enum {
-    VERSION_LEGACY = -1,
-    VERSION_0 = 0,
-} SAVEGAME_VERSION;
-
-typedef struct {
-    bool allow_load;
-    bool allow_save;
-    SAVEGAME_FORMAT format;
-    const char *(*get_save_file_pattern_func)(void);
-    bool (*fill_info_func)(MYFILE *fp, SAVEGAME_INFO *info);
-    bool (*load_from_file_func)(MYFILE *fp);
-    void (*save_to_file_func)(MYFILE *fp);
-} SAVEGAME_STRATEGY;
-
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
 void Savegame_RegisterStrategy(SAVEGAME_STRATEGY strategy);
