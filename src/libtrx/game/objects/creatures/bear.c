@@ -1,6 +1,7 @@
 #include "game/objects/creatures/bear.h"
 
 #include "config.h"
+#include "game/const.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/random.h"

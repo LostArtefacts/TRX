@@ -1,5 +1,6 @@
 #include "game/objects/creatures/wolf.h"
 
+#include "game/const.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/random.h"

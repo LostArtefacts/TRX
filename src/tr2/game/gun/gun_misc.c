@@ -116,7 +116,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
     ITEM *best_target = nullptr;
 
     const int16_t max_dist = winfo->target_dist;
-    for (int32_t i = 0; i < NUM_SLOTS; i++) {
+    for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
         const int16_t item_num = g_BaddieSlots[i].item_num;
         if (item_num == NO_ITEM || item_num == g_Lara.item_num) {
             continue;
@@ -327,13 +327,13 @@ void Gun_HitTarget(
             item->rot.y, item->room_num);
     }
 
-    if (!g_IsMonkAngry
+    if (!Creature_AreAlliesHostile()
         && (item->object_id == O_MONK_1 || item->object_id == O_MONK_2)) {
         CREATURE *const creature = item->data;
         creature->flags += damage;
         if ((creature->flags & 0xFFF) > MONK_FRIENDLY_FIRE_THRESHOLD
             || creature->mood == MOOD_BORED) {
-            g_IsMonkAngry = true;
+            Creature_SetAlliesHostile(true);
         }
     }
 }

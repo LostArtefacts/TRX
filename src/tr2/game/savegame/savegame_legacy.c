@@ -776,7 +776,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 
     M_WriteS32(Room_GetFlipEffect());
     M_WriteS32(Room_GetFlipTimer());
-    M_WriteS32(g_IsMonkAngry);
+    M_WriteS32(Creature_AreAlliesHostile());
 
     M_WriteFlares();
 
@@ -860,7 +860,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     Room_SetFlipEffect(M_ReadS32());
     Room_SetFlipTimer(M_ReadS32());
-    g_IsMonkAngry = M_ReadS32();
+    Creature_SetAlliesHostile(M_ReadS32() != 0);
 
     M_ReadFlares();
 
