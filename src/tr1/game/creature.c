@@ -18,12 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-static bool M_SwitchToWater(
-    int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
-static bool M_SwitchToLand(
-    int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
-static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
-
 void Creature_Mood(
     const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
@@ -638,111 +632,10 @@ bool Creature_ShootAtLara(
     return hit;
 }
 
-bool Creature_EnsureHabitat(
-    const int16_t item_num, int32_t *const wh, const HYBRID_INFO *const info)
-{
-    // Test the environment for a hybrid creature. Record the water height and
-    // return whether or not a type conversion has taken place.
-    const ITEM *const item = Item_Get(item_num);
-    *wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
-
-    return item->object_id == info->land.id
-        ? M_SwitchToWater(item_num, wh, info)
-        : M_SwitchToLand(item_num, wh, info);
-}
-
 bool Creature_IsBoss(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     return Object_IsType(item->object_id, g_BossObjects);
-}
-
-static bool M_SwitchToWater(
-    const int16_t item_num, const int32_t *const wh,
-    const HYBRID_INFO *const info)
-{
-    if (*wh == NO_HEIGHT) {
-        return false;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->hit_points <= 0) {
-        // Dead land creatures should remain in their pose permanently.
-        return false;
-    }
-
-    // The land creature is alive and the room has been flooded. Switch to the
-    // water creature.
-    if (!M_TestSwitchOrKill(item_num, info->water.id)) {
-        return false;
-    }
-
-    item->object_id = info->water.id;
-    Item_SwitchToAnim(item, info->water.active_anim, 0);
-    item->current_anim_state = Item_GetAnim(item)->current_anim_state;
-    item->goal_anim_state = item->current_anim_state;
-    item->pos.y = *wh;
-
-    return true;
-}
-
-static bool M_SwitchToLand(
-    const int16_t item_num, const int32_t *const wh,
-    const HYBRID_INFO *const info)
-{
-    if (*wh != NO_HEIGHT) {
-        return false;
-    }
-
-    if (!M_TestSwitchOrKill(item_num, info->land.id)) {
-        return false;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-
-    // Switch to the land creature regardless of death state.
-    item->object_id = info->land.id;
-    item->rot.x = 0;
-
-    if (item->hit_points > 0) {
-        Item_SwitchToAnim(item, info->land.active_anim, 0);
-        item->current_anim_state = Item_GetAnim(item)->current_anim_state;
-        item->goal_anim_state = item->current_anim_state;
-
-    } else {
-        Item_SwitchToAnim(item, info->land.death_anim, -1);
-        item->current_anim_state = info->land.death_state;
-        item->goal_anim_state = item->current_anim_state;
-
-        int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        item->pos.y = item->floor;
-
-        if (item->room_num != room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
-    }
-
-    return true;
-}
-
-static bool M_TestSwitchOrKill(
-    const int16_t item_num, const GAME_OBJECT_ID target_id)
-{
-    if (Object_Get(target_id)->loaded) {
-        return true;
-    }
-
-    LOG_WARNING(
-        "Object %d is not loaded; item %d cannot be converted.", target_id,
-        item_num);
-    Item_Kill(item_num);
-    return false;
 }
 
 bool Creature_IsHostile(const ITEM *const item)

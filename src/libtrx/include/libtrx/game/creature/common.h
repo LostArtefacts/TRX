@@ -6,6 +6,8 @@
 void Creature_Initialise(int16_t item_num);
 bool Creature_Activate(int16_t item_num);
 void Creature_AIInfo(ITEM *item, AI_INFO *info);
+bool Creature_EnsureHabitat(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
 
 extern bool Creature_IsHostile(const ITEM *item);
 extern void Creature_Collision(
