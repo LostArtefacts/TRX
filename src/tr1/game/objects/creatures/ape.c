@@ -44,7 +44,7 @@ typedef enum {
     APE_STATE_VAULT = 11,
 } APE_STATE;
 
-static BITE m_ApeBite = { 0, -19, 75, 15 };
+static BITE m_ApeBite = { .pos = { 0, -19, 75 }, .mesh_num = 15 };
 
 static bool M_Vault(int16_t item_num, int16_t angle);
 static void M_Setup(OBJECT *obj);

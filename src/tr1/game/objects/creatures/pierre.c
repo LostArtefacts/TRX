@@ -38,8 +38,8 @@ typedef enum {
     PIERRE_STATE_SHOOT = 7,
 } PIERRE_STATE;
 
-static BITE m_PierreGun1 = { 60, 200, 0, 11 };
-static BITE m_PierreGun2 = { -57, 200, 0, 14 };
+static BITE m_PierreGun1 = { .pos = { 60, 200, 0 }, .mesh_num = 11 };
+static BITE m_PierreGun2 = { .pos = { -57, 200, 0 }, .mesh_num = 14 };
 static int16_t m_PierreItemNum = NO_ITEM;
 
 static void M_Setup(OBJECT *obj);

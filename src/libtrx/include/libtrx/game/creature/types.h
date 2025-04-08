@@ -31,19 +31,7 @@ typedef struct {
 } AI_INFO;
 
 typedef struct {
-    // TODO: merge
-#if TR_VERSION == 1
-    int32_t x;
-    int32_t y;
-    int32_t z;
-#else
-    union {
-        struct {
-            int32_t x, y, z;
-        };
-        XYZ_32 pos;
-    };
-#endif
+    XYZ_32 pos;
     int32_t mesh_num;
 } BITE;
 

@@ -44,7 +44,7 @@ typedef enum {
     VOLE_STATE_DEATH = 3,
 } VOLE_STATE;
 
-static BITE m_RatBite = { 0, -11, 108, 3 };
+static BITE m_RatBite = { .pos = { 0, -11, 108 }, .mesh_num = 3 };
 
 static void M_SetupBase(OBJECT *obj);
 static void M_SetupRat(OBJECT *obj);

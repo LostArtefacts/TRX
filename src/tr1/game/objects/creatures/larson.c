@@ -29,7 +29,7 @@ typedef enum {
     LARSON_STATE_SHOOT = 7,
 } LARSON_STATE;
 
-static BITE m_LarsonGun = { -60, 170, 0, 14 };
+static BITE m_LarsonGun = { .pos = { -60, 170, 0 }, .mesh_num = 14 };
 
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
