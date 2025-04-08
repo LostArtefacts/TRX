@@ -24,11 +24,6 @@
 #define M_SHOOT_TARGETING_SPEED 300
 #define M_SHOOT_HIT_CHANCE 0x2000
 
-bool Creature_IsAlly(const ITEM *const item)
-{
-    return Object_IsType(item->object_id, g_AllyObjects);
-}
-
 int32_t Creature_ShootAtLara(
     ITEM *const item, const AI_INFO *const info, const BITE *const gun,
     const int16_t extra_rotation, const int32_t damage)
