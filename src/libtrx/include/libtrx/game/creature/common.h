@@ -8,11 +8,11 @@ bool Creature_Activate(int16_t item_num);
 void Creature_AIInfo(ITEM *item, AI_INFO *info);
 bool Creature_EnsureHabitat(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+void Creature_Mood(const ITEM *item, const AI_INFO *info, bool violent);
 
 extern bool Creature_IsHostile(const ITEM *item);
 extern void Creature_Collision(
     int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-extern void Creature_Mood(const ITEM *item, const AI_INFO *info, bool violent);
 extern int16_t Creature_Turn(ITEM *item, int16_t maximum_turn);
 extern void Creature_Tilt(ITEM *item, int16_t angle);
 extern void Creature_Head(ITEM *item, int16_t required);
