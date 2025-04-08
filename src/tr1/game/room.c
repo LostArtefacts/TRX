@@ -220,7 +220,7 @@ SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
     return sector;
 }
 
-int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
+int32_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     const ROOM *room = Room_Get(room_num);
 

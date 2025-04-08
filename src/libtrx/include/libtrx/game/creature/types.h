@@ -41,3 +41,16 @@ typedef struct {
 #endif
     int32_t mesh_num;
 } BITE;
+
+typedef struct {
+    struct {
+        GAME_OBJECT_ID id;
+        int16_t active_anim;
+        int16_t death_anim;
+        int16_t death_state;
+    } land;
+    struct {
+        GAME_OBJECT_ID id;
+        int16_t active_anim;
+    } water;
+} HYBRID_INFO;
