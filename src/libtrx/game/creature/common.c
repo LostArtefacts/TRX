@@ -495,6 +495,22 @@ void Creature_Float(const int16_t item_num)
     }
 }
 
+void Creature_Underwater(ITEM *const item, const int32_t depth)
+{
+    const int32_t wh = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    if (item->pos.y >= wh + depth) {
+        return;
+    }
+
+    item->pos.y = wh + depth;
+    if (item->rot.x > 2 * DEG_1) {
+        item->rot.x -= 2 * DEG_1;
+    } else {
+        CLAMPG(item->rot.x, 0);
+    }
+}
+
 bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
 {
     const CREATURE *const creature = item->data;

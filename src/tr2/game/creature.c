@@ -21,26 +21,9 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-#define TARGET_TOLERANCE 0x400000
-
-#define CREATURE_SHOOT_TARGETING_SPEED 300
-#define CREATURE_SHOOT_HIT_CHANCE 0x2000
-
-void Creature_Underwater(ITEM *const item, const int32_t depth)
-{
-    const int32_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    if (item->pos.y >= wh + depth) {
-        return;
-    }
-
-    item->pos.y = wh + depth;
-    if (item->rot.x > 2 * DEG_1) {
-        item->rot.x -= 2 * DEG_1;
-    } else {
-        CLAMPG(item->rot.x, 0);
-    }
-}
+#define M_TARGET_TOLERANCE 0x400000
+#define M_SHOOT_TARGETING_SPEED 300
+#define M_SHOOT_HIT_CHANCE 0x2000
 
 int32_t Creature_Vault(
     const int16_t item_num, const int16_t angle, int32_t vault,
@@ -192,7 +175,7 @@ void Creature_GetBaddieTarget(const int16_t item_num, const bool goody)
         const int32_t dy = (target->pos.y - item->pos.y) >> 6;
         const int32_t dz = (target->pos.z - item->pos.z) >> 6;
         const int32_t distance = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
-        if (distance < best_distance + TARGET_TOLERANCE) {
+        if (distance < best_distance + M_TARGET_TOLERANCE) {
             creature->enemy = best_item;
         }
     }
@@ -227,12 +210,12 @@ int32_t Creature_ShootAtLara(
         int32_t distance =
             (((target_item->speed * Math_Sin(info->enemy_facing)) >> W2V_SHIFT)
              * CREATURE_SHOOT_RANGE)
-            / CREATURE_SHOOT_TARGETING_SPEED;
+            / M_SHOOT_TARGETING_SPEED;
         distance = info->distance + SQUARE(distance);
         if (distance > CREATURE_SHOOT_RANGE) {
             is_hit = false;
         } else {
-            const int32_t chance = CREATURE_SHOOT_HIT_CHANCE
+            const int32_t chance = M_SHOOT_HIT_CHANCE
                 + (CREATURE_SHOOT_RANGE - info->distance)
                     / (CREATURE_SHOOT_RANGE / 0x5000);
             is_hit = Random_GetControl() < chance;

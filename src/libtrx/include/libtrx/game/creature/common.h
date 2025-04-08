@@ -16,6 +16,7 @@ void Creature_Head(ITEM *item, int16_t required);
 void Creature_Neck(ITEM *item, int16_t required);
 
 void Creature_Float(int16_t item_num);
+void Creature_Underwater(ITEM *item, int32_t depth);
 
 bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
 bool Creature_CheckBaddieOverlap(int16_t item_num);
