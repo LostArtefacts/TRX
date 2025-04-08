@@ -9,6 +9,7 @@
 #define M_ATTACK_RANGE SQUARE(WALL_L * 3) // = 0x900000 = 9437184
 #define M_ESCAPE_CHANCE 2048
 #define M_RECOVER_CHANCE 256
+#define M_MAX_TILT (3 * DEG_1) // = 546
 
 static ITEM *M_ChooseEnemy(const ITEM *item);
 static bool M_SwitchToWater(
@@ -418,4 +419,11 @@ int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
     CLAMP(angle, -max_turn, max_turn);
     item->rot.y += angle;
     return angle;
+}
+
+void Creature_Tilt(ITEM *const item, int16_t angle)
+{
+    angle = angle * 4 - item->rot.z;
+    CLAMP(angle, -M_MAX_TILT, M_MAX_TILT);
+    item->rot.z += angle;
 }

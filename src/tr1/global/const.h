@@ -57,7 +57,6 @@
 #define DIVE_WAIT 10
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define MAX_HEAD_CHANGE (DEG_1 * 5) // = 910
-#define MAX_TILT (DEG_1 * 3) // = 546
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * DEG_1) // = -10920
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004

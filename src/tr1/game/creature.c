@@ -18,17 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-void Creature_Tilt(ITEM *item, int16_t angle)
-{
-    angle = angle * 4 - item->rot.z;
-    if (angle < -MAX_TILT) {
-        angle = -MAX_TILT;
-    } else if (angle > MAX_TILT) {
-        angle = MAX_TILT;
-    }
-    item->rot.z += angle;
-}
-
 void Creature_Head(ITEM *item, int16_t required)
 {
     CREATURE *creature = item->data;
