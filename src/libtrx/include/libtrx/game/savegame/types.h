@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../filesystem.h"
 #include "../lara/enum.h"
 #include "../stats/types.h"
 
@@ -45,3 +46,30 @@ typedef struct {
         };
     } flags;
 } RESUME_INFO;
+
+typedef struct {
+    SAVEGAME_FORMAT format;
+    char *full_path;
+    int32_t counter;
+    int32_t level_num;
+    char *level_title;
+    int16_t initial_version;
+#if TR_VERSION == 1
+    struct {
+        bool restart;
+        bool select_level;
+    } features;
+#endif
+} SAVEGAME_INFO;
+
+typedef struct {
+    bool allow_load;
+    bool allow_save;
+    SAVEGAME_FORMAT format;
+    const char *(*get_save_file_pattern_func)(void);
+    bool (*fill_info_func)(MYFILE *fp, SAVEGAME_INFO *info);
+    bool (*load_from_file_func)(MYFILE *fp);
+    bool (*load_only_resume_info_func)(MYFILE *fp);
+    void (*save_to_file_func)(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+    bool (*update_death_counters_func)(MYFILE *fp, int32_t death_count);
+} SAVEGAME_STRATEGY;

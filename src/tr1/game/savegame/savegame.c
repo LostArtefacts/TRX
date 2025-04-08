@@ -30,18 +30,6 @@
 
 #define SAVES_DIR "saves"
 
-typedef struct {
-    bool allow_load;
-    bool allow_save;
-    SAVEGAME_FORMAT format;
-    const char *(*get_save_filename_pattern)(void);
-    bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
-    bool (*load_from_file)(MYFILE *fp);
-    bool (*load_only_resume_info)(MYFILE *fp);
-    void (*save_to_file)(MYFILE *fp, SAVEGAME_INFO *savegame_info);
-    bool (*update_death_counters)(MYFILE *fp, int32_t death_count);
-} SAVEGAME_STRATEGY;
-
 static int32_t m_SaveSlots = 0;
 static int16_t m_NewestSlot = -1;
 static int32_t m_SaveCounter = 0;
@@ -55,23 +43,23 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = true,
         .format = SAVEGAME_FORMAT_BSON,
-        .get_save_filename_pattern = Savegame_BSON_GetSaveFilePattern,
-        .fill_info = Savegame_BSON_FillInfo,
-        .load_from_file = Savegame_BSON_LoadFromFile,
-        .load_only_resume_info = Savegame_BSON_LoadOnlyResumeInfo,
-        .save_to_file = Savegame_BSON_SaveToFile,
-        .update_death_counters = Savegame_BSON_UpdateDeathCounters,
+        .get_save_file_pattern_func = Savegame_BSON_GetSaveFilePattern,
+        .fill_info_func = Savegame_BSON_FillInfo,
+        .load_from_file_func = Savegame_BSON_LoadFromFile,
+        .load_only_resume_info_func = Savegame_BSON_LoadOnlyResumeInfo,
+        .save_to_file_func = Savegame_BSON_SaveToFile,
+        .update_death_counters_func = Savegame_BSON_UpdateDeathCounters,
     },
     {
         .allow_load = true,
         .allow_save = false,
         .format = SAVEGAME_FORMAT_LEGACY,
-        .get_save_filename_pattern = Savegame_Legacy_GetSaveFilePattern,
-        .fill_info = Savegame_Legacy_FillInfo,
-        .load_from_file = Savegame_Legacy_LoadFromFile,
-        .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
-        .save_to_file = nullptr,
-        .update_death_counters = nullptr,
+        .get_save_file_pattern_func = Savegame_Legacy_GetSaveFilePattern,
+        .fill_info_func = Savegame_Legacy_FillInfo,
+        .load_from_file_func = Savegame_Legacy_LoadFromFile,
+        .load_only_resume_info_func = Savegame_Legacy_LoadOnlyResumeInfo,
+        .save_to_file_func = nullptr,
+        .update_death_counters_func = nullptr,
     },
     { 0 },
 };
@@ -112,7 +100,7 @@ static bool M_FillSlot(
     bool result = false;
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
     if (fp != nullptr) {
-        if (strategy->fill_info(fp, savegame_info)) {
+        if (strategy->fill_info_func(fp, savegame_info)) {
             savegame_info->format = strategy->format;
             Memory_FreePointer(&savegame_info->full_path);
             savegame_info->full_path = Memory_DupStr(path);
@@ -146,8 +134,8 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
             }
 
             int32_t slot = -1;
-            int32_t parsed =
-                sscanf(file_name, strategy->get_save_filename_pattern(), &slot);
+            int32_t parsed = sscanf(
+                file_name, strategy->get_save_file_pattern_func(), &slot);
             if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
                 char *file_path = String_Format("%s/%s", dir_path, file_name);
                 M_FillSlot(strategy, slot, file_path);
@@ -499,7 +487,7 @@ bool Savegame_Load(const int32_t slot_num)
         if (savegame_info->format == strategy->format) {
             MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
             if (fp) {
-                ret = strategy->load_from_file(fp);
+                ret = strategy->load_from_file_func(fp);
                 File_Close(fp);
             }
             break;
@@ -541,14 +529,14 @@ bool Savegame_Save(const int32_t slot_num)
     m_SaveCounter++;
     const SAVEGAME_STRATEGY *strategy = m_Strategies;
     while (strategy->format != 0) {
-        if (strategy->allow_save && strategy->save_to_file != nullptr) {
+        if (strategy->allow_save && strategy->save_to_file_func != nullptr) {
             char *filename =
-                String_Format(strategy->get_save_filename_pattern(), slot_num);
+                String_Format(strategy->get_save_file_pattern_func(), slot_num);
             char *full_path = String_Format("%s/%s", SAVES_DIR, filename);
 
             MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp != nullptr) {
-                strategy->save_to_file(fp, savegame_info);
+                strategy->save_to_file_func(fp, savegame_info);
                 savegame_info->format = strategy->format;
                 Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
@@ -591,11 +579,11 @@ bool Savegame_UpdateDeathCounters(
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
         if (savegame_info->format == strategy->format
-            && strategy->update_death_counters != nullptr) {
+            && strategy->update_death_counters_func != nullptr) {
             MYFILE *fp =
                 File_Open(savegame_info->full_path, FILE_OPEN_READ_WRITE);
             if (fp) {
-                ret = strategy->update_death_counters(fp, death_count);
+                ret = strategy->update_death_counters_func(fp, death_count);
                 File_Close(fp);
             } else
                 break;
@@ -616,7 +604,7 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num)
         if (savegame_info->format == strategy->format) {
             MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
             if (fp) {
-                ret = strategy->load_only_resume_info(fp);
+                ret = strategy->load_only_resume_info_func(fp);
                 File_Close(fp);
             }
             break;

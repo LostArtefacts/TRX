@@ -1,33 +1,8 @@
 #pragma once
 
+#include "./savegame/const.h"
+#include "./savegame/enum.h"
 #include "./savegame/types.h"
-
-typedef enum {
-    SAVEGAME_STAGE_BEFORE_LOAD,
-    SAVEGAME_STAGE_AFTER_LOAD,
-    SAVEGAME_STAGE_BEFORE_SAVE,
-} SAVEGAME_STAGE;
-
-typedef enum {
-    SAVEGAME_FORMAT_INVALID = 0,
-    SAVEGAME_FORMAT_LEGACY = 1,
-    SAVEGAME_FORMAT_BSON = 2,
-} SAVEGAME_FORMAT;
-
-typedef struct {
-    SAVEGAME_FORMAT format;
-    char *full_path;
-    int32_t counter;
-    int32_t level_num;
-    char *level_title;
-    int16_t initial_version;
-#if TR_VERSION == 1
-    struct {
-        bool restart;
-        bool select_level;
-    } features;
-#endif
-} SAVEGAME_INFO;
 
 // Remembers the slot used when the player starts a loaded game.
 // Persists across level reloads.

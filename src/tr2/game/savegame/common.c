@@ -558,7 +558,7 @@ bool Savegame_Save(const int32_t slot_idx)
         char *full_path = String_Format("%s/%s", SAVES_DIR, file_name);
         MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
         if (fp != nullptr) {
-            strategy.save_to_file_func(fp);
+            strategy.save_to_file_func(fp, savegame_info);
             savegame_info->format = strategy.format;
             Memory_FreePointer(&savegame_info->full_path);
             savegame_info->full_path = Memory_DupStr(File_GetPath(fp));

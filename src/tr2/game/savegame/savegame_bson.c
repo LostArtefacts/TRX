@@ -86,7 +86,7 @@ static bool M_IsValidItemObject(
 
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
-static void M_SaveToFile(MYFILE *fp);
+static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
 static bool M_LoadFromFile(MYFILE *fp);
 
 static SAVEGAME_STRATEGY m_Strategy = {
@@ -98,6 +98,8 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .fill_info_func = M_FillInfo,
     .load_from_file_func = M_LoadFromFile,
     .save_to_file_func = M_SaveToFile,
+    .load_only_resume_info_func = nullptr,
+    .update_death_counters_func = nullptr,
     // clang-format on
 };
 
@@ -120,7 +122,7 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-static void M_SaveToFile(MYFILE *const fp)
+static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     JSON_OBJECT *const root_obj = JSON_ObjectNew();

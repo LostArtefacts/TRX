@@ -14,27 +14,6 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
-#define SAVEGAME_CURRENT_VERSION 8
-
-typedef enum {
-    VERSION_LEGACY = -1,
-    VERSION_0 = 0,
-    VERSION_1 = 1,
-    VERSION_2 = 2,
-    VERSION_3 = 3,
-    VERSION_4 = 4,
-    VERSION_5 = 5,
-    VERSION_6 = 6,
-
-    VERSION_7 = 7,
-    // Added extra footer after the compressed BSON structure for quicker
-    // access to essential data, such as the level counter and the level title,
-    // without the need to parse the entire BSON document.
-    // Added TR2+ stats ammo hits/used, health packs used, distance travelled.
-    VERSION_8 = 8,
-    // Added the current TR1X version string.
-} SAVEGAME_VERSION;
-
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
 bool Savegame_IsInitialised(void);
