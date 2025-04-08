@@ -1,5 +1,6 @@
 #include "game/creature.h"
 #include "game/lara/common.h"
+#include "game/los.h"
 #include "game/objects/vars.h"
 #include "game/random.h"
 #include "game/rooms.h"
@@ -462,6 +463,30 @@ void Creature_Neck(ITEM *const item, const int16_t required)
 
     creature->neck_rotation += change;
     CLAMP(creature->neck_rotation, -M_HEAD_ARC, M_HEAD_ARC);
+}
+
+bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
+{
+    const CREATURE *const creature = item->data;
+    const ITEM *const enemy =
+        creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
+    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
+        return false;
+    }
+
+    GAME_VECTOR start;
+    start.pos.x = item->pos.x;
+    start.pos.y = item->pos.y - STEP_L * 3;
+    start.pos.z = item->pos.z;
+    start.room_num = item->room_num;
+
+    GAME_VECTOR target;
+    target.pos.x = enemy->pos.x;
+    target.pos.y = enemy->pos.y - STEP_L * 3;
+    target.pos.z = enemy->pos.z;
+    target.room_num = enemy->room_num;
+
+    return LOS_Check(&start, &target);
 }
 
 bool Creature_CheckBaddieOverlap(const int16_t item_num)

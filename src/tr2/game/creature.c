@@ -25,7 +25,6 @@
 #define TARGET_TOLERANCE 0x400000
 
 #define CREATURE_SHOOT_TARGETING_SPEED 300
-#define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 8) // = 0x4000000 = 67108864
 #define CREATURE_SHOOT_HIT_CHANCE 0x2000
 
 void Creature_Die(const int16_t item_num, const bool explode)
@@ -275,31 +274,6 @@ void Creature_GetBaddieTarget(const int16_t item_num, const bool goody)
             creature->enemy = best_item;
         }
     }
-}
-
-int32_t Creature_CanTargetEnemy(
-    const ITEM *const item, const AI_INFO *const info)
-{
-    const CREATURE *const creature = item->data;
-    const ITEM *const enemy = creature->enemy;
-    if (enemy->hit_points <= 0 || !info->ahead
-        || info->distance >= CREATURE_SHOOT_RANGE) {
-        return 0;
-    }
-
-    GAME_VECTOR start;
-    start.pos.x = item->pos.x;
-    start.pos.y = item->pos.y - STEP_L * 3;
-    start.pos.z = item->pos.z;
-    start.room_num = item->room_num;
-
-    GAME_VECTOR target;
-    target.pos.x = enemy->pos.x;
-    target.pos.y = enemy->pos.y - STEP_L * 3;
-    target.pos.z = enemy->pos.z;
-    target.room_num = enemy->room_num;
-
-    return LOS_Check(&start, &target);
 }
 
 bool Creature_IsHostile(const ITEM *const item)
