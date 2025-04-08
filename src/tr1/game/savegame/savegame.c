@@ -420,7 +420,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        current->magnum_ammo = g_Lara.magnums.ammo;
+        current->magnum_ammo = g_Lara.magnum_ammo.ammo;
         current->flags.has_magnums = 1;
     } else {
         current->magnum_ammo =
@@ -429,7 +429,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
-        current->uzi_ammo = g_Lara.uzis.ammo;
+        current->uzi_ammo = g_Lara.uzi_ammo.ammo;
         current->flags.has_uzis = 1;
     } else {
         current->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
@@ -437,7 +437,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        current->shotgun_ammo = g_Lara.shotgun.ammo;
+        current->shotgun_ammo = g_Lara.shotgun_ammo.ammo;
         current->flags.has_shotgun = 1;
     } else {
         current->shotgun_ammo =

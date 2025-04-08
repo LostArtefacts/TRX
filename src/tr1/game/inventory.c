@@ -54,9 +54,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_SHOTGUN_OPTION:
         for (int32_t i = Inv_RequestItem(O_SG_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_SG_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.shotgun, SHOTGUN_AMMO_QTY);
+            Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         }
-        Inv_AddAmmo(&g_Lara.shotgun, SHOTGUN_AMMO_QTY);
+        Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Shotgun);
         Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
         return false;
@@ -65,9 +65,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_MAGNUM_OPTION:
         for (int32_t i = Inv_RequestItem(O_MAG_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_MAG_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.magnums, MAGNUM_AMMO_QTY);
+            Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         }
-        Inv_AddAmmo(&g_Lara.magnums, MAGNUM_AMMO_QTY);
+        Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Magnum);
         Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
         return false;
@@ -76,9 +76,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_UZI_OPTION:
         for (int32_t i = Inv_RequestItem(O_UZI_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_UZI_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.uzis, UZI_AMMO_QTY);
+            Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         }
-        Inv_AddAmmo(&g_Lara.uzis, UZI_AMMO_QTY);
+        Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Uzi);
         Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return false;
@@ -86,7 +86,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_SG_AMMO_ITEM:
     case O_SG_AMMO_OPTION:
         if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Inv_AddAmmo(&g_Lara.shotgun, SHOTGUN_AMMO_QTY);
+            Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_ShotgunAmmo);
         }
@@ -95,7 +95,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_MAG_AMMO_ITEM:
     case O_MAG_AMMO_OPTION:
         if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Inv_AddAmmo(&g_Lara.magnums, MAGNUM_AMMO_QTY);
+            Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_MagnumAmmo);
         }
@@ -104,7 +104,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_UZI_AMMO_ITEM:
     case O_UZI_AMMO_OPTION:
         if (Inv_RequestItem(O_UZI_ITEM)) {
-            Inv_AddAmmo(&g_Lara.uzis, UZI_AMMO_QTY);
+            Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_UziAmmo);
         }
