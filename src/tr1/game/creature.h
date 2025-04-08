@@ -1,10 +1,6 @@
 #pragma once
 
-#include "global/const.h"
-#include "global/types.h"
-
 #include <libtrx/game/creature.h>
-#include <libtrx/utils.h>
 
 bool Creature_IsBoss(int16_t item_num);
 bool Creature_ShootAtLara(
