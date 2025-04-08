@@ -1,5 +1,4 @@
 #include "game/savegame.h"
-
 #include "log.h"
 
 static int32_t m_BoundSlot = -1;
