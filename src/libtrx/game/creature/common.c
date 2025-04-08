@@ -1094,6 +1094,12 @@ void Creature_SetAlliesHostile(bool enable)
     m_AlliesHostile = enable;
 }
 
+bool Creature_IsHostile(const ITEM *const item)
+{
+    return Object_IsType(item->object_id, g_EnemyObjects)
+        || (Creature_AreAlliesHostile() && Creature_IsAlly(item));
+}
+
 int16_t Creature_Effect(
     const ITEM *const item, const BITE *const bite,
     int16_t (*const spawn)(

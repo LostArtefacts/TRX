@@ -31,7 +31,8 @@ int32_t Creature_Vault(
 
 bool Creature_AreAlliesHostile(void);
 void Creature_SetAlliesHostile(bool enable);
-extern bool Creature_IsHostile(const ITEM *item);
+bool Creature_IsHostile(const ITEM *item);
+extern bool Creature_IsAlly(const ITEM *item);
 
 int16_t Creature_Effect(
     const ITEM *item, const BITE *bite,

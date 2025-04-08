@@ -56,11 +56,6 @@ bool Creature_IsBoss(const int16_t item_num)
     return Object_IsType(item->object_id, g_BossObjects);
 }
 
-bool Creature_IsHostile(const ITEM *const item)
-{
-    return Object_IsType(item->object_id, g_EnemyObjects);
-}
-
 bool Creature_IsAlly(const ITEM *const item)
 {
     return Object_IsType(item->object_id, g_AllyObjects);

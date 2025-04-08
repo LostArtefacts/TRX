@@ -24,13 +24,6 @@
 #define M_SHOOT_TARGETING_SPEED 300
 #define M_SHOOT_HIT_CHANCE 0x2000
 
-bool Creature_IsHostile(const ITEM *const item)
-{
-    return Object_IsType(item->object_id, g_EnemyObjects)
-        || (Creature_AreAlliesHostile()
-            && (item->object_id == O_MONK_1 || item->object_id == O_MONK_2));
-}
-
 bool Creature_IsAlly(const ITEM *const item)
 {
     return Object_IsType(item->object_id, g_AllyObjects);
