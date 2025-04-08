@@ -275,10 +275,10 @@ static void M_ReadLara(LARA_INFO *const lara)
 
     M_ReadArm(&lara->left_arm);
     M_ReadArm(&lara->right_arm);
-    M_ReadAmmoInfo(&lara->pistols);
-    M_ReadAmmoInfo(&lara->magnums);
-    M_ReadAmmoInfo(&lara->uzis);
-    M_ReadAmmoInfo(&lara->shotgun);
+    M_ReadAmmoInfo(&lara->pistol_ammo);
+    M_ReadAmmoInfo(&lara->magnum_ammo);
+    M_ReadAmmoInfo(&lara->uzi_ammo);
+    M_ReadAmmoInfo(&lara->shotgun_ammo);
     M_ReadLOT(&lara->lot);
 }
 

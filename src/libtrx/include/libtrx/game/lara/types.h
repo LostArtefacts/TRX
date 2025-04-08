@@ -59,10 +59,10 @@ typedef struct {
     XYZ_16 torso_rot;
     LARA_ARM left_arm;
     LARA_ARM right_arm;
-    AMMO_INFO pistols;
-    AMMO_INFO magnums;
-    AMMO_INFO uzis;
-    AMMO_INFO shotgun;
+    AMMO_INFO pistol_ammo;
+    AMMO_INFO magnum_ammo;
+    AMMO_INFO uzi_ammo;
+    AMMO_INFO shotgun_ammo;
     LOT_INFO lot;
     struct {
         int32_t item_num;

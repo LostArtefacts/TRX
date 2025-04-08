@@ -872,21 +872,21 @@ static bool M_LoadLara(
     }
 
     if (!M_LoadAmmo(
-            JSON_ObjectGetObject(lara_obj, "pistols"), &lara->pistols)) {
+            JSON_ObjectGetObject(lara_obj, "pistols"), &lara->pistol_ammo)) {
         return false;
     }
 
     if (!M_LoadAmmo(
-            JSON_ObjectGetObject(lara_obj, "magnums"), &lara->magnums)) {
+            JSON_ObjectGetObject(lara_obj, "magnums"), &lara->magnum_ammo)) {
         return false;
     }
 
-    if (!M_LoadAmmo(JSON_ObjectGetObject(lara_obj, "uzis"), &lara->uzis)) {
+    if (!M_LoadAmmo(JSON_ObjectGetObject(lara_obj, "uzis"), &lara->uzi_ammo)) {
         return false;
     }
 
     if (!M_LoadAmmo(
-            JSON_ObjectGetObject(lara_obj, "shotgun"), &lara->shotgun)) {
+            JSON_ObjectGetObject(lara_obj, "shotgun"), &lara->shotgun_ammo)) {
         return false;
     }
 
@@ -1300,10 +1300,13 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
 
     JSON_ObjectAppendObject(lara_obj, "left_arm", M_DumpArm(&lara->left_arm));
     JSON_ObjectAppendObject(lara_obj, "right_arm", M_DumpArm(&lara->right_arm));
-    JSON_ObjectAppendObject(lara_obj, "pistols", M_DumpAmmo(&lara->pistols));
-    JSON_ObjectAppendObject(lara_obj, "magnums", M_DumpAmmo(&lara->magnums));
-    JSON_ObjectAppendObject(lara_obj, "uzis", M_DumpAmmo(&lara->uzis));
-    JSON_ObjectAppendObject(lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun));
+    JSON_ObjectAppendObject(
+        lara_obj, "pistols", M_DumpAmmo(&lara->pistol_ammo));
+    JSON_ObjectAppendObject(
+        lara_obj, "magnums", M_DumpAmmo(&lara->magnum_ammo));
+    JSON_ObjectAppendObject(lara_obj, "uzis", M_DumpAmmo(&lara->uzi_ammo));
+    JSON_ObjectAppendObject(
+        lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun_ammo));
     JSON_ObjectAppendObject(lara_obj, "lot", M_DumpLOT(&lara->lot));
 
     JSON_ObjectAppendInt(

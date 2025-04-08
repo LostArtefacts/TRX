@@ -137,7 +137,7 @@ void Gun_Control(void)
 
         switch (g_Lara.gun_type) {
         case LGT_PISTOLS:
-            if (g_Lara.pistols.ammo && g_Input.action) {
+            if (g_Lara.pistol_ammo.ammo && g_Input.action) {
                 Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
@@ -147,7 +147,7 @@ void Gun_Control(void)
             break;
 
         case LGT_MAGNUMS:
-            if (g_Lara.magnums.ammo && g_Input.action) {
+            if (g_Lara.magnum_ammo.ammo && g_Input.action) {
                 Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
@@ -157,7 +157,7 @@ void Gun_Control(void)
             break;
 
         case LGT_UZIS:
-            if (g_Lara.uzis.ammo && g_Input.action) {
+            if (g_Lara.uzi_ammo.ammo && g_Input.action) {
                 Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
@@ -167,7 +167,7 @@ void Gun_Control(void)
             break;
 
         case LGT_SHOTGUN:
-            if (g_Lara.shotgun.ammo && g_Input.action) {
+            if (g_Lara.shotgun_ammo.ammo && g_Input.action) {
                 Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {

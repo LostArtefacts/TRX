@@ -394,28 +394,28 @@ int32_t Gun_FireWeapon(
     AMMO_INFO *ammo;
     switch (weapon_type) {
     case LGT_MAGNUMS:
-        ammo = &g_Lara.magnums;
+        ammo = &g_Lara.magnum_ammo;
         if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
-        ammo = &g_Lara.uzis;
+        ammo = &g_Lara.uzi_ammo;
         if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
-        ammo = &g_Lara.shotgun;
+        ammo = &g_Lara.shotgun_ammo;
         if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     default:
-        ammo = &g_Lara.pistols;
+        ammo = &g_Lara.pistol_ammo;
         ammo->ammo = 1000;
         break;
     }

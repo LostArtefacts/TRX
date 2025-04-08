@@ -541,7 +541,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    g_Lara.pistols.ammo = 1000;
+    g_Lara.pistol_ammo.ammo = 1000;
 
     if (resume != nullptr) {
         if (g_GameInfo.remove_guns) {
@@ -576,38 +576,38 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
         if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
-            g_Lara.magnums.ammo = resume->magnum_ammo;
+            g_Lara.magnum_ammo.ammo = resume->magnum_ammo;
             Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
         } else {
             int32_t ammo = resume->magnum_ammo / MAGNUM_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
                 Inv_AddItem(O_MAG_AMMO_ITEM);
             }
-            g_Lara.magnums.ammo = 0;
+            g_Lara.magnum_ammo.ammo = 0;
         }
 
         if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
-            g_Lara.uzis.ammo = resume->uzi_ammo;
+            g_Lara.uzi_ammo.ammo = resume->uzi_ammo;
             Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         } else {
             int32_t ammo = resume->uzi_ammo / UZI_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
                 Inv_AddItem(O_UZI_AMMO_ITEM);
             }
-            g_Lara.uzis.ammo = 0;
+            g_Lara.uzi_ammo.ammo = 0;
         }
 
         if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
-            g_Lara.shotgun.ammo = resume->shotgun_ammo;
+            g_Lara.shotgun_ammo.ammo = resume->shotgun_ammo;
             Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
         } else {
             int32_t ammo = resume->shotgun_ammo / SHOTGUN_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
                 Inv_AddItem(O_SG_AMMO_ITEM);
             }
-            g_Lara.shotgun.ammo = 0;
+            g_Lara.shotgun_ammo.ammo = 0;
         }
 
         for (int i = 0; i < resume->num_scions; i++) {
