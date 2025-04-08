@@ -20,7 +20,6 @@
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound/enum.h>
 #include <libtrx/game/sound/ids.h>
-#include <libtrx/game/stats/types.h>
 #include <libtrx/game/text.h>
 #include <libtrx/game/types.h>
 
@@ -129,33 +128,6 @@ typedef struct {
     SECTOR old_sector;
     int16_t block;
 } DOORPOS_DATA;
-
-typedef struct {
-    int32_t lara_hitpoints;
-    uint16_t pistol_ammo;
-    uint16_t magnum_ammo;
-    uint16_t uzi_ammo;
-    uint16_t shotgun_ammo;
-    uint8_t num_medis;
-    uint8_t num_big_medis;
-    uint8_t num_scions;
-    int8_t gun_status;
-    LARA_GUN_TYPE equipped_gun_type;
-    LARA_GUN_TYPE holsters_gun_type;
-    LARA_GUN_TYPE back_gun_type;
-    union {
-        uint16_t all;
-        struct {
-            uint16_t available : 1;
-            uint16_t got_pistols : 1;
-            uint16_t got_magnums : 1;
-            uint16_t got_uzis : 1;
-            uint16_t got_shotgun : 1;
-            uint16_t costume : 1;
-        };
-    } flags;
-    LEVEL_STATS stats;
-} RESUME_INFO;
 
 typedef struct {
     PASSPORT_MODE passport_selection;

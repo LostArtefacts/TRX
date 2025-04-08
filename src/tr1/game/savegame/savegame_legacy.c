@@ -340,8 +340,8 @@ static void M_ReadResumeInfo(MYFILE *const fp)
         current->magnum_ammo = M_ReadU16();
         current->uzi_ammo = M_ReadU16();
         current->shotgun_ammo = M_ReadU16();
-        current->num_medis = M_ReadU8();
-        current->num_big_medis = M_ReadU8();
+        current->small_medipacks = M_ReadU8();
+        current->large_medipacks = M_ReadU8();
         current->num_scions = M_ReadU8();
         current->gun_status = M_ReadS8();
         current->equipped_gun_type = M_ReadS8();
@@ -350,10 +350,10 @@ static void M_ReadResumeInfo(MYFILE *const fp)
 
         const uint16_t flags = M_ReadU16();
         current->flags.available = flags & 1 ? 1 : 0;
-        current->flags.got_pistols = flags & 2 ? 1 : 0;
-        current->flags.got_magnums = flags & 4 ? 1 : 0;
-        current->flags.got_uzis = flags & 8 ? 1 : 0;
-        current->flags.got_shotgun = flags & 16 ? 1 : 0;
+        current->flags.has_pistols = flags & 2 ? 1 : 0;
+        current->flags.has_magnums = flags & 4 ? 1 : 0;
+        current->flags.has_uzis = flags & 8 ? 1 : 0;
+        current->flags.has_shotgun = flags & 16 ? 1 : 0;
         current->flags.costume = flags & 32 ? 1 : 0;
         // Gym and first level have special starting items.
         if (level == GF_GetFirstLevel() || level == GF_GetGymLevel()) {

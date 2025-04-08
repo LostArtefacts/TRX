@@ -171,7 +171,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     }
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-    resume->available = 0;
+    resume->flags.available = 0;
     const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
     if (next_level != nullptr) {

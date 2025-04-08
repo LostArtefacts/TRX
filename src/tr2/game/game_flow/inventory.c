@@ -42,13 +42,13 @@ static void M_ModifyInventory_GunOrAmmo(
         // clang-format off
         // TODO: consider moving this to Inv_AddItem
         switch (gun_type) {
-        case LGT_PISTOLS: resume->has_pistols = 1; break;
-        case LGT_MAGNUMS: resume->has_magnums = 1; break;
-        case LGT_UZIS:    resume->has_uzis = 1;    break;
-        case LGT_SHOTGUN: resume->has_shotgun = 1; break;
-        case LGT_HARPOON: resume->has_harpoon = 1; break;
-        case LGT_M16:     resume->has_m16 = 1;     break;
-        case LGT_GRENADE: resume->has_grenade = 1; break;
+        case LGT_PISTOLS: resume->flags.has_pistols = 1; break;
+        case LGT_MAGNUMS: resume->flags.has_magnums = 1; break;
+        case LGT_UZIS:    resume->flags.has_uzis = 1;    break;
+        case LGT_SHOTGUN: resume->flags.has_shotgun = 1; break;
+        case LGT_HARPOON: resume->flags.has_harpoon = 1; break;
+        case LGT_M16:     resume->flags.has_m16 = 1;     break;
+        case LGT_GRENADE: resume->flags.has_grenade = 1; break;
         default: break;
         }
         // clang-format on
@@ -140,22 +140,22 @@ void GF_InventoryModifier_Apply(
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
     if (m_RemoveWeapons) {
-        resume->has_pistols = 0;
-        resume->has_magnums = 0;
-        resume->has_uzis = 0;
-        resume->has_shotgun = 0;
-        resume->has_m16 = 0;
-        resume->has_grenade = 0;
-        resume->has_harpoon = 0;
-        resume->gun_type = LGT_UNARMED;
+        resume->flags.has_pistols = 0;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_shotgun = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
+        resume->flags.has_harpoon = 0;
+        resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     }
 
-    if (!resume->has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
-        resume->has_pistols = 1;
+    if (!resume->flags.has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
+        resume->flags.has_pistols = 1;
         Inv_AddItem(O_PISTOL_ITEM);
-        if (resume->gun_type == LGT_UNARMED) {
-            resume->gun_type = LGT_PISTOLS;
+        if (resume->equipped_gun_type == LGT_UNARMED) {
+            resume->equipped_gun_type = LGT_PISTOLS;
         }
     }
 
