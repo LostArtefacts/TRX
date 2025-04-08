@@ -1,7 +1,8 @@
 #pragma once
 
-#include "game/stats/types.h"
 #include "global/types.h"
+
+#include <libtrx/game/stats.h>
 
 void Stats_ObserveRoomsLoad(void);
 void Stats_CalculateStats(void);

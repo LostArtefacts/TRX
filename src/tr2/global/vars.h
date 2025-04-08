@@ -62,7 +62,7 @@ extern bool g_CameraUnderwater;
 extern char g_LevelFileName[256];
 extern WEAPON_INFO g_Weapons[];
 extern int16_t g_FinalBossActive;
-extern int16_t g_FinalLevelCount;
+extern uint16_t g_FinalLevelCount;
 extern int16_t g_FinalBossCount;
 extern int16_t g_FinalBossItem[5];
 extern REQUEST_INFO g_LoadGameRequester;

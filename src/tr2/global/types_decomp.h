@@ -9,6 +9,7 @@
 #include <libtrx/game/items.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/rooms/types.h>
+#include <libtrx/game/stats/types.h>
 #include <libtrx/game/text.h>
 #include <libtrx/game/types.h>
 
@@ -79,27 +80,6 @@ typedef enum {
     DRAW_OPAQUE    = 0,
     DRAW_COLOR_KEY = 1,
 } DRAW_TYPE;
-
-typedef struct STATS_COMMON {
-    uint32_t timer;
-    uint32_t ammo_used;
-    uint32_t ammo_hits;
-    uint32_t distance;
-    uint16_t kills;
-    uint8_t medipacks;
-    uint16_t max_secret_count;
-} STATS_COMMON;
-
-typedef struct {
-    struct STATS_COMMON;
-    int32_t found_secrets;
-    int32_t total_secrets;
-} FINAL_STATS;
-
-typedef struct {
-    struct STATS_COMMON;
-    uint8_t secret_flags;
-} LEVEL_STATS;
 
 typedef struct {
     uint16_t pistol_ammo;

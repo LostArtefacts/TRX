@@ -737,7 +737,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             CLAMPG(item->hit_points, LARA_MAX_HITPOINTS);
             Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-            Stats_AddMedipacksUsed(1);
+            Stats_AddMedipacksUsed(0.5);
         }
         break;
 
@@ -747,7 +747,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             item->hit_points = LARA_MAX_HITPOINTS;
             Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-            Stats_AddMedipacksUsed(2);
+            Stats_AddMedipacksUsed(1);
         }
         break;
 

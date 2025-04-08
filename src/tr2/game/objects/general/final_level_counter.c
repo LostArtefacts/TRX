@@ -94,12 +94,13 @@ static void M_Control(const int16_t item_num)
 {
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (current_info->stats.kills == g_FinalLevelCount && !g_FinalBossActive) {
+    if (current_info->stats.kill_count == g_FinalLevelCount
+        && !g_FinalBossActive) {
         M_ActivateLastBoss();
         return;
     }
 
-    if (current_info->stats.kills > g_FinalLevelCount) {
+    if (current_info->stats.kill_count > g_FinalLevelCount) {
         g_FinalBossActive++;
         if (g_FinalBossActive == CUTSCENE_DELAY) {
             M_PrepareCutscene(item_num);
