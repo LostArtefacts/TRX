@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../colors.h"
+
 #include <stdint.h>
 
 typedef enum {
@@ -58,25 +60,6 @@ typedef struct ANIMATED_TEXTURE_RANGE {
     int16_t *textures;
     struct ANIMATED_TEXTURE_RANGE *next_range;
 } ANIMATED_TEXTURE_RANGE;
-
-typedef struct {
-    float r;
-    float g;
-    float b;
-} RGB_F;
-
-typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} RGB_888;
-
-typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
-} RGBA_8888;
 
 typedef struct {
     uint8_t index[256];

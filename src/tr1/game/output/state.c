@@ -90,11 +90,11 @@ bool Output_GetWibbleEffect(void)
     return m_IsWibbleEffect;
 }
 
-void Output_SetWaterColor(const RGB_F *const color)
+void Output_SetWaterColor(const RGB_888 color)
 {
-    m_WaterColor.r = color->r;
-    m_WaterColor.g = color->g;
-    m_WaterColor.b = color->b;
+    m_WaterColor.r = color.r / 255.0f;
+    m_WaterColor.g = color.g / 255.0f;
+    m_WaterColor.b = color.b / 255.0f;
 }
 
 RGB_F Output_GetTint(void)

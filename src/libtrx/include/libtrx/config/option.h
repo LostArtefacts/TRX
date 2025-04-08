@@ -1,11 +1,12 @@
 #pragma once
 
 typedef enum {
-    COT_BOOL = 0,
-    COT_INT32 = 1,
-    COT_FLOAT = 2,
-    COT_DOUBLE = 3,
-    COT_ENUM = 4,
+    COT_BOOL,
+    COT_INT32,
+    COT_FLOAT,
+    COT_DOUBLE,
+    COT_ENUM,
+    COT_RGB888,
 } CONFIG_OPTION_TYPE;
 
 typedef struct {

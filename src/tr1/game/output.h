@@ -25,7 +25,7 @@ int32_t Output_GetDrawDistFade(void);
 int32_t Output_GetDrawDistMax(void);
 void Output_SetDrawDistFade(int32_t dist);
 void Output_SetDrawDistMax(int32_t dist);
-void Output_SetWaterColor(const RGB_F *color);
+void Output_SetWaterColor(const RGB_888 color);
 
 void Output_BeginScene(void);
 void Output_EndScene(void);

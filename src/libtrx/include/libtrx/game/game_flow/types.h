@@ -79,9 +79,14 @@ typedef struct {
 
 typedef struct {
 #if TR_VERSION == 1
-    RGB_F water_color;
-    float fog_start;
-    float fog_end;
+    struct {
+        bool is_present;
+        RGB_888 value;
+    } water_color;
+    struct {
+        bool is_present;
+        float value;
+    } fog_start, fog_end;
 #elif TR_VERSION == 2
     char *sfx_path;
 #endif
