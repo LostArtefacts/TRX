@@ -21,7 +21,6 @@
 #include <libtrx/utils.h>
 
 #define MAX_X_ROT (20 * DEG_1) // = 3640
-#define MAX_TILT (3 * DEG_1) // = 546
 #define MAX_HEAD_CHANGE (5 * DEG_1) // = 910
 #define HEAD_ARC 0x3000 // = 12288
 #define FLOAT_SPEED 32
@@ -357,13 +356,6 @@ bool Creature_Animate(
         Item_NewRoom(item_num, room_num);
     }
     return true;
-}
-
-void Creature_Tilt(ITEM *const item, int16_t angle)
-{
-    angle = 4 * angle - item->rot.z;
-    CLAMP(angle, -MAX_TILT, MAX_TILT);
-    item->rot.z += angle;
 }
 
 void Creature_Head(ITEM *item, int16_t required)
