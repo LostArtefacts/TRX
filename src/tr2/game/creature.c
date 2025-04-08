@@ -27,57 +27,6 @@
 #define CREATURE_SHOOT_TARGETING_SPEED 300
 #define CREATURE_SHOOT_HIT_CHANCE 0x2000
 
-void Creature_Die(const int16_t item_num, const bool explode)
-{
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->object_id == O_DRAGON_FRONT) {
-        item->hit_points = 0;
-        return;
-    }
-
-    if (item->object_id == O_SKIDOO_DRIVER) {
-        if (explode) {
-            Item_Explode(item_num, -1, 0);
-        }
-        item->hit_points = DONT_TARGET;
-        const int16_t vehicle_item_num = (int16_t)(intptr_t)item->data;
-        ITEM *const vehicle_item = Item_Get(vehicle_item_num);
-        vehicle_item->hit_points = 0;
-        return;
-    }
-
-    item->collidable = 0;
-    item->hit_points = DONT_TARGET;
-    if (explode) {
-        Item_Explode(item_num, -1, 0);
-        Item_Kill(item_num);
-    } else {
-        Item_RemoveActive(item_num);
-    }
-
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->intelligent) {
-        LOT_DisableBaddieAI(item_num);
-    }
-    item->flags |= IF_ONE_SHOT;
-
-    if (item->killed) {
-        item->next_active = Item_GetPrevActive();
-        Item_SetPrevActive(item_num);
-    }
-
-    if (obj->intelligent) {
-        int16_t pickup_num = item->carried_item;
-        while (pickup_num != NO_ITEM) {
-            ITEM *const pickup = Item_Get(pickup_num);
-            pickup->pos = item->pos;
-            Item_NewRoom(pickup_num, item->room_num);
-            pickup_num = pickup->carried_item;
-        }
-    }
-}
-
 void Creature_Float(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
