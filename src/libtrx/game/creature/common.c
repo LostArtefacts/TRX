@@ -8,6 +8,7 @@
 #include "log.h"
 #include "utils.h"
 
+#define M_FLOAT_SPEED 32
 #define M_MAX_DISTANCE (WALL_L * 30)
 #define M_ATTACK_RANGE SQUARE(WALL_L * 3) // = 0x900000 = 9437184
 #define M_ESCAPE_CHANCE 2048
@@ -466,6 +467,32 @@ void Creature_Neck(ITEM *const item, const int16_t required)
 
     creature->neck_rotation += change;
     CLAMP(creature->neck_rotation, -M_HEAD_ARC, M_HEAD_ARC);
+}
+
+void Creature_Float(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    item->hit_points = DONT_TARGET;
+    item->rot.x = 0;
+
+    const int32_t wh = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    if (item->pos.y > wh) {
+        item->pos.y -= M_FLOAT_SPEED;
+    } else if (item->pos.y < wh) {
+        item->pos.y = wh;
+    }
+
+    Item_Animate(item);
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    if (room_num != item->room_num) {
+        Item_NewRoom(item_num, room_num);
+    }
 }
 
 bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)

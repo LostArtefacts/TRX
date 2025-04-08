@@ -4,7 +4,6 @@
 
 #include <libtrx/game/creature.h>
 
-void Creature_Float(int16_t item_num);
 void Creature_Underwater(ITEM *item, int32_t depth);
 int32_t Creature_Vault(
     int16_t item_num, int16_t angle, int32_t vault, int32_t shift);
