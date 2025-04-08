@@ -1,5 +1,6 @@
 #include "game/lara/misc.h"
 
+#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/const.h"
 #include "game/rooms.h"

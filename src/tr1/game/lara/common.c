@@ -701,11 +701,6 @@ bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
-bool Lara_TestBoundsCollide(ITEM *item, int32_t radius)
-{
-    return Item_TestBoundsCollide(g_LaraItem, item, radius);
-}
-
 bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *const bounds)
 {
     return Item_TestPosition(g_LaraItem, item, bounds);

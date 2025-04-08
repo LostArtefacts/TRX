@@ -510,3 +510,33 @@ void Item_PlayAnimSFX(
 
     Sound_Effect(data->effect_num, &item->pos, play_mode);
 }
+
+bool Item_TestBoundsCollide(
+    const ITEM *const src_item, const ITEM *const dst_item,
+    const int32_t radius)
+{
+    const BOUNDS_16 *const src_bounds = &Item_GetBestFrame(src_item)->bounds;
+    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrame(dst_item)->bounds;
+
+    if (src_item->pos.y + src_bounds->min.y
+            >= dst_item->pos.y + dst_bounds->max.y
+        || src_item->pos.y + src_bounds->max.y
+            <= dst_item->pos.y + dst_bounds->min.y) {
+        return false;
+    }
+
+    const int32_t c = Math_Cos(src_item->rot.y);
+    const int32_t s = Math_Sin(src_item->rot.y);
+    const int32_t dx = dst_item->pos.x - src_item->pos.x;
+    const int32_t dz = dst_item->pos.z - src_item->pos.z;
+    const int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
+    const int32_t rz = (c * dz + s * dx) >> W2V_SHIFT;
+
+    // clang-format off
+    return (
+        rx >= src_bounds->min.x - radius &&
+        rx <= src_bounds->max.x + radius &&
+        rz >= src_bounds->min.z - radius &&
+        rz <= src_bounds->max.z + radius);
+    // clang-format on
+}

@@ -151,3 +151,8 @@ void Lara_TakeDamage(const int16_t damage, const bool hit_status)
 {
     Item_TakeDamage(Lara_GetItem(), damage, hit_status);
 }
+
+bool Lara_TestBoundsCollide(const ITEM *const item, const int32_t radius)
+{
+    return Item_TestBoundsCollide(item, Lara_GetItem(), radius);
+}
