@@ -8,8 +8,6 @@ void Item_Control(void);
 void Item_ClearKilled(void);
 void Item_ShiftCol(ITEM *item, COLL_INFO *coll);
 void Item_UpdateRoom(ITEM *item, int32_t height);
-int32_t Item_TestBoundsCollide(
-    const ITEM *src_item, const ITEM *dst_item, int32_t radius);
 int32_t Item_TestPosition(
     const int16_t *bounds, const ITEM *src_item, const ITEM *dst_item);
 void Item_AlignPosition(

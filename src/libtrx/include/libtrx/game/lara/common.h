@@ -11,3 +11,5 @@ OBJECT_MESH *Lara_GetMesh(LARA_MESH mesh);
 void Lara_SetMesh(LARA_MESH mesh, OBJECT_MESH *mesh_ptr);
 const ANIM_FRAME *Lara_GetHitFrame(const ITEM *item);
 void Lara_TakeDamage(int16_t damage, bool hit_status);
+
+bool Lara_TestBoundsCollide(const ITEM *item, int32_t radius);

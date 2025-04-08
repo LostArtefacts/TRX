@@ -196,30 +196,6 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
 }
 
-bool Item_TestBoundsCollide(ITEM *src_item, ITEM *dst_item, int32_t radius)
-{
-    const BOUNDS_16 *const src_bounds = &Item_GetBestFrame(src_item)->bounds;
-    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrame(dst_item)->bounds;
-    if (dst_item->pos.y + dst_bounds->max.y
-            <= src_item->pos.y + src_bounds->min.y
-        || dst_item->pos.y + dst_bounds->min.y
-            >= src_item->pos.y + src_bounds->max.y) {
-        return false;
-    }
-
-    const int32_t c = Math_Cos(dst_item->rot.y);
-    const int32_t s = Math_Sin(dst_item->rot.y);
-    const int32_t x = src_item->pos.x - dst_item->pos.x;
-    const int32_t z = src_item->pos.z - dst_item->pos.z;
-    const int32_t rx = (c * x - s * z) >> W2V_SHIFT;
-    const int32_t rz = (c * z + s * x) >> W2V_SHIFT;
-    const int32_t min_x = dst_bounds->min.x - radius;
-    const int32_t max_x = dst_bounds->max.x + radius;
-    const int32_t min_z = dst_bounds->min.z - radius;
-    const int32_t max_z = dst_bounds->max.z + radius;
-    return rx >= min_x && rx <= max_x && rz >= min_z && rz <= max_z;
-}
-
 bool Item_TestPosition(
     const ITEM *const src_item, const ITEM *const dst_item,
     const OBJECT_BOUNDS *const bounds)
