@@ -255,9 +255,11 @@ void Gun_Rifle_Fire(const LARA_GUN_TYPE weapon_type)
 
     for (int i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
         dangles[0] = angles[0]
-            + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
+            + (int32_t)((Random_GetControl() - 16384) * SHOTGUN_PELLET_SCATTER)
+                / 65536;
         dangles[1] = angles[1]
-            + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
+            + (int32_t)((Random_GetControl() - 16384) * SHOTGUN_PELLET_SCATTER)
+                / 65536;
         if (Gun_FireWeapon(weapon_type, g_Lara.target, g_LaraItem, dangles)) {
             fired = true;
         }

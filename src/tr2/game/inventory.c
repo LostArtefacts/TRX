@@ -6,6 +6,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/gun/const.h>
 #include <libtrx/utils.h>
 
 bool Inv_AddItem(const GAME_OBJECT_ID obj_id)

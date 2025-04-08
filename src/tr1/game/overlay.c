@@ -17,6 +17,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun/const.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
