@@ -26,15 +26,6 @@ static bool M_SwitchToLand(
     int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
 static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
 
-void Creature_Initialise(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-
-    item->rot.y += (PHD_ANGLE)((Random_GetControl() - DEG_90) >> 1);
-    item->collidable = 1;
-    item->data = nullptr;
-}
-
 void Creature_AIInfo(ITEM *item, AI_INFO *info)
 {
     CREATURE *creature = item->data;

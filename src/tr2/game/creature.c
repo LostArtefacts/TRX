@@ -34,14 +34,6 @@
 #define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 8) // = 0x4000000 = 67108864
 #define CREATURE_SHOOT_HIT_CHANCE 0x2000
 
-void Creature_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->rot.y += (Random_GetControl() - DEG_90) >> 1;
-    item->collidable = 1;
-    item->data = 0;
-}
-
 void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
 {
     CREATURE *const creature = (CREATURE *)item->data;
