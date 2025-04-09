@@ -144,18 +144,6 @@ void DecreaseScreenSize(void)
     }
 }
 
-void GetValidLevelsList(REQUEST_INFO *const req)
-{
-    Requester_RemoveAllItems(req);
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type != GFL_GYM) {
-            Requester_AddItem(req, level->title, 0, nullptr, 0);
-        }
-    }
-}
-
 void InitialiseGameFlags(void)
 {
     Music_ResetTrackFlags();

@@ -256,8 +256,28 @@ void Savegame_FillAvailableSaves(REQUEST_INFO *const req)
     memcpy(m_ReqFlags2, g_RequesterFlags2, sizeof(m_ReqFlags2));
 }
 
+void Savegame_FillAvailableLevels(REQUEST_INFO *const req)
+{
+    ASSERT(req != nullptr);
+    Requester_Init(req);
+    Requester_SetSize(req, 10, -32);
+    Requester_SetHeading(req, GS(PASSPORT_SELECT_LEVEL), 0, nullptr, 0);
+    req->ready = true;
+    req->selected = 0;
+
+    Requester_RemoveAllItems(req);
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < level_table->count; i++) {
+        const GF_LEVEL *const level = &level_table->levels[i];
+        if (level->type != GFL_GYM) {
+            Requester_AddItem(req, level->title, 0, nullptr, 0);
+        }
+    }
+}
+
 void Savegame_HighlightNewestSlot(void)
 {
+    g_SaveGameRequester.selected = MAX(0, m_NewestSlot);
     g_LoadGameRequester.selected = MAX(0, m_NewestSlot);
 }
 
@@ -576,15 +596,6 @@ bool Savegame_Save(const int32_t slot_idx)
     }
 
     if (result) {
-        char save_num_text[16];
-        sprintf(save_num_text, "%d", m_SaveCounter);
-        Requester_ChangeItem(
-            &g_LoadGameRequester, slot_idx, level_title, REQ_ALIGN_LEFT,
-            save_num_text, REQ_ALIGN_RIGHT);
-
-        m_ReqFlags1[slot_idx] = g_RequesterFlags1[slot_idx];
-        m_ReqFlags2[slot_idx] = g_RequesterFlags2[slot_idx];
-
         m_NewestSlot = slot_idx;
         if (was_slot_empty) {
             m_SavedGames++;
