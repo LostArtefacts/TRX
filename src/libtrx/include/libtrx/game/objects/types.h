@@ -4,7 +4,7 @@
 #include "../collision.h"
 #include "../items/types.h"
 #include "../rooms/enum.h"
-#include "../savegame.h"
+#include "../savegame/enum.h"
 #include "../types.h"
 
 #include <stdint.h>

@@ -72,8 +72,6 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll);
 
 void Lara_WaterCurrent(COLL_INFO *coll);
 
-void Lara_CatchFire(void);
-
 void Lara_TouchLava(ITEM *item);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
