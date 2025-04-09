@@ -1,5 +1,3 @@
-#include "game/savegame/savegame_legacy.h"
-
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -11,6 +9,7 @@
 #include "game/level.h"
 #include "game/lot.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -84,6 +83,25 @@ static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLOT(LOT_INFO *lot);
 static void M_SetCurrentPosition(int32_t level_num);
 static void M_ReadResumeInfo(MYFILE *fp);
+
+static const char *M_GetSaveFilePattern(void);
+static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+static bool M_LoadFromFile(MYFILE *fp);
+static bool M_LoadOnlyResumeInfo(MYFILE *fp);
+
+static SAVEGAME_STRATEGY m_Strategy = {
+    // clang-format off
+    .allow_load = true,
+    .allow_save = false,
+    .format = SAVEGAME_FORMAT_LEGACY,
+    .get_save_file_pattern_func = M_GetSaveFilePattern,
+    .fill_info_func = M_FillInfo,
+    .load_from_file_func = M_LoadFromFile,
+    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
+    .save_to_file_func = nullptr,
+    .update_death_counters_func = nullptr,
+    // clang-format on
+};
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
@@ -381,12 +399,12 @@ static void M_ReadResumeInfo(MYFILE *const fp)
     resume_info->stats.death_count = -1;
 }
 
-const char *Savegame_Legacy_GetSaveFilePattern(void)
+static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_legacy;
 }
 
-bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
+static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     File_Seek(fp, 0, SEEK_SET);
 
@@ -424,7 +442,7 @@ bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-bool Savegame_Legacy_LoadFromFile(MYFILE *const fp)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
@@ -557,7 +575,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *const fp)
     return true;
 }
 
-bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp)
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
@@ -571,3 +589,5 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp)
     Memory_FreePointer(&buffer);
     return true;
 }
+
+REGISTER_SAVEGAME_STRATEGY(m_Strategy)

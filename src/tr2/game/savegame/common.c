@@ -20,7 +20,6 @@
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
-#define MAX_STRATEGIES 2
 #define SAVES_DIR "saves"
 
 static STATS_COMMON *m_DefaultStats = nullptr;

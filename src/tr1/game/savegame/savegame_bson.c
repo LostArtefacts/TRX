@@ -1,5 +1,3 @@
-#include "game/savegame/savegame_bson.h"
-
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -11,6 +9,7 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -75,6 +74,25 @@ static JSON_ARRAY *M_DumpMusicTrackFlags(void);
 static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
 static bool M_IsValidItemObject(
     GAME_OBJECT_ID saved_obj_id, GAME_OBJECT_ID current_obj_id);
+
+static const char *M_GetSaveFilePattern(void);
+static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+static bool M_LoadFromFile(MYFILE *fp);
+static bool M_LoadOnlyResumeInfo(MYFILE *fp);
+static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+static bool M_UpdateDeathCounters(MYFILE *fp, int32_t death_count);
+
+static SAVEGAME_STRATEGY m_Strategy = {
+    .allow_load = true,
+    .allow_save = true,
+    .format = SAVEGAME_FORMAT_BSON,
+    .get_save_file_pattern_func = M_GetSaveFilePattern,
+    .fill_info_func = M_FillInfo,
+    .load_from_file_func = M_LoadFromFile,
+    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
+    .save_to_file_func = M_SaveToFile,
+    .update_death_counters_func = M_UpdateDeathCounters,
+};
 
 static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 {
@@ -1329,12 +1347,12 @@ static JSON_ARRAY *M_DumpMusicTrackFlags(void)
     return music_track_arr;
 }
 
-const char *Savegame_BSON_GetSaveFilePattern(void)
+static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_bson;
 }
 
-bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
+static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     bool ret = false;
     SAVEGAME_BSON_HEADER header;
@@ -1375,7 +1393,7 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     return ret;
 }
 
-bool Savegame_BSON_LoadFromFile(MYFILE *const fp)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
     bool ret = false;
 
@@ -1453,7 +1471,7 @@ cleanup:
     return ret;
 }
 
-bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *const fp)
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
     bool ret = false;
 
@@ -1488,8 +1506,7 @@ cleanup:
     return ret;
 }
 
-void Savegame_BSON_SaveToFile(
-    MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
+static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     JSON_OBJECT *root_obj = JSON_ObjectNew();
@@ -1517,8 +1534,7 @@ void Savegame_BSON_SaveToFile(
     savegame_info->features.restart = true;
 }
 
-bool Savegame_BSON_UpdateDeathCounters(
-    MYFILE *const fp, const int32_t death_count)
+static bool M_UpdateDeathCounters(MYFILE *const fp, const int32_t death_count)
 {
     bool result = false;
     int32_t version;
@@ -1545,3 +1561,5 @@ cleanup:
     JSON_ValueFree(root);
     return result;
 }
+
+REGISTER_SAVEGAME_STRATEGY(m_Strategy)
