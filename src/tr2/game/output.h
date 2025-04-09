@@ -22,6 +22,8 @@ typedef struct {
     float g;
 } VERTEX_INFO;
 
+void Output_ApplyLevelSettings(void);
+
 void Output_DrawObjectMesh(const OBJECT_MESH *mesh, int32_t clip);
 void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, int32_t clip);
 void Output_DrawRoom(const ROOM_MESH *mesh, bool is_outside);
@@ -74,7 +76,6 @@ void Output_DrawAirBar(int32_t percent);
 BACKGROUND_TYPE Output_GetBackgroundType(void);
 void Output_LoadBackgroundFromObject(void);
 
-void Output_InitialiseNamedColors(void);
 void Output_InsertShadow(
     int16_t radius, const BOUNDS_16 *bounds, const ITEM *item);
 
@@ -87,3 +88,6 @@ void Output_SetShadeEffect(bool shade_effect);
 bool Output_IsShadeEffect(void);
 void Output_SetSunsetEnabled(bool enabled);
 void Output_SetSunsetTimer(int32_t timer);
+
+int32_t Output_GetNearZ(void);
+int32_t Output_GetFarZ(void);

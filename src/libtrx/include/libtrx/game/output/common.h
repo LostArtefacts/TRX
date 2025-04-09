@@ -2,6 +2,9 @@
 
 #include "../rooms.h"
 
+extern void Output_ObserveLevelLoad(void);
+extern void Output_ObserveLevelUnload(void);
+
 extern bool Output_MakeScreenshot(const char *path);
 extern void Output_BeginScene(void);
 extern void Output_EndScene(void);
@@ -36,3 +39,8 @@ void Output_LightRoom(ROOM *room);
 
 void Output_ResetDynamicLights(void);
 void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);
+
+int32_t Output_GetFogStart(void);
+void Output_SetFogStart(int32_t dist);
+extern int32_t Output_GetFogEnd(void);
+extern void Output_SetFogEnd(int32_t dist);

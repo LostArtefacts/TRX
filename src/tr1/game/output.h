@@ -14,17 +14,10 @@ void Output_Shutdown(void);
 void Output_SetWindowSize(int32_t width, int32_t height);
 void Output_ApplyLevelSettings(void);
 void Output_ApplyRenderSettings(void);
-void Output_ObserveLevelLoad(void);
-void Output_ObserveLevelUnload(void);
 void Output_ObserveFOVChange(void);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
-int32_t Output_GetDrawDistMin(void);
-int32_t Output_GetDrawDistFade(void);
-int32_t Output_GetDrawDistMax(void);
-void Output_SetDrawDistFade(int32_t dist);
-void Output_SetDrawDistMax(int32_t dist);
 void Output_SetWaterColor(const RGB_888 color);
 
 void Output_BeginScene(void);

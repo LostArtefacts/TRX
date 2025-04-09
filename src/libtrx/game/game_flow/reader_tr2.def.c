@@ -47,6 +47,8 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
 static void M_LoadSettings(
     JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
 {
+    M_LoadCommonSettings(obj, settings);
+
     {
         const char *tmp_s =
             JSON_ObjectGetString(obj, "sfx_path", JSON_INVALID_STRING);

@@ -388,8 +388,8 @@ void Output_ApplyLevelSettings(void)
 {
     const RGB_888 color = Level_GetWaterColor();
     Output_SetWaterColor(Level_GetWaterColor());
-    Output_SetDrawDistFade(Level_GetFogStart() * WALL_L);
-    Output_SetDrawDistMax(Level_GetFogEnd() * WALL_L);
+    Output_SetFogStart(Level_GetFogStart() * WALL_L);
+    Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
 }
 
 void Output_ApplyRenderSettings(void)

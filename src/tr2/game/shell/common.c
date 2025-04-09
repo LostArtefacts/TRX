@@ -384,6 +384,8 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
             Viewport_AlterFOV(-1);
         }
     }
+
+    Output_ApplyLevelSettings();
 }
 
 // TODO: refactor the hell out of me

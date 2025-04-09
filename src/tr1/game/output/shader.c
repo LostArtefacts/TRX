@@ -120,8 +120,8 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
         glUniform2f, shader->uniforms[M_UNIFORM_VIEWPORT_SIZE],
         GFX_Context_GetDisplayWidth(), GFX_Context_GetDisplayHeight());
     GFX_TRACK_UNIFORM(
-        glUniform2f, shader->uniforms[M_UNIFORM_FOG], Output_GetDrawDistFade(),
-        Output_GetDrawDistMax());
+        glUniform2f, shader->uniforms[M_UNIFORM_FOG], Output_GetFogStart(),
+        Output_GetFogEnd());
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_TIME], Output_GetTime());
 }
