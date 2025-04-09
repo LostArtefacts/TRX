@@ -148,8 +148,8 @@ void Viewport_Reset(void)
         vp->width = vp->height * vp->render_ar;
     }
 
-    vp->near_z = VIEW_NEAR;
-    vp->far_z = VIEW_FAR;
+    vp->near_z = Output_GetNearZ() >> W2V_SHIFT;
+    vp->far_z = Output_GetFarZ() >> W2V_SHIFT;
 
     // We do not update vp->view_angle on purpose, as it's managed by the game
     // rather than the window manager. (Think cutscenes, special cameras, etc.)

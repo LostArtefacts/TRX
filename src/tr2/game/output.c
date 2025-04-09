@@ -2,11 +2,13 @@
 
 #include "game/clock.h"
 #include "game/inventory_ring.h"
+#include "game/level.h"
 #include "game/random.h"
 #include "game/render/common.h"
 #include "game/render/priv.h"
 #include "game/scaler.h"
 #include "game/shell.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -62,10 +64,14 @@ static int16_t m_ShadesTable[32];
 static int32_t m_RandomTable[32];
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
 static XYZ_32 m_LsVectorView = {};
+
+static int32_t m_FogEnd = 0;
+
 static bool m_IsWaterEffect = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsShadeEffect = false;
 static int32_t m_WibbleOffset = 0;
+
 static bool m_IsSunsetEnabled = false;
 static int32_t m_SunsetTimer = 0;
 
@@ -171,18 +177,13 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
             const double persp = g_FltPersp / zv;
             const int32_t depth = zv_int >> W2V_SHIFT;
             vbuf->zv += base_z;
-
-            if (depth < FOG_END) {
-                if (depth > FOG_START) {
-                    shade += depth - FOG_START;
-                }
-                vbuf->rhw = persp * g_FltRhwOPersp;
-            } else {
-                // clip_flags = far_clip;
-                shade = 0x1FFF;
+            if (zv >= Output_GetFarZ()) {
                 vbuf->zv = g_FltFarZ;
-                vbuf->rhw = persp * g_FltRhwOPersp;
             }
+
+            shade += Output_CalcFogShade(depth);
+
+            vbuf->rhw = persp * g_FltRhwOPersp;
 
             double xs = xv * persp + g_FltWinCenterX;
             double ys = yv * persp + g_FltWinCenterY;
@@ -408,6 +409,31 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
     }
 }
 
+void Output_ApplyLevelSettings(void)
+{
+    Output_SetFogStart(Level_GetFogStart() * WALL_L);
+    Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
+    Viewport_Reset();
+}
+
+void Output_ObserveLevelLoad(void)
+{
+    Output_ApplyLevelSettings();
+    for (int32_t i = 0; i < COLOR_NUMBER_OF; i++) {
+        m_NamedColors[i].palette_index =
+            Output_FindColor8(m_NamedColors[i].rgb);
+    }
+}
+
+void Output_ObserveLevelUnload(void)
+{
+    Output_InitialiseTexturePages(0, true);
+    Output_InitialiseObjectTextures(0);
+    if (Output_GetBackgroundType() == BK_OBJECT) {
+        Output_UnloadBackground();
+    }
+}
+
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
 {
     g_FltWinLeft = 0.0f;
@@ -590,8 +616,8 @@ void Output_DrawSprite(
 
     if (flags & SPRF_SHADE) {
         const int32_t depth = zv >> W2V_SHIFT;
-        if (depth > FOG_START) {
-            shade += depth - FOG_START;
+        if (depth > Output_GetFogStart()) {
+            shade += depth - Output_GetFogStart();
             if (shade > 0x1FFF) {
                 return;
             }
@@ -900,6 +926,26 @@ int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
     return 1;
 }
 
+int32_t Output_GetNearZ(void)
+{
+    return 20 << W2V_SHIFT;
+}
+
+int32_t Output_GetFarZ(void)
+{
+    return Output_GetFogEnd() << W2V_SHIFT;
+}
+
+int32_t Output_GetFogEnd(void)
+{
+    return m_FogEnd;
+}
+
+void Output_SetFogEnd(const int32_t dist)
+{
+    m_FogEnd = dist;
+}
+
 void Output_SetupBelowWater(const bool is_underwater)
 {
     Render_SetWet(is_underwater);
@@ -974,13 +1020,15 @@ void Output_SetLightDivider(const int32_t divider)
 
 int32_t Output_CalcFogShade(const int32_t depth)
 {
-    if (depth > FOG_START) {
-        return depth - FOG_START;
+    const int32_t fog_start = Output_GetFogStart();
+    const int32_t fog_end = Output_GetFogEnd();
+    if (depth < fog_start) {
+        return 0;
     }
-    if (depth > FOG_END) {
+    if (depth >= fog_end) {
         return 0x1FFF;
     }
-    return 0;
+    return (depth - fog_start) * 0x1FFF / (fog_end - fog_start);
 }
 
 int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
@@ -997,13 +1045,5 @@ void Output_LightRoomVertices(const ROOM *const room)
         const int32_t wibble =
             light_table->table[vtx->light_table_value % WIBBLE_SIZE];
         vtx->light_adder = vtx->light_base + wibble;
-    }
-}
-
-void Output_InitialiseNamedColors(void)
-{
-    for (int32_t i = 0; i < COLOR_NUMBER_OF; i++) {
-        m_NamedColors[i].palette_index =
-            Output_FindColor8(m_NamedColors[i].rgb);
     }
 }

@@ -78,15 +78,15 @@ typedef struct {
 } GF_FMV;
 
 typedef struct {
+    struct {
+        bool is_present;
+        float value;
+    } fog_start, fog_end;
 #if TR_VERSION == 1
     struct {
         bool is_present;
         RGB_888 value;
     } water_color;
-    struct {
-        bool is_present;
-        float value;
-    } fog_start, fog_end;
 #elif TR_VERSION == 2
     char *sfx_path;
 #endif

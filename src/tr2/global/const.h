@@ -143,12 +143,6 @@
 #define SPRITE_TRANS_QUARTER 0x60000000
 #define SPRITE_COLOUR(r, g, b) ((r) | ((g) << 8) | ((b) << 16))
 
-#define VIEW_NEAR (20 * 1) // = 20
-#define VIEW_FAR (20 * WALL_L) // = 20480
-
-#define FOG_START (12 * WALL_L) // = 12288
-#define FOG_END (20 * WALL_L) // = 20480
-
 #define PITCH_SHIFT 4
 
 #define IDS_DX5_REQUIRED 1

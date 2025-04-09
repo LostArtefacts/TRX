@@ -23,6 +23,7 @@
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
@@ -276,7 +277,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_InitialiseNamedColors();
+    Output_ObserveLevelLoad();
 
     Render_Reset(
         RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
@@ -376,13 +377,7 @@ bool Level_Initialise(
 
 void Level_Unload(void)
 {
-    Output_InitialiseTexturePages(0, true);
-    Output_InitialiseObjectTextures(0);
-
-    if (Output_GetBackgroundType() == BK_OBJECT) {
-        Output_UnloadBackground();
-    }
-
+    Output_ObserveLevelUnload();
     Camera_Reset();
 }
 
@@ -414,4 +409,22 @@ void Level_Init(void)
     }
 
     Benchmark_End(&benchmark, nullptr);
+}
+
+float Level_GetFogStart(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.fog_start.is_present) {
+        return level->settings.fog_start.value;
+    }
+    return g_Config.visuals.fog_start;
+}
+
+float Level_GetFogEnd(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.fog_end.is_present) {
+        return level->settings.fog_end.value;
+    }
+    return g_Config.visuals.fog_end;
 }

@@ -50,6 +50,8 @@ typedef struct {
         bool fix_item_rots;
         int32_t fov;
         bool use_pcx_fov;
+        int32_t fog_start;
+        int32_t fog_end;
     } visuals;
 
     struct {

@@ -98,23 +98,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent)
 static void M_LoadSettings(
     JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
 {
-    {
-        const double value =
-            JSON_ObjectGetDouble(obj, "fog_start", JSON_INVALID_NUMBER);
-        if (value != JSON_INVALID_NUMBER) {
-            settings->fog_start.is_present = true;
-            settings->fog_start.value = value;
-        }
-    }
-
-    {
-        const double value =
-            JSON_ObjectGetDouble(obj, "fog_end", JSON_INVALID_NUMBER);
-        if (value != JSON_INVALID_NUMBER) {
-            settings->fog_end.is_present = true;
-            settings->fog_end.value = value;
-        }
-    }
+    M_LoadCommonSettings(obj, settings);
 
     {
         JSON_ARRAY *const tmp_arr = JSON_ObjectGetArray(obj, "water_color");

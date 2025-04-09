@@ -6,9 +6,7 @@
 static int32_t m_Time = 0;
 static int32_t m_AnimatedTexturesOffset = 0;
 
-static int32_t m_DrawDistFade = 0;
-static int32_t m_DrawDistMax = 0;
-
+static int32_t m_FogEnd = 0;
 static RGB_F m_WaterColor = {};
 
 static int32_t m_LsAdder = 0;
@@ -19,29 +17,14 @@ static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
 
-int32_t Output_GetDrawDistMin(void)
+int32_t Output_GetFogEnd(void)
 {
-    return 20;
+    return m_FogEnd;
 }
 
-int32_t Output_GetDrawDistFade(void)
+void Output_SetFogEnd(const int32_t dist)
 {
-    return m_DrawDistFade;
-}
-
-int32_t Output_GetDrawDistMax(void)
-{
-    return m_DrawDistMax;
-}
-
-void Output_SetDrawDistFade(const int32_t dist)
-{
-    m_DrawDistFade = dist;
-}
-
-void Output_SetDrawDistMax(const int32_t dist)
-{
-    m_DrawDistMax = dist;
+    m_FogEnd = dist;
 
     const double near_z = Output_GetNearZ();
     const double far_z = Output_GetFarZ();
@@ -52,12 +35,12 @@ void Output_SetDrawDistMax(const int32_t dist)
 
 int32_t Output_GetNearZ(void)
 {
-    return Output_GetDrawDistMin() << W2V_SHIFT;
+    return 20 << W2V_SHIFT;
 }
 
 int32_t Output_GetFarZ(void)
 {
-    return Output_GetDrawDistMax() << W2V_SHIFT;
+    return Output_GetFogEnd() << W2V_SHIFT;
 }
 
 void Output_SetupBelowWater(const bool underwater)

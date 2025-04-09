@@ -71,6 +71,7 @@ static void M_LoadFMV(
     void *user_arg);
 static void M_LoadFMVs(JSON_OBJECT *obj, GAME_FLOW *gf);
 static void M_LoadGlobalInjections(JSON_OBJECT *obj, GAME_FLOW *gf);
+static void M_LoadCommonSettings(JSON_OBJECT *obj, GF_LEVEL_SETTINGS *settings);
 static void M_LoadCommonRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 static void M_LoadRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 
@@ -79,6 +80,28 @@ static void M_LoadRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 #elif TR_VERSION == 2
     #include "./reader_tr2.def.c"
 #endif
+
+static void M_LoadCommonSettings(
+    JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
+{
+    {
+        const double value =
+            JSON_ObjectGetDouble(obj, "fog_start", JSON_INVALID_NUMBER);
+        if (value != JSON_INVALID_NUMBER) {
+            settings->fog_start.is_present = true;
+            settings->fog_start.value = value;
+        }
+    }
+
+    {
+        const double value =
+            JSON_ObjectGetDouble(obj, "fog_end", JSON_INVALID_NUMBER);
+        if (value != JSON_INVALID_NUMBER) {
+            settings->fog_end.is_present = true;
+            settings->fog_end.value = value;
+        }
+    }
+}
 
 static void M_LoadCommonRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
 {

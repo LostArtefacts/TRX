@@ -10,6 +10,7 @@ typedef struct {
     int32_t shade;
 } COMMON_LIGHT;
 
+static int32_t m_FogStart = 0;
 static int32_t m_DynamicLightCount = 0;
 static LIGHT m_DynamicLights[MAX_DYNAMIC_LIGHTS] = {};
 
@@ -293,4 +294,14 @@ void Output_AddDynamicLight(
     light->pos = pos;
     light->shade.value_1 = intensity;
     light->falloff.value_1 = falloff;
+}
+
+int32_t Output_GetFogStart(void)
+{
+    return m_FogStart;
+}
+
+void Output_SetFogStart(const int32_t dist)
+{
+    m_FogStart = dist;
 }

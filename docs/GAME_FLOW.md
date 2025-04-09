@@ -100,12 +100,12 @@ remains distinct for each game.
       <a name="draw-distance-fade"></a>
       <code>fog_start</code>
     </td>
-    <td>Double<strong>*</strong></td>
+    <td>Double</td>
     <td>
       The distance (in tiles) at which objects and the world start to fade into
       blackness.
       <ul>
-        <li>The default hardcoded value in TR1 is 12.</li>
+        <li>The default value in OG TR1 is hardcoded to 12.</li>
         <li>The default (disabled) value in TombATI is 72.</li>
       </ul>
     </td>
@@ -115,11 +115,11 @@ remains distinct for each game.
       <a name="draw-distance-max"></a>
       <code>fog_end</code>
     </td>
-    <td>Double<strong>*</strong></td>
+    <td>Double</td>
     <td>
       The distance (in tiles) at which objects and the world are clipped away.
       <ul>
-        <li>The default hardcoded value in TR1 is 20.</li>
+        <li>The default value in OG TR1 is hardcoded to 20.</li>
         <li>The default (disabled) value in TombATI is 80.</li>
       </ul>
     </td>
@@ -313,6 +313,28 @@ remains distinct for each game.
     <td>String</td>
     <td>
       The path to the sound effects (.sfx) file to use in the game.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="draw-distance-fade"></a>
+      <code>fog_start</code>
+    </td>
+    <td>Double</td>
+    <td>
+      The distance (in tiles) at which objects and the world start to fade into
+      blackness. The default value in OG TR2 is hardcoded to 12.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="draw-distance-max"></a>
+      <code>fog_end</code>
+    </td>
+    <td>Double<strong>*</strong></td>
+    <td>
+      The distance (in tiles) at which objects and the world are clipped away.
+      The default value in OG TR2 is hardcoded to 20.
     </td>
   </tr>
 </table>
@@ -517,7 +539,7 @@ Following are each of the properties available within a level.
     <td colspan="2">The ambient music track ID.</td>
   </tr>
   <tr valign="top">
-    <td><code>fog_start</code><strong>¹</strong></td>
+    <td><code>fog_start</code></td>
     <td>Double</td>
     <td colspan="2">
       Can be customized per level. See <a href="#draw-distance-fade">above</a>
@@ -525,7 +547,7 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>fog_end</code><strong>¹</strong></td>
+    <td><code>fog_end</code></td>
     <td>Double</td>
     <td colspan="2">
       Can be customized per level. See <a href="#draw-distance-max">above</a>
