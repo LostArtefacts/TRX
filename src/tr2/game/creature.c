@@ -358,20 +358,6 @@ bool Creature_Animate(
     return true;
 }
 
-void Creature_Head(ITEM *item, int16_t required)
-{
-    CREATURE *const creature = item->data;
-    if (creature == nullptr) {
-        return;
-    }
-
-    int16_t change = required - creature->head_rotation;
-    CLAMP(change, -MAX_HEAD_CHANGE, MAX_HEAD_CHANGE);
-
-    creature->head_rotation += change;
-    CLAMP(creature->head_rotation, -HEAD_ARC, HEAD_ARC);
-}
-
 void Creature_Neck(ITEM *const item, const int16_t required)
 {
     CREATURE *const creature = item->data;

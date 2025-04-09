@@ -10,6 +10,12 @@
 #define M_ESCAPE_CHANCE 2048
 #define M_RECOVER_CHANCE 256
 #define M_MAX_TILT (3 * DEG_1) // = 546
+#define M_MAX_HEAD_CHANGE (5 * DEG_1) // = 910
+#if TR_VERSION == 1
+    #define M_HEAD_ARC FRONT_ARC
+#elif TR_VERSION >= 2
+    #define M_HEAD_ARC 0x3000 // = 12288
+#endif
 
 static ITEM *M_ChooseEnemy(const ITEM *item);
 static bool M_SwitchToWater(
@@ -426,4 +432,18 @@ void Creature_Tilt(ITEM *const item, int16_t angle)
     angle = angle * 4 - item->rot.z;
     CLAMP(angle, -M_MAX_TILT, M_MAX_TILT);
     item->rot.z += angle;
+}
+
+void Creature_Head(ITEM *const item, const int16_t required)
+{
+    CREATURE *const creature = item->data;
+    if (creature == nullptr) {
+        return;
+    }
+
+    int16_t change = required - creature->head_rotation;
+    CLAMP(change, -M_MAX_HEAD_CHANGE, M_MAX_HEAD_CHANGE);
+
+    creature->head_rotation += change;
+    CLAMP(creature->head_rotation, -M_HEAD_ARC, M_HEAD_ARC);
 }

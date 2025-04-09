@@ -18,29 +18,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 
-void Creature_Head(ITEM *item, int16_t required)
-{
-    CREATURE *creature = item->data;
-    if (!creature) {
-        return;
-    }
-
-    int16_t change = required - creature->head_rotation;
-    if (change > MAX_HEAD_CHANGE) {
-        change = MAX_HEAD_CHANGE;
-    } else if (change < -MAX_HEAD_CHANGE) {
-        change = -MAX_HEAD_CHANGE;
-    }
-
-    creature->head_rotation += change;
-
-    if (creature->head_rotation > FRONT_ARC) {
-        creature->head_rotation = FRONT_ARC;
-    } else if (creature->head_rotation < -FRONT_ARC) {
-        creature->head_rotation = -FRONT_ARC;
-    }
-}
-
 int16_t Creature_Effect(
     const ITEM *const item, const BITE *const bite,
     int16_t (*spawn)(
