@@ -44,11 +44,12 @@ INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
         },
     },
     [RT_OPTION] = {
-        .count = 4,
+        .count = 5,
         .current = 0,
-        .qtys = { 1, 1, 1, 1 },
+        .qtys = { 1, 1, 1, 1, 1 },
         .items = {
             &g_InvRing_Item_Passport,
+            &g_InvRing_Item_Graphics,
             &g_InvRing_Item_Controls,
             &g_InvRing_Item_Sound,
             &g_InvRing_Item_Photo,

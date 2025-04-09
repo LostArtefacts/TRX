@@ -203,7 +203,7 @@ static void M_InitText(void)
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);
 
-    m_Text[TEXT_TITLE] = Text_Create(0, TOP_Y, GS(DETAIL_SELECT_DETAIL));
+    m_Text[TEXT_TITLE] = Text_Create(0, TOP_Y, GS(DETAIL_TITLE));
     Text_CentreH(m_Text[TEXT_TITLE], 1);
     Text_CentreV(m_Text[TEXT_TITLE], 1);
     Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0, TS_HEADING);
