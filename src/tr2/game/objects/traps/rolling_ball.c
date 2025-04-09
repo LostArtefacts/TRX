@@ -1,6 +1,5 @@
 #include "game/camera.h"
 #include "game/items.h"
-#include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -10,6 +9,7 @@
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -167,7 +167,7 @@ static void M_Collision(
 
     if (lara_item->gravity) {
         if (coll->enable_baddie_push) {
-            Lara_Push(item, lara_item, coll, coll->enable_hit, true);
+            Lara_Push(item, coll, coll->enable_hit, true);
         }
         lara_item->hit_points -= ROLLING_BALL_DAMAGE_AIR;
 

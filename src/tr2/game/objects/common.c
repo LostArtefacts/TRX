@@ -1,13 +1,13 @@
 #include "game/objects/common.h"
 
 #include "game/items.h"
-#include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
@@ -93,7 +93,7 @@ void Object_Collision(
     }
 
     if (coll->enable_baddie_push) {
-        Lara_Push(item, lara_item, coll, false, true);
+        Lara_Push(item, coll, false, true);
     }
 }
 

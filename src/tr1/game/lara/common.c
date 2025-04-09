@@ -721,11 +721,13 @@ bool Lara_MovePosition(ITEM *item, XYZ_32 *vec)
     return Item_MovePosition(g_LaraItem, item, vec, velocity);
 }
 
-void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
+void Lara_Push(
+    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+    const bool big_push)
 {
-    ITEM *const lara_item = g_LaraItem;
-    int32_t x = lara_item->pos.x - item->pos.x;
-    int32_t z = lara_item->pos.z - item->pos.z;
+    ITEM *const target_item = Lara_GetItem();
+    int32_t x = target_item->pos.x - item->pos.x;
+    int32_t z = target_item->pos.z - item->pos.z;
     const int32_t c = Math_Cos(item->rot.y);
     const int32_t s = Math_Sin(item->rot.y);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
@@ -763,8 +765,8 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
         int32_t ax = (c * rx + s * rz) >> W2V_SHIFT;
         int32_t az = (c * rz - s * rx) >> W2V_SHIFT;
 
-        lara_item->pos.x = item->pos.x + ax;
-        lara_item->pos.z = item->pos.z + az;
+        target_item->pos.x = item->pos.x + ax;
+        target_item->pos.z = item->pos.z + az;
 
         rx = (bounds->min.x + bounds->max.x) / 2;
         rz = (bounds->min.z + bounds->max.z) / 2;
@@ -772,10 +774,10 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 
         if (hit_on) {
-            PHD_ANGLE hitang = lara_item->rot.y - (DEG_180 + Math_Atan(z, x));
+            PHD_ANGLE hitang = target_item->rot.y - (DEG_180 + Math_Atan(z, x));
             g_Lara.hit_direction = (hitang + DEG_45) / DEG_90;
             if (!g_Lara.hit_frame) {
-                Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+                Sound_Effect(SFX_LARA_BODYSL, &target_item->pos, SPM_NORMAL);
             }
 
             g_Lara.hit_frame++;
@@ -790,20 +792,20 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
 
         int16_t old_facing = coll->facing;
         coll->facing = Math_Atan(
-            lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+            target_item->pos.z - coll->old.z, target_item->pos.x - coll->old.x);
         Collide_GetCollisionInfo(
-            coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-            lara_item->room_num, LARA_HEIGHT);
+            coll, target_item->pos.x, target_item->pos.y, target_item->pos.z,
+            target_item->room_num, LARA_HEIGHT);
         coll->facing = old_facing;
 
         if (coll->coll_type != COLL_NONE) {
-            lara_item->pos.x = coll->old.x;
-            lara_item->pos.z = coll->old.z;
+            target_item->pos.x = coll->old.x;
+            target_item->pos.z = coll->old.z;
         } else {
-            coll->old.x = lara_item->pos.x;
-            coll->old.y = lara_item->pos.y;
-            coll->old.z = lara_item->pos.z;
-            Item_UpdateRoom(item, -10);
+            coll->old.x = target_item->pos.x;
+            coll->old.y = target_item->pos.y;
+            coll->old.z = target_item->pos.z;
+            Item_UpdateRoom(target_item, -10);
         }
 
         if (g_Lara.interact_target.is_moving

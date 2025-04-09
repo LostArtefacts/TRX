@@ -1,10 +1,10 @@
 #include "game/items.h"
 #include "game/lara/control.h"
-#include "game/lara/misc.h"
 #include "game/objects/creatures/skidoo_driver.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 
 #define SKIDOO_ARMED_RADIUS (WALL_L / 3) // = 341
@@ -46,8 +46,7 @@ static void M_Collision(
 
     if (coll->enable_baddie_push) {
         Lara_Push(
-            item, lara_item, coll, item->speed > 0 ? coll->enable_hit : false,
-            false);
+            item, coll, item->speed > 0 ? coll->enable_hit : false, false);
     }
 
     if (g_Lara.skidoo == NO_ITEM && item->speed > 0) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../collision.h"
 #include "../items.h"
 #include "types.h"
 
@@ -13,3 +14,4 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *item);
 void Lara_TakeDamage(int16_t damage, bool hit_status);
 
 bool Lara_TestBoundsCollide(const ITEM *item, int32_t radius);
+void Lara_Push(const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
