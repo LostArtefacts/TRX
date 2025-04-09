@@ -13,8 +13,6 @@
 
 #include <math.h>
 
-#define MAX_VOLUME 0x8000
-
 typedef enum {
     SOUND_MODE_NORMAL = 0,
     SOUND_MODE_WAIT = 1,
@@ -44,7 +42,9 @@ typedef enum {
 #define SOUND_RADIUS_SQRD SQUARE(SOUND_RADIUS) // = 0x6400000
 
 #define SOUND_MAX_SLOTS 32
-#define SOUND_MAX_VOLUME (SOUND_RADIUS - 1)
+#define SOUND_RANGE_MULT_CONSTANT 4
+// sample volume ranges from 0..32767
+#define SOUND_MAX_VOLUME ((SOUND_RADIUS * SOUND_RANGE_MULT_CONSTANT) - 1)
 #define SOUND_MAX_VOLUME_CHANGE 0x2000
 #define SOUND_MAX_PITCH_CHANGE 6000
 
@@ -69,11 +69,12 @@ static void M_ClearAllSlots(void);
 static void M_CloseSlot(SOUND_SLOT *const slot);
 static void M_UpdateSlot(SOUND_SLOT *const slot);
 
-static int32_t M_ConvertVolumeToDecibel(const int32_t volume)
+static int32_t M_ConvertVolumeToDecibel(int32_t volume)
 {
-    const double adjusted_volume = m_MasterVolume * volume;
-    const double scaler = 0x1.p-21; // 2.0e-21
-    return (adjusted_volume * scaler - 1.0) * 5000.0;
+    int32_t idx =
+        volume * (m_MasterVolume / 64.0f) * DECIBEL_LUT_SIZE / SOUND_MAX_VOLUME;
+    CLAMP(idx, 0, DECIBEL_LUT_SIZE - 1);
+    return m_DecibelLUT[idx];
 }
 
 static int32_t M_ConvertPanToDecibel(const uint16_t pan)
@@ -281,8 +282,8 @@ bool Sound_Effect(
     }
 
     if (free_slot == -1) {
-        // No slot found - try to find the most silent track, and use this one
-        int32_t min_volume = MAX_VOLUME;
+        // No slot found - try to find the most quiet track, and use this one
+        int32_t min_volume = INT32_MAX;
         for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
             SOUND_SLOT *const slot = &m_SoundSlots[i];
             if (slot->effect_num >= 0 && slot->volume < min_volume) {
