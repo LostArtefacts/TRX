@@ -20,6 +20,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
 
 void Savegame_ScanSavedGames(void);
 void Savegame_FillAvailableSaves(REQUEST_INFO *req);
+void Savegame_FillAvailableLevels(REQUEST_INFO *req);
 void Savegame_HighlightNewestSlot(void);
 int32_t Savegame_GetLevelNumber(int32_t slot_idx);
 int32_t Savegame_GetCounter(void);

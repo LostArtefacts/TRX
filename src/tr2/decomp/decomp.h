@@ -19,7 +19,6 @@ void S_InitialisePolyList(bool clear_back_buffer);
 void DecreaseScreenSize(void);
 void IncreaseScreenSize(void);
 void S_UnloadLevelFile(void);
-void GetValidLevelsList(REQUEST_INFO *req);
 void InitialiseGameFlags(void);
 void GetCarriedItems(void);
 int32_t DoShift(ITEM *vehicle, const XYZ_32 *pos, const XYZ_32 *old);

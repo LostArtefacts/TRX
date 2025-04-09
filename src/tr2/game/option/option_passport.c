@@ -221,12 +221,7 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
 
     case M_ROLE_PLAY_ANY_LEVEL: {
         if (!g_SaveGameRequester.ready) {
-            Requester_Init(&g_SaveGameRequester);
-            Requester_SetSize(&g_SaveGameRequester, 10, -32);
-            GetValidLevelsList(&g_SaveGameRequester);
-            Requester_SetHeading(
-                &g_SaveGameRequester, GS(PASSPORT_SELECT_LEVEL), 0, nullptr, 0);
-            g_SaveGameRequester.ready = true;
+            Savegame_FillAvailableLevels(&g_SaveGameRequester);
         }
         if (m_SubtitleText == nullptr) {
             m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_NEW_GAME));
