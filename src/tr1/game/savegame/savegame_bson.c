@@ -19,6 +19,7 @@
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/savegame/bson.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -31,23 +32,6 @@
 #include <zlib.h>
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
-
-#pragma pack(push, 1)
-typedef struct {
-    uint32_t magic;
-    int16_t initial_version;
-    uint16_t version;
-    int32_t compressed_size;
-    int32_t uncompressed_size;
-} SAVEGAME_BSON_HEADER;
-
-typedef struct {
-    uint32_t flags;
-    int32_t counter;
-    int32_t level_num;
-    size_t title_size;
-} SAVEGAME_BSON_EXTENDED_HEADER;
-#pragma pack(pop)
 
 typedef struct {
     int16_t count;
@@ -108,20 +92,19 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 
     Memory_FreePointer(&uncompressed);
 
-    SAVEGAME_BSON_HEADER header = {
+    const SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
         .initial_version = Savegame_GetInitialVersion(),
         .version = version,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
     };
-
     File_WriteData(fp, &header, sizeof(header));
 
     File_WriteData(fp, compressed, compressed_size);
 
     const GF_LEVEL *const level = Game_GetCurrentLevel();
-    SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
+    const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag(),
         .counter = Savegame_GetCounter(),
         .level_num = level->num,

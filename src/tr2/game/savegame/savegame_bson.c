@@ -10,6 +10,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/json.h>
 #include <libtrx/memory.h>
@@ -37,21 +38,6 @@
         value.y = JSON_ObjectGetInt(sub_obj, "y", value.y);                    \
         value.z = JSON_ObjectGetInt(sub_obj, "z", value.z);                    \
     } while (0)
-
-#pragma pack(push, 1)
-typedef struct {
-    uint32_t magic;
-    int16_t initial_version;
-    uint16_t version;
-    uint32_t flags;
-    int32_t counter;
-    int32_t level_num;
-    size_t title_size;
-    size_t game_version_size;
-    size_t compressed_size;
-    size_t uncompressed_size;
-} SAVEGAME_BSON_HEADER;
-#pragma pack(pop)
 
 static void M_SaveRaw(MYFILE *fp, const JSON_VALUE *root);
 static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
@@ -114,11 +100,18 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
     info->initial_version = header.initial_version;
-    info->counter = header.counter;
-    info->level_num = header.level_num;
-    info->level_title = Memory_Alloc(header.title_size + 1);
-    File_ReadData(fp, info->level_title, header.title_size);
 
+    File_Skip(fp, header.compressed_size);
+    SAVEGAME_BSON_EXTENDED_HEADER extra_header;
+    File_ReadData(fp, &extra_header, sizeof(extra_header));
+
+    info->counter = extra_header.counter;
+    info->level_num = extra_header.level_num;
+    if (extra_header.title_size >= File_Size(fp)) {
+        return false;
+    }
+    info->level_title = Memory_Alloc(extra_header.title_size + 1);
+    File_ReadData(fp, info->level_title, extra_header.title_size);
     return true;
 }
 
@@ -161,18 +154,20 @@ static void M_SaveRaw(MYFILE *const fp, const JSON_VALUE *const root)
         .magic = SAVEGAME_BSON_MAGIC,
         .initial_version = Savegame_GetInitialVersion(),
         .version = SAVEGAME_CURRENT_VERSION,
+        .compressed_size = compressed_size,
+        .uncompressed_size = uncompressed_size,
+    };
+    const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag(),
         .counter = Savegame_GetCounter(),
         .level_num = level->num,
         .title_size = strlen(level->title),
-        .game_version_size = strlen(g_TRXVersion),
-        .compressed_size = compressed_size,
-        .uncompressed_size = uncompressed_size,
     };
 
     File_WriteData(fp, &header, sizeof(header));
-    File_WriteData(fp, level->title, strlen(level->title));
     File_WriteData(fp, compressed, compressed_size);
+    File_WriteData(fp, &extra_header, sizeof(extra_header));
+    File_WriteData(fp, level->title, strlen(level->title));
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);
@@ -258,8 +253,7 @@ static JSON_VALUE *M_ParseFromBuffer(
         *version_out = header->version;
     }
 
-    const char *compressed =
-        buffer + sizeof(SAVEGAME_BSON_HEADER) + header->title_size;
+    const char *compressed = buffer + sizeof(SAVEGAME_BSON_HEADER);
     char *uncompressed = Memory_Alloc(header->uncompressed_size);
 
     uLongf uncompressed_size = header->uncompressed_size;
