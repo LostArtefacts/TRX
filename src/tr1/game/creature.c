@@ -50,26 +50,6 @@ bool Creature_CheckBaddieOverlap(int16_t item_num)
     return false;
 }
 
-void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
-{
-    ITEM *const item = Item_Get(item_num);
-
-    if (!Lara_TestBoundsCollide(item, coll->radius)) {
-        return;
-    }
-    if (!Collide_TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push) {
-        if (item->hit_points <= 0) {
-            Lara_Push(item, coll, 0, 0);
-        } else {
-            Lara_Push(item, coll, coll->enable_hit, 0);
-        }
-    }
-}
-
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
 {
     ITEM *const item = Item_Get(item_num);

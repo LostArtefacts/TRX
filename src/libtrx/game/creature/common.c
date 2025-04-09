@@ -462,6 +462,34 @@ void Creature_Neck(ITEM *const item, const int16_t required)
     CLAMP(creature->neck_rotation, -M_HEAD_ARC, M_HEAD_ARC);
 }
 
+void Creature_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
+        return;
+    }
+    if (!Collide_TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (!coll->enable_baddie_push) {
+        return;
+    }
+
+    if (TR_VERSION >= 2
+        && (lara->water_status == LWS_UNDERWATER
+            || lara->water_status == LWS_SURFACE)) {
+        return;
+    }
+
+    Lara_Push(
+        item, coll,
+        (TR_VERSION >= 2 || item->hit_points > 0) ? coll->enable_hit : false,
+        false);
+}
+
 int16_t Creature_Effect(
     const ITEM *const item, const BITE *const bite,
     int16_t (*const spawn)(

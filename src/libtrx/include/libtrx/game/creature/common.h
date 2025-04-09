@@ -15,9 +15,9 @@ void Creature_Tilt(ITEM *item, int16_t angle);
 void Creature_Head(ITEM *item, int16_t required);
 void Creature_Neck(ITEM *item, int16_t required);
 
+void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
 extern bool Creature_IsHostile(const ITEM *item);
-extern void Creature_Collision(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 extern bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 
 int16_t Creature_Effect(
