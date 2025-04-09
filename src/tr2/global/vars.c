@@ -49,7 +49,6 @@ float g_FltWinRight;
 int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
-bool g_IsDemoLoaded;
 uint16_t g_SoundOptionLine;
 int32_t g_HealthBarTimer;
 int32_t g_LevelComplete;
@@ -58,7 +57,6 @@ ITEM *g_LaraItem = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
 bool g_CameraUnderwater;
-char g_LevelFileName[256];
 
 WEAPON_INFO g_Weapons[] = {
     {},
