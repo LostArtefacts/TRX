@@ -217,7 +217,6 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     BENCHMARK benchmark = Benchmark_Start();
 
     const char *full_path = File_GetFullPath(level->path);
-    strcpy(g_LevelFileName, full_path);
     VFILE *const file = VFile_CreateFromPath(full_path);
     Memory_FreePointer(&full_path);
 
@@ -377,7 +376,6 @@ bool Level_Initialise(
 
 void Level_Unload(void)
 {
-    strcpy(g_LevelFileName, "");
     Output_InitialiseTexturePages(0, true);
     Output_InitialiseObjectTextures(0);
 
