@@ -1,8 +1,9 @@
 #pragma once
 
 #include "./enum.h"
+#include "./types.h"
 
-#include <stdint.h>
+extern void Savegame_RegisterStrategy(SAVEGAME_STRATEGY strategy);
 
 SAVEGAME_VERSION Savegame_GetInitialVersion(void);
 void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
@@ -22,3 +23,9 @@ extern int32_t Savegame_GetSlotCount(void);
 extern bool Savegame_IsSlotFree(int32_t slot_num);
 extern bool Savegame_Load(int32_t slot_num);
 extern bool Savegame_Save(int32_t slot_num);
+
+#define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
+    __attribute__((__constructor__)) static void M_Register(void)              \
+    {                                                                          \
+        Savegame_RegisterStrategy(strategy_);                                  \
+    }

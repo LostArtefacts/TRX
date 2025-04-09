@@ -7,7 +7,6 @@
 
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
-void Savegame_RegisterStrategy(SAVEGAME_STRATEGY strategy);
 
 void Savegame_InitCurrentInfo(void);
 
@@ -31,9 +30,3 @@ void Savegame_ProcessItemsBeforeLoad(void);
 
 void Savegame_SetDefaultStats(const GF_LEVEL *level, STATS_COMMON stats);
 STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);
-
-#define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
-    __attribute__((__constructor__)) static void M_Register(void)              \
-    {                                                                          \
-        Savegame_RegisterStrategy(strategy_);                                  \
-    }
