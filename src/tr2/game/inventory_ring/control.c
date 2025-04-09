@@ -32,8 +32,8 @@
 
 #include <stdio.h>
 
-#define TITLE_RING_OBJECTS 3
-#define OPTION_RING_OBJECTS 3
+#define TITLE_RING_OBJECTS 4
+#define OPTION_RING_OBJECTS 4
 #define INV_RING_FADE_TIME_FAST                                                \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
 #define INV_RING_FADE_TIME_TITLE_FINISH 0.25

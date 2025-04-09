@@ -163,6 +163,7 @@ as Notepad.
 - added support for more accented characters
 - added fade effects to displayed images
 - added a wireframe mode
+- added sunglasses for graphic options
 - improved support for windowed mode
 
 #### Gameplay

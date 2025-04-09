@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
 - added support for The Golden Mask (#1621)
+- added sunglasses for graphic options (#1615)
 - added control over the fog distances for players and level builders (#1622)
 - added an installer for Windows (#2681)
 - added the bonus level game flow type, which allows for levels to be unlocked if all main game secrets are found (#2668)
