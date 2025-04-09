@@ -555,24 +555,6 @@ void Creature_GetBaddieTarget(const int16_t item_num, const bool goody)
     }
 }
 
-void Creature_Collision(
-    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
-        return;
-    }
-
-    if (!Collide_TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push && g_Lara.water_status != LWS_UNDERWATER
-        && g_Lara.water_status != LWS_SURFACE) {
-        Lara_Push(item, coll, coll->enable_hit, false);
-    }
-}
-
 int32_t Creature_CanTargetEnemy(
     const ITEM *const item, const AI_INFO *const info)
 {
