@@ -33,7 +33,6 @@
 #define MAX_LEVEL_NAME_SIZE 50 // TODO: get rid of this limit
 #define MAX_DEMO_FILES MAX_LEVELS
 #define MAX_REQUESTER_ITEMS 24
-#define MAX_SAVE_SLOTS 16
 
 #define DEATH_WAIT (5 * 2 * FRAMES_PER_SECOND) // = 300
 #define DEATH_WAIT_INPUT (2 * FRAMES_PER_SECOND) // = 60
