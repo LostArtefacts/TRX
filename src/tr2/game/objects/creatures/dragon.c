@@ -2,7 +2,6 @@
 #include "game/creature.h"
 #include "game/input.h"
 #include "game/lara/control.h"
-#include "game/lara/misc.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/output.h"
@@ -15,6 +14,7 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 
 // clang-format off
@@ -229,7 +229,7 @@ static void M_Collision(
     }
 
     if (item->current_anim_state != DRAGON_STATE_DEATH) {
-        Lara_Push(item, lara_item, coll, true, false);
+        Lara_Push(item, coll, true, false);
         return;
     }
 
@@ -240,7 +240,7 @@ static void M_Collision(
     const int32_t side_shift = (cy * dz + sy * dx) >> W2V_SHIFT;
 
     if (side_shift <= DRAGON_L_COL || side_shift >= DRAGON_R_COL) {
-        Lara_Push(item, lara_item, coll, true, false);
+        Lara_Push(item, coll, true, false);
         return;
     }
 

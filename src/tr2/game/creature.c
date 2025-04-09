@@ -17,6 +17,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -568,7 +569,7 @@ void Creature_Collision(
 
     if (coll->enable_baddie_push && g_Lara.water_status != LWS_UNDERWATER
         && g_Lara.water_status != LWS_SURFACE) {
-        Lara_Push(item, lara_item, coll, coll->enable_hit, false);
+        Lara_Push(item, coll, coll->enable_hit, false);
     }
 }
 

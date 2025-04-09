@@ -29,6 +29,5 @@ void Lara_UseItem(GAME_OBJECT_ID obj_id);
 bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *bounds);
 void Lara_AlignPosition(ITEM *item, XYZ_32 *vec);
 bool Lara_MovePosition(ITEM *item, XYZ_32 *vec);
-void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
 
 void Lara_RevertToPistolsIfNeeded(void);

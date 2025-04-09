@@ -1026,11 +1026,12 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
 }
 
 void Lara_Push(
-    const ITEM *const item, ITEM *const lara_item, COLL_INFO *const coll,
-    const bool hit_on, const bool big_push)
+    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+    const bool big_push)
 {
-    int32_t dx = lara_item->pos.x - item->pos.x;
-    int32_t dz = lara_item->pos.z - item->pos.z;
+    ITEM *const target_item = Lara_GetItem();
+    int32_t dx = target_item->pos.x - item->pos.x;
+    int32_t dz = target_item->pos.z - item->pos.z;
     const int32_t c = Math_Cos(item->rot.y);
     const int32_t s = Math_Sin(item->rot.y);
     int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
@@ -1068,8 +1069,8 @@ void Lara_Push(
         rz = min_z;
     }
 
-    lara_item->pos.x = item->pos.x + ((rz * s + rx * c) >> W2V_SHIFT);
-    lara_item->pos.z = item->pos.z + ((rz * c - rx * s) >> W2V_SHIFT);
+    target_item->pos.x = item->pos.x + ((rz * s + rx * c) >> W2V_SHIFT);
+    target_item->pos.z = item->pos.z + ((rz * c - rx * s) >> W2V_SHIFT);
 
     rz = (bounds->max.z + bounds->min.z) / 2;
     rx = (bounds->max.x + bounds->min.x) / 2;
@@ -1077,7 +1078,7 @@ void Lara_Push(
     dz -= (c * rz - s * rx) >> W2V_SHIFT;
 
     if (hit_on && bounds->max.y - bounds->min.y > STEP_L) {
-        M_TakeHit(lara_item, dx, dz);
+        M_TakeHit(target_item, dx, dz);
     }
 
     int16_t old_facing = coll->facing;
@@ -1085,20 +1086,20 @@ void Lara_Push(
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
     coll->facing = Math_Atan(
-        lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+        target_item->pos.z - coll->old.z, target_item->pos.x - coll->old.x);
     Collide_GetCollisionInfo(
-        coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-        lara_item->room_num, LARA_HEIGHT);
+        coll, target_item->pos.x, target_item->pos.y, target_item->pos.z,
+        target_item->room_num, LARA_HEIGHT);
     coll->facing = old_facing;
 
     if (coll->coll_type != COLL_NONE) {
-        lara_item->pos.x = coll->old.x;
-        lara_item->pos.z = coll->old.z;
+        target_item->pos.x = coll->old.x;
+        target_item->pos.z = coll->old.z;
     } else {
-        coll->old.x = lara_item->pos.x;
-        coll->old.y = lara_item->pos.y;
-        coll->old.z = lara_item->pos.z;
-        Item_UpdateRoom(lara_item, -WALL_SHIFT);
+        coll->old.x = target_item->pos.x;
+        coll->old.y = target_item->pos.y;
+        coll->old.z = target_item->pos.z;
+        Item_UpdateRoom(target_item, -10);
     }
 }
 

@@ -2,13 +2,13 @@
 
 #include "game/box.h"
 #include "game/items.h"
-#include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/lara/common.h>
 
 typedef struct {
     DOORPOS_DATA d1;
@@ -206,7 +206,7 @@ void Door_Collision(
 
     if (coll->enable_baddie_push) {
         Lara_Push(
-            item, lara_item, coll,
+            item, coll,
             item->current_anim_state != item->goal_anim_state ? coll->enable_hit
                                                               : false,
             true);
