@@ -69,7 +69,8 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
     const RGBA_8888 color_white = { 255, 255, 255, 128 };
     const bool wireframe_state = GFX_Context_GetWireframeMode();
     for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
+        vertices[i].flags =
+            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS;
         vertices[i].color = wireframe_state ? color_black : color_white;
     }
 
@@ -158,7 +159,8 @@ void Output_DrawRoomPortals(const ROOM *const room)
     }
     for (int32_t i = 0; i < vertex_count; i++) {
         vertices[i].uvw_idx = -1;
-        vertices[i].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
+        vertices[i].flags =
+            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS;
         vertices[i].color = color;
     }
 
@@ -274,7 +276,8 @@ void Output_DrawShadow(
         vertices[i * 3 + 2].pos.z = z_mid;
         for (int32_t j = 0; j < 3; j++) {
             vertices[i * 3 + j].pos.y = -5;
-            vertices[i * 3 + j].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
+            vertices[i * 3 + j].flags =
+                VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS;
             vertices[i * 3 + j].color = (RGBA_8888) { 0, 0, 0, 128 };
         }
     }
