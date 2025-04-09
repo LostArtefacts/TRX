@@ -36,7 +36,6 @@ static uint32_t m_ReqFlags2[MAX_REQUESTER_ITEMS] = {};
 
 static int32_t m_StrategyCount = 0;
 static SAVEGAME_STRATEGY m_Strategies[MAX_STRATEGIES];
-static SAVEGAME_VERSION m_InitialVersion = VERSION_LEGACY;
 
 static void M_ClearSlots(void);
 static bool M_FillSlot(
@@ -289,16 +288,6 @@ int32_t Savegame_GetCounter(void)
 int32_t Savegame_GetTotalCount(void)
 {
     return m_SavedGames;
-}
-
-SAVEGAME_VERSION Savegame_GetInitialVersion(void)
-{
-    return m_InitialVersion;
-}
-
-void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
-{
-    m_InitialVersion = version;
 }
 
 void Savegame_ProcessItemsBeforeSave(void)
