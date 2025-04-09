@@ -25,8 +25,6 @@ void Savegame_HighlightNewestSlot(void);
 int32_t Savegame_GetLevelNumber(int32_t slot_idx);
 int32_t Savegame_GetCounter(void);
 int32_t Savegame_GetTotalCount(void);
-SAVEGAME_VERSION Savegame_GetInitialVersion(void);
-void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
 
 void Savegame_ProcessItemsBeforeSave(void);
 void Savegame_ProcessItemsBeforeLoad(void);

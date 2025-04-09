@@ -1,6 +1,11 @@
 #pragma once
 
+#include "./enum.h"
+
 #include <stdint.h>
+
+SAVEGAME_VERSION Savegame_GetInitialVersion(void);
+void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
 
 // Remembers the slot used when the player starts a loaded game.
 // Persists across level reloads.

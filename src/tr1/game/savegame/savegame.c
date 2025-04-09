@@ -37,7 +37,6 @@ static int32_t m_SaveCounter = 0;
 static int32_t m_SavedGames = 0;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 static RESUME_INFO *m_ResumeInfo = nullptr;
-static SAVEGAME_VERSION m_InitialVersion = VERSION_LEGACY;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
@@ -714,16 +713,6 @@ bool Savegame_RestartAvailable(int32_t slot_num)
 
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     return savegame_info->features.restart;
-}
-
-SAVEGAME_VERSION Savegame_GetInitialVersion(void)
-{
-    return m_InitialVersion;
-}
-
-void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
-{
-    m_InitialVersion = version;
 }
 
 int32_t Savegame_GetCounter(void)
