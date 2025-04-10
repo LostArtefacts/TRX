@@ -1,5 +1,8 @@
 #include "game/output.h"
 #include "game/output/meshes/common.h"
+#include "game/output/meshes/objects.h"
+#include "game/output/meshes/rooms.h"
+#include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "global/vars.h"
 
@@ -145,5 +148,8 @@ void Output_AnimateTextures(const int32_t num_frames)
     }
     if (update) {
         Output_Textures_CycleAnimations();
+        Output_Sprites_ObserveTextureAnimation();
+        Output_Meshes_ObserveTextureAnimationRooms();
+        Output_Meshes_ObserveTextureAnimationObjects();
     }
 }

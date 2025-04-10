@@ -42,6 +42,16 @@ VECTOR *Vector_CreateAtCapacity(const size_t item_size, const int32_t capacity)
     return vector;
 }
 
+void Vector_EnsureCapacity(VECTOR *const vector, const int32_t capacity)
+{
+    if (vector->capacity >= capacity) {
+        return;
+    }
+    vector->capacity = capacity;
+    P(vector).items =
+        Memory_Realloc(P(vector).items, vector->item_size * capacity);
+}
+
 void Vector_Free(VECTOR *vector)
 {
     Memory_FreePointer(&P(vector).items);
@@ -84,6 +94,11 @@ void *Vector_Get(VECTOR *const vector, const int32_t index)
     ASSERT(index >= 0 && index < vector->count);
     char *const items = P(vector).items;
     return (void *)(items + index * vector->item_size);
+}
+
+void *Vector_GetData(VECTOR *const vector)
+{
+    return P(vector).items;
 }
 
 void Vector_Add(VECTOR *const vector, const void *const item)

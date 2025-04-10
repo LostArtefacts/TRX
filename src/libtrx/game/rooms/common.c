@@ -7,6 +7,7 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/objects/traps/movable_block.h"
+#include "game/output.h"
 #include "game/rooms/const.h"
 #include "game/rooms/enum.h"
 #include "game/sound/common.h"
@@ -294,6 +295,8 @@ void Room_FlipMap(void)
         room->effect_num = flipped->effect_num;
 
         M_AddFlipItems(room);
+        Output_ObserveRoomFlip(flipped);
+        Output_ObserveRoomFlip(room);
     }
 
     MovableBlock_HandleFlipMap(RFS_FLIPPED);

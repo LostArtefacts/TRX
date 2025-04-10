@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/output/shader.h"
+#include "game/output/textures.h"
 
 // clang-format off
 #define VERT_NO_CAUSTICS 0b0000'0001 // = 0x01
@@ -8,6 +9,15 @@
 #define VERT_REFLECTIVE  0b0000'0100 // = 0x04
 #define VERT_NO_LIGHTING 0b0000'1000 // = 0x08
 // clang-format on
+
+typedef struct {
+    // attribute 2
+    OUTPUT_UVW uvw;
+    // attribute 3
+    OUTPUT_TEXTURE_SIZE texture_size;
+    // attribute 4
+    float trapezoid_ratio[2];
+} OUTPUT_MESH_TEXTURE;
 
 void Output_Meshes_Init(void);
 void Output_Meshes_Shutdown(void);

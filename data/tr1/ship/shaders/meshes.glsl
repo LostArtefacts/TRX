@@ -1,8 +1,6 @@
 #ifdef VERTEX
 
 uniform int uTime;
-uniform samplerBuffer uUVW; // texture u, v, layer
-uniform samplerBuffer uAtlasSizes; // texture x, y, w, h
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
 uniform mat4 uMatModelView;
@@ -11,11 +9,12 @@ uniform bool uWibbleEffect;
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal;
-layout(location = 2) in int inUVWIdx;
-layout(location = 3) in vec2 inTrapezoidRatios;
-layout(location = 4) in int inFlags;
-layout(location = 5) in vec4 inColor;
-layout(location = 6) in float inShade;
+layout(location = 2) in vec3 inUVW;
+layout(location = 3) in vec4 inTextureSize;
+layout(location = 4) in vec2 inTrapezoidRatios;
+layout(location = 5) in int inFlags;
+layout(location = 6) in vec4 inColor;
+layout(location = 7) in float inShade;
 
 out vec4 gWorldPos;
 out vec3 gNormal;
@@ -37,11 +36,10 @@ void main(void) {
             waterWibble(gl_Position, uViewportSize, uTime);
     }
 
-    vec3 uvw = texelFetch(uUVW, int(inUVWIdx)).xyz;
-    gAtlasSize = texelFetch(uAtlasSizes, int(inUVWIdx / 4));
     gFlags = inFlags;
-    gTexLayer = int(uvw.z);
-    gTexUV = uvw.xy;
+    gAtlasSize = inTextureSize;
+    gTexUV = inUVW.xy;
+    gTexLayer = int(inUVW.z);
     gTrapezoidRatios = inTrapezoidRatios;
     if (uTrapezoidFilterEnabled) {
         gTexUV *= inTrapezoidRatios;

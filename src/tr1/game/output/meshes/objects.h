@@ -9,6 +9,7 @@ void Output_Meshes_InitObjects(void);
 void Output_Meshes_ShutdownObjects(void);
 void Output_Meshes_ObserveLevelLoadObjects(void);
 void Output_Meshes_ObserveLevelUnloadObjects(void);
+void Output_Meshes_ObserveTextureAnimationObjects(void);
 
 void Output_Meshes_RenderObjectMesh(
     const MATRIX *matrix, RGB_F tint, const OBJECT_MESH *mesh);

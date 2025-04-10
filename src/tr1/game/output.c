@@ -2,6 +2,7 @@
 
 #include "game/level.h"
 #include "game/output/meshes/common.h"
+#include "game/output/meshes/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
@@ -438,6 +439,11 @@ void Output_ObserveLevelLoad(void)
 void Output_ObserveLevelUnload(void)
 {
     Output_Meshes_ObserveLevelUnload();
+}
+
+void Output_ObserveRoomFlip(const ROOM *room)
+{
+    Output_Meshes_ObserveRoomFlip(room);
 }
 
 void Output_FlushTranslucentObjects(void)

@@ -34,28 +34,33 @@ void Output_Meshes_InitDynamic(void)
         (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, normal));
 
     glEnableVertexAttribArray(2);
-    glVertexAttribIPointer(
-        2, 1, GL_UNSIGNED_INT, sizeof(OUTPUT_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, uvw_idx));
+    glVertexAttribPointer(
+        2, 3, GL_FLOAT, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, uvw));
 
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(
-        3, 2, GL_FLOAT, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, trapezoid_ratio));
+        3, 4, GL_FLOAT, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, texture_size));
 
     glEnableVertexAttribArray(4);
-    glVertexAttribIPointer(
-        4, 1, GL_UNSIGNED_SHORT, sizeof(OUTPUT_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, flags));
+    glVertexAttribPointer(
+        4, 2, GL_FLOAT, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, trapezoid_ratio));
 
     glEnableVertexAttribArray(5);
-    glVertexAttribPointer(
-        5, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(OUTPUT_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, color));
+    glVertexAttribIPointer(
+        5, 1, GL_UNSIGNED_SHORT, sizeof(OUTPUT_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, flags));
 
     glEnableVertexAttribArray(6);
     glVertexAttribPointer(
-        6, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
+        6, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(OUTPUT_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, color));
+
+    glEnableVertexAttribArray(7);
+    glVertexAttribPointer(
+        7, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
         (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, shade));
 }
 
