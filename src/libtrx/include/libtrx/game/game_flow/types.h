@@ -82,12 +82,11 @@ typedef struct {
         bool is_present;
         float value;
     } fog_start, fog_end;
-#if TR_VERSION == 1
     struct {
         bool is_present;
         RGB_888 value;
     } water_color;
-#elif TR_VERSION == 2
+#if TR_VERSION == 2
     char *sfx_path;
 #endif
 } GF_LEVEL_SETTINGS;

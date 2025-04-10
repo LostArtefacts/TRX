@@ -130,13 +130,10 @@ static void M_ShadeColor(
     GFX_3D_VERTEX *const target, uint32_t red, uint32_t green,
     const uint32_t blue, const uint8_t alpha)
 {
-    if (Output_IsShadeEffect()) {
-        red /= 2;
-        green = green * 7 / 8;
-    }
-    target->r = red;
-    target->g = green;
-    target->b = blue;
+    const RGB_F tint = Output_GetTint();
+    target->r = red * tint.r;
+    target->g = green * tint.g;
+    target->b = blue * tint.b;
     target->a = alpha;
 }
 

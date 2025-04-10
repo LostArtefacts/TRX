@@ -99,26 +99,6 @@ static void M_LoadSettings(
     JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
 {
     M_LoadCommonSettings(obj, settings);
-
-    {
-        JSON_ARRAY *const tmp_arr = JSON_ObjectGetArray(obj, "water_color");
-        if (tmp_arr != nullptr) {
-            const RGB_F color = {
-                JSON_ArrayGetDouble(tmp_arr, 0, JSON_INVALID_NUMBER),
-                JSON_ArrayGetDouble(tmp_arr, 1, JSON_INVALID_NUMBER),
-                JSON_ArrayGetDouble(tmp_arr, 2, JSON_INVALID_NUMBER),
-            };
-            if (color.r != JSON_INVALID_NUMBER && color.g != JSON_INVALID_NUMBER
-                && color.b != JSON_INVALID_NUMBER) {
-                settings->water_color.is_present = true;
-                settings->water_color.value = (RGB_888) {
-                    color.r * 255.0f,
-                    color.g * 255.0f,
-                    color.b * 255.0f,
-                };
-            }
-        }
-    }
 }
 
 static void M_LoadLevelGameSpecifics(

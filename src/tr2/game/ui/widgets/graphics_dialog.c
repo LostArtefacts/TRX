@@ -1,6 +1,7 @@
 #include "game/ui/widgets/graphics_dialog.h"
 
 #include <libtrx/config.h>
+#include <libtrx/debug.h>
 #include <libtrx/game/game_string.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/text.h>
@@ -19,6 +20,7 @@ typedef struct {
     void *target;
     int32_t min_value;
     int32_t max_value;
+    int32_t misc;
 } M_OPTION;
 
 typedef struct {
@@ -58,6 +60,7 @@ static M_OPTION m_Options[] = {
         .min_value = 1,
         .max_value = 100,
     },
+
     {
         .option_type = COT_INT32,
         .label_id = GS_ID(DETAIL_FOG_END),
@@ -65,11 +68,40 @@ static M_OPTION m_Options[] = {
         .min_value = 1,
         .max_value = 100,
     },
+
+    {
+        .option_type = COT_RGB888,
+        .label_id = GS_ID(DETAIL_WATER_COLOR_R),
+        .target = &g_Config.visuals.water_color,
+        .min_value = 0,
+        .max_value = 255,
+        .misc = 0,
+    },
+
+    {
+        .option_type = COT_RGB888,
+        .label_id = GS_ID(DETAIL_WATER_COLOR_G),
+        .target = &g_Config.visuals.water_color,
+        .min_value = 0,
+        .max_value = 255,
+        .misc = 1,
+    },
+
+    {
+        .option_type = COT_RGB888,
+        .label_id = GS_ID(DETAIL_WATER_COLOR_B),
+        .target = &g_Config.visuals.water_color,
+        .min_value = 0,
+        .max_value = 255,
+        .misc = 2,
+    },
+
     {
         .target = nullptr,
     },
 };
 
+static uint8_t *M_GetColorComponent(const M_OPTION *option);
 static void M_ClearRows(M_WIDGET *self);
 static char *M_FormatRowValue(int32_t row_idx);
 static bool M_CanChangeValue(int32_t row_idx, int32_t delta);
@@ -89,6 +121,21 @@ static void M_SetPosition(M_WIDGET *self, int32_t x, int32_t y);
 static void M_Control(M_WIDGET *self);
 static void M_Draw(M_WIDGET *self);
 static void M_Free(M_WIDGET *self);
+
+static uint8_t *M_GetColorComponent(const M_OPTION *const option)
+{
+    RGB_888 *const color = option->target;
+    switch (option->misc) {
+    case 0:
+        return &color->r;
+    case 1:
+        return &color->g;
+    case 2:
+        return &color->b;
+    }
+    ASSERT_FAIL();
+    return nullptr;
+}
 
 static void M_ClearRows(M_WIDGET *const self)
 {
@@ -115,6 +162,11 @@ static char *M_FormatRowValue(const int32_t row_idx)
         return String_Format(
             GS(DETAIL_INTEGER_FMT), *(int32_t *)option->target);
         break;
+    case COT_RGB888: {
+        const uint8_t *const component = M_GetColorComponent(option);
+        return String_Format("%d", *component);
+        break;
+    }
     default:
         break;
     }
@@ -132,6 +184,15 @@ static bool M_CanChangeValue(const int32_t row_idx, const int32_t delta)
             return *(int32_t *)option->target < option->max_value;
         }
         break;
+    case COT_RGB888: {
+        const uint8_t *const component = M_GetColorComponent(option);
+        if (delta < 0) {
+            return *component > option->min_value;
+        } else if (delta > 0) {
+            return *component < option->max_value;
+        }
+        break;
+    }
     default:
         return false;
     }
@@ -160,6 +221,11 @@ static bool M_RequestChangeValue(
     case COT_INT32:
         *(int32_t *)option->target += delta;
         break;
+    case COT_RGB888: {
+        uint8_t *const component = M_GetColorComponent(option);
+        *component += delta;
+        break;
+    }
     default:
         return false;
     }
@@ -197,13 +263,13 @@ static M_ROW *M_AddRow(
     M_ROW *const row = &self->rows[self->row_count - 1];
 
     row->stack =
-        UI_Stack_Create(UI_STACK_LAYOUT_HORIZONTAL, 200, UI_STACK_AUTO_SIZE);
+        UI_Stack_Create(UI_STACK_LAYOUT_HORIZONTAL, 220, UI_STACK_AUTO_SIZE);
     UI_Stack_SetHAlign(row->stack, UI_STACK_H_ALIGN_DISTRIBUTE);
 
     row->frame = UI_Frame_Create(row->stack, 0, 0);
     UI_Frame_SetFrameVisible(row->frame, false);
 
-    row->title_label = UI_Label_Create(left_text, 120, UI_LABEL_AUTO_SIZE);
+    row->title_label = UI_Label_Create(left_text, 150, UI_LABEL_AUTO_SIZE);
     UI_Stack_AddChild(row->stack, row->title_label);
 
     row->arrow_left_label = UI_Label_Create(
@@ -349,7 +415,6 @@ UI_WIDGET *UI_GraphicsDialog_Create(void)
         .free = (UI_WIDGET_FREE)M_Free,
     };
 
-    self->visible_rows = 2;
     self->outer_stack = UI_Stack_Create(
         UI_STACK_LAYOUT_VERTICAL, UI_STACK_AUTO_SIZE, UI_STACK_AUTO_SIZE);
     UI_Stack_SetHAlign(self->outer_stack, UI_STACK_H_ALIGN_CENTER);
@@ -360,6 +425,11 @@ UI_WIDGET *UI_GraphicsDialog_Create(void)
     self->selected_row_offset = -1;
     self->listener = UI_Events_Subscribe(
         "canvas_resize", nullptr, M_HandleCanvasResize, self);
+
+    self->visible_rows = 0;
+    for (int32_t i = 0; m_Options[i].target != nullptr; i++) {
+        self->visible_rows++;
+    }
 
     for (int32_t i = 0; m_Options[i].target != nullptr; i++) {
         char *value_text = M_FormatRowValue(i);

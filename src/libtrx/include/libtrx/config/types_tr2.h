@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../colors.h"
 #include "../game/input.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
@@ -50,6 +51,8 @@ typedef struct {
         bool fix_item_rots;
         int32_t fov;
         bool use_pcx_fov;
+
+        RGB_888 water_color;
         int32_t fog_start;
         int32_t fog_end;
     } visuals;

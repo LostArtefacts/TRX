@@ -4,7 +4,6 @@
 #include "game/carrier.h"
 #include "game/effects.h"
 #include "game/game.h"
-#include "game/game_flow.h"
 #include "game/inventory_ring/vars.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -331,33 +330,6 @@ void Level_Load(const GF_LEVEL *const level)
         g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
 
     Benchmark_End(&benchmark, nullptr);
-}
-
-RGB_888 Level_GetWaterColor(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.water_color.is_present) {
-        return level->settings.water_color.value;
-    }
-    return g_Config.visuals.water_color;
-}
-
-float Level_GetFogStart(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.fog_start.is_present) {
-        return level->settings.fog_start.value;
-    }
-    return g_Config.visuals.fog_start;
-}
-
-float Level_GetFogEnd(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.fog_end.is_present) {
-        return level->settings.fog_end.value;
-    }
-    return g_Config.visuals.fog_end;
 }
 
 void Level_Unload(void)
