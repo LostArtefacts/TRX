@@ -107,7 +107,7 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 
     info->counter = extra_header.counter;
     info->level_num = extra_header.level_num;
-    if (extra_header.title_size >= File_Size(fp)) {
+    if (extra_header.title_size >= (int32_t)File_Size(fp)) {
         return false;
     }
     info->level_title = Memory_Alloc(extra_header.title_size + 1);
