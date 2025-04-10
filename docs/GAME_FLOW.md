@@ -198,8 +198,8 @@ remains distinct for each game.
     <td>
       Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
       <ul>
-        <li>[0.6, 0.7, 1.0] is the original DOS version filter.</li>
-        <li>[0.45, 1.0, 1.0] is the default TombATI filter.</li>
+        <li><code>[0.6, 0.7, 1.0]</code> is the original DOS version color.</li>
+        <li><code>[0.45, 1.0, 1.0]</code> is the default TombATI color.</li>
       </ul>
     </td>
   </tr>
@@ -331,10 +331,29 @@ remains distinct for each game.
       <a name="draw-distance-max"></a>
       <code>fog_end</code>
     </td>
-    <td>Double<strong>*</strong></td>
+    <td>Double</td>
     <td>
       The distance (in tiles) at which objects and the world are clipped away.
       The default value in OG TR2 is hardcoded to 20.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="water-color"></a>
+      <code>water_color</code>
+    </td>
+    <td>Float array</td>
+    <td>
+      Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+      <ul>
+        <li><code>[0.5, 0.875, 1.0]</code> is the default PC hardware renderer color.</li>
+        <li><code>[0.66, 0.66, 1.0]</code> is the default PC software renderer color.</li>
+        <li><code>[0.8, 1.0, 0.5]</code> is the PS1 color in the Venice, Bartoli's Hideout and Opera House levels.</li>
+        <li><code>[0.8, 1.0, 0.6]</code> is the PS1 color for the Temple of Xian level.</li>
+        <li><code>[0.8, 1.0, 0.8]</code> is the PS1 color for the Floating Islands and Dragon's Lair levels.</li>
+        <li><code>[0.7, 0.9, 0.9]</code> is the PS1 color for The Great Wall and Tibetan Foothills levels.</li>
+        <li><code>[0.5, 1.0, 1.0]</code> is the PS1 color for all other PS1 levels.</li>
+      </ul>
     </td>
   </tr>
 </table>

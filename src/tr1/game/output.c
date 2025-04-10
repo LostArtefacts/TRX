@@ -387,7 +387,6 @@ void Output_SetWindowSize(int32_t width, int32_t height)
 
 void Output_ApplyLevelSettings(void)
 {
-    const RGB_888 color = Level_GetWaterColor();
     Output_SetWaterColor(Level_GetWaterColor());
     Output_SetFogStart(Level_GetFogStart() * WALL_L);
     Output_SetFogEnd(Level_GetFogEnd() * WALL_L);

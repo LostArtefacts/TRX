@@ -66,6 +66,7 @@ static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
 static XYZ_32 m_LsVectorView = {};
 
 static int32_t m_FogEnd = 0;
+static RGB_F m_WaterColor = {};
 
 static bool m_IsWaterEffect = false;
 static bool m_IsWibbleEffect = false;
@@ -411,6 +412,7 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
 
 void Output_ApplyLevelSettings(void)
 {
+    Output_SetWaterColor(Level_GetWaterColor());
     Output_SetFogStart(Level_GetFogStart() * WALL_L);
     Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
     Viewport_Reset();
@@ -938,6 +940,21 @@ int32_t Output_GetNearZ(void)
 int32_t Output_GetFarZ(void)
 {
     return Output_GetFogEnd() << W2V_SHIFT;
+}
+
+void Output_SetWaterColor(const RGB_888 color)
+{
+    m_WaterColor.r = color.r / 255.0f;
+    m_WaterColor.g = color.g / 255.0f;
+    m_WaterColor.b = color.b / 255.0f;
+}
+
+RGB_F Output_GetTint(void)
+{
+    if (Output_IsShadeEffect()) {
+        return m_WaterColor;
+    }
+    return (RGB_F) { 1.0f, 1.0f, 1.0f };
 }
 
 int32_t Output_GetFogEnd(void)

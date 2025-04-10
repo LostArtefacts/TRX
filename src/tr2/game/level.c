@@ -410,21 +410,3 @@ void Level_Init(void)
 
     Benchmark_End(&benchmark, nullptr);
 }
-
-float Level_GetFogStart(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.fog_start.is_present) {
-        return level->settings.fog_start.value;
-    }
-    return g_Config.visuals.fog_start;
-}
-
-float Level_GetFogEnd(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.fog_end.is_present) {
-        return level->settings.fog_end.value;
-    }
-    return g_Config.visuals.fog_end;
-}

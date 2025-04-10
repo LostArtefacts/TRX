@@ -91,3 +91,6 @@ void Output_SetSunsetTimer(int32_t timer);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
+
+void Output_SetWaterColor(RGB_888 color);
+RGB_F Output_GetTint(void);
