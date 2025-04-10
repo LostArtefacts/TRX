@@ -15,6 +15,6 @@ typedef struct {
     uint32_t flags;
     int32_t counter;
     int32_t level_num;
-    size_t title_size;
+    int32_t title_size;
 } SAVEGAME_BSON_EXTENDED_HEADER;
 #pragma pack(pop)
