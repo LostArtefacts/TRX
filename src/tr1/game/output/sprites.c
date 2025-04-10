@@ -4,6 +4,7 @@
 #include "game/output/shader.h"
 #include "game/output/textures.h"
 #include "game/output/utils.h"
+#include "game/output/vertex_range.h"
 #include "game/room.h"
 
 #include <libtrx/gfx/gl/utils.h>
@@ -22,7 +23,7 @@ typedef struct {
     } displacement;
 
     // attribute 2
-    int32_t uvw_idx;
+    OUTPUT_UVW uvw;
 } M_SPRITE_VERTEX;
 
 typedef uint16_t M_SPRITE_SHADE;
@@ -57,6 +58,7 @@ static struct {
     M_SPRITE_BUFFER sprite_buf;
     size_t room_batch_count;
     M_ROOM_BATCH *room_batches;
+    VECTOR *animated_vertices;
 } m_LevelData = {};
 
 static struct {
@@ -71,8 +73,8 @@ static void M_MakeQuad(
 
     for (int32_t k = 0; k < 4; k++) {
         out_quad[k].pos = (XYZ_F) { .x = pos.x, .y = pos.y, .z = pos.z };
-        out_quad[k].uvw_idx =
-            Output_Textures_GetSpritesUVWsBase() + sprite_idx * 4 + k;
+        out_quad[k].uvw = Output_Textures_GetUVW(
+            Output_Textures_GetSpritesUVWsBase() + sprite_idx * 4 + k);
     }
 
     out_quad[0].displacement.x = sprite->x0;
@@ -144,9 +146,9 @@ static void M_PrepareBuffer(
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, displacement));
 
     glEnableVertexAttribArray(2);
-    glVertexAttribIPointer(
-        2, 1, GL_UNSIGNED_INT, sizeof(M_SPRITE_VERTEX),
-        (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, uvw_idx));
+    glVertexAttribPointer(
+        2, 3, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
+        (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, uvw));
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer->shade_vbo);
     glEnableVertexAttribArray(3);
@@ -192,8 +194,6 @@ static void M_DrawBuffer(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetUVWsTexture());
-    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
     GFX_GL_CheckError();
 
@@ -214,9 +214,29 @@ static void M_PrepareLevelBatches(void)
         room_batch->quad_count = room->mesh.num_sprites;
         current_quad += room->mesh.num_sprites;
     }
+
+    Vector_Clear(m_LevelData.animated_vertices);
+    int32_t current_vertex = 0;
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
+            const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[j];
+            const int16_t sprite_idx = room_sprite->texture;
+            if (Output_Textures_IsSpriteTextureAnimated(sprite_idx)) {
+                Vector_Add(
+                    m_LevelData.animated_vertices,
+                    &(OUTPUT_VERTEX_RANGE) {
+                        .vertex_start = current_vertex,
+                        .vertex_count = OUTPUT_QUAD_VERTICES,
+                    });
+            }
+            current_vertex += OUTPUT_QUAD_VERTICES;
+        }
+    }
+    Output_GlueVertexRanges(m_LevelData.animated_vertices);
 }
 
-static void M_UpdateRoomGeometry(const ROOM *const room)
+static void M_FillRoomGeometry(const ROOM *const room)
 {
     int32_t current_vertex = 0;
     for (int32_t i = 0; i < Room_GetCount(); i++) {
@@ -230,6 +250,7 @@ static void M_UpdateRoomGeometry(const ROOM *const room)
 
             M_SPRITE_VERTEX quad[4];
             M_MakeQuad(quad, sprite_idx, pos);
+
             for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
                 m_LevelData.sprite_buf.geom_vbo_data[current_vertex] =
                     quad[OUTPUT_QUAD_TO_FAN(k)];
@@ -273,12 +294,12 @@ static void M_PrepareLevelBuffers(void)
     M_PrepareBuffer(&m_Dynamic.sprite_buf, 500, GL_DYNAMIC_DRAW);
     M_PrepareBuffer(
         &m_LevelData.sprite_buf, num_quads * OUTPUT_QUAD_VERTICES,
-        GL_STATIC_DRAW);
+        GL_DYNAMIC_DRAW);
 
     m_LevelData.sprite_buf.vertex_count = num_quads * OUTPUT_QUAD_VERTICES;
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
-        M_UpdateRoomGeometry(room);
+        M_FillRoomGeometry(room);
     }
     M_BufferReallocGPU(&m_LevelData.sprite_buf);
 }
@@ -286,11 +307,14 @@ static void M_PrepareLevelBuffers(void)
 void Output_Sprites_Init(void)
 {
     m_Shader = Output_Shader_Create("shaders/sprites.glsl");
+    m_LevelData.animated_vertices = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
     m_Dynamic.source = Vector_CreateAtCapacity(sizeof(M_DYNAMIC_SPRITE), 50);
 }
 
 void Output_Sprites_Shutdown(void)
 {
+    Vector_Free(m_LevelData.animated_vertices);
+    Vector_Free(m_Dynamic.source);
     M_FreeBuffers();
     Output_Shader_Free(m_Shader);
     m_Shader = nullptr;
@@ -301,6 +325,39 @@ void Output_Sprites_ObserveLevelLoad(void)
     M_FreeBuffers();
     M_PrepareLevelBuffers();
     M_PrepareLevelBatches();
+}
+
+void Output_Sprites_ObserveTextureAnimation(void)
+{
+    int32_t current_vertex = 0;
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
+            const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[j];
+            const int16_t sprite_idx = room_sprite->texture;
+            if (!Output_Textures_IsSpriteTextureAnimated(sprite_idx)) {
+                current_vertex += OUTPUT_QUAD_VERTICES;
+                continue;
+            }
+            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
+                m_LevelData.sprite_buf.geom_vbo_data[current_vertex].uvw =
+                    Output_Textures_GetUVW(
+                        Output_Textures_GetSpritesUVWsBase() + sprite_idx * 4
+                        + OUTPUT_QUAD_TO_FAN(k));
+                current_vertex++;
+            }
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, m_LevelData.sprite_buf.geom_vbo);
+    for (int32_t i = 0; i < m_LevelData.animated_vertices->count; i++) {
+        const OUTPUT_VERTEX_RANGE *const range =
+            Vector_Get(m_LevelData.animated_vertices, i);
+        GFX_TRACK_DATA(
+            glBufferSubData, GL_ARRAY_BUFFER,
+            range->vertex_start * sizeof(M_SPRITE_VERTEX),
+            range->vertex_count * sizeof(M_SPRITE_VERTEX),
+            &m_LevelData.sprite_buf.geom_vbo_data[range->vertex_start]);
+    }
 }
 
 void Output_Sprites_RenderRoomSprites(

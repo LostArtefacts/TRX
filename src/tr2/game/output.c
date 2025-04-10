@@ -434,6 +434,10 @@ void Output_ObserveLevelUnload(void)
     }
 }
 
+void Output_ObserveRoomFlip(const ROOM *room)
+{
+}
+
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
 {
     g_FltWinLeft = 0.0f;

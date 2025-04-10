@@ -254,6 +254,7 @@ sources = [
   'game/output/sprites.c',
   'game/output/state.c',
   'game/output/textures.c',
+  'game/output/vertex_range.c',
   'game/overlay.c',
   'game/requester.c',
   'game/room.c',

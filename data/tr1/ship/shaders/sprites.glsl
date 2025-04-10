@@ -9,7 +9,7 @@ uniform int uTime;
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inDisplacement;
-layout(location = 2) in int inUVWIdx;
+layout(location = 2) in vec3 inUVW;
 layout(location = 3) in float inShade;
 
 out vec4 gWorldPos;
@@ -28,9 +28,8 @@ void main(void) {
             waterWibble(gl_Position, uViewportSize, uTime);
     }
 
-    vec3 uvw = texelFetch(uUVW, int(inUVWIdx)).xyz;
-    gTexUV = uvw.xy;
-    gTexLayer = int(uvw.z);
+    gTexUV = inUVW.xy;
+    gTexLayer = int(inUVW.z);
     gShade = inShade;
 }
 

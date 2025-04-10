@@ -8,6 +8,7 @@
 void Output_Sprites_Init(void);
 void Output_Sprites_Shutdown(void);
 void Output_Sprites_ObserveLevelLoad(void);
+void Output_Sprites_ObserveTextureAnimation(void);
 void Output_Sprites_UploadProjectionMatrix(void);
 
 void Output_Sprites_RenderBegin(void);

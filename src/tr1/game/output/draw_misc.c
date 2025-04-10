@@ -158,7 +158,6 @@ void Output_DrawRoomPortals(const ROOM *const room)
         }
     }
     for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].uvw_idx = -1;
         vertices[i].flags =
             VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS;
         vertices[i].color = color;

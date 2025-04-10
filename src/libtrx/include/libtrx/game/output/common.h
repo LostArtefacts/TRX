@@ -4,6 +4,7 @@
 
 extern void Output_ObserveLevelLoad(void);
 extern void Output_ObserveLevelUnload(void);
+extern void Output_ObserveRoomFlip(const ROOM *room);
 
 extern bool Output_MakeScreenshot(const char *path);
 extern void Output_BeginScene(void);
