@@ -298,7 +298,7 @@ void Output_AddDynamicLight(
 
 int32_t Output_GetFogStart(void)
 {
-    return m_FogStart;
+    return MIN(m_FogStart, Output_GetFogEnd());
 }
 
 void Output_SetFogStart(const int32_t dist)

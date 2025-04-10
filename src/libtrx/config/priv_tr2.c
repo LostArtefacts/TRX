@@ -137,6 +137,8 @@ void Config_Sanitize(void)
         g_Config.rendering.fps = 30;
     }
 
+    CLAMP(g_Config.visuals.fog_start, 1, 100);
+    CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
