@@ -204,6 +204,8 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
+    CLAMP(g_Config.visuals.fog_start, 1, 100);
+    CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov_value, 30, 150);
     CLAMP(g_Config.gameplay.camera_speed, 1, 10);
     CLAMP(g_Config.audio.music_volume, 0, 10);

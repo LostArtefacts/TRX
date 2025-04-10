@@ -138,6 +138,17 @@ static bool M_CanChangeValue(const int32_t row_idx, const int32_t delta)
     return false;
 }
 
+static void M_SyncRows(M_WIDGET *const self)
+{
+    for (int32_t row_idx = 0; row_idx < self->row_count; row_idx++) {
+        M_ROW *const row = &self->rows[row_idx];
+        char *value_text = M_FormatRowValue(row_idx);
+        UI_Label_ChangeText(row->value_label, value_text);
+        Memory_Free(value_text);
+    }
+    M_DoLayout(self);
+}
+
 static bool M_RequestChangeValue(
     M_WIDGET *const self, const int32_t row_idx, const int32_t delta)
 {
@@ -152,14 +163,12 @@ static bool M_RequestChangeValue(
     default:
         return false;
     }
+    Config_Write();
 
     M_ROW *const row = &self->rows[row_idx];
-    char *value_text = M_FormatRowValue(row_idx);
-    UI_Label_ChangeText(row->value_label, value_text);
     UI_Label_SetVisible(row->arrow_left_label, M_CanChangeValue(row_idx, -1));
     UI_Label_SetVisible(row->arrow_right_label, M_CanChangeValue(row_idx, +1));
-    Memory_Free(value_text);
-    Config_Write();
+    M_SyncRows(self);
     return true;
 }
 
