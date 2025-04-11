@@ -106,6 +106,9 @@
                 {"type": "total_stats", "background_path": "data/images/end.png"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/guardian_death_commands.bin",
+            ],
         },
 
         // 5. Nightmare in Vegas
@@ -123,6 +126,9 @@
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/guardian_death_commands.bin",
             ],
         },
     ],

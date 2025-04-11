@@ -309,6 +309,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/guardian_death_commands.bin",
                 "data/injections/palace_fd.bin",
                 "data/injections/palace_itemrots.bin",
             ],
