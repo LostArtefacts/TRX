@@ -167,7 +167,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     const GF_LEVEL *const next_level = GF_GetLevelAfter(current_level);
 
     if (current_level == GF_GetLastLevel()) {
-        Game_SetBonusFlag(GBF_NGPLUS);
+        g_Config.profile.new_game_plus_unlock = true;
+        Config_Write();
     }
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
@@ -270,9 +271,10 @@ void GF_PreSequenceHook(
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
-    // TODO: reset bonus flag if seq_ctx == GFSC_SAVED once S_LoadGame logic is
-    // merged with overall save loading logic.
     Camera_GetCineData()->position.target_angle = DEG_90;
+    if (seq_ctx == GFSC_SAVED) {
+        Game_SetBonusFlag(GBF_NONE);
+    }
 }
 
 GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(

@@ -293,7 +293,9 @@ int32_t Gun_FireWeapon(
         if (item_to_smash != NO_ITEM) {
             Gun_SmashItem(item_to_smash, weapon_type);
         }
-        Gun_HitTarget(target, &hit_pos, winfo->damage);
+        Gun_HitTarget(
+            target, &hit_pos,
+            winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
 }
