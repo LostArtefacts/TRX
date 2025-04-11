@@ -1376,7 +1376,22 @@ provided with the game achieves.
 
 #### TR2
 
-TBD
+<table>
+  <tr valign="top" align="left">
+    <th>Injection file</th>
+    <th>Purpose</th>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>guardian_death_commands.bin</code>
+    </td>
+    <td>
+      Injects an animation command for the bird guardian to end the level on the
+      final frame of its death animation. The original hard-coded end-level
+      behaviour is removed in TR2X.
+    </td>
+  </tr>
+</table>
 
 ## FMVs
 

@@ -308,6 +308,7 @@ as Notepad.
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
 - added ability to disable FMVs
 - added per-level customizable fog distance
+- removed the hard-coded end-level behaviour of the bird guardian for custom levels
 
 #### Miscellaneous
 - added Linux builds
