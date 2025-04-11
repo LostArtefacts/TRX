@@ -53,6 +53,10 @@
       "Title": "Abilita FMV",
       "Description": "Abilita la riproduzione dei filmati."
     },
+    "enable_game_modes": {
+      "Title": "Abilita le modalità di gioco",
+      "Description": "Consente di selezionare diverse modalità di gioco dal menu passaporto.\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi infliggono danni doppi, i razzi di segnalazione contengono 8 anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese."
+    },
     "fix_m16_accuracy": {
       "Title": "Correggi precisione M16",
       "Description": "Corregge la precisione della mira dell'M16 quando Lara corre."

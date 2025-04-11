@@ -298,12 +298,6 @@ const SAVEGAME_INFO *Savegame_GetSavegameInfo(const int32_t slot_num)
 
 void Savegame_InitCurrentInfo(void)
 {
-    // TODO: remove both NG+ checks in this function once the TR1 NG options are
-    // ported to TR2.
-    if (TR_VERSION == 2 && Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        return;
-    }
-
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
@@ -318,10 +312,6 @@ void Savegame_InitCurrentInfo(void)
     if (GF_GetFirstLevel() != nullptr) {
         Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = 1;
     }
-
-#if TR_VERSION == 2
-    Game_SetBonusFlag(GBF_NONE);
-#endif
 }
 
 void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)

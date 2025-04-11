@@ -128,6 +128,11 @@
           "Field": "enable_fmv",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "enable_game_modes",
+          "DataType": "Bool",
+          "DefaultValue": true
         }
       ]
     },

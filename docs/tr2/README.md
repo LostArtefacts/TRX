@@ -179,6 +179,7 @@ as Notepad.
 - added a pause screen
 - added a photo mode feature
 - added combined support for The Golden Mask
+- added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed secret rewards not displaying shotgun ammo

@@ -6,6 +6,7 @@
 - added the bonus level game flow type, which allows for levels to be unlocked if all main game secrets are found (#2668)
 - added the ability for custom levels to have up to two of each secret type per level (#2674)
 - added BSON savegame support, removing the limits imposed by the OG 8KB file size, so allowing for storing more data and offering improved feature support (legacy save files can still be read, similar to TR1) (#2662)
+- added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport (#2731)
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
 - fixed the inability to completely mute the sounds, even at sound volume 0 (#2722)

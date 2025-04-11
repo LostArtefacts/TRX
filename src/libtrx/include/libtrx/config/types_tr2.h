@@ -83,6 +83,7 @@ typedef struct {
         bool enable_fmv;
         bool enable_auto_item_selection;
         int32_t turbo_speed;
+        bool enable_game_modes;
     } gameplay;
 
     struct {
@@ -112,4 +113,8 @@ typedef struct {
         int32_t scaler;
         float sizer;
     } rendering;
+
+    struct {
+        bool new_game_plus_unlock;
+    } profile;
 } CONFIG;

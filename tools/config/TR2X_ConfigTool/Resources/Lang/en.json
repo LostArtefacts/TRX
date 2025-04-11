@@ -46,6 +46,10 @@
       "Title": "Enable FMVs",
       "Description": "Enables FMVs playing."
     },
+    "enable_game_modes": {
+      "Title": "Enable game modes",
+      "Description": "Allows new game plus options to be selected from the new game passport menu.\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG."
+    },
     "fix_m16_accuracy": {
       "Title": "Fix M16 accuracy",
       "Description": "Fixes the accuracy of the M16 while Lara is running."

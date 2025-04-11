@@ -34,6 +34,6 @@
     #define GRENADE_AMMO_QTY (GRENADE_AMMO_CLIP * 2) // = 2
     #define GRENADE_SPEED 200
 
-    // TODO: Japanese version uses 8
     #define FLARE_AMMO_QTY 6
+    #define FLARE_AMMO_JAPANESE_QTY 8
 #endif
