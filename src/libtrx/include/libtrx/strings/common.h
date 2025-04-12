@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../colors.h"
 #include "../vector.h"
 
 #include <stdint.h>
@@ -14,6 +15,7 @@ bool String_IsEmpty(const char *value);
 bool String_ParseBool(const char *value, bool *target);
 bool String_ParseInteger(const char *value, int32_t *target);
 bool String_ParseDecimal(const char *value, float *target);
+bool String_ParseRGB888(const char *value, RGB_888 *target);
 
 char *String_ToUpper(const char *text);
 

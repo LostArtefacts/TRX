@@ -8,6 +8,7 @@
 #include "memory.h"
 #include "strings.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #define EMPTY_ROOT "{}"
@@ -248,6 +249,7 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             break;
 
         case COT_RGB888: {
+            RGB_888 *const target = (RGB_888 *)opt->target;
             JSON_VALUE *const value =
                 JSON_ObjectGetValue(root_obj, M_ResolveOptionName(opt->name));
             bool success = false;
@@ -255,11 +257,15 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 const uint32_t rgb_value =
                     JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
                 ASSERT(rgb_value != JSON_INVALID_NUMBER);
-                RGB_888 *const target = (RGB_888 *)opt->target;
                 target->r = (rgb_value >> 0) & 0xFF;
                 target->g = (rgb_value >> 8) & 0xFF;
                 target->b = (rgb_value >> 16) & 0xFF;
                 success = true;
+            } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
+                const char *str_value =
+                    JSON_ValueGetString(value, JSON_INVALID_STRING);
+                ASSERT(str_value != JSON_INVALID_STRING);
+                success = String_ParseRGB888(str_value, target);
             }
             if (!success) {
                 *(RGB_888 *)opt->target = *(RGB_888 *)opt->default_value;
@@ -307,9 +313,10 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
 
         case COT_RGB888: {
             const RGB_888 *const color = (RGB_888 *)opt->target;
-            JSON_ObjectAppendInt(
-                root_obj, M_ResolveOptionName(opt->name),
-                color->r | (color->g << 8) | (color->b << 16));
+            char tmp[10];
+            sprintf(tmp, "#%02X%02X%02X", color->r, color->g, color->b);
+            JSON_ObjectAppendString(
+                root_obj, M_ResolveOptionName(opt->name), tmp);
             break;
         }
         }
