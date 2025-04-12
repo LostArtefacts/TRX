@@ -65,8 +65,11 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
 
     if (p->args.background_type == BK_IMAGE) {
-        ASSERT(p->args.background_path != nullptr);
-        Output_LoadBackgroundFromFile(p->args.background_path);
+        if (p->args.background_path == nullptr) {
+            LOG_WARNING("Trying to load empty background image");
+        } else {
+            Output_LoadBackgroundFromFile(p->args.background_path);
+        }
     } else if (p->args.background_type == BK_OBJECT) {
         Output_LoadBackgroundFromObject();
     } else {
