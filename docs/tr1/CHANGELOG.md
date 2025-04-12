@@ -1,12 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
 - added an ability to customize the fog distances (#634)
-- added an ability to customize the water color (#1532)  
-    Reference:
-    Version | Red | Green | Blue | Hex
-    ------- | --- | ----- | ---- | -------
-    TombATI | 115 | 255   | 255  | ![#73FFFF](https://placehold.co/15x15/73FFFF/73FFFF.png) `#73FFFF`
-    PS1     | 77  | 255   | 255  | ![#4DFFFF](https://placehold.co/15x15/4DFFFF/4DFFFF.png) `#4DFFFF`
-    DOS     | 153 | 179   | 255  | ![#99B3FF](https://placehold.co/15x15/99B3FF/99B3FF.png) `#99B3FF`
+- added an ability to customize the water color [see the reference](/docs/GAME_FLOW.md#water-color-table) (#1532)  
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
 - changed the `draw_distance_min` and `draw_distance_max` to `fog_start` and `fog_end`
 - changed `Select Detail` dialog title to `Graphic Options`
