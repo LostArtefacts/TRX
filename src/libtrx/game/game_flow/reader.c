@@ -158,10 +158,6 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 {
     const char *const path = JSON_ObjectGetString(event_obj, "path", nullptr);
-    if (path == nullptr) {
-        Shell_ExitSystem("Missing picture path");
-        return -1;
-    }
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
         event_data->path = (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
@@ -171,10 +167,13 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
             JSON_ObjectGetDouble(event_obj, "fade_in_time", 1.0);
         event_data->fade_out_time =
             JSON_ObjectGetDouble(event_obj, "fade_out_time", 1.0 / 3.0);
-        strcpy(event_data->path, path);
+        if (path != nullptr) {
+            strcpy(event_data->path, path);
+        }
         event->data = event_data;
     }
-    return sizeof(GF_DISPLAY_PICTURE_DATA) + strlen(path) + 1;
+    return sizeof(GF_DISPLAY_PICTURE_DATA)
+        + (path == nullptr ? 0 : strlen(path) + 1);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
@@ -182,8 +181,10 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
     const char *const path =
         JSON_ObjectGetString(event_obj, "background_path", nullptr);
     if (path == nullptr) {
-        Shell_ExitSystem("Missing picture path");
-        return -1;
+        if (event != nullptr) {
+            event->data = nullptr;
+        }
+        return 0;
     }
     if (event != nullptr) {
         char *const event_data = extra_data;
