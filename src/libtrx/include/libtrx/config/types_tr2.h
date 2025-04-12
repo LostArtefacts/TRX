@@ -84,6 +84,7 @@ typedef struct {
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
+        bool enable_legal;
         bool enable_auto_item_selection;
         int32_t turbo_speed;
         bool enable_game_modes;

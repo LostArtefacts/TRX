@@ -261,9 +261,9 @@
       "Title": "Activer les FMV",
       "Description": "Active les FMV en jeu."
     },
-    "enable_eidos_logo": {
-        "Title": "Activer le logo EIDOS",
-        "Description": "Active le logo EIDOS au début du jeu."
+    "enable_legal": {
+        "Title": "Activer le contenu légal",
+        "Description": "Active le logo EIDOS, la vidéo FMV de Core Design et la vidéo FMV avec le codec Bink au début du jeu."
     },
     "enable_loading_screens": {
       "Title": "Activer les écrans de chargement",

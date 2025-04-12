@@ -34,7 +34,7 @@
             "data/injections/pda_model.bin",
         ],
         "sequence": [
-            {"type": "display_picture", "path": "data/images/eidos.webp", "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
+            {"type": "display_picture", "path": "data/images/eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -132,7 +132,7 @@
     ],
 
     "fmvs": [
-        {"path": "fmv/core.avi"},
-        {"path": "fmv/escape.avi"},
+        {"path": "fmv/core.avi", "legal": true},
+        {"path": "fmv/escape.avi", "legal": true},
     ],
 }

@@ -28,7 +28,7 @@
         "path": "data/title_gm.tr2",
         "music_track": 64,
         "sequence": [
-            {"type": "display_picture", "path": "data/images/legal.png"},
+            {"type": "display_picture", "path": "data/images/legal.png", "legal": true},
             {"type": "exit_to_title"},
         ],
     },

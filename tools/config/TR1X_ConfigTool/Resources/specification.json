@@ -329,7 +329,7 @@
           "DefaultValue": true
         },
         {
-          "Field": "enable_eidos_logo",
+          "Field": "enable_legal",
           "DataType": "Bool",
           "DefaultValue": true
         },

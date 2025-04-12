@@ -261,9 +261,9 @@
       "Title": "Abilita gli FMV",
       "Description": "Abilita la riproduzione dei filmati."
     },
-    "enable_eidos_logo": {
-      "Title": "Abilita il logo EIDOS",
-      "Description": "Abilita il logo EIDOS all'avvio del gioco."
+    "enable_legal": {
+      "Title": "Abilita il contenuto legale",
+      "Description": "Abilita il logo EIDOS, il FMV di Core Design e il FMV del codec video Bink all'avvio del gioco."
     },
     "enable_loading_screens": {
       "Title": "Abilita le schermate di caricamento",
