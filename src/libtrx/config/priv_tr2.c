@@ -16,6 +16,7 @@ static void M_LoadInputLayout(
 static void M_DumpInputConfig(JSON_OBJECT *root_obj);
 static void M_DumpInputLayout(
     JSON_OBJECT *parent_obj, INPUT_BACKEND backend, INPUT_LAYOUT layout);
+static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj);
 
 static void M_LoadInputConfig(JSON_OBJECT *const root_obj)
 {
@@ -98,10 +99,20 @@ static void M_DumpInputLayout(
     }
 }
 
+static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
+{
+#define READ_FALLBACK_BOOL(target, key)                                        \
+    target = JSON_ObjectGetBool(parent_obj, key, target)
+
+    // ..0.10
+    READ_FALLBACK_BOOL(g_Config.visuals.use_psx_fov, "use_pcx_fov");
+}
+
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, Config_GetOptionMap());
     M_LoadInputConfig(root_obj);
+    M_LoadLegacyOptions(root_obj);
     g_Config.loaded = true;
     g_SavedConfig = g_Config;
 }

@@ -50,7 +50,7 @@ typedef struct {
         bool enable_exit_fade_effects;
         bool fix_item_rots;
         int32_t fov;
-        bool use_pcx_fov;
+        bool use_psx_fov;
 
         RGB_888 water_color;
         int32_t fog_start;

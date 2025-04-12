@@ -52,7 +52,7 @@ static void M_AlterFov(VIEWPORT *const vp)
     const int32_t view_angle =
         vp->view_angle <= 0 ? g_Config.visuals.fov * DEG_1 : vp->view_angle;
     const int32_t fov_width = vp->game_vars.win_height * 320
-        / (g_Config.visuals.use_pcx_fov ? 200 : 240);
+        / (g_Config.visuals.use_psx_fov ? 200 : 240);
     vp->game_vars.persp =
         fov_width / 2 * Math_Cos(view_angle / 2) / Math_Sin(view_angle / 2);
 
