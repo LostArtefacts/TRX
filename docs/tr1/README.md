@@ -620,6 +620,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added per-level customizable water color (with customizable blue component)
 - added per-level customizable fog distance
 - added deadly water feature from TR2+
+- added support for antitriggers, like TR2+
 
 #### Miscellaneous
 - added Linux builds

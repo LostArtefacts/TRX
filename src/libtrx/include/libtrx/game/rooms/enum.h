@@ -67,9 +67,7 @@ typedef enum {
     TT_ANTIPAD = 6,
     TT_COMBAT = 7,
     TT_DUMMY = 8,
-#if TR_VERSION == 2
     TT_ANTITRIGGER = 9,
-#endif
 } TRIGGER_TYPE;
 
 #if TR_VERSION == 2
