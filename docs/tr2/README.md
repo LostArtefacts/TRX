@@ -327,6 +327,7 @@ as Notepad.
 - expanded the number of static mesh slots from 50 to 256
 - expanded maximum number of items (moveables) from 256 to 10240 (1024 remains the limit for triggered items)
 - expanded maximum number of visible enemies from 5 to 32
+- expanded the maximum number of effects (flames, embers, exploding parts etc) from 100 to 1000
 - ported audio decoding library to ffmpeg
 - ported video decoding library to ffmpeg
 - ported input backend to SDL
