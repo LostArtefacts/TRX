@@ -196,7 +196,8 @@ remains distinct for each game.
     </td>
     <td>Float array</td>
     <td>
-      Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+      Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
+      or `00` means completely black color.
       See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
@@ -338,9 +339,10 @@ remains distinct for each game.
     <td>
       <code>water_color</code>
     </td>
-    <td>Float array or string</td>
+    <td>Float array or hex string</td>
     <td>
-      Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+      Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
+      or `00` means completely black color.
       See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
