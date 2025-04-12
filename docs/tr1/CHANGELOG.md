@@ -7,6 +7,7 @@
     TombATI | 115 | 255   | 255  | ![#73FFFF](https://placehold.co/15x15/73FFFF/73FFFF.png) `#73FFFF`
     PS1     | 77  | 255   | 255  | ![#4DFFFF](https://placehold.co/15x15/4DFFFF/4DFFFF.png) `#4DFFFF`
     DOS     | 153 | 179   | 255  | ![#99B3FF](https://placehold.co/15x15/99B3FF/99B3FF.png) `#99B3FF`
+- added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
 - changed the `draw_distance_min` and `draw_distance_max` to `fog_start` and `fog_end`
 - changed `Select Detail` dialog title to `Graphic Options`
 - changed the number of static mesh slots from 50 to 256 (#2734)

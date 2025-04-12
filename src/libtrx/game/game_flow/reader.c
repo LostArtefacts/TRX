@@ -11,6 +11,7 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
+#include "strings.h"
 
 #include <string.h>
 
@@ -103,8 +104,9 @@ static void M_LoadCommonSettings(
     }
 
     {
-        JSON_ARRAY *const tmp_arr = JSON_ObjectGetArray(obj, "water_color");
-        if (tmp_arr != nullptr) {
+        JSON_VALUE *const tmp_value = JSON_ObjectGetValue(obj, "water_color");
+        if (tmp_value != nullptr && tmp_value->type == JSON_TYPE_ARRAY) {
+            const JSON_ARRAY *const tmp_arr = JSON_ValueAsArray(tmp_value);
             const RGB_F color = {
                 JSON_ArrayGetDouble(tmp_arr, 0, JSON_INVALID_NUMBER),
                 JSON_ArrayGetDouble(tmp_arr, 1, JSON_INVALID_NUMBER),
@@ -118,6 +120,16 @@ static void M_LoadCommonSettings(
                     color.g * 255.0f,
                     color.b * 255.0f,
                 };
+            }
+        } else if (
+            tmp_value != nullptr && tmp_value->type == JSON_TYPE_STRING) {
+            const char *tmp_str =
+                JSON_ValueGetString(tmp_value, JSON_INVALID_STRING);
+            ASSERT(tmp_str != JSON_INVALID_STRING);
+            RGB_888 tmp_color;
+            if (String_ParseRGB888(tmp_str, &tmp_color)) {
+                settings->water_color.is_present = true;
+                settings->water_color.value = tmp_color;
             }
         }
     }
