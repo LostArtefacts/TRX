@@ -13,6 +13,7 @@
 - changed the number of static mesh slots from 50 to 256 (#2734)
 - changed the "enable EIDOS logo" option to disable the Core Design and Bink Video Codec FMVs as well; renamed to "enable legal" (#2741)
 - fixed the bilinear filter to not readjust the UVs (#2258)
+- fixed disabling the cutscenes causing the game to exit (#2743, regression from 4.8)
 - fixed anisotropy filter causing black lines on certain GPUs (#902)
 - fixed mesh faces not being drawn under some circumstances (#2452, #2438)
 - fixed objects disappearing too early around screen edges (#2005)

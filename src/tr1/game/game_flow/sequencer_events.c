@@ -388,25 +388,6 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     }
 }
 
-bool GF_ShouldSkipSequenceEvent(
-    const GF_LEVEL *const level, const GF_SEQUENCE_EVENT *const event)
-{
-    // Skip cinematic levels
-    if (!g_Config.gameplay.enable_cutscenes && level->type == GFL_CUTSCENE) {
-        switch (event->type) {
-        case GFS_EXIT_TO_TITLE:
-        case GFS_LEVEL_COMPLETE:
-        case GFS_PLAY_FMV:
-        case GFS_LEVEL_STATS:
-        case GFS_TOTAL_STATS:
-            return false;
-        default:
-            return true;
-        }
-    }
-    return false;
-}
-
 GF_EVENT_QUEUE_TYPE GF_ShouldDeferSequenceEvent(
     const GF_SEQUENCE_EVENT_TYPE event_type)
 {
