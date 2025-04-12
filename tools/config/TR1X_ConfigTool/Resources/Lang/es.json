@@ -153,7 +153,7 @@
       "Title": "Consola",
       "Description": "Habilita la consola de desarrollo."
     },
-    "enable_cine": {
+    "enable_cutscenes": {
       "Title": "Habilitar escenas",
       "Description": "Habilita la reproducción de escenas."
     },

@@ -249,7 +249,7 @@
       "Title": "Mode détail Stat",
       "Description": "Permet différents niveaux de détail des statistiques.\n- Minime: indique les tués, les ramassages, les secrets et le temps passé.\n- Détaillée: indique toutes les statistiques de nu ainsi que le nombre maximum de ramassages et de tués pour chaque niveau.\n- Complet: indique toutes les statistiques de détaillé ainsi que les munitions touchées, les munitions utilisées, les trousses de santé utilisées et la distance parcourue."
     },
-    "enable_cine": {
+    "enable_cutscenes": {
       "Title": "Activer les cutscenes",
       "Description": "Active les cutscenes en jeu."
     },

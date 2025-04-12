@@ -238,7 +238,7 @@
       "Title": "Stat detail mode",
       "Description": "Allows various levels of stat detail.\n- Minimal: shows kills, pickups, secrets, and time taken.\n- Detailed: shows all stats from minimal as well as the maximum pickup count and kill count of each level.\n- Full: shows all stats from detailed as well as ammo hits, ammo used, health packs used, and distance travelled."
     },
-    "enable_cine": {
+    "enable_cutscenes": {
       "Title": "Enable cutscenes",
       "Description": "Enables cutscenes playing."
     },

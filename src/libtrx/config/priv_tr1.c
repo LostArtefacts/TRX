@@ -119,6 +119,7 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     READ_FALLBACK_INT(g_Config.input.controller_layout, "cntlr_layout");
 
     // ..4.9
+    READ_FALLBACK_BOOL(g_Config.gameplay.enable_cutscenes, "enable_cine");
     READ_FALLBACK_BOOL(g_Config.gameplay.enable_legal, "enable_eidos_logo");
 }
 

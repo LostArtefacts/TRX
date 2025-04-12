@@ -249,7 +249,7 @@
       "Title": "Modalità di visualizzazione delle statistiche",
       "Description": "Consente di scegliere tra vari livelli di dettaglio per la visualizzazione delle statistiche.\n- Minimo: mostra le uccisioni, gli oggetti raccolti, i segreti e il tempo impiegato per completare il livello.\n- Dettagliato: mostra tutte le statistiche della modalità 'Minimo' e, in aggiunta, il numero massimo di uccisioni e di oggetti recuperabili di ogni livello.\n- Completo: mostra tutte le statistiche della modalità 'Dettagliato' e, in aggiunta, i colpi andati a segno, le munizioni utilizzate, i kit medici adoperati e la distanza percorsa."
     },
-    "enable_cine": {
+    "enable_cutscenes": {
       "Title": "Abilita le scene di intermezzo",
       "Description": "Abilita la riproduzione delle scene di intermezzo."
     },
