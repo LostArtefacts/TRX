@@ -20,6 +20,8 @@ typedef struct {
     void *target;
     int32_t min_value;
     int32_t max_value;
+    int32_t delta_slow;
+    int32_t delta_fast;
     int32_t misc;
 } M_OPTION;
 
@@ -75,6 +77,8 @@ static M_OPTION m_Options[] = {
         .target = &g_Config.visuals.water_color,
         .min_value = 0,
         .max_value = 255,
+        .delta_slow = 1,
+        .delta_fast = 10,
         .misc = 0,
     },
 
@@ -84,6 +88,8 @@ static M_OPTION m_Options[] = {
         .target = &g_Config.visuals.water_color,
         .min_value = 0,
         .max_value = 255,
+        .delta_slow = 1,
+        .delta_fast = 10,
         .misc = 1,
     },
 
@@ -93,6 +99,8 @@ static M_OPTION m_Options[] = {
         .target = &g_Config.visuals.water_color,
         .min_value = 0,
         .max_value = 255,
+        .delta_slow = 1,
+        .delta_fast = 10,
         .misc = 2,
     },
 
@@ -104,11 +112,11 @@ static M_OPTION m_Options[] = {
 static uint8_t *M_GetColorComponent(const M_OPTION *option);
 static void M_ClearRows(M_WIDGET *self);
 static char *M_FormatRowValue(int32_t row_idx);
-static bool M_CanChangeValue(int32_t row_idx, int32_t delta);
-static bool M_RequestChangeValue(
-    M_WIDGET *self, int32_t row_idx, int32_t delta);
+static bool M_CanChangeValue(int32_t row_idx, int32_t dir);
+static bool M_RequestChangeValue(M_WIDGET *self, int32_t row_idx, int32_t dir);
 static void M_DeselectRow(M_WIDGET *self, int32_t row_idx);
 static void M_SelectRow(M_WIDGET *self, int32_t row_idx);
+static void M_SyncRows(M_WIDGET *self);
 static M_ROW *M_AddRow(
     M_WIDGET *self, const char *left_text, const char *right_text,
     void *user_data);
@@ -161,11 +169,9 @@ static char *M_FormatRowValue(const int32_t row_idx)
     case COT_INT32:
         return String_Format(
             GS(DETAIL_INTEGER_FMT), *(int32_t *)option->target);
-        break;
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
         return String_Format("%d", *component);
-        break;
     }
     default:
         break;
@@ -173,50 +179,46 @@ static char *M_FormatRowValue(const int32_t row_idx)
     return nullptr;
 }
 
-static bool M_CanChangeValue(const int32_t row_idx, const int32_t delta)
+static bool M_CanChangeValue(const int32_t row_idx, const int32_t dir)
 {
     const M_OPTION *const option = &m_Options[row_idx];
     switch (option->option_type) {
     case COT_INT32:
-        if (delta < 0) {
+        if (dir < 0) {
             return *(int32_t *)option->target > option->min_value;
-        } else if (delta > 0) {
+        } else if (dir > 0) {
             return *(int32_t *)option->target < option->max_value;
         }
         break;
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
-        if (delta < 0) {
+        if (dir < 0) {
             return *component > option->min_value;
-        } else if (delta > 0) {
+        } else if (dir > 0) {
             return *component < option->max_value;
         }
         break;
     }
     default:
-        return false;
+        break;
     }
     return false;
 }
 
-static void M_SyncRows(M_WIDGET *const self)
-{
-    for (int32_t row_idx = 0; row_idx < self->row_count; row_idx++) {
-        M_ROW *const row = &self->rows[row_idx];
-        char *value_text = M_FormatRowValue(row_idx);
-        UI_Label_ChangeText(row->value_label, value_text);
-        Memory_Free(value_text);
-    }
-    M_DoLayout(self);
-}
-
 static bool M_RequestChangeValue(
-    M_WIDGET *const self, const int32_t row_idx, const int32_t delta)
+    M_WIDGET *const self, const int32_t row_idx, const int32_t dir)
 {
-    if (!M_CanChangeValue(row_idx, delta)) {
+    if (!M_CanChangeValue(row_idx, dir)) {
         return false;
     }
+
     const M_OPTION *const option = &m_Options[row_idx];
+    int32_t delta = g_Input.slow ? option->delta_slow : option->delta_fast;
+    if (delta == 0) {
+        delta = 1;
+    }
+    delta *= dir;
+
     switch (option->option_type) {
     case COT_INT32:
         *(int32_t *)option->target += delta;
@@ -252,6 +254,17 @@ static void M_SelectRow(M_WIDGET *const self, const int32_t row_idx)
     UI_Label_SetVisible(row->arrow_left_label, M_CanChangeValue(row_idx, -1));
     UI_Label_SetVisible(row->arrow_right_label, M_CanChangeValue(row_idx, +1));
     UI_Frame_SetFrameVisible(row->frame, true);
+}
+
+static void M_SyncRows(M_WIDGET *const self)
+{
+    for (int32_t row_idx = 0; row_idx < self->row_count; row_idx++) {
+        M_ROW *const row = &self->rows[row_idx];
+        char *value_text = M_FormatRowValue(row_idx);
+        UI_Label_ChangeText(row->value_label, value_text);
+        Memory_Free(value_text);
+    }
+    M_DoLayout(self);
 }
 
 static M_ROW *M_AddRow(
