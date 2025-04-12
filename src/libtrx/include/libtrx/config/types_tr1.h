@@ -158,7 +158,7 @@ typedef struct {
         bool enable_timer_in_inventory;
         bool enable_demo;
         bool enable_loading_screens;
-        bool enable_cine;
+        bool enable_cutscenes;
         STAT_DETAIL_MODE stat_detail_mode;
         bool enable_walk_to_items;
         bool enable_enhanced_saves;

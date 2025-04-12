@@ -314,7 +314,7 @@
           "DefaultValue": "full"
         },
         {
-          "Field": "enable_cine",
+          "Field": "enable_cutscenes",
           "DataType": "Bool",
           "DefaultValue": true
         },
