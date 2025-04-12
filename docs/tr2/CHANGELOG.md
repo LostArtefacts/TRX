@@ -4,7 +4,7 @@
 - added ability to turn off ingame cutscenes (#2127)
 - added sunglasses for graphic options (#1615)
 - added control over the fog distances for players and level builders (#1622)
-- added control over the water color for players and level builders (#1619)
+- added control over the water color for players and level builders [see the reference](/docs/GAME_FLOW.md#water-color-table) (#1619)
 - added an installer for Windows (#2681)
 - added the bonus level game flow type, which allows for levels to be unlocked if all main game secrets are found (#2668)
 - added the ability for custom levels to have up to two of each secret type per level (#2674)
