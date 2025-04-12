@@ -3,8 +3,6 @@
 extern void GF_PreSequenceHook(GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg);
 extern GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     const GF_SEQUENCE_EVENT *event, GF_SEQUENCE_CONTEXT seq_ctx);
-extern bool GF_ShouldSkipSequenceEvent(
-    const GF_LEVEL *level, const GF_SEQUENCE_EVENT *event);
 
 // Defer execution of certain events to run it at various stages of
 // GFS_LOOP_GAME.

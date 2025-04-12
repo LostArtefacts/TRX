@@ -293,12 +293,6 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     }
 }
 
-bool GF_ShouldSkipSequenceEvent(
-    const GF_LEVEL *const level, const GF_SEQUENCE_EVENT *const event)
-{
-    return false;
-}
-
 GF_EVENT_QUEUE_TYPE GF_ShouldDeferSequenceEvent(
     const GF_SEQUENCE_EVENT_TYPE event_type)
 {

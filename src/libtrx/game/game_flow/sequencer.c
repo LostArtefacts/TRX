@@ -81,10 +81,6 @@ GF_COMMAND GF_InterpretSequence(
     const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[i];
-        if (GF_ShouldSkipSequenceEvent(level, event)) {
-            continue;
-        }
-
         if (M_PostponeEvent(event)) {
             continue;
         }
