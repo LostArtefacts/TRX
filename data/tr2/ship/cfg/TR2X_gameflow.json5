@@ -28,7 +28,7 @@
         "path": "data/title.tr2",
         "music_track": 64,
         "sequence": [
-            {"type": "display_picture", "path": "data/images/legal.png"},
+            {"type": "display_picture", "path": "data/images/legal.png", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -493,7 +493,7 @@
     ],
 
     "fmvs": [
-        {"path": "fmv/LOGO.RPL"},
+        {"path": "fmv/LOGO.RPL", "legal": true},
         {"path": "fmv/ANCIENT.RPL"},
         {"path": "fmv/MODERN.RPL"},
         {"path": "fmv/LANDING.RPL"},

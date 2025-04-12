@@ -250,9 +250,9 @@
       "Title": "Enable FMVs",
       "Description": "Enables FMVs playing."
     },
-    "enable_eidos_logo": {
-      "Title": "Enable EIDOS logo",
-      "Description": "Enables EIDOS logo at the game start."
+    "enable_legal": {
+      "Title": "Enable legal",
+      "Description": "Enables EIDOS logo, Core Design FMV and bink video codec FMV at the game start."
     },
     "enable_loading_screens": {
       "Title": "Enable loading screens",

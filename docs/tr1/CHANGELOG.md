@@ -10,6 +10,7 @@
 - changed the `draw_distance_min` and `draw_distance_max` to `fog_start` and `fog_end`
 - changed `Select Detail` dialog title to `Graphic Options`
 - changed the number of static mesh slots from 50 to 256 (#2734)
+- changed the "enable EIDOS logo" option to disable the Core Design and Bink Video Codec FMVs as well; renamed to "enable legal" (#2741)
 - fixed the bilinear filter to not readjust the UVs (#2258)
 - fixed anisotropy filter causing black lines on certain GPUs (#902)
 - fixed mesh faces not being drawn under some circumstances (#2452, #2438)

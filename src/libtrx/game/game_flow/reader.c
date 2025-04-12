@@ -165,6 +165,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
         event_data->path = (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
+        event_data->is_legal = JSON_ObjectGetBool(event_obj, "legal", false);
         event_data->display_time =
             JSON_ObjectGetDouble(event_obj, "display_time", 5.0);
         event_data->fade_in_time =
@@ -514,6 +515,7 @@ static void M_LoadFMV(
         Shell_ExitSystemFmt("Missing FMV path");
     }
     fmv->path = Memory_DupStr(path);
+    fmv->is_legal = JSON_ObjectGetBool(obj, "legal", false);
 }
 
 static void M_LoadFMVs(JSON_OBJECT *const obj, GAME_FLOW *const gf)

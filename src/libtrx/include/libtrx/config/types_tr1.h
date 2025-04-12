@@ -152,11 +152,11 @@ typedef struct {
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
+        bool enable_legal;
         bool enable_compass_stats;
         bool enable_total_stats;
         bool enable_timer_in_inventory;
         bool enable_demo;
-        bool enable_eidos_logo;
         bool enable_loading_screens;
         bool enable_cine;
         STAT_DETAIL_MODE stat_detail_mode;

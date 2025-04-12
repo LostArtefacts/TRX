@@ -29,6 +29,7 @@ typedef struct {
 
 typedef struct {
     char *path;
+    bool is_legal;
     float display_time;
     float fade_in_time;
     float fade_out_time;
@@ -75,6 +76,7 @@ typedef struct {
 
 typedef struct {
     const char *path;
+    bool is_legal;
 } GF_FMV;
 
 typedef struct {
