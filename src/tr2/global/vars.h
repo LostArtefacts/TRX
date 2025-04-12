@@ -45,7 +45,7 @@ extern float g_FltPersp;
 extern int16_t *g_Info3DPtr;
 extern int32_t g_PhdWinWidth;
 extern int32_t g_PhdViewDistance;
-extern PHD_VBUF g_PhdVBuf[];
+extern PHD_VBUF *g_PhdVBuf;
 extern float g_FltWinRight;
 extern int32_t g_PhdWinRight;
 extern int32_t g_SurfaceCount;

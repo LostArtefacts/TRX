@@ -11,11 +11,13 @@
 #include "game/viewport.h"
 #include "global/vars.h"
 
+#include <libtrx/benchmark.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/log.h>
+#include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
 typedef enum {
@@ -54,6 +56,7 @@ static NAMED_COLOR m_NamedColors[COLOR_NUMBER_OF] = {
     // clang-format on
 };
 
+static int32_t m_VBufCapacity = 0;
 static int32_t m_TickComp = 0;
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
@@ -410,6 +413,44 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
     }
 }
 
+static void M_ReserveVertexBuffer(void)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    int32_t max_vertices = 1500;
+    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+        const OBJECT *const obj = Object_Get(i);
+        if (!obj->loaded) {
+            continue;
+        }
+
+        for (int32_t j = 0; j < obj->mesh_count; j++) {
+            const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + j);
+            max_vertices = MAX(max_vertices, mesh->num_vertices);
+        }
+    }
+
+    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_3D; i++) {
+        const STATIC_OBJECT_3D *obj = Object_Get3DStatic(i);
+        if (!obj->loaded) {
+            continue;
+        }
+
+        const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
+        max_vertices = MAX(max_vertices, mesh->num_vertices);
+    }
+
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        max_vertices = MAX(max_vertices, room->mesh.num_vertices);
+    }
+
+    Benchmark_End(&benchmark, nullptr);
+    if (max_vertices >= m_VBufCapacity) {
+        g_PhdVBuf = Memory_Realloc(g_PhdVBuf, max_vertices * sizeof(PHD_VBUF));
+        m_VBufCapacity = max_vertices;
+    }
+}
+
 void Output_ApplyLevelSettings(void)
 {
     Output_SetWaterColor(Level_GetWaterColor());
@@ -420,6 +461,7 @@ void Output_ApplyLevelSettings(void)
 
 void Output_ObserveLevelLoad(void)
 {
+    M_ReserveVertexBuffer();
     Output_ApplyLevelSettings();
     for (int32_t i = 0; i < COLOR_NUMBER_OF; i++) {
         m_NamedColors[i].palette_index =

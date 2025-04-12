@@ -44,7 +44,7 @@ float g_FltPersp;
 int16_t *g_Info3DPtr = nullptr;
 int32_t g_PhdWinWidth;
 int32_t g_PhdViewDistance;
-PHD_VBUF g_PhdVBuf[1500];
+PHD_VBUF *g_PhdVBuf = nullptr;
 float g_FltWinRight;
 int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
