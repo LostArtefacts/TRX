@@ -105,6 +105,22 @@ static M_OPTION m_Options[] = {
     },
 
     {
+        .option_type = COT_INT32,
+        .label_id = GS_ID(DETAIL_FOV),
+        .target = &g_Config.visuals.fov,
+        .min_value = 30,
+        .max_value = 150,
+        .delta_slow = 1,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(DETAIL_USE_PSX_FOV),
+        .target = &g_Config.visuals.use_psx_fov,
+    },
+
+    {
         .target = nullptr,
     },
 };
@@ -166,6 +182,9 @@ static char *M_FormatRowValue(const int32_t row_idx)
 {
     const M_OPTION *const option = &m_Options[row_idx];
     switch (option->option_type) {
+    case COT_BOOL:
+        return String_Format(
+            "%s", *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
     case COT_INT32:
         return String_Format(
             GS(DETAIL_INTEGER_FMT), *(int32_t *)option->target);
@@ -183,6 +202,8 @@ static bool M_CanChangeValue(const int32_t row_idx, const int32_t dir)
 {
     const M_OPTION *const option = &m_Options[row_idx];
     switch (option->option_type) {
+    case COT_BOOL:
+        return true;
     case COT_INT32:
         if (dir < 0) {
             return *(int32_t *)option->target > option->min_value;
@@ -220,6 +241,9 @@ static bool M_RequestChangeValue(
     delta *= dir;
 
     switch (option->option_type) {
+    case COT_BOOL:
+        *(bool *)option->target = !*(bool *)option->target;
+        break;
     case COT_INT32:
         *(int32_t *)option->target += delta;
         break;
