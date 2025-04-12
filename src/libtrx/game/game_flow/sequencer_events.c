@@ -37,12 +37,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const int16_t cutscene_num = (int16_t)(intptr_t)event->data;
-#if TR_VERSION == 1
-    if (!g_Config.gameplay.enable_cutscenes) {
-        return gf_cmd;
-    }
-#endif
-    if (seq_ctx != GFSC_SAVED) {
+    if (seq_ctx != GFSC_SAVED && g_Config.gameplay.enable_cutscenes) {
         gf_cmd = GF_DoCutsceneSequence(cutscene_num);
         if (gf_cmd.action == GF_LEVEL_COMPLETE) {
             gf_cmd.action = GF_NOOP;

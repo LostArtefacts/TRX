@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
 - added support for The Golden Mask (#1621)
 - added ability to turn off legal screen and FMVs (#2740)
+- added ability to turn off ingame cutscenes (#2127)
 - added sunglasses for graphic options (#1615)
 - added control over the fog distances for players and level builders (#1622)
 - added control over the water color for players and level builders (#1619)
