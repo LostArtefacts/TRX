@@ -41,6 +41,10 @@ static int32_t M_GetAnimFrameCount(
     uint32_t next_ofs = anim_idx == Anim_GetTotalCount() - 1
         ? (unsigned)(sizeof(int16_t) * frame_data_length)
         : Anim_GetAnim(anim_idx + 1)->frame_ofs;
+    if (anim->frame_size == 0) {
+        ASSERT(next_ofs - anim->frame_ofs == 0);
+        return 0;
+    }
     return (next_ofs - anim->frame_ofs)
         / (int32_t)(sizeof(int16_t) * anim->frame_size);
 #endif

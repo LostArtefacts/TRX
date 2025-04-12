@@ -21,7 +21,8 @@
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
 - fixed the console opening when remapping its key (#2641)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
-- fixed game crashing if the images were missing
+- fixed a crash if an image was missing
+- fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
 - removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels (#1583)
 
