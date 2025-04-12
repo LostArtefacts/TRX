@@ -197,10 +197,7 @@ remains distinct for each game.
     <td>Float array</td>
     <td>
       Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
-      <ul>
-        <li><code>[0.6, 0.7, 1.0]</code> is the original DOS version color.</li>
-        <li><code>[0.45, 1.0, 1.0]</code> is the default TombATI color.</li>
-      </ul>
+      See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
 </table>
@@ -339,21 +336,12 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td>
-      <a name="water-color"></a>
       <code>water_color</code>
     </td>
-    <td>Float array</td>
+    <td>Float array or string</td>
     <td>
       Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
-      <ul>
-        <li><code>[0.5, 0.875, 1.0]</code> is the default PC hardware renderer color.</li>
-        <li><code>[0.66, 0.66, 1.0]</code> is the default PC software renderer color.</li>
-        <li><code>[0.8, 1.0, 0.5]</code> is the PS1 color in the Venice, Bartoli's Hideout and Opera House levels.</li>
-        <li><code>[0.8, 1.0, 0.6]</code> is the PS1 color for the Temple of Xian level.</li>
-        <li><code>[0.8, 1.0, 0.8]</code> is the PS1 color for the Floating Islands and Dragon's Lair levels.</li>
-        <li><code>[0.7, 0.9, 0.9]</code> is the PS1 color for The Great Wall and Tibetan Foothills levels.</li>
-        <li><code>[0.5, 1.0, 1.0]</code> is the PS1 color for all other PS1 levels.</li>
-      </ul>
+      See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
 </table>
@@ -1478,3 +1466,65 @@ keyboard or controller layouts defined.
 
 If you do not have any requirement to enforce settings, you can omit the
 `enforced_config` section from your game flow altogether.
+
+## Water colors<a id="user-content-water-color-table"></a>
+
+<table>
+<thead>
+    <tr>
+        <th>Game</th>
+        <th>Color (hex)</th>
+        <th>Color (array)</th>
+        <th>Usage</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td rowspan="2">TR1</td>
+        <td><code>#99B2FF</code></td>
+        <td><code>[0.6, 0.7, 1.0]</code></td>
+        <td>original DOS version color</td>
+    </tr>
+    <tr>
+        <td><code>#72FFFF</code></td>
+        <td><code>[0.45, 1.0, 1.0]</code></td>
+        <td>default TombATI color</td>
+    </tr>
+    <tr>
+        <td rowspan="7">TR2</td>
+        <td><code>#80DFFF</code></td>
+        <td><code>[0.5, 0.875, 1.0]</code></td>
+        <td>default PC hardware renderer color</td>
+    </tr>
+    <tr>
+        <td><code>#AAAAFF</code></td>
+        <td><code>[0.66, 0.66, 1.0]</code></td>
+        <td>default PC software renderer color</td>
+    </tr>
+    <tr>
+        <td><code>#CCFF80</code></td>
+        <td><code>[0.8, 1.0, 0.5]</code></td>
+        <td>Venice, Bartoli's Hideout and Opera House (PS1)</td>
+    </tr>
+    <tr>
+        <td><code>#CCFF99</code></td>
+        <td><code>[0.8, 1.0, 0.6]</code></td>
+        <td>Temple of Xian (PS1)</td>
+    </tr>
+    <tr>
+        <td><code>#CCFFCC</code></td>
+        <td><code>[0.8, 1.0, 0.8]</code></td>
+        <td>Floating Islands and Dragon's Lair (PS1)</td>
+    </tr>
+    <tr>
+        <td><code>#B2E5E5</code></td>
+        <td><code>[0.7, 0.9, 0.9]</code></td>
+        <td>The Great Wall and Tibetan Foothills (PS1)</td>
+    </tr>
+    <tr>
+        <td><code>#80FFFF</code></td>
+        <td><code>[0.5, 1.0, 1.0]</code></td>
+        <td>All other PS1 levels</td>
+    </tr>
+</tbody>
+</table>
