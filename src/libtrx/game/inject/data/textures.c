@@ -147,7 +147,7 @@ static void M_HandleSpriteSequences(
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
             obj->loaded = true;
-        } else if (obj_id - O_NUMBER_OF < MAX_STATIC_OBJECTS) {
+        } else if (obj_id - O_NUMBER_OF < MAX_STATIC_OBJECTS_2D) {
             STATIC_OBJECT_2D *const obj =
                 Object_Get2DStatic(obj_id - O_NUMBER_OF);
             obj->frame_count = ABS(num_meshes);

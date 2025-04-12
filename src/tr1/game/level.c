@@ -400,15 +400,7 @@ bool Level_Initialise(
 
     Music_ResetTrackFlags();
 
-    /* Clear Object Loaded flags */
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        Object_Get(i)->loaded = false;
-    }
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
-        Object_Get2DStatic(i)->loaded = false;
-        Object_Get3DStatic(i)->loaded = false;
-    }
-
+    Object_Reset();
     Camera_Reset();
     Pierre_Reset();
 

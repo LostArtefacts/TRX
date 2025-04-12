@@ -147,10 +147,6 @@ void DecreaseScreenSize(void)
 void InitialiseGameFlags(void)
 {
     Music_ResetTrackFlags();
-    for (GAME_OBJECT_ID obj_id = 0; obj_id < O_NUMBER_OF; obj_id++) {
-        Object_Get(obj_id)->loaded = 0;
-    }
-
     Output_SetSunsetTimer(0);
     g_LevelComplete = false;
     g_DetonateAllMines = false;

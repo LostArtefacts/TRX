@@ -9,6 +9,7 @@
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport (#2731)
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
+- changed the number of static mesh slots from 50 to 256 (#2734)
 - fixed the inability to completely mute the sounds, even at sound volume 0 (#2722)
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)

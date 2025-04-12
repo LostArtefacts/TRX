@@ -7,6 +7,7 @@
 #include "ids.h"
 #include "types.h"
 
+void Object_Reset(void);
 OBJECT *Object_Get(GAME_OBJECT_ID obj_id);
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
