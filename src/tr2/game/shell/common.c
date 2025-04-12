@@ -379,7 +379,7 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         Render_Reset(RENDER_RESET_PARAMS);
     }
 
-    if (CHANGED(visuals.fov) || CHANGED(visuals.use_pcx_fov)) {
+    if (CHANGED(visuals.fov) || CHANGED(visuals.use_psx_fov)) {
         if (Viewport_GetFOV(false) == -1) {
             Viewport_AlterFOV(-1);
         }
