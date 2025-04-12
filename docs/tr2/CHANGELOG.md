@@ -13,6 +13,7 @@
 - changed the number of static mesh slots from 50 to 256 (#2734)
 - changed the maximum number of items (moveables) per level from 256 to 10240 (1024 remains the limit for triggered items) (#1794)
 - changed the maximum number of visible enemies from 5 to 32 (#1624)
+- changed the maximum number of effects (flames, embers, exploding parts etc) from 100 to 1000 (#1581)
 - fixed the inability to completely mute the sounds, even at sound volume 0 (#2722)
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)

@@ -34,7 +34,7 @@
 
 typedef struct {
     int16_t count;
-    int16_t id_map[NUM_EFFECTS];
+    int16_t id_map[MAX_EFFECTS];
 } SAVEGAME_BSON_FX_ORDER;
 
 static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version);
@@ -137,7 +137,7 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order)
 {
     order->count = 0;
-    for (int i = 0; i < NUM_EFFECTS; i++) {
+    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
         order->id_map[i] = -1;
     }
 
@@ -677,12 +677,12 @@ static bool M_LoadEffects(JSON_ARRAY *fx_arr)
         return false;
     }
 
-    if ((signed)fx_arr->length >= NUM_EFFECTS) {
+    if ((signed)fx_arr->length >= MAX_EFFECTS) {
         LOG_WARNING(
             "Malformed save: expected a max of %d effect, got %d. effect over "
             "the "
             "maximum will not be created.",
-            NUM_EFFECTS - 1, fx_arr->length);
+            MAX_EFFECTS - 1, fx_arr->length);
     }
 
     for (int i = 0; i < (signed)fx_arr->length; i++) {
