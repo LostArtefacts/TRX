@@ -842,10 +842,10 @@ void Level_ReadStaticObjects(VFILE *const file)
     LOG_INFO("static objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
         const int32_t static_id = VFile_ReadS32(file);
-        if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS) {
+        if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS_3D) {
             Shell_ExitSystemFmt(
                 "Invalid static ID: %d (max=%d)", static_id,
-                MAX_STATIC_OBJECTS);
+                MAX_STATIC_OBJECTS_3D - 1);
         }
 
         STATIC_OBJECT_3D *const obj = Object_Get3DStatic(static_id);
@@ -936,7 +936,7 @@ void Level_ReadSpriteSequences(VFILE *const file)
             obj->mesh_idx = mesh_idx;
             obj->anim_idx = NO_ANIM;
             obj->loaded = true;
-        } else if (object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS) {
+        } else if (object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS_2D) {
             STATIC_OBJECT_2D *const obj =
                 Object_Get2DStatic(object_id - O_NUMBER_OF);
             obj->frame_count = ABS(num_meshes);

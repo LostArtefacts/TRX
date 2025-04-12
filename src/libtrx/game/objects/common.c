@@ -9,10 +9,23 @@
 #include "game/output/objects.h"
 
 static OBJECT m_Objects[O_NUMBER_OF] = {};
-static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS] = {};
-static STATIC_OBJECT_2D m_StaticObjects2D[MAX_STATIC_OBJECTS] = {};
+static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS_3D] = {};
+static STATIC_OBJECT_2D m_StaticObjects2D[MAX_STATIC_OBJECTS_2D] = {};
 static OBJECT_MESH **m_MeshPointers = nullptr;
 static int32_t m_MeshCount = 0;
+
+void Object_Reset(void)
+{
+    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+        m_Objects[i].loaded = false;
+    }
+    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_3D; i++) {
+        m_StaticObjects3D[i].loaded = false;
+    }
+    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
+        m_StaticObjects2D[i].loaded = false;
+    }
+}
 
 OBJECT *Object_Get(const GAME_OBJECT_ID obj_id)
 {

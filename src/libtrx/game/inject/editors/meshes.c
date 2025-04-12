@@ -104,7 +104,7 @@ static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
         }
 
         mesh = Object_GetMesh(obj->mesh_idx + edit->mesh_idx);
-    } else if (edit->object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS) {
+    } else if (edit->object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS_3D) {
         const STATIC_OBJECT_3D *const obj =
             Object_Get3DStatic(edit->object_id - O_NUMBER_OF);
         mesh = Object_GetMesh(obj->mesh_idx);

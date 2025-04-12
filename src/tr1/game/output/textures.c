@@ -71,7 +71,7 @@ static void M_PrepareObjectAnimationRanges(void)
 static void M_PrepareSpriteAnimationRanges(void)
 {
     size_t required_size = 0;
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
+    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
         const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(i);
         if (!obj->loaded || obj->frame_count == 1) {
             continue;
@@ -82,7 +82,7 @@ static void M_PrepareSpriteAnimationRanges(void)
     Vector_Clear(m_AnimationRanges.sprites);
     Vector_EnsureCapacity(m_AnimationRanges.sprites, required_size);
 
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
+    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
         const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(i);
         if (!obj->loaded || obj->frame_count == 1) {
             continue;

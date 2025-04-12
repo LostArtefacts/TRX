@@ -636,6 +636,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - expanded maximum texture pages from 32 to 128
 - expanded maximum vertices of a single drawable object from 1500 to unlimited
 - expanded the number of visible enemies from 8 to 32
+- expanded the number of static mesh slots from 50 to 256
 - ported audio decoding library to ffmpeg
 - ported video decoding library to ffmpeg
 - ported image decoding library to ffmpeg

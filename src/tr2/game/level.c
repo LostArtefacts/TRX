@@ -294,13 +294,7 @@ bool Level_Load(const GF_LEVEL *const level)
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
 
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        Object_Get(i)->loaded = false;
-    }
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
-        Object_Get2DStatic(i)->loaded = false;
-        Object_Get3DStatic(i)->loaded = false;
-    }
+    Object_Reset();
 
     Inject_InitLevel(level);
 
