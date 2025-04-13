@@ -150,6 +150,7 @@
             "injections": [
                 "data/injections/folly_fd.bin",
                 "data/injections/folly_itemrots.bin",
+                "data/injections/folly_pickup_meshes.bin",
                 "data/injections/folly_textures.bin",
             ],
         },
