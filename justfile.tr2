@@ -20,6 +20,6 @@ tr2-package-win-installer target='release': \
     (_docker_run "rrdash/trx-win" "package" "--tr-version" "2" "-o" "tools/installer/TR2X_Installer/Resources/release.zip") (tr2-build-win-installer)
     #!/bin/sh
     git checkout "tools/installer/TR2X_Installer/Resources/release.zip"
-    exe_name=TR2X-$(tools/get_version 1)-Installer.exe
+    exe_name=TR2X-$(tools/get_version 2)-Installer.exe
     cp tools/installer/out/TR2X_Installer.exe "${exe_name}"
     echo "Created ${exe_name}"
