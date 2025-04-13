@@ -912,10 +912,13 @@ bool Creature_Animate(
         item->rot.x = 0;
     }
 
-    if (TR_VERSION >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
+    if (!Object_IsType(item->object_id, g_WaterObjects)) {
+        // Get the room just above the enemy so that if it is in one-click high
+        // water, its effects behave still as though in a dry room.
         Room_GetSector(
             item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z, &room_num);
-        if (Room_Get(room_num)->flags & RF_UNDERWATER) {
+        if (TR_VERSION >= 2
+            && (Room_Get(room_num)->flags & RF_UNDERWATER) != 0) {
             item->hit_points = 0;
         }
     }
