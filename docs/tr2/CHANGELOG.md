@@ -23,6 +23,7 @@
 - fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground (#2752)
 - fixed the drawbridge producing dynamic light when open (#2294)
 - fixed the scale of several pickup models in The Golden Mask (#2652)
+- fixed the shark in The Cold War not making any sounds when biting Lara (#2678)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
