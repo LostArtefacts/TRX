@@ -607,6 +607,8 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Atlantean Stronghold**: converted track 20 in room 4, track 19 in room 13, track 11 in room 17, track 15 in room 20, and track 12 in room 25 to one shot
     - **The Hive**: converted track 9 in room 8, track 6 in room 18, track 12 in room 30, track 18 in room 31, track 3 in room 32, and track 20 in room 35 to one shot
 - fixed being unable to load a level that contains no sound effect data
+- fixed the panther at times not making a sound when it dies
+- restored Skate Kid's death SFX
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
