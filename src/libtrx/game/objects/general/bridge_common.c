@@ -1,18 +1,16 @@
 #include "game/objects/general/bridge_common.h"
 
-#include "game/items.h"
-#include "game/room.h"
-#include "global/const.h"
+#include "config.h"
+#include "game/rooms.h"
+#include "utils.h"
 
-#include <libtrx/config.h>
-#include <libtrx/utils.h>
-
-bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM *item)
+bool Bridge_IsSameSector(
+    const int32_t x, const int32_t z, const ITEM *const item)
 {
-    int32_t sector_x = x / WALL_L;
-    int32_t sector_z = z / WALL_L;
-    int32_t item_sector_x = item->pos.x / WALL_L;
-    int32_t item_sector_z = item->pos.z / WALL_L;
+    const int32_t sector_x = x / WALL_L;
+    const int32_t sector_z = z / WALL_L;
+    const int32_t item_sector_x = item->pos.x / WALL_L;
+    const int32_t item_sector_z = item->pos.z / WALL_L;
 
     return sector_x == item_sector_x && sector_z == item_sector_z;
 }
@@ -74,9 +72,9 @@ void Bridge_FixEmbeddedPosition(int16_t item_num)
     // and moves them up.
     ITEM *const item = Item_Get(item_num);
 
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
+    const int32_t x = item->pos.x;
+    const int32_t y = item->pos.y;
+    const int32_t z = item->pos.z;
     int16_t room_num = item->room_num;
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
