@@ -132,9 +132,9 @@ const GAME_OBJECT_ID g_DoorObjects[] = {
 
 const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format off
-    O_TRAPDOOR_1,
-    O_TRAPDOOR_2,
-    O_BIGTRAPDOOR,
+    O_TRAPDOOR_TYPE_1,
+    O_TRAPDOOR_TYPE_2,
+    O_TRAPDOOR_TYPE_3,
     O_DRAWBRIDGE,
     NO_OBJECT,
     // clang-format on

@@ -271,7 +271,7 @@
         "door_8":            {"name": "Door 8"},
         "trapdoor_1":        {"name": "Trapdoor 1"},
         "trapdoor_2":        {"name": "Trapdoor 2"},
-        "big_trapdoor":      {"name": "Big Trapdoor"},
+        "trapdoor_3":        {"name": "Trapdoor 3"},
         "bridge_flat":       {"name": "Bridge Flat"},
         "bridge_tilt_1":     {"name": "Bridge Tilt 1"},
         "bridge_tilt_2":     {"name": "Bridge Tilt 2"},

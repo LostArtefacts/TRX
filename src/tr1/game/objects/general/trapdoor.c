@@ -109,5 +109,5 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-REGISTER_OBJECT(O_TRAPDOOR_1, M_Setup)
-REGISTER_OBJECT(O_TRAPDOOR_2, M_Setup)
+REGISTER_OBJECT(O_TRAPDOOR_TYPE_1, M_Setup)
+REGISTER_OBJECT(O_TRAPDOOR_TYPE_2, M_Setup)
