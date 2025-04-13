@@ -1,22 +1,51 @@
-#include "game/items.h"
-#include "global/const.h"
-
-#include <libtrx/utils.h>
+#include "game/const.h"
+#include "game/objects.h"
 
 typedef enum {
     TRAPDOOR_STATE_CLOSED,
     TRAPDOOR_STATE_OPEN,
 } TRAPDOOR_STATE;
 
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+        return height;
+    } else if (y > item->pos.y || item->pos.y > height) {
+        return height;
+    } else {
+        return item->pos.y;
+    }
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+        return height;
+    } else if (y <= item->pos.y || item->pos.y <= height) {
+        return height;
+    } else {
+        return item->pos.y + STEP_L;
+    }
+}
+
+static bool M_IsItemOnTop(
+    const ITEM *const item, const int32_t x, const int32_t z)
 {
     const BOUNDS_16 *const orig_bounds = &Item_GetBestFrame(item)->bounds;
     if (orig_bounds == nullptr) {
@@ -64,8 +93,8 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->save_anim = 1;
 }
 
 static void M_Control(const int16_t item_num)
@@ -75,38 +104,12 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state == TRAPDOOR_STATE_CLOSED) {
             item->goal_anim_state = TRAPDOOR_STATE_OPEN;
         }
-    } else if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
-        item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
+    } else {
+        if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
+            item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
+        }
     }
     Item_Animate(item);
-}
-
-static int16_t M_GetFloorHeight(
-    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
-{
-    if (!M_IsItemOnTop(item, x, z)) {
-        return height;
-    }
-    if (item->current_anim_state == TRAPDOOR_STATE_OPEN || y > item->pos.y
-        || item->pos.y >= height) {
-        return height;
-    }
-    return item->pos.y;
-}
-
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
-{
-    if (!M_IsItemOnTop(item, x, z)) {
-        return height;
-    }
-    if (item->current_anim_state == TRAPDOOR_STATE_OPEN || y <= item->pos.y
-        || item->pos.y <= height) {
-        return height;
-    }
-    return item->pos.y + STEP_L;
 }
 
 REGISTER_OBJECT(O_TRAPDOOR_TYPE_1, M_Setup)

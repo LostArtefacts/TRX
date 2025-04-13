@@ -1,6 +1,7 @@
+#include "config.h"
+#include "game/const.h"
+#include "game/objects.h"
 #include "game/objects/general/bridge_common.h"
-
-#include <libtrx/config.h>
 
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
@@ -9,8 +10,8 @@ static int16_t M_GetCeilingHeight(
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
 
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+int16_t M_GetFloorHeight(
+    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (g_Config.gameplay.fix_bridge_collision
@@ -19,8 +20,8 @@ static int16_t M_GetFloorHeight(
     }
 
     const int32_t offset_height =
-        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 4);
-    if (y > offset_height || item->pos.y >= height) {
+        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 2);
+    if (y > offset_height) {
         return height;
     }
 
@@ -31,8 +32,8 @@ static int16_t M_GetFloorHeight(
     return offset_height;
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+int16_t M_GetCeilingHeight(
+    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (g_Config.gameplay.fix_bridge_collision
@@ -41,7 +42,7 @@ static int16_t M_GetCeilingHeight(
     }
 
     const int32_t offset_height =
-        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 4);
+        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 2);
     if (y <= offset_height) {
         return height;
     }
@@ -65,4 +66,4 @@ static void M_Initialise(const int16_t item_num)
     Bridge_FixEmbeddedPosition(item_num);
 }
 
-REGISTER_OBJECT(O_BRIDGE_TILT_1, M_Setup)
+REGISTER_OBJECT(O_BRIDGE_TILT_2, M_Setup)

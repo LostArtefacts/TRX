@@ -14,12 +14,8 @@ static bool M_IsOnWalkable(
     const SECTOR *const sector, const int32_t x, const int32_t y,
     const int32_t z, const int32_t room_height)
 {
-#if TR_VERSION == 1
     return g_Config.gameplay.fix_bridge_collision
         && Room_IsOnWalkable(sector, x, y, z, room_height);
-#elif TR_VERSION >= 2
-    return false;
-#endif
 }
 
 int32_t Collide_GetSpheres(
@@ -291,11 +287,7 @@ void Collide_GetCollisionInfo(
     coll->side_front.ceiling = ceiling;
     coll->side_front.type = Room_GetHeightType();
 
-#if TR_VERSION == 1
     is_on_walkable = M_IsOnWalkable(sector, x, y_top, z, room_height);
-#elif TR_VERSION >= 2
-    is_on_walkable = false;
-#endif
     if (!is_on_walkable) {
         if (coll->slopes_are_walls && coll->side_front.type == HT_BIG_SLOPE
             && coll->side_front.floor < 0) {

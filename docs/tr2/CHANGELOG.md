@@ -20,6 +20,8 @@
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
 - fixed the console opening when remapping its key (#2641)
+- fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground (#2752)
+- fixed the drawbridge producing dynamic light when open (#2294)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)

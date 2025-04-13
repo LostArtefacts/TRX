@@ -219,6 +219,7 @@ as Notepad.
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
 - fixed smashed windows blocking enemy pathing after loading a save
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
+- fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground
 - fixed several issues with pushblocks:
     - fixed an invisible wall above stacked pushblocks if near a ceiling portal
     - fixed floor height issues with pushblocks poised to fall in various scenarios
@@ -289,6 +290,7 @@ as Notepad.
 - fixed bubbles spawning from flares if Lara is in shallow water
 - fixed the inventory up arrow at times overlapping the health bar
 - fixed blood spawning on Lara from gunshots using incorrect positioning data
+- fixed the drawbridge producing dynamic light when open
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
