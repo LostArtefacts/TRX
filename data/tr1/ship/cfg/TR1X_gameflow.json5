@@ -246,6 +246,7 @@
                 "data/injections/khamoon_fd.bin",
                 "data/injections/khamoon_mummy.bin",
                 "data/injections/khamoon_textures.bin",
+                "data/injections/panther_sfx.bin",
             ],
         },
 
@@ -265,6 +266,7 @@
                 "data/injections/obelisk_meshfixes.bin",
                 "data/injections/obelisk_skybox.bin",
                 "data/injections/obelisk_textures.bin",
+                "data/injections/panther_sfx.bin",
             ],
         },
 
@@ -306,6 +308,7 @@
                 "data/injections/mines_meshfixes.bin",
                 "data/injections/mines_pushblocks.bin",
                 "data/injections/mines_textures.bin",
+                "data/injections/skate_kid_sfx.bin",
             ],
             "item_drops": [
                 {"enemy_num": 17, "object_ids": [86]},
