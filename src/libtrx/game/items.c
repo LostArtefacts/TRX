@@ -540,3 +540,27 @@ bool Item_TestBoundsCollide(
         rz <= src_bounds->max.z + radius);
     // clang-format on
 }
+
+bool Item_IsTriggerActive(ITEM *const item)
+{
+    const bool ok = !(item->flags & IF_REVERSE);
+
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return !ok;
+    }
+
+    if (!item->timer) {
+        return ok;
+    }
+
+    if (item->timer == -1) {
+        return !ok;
+    }
+
+    item->timer--;
+    if (item->timer == 0) {
+        item->timer = -1;
+    }
+
+    return ok;
+}

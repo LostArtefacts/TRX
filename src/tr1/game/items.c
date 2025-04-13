@@ -361,31 +361,6 @@ void Item_ShiftCol(ITEM *item, COLL_INFO *coll)
     coll->shift.z = 0;
 }
 
-bool Item_IsTriggerActive(ITEM *item)
-{
-    bool ok = !(item->flags & IF_REVERSE);
-
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return !ok;
-    }
-
-    if (!item->timer) {
-        return ok;
-    }
-
-    if (item->timer == -1) {
-        return !ok;
-    }
-
-    item->timer--;
-
-    if (!item->timer) {
-        item->timer = -1;
-    }
-
-    return ok;
-}
-
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
 {
     ANIM_FRAME *frames[2];

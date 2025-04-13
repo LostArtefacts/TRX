@@ -277,30 +277,6 @@ void Item_AlignPosition(
     dst_item->pos.z = new_pos.z;
 }
 
-int32_t Item_IsTriggerActive(ITEM *const item)
-{
-    const bool ok = !(item->flags & IF_REVERSE);
-
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return !ok;
-    }
-
-    if (!item->timer) {
-        return ok;
-    }
-
-    if (item->timer == -1) {
-        return !ok;
-    }
-
-    item->timer--;
-    if (item->timer == 0) {
-        item->timer = -1;
-    }
-
-    return ok;
-}
-
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);
