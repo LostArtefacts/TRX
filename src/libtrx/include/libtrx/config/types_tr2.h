@@ -81,6 +81,7 @@ typedef struct {
         bool fix_flare_throw_priority;
         bool fix_walk_run_jump;
         bool fix_bear_ai;
+        bool fix_bridge_collision;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
