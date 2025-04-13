@@ -6,15 +6,29 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
 
 #define SPIKE_WALL_DAMAGE 20
 #define SPIKE_WALL_SPEED 1
 
+static void M_Initialise(int16_t item_num);
 static void M_Move(int16_t item_num);
+static void M_Reset(int16_t item_num);
 static void M_HitLara(ITEM *item);
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    GAME_VECTOR *const data =
+        GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_ITEM_DATA);
+    data->pos = item->pos;
+    data->room_num = item->room_num;
+    item->data = data;
+}
 
 static void M_Move(const int16_t item_num)
 {
@@ -25,9 +39,9 @@ static void M_Move(const int16_t item_num)
         item->pos.x + (SPIKE_WALL_SPEED * Math_Sin(item->rot.y) >> WALL_SHIFT);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const Sector = Room_GetSector(x, item->pos.y, z, &room_num);
+    const SECTOR *const sector = Room_GetSector(x, item->pos.y, z, &room_num);
 
-    if (Room_GetHeight(Sector, x, item->pos.y, z) != item->pos.y) {
+    if (Room_GetHeight(sector, x, item->pos.y, z) != item->pos.y) {
         item->status = IS_DEACTIVATED;
     } else {
         item->pos.z = z;
@@ -38,6 +52,24 @@ static void M_Move(const int16_t item_num)
     }
 
     Sound_Effect(SFX_DOOR_SLIDE, &item->pos, SPM_NORMAL);
+}
+
+static void M_Reset(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->status = IS_INACTIVE;
+
+    const GAME_VECTOR *const data = item->data;
+    item->pos = data->pos;
+    if (item->room_num != data->room_num) {
+        Item_RemoveDrawn(item_num);
+        ROOM *const room = Room_Get(data->room_num);
+        item->next_item = room->item_num;
+        room->item_num = item_num;
+        item->room_num = data->room_num;
+    }
+
+    Item_RemoveActive(item_num);
 }
 
 static void M_HitLara(ITEM *const item)
@@ -54,6 +86,7 @@ static void M_HitLara(ITEM *const item)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_position = 1;
@@ -64,7 +97,9 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (Item_IsTriggerActive(item) && item->status != IS_DEACTIVATED) {
+    if (!Item_IsTriggerActive(item)) {
+        M_Reset(item_num);
+    } else if (item->status != IS_DEACTIVATED) {
         M_Move(item_num);
     }
 

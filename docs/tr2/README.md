@@ -214,8 +214,9 @@ as Notepad.
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
     - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
     - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, and added an extra pickup trigger beside the Gong Hammer in room 29
-    - **Temple of Xian**: fixed missing death tiles in room 91
-    - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it
+    - **Temple of Xian**: fixed missing death tiles in room 91; adding trigger workarounds to avoid a softlock after (missing) the final key
+    - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it; added extra zipline reset triggers to avoid softlock
+    - **Nightmare in Vegas**: added additional triggers for the bird monster and final flip map to avoid softlock
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
 - fixed smashed windows blocking enemy pathing after loading a save
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
@@ -310,6 +311,7 @@ as Notepad.
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
 - added ability to disable FMVs
 - added per-level customizable fog distance
+- added the ability for spike walls to be reset (antitriggered)
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels
 
 #### Miscellaneous
