@@ -877,6 +877,12 @@ void Camera_LoadCutsceneFrame(void)
     g_Camera.roll = roll;
     g_Camera.shift = 0;
 
+    const int16_t room_num =
+        Room_FindByPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
+    if (room_num != NO_ROOM_NEG) {
+        g_Camera.pos.room_num = room_num;
+    }
+
     Viewport_AlterFOV(fov);
 
     if (g_Config.audio.enable_lara_mic) {
