@@ -60,6 +60,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
+            ],
         },
 
         // 2. Fool's Gold
@@ -72,6 +75,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/fools_pickup_meshes.bin",
+            ],
         },
 
         // 3. Furnace of the Gods
@@ -83,6 +89,9 @@
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/furnace_pickup_meshes.bin",
             ],
         },
 
@@ -107,6 +116,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/guardian_death_commands.bin",
             ],
         },
@@ -128,6 +138,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/guardian_death_commands.bin",
             ],
         },
