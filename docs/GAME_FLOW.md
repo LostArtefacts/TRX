@@ -1215,17 +1215,27 @@ best practice to remove the references to maintain a clean game flow file.
 Following is a summary of what each of the default injection files that are
 provided with the game achieves.
 
-#### TR1
-
 <table>
   <tr valign="top" align="left">
     <th>Injection file</th>
+    <th>Usage</th>
     <th>Purpose</th>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>*_cameras.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects positional adjustments for cameras that can otherwise cause visual
+      issues, such as in Temple of the Cat.
+    </td>
   </tr>
   <tr valign="top">
     <td>
       <code>*_fd.bin</code>
     </td>
+    <td>TR1, TR2</td>
     <td>
       Injects fixes for floor data issues in the original levels. Refer to the
       README for a full list of fixes.
@@ -1235,6 +1245,7 @@ provided with the game achieves.
     <td>
       <code>*_itemrots.bin</code>
     </td>
+    <td>TR1, TR2</td>
     <td>
       Injects rotations on pickup items so they make more visual sense when
       using the 3D pickups option.
@@ -1242,8 +1253,39 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>*_meshfixes.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects miscellaneous mesh adjustments for objects, such as in Obelisk of
+      Khamoon to avoid z-fighting.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>*_pickup_meshes.bin</code>
+    </td>
+    <td>TR1, TR2</td>
+    <td>
+      Injects mesh edits to change the scale of various pickup models, such as
+      the keys in St. Francis' Folly or the Prayer Wheel in Barkhang Monastry.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>*_sfx.bin</code>
+    </td>
+    <td>TR1, TR2</td>
+    <td>
+      Injects various SFX fixes or additions, such as the PSX Uzi SFX in TR1, or
+      fixing the silent enemies in TR2's water levels.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>*_skybox.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects a predefined skybox model into specific levels.
     </td>
@@ -1252,6 +1294,7 @@ provided with the game achieves.
     <td>
       <code>*_textures.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects fixes for texture issues in the original levels, such as gaps in
       the walls or wrongly colored models. Refer to the README for a full list
@@ -1262,6 +1305,7 @@ provided with the game achieves.
     <td>
       <code>backpack.bin</code>
     </td>
+    <td>TR1</td>
     <td rowspan="2">
       Injects mesh edits for Lara's backback, such that it becomes shallower.
       This is only applied when the braid is enabled, to avoid the braid
@@ -1278,6 +1322,7 @@ provided with the game achieves.
     <td>
       <code>braid.bin</code>
     </td>
+    <td rowspan="4">TR1</td>
     <td rowspan="4">
       Injects a braid when the option for it is enabled. This also edits Lara's
       head meshes (object 0 and object 4) to make the braid fit better. A golden
@@ -1303,8 +1348,19 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>bubbles.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects replacement sprite textures for Lara's underwater bubble sprites,
+      which are cut off in OG.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>cistern_plants.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       This disables the animation on sprite ID 193 in The Cistern and Tomb of
       Tihocan.
@@ -1314,6 +1370,7 @@ provided with the game achieves.
     <td>
       <code>khamoon_mummy.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects the mummy in room 25 of City of Khamoon, which is present in the
       PS1 version but not the PC.
@@ -1323,6 +1380,7 @@ provided with the game achieves.
     <td>
       <code>lara_animations.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects several animations, state changes and commands for Lara, such as
       responsive jumping, jump-twist, somersault, underwater roll, and wading.
@@ -1330,16 +1388,47 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>lara_gym_guns.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects all of Lara's weapons and weapon animations in TR1's gym level.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>explosion.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects explosion sprites for certain console commands.
     </td>
   </tr>
   <tr valign="top">
     <td>
+      <code>font.bin</code>
+    </td>
+    <td>TR1, TR2</td>
+    <td>
+      Injects replacement font sprites to support more characters than OG.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>guardian_death_commands.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Injects an animation command for the bird guardian to end the level on the
+      final frame of its death animation. The original hard-coded end-level
+      behaviour is removed in TR2X.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>mines_pushblocks.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects animation command data for pushblock types 2, 3 and 4 to restore
       the missing scraping SFX when pulling these blocks.
@@ -1349,6 +1438,7 @@ provided with the game achieves.
     <td>
       <code>pickup_aid.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects a sprite sequence similar to the Midas twinkle effect, which is
       used when the option for pickup aids is enabled. Custom levels should
@@ -1359,6 +1449,7 @@ provided with the game achieves.
     <td>
       <code>photo.bin</code>
     </td>
+    <td>TR1, TR2</td>
     <td>
       Injects camera shutter sound effect for the photo mode, needed only for
       the cutscene levels.
@@ -1368,6 +1459,7 @@ provided with the game achieves.
     <td>
       <code>purple_crystal.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects a replacement savegame crystal model to match the PS1 style.
     </td>
@@ -1376,28 +1468,19 @@ provided with the game achieves.
     <td>
       <code>scion_collision.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Increases the collision radius on the (targetable) Scion such that it can
       be shot with the shotgun.
     </td>
   </tr>
-</table>
-
-#### TR2
-
-<table>
-  <tr valign="top" align="left">
-    <th>Injection file</th>
-    <th>Purpose</th>
-  </tr>
   <tr valign="top">
     <td>
-      <code>guardian_death_commands.bin</code>
+      <code>seaweed_collision.bin</code>
     </td>
+    <td>TR2</td>
     <td>
-      Injects an animation command for the bird guardian to end the level on the
-      final frame of its death animation. The original hard-coded end-level
-      behaviour is removed in TR2X.
+      Fixes the seaweed in Living Quarters blocking Lara from exiting the water.
     </td>
   </tr>
 </table>
