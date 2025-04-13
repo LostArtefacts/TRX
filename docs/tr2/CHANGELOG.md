@@ -10,6 +10,7 @@
 - added the ability for custom levels to have up to two of each secret type per level (#2674)
 - added BSON savegame support, removing the limits imposed by the OG 8KB file size, so allowing for storing more data and offering improved feature support (legacy save files can still be read, similar to TR1) (#2662)
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport (#2731)
+- added the ability for spike walls to be reset (antitriggered)
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
 - changed the number of static mesh slots from 50 to 256 (#2734)
@@ -25,6 +26,9 @@
 - fixed the scale of several pickup models in The Golden Mask (#2652)
 - fixed the shark in The Cold War not making any sounds when biting Lara (#2678)
 - fixed the in-game cinematic camera at times yielding invalid positions (and hence views) in custom levels (#2754)
+- fixed a softlock in Temple of Xian if the main chamber key is missed (#2042)
+- fixed a potential softlock in Floating Islands if returning towards the level start from the gold secret (#2590)
+- fixed a potential softlock in Nightmare in Vegas where the bird monster could remain inactive, or the flip map not set (#1851)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
