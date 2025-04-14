@@ -1110,3 +1110,43 @@ void Output_LightRoomVertices(const ROOM *const room)
         vtx->light_adder = vtx->light_base + wibble;
     }
 }
+
+void Output_DrawTextOutline(
+    const UI_STYLE ui_style, const int32_t x, const int32_t y,
+    const int32_t width, const int32_t height, const int32_t z,
+    const TEXT_STYLE text_style)
+{
+    const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
+
+    const int32_t offset = 4;
+    const int32_t x0 = x + offset;
+    const int32_t y0 = y + offset;
+    const int32_t x1 = x0 + width - offset * 2;
+    const int32_t y1 = y0 + height - offset * 2;
+    const int32_t scale_h = TEXT_BASE_SCALE;
+    const int32_t scale_v = TEXT_BASE_SCALE;
+
+    Output_DrawScreenSprite(
+        x0, y0, z, scale_h, scale_v, mesh_idx + 0, 0x1000, 0);
+    Output_DrawScreenSprite(
+        x1, y0, z, scale_h, scale_v, mesh_idx + 1, 0x1000, 0);
+    Output_DrawScreenSprite(
+        x1, y1, z, scale_h, scale_v, mesh_idx + 2, 0x1000, 0);
+    Output_DrawScreenSprite(
+        x0, y1, z, scale_h, scale_v, mesh_idx + 3, 0x1000, 0);
+
+    int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
+    int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
+
+    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
+    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
+}
+
+void Output_DrawTextBackground(
+    const UI_STYLE ui_style, const int32_t x, const int32_t y, const int32_t w,
+    const int32_t h, const int32_t z, const TEXT_STYLE text_style)
+{
+    Output_DrawScreenFBox(x, y, z, w, h, 0, nullptr, 0);
+}

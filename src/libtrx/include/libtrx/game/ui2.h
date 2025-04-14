@@ -3,6 +3,7 @@
 #include "./ui2/common.h"
 #include "./ui2/elements/anchor.h"
 #include "./ui2/elements/flash.h"
+#include "./ui2/elements/frame.h"
 #include "./ui2/elements/label.h"
 #include "./ui2/elements/modal.h"
 #include "./ui2/elements/pad.h"

@@ -147,23 +147,6 @@ typedef struct {
     bool ask_for_save;
 } GAME_INFO;
 
-typedef enum {
-    MC_PURPLE_C,
-    MC_PURPLE_E,
-    MC_BROWN_C,
-    MC_BROWN_E,
-    MC_GREY_C,
-    MC_GREY_E,
-    MC_GREY_TL,
-    MC_GREY_TR,
-    MC_GREY_BL,
-    MC_GREY_BR,
-    MC_BLACK,
-    MC_GOLD_LIGHT,
-    MC_GOLD_DARK,
-    MC_NUMBER_OF,
-} MENU_COLOR;
-
 typedef struct {
     int32_t xv;
     int32_t yv;
