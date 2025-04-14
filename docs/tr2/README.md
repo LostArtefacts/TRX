@@ -312,6 +312,7 @@ as Notepad.
 - added ability to disable FMVs
 - added per-level customizable fog distance
 - added the ability for spike walls to be reset (antitriggered)
+- fixed the lift to work in any cardinal direction in custom levels, not just South
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels
 
 #### Miscellaneous
