@@ -5,6 +5,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/math.h>
 
 #define LIFT_WAIT_TIME (3 * FRAMES_PER_SECOND) // = 90
 #define LIFT_SHIFT 16
@@ -46,14 +47,38 @@ static void M_FloorCeiling(
         .z = z >> WALL_SHIFT,
     };
 
+    const DIRECTION direction = Math_GetDirection(item->rot.y);
+    int32_t dx = 0;
+    int32_t dz = 0;
+    switch (direction) {
+    case DIR_NORTH:
+        dx = -1;
+        dz = 1;
+        break;
+    case DIR_EAST:
+        dx = 1;
+        dz = 1;
+        break;
+    case DIR_SOUTH:
+        dx = 1;
+        dz = -1;
+        break;
+    case DIR_WEST:
+        dx = -1;
+        dz = -1;
+        break;
+    default:
+        break;
+    }
+
     // clang-format off
     const bool point_in_shaft =
-        (test_tile.x == lift_tile.x || test_tile.x + 1 == lift_tile.x) &&
-        (test_tile.z == lift_tile.z || test_tile.z - 1 == lift_tile.z);
+        (test_tile.x == lift_tile.x || test_tile.x + dx == lift_tile.x) &&
+        (test_tile.z == lift_tile.z || test_tile.z + dz == lift_tile.z);
 
     const bool lara_in_shaft =
-        (lara_tile.x == lift_tile.x || lara_tile.x + 1 == lift_tile.x) &&
-        (lara_tile.z == lift_tile.z || lara_tile.z - 1 == lift_tile.z);
+        (lara_tile.x == lift_tile.x || lara_tile.x + dx == lift_tile.x) &&
+        (lara_tile.z == lift_tile.z || lara_tile.z + dz == lift_tile.z);
     // clang-format on
 
     const int32_t lift_floor = item->pos.y;
