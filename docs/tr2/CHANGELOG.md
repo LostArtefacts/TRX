@@ -42,6 +42,7 @@
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
 - fixed a crash in custom levels with large rooms (#2749)
+- improved pause exit dialog - it can now be canceled with escape
 - removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels (#1583)
 

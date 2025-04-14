@@ -211,6 +211,7 @@ sources = [
   'game/ui2/common.c',
   'game/ui2/dialogs/examine_item.c',
   'game/ui2/dialogs/new_game.c',
+  'game/ui2/dialogs/pause.c',
   'game/ui2/dialogs/photo_mode.c',
   'game/ui2/elements/anchor.c',
   'game/ui2/elements/fade.c',

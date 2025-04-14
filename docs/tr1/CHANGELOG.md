@@ -27,6 +27,7 @@
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 4.9)
 - improved bubble appearance (#2672)
 - improved rendering performance
+- improved pause exit dialog - it can now be canceled with escape
 - removed the pretty pixels options (it's now always enabled, #2258)
 
 ## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
