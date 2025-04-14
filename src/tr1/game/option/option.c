@@ -145,9 +145,13 @@ void Option_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     }
 }
 
-void Option_Draw(INVENTORY_ITEM *inv_item)
+void Option_Draw(INVENTORY_ITEM *const inv_item)
 {
     switch (inv_item->object_id) {
+    case O_PASSPORT_OPTION:
+        Option_Passport_Draw(inv_item);
+        break;
+
     case O_CONTROL_OPTION:
         switch (m_ControlMode) {
         case CM_KEYBOARD:

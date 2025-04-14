@@ -13,8 +13,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/widgets/requester.h>
+#include <libtrx/game/ui2.h>
 
 typedef enum {
     M_ROLE_LOAD_GAME,
@@ -43,28 +42,50 @@ static struct {
     bool page_ready;
     struct {
         bool is_ready;
-        UI_WIDGET *ui;
-    } requester;
+        UI2_NEW_GAME_STATE state;
+    } new_game;
 } m_State = { .active_page = -1 };
 
 TEXTSTRING *m_SubtitleText = nullptr;
 
+static void M_ChangePageTextContent(const char *title);
 static void M_SetPage(int32_t page, M_PAGE_ROLE role, bool available);
+static void M_InitRequesters(void);
+static void M_FreeRequesters(void);
 static void M_DeterminePages(void);
 static void M_RemoveAllText(void);
+static void M_NewGame(void);
 static void M_FlipLeft(INVENTORY_ITEM *inv_item);
 static void M_FlipRight(INVENTORY_ITEM *inv_item);
 static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_ShowPage(const INVENTORY_ITEM *inv_item);
 static void M_HandleFlipInputs(void);
-static int32_t M_DisplayNewGameRequester(void);
-static void M_CloseRequester(void);
+
+static void M_ChangePageTextContent(const char *const title)
+{
+    if (m_SubtitleText == nullptr) {
+        m_SubtitleText = Text_Create(0, -16, title);
+        Text_AlignBottom(m_SubtitleText, true);
+        Text_CentreH(m_SubtitleText, true);
+    }
+}
 
 static void M_SetPage(
     const int32_t page, const M_PAGE_ROLE role, const bool available)
 {
     m_State.pages[page].role = role;
     m_State.pages[page].available = available;
+}
+
+static void M_InitRequesters(void)
+{
+    UI2_NewGame_Init(&m_State.new_game.state);
+}
+
+static void M_FreeRequesters(void)
+{
+    UI2_NewGame_Free(&m_State.new_game.state);
+    m_State.new_game.is_ready = false;
 }
 
 static void M_DeterminePages(void)
@@ -77,6 +98,7 @@ static void M_DeterminePages(void)
 
     switch (g_Inv_Mode) {
     case INV_TITLE_MODE:
+        m_State.mode = M_MODE_BROWSE;
         M_SetPage(0, M_ROLE_LOAD_GAME, has_saves);
         M_SetPage(
             1,
@@ -86,17 +108,20 @@ static void M_DeterminePages(void)
         break;
 
     case INV_GAME_MODE:
+        m_State.mode = M_MODE_BROWSE;
         M_SetPage(0, M_ROLE_LOAD_GAME, has_saves);
         M_SetPage(1, M_ROLE_SAVE_GAME, true);
         M_SetPage(2, M_ROLE_EXIT, true);
         break;
 
     case INV_DEATH_MODE:
+        m_State.mode = M_MODE_BROWSE;
         M_SetPage(0, M_ROLE_LOAD_GAME, has_saves);
         M_SetPage(2, M_ROLE_EXIT, true);
         break;
 
     case INV_LOAD_MODE:
+        m_State.mode = M_MODE_BROWSE;
         if (has_saves) {
             M_SetPage(0, M_ROLE_LOAD_GAME, true);
         } else {
@@ -105,6 +130,7 @@ static void M_DeterminePages(void)
         break;
 
     case INV_SAVE_MODE:
+        m_State.mode = M_MODE_BROWSE;
         M_SetPage(1, M_ROLE_SAVE_GAME, true);
         break;
 
@@ -155,9 +181,55 @@ static void M_RemoveAllText(void)
     if (g_SaveGameRequester.ready) {
         Requester_Shutdown(&g_SaveGameRequester);
     }
+    M_FreeRequesters();
     if (m_SubtitleText != nullptr) {
         Text_Remove(m_SubtitleText);
         m_SubtitleText = nullptr;
+    }
+}
+
+static void M_NewGame(void)
+{
+    M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
+    m_State.selection = GF_GetFirstLevel()->num;
+    if (m_State.mode == M_MODE_BROWSE) {
+        if (g_InputDB.menu_confirm
+            && (g_Config.gameplay.enable_game_modes
+                || g_Config.profile.new_game_plus_unlock)) {
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+            m_State.mode = M_MODE_PICK_OPTION;
+            m_State.new_game.is_ready = true;
+        }
+    } else if (m_State.mode == M_MODE_PICK_OPTION) {
+        const int32_t choice = UI2_NewGame_Control(&m_State.new_game.state);
+        if (choice == UI2_REQUESTER_NO_CHOICE) {
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+        } else if (choice == UI2_REQUESTER_CANCEL) {
+            m_State.mode = M_MODE_BROWSE;
+            m_State.new_game.is_ready = false;
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+        } else {
+            switch (choice) {
+            case 0:
+                Game_SetBonusFlag(GBF_NONE);
+                break;
+            case 1:
+                Game_SetBonusFlag(GBF_NGPLUS);
+                break;
+            case 2:
+                Game_SetBonusFlag(GBF_JAPANESE);
+                break;
+            case 3:
+                Game_SetBonusFlag(GBF_JAPANESE | GBF_NGPLUS);
+                break;
+            default:
+                Game_SetBonusFlag(GBF_NONE);
+                break;
+            }
+        }
     }
 }
 
@@ -193,11 +265,7 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
 {
     switch (m_State.pages[m_State.active_page].role) {
     case M_ROLE_LOAD_GAME:
-        if (m_SubtitleText == nullptr) {
-            m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_LOAD_GAME));
-            Text_AlignBottom(m_SubtitleText, true);
-            Text_CentreH(m_SubtitleText, true);
-        }
+        M_ChangePageTextContent(GS(PASSPORT_LOAD_GAME));
 
         if (!g_LoadGameRequester.ready) {
             Savegame_FillAvailableSaves(&g_LoadGameRequester);
@@ -216,11 +284,7 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
         break;
 
     case M_ROLE_SAVE_GAME: {
-        if (m_SubtitleText == nullptr) {
-            m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_SAVE_GAME));
-            Text_AlignBottom(m_SubtitleText, true);
-            Text_CentreH(m_SubtitleText, true);
-        }
+        M_ChangePageTextContent(GS(PASSPORT_SAVE_GAME));
 
         if (!g_LoadGameRequester.ready) {
             Requester_SetHeading(
@@ -237,70 +301,23 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
         if (!g_SaveGameRequester.ready) {
             Savegame_FillAvailableLevels(&g_SaveGameRequester);
         }
-        if (m_SubtitleText == nullptr) {
-            m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_NEW_GAME));
-            Text_AlignBottom(m_SubtitleText, true);
-            Text_CentreH(m_SubtitleText, true);
-        }
+        M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
         m_State.selection =
             Requester_Display(&g_SaveGameRequester, true, true) - 1;
         break;
     }
 
     case M_ROLE_NEW_GAME:
-        if (m_SubtitleText == nullptr) {
-            m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_NEW_GAME));
-            Text_AlignBottom(m_SubtitleText, true);
-            Text_CentreH(m_SubtitleText, true);
-        }
-        m_State.selection = GF_GetFirstLevel()->num;
-        if (m_State.mode == M_MODE_BROWSE) {
-            if (g_InputDB.menu_confirm
-                && (g_Config.gameplay.enable_game_modes
-                    || g_Config.profile.new_game_plus_unlock)) {
-                g_Input = (INPUT_STATE) {};
-                g_InputDB = (INPUT_STATE) {};
-                m_State.mode = M_MODE_PICK_OPTION;
-            }
-        } else if (m_State.mode == M_MODE_PICK_OPTION) {
-            const int32_t mode = M_DisplayNewGameRequester();
-            if (mode > 0) {
-                switch (mode) {
-                case 0:
-                    Game_SetBonusFlag(GBF_NONE);
-                    break;
-                case 1:
-                    Game_SetBonusFlag(GBF_NGPLUS);
-                    break;
-                case 2:
-                    Game_SetBonusFlag(GBF_JAPANESE);
-                    break;
-                case 3:
-                    Game_SetBonusFlag(GBF_JAPANESE | GBF_NGPLUS);
-                    break;
-                default:
-                    Game_SetBonusFlag(GBF_NONE);
-                    break;
-                }
-            } else if (mode < 0) {
-                g_Input = (INPUT_STATE) {};
-                g_InputDB = (INPUT_STATE) {};
-            }
-        }
+        M_NewGame();
         break;
 
     case M_ROLE_EXIT:
-        if (m_SubtitleText == nullptr) {
-            if (g_Inv_Mode == INV_TITLE_MODE) {
-                m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_EXIT_GAME));
-            } else if (g_GameFlow.is_demo_version) {
-                m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_EXIT_DEMO));
-            } else {
-                m_SubtitleText =
-                    Text_Create(0, -16, GS(PASSPORT_EXIT_TO_TITLE));
-            }
-            Text_AlignBottom(m_SubtitleText, true);
-            Text_CentreH(m_SubtitleText, true);
+        if (g_Inv_Mode == INV_TITLE_MODE) {
+            M_ChangePageTextContent(GS(PASSPORT_EXIT_GAME));
+        } else if (g_GameFlow.is_demo_version) {
+            M_ChangePageTextContent(GS(PASSPORT_EXIT_DEMO));
+        } else {
+            M_ChangePageTextContent(GS(PASSPORT_EXIT_TO_TITLE));
         }
         break;
     }
@@ -325,69 +342,11 @@ static void M_HandleFlipInputs(void)
     }
 }
 
-static int32_t M_DisplayNewGameRequester(void)
-{
-    if (g_InputDB.menu_back) {
-        M_CloseRequester();
-        g_Input = (INPUT_STATE) {};
-        g_InputDB = (INPUT_STATE) {};
-        return -1;
-    }
-
-    if (!m_State.requester.is_ready) {
-        if (m_State.requester.ui == nullptr) {
-            m_State.requester.ui = UI_Requester_Create((UI_REQUESTER_SETTINGS) {
-                .is_selectable = true,
-                .width = 160,
-                .visible_rows = 4,
-            });
-        }
-        UI_Requester_ClearRows(m_State.requester.ui);
-        UI_Requester_SetTitle(m_State.requester.ui, GS(PASSPORT_SELECT_MODE));
-        UI_Requester_AddRowC(
-            m_State.requester.ui, GS(PASSPORT_MODE_NEW_GAME), nullptr);
-        UI_Requester_AddRowC(
-            m_State.requester.ui, GS(PASSPORT_MODE_NEW_GAME_PLUS), nullptr);
-        UI_Requester_AddRowC(
-            m_State.requester.ui, GS(PASSPORT_MODE_NEW_GAME_JP), nullptr);
-        UI_Requester_AddRowC(
-            m_State.requester.ui, GS(PASSPORT_MODE_NEW_GAME_JP_PLUS), nullptr);
-        m_State.requester.ui->set_position(
-            m_State.requester.ui,
-            (UI_GetCanvasWidth()
-             - m_State.requester.ui->get_width(m_State.requester.ui))
-                / 2,
-            (UI_GetCanvasHeight()
-             - m_State.requester.ui->get_height(m_State.requester.ui))
-                / 2);
-        m_State.requester.is_ready = true;
-    }
-
-    const int32_t choice = UI_Requester_GetSelectedRow(m_State.requester.ui);
-    if (choice != -1) {
-        M_CloseRequester();
-    }
-    return choice;
-}
-
-static void M_CloseRequester(void)
-{
-    if (m_State.requester.ui != nullptr) {
-        m_State.requester.ui->free(m_State.requester.ui);
-        m_State.requester.ui = nullptr;
-        m_State.requester.is_ready = false;
-        m_State.mode = M_MODE_BROWSE;
-    }
-}
-
 void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
 {
     if (m_State.active_page == -1) {
+        M_InitRequesters();
         M_DeterminePages();
-    }
-
-    if (m_State.requester.ui != nullptr) {
-        m_State.requester.ui->control(m_State.requester.ui);
     }
 
     if (is_busy) {
@@ -434,14 +393,20 @@ void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
 
 void Option_Passport_Draw(INVENTORY_ITEM *const item)
 {
-    if (m_State.requester.ui != nullptr) {
-        m_State.requester.ui->draw(m_State.requester.ui);
+    switch (m_State.pages[m_State.active_page].role) {
+    case M_ROLE_NEW_GAME:
+        if (m_State.new_game.is_ready) {
+            UI2_NewGame(&m_State.new_game.state);
+        }
+        break;
+    default:
+        break;
     }
 }
 
 void Option_Passport_Shutdown(void)
 {
     M_RemoveAllText();
-    M_CloseRequester();
+    UI2_NewGame_Free(&m_State.new_game.state);
     m_State.active_page = -1;
 }
