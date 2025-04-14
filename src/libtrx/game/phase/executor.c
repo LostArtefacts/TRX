@@ -12,6 +12,7 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/text.h"
+#include "game/ui2.h"
 #include "gfx/gl/track.h"
 
 #define DEBUG_OPTIM 0
@@ -64,6 +65,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 static void M_Draw(PHASE *const phase)
 {
     Output_BeginScene();
+    UI2_BeginScene();
 #if DEBUG_OPTIM
     BENCHMARK benchmark = Benchmark_Start();
 #endif
@@ -73,6 +75,7 @@ static void M_Draw(PHASE *const phase)
 
     Console_Draw();
     Text_Draw();
+    UI2_EndScene();
     Output_DrawPolyList();
     Fader_Draw(&m_ExitFader);
 

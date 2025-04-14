@@ -11,10 +11,10 @@ static int32_t M_DoCalc(
 {
     const int32_t sign = unit < 0 ? -1 : 1;
     const int32_t scale_x = g_PhdWinWidth > base_width
-        ? ((double)g_PhdWinWidth * ABS(unit) * factor) / base_width
+        ? ((double)g_PhdWinWidth * ABS(unit) * factor) / MAX(1, base_width)
         : ABS(unit) * factor;
     const int32_t scale_y = g_PhdWinHeight > base_height
-        ? ((double)g_PhdWinHeight * ABS(unit) * factor) / base_height
+        ? ((double)g_PhdWinHeight * ABS(unit) * factor) / MAX(1, base_height)
         : ABS(unit) * factor;
     return MIN(scale_x, scale_y) * sign;
 }

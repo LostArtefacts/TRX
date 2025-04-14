@@ -471,5 +471,5 @@ int32_t Text_GetHeight(const TEXTSTRING *const text)
             height += TEXT_HEIGHT_FIXED;
         }
     }
-    return height * text->scale.v / TEXT_BASE_SCALE;
+    return height * text->scale.v / (float)TEXT_BASE_SCALE;
 }

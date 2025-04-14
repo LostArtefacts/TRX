@@ -6,6 +6,11 @@ typedef enum {
     MUSIC_LOAD_ALWAYS,
 } MUSIC_LOAD_CONDITION;
 
+typedef enum {
+    UI_STYLE_PS1,
+    UI_STYLE_PC,
+} UI_STYLE;
+
 #if TR_VERSION == 1
     #include "./types_tr1.h"
 #elif TR_VERSION == 2

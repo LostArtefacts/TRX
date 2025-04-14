@@ -3,8 +3,9 @@
 #include <stdint.h>
 
 typedef enum {
-    RSR_TEXT = 0,
-    RSR_BAR = 1,
+    RSR_TEXT,
+    RSR_BAR,
+    RSR_GENERIC,
 } RENDER_SCALE_REF;
 
 void Screen_Init(void);

@@ -13,6 +13,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/ui/common.h>
+#include <libtrx/game/ui2.h>
 #include <libtrx/gfx/common.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
@@ -189,6 +190,7 @@ void Shell_ProcessEvents(void)
                 Console_Open();
             } else {
                 UI_HandleKeyDown(event.key.keysym.sym);
+                UI2_HandleKeyDown(event.key.keysym.sym);
             }
             break;
         }
@@ -203,10 +205,12 @@ void Shell_ProcessEvents(void)
 
         case SDL_TEXTEDITING:
             UI_HandleTextEdit(event.text.text);
+            UI2_HandleTextEdit(event.text.text);
             break;
 
         case SDL_TEXTINPUT:
             UI_HandleTextEdit(event.text.text);
+            UI2_HandleTextEdit(event.text.text);
             break;
 
         case SDL_CONTROLLERDEVICEADDED:

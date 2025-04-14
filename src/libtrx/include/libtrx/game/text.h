@@ -1,5 +1,7 @@
 #pragma once
 
+#include "./output/draw.h"
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -31,12 +33,6 @@ typedef struct {
         int32_t offset_y;
     } combine_with;
 } GLYPH_INFO;
-
-typedef enum {
-    TS_HEADING = 0,
-    TS_BACKGROUND = 1,
-    TS_REQUESTED = 2,
-} TEXT_STYLE;
 
 typedef struct {
     union {
