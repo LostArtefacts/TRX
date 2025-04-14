@@ -12,12 +12,10 @@
 #include "game/overlay.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "game/ui/common.h"
-#include "game/ui/widgets/photo_mode.h"
+#include "game/ui2.h"
 #include "memory.h"
 
 typedef struct {
-    UI_WIDGET *ui;
     bool taking_screenshot;
     bool show_fps_counter;
 } M_PRIV;
@@ -40,7 +38,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     Music_Pause();
     Sound_PauseAll();
 
-    p->ui = UI_PhotoMode_Create();
     if (!g_Config.ui.enable_photo_mode_ui) {
         Console_Log(
             GS(OSD_PHOTO_MODE_LAUNCHED),
@@ -55,9 +52,6 @@ static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Camera_ExitPhotoMode();
-
-    p->ui->free(p->ui);
-    p->ui = nullptr;
 
 #if TR_VERSION == 1
     g_Config.rendering.enable_fps_counter = p->show_fps_counter;
@@ -92,7 +86,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
         Output_EndScene();
         Sound_Effect(SFX_MENU_LARA_HOME, nullptr, SPM_ALWAYS);
     } else {
-        p->ui->control(p->ui);
         Camera_Update();
     }
 
@@ -106,7 +99,7 @@ static void M_Draw(PHASE *const phase)
     Output_DrawPolyList();
 
     if (!p->taking_screenshot) {
-        p->ui->draw(p->ui);
+        UI2_PhotoMode();
     }
     Output_DrawPolyList();
 }
