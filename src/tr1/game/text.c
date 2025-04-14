@@ -160,8 +160,8 @@ void Text_DrawText(TEXTSTRING *const text)
 
     int32_t sx;
     int32_t sy;
-    int32_t sh;
-    int32_t sv;
+    int32_t sh = Screen_GetRenderScale(text->scale.h, RSR_TEXT);
+    int32_t sv = Screen_GetRenderScale(text->scale.v, RSR_TEXT);
     const int32_t start_x = x;
 
     const GLYPH_INFO **glyph_ptr = text->glyphs;
@@ -179,8 +179,6 @@ void Text_DrawText(TEXTSTRING *const text)
 
         sx = Screen_GetRenderScale(x, RSR_TEXT);
         sy = Screen_GetRenderScale(y, RSR_TEXT);
-        sh = Screen_GetRenderScale(text->scale.h, RSR_TEXT);
-        sv = Screen_GetRenderScale(text->scale.v, RSR_TEXT);
 
         if (glyph->role == GLYPH_COMPOUND) {
             const int32_t csx = sx
@@ -232,7 +230,6 @@ void Text_DrawText(TEXTSTRING *const text)
         sy = Screen_GetRenderScale(bypos, RSR_TEXT);
         sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
         sv = Screen_GetRenderScale(bheight, RSR_TEXT);
-
         M_DrawTextBackground(
             g_Config.ui.menu_style, sx, sy, sh, sv, text->background.style);
     }
@@ -242,7 +239,6 @@ void Text_DrawText(TEXTSTRING *const text)
         sy = Screen_GetRenderScale(bypos, RSR_TEXT);
         sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
         sv = Screen_GetRenderScale(bheight, RSR_TEXT);
-
         M_DrawTextOutline(
             g_Config.ui.menu_style, sx, sy, sh, sv, text->outline.style);
     }
