@@ -601,6 +601,7 @@
         "OSD_UNKNOWN_COMMAND": "Unknown command: %s",
         "OSD_WIREFRAME_MODE_OFF": "Wireframe mode: off",
         "OSD_WIREFRAME_MODE_ON": "Wireframe mode: on",
+        "PAGINATION_NAV": "%d / %d",
         "PASSPORT_EXIT_DEMO": "Exit Demo",
         "PASSPORT_EXIT_GAME": "Exit Game",
         "PASSPORT_EXIT_TO_TITLE": "Exit to Title",
