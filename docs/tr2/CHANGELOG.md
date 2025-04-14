@@ -29,6 +29,7 @@
 - fixed a softlock in Temple of Xian if the main chamber key is missed (#2042)
 - fixed a potential softlock in Floating Islands if returning towards the level start from the gold secret (#2590)
 - fixed a potential softlock in Nightmare in Vegas where the bird monster could remain inactive, or the flip map not set (#1851)
+- fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 0.10)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
