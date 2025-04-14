@@ -24,6 +24,7 @@
 - fixed being stuck on the Exit to Title page if using save crystals and a new save is made when there were previously none, and then F5 is pressed (#2700, regression from 4.9)
 - fixed the sprite UVs to restore the right and bottom edge pixels (#2672, regression from 4.8)
 - fixed sprites missing the fog effect (regression from 4.9)
+- fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 4.9)
 - improved bubble appearance (#2672)
 - improved rendering performance
 - removed the pretty pixels options (it's now always enabled, #2258)

@@ -50,8 +50,10 @@ void Camera_ClampInterpResult(void)
     CLAMP(pos->z, box->left, box->right);
 
 finish:
-    const int32_t floor = Room_GetHeight(sector, pos->x, pos->y, pos->z);
-    const int32_t ceiling = Room_GetCeiling(sector, pos->x, pos->y, pos->z);
+    const int32_t floor =
+        Room_GetHeightEx(sector, pos->x, pos->y, pos->z, true);
+    const int32_t ceiling =
+        Room_GetCeilingEx(sector, pos->x, pos->y, pos->z, true);
     if (floor != NO_HEIGHT && ceiling != NO_HEIGHT) {
         CLAMP(pos->y, ceiling - shift, floor - shift);
     }
