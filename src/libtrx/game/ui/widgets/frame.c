@@ -1,5 +1,6 @@
+#include "game/ui/widgets/frame.h"
+
 #include "game/text.h"
-#include "game/ui/widgets/spacer.h"
 #include "memory.h"
 
 typedef struct {
