@@ -13,3 +13,5 @@
 #include "./ui2/elements/spacer.h"
 #include "./ui2/elements/stack.h"
 #include "./ui2/events.h"
+#include "./ui2/hud/console.h"
+#include "./ui2/hud/console_logs.h"

@@ -11,12 +11,9 @@ void Console_Open(void);
 void Console_Close(void);
 bool Console_IsOpened(void);
 
-void Console_ScrollLogs(void);
-int32_t Console_GetVisibleLogCount(void);
-int32_t Console_GetMaxLogCount(void);
-
 void Console_Log(const char *fmt, ...);
 COMMAND_RESULT Console_Eval(const char *cmdline);
 
+void Console_Control(void);
 void Console_Draw(void);
 extern void Console_DrawBackdrop(void);

@@ -29,6 +29,8 @@ static int32_t M_Wait(PHASE *phase);
 
 static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 {
+    Console_Control();
+
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();
     if (gf_override_cmd.action != GF_NOOP) {
         const GF_COMMAND gf_cmd = gf_override_cmd;
