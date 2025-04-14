@@ -54,11 +54,6 @@ typedef enum {
 } TARGET_LOCK_MODE;
 
 typedef enum {
-    UI_STYLE_PS1,
-    UI_STYLE_PC,
-} UI_STYLE;
-
-typedef enum {
     SDM_MINIMAL,
     SDM_DETAILED,
     SDM_FULL,

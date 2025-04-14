@@ -33,6 +33,7 @@
 #include <libtrx/game/objects/creatures/wolf.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/ui/common.h>
+#include <libtrx/game/ui2.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -245,6 +246,7 @@ static void M_HandleKeyDown(const SDL_Event *const event)
         Console_Open();
     } else {
         UI_HandleKeyDown(event->key.keysym.sym);
+        UI2_HandleKeyDown(event->key.keysym.sym);
     }
 }
 
@@ -408,6 +410,7 @@ void Shell_Main(void)
     Config_Init();
     Text_Init();
     UI_Init();
+    UI2_Init();
     Console_Init();
 
     Input_Init();
@@ -544,6 +547,7 @@ void Shell_Shutdown(void)
     Render_Shutdown();
     Text_Shutdown();
     UI_Shutdown();
+    UI2_Shutdown();
     GameBuf_Shutdown();
     Config_Shutdown();
     EnumMap_Shutdown();
@@ -597,10 +601,12 @@ void Shell_ProcessEvents(void)
 
         case SDL_TEXTEDITING:
             UI_HandleTextEdit(event.text.text);
+            UI2_HandleTextEdit(event.text.text);
             break;
 
         case SDL_TEXTINPUT:
             UI_HandleTextEdit(event.text.text);
+            UI2_HandleTextEdit(event.text.text);
             break;
 
         case SDL_CONTROLLERDEVICEADDED:

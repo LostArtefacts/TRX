@@ -27,6 +27,7 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/ui/common.h>
+#include <libtrx/game/ui2.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -160,6 +161,7 @@ void Shell_Shutdown(void)
     Music_Shutdown();
     Sound_Shutdown();
     UI_Shutdown();
+    UI2_Shutdown();
     Text_Shutdown();
     Config_Shutdown();
     Log_Shutdown();
@@ -185,6 +187,7 @@ void Shell_Main(void)
 
     Text_Init();
     UI_Init();
+    UI2_Init();
 
     Input_Init();
     Sound_Init();

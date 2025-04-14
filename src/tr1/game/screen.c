@@ -131,7 +131,7 @@ int32_t Screen_GetRenderScale(int32_t unit, RENDER_SCALE_REF ref)
     } else if (ref == RSR_BAR) {
         return M_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
     } else {
-        return M_GetRenderScaleBase(unit, 640, 480, 0);
+        return M_GetRenderScaleBase(unit, 640, 480, 1.0f);
     }
 }
 
