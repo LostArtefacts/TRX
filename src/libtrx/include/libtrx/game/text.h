@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 
 // TODO: rename this
@@ -94,8 +95,10 @@ typedef struct {
         TEXT_STYLE style;
     } outline;
 
+    size_t content_cap;
     char *content;
 
+    size_t glyphs_cap;
     const GLYPH_INFO **glyphs;
 } TEXTSTRING;
 

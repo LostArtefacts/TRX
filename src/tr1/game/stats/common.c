@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_TEXTSTRINGS 10
 #define USE_REAL_CLOCK 0
 
 static int32_t m_CachedItemCount = 0;
