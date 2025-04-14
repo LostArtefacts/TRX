@@ -34,7 +34,9 @@ void Option_Detail_Control(INVENTORY_ITEM *const item, const bool is_busy)
 
 void Option_Detail_Draw(INVENTORY_ITEM *const item)
 {
-    m_Priv.widget->draw(m_Priv.widget);
+    if (m_Priv.widget != nullptr) {
+        m_Priv.widget->draw(m_Priv.widget);
+    }
 }
 
 void Option_Detail_Shutdown(void)
