@@ -15,38 +15,6 @@ static int32_t M_Scale(const int32_t value)
     return Scaler_Calc(value, SCALER_TARGET_TEXT);
 }
 
-void Text_DrawBorder(
-    const int32_t x, const int32_t y, const int32_t z, const int32_t width,
-    const int32_t height)
-{
-    const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
-
-    const int32_t offset = 4;
-    const int32_t x0 = x + offset;
-    const int32_t y0 = y + offset;
-    const int32_t x1 = x0 + width - offset * 2;
-    const int32_t y1 = y0 + height - offset * 2;
-    const int32_t scale_h = TEXT_BASE_SCALE;
-    const int32_t scale_v = TEXT_BASE_SCALE;
-
-    Output_DrawScreenSprite(
-        x0, y0, z, scale_h, scale_v, mesh_idx + 0, 0x1000, 0);
-    Output_DrawScreenSprite(
-        x1, y0, z, scale_h, scale_v, mesh_idx + 1, 0x1000, 0);
-    Output_DrawScreenSprite(
-        x1, y1, z, scale_h, scale_v, mesh_idx + 2, 0x1000, 0);
-    Output_DrawScreenSprite(
-        x0, y1, z, scale_h, scale_v, mesh_idx + 3, 0x1000, 0);
-
-    int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
-    int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
-
-    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
-    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
-    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
-    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
-}
-
 void Text_DrawText(TEXTSTRING *const text)
 {
     if (text->flags.drawn) {
@@ -186,13 +154,14 @@ void Text_DrawText(TEXTSTRING *const text)
     }
 
     if (text->flags.background) {
-        Output_DrawScreenFBox(
-            box_x, box_y, z + text->background.offset.z, box_w, box_h, 0,
-            nullptr, 0);
+        Output_DrawTextBackground(
+            UI_STYLE_PC, box_x, box_y, box_w, box_h,
+            z + text->background.offset.z, TS_REQUESTED);
     }
 
     if (text->flags.outline) {
-        Text_DrawBorder(box_x, box_y, z, box_w, box_h);
+        Output_DrawTextOutline(
+            UI_STYLE_PC, box_x, box_y, box_w, box_h, z, TS_REQUESTED);
     }
 }
 

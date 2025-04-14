@@ -507,10 +507,10 @@ static void M_ProgressBar(
     const TEXTSTRING *const txt, BAR_INFO *const bar, const int32_t timer)
 {
     int32_t width = Text_GetWidth(txt);
-    int32_t height = TEXT_HEIGHT;
+    int32_t height = TEXT_HEIGHT_FIXED * 2 / 3;
 
     int32_t x = txt->pos.x;
-    int32_t y = txt->pos.y - TEXT_HEIGHT;
+    int32_t y = txt->pos.y - height;
 
     if (txt->flags.centre_h) {
         x += (Screen_GetResWidthDownscaled(RSR_TEXT) - width) / 2;
