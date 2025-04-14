@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./ui2/common.h"
+#include "./ui2/dialogs/photo_mode.h"
 #include "./ui2/elements/anchor.h"
 #include "./ui2/elements/fade.h"
 #include "./ui2/elements/flash.h"

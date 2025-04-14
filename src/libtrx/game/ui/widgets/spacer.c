@@ -55,11 +55,3 @@ UI_WIDGET *UI_Spacer_Create(const int32_t width, const int32_t height)
     self->height = height;
     return (UI_WIDGET *)self;
 }
-
-void UI_Spacer_SetSize(
-    UI_WIDGET *const widget, const int32_t width, const int32_t height)
-{
-    UI_SPACER *const self = (UI_SPACER *)widget;
-    self->width = width;
-    self->height = height;
-}
