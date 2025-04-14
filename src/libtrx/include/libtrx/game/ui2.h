@@ -2,6 +2,7 @@
 
 #include "./ui2/common.h"
 #include "./ui2/dialogs/examine_item.h"
+#include "./ui2/dialogs/new_game.h"
 #include "./ui2/dialogs/photo_mode.h"
 #include "./ui2/elements/anchor.h"
 #include "./ui2/elements/fade.h"
