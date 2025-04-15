@@ -214,6 +214,7 @@ sources = [
   'game/ui/widgets/window.c',
   'game/ui2/common.c',
   'game/ui2/elements/anchor.c',
+  'game/ui2/elements/fade.c',
   'game/ui2/elements/flash.c',
   'game/ui2/elements/frame.c',
   'game/ui2/elements/hide.c',
