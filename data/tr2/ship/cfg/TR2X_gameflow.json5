@@ -234,6 +234,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/deck_fd.bin",
                 "data/injections/deck_itemrots.bin",
                 "data/injections/deck_pickup_meshes.bin",
                 "data/injections/living_deck_goon_sfx.bin",

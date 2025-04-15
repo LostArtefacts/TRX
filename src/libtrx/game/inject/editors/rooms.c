@@ -299,7 +299,7 @@ static void M_RoomPortalEdits(
         const ROOM *const room = Room_Get(base_room);
         PORTAL *portal = nullptr;
         for (int32_t j = 0; j < room->portals->count; j++) {
-            PORTAL room_portal = room->portals->portal[j];
+            const PORTAL room_portal = room->portals->portal[j];
             if (room_portal.room_num == link_room && j == portal_index) {
                 portal = &room->portals->portal[j];
                 break;
@@ -314,10 +314,23 @@ static void M_RoomPortalEdits(
             continue;
         }
 
+        bool empty_portal = true;
         for (int32_t j = 0; j < 4; j++) {
             portal->vertex[j].x += VFile_ReadS16(injection->fp);
             portal->vertex[j].y += VFile_ReadS16(injection->fp);
             portal->vertex[j].z += VFile_ReadS16(injection->fp);
+            empty_portal &= portal->vertex[j].x == 0 && portal->vertex[j].y == 0
+                && portal->vertex[j].z == 0;
+        }
+
+        // An injection that has reset all vertices such that the portal size is
+        // now 0, should be interpreted as a command to ignore that portal.
+        if (empty_portal) {
+            for (int32_t j = portal_index + 1; j < room->portals->count; j++) {
+                room->portals->portal[j - 1] = room->portals->portal[j];
+            }
+            room->portals->portal[room->portals->count - 1] = *portal;
+            room->portals->count--;
         }
     }
 }
