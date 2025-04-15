@@ -25,6 +25,7 @@
 - fixed the sprite UVs to restore the right and bottom edge pixels (#2672, regression from 4.8)
 - fixed sprites missing the fog effect (regression from 4.9)
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 4.9)
+- fixed wrong PS1-style title bar color for the end of the level stats dialog (regression from 4.9)
 - improved bubble appearance (#2672)
 - improved rendering performance
 - improved pause exit dialog - it can now be canceled with escape

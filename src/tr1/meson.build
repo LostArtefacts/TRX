@@ -263,7 +263,7 @@ sources = [
   'game/stats/common.c',
   'game/text.c',
   'game/ui/common.c',
-  'game/ui/widgets/stats_dialog.c',
+  'game/ui2/dialogs/stats.c',
   'game/viewport.c',
   'global/enum_map.c',
   'global/vars.c',

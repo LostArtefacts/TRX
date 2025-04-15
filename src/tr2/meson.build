@@ -278,7 +278,7 @@ sources = [
   'game/ui/widgets/controls_layout_editor.c',
   'game/ui/widgets/controls_layout_selector.c',
   'game/ui/widgets/graphics_dialog.c',
-  'game/ui/widgets/stats_dialog.c',
+  'game/ui2/dialogs/stats.c',
   'game/viewport.c',
   'global/enum_map.c',
   'global/vars.c',
