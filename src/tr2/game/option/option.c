@@ -73,7 +73,7 @@ void Option_Draw(INVENTORY_ITEM *const item)
         Option_Passport_Draw(item);
         break;
     case O_COMPASS_OPTION:
-        Option_Compass_Draw(item);
+        Option_Compass_Draw();
         break;
     case O_DETAIL_OPTION:
         Option_Detail_Draw(item);

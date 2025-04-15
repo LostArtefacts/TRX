@@ -27,5 +27,5 @@ void Option_Controls_ShowControls(void);
 void Option_Controls_UpdateText(void);
 
 void Option_Compass_Control(INVENTORY_ITEM *item, bool is_busy);
-void Option_Compass_Draw(INVENTORY_ITEM *item);
+void Option_Compass_Draw(void);
 void Option_Compass_Shutdown(void);
