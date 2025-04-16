@@ -1,6 +1,8 @@
 #pragma once
 
 #include "./ui2/common.h"
+#include "./ui2/dialogs/controls.h"
+#include "./ui2/dialogs/controls_backend.h"
 #include "./ui2/dialogs/examine_item.h"
 #include "./ui2/dialogs/new_game.h"
 #include "./ui2/dialogs/pause.h"

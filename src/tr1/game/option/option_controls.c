@@ -295,10 +295,10 @@ static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], TS_BACKGROUND);
 
     sprintf(
-        m_ResetGS, GS(CONTROL_RESET_DEFAULTS),
+        m_ResetGS, GS(CONTROLS_RESET_DEFAULTS),
         Input_GetKeyName(backend, layout, INPUT_ROLE_RESET_BINDINGS));
     sprintf(
-        m_UnbindGS, GS(CONTROL_UNBIND),
+        m_UnbindGS, GS(CONTROLS_UNBIND),
         Input_GetKeyName(backend, layout, INPUT_ROLE_UNBIND_KEY));
 
     m_Text[TEXT_RESET] =
@@ -340,11 +340,11 @@ static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
     }
 
     sprintf(
-        m_ResetGS, GS(CONTROL_RESET_DEFAULTS),
+        m_ResetGS, GS(CONTROLS_RESET_DEFAULTS),
         Input_GetKeyName(backend, layout, INPUT_ROLE_RESET_BINDINGS));
     Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
     sprintf(
-        m_UnbindGS, GS(CONTROL_UNBIND),
+        m_UnbindGS, GS(CONTROLS_UNBIND),
         Input_GetKeyName(backend, layout, INPUT_ROLE_UNBIND_KEY));
     Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
 
