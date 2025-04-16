@@ -101,3 +101,5 @@ bool Input_AssignToJSONObject(
     INPUT_ROLE role);
 
 INPUT_STATE Input_GetDebounced(const INPUT_STATE input);
+
+extern const char *Input_GetRoleName(INPUT_ROLE role);
