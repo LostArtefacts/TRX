@@ -12,7 +12,7 @@
 #include "game/overlay.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "game/ui2.h"
+#include "game/ui.h"
 #include "memory.h"
 
 typedef struct {
@@ -69,7 +69,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
     Shell_ProcessInput();
 
     if (g_InputDB.toggle_ui) {
-        UI2_ToggleState(&g_Config.ui.enable_photo_mode_ui);
+        UI_ToggleState(&g_Config.ui.enable_photo_mode_ui);
     }
 
     if (g_InputDB.toggle_photo_mode || g_InputDB.menu_back) {
@@ -99,7 +99,7 @@ static void M_Draw(PHASE *const phase)
     Output_DrawPolyList();
 
     if (!p->taking_screenshot) {
-        UI2_PhotoMode();
+        UI_PhotoMode();
     }
     Output_DrawPolyList();
 }

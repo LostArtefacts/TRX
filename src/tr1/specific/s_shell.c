@@ -12,7 +12,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/ui2.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/gfx/common.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
@@ -186,7 +186,7 @@ void Shell_ProcessEvents(void)
                     INPUT_ROLE_ENTER_CONSOLE)) {
                 Console_Open();
             } else {
-                UI2_HandleKeyDown(event.key.keysym.sym);
+                UI_HandleKeyDown(event.key.keysym.sym);
             }
             break;
         }
@@ -200,11 +200,11 @@ void Shell_ProcessEvents(void)
             break;
 
         case SDL_TEXTEDITING:
-            UI2_HandleTextEdit(event.text.text);
+            UI_HandleTextEdit(event.text.text);
             break;
 
         case SDL_TEXTINPUT:
-            UI2_HandleTextEdit(event.text.text);
+            UI_HandleTextEdit(event.text.text);
             break;
 
         case SDL_CONTROLLERDEVICEADDED:

@@ -2,13 +2,13 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/game/ui2.h>
+#include <libtrx/game/ui.h>
 
 typedef struct {
     int32_t listeners[2];
     struct {
         bool is_ready;
-        UI2_CONTROLS_STATE state;
+        UI_CONTROLS_STATE state;
     } ui;
 } M_PRIV;
 
@@ -21,7 +21,7 @@ static void M_HandleKeyChange(const EVENT *event, void *user_data);
 
 static void M_Init(M_PRIV *const p)
 {
-    UI2_Controls_Init(&p->ui.state);
+    UI_Controls_Init(&p->ui.state);
     p->ui.is_ready = true;
     p->listeners[0] = EventManager_Subscribe(
         p->ui.state.events, "layout_change", nullptr, M_HandleLayoutChange, p);
@@ -34,7 +34,7 @@ static void M_Shutdown(M_PRIV *const p)
     if (p->ui.is_ready) {
         EventManager_Unsubscribe(p->ui.state.events, p->listeners[0]);
         EventManager_Unsubscribe(p->ui.state.events, p->listeners[1]);
-        UI2_Controls_Free(&p->ui.state);
+        UI_Controls_Free(&p->ui.state);
         p->ui.is_ready = false;
     }
 }
@@ -76,7 +76,7 @@ void Option_Controls_Control(INVENTORY_ITEM *const item, const bool is_busy)
         M_Init(p);
     }
 
-    if (UI2_Controls_Control(&p->ui.state)) {
+    if (UI_Controls_Control(&p->ui.state)) {
         M_Shutdown(p);
     } else {
         g_Input = (INPUT_STATE) {};
@@ -88,6 +88,6 @@ void Option_Controls_Draw(INVENTORY_ITEM *const item)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ui.is_ready) {
-        UI2_Controls(&p->ui.state);
+        UI_Controls(&p->ui.state);
     }
 }

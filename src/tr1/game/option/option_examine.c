@@ -3,14 +3,14 @@
 #include "game/input.h"
 
 #include <libtrx/game/objects/names.h>
-#include <libtrx/game/ui2.h>
+#include <libtrx/game/ui.h>
 
 #define MAX_LINES 10
 
 typedef struct {
     struct {
         bool is_ready;
-        UI2_EXAMINE_ITEM_STATE state;
+        UI_EXAMINE_ITEM_STATE state;
     } ui;
 } M_PRIV;
 
@@ -22,7 +22,7 @@ static void M_Shutdown(M_PRIV *p);
 static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
 {
     p->ui.is_ready = true;
-    UI2_ExamineItem_Init(
+    UI_ExamineItem_Init(
         &p->ui.state, Object_GetName(obj_id), Object_GetDescription(obj_id),
         MAX_LINES);
 }
@@ -30,7 +30,7 @@ static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
 static void M_Shutdown(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
-        UI2_ExamineItem_Free(&p->ui.state);
+        UI_ExamineItem_Free(&p->ui.state);
         p->ui.is_ready = false;
     }
 }
@@ -56,7 +56,7 @@ void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
     if (!p->ui.is_ready) {
         M_Init(p, obj_id);
     }
-    UI2_ExamineItem_Control(&p->ui.state);
+    UI_ExamineItem_Control(&p->ui.state);
 
     if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
         M_Shutdown(p);
@@ -67,7 +67,7 @@ void Option_Examine_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ui.is_ready) {
-        UI2_ExamineItem(&p->ui.state);
+        UI_ExamineItem(&p->ui.state);
     }
 }
 
