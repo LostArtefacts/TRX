@@ -9,7 +9,7 @@
 #include "game/interpolation.h"
 #include "game/shell.h"
 #include "game/text.h"
-#include "game/ui2.h"
+#include "game/ui.h"
 #include "memory.h"
 
 typedef enum {
@@ -25,7 +25,7 @@ typedef struct {
     FADER back_fader;
     FADER top_fader;
     bool ui_active;
-    UI2_STATS_DIALOG_STATE ui_state;
+    UI_STATS_DIALOG_STATE ui_state;
 } M_PRIV;
 
 static bool M_IsFading(M_PRIV *p);
@@ -88,14 +88,14 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         }
 
         p->ui_active = true;
-        UI2_StatsDialog_Init(
+        UI_StatsDialog_Init(
             &p->ui_state,
-            (UI2_STATS_DIALOG_ARGS) {
-                .mode = p->args.show_final_stats ? UI2_STATS_DIALOG_MODE_FINAL
-                                                 : UI2_STATS_DIALOG_MODE_LEVEL,
+            (UI_STATS_DIALOG_ARGS) {
+                .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
+                                                 : UI_STATS_DIALOG_MODE_LEVEL,
                 .style = p->args.use_bare_style
-                    ? UI2_STATS_DIALOG_STYLE_BARE
-                    : UI2_STATS_DIALOG_STYLE_BORDERED,
+                    ? UI_STATS_DIALOG_STYLE_BARE
+                    : UI_STATS_DIALOG_STYLE_BORDERED,
                 .level_num = p->args.level_num != -1
                     ? p->args.level_num
                     : Game_GetCurrentLevel()->num,
@@ -110,7 +110,7 @@ static void M_End(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     if (p->ui_active) {
         p->ui_active = false;
-        UI2_StatsDialog_Free(&p->ui_state);
+        UI_StatsDialog_Free(&p->ui_state);
     }
     Output_UnloadBackground();
 }
@@ -166,11 +166,11 @@ static void M_Draw(PHASE *const phase)
     }
     Fader_Draw(&p->back_fader);
 
-    UI2_BeginFade(&p->top_fader, true);
+    UI_BeginFade(&p->top_fader, true);
     if (p->ui_active) {
-        UI2_StatsDialog(&p->ui_state);
+        UI_StatsDialog(&p->ui_state);
     }
-    UI2_EndFade();
+    UI_EndFade();
 }
 
 PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)

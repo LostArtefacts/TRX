@@ -8,7 +8,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/game/ui2.h>
+#include <libtrx/game/ui.h>
 
 #include <stdint.h>
 #include <stdio.h>
@@ -16,7 +16,7 @@
 typedef struct {
     struct {
         bool is_ready;
-        UI2_STATS_DIALOG_STATE state;
+        UI_STATS_DIALOG_STATE state;
     } ui;
 } M_PRIV;
 
@@ -31,11 +31,11 @@ static void M_Shutdown(M_PRIV *p);
 static void M_Init(M_PRIV *const p)
 {
     p->ui.is_ready = true;
-    UI2_StatsDialog_Init(
+    UI_StatsDialog_Init(
         &p->ui.state,
-        (UI2_STATS_DIALOG_ARGS) {
-            .mode = UI2_STATS_DIALOG_MODE_LEVEL,
-            .style = UI2_STATS_DIALOG_STYLE_BORDERED,
+        (UI_STATS_DIALOG_ARGS) {
+            .mode = UI_STATS_DIALOG_MODE_LEVEL,
+            .style = UI_STATS_DIALOG_STYLE_BORDERED,
             .level_num = Game_GetCurrentLevel()->num,
         });
 }
@@ -44,7 +44,7 @@ static void M_Shutdown(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
         p->ui.is_ready = false;
-        UI2_StatsDialog_Free(&p->ui.state);
+        UI_StatsDialog_Free(&p->ui.state);
     }
 }
 
@@ -58,7 +58,7 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     if (!p->ui.is_ready && g_Config.gameplay.enable_compass_stats) {
         M_Init(p);
     }
-    UI2_StatsDialog_Control(&p->ui.state);
+    UI_StatsDialog_Control(&p->ui.state);
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
         M_Shutdown(p);
@@ -71,7 +71,7 @@ void Option_Compass_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ui.is_ready) {
-        UI2_StatsDialog(&p->ui.state);
+        UI_StatsDialog(&p->ui.state);
     }
 }
 

@@ -11,7 +11,7 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "game/ui2.h"
+#include "game/ui.h"
 #include "memory.h"
 
 #include <stdint.h>
@@ -29,7 +29,7 @@ typedef struct {
     STATE state;
     struct {
         bool is_ready;
-        UI2_PAUSE_STATE state;
+        UI_PAUSE_STATE state;
     } ui;
     TEXTSTRING *mode_text;
     GF_ACTION action;
@@ -108,7 +108,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
 
     p->ui.is_ready = false;
-    UI2_Pause_Init(&p->ui.state);
+    UI_Pause_Init(&p->ui.state);
     M_PauseGame(p);
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
@@ -117,7 +117,7 @@ static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     M_RemoveText(p);
-    UI2_Pause_Free(&p->ui.state);
+    UI_Pause_Free(&p->ui.state);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
@@ -128,7 +128,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
     Shell_ProcessInput();
 
     if (p->ui.is_ready) {
-        UI2_Pause_Control(&p->ui.state);
+        UI_Pause_Control(&p->ui.state);
     }
 
     switch (p->state) {
@@ -153,15 +153,15 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
         break;
 
     case STATE_ASK: {
-        const UI2_PAUSE_EXIT_CHOICE choice = UI2_Pause_Control(&p->ui.state);
+        const UI_PAUSE_EXIT_CHOICE choice = UI_Pause_Control(&p->ui.state);
         switch (choice) {
-        case UI2_PAUSE_RESUME_PAUSE:
+        case UI_PAUSE_RESUME_PAUSE:
             p->state = STATE_WAIT;
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        case UI2_PAUSE_EXIT_TO_GAME:
+        case UI_PAUSE_EXIT_TO_GAME:
             M_ReturnToGame(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        case UI2_PAUSE_EXIT_TO_TITLE:
+        case UI_PAUSE_EXIT_TO_TITLE:
             M_ExitToTitle(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
         default:
@@ -193,7 +193,7 @@ static void M_Draw(PHASE *const phase)
     Fader_Draw(&p->back_fader);
 
     if (p->state == STATE_ASK) {
-        UI2_Pause(&p->ui.state);
+        UI_Pause(&p->ui.state);
     }
     Output_DrawPolyList();
 }

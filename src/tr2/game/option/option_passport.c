@@ -13,7 +13,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/game/ui2.h>
+#include <libtrx/game/ui.h>
 
 typedef enum {
     M_ROLE_LOAD_GAME,
@@ -42,7 +42,7 @@ static struct {
     bool page_ready;
     struct {
         bool is_ready;
-        UI2_NEW_GAME_STATE state;
+        UI_NEW_GAME_STATE state;
     } new_game;
 } m_State = { .active_page = -1 };
 
@@ -79,12 +79,12 @@ static void M_SetPage(
 
 static void M_InitRequesters(void)
 {
-    UI2_NewGame_Init(&m_State.new_game.state);
+    UI_NewGame_Init(&m_State.new_game.state);
 }
 
 static void M_FreeRequesters(void)
 {
-    UI2_NewGame_Free(&m_State.new_game.state);
+    UI_NewGame_Free(&m_State.new_game.state);
     m_State.new_game.is_ready = false;
 }
 
@@ -202,11 +202,11 @@ static void M_NewGame(void)
             m_State.new_game.is_ready = true;
         }
     } else if (m_State.mode == M_MODE_PICK_OPTION) {
-        const int32_t choice = UI2_NewGame_Control(&m_State.new_game.state);
-        if (choice == UI2_REQUESTER_NO_CHOICE) {
+        const int32_t choice = UI_NewGame_Control(&m_State.new_game.state);
+        if (choice == UI_REQUESTER_NO_CHOICE) {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
-        } else if (choice == UI2_REQUESTER_CANCEL) {
+        } else if (choice == UI_REQUESTER_CANCEL) {
             m_State.mode = M_MODE_BROWSE;
             m_State.new_game.is_ready = false;
             g_Input = (INPUT_STATE) {};
@@ -396,7 +396,7 @@ void Option_Passport_Draw(INVENTORY_ITEM *const item)
     switch (m_State.pages[m_State.active_page].role) {
     case M_ROLE_NEW_GAME:
         if (m_State.new_game.is_ready) {
-            UI2_NewGame(&m_State.new_game.state);
+            UI_NewGame(&m_State.new_game.state);
         }
         break;
     default:
@@ -407,6 +407,6 @@ void Option_Passport_Draw(INVENTORY_ITEM *const item)
 void Option_Passport_Shutdown(void)
 {
     M_RemoveAllText();
-    UI2_NewGame_Free(&m_State.new_game.state);
+    UI_NewGame_Free(&m_State.new_game.state);
     m_State.active_page = -1;
 }

@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "game/console/registry.h"
 #include "game/game_string.h"
-#include "game/ui2.h"
+#include "game/ui.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -14,18 +14,18 @@
 #include <string.h>
 
 static bool m_IsOpened = false;
-static UI2_CONSOLE_STATE m_UIState = {};
+static UI_CONSOLE_STATE m_UIState = {};
 
 void Console_Init(void)
 {
-    UI2_Console_Init(&m_UIState);
+    UI_Console_Init(&m_UIState);
 
     Console_History_Init();
 }
 
 void Console_Shutdown(void)
 {
-    UI2_Console_Free(&m_UIState);
+    UI_Console_Free(&m_UIState);
 
     Console_History_Shutdown();
     Console_Registry_Shutdown();
@@ -39,7 +39,7 @@ void Console_Open(void)
         return;
     }
     m_IsOpened = true;
-    UI2_FireEvent(
+    UI_FireEvent(
         (EVENT) { .name = "console_open", .sender = nullptr, .data = nullptr });
 }
 
@@ -49,7 +49,7 @@ void Console_Close(void)
         return;
     }
     m_IsOpened = false;
-    UI2_FireEvent((EVENT) {
+    UI_FireEvent((EVENT) {
         .name = "console_close", .sender = nullptr, .data = nullptr });
 }
 
@@ -75,7 +75,7 @@ void Console_Log(const char *fmt, ...)
 
     LOG_INFO("%s", text);
 
-    UI2_FireEvent((EVENT) {
+    UI_FireEvent((EVENT) {
         .name = "console_log",
         .sender = nullptr,
         .data = text,
@@ -130,10 +130,10 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
 void Console_Control(void)
 {
-    UI2_Console_Control(&m_UIState);
+    UI_Console_Control(&m_UIState);
 }
 
 void Console_Draw(void)
 {
-    UI2_Console(&m_UIState);
+    UI_Console(&m_UIState);
 }

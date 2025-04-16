@@ -14,7 +14,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/game/ui2.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
 
 #include <stdint.h>
@@ -52,7 +52,7 @@ static struct {
     M_PAGE_NUMBER active_page;
     struct {
         bool is_ready;
-        UI2_NEW_GAME_STATE state;
+        UI_NEW_GAME_STATE state;
     } new_game;
 } m_State = {
     .current_page = PAGE_1,
@@ -130,12 +130,12 @@ static void M_InitRequesters(void)
     Requester_Init(&g_SavegameRequester, Savegame_GetSlotCount());
     Requester_Init(
         &m_SelectLevelRequester, g_GameFlow.level_tables[GFLT_MAIN].count + 1);
-    UI2_NewGame_Init(&m_State.new_game.state);
+    UI_NewGame_Init(&m_State.new_game.state);
 }
 
 static void M_FreeRequesters(void)
 {
-    UI2_NewGame_Free(&m_State.new_game.state);
+    UI_NewGame_Free(&m_State.new_game.state);
     m_State.new_game.is_ready = false;
 }
 
@@ -541,11 +541,11 @@ static void M_NewGame(void)
             g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
         }
     } else if (m_State.mode == PASSPORT_MODE_NEW_GAME) {
-        const int32_t choice = UI2_NewGame_Control(&m_State.new_game.state);
-        if (choice == UI2_REQUESTER_NO_CHOICE) {
+        const int32_t choice = UI_NewGame_Control(&m_State.new_game.state);
+        if (choice == UI_REQUESTER_NO_CHOICE) {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
-        } else if (choice == UI2_REQUESTER_CANCEL) {
+        } else if (choice == UI_REQUESTER_CANCEL) {
             m_State.new_game.is_ready = false;
             m_State.mode = PASSPORT_MODE_BROWSE;
             g_Input = (INPUT_STATE) {};
@@ -719,7 +719,7 @@ void Option_Passport_Draw(INVENTORY_ITEM *const item)
     switch (m_State.pages[m_State.active_page].role) {
     case PASSPORT_MODE_NEW_GAME:
         if (m_State.new_game.is_ready) {
-            UI2_NewGame(&m_State.new_game.state);
+            UI_NewGame(&m_State.new_game.state);
         }
         break;
     default:
