@@ -152,7 +152,7 @@
     },
     "fix_texture_issues": {
       "Title": "Fix texture issues",
-      "Description": "Fixes original issues with missing or incorrect textures."
+      "Description": "Fixes original issues with missing or incorrect textures/meshes."
     },
     "fix_animated_sprites": {
       "Title": "Fix sprite animations",

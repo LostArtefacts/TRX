@@ -97,6 +97,10 @@
       "Title": "Correggi i dati dei livelli",
       "Description": "Risolve i problemi dei livelli originali relativi a dati/eventi."
     },
+    "fix_texture_issues": {
+      "Title": "Correggi i problemi delle texture",
+      "Description": "Risolve i problemi riguardanti texture mancanti o errate nei livelli originali."
+    },
     "fix_item_rots": {
       "Title": "Correggi l'orientamento degli oggetti",
       "Description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D nei livelli originali."

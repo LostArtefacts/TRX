@@ -1303,6 +1303,16 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>boat_bits.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Injects a model in slot `O_BOAT_BITS` (221) which is used to show the boat
+      exploding when it crosses mines.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>backpack.bin</code>
     </td>
     <td>TR1</td>

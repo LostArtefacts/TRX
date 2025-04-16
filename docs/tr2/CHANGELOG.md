@@ -21,6 +21,7 @@
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
 - fixed the console opening when remapping its key (#2641)
+- fixed the boat when it explodes after crossing mines, where Lara's hips would appear rather than exploded boat parts (#1605)
 - fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground (#2752)
 - fixed the lift to work in any cardinal direction in custom levels, not just South (#2100)
 - fixed the drawbridge producing dynamic light when open (#2294)
