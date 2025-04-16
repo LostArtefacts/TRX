@@ -488,6 +488,7 @@
                 {"type": "loop_game"},
             ],
             "injections": [
+                "data/injections/cut4_textures.bin",
                 "data/injections/photo.bin",
             ],
         },
