@@ -881,6 +881,7 @@ void Level_AppendObjectTextures(
 {
     for (int32_t i = 0; i < num_textures; i++) {
         OBJECT_TEXTURE *const texture = Output_GetObjectTexture(base_idx + i);
+        texture->uv_count = 4; // Default to 4 vertices
         texture->draw_type = VFile_ReadU16(file);
         texture->tex_page = VFile_ReadU16(file) + base_page_idx;
         for (int32_t j = 0; j < 4; j++) {
@@ -1189,6 +1190,26 @@ finish:
 
 void Level_LoadTextures(void)
 {
+    for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
+        const ROOM *const room = Room_Get(room_num);
+        for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
+            const FACE3 *const face = &room->mesh.face3s[j];
+            OBJECT_TEXTURE *const texture =
+                Output_GetObjectTexture(face->texture_idx);
+            texture->uv_count = 3;
+        }
+    }
+
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        for (int32_t j = 0; j < mesh->num_tex_face3s; j++) {
+            const FACE3 *const face = &mesh->tex_face3s[j];
+            OBJECT_TEXTURE *const texture =
+                Output_GetObjectTexture(face->texture_idx);
+            texture->uv_count = 3;
+        }
+    }
+
     for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
         ROOM *const room = Room_Get(room_num);
         for (int32_t j = 0; j < room->mesh.num_face4s; j++) {

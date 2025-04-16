@@ -139,7 +139,7 @@ static void M_FillAtlasObjectSize(const int32_t i)
     size->y0 = texture->uv[0].v;
     size->x1 = texture->uv[0].u;
     size->y1 = texture->uv[0].v;
-    for (int32_t j = 1; j < 3; j++) {
+    for (int32_t j = 1; j < texture->uv_count; j++) {
         size->x0 = MIN(size->x0, texture->uv[j].u);
         size->y0 = MIN(size->y0, texture->uv[j].v);
         size->x1 = MAX(size->x1, texture->uv[j].u);
