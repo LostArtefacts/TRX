@@ -292,6 +292,7 @@ as Notepad.
 - fixed the inventory up arrow at times overlapping the health bar
 - fixed blood spawning on Lara from gunshots using incorrect positioning data
 - fixed the drawbridge producing dynamic light when open
+- fixed the boat when it explodes after crossing mines, where Lara's hips would appear rather than exploded boat parts
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios

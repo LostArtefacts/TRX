@@ -90,6 +90,10 @@
       "Title": "Fix floor data issues",
       "Description": "Fixes original issues with floor data/triggers."
     },
+    "fix_texture_issues": {
+      "Title": "Fix texture issues",
+      "Description": "Fixes original issues with missing or incorrect textures/meshes."
+    },
     "fix_item_rots": {
       "Title": "Fix item rotation issues",
       "Description": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option."

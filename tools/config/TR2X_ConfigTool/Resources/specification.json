@@ -73,6 +73,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "fix_texture_issues",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "fix_item_rots",
           "DataType": "Bool",
           "DefaultValue": true
