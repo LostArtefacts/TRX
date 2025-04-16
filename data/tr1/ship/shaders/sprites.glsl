@@ -4,7 +4,6 @@ uniform samplerBuffer uUVW; // texture u, v, layer
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
 uniform mat4 uMatModelView;
-uniform bool uWibbleEffect;
 uniform int uTime;
 
 layout(location = 0) in vec3 inPosition;
@@ -22,11 +21,6 @@ void main(void) {
     gWorldPos = centerEyeSpace;
     centerEyeSpace.xy += inDisplacement;
     gl_Position = uMatProjection * centerEyeSpace;
-
-    if (uWibbleEffect) {
-        gl_Position.xyz =
-            waterWibble(gl_Position, uViewportSize, uTime);
-    }
 
     gTexUV = inUVW.xy;
     gTexLayer = int(inUVW.z);
