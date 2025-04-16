@@ -270,7 +270,7 @@ sources = [
   'game/stats.c',
   'game/text.c',
   'game/ui/common.c',
-  'game/ui/widgets/graphics_dialog.c',
+  'game/ui2/dialogs/graphic_settings.c',
   'game/ui2/dialogs/stats.c',
   'game/viewport.c',
   'global/enum_map.c',
