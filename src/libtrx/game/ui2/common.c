@@ -8,6 +8,7 @@
 #include "game/ui2/events.h"
 #include "memory.h"
 
+#include <SDL2/SDL.h>
 #include <string.h>
 
 static struct {
@@ -30,9 +31,22 @@ static void M_MeasureNode(UI2_NODE *node);
 static void M_LayoutNode(UI2_NODE *node, float x, float y, float w, float h);
 static void M_DrawNode(const UI2_NODE *node);
 
-static UI2_INPUT M_TranslateInput(uint32_t system_keycode)
+static UI2_INPUT M_TranslateInput(const uint32_t system_keycode)
 {
-    return (UI2_INPUT)UI_TranslateInput(system_keycode);
+    // clang-format off
+    switch (system_keycode) {
+    case SDLK_UP:        return UI2_KEY_UP;
+    case SDLK_DOWN:      return UI2_KEY_DOWN;
+    case SDLK_LEFT:      return UI2_KEY_LEFT;
+    case SDLK_RIGHT:     return UI2_KEY_RIGHT;
+    case SDLK_HOME:      return UI2_KEY_HOME;
+    case SDLK_END:       return UI2_KEY_END;
+    case SDLK_BACKSPACE: return UI2_KEY_BACK;
+    case SDLK_RETURN:    return UI2_KEY_RETURN;
+    case SDLK_ESCAPE:    return UI2_KEY_ESCAPE;
+    }
+    // clang-format on
+    return -1;
 }
 
 // Depth-first measure pass
@@ -160,10 +174,9 @@ void UI2_Shutdown(void)
 
 void UI2_ToggleState(bool *const config_setting)
 {
-    // NOTE: handled in the legacy UI module
-    // *config_setting ^= true;
-    // Config_Write();
-    // Console_Log(*config_setting ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
+    *config_setting ^= true;
+    Config_Write();
+    Console_Log(*config_setting ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
 }
 
 void UI2_HandleKeyDown(const uint32_t key)

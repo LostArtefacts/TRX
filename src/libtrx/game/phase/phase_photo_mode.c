@@ -69,7 +69,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
     Shell_ProcessInput();
 
     if (g_InputDB.toggle_ui) {
-        UI_ToggleState(&g_Config.ui.enable_photo_mode_ui);
+        UI2_ToggleState(&g_Config.ui.enable_photo_mode_ui);
     }
 
     if (g_InputDB.toggle_photo_mode || g_InputDB.menu_back) {

@@ -269,7 +269,7 @@ sources = [
   'game/spawn.c',
   'game/stats.c',
   'game/text.c',
-  'game/ui/common.c',
+  'game/ui2/common.c',
   'game/ui2/dialogs/graphic_settings.c',
   'game/ui2/dialogs/stats.c',
   'game/viewport.c',

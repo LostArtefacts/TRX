@@ -12,7 +12,6 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/ui/common.h>
 #include <libtrx/game/ui2.h>
 #include <libtrx/gfx/common.h>
 #include <libtrx/gfx/context.h>
@@ -130,8 +129,6 @@ void S_Shell_HandleWindowResize(void)
     M_SetWindowPos(x, y, false);
     M_SetWindowSize(width, height, false);
 
-    UI_Events_Fire(&(EVENT) { .name = "canvas_resize" });
-
     // save the updated config, but ensure it was loaded first
     if (g_Config.loaded) {
         Config_Write();
@@ -189,7 +186,6 @@ void Shell_ProcessEvents(void)
                     INPUT_ROLE_ENTER_CONSOLE)) {
                 Console_Open();
             } else {
-                UI_HandleKeyDown(event.key.keysym.sym);
                 UI2_HandleKeyDown(event.key.keysym.sym);
             }
             break;
@@ -204,12 +200,10 @@ void Shell_ProcessEvents(void)
             break;
 
         case SDL_TEXTEDITING:
-            UI_HandleTextEdit(event.text.text);
             UI2_HandleTextEdit(event.text.text);
             break;
 
         case SDL_TEXTINPUT:
-            UI_HandleTextEdit(event.text.text);
             UI2_HandleTextEdit(event.text.text);
             break;
 
