@@ -23,8 +23,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/interpolation.h>
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui2/common.h>
+#include <libtrx/game/ui2.h>
 
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
@@ -67,7 +66,6 @@ void Game_ProcessInput(void)
     }
 
     if (g_InputDB.toggle_ui) {
-        UI_ToggleState(&g_Config.ui.enable_game_ui);
         UI2_ToggleState(&g_Config.ui.enable_game_ui);
     }
 }

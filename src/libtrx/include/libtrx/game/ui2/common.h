@@ -1,10 +1,19 @@
 #pragma once
 
-#include "../ui/common.h"
-
 #include <stddef.h>
+#include <stdint.h>
 
-typedef UI_INPUT UI2_INPUT;
+typedef enum {
+    UI2_KEY_UP,
+    UI2_KEY_DOWN,
+    UI2_KEY_LEFT,
+    UI2_KEY_RIGHT,
+    UI2_KEY_HOME,
+    UI2_KEY_END,
+    UI2_KEY_BACK,
+    UI2_KEY_RETURN,
+    UI2_KEY_ESCAPE,
+} UI2_INPUT;
 
 // Forward declaration of the node and its vtable.
 struct UI2_NODE;

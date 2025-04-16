@@ -54,8 +54,8 @@ static void M_HandleKeyDown(const EVENT *const event, void *const user_data)
 
     // clang-format off
     switch (key) {
-    case UI_KEY_UP:   M_MoveHistoryUp(s); break;
-    case UI_KEY_DOWN: M_MoveHistoryDown(s); break;
+    case UI2_KEY_UP:   M_MoveHistoryUp(s); break;
+    case UI2_KEY_DOWN: M_MoveHistoryDown(s); break;
     default:          break;
     }
     // clang-format on

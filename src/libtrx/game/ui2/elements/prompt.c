@@ -138,13 +138,13 @@ static void M_HandleKeyDown(const EVENT *const event, void *const user_data)
 
     // clang-format off
     switch (key) {
-    case UI_KEY_LEFT:   M_MoveCaretLeft(s); break;
-    case UI_KEY_RIGHT:  M_MoveCaretRight(s); break;
-    case UI_KEY_HOME:   M_MoveCaretStart(s); break;
-    case UI_KEY_END:    M_MoveCaretEnd(s); break;
-    case UI_KEY_BACK:   M_DeleteCharBack(s); break;
-    case UI_KEY_RETURN: M_Confirm(s); break;
-    case UI_KEY_ESCAPE: M_Cancel(s); break;
+    case UI2_KEY_LEFT:   M_MoveCaretLeft(s); break;
+    case UI2_KEY_RIGHT:  M_MoveCaretRight(s); break;
+    case UI2_KEY_HOME:   M_MoveCaretStart(s); break;
+    case UI2_KEY_END:    M_MoveCaretEnd(s); break;
+    case UI2_KEY_BACK:   M_DeleteCharBack(s); break;
+    case UI2_KEY_RETURN: M_Confirm(s); break;
+    case UI2_KEY_ESCAPE: M_Cancel(s); break;
     default:            break;
     }
     // clang-format on

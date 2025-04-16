@@ -2,6 +2,7 @@
 
 // A controls remapper dialog.
 
+#include "../../../event_manager.h"
 #include "../../input.h"
 #include "../common.h"
 #include "../elements/flash.h"
