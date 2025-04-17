@@ -17,23 +17,18 @@ static XYZ_32 m_PuzzleHolePosition = {
     .z = WALL_L / 2 - LARA_RADIUS - 85,
 };
 
-static int16_t m_PuzzleHoleBounds[12] = {
-    // clang-format off
-    -200,
-    +200,
-    +0,
-    +0,
-    +WALL_L / 2 - 200,
-    +WALL_L / 2,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    -30 * DEG_1,
-    +30 * DEG_1,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    // clang-format on
+static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
+    .shift = {
+        .min = { .x = -200, .y = 0, .z = WALL_L / 2 - 200, },
+        .max = { .x = +200, .y = 0, .z = WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Refuse(const ITEM *lara_item);
 static void M_Consume(
     ITEM *lara_item, ITEM *puzzle_hole_item, GAME_OBJECT_ID puzzle_obj_id);
@@ -42,6 +37,11 @@ static void M_SetupEmpty(OBJECT *obj);
 static void M_SetupDone(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_PuzzleHoleBounds;
+}
 
 static void M_Refuse(const ITEM *const lara_item)
 {
@@ -82,6 +82,7 @@ static void M_SetupEmpty(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->handle_save_func = M_HandleSave;
+    obj->bounds_func = M_Bounds;
     obj->save_flags = 1;
 }
 
@@ -103,10 +104,11 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
 
     if (lara_item->current_anim_state != LS_STOP) {
         if (lara_item->current_anim_state != LS_USE_PUZZLE
-            || !Item_TestPosition(m_PuzzleHoleBounds, item, lara_item)
+            || !Lara_TestPosition(item, obj->bounds_func())
             || !Item_TestFrameEqual(lara_item, LF_USE_PUZZLE)) {
             return;
         }
@@ -120,7 +122,7 @@ static void M_Collision(
         return;
     }
 
-    if (!Item_TestPosition(m_PuzzleHoleBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

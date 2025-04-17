@@ -20,21 +20,18 @@ typedef enum {
     MOVABLE_BLOCK_STATE_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-static int16_t m_MovableBlockBounds[12] = {
-    -300,
-    +300,
-    +0,
-    +0,
-    -WALL_L / 2 - LARA_RADIUS - 80,
-    -WALL_L / 2,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    -30 * DEG_1,
-    +30 * DEG_1,
-    -10 * DEG_1,
-    +10 * DEG_1,
+static const OBJECT_BOUNDS m_MovableBlockBounds = {
+    .shift = {
+        .min = { .x = -300, .y = 0, .z = -WALL_L / 2 - LARA_RADIUS - 80, },
+        .max = { .x = +300, .y = 0, .z = -WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_TestDestination(const ITEM *item, int32_t block_height);
 static bool M_TestPush(
     const ITEM *item, int32_t block_height, DIRECTION quadrant);
@@ -46,6 +43,11 @@ static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Draw(const ITEM *item);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_MovableBlockBounds;
+}
 
 static bool M_TestDestination(
     const ITEM *const item, const int32_t block_height)
@@ -199,6 +201,7 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
     obj->draw_func = M_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
@@ -303,7 +306,7 @@ static void M_Collision(
             break;
         }
 
-        if (!Item_TestPosition(m_MovableBlockBounds, item, lara_item)) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 
@@ -346,7 +349,7 @@ static void M_Collision(
     } else if (
         Item_TestAnimEqual(lara_item, LA_PUSHABLE_GRAB)
         && Item_TestFrameEqual(lara_item, LF_PPREADY)) {
-        if (!Item_TestPosition(m_MovableBlockBounds, item, lara_item)) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 

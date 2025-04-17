@@ -22,33 +22,35 @@ static XYZ_32 m_ZiplineHandlePosition = {
     .y = 0,
     .z = WALL_L / 2 - 141,
 };
-static int16_t m_ZiplineHandleBounds[12] = {
-    // clang-format off
-    -WALL_L / 4,
-    +WALL_L / 4,
-    -100,
-    +100,
-    +WALL_L / 4,
-    +WALL_L / 2,
-    +0,
-    +0,
-    -25 * DEG_1,
-    +25 * DEG_1,
-    +0,
-    +0,
-    // clang-format on
+
+static const OBJECT_BOUNDS m_ZiplineHandleBounds = {
+    .shift = {
+        .min = { .x = -WALL_L / 4, .y = -100, .z = +WALL_L / 4, },
+        .max = { .x = +WALL_L / 4, .y = +100, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = +0, .y = -25 * DEG_1, .z = +0, },
+        .max = { .x = +0, .y = +25 * DEG_1, .z = +0, },
+    },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_ZiplineHandleBounds;
+}
 
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -149,7 +151,8 @@ static void M_Collision(
         return;
     }
 
-    if (!Item_TestPosition(m_ZiplineHandleBounds, item, lara_item)) {
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

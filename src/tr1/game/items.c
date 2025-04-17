@@ -196,49 +196,6 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
 }
 
-bool Item_TestPosition(
-    const ITEM *const src_item, const ITEM *const dst_item,
-    const OBJECT_BOUNDS *const bounds)
-{
-    const XYZ_16 rot = {
-        .x = src_item->rot.x - dst_item->rot.x,
-        .y = src_item->rot.y - dst_item->rot.y,
-        .z = src_item->rot.z - dst_item->rot.z,
-    };
-    if (rot.x < bounds->rot.min.x || rot.x > bounds->rot.max.x
-        || rot.y < bounds->rot.min.y || rot.y > bounds->rot.max.y
-        || rot.z < bounds->rot.min.z || rot.z > bounds->rot.max.z) {
-        return false;
-    }
-
-    const XYZ_32 dist = {
-        .x = src_item->pos.x - dst_item->pos.x,
-        .y = src_item->pos.y - dst_item->pos.y,
-        .z = src_item->pos.z - dst_item->pos.z,
-    };
-
-    Matrix_PushUnit();
-    Matrix_Rot16(dst_item->rot);
-    MATRIX *mptr = g_MatrixPtr;
-    const XYZ_32 shift = {
-        .x = (mptr->_00 * dist.x + mptr->_10 * dist.y + mptr->_20 * dist.z)
-            >> W2V_SHIFT,
-        .y = (mptr->_01 * dist.x + mptr->_11 * dist.y + mptr->_21 * dist.z)
-            >> W2V_SHIFT,
-        .z = (mptr->_02 * dist.x + mptr->_12 * dist.y + mptr->_22 * dist.z)
-            >> W2V_SHIFT,
-    };
-    Matrix_Pop();
-
-    if (shift.x < bounds->shift.min.x || shift.x > bounds->shift.max.x
-        || shift.y < bounds->shift.min.y || shift.y > bounds->shift.max.y
-        || shift.z < bounds->shift.min.z || shift.z > bounds->shift.max.z) {
-        return false;
-    }
-
-    return true;
-}
-
 void Item_AlignPosition(ITEM *src_item, ITEM *dst_item, XYZ_32 *vec)
 {
     src_item->rot.x = dst_item->rot.x;

@@ -26,41 +26,29 @@
 #define LF_PICKUP_FLARE_UW 20
 #define LF_PICKUP_UW 18
 
-int16_t g_PickupBounds[12] = {
-    // clang-format off
-    -WALL_L / 4,
-    +WALL_L / 4,
-    -100,
-    +100,
-    -WALL_L / 4,
-    +WALL_L / 4,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    +0,
-    +0,
-    +0,
-    +0,
-    // clang-format on
-};
-
 static XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 
-static int16_t m_PickupBoundsUW[12] = {
-    // clang-format off
-    -WALL_L / 2,
-    +WALL_L / 2,
-    -WALL_L / 2,
-    +WALL_L / 2,
-    -WALL_L / 2,
-    +WALL_L / 2,
-    -45 * DEG_1,
-    +45 * DEG_1,
-    -45 * DEG_1,
-    +45 * DEG_1,
-    -45 * DEG_1,
-    +45 * DEG_1,
-    // clang-format on
+static const OBJECT_BOUNDS m_PickUpBounds = {
+    .shift = {
+        .min = { .x = -WALL_L / 4, .y = -100, .z = -WALL_L / 4, },
+        .max = { .x = +WALL_L / 4, .y = +100, .z = +WALL_L / 4, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
+        .max = { .x = +10 * DEG_1, .y = 0, .z = 0, },
+    },
+};
+
+static const OBJECT_BOUNDS m_PickUpBoundsUW = {
+    .shift = {
+        .min = { .x = -WALL_L / 2, .y = -WALL_L / 2, .z = -WALL_L / 2, },
+        .max = { .x = +WALL_L / 2, .y = +WALL_L / 2, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -45 * DEG_1, .y = -45 * DEG_1, .z = -45 * DEG_1, },
+        .max = { .x = +45 * DEG_1, .y = +45 * DEG_1, .z = +45 * DEG_1, },
+    },
 };
 
 static void M_DoPickup(int16_t item_num);
@@ -107,13 +95,14 @@ static void M_DoFlarePickup(const int16_t item_num)
 static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
     const XYZ_16 old_rot = item->rot;
 
     item->rot.x = 0;
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (!Item_TestPosition(g_PickupBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         goto cleanup;
     }
 
@@ -163,13 +152,14 @@ cleanup:
 static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
     const XYZ_16 old_rot = item->rot;
 
     item->rot.x = -25 * DEG_1;
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (!Item_TestPosition(m_PickupBoundsUW, item, lara_item)) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         goto cleanup;
     }
 
@@ -224,6 +214,7 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->activate_func = M_Activate;
     obj->collision_func = Pickup_Collision;
+    obj->bounds_func = Pickup_Bounds;
     obj->draw_func = M_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
@@ -341,6 +332,15 @@ static void M_Draw(const ITEM *const item)
     }
 
     Matrix_Pop();
+}
+
+const OBJECT_BOUNDS *Pickup_Bounds(void)
+{
+    if (g_Lara.water_status == LWS_UNDERWATER) {
+        return &m_PickUpBoundsUW;
+    } else {
+        return &m_PickUpBounds;
+    }
 }
 
 void Pickup_Collision(

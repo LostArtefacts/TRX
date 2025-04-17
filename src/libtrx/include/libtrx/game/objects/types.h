@@ -38,14 +38,12 @@ typedef struct {
     bool disable_lighting;
 } OBJECT_MESH;
 
-#if TR_VERSION == 1
 typedef struct {
     struct {
         XYZ_16 min;
         XYZ_16 max;
     } shift, rot;
 } OBJECT_BOUNDS;
-#endif
 
 typedef struct OBJECT {
     int16_t mesh_count;
@@ -66,8 +64,8 @@ typedef struct OBJECT {
     void (*activate_func)(ITEM *item);
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
-#if TR_VERSION == 1
     const OBJECT_BOUNDS *(*bounds_func)(void);
+#if TR_VERSION == 1
     bool (*is_usable_func)(int16_t item_num);
 #endif
 

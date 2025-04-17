@@ -10,32 +10,36 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <libtrx/game/lara.h>
+
 #define EXPLOSION_START_FRAME 76
 #define EXPLOSION_END_FRAME 99
 #define EXPLOSION_ACTION_FRAME 80
 
 static XYZ_32 m_DetonatorPosition = { .x = 0, .y = 0, .z = 0 };
 
-static int16_t m_GongBounds[12] = {
-    -WALL_L / 2,
-    +WALL_L,
-    -100,
-    +100,
-    -WALL_L / 2 - 300,
-    -WALL_L / 2 + 100,
-    -30 * DEG_1,
-    +30 * DEG_1,
-    +0,
-    +0,
-    +0,
-    +0,
+static const OBJECT_BOUNDS m_GongBounds = {
+    .shift = {
+        .min = { .x = -WALL_L / 2, .y = -100, .z = -WALL_L / 2 - 300, },
+        .max = { .x = +WALL_L, .y = +100, .z = -WALL_L / 2 + 100, },
+    },
+    .rot = {
+        .min = { .x = -30 * DEG_1, .y = 0, .z = 0, },
+        .max = { .x = +30 * DEG_1, .y = 0, .z = 0, },
+    },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_CreateGongBonger(ITEM *lara_item);
 static void M_Setup1(OBJECT *obj);
 static void M_Setup2(OBJECT *obj);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_GongBounds;
+}
 
 static void M_CreateGongBonger(ITEM *const lara_item)
 {
@@ -64,12 +68,14 @@ static void M_CreateGongBonger(ITEM *const lara_item)
 static void M_Setup1(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
 }
 
 static void M_Setup2(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
+    obj->bounds_func = Pickup_Bounds;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
@@ -102,6 +108,7 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
     const XYZ_16 old_rot = item->rot;
     const int16_t x = item->rot.x;
     const int16_t y = item->rot.y;
@@ -117,16 +124,11 @@ static void M_Collision(
         goto normal_collision;
     }
 
-    if (item->object_id == O_DETONATOR_2) {
-        if (!Item_TestPosition(g_PickupBounds, item, lara_item)) {
-            goto normal_collision;
-        }
-    } else {
-        if (!Item_TestPosition(m_GongBounds, item, lara_item)) {
-            goto normal_collision;
-        } else {
-            item->rot = old_rot;
-        }
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
+        goto normal_collision;
+    }
+    if (item->object_id == O_DETONATOR_1) {
+        item->rot = old_rot;
     }
 
     if (g_Inv_Chosen == NO_OBJECT) {

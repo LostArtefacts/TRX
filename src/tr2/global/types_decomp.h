@@ -152,13 +152,6 @@ typedef struct {
 } SKIDOO_INFO;
 
 typedef struct {
-    struct {
-        XYZ_16 min;
-        XYZ_16 max;
-    } shift, rot;
-} OBJECT_BOUNDS;
-
-typedef struct {
     int32_t xv;
     int32_t yv;
     int32_t zv;
