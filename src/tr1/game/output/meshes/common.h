@@ -8,6 +8,7 @@
 #define VERT_FLAT_SHADED 0b0000'0010 // = 0x02
 #define VERT_REFLECTIVE  0b0000'0100 // = 0x04
 #define VERT_NO_LIGHTING 0b0000'1000 // = 0x08
+#define VERT_SPRITE      0b0001'0000 // = 0x10
 // clang-format on
 
 typedef struct {

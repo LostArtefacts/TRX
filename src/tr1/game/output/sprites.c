@@ -1,12 +1,15 @@
 #include "game/output/sprites.h"
 
 #include "game/output.h"
+#include "game/output/meshes/common.h"
 #include "game/output/shader.h"
 #include "game/output/textures.h"
 #include "game/output/utils.h"
 #include "game/output/vertex_range.h"
 #include "game/room.h"
 
+#include <libtrx/game/math/types.h>
+#include <libtrx/game/output/types.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -33,7 +36,7 @@ typedef struct {
     MATRIX matrix;
     XYZ_32 pos;
     int32_t sprite_idx;
-    uint16_t shade;
+    M_SPRITE_SHADE shade;
 } M_DYNAMIC_SPRITE;
 
 typedef struct {
@@ -135,25 +138,47 @@ static void M_PrepareBuffer(
     glBindVertexArray(buffer->vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer->geom_vbo);
+
+    // attribute 0: position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
         0, 3, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, pos));
 
+    // attribute 1: normal (becomes sprite corner displacement)
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
         1, 2, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, displacement));
 
+    // attribute 2: uvw
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(
         2, 3, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, uvw));
 
+    // attribute 3: texture size
+    glDisableVertexAttribArray(3);
+    glVertexAttrib4f(3, 0.0f, 0.0f, 1.0f, 1.0f);
+
+    // attribute 4: trapezoid ratios
+    glDisableVertexAttribArray(4);
+    glVertexAttrib2f(4, 1.0f, 1.0f);
+
+    // attribute 5: flags
+    glDisableVertexAttribArray(5);
+    glVertexAttribI1i(5, VERT_SPRITE);
+
+    // attribute 6: mesh color (ignore)
+    glDisableVertexAttribArray(6);
+    glVertexAttrib4f(6, 1.0f, 1.0f, 1.0f, 1.0f);
+
     glBindBuffer(GL_ARRAY_BUFFER, buffer->shade_vbo);
-    glEnableVertexAttribArray(3);
+
+    // attribute 7 (shade)
+    glEnableVertexAttribArray(7);
     glVertexAttribPointer(
-        3, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_SPRITE_SHADE), 0);
+        7, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_SPRITE_SHADE), 0);
 }
 
 static void M_FreeBuffer(M_SPRITE_BUFFER *const buffer)
@@ -306,7 +331,7 @@ static void M_PrepareLevelBuffers(void)
 
 void Output_Sprites_Init(void)
 {
-    m_Shader = Output_Shader_Create("shaders/sprites.glsl");
+    m_Shader = Output_Meshes_GetShader();
     m_LevelData.animated_vertices = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
     m_Dynamic.source = Vector_CreateAtCapacity(sizeof(M_DYNAMIC_SPRITE), 50);
 }
@@ -316,7 +341,6 @@ void Output_Sprites_Shutdown(void)
     Vector_Free(m_LevelData.animated_vertices);
     Vector_Free(m_Dynamic.source);
     M_FreeBuffers();
-    Output_Shader_Free(m_Shader);
     m_Shader = nullptr;
 }
 

@@ -401,8 +401,8 @@ bool Output_Init(void)
     GFX_3D_Renderer_SetAlphaPointDiscard(m_Renderer3D, true);
 
     Output_Textures_Init();
-    Output_Sprites_Init();
     Output_Meshes_Init();
+    Output_Sprites_Init();
     return true;
 }
 
