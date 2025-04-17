@@ -27,11 +27,18 @@ out float gShade;
 out vec4 gColor;
 
 void main(void) {
-    gWorldPos = uMatModelView * vec4(inPosition.xyz, 1.0);
+    // billboard sprites if flagged, else standard vertex transform
+    vec4 eyePos = uMatModelView * vec4(inPosition.xyz, 1.0);
+    if ((inFlags & VERT_SPRITE) != 0) {
+        // inNormal.xy carries sprite displacement for billboarding
+        eyePos.xy += inNormal.xy;
+    }
+    gWorldPos = eyePos;
     gNormal = inNormal;
-    gl_Position = uMatProjection * gWorldPos;
+    gl_Position = uMatProjection * eyePos;
 
-    if (uWibbleEffect && (inFlags & VERT_NO_CAUSTICS) == 0) {
+    // apply water wibble effect only to non-sprite vertices
+    if (uWibbleEffect && (inFlags & VERT_NO_CAUSTICS) == 0 && (inFlags & VERT_SPRITE) == 0) {
         gl_Position.xyz =
             waterWibble(gl_Position, uViewportSize, uTime);
     }
