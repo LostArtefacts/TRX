@@ -11,6 +11,7 @@
 - added BSON savegame support, removing the limits imposed by the OG 8KB file size, so allowing for storing more data and offering improved feature support (legacy save files can still be read, similar to TR1) (#2662)
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport (#2731)
 - added the ability for spike walls to be reset (antitriggered)
+- added waterfalls to the savegame so that they now persist on load (#2686)
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
 - changed the number of static mesh slots from 50 to 256 (#2734)
