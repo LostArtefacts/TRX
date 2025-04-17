@@ -45,6 +45,8 @@ typedef struct {
 static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
 
+static bool M_ItemHasSaveFlags(const OBJECT *obj, const ITEM *item);
+
 static void M_Reset(char *buffer);
 
 static void M_Read(void *ptr, size_t size);
@@ -92,6 +94,11 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .update_death_counters_func = nullptr,
     // clang-format on
 };
+
+static bool M_ItemHasSaveFlags(const OBJECT *const obj, const ITEM *const item)
+{
+    return obj->save_flags && item->object_id != O_WATERFALL;
+}
 
 static void M_Reset(char *const buffer)
 {
@@ -224,7 +231,7 @@ static void M_ReadItems(void)
             item->hit_points = M_ReadS16();
         }
 
-        if (obj->save_flags) {
+        if (M_ItemHasSaveFlags(obj, item)) {
             item->flags = M_ReadU16();
 
             if (obj->intelligent) {
@@ -507,7 +514,7 @@ static void M_WriteItems(void)
             M_WriteS16(item->hit_points);
         }
 
-        if (obj->save_flags) {
+        if (M_ItemHasSaveFlags(obj, item)) {
             uint16_t flags = item->flags + item->active + (item->status << 1)
                 + (item->gravity << 3) + (item->collidable << 4);
             if (obj->intelligent && item->data != nullptr) {
