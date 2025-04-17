@@ -58,18 +58,6 @@
       "semi-lock": "Parziale",
       "no-lock": "Nessuno"
     },
-    "underwater_music": {
-      "full": "Completa",
-      "quiet": "Attenuata",
-      "full_no_ambient": "Completa ma senza suoni ambientali",
-      "quiet_no_ambient": "Attenuata ma senza suoni ambientali",
-      "none": "Assente"
-    },
-    "music_load_condition": {
-      "never": "Mai",
-      "non-ambient": "Non ambientale",
-      "always": "Sempre"
-    },
     "stat_mode": {
       "minimal": "Minimo",
       "detailed": "Dettagliato",

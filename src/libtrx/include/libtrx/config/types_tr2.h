@@ -69,6 +69,7 @@ typedef struct {
         int32_t music_volume;
         bool enable_lara_mic;
         UNDERWATER_MUSIC_MODE underwater_music_mode;
+        MUSIC_LOAD_CONDITION music_load_condition;
     } audio;
 
     struct {

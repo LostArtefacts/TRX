@@ -114,6 +114,10 @@
       "Title": "Gun/explosion lighting",
       "Description": "Enables dynamic lighting to be generated for gunshots and explosions."
     },
+    "music_load_condition": {
+      "Title": "Load music track",
+      "Description": "Loads the music track that was playing when the game was saved.\n- Never: do not restore music tracks on load.\n- Non-ambient: restore only non-ambient music tracks on load.\n- Always: restore any kind of music track on load."
+    },
     "enable_lara_mic" : {
       "Title": "Microphone at Lara",
       "Description": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position."

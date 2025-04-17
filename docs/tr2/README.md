@@ -303,6 +303,7 @@ as Notepad.
 
 #### Audio
 - added an option to control how music is played while underwater rather than simply muting it
+- added the current music track and timestamp to the savegame so they now persist on load
 - fixed music not playing with certain game versions
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace
 - fixed sound settings resuming the music

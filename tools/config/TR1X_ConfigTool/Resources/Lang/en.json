@@ -54,11 +54,6 @@
       "semi-lock": "Semi lock",
       "no-lock": "No lock"
     },
-    "music_load_condition": {
-      "never": "Never",
-      "non-ambient": "Non-ambient",
-      "always": "Always"
-    },
     "stat_mode": {
       "minimal": "Minimal",
       "detailed": "Detailed",
