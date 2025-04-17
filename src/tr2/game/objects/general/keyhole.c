@@ -17,28 +17,28 @@ static XYZ_32 m_KeyholePosition = {
     .z = WALL_L / 2 - LARA_RADIUS - 50,
 };
 
-static int16_t m_KeyholeBounds[12] = {
-    // clang-format off
-    -200,
-    +200,
-    +0,
-    +0,
-    +WALL_L / 2 - 200,
-    +WALL_L / 2,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    -30 * DEG_1,
-    +30 * DEG_1,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    // clang-format on
+static const OBJECT_BOUNDS m_KeyHoleBounds = {
+    .shift = {
+        .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
+        .max = { .x = +200, .y = +0, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Consume(
     ITEM *lara_item, ITEM *keyhole_item, GAME_OBJECT_ID key_obj_id);
 static void M_Refuse(const ITEM *lara_item);
 static void M_Setup(OBJECT *obj);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_KeyHoleBounds;
+}
 
 static void M_Refuse(const ITEM *const lara_item)
 {
@@ -71,6 +71,7 @@ static void M_Consume(
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
     obj->save_flags = 1;
 }
 
@@ -82,12 +83,13 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
     if ((g_Inv_Chosen == NO_OBJECT && !g_Input.action)
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity) {
         return;
     }
 
-    if (!Item_TestPosition(m_KeyholeBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

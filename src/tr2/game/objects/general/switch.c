@@ -17,40 +17,30 @@ static XYZ_32 g_PushSwitchPosition = { .x = 0, .y = 0, .z = 292 };
 static XYZ_32 m_AirlockPosition = { .x = 0, .y = 0, .z = 212 };
 static XYZ_32 m_SwitchUWPosition = { .x = 0, .y = 0, .z = 108 };
 
-static int16_t m_SwitchBounds[12] = {
-    // clang-format off
-    -220,
-    +220,
-    +0,
-    +0,
-    +WALL_L / 2 - 220,
-    +WALL_L / 2,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    -30 * DEG_1,
-    +30 * DEG_1,
-    -10 * DEG_1,
-    +10 * DEG_1,
-    // clang-format on
+static const OBJECT_BOUNDS m_SwitchBounds = {
+    .shift = {
+        .min = { .x = -220, .y = +0, .z = +WALL_L / 2 - 220, },
+        .max = { .x = +220, .y = +0, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
 };
 
-static int16_t m_SwitchBoundsUW[12] = {
-    // clang-format off
-    -WALL_L,
-    +WALL_L,
-    -WALL_L,
-    +WALL_L,
-    -WALL_L,
-    +WALL_L / 2,
-    -80 * DEG_1,
-    +80 * DEG_1,
-    -80 * DEG_1,
-    +80 * DEG_1,
-    -80 * DEG_1,
-    +80 * DEG_1,
-    // clang-format on
+static const OBJECT_BOUNDS m_SwitchBoundsUW = {
+    .shift = {
+        .min = { .x = -WALL_L, .y = -WALL_L, .z = -WALL_L, },
+        .max = { .x = +WALL_L, .y = +WALL_L, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -80 * DEG_1, .y = -80 * DEG_1, .z = -80 * DEG_1, },
+        .max = { .x = +80 * DEG_1, .y = +80 * DEG_1, .z = +80 * DEG_1, },
+    },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
+static const OBJECT_BOUNDS *M_BoundsUW(void);
 static void M_AlignLara(ITEM *lara_item, ITEM *switch_item);
 static void M_SwitchOn(ITEM *switch_item, ITEM *lara_item);
 static void M_SwitchOff(ITEM *switch_item, ITEM *lara_item);
@@ -61,6 +51,16 @@ static void M_SetupUW(OBJECT *obj);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Control(int16_t item_num);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_SwitchBounds;
+}
+
+static const OBJECT_BOUNDS *M_BoundsUW(void)
+{
+    return &m_SwitchBoundsUW;
+}
 
 static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
 {
@@ -139,28 +139,32 @@ static void M_Setup(OBJECT *const obj)
 {
     M_SetupBase(obj);
     obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
 }
 
 static void M_SetupPushButton(OBJECT *const obj)
 {
     M_Setup(obj);
     obj->enable_interpolation = false;
+    obj->bounds_func = M_Bounds;
 }
 
 static void M_SetupUW(OBJECT *const obj)
 {
     M_SetupBase(obj);
     obj->collision_func = M_CollisionUW;
+    obj->bounds_func = M_BoundsUW;
 }
 
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
     if (!g_Input.action || item->status != IS_INACTIVE
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity
         || lara_item->current_anim_state != LS_STOP
-        || !Item_TestPosition(m_SwitchBounds, item, lara_item)) {
+        || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 
@@ -193,6 +197,7 @@ static void M_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
         || g_Lara.water_status != LWS_UNDERWATER
@@ -201,7 +206,7 @@ static void M_CollisionUW(
         return;
     }
 
-    if (!Item_TestPosition(m_SwitchBoundsUW, item, lara_item)) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

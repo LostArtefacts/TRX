@@ -701,11 +701,6 @@ bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
-bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *const bounds)
-{
-    return Item_TestPosition(g_LaraItem, item, bounds);
-}
-
 void Lara_AlignPosition(ITEM *item, XYZ_32 *vec)
 {
     Item_AlignPosition(g_LaraItem, item, vec);

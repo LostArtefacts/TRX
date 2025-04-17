@@ -2,6 +2,7 @@
 
 #include "game/const.h"
 #include "game/item_actions.h"
+#include "game/matrix.h"
 #include "game/rooms/const.h"
 
 void Lara_Animate(ITEM *const item)
@@ -155,4 +156,53 @@ void Lara_TakeDamage(const int16_t damage, const bool hit_status)
 bool Lara_TestBoundsCollide(const ITEM *const item, const int32_t radius)
 {
     return Item_TestBoundsCollide(item, Lara_GetItem(), radius);
+}
+
+bool Lara_TestPosition(
+    const ITEM *const item, const OBJECT_BOUNDS *const bounds)
+{
+    const ITEM *const lara = Lara_GetItem();
+    const XYZ_16 rot = {
+        .x = lara->rot.x - item->rot.x,
+        .y = lara->rot.y - item->rot.y,
+        .z = lara->rot.z - item->rot.z,
+    };
+    const XYZ_32 dist = {
+        .x = lara->pos.x - item->pos.x,
+        .y = lara->pos.y - item->pos.y,
+        .z = lara->pos.z - item->pos.z,
+    };
+
+    // clang-format off
+    if (rot.x < bounds->rot.min.x ||
+        rot.x > bounds->rot.max.x ||
+        rot.y < bounds->rot.min.y ||
+        rot.y > bounds->rot.max.y ||
+        rot.z < bounds->rot.min.z ||
+        rot.z > bounds->rot.max.z
+    ) {
+        return false;
+    }
+    // clang-format on
+
+    Matrix_PushUnit();
+    Matrix_Rot16(item->rot);
+    const MATRIX *const m = g_MatrixPtr;
+    const XYZ_32 shift = {
+        .x = (dist.x * m->_00 + dist.y * m->_10 + dist.z * m->_20) >> W2V_SHIFT,
+        .y = (dist.x * m->_01 + dist.y * m->_11 + dist.z * m->_21) >> W2V_SHIFT,
+        .z = (dist.x * m->_02 + dist.y * m->_12 + dist.z * m->_22) >> W2V_SHIFT,
+    };
+    Matrix_Pop();
+
+    // clang-format off
+    return (
+        shift.x >= bounds->shift.min.x &&
+        shift.x <= bounds->shift.max.x &&
+        shift.y >= bounds->shift.min.y &&
+        shift.y <= bounds->shift.max.y &&
+        shift.z >= bounds->shift.min.z &&
+        shift.z <= bounds->shift.max.z
+    );
+    // clang-format on
 }
