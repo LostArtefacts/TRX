@@ -44,6 +44,11 @@
       "jpg": "JPEG",
       "png": "PNG"
     },
+    "music_load_condition": {
+      "never": "Never",
+      "non-ambient": "Non-ambient",
+      "always": "Always"
+    },
     "underwater_music": {
       "full": "Full",
       "quiet": "Quiet",

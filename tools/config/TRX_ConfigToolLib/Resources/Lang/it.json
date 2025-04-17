@@ -38,5 +38,19 @@
     "graphics": "Grafica",
     "sound": "Suono",
     "ui": "Interfaccia utente"
+  },
+  "Enums": {
+    "underwater_music": {
+      "full": "Completa",
+      "quiet": "Attenuata",
+      "full_no_ambient": "Completa ma senza suoni ambientali",
+      "quiet_no_ambient": "Attenuata ma senza suoni ambientali",
+      "none": "Assente"
+    },
+    "music_load_condition": {
+      "never": "Mai",
+      "non-ambient": "Non ambientale",
+      "always": "Sempre"
+    }
   }
 }

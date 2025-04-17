@@ -15,13 +15,6 @@
       "any": "Qualsiasi",
       "16:9": "16:9",
       "4:3": "4:3"
-    },
-    "underwater_music": {
-      "full": "Completa",
-      "quiet": "Attenuata",
-      "full_no_ambient": "Completa ma senza suoni ambientali",
-      "quiet_no_ambient": "Attenuata ma senza suoni ambientali",
-      "none": "Assente"
     }
   },
   "Properties": {
@@ -120,6 +113,10 @@
     "enable_gun_lighting": {
       "Title": "Illuminazione spari/esplosioni",
       "Description": "Abilita l'illuminazione dinamica per spari ed esplosioni."
+    },
+    "music_load_condition": {
+      "Title": "Carica la traccia musicale",
+      "Description": "Carica la traccia musicale che era in riproduzione al momento del salvataggio della partita.\n- Mai: non ripristina le tracce musicali al caricamento.\n- Non ambientale: ripristina le tracce musicali ma non le tracce ambientali al caricamento.\n- Sempre: ripristina qualsiasi tipo di traccia musicale al caricamento."
     },
     "enable_lara_mic" : {
       "Title": "Microfono su Lara",

@@ -2,11 +2,13 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/lara/control.h"
+#include "game/music.h"
 #include "game/objects/general/lift.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/bson.h>
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
@@ -303,6 +305,15 @@ static JSON_OBJECT *M_DumpMusic(void)
         JSON_ArrayAppendInt(track_arr, Music_GetTrackFlags(i));
     }
     JSON_ObjectAppendArray(music_obj, "flags", track_arr);
+
+    const MUSIC_TRACK_ID current_track = Music_GetCurrentPlayingTrack();
+    const bool is_ambient = current_track == Music_GetCurrentLoopedTrack();
+    JSON_OBJECT *const current_obj = JSON_ObjectNew();
+    JSON_ObjectAppendInt(current_obj, "current_track", current_track);
+    JSON_ObjectAppendDouble(current_obj, "timestamp", Music_GetTimestamp());
+    JSON_ObjectAppendBool(current_obj, "is_ambient", is_ambient);
+    JSON_ObjectAppendObject(music_obj, "current", current_obj);
+
     return music_obj;
 }
 
@@ -328,6 +339,35 @@ static bool M_LoadMusic(JSON_OBJECT *const music_obj)
 
     for (int32_t i = 0; i < (signed)track_arr->length; i++) {
         Music_SetTrackFlags(i, JSON_ArrayGetInt(track_arr, i, 0));
+    }
+
+    const JSON_OBJECT *const current_obj =
+        JSON_ObjectGetObject(music_obj, "current");
+    if (current_obj == nullptr
+        || g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
+        return true;
+    }
+
+    const int16_t current_track =
+        JSON_ObjectGetInt(current_obj, "current_track", -1);
+    double timestamp = JSON_ObjectGetDouble(current_obj, "timestamp", -1.0);
+    if (current_track != MX_INACTIVE) {
+        const bool is_ambient =
+            JSON_ObjectGetBool(music_obj, "is_ambient", false);
+        if (is_ambient) {
+            if (g_Config.audio.music_load_condition == MUSIC_LOAD_NON_AMBIENT) {
+                return true;
+            }
+            Music_Play(current_track, MPM_LOOPED);
+        } else {
+            Music_Play(current_track, MPM_ALWAYS);
+        }
+
+        if (!Music_SeekTimestamp(timestamp)) {
+            LOG_WARNING(
+                "Could not load current track %d at timestamp %" PRId64 ".",
+                current_track, timestamp);
+        }
     }
 
     return true;

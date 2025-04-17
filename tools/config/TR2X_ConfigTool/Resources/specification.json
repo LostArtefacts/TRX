@@ -19,6 +19,11 @@
       "full_no_ambient",
       "quiet_no_ambient",
       "none"
+    ],
+    "music_load_condition": [
+      "never",
+      "non-ambient",
+      "always"
     ]
   },
   "CategorisedProperties": [
@@ -188,6 +193,12 @@
           "Field": "enable_lara_mic",
           "DataType": "Bool",
           "DefaultValue": false
+        },
+        {
+          "Field": "music_load_condition",
+          "DataType": "Enum",
+          "EnumKey": "music_load_condition",
+          "DefaultValue": "non-ambient"
         },
         {
           "Field": "underwater_music_mode",

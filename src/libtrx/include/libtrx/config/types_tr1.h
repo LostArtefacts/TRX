@@ -48,12 +48,6 @@ typedef enum {
 } BAR_COLOR;
 
 typedef enum {
-    MUSIC_LOAD_NEVER,
-    MUSIC_LOAD_NON_AMBIENT,
-    MUSIC_LOAD_ALWAYS,
-} MUSIC_LOAD_CONDITION;
-
-typedef enum {
     TLM_FULL,
     TLM_SEMI,
     TLM_NONE,
