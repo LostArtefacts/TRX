@@ -28,6 +28,7 @@
 - fixed the drawbridge producing dynamic light when open (#2294)
 - fixed the scale of several pickup models in The Golden Mask (#2652)
 - fixed the shark in The Cold War not making any sounds when biting Lara (#2678)
+- fixed the bird monster not having a shadow (#2060)
 - fixed the in-game cinematic camera at times yielding invalid positions (and hence views) in custom levels (#2754)
 - fixed a softlock in Temple of Xian if the main chamber key is missed (#2042)
 - fixed a potential softlock in Floating Islands if returning towards the level start from the gold secret (#2590)

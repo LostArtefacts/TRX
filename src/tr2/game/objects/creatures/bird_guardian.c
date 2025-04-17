@@ -6,6 +6,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -64,6 +65,9 @@ static void M_Setup(OBJECT *const obj)
 
     obj->hit_points = BIRD_GUARDIAN_HITPOINTS;
     obj->radius = BIRD_GUARDIAN_RADIUS;
+    if (g_Config.visuals.fix_texture_issues) {
+        obj->shadow_size = UNIT_SHADOW / 2;
+    }
 
     obj->intelligent = 1;
     obj->save_position = 1;
