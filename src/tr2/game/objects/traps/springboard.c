@@ -35,17 +35,29 @@ static void M_Control(const int16_t item_num)
             return;
         }
 
-        if (lara_item->current_anim_state == LS_BACK
-            || lara_item->current_anim_state == LS_FAST_BACK) {
-            lara_item->speed = -lara_item->speed;
+        const LARA_INFO *const lara = Lara_GetLaraInfo();
+        if (lara->skidoo != NO_ITEM) {
+            ITEM *const skidoo = Item_Get(lara->skidoo);
+            if (skidoo->object_id != O_SKIDOO_FAST
+                && skidoo->object_id != O_SKIDOO_ARMED) {
+                return;
+            }
+
+            skidoo->fall_speed = -200;
+            skidoo->pos.y -= STEP_L;
+        } else {
+            if (lara_item->current_anim_state == LS_BACK
+                || lara_item->current_anim_state == LS_FAST_BACK) {
+                lara_item->speed = -lara_item->speed;
+            }
+
+            lara_item->fall_speed = -240;
+            lara_item->gravity = 1;
+
+            Item_SwitchToAnim(lara_item, LA_FALL_START, 0);
+            lara_item->current_anim_state = LS_JUMP_FORWARD;
+            lara_item->goal_anim_state = LS_JUMP_FORWARD;
         }
-
-        lara_item->fall_speed = -240;
-        lara_item->gravity = 1;
-
-        Item_SwitchToAnim(lara_item, LA_FALL_START, 0);
-        lara_item->current_anim_state = LS_JUMP_FORWARD;
-        lara_item->goal_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = SPRINGBOARD_STATE_ON;
     }
 

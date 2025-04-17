@@ -25,6 +25,7 @@
 - fixed Lara's hips appearing on Bartoli in the Temple of Xian cutscene (#2558)
 - fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground (#2752)
 - fixed the lift to work in any cardinal direction in custom levels, not just South (#2100)
+- fixed the springboard not responding correctly when Lara drives across one on a skidoo (#1903)
 - fixed the drawbridge producing dynamic light when open (#2294)
 - fixed the scale of several pickup models in The Golden Mask (#2652)
 - fixed the shark in The Cold War not making any sounds when biting Lara (#2678)
