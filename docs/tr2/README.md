@@ -316,6 +316,7 @@ as Notepad.
 - added per-level customizable fog distance
 - added the ability for spike walls to be reset (antitriggered)
 - fixed the lift to work in any cardinal direction in custom levels, not just South
+- fixed the springboard not responding correctly when Lara drives across one on a skidoo
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels
 
 #### Miscellaneous
