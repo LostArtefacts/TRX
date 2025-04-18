@@ -6,17 +6,6 @@
     "window_title_about": "Informazioni sul Programma di configurazione di TR2X",
     "label_about_details": "Per ulteriori informazioni, visita la pagina GitHub di TR2X."
   },
-  "Enums": {
-    "fps": {
-      "30": "30",
-      "60": "60"
-    },
-    "aspect_mode": {
-      "any": "Qualsiasi",
-      "16:9": "16:9",
-      "4:3": "4:3"
-    }
-  },
   "Properties": {
     "enable_tr3_sidesteps": {
       "Title": "Passi laterali migliorati",
@@ -25,10 +14,6 @@
     "enable_responsive_passport": {
       "Title": "Abilita passaporto reattivo",
       "Description": "Disabilita il blocco dell'input dell'utente mentre scorrono le pagine del passaporto, programmando invece le pagine da sfogliare."
-    },
-    "fps": {
-      "Title": "FPS",
-      "Description": "Controlla i fotogrammi al secondo a cui eseguire il gioco."
     },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
@@ -101,10 +86,6 @@
     "enable_auto_item_selection": {
       "Title": "Preselezione degli oggetti chiave",
       "Description": "Quando Lara preme azione contro un buco della serratura o un altro ricettacolo e ha l'oggetto corrispondente nell'inventario, quell'oggetto verrà preselezionato."
-    },
-    "aspect_mode": {
-      "Title": "Modalità rapporto d'aspetto",
-      "Description": "Imposta il rapporto d'aspetto del gioco."
     },
     "screenshot_format": {
       "Title": "Formato istantanea dello schermo",

@@ -6,17 +6,6 @@
     "window_title_about": "About TR2X Config Tool",
     "label_about_details": "Visit the TR2X GitHub page for further information."
   },
-  "Enums": {
-    "fps": {
-      "30": "30",
-      "60": "60"
-    },
-    "aspect_mode": {
-      "any": "Any",
-      "16:9": "16:9",
-      "4:3": "4:3"
-    }
-  },
   "Properties": {
     "enable_tr3_sidesteps": {
       "Title": "Enhanced sidesteps",
@@ -25,10 +14,6 @@
     "enable_responsive_passport": {
       "Title": "Enable more responsive passport",
       "Description": "Disables blocking user input when passport flips pages, scheduling the page flips instead."
-    },
-    "fps": {
-      "Title": "FPS",
-      "Description": "Controls the framerate at which to render the game."
     },
     "enable_3d_pickups": {
       "Title": "3D pickups",
@@ -101,10 +86,6 @@
     "enable_auto_item_selection": {
       "Title": "Key item pre-selection",
       "Description": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected."
-    },
-    "aspect_mode": {
-      "Title": "Aspect mode",
-      "Description": "Set the aspect ratio of the game output."
     },
     "screenshot_format": {
       "Title": "Screenshot format",

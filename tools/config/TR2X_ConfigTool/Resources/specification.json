@@ -4,15 +4,6 @@
       "jpg",
       "png"
     ],
-    "fps": [
-      "30",
-      "60"
-    ],
-    "aspect_mode": [
-      "any",
-      "16:9",
-      "4:3"
-    ],
     "underwater_music": [
       "full",
       "quiet",
@@ -159,18 +150,6 @@
           "Field": "enable_3d_pickups",
           "DataType": "Bool",
           "DefaultValue": true
-        },
-        {
-          "Field": "fps",
-          "DataType": "Enum",
-          "EnumKey": "fps",
-          "DefaultValue": "60"
-        },
-        {
-          "Field": "aspect_mode",
-          "DataType": "Enum",
-          "EnumKey": "aspect_mode",
-          "DefaultValue": "any"
         },
         {
           "Field": "screenshot_format",

@@ -45,6 +45,7 @@
 - improved pause exit dialog - it can now be canceled with escape
 - removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels (#1583)
+- removed the FPS and aspect mode options from the config tool (now available in-game in the graphics options)
 
 ## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
 - added support for 60 FPS rendering
