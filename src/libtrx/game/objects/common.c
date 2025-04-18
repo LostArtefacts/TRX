@@ -185,6 +185,17 @@ void Object_DrawInterpolatedObject(
                 Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
                 Matrix_Rot16_ID(
                     frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
+                if (extra_rotation != nullptr) {
+                    if (obj->base_rot.y) {
+                        Matrix_RotY_I(*extra_rotation++);
+                    }
+                    if (obj->base_rot.x) {
+                        Matrix_RotX_I(*extra_rotation++);
+                    }
+                    if (obj->base_rot.z) {
+                        Matrix_RotZ_I(*extra_rotation++);
+                    }
+                }
             } else {
                 const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
                 if (bone->matrix_pop) {
@@ -219,6 +230,17 @@ void Object_DrawInterpolatedObject(
             if (mesh_idx == 0) {
                 Matrix_TranslateRel16(frame1->offset);
                 Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
+                if (extra_rotation != nullptr) {
+                    if (obj->base_rot.y) {
+                        Matrix_RotY(*extra_rotation++);
+                    }
+                    if (obj->base_rot.x) {
+                        Matrix_RotX(*extra_rotation++);
+                    }
+                    if (obj->base_rot.z) {
+                        Matrix_RotZ(*extra_rotation++);
+                    }
+                }
             } else {
                 const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
                 if (bone->matrix_pop) {

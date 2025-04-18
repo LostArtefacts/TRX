@@ -7,6 +7,11 @@
 
 #include <stdlib.h>
 
+typedef struct {
+    int16_t counter_rot[3];
+    int16_t original_rot;
+} M_PRIV;
+
 static int32_t m_BlockCount = 0;
 static VECTOR *m_UnsortedBlocks = nullptr;
 static int16_t *m_SortedBlocks = nullptr;
@@ -54,6 +59,24 @@ void MovableBlock_Initialise(const int16_t item_num)
         m_UnsortedBlocks = Vector_Create(sizeof(int16_t));
     }
     Vector_Add(m_UnsortedBlocks, (void *)&item_num);
+
+    // Ensure the block is snapped to the grid, otherwise the snapping occurs
+    // during collision tests and can appear jarring. Additional angles are
+    // stored to preserve item appearance in spite of control angle changes.
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const data = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
+    item->data = data;
+    data->original_rot =
+        (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
+    MovableBlock_UpdateRotation(item, data->original_rot);
+}
+
+// TODO: make private
+void MovableBlock_UpdateRotation(ITEM *const item, const int16_t rot_y)
+{
+    item->rot.y = rot_y;
+    M_PRIV *const data = (M_PRIV *)item->data;
+    data->counter_rot[0] = data->original_rot - rot_y;
 }
 
 void MovableBlock_SetupFloor(void)

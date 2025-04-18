@@ -17,6 +17,7 @@
 - fixed enemies in one-click high water appearing with a water tint, and not making any animation sounds (#2753)
 - fixed the scale of the four keys in St. Francis' Folly (#2652)
 - fixed the panther at times not making a sound when it dies, and restored Skate Kid's death SFX (#2647)
+- fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used (#2776)
 - fixed a crash when 3D pickups are disabled and Lara crosses a trigger to look at a pickup item (#2711, regression from 4.8)
 - fixed trapezoid filter warping on faces close to the camera (#2629, regression from 4.9)
 - fixed Mac builds crashing upon start (regression from 4.9)

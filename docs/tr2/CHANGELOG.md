@@ -37,6 +37,7 @@
 - fixed a potential softlock in Floating Islands if returning towards the level start from the gold secret (#2590)
 - fixed a potential softlock in Nightmare in Vegas where the bird monster could remain inactive, or the flip map not set (#1851)
 - fixed invalid portals in The Deck between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms (#2393)
+- fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used (#2776)
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 0.10)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed a crash if an image was missing
