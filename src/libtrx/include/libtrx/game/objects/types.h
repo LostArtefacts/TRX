@@ -79,6 +79,12 @@ typedef struct OBJECT {
     int16_t smartness;
     bool enable_interpolation;
 
+    struct {
+        bool x;
+        bool y;
+        bool z;
+    } base_rot;
+
     union {
         uint16_t flags;
         // clang-format off

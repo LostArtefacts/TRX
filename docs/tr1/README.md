@@ -475,6 +475,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed a potential softlock when killing the Torso boss in Great Pyramid
 - fixed being able to shoot the scion multiple times if save/load is used while it blows up
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
+- fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
 
 #### Cheats
 - added a fly cheat

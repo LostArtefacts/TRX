@@ -243,6 +243,7 @@ as Notepad.
     - increased Barkhang Monastery rooftops key size
     - increased Temple of Xian dragon seal size, and fixed inventory rotation
     - fixed Floating Islands mystic plaque inventory rotation
+- fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
 - improved the animation of Lara's braid
 
 #### Cheats
