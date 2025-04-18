@@ -26,6 +26,7 @@
 - fixed sprites missing the fog effect (regression from 4.9)
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 4.9)
 - fixed wrong PS1-style title bar color for the end of the level stats dialog (regression from 4.9)
+- fixed Story So Far showing up even when there's nothing to play (#2611, regression from 2.10)
 - improved bubble appearance (#2672)
 - improved rendering performance
 - improved pause exit dialog - it can now be canceled with escape
@@ -83,7 +84,7 @@
 ## [4.8.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.1...tr1-4.8.2) - 2025-02-15
 - changed default FPS value to 60 (#2501)
 - changed passport to be more responsive to player inputs (#1328)
-- fixed story so far not skipping over levels (#2506, regression from 4.8)
+- fixed Story So Far not skipping over levels (#2506, regression from 4.8)
 - fixed resolving paths (especially to music files) on case-sensitive filesystems (#1934, #2504)
 - improved memory usage by shedding ca. 100-110 MB on average
 
@@ -741,7 +742,7 @@
 - added a .NET-based installer
 - added the option to make Lara revert to pistols on new level start (#557)
 - added the PS1 style UI (#517)
-- added the "Story so far..." option in the select level menu to view cutscenes and FMVs (#201)
+- added the "Story So far..." option in the select level menu to view cutscenes and FMVs (#201)
 
 ## [2.9.1](https://github.com/LostArtefacts/TRX/compare/tr1-2.9...tr1-2.9.1) - 2022-06-03
 - fixed crash on centaur hatch (#579, regression from 2.9)

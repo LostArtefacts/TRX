@@ -39,6 +39,30 @@ GF_COMMAND GF_PlayAvailableStory(const int32_t slot_num)
     return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
 }
 
+bool GF_HasAvailableStory(const int32_t slot_num)
+{
+    const int32_t savegame_level = Savegame_GetLevelNumber(slot_num);
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    const int32_t max_level = MIN(savegame_level, level_table->count);
+    for (int32_t i = 0; i <= max_level; i++) {
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        if (level->type == GFL_GYM) {
+            continue;
+        }
+        const GF_SEQUENCE *const seq = &level->sequence;
+        for (int32_t j = 0; j < seq->length; j++) {
+            const GF_SEQUENCE_EVENT *const ev = &seq->events[j];
+            if (ev->type == GFS_LOOP_GAME) {
+                break;
+            }
+            if (ev->type == GFS_PLAY_CUTSCENE || ev->type == GFS_PLAY_FMV) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 GF_COMMAND GF_DoLevelSequence(
     const GF_LEVEL *const start_level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {

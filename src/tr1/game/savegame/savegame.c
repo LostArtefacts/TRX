@@ -168,7 +168,7 @@ void Savegame_FillAvailableLevels(REQUEST_INFO *const req)
         }
     }
 
-    if (g_InvMode == INV_TITLE_MODE) {
+    if (g_InvMode == INV_TITLE_MODE && GF_HasAvailableStory(slot_num)) {
         Requester_AddItem(req, false, "%s", GS(PASSPORT_STORY_SO_FAR));
     }
 
