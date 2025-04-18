@@ -27,6 +27,7 @@
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 4.9)
 - fixed wrong PS1-style title bar color for the end of the level stats dialog (regression from 4.9)
 - fixed Story So Far showing up even when there's nothing to play (#2611, regression from 2.10)
+- fixed Story So Far not playing the opening FMV, `cafe.rpl` (#2779, regression from 2.10)
 - improved bubble appearance (#2672)
 - improved rendering performance
 - improved pause exit dialog - it can now be canceled with escape
