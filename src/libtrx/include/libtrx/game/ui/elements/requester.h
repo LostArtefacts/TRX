@@ -26,6 +26,7 @@ void UI_Requester_Init(
 void UI_Requester_Free(UI_REQUESTER_STATE *s);
 int32_t UI_Requester_Control(UI_REQUESTER_STATE *s);
 void UI_Requester_SetMaxRows(UI_REQUESTER_STATE *s, int32_t max_rows);
+void UI_Requester_SetVisibleRows(UI_REQUESTER_STATE *s, size_t visible_rows);
 int32_t UI_Requester_GetFirstRow(const UI_REQUESTER_STATE *s);
 int32_t UI_Requester_GetLastRow(const UI_REQUESTER_STATE *s);
 int32_t UI_Requester_GetCurrentRow(const UI_REQUESTER_STATE *s);

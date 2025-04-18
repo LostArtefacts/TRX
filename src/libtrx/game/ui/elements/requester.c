@@ -26,22 +26,23 @@ void UI_Requester_Free(UI_REQUESTER_STATE *const s)
 
 int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
 {
-    if (g_InputDB.menu_down) {
-        if (s->vis_row + s->vis_rows < s->max_rows) {
-            s->vis_row++;
-        }
-    } else if (g_InputDB.menu_up) {
-        if (s->vis_row > 0) {
-            s->vis_row--;
-        }
-    }
-
     if (s->is_selectable) {
         if (g_InputDB.menu_down && s->sel_row + 1 < s->max_rows) {
             s->sel_row++;
         } else if (g_InputDB.menu_up && s->sel_row > 0) {
             s->sel_row--;
         }
+    }
+
+    if (s->sel_row > s->vis_row + s->vis_rows) {
+        s->vis_row++;
+    }
+    if (s->sel_row < s->vis_row) {
+        s->vis_row = s->sel_row;
+    }
+    CLAMP(s->vis_row, 0, s->max_rows - s->vis_rows);
+
+    if (s->is_selectable) {
         if (g_InputDB.menu_back) {
             return UI_REQUESTER_CANCEL;
         }
@@ -56,6 +57,22 @@ void UI_Requester_SetMaxRows(
     UI_REQUESTER_STATE *const s, const int32_t max_rows)
 {
     s->max_rows = max_rows;
+}
+
+void UI_Requester_SetVisibleRows(
+    UI_REQUESTER_STATE *const s, const size_t visible_rows)
+{
+    s->vis_rows = visible_rows;
+    CLAMP(s->vis_rows, 0, s->max_rows);
+    if (s->sel_row != -1) {
+        if (s->vis_row > s->sel_row) {
+            s->vis_row = s->sel_row;
+        } else if (s->sel_row > s->vis_row + s->vis_rows) {
+            s->vis_row = s->sel_row - s->vis_rows + 1;
+        }
+    }
+
+    CLAMP(s->vis_row, 0, s->max_rows - s->vis_rows);
 }
 
 int32_t UI_Requester_GetFirstRow(const UI_REQUESTER_STATE *const s)
