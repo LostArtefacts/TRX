@@ -1,5 +1,6 @@
 #include "game/ui/elements/requester.h"
 
+#include "config.h"
 #include "game/input.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/pad.h"
@@ -27,10 +28,18 @@ void UI_Requester_Free(UI_REQUESTER_STATE *const s)
 int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
 {
     if (s->is_selectable) {
-        if (g_InputDB.menu_down && s->sel_row + 1 < s->max_rows) {
-            s->sel_row++;
-        } else if (g_InputDB.menu_up && s->sel_row > 0) {
-            s->sel_row--;
+        if (g_InputDB.menu_down) {
+            if (s->sel_row + 1 < s->max_rows) {
+                s->sel_row++;
+            } else if (g_Config.ui.enable_wraparound) {
+                s->sel_row = 0;
+            }
+        } else if (g_InputDB.menu_up) {
+            if (s->sel_row > 0) {
+                s->sel_row--;
+            } else if (g_Config.ui.enable_wraparound) {
+                s->sel_row = s->max_rows - 1;
+            }
         }
     }
 

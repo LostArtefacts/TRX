@@ -98,6 +98,7 @@ typedef struct {
     struct {
         bool enable_game_ui;
         bool enable_photo_mode_ui;
+        bool enable_wraparound;
         double text_scale;
         double bar_scale;
         UI_STYLE menu_style;
