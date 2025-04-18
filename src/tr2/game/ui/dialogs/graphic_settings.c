@@ -1,5 +1,7 @@
 #include "game/ui/dialogs/graphic_settings.h"
 
+#include "game/scaler.h"
+
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/game_string.h>
@@ -15,6 +17,8 @@
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
+
+#include <math.h>
 
 typedef struct {
     CONFIG_OPTION_TYPE option_type;
@@ -385,10 +389,12 @@ static bool M_RequestChangeValue(const int32_t row_idx, const int32_t dir)
         *(int32_t *)option->target += delta;
         break;
     case COT_DOUBLE:
-        *(double *)option->target += (double)delta / 100;
+        *(double *)option->target =
+            (round(*(double *)option->target * 10) + (delta / 10.0f)) / 10.0f;
         break;
     case COT_FLOAT:
-        *(float *)option->target += (float)delta / 100;
+        *(float *)option->target =
+            (round(*(float *)option->target * 10) + (delta / 10.0f)) / 10.0f;
         break;
     case COT_RGB888: {
         uint8_t *const component = M_GetColorComponent(option);
@@ -430,6 +436,17 @@ void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *const s)
 
 bool UI_GraphicSettings_Control(UI_GRAPHIC_SETTINGS_STATE *const s)
 {
+    const int32_t scale = Scaler_GetScale(SCALER_TARGET_TEXT) * 100;
+    if (scale >= 190) {
+        UI_Requester_SetVisibleRows(&s->req, 6);
+    } else if (scale >= 160) {
+        UI_Requester_SetVisibleRows(&s->req, 8);
+    } else if (scale >= 120) {
+        UI_Requester_SetVisibleRows(&s->req, 12);
+    } else {
+        UI_Requester_SetVisibleRows(&s->req, 18);
+    }
+
     const int32_t choice = UI_Requester_Control(&s->req);
     if (choice == UI_REQUESTER_CANCEL) {
         return true;
@@ -448,14 +465,19 @@ void UI_GraphicSettings(UI_GRAPHIC_SETTINGS_STATE *const s)
     const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
     UI_BeginModal(0.5f, 0.6f);
     UI_BeginRequester(&s->req, GS(DETAIL_TITLE));
-    for (int32_t i = UI_Requester_GetFirstRow(&s->req);
-         i < UI_Requester_GetLastRow(&s->req); i++) {
+
+    for (int32_t i = 0; i < s->req.max_rows; i++) {
+        if (!UI_Requester_IsRowVisible(&s->req, i)) {
+            UI_BeginResize(-1.0f, 0.0f);
+        } else {
+            UI_BeginResize(-1.0f, -1.0f);
+        }
+
         UI_BeginRequesterRow(&s->req, i);
         UI_BeginStack(UI_STACK_HORIZONTAL);
         UI_Label(GameString_Get(m_Options[i].label_id));
         UI_Spacer(20.0f, 0.0f);
 
-        UI_BeginResize(110.0f, -1.0f);
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_CENTER },
@@ -469,10 +491,10 @@ void UI_GraphicSettings(UI_GRAPHIC_SETTINGS_STATE *const s)
         UI_Label("\\{button right}");
         UI_EndHide();
         UI_EndStack();
-        UI_EndResize();
 
         UI_EndStack();
         UI_EndRequesterRow(&s->req, i);
+        UI_EndResize();
     }
     UI_EndRequester(&s->req);
     UI_EndModal();
