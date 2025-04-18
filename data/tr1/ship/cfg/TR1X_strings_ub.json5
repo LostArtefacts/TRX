@@ -1,6 +1,6 @@
 {
     "levels": [
-        // Level 0: Return to Egypt
+        // Level 1: Return to Egypt
         {
             "title": "Return to Egypt",
             "objects": {
@@ -8,7 +8,7 @@
             },
         },
 
-        // Level 1: Temple of the Cat
+        // Level 2: Temple of the Cat
         {
             "title": "Temple of the Cat",
             "objects": {
@@ -16,22 +16,22 @@
             },
         },
 
-        // Level 2: Atlantean Stronghold
+        // Level 3: Atlantean Stronghold
         {
             "title": "Atlantean Stronghold",
         },
 
-        // Level 3: The Hive
+        // Level 4: The Hive
         {
             "title": "The Hive",
         },
 
-        // Level 4: Title
+        // Level 5: Title
         {
             "title": "Title",
         },
 
-        // Level 5: Current Position
+        // Level 6: Current Position
         {
             "title": "Current Position",
         },
