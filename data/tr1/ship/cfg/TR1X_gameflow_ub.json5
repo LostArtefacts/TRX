@@ -42,7 +42,7 @@
     },
 
     "levels": [
-        // Level 0: Return to Egypt
+        // Level 1: Return to Egypt
         {
             "path": "data/egypt.phd",
             "music_track": 59,
@@ -61,7 +61,7 @@
             "unobtainable_kills": 1,
         },
 
-        // Level 1: Temple of the Cat
+        // Level 2: Temple of the Cat
         {
             "path": "data/cat.phd",
             "music_track": 59,
@@ -81,7 +81,7 @@
             "unobtainable_pickups": 1,
         },
 
-        // Level 2: Atlantean Stronghold
+        // Level 3: Atlantean Stronghold
         {
             "path": "data/end.phd",
             "music_track": 60,
@@ -98,7 +98,7 @@
             "unobtainable_kills": 1,
         },
 
-        // Level 3: The Hive
+        // Level 4: The Hive
         {
             "path": "data/end2.phd",
             "music_track": 60,
@@ -123,7 +123,8 @@
 
         {"type": "dummy"},
 
-        // Level 5: Current Position
+        // Level 6: Current Position
+        // This level is necessary to read TombATI's save files.
         {
             "path": "data/current.phd",
             "type": "current",
