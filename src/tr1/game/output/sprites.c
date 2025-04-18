@@ -36,6 +36,7 @@ typedef struct {
     MATRIX matrix;
     XYZ_32 pos;
     int32_t sprite_idx;
+    RGB_F tint;
     M_SPRITE_SHADE shade;
 } M_DYNAMIC_SPRITE;
 
@@ -419,6 +420,7 @@ void Output_Sprites_RenderSingleSprite(
         .matrix = *matrix,
         .pos = pos,
         .sprite_idx = sprite_idx,
+        .tint = Output_GetTint(),
         .shade = shade,
     };
     Vector_Add(m_Dynamic.source, &sprite);
@@ -465,9 +467,9 @@ bool Output_Sprites_Flush(void)
     M_BufferReallocGPU(buffer);
 
     Output_Shader_UploadWibbleEffect(m_Shader, Output_GetWibbleEffect());
-    Output_Shader_UploadTint(m_Shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
     for (int32_t i = 0; i < m_Dynamic.source->count; i++) {
         const M_DYNAMIC_SPRITE *const sprite = Vector_Get(m_Dynamic.source, i);
+        Output_Shader_UploadTint(m_Shader, sprite->tint);
         Output_Shader_UploadMatrix(m_Shader, &sprite->matrix);
         M_DrawBuffer(
             &m_Dynamic.sprite_buf, i * OUTPUT_QUAD_VERTICES,
