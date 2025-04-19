@@ -217,6 +217,7 @@ sources = [
   'game/ui/elements/hide.c',
   'game/ui/elements/label.c',
   'game/ui/elements/modal.c',
+  'game/ui/elements/offset.c',
   'game/ui/elements/pad.c',
   'game/ui/elements/prompt.c',
   'game/ui/elements/requester.c',
