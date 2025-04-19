@@ -29,7 +29,7 @@ void UI_EndWindow(void)
 
 void UI_BeginWindowBody(void)
 {
-    const float body_pad = 8.0f;
+    const float body_pad = TR_VERSION == 2 ? 4.0f : 8.0f;
     UI_BeginPad(body_pad, body_pad);
 }
 
@@ -41,7 +41,7 @@ void UI_EndWindowBody(void)
 void UI_WindowTitle(const char *const title)
 {
     UI_BeginFrame(UI_FRAME_DIALOG_HEADING);
-    UI_BeginPad(10.0f, 2.0f);
+    UI_BeginPad(10.0f, TR_VERSION == 2 ? 1.0f : 2.0f);
     UI_BeginAnchor(0.5f, 0.5f);
     UI_Label(title);
     UI_EndAnchor();
