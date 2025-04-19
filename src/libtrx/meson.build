@@ -212,6 +212,7 @@ sources = [
   'game/ui/dialogs/stats.c',
   'game/ui/elements/anchor.c',
   'game/ui/elements/fade.c',
+  'game/ui/elements/fixed.c',
   'game/ui/elements/flash.c',
   'game/ui/elements/frame.c',
   'game/ui/elements/hide.c',

@@ -9,11 +9,12 @@ typedef struct {
 } M_DATA;
 
 static void M_Measure(UI_NODE *node);
+static void M_Draw(const UI_NODE *node);
 
 static const UI_WIDGET_OPS m_Ops = {
     .measure = M_Measure,
     .layout = UI_LayoutWrapper,
-    .draw = UI_DrawWrapper,
+    .draw = M_Draw,
 };
 
 static void M_Measure(UI_NODE *const node)
@@ -26,6 +27,14 @@ static void M_Measure(UI_NODE *const node)
     if (data->y >= 0.0f) {
         node->measure_h = data->y;
     }
+}
+
+void M_Draw(const UI_NODE *const node)
+{
+    if (node->measure_w <= 0.0f || node->measure_h <= 0.0f) {
+        return;
+    }
+    UI_DrawWrapper(node);
 }
 
 void UI_BeginResize(const float x, const float y)
