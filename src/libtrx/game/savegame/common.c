@@ -23,7 +23,8 @@ static STATS_COMMON *m_DefaultStats = nullptr;
 static int32_t m_SaveSlots = 0;
 static int32_t m_SavedGames = 0;
 static int32_t m_SaveCounter = 0;
-static int32_t m_NewestSlot = -1;
+static int32_t m_MostRecentlyUsedSlot = -1;
+static int32_t m_MostRecentlyCreatedSlot = -1;
 static int32_t m_BoundSlot = -1;
 
 static int32_t m_StrategyCount = 0;
@@ -171,7 +172,13 @@ void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
 void Savegame_BindSlot(const int32_t slot_num)
 {
     m_BoundSlot = slot_num;
+    m_MostRecentlyUsedSlot = slot_num;
     LOG_DEBUG("Binding save slot %d", slot_num);
+}
+
+int32_t Savegame_GetMostRecentlyUsedSlot(void)
+{
+    return m_MostRecentlyUsedSlot;
 }
 
 void Savegame_UnbindSlot(void)
@@ -205,9 +212,9 @@ int32_t Savegame_GetTotalCount(void)
     return m_SavedGames;
 }
 
-int32_t Savegame_GetHighestSlot(void)
+int32_t Savegame_GetMostRecentlyCreatedSlot(void)
 {
-    return m_NewestSlot;
+    return m_MostRecentlyCreatedSlot;
 }
 
 bool Savegame_RestartAvailable(const int32_t slot_num)
@@ -473,7 +480,7 @@ void Savegame_ScanSavedGames(void)
 
     m_SaveCounter = 0;
     m_SavedGames = 0;
-    m_NewestSlot = -1;
+    m_MostRecentlyCreatedSlot = -1;
 
     M_ScanSavedGamesDir(SAVES_DIR);
     M_ScanSavedGamesDir(".");
@@ -483,7 +490,7 @@ void Savegame_ScanSavedGames(void)
         if (savegame_info->level_title != nullptr) {
             if (savegame_info->counter > m_SaveCounter) {
                 m_SaveCounter = savegame_info->counter;
-                m_NewestSlot = i;
+                m_MostRecentlyCreatedSlot = i;
             }
             m_SavedGames++;
         }
@@ -546,7 +553,7 @@ bool Savegame_Save(const int32_t slot_idx)
     }
 
     if (result) {
-        m_NewestSlot = slot_idx;
+        m_MostRecentlyCreatedSlot = slot_idx;
         if (was_slot_empty) {
             m_SavedGames++;
         }

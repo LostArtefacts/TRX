@@ -3,7 +3,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/requester.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -17,7 +16,7 @@ int32_t Savegame_GetSlotCount(void)
 
 void Savegame_HighlightNewestSlot(void)
 {
-    g_SavegameRequester.requested = MAX(0, Savegame_GetHighestSlot());
+    g_GameInfo.select_save_slot = Savegame_GetMostRecentlyCreatedSlot();
 }
 
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
@@ -114,29 +113,5 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         } else {
             current->back_gun_type = LGT_UNARMED;
         }
-    }
-}
-
-void Savegame_FillAvailableSaves(REQUEST_INFO *const req)
-{
-    Requester_ClearTextstrings(req);
-    Requester_Init(req, Savegame_GetSlotCount());
-
-    for (int32_t i = 0; i < req->max_items; i++) {
-        const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(i);
-
-        if (savegame_info->level_title != nullptr) {
-            Requester_AddItem(
-                req, false, "%s %d", savegame_info->level_title,
-                savegame_info->counter);
-        } else {
-            Requester_AddItem(req, true, GS(MISC_EMPTY_SLOT_FMT), i + 1);
-        }
-    }
-
-    if (req->requested >= req->vis_lines) {
-        req->line_offset = req->requested - req->vis_lines + 1;
-    } else if (req->requested < req->line_offset) {
-        req->line_offset = req->requested;
     }
 }

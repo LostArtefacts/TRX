@@ -866,7 +866,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         g_InvRing_Source[RT_OPTION].count = TITLE_RING_OBJECTS;
         InvRing_ShowVersionText();
         Savegame_ScanSavedGames();
-        Savegame_FillAvailableSaves(&g_SavegameRequester);
     } else {
         g_InvRing_Source[RT_OPTION].count = OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();
