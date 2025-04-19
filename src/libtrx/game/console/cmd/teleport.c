@@ -156,7 +156,7 @@ static COMMAND_RESULT M_TeleportToXYZ(float x, const float y, float z)
         z += 0.5f;
     }
 
-    if (!Lara_Cheat_Teleport(x * WALL_L, y * WALL_L, z * WALL_L)) {
+    if (!Lara_Cheat_Teleport(x * WALL_L, y * WALL_L, z * WALL_L, NO_ROOM)) {
         Console_Log(GS(OSD_POS_SET_POS_FAIL), x, y, z);
         return CR_FAILURE;
     }
@@ -185,7 +185,7 @@ static COMMAND_RESULT M_TeleportToRoom(const int16_t room_num)
         int32_t x = x1 + Random_GetControl() * (x2 - x1) / 0x7FFF;
         int32_t y = y1;
         int32_t z = z1 + Random_GetControl() * (z2 - z1) / 0x7FFF;
-        if (Lara_Cheat_Teleport(x, y, z)) {
+        if (Lara_Cheat_Teleport(x, y, z, room_num)) {
             success = true;
             break;
         }
@@ -219,8 +219,8 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
     }
 
     if (Lara_Cheat_Teleport(
-            best_item->pos.x, best_item->pos.y - STEP_L / 4,
-            best_item->pos.z)) {
+            best_item->pos.x, best_item->pos.y - STEP_L / 4, best_item->pos.z,
+            best_item->room_num)) {
         Console_Log(GS(OSD_POS_SET_ITEM), obj_name);
     } else {
         Console_Log(GS(OSD_POS_SET_ITEM_FAIL), obj_name);

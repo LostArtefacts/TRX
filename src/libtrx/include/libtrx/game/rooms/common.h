@@ -31,6 +31,7 @@ void Room_PopulateSectorData(
 
 int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
 int32_t Room_FindByPos(int32_t x, int32_t y, int32_t z);
+int32_t Room_GetFlippedBaseRoom(int32_t room_num);
 BOUNDS_32 Room_GetWorldBounds(void);
 
 extern SECTOR *Room_GetSector(
