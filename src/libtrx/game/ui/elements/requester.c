@@ -2,8 +2,10 @@
 
 #include "config.h"
 #include "game/input.h"
+#include "game/text.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/pad.h"
+#include "game/ui/elements/resize.h"
 #include "game/ui/elements/stack.h"
 #include "game/ui/elements/window.h"
 #include "utils.h"
@@ -19,6 +21,7 @@ void UI_Requester_Init(
     s->is_selectable = is_selectable;
     s->row_pad = 20.0f;
     s->row_spacing = 3.0f;
+    s->reserve_space = false;
 }
 
 void UI_Requester_Free(UI_REQUESTER_STATE *const s)
@@ -107,6 +110,13 @@ void UI_BeginRequester(
     UI_WindowTitle(title);
     UI_BeginWindowBody();
 
+    if (s->reserve_space) {
+        UI_BeginResize(
+            -1.0f,
+            s->vis_rows * TEXT_HEIGHT_FIXED
+                + (s->vis_rows - 1) * s->row_spacing);
+    }
+
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
@@ -116,6 +126,10 @@ void UI_BeginRequester(
 
 void UI_EndRequester(const UI_REQUESTER_STATE *const s)
 {
+    if (s->reserve_space) {
+        UI_EndResize();
+    }
+
     UI_EndStack();
     UI_EndWindowBody();
     UI_EndWindow();

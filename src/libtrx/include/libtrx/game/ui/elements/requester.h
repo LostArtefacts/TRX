@@ -17,6 +17,7 @@ typedef struct {
     int32_t sel_row;
     float row_pad;
     float row_spacing;
+    bool reserve_space;
 } UI_REQUESTER_STATE;
 
 // state functions
