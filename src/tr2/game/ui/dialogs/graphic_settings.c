@@ -1,11 +1,10 @@
 #include "game/ui/dialogs/graphic_settings.h"
 
-#include "game/scaler.h"
-
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/game_string.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/game/ui/elements/anchor.h>
 #include <libtrx/game/ui/elements/hide.h>
 #include <libtrx/game/ui/elements/label.h>

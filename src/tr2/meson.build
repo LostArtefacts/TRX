@@ -262,7 +262,6 @@ sources = [
   'game/savegame/common.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
-  'game/scaler.c',
   'game/shell/common.c',
   'game/shell/input.c',
   'game/sound.c',

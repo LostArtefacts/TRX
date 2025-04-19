@@ -1,7 +1,7 @@
-#include "game/scaler.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/game/ui/common.h>
 
 int32_t UI_GetCanvasWidth(void)

@@ -1,20 +1,21 @@
 #include "game/scaler.h"
 
-#include "global/vars.h"
-
-#include <libtrx/config.h>
-#include <libtrx/log.h>
-#include <libtrx/utils.h>
+#include "config.h"
+#include "game/viewport.h"
+#include "log.h"
+#include "utils.h"
 
 static int32_t M_DoCalc(
     int32_t unit, int32_t base_width, int32_t base_height, double factor)
 {
+    const int32_t win_width = Viewport_GetWidth();
+    const int32_t win_height = Viewport_GetHeight();
     const int32_t sign = unit < 0 ? -1 : 1;
-    const int32_t scale_x = g_PhdWinWidth > base_width
-        ? ((double)g_PhdWinWidth * ABS(unit) * factor) / MAX(1, base_width)
+    const int32_t scale_x = win_width > base_width
+        ? ((double)win_width * ABS(unit) * factor) / MAX(1, base_width)
         : ABS(unit) * factor;
-    const int32_t scale_y = g_PhdWinHeight > base_height
-        ? ((double)g_PhdWinHeight * ABS(unit) * factor) / MAX(1, base_height)
+    const int32_t scale_y = win_height > base_height
+        ? ((double)win_height * ABS(unit) * factor) / MAX(1, base_height)
         : ABS(unit) * factor;
     return MIN(scale_x, scale_y) * sign;
 }

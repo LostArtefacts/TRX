@@ -1,12 +1,12 @@
 #include "game/ui/dialogs/save_slot.h"
 
 #include "game/inventory_ring/vars.h"
-#include "game/scaler.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_string.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/savegame.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/game/ui/elements/anchor.h>
 #include <libtrx/game/ui/elements/hide.h>
