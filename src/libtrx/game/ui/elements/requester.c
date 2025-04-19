@@ -3,12 +3,45 @@
 #include "config.h"
 #include "game/input.h"
 #include "game/text.h"
+#include "game/ui/elements/anchor.h"
+#include "game/ui/elements/fixed.h"
 #include "game/ui/elements/frame.h"
+#include "game/ui/elements/hide.h"
+#include "game/ui/elements/label.h"
+#include "game/ui/elements/offset.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/resize.h"
+#include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "game/ui/elements/window.h"
 #include "utils.h"
+
+static void M_UpArrow(const UI_REQUESTER_STATE *s);
+static void M_DownArrow(const UI_REQUESTER_STATE *s);
+
+static void M_UpArrow(const UI_REQUESTER_STATE *const s)
+{
+    UI_BeginHide(s->vis_row == 0);
+    UI_Spacer(0.0f, 4.0f);
+    UI_BeginAnchor(0.5f, 0.5f);
+    UI_BeginFixed(0.5f, 1.5f);
+    UI_LabelEx("\\{arrow up}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
+    UI_EndFixed();
+    UI_EndAnchor();
+    UI_EndHide();
+}
+
+static void M_DownArrow(const UI_REQUESTER_STATE *const s)
+{
+    UI_BeginHide(s->vis_row + s->vis_rows >= s->max_rows);
+    UI_BeginAnchor(0.5f, 0.5f);
+    UI_BeginFixed(0.5f, 0.0f);
+    UI_LabelEx("\\{arrow down}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
+    UI_EndFixed();
+    UI_EndAnchor();
+    UI_EndHide();
+    UI_Spacer(0.0f, 4.0f);
+}
 
 void UI_Requester_Init(
     UI_REQUESTER_STATE *const s, const int32_t vis_rows, const int32_t max_rows,
@@ -21,6 +54,7 @@ void UI_Requester_Init(
     s->is_selectable = is_selectable;
     s->row_pad = 20.0f;
     s->row_spacing = 3.0f;
+    s->show_arrows = false;
     s->reserve_space = false;
 }
 
@@ -110,6 +144,14 @@ void UI_BeginRequester(
     UI_WindowTitle(title);
     UI_BeginWindowBody();
 
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    });
+
+    if (s->show_arrows) {
+        M_UpArrow(s);
+    }
     if (s->reserve_space) {
         UI_BeginResize(
             -1.0f,
@@ -126,8 +168,13 @@ void UI_BeginRequester(
 
 void UI_EndRequester(const UI_REQUESTER_STATE *const s)
 {
+    UI_EndStack();
+
     if (s->reserve_space) {
         UI_EndResize();
+    }
+    if (s->show_arrows) {
+        M_DownArrow(s);
     }
 
     UI_EndStack();
