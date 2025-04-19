@@ -25,7 +25,6 @@ void Savegame_HighlightNewestSlot(void)
 {
     const int32_t slot = Savegame_GetMostRecentlyCreatedSlot();
     g_SaveGameRequester.selected = MAX(0, slot);
-    g_LoadGameRequester.selected = MAX(0, slot);
 }
 
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
@@ -137,33 +136,6 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
     resume->stats.max_secret_count = default_stats.max_secret_count;
-}
-
-void Savegame_FillAvailableSaves(REQUEST_INFO *const req)
-{
-    Requester_Init(req);
-
-    for (int32_t i = 0; i < MAX_SAVE_SLOTS; i++) {
-        const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(i);
-        if (savegame_info->level_title != nullptr) {
-            char save_num_text[16];
-            sprintf(save_num_text, "%d", savegame_info->counter);
-            Requester_AddItem(
-                req, savegame_info->level_title, REQ_ALIGN_LEFT, save_num_text,
-                REQ_ALIGN_RIGHT);
-        } else {
-            Requester_AddItem(req, GS(MISC_EMPTY_SLOT), 0, 0, 0);
-        }
-    }
-
-    Requester_SetSize(req, 10, -32);
-    if (req->selected >= req->visible_count) {
-        req->line_offset = req->selected - req->visible_count + 1;
-    } else if (req->selected < req->line_offset) {
-        req->line_offset = req->selected;
-    }
-    memcpy(m_ReqFlags1, g_RequesterFlags1, sizeof(m_ReqFlags1));
-    memcpy(m_ReqFlags2, g_RequesterFlags2, sizeof(m_ReqFlags2));
 }
 
 void Savegame_FillAvailableLevels(REQUEST_INFO *const req)
