@@ -68,8 +68,8 @@ def postprocess_game_strings(
 
 def process(game: int) -> None:
     GAME_STRING_DEF_PATHS = [
-        PROJECT_PATHS[game].src_dir / "game/game_string.def",
         SHARED_INCLUDE_DIR / "game/game_string.def",
+        PROJECT_PATHS[game].src_dir / "game/game_string.def",
     ]
     OBJECT_NAMES_DEF_PATH = (
         SHARED_INCLUDE_DIR / f"game/objects/names_tr{game}.def"

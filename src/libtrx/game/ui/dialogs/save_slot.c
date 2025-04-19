@@ -1,24 +1,32 @@
 #include "game/ui/dialogs/save_slot.h"
 
-#include "game/screen.h"
-#include "global/vars.h"
-
-#include <libtrx/game/game_string.h>
-#include <libtrx/game/input.h>
-#include <libtrx/game/savegame.h>
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/elements/anchor.h>
-#include <libtrx/game/ui/elements/hide.h>
-#include <libtrx/game/ui/elements/label.h>
-#include <libtrx/game/ui/elements/modal.h>
-#include <libtrx/game/ui/elements/offset.h>
-#include <libtrx/game/ui/elements/requester.h>
-#include <libtrx/game/ui/elements/resize.h>
-#include <libtrx/game/ui/elements/spacer.h>
-#include <libtrx/game/ui/elements/stack.h>
-#include <libtrx/memory.h>
+#include "game/game_string.h"
+#include "game/input.h"
+#include "game/inventory.h"
+#include "game/savegame.h"
+#include "game/scaler.h"
+#include "game/ui/common.h"
+#include "game/ui/elements/anchor.h"
+#include "game/ui/elements/hide.h"
+#include "game/ui/elements/label.h"
+#include "game/ui/elements/modal.h"
+#include "game/ui/elements/offset.h"
+#include "game/ui/elements/requester.h"
+#include "game/ui/elements/resize.h"
+#include "game/ui/elements/spacer.h"
+#include "game/ui/elements/stack.h"
+#include "game/viewport.h"
+#include "memory.h"
+#include "utils.h"
 
 #include <stdio.h>
+
+// TODO: consolidate this variable
+#if TR_VERSION == 1
+extern int32_t g_InvMode;
+#else
+extern int32_t g_Inv_Mode;
+#endif
 
 typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_SAVE_SLOT_DIALOG_TYPE type;
@@ -34,15 +42,20 @@ static void M_EmptySlot(const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx);
 
 static int32_t M_GetVisibleRows(void)
 {
-    const int32_t res_h = Screen_GetResHeightDownscaled(RSR_TEXT);
-    if (res_h <= 240) {
-        return 5;
-    } else if (res_h <= 384) {
-        return 7;
-    } else if (res_h <= 480) {
+    if (TR_VERSION == 2) {
         return 10;
     } else {
-        return 12;
+        const int32_t res_h =
+            Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+        if (res_h <= 240) {
+            return 5;
+        } else if (res_h <= 384) {
+            return 7;
+        } else if (res_h <= 480) {
+            return 10;
+        } else {
+            return 12;
+        }
     }
 }
 
@@ -55,8 +68,10 @@ static bool M_ShowDetails(
     if (!UI_Requester_IsRowSelected(&s->req, slot_idx)) {
         return false;
     }
-    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot_idx);
-    return info != nullptr && info->level_title != nullptr;
+    if (TR_VERSION == 2) {
+        return false;
+    }
+    return !Savegame_IsSlotFree(slot_idx);
 }
 
 static void M_NonEmptySlot(
@@ -74,10 +89,19 @@ static void M_NonEmptySlot(
         UI_BeginHide(true);
         UI_Label("\\{button right}");
         UI_EndHide();
-        UI_BeginStack(UI_STACK_HORIZONTAL);
+        if (TR_VERSION == 1) {
+            UI_BeginStack(UI_STACK_HORIZONTAL);
+        }
     } else {
-        UI_BeginAnchor(0.5f, 0.5f);
-        UI_BeginStack(UI_STACK_HORIZONTAL);
+        if (TR_VERSION == 1) {
+            UI_BeginAnchor(0.5f, 0.5f);
+            UI_BeginStack(UI_STACK_HORIZONTAL);
+        } else {
+            UI_BeginStackEx((UI_STACK_SETTINGS) {
+                .orientation = UI_STACK_HORIZONTAL,
+                .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+            });
+        }
     }
 
     // Level title with the save counter
@@ -90,14 +114,18 @@ static void M_NonEmptySlot(
     }
 
     if (show_details) {
-        UI_EndStack();
+        if (TR_VERSION == 1) {
+            UI_EndStack();
+        }
         UI_BeginOffset(0.0f, -1.0f);
         UI_Label("\\{button right}");
         UI_EndOffset();
         UI_EndStack();
     } else {
         UI_EndStack();
-        UI_EndAnchor();
+        if (TR_VERSION == 1) {
+            UI_EndAnchor();
+        }
     }
 }
 
@@ -121,7 +149,8 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
     UI_Requester_Init(
         &s->req, M_GetVisibleRows(), Savegame_GetSlotCount(), true);
     s->req.row_pad = 2.0f;
-    s->req.show_arrows = true;
+    s->req.row_spacing = TR_VERSION == 1 ? 2.0f : 3.0f;
+    s->req.show_arrows = TR_VERSION == 1;
     s->req.reserve_space = true;
     s->req.sel_row = save_slot;
     CLAMP(s->req.sel_row, 0, s->req.max_rows);
@@ -165,7 +194,12 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
 
 void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
-    UI_BeginModal(0.5f, g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f);
+#if TR_VERSION == 1
+    const float modal_y = g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f;
+#else
+    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f;
+#endif
+    UI_BeginModal(0.5f, modal_y);
     UI_BeginResize(300.0f, -1.0f);
 
     const char *const title = (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME)

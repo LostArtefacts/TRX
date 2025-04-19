@@ -210,6 +210,7 @@ sources = [
   'game/ui/dialogs/new_game.c',
   'game/ui/dialogs/pause.c',
   'game/ui/dialogs/photo_mode.c',
+  'game/ui/dialogs/save_slot.c',
   'game/ui/dialogs/stats.c',
   'game/ui/elements/anchor.c',
   'game/ui/elements/fade.c',

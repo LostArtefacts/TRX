@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <libtrx/game/ui/common.h>
+#include "../common.h"
 
 typedef enum {
     UI_SAVE_SLOT_DIALOG_LOAD_GAME,
