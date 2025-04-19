@@ -6,6 +6,7 @@
 #include "game/game_string.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
+#include "game/rooms.h"
 #include "memory.h"
 #include "strings.h"
 
@@ -45,10 +46,15 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         String_Format(level_type_fmt, current_level->num + reindex);
 
     const ITEM *const lara_item = Lara_GetItem();
+    int16_t room_num = lara_item->room_num;
+    const ROOM *const room = Room_Get(room_num);
+    if (Room_GetFlipStatus() && room->flipped_room != NO_ROOM_NEG) {
+        room_num = room->flipped_room;
+    }
     char *details = lara_item == nullptr
         ? String_Format("%s", GS(OSD_POS_LARA_MISSING))
         : String_Format(
-              GS(OSD_POS_LARA_POS_FMT), lara_item->room_num,
+              GS(OSD_POS_LARA_POS_FMT), room_num,
               lara_item->pos.x / (float)WALL_L,
               lara_item->pos.y / (float)WALL_L,
               lara_item->pos.z / (float)WALL_L,
