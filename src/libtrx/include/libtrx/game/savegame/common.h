@@ -19,7 +19,6 @@ void Savegame_ScanSavedGames(void);
 
 SAVEGAME_VERSION Savegame_GetInitialVersion(void);
 void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
-int32_t Savegame_GetHighestSlot(void);
 int32_t Savegame_GetCounter(void);
 int32_t Savegame_GetTotalCount(void);
 int32_t Savegame_GetLevelNumber(int32_t slot_num);
@@ -36,6 +35,12 @@ void Savegame_UnbindSlot(void);
 
 // Returns the currently bound slot number. If there is none, returns -1.
 int32_t Savegame_GetBoundSlot(void);
+
+// Returns the most recently created slot number. If there is none, returns -1.
+int32_t Savegame_GetMostRecentlyCreatedSlot(void);
+
+// Returns the most recently created slot number. If there is none, returns -1.
+int32_t Savegame_GetMostRecentlyUsedSlot(void);
 
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);

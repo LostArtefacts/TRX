@@ -23,7 +23,7 @@ int32_t Savegame_GetSlotCount(void)
 
 void Savegame_HighlightNewestSlot(void)
 {
-    const int32_t slot = Savegame_GetHighestSlot();
+    const int32_t slot = Savegame_GetMostRecentlyCreatedSlot();
     g_SaveGameRequester.selected = MAX(0, slot);
     g_LoadGameRequester.selected = MAX(0, slot);
 }

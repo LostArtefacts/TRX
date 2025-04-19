@@ -9,6 +9,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/log.h>
+#include <libtrx/utils.h>
 
 GF_COMMAND GF_RunTitle(void)
 {

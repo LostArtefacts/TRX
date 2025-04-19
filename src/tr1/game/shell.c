@@ -132,7 +132,6 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         Savegame_Shutdown();
         Savegame_Init();
         Savegame_ScanSavedGames();
-        Savegame_FillAvailableSaves(&g_SavegameRequester);
         Savegame_HighlightNewestSlot();
     }
 
@@ -212,7 +211,6 @@ void Shell_Main(void)
 
     Savegame_Init();
     Savegame_ScanSavedGames();
-    Savegame_FillAvailableSaves(&g_SavegameRequester);
     Savegame_HighlightNewestSlot();
     GameBuf_Init();
     Console_Init();
