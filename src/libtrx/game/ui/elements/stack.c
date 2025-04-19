@@ -83,18 +83,19 @@ static void M_Measure(UI_NODE *const node)
     node->measure_h = 0.0f;
     UI_NODE *child = node->first_child;
     M_DATA *const data = node->data;
+    const float scale = g_Config.ui.text_scale;
     while (child != nullptr) {
         if (data->settings.orientation == UI_STACK_VERTICAL) {
             node->measure_w = MAX(node->measure_w, child->measure_w);
             node->measure_h += child->measure_h;
             if (child->next_sibling != nullptr) {
-                node->measure_h += data->settings.spacing.v;
+                node->measure_h += data->settings.spacing.v * scale;
             }
         } else {
             node->measure_h = MAX(node->measure_h, child->measure_h);
             node->measure_w += child->measure_w;
             if (child->next_sibling != nullptr) {
-                node->measure_w += data->settings.spacing.h;
+                node->measure_w += data->settings.spacing.h * scale;
             }
         }
         child = child->next_sibling;
@@ -130,13 +131,14 @@ static void M_Layout(
     // (configured) total spacing on the main axis. If only 1 child or 0
     // children, there's no gap to distribute leftover space into.
     const int32_t gaps = (child_count > 1) ? (child_count - 1) : 0;
+    const float scale = g_Config.ui.text_scale;
     float base_spacing = 0.0f;
     switch (data->settings.orientation) {
     case UI_STACK_HORIZONTAL:
-        base_spacing = data->settings.spacing.h * gaps;
+        base_spacing = data->settings.spacing.h * gaps * scale;
         break;
     case UI_STACK_VERTICAL:
-        base_spacing = data->settings.spacing.v * gaps;
+        base_spacing = data->settings.spacing.v * gaps * scale;
         break;
     }
 
@@ -185,7 +187,7 @@ static void M_Layout(
             cx += cw;
             // Add normal spacing + any extra leftover that we are distributing
             if (child->next_sibling != nullptr) {
-                cx += data->settings.spacing.h + extra_per_gap;
+                cx += data->settings.spacing.h * scale + extra_per_gap;
             }
             break;
 
@@ -196,7 +198,7 @@ static void M_Layout(
 
             cy += ch;
             if (child->next_sibling != nullptr) {
-                cy += data->settings.spacing.v + extra_per_gap;
+                cy += data->settings.spacing.v * scale + extra_per_gap;
             }
             break;
         }
