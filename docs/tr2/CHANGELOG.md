@@ -41,6 +41,7 @@
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 0.10)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed Lara at times ending up in incorrect rooms when using the teleport cheat (#2486, regression from 0.3)
+- fixed the `/pos` console command reporting the base room number when Lara is actually in a flipped room (#2487, regression from 0.3)
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
 - fixed a crash in custom levels with large rooms (#2749)

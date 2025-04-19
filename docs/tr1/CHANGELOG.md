@@ -31,6 +31,7 @@
 - fixed Story So Far showing up even when there's nothing to play (#2611, regression from 2.10)
 - fixed Story So Far not playing the opening FMV, `cafe.rpl` (#2779, regression from 2.10)
 - fixed Lara at times ending up in incorrect rooms when using the teleport cheat (#2486, regression from 3.0)
+- fixed the `/pos` console command reporting the base room number when Lara is actually in a flipped room (#2487, regression from 3.0)
 - improved bubble appearance (#2672)
 - improved rendering performance
 - improved pause exit dialog - it can now be canceled with escape
