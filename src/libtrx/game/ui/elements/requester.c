@@ -41,14 +41,9 @@ int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
                 s->sel_row = s->max_rows - 1;
             }
         }
+        CLAMP(s->vis_row, s->sel_row - s->vis_rows + 1, s->sel_row);
     }
 
-    if (s->sel_row > s->vis_row + s->vis_rows) {
-        s->vis_row++;
-    }
-    if (s->sel_row < s->vis_row) {
-        s->vis_row = s->sel_row;
-    }
     CLAMP(s->vis_row, 0, s->max_rows - s->vis_rows);
 
     if (s->is_selectable) {
@@ -62,8 +57,7 @@ int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
     return UI_REQUESTER_NO_CHOICE;
 }
 
-void UI_Requester_SetMaxRows(
-    UI_REQUESTER_STATE *const s, const int32_t max_rows)
+void UI_Requester_SetMaxRows(UI_REQUESTER_STATE *const s, const size_t max_rows)
 {
     s->max_rows = max_rows;
 }
@@ -72,15 +66,10 @@ void UI_Requester_SetVisibleRows(
     UI_REQUESTER_STATE *const s, const size_t visible_rows)
 {
     s->vis_rows = visible_rows;
-    CLAMP(s->vis_rows, 0, s->max_rows);
+    CLAMPL(s->vis_rows, 0);
     if (s->sel_row != -1) {
-        if (s->vis_row > s->sel_row) {
-            s->vis_row = s->sel_row;
-        } else if (s->sel_row > s->vis_row + s->vis_rows) {
-            s->vis_row = s->sel_row - s->vis_rows + 1;
-        }
+        CLAMP(s->vis_row, s->sel_row - s->vis_rows + 1, s->sel_row);
     }
-
     CLAMP(s->vis_row, 0, s->max_rows - s->vis_rows);
 }
 
