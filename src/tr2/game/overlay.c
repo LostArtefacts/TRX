@@ -11,13 +11,13 @@
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/savegame.h"
-#include "game/scaler.h"
 #include "game/text.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/utils.h>
 
 #include <stdio.h>

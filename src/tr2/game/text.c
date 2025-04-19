@@ -3,9 +3,9 @@
 #include "decomp/decomp.h"
 #include "game/clock.h"
 #include "game/output.h"
-#include "game/scaler.h"
 #include "global/vars.h"
 
+#include <libtrx/game/scaler.h>
 #include <libtrx/utils.h>
 
 static int32_t M_Scale(const int32_t value);

@@ -6,7 +6,6 @@
 #include "game/random.h"
 #include "game/render/common.h"
 #include "game/render/priv.h"
-#include "game/scaler.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -16,6 +15,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
