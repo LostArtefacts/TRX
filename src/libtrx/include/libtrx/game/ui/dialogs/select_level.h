@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <libtrx/game/ui/common.h>
+#include "../common.h"
 
 #include <stdint.h>
 

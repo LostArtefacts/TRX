@@ -717,6 +717,8 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 
     savegame_info->level_num = File_ReadS16(fp);
     savegame_info->initial_version = VERSION_LEGACY;
+    savegame_info->features.restart = false;
+    savegame_info->features.select_level = false;
 
     return true;
 }
