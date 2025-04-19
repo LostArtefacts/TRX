@@ -40,10 +40,7 @@ void UI_LayoutWrapper(
 
 void UI_DrawWrapper(const UI_NODE *const node)
 {
-    if (node->measure_w <= 0.0f || node->measure_h <= 0.0f) {
-        return;
-    }
-    UI_NODE *child = node->first_child;
+    const UI_NODE *child = node->first_child;
     while (child != nullptr) {
         if (child->ops->draw != nullptr) {
             child->ops->draw(child);
