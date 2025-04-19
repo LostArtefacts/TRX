@@ -156,8 +156,13 @@ static void M_Layout(
         break;
     }
 
-    if (gaps > 0 && leftover > 0.0f) {
-        extra_per_gap = leftover / (float)gaps;
+    if ((data->settings.orientation == UI_STACK_HORIZONTAL
+         && data->settings.align.h == UI_STACK_H_ALIGN_DISTRIBUTE)
+        || (data->settings.orientation == UI_STACK_VERTICAL
+            && data->settings.align.v == UI_STACK_V_ALIGN_DISTRIBUTE)) {
+        if (gaps > 0 && leftover > 0.0f) {
+            extra_per_gap = leftover / (float)gaps;
+        }
     }
 
     // Now we actually lay out the children

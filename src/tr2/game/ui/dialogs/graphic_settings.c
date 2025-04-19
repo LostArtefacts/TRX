@@ -474,13 +474,16 @@ void UI_GraphicSettings(UI_GRAPHIC_SETTINGS_STATE *const s)
         }
 
         UI_BeginRequesterRow(&s->req, i);
-        UI_BeginStack(UI_STACK_HORIZONTAL);
+        UI_BeginStackEx((UI_STACK_SETTINGS) {
+            .orientation = UI_STACK_HORIZONTAL,
+            .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+        });
         UI_Label(GameString_Get(m_Options[i].label_id));
         UI_Spacer(20.0f, 0.0f);
 
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
-            .align = { .h = UI_STACK_H_ALIGN_CENTER },
+            .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
             .spacing = { .h = 5.0f },
         });
         UI_BeginHide(i != sel_row || !M_CanChangeValue(i, -1));
