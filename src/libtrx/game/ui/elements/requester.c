@@ -102,7 +102,7 @@ int32_t UI_Requester_GetCurrentRow(const UI_REQUESTER_STATE *s)
 bool UI_Requester_IsRowVisible(
     const UI_REQUESTER_STATE *const s, const int32_t i)
 {
-    return i >= UI_Requester_GetFirstRow(s) && i <= UI_Requester_GetLastRow(s);
+    return i >= UI_Requester_GetFirstRow(s) && i < UI_Requester_GetLastRow(s);
 }
 
 bool UI_Requester_IsRowSelected(
