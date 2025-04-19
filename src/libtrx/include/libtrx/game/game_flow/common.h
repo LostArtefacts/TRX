@@ -22,3 +22,7 @@ const GF_LEVEL *GF_GetLevelBefore(const GF_LEVEL *level);
 
 void GF_SetCurrentLevel(const GF_LEVEL *level);
 void GF_SetLevelTitle(GF_LEVEL *level, const char *title);
+
+// Returns true if any story cutscenes or FMVs occur before gameplay in any
+// main level up to the level in the specified save slot.
+bool GF_HasAvailableStory(int32_t slot_num);
