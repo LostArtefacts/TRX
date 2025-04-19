@@ -441,7 +441,6 @@ void Shell_Main(void)
     Savegame_Init();
     Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
-    Savegame_FillAvailableSaves(&g_LoadGameRequester);
     Savegame_HighlightNewestSlot();
 
     if (m_Args.level_to_play != nullptr) {

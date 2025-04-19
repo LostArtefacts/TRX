@@ -535,7 +535,7 @@
         "KEYMAP_USE_FLARE": "Flare",
         "KEYMAP_WALK": "Walk",
         "MISC_DEMO_MODE": "Demo Mode",
-        "MISC_EMPTY_SLOT": "- EMPTY SLOT -",
+        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT -",
         "MISC_EXIT": "Exit",
         "MISC_NONE": "None",
         "MISC_OFF": "Off",

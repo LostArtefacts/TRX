@@ -9,6 +9,7 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "game/ui/dialogs/save_slot.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -39,11 +40,14 @@ static struct {
     int32_t active_page;
     int32_t selection;
     M_PAGE pages[3];
-    bool page_ready;
+    bool is_ready;
     struct {
         bool is_ready;
         UI_NEW_GAME_STATE state;
     } new_game;
+    struct {
+        UI_SAVE_SLOT_DIALOG_STATE *state;
+    } save_slot;
 } m_State = { .active_page = -1 };
 
 TEXTSTRING *m_SubtitleText = nullptr;
@@ -54,11 +58,15 @@ static void M_InitRequesters(void);
 static void M_FreeRequesters(void);
 static void M_DeterminePages(void);
 static void M_RemoveAllText(void);
+static void M_InitSaveRequester(M_PAGE_ROLE page_role);
+static void M_ShowSaves(INVENTORY_ITEM *inv_item);
+static void M_LoadGame(INVENTORY_ITEM *inv_item);
+static void M_SaveGame(INVENTORY_ITEM *inv_item);
 static void M_NewGame(void);
 static void M_FlipLeft(INVENTORY_ITEM *inv_item);
 static void M_FlipRight(INVENTORY_ITEM *inv_item);
 static void M_Close(INVENTORY_ITEM *inv_item);
-static void M_ShowPage(const INVENTORY_ITEM *inv_item);
+static void M_ShowPage(INVENTORY_ITEM *inv_item);
 static void M_HandleFlipInputs(void);
 
 static void M_ChangePageTextContent(const char *const title)
@@ -86,6 +94,7 @@ static void M_FreeRequesters(void)
 {
     UI_NewGame_Free(&m_State.new_game.state);
     m_State.new_game.is_ready = false;
+    m_State.is_ready = false;
 }
 
 static void M_DeterminePages(void)
@@ -175,17 +184,76 @@ static void M_DeterminePages(void)
 
 static void M_RemoveAllText(void)
 {
-    if (g_LoadGameRequester.ready) {
-        Requester_Shutdown(&g_LoadGameRequester);
+    if (m_SubtitleText != nullptr) {
+        Text_Remove(m_SubtitleText);
+        m_SubtitleText = nullptr;
+    }
+    if (m_State.save_slot.state != nullptr) {
+        UI_SaveSlotDialog_Free(m_State.save_slot.state);
+        m_State.save_slot.state = nullptr;
     }
     if (g_SaveGameRequester.ready) {
         Requester_Shutdown(&g_SaveGameRequester);
     }
     M_FreeRequesters();
-    if (m_SubtitleText != nullptr) {
-        Text_Remove(m_SubtitleText);
-        m_SubtitleText = nullptr;
+}
+
+static void M_InitSaveRequester(const M_PAGE_ROLE role)
+{
+    int32_t save_slot = Savegame_GetMostRecentlyUsedSlot();
+    if (save_slot == -1) {
+        save_slot = Savegame_GetMostRecentlyCreatedSlot();
     }
+
+    const UI_SAVE_SLOT_DIALOG_TYPE dialog_type = role == M_ROLE_LOAD_GAME
+        ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
+        : UI_SAVE_SLOT_DIALOG_SAVE_GAME;
+    m_State.save_slot.state = UI_SaveSlotDialog_Init(dialog_type, save_slot);
+}
+
+static void M_ShowSaves(INVENTORY_ITEM *const inv_item)
+{
+    if (m_State.save_slot.state == nullptr) {
+        M_InitSaveRequester(m_State.pages[m_State.active_page].role);
+    }
+    const UI_SAVE_SLOT_DIALOG_CHOICE choice =
+        UI_SaveSlotDialog_Control(m_State.save_slot.state);
+    switch (choice.action) {
+    case UI_SAVE_SLOT_DIALOG_NO_CHOICE:
+        // prevent propagating confirmation input up
+        if (g_Input.menu_confirm) {
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+        }
+        break;
+
+    case UI_SAVE_SLOT_DIALOG_CANCEL:
+        if (g_Inv_Mode != INV_SAVE_MODE && g_Inv_Mode != INV_LOAD_MODE) {
+            M_Close(inv_item);
+        }
+        break;
+
+    case UI_SAVE_SLOT_DIALOG_DETAILS:
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
+        break;
+
+    case UI_SAVE_SLOT_DIALOG_CONFIRM:
+        m_State.selection = choice.slot_num;
+        break;
+    }
+}
+
+static void M_LoadGame(INVENTORY_ITEM *const inv_item)
+{
+    M_ChangePageTextContent(GS(PASSPORT_LOAD_GAME));
+    M_ShowSaves(inv_item);
+}
+
+static void M_SaveGame(INVENTORY_ITEM *const inv_item)
+{
+    M_ChangePageTextContent(GS(PASSPORT_SAVE_GAME));
+    M_ShowSaves(inv_item);
 }
 
 static void M_NewGame(void)
@@ -251,6 +319,7 @@ static void M_FlipRight(INVENTORY_ITEM *const inv_item)
 
 static void M_Close(INVENTORY_ITEM *const inv_item)
 {
+    m_State.active_page = -1;
     M_RemoveAllText();
     if (m_State.current_page == 2) {
         inv_item->anim_direction = 1;
@@ -261,41 +330,20 @@ static void M_Close(INVENTORY_ITEM *const inv_item)
     }
 }
 
-static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
+static void M_ShowPage(INVENTORY_ITEM *const inv_item)
 {
     switch (m_State.pages[m_State.active_page].role) {
     case M_ROLE_LOAD_GAME:
-        M_ChangePageTextContent(GS(PASSPORT_LOAD_GAME));
-
-        if (!g_LoadGameRequester.ready) {
-            Savegame_FillAvailableSaves(&g_LoadGameRequester);
-            Requester_SetHeading(
-                &g_LoadGameRequester, GS(PASSPORT_LOAD_GAME), 0, nullptr, 0);
-            Requester_SetSize(&g_LoadGameRequester, 10, -32);
-            g_LoadGameRequester.ready = true;
-        }
-        m_State.selection =
-            Requester_Display(&g_LoadGameRequester, false, true) - 1;
-        if (m_State.selection >= 0 && Savegame_IsSlotFree(m_State.selection)) {
-            m_State.selection = -1;
-            g_Input = (INPUT_STATE) {};
-            g_InputDB = (INPUT_STATE) {};
-        }
+        M_LoadGame(inv_item);
         break;
 
-    case M_ROLE_SAVE_GAME: {
-        M_ChangePageTextContent(GS(PASSPORT_SAVE_GAME));
-
-        if (!g_LoadGameRequester.ready) {
-            Requester_SetHeading(
-                &g_LoadGameRequester, GS(PASSPORT_SAVE_GAME), 0, nullptr, 0);
-            Requester_SetSize(&g_LoadGameRequester, 10, -32);
-            g_LoadGameRequester.ready = true;
-        }
-        m_State.selection =
-            Requester_Display(&g_LoadGameRequester, true, true) - 1;
+    case M_ROLE_SAVE_GAME:
+        M_SaveGame(inv_item);
         break;
-    }
+
+    case M_ROLE_NEW_GAME:
+        M_NewGame();
+        break;
 
     case M_ROLE_PLAY_ANY_LEVEL: {
         if (!g_SaveGameRequester.ready) {
@@ -306,10 +354,6 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
             Requester_Display(&g_SaveGameRequester, true, true) - 1;
         break;
     }
-
-    case M_ROLE_NEW_GAME:
-        M_NewGame();
-        break;
 
     case M_ROLE_EXIT:
         if (g_Inv_Mode == INV_TITLE_MODE) {
@@ -371,19 +415,18 @@ void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
     } else if (m_State.current_page > m_State.active_page) {
         M_FlipLeft(item);
     } else {
+        m_State.is_ready = true;
         M_ShowPage(item);
         if (g_InputDB.menu_confirm) {
             g_Inv_ExtraData[0] = m_State.active_page;
             g_Inv_ExtraData[1] = m_State.selection;
-            m_State.active_page = -1;
             M_Close(item);
         } else if (g_InputDB.menu_back) {
-            if (g_Inv_Mode != INV_DEATH_MODE) {
-                m_State.active_page = -1;
-                M_Close(item);
-            } else {
+            if (g_Inv_Mode == INV_DEATH_MODE) {
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
+            } else {
+                M_Close(item);
             }
         } else {
             M_HandleFlipInputs();
@@ -399,6 +442,14 @@ void Option_Passport_Draw(INVENTORY_ITEM *const item)
             UI_NewGame(&m_State.new_game.state);
         }
         break;
+
+    case M_ROLE_LOAD_GAME:
+    case M_ROLE_SAVE_GAME:
+        if (m_State.is_ready && m_State.save_slot.state != nullptr) {
+            UI_SaveSlotDialog(m_State.save_slot.state);
+        }
+        break;
+
     default:
         break;
     }

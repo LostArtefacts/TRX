@@ -62,7 +62,6 @@ extern int16_t g_FinalBossActive;
 extern uint16_t g_FinalLevelCount;
 extern int16_t g_FinalBossCount;
 extern int16_t g_FinalBossItem[5];
-extern REQUEST_INFO g_LoadGameRequester;
 extern REQUEST_INFO g_SaveGameRequester;
 
 extern bool g_GF_RemoveAmmo;
