@@ -3,21 +3,11 @@
 #include "game/ui/elements/hide.h"
 #include "game/ui/helpers.h"
 
-static void M_Draw(const UI_NODE *node);
-
 static const UI_WIDGET_OPS m_Ops = {
     .measure = UI_MeasureWrapper,
     .layout = UI_LayoutWrapper,
-    .draw = M_Draw,
+    .draw = UI_DrawWrapper,
 };
-
-static void M_Draw(const UI_NODE *const node)
-{
-    UI_FLASH_STATE *const s = *(UI_FLASH_STATE **)node->data;
-    UI_BeginHide(s->count >= 0);
-    UI_DrawWrapper(node);
-    UI_EndHide();
-}
 
 void UI_Flash_Init(UI_FLASH_STATE *const s, const int32_t rate)
 {
@@ -43,9 +33,11 @@ void UI_BeginFlash(UI_FLASH_STATE *const s)
     *(UI_FLASH_STATE **)node->data = s;
     UI_AddChild(node);
     UI_PushCurrent(node);
+    UI_BeginHide(s->count >= 0);
 }
 
 void UI_EndFlash(void)
 {
+    UI_EndHide();
     UI_PopCurrent();
 }
