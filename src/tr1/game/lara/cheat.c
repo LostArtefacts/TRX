@@ -383,11 +383,21 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     return true;
 }
 
-bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
+bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    int16_t room_num = Room_GetIndexFromPos(x, y, z);
+    if (room_num == NO_ROOM) {
+        room_num = Room_GetIndexFromPos(x, y, z);
+    }
     if (room_num == NO_ROOM) {
         return false;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flip_status == RFS_FLIPPED && Room_GetFlipStatus()) {
+        room_num = Room_GetFlippedBaseRoom(room_num);
+        if (room_num == NO_ROOM) {
+            return false;
+        }
     }
 
     const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
@@ -411,12 +421,9 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
                     .y = y,
                     .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
                 };
-                room_num = Room_GetIndexFromPos(point.x, point.y, point.z);
-                if (room_num == NO_ROOM) {
-                    continue;
-                }
                 sector = Room_GetSector(point.x, point.y, point.z, &room_num);
-                height = Room_GetHeight(sector, point.x, point.y, point.z);
+                height =
+                    Room_GetHeightEx(sector, point.x, point.y, point.z, true);
                 if (height == NO_HEIGHT) {
                     continue;
                 }
@@ -443,12 +450,8 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
         }
     }
 
-    room_num = Room_GetIndexFromPos(x, y, z);
-    if (room_num == NO_ROOM) {
-        return false;
-    }
     sector = Room_GetSector(x, y, z, &room_num);
-    height = Room_GetHeight(sector, x, y, z);
+    height = Room_GetHeightEx(sector, x, y, z, true);
     if (height == NO_HEIGHT) {
         return false;
     }

@@ -10,5 +10,4 @@ bool Lara_Cheat_GiveAllKeys(void);
 bool Lara_Cheat_GiveAllGuns(void);
 bool Lara_Cheat_GiveAllItems(void);
 bool Lara_Cheat_OpenNearestDoor(void);
-bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z);
 bool Lara_Cheat_KillEnemy(int16_t item_num);

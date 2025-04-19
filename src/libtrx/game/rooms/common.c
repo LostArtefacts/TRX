@@ -467,6 +467,17 @@ int32_t Room_FindByPos(const int32_t x, const int32_t y, const int32_t z)
     return NO_ROOM_NEG;
 }
 
+int32_t Room_GetFlippedBaseRoom(const int32_t room_num)
+{
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        if (room->flipped_room == room_num) {
+            return i;
+        }
+    }
+    return NO_ROOM;
+}
+
 BOUNDS_32 Room_GetWorldBounds(void)
 {
     BOUNDS_32 bounds = {
