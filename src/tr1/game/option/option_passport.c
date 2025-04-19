@@ -9,7 +9,6 @@
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "game/ui/dialogs/save_slot.h"
 #include "game/ui/dialogs/select_level.h"
 #include "global/const.h"
 #include "global/vars.h"

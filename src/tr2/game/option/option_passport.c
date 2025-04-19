@@ -9,7 +9,6 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "game/ui/dialogs/save_slot.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
