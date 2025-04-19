@@ -54,12 +54,10 @@ typedef struct {
     int32_t level_num;
     char *level_title;
     int16_t initial_version;
-#if TR_VERSION == 1
     struct {
         bool restart;
         bool select_level;
     } features;
-#endif
 } SAVEGAME_INFO;
 
 typedef struct {

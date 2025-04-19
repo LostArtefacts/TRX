@@ -102,6 +102,8 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
     info->initial_version = header.initial_version;
+    info->features.restart = false;
+    info->features.select_level = false;
 
     File_Skip(fp, header.compressed_size);
     SAVEGAME_BSON_EXTENDED_HEADER extra_header;

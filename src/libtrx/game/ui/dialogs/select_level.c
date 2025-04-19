@@ -1,24 +1,30 @@
 #include "game/ui/dialogs/select_level.h"
 
+#include "debug.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/savegame.h"
-#include "game/screen.h"
-#include "global/vars.h"
+#include "game/scaler.h"
+#include "game/ui/common.h"
+#include "game/ui/elements/anchor.h"
+#include "game/ui/elements/hide.h"
+#include "game/ui/elements/label.h"
+#include "game/ui/elements/modal.h"
+#include "game/ui/elements/offset.h"
+#include "game/ui/elements/requester.h"
+#include "game/ui/elements/resize.h"
+#include "game/ui/elements/spacer.h"
+#include "game/ui/elements/stack.h"
+#include "game/viewport.h"
+#include "memory.h"
+#include "vector.h"
 
-#include <libtrx/debug.h>
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/elements/anchor.h>
-#include <libtrx/game/ui/elements/hide.h>
-#include <libtrx/game/ui/elements/label.h>
-#include <libtrx/game/ui/elements/modal.h>
-#include <libtrx/game/ui/elements/offset.h>
-#include <libtrx/game/ui/elements/requester.h>
-#include <libtrx/game/ui/elements/resize.h>
-#include <libtrx/game/ui/elements/spacer.h>
-#include <libtrx/game/ui/elements/stack.h>
-#include <libtrx/memory.h>
-#include <libtrx/vector.h>
+// TODO: consolidate this variable
+#if TR_VERSION == 1
+extern int32_t g_InvMode;
+#else
+extern int32_t g_Inv_Mode;
+#endif
 
 typedef enum {
     M_ROW_ROLE_PLAY_LEVEL,
@@ -41,15 +47,20 @@ static int32_t M_GetVisibleRows(void);
 
 static int32_t M_GetVisibleRows(void)
 {
-    const int32_t res_h = Screen_GetResHeightDownscaled(RSR_TEXT);
-    if (res_h <= 240) {
-        return 5;
-    } else if (res_h <= 384) {
-        return 7;
-    } else if (res_h <= 480) {
+    if (TR_VERSION == 2) {
         return 10;
     } else {
-        return 12;
+        const int32_t res_h =
+            Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+        if (res_h <= 240) {
+            return 5;
+        } else if (res_h <= 384) {
+            return 7;
+        } else if (res_h <= 480) {
+            return 10;
+        } else {
+            return 12;
+        }
     }
 }
 
@@ -80,7 +91,12 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
             }
         }
 
-        if (g_InvMode == INV_TITLE_MODE && GF_HasAvailableStory(save_slot)) {
+#if TR_VERSION == 1
+        const INVENTORY_MODE inv_mode = g_InvMode;
+#else
+        const INVENTORY_MODE inv_mode = g_Inv_Mode;
+#endif
+        if (inv_mode == INV_TITLE_MODE && GF_HasAvailableStory(save_slot)) {
             Vector_Add(
                 s->rows,
                 &(M_ROW) {
@@ -120,7 +136,12 @@ int32_t UI_SelectLevelDialog_Control(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 
 void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 {
-    UI_BeginModal(0.5f, g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f);
+#if TR_VERSION == 1
+    const float modal_y = g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f;
+#else
+    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f;
+#endif
+    UI_BeginModal(0.5f, modal_y);
     UI_BeginResize(300.0f, -1.0f);
     UI_BeginRequester(&s->req, GS(PASSPORT_SELECT_LEVEL));
 
