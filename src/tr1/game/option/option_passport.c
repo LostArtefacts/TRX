@@ -98,14 +98,6 @@ static void M_HandleFlipInputs(void);
 
 static void M_InitRequesters(void)
 {
-    if (m_State.select_level.state != nullptr) {
-        UI_SelectLevelDialog_Free(m_State.select_level.state);
-        m_State.select_level.state = nullptr;
-    }
-    if (m_State.save_slot.state != nullptr) {
-        UI_SaveSlotDialog_Free(m_State.save_slot.state);
-        m_State.save_slot.state = nullptr;
-    }
     UI_NewGame_Init(&m_State.new_game.state);
 }
 
@@ -286,7 +278,7 @@ static void M_DeterminePages(void)
     }
 }
 
-static void M_InitSaveRequester(int16_t page_num)
+static void M_InitSaveRequester(const int16_t page_num)
 {
     int32_t save_slot = g_GameInfo.select_save_slot;
     if (save_slot == -1) {
@@ -365,7 +357,6 @@ static void M_ShowSelectLevel(void)
 static void M_LoadGame(void)
 {
     M_ChangePageTextContent(GS(PASSPORT_LOAD_GAME));
-
     if (m_State.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
             M_InitSaveRequester(m_State.active_page);
@@ -396,7 +387,6 @@ static void M_SelectLevel(void)
 static void M_SaveGame(void)
 {
     M_ChangePageTextContent(GS(PASSPORT_SAVE_GAME));
-
     if (m_State.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
             M_InitSaveRequester(m_State.active_page);
@@ -607,15 +597,20 @@ void Option_Passport_Draw(INVENTORY_ITEM *const item)
             UI_NewGame(&m_State.new_game.state);
         }
         break;
+
     case PASSPORT_MODE_SELECT_LEVEL:
-        UI_SelectLevelDialog(m_State.select_level.state);
+        if (m_State.select_level.state != nullptr) {
+            UI_SelectLevelDialog(m_State.select_level.state);
+        }
         break;
+
     case PASSPORT_MODE_LOAD_GAME:
     case PASSPORT_MODE_SAVE_GAME:
-        if (m_State.is_ready) {
+        if (m_State.is_ready && m_State.save_slot.state != nullptr) {
             UI_SaveSlotDialog(m_State.save_slot.state);
         }
         break;
+
     default:
         break;
     }

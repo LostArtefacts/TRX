@@ -145,20 +145,22 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
         };
     }
     const int32_t choice = UI_Requester_Control(&s->req);
-    if (choice == UI_REQUESTER_NO_CHOICE) {
-        return (UI_SAVE_SLOT_DIALOG_CHOICE) {
-            .action = UI_SAVE_SLOT_DIALOG_NO_CHOICE
-        };
-    } else if (choice == UI_REQUESTER_CANCEL) {
+    if (choice == UI_REQUESTER_CANCEL) {
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
             .action = UI_SAVE_SLOT_DIALOG_CANCEL,
         };
-    } else {
+    } else if (
+        choice != UI_REQUESTER_NO_CHOICE
+        && (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME
+            || !Savegame_IsSlotFree(choice))) {
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
             .action = UI_SAVE_SLOT_DIALOG_CONFIRM,
             .slot_num = sel_row,
         };
     }
+    return (UI_SAVE_SLOT_DIALOG_CHOICE) {
+        .action = UI_SAVE_SLOT_DIALOG_NO_CHOICE,
+    };
 }
 
 void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
@@ -166,7 +168,7 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
     UI_BeginModal(0.5f, g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f);
     UI_BeginResize(300.0f, -1.0f);
 
-    const char *title = (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME)
+    const char *const title = (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME)
         ? GS(PASSPORT_SAVE_GAME)
         : GS(PASSPORT_LOAD_GAME);
     UI_BeginRequester(&s->req, title);
