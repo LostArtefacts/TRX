@@ -33,11 +33,11 @@ static void M_Layout(
 {
     UI_LayoutBasic(node, x, y, w, h);
     const M_DATA *const data = node->data;
-    const float px = data->l;
-    const float py = data->t;
     UI_NODE *child = node->first_child;
     while (child != nullptr) {
-        child->ops->layout(child, x + px, y + py, w - px * 2.0f, h - py * 2.0f);
+        child->ops->layout(
+            child, x + data->l, y + data->t, w - data->l - data->r,
+            h - data->t - data->d);
         child = child->next_sibling;
     }
 }
