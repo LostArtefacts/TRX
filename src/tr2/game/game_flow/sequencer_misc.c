@@ -50,3 +50,8 @@ GF_COMMAND GF_DoLevelSequence(
         current_level++;
     }
 }
+
+bool GF_HasAvailableStory(const int32_t slot_num)
+{
+    return false;
+}

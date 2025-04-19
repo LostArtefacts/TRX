@@ -10,6 +10,7 @@
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "game/ui/dialogs/select_level.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -54,6 +55,9 @@ static struct {
         bool is_ready;
         UI_NEW_GAME_STATE state;
     } new_game;
+    struct {
+        UI_SELECT_LEVEL_DIALOG_STATE *state;
+    } select_level;
 } m_State = {
     .current_page = PAGE_1,
     .active_page = -1,
@@ -67,22 +71,6 @@ static struct {
 
 static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = {};
-
-static REQUEST_INFO m_SelectLevelRequester = {
-    .items_used = 0,
-    .max_items = 2,
-    .requested = 0,
-    .vis_lines = -1,
-    .line_offset = 0,
-    .line_old_offset = 0,
-    .pix_width = 292,
-    .line_height = TEXT_HEIGHT_FIXED + 3,
-    .is_blockable = false,
-    .x = 0,
-    .y = -32,
-    .heading_text = nullptr,
-    .items = nullptr,
-};
 
 REQUEST_INFO g_SavegameRequester = {
     .items_used = 0,
@@ -125,11 +113,12 @@ static void M_HandleFlipInputs(void);
 
 static void M_InitRequesters(void)
 {
-    Requester_Shutdown(&m_SelectLevelRequester);
+    if (m_State.select_level.state != nullptr) {
+        UI_SelectLevelDialog_Free(m_State.select_level.state);
+        m_State.select_level.state = nullptr;
+    }
     Requester_Shutdown(&g_SavegameRequester);
     Requester_Init(&g_SavegameRequester, Savegame_GetSlotCount());
-    Requester_Init(
-        &m_SelectLevelRequester, g_GameFlow.level_tables[GFLT_MAIN].count + 1);
     UI_NewGame_Init(&m_State.new_game.state);
 }
 
@@ -167,7 +156,10 @@ static void M_RemoveAllText(void)
         Text_Remove(m_Text[i]);
         m_Text[i] = nullptr;
     }
-    Requester_Shutdown(&m_SelectLevelRequester);
+    if (m_State.select_level.state != nullptr) {
+        UI_SelectLevelDialog_Free(m_State.select_level.state);
+        m_State.select_level.state = nullptr;
+    }
     Requester_Shutdown(&g_SavegameRequester);
     M_FreeRequesters();
 }
@@ -347,31 +339,8 @@ static void M_RestoreSaveRequester(void)
 
 static void M_InitSelectLevelRequester(void)
 {
-    REQUEST_INFO *req = &m_SelectLevelRequester;
-    req->is_blockable = true;
-    Requester_ClearTextstrings(req);
-    Requester_SetHeading(req, GS(PASSPORT_SELECT_LEVEL));
-
-    if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
-        req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 384) {
-        req->vis_lines = 7;
-    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 480) {
-        req->vis_lines = 10;
-    } else {
-        req->vis_lines = 12;
-    }
-
-    // Title screen passport is at a different pitch.
-    if (g_InvMode == INV_TITLE_MODE) {
-        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2)
-            + (req->line_height * req->vis_lines);
-    } else {
-        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 1.73)
-            + (req->line_height * req->vis_lines);
-    }
-
-    Savegame_FillAvailableLevels(req);
+    m_State.select_level.state =
+        UI_SelectLevelDialog_Init(g_GameInfo.select_save_slot);
 }
 
 static void M_ShowSaves(PASSPORT_MODE pending_mode)
@@ -397,22 +366,14 @@ static void M_ShowSaves(PASSPORT_MODE pending_mode)
 
 static void M_ShowSelectLevel(void)
 {
-    int32_t select = Requester_Display(&m_SelectLevelRequester);
-    if (select) {
-        if (select - 1 + GF_GetFirstLevel()->num
-            == Savegame_GetLevelNumber(g_GameInfo.select_save_slot) + 1) {
-            g_GameInfo.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
-        } else if (select > 0) {
-            g_GameInfo.select_level_num = select - 1 + GF_GetFirstLevel()->num;
-            g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
-            Savegame_BindSlot(g_GameInfo.select_save_slot);
-        } else if (
-            g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
-            && g_InvMode != INV_LOAD_MODE) {
-            g_Input = (INPUT_STATE) {};
-            g_InputDB = (INPUT_STATE) {};
-        }
-        m_State.mode = PASSPORT_MODE_BROWSE;
+    const int32_t choice =
+        UI_SelectLevelDialog_Control(m_State.select_level.state);
+    if (choice == UI_SELECT_LEVEL_CHOICE_PLAY_STORY_SO_FAR) {
+        g_GameInfo.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
+    } else if (choice != UI_SELECT_LEVEL_CHOICE_NOOP) {
+        g_GameInfo.select_level_num = choice + GF_GetFirstLevel()->num;
+        g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
+        Savegame_BindSlot(g_GameInfo.select_save_slot);
     } else {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
@@ -479,7 +440,6 @@ static void M_SelectLevel(void)
 {
     if (g_InputDB.menu_left) {
         Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
-        Requester_ClearTextstrings(&m_SelectLevelRequester);
         M_InitSaveRequester(m_State.active_page);
         m_State.mode = PASSPORT_MODE_LOAD_GAME;
         g_Input = (INPUT_STATE) {};
@@ -487,21 +447,7 @@ static void M_SelectLevel(void)
         M_ShowSaves(PASSPORT_MODE_LOAD_GAME);
     } else {
         M_ShowSelectLevel();
-        if (m_State.mode == PASSPORT_MODE_SELECT_LEVEL) {
-            const TEXTSTRING *const sel_item =
-                m_SelectLevelRequester
-                    .items
-                        [m_SelectLevelRequester.requested
-                         - m_SelectLevelRequester.line_offset]
-                    .content;
-            if (sel_item != nullptr) {
-                Text_SetPos(
-                    m_Text[TEXT_LEVEL_ARROW_LEFT], -130, sel_item->pos.y);
-                Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], false);
-            } else {
-                Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
-            }
-        } else {
+        if (m_State.mode != PASSPORT_MODE_SELECT_LEVEL) {
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
         }
     }
@@ -716,11 +662,14 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 
 void Option_Passport_Draw(INVENTORY_ITEM *const item)
 {
-    switch (m_State.pages[m_State.active_page].role) {
+    switch (m_State.mode) {
     case PASSPORT_MODE_NEW_GAME:
         if (m_State.new_game.is_ready) {
             UI_NewGame(&m_State.new_game.state);
         }
+        break;
+    case PASSPORT_MODE_SELECT_LEVEL:
+        UI_SelectLevelDialog(m_State.select_level.state);
         break;
     default:
         break;

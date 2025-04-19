@@ -140,38 +140,3 @@ void Savegame_FillAvailableSaves(REQUEST_INFO *const req)
         req->line_offset = req->requested;
     }
 }
-
-void Savegame_FillAvailableLevels(REQUEST_INFO *const req)
-{
-    ASSERT(req != nullptr);
-    const int32_t slot_num = g_GameInfo.select_save_slot;
-    if (slot_num == -1) {
-        return;
-    }
-
-    const SAVEGAME_INFO *const savegame_info =
-        Savegame_GetSavegameInfo(slot_num);
-    if (!savegame_info->features.select_level) {
-        Requester_AddItem(req, true, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_1));
-        Requester_AddItem(req, true, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
-        req->requested = 0;
-        req->line_offset = 0;
-        return;
-    }
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i <= MIN(savegame_info->level_num, level_table->count);
-         i++) {
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        if (level->type != GFL_GYM) {
-            Requester_AddItem(req, false, "%s", level->title);
-        }
-    }
-
-    if (g_InvMode == INV_TITLE_MODE && GF_HasAvailableStory(slot_num)) {
-        Requester_AddItem(req, false, "%s", GS(PASSPORT_STORY_SO_FAR));
-    }
-
-    req->requested = 0;
-    req->line_offset = 0;
-}
