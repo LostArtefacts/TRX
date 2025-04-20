@@ -1,7 +1,6 @@
 #include "game/game.h"
 #include "game/input.h"
 #include "game/option/option.h"
-#include "game/requester.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "global/vars.h"

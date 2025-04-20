@@ -256,7 +256,6 @@ sources = [
   'game/render/hwr.c',
   'game/render/priv.c',
   'game/render/swr.c',
-  'game/requester.c',
   'game/room.c',
   'game/room_draw.c',
   'game/savegame/common.c',
