@@ -185,17 +185,7 @@ void Object_DrawInterpolatedObject(
                 Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
                 Matrix_Rot16_ID(
                     frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
-                if (extra_rotation != nullptr) {
-                    if (obj->base_rot.y) {
-                        Matrix_RotY_I(*extra_rotation++);
-                    }
-                    if (obj->base_rot.x) {
-                        Matrix_RotX_I(*extra_rotation++);
-                    }
-                    if (obj->base_rot.z) {
-                        Matrix_RotZ_I(*extra_rotation++);
-                    }
-                }
+                Object_ApplyExtraRotation(&extra_rotation, obj->base_rot, true);
             } else {
                 const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
                 if (bone->matrix_pop) {
@@ -208,17 +198,7 @@ void Object_DrawInterpolatedObject(
                 Matrix_TranslateRel32_I(bone->pos);
                 Matrix_Rot16_ID(
                     frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
-                if (extra_rotation != nullptr) {
-                    if (bone->rot_y) {
-                        Matrix_RotY_I(*extra_rotation++);
-                    }
-                    if (bone->rot_x) {
-                        Matrix_RotX_I(*extra_rotation++);
-                    }
-                    if (bone->rot_z) {
-                        Matrix_RotZ_I(*extra_rotation++);
-                    }
-                }
+                Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
             }
 
             if (meshes & (1 << mesh_idx)) {
@@ -230,17 +210,8 @@ void Object_DrawInterpolatedObject(
             if (mesh_idx == 0) {
                 Matrix_TranslateRel16(frame1->offset);
                 Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
-                if (extra_rotation != nullptr) {
-                    if (obj->base_rot.y) {
-                        Matrix_RotY(*extra_rotation++);
-                    }
-                    if (obj->base_rot.x) {
-                        Matrix_RotX(*extra_rotation++);
-                    }
-                    if (obj->base_rot.z) {
-                        Matrix_RotZ(*extra_rotation++);
-                    }
-                }
+                Object_ApplyExtraRotation(
+                    &extra_rotation, obj->base_rot, false);
             } else {
                 const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
                 if (bone->matrix_pop) {
@@ -252,17 +223,7 @@ void Object_DrawInterpolatedObject(
 
                 Matrix_TranslateRel32(bone->pos);
                 Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
-                if (extra_rotation != nullptr) {
-                    if (bone->rot_y) {
-                        Matrix_RotY(*extra_rotation++);
-                    }
-                    if (bone->rot_x) {
-                        Matrix_RotX(*extra_rotation++);
-                    }
-                    if (bone->rot_z) {
-                        Matrix_RotZ(*extra_rotation++);
-                    }
-                }
+                Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
             }
 
             if (meshes & (1 << mesh_idx)) {
@@ -272,4 +233,30 @@ void Object_DrawInterpolatedObject(
     }
 
     Matrix_Pop();
+}
+
+void Object_ApplyExtraRotation(
+    const int16_t **extra_rotation, const XYZ_BOOL rot_flags,
+    const bool interpolated)
+{
+    const int16_t *rot_ptr = *extra_rotation;
+    if (rot_ptr == nullptr) {
+        return;
+    }
+
+#define APPLY_ROTATION(axis_, flag_)                                           \
+    if (rot_flags.flag_) {                                                     \
+        if (interpolated) {                                                    \
+            Matrix_Rot##axis_##_I(*rot_ptr++);                                 \
+        } else {                                                               \
+            Matrix_Rot##axis_(*rot_ptr++);                                     \
+        }                                                                      \
+    }
+
+    APPLY_ROTATION(Y, y);
+    APPLY_ROTATION(X, x);
+    APPLY_ROTATION(Z, z);
+
+#undef APPLY_ROTATION
+    *extra_rotation = rot_ptr;
 }

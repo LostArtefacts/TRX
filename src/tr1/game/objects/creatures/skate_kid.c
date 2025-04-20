@@ -61,7 +61,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 0)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
 
     if (!Object_Get(O_SKATEBOARD)->loaded) {
         LOG_WARNING(

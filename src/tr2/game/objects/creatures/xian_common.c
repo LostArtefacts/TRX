@@ -48,6 +48,7 @@ void XianWarrior_Draw(const ITEM *item)
                 Matrix_Rot16_ID(
                     frames[0]->mesh_rots[mesh_idx],
                     frames[1]->mesh_rots[mesh_idx]);
+                Object_ApplyExtraRotation(&extra_rotation, obj->base_rot, true);
             } else {
                 const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
                 if (bone->matrix_pop) {
@@ -61,17 +62,7 @@ void XianWarrior_Draw(const ITEM *item)
                 Matrix_Rot16_ID(
                     frames[0]->mesh_rots[mesh_idx],
                     frames[1]->mesh_rots[mesh_idx]);
-                if (extra_rotation != nullptr) {
-                    if (bone->rot_y) {
-                        Matrix_RotY_I(*extra_rotation++);
-                    }
-                    if (bone->rot_x) {
-                        Matrix_RotX_I(*extra_rotation++);
-                    }
-                    if (bone->rot_z) {
-                        Matrix_RotZ_I(*extra_rotation++);
-                    }
-                }
+                Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
             }
 
             if (item->mesh_bits & (1 << mesh_idx)) {
@@ -85,6 +76,8 @@ void XianWarrior_Draw(const ITEM *item)
             if (mesh_idx == 0) {
                 Matrix_TranslateRel16(frames[0]->offset);
                 Matrix_Rot16(frames[0]->mesh_rots[mesh_idx]);
+                Object_ApplyExtraRotation(
+                    &extra_rotation, obj->base_rot, false);
             } else {
                 const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
                 if (bone->matrix_pop) {
@@ -96,17 +89,7 @@ void XianWarrior_Draw(const ITEM *item)
 
                 Matrix_TranslateRel32(bone->pos);
                 Matrix_Rot16(frames[0]->mesh_rots[mesh_idx]);
-                if (extra_rotation != nullptr) {
-                    if (bone->rot_y) {
-                        Matrix_RotY(*extra_rotation++);
-                    }
-                    if (bone->rot_x) {
-                        Matrix_RotX(*extra_rotation++);
-                    }
-                    if (bone->rot_z) {
-                        Matrix_RotZ(*extra_rotation++);
-                    }
-                }
+                Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
             }
 
             if (item->mesh_bits & (1 << mesh_idx)) {

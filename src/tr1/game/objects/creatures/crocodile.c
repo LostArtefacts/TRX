@@ -77,7 +77,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    Object_GetBone(obj, 7)->rot_y = true;
+    Object_GetBone(obj, 7)->rot.y = true;
 }
 
 static void M_SetupCrocodile(OBJECT *const obj)

@@ -774,9 +774,9 @@ void Level_AppendAnimBones(
         const int32_t flags = VFile_ReadS32(file);
         bone->matrix_pop = (flags & 1) != 0;
         bone->matrix_push = (flags & 2) != 0;
-        bone->rot_x = false;
-        bone->rot_y = false;
-        bone->rot_z = false;
+        bone->rot.x = false;
+        bone->rot.y = false;
+        bone->rot.z = false;
         M_ReadPosition(&bone->pos, file);
     }
 }

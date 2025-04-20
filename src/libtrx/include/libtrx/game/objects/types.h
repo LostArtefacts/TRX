@@ -78,12 +78,7 @@ typedef struct OBJECT {
     int16_t shadow_size;
     int16_t smartness;
     bool enable_interpolation;
-
-    struct {
-        bool x;
-        bool y;
-        bool z;
-    } base_rot;
+    XYZ_BOOL base_rot;
 
     union {
         uint16_t flags;

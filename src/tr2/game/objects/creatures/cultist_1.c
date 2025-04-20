@@ -72,7 +72,7 @@ static void M_Setup1(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 0)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
 }
 
 static void M_Setup1A(OBJECT *const obj)
@@ -101,7 +101,7 @@ static void M_Setup1A(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 0)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
 }
 
 static void M_Setup1B(OBJECT *const obj)
@@ -130,7 +130,7 @@ static void M_Setup1B(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 0)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
 }
 
 static void M_Initialise(const int16_t item_num)

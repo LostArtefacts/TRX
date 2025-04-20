@@ -459,12 +459,6 @@ int32_t Item_Explode(int16_t item_num, int32_t mesh_bits, int16_t damage)
     Matrix_TranslateRel16(frame->offset);
     Matrix_Rot16(frame->mesh_rots[0]);
 
-#if 0
-    // XXX: present in OG, removed by GLrage on the grounds that it sometimes
-    // crashes.
-    int16_t *extra_rotation = (int16_t*)item->data;
-#endif
-
     int32_t bit = 1;
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
         int16_t effect_num = Effect_Create(item->room_num);
@@ -502,17 +496,10 @@ int32_t Item_Explode(int16_t item_num, int32_t mesh_bits, int16_t damage)
         Matrix_Rot16(frame->mesh_rots[i]);
 
 #if 0
-    if (extra_rotation) {
-        if (bone->rot_y) {
-            Matrix_RotY(*extra_rotation++);
-        }
-        if (bone->rot_x) {
-            Matrix_RotX(*extra_rotation++);
-        }
-        if (bone->rot_z) {
-            Matrix_RotZ(*extra_rotation++);
-        }
-    }
+        // XXX: present in OG, removed by GLrage on the grounds that it
+        // sometimes crashes.
+        const int16_t *extra_rotation = (int16_t *)item->data;
+        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
 #endif
 
         bit <<= 1;

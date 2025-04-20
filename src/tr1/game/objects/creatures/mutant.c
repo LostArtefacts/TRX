@@ -83,8 +83,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    Object_GetBone(obj, 0)->rot_y = true;
-    Object_GetBone(obj, 2)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
+    Object_GetBone(obj, 2)->rot.y = true;
 }
 
 static void M_Setup2(OBJECT *const obj)

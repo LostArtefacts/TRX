@@ -231,7 +231,7 @@ void Wolf_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 2)->rot_y = true;
+    Object_GetBone(obj, 2)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_WOLF, Wolf_Setup)

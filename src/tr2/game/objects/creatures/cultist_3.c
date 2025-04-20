@@ -276,10 +276,10 @@ static void M_Control(const int16_t item_num)
     Creature_Tilt(item, tilt);
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    Object_GetBone(obj, 0)->rot_y = body != 0;
-    Object_GetBone(obj, 2)->rot_y = left != 0;
-    Object_GetBone(obj, 6)->rot_y = right != 0;
-    Object_GetBone(obj, 10)->rot_y = head != 0;
+    Object_GetBone(obj, 0)->rot.y = body != 0;
+    Object_GetBone(obj, 2)->rot.y = left != 0;
+    Object_GetBone(obj, 6)->rot.y = right != 0;
+    Object_GetBone(obj, 10)->rot.y = head != 0;
 
     if (body != 0) {
         Creature_Head(item, body);
