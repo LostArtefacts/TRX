@@ -657,7 +657,7 @@ static void M_Control(const int16_t item_num)
 
     int16_t room_num = boat->room_num;
     const SECTOR *sector =
-        Room_GetSector(boat->pos.x, boat->pos.y, boat->pos.z, &room_num);
+        Room_GetSector(boat->pos.x, boat->pos.y - 5, boat->pos.z, &room_num);
     int32_t height =
         Room_GetHeight(sector, boat->pos.x, boat->pos.y, boat->pos.z);
     const int32_t ceiling =
