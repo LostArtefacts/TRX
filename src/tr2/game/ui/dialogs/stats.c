@@ -13,6 +13,7 @@
 #include <libtrx/game/ui/elements/modal.h>
 #include <libtrx/game/ui/elements/pad.h>
 #include <libtrx/game/ui/elements/requester.h>
+#include <libtrx/game/ui/elements/resize.h>
 #include <libtrx/game/ui/elements/spacer.h>
 #include <libtrx/game/ui/elements/stack.h>
 #include <libtrx/game/ui/elements/window.h>
@@ -196,28 +197,23 @@ static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
 static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
 {
     const ASSAULT_STATS stats = Gym_GetAssaultStats();
-
-    int32_t present = 0;
-    for (int i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (stats.best_time[i] != 0) {
-            present++;
-        }
-    }
-    UI_Requester_SetMaxRows(&s->assault_req, present);
-
-    int32_t visible = 0;
+    UI_BeginRequester(&s->assault_req, M_GetDialogTitle(s));
+    // ensure minimum dialog width
+    UI_Spacer(290.0f, 0.0f);
     if (stats.best_time[0] == 0) {
         UI_BeginAnchor(0.5f, 0.5f);
         UI_Label(GS(STATS_ASSAULT_NO_TIMES_SET));
         UI_EndAnchor();
-        visible = 1;
     } else {
-        int32_t first = UI_Requester_GetFirstRow(&s->assault_req);
-        int32_t last = UI_Requester_GetLastRow(&s->assault_req);
+        const int32_t first = UI_Requester_GetFirstRow(&s->assault_req);
+        const int32_t last = UI_Requester_GetLastRow(&s->assault_req);
         for (int32_t i = first; i < last; i++) {
-            char left_buf[32] = "";
-            char right_buf[32] = "";
-            ASSERT(stats.best_time[i] != 0);
+            if (stats.best_time[i] == 0) {
+                break;
+            }
+
+            char left_buf[32] = " ";
+            char right_buf[32] = " ";
             sprintf(
                 left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
                 stats.best_finish[i]);
@@ -229,12 +225,9 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
                     / (FRAMES_PER_SECOND / 10));
 
             M_Row(s, left_buf, right_buf);
-            visible++;
         }
     }
-
-    UI_Spacer(
-        0.0f, TEXT_HEIGHT_FIXED * MAX(0, s->assault_req.vis_rows - visible));
+    UI_EndRequester(&s->assault_req);
 }
 
 static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
@@ -259,8 +252,6 @@ static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
 static void M_BeginDialog(const UI_STATS_DIALOG_STATE *const s)
 {
     const char *const title = M_GetDialogTitle(s);
-    UI_BeginModal(0.5f, 1.0f);
-    UI_BeginPad(40.f, 40.0f);
     if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_VERTICAL,
@@ -295,8 +286,6 @@ static void M_EndDialog(const UI_STATS_DIALOG_STATE *const s)
         UI_EndWindowBody();
         UI_EndWindow();
     }
-    UI_EndPad();
-    UI_EndModal();
 }
 
 void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
@@ -305,19 +294,25 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
     // implementations.
     ASSERT(s->args.style == UI_STATS_DIALOG_STYLE_BORDERED);
 
-    M_BeginDialog(s);
+    UI_BeginModal(0.5f, 1.0f);
+    UI_BeginPad(40.f, 40.0f);
 
     switch (s->args.mode) {
     case UI_STATS_DIALOG_MODE_LEVEL:
+        M_BeginDialog(s);
         M_LevelStatsRows(s);
+        M_EndDialog(s);
         break;
     case UI_STATS_DIALOG_MODE_FINAL:
+        M_BeginDialog(s);
         M_FinalStatsRows(s);
+        M_EndDialog(s);
         break;
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
         M_AssaultCourseStatsRows(s);
         break;
     }
 
-    M_EndDialog(s);
+    UI_EndPad();
+    UI_EndModal();
 }
