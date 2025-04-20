@@ -15,6 +15,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
+    obj->save_position = 1;
 }
 
 static void M_Control(const int16_t item_num)
