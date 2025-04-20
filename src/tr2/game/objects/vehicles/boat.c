@@ -46,6 +46,7 @@
 #define BOAT_TURN (DEG_1 / 8) // = 22
 #define BOAT_MAX_TURN (DEG_1 * 4) // = 728
 #define BOAT_SOUND_CEILING (WALL_L * 5) // = 5120
+#define BOAT_SHIFT_Y (-5)
 
 typedef enum {
     BOAT_STATE_GET_ON = 0,
@@ -164,7 +165,7 @@ static int32_t M_TestWaterHeight(
         }
     }
 
-    return height - 5;
+    return height + BOAT_SHIFT_Y;
 }
 
 static void M_DoWakeEffect(const ITEM *const boat)
@@ -618,7 +619,7 @@ static void M_Collision(
     ITEM *const boat = Item_Get(item_num);
 
     lara->pos.x = boat->pos.x;
-    lara->pos.y = boat->pos.y - 5;
+    lara->pos.y = boat->pos.y + BOAT_SHIFT_Y;
     lara->pos.z = boat->pos.z;
     lara->gravity = 0;
     lara->rot.x = 0;
@@ -656,8 +657,8 @@ static void M_Control(const int16_t item_num)
     const int32_t hfr = M_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr);
 
     int16_t room_num = boat->room_num;
-    const SECTOR *sector =
-        Room_GetSector(boat->pos.x, boat->pos.y - 5, boat->pos.z, &room_num);
+    const SECTOR *sector = Room_GetSector(
+        boat->pos.x, boat->pos.y + BOAT_SHIFT_Y, boat->pos.z, &room_num);
     int32_t height =
         Room_GetHeight(sector, boat->pos.x, boat->pos.y, boat->pos.z);
     const int32_t ceiling =
@@ -695,7 +696,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    boat->floor = height - 5;
+    boat->floor = height + BOAT_SHIFT_Y;
     if (boat_data->water == NO_HEIGHT) {
         boat_data->water = height;
     } else {
@@ -741,7 +742,7 @@ static void M_Control(const int16_t item_num)
         Room_TestTriggers(boat);
 
         sector = Room_GetSector(
-            lara->pos.x, lara->pos.y - 5, lara->pos.z, &room_num);
+            lara->pos.x, lara->pos.y + BOAT_SHIFT_Y, lara->pos.z, &room_num);
         if (room_num != g_LaraItem->room_num) {
             Item_NewRoom(g_Lara.item_num, room_num);
         }
@@ -769,7 +770,7 @@ static void M_Control(const int16_t item_num)
         : boat->speed;
 
     boat_data->pitch += ((pitch - boat_data->pitch) >> 2);
-    if (boat->speed != 0 && water_height - 5 != boat->pos.y) {
+    if (boat->speed != 0 && water_height + BOAT_SHIFT_Y != boat->pos.y) {
         Sound_Effect(SFX_BOAT_ENGINE, &boat->pos, SPM_NORMAL);
     } else if (boat->speed > 20) {
         Sound_Effect(
@@ -784,7 +785,7 @@ static void M_Control(const int16_t item_num)
                 + ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
     }
 
-    if (boat->speed && water_height - 5 == boat->pos.y) {
+    if (boat->speed && water_height + BOAT_SHIFT_Y == boat->pos.y) {
         M_DoWakeEffect(boat);
     }
 
