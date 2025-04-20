@@ -134,7 +134,7 @@ int16_t Spawn_GunShot(
     effect->counter = 3;
     effect->frame_num = 0;
     effect->object_id = O_GUN_FLASH;
-    effect->shade = HIGH_LIGHT;
+    effect->shade = SHADE_NEUTRAL;
     return effect_num;
 }
 

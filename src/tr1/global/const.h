@@ -69,8 +69,6 @@
 #define NO_BAD_NEG NO_HEIGHT
 #define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
 #define MAX_WIBBLE 2
-#define MAX_SHADE 0x300
-#define MAX_LIGHTING 0x1FFF
 #define NO_VERT_MOVE 0x2000
 #define NO_BOX (-1)
 #define PASSPORT_FOV 65
@@ -89,8 +87,6 @@
 #define OPTION_RING_OBJECTS 4
 #define TITLE_RING_OBJECTS 5
 #define CAMERA_2_RING 598
-#define LOW_LIGHT 0x1400 // = 5120
-#define HIGH_LIGHT 0x1000 // = 4096
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function

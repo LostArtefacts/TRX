@@ -1,6 +1,6 @@
 #define WALL_L 1024
-#define NEUTRAL_SHADE 0x1000
-#define MAX_SHADE 0x1FFF
+#define SHADE_NEUTRAL 0x1000
+#define SHADE_MAX 0x1FFF
 
 #define VERT_NO_CAUSTICS 0x01
 #define VERT_FLAT_SHADED 0x02
@@ -35,15 +35,15 @@ float shadeFog(float shade, float depth, vec2 fog)
     if (depth < fogBegin) {
         return shade + 0.0;
     } else if (depth >= fogEnd) {
-        return shade + float(MAX_SHADE);
+        return shade + float(SHADE_MAX);
     } else {
-        return shade + (depth - fogBegin) * MAX_SHADE / (fogEnd - fogBegin);
+        return shade + (depth - fogBegin) * SHADE_MAX / (fogEnd - fogBegin);
     }
 }
 
 vec3 applyShade(vec3 color, float shade)
 {
-    return color * (2.0 - (shade / NEUTRAL_SHADE));
+    return color * (2.0 - (shade / SHADE_NEUTRAL));
 }
 
 bool discardTranslucent(sampler2D tex, vec2 uv)

@@ -150,7 +150,7 @@ int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
         spawn->rot = item->rot;
         Item_Initialise(spawn_num);
         spawn->status = IS_INACTIVE;
-        spawn->shade.value_1 = HIGH_LIGHT;
+        spawn->shade.value_1 = SHADE_NEUTRAL;
     }
     return spawn_num;
 }

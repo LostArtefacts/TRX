@@ -12,7 +12,6 @@
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define SLOPE_DIF 60
 #define MAX_WIBBLE 2
-#define MAX_SHADE 0x300
 #define LIGHT_MAP_SIZE 32
 #define MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
 
@@ -147,6 +146,3 @@
 #define IDS_DX5_REQUIRED 1
 
 #define MONK_FRIENDLY_FIRE_THRESHOLD 10
-
-#define LOW_LIGHT 5120
-#define HIGH_LIGHT 4096

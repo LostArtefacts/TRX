@@ -64,7 +64,7 @@ void Object_DrawSpriteItem(const ITEM *const item)
 {
     SHADE shade = item->shade;
     if (shade.value_1 < 0) {
-        shade.value_1 = HIGH_LIGHT;
+        shade.value_1 = SHADE_NEUTRAL;
     }
     Output_CalculateStaticMeshLight(
         item->interp.result.pos, shade, Room_Get(item->room_num));
@@ -76,7 +76,7 @@ void Object_DrawSpriteItem(const ITEM *const item)
             | SPRITE_SHADE,
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
-        Output_GetLightAdder() + 4096, 0);
+        Output_GetLightAdder() + SHADE_NEUTRAL, 0);
 }
 
 void Object_Collision(

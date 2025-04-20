@@ -147,22 +147,22 @@ static void M_ShadeLightColor(
     GFX_3D_VERTEX *const target, uint32_t shade, const bool is_textured,
     uint32_t red, uint32_t green, uint32_t blue, const uint8_t alpha)
 {
-    CLAMPG(shade, 0x1FFF);
+    CLAMPG(shade, SHADE_MAX);
 
     if (g_Config.rendering.lighting_contrast == LIGHTING_CONTRAST_MEDIUM) {
         CLAMPL(shade, 0x800);
     }
     if (g_Config.rendering.lighting_contrast != LIGHTING_CONTRAST_LOW
         && is_textured) {
-        shade = 0x1000 + shade / 2;
+        shade = SHADE_NEUTRAL + shade / 2;
     }
     if (g_Config.rendering.lighting_contrast == LIGHTING_CONTRAST_LOW
         && !is_textured) {
-        CLAMPL(shade, 0x1000);
+        CLAMPL(shade, SHADE_NEUTRAL);
     }
 
-    if (shade != 0x1000) {
-        const int32_t brightness = 0x1FFF - shade;
+    if (shade != SHADE_NEUTRAL) {
+        const int32_t brightness = SHADE_MAX - shade;
         red = (red * brightness) >> 12;
         green = (green * brightness) >> 12;
         blue = (blue * brightness) >> 12;

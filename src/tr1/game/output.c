@@ -346,7 +346,7 @@ static void M_DrawSprite(
 
     const float multiplier = g_Config.visuals.brightness / 16.0f;
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
-    float vshade = (MAX_LIGHTING - shade) * multiplier;
+    float vshade = (SHADE_MAX - shade) * multiplier;
     CLAMPG(vshade, 255.0f);
 
     const float u0 = (sprite->offset & 0xFF) / 256.0f;

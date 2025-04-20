@@ -131,7 +131,7 @@ int16_t Spawn_RocketGun(
         effect->object_id = O_MISSILE_3;
         effect->frame_num = 0;
         effect->speed = ROCKET_SPEED;
-        effect->shade = HIGH_LIGHT;
+        effect->shade = SHADE_NEUTRAL;
         M_ShootAtLara(effect);
     }
     return effect_num;
@@ -154,7 +154,7 @@ int16_t Spawn_GunShot(
         effect->counter = 3;
         effect->frame_num = 0;
         effect->object_id = O_GUN_FLASH;
-        effect->shade = HIGH_LIGHT;
+        effect->shade = SHADE_NEUTRAL;
     }
     return effect_num;
 }

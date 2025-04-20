@@ -147,7 +147,7 @@ void Effect_Draw(const int16_t effect_num)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            4096);
+            SHADE_NEUTRAL);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);

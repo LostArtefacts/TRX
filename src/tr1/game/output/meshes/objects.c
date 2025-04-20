@@ -210,12 +210,12 @@ static void M_UpdateShades(
         for (int32_t i = 0; i < batch->vertex_count; i++) {
             const int32_t j = light_idx_map[i];
             int16_t shade = ls_adder + mesh->lighting.lights[j];
-            CLAMP(shade, 0, 0x1FFF);
+            CLAMP(shade, 0, SHADE_MAX);
             out_shades[i] = shade;
         }
     } else if (ls_divider == 0) {
         int16_t shade = ls_adder;
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         for (int32_t i = 0; i < batch->vertex_count; i++) {
             out_shades[i] = shade;
         }
@@ -245,7 +245,7 @@ static void M_UpdateShades(
             const XYZ_16 *const normal = &mesh->lighting.normals[j];
             int16_t shade = ls_adder
                 + ((normal->x * xv + normal->y * yv + normal->z * zv) >> 16);
-            CLAMP(shade, 0, 0x1FFF);
+            CLAMP(shade, 0, SHADE_MAX);
             out_shades[i] = shade;
         }
     }
