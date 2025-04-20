@@ -79,9 +79,24 @@ int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
             }
         }
         CLAMP(s->vis_row, s->sel_row - s->vis_rows + 1, s->sel_row);
+    } else {
+        if (g_InputDB.menu_down) {
+            if (s->vis_row + 1 <= s->max_rows - s->vis_rows) {
+                s->vis_row++;
+            } else if (g_Config.ui.enable_wraparound) {
+                s->vis_row = 0;
+            }
+        } else if (g_InputDB.menu_up) {
+            if (s->vis_row > 0) {
+                s->vis_row--;
+            } else if (g_Config.ui.enable_wraparound) {
+                s->vis_row = s->max_rows - 1;
+            }
+        }
     }
 
-    CLAMP(s->vis_row, 0, s->max_rows - s->vis_rows);
+    CLAMPG(s->vis_row, s->max_rows - s->vis_rows);
+    CLAMPL(s->vis_row, 0);
 
     if (s->is_selectable) {
         if (g_InputDB.menu_back) {
