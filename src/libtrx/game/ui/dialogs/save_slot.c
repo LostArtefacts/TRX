@@ -2,17 +2,15 @@
 
 #include "game/game_string.h"
 #include "game/input.h"
-#include "game/inventory.h"
 #include "game/savegame.h"
 #include "game/scaler.h"
 #include "game/ui/common.h"
+#include "game/ui/dialogs/base_passport.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/elements/hide.h"
 #include "game/ui/elements/label.h"
-#include "game/ui/elements/modal.h"
 #include "game/ui/elements/offset.h"
 #include "game/ui/elements/requester.h"
-#include "game/ui/elements/resize.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "game/viewport.h"
@@ -33,31 +31,11 @@ typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_REQUESTER_STATE req;
 } UI_SAVE_SLOT_DIALOG_STATE;
 
-static int32_t M_GetVisibleRows(void);
 static bool M_ShowDetails(const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx);
 static void M_NonEmptySlot(
     const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx,
     const SAVEGAME_INFO *info);
 static void M_EmptySlot(const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx);
-
-static int32_t M_GetVisibleRows(void)
-{
-    if (TR_VERSION == 2) {
-        return 10;
-    } else {
-        const int32_t res_h =
-            Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
-        if (res_h <= 240) {
-            return 5;
-        } else if (res_h <= 384) {
-            return 7;
-        } else if (res_h <= 480) {
-            return 10;
-        } else {
-            return 12;
-        }
-    }
-}
 
 static bool M_ShowDetails(
     const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx)
@@ -146,12 +124,7 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
         Memory_Alloc(sizeof(UI_SAVE_SLOT_DIALOG_STATE));
     s->type = type;
 
-    UI_Requester_Init(
-        &s->req, M_GetVisibleRows(), Savegame_GetSlotCount(), true);
-    s->req.row_pad = 2.0f;
-    s->req.row_spacing = TR_VERSION == 1 ? 2.0f : 3.0f;
-    s->req.show_arrows = TR_VERSION == 1;
-    s->req.reserve_space = true;
+    UI_BasePassportDialog_Init(&s->req, Savegame_GetSlotCount());
     s->req.sel_row = save_slot;
     CLAMP(s->req.sel_row, 0, s->req.max_rows);
     return s;
@@ -165,7 +138,7 @@ void UI_SaveSlotDialog_Free(UI_SAVE_SLOT_DIALOG_STATE *const s)
 UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
     UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
-    UI_Requester_SetVisibleRows(&s->req, M_GetVisibleRows());
+    UI_BasePassportDialog_Control(&s->req);
     const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
     if (M_ShowDetails(s, sel_row) && g_InputDB.menu_right) {
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
@@ -194,14 +167,7 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
 
 void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
-#if TR_VERSION == 1
-    const float modal_y = g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f;
-#else
-    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f;
-#endif
-    UI_BeginModal(0.5f, modal_y);
-    UI_BeginResize(300.0f, -1.0f);
-
+    UI_BeginBasePassportDialog();
     const char *const title = (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME)
         ? GS(PASSPORT_SAVE_GAME)
         : GS(PASSPORT_LOAD_GAME);
@@ -221,6 +187,5 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
     }
 
     UI_EndRequester(&s->req);
-    UI_EndResize();
-    UI_EndModal();
+    UI_EndBasePassportDialog();
 }

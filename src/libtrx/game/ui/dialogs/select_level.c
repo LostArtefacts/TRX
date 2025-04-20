@@ -4,18 +4,15 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/savegame.h"
-#include "game/scaler.h"
 #include "game/ui/common.h"
+#include "game/ui/dialogs/base_passport.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/elements/hide.h"
 #include "game/ui/elements/label.h"
-#include "game/ui/elements/modal.h"
 #include "game/ui/elements/offset.h"
 #include "game/ui/elements/requester.h"
-#include "game/ui/elements/resize.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
-#include "game/viewport.h"
 #include "memory.h"
 #include "vector.h"
 
@@ -43,27 +40,6 @@ typedef struct UI_SELECT_LEVEL_DIALOG_STATE {
     UI_REQUESTER_STATE req;
 } UI_SELECT_LEVEL_DIALOG_STATE;
 
-static int32_t M_GetVisibleRows(void);
-
-static int32_t M_GetVisibleRows(void)
-{
-    if (TR_VERSION == 2) {
-        return 10;
-    } else {
-        const int32_t res_h =
-            Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
-        if (res_h <= 240) {
-            return 5;
-        } else if (res_h <= 384) {
-            return 7;
-        } else if (res_h <= 480) {
-            return 10;
-        } else {
-            return 12;
-        }
-    }
-}
-
 UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
 {
     UI_SELECT_LEVEL_DIALOG_STATE *const s =
@@ -73,11 +49,9 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
 
     const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(save_slot);
     ASSERT(info != nullptr);
-    if (!info->features.select_level) {
-        s->is_active = false;
-    } else {
-        s->is_active = true;
+    s->is_active = info->features.select_level;
 
+    if (s->is_active) {
         const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
         for (int32_t i = 0; i <= info->level_num && i < level_table->count;
              i++) {
@@ -106,10 +80,7 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
         }
     }
 
-    UI_Requester_Init(&s->req, 0, s->rows->count, true);
-    s->req.row_pad = 2.0f;
-    s->req.show_arrows = true;
-    s->req.reserve_space = true;
+    UI_BasePassportDialog_Init(&s->req, s->rows->count);
     return s;
 }
 
@@ -122,7 +93,7 @@ void UI_SelectLevelDialog_Free(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 
 int32_t UI_SelectLevelDialog_Control(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 {
-    UI_Requester_SetVisibleRows(&s->req, M_GetVisibleRows());
+    UI_BasePassportDialog_Control(&s->req);
     const int32_t choice = UI_Requester_Control(&s->req);
     if (choice < 0 || !s->is_active) {
         return UI_SELECT_LEVEL_CHOICE_NOOP;
@@ -136,13 +107,7 @@ int32_t UI_SelectLevelDialog_Control(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 
 void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 {
-#if TR_VERSION == 1
-    const float modal_y = g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f;
-#else
-    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f;
-#endif
-    UI_BeginModal(0.5f, modal_y);
-    UI_BeginResize(300.0f, -1.0f);
+    UI_BeginBasePassportDialog();
     UI_BeginRequester(&s->req, GS(PASSPORT_SELECT_LEVEL));
 
     const SAVEGAME_INFO *info = Savegame_GetSavegameInfo(s->save_slot);
@@ -182,6 +147,5 @@ void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
     }
 
     UI_EndRequester(&s->req);
-    UI_EndResize();
-    UI_EndModal();
+    UI_EndBasePassportDialog();
 }

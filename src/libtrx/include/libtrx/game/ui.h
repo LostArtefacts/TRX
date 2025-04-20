@@ -7,6 +7,7 @@
 #include "./ui/dialogs/new_game.h"
 #include "./ui/dialogs/pause.h"
 #include "./ui/dialogs/photo_mode.h"
+#include "./ui/dialogs/play_any_level.h"
 #include "./ui/dialogs/save_slot.h"
 #include "./ui/dialogs/select_level.h"
 #include "./ui/dialogs/stats.h"
