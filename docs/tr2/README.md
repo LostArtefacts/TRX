@@ -246,6 +246,7 @@ as Notepad.
     - fixed Floating Islands mystic plaque inventory rotation
 - fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
 - fixed being able to use hotkeys in the end-level statistics screen
+- fixed destroyed gondolas appearing embedded in the ground after loading a save
 - improved the animation of Lara's braid
 
 #### Cheats

@@ -41,6 +41,7 @@
 - fixed invalid portals in The Deck between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms (#2393)
 - fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used (#2776)
 - fixed the boat briefly having an underwater hue when Lara first climbs on (#2787)
+- fixed destroyed gondolas appearing embedded in the ground after loading a save (#1612)
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 0.10)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
 - fixed some 3D pickup items rendering black in software mode (#2792, regression from 0.10)

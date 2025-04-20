@@ -45,6 +45,7 @@ static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
 
 static bool M_ItemHasSaveFlags(const OBJECT *obj, const ITEM *item);
+static bool M_ItemHasSavePosition(const OBJECT *obj, const ITEM *item);
 
 static void M_Reset(char *buffer);
 
@@ -97,6 +98,12 @@ static SAVEGAME_STRATEGY m_Strategy = {
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, const ITEM *const item)
 {
     return obj->save_flags && item->object_id != O_WATERFALL;
+}
+
+static bool M_ItemHasSavePosition(
+    const OBJECT *const obj, const ITEM *const item)
+{
+    return obj->save_position && item->object_id != O_GONDOLA;
 }
 
 static void M_Reset(char *const buffer)
@@ -202,7 +209,7 @@ static void M_ReadItems(void)
         ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (obj->save_position) {
+        if (M_ItemHasSavePosition(obj, item)) {
             item->pos.x = M_ReadS32();
             item->pos.y = M_ReadS32();
             item->pos.z = M_ReadS32();
@@ -489,7 +496,7 @@ static void M_WriteItems(void)
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->save_position) {
+        if (M_ItemHasSavePosition(obj, item)) {
             M_WriteS32(item->pos.x);
             M_WriteS32(item->pos.y);
             M_WriteS32(item->pos.z);
