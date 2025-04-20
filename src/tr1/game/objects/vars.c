@@ -216,6 +216,17 @@ const GAME_OBJECT_ID g_InvObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
+    // clang-format off
+    O_WATERFALL,
+    O_SPLASH_1,
+    O_SPLASH_2,
+    O_BUBBLES_1,
+    O_BUBBLES_2,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
     // clang-format off
     { O_PISTOL_ITEM, O_PISTOL_AMMO_ITEM },

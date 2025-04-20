@@ -414,13 +414,13 @@ void Output_Sprites_RenderRoomSprites(
 
 void Output_Sprites_RenderSingleSprite(
     const MATRIX *const matrix, const XYZ_32 pos, const int32_t sprite_idx,
-    const uint16_t shade)
+    const uint16_t shade, const RGB_F tint)
 {
     const M_DYNAMIC_SPRITE sprite = {
         .matrix = *matrix,
         .pos = pos,
         .sprite_idx = sprite_idx,
-        .tint = Output_GetTint(),
+        .tint = tint,
         .shade = shade,
     };
     Vector_Add(m_Dynamic.source, &sprite);
