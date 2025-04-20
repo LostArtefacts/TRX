@@ -40,6 +40,7 @@
 - fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used (#2776)
 - fixed the camera going out of bounds in 60fps near specific invalid floor data (known as no-space) (#2764, regression from 0.10)
 - fixed sprites rendering black if no shade value is assigned in the level (#2701, regression from 0.8)
+- fixed some 3D pickup items rendering black in software mode (#2792, regression from 0.10)
 - fixed Lara at times ending up in incorrect rooms when using the teleport cheat (#2486, regression from 0.3)
 - fixed the `/pos` console command reporting the base room number when Lara is actually in a flipped room (#2487, regression from 0.3)
 - fixed a crash if an image was missing
