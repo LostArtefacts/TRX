@@ -45,6 +45,9 @@ static struct {
         UI_NEW_GAME_STATE state;
     } new_game;
     struct {
+        UI_PLAY_ANY_LEVEL_DIALOG_STATE *state;
+    } play_any_level;
+    struct {
         UI_SAVE_SLOT_DIALOG_STATE *state;
     } save_slot;
 } m_State = { .active_page = -1 };
@@ -62,6 +65,7 @@ static void M_ShowSaves(INVENTORY_ITEM *inv_item);
 static void M_LoadGame(INVENTORY_ITEM *inv_item);
 static void M_SaveGame(INVENTORY_ITEM *inv_item);
 static void M_NewGame(void);
+static void M_PlayAnyLevel(INVENTORY_ITEM *inv_item);
 static void M_FlipLeft(INVENTORY_ITEM *inv_item);
 static void M_FlipRight(INVENTORY_ITEM *inv_item);
 static void M_Close(INVENTORY_ITEM *inv_item);
@@ -191,8 +195,9 @@ static void M_RemoveAllText(void)
         UI_SaveSlotDialog_Free(m_State.save_slot.state);
         m_State.save_slot.state = nullptr;
     }
-    if (g_SaveGameRequester.ready) {
-        Requester_Shutdown(&g_SaveGameRequester);
+    if (m_State.play_any_level.state != nullptr) {
+        UI_SaveSlotDialog_Free(m_State.save_slot.state);
+        m_State.play_any_level.state = nullptr;
     }
     M_FreeRequesters();
 }
@@ -300,6 +305,19 @@ static void M_NewGame(void)
     }
 }
 
+static void M_PlayAnyLevel(INVENTORY_ITEM *const inv_item)
+{
+    M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
+    if (m_State.play_any_level.state == nullptr) {
+        m_State.play_any_level.state = UI_PlayAnyLevelDialog_Init();
+    }
+    const int32_t choice =
+        UI_PlayAnyLevelDialog_Control(m_State.play_any_level.state);
+    if (choice != UI_PLAY_ANY_LEVEL_CHOICE_NO_CHOICE) {
+        m_State.selection = choice;
+    }
+}
+
 static void M_FlipLeft(INVENTORY_ITEM *const inv_item)
 {
     M_RemoveAllText();
@@ -344,15 +362,9 @@ static void M_ShowPage(INVENTORY_ITEM *const inv_item)
         M_NewGame();
         break;
 
-    case M_ROLE_PLAY_ANY_LEVEL: {
-        if (!g_SaveGameRequester.ready) {
-            Savegame_FillAvailableLevels(&g_SaveGameRequester);
-        }
-        M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
-        m_State.selection =
-            Requester_Display(&g_SaveGameRequester, true, true) - 1;
+    case M_ROLE_PLAY_ANY_LEVEL:
+        M_PlayAnyLevel(inv_item);
         break;
-    }
 
     case M_ROLE_EXIT:
         if (g_Inv_Mode == INV_TITLE_MODE) {
@@ -439,6 +451,12 @@ void Option_Passport_Draw(INVENTORY_ITEM *const item)
     case M_ROLE_NEW_GAME:
         if (m_State.new_game.is_ready) {
             UI_NewGame(&m_State.new_game.state);
+        }
+        break;
+
+    case M_ROLE_PLAY_ANY_LEVEL:
+        if (m_State.play_any_level.state != nullptr) {
+            UI_PlayAnyLevelDialog(m_State.play_any_level.state);
         }
         break;
 
