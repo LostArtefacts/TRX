@@ -73,11 +73,12 @@ void Object_DrawDummyItem(const ITEM *const item)
 
 void Object_DrawSpriteItem(const ITEM *const item)
 {
+    const RGB_F tint = Output_GetTint();
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z,
         Object_Get(item->object_id)->mesh_idx - item->frame_num,
-        item->shade.value_1 < 0 ? SHADE_NEUTRAL : item->shade.value_1);
+        item->shade.value_1 < 0 ? SHADE_NEUTRAL : item->shade.value_1, tint);
 }
 
 void Object_DrawPickupItem(const ITEM *const item)

@@ -292,11 +292,11 @@ void Output_DrawShadow(
 
 void Output_DrawSprite(
     const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
-    const int16_t shade)
+    const int16_t shade, const RGB_F tint)
 {
     Matrix_Push();
     Matrix_TranslateAbs(x, y, z);
     Output_Sprites_RenderSingleSprite(
-        g_MatrixPtr, (XYZ_32) { 0, 0, 0 }, sprite_idx, shade);
+        g_MatrixPtr, (XYZ_32) { 0, 0, 0 }, sprite_idx, shade, tint);
     Matrix_Pop();
 }

@@ -1,5 +1,6 @@
 #include "game/effects.h"
 
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -144,10 +145,14 @@ void Effect_Draw(const int16_t effect_num)
     }
 
     if (obj->mesh_count < 0) {
+        const RGB_F tint =
+            Object_IsType(effect->object_id, g_WaterSpriteObjects)
+            ? (RGB_F) { 1.0f, 1.0f, 1.0f }
+            : Output_GetTint();
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            SHADE_NEUTRAL);
+            SHADE_NEUTRAL, tint);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);

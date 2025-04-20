@@ -242,6 +242,14 @@ const GAME_OBJECT_ID g_InvObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
+    // clang-format off
+    O_WATERFALL,
+    O_SPLASH,
+    O_BUBBLE,
+    // clang-format on
+};
+
 const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format off
     { O_COMPASS_ITEM, O_COMPASS_OPTION },
