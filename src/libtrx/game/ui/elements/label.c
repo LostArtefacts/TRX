@@ -65,8 +65,11 @@ void UI_Label(const char *const text)
     UI_LabelEx(text, m_DefaultSettings);
 }
 
-void UI_LabelEx(const char *const text, const UI_LABEL_SETTINGS settings)
+void UI_LabelEx(const char *text, const UI_LABEL_SETTINGS settings)
 {
+    if (text == nullptr) {
+        text = "(null)"; // quality of life for UI development
+    }
     UI_NODE *const node =
         UI_AllocNode(&m_Ops, sizeof(M_DATA) + strlen(text) + 1);
     M_DATA *const data = node->data;
