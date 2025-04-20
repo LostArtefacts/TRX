@@ -100,9 +100,9 @@ static void M_DrawItem(
         const int32_t seconds = (total_seconds % 60) * DEG_1 * -360 / 60;
 
         const int16_t extra_rotation[3] = { hours, minutes, seconds };
-        Object_GetBone(obj, 3)->rot_z = true;
-        Object_GetBone(obj, 4)->rot_z = true;
-        Object_GetBone(obj, 5)->rot_z = true;
+        Object_GetBone(obj, 3)->rot.z = true;
+        Object_GetBone(obj, 4)->rot.z = true;
+        Object_GetBone(obj, 5)->rot.z = true;
         Object_DrawInterpolatedObject(
             obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
             rate);

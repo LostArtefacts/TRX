@@ -68,8 +68,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 0)->rot_y = true;
-    Object_GetBone(obj, 8)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
+    Object_GetBone(obj, 8)->rot.y = true;
 }
 
 static void M_Control(const int16_t item_num)

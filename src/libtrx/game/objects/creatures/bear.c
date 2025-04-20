@@ -243,7 +243,7 @@ void Bear_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 13)->rot_y = true;
+    Object_GetBone(obj, 13)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_BEAR, Bear_Setup)

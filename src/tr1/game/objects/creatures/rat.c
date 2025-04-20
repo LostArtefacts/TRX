@@ -75,7 +75,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    Object_GetBone(obj, 1)->rot_y = true;
+    Object_GetBone(obj, 1)->rot.y = true;
 }
 
 static void M_SetupRat(OBJECT *const obj)

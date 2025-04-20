@@ -65,18 +65,7 @@ int32_t Collide_GetSpheres(
 
         Matrix_TranslateRel32(bone->pos);
         Matrix_Rot16(frame->mesh_rots[i]);
-
-        if (extra_rotation != nullptr) {
-            if (bone->rot_y) {
-                Matrix_RotY(*extra_rotation++);
-            }
-            if (bone->rot_x) {
-                Matrix_RotX(*extra_rotation++);
-            }
-            if (bone->rot_z) {
-                Matrix_RotZ(*extra_rotation++);
-            }
-        }
+        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
 
         mesh = Object_GetMesh(obj->mesh_idx + i);
         Matrix_Push();
@@ -154,18 +143,7 @@ void Collide_GetJointAbsPosition(
 
         Matrix_TranslateRel32(bone->pos);
         Matrix_Rot16(frame->mesh_rots[i + 1]);
-
-        if (extra_rotation != nullptr) {
-            if (bone->rot_y) {
-                Matrix_RotY(*extra_rotation++);
-            }
-            if (bone->rot_x) {
-                Matrix_RotX(*extra_rotation++);
-            }
-            if (bone->rot_z) {
-                Matrix_RotZ(*extra_rotation++);
-            }
-        }
+        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
     }
 
     Matrix_TranslateRel32(*out_vec);

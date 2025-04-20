@@ -448,18 +448,7 @@ int32_t Item_Explode(
 
         Matrix_TranslateRel32(bone->pos);
         Matrix_Rot16(best_frame->mesh_rots[i]);
-
-        if (extra_rotation != nullptr) {
-            if (bone->rot_y) {
-                Matrix_RotY(*extra_rotation++);
-            }
-            if (bone->rot_x) {
-                Matrix_RotX(*extra_rotation++);
-            }
-            if (bone->rot_z) {
-                Matrix_RotZ(*extra_rotation++);
-            }
-        }
+        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
 
         bit <<= 1;
         if ((mesh_bits & bit) && (item->mesh_bits & bit)) {

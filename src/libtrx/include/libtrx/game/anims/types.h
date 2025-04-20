@@ -35,9 +35,7 @@ typedef struct {
 typedef struct {
     bool matrix_pop;
     bool matrix_push;
-    bool rot_x;
-    bool rot_y;
-    bool rot_z;
+    XYZ_BOOL rot;
     XYZ_32 pos;
 } ANIM_BONE;
 

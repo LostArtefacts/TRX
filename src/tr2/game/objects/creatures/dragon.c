@@ -185,7 +185,7 @@ static void M_SetupFront(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 10)->rot_z = true;
+    Object_GetBone(obj, 10)->rot.z = true;
 }
 
 static void M_SetupBack(OBJECT *const obj)
