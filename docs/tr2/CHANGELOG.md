@@ -341,6 +341,7 @@
 - fixed harpoon bolts damaging inactive enemies (#1804)
 - fixed enemies that are run over by the skidoo not being counted in the statistics (#1772)
 - fixed sound settings resuming the music (#1707)
+- fixed being able to use hotkeys in the end-level statistics screen
 - fixed the inventory ring spinout animation sometimes running too fast (#1704, regression from 0.3)
 - fixed new saves not displaying the save count in the passport (#1591)
 - fixed certain erroneous `/play` invocations resulting in duplicated error messages

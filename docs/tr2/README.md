@@ -244,6 +244,7 @@ as Notepad.
     - increased Temple of Xian dragon seal size, and fixed inventory rotation
     - fixed Floating Islands mystic plaque inventory rotation
 - fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
+- fixed being able to use hotkeys in the end-level statistics screen
 - improved the animation of Lara's braid
 
 #### Cheats
