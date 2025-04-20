@@ -183,6 +183,7 @@ as Notepad.
 - added waterfalls to the savegame so that they now persist on load
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
+- fixed assault course best times not being retained between game relaunches
 - fixed secret rewards not displaying shotgun ammo
 - fixed numeric keys interfering with the demos
 - fixed the ammo counter being hidden while a demo plays in NG+

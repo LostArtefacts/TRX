@@ -1,12 +1,11 @@
 #pragma once
 
 #include "../colors.h"
+#include "../game/gym.h"
 #include "../game/input.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
 #include "../screenshot.h"
-
-#include <stdint.h>
 
 typedef enum {
     LIGHTING_CONTRAST_LOW,
@@ -125,5 +124,6 @@ typedef struct {
 
     struct {
         bool new_game_plus_unlock;
+        ASSAULT_STATS assault_stats;
     } profile;
 } CONFIG;

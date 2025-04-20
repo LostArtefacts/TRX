@@ -178,6 +178,9 @@ static void M_DumpControllerLayout(
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_LoadAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
@@ -186,13 +189,15 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
     }
 
     M_LoadLegacyOptions(root_obj);
-
     g_Config.loaded = true;
 }
 
 void Config_DumpToJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_DumpAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
