@@ -5,7 +5,6 @@
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/gym.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
@@ -23,6 +22,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/gym.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>

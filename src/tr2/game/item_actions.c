@@ -1,7 +1,6 @@
 #include "game/item_actions.h"
 
 #include "game/camera.h"
-#include "game/gym.h"
 #include "game/lara/hair.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -12,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/utils.h>
 

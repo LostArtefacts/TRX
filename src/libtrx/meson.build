@@ -136,6 +136,7 @@ sources = [
   'game/game_string_table/priv.c',
   'game/game_string_table/reader.c',
   'game/gun/common.c',
+  'game/gym.c',
   'game/inject/common.c',
   'game/inject/data/anims.c',
   'game/inject/data/meshes.c',

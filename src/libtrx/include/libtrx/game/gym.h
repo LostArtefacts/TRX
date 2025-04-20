@@ -10,7 +10,7 @@ typedef struct {
     uint32_t finish_count;
 } ASSAULT_STATS;
 
-bool Gym_IsAccessible(void);
+extern bool Gym_IsAccessible(void);
 void Gym_SetInventoryOpenEnabled(bool enabled);
 bool Gym_IsInventoryOpenEnabled(void);
 

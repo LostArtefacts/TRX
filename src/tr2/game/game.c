@@ -5,7 +5,6 @@
 #include "game/demo.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
-#include "game/gym.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara/cheat_keys.h"
@@ -23,6 +22,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/interpolation.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
