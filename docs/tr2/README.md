@@ -290,6 +290,7 @@ as Notepad.
 - fixed TGA screenshots crashing the game
 - fixed the camera being cut off after using the gong hammer in Ice Palace
 - fixed Lara's underwater hue being retained when re-entering a boat
+- fixed the boat briefly having an underwater hue when Lara first climbs on
 - fixed distant rooms sometimes not appearing, causing the skybox to be visible when it shouldn't
 - fixed rendering problems on certain Intel GPUs
 - fixed bubbles spawning from flares if Lara is in shallow water
