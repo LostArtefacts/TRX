@@ -67,9 +67,5 @@ extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;
 extern int32_t g_GF_LaraStartAnim;
 
-extern char g_ValidLevelStrings1[MAX_LEVELS][50];
-extern char g_ValidLevelStrings2[MAX_LEVELS][50];
-extern uint32_t g_RequesterFlags1[MAX_REQUESTER_ITEMS];
-extern uint32_t g_RequesterFlags2[MAX_REQUESTER_ITEMS];
 extern XYZ_32 g_InteractPosition;
 extern bool g_DetonateAllMines;

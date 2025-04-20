@@ -1,7 +1,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/requester.h"
 #include "game/savegame.h"
 #include "global/types_decomp.h"
 #include "global/vars.h"
@@ -12,9 +11,6 @@
 
 // TODO: make configurable
 #define MAX_SAVE_SLOTS MAX_REQUESTER_ITEMS
-
-static uint32_t m_ReqFlags1[MAX_REQUESTER_ITEMS] = {};
-static uint32_t m_ReqFlags2[MAX_REQUESTER_ITEMS] = {};
 
 int32_t Savegame_GetSlotCount(void)
 {
@@ -134,23 +130,4 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
     resume->stats.max_secret_count = default_stats.max_secret_count;
-}
-
-void Savegame_FillAvailableLevels(REQUEST_INFO *const req)
-{
-    ASSERT(req != nullptr);
-    Requester_Init(req);
-    Requester_SetSize(req, 10, -32);
-    Requester_SetHeading(req, GS(PASSPORT_SELECT_LEVEL), 0, nullptr, 0);
-    req->ready = true;
-    req->selected = 0;
-
-    Requester_RemoveAllItems(req);
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type != GFL_GYM) {
-            Requester_AddItem(req, level->title, 0, nullptr, 0);
-        }
-    }
 }

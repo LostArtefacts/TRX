@@ -166,29 +166,3 @@ typedef struct {
     int16_t flash_time;
     int16_t sample_num;
 } WEAPON_INFO;
-
-typedef struct {
-    bool is_blocked;
-    char *content_text;
-    TEXTSTRING *content;
-} REQUESTER_ITEM;
-
-typedef struct {
-    uint16_t items_used;
-    uint16_t max_items;
-    uint16_t requested;
-    uint16_t vis_lines;
-    int16_t line_offset;
-    int16_t line_old_offset;
-    uint16_t pix_width;
-    uint16_t line_height;
-    bool is_blockable;
-    int16_t x;
-    int16_t y;
-    char *heading_text;
-    TEXTSTRING *heading;
-    TEXTSTRING *background;
-    TEXTSTRING *moreup;
-    TEXTSTRING *moredown;
-    REQUESTER_ITEM *items;
-} REQUEST_INFO;
