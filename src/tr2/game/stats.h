@@ -3,9 +3,8 @@
 #include "global/types.h"
 
 #include <libtrx/game/game_flow.h>
-#include <libtrx/game/stats/types.h>
+#include <libtrx/game/stats.h>
 
-void Stats_StartTimer(void);
 void Stats_UpdateTimer(void);
 void Stats_CalculateStats(void);
 int32_t Stats_GetSecrets(void);

@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/gym.h"
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lot.h"
@@ -29,6 +28,7 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/inject.h>
 #include <libtrx/game/level.h>
 #include <libtrx/game/objects/traps/movable_block.h>

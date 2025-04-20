@@ -2,11 +2,11 @@
 
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/gym.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/game/ui/elements/anchor.h>
 #include <libtrx/game/ui/elements/label.h>
