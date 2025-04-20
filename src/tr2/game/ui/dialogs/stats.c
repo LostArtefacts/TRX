@@ -200,7 +200,7 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
     UI_BeginRequester(&s->assault_req, M_GetDialogTitle(s));
     // ensure minimum dialog width
     UI_Spacer(290.0f, 0.0f);
-    if (stats.best_time[0] == 0) {
+    if (stats.entries[0].time == 0) {
         UI_BeginAnchor(0.5f, 0.5f);
         UI_Label(GS(STATS_ASSAULT_NO_TIMES_SET));
         UI_EndAnchor();
@@ -208,7 +208,7 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
         const int32_t first = UI_Requester_GetFirstRow(&s->assault_req);
         const int32_t last = UI_Requester_GetLastRow(&s->assault_req);
         for (int32_t i = first; i < last; i++) {
-            if (stats.best_time[i] == 0) {
+            if (stats.entries[i].time == 0) {
                 break;
             }
 
@@ -216,12 +216,12 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
             char right_buf[32] = " ";
             sprintf(
                 left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
-                stats.best_finish[i]);
+                stats.entries[i].attempt_num);
 
-            const int32_t sec = stats.best_time[i] / FRAMES_PER_SECOND;
+            const int32_t sec = stats.entries[i].time / FRAMES_PER_SECOND;
             sprintf(
                 right_buf, "%02d:%02d.%-2d", sec / 60, sec % 60,
-                stats.best_time[i] % FRAMES_PER_SECOND
+                stats.entries[i].time % FRAMES_PER_SECOND
                     / (FRAMES_PER_SECOND / 10));
 
             M_Row(s, left_buf, right_buf);

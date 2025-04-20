@@ -8,7 +8,7 @@ void UI_StatsDialog_Init(
     const ASSAULT_STATS stats = Gym_GetAssaultStats();
     int32_t max_assault_times = 0;
     for (int i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (stats.best_time[i] != 0) {
+        if (stats.entries[i].time != 0) {
             max_assault_times++;
         }
     }

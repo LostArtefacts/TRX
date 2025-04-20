@@ -5,9 +5,12 @@
 #define MAX_ASSAULT_TIMES 10
 
 typedef struct {
-    uint32_t best_time[MAX_ASSAULT_TIMES];
-    uint32_t best_finish[MAX_ASSAULT_TIMES];
-    uint32_t finish_count;
+    struct {
+        uint32_t time;
+        uint32_t attempt_num;
+    } entries[MAX_ASSAULT_TIMES];
+    int32_t best_time;
+    uint32_t total_attempts;
 } ASSAULT_STATS;
 
 extern bool Gym_IsAccessible(void);
