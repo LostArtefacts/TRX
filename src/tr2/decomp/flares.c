@@ -83,7 +83,7 @@ int32_t Flare_DoLight(const XYZ_32 *const pos, const int32_t flare_age)
 
     const int32_t random = Random_GetDraw();
     const XYZ_32 light_pos = {
-        .x = pos->x + (random & 0xF),
+        .x = pos->x + (random & 0xA0),
         .y = pos->y,
         .z = pos->z,
     };
