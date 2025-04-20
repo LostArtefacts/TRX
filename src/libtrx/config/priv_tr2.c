@@ -4,6 +4,7 @@
 #include "config/vars.h"
 #include "debug.h"
 #include "game/clock.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "log.h"
 #include "utils.h"
@@ -111,6 +112,9 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_LoadAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
     M_LoadInputConfig(root_obj);
     M_LoadLegacyOptions(root_obj);
     g_Config.loaded = true;
@@ -120,6 +124,9 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 void Config_DumpToJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_DumpAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
     M_DumpInputConfig(root_obj);
 }
 

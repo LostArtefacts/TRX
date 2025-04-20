@@ -1,11 +1,10 @@
 #pragma once
 
+#include "../game/gym.h"
 #include "../game/output/types.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
 #include "../screenshot.h"
-
-#include <stdint.h>
 
 #define CONFIG_MIN_BRIGHTNESS 0.1f
 #define CONFIG_MAX_BRIGHTNESS 2.0f
@@ -216,5 +215,6 @@ typedef struct {
 
     struct {
         bool new_game_plus_unlock;
+        ASSAULT_STATS assault_stats;
     } profile;
 } CONFIG;

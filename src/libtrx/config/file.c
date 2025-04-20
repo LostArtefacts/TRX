@@ -340,3 +340,51 @@ void ConfigFile_WriteEnum(
 {
     JSON_ObjectAppendString(obj, name, EnumMap_ToString(enum_name, value));
 }
+
+bool ConfigFile_LoadAssaultStats(
+    JSON_OBJECT *const root_obj, ASSAULT_STATS *const assault_stats)
+{
+    JSON_OBJECT *const stats_obj =
+        JSON_ObjectGetObject(root_obj, "assault_stats");
+    if (stats_obj == nullptr) {
+        return false;
+    }
+    JSON_ARRAY *const entries_arr = JSON_ObjectGetArray(stats_obj, "entries");
+    if (entries_arr != nullptr) {
+        for (size_t i = 0; i < entries_arr->length && i < MAX_ASSAULT_TIMES;
+             i++) {
+            JSON_OBJECT *const entry_obj = JSON_ArrayGetObject(entries_arr, i);
+            if (entry_obj != nullptr) {
+                assault_stats->entries[i].time = JSON_ObjectGetInt(
+                    entry_obj, "time", assault_stats->entries[i].time);
+                assault_stats->entries[i].attempt_num = JSON_ObjectGetInt(
+                    entry_obj, "attempt_num",
+                    assault_stats->entries[i].attempt_num);
+            }
+        }
+    }
+    assault_stats->best_time =
+        JSON_ObjectGetInt(stats_obj, "best_time", assault_stats->best_time);
+    assault_stats->total_attempts = JSON_ObjectGetInt(
+        stats_obj, "total_attempts", assault_stats->total_attempts);
+    return true;
+}
+
+bool ConfigFile_DumpAssaultStats(
+    JSON_OBJECT *const root_obj, const ASSAULT_STATS *const assault_stats)
+{
+    JSON_OBJECT *const stats_obj = JSON_ObjectNew();
+    JSON_ARRAY *const entries_arr = JSON_ArrayNew();
+    for (int i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        JSON_OBJECT *const entry_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(entry_obj, "time", assault_stats->entries[i].time);
+        JSON_ObjectAppendInt(
+            entry_obj, "attempt_num", assault_stats->entries[i].attempt_num);
+        JSON_ArrayAppendObject(entries_arr, entry_obj);
+    }
+    JSON_ObjectAppendArray(stats_obj, "entries", entries_arr);
+    JSON_ObjectAppendInt(
+        stats_obj, "total_attempts", assault_stats->total_attempts);
+    JSON_ObjectAppendObject(root_obj, "assault_stats", stats_obj);
+    return true;
+}
