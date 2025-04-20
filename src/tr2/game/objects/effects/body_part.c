@@ -62,7 +62,7 @@ static void M_Control(const int16_t effect_num)
             effect->frame_num = 0;
             effect->counter = 0;
             effect->object_id = O_EXPLOSION;
-            effect->shade = HIGH_LIGHT;
+            effect->shade = SHADE_NEUTRAL;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
         } else {
             Effect_Kill(effect_num);
@@ -78,7 +78,7 @@ static void M_Control(const int16_t effect_num)
             effect->frame_num = 0;
             effect->counter = 0;
             effect->object_id = O_EXPLOSION;
-            effect->shade = HIGH_LIGHT;
+            effect->shade = SHADE_NEUTRAL;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
             g_Lara.hit_effect_count = 5;
             g_Lara.hit_effect = effect;

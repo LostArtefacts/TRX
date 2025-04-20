@@ -68,9 +68,9 @@ static void M_DrawItem(
 {
     if (ring->motion.status != RNG_FADING_OUT && ring->motion.status != RNG_DONE
         && inv_item == ring->list[ring->current_object] && !ring->rotating) {
-        Output_SetLightAdder(HIGH_LIGHT);
+        Output_SetLightAdder(SHADE_NEUTRAL);
     } else {
-        Output_SetLightAdder(LOW_LIGHT);
+        Output_SetLightAdder(SHADE_LOW);
     }
 
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);

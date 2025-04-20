@@ -389,7 +389,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     Matrix_RotY(pu->rot_y);
 
     Output_SetLightDivider(0x6000);
-    Output_SetLightAdder(LOW_LIGHT);
+    Output_SetLightAdder(SHADE_LOW);
     Output_RotateLight(0, 0);
 
     const OBJECT *const obj = Object_Get(Inv_GetItemOption(pu->object_id));
@@ -501,7 +501,7 @@ static void M_DrawPickupsSprites(void)
             Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
         const int32_t scale = Screen_GetRenderScaleGLRage(12288);
         const int16_t sprite_num = Object_Get(pu->object_id)->mesh_idx;
-        Output_DrawUISprite(x, y, scale, sprite_num, 4096);
+        Output_DrawUISprite(x, y, scale, sprite_num, SHADE_NEUTRAL);
     }
 }
 

@@ -53,9 +53,9 @@ static M_MESH_SHADE M_ShadeCaustics(M_MESH_SHADE source, uint8_t caustic)
     if (Output_GetWaterEffect()) {
         source +=
             m_ShadeTable[((uint8_t)Output_GetTime() + caustic) % WIBBLE_SIZE];
-        CLAMP(source, 0, MAX_LIGHTING);
+        CLAMP(source, 0, SHADE_MAX);
     } else {
-        CLAMPG(source, MAX_LIGHTING);
+        CLAMPG(source, SHADE_MAX);
     }
     return source;
 }
@@ -341,7 +341,7 @@ void Output_Meshes_InitRooms(void)
     m_Shader = Output_Meshes_GetShader();
     for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
         const int16_t angle = (i * DEG_360) / WIBBLE_SIZE;
-        m_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
+        m_ShadeTable[i] = Math_Sin(angle) * SHADE_CAUSTICS >> W2V_SHIFT;
         m_CausticsTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }

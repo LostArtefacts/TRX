@@ -209,7 +209,7 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
             // clip_flags |= (~((uint8_t)(vbuf->zv / 0x155555.p0))) << 8;
         }
 
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         vbuf->g = shade;
         vbuf->clip = clip_flags;
     }
@@ -359,7 +359,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
     if (mesh->num_lights <= 0) {
         for (int32_t i = 0; i < -mesh->num_lights; i++) {
             int16_t shade = m_LsAdder + mesh->lighting.lights[i];
-            CLAMP(shade, 0, 0x1FFF);
+            CLAMP(shade, 0, SHADE_MAX);
             g_PhdVBuf[i].g = shade;
         }
 
@@ -368,7 +368,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
 
     if (m_LsDivider == 0) {
         int16_t shade = m_LsAdder;
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         for (int32_t i = 0; i < mesh->num_lights; i++) {
             g_PhdVBuf[i].g = shade;
         }
@@ -401,7 +401,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
         const XYZ_16 *const normal = &mesh->lighting.normals[i];
         int16_t shade = m_LsAdder
             + ((xv * normal->x + yv * normal->y + zv * normal->z) >> 16);
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         g_PhdVBuf[i].g = shade;
     }
 }
@@ -666,12 +666,12 @@ void Output_DrawSprite(
         const int32_t depth = zv >> W2V_SHIFT;
         if (depth > Output_GetFogStart()) {
             shade += depth - Output_GetFogStart();
-            if (shade > 0x1FFF) {
+            if (shade > SHADE_MAX) {
                 return;
             }
         }
     } else {
-        shade = 0x1000;
+        shade = SHADE_NEUTRAL;
     }
 
     Render_InsertSprite(zv, x0, y0, x1, y1, sprite_idx, shade);
@@ -899,7 +899,7 @@ void Output_CalculateWibbleTable(void)
     for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
         const int32_t sine = Math_Sin(i * DEG_360 / WIBBLE_SIZE);
         m_WibbleTable[i] = (sine * MAX_WIBBLE) >> W2V_SHIFT;
-        m_ShadesTable[i] = (sine * MAX_SHADE) >> W2V_SHIFT;
+        m_ShadesTable[i] = (sine * SHADE_CAUSTICS) >> W2V_SHIFT;
         m_RandomTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
         for (int32_t j = 0; j < WIBBLE_SIZE; j++) {
             m_RoomLightTables[i].table[j] = (j - (WIBBLE_SIZE / 2)) * i
@@ -1089,9 +1089,9 @@ int32_t Output_CalcFogShade(const int32_t depth)
         return 0;
     }
     if (depth >= fog_end) {
-        return 0x1FFF;
+        return SHADE_MAX;
     }
-    return (depth - fog_start) * 0x1FFF / (fog_end - fog_start);
+    return (depth - fog_start) * SHADE_MAX / (fog_end - fog_start);
 }
 
 int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
@@ -1127,21 +1127,25 @@ void Output_DrawTextOutline(
     const int32_t scale_v = TEXT_BASE_SCALE;
 
     Output_DrawScreenSprite(
-        x0, y0, z, scale_h, scale_v, mesh_idx + 0, 0x1000, 0);
+        x0, y0, z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL, 0);
     Output_DrawScreenSprite(
-        x1, y0, z, scale_h, scale_v, mesh_idx + 1, 0x1000, 0);
+        x1, y0, z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL, 0);
     Output_DrawScreenSprite(
-        x1, y1, z, scale_h, scale_v, mesh_idx + 2, 0x1000, 0);
+        x1, y1, z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL, 0);
     Output_DrawScreenSprite(
-        x0, y1, z, scale_h, scale_v, mesh_idx + 3, 0x1000, 0);
+        x0, y1, z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL, 0);
 
     int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
     int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
 
-    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
-    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
-    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
-    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
+    Output_DrawScreenSprite(
+        x0, y0, z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x1, y0, z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x0, y1, z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x0, y0, z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL, 0);
 }
 
 void Output_DrawTextBackground(

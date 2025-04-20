@@ -52,7 +52,7 @@ static void M_CalculateBrightestLight(
     }
 #endif
 
-    const int32_t ambient = TR_VERSION == 1 ? (0x1FFF - room->ambient) : 0;
+    const int32_t ambient = TR_VERSION == 1 ? (SHADE_MAX - room->ambient) : 0;
     for (int32_t i = 0; i < room->num_lights; i++) {
         const LIGHT *const light = &room->lights[i];
         const int32_t dx = pos.x - light->pos.x;
@@ -112,7 +112,7 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
 
     adder = (adder + dynamic_adder) / 2;
     if (TR_VERSION == 1 && (room->num_lights > 0 || dynamic_adder > 0)) {
-        adder += (0x1FFF - room->ambient) / 2;
+        adder += (SHADE_MAX - room->ambient) / 2;
     }
 
     // TODO: use m_LsAdder and m_LsDivider once ported
@@ -123,7 +123,7 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
         global_divider = 0;
     } else {
 #if TR_VERSION == 1
-        global_adder = 0x1FFF - adder;
+        global_adder = SHADE_MAX - adder;
         const int32_t divider = brightest_light.shade == adder
             ? adder
             : brightest_light.shade - adder;
@@ -141,7 +141,7 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
 
     const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
     global_adder += Output_CalcFogShade(depth);
-    CLAMPG(global_adder, 0x1FFF);
+    CLAMPG(global_adder, SHADE_MAX);
 
     Output_SetLightAdder(global_adder);
     Output_SetLightDivider(global_divider);
@@ -150,10 +150,10 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
 void Output_CalculateStaticLight(const int16_t adder)
 {
     // TODO: use m_LsAdder
-    int32_t global_adder = adder - 0x1000;
+    int32_t global_adder = adder - SHADE_NEUTRAL;
     const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
     global_adder += Output_CalcFogShade(depth);
-    CLAMPG(global_adder, 0x1FFF);
+    CLAMPG(global_adder, SHADE_MAX);
     Output_SetLightAdder(global_adder);
 }
 

@@ -100,7 +100,8 @@ void Text_DrawText(TEXTSTRING *const text)
             const float sprite_scale = MIN(sprite_scale_h, sprite_scale_v);
             Output_DrawScreenSprite(
                 x + M_Scale(10), y, z, M_Scale(glyph->width * sprite_scale),
-                M_Scale(glyph->width * sprite_scale), sprite_idx, 4096, 0);
+                M_Scale(glyph->width * sprite_scale), sprite_idx, SHADE_NEUTRAL,
+                0);
             x += glyph->width * scale_h / TEXT_BASE_SCALE;
             goto loop_end;
         }
@@ -116,7 +117,7 @@ void Text_DrawText(TEXTSTRING *const text)
 
             Output_DrawScreenSprite(
                 cx, cy, 0, scale_h, scale_v,
-                obj->mesh_idx + glyph->combine_with.mesh_idx, 4096, 0);
+                obj->mesh_idx + glyph->combine_with.mesh_idx, SHADE_NEUTRAL, 0);
         }
 
         if (x >= 0 && x < g_PhdWinWidth && y >= 0 && y < g_PhdWinHeight) {
@@ -125,7 +126,7 @@ void Text_DrawText(TEXTSTRING *const text)
             }
             Output_DrawScreenSprite(
                 x, y, z, scale_h, scale_v, obj->mesh_idx + glyph->mesh_idx,
-                4096, 0);
+                SHADE_NEUTRAL, 0);
         }
 
         if (glyph->role != GLYPH_COMBINING) {

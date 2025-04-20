@@ -369,7 +369,7 @@ void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const int32_t clip)
 
     switch (weapon_type) {
     case LGT_MAGNUMS:
-        shade = HIGH_LIGHT;
+        shade = SHADE_NEUTRAL;
         y = 215;
         z = 65;
         break;
@@ -400,7 +400,7 @@ void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const int32_t clip)
         return;
 
     default:
-        shade = LOW_LIGHT;
+        shade = SHADE_LOW;
         y = 185;
         z = 40;
         break;
