@@ -3,6 +3,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
+#include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/option/option.h"
 #include "game/savegame.h"

@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
+#include "game/inventory.h"
 #include "game/savegame.h"
 #include "game/ui/common.h"
 #include "game/ui/dialogs/base_passport.h"
@@ -15,13 +16,6 @@
 #include "game/ui/elements/stack.h"
 #include "memory.h"
 #include "vector.h"
-
-// TODO: consolidate this variable
-#if TR_VERSION == 1
-extern int32_t g_InvMode;
-#else
-extern int32_t g_Inv_Mode;
-#endif
 
 typedef enum {
     M_ROW_ROLE_PLAY_LEVEL,
@@ -65,12 +59,7 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
             }
         }
 
-#if TR_VERSION == 1
-        const INVENTORY_MODE inv_mode = g_InvMode;
-#else
-        const INVENTORY_MODE inv_mode = g_Inv_Mode;
-#endif
-        if (inv_mode == INV_TITLE_MODE && GF_HasAvailableStory(save_slot)) {
+        if (g_Inv_Mode == INV_TITLE_MODE && GF_HasAvailableStory(save_slot)) {
             Vector_Add(
                 s->rows,
                 &(M_ROW) {

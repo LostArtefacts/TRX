@@ -19,13 +19,6 @@
 
 #include <stdio.h>
 
-// TODO: consolidate this variable
-#if TR_VERSION == 1
-extern int32_t g_InvMode;
-#else
-extern int32_t g_Inv_Mode;
-#endif
-
 typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_SAVE_SLOT_DIALOG_TYPE type;
     UI_REQUESTER_STATE req;

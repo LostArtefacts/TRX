@@ -7,13 +7,6 @@
 #include "game/ui/elements/resize.h"
 #include "game/viewport.h"
 
-// TODO: consolidate this variable
-#if TR_VERSION == 1
-extern int32_t g_InvMode;
-#else
-extern int32_t g_Inv_Mode;
-#endif
-
 static int32_t M_GetVisibleRows(void);
 
 static int32_t M_GetVisibleRows(void)
@@ -52,11 +45,9 @@ void UI_BasePassportDialog_Control(UI_REQUESTER_STATE *const req)
 
 void UI_BeginBasePassportDialog(void)
 {
-#if TR_VERSION == 1
-    const float modal_y = g_InvMode == INV_TITLE_MODE ? 0.72f : 0.55f;
-#else
-    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f;
-#endif
+    const float modal_y = TR_VERSION == 1
+        ? (g_Inv_Mode == INV_TITLE_MODE ? 0.72f : 0.55f)
+        : (g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f);
     UI_BeginModal(0.5f, modal_y);
     UI_BeginResize(300.0f, -1.0f);
 }

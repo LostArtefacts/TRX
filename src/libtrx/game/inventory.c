@@ -4,6 +4,8 @@
 #include "game/objects/vars.h"
 #include "utils.h"
 
+INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
+
 bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
 {
     bool result = false;

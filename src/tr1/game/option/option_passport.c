@@ -4,6 +4,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
+#include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -192,7 +193,7 @@ static void M_DeterminePages(void)
     const bool has_saves =
         Savegame_GetTotalCount() > 0 && Savegame_GetSlotCount() > 0;
 
-    switch (g_InvMode) {
+    switch (g_Inv_Mode) {
     case INV_TITLE_MODE:
         m_State.mode = PASSPORT_MODE_BROWSE;
         M_SetPage(PAGE_1, PASSPORT_MODE_LOAD_GAME, has_saves);
@@ -309,8 +310,8 @@ static void M_ShowSaves(const PASSPORT_MODE pending_mode)
         break;
 
     case UI_SAVE_SLOT_DIALOG_CANCEL:
-        if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
-            && g_InvMode != INV_LOAD_MODE) {
+        if (g_Inv_Mode != INV_SAVE_MODE && g_Inv_Mode != INV_SAVE_CRYSTAL_MODE
+            && g_Inv_Mode != INV_LOAD_MODE) {
             m_State.mode = PASSPORT_MODE_BROWSE;
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
@@ -572,7 +573,7 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             M_Close(inv_item);
             m_State.active_page = -1;
         } else if (g_InputDB.menu_back) {
-            if (g_InvMode != INV_DEATH_MODE
+            if (g_Inv_Mode != INV_DEATH_MODE
                 && (m_State.mode == PASSPORT_MODE_BROWSE
                     || m_State.mode == PASSPORT_MODE_RESTART)) {
                 M_Close(inv_item);
