@@ -79,6 +79,8 @@ static int32_t m_WibbleOffset = 0;
 static bool m_IsSunsetEnabled = false;
 static int32_t m_SunsetTimer = 0;
 
+static int32_t m_DepthBias = 0;
+
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
 static void M_DrawRoomSprites(const ROOM_MESH *mesh);
@@ -300,9 +302,11 @@ static bool M_CalcObjectVertices(
             }
 
             const double persp = g_FltPersp / zv;
+            const double persp_biased =
+                g_FltPersp / (zv + (m_DepthBias << W2V_SHIFT));
             vbuf->xs = persp * xv + g_FltWinCenterX;
             vbuf->ys = persp * yv + g_FltWinCenterY;
-            vbuf->rhw = persp * g_FltRhwOPersp;
+            vbuf->rhw = persp_biased * g_FltRhwOPersp;
 
             clip_flags = 0x00;
             if (vbuf->xs < g_FltWinLeft) {
@@ -1153,4 +1157,14 @@ void Output_DrawTextBackground(
     const int32_t h, const int32_t z, const TEXT_STYLE text_style)
 {
     Output_DrawScreenFBox(x, y, z, w, h, 0, nullptr, 0);
+}
+
+int32_t Output_GetDepthBias(void)
+{
+    return m_DepthBias;
+}
+
+void Output_SetDepthBias(const int32_t bias)
+{
+    m_DepthBias = bias;
 }
