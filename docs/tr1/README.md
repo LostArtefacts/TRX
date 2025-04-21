@@ -1,6 +1,5 @@
 <p align="center">
-<img alt="TR1X logo" src="/data/tr1/logo-light-theme.png#gh-light-mode-only" width="400"/>
-<img alt="TR1X logo" src="/data/tr1/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
+<img alt="TR1X logo" src="/data/tr1/logo.png" width="400"/>
 </p>
 
 ## Windows / Linux

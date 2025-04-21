@@ -1,6 +1,5 @@
 <p align="center">
-<img alt="TR2X logo" src="/data/tr2/logo-light-theme.png#gh-light-mode-only" width="400"/>
-<img alt="TR2X logo" src="/data/tr2/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
+<img alt="TR2X logo" src="/data/tr2/logo.png" width="400"/>
 </p>
 
 TR2X is finished with the decompilation and is now able to run without the
