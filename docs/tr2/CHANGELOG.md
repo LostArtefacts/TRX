@@ -23,6 +23,7 @@
 - fixed the inability to completely mute the sounds, even at sound volume 0 (#2722)
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed assault course best times not being retained between game relaunches (#1578)
+- fixed flares disappearing on the ground when the z buffer is enabled (#1595)
 - fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
 - fixed the console opening when remapping its key (#2641)
 - fixed the boat when it explodes after crossing mines, where Lara's hips would appear rather than exploded boat parts (#1605)

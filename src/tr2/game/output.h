@@ -94,3 +94,6 @@ int32_t Output_GetFarZ(void);
 
 void Output_SetWaterColor(RGB_888 color);
 RGB_F Output_GetTint(void);
+
+int32_t Output_GetDepthBias(void);
+void Output_SetDepthBias(int32_t bias);
