@@ -10,12 +10,7 @@ extern bool Output_MakeScreenshot(const char *path);
 extern void Output_BeginScene(void);
 extern void Output_EndScene(void);
 
-extern bool Output_LoadBackgroundFromFile(const char *file_name);
-extern void Output_LoadBackgroundFromObject(void);
-extern void Output_UnloadBackground(void);
-
 extern void Output_DrawBlackRectangle(int32_t opacity);
-extern void Output_DrawBackground(void);
 extern void Output_DrawPolyList(void);
 
 extern void Output_SetupBelowWater(bool is_underwater);

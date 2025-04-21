@@ -13,6 +13,7 @@
 - added the ability for spike walls to be reset (antitriggered)
 - added the current music track and timestamp to the savegame so they now persist on load (#2579)
 - added waterfalls to the savegame so that they now persist on load (#2686)
+- added support for aspect ratio-specific images (#1840)
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
 - changed the number of static mesh slots from 50 to 256 (#2734)

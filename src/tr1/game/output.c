@@ -63,7 +63,6 @@ static int32_t m_SurfaceHeight = 0;
 static GFX_2D_SURFACE *m_PictureSurface = nullptr;
 static GFX_2D_SURFACE *m_TextureSurfaces[GFX_MAX_TEXTURES] = { nullptr };
 
-static char *m_BackdropImagePath = nullptr;
 static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
 };
@@ -318,7 +317,6 @@ static void M_DrawLightningSegment(const LIGHTNING *const lightning)
     vertices[vtx_idx].b = color.b;                                             \
     vertices[vtx_idx].a = 128.0f;
     // clang-format off
-    LOG_INFO("%d %d %d, %d %d %d, %d", p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, t1);
     SET(0, p0.x,          p0.y, p0.z, blue);
     SET(1, p0.x + t1 / 2, p0.y, p0.z, white);
     SET(2, p1.x + t2 / 2, p1.y, p1.z, white);
@@ -424,7 +422,7 @@ void Output_Shutdown(void)
         m_Renderer3D = nullptr;
     }
     GFX_Context_Detach();
-    Memory_FreePointer(&m_BackdropImagePath);
+    Output_ClearLastBackgroundPath();
 }
 
 void Output_SetWindowSize(int32_t width, int32_t height)
@@ -467,8 +465,9 @@ void Output_ApplyRenderSettings(void)
     GFX_3D_Renderer_SetAnisotropyFilter(
         m_Renderer3D, g_Config.rendering.anisotropy_filter);
 
-    if (m_BackdropImagePath != nullptr) {
-        Output_LoadBackgroundFromFile(m_BackdropImagePath);
+    const char *const last_path = Output_GetLastBackgroundPath();
+    if (last_path != nullptr) {
+        Output_LoadBackgroundFromFile(last_path);
     }
 }
 
@@ -781,21 +780,9 @@ void Output_DrawUISprite(
     }
 }
 
-bool Output_LoadBackgroundFromFile(const char *const path)
+bool Output_LoadBackgroundFromImage(const IMAGE *const image)
 {
-    ASSERT(path != nullptr);
-    const char *old_path = m_BackdropImagePath;
-    m_BackdropImagePath = File_GuessExtension(path, m_ImageExtensions);
-    Memory_FreePointer(&old_path);
-
-    IMAGE *const img = Image_CreateFromFileInto(
-        m_BackdropImagePath, Viewport_GetWidth(), Viewport_GetHeight(),
-        IMAGE_FIT_SMART);
-    if (img == nullptr) {
-        return false;
-    }
-    M_DownloadBackdropSurface(img);
-    Image_Free(img);
+    M_DownloadBackdropSurface(image);
     return true;
 }
 
@@ -808,7 +795,7 @@ void Output_LoadBackgroundFromObject(void)
 void Output_UnloadBackground(void)
 {
     M_DownloadBackdropSurface(nullptr);
-    Memory_FreePointer(&m_BackdropImagePath);
+    Output_ClearLastBackgroundPath();
 }
 
 void Output_DrawLightningSegment(

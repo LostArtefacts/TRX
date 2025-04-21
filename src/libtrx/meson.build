@@ -181,6 +181,7 @@ sources = [
   'game/objects/names.c',
   'game/objects/traps/movable_block.c',
   'game/objects/vars.c',
+  'game/output/background.c',
   'game/output/common.c',
   'game/output/textures.c',
   'game/packer.c',
