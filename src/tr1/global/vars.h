@@ -25,5 +25,3 @@ extern ITEM *g_LaraItem;
 extern GAME_INFO g_GameInfo;
 extern bool g_LevelComplete;
 extern int32_t g_OverlayFlag;
-
-extern INVENTORY_MODE g_InvMode;

@@ -4,7 +4,6 @@
 
 #include <libtrx/game/inventory_ring/vars.h>
 
-extern INVENTORY_MODE g_Inv_Mode;
 extern int16_t g_Inv_Chosen;
 extern int32_t g_Inv_ExtraData[8];
 

@@ -18,8 +18,6 @@ GAME_INFO g_GameInfo = { .select_save_slot = -1 };
 bool g_LevelComplete = false;
 int32_t g_OverlayFlag = 0;
 
-INVENTORY_MODE g_InvMode;
-
 #ifndef MESON_BUILD
 const char *g_TRXVersion = "TR1X (non-Docker build)";
 #endif

@@ -930,7 +930,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         break;
     }
 
-    g_InvMode = mode;
+    g_Inv_Mode = mode;
     Interpolation_Remember();
     if (g_Config.gameplay.enable_timer_in_inventory) {
         Stats_StartTimer();
