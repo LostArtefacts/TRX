@@ -18,6 +18,7 @@
 #include <libtrx/game/scaler.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
 typedef enum {
@@ -738,14 +739,9 @@ BACKGROUND_TYPE Output_GetBackgroundType(void)
     return m_BackgroundType;
 }
 
-bool Output_LoadBackgroundFromFile(const char *const file_name)
+bool Output_LoadBackgroundFromImage(const IMAGE *const image)
 {
-    IMAGE *const image = Image_CreateFromFile(file_name);
-    if (image == nullptr) {
-        return false;
-    }
     Render_LoadBackgroundFromImage(image);
-    Image_Free(image);
     m_BackgroundType = BK_IMAGE;
     return true;
 }
@@ -774,6 +770,7 @@ void Output_UnloadBackground(void)
 {
     Render_UnloadBackground();
     m_BackgroundType = BK_TRANSPARENT;
+    Output_ClearLastBackgroundPath();
 }
 
 void Output_InsertBackPolygon(

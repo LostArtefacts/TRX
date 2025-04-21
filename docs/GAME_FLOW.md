@@ -690,7 +690,18 @@ default game flow for examples.
     </td>
     <td><code>path</code></td>
     <td>String</td>
-    <td> Displays the specified picture for a fixed time. </td>
+    <td>
+      Displays the specified picture for a fixed time.
+      Files that are needed to function only with a specific aspect ratio can
+      be placed in a directory adjacent to the main image, named according to
+      the aspect ratio – for example, 4x3/title.png or 16x10/title.png. The
+      game won't attempt to match these precisely; instead, it will select the
+      file with the aspect ratio closest to the game's viewport. The main image
+      designated by <code>path</code> is presumed to have a 16:9 aspect ratio
+      for this purpose, and as such there's no need for 16x9-specific
+      directory.<br/>
+      This logic applies to all images.
+    </td>
   </tr>
   <tr valign="top">
     <td><code>display_time</code></td>
