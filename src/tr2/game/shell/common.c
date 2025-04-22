@@ -149,41 +149,35 @@ static void M_SyncToWindow(void)
 
 static void M_SyncFromWindow(void)
 {
-    if (SDL_GetTicks() - m_UpdateDebounce < 1000) {
-        // Setting the size programatically triggers resize events.
-        // Additionally, SDL_GetWindowSize() is not guaranteed to return the
-        // same values as passed to SDL_SetWindowSize(). In order to avoid
-        // infinite loops where the window dimensions are continuously updated,
-        // resize events are debounced.
-        return;
-    }
+    // Determine if this call should sync config, i.e., skip immediate
+    // programmatic events
+    const Uint32 now = SDL_GetTicks();
+    const bool skip_config = (now - m_UpdateDebounce) < 100;
 
+    // Always pull current window state for logging and viewport reset
     const Uint32 window_flags = SDL_GetWindowFlags(g_SDLWindow);
     const bool is_maximized = window_flags & SDL_WINDOW_MAXIMIZED;
-
-    int32_t width;
-    int32_t height;
+    int32_t x, y;
+    int32_t width, height;
     SDL_GetWindowSize(g_SDLWindow, &width, &height);
-
-    int32_t x;
-    int32_t y;
     SDL_GetWindowPosition(g_SDLWindow, &x, &y);
-
     LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
 
-    g_Config.window.is_maximized = is_maximized;
-    if (!is_maximized && !g_Config.window.is_fullscreen) {
-        g_Config.window.x = x;
-        g_Config.window.y = y;
-        g_Config.window.width = width;
-        g_Config.window.height = height;
+    // Update config only when not in debounce window
+    if (!skip_config) {
+        g_Config.window.is_maximized = is_maximized;
+        if (!is_maximized && !g_Config.window.is_fullscreen) {
+            g_Config.window.x = x;
+            g_Config.window.y = y;
+            g_Config.window.width = width;
+            g_Config.window.height = height;
+        }
+        if (g_Config.loaded) {
+            Config_Write();
+        }
     }
 
-    // Save the updated config, but ensure it was loaded first
-    if (g_Config.loaded) {
-        Config_Write();
-    }
-
+    // Always refresh viewport to reflect the actual window size
     M_RefreshRendererViewport();
 }
 
