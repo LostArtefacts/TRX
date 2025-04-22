@@ -79,6 +79,7 @@ static SHELL_ARGS m_Args = {
 
 static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
 static Uint64 m_UpdateDebounce = 0;
+static bool m_IgnoreConfigChanges = false;
 
 static void M_SyncToWindow(void);
 static void M_SyncFromWindow(bool update_viewport);
@@ -155,7 +156,7 @@ static void M_SyncFromWindow(const bool update_viewport)
     // Determine if this call should sync config, i.e., skip immediate
     // programmatic events
     const Uint32 now = SDL_GetTicks();
-    const bool skip_config = (now - m_UpdateDebounce) < 100;
+    const bool skip_config = (now - m_UpdateDebounce) < 500;
 
     // Always pull current window state for logging and viewport reset
     const Uint32 window_flags = SDL_GetWindowFlags(g_SDLWindow);
@@ -176,7 +177,9 @@ static void M_SyncFromWindow(const bool update_viewport)
             g_Config.window.height = height;
         }
         if (g_Config.loaded) {
+            m_IgnoreConfigChanges = true;
             Config_Write();
+            m_IgnoreConfigChanges = false;
         }
     }
 
@@ -351,6 +354,10 @@ static void M_LoadConfig(void)
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
+    if (m_IgnoreConfigChanges) {
+        return;
+    }
+
     const CONFIG *const old = &g_Config;
     const CONFIG *const new = &g_SavedConfig;
 
