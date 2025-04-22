@@ -28,30 +28,52 @@ on:
         default: github.ref_name
 
 jobs:
-  package_multiplatform:
-    name: Build release assets
+  package_tr2_linux:
+    name: Build TR2 (Linux)
     if: vars.RELEASE_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr2.yml
     with:
-      target: "release"
+      platform: linux
+      target: release
+    secrets: inherit
+
+  package_tr2_win:
+    name: Build TR2 (Windows)
+    if: vars.RELEASE_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_tr2.yml
+    with:
+      platform: win-all
+      target: release
+    secrets: inherit
+
+  package_tr2_win_installer:
+    name: Build TR2 (Windows installer)
+    if: vars.RELEASE_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_tr2.yml
+    with:
+      platform: win-installer
+      target: release
     secrets: inherit
 
   package_mac:
-    name: "Build release assets (mac)"
+    name: Build TR2 (Mac)
     if: |
       vars.RELEASE_ENABLE == 'true' &&
       vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr2_macos.yml
     with:
-      target: "release"
+      target: release
       let_mac_fail: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     secrets: inherit
 
   publish_release:
-    if: vars.RELEASE_ENABLE == 'true'
+    if: always() && (vars.RELEASE_ENABLE == 'true')
     name: Create a GitHub release
     needs:
-      - package_multiplatform
+      - package_tr2_linux
+      - package_tr2_win
+      - package_tr2_win_installer
+      - package_mac
     with:
       draft: ${{ inputs.draft || false }}
       prerelease: ${{ inputs.draft || false }}
