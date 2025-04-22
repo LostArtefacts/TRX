@@ -31,7 +31,7 @@ static void M_Draw(const UI_NODE *const node)
 
 void UI_BeginFade(FADER *const fader, bool is_on_top)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA *));
+    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->fader = fader;
     data->is_on_top = is_on_top;
