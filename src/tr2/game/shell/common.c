@@ -138,10 +138,35 @@ static void M_SyncToWindow(void)
             width = 1280;
             height = 720;
         }
-        if (x == -1 && y == -1) { // default config state
-            const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
-            x = (display_size.w - width) / 2;
-            y = (display_size.h - height) / 2;
+
+        // Handle default position
+        if (x == -1 && y == -1) {
+            SDL_DisplayMode display_mode;
+            SDL_GetCurrentDisplayMode(0, &display_mode);
+            x = (display_mode.w - width) / 2;
+            y = (display_mode.h - height) / 2;
+        } else {
+            // Adjust window position if completely offscreen
+            bool on_screen = false;
+            const int32_t num_displays = SDL_GetNumVideoDisplays();
+            for (int32_t i = 0; i < num_displays; i++) {
+                SDL_Rect bounds;
+                SDL_GetDisplayBounds(i, &bounds);
+                if (x + width > bounds.x && x < bounds.x + bounds.w
+                    && y + height > bounds.y && y < bounds.y + bounds.h) {
+                    on_screen = true;
+                    break;
+                }
+            }
+            if (!on_screen) {
+                x = 0;
+                y = 0;
+                // Find the first display to reposition the window
+                SDL_Rect bounds;
+                SDL_GetDisplayBounds(0, &bounds);
+                x = bounds.x + (bounds.w - width) / 2;
+                y = bounds.y + (bounds.h - height) / 2;
+            }
         }
 
         SDL_SetWindowFullscreen(g_SDLWindow, 0);
