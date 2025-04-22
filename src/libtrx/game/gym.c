@@ -14,12 +14,14 @@ static bool m_IsInventoryOpenEnabled = true;
 static bool m_IsAssaultTimerDisplay = false;
 static bool m_IsAssaultTimerActive = false;
 
+static int32_t M_GetBestTime(void);
 static bool M_StoreAssaultTime(uint32_t time);
 
 static int32_t M_GetBestTime(void)
 {
     const ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
-    return assault->total_attempts > 0 ? assault->entries[0].time : NO_TIME;
+    return assault->total_attempts > 0 ? (int32_t)assault->entries[0].time
+                                       : NO_TIME;
 }
 
 static bool M_StoreAssaultTime(const uint32_t time)
