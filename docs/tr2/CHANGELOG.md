@@ -55,6 +55,8 @@
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
 - fixed a crash in custom levels with large rooms (#2749)
 - fixed flares missing the flicker effect in 60 FPS (#2806)
+- fixed the viewport not always in sync with the window (#2820)
+- improved performance when moving the window around
 - improved pause exit dialog - it can now be canceled with escape
 - removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels (#1583)
