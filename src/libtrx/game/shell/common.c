@@ -156,9 +156,16 @@ SHELL_SIZE Shell_GetCurrentSize(void)
 
 SHELL_SIZE Shell_GetCurrentDisplaySize(void)
 {
+    int32_t display_idx = 0;
+    SDL_Window *const window = Shell_GetWindow();
+    if (window != nullptr) {
+        display_idx = SDL_GetWindowDisplayIndex(window);
+    }
     SDL_DisplayMode dm;
-    SDL_GetCurrentDisplayMode(0, &dm);
-    return (SHELL_SIZE) { .w = dm.w, .h = dm.h };
+    if (SDL_GetCurrentDisplayMode(display_idx, &dm) == 0) {
+        return (SHELL_SIZE) { .w = dm.w, .h = dm.h };
+    }
+    return (SHELL_SIZE) { .w = -1, .h = -1 };
 }
 
 void Shell_ScheduleExit(void)
