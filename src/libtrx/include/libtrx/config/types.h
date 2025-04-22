@@ -20,7 +20,6 @@ typedef struct {
         uint32_t time;
         uint32_t attempt_num;
     } entries[MAX_ASSAULT_TIMES];
-    int32_t best_time;
     uint32_t total_attempts;
 } ASSAULT_STATS;
 

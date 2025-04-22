@@ -8,11 +8,19 @@
 #include "game/savegame.h"
 #include "game/stats.h"
 
+#define NO_TIME (-1)
+
 static bool m_IsInventoryOpenEnabled = true;
 static bool m_IsAssaultTimerDisplay = false;
 static bool m_IsAssaultTimerActive = false;
 
 static bool M_StoreAssaultTime(uint32_t time);
+
+static int32_t M_GetBestTime(void)
+{
+    const ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
+    return assault->total_attempts > 0 ? assault->entries[0].time : NO_TIME;
+}
 
 static bool M_StoreAssaultTime(const uint32_t time)
 {
@@ -91,28 +99,26 @@ void Gym_FinishAssault(void)
         return;
     }
 
+    const int32_t current_best_time = M_GetBestTime();
     ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
     const RESUME_INFO *const resume =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     M_StoreAssaultTime(resume->stats.timer);
 
-    if (assault->best_time <= 0) {
+    if (current_best_time <= 0) {
         if (resume->stats.timer < 100 * LOGIC_FPS) {
             // "Gosh! That was my best time yet!"
             Music_Play(MX_GYM_HINT_15, MPM_ALWAYS);
-            assault->best_time = resume->stats.timer;
         } else {
             // "Congratulations! You did it! But perhaps I could've been
             // faster."
             Music_Play(MX_GYM_HINT_17, MPM_ALWAYS);
-            assault->best_time = 100 * LOGIC_FPS;
         }
-    } else if (resume->stats.timer < (uint32_t)assault->best_time) {
+    } else if (resume->stats.timer < (uint32_t)current_best_time) {
         // "Gosh! That was my best time yet!"
         Music_Play(MX_GYM_HINT_15, MPM_ALWAYS);
-        assault->best_time = resume->stats.timer;
     } else if (
-        resume->stats.timer < (uint32_t)assault->best_time + 5 * LOGIC_FPS) {
+        resume->stats.timer < (uint32_t)current_best_time + 5 * LOGIC_FPS) {
         // "Almost. Perhaps another try and I might beat it."
         Music_Play(MX_GYM_HINT_16, MPM_ALWAYS);
     } else {

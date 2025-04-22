@@ -363,8 +363,6 @@ bool ConfigFile_LoadAssaultStats(
             }
         }
     }
-    assault_stats->best_time =
-        JSON_ObjectGetInt(stats_obj, "best_time", assault_stats->best_time);
     assault_stats->total_attempts = JSON_ObjectGetInt(
         stats_obj, "total_attempts", assault_stats->total_attempts);
     return true;
