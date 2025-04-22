@@ -77,10 +77,12 @@ static SHELL_ARGS m_Args = {
     .save_to_load = -1,
 };
 
+static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
 static Uint64 m_UpdateDebounce = 0;
 
 static void M_SyncToWindow(void);
-static void M_SyncFromWindow(void);
+static void M_SyncFromWindow(bool update_viewport);
+static bool M_MustUpdateRendererViewport(void);
 static void M_RefreshRendererViewport(void);
 static void M_HandleFocusGained(void);
 static void M_HandleFocusLost(void);
@@ -136,8 +138,9 @@ static void M_SyncToWindow(void)
             height = 720;
         }
         if (x <= 0 || y <= 0) {
-            x = (Shell_GetCurrentDisplayWidth() - width) / 2;
-            y = (Shell_GetCurrentDisplayHeight() - height) / 2;
+            const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
+            x = (display_size.w - width) / 2;
+            y = (display_size.h - height) / 2;
         }
 
         SDL_SetWindowFullscreen(g_SDLWindow, 0);
@@ -147,7 +150,7 @@ static void M_SyncToWindow(void)
     }
 }
 
-static void M_SyncFromWindow(void)
+static void M_SyncFromWindow(const bool update_viewport)
 {
     // Determine if this call should sync config, i.e., skip immediate
     // programmatic events
@@ -177,13 +180,22 @@ static void M_SyncFromWindow(void)
         }
     }
 
-    // Always refresh viewport to reflect the actual window size
-    M_RefreshRendererViewport();
+    if (update_viewport || M_MustUpdateRendererViewport()) {
+        // Refresh viewport to reflect the actual window size
+        M_RefreshRendererViewport();
+    }
+}
+
+static bool M_MustUpdateRendererViewport(void)
+{
+    const SHELL_SIZE size = Shell_GetCurrentSize();
+    return m_ViewportSize.w != size.w || m_ViewportSize.h != size.h;
 }
 
 static void M_RefreshRendererViewport(void)
 {
     Viewport_Reset();
+    m_ViewportSize = Shell_GetCurrentSize();
 }
 
 static void M_HandleFocusGained(void)
@@ -201,7 +213,7 @@ static void M_HandleWindowShown(void)
 
 static void M_HandleWindowRestored(void)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(true);
 }
 
 static void M_HandleWindowMinimized(void)
@@ -211,17 +223,17 @@ static void M_HandleWindowMinimized(void)
 
 static void M_HandleWindowMaximized(void)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(true);
 }
 
 static void M_HandleWindowMoved(const int32_t x, const int32_t y)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(false);
 }
 
 static void M_HandleWindowResized(int32_t width, int32_t height)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(true);
 }
 
 static void M_HandleKeyDown(const SDL_Event *const event)
@@ -352,9 +364,9 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     }
 
     if (CHANGED(window.is_fullscreen) || CHANGED(window.is_maximized)
-        || CHANGED(window.x) || CHANGED(window.y) || CHANGED(window.width)
-        || CHANGED(window.height) || CHANGED(rendering.scaler)
-        || CHANGED(rendering.sizer) || CHANGED(rendering.aspect_mode)) {
+        || CHANGED(window.width) || CHANGED(window.height)
+        || CHANGED(rendering.scaler) || CHANGED(rendering.sizer)
+        || CHANGED(rendering.aspect_mode)) {
         LOG_DEBUG("Change in settings detected");
         M_SyncToWindow();
         M_RefreshRendererViewport();
@@ -378,7 +390,11 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         }
     }
 
-    Output_ApplyLevelSettings();
+    if (CHANGED(visuals.fog_start) || CHANGED(visuals.fog_end)
+        || CHANGED(visuals.water_color.g) || CHANGED(visuals.water_color.b)
+        || CHANGED(visuals.water_color.r)) {
+        Output_ApplyLevelSettings();
+    }
 }
 
 // TODO: refactor the hell out of me
@@ -560,12 +576,6 @@ void Shell_Start(void)
     SDL_ShowWindow(g_SDLWindow);
     SDL_RaiseWindow(g_SDLWindow);
     M_RefreshRendererViewport();
-}
-
-bool Shell_IsFullscreen(void)
-{
-    const Uint32 flags = SDL_GetWindowFlags(g_SDLWindow);
-    return (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
 }
 
 // TODO: try to call this function in a single place after introducing phases.

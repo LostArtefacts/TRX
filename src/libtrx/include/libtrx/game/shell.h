@@ -3,6 +3,11 @@
 #include <SDL2/SDL.h>
 #include <stdint.h>
 
+typedef struct {
+    int32_t w;
+    int32_t h;
+} SHELL_SIZE;
+
 extern void Shell_Shutdown(void);
 extern SDL_Window *Shell_GetWindow(void);
 
@@ -16,9 +21,10 @@ void Shell_GetCommandLine(int *arg_count, const char ***args);
 void Shell_ScheduleExit(void);
 bool Shell_IsExiting(void);
 
-int32_t Shell_GetCurrentDisplayWidth(void);
-int32_t Shell_GetCurrentDisplayHeight(void);
-void Shell_GetWindowSize(int32_t *out_width, int32_t *out_height);
+bool Shell_IsFullscreen(void);
+SHELL_SIZE Shell_GetWindowSize(void);
+SHELL_SIZE Shell_GetCurrentSize(void);
+SHELL_SIZE Shell_GetCurrentDisplaySize(void);
 
 extern const char *Shell_GetConfigPath(void);
 extern const char *Shell_GetGameFlowPath(void);

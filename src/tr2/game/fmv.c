@@ -123,9 +123,8 @@ static bool M_Play(const char *const file_name)
                 ? 0
                 : g_Config.audio.sound_volume / (float)Sound_GetMaxVolume());
 
-        Video_SetSurfaceSize(
-            video, Shell_GetCurrentDisplayWidth(),
-            Shell_GetCurrentDisplayHeight());
+        const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
+        Video_SetSurfaceSize(video, display_size.w, display_size.h);
         if (g_Config.rendering.render_mode == RM_SOFTWARE) {
             Video_SetSurfacePixelFormat(video, AV_PIX_FMT_RGB8);
             GFX_2D_Renderer_SetPalette(renderer_2d, palette);
