@@ -11,34 +11,52 @@ on:
       - '!develop'
 
 jobs:
-  package_tr1_multiplatform:
-    name: Build TR1
+  package_tr1_linux:
+    name: TR1 (Linux)
     uses: ./.github/workflows/job_build_tr1.yml
     with:
-      target: 'debug'
+      platform: linux
+      target: debug
+    secrets: inherit
+
+  package_tr1_win:
+    name: TR1 (Windows)
+    uses: ./.github/workflows/job_build_tr1.yml
+    with:
+      platform: win-all
+      target: debug
     secrets: inherit
 
   package_tr1_mac:
-    name: Build TR1
+    name: TR1 (Mac)
     if: vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr1_macos.yml
     with:
-      target: 'debug'
+      target: debug
       let_mac_fail: true
     secrets: inherit
 
-  package_tr2_multiplatform:
-    name: Build TR2
+  package_tr2_linux:
+    name: TR2 (Linux)
     uses: ./.github/workflows/job_build_tr2.yml
     with:
-      target: 'debug'
+      platform: linux
+      target: debug
+    secrets: inherit
+
+  package_tr2_win:
+    name: TR2 (Windows)
+    uses: ./.github/workflows/job_build_tr2.yml
+    with:
+      platform: win-all
+      target: debug
     secrets: inherit
 
   package_tr2_mac:
-      name: Build TR2
+      name: TR2 (Mac)
       if: vars.MACOS_ENABLE == 'true'
       uses: ./.github/workflows/job_build_tr2_macos.yml
       with:
-        target: 'debug'
+        target: debug
         let_mac_fail: true
       secrets: inherit
