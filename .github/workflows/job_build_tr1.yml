@@ -32,6 +32,10 @@ jobs:
         name: Prepare variables
         run: echo "version=$(just output-current-version 1)" >> $GITHUB_OUTPUT
 
+      - name: Download large assets
+        if: ${{ inputs.target == 'release' }}
+        run: just download-assets 1
+
       - name: Package asset (${{ inputs.platform }})
         run: just tr1-package-${{ inputs.platform }} ${{ inputs.target }}
 

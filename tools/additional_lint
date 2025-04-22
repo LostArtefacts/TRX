@@ -24,6 +24,8 @@ def filter_files(
     files: Iterable[Path], ignored_patterns: list[str] | None, debug: bool
 ) -> Iterable[Path]:
     for path in files:
+        if not path.exists():
+            continue
         if path.is_dir():
             continue
         if is_binary_file(path):
