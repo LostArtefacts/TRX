@@ -138,7 +138,7 @@ static void M_SyncToWindow(void)
             width = 1280;
             height = 720;
         }
-        if (x <= 0 || y <= 0) {
+        if (x == -1 && y == -1) { // default config state
             const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
             x = (display_size.w - width) / 2;
             y = (display_size.h - height) / 2;
