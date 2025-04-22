@@ -371,6 +371,16 @@ less like this (click to expand):
 </pre>
 </details>
 
+## Dev snapshots
+
+To ease the load on our infrastructure, the binary assets such as images and music files are not included in pre-releases and pull request preview builds - they only ship with the full release builds.
+However, you can easily download them manually from these urls:
+
+- https://lostartefacts.dev/aux/tr1x/main.zip (main assets)
+- https://lostartefacts.dev/aux/tr1x/music.zip (music files)
+- https://lostartefacts.dev/aux/tr1x/trub-music.zip (TR: Unfinished Business expansion pack with fan-patched music)
+- https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (TR: Unfinished Business expansion pack in its original form)
+
 ## Improvements over original game
 
 Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for details.

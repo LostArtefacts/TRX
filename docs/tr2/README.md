@@ -156,6 +156,15 @@ as Notepad.
 4. Find TR2X in your Applications folder. Right-click it and click "Show Package Contents".
 5. Copy your Tomb Raider 2 game data files into `Contents/Resources`.
 
+## Dev snapshots
+
+To ease the load on our infrastructure, the binary assets such as images and music files are not included in pre-releases and pull request preview builds - they only ship with the full release builds.
+However, you can easily download them manually from these urls:
+
+- https://lostartefacts.dev/aux/tr2x/main.zip (main assets)
+- https://lostartefacts.dev/aux/tr2x/music.zip (music files)
+- https://lostartefacts.dev/aux/tr2x/trgm.zip (TR: The Golden Mask expansion pack)
+
 ## Improvements over original game
 
 #### UI

@@ -35,3 +35,7 @@ Release/
 **/subprojects/dwarfstack-*/
 src/tr1/subprojects/dwarfstack.wrap
 src/tr2/subprojects/dwarfstack.wrap
+
+data/tr1/ship/data/images/
+data/tr2/ship/data/images/
+data/tr2/ship/music/
