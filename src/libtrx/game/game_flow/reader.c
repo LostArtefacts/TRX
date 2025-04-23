@@ -108,12 +108,11 @@ static void M_LoadCommonSettings(
         if (tmp_value != nullptr && tmp_value->type == JSON_TYPE_ARRAY) {
             const JSON_ARRAY *const tmp_arr = JSON_ValueAsArray(tmp_value);
             const RGB_F color = {
-                JSON_ArrayGetDouble(tmp_arr, 0, JSON_INVALID_NUMBER),
-                JSON_ArrayGetDouble(tmp_arr, 1, JSON_INVALID_NUMBER),
-                JSON_ArrayGetDouble(tmp_arr, 2, JSON_INVALID_NUMBER),
+                JSON_ArrayGetDouble(tmp_arr, 0, -1.0),
+                JSON_ArrayGetDouble(tmp_arr, 1, -1.0),
+                JSON_ArrayGetDouble(tmp_arr, 2, -1.0),
             };
-            if (color.r != JSON_INVALID_NUMBER && color.g != JSON_INVALID_NUMBER
-                && color.b != JSON_INVALID_NUMBER) {
+            if (color.r >= 0.0 && color.g >= 0.0 && color.b >= 0.0) {
                 settings->water_color.is_present = true;
                 settings->water_color.value = (RGB_888) {
                     color.r * 255.0f,
@@ -515,7 +514,8 @@ static void M_LoadTitleLevel(JSON_OBJECT *obj, GAME_FLOW *const gf)
     JSON_OBJECT *title_obj = JSON_ObjectGetObject(obj, "title");
     if (title_obj != nullptr) {
         gf->title_level = Memory_Alloc(sizeof(GF_LEVEL));
-        M_LoadLevel(title_obj, gf, gf->title_level, 0, GFL_TITLE);
+        M_LoadLevel(
+            title_obj, gf, gf->title_level, 0, (void *)(intptr_t)GFL_TITLE);
     }
 }
 
