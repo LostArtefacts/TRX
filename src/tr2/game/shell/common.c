@@ -427,6 +427,10 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         || CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();
     }
+
+    if (CHANGED(rendering.aspect_mode)) {
+        Output_ReloadBackgroundImage();
+    }
 }
 
 // TODO: refactor the hell out of me
