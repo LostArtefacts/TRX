@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...develop) - ××××-××-××
+
+## [1.0](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...tr2-1.0) - 2025-04-23
 - added support for The Golden Mask (#1621)
 - added ability to turn off legal screen and FMVs (#2740)
 - added ability to turn off ingame cutscenes (#2127)
