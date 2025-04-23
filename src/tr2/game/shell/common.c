@@ -398,7 +398,7 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     if (CHANGED(window.is_fullscreen) || CHANGED(window.is_maximized)
         || CHANGED(window.width) || CHANGED(window.height)
         || CHANGED(rendering.scaler) || CHANGED(rendering.sizer)
-        || CHANGED(rendering.aspect_mode)) {
+        || CHANGED(rendering.aspect_mode) || CHANGED(visuals.use_psx_fov)) {
         LOG_DEBUG("Change in settings detected");
         M_SyncToWindow();
         M_RefreshRendererViewport();
