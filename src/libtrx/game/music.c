@@ -2,6 +2,16 @@
 
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
 
+int32_t Music_GetMinVolume(void)
+{
+    return 0;
+}
+
+int32_t Music_GetMaxVolume(void)
+{
+    return 10;
+}
+
 void Music_ResetTrackFlags(void)
 {
     for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {

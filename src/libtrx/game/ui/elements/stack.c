@@ -114,7 +114,7 @@ static void M_Layout(
     int32_t child_count = 0;
     float total_child_main_size = 0.0f;
     UI_NODE *child = node->first_child;
-    while (child != NULL) {
+    while (child != nullptr) {
         switch (data->settings.orientation) {
         case UI_STACK_HORIZONTAL:
             total_child_main_size += child->measure_w;

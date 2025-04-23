@@ -14,6 +14,11 @@ int16_t *Sound_GetSampleLUT(void);
 SAMPLE_INFO *Sound_GetSampleInfo(SOUND_EFFECT_ID sfx_num);
 SAMPLE_INFO *Sound_GetSampleInfoByIdx(int32_t info_idx);
 
+extern int32_t Sound_GetMinVolume(void);
+extern int32_t Sound_GetMaxVolume(void);
+extern int32_t Sound_GetMasterVolume(void);
+extern void Sound_SetMasterVolume(int32_t volume);
+
 void Sound_ResetSources(void);
 void Sound_PauseAll(void);
 void Sound_UnpauseAll(void);

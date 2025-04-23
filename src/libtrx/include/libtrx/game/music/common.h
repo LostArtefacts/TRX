@@ -31,3 +31,15 @@ extern void Music_Unpause(void);
 void Music_ResetTrackFlags(void);
 uint16_t Music_GetTrackFlags(int32_t track_idx);
 void Music_SetTrackFlags(int32_t track, uint16_t flags);
+
+// Gets the minimum possible game volume.
+extern int32_t Music_GetMinVolume(void);
+
+// Gets the maximum possible game volume.
+extern int32_t Music_GetMaxVolume(void);
+
+// Gets the game volume.
+extern int32_t Music_GetVolume(void);
+
+// Sets the game volume.
+extern void Music_SetVolume(int32_t volume);

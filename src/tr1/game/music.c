@@ -182,27 +182,17 @@ void Music_Unmute(void)
     M_SyncVolume(m_AudioStreamID);
 }
 
-int16_t Music_GetVolume(void)
+int32_t Music_GetVolume(void)
 {
     return m_Volume;
 }
 
-void Music_SetVolume(int16_t volume)
+void Music_SetVolume(int32_t volume)
 {
     if (volume != m_Volume) {
         m_Volume = volume;
         M_SyncVolume(m_AudioStreamID);
     }
-}
-
-int16_t Music_GetMinVolume(void)
-{
-    return 0;
-}
-
-int16_t Music_GetMaxVolume(void)
-{
-    return 10;
 }
 
 void Music_Pause(void)

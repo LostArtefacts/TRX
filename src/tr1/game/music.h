@@ -19,18 +19,6 @@ void Music_Mute(void);
 // Unmutes the game music. Doesn't change the music volume.
 void Music_Unmute(void);
 
-// Gets the game volume.
-int16_t Music_GetVolume(void);
-
-// Sets the game volume. Value can be 0-10.
-void Music_SetVolume(int16_t volume);
-
-// Gets the minimum possible game volume.
-int16_t Music_GetMinVolume(void);
-
-// Gets the maximum possible game volume.
-int16_t Music_GetMaxVolume(void);
-
 // Returns the currently playing track. Includes looped music.
 MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
 
