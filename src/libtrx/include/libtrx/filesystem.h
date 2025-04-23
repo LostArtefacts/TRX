@@ -39,8 +39,8 @@ char *File_GuessExtension(const char *path, const char **extensions);
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode);
 
-void File_ReadData(MYFILE *file, void *data, size_t size);
-void File_ReadItems(MYFILE *file, void *data, size_t count, size_t item_size);
+bool File_ReadData(MYFILE *file, void *data, size_t size);
+bool File_ReadItems(MYFILE *file, void *data, size_t count, size_t item_size);
 int8_t File_ReadS8(MYFILE *file);
 int16_t File_ReadS16(MYFILE *file);
 int32_t File_ReadS32(MYFILE *file);

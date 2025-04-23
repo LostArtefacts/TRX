@@ -283,56 +283,56 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
     return file;
 }
 
-void File_ReadData(MYFILE *const file, void *const data, const size_t size)
+bool File_ReadData(MYFILE *const file, void *const data, const size_t size)
 {
-    fread(data, size, 1, file->fp);
+    return fread(data, size, 1, file->fp) == 1;
 }
 
-void File_ReadItems(
+bool File_ReadItems(
     MYFILE *const file, void *data, const size_t count, const size_t item_size)
 {
-    fread(data, item_size, count, file->fp);
+    return fread(data, item_size, count, file->fp) == count;
 }
 
 int8_t File_ReadS8(MYFILE *const file)
 {
     int8_t result;
-    fread(&result, sizeof(result), 1, file->fp);
+    File_ReadData(file, &result, sizeof(result));
     return result;
 }
 
 int16_t File_ReadS16(MYFILE *const file)
 {
     int16_t result;
-    fread(&result, sizeof(result), 1, file->fp);
+    File_ReadData(file, &result, sizeof(result));
     return result;
 }
 
 int32_t File_ReadS32(MYFILE *const file)
 {
     int32_t result;
-    fread(&result, sizeof(result), 1, file->fp);
+    File_ReadData(file, &result, sizeof(result));
     return result;
 }
 
 uint8_t File_ReadU8(MYFILE *const file)
 {
     uint8_t result;
-    fread(&result, sizeof(result), 1, file->fp);
+    File_ReadData(file, &result, sizeof(result));
     return result;
 }
 
 uint16_t File_ReadU16(MYFILE *const file)
 {
     uint16_t result;
-    fread(&result, sizeof(result), 1, file->fp);
+    File_ReadData(file, &result, sizeof(result));
     return result;
 }
 
 uint32_t File_ReadU32(MYFILE *const file)
 {
     uint32_t result;
-    fread(&result, sizeof(result), 1, file->fp);
+    File_ReadData(file, &result, sizeof(result));
     return result;
 }
 
