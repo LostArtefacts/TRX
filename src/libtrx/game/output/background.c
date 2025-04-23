@@ -2,6 +2,7 @@
 
 #include "debug.h"
 #include "filesystem.h"
+#include "game/output/common.h"
 #include "game/viewport.h"
 #include "log.h"
 #include "memory.h"
@@ -196,6 +197,18 @@ bool Output_LoadBackgroundFromFile(const char *const path)
         Memory_FreePointer(&prev);
     }
     return result;
+}
+
+void Output_ReloadBackgroundImage(void)
+{
+    if (m_LastPath == nullptr) {
+        return;
+    }
+
+    char *prev = Memory_DupStr(m_LastPath);
+    Output_UnloadBackground();
+    Output_LoadBackgroundFromFile(prev);
+    Memory_FreePointer(&prev);
 }
 
 char *Output_GetLastBackgroundPath(void)
