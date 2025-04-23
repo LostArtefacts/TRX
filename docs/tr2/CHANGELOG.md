@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...develop) - ××××-××-××
+- added an option to wraparound when scrolling UI dialogs, such as save/load (#2834)
 - fixed the selected keyboard/controller layout not being saved (#2830, regression from 1.0)
 - fixed toggling the PSX FOV option not having an immediate effect (#2831, regression from 1.0)
 - fixed changing the aspect ratio not updating the current background image (#2832, regression from 1.0)
