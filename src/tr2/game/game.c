@@ -114,10 +114,10 @@ GF_COMMAND Game_Control(const bool demo_mode)
         if (g_OverlayStatus > 0) {
             if (g_GameFlow.load_save_disabled) {
                 g_OverlayStatus = 0;
-            } else if (g_Input.load) {
-                g_OverlayStatus = -1;
+            } else if (g_Input.save) {
+                g_OverlayStatus = -2;
             } else {
-                g_OverlayStatus = g_Input.save ? -2 : 0;
+                g_OverlayStatus = g_Input.load ? -1 : 0;
             }
         } else {
             GF_COMMAND gf_cmd;
