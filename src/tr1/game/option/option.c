@@ -168,6 +168,9 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     case O_COMPASS_OPTION:
         Option_Compass_Draw();
         break;
+    case O_SOUND_OPTION:
+        Option_Sound_Draw(inv_item);
+        break;
 
     case O_PICKUP_OPTION_1:
     case O_PICKUP_OPTION_2:

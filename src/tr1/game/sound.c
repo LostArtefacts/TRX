@@ -528,18 +528,6 @@ void Sound_StopAll(void)
     Audio_Sample_CloseAll();
 }
 
-void Sound_SetMasterVolume(int8_t volume)
-{
-    int8_t raw_volume = volume ? 6 * volume + 3 : 0;
-    m_MasterVolumeDefault = raw_volume & 0x3F;
-    m_MasterVolume = raw_volume & 0x3F;
-}
-
-int8_t Sound_GetMasterVolume(void)
-{
-    return (m_MasterVolume - 3) / 6;
-}
-
 int32_t Sound_GetMinVolume(void)
 {
     return 0;
@@ -548,6 +536,18 @@ int32_t Sound_GetMinVolume(void)
 int32_t Sound_GetMaxVolume(void)
 {
     return 10;
+}
+
+void Sound_SetMasterVolume(int32_t volume)
+{
+    int8_t raw_volume = volume ? 6 * volume + 3 : 0;
+    m_MasterVolumeDefault = raw_volume & 0x3F;
+    m_MasterVolume = raw_volume & 0x3F;
+}
+
+int32_t Sound_GetMasterVolume(void)
+{
+    return (m_MasterVolume - 3) / 6;
 }
 
 void Sound_ResetAmbient(void)

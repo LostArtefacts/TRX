@@ -216,6 +216,7 @@ sources = [
   'game/ui/dialogs/play_any_level.c',
   'game/ui/dialogs/save_slot.c',
   'game/ui/dialogs/select_level.c',
+  'game/ui/dialogs/sound_settings.c',
   'game/ui/dialogs/stats.c',
   'game/ui/elements/anchor.c',
   'game/ui/elements/fade.c',
