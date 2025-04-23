@@ -496,6 +496,7 @@
         "DETAIL_TITLE": "Graphic Options",
         "DETAIL_TRAPEZOID_FILTER": "Trapezoid filter",
         "DETAIL_UI_BAR_SCALE": "UI bar scale",
+        "DETAIL_UI_SCROLL_WRAPAROUND": "UI scroll wrap",
         "DETAIL_UI_TEXT_SCALE": "UI text scale",
         "DETAIL_USE_PSX_FOV": "Use PSX FOV",
         "DETAIL_WATER_COLOR_B": "Water color (B)",

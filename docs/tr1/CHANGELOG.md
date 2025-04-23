@@ -4,6 +4,7 @@
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
 - added support for antitriggers, like TR2+ (#2580)
 - added support for aspect ratio-specific images (#1840)
+- added an option to wraparound when scrolling UI dialogs, such as save/load (#2834)
 - changed the `draw_distance_min` and `draw_distance_max` to `fog_start` and `fog_end`
 - changed `Select Detail` dialog title to `Graphic Options`
 - changed the number of static mesh slots from 50 to 256 (#2734)

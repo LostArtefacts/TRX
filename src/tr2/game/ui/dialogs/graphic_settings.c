@@ -220,6 +220,12 @@ static const M_OPTION m_Options[] = {
     },
 
     {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
+        .target = &g_Config.ui.enable_wraparound,
+    },
+
+    {
         .option_type = COT_INT32,
         .label_id = GS_ID(DETAIL_SCALER),
         .target = &g_Config.rendering.scaler,

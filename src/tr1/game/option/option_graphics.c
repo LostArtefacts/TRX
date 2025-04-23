@@ -50,6 +50,7 @@ typedef enum {
     OPTION_BRIGHTNESS,
     OPTION_UI_TEXT_SCALE,
     OPTION_UI_BAR_SCALE,
+    OPTION_UI_SCROLL_WRAPAROUND,
     OPTION_RENDER_MODE,
     OPTION_RESOLUTION,
     OPTION_TRAPEZOID_FILTER,
@@ -95,6 +96,8 @@ static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
       GS_ID(DETAIL_FLOAT_FMT) },
     { OPTION_UI_BAR_SCALE, GS_ID(DETAIL_UI_BAR_SCALE),
       GS_ID(DETAIL_FLOAT_FMT) },
+    { OPTION_UI_SCROLL_WRAPAROUND, GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
+      GS_ID(MISC_ON) },
     { OPTION_RENDER_MODE, GS_ID(DETAIL_RENDER_MODE), GS_ID(DETAIL_STRING_FMT) },
     { OPTION_RESOLUTION, GS_ID(DETAIL_RESOLUTION),
       GS_ID(DETAIL_RESOLUTION_FMT) },
@@ -177,6 +180,8 @@ static void M_MenuUp(void)
         }
         m_GraphicsMenu.cur_option--;
         M_UpdateText();
+    } else if (g_Config.ui.enable_wraparound) {
+        M_Reinitialize(m_GfxOptionRows[OPTION_NUMBER_OF - 1].option_name);
     }
 }
 
@@ -191,6 +196,8 @@ static void M_MenuDown(void)
         }
         m_GraphicsMenu.cur_option++;
         M_UpdateText();
+    } else if (g_Config.ui.enable_wraparound) {
+        M_Reinitialize(m_GfxOptionRows[0].option_name);
     }
 }
 
@@ -322,6 +329,10 @@ static void M_UpdateArrows(
     case OPTION_UI_BAR_SCALE:
         m_HideArrowLeft = g_Config.ui.bar_scale <= CONFIG_MIN_BAR_SCALE;
         m_HideArrowRight = g_Config.ui.bar_scale >= CONFIG_MAX_BAR_SCALE;
+        break;
+    case OPTION_UI_SCROLL_WRAPAROUND:
+        m_HideArrowLeft = !g_Config.ui.enable_wraparound;
+        m_HideArrowRight = g_Config.ui.enable_wraparound;
         break;
     case OPTION_RENDER_MODE:
         local_right_arrow_offset = RIGHT_ARROW_OFFSET_MAX;
@@ -483,6 +494,11 @@ static void M_ChangeTextOption(
         Text_ChangeText(value_text, buf);
         break;
 
+    case OPTION_UI_SCROLL_WRAPAROUND:
+        bool is_enabled = g_Config.ui.enable_wraparound;
+        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
+        break;
+
     case OPTION_RENDER_MODE:
         sprintf(
             buf, GS(DETAIL_STRING_FMT),
@@ -636,6 +652,13 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             reset = OPTION_UI_BAR_SCALE;
             break;
 
+        case OPTION_UI_SCROLL_WRAPAROUND:
+            if (!g_Config.ui.enable_wraparound) {
+                g_Config.ui.enable_wraparound = true;
+                reset = OPTION_UI_SCROLL_WRAPAROUND;
+            }
+            break;
+
         case OPTION_RENDER_MODE:
             if (g_Config.rendering.render_mode == GFX_RM_LEGACY) {
                 g_Config.rendering.render_mode = GFX_RM_FRAMEBUFFER;
@@ -764,6 +787,13 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
                 g_Config.ui.bar_scale, CONFIG_MIN_BAR_SCALE,
                 CONFIG_MAX_BAR_SCALE);
             reset = OPTION_UI_BAR_SCALE;
+            break;
+
+        case OPTION_UI_SCROLL_WRAPAROUND:
+            if (g_Config.ui.enable_wraparound) {
+                g_Config.ui.enable_wraparound = false;
+                reset = OPTION_UI_SCROLL_WRAPAROUND;
+            }
             break;
 
         case OPTION_RENDER_MODE:
