@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...develop) - ××××-××-××
+- fixed the selected keyboard/controller layout not being saved (#2830, regression from 1.0)
 
 ## [1.0](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...tr2-1.0) - 2025-04-23
 - added support for The Golden Mask (#1621)
