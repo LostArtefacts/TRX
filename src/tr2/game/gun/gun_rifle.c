@@ -8,9 +8,11 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
@@ -195,11 +197,11 @@ void Gun_Rifle_FireHarpoon(void)
     item->status = IS_ACTIVE;
 
     g_Lara.harpoon_ammo.ammo--;
-    if (g_SaveGame.bonus_flag
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)
         && (g_Lara.harpoon_ammo.ammo % HARPOON_RECOIL) == 0) {
         g_Lara.harpoon_ammo.ammo += HARPOON_RECOIL;
     }
-    g_SaveGame.current_stats.ammo_used++;
+    Stats_AddAmmoUsed();
 }
 
 void Gun_Rifle_FireGrenade(void)
@@ -236,10 +238,10 @@ void Gun_Rifle_FireGrenade(void)
     Item_AddActive(item_num);
     item->status = IS_ACTIVE;
 
-    if (!g_SaveGame.bonus_flag) {
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         g_Lara.grenade_ammo.ammo--;
     }
-    g_SaveGame.current_stats.ammo_used++;
+    Stats_AddAmmoUsed();
 }
 
 void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)

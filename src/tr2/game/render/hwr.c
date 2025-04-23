@@ -29,7 +29,6 @@ typedef struct {
     GFX_2D_SURFACE *surface_pic;
     GFX_2D_SURFACE *surface_tex[GFX_MAX_TEXTURES];
     int32_t texture_map[GFX_MAX_TEXTURES];
-    int32_t env_map_texture;
     int32_t current_texture;
 } M_PRIV;
 
@@ -130,13 +129,10 @@ static void M_ShadeColor(
     GFX_3D_VERTEX *const target, uint32_t red, uint32_t green,
     const uint32_t blue, const uint8_t alpha)
 {
-    if (Output_IsShadeEffect()) {
-        red /= 2;
-        green = green * 7 / 8;
-    }
-    target->r = red;
-    target->g = green;
-    target->b = blue;
+    const RGB_F tint = Output_GetTint();
+    target->r = red * tint.r;
+    target->g = green * tint.g;
+    target->b = blue * tint.b;
     target->a = alpha;
 }
 
@@ -150,22 +146,22 @@ static void M_ShadeLightColor(
     GFX_3D_VERTEX *const target, uint32_t shade, const bool is_textured,
     uint32_t red, uint32_t green, uint32_t blue, const uint8_t alpha)
 {
-    CLAMPG(shade, 0x1FFF);
+    CLAMPG(shade, SHADE_MAX);
 
     if (g_Config.rendering.lighting_contrast == LIGHTING_CONTRAST_MEDIUM) {
         CLAMPL(shade, 0x800);
     }
     if (g_Config.rendering.lighting_contrast != LIGHTING_CONTRAST_LOW
         && is_textured) {
-        shade = 0x1000 + shade / 2;
+        shade = SHADE_NEUTRAL + shade / 2;
     }
     if (g_Config.rendering.lighting_contrast == LIGHTING_CONTRAST_LOW
         && !is_textured) {
-        CLAMPL(shade, 0x1000);
+        CLAMPL(shade, SHADE_NEUTRAL);
     }
 
-    if (shade != 0x1000) {
-        const int32_t brightness = 0x1FFF - shade;
+    if (shade != SHADE_NEUTRAL) {
+        const int32_t brightness = SHADE_MAX - shade;
         red = (red * brightness) >> 12;
         green = (green * brightness) >> 12;
         blue = (blue * brightness) >> 12;
@@ -187,10 +183,6 @@ static void M_ReleaseTextures(RENDERER *const renderer)
             priv->texture_map[i] = GFX_NO_TEXTURE;
         }
     }
-    if (priv->env_map_texture != GFX_NO_TEXTURE) {
-        GFX_3D_Renderer_UnregisterEnvironmentMap(
-            priv->renderer_3d, priv->env_map_texture);
-    }
 }
 
 static void M_LoadTexturePages(RENDERER *renderer)
@@ -211,9 +203,6 @@ static void M_LoadTexturePages(RENDERER *renderer)
             priv->renderer_3d, surface->buffer, surface->desc.width,
             surface->desc.height);
     }
-
-    priv->env_map_texture =
-        GFX_3D_Renderer_RegisterEnvironmentMap(priv->renderer_3d);
 }
 
 static void M_SelectTexture(RENDERER *const renderer, const int32_t tex_source)
@@ -1247,7 +1236,6 @@ static void M_Init(RENDERER *const renderer)
     for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
         priv->texture_map[i] = GFX_NO_TEXTURE;
     }
-    priv->env_map_texture = GFX_NO_TEXTURE;
 
     renderer->initialized = true;
     renderer->priv = priv;

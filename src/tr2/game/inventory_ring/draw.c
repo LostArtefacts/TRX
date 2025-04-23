@@ -1,12 +1,13 @@
 #include "game/inventory_ring/draw.h"
 
-#include "decomp/savegame.h"
 #include "game/console/common.h"
+#include "game/game.h"
 #include "game/input.h"
 #include "game/inventory_ring/control.h"
 #include "game/option/option.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -67,9 +68,9 @@ static void M_DrawItem(
 {
     if (ring->motion.status != RNG_FADING_OUT && ring->motion.status != RNG_DONE
         && inv_item == ring->list[ring->current_object] && !ring->rotating) {
-        Output_SetLightAdder(HIGH_LIGHT);
+        Output_SetLightAdder(SHADE_NEUTRAL);
     } else {
-        Output_SetLightAdder(LOW_LIGHT);
+        Output_SetLightAdder(SHADE_LOW);
     }
 
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
@@ -90,16 +91,18 @@ static void M_DrawItem(
     ANIM_FRAME *frame2;
     const int32_t frac = M_GetFrames(ring, inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_id == O_COMPASS_OPTION) {
+        const RESUME_INFO *const current_info =
+            Savegame_GetCurrentInfo(Game_GetCurrentLevel());
         const int32_t total_seconds =
-            g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
+            current_info->stats.timer / FRAMES_PER_SECOND;
         const int32_t hours = (total_seconds % 43200) * DEG_1 * -360 / 43200;
         const int32_t minutes = (total_seconds % 3600) * DEG_1 * -360 / 3600;
         const int32_t seconds = (total_seconds % 60) * DEG_1 * -360 / 60;
 
         const int16_t extra_rotation[3] = { hours, minutes, seconds };
-        Object_GetBone(obj, 3)->rot_z = true;
-        Object_GetBone(obj, 4)->rot_z = true;
-        Object_GetBone(obj, 5)->rot_z = true;
+        Object_GetBone(obj, 3)->rot.z = true;
+        Object_GetBone(obj, 4)->rot.z = true;
+        Object_GetBone(obj, 5)->rot.z = true;
         Object_DrawInterpolatedObject(
             obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
             rate);

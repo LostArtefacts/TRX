@@ -32,7 +32,7 @@ void GFX_GL_Program_Close(GFX_GL_PROGRAM *program)
     }
 }
 
-void GFX_GL_Program_Bind(GFX_GL_PROGRAM *program)
+void GFX_GL_Program_Bind(const GFX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     glUseProgram(program->id);

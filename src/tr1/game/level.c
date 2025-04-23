@@ -4,7 +4,6 @@
 #include "game/carrier.h"
 #include "game/effects.h"
 #include "game/game.h"
-#include "game/game_flow.h"
 #include "game/inventory_ring/vars.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -54,7 +53,6 @@ static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
-static size_t M_CalculateMaxVertices(void);
 
 static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
 {
@@ -261,15 +259,11 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level);
 
-    const size_t max_vertices = M_CalculateMaxVertices();
-    LOG_INFO("Maximum vertices: %d", max_vertices);
-    Output_ReserveVertexBuffer(max_vertices);
-
     Level_LoadTextures();
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_DownloadTextures();
+    Output_ObserveLevelLoad();
 
     // Initialise the sound effects.
     LEVEL_INFO *const info = Level_GetInfo();
@@ -320,41 +314,6 @@ static void M_MarkWaterEdgeVertices(void)
     Benchmark_End(&benchmark, nullptr);
 }
 
-static size_t M_CalculateMaxVertices(void)
-{
-    BENCHMARK benchmark = Benchmark_Start();
-    int32_t max_vertices = 0;
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        const OBJECT *const obj = Object_Get(i);
-        if (!obj->loaded) {
-            continue;
-        }
-
-        for (int32_t j = 0; j < obj->mesh_count; j++) {
-            const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + j);
-            max_vertices = MAX(max_vertices, mesh->num_vertices);
-        }
-    }
-
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
-        const STATIC_OBJECT_3D *obj = Object_Get3DStatic(i);
-        if (!obj->loaded) {
-            continue;
-        }
-
-        const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
-        max_vertices = MAX(max_vertices, mesh->num_vertices);
-    }
-
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        max_vertices = MAX(max_vertices, room->mesh.num_vertices);
-    }
-
-    Benchmark_End(&benchmark, nullptr);
-    return max_vertices;
-}
-
 void Level_Load(const GF_LEVEL *const level)
 {
     LOG_INFO("%d (%s)", level->num, level->path);
@@ -367,13 +326,15 @@ void Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Output_SetWaterColor(&level->settings.water_color);
-    Output_SetDrawDistFade(level->settings.draw_distance_fade * WALL_L);
-    Output_SetDrawDistMax(level->settings.draw_distance_max * WALL_L);
     Output_SetSkyboxEnabled(
         g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
 
     Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_Unload(void)
+{
+    Output_ObserveLevelUnload();
 }
 
 bool Level_Initialise(
@@ -411,19 +372,12 @@ bool Level_Initialise(
 
     Music_ResetTrackFlags();
 
-    /* Clear Object Loaded flags */
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        Object_Get(i)->loaded = false;
-    }
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
-        Object_Get2DStatic(i)->loaded = false;
-        Object_Get3DStatic(i)->loaded = false;
-    }
-
+    Object_Reset();
     Camera_Reset();
     Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);
+    Level_Unload();
     Level_Load(level);
     GameStringTable_Apply(level);
 

@@ -104,16 +104,16 @@ void Option_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     case O_MAGNUM_OPTION:
     case O_UZI_OPTION:
     case O_EXPLOSIVE_OPTION:
-    case O_MEDI_OPTION:
-    case O_BIGMEDI_OPTION:
+    case O_SMALL_MEDIPACK_OPTION:
+    case O_LARGE_MEDIPACK_OPTION:
         if (!is_busy) {
             g_InputDB.menu_confirm = 1;
         }
         break;
 
     case O_PISTOL_AMMO_OPTION:
-    case O_SG_AMMO_OPTION:
-    case O_MAG_AMMO_OPTION:
+    case O_SHOTGUN_AMMO_OPTION:
+    case O_MAGNUM_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:
         break;
 
@@ -145,9 +145,13 @@ void Option_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     }
 }
 
-void Option_Draw(INVENTORY_ITEM *inv_item)
+void Option_Draw(INVENTORY_ITEM *const inv_item)
 {
     switch (inv_item->object_id) {
+    case O_PASSPORT_OPTION:
+        Option_Passport_Draw(inv_item);
+        break;
+
     case O_CONTROL_OPTION:
         switch (m_ControlMode) {
         case CM_KEYBOARD:

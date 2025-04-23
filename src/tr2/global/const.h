@@ -12,7 +12,6 @@
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define SLOPE_DIF 60
 #define MAX_WIBBLE 2
-#define MAX_SHADE 0x300
 #define LIGHT_MAP_SIZE 32
 #define MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
 
@@ -28,13 +27,10 @@
 #define MAX_PALETTES 16
 #define MAX_VERTICES 0x2000
 #define MAX_BOUND_ROOMS 128
-#define MAX_EFFECTS 100
 #define MAX_LEVELS 24
 #define MAX_LEVEL_NAME_SIZE 50 // TODO: get rid of this limit
 #define MAX_DEMO_FILES MAX_LEVELS
 #define MAX_REQUESTER_ITEMS 24
-#define MAX_SAVE_SLOTS 16
-#define MAX_SG_BUFFER_SIZE 6272
 
 #define DEATH_WAIT (5 * 2 * FRAMES_PER_SECOND) // = 300
 #define DEATH_WAIT_INPUT (2 * FRAMES_PER_SECOND) // = 60
@@ -145,51 +141,8 @@
 #define SPRITE_TRANS_QUARTER 0x60000000
 #define SPRITE_COLOUR(r, g, b) ((r) | ((g) << 8) | ((b) << 16))
 
-#define VIEW_NEAR (20 * 1) // = 20
-#define VIEW_FAR (20 * WALL_L) // = 20480
-
-#define FOG_START (12 * WALL_L) // = 12288
-#define FOG_END (20 * WALL_L) // = 20480
-
-#define NUM_SLOTS 5
 #define PITCH_SHIFT 4
 
 #define IDS_DX5_REQUIRED 1
 
 #define MONK_FRIENDLY_FIRE_THRESHOLD 10
-
-#define GUN_AMMO_CLIP 16
-#define GUN_AMMO_QTY (GUN_AMMO_CLIP * 2) // = 32
-
-#define MAGNUM_AMMO_CLIP 20
-#define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 40
-
-#define UZI_AMMO_CLIP 40
-#define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2) // =  80
-
-#define M16_AMMO_CLIP 40
-#define M16_AMMO_QTY M16_AMMO_CLIP // = 40
-
-#define SHOTGUN_SHELL_COUNT 2
-#define SHOTGUN_AMMO_CLIP 6
-#define SHOTGUN_AMMO_QTY (SHOTGUN_AMMO_CLIP * SHOTGUN_SHELL_COUNT) // = 12
-#define SHOTGUN_PELLET_SCATTER (DEG_1 * 20) // = 3640
-
-#define HARPOON_BOLT_SPEED 150
-#define HARPOON_RECOIL 4
-#define HARPOON_AMMO_CLIP 3
-#define HARPOON_AMMO_QTY HARPOON_AMMO_CLIP // = 3
-
-#define GRENADE_SPEED 200
-#define GRENADE_AMMO_CLIP 1
-#define GRENADE_AMMO_QTY (GRENADE_AMMO_CLIP * 2) // = 2
-
-#if defined(PSX_VERSION) && defined(JAPAN)
-    #define FLARE_AMMO_BOX 8
-#else
-    #define FLARE_AMMO_BOX 6
-#endif
-#define FLARE_AMMO_QTY FLARE_AMMO_BOX
-
-#define LOW_LIGHT 5120
-#define HIGH_LIGHT 4096

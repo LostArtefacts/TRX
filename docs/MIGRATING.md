@@ -2,7 +2,17 @@
 
 ## TR1X
 
-### Version 4.7 to TR1X 4.8
+### Version 4.9 to 4.10
+
+1. **Update fog configuration**  
+    If you wish to force your fog settings on player:
+    - Rename `draw_distance_min` to `fog_start`
+    - Rename `draw_distance_max` to `fog_end`
+    If you wish to give the player agency to change the fog:
+    - Remove `draw_distance_min` and `draw_distance_max`
+
+
+### Version 4.7 to 4.8
 
 1. **Rename basic keys**  
    - Replace `file` key with `path` for every level.

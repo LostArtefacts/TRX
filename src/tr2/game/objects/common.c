@@ -1,13 +1,13 @@
 #include "game/objects/common.h"
 
 #include "game/items.h"
-#include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
@@ -62,8 +62,12 @@ void Object_DrawUnclippedItem(const ITEM *const item)
 
 void Object_DrawSpriteItem(const ITEM *const item)
 {
+    SHADE shade = item->shade;
+    if (shade.value_1 < 0) {
+        shade.value_1 = SHADE_NEUTRAL;
+    }
     Output_CalculateStaticMeshLight(
-        item->interp.result.pos, item->shade, Room_Get(item->room_num));
+        item->interp.result.pos, shade, Room_Get(item->room_num));
 
     const OBJECT *const obj = Object_Get(item->object_id);
 
@@ -72,7 +76,7 @@ void Object_DrawSpriteItem(const ITEM *const item)
             | SPRITE_SHADE,
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
-        Output_GetLightAdder() + 4096, 0);
+        Output_GetLightAdder() + SHADE_NEUTRAL, 0);
 }
 
 void Object_Collision(
@@ -89,7 +93,7 @@ void Object_Collision(
     }
 
     if (coll->enable_baddie_push) {
-        Lara_Push(item, lara_item, coll, false, true);
+        Lara_Push(item, coll, false, true);
     }
 }
 

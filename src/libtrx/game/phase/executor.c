@@ -12,6 +12,7 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/text.h"
+#include "game/ui.h"
 #include "gfx/gl/track.h"
 
 #define DEBUG_OPTIM 0
@@ -28,6 +29,8 @@ static int32_t M_Wait(PHASE *phase);
 
 static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 {
+    Console_Control();
+
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();
     if (gf_override_cmd.action != GF_NOOP) {
         const GF_COMMAND gf_cmd = gf_override_cmd;
@@ -64,6 +67,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 static void M_Draw(PHASE *const phase)
 {
     Output_BeginScene();
+    UI_BeginScene();
 #if DEBUG_OPTIM
     BENCHMARK benchmark = Benchmark_Start();
 #endif
@@ -73,6 +77,7 @@ static void M_Draw(PHASE *const phase)
 
     Console_Draw();
     Text_Draw();
+    UI_EndScene();
     Output_DrawPolyList();
     Fader_Draw(&m_ExitFader);
 

@@ -1,10 +1,10 @@
 #pragma once
 
+#include "../game/gym.h"
+#include "../game/output/types.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
 #include "../screenshot.h"
-
-#include <stdint.h>
 
 #define CONFIG_MIN_BRIGHTNESS 0.1f
 #define CONFIG_MAX_BRIGHTNESS 2.0f
@@ -47,21 +47,10 @@ typedef enum {
 } BAR_COLOR;
 
 typedef enum {
-    MUSIC_LOAD_NEVER,
-    MUSIC_LOAD_NON_AMBIENT,
-    MUSIC_LOAD_ALWAYS,
-} MUSIC_LOAD_CONDITION;
-
-typedef enum {
     TLM_FULL,
     TLM_SEMI,
     TLM_NONE,
 } TARGET_LOCK_MODE;
-
-typedef enum {
-    UI_STYLE_PS1,
-    UI_STYLE_PC,
-} UI_STYLE;
 
 typedef enum {
     SDM_MINIMAL,
@@ -99,11 +88,16 @@ typedef struct {
         bool fix_animated_sprites;
         bool fix_texture_issues;
         bool enable_ps1_crystals;
+
+        RGB_888 water_color;
+        int32_t fog_start;
+        int32_t fog_end;
     } visuals;
 
     struct {
         bool enable_game_ui;
         bool enable_photo_mode_ui;
+        bool enable_wraparound;
         double text_scale;
         double bar_scale;
         UI_STYLE menu_style;
@@ -147,13 +141,13 @@ typedef struct {
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
+        bool enable_legal;
         bool enable_compass_stats;
         bool enable_total_stats;
         bool enable_timer_in_inventory;
         bool enable_demo;
-        bool enable_eidos_logo;
         bool enable_loading_screens;
-        bool enable_cine;
+        bool enable_cutscenes;
         STAT_DETAIL_MODE stat_detail_mode;
         bool enable_walk_to_items;
         bool enable_enhanced_saves;
@@ -216,11 +210,11 @@ typedef struct {
         bool enable_vsync;
         bool enable_fps_counter;
         float anisotropy_filter;
-        bool pretty_pixels;
         SCREENSHOT_FORMAT screenshot_format;
     } rendering;
 
     struct {
         bool new_game_plus_unlock;
+        ASSAULT_STATS assault_stats;
     } profile;
 } CONFIG;

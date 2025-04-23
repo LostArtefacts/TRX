@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_TEXTSTRINGS 10
 #define USE_REAL_CLOCK 0
 
 static int32_t m_CachedItemCount = 0;
@@ -327,4 +326,16 @@ void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
     current_info->stats.distance_travelled += Math_Sqrt(
         SQUARE(pos.z - last_pos.z) + SQUARE(pos.y - last_pos.y)
         + SQUARE(pos.x - last_pos.x));
+}
+
+void Stats_AddDeath(void)
+{
+    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+    RESUME_INFO *const current_info = Savegame_GetCurrentInfo(current_level);
+    current_info->stats.death_count++;
+    const int32_t save_slot = Savegame_GetBoundSlot();
+    if (save_slot != -1) {
+        Savegame_UpdateDeathCounters(
+            save_slot, current_info->stats.death_count);
+    }
 }

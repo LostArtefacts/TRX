@@ -27,6 +27,12 @@ typedef struct {
 } XYZ_16;
 
 typedef struct {
+    bool x;
+    bool y;
+    bool z;
+} XYZ_BOOL;
+
+typedef struct {
     float x, y, z;
 } XYZ_F;
 

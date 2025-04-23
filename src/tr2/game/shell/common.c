@@ -1,7 +1,6 @@
 #include "game/shell/common.h"
 
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/console/common.h"
 #include "game/demo.h"
@@ -19,6 +18,7 @@
 #include "game/phase.h"
 #include "game/random.h"
 #include "game/render/common.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/viewport.h"
@@ -32,7 +32,7 @@
 #include <libtrx/game/objects/creatures/bear.h>
 #include <libtrx/game/objects/creatures/wolf.h>
 #include <libtrx/game/shell.h>
-#include <libtrx/game/ui/common.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -77,10 +77,13 @@ static SHELL_ARGS m_Args = {
     .save_to_load = -1,
 };
 
+static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
 static Uint64 m_UpdateDebounce = 0;
+static bool m_IgnoreConfigChanges = false;
 
 static void M_SyncToWindow(void);
-static void M_SyncFromWindow(void);
+static void M_SyncFromWindow(bool update_viewport);
+static bool M_MustUpdateRendererViewport(void);
 static void M_RefreshRendererViewport(void);
 static void M_HandleFocusGained(void);
 static void M_HandleFocusLost(void);
@@ -135,9 +138,35 @@ static void M_SyncToWindow(void)
             width = 1280;
             height = 720;
         }
-        if (x <= 0 || y <= 0) {
-            x = (Shell_GetCurrentDisplayWidth() - width) / 2;
-            y = (Shell_GetCurrentDisplayHeight() - height) / 2;
+
+        // Handle default position
+        if (x == -1 && y == -1) {
+            SDL_DisplayMode display_mode;
+            SDL_GetCurrentDisplayMode(0, &display_mode);
+            x = (display_mode.w - width) / 2;
+            y = (display_mode.h - height) / 2;
+        } else {
+            // Adjust window position if completely offscreen
+            bool on_screen = false;
+            const int32_t num_displays = SDL_GetNumVideoDisplays();
+            for (int32_t i = 0; i < num_displays; i++) {
+                SDL_Rect bounds;
+                SDL_GetDisplayBounds(i, &bounds);
+                if (x + width > bounds.x && x < bounds.x + bounds.w
+                    && y + height > bounds.y && y < bounds.y + bounds.h) {
+                    on_screen = true;
+                    break;
+                }
+            }
+            if (!on_screen) {
+                x = 0;
+                y = 0;
+                // Find the first display to reposition the window
+                SDL_Rect bounds;
+                SDL_GetDisplayBounds(0, &bounds);
+                x = bounds.x + (bounds.w - width) / 2;
+                y = bounds.y + (bounds.h - height) / 2;
+            }
         }
 
         SDL_SetWindowFullscreen(g_SDLWindow, 0);
@@ -147,50 +176,54 @@ static void M_SyncToWindow(void)
     }
 }
 
-static void M_SyncFromWindow(void)
+static void M_SyncFromWindow(const bool update_viewport)
 {
-    if (SDL_GetTicks() - m_UpdateDebounce < 1000) {
-        // Setting the size programatically triggers resize events.
-        // Additionally, SDL_GetWindowSize() is not guaranteed to return the
-        // same values as passed to SDL_SetWindowSize(). In order to avoid
-        // infinite loops where the window dimensions are continuously updated,
-        // resize events are debounced.
-        return;
-    }
+    // Determine if this call should sync config, i.e., skip immediate
+    // programmatic events
+    const Uint32 now = SDL_GetTicks();
+    const bool skip_config = (now - m_UpdateDebounce) < 500;
 
+    // Always pull current window state for logging and viewport reset
     const Uint32 window_flags = SDL_GetWindowFlags(g_SDLWindow);
     const bool is_maximized = window_flags & SDL_WINDOW_MAXIMIZED;
-
-    int32_t width;
-    int32_t height;
+    int32_t x, y;
+    int32_t width, height;
     SDL_GetWindowSize(g_SDLWindow, &width, &height);
-
-    int32_t x;
-    int32_t y;
     SDL_GetWindowPosition(g_SDLWindow, &x, &y);
-
     LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
 
-    g_Config.window.is_maximized = is_maximized;
-    if (!is_maximized && !g_Config.window.is_fullscreen) {
-        g_Config.window.x = x;
-        g_Config.window.y = y;
-        g_Config.window.width = width;
-        g_Config.window.height = height;
+    // Update config only when not in debounce window
+    if (!skip_config) {
+        g_Config.window.is_maximized = is_maximized;
+        if (!is_maximized && !g_Config.window.is_fullscreen) {
+            g_Config.window.x = x;
+            g_Config.window.y = y;
+            g_Config.window.width = width;
+            g_Config.window.height = height;
+        }
+        if (g_Config.loaded) {
+            m_IgnoreConfigChanges = true;
+            Config_Write();
+            m_IgnoreConfigChanges = false;
+        }
     }
 
-    // Save the updated config, but ensure it was loaded first
-    if (g_Config.loaded) {
-        Config_Write();
+    if (update_viewport || M_MustUpdateRendererViewport()) {
+        // Refresh viewport to reflect the actual window size
+        M_RefreshRendererViewport();
     }
+}
 
-    M_RefreshRendererViewport();
+static bool M_MustUpdateRendererViewport(void)
+{
+    const SHELL_SIZE size = Shell_GetCurrentSize();
+    return m_ViewportSize.w != size.w || m_ViewportSize.h != size.h;
 }
 
 static void M_RefreshRendererViewport(void)
 {
     Viewport_Reset();
-    UI_Events_Fire(&(EVENT) { .name = "canvas_resize" });
+    m_ViewportSize = Shell_GetCurrentSize();
 }
 
 static void M_HandleFocusGained(void)
@@ -208,7 +241,7 @@ static void M_HandleWindowShown(void)
 
 static void M_HandleWindowRestored(void)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(true);
 }
 
 static void M_HandleWindowMinimized(void)
@@ -218,17 +251,17 @@ static void M_HandleWindowMinimized(void)
 
 static void M_HandleWindowMaximized(void)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(true);
 }
 
 static void M_HandleWindowMoved(const int32_t x, const int32_t y)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(false);
 }
 
 static void M_HandleWindowResized(int32_t width, int32_t height)
 {
-    M_SyncFromWindow();
+    M_SyncFromWindow(true);
 }
 
 static void M_HandleKeyDown(const SDL_Event *const event)
@@ -346,6 +379,10 @@ static void M_LoadConfig(void)
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
+    if (m_IgnoreConfigChanges) {
+        return;
+    }
+
     const CONFIG *const old = &g_Config;
     const CONFIG *const new = &g_SavedConfig;
 
@@ -359,9 +396,9 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     }
 
     if (CHANGED(window.is_fullscreen) || CHANGED(window.is_maximized)
-        || CHANGED(window.x) || CHANGED(window.y) || CHANGED(window.width)
-        || CHANGED(window.height) || CHANGED(rendering.scaler)
-        || CHANGED(rendering.sizer) || CHANGED(rendering.aspect_mode)) {
+        || CHANGED(window.width) || CHANGED(window.height)
+        || CHANGED(rendering.scaler) || CHANGED(rendering.sizer)
+        || CHANGED(rendering.aspect_mode)) {
         LOG_DEBUG("Change in settings detected");
         M_SyncToWindow();
         M_RefreshRendererViewport();
@@ -379,10 +416,16 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         Render_Reset(RENDER_RESET_PARAMS);
     }
 
-    if (CHANGED(visuals.fov) || CHANGED(visuals.use_pcx_fov)) {
+    if (CHANGED(visuals.fov) || CHANGED(visuals.use_psx_fov)) {
         if (Viewport_GetFOV(false) == -1) {
             Viewport_AlterFOV(-1);
         }
+    }
+
+    if (CHANGED(visuals.fog_start) || CHANGED(visuals.fog_end)
+        || CHANGED(visuals.water_color.g) || CHANGED(visuals.water_color.b)
+        || CHANGED(visuals.water_color.r)) {
+        Output_ApplyLevelSettings();
     }
 }
 
@@ -439,7 +482,8 @@ void Shell_Main(void)
 
     Savegame_Init();
     Savegame_InitCurrentInfo();
-    S_FrontEndCheck();
+    Savegame_ScanSavedGames();
+    Savegame_HighlightNewestSlot();
 
     if (m_Args.level_to_play != nullptr) {
         Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
@@ -476,14 +520,15 @@ void Shell_Main(void)
         }
 
         case GF_START_SAVED_GAME: {
-            if (!S_LoadGame(gf_cmd.param)) {
+            const int16_t slot_num = gf_cmd.param;
+            const int16_t level_num = Savegame_GetLevelNumber(slot_num);
+            if (level_num < 0) {
+                LOG_ERROR("Corrupt save file!");
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
             } else {
-                const GF_LEVEL *const level =
-                    GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
-                if (level != nullptr) {
-                    gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
-                }
+                Savegame_BindSlot(slot_num);
+                const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
+                gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
             }
             break;
         }
@@ -563,12 +608,6 @@ void Shell_Start(void)
     SDL_ShowWindow(g_SDLWindow);
     SDL_RaiseWindow(g_SDLWindow);
     M_RefreshRendererViewport();
-}
-
-bool Shell_IsFullscreen(void)
-{
-    const Uint32 flags = SDL_GetWindowFlags(g_SDLWindow);
-    return (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
 }
 
 // TODO: try to call this function in a single place after introducing phases.

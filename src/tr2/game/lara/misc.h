@@ -46,9 +46,6 @@ void Lara_GetJointAbsPosition_I(
 
 void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
 void Lara_TakeHit(ITEM *lara_item, const COLL_INFO *coll);
-void Lara_Push(
-    const ITEM *item, ITEM *lara_item, COLL_INFO *coll, bool hit_on,
-    bool big_push);
 int32_t Lara_MovePosition(XYZ_32 *vec, ITEM *item, ITEM *lara_item);
 int32_t Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
 
@@ -74,8 +71,6 @@ void Lara_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
 void Lara_SwimCollision(ITEM *item, COLL_INFO *coll);
 
 void Lara_WaterCurrent(COLL_INFO *coll);
-
-void Lara_CatchFire(void);
 
 void Lara_TouchLava(ITEM *item);
 

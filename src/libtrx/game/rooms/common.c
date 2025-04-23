@@ -7,6 +7,7 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/objects/traps/movable_block.h"
+#include "game/output.h"
 #include "game/rooms/const.h"
 #include "game/rooms/enum.h"
 #include "game/sound/common.h"
@@ -42,9 +43,10 @@ static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
 static void M_AddFlipItems(const ROOM *room);
 static void M_RemoveFlipItems(const ROOM *room);
-static int16_t M_GetFloorTiltHeight(const SECTOR *sector, int32_t x, int32_t z);
+static int16_t M_GetFloorTiltHeight(
+    const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
 static int16_t M_GetCeilingTiltHeight(
-    const SECTOR *sector, int32_t x, int32_t z);
+    const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -154,10 +156,11 @@ static void M_RemoveFlipItems(const ROOM *const room)
 }
 
 static int16_t M_GetFloorTiltHeight(
-    const SECTOR *const sector, const int32_t x, const int32_t z)
+    const SECTOR *const sector, const int32_t x, const int32_t z,
+    const bool fix_tilts)
 {
     int16_t height = sector->floor.height;
-    if (sector->floor.tilt == 0) {
+    if (sector->floor.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
         return height;
     }
 
@@ -188,10 +191,11 @@ static int16_t M_GetFloorTiltHeight(
 }
 
 static int16_t M_GetCeilingTiltHeight(
-    const SECTOR *sector, const int32_t x, const int32_t z)
+    const SECTOR *sector, const int32_t x, const int32_t z,
+    const bool fix_tilts)
 {
     int16_t height = sector->ceiling.height;
-    if (sector->ceiling.tilt == 0) {
+    if (sector->ceiling.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
         return height;
     }
 
@@ -294,6 +298,8 @@ void Room_FlipMap(void)
         room->effect_num = flipped->effect_num;
 
         M_AddFlipItems(room);
+        Output_ObserveRoomFlip(flipped);
+        Output_ObserveRoomFlip(room);
     }
 
     MovableBlock_HandleFlipMap(RFS_FLIPPED);
@@ -461,6 +467,17 @@ int32_t Room_FindByPos(const int32_t x, const int32_t y, const int32_t z)
     return NO_ROOM_NEG;
 }
 
+int32_t Room_GetFlippedBaseRoom(const int32_t room_num)
+{
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        if (room->flipped_room == room_num) {
+            return i;
+        }
+    }
+    return NO_ROOM;
+}
+
 BOUNDS_32 Room_GetWorldBounds(void)
 {
     BOUNDS_32 bounds = {
@@ -544,7 +561,15 @@ HEIGHT_TYPE Room_GetHeightType(void)
 }
 
 int16_t Room_GetHeight(
-    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z)
+    const SECTOR *const sector, const int32_t x, const int32_t y,
+    const int32_t z)
+{
+    return Room_GetHeightEx(sector, x, y, z, false);
+}
+
+int16_t Room_GetHeightEx(
+    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
+    const bool fix_tilts)
 {
     m_HeightType = HT_WALL;
 
@@ -554,7 +579,7 @@ int16_t Room_GetHeight(
     if (Room_IsAbyssHeight(height)) {
         height = m_AbyssMaxHeight;
     } else {
-        height = M_GetFloorTiltHeight(pit_sector, x, z);
+        height = M_GetFloorTiltHeight(pit_sector, x, z, fix_tilts);
     }
 
     if (pit_sector->trigger == nullptr) {
@@ -581,8 +606,15 @@ int16_t Room_GetCeiling(
     const SECTOR *const sector, const int32_t x, const int32_t y,
     const int32_t z)
 {
+    return Room_GetCeilingEx(sector, x, y, z, false);
+}
+
+int16_t Room_GetCeilingEx(
+    const SECTOR *const sector, const int32_t x, const int32_t y,
+    const int32_t z, const bool fix_tilts)
+{
     const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
-    int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z);
+    int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z, fix_tilts);
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
     if (pit_sector->trigger == nullptr) {

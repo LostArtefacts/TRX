@@ -49,8 +49,8 @@
 #define SHOTGUN_RARM_XMIN (-65 * DEG_1)
 #define SHOTGUN_RARM_XMAX (+65 * DEG_1)
 
-static ITEM *m_TargetList[NUM_SLOTS];
-static ITEM *m_LastTargetList[NUM_SLOTS];
+static ITEM *m_TargetList[LOT_SLOT_COUNT];
+static ITEM *m_LastTargetList[LOT_SLOT_COUNT];
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     // null
@@ -269,7 +269,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     }
 
     if (num_targets > 0) {
-        for (int slot = 0; slot < NUM_SLOTS; slot++) {
+        for (int slot = 0; slot < LOT_SLOT_COUNT; slot++) {
             if (!m_TargetList[slot]) {
                 g_Lara.target = nullptr;
             }
@@ -288,7 +288,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     }
 
     if (g_Lara.target != m_LastTargetList[0]) {
-        for (int slot = NUM_SLOTS - 1; slot > 0; slot--) {
+        for (int slot = LOT_SLOT_COUNT - 1; slot > 0; slot--) {
             m_LastTargetList[slot] = m_LastTargetList[slot - 1];
         }
         m_LastTargetList[0] = g_Lara.target;
@@ -302,12 +302,12 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
     g_Lara.target = nullptr;
     bool found_new_target = false;
 
-    for (int new_target = 0; new_target < NUM_SLOTS; new_target++) {
+    for (int new_target = 0; new_target < LOT_SLOT_COUNT; new_target++) {
         if (!m_TargetList[new_target]) {
             break;
         }
 
-        for (int last_target = 0; last_target < NUM_SLOTS; last_target++) {
+        for (int last_target = 0; last_target < LOT_SLOT_COUNT; last_target++) {
             if (!m_LastTargetList[last_target]) {
                 found_new_target = true;
                 break;
@@ -325,7 +325,8 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
     }
 
     if (g_Lara.target != m_LastTargetList[0]) {
-        for (int last_target = NUM_SLOTS - 1; last_target > 0; last_target--) {
+        for (int last_target = LOT_SLOT_COUNT - 1; last_target > 0;
+             last_target--) {
             m_LastTargetList[last_target] = m_LastTargetList[last_target - 1];
         }
         m_LastTargetList[0] = g_Lara.target;
@@ -394,28 +395,28 @@ int32_t Gun_FireWeapon(
     AMMO_INFO *ammo;
     switch (weapon_type) {
     case LGT_MAGNUMS:
-        ammo = &g_Lara.magnums;
-        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+        ammo = &g_Lara.magnum_ammo;
+        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
-        ammo = &g_Lara.uzis;
-        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+        ammo = &g_Lara.uzi_ammo;
+        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
-        ammo = &g_Lara.shotgun;
-        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+        ammo = &g_Lara.shotgun_ammo;
+        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     default:
-        ammo = &g_Lara.pistols;
+        ammo = &g_Lara.pistol_ammo;
         ammo->ammo = 1000;
         break;
     }
@@ -478,7 +479,7 @@ int32_t Gun_FireWeapon(
         vdest.z = vsrc.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
         Gun_HitTarget(
             target, &vdest,
-            winfo->damage * (g_GameInfo.bonus_flag & GBF_JAPANESE ? 2 : 1));
+            winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
 

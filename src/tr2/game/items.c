@@ -10,12 +10,14 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
+static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};
 
 static OBJECT_BOUNDS M_ConvertBounds(const int16_t *bounds_in);
@@ -122,7 +124,8 @@ void Item_Initialise(const int16_t item_num)
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     item->floor = sector->floor.height;
 
-    if (g_SaveGame.bonus_flag && GF_GetCurrentLevel()->type != GFL_DEMO) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)
+        && GF_GetCurrentLevel()->type != GFL_DEMO) {
         item->hit_points *= 2;
     }
 
@@ -183,36 +186,6 @@ int16_t Item_GetHeight(const ITEM *const item)
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     return height;
-}
-
-int32_t Item_TestBoundsCollide(
-    const ITEM *const src_item, const ITEM *const dst_item,
-    const int32_t radius)
-{
-    const BOUNDS_16 *const src_bounds = &Item_GetBestFrame(src_item)->bounds;
-    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrame(dst_item)->bounds;
-
-    if (src_item->pos.y + src_bounds->max.y
-            <= dst_item->pos.y + dst_bounds->min.y
-        || src_item->pos.y + src_bounds->min.y
-            >= dst_item->pos.y + dst_bounds->max.y) {
-        return false;
-    }
-
-    const int32_t c = Math_Cos(src_item->rot.y);
-    const int32_t s = Math_Sin(src_item->rot.y);
-    const int32_t dx = dst_item->pos.x - src_item->pos.x;
-    const int32_t dz = dst_item->pos.z - src_item->pos.z;
-    const int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
-    const int32_t rz = (c * dz + s * dx) >> W2V_SHIFT;
-
-    // clang-format off
-    return (
-        rx >= src_bounds->min.x - radius &&
-        rx <= src_bounds->max.x + radius &&
-        rz >= src_bounds->min.z - radius &&
-        rz <= src_bounds->max.z + radius);
-    // clang-format on
 }
 
 int32_t Item_TestPosition(
@@ -304,33 +277,14 @@ void Item_AlignPosition(
     dst_item->pos.z = new_pos.z;
 }
 
-int32_t Item_IsTriggerActive(ITEM *const item)
-{
-    const bool ok = !(item->flags & IF_REVERSE);
-
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return !ok;
-    }
-
-    if (!item->timer) {
-        return ok;
-    }
-
-    if (item->timer == -1) {
-        return !ok;
-    }
-
-    item->timer--;
-    if (item->timer == 0) {
-        item->timer = -1;
-    }
-
-    return ok;
-}
-
-int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
+int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);
+    if (anim->frame_ptr == nullptr) {
+        frames[0] = nullptr;
+        return 0;
+    }
+
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
     const int32_t key_frame_span = anim->interpolation;
@@ -349,8 +303,8 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
         }
     }
 
-    frmptr[0] = &anim->frame_ptr[first_key_frame_num];
-    frmptr[1] = &anim->frame_ptr[second_key_frame_num];
+    frames[0] = &anim->frame_ptr[first_key_frame_num];
+    frames[1] = &anim->frame_ptr[second_key_frame_num];
 
     // OG
     if (g_Config.rendering.fps == 30) {
@@ -381,34 +335,38 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
     return final * 10;
 }
 
-BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
+const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
 {
     int32_t rate;
-    ANIM_FRAME *frmptr[2];
-    const int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (!frac) {
-        return &frmptr[0]->bounds;
+    ANIM_FRAME *frames[2];
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    if (frames[0] == nullptr) {
+        return &m_NullBounds;
+    }
+
+    if (frac == 0) {
+        return &frames[0]->bounds;
     }
 
 #define CALC(target, b1, b2, prop)                                             \
     target->prop = (b1)->prop + ((((b2)->prop - (b1)->prop) * frac) / rate);
 
     BOUNDS_16 *const result = &m_InterpolatedBounds;
-    CALC(result, &frmptr[0]->bounds, &frmptr[1]->bounds, min.x);
-    CALC(result, &frmptr[0]->bounds, &frmptr[1]->bounds, max.x);
-    CALC(result, &frmptr[0]->bounds, &frmptr[1]->bounds, min.y);
-    CALC(result, &frmptr[0]->bounds, &frmptr[1]->bounds, max.y);
-    CALC(result, &frmptr[0]->bounds, &frmptr[1]->bounds, min.z);
-    CALC(result, &frmptr[0]->bounds, &frmptr[1]->bounds, max.z);
+    CALC(result, &frames[0]->bounds, &frames[1]->bounds, min.x);
+    CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.x);
+    CALC(result, &frames[0]->bounds, &frames[1]->bounds, min.y);
+    CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.y);
+    CALC(result, &frames[0]->bounds, &frames[1]->bounds, min.z);
+    CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.z);
     return result;
 }
 
 ANIM_FRAME *Item_GetBestFrame(const ITEM *const item)
 {
-    ANIM_FRAME *frmptr[2];
+    ANIM_FRAME *frames[2];
     int32_t rate;
-    const int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    return frmptr[(frac > rate / 2) ? 1 : 0];
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    return frames[(frac > rate / 2) ? 1 : 0];
 }
 
 bool Item_IsNearItem(
@@ -490,18 +448,7 @@ int32_t Item_Explode(
 
         Matrix_TranslateRel32(bone->pos);
         Matrix_Rot16(best_frame->mesh_rots[i]);
-
-        if (extra_rotation != nullptr) {
-            if (bone->rot_y) {
-                Matrix_RotY(*extra_rotation++);
-            }
-            if (bone->rot_x) {
-                Matrix_RotX(*extra_rotation++);
-            }
-            if (bone->rot_z) {
-                Matrix_RotZ(*extra_rotation++);
-            }
-        }
+        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
 
         bit <<= 1;
         if ((mesh_bits & bit) && (item->mesh_bits & bit)) {

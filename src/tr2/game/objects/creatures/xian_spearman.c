@@ -127,8 +127,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 6)->rot_y = true;
-    Object_GetBone(obj, 12)->rot_y = true;
+    Object_GetBone(obj, 6)->rot.y = true;
+    Object_GetBone(obj, 12)->rot.y = true;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -409,7 +409,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (lara_alive && g_LaraItem->hit_points <= 0) {
-        Creature_Kill(
+        Creature_SpecialKill(
             item, XIAN_SPEARMAN_ANIM_KILL, XIAN_SPEARMAN_STATE_KILL,
             LA_EXTRA_YETI_KILL);
         return;

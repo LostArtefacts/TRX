@@ -2,7 +2,7 @@
 
 #include "game/game_flow/types.h"
 
-#include <libtrx/game/level/common.h>
+#include <libtrx/game/level.h>
 
 void Level_Init(void);
 bool Level_Initialise(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);

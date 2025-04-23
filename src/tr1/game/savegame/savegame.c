@@ -3,293 +3,20 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/inventory.h"
-#include "game/items.h"
-#include "game/lot.h"
-#include "game/objects/vars.h"
-#include "game/requester.h"
-#include "game/room.h"
-#include "game/savegame/savegame_bson.h"
-#include "game/savegame/savegame_legacy.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
 
-#include <libtrx/benchmark.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/enum_map.h>
-#include <libtrx/filesystem.h>
-#include <libtrx/game/objects/traps/movable_block.h>
-#include <libtrx/memory.h>
-#include <libtrx/strings.h>
+#include <libtrx/game/gun/const.h>
 
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-
-#define SAVES_DIR "saves"
-
-typedef struct {
-    bool allow_load;
-    bool allow_save;
-    SAVEGAME_FORMAT format;
-    const char *(*get_save_filename_pattern)(void);
-    bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
-    bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
-    bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
-    void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
-    bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
-} SAVEGAME_STRATEGY;
-
-static int32_t m_SaveSlots = 0;
-static int16_t m_NewestSlot = -1;
-static SAVEGAME_INFO *m_SavegameInfo = nullptr;
-
-static const SAVEGAME_STRATEGY m_Strategies[] = {
-    {
-        .allow_load = true,
-        .allow_save = true,
-        .format = SAVEGAME_FORMAT_BSON,
-        .get_save_filename_pattern = Savegame_BSON_GetSaveFilePattern,
-        .fill_info = Savegame_BSON_FillInfo,
-        .load_from_file = Savegame_BSON_LoadFromFile,
-        .load_only_resume_info = Savegame_BSON_LoadOnlyResumeInfo,
-        .save_to_file = Savegame_BSON_SaveToFile,
-        .update_death_counters = Savegame_BSON_UpdateDeathCounters,
-    },
-    {
-        .allow_load = true,
-        .allow_save = false,
-        .format = SAVEGAME_FORMAT_LEGACY,
-        .get_save_filename_pattern = Savegame_Legacy_GetSaveFilePattern,
-        .fill_info = Savegame_Legacy_FillInfo,
-        .load_from_file = Savegame_Legacy_LoadFromFile,
-        .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
-        .save_to_file = nullptr,
-        .update_death_counters = Savegame_Legacy_UpdateDeathCounters,
-    },
-    { 0 },
-};
-
-static void M_ClearSlots(void);
-static bool M_FillSlot(
-    const SAVEGAME_STRATEGY *strategy, int32_t slot_num, const char *path);
-static void M_ScanSavedGamesDir(const char *dir_path);
-static void M_LoadPreprocess(void);
-static void M_LoadPostprocess(void);
-
-static void M_ClearSlots(void)
+int32_t Savegame_GetSlotCount(void)
 {
-    if (m_SavegameInfo == nullptr) {
-        return;
-    }
-
-    for (int32_t i = 0; i < m_SaveSlots; i++) {
-        SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
-        savegame_info->format = 0;
-        savegame_info->counter = -1;
-        savegame_info->level_num = -1;
-        Memory_FreePointer(&savegame_info->full_path);
-        Memory_FreePointer(&savegame_info->level_title);
-    }
+    return g_Config.gameplay.maximum_save_slots;
 }
 
-static bool M_FillSlot(
-    const SAVEGAME_STRATEGY *const strategy, const int32_t slot_num,
-    const char *const path)
+void Savegame_HighlightNewestSlot(void)
 {
-    SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
-    if (strategy->format <= savegame_info->format) {
-        // do not override already filled slots or for less preferred strategies
-        return true;
-    }
-
-    bool result = false;
-    MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
-    if (fp != nullptr) {
-        if (strategy->fill_info(fp, savegame_info)) {
-            savegame_info->format = strategy->format;
-            Memory_FreePointer(&savegame_info->full_path);
-            savegame_info->full_path = Memory_DupStr(path);
-            result = true;
-        }
-        File_Close(fp);
-    }
-    return result;
-}
-
-static void M_ScanSavedGamesDir(const char *const dir_path)
-{
-    void *dir_handle = File_OpenDirectory(dir_path);
-    if (dir_handle == nullptr) {
-        return;
-    }
-
-    while (true) {
-        const char *file_name = File_ReadDirectory(dir_handle);
-        if (file_name == nullptr) {
-            break;
-        }
-        if (strcmp(file_name, ".") == 0 || strcmp(file_name, "..") == 0) {
-            continue;
-        }
-
-        for (const SAVEGAME_STRATEGY *strategy = m_Strategies; strategy->format;
-             strategy++) {
-            if (!strategy->allow_load) {
-                continue;
-            }
-
-            int32_t slot = -1;
-            int32_t parsed =
-                sscanf(file_name, strategy->get_save_filename_pattern(), &slot);
-            if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
-                char *file_path = String_Format("%s/%s", dir_path, file_name);
-                M_FillSlot(strategy, slot, file_path);
-                Memory_FreePointer(&file_path);
-            }
-        }
-    }
-
-    File_CloseDirectory(dir_handle);
-}
-
-static void M_LoadPreprocess(void)
-{
-    Savegame_InitCurrentInfo();
-}
-
-static void M_LoadPostprocess(void)
-{
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (obj->save_position && obj->shadow_size) {
-            int16_t room_num = item->room_num;
-            const SECTOR *const sector = Room_GetSector(
-                item->pos.x, item->pos.y, item->pos.z, &room_num);
-            item->floor =
-                Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        }
-
-        if (obj->save_flags != 0) {
-            item->flags &= 0xFF00;
-        }
-
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
-        }
-    }
-
-    MovableBlock_SetupFloor();
-
-    if (g_GameInfo.bonus_flag) {
-        g_Config.profile.new_game_plus_unlock = true;
-    }
-
-    LOT_ClearLOT(&g_Lara.lot);
-}
-
-void Savegame_Init(void)
-{
-    g_GameInfo.current = Memory_Alloc(
-        sizeof(RESUME_INFO)
-        * (GF_GetLevelTable(GFLT_MAIN)->count
-           + (GF_GetLevelTable(GFLT_DEMOS)->count >= 0 ? 1 : 0)));
-    m_SaveSlots = g_Config.gameplay.maximum_save_slots;
-    m_SavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * m_SaveSlots);
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        RESUME_INFO *const resume_info =
-            Savegame_GetCurrentInfo(&level_table->levels[i]);
-        resume_info->flags.available = 1;
-        resume_info->flags.costume = 0;
-        resume_info->num_medis = 0;
-        resume_info->num_big_medis = 0;
-        resume_info->num_scions = 0;
-        resume_info->flags.got_pistols = 1;
-        resume_info->flags.got_shotgun = 0;
-        resume_info->flags.got_magnums = 0;
-        resume_info->flags.got_uzis = 0;
-        resume_info->pistol_ammo = 1000;
-        resume_info->shotgun_ammo = 0;
-        resume_info->magnum_ammo = 0;
-        resume_info->uzi_ammo = 0;
-        resume_info->gun_status = LGS_ARMLESS;
-        resume_info->equipped_gun_type = LGT_PISTOLS;
-        resume_info->holsters_gun_type = LGT_PISTOLS;
-        resume_info->back_gun_type = LGT_UNARMED;
-        resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
-    }
-}
-
-RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
-{
-    ASSERT(level != nullptr);
-    if (GF_GetLevelTableType(level->type) == GFLT_MAIN) {
-        return &g_GameInfo.current[level->num];
-    } else if (level->type == GFL_DEMO) {
-        return &g_GameInfo.current[GF_GetLevelTable(GFLT_MAIN)->count];
-    }
-    LOG_WARNING(
-        "Warning: unable to get resume info for level %d (type=%s)", level->num,
-        ENUM_MAP_TO_STRING(GF_LEVEL_TYPE, level->type));
-    return nullptr;
-}
-
-void Savegame_Shutdown(void)
-{
-    M_ClearSlots();
-    Memory_FreePointer(&m_SavegameInfo);
-    Memory_FreePointer(&g_GameInfo.current);
-}
-
-bool Savegame_IsInitialised(void)
-{
-    return m_SavegameInfo != nullptr;
-}
-
-void Savegame_ProcessItemsBeforeLoad(void)
-{
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
-        }
-    }
-}
-
-void Savegame_ProcessItemsBeforeSave(void)
-{
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_SAVE);
-        }
-    }
-}
-
-void Savegame_InitCurrentInfo(void)
-{
-    g_GameInfo.death_count = 0;
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        Savegame_ResetCurrentInfo(level);
-        Savegame_ApplyLogicToCurrentInfo(level);
-        Savegame_GetCurrentInfo(level)->flags.available = 0;
-    }
-    if (GF_GetGymLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetGymLevel())->flags.available = 1;
-    }
-    if (GF_GetFirstLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = 1;
-    }
+    g_GameInfo.select_save_slot = Savegame_GetMostRecentlyCreatedSlot();
 }
 
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
@@ -305,17 +32,17 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     if (level == GF_GetGymLevel()) {
         current->flags.available = 1;
         current->flags.costume = 1;
-        current->num_medis = 0;
-        current->num_big_medis = 0;
+        current->small_medipacks = 0;
+        current->large_medipacks = 0;
         current->num_scions = 0;
         current->pistol_ammo = 0;
         current->shotgun_ammo = 0;
         current->magnum_ammo = 0;
         current->uzi_ammo = 0;
-        current->flags.got_pistols = 0;
-        current->flags.got_shotgun = 0;
-        current->flags.got_magnums = 0;
-        current->flags.got_uzis = 0;
+        current->flags.has_pistols = 0;
+        current->flags.has_shotgun = 0;
+        current->flags.has_magnums = 0;
+        current->flags.has_uzis = 0;
         current->equipped_gun_type = LGT_UNARMED;
         current->holsters_gun_type = LGT_UNARMED;
         current->back_gun_type = LGT_UNARMED;
@@ -325,28 +52,28 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     if (level == GF_GetFirstLevel()) {
         current->flags.available = 1;
         current->flags.costume = 0;
-        current->num_medis = 0;
-        current->num_big_medis = 0;
+        current->small_medipacks = 0;
+        current->large_medipacks = 0;
         current->num_scions = 0;
         current->pistol_ammo = 1000;
         current->shotgun_ammo = 0;
         current->magnum_ammo = 0;
         current->uzi_ammo = 0;
-        current->flags.got_pistols = 1;
-        current->flags.got_shotgun = 0;
-        current->flags.got_magnums = 0;
-        current->flags.got_uzis = 0;
+        current->flags.has_pistols = 1;
+        current->flags.has_shotgun = 0;
+        current->flags.has_magnums = 0;
+        current->flags.has_uzis = 0;
         current->equipped_gun_type = LGT_PISTOLS;
         current->holsters_gun_type = LGT_PISTOLS;
         current->back_gun_type = LGT_UNARMED;
         current->gun_status = LGS_ARMLESS;
     }
 
-    if ((g_GameInfo.bonus_flag & GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        current->flags.got_pistols = 1;
-        current->flags.got_shotgun = 1;
-        current->flags.got_magnums = 1;
-        current->flags.got_uzis = 1;
+    if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
+        current->flags.has_pistols = 1;
+        current->flags.has_shotgun = 1;
+        current->flags.has_magnums = 1;
+        current->flags.has_uzis = 1;
         current->shotgun_ammo = 1234;
         current->magnum_ammo = 1234;
         current->uzi_ammo = 1234;
@@ -365,11 +92,11 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
             current->holsters_gun_type = current->equipped_gun_type;
             break;
         case LGT_SHOTGUN:
-            if (current->flags.got_pistols) {
+            if (current->flags.has_pistols) {
                 current->holsters_gun_type = LGT_PISTOLS;
-            } else if (current->flags.got_magnums) {
+            } else if (current->flags.has_magnums) {
                 current->holsters_gun_type = LGT_MAGNUMS;
-            } else if (current->flags.got_uzis) {
+            } else if (current->flags.has_uzis) {
                 current->holsters_gun_type = LGT_UZIS;
             } else {
                 current->holsters_gun_type = LGT_UNARMED;
@@ -381,338 +108,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         }
     }
     if (current->back_gun_type == LGT_UNKNOWN) {
-        if (current->flags.got_shotgun) {
+        if (current->flags.has_shotgun) {
             current->back_gun_type = LGT_SHOTGUN;
         } else {
             current->back_gun_type = LGT_UNARMED;
         }
     }
-}
-
-void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
-{
-    LOG_INFO("Resetting resume info for level #%d", level->num);
-    RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
-    memset(current, 0, sizeof(RESUME_INFO));
-}
-
-void Savegame_CarryCurrentInfoToNextLevel(
-    const GF_LEVEL *const src_level, const GF_LEVEL *const dst_level)
-{
-    LOG_INFO(
-        "Copying resume info from level #%d to level #%d", src_level->num,
-        dst_level->num);
-    RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
-    RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
-    memcpy(dst_resume, src_resume, sizeof(RESUME_INFO));
-}
-
-void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
-{
-    ASSERT(level != nullptr);
-    RESUME_INFO *current = Savegame_GetCurrentInfo(level);
-
-    current->lara_hitpoints = g_LaraItem->hit_points;
-    current->flags.available = 1;
-
-    current->pistol_ammo = 1000;
-    if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        current->flags.got_pistols = 1;
-    } else {
-        current->flags.got_pistols = 0;
-    }
-
-    if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        current->magnum_ammo = g_Lara.magnums.ammo;
-        current->flags.got_magnums = 1;
-    } else {
-        current->magnum_ammo =
-            Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
-        current->flags.got_magnums = 0;
-    }
-
-    if (Inv_RequestItem(O_UZI_ITEM)) {
-        current->uzi_ammo = g_Lara.uzis.ammo;
-        current->flags.got_uzis = 1;
-    } else {
-        current->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
-        current->flags.got_uzis = 0;
-    }
-
-    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        current->shotgun_ammo = g_Lara.shotgun.ammo;
-        current->flags.got_shotgun = 1;
-    } else {
-        current->shotgun_ammo =
-            Inv_RequestItem(O_SG_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
-        current->flags.got_shotgun = 0;
-    }
-
-    current->num_medis = Inv_RequestItem(O_MEDI_ITEM);
-    current->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
-    current->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
-
-    current->equipped_gun_type = g_Lara.gun_type;
-    current->holsters_gun_type = g_Lara.holsters_gun_type;
-    current->back_gun_type = g_Lara.back_gun_type;
-    if (g_Lara.gun_status == LGS_READY) {
-        current->gun_status = LGS_READY;
-    } else {
-        current->gun_status = LGS_ARMLESS;
-    }
-}
-
-int32_t Savegame_GetLevelNumber(const int32_t slot_num)
-{
-    return m_SavegameInfo[slot_num].level_num;
-}
-
-int32_t Savegame_GetSlotCount(void)
-{
-    return m_SaveSlots;
-}
-
-bool Savegame_IsSlotFree(const int32_t slot_num)
-{
-    return m_SavegameInfo[slot_num].level_num == -1;
-}
-
-bool Savegame_Load(const int32_t slot_num)
-{
-    GAME_INFO *const game_info = &g_GameInfo;
-    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    ASSERT(savegame_info->format != 0);
-
-    M_LoadPreprocess();
-
-    bool ret = false;
-    const SAVEGAME_STRATEGY *strategy = m_Strategies;
-    while (strategy->format) {
-        if (savegame_info->format == strategy->format) {
-            MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
-            if (fp) {
-                ret = strategy->load_from_file(fp, game_info);
-                File_Close(fp);
-            }
-            break;
-        }
-        strategy++;
-    }
-
-    if (ret) {
-        M_LoadPostprocess();
-    }
-
-    g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;
-
-    return ret;
-}
-
-bool Savegame_Save(const int32_t slot_num)
-{
-    GAME_INFO *const game_info = &g_GameInfo;
-    bool ret = false;
-    Savegame_BindSlot(slot_num);
-
-    File_CreateDirectory(SAVES_DIR);
-
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    Savegame_PersistGameToCurrentInfo(current_level);
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_CURRENT) {
-            game_info->current[i] = game_info->current[current_level->num];
-        }
-    }
-    const char *const level_title = Game_GetCurrentLevel()->title;
-
-    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    const bool was_slot_empty = savegame_info->full_path == nullptr;
-    const SAVEGAME_STRATEGY *strategy = m_Strategies;
-    while (strategy->format != 0) {
-        if (strategy->allow_save && strategy->save_to_file != nullptr) {
-            char *filename =
-                String_Format(strategy->get_save_filename_pattern(), slot_num);
-            char *full_path = String_Format("%s/%s", SAVES_DIR, filename);
-
-            MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
-            if (fp != nullptr) {
-                g_SaveCounter++;
-                strategy->save_to_file(fp, game_info);
-                savegame_info->format = strategy->format;
-                Memory_FreePointer(&savegame_info->full_path);
-                savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
-                savegame_info->counter = g_SaveCounter;
-                savegame_info->level_num = current_level->num;
-                savegame_info->level_title = level_title != nullptr
-                    ? Memory_DupStr(level_title)
-                    : nullptr;
-                File_Close(fp);
-                ret = true;
-            }
-
-            Memory_FreePointer(&filename);
-            Memory_FreePointer(&full_path);
-        }
-        strategy++;
-    }
-
-    if (ret) {
-        m_NewestSlot = slot_num;
-        if (was_slot_empty) {
-            g_SavedGamesCount++;
-        }
-        Savegame_HighlightNewestSlot();
-    }
-
-    return ret;
-}
-
-bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
-{
-    ASSERT(game_info != nullptr);
-    ASSERT(slot_num >= 0);
-    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    ASSERT(savegame_info->format != 0);
-
-    bool ret = false;
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-    while (strategy->format) {
-        if (savegame_info->format == strategy->format) {
-            MYFILE *fp =
-                File_Open(savegame_info->full_path, FILE_OPEN_READ_WRITE);
-            if (fp) {
-                ret = strategy->update_death_counters(fp, game_info);
-                File_Close(fp);
-            } else
-                break;
-        }
-        strategy++;
-    }
-    return ret;
-}
-
-bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
-{
-    ASSERT(game_info != nullptr);
-    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    ASSERT(savegame_info->format != 0);
-
-    bool ret = false;
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-    while (strategy->format) {
-        if (savegame_info->format == strategy->format) {
-            MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
-            if (fp) {
-                ret = strategy->load_only_resume_info(fp, game_info);
-                File_Close(fp);
-            }
-            break;
-        }
-        strategy++;
-    }
-
-    g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;
-
-    return ret;
-}
-
-void Savegame_ScanSavedGames(void)
-{
-    BENCHMARK benchmark = Benchmark_Start();
-    M_ClearSlots();
-
-    g_SaveCounter = 0;
-    g_SavedGamesCount = 0;
-    m_NewestSlot = -1;
-
-    M_ScanSavedGamesDir(SAVES_DIR);
-    M_ScanSavedGamesDir(".");
-
-    for (int32_t i = 0; i < m_SaveSlots; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-        if (savegame_info->level_title != nullptr) {
-            if (savegame_info->counter > g_SaveCounter) {
-                g_SaveCounter = savegame_info->counter;
-                m_NewestSlot = i;
-            }
-            g_SavedGamesCount++;
-        }
-    }
-    Benchmark_End(&benchmark, nullptr);
-}
-
-void Savegame_FillAvailableSaves(REQUEST_INFO *req)
-{
-    Requester_ClearTextstrings(req);
-    Requester_Init(req, Savegame_GetSlotCount());
-
-    for (int i = 0; i < req->max_items; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-
-        if (savegame_info->level_title != nullptr) {
-            Requester_AddItem(
-                req, false, "%s %d", savegame_info->level_title,
-                savegame_info->counter);
-        } else {
-            Requester_AddItem(req, true, GS(MISC_EMPTY_SLOT_FMT), i + 1);
-        }
-    }
-
-    if (req->requested >= req->vis_lines) {
-        req->line_offset = req->requested - req->vis_lines + 1;
-    } else if (req->requested < req->line_offset) {
-        req->line_offset = req->requested;
-    }
-}
-
-void Savegame_FillAvailableLevels(REQUEST_INFO *req)
-{
-    ASSERT(req != nullptr);
-    const int32_t slot_num = g_GameInfo.select_save_slot;
-    if (slot_num == -1) {
-        return;
-    }
-
-    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
-    if (!savegame_info->features.select_level) {
-        Requester_AddItem(req, true, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_1));
-        Requester_AddItem(req, true, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
-        req->requested = 0;
-        req->line_offset = 0;
-        return;
-    }
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i <= MIN(savegame_info->level_num, level_table->count);
-         i++) {
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        if (level->type != GFL_GYM) {
-            Requester_AddItem(req, false, "%s", level->title);
-        }
-    }
-
-    if (g_InvMode == INV_TITLE_MODE) {
-        Requester_AddItem(req, false, "%s", GS(PASSPORT_STORY_SO_FAR));
-    }
-
-    req->requested = 0;
-    req->line_offset = 0;
-}
-
-void Savegame_HighlightNewestSlot(void)
-{
-    g_SavegameRequester.requested = MAX(0, m_NewestSlot);
-}
-
-bool Savegame_RestartAvailable(int32_t slot_num)
-{
-    if (slot_num == -1) {
-        return true;
-    }
-
-    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    return savegame_info->features.restart;
 }

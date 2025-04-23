@@ -2,8 +2,9 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
-    "main_menu_picture": "data/images/title_eu.png",
+    "main_menu_picture": "data/images/title_eu.webp",
     "savegame_fmt_legacy": "savegame.%d",
+    "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},
@@ -27,7 +28,7 @@
         "path": "data/title.tr2",
         "music_track": 64,
         "sequence": [
-            {"type": "display_picture", "path": "data/images/legal.png"},
+            {"type": "display_picture", "path": "data/images/legal_eu.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -84,6 +85,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/boat_bits.bin",
                 "data/injections/common_pickup_meshes.bin",
             ],
         },
@@ -232,6 +234,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/deck_fd.bin",
                 "data/injections/deck_itemrots.bin",
                 "data/injections/deck_pickup_meshes.bin",
                 "data/injections/living_deck_goon_sfx.bin",
@@ -308,6 +311,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/guardian_death_commands.bin",
                 "data/injections/palace_fd.bin",
                 "data/injections/palace_itemrots.bin",
             ],
@@ -382,15 +386,15 @@
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 52},
                 {"type": "level_complete"},
-                {"type": "display_picture", "path": "data/images/credit01.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit02.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit03.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit04.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit05.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit06.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit07.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit08.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "total_stats", "background_path": "data/images/end.png"},
+                {"type": "display_picture", "path": "data/images/credit01.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit02.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit03.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit04.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit05.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit06.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit07.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit08.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "total_stats", "background_path": "data/images/end.webp"},
             ],
             "injections": [
                 "data/injections/house_itemrots.bin",
@@ -485,13 +489,14 @@
                 {"type": "loop_game"},
             ],
             "injections": [
+                "data/injections/cut4_textures.bin",
                 "data/injections/photo.bin",
             ],
         },
     ],
 
     "fmvs": [
-        {"path": "fmv/LOGO.RPL"},
+        {"path": "fmv/LOGO.RPL", "legal": true},
         {"path": "fmv/ANCIENT.RPL"},
         {"path": "fmv/MODERN.RPL"},
         {"path": "fmv/LANDING.RPL"},

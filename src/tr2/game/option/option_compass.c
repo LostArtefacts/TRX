@@ -1,67 +1,76 @@
 #include "game/game.h"
 #include "game/input.h"
 #include "game/option/option.h"
-#include "game/requester.h"
+#include "game/savegame.h"
 #include "game/sound.h"
-#include "game/stats.h"
-#include "game/ui/widgets/stats_dialog.h"
 #include "global/vars.h"
+
+#include <libtrx/game/ui.h>
 
 #include <stdio.h>
 
-static UI_WIDGET *m_Dialog = nullptr;
+typedef struct {
+    bool ui_active;
+    UI_STATS_DIALOG_STATE ui_state;
+} M_PRIV;
 
-static void M_Init(void);
+static M_PRIV m_Priv = {};
 
-static void M_Init(void)
+static void M_Init(M_PRIV *p);
+static void M_Shutdown(M_PRIV *p);
+
+static void M_Init(M_PRIV *const p)
 {
-    m_Dialog = UI_StatsDialog_Create((UI_STATS_DIALOG_ARGS) {
-        .mode = Game_IsInGym() ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
-                               : UI_STATS_DIALOG_MODE_LEVEL,
-        .level_num = Game_GetCurrentLevel()->num,
-        .style = UI_STATS_DIALOG_STYLE_BORDERED,
-    });
+    p->ui_active = true;
+    UI_StatsDialog_Init(
+        &p->ui_state,
+        (UI_STATS_DIALOG_ARGS) {
+            .mode = Game_IsInGym() ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
+                                   : UI_STATS_DIALOG_MODE_LEVEL,
+            .level_num = Game_GetCurrentLevel()->num,
+            .style = UI_STATS_DIALOG_STYLE_BORDERED,
+        });
 }
 
-static void M_Shutdown(void)
+static void M_Shutdown(M_PRIV *const p)
 {
-    if (m_Dialog != nullptr) {
-        m_Dialog->free(m_Dialog);
-        m_Dialog = nullptr;
+    if (p->ui_active) {
+        p->ui_active = false;
+        UI_StatsDialog_Free(&p->ui_state);
     }
 }
 
-void Option_Compass_Control(INVENTORY_ITEM *const item, const bool is_busy)
+void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
+    M_PRIV *const p = &m_Priv;
     if (is_busy) {
         return;
     }
 
-    char buffer[32];
-    const int32_t sec = g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
-    sprintf(buffer, "%02d:%02d:%02d", sec / 3600, sec / 60 % 60, sec % 60);
-
-    if (m_Dialog == nullptr) {
-        M_Init();
+    if (!p->ui_active) {
+        M_Init(p);
     }
-    m_Dialog->control(m_Dialog);
+    UI_StatsDialog_Control(&p->ui_state);
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        item->anim_direction = 1;
-        item->goal_frame = item->frames_total - 1;
+        M_Shutdown(p);
+        inv_item->anim_direction = 1;
+        inv_item->goal_frame = inv_item->frames_total - 1;
     }
 
     Sound_Effect(SFX_MENU_STOPWATCH, 0, SPM_ALWAYS);
 }
 
-void Option_Compass_Draw(INVENTORY_ITEM *const item)
+void Option_Compass_Draw(void)
 {
-    if (m_Dialog != nullptr) {
-        m_Dialog->draw(m_Dialog);
+    M_PRIV *const p = &m_Priv;
+    if (p->ui_active) {
+        UI_StatsDialog(&p->ui_state);
     }
 }
 
 void Option_Compass_Shutdown(void)
 {
-    M_Shutdown();
+    M_PRIV *const p = &m_Priv;
+    M_Shutdown(p);
 }

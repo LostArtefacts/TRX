@@ -1,6 +1,5 @@
 <p align="center">
-<img alt="TR2X logo" src="/data/tr2/logo-light-theme.png#gh-light-mode-only" width="400"/>
-<img alt="TR2X logo" src="/data/tr2/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
+<img alt="TR2X logo" src="/data/tr2/logo.png" width="400"/>
 </p>
 
 TR2X is finished with the decompilation and is now able to run without the
@@ -157,12 +156,22 @@ as Notepad.
 4. Find TR2X in your Applications folder. Right-click it and click "Show Package Contents".
 5. Copy your Tomb Raider 2 game data files into `Contents/Resources`.
 
+## Dev snapshots
+
+To ease the load on our infrastructure, the binary assets such as images and music files are not included in pre-releases and pull request preview builds - they only ship with the full release builds.
+However, you can easily download them manually from these urls:
+
+- https://lostartefacts.dev/aux/tr2x/main.zip (main assets)
+- https://lostartefacts.dev/aux/tr2x/music.zip (music files)
+- https://lostartefacts.dev/aux/tr2x/trgm.zip (TR: The Golden Mask expansion pack)
+
 ## Improvements over original game
 
 #### UI
 - added support for more accented characters
 - added fade effects to displayed images
 - added a wireframe mode
+- added sunglasses for graphic options
 - improved support for windowed mode
 
 #### Gameplay
@@ -178,8 +187,11 @@ as Notepad.
 - added a pause screen
 - added a photo mode feature
 - added combined support for The Golden Mask
+- added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport
+- added waterfalls to the savegame so that they now persist on load
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
+- fixed assault course best times not being retained between game relaunches
 - fixed secret rewards not displaying shotgun ammo
 - fixed numeric keys interfering with the demos
 - fixed the ammo counter being hidden while a demo plays in NG+
@@ -209,14 +221,17 @@ as Notepad.
 - fixed the following floor data issues:
     - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204
     - **Wreck of the Maria Doria**: fixed room 98 not having water
+    - **The Deck**: fixed invalid portals between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
     - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
     - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, and added an extra pickup trigger beside the Gong Hammer in room 29
-    - **Temple of Xian**: fixed missing death tiles in room 91
-    - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it
+    - **Temple of Xian**: fixed missing death tiles in room 91; adding trigger workarounds to avoid a softlock after (missing) the final key
+    - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it; added extra zipline reset triggers to avoid softlock
+    - **Nightmare in Vegas**: added additional triggers for the bird monster and final flip map to avoid softlock
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
 - fixed smashed windows blocking enemy pathing after loading a save
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
+- fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground
 - fixed several issues with pushblocks:
     - fixed an invisible wall above stacked pushblocks if near a ceiling portal
     - fixed floor height issues with pushblocks poised to fall in various scenarios
@@ -237,6 +252,9 @@ as Notepad.
     - increased Barkhang Monastery rooftops key size
     - increased Temple of Xian dragon seal size, and fixed inventory rotation
     - fixed Floating Islands mystic plaque inventory rotation
+- fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
+- fixed being able to use hotkeys in the end-level statistics screen
+- fixed destroyed gondolas appearing embedded in the ground after loading a save
 - improved the animation of Lara's braid
 
 #### Cheats
@@ -282,17 +300,23 @@ as Notepad.
 - fixed TGA screenshots crashing the game
 - fixed the camera being cut off after using the gong hammer in Ice Palace
 - fixed Lara's underwater hue being retained when re-entering a boat
+- fixed the boat briefly having an underwater hue when Lara first climbs on
 - fixed distant rooms sometimes not appearing, causing the skybox to be visible when it shouldn't
 - fixed rendering problems on certain Intel GPUs
 - fixed bubbles spawning from flares if Lara is in shallow water
 - fixed the inventory up arrow at times overlapping the health bar
 - fixed blood spawning on Lara from gunshots using incorrect positioning data
+- fixed the drawbridge producing dynamic light when open
+- fixed the boat when it explodes after crossing mines, where Lara's hips would appear rather than exploded boat parts
+- fixed Lara's hips appearing on Bartoli in the Temple of Xian cutscene
+- fixed the bird monster not having a shadow
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
 
 #### Audio
 - added an option to control how music is played while underwater rather than simply muting it
+- added the current music track and timestamp to the savegame so they now persist on load
 - fixed music not playing with certain game versions
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace
 - fixed sound settings resuming the music
@@ -305,11 +329,17 @@ as Notepad.
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
 - added ability to disable FMVs
+- added per-level customizable fog distance
+- added the ability for spike walls to be reset (antitriggered)
+- fixed the lift to work in any cardinal direction in custom levels, not just South
+- fixed the springboard not responding correctly when Lara drives across one on a skidoo
+- removed the hard-coded end-level behaviour of the bird guardian for custom levels
 
 #### Miscellaneous
 - added Linux builds
 - added macOS builds
 - added .jpeg/.png screenshots
+- added BSON savegame support, removing the limits imposed by the OG 8KB file size, so allowing for storing more data and offering improved feature support
 - added ability to skip FMVs with both the Action key
 - added ability to skip end credits with the Action and Escape keys
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels
@@ -319,6 +349,10 @@ as Notepad.
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)
 - expanded maximum texture pages from 32 to 128
+- expanded the number of static mesh slots from 50 to 256
+- expanded maximum number of items (moveables) from 256 to 10240 (1024 remains the limit for triggered items)
+- expanded maximum number of visible enemies from 5 to 32
+- expanded the maximum number of effects (flames, embers, exploding parts etc) from 100 to 1000
 - ported audio decoding library to ffmpeg
 - ported video decoding library to ffmpeg
 - ported input backend to SDL

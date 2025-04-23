@@ -1,17 +1,19 @@
 #include "game/output/sprites.h"
 
 #include "game/output.h"
-#include "game/output/sprite_program.h"
+#include "game/output/meshes/common.h"
+#include "game/output/shader.h"
 #include "game/output/textures.h"
+#include "game/output/utils.h"
+#include "game/output/vertex_range.h"
 #include "game/room.h"
-#include "specific/s_output.h"
 
+#include <libtrx/game/math/types.h>
+#include <libtrx/game/output/types.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/vector.h>
-
-#define M_QUAD_VERTICES 6
 
 #pragma pack(push, 1)
 typedef struct {
@@ -24,7 +26,7 @@ typedef struct {
     } displacement;
 
     // attribute 2
-    int32_t texture_idx;
+    OUTPUT_UVW uvw;
 } M_SPRITE_VERTEX;
 
 typedef uint16_t M_SPRITE_SHADE;
@@ -34,7 +36,8 @@ typedef struct {
     MATRIX matrix;
     XYZ_32 pos;
     int32_t sprite_idx;
-    uint16_t shade;
+    RGB_F tint;
+    M_SPRITE_SHADE shade;
 } M_DYNAMIC_SPRITE;
 
 typedef struct {
@@ -53,12 +56,13 @@ typedef struct {
     int32_t quad_count;
 } M_ROOM_BATCH;
 
-static const int32_t m_QuadToFan[] = { 0, 1, 2, 0, 2, 3 };
+static OUTPUT_SHADER *m_Shader = nullptr;
 
 static struct {
     M_SPRITE_BUFFER sprite_buf;
     size_t room_batch_count;
     M_ROOM_BATCH *room_batches;
+    VECTOR *animated_vertices;
 } m_LevelData = {};
 
 static struct {
@@ -73,10 +77,8 @@ static void M_MakeQuad(
 
     for (int32_t k = 0; k < 4; k++) {
         out_quad[k].pos = (XYZ_F) { .x = pos.x, .y = pos.y, .z = pos.z };
-    }
-
-    for (int32_t k = 0; k < 4; k++) {
-        out_quad[k].texture_idx = sprite_idx * 4 + k;
+        out_quad[k].uvw = Output_Textures_GetUVW(
+            Output_Textures_GetSpritesUVWsBase() + sprite_idx * 4 + k);
     }
 
     out_quad[0].displacement.x = sprite->x0;
@@ -118,24 +120,6 @@ static void M_BufferReallocGPU(M_SPRITE_BUFFER *const buffer)
         buffer->shade_vbo_data, GL_DYNAMIC_DRAW); // shades are always dynamic
 }
 
-static void M_BufferUploadGPU(
-    M_SPRITE_BUFFER *const buffer, const int32_t start, const int32_t count)
-{
-    glBindBuffer(GL_ARRAY_BUFFER, buffer->geom_vbo);
-    GFX_GL_CheckError();
-    GFX_TRACK_DATA(
-        glBufferSubData, GL_ARRAY_BUFFER, start * sizeof(M_SPRITE_VERTEX),
-        count * sizeof(M_SPRITE_VERTEX), &buffer->geom_vbo_data[start]);
-    GFX_GL_CheckError();
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffer->shade_vbo);
-    GFX_GL_CheckError();
-    GFX_TRACK_DATA(
-        glBufferSubData, GL_ARRAY_BUFFER, start * sizeof(M_SPRITE_SHADE),
-        count * sizeof(M_SPRITE_SHADE), &buffer->shade_vbo_data[start]);
-    GFX_GL_CheckError();
-}
-
 static void M_PrepareBuffer(
     M_SPRITE_BUFFER *const buffer, const size_t capacity, const GLenum usage)
 {
@@ -155,25 +139,47 @@ static void M_PrepareBuffer(
     glBindVertexArray(buffer->vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer->geom_vbo);
+
+    // attribute 0: position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
         0, 3, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, pos));
 
+    // attribute 1: normal (becomes sprite corner displacement)
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
         1, 2, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, displacement));
 
+    // attribute 2: uvw
     glEnableVertexAttribArray(2);
-    glVertexAttribIPointer(
-        2, 1, GL_UNSIGNED_INT, sizeof(M_SPRITE_VERTEX),
-        (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, texture_idx));
+    glVertexAttribPointer(
+        2, 3, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
+        (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, uvw));
+
+    // attribute 3: texture size
+    glDisableVertexAttribArray(3);
+    glVertexAttrib4f(3, 0.0f, 0.0f, 1.0f, 1.0f);
+
+    // attribute 4: trapezoid ratios
+    glDisableVertexAttribArray(4);
+    glVertexAttrib2f(4, 1.0f, 1.0f);
+
+    // attribute 5: flags
+    glDisableVertexAttribArray(5);
+    glVertexAttribI1i(5, VERT_SPRITE);
+
+    // attribute 6: mesh color (ignore)
+    glDisableVertexAttribArray(6);
+    glVertexAttrib4f(6, 1.0f, 1.0f, 1.0f, 1.0f);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer->shade_vbo);
-    glEnableVertexAttribArray(3);
+
+    // attribute 7 (shade)
+    glEnableVertexAttribArray(7);
     glVertexAttribPointer(
-        3, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_SPRITE_SHADE), 0);
+        7, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_SPRITE_SHADE), 0);
 }
 
 static void M_FreeBuffer(M_SPRITE_BUFFER *const buffer)
@@ -210,15 +216,13 @@ static void M_DrawBuffer(
 {
     glBindVertexArray(buffer->vao);
     GFX_GL_CheckError();
-    glActiveTexture(GL_TEXTURE1);
-    GFX_GL_CheckError();
-    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteUVWsTexture());
-    GFX_GL_CheckError();
+
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
     GFX_GL_CheckError();
 
-    glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
-    GFX_GL_CheckError();
     glDrawArrays(GL_TRIANGLES, start, count);
     GFX_GL_CheckError();
 }
@@ -236,12 +240,30 @@ static void M_PrepareLevelBatches(void)
         room_batch->quad_count = room->mesh.num_sprites;
         current_quad += room->mesh.num_sprites;
     }
+
+    Vector_Clear(m_LevelData.animated_vertices);
+    int32_t current_vertex = 0;
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
+            const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[j];
+            const int16_t sprite_idx = room_sprite->texture;
+            if (Output_Textures_IsSpriteTextureAnimated(sprite_idx)) {
+                Vector_Add(
+                    m_LevelData.animated_vertices,
+                    &(OUTPUT_VERTEX_RANGE) {
+                        .vertex_start = current_vertex,
+                        .vertex_count = OUTPUT_QUAD_VERTICES,
+                    });
+            }
+            current_vertex += OUTPUT_QUAD_VERTICES;
+        }
+    }
+    Output_GlueVertexRanges(m_LevelData.animated_vertices);
 }
 
-static void M_UpdateRoomGeometry(const ROOM *const room)
+static void M_FillRoomGeometry(const ROOM *const room)
 {
-    M_BufferReallocGPU(&m_LevelData.sprite_buf);
-
     int32_t current_vertex = 0;
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
@@ -254,9 +276,10 @@ static void M_UpdateRoomGeometry(const ROOM *const room)
 
             M_SPRITE_VERTEX quad[4];
             M_MakeQuad(quad, sprite_idx, pos);
-            for (int32_t k = 0; k < M_QUAD_VERTICES; k++) {
+
+            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
                 m_LevelData.sprite_buf.geom_vbo_data[current_vertex] =
-                    quad[m_QuadToFan[k]];
+                    quad[OUTPUT_QUAD_TO_FAN(k)];
                 current_vertex++;
             }
         }
@@ -266,10 +289,10 @@ static void M_UpdateRoomGeometry(const ROOM *const room)
 static void M_UpdateRoomShades(const ROOM *const room)
 {
     const M_ROOM_BATCH *const room_batch = M_GetRoomBatch(room);
-    int32_t current_vertex = room_batch->quad_start * M_QUAD_VERTICES;
+    int32_t current_vertex = room_batch->quad_start * OUTPUT_QUAD_VERTICES;
     for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
         const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[j];
-        for (int32_t k = 0; k < M_QUAD_VERTICES; k++) {
+        for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
             m_LevelData.sprite_buf.shade_vbo_data[current_vertex] =
                 room->mesh.vertices[room_sprite->vertex].light_adder;
             current_vertex++;
@@ -296,25 +319,30 @@ static void M_PrepareLevelBuffers(void)
     }
     M_PrepareBuffer(&m_Dynamic.sprite_buf, 500, GL_DYNAMIC_DRAW);
     M_PrepareBuffer(
-        &m_LevelData.sprite_buf, num_quads * M_QUAD_VERTICES, GL_STATIC_DRAW);
+        &m_LevelData.sprite_buf, num_quads * OUTPUT_QUAD_VERTICES,
+        GL_DYNAMIC_DRAW);
 
-    m_LevelData.sprite_buf.vertex_count = num_quads * M_QUAD_VERTICES;
+    m_LevelData.sprite_buf.vertex_count = num_quads * OUTPUT_QUAD_VERTICES;
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
-        M_UpdateRoomGeometry(room);
+        M_FillRoomGeometry(room);
     }
+    M_BufferReallocGPU(&m_LevelData.sprite_buf);
 }
 
 void Output_Sprites_Init(void)
 {
-    Output_SpriteProgram_Init();
+    m_Shader = Output_Meshes_GetShader();
+    m_LevelData.animated_vertices = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
     m_Dynamic.source = Vector_CreateAtCapacity(sizeof(M_DYNAMIC_SPRITE), 50);
 }
 
 void Output_Sprites_Shutdown(void)
 {
+    Vector_Free(m_LevelData.animated_vertices);
+    Vector_Free(m_Dynamic.source);
     M_FreeBuffers();
-    Output_SpriteProgram_Shutdown();
+    m_Shader = nullptr;
 }
 
 void Output_Sprites_ObserveLevelLoad(void)
@@ -324,8 +352,41 @@ void Output_Sprites_ObserveLevelLoad(void)
     M_PrepareLevelBatches();
 }
 
+void Output_Sprites_ObserveTextureAnimation(void)
+{
+    int32_t current_vertex = 0;
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
+            const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[j];
+            const int16_t sprite_idx = room_sprite->texture;
+            if (!Output_Textures_IsSpriteTextureAnimated(sprite_idx)) {
+                current_vertex += OUTPUT_QUAD_VERTICES;
+                continue;
+            }
+            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
+                m_LevelData.sprite_buf.geom_vbo_data[current_vertex].uvw =
+                    Output_Textures_GetUVW(
+                        Output_Textures_GetSpritesUVWsBase() + sprite_idx * 4
+                        + OUTPUT_QUAD_TO_FAN(k));
+                current_vertex++;
+            }
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, m_LevelData.sprite_buf.geom_vbo);
+    for (int32_t i = 0; i < m_LevelData.animated_vertices->count; i++) {
+        const OUTPUT_VERTEX_RANGE *const range =
+            Vector_Get(m_LevelData.animated_vertices, i);
+        GFX_TRACK_DATA(
+            glBufferSubData, GL_ARRAY_BUFFER,
+            range->vertex_start * sizeof(M_SPRITE_VERTEX),
+            range->vertex_count * sizeof(M_SPRITE_VERTEX),
+            &m_LevelData.sprite_buf.geom_vbo_data[range->vertex_start]);
+    }
+}
+
 void Output_Sprites_RenderRoomSprites(
-    const MATRIX *matrix, const RGB_F tint, const ROOM *const room)
+    const MATRIX *const matrix, const RGB_F tint, const ROOM *const room)
 {
     M_UpdateRoomShades(room);
 
@@ -334,30 +395,32 @@ void Output_Sprites_RenderRoomSprites(
     GFX_GL_CheckError();
     GFX_TRACK_SUBDATA(
         glBufferSubData, GL_ARRAY_BUFFER,
-        room_batch->quad_start * M_QUAD_VERTICES * sizeof(M_SPRITE_SHADE),
-        room_batch->quad_count * M_QUAD_VERTICES * sizeof(M_SPRITE_SHADE),
+        room_batch->quad_start * OUTPUT_QUAD_VERTICES * sizeof(M_SPRITE_SHADE),
+        room_batch->quad_count * OUTPUT_QUAD_VERTICES * sizeof(M_SPRITE_SHADE),
         &m_LevelData.sprite_buf
-             .shade_vbo_data[room_batch->quad_start * M_QUAD_VERTICES]);
+             .shade_vbo_data[room_batch->quad_start * OUTPUT_QUAD_VERTICES]);
     GFX_GL_CheckError();
 
-    Output_SpriteProgram_UploadMatrix(matrix);
-    Output_SpriteProgram_UploadTint(tint);
+    Output_Shader_UploadWibbleEffect(m_Shader, Output_GetWibbleEffect());
+    Output_Shader_UploadMatrix(m_Shader, matrix);
+    Output_Shader_UploadTint(m_Shader, tint);
     GFX_GL_CheckError();
 
     const M_ROOM_BATCH *const batch = M_GetRoomBatch(room);
     M_DrawBuffer(
-        &m_LevelData.sprite_buf, batch->quad_start * M_QUAD_VERTICES,
-        batch->quad_count * M_QUAD_VERTICES);
+        &m_LevelData.sprite_buf, batch->quad_start * OUTPUT_QUAD_VERTICES,
+        batch->quad_count * OUTPUT_QUAD_VERTICES);
 }
 
 void Output_Sprites_RenderSingleSprite(
     const MATRIX *const matrix, const XYZ_32 pos, const int32_t sprite_idx,
-    const uint16_t shade)
+    const uint16_t shade, const RGB_F tint)
 {
     const M_DYNAMIC_SPRITE sprite = {
         .matrix = *matrix,
         .pos = pos,
         .sprite_idx = sprite_idx,
+        .tint = tint,
         .shade = shade,
     };
     Vector_Add(m_Dynamic.source, &sprite);
@@ -365,8 +428,8 @@ void Output_Sprites_RenderSingleSprite(
 
 void Output_Sprites_RenderBegin(void)
 {
-    Output_SpriteProgram_UploadCommonUniforms();
-    Output_SpriteProgram_UploadProjectionMatrix();
+    Output_Shader_UploadCommonUniforms(m_Shader);
+    Output_Shader_UploadProjectionMatrix(m_Shader);
 }
 
 bool Output_Sprites_Flush(void)
@@ -376,10 +439,10 @@ bool Output_Sprites_Flush(void)
     }
 
     M_SPRITE_BUFFER *const buffer = &m_Dynamic.sprite_buf;
-    if ((size_t)m_Dynamic.source->count * M_QUAD_VERTICES
+    if ((size_t)m_Dynamic.source->count * OUTPUT_QUAD_VERTICES
         > buffer->vertex_capacity) {
         buffer->vertex_capacity =
-            (m_Dynamic.source->count + 50) * M_QUAD_VERTICES;
+            (m_Dynamic.source->count + 50) * OUTPUT_QUAD_VERTICES;
         buffer->geom_vbo_data = Memory_Realloc(
             buffer->geom_vbo_data,
             buffer->vertex_capacity * sizeof(M_SPRITE_VERTEX));
@@ -394,23 +457,31 @@ bool Output_Sprites_Flush(void)
         M_MakeQuad(
             quad, sprite->sprite_idx,
             (XYZ_16) { sprite->pos.x, sprite->pos.y, sprite->pos.z });
-        for (int32_t i = 0; i < M_QUAD_VERTICES; i++) {
-            buffer->geom_vbo_data[buffer->vertex_count] = quad[m_QuadToFan[i]];
+        for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
+            buffer->geom_vbo_data[buffer->vertex_count] =
+                quad[OUTPUT_QUAD_TO_FAN(i)];
             buffer->shade_vbo_data[buffer->vertex_count] = sprite->shade;
             buffer->vertex_count++;
         }
     }
     M_BufferReallocGPU(buffer);
 
-    Output_SpriteProgram_UploadTint((RGB_F) { 1.0f, 1.0f, 1.0f });
+    Output_Shader_UploadWibbleEffect(m_Shader, Output_GetWibbleEffect());
     for (int32_t i = 0; i < m_Dynamic.source->count; i++) {
         const M_DYNAMIC_SPRITE *const sprite = Vector_Get(m_Dynamic.source, i);
-        Output_SpriteProgram_UploadMatrix(&sprite->matrix);
+        Output_Shader_UploadTint(m_Shader, sprite->tint);
+        Output_Shader_UploadMatrix(m_Shader, &sprite->matrix);
         M_DrawBuffer(
-            &m_Dynamic.sprite_buf, i * M_QUAD_VERTICES, M_QUAD_VERTICES);
+            &m_Dynamic.sprite_buf, i * OUTPUT_QUAD_VERTICES,
+            OUTPUT_QUAD_VERTICES);
     }
 
     Vector_Clear(m_Dynamic.source);
     M_FlushBuffer(&m_Dynamic.sprite_buf);
     return true;
+}
+
+void Output_Sprites_UploadProjectionMatrix(void)
+{
+    Output_Shader_UploadProjectionMatrix(m_Shader);
 }

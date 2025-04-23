@@ -11,7 +11,14 @@
 typedef struct {
     GLYPH_INFO *glyph;
     UT_hash_handle hh;
-} M_HASH_ENTRY;
+} M_GLYPH_MAP_ENTRY;
+
+typedef struct {
+    char *text;
+    const GLYPH_INFO **glyphs;
+    size_t glyph_count;
+    UT_hash_handle hh;
+} M_TEXT_MAP_ENTRY;
 
 static TEXTSTRING m_TextStrings[TEXT_MAX_STRINGS] = {};
 
@@ -28,7 +35,8 @@ static GLYPH_INFO m_Glyphs[] = {
 
 static size_t m_GlyphLookupKeyCap = 0;
 static char *m_GlyphLookupKey = nullptr;
-static M_HASH_ENTRY *m_GlyphMap = nullptr;
+static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
+static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
 static size_t M_GetGlyphSize(const char *ptr);
 
@@ -66,7 +74,8 @@ void Text_Init(void)
     // table for faster text-to-glyph resolution.
     for (GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
          glyph_ptr++) {
-        M_HASH_ENTRY *const hash_entry = Memory_Alloc(sizeof(M_HASH_ENTRY));
+        M_GLYPH_MAP_ENTRY *const hash_entry =
+            Memory_Alloc(sizeof(M_GLYPH_MAP_ENTRY));
         hash_entry->glyph = glyph_ptr;
         HASH_ADD_KEYPTR(
             hh, m_GlyphMap, glyph_ptr->text, strlen(glyph_ptr->text),
@@ -82,14 +91,29 @@ void Text_Shutdown(void)
     for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *const text = &m_TextStrings[i];
         Memory_FreePointer(&text->content);
+        text->content_cap = 0;
         Memory_FreePointer(&text->glyphs);
+        text->glyphs_cap = 0;
     }
 
-    M_HASH_ENTRY *current, *tmp;
-    HASH_ITER(hh, m_GlyphMap, current, tmp)
     {
-        HASH_DEL(m_GlyphMap, current);
-        Memory_Free(current);
+        M_GLYPH_MAP_ENTRY *current, *tmp;
+        HASH_ITER(hh, m_GlyphMap, current, tmp)
+        {
+            HASH_DEL(m_GlyphMap, current);
+            Memory_Free(current);
+        }
+    }
+
+    {
+        M_TEXT_MAP_ENTRY *current, *tmp;
+        HASH_ITER(hh, m_TextMap, current, tmp)
+        {
+            Memory_FreePointer(&current->text);
+            Memory_FreePointer(&current->glyphs);
+            HASH_DEL(m_TextMap, current);
+            Memory_FreePointer(&current);
+        }
     }
 
     Memory_FreePointer(&m_GlyphLookupKey);
@@ -134,8 +158,12 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *const content)
     }
 
     TEXTSTRING *text = &m_TextStrings[free_idx];
-    text->content = nullptr;
-    text->glyphs = nullptr;
+    if (text->content != nullptr) {
+        text->content[0] = '\0';
+    }
+    if (text->glyphs != nullptr) {
+        text->glyphs[0] = nullptr;
+    }
     text->scale.h = TEXT_BASE_SCALE;
     text->scale.v = TEXT_BASE_SCALE;
     text->pos.x = x;
@@ -164,24 +192,18 @@ void Text_Remove(TEXTSTRING *const text)
     }
     if (text->flags.active) {
         text->flags.active = 0;
-        Memory_FreePointer(&text->content);
-        Memory_FreePointer(&text->glyphs);
+        if (text->content != nullptr) {
+            text->content[0] = '\0';
+        }
+        if (text->glyphs != nullptr) {
+            text->glyphs[0] = nullptr;
+        }
     }
 }
 
-void Text_ChangeText(TEXTSTRING *const text, const char *const content)
+static const GLYPH_INFO **M_Decompose(
+    const char *const content, size_t *out_glyph_count)
 {
-    if (text == nullptr) {
-        return;
-    }
-
-    ASSERT(content != nullptr);
-    Memory_FreePointer(&text->content);
-    Memory_FreePointer(&text->glyphs);
-    if (!text->flags.active) {
-        return;
-    }
-
     // Count number of characters
     size_t glyph_count = 0;
     const char *content_ptr = content;
@@ -191,12 +213,11 @@ void Text_ChangeText(TEXTSTRING *const text, const char *const content)
         glyph_count++;
     }
 
-    text->content = Memory_DupStr(content);
-    text->glyphs = Memory_Alloc((glyph_count + 1) * sizeof(GLYPH_INFO *));
-
     // Assign glyphs using hash table
+    const GLYPH_INFO **glyphs =
+        Memory_Alloc((glyph_count + 1) * sizeof(GLYPH_INFO *));
     content_ptr = content;
-    const GLYPH_INFO **glyph_ptr = text->glyphs;
+    const GLYPH_INFO **glyph_ptr = glyphs;
     while (*content_ptr != '\0') {
         const size_t glyph_size = M_GetGlyphSize(content_ptr);
         if (m_GlyphLookupKeyCap <= glyph_size) {
@@ -207,7 +228,7 @@ void Text_ChangeText(TEXTSTRING *const text, const char *const content)
         strncpy(m_GlyphLookupKey, content_ptr, glyph_size);
         m_GlyphLookupKey[glyph_size] = '\0';
 
-        M_HASH_ENTRY *entry;
+        M_GLYPH_MAP_ENTRY *entry;
         HASH_FIND_STR(m_GlyphMap, m_GlyphLookupKey, entry);
 
         if (entry != nullptr) {
@@ -219,8 +240,67 @@ void Text_ChangeText(TEXTSTRING *const text, const char *const content)
         content_ptr += glyph_size;
     }
 
+    if (out_glyph_count != nullptr) {
+        *out_glyph_count = glyph_count;
+    }
+
     // guard
     *glyph_ptr++ = nullptr;
+    return glyphs;
+}
+
+static const GLYPH_INFO **M_DecomposeWithCache(
+    const char *const content, size_t *out_glyph_count)
+{
+    M_TEXT_MAP_ENTRY *entry;
+    HASH_FIND_STR(m_TextMap, content, entry);
+    if (entry == nullptr) {
+        entry = Memory_Alloc(sizeof(M_TEXT_MAP_ENTRY));
+        entry->text = Memory_DupStr(content);
+        entry->glyphs = M_Decompose(content, &entry->glyph_count);
+        HASH_ADD_STR(m_TextMap, text, entry);
+    }
+    if (out_glyph_count != nullptr) {
+        *out_glyph_count = entry->glyph_count;
+    }
+    return entry->glyphs;
+}
+
+void Text_ChangeText(TEXTSTRING *const text, const char *const content)
+{
+    if (text == nullptr) {
+        return;
+    }
+
+    ASSERT(content != nullptr);
+    if (text->content != nullptr) {
+        text->content[0] = '\0';
+    }
+    if (text->glyphs != nullptr) {
+        text->glyphs[0] = nullptr;
+    }
+    if (!text->flags.active) {
+        return;
+    }
+
+    const size_t content_size = strlen(content) + 1;
+    if (content_size >= text->content_cap) {
+        text->content_cap = content_size;
+        text->content = Memory_Realloc(text->content, content_size);
+    }
+    strcpy(text->content, content);
+
+    size_t glyph_count;
+    const GLYPH_INFO **glyphs =
+        M_DecomposeWithCache(text->content, &glyph_count);
+    const size_t glyphs_size = (glyph_count + 1) * sizeof(GLYPH_INFO *);
+    if (glyphs_size >= text->glyphs_cap) {
+        text->glyphs_cap = glyphs_size;
+        text->glyphs = Memory_Realloc(text->glyphs, glyphs_size);
+    }
+    text->glyphs[0] = nullptr;
+    memcpy(text->glyphs, glyphs, glyphs_size);
+    // Memory_FreePointer(&glyphs);
 }
 
 void Text_SetPos(TEXTSTRING *const text, int16_t x, int16_t y)
@@ -355,11 +435,7 @@ void Text_SetMultiline(TEXTSTRING *const text, const bool enable)
 
 int32_t Text_GetWidth(const TEXTSTRING *const text)
 {
-    if (text == nullptr) {
-        return 0;
-    }
-
-    if (text->glyphs == nullptr) {
+    if (text == nullptr || text->glyphs == nullptr) {
         return 0;
     }
 
@@ -395,5 +471,5 @@ int32_t Text_GetHeight(const TEXTSTRING *const text)
             height += TEXT_HEIGHT_FIXED;
         }
     }
-    return height * text->scale.v / TEXT_BASE_SCALE;
+    return height * text->scale.v / (float)TEXT_BASE_SCALE;
 }

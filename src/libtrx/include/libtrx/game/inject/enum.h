@@ -66,7 +66,8 @@ typedef enum {
     IDT_CAMERA_EDITS     = 24,
     IDT_FRAME_EDITS      = 25,
     IDT_OBJECT_3D_EDITS  = 26,
-    IDT_NUMBER_OF        = 27,
+    IDT_ANIM_CMD_EDITS   = 27,
+    IDT_NUMBER_OF        = 28,
 } INJECTION_DATA_TYPE;
 
 typedef enum {

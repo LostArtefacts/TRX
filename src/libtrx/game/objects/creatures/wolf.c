@@ -1,5 +1,6 @@
 #include "game/objects/creatures/wolf.h"
 
+#include "game/const.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/random.h"
@@ -51,11 +52,7 @@ typedef enum {
     WOLF_ANIM_DEATH = 20,
 } WOLF_ANIM;
 
-#if TR_VERSION == 1
-static BITE m_WolfJawBite = { 0, -14, 174, 6 };
-#else
 static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
-#endif
 
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
@@ -234,7 +231,7 @@ void Wolf_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 2)->rot_y = true;
+    Object_GetBone(obj, 2)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_WOLF, Wolf_Setup)

@@ -4,6 +4,7 @@
 #include "config/vars.h"
 #include "debug.h"
 #include "game/clock.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "log.h"
 #include "utils.h"
@@ -16,6 +17,7 @@ static void M_LoadInputLayout(
 static void M_DumpInputConfig(JSON_OBJECT *root_obj);
 static void M_DumpInputLayout(
     JSON_OBJECT *parent_obj, INPUT_BACKEND backend, INPUT_LAYOUT layout);
+static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj);
 
 static void M_LoadInputConfig(JSON_OBJECT *const root_obj)
 {
@@ -98,10 +100,23 @@ static void M_DumpInputLayout(
     }
 }
 
+static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
+{
+#define READ_FALLBACK_BOOL(target, key)                                        \
+    target = JSON_ObjectGetBool(parent_obj, key, target)
+
+    // ..0.10
+    READ_FALLBACK_BOOL(g_Config.visuals.use_psx_fov, "use_pcx_fov");
+}
+
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_LoadAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
     M_LoadInputConfig(root_obj);
+    M_LoadLegacyOptions(root_obj);
     g_Config.loaded = true;
     g_SavedConfig = g_Config;
 }
@@ -109,6 +124,9 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 void Config_DumpToJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_DumpAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
     M_DumpInputConfig(root_obj);
 }
 
@@ -137,6 +155,8 @@ void Config_Sanitize(void)
         g_Config.rendering.fps = 30;
     }
 
+    CLAMP(g_Config.visuals.fog_start, 1, 100);
+    CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);

@@ -6,7 +6,7 @@
 #define PHD_ONE 0x10000
 
 #define MAX_REQLINES 18
-#define NUM_SLOTS 32
+#define LOT_SLOT_COUNT 32
 #define MAX_SECRETS 16
 #define LARA_MAX_HITPOINTS 1000
 #define LARA_MAX_AIR 1800
@@ -41,17 +41,6 @@
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
 #define NO_CAMERA (-1)
-#define PELLET_SCATTER (20 * DEG_1)
-#define NUM_SG_SHELLS 2
-#define GUN_AMMO_CLIP 16
-#define MAGNUM_AMMO_CLIP 25
-#define UZI_AMMO_CLIP 50
-#define SHOTGUN_AMMO_CLIP 6
-#define GUN_AMMO_QTY (GUN_AMMO_CLIP * 2)
-#define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2)
-#define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2)
-#define SHOTGUN_AMMO_QTY (SHOTGUN_AMMO_CLIP * NUM_SG_SHELLS)
-#define NUM_EFFECTS 1000
 #define DEATH_WAIT (10 * LOGIC_FPS)
 #define DEATH_WAIT_MIN (2 * LOGIC_FPS)
 #define MAX_HEAD_ROTATION (50 * DEG_1) // = 9100
@@ -66,8 +55,6 @@
 #define MIN_HEAD_TILT_SURF (-40 * DEG_1) // = -7280
 #define DIVE_WAIT 10
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
-#define MAX_HEAD_CHANGE (DEG_1 * 5) // = 910
-#define MAX_TILT (DEG_1 * 3) // = 546
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * DEG_1) // = -10920
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
@@ -82,13 +69,8 @@
 #define NO_BAD_NEG NO_HEIGHT
 #define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
 #define MAX_WIBBLE 2
-#define MAX_SHADE 0x300
-#define MAX_LIGHTING 0x1FFF
 #define NO_VERT_MOVE 0x2000
 #define NO_BOX (-1)
-#define ATTACK_RANGE SQUARE(WALL_L * 3) // = 9437184
-#define ESCAPE_CHANCE 2048
-#define RECOVER_CHANCE 256
 #define PASSPORT_FOV 65
 #define PICKUPS_FOV 65
 
@@ -105,8 +87,6 @@
 #define OPTION_RING_OBJECTS 4
 #define TITLE_RING_OBJECTS 5
 #define CAMERA_2_RING 598
-#define LOW_LIGHT 0x1400 // = 5120
-#define HIGH_LIGHT 0x1000 // = 4096
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function

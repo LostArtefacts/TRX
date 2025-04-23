@@ -71,9 +71,10 @@ void Screen_Init(void)
     }
 
     // set the first resolution size to desktop size
+    const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
     res = &m_Resolutions[0];
-    res->width = Shell_GetCurrentDisplayWidth();
-    res->height = Shell_GetCurrentDisplayHeight();
+    res->width = display_size.w;
+    res->height = display_size.h;
 
     // select matching resolution from config
     if (g_Config.rendering.resolution_width > 0
@@ -131,7 +132,7 @@ int32_t Screen_GetRenderScale(int32_t unit, RENDER_SCALE_REF ref)
     } else if (ref == RSR_BAR) {
         return M_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
     } else {
-        return M_GetRenderScaleBase(unit, 640, 480, 0);
+        return M_GetRenderScaleBase(unit, 640, 480, 1.0f);
     }
 }
 

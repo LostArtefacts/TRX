@@ -41,7 +41,7 @@ typedef enum {
     LION_STATE_ATTACK_2 = 7,
 } LION_STATE;
 
-static BITE m_LionBite = { -2, -10, 132, 21 };
+static BITE m_LionBite = { .pos = { -2, -10, 132 }, .mesh_num = 21 };
 
 static void M_SetupBase(OBJECT *obj);
 static void M_SetupLion(OBJECT *obj);
@@ -62,7 +62,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 19)->rot_y = true;
+    Object_GetBone(obj, 19)->rot.y = true;
 }
 
 static void M_SetupLion(OBJECT *const obj)

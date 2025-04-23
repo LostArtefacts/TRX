@@ -5,6 +5,7 @@
 #include "game/lara/common.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
+#include "game/output/meshes/objects.h"
 #include "game/room.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -72,11 +73,12 @@ void Object_DrawDummyItem(const ITEM *const item)
 
 void Object_DrawSpriteItem(const ITEM *const item)
 {
+    const RGB_F tint = Output_GetTint();
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z,
         Object_Get(item->object_id)->mesh_idx - item->frame_num,
-        item->shade.value_1);
+        item->shade.value_1 < 0 ? SHADE_NEUTRAL : item->shade.value_1, tint);
 }
 
 void Object_DrawPickupItem(const ITEM *const item)
@@ -139,7 +141,7 @@ void Object_DrawPickupItem(const ITEM *const item)
         case O_SHOTGUN_OPTION:
         case O_MAGNUM_OPTION:
         case O_UZI_OPTION:
-        case O_MAG_AMMO_OPTION:
+        case O_MAGNUM_AMMO_OPTION:
         case O_UZI_AMMO_OPTION:
         case O_EXPLOSIVE_OPTION:
         case O_LEADBAR_OPTION:
@@ -149,9 +151,9 @@ void Object_DrawPickupItem(const ITEM *const item)
             // Ignore the sprite and just position based upon the anim.
             offset = item->pos.y + (min_y - anim_y) / 2;
             break;
-        case O_MEDI_OPTION:
-        case O_BIGMEDI_OPTION:
-        case O_SG_AMMO_OPTION:
+        case O_SMALL_MEDIPACK_OPTION:
+        case O_LARGE_MEDIPACK_OPTION:
+        case O_SHOTGUN_AMMO_OPTION:
         case O_PUZZLE_OPTION_1:
         case O_PUZZLE_OPTION_2:
         case O_PUZZLE_OPTION_3:
@@ -278,22 +280,19 @@ void Object_SetMeshReflective(
 
     OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + mesh_idx);
     mesh->enable_reflections = enabled;
-
     for (int32_t i = 0; i < mesh->num_tex_face4s; i++) {
         mesh->tex_face4s[i].enable_reflections = enabled;
     }
-
     for (int32_t i = 0; i < mesh->num_tex_face3s; i++) {
         mesh->tex_face3s[i].enable_reflections = enabled;
     }
-
     for (int32_t i = 0; i < mesh->num_flat_face4s; i++) {
         mesh->flat_face4s[i].enable_reflections = enabled;
     }
-
     for (int32_t i = 0; i < mesh->num_flat_face3s; i++) {
         mesh->flat_face3s[i].enable_reflections = enabled;
     }
+    Output_Meshes_ObserveObjectMeshUpdate(mesh);
 }
 
 void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)

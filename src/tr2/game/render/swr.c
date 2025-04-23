@@ -1439,8 +1439,11 @@ static void M_SetWet(RENDERER *const renderer, const bool is_wet)
 {
     M_PRIV *const priv = renderer->priv;
     if (is_wet) {
+        const RGB_F tint = Output_GetTint();
         GFX_2D_Renderer_SetTint(
-            priv->renderer_2d, (GFX_COLOR) { .r = 170, .g = 170, .b = 255 });
+            priv->renderer_2d,
+            (GFX_COLOR) {
+                .r = tint.r * 255, .g = tint.g * 255, .b = tint.b * 255 });
     } else {
         GFX_2D_Renderer_SetTint(
             priv->renderer_2d, (GFX_COLOR) { .r = 255, .g = 255, .b = 255 });

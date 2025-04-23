@@ -29,6 +29,7 @@ typedef struct {
 
 typedef struct {
     char *path;
+    bool is_legal;
     float display_time;
     float fade_in_time;
     float fade_out_time;
@@ -75,14 +76,19 @@ typedef struct {
 
 typedef struct {
     const char *path;
+    bool is_legal;
 } GF_FMV;
 
 typedef struct {
-#if TR_VERSION == 1
-    RGB_F water_color;
-    float draw_distance_fade;
-    float draw_distance_max;
-#elif TR_VERSION == 2
+    struct {
+        bool is_present;
+        float value;
+    } fog_start, fog_end;
+    struct {
+        bool is_present;
+        RGB_888 value;
+    } water_color;
+#if TR_VERSION == 2
     char *sfx_path;
 #endif
 } GF_LEVEL_SETTINGS;
@@ -142,13 +148,13 @@ typedef struct {
         GF_FMV *fmvs;
     };
 
-#if TR_VERSION == 1
     // savegame settings
     struct {
         char *savegame_fmt_legacy;
         char *savegame_fmt_bson;
     };
 
+#if TR_VERSION == 1
     // global settings
     struct {
         float demo_delay;
@@ -166,11 +172,6 @@ typedef struct {
         GF_COMMAND cmd_death_in_game;
         GF_COMMAND cmd_demo_interrupt;
         GF_COMMAND cmd_demo_end;
-    };
-
-    // savegame settings
-    struct {
-        char *savegame_fmt_legacy;
     };
 
     // global settings

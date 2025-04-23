@@ -1,5 +1,3 @@
-#include "game/savegame/savegame_legacy.h"
-
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -11,6 +9,7 @@
 #include "game/level.h"
 #include "game/lot.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -83,7 +82,26 @@ static void M_ReadAmmoInfo(AMMO_INFO *ammo_info);
 static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLOT(LOT_INFO *lot);
 static void M_SetCurrentPosition(int32_t level_num);
-static void M_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info);
+static void M_ReadResumeInfo(MYFILE *fp);
+
+static const char *M_GetSaveFilePattern(void);
+static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+static bool M_LoadFromFile(MYFILE *fp);
+static bool M_LoadOnlyResumeInfo(MYFILE *fp);
+
+static SAVEGAME_STRATEGY m_Strategy = {
+    // clang-format off
+    .allow_load = true,
+    .allow_save = false,
+    .format = SAVEGAME_FORMAT_LEGACY,
+    .get_save_file_pattern_func = M_GetSaveFilePattern,
+    .fill_info_func = M_FillInfo,
+    .load_from_file_func = M_LoadFromFile,
+    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
+    .save_to_file_func = nullptr,
+    .update_death_counters_func = nullptr,
+    // clang-format on
+};
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
@@ -275,10 +293,10 @@ static void M_ReadLara(LARA_INFO *const lara)
 
     M_ReadArm(&lara->left_arm);
     M_ReadArm(&lara->right_arm);
-    M_ReadAmmoInfo(&lara->pistols);
-    M_ReadAmmoInfo(&lara->magnums);
-    M_ReadAmmoInfo(&lara->uzis);
-    M_ReadAmmoInfo(&lara->shotgun);
+    M_ReadAmmoInfo(&lara->pistol_ammo);
+    M_ReadAmmoInfo(&lara->magnum_ammo);
+    M_ReadAmmoInfo(&lara->uzi_ammo);
+    M_ReadAmmoInfo(&lara->shotgun_ammo);
     M_ReadLOT(&lara->lot);
 }
 
@@ -325,14 +343,13 @@ static void M_SetCurrentPosition(const int32_t level_num)
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
         if (level->type == GFL_CURRENT) {
-            g_GameInfo.current[current_level->num] = g_GameInfo.current[i];
+            Savegame_SetCurrentInfo(current_level->num, i);
         }
     }
 }
 
-static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
+static void M_ReadResumeInfo(MYFILE *const fp)
 {
-    ASSERT(game_info->current != nullptr);
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
@@ -341,8 +358,8 @@ static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
         current->magnum_ammo = M_ReadU16();
         current->uzi_ammo = M_ReadU16();
         current->shotgun_ammo = M_ReadU16();
-        current->num_medis = M_ReadU8();
-        current->num_big_medis = M_ReadU8();
+        current->small_medipacks = M_ReadU8();
+        current->large_medipacks = M_ReadU8();
         current->num_scions = M_ReadU8();
         current->gun_status = M_ReadS8();
         current->equipped_gun_type = M_ReadS8();
@@ -351,10 +368,10 @@ static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
 
         const uint16_t flags = M_ReadU16();
         current->flags.available = flags & 1 ? 1 : 0;
-        current->flags.got_pistols = flags & 2 ? 1 : 0;
-        current->flags.got_magnums = flags & 4 ? 1 : 0;
-        current->flags.got_uzis = flags & 8 ? 1 : 0;
-        current->flags.got_shotgun = flags & 16 ? 1 : 0;
+        current->flags.has_pistols = flags & 2 ? 1 : 0;
+        current->flags.has_magnums = flags & 4 ? 1 : 0;
+        current->flags.has_uzis = flags & 8 ? 1 : 0;
+        current->flags.has_shotgun = flags & 16 ? 1 : 0;
         current->flags.costume = flags & 32 ? 1 : 0;
         // Gym and first level have special starting items.
         if (level == GF_GetFirstLevel() || level == GF_GetGymLevel()) {
@@ -375,16 +392,19 @@ static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
     resume_info->stats.secret_flags = temp_secret_flags;
     Stats_UpdateSecrets(&resume_info->stats);
     resume_info->stats.pickup_count = M_ReadU8();
-    game_info->bonus_flag = M_ReadU8();
-    game_info->death_count = -1;
+    const bool is_ng_plus = M_ReadU8() != 0;
+    if (is_ng_plus) {
+        Game_SetBonusFlag(GBF_NGPLUS);
+    }
+    resume_info->stats.death_count = -1;
 }
 
-const char *Savegame_Legacy_GetSaveFilePattern(void)
+static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_legacy;
 }
 
-bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
+static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     File_Seek(fp, 0, SEEK_SET);
 
@@ -422,10 +442,8 @@ bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
@@ -439,7 +457,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfo(fp, game_info);
+    M_ReadResumeInfo(fp);
     g_Lara.holsters_gun_type = LGT_UNKNOWN;
     g_Lara.back_gun_type = LGT_UNKNOWN;
 
@@ -557,10 +575,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
     return true;
 }
 
-bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
@@ -568,14 +584,10 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfo(fp, game_info);
+    M_ReadResumeInfo(fp);
 
     Memory_FreePointer(&buffer);
     return true;
 }
 
-bool Savegame_Legacy_UpdateDeathCounters(
-    MYFILE *const fp, GAME_INFO *const game_info)
-{
-    return false;
-}
+REGISTER_SAVEGAME_STRATEGY(m_Strategy)

@@ -1,5 +1,6 @@
 #include "config/file.h"
 
+#include "colors.h"
 #include "debug.h"
 #include "filesystem.h"
 #include "game/console/history.h"
@@ -7,6 +8,7 @@
 #include "memory.h"
 #include "strings.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #define EMPTY_ROOT "{}"
@@ -244,6 +246,32 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             *(int *)opt->target = ConfigFile_ReadEnum(
                 root_obj, M_ResolveOptionName(opt->name),
                 *(int *)opt->default_value, opt->param);
+            break;
+
+        case COT_RGB888: {
+            RGB_888 *const target = (RGB_888 *)opt->target;
+            JSON_VALUE *const value =
+                JSON_ObjectGetValue(root_obj, M_ResolveOptionName(opt->name));
+            bool success = false;
+            if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
+                const uint32_t rgb_value =
+                    JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
+                ASSERT(rgb_value != JSON_INVALID_NUMBER);
+                target->r = (rgb_value >> 0) & 0xFF;
+                target->g = (rgb_value >> 8) & 0xFF;
+                target->b = (rgb_value >> 16) & 0xFF;
+                success = true;
+            } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
+                const char *str_value =
+                    JSON_ValueGetString(value, JSON_INVALID_STRING);
+                ASSERT(str_value != JSON_INVALID_STRING);
+                success = String_ParseRGB888(str_value, target);
+            }
+            if (!success) {
+                *(RGB_888 *)opt->target = *(RGB_888 *)opt->default_value;
+            }
+            break;
+        }
         }
         opt++;
     }
@@ -282,6 +310,15 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 root_obj, M_ResolveOptionName(opt->name), *(int *)opt->target,
                 (const char *)opt->param);
             break;
+
+        case COT_RGB888: {
+            const RGB_888 *const color = (RGB_888 *)opt->target;
+            char tmp[10];
+            sprintf(tmp, "#%02X%02X%02X", color->r, color->g, color->b);
+            JSON_ObjectAppendString(
+                root_obj, M_ResolveOptionName(opt->name), tmp);
+            break;
+        }
         }
         opt++;
     }
@@ -302,4 +339,50 @@ void ConfigFile_WriteEnum(
     JSON_OBJECT *obj, const char *name, int value, const char *enum_name)
 {
     JSON_ObjectAppendString(obj, name, EnumMap_ToString(enum_name, value));
+}
+
+bool ConfigFile_LoadAssaultStats(
+    JSON_OBJECT *const root_obj, ASSAULT_STATS *const assault_stats)
+{
+    JSON_OBJECT *const stats_obj =
+        JSON_ObjectGetObject(root_obj, "assault_stats");
+    if (stats_obj == nullptr) {
+        return false;
+    }
+    JSON_ARRAY *const entries_arr = JSON_ObjectGetArray(stats_obj, "entries");
+    if (entries_arr != nullptr) {
+        for (size_t i = 0; i < entries_arr->length && i < MAX_ASSAULT_TIMES;
+             i++) {
+            JSON_OBJECT *const entry_obj = JSON_ArrayGetObject(entries_arr, i);
+            if (entry_obj != nullptr) {
+                assault_stats->entries[i].time = JSON_ObjectGetInt(
+                    entry_obj, "time", assault_stats->entries[i].time);
+                assault_stats->entries[i].attempt_num = JSON_ObjectGetInt(
+                    entry_obj, "attempt_num",
+                    assault_stats->entries[i].attempt_num);
+            }
+        }
+    }
+    assault_stats->total_attempts = JSON_ObjectGetInt(
+        stats_obj, "total_attempts", assault_stats->total_attempts);
+    return true;
+}
+
+bool ConfigFile_DumpAssaultStats(
+    JSON_OBJECT *const root_obj, const ASSAULT_STATS *const assault_stats)
+{
+    JSON_OBJECT *const stats_obj = JSON_ObjectNew();
+    JSON_ARRAY *const entries_arr = JSON_ArrayNew();
+    for (int i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        JSON_OBJECT *const entry_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(entry_obj, "time", assault_stats->entries[i].time);
+        JSON_ObjectAppendInt(
+            entry_obj, "attempt_num", assault_stats->entries[i].attempt_num);
+        JSON_ArrayAppendObject(entries_arr, entry_obj);
+    }
+    JSON_ObjectAppendArray(stats_obj, "entries", entries_arr);
+    JSON_ObjectAppendInt(
+        stats_obj, "total_attempts", assault_stats->total_attempts);
+    JSON_ObjectAppendObject(root_obj, "assault_stats", stats_obj);
+    return true;
 }

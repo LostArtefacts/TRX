@@ -12,7 +12,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/ui/common.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/gfx/common.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
@@ -128,8 +128,6 @@ void S_Shell_HandleWindowResize(void)
     M_SetWindowMaximized(is_maximized, false);
     M_SetWindowPos(x, y, false);
     M_SetWindowSize(width, height, false);
-
-    UI_Events_Fire(&(EVENT) { .name = "canvas_resize" });
 
     // save the updated config, but ensure it was loaded first
     if (g_Config.loaded) {

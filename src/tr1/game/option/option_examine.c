@@ -1,21 +1,38 @@
 #include "game/option/option_examine.h"
 
 #include "game/input.h"
-#include "game/ui/widgets/paginator.h"
 
 #include <libtrx/game/objects/names.h>
-#include <libtrx/game/ui/common.h>
+#include <libtrx/game/ui.h>
 
 #define MAX_LINES 10
 
-static UI_WIDGET *m_PaginatorUI = nullptr;
+typedef struct {
+    struct {
+        bool is_ready;
+        UI_EXAMINE_ITEM_STATE state;
+    } ui;
+} M_PRIV;
 
-static void M_End(void);
+static M_PRIV m_Priv = {};
 
-static void M_End(void)
+static void M_Init(M_PRIV *p, GAME_OBJECT_ID obj_id);
+static void M_Shutdown(M_PRIV *p);
+
+static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
 {
-    m_PaginatorUI->free(m_PaginatorUI);
-    m_PaginatorUI = nullptr;
+    p->ui.is_ready = true;
+    UI_ExamineItem_Init(
+        &p->ui.state, Object_GetName(obj_id), Object_GetDescription(obj_id),
+        MAX_LINES);
+}
+
+static void M_Shutdown(M_PRIV *const p)
+{
+    if (p->ui.is_ready) {
+        UI_ExamineItem_Free(&p->ui.state);
+        p->ui.is_ready = false;
+    }
 }
 
 bool Option_Examine_CanExamine(const GAME_OBJECT_ID obj_id)
@@ -25,37 +42,37 @@ bool Option_Examine_CanExamine(const GAME_OBJECT_ID obj_id)
 
 bool Option_Examine_IsActive(void)
 {
-    return m_PaginatorUI != nullptr;
+    const M_PRIV *const p = &m_Priv;
+    return p->ui.is_ready;
 }
 
 void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
 {
+    M_PRIV *const p = &m_Priv;
     if (is_busy) {
         return;
     }
 
-    if (m_PaginatorUI == nullptr) {
-        m_PaginatorUI = UI_Paginator_Create(
-            Object_GetName(obj_id), Object_GetDescription(obj_id), MAX_LINES);
+    if (!p->ui.is_ready) {
+        M_Init(p, obj_id);
     }
-
-    m_PaginatorUI->control(m_PaginatorUI);
+    UI_ExamineItem_Control(&p->ui.state);
 
     if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
-        M_End();
+        M_Shutdown(p);
     }
 }
 
 void Option_Examine_Draw(void)
 {
-    if (m_PaginatorUI != nullptr) {
-        m_PaginatorUI->draw(m_PaginatorUI);
+    M_PRIV *const p = &m_Priv;
+    if (p->ui.is_ready) {
+        UI_ExamineItem(&p->ui.state);
     }
 }
 
 void Option_Examine_Shutdown(void)
 {
-    if (m_PaginatorUI != nullptr) {
-        M_End();
-    }
+    M_PRIV *const p = &m_Priv;
+    M_Shutdown(p);
 }

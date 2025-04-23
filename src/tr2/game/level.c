@@ -1,12 +1,10 @@
 #include "game/level.h"
 
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/gym.h"
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lot.h"
@@ -16,6 +14,7 @@
 #include "game/random.h"
 #include "game/render/common.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -23,11 +22,13 @@
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/inject.h>
 #include <libtrx/game/level.h>
 #include <libtrx/game/objects/traps/movable_block.h>
@@ -217,7 +218,6 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     BENCHMARK benchmark = Benchmark_Start();
 
     const char *full_path = File_GetFullPath(level->path);
-    strcpy(g_LevelFileName, full_path);
     VFILE *const file = VFile_CreateFromPath(full_path);
     Memory_FreePointer(&full_path);
 
@@ -277,7 +277,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_InitialiseNamedColors();
+    Output_ObserveLevelLoad();
 
     Render_Reset(
         RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
@@ -294,13 +294,7 @@ bool Level_Load(const GF_LEVEL *const level)
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
 
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        Object_Get(i)->loaded = false;
-    }
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS; i++) {
-        Object_Get2DStatic(i)->loaded = false;
-        Object_Get3DStatic(i)->loaded = false;
-    }
+    Object_Reset();
 
     Inject_InitLevel(level);
 
@@ -377,14 +371,7 @@ bool Level_Initialise(
 
 void Level_Unload(void)
 {
-    strcpy(g_LevelFileName, "");
-    Output_InitialiseTexturePages(0, true);
-    Output_InitialiseObjectTextures(0);
-
-    if (Output_GetBackgroundType() == BK_OBJECT) {
-        Output_UnloadBackground();
-    }
-
+    Output_ObserveLevelUnload();
     Camera_Reset();
 }
 

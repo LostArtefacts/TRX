@@ -1,5 +1,6 @@
 #include "game/viewport.h"
 
+#include "game/output.h"
 #include "game/screen.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -21,8 +22,8 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
     m_MinX = x;
     m_MinY = y;
-    m_MaxX = x + width - 1;
-    m_MaxY = y + height - 1;
+    m_MaxX = x + width;
+    m_MaxY = y + height;
     m_CenterX = (m_MinX + m_MaxX) / 2;
     m_CenterY = (m_MinY + m_MaxY) / 2;
     m_Width = width;
@@ -87,4 +88,5 @@ int16_t Viewport_GetUserFOV(void)
 void Viewport_SetFOV(int16_t fov)
 {
     m_CurrentFOV = fov;
+    Output_ObserveFOVChange();
 }

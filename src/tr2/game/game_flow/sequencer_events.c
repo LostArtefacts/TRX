@@ -1,5 +1,4 @@
 #include "decomp/decomp.h"
-#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/fmv.h"
 #include "game/game.h"
@@ -9,6 +8,7 @@
 #include "game/music.h"
 #include "game/output.h"
 #include "game/phase.h"
+#include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
@@ -56,6 +56,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     case GFSC_SAVED:
         GF_InventoryModifier_Scan(level);
+        // reset current info to the defaults so that we do not do
+        // Item_GlobalReplace in the inventory initialization routines too early
+        Savegame_InitCurrentInfo();
         break;
 
     case GFSC_SELECT: {
@@ -75,7 +78,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             }
             tmp_level = next_level;
         }
-        Stats_Reset();
         break;
     }
 
@@ -84,7 +86,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
-            Stats_Reset();
         }
         break;
     }
@@ -114,11 +115,16 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     switch (seq_ctx) {
     case GFSC_SAVED:
-        ExtractSaveGameInfo();
+        const int16_t slot_num = Savegame_GetBoundSlot();
+        if (!Savegame_Load(slot_num)) {
+            LOG_ERROR("Failed to load save file!");
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
         break;
 
     default:
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }
@@ -126,11 +132,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     Stats_CalculateStats();
-    START_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (resume != nullptr) {
         const int32_t secret_count = Stats_GetSecrets();
         resume->stats.max_secret_count = secret_count;
-        g_SaveGame.current_stats.max_secret_count = secret_count;
     }
 
     ASSERT(GF_GetCurrentLevel() == level);
@@ -142,12 +147,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         gf_cmd = GF_RunGame(level, seq_ctx);
     }
     if (gf_cmd.action == GF_LEVEL_COMPLETE) {
-        // TODO: refactor, currently required to guarantee final statistics are
-        // accurate prior to jumping to a bonus level.
-        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            START_INFO *const start = Savegame_GetCurrentInfo(level);
-            start->stats = g_SaveGame.current_stats;
-        }
         gf_cmd.action = GF_NOOP;
     }
     return gf_cmd;
@@ -168,26 +167,21 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     const GF_LEVEL *const next_level = GF_GetLevelAfter(current_level);
 
     if (current_level == GF_GetLastLevel()) {
-        g_SaveGame.bonus_flag = true;
-        // TODO: refactor me
-        START_INFO *const start = Savegame_GetCurrentInfo(current_level);
-        start->stats = g_SaveGame.current_stats;
+        g_Config.profile.new_game_plus_unlock = true;
+        Config_Write();
     }
 
-    START_INFO *const start = Savegame_GetCurrentInfo(current_level);
-    start->stats = g_SaveGame.current_stats;
-    start->available = 0;
-    g_Config.profile.bonus_level_unlock =
-        Stats_CheckAllSecretsCollected(GFL_NORMAL);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+    resume->flags.available = 0;
+    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
     if (next_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);
-        g_SaveGame.current_level = next_level->num;
     }
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-    if (next_level->type == GFL_BONUS && !g_Config.profile.bonus_level_unlock) {
+    if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {
@@ -277,9 +271,10 @@ void GF_PreSequenceHook(
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
-    // TODO: reset bonus flag if seq_ctx == GFSC_SAVED once S_LoadGame logic is
-    // merged with overall save loading logic.
     Camera_GetCineData()->position.target_angle = DEG_90;
+    if (seq_ctx == GFSC_SAVED) {
+        Game_SetBonusFlag(GBF_NONE);
+    }
 }
 
 GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
@@ -296,12 +291,6 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     default:
         return seq_ctx;
     }
-}
-
-bool GF_ShouldSkipSequenceEvent(
-    const GF_LEVEL *const level, const GF_SEQUENCE_EVENT *const event)
-{
-    return false;
 }
 
 GF_EVENT_QUEUE_TYPE GF_ShouldDeferSequenceEvent(

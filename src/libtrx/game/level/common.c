@@ -297,6 +297,7 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
     VFile_Skip(file, sizeof(int16_t));
 
     mesh->enable_reflections = false;
+    mesh->disable_lighting = false;
 
     {
         mesh->num_vertices = VFile_ReadS16(file);
@@ -773,9 +774,9 @@ void Level_AppendAnimBones(
         const int32_t flags = VFile_ReadS32(file);
         bone->matrix_pop = (flags & 1) != 0;
         bone->matrix_push = (flags & 2) != 0;
-        bone->rot_x = false;
-        bone->rot_y = false;
-        bone->rot_z = false;
+        bone->rot.x = false;
+        bone->rot.y = false;
+        bone->rot.z = false;
         M_ReadPosition(&bone->pos, file);
     }
 }
@@ -841,10 +842,10 @@ void Level_ReadStaticObjects(VFILE *const file)
     LOG_INFO("static objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
         const int32_t static_id = VFile_ReadS32(file);
-        if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS) {
+        if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS_3D) {
             Shell_ExitSystemFmt(
                 "Invalid static ID: %d (max=%d)", static_id,
-                MAX_STATIC_OBJECTS);
+                MAX_STATIC_OBJECTS_3D - 1);
         }
 
         STATIC_OBJECT_3D *const obj = Object_Get3DStatic(static_id);
@@ -880,6 +881,7 @@ void Level_AppendObjectTextures(
 {
     for (int32_t i = 0; i < num_textures; i++) {
         OBJECT_TEXTURE *const texture = Output_GetObjectTexture(base_idx + i);
+        texture->uv_count = 4; // Default to 4 vertices
         texture->draw_type = VFile_ReadU16(file);
         texture->tex_page = VFile_ReadU16(file) + base_page_idx;
         for (int32_t j = 0; j < 4; j++) {
@@ -933,8 +935,9 @@ void Level_ReadSpriteSequences(VFILE *const file)
             OBJECT *const obj = Object_Get(object_id);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx;
+            obj->anim_idx = NO_ANIM;
             obj->loaded = true;
-        } else if (object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS) {
+        } else if (object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS_2D) {
             STATIC_OBJECT_2D *const obj =
                 Object_Get2DStatic(object_id - O_NUMBER_OF);
             obj->frame_count = ABS(num_meshes);
@@ -1187,6 +1190,26 @@ finish:
 
 void Level_LoadTextures(void)
 {
+    for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
+        const ROOM *const room = Room_Get(room_num);
+        for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
+            const FACE3 *const face = &room->mesh.face3s[j];
+            OBJECT_TEXTURE *const texture =
+                Output_GetObjectTexture(face->texture_idx);
+            texture->uv_count = 3;
+        }
+    }
+
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        for (int32_t j = 0; j < mesh->num_tex_face3s; j++) {
+            const FACE3 *const face = &mesh->tex_face3s[j];
+            OBJECT_TEXTURE *const texture =
+                Output_GetObjectTexture(face->texture_idx);
+            texture->uv_count = 3;
+        }
+    }
+
     for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
         ROOM *const room = Room_Get(room_num);
         for (int32_t j = 0; j < room->mesh.num_face4s; j++) {

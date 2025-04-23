@@ -1,5 +1,3 @@
-#include "game/objects/general/door.h"
-
 #include "game/box.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -9,6 +7,7 @@
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/objects/general/door.h>
 #include <libtrx/utils.h>
 
 typedef struct {

@@ -24,6 +24,7 @@
 #define LEFT_ARROW_OFFSET (-20)
 #define RIGHT_ARROW_OFFSET_MIN 35
 #define RIGHT_ARROW_OFFSET_MAX 85
+#define COLOR_SHIFT 10
 
 typedef enum {
     TEXT_TITLE,
@@ -38,6 +39,11 @@ typedef enum {
 
 typedef enum {
     OPTION_FPS,
+    OPTION_FOG_START,
+    OPTION_FOG_END,
+    OPTION_WATER_COLOR_R,
+    OPTION_WATER_COLOR_G,
+    OPTION_WATER_COLOR_B,
     OPTION_TEXTURE_FILTER,
     OPTION_FBO_FILTER,
     OPTION_VSYNC,
@@ -47,7 +53,6 @@ typedef enum {
     OPTION_RENDER_MODE,
     OPTION_RESOLUTION,
     OPTION_TRAPEZOID_FILTER,
-    OPTION_PRETTY_PIXELS,
     OPTION_REFLECTIONS,
     OPTION_NUMBER_OF,
     OPTION_MIN = OPTION_FPS,
@@ -73,7 +78,15 @@ typedef struct {
 } GRAPHICS_MENU;
 
 static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
-    { OPTION_FPS, GS_ID(DETAIL_FPS), GS_ID(DETAIL_DECIMAL_FMT) },
+    { OPTION_FPS, GS_ID(DETAIL_FPS), GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_FOG_START, GS_ID(DETAIL_FOG_START), GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_FOG_END, GS_ID(DETAIL_FOG_END), GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_WATER_COLOR_R, GS_ID(DETAIL_WATER_COLOR_R),
+      GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_WATER_COLOR_G, GS_ID(DETAIL_WATER_COLOR_G),
+      GS_ID(DETAIL_INTEGER_FMT) },
+    { OPTION_WATER_COLOR_B, GS_ID(DETAIL_WATER_COLOR_B),
+      GS_ID(DETAIL_INTEGER_FMT) },
     { OPTION_TEXTURE_FILTER, GS_ID(DETAIL_TEXTURE_FILTER), GS_ID(MISC_OFF) },
     { OPTION_FBO_FILTER, GS_ID(DETAIL_FBO_FILTER), GS_ID(MISC_OFF) },
     { OPTION_VSYNC, GS_ID(DETAIL_VSYNC), GS_ID(MISC_ON) },
@@ -86,7 +99,6 @@ static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
     { OPTION_RESOLUTION, GS_ID(DETAIL_RESOLUTION),
       GS_ID(DETAIL_RESOLUTION_FMT) },
     { OPTION_TRAPEZOID_FILTER, GS_ID(DETAIL_TRAPEZOID_FILTER), GS_ID(MISC_ON) },
-    { OPTION_PRETTY_PIXELS, GS_ID(DETAIL_PRETTY_PIXELS), GS_ID(MISC_ON) },
     { OPTION_REFLECTIONS, GS_ID(DETAIL_REFLECTIONS), GS_ID(MISC_ON) },
     // end
     { OPTION_NUMBER_OF, 0, 0 },
@@ -191,7 +203,7 @@ static void M_InitText(void)
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);
 
-    m_Text[TEXT_TITLE] = Text_Create(0, TOP_Y, GS(DETAIL_SELECT_DETAIL));
+    m_Text[TEXT_TITLE] = Text_Create(0, TOP_Y, GS(DETAIL_TITLE));
     Text_CentreH(m_Text[TEXT_TITLE], 1);
     Text_CentreV(m_Text[TEXT_TITLE], 1);
     Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0, TS_HEADING);
@@ -267,6 +279,26 @@ static void M_UpdateArrows(
         m_HideArrowLeft = g_Config.rendering.fps == 30;
         m_HideArrowRight = g_Config.rendering.fps == 60;
         break;
+    case OPTION_FOG_START:
+        m_HideArrowLeft = g_Config.visuals.fog_start <= 1;
+        m_HideArrowRight = g_Config.visuals.fog_start >= 100;
+        break;
+    case OPTION_FOG_END:
+        m_HideArrowLeft = g_Config.visuals.fog_end <= 1;
+        m_HideArrowRight = g_Config.visuals.fog_end >= 100;
+        break;
+    case OPTION_WATER_COLOR_R:
+        m_HideArrowLeft = g_Config.visuals.water_color.r <= 0;
+        m_HideArrowRight = g_Config.visuals.water_color.r >= 255;
+        break;
+    case OPTION_WATER_COLOR_G:
+        m_HideArrowLeft = g_Config.visuals.water_color.g <= 0;
+        m_HideArrowRight = g_Config.visuals.water_color.g >= 255;
+        break;
+    case OPTION_WATER_COLOR_B:
+        m_HideArrowLeft = g_Config.visuals.water_color.b <= 0;
+        m_HideArrowRight = g_Config.visuals.water_color.b >= 255;
+        break;
     case OPTION_TEXTURE_FILTER:
         m_HideArrowLeft = g_Config.rendering.texture_filter == GFX_TF_FIRST;
         m_HideArrowRight = g_Config.rendering.texture_filter == GFX_TF_LAST;
@@ -304,10 +336,6 @@ static void M_UpdateArrows(
     case OPTION_TRAPEZOID_FILTER:
         m_HideArrowLeft = !g_Config.rendering.enable_trapezoid_filter;
         m_HideArrowRight = g_Config.rendering.enable_trapezoid_filter;
-        break;
-    case OPTION_PRETTY_PIXELS:
-        m_HideArrowLeft = !g_Config.rendering.pretty_pixels;
-        m_HideArrowRight = g_Config.rendering.pretty_pixels;
         break;
     case OPTION_REFLECTIONS:
         m_HideArrowLeft = !g_Config.visuals.enable_reflections;
@@ -387,7 +415,32 @@ static void M_ChangeTextOption(
 
     switch (row->option_name) {
     case OPTION_FPS:
-        sprintf(buf, GS(DETAIL_DECIMAL_FMT), g_Config.rendering.fps);
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.rendering.fps);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_FOG_START:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.fog_start);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_FOG_END:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.fog_end);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_WATER_COLOR_R:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.water_color.r);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_WATER_COLOR_G:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.water_color.g);
+        Text_ChangeText(value_text, buf);
+        break;
+
+    case OPTION_WATER_COLOR_B:
+        sprintf(buf, GS(DETAIL_INTEGER_FMT), g_Config.visuals.water_color.b);
         Text_ChangeText(value_text, buf);
         break;
 
@@ -452,12 +505,6 @@ static void M_ChangeTextOption(
         break;
     }
 
-    case OPTION_PRETTY_PIXELS: {
-        bool is_enabled = g_Config.rendering.pretty_pixels;
-        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
-        break;
-    }
-
     case OPTION_REFLECTIONS: {
         bool is_enabled = g_Config.visuals.enable_reflections;
         Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
@@ -497,11 +544,49 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 
     int32_t reset = -1;
 
+    const int32_t color_shift = g_Input.slow ? 1 : COLOR_SHIFT;
     if (g_InputDB.menu_right) {
         switch (m_GraphicsMenu.cur_option->option_name) {
         case OPTION_FPS:
             g_Config.rendering.fps = 60;
             reset = OPTION_FPS;
+            break;
+
+        case OPTION_FOG_START:
+            g_Config.visuals.fog_start++;
+            reset = OPTION_FOG_START;
+            break;
+
+        case OPTION_FOG_END:
+            g_Config.visuals.fog_end++;
+            reset = OPTION_FOG_END;
+            break;
+
+        case OPTION_WATER_COLOR_R:
+            if (g_Config.visuals.water_color.r < 255 - color_shift) {
+                g_Config.visuals.water_color.r += color_shift;
+            } else {
+                g_Config.visuals.water_color.r = 255;
+            }
+            reset = OPTION_WATER_COLOR_R;
+            break;
+
+        case OPTION_WATER_COLOR_G:
+            if (g_Config.visuals.water_color.g < 255 - color_shift) {
+                g_Config.visuals.water_color.g += color_shift;
+            } else {
+                g_Config.visuals.water_color.g = 255;
+            }
+            reset = OPTION_WATER_COLOR_G;
+            break;
+
+        case OPTION_WATER_COLOR_B:
+            if (g_Config.visuals.water_color.b < 255 - color_shift) {
+                g_Config.visuals.water_color.b += color_shift;
+            } else {
+                g_Config.visuals.water_color.b = 255;
+            }
+            reset = OPTION_WATER_COLOR_B;
             break;
 
         case OPTION_TEXTURE_FILTER:
@@ -576,13 +661,6 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             }
             break;
 
-        case OPTION_PRETTY_PIXELS:
-            if (!g_Config.rendering.pretty_pixels) {
-                g_Config.rendering.pretty_pixels = true;
-                reset = OPTION_PRETTY_PIXELS;
-            }
-            break;
-
         case OPTION_REFLECTIONS:
             if (!g_Config.visuals.enable_reflections) {
                 g_Config.visuals.enable_reflections = true;
@@ -601,6 +679,44 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
         case OPTION_FPS:
             g_Config.rendering.fps = 30;
             reset = OPTION_FPS;
+            break;
+
+        case OPTION_FOG_START:
+            g_Config.visuals.fog_start--;
+            reset = OPTION_FOG_START;
+            break;
+
+        case OPTION_FOG_END:
+            g_Config.visuals.fog_end--;
+            reset = OPTION_FOG_END;
+            break;
+
+        case OPTION_WATER_COLOR_R:
+            if (g_Config.visuals.water_color.r >= color_shift) {
+                g_Config.visuals.water_color.r -= color_shift;
+            } else {
+                g_Config.visuals.water_color.r = 0;
+            }
+            reset = OPTION_WATER_COLOR_R;
+            break;
+
+        case OPTION_WATER_COLOR_G:
+            if (g_Config.visuals.water_color.g >= color_shift) {
+                g_Config.visuals.water_color.g -= color_shift;
+            } else {
+                g_Config.visuals.water_color.g = 0;
+            }
+            reset = OPTION_WATER_COLOR_G;
+            break;
+
+        case OPTION_WATER_COLOR_B:
+            if (g_Config.visuals.water_color.b >= color_shift) {
+                g_Config.visuals.water_color.b -= color_shift;
+            } else {
+                g_Config.visuals.water_color.b = 0;
+            }
+            CLAMP(g_Config.visuals.water_color.b, 0, 255);
+            reset = OPTION_WATER_COLOR_B;
             break;
 
         case OPTION_TEXTURE_FILTER:
@@ -672,13 +788,6 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             if (g_Config.rendering.enable_trapezoid_filter) {
                 g_Config.rendering.enable_trapezoid_filter = false;
                 reset = OPTION_TRAPEZOID_FILTER;
-            }
-            break;
-
-        case OPTION_PRETTY_PIXELS:
-            if (g_Config.rendering.pretty_pixels) {
-                g_Config.rendering.pretty_pixels = false;
-                reset = OPTION_PRETTY_PIXELS;
             }
             break;
 

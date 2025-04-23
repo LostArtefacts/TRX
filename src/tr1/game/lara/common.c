@@ -273,11 +273,7 @@ void Lara_Control(void)
         item->hit_points = -1;
         if (!g_Lara.death_timer) {
             Music_Stop();
-            g_GameInfo.death_count++;
-            if (Savegame_GetBoundSlot() != -1) {
-                Savegame_UpdateDeathCounters(
-                    Savegame_GetBoundSlot(), &g_GameInfo);
-            }
+            Stats_AddDeath();
         }
         g_Lara.death_timer++;
         // make sure the enemy healthbar is no longer rendered. If g_Lara later
@@ -396,28 +392,28 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         }
         break;
 
-    case O_MEDI_ITEM:
-    case O_MEDI_OPTION:
+    case O_SMALL_MEDIPACK_ITEM:
+    case O_SMALL_MEDIPACK_OPTION:
         if (g_LaraItem->hit_points <= 0
             || g_LaraItem->hit_points >= LARA_MAX_HITPOINTS) {
             return;
         }
         g_LaraItem->hit_points += LARA_MAX_HITPOINTS / 2;
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
-        Inv_RemoveItem(O_MEDI_ITEM);
+        Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
         Stats_AddMedipacksUsed(.5);
         break;
 
-    case O_BIGMEDI_ITEM:
-    case O_BIGMEDI_OPTION:
+    case O_LARGE_MEDIPACK_ITEM:
+    case O_LARGE_MEDIPACK_OPTION:
         if (g_LaraItem->hit_points <= 0
             || g_LaraItem->hit_points >= LARA_MAX_HITPOINTS) {
             return;
         }
         g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_MAX_HITPOINTS;
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
-        Inv_RemoveItem(O_BIGMEDI_ITEM);
+        Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
         Stats_AddMedipacksUsed(1);
         break;
@@ -545,14 +541,14 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    g_Lara.pistols.ammo = 1000;
+    g_Lara.pistol_ammo.ammo = 1000;
 
     if (resume != nullptr) {
         if (g_GameInfo.remove_guns) {
-            resume->flags.got_pistols = 0;
-            resume->flags.got_shotgun = 0;
-            resume->flags.got_magnums = 0;
-            resume->flags.got_uzis = 0;
+            resume->flags.has_pistols = 0;
+            resume->flags.has_shotgun = 0;
+            resume->flags.has_magnums = 0;
+            resume->flags.has_uzis = 0;
             resume->equipped_gun_type = LGT_UNARMED;
             resume->holsters_gun_type = LGT_UNARMED;
             resume->back_gun_type = LGT_UNARMED;
@@ -570,60 +566,60 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         }
 
         if (g_GameInfo.remove_medipacks) {
-            resume->num_medis = 0;
-            resume->num_big_medis = 0;
+            resume->small_medipacks = 0;
+            resume->large_medipacks = 0;
         }
 
-        if (resume->flags.got_pistols) {
+        if (resume->flags.has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);
         }
 
-        if (resume->flags.got_magnums) {
+        if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
-            g_Lara.magnums.ammo = resume->magnum_ammo;
-            Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+            g_Lara.magnum_ammo.ammo = resume->magnum_ammo;
+            Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         } else {
             int32_t ammo = resume->magnum_ammo / MAGNUM_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
-                Inv_AddItem(O_MAG_AMMO_ITEM);
+                Inv_AddItem(O_MAGNUM_AMMO_ITEM);
             }
-            g_Lara.magnums.ammo = 0;
+            g_Lara.magnum_ammo.ammo = 0;
         }
 
-        if (resume->flags.got_uzis) {
+        if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
-            g_Lara.uzis.ammo = resume->uzi_ammo;
+            g_Lara.uzi_ammo.ammo = resume->uzi_ammo;
             Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         } else {
             int32_t ammo = resume->uzi_ammo / UZI_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
                 Inv_AddItem(O_UZI_AMMO_ITEM);
             }
-            g_Lara.uzis.ammo = 0;
+            g_Lara.uzi_ammo.ammo = 0;
         }
 
-        if (resume->flags.got_shotgun) {
+        if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
-            g_Lara.shotgun.ammo = resume->shotgun_ammo;
-            Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+            g_Lara.shotgun_ammo.ammo = resume->shotgun_ammo;
+            Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
         } else {
             int32_t ammo = resume->shotgun_ammo / SHOTGUN_AMMO_QTY;
             for (int i = 0; i < ammo; i++) {
-                Inv_AddItem(O_SG_AMMO_ITEM);
+                Inv_AddItem(O_SHOTGUN_AMMO_ITEM);
             }
-            g_Lara.shotgun.ammo = 0;
+            g_Lara.shotgun_ammo.ammo = 0;
         }
 
         for (int i = 0; i < resume->num_scions; i++) {
             Inv_AddItem(O_SCION_ITEM_1);
         }
 
-        for (int i = 0; i < resume->num_medis; i++) {
-            Inv_AddItem(O_MEDI_ITEM);
+        for (int i = 0; i < resume->small_medipacks; i++) {
+            Inv_AddItem(O_SMALL_MEDIPACK_ITEM);
         }
 
-        for (int i = 0; i < resume->num_big_medis; i++) {
-            Inv_AddItem(O_BIGMEDI_ITEM);
+        for (int i = 0; i < resume->large_medipacks; i++) {
+            Inv_AddItem(O_LARGE_MEDIPACK_ITEM);
         }
 
         g_Lara.gun_status = resume->gun_status;
@@ -705,11 +701,6 @@ bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
-bool Lara_TestBoundsCollide(ITEM *item, int32_t radius)
-{
-    return Item_TestBoundsCollide(g_LaraItem, item, radius);
-}
-
 bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *const bounds)
 {
     return Item_TestPosition(g_LaraItem, item, bounds);
@@ -730,11 +721,13 @@ bool Lara_MovePosition(ITEM *item, XYZ_32 *vec)
     return Item_MovePosition(g_LaraItem, item, vec, velocity);
 }
 
-void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
+void Lara_Push(
+    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+    const bool big_push)
 {
-    ITEM *const lara_item = g_LaraItem;
-    int32_t x = lara_item->pos.x - item->pos.x;
-    int32_t z = lara_item->pos.z - item->pos.z;
+    ITEM *const target_item = Lara_GetItem();
+    int32_t x = target_item->pos.x - item->pos.x;
+    int32_t z = target_item->pos.z - item->pos.z;
     const int32_t c = Math_Cos(item->rot.y);
     const int32_t s = Math_Sin(item->rot.y);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
@@ -772,8 +765,8 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
         int32_t ax = (c * rx + s * rz) >> W2V_SHIFT;
         int32_t az = (c * rz - s * rx) >> W2V_SHIFT;
 
-        lara_item->pos.x = item->pos.x + ax;
-        lara_item->pos.z = item->pos.z + az;
+        target_item->pos.x = item->pos.x + ax;
+        target_item->pos.z = item->pos.z + az;
 
         rx = (bounds->min.x + bounds->max.x) / 2;
         rz = (bounds->min.z + bounds->max.z) / 2;
@@ -781,10 +774,10 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 
         if (hit_on) {
-            PHD_ANGLE hitang = lara_item->rot.y - (DEG_180 + Math_Atan(z, x));
+            PHD_ANGLE hitang = target_item->rot.y - (DEG_180 + Math_Atan(z, x));
             g_Lara.hit_direction = (hitang + DEG_45) / DEG_90;
             if (!g_Lara.hit_frame) {
-                Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+                Sound_Effect(SFX_LARA_BODYSL, &target_item->pos, SPM_NORMAL);
             }
 
             g_Lara.hit_frame++;
@@ -799,20 +792,20 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
 
         int16_t old_facing = coll->facing;
         coll->facing = Math_Atan(
-            lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+            target_item->pos.z - coll->old.z, target_item->pos.x - coll->old.x);
         Collide_GetCollisionInfo(
-            coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-            lara_item->room_num, LARA_HEIGHT);
+            coll, target_item->pos.x, target_item->pos.y, target_item->pos.z,
+            target_item->room_num, LARA_HEIGHT);
         coll->facing = old_facing;
 
         if (coll->coll_type != COLL_NONE) {
-            lara_item->pos.x = coll->old.x;
-            lara_item->pos.z = coll->old.z;
+            target_item->pos.x = coll->old.x;
+            target_item->pos.z = coll->old.z;
         } else {
-            coll->old.x = lara_item->pos.x;
-            coll->old.y = lara_item->pos.y;
-            coll->old.z = lara_item->pos.z;
-            Item_UpdateRoom(item, -10);
+            coll->old.x = target_item->pos.x;
+            coll->old.y = target_item->pos.y;
+            coll->old.z = target_item->pos.z;
+            Item_UpdateRoom(target_item, -10);
         }
 
         if (g_Lara.interact_target.is_moving

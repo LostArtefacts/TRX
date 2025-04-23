@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+import argparse
+import shutil
+import sys
+import tempfile
+from pathlib import Path
+from urllib.request import Request, urlopen
+from zipfile import ZipFile
+
+from shared.paths import PROJECT_PATHS
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Downloads large binary assets into local "
+            "data/*/ship/ directories."
+        )
+    )
+    parser.add_argument(
+        "game_version", choices=["1", "2", "all"], default="all", nargs="?"
+    )
+    return parser.parse_args()
+
+
+def download_to_file(url: str, path: Path) -> None:
+    print(f"Downloading {url}...")
+    req = Request(url, headers={"User-Agent": "download_assets"})
+    with urlopen(req) as response:
+        if getattr(response, "status", None) not in (None, 200):
+            sys.exit(
+                f"Error: failed to download {url}. Status: {response.status}"
+            )
+        with path.open("wb") as f:
+            shutil.copyfileobj(response, f)
+
+
+def extract_zip(zip_path: Path, dest_dir: Path) -> None:
+    print(f"Extracting {zip_path} to {dest_dir}...")
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    with ZipFile(zip_path) as z:
+        z.extractall(dest_dir)
+
+
+def download_assets(assets: list[tuple[str, Path]]) -> None:
+    with tempfile.TemporaryDirectory() as tmpdir_str:
+        tmpdir = Path(tmpdir_str)
+        for url, dest in assets:
+            filename = Path(url).name
+            local_zip = tmpdir / filename
+            download_to_file(url, local_zip)
+            extract_zip(local_zip, dest)
+    print("Asset download and extraction complete.")
+
+
+def main() -> None:
+    args = parse_args()
+    assets: dict[int, list[tuple[str, Path]]] = {
+        1: [
+            (
+                "https://lostartefacts.dev/aux/tr1x/main.zip",
+                Path("data/tr1/ship"),
+            )
+        ],
+        2: [
+            (
+                "https://lostartefacts.dev/aux/tr2x/main.zip",
+                Path("data/tr2/ship"),
+            )
+        ],
+    }
+    match str(args.game_version):
+        case "1":
+            download_assets(assets[1])
+        case "2":
+            download_assets(assets[2])
+        case "all":
+            download_assets(assets[1])
+            download_assets(assets[2])
+
+
+if __name__ == "__main__":
+    main()

@@ -23,6 +23,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun/const.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/memory.h>
@@ -96,7 +97,7 @@ static void M_RemoveExamineOverlay(void)
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
-    if (!(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         InvRing_ShowItemQuantity(fmt, qty);
     }
 }
@@ -122,28 +123,29 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
 
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
-        M_ShowAmmoQuantity("%5d A", g_Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
+        M_ShowAmmoQuantity(
+            "%5d A", g_Lara.shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
 
     case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity("%5d B", g_Lara.magnums.ammo);
+        M_ShowAmmoQuantity("%5d B", g_Lara.magnum_ammo.ammo);
         break;
 
     case O_UZI_OPTION:
-        M_ShowAmmoQuantity("%5d C", g_Lara.uzis.ammo);
+        M_ShowAmmoQuantity("%5d C", g_Lara.uzi_ammo.ammo);
         break;
 
-    case O_SG_AMMO_OPTION:
-        InvRing_ShowItemQuantity("%d", qty * NUM_SG_SHELLS);
+    case O_SHOTGUN_AMMO_OPTION:
+        InvRing_ShowItemQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
         break;
 
-    case O_MAG_AMMO_OPTION:
+    case O_MAGNUM_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:
         InvRing_ShowItemQuantity("%d", qty * 2);
         break;
 
-    case O_MEDI_OPTION:
-    case O_BIGMEDI_OPTION:
+    case O_SMALL_MEDIPACK_OPTION:
+    case O_LARGE_MEDIPACK_OPTION:
         Overlay_BarSetHealthTimer(40);
         if (qty > 1) {
             InvRing_ShowItemQuantity("%d", qty);
@@ -174,8 +176,8 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
     }
 
-    if (inv_item->object_id == O_MEDI_OPTION
-        || inv_item->object_id == O_BIGMEDI_OPTION) {
+    if (inv_item->object_id == O_SMALL_MEDIPACK_OPTION
+        || inv_item->object_id == O_LARGE_MEDIPACK_OPTION) {
         if (g_Config.ui.healthbar_location == BL_TOP_LEFT) {
             InvRing_HideArrow(INV_RING_ARROW_TL, true);
         } else if (g_Config.ui.healthbar_location == BL_TOP_RIGHT) {
@@ -315,8 +317,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_SHOTGUN_OPTION:
     case O_MAGNUM_OPTION:
     case O_UZI_OPTION:
-    case O_MEDI_OPTION:
-    case O_BIGMEDI_OPTION:
+    case O_SMALL_MEDIPACK_OPTION:
+    case O_LARGE_MEDIPACK_OPTION:
     case O_KEY_OPTION_1:
     case O_KEY_OPTION_2:
     case O_KEY_OPTION_3:
@@ -864,7 +866,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         g_InvRing_Source[RT_OPTION].count = TITLE_RING_OBJECTS;
         InvRing_ShowVersionText();
         Savegame_ScanSavedGames();
-        Savegame_FillAvailableSaves(&g_SavegameRequester);
     } else {
         g_InvRing_Source[RT_OPTION].count = OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();
@@ -929,7 +930,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         break;
     }
 
-    g_InvMode = mode;
+    g_Inv_Mode = mode;
     Interpolation_Remember();
     if (g_Config.gameplay.enable_timer_in_inventory) {
         Stats_StartTimer();

@@ -11,6 +11,7 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
+#include "strings.h"
 
 #include <string.h>
 
@@ -71,6 +72,7 @@ static void M_LoadFMV(
     void *user_arg);
 static void M_LoadFMVs(JSON_OBJECT *obj, GAME_FLOW *gf);
 static void M_LoadGlobalInjections(JSON_OBJECT *obj, GAME_FLOW *gf);
+static void M_LoadCommonSettings(JSON_OBJECT *obj, GF_LEVEL_SETTINGS *settings);
 static void M_LoadCommonRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 static void M_LoadRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 
@@ -79,6 +81,59 @@ static void M_LoadRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 #elif TR_VERSION == 2
     #include "./reader_tr2.def.c"
 #endif
+
+static void M_LoadCommonSettings(
+    JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
+{
+    {
+        const double value =
+            JSON_ObjectGetDouble(obj, "fog_start", JSON_INVALID_NUMBER);
+        if (value != JSON_INVALID_NUMBER) {
+            settings->fog_start.is_present = true;
+            settings->fog_start.value = value;
+        }
+    }
+
+    {
+        const double value =
+            JSON_ObjectGetDouble(obj, "fog_end", JSON_INVALID_NUMBER);
+        if (value != JSON_INVALID_NUMBER) {
+            settings->fog_end.is_present = true;
+            settings->fog_end.value = value;
+        }
+    }
+
+    {
+        JSON_VALUE *const tmp_value = JSON_ObjectGetValue(obj, "water_color");
+        if (tmp_value != nullptr && tmp_value->type == JSON_TYPE_ARRAY) {
+            const JSON_ARRAY *const tmp_arr = JSON_ValueAsArray(tmp_value);
+            const RGB_F color = {
+                JSON_ArrayGetDouble(tmp_arr, 0, JSON_INVALID_NUMBER),
+                JSON_ArrayGetDouble(tmp_arr, 1, JSON_INVALID_NUMBER),
+                JSON_ArrayGetDouble(tmp_arr, 2, JSON_INVALID_NUMBER),
+            };
+            if (color.r != JSON_INVALID_NUMBER && color.g != JSON_INVALID_NUMBER
+                && color.b != JSON_INVALID_NUMBER) {
+                settings->water_color.is_present = true;
+                settings->water_color.value = (RGB_888) {
+                    color.r * 255.0f,
+                    color.g * 255.0f,
+                    color.b * 255.0f,
+                };
+            }
+        } else if (
+            tmp_value != nullptr && tmp_value->type == JSON_TYPE_STRING) {
+            const char *tmp_str =
+                JSON_ValueGetString(tmp_value, JSON_INVALID_STRING);
+            ASSERT(tmp_str != JSON_INVALID_STRING);
+            RGB_888 tmp_color;
+            if (String_ParseRGB888(tmp_str, &tmp_color)) {
+                settings->water_color.is_present = true;
+                settings->water_color.value = tmp_color;
+            }
+        }
+    }
+}
 
 static void M_LoadCommonRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
 {
@@ -95,6 +150,12 @@ static void M_LoadCommonRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
         Shell_ExitSystem("'savegame_fmt_legacy' must be a string");
     }
     gf->savegame_fmt_legacy = Memory_DupStr(tmp_s);
+
+    tmp_s = JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
+        Shell_ExitSystem("'savegame_fmt_bson' must be a string");
+    }
+    gf->savegame_fmt_bson = Memory_DupStr(tmp_s);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
@@ -109,23 +170,23 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 {
     const char *const path = JSON_ObjectGetString(event_obj, "path", nullptr);
-    if (path == nullptr) {
-        Shell_ExitSystem("Missing picture path");
-        return -1;
-    }
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
         event_data->path = (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
+        event_data->is_legal = JSON_ObjectGetBool(event_obj, "legal", false);
         event_data->display_time =
             JSON_ObjectGetDouble(event_obj, "display_time", 5.0);
         event_data->fade_in_time =
             JSON_ObjectGetDouble(event_obj, "fade_in_time", 1.0);
         event_data->fade_out_time =
             JSON_ObjectGetDouble(event_obj, "fade_out_time", 1.0 / 3.0);
-        strcpy(event_data->path, path);
+        if (path != nullptr) {
+            strcpy(event_data->path, path);
+        }
         event->data = event_data;
     }
-    return sizeof(GF_DISPLAY_PICTURE_DATA) + strlen(path) + 1;
+    return sizeof(GF_DISPLAY_PICTURE_DATA)
+        + (path == nullptr ? 0 : strlen(path) + 1);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
@@ -133,8 +194,10 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
     const char *const path =
         JSON_ObjectGetString(event_obj, "background_path", nullptr);
     if (path == nullptr) {
-        Shell_ExitSystem("Missing picture path");
-        return -1;
+        if (event != nullptr) {
+            event->data = nullptr;
+        }
+        return 0;
     }
     if (event != nullptr) {
         char *const event_data = extra_data;
@@ -465,6 +528,7 @@ static void M_LoadFMV(
         Shell_ExitSystemFmt("Missing FMV path");
     }
     fmv->path = Memory_DupStr(path);
+    fmv->is_legal = JSON_ObjectGetBool(obj, "legal", false);
 }
 
 static void M_LoadFMVs(JSON_OBJECT *const obj, GAME_FLOW *const gf)

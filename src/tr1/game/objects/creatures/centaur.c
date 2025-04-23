@@ -32,8 +32,8 @@ typedef enum {
     CENTAUR_STATE_WARNING = 6,
 } CENTAUR_STATE;
 
-static BITE m_CentaurRocket = { 11, 415, 41, 13 };
-static BITE m_CentaurRear = { 50, 30, 0, 5 };
+static BITE m_CentaurRocket = { .pos = { 11, 415, 41 }, .mesh_num = 13 };
+static BITE m_CentaurRear = { .pos = { 50, 30, 0 }, .mesh_num = 5 };
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
@@ -57,8 +57,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 10)->rot_x = true;
-    Object_GetBone(obj, 10)->rot_y = true;
+    Object_GetBone(obj, 10)->rot.x = true;
+    Object_GetBone(obj, 10)->rot.y = true;
 }
 
 static void M_Control(const int16_t item_num)

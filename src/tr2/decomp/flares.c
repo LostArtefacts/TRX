@@ -12,6 +12,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
@@ -82,7 +83,7 @@ int32_t Flare_DoLight(const XYZ_32 *const pos, const int32_t flare_age)
 
     const int32_t random = Random_GetDraw();
     const XYZ_32 light_pos = {
-        .x = pos->x + (random & 0xF),
+        .x = pos->x + (random & 0xA0),
         .y = pos->y,
         .z = pos->z,
     };
@@ -142,8 +143,22 @@ void Flare_DrawInAir(const ITEM *const item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
     const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
+
+    const XYZ_32 flare_size = {
+        .x = frames[0]->bounds.max.x - frames[0]->bounds.min.x,
+        .y = frames[0]->bounds.max.y - frames[0]->bounds.min.y,
+        .z = frames[0]->bounds.max.z - frames[0]->bounds.min.z,
+    };
+    const XYZ_32 flare_offset = {
+        .x = -flare_size.x,
+        .y = -flare_size.y,
+        .z = -flare_size.z,
+    };
+    Matrix_TranslateRel32(flare_offset);
+
     if (clip != 0) {
         Output_CalculateObjectLighting(item, &frames[0]->bounds);
+        Output_SetDepthBias(-20);
         Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
         if (((int32_t)(intptr_t)item->data) & 0x8000) {
             Matrix_TranslateRel(-6, 6, 80);
@@ -152,6 +167,7 @@ void Flare_DrawInAir(const ITEM *const item)
             Output_CalculateStaticLight(8 * 256);
             Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
         }
+        Output_SetDepthBias(0);
     }
     Matrix_Pop();
 }
@@ -258,7 +274,7 @@ void Flare_Draw(void)
         frame_num = LF_FL_DRAW;
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
         Flare_DrawMeshes();
-        if (!g_SaveGame.bonus_flag) {
+        if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
             Inv_RemoveItem(O_FLARES_ITEM);
         }
     } else if (frame_num >= LF_FL_IGNITE && frame_num <= LF_FL_2_HOLD - 2) {

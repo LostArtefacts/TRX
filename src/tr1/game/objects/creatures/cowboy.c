@@ -28,8 +28,8 @@ typedef enum {
     COWBOY_STATE_SHOOT = 6,
 } COWBOY_STATE;
 
-static BITE m_CowboyGun1 = { 1, 200, 41, 5 };
-static BITE m_CowboyGun2 = { -2, 200, 40, 8 };
+static BITE m_CowboyGun1 = { .pos = { 1, 200, 41 }, .mesh_num = 5 };
+static BITE m_CowboyGun2 = { .pos = { -2, 200, 40 }, .mesh_num = 8 };
 
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
@@ -54,7 +54,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 0)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

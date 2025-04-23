@@ -44,23 +44,19 @@ float g_FltPersp;
 int16_t *g_Info3DPtr = nullptr;
 int32_t g_PhdWinWidth;
 int32_t g_PhdViewDistance;
-PHD_VBUF g_PhdVBuf[1500];
+PHD_VBUF *g_PhdVBuf = nullptr;
 float g_FltWinRight;
 int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
-bool g_IsDemoLoaded;
-bool g_IsMonkAngry;
 uint16_t g_SoundOptionLine;
 int32_t g_HealthBarTimer;
 int32_t g_LevelComplete;
-SAVEGAME_INFO g_SaveGame = {};
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
 bool g_CameraUnderwater;
-char g_LevelFileName[256];
 
 WEAPON_INFO g_Weapons[] = {
     {},
@@ -172,103 +168,17 @@ WEAPON_INFO g_Weapons[] = {
 };
 
 int16_t g_FinalBossActive;
-int16_t g_FinalLevelCount;
+uint16_t g_FinalLevelCount;
 int16_t g_FinalBossCount;
 int16_t g_FinalBossItem[5];
 
 static char m_LoadGameRequesterStrings1[MAX_LEVELS][50];
 static char m_LoadGameRequesterStrings2[MAX_LEVELS][50];
 
-REQUEST_INFO g_LoadGameRequester = {
-    .no_selector = 0,
-    .ready = 0,
-    .pad = 0,
-    .items_count = 1,
-    .selected = 0,
-    .visible_count = 5,
-    .line_offset = 0,
-    .line_old_offset = 0,
-    .pix_width = 296,
-    .line_height = 18,
-    .x_pos = 0,
-    .y_pos = -32,
-    .z_pos = 0,
-    .item_string_len = 50,
-    .pitem_strings1 = (char *)m_LoadGameRequesterStrings1,
-    .pitem_strings2 = (char *)m_LoadGameRequesterStrings2,
-    .pitem_flags1 = nullptr,
-    .pitem_flags2 = nullptr,
-    .heading_flags1 = 0,
-    .heading_flags2 = 0,
-    .background_flags = 0,
-    .moreup_flags = 0,
-    .moredown_flags = 0,
-    .item_flags1 = {},
-    .item_flags2 = {},
-    .heading_text1 = nullptr,
-    .heading_text2 = nullptr,
-    .background_text = nullptr,
-    .moreup_text = nullptr,
-    .moredown_text = nullptr,
-    .item_texts1 = { nullptr },
-    .item_texts2 = { nullptr },
-    .heading_string1 = {},
-    .heading_string2 = {},
-    .render_width = 0,
-    .render_height = 0,
-};
-
-REQUEST_INFO g_SaveGameRequester = {
-    .no_selector = 0,
-    .ready = 0,
-    .pad = 0,
-    .items_count = 1,
-    .selected = 0,
-    .visible_count = 5,
-    .line_offset = 0,
-    .line_old_offset = 0,
-    .pix_width = 272,
-    .line_height = 18,
-    .x_pos = 0,
-    .y_pos = -32,
-    .z_pos = 0,
-    .item_string_len = 50,
-    .pitem_strings1 = (char *)g_ValidLevelStrings1,
-    .pitem_strings2 = (char *)g_ValidLevelStrings2,
-    .pitem_flags1 = nullptr,
-    .pitem_flags2 = nullptr,
-    .heading_flags1 = 0,
-    .heading_flags2 = 0,
-    .background_flags = 0,
-    .moreup_flags = 0,
-    .moredown_flags = 0,
-    .item_flags1 = {},
-    .item_flags2 = {},
-    .heading_text1 = nullptr,
-    .heading_text2 = nullptr,
-    .background_text = nullptr,
-    .moreup_text = nullptr,
-    .moredown_text = nullptr,
-    .item_texts1 = { nullptr },
-    .item_texts2 = { nullptr },
-    .heading_string1 = {},
-    .heading_string2 = {},
-    .render_width = 0,
-    .render_height = 0,
-};
-
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
 int32_t g_GF_LaraStartAnim;
 int32_t g_GF_ScriptVersion;
-
-int32_t g_SavedGames;
-char g_ValidLevelStrings1[MAX_LEVELS][50];
-char g_ValidLevelStrings2[MAX_LEVELS][50];
-uint32_t g_RequesterFlags1[MAX_REQUESTER_ITEMS];
-uint32_t g_RequesterFlags2[MAX_REQUESTER_ITEMS];
-int32_t g_SaveCounter;
-int16_t g_SavedLevels[MAX_LEVELS] = { -1, 0 };
 
 XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
 bool g_DetonateAllMines = false;

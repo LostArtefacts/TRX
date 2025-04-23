@@ -6,7 +6,17 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/game.h>
+#include <libtrx/game/gun/const.h>
 #include <libtrx/utils.h>
+
+static int32_t M_GetFlareQuantity(void);
+
+static int32_t M_GetFlareQuantity(void)
+{
+    return Game_IsBonusFlagSet(GBF_JAPANESE) ? FLARE_AMMO_JAPANESE_QTY
+                                             : FLARE_AMMO_QTY;
+}
 
 bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 {
@@ -22,7 +32,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i]->object_id == inv_obj_id) {
                 const int32_t qty =
-                    obj_id == O_FLARES_ITEM ? FLARE_AMMO_QTY : 1;
+                    obj_id == O_FLARES_ITEM ? M_GetFlareQuantity() : 1;
                 source->qtys[i] += qty;
                 CLAMPG(source->qtys[i], MAX_QTY);
                 return true;
@@ -183,7 +193,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 
     case O_FLARES_ITEM:
     case O_FLARES_OPTION:
-        for (int32_t i = 0; i < FLARE_AMMO_QTY; i++) {
+        for (int32_t i = 0; i < M_GetFlareQuantity(); i++) {
             Inv_AddItem(O_FLARE_ITEM);
         }
         return true;

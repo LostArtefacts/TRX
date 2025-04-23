@@ -1,611 +1,504 @@
 #include "game/output.h"
 
-#include "game/clock.h"
+#include "game/level.h"
+#include "game/output/meshes/common.h"
+#include "game/output/meshes/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
-#include "game/random.h"
-#include "game/room.h"
 #include "game/shell.h"
 #include "game/viewport.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/engine/image.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>
-#include <libtrx/utils.h>
-
-#include <math.h>
-#include <string.h>
 
 #define MAX_LIGHTNINGS 64
-#define PHD_IONE (PHD_ONE / 4)
+#define MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
+#define TEXT_OUTLINE_THICKNESS 2
+
+typedef enum {
+    MC_PURPLE_C,
+    MC_PURPLE_E,
+    MC_BROWN_C,
+    MC_BROWN_E,
+    MC_GREY_C,
+    MC_GREY_E,
+    MC_GREY_TL,
+    MC_GREY_TR,
+    MC_GREY_BL,
+    MC_GREY_BR,
+    MC_BLACK,
+    MC_GOLD_LIGHT,
+    MC_GOLD_DARK,
+    MC_NUMBER_OF,
+} MENU_COLOR;
 
 typedef struct {
-    struct {
-        XYZ_32 pos;
-        int32_t thickness;
-    } edges[2];
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
+} QUAD_INFO;
+
+typedef struct {
+    XYZ_32 pos_0;
+    XYZ_32 pos_1;
+    int32_t thickness;
 } LIGHTNING;
-
-typedef struct {
-    int16_t poly_count;
-    int16_t vertex_count;
-    XYZ_16 vertices[32];
-} SHADOW_INFO;
-
-static int32_t m_LsAdder = 0;
-static int32_t m_LsDivider = 0;
-static bool m_IsSkyboxEnabled = false;
-static bool m_IsWibbleEffect = false;
-static bool m_IsWaterEffect = false;
-static bool m_IsShadeEffect = false;
-static int m_OverlayCurAlpha = 0;
-static int m_OverlayDstAlpha = 0;
-static int m_BackdropCurAlpha = 0;
-static int m_BackdropDstAlpha = 0;
-
-static int32_t m_WibbleOffset = 0;
-static int32_t m_AnimatedTexturesOffset = 0;
-static CLOCK_TIMER m_WibbleTimer = { .type = CLOCK_TIMER_SIM };
-static CLOCK_TIMER m_AnimatedTexturesTimer = { .type = CLOCK_TIMER_SIM };
-static CLOCK_TIMER m_FadeTimer = { .type = CLOCK_TIMER_SIM };
-static int32_t m_WibbleTable[WIBBLE_SIZE] = {};
-static int32_t m_ShadeTable[WIBBLE_SIZE] = {};
-static int32_t m_RandTable[WIBBLE_SIZE] = {};
-
-static PHD_VBUF *m_VBuf = nullptr;
-static TEXTURE_UV *m_EnvMapUV = nullptr;
-static int32_t m_DrawDistFade = 0;
-static int32_t m_DrawDistMax = 0;
-static RGB_F m_WaterColor = {};
-static XYZ_32 m_LsVectorView = {};
 
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
+static int32_t m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 
-static char *m_BackdropImagePath = nullptr;
+static GFX_2D_RENDERER *m_Renderer2D = nullptr;
+static GFX_3D_RENDERER *m_Renderer3D = nullptr;
+static bool m_IsTextureMode = false;
+static int32_t m_SelectedTexture = -1;
+
+static int32_t m_SurfaceWidth = 0;
+static int32_t m_SurfaceHeight = 0;
+static GFX_2D_SURFACE *m_PictureSurface = nullptr;
+static GFX_2D_SURFACE *m_TextureSurfaces[GFX_MAX_TEXTURES] = { nullptr };
+
 static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
 };
 
-static struct {
-    GLint bound_program;
-    GLint bound_vao;
-    GLint bound_vbo;
-    GLint bound_texture;
-} m_CachedState;
+static RGBA_8888 m_MenuColorMap[MC_NUMBER_OF] = {
+    { 70, 30, 107, 230 }, // MC_PURPLE_C
+    { 70, 30, 107, 0 }, // MC_PURPLE_E
+    { 91, 46, 9, 255 }, // MC_BROWN_C
+    { 91, 46, 9, 0 }, // MC_BROWN_E
+    { 197, 197, 197, 255 }, // MC_GREY_C
+    { 45, 45, 45, 255 }, // MC_GREY_E
+    { 96, 96, 96, 255 }, // MC_GREY_TL
+    { 32, 32, 32, 255 }, // MC_GREY_TR
+    { 63, 63, 63, 255 }, // MC_GREY_BL
+    { 0, 0, 0, 255 }, // MC_GREY_BR
+    { 0, 0, 0, 255 }, // MC_BLACK
+    { 232, 192, 112, 255 }, // MC_GOLD_LIGHT
+    { 140, 112, 56, 255 }, // MC_GOLD_DARK
+};
 
-static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
-static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
-static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
-static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
-static void M_DrawTexturedFace4s(const FACE4 *faces, int32_t count);
-static void M_DrawObjectFace3EnvMap(const FACE3 *faces, int32_t count);
-static void M_DrawObjectFace4EnvMap(const FACE4 *faces, int32_t count);
-static uint16_t M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
-static void M_CalcVertexWibble(PHD_VBUF *vbuf);
-static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
-static void M_CalcVerticeLight(const OBJECT_MESH *mesh);
-static bool M_CalcVerticeEnvMap(const OBJECT_MESH *mesh);
-static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
-static void M_CalcRoomVertices(const ROOM_MESH *mesh);
-static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
-static void M_CalcWibbleTable(void);
+static RGBA_8888 M_GetMenuColor(MENU_COLOR color);
+static void M_SelectTexture(int32_t texture_num);
+static void M_EnableDepthWrites(void);
+static void M_DisableDepthWrites(void);
+static void M_EnableDepthTest(void);
+static void M_DisableDepthTest(void);
+static void M_EnableTextureMode(void);
+static void M_DisableTextureMode(void);
+static void M_DownloadBackdropSurface(const IMAGE *image);
+static void M_DownloadTextures(int32_t pages);
+static void M_ReleaseTextures(void);
+static void M_ReleaseSurfaces(void);
+static void M_Flush(void);
+static void M_FlipScreen(void);
 
-static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
+static void M_DrawTriangleFan(
+    const GFX_3D_VERTEX *vertices, int32_t vertex_count);
+static void M_DrawTriangleStrip(
+    const GFX_3D_VERTEX *vertices, int32_t vertex_count);
+static void M_Draw2DQuad(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br);
+static void M_DrawLightningSegment(const LIGHTNING *const lightning);
+static void M_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z,
+    int32_t sprite_idx, int16_t shade);
+
+static RGBA_8888 M_GetMenuColor(MENU_COLOR color)
 {
-    bool wireframe_state = GFX_Context_GetWireframeMode();
-    GFX_Context_SetWireframeMode(true);
+    return m_MenuColorMap[color];
+}
 
-    RGBA_8888 color = { .r = 255, .g = 255, .b = 255, .a = 128 };
-    if (wireframe_state) {
-        color = (RGBA_8888) { .r = 0, .g = 0, .b = 0, .a = 128 };
+static void M_SelectTexture(const int32_t texture_num)
+{
+    if (texture_num == m_SelectedTexture) {
+        return;
     }
+    if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
+        LOG_ERROR("ERROR: Attempt to select unloaded texture");
+        return;
+    }
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
+    m_SelectedTexture = texture_num;
+}
 
-    S_Output_DisableTextureMode();
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+static void M_EnableDepthWrites(void)
+{
+    GFX_3D_Renderer_SetDepthWritesEnabled(m_Renderer3D, true);
+}
 
-    // More subdivisions means smoother spheres.
-    const int32_t subdivisions = 12;
-    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
-    int32_t index = 0;
+static void M_DisableDepthWrites(void)
+{
+    GFX_3D_Renderer_SetDepthWritesEnabled(m_Renderer3D, false);
+}
 
-    for (int32_t i = 0; i <= subdivisions; i++) {
-        const float theta = (M_PI * i) / subdivisions; // Latitude angle
-        const float sin_theta = sinf(theta);
-        const float cos_theta = cosf(theta);
+static void M_EnableDepthTest(void)
+{
+    GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, true);
+}
 
-        for (int32_t j = 0; j <= subdivisions; j++) {
-            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
-            const float sin_phi = sinf(phi);
-            const float cos_phi = cosf(phi);
+static void M_DisableDepthTest(void)
+{
+    GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, false);
+}
 
-            // Convert spherical coordinates to 3D points.
-            XYZ_16 vertex_pos = {
-                .x = pos.x + radius * cos_phi * sin_theta,
-                .y = pos.y + radius * cos_theta,
-                .z = pos.z + radius * sin_phi * sin_theta,
+static void M_EnableTextureMode(void)
+{
+    if (!m_IsTextureMode) {
+        m_IsTextureMode = true;
+        GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
+    }
+}
+
+static void M_DisableTextureMode(void)
+{
+    if (m_IsTextureMode) {
+        m_IsTextureMode = false;
+        GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
+    }
+}
+
+static void M_DownloadBackdropSurface(const IMAGE *const image)
+{
+    GFX_2D_Surface_Free(m_PictureSurface);
+    m_PictureSurface = nullptr;
+    if (image == nullptr) {
+        return;
+    }
+    m_PictureSurface = GFX_2D_Surface_CreateFromImage(image);
+    GFX_2D_Renderer_Upload(
+        m_Renderer2D, &m_PictureSurface->desc, m_PictureSurface->buffer);
+}
+
+static void M_DownloadTextures(const int32_t pages)
+{
+    if (pages > GFX_MAX_TEXTURES) {
+        Shell_ExitSystem("Attempt to download more than texture page limit");
+    }
+    M_ReleaseTextures();
+
+    for (int32_t i = 0; i < pages; i++) {
+        if (m_TextureSurfaces[i] == nullptr) {
+            const GFX_2D_SURFACE_DESC surface_desc = {
+                .width = TEXTURE_PAGE_WIDTH,
+                .height = TEXTURE_PAGE_HEIGHT,
             };
-
-            M_CalcVertex(&vertices[index], vertex_pos);
-            vertices[index].g = HIGH_LIGHT;
-            index++;
+            m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
         }
-    }
-
-    for (int32_t i = 0; i < subdivisions; i++) {
-        for (int32_t j = 0; j < subdivisions; j++) {
-            const int32_t index_0 = i * (subdivisions + 1) + j;
-            const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
-            const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
-            const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
-            S_Output_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_1], &vertices[index_2],
-                color);
-            S_Output_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_2], &vertices[index_3],
-                color);
-        }
-    }
-
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
-    GFX_Context_SetWireframeMode(wireframe_state);
-}
-
-static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
-{
-    S_Output_DisableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE3 *const face = &faces[i];
-        PHD_VBUF *const vns[3] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-        };
-
-        const RGBA_8888 color =
-            Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
-        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        GFX_2D_SURFACE *const surface = m_TextureSurfaces[i];
+        RGBA_8888 *const output_ptr = (RGBA_8888 *)surface->buffer;
+        const RGBA_8888 *const input_ptr = Output_GetTexturePage32(i);
+        memcpy(
+            output_ptr, input_ptr,
+            surface->desc.width * surface->desc.height * sizeof(RGBA_8888));
+        m_TextureMap[i] = GFX_3D_Renderer_RegisterTexturePage(
+            m_Renderer3D, output_ptr, surface->desc.width,
+            surface->desc.height);
     }
 }
 
-static void M_DrawFlatFace4s(const FACE4 *const faces, const int32_t count)
+static void M_ReleaseTextures(void)
 {
-    S_Output_DisableTextureMode();
+    if (m_Renderer3D == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
+        if (m_TextureMap[i] != GFX_NO_TEXTURE) {
+            GFX_3D_Renderer_UnregisterTexturePage(
+                m_Renderer3D, m_TextureMap[i]);
+            m_TextureMap[i] = GFX_NO_TEXTURE;
+        }
+    }
+    m_SelectedTexture = -1;
+}
 
-    for (int32_t i = 0; i < count; i++) {
-        const FACE4 *const face = &faces[i];
-        PHD_VBUF *const vns[4] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-            &m_VBuf[face->vertices[3]],
-        };
-
-        const RGBA_8888 color =
-            Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
-        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-        S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
+static void M_ReleaseSurfaces(void)
+{
+    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
+        if (m_TextureSurfaces[i] != nullptr) {
+            GFX_2D_Surface_Free(m_TextureSurfaces[i]);
+            m_TextureSurfaces[i] = nullptr;
+        }
+    }
+    if (m_PictureSurface != nullptr) {
+        GFX_2D_Surface_Free(m_PictureSurface);
+        m_PictureSurface = nullptr;
     }
 }
 
-static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
+static void M_Flush(void)
 {
-    S_Output_EnableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE3 *const face = &faces[i];
-        PHD_VBUF *const vns[3] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-        };
-
-        OBJECT_TEXTURE *const tex = Output_GetObjectTexture(face->texture_idx);
-        for (int32_t j = 0; j < 3; j++) {
-            vns[j]->u = tex->uv[j].u;
-            vns[j]->v = tex->uv[j].v;
-            vns[j]->z = 1.0f;
-            vns[j]->w = 1.0f;
-        }
-
-        S_Output_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tex_page, tex->draw_type);
-    }
+    GFX_3D_Renderer_Flush(m_Renderer3D);
 }
 
-static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
+static void M_FlipScreen(void)
 {
-    S_Output_EnableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE4 *const face = &faces[i];
-        PHD_VBUF *const vns[4] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-            &m_VBuf[face->vertices[3]],
-        };
-
-        OBJECT_TEXTURE *const tex = Output_GetObjectTexture(face->texture_idx);
-        for (int32_t j = 0; j < 4; j++) {
-            vns[j]->u = tex->uv[j].u;
-            vns[j]->v = tex->uv[j].v;
-            if (g_Config.rendering.enable_trapezoid_filter) {
-                vns[j]->z = face->texture_zw[j].z;
-                vns[j]->w = face->texture_zw[j].w;
-            } else {
-                vns[j]->z = 1.0f;
-                vns[j]->w = 1.0f;
-            }
-        }
-
-        S_Output_DrawTexturedQuad(
-            vns[0], vns[1], vns[2], vns[3], tex->tex_page, tex->draw_type);
-    }
+    GFX_Context_SwapBuffers();
+    m_SelectedTexture = -1;
 }
 
-static void M_DrawObjectFace3EnvMap(
-    const FACE3 *const faces, const int32_t count)
+static void M_DrawBackdropSurface(void)
 {
-    for (int32_t i = 0; i < count; i++) {
-        const FACE3 *const face = &faces[i];
-        PHD_VBUF *vns[3] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-        };
-
-        for (int32_t j = 0; j < 3; j++) {
-            vns[j]->u = m_EnvMapUV[face->vertices[j]].u;
-            vns[j]->v = m_EnvMapUV[face->vertices[j]].v;
-        }
-
-        if (face->enable_reflections) {
-            S_Output_DrawEnvMapTriangle(vns[0], vns[1], vns[2]);
-        }
-    }
 }
 
-static void M_DrawObjectFace4EnvMap(
-    const FACE4 *const faces, const int32_t count)
+static void M_DrawTriangleFan(
+    const GFX_3D_VERTEX *const vertices, const int32_t vertex_count)
 {
-    for (int32_t i = 0; i < count; i++) {
-        const FACE4 *const face = &faces[i];
-        PHD_VBUF *vns[4] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-            &m_VBuf[face->vertices[3]],
-        };
-
-        for (int32_t j = 0; j < 4; j++) {
-            vns[j]->u = m_EnvMapUV[face->vertices[j]].u;
-            vns[j]->v = m_EnvMapUV[face->vertices[j]].v;
-        }
-
-        if (face->enable_reflections) {
-            S_Output_DrawEnvMapQuad(vns[0], vns[1], vns[2], vns[3]);
-        }
-    }
+    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
 }
 
-static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
+static void M_DrawTriangleStrip(
+    const GFX_3D_VERTEX *const vertices, const int32_t vertex_count)
 {
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
+}
+
+static void M_Draw2DQuad(
+    const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2,
+    const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const RGBA_8888 br)
+{
+    int32_t vertex_count = 4;
+    GFX_3D_VERTEX vertices[vertex_count];
+
+#define SET(vtx_idx, x_, y_, z_, color)                                        \
+    vertices[vtx_idx].x = x_, vertices[vtx_idx].y = y_,                        \
+    vertices[vtx_idx].z = 1.0f, vertices[vtx_idx].r = color.r;                 \
+    vertices[vtx_idx].g = color.g;                                             \
+    vertices[vtx_idx].b = color.b;                                             \
+    vertices[vtx_idx].a = color.a;
+    SET(0, x1, y1, 1.0f, tl);
+    SET(1, x2, y1, 1.0f, tr);
+    SET(2, x2, y2, 1.0f, br);
+    SET(3, x1, y2, 1.0f, bl);
+#undef SET
+
+    M_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    M_DrawTriangleFan(vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+}
+
+static void M_DrawLightningSegment(const LIGHTNING *const lightning)
+{
+    const int32_t vertex_count = 8;
+    const RGB_F blue = { 0.0f, 0.0f, 255.0f };
+    const RGB_F white = { 255.0f, 255.0f, 255.0f };
+    GFX_3D_VERTEX vertices[vertex_count];
+
+    const XYZ_32 wp0 = lightning->pos_0;
+    const XYZ_32 wp1 = lightning->pos_1;
+    if (wp0.z < Output_GetNearZ() || wp0.z > Output_GetFarZ()
+        || wp1.z < Output_GetNearZ() || wp1.z > Output_GetFarZ()) {
+        return;
+    }
+
+    const int32_t vcx = Viewport_GetCenterX();
+    const int32_t vcy = Viewport_GetCenterY();
+    const float zp0 = wp0.z / g_PhdPersp;
+    const float zp1 = wp1.z / g_PhdPersp;
+    const XYZ_32 p0 = { vcx + wp0.x / zp0, vcy + wp0.y / zp0, wp0.z };
+    const XYZ_32 p1 = { vcx + wp1.x / zp1, vcy + wp1.y / zp1, wp1.z };
+    const int32_t t1 = (lightning->thickness << W2V_SHIFT) / zp0;
+    const int32_t t2 = (lightning->thickness << W2V_SHIFT) / zp1;
+
+#define SET(vtx_idx, x_, y_, z_, color)                                        \
+    vertices[vtx_idx].x = x_;                                                  \
+    vertices[vtx_idx].y = y_;                                                  \
+    vertices[vtx_idx].z = MAP_DEPTH(z_);                                       \
+    vertices[vtx_idx].r = color.r;                                             \
+    vertices[vtx_idx].g = color.g;                                             \
+    vertices[vtx_idx].b = color.b;                                             \
+    vertices[vtx_idx].a = 128.0f;
     // clang-format off
-    double xv =
-        g_MatrixPtr->_00 * pos.x +
-        g_MatrixPtr->_01 * pos.y +
-        g_MatrixPtr->_02 * pos.z +
-        g_MatrixPtr->_03;
-    double yv =
-        g_MatrixPtr->_10 * pos.x +
-        g_MatrixPtr->_11 * pos.y +
-        g_MatrixPtr->_12 * pos.z +
-        g_MatrixPtr->_13;
-    double zv =
-        g_MatrixPtr->_20 * pos.x +
-        g_MatrixPtr->_21 * pos.y +
-        g_MatrixPtr->_22 * pos.z +
-        g_MatrixPtr->_23;
+    SET(0, p0.x,          p0.y, p0.z, blue);
+    SET(1, p0.x + t1 / 2, p0.y, p0.z, white);
+    SET(2, p1.x + t2 / 2, p1.y, p1.z, white);
+    SET(3, p1.x,          p1.y, p1.z, blue);
+    SET(4, p0.x + t1 / 2, p0.y, p0.z, white);
+    SET(5, p0.x + t1,     p0.y, p0.z, blue);
+    SET(6, p1.x + t2,     p1.y, p1.z, blue);
+    SET(7, p1.x + t2 / 2, p1.y, p1.z, white);
     // clang-format on
+#undef SET
 
-    vbuf->xv = xv;
-    vbuf->yv = yv;
-    vbuf->zv = zv;
+    M_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    M_DrawTriangleFan(&vertices[0], 4);
+    M_DrawTriangleFan(&vertices[4], 4);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+}
 
-    uint16_t clip_flags;
-    if (zv < Output_GetNearZ()) {
-        clip_flags = 0x8000;
+static void M_DrawSprite(
+    const int16_t x1, const int16_t y1, const int16_t x2, const int32_t y2,
+    const int32_t z, const int32_t sprite_idx, const int16_t shade)
+{
+    const int32_t vertex_count = 4;
+    GFX_3D_VERTEX vertices[vertex_count];
+
+    const float multiplier = g_Config.visuals.brightness / 16.0f;
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
+    float vshade = (SHADE_MAX - shade) * multiplier;
+    CLAMPG(vshade, 255.0f);
+
+    const float u0 = (sprite->offset & 0xFF) / 256.0f;
+    const float v0 = (sprite->offset >> 8) / 256.0f;
+    const float u1 = (sprite->width >> 8) / 256.0f + u0;
+    const float v1 = (sprite->height >> 8) / 256.0f + v0;
+    const float vz = MAP_DEPTH(z);
+    const float rhw = 1.0f / z;
+
+#define SET(vtx_idx, x_, y_, z_, u_, v_)                                       \
+    vertices[vtx_idx].x = x_;                                                  \
+    vertices[vtx_idx].y = y_;                                                  \
+    vertices[vtx_idx].z = z_;                                                  \
+    vertices[vtx_idx].s = u_;                                                  \
+    vertices[vtx_idx].t = v_;                                                  \
+    vertices[vtx_idx].tex_coord[2] = 1.0;                                      \
+    vertices[vtx_idx].tex_coord[3] = 1.0;                                      \
+    vertices[vtx_idx].w = rhw;                                                 \
+    vertices[vtx_idx].r = vshade;                                              \
+    vertices[vtx_idx].g = vshade;                                              \
+    vertices[vtx_idx].b = vshade;
+
+    SET(0, x1, y1, vz, u0, v0);
+    SET(1, x2, y1, vz, u1, v0);
+    SET(2, x2, y2, vz, u1, v1);
+    SET(3, x1, y2, vz, u0, v1);
+#undef SET
+
+    if (m_TextureMap[sprite->tex_page] != GFX_NO_TEXTURE) {
+        M_EnableTextureMode();
+        M_SelectTexture(sprite->tex_page);
+        M_DrawTriangleFan(vertices, vertex_count);
     } else {
-        clip_flags = 0;
-
-        double persp = g_PhdPersp / zv;
-        double xs = Viewport_GetCenterX() + xv * persp;
-        double ys = Viewport_GetCenterY() + yv * persp;
-
-        if (xs < g_PhdLeft) {
-            clip_flags |= 1;
-        } else if (xs > g_PhdRight) {
-            clip_flags |= 2;
-        }
-
-        if (ys < g_PhdTop) {
-            clip_flags |= 4;
-        } else if (ys > g_PhdBottom) {
-            clip_flags |= 8;
-        }
-
-        vbuf->xs = xs;
-        vbuf->ys = ys;
-    }
-    vbuf->clip = clip_flags;
-    return clip_flags;
-}
-
-static void M_CalcVertexWibble(PHD_VBUF *const vbuf)
-{
-    double xs = vbuf->xs;
-    double ys = vbuf->ys;
-    xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & (WIBBLE_SIZE - 1)];
-    ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & (WIBBLE_SIZE - 1)];
-
-    int16_t clip_flags = vbuf->clip & ~15;
-    if (xs < g_PhdLeft) {
-        clip_flags |= 1;
-    } else if (xs > g_PhdRight) {
-        clip_flags |= 2;
-    }
-
-    if (ys < g_PhdTop) {
-        clip_flags |= 4;
-    } else if (ys > g_PhdBottom) {
-        clip_flags |= 8;
-    }
-
-    vbuf->xs = xs;
-    vbuf->ys = ys;
-    vbuf->clip = clip_flags;
-}
-
-static bool M_CalcObjectVertices(
-    const XYZ_16 *const vertices, const int16_t count)
-{
-    uint16_t total_clip = 0xFFFF;
-    for (int i = 0; i < count; i++) {
-        total_clip &= M_CalcVertex(&m_VBuf[i], vertices[i]);
-    }
-
-    return total_clip == 0;
-}
-
-static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
-{
-    if (mesh->num_lights <= 0) {
-        for (int32_t i = 0; i < -mesh->num_lights; i++) {
-            int16_t shade = m_LsAdder + mesh->lighting.lights[i];
-            CLAMP(shade, 0, 0x1FFF);
-            m_VBuf[i].g = shade;
-        }
-
-        return;
-    }
-
-    if (m_LsDivider == 0) {
-        int16_t shade = m_LsAdder;
-        CLAMP(shade, 0, 0x1FFF);
-        for (int32_t i = 0; i < mesh->num_lights; i++) {
-            m_VBuf[i].g = shade;
-        }
-
-        return;
-    }
-
-    // clang-format off
-    const int32_t xv = (
-        g_MatrixPtr->_00 * m_LsVectorView.x +
-        g_MatrixPtr->_10 * m_LsVectorView.y +
-        g_MatrixPtr->_20 * m_LsVectorView.z
-    ) / m_LsDivider;
-
-    const int32_t yv = (
-        g_MatrixPtr->_01 * m_LsVectorView.x +
-        g_MatrixPtr->_11 * m_LsVectorView.y +
-        g_MatrixPtr->_21 * m_LsVectorView.z
-    ) / m_LsDivider;
-
-    const int32_t zv = (
-        g_MatrixPtr->_02 * m_LsVectorView.x +
-        g_MatrixPtr->_12 * m_LsVectorView.y +
-        g_MatrixPtr->_22 * m_LsVectorView.z
-    ) / m_LsDivider;
-    // clang-format on
-
-    for (int32_t i = 0; i < mesh->num_lights; i++) {
-        const XYZ_16 *const normal = &mesh->lighting.normals[i];
-        int16_t shade = m_LsAdder
-            + ((normal->x * xv + normal->y * yv + normal->z * zv) >> 16);
-        CLAMP(shade, 0, 0x1FFF);
-        m_VBuf[i].g = shade;
-    }
-}
-
-static bool M_CalcVerticeEnvMap(const OBJECT_MESH *mesh)
-{
-    if (mesh->num_lights <= 0) {
-        return false;
-    }
-
-    for (int32_t i = 0; i < mesh->num_lights; ++i) {
-        // make sure that reflection will be drawn after normal poly
-        m_VBuf[i].zv -= (double)((1 << W2V_SHIFT) / 2);
-
-        // set lighting that depends only from fog distance
-        m_VBuf[i].g = 0x1000;
-
-        const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-        m_VBuf[i].g += Output_CalcFogShade(depth);
-
-        // reflection can be darker but not brighter
-        CLAMP(m_VBuf[i].g, 0x1000, 0x1FFF);
-
-        // rotate normal vectors for X/Y, no translation
-        const XYZ_16 *const normal = &mesh->lighting.normals[i];
-
-        // clang-format off
-        int32_t x = (
-            g_MatrixPtr->_00 * normal->x +
-            g_MatrixPtr->_01 * normal->y +
-            g_MatrixPtr->_02 * normal->z
-        ) >> W2V_SHIFT;
-
-        int32_t y = (
-            g_MatrixPtr->_10 * normal->x +
-            g_MatrixPtr->_11 * normal->y +
-            g_MatrixPtr->_12 * normal->z
-        ) >> W2V_SHIFT;
-        // clang-format on
-
-        CLAMP(x, -PHD_ONE, PHD_IONE);
-        CLAMP(y, -PHD_ONE, PHD_IONE);
-        m_EnvMapUV[i].u = PHD_ONE / PHD_IONE * (x + PHD_IONE) / 2;
-        m_EnvMapUV[i].v = PHD_ONE - PHD_ONE / PHD_IONE * (y + PHD_IONE) / 2;
-    }
-
-    return true;
-}
-
-static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
-{
-    for (int32_t i = 0; i < ABS(mesh->num_lights); i++) {
-        m_VBuf[i].g = 0xFFF;
-    }
-}
-
-static void M_CalcRoomVertices(const ROOM_MESH *const mesh)
-{
-    for (int32_t i = 0; i < mesh->num_vertices; i++) {
-        PHD_VBUF *const vbuf = &m_VBuf[i];
-        const ROOM_VERTEX *const vertex = &mesh->vertices[i];
-
-        M_CalcVertex(vbuf, vertex->pos);
-
-        vbuf->g = vertex->light_adder;
-        if (vbuf->zv >= Output_GetNearZ()) {
-            const int32_t depth = ((int32_t)vbuf->zv) >> W2V_SHIFT;
-            if (depth > Output_GetDrawDistMax()) {
-                vbuf->g = MAX_LIGHTING;
-                if (!m_IsSkyboxEnabled) {
-                    vbuf->clip |= 16;
-                }
-            } else {
-                vbuf->g += Output_CalcFogShade(depth);
-                if (!m_IsWaterEffect) {
-                    CLAMPG(vbuf->g, MAX_LIGHTING);
-                }
-            }
-        }
-
-        if (m_IsWaterEffect) {
-            vbuf->g += m_ShadeTable[(
-                ((uint8_t)m_WibbleOffset
-                 + (uint8_t)m_RandTable[(mesh->num_vertices - i) % WIBBLE_SIZE])
-                % WIBBLE_SIZE)];
-            CLAMP(vbuf->g, 0, 0x1FFF);
-        }
-    }
-}
-
-static void M_CalcRoomVerticesWibble(const ROOM_MESH *const mesh)
-{
-    for (int32_t i = 0; i < mesh->num_vertices; i++) {
-        if (mesh->vertices[i].flags & NO_VERT_MOVE) {
-            continue;
-        }
-        M_CalcVertexWibble(&m_VBuf[i]);
-    }
-}
-
-static void M_CalcWibbleTable(void)
-{
-    for (int i = 0; i < WIBBLE_SIZE; i++) {
-        PHD_ANGLE angle = (i * DEG_360) / WIBBLE_SIZE;
-        m_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        m_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        m_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
+        M_DisableTextureMode();
+        M_DrawTriangleFan(vertices, vertex_count);
     }
 }
 
 bool Output_Init(void)
 {
-    M_CalcWibbleTable();
-    Output_Sprites_Init();
+    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
+        m_TextureMap[i] = GFX_NO_TEXTURE;
+        m_TextureSurfaces[i] = nullptr;
+    }
+
+    m_Renderer2D = GFX_2D_Renderer_Create();
+    m_Renderer3D = GFX_3D_Renderer_Create();
+
+    Output_ApplyRenderSettings();
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
+    GFX_3D_Renderer_SetAlphaThreshold(m_Renderer3D, 0.0);
+    GFX_3D_Renderer_SetAlphaPointDiscard(m_Renderer3D, true);
+
     Output_Textures_Init();
-    return S_Output_Init();
+    Output_Meshes_Init();
+    Output_Sprites_Init();
+    return true;
 }
 
 void Output_Shutdown(void)
 {
+    Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();
-    S_Output_Shutdown();
-    Memory_FreePointer(&m_BackdropImagePath);
+
+    M_ReleaseTextures();
+    M_ReleaseSurfaces();
+
+    if (m_Renderer2D != nullptr) {
+        GFX_2D_Renderer_Destroy(m_Renderer2D);
+        m_Renderer2D = nullptr;
+    }
+    if (m_Renderer3D != nullptr) {
+        GFX_3D_Renderer_Destroy(m_Renderer3D);
+        m_Renderer3D = nullptr;
+    }
+    GFX_Context_Detach();
+    Output_ClearLastBackgroundPath();
 }
 
-void Output_ReserveVertexBuffer(const size_t size)
+void Output_SetWindowSize(int32_t width, int32_t height)
 {
-    m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
-    m_EnvMapUV = GameBuf_Alloc(size * sizeof(TEXTURE_UV), GBUF_VERTEX_BUFFER);
+    GFX_Context_SetWindowSize(width, height);
 }
 
-void Output_SetWindowSize(int width, int height)
+void Output_ApplyLevelSettings(void)
 {
-    S_Output_SetWindowSize(width, height);
+    Output_SetWaterColor(Level_GetWaterColor());
+    Output_SetFogStart(Level_GetFogStart() * WALL_L);
+    Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
 }
 
 void Output_ApplyRenderSettings(void)
 {
-    S_Output_ApplyRenderSettings();
-    if (m_BackdropImagePath) {
-        Output_LoadBackgroundFromFile(m_BackdropImagePath);
+    Output_Textures_ApplyRenderSettings();
+    Output_ApplyLevelSettings();
+
+    if (m_Renderer3D == nullptr) {
+        return;
+    }
+
+    if (m_PictureSurface != nullptr
+        && (Screen_GetResWidth() != m_SurfaceWidth
+            || Screen_GetResHeight() != m_SurfaceHeight)) {
+        GFX_2D_Surface_Free(m_PictureSurface);
+        m_PictureSurface = nullptr;
+    }
+
+    m_SurfaceWidth = Screen_GetResWidth();
+    m_SurfaceHeight = Screen_GetResHeight();
+
+    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+    GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
+    GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
+    GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
+    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
+    GFX_3D_Renderer_SetAnisotropyFilter(
+        m_Renderer3D, g_Config.rendering.anisotropy_filter);
+
+    const char *const last_path = Output_GetLastBackgroundPath();
+    if (last_path != nullptr) {
+        Output_LoadBackgroundFromFile(last_path);
     }
 }
 
-void Output_DownloadTextures(void)
+void Output_ObserveLevelLoad(void)
 {
-    S_Output_DownloadTextures(Output_GetTexturePageCount());
-
+    M_DownloadTextures(Output_GetTexturePageCount());
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
+    Output_Meshes_ObserveLevelLoad();
+
+    Output_ApplyLevelSettings();
 }
 
-void Output_DrawBlack(void)
+void Output_ObserveLevelUnload(void)
 {
-    Output_DrawBlackRectangle(255);
+    Output_Meshes_ObserveLevelUnload();
+}
+
+void Output_ObserveRoomFlip(const ROOM *room)
+{
+    Output_Meshes_ObserveRoomFlip(room);
 }
 
 void Output_FlushTranslucentObjects(void)
 {
+    Output_RememberState();
     // draw transparent lightnings as last in the 3D geometry pipeline
     for (int32_t i = 0; i < m_LightningCount; i++) {
-        const LIGHTNING *const lightning = &m_LightningTable[i];
-        S_Output_DrawLightningSegment(
-            lightning->edges[0].pos.x, lightning->edges[0].pos.y,
-            lightning->edges[0].pos.z, lightning->edges[0].thickness,
-            lightning->edges[1].pos.x, lightning->edges[1].pos.y,
-            lightning->edges[1].pos.z, lightning->edges[1].thickness);
+        M_DrawLightningSegment(&m_LightningTable[i]);
     }
+    Output_RestoreState();
 }
 
 void Output_BeginScene(void)
@@ -613,478 +506,283 @@ void Output_BeginScene(void)
     Output_ApplyFOV();
     Text_DrawReset();
 
+    Output_RememberState();
     Output_Sprites_RenderBegin();
-    S_Output_RenderBegin();
+    Output_Meshes_RenderBegin();
+
+    GFX_Context_Clear();
+    GFX_Track_Reset();
+    GFX_3D_Renderer_RenderBegin(m_Renderer3D);
+    GFX_3D_Renderer_SetTextureFilter(
+        m_Renderer3D, g_Config.rendering.texture_filter);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
     m_LightningCount = 0;
 }
 
 void Output_EndScene(void)
 {
-    S_Output_DisableDepthTest();
-    S_Output_ClearDepthBuffer();
+    M_DisableDepthTest();
+    Output_ClearDepthBuffer();
     Overlay_DrawFPSInfo();
-    S_Output_EnableDepthTest();
-    S_Output_RenderEnd();
-    S_Output_FlipScreen();
+    M_EnableDepthTest();
+    GFX_3D_Renderer_RenderEnd(m_Renderer3D);
+    M_FlipScreen();
     Shell_ProcessEvents();
     g_FPSCounter++;
 }
 
 void Output_ClearDepthBuffer(void)
 {
-    S_Output_ClearDepthBuffer();
-}
-
-void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
-{
-    if (!M_CalcObjectVertices(mesh->vertices, mesh->num_vertices)) {
-        return;
-    }
-
-    M_CalcVerticeLight(mesh);
-    M_DrawTexturedFace4s(mesh->tex_face4s, mesh->num_tex_face4s);
-    M_DrawTexturedFace3s(mesh->tex_face3s, mesh->num_tex_face3s);
-    M_DrawFlatFace4s(mesh->flat_face4s, mesh->num_flat_face4s);
-    M_DrawFlatFace3s(mesh->flat_face3s, mesh->num_flat_face3s);
-
-    if (mesh->enable_reflections && g_Config.visuals.enable_reflections) {
-        if (!M_CalcVerticeEnvMap(mesh)) {
-            return;
-        }
-
-        M_DrawObjectFace4EnvMap(mesh->tex_face4s, mesh->num_tex_face4s);
-        M_DrawObjectFace3EnvMap(mesh->tex_face3s, mesh->num_tex_face3s);
-        M_DrawObjectFace4EnvMap(mesh->flat_face4s, mesh->num_flat_face4s);
-        M_DrawObjectFace3EnvMap(mesh->flat_face3s, mesh->num_flat_face3s);
-    }
-
-    if (g_Config.rendering.enable_debug_spheres) {
-        M_DrawSphere(
-            (XYZ_32) {
-                .x = mesh->center.x,
-                .y = mesh->center.y,
-                .z = mesh->center.z,
-            },
-            mesh->radius);
-    }
-}
-
-void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
-{
-    Matrix_Push();
-    Matrix_Interpolate();
-    Output_DrawObjectMesh(mesh, clip);
-    Matrix_Pop();
-}
-
-void Output_SetSkyboxEnabled(const bool enabled)
-{
-    m_IsSkyboxEnabled = enabled;
-}
-
-bool Output_IsSkyboxEnabled(void)
-{
-    return m_IsSkyboxEnabled;
-}
-
-void Output_DrawSkybox(const OBJECT_MESH *const mesh)
-{
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdRight = Viewport_GetMaxX();
-    g_PhdBottom = Viewport_GetMaxY();
-
-    if (!M_CalcObjectVertices(mesh->vertices, mesh->num_vertices)) {
-        return;
-    }
-
-    S_Output_DisableDepthTest();
-    M_CalcSkyboxLight(mesh);
-    M_DrawTexturedFace4s(mesh->tex_face4s, mesh->num_tex_face4s);
-    M_DrawTexturedFace3s(mesh->tex_face3s, mesh->num_tex_face3s);
-    M_DrawFlatFace4s(mesh->flat_face4s, mesh->num_flat_face4s);
-    M_DrawFlatFace3s(mesh->flat_face3s, mesh->num_flat_face3s);
-    S_Output_EnableDepthTest();
-}
-
-void Output_DrawRoomMesh(const ROOM *const room)
-{
-    const ROOM_MESH *const mesh = &room->mesh;
-    M_CalcRoomVertices(mesh);
-
-    if (m_IsWibbleEffect) {
-        S_Output_DisableDepthWrites();
-        M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
-        M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
-        S_Output_EnableDepthWrites();
-        M_CalcRoomVerticesWibble(mesh);
-    }
-
-    M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
-    M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
-}
-
-void Output_DrawRoomPortals(const ROOM *const room)
-{
-    S_Output_DisableDepthTest();
-    const RGBA_8888 portal_color = { 0, 0, 255, 255 };
-    for (int32_t i = 0; i < room->portals->count; i++) {
-        const PORTAL *const portal = &room->portals->portal[i];
-        const XYZ_32 vertices[4] = {
-            { portal->vertex[0].x, portal->vertex[0].y, portal->vertex[0].z },
-            { portal->vertex[1].x, portal->vertex[1].y, portal->vertex[1].z },
-            { portal->vertex[2].x, portal->vertex[2].y, portal->vertex[2].z },
-            { portal->vertex[3].x, portal->vertex[3].y, portal->vertex[3].z },
-        };
-        Output_Draw3DFrame(vertices, portal_color);
-    }
-    S_Output_EnableDepthTest();
-}
-
-void Output_DrawRoomTriggers(const ROOM *const room)
-{
-#define DRAW_TRI(a, b, c, color)                                               \
-    do {                                                                       \
-        S_Output_DrawFlatTriangle(a, b, c, color);                             \
-        S_Output_DrawFlatTriangle(c, b, a, color);                             \
-    } while (0)
-#define DRAW_QUAD(a, b, c, d, color)                                           \
-    do {                                                                       \
-        DRAW_TRI(a, b, d, color);                                              \
-        DRAW_TRI(b, c, d, color);                                              \
-    } while (0)
-
-    const RGBA_8888 color = { .r = 255, .g = 0, .b = 255, .a = 128 };
-    const XZ_16 offsets[4] = { { 0, 0 }, { 0, 1 }, { 1, 1 }, { 1, 0 } };
-
-    m_IsWaterEffect = false;
-    m_IsShadeEffect = false;
-    S_Output_DisableTextureMode();
-    S_Output_DisableDepthWrites();
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
-    for (int32_t z = 0; z < room->size.z; z++) {
-        for (int32_t x = 0; x < room->size.x; x++) {
-            const SECTOR *sector = Room_GetUnitSector(room, x, z);
-            if (sector->trigger == nullptr) {
-                continue;
-            }
-            PHD_VBUF vns[4];
-            for (int32_t i = 0; i < 4; i++) {
-                XYZ_16 vertex_pos = {
-                    .x = (x + offsets[i].x) * WALL_L,
-                    .z = (z + offsets[i].z) * WALL_L,
-                };
-                XYZ_32 world_pos = {
-                    .x = room->pos.x + x * WALL_L + offsets[i].x * (WALL_L - 1),
-                    .z = room->pos.z + z * WALL_L + offsets[i].z * (WALL_L - 1),
-                    .y = room->pos.y,
-                };
-
-                int16_t room_num = room - Room_Get(0);
-                sector = Room_GetSector(
-                    world_pos.x, world_pos.y, world_pos.z, &room_num);
-                vertex_pos.y =
-                    Room_GetHeight(
-                        sector, world_pos.x, world_pos.y, world_pos.z)
-                    + (m_IsWaterEffect ? -16 : -2);
-
-                M_CalcVertex(&vns[i], vertex_pos);
-                vns[i].g = HIGH_LIGHT;
-                vns[i].zv -=
-                    (double)((1 << W2V_SHIFT) / 2); // reduce z fighting
-            }
-
-            DRAW_QUAD(&vns[0], &vns[1], &vns[2], &vns[3], color);
-        }
-    }
-
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
-    S_Output_EnableDepthWrites();
-
-#undef DRAW_TRI
-#undef DRAW_QUAD
-}
-
-void Output_DrawShadow(
-    const int16_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
-{
-    if (!item->enable_shadow) {
-        return;
-    }
-
-    SHADOW_INFO shadow = {};
-    shadow.vertex_count = g_Config.visuals.enable_round_shadow ? 32 : 8;
-
-    int32_t x0 = bounds->min.x;
-    int32_t x1 = bounds->max.x;
-    int32_t z0 = bounds->min.z;
-    int32_t z1 = bounds->max.z;
-
-    int32_t x_mid = (x0 + x1) / 2;
-    int32_t z_mid = (z0 + z1) / 2;
-
-    int32_t x_add = (x1 - x0) * size / 1024;
-    int32_t z_add = (z1 - z0) * size / 1024;
-
-    for (int32_t i = 0; i < shadow.vertex_count; i++) {
-        int32_t angle = (DEG_180 + i * DEG_360) / shadow.vertex_count;
-        shadow.vertices[i].x = x_mid + (x_add * 2) * Math_Sin(angle) / DEG_90;
-        shadow.vertices[i].z = z_mid + (z_add * 2) * Math_Cos(angle) / DEG_90;
-        shadow.vertices[i].y = 0;
-    }
-
-    Matrix_Push();
-    Matrix_TranslateAbs(
-        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
-    Matrix_RotY(item->rot.y);
-
-    if (M_CalcObjectVertices(shadow.vertices, shadow.vertex_count)) {
-        int16_t clip_and = 1;
-        int16_t clip_positive = 1;
-        int16_t clip_or = 0;
-        for (int32_t i = 0; i < shadow.vertex_count; i++) {
-            clip_and &= m_VBuf[i].clip;
-            clip_positive &= m_VBuf[i].clip >= 0;
-            clip_or |= m_VBuf[i].clip;
-        }
-        PHD_VBUF *vn1 = &m_VBuf[0];
-        PHD_VBUF *vn2 = &m_VBuf[g_Config.visuals.enable_round_shadow ? 4 : 1];
-        PHD_VBUF *vn3 = &m_VBuf[g_Config.visuals.enable_round_shadow ? 8 : 2];
-
-        int32_t c1 = (vn3->xs - vn2->xs) * (vn1->ys - vn2->ys);
-        int32_t c2 = (vn1->xs - vn2->xs) * (vn3->ys - vn2->ys);
-        bool visible = (int32_t)(c1 - c2) >= 0;
-
-        if (!clip_and && clip_positive && visible) {
-            S_Output_DrawShadow(
-                &m_VBuf[0], clip_or ? 1 : 0, shadow.vertex_count);
-        }
-    }
-
-    Matrix_Pop();
-}
-
-int32_t Output_GetDrawDistMin(void)
-{
-    return 20;
-}
-
-int32_t Output_GetDrawDistFade(void)
-{
-    return m_DrawDistFade;
-}
-
-int32_t Output_GetDrawDistMax(void)
-{
-    return m_DrawDistMax;
-}
-
-void Output_SetDrawDistFade(int32_t dist)
-{
-    m_DrawDistFade = dist;
-}
-
-void Output_SetDrawDistMax(int32_t dist)
-{
-    m_DrawDistMax = dist;
-
-    const double near_z = Output_GetNearZ();
-    const double far_z = Output_GetFarZ();
-    const double res_z = 0.99 * near_z * far_z / (far_z - near_z);
-    g_FltResZ = res_z;
-    g_FltResZBuf = 0.005 + res_z / near_z;
-}
-
-void Output_SetWaterColor(const RGB_F *color)
-{
-    m_WaterColor.r = color->r;
-    m_WaterColor.g = color->g;
-    m_WaterColor.b = color->b;
-}
-
-void Output_SetLightAdder(const int32_t adder)
-{
-    m_LsAdder = adder;
-}
-
-int32_t Output_GetLightAdder(void)
-{
-    return m_LsAdder;
-}
-
-void Output_SetLightDivider(const int32_t divider)
-{
-    m_LsDivider = divider;
-}
-
-int32_t Output_GetNearZ(void)
-{
-    return Output_GetDrawDistMin() << W2V_SHIFT;
-}
-
-int32_t Output_GetFarZ(void)
-{
-    return Output_GetDrawDistMax() << W2V_SHIFT;
-}
-
-void Output_DrawSprite(
-    const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
-    const int16_t shade)
-{
-    Matrix_Push();
-    Matrix_TranslateAbs(x, y, z);
-    Output_Sprites_RenderSingleSprite(
-        g_MatrixPtr, (XYZ_32) { 0, 0, 0 }, sprite_idx, shade);
-    Matrix_Pop();
+    GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color)
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 color)
 {
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
+    M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
-    RGBA_8888 bl, RGBA_8888 br)
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const RGBA_8888 br)
 {
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
-}
-
-void Output_Draw3DLine(
-    const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
-{
-    PHD_VBUF vbuf[2];
-    uint16_t total_clip = 0xFFFF;
-    total_clip &= M_CalcVertex(
-        &vbuf[0], (XYZ_16) { .x = pos_0.x, .y = pos_0.y, .z = pos_0.z });
-    total_clip &= M_CalcVertex(
-        &vbuf[1], (XYZ_16) { .x = pos_1.x, .y = pos_1.y, .z = pos_1.z });
-    S_Output_Draw3DLine(&vbuf[0], &vbuf[1], color);
-}
-
-void Output_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
-{
-    Output_Draw3DLine(vert[0], vert[1], color);
-    Output_Draw3DLine(vert[1], vert[2], color);
-    Output_Draw3DLine(vert[2], vert[3], color);
-    Output_Draw3DLine(vert[3], vert[0], color);
+    M_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenFrame(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
-    RGBA_8888 colLight, int32_t thickness)
+    int32_t sx, int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 col_dark, const RGBA_8888 col_light,
+    const int32_t thickness_i)
 {
-    float scale = Viewport_GetHeight() / 480.0;
-    S_Output_DrawScreenFrame(
-        sx - scale, sy - scale, w, h, colDark, colLight,
-        thickness * scale / 2.0f);
+    const float scale = Viewport_GetHeight() / 480.0;
+    const float thickness = thickness_i * scale / 2.0f;
+    sx -= scale;
+    sy -= scale;
+
+#define SB_NUM_VERTS_DARK 12
+#define SB_NUM_VERTS_LIGHT 10
+    GFX_3D_VERTEX vertices[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+    GFX_3D_VERTEX *const dark_vertices = vertices;
+    GFX_3D_VERTEX *const light_vertices = vertices + SB_NUM_VERTS_DARK;
+    const float sxf = sx + thickness;
+    const float syf = sy + thickness;
+    const float hf = h;
+    const float wf = w;
+
+#define SET(i, x_, y_)                                                         \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;
+    // clang-format off
+    // Top Left Dark edge
+    SET(0,  sxf,                         syf + hf - thickness);
+    SET(1,  sxf + thickness,             syf + hf - thickness);
+    SET(2,  sxf,                         syf);
+    SET(3,  sxf + thickness,             syf + thickness);
+    SET(4,  sxf + wf - thickness,        syf);
+    SET(5,  sxf + wf - thickness,        syf + thickness);
+    // Bottom Right Dark set
+    SET(6,  sxf + wf + thickness,        syf - thickness);
+    SET(7,  sxf + wf,                    syf - thickness);
+    SET(8,  sxf + wf + thickness,        syf + hf + thickness);
+    SET(9,  sxf + wf,                    syf + hf);
+    SET(10, sxf - thickness,             syf + hf + thickness);
+    SET(11, sxf - thickness,             syf + hf);
+    // Light box
+    SET(12, sxf - thickness,             syf + hf);
+    SET(13, sxf - thickness + thickness, syf + hf - thickness);
+    SET(14, sxf - thickness,             syf - thickness);
+    SET(15, sxf,                         syf);
+    SET(16, sxf + wf,                    syf - thickness);
+    SET(17, sxf + wf - thickness,        syf);
+    SET(18, sxf + wf,                    syf + hf);
+    SET(19, sxf + wf - thickness,        syf + hf - thickness);
+    SET(20, sxf - thickness,             syf + hf);
+    SET(21, sxf - thickness + thickness, syf + hf - thickness);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
+    }
+    for (int32_t i = 0; i < SB_NUM_VERTS_DARK; i++) {
+        dark_vertices[i].r = col_dark.r;
+        dark_vertices[i].g = col_dark.g;
+        dark_vertices[i].b = col_dark.b;
+        dark_vertices[i].a = col_dark.a;
+    }
+    for (int32_t i = 0; i < SB_NUM_VERTS_LIGHT; i++) {
+        light_vertices[i].r = col_light.r;
+        light_vertices[i].g = col_light.g;
+        light_vertices[i].b = col_light.b;
+        light_vertices[i].a = col_light.a;
+    }
+    M_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
 }
 
 void Output_DrawGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
-    RGBA_8888 bl, RGBA_8888 br, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 tl,
+    const RGBA_8888 tr, const RGBA_8888 bl, const RGBA_8888 br,
+    const int32_t thickness_i)
 {
-    float scale = Viewport_GetHeight() / 480.0;
-    S_Output_4ColourTextBox(
-        sx - scale, sy - scale, w + scale, h + scale, tl, tr, bl, br,
-        thickness * scale / 2.0f);
+    const float scale = Viewport_GetHeight() / 480.0;
+    const float thickness = thickness_i * scale / 2.0f;
+    sx -= scale;
+    sy -= scale;
+    w += scale;
+    h += scale;
+
+    //  0                 2
+    //   *               &
+    //    1             3
+    //
+    //    7             5
+    //   #               @
+    //  6                 4
+    GFX_3D_VERTEX vertices[10];
+
+#define SET(i, x_, y_, color)                                                  \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;                                                        \
+    vertices[i].r = color.r;                                                   \
+    vertices[i].g = color.g;                                                   \
+    vertices[i].b = color.b;                                                   \
+    vertices[i].a = color.a;
+    // clang-format off
+    SET(0, sx - thickness,     sy - thickness,     tl);
+    SET(1, sx + thickness,     sy + thickness,     tl);
+    SET(2, sx + w + thickness, sy - thickness,     tr);
+    SET(3, sx + w - thickness, sy + thickness,     tr);
+    SET(4, sx + w + thickness, sy + h + thickness, br);
+    SET(5, sx + w - thickness, sy + h - thickness, br);
+    SET(6, sx - thickness,     sy + h + thickness, bl);
+    SET(7, sx + thickness,     sy + h - thickness, bl);
+    SET(8, sx - thickness,     sy - thickness,     tl);
+    SET(9, sx + thickness,     sy + thickness,     tl);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < 10; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
+    }
+    M_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, 10);
 }
 
 void Output_DrawCentreGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
-    RGBA_8888 center, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 edge,
+    const RGBA_8888 center, const int32_t thickness_i)
 {
-    float scale = Viewport_GetHeight() / 480.0;
-    S_Output_2ToneColourTextBox(
-        sx - scale, sy - scale, w + scale, h + scale, edge, center,
-        thickness * scale / 2.0f);
+    const float scale = Viewport_GetHeight() / 480.0;
+    const float thickness = thickness_i * scale / 2.0f;
+    sx -= scale;
+    sy -= scale;
+    w += scale;
+    h += scale;
+
+    //  0        2        4
+    //   *               &
+    //    1      3      5
+    //
+    // 14 15            7 6
+    //
+    //    13    10      9
+    //   #               @
+    // 12       11        8
+
+    const int32_t half_w = w / 2;
+    const int32_t half_h = h / 2;
+    GFX_3D_VERTEX vertices[18];
+
+#define SET(i, x_, y_, color)                                                  \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;                                                        \
+    vertices[i].r = color.r;                                                   \
+    vertices[i].g = color.g;                                                   \
+    vertices[i].b = color.b;                                                   \
+    vertices[i].a = color.a;
+    // clang-format off
+    SET(0, sx - thickness,     sy - thickness,     edge);
+    SET(1, sx + thickness,     sy + thickness,     edge);
+    SET(2, sx + half_w,        sy - thickness,     center);
+    SET(3, sx + half_w,        sy + thickness,     center);
+    SET(4, sx + w + thickness, sy - thickness,     edge);
+    SET(5, sx + w - thickness, sy + thickness,     edge);
+    SET(6, sx + w + thickness, sy + half_h,        center);
+    SET(7, sx + w - thickness, sy + half_h,        center);
+    SET(8, sx + w + thickness, sy + h + thickness, edge);
+    SET(9, sx + w - thickness, sy + h - thickness, edge);
+    SET(10, sx + half_w,       sy + h + thickness, center);
+    SET(11, sx + half_w,       sy + h - thickness, center);
+    SET(12, sx - thickness,    sy + h + thickness, edge);
+    SET(13, sx + thickness,    sy + h - thickness, edge);
+    SET(14, sx - thickness,    sy + half_h,        center);
+    SET(15, sx + thickness,    sy + half_h,        center);
+    SET(16, sx - thickness,    sy - thickness,     edge);
+    SET(17, sx + thickness,    sy + thickness,     edge);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < 18; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
+    }
+    M_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, 18);
 }
 
-void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
+void Output_DrawScreenFBox(
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h)
 {
     RGBA_8888 color = { 0, 0, 0, 128 };
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
+    M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenSprite(
-    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
-    int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
+    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade,
+    const uint16_t flags, const int32_t page)
 {
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     const int32_t x0 = sx + (scale_h * sprite->x0 / PHD_ONE);
     const int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     const int32_t y0 = sy + (scale_v * sprite->y0 / PHD_ONE);
     const int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth()
         && y0 < Viewport_GetHeight()) {
-        S_Output_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, 0);
-    }
-}
-
-void Output_DrawSpriteRel(
-    int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
-{
-    int32_t zv = g_MatrixPtr->_20 * x + g_MatrixPtr->_21 * y
-        + g_MatrixPtr->_22 * z + g_MatrixPtr->_23;
-    if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
-        return;
-    }
-
-    int32_t xv = g_MatrixPtr->_00 * x + g_MatrixPtr->_01 * y
-        + g_MatrixPtr->_02 * z + g_MatrixPtr->_03;
-    int32_t yv = g_MatrixPtr->_10 * x + g_MatrixPtr->_11 * y
-        + g_MatrixPtr->_12 * z + g_MatrixPtr->_13;
-    int32_t zp = zv / g_PhdPersp;
-
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
-    const int32_t x0 =
-        Viewport_GetCenterX() + (xv + (sprite->x0 << W2V_SHIFT)) / zp;
-    const int32_t y0 =
-        Viewport_GetCenterY() + (yv + (sprite->y0 << W2V_SHIFT)) / zp;
-    const int32_t x1 =
-        Viewport_GetCenterX() + (xv + (sprite->y0 << W2V_SHIFT)) / zp;
-    const int32_t y1 =
-        Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
-        && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
-        int32_t depth = zv >> W2V_SHIFT;
-        shade += Output_CalcFogShade(depth);
-        CLAMPG(shade, 0x1FFF);
-        S_Output_DrawSprite(x0, y0, x1, y1, zv, sprnum, shade);
+        M_DrawSprite(x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, 0);
     }
 }
 
 void Output_DrawUISprite(
-    int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade)
+    const int32_t x, const int32_t y, const int32_t scale,
+    const int16_t sprite_idx, const int16_t shade)
 {
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     const int32_t x0 = x + (scale * sprite->x0 >> 16);
     const int32_t x1 = x + (scale * sprite->x1 >> 16);
     const int32_t y0 = y + (scale * sprite->y0 >> 16);
     const int32_t y1 = y + (scale * sprite->y1 >> 16);
     if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
         && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
-        S_Output_DrawSprite(
-            x0, y0, x1, y1, Output_GetNearZ() + 200, sprnum, shade);
+        M_DrawSprite(
+            x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
     }
 }
 
-bool Output_LoadBackgroundFromFile(const char *const path)
+bool Output_LoadBackgroundFromImage(const IMAGE *const image)
 {
-    ASSERT(path != nullptr);
-    const char *old_path = m_BackdropImagePath;
-    m_BackdropImagePath = File_GuessExtension(path, m_ImageExtensions);
-    Memory_FreePointer(&old_path);
-
-    IMAGE *const img = Image_CreateFromFileInto(
-        m_BackdropImagePath, Viewport_GetWidth(), Viewport_GetHeight(),
-        IMAGE_FIT_SMART);
-    if (img == nullptr) {
-        return false;
-    }
-    S_Output_DownloadBackdropSurface(img);
-    Image_Free(img);
+    M_DownloadBackdropSurface(image);
     return true;
 }
 
@@ -1096,114 +794,48 @@ void Output_LoadBackgroundFromObject(void)
 
 void Output_UnloadBackground(void)
 {
-    S_Output_DownloadBackdropSurface(nullptr);
-    Memory_FreePointer(&m_BackdropImagePath);
+    M_DownloadBackdropSurface(nullptr);
+    Output_ClearLastBackgroundPath();
 }
 
 void Output_DrawLightningSegment(
-    int32_t x1, int32_t y1, const int32_t z1, int32_t x2, int32_t y2,
-    const int32_t z2, const int32_t width)
+    const XYZ_32 pos_0, const XYZ_32 pos_1, const int32_t thickness)
 {
     if (m_LightningCount >= MAX_LIGHTNINGS) {
         return;
     }
-
-    if (z1 < Output_GetNearZ() || z1 > Output_GetFarZ()
-        || z2 < Output_GetNearZ() || z2 > Output_GetFarZ()) {
-        return;
-    }
-
-    x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
-    y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
-    x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
-    y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
-    const int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
-    const int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
-
     LIGHTNING *const lightning = &m_LightningTable[m_LightningCount];
-    lightning->edges[0].pos.x = x1;
-    lightning->edges[0].pos.y = y1;
-    lightning->edges[0].pos.z = z1;
-    lightning->edges[0].thickness = thickness1;
-    lightning->edges[1].pos.x = x2;
-    lightning->edges[1].pos.y = y2;
-    lightning->edges[1].pos.z = z2;
-    lightning->edges[1].thickness = thickness2;
+    lightning->pos_0 = pos_0;
+    lightning->pos_1 = pos_1;
+    lightning->thickness = thickness;
     m_LightningCount++;
 }
 
-void Output_SetupBelowWater(bool underwater)
+void Output_DrawBlackRectangle(const int32_t opacity)
 {
-    m_IsWaterEffect = true;
-    m_IsWibbleEffect = !underwater;
-    m_IsShadeEffect = true;
-}
-
-void Output_SetupAboveWater(bool underwater)
-{
-    m_IsWaterEffect = false;
-    m_IsWibbleEffect = underwater;
-    m_IsShadeEffect = underwater;
-}
-
-void Output_AnimateTextures(const int32_t num_frames)
-{
-    m_WibbleOffset = (m_WibbleOffset + num_frames) % WIBBLE_SIZE;
-    m_AnimatedTexturesOffset += num_frames;
-    bool update = false;
-    while (m_AnimatedTexturesOffset > 5) {
-        Output_CycleAnimatedTextures();
-        update = true;
-        m_AnimatedTexturesOffset -= 5;
-    }
-    if (update) {
-        Output_Textures_Update();
-    }
-}
-
-void Output_RotateLight(int16_t pitch, int16_t yaw)
-{
-    int32_t cp = Math_Cos(pitch);
-    int32_t sp = Math_Sin(pitch);
-    int32_t cy = Math_Cos(yaw);
-    int32_t sy = Math_Sin(yaw);
-    int32_t ls_x = TRIGMULT2(cp, sy);
-    int32_t ls_y = -sp;
-    int32_t ls_z = TRIGMULT2(cp, cy);
-    m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
-                        + g_W2VMatrix._02 * ls_z)
-        >> W2V_SHIFT;
-    m_LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
-                        + g_W2VMatrix._12 * ls_z)
-        >> W2V_SHIFT;
-    m_LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
-                        + g_W2VMatrix._22 * ls_z)
-        >> W2V_SHIFT;
-}
-
-void Output_DrawBlackRectangle(int32_t opacity)
-{
-    int32_t sx = 0;
-    int32_t sy = 0;
-    int32_t sw = Viewport_GetWidth();
-    int32_t sh = Viewport_GetHeight();
-
-    RGBA_8888 background = { 0, 0, 0, opacity };
-    S_Output_DisableDepthTest();
-    S_Output_ClearDepthBuffer();
+    const int32_t sx = 0;
+    const int32_t sy = 0;
+    const int32_t sw = Viewport_GetWidth();
+    const int32_t sh = Viewport_GetHeight();
+    const RGBA_8888 background = { 0, 0, 0, opacity };
+    M_DisableDepthTest();
+    Output_ClearDepthBuffer();
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
-    S_Output_EnableDepthTest();
+    M_EnableDepthTest();
 }
 
 void Output_DrawBackground(void)
 {
-    // already handled in S_Output_RenderBegin
+    if (m_PictureSurface == nullptr) {
+        return;
+    }
+    GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
 void Output_DrawPolyList(void)
 {
     // force flush the vertex stream
-    S_Output_ClearDepthBuffer();
+    Output_ClearDepthBuffer();
 }
 
 void Output_ApplyFOV(void)
@@ -1232,232 +864,73 @@ void Output_ApplyFOV(void)
     }
 }
 
-void Output_ApplyTint(float *r, float *g, float *b)
+void Output_DrawTextBackground(
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy, int32_t w,
+    int32_t h, const int32_t z, const TEXT_STYLE text_style)
 {
-    const RGB_F tint = Output_GetTint();
-    if (m_IsShadeEffect) {
-        *r *= tint.r;
-        *g *= tint.g;
-        *b *= tint.b;
-    }
-}
-
-RGB_F Output_GetTint(void)
-{
-    if (m_IsShadeEffect) {
-        return m_WaterColor;
-    }
-    return (RGB_F) { 1.0f, 1.0f, 1.0f };
-}
-
-bool Output_MakeScreenshot(const char *const path)
-{
-    GFX_Context_ScheduleScreenshot(path);
-    return true;
-}
-
-int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
-{
-    if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
-        return 0;
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenFBox(sx, sy, w, h);
+        return;
     }
 
-    int32_t x_min = bounds->min.x;
-    int32_t x_max = bounds->max.x;
-    int32_t y_min = bounds->min.y;
-    int32_t y_max = bounds->max.y;
-    int32_t z_min = bounds->min.z;
-    int32_t z_max = bounds->max.z;
+    // Make sure height and width divisible by 2.
+    w = 2 * ((w + 1) / 2);
+    h = 2 * ((h + 1) / 2);
+    Output_DrawScreenFBox(sx - 1, sy - 1, w + 1, h + 1);
 
-    XYZ_32 vtx[8];
-    vtx[0].x = x_min;
-    vtx[0].y = y_min;
-    vtx[0].z = z_min;
-    vtx[1].x = x_max;
-    vtx[1].y = y_min;
-    vtx[1].z = z_min;
-    vtx[2].x = x_max;
-    vtx[2].y = y_max;
-    vtx[2].z = z_min;
-    vtx[3].x = x_min;
-    vtx[3].y = y_max;
-    vtx[3].z = z_min;
-    vtx[4].x = x_min;
-    vtx[4].y = y_min;
-    vtx[4].z = z_max;
-    vtx[5].x = x_max;
-    vtx[5].y = y_min;
-    vtx[5].z = z_max;
-    vtx[6].x = x_max;
-    vtx[6].y = y_max;
-    vtx[6].z = z_max;
-    vtx[7].x = x_min;
-    vtx[7].y = y_max;
-    vtx[7].z = z_max;
+    QUAD_INFO gradient_quads[4] = {
+        { sx, sy, w / 2, h / 2 },
+        { sx + w, sy, -w / 2, h / 2 },
+        { sx, sy + h, w / 2, -h / 2 },
+        { sx + w, sy + h, -w / 2, -h / 2 },
+    };
 
-    int num_z = 0;
-    x_min = 0x3FFFFFFF;
-    y_min = 0x3FFFFFFF;
-    x_max = -0x3FFFFFFF;
-    y_max = -0x3FFFFFFF;
-
-    for (int i = 0; i < 8; i++) {
-        int32_t zv = g_MatrixPtr->_20 * vtx[i].x + g_MatrixPtr->_21 * vtx[i].y
-            + g_MatrixPtr->_22 * vtx[i].z + g_MatrixPtr->_23;
-
-        if (zv > Output_GetNearZ() && zv < Output_GetFarZ()) {
-            ++num_z;
-            int32_t zp = zv / g_PhdPersp;
-            int32_t xv =
-                (g_MatrixPtr->_00 * vtx[i].x + g_MatrixPtr->_01 * vtx[i].y
-                 + g_MatrixPtr->_02 * vtx[i].z + g_MatrixPtr->_03)
-                / zp;
-            int32_t yv =
-                (g_MatrixPtr->_10 * vtx[i].x + g_MatrixPtr->_11 * vtx[i].y
-                 + g_MatrixPtr->_12 * vtx[i].z + g_MatrixPtr->_13)
-                / zp;
-
-            if (x_min > xv) {
-                x_min = xv;
-            } else if (x_max < xv) {
-                x_max = xv;
-            }
-
-            if (y_min > yv) {
-                y_min = yv;
-            } else if (y_max < yv) {
-                y_max = yv;
-            }
+    if (text_style == TS_HEADING) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, M_GetMenuColor(MC_BROWN_E),
+                M_GetMenuColor(MC_BROWN_E), M_GetMenuColor(MC_BROWN_E),
+                M_GetMenuColor(MC_BROWN_C));
+        }
+    } else if (text_style == TS_REQUESTED) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, M_GetMenuColor(MC_PURPLE_E),
+                M_GetMenuColor(MC_PURPLE_E), M_GetMenuColor(MC_PURPLE_E),
+                M_GetMenuColor(MC_PURPLE_C));
         }
     }
+}
 
-    x_min += Viewport_GetCenterX();
-    x_max += Viewport_GetCenterX();
-    y_min += Viewport_GetCenterY();
-    y_max += Viewport_GetCenterY();
-
-    if (!num_z || x_min > g_PhdRight || y_min > g_PhdBottom || x_max < g_PhdLeft
-        || y_max < g_PhdTop) {
-        return 0; // out of screen
+void Output_DrawTextOutline(
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy, int32_t w,
+    int32_t h, const int32_t z, const TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenFrame(
+            sx, sy, w, h, M_GetMenuColor(MC_GOLD_DARK),
+            M_GetMenuColor(MC_GOLD_LIGHT), TEXT_OUTLINE_THICKNESS);
+        return;
     }
 
-    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > Viewport_GetMaxX()
-        || y_max > Viewport_GetMaxY()) {
-        return -1; // clipped
+    if (text_style == TS_HEADING) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
+            M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
+            TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_BACKGROUND) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, M_GetMenuColor(MC_GREY_TL),
+            M_GetMenuColor(MC_GREY_TR), M_GetMenuColor(MC_GREY_BL),
+            M_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_REQUESTED) {
+        // Make sure height and width divisible by 2.
+        w = 2 * ((w + 1) / 2);
+        h = 2 * ((h + 1) / 2);
+        Output_DrawCentreGradientScreenBox(
+            sx, sy, w, h, M_GetMenuColor(MC_GREY_E), M_GetMenuColor(MC_GREY_C),
+            TEXT_OUTLINE_THICKNESS);
     }
-
-    return 1; // fully on screen
-}
-
-int32_t Output_CalcFogShade(const int32_t depth)
-{
-    int32_t fog_begin = Output_GetDrawDistFade();
-    int32_t fog_end = Output_GetDrawDistMax();
-
-    if (depth < fog_begin) {
-        return 0;
-    }
-    if (depth >= fog_end) {
-        return 0x1FFF;
-    }
-
-    return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
-}
-
-int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
-{
-    // TODO: remove
-    ASSERT_FAIL();
-    return 0;
-}
-
-void Output_LightRoomVertices(const ROOM *room)
-{
-    // TODO: remove
-    ASSERT_FAIL();
-}
-
-int32_t Output_GetWibbleOffset(void)
-{
-    if (!m_IsWibbleEffect) {
-        return -1;
-    }
-    return m_WibbleOffset;
-}
-
-void Output_GetProjectionMatrix(GLfloat output[][4])
-{
-    const float left = 0.0f;
-    const float top = 0.0f;
-    const float right = Viewport_GetWidth();
-    const float bottom = Viewport_GetHeight();
-    const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
-    const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
-    const float aspect = (float)right / (float)bottom;
-    const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
-    const float f = 1.0f / tan(fov / 2.0f);
-
-    output[0][0] = f / aspect;
-    output[0][1] = 0.0f;
-    output[0][2] = 0.0f;
-    output[0][3] = 0.0f;
-
-    output[1][0] = 0.0f;
-    output[1][1] = -f;
-    output[1][2] = 0.0f;
-    output[1][3] = 0.0f;
-
-    output[2][0] = 0.0f;
-    output[2][1] = 0.0f;
-    // TODO(dash): these do not match the original game Z buffer mapping.
-    // I couldn't figure out how to replicate the original MAP_DEPTH transform.
-    // To combat this, the vertex shaders for now fence the simpler matrices
-    // behind a `NEW_ZBUFFER` define, and fall back to doing the perspective
-    // transform completely manually. This will be removable once we no longer
-    // rely on PHD_VBUF / GFX_3D_Rendere for world rendering.
-    output[2][2] = (far + near) / (far - near);
-    output[2][3] = -(2.0f * far * near) / (far - near);
-
-    output[3][0] = 0.0f;
-    output[3][1] = 0.0f;
-    output[3][2] = 1.0f;
-    output[3][3] = 0.0f;
-}
-
-void Output_EnableScissor(
-    const float x, const float y, const float w, const float h)
-{
-    const int32_t border = 2; // to deal with precision issues
-
-    float scale_x;
-    float scale_y;
-    GFX_Context_GetScale(&scale_x, &scale_y);
-
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(
-        x * scale_x, (GFX_Context_GetDisplayHeight() - y) * scale_y,
-        w * scale_x, h * scale_y);
-}
-
-void Output_DisableScissor(void)
-{
-    glDisable(GL_SCISSOR_TEST);
-}
-
-void Output_RememberState(void)
-{
-    glGetIntegerv(GL_CURRENT_PROGRAM, &m_CachedState.bound_program);
-    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &m_CachedState.bound_vao);
-    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &m_CachedState.bound_vbo);
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &m_CachedState.bound_texture);
-    GFX_GL_CheckError();
-}
-
-void Output_RestoreState(void)
-{
-    glBindVertexArray(m_CachedState.bound_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CachedState.bound_vbo);
-    glBindTexture(GL_TEXTURE_2D, m_CachedState.bound_texture);
-    glUseProgram(m_CachedState.bound_program);
-    GFX_GL_CheckError();
 }

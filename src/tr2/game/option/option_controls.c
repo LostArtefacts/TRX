@@ -1,61 +1,57 @@
 #include "game/option/option.h"
-#include "game/ui/widgets/controls_dialog.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/game/ui/events.h>
+#include <libtrx/game/ui.h>
 
-static UI_WIDGET *m_Dialog;
-static UI_CONTROLS_CONTROLLER m_Controller;
-static int32_t m_Listener1;
-static int32_t m_Listener2;
+typedef struct {
+    int32_t listeners[2];
+    struct {
+        bool is_ready;
+        UI_CONTROLS_STATE state;
+    } ui;
+} M_PRIV;
 
-static void M_Init(void);
-static void M_Shutdown(void);
+static M_PRIV m_Priv = {};
+
+static void M_Init(M_PRIV *p);
+static void M_Shutdown(M_PRIV *p);
 static void M_HandleLayoutChange(const EVENT *event, void *user_data);
 static void M_HandleKeyChange(const EVENT *event, void *user_data);
 
-static void M_Init(void)
+static void M_Init(M_PRIV *const p)
 {
-    UI_ControlsController_Init(&m_Controller);
-    m_Controller.active_layout = g_Config.input.keyboard_layout;
-
-    m_Dialog = UI_ControlsDialog_Create(&m_Controller);
-    m_Listener1 = EventManager_Subscribe(
-        m_Controller.events, "layout_change", nullptr, M_HandleLayoutChange,
-        nullptr);
-    m_Listener2 = EventManager_Subscribe(
-        m_Controller.events, "key_change", nullptr, M_HandleKeyChange, nullptr);
+    UI_Controls_Init(&p->ui.state);
+    p->ui.is_ready = true;
+    p->listeners[0] = EventManager_Subscribe(
+        p->ui.state.events, "layout_change", nullptr, M_HandleLayoutChange, p);
+    p->listeners[1] = EventManager_Subscribe(
+        p->ui.state.events, "key_change", nullptr, M_HandleKeyChange, p);
 }
 
-static void M_Shutdown(void)
+static void M_Shutdown(M_PRIV *const p)
 {
-    if (m_Dialog == nullptr) {
-        return;
+    if (p->ui.is_ready) {
+        EventManager_Unsubscribe(p->ui.state.events, p->listeners[0]);
+        EventManager_Unsubscribe(p->ui.state.events, p->listeners[1]);
+        UI_Controls_Free(&p->ui.state);
+        p->ui.is_ready = false;
     }
-
-    m_Dialog->free(m_Dialog);
-    m_Dialog = nullptr;
-
-    EventManager_Unsubscribe(m_Controller.events, m_Listener1);
-    EventManager_Unsubscribe(m_Controller.events, m_Listener2);
-
-    UI_ControlsController_Shutdown(&m_Controller);
 }
 
 static void M_HandleLayoutChange(const EVENT *event, void *user_data)
 {
-    switch (m_Controller.backend) {
+    const M_PRIV *const p = user_data;
+    switch (p->ui.state.backend) {
     case INPUT_BACKEND_KEYBOARD:
-        g_Config.input.keyboard_layout = m_Controller.active_layout;
+        g_Config.input.keyboard_layout = p->ui.state.active_layout;
         break;
     case INPUT_BACKEND_CONTROLLER:
-        g_Config.input.controller_layout = m_Controller.active_layout;
+        g_Config.input.controller_layout = p->ui.state.active_layout;
         break;
     default:
         break;
     }
-
     Config_Write();
 }
 
@@ -66,22 +62,22 @@ static void M_HandleKeyChange(const EVENT *event, void *user_data)
 
 void Option_Controls_Shutdown(void)
 {
-    M_Shutdown();
+    M_Shutdown(&m_Priv);
 }
 
 void Option_Controls_Control(INVENTORY_ITEM *const item, const bool is_busy)
 {
+    M_PRIV *const p = &m_Priv;
     if (is_busy) {
         return;
     }
 
-    if (m_Dialog == nullptr) {
-        M_Init();
+    if (!p->ui.is_ready) {
+        M_Init(p);
     }
 
-    m_Dialog->control(m_Dialog);
-    if (m_Controller.state == UI_CONTROLS_STATE_EXIT) {
-        Option_Controls_Shutdown();
+    if (UI_Controls_Control(&p->ui.state)) {
+        M_Shutdown(p);
     } else {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
@@ -90,7 +86,8 @@ void Option_Controls_Control(INVENTORY_ITEM *const item, const bool is_busy)
 
 void Option_Controls_Draw(INVENTORY_ITEM *const item)
 {
-    if (m_Dialog != nullptr) {
-        m_Dialog->draw(m_Dialog);
+    M_PRIV *const p = &m_Priv;
+    if (p->ui.is_ready) {
+        UI_Controls(&p->ui.state);
     }
 }

@@ -5,74 +5,80 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/text.h"
-#include "game/ui/widgets/stats_dialog.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/ui.h>
 
 #include <stdint.h>
 #include <stdio.h>
 
-static UI_WIDGET *m_Dialog = nullptr;
+typedef struct {
+    struct {
+        bool is_ready;
+        UI_STATS_DIALOG_STATE state;
+    } ui;
+} M_PRIV;
+
+static M_PRIV m_Priv = {};
+
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 
-static void M_Init(void);
-static void M_Shutdown(void);
+static void M_Init(M_PRIV *p);
+static void M_Shutdown(M_PRIV *p);
 
-static void M_Init(void)
+static void M_Init(M_PRIV *const p)
 {
-    m_Dialog = UI_StatsDialog_Create((UI_STATS_DIALOG_ARGS) {
-        .mode = UI_STATS_DIALOG_MODE_LEVEL,
-        .style = UI_STATS_DIALOG_STYLE_BORDERED,
-        .level_num = Game_GetCurrentLevel()->num,
-    });
+    p->ui.is_ready = true;
+    UI_StatsDialog_Init(
+        &p->ui.state,
+        (UI_STATS_DIALOG_ARGS) {
+            .mode = UI_STATS_DIALOG_MODE_LEVEL,
+            .style = UI_STATS_DIALOG_STYLE_BORDERED,
+            .level_num = Game_GetCurrentLevel()->num,
+        });
 }
 
-static void M_Shutdown(void)
+static void M_Shutdown(M_PRIV *const p)
 {
-    if (m_Dialog != nullptr) {
-        m_Dialog->free(m_Dialog);
-        m_Dialog = nullptr;
+    if (p->ui.is_ready) {
+        p->ui.is_ready = false;
+        UI_StatsDialog_Free(&p->ui.state);
     }
 }
 
 void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
+    M_PRIV *const p = &m_Priv;
     if (is_busy) {
         return;
     }
 
-    if (g_Config.gameplay.enable_compass_stats) {
-        char buf[100];
-        char time_buf[100];
-
-        if (m_Dialog == nullptr) {
-            M_Init();
-        }
-
-        if (m_Dialog != nullptr) {
-            m_Dialog->control(m_Dialog);
-        }
+    if (!p->ui.is_ready && g_Config.gameplay.enable_compass_stats) {
+        M_Init(p);
     }
+    UI_StatsDialog_Control(&p->ui.state);
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        M_Shutdown();
-        inv_item->goal_frame = inv_item->frames_total - 1;
+        M_Shutdown(p);
         inv_item->anim_direction = 1;
+        inv_item->goal_frame = inv_item->frames_total - 1;
     }
 }
 
 void Option_Compass_Draw(void)
 {
-    if (m_Dialog != nullptr) {
-        m_Dialog->draw(m_Dialog);
+    M_PRIV *const p = &m_Priv;
+    if (p->ui.is_ready) {
+        UI_StatsDialog(&p->ui.state);
     }
 }
 
 void Option_Compass_Shutdown(void)
 {
-    M_Shutdown();
+    M_PRIV *const p = &m_Priv;
+    M_Shutdown(p);
 }
 
 void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)

@@ -107,9 +107,9 @@ void Lara_Cheat_Control(void)
                 Inv_AddItem(O_SHOTGUN_ITEM);
                 Inv_AddItem(O_MAGNUM_ITEM);
                 Inv_AddItem(O_UZI_ITEM);
-                g_Lara.shotgun.ammo = 500;
-                g_Lara.magnums.ammo = 500;
-                g_Lara.uzis.ammo = 5000;
+                g_Lara.shotgun_ammo.ammo = 500;
+                g_Lara.magnum_ammo.ammo = 500;
+                g_Lara.uzi_ammo.ammo = 5000;
                 Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_ALWAYS);
             } else if (as == LS_SWAN_DIVE) {
                 Item_Explode(g_Lara.item_num, -1, 1);
@@ -241,9 +241,9 @@ bool Lara_Cheat_GiveAllGuns(void)
     Inv_AddItem(O_MAGNUM_ITEM);
     Inv_AddItem(O_UZI_ITEM);
     Inv_AddItem(O_SHOTGUN_ITEM);
-    g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
-    g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
-    g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+    g_Lara.shotgun_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 300;
+    g_Lara.magnum_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 1000;
+    g_Lara.uzi_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 2000;
 
     Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
@@ -261,24 +261,24 @@ bool Lara_Cheat_GiveAllItems(void)
     if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
         Inv_AddItem(O_SHOTGUN_ITEM);
     }
-    g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
+    g_Lara.shotgun_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 300;
 
     if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
         Inv_AddItem(O_MAGNUM_ITEM);
     }
-    g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
+    g_Lara.magnum_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 1000;
 
     if (!Inv_RequestItem(O_UZI_ITEM)) {
         Inv_AddItem(O_UZI_ITEM);
     }
-    g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+    g_Lara.uzi_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 2000;
 
     for (int i = 0; i < 10; i++) {
-        if (Inv_RequestItem(O_MEDI_ITEM) < 240) {
-            Inv_AddItem(O_MEDI_ITEM);
+        if (Inv_RequestItem(O_SMALL_MEDIPACK_ITEM) < 240) {
+            Inv_AddItem(O_SMALL_MEDIPACK_ITEM);
         }
-        if (Inv_RequestItem(O_BIGMEDI_ITEM) < 240) {
-            Inv_AddItem(O_BIGMEDI_ITEM);
+        if (Inv_RequestItem(O_LARGE_MEDIPACK_ITEM) < 240) {
+            Inv_AddItem(O_LARGE_MEDIPACK_ITEM);
         }
     }
 
@@ -383,11 +383,21 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     return true;
 }
 
-bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
+bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    int16_t room_num = Room_GetIndexFromPos(x, y, z);
+    if (room_num == NO_ROOM) {
+        room_num = Room_GetIndexFromPos(x, y, z);
+    }
     if (room_num == NO_ROOM) {
         return false;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flip_status == RFS_FLIPPED && Room_GetFlipStatus()) {
+        room_num = Room_GetFlippedBaseRoom(room_num);
+        if (room_num == NO_ROOM) {
+            return false;
+        }
     }
 
     const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
@@ -411,12 +421,9 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
                     .y = y,
                     .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
                 };
-                room_num = Room_GetIndexFromPos(point.x, point.y, point.z);
-                if (room_num == NO_ROOM) {
-                    continue;
-                }
                 sector = Room_GetSector(point.x, point.y, point.z, &room_num);
-                height = Room_GetHeight(sector, point.x, point.y, point.z);
+                height =
+                    Room_GetHeightEx(sector, point.x, point.y, point.z, true);
                 if (height == NO_HEIGHT) {
                     continue;
                 }
@@ -443,12 +450,8 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
         }
     }
 
-    room_num = Room_GetIndexFromPos(x, y, z);
-    if (room_num == NO_ROOM) {
-        return false;
-    }
     sector = Room_GetSector(x, y, z, &room_num);
-    height = Room_GetHeight(sector, x, y, z);
+    height = Room_GetHeightEx(sector, x, y, z, true);
     if (height == NO_HEIGHT) {
         return false;
     }

@@ -1,18 +1,21 @@
 #include "game/stats.h"
 
 #include "game/clock.h"
+#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/objects/vars.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/log.h>
+#include <libtrx/utils.h>
 
 #define USE_REAL_CLOCK 0
 
 static int32_t m_CachedItemCount = 0;
 static int32_t m_LevelSecrets = 0;
 
-static bool M_SetSecretFlag(uint8_t *flags, GAME_OBJECT_ID obj_id);
+static bool M_SetSecretFlag(uint16_t *flags, GAME_OBJECT_ID obj_id);
 
 #if USE_REAL_CLOCK
 static CLOCK_TIMER m_StartCounter = { .type = CLOCK_TYPE_REAL };
@@ -21,13 +24,16 @@ static int32_t m_StartTimer = 0;
 void Stats_StartTimer(void)
 {
     ClockTimer_Sync(&m_StartCounter);
-    m_StartTimer = g_SaveGame.current_stats.timer;
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    m_StartTimer = resume->stats.timer;
 }
 
 void Stats_UpdateTimer(void)
 {
     const double elapsed = ClockTimer_PeekElapsed(&m_StartCounter) * LOGIC_FPS;
-    g_SaveGame.current_stats.timer = m_StartTimer + elapsed;
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    resume->stats.timer = m_StartTimer + elapsed;
 }
 #else
 void Stats_StartTimer(void)
@@ -36,11 +42,15 @@ void Stats_StartTimer(void)
 
 void Stats_UpdateTimer(void)
 {
-    g_SaveGame.current_stats.timer++;
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    if (level != nullptr) {
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        resume->stats.timer++;
+    }
 }
 #endif
 
-static bool M_SetSecretFlag(uint8_t *const flags, const GAME_OBJECT_ID obj_id)
+static bool M_SetSecretFlag(uint16_t *const flags, const GAME_OBJECT_ID obj_id)
 {
     for (int32_t i = 0; i < 2; i++) {
         const int32_t flag = 1 << ((obj_id - O_SECRET_1) + i * 3);
@@ -53,7 +63,7 @@ static bool M_SetSecretFlag(uint8_t *const flags, const GAME_OBJECT_ID obj_id)
     return false;
 }
 
-FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
+FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
 {
     FINAL_STATS result = {};
 
@@ -63,16 +73,18 @@ FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
         if (level->type != level_type) {
             continue;
         }
-        result.timer += g_SaveGame.start[i].stats.timer;
-        result.ammo_used += g_SaveGame.start[i].stats.ammo_used;
-        result.ammo_hits += g_SaveGame.start[i].stats.ammo_hits;
-        result.kills += g_SaveGame.start[i].stats.kills;
-        result.distance += g_SaveGame.start[i].stats.distance;
-        result.medipacks += g_SaveGame.start[i].stats.medipacks;
 
-        for (int32_t j = 0; j < g_SaveGame.start[i].stats.max_secret_count;
-             j++) {
-            if (g_SaveGame.start[i].stats.secret_flags & (1 << j)) {
+        const RESUME_INFO *const info = Savegame_GetCurrentInfo(level);
+        const LEVEL_STATS *const stats = &info->stats;
+        result.timer += stats->timer;
+        result.ammo_used += stats->ammo_used;
+        result.ammo_hits += stats->ammo_hits;
+        result.kill_count += stats->kill_count;
+        result.distance_travelled += stats->distance_travelled;
+        result.medipacks_used += stats->medipacks_used;
+
+        for (int32_t j = 0; j < stats->max_secret_count; j++) {
+            if (stats->secret_flags & (1 << j)) {
                 result.found_secrets++;
             }
             result.total_secrets++;
@@ -80,17 +92,6 @@ FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
     }
 
     return result;
-}
-
-void Stats_Reset(void)
-{
-    g_SaveGame.current_stats.timer = 0;
-    g_SaveGame.current_stats.kills = 0;
-    g_SaveGame.current_stats.distance = 0;
-    g_SaveGame.current_stats.ammo_hits = 0;
-    g_SaveGame.current_stats.ammo_used = 0;
-    g_SaveGame.current_stats.medipacks = 0;
-    g_SaveGame.current_stats.secret_flags = 0;
 }
 
 void Stats_ObserveItemsLoad(void)
@@ -101,7 +102,7 @@ void Stats_ObserveItemsLoad(void)
 void Stats_CalculateStats(void)
 {
     m_LevelSecrets = 0;
-    uint8_t secret_flags = 0;
+    uint16_t secret_flags = 0;
 
     for (int32_t i = 0; i < m_CachedItemCount; i++) {
         const ITEM *const item = Item_Get(i);
@@ -124,23 +125,63 @@ int32_t Stats_GetSecrets(void)
 
 void Stats_MarkSecretCollected(const GAME_OBJECT_ID obj_id)
 {
-    M_SetSecretFlag(&g_SaveGame.current_stats.secret_flags, obj_id);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    M_SetSecretFlag(&resume->stats.secret_flags, obj_id);
 }
 
 bool Stats_CheckAllLevelSecretsCollected(void)
 {
-    int32_t flags = g_SaveGame.current_stats.secret_flags;
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    int32_t flags = resume->stats.secret_flags;
     int32_t count = 0;
     while (flags != 0) {
         count += flags & 1;
         flags >>= 1;
     }
 
-    return count >= g_SaveGame.current_stats.max_secret_count;
+    return count >= resume->stats.max_secret_count;
 }
 
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
 {
     const FINAL_STATS stats = Stats_ComputeFinalStats(level_type);
     return stats.found_secrets >= stats.total_secrets;
+}
+
+void Stats_AddKill(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.kill_count++;
+}
+
+void Stats_AddAmmoHits(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.ammo_hits++;
+}
+
+void Stats_AddAmmoUsed(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.ammo_used++;
+}
+
+void Stats_AddMedipacksUsed(const double medipack_value)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.medipacks_used += medipack_value;
+}
+
+void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.distance_travelled += Math_Sqrt(
+        SQUARE(pos.z - last_pos.z) + SQUARE(pos.y - last_pos.y)
+        + SQUARE(pos.x - last_pos.x));
 }

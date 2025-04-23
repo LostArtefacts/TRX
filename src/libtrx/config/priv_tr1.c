@@ -117,6 +117,10 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     READ_FALLBACK_INT(g_Config.window.height, "window_height");
     READ_FALLBACK_INT(g_Config.input.keyboard_layout, "layout");
     READ_FALLBACK_INT(g_Config.input.controller_layout, "cntlr_layout");
+
+    // ..4.9
+    READ_FALLBACK_BOOL(g_Config.gameplay.enable_cutscenes, "enable_cine");
+    READ_FALLBACK_BOOL(g_Config.gameplay.enable_legal, "enable_eidos_logo");
 }
 
 static void M_DumpKeyboardLayout(
@@ -174,6 +178,9 @@ static void M_DumpControllerLayout(
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_LoadAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
@@ -182,13 +189,15 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
     }
 
     M_LoadLegacyOptions(root_obj);
-
     g_Config.loaded = true;
 }
 
 void Config_DumpToJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, Config_GetOptionMap());
+    if (Gym_HasAssaultStats()) {
+        ConfigFile_DumpAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
@@ -204,6 +213,8 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
+    CLAMP(g_Config.visuals.fog_start, 1, 100);
+    CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov_value, 30, 150);
     CLAMP(g_Config.gameplay.camera_speed, 1, 10);
     CLAMP(g_Config.audio.music_volume, 0, 10);

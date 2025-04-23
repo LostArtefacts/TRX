@@ -52,7 +52,7 @@ static void M_AlterFov(VIEWPORT *const vp)
     const int32_t view_angle =
         vp->view_angle <= 0 ? g_Config.visuals.fov * DEG_1 : vp->view_angle;
     const int32_t fov_width = vp->game_vars.win_height * 320
-        / (g_Config.visuals.use_pcx_fov ? 200 : 240);
+        / (g_Config.visuals.use_psx_fov ? 200 : 240);
     vp->game_vars.persp =
         fov_width / 2 * Math_Cos(view_angle / 2) / Math_Sin(view_angle / 2);
 
@@ -120,14 +120,7 @@ static void M_ApplyGameVars(const VIEWPORT *const vp)
 
 void Viewport_Reset(void)
 {
-    int32_t win_width;
-    int32_t win_height;
-    if (Shell_IsFullscreen()) {
-        win_width = Shell_GetCurrentDisplayWidth();
-        win_height = Shell_GetCurrentDisplayHeight();
-    } else {
-        SDL_GetWindowSize(g_SDLWindow, &win_width, &win_height);
-    }
+    const SHELL_SIZE size = Shell_GetCurrentSize();
 
     VIEWPORT *const vp = &m_Viewport;
     switch (g_Config.rendering.aspect_mode) {
@@ -138,18 +131,18 @@ void Viewport_Reset(void)
         vp->render_ar = 16.0 / 9.0;
         break;
     case AM_ANY:
-        vp->render_ar = win_width / (double)win_height;
+        vp->render_ar = size.w / (double)size.h;
         break;
     }
 
-    vp->width = win_width / g_Config.rendering.scaler;
-    vp->height = win_height / g_Config.rendering.scaler;
+    vp->width = size.w / g_Config.rendering.scaler;
+    vp->height = size.h / g_Config.rendering.scaler;
     if (g_Config.rendering.aspect_mode != AM_ANY) {
         vp->width = vp->height * vp->render_ar;
     }
 
-    vp->near_z = VIEW_NEAR;
-    vp->far_z = VIEW_FAR;
+    vp->near_z = Output_GetNearZ() >> W2V_SHIFT;
+    vp->far_z = Output_GetFarZ() >> W2V_SHIFT;
 
     // We do not update vp->view_angle on purpose, as it's managed by the game
     // rather than the window manager. (Think cutscenes, special cameras, etc.)
@@ -171,9 +164,8 @@ void Viewport_Reset(void)
     M_InitGameVars(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);
 
-    const int32_t win_border = win_height * (1.0 - g_Config.rendering.sizer);
-    Render_SetupDisplay(
-        win_border, win_width, win_height, vp->width, vp->height);
+    const int32_t win_border = size.h * (1.0 - g_Config.rendering.sizer);
+    Render_SetupDisplay(win_border, size.w, size.h, vp->width, vp->height);
 }
 
 const VIEWPORT *Viewport_Get(void)
@@ -201,6 +193,16 @@ void Viewport_AlterFOV(const int16_t view_angle)
     M_PullGameVars(&m_Viewport);
     M_AlterFov(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);
+}
+
+int32_t Viewport_GetWidth(void)
+{
+    return g_PhdWinWidth;
+}
+
+int32_t Viewport_GetHeight(void)
+{
+    return g_PhdWinHeight;
 }
 
 int32_t Viewport_GetMaxX(void)

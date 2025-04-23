@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../items.h"
-#include "../pathing.h"
+#include "../pathing/types.h"
 #include "./enum.h"
 
 typedef struct {
@@ -13,9 +13,7 @@ typedef struct {
     MOOD_TYPE mood;
     LOT_INFO lot;
     XYZ_32 target;
-#if TR_VERSION == 2
     ITEM *enemy;
-#endif
 } CREATURE;
 
 typedef struct {
@@ -33,13 +31,19 @@ typedef struct {
 } AI_INFO;
 
 typedef struct {
-    // TODO: merge
-#if TR_VERSION == 1
-    int32_t x;
-    int32_t y;
-    int32_t z;
-#else
     XYZ_32 pos;
-#endif
     int32_t mesh_num;
 } BITE;
+
+typedef struct {
+    struct {
+        GAME_OBJECT_ID id;
+        int16_t active_anim;
+        int16_t death_anim;
+        int16_t death_state;
+    } land;
+    struct {
+        GAME_OBJECT_ID id;
+        int16_t active_anim;
+    } water;
+} HYBRID_INFO;

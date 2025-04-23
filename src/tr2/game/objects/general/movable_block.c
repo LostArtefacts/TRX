@@ -203,6 +203,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
+    obj->base_rot.y = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -214,6 +215,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
             item->status = IS_INACTIVE;
         }
         item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
+        MovableBlock_UpdateRotation(item, item->rot.y);
     }
 }
 
@@ -286,16 +288,16 @@ static void M_Collision(
 
         switch (quadrant) {
         case DIR_NORTH:
-            item->rot.y = 0;
+            MovableBlock_UpdateRotation(item, 0);
             break;
         case DIR_EAST:
-            item->rot.y = DEG_90;
+            MovableBlock_UpdateRotation(item, DEG_90);
             break;
         case DIR_SOUTH:
-            item->rot.y = -DEG_180;
+            MovableBlock_UpdateRotation(item, -DEG_180);
             break;
         case DIR_WEST:
-            item->rot.y = -DEG_90;
+            MovableBlock_UpdateRotation(item, -DEG_90);
             break;
         default:
             break;

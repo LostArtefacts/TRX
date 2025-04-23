@@ -1,11 +1,11 @@
 #pragma once
 
+#include "../colors.h"
+#include "../game/gym.h"
 #include "../game/input.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
 #include "../screenshot.h"
-
-#include <stdint.h>
 
 typedef enum {
     LIGHTING_CONTRAST_LOW,
@@ -48,12 +48,18 @@ typedef struct {
         bool enable_fade_effects;
         bool enable_exit_fade_effects;
         bool fix_item_rots;
+        bool fix_texture_issues;
         int32_t fov;
-        bool use_pcx_fov;
+        bool use_psx_fov;
+
+        RGB_888 water_color;
+        int32_t fog_start;
+        int32_t fog_end;
     } visuals;
 
     struct {
         bool enable_photo_mode_ui;
+        bool enable_wraparound;
         double text_scale;
         double bar_scale;
     } ui;
@@ -63,6 +69,7 @@ typedef struct {
         int32_t music_volume;
         bool enable_lara_mic;
         UNDERWATER_MUSIC_MODE underwater_music_mode;
+        MUSIC_LOAD_CONDITION music_load_condition;
     } audio;
 
     struct {
@@ -76,11 +83,15 @@ typedef struct {
         bool fix_flare_throw_priority;
         bool fix_walk_run_jump;
         bool fix_bear_ai;
+        bool fix_bridge_collision;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
+        bool enable_legal;
+        bool enable_cutscenes;
         bool enable_auto_item_selection;
         int32_t turbo_speed;
+        bool enable_game_modes;
     } gameplay;
 
     struct {
@@ -112,6 +123,7 @@ typedef struct {
     } rendering;
 
     struct {
-        bool bonus_level_unlock;
+        bool new_game_plus_unlock;
+        ASSAULT_STATS assault_stats;
     } profile;
 } CONFIG;

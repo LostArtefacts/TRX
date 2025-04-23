@@ -8,12 +8,10 @@
     "savegame_fmt_legacy": "saveuba.%d",
     "savegame_fmt_bson": "save_trub_%02d.dat",
     "demo_delay": 16,
-    "water_color": [0.45, 1.0, 1.0],
-    "draw_distance_fade": 22,
-    "draw_distance_max": 30,
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",
+        "data/injections/bubbles.bin",
         "data/injections/lara_animations.bin",
         "data/injections/uzi_sfx.bin",
         "data/injections/explosion.bin",
@@ -36,7 +34,7 @@
             "data/injections/pda_model.bin",
         ],
         "sequence": [
-            {"type": "display_picture", "path": "data/images/eidos.webp", "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
+            {"type": "display_picture", "path": "data/images/eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -44,7 +42,7 @@
     },
 
     "levels": [
-        // Level 0: Return to Egypt
+        // Level 1: Return to Egypt
         {
             "path": "data/egypt.phd",
             "music_track": 59,
@@ -58,11 +56,12 @@
                 "data/injections/egypt_fd.bin",
                 "data/injections/egypt_meshfixes.bin",
                 "data/injections/egypt_textures.bin",
+                "data/injections/panther_sfx.bin",
             ],
             "unobtainable_kills": 1,
         },
 
-        // Level 1: Temple of the Cat
+        // Level 2: Temple of the Cat
         {
             "path": "data/cat.phd",
             "music_track": 59,
@@ -77,11 +76,12 @@
                 "data/injections/cat_itemrots.bin",
                 "data/injections/cat_meshfixes.bin",
                 "data/injections/cat_textures.bin",
+                "data/injections/panther_sfx.bin",
             ],
             "unobtainable_pickups": 1,
         },
 
-        // Level 2: Atlantean Stronghold
+        // Level 3: Atlantean Stronghold
         {
             "path": "data/end.phd",
             "music_track": 60,
@@ -98,7 +98,7 @@
             "unobtainable_kills": 1,
         },
 
-        // Level 3: The Hive
+        // Level 4: The Hive
         {
             "path": "data/end2.phd",
             "music_track": 60,
@@ -123,7 +123,8 @@
 
         {"type": "dummy"},
 
-        // Level 5: Current Position
+        // Level 6: Current Position
+        // This level is necessary to read TombATI's save files.
         {
             "path": "data/current.phd",
             "type": "current",
@@ -134,7 +135,7 @@
     ],
 
     "fmvs": [
-        {"path": "fmv/core.avi"},
-        {"path": "fmv/escape.avi"},
+        {"path": "fmv/core.avi", "legal": true},
+        {"path": "fmv/escape.avi", "legal": true},
     ],
 }

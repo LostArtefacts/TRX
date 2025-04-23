@@ -1,6 +1,5 @@
 #pragma once
 
-#include "game/stats/types.h"
 #include "global/const.h"
 
 #include <libtrx/game/anims.h>
@@ -91,11 +90,6 @@ typedef enum {
 } BAR_TYPE;
 
 typedef enum {
-    GBF_NGPLUS = 1 << 0,
-    GBF_JAPANESE = 1 << 1,
-} GAME_BONUS_FLAG;
-
-typedef enum {
     PASSPORT_MODE_BROWSE = 0,
     PASSPORT_MODE_LOAD_GAME = 1,
     PASSPORT_MODE_SELECT_LEVEL = 2,
@@ -136,39 +130,6 @@ typedef struct {
 } DOORPOS_DATA;
 
 typedef struct {
-    int32_t lara_hitpoints;
-    uint16_t pistol_ammo;
-    uint16_t magnum_ammo;
-    uint16_t uzi_ammo;
-    uint16_t shotgun_ammo;
-    uint8_t num_medis;
-    uint8_t num_big_medis;
-    uint8_t num_scions;
-    int8_t gun_status;
-    LARA_GUN_TYPE equipped_gun_type;
-    LARA_GUN_TYPE holsters_gun_type;
-    LARA_GUN_TYPE back_gun_type;
-    union {
-        uint16_t all;
-        struct {
-            uint16_t available : 1;
-            uint16_t got_pistols : 1;
-            uint16_t got_magnums : 1;
-            uint16_t got_uzis : 1;
-            uint16_t got_shotgun : 1;
-            uint16_t costume : 1;
-        };
-    } flags;
-    LEVEL_STATS stats;
-} RESUME_INFO;
-
-typedef struct {
-    RESUME_INFO *current;
-    int32_t death_count;
-
-    uint8_t bonus_flag;
-    bool bonus_level_unlock;
-    int16_t save_initial_version;
     PASSPORT_MODE passport_selection;
     int32_t select_save_slot;
     int32_t select_level_num;
@@ -185,23 +146,6 @@ typedef struct {
 
     bool ask_for_save;
 } GAME_INFO;
-
-typedef enum {
-    MC_PURPLE_C,
-    MC_PURPLE_E,
-    MC_BROWN_C,
-    MC_BROWN_E,
-    MC_GREY_C,
-    MC_GREY_E,
-    MC_GREY_TL,
-    MC_GREY_TR,
-    MC_GREY_BL,
-    MC_GREY_BR,
-    MC_BLACK,
-    MC_GOLD_LIGHT,
-    MC_GOLD_DARK,
-    MC_NUMBER_OF,
-} MENU_COLOR;
 
 typedef struct {
     int32_t xv;
@@ -222,29 +166,3 @@ typedef struct {
     int16_t flash_time;
     int16_t sample_num;
 } WEAPON_INFO;
-
-typedef struct {
-    bool is_blocked;
-    char *content_text;
-    TEXTSTRING *content;
-} REQUESTER_ITEM;
-
-typedef struct {
-    uint16_t items_used;
-    uint16_t max_items;
-    uint16_t requested;
-    uint16_t vis_lines;
-    int16_t line_offset;
-    int16_t line_old_offset;
-    uint16_t pix_width;
-    uint16_t line_height;
-    bool is_blockable;
-    int16_t x;
-    int16_t y;
-    char *heading_text;
-    TEXTSTRING *heading;
-    TEXTSTRING *background;
-    TEXTSTRING *moreup;
-    TEXTSTRING *moredown;
-    REQUESTER_ITEM *items;
-} REQUEST_INFO;

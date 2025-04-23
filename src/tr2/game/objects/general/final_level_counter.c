@@ -1,11 +1,13 @@
 #include "decomp/flares.h"
 #include "game/camera.h"
 #include "game/creature.h"
+#include "game/game.h"
 #include "game/gun/gun.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/utils.h>
@@ -76,7 +78,7 @@ static void M_PrepareCutscene(const int16_t item_num)
     g_Lara.water_status = LWS_ABOVE_WATER;
 
     ITEM *const item = Item_Get(item_num);
-    Creature_Kill(item, 0, 0, LA_EXTRA_FINAL_ANIM);
+    Creature_SpecialKill(item, 0, 0, LA_EXTRA_FINAL_ANIM);
 
     Camera_InvokeCinematic(item, 428, 0);
 }
@@ -90,13 +92,15 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_Control(const int16_t item_num)
 {
-    if (g_SaveGame.current_stats.kills == g_FinalLevelCount
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    if (current_info->stats.kill_count == g_FinalLevelCount
         && !g_FinalBossActive) {
         M_ActivateLastBoss();
         return;
     }
 
-    if (g_SaveGame.current_stats.kills > g_FinalLevelCount) {
+    if (current_info->stats.kill_count > g_FinalLevelCount) {
         g_FinalBossActive++;
         if (g_FinalBossActive == CUTSCENE_DELAY) {
             M_PrepareCutscene(item_num);

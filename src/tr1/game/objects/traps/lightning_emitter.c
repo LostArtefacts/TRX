@@ -231,11 +231,12 @@ static void M_Draw(const ITEM *const item)
 
         if (i > 0) {
             Output_DrawLightningSegment(
-                x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2,
-                Viewport_GetWidth() / 6);
+                (XYZ_32) { x1, y1 + l->wibble[i - 1].y, z1 },
+                (XYZ_32) { x2, y2, z2 }, Viewport_GetWidth() / 6);
         } else {
             Output_DrawLightningSegment(
-                x1, y1, z1, x2, y2, z2, Viewport_GetWidth() / 6);
+                (XYZ_32) { x1, y1, z1 }, (XYZ_32) { x2, y2, z2 },
+                Viewport_GetWidth() / 6);
         }
 
         x1 = x2;
@@ -285,11 +286,12 @@ static void M_Draw(const ITEM *const item)
 
             if (k > 0) {
                 Output_DrawLightningSegment(
-                    x1, y1 + l->shoot[i][k - 1].y, z1, x2, y2, z2,
-                    Viewport_GetWidth() / 16);
+                    (XYZ_32) { x1, y1 + l->shoot[i][k - 1].y, z1 },
+                    (XYZ_32) { x2, y2, z2 }, Viewport_GetWidth() / 16);
             } else {
                 Output_DrawLightningSegment(
-                    x1, y1, z1, x2, y2, z2, Viewport_GetWidth() / 16);
+                    (XYZ_32) { x1, y1, z1 }, (XYZ_32) { x2, y2, z2 },
+                    Viewport_GetWidth() / 16);
             }
 
             x1 = x2;

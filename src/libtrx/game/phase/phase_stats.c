@@ -9,7 +9,7 @@
 #include "game/interpolation.h"
 #include "game/shell.h"
 #include "game/text.h"
-#include "game/ui/widgets/stats_dialog.h"
+#include "game/ui.h"
 #include "memory.h"
 
 typedef enum {
@@ -24,7 +24,8 @@ typedef struct {
     STATE state;
     FADER back_fader;
     FADER top_fader;
-    UI_WIDGET *ui;
+    bool ui_active;
+    UI_STATS_DIALOG_STATE ui_state;
 } M_PRIV;
 
 static bool M_IsFading(M_PRIV *p);
@@ -65,8 +66,11 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
 
     if (p->args.background_type == BK_IMAGE) {
-        ASSERT(p->args.background_path != nullptr);
-        Output_LoadBackgroundFromFile(p->args.background_path);
+        if (p->args.background_path == nullptr) {
+            LOG_WARNING("Trying to load empty background image");
+        } else {
+            Output_LoadBackgroundFromFile(p->args.background_path);
+        }
     } else if (p->args.background_type == BK_OBJECT) {
         Output_LoadBackgroundFromObject();
     } else {
@@ -83,14 +87,19 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             M_FadeIn(p);
         }
 
-        p->ui = UI_StatsDialog_Create((UI_STATS_DIALOG_ARGS) {
-            .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
-                                             : UI_STATS_DIALOG_MODE_LEVEL,
-            .style = p->args.use_bare_style ? UI_STATS_DIALOG_STYLE_BARE
-                                            : UI_STATS_DIALOG_STYLE_BORDERED,
-            .level_num = p->args.level_num != -1 ? p->args.level_num
-                                                 : Game_GetCurrentLevel()->num,
-        });
+        p->ui_active = true;
+        UI_StatsDialog_Init(
+            &p->ui_state,
+            (UI_STATS_DIALOG_ARGS) {
+                .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
+                                                 : UI_STATS_DIALOG_MODE_LEVEL,
+                .style = p->args.use_bare_style
+                    ? UI_STATS_DIALOG_STYLE_BARE
+                    : UI_STATS_DIALOG_STYLE_BORDERED,
+                .level_num = p->args.level_num != -1
+                    ? p->args.level_num
+                    : Game_GetCurrentLevel()->num,
+            });
     }
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -99,10 +108,11 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    Output_UnloadBackground();
-    if (p->ui != nullptr) {
-        p->ui->free(p->ui);
+    if (p->ui_active) {
+        p->ui_active = false;
+        UI_StatsDialog_Free(&p->ui_state);
     }
+    Output_UnloadBackground();
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
@@ -140,9 +150,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
         };
     }
 
-    if (p->ui != nullptr) {
-        p->ui->control(p->ui);
-    }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
@@ -159,13 +166,11 @@ static void M_Draw(PHASE *const phase)
     }
     Fader_Draw(&p->back_fader);
 
-    if (p->ui != nullptr) {
-        p->ui->draw(p->ui);
+    UI_BeginFade(&p->top_fader, true);
+    if (p->ui_active) {
+        UI_StatsDialog(&p->ui_state);
     }
-    Text_Draw();
-    Output_DrawPolyList();
-
-    Fader_Draw(&p->top_fader);
+    UI_EndFade();
 }
 
 PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)

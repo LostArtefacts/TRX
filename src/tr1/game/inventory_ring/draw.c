@@ -70,9 +70,9 @@ static void M_DrawItem(
 {
     if (ring->motion.status != RNG_FADING_OUT && ring->motion.status != RNG_DONE
         && inv_item == ring->list[ring->current_object] && !ring->rotating) {
-        Output_SetLightAdder(HIGH_LIGHT);
+        Output_SetLightAdder(SHADE_NEUTRAL);
     } else {
-        Output_SetLightAdder(LOW_LIGHT);
+        Output_SetLightAdder(SHADE_LOW);
     }
 
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
@@ -81,7 +81,6 @@ static void M_DrawItem(
 
     OBJECT *const obj = Object_Get(inv_item->object_id);
     if (obj->mesh_count < 0) {
-        Output_DrawSpriteRel(0, 0, 0, obj->mesh_idx, 4096);
         return;
     }
 
@@ -91,7 +90,7 @@ static void M_DrawItem(
     const int32_t frac = M_GetFrames(ring, inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_id == O_COMPASS_OPTION) {
         const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
-        Object_GetBone(obj, 0)->rot_y = true;
+        Object_GetBone(obj, 0)->rot.y = true;
         Object_DrawInterpolatedObject(
             obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
             rate);
@@ -169,8 +168,8 @@ void InvRing_Draw(INV_RING *const ring)
             || ring->motion.status == RNG_CLOSING_ITEM)) {
         const INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
         switch (inv_item->object_id) {
-        case O_MEDI_OPTION:
-        case O_BIGMEDI_OPTION:
+        case O_SMALL_MEDIPACK_OPTION:
+        case O_LARGE_MEDIPACK_OPTION:
             if (g_Config.ui.enable_game_ui) {
                 Overlay_BarDrawHealth();
             }

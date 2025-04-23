@@ -44,7 +44,7 @@ typedef enum {
     VOLE_STATE_DEATH = 3,
 } VOLE_STATE;
 
-static BITE m_RatBite = { 0, -11, 108, 3 };
+static BITE m_RatBite = { .pos = { 0, -11, 108 }, .mesh_num = 3 };
 
 static void M_SetupBase(OBJECT *obj);
 static void M_SetupRat(OBJECT *obj);
@@ -75,7 +75,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    Object_GetBone(obj, 1)->rot_y = true;
+    Object_GetBone(obj, 1)->rot.y = true;
 }
 
 static void M_SetupRat(OBJECT *const obj)

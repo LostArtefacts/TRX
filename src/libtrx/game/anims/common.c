@@ -7,6 +7,7 @@ static ANIM *m_Anims = nullptr;
 static ANIM_CHANGE *m_Changes = nullptr;
 static ANIM_RANGE *m_Ranges = nullptr;
 static ANIM_BONE *m_Bones = nullptr;
+static ANIM m_NullAnim = {};
 
 void Anim_InitialiseAnims(const int32_t num_anims)
 {
@@ -37,7 +38,7 @@ int32_t Anim_GetTotalCount(void)
 
 ANIM *Anim_GetAnim(const int32_t anim_idx)
 {
-    return &m_Anims[anim_idx];
+    return anim_idx == NO_ANIM ? &m_NullAnim : &m_Anims[anim_idx];
 }
 
 ANIM_CHANGE *Anim_GetChange(const int32_t change_idx)

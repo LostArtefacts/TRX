@@ -48,8 +48,12 @@ static void M_DetonateAll(
         g_LaraItem->flags |= IF_ONE_SHOT;
     }
 
-    boat_item->object_id = O_BOAT_BITS;
-    Item_Explode(boat_item_num, -1, 0);
+    const OBJECT *const obj = Object_Get(O_BOAT_BITS);
+    if (obj->loaded) {
+        boat_item->object_id = O_BOAT_BITS;
+        boat_item->mesh_bits = (1 << obj->mesh_count) - 1;
+        Item_Explode(boat_item_num, -1, 0);
+    }
     Item_Kill(boat_item_num);
     boat_item->object_id = O_BOAT;
 

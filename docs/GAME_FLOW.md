@@ -34,8 +34,8 @@ remains distinct for each game.
 "savegame_fmt_bson": "save_tr1_%02d.dat",
 "demo_delay": 16,
 "water_color": [0.45, 1.0, 1.0],
-"draw_distance_fade": 22.0,
-"draw_distance_max": 30.0,
+"fog_start": 22.0,
+"fog_end": 30.0,
 "injections": [
     "data/global_injection1.bin",
     "data/global_injection2.bin",
@@ -98,14 +98,14 @@ remains distinct for each game.
   <tr valign="top">
     <td>
       <a name="draw-distance-fade"></a>
-      <code>draw_distance_fade</code>
+      <code>fog_start</code>
     </td>
-    <td>Double<strong>*</strong></td>
+    <td>Double</td>
     <td>
       The distance (in tiles) at which objects and the world start to fade into
       blackness.
       <ul>
-        <li>The default hardcoded value in TR1 is 12.</li>
+        <li>The default value in OG TR1 is hardcoded to 12.</li>
         <li>The default (disabled) value in TombATI is 72.</li>
       </ul>
     </td>
@@ -113,13 +113,13 @@ remains distinct for each game.
   <tr valign="top">
     <td>
       <a name="draw-distance-max"></a>
-      <code>draw_distance_max</code>
+      <code>fog_end</code>
     </td>
-    <td>Double<strong>*</strong></td>
+    <td>Double</td>
     <td>
       The distance (in tiles) at which objects and the world are clipped away.
       <ul>
-        <li>The default hardcoded value in TR1 is 20.</li>
+        <li>The default value in OG TR1 is hardcoded to 20.</li>
         <li>The default (disabled) value in TombATI is 80.</li>
       </ul>
     </td>
@@ -196,11 +196,9 @@ remains distinct for each game.
     </td>
     <td>Float array</td>
     <td>
-      Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
-      <ul>
-        <li>[0.6, 0.7, 1.0] is the original DOS version filter.</li>
-        <li>[0.45, 1.0, 1.0] is the default TombATI filter.</li>
-      </ul>
+      Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
+      or `00` means completely black color.
+      See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
 </table>
@@ -315,6 +313,39 @@ remains distinct for each game.
       The path to the sound effects (.sfx) file to use in the game.
     </td>
   </tr>
+  <tr valign="top">
+    <td>
+      <a name="draw-distance-fade"></a>
+      <code>fog_start</code>
+    </td>
+    <td>Double</td>
+    <td>
+      The distance (in tiles) at which objects and the world start to fade into
+      blackness. The default value in OG TR2 is hardcoded to 12.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="draw-distance-max"></a>
+      <code>fog_end</code>
+    </td>
+    <td>Double</td>
+    <td>
+      The distance (in tiles) at which objects and the world are clipped away.
+      The default value in OG TR2 is hardcoded to 20.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>water_color</code>
+    </td>
+    <td>Float array or hex string</td>
+    <td>
+      Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
+      or `00` means completely black color.
+      See <a href="#water-color-table">this table</a> for reference values.</a>
+    </td>
+  </tr>
 </table>
 
 ## Game flow commands
@@ -424,8 +455,8 @@ Following are each of the properties available within a level.
     "music_track": 57,
     "lara_type": 0,
     "water_color": [0.7, 0.5, 0.85],
-    "draw_distance_fade": 34.0,
-    "draw_distance_max": 50.0,
+    "fog_start": 34.0,
+    "fog_end": 50.0,
     "unobtainable_pickups": 1,
     "unobtainable_kills": 1,
     "inherit_injections": false,
@@ -517,7 +548,7 @@ Following are each of the properties available within a level.
     <td colspan="2">The ambient music track ID.</td>
   </tr>
   <tr valign="top">
-    <td><code>draw_distance_fade</code><strong>¹</strong></td>
+    <td><code>fog_start</code></td>
     <td>Double</td>
     <td colspan="2">
       Can be customized per level. See <a href="#draw-distance-fade">above</a>
@@ -525,7 +556,7 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>draw_distance_max</code><strong>¹</strong></td>
+    <td><code>fog_end</code></td>
     <td>Double</td>
     <td colspan="2">
       Can be customized per level. See <a href="#draw-distance-max">above</a>
@@ -659,7 +690,18 @@ default game flow for examples.
     </td>
     <td><code>path</code></td>
     <td>String</td>
-    <td> Displays the specified picture for a fixed time. </td>
+    <td>
+      Displays the specified picture for a fixed time.
+      Files that are needed to function only with a specific aspect ratio can
+      be placed in a directory adjacent to the main image, named according to
+      the aspect ratio – for example, 4x3/title.png or 16x10/title.png. The
+      game won't attempt to match these precisely; instead, it will select the
+      file with the aspect ratio closest to the game's viewport. The main image
+      designated by <code>path</code> is presumed to have a 16:9 aspect ratio
+      for this purpose, and as such there's no need for 16x9-specific
+      directory.<br/>
+      This logic applies to all images.
+    </td>
   </tr>
   <tr valign="top">
     <td><code>display_time</code></td>
@@ -1184,17 +1226,27 @@ best practice to remove the references to maintain a clean game flow file.
 Following is a summary of what each of the default injection files that are
 provided with the game achieves.
 
-#### TR1
-
 <table>
   <tr valign="top" align="left">
     <th>Injection file</th>
+    <th>Usage</th>
     <th>Purpose</th>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>*_cameras.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects positional adjustments for cameras that can otherwise cause visual
+      issues, such as in Temple of the Cat.
+    </td>
   </tr>
   <tr valign="top">
     <td>
       <code>*_fd.bin</code>
     </td>
+    <td>TR1, TR2</td>
     <td>
       Injects fixes for floor data issues in the original levels. Refer to the
       README for a full list of fixes.
@@ -1204,6 +1256,7 @@ provided with the game achieves.
     <td>
       <code>*_itemrots.bin</code>
     </td>
+    <td>TR1, TR2</td>
     <td>
       Injects rotations on pickup items so they make more visual sense when
       using the 3D pickups option.
@@ -1211,8 +1264,39 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>*_meshfixes.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects miscellaneous mesh adjustments for objects, such as in Obelisk of
+      Khamoon to avoid z-fighting.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>*_pickup_meshes.bin</code>
+    </td>
+    <td>TR1, TR2</td>
+    <td>
+      Injects mesh edits to change the scale of various pickup models, such as
+      the keys in St. Francis' Folly or the Prayer Wheel in Barkhang Monastry.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>*_sfx.bin</code>
+    </td>
+    <td>TR1, TR2</td>
+    <td>
+      Injects various SFX fixes or additions, such as the PSX Uzi SFX in TR1, or
+      fixing the silent enemies in TR2's water levels.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>*_skybox.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects a predefined skybox model into specific levels.
     </td>
@@ -1221,6 +1305,7 @@ provided with the game achieves.
     <td>
       <code>*_textures.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects fixes for texture issues in the original levels, such as gaps in
       the walls or wrongly colored models. Refer to the README for a full list
@@ -1229,8 +1314,19 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>boat_bits.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Injects a model in slot `O_BOAT_BITS` (221) which is used to show the boat
+      exploding when it crosses mines.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>backpack.bin</code>
     </td>
+    <td>TR1</td>
     <td rowspan="2">
       Injects mesh edits for Lara's backback, such that it becomes shallower.
       This is only applied when the braid is enabled, to avoid the braid
@@ -1247,6 +1343,7 @@ provided with the game achieves.
     <td>
       <code>braid.bin</code>
     </td>
+    <td rowspan="4">TR1</td>
     <td rowspan="4">
       Injects a braid when the option for it is enabled. This also edits Lara's
       head meshes (object 0 and object 4) to make the braid fit better. A golden
@@ -1272,8 +1369,19 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>bubbles.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects replacement sprite textures for Lara's underwater bubble sprites,
+      which are cut off in OG.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>cistern_plants.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       This disables the animation on sprite ID 193 in The Cistern and Tomb of
       Tihocan.
@@ -1283,6 +1391,7 @@ provided with the game achieves.
     <td>
       <code>khamoon_mummy.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects the mummy in room 25 of City of Khamoon, which is present in the
       PS1 version but not the PC.
@@ -1292,6 +1401,7 @@ provided with the game achieves.
     <td>
       <code>lara_animations.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects several animations, state changes and commands for Lara, such as
       responsive jumping, jump-twist, somersault, underwater roll, and wading.
@@ -1299,16 +1409,47 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>lara_gym_guns.bin</code>
+    </td>
+    <td>TR1</td>
+    <td>
+      Injects all of Lara's weapons and weapon animations in TR1's gym level.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>explosion.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects explosion sprites for certain console commands.
     </td>
   </tr>
   <tr valign="top">
     <td>
+      <code>font.bin</code>
+    </td>
+    <td>TR1, TR2</td>
+    <td>
+      Injects replacement font sprites to support more characters than OG.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>guardian_death_commands.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Injects an animation command for the bird guardian to end the level on the
+      final frame of its death animation. The original hard-coded end-level
+      behaviour is removed in TR2X.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>mines_pushblocks.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects animation command data for pushblock types 2, 3 and 4 to restore
       the missing scraping SFX when pulling these blocks.
@@ -1318,6 +1459,7 @@ provided with the game achieves.
     <td>
       <code>pickup_aid.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects a sprite sequence similar to the Midas twinkle effect, which is
       used when the option for pickup aids is enabled. Custom levels should
@@ -1328,6 +1470,7 @@ provided with the game achieves.
     <td>
       <code>photo.bin</code>
     </td>
+    <td>TR1, TR2</td>
     <td>
       Injects camera shutter sound effect for the photo mode, needed only for
       the cutscene levels.
@@ -1337,6 +1480,7 @@ provided with the game achieves.
     <td>
       <code>purple_crystal.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Injects a replacement savegame crystal model to match the PS1 style.
     </td>
@@ -1345,16 +1489,22 @@ provided with the game achieves.
     <td>
       <code>scion_collision.bin</code>
     </td>
+    <td>TR1</td>
     <td>
       Increases the collision radius on the (targetable) Scion such that it can
       be shot with the shotgun.
     </td>
   </tr>
+  <tr valign="top">
+    <td>
+      <code>seaweed_collision.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Fixes the seaweed in Living Quarters blocking Lara from exiting the water.
+    </td>
+  </tr>
 </table>
-
-#### TR2
-
-TBD
 
 ## FMVs
 
@@ -1422,3 +1572,65 @@ keyboard or controller layouts defined.
 
 If you do not have any requirement to enforce settings, you can omit the
 `enforced_config` section from your game flow altogether.
+
+## Water colors<a id="user-content-water-color-table"></a>
+
+<table>
+<thead>
+    <tr>
+        <th>Game</th>
+        <th>Color (hex)</th>
+        <th>Color (array)</th>
+        <th>Usage</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td rowspan="2">TR1</td>
+        <td><img src="https://dummyimage.com/20x20/99b2ff/fff.png&text=+" valign="middle"/> <code>#99B2FF</code></td>
+        <td><code>[0.6, 0.7, 1.0]</code></td>
+        <td>original DOS version color</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/72ffff/fff.png&text=+" valign="middle"/> <code>#72FFFF</code></td>
+        <td><code>[0.45, 1.0, 1.0]</code></td>
+        <td>default TombATI color</td>
+    </tr>
+    <tr>
+        <td rowspan="7">TR2</td>
+        <td><img src="https://dummyimage.com/20x20/80dfff/fff.png&text=+" valign="middle"/> <code>#80DFFF</code></td>
+        <td><code>[0.5, 0.875, 1.0]</code></td>
+        <td>default PC hardware renderer color</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/aaaaff/fff.png&text=+" valign="middle"/> <code>#AAAAFF</code></td>
+        <td><code>[0.66, 0.66, 1.0]</code></td>
+        <td>default PC software renderer color</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/ccff80/fff.png&text=+" valign="middle"/> <code>#CCFF80</code></td>
+        <td><code>[0.8, 1.0, 0.5]</code></td>
+        <td>Venice, Bartoli's Hideout and Opera House (PS1)</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/ccff99/fff.png&text=+" valign="middle"/> <code>#CCFF99</code></td>
+        <td><code>[0.8, 1.0, 0.6]</code></td>
+        <td>Temple of Xian (PS1)</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/ccffcc/fff.png&text=+" valign="middle"/> <code>#CCFFCC</code></td>
+        <td><code>[0.8, 1.0, 0.8]</code></td>
+        <td>Floating Islands and Dragon's Lair (PS1)</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/b2e5e5/fff.png&text=+" valign="middle"/> <code>#B2E5E5</code></td>
+        <td><code>[0.7, 0.9, 0.9]</code></td>
+        <td>The Great Wall and Tibetan Foothills (PS1)</td>
+    </tr>
+    <tr>
+        <td><img src="https://dummyimage.com/20x20/80ffff/fff.png&text=+" valign="middle"/> <code>#80FFFF</code></td>
+        <td><code>[0.5, 1.0, 1.0]</code></td>
+        <td>All other PS1 levels</td>
+    </tr>
+</tbody>
+</table>

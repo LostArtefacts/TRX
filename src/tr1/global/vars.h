@@ -23,11 +23,5 @@ extern int32_t g_FPSCounter;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern GAME_INFO g_GameInfo;
-extern int32_t g_SavedGamesCount;
-extern int32_t g_SaveCounter;
 extern bool g_LevelComplete;
 extern int32_t g_OverlayFlag;
-
-extern REQUEST_INFO g_SavegameRequester;
-
-extern INVENTORY_MODE g_InvMode;

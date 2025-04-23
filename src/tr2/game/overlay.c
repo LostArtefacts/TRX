@@ -4,19 +4,20 @@
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/gym.h"
 #include "game/inventory.h"
 #include "game/music.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
-#include "game/scaler.h"
+#include "game/savegame.h"
 #include "game/text.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/utils.h>
 
 #include <stdio.h>
@@ -162,9 +163,10 @@ static void M_DrawAssaultTimer(void)
     }
 
     char buffer[32];
-    const int32_t total_sec =
-        g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
-    const int32_t frame = g_SaveGame.current_stats.timer % FRAMES_PER_SECOND;
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const int32_t total_sec = resume->stats.timer / FRAMES_PER_SECOND;
+    const int32_t frame = resume->stats.timer % FRAMES_PER_SECOND;
     sprintf(
         buffer, "%d:%02d.%d", total_sec / 60, total_sec % 60,
         frame * 10 / FRAMES_PER_SECOND);
@@ -209,7 +211,8 @@ static void M_DrawAssaultTimer(void)
             glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
         Output_DrawScreenSprite(
             x, y, 0, scale_h, scale_v,
-            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, 0x1000, 0);
+            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, SHADE_NEUTRAL,
+            0);
         x += Scaler_Calc(
             glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
     }
@@ -257,7 +260,7 @@ static void M_DrawAirBar(void)
 static void M_DrawAmmoInfo(void)
 {
     if (g_Lara.gun_status != LGS_READY || g_OverlayStatus <= 0
-        || g_SaveGame.bonus_flag) {
+        || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         if (m_AmmoTextInfo != nullptr) {
             Text_Remove(m_AmmoTextInfo);
             m_AmmoTextInfo = nullptr;
@@ -454,7 +457,7 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
     Matrix_RotY(pickup->rot_y);
 
     Output_SetLightDivider(0x6000);
-    Output_SetLightAdder(LOW_LIGHT);
+    Output_SetLightAdder(SHADE_LOW);
     Output_RotateLight(0, 0);
 
     Matrix_Push();
@@ -502,7 +505,7 @@ static void M_DrawPickupSprite(const DISPLAY_PICKUP *const pickup)
     // TODO: use proper scaling
     const int32_t scale = 12288 * g_PhdWinWidth / 640;
     const int16_t sprite_num = pickup->object->mesh_idx;
-    Output_DrawPickup(x, y, scale, sprite_num, 4096);
+    Output_DrawPickup(x, y, scale, sprite_num, SHADE_NEUTRAL);
 }
 
 static void M_DrawPickups(void)

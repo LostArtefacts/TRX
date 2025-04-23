@@ -37,6 +37,5 @@ void GFX_Context_SwitchToDisplayViewport(void);
 void GFX_Context_ScheduleScreenshot(const char *path);
 const char *GFX_Context_GetScheduledScreenshotPath(void);
 void GFX_Context_ClearScheduledScreenshotPath(void);
-void GFX_Context_GetScale(float *out_x, float *out_y);
 
 GFX_CONFIG *GFX_Context_GetConfig(void);

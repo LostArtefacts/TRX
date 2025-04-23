@@ -2,8 +2,9 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
-    "main_menu_picture": "data/images/title_eu_gm.png",
+    "main_menu_picture": "data/images/title_eu_gm.webp",
     "savegame_fmt_legacy": "savegame_gm.%d",
+    "savegame_fmt_bson": "save_trgm_%02d.dat",
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},
@@ -27,7 +28,7 @@
         "path": "data/title_gm.tr2",
         "music_track": 64,
         "sequence": [
-            {"type": "display_picture", "path": "data/images/legal.png"},
+            {"type": "display_picture", "path": "data/images/legal_eu_gm.webp", "legal": true},
             {"type": "exit_to_title"},
         ],
     },
@@ -59,6 +60,10 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
+                "data/injections/shark_sfx.bin",
+            ],
         },
 
         // 2. Fool's Gold
@@ -70,6 +75,9 @@
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/fools_pickup_meshes.bin",
             ],
         },
 
@@ -83,6 +91,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/furnace_pickup_meshes.bin",
+            ],
         },
 
         // 4. Kingdom
@@ -93,17 +104,21 @@
                 {"type": "give_item", "object_id": "puzzle_1"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 52},
-                {"type": "display_picture", "path": "data/images/credit00_gm.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit01.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit02.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit03.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit04.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit05.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit06.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit07_gm.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "display_picture", "path": "data/images/credit08.png", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
-                {"type": "total_stats", "background_path": "data/images/end.png"},
+                {"type": "display_picture", "path": "data/images/credit00_gm.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit01.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit02.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit03.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit04.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit05.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit06.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit07_gm.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/images/credit08.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "total_stats", "background_path": "data/images/end.webp"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
+                "data/injections/guardian_death_commands.bin",
             ],
         },
 
@@ -122,6 +137,11 @@
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
+                "data/injections/guardian_death_commands.bin",
+                "data/injections/vegas_fd.bin",
             ],
         },
     ],

@@ -7,12 +7,6 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent);
 static void M_LoadLevelItemDrops(
     JSON_OBJECT *obj, const GAME_FLOW *gf, GF_LEVEL *level);
 
-static GF_LEVEL_SETTINGS m_DefaultSettings = {
-    .water_color = { .r = 0.6, .g = 0.7, .b = 1.0 },
-    .draw_distance_fade = 12.0f,
-    .draw_distance_max = 20.0f,
-};
-
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
     // Events without arguments
@@ -104,33 +98,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent)
 static void M_LoadSettings(
     JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
 {
-    {
-        const double value = JSON_ObjectGetDouble(
-            obj, "draw_distance_fade", JSON_INVALID_NUMBER);
-        if (value != JSON_INVALID_NUMBER) {
-            settings->draw_distance_fade = value;
-        }
-    }
-
-    {
-        const double value =
-            JSON_ObjectGetDouble(obj, "draw_distance_max", JSON_INVALID_NUMBER);
-        if (value != JSON_INVALID_NUMBER) {
-            settings->draw_distance_max = value;
-        }
-    }
-
-    {
-        JSON_ARRAY *const tmp_arr = JSON_ObjectGetArray(obj, "water_color");
-        if (tmp_arr != nullptr) {
-            settings->water_color.r =
-                JSON_ArrayGetDouble(tmp_arr, 0, settings->water_color.r);
-            settings->water_color.g =
-                JSON_ArrayGetDouble(tmp_arr, 1, settings->water_color.g);
-            settings->water_color.b =
-                JSON_ArrayGetDouble(tmp_arr, 2, settings->water_color.b);
-        }
-    }
+    M_LoadCommonSettings(obj, settings);
 }
 
 static void M_LoadLevelGameSpecifics(
@@ -228,15 +196,8 @@ static void M_LoadLevelItemDrops(
 
 static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
 {
-    const char *tmp_s;
     double tmp_d;
     JSON_ARRAY *tmp_arr;
-
-    tmp_s = JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
-    if (tmp_s == JSON_INVALID_STRING) {
-        Shell_ExitSystem("'savegame_fmt_bson' must be a string");
-    }
-    gf->savegame_fmt_bson = Memory_DupStr(tmp_s);
 
     tmp_d = JSON_ObjectGetDouble(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
@@ -244,7 +205,6 @@ static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     }
     gf->demo_delay = tmp_d;
 
-    gf->settings = m_DefaultSettings;
     M_LoadSettings(obj, &gf->settings);
 
     gf->enable_tr2_item_drops =

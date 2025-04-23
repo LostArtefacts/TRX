@@ -123,3 +123,9 @@ Please refer to the [detailed documentation](docs/tr2/).
     further refined our identity by adopting the name TR1X. Meanwhile, TR2Main
     follows a completely separate and unique path, unconnected to our
     development work.
+
+## Credits
+
+- Endless GitHub contributors.
+- TR1 title screen image by Kidd Bowyer. HD assets by goblan and posix.
+- TR2 HD images by Arsunt.

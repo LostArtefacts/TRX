@@ -1,5 +1,3 @@
-#include "game/savegame/savegame_bson.h"
-
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -11,6 +9,7 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -19,10 +18,12 @@
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/savegame/bson.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
+#include <libtrx/version.h>
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -31,40 +32,19 @@
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
-#pragma pack(push, 1)
-typedef struct {
-    uint32_t magic;
-    int16_t initial_version;
-    uint16_t version;
-    int32_t compressed_size;
-    int32_t uncompressed_size;
-} SAVEGAME_BSON_HEADER;
-
-typedef struct {
-    uint32_t flags;
-    int32_t counter;
-    int32_t level_num;
-    size_t title_size;
-} SAVEGAME_BSON_EXTENDED_HEADER;
-#pragma pack(pop)
-
 typedef struct {
     int16_t count;
-    int16_t id_map[NUM_EFFECTS];
+    int16_t id_map[MAX_EFFECTS];
 } SAVEGAME_BSON_FX_ORDER;
 
 static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version);
 static JSON_VALUE *M_ParseFromBuffer(
     const char *buffer, size_t buffer_size, int32_t *version_out);
 static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out);
-static bool M_LoadResumeInfo(
-    JSON_ARRAY *levels_arr, RESUME_INFO *resume_info, uint16_t header_version);
-static bool M_LoadDiscontinuedStartInfo(
-    JSON_ARRAY *start_arr, GAME_INFO *game_info);
-static bool M_LoadDiscontinuedEndInfo(
-    JSON_ARRAY *end_arr, GAME_INFO *game_info);
-static bool M_LoadMisc(
-    JSON_OBJECT *misc_obj, GAME_INFO *game_info, uint16_t header_version);
+static bool M_LoadResumeInfo(JSON_ARRAY *levels_arr, uint16_t header_version);
+static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *start_arr);
+static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr);
+static bool M_LoadMisc(JSON_OBJECT *misc_obj, uint16_t header_version);
 static bool M_LoadInventory(JSON_OBJECT *inv_obj);
 static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj);
 static bool M_LoadCameras(JSON_ARRAY *cameras_arr);
@@ -77,8 +57,8 @@ static bool M_LoadLara(
     JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version);
 static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj);
 static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr);
-static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *game_info);
-static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info);
+static JSON_ARRAY *M_DumpResumeInfo(void);
+static JSON_OBJECT *M_DumpMisc(void);
 static JSON_OBJECT *M_DumpInventory(void);
 static JSON_OBJECT *M_DumpFlipmaps(void);
 static JSON_ARRAY *M_DumpCameras(void);
@@ -94,6 +74,25 @@ static JSON_ARRAY *M_DumpMusicTrackFlags(void);
 static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
 static bool M_IsValidItemObject(
     GAME_OBJECT_ID saved_obj_id, GAME_OBJECT_ID current_obj_id);
+
+static const char *M_GetSaveFilePattern(void);
+static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+static bool M_LoadFromFile(MYFILE *fp);
+static bool M_LoadOnlyResumeInfo(MYFILE *fp);
+static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *savegame_info);
+static bool M_UpdateDeathCounters(MYFILE *fp, int32_t death_count);
+
+static SAVEGAME_STRATEGY m_Strategy = {
+    .allow_load = true,
+    .allow_save = true,
+    .format = SAVEGAME_FORMAT_BSON,
+    .get_save_file_pattern_func = M_GetSaveFilePattern,
+    .fill_info_func = M_FillInfo,
+    .load_from_file_func = M_LoadFromFile,
+    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
+    .save_to_file_func = M_SaveToFile,
+    .update_death_counters_func = M_UpdateDeathCounters,
+};
 
 static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 {
@@ -111,22 +110,21 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 
     Memory_FreePointer(&uncompressed);
 
-    SAVEGAME_BSON_HEADER header = {
+    const SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
-        .initial_version = g_GameInfo.save_initial_version,
+        .initial_version = Savegame_GetInitialVersion(),
         .version = version,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
     };
-
     File_WriteData(fp, &header, sizeof(header));
 
     File_WriteData(fp, compressed, compressed_size);
 
     const GF_LEVEL *const level = Game_GetCurrentLevel();
-    SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
-        .flags = g_GameInfo.bonus_flag,
-        .counter = g_SaveCounter,
+    const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
+        .flags = Game_GetBonusFlag(),
+        .counter = Savegame_GetCounter(),
         .level_num = level->num,
         .title_size = strlen(level->title),
     };
@@ -139,7 +137,7 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order)
 {
     order->count = 0;
-    for (int i = 0; i < NUM_EFFECTS; i++) {
+    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
         order->id_map[i] = -1;
     }
 
@@ -166,8 +164,8 @@ static bool M_IsValidItemObject(
         case O_PUZZLE_DONE_4: return initial_obj_id == O_PUZZLE_HOLE_4;
         // pickups
         case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ANIM;
-        case O_SG_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
-        case O_MAG_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
+        case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
+        case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
         // dual-state animals
         case O_ALLIGATOR: return initial_obj_id == O_CROCODILE;
@@ -224,9 +222,8 @@ static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out)
 }
 
 static bool M_LoadResumeInfo(
-    JSON_ARRAY *resume_arr, RESUME_INFO *resume_info, uint16_t header_version)
+    JSON_ARRAY *const resume_arr, const uint16_t header_version)
 {
-    ASSERT(resume_info != nullptr);
     if (!resume_arr) {
         LOG_ERROR("Malformed save: invalid or missing resume array");
         return false;
@@ -243,7 +240,9 @@ static bool M_LoadResumeInfo(
             LOG_ERROR("Malformed save: invalid resume info");
             return false;
         }
-        RESUME_INFO *resume = &resume_info[i];
+
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         resume->lara_hitpoints = JSON_ObjectGetInt(
             resume_obj, "lara_hitpoints",
             g_Config.gameplay.start_lara_hitpoints);
@@ -251,8 +250,8 @@ static bool M_LoadResumeInfo(
         resume->magnum_ammo = JSON_ObjectGetInt(resume_obj, "magnum_ammo", 0);
         resume->uzi_ammo = JSON_ObjectGetInt(resume_obj, "uzi_ammo", 0);
         resume->shotgun_ammo = JSON_ObjectGetInt(resume_obj, "shotgun_ammo", 0);
-        resume->num_medis = JSON_ObjectGetInt(resume_obj, "num_medis", 0);
-        resume->num_big_medis =
+        resume->small_medipacks = JSON_ObjectGetInt(resume_obj, "num_medis", 0);
+        resume->large_medipacks =
             JSON_ObjectGetInt(resume_obj, "num_big_medis", 0);
         resume->num_scions = JSON_ObjectGetInt(resume_obj, "num_scions", 0);
         resume->gun_status = JSON_ObjectGetInt(resume_obj, "gun_status", 0);
@@ -264,12 +263,12 @@ static bool M_LoadResumeInfo(
             JSON_ObjectGetInt(resume_obj, "back_gun_type", LGT_UNKNOWN);
         resume->flags.available =
             JSON_ObjectGetBool(resume_obj, "available", 0);
-        resume->flags.got_pistols =
+        resume->flags.has_pistols =
             JSON_ObjectGetBool(resume_obj, "got_pistols", 0);
-        resume->flags.got_magnums =
+        resume->flags.has_magnums =
             JSON_ObjectGetBool(resume_obj, "got_magnums", 0);
-        resume->flags.got_uzis = JSON_ObjectGetBool(resume_obj, "got_uzis", 0);
-        resume->flags.got_shotgun =
+        resume->flags.has_uzis = JSON_ObjectGetBool(resume_obj, "got_uzis", 0);
+        resume->flags.has_shotgun =
             JSON_ObjectGetBool(resume_obj, "got_shotgun", 0);
         resume->flags.costume = JSON_ObjectGetBool(resume_obj, "costume", 0);
 
@@ -303,13 +302,10 @@ static bool M_LoadResumeInfo(
     return true;
 }
 
-static bool M_LoadDiscontinuedStartInfo(
-    JSON_ARRAY *start_arr, GAME_INFO *game_info)
+static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *const start_arr)
 {
     // This function solely exists for backward compatibility with 2.6 and 2.7
     // saves.
-    ASSERT(game_info != nullptr);
-    ASSERT(game_info->current != nullptr);
     if (!start_arr) {
         LOG_ERROR(
             "Malformed save: invalid or missing discontinued start array");
@@ -327,7 +323,8 @@ static bool M_LoadDiscontinuedStartInfo(
             LOG_ERROR("Malformed save: invalid discontinued start info");
             return false;
         }
-        RESUME_INFO *start = &game_info->current[i];
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const start = Savegame_GetCurrentInfo(level);
         start->lara_hitpoints = JSON_ObjectGetInt(
             start_obj, "lara_hitpoints",
             g_Config.gameplay.start_lara_hitpoints);
@@ -335,8 +332,9 @@ static bool M_LoadDiscontinuedStartInfo(
         start->magnum_ammo = JSON_ObjectGetInt(start_obj, "magnum_ammo", 0);
         start->uzi_ammo = JSON_ObjectGetInt(start_obj, "uzi_ammo", 0);
         start->shotgun_ammo = JSON_ObjectGetInt(start_obj, "shotgun_ammo", 0);
-        start->num_medis = JSON_ObjectGetInt(start_obj, "num_medis", 0);
-        start->num_big_medis = JSON_ObjectGetInt(start_obj, "num_big_medis", 0);
+        start->small_medipacks = JSON_ObjectGetInt(start_obj, "num_medis", 0);
+        start->large_medipacks =
+            JSON_ObjectGetInt(start_obj, "num_big_medis", 0);
         start->num_scions = JSON_ObjectGetInt(start_obj, "num_scions", 0);
         start->gun_status = JSON_ObjectGetInt(start_obj, "gun_status", 0);
         start->equipped_gun_type =
@@ -344,24 +342,22 @@ static bool M_LoadDiscontinuedStartInfo(
         start->holsters_gun_type = LGT_UNKNOWN;
         start->back_gun_type = LGT_UNKNOWN;
         start->flags.available = JSON_ObjectGetBool(start_obj, "available", 0);
-        start->flags.got_pistols =
+        start->flags.has_pistols =
             JSON_ObjectGetBool(start_obj, "got_pistols", 0);
-        start->flags.got_magnums =
+        start->flags.has_magnums =
             JSON_ObjectGetBool(start_obj, "got_magnums", 0);
-        start->flags.got_uzis = JSON_ObjectGetBool(start_obj, "got_uzis", 0);
-        start->flags.got_shotgun =
+        start->flags.has_uzis = JSON_ObjectGetBool(start_obj, "got_uzis", 0);
+        start->flags.has_shotgun =
             JSON_ObjectGetBool(start_obj, "got_shotgun", 0);
         start->flags.costume = JSON_ObjectGetBool(start_obj, "costume", 0);
     }
     return true;
 }
 
-static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr, GAME_INFO *game_info)
+static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr)
 {
     // This function solely exists for backward compatibility with 2.6 and 2.7
     // saves.
-    ASSERT(game_info != nullptr);
-    ASSERT(game_info->current != nullptr);
     if (!end_arr) {
         LOG_ERROR("Malformed save: invalid or missing resume info array");
         return false;
@@ -378,7 +374,10 @@ static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr, GAME_INFO *game_info)
             LOG_ERROR("Malformed save: invalid resume info");
             return false;
         }
-        LEVEL_STATS *end = &game_info->current[i].stats;
+
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        LEVEL_STATS *const end = &resume->stats;
         end->timer = JSON_ObjectGetInt(end_obj, "timer", end->timer);
         end->secret_flags =
             JSON_ObjectGetInt(end_obj, "secrets", end->secret_flags);
@@ -397,18 +396,19 @@ static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr, GAME_INFO *game_info)
 }
 
 static bool M_LoadMisc(
-    JSON_OBJECT *misc_obj, GAME_INFO *game_info, uint16_t header_version)
+    JSON_OBJECT *const misc_obj, const uint16_t header_version)
 {
-    ASSERT(game_info != nullptr);
     if (!misc_obj) {
         LOG_ERROR("Malformed save: invalid or missing misc info");
         return false;
     }
-    game_info->bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
+    const int32_t bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
+    Game_SetBonusFlag(bonus_flag);
     if (header_version >= VERSION_4) {
-        game_info->bonus_level_unlock =
-            JSON_ObjectGetBool(misc_obj, "bonus_level_unlock", 0);
-        game_info->death_count = JSON_ObjectGetInt(misc_obj, "death_count", -1);
+        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        resume->stats.death_count =
+            JSON_ObjectGetInt(misc_obj, "death_count", -1);
     }
     return true;
 }
@@ -677,12 +677,12 @@ static bool M_LoadEffects(JSON_ARRAY *fx_arr)
         return false;
     }
 
-    if ((signed)fx_arr->length >= NUM_EFFECTS) {
+    if ((signed)fx_arr->length >= MAX_EFFECTS) {
         LOG_WARNING(
             "Malformed save: expected a max of %d effect, got %d. effect over "
             "the "
             "maximum will not be created.",
-            NUM_EFFECTS - 1, fx_arr->length);
+            MAX_EFFECTS - 1, fx_arr->length);
     }
 
     for (int i = 0; i < (signed)fx_arr->length; i++) {
@@ -873,21 +873,21 @@ static bool M_LoadLara(
     }
 
     if (!M_LoadAmmo(
-            JSON_ObjectGetObject(lara_obj, "pistols"), &lara->pistols)) {
+            JSON_ObjectGetObject(lara_obj, "pistols"), &lara->pistol_ammo)) {
         return false;
     }
 
     if (!M_LoadAmmo(
-            JSON_ObjectGetObject(lara_obj, "magnums"), &lara->magnums)) {
+            JSON_ObjectGetObject(lara_obj, "magnums"), &lara->magnum_ammo)) {
         return false;
     }
 
-    if (!M_LoadAmmo(JSON_ObjectGetObject(lara_obj, "uzis"), &lara->uzis)) {
+    if (!M_LoadAmmo(JSON_ObjectGetObject(lara_obj, "uzis"), &lara->uzi_ammo)) {
         return false;
     }
 
     if (!M_LoadAmmo(
-            JSON_ObjectGetObject(lara_obj, "shotgun"), &lara->shotgun)) {
+            JSON_ObjectGetObject(lara_obj, "shotgun"), &lara->shotgun_ammo)) {
         return false;
     }
 
@@ -978,12 +978,12 @@ static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr)
     return true;
 }
 
-static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *resume_info)
+static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *resume_arr = JSON_ArrayNew();
-    ASSERT(resume_info != nullptr);
     for (int i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
-        RESUME_INFO *resume = &resume_info[i];
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         JSON_OBJECT *resume_obj = JSON_ObjectNew();
         JSON_ObjectAppendInt(
             resume_obj, "lara_hitpoints", resume->lara_hitpoints);
@@ -991,9 +991,9 @@ static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *resume_info)
         JSON_ObjectAppendInt(resume_obj, "magnum_ammo", resume->magnum_ammo);
         JSON_ObjectAppendInt(resume_obj, "uzi_ammo", resume->uzi_ammo);
         JSON_ObjectAppendInt(resume_obj, "shotgun_ammo", resume->shotgun_ammo);
-        JSON_ObjectAppendInt(resume_obj, "num_medis", resume->num_medis);
+        JSON_ObjectAppendInt(resume_obj, "num_medis", resume->small_medipacks);
         JSON_ObjectAppendInt(
-            resume_obj, "num_big_medis", resume->num_big_medis);
+            resume_obj, "num_big_medis", resume->large_medipacks);
         JSON_ObjectAppendInt(resume_obj, "num_scions", resume->num_scions);
         JSON_ObjectAppendInt(resume_obj, "gun_status", resume->gun_status);
         JSON_ObjectAppendInt(resume_obj, "gun_type", resume->equipped_gun_type);
@@ -1003,12 +1003,12 @@ static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *resume_info)
             resume_obj, "back_gun_type", resume->back_gun_type);
         JSON_ObjectAppendBool(resume_obj, "available", resume->flags.available);
         JSON_ObjectAppendBool(
-            resume_obj, "got_pistols", resume->flags.got_pistols);
+            resume_obj, "got_pistols", resume->flags.has_pistols);
         JSON_ObjectAppendBool(
-            resume_obj, "got_magnums", resume->flags.got_magnums);
-        JSON_ObjectAppendBool(resume_obj, "got_uzis", resume->flags.got_uzis);
+            resume_obj, "got_magnums", resume->flags.has_magnums);
+        JSON_ObjectAppendBool(resume_obj, "got_uzis", resume->flags.has_uzis);
         JSON_ObjectAppendBool(
-            resume_obj, "got_shotgun", resume->flags.got_shotgun);
+            resume_obj, "got_shotgun", resume->flags.has_shotgun);
         JSON_ObjectAppendBool(resume_obj, "costume", resume->flags.costume);
         JSON_ObjectAppendInt(resume_obj, "timer", resume->stats.timer);
         JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kill_count);
@@ -1031,14 +1031,15 @@ static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *resume_info)
     return resume_arr;
 }
 
-static JSON_OBJECT *M_DumpMisc(GAME_INFO *game_info)
+static JSON_OBJECT *M_DumpMisc(void)
 {
-    ASSERT(game_info != nullptr);
     JSON_OBJECT *misc_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(misc_obj, "bonus_flag", game_info->bonus_flag);
-    JSON_ObjectAppendBool(
-        misc_obj, "bonus_level_unlock", game_info->bonus_level_unlock);
-    JSON_ObjectAppendInt(misc_obj, "death_count", game_info->death_count);
+    JSON_ObjectAppendString(misc_obj, "game_version", g_TRXVersion);
+    JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
+
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    JSON_ObjectAppendInt(misc_obj, "death_count", resume->stats.death_count);
     return misc_obj;
 }
 
@@ -1300,10 +1301,13 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
 
     JSON_ObjectAppendObject(lara_obj, "left_arm", M_DumpArm(&lara->left_arm));
     JSON_ObjectAppendObject(lara_obj, "right_arm", M_DumpArm(&lara->right_arm));
-    JSON_ObjectAppendObject(lara_obj, "pistols", M_DumpAmmo(&lara->pistols));
-    JSON_ObjectAppendObject(lara_obj, "magnums", M_DumpAmmo(&lara->magnums));
-    JSON_ObjectAppendObject(lara_obj, "uzis", M_DumpAmmo(&lara->uzis));
-    JSON_ObjectAppendObject(lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun));
+    JSON_ObjectAppendObject(
+        lara_obj, "pistols", M_DumpAmmo(&lara->pistol_ammo));
+    JSON_ObjectAppendObject(
+        lara_obj, "magnums", M_DumpAmmo(&lara->magnum_ammo));
+    JSON_ObjectAppendObject(lara_obj, "uzis", M_DumpAmmo(&lara->uzi_ammo));
+    JSON_ObjectAppendObject(
+        lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun_ammo));
     JSON_ObjectAppendObject(lara_obj, "lot", M_DumpLOT(&lara->lot));
 
     JSON_ObjectAppendInt(
@@ -1343,12 +1347,12 @@ static JSON_ARRAY *M_DumpMusicTrackFlags(void)
     return music_track_arr;
 }
 
-const char *Savegame_BSON_GetSaveFilePattern(void)
+static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_bson;
 }
 
-bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
+static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     bool ret = false;
     SAVEGAME_BSON_HEADER header;
@@ -1389,10 +1393,8 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     return ret;
 }
 
-bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     bool ret = false;
 
     int32_t version;
@@ -1404,24 +1406,22 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadResumeInfo(
-            JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
-            version)) {
+            JSON_ObjectGetArray(root_obj, "current_info"), version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. "
             "Checking if save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!M_LoadDiscontinuedStartInfo(
-                JSON_ObjectGetArray(root_obj, "start_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "start_info"))) {
             goto cleanup;
         }
         if (!M_LoadDiscontinuedEndInfo(
-                JSON_ObjectGetArray(root_obj, "end_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "end_info"))) {
             goto cleanup;
         }
     }
 
-    if (!M_LoadMisc(
-            JSON_ObjectGetObject(root_obj, "misc"), game_info, version)) {
+    if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"), version)) {
         goto cleanup;
     }
 
@@ -1471,10 +1471,8 @@ cleanup:
     return ret;
 }
 
-bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
-    ASSERT(game_info != nullptr);
-
     bool ret = false;
 
     int32_t version;
@@ -1486,18 +1484,17 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadResumeInfo(
-            JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
-            version)) {
+            JSON_ObjectGetArray(root_obj, "current_info"), version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. Checking if "
             "save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!M_LoadDiscontinuedStartInfo(
-                JSON_ObjectGetArray(root_obj, "start_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "start_info"))) {
             goto cleanup;
         }
         if (!M_LoadDiscontinuedEndInfo(
-                JSON_ObjectGetArray(root_obj, "end_info"), game_info)) {
+                JSON_ObjectGetArray(root_obj, "end_info"))) {
             goto cleanup;
         }
     }
@@ -1509,20 +1506,17 @@ cleanup:
     return ret;
 }
 
-void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
+static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 {
-    ASSERT(game_info != nullptr);
-
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     JSON_OBJECT *root_obj = JSON_ObjectNew();
 
     JSON_ObjectAppendString(root_obj, "level_title", current_level->title);
-    JSON_ObjectAppendInt(root_obj, "save_counter", g_SaveCounter);
+    JSON_ObjectAppendInt(root_obj, "save_counter", Savegame_GetCounter());
     JSON_ObjectAppendInt(root_obj, "level_num", current_level->num);
 
-    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc(game_info));
-    JSON_ObjectAppendArray(
-        root_obj, "current_info", M_DumpResumeInfo(game_info->current));
+    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
+    JSON_ObjectAppendArray(root_obj, "current_info", M_DumpResumeInfo());
     JSON_ObjectAppendObject(root_obj, "inventory", M_DumpInventory());
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
@@ -1536,9 +1530,11 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     JSON_VALUE *root = JSON_ValueFromObject(root_obj);
     M_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);
     JSON_ValueFree(root);
+
+    savegame_info->features.restart = true;
 }
 
-bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
+static bool M_UpdateDeathCounters(MYFILE *const fp, const int32_t death_count)
 {
     bool result = false;
     int32_t version;
@@ -1555,7 +1551,7 @@ bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
     JSON_ObjectEvictKey(misc_obj, "death_count");
-    JSON_ObjectAppendInt(misc_obj, "death_count", game_info->death_count);
+    JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
 
     File_Seek(fp, 0, FILE_SEEK_SET);
     M_SaveRaw(fp, root, version);
@@ -1565,3 +1561,5 @@ cleanup:
     JSON_ValueFree(root);
     return result;
 }
+
+REGISTER_SAVEGAME_STRATEGY(m_Strategy)

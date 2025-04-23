@@ -80,7 +80,7 @@ INVENTORY_ITEM g_InvRing_Item_Compass = {
 };
 
 INVENTORY_ITEM g_InvRing_Item_Medi = {
-    .object_id = O_MEDI_OPTION,
+    .object_id = O_SMALL_MEDIPACK_OPTION,
     .frames_total = 26,
     .current_frame = 0,
     .goal_frame = 0,
@@ -105,7 +105,7 @@ INVENTORY_ITEM g_InvRing_Item_Medi = {
 };
 
 INVENTORY_ITEM g_InvRing_Item_BigMedi = {
-    .object_id = O_BIGMEDI_OPTION,
+    .object_id = O_LARGE_MEDIPACK_OPTION,
     .frames_total = 20,
     .current_frame = 0,
     .goal_frame = 0,
@@ -580,7 +580,7 @@ INVENTORY_ITEM g_InvRing_Item_PistolAmmo = {
 };
 
 INVENTORY_ITEM g_InvRing_Item_ShotgunAmmo = {
-    .object_id = O_SG_AMMO_OPTION,
+    .object_id = O_SHOTGUN_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -605,7 +605,7 @@ INVENTORY_ITEM g_InvRing_Item_ShotgunAmmo = {
 };
 
 INVENTORY_ITEM g_InvRing_Item_MagnumAmmo = {
-    .object_id = O_MAG_AMMO_OPTION,
+    .object_id = O_MAGNUM_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,

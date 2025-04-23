@@ -7,6 +7,7 @@
 #include "ids.h"
 #include "types.h"
 
+void Object_Reset(void);
 OBJECT *Object_Get(GAME_OBJECT_ID obj_id);
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
@@ -24,6 +25,7 @@ void Object_StoreMesh(OBJECT_MESH *mesh);
 
 int32_t Object_GetMeshCount(void);
 OBJECT_MESH *Object_FindMesh(int32_t data_offset);
+int32_t Object_GetMeshIndex(const OBJECT_MESH *mesh);
 int32_t Object_GetMeshOffset(const OBJECT_MESH *mesh);
 void Object_SetMeshOffset(OBJECT_MESH *mesh, int32_t data_offset);
 
@@ -40,6 +42,9 @@ void Object_DrawInterpolatedObject(
     const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,
     const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
     int32_t rate);
+void Object_ApplyExtraRotation(
+    const int16_t **extra_rotation, const XYZ_BOOL rot_flags,
+    bool interpolated);
 
 #define REGISTER_OBJECT(object_id, setup_func_)                                \
     __attribute__((constructor)) static void M_RegisterObject##object_id(void) \

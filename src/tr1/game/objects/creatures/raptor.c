@@ -36,7 +36,7 @@ typedef enum {
     RAPTOR_STATE_ATTACK_3 = 8,
 } RAPTOR_STATE;
 
-static BITE m_RaptorBite = { 0, 66, 318, 22 };
+static BITE m_RaptorBite = { .pos = { 0, 66, 318 }, .mesh_num = 22 };
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
@@ -60,7 +60,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
 
-    Object_GetBone(obj, 21)->rot_y = true;
+    Object_GetBone(obj, 21)->rot.y = true;
 }
 
 static void M_Control(const int16_t item_num)

@@ -1,8 +1,9 @@
 {
     // This file is used to enable the -l argument support.
 
-    "main_menu_picture": "data/images/title_eu.png",
-    "savegame_fmt_legacy": "savegame.%d",
+    "main_menu_picture": "data/images/title_eu.webp",
+    "savegame_fmt_legacy": "savegame_custom.%d",
+    "savegame_fmt_bson": "save_tr2_custom_%02d.dat",
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},

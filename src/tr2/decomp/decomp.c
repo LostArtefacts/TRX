@@ -11,7 +11,6 @@
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/phase.h"
-#include "game/requester.h"
 #include "game/room.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -144,29 +143,13 @@ void DecreaseScreenSize(void)
     }
 }
 
-void GetValidLevelsList(REQUEST_INFO *const req)
-{
-    Requester_RemoveAllItems(req);
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type != GFL_GYM) {
-            Requester_AddItem(req, level->title, 0, nullptr, 0);
-        }
-    }
-}
-
 void InitialiseGameFlags(void)
 {
     Music_ResetTrackFlags();
-    for (GAME_OBJECT_ID obj_id = 0; obj_id < O_NUMBER_OF; obj_id++) {
-        Object_Get(obj_id)->loaded = 0;
-    }
-
     Output_SetSunsetTimer(0);
     g_LevelComplete = false;
     g_DetonateAllMines = false;
-    g_IsMonkAngry = false;
+    Creature_SetAlliesHostile(false);
 }
 
 void GetCarriedItems(void)

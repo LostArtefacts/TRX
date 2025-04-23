@@ -7,6 +7,8 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/output.h"
+#include "game/output/meshes/common.h"
+#include "game/output/shader.h"
 #include "game/screen.h"
 #include "game/text.h"
 #include "game/viewport.h"
@@ -15,6 +17,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun/const.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
@@ -239,14 +242,14 @@ static void M_BarGetLocation(
     }
 
     if (g_GameInfo.showing_demo && bar_info->location == BL_BOTTOM_CENTER) {
-        *y -= M_GetBarToTextScale() * (TEXT_HEIGHT + bar_spacing);
+        *y -= M_GetBarToTextScale() * (TEXT_HEIGHT_FIXED + bar_spacing);
     } else if (
         g_GameInfo.inv_ring_shown && GF_GetCurrentLevel() != nullptr
         && GF_GetCurrentLevel()->type == GFL_TITLE
         && (bar_info->location == BL_TOP_CENTER
             || bar_info->location == BL_BOTTOM_CENTER)) {
         *y = screen_margin_v + m_BarOffsetY[bar_info->location]
-            + M_GetBarToTextScale() * (TEXT_HEIGHT + bar_spacing);
+            + M_GetBarToTextScale() * (TEXT_HEIGHT_FIXED + bar_spacing);
     }
 
     m_BarOffsetY[bar_info->location] += *height + bar_spacing;
@@ -376,6 +379,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     int16_t old_fov = Viewport_GetFOV();
     Viewport_SetFOV(PICKUPS_FOV * DEG_1);
     Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
+    glViewport(vp_x1, -vp_y1, screen_width, screen_height);
     Output_ApplyFOV();
 
     Matrix_PushUnit();
@@ -385,7 +389,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     Matrix_RotY(pu->rot_y);
 
     Output_SetLightDivider(0x6000);
-    Output_SetLightAdder(LOW_LIGHT);
+    Output_SetLightAdder(SHADE_LOW);
     Output_RotateLight(0, 0);
 
     const OBJECT *const obj = Object_Get(Inv_GetItemOption(pu->object_id));
@@ -422,6 +426,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     Matrix_Pop();
     Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
     Viewport_SetFOV(old_fov);
+    glViewport(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
 }
 
 static void M_DrawPickups3D(void)
@@ -496,7 +501,7 @@ static void M_DrawPickupsSprites(void)
             Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
         const int32_t scale = Screen_GetRenderScaleGLRage(12288);
         const int16_t sprite_num = Object_Get(pu->object_id)->mesh_idx;
-        Output_DrawUISprite(x, y, scale, sprite_num, 4096);
+        Output_DrawUISprite(x, y, scale, sprite_num, SHADE_NEUTRAL);
     }
 }
 
@@ -580,7 +585,7 @@ static void M_BarDrawEnemy(void)
     const OBJECT *const obj = Object_Get(g_Lara.target->object_id);
     m_EnemyBar.value = g_Lara.target->hit_points;
     m_EnemyBar.max_value =
-        obj->hit_points * ((g_GameInfo.bonus_flag & GBF_NGPLUS) ? 2 : 1);
+        obj->hit_points * (Game_IsBonusFlagSet(GBF_NGPLUS) ? 2 : 1);
     CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
     Overlay_BarDraw(&m_EnemyBar, RSR_BAR);
@@ -616,8 +621,7 @@ static void M_DrawAmmoInfo(void)
 
     double scale_ammo_to_bar = g_Config.ui.bar_scale / g_Config.ui.text_scale;
 
-    if (g_Lara.gun_status != LGS_READY
-        || (g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+    if (g_Lara.gun_status != LGS_READY || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         M_RemoveAmmoText();
         return;
     }
@@ -627,13 +631,14 @@ static void M_DrawAmmoInfo(void)
     case LGT_PISTOLS:
         return;
     case LGT_SHOTGUN:
-        sprintf(ammo_string, "%6d A", g_Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
+        sprintf(
+            ammo_string, "%6d A", g_Lara.shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
     case LGT_UZIS:
-        sprintf(ammo_string, "%6d C", g_Lara.uzis.ammo);
+        sprintf(ammo_string, "%6d C", g_Lara.uzi_ammo.ammo);
         break;
     case LGT_MAGNUMS:
-        sprintf(ammo_string, "%6d B", g_Lara.magnums.ammo);
+        sprintf(ammo_string, "%6d B", g_Lara.magnum_ammo.ammo);
         break;
     default:
         return;

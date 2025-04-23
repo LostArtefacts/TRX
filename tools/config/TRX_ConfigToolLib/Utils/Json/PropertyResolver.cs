@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using TRX_ConfigToolLib.Models;
+using TRX_ConfigToolLib.Models.Specification;
 
-namespace TRX_ConfigToolLib.Utils;
+namespace TRX_ConfigToolLib.Utils.Json;
 
 public class PropertyResolver : DefaultContractResolver
 {

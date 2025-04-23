@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace TRX_ConfigToolLib.Utils;
+namespace TRX_ConfigToolLib.Utils.Converters;
 
 public class ConditionalMarkupConverter : MarkupExtension, IValueConverter
 {

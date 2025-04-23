@@ -1,11 +1,9 @@
 #include "game/inventory_ring/control.h"
 
-#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/gym.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/draw.h"
@@ -15,6 +13,7 @@
 #include "game/option/option.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -22,6 +21,8 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun/const.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
@@ -31,8 +32,8 @@
 
 #include <stdio.h>
 
-#define TITLE_RING_OBJECTS 3
-#define OPTION_RING_OBJECTS 3
+#define TITLE_RING_OBJECTS 4
+#define OPTION_RING_OBJECTS 4
 #define INV_RING_FADE_TIME_FAST                                                \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
 #define INV_RING_FADE_TIME_TITLE_FINISH 0.25
@@ -53,7 +54,7 @@ static GF_COMMAND M_Control(INV_RING *ring);
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
-    if (!g_SaveGame.bonus_flag) {
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         InvRing_ShowItemQuantity(fmt, qty);
     }
 }
@@ -192,11 +193,6 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             // first passport page: load game.
             if (apply_changes) {
                 Inv_RemoveAllItems();
-                if (!S_LoadGame(g_Inv_ExtraData[1])) {
-                    return (GF_COMMAND) {
-                        .action = GF_EXIT_TO_TITLE,
-                    };
-                }
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
@@ -243,8 +239,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 } else {
                     if (apply_changes) {
                         Music_Unpause();
-                        CreateSaveGameInfo();
-                        S_SaveGame(g_Inv_ExtraData[1]);
+                        Savegame_Save(g_Inv_ExtraData[1]);
                     }
                     return (GF_COMMAND) { .action = GF_NOOP };
                 }

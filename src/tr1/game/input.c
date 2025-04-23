@@ -129,3 +129,9 @@ void Input_Update(void)
         g_InputDB.any = 0;
     }
 }
+
+const char *Input_GetRoleName(const INPUT_ROLE role)
+{
+    // TODO: implement me
+    return nullptr;
+}

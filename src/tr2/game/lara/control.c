@@ -1,12 +1,10 @@
 #include "game/lara/control.h"
 
-#include "decomp/savegame.h"
 #include "decomp/skidoo.h"
 #include "game/camera.h"
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/gym.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
@@ -18,10 +16,13 @@
 #include "game/lara/state.h"
 #include "game/music.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/gym.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
@@ -680,11 +681,7 @@ void Lara_Control(const int16_t item_num)
         break;
     }
 
-    g_SaveGame.current_stats.distance += Math_Sqrt(
-        SQUARE(item->pos.z - g_Lara.last_pos.z)
-        + SQUARE(item->pos.y - g_Lara.last_pos.y)
-        + SQUARE(item->pos.x - g_Lara.last_pos.x));
-
+    Stats_AddDistanceTravelled(item->pos, g_Lara.last_pos);
     g_Lara.last_pos = item->pos;
 }
 
@@ -740,7 +737,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             CLAMPG(item->hit_points, LARA_MAX_HITPOINTS);
             Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-            g_SaveGame.current_stats.medipacks++;
+            Stats_AddMedipacksUsed(0.5);
         }
         break;
 
@@ -750,7 +747,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             item->hit_points = LARA_MAX_HITPOINTS;
             Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-            g_SaveGame.current_stats.medipacks += 2;
+            Stats_AddMedipacksUsed(1);
         }
         break;
 
@@ -858,72 +855,72 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     Inv_RemoveAllItems();
     Inv_AddItem(O_COMPASS_ITEM);
 
-    START_INFO *const start = Savegame_GetCurrentInfo(level);
-    if (start != nullptr) {
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr) {
         g_Lara.pistol_ammo.ammo = 1000;
-        if (start->has_pistols) {
+        if (resume->flags.has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);
         }
 
-        if (start->has_magnums) {
+        if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
-            g_Lara.magnum_ammo.ammo = start->magnum_ammo;
+            g_Lara.magnum_ammo.ammo = resume->magnum_ammo;
             Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         } else {
-            Inv_AddItemNTimes(O_MAGNUM_AMMO_ITEM, start->magnum_ammo / 40);
+            Inv_AddItemNTimes(O_MAGNUM_AMMO_ITEM, resume->magnum_ammo / 40);
             g_Lara.magnum_ammo.ammo = 0;
         }
 
-        if (start->has_uzis) {
+        if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
-            g_Lara.uzi_ammo.ammo = start->uzi_ammo;
+            g_Lara.uzi_ammo.ammo = resume->uzi_ammo;
             Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         } else {
-            Inv_AddItemNTimes(O_UZI_AMMO_ITEM, start->uzi_ammo / 80);
+            Inv_AddItemNTimes(O_UZI_AMMO_ITEM, resume->uzi_ammo / 80);
             g_Lara.uzi_ammo.ammo = 0;
         }
 
-        if (start->has_shotgun) {
+        if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
-            g_Lara.shotgun_ammo.ammo = start->shotgun_ammo;
+            g_Lara.shotgun_ammo.ammo = resume->shotgun_ammo;
             Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
         } else {
-            Inv_AddItemNTimes(O_SHOTGUN_AMMO_ITEM, start->shotgun_ammo / 12);
+            Inv_AddItemNTimes(O_SHOTGUN_AMMO_ITEM, resume->shotgun_ammo / 12);
             g_Lara.shotgun_ammo.ammo = 0;
         }
 
-        if (start->has_m16) {
+        if (resume->flags.has_m16) {
             Inv_AddItem(O_M16_ITEM);
-            g_Lara.m16_ammo.ammo = start->m16_ammo;
+            g_Lara.m16_ammo.ammo = resume->m16_ammo;
             Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
         } else {
-            Inv_AddItemNTimes(O_M16_AMMO_ITEM, start->m16_ammo / 40);
+            Inv_AddItemNTimes(O_M16_AMMO_ITEM, resume->m16_ammo / 40);
             g_Lara.m16_ammo.ammo = 0;
         }
 
-        if (start->has_grenade) {
+        if (resume->flags.has_grenade) {
             Inv_AddItem(O_GRENADE_ITEM);
-            g_Lara.grenade_ammo.ammo = start->grenade_ammo;
+            g_Lara.grenade_ammo.ammo = resume->grenade_ammo;
             Item_GlobalReplace(O_GRENADE_ITEM, O_GRENADE_AMMO_ITEM);
         } else {
-            Inv_AddItemNTimes(O_GRENADE_AMMO_ITEM, start->grenade_ammo / 2);
+            Inv_AddItemNTimes(O_GRENADE_AMMO_ITEM, resume->grenade_ammo / 2);
             g_Lara.grenade_ammo.ammo = 0;
         }
 
-        if (start->has_harpoon) {
+        if (resume->flags.has_harpoon) {
             Inv_AddItem(O_HARPOON_ITEM);
-            g_Lara.harpoon_ammo.ammo = start->harpoon_ammo;
+            g_Lara.harpoon_ammo.ammo = resume->harpoon_ammo;
             Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
         } else {
-            Inv_AddItemNTimes(O_HARPOON_AMMO_ITEM, start->harpoon_ammo / 3);
+            Inv_AddItemNTimes(O_HARPOON_AMMO_ITEM, resume->harpoon_ammo / 3);
             g_Lara.harpoon_ammo.ammo = 0;
         }
 
-        Inv_AddItemNTimes(O_FLARE_ITEM, start->flares);
-        Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, start->small_medipacks);
-        Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, start->large_medipacks);
+        Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
+        Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
+        Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
 
-        g_Lara.last_gun_type = start->gun_type;
+        g_Lara.last_gun_type = resume->equipped_gun_type;
     }
 
     g_Lara.gun_status = LGS_ARMLESS;
@@ -940,16 +937,16 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
         Lara_SwapSingleMesh(i, O_LARA);
     }
 
-    const START_INFO *const start = Savegame_GetCurrentInfo(level);
-    if (start == nullptr) {
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume == nullptr) {
         return;
     }
 
     GAME_OBJECT_ID holster_obj_id = NO_OBJECT;
-    if (start->gun_type != LGT_UNARMED) {
-        if (start->gun_type == LGT_MAGNUMS) {
+    if (resume->equipped_gun_type != LGT_UNARMED) {
+        if (resume->equipped_gun_type == LGT_MAGNUMS) {
             holster_obj_id = O_LARA_MAGNUMS;
-        } else if (start->gun_type == LGT_UZIS) {
+        } else if (resume->equipped_gun_type == LGT_UZIS) {
             holster_obj_id = O_LARA_UZIS;
         } else {
             holster_obj_id = O_LARA_PISTOLS;
@@ -961,11 +958,11 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
         Lara_SwapSingleMesh(LM_THIGH_R, holster_obj_id);
     }
 
-    if (start->gun_type == LGT_FLARE) {
+    if (resume->equipped_gun_type == LGT_FLARE) {
         Lara_SwapSingleMesh(LM_HAND_L, O_LARA_FLARE);
     }
 
-    switch (start->gun_type) {
+    switch (resume->equipped_gun_type) {
     case LGT_M16:
         g_Lara.back_gun = O_LARA_M16;
         return;
@@ -977,15 +974,18 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
     case LGT_HARPOON:
         g_Lara.back_gun = O_LARA_HARPOON;
         return;
+
+    default:
+        break;
     }
 
-    if (start->has_shotgun) {
+    if (resume->flags.has_shotgun) {
         g_Lara.back_gun = O_LARA_SHOTGUN;
-    } else if (start->has_m16) {
+    } else if (resume->flags.has_m16) {
         g_Lara.back_gun = O_LARA_M16;
-    } else if (start->has_grenade) {
+    } else if (resume->flags.has_grenade) {
         g_Lara.back_gun = O_LARA_GRENADE;
-    } else if (start->has_harpoon) {
+    } else if (resume->flags.has_harpoon) {
         g_Lara.back_gun = O_LARA_HARPOON;
     }
 }

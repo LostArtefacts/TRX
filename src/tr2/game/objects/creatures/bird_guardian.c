@@ -6,6 +6,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -17,7 +18,6 @@
 #define BIRD_GUARDIAN_ATTACK_1_RANGE SQUARE(WALL_L) // = 1048576
 #define BIRD_GUARDIAN_ATTACK_2_RANGE SQUARE(WALL_L * 2) // = 4194304
 #define BIRD_GUARDIAN_PUNCH_DAMAGE   200
-#define BIRD_GUARDIAN_DEATH_FRAME    158
 // clang-format on
 
 typedef enum {
@@ -65,6 +65,9 @@ static void M_Setup(OBJECT *const obj)
 
     obj->hit_points = BIRD_GUARDIAN_HITPOINTS;
     obj->radius = BIRD_GUARDIAN_RADIUS;
+    if (g_Config.visuals.fix_texture_issues) {
+        obj->shadow_size = UNIT_SHADOW / 2;
+    }
 
     obj->intelligent = 1;
     obj->save_position = 1;
@@ -72,7 +75,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 14)->rot_y = true;
+    Object_GetBone(obj, 14)->rot.y = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -187,15 +190,9 @@ static void M_Control(const int16_t item_num)
         default:
             break;
         }
-    } else {
-        if (item->current_anim_state != BIRD_GUARDIAN_STATE_DEATH) {
-            Item_SwitchToAnim(item, BIRD_GUARDIAN_ANIM_DEATH, 0);
-            item->current_anim_state = BIRD_GUARDIAN_STATE_DEATH;
-        }
-
-        if (Item_TestFrameEqual(item, BIRD_GUARDIAN_DEATH_FRAME)) {
-            g_LevelComplete = true;
-        }
+    } else if (item->current_anim_state != BIRD_GUARDIAN_STATE_DEATH) {
+        Item_SwitchToAnim(item, BIRD_GUARDIAN_ANIM_DEATH, 0);
+        item->current_anim_state = BIRD_GUARDIAN_STATE_DEATH;
     }
 
     Creature_Head(item, head);

@@ -41,6 +41,10 @@ static int32_t M_GetAnimFrameCount(
     uint32_t next_ofs = anim_idx == Anim_GetTotalCount() - 1
         ? (unsigned)(sizeof(int16_t) * frame_data_length)
         : Anim_GetAnim(anim_idx + 1)->frame_ofs;
+    if (anim->frame_size == 0) {
+        ASSERT(next_ofs - anim->frame_ofs == 0);
+        return 0;
+    }
     return (next_ofs - anim->frame_ofs)
         / (int32_t)(sizeof(int16_t) * anim->frame_size);
 #endif
@@ -201,7 +205,7 @@ void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
     // so ensure everything that's loaded is configured as such.
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
-        if (obj->loaded && obj->mesh_count >= 0 && obj->anim_idx == -1
+        if (obj->loaded && obj->mesh_count >= 0 && obj->anim_idx == NO_ANIM
             && obj->frame_base == nullptr) {
             obj->frame_base = M_FindFrameBase(obj->frame_ofs);
         }

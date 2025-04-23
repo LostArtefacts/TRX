@@ -174,6 +174,16 @@ bool String_ParseDecimal(const char *const value, float *const target)
     return true;
 }
 
+bool String_ParseRGB888(const char *value, RGB_888 *const target)
+{
+    if (value[0] == '#') {
+        value++;
+    }
+    return sscanf(
+               value, "%02hhX%02hhX%02hhX", &target->r, &target->g, &target->b)
+        == 3;
+}
+
 char *String_ToUpper(const char *text)
 {
     if (text == nullptr) {

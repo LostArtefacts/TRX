@@ -27,6 +27,17 @@ static void M_SetupLaraExtra(void)
     obj->control_func = Lara_ControlExtra;
 }
 
+static void M_SetupSkybox(void)
+{
+    const OBJECT *const obj = Object_Get(O_SKYBOX);
+    if (obj->loaded) {
+        for (int32_t i = 0; i < obj->mesh_count; i++) {
+            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
+            obj_mesh->disable_lighting = true;
+        }
+    }
+}
+
 static void M_DisableObject(const GAME_OBJECT_ID obj_id)
 {
     OBJECT *const obj = Object_Get(obj_id);
@@ -67,17 +78,18 @@ void Object_SetupAllObjects(void)
 
     M_SetupLara();
     M_SetupLaraExtra();
+    M_SetupSkybox();
 
     Lara_Hair_Initialise();
 
     if (g_Config.gameplay.disable_medpacks) {
-        M_DisableObject(O_MEDI_ITEM);
-        M_DisableObject(O_BIGMEDI_ITEM);
+        M_DisableObject(O_SMALL_MEDIPACK_ITEM);
+        M_DisableObject(O_LARGE_MEDIPACK_ITEM);
     }
 
     if (g_Config.gameplay.disable_magnums) {
         M_DisableObject(O_MAGNUM_ITEM);
-        M_DisableObject(O_MAG_AMMO_ITEM);
+        M_DisableObject(O_MAGNUM_AMMO_ITEM);
     }
 
     if (g_Config.gameplay.disable_uzis) {
@@ -87,6 +99,6 @@ void Object_SetupAllObjects(void)
 
     if (g_Config.gameplay.disable_shotgun) {
         M_DisableObject(O_SHOTGUN_ITEM);
-        M_DisableObject(O_SG_AMMO_ITEM);
+        M_DisableObject(O_SHOTGUN_AMMO_ITEM);
     }
 }

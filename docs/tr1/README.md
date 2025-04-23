@@ -1,6 +1,5 @@
 <p align="center">
-<img alt="TR1X logo" src="/data/tr1/logo-light-theme.png#gh-light-mode-only" width="400"/>
-<img alt="TR1X logo" src="/data/tr1/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
+<img alt="TR1X logo" src="/data/tr1/logo.png" width="400"/>
 </p>
 
 ## Windows / Linux
@@ -372,6 +371,16 @@ less like this (click to expand):
 </pre>
 </details>
 
+## Dev snapshots
+
+To ease the load on our infrastructure, the binary assets such as images and music files are not included in pre-releases and pull request preview builds - they only ship with the full release builds.
+However, you can easily download them manually from these urls:
+
+- https://lostartefacts.dev/aux/tr1x/main.zip (main assets)
+- https://lostartefacts.dev/aux/tr1x/music.zip (music files)
+- https://lostartefacts.dev/aux/tr1x/trub-music.zip (TR: Unfinished Business expansion pack with fan-patched music)
+- https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (TR: Unfinished Business expansion pack in its original form)
+
 ## Improvements over original game
 
 Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for details.
@@ -475,6 +484,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed a potential softlock when killing the Torso boss in Great Pyramid
 - fixed being able to shoot the scion multiple times if save/load is used while it blows up
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
+- fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
 
 #### Cheats
 - added a fly cheat
@@ -607,6 +617,8 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Atlantean Stronghold**: converted track 20 in room 4, track 19 in room 13, track 11 in room 17, track 15 in room 20, and track 12 in room 25 to one shot
     - **The Hive**: converted track 9 in room 8, track 6 in room 18, track 12 in room 30, track 18 in room 31, track 3 in room 32, and track 20 in room 35 to one shot
 - fixed being unable to load a level that contains no sound effect data
+- fixed the panther at times not making a sound when it dies
+- restored Skate Kid's death SFX
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
@@ -620,6 +632,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added per-level customizable water color (with customizable blue component)
 - added per-level customizable fog distance
 - added deadly water feature from TR2+
+- added support for antitriggers, like TR2+
 
 #### Miscellaneous
 - added Linux builds
@@ -636,6 +649,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - expanded maximum texture pages from 32 to 128
 - expanded maximum vertices of a single drawable object from 1500 to unlimited
 - expanded the number of visible enemies from 8 to 32
+- expanded the number of static mesh slots from 50 to 256
 - ported audio decoding library to ffmpeg
 - ported video decoding library to ffmpeg
 - ported image decoding library to ffmpeg

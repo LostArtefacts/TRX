@@ -1,0 +1,43 @@
+#include "game/ui/elements/flash.h"
+
+#include "game/ui/elements/hide.h"
+#include "game/ui/helpers.h"
+
+static const UI_WIDGET_OPS m_Ops = {
+    .measure = UI_MeasureWrapper,
+    .layout = UI_LayoutWrapper,
+    .draw = UI_DrawWrapper,
+};
+
+void UI_Flash_Init(UI_FLASH_STATE *const s, const int32_t rate)
+{
+    s->count = 0;
+    s->rate = rate;
+}
+
+void UI_Flash_Free(UI_FLASH_STATE *const s)
+{
+}
+
+void UI_Flash_Control(UI_FLASH_STATE *const s)
+{
+    s->count -= 2;
+    if (s->count < -s->rate) {
+        s->count = s->rate;
+    }
+}
+
+void UI_BeginFlash(UI_FLASH_STATE *const s)
+{
+    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(UI_FLASH_STATE *));
+    *(UI_FLASH_STATE **)node->data = s;
+    UI_AddChild(node);
+    UI_PushCurrent(node);
+    UI_BeginHide(s->count >= 0);
+}
+
+void UI_EndFlash(void)
+{
+    UI_EndHide();
+    UI_PopCurrent();
+}

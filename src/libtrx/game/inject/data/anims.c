@@ -1,9 +1,11 @@
 #include "debug.h"
 #include "game/anims.h"
 #include "game/inject.h"
+#include "game/objects.h"
 #include "memory.h"
 
 static void M_HandleAnimData(INJECTION_CHUNK chunk);
+static void M_CommandEdits(const INJECTION *injection, int32_t data_count);
 
 static void M_HandleAnimData(const INJECTION_CHUNK chunk)
 {
@@ -90,4 +92,28 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
     }
 }
 
+static void M_CommandEdits(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    const LEVEL_INFO cached_info = Inject_GetCachedInfo();
+    int16_t cmd_idx = cached_info.anims.command_count;
+    for (int32_t i = 0; i < data_count; i++) {
+        const GAME_OBJECT_ID obj_id = VFile_ReadS32(injection->fp);
+        const int32_t anim_idx = VFile_ReadS32(injection->fp);
+        const int32_t num_raw_cmds = VFile_ReadS32(injection->fp);
+        const int32_t num_anim_cmds = VFile_ReadS32(injection->fp);
+
+        const OBJECT *const obj = Object_Get(obj_id);
+        if (!obj->loaded) {
+            continue;
+        }
+
+        ANIM *const anim = Object_GetAnim(obj, anim_idx);
+        anim->command_idx = cmd_idx;
+        anim->num_commands = num_anim_cmds;
+        cmd_idx += num_raw_cmds;
+    }
+}
+
 REGISTER_INJECTOR(ICT_ANIMATION_DATA, M_HandleAnimData)
+REGISTER_INJECT_EDITOR(IDT_ANIM_CMD_EDITS, M_CommandEdits)

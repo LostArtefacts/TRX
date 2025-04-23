@@ -1,0 +1,618 @@
+{
+  "Enums": {
+    "airbar_mode": [
+      "default",
+      "flashing-only",
+      "never",
+      "ps1"
+    ],
+    "healthbar_mode": [
+      "default",
+      "flashing-or-default",
+      "flashing-only",
+      "always",
+      "never",
+      "ps1"
+    ],
+    "enemy_healthbar_mode": [
+      "never",
+      "always",
+      "boss-only"
+    ],
+    "menu_style": [
+      "pc",
+      "ps1"
+    ],
+    "screenshot_format": [
+      "jpg",
+      "png"
+    ],
+    "ui_color": [
+      "gold",
+      "red",
+      "grey",
+      "blue",
+      "silver",
+      "green",
+      "gold2",
+      "blue2",
+      "pink"
+    ],
+    "ui_location": [
+      "top-left",
+      "top-center",
+      "top-right",
+      "bottom-left",
+      "bottom-center",
+      "bottom-right"
+    ],
+    "target_mode": [
+      "full-lock",
+      "semi-lock",
+      "no-lock"
+    ],
+    "underwater_music": [
+      "full",
+      "quiet",
+      "full_no_ambient",
+      "quiet_no_ambient",
+      "none"
+    ],
+    "music_load_condition": [
+      "never",
+      "non-ambient",
+      "always"
+    ],
+    "stat_mode": [
+      "minimal",
+      "detailed",
+      "full"
+    ]
+  },
+  "CategorisedProperties": [
+    {
+      "ID": "controls",
+      "Image": "Graphics/graphic1.jpg",
+      "Properties": [
+        {
+          "Field": "enable_tr3_sidesteps",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_responsive_passport",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_enhanced_look",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_jump_twists",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_swing_cancel",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_tr2_jumping",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_uw_roll",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_tr2_swimming",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_tr2_swim_cancel",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_wading",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_target_change",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "target_mode",
+          "DataType": "Enum",
+          "EnumKey": "target_mode",
+          "DefaultValue": "full-lock"
+        },
+        {
+          "Field": "enable_lean_jumping",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_numeric_keys",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_inverted_look",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "camera_speed",
+          "DataType": "Numeric",
+          "DefaultValue": 5,
+          "MinimumValue": 1,
+          "MaximumValue": 10
+        }
+      ]
+    },
+    {
+      "ID": "gameplay_fixes",
+      "Image": "Graphics/graphic2.jpg",
+      "Properties": [
+        {
+          "Field": "fix_alligator_ai",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_bear_ai",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_descending_glitch",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "fix_bridge_collision",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_floor_data_issues",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_texture_issues",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_animated_sprites",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_qwop_glitch",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "fix_item_duplication_glitch",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "fix_tihocan_secret_sound",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_wall_jump_glitch",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "fix_item_rots",
+          "DataType": "Bool",
+          "DefaultValue": true
+        }
+      ]
+    },
+    {
+      "ID": "gameplay_modifications",
+      "Image": "Graphics/graphic3.jpg",
+      "Properties": [
+        {
+          "Field": "enable_cheats",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_console",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "start_lara_hitpoints",
+          "DataType": "Numeric",
+          "DefaultValue": 1000,
+          "MinimumValue": 1,
+          "MaximumValue": 1000
+        },
+        {
+          "Field": "disable_medpacks",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "disable_healing_between_levels",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "disable_shotgun",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "disable_magnums",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "disable_uzis",
+          "DataType": "Bool",
+          "DefaultValue": false
+        }
+      ]
+    },
+    {
+      "ID": "gameplay_options",
+      "Image": "Graphics/graphic4.jpg",
+      "Properties": [
+        {
+          "Field": "enable_save_crystals",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_walk_to_items",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_auto_item_selection",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_deaths_counter",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_total_stats",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_compass_stats",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "stat_detail_mode",
+          "DataType": "Enum",
+          "EnumKey": "stat_mode",
+          "DefaultValue": "full"
+        },
+        {
+          "Field": "enable_cutscenes",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_demo",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_fmv",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_legal",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_loading_screens",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_buffering",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "disable_trex_collision",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "fix_shotgun_targeting",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "revert_to_pistols",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "maximum_save_slots",
+          "DataType": "Numeric",
+          "DefaultValue": 25,
+          "MinimumValue": 1,
+          "MaximumValue": 1000
+        },
+        {
+          "Field": "enable_enhanced_saves",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "change_pierre_spawn",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "restore_ps1_enemies",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_game_modes",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_timer_in_inventory",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_item_examining",
+          "DataType": "Bool",
+          "DefaultValue": true
+        }
+      ]
+    },
+    {
+      "ID": "graphics",
+      "Image": "Graphics/graphic5.jpg",
+      "Properties": [
+        {
+          "Field": "anisotropy_filter",
+          "DataType": "Numeric",
+          "DefaultValue": 16,
+          "MinimumValue": 1,
+          "DecimalPlaces": 1
+        },
+        {
+          "Field": "fov_value",
+          "DataType": "Numeric",
+          "DefaultValue": 65,
+          "MinimumValue": 30,
+          "MaximumValue": 255
+        },
+        {
+          "Field": "fov_vertical",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "resolution_width",
+          "DataType": "Numeric",
+          "DefaultValue": -1,
+          "MinimumValue": -1
+        },
+        {
+          "Field": "resolution_height",
+          "DataType": "Numeric",
+          "DefaultValue": -1,
+          "MinimumValue": -1
+        },
+        {
+          "Field": "enable_skybox",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_braid",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_3d_pickups",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_pickup_aids",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "enable_ps1_crystals",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_round_shadow",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_gun_lighting",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_shotgun_flash",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "screenshot_format",
+          "DataType": "Enum",
+          "EnumKey": "screenshot_format",
+          "DefaultValue": "jpg"
+        }
+      ]
+    },
+    {
+      "ID": "sound",
+      "Image": "Graphics/graphic6.jpg",
+      "Properties": [
+        {
+          "Field": "music_load_condition",
+          "DataType": "Enum",
+          "EnumKey": "music_load_condition",
+          "DefaultValue": "non-ambient"
+        },
+        {
+          "Field": "load_music_triggers",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_music_in_menu",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_pitched_sounds",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_music_in_inventory",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_secrets_killing_music",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "fix_speeches_killing_music",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_ps_uzi_sfx",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
+          "Field": "underwater_music_mode",
+          "DataType": "Enum",
+          "EnumKey": "underwater_music",
+          "DefaultValue": "full"
+        }
+      ]
+    },
+    {
+      "ID": "ui",
+      "Image": "Graphics/graphic7.jpg",
+      "Properties": [
+        {
+          "Field": "menu_style",
+          "DataType": "Enum",
+          "EnumKey": "menu_style",
+          "DefaultValue": "pc"
+        },
+        {
+          "Field": "healthbar_show_mode",
+          "DataType": "Enum",
+          "EnumKey": "healthbar_mode",
+          "DefaultValue": "flashing-or-default"
+        },
+        {
+          "Field": "healthbar_location",
+          "DataType": "Enum",
+          "EnumKey": "ui_location",
+          "DefaultValue": "top-left"
+        },
+        {
+          "Field": "healthbar_color",
+          "DataType": "Enum",
+          "EnumKey": "ui_color",
+          "DefaultValue": "red"
+        },
+        {
+          "Field": "airbar_show_mode",
+          "DataType": "Enum",
+          "EnumKey": "airbar_mode",
+          "DefaultValue": "default"
+        },
+        {
+          "Field": "airbar_location",
+          "DataType": "Enum",
+          "EnumKey": "ui_location",
+          "DefaultValue": "top-right"
+        },
+        {
+          "Field": "airbar_color",
+          "DataType": "Enum",
+          "EnumKey": "ui_color",
+          "DefaultValue": "blue"
+        },
+        {
+          "Field": "enemy_healthbar_show_mode",
+          "DataType": "Enum",
+          "EnumKey": "enemy_healthbar_mode",
+          "DefaultValue": "always"
+        },
+        {
+          "Field": "enemy_healthbar_location",
+          "DataType": "Enum",
+          "EnumKey": "ui_location",
+          "DefaultValue": "bottom-left"
+        },
+        {
+          "Field": "enemy_healthbar_color",
+          "DataType": "Enum",
+          "EnumKey": "ui_color",
+          "DefaultValue": "grey"
+        },
+        {
+          "Field": "enable_smooth_bars",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_fade_effects",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "enable_exit_fade_effects",
+          "DataType": "Bool",
+          "DefaultValue": true
+        }
+      ]
+    }
+  ]
+}

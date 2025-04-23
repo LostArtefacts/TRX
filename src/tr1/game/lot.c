@@ -16,14 +16,19 @@ static CREATURE *m_BaddieSlots = nullptr;
 void LOT_InitialiseArray(void)
 {
     m_BaddieSlots =
-        GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE), GBUF_CREATURE_DATA);
-    for (int i = 0; i < NUM_SLOTS; i++) {
+        GameBuf_Alloc(LOT_SLOT_COUNT * sizeof(CREATURE), GBUF_CREATURE_DATA);
+    for (int i = 0; i < LOT_SLOT_COUNT; i++) {
         CREATURE *creature = &m_BaddieSlots[i];
         creature->item_num = NO_ITEM;
         creature->lot.node =
             GameBuf_Alloc(sizeof(BOX_NODE) * Box_GetCount(), GBUF_CREATURE_LOT);
     }
     m_SlotsUsed = 0;
+}
+
+CREATURE *LOT_GetBaddieSlot(const int32_t i)
+{
+    return &m_BaddieSlots[i];
 }
 
 void LOT_DisableBaddieAI(int16_t item_num)
@@ -43,8 +48,8 @@ bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
         return true;
     }
 
-    if (m_SlotsUsed < NUM_SLOTS) {
-        for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
+    if (m_SlotsUsed < LOT_SLOT_COUNT) {
+        for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
             CREATURE *creature = &m_BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
                 LOT_InitialiseSlot(item_num, slot);
@@ -64,7 +69,7 @@ bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
     }
 
     int32_t worst_slot = -1;
-    for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
+    for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
         CREATURE *creature = &m_BaddieSlots[slot];
         const ITEM *const item = Item_Get(creature->item_num);
         int32_t x = (item->pos.x - g_Camera.pos.x) >> 8;

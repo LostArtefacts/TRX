@@ -8,10 +8,12 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -114,7 +116,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
     ITEM *best_target = nullptr;
 
     const int16_t max_dist = winfo->target_dist;
-    for (int32_t i = 0; i < NUM_SLOTS; i++) {
+    for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
         const int16_t item_num = g_BaddieSlots[i].item_num;
         if (item_num == NO_ITEM || item_num == g_Lara.item_num) {
             continue;
@@ -205,7 +207,7 @@ int32_t Gun_FireWeapon(
     AMMO_INFO *const ammo = Gun_GetAmmoInfo(weapon_type);
     ASSERT(ammo != nullptr);
 
-    if (ammo == &g_Lara.pistol_ammo || g_SaveGame.bonus_flag) {
+    if (ammo == &g_Lara.pistol_ammo || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         ammo->ammo = 1000;
     }
 
@@ -249,7 +251,7 @@ int32_t Gun_FireWeapon(
         }
     }
 
-    g_SaveGame.current_stats.ammo_used++;
+    Stats_AddAmmoUsed();
 
     GAME_VECTOR start;
     start.pos.x = view_pos.x;
@@ -277,7 +279,7 @@ int32_t Gun_FireWeapon(
             return -1;
         }
     } else {
-        g_SaveGame.current_stats.ammo_hits++;
+        Stats_AddAmmoHits();
         GAME_VECTOR hit_pos;
         hit_pos.pos.x =
             view_pos.x + ((best_dist * g_MatrixPtr->_20) >> W2V_SHIFT);
@@ -291,7 +293,9 @@ int32_t Gun_FireWeapon(
         if (item_to_smash != NO_ITEM) {
             Gun_SmashItem(item_to_smash, weapon_type);
         }
-        Gun_HitTarget(target, &hit_pos, winfo->damage);
+        Gun_HitTarget(
+            target, &hit_pos,
+            winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
 }
@@ -315,7 +319,7 @@ void Gun_HitTarget(
 {
     if (item->hit_points > 0 && item->hit_points <= damage
         && item->object_id != O_DRAGON_FRONT) {
-        g_SaveGame.current_stats.kills++;
+        Stats_AddKill();
     }
     Item_TakeDamage(item, damage, true);
 
@@ -325,13 +329,13 @@ void Gun_HitTarget(
             item->rot.y, item->room_num);
     }
 
-    if (!g_IsMonkAngry
+    if (!Creature_AreAlliesHostile()
         && (item->object_id == O_MONK_1 || item->object_id == O_MONK_2)) {
         CREATURE *const creature = item->data;
         creature->flags += damage;
         if ((creature->flags & 0xFFF) > MONK_FRIENDLY_FIRE_THRESHOLD
             || creature->mood == MOOD_BORED) {
-            g_IsMonkAngry = true;
+            Creature_SetAlliesHostile(true);
         }
     }
 }
@@ -365,7 +369,7 @@ void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const int32_t clip)
 
     switch (weapon_type) {
     case LGT_MAGNUMS:
-        shade = HIGH_LIGHT;
+        shade = SHADE_NEUTRAL;
         y = 215;
         z = 65;
         break;
@@ -396,7 +400,7 @@ void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const int32_t clip)
         return;
 
     default:
-        shade = LOW_LIGHT;
+        shade = SHADE_LOW;
         y = 185;
         z = 40;
         break;

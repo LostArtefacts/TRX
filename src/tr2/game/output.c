@@ -2,18 +2,23 @@
 
 #include "game/clock.h"
 #include "game/inventory_ring.h"
+#include "game/level.h"
 #include "game/random.h"
 #include "game/render/common.h"
 #include "game/render/priv.h"
-#include "game/scaler.h"
 #include "game/shell.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 
+#include <libtrx/benchmark.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/log.h>
+#include <libtrx/memory.h>
+#include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
 typedef enum {
@@ -52,6 +57,7 @@ static NAMED_COLOR m_NamedColors[COLOR_NUMBER_OF] = {
     // clang-format on
 };
 
+static int32_t m_VBufCapacity = 0;
 static int32_t m_TickComp = 0;
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
@@ -62,12 +68,19 @@ static int16_t m_ShadesTable[32];
 static int32_t m_RandomTable[32];
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
 static XYZ_32 m_LsVectorView = {};
+
+static int32_t m_FogEnd = 0;
+static RGB_F m_WaterColor = {};
+
 static bool m_IsWaterEffect = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsShadeEffect = false;
 static int32_t m_WibbleOffset = 0;
+
 static bool m_IsSunsetEnabled = false;
 static int32_t m_SunsetTimer = 0;
+
+static int32_t m_DepthBias = 0;
 
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
@@ -171,18 +184,13 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
             const double persp = g_FltPersp / zv;
             const int32_t depth = zv_int >> W2V_SHIFT;
             vbuf->zv += base_z;
-
-            if (depth < FOG_END) {
-                if (depth > FOG_START) {
-                    shade += depth - FOG_START;
-                }
-                vbuf->rhw = persp * g_FltRhwOPersp;
-            } else {
-                // clip_flags = far_clip;
-                shade = 0x1FFF;
+            if (zv >= Output_GetFarZ()) {
                 vbuf->zv = g_FltFarZ;
-                vbuf->rhw = persp * g_FltRhwOPersp;
             }
+
+            shade += Output_CalcFogShade(depth);
+
+            vbuf->rhw = persp * g_FltRhwOPersp;
 
             double xs = xv * persp + g_FltWinCenterX;
             double ys = yv * persp + g_FltWinCenterY;
@@ -204,7 +212,7 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
             // clip_flags |= (~((uint8_t)(vbuf->zv / 0x155555.p0))) << 8;
         }
 
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         vbuf->g = shade;
         vbuf->clip = clip_flags;
     }
@@ -295,9 +303,11 @@ static bool M_CalcObjectVertices(
             }
 
             const double persp = g_FltPersp / zv;
+            const double persp_biased =
+                g_FltPersp / (zv + (m_DepthBias << W2V_SHIFT));
             vbuf->xs = persp * xv + g_FltWinCenterX;
             vbuf->ys = persp * yv + g_FltWinCenterY;
-            vbuf->rhw = persp * g_FltRhwOPersp;
+            vbuf->rhw = persp_biased * g_FltRhwOPersp;
 
             clip_flags = 0x00;
             if (vbuf->xs < g_FltWinLeft) {
@@ -354,7 +364,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
     if (mesh->num_lights <= 0) {
         for (int32_t i = 0; i < -mesh->num_lights; i++) {
             int16_t shade = m_LsAdder + mesh->lighting.lights[i];
-            CLAMP(shade, 0, 0x1FFF);
+            CLAMP(shade, 0, SHADE_MAX);
             g_PhdVBuf[i].g = shade;
         }
 
@@ -363,7 +373,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
 
     if (m_LsDivider == 0) {
         int16_t shade = m_LsAdder;
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         for (int32_t i = 0; i < mesh->num_lights; i++) {
             g_PhdVBuf[i].g = shade;
         }
@@ -396,7 +406,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
         const XYZ_16 *const normal = &mesh->lighting.normals[i];
         int16_t shade = m_LsAdder
             + ((xv * normal->x + yv * normal->y + zv * normal->z) >> 16);
-        CLAMP(shade, 0, 0x1FFF);
+        CLAMP(shade, 0, SHADE_MAX);
         g_PhdVBuf[i].g = shade;
     }
 }
@@ -406,6 +416,75 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
     for (int32_t i = 0; i < ABS(mesh->num_lights); i++) {
         g_PhdVBuf[i].g = 0xFFF;
     }
+}
+
+static void M_ReserveVertexBuffer(void)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    int32_t max_vertices = 1500;
+    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+        const OBJECT *const obj = Object_Get(i);
+        if (!obj->loaded) {
+            continue;
+        }
+
+        for (int32_t j = 0; j < obj->mesh_count; j++) {
+            const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + j);
+            max_vertices = MAX(max_vertices, mesh->num_vertices);
+        }
+    }
+
+    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_3D; i++) {
+        const STATIC_OBJECT_3D *obj = Object_Get3DStatic(i);
+        if (!obj->loaded) {
+            continue;
+        }
+
+        const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
+        max_vertices = MAX(max_vertices, mesh->num_vertices);
+    }
+
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        max_vertices = MAX(max_vertices, room->mesh.num_vertices);
+    }
+
+    Benchmark_End(&benchmark, nullptr);
+    if (max_vertices >= m_VBufCapacity) {
+        g_PhdVBuf = Memory_Realloc(g_PhdVBuf, max_vertices * sizeof(PHD_VBUF));
+        m_VBufCapacity = max_vertices;
+    }
+}
+
+void Output_ApplyLevelSettings(void)
+{
+    Output_SetWaterColor(Level_GetWaterColor());
+    Output_SetFogStart(Level_GetFogStart() * WALL_L);
+    Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
+    Viewport_Reset();
+}
+
+void Output_ObserveLevelLoad(void)
+{
+    M_ReserveVertexBuffer();
+    Output_ApplyLevelSettings();
+    for (int32_t i = 0; i < COLOR_NUMBER_OF; i++) {
+        m_NamedColors[i].palette_index =
+            Output_FindColor8(m_NamedColors[i].rgb);
+    }
+}
+
+void Output_ObserveLevelUnload(void)
+{
+    Output_InitialiseTexturePages(0, true);
+    Output_InitialiseObjectTextures(0);
+    if (Output_GetBackgroundType() == BK_OBJECT) {
+        Output_UnloadBackground();
+    }
+}
+
+void Output_ObserveRoomFlip(const ROOM *room)
+{
 }
 
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
@@ -590,14 +669,14 @@ void Output_DrawSprite(
 
     if (flags & SPRF_SHADE) {
         const int32_t depth = zv >> W2V_SHIFT;
-        if (depth > FOG_START) {
-            shade += depth - FOG_START;
-            if (shade > 0x1FFF) {
+        if (depth > Output_GetFogStart()) {
+            shade += depth - Output_GetFogStart();
+            if (shade > SHADE_MAX) {
                 return;
             }
         }
     } else {
-        shade = 0x1000;
+        shade = SHADE_NEUTRAL;
     }
 
     Render_InsertSprite(zv, x0, y0, x1, y1, sprite_idx, shade);
@@ -660,14 +739,9 @@ BACKGROUND_TYPE Output_GetBackgroundType(void)
     return m_BackgroundType;
 }
 
-bool Output_LoadBackgroundFromFile(const char *const file_name)
+bool Output_LoadBackgroundFromImage(const IMAGE *const image)
 {
-    IMAGE *const image = Image_CreateFromFile(file_name);
-    if (image == nullptr) {
-        return false;
-    }
     Render_LoadBackgroundFromImage(image);
-    Image_Free(image);
     m_BackgroundType = BK_IMAGE;
     return true;
 }
@@ -696,6 +770,7 @@ void Output_UnloadBackground(void)
 {
     Render_UnloadBackground();
     m_BackgroundType = BK_TRANSPARENT;
+    Output_ClearLastBackgroundPath();
 }
 
 void Output_InsertBackPolygon(
@@ -825,7 +900,7 @@ void Output_CalculateWibbleTable(void)
     for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
         const int32_t sine = Math_Sin(i * DEG_360 / WIBBLE_SIZE);
         m_WibbleTable[i] = (sine * MAX_WIBBLE) >> W2V_SHIFT;
-        m_ShadesTable[i] = (sine * MAX_SHADE) >> W2V_SHIFT;
+        m_ShadesTable[i] = (sine * SHADE_CAUSTICS) >> W2V_SHIFT;
         m_RandomTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
         for (int32_t j = 0; j < WIBBLE_SIZE; j++) {
             m_RoomLightTables[i].table[j] = (j - (WIBBLE_SIZE / 2)) * i
@@ -898,6 +973,41 @@ int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 
     // fully on screen
     return 1;
+}
+
+int32_t Output_GetNearZ(void)
+{
+    return 20 << W2V_SHIFT;
+}
+
+int32_t Output_GetFarZ(void)
+{
+    return Output_GetFogEnd() << W2V_SHIFT;
+}
+
+void Output_SetWaterColor(const RGB_888 color)
+{
+    m_WaterColor.r = color.r / 255.0f;
+    m_WaterColor.g = color.g / 255.0f;
+    m_WaterColor.b = color.b / 255.0f;
+}
+
+RGB_F Output_GetTint(void)
+{
+    if (Output_IsShadeEffect()) {
+        return m_WaterColor;
+    }
+    return (RGB_F) { 1.0f, 1.0f, 1.0f };
+}
+
+int32_t Output_GetFogEnd(void)
+{
+    return m_FogEnd;
+}
+
+void Output_SetFogEnd(const int32_t dist)
+{
+    m_FogEnd = dist;
 }
 
 void Output_SetupBelowWater(const bool is_underwater)
@@ -974,13 +1084,15 @@ void Output_SetLightDivider(const int32_t divider)
 
 int32_t Output_CalcFogShade(const int32_t depth)
 {
-    if (depth > FOG_START) {
-        return depth - FOG_START;
+    const int32_t fog_start = Output_GetFogStart();
+    const int32_t fog_end = Output_GetFogEnd();
+    if (depth < fog_start) {
+        return 0;
     }
-    if (depth > FOG_END) {
-        return 0x1FFF;
+    if (depth >= fog_end) {
+        return SHADE_MAX;
     }
-    return 0;
+    return (depth - fog_start) * SHADE_MAX / (fog_end - fog_start);
 }
 
 int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
@@ -1000,10 +1112,56 @@ void Output_LightRoomVertices(const ROOM *const room)
     }
 }
 
-void Output_InitialiseNamedColors(void)
+void Output_DrawTextOutline(
+    const UI_STYLE ui_style, const int32_t x, const int32_t y,
+    const int32_t width, const int32_t height, const int32_t z,
+    const TEXT_STYLE text_style)
 {
-    for (int32_t i = 0; i < COLOR_NUMBER_OF; i++) {
-        m_NamedColors[i].palette_index =
-            Output_FindColor8(m_NamedColors[i].rgb);
-    }
+    const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
+
+    const int32_t offset = 4;
+    const int32_t x0 = x + offset;
+    const int32_t y0 = y + offset;
+    const int32_t x1 = x0 + width - offset * 2;
+    const int32_t y1 = y0 + height - offset * 2;
+    const int32_t scale_h = TEXT_BASE_SCALE;
+    const int32_t scale_v = TEXT_BASE_SCALE;
+
+    Output_DrawScreenSprite(
+        x0, y0, z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x1, y0, z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x1, y1, z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x0, y1, z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL, 0);
+
+    int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
+    int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
+
+    Output_DrawScreenSprite(
+        x0, y0, z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x1, y0, z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x0, y1, z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(
+        x0, y0, z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL, 0);
+}
+
+void Output_DrawTextBackground(
+    const UI_STYLE ui_style, const int32_t x, const int32_t y, const int32_t w,
+    const int32_t h, const int32_t z, const TEXT_STYLE text_style)
+{
+    Output_DrawScreenFBox(x, y, z, w, h, 0, nullptr, 0);
+}
+
+int32_t Output_GetDepthBias(void)
+{
+    return m_DepthBias;
+}
+
+void Output_SetDepthBias(const int32_t bias)
+{
+    m_DepthBias = bias;
 }

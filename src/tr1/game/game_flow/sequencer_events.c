@@ -88,8 +88,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             // select level feature
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
-                Savegame_LoadOnlyResumeInfo(
-                    g_GameInfo.select_save_slot, &g_GameInfo);
+                Savegame_LoadOnlyResumeInfo(g_GameInfo.select_save_slot);
                 const GF_LEVEL *tmp_level = level;
                 while (tmp_level != nullptr) {
                     Savegame_ResetCurrentInfo(tmp_level);
@@ -219,7 +218,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
         g_Config.profile.new_game_plus_unlock = true;
         Config_Write();
     }
-    g_GameInfo.bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
+    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
     // play specific level
     if (g_GameInfo.select_level_num != -1) {
@@ -242,7 +241,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     Savegame_CarryCurrentInfoToNextLevel(current_level, next_level);
     Savegame_ApplyLogicToCurrentInfo(next_level);
 
-    if (next_level->type == GFL_BONUS && !g_GameInfo.bonus_level_unlock) {
+    if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {
@@ -307,7 +306,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem)
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
 {
     if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED
-        && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+        && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
         g_GameInfo.remove_guns = true;
     }
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -316,7 +315,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo)
 {
     if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED
-        && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+        && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
         g_GameInfo.remove_ammo = true;
     }
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -369,7 +368,7 @@ void GF_PreSequenceHook(
     g_GameInfo.remove_ammo = false;
     g_GameInfo.remove_medipacks = false;
     if (seq_ctx == GFSC_SAVED) {
-        g_GameInfo.bonus_flag = false;
+        Game_SetBonusFlag(GBF_NONE);
     }
 }
 
@@ -387,25 +386,6 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     default:
         return seq_ctx;
     }
-}
-
-bool GF_ShouldSkipSequenceEvent(
-    const GF_LEVEL *const level, const GF_SEQUENCE_EVENT *const event)
-{
-    // Skip cinematic levels
-    if (!g_Config.gameplay.enable_cine && level->type == GFL_CUTSCENE) {
-        switch (event->type) {
-        case GFS_EXIT_TO_TITLE:
-        case GFS_LEVEL_COMPLETE:
-        case GFS_PLAY_FMV:
-        case GFS_LEVEL_STATS:
-        case GFS_TOTAL_STATS:
-            return false;
-        default:
-            return true;
-        }
-    }
-    return false;
 }
 
 GF_EVENT_QUEUE_TYPE GF_ShouldDeferSequenceEvent(

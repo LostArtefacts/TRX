@@ -37,7 +37,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const int16_t cutscene_num = (int16_t)(intptr_t)event->data;
-    if (seq_ctx != GFSC_SAVED) {
+    if (seq_ctx != GFSC_SAVED && g_Config.gameplay.enable_cutscenes) {
         gf_cmd = GF_DoCutsceneSequence(cutscene_num);
         if (gf_cmd.action == GF_LEVEL_COMPLETE) {
             gf_cmd.action = GF_NOOP;
@@ -50,13 +50,18 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const int16_t fmv_id = (int16_t)(intptr_t)event->data;
-    if (seq_ctx != GFSC_SAVED) {
-        if (fmv_id < 0 || fmv_id >= g_GameFlow.fmv_count) {
-            LOG_ERROR("Invalid FMV number: %d", fmv_id);
-        } else {
-            FMV_Play(g_GameFlow.fmvs[fmv_id].path);
-        }
+    if (seq_ctx == GFSC_SAVED) {
+        return gf_cmd;
     }
+    if (fmv_id < 0 || fmv_id >= g_GameFlow.fmv_count) {
+        LOG_ERROR("Invalid FMV number: %d", fmv_id);
+        return gf_cmd;
+    }
+    const GF_FMV *const fmv = &g_GameFlow.fmvs[fmv_id];
+    if (fmv->is_legal && !g_Config.gameplay.enable_legal) {
+        return gf_cmd;
+    }
+    FMV_Play(fmv->path);
     return gf_cmd;
 }
 
@@ -73,14 +78,11 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
         return gf_cmd;
     }
 
-#if TR_VERSION == 1
-    if (Game_GetCurrentLevel() == nullptr
-        && !g_Config.gameplay.enable_eidos_logo) {
+    GF_DISPLAY_PICTURE_DATA *data = event->data;
+    if (data->is_legal && !g_Config.gameplay.enable_legal) {
         return gf_cmd;
     }
-#endif
 
-    GF_DISPLAY_PICTURE_DATA *data = event->data;
     PHASE *const phase = Phase_Picture_Create((PHASE_PICTURE_ARGS) {
         .file_name = data->path,
         .display_time = data->display_time,

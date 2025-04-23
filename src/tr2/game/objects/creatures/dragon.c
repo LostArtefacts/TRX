@@ -2,18 +2,19 @@
 #include "game/creature.h"
 #include "game/input.h"
 #include "game/lara/control.h"
-#include "game/lara/misc.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 
 // clang-format off
@@ -81,7 +82,7 @@ static void M_MarkDragonDead(const ITEM *const dragon_back_item)
     const ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
     CREATURE *const creature = dragon_front_item->data;
     creature->flags = -1;
-    g_SaveGame.current_stats.kills++;
+    Stats_AddKill();
 }
 
 static void M_PushLaraAway(
@@ -184,7 +185,7 @@ static void M_SetupFront(OBJECT *const obj)
     obj->save_flags = 1;
     obj->save_anim = 1;
 
-    Object_GetBone(obj, 10)->rot_z = true;
+    Object_GetBone(obj, 10)->rot.z = true;
 }
 
 static void M_SetupBack(OBJECT *const obj)
@@ -228,7 +229,7 @@ static void M_Collision(
     }
 
     if (item->current_anim_state != DRAGON_STATE_DEATH) {
-        Lara_Push(item, lara_item, coll, true, false);
+        Lara_Push(item, coll, true, false);
         return;
     }
 
@@ -239,7 +240,7 @@ static void M_Collision(
     const int32_t side_shift = (cy * dz + sy * dx) >> W2V_SHIFT;
 
     if (side_shift <= DRAGON_L_COL || side_shift >= DRAGON_R_COL) {
-        Lara_Push(item, lara_item, coll, true, false);
+        Lara_Push(item, coll, true, false);
         return;
     }
 

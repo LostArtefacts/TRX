@@ -11,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
@@ -27,6 +28,7 @@
         }                                                                      \
     } while (0)
 
+static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};
 
 void Item_Control(void)
@@ -92,7 +94,7 @@ void Item_Initialise(int16_t item_num)
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     item->floor = sector->floor.height;
 
-    if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
         item->hit_points *= 2;
     }
     if (obj->initialise_func) {
@@ -148,7 +150,7 @@ int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
         spawn->rot = item->rot;
         Item_Initialise(spawn_num);
         spawn->status = IS_INACTIVE;
-        spawn->shade.value_1 = HIGH_LIGHT;
+        spawn->shade.value_1 = SHADE_NEUTRAL;
     }
     return spawn_num;
 }
@@ -192,30 +194,6 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 {
     return ABS(x) < range && ABS(y) < range && ABS(z) < range
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
-}
-
-bool Item_TestBoundsCollide(ITEM *src_item, ITEM *dst_item, int32_t radius)
-{
-    const BOUNDS_16 *const src_bounds = &Item_GetBestFrame(src_item)->bounds;
-    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrame(dst_item)->bounds;
-    if (dst_item->pos.y + dst_bounds->max.y
-            <= src_item->pos.y + src_bounds->min.y
-        || dst_item->pos.y + dst_bounds->min.y
-            >= src_item->pos.y + src_bounds->max.y) {
-        return false;
-    }
-
-    const int32_t c = Math_Cos(dst_item->rot.y);
-    const int32_t s = Math_Sin(dst_item->rot.y);
-    const int32_t x = src_item->pos.x - dst_item->pos.x;
-    const int32_t z = src_item->pos.z - dst_item->pos.z;
-    const int32_t rx = (c * x - s * z) >> W2V_SHIFT;
-    const int32_t rz = (c * z + s * x) >> W2V_SHIFT;
-    const int32_t min_x = dst_bounds->min.x - radius;
-    const int32_t max_x = dst_bounds->max.x + radius;
-    const int32_t min_z = dst_bounds->min.z - radius;
-    const int32_t max_z = dst_bounds->max.z + radius;
-    return rx >= min_x && rx <= max_x && rz >= min_z && rz <= max_z;
 }
 
 bool Item_TestPosition(
@@ -383,55 +361,29 @@ void Item_ShiftCol(ITEM *item, COLL_INFO *coll)
     coll->shift.z = 0;
 }
 
-bool Item_IsTriggerActive(ITEM *item)
-{
-    bool ok = !(item->flags & IF_REVERSE);
-
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return !ok;
-    }
-
-    if (!item->timer) {
-        return ok;
-    }
-
-    if (item->timer == -1) {
-        return !ok;
-    }
-
-    item->timer--;
-
-    if (!item->timer) {
-        item->timer = -1;
-    }
-
-    return ok;
-}
-
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
 {
-    ANIM_FRAME *frmptr[2];
+    ANIM_FRAME *frames[2];
     int32_t rate;
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (frac <= rate / 2) {
-        return frmptr[0];
-    } else {
-        return frmptr[1];
-    }
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    return frames[(frac > rate / 2) ? 1 : 0];
 }
 
 const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
 {
     int32_t rate;
-    ANIM_FRAME *frmptr[2];
-
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (!frac) {
-        return &frmptr[0]->bounds;
+    ANIM_FRAME *frames[2];
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    if (frames[0] == nullptr) {
+        return &m_NullBounds;
     }
 
-    const BOUNDS_16 *const a = &frmptr[0]->bounds;
-    const BOUNDS_16 *const b = &frmptr[1]->bounds;
+    if (frac == 0) {
+        return &frames[0]->bounds;
+    }
+
+    const BOUNDS_16 *const a = &frames[0]->bounds;
+    const BOUNDS_16 *const b = &frames[1]->bounds;
     BOUNDS_16 *const result = &m_InterpolatedBounds;
 
     result->min.x = a->min.x + (((b->min.x - a->min.x) * frac) / rate);
@@ -443,9 +395,13 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
     return result;
 }
 
-int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
+int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);
+    if (anim->frame_ptr == nullptr) {
+        frames[0] = nullptr;
+        return 0;
+    }
 
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
@@ -453,8 +409,8 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
     const int32_t second_key_frame_num = first_key_frame_num + 1;
 
-    frmptr[0] = &anim->frame_ptr[first_key_frame_num];
-    frmptr[1] = &anim->frame_ptr[second_key_frame_num];
+    frames[0] = &anim->frame_ptr[first_key_frame_num];
+    frames[1] = &anim->frame_ptr[second_key_frame_num];
 
     const int32_t key_frame_shift = cur_frame_num % key_frame_span;
     const int32_t numerator = key_frame_shift;
@@ -503,12 +459,6 @@ int32_t Item_Explode(int16_t item_num, int32_t mesh_bits, int16_t damage)
     Matrix_TranslateRel16(frame->offset);
     Matrix_Rot16(frame->mesh_rots[0]);
 
-#if 0
-    // XXX: present in OG, removed by GLrage on the grounds that it sometimes
-    // crashes.
-    int16_t *extra_rotation = (int16_t*)item->data;
-#endif
-
     int32_t bit = 1;
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
         int16_t effect_num = Effect_Create(item->room_num);
@@ -546,17 +496,10 @@ int32_t Item_Explode(int16_t item_num, int32_t mesh_bits, int16_t damage)
         Matrix_Rot16(frame->mesh_rots[i]);
 
 #if 0
-    if (extra_rotation) {
-        if (bone->rot_y) {
-            Matrix_RotY(*extra_rotation++);
-        }
-        if (bone->rot_x) {
-            Matrix_RotX(*extra_rotation++);
-        }
-        if (bone->rot_z) {
-            Matrix_RotZ(*extra_rotation++);
-        }
-    }
+        // XXX: present in OG, removed by GLrage on the grounds that it
+        // sometimes crashes.
+        const int16_t *extra_rotation = (int16_t *)item->data;
+        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
 #endif
 
         bit <<= 1;

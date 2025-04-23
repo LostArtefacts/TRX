@@ -4,7 +4,7 @@
 #include "../collision.h"
 #include "../items/types.h"
 #include "../rooms/enum.h"
-#include "../savegame.h"
+#include "../savegame/enum.h"
 #include "../types.h"
 
 #include <stdint.h>
@@ -33,7 +33,9 @@ typedef struct {
     FACE3 *tex_face3s;
     FACE4 *flat_face4s;
     FACE3 *flat_face3s;
+
     bool enable_reflections;
+    bool disable_lighting;
 } OBJECT_MESH;
 
 #if TR_VERSION == 1
@@ -76,6 +78,7 @@ typedef struct OBJECT {
     int16_t shadow_size;
     int16_t smartness;
     bool enable_interpolation;
+    XYZ_BOOL base_rot;
 
     union {
         uint16_t flags;

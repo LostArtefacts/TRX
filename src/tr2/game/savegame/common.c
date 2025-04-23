@@ -1,88 +1,133 @@
-#include "decomp/savegame.h"
+#include "game/game.h"
 #include "game/game_flow.h"
+#include "game/game_string.h"
+#include "game/savegame.h"
+#include "global/types_decomp.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
-#include <libtrx/enum_map.h>
-#include <libtrx/game/savegame.h>
-#include <libtrx/log.h>
-#include <libtrx/memory.h>
+#include <libtrx/game/gun/const.h>
+#include <libtrx/utils.h>
 
-static STATS_COMMON *m_DefaultStats = nullptr;
-
-void Savegame_Init(void)
-{
-    g_SaveGame.start = Memory_Alloc(
-        sizeof(START_INFO)
-        * (GF_GetLevelTable(GFLT_MAIN)->count
-           + GF_GetLevelTable(GFLT_DEMOS)->count));
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        START_INFO *const resume_info =
-            Savegame_GetCurrentInfo(&level_table->levels[i]);
-        resume_info->available = 1;
-        resume_info->has_pistols = 1;
-        resume_info->pistol_ammo = 1000;
-        resume_info->gun_status = LGS_ARMLESS;
-        resume_info->gun_type = LGT_PISTOLS;
-    }
-}
-
-void Savegame_Shutdown(void)
-{
-    Memory_FreePointer(&g_SaveGame.start);
-    Memory_FreePointer(&m_DefaultStats);
-}
+// TODO: make configurable
+#define MAX_SAVE_SLOTS MAX_REQUESTER_ITEMS
 
 int32_t Savegame_GetSlotCount(void)
 {
     return MAX_SAVE_SLOTS;
 }
 
-bool Savegame_IsSlotFree(const int32_t slot_idx)
+void Savegame_HighlightNewestSlot(void)
 {
-    return g_SavedLevels[slot_idx] == 0;
 }
 
-bool Savegame_Save(const int32_t slot_idx)
+void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 {
-    CreateSaveGameInfo();
-    S_SaveGame(slot_idx);
-    GetSavedGamesList(&g_LoadGameRequester);
-    return true;
-}
-
-START_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
-{
-    ASSERT(g_SaveGame.start != nullptr);
-    ASSERT(level != nullptr);
-    if (GF_GetLevelTableType(level->type) == GFLT_MAIN) {
-        return &g_SaveGame.start[level->num];
-    } else if (level->type == GFL_DEMO) {
-        return &g_SaveGame.start[GF_GetLevelTable(GFLT_MAIN)->count];
+    RESUME_INFO *resume = Savegame_GetCurrentInfo(level);
+    if (resume == nullptr) {
+        return;
     }
-    LOG_WARNING(
-        "Warning: unable to get resume info for level %d (type=%s)", level->num,
-        ENUM_MAP_TO_STRING(GF_LEVEL_TYPE, level->type));
-    return nullptr;
-}
 
-void Savegame_SetDefaultStats(
-    const GF_LEVEL *const level, const STATS_COMMON stats)
-{
-    if (m_DefaultStats == nullptr) {
-        m_DefaultStats = Memory_Alloc(
-            sizeof(STATS_COMMON) * GF_GetLevelTable(GFLT_MAIN)->count);
-    }
-    m_DefaultStats[level->num] = stats;
-}
+    resume->flags.has_pistols = 1;
+    resume->equipped_gun_type = LGT_PISTOLS;
+    resume->pistol_ammo = 1000;
 
-STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *const level)
-{
-    if (m_DefaultStats == nullptr
-        || (level->type != GFL_NORMAL && level->type != GFL_BONUS)) {
-        return (STATS_COMMON) {};
+    if (level == GF_GetGymLevel()) {
+        resume->flags.available = 1;
+
+        resume->flags.has_pistols = 0;
+        resume->flags.has_shotgun = 0;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_harpoon = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
+
+        resume->pistol_ammo = 0;
+        resume->shotgun_ammo = 0;
+        resume->magnum_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->harpoon_ammo = 0;
+        resume->m16_ammo = 0;
+        resume->grenade_ammo = 0;
+
+        resume->flares = 0;
+        resume->large_medipacks = 0;
+        resume->small_medipacks = 0;
+        resume->equipped_gun_type = LGT_UNARMED;
+        resume->gun_status = LGS_ARMLESS;
+    } else if (level == GF_GetFirstLevel()) {
+        resume->flags.available = 1;
+
+        resume->flags.has_pistols = 1;
+        resume->flags.has_shotgun = 1;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_harpoon = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
+
+        resume->shotgun_ammo = 2 * SHOTGUN_AMMO_CLIP;
+        resume->magnum_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->harpoon_ammo = 0;
+        resume->m16_ammo = 0;
+        resume->grenade_ammo = 0;
+
+        resume->flares = 2;
+        resume->small_medipacks = 1;
+        resume->large_medipacks = 1;
+        resume->gun_status = LGS_ARMLESS;
     }
-    return m_DefaultStats[level->num];
+
+    if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
+        resume->flags.has_pistols = 1;
+        resume->flags.has_shotgun = 1;
+        resume->flags.has_magnums = 1;
+        resume->flags.has_uzis = 1;
+        resume->flags.has_grenade = 1;
+        resume->flags.has_harpoon = 1;
+        resume->flags.has_m16 = 1;
+        resume->flags.has_grenade = 1;
+
+        resume->shotgun_ammo = 10000;
+        resume->magnum_ammo = 10000;
+        resume->uzi_ammo = 10000;
+        resume->harpoon_ammo = 10000;
+        resume->m16_ammo = 10000;
+        resume->grenade_ammo = 10000;
+
+        resume->flares = -1;
+        resume->equipped_gun_type = LGT_GRENADE;
+    }
+
+    if (g_GF_RemoveWeapons) {
+        resume->flags.has_pistols = 0;
+        resume->flags.has_magnums = 0;
+        resume->flags.has_uzis = 0;
+        resume->flags.has_shotgun = 0;
+        resume->flags.has_m16 = 0;
+        resume->flags.has_grenade = 0;
+        resume->flags.has_harpoon = 0;
+        resume->equipped_gun_type = LGT_UNARMED;
+        resume->gun_status = LGS_ARMLESS;
+        g_GF_RemoveWeapons = false;
+    }
+
+    if (g_GF_RemoveAmmo) {
+        resume->m16_ammo = 0;
+        resume->grenade_ammo = 0;
+        resume->harpoon_ammo = 0;
+        resume->shotgun_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->magnum_ammo = 0;
+        resume->pistol_ammo = 0;
+        resume->flares = 0;
+        resume->large_medipacks = 0;
+        resume->small_medipacks = 0;
+        g_GF_RemoveAmmo = false;
+    }
+
+    const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
+    resume->stats.max_secret_count = default_stats.max_secret_count;
 }

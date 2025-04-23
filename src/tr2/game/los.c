@@ -253,7 +253,7 @@ int32_t LOS_ClipTarget(
     return 1;
 }
 
-int32_t LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
+bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     int32_t los1;
     int32_t los2;
@@ -270,7 +270,7 @@ int32_t LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
     }
 
     if (!los2) {
-        return 0;
+        return false;
     }
 
     if (dx == 0 && dz == 0) {
@@ -281,12 +281,12 @@ int32_t LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
         Room_GetSector(target->x, target->y, target->z, &target->room_num);
 
     if (!LOS_ClipTarget(start, target, sector)) {
-        return 0;
+        return false;
     }
     if (los1 == 1 && los2 == 1) {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 
 int32_t LOS_CheckSmashable(

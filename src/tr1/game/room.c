@@ -26,7 +26,8 @@ static bool M_TestLava(const ITEM *const item);
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
-    if (track == MX_UNUSED_0 && trigger->type == TT_ANTIPAD) {
+    if (track == MX_UNUSED_0
+        && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER)) {
         Music_Stop();
         return;
     }
@@ -92,7 +93,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 
     if (trigger->type == TT_SWITCH) {
         flags ^= trigger->mask;
-    } else if (trigger->type == TT_ANTIPAD) {
+    } else if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
         flags &= -1 - trigger->mask;
     } else if (trigger->mask) {
         flags |= trigger->mask;
@@ -220,7 +221,7 @@ SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
     return sector;
 }
 
-int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
+int32_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     const ROOM *room = Room_Get(room_num);
 
@@ -404,9 +405,6 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         }
     } else {
         switch (trigger->type) {
-        case TT_TRIGGER:
-            break;
-
         case TT_SWITCH: {
             if (!Switch_Trigger(trigger->item_index, trigger->timer)) {
                 return;
@@ -446,6 +444,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 return;
             }
             break;
+
+        default:
+            break;
         }
     }
 
@@ -466,7 +467,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
             if (trigger->type == TT_SWITCH) {
                 item->flags ^= trigger->mask;
-            } else if (trigger->type == TT_ANTIPAD) {
+            } else if (
+                trigger->type == TT_ANTIPAD
+                || trigger->type == TT_ANTITRIGGER) {
                 item->flags &= -1 - trigger->mask;
             } else if (trigger->mask) {
                 item->flags |= trigger->mask;

@@ -130,31 +130,42 @@ void Shell_ExitSystemFmt(const char *fmt, ...)
     Memory_FreePointer(&message);
 }
 
-int32_t Shell_GetCurrentDisplayWidth(void)
+bool Shell_IsFullscreen(void)
 {
-    SDL_DisplayMode dm;
-    SDL_GetCurrentDisplayMode(0, &dm);
-    return dm.w;
-}
-
-int32_t Shell_GetCurrentDisplayHeight(void)
-{
-    SDL_DisplayMode dm;
-    SDL_GetCurrentDisplayMode(0, &dm);
-    return dm.h;
-}
-
-void Shell_GetWindowSize(int32_t *const out_width, int32_t *const out_height)
-{
-    ASSERT(out_width != nullptr);
-    ASSERT(out_height != nullptr);
     SDL_Window *const window = Shell_GetWindow();
-    if (window == nullptr) {
-        *out_width = -1;
-        *out_height = -1;
-    } else {
-        SDL_GetWindowSize(window, out_width, out_height);
+    ASSERT(window != nullptr);
+    const Uint32 flags = SDL_GetWindowFlags(window);
+    return (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
+}
+
+SHELL_SIZE Shell_GetWindowSize(void)
+{
+    SDL_Window *const window = Shell_GetWindow();
+    SHELL_SIZE result = { .w = -1, .h = -1 };
+    if (window != nullptr) {
+        SDL_GetWindowSize(window, &result.w, &result.h);
     }
+    return result;
+}
+
+SHELL_SIZE Shell_GetCurrentSize(void)
+{
+    return Shell_IsFullscreen() ? Shell_GetCurrentDisplaySize()
+                                : Shell_GetWindowSize();
+}
+
+SHELL_SIZE Shell_GetCurrentDisplaySize(void)
+{
+    int32_t display_idx = 0;
+    SDL_Window *const window = Shell_GetWindow();
+    if (window != nullptr) {
+        display_idx = SDL_GetWindowDisplayIndex(window);
+    }
+    SDL_DisplayMode dm;
+    if (SDL_GetCurrentDisplayMode(display_idx, &dm) == 0) {
+        return (SHELL_SIZE) { .w = dm.w, .h = dm.h };
+    }
+    return (SHELL_SIZE) { .w = -1, .h = -1 };
 }
 
 void Shell_ScheduleExit(void)

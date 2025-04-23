@@ -59,7 +59,12 @@ static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
     ctx->packet = nullptr;
 
     char *full_path = File_GetFullPath(path);
-    int32_t error_code =
+    int32_t error_code = 0;
+    if (full_path == nullptr) {
+        error_code = AVERROR(ENOENT);
+        goto finish;
+    }
+    error_code =
         avformat_open_input(&ctx->format_ctx, full_path, nullptr, nullptr);
     Memory_FreePointer(&full_path);
 

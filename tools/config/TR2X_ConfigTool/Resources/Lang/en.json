@@ -1,0 +1,123 @@
+{
+  "Controls": {
+    "window_title_main": "TR2X Config Tool",
+    "command_launch_gold": "Launch Golden Mask",
+    "file_dialog_filter": "TR2X Config Files",
+    "window_title_about": "About TR2X Config Tool",
+    "label_about_details": "Visit the TR2X GitHub page for further information."
+  },
+  "Properties": {
+    "enable_tr3_sidesteps": {
+      "Title": "Enhanced sidesteps",
+      "Description": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work."
+    },
+    "enable_responsive_passport": {
+      "Title": "Enable more responsive passport",
+      "Description": "Disables blocking user input when passport flips pages, scheduling the page flips instead."
+    },
+    "enable_3d_pickups": {
+      "Title": "3D pickups",
+      "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."
+    },
+    "enable_cheats": {
+      "Title": "Cheats",
+      "Description": "Enables various cheats:\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable DOZY cheat (swimming midair).\n     - WALK key: exit DOZY.\n     - GUN key: open the closest door (doesn't work in certain places)."
+    },
+    "enable_console": {
+      "Title": "Console",
+      "Description": "Enables the developer console."
+    },
+    "enable_fmv": {
+      "Title": "Enable FMVs",
+      "Description": "Enables FMVs playing."
+    },
+    "enable_game_modes": {
+      "Title": "Enable game modes",
+      "Description": "Allows new game plus options to be selected from the new game passport menu.\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG."
+    },
+    "fix_m16_accuracy": {
+      "Title": "Fix M16 accuracy",
+      "Description": "Fixes the accuracy of the M16 while Lara is running."
+    },
+    "fix_item_duplication_glitch": {
+      "Title": "Fix item duplication glitch",
+      "Description": "Fixes the ability to duplicate usage of key items in the inventory."
+    },
+    "fix_qwop_glitch": {
+      "Title": "Fix QWOP glitch",
+      "Description": "Fixes Lara entering the QWOP animation."
+    },
+    "fix_step_glitch": {
+      "Title": "Fix step glitch",
+      "Description": "Fixes Lara sometimes being pushed into walls adjacent to steps when running up them in a specific way."
+    },
+    "fix_free_flare_glitch": {
+      "Title": "Fix free flare glitch",
+      "Description": "Fixes the ability to spawn a free flare when pressing the flare input while picking up any item."
+    },
+    "fix_pickup_drift_glitch": {
+      "Title": "Fix underwater pickup glitch",
+      "Description": "Fixes Lara sometimes drifting when collecting underwater items, which can push her into walls."
+    },
+    "fix_flare_throw_priority": {
+      "Title": "Fix flare throwing priority",
+      "Description": "Fixes Lara prioritising throwing a spent flare while in mid-air, which can lead to being unable to grab ledges."
+    },
+    "fix_walk_run_jump": {
+      "Title": "Fix walk-run-jump breaking",
+      "Description": "Fixes Lara at times not being able to jump immediately after going from her walking to running animation."
+    },
+    "fix_bridge_collision": {
+      "Title": "Fix bridge collision",
+      "Description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground."
+    },
+    "fix_floor_data_issues": {
+      "Title": "Fix floor data issues",
+      "Description": "Fixes original issues with floor data/triggers."
+    },
+    "fix_texture_issues": {
+      "Title": "Fix texture issues",
+      "Description": "Fixes original issues with missing or incorrect textures/meshes."
+    },
+    "fix_item_rots": {
+      "Title": "Fix item rotation issues",
+      "Description": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option."
+    },
+    "enable_auto_item_selection": {
+      "Title": "Key item pre-selection",
+      "Description": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected."
+    },
+    "screenshot_format": {
+      "Title": "Screenshot format",
+      "Description": "Screenshot file format."
+    },
+    "enable_gun_lighting": {
+      "Title": "Gun/explosion lighting",
+      "Description": "Enables dynamic lighting to be generated for gunshots and explosions."
+    },
+    "music_load_condition": {
+      "Title": "Load music track",
+      "Description": "Loads the music track that was playing when the game was saved.\n- Never: do not restore music tracks on load.\n- Non-ambient: restore only non-ambient music tracks on load.\n- Always: restore any kind of music track on load."
+    },
+    "enable_lara_mic" : {
+      "Title": "Microphone at Lara",
+      "Description": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position."
+    },
+    "underwater_music_mode": {
+      "Title": "Underwater music behavior",
+      "Description": "Changes how music is played when the camera is underwater.\n- Full: music plays normally while underwater.\n- Quiet: music plays at half volume while underwater.\n- Full but no ambient: music plays normally while underwater, but ambient music is muted.\n- Quiet but no ambient: music plays at half volume while underwater, but ambient music is muted.\n- None: no music plays while underwater (OG TR2)."
+    },
+    "enable_fade_effects": {
+      "Title": "Fade effects",
+      "Description": "Enable fade transitions, for example between credit graphics."
+    },
+    "enable_exit_fade_effects": {
+      "Title": "Exit fade effects",
+      "Description": "Enables the fade effects when exiting the game to desktop."
+    },
+    "fix_bear_ai": {
+      "Title": "Fix bear AI",
+      "Description": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara."
+    }
+  }
+}

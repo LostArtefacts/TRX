@@ -3,19 +3,38 @@
 #include "../collision.h"
 #include "./types.h"
 
+void Creature_Initialise(int16_t item_num);
 bool Creature_Activate(int16_t item_num);
-bool Creature_IsHostile(const ITEM *item);
+void Creature_AIInfo(ITEM *item, AI_INFO *info);
+bool Creature_EnsureHabitat(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+void Creature_Mood(const ITEM *item, const AI_INFO *info, bool violent);
 
-extern void Creature_Initialise(int16_t item_num);
-extern void Creature_Collision(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-extern void Creature_AIInfo(ITEM *item, AI_INFO *info);
-extern void Creature_Mood(const ITEM *item, const AI_INFO *info, bool violent);
-extern int16_t Creature_Turn(ITEM *item, int16_t maximum_turn);
-extern void Creature_Tilt(ITEM *item, int16_t angle);
-extern void Creature_Head(ITEM *item, int16_t required);
-extern bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
-extern int16_t Creature_Effect(
+int16_t Creature_Turn(ITEM *item, int16_t max_turn);
+void Creature_Tilt(ITEM *item, int16_t angle);
+void Creature_Head(ITEM *item, int16_t required);
+void Creature_Neck(ITEM *item, int16_t required);
+
+void Creature_Float(int16_t item_num);
+void Creature_Underwater(ITEM *item, int32_t depth);
+
+bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
+bool Creature_CheckBaddieOverlap(int16_t item_num);
+void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
+
+void Creature_SpecialKill(
+    ITEM *item, int32_t kill_anim, int32_t kill_state, int32_t lara_kill_state);
+void Creature_Die(int16_t item_num, bool explode);
+int32_t Creature_Vault(
+    int16_t item_num, int16_t angle, int32_t vault, int32_t shift);
+
+bool Creature_AreAlliesHostile(void);
+void Creature_SetAlliesHostile(bool enable);
+bool Creature_IsHostile(const ITEM *item);
+bool Creature_IsAlly(const ITEM *item);
+
+int16_t Creature_Effect(
     const ITEM *item, const BITE *bite,
     int16_t (*spawn)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,

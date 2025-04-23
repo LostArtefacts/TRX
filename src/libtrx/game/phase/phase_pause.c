@@ -11,8 +11,7 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "game/ui/common.h"
-#include "game/ui/widgets/requester.h"
+#include "game/ui.h"
 #include "memory.h"
 
 #include <stdint.h>
@@ -23,14 +22,15 @@ typedef enum {
     STATE_FADE_IN,
     STATE_WAIT,
     STATE_ASK,
-    STATE_CONFIRM,
     STATE_FADE_OUT,
 } STATE;
 
 typedef struct {
     STATE state;
-    bool is_ui_ready;
-    UI_WIDGET *ui;
+    struct {
+        bool is_ready;
+        UI_PAUSE_STATE state;
+    } ui;
     TEXTSTRING *mode_text;
     GF_ACTION action;
     FADER back_fader;
@@ -43,8 +43,6 @@ static void M_ReturnToGame(M_PRIV *p);
 static void M_ExitToTitle(M_PRIV *p);
 static void M_CreateText(M_PRIV *p);
 static void M_RemoveText(M_PRIV *p);
-static int32_t M_DisplayRequester(
-    M_PRIV *p, const char *header, const char *option1, const char *option2);
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
@@ -60,10 +58,7 @@ static void M_FadeIn(M_PRIV *const p)
 static void M_FadeOut(M_PRIV *const p)
 {
     M_RemoveText(p);
-    if (p->ui != nullptr) {
-        p->ui->free(p->ui);
-        p->ui = nullptr;
-    }
+    p->ui.is_ready = false;
     if (p->action == GF_NOOP) {
         Fader_Init(&p->back_fader, FADER_ANY, FADER_TRANSPARENT, FADE_TIME);
     } else {
@@ -108,42 +103,13 @@ static void M_RemoveText(M_PRIV *const p)
     p->mode_text = nullptr;
 }
 
-static int32_t M_DisplayRequester(
-    M_PRIV *const p, const char *header, const char *option1,
-    const char *option2)
-{
-    if (!p->is_ui_ready) {
-        if (p->ui == nullptr) {
-            p->ui = UI_Requester_Create((UI_REQUESTER_SETTINGS) {
-                .is_selectable = true,
-                .width = 160,
-                .visible_rows = 2,
-            });
-        }
-        UI_Requester_ClearRows(p->ui);
-        UI_Requester_SetTitle(p->ui, header);
-        UI_Requester_AddRowC(p->ui, option1, nullptr);
-        UI_Requester_AddRowC(p->ui, option2, nullptr);
-        p->ui->set_position(
-            p->ui, (UI_GetCanvasWidth() - p->ui->get_width(p->ui)) / 2,
-            (UI_GetCanvasHeight() - p->ui->get_height(p->ui)) - 50);
-        p->is_ui_ready = true;
-    }
-
-    const int32_t choice = UI_Requester_GetSelectedRow(p->ui);
-    if (choice >= 0) {
-        p->is_ui_ready = false;
-    }
-    return choice;
-}
-
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
+    p->ui.is_ready = false;
+    UI_Pause_Init(&p->ui.state);
     M_PauseGame(p);
-
-    p->is_ui_ready = false;
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
@@ -151,10 +117,7 @@ static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     M_RemoveText(p);
-    if (p->ui != nullptr) {
-        p->ui->free(p->ui);
-        p->ui = nullptr;
-    }
+    UI_Pause_Free(&p->ui.state);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
@@ -164,8 +127,8 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
     Input_Update();
     Shell_ProcessInput();
 
-    if (p->ui != nullptr) {
-        p->ui->control(p->ui);
+    if (p->ui.is_ready) {
+        UI_Pause_Control(&p->ui.state);
     }
 
     switch (p->state) {
@@ -190,29 +153,22 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
         break;
 
     case STATE_ASK: {
-        const int32_t choice = M_DisplayRequester(
-            p, GS(PAUSE_EXIT_TO_TITLE), GS(PAUSE_CONTINUE), GS(PAUSE_QUIT));
-        if (choice == 0) {
+        const UI_PAUSE_EXIT_CHOICE choice = UI_Pause_Control(&p->ui.state);
+        switch (choice) {
+        case UI_PAUSE_RESUME_PAUSE:
+            p->state = STATE_WAIT;
+            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+        case UI_PAUSE_EXIT_TO_GAME:
             M_ReturnToGame(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (choice == 1) {
-            p->state = STATE_CONFIRM;
+        case UI_PAUSE_EXIT_TO_TITLE:
+            M_ExitToTitle(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+        default:
+            break;
         }
         break;
     }
-
-    case STATE_CONFIRM: {
-        const int32_t choice = M_DisplayRequester(
-            p, GS(PAUSE_ARE_YOU_SURE), GS(PAUSE_YES), GS(PAUSE_NO));
-        if (choice == 0) {
-            M_ExitToTitle(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (choice == 1) {
-            M_ReturnToGame(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        }
-        break;
 
     case STATE_FADE_OUT:
         if (!Fader_IsActive(&p->back_fader)) {
@@ -222,7 +178,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
             };
         }
         break;
-    }
     }
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -237,8 +192,8 @@ static void M_Draw(PHASE *const phase)
     Interpolation_Enable();
     Fader_Draw(&p->back_fader);
 
-    if (p->ui != nullptr) {
-        p->ui->draw(p->ui);
+    if (p->state == STATE_ASK) {
+        UI_Pause(&p->ui.state);
     }
     Output_DrawPolyList();
 }

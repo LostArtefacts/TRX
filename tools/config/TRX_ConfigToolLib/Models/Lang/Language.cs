@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Globalization;
 using TRX_ConfigToolLib.Utils;
 
-namespace TRX_ConfigToolLib.Models;
+namespace TRX_ConfigToolLib.Models.Lang;
 
 public class Language
 {

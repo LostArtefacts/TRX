@@ -80,66 +80,6 @@ typedef enum {
     DRAW_COLOR_KEY = 1,
 } DRAW_TYPE;
 
-typedef struct STATS_COMMON {
-    uint32_t timer;
-    uint32_t ammo_used;
-    uint32_t ammo_hits;
-    uint32_t distance;
-    uint16_t kills;
-    uint8_t medipacks;
-    uint16_t max_secret_count;
-} STATS_COMMON;
-
-typedef struct {
-    struct STATS_COMMON;
-    int32_t found_secrets;
-    int32_t total_secrets;
-} FINAL_STATS;
-
-typedef struct {
-    struct STATS_COMMON;
-    uint8_t secret_flags;
-} LEVEL_STATS;
-
-typedef struct {
-    uint16_t pistol_ammo;
-    uint16_t magnum_ammo;
-    uint16_t uzi_ammo;
-    uint16_t shotgun_ammo;
-    uint16_t m16_ammo;
-    uint16_t grenade_ammo;
-    uint16_t harpoon_ammo;
-    uint8_t small_medipacks;
-    uint8_t large_medipacks;
-    uint8_t reserved1;
-    uint8_t flares;
-    uint8_t gun_status;
-    uint8_t gun_type;
-    uint16_t available:   1; // 0x01 1
-    uint16_t has_pistols: 1; // 0x02 2
-    uint16_t has_magnums: 1; // 0x04 4
-    uint16_t has_uzis:    1; // 0x08 8
-    uint16_t has_shotgun: 1; // 0x10 16
-    uint16_t has_m16:     1; // 0x20 32
-    uint16_t has_grenade: 1; // 0x40 64
-    uint16_t has_harpoon: 1; // 0x80 128
-    uint16_t pad : 8;
-    uint16_t reserved2;
-    LEVEL_STATS stats;
-} START_INFO;
-
-typedef struct {
-    START_INFO *start;
-    LEVEL_STATS current_stats;
-    int16_t current_level;
-    bool bonus_flag;
-    uint8_t num_pickup[2];
-    uint8_t num_puzzle[4];
-    uint8_t num_key[4];
-    uint16_t reserved;
-    char buffer[MAX_SG_BUFFER_SIZE];
-} SAVEGAME_INFO;
-
 typedef struct {
     int16_t lock_angles[4];
     int16_t left_angles[4];
@@ -234,56 +174,6 @@ typedef struct {
     int32_t table[32]; // WIBBLE_SIZE
 } ROOM_LIGHT_TABLE;
 
-typedef enum {
-    REQ_CENTER      = 0x00,
-    REQ_USE         = 0x01,
-    REQ_ALIGN_LEFT  = 0x02,
-    REQ_ALIGN_RIGHT = 0x04,
-    REQ_HEADING     = 0x08,
-    REQ_BEST_TIME   = 0x10,
-    REQ_NORMAL_TIME = 0x20,
-    REQ_NO_TIME     = 0x40,
-} REQUESTER_FLAGS;
-
 #pragma pack(pop)
-
-typedef struct {
-    uint16_t no_selector : 1;
-    uint16_t ready : 1; // not present in the OG
-    uint16_t pad : 14;
-    uint16_t items_count;
-    uint16_t selected;
-    uint16_t visible_count;
-    uint16_t line_offset;
-    uint16_t line_old_offset;
-    uint16_t pix_width;
-    uint16_t line_height;
-    int16_t x_pos;
-    int16_t y_pos;
-    int16_t z_pos;
-    uint16_t item_string_len;
-    char *pitem_strings1;
-    char *pitem_strings2;
-    uint32_t *pitem_flags1;
-    uint32_t *pitem_flags2;
-    uint32_t heading_flags1;
-    uint32_t heading_flags2;
-    uint32_t background_flags;
-    uint32_t moreup_flags;
-    uint32_t moredown_flags;
-    uint32_t item_flags1[24]; // MAX_REQUESTER_ITEMS
-    uint32_t item_flags2[24]; // MAX_REQUESTER_ITEMS
-    TEXTSTRING *heading_text1;
-    TEXTSTRING *heading_text2;
-    TEXTSTRING *background_text;
-    TEXTSTRING *moreup_text;
-    TEXTSTRING *moredown_text;
-    TEXTSTRING *item_texts1[24]; // MAX_REQUESTER_ITEMS
-    TEXTSTRING *item_texts2[24]; // MAX_REQUESTER_ITEMS
-    char heading_string1[32];
-    char heading_string2[32];
-    uint32_t render_width;
-    uint32_t render_height;
-} REQUEST_INFO;
 
 // clang-format on

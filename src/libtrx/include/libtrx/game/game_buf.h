@@ -47,7 +47,6 @@ typedef enum {
     GBUF_SAMPLE_INFOS,
     GBUF_SAMPLES,
     GBUF_DEMO_BUFFER,
-    GBUF_VERTEX_BUFFER,
     GBUF_NUM_MALLOC_TYPES,
     // clang-format on
 } GAME_BUFFER;

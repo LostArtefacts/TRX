@@ -55,9 +55,9 @@ typedef enum {
 } MUTANT_STATE;
 
 static bool m_EnableExplosions = true;
-static BITE m_WarriorBite = { -27, 98, 0, 10 };
-static BITE m_WarriorRocket = { 51, 213, 0, 14 };
-static BITE m_WarriorShard = { -35, 269, 0, 9 };
+static BITE m_WarriorBite = { .pos = { -27, 98, 0 }, .mesh_num = 10 };
+static BITE m_WarriorRocket = { .pos = { 51, 213, 0 }, .mesh_num = 14 };
+static BITE m_WarriorShard = { .pos = { -35, 269, 0 }, .mesh_num = 9 };
 
 static void M_Setup(OBJECT *obj);
 static void M_Setup2(OBJECT *obj);
@@ -83,8 +83,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    Object_GetBone(obj, 0)->rot_y = true;
-    Object_GetBone(obj, 2)->rot_y = true;
+    Object_GetBone(obj, 0)->rot.y = true;
+    Object_GetBone(obj, 2)->rot.y = true;
 }
 
 static void M_Setup2(OBJECT *const obj)
