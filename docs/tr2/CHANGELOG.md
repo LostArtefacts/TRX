@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...develop) - ××××-××-××
+
+## [1.0.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...tr2-1.0.1) - 2025-04-24
 - added an option to wraparound when scrolling UI dialogs, such as save/load (#2834)
 - changed save to take priority over load when both inputs are held on the same frame, in line with OG (#2833)
 - fixed the selected keyboard/controller layout not being saved (#2830, regression from 1.0)
