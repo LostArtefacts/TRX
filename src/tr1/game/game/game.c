@@ -142,10 +142,10 @@ GF_COMMAND Game_Control(const bool demo_mode)
         if (g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {
-            if (g_Input.load) {
-                g_OverlayFlag = -1;
-            } else if (g_Input.save) {
+            if (g_Input.save) {
                 g_OverlayFlag = -2;
+            } else if (g_Input.load) {
+                g_OverlayFlag = -1;
             } else {
                 g_OverlayFlag = 0;
             }

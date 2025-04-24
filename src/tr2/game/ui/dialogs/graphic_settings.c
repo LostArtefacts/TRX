@@ -13,11 +13,14 @@
 #include <libtrx/game/ui/elements/resize.h>
 #include <libtrx/game/ui/elements/spacer.h>
 #include <libtrx/game/ui/elements/stack.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
 #include <math.h>
+
+#define M_ARROW_SPACING 2.0f
 
 typedef struct {
     CONFIG_OPTION_TYPE option_type;
@@ -220,6 +223,12 @@ static const M_OPTION m_Options[] = {
     },
 
     {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
+        .target = &g_Config.ui.enable_wraparound,
+    },
+
+    {
         .option_type = COT_INT32,
         .label_id = GS_ID(DETAIL_SCALER),
         .target = &g_Config.rendering.scaler,
@@ -244,11 +253,28 @@ static const M_OPTION m_Options[] = {
     },
 };
 
+static int32_t M_GetVisibleRows(void);
 static uint8_t *M_GetColorComponent(const M_OPTION *option);
 static M_ENUM_LOOKUP M_GetEnumEntry(const M_OPTION *option);
 static char *M_FormatRowValue(int32_t row_idx);
 static bool M_CanChangeValue(int32_t row_idx, int32_t dir);
 static bool M_RequestChangeValue(int32_t row_idx, int32_t dir);
+static float M_GetValueWidth(const UI_GRAPHIC_SETTINGS_STATE *s);
+
+static int32_t M_GetVisibleRows(void)
+{
+    const int32_t res_h =
+        Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+    if (res_h <= 240) {
+        return 5;
+    } else if (res_h <= 384) {
+        return 7;
+    } else if (res_h < 480) {
+        return 10;
+    } else {
+        return 12;
+    }
+}
 
 static uint8_t *M_GetColorComponent(const M_OPTION *const option)
 {
@@ -417,6 +443,26 @@ static bool M_RequestChangeValue(const int32_t row_idx, const int32_t dir)
     return true;
 }
 
+static float M_GetValueWidth(const UI_GRAPHIC_SETTINGS_STATE *const s)
+{
+    // Measure the maximum width of the value label to prevent the entire
+    // dialog from changing its size as the player changes the sound levels.
+    float result = -1.0f;
+    for (int32_t i = 0; i < s->req.max_rows; i++) {
+        const char *const value = M_FormatRowValue(i);
+        float value_w;
+        UI_Label_Measure(value, &value_w, nullptr);
+        result = MAX(result, value_w);
+    }
+    float arrow_w;
+    UI_Label_Measure("\\{button left}", &arrow_w, nullptr);
+    result += arrow_w;
+    UI_Label_Measure("\\{button right}", &arrow_w, nullptr);
+    result += arrow_w;
+    result += M_ARROW_SPACING * 2;
+    return result;
+}
+
 void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *const s)
 {
     int32_t row_count = 0;
@@ -426,6 +472,7 @@ void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *const s)
     UI_Requester_Init(&s->req, row_count, row_count, true);
     s->req.row_pad = 2.0f;
     s->req.row_spacing = 0.0f;
+    s->req.show_arrows = true;
 }
 
 void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *const s)
@@ -435,17 +482,7 @@ void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *const s)
 
 bool UI_GraphicSettings_Control(UI_GRAPHIC_SETTINGS_STATE *const s)
 {
-    const int32_t scale = Scaler_GetScale(SCALER_TARGET_TEXT) * 100;
-    if (scale >= 190) {
-        UI_Requester_SetVisibleRows(&s->req, 6);
-    } else if (scale >= 160) {
-        UI_Requester_SetVisibleRows(&s->req, 8);
-    } else if (scale >= 120) {
-        UI_Requester_SetVisibleRows(&s->req, 12);
-    } else {
-        UI_Requester_SetVisibleRows(&s->req, 18);
-    }
-
+    UI_Requester_SetVisibleRows(&s->req, M_GetVisibleRows());
     const int32_t choice = UI_Requester_Control(&s->req);
     if (choice == UI_REQUESTER_CANCEL) {
         return true;
@@ -465,6 +502,8 @@ void UI_GraphicSettings(UI_GRAPHIC_SETTINGS_STATE *const s)
     UI_BeginModal(0.5f, 0.6f);
     UI_BeginRequester(&s->req, GS(DETAIL_TITLE));
 
+    const float max_value_w = M_GetValueWidth(s) / g_Config.ui.text_scale;
+
     for (int32_t i = 0; i < s->req.max_rows; i++) {
         if (!UI_Requester_IsRowVisible(&s->req, i)) {
             UI_BeginResize(-1.0f, 0.0f);
@@ -480,19 +519,25 @@ void UI_GraphicSettings(UI_GRAPHIC_SETTINGS_STATE *const s)
         UI_Label(GameString_Get(m_Options[i].label_id));
         UI_Spacer(20.0f, 0.0f);
 
+        UI_BeginResize(max_value_w, -1.0f);
+        UI_BeginAnchor(1.0f, 0.5f);
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
-            .spacing = { .h = 5.0f },
+            .spacing = { .h = M_ARROW_SPACING },
         });
         UI_BeginHide(i != sel_row || !M_CanChangeValue(i, -1));
         UI_Label("\\{button left}");
         UI_EndHide();
+
         UI_Label(M_FormatRowValue(i));
+
         UI_BeginHide(i != sel_row || !M_CanChangeValue(i, +1));
         UI_Label("\\{button right}");
         UI_EndHide();
         UI_EndStack();
+        UI_EndAnchor();
+        UI_EndResize();
 
         UI_EndStack();
         UI_EndRequesterRow(&s->req, i);

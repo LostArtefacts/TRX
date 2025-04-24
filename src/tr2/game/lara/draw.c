@@ -473,6 +473,13 @@ void Lara_Draw_I(
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_R], mesh_rots_2[LM_UARM_R]);
         Output_DrawObjectMesh_I(g_Lara.mesh_ptrs[LM_UARM_R], clip);
 
+// NOTE: gcc wrongly complains about mesh_rots_1 possibly being NULL.
+// While this is not the case, it's curious how the pistols subtract the
+// frame_base from g_Lara.*_arm.frame_num to access the mesh_rots, and the
+// rifles do not.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots_1, mesh_rots_2, clip);
 
@@ -485,6 +492,8 @@ void Lara_Draw_I(
         M_DrawBodyPart(LM_UARM_L, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, mesh_rots_2, clip);
+
+#pragma GCC diagnostic pop
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;

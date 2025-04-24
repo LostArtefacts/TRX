@@ -143,22 +143,24 @@ static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
 static void M_InitialiseSoundEffects(const char *file_name)
 {
     BENCHMARK benchmark = Benchmark_Start();
+    LEVEL_INFO *info = nullptr;
     SAMPLE_ENTRY *entries = nullptr;
+
     if (file_name == nullptr) {
         file_name = g_GameFlow.settings.sfx_path;
     }
     const char *full_path =
         File_GetFullPath(file_name == nullptr ? DEFAULT_SFX_PATH : file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
+
     MYFILE *const fp = File_Open(full_path, FILE_OPEN_READ);
     Memory_FreePointer(&full_path);
-
     if (fp == nullptr) {
         Shell_ExitSystemFmt("Could not open %s file", file_name);
         goto finish;
     }
 
-    LEVEL_INFO *const info = Level_GetInfo();
+    info = Level_GetInfo();
     const int32_t sample_count = info->samples.offset_count;
     entries = Memory_Alloc(sizeof(SAMPLE_ENTRY) * sample_count);
     for (int32_t i = 0; i < sample_count; i++) {
