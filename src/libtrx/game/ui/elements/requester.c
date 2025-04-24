@@ -22,9 +22,9 @@ static void M_DownArrow(const UI_REQUESTER_STATE *s);
 static void M_UpArrow(const UI_REQUESTER_STATE *const s)
 {
     UI_BeginHide(s->vis_row == 0);
-    UI_Spacer(0.0f, 4.0f);
+    UI_Spacer(0.0f, TR_VERSION == 2 ? 6.0f : 4.0f);
     UI_BeginAnchor(0.5f, 0.5f);
-    UI_BeginFixed(0.5f, 1.5f);
+    UI_BeginFixed(0.5f, TR_VERSION == 2 ? 1.25f : 1.5f);
     UI_LabelEx("\\{arrow up}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
     UI_EndFixed();
     UI_EndAnchor();
@@ -40,7 +40,7 @@ static void M_DownArrow(const UI_REQUESTER_STATE *const s)
     UI_EndFixed();
     UI_EndAnchor();
     UI_EndHide();
-    UI_Spacer(0.0f, 4.0f);
+    UI_Spacer(0.0f, TR_VERSION == 2 ? 6.0f : 4.0f);
 }
 
 void UI_Requester_Init(

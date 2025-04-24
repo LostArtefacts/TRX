@@ -5,6 +5,8 @@
 
 typedef struct {
     UI_REQUESTER_STATE req;
+    float arrow_spacing;
+    float value_w;
 } UI_GRAPHIC_SETTINGS_STATE;
 
 void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *s);
