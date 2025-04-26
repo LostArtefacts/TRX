@@ -694,7 +694,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
-
                 if (ring->mode == INV_LOAD_MODE || ring->mode == INV_SAVE_MODE
                     || ring->mode == INV_SAVE_CRYSTAL_MODE) {
                     InvRing_MotionSetup(
@@ -713,7 +712,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 }
 
                 if (ring->mode == INV_TITLE_MODE
-                    && ((inv_item->object_id == O_DETAIL_OPTION)
+                    && (inv_item->object_id == O_DETAIL_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
                         || inv_item->object_id == O_CONTROL_OPTION
                         || inv_item->object_id == O_GAMMA_OPTION)) {
