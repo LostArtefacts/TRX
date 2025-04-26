@@ -45,7 +45,6 @@ static RENDERER *M_GetRenderer(void)
     } else if (g_Config.rendering.render_mode == RM_HARDWARE) {
         r = &m_Renderer_HW;
     }
-    ASSERT(r != nullptr);
     return r;
 }
 
@@ -124,7 +123,6 @@ void Render_Init(void)
 
 void Render_Shutdown(void)
 {
-    LOG_DEBUG("");
     RENDERER *const r = M_GetRenderer();
     if (r != nullptr) {
         r->Close(r);

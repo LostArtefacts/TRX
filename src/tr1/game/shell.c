@@ -81,11 +81,22 @@ static SHELL_ARGS m_Args = {
 
 static const char *m_CurrentGameFlowPath;
 
-static void M_ParseArgs(SHELL_ARGS *out_args);
+static void M_ShowHelp(void);
+static bool M_ParseArgs(SHELL_ARGS *out_args);
 static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
 
-static void M_ParseArgs(SHELL_ARGS *const out_args)
+static void M_ShowHelp(void)
+{
+    puts("Currently available options:");
+    puts("");
+    puts("-g/--gold: launch The Unfinished Business expansion pack.");
+    puts("   --demo-pc: launch the PC demo level file.");
+    puts("-l/--level <PATH>: launch a specific level file.");
+    puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
+}
+
+static bool M_ParseArgs(SHELL_ARGS *const out_args)
 {
     const char **args = nullptr;
     int32_t arg_count = 0;
@@ -94,10 +105,15 @@ static void M_ParseArgs(SHELL_ARGS *const out_args)
     out_args->mod = M_MOD_OG;
 
     for (int32_t i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
+        if (!strcmp(args[i], "-h") || !strcmp(args[i], "--help")) {
+            M_ShowHelp();
+            return false;
+        }
+        if (!strcmp(args[i], "-g") || !strcmp(args[i], "--gold")
+            || !strcmp(args[i], "-gold")) {
             out_args->mod = M_MOD_UB;
         }
-        if (!strcmp(args[i], "-demo_pc")) {
+        if (!strcmp(args[i], "--demo-pc") || !strcmp(args[i], "-demo_pc")) {
             out_args->mod = M_MOD_DEMO_PC;
         }
         if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
@@ -112,6 +128,7 @@ static void M_ParseArgs(SHELL_ARGS *const out_args)
             }
         }
     }
+    return true;
 }
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
@@ -174,9 +191,11 @@ const char *Shell_GetGameFlowPath(void)
     return m_ModPaths[m_Args.mod].game_flow_path;
 }
 
-void Shell_Main(void)
+int32_t Shell_Main(void)
 {
-    M_ParseArgs(&m_Args);
+    if (!M_ParseArgs(&m_Args)) {
+        return 0;
+    }
 
     GameString_Init();
     EnumMap_Init();
@@ -200,7 +219,7 @@ void Shell_Main(void)
 
     if (!Output_Init()) {
         Shell_ExitSystem("Could not initialise video system");
-        return;
+        return 1;
     }
     Screen_Init();
 
@@ -312,6 +331,7 @@ void Shell_Main(void)
     if (m_Args.level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
+    return 0;
 }
 
 void Shell_ProcessInput(void)

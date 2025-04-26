@@ -21,13 +21,11 @@ int main(int argc, char *argv[])
     Log_Init(log_path);
     Memory_FreePointer(&log_path);
 
-    LOG_INFO("Game directory: %s", File_GetGameDirectory());
-
     m_ArgCount = argc;
     m_ArgStrings = (const char **)argv;
 
     Shell_Setup();
-    Shell_Main();
-    Shell_Terminate(0);
-    return 0;
+    int32_t exit_code = Shell_Main();
+    Shell_Terminate(exit_code);
+    return exit_code;
 }

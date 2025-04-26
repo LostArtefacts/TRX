@@ -49,6 +49,7 @@ typedef struct {
     int32_t thickness;
 } LIGHTNING;
 
+static bool m_Initialized = false;
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
 static int32_t m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
@@ -385,6 +386,11 @@ static void M_DrawSprite(
 
 bool Output_Init(void)
 {
+    if (m_Initialized) {
+        return true;
+    }
+    m_Initialized = true;
+
     for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
         m_TextureMap[i] = GFX_NO_TEXTURE;
         m_TextureSurfaces[i] = nullptr;
@@ -406,6 +412,11 @@ bool Output_Init(void)
 
 void Output_Shutdown(void)
 {
+    if (!m_Initialized) {
+        return;
+    }
+    m_Initialized = false;
+
     Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();

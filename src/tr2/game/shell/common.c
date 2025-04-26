@@ -99,7 +99,8 @@ static void M_HandleQuit(void);
 static void M_ConfigureOpenGL(void);
 static bool M_CreateGameWindow(void);
 
-static void M_ParseArgs(SHELL_ARGS *out_args);
+static void M_ShowHelp(void);
+static bool M_ParseArgs(SHELL_ARGS *out_args);
 static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
 
@@ -342,7 +343,16 @@ static bool M_CreateGameWindow(void)
     return true;
 }
 
-static void M_ParseArgs(SHELL_ARGS *const out_args)
+static void M_ShowHelp(void)
+{
+    puts("Currently available options:");
+    puts("");
+    puts("-g/--gold: launch The Golden Mask expansion pack.");
+    puts("-l/--level <PATH>: launch a specific level file.");
+    puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
+}
+
+static bool M_ParseArgs(SHELL_ARGS *const out_args)
 {
     const char **args = nullptr;
     int32_t arg_count = 0;
@@ -351,7 +361,12 @@ static void M_ParseArgs(SHELL_ARGS *const out_args)
     out_args->mod = M_MOD_OG;
 
     for (int32_t i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
+        if (!strcmp(args[i], "-h") || !strcmp(args[i], "--help")) {
+            M_ShowHelp();
+            return false;
+        }
+        if (!strcmp(args[i], "-g") || !strcmp(args[i], "--gold")
+            || !strcmp(args[i], "-gold")) {
             out_args->mod = M_MOD_GM;
         }
         if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
@@ -366,6 +381,7 @@ static void M_ParseArgs(SHELL_ARGS *const out_args)
             }
         }
     }
+    return true;
 }
 
 static void M_LoadConfig(void)
@@ -434,9 +450,13 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 }
 
 // TODO: refactor the hell out of me
-void Shell_Main(void)
+int32_t Shell_Main(void)
 {
-    M_ParseArgs(&m_Args);
+    if (!M_ParseArgs(&m_Args)) {
+        return 0;
+    }
+
+    LOG_INFO("Game directory: %s", File_GetGameDirectory());
 
     if (m_Args.mod == M_MOD_GM) {
         Object_Get(O_MONK_3)->setup_func = Monk3_Setup;
@@ -465,7 +485,7 @@ void Shell_Main(void)
 
     if (!M_CreateGameWindow()) {
         Shell_ExitSystem("Failed to create game window");
-        return;
+        return 1;
     }
 
     Random_Seed();
@@ -556,7 +576,7 @@ void Shell_Main(void)
                 if (gf_cmd.action == GF_NOOP
                     || gf_cmd.action == GF_EXIT_TO_TITLE) {
                     Shell_ExitSystem("Title disabled & no replacement");
-                    return;
+                    return 1;
                 }
             } else {
                 gf_cmd = GF_RunTitle();
@@ -578,6 +598,7 @@ void Shell_Main(void)
     if (m_Args.level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
+    return 0;
 }
 
 void Shell_Shutdown(void)
