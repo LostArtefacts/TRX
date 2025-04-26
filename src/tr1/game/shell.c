@@ -152,6 +152,8 @@ void Shell_Shutdown(void)
     Console_Shutdown();
     GameBuf_Shutdown();
     Savegame_Shutdown();
+
+    GameStringTable_Shutdown();
     GF_Shutdown();
 
     Output_Shutdown();
@@ -206,7 +208,11 @@ void Shell_Main(void)
 
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
-    GameStringTable_LoadFromFile(m_ModPaths[m_Args.mod].game_strings_path);
+    GameStringTable_Init();
+    if (m_Args.mod != M_MOD_OG) {
+        GameStringTable_Load(m_ModPaths[M_MOD_OG].game_strings_path, false);
+    }
+    GameStringTable_Load(m_ModPaths[m_Args.mod].game_strings_path, true);
     GameStringTable_Apply(nullptr);
 
     Savegame_Init();
