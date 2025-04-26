@@ -52,4 +52,5 @@ void GS_File_Free(GS_FILE *const gs_file)
     for (int32_t i = 0; i < GFLT_NUMBER_OF; i++) {
         M_FreeLevelsTable(&gs_file->level_tables[i]);
     }
+    Memory_Free(gs_file);
 }
