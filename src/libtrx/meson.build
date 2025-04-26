@@ -176,6 +176,7 @@ sources = [
   'game/objects/general/bridge_flat.c',
   'game/objects/general/bridge_tilt1.c',
   'game/objects/general/bridge_tilt2.c',
+  'game/objects/general/door.c',
   'game/objects/general/drawbridge.c',
   'game/objects/general/trapdoor.c',
   'game/objects/names.c',

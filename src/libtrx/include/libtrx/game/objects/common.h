@@ -36,6 +36,7 @@ void Object_SwapMesh(
 ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
 
+extern void Object_DrawUnclippedItem(const ITEM *item);
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
 
 void Object_DrawInterpolatedObject(

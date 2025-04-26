@@ -124,12 +124,6 @@ typedef struct {
 } PHD_VBUF;
 
 typedef struct {
-    SECTOR *sector;
-    SECTOR old_sector;
-    int16_t block;
-} DOORPOS_DATA;
-
-typedef struct {
     PASSPORT_MODE passport_selection;
     int32_t select_save_slot;
     int32_t select_level_num;

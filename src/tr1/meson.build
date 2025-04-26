@@ -197,7 +197,6 @@ sources = [
   'game/objects/general/cabin.c',
   'game/objects/general/camera_target.c',
   'game/objects/general/cog.c',
-  'game/objects/general/door.c',
   'game/objects/general/earthquake.c',
   'game/objects/general/keyhole.c',
   'game/objects/general/moving_bar.c',
