@@ -21,6 +21,8 @@ static SECTOR *M_GetRoomRelSector(
 static void M_InitialisePortal(
     const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz,
     DOORPOS_DATA *door_pos);
+static bool M_LaraDoorCollision(const SECTOR *sector);
+static void M_Check(DOORPOS_DATA *d);
 static void M_Shut(DOORPOS_DATA *d);
 static void M_Open(DOORPOS_DATA *d);
 static void M_Setup(OBJECT *obj);
@@ -38,7 +40,32 @@ static SECTOR *M_GetRoomRelSector(
     return Room_GetUnitSector(room, sector.x, sector.z);
 }
 
-static void Door_Shut(DOORPOS_DATA *const d)
+static bool M_LaraDoorCollision(const SECTOR *const sector)
+{
+    // Check if Lara is on the same tile as the invisible block.
+    const ITEM *const lara = Lara_GetItem();
+    if (lara == nullptr) {
+        return false;
+    }
+
+    int16_t room_num = lara->room_num;
+    const SECTOR *const lara_sector =
+        Room_GetSector(lara->pos.x, lara->pos.y, lara->pos.z, &room_num);
+    return lara_sector == sector;
+}
+
+static void M_Check(DOORPOS_DATA *const d)
+{
+    // Forcefully remove the invisible block if Lara happens to occupy the same
+    // tile. This ensures that Lara doesn't void if a timed door happens to
+    // close right on her, or the player loads the game while standing on a
+    // closed door's block tile.
+    if (M_LaraDoorCollision(d->sector)) {
+        M_Open(d);
+    }
+}
+
+static void M_Shut(DOORPOS_DATA *const d)
 {
     SECTOR *const sector = d->sector;
     if (d->sector == nullptr) {
@@ -61,7 +88,7 @@ static void Door_Shut(DOORPOS_DATA *const d)
     }
 }
 
-static void Door_Open(DOORPOS_DATA *const d)
+static void M_Open(DOORPOS_DATA *const d)
 {
     if (d->sector == nullptr) {
         return;
@@ -137,8 +164,8 @@ static void M_Initialise(const int16_t item_num)
     }
 
     room_num = door->d1.sector->portal_room.wall;
-    Door_Shut(&door->d1);
-    Door_Shut(&door->d1flip);
+    M_Shut(&door->d1);
+    M_Shut(&door->d1flip);
 
     if (room_num == NO_ROOM) {
         door->d2.sector = nullptr;
@@ -153,8 +180,8 @@ static void M_Initialise(const int16_t item_num)
             M_InitialisePortal(room, item, 0, 0, &door->d2flip);
         }
 
-        Door_Shut(&door->d2);
-        Door_Shut(&door->d2flip);
+        M_Shut(&door->d2);
+        M_Shut(&door->d2flip);
 
         const int16_t prev_room = item->room_num;
         Item_NewRoom(item_num, room_num);
@@ -171,22 +198,26 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state == DOOR_STATE_CLOSED) {
             item->goal_anim_state = DOOR_STATE_OPEN;
         } else {
-            Door_Open(&data->d1);
-            Door_Open(&data->d2);
-            Door_Open(&data->d1flip);
-            Door_Open(&data->d2flip);
+            M_Open(&data->d1);
+            M_Open(&data->d2);
+            M_Open(&data->d1flip);
+            M_Open(&data->d2flip);
         }
     } else {
         if (item->current_anim_state == DOOR_STATE_OPEN) {
             item->goal_anim_state = DOOR_STATE_CLOSED;
         } else {
-            Door_Shut(&data->d1);
-            Door_Shut(&data->d2);
-            Door_Shut(&data->d1flip);
-            Door_Shut(&data->d2flip);
+            M_Shut(&data->d1);
+            M_Shut(&data->d2);
+            M_Shut(&data->d1flip);
+            M_Shut(&data->d2flip);
         }
     }
 
+    M_Check(&data->d1);
+    M_Check(&data->d2);
+    M_Check(&data->d1flip);
+    M_Check(&data->d2flip);
     Item_Animate(item);
 }
 

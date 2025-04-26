@@ -256,6 +256,7 @@ However, you can easily download them manually from these urls:
 - fixed being able to use hotkeys in the end-level statistics screen
 - fixed guns carried by enemies not being converted to ammo if Lara has picked up the same gun elsewhere in the same level
 - fixed destroyed gondolas appearing embedded in the ground after loading a save
+- fixed Lara voiding if she stops on a tile with a closing door, and the door isn't on a portal
 - improved the animation of Lara's braid
 
 #### Cheats
