@@ -639,10 +639,10 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
             if (g_InputDB.menu_confirm) {
                 g_Inv_Chosen = inv_item->object_id;
-                if (ring->type != RT_MAIN) {
-                    g_InvRing_Source[RT_OPTION].current = ring->current_object;
-                } else {
+                if (ring->type == RT_MAIN) {
                     g_InvRing_Source[RT_MAIN].current = ring->current_object;
+                } else {
+                    g_InvRing_Source[RT_OPTION].current = ring->current_object;
                 }
                 if (ring->mode == INV_TITLE_MODE
                     && (inv_item->object_id == O_DETAIL_OPTION
@@ -783,7 +783,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        g_Inv_ExtraData[i] = 0;
+        g_Inv_ExtraData[i] = -1;
     }
 
     g_InvRing_Source[RT_MAIN].current = 0;
