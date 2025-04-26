@@ -219,15 +219,11 @@ int32_t Item_GlobalReplace(
 {
     int32_t changed = 0;
 
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        int16_t item_num = Room_Get(i)->item_num;
-        while (item_num != NO_ITEM) {
-            ITEM *const item = &m_Items[item_num];
-            if (item->object_id == src_obj_id) {
-                item->object_id = dst_obj_id;
-                changed++;
-            }
-            item_num = item->next_item;
+    for (int32_t item_num = 0; item_num < m_MaxUsedItemCount; item_num++) {
+        ITEM *const item = &m_Items[item_num];
+        if (item->object_id == src_obj_id) {
+            item->object_id = dst_obj_id;
+            changed++;
         }
     }
 
