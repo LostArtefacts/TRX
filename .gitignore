@@ -38,4 +38,11 @@ src/tr2/subprojects/dwarfstack.wrap
 
 data/tr1/ship/data/images/
 data/tr2/ship/data/images/
+data/tr2/ship/data/level1.tr2
+data/tr2/ship/data/level2.tr2
+data/tr2/ship/data/level3.tr2
+data/tr2/ship/data/level4.tr2
+data/tr2/ship/data/level5.tr2
+data/tr2/ship/data/main_gm.sfx
+data/tr2/ship/data/title_gm.tr2
 data/tr2/ship/music/
