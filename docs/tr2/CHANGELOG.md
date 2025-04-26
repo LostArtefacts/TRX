@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...develop) - ××××-××-××
+- fixed Lara voiding if she stops on a tile with a closing door, and the door isn't on a portal (#2848)
 - fixed guns carried by enemies not being converted to ammo if Lara has picked up the same gun elsewhere in the same level (#2856)
 - fixed guns carried by enemies not being converted to ammo if Lara starts the level with the gun and the game has later been reloaded (#2850, regression from 1.0)
 - fixed 1920x1080 screenshots in 16:9 aspect mode being saved as 1919x1080 (#2845, regression from 0.8)
