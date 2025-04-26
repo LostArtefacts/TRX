@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/game_flow/enum.h"
+#include "vector.h"
 
 #include <stdint.h>
 
@@ -35,7 +36,7 @@ typedef struct {
     GS_LEVEL_TABLE level_tables[GFLT_NUMBER_OF];
 } GS_FILE;
 
-extern GS_FILE g_GST_File;
-
 void GS_Table_Free(GS_TABLE *gs_table);
+
+GS_FILE *GS_File_CreateFromString(const char *data, bool load_levels);
 void GS_File_Free(GS_FILE *gs_file);
