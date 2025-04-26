@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...develop) - ××××-××-××
+- fixed guns carried by enemies not being converted to ammo if Lara has picked up the same gun elsewhere in the same level (#2856)
+- fixed guns carried by enemies not being converted to ammo if Lara starts the level with the gun and the game has later been reloaded (#2850, regression from 1.0)
 
 ## [1.0.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...tr2-1.0.1) - 2025-04-24
 - added an option to wraparound when scrolling UI dialogs, such as save/load (#2834)
