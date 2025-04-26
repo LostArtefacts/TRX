@@ -24,9 +24,19 @@
 #include <string.h>
 
 typedef struct {
+    struct {
+        int32_t format;
+        AVChannelLayout ch_layout;
+        int32_t sample_rate;
+    } src, dst;
+    SwrContext *ctx;
+    size_t working_buffer_size;
+    uint8_t *working_buffer;
+} M_SWR_CONTEXT;
+
+typedef struct {
     char *original_data;
     size_t original_size;
-
     float *sample_data;
     int32_t channels;
     int32_t num_samples;
@@ -135,6 +145,76 @@ static int64_t M_SeekAVBuffer(void *opaque, int64_t offset, int32_t whence)
     return src->ptr - src->data;
 }
 
+static int32_t M_OutputAudioFrame(
+    M_SWR_CONTEXT *const swr, AVFrame *const frame)
+{
+    uint8_t *out_buffer = nullptr;
+    const int32_t out_samples =
+        swr_get_out_samples(swr->ctx, frame->nb_samples);
+    av_samples_alloc(
+        &out_buffer, nullptr, swr->dst.ch_layout.nb_channels, out_samples,
+        swr->dst.format, 1);
+    int32_t resampled_size = swr_convert(
+        swr->ctx, &out_buffer, out_samples, (const uint8_t **)frame->data,
+        frame->nb_samples);
+    while (resampled_size > 0) {
+        int32_t out_buffer_size = av_samples_get_buffer_size(
+            nullptr, swr->dst.ch_layout.nb_channels, resampled_size,
+            swr->dst.format, 1);
+
+        if (out_buffer_size > 0) {
+            swr->working_buffer = Memory_Realloc(
+                swr->working_buffer,
+                swr->working_buffer_size + out_buffer_size);
+            if (out_buffer) {
+                memcpy(
+                    swr->working_buffer + swr->working_buffer_size, out_buffer,
+                    out_buffer_size);
+            }
+            swr->working_buffer_size += out_buffer_size;
+        }
+
+        resampled_size =
+            swr_convert(swr->ctx, &out_buffer, out_samples, nullptr, 0);
+    }
+
+    av_freep(&out_buffer);
+    return 0;
+}
+
+static int32_t M_DecodePacket(
+    AVCodecContext *const dec, const AVPacket *const pkt, AVFrame *frame,
+    M_SWR_CONTEXT *const swr)
+{
+    // Submit the packet to the decoder
+    int32_t ret = avcodec_send_packet(dec, pkt);
+    if (ret < 0) {
+        LOG_ERROR(
+            "Error submitting a packet for decoding (%s)\n", av_err2str(ret));
+        return ret;
+    }
+
+    // Get all the available frames from the decoder
+    while (ret >= 0) {
+        ret = avcodec_receive_frame(dec, frame);
+        if (ret < 0) {
+            // those two return values are special and mean there is no output
+            // frame available, but there were no errors during decoding
+            if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN)) {
+                return 0;
+            }
+            LOG_ERROR(
+                "Error receiving a frame for decoding (%s)\n", av_err2str(ret));
+            return ret;
+        }
+
+        ret = M_OutputAudioFrame(swr, frame);
+        av_frame_unref(frame);
+    }
+
+    return ret;
+}
+
 static bool M_ConvertRawData(
     const uint8_t *const original_data, const int32_t original_size,
     const int32_t dst_sample_rate, const int32_t dst_format,
@@ -142,8 +222,6 @@ static bool M_ConvertRawData(
     size_t *const out_size, size_t *const out_sample_count)
 {
     bool result = false;
-    size_t working_buffer_size = 0;
-    float *working_buffer = nullptr;
 
     struct {
         size_t read_buffer_size;
@@ -165,19 +243,11 @@ static bool M_ConvertRawData(
         .frame = nullptr,
     };
 
-    struct {
-        struct {
-            int32_t format;
-            AVChannelLayout ch_layout;
-            int32_t sample_rate;
-        } src, dst;
-        SwrContext *ctx;
-    } swr = {};
-
+    M_SWR_CONTEXT swr = {};
     int32_t error_code;
 
-    unsigned char *read_buffer = av_malloc(av.read_buffer_size);
-    if (!read_buffer) {
+    uint8_t *const read_buffer = av_malloc(av.read_buffer_size);
+    if (read_buffer == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
@@ -195,8 +265,7 @@ static bool M_ConvertRawData(
 
     av.format_ctx = avformat_alloc_context();
     av.format_ctx->pb = av.avio_context;
-    error_code =
-        avformat_open_input(&av.format_ctx, "dummy_filename", nullptr, nullptr);
+    error_code = avformat_open_input(&av.format_ctx, "mem:", nullptr, nullptr);
     if (error_code != 0) {
         goto cleanup;
     }
@@ -214,19 +283,19 @@ static bool M_ConvertRawData(
             break;
         }
     }
-    if (!av.stream) {
+    if (av.stream == nullptr) {
         error_code = AVERROR_STREAM_NOT_FOUND;
         goto cleanup;
     }
 
     av.codec = avcodec_find_decoder(av.stream->codecpar->codec_id);
-    if (!av.codec) {
+    if (av.codec == nullptr) {
         error_code = AVERROR_DEMUXER_NOT_FOUND;
         goto cleanup;
     }
 
     av.codec_ctx = avcodec_alloc_context3(av.codec);
-    if (!av.codec_ctx) {
+    if (av.codec_ctx == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
@@ -249,115 +318,62 @@ static bool M_ConvertRawData(
     }
 
     av.frame = av_frame_alloc();
-    if (!av.frame) {
+    if (av.frame == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
 
-    while (1) {
-        error_code = av_read_frame(av.format_ctx, av.packet);
-        if (error_code == AVERROR_EOF) {
-            av_packet_unref(av.packet);
-            error_code = 0;
+    swr.src.sample_rate = av.codec_ctx->sample_rate;
+    swr.src.ch_layout = av.codec_ctx->ch_layout;
+    swr.src.format = av.codec_ctx->sample_fmt;
+    swr.dst.sample_rate = AUDIO_WORKING_RATE;
+    av_channel_layout_default(&swr.dst.ch_layout, dst_channel_count);
+    swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
+    swr_alloc_set_opts2(
+        &swr.ctx, &swr.dst.ch_layout, swr.dst.format, swr.dst.sample_rate,
+        &swr.src.ch_layout, swr.src.format, swr.src.sample_rate, 0, 0);
+    if (swr.ctx == nullptr) {
+        av_packet_unref(av.packet);
+        error_code = AVERROR(ENOMEM);
+        goto cleanup;
+    }
+
+    error_code = swr_init(swr.ctx);
+    if (error_code != 0) {
+        av_packet_unref(av.packet);
+        goto cleanup;
+    }
+
+    while ((error_code = av_read_frame(av.format_ctx, av.packet)) >= 0) {
+        M_DecodePacket(av.codec_ctx, av.packet, av.frame, &swr);
+        av_packet_unref(av.packet);
+        if (error_code < 0) {
             break;
         }
+    }
 
-        if (error_code < 0) {
-            av_packet_unref(av.packet);
-            goto cleanup;
-        }
+    if (av.codec_ctx != nullptr) {
+        M_DecodePacket(av.codec_ctx, nullptr, av.frame, &swr);
+    }
 
-        error_code = avcodec_send_packet(av.codec_ctx, av.packet);
-        if (error_code < 0) {
-            av_packet_unref(av.packet);
-            goto cleanup;
-        }
-
-        if (swr.ctx == nullptr) {
-            swr.src.sample_rate = av.codec_ctx->sample_rate;
-            swr.src.ch_layout = av.codec_ctx->ch_layout;
-            swr.src.format = av.codec_ctx->sample_fmt;
-            swr.dst.sample_rate = AUDIO_WORKING_RATE;
-            av_channel_layout_default(&swr.dst.ch_layout, dst_channel_count);
-            swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
-            swr_alloc_set_opts2(
-                &swr.ctx, &swr.dst.ch_layout, swr.dst.format,
-                swr.dst.sample_rate, &swr.src.ch_layout, swr.src.format,
-                swr.src.sample_rate, 0, 0);
-            if (swr.ctx == nullptr) {
-                av_packet_unref(av.packet);
-                error_code = AVERROR(ENOMEM);
-                goto cleanup;
-            }
-
-            error_code = swr_init(swr.ctx);
-            if (error_code != 0) {
-                av_packet_unref(av.packet);
-                goto cleanup;
-            }
-        }
-
-        while (1) {
-            error_code = avcodec_receive_frame(av.codec_ctx, av.frame);
-            if (error_code == AVERROR(EAGAIN)) {
-                av_frame_unref(av.frame);
-                break;
-            }
-
-            if (error_code < 0) {
-                av_packet_unref(av.packet);
-                av_frame_unref(av.frame);
-                goto cleanup;
-            }
-
-            uint8_t *out_buffer = nullptr;
-            const int32_t out_samples =
-                swr_get_out_samples(swr.ctx, av.frame->nb_samples);
-            av_samples_alloc(
-                &out_buffer, nullptr, swr.dst.ch_layout.nb_channels,
-                out_samples, swr.dst.format, 1);
-            int32_t resampled_size = swr_convert(
-                swr.ctx, &out_buffer, out_samples,
-                (const uint8_t **)av.frame->data, av.frame->nb_samples);
-            while (resampled_size > 0) {
-                int32_t out_buffer_size = av_samples_get_buffer_size(
-                    nullptr, swr.dst.ch_layout.nb_channels, resampled_size,
-                    swr.dst.format, 1);
-
-                if (out_buffer_size > 0) {
-                    working_buffer = Memory_Realloc(
-                        working_buffer, working_buffer_size + out_buffer_size);
-                    if (out_buffer) {
-                        memcpy(
-                            (uint8_t *)working_buffer + working_buffer_size,
-                            out_buffer, out_buffer_size);
-                    }
-                    working_buffer_size += out_buffer_size;
-                }
-
-                resampled_size =
-                    swr_convert(swr.ctx, &out_buffer, out_samples, nullptr, 0);
-            }
-
-            av_freep(&out_buffer);
-            av_frame_unref(av.frame);
-        }
-
-        av_packet_unref(av.packet);
+    if (error_code == AVERROR_EOF) {
+        error_code = 0;
+    } else if (error_code < 0) {
+        goto cleanup;
     }
 
     if (out_size != nullptr) {
-        *out_size = working_buffer_size;
+        *out_size = swr.working_buffer_size;
     }
     if (out_sample_count != nullptr) {
-        *out_sample_count = (int32_t)(working_buffer_size
-                                      / av_get_bytes_per_sample(swr.dst.format))
+        *out_sample_count = (int32_t)swr.working_buffer_size
+            / av_get_bytes_per_sample(swr.dst.format)
             / swr.dst.ch_layout.nb_channels;
     }
     if (out_sample_data != nullptr) {
-        *out_sample_data = (uint8_t *)working_buffer;
+        *out_sample_data = swr.working_buffer;
     } else {
-        Memory_FreePointer(&working_buffer);
+        Memory_FreePointer(&swr.working_buffer);
     }
     result = true;
 
@@ -365,20 +381,6 @@ cleanup:
     if (error_code != 0) {
         LOG_ERROR("Error while decoding sample: %s", av_err2str(error_code));
     }
-
-    if (swr.ctx) {
-        swr_free(&swr.ctx);
-    }
-
-    if (av.frame) {
-        av_frame_free(&av.frame);
-    }
-
-    if (av.packet) {
-        av_packet_free(&av.packet);
-    }
-
-    av.codec = nullptr;
 
     if (!result) {
         if (out_size != nullptr) {
@@ -390,22 +392,29 @@ cleanup:
         if (out_sample_data != nullptr) {
             *out_sample_data = nullptr;
         }
-        Memory_FreePointer(&working_buffer);
+        Memory_FreePointer(&swr.working_buffer);
     }
 
+    if (swr.ctx) {
+        swr_free(&swr.ctx);
+    }
+    if (av.frame) {
+        av_frame_free(&av.frame);
+    }
+    if (av.packet) {
+        av_packet_free(&av.packet);
+    }
+    av.codec = nullptr;
     if (av.codec_ctx) {
         avcodec_free_context(&av.codec_ctx);
     }
-
     if (av.format_ctx) {
         avformat_close_input(&av.format_ctx);
     }
-
     if (av.avio_context) {
         av_freep(&av.avio_context->buffer);
         avio_context_free(&av.avio_context);
     }
-
     return result;
 }
 
