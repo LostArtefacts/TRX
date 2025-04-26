@@ -137,7 +137,7 @@ void GameStringTable_Apply(const GF_LEVEL *const level)
     Object_ResetNames();
     ASSERT(m_GST_Layers != nullptr);
     for (int32_t i = 0; i < m_GST_Layers->count; i++) {
-        const GS_FILE *const gs_file = Vector_Get(m_GST_Layers, i);
+        const GS_FILE *const gs_file = *(GS_FILE **)Vector_Get(m_GST_Layers, i);
         M_ApplyLayer(level, gs_file);
     }
     M_DoObjectAliases();
@@ -145,14 +145,14 @@ void GameStringTable_Apply(const GF_LEVEL *const level)
 
 void GameStringTable_Init(void)
 {
-    m_GST_Layers = Vector_Create(sizeof(GS_FILE));
+    m_GST_Layers = Vector_Create(sizeof(GS_FILE *));
 }
 
 void GameStringTable_Shutdown(void)
 {
     if (m_GST_Layers != nullptr) {
         for (int32_t i = 0; i < m_GST_Layers->count; i++) {
-            GS_FILE *const gs_file = Vector_Get(m_GST_Layers, i);
+            GS_FILE *const gs_file = *(GS_FILE **)Vector_Get(m_GST_Layers, i);
             GS_File_Free(gs_file);
         }
         Vector_Free(m_GST_Layers);
@@ -168,6 +168,6 @@ void GameStringTable_Load(const char *const path, const bool load_levels)
     }
     GS_FILE *gs_file = GS_File_CreateFromString(data, load_levels);
     ASSERT(m_GST_Layers != nullptr);
-    Vector_Add(m_GST_Layers, gs_file);
+    Vector_Add(m_GST_Layers, &gs_file);
     Memory_FreePointer(&data);
 }
