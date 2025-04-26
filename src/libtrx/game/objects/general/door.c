@@ -1,14 +1,16 @@
-#include "game/box.h"
-#include "game/items.h"
+#include "game/objects/general/door.h"
+
+#include "game/game_buf.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
-#include "game/room.h"
-#include "global/vars.h"
+#include "game/pathing.h"
+#include "game/rooms.h"
 
-#include <libtrx/game/collision.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/objects/general/door.h>
-#include <libtrx/utils.h>
+typedef struct {
+    SECTOR *sector;
+    SECTOR old_sector;
+    int16_t box_num;
+} DOORPOS_DATA;
 
 typedef struct {
     DOORPOS_DATA d1;
@@ -22,7 +24,6 @@ static SECTOR *M_GetRoomRelSector(
 static void M_InitialisePortal(
     const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz,
     DOORPOS_DATA *door_pos);
-
 static bool M_LaraDoorCollision(const SECTOR *sector);
 static void M_Check(DOORPOS_DATA *d);
 static void M_Shut(DOORPOS_DATA *d);
@@ -42,38 +43,17 @@ static SECTOR *M_GetRoomRelSector(
     return Room_GetUnitSector(room, sector.x, sector.z);
 }
 
-static void M_InitialisePortal(
-    const ROOM *const room, const ITEM *const item, const int32_t sector_dx,
-    const int32_t sector_dz, DOORPOS_DATA *const door_pos)
-{
-    door_pos->sector = M_GetRoomRelSector(room, item, sector_dx, sector_dz);
-
-    const SECTOR *sector = door_pos->sector;
-
-    const int16_t room_num = sector->portal_room.wall;
-    if (room_num != NO_ROOM) {
-        sector =
-            M_GetRoomRelSector(Room_Get(room_num), item, sector_dx, sector_dz);
-    }
-
-    int16_t box_num = sector->box;
-    if (!(Box_GetBox(box_num)->overlap_index & BOX_BLOCKABLE)) {
-        box_num = NO_BOX;
-    }
-    door_pos->block = box_num;
-    door_pos->old_sector = *door_pos->sector;
-}
-
 static bool M_LaraDoorCollision(const SECTOR *const sector)
 {
     // Check if Lara is on the same tile as the invisible block.
-    if (g_LaraItem == nullptr) {
+    const ITEM *const lara = Lara_GetItem();
+    if (lara == nullptr) {
         return false;
     }
 
-    int16_t room_num = g_LaraItem->room_num;
-    const SECTOR *const lara_sector = Room_GetSector(
-        g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
+    int16_t room_num = lara->room_num;
+    const SECTOR *const lara_sector =
+        Room_GetSector(lara->pos.x, lara->pos.y, lara->pos.z, &room_num);
     return lara_sector == sector;
 }
 
@@ -90,22 +70,22 @@ static void M_Check(DOORPOS_DATA *const d)
 
 static void M_Shut(DOORPOS_DATA *const d)
 {
-    // Change the level geometry so that the door tile is impassable.
     SECTOR *const sector = d->sector;
-    if (sector == nullptr) {
+    if (d->sector == nullptr) {
         return;
     }
 
+    sector->idx = 0;
     sector->box = NO_BOX;
-    sector->floor.height = NO_HEIGHT;
     sector->ceiling.height = NO_HEIGHT;
+    sector->floor.height = NO_HEIGHT;
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
-    sector->portal_room.sky = NO_ROOM;
-    sector->portal_room.pit = NO_ROOM;
+    sector->portal_room.sky = NO_ROOM_NEG;
+    sector->portal_room.pit = NO_ROOM_NEG;
     sector->portal_room.wall = NO_ROOM;
 
-    const int16_t box_num = d->block;
+    const int16_t box_num = d->box_num;
     if (box_num != NO_BOX) {
         Box_GetBox(box_num)->overlap_index |= BOX_BLOCKED;
     }
@@ -113,18 +93,39 @@ static void M_Shut(DOORPOS_DATA *const d)
 
 static void M_Open(DOORPOS_DATA *const d)
 {
-    // Restore the level geometry so that the door tile is passable.
-    SECTOR *const sector = d->sector;
-    if (!sector) {
+    if (d->sector == nullptr) {
         return;
     }
 
-    *sector = d->old_sector;
+    *d->sector = d->old_sector;
 
-    const int16_t box_num = d->block;
+    const int16_t box_num = d->box_num;
     if (box_num != NO_BOX) {
         Box_GetBox(box_num)->overlap_index &= ~BOX_BLOCKED;
     }
+}
+
+static void M_InitialisePortal(
+    const ROOM *const room, const ITEM *const item, const int32_t sector_dx,
+    const int32_t sector_dz, DOORPOS_DATA *const door_pos)
+{
+    door_pos->sector = M_GetRoomRelSector(room, item, sector_dx, sector_dz);
+
+    const SECTOR *sector = door_pos->sector;
+
+    const int16_t room_num = door_pos->sector->portal_room.wall;
+    if (room_num != NO_ROOM) {
+        sector =
+            M_GetRoomRelSector(Room_Get(room_num), item, sector_dx, sector_dz);
+    }
+
+    int16_t box_num = sector->box;
+    const BOX_INFO *const box = Box_GetBox(box_num);
+    if ((box->overlap_index & BOX_BLOCKABLE) == 0) {
+        box_num = NO_BOX;
+    }
+    door_pos->box_num = box_num;
+    door_pos->old_sector = *door_pos->sector;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -133,14 +134,14 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Door_Collision;
-    obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->save_anim = 1;
 }
 
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    DOOR_DATA *const door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_ITEM_DATA);
+    DOOR_DATA *door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_ITEM_DATA);
     item->data = door;
 
     int32_t dx = 0;
@@ -159,7 +160,7 @@ static void M_Initialise(const int16_t item_num)
     const ROOM *room = Room_Get(room_num);
     M_InitialisePortal(room, item, dx, dz, &door->d1);
 
-    if (room->flipped_room == -1) {
+    if (room->flipped_room == NO_ROOM_NEG) {
         door->d1flip.sector = nullptr;
     } else {
         room = Room_Get(room->flipped_room);
@@ -173,30 +174,29 @@ static void M_Initialise(const int16_t item_num)
     if (room_num == NO_ROOM) {
         door->d2.sector = nullptr;
         door->d2flip.sector = nullptr;
-        return;
-    }
-
-    room = Room_Get(room_num);
-    M_InitialisePortal(room, item, 0, 0, &door->d2);
-    if (room->flipped_room == -1) {
-        door->d2flip.sector = nullptr;
     } else {
-        room = Room_Get(room->flipped_room);
-        M_InitialisePortal(room, item, 0, 0, &door->d2flip);
+        room = Room_Get(room_num);
+        M_InitialisePortal(room, item, 0, 0, &door->d2);
+        if (room->flipped_room == NO_ROOM_NEG) {
+            door->d2flip.sector = nullptr;
+        } else {
+            room = Room_Get(room->flipped_room);
+            M_InitialisePortal(room, item, 0, 0, &door->d2flip);
+        }
+
+        M_Shut(&door->d2);
+        M_Shut(&door->d2flip);
+
+        const int16_t prev_room = item->room_num;
+        Item_NewRoom(item_num, room_num);
+        item->room_num = prev_room;
     }
-
-    M_Shut(&door->d2);
-    M_Shut(&door->d2flip);
-
-    const int16_t prev_room = item->room_num;
-    Item_NewRoom(item_num, room_num);
-    item->room_num = prev_room;
 }
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    DOOR_DATA *door = item->data;
+    DOOR_DATA *const door = item->data;
 
     if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_STATE_CLOSED) {
@@ -225,21 +225,25 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void Door_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+void Door_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    if (!Lara_TestBoundsCollide(item, coll->radius)) {
+
+    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }
+
     if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
+
     if (coll->enable_baddie_push) {
-        if (item->current_anim_state != item->goal_anim_state) {
-            Lara_Push(item, coll, coll->enable_hit, true);
-        } else {
-            Lara_Push(item, coll, false, true);
-        }
+        Lara_Push(
+            item, coll,
+            coll->enable_hit
+                && item->current_anim_state != item->goal_anim_state,
+            true);
     }
 }
 

@@ -120,12 +120,6 @@ typedef enum {
     GFE_REMOVE_AMMO      = 22,
 } GF_EVENTS;
 
-typedef struct {
-    SECTOR *sector;
-    SECTOR old_sector;
-    int16_t block;
-} DOORPOS_DATA;
-
 typedef enum {
     TRAP_SET      = 0,
     TRAP_ACTIVATE = 1,

@@ -195,7 +195,6 @@ sources = [
   'game/objects/general/cutscene_player.c',
   'game/objects/general/detonator.c',
   'game/objects/general/ding_dong.c',
-  'game/objects/general/door.c',
   'game/objects/general/earthquake.c',
   'game/objects/general/final_cutscene.c',
   'game/objects/general/final_level_counter.c',
