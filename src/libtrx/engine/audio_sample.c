@@ -1,5 +1,6 @@
 #include "audio_internal.h"
 
+#include "benchmark.h"
 #include "debug.h"
 #include "log.h"
 #include "memory.h"
@@ -21,7 +22,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 
 typedef struct {
     char *original_data;
@@ -50,8 +50,8 @@ typedef struct {
 } AUDIO_SAMPLE_SOUND;
 
 typedef struct {
-    const char *data;
-    const char *ptr;
+    const uint8_t *data;
+    const uint8_t *ptr;
     int32_t size;
     int32_t remaining;
 } AUDIO_AV_BUFFER;
@@ -64,7 +64,7 @@ static double M_DecibelToMultiplier(double db_gain);
 static bool M_RecalculateChannelVolumes(int32_t sound_id);
 static int32_t M_ReadAVBuffer(void *opaque, uint8_t *dst, int32_t dst_size);
 static int64_t M_SeekAVBuffer(void *opaque, int64_t offset, int32_t whence);
-static bool M_Convert(const int32_t sample_id);
+static bool M_ConvertSample(const int32_t sample_id);
 
 static double M_DecibelToMultiplier(double db_gain)
 {
@@ -135,18 +135,13 @@ static int64_t M_SeekAVBuffer(void *opaque, int64_t offset, int32_t whence)
     return src->ptr - src->data;
 }
 
-static bool M_Convert(const int32_t sample_id)
+static bool M_ConvertRawData(
+    const uint8_t *const original_data, const int32_t original_size,
+    const int32_t dst_sample_rate, const int32_t dst_format,
+    const int32_t dst_channel_count, uint8_t **const out_sample_data,
+    size_t *const out_size, size_t *const out_sample_count)
 {
-    ASSERT(sample_id >= 0 && sample_id < m_LoadedSamplesCount);
-
     bool result = false;
-    AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
-
-    if (sample->sample_data != nullptr) {
-        return true;
-    }
-
-    const clock_t time_start = clock();
     size_t working_buffer_size = 0;
     float *working_buffer = nullptr;
 
@@ -188,10 +183,10 @@ static bool M_Convert(const int32_t sample_id)
     }
 
     AUDIO_AV_BUFFER av_buf = {
-        .data = sample->original_data,
-        .ptr = sample->original_data,
-        .size = sample->original_size,
-        .remaining = sample->original_size,
+        .data = original_data,
+        .ptr = original_data,
+        .size = original_size,
+        .remaining = original_size,
     };
 
     av.avio_context = avio_alloc_context(
@@ -248,7 +243,7 @@ static bool M_Convert(const int32_t sample_id)
     }
 
     av.packet = av_packet_alloc();
-    if (!av.packet) {
+    if (av.packet == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
@@ -283,7 +278,7 @@ static bool M_Convert(const int32_t sample_id)
             swr.src.ch_layout = av.codec_ctx->ch_layout;
             swr.src.format = av.codec_ctx->sample_fmt;
             swr.dst.sample_rate = AUDIO_WORKING_RATE;
-            av_channel_layout_default(&swr.dst.ch_layout, 1);
+            av_channel_layout_default(&swr.dst.ch_layout, dst_channel_count);
             swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
             swr_alloc_set_opts2(
                 &swr.ctx, &swr.dst.ch_layout, swr.dst.format,
@@ -351,25 +346,24 @@ static bool M_Convert(const int32_t sample_id)
         av_packet_unref(av.packet);
     }
 
-    int32_t sample_format_bytes = av_get_bytes_per_sample(swr.dst.format);
-    sample->num_samples = working_buffer_size / sample_format_bytes
-        / swr.dst.ch_layout.nb_channels;
-    sample->channels = swr.src.ch_layout.nb_channels;
-    sample->sample_data = working_buffer;
+    if (out_size != nullptr) {
+        *out_size = working_buffer_size;
+    }
+    if (out_sample_count != nullptr) {
+        *out_sample_count = (int32_t)(working_buffer_size
+                                      / av_get_bytes_per_sample(swr.dst.format))
+            / swr.dst.ch_layout.nb_channels;
+    }
+    if (out_sample_data != nullptr) {
+        *out_sample_data = (uint8_t *)working_buffer;
+    } else {
+        Memory_FreePointer(&working_buffer);
+    }
     result = true;
-
-    const clock_t time_end = clock();
-    const double time_delta =
-        (((double)(time_end - time_start)) / CLOCKS_PER_SEC) * 1000.0f;
-    LOG_DEBUG(
-        "Sample %d decoded (%.0f ms)", sample_id, sample->original_size,
-        time_delta);
 
 cleanup:
     if (error_code != 0) {
-        LOG_ERROR(
-            "Error while opening sample ID %d: %s", sample_id,
-            av_err2str(error_code));
+        LOG_ERROR("Error while decoding sample: %s", av_err2str(error_code));
     }
 
     if (swr.ctx) {
@@ -387,11 +381,15 @@ cleanup:
     av.codec = nullptr;
 
     if (!result) {
-        sample->sample_data = nullptr;
-        sample->original_data = nullptr;
-        sample->original_size = 0;
-        sample->num_samples = 0;
-        sample->channels = 0;
+        if (out_size != nullptr) {
+            *out_size = 0;
+        }
+        if (out_sample_count != nullptr) {
+            *out_sample_count = 0;
+        }
+        if (out_sample_data != nullptr) {
+            *out_sample_data = nullptr;
+        }
         Memory_FreePointer(&working_buffer);
     }
 
@@ -408,6 +406,31 @@ cleanup:
         avio_context_free(&av.avio_context);
     }
 
+    return result;
+}
+
+static bool M_ConvertSample(const int32_t sample_id)
+{
+    ASSERT(sample_id >= 0 && sample_id < m_LoadedSamplesCount);
+    AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
+    if (sample->sample_data != nullptr) {
+        return true;
+    }
+
+    size_t num_samples;
+    BENCHMARK benchmark = Benchmark_Start();
+
+    const bool result = M_ConvertRawData(
+        (uint8_t *)sample->original_data, sample->original_size,
+        AUDIO_WORKING_RATE, Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT), 1,
+        (uint8_t **)&sample->sample_data, nullptr, &num_samples);
+
+    char buffer[80];
+    sprintf(buffer, "sample %d decoded", sample_id);
+    Benchmark_End(&benchmark, buffer);
+
+    sample->channels = 1;
+    sample->num_samples = num_samples;
     return result;
 }
 
@@ -553,7 +576,7 @@ int32_t Audio_Sample_Play(
             continue;
         }
 
-        M_Convert(sample_id);
+        M_ConvertSample(sample_id);
 
         sound->is_used = true;
         sound->is_playing = true;
