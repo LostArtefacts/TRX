@@ -14,6 +14,7 @@
 - changed sprite pickups to respect the water tint if placed underwater (#2673)
 - changed save to take priority over load when both inputs are held on the same frame, in line with OG (#2833)
 - changed the sound dialog appearance (repositioned and added text labels)
+- changed The Unfinished Business strings to default to the OG strings file for the main tables (#2847)
 - fixed the bilinear filter to not readjust the UVs (#2258)
 - fixed disabling the cutscenes causing the game to exit (#2743, regression from 4.8)
 - fixed anisotropy filter causing black lines on certain GPUs (#902)

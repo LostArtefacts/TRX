@@ -490,7 +490,12 @@ int32_t Shell_Main(void)
 
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
-    GameStringTable_LoadFromFile(m_ModPaths[m_Args.mod].game_strings_path);
+
+    GameStringTable_Init();
+    if (m_Args.mod != M_MOD_OG) {
+        GameStringTable_Load(m_ModPaths[M_MOD_OG].game_strings_path, false);
+    }
+    GameStringTable_Load(m_ModPaths[m_Args.mod].game_strings_path, true);
     GameStringTable_Apply(nullptr);
 
     GameBuf_Init();
@@ -595,8 +600,9 @@ int32_t Shell_Main(void)
 
 void Shell_Shutdown(void)
 {
+    GameStringTable_Shutdown();
     GF_Shutdown();
-    GameString_Shutdown();
+
     Console_Shutdown();
     Render_Shutdown();
     Text_Shutdown();
@@ -604,6 +610,7 @@ void Shell_Shutdown(void)
     GameBuf_Shutdown();
     Config_Shutdown();
     EnumMap_Shutdown();
+    GameString_Shutdown();
 }
 
 const char *Shell_GetConfigPath(void)
