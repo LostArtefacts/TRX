@@ -1,8 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...develop) - ××××-××-××
 - added aliases to CLI options (`-gold` becomes `-g/--gold`)
 - added a `--help` CLI option (may not output anything on Windows machines – OS bug)
-- changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
+
+## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
+- changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)
 - fixed Lara voiding if she stops on a tile with a closing door, and the door isn't on a portal (#2848)
 - fixed guns carried by enemies not being converted to ammo if Lara has picked up the same gun elsewhere in the same level (#2856)
 - fixed button mashing triggering load instead of save on a specific passport animation frame (#2863, regression from 1.0)

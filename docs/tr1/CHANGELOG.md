@@ -5,9 +5,9 @@
 - added support for antitriggers, like TR2+ (#2580)
 - added support for aspect ratio-specific images (#1840)
 - added an option to wraparound when scrolling UI dialogs, such as save/load (#2834)
-- changed the `draw_distance_fade` and `draw_distance_max` to `fog_start` and `fog_end`
 - added aliases to CLI options (`-gold` becomes `-g/--gold`, `-demo_pc` becomes `--demo-pc`)
 - added a `--help` CLI option (may not output anything on Windows machines – OS bug)
+- changed the `draw_distance_fade` and `draw_distance_max` to `fog_start` and `fog_end`
 - changed `Select Detail` dialog title to `Graphic Options`
 - changed the number of static mesh slots from 50 to 256 (#2734)
 - changed the "enable EIDOS logo" option to disable the Core Design and Bink Video Codec FMVs as well; renamed to "enable legal" (#2741)
