@@ -125,20 +125,23 @@ void Viewport_Reset(void)
     VIEWPORT *const vp = &m_Viewport;
     switch (g_Config.rendering.aspect_mode) {
     case AM_4_3:
-        vp->render_ar = 4.0 / 3.0;
+        vp->render_ar.w = 4;
+        vp->render_ar.h = 3;
         break;
     case AM_16_9:
-        vp->render_ar = 16.0 / 9.0;
+        vp->render_ar.w = 16;
+        vp->render_ar.h = 9;
         break;
     case AM_ANY:
-        vp->render_ar = size.w / (double)size.h;
+        vp->render_ar.w = size.w;
+        vp->render_ar.h = size.h;
         break;
     }
 
     vp->width = size.w / g_Config.rendering.scaler;
     vp->height = size.h / g_Config.rendering.scaler;
     if (g_Config.rendering.aspect_mode != AM_ANY) {
-        vp->width = vp->height * vp->render_ar;
+        vp->width = vp->height * vp->render_ar.w / vp->render_ar.h;
     }
 
     vp->near_z = Output_GetNearZ() >> W2V_SHIFT;
