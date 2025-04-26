@@ -148,34 +148,49 @@ static int64_t M_SeekAVBuffer(void *opaque, int64_t offset, int32_t whence)
 static int32_t M_OutputAudioFrame(
     M_SWR_CONTEXT *const swr, AVFrame *const frame)
 {
+    // Determine the maximum number of output samples this call can produce,
+    // based on the current delay already inside the resampler plus the new
+    // input. Using av_rescale_rnd() keeps everything in integer domain and
+    // avoids cumulative rounding errors.
+    const int64_t delay = swr_get_delay(swr->ctx, swr->src.sample_rate);
+    const int32_t out_samples = (int32_t)av_rescale_rnd(
+        delay + frame->nb_samples, swr->dst.sample_rate, swr->src.sample_rate,
+        AV_ROUND_UP);
+    if (out_samples <= 0) {
+        return 0; // nothing to do
+    }
+
     uint8_t *out_buffer = nullptr;
-    const int32_t out_samples =
-        swr_get_out_samples(swr->ctx, frame->nb_samples);
-    av_samples_alloc(
-        &out_buffer, nullptr, swr->dst.ch_layout.nb_channels, out_samples,
-        swr->dst.format, 1);
-    int32_t resampled_size = swr_convert(
+    if (av_samples_alloc(
+            &out_buffer, nullptr, swr->dst.ch_layout.nb_channels, out_samples,
+            swr->dst.format, 1)
+        < 0) {
+        return AVERROR(ENOMEM);
+    }
+
+    // Convert – we do *not* drain the resampler here.
+    const int32_t converted = swr_convert(
         swr->ctx, &out_buffer, out_samples, (const uint8_t **)frame->data,
         frame->nb_samples);
-    while (resampled_size > 0) {
-        int32_t out_buffer_size = av_samples_get_buffer_size(
-            nullptr, swr->dst.ch_layout.nb_channels, resampled_size,
-            swr->dst.format, 1);
 
+    if (converted < 0) {
+        av_freep(&out_buffer);
+        return converted; // propagate error
+    }
+
+    if (converted > 0) {
+        const int32_t out_buffer_size = av_samples_get_buffer_size(
+            nullptr, swr->dst.ch_layout.nb_channels, converted, swr->dst.format,
+            1);
         if (out_buffer_size > 0) {
             swr->working_buffer = Memory_Realloc(
                 swr->working_buffer,
                 swr->working_buffer_size + out_buffer_size);
-            if (out_buffer) {
-                memcpy(
-                    swr->working_buffer + swr->working_buffer_size, out_buffer,
-                    out_buffer_size);
-            }
+            memcpy(
+                swr->working_buffer + swr->working_buffer_size, out_buffer,
+                out_buffer_size);
             swr->working_buffer_size += out_buffer_size;
         }
-
-        resampled_size =
-            swr_convert(swr->ctx, &out_buffer, out_samples, nullptr, 0);
     }
 
     av_freep(&out_buffer);
