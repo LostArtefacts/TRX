@@ -8,7 +8,10 @@ typedef struct {
     int32_t near_z;
     int32_t far_z;
     int16_t view_angle;
-    double render_ar;
+    struct {
+        int32_t w;
+        int32_t h;
+    } render_ar;
 
     // TODO: remove most of these variables if possible
     struct {
