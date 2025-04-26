@@ -42,41 +42,33 @@ def extract_zip(zip_path: Path, dest_dir: Path) -> None:
         z.extractall(dest_dir)
 
 
-def download_assets(assets: list[tuple[str, Path]]) -> None:
+def download_assets(asset_urls: list[str], target_dir: Path) -> None:
     with tempfile.TemporaryDirectory() as tmpdir_str:
         tmpdir = Path(tmpdir_str)
-        for url, dest in assets:
+        for url in asset_urls:
             filename = Path(url).name
             local_zip = tmpdir / filename
             download_to_file(url, local_zip)
-            extract_zip(local_zip, dest)
+            extract_zip(local_zip, target_dir)
     print("Asset download and extraction complete.")
 
 
 def main() -> None:
     args = parse_args()
-    assets: dict[int, list[tuple[str, Path]]] = {
-        1: [
-            (
-                "https://lostartefacts.dev/aux/tr1x/main.zip",
-                Path("data/tr1/ship"),
-            )
-        ],
+    asset_urls_map: dict[int, list[str]] = {
+        1: ["https://lostartefacts.dev/aux/tr1x/main.zip"],
         2: [
-            (
-                "https://lostartefacts.dev/aux/tr2x/main.zip",
-                Path("data/tr2/ship"),
-            )
+            "https://lostartefacts.dev/aux/tr2x/main.zip",
+            "https://lostartefacts.dev/aux/tr2x/trgm.zip",
         ],
     }
-    match str(args.game_version):
-        case "1":
-            download_assets(assets[1])
-        case "2":
-            download_assets(assets[2])
-        case "all":
-            download_assets(assets[1])
-            download_assets(assets[2])
+
+    versions = {"1": [1], "2": [2], "all": [1, 2]}[args.game_version]
+    for version in versions:
+        download_assets(
+            asset_urls_map[version],
+            target_dir=PROJECT_PATHS[version].shipped_data_dir,
+        )
 
 
 if __name__ == "__main__":
