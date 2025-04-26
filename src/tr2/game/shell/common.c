@@ -100,7 +100,6 @@ static void M_ConfigureOpenGL(void);
 static bool M_CreateGameWindow(void);
 
 static void M_ShowHelp(void);
-static bool M_ParseArgs(SHELL_ARGS *out_args);
 static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
 
@@ -352,38 +351,6 @@ static void M_ShowHelp(void)
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
 }
 
-static bool M_ParseArgs(SHELL_ARGS *const out_args)
-{
-    const char **args = nullptr;
-    int32_t arg_count = 0;
-    Shell_GetCommandLine(&arg_count, &args);
-
-    out_args->mod = M_MOD_OG;
-
-    for (int32_t i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-h") || !strcmp(args[i], "--help")) {
-            M_ShowHelp();
-            return false;
-        }
-        if (!strcmp(args[i], "-g") || !strcmp(args[i], "--gold")
-            || !strcmp(args[i], "-gold")) {
-            out_args->mod = M_MOD_GM;
-        }
-        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
-            && i + 1 < arg_count) {
-            out_args->level_to_play = args[i + 1];
-            out_args->mod = M_MOD_CUSTOM_LEVEL;
-        }
-        if ((!strcmp(args[i], "-s") || !strcmp(args[i], "--save"))
-            && i + 1 < arg_count) {
-            if (String_ParseInteger(args[i + 1], &out_args->save_to_load)) {
-                out_args->save_to_load--;
-            }
-        }
-    }
-    return true;
-}
-
 static void M_LoadConfig(void)
 {
     Config_Read();
@@ -449,13 +416,38 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     }
 }
 
+bool Shell_ParseArgs(const int32_t arg_count, const char **args)
+{
+    SHELL_ARGS *const out_args = &m_Args;
+    out_args->mod = M_MOD_OG;
+
+    for (int32_t i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-h") || !strcmp(args[i], "--help")) {
+            M_ShowHelp();
+            return false;
+        }
+        if (!strcmp(args[i], "-g") || !strcmp(args[i], "--gold")
+            || !strcmp(args[i], "-gold")) {
+            out_args->mod = M_MOD_GM;
+        }
+        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
+            && i + 1 < arg_count) {
+            out_args->level_to_play = args[i + 1];
+            out_args->mod = M_MOD_CUSTOM_LEVEL;
+        }
+        if ((!strcmp(args[i], "-s") || !strcmp(args[i], "--save"))
+            && i + 1 < arg_count) {
+            if (String_ParseInteger(args[i + 1], &out_args->save_to_load)) {
+                out_args->save_to_load--;
+            }
+        }
+    }
+    return true;
+}
+
 // TODO: refactor the hell out of me
 int32_t Shell_Main(void)
 {
-    if (!M_ParseArgs(&m_Args)) {
-        return 0;
-    }
-
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
 
     if (m_Args.mod == M_MOD_GM) {
