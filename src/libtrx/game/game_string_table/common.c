@@ -124,7 +124,7 @@ static void M_ApplyLayer(
         }
         }
 
-        if (gs_level_table != nullptr) {
+        if (gs_level_table != nullptr && gs_level_table->count != 0) {
             ASSERT(level->num >= 0);
             ASSERT(level->num < gs_level_table->count);
             M_Apply(&gs_level_table->entries[level->num].table);
