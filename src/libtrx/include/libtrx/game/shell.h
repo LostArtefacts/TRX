@@ -12,7 +12,7 @@ extern void Shell_Shutdown(void);
 extern SDL_Window *Shell_GetWindow(void);
 
 void Shell_Setup(void);
-extern void Shell_Main(void);
+extern int32_t Shell_Main(void);
 void Shell_Terminate(int32_t exit_code);
 void Shell_ExitSystem(const char *message);
 void Shell_ExitSystemFmt(const char *fmt, ...);
