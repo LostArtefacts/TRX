@@ -175,11 +175,7 @@ bool Demo_Start(const int32_t level_num)
     // https://github.com/LostArtefacts/TRX/issues/36
     g_Lara.request_gun_type = LGT_UNARMED;
 
-    p->text = Text_Create(0, -16, GS(MISC_DEMO_MODE));
-    Text_Flash(p->text, true, 20);
-    Text_AlignBottom(p->text, true);
-    Text_CentreH(p->text, true);
-    g_GameInfo.showing_demo = true;
+    Overlay_SetBottomText(GS(MISC_DEMO_MODE), true);
     return true;
 }
 
@@ -187,25 +183,21 @@ void Demo_End(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Text_Remove(p->text);
-    p->text = nullptr;
-    g_GameInfo.showing_demo = false;
+    Overlay_SetBottomText(nullptr, false);
 }
 
 void Demo_Pause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Text_Hide(p->text, true);
-    g_GameInfo.showing_demo = false;
+    Overlay_SetBottomText(nullptr, false);
 }
 
 void Demo_Unpause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_PrepareConfig(p);
-    Text_Hide(p->text, false);
-    g_GameInfo.showing_demo = true;
+    Overlay_SetBottomText(GS(MISC_DEMO_MODE), true);
 }
 
 int32_t Demo_ChooseLevel(const int32_t demo_num)
@@ -272,7 +264,6 @@ GF_COMMAND Demo_Control(void)
     Sound_ResetAmbient();
     ItemAction_RunActive();
     Sound_UpdateEffects();
-    Overlay_BarHealthTimerTick();
     Output_AnimateTextures(1);
 
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -280,6 +271,5 @@ GF_COMMAND Demo_Control(void)
 
 void Demo_StopFlashing(void)
 {
-    M_PRIV *const p = &m_Priv;
-    Text_Flash(p->text, false, 0);
+    Overlay_SetBottomText(GS(MISC_DEMO_MODE), false);
 }

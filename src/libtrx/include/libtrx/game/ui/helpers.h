@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/ui/common.h"
+#include "./common.h"
 
 // Repetitive widget ops strategies
 void UI_MeasureWrapper(UI_NODE *node);

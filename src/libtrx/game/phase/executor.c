@@ -9,6 +9,7 @@
 #include "game/input.h"
 #include "game/interpolation.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/text.h"
@@ -30,6 +31,7 @@ static int32_t M_Wait(PHASE *phase);
 static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 {
     Console_Control();
+    Overlay_Control();
 
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();
     if (gf_override_cmd.action != GF_NOOP) {
@@ -75,6 +77,7 @@ static void M_Draw(PHASE *const phase)
         phase->draw(phase);
     }
 
+    Overlay_Draw();
     Console_Draw();
     Text_Draw();
     UI_EndScene();

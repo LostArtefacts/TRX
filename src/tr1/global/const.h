@@ -1,6 +1,7 @@
 #pragma once
 
 #include <libtrx/game/const.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/utils.h>
 
 #define PHD_ONE 0x10000
@@ -8,8 +9,6 @@
 #define MAX_REQLINES 18
 #define LOT_SLOT_COUNT 32
 #define MAX_SECRETS 16
-#define LARA_MAX_HITPOINTS 1000
-#define LARA_MAX_AIR 1800
 #define LARA_TURN_UNDO (2 * DEG_1) // = 364
 #define LARA_TURN_RATE ((DEG_1 / 4) + LARA_TURN_UNDO) // = 409
 #define LARA_TURN_RATE_UW (2 * DEG_1) // = 364

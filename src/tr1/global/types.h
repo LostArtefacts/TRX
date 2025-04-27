@@ -132,12 +132,6 @@ typedef struct {
     bool remove_ammo;
     bool remove_medipacks;
 
-    // TODO: remove these from here and make it a responsibility of overlay.c
-    bool inv_ring_shown;
-    bool showing_demo;
-    bool inv_showing_medpack;
-    bool inv_ring_above;
-
     bool ask_for_save;
 } GAME_INFO;
 

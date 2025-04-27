@@ -35,9 +35,12 @@ typedef enum {
     IT_NUMBER_OF,
 } INV_TEXT;
 
+// TODO: drop in favor of the Overlay APIs
 static TEXTSTRING *m_HeadingText = nullptr;
 static TEXTSTRING *m_VersionText = nullptr;
+#if TR_VERSION > 1
 static TEXTSTRING *m_Arrows[4] = {};
+#endif
 static TEXTSTRING *m_ItemText[IT_NUMBER_OF] = {};
 static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
@@ -485,41 +488,60 @@ void InvRing_ShowHeader(INV_RING *const ring)
         return;
     }
 
-    if (m_Arrows[INV_RING_ARROW_TL] == nullptr
-        && (ring->type == RT_OPTION
-            || (ring->type == RT_MAIN
-                && g_InvRing_Source[RT_KEYS].count > 0))) {
+    const bool show_up_arrow = ring->type == RT_OPTION
+        || (ring->type == RT_MAIN && g_InvRing_Source[RT_KEYS].count > 0);
+    const bool show_bottom_arrow = ring->type == RT_KEYS
+        || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
+
+#if TR_VERSION == 1
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, show_up_arrow);
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, show_up_arrow);
+#else
+    if (m_Arrows[INV_RING_ARROW_TL] == nullptr) {
         m_Arrows[INV_RING_ARROW_TL] = Text_Create(20, 28, "\\{arrow up}");
         m_Arrows[INV_RING_ARROW_TR] = Text_Create(-20, 28, "\\{arrow up}");
         Text_AlignRight(m_Arrows[INV_RING_ARROW_TR], true);
     }
+#endif
 
-    if (m_Arrows[INV_RING_ARROW_BL] == nullptr
-        && ((ring->type == RT_MAIN && !InvRing_IsOptionLockedOut())
-            || ring->type == RT_KEYS)) {
+#if TR_VERSION == 1
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, show_bottom_arrow);
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_BR, show_bottom_arrow);
+#else
+    if (m_Arrows[INV_RING_ARROW_BL] == nullptr && show_bottom_arrow) {
         m_Arrows[INV_RING_ARROW_BL] = Text_Create(20, -15, "\\{arrow down}");
-        Text_AlignBottom(m_Arrows[INV_RING_ARROW_BL], true);
         m_Arrows[INV_RING_ARROW_BR] = Text_Create(-20, -15, "\\{arrow down}");
+        Text_AlignBottom(m_Arrows[INV_RING_ARROW_BL], true);
         Text_AlignBottom(m_Arrows[INV_RING_ARROW_BR], true);
         Text_AlignRight(m_Arrows[INV_RING_ARROW_BR], true);
     }
+#endif
 }
 
 void InvRing_RemoveHeader(void)
 {
     Text_Remove(m_HeadingText);
     m_HeadingText = nullptr;
+#if TR_VERSION == 2
     for (int32_t i = 0; i < 4; i++) {
         Text_Remove(m_Arrows[i]);
         m_Arrows[i] = nullptr;
     }
+#endif
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, false);
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, false);
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, false);
+    Overlay_ShowArrows(UI_OVERLAY_ARROW_BR, false);
 }
 
 void InvRing_HideArrow(const INV_RING_ARROW arrow, const bool hide)
 {
+#if TR_VERSION > 1
     if (m_Arrows[arrow] != nullptr) {
         Text_Hide(m_Arrows[arrow], hide);
     }
+#endif
+    Overlay_ShowArrows((UI_OVERLAY_ARROW)arrow, hide);
 }
 
 void InvRing_ShowVersionText(void)
