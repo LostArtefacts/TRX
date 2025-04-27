@@ -5,7 +5,6 @@
 #include <libtrx/game/items.h>
 
 void Item_Control(void);
-void Item_UpdateRoom(ITEM *item, int32_t height);
 int16_t Item_GetWaterHeight(ITEM *item);
 int16_t Item_Spawn(const ITEM *item, GAME_OBJECT_ID obj_id);
 

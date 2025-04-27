@@ -274,7 +274,7 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    Item_UpdateRoom(item, -LARA_HEIGHT / 2);
+    Lara_UpdateRoom(-LARA_HEIGHT / 2);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }
@@ -333,7 +333,7 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
         m_CollisionRoutines[item->current_anim_state](item, coll);
     }
 
-    Item_UpdateRoom(item, 100);
+    Lara_UpdateRoom(100);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }
@@ -423,7 +423,7 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
         m_CollisionRoutines[item->current_anim_state](item, coll);
     }
 
-    Item_UpdateRoom(item, 0);
+    Lara_UpdateRoom(0);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }
@@ -474,7 +474,7 @@ void Lara_Control(const int16_t item_num)
                 g_Lara.water_status = LWS_UNDERWATER;
                 item->gravity = 0;
                 item->pos.y += 100;
-                Item_UpdateRoom(item, 0);
+                Lara_UpdateRoom(0);
                 Sound_StopEffect(SFX_LARA_FALL);
                 if (item->current_anim_state == LS_SWAN_DIVE) {
                     item->rot.x = -45 * DEG_1;
@@ -534,7 +534,7 @@ void Lara_Control(const int16_t item_num)
                 g_Lara.torso_rot.x = 0;
                 g_Lara.head_rot.y = 0;
                 g_Lara.head_rot.x = 0;
-                Item_UpdateRoom(item, -381);
+                Lara_UpdateRoom(-381);
                 Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
             }
             break;
@@ -613,7 +613,7 @@ void Lara_Control(const int16_t item_num)
                 g_Lara.torso_rot.x = 0;
                 g_Lara.head_rot.y = 0;
                 g_Lara.head_rot.x = 0;
-                Item_UpdateRoom(item, -LARA_HEIGHT / 2);
+                Lara_UpdateRoom(-LARA_HEIGHT / 2);
             }
             break;
 
