@@ -103,7 +103,7 @@ int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
     switch (coll->coll_type) {
     case COLL_FRONT:
     case COLL_TOP_FRONT:
-        Item_ShiftCol(item, coll);
+        Lara_ShiftCol(coll);
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
         item->gravity = 0;
@@ -111,12 +111,12 @@ int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
         return 1;
 
     case COLL_LEFT:
-        Item_ShiftCol(item, coll);
+        Lara_ShiftCol(coll);
         item->rot.y += LARA_DEFLECT_ANGLE;
         return 0;
 
     case COLL_RIGHT:
-        Item_ShiftCol(item, coll);
+        Lara_ShiftCol(coll);
         item->rot.y -= LARA_DEFLECT_ANGLE;
         return 0;
 
@@ -127,7 +127,7 @@ int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
 
 void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
 {
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
     switch (coll->coll_type) {
     case COLL_FRONT:
     case COLL_TOP_FRONT:
@@ -176,7 +176,7 @@ void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
 
 void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
 {
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     switch (coll->coll_type) {
     case COLL_LEFT:
@@ -687,7 +687,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
         g_Lara.climb_status
         && (front_floor < -STEP_L * 4 || front_ceiling >= LARA_HEIGHT - STEP_L)
         && coll->side_mid.ceiling <= -STEP_L * 5 + LARA_HEIGHT) {
-        Item_ShiftCol(item, coll);
+        Lara_ShiftCol(coll);
         if (Lara_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS_CLIMB_STANCE;
             item->current_anim_state = LS_STOP;
@@ -703,7 +703,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
     }
 
     item->rot.y = angle;
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
     return 1;
 }
 
@@ -727,7 +727,7 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     }
 
     const int16_t angle_dif = angle - item->rot.y;
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
         if (item->current_anim_state == LS_SLIDE
@@ -1571,7 +1571,7 @@ void Lara_SwimCollision(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
         item->room_num, height);
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     switch (coll->coll_type) {
     case COLL_FRONT:
@@ -1709,7 +1709,7 @@ void Lara_WaterCurrent(COLL_INFO *const coll)
         item->pos.y += coll->side_mid.floor;
         item->rot.x += LARA_UW_WALL_DEFLECT;
     }
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     coll->old = item->pos;
 }

@@ -12,9 +12,6 @@ bool Item_IsNearItem(const ITEM *item, const XYZ_32 *pos, int32_t distance);
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);
 bool Item_MovePosition(
     ITEM *src_item, const ITEM *dst_item, const XYZ_32 *vec, int32_t velocity);
-void Item_ShiftCol(ITEM *item, COLL_INFO *coll);
 int32_t Item_GetDistance(const ITEM *item, const XYZ_32 *target);
 
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate);
-
-void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);

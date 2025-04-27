@@ -119,16 +119,6 @@ bool Item_IsSmashable(const ITEM *item)
     return (item->object_id == O_WINDOW_1 || item->object_id == O_BELL);
 }
 
-void Item_ShiftCol(ITEM *const item, COLL_INFO *const coll)
-{
-    item->pos.x += coll->shift.x;
-    item->pos.y += coll->shift.y;
-    item->pos.z += coll->shift.z;
-    coll->shift.z = 0;
-    coll->shift.y = 0;
-    coll->shift.x = 0;
-}
-
 int16_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
