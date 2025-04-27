@@ -243,3 +243,23 @@ void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
 
     lara->pos = new_pos;
 }
+
+bool Lara_IsNearItem(const XYZ_32 *const pos, const int32_t distance)
+{
+    const ITEM *const item = Lara_GetItem();
+    const XYZ_32 d = {
+        .x = pos->x - item->pos.x,
+        .y = pos->y - item->pos.y,
+        .z = pos->z - item->pos.z,
+    };
+    if (ABS(d.x) > distance || ABS(d.z) > distance || ABS(d.y) > WALL_L * 3) {
+        return false;
+    }
+
+    if (SQUARE(d.x) + SQUARE(d.z) > SQUARE(distance)) {
+        return false;
+    }
+
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    return d.y >= bounds->min.y && d.y <= bounds->max.y + 100;
+}

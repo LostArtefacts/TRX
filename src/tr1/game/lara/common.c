@@ -696,11 +696,6 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
     }
 }
 
-bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
-{
-    return Item_IsNearItem(g_LaraItem, pos, distance);
-}
-
 bool Lara_MovePosition(ITEM *item, XYZ_32 *vec)
 {
     int32_t velocity = g_Config.gameplay.enable_walk_to_items
