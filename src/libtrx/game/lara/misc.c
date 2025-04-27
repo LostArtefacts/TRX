@@ -28,3 +28,19 @@ void Lara_GetCollisionInfo(const ITEM *const item, COLL_INFO *const coll)
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
         LARA_HEIGHT);
 }
+
+void Lara_UpdateRoom(const int32_t height)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    const int32_t x = lara_item->pos.x;
+    const int32_t y = height + lara_item->pos.y;
+    const int32_t z = lara_item->pos.z;
+
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    lara_item->floor = Room_GetHeight(sector, x, y, z);
+    if (lara_item->room_num != room_num) {
+        const int16_t item_num = Item_GetIndex(lara_item);
+        Item_NewRoom(item_num, room_num);
+    }
+}

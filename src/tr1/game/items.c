@@ -104,19 +104,6 @@ void Item_Initialise(int16_t item_num)
     Interpolation_RememberItem(item);
 }
 
-void Item_UpdateRoom(ITEM *item, int32_t height)
-{
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y + height;
-    int32_t z = item->pos.z;
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    item->floor = Room_GetHeight(sector, x, y, z);
-    if (item->room_num != room_num) {
-        Item_NewRoom(g_Lara.item_num, room_num);
-    }
-}
-
 int16_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
