@@ -57,7 +57,7 @@ static void M_Consume(
     const GAME_OBJECT_ID key_obj_id)
 {
     Inv_RemoveItem(key_obj_id);
-    Item_AlignPosition(&m_KeyholePosition, keyhole_item, lara_item);
+    Lara_AlignPosition(keyhole_item, &m_KeyholePosition);
     lara_item->goal_anim_state = LS_USE_KEY;
     do {
         Lara_Animate(lara_item);

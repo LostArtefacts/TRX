@@ -156,7 +156,7 @@ static void M_Collision(
         return;
     }
 
-    Item_AlignPosition(&m_ZiplineHandlePosition, item, lara_item);
+    Lara_AlignPosition(item, &m_ZiplineHandlePosition);
     g_Lara.gun_status = LGS_HANDS_BUSY;
 
     lara_item->goal_anim_state = LS_ZIPLINE;

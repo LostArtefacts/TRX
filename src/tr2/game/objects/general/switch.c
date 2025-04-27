@@ -66,15 +66,15 @@ static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
 {
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
-        Item_AlignPosition(&m_AirlockPosition, switch_item, lara_item);
+        Lara_AlignPosition(switch_item, &m_AirlockPosition);
         break;
 
     case O_SWITCH_TYPE_SMALL:
-        Item_AlignPosition(&g_SmallSwitchPosition, switch_item, lara_item);
+        Lara_AlignPosition(switch_item, &g_SmallSwitchPosition);
         break;
 
     case O_SWITCH_TYPE_BUTTON:
-        Item_AlignPosition(&g_PushSwitchPosition, switch_item, lara_item);
+        Lara_AlignPosition(switch_item, &g_PushSwitchPosition);
         break;
     }
 }

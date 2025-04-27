@@ -196,27 +196,6 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
 }
 
-void Item_AlignPosition(ITEM *src_item, ITEM *dst_item, XYZ_32 *vec)
-{
-    src_item->rot.x = dst_item->rot.x;
-    src_item->rot.y = dst_item->rot.y;
-    src_item->rot.z = dst_item->rot.z;
-
-    Matrix_PushUnit();
-    Matrix_Rot16(dst_item->rot);
-    MATRIX *mptr = g_MatrixPtr;
-    src_item->pos.x = dst_item->pos.x
-        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
-           >> W2V_SHIFT);
-    src_item->pos.y = dst_item->pos.y
-        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
-           >> W2V_SHIFT);
-    src_item->pos.z = dst_item->pos.z
-        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
-           >> W2V_SHIFT);
-    Matrix_Pop();
-}
-
 bool Item_MovePosition(
     ITEM *item, const ITEM *ref_item, const XYZ_32 *vec, int32_t velocity)
 {

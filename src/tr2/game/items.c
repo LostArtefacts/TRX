@@ -154,44 +154,6 @@ int16_t Item_GetHeight(const ITEM *const item)
     return height;
 }
 
-void Item_AlignPosition(
-    const XYZ_32 *const vec, const ITEM *const src_item, ITEM *const dst_item)
-{
-    dst_item->rot = src_item->rot;
-    Matrix_PushUnit();
-    Matrix_Rot16(src_item->rot);
-    const MATRIX *const m = g_MatrixPtr;
-    const XYZ_32 shift = {
-        .x = (vec->x * m->_00 + vec->y * m->_01 + vec->z * m->_02) >> W2V_SHIFT,
-        .y = (vec->x * m->_10 + vec->y * m->_11 + vec->z * m->_12) >> W2V_SHIFT,
-        .z = (vec->x * m->_20 + vec->y * m->_21 + vec->z * m->_22) >> W2V_SHIFT,
-    };
-    Matrix_Pop();
-
-    const XYZ_32 new_pos = {
-        .x = src_item->pos.x + shift.x,
-        .y = src_item->pos.y + shift.y,
-        .z = src_item->pos.z + shift.z,
-    };
-
-    int16_t room_num = dst_item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, new_pos.x, new_pos.y, new_pos.z);
-    const int32_t ceiling =
-        Room_GetCeiling(sector, new_pos.x, new_pos.y, new_pos.z);
-
-    if (ABS(height - dst_item->pos.y) > STEP_L
-        || ABS(ceiling - dst_item->pos.y) < LARA_HEIGHT) {
-        return;
-    }
-
-    dst_item->pos.x = new_pos.x;
-    dst_item->pos.y = new_pos.y;
-    dst_item->pos.z = new_pos.z;
-}
-
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);

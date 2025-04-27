@@ -26,7 +26,6 @@ void Lara_SwapMeshExtra(void);
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
 void Lara_UseItem(GAME_OBJECT_ID obj_id);
 
-void Lara_AlignPosition(ITEM *item, XYZ_32 *vec);
 bool Lara_MovePosition(ITEM *item, XYZ_32 *vec);
 
 void Lara_RevertToPistolsIfNeeded(void);
