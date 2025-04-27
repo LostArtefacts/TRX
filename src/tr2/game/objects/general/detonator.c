@@ -140,7 +140,7 @@ static void M_Collision(
     }
 
     Inv_RemoveItem(O_KEY_OPTION_2);
-    Item_AlignPosition(&m_DetonatorPosition, item, lara_item);
+    Lara_AlignPosition(item, &m_DetonatorPosition);
     Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
     lara_item->current_anim_state = LA_EXTRA_BREATH;
     if (item->object_id == O_DETONATOR_2) {

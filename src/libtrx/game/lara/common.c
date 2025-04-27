@@ -2,8 +2,9 @@
 
 #include "game/const.h"
 #include "game/item_actions.h"
+#include "game/lara/const.h"
 #include "game/matrix.h"
-#include "game/rooms/const.h"
+#include "game/rooms.h"
 
 void Lara_Animate(ITEM *const item)
 {
@@ -205,4 +206,43 @@ bool Lara_TestPosition(
         shift.z <= bounds->shift.max.z
     );
     // clang-format on
+}
+
+void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
+{
+    ITEM *const lara = Lara_GetItem();
+    lara->rot = item->rot;
+    Matrix_PushUnit();
+    Matrix_Rot16(item->rot);
+    const MATRIX *const m = g_MatrixPtr;
+    const XYZ_32 shift = {
+        .x = (vec->x * m->_00 + vec->y * m->_01 + vec->z * m->_02) >> W2V_SHIFT,
+        .y = (vec->x * m->_10 + vec->y * m->_11 + vec->z * m->_12) >> W2V_SHIFT,
+        .z = (vec->x * m->_20 + vec->y * m->_21 + vec->z * m->_22) >> W2V_SHIFT,
+    };
+    Matrix_Pop();
+
+    const XYZ_32 new_pos = {
+        .x = item->pos.x + shift.x,
+        .y = item->pos.y + shift.y,
+        .z = item->pos.z + shift.z,
+    };
+
+#if TR_VERSION == 2
+    // TODO: check the significance of this in TR1
+    int16_t room_num = lara->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, new_pos.x, new_pos.y, new_pos.z);
+    const int32_t ceiling =
+        Room_GetCeiling(sector, new_pos.x, new_pos.y, new_pos.z);
+
+    if (ABS(height - lara->pos.y) > STEP_L
+        || ABS(ceiling - lara->pos.y) < LARA_HEIGHT) {
+        return;
+    }
+#endif
+
+    lara->pos = new_pos;
 }

@@ -701,11 +701,6 @@ bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
-void Lara_AlignPosition(ITEM *item, XYZ_32 *vec)
-{
-    Item_AlignPosition(g_LaraItem, item, vec);
-}
-
 bool Lara_MovePosition(ITEM *item, XYZ_32 *vec)
 {
     int32_t velocity = g_Config.gameplay.enable_walk_to_items

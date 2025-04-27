@@ -134,7 +134,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
             lara_item->goal_anim_state = LS_STOP;
             g_Lara.gun_status = LGS_HANDS_BUSY;
         } else {
-            Item_AlignPosition(&m_PickupPosition, item, lara_item);
+            Lara_AlignPosition(item, &m_PickupPosition);
             lara_item->goal_anim_state = LS_PICKUP;
             do {
                 Lara_Animate(lara_item);

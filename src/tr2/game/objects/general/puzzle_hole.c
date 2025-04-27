@@ -58,7 +58,7 @@ static void M_Consume(
     const GAME_OBJECT_ID puzzle_obj_id)
 {
     Inv_RemoveItem(puzzle_obj_id);
-    Item_AlignPosition(&m_PuzzleHolePosition, puzzle_hole_item, lara_item);
+    Lara_AlignPosition(puzzle_hole_item, &m_PuzzleHolePosition);
     lara_item->goal_anim_state = LS_USE_PUZZLE;
     do {
         Lara_Animate(lara_item);
