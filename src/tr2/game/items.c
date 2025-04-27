@@ -242,11 +242,6 @@ bool Item_IsNearItem(
     return d.y >= bounds->min.y && d.y <= bounds->max.y + 100;
 }
 
-int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 *const target)
-{
-    return XYZ_32_GetDistance(&item->pos, target);
-}
-
 int32_t Item_Explode(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {

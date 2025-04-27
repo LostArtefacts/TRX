@@ -363,6 +363,11 @@ void Item_Translate(
     item->pos.z += ((c * z - s * x) >> W2V_SHIFT);
 }
 
+int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 *const target)
+{
+    return XYZ_32_GetDistance(&item->pos, target);
+}
+
 void Item_Animate(ITEM *const item)
 {
     item->hit_status = 0;
