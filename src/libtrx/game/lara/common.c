@@ -228,8 +228,6 @@ void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
         .z = item->pos.z + shift.z,
     };
 
-#if TR_VERSION == 2
-    // TODO: check the significance of this in TR1
     int16_t room_num = lara->room_num;
     const SECTOR *const sector =
         Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
@@ -242,7 +240,6 @@ void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
         || ABS(ceiling - lara->pos.y) < LARA_HEIGHT) {
         return;
     }
-#endif
 
     lara->pos = new_pos;
 }
