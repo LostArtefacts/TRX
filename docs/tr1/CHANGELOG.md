@@ -40,6 +40,7 @@
 - fixed Lara at times ending up in incorrect rooms when using the teleport cheat (#2486, regression from 3.0)
 - fixed the `/pos` console command reporting the base room number when Lara is actually in a flipped room (#2487, regression from 3.0)
 - fixed clicks in audio sounds (#2846, regression from 2.0)
+- fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 4.9)
 - improved bubble appearance (#2672)
 - improved rendering performance
 - improved pause exit dialog - it can now be canceled with escape
