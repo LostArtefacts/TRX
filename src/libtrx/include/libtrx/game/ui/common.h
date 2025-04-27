@@ -50,10 +50,10 @@ typedef struct UI_NODE {
 
 // Dimensions in virtual pixels of the screen area
 // (640x480 for any 4:3 resolution on 1.00 text scaling)
-extern int32_t UI_GetCanvasWidth(void);
-extern int32_t UI_GetCanvasHeight(void);
-extern float UI_ScaleX(float x);
-extern float UI_ScaleY(float y);
+int32_t UI_GetCanvasWidth(void);
+int32_t UI_GetCanvasHeight(void);
+float UI_ScaleX(float x);
+float UI_ScaleY(float y);
 
 // Public API for scene management
 void UI_BeginScene(void);

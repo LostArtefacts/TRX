@@ -21,7 +21,7 @@ void UI_PhotoMode(void)
     char tmp[50];
 
     UI_BeginModal(0.0f, 0.0f);
-    UI_BeginPad(8.0f, 10.0f);
+    UI_BeginPad(8.0f, 8.0f);
     UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
     UI_BeginPad(8.0, 6.0);
 

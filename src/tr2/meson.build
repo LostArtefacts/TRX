@@ -266,7 +266,6 @@ sources = [
   'game/spawn.c',
   'game/stats.c',
   'game/text.c',
-  'game/ui/common.c',
   'game/ui/dialogs/graphic_settings.c',
   'game/ui/dialogs/stats.c',
   'game/viewport.c',
