@@ -1152,11 +1152,6 @@ int32_t Lara_MovePosition(XYZ_32 *vec, ITEM *item, ITEM *lara_item)
     return result;
 }
 
-int32_t Lara_IsNearItem(const XYZ_32 *const pos, const int32_t distance)
-{
-    return Item_IsNearItem(g_LaraItem, pos, distance);
-}
-
 int32_t Lara_TestClimb(
     const int32_t x, const int32_t y, const int32_t z, const int32_t x_front,
     const int32_t z_front, const int32_t item_height, const int16_t item_room,

@@ -142,24 +142,6 @@ int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
     return spawn_num;
 }
 
-bool Item_IsNearItem(const ITEM *item, const XYZ_32 *pos, int32_t distance)
-{
-    int32_t x = pos->x - item->pos.x;
-    int32_t y = pos->y - item->pos.y;
-    int32_t z = pos->z - item->pos.z;
-
-    if (x >= -distance && x <= distance && z >= -distance && z <= distance
-        && y >= -WALL_L * 3 && y <= WALL_L * 3
-        && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-        if (y >= bounds->min.y && y <= bounds->max.y + 100) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 {
     return ABS(x) < range && ABS(y) < range && ABS(z) < range

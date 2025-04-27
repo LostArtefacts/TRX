@@ -8,7 +8,6 @@ void Item_Control(void);
 int16_t Item_GetWaterHeight(ITEM *item);
 int16_t Item_Spawn(const ITEM *item, GAME_OBJECT_ID obj_id);
 
-bool Item_IsNearItem(const ITEM *item, const XYZ_32 *pos, int32_t distance);
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);
 bool Item_MovePosition(
     ITEM *src_item, const ITEM *dst_item, const XYZ_32 *vec, int32_t velocity);

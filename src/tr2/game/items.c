@@ -222,26 +222,6 @@ ANIM_FRAME *Item_GetBestFrame(const ITEM *const item)
     return frames[(frac > rate / 2) ? 1 : 0];
 }
 
-bool Item_IsNearItem(
-    const ITEM *const item, const XYZ_32 *const pos, const int32_t distance)
-{
-    const XYZ_32 d = {
-        .x = pos->x - item->pos.x,
-        .y = pos->y - item->pos.y,
-        .z = pos->z - item->pos.z,
-    };
-    if (ABS(d.x) > distance || ABS(d.z) > distance || ABS(d.y) > WALL_L * 3) {
-        return false;
-    }
-
-    if (SQUARE(d.x) + SQUARE(d.z) > SQUARE(distance)) {
-        return false;
-    }
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    return d.y >= bounds->min.y && d.y <= bounds->max.y + 100;
-}
-
 int32_t Item_Explode(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {
