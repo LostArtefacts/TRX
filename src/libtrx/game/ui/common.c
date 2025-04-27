@@ -4,8 +4,10 @@
 #include "debug.h"
 #include "game/console/common.h"
 #include "game/game_string.h"
+#include "game/scaler.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/events.h"
+#include "game/viewport.h"
 #include "memory.h"
 
 #include <SDL2/SDL.h>
@@ -200,4 +202,24 @@ void UI_HandleTextEdit(const char *const text)
 {
     UI_FireEvent((EVENT) {
         .name = "text_edit", .sender = nullptr, .data = (void *)text });
+}
+
+int32_t UI_GetCanvasWidth(void)
+{
+    return Scaler_CalcInverse(Viewport_GetWidth(), SCALER_TARGET_GENERIC);
+}
+
+int32_t UI_GetCanvasHeight(void)
+{
+    return Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_GENERIC);
+}
+
+float UI_ScaleX(const float x)
+{
+    return Scaler_Calc(x, SCALER_TARGET_GENERIC);
+}
+
+float UI_ScaleY(const float y)
+{
+    return Scaler_Calc(y, SCALER_TARGET_GENERIC);
 }
