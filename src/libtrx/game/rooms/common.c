@@ -550,7 +550,7 @@ void Room_SetAbyssHeight(const int16_t height)
     CLAMPG(m_AbyssMaxHeight, MAX_HEIGHT - STEP_L);
 }
 
-bool Room_IsAbyssHeight(const int16_t height)
+bool Room_IsAbyssHeight(const int32_t height)
 {
     return m_AbyssMinHeight != 0 && height >= m_AbyssMinHeight;
 }
