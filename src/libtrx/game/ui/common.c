@@ -216,10 +216,10 @@ int32_t UI_GetCanvasHeight(void)
 
 float UI_ScaleX(const float x)
 {
-    return Scaler_Calc(x, SCALER_TARGET_GENERIC);
+    return Scaler_Calc(x * 0x10000, SCALER_TARGET_GENERIC) / 0x10000.p0;
 }
 
 float UI_ScaleY(const float y)
 {
-    return Scaler_Calc(y, SCALER_TARGET_GENERIC);
+    return Scaler_Calc(y * 0x10000, SCALER_TARGET_GENERIC) / 0x10000.p0;
 }

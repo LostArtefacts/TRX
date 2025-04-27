@@ -268,6 +268,7 @@ sources = [
   'game/text.c',
   'game/ui/dialogs/graphic_settings.c',
   'game/ui/dialogs/stats.c',
+  'game/ui/hud/overlay.c',
   'game/viewport.c',
   'global/enum_map.c',
   'global/vars.c',

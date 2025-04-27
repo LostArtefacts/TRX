@@ -9,7 +9,6 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/shell.h"
-#include "game/text.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -171,7 +170,7 @@ void InvRing_Draw(INV_RING *const ring)
         case O_SMALL_MEDIPACK_OPTION:
         case O_LARGE_MEDIPACK_OPTION:
             if (g_Config.ui.enable_game_ui) {
-                Overlay_BarDrawHealth();
+                Overlay_ForceHealthBar(true);
             }
             break;
 

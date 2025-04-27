@@ -27,10 +27,9 @@ void UI_Flash_Control(UI_FLASH_STATE *const s)
     }
 }
 
-void UI_BeginFlash(UI_FLASH_STATE *const s)
+void UI_BeginFlash(const UI_FLASH_STATE *const s)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(UI_FLASH_STATE *));
-    *(UI_FLASH_STATE **)node->data = s;
+    UI_NODE *const node = UI_AllocNode(&m_Ops, 0);
     UI_AddChild(node);
     UI_PushCurrent(node);
     UI_BeginHide(s->count >= 0);

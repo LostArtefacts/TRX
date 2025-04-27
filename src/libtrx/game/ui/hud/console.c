@@ -93,10 +93,10 @@ static void M_HandleConfirm(const EVENT *event, void *user_data)
 static void M_Draw(const UI_NODE *node)
 {
     UI_CONSOLE_STATE *const s = *(UI_CONSOLE_STATE **)node->data;
-    UI_DrawWrapper(node);
     if (Console_IsOpened() || s->logs.vis_lines > 0) {
         Console_DrawBackdrop();
     }
+    UI_DrawWrapper(node);
 }
 
 void UI_Console_Init(UI_CONSOLE_STATE *const s)

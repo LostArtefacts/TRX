@@ -180,7 +180,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
         Sound_ResetAmbient();
         ItemAction_RunActive();
         Sound_UpdateEffects();
-        Overlay_BarHealthTimerTick();
         Output_AnimateTextures(1);
     }
     return (GF_COMMAND) { .action = GF_NOOP };

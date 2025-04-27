@@ -1,4 +1,5 @@
 #include <libtrx/game/const.h>
+#include <libtrx/game/lara/const.h>
 
 #define FRAMES_PER_SECOND LOGIC_FPS
 #define TICKS_PER_FRAME 2
@@ -79,8 +80,6 @@
 #define LARA_DEFLECT_ANGLE (5 * DEG_1) // = 910
 #define LARA_HANG_ANGLE (35 * DEG_1) // = 6370
 #define LARA_VAULT_ANGLE (30 * DEG_1) // = 5460
-#define LARA_MAX_AIR 1800
-#define LARA_MAX_HITPOINTS 1000
 
 #define CAM_HANG_ANGLE 0
 #define CAM_HANG_ELEVATION (-60 * DEG_1) // = -10920

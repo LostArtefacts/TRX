@@ -11,6 +11,7 @@
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -137,6 +138,7 @@ void Shell_Shutdown(void)
     GameStringTable_Shutdown();
     GF_Shutdown();
 
+    Overlay_Shutdown();
     Output_Shutdown();
     Input_Shutdown();
     Music_Shutdown();

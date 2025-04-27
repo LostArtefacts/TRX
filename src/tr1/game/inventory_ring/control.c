@@ -176,25 +176,10 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
     }
 
-    if (inv_item->object_id == O_SMALL_MEDIPACK_OPTION
-        || inv_item->object_id == O_LARGE_MEDIPACK_OPTION) {
-        if (g_Config.ui.healthbar_location == BL_TOP_LEFT) {
-            InvRing_HideArrow(INV_RING_ARROW_TL, true);
-        } else if (g_Config.ui.healthbar_location == BL_TOP_RIGHT) {
-            InvRing_HideArrow(INV_RING_ARROW_TR, true);
-        } else if (g_Config.ui.healthbar_location == BL_BOTTOM_LEFT) {
-            InvRing_HideArrow(INV_RING_ARROW_BL, true);
-        } else if (g_Config.ui.healthbar_location == BL_BOTTOM_RIGHT) {
-            InvRing_HideArrow(INV_RING_ARROW_BR, true);
-        }
-        g_GameInfo.inv_showing_medpack = true;
-    } else {
-        InvRing_HideArrow(INV_RING_ARROW_TL, false);
-        InvRing_HideArrow(INV_RING_ARROW_TR, false);
-        InvRing_HideArrow(INV_RING_ARROW_BL, false);
-        InvRing_HideArrow(INV_RING_ARROW_BR, false);
-        g_GameInfo.inv_showing_medpack = false;
-    }
+    InvRing_HideArrow(INV_RING_ARROW_TL, false);
+    InvRing_HideArrow(INV_RING_ARROW_TR, false);
+    InvRing_HideArrow(INV_RING_ARROW_BL, false);
+    InvRing_HideArrow(INV_RING_ARROW_BR, false);
 
     if (m_ExamineItemText != nullptr) {
         Text_Hide(m_ExamineItemText, !show_examine_option);
@@ -398,10 +383,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     Game_ProcessInput();
 
     m_StartLevel = g_LevelComplete ? g_GameInfo.select_level_num : -1;
-
-    g_GameInfo.inv_ring_above = ring->mode == INV_GAME_MODE
-        && ((ring->type == RT_MAIN && g_InvRing_Source[RT_KEYS].count != 0)
-            || (ring->type == RT_OPTION && g_InvRing_Source[RT_MAIN].count));
 
     if (g_Config.gameplay.enable_timer_in_inventory) {
         Stats_UpdateTimer();
@@ -947,7 +928,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             INV_RING_FADE_TIME_FAST);
     }
 
-    g_GameInfo.inv_ring_shown = true;
     return ring;
 }
 
@@ -975,7 +955,6 @@ void InvRing_Close(INV_RING *const ring)
         g_OldInputDB = (INPUT_STATE) {};
     }
 
-    g_GameInfo.inv_ring_shown = false;
     m_InvChosen = NO_OBJECT;
     Memory_Free(ring);
 }

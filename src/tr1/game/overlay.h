@@ -25,14 +25,13 @@ typedef struct {
 } BAR_INFO;
 
 void Overlay_Init(void);
+void Overlay_Shutdown(void);
 
+void Overlay_ForceHealthBar(bool show);
 void Overlay_BarSetHealthTimer(int16_t health_bar_timer);
-void Overlay_BarHealthTimerTick(void);
 void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_func);
-void Overlay_BarDrawHealth(void);
 
 void Overlay_HideGameInfo(void);
 void Overlay_DrawGameInfo(void);
-void Overlay_DrawFPSInfo(void);
 
 void Overlay_AddPickup(GAME_OBJECT_ID obj_id);

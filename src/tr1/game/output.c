@@ -268,16 +268,18 @@ static void M_Draw2DQuad(
     int32_t vertex_count = 4;
     GFX_3D_VERTEX vertices[vertex_count];
 
-#define SET(vtx_idx, x_, y_, z_, color)                                        \
-    vertices[vtx_idx].x = x_, vertices[vtx_idx].y = y_,                        \
-    vertices[vtx_idx].z = 1.0f, vertices[vtx_idx].r = color.r;                 \
+#define SET(vtx_idx, x_, y_, color)                                            \
+    vertices[vtx_idx].x = x_;                                                  \
+    vertices[vtx_idx].y = y_;                                                  \
+    vertices[vtx_idx].z = 1.0f;                                                \
+    vertices[vtx_idx].r = color.r;                                             \
     vertices[vtx_idx].g = color.g;                                             \
     vertices[vtx_idx].b = color.b;                                             \
     vertices[vtx_idx].a = color.a;
-    SET(0, x1, y1, 1.0f, tl);
-    SET(1, x2, y1, 1.0f, tr);
-    SET(2, x2, y2, 1.0f, br);
-    SET(3, x1, y2, 1.0f, bl);
+    SET(0, x1, y1, tl);
+    SET(1, x2, y1, tr);
+    SET(2, x2, y2, br);
+    SET(3, x1, y2, bl);
 #undef SET
 
     M_DisableTextureMode();
@@ -534,7 +536,6 @@ void Output_EndScene(void)
 {
     M_DisableDepthTest();
     Output_ClearDepthBuffer();
-    Overlay_DrawFPSInfo();
     M_EnableDepthTest();
     GFX_3D_Renderer_RenderEnd(m_Renderer3D);
     M_FlipScreen();

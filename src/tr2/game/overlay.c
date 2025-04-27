@@ -18,6 +18,7 @@
 #include <libtrx/game/gym.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/scaler.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/utils.h>
 
 #include <stdio.h>
@@ -355,28 +356,7 @@ void Overlay_HideGameInfo(void)
 
 void Overlay_MakeAmmoString(char *const string)
 {
-    char result[128] = "";
-
-    char *ptr = string;
-    while (*ptr != '\0') {
-        if (*ptr == ' ') {
-            strcat(result, " ");
-        } else if (*ptr == 'A') {
-            strcat(result, "\\{ammo shotgun}");
-        } else if (*ptr == 'B') {
-            strcat(result, "\\{ammo magnums}");
-        } else if (*ptr == 'C') {
-            strcat(result, "\\{ammo uzis}");
-        } else if (*ptr >= '0' && *ptr <= '9') {
-            strcat(result, "\\{small digit ");
-            char tmp[2] = { *ptr, '\0' };
-            strcat(result, tmp);
-            strcat(result, "}");
-        }
-        ptr++;
-    }
-
-    strcpy(string, result);
+    UI_AmmoLabel_MakeString(string);
 }
 
 void Overlay_Reset(void)
@@ -525,6 +505,14 @@ static void M_DrawPickups(void)
     }
 }
 
+void Overlay_Control(void)
+{
+}
+
+void Overlay_Draw(void)
+{
+}
+
 void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
 {
     if (Object_IsType(obj_id, g_SecretObjects)) {
@@ -598,4 +586,12 @@ void Overlay_DrawHealthBar(void)
 void Overlay_DrawModeInfo(void)
 {
     M_DrawModeInfo();
+}
+
+void Overlay_ShowArrows(const UI_OVERLAY_ARROW arrow, const bool show)
+{
+}
+
+void Overlay_SetBottomText(const char *const text, const bool flash)
+{
 }
