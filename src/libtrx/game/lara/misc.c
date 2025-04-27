@@ -44,3 +44,14 @@ void Lara_UpdateRoom(const int32_t height)
         Item_NewRoom(item_num, room_num);
     }
 }
+
+void Lara_ShiftCol(COLL_INFO *const coll)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    lara_item->pos.x += coll->shift.x;
+    lara_item->pos.y += coll->shift.y;
+    lara_item->pos.z += coll->shift.z;
+    coll->shift.z = 0;
+    coll->shift.y = 0;
+    coll->shift.x = 0;
+}

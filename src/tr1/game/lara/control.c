@@ -166,7 +166,7 @@ static void M_WaterCurrent(COLL_INFO *coll)
         item->pos.y += coll->side_mid.floor;
         item->rot.x += UW_WALLDEFLECT;
     }
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;

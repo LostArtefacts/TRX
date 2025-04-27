@@ -10,3 +10,4 @@ void Lara_GetCollisionInfo(const ITEM *item, COLL_INFO *coll);
 extern void Lara_CatchFire(void);
 
 void Lara_UpdateRoom(int32_t height);
+void Lara_ShiftCol(COLL_INFO *coll);

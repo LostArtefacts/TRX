@@ -204,7 +204,7 @@ void Lara_SurfaceCollision(ITEM *const item, COLL_INFO *const coll)
         coll, item->pos.x, item->pos.y + LARA_HEIGHT_SURF, item->pos.z,
         item->room_num, LARA_HEIGHT_SURF + 100);
 
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     if (coll->coll_type == COLL_LEFT) {
         item->rot.y += 5 * DEG_1;
@@ -383,7 +383,7 @@ void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
     item->pos.y += coll->side_mid.floor;
 }
 
@@ -495,7 +495,7 @@ void Lara_Col_Death(ITEM *item, COLL_INFO *coll)
     coll->radius = 400;
 
     Lara_GetCollisionInfo(item, coll);
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     item->pos.y += coll->side_mid.floor;
     item->hit_points = -1;
@@ -603,7 +603,7 @@ void Lara_Col_Splat(ITEM *item, COLL_INFO *coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
 
     if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
         item->pos.y += coll->side_mid.floor;
@@ -856,7 +856,7 @@ void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    Item_ShiftCol(item, coll);
+    Lara_ShiftCol(coll);
     item->pos.y += coll->side_mid.floor;
 }
 
@@ -882,7 +882,7 @@ void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll)
         item->gravity = 1;
         item->fall_speed = 0;
     } else {
-        Item_ShiftCol(item, coll);
+        Lara_ShiftCol(coll);
         item->pos.y += coll->side_mid.floor;
     }
 }

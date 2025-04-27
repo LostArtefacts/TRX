@@ -274,16 +274,6 @@ bool Item_MovePosition(
     // clang-format on
 }
 
-void Item_ShiftCol(ITEM *item, COLL_INFO *coll)
-{
-    item->pos.x += coll->shift.x;
-    item->pos.y += coll->shift.y;
-    item->pos.z += coll->shift.z;
-    coll->shift.x = 0;
-    coll->shift.y = 0;
-    coll->shift.z = 0;
-}
-
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
 {
     ANIM_FRAME *frames[2];
