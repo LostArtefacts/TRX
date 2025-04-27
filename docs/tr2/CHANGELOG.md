@@ -3,6 +3,7 @@
 - added a `--help` CLI option (may not output anything on Windows machines – OS bug)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
+- fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used (#2851)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)

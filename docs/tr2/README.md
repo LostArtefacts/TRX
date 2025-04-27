@@ -221,6 +221,7 @@ However, you can easily download them manually from these urls:
 - fixed the following floor data issues:
     - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204
     - **Wreck of the Maria Doria**: fixed room 98 not having water
+    - **Living Quarters** - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used
     - **The Deck**: fixed invalid portals between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
     - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
