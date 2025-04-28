@@ -29,7 +29,7 @@ typedef struct {
     OUTPUT_UVW uvw;
 } M_SPRITE_VERTEX;
 
-typedef uint16_t M_SPRITE_SHADE;
+typedef OUTPUT_USHORT M_SPRITE_SHADE;
 #pragma pack(pop)
 
 typedef struct {
@@ -179,7 +179,7 @@ static void M_PrepareBuffer(
     // attribute 7 (shade)
     glEnableVertexAttribArray(7);
     glVertexAttribPointer(
-        7, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_SPRITE_SHADE), 0);
+        7, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(M_SPRITE_SHADE), 0);
 }
 
 static void M_FreeBuffer(M_SPRITE_BUFFER *const buffer)

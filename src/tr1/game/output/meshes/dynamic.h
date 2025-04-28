@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/output/meshes/common.h"
 #include "game/output/shader.h"
 #include "game/output/textures.h"
 
@@ -15,9 +16,9 @@ typedef struct {
     OUTPUT_UVW uvw;                     // attribute 2
     OUTPUT_TEXTURE_SIZE texture_size;   // attribute 3
     float trapezoid_ratio[2];           // attribute 4
-    uint16_t flags;                     // attribute 5
+    OUTPUT_USHORT flags;                // attribute 5
     RGBA_8888 color;                    // attribute 6
-    int16_t shade;                      // attribute 7
+    OUTPUT_USHORT shade;                // attribute 7
     // clang-format on
 } OUTPUT_MESH_VERTEX;
 #pragma pack(pop)
