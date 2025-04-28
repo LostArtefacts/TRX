@@ -64,6 +64,7 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
 
 static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
 {
+    lara_item->rot.y = switch_item->rot.y;
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
         Lara_AlignPosition(switch_item, &m_AirlockPosition);
@@ -167,8 +168,6 @@ static void M_Collision(
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
-
-    lara_item->rot.y = item->rot.y;
 
     if (item->object_id == O_SWITCH_TYPE_AIRLOCK
         && item->current_anim_state == SWITCH_STATE_ON) {
