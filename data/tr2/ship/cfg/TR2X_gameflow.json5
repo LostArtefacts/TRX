@@ -398,6 +398,7 @@
                 {"type": "total_stats", "background_path": "data/images/end.webp"},
             ],
             "injections": [
+                "data/injections/explosion.bin",
                 "data/injections/house_itemrots.bin",
             ],
         },
