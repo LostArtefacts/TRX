@@ -258,6 +258,7 @@ However, you can easily download them manually from these urls:
 - fixed guns carried by enemies not being converted to ammo if Lara has picked up the same gun elsewhere in the same level
 - fixed destroyed gondolas appearing embedded in the ground after loading a save
 - fixed Lara voiding if she stops on a tile with a closing door, and the door isn't on a portal
+- fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door
 - improved the animation of Lara's braid
 
 #### Cheats
