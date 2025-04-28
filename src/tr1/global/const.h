@@ -61,7 +61,6 @@
 #define LOOK_SPEED 4
 #define COMBAT_SPEED 8
 #define CHASE_SPEED 12
-#define MOVE_ANG (2 * DEG_1) // = 364
 #define COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
 #define DEFAULT_RADIUS 10

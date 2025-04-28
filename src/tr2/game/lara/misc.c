@@ -20,8 +20,6 @@
 #include <libtrx/utils.h>
 
 #define MAX_BADDIE_COLLISION 20
-#define MOVE_SPEED 16
-#define MOVE_ANGLE (2 * DEG_1) // = 364
 #define CLIMB_HANG 900
 #define CLIMB_SHIFT 70
 #define LF_FAST_FALL 1
@@ -1100,56 +1098,6 @@ void Lara_Push(
         coll->old.z = target_item->pos.z;
         Lara_UpdateRoom(-10);
     }
-}
-
-int32_t Lara_MovePosition(XYZ_32 *vec, ITEM *item, ITEM *lara_item)
-{
-    const XYZ_16 rot = item->rot;
-
-    Matrix_PushUnit();
-    Matrix_Rot16(rot);
-    const MATRIX *const m = g_MatrixPtr;
-    const XYZ_32 shift = {
-        .x = (vec->y * m->_01 + vec->z * m->_02 + vec->x * m->_00) >> W2V_SHIFT,
-        .y = (vec->x * m->_10 + vec->z * m->_12 + vec->y * m->_11) >> W2V_SHIFT,
-        .z = (vec->y * m->_21 + vec->x * m->_20 + vec->z * m->_22) >> W2V_SHIFT,
-    };
-    Matrix_Pop();
-
-    const XYZ_32 new_pos = {
-        .x = item->pos.x + shift.x,
-        .y = item->pos.y + shift.y,
-        .z = item->pos.z + shift.z,
-    };
-
-    if (item->object_id == O_FLARE_ITEM) {
-        int16_t room_num = lara_item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
-        const int32_t height =
-            Room_GetHeight(sector, new_pos.x, new_pos.y, new_pos.z);
-        if (ABS(height - lara_item->pos.y) > STEP_L * 2) {
-            return false;
-        }
-        if (XYZ_32_GetDistance(&new_pos, &lara_item->pos) < STEP_L) {
-            return true;
-        }
-    }
-
-    // TODO: get rid of this conversion
-    const PHD_3DPOS new_pos_full = {
-        .pos = new_pos,
-        .rot = rot,
-    };
-    PHD_3DPOS src_pos = {
-        .pos = lara_item->pos,
-        .rot = lara_item->rot,
-    };
-    const int32_t result =
-        Misc_Move3DPosTo3DPos(&src_pos, &new_pos_full, MOVE_SPEED, MOVE_ANGLE);
-    lara_item->pos = src_pos.pos;
-    lara_item->rot = src_pos.rot;
-    return result;
 }
 
 int32_t Lara_TestClimb(

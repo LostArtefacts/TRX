@@ -1,10 +1,15 @@
 #include "game/lara/common.h"
 
+#include "config.h"
 #include "game/const.h"
 #include "game/item_actions.h"
 #include "game/lara/const.h"
 #include "game/matrix.h"
 #include "game/rooms.h"
+
+#define M_MOVE_ANIM_VELOCITY 12
+#define M_MOVE_SPEED 16
+#define M_MOVE_ANGLE (2 * DEG_1) // = 364
 
 void Lara_Animate(ITEM *const item)
 {
@@ -262,4 +267,117 @@ bool Lara_IsNearItem(const XYZ_32 *const pos, const int32_t distance)
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     return d.y >= bounds->min.y && d.y <= bounds->max.y + 100;
+}
+
+bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+#if TR_VERSION == 1
+    const int32_t velocity = g_Config.gameplay.enable_walk_to_items
+            && lara_info->water_status != LWS_UNDERWATER
+        ? M_MOVE_ANIM_VELOCITY
+        : M_MOVE_SPEED;
+#else
+    const int32_t velocity = M_MOVE_SPEED;
+#endif
+
+    ITEM *const lara_item = Lara_GetItem();
+    const XYZ_16 new_rot = ref_item->rot;
+
+    Matrix_PushUnit();
+    Matrix_Rot16(new_rot);
+    const MATRIX *const m = g_MatrixPtr;
+    const XYZ_32 shift = {
+        .x = (vec->y * m->_01 + vec->z * m->_02 + vec->x * m->_00) >> W2V_SHIFT,
+        .y = (vec->x * m->_10 + vec->z * m->_12 + vec->y * m->_11) >> W2V_SHIFT,
+        .z = (vec->y * m->_21 + vec->x * m->_20 + vec->z * m->_22) >> W2V_SHIFT,
+    };
+    Matrix_Pop();
+
+    const XYZ_32 new_pos = {
+        .x = ref_item->pos.x + shift.x,
+        .y = ref_item->pos.y + shift.y,
+        .z = ref_item->pos.z + shift.z,
+    };
+
+#if TR_VERSION == 2
+    if (ref_item->object_id == O_FLARE_ITEM) {
+        int16_t room_num = lara_item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
+        const int32_t height =
+            Room_GetHeight(sector, new_pos.x, new_pos.y, new_pos.z);
+        if (ABS(height - lara_item->pos.y) > STEP_L * 2) {
+            return false;
+        }
+        if (XYZ_32_GetDistance(&new_pos, &lara_item->pos) < STEP_L) {
+            return true;
+        }
+    }
+#endif
+
+    const XYZ_32 dpos = {
+        .x = new_pos.x - lara_item->pos.x,
+        .y = new_pos.y - lara_item->pos.y,
+        .z = new_pos.z - lara_item->pos.z,
+    };
+    const int32_t dist = XYZ_32_GetDistance0(&dpos);
+    if (velocity >= dist) {
+        lara_item->pos = new_pos;
+    } else {
+        lara_item->pos.x += velocity * dpos.x / dist;
+        lara_item->pos.y += velocity * dpos.y / dist;
+        lara_item->pos.z += velocity * dpos.z / dist;
+    }
+
+#if TR_VERSION == 1
+    if (g_Config.gameplay.enable_walk_to_items
+        && !lara_info->interact_target.is_moving) {
+        if (lara_info->water_status != LWS_UNDERWATER) {
+            const int16_t step_to_anim_num[4] = {
+                LA_SIDE_STEP_LEFT,
+                LA_WALK_FORWARD,
+                LA_SIDE_STEP_RIGHT,
+                LA_WALK_BACK,
+            };
+            const int16_t step_to_anim_state[4] = {
+                LS_STEP_LEFT,
+                LS_WALK,
+                LS_STEP_RIGHT,
+                LS_BACK,
+            };
+
+            const int32_t dx = lara_item->pos.x - new_pos.x;
+            const int32_t dz = lara_item->pos.z - new_pos.z;
+            const int32_t angle = (DEG_360 - Math_Atan(dx, dz)) % DEG_360;
+            const uint32_t src_quadrant = (uint32_t)(angle + DEG_45) / DEG_90;
+            const uint32_t dst_quadrant =
+                (uint32_t)(new_rot.y + DEG_45) / DEG_90;
+            const DIRECTION quadrant = (src_quadrant - dst_quadrant) % 4;
+
+            Item_SwitchToAnim(lara_item, step_to_anim_num[quadrant], 0);
+            lara_item->goal_anim_state = step_to_anim_state[quadrant];
+            lara_item->current_anim_state = step_to_anim_state[quadrant];
+
+            lara_info->gun_status = LGS_HANDS_BUSY;
+        }
+
+        lara_info->interact_target.is_moving = true;
+        lara_info->interact_target.move_count = 0;
+    }
+#endif
+
+    const int16_t rotation = M_MOVE_ANGLE;
+    ITEM_ADJUST_ROT(lara_item->rot.x, new_rot.x, rotation);
+    ITEM_ADJUST_ROT(lara_item->rot.y, new_rot.y, rotation);
+    ITEM_ADJUST_ROT(lara_item->rot.z, new_rot.z, rotation);
+
+    // clang-format off
+    return lara_item->pos.x == new_pos.x
+        && lara_item->pos.y == new_pos.y
+        && lara_item->pos.z == new_pos.z
+        && lara_item->rot.x == new_rot.x
+        && lara_item->rot.y == new_rot.y
+        && lara_item->rot.z == new_rot.z;
+    // clang-format on
 }

@@ -183,7 +183,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
     if (g_Input.action && lara_item->current_anim_state == LS_TREAD
         && g_Lara.gun_status == LGS_ARMLESS
         && (g_Lara.gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
-        if (!Lara_MovePosition(&m_PickupPositionUW, item, lara_item)) {
+        if (!Lara_MovePosition(item, &m_PickupPositionUW)) {
             goto cleanup;
         }
 
