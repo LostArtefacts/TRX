@@ -266,30 +266,63 @@ request number, but it's important to carefully review the body field, as it
 often includes unwanted content.
 
 
-### Branching model
-
-We have two branches: `develop` and `stable`. `develop` is where all changes
-about to be published in the next release land. `stable` is the latest release.
-We avoid creating merge commits between these two – they should always point to
-the same HEAD when applicable. This means that any hotfixes that need to be
-released ahead of unpublished work in `develop` are merged directly to
-`stable`, and `develop` needs to be then rebased on top of the now-patched
-`stable`.
-
-
 ### Tooling
 
 Internal tools are typically coded in a reasonably recent version of Python,
 while avoiding the use of bash, shell, and similar languages.
 
 
+### Branching model
+
+We have two branches: `develop` and `stable`. `develop` is where all changes
+about to be published in the next release land. `stable` is the latest release.
+
+
 ### Releasing a new version
 
-New version releases happen automatically whenever a new tag is pushed to the
-`stable` branch with the help of GitHub actions. In general this is accompanied
-with a special commit `docs: release X.Y.Z` that also adjusts the changelog.
-See git history for details.
+New version releases are published automatically whenever a new tag is pushed
+to the `stable` branch with the help of GitHub actions.
+The general workflow is this:
 
+```console
+TR_VERSION=...
+RELEASE_VERSION=...
+
+# Switch to the stable branch.
+git checkout stable
+
+# Merge `develop` into it.
+git merge develop
+
+# Create a special commit `docs: release X.Y.Z` marking the release in the
+# relevant changelog file. Then tag it with `tr1-X.Y.Z` or `tr2-X.Y.Z`.
+# You can do that by hand, or run the command below:
+tools/release commit ${TR_VERSION} ${RELEASE_VERSION}
+
+# Review the changelog content.
+
+# Switch back to develop.
+git checkout develop
+
+# Merge stable using fast-forward.
+git merge --ff stable
+
+# Review both branches and changes. If everything is okay, push to GitHub.
+# You can do this by hand: git push origin develop stable tr1-X.Y.Z, or:
+# tools/release push ${TR_VERSION} ${RELEASE_VERSION}
+```
+
+### Hotfixes
+
+Hotfix releases are a bit different as we try to not include non-bugfix changes
+in them. Here instead of merging `develop` to `stable` we cherry-pick relevant
+changes, resolving conflicts along the way.
+
+### Versioning
+
+We increase the major version for significant releases based on judgment,
+typically defaulting to increasing the minor version. Hotfixes increase the
+patch version.
 
 
 ## Glossary
