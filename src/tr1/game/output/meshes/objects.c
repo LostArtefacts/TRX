@@ -19,14 +19,14 @@ typedef struct {
     // attribute 1
     XYZ_F normal;
     // attribute 5
-    uint16_t flags;
+    OUTPUT_USHORT flags;
     // attribute 6
     RGBA_8888 color;
     // clang-format on
 } M_MESH_VERTEX;
 
 // attribute 7
-typedef int16_t M_MESH_SHADE;
+typedef OUTPUT_USHORT M_MESH_SHADE;
 #pragma pack(pop)
 
 typedef struct {
@@ -361,7 +361,7 @@ static void M_PrepareBuffers(void)
     // attribute 5: flags
     glEnableVertexAttribArray(5);
     glVertexAttribIPointer(
-        5, 1, GL_UNSIGNED_SHORT, sizeof(M_MESH_VERTEX),
+        5, 1, OUTPUT_USHORT_GL, sizeof(M_MESH_VERTEX),
         (void *)(intptr_t)offsetof(M_MESH_VERTEX, flags));
 
     // attribute 6: color
@@ -394,7 +394,7 @@ static void M_PrepareBuffers(void)
     // attribute 7: shade
     glEnableVertexAttribArray(7);
     glVertexAttribPointer(
-        7, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
+        7, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(M_MESH_SHADE), 0);
 
     M_UpdateVertices();
 }
