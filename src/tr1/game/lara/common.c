@@ -32,8 +32,6 @@
 
 #define LARA_MOVE_TIMEOUT 90
 #define LARA_PUSH_TIMEOUT 15
-#define LARA_MOVE_ANIM_VELOCITY 12
-#define LARA_MOVE_SPEED 16
 #define LARA_UW_DAMAGE 5
 
 static int16_t m_DeathCameraTarget = NO_ITEM;
@@ -694,16 +692,6 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
         Gun_SetLaraHolsterLMesh(holsters_gun_type);
         Gun_SetLaraHolsterRMesh(holsters_gun_type);
     }
-}
-
-bool Lara_MovePosition(ITEM *item, XYZ_32 *vec)
-{
-    int32_t velocity = g_Config.gameplay.enable_walk_to_items
-            && g_Lara.water_status != LWS_UNDERWATER
-        ? LARA_MOVE_ANIM_VELOCITY
-        : LARA_MOVE_SPEED;
-
-    return Item_MovePosition(g_LaraItem, item, vec, velocity);
 }
 
 void Lara_Push(

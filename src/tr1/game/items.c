@@ -17,17 +17,6 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
-#define ITEM_ADJUST_ROT(source, target, rot)                                   \
-    do {                                                                       \
-        if ((int16_t)(target - source) > rot) {                                \
-            source += rot;                                                     \
-        } else if ((int16_t)(target - source) < -rot) {                        \
-            source -= rot;                                                     \
-        } else {                                                               \
-            source = target;                                                   \
-        }                                                                      \
-    } while (0)
-
 static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};
 
@@ -146,97 +135,6 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 {
     return ABS(x) < range && ABS(y) < range && ABS(z) < range
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
-}
-
-bool Item_MovePosition(
-    ITEM *item, const ITEM *ref_item, const XYZ_32 *vec, int32_t velocity)
-{
-    const XYZ_32 *ref_pos = &ref_item->pos;
-
-    Matrix_PushUnit();
-    Matrix_Rot16(ref_item->rot);
-
-    MATRIX *mptr = g_MatrixPtr;
-    const XYZ_32 dst_pos = {
-        .x = ref_pos->x
-            + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
-               >> W2V_SHIFT),
-        .y = ref_pos->y
-            + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
-               >> W2V_SHIFT),
-        .z = ref_pos->z
-            + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
-               >> W2V_SHIFT),
-    };
-
-    const XYZ_16 dst_rot = ref_item->rot;
-
-    Matrix_Pop();
-
-    {
-        const int32_t dx = dst_pos.x - item->pos.x;
-        const int32_t dy = dst_pos.y - item->pos.y;
-        const int32_t dz = dst_pos.z - item->pos.z;
-        const int32_t dist = Math_Sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-        if (velocity >= dist) {
-            item->pos.x = dst_pos.x;
-            item->pos.y = dst_pos.y;
-            item->pos.z = dst_pos.z;
-        } else {
-            item->pos.x += (dx * velocity) / dist;
-            item->pos.y += (dy * velocity) / dist;
-            item->pos.z += (dz * velocity) / dist;
-        }
-    }
-
-    if (item == g_LaraItem && g_Config.gameplay.enable_walk_to_items
-        && !g_Lara.interact_target.is_moving) {
-        if (g_Lara.water_status != LWS_UNDERWATER) {
-            const int16_t step_to_anim_num[4] = {
-                LA_SIDE_STEP_LEFT,
-                LA_WALK_FORWARD,
-                LA_SIDE_STEP_RIGHT,
-                LA_WALK_BACK,
-            };
-            const int16_t step_to_anim_state[4] = {
-                LS_STEP_LEFT,
-                LS_WALK,
-                LS_STEP_RIGHT,
-                LS_BACK,
-            };
-
-            const int32_t dx = item->pos.x - dst_pos.x;
-            const int32_t dz = item->pos.z - dst_pos.z;
-            const int32_t angle = (DEG_360 - Math_Atan(dx, dz)) % DEG_360;
-            const uint32_t src_quadrant = (uint32_t)(angle + DEG_45) / DEG_90;
-            const uint32_t dst_quadrant =
-                (uint32_t)(dst_rot.y + DEG_45) / DEG_90;
-            const DIRECTION quadrant = (src_quadrant - dst_quadrant) % 4;
-
-            Item_SwitchToAnim(item, step_to_anim_num[quadrant], 0);
-            item->goal_anim_state = step_to_anim_state[quadrant];
-            item->current_anim_state = step_to_anim_state[quadrant];
-
-            g_Lara.gun_status = LGS_HANDS_BUSY;
-        }
-
-        g_Lara.interact_target.is_moving = true;
-        g_Lara.interact_target.move_count = 0;
-    }
-
-    int16_t rotation = MOVE_ANG;
-    ITEM_ADJUST_ROT(item->rot.x, dst_rot.x, rotation);
-    ITEM_ADJUST_ROT(item->rot.y, dst_rot.y, rotation);
-    ITEM_ADJUST_ROT(item->rot.z, dst_rot.z, rotation);
-
-    // clang-format off
-    return item->pos.x == dst_pos.x
-        && item->pos.y == dst_pos.y
-        && item->pos.z == dst_pos.z
-        && item->rot.x == dst_rot.x
-        && item->rot.y == dst_rot.y
-        && item->rot.z == dst_rot.z;
-    // clang-format on
 }
 
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)

@@ -214,7 +214,7 @@ static void M_CollisionUW(
         return;
     }
 
-    if (!Lara_MovePosition(&m_SwitchUWPosition, item, lara_item)) {
+    if (!Lara_MovePosition(item, &m_SwitchUWPosition)) {
         return;
     }
 

@@ -25,6 +25,4 @@ void Lara_InitialiseMeshes(const GF_LEVEL *level);
 void Lara_SwapMeshExtra(void);
 void Lara_UseItem(GAME_OBJECT_ID obj_id);
 
-bool Lara_MovePosition(ITEM *item, XYZ_32 *vec);
-
 void Lara_RevertToPistolsIfNeeded(void);
