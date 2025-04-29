@@ -272,6 +272,10 @@ static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
 
     int32_t error_code;
     char *full_path = File_GetFullPath(file_path);
+    if (full_path == nullptr) {
+        error_code = AVERROR(ENOENT);
+        goto cleanup;
+    }
 
     AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
 
