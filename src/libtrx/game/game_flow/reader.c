@@ -281,16 +281,15 @@ static size_t M_LoadSequenceEvent(
     const char *const type_str = JSON_ObjectGetString(event_obj, "type", "");
     const GF_SEQUENCE_EVENT_TYPE type =
         ENUM_MAP_GET(GF_SEQUENCE_EVENT_TYPE, type_str, -1);
+    if (type == (GF_SEQUENCE_EVENT_TYPE)-1) {
+        Shell_ExitSystemFmt(
+            "Unknown game flow sequence event type: '%s'", type_str);
+    }
 
     const M_SEQUENCE_EVENT_HANDLER *handler = M_GetSequenceEventHandlers();
     while (handler->event_type != (GF_SEQUENCE_EVENT_TYPE)-1
            && handler->event_type != type) {
         handler++;
-    }
-
-    if (handler->event_type != type) {
-        Shell_ExitSystemFmt(
-            "Unknown game flow sequence event type: '%s'", type);
     }
 
     int32_t extra_data_size = 0;
