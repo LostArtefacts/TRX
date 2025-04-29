@@ -84,17 +84,32 @@ static void M_SeekToStart(AUDIO_STREAM_SOUND *stream)
     ASSERT(stream != nullptr);
 
     stream->timestamp = stream->start_at;
+    int32_t error_code;
     if (stream->start_at <= 0.0) {
         // reset to start of file
         avio_seek(stream->av.format_ctx->pb, 0, SEEK_SET);
-        avformat_seek_file(
+        error_code = avformat_seek_file(
             stream->av.format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_FRAME);
     } else {
         // seek to specific timestamp
-        const double time_base_sec = av_q2d(stream->av.stream->time_base);
-        av_seek_frame(
-            stream->av.format_ctx, 0, stream->start_at / time_base_sec,
-            AVSEEK_FLAG_ANY);
+        AVFormatContext *const fmt = stream->av.format_ctx;
+        if (fmt->pb != nullptr && (fmt->pb->seekable & AVIO_SEEKABLE_NORMAL)) {
+            const int64_t ts = (int64_t)(stream->start_at * AV_TIME_BASE);
+            error_code = avformat_seek_file(
+                fmt, stream->av.stream->index, INT64_MIN, ts, INT64_MAX,
+                AVSEEK_FLAG_BACKWARD);
+        } else {
+            // fallback to stream-based seek
+            const double time_base_sec = av_q2d(stream->av.stream->time_base);
+            error_code = av_seek_frame(
+                fmt, stream->av.stream->index,
+                (int64_t)(stream->start_at / time_base_sec), AVSEEK_FLAG_ANY);
+        }
+    }
+    if (error_code < 0) {
+        LOG_ERROR(
+            "seek failed for timestamp %f: %s", stream->timestamp,
+            av_err2str(error_code));
     }
 }
 
@@ -680,26 +695,51 @@ double Audio_Stream_GetDuration(int32_t sound_id)
     return duration;
 }
 
-bool Audio_Stream_SeekTimestamp(int32_t sound_id, double timestamp)
+bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
 {
     if (!g_AudioDeviceID || sound_id < 0
         || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
-    if (m_Streams[sound_id].is_playing) {
-        SDL_LockAudioDevice(g_AudioDeviceID);
-        AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
-        const double time_base_sec = av_q2d(stream->av.stream->time_base);
-        av_seek_frame(
-            stream->av.format_ctx, 0, timestamp / time_base_sec,
-            AVSEEK_FLAG_ANY);
-        avcodec_flush_buffers(stream->av.codec_ctx);
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    stream->start_at = timestamp;
+    if (!stream->is_used) {
+        return false;
+    }
+    ASSERT(stream->av.format_ctx != nullptr);
+    ASSERT(stream->av.codec_ctx != nullptr);
+    ASSERT(stream->av.stream != nullptr);
+
+    SDL_LockAudioDevice(g_AudioDeviceID);
+
+    const double time_base_sec = av_q2d(stream->av.stream->time_base);
+    if (time_base_sec <= 0.0) {
+        LOG_ERROR(
+            "Audio_Stream_SeekTimestamp: invalid time_base %f", time_base_sec);
         SDL_UnlockAudioDevice(g_AudioDeviceID);
-        return true;
+        return false;
     }
 
-    return false;
+    const int32_t stream_index = stream->av.stream->index;
+    const int64_t seek_target = (int64_t)(timestamp / time_base_sec);
+    const int32_t error_code = av_seek_frame(
+        stream->av.format_ctx, stream_index, seek_target, AVSEEK_FLAG_ANY);
+    if (error_code < 0) {
+        LOG_ERROR(
+            "seek failed for timestamp %f: %s", timestamp,
+            av_err2str(error_code));
+    }
+
+    avcodec_flush_buffers(stream->av.codec_ctx);
+    if (stream->sdl.stream) {
+        SDL_AudioStreamFlush(stream->sdl.stream);
+    }
+
+    stream->timestamp = timestamp;
+
+    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    return true;
 }
 
 bool Audio_Stream_SetStartTimestamp(int32_t sound_id, double timestamp)
