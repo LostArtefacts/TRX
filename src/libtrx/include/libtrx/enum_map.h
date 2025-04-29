@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "vector.h"
 
 #define ENUM_MAP_DEFINE(enum_name, enum_value, str_value)                      \
     EnumMap_Define(ENUM_MAP_NAME(enum_name), enum_value, str_value);
@@ -17,6 +17,13 @@
 extern void EnumMap_Init(void);
 
 void EnumMap_Shutdown(void);
+
+// Returns a vector of valid string values for the given enum_name.
+//
+// The returned vector must be freed via Vector_Free(). The string pointers
+// within the vector are owned by the enum map and should not be freed by the
+// caller. Returns nullptr if the enum_name is not valid.
+VECTOR *EnumMap_ListValues(const char *enum_name);
 
 void EnumMap_Define(
     const char *enum_name, int32_t enum_value, const char *str_value);

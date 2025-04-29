@@ -45,6 +45,7 @@
 - improved bubble appearance (#2672)
 - improved rendering performance
 - improved pause exit dialog - it can now be canceled with escape
+- improved the `/set` console command to display available options if given an unknown argument
 - removed the pretty pixels options (it's now always enabled, #2258)
 
 ## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
