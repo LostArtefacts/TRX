@@ -5,6 +5,8 @@
 #include "utils.h"
 #include "vector.h"
 
+#include <string.h>
+
 #define MAX_HISTORY_ENTRIES 30
 
 VECTOR *m_History = nullptr;
@@ -86,12 +88,21 @@ void Console_History_Clear(void)
 
 void Console_History_Append(const char *const prompt)
 {
+    for (int32_t i = m_History->count - 1; i >= 0; i--) {
+        char *const entry = *(char **)Vector_Get(m_History, i);
+        if (strcmp(entry, prompt) == 0) {
+            Memory_Free(entry);
+            Vector_RemoveAt(m_History, i);
+        }
+    }
+
     if (m_History->count == MAX_HISTORY_ENTRIES) {
-        char *const prompt = *(char **)Vector_Get(m_History, 0);
-        Memory_Free(prompt);
+        char *const oldest = *(char **)Vector_Get(m_History, 0);
+        Memory_Free(oldest);
         Vector_RemoveAt(m_History, 0);
     }
-    char *prompt_copy = Memory_DupStr(prompt);
+
+    char *const prompt_copy = Memory_DupStr(prompt);
     Vector_Add(m_History, &prompt_copy);
 }
 

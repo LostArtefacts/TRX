@@ -4,6 +4,7 @@
 - added explosion sprites to Home Sweet Home (#1569)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
 - changed the installer to always allow downloading music files (#2891)
+- changed the dev console to no longer add duplicate entries to the history
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
 - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used (#2851)
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door (#2215)
