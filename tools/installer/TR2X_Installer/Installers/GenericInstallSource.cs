@@ -15,15 +15,10 @@ public abstract class GenericInstallSource : BaseInstallSource
     };
 
     public override bool IsDownloadingMusicNeeded(string sourceDirectory)
-    {
-        return !Directory.Exists(Path.Combine(sourceDirectory, "audio"))
-            && !Directory.Exists(Path.Combine(sourceDirectory, "music"));
-    }
+        => true;
 
     public override bool IsDownloadingExpansionNeeded(string sourceDirectory)
-    {
-        return true;
-    }
+        => true;
 
     public override async Task CopyOriginalGameFiles(
         string sourceDirectory,
