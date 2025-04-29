@@ -121,3 +121,25 @@ void EnumMap_Shutdown(void)
         }
     }
 }
+
+VECTOR *EnumMap_ListValues(const char *const enum_name)
+{
+    if (enum_name == nullptr) {
+        return nullptr;
+    }
+
+    // Compare the prefix to find the matching enum values.
+    const size_t prefix_len = strlen(enum_name) + 1;
+
+    VECTOR *const results = Vector_Create(sizeof(char *));
+    M_INVERSE_ENTRY *entry;
+    M_INVERSE_ENTRY *tmp;
+    HASH_ITER(hh, m_InverseMap, entry, tmp)
+    {
+        if (strncmp(entry->key, enum_name, prefix_len - 1) == 0
+            && entry->key[prefix_len - 1] == '|') {
+            Vector_Add(results, &entry->str_value);
+        }
+    }
+    return results;
+}

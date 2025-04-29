@@ -14,6 +14,7 @@
 
 static const char *M_Resolve(const char *option_name);
 static bool M_SameKey(const char *key1, const char *key2);
+static char *M_GetAvailableOptions(const CONFIG_OPTION *option);
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
@@ -74,6 +75,56 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 cleanup:
     Memory_FreePointer(&key);
     return result;
+}
+
+// Return a comma-delimited list of valid values for the option.
+// Caller must free the result via Memory_FreePointer.
+static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
+{
+    if (option == nullptr) {
+        return nullptr;
+    }
+
+    switch (option->type) {
+    case COT_BOOL:
+        return Memory_DupStr(GS(OSD_COMMAND_BOOL));
+
+    case COT_INT32:
+        return Memory_DupStr(GS(OSD_COMMAND_INTEGER));
+
+    case COT_DOUBLE:
+    case COT_FLOAT:
+        return Memory_DupStr(GS(OSD_COMMAND_DECIMAL));
+
+    case COT_ENUM: {
+        const char *enum_name = (const char *)option->param;
+        VECTOR *const values = EnumMap_ListValues(enum_name);
+        if (values == nullptr) {
+            return nullptr;
+        }
+        // Join vector items into a comma-separated string
+        size_t total_len = 1;
+        const char *const sep = ", ";
+        for (int32_t i = 0; i < values->count; i++) {
+            const char *const s = *(char **)Vector_Get(values, i);
+            total_len += strlen(s) + (i + 1 < values->count ? strlen(sep) : 0);
+        }
+        char *const result = Memory_Alloc(total_len);
+        char *ptr = result;
+        for (int32_t i = 0; i < values->count; i++) {
+            const char *const s = *(char **)Vector_Get(values, i);
+            strcat(ptr, s);
+            if (i + 1 < values->count) {
+                strcat(ptr, sep);
+            }
+        }
+        Vector_Free(values);
+        return result;
+    }
+
+    default:
+        return nullptr;
+    }
 }
 
 char *Console_Cmd_Config_NormalizeKey(const char *key)
@@ -261,18 +312,16 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
 
     char *normalized_name = Console_Cmd_Config_NormalizeKey(option->name);
 
-    COMMAND_RESULT result = CR_BAD_INVOCATION;
     if (new_value == nullptr || String_IsEmpty(new_value)) {
         char cur_value[128];
         if (Console_Cmd_Config_GetCurrentValue(option, cur_value, 128)) {
             Console_Log(GS(OSD_CONFIG_OPTION_GET), normalized_name, cur_value);
-            result = CR_SUCCESS;
-        } else {
-            result = CR_FAILURE;
+            return CR_SUCCESS;
         }
-        return result;
+        return CR_FAILURE;
     }
 
+    COMMAND_RESULT result;
     if (Console_Cmd_Config_SetCurrentValue(option, new_value)) {
         Config_Write();
 
@@ -280,6 +329,15 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
         ASSERT(Console_Cmd_Config_GetCurrentValue(option, final_value, 128));
         Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, final_value);
         result = CR_SUCCESS;
+    } else {
+        // Report bad invocation on the provided new value
+        Console_Log(GS(OSD_COMMAND_BAD_INVOCATION), new_value);
+        char *available_options = M_GetAvailableOptions(option);
+        if (available_options != nullptr) {
+            Console_Log(GS(OSD_COMMAND_VALID_VALUES), available_options);
+            Memory_FreePointer(&available_options);
+        }
+        result = CR_FAILURE;
     }
 
 cleanup:
