@@ -16,6 +16,11 @@
 
 void Gun_Control(void)
 {
+    if (g_Lara.extra_anim) {
+        g_Lara.request_gun_type = LGT_UNARMED;
+        return;
+    }
+
     if (g_Lara.left_arm.flash_gun > 0) {
         g_Lara.left_arm.flash_gun--;
     }
