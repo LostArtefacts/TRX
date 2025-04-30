@@ -196,10 +196,7 @@ static bool M_SwitchToLand(
         item->floor =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         item->pos.y = item->floor;
-
-        if (item->room_num != room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
+        Item_UpdateRoom(item_num, room_num);
     }
 
     return true;
@@ -560,9 +557,7 @@ void Creature_Float(const int16_t item_num)
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 }
 
 void Creature_Underwater(ITEM *const item, const int32_t depth)
@@ -683,9 +678,7 @@ bool Creature_Animate(
     if (TR_VERSION >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
         int16_t room_num = item->room_num;
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        if (room_num != item->room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
+        Item_UpdateRoom(item_num, room_num);
     }
 
     Item_Animate(item);
@@ -923,9 +916,7 @@ bool Creature_Animate(
         }
     }
 
-    if (item->room_num != room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
     return true;
 }
 
@@ -951,9 +942,7 @@ void Creature_SpecialKill(
     lara_item->speed = 0;
 
     int16_t room_num = item->room_num;
-    if (room_num != lara_item->room_num) {
-        Item_NewRoom(lara->item_num, room_num);
-    }
+    Item_UpdateRoom(lara->item_num, room_num);
 
     Item_Animate(lara_item);
 
@@ -1021,7 +1010,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         while (pickup_num != NO_ITEM) {
             ITEM *const pickup = Item_Get(pickup_num);
             pickup->pos = item->pos;
-            Item_NewRoom(pickup_num, item->room_num);
+            Item_UpdateRoom(pickup_num, item->room_num);
             pickup_num = pickup->carried_item;
         }
     }
@@ -1081,9 +1070,7 @@ int32_t Creature_Vault(
     item->floor = old.y;
     item->pos.y = old.y;
 
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
     return vault;
 }
 

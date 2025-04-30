@@ -80,7 +80,7 @@ static void M_Control(const int16_t item_num)
         item->rot.x = g_LaraItem->rot.x;
         item->rot.y = g_LaraItem->rot.y - DEG_180;
         item->rot.z = g_LaraItem->rot.z;
-        Item_NewRoom(item_num, g_LaraItem->room_num);
+        Item_UpdateRoom(item_num, g_LaraItem->room_num);
 
         if (h >= lh + WALL_L && !g_LaraItem->gravity) {
             item->current_anim_state = LS_FAST_FALL;

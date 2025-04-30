@@ -101,9 +101,7 @@ static bool M_Vault(int16_t item_num, int16_t angle)
     item->floor = y;
     item->pos.y = y;
 
-    if (item->room_num != room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 
     return true;
 }

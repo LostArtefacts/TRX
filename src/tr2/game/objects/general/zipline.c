@@ -76,9 +76,7 @@ static void M_Control(const int16_t item_num)
     if (!(item->flags & IF_ONE_SHOT)) {
         const GAME_VECTOR *const old = item->data;
         item->pos = old->pos;
-        if (old->room_num != item->room_num) {
-            Item_NewRoom(item_num, old->room_num);
-        }
+        Item_UpdateRoom(item_num, old->room_num);
         item->status = IS_INACTIVE;
         item->goal_anim_state = ZIPLINE_STATE_GRAB;
         item->current_anim_state = ZIPLINE_STATE_GRAB;
@@ -105,9 +103,7 @@ static void M_Control(const int16_t item_num)
 
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 
     const bool lara_on_zipline = g_LaraItem->current_anim_state == LS_ZIPLINE;
     if (lara_on_zipline) {

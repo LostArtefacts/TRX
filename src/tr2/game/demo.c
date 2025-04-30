@@ -146,9 +146,7 @@ bool Demo_Start(const int32_t level_num)
     lara_item->rot.z = *p->demo_ptr++;
 
     int16_t room_num = *p->demo_ptr++;
-    if (lara_item->room_num != room_num) {
-        Item_NewRoom(g_Lara.item_num, room_num);
-    }
+    Item_UpdateRoom(g_Lara.item_num, room_num);
     const SECTOR *const sector = Room_GetSector(
         lara_item->pos.x, lara_item->pos.y, lara_item->pos.z, &room_num);
     lara_item->floor = Room_GetHeight(

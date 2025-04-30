@@ -61,9 +61,7 @@ static void M_Control(const int16_t item_num)
         int16_t room_num = item->room_num;
         const SECTOR *sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        if (item->room_num != room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
+        Item_UpdateRoom(item_num, room_num);
 
         item->floor =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
@@ -153,9 +151,7 @@ static void M_Collision(
         lara_item->hit_status = 1;
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
-            if (lara_item->room_num != item->room_num) {
-                Item_NewRoom(g_Lara.item_num, item->room_num);
-            }
+            Item_UpdateRoom(g_Lara.item_num, item->room_num);
 
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;

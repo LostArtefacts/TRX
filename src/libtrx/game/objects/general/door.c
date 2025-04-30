@@ -188,7 +188,7 @@ static void M_Initialise(const int16_t item_num)
         M_Shut(&door->d2flip);
 
         const int16_t prev_room = item->room_num;
-        Item_NewRoom(item_num, room_num);
+        Item_UpdateRoom(item_num, room_num);
         item->room_num = prev_room;
     }
 }

@@ -328,9 +328,7 @@ static void M_Control(const int16_t item_num)
         Item_RemoveActive(item_num);
     }
 
-    if (item->room_num != room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_INACTIVE;

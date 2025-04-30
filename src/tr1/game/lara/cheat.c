@@ -461,10 +461,8 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
     g_LaraItem->pos.z = z;
     g_LaraItem->floor = height;
 
-    if (g_LaraItem->room_num != room_num) {
-        const int16_t item_num = Item_GetIndex(g_LaraItem);
-        Item_NewRoom(item_num, room_num);
-    }
+    const int16_t item_num = Item_GetIndex(g_LaraItem);
+    Item_UpdateRoom(item_num, room_num);
 
     Camera_ResetPosition();
     return true;

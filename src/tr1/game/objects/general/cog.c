@@ -28,9 +28,7 @@ static void M_Control(const int16_t item_num)
 
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 }
 
 REGISTER_OBJECT(O_COG_1, M_Setup)

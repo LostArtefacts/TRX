@@ -874,9 +874,7 @@ int32_t Skidoo_Control(void)
 
     if (skidoo->flags & IF_ONE_SHOT) {
         Room_TestTriggers(g_LaraItem);
-        if (room_num != skidoo->room_num) {
-            Item_NewRoom(g_Lara.skidoo, room_num);
-        }
+        Item_UpdateRoom(g_Lara.skidoo, room_num);
         if (skidoo->pos.y == skidoo->floor) {
             Skidoo_Explode(skidoo);
         }
@@ -884,10 +882,8 @@ int32_t Skidoo_Control(void)
     }
 
     Skidoo_Animation(skidoo, collide, dead);
-    if (room_num != skidoo->room_num) {
-        Item_NewRoom(g_Lara.skidoo, room_num);
-        Item_NewRoom(g_Lara.item_num, room_num);
-    }
+    Item_UpdateRoom(g_Lara.skidoo, room_num);
+    Item_UpdateRoom(g_Lara.item_num, room_num);
 
     if (g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_FALLOFF) {
         g_LaraItem->rot.x = 0;

@@ -506,9 +506,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
             item->speed = M_ReadS16();
             item->fall_speed = M_ReadS16();
 
-            if (item->room_num != room_num) {
-                Item_NewRoom(i, room_num);
-            }
+            Item_UpdateRoom(i, room_num);
         }
 
         if (M_ItemHasSaveAnim(item)) {

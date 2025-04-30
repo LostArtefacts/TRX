@@ -39,10 +39,9 @@ void Lara_UpdateRoom(const int32_t height)
     int16_t room_num = lara_item->room_num;
     const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
     lara_item->floor = Room_GetHeight(sector, x, y, z);
-    if (lara_item->room_num != room_num) {
-        const int16_t item_num = Item_GetIndex(lara_item);
-        Item_NewRoom(item_num, room_num);
-    }
+
+    const int16_t item_num = Item_GetIndex(lara_item);
+    Item_UpdateRoom(item_num, room_num);
 }
 
 void Lara_ShiftCol(COLL_INFO *const coll)

@@ -104,9 +104,7 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
         }
     }
 
-    if (room_num != pickup->room_num) {
-        Item_NewRoom(item->spawn_num, room_num);
-    }
+    Item_UpdateRoom(item->spawn_num, room_num);
 
     // Track animating status in the carrier for saving/loading.
     item->pos = pickup->pos;
@@ -304,7 +302,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
             item->spawn_num = Item_Spawn(carrier, obj_id);
         } else {
             // TR2-style item drops will already have a spawn number.
-            Item_NewRoom(item->spawn_num, carrier->room_num);
+            Item_UpdateRoom(item->spawn_num, carrier->room_num);
             ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = carrier->pos;
             pickup->rot = carrier->rot;
@@ -319,9 +317,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
             ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = item->pos;
             pickup->fall_speed = item->fall_speed;
-            if (pickup->room_num != item->room_num) {
-                Item_NewRoom(item->spawn_num, item->room_num);
-            }
+            Item_UpdateRoom(item->spawn_num, item->room_num);
         }
 
     } while ((item = item->next_item));

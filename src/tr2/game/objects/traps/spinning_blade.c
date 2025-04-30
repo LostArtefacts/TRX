@@ -99,9 +99,7 @@ static void M_Control(const int16_t item_num)
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     item->pos.y = height;
     item->floor = height;
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 
     if (spinning) {
         if (item->current_anim_state == SPINNING_BLADE_STATE_STOP) {

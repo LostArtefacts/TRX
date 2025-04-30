@@ -27,9 +27,7 @@ static void M_Move(const int16_t item_num)
         item->status = IS_DEACTIVATED;
     } else {
         item->pos.y = y;
-        if (room_num != item->room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
+        Item_UpdateRoom(item_num, room_num);
     }
     Sound_Effect(SFX_DOOR_SLIDE, &item->pos, SPM_NORMAL);
 }

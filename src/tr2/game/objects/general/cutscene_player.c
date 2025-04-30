@@ -36,8 +36,8 @@ static void M_Control(const int16_t item_num)
     Collide_GetJointAbsPosition(item, &pos, 0);
 
     const int16_t room_num = Room_FindByPos(pos.x, pos.y, pos.z);
-    if (room_num != NO_ROOM_NEG && item->room_num != room_num) {
-        Item_NewRoom(item_num, room_num);
+    if (room_num != NO_ROOM_NEG) {
+        Item_UpdateRoom(item_num, room_num);
     }
 
     if (item->dynamic_light && item->status != IS_INVISIBLE) {

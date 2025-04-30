@@ -44,9 +44,7 @@ static void M_Control(const int16_t item_num)
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     item->floor = height;
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
     if (item->current_anim_state == TRAP_ACTIVATE && item->pos.y >= height) {
         item->pos.y = height;
         item->goal_anim_state = TRAP_WORKING;

@@ -630,9 +630,7 @@ static void M_Collision(
     lara->goal_anim_state = 0;
     lara->current_anim_state = 0;
 
-    if (lara->room_num != boat->room_num) {
-        Item_NewRoom(g_Lara.item_num, boat->room_num);
-    }
+    Item_UpdateRoom(g_Lara.item_num, boat->room_num);
 
     Item_Animate(lara);
     if (boat->status != IS_ACTIVE) {
@@ -727,9 +725,7 @@ static void M_Control(const int16_t item_num)
     if (g_Lara.skidoo == item_num) {
         M_Animation(boat, collide);
 
-        if (room_num != boat->room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
+        Item_UpdateRoom(item_num, room_num);
 
         boat->rot.z += boat_data->tilt_angle;
         lara->pos.x = boat->pos.x;
@@ -743,9 +739,7 @@ static void M_Control(const int16_t item_num)
 
         sector = Room_GetSector(
             lara->pos.x, lara->pos.y + BOAT_SHIFT_Y, lara->pos.z, &room_num);
-        if (room_num != g_LaraItem->room_num) {
-            Item_NewRoom(g_Lara.item_num, room_num);
-        }
+        Item_UpdateRoom(g_Lara.item_num, room_num);
 
         Item_Animate(lara);
 
@@ -759,9 +753,7 @@ static void M_Control(const int16_t item_num)
         g_Camera.target_elevation = -20 * DEG_1;
         g_Camera.target_distance = 2 * WALL_L;
     } else {
-        if (room_num != boat->room_num) {
-            Item_NewRoom(item_num, room_num);
-        }
+        Item_UpdateRoom(item_num, room_num);
         boat->rot.z += boat_data->tilt_angle;
     }
 
@@ -824,9 +816,7 @@ static void M_Control(const int16_t item_num)
         if (Room_GetHeight(sector, pos.x, pos.y, pos.z) >= pos.y - STEP_L) {
             lara->pos.x = pos.x;
             lara->pos.z = pos.z;
-            if (room_num != lara->room_num) {
-                Item_NewRoom(g_Lara.item_num, room_num);
-            }
+            Item_UpdateRoom(g_Lara.item_num, room_num);
         }
 
         lara->pos.y = pos.y;
