@@ -8,6 +8,7 @@
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
 - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used (#2851)
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door (#2215)
+- fixed Lara being able to equip guns and flares during in-game cutscenes (#2895)
 - fixed the game crashing on unknown sequencer events
 - improved the `/set` console command to display available options if given an unknown argument
 
