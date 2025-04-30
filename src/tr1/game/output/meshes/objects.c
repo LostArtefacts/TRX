@@ -26,7 +26,7 @@ typedef struct {
 } M_MESH_VERTEX;
 
 // attribute 7
-typedef OUTPUT_USHORT M_MESH_SHADE;
+typedef OUTPUT_SHORT M_MESH_SHADE;
 #pragma pack(pop)
 
 typedef struct {
@@ -394,7 +394,7 @@ static void M_PrepareBuffers(void)
     // attribute 7: shade
     glEnableVertexAttribArray(7);
     glVertexAttribPointer(
-        7, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(M_MESH_SHADE), 0);
+        7, 1, OUTPUT_SHORT_GL, GL_FALSE, sizeof(M_MESH_SHADE), 0);
 
     M_UpdateVertices();
 }

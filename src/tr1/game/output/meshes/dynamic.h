@@ -18,7 +18,7 @@ typedef struct {
     float trapezoid_ratio[2];           // attribute 4
     OUTPUT_USHORT flags;                // attribute 5
     RGBA_8888 color;                    // attribute 6
-    OUTPUT_USHORT shade;                // attribute 7
+    OUTPUT_SHORT shade;                // attribute 7
     // clang-format on
 } OUTPUT_MESH_VERTEX;
 #pragma pack(pop)

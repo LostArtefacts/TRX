@@ -60,7 +60,7 @@ void Output_Meshes_InitDynamic(void)
 
     glEnableVertexAttribArray(7);
     glVertexAttribPointer(
-        7, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
+        7, 1, OUTPUT_SHORT_GL, GL_FALSE, sizeof(OUTPUT_MESH_VERTEX),
         (void *)(intptr_t)offsetof(OUTPUT_MESH_VERTEX, shade));
 }
 

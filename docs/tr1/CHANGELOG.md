@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...develop) - ××××-××-××
+- fixed water caustics appearance (#2896, regression from 4.10)
 
 ## [4.10](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...tr1-4.10) - 2025-04-30
 - added an ability to customize the fog distances (#634)
