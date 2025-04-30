@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...develop) - ××××-××-××
+
+## [4.10](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...tr1-4.10) - 2025-04-30
 - added an ability to customize the fog distances (#634)
 - added an ability to customize the water color [see the reference](/docs/GAME_FLOW.md#water-color-table) (#1532)  
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
