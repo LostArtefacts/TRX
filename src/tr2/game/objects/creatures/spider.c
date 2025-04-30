@@ -60,9 +60,7 @@ static void M_Leap(const int16_t item_num, const int16_t angle)
     }
 
     item->pos = old_pos;
-    if (item->room_num != old_room_num) {
-        Item_NewRoom(item_num, old_room_num);
-    }
+    Item_UpdateRoom(item_num, old_room_num);
     Item_SwitchToAnim(item, SPIDER_ANIM_LEAP, 0);
     item->current_anim_state = SPIDER_STATE_ATTACK_2;
     Creature_Animate(item_num, angle, 0);

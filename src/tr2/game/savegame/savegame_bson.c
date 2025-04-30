@@ -781,9 +781,7 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
                 JSON_ObjectGetInt(item_obj, "fall_speed", item->fall_speed);
 
             int16_t room_num = JSON_ObjectGetInt(item_obj, "room_num", -1);
-            if (room_num != -1 && item->room_num != room_num) {
-                Item_NewRoom(i, room_num);
-            }
+            Item_UpdateRoom(i, room_num);
         }
 
         if (obj->save_anim) {

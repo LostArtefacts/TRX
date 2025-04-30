@@ -186,9 +186,13 @@ void Item_AddActive(const int16_t item_num)
     m_NextItemActive = item_num;
 }
 
-void Item_NewRoom(const int16_t item_num, const int16_t room_num)
+void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
 {
     ITEM *const item = &m_Items[item_num];
+    if (item->room_num == room_num) {
+        return;
+    }
+
     ROOM *room = nullptr;
 
     if (item->room_num != NO_ROOM) {

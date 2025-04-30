@@ -220,9 +220,7 @@ static void M_ReadItems(void)
             item->speed = M_ReadS16();
             item->fall_speed = M_ReadS16();
 
-            if (item->room_num != room_num) {
-                Item_NewRoom(item_num, room_num);
-            }
+            Item_UpdateRoom(item_num, room_num);
         }
 
         if (obj->save_anim) {

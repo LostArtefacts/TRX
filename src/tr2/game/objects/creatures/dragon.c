@@ -110,9 +110,7 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     lara_item->gravity = 0;
     lara_item->speed = 0;
 
-    if (dragon_back_item->room_num != lara_item->room_num) {
-        Item_NewRoom(g_Lara.item_num, dragon_back_item->room_num);
-    }
+    Item_UpdateRoom(g_Lara.item_num, dragon_back_item->room_num);
 
     Item_Animate(g_LaraItem);
 
@@ -468,9 +466,7 @@ static void M_Control(const int16_t item_num)
     dragon_back_item->rot.x = dragon_front_item->rot.x;
     dragon_back_item->rot.y = dragon_front_item->rot.y;
     dragon_back_item->rot.z = dragon_front_item->rot.z;
-    if (dragon_back_item->room_num != dragon_front_item->room_num) {
-        Item_NewRoom(dragon_back_item_num, dragon_front_item->room_num);
-    }
+    Item_UpdateRoom(dragon_back_item_num, dragon_front_item->room_num);
 }
 
 REGISTER_OBJECT(O_DRAGON_FRONT, M_SetupFront)

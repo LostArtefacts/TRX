@@ -186,9 +186,7 @@ static void M_Control(const int16_t item_num)
 static void M_KillLara(ITEM *const item)
 {
     item->goal_anim_state = TREX_STATE_KILL;
-    if (g_LaraItem->room_num != item->room_num) {
-        Item_NewRoom(g_Lara.item_num, item->room_num);
-    }
+    Item_UpdateRoom(g_Lara.item_num, item->room_num);
 
     g_LaraItem->pos.x = item->pos.x;
     g_LaraItem->pos.y = item->pos.y;

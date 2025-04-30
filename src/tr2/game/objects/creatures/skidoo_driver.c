@@ -266,10 +266,7 @@ static void M_Control(const int16_t driver_item_num)
         driver_item->pos.y = skidoo_item->pos.y;
         driver_item->pos.z = skidoo_item->pos.z;
         driver_item->rot.y = skidoo_item->rot.y;
-        const int16_t room_num = skidoo_item->room_num;
-        if (room_num != driver_item->room_num) {
-            Item_NewRoom(driver_item_num, room_num);
-        }
+        Item_UpdateRoom(driver_item_num, skidoo_item->room_num);
         const int16_t anim_num =
             Item_GetRelativeObjAnim(skidoo_item, O_SKIDOO_ARMED);
         const int16_t frame_num = Item_GetRelativeFrame(skidoo_item);

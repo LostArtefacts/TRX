@@ -453,9 +453,7 @@ void Flare_Control(const int16_t item_num)
         }
     }
 
-    if (room_num != item->room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 
     int32_t flare_age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
     if (flare_age < MAX_FLARE_AGE) {

@@ -61,9 +61,7 @@ static void M_Control(const int16_t item_num)
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    if (item->room_num != room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
+    Item_UpdateRoom(item_num, room_num);
 
     bool explode = false;
     int32_t radius = 0;
