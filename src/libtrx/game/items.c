@@ -1,10 +1,12 @@
 #include "game/items.h"
 
+#include "config.h"
 #include "game/const.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_buf.h"
 #include "game/game_flow.h"
+#include "game/interpolation.h"
 #include "game/item_actions.h"
 #include "game/lara/common.h"
 #include "game/matrix.h"
@@ -800,4 +802,69 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
 #undef CALC
 
     return result;
+}
+
+int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
+{
+    const ANIM *const anim = Item_GetAnim(item);
+    if (anim->frame_ptr == nullptr) {
+        frames[0] = nullptr;
+        return 0;
+    }
+
+    const int32_t cur_frame_num = item->frame_num - anim->frame_base;
+    const int32_t last_frame_num = anim->frame_end - anim->frame_base;
+    const int32_t key_frame_span = anim->interpolation;
+    const int32_t key_frame_shift = cur_frame_num % key_frame_span;
+    const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
+    const int32_t second_key_frame_num = first_key_frame_num + 1;
+
+    const int32_t numerator = key_frame_shift;
+    int32_t denominator = key_frame_span;
+    if (numerator != 0) {
+#if TR_VERSION == 1
+        if (second_key_frame_num > anim->frame_end) {
+            denominator =
+                anim->frame_end + key_frame_span - second_key_frame_num;
+        }
+#else
+        const int32_t second_key_frame_num2 =
+            (cur_frame_num / key_frame_span + 1) * key_frame_span;
+        if (second_key_frame_num2 > anim->frame_end) {
+            denominator += anim->frame_end - second_key_frame_num2;
+        }
+#endif
+    }
+
+    frames[0] = &anim->frame_ptr[first_key_frame_num];
+    frames[1] = &anim->frame_ptr[second_key_frame_num];
+
+    // OG
+    if (g_Config.rendering.fps == 30) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    // Invalid state for interpolation
+    if (item != Lara_GetItem()
+        && (!item->active || item->status != IS_ACTIVE
+            || !item->enable_interpolation
+            || !Object_Get(item->object_id)->enable_interpolation)) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    // Interpolated
+    const double clock_ratio = Interpolation_GetWorldRate() - 0.5;
+    const double final =
+        (key_frame_shift + clock_ratio) / (double)key_frame_span;
+    const double interp_frame_num =
+        (first_key_frame_num * key_frame_span) + (final * key_frame_span);
+    if (interp_frame_num >= last_frame_num) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    *rate = 10;
+    return final * 10;
 }
