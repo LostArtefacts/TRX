@@ -473,9 +473,3 @@ void Interpolation_Interpolate(void)
         M_InterpolateBraid(m_WorldRate, lara_item);
     }
 }
-
-void Interpolation_RememberItem(ITEM *item)
-{
-    item->interp.prev.pos = item->pos;
-    item->interp.prev.rot = item->rot;
-}
