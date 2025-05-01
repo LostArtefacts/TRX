@@ -93,22 +93,6 @@ void Item_Initialise(int16_t item_num)
     Interpolation_RememberItem(item);
 }
 
-int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
-{
-    const int16_t spawn_num = Item_Create();
-    if (spawn_num != NO_ITEM) {
-        ITEM *const spawn = Item_Get(spawn_num);
-        spawn->object_id = obj_id;
-        spawn->room_num = item->room_num;
-        spawn->pos = item->pos;
-        spawn->rot = item->rot;
-        Item_Initialise(spawn_num);
-        spawn->status = IS_INACTIVE;
-        spawn->shade.value_1 = SHADE_NEUTRAL;
-    }
-    return spawn_num;
-}
-
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 {
     return ABS(x) < range && ABS(y) < range && ABS(z) < range
