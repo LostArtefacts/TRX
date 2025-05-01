@@ -8,9 +8,6 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
 
-static BOUNDS_16 m_NullBounds = {};
-static BOUNDS_16 m_InterpolatedBounds = {};
-
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextActive();
@@ -24,32 +21,6 @@ void Item_Control(void)
     }
 
     Carrier_AnimateDrops();
-}
-
-const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
-{
-    int32_t rate;
-    ANIM_FRAME *frames[2];
-    const int32_t frac = Item_GetFrames(item, frames, &rate);
-    if (frames[0] == nullptr) {
-        return &m_NullBounds;
-    }
-
-    if (frac == 0) {
-        return &frames[0]->bounds;
-    }
-
-    const BOUNDS_16 *const a = &frames[0]->bounds;
-    const BOUNDS_16 *const b = &frames[1]->bounds;
-    BOUNDS_16 *const result = &m_InterpolatedBounds;
-
-    result->min.x = a->min.x + (((b->min.x - a->min.x) * frac) / rate);
-    result->min.y = a->min.y + (((b->min.y - a->min.y) * frac) / rate);
-    result->min.z = a->min.z + (((b->min.z - a->min.z) * frac) / rate);
-    result->max.x = a->max.x + (((b->max.x - a->max.x) * frac) / rate);
-    result->max.y = a->max.y + (((b->max.y - a->max.y) * frac) / rate);
-    result->max.z = a->max.z + (((b->max.z - a->max.z) * frac) / rate);
-    return result;
 }
 
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
