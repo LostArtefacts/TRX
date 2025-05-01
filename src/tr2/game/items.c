@@ -8,9 +8,6 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
 
-static BOUNDS_16 m_NullBounds = {};
-static BOUNDS_16 m_InterpolatedBounds = {};
-
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextActive();
@@ -95,30 +92,4 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 
     *rate = 10;
     return final * 10;
-}
-
-const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
-{
-    int32_t rate;
-    ANIM_FRAME *frames[2];
-    const int32_t frac = Item_GetFrames(item, frames, &rate);
-    if (frames[0] == nullptr) {
-        return &m_NullBounds;
-    }
-
-    if (frac == 0) {
-        return &frames[0]->bounds;
-    }
-
-#define CALC(target, b1, b2, prop)                                             \
-    target->prop = (b1)->prop + ((((b2)->prop - (b1)->prop) * frac) / rate);
-
-    BOUNDS_16 *const result = &m_InterpolatedBounds;
-    CALC(result, &frames[0]->bounds, &frames[1]->bounds, min.x);
-    CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.x);
-    CALC(result, &frames[0]->bounds, &frames[1]->bounds, min.y);
-    CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.y);
-    CALC(result, &frames[0]->bounds, &frames[1]->bounds, min.z);
-    CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.z);
-    return result;
 }
