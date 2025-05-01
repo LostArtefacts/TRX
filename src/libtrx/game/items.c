@@ -96,6 +96,22 @@ int16_t Item_CreateLevelItem(void)
     return item_num;
 }
 
+int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
+{
+    const int16_t spawn_num = Item_Create();
+    if (spawn_num != NO_ITEM) {
+        ITEM *const spawn = Item_Get(spawn_num);
+        spawn->object_id = obj_id;
+        spawn->room_num = item->room_num;
+        spawn->pos = item->pos;
+        spawn->rot = item->rot;
+        Item_Initialise(spawn_num);
+        spawn->status = IS_INACTIVE;
+        spawn->shade.value_1 = SHADE_NEUTRAL;
+    }
+    return spawn_num;
+}
+
 void Item_Kill(const int16_t item_num)
 {
     Item_RemoveActive(item_num);
