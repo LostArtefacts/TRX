@@ -1,13 +1,5 @@
 #include "game/items.h"
 
-#include "game/game_flow.h"
-#include "game/room.h"
-#include "global/vars.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/game.h>
-#include <libtrx/game/interpolation.h>
-
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextActive();
