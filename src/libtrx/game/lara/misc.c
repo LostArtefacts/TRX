@@ -29,7 +29,7 @@ void Lara_GetCollisionInfo(const ITEM *const item, COLL_INFO *const coll)
         LARA_HEIGHT);
 }
 
-void Lara_UpdateRoom(const int32_t height)
+void Lara_UpdateRoomToHeight(const int32_t height)
 {
     ITEM *const lara_item = Lara_GetItem();
     const int32_t x = lara_item->pos.x;

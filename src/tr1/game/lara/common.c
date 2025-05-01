@@ -110,7 +110,7 @@ void Lara_Control(void)
             g_Lara.air = LARA_MAX_AIR;
             item->pos.y += 100;
             item->gravity = 0;
-            Lara_UpdateRoom(0);
+            Lara_UpdateRoomToHeight(0);
             Sound_StopEffect(SFX_LARA_FALL, nullptr);
             if (item->current_anim_state == LS_SWAN_DIVE) {
                 item->goal_anim_state = LS_DIVE;
@@ -173,7 +173,7 @@ void Lara_Control(void)
             g_Lara.head_rot.y = 0;
             g_Lara.torso_rot.x = 0;
             g_Lara.torso_rot.y = 0;
-            Lara_UpdateRoom(-LARA_HEIGHT / 2);
+            Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
             Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         }
         break;
@@ -258,7 +258,7 @@ void Lara_Control(void)
             g_Lara.torso_rot.x = 0;
             g_Lara.head_rot.y = 0;
             g_Lara.head_rot.x = 0;
-            Lara_UpdateRoom(-LARA_HEIGHT / 2);
+            Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
         }
         break;
     }
@@ -778,7 +778,7 @@ void Lara_Push(
             coll->old.x = target_item->pos.x;
             coll->old.y = target_item->pos.y;
             coll->old.z = target_item->pos.z;
-            Lara_UpdateRoom(-10);
+            Lara_UpdateRoomToHeight(-10);
         }
 
         if (g_Lara.interact_target.is_moving

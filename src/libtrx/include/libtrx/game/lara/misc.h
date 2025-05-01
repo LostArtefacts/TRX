@@ -9,5 +9,5 @@ int16_t Lara_FloorFront(const ITEM *item, int16_t ang, int32_t dist);
 void Lara_GetCollisionInfo(const ITEM *item, COLL_INFO *coll);
 extern void Lara_CatchFire(void);
 
-void Lara_UpdateRoom(int32_t height);
+void Lara_UpdateRoomToHeight(int32_t height);
 void Lara_ShiftCol(COLL_INFO *coll);

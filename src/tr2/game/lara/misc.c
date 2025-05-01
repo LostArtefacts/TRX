@@ -1096,7 +1096,7 @@ void Lara_Push(
         coll->old.x = target_item->pos.x;
         coll->old.y = target_item->pos.y;
         coll->old.z = target_item->pos.z;
-        Lara_UpdateRoom(-10);
+        Lara_UpdateRoomToHeight(-10);
     }
 }
 
