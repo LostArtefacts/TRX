@@ -93,17 +93,6 @@ void Item_Initialise(int16_t item_num)
     Interpolation_RememberItem(item);
 }
 
-int16_t Item_GetWaterHeight(ITEM *item)
-{
-    int16_t height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    if (height != NO_HEIGHT) {
-        height -= item->pos.y;
-    }
-
-    return height;
-}
-
 int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
 {
     const int16_t spawn_num = Item_Create();
