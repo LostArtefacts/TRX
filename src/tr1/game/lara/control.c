@@ -303,7 +303,7 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
 
     M_BaddieCollision(item, coll);
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
-    Lara_UpdateRoom(-LARA_HEIGHT / 2);
+    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }
@@ -370,7 +370,7 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
 
     M_BaddieCollision(item, coll);
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
-    Lara_UpdateRoom(100);
+    Lara_UpdateRoomToHeight(100);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }
@@ -461,7 +461,7 @@ void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
     }
 
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
-    Lara_UpdateRoom(0);
+    Lara_UpdateRoomToHeight(0);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }

@@ -730,7 +730,7 @@ bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
     }
 
     item->pos.y += coll->side_front.floor + SURF_HEIGHT - 5;
-    Lara_UpdateRoom(-LARA_HEIGHT / 2);
+    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
     item->gravity = 0;
     item->rot.x = 0;
     item->rot.z = 0;
@@ -767,7 +767,7 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
     }
 
     item->pos.y += hdif - 5;
-    Lara_UpdateRoom(-LARA_HEIGHT / 2);
+    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
 
     switch (dir) {
     case DIR_NORTH:
