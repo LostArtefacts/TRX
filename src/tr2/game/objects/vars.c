@@ -119,6 +119,14 @@ const GAME_OBJECT_ID g_SecretObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_SmashableObjects[] = {
+    // clang-format off
+    O_WINDOW_1,
+    O_BELL,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_DoorObjects[] = {
     // clang-format off
     O_DOOR_TYPE_1,

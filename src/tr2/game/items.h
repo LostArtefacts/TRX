@@ -7,5 +7,3 @@
 void Item_Control(void);
 void Item_ClearKilled(void);
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate);
-
-bool Item_IsSmashable(const ITEM *item);
