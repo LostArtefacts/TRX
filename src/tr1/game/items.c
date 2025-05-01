@@ -26,64 +26,6 @@ void Item_Control(void)
     Carrier_AnimateDrops();
 }
 
-void Item_Initialise(int16_t item_num)
-{
-    ITEM *item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    Item_SwitchToAnim(item, 0, 0);
-    item->current_anim_state = Item_GetAnim(item)->current_anim_state;
-    item->goal_anim_state = item->current_anim_state;
-    item->required_anim_state = 0;
-    item->rot.x = 0;
-    item->rot.z = 0;
-    item->speed = 0;
-    item->fall_speed = 0;
-    item->status = IS_INACTIVE;
-    item->active = 0;
-    item->gravity = 0;
-    item->hit_status = 0;
-    item->looked_at = 0;
-    item->collidable = 1;
-    item->hit_points = obj->hit_points;
-    item->timer = 0;
-    item->mesh_bits = -1;
-    item->touch_bits = 0;
-    item->data = nullptr;
-    item->priv = nullptr;
-    item->carried_item = nullptr;
-    item->enable_shadow = true;
-    item->enable_interpolation = true;
-
-    if (item->flags & IF_INVISIBLE) {
-        item->status = IS_INVISIBLE;
-        item->flags &= ~IF_INVISIBLE;
-    }
-
-    if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
-        item->flags &= ~IF_CODE_BITS;
-        item->flags |= IF_REVERSE;
-        Item_AddActive(item_num);
-        item->status = IS_ACTIVE;
-    }
-
-    ROOM *const room = Room_Get(item->room_num);
-    item->next_item = room->item_num;
-    room->item_num = item_num;
-    const SECTOR *const sector =
-        Room_GetWorldSector(room, item->pos.x, item->pos.z);
-    item->floor = sector->floor.height;
-
-    if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        item->hit_points *= 2;
-    }
-    if (obj->initialise_func) {
-        obj->initialise_func(item_num);
-    }
-
-    Interpolation_RememberItem(item);
-}
-
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
 {
     ANIM_FRAME *frames[2];

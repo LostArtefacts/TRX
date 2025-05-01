@@ -2,7 +2,9 @@
 
 #include "game/const.h"
 #include "game/effects.h"
+#include "game/game.h"
 #include "game/game_buf.h"
+#include "game/game_flow.h"
 #include "game/item_actions.h"
 #include "game/lara/common.h"
 #include "game/matrix.h"
@@ -94,6 +96,77 @@ int16_t Item_CreateLevelItem(void)
         m_LevelItemCount++;
     }
     return item_num;
+}
+
+void Item_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    Item_SwitchToAnim(item, 0, 0);
+    item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
+    item->current_anim_state = item->goal_anim_state;
+    item->required_anim_state = 0;
+    item->rot.x = 0;
+    item->rot.z = 0;
+    item->speed = 0;
+    item->fall_speed = 0;
+    item->hit_points = obj->hit_points;
+    item->timer = 0;
+    item->mesh_bits = 0xFFFFFFFF;
+    item->touch_bits = 0;
+    item->data = nullptr;
+    item->priv = nullptr;
+
+    item->active = 0;
+    item->status = IS_INACTIVE;
+    item->gravity = 0;
+    item->hit_status = 0;
+    item->collidable = 1;
+    item->looked_at = 0;
+    item->enable_interpolation = true;
+
+#if TR_VERSION == 1
+    item->carried_item = nullptr;
+    item->enable_shadow = true;
+#else
+    item->killed = 0;
+    if ((item->flags & IF_KILLED) != 0) {
+        item->killed = 1;
+        item->flags &= ~IF_KILLED;
+    }
+#endif
+
+    if ((item->flags & IF_INVISIBLE) != 0) {
+        item->status = IS_INVISIBLE;
+        item->flags &= ~IF_INVISIBLE;
+    } else if (TR_VERSION >= 2 && obj->intelligent) {
+        item->status = IS_INVISIBLE;
+    }
+
+    if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
+        item->flags &= ~IF_CODE_BITS;
+        item->flags |= IF_REVERSE;
+        Item_AddActive(item_num);
+        item->status = IS_ACTIVE;
+    }
+
+    ROOM *const room = Room_Get(item->room_num);
+    item->next_item = room->item_num;
+    room->item_num = item_num;
+
+    const SECTOR *const sector =
+        Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    item->floor = sector->floor.height;
+
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)
+        && GF_GetCurrentLevel()->type != GFL_DEMO) {
+        item->hit_points *= 2;
+    }
+
+    if (obj->initialise_func != nullptr) {
+        obj->initialise_func(item_num);
+    }
 }
 
 int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
