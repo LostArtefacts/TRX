@@ -93,12 +93,6 @@ void Item_Initialise(int16_t item_num)
     Interpolation_RememberItem(item);
 }
 
-bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
-{
-    return ABS(x) < range && ABS(y) < range && ABS(z) < range
-        && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
-}
-
 ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
 {
     ANIM_FRAME *frames[2];

@@ -403,6 +403,13 @@ int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 *const target)
     return XYZ_32_GetDistance(&item->pos, target);
 }
 
+bool Item_Test3DRange(
+    const int32_t x, const int32_t y, const int32_t z, const int32_t range)
+{
+    return ABS(x) < range && ABS(y) < range && ABS(z) < range
+        && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
+}
+
 void Item_Animate(ITEM *const item)
 {
     item->hit_status = 0;
