@@ -26,14 +26,6 @@ void Item_Control(void)
     Carrier_AnimateDrops();
 }
 
-ANIM_FRAME *Item_GetBestFrame(const ITEM *item)
-{
-    ANIM_FRAME *frames[2];
-    int32_t rate;
-    const int32_t frac = Item_GetFrames(item, frames, &rate);
-    return frames[(frac > rate / 2) ? 1 : 0];
-}
-
 const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
 {
     int32_t rate;
