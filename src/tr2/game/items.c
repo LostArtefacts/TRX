@@ -122,11 +122,3 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
     CALC(result, &frames[0]->bounds, &frames[1]->bounds, max.z);
     return result;
 }
-
-ANIM_FRAME *Item_GetBestFrame(const ITEM *const item)
-{
-    ANIM_FRAME *frames[2];
-    int32_t rate = 0;
-    const int32_t frac = Item_GetFrames(item, frames, &rate);
-    return frames[(frac > rate / 2) ? 1 : 0];
-}

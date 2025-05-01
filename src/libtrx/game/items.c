@@ -763,3 +763,11 @@ int32_t Item_Explode(
 
     return !(item->mesh_bits & (0x7FFFFFFF >> (31 - obj->mesh_count)));
 }
+
+ANIM_FRAME *Item_GetBestFrame(const ITEM *const item)
+{
+    ANIM_FRAME *frames[2];
+    int32_t rate = 0;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    return frames[(frac > rate / 2) ? 1 : 0];
+}
