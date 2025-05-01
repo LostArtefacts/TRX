@@ -663,10 +663,7 @@ int32_t Item_Explode(
 
         Matrix_TranslateRel32(bone->pos);
         Matrix_Rot16(best_frame->mesh_rots[i]);
-#if TR_VERSION != 1
-        // Removed from TR1 by GLrage on the grounds that it sometimes crashes.
         Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
-#endif
 
         bit <<= 1;
         if ((mesh_bits & bit) && (item->mesh_bits & bit)) {
