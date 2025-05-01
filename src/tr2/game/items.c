@@ -1,21 +1,12 @@
 #include "game/items.h"
 
-#include "game/effects.h"
 #include "game/game_flow.h"
-#include "game/output.h"
-#include "game/random.h"
 #include "game/room.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/debug.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/interpolation.h>
-#include <libtrx/game/lara/const.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/utils.h>
 
 static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};
