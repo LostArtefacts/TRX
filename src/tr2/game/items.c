@@ -114,11 +114,6 @@ void Item_ClearKilled(void)
     Item_SetPrevActive(NO_ITEM);
 }
 
-bool Item_IsSmashable(const ITEM *item)
-{
-    return (item->object_id == O_WINDOW_1 || item->object_id == O_BELL);
-}
-
 int16_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;

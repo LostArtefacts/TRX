@@ -1,6 +1,7 @@
 #include "game/los.h"
 
 #include "game/items.h"
+#include "game/objects/vars.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -304,7 +305,7 @@ int32_t LOS_CheckSmashable(
                 continue;
             }
 
-            if (!Item_IsSmashable(item)) {
+            if (!Object_IsType(item->object_id, g_SmashableObjects)) {
                 continue;
             }
 
