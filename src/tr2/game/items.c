@@ -114,17 +114,6 @@ void Item_ClearKilled(void)
     Item_SetPrevActive(NO_ITEM);
 }
 
-int16_t Item_GetHeight(const ITEM *const item)
-{
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-
-    return height;
-}
-
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);

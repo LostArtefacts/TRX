@@ -93,17 +93,6 @@ void Item_Initialise(int16_t item_num)
     Interpolation_RememberItem(item);
 }
 
-int16_t Item_GetHeight(const ITEM *const item)
-{
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-
-    return height;
-}
-
 int16_t Item_GetWaterHeight(ITEM *item)
 {
     int16_t height = Room_GetWaterHeight(
