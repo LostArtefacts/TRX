@@ -13,6 +13,7 @@ int16_t Item_GetNextActive(void);
 int16_t Item_GetPrevActive(void);
 void Item_SetPrevActive(int16_t item_num);
 int32_t Item_GetDistance(const ITEM *item, const XYZ_32 *target);
+bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);
 void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);
 
 void Item_Initialise(int16_t item_num);
