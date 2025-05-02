@@ -19,10 +19,9 @@ bool UI_LaraAirBar(const bool blink_state)
         || lara->water_status == LWS_SURFACE;
     switch (g_Config.ui.airbar_show_mode) {
     case BSM_DEFAULT:
-        show |= is_blinking;
         break;
     case BSM_FLASHING_ONLY:
-        show = is_blinking;
+        show &= is_blinking;
         break;
     case BSM_NEVER:
         show = false;
