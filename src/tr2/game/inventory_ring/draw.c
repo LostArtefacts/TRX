@@ -164,7 +164,7 @@ void InvRing_Draw(INV_RING *const ring)
             switch (inv_item->object_id) {
             case O_SMALL_MEDIPACK_OPTION:
             case O_LARGE_MEDIPACK_OPTION:
-                Overlay_DrawHealthBar();
+                Overlay_ForceHealthBar(true);
                 break;
 
             default:

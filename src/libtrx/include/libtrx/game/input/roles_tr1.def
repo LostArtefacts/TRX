@@ -1,4 +1,3 @@
-INPUT_ROLE_DEFINE(FPS,            toggle_fps_counter)
 INPUT_ROLE_DEFINE(BILINEAR,       toggle_bilinear_filter)
 INPUT_ROLE_DEFINE(CHANGE_TARGET,  change_target)
 INPUT_ROLE_DEFINE(UNBIND_KEY,     unbind_key)

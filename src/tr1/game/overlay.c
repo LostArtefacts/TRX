@@ -11,8 +11,6 @@
 #include "game/output/shader.h"
 #include "game/screen.h"
 #include "game/text.h"
-#include "game/ui/elements/bar_lara_hp.h"
-#include "game/ui/hud/overlay.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -22,7 +20,6 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/gun/const.h>
 #include <libtrx/game/matrix.h>
-#include <libtrx/game/ui.h>
 #include <libtrx/utils.h>
 
 #include <stdio.h>
@@ -118,8 +115,6 @@ static RGBA_8888 m_ColorBarMap[][COLOR_STEPS] = {
       { 39, 17, 60, 255 },
       { 26, 11, 40, 255 } },
 };
-
-static UI_OVERLAY_STATE *m_UI = nullptr;
 
 static void M_BarBlink(BAR_INFO *bar_info);
 static int32_t M_BarGetPercent(BAR_INFO *bar_info);
@@ -406,40 +401,11 @@ static void M_DrawPickups(void)
     }
 }
 
-void Overlay_Init(void)
+void Overlay_Reset(void)
 {
     for (int i = 0; i < MAX_PICKUPS; i++) {
         m_Pickups[i].phase = DPP_DEAD;
     }
-
-    if (m_UI == nullptr) {
-        m_UI = UI_Overlay_Init();
-    }
-}
-
-void Overlay_Shutdown(void)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay_Free(m_UI);
-        m_UI = nullptr;
-    }
-}
-
-void Overlay_Control(void)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay_Control(m_UI);
-    }
-}
-
-void Overlay_BarSetHealthTimer(int16_t timer)
-{
-    UI_LaraHealthBar_SetTimer(timer);
-}
-
-void Overlay_ForceHealthBar(const bool show)
-{
-    UI_Overlay_ForceHealthBar(m_UI, show);
 }
 
 void Overlay_HideGameInfo(void)
@@ -452,13 +418,6 @@ void Overlay_DrawGameInfo(void)
     Output_ClearDepthBuffer();
     if (Game_IsPlaying()) {
         M_DrawPickups();
-    }
-}
-
-void Overlay_Draw(void)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay(m_UI);
     }
 }
 
@@ -501,25 +460,6 @@ void Overlay_AddPickup(const GAME_OBJECT_ID obj_id)
     }
 }
 
-void Overlay_MakeAmmoString(char *const string)
-{
-    UI_AmmoLabel_MakeString(string);
-}
-
 void Overlay_DrawModeInfo(void)
 {
-}
-
-void Overlay_ShowArrows(const UI_OVERLAY_ARROW arrow, const bool show)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay_ShowArrows(m_UI, arrow, show);
-    }
-}
-
-void Overlay_SetBottomText(const char *const text, const bool flash)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay_SetBottomText(m_UI, text, flash);
-    }
 }

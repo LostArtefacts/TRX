@@ -21,42 +21,6 @@
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
-typedef enum {
-    COLOR_BLACK = 0,
-    COLOR_GRAY = 1,
-    COLOR_WHITE = 2,
-    COLOR_RED = 3,
-    COLOR_ORANGE = 4,
-    COLOR_YELLOW = 5,
-    COLOR_DARK_GREEN = 12,
-    COLOR_GREEN = 13,
-    COLOR_CYAN = 14,
-    COLOR_BLUE = 15,
-    COLOR_MAGENTA = 16,
-    COLOR_NUMBER_OF = 17,
-} COLOR_NAME;
-
-typedef struct {
-    RGB_888 rgb;
-    uint8_t palette_index;
-} NAMED_COLOR;
-
-static NAMED_COLOR m_NamedColors[COLOR_NUMBER_OF] = {
-    // clang-format off
-    [COLOR_BLACK]      = {.rgb = {.r = 0x00, .g = 0x00, .b = 0x00}},
-    [COLOR_GRAY]       = {.rgb = {.r = 0x40, .g = 0x40, .b = 0x40}},
-    [COLOR_WHITE]      = {.rgb = {.r = 0xFF, .g = 0xFF, .b = 0xFF}},
-    [COLOR_RED]        = {.rgb = {.r = 0xFF, .g = 0x00, .b = 0x00}},
-    [COLOR_ORANGE]     = {.rgb = {.r = 0xFF, .g = 0x80, .b = 0x00}},
-    [COLOR_YELLOW]     = {.rgb = {.r = 0xFF, .g = 0xFF, .b = 0x00}},
-    [COLOR_DARK_GREEN] = {.rgb = {.r = 0x00, .g = 0x80, .b = 0x00}},
-    [COLOR_GREEN]      = {.rgb = {.r = 0x00, .g = 0xFF, .b = 0x00}},
-    [COLOR_CYAN]       = {.rgb = {.r = 0x00, .g = 0xFF, .b = 0xFF}},
-    [COLOR_BLUE]       = {.rgb = {.r = 0x00, .g = 0x00, .b = 0xFF}},
-    [COLOR_MAGENTA]    = {.rgb = {.r = 0xFF, .g = 0x00, .b = 0xFF}},
-    // clang-format on
-};
-
 static int32_t m_VBufCapacity = 0;
 static int32_t m_TickComp = 0;
 static int32_t m_LsAdder = 0;
@@ -86,50 +50,9 @@ static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
 static void M_DrawRoomSprites(const ROOM_MESH *mesh);
 
-static void M_InsertBar(
-    int32_t l, int32_t t, int32_t w, int32_t h, int32_t percent,
-    COLOR_NAME bar_color_main, COLOR_NAME bar_color_highlight);
-
 static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
 static void M_CalcVerticeLight(const OBJECT_MESH *mesh);
 static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
-
-static void M_InsertBar(
-    const int32_t l, const int32_t t, const int32_t w, const int32_t h,
-    const int32_t percent, const COLOR_NAME bar_color_main,
-    const COLOR_NAME bar_color_highlight)
-{
-    struct {
-        int32_t x1, y1, x2, y2;
-        COLOR_NAME color;
-    } rects[] = {
-        { 0, 0, w, h, COLOR_WHITE },
-        { 1, 1, w, h, COLOR_GRAY },
-        { 1, 1, w - 1, h - 1, COLOR_BLACK },
-        { 2, 2, (w - 2) * percent / 100, h - 2, bar_color_main },
-        { 2, 3, (w - 2) * percent / 100, 4, bar_color_highlight },
-    };
-
-    const int32_t z_offset = 8;
-    const int32_t x_offset = l < 0
-        ? g_PhdWinWidth + Scaler_Calc(l, SCALER_TARGET_GENERIC)
-            - Scaler_Calc(w - 1, SCALER_TARGET_BAR)
-        : Scaler_Calc(l, SCALER_TARGET_GENERIC);
-    const int32_t y_offset = t < 0
-        ? g_PhdWinHeight + Scaler_Calc(t, SCALER_TARGET_GENERIC)
-            - Scaler_Calc(h - 1, SCALER_TARGET_BAR)
-        : Scaler_Calc(t, SCALER_TARGET_GENERIC);
-
-    for (int32_t i = 0; i < 5; i++) {
-        Render_InsertFlatRect(
-            x_offset + Scaler_Calc(rects[i].x1, SCALER_TARGET_BAR),
-            y_offset + Scaler_Calc(rects[i].y1, SCALER_TARGET_BAR),
-            x_offset + Scaler_Calc(rects[i].x2, SCALER_TARGET_BAR),
-            y_offset + Scaler_Calc(rects[i].y2, SCALER_TARGET_BAR),
-            g_PhdNearZ + z_offset * (5 - i),
-            m_NamedColors[rects[i].color].palette_index);
-    }
-}
 
 static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
 {
@@ -468,10 +391,6 @@ void Output_ObserveLevelLoad(void)
 {
     M_ReserveVertexBuffer();
     Output_ApplyLevelSettings();
-    for (int32_t i = 0; i < COLOR_NUMBER_OF; i++) {
-        m_NamedColors[i].palette_index =
-            Output_FindColor8(m_NamedColors[i].rgb);
-    }
 }
 
 void Output_ObserveLevelUnload(void)
@@ -778,7 +697,7 @@ void Output_InsertBackPolygon(
 {
     Render_InsertFlatRect(
         x0, y0, x1, y1, g_PhdFarZ + 1,
-        m_NamedColors[COLOR_BLACK].palette_index);
+        Output_FindColor8((RGB_888) { 0, 0, 0 }));
 }
 
 void Output_DrawBlackRectangle(int32_t opacity)
@@ -835,16 +754,11 @@ void Output_DrawScreenFBox(
     Render_InsertTransQuad(sx, sy, width + 1, height + 1, g_PhdNearZ + 8 * z);
 }
 
-void Output_DrawHealthBar(const int32_t percent)
+void Output_DrawScreenFlatQuad(
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    int32_t z, const RGB_888 color)
 {
-    m_IsShadeEffect = false;
-    M_InsertBar(8, 8, 105, 9, percent, COLOR_RED, COLOR_ORANGE);
-}
-
-void Output_DrawAirBar(const int32_t percent)
-{
-    m_IsShadeEffect = false;
-    M_InsertBar(-8, 8, 105, 9, percent, COLOR_BLUE, COLOR_WHITE);
+    Render_InsertFlatRect(sx, sy, sx + w, sy + h, z, Output_FindColor8(color));
 }
 
 void Output_InsertShadow(

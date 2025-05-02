@@ -148,7 +148,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Overlay_Animate(1);
     Output_AnimateTextures(1 * TICKS_PER_FRAME);
 
-    g_HealthBarTimer--;
     if (!Game_IsInGym() || Gym_IsAssaultTimerActive()) {
         Stats_UpdateTimer();
     }
@@ -203,5 +202,9 @@ void Game_ProcessInput(void)
     if (g_GameFlow.load_save_disabled) {
         g_Input.save = 0;
         g_Input.load = 0;
+    }
+
+    if (g_InputDB.toggle_ui) {
+        UI_ToggleState(&g_Config.ui.enable_game_ui);
     }
 }

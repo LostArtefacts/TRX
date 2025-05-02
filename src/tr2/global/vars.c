@@ -50,7 +50,6 @@ int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
 uint16_t g_SoundOptionLine;
-int32_t g_HealthBarTimer;
 int32_t g_LevelComplete;
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;

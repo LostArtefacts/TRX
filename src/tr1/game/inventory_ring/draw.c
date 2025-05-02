@@ -169,9 +169,7 @@ void InvRing_Draw(INV_RING *const ring)
         switch (inv_item->object_id) {
         case O_SMALL_MEDIPACK_OPTION:
         case O_LARGE_MEDIPACK_OPTION:
-            if (g_Config.ui.enable_game_ui) {
-                Overlay_ForceHealthBar(true);
-            }
+            Overlay_ForceHealthBar(true);
             break;
 
         default:

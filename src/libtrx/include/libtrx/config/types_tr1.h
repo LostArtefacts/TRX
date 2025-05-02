@@ -14,39 +14,6 @@
 #define CONFIG_MAX_BAR_SCALE 1.5
 
 typedef enum {
-    BSM_DEFAULT,
-    BSM_FLASHING_OR_DEFAULT,
-    BSM_FLASHING_ONLY,
-    BSM_ALWAYS,
-    BSM_NEVER,
-    BSM_PS1,
-    BSM_BOSS_ONLY,
-} BAR_SHOW_MODE;
-
-typedef enum {
-    BL_TOP_LEFT,
-    BL_TOP_CENTER,
-    BL_TOP_RIGHT,
-    BL_BOTTOM_LEFT,
-    BL_BOTTOM_CENTER,
-    BL_BOTTOM_RIGHT,
-    BL_CUSTOM,
-} BAR_LOCATION;
-
-typedef enum {
-    BC_GOLD,
-    BC_BLUE,
-    BC_GREY,
-    BC_RED,
-    BC_SILVER,
-    BC_GREEN,
-    BC_GOLD2,
-    BC_BLUE2,
-    BC_PINK,
-    BC_PURPLE,
-} BAR_COLOR;
-
-typedef enum {
     TLM_FULL,
     TLM_SEMI,
     TLM_NONE,
@@ -98,20 +65,17 @@ typedef struct {
         bool enable_game_ui;
         bool enable_photo_mode_ui;
         bool enable_wraparound;
+        bool enable_fps_counter;
         double text_scale;
         double bar_scale;
         UI_STYLE menu_style;
 
         bool enable_smooth_bars;
-        BAR_SHOW_MODE healthbar_show_mode;
-        BAR_LOCATION healthbar_location;
-        BAR_COLOR healthbar_color;
-        BAR_SHOW_MODE airbar_show_mode;
-        BAR_LOCATION airbar_location;
-        BAR_COLOR airbar_color;
-        BAR_SHOW_MODE enemy_healthbar_show_mode;
-        BAR_LOCATION enemy_healthbar_location;
-        BAR_COLOR enemy_healthbar_color;
+        struct {
+            BAR_SHOW_MODE show_mode;
+            BAR_LOCATION location;
+            BAR_COLOR color;
+        } enemy_health_bar, lara_health_bar, lara_air_bar;
     } ui;
 
     struct {
@@ -208,7 +172,6 @@ typedef struct {
         bool enable_wireframe;
         double wireframe_width;
         bool enable_vsync;
-        bool enable_fps_counter;
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
     } rendering;

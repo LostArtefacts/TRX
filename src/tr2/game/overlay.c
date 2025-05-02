@@ -18,7 +18,6 @@
 #include <libtrx/game/gym.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/scaler.h>
-#include <libtrx/game/ui.h>
 #include <libtrx/utils.h>
 
 #include <stdio.h>
@@ -70,9 +69,6 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *pickup);
 static void M_DrawPickupSprite(const DISPLAY_PICKUP *pickup);
 static void M_DrawPickups(void);
 static void M_DrawAssaultTimer(void);
-static void M_DrawHealthBar(void);
-static void M_DrawAirBar(void);
-static void M_DrawAmmoInfo(void);
 static void M_DrawModeInfo(void);
 
 static float M_Ease(const int32_t cur_frame, const int32_t max_frames)
@@ -219,96 +215,6 @@ static void M_DrawAssaultTimer(void)
     }
 }
 
-static void M_DrawHealthBar(void)
-{
-    int32_t hit_points = g_LaraItem->hit_points;
-    CLAMP(hit_points, 0, LARA_MAX_HITPOINTS);
-
-    if (m_OldHitPoints != hit_points) {
-        m_OldHitPoints = hit_points;
-        g_HealthBarTimer = 40;
-    }
-    CLAMPL(g_HealthBarTimer, 0);
-
-    const int32_t percent = hit_points * 100 / LARA_MAX_HITPOINTS;
-    if (hit_points <= LARA_MAX_HITPOINTS / 4) {
-        Output_DrawHealthBar(m_FlashState ? percent : 0);
-    } else if (g_HealthBarTimer > 0 || g_Lara.gun_status == LGS_READY) {
-        Output_DrawHealthBar(percent);
-    }
-}
-
-static void M_DrawAirBar(void)
-{
-    if (g_Lara.water_status != LWS_UNDERWATER
-        && g_Lara.water_status != LWS_SURFACE) {
-        return;
-    }
-
-    int32_t air = g_Lara.air;
-    CLAMP(air, 0, LARA_MAX_AIR);
-    const int32_t percent = air * 100 / LARA_MAX_AIR;
-    if (air <= 450) {
-        Output_DrawAirBar(m_FlashState ? percent : 0);
-    } else {
-        Output_DrawAirBar(percent);
-        m_AmmoTextY += 10 * Scaler_GetScale(SCALER_TARGET_BAR)
-            / Scaler_GetScale(SCALER_TARGET_TEXT);
-        m_AmmoTextY += 3;
-    }
-}
-
-static void M_DrawAmmoInfo(void)
-{
-    if (g_Lara.gun_status != LGS_READY || g_OverlayStatus <= 0
-        || Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        if (m_AmmoTextInfo != nullptr) {
-            Text_Remove(m_AmmoTextInfo);
-            m_AmmoTextInfo = nullptr;
-        }
-        return;
-    }
-
-    char buffer[128] = "";
-    switch (g_Lara.gun_type) {
-    case LGT_MAGNUMS:
-        sprintf(buffer, "%6d", g_Lara.magnum_ammo.ammo);
-        break;
-
-    case LGT_UZIS:
-        sprintf(buffer, "%6d", g_Lara.uzi_ammo.ammo);
-        break;
-
-    case LGT_SHOTGUN:
-        sprintf(buffer, "%6d", g_Lara.shotgun_ammo.ammo / 6);
-        break;
-
-    case LGT_M16:
-        sprintf(buffer, "%6d", g_Lara.m16_ammo.ammo);
-        break;
-
-    case LGT_GRENADE:
-        sprintf(buffer, "%6d", g_Lara.grenade_ammo.ammo);
-        break;
-
-    case LGT_HARPOON:
-        sprintf(buffer, "%6d", g_Lara.harpoon_ammo.ammo);
-        break;
-
-    default:
-        return;
-    }
-
-    Overlay_MakeAmmoString(buffer);
-    if (m_AmmoTextInfo != nullptr) {
-        Text_SetPos(m_AmmoTextInfo, AMMO_X, m_AmmoTextY);
-        Text_ChangeText(m_AmmoTextInfo, buffer);
-    } else {
-        m_AmmoTextInfo = Text_Create(AMMO_X, m_AmmoTextY, buffer);
-        Text_AlignRight(m_AmmoTextInfo, true);
-    }
-}
-
 void M_DrawModeInfo(void)
 {
     if (m_DisplayModeTextInfo == nullptr) {
@@ -322,18 +228,21 @@ void M_DrawModeInfo(void)
     }
 }
 
+void Overlay_Reset(void)
+{
+    Overlay_HideGameInfo();
+    for (int32_t i = 0; i < MAX_PICKUPS; i++) {
+        m_Pickups[i].phase = DPP_DEAD;
+    }
+}
+
 void Overlay_DrawGameInfo(void)
 {
     m_AmmoTextY = ABS(AMMO_X) + TEXT_HEIGHT;
-    if (g_OverlayStatus > 0) {
-        M_DrawHealthBar();
-        M_DrawAirBar();
-    }
     if (Game_IsPlaying()) {
         M_DrawPickups();
         M_DrawAssaultTimer();
     }
-    M_DrawAmmoInfo();
     M_DrawModeInfo();
 }
 
@@ -352,19 +261,6 @@ void Overlay_HideGameInfo(void)
 
     Text_Remove(m_DisplayModeTextInfo);
     m_DisplayModeTextInfo = nullptr;
-}
-
-void Overlay_MakeAmmoString(char *const string)
-{
-    UI_AmmoLabel_MakeString(string);
-}
-
-void Overlay_Reset(void)
-{
-    Overlay_HideGameInfo();
-    for (int32_t i = 0; i < MAX_PICKUPS; i++) {
-        m_Pickups[i].phase = DPP_DEAD;
-    }
 }
 
 static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
@@ -505,14 +401,6 @@ static void M_DrawPickups(void)
     }
 }
 
-void Overlay_Control(void)
-{
-}
-
-void Overlay_Draw(void)
-{
-}
-
 void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
 {
     if (Object_IsType(obj_id, g_SecretObjects)) {
@@ -578,20 +466,7 @@ void Overlay_DisplayModeInfo(const char *const string)
     m_DisplayModeInfoTimer = 2.5 * FRAMES_PER_SECOND;
 }
 
-void Overlay_DrawHealthBar(void)
-{
-    M_DrawHealthBar();
-}
-
 void Overlay_DrawModeInfo(void)
 {
     M_DrawModeInfo();
-}
-
-void Overlay_ShowArrows(const UI_OVERLAY_ARROW arrow, const bool show)
-{
-}
-
-void Overlay_SetBottomText(const char *const text, const bool flash)
-{
 }

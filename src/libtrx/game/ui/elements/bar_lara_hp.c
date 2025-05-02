@@ -1,10 +1,9 @@
 #include "game/ui/elements/bar_lara_hp.h"
 
+#include "config.h"
+#include "game/lara/common.h"
+#include "game/lara/const.h"
 #include "game/ui/elements/bar.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/lara/common.h>
-#include <libtrx/game/lara/const.h>
 
 static int32_t m_OldHealth = 0;
 static int32_t m_HitTimer = 0;
@@ -62,7 +61,7 @@ bool UI_LaraHealthBar(const bool blink_state, const BAR_SHOW_MODE show_mode)
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
-        .color = g_Config.ui.healthbar_color,
+        .color = g_Config.ui.lara_health_bar.color,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = is_blinking && blink_state ? 0 : health,

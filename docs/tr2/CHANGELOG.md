@@ -2,9 +2,13 @@
 - added aliases to CLI options (`-gold` becomes `-g/--gold`)
 - added a `--help` CLI option (may not output anything on Windows machines – OS bug)
 - added explosion sprites to Home Sweet Home (#1569)
+- added ability to reposition the health bar and the air bar (#1611)
+- added enemy health bars (#2909)
+- added an FPS counter (#2910)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
 - changed the installer to always allow downloading music files (#2891)
 - changed the dev console to no longer add duplicate entries to the history
+- changed the health bar and the air bar sizes to be slightly bigger
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
 - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used (#2851)
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door (#2215)
@@ -12,6 +16,7 @@
 - fixed an illegal reachable slope in Barkhang Monastery room 96, which could lead to Lara becoming softlocked (#2900)
 - fixed the game crashing on unknown sequencer events
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 1.0)
+- fixed harpoon's ammo counter overlapping with the air bar (#2871)
 - improved the `/set` console command to display available options if given an unknown argument
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26

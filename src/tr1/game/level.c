@@ -394,8 +394,8 @@ bool Level_Initialise(
     Effect_InitialiseArray();
     LOT_InitialiseArray();
 
-    Overlay_Init();
-    Overlay_BarSetHealthTimer(100);
+    Overlay_Reset();
+    Overlay_SetHealthBarTimer(100);
 
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
