@@ -822,18 +822,11 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
     const int32_t numerator = key_frame_shift;
     int32_t denominator = key_frame_span;
     if (numerator != 0) {
-#if TR_VERSION == 1
-        if (second_key_frame_num > anim->frame_end) {
-            denominator =
-                anim->frame_end + key_frame_span - second_key_frame_num;
-        }
-#else
         const int32_t second_key_frame_num2 =
             (cur_frame_num / key_frame_span + 1) * key_frame_span;
         if (second_key_frame_num2 > anim->frame_end) {
             denominator += anim->frame_end - second_key_frame_num2;
         }
-#endif
     }
 
     frames[0] = &anim->frame_ptr[first_key_frame_num];
