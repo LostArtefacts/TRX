@@ -275,6 +275,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barkhang_fd.bin",
                 "data/injections/barkhang_itemrots.bin",
                 "data/injections/barkhang_pickup_meshes.bin",
             ],
