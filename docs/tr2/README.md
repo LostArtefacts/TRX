@@ -224,6 +224,7 @@ However, you can easily download them manually from these urls:
     - **Living Quarters** - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used
     - **The Deck**: fixed invalid portals between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
+    - **Barkhang Monastery**: fixed the illegal slope in room 96
     - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
     - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, and added an extra pickup trigger beside the Gong Hammer in room 29
     - **Temple of Xian**: fixed missing death tiles in room 91; adding trigger workarounds to avoid a softlock after (missing) the final key
