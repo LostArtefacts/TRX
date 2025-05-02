@@ -2,6 +2,7 @@
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 4.10)
+- fixed FPS counter turning off after a game relaunch (#2911)
 
 ## [4.10.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...tr1-4.10.1) - 2025-04-30
 - fixed water caustics appearance (#2896, regression from 4.10)
