@@ -14,11 +14,17 @@ typedef enum {
 typedef struct UI_OVERLAY_STATE UI_OVERLAY_STATE;
 
 // state functions
-extern UI_OVERLAY_STATE *UI_Overlay_Init(void);
-extern void UI_Overlay_Free(UI_OVERLAY_STATE *s);
-extern void UI_Overlay_Control(UI_OVERLAY_STATE *s);
+UI_OVERLAY_STATE *UI_Overlay_Init(void);
+void UI_Overlay_Free(UI_OVERLAY_STATE *s);
+void UI_Overlay_Control(UI_OVERLAY_STATE *s);
 
 // draw functions
-extern void UI_Overlay(UI_OVERLAY_STATE *s);
-extern void UI_BeginOverlayRegion(float x, float y);
-extern void UI_EndOverlayRegion(void);
+void UI_Overlay(UI_OVERLAY_STATE *s);
+void UI_BeginOverlayRegion(float x, float y);
+void UI_EndOverlayRegion(void);
+
+void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *s, bool show);
+void UI_Overlay_ShowArrows(
+    UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow, bool show);
+void UI_Overlay_SetBottomText(
+    UI_OVERLAY_STATE *s, const char *text, bool flash);

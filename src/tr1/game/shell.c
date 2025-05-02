@@ -143,6 +143,7 @@ void Shell_Shutdown(void)
     Input_Shutdown();
     Music_Shutdown();
     Sound_Shutdown();
+    Overlay_Shutdown();
     UI_Shutdown();
     Text_Shutdown();
     Config_Shutdown();
@@ -199,6 +200,7 @@ int32_t Shell_Main(void)
 
     Text_Init();
     UI_Init();
+    Overlay_Init();
 
     Input_Init();
     Sound_Init();
@@ -369,10 +371,10 @@ void Shell_ProcessInput(void)
     }
 
     if (g_InputDB.toggle_fps_counter) {
-        g_Config.rendering.enable_fps_counter ^= true;
+        g_Config.ui.enable_fps_counter ^= true;
         Console_Log(
-            g_Config.rendering.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
-                                                  : GS(OSD_FPS_COUNTER_OFF));
+            g_Config.ui.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
+                                           : GS(OSD_FPS_COUNTER_OFF));
         Config_Write();
     }
 

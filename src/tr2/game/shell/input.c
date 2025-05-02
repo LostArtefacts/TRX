@@ -18,6 +18,7 @@
 #include <libtrx/screenshot.h>
 #include <libtrx/utils.h>
 
+static void M_ToggleFPSCounter(void);
 static void M_ToggleBilinearFiltering(void);
 static void M_TogglePerspectiveCorrection(void);
 static void M_ToggleTrapezoidFilter(void);
@@ -29,6 +30,15 @@ static void M_DecreaseResolutionOrBPP(void);
 static void M_IncreaseResolutionOrBPP(void);
 static void M_DecreaseInternalScreenSize(void);
 static void M_IncreaseInternalScreenSize(void);
+
+static void M_ToggleFPSCounter(void)
+{
+    g_Config.ui.enable_fps_counter = !g_Config.ui.enable_fps_counter;
+    Config_Write();
+    Overlay_DisplayModeInfo(
+        g_Config.ui.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
+                                       : GS(OSD_FPS_COUNTER_OFF));
+}
 
 static void M_ToggleBilinearFiltering(void)
 {
@@ -183,6 +193,10 @@ void Shell_ProcessInput(void)
         } else {
             M_DecreaseInternalScreenSize();
         }
+    }
+
+    if (g_InputDB.toggle_fps_counter) {
+        M_ToggleFPSCounter();
     }
 
     if (g_InputDB.toggle_bilinear_filter) {

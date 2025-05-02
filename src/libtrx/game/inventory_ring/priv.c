@@ -10,6 +10,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/text.h"
+#include "game/ui.h"
 #include "version.h"
 
 #include <stdio.h>
@@ -38,9 +39,6 @@ typedef enum {
 // TODO: drop in favor of the Overlay APIs
 static TEXTSTRING *m_HeadingText = nullptr;
 static TEXTSTRING *m_VersionText = nullptr;
-#if TR_VERSION > 1
-static TEXTSTRING *m_Arrows[4] = {};
-#endif
 static TEXTSTRING *m_ItemText[IT_NUMBER_OF] = {};
 static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
@@ -439,7 +437,7 @@ void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
     }
     char string[128];
     sprintf(string, fmt, qty);
-    Overlay_MakeAmmoString(string);
+    UI_AmmoLabel_MakeString(string);
     m_ItemText[IT_QTY] = Text_Create(64, -56, string);
     Text_AlignBottom(m_ItemText[IT_QTY], true);
     Text_CentreH(m_ItemText[IT_QTY], true);
@@ -493,41 +491,17 @@ void InvRing_ShowHeader(INV_RING *const ring)
     const bool show_bottom_arrow = ring->type == RT_KEYS
         || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
 
-#if TR_VERSION == 1
     Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, show_up_arrow);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, show_up_arrow);
-#else
-    if (m_Arrows[INV_RING_ARROW_TL] == nullptr) {
-        m_Arrows[INV_RING_ARROW_TL] = Text_Create(20, 28, "\\{arrow up}");
-        m_Arrows[INV_RING_ARROW_TR] = Text_Create(-20, 28, "\\{arrow up}");
-        Text_AlignRight(m_Arrows[INV_RING_ARROW_TR], true);
-    }
-#endif
 
-#if TR_VERSION == 1
     Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, show_bottom_arrow);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_BR, show_bottom_arrow);
-#else
-    if (m_Arrows[INV_RING_ARROW_BL] == nullptr && show_bottom_arrow) {
-        m_Arrows[INV_RING_ARROW_BL] = Text_Create(20, -15, "\\{arrow down}");
-        m_Arrows[INV_RING_ARROW_BR] = Text_Create(-20, -15, "\\{arrow down}");
-        Text_AlignBottom(m_Arrows[INV_RING_ARROW_BL], true);
-        Text_AlignBottom(m_Arrows[INV_RING_ARROW_BR], true);
-        Text_AlignRight(m_Arrows[INV_RING_ARROW_BR], true);
-    }
-#endif
 }
 
 void InvRing_RemoveHeader(void)
 {
     Text_Remove(m_HeadingText);
     m_HeadingText = nullptr;
-#if TR_VERSION == 2
-    for (int32_t i = 0; i < 4; i++) {
-        Text_Remove(m_Arrows[i]);
-        m_Arrows[i] = nullptr;
-    }
-#endif
     Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, false);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, false);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, false);
@@ -536,11 +510,6 @@ void InvRing_RemoveHeader(void)
 
 void InvRing_HideArrow(const INV_RING_ARROW arrow, const bool hide)
 {
-#if TR_VERSION > 1
-    if (m_Arrows[arrow] != nullptr) {
-        Text_Hide(m_Arrows[arrow], hide);
-    }
-#endif
     Overlay_ShowArrows((UI_OVERLAY_ARROW)arrow, hide);
 }
 

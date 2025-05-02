@@ -28,10 +28,8 @@ static void M_Draw(PHASE *phase);
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-#if TR_VERSION == 1
-    p->show_fps_counter = g_Config.rendering.enable_fps_counter;
-    g_Config.rendering.enable_fps_counter = false;
-#endif
+    p->show_fps_counter = g_Config.ui.enable_fps_counter;
+    g_Config.ui.enable_fps_counter = false;
 
     Camera_EnterPhotoMode();
     Overlay_HideGameInfo();
@@ -53,9 +51,7 @@ static void M_End(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Camera_ExitPhotoMode();
 
-#if TR_VERSION == 1
-    g_Config.rendering.enable_fps_counter = p->show_fps_counter;
-#endif
+    g_Config.ui.enable_fps_counter = p->show_fps_counter;
     Music_Unpause();
     Sound_UnpauseAll();
 }

@@ -258,6 +258,19 @@ const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_BossObjects[] = {
+    // clang-format off
+    O_CULT_3,
+    O_DRAGON_FRONT,
+    O_BARTOLI,
+    O_BIRD_GUARDIAN,
+    O_SKIDOO_DRIVER,
+    O_SKIDOO_ARMED,
+    O_DINO,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format off
     { O_COMPASS_ITEM, O_COMPASS_OPTION },

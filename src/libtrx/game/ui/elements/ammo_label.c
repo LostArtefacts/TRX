@@ -37,25 +37,51 @@ void UI_AmmoLabel_MakeString(char *const string)
 void UI_AmmoLabel(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    char ammo_string[128] = "";
+    char buf[128] = "";
+
+#if TR_VERSION == 1
     switch (lara->gun_type) {
     case LGT_PISTOLS:
         return;
     case LGT_SHOTGUN:
-        sprintf(
-            ammo_string, "%6d A", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+        sprintf(buf, "%6d A", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
     case LGT_UZIS:
-        sprintf(ammo_string, "%6d C", lara->uzi_ammo.ammo);
+        sprintf(buf, "%6d C", lara->uzi_ammo.ammo);
         break;
     case LGT_MAGNUMS:
-        sprintf(ammo_string, "%6d B", lara->magnum_ammo.ammo);
+        sprintf(buf, "%6d B", lara->magnum_ammo.ammo);
         break;
     default:
         return;
     }
-    UI_AmmoLabel_MakeString(ammo_string);
+#else
+    switch (lara->gun_type) {
+    case LGT_MAGNUMS:
+        sprintf(buf, "%6d", lara->magnum_ammo.ammo);
+        break;
+    case LGT_UZIS:
+        sprintf(buf, "%6d", lara->uzi_ammo.ammo);
+        break;
+    case LGT_SHOTGUN:
+        sprintf(buf, "%6d", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+        break;
+    case LGT_M16:
+        sprintf(buf, "%6d", lara->m16_ammo.ammo);
+        break;
+    case LGT_GRENADE:
+        sprintf(buf, "%6d", lara->grenade_ammo.ammo);
+        break;
+    case LGT_HARPOON:
+        sprintf(buf, "%6d", lara->harpoon_ammo.ammo);
+        break;
+    default:
+        return;
+    }
+#endif
+
+    UI_AmmoLabel_MakeString(buf);
     if (lara->gun_status == LGS_READY && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        UI_LabelEx(ammo_string, (UI_LABEL_SETTINGS) { .scale = 1.5f });
+        UI_LabelEx(buf, (UI_LABEL_SETTINGS) { .scale = 1.5f });
     }
 }

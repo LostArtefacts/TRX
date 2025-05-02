@@ -168,10 +168,14 @@ However, you can easily download them manually from these urls:
 ## Improvements over original game
 
 #### UI
+- added proper UI and bar scaling
 - added support for more accented characters
 - added fade effects to displayed images
 - added a wireframe mode
 - added sunglasses for graphic options
+- added enemy health bars
+- added an FPS counter
+- added an option to toggle in-game UI, such as healthbars and ammo text
 - improved support for windowed mode
 
 #### Gameplay

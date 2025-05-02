@@ -1,7 +1,7 @@
 #pragma once
 
-#include <libtrx/config/types.h>
-#include <libtrx/game/ui/common.h>
+#include "../../../config/types.h"
+#include "../common.h"
 
 // state functions
 void UI_LaraHealthBar_Control(void);

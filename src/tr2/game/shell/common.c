@@ -15,6 +15,7 @@
 #include "game/objects/creatures/monk.h"
 #include "game/objects/creatures/spider.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/phase.h"
 #include "game/random.h"
 #include "game/render/common.h"
@@ -466,6 +467,7 @@ int32_t Shell_Main(void)
     Text_Init();
     UI_Init();
     Console_Init();
+    Overlay_Init();
 
     Input_Init();
     Sound_Init();
@@ -603,8 +605,9 @@ void Shell_Shutdown(void)
     GameStringTable_Shutdown();
     GF_Shutdown();
 
-    Console_Shutdown();
     Render_Shutdown();
+    Console_Shutdown();
+    Overlay_Shutdown();
     Text_Shutdown();
     UI_Shutdown();
     GameBuf_Shutdown();

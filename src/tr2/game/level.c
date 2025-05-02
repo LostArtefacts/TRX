@@ -352,8 +352,10 @@ bool Level_Initialise(
 
     Effect_InitialiseArray();
     LOT_InitialiseArray();
+
     Overlay_Reset();
-    g_HealthBarTimer = 100;
+    Overlay_SetHealthBarTimer(100);
+
     Sound_StopAll();
 
     if (Object_Get(O_FINAL_LEVEL_COUNTER)->loaded) {

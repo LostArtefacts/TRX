@@ -75,6 +75,7 @@ static void M_UpdateFromBackend(
     s->screenshot                  |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
     s->switch_resolution           |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_RESOLUTION);
     s->switch_internal_screen_size |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_INTERNAL_SCREEN_SIZE);
+    s->toggle_fps_counter          |= backend->is_pressed(layout, INPUT_ROLE_FPS);
     s->toggle_bilinear_filter      |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_BILINEAR_FILTER);
     s->toggle_perspective_filter   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER);
     s->toggle_trapezoid_filter     |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);

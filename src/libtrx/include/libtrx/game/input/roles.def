@@ -29,6 +29,7 @@ INPUT_ROLE_DEFINE(SAVE,                    save)
 INPUT_ROLE_DEFINE(LOAD,                    load)
 
 INPUT_ROLE_DEFINE(SCREENSHOT,              screenshot)
+INPUT_ROLE_DEFINE(FPS,                     toggle_fps_counter)
 INPUT_ROLE_DEFINE(TOGGLE_FULLSCREEN,       toggle_fullscreen)
 
 INPUT_ROLE_DEFINE(EQUIP_PISTOLS,           equip_pistols)

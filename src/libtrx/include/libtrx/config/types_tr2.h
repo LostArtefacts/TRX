@@ -58,10 +58,18 @@ typedef struct {
     } visuals;
 
     struct {
+        bool enable_game_ui;
         bool enable_photo_mode_ui;
         bool enable_wraparound;
+        bool enable_fps_counter;
         double text_scale;
         double bar_scale;
+
+        struct {
+            BAR_SHOW_MODE show_mode;
+            BAR_LOCATION location;
+            BAR_COLOR color;
+        } enemy_health_bar, lara_health_bar, lara_air_bar;
     } ui;
 
     struct {

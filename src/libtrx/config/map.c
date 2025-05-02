@@ -34,7 +34,10 @@
       .param = nullptr },
 
 #define CFG_ENUM(parent, target_, default_value_, enum_map)                    \
-    { .name = QUOTE(target_),                                                  \
+    CFG_ENUM_EX(parent, QUOTE(target_), target_, default_value_, enum_map)
+
+#define CFG_ENUM_EX(parent, name_, target_, default_value_, enum_map)          \
+    { .name = name_,                                                           \
       .type = COT_ENUM,                                                        \
       .target = &parent.target_,                                               \
       .default_value = &(int32_t) { default_value_ },                          \

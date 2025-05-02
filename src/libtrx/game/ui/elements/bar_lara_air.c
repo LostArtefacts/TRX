@@ -1,10 +1,9 @@
 #include "game/ui/elements/bar_lara_air.h"
 
+#include "config.h"
+#include "game/lara/common.h"
+#include "game/lara/const.h"
 #include "game/ui/elements/bar.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/lara/common.h>
-#include <libtrx/game/lara/const.h>
 
 bool UI_LaraAirBar(const bool blink_state)
 {
@@ -17,7 +16,7 @@ bool UI_LaraAirBar(const bool blink_state)
 
     bool show = lara->water_status == LWS_UNDERWATER
         || lara->water_status == LWS_SURFACE;
-    switch (g_Config.ui.airbar_show_mode) {
+    switch (g_Config.ui.lara_air_bar.show_mode) {
     case BSM_DEFAULT:
         break;
     case BSM_FLASHING_ONLY:
@@ -34,7 +33,7 @@ bool UI_LaraAirBar(const bool blink_state)
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
-        .color = g_Config.ui.airbar_color,
+        .color = g_Config.ui.lara_air_bar.color,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = is_blinking && blink_state ? 0 : lara->air,

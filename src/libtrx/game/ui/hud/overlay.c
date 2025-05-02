@@ -1,24 +1,23 @@
 #include "game/ui/hud/overlay.h"
 
+#include "config.h"
+#include "game/clock.h"
+#include "game/game.h"
+#include "game/scaler.h"
+#include "game/ui/elements/ammo_label.h"
 #include "game/ui/elements/bar.h"
 #include "game/ui/elements/bar_enemy_hp.h"
 #include "game/ui/elements/bar_lara_air.h"
 #include "game/ui/elements/bar_lara_hp.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/clock.h>
-#include <libtrx/game/game.h>
-#include <libtrx/game/scaler.h>
-#include <libtrx/game/ui/elements/ammo_label.h>
-#include <libtrx/game/ui/elements/flash.h>
-#include <libtrx/game/ui/elements/fps_counter.h>
-#include <libtrx/game/ui/elements/label.h>
-#include <libtrx/game/ui/elements/modal.h>
-#include <libtrx/game/ui/elements/pad.h>
-#include <libtrx/game/ui/elements/resize.h>
-#include <libtrx/game/ui/elements/spacer.h>
-#include <libtrx/game/ui/elements/stack.h>
-#include <libtrx/memory.h>
+#include "game/ui/elements/flash.h"
+#include "game/ui/elements/fps_counter.h"
+#include "game/ui/elements/label.h"
+#include "game/ui/elements/modal.h"
+#include "game/ui/elements/pad.h"
+#include "game/ui/elements/resize.h"
+#include "game/ui/elements/spacer.h"
+#include "game/ui/elements/stack.h"
+#include "memory.h"
 
 typedef struct UI_OVERLAY_STATE {
     struct {
@@ -49,7 +48,7 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *s);
 static bool M_LaraHealthBar(
     const UI_OVERLAY_STATE *const s, const BAR_LOCATION location)
 {
-    if (location != g_Config.ui.healthbar_location) {
+    if (location != g_Config.ui.lara_health_bar.location) {
         return false;
     }
     if (!Game_IsPlaying() && !s->force_show_healthbar) {
@@ -60,13 +59,14 @@ static bool M_LaraHealthBar(
     }
     return UI_LaraHealthBar(
         s->blink.state,
-        s->force_show_healthbar ? BSM_ALWAYS : g_Config.ui.healthbar_show_mode);
+        s->force_show_healthbar ? BSM_ALWAYS
+                                : g_Config.ui.lara_health_bar.show_mode);
 }
 
 static bool M_LaraAirBar(
     const UI_OVERLAY_STATE *const s, const BAR_LOCATION location)
 {
-    if (location != g_Config.ui.airbar_location) {
+    if (location != g_Config.ui.lara_air_bar.location) {
         return false;
     }
     if (!Game_IsPlaying()) {
@@ -80,7 +80,7 @@ static bool M_LaraAirBar(
 
 static bool M_EnemyHealthBar(const BAR_LOCATION location)
 {
-    if (location != g_Config.ui.enemy_healthbar_location) {
+    if (location != g_Config.ui.enemy_health_bar.location) {
         return false;
     }
     if (!Game_IsPlaying()) {
@@ -125,7 +125,7 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_TL);
     }
-    if (g_Config.rendering.enable_fps_counter && g_Config.ui.enable_game_ui) {
+    if (g_Config.ui.enable_fps_counter && g_Config.ui.enable_game_ui) {
         UI_FPSCounter(s->fps);
     }
     UI_EndOverlayRegion();
