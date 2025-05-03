@@ -14,6 +14,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
@@ -341,7 +342,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         }
 
         case TO_FINISH:
-            g_LevelComplete = true;
+            Game_SetIsLevelComplete(true);
             break;
 
         case TO_FLIPEFFECT:

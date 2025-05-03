@@ -233,7 +233,8 @@ GF_COMMAND Demo_Control(void)
         return gf_cmd;
     }
 
-    if (g_LevelComplete || g_InputDB.menu_confirm || g_InputDB.menu_back) {
+    if (Game_IsLevelComplete() || g_InputDB.menu_confirm
+        || g_InputDB.menu_back) {
         return (GF_COMMAND) {
             .action = GF_EXIT_TO_TITLE,
             .param = p->level->num,

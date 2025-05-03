@@ -51,7 +51,6 @@ extern int32_t g_PhdWinRight;
 extern int32_t g_SurfaceCount;
 extern SORT_ITEM *g_Sort3DPtr;
 extern uint16_t g_SoundOptionLine;
-extern int32_t g_LevelComplete;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern CREATURE *g_BaddieSlots;

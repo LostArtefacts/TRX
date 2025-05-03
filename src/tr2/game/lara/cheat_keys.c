@@ -29,7 +29,7 @@ static void M_ExplodeLara(void);
 
 static void M_CompleteLevel(void)
 {
-    g_LevelComplete = true;
+    Game_SetIsLevelComplete(true);
 }
 
 static void M_GiveItems(void)

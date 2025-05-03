@@ -115,7 +115,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Stats_UpdateTimer();
 
     Lara_Cheat_Control();
-    if (g_LevelComplete) {
+    if (Game_IsLevelComplete()) {
         Sound_StopAll();
         Music_Stop();
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };

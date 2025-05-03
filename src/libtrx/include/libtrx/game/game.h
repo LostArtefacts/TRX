@@ -16,6 +16,9 @@ GAME_BONUS_FLAG Game_GetBonusFlag(void);
 void Game_SetBonusFlag(GAME_BONUS_FLAG flag);
 bool Game_IsBonusFlagSet(GAME_BONUS_FLAG flag);
 
+void Game_SetIsLevelComplete(bool is_complete);
+bool Game_IsLevelComplete(void);
+
 extern bool Game_Start(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
 extern void Game_End(void);
 extern void Game_Suspend(void);

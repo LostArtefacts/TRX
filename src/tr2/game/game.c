@@ -60,7 +60,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         Lara_Cheat_CheckKeys();
     }
 
-    if (g_LevelComplete) {
+    if (Game_IsLevelComplete()) {
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };
     }
 

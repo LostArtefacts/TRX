@@ -102,7 +102,7 @@ void Lara_Cheat_Control(void)
     case 8:
         if (g_LaraItem->fall_speed > 0) {
             if (as == LS_JUMP_FORWARD) {
-                g_LevelComplete = true;
+                Game_SetIsLevelComplete(true);
             } else if (as == LS_JUMP_BACK) {
                 Inv_AddItem(O_SHOTGUN_ITEM);
                 Inv_AddItem(O_MAGNUM_ITEM);
@@ -129,7 +129,7 @@ void Lara_Cheat_Control(void)
 
 void Lara_Cheat_EndLevel(void)
 {
-    g_LevelComplete = true;
+    Game_SetIsLevelComplete(true);
     Console_Log(GS(OSD_COMPLETE_LEVEL));
 }
 

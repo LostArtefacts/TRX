@@ -14,6 +14,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/utils.h>
 
 #define LF_ROLL 2
@@ -832,7 +833,7 @@ void Lara_State_Extra_FinalAnim(ITEM *item, COLL_INFO *coll)
     } else if (Item_TestFrameEqual(item, LF_SHOWER_SHOTGUN_PICKUP)) {
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA_SHOTGUN);
     } else if (Item_TestFrameEqual(item, LF_SHOWER_END)) {
-        g_LevelComplete = true;
+        Game_SetIsLevelComplete(true);
     }
 }
 

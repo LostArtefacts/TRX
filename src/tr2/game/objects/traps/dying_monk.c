@@ -1,8 +1,8 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/room.h"
-#include "global/vars.h"
 
+#include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/utils.h>
@@ -68,7 +68,7 @@ static void M_Control(const int16_t item_num)
     const int32_t dz = ABS(lara_item->pos.z - item->pos.z);
     if (dx < WALL_L && dz < WALL_L && !lara_item->gravity
         && lara_item->pos.y == item->pos.y) {
-        g_LevelComplete = true;
+        Game_SetIsLevelComplete(true);
     }
 }
 

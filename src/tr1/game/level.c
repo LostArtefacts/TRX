@@ -362,7 +362,7 @@ bool Level_Initialise(
         resume->stats.distance_travelled = 0;
     }
 
-    g_LevelComplete = false;
+    Game_SetIsLevelComplete(false);
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
         Game_SetCurrentLevel((GF_LEVEL *)level);
     }
