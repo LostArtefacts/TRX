@@ -5,6 +5,7 @@
 #include "game/clock.h"
 #include "game/console/common.h"
 #include "game/fader.h"
+#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/interpolation.h"
@@ -41,6 +42,8 @@ static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
         // A change in the game flow is not natural. Force features like death
         // counter to break from the currently active savegame file.
         Savegame_UnbindSlot();
+        // This flag needs to be cleared as well.
+        Game_SetIsPlaying(false);
 
         return (PHASE_CONTROL) { .action = PHASE_ACTION_END, .gf_cmd = gf_cmd };
     }
