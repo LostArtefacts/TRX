@@ -11,15 +11,32 @@ typedef struct {
     GAME_STRING_ID name;
 } UI_SETTINGS_ENUM_ENTRY;
 
+typedef struct UI_SETTINGS_OPTION UI_SETTINGS_OPTION;
+
 typedef struct {
+    char *(*format_value)(const struct UI_SETTINGS_OPTION *option);
+    bool (*can_change_value)(
+        const struct UI_SETTINGS_OPTION *option, int32_t dir);
+    bool (*request_change_value)(
+        const struct UI_SETTINGS_OPTION *option, int32_t dir);
+} UI_SETTINGS_CUSTOM_OPITON_HANDLER;
+
+typedef struct UI_SETTINGS_OPTION {
     CONFIG_OPTION_TYPE option_type;
     GAME_STRING_ID label_id;
-    void *target;
-    int32_t min_value;
-    int32_t max_value;
-    int32_t delta_slow;
-    int32_t delta_fast;
-    const void *misc;
+
+    // A custom handler that must have all the function pointers filled,
+    UI_SETTINGS_CUSTOM_OPITON_HANDLER custom_handler;
+
+    // ...or a convenience default handler options
+    struct {
+        void *target;
+        int32_t min_value;
+        int32_t max_value;
+        int32_t delta_slow;
+        int32_t delta_fast;
+        const void *misc;
+    };
 } UI_SETTINGS_OPTION;
 
 typedef struct {
