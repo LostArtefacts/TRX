@@ -1,13 +1,9 @@
 #pragma once
 
 #include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/elements/requester.h>
+#include <libtrx/game/ui/dialogs/settings.h>
 
-typedef struct {
-    UI_REQUESTER_STATE req;
-    float arrow_spacing;
-    float value_w;
-} UI_GRAPHIC_SETTINGS_STATE;
+typedef UI_SETTINGS_STATE UI_GRAPHIC_SETTINGS_STATE;
 
 void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *s);
 void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *s);
