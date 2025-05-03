@@ -6,14 +6,16 @@
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/option/option.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/ui.h>
+
+#define M_PAGE_COUNT 3
 
 typedef enum {
     M_ROLE_LOAD_GAME,
@@ -52,14 +54,14 @@ static struct {
     } save_slot;
 } m_State = { .active_page = -1 };
 
-TEXTSTRING *m_SubtitleText = nullptr;
-
-static void M_ChangePageTextContent(const char *title);
-static void M_SetPage(int32_t page, M_PAGE_ROLE role, bool available);
 static void M_InitRequesters(void);
 static void M_FreeRequesters(void);
-static void M_DeterminePages(void);
+static void M_InitText(void);
 static void M_RemoveAllText(void);
+static void M_SyncArrowsVisibility(void);
+static void M_ChangePageTextContent(const char *title);
+static void M_SetPage(int32_t page, M_PAGE_ROLE role, bool available);
+static void M_DeterminePages(void);
 static void M_InitSaveRequester(M_PAGE_ROLE page_role);
 static void M_ShowSaves(INVENTORY_ITEM *inv_item);
 static void M_LoadGame(INVENTORY_ITEM *inv_item);
@@ -74,22 +76,6 @@ static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_ShowPage(INVENTORY_ITEM *inv_item);
 static void M_HandleFlipInputs(void);
 
-static void M_ChangePageTextContent(const char *const title)
-{
-    if (m_SubtitleText == nullptr) {
-        m_SubtitleText = Text_Create(0, -16, title);
-        Text_AlignBottom(m_SubtitleText, true);
-        Text_CentreH(m_SubtitleText, true);
-    }
-}
-
-static void M_SetPage(
-    const int32_t page, const M_PAGE_ROLE role, const bool available)
-{
-    m_State.pages[page].role = role;
-    m_State.pages[page].available = available;
-}
-
 static void M_InitRequesters(void)
 {
     UI_NewGame_Init(&m_State.new_game.state);
@@ -102,11 +88,61 @@ static void M_FreeRequesters(void)
     m_State.is_ready = false;
 }
 
+static void M_InitText(void)
+{
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_SetBottomText(nullptr, false);
+}
+
+static void M_RemoveAllText(void)
+{
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_SetBottomText(nullptr, false);
+    if (m_State.save_slot.state != nullptr) {
+        UI_SaveSlotDialog_Free(m_State.save_slot.state);
+        m_State.save_slot.state = nullptr;
+    }
+    if (m_State.play_any_level.state != nullptr) {
+        UI_PlayAnyLevelDialog_Free(m_State.play_any_level.state);
+        m_State.play_any_level.state = nullptr;
+    }
+    M_FreeRequesters();
+}
+
+static void M_SyncArrowsVisibility(void)
+{
+    bool has_pages_to_left = false;
+    bool has_pages_to_right = false;
+    for (int32_t page = 0; page < M_PAGE_COUNT; page++) {
+        has_pages_to_left |=
+            (page < m_State.active_page) && m_State.pages[page].available;
+        has_pages_to_right |=
+            (page > m_State.active_page) && m_State.pages[page].available;
+    }
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, has_pages_to_left);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, has_pages_to_right);
+}
+
+static void M_ChangePageTextContent(const char *const content)
+{
+    InvRing_RemoveAllText();
+    Overlay_SetBottomText(content, false);
+}
+
+static void M_SetPage(
+    const int32_t page, const M_PAGE_ROLE role, const bool available)
+{
+    m_State.pages[page].role = role;
+    m_State.pages[page].available = available;
+}
+
 static void M_DeterminePages(void)
 {
     const bool has_saves = Savegame_GetTotalCount() != 0;
 
-    for (int32_t i = 0; i < 3; i++) {
+    for (int32_t i = 0; i < M_PAGE_COUNT; i++) {
         m_State.pages[i].available = false;
     }
 
@@ -153,7 +189,7 @@ static void M_DeterminePages(void)
     }
 
     if (Game_IsInGym()) {
-        for (int32_t i = 0; i < 3; i++) {
+        for (int32_t i = 0; i < M_PAGE_COUNT; i++) {
             if (m_State.pages[i].role == M_ROLE_SAVE_GAME) {
                 m_State.pages[i].role = g_GameFlow.play_any_level
                     ? M_ROLE_PLAY_ANY_LEVEL
@@ -164,7 +200,7 @@ static void M_DeterminePages(void)
 
     // disable save & load
     if (g_GameFlow.load_save_disabled) {
-        for (int32_t i = 0; i < 3; i++) {
+        for (int32_t i = 0; i < M_PAGE_COUNT; i++) {
             if (m_State.pages[i].role == M_ROLE_LOAD_GAME
                 || m_State.pages[i].role == M_ROLE_SAVE_GAME) {
                 m_State.pages[i].available = false;
@@ -173,35 +209,18 @@ static void M_DeterminePages(void)
     }
 
     // select first available page
-    for (int32_t i = 0; i < 3; i++) {
+    for (int32_t i = 0; i < M_PAGE_COUNT; i++) {
         if (m_State.pages[i].available) {
             m_State.active_page = i;
             break;
         }
     }
 
-    for (int32_t i = 0; i < 3; i++) {
+    for (int32_t i = 0; i < M_PAGE_COUNT; i++) {
         LOG_DEBUG(
             "page %d: role=%d available=%d", i, m_State.pages[i].role,
             m_State.pages[i].available);
     }
-}
-
-static void M_RemoveAllText(void)
-{
-    if (m_SubtitleText != nullptr) {
-        Text_Remove(m_SubtitleText);
-        m_SubtitleText = nullptr;
-    }
-    if (m_State.save_slot.state != nullptr) {
-        UI_SaveSlotDialog_Free(m_State.save_slot.state);
-        m_State.save_slot.state = nullptr;
-    }
-    if (m_State.play_any_level.state != nullptr) {
-        UI_SaveSlotDialog_Free(m_State.save_slot.state);
-        m_State.play_any_level.state = nullptr;
-    }
-    M_FreeRequesters();
 }
 
 static void M_InitSaveRequester(const M_PAGE_ROLE role)
@@ -401,7 +420,8 @@ static void M_HandleFlipInputs(void)
             }
         }
     } else if (g_InputDB.menu_right) {
-        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
+        for (int32_t page = m_State.active_page + 1; page < M_PAGE_COUNT;
+             page++) {
             if (m_State.pages[page].available) {
                 m_State.active_page = page;
                 break;
@@ -441,6 +461,7 @@ void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
         g_InputDB = (INPUT_STATE) {};
     } else {
         m_State.is_ready = true;
+        M_SyncArrowsVisibility();
         M_ShowPage(item);
         if (g_InputDB.menu_confirm) {
             g_Inv_ExtraData[0] = m_State.active_page;
