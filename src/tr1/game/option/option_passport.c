@@ -333,7 +333,7 @@ static void M_LoadGame(void)
 
 static void M_SelectLevel(void)
 {
-    if (g_InputDB.menu_left) {
+    if (g_InputDB.menu_left || g_InputDB.menu_back) {
         M_InitSaveRequester(m_State.active_page);
         m_State.mode = PASSPORT_MODE_LOAD_GAME;
         g_Input = (INPUT_STATE) {};
