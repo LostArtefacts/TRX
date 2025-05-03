@@ -2,6 +2,10 @@
 TR2X introduces a developer console, by default accessible with the <kbd>/</kbd> key.
 Currently supported commands:
 
+- `/help`  
+  `/help {command}`  
+  Shows a list of the available commands or a detailed help for the chosen one. Even Lara needs a lifeline!
+
 - `/pos`  
   Retrieves precise information about Lara's coordinates. Knowledge is power!
 

@@ -48,3 +48,15 @@ void Console_Registry_Add(CONSOLE_COMMAND cmd)
     node->next = m_List;
     m_List = node;
 }
+
+VECTOR *Console_Registry_GetAll(void)
+{
+    VECTOR *vec = Vector_Create(sizeof(const CONSOLE_COMMAND *));
+    M_NODE *node = m_List;
+    while (node != nullptr) {
+        const CONSOLE_COMMAND *cmd_ptr = &node->cmd;
+        Vector_Add(vec, &cmd_ptr);
+        node = node->next;
+    }
+    return vec;
+}
