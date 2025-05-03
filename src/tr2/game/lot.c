@@ -33,16 +33,11 @@ CREATURE *LOT_GetBaddieSlot(const int32_t i)
 
 void LOT_DisableBaddieAI(const int16_t item_num)
 {
-    CREATURE *creature;
+    ASSERT(item_num != g_Lara.item_num);
 
-    if (item_num == g_Lara.item_num) {
-        creature = g_Lara.creature;
-        g_Lara.creature = nullptr;
-    } else {
-        ITEM *const item = Item_Get(item_num);
-        creature = (CREATURE *)item->data;
-        item->data = nullptr;
-    }
+    ITEM *const item = Item_Get(item_num);
+    CREATURE *const creature = (CREATURE *)item->data;
+    item->data = nullptr;
 
     if (creature != nullptr) {
         creature->item_num = NO_ITEM;
@@ -52,11 +47,8 @@ void LOT_DisableBaddieAI(const int16_t item_num)
 
 bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 {
-    if (g_Lara.item_num == item_num) {
-        if (g_Lara.creature != nullptr) {
-            return true;
-        }
-    } else if (Item_Get(item_num)->data != nullptr) {
+    ASSERT(item_num != g_Lara.item_num);
+    if (Item_Get(item_num)->data != nullptr) {
         return true;
     }
 
@@ -106,15 +98,10 @@ bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 
 void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
 {
-
+    ASSERT(item_num != g_Lara.item_num);
     CREATURE *const creature = &g_BaddieSlots[slot];
     ITEM *const item = Item_Get(item_num);
-
-    if (item_num == g_Lara.item_num) {
-        g_Lara.creature = &g_BaddieSlots[slot];
-    } else {
-        item->data = creature;
-    }
+    item->data = creature;
 
     creature->item_num = item_num;
     creature->mood = MOOD_BORED;
@@ -129,12 +116,6 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
     creature->lot.fly = 0;
 
     switch (item->object_id) {
-    case O_LARA:
-        creature->lot.step = WALL_L * 20;
-        creature->lot.drop = -WALL_L * 20;
-        creature->lot.fly = STEP_L;
-        break;
-
     case O_SHARK:
     case O_BARRACUDA:
     case O_DIVER:
@@ -171,10 +152,7 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
     }
 
     LOT_ClearLOT(&creature->lot);
-
-    if (item_num != g_Lara.item_num) {
-        LOT_CreateZone(item);
-    }
+    LOT_CreateZone(item);
 
     m_SlotsUsed++;
 }
@@ -208,6 +186,13 @@ void LOT_CreateZone(ITEM *const item)
             creature->lot.zone_count++;
         }
     }
+}
+
+void LOT_InitialiseLOT(LOT_INFO *const lot)
+{
+    lot->node =
+        GameBuf_Alloc(sizeof(BOX_NODE) * Box_GetCount(), GBUF_CREATURE_LOT);
+    LOT_ClearLOT(lot);
 }
 
 void LOT_ClearLOT(LOT_INFO *const lot)
