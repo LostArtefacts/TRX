@@ -245,10 +245,23 @@ static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
     // dialog from changing its size as the player changes the levels.
     float result = -1.0f;
     for (int32_t i = 0; i < s->req.max_rows; i++) {
-        const char *const value = M_FormatRowValue(s, i);
-        float value_w;
-        UI_Label_Measure(value, &value_w, nullptr);
-        result = MAX(result, value_w);
+        const UI_SETTINGS_OPTION *const option = &s->options[i];
+        if (option->option_type == COT_ENUM) {
+            const UI_SETTINGS_ENUM_ENTRY *entry =
+                &((UI_SETTINGS_ENUM_ENTRY *)option->misc)[0];
+            while (entry->value != -1) {
+                const char *const value = GameString_Get(entry->name);
+                float value_w;
+                UI_Label_Measure(value, &value_w, nullptr);
+                result = MAX(result, value_w);
+                entry++;
+            }
+        } else {
+            const char *const value = M_FormatRowValue(s, i);
+            float value_w;
+            UI_Label_Measure(value, &value_w, nullptr);
+            result = MAX(result, value_w);
+        }
     }
     float arrow_w;
     UI_Label_Measure("\\{button left}", &arrow_w, nullptr);
