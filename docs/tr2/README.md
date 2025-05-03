@@ -320,6 +320,7 @@ However, you can easily download them manually from these urls:
 - fixed the boat when it explodes after crossing mines, where Lara's hips would appear rather than exploded boat parts
 - fixed Lara's hips appearing on Bartoli in the Temple of Xian cutscene
 - fixed the bird monster not having a shadow
+- fixed flames showing briefly when Lara enters water and a death tile is present
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios

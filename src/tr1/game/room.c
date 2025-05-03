@@ -333,7 +333,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 {
     const bool is_heavy = item->object_id != O_LARA;
     if (!is_heavy && sector->is_death_sector && M_TestLava(item)) {
-        Lara_CatchFire();
+        Lara_TouchLava();
     }
 
     const TRIGGER *const trigger = sector->trigger;

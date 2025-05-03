@@ -89,7 +89,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     const bool is_heavy = item->object_id != O_LARA;
     if (!is_heavy) {
         if (sector->is_death_sector && M_TestLava(item)) {
-            Lara_TouchLava((ITEM *)item);
+            Lara_TouchLava();
         }
 
         const LADDER_DIRECTION direction = 1 << Math_GetDirection(item->rot.y);

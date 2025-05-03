@@ -19,6 +19,7 @@
 - fixed the game crashing on unknown sequencer events
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 1.0)
 - fixed harpoon's ammo counter overlapping with the air bar (#2871)
+- fixed flames showing briefly when Lara enters water and a death tile is present
 - improved the `/set` console command to display available options if given an unknown argument
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26

@@ -63,7 +63,7 @@ static void M_Control(const int16_t item_num)
 
     if (item->touch_bits) {
         if (g_LaraItem->hit_points > 0) {
-            Lara_CatchFire();
+            Lara_TouchLava();
         }
 
         g_Camera.item = item;
