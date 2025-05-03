@@ -6,6 +6,7 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/sound.h"
@@ -18,17 +19,6 @@
 #include <libtrx/memory.h>
 
 #include <stdint.h>
-
-#define MAX_GAME_MODES 4
-#define MIN_NAME_WIDTH 140
-#define NAME_SPACER 15
-
-typedef enum {
-    TEXT_PAGE_NAME = 0,
-    TEXT_LEFT_ARROW = 1,
-    TEXT_RIGHT_ARROW = 2,
-    TEXT_NUMBER_OF = 5,
-} PASSPORT_TEXT;
 
 typedef enum {
     PAGE_UNDETERMINED = -1,
@@ -70,13 +60,9 @@ static struct {
     },
 };
 
-static bool m_IsTextInit = false;
-static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = {};
-
 static void M_InitRequesters(void);
 static void M_InitText(void);
 static void M_RemoveAllText(void);
-static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_SyncArrowsVisibility(void);
 static void M_ChangePageTextContent(const char *text);
 static void M_SetPage(int32_t page, PASSPORT_MODE role, bool available);
@@ -90,8 +76,9 @@ static void M_SelectLevel(void);
 static void M_SaveGame(void);
 static void M_NewGame(void);
 static void M_Restart(INVENTORY_ITEM *inv_item);
-static void M_FlipRight(INVENTORY_ITEM *inv_item);
 static void M_FlipLeft(INVENTORY_ITEM *inv_item);
+static void M_FlipRight(INVENTORY_ITEM *inv_item);
+static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_ShowPage(INVENTORY_ITEM *inv_item);
 static void M_HandleFlipInputs(void);
 
@@ -109,26 +96,16 @@ static void M_FreeRequesters(void)
 
 static void M_InitText(void)
 {
-    m_Text[TEXT_LEFT_ARROW] = Text_Create(-85, -15, "\\{button left}");
-    Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-
-    m_Text[TEXT_RIGHT_ARROW] = Text_Create(70, -15, "\\{button right}");
-    Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
-
-    m_Text[TEXT_PAGE_NAME] = Text_Create(0, -16, "");
-
-    for (int i = 0; i < TEXT_NUMBER_OF; i++) {
-        Text_AlignBottom(m_Text[i], 1);
-        Text_CentreH(m_Text[i], 1);
-    }
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_SetBottomText(nullptr, false);
 }
 
 static void M_RemoveAllText(void)
 {
-    for (int i = 0; i < TEXT_NUMBER_OF; i++) {
-        Text_Remove(m_Text[i]);
-        m_Text[i] = nullptr;
-    }
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_SetBottomText(nullptr, false);
     if (m_State.select_level.state != nullptr) {
         UI_SelectLevelDialog_Free(m_State.select_level.state);
         m_State.select_level.state = nullptr;
@@ -140,23 +117,11 @@ static void M_RemoveAllText(void)
     M_FreeRequesters();
 }
 
-static void M_Close(INVENTORY_ITEM *inv_item)
-{
-    M_RemoveAllText();
-    if (m_State.current_page == PAGE_3) {
-        inv_item->anim_direction = 1;
-        inv_item->goal_frame = inv_item->frames_total - 1;
-    } else {
-        inv_item->anim_direction = -1;
-        inv_item->goal_frame = 0;
-    }
-}
-
 static void M_SyncArrowsVisibility(void)
 {
     if (m_State.mode != PASSPORT_MODE_BROWSE) {
-        Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-        Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
+        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
+        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
     } else {
         bool has_pages_to_left = false;
         bool has_pages_to_right = false;
@@ -166,19 +131,15 @@ static void M_SyncArrowsVisibility(void)
             has_pages_to_right |=
                 (page > m_State.active_page) && m_State.pages[page].available;
         }
-        Text_Hide(m_Text[TEXT_LEFT_ARROW], !has_pages_to_left);
-        Text_Hide(m_Text[TEXT_RIGHT_ARROW], !has_pages_to_right);
+        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, has_pages_to_left);
+        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, has_pages_to_right);
     }
 }
 
 static void M_ChangePageTextContent(const char *const content)
 {
     InvRing_RemoveAllText();
-    Text_ChangeText(m_Text[TEXT_PAGE_NAME], content);
-    const int32_t width = Text_GetWidth(m_Text[TEXT_PAGE_NAME]);
-    const int32_t x_pos = MAX(width, MIN_NAME_WIDTH) / 2 + NAME_SPACER;
-    Text_SetPos(m_Text[TEXT_LEFT_ARROW], -x_pos, -15);
-    Text_SetPos(m_Text[TEXT_RIGHT_ARROW], x_pos, -15);
+    Overlay_SetBottomText(content, false);
 }
 
 static void M_SetPage(
@@ -461,6 +422,13 @@ static void M_Restart(INVENTORY_ITEM *inv_item)
     }
 }
 
+static void M_FlipLeft(INVENTORY_ITEM *inv_item)
+{
+    inv_item->anim_direction = -1;
+    inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
+    Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
+}
+
 static void M_FlipRight(INVENTORY_ITEM *inv_item)
 {
     inv_item->anim_direction = 1;
@@ -468,11 +436,16 @@ static void M_FlipRight(INVENTORY_ITEM *inv_item)
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
 }
 
-static void M_FlipLeft(INVENTORY_ITEM *inv_item)
+static void M_Close(INVENTORY_ITEM *inv_item)
 {
-    inv_item->anim_direction = -1;
-    inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
-    Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
+    M_RemoveAllText();
+    if (m_State.current_page == PAGE_3) {
+        inv_item->anim_direction = 1;
+        inv_item->goal_frame = inv_item->frames_total - 1;
+    } else {
+        inv_item->anim_direction = -1;
+        inv_item->goal_frame = 0;
+    }
 }
 
 static void M_ShowPage(INVENTORY_ITEM *const inv_item)
@@ -541,7 +514,6 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     if (m_State.active_page == -1) {
         M_InitRequesters();
         M_InitText();
-        m_IsTextInit = true;
         M_DeterminePages();
     }
 

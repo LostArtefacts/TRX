@@ -9,6 +9,7 @@
 #include "game/ui/elements/bar_enemy_hp.h"
 #include "game/ui/elements/bar_lara_air.h"
 #include "game/ui/elements/bar_lara_hp.h"
+#include "game/ui/elements/fixed.h"
 #include "game/ui/elements/flash.h"
 #include "game/ui/elements/fps_counter.h"
 #include "game/ui/elements/label.h"
@@ -27,7 +28,7 @@ typedef struct UI_OVERLAY_STATE {
     } blink;
     UI_FPS_COUNTER_STATE *fps;
     bool force_show_healthbar;
-    bool show_arrows[4];
+    bool show_arrows[6];
     bool show_version;
     struct {
         const char *text;
@@ -35,6 +36,18 @@ typedef struct UI_OVERLAY_STATE {
     } top_text, bottom_text;
     UI_FLASH_STATE flash_state;
 } UI_OVERLAY_STATE;
+
+static struct {
+    bool resize;
+    const char *label;
+} m_ArrowInfo[] = {
+    [UI_OVERLAY_ARROW_TR] = { true, "\\{arrow up}" },
+    [UI_OVERLAY_ARROW_TL] = { true, "\\{arrow up}" },
+    [UI_OVERLAY_ARROW_BL] = { true, "\\{arrow down}" },
+    [UI_OVERLAY_ARROW_BR] = { true, "\\{arrow down}" },
+    [UI_OVERLAY_ARROW_BCL] = { false, "\\{button left}" },
+    [UI_OVERLAY_ARROW_BCR] = { false, "\\{button right}" },
+};
 
 static bool M_LaraHealthBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
 static bool M_LaraAirBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
@@ -99,21 +112,20 @@ static void M_Arrow(
 {
     if (s->show_arrows[arrow]) {
         // make sure the arrow has exactly the same size as the bar
-        UI_BeginResize(
-            -1.0,
-            UI_BAR_HEIGHT * Scaler_GetScale(SCALER_TARGET_BAR)
-                / Scaler_GetScale(SCALER_TARGET_TEXT));
-        switch (arrow) {
-        case UI_OVERLAY_ARROW_TL:
-        case UI_OVERLAY_ARROW_TR:
-            UI_Label("\\{arrow up}");
-            break;
-        case UI_OVERLAY_ARROW_BL:
-        case UI_OVERLAY_ARROW_BR:
-            UI_Label("\\{arrow down}");
-            break;
+        if (m_ArrowInfo[arrow].resize) {
+            UI_BeginResize(
+                -1.0,
+                UI_BAR_HEIGHT * Scaler_GetScale(SCALER_TARGET_BAR)
+                    / Scaler_GetScale(SCALER_TARGET_TEXT));
+        } else {
+            UI_BeginFixed(0.5f, 0.5f);
         }
-        UI_EndResize();
+        UI_Label(m_ArrowInfo[arrow].label);
+        if (m_ArrowInfo[arrow].resize) {
+            UI_EndResize();
+        } else {
+            UI_EndFixed();
+        }
     }
 }
 
@@ -187,7 +199,15 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
         if (s->bottom_text.flash_enabled) {
             UI_BeginFlash(&s->flash_state);
         }
+        UI_BeginStackEx((UI_STACK_SETTINGS) {
+            .orientation = UI_STACK_HORIZONTAL,
+            .spacing = { .h = 20 },
+            .align = { .v = UI_STACK_V_ALIGN_CENTER },
+        });
+        M_Arrow(s, UI_OVERLAY_ARROW_BCL);
         UI_Label(s->bottom_text.text);
+        M_Arrow(s, UI_OVERLAY_ARROW_BCR);
+        UI_EndStack();
         if (s->bottom_text.flash_enabled) {
             UI_EndFlash();
         }
@@ -287,7 +307,7 @@ void UI_EndOverlayRegion(void)
     UI_EndModal();
 }
 
-void UI_Overlay_ShowArrows(
+void UI_Overlay_ShowArrow(
     UI_OVERLAY_STATE *const s, const UI_OVERLAY_ARROW arrow, const bool show)
 {
     s->show_arrows[arrow] = show;
