@@ -50,6 +50,20 @@ void Overlay_ShowArrows(const UI_OVERLAY_ARROW arrow, const bool show)
     }
 }
 
+void Overlay_ShowVersion(const bool show)
+{
+    if (m_UI != nullptr) {
+        UI_Overlay_ShowVersion(m_UI, show);
+    }
+}
+
+void Overlay_SetTopText(const char *const text, const bool flash)
+{
+    if (m_UI != nullptr) {
+        UI_Overlay_SetTopText(m_UI, text, flash);
+    }
+}
+
 void Overlay_SetBottomText(const char *const text, const bool flash)
 {
     if (m_UI != nullptr) {

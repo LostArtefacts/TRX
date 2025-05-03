@@ -18,6 +18,7 @@
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "memory.h"
+#include "version.h"
 
 typedef struct UI_OVERLAY_STATE {
     struct {
@@ -27,10 +28,11 @@ typedef struct UI_OVERLAY_STATE {
     UI_FPS_COUNTER_STATE *fps;
     bool force_show_healthbar;
     bool show_arrows[4];
+    bool show_version;
     struct {
         const char *text;
         bool flash_enabled;
-    } bottom_text;
+    } top_text, bottom_text;
     UI_FLASH_STATE flash_state;
 } UI_OVERLAY_STATE;
 
@@ -137,6 +139,15 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
     M_LaraHealthBar(s, BL_TOP_CENTER);
     M_LaraAirBar(s, BL_TOP_CENTER);
     M_EnemyHealthBar(BL_TOP_CENTER);
+    if (s->top_text.text != nullptr) {
+        if (s->top_text.flash_enabled) {
+            UI_BeginFlash(&s->flash_state);
+        }
+        UI_Label(s->top_text.text);
+        if (s->top_text.flash_enabled) {
+            UI_EndFlash();
+        }
+    }
     UI_EndOverlayRegion();
 }
 
@@ -196,6 +207,9 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
     bar_shown |= M_EnemyHealthBar(BL_BOTTOM_RIGHT);
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_BR);
+    }
+    if (s->show_version) {
+        UI_LabelEx(g_TRXVersion, (UI_LABEL_SETTINGS) { .scale = 0.5f });
     }
     UI_EndOverlayRegion();
 }
@@ -277,6 +291,18 @@ void UI_Overlay_ShowArrows(
     UI_OVERLAY_STATE *const s, const UI_OVERLAY_ARROW arrow, const bool show)
 {
     s->show_arrows[arrow] = show;
+}
+
+void UI_Overlay_ShowVersion(UI_OVERLAY_STATE *const s, const bool show)
+{
+    s->show_version = show;
+}
+
+void UI_Overlay_SetTopText(
+    UI_OVERLAY_STATE *const s, const char *const text, const bool flash)
+{
+    s->top_text.text = text;
+    s->top_text.flash_enabled = flash;
 }
 
 void UI_Overlay_SetBottomText(

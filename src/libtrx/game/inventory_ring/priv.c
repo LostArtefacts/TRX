@@ -9,11 +9,10 @@
 #include "game/objects/names.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/text.h"
 #include "game/ui.h"
-#include "version.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #define RING_CAMERA_Y_OFFSET (-96)
 
@@ -30,16 +29,7 @@ typedef enum {
     // clang-format on
 } PASS_MESH;
 
-typedef enum {
-    IT_NAME,
-    IT_QTY,
-    IT_NUMBER_OF,
-} INV_TEXT;
-
-// TODO: drop in favor of the Overlay APIs
-static TEXTSTRING *m_HeadingText = nullptr;
-static TEXTSTRING *m_VersionText = nullptr;
-static TEXTSTRING *m_ItemText[IT_NUMBER_OF] = {};
+static char m_CountText[128];
 static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
 static void M_HandleRequestedObject(INV_RING *ring);
@@ -418,37 +408,27 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
 
 void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
 {
-    if (m_ItemText[IT_NAME] != nullptr) {
-        return;
-    }
     if (inv_item->object_id == O_PASSPORT_OPTION) {
         return;
     }
-    m_ItemText[IT_NAME] =
-        Text_Create(0, -16, Object_GetName(inv_item->object_id));
-    Text_AlignBottom(m_ItemText[IT_NAME], true);
-    Text_CentreH(m_ItemText[IT_NAME], true);
+    Overlay_SetBottomText(Object_GetName(inv_item->object_id), false);
 }
 
 void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 {
-    if (m_ItemText[IT_QTY] != nullptr) {
-        return;
-    }
-    char string[128];
-    sprintf(string, fmt, qty);
-    UI_AmmoLabel_MakeString(string);
-    m_ItemText[IT_QTY] = Text_Create(64, -56, string);
-    Text_AlignBottom(m_ItemText[IT_QTY], true);
-    Text_CentreH(m_ItemText[IT_QTY], true);
+    sprintf(m_CountText, fmt, qty);
+    UI_AmmoLabel_MakeString(m_CountText);
+}
+
+const char *InvRing_GetItemQuantityText(void)
+{
+    return m_CountText;
 }
 
 void InvRing_RemoveItemTexts(void)
 {
-    for (int32_t i = 0; i < IT_NUMBER_OF; i++) {
-        Text_Remove(m_ItemText[i]);
-        m_ItemText[i] = nullptr;
-    }
+    Overlay_SetBottomText(nullptr, false);
+    strcpy(m_CountText, "");
 }
 
 void InvRing_ShowHeader(INV_RING *const ring)
@@ -457,29 +437,22 @@ void InvRing_ShowHeader(INV_RING *const ring)
         return;
     }
 
-    if (m_HeadingText == nullptr) {
-        switch (ring->type) {
-        case RT_MAIN:
-            m_HeadingText = Text_Create(0, 26, GS(HEADING_INVENTORY));
-            break;
-
-        case RT_OPTION:
-            if (ring->mode == INV_DEATH_MODE) {
-                m_HeadingText = Text_Create(0, 26, GS(HEADING_GAME_OVER));
-            } else {
-                m_HeadingText = Text_Create(0, 26, GS(HEADING_OPTION));
-            }
-            break;
-
-        case RT_KEYS:
-            m_HeadingText = Text_Create(0, 26, GS(HEADING_ITEMS));
-            break;
-
-        case RT_NUMBER_OF:
-            break;
+    switch (ring->type) {
+    case RT_MAIN:
+        Overlay_SetTopText(GS(HEADING_INVENTORY), false);
+        break;
+    case RT_OPTION:
+        if (ring->mode == INV_DEATH_MODE) {
+            Overlay_SetTopText(GS(HEADING_GAME_OVER), false);
+        } else {
+            Overlay_SetTopText(GS(HEADING_OPTION), false);
         }
-
-        Text_CentreH(m_HeadingText, true);
+        break;
+    case RT_KEYS:
+        Overlay_SetTopText(GS(HEADING_ITEMS), false);
+        break;
+    case RT_NUMBER_OF:
+        break;
     }
 
     if (ring->mode != INV_GAME_MODE) {
@@ -500,8 +473,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
 
 void InvRing_RemoveHeader(void)
 {
-    Text_Remove(m_HeadingText);
-    m_HeadingText = nullptr;
+    Overlay_SetTopText(nullptr, false);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, false);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, false);
     Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, false);
@@ -515,16 +487,12 @@ void InvRing_HideArrow(const INV_RING_ARROW arrow, const bool hide)
 
 void InvRing_ShowVersionText(void)
 {
-    m_VersionText = Text_Create(-20, -18, g_TRXVersion);
-    Text_AlignRight(m_VersionText, true);
-    Text_AlignBottom(m_VersionText, true);
-    Text_SetScale(m_VersionText, TEXT_BASE_SCALE * 0.5, TEXT_BASE_SCALE * 0.5);
+    Overlay_ShowVersion(true);
 }
 
 void InvRing_RemoveVersionText(void)
 {
-    Text_Remove(m_VersionText);
-    m_VersionText = nullptr;
+    Overlay_ShowVersion(false);
 }
 
 void InvRing_UpdateInventoryItem(

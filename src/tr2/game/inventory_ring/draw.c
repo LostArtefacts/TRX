@@ -15,6 +15,7 @@
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/common.h>
+#include <libtrx/game/ui.h>
 
 static int32_t M_GetFrames(
     const INV_RING *ring, const INVENTORY_ITEM *inv_item,
@@ -192,6 +193,15 @@ void InvRing_Draw(INV_RING *const ring)
         for (int32_t i = 0; i < num_frames; i++) {
             InvRing_DoMotions(ring);
         }
+    }
+
+    const char *const count_text = InvRing_GetItemQuantityText();
+    if (count_text != nullptr) {
+        UI_BeginModal(0.5f, 1.0f);
+        UI_BeginOffset(64.0f, -56.0f);
+        UI_Label(count_text);
+        UI_EndOffset();
+        UI_EndModal();
     }
 
     Fader_Draw(&ring->top_fader);
