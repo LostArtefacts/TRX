@@ -637,6 +637,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added deadly water feature from TR2+
 - added support for antitriggers, like TR2+
 - added the ability to trigger a flip effect without having to also trigger the flip map, like TR2+
+- fixed falling ceiling and Damocles Sword traps not falling through stacked rooms
 
 #### Miscellaneous
 - added Linux builds
