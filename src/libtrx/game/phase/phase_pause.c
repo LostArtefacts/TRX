@@ -31,7 +31,6 @@ typedef struct {
         bool is_ready;
         UI_PAUSE_STATE state;
     } ui;
-    TEXTSTRING *mode_text;
     GF_ACTION action;
     FADER back_fader;
 } M_PRIV;
@@ -90,17 +89,12 @@ static void M_ExitToTitle(M_PRIV *const p)
 
 static void M_CreateText(M_PRIV *const p)
 {
-    if (p->mode_text == nullptr) {
-        p->mode_text = Text_Create(0, -24, GS(PAUSE_PAUSED));
-        Text_CentreH(p->mode_text, true);
-        Text_AlignBottom(p->mode_text, true);
-    }
+    Overlay_SetBottomText(GS(PAUSE_PAUSED), false);
 }
 
 static void M_RemoveText(M_PRIV *const p)
 {
-    Text_Remove(p->mode_text);
-    p->mode_text = nullptr;
+    Overlay_SetBottomText(nullptr, false);
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
