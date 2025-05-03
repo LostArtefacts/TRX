@@ -168,4 +168,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return M_KillEnemyType(ctx->args);
 }
 
-REGISTER_CONSOLE_COMMAND("kill", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("kill", M_Entrypoint, GS_ID(CONSOLE_HELP_KILL))

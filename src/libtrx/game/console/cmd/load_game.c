@@ -35,4 +35,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("load", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("load", M_Entrypoint, GS_ID(CONSOLE_HELP_LOAD))

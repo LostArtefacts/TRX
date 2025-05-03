@@ -33,4 +33,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("hp", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("hp", M_Entrypoint, GS_ID(CONSOLE_HELP_HP))

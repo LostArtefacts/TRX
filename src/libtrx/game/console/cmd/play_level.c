@@ -93,4 +93,5 @@ cleanup:
     return result;
 }
 
-REGISTER_CONSOLE_COMMAND("play|level", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("play", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_LEVEL))
+REGISTER_CONSOLE_COMMAND("level", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_LEVEL))

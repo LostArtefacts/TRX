@@ -31,4 +31,6 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 }
 
-REGISTER_CONSOLE_COMMAND("cut(scene)?", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("cut", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_CUTSCENE))
+REGISTER_CONSOLE_COMMAND(
+    "cutscene", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_CUTSCENE))

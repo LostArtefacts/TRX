@@ -63,4 +63,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 }
 
-REGISTER_CONSOLE_COMMAND("debug", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("debug", M_Entrypoint, GS_ID(CONSOLE_HELP_DEBUG))

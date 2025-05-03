@@ -33,4 +33,5 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("abortion|natla-?s(uc|tin)ks", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("abortion", M_Entrypoint, nullptr)
+REGISTER_CONSOLE_COMMAND("natla-?s(uc|tin)ks", M_Entrypoint, nullptr)
