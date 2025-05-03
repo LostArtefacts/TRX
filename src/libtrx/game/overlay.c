@@ -43,10 +43,10 @@ void Overlay_SetHealthBarTimer(const int16_t timer)
     UI_LaraHealthBar_SetTimer(timer);
 }
 
-void Overlay_ShowArrows(const UI_OVERLAY_ARROW arrow, const bool show)
+void Overlay_ShowArrow(const UI_OVERLAY_ARROW arrow, const bool show)
 {
     if (m_UI != nullptr) {
-        UI_Overlay_ShowArrows(m_UI, arrow, show);
+        UI_Overlay_ShowArrow(m_UI, arrow, show);
     }
 }
 

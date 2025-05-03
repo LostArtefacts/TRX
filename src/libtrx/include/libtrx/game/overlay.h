@@ -14,7 +14,7 @@ extern void Overlay_DrawModeInfo(void);
 
 void Overlay_ForceHealthBar(bool show);
 void Overlay_SetHealthBarTimer(int16_t health_bar_timer);
-void Overlay_ShowArrows(UI_OVERLAY_ARROW arrow, bool show);
+void Overlay_ShowArrow(UI_OVERLAY_ARROW arrow, bool show);
 void Overlay_ShowVersion(bool show);
 void Overlay_SetTopText(const char *text, bool flash);
 void Overlay_SetBottomText(const char *text, bool flash);

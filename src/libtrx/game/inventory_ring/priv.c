@@ -464,25 +464,25 @@ void InvRing_ShowHeader(INV_RING *const ring)
     const bool show_bottom_arrow = ring->type == RT_KEYS
         || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
 
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, show_up_arrow);
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, show_up_arrow);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_TL, show_up_arrow);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, show_up_arrow);
 
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, show_bottom_arrow);
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_BR, show_bottom_arrow);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, show_bottom_arrow);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, show_bottom_arrow);
 }
 
 void InvRing_RemoveHeader(void)
 {
     Overlay_SetTopText(nullptr, false);
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_TL, false);
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_TR, false);
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_BL, false);
-    Overlay_ShowArrows(UI_OVERLAY_ARROW_BR, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_TL, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, false);
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, false);
 }
 
 void InvRing_HideArrow(const INV_RING_ARROW arrow, const bool hide)
 {
-    Overlay_ShowArrows((UI_OVERLAY_ARROW)arrow, hide);
+    Overlay_ShowArrow((UI_OVERLAY_ARROW)arrow, hide);
 }
 
 void InvRing_ShowVersionText(void)
