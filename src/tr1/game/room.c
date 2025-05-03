@@ -395,6 +395,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     bool switch_off = false;
     bool flip_map = false;
+    bool flip_available = false;
     int32_t new_effect = -1;
     ITEM *camera_item = nullptr;
     const bool flip_status = Room_GetFlipStatus();
@@ -572,6 +573,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_FLIPMAP: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            flip_available = true;
             if (slot_flags & IF_ONE_SHOT) {
                 break;
             }
@@ -601,6 +603,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_FLIPON: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            flip_available = true;
             if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && !flip_status) {
                 flip_map = true;
             }
@@ -610,6 +613,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_FLIPOFF: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            flip_available = true;
             if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && flip_status) {
                 flip_map = true;
             }
@@ -645,9 +649,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     if (flip_map) {
         Room_FlipMap();
-        if (new_effect != -1) {
-            Room_SetFlipEffect(new_effect);
-            Room_SetFlipTimer(0);
-        }
+    }
+
+    if (new_effect != -1 && (flip_map || !flip_available)) {
+        Room_SetFlipEffect(new_effect);
+        Room_SetFlipTimer(0);
     }
 }
