@@ -7,7 +7,6 @@
 #include "game/inventory_ring.h"
 #include "game/output.h"
 #include "game/shell.h"
-#include "game/text.h"
 #include "memory.h"
 
 typedef enum {
@@ -119,7 +118,6 @@ static void M_Draw(PHASE *const phase)
     if (p->state == STATE_FADE_OUT) {
         Interpolation_Enable();
     }
-    Text_Draw();
     Fader_Draw(&p->top_fader);
     Output_DrawPolyList();
 }

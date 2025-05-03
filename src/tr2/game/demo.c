@@ -16,7 +16,6 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "game/text.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -161,11 +160,7 @@ bool Demo_Start(const int32_t level_num)
     Camera_Initialise();
     Stats_StartTimer();
 
-    p->text = Text_Create(0, g_PhdWinHeight - 16, GS(MISC_DEMO_MODE));
-    Text_Flash(p->text, true, 20);
-    Text_CentreV(p->text, true);
-    Text_CentreH(p->text, true);
-
+    Overlay_SetBottomText(GS(MISC_DEMO_MODE), true);
     return true;
 }
 
@@ -173,18 +168,18 @@ void Demo_End(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Text_Remove(p->text);
+    Overlay_SetBottomText(nullptr, false);
     Overlay_HideGameInfo();
     Sound_StopAll();
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
-    p->text = nullptr;
 }
 
 void Demo_Pause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
+    Overlay_SetBottomText(nullptr, false);
 }
 
 void Demo_Unpause(void)
@@ -192,6 +187,7 @@ void Demo_Unpause(void)
     M_PRIV *const p = &m_Priv;
     M_PrepareConfig(p);
     Stats_StartTimer();
+    Overlay_SetBottomText(GS(MISC_DEMO_MODE), true);
 }
 
 int32_t Demo_ChooseLevel(const int32_t demo_num)
@@ -214,6 +210,5 @@ GF_COMMAND Demo_Control(void)
 
 void Demo_StopFlashing(void)
 {
-    M_PRIV *const p = &m_Priv;
-    Text_Flash(p->text, false, 0);
+    Overlay_SetBottomText(GS(MISC_DEMO_MODE), false);
 }

@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...develop) - ××××-××-××
+- added a flashing Demo Mode caption to demos (#1556)
 - added aliases to CLI options (`-gold` becomes `-g/--gold`)
 - added a `--help` CLI option (may not output anything on Windows machines – OS bug)
 - added explosion sprites to Home Sweet Home (#1569)
