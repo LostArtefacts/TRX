@@ -33,6 +33,11 @@ static void M_Initialise(const int16_t item_num)
     item->rot.y = Random_GetControl();
     item->required_anim_state = (Random_GetControl() - 0x4000) / 16;
     item->fall_speed = 50;
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 }
 
 static void M_Control(const int16_t item_num)
@@ -44,6 +49,15 @@ static void M_Control(const int16_t item_num)
         item->pos.y += item->fall_speed;
         item->pos.x += item->current_anim_state;
         item->pos.z += item->goal_anim_state;
+
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        const int16_t height =
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+
+        item->floor = height;
+        Item_UpdateRoom(item_num, room_num);
 
         if (item->pos.y > item->floor) {
             Sound_Effect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
