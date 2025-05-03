@@ -17,6 +17,7 @@
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/pathing/lot.h>
 #include <libtrx/utils.h>
 
 #define MAX_BADDIE_COLLISION 20
@@ -1572,14 +1573,8 @@ void Lara_WaterCurrent(COLL_INFO *const coll)
     g_LaraItem->box_num =
         Room_GetWorldSector(room, g_LaraItem->pos.x, g_LaraItem->pos.z)->box;
 
-    if (g_Lara.creature == nullptr) {
-        g_Lara.current_active = 0;
-        return;
-    }
-
     XYZ_32 target;
-    if (Box_CalculateTarget(&target, item, &g_Lara.creature->lot)
-        == TARGET_NONE) {
+    if (Box_CalculateTarget(&target, item, &g_Lara.lot) == TARGET_NONE) {
         return;
     }
 

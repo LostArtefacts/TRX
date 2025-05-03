@@ -148,7 +148,7 @@ typedef struct {
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;
     AMMO_INFO m16_ammo;
-    CREATURE *creature;
+    LOT_INFO lot;
 
     struct {
         struct {

@@ -271,12 +271,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             const OBJECT_VECTOR *const sink =
                 Camera_GetFixedObject((int16_t)(intptr_t)cmd->parameter);
 
-            if (!g_Lara.creature) {
-                LOT_EnableBaddieAI(g_Lara.item_num, true);
+            if (g_Lara.lot.required_box != sink->flags) {
+                g_Lara.lot.target = sink->pos;
+                g_Lara.lot.required_box = sink->flags;
             }
-
-            g_Lara.creature->lot.target = sink->pos;
-            g_Lara.creature->lot.required_box = sink->flags;
             g_Lara.current_active = sink->data * 6;
             break;
         }

@@ -374,7 +374,6 @@ static void M_ReadLara(LARA_INFO *const lara)
     M_ReadAmmoInfo(&lara->grenade_ammo);
     M_ReadAmmoInfo(&lara->m16_ammo);
     M_Skip(4);
-    lara->creature = nullptr;
 }
 
 static void M_ReadLaraArm(LARA_ARM *const arm)

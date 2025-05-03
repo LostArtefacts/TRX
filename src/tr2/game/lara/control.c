@@ -14,6 +14,7 @@
 #include "game/lara/look.h"
 #include "game/lara/misc.h"
 #include "game/lara/state.h"
+#include "game/lot.h"
 #include "game/music.h"
 #include "game/room.h"
 #include "game/savegame.h"
@@ -317,6 +318,8 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         Lara_WaterCurrent(coll);
+    } else {
+        LOT_ClearLOT(&g_Lara.lot);
     }
 
     Lara_Animate(item);
@@ -390,6 +393,8 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
     item->rot.y += g_Lara.turn_rate;
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         Lara_WaterCurrent(coll);
+    } else {
+        LOT_ClearLOT(&g_Lara.lot);
     }
 
     Lara_Animate(item);
@@ -785,7 +790,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.air = LARA_MAX_AIR;
     g_Lara.dive_count = 0;
     g_Lara.death_timer = 0;
-    g_Lara.current_active = 0;
     g_Lara.hit_effect_count = 0;
     g_Lara.flare_age = 0;
     g_Lara.back_gun = 0;
@@ -812,7 +816,13 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.right_arm.flash_gun = 0;
     g_Lara.left_arm.lock = 0;
     g_Lara.right_arm.lock = 0;
-    g_Lara.creature = nullptr;
+
+    g_Lara.current_active = 0;
+
+    LOT_InitialiseLOT(&g_Lara.lot);
+    g_Lara.lot.step = WALL_L * 20;
+    g_Lara.lot.drop = -WALL_L * 20;
+    g_Lara.lot.fly = STEP_L;
 
     if ((level->type == GFL_NORMAL || level->type == GFL_BONUS)
         && g_GF_LaraStartAnim) {
