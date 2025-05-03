@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...develop) - ××××-××-××
+- added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)
 - fixed some pickup sprites being too far embedded into the floor (#2903)
