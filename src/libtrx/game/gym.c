@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/lara.h"
 #include "game/music.h"
 #include "game/savegame.h"
 #include "game/stats.h"
@@ -13,6 +14,7 @@
 static bool m_IsInventoryOpenEnabled = true;
 static bool m_IsAssaultTimerDisplay = false;
 static bool m_IsAssaultTimerActive = false;
+static int16_t m_CompletionTimer = 0;
 
 static int32_t M_GetBestTime(void);
 static bool M_StoreAssaultTime(uint32_t time);
@@ -134,4 +136,57 @@ void Gym_FinishAssault(void)
 bool Gym_HasAssaultStats(void)
 {
     return TR_VERSION >= 2;
+}
+
+bool Gym_CanPlayMusicTrack(int16_t *const track_id)
+{
+#if TR_VERSION == 1
+    const uint16_t flags = Music_GetTrackFlags(*track_id);
+    const ITEM *const lara = Lara_GetItem();
+    switch (*track_id) {
+    case MX_GYM_HINT_03:
+        if ((flags & IF_ONE_SHOT) != 0
+            && lara->current_anim_state == LS_JUMP_UP) {
+            *track_id = MX_GYM_HINT_04;
+        }
+        break;
+
+    case MX_GYM_HINT_12:
+        if (lara->current_anim_state != LS_HANG) {
+            return false;
+        }
+        break;
+
+    case MX_GYM_HINT_16:
+        if (lara->current_anim_state != LS_HANG) {
+            return false;
+        }
+        break;
+
+    case MX_GYM_HINT_17:
+        if ((flags & IF_ONE_SHOT) != 0 && lara->current_anim_state == LS_HANG) {
+            *track_id = MX_GYM_HINT_18;
+        }
+        break;
+
+    case MX_GYM_HINT_24:
+        if (lara->current_anim_state != LS_SURF_TREAD) {
+            return false;
+        }
+        break;
+
+    case MX_GYM_HINT_25:
+        if ((flags & IF_ONE_SHOT) != 0) {
+            m_CompletionTimer++;
+            if (m_CompletionTimer == LOGIC_FPS * 4) {
+                Game_SetIsLevelComplete(true);
+                m_CompletionTimer = 0;
+            }
+        } else if (lara->current_anim_state != LS_WATER_OUT) {
+            return false;
+        }
+        break;
+    }
+#endif
+    return true;
 }

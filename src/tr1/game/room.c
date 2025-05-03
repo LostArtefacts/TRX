@@ -18,6 +18,7 @@
 
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/utils.h>
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
@@ -32,61 +33,12 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         return;
     }
 
-    if (track <= MX_UNUSED_1 || track >= MAX_MUSIC_TRACKS) {
+    if (track <= MX_UNUSED_1 || track >= MAX_MUSIC_TRACKS
+        || !Gym_CanPlayMusicTrack(&track)) {
         return;
     }
 
-    // handle g_Lara gym routines
     uint16_t flags = Music_GetTrackFlags(track);
-    switch (track) {
-    case MX_GYM_HINT_03:
-        if ((flags & IF_ONE_SHOT)
-            && g_LaraItem->current_anim_state == LS_JUMP_UP) {
-            track = MX_GYM_HINT_04;
-        }
-        break;
-
-    case MX_GYM_HINT_12:
-        if (g_LaraItem->current_anim_state != LS_HANG) {
-            return;
-        }
-        break;
-
-    case MX_GYM_HINT_16:
-        if (g_LaraItem->current_anim_state != LS_HANG) {
-            return;
-        }
-        break;
-
-    case MX_GYM_HINT_17:
-        if ((flags & IF_ONE_SHOT)
-            && g_LaraItem->current_anim_state == LS_HANG) {
-            track = MX_GYM_HINT_18;
-        }
-        break;
-
-    case MX_GYM_HINT_24:
-        if (g_LaraItem->current_anim_state != LS_SURF_TREAD) {
-            return;
-        }
-        break;
-
-    case MX_GYM_HINT_25:
-        if (flags & IF_ONE_SHOT) {
-            static int16_t gym_completion_counter = 0;
-            gym_completion_counter++;
-            if (gym_completion_counter == LOGIC_FPS * 4) {
-                Game_SetIsLevelComplete(true);
-                gym_completion_counter = 0;
-            }
-        } else if (g_LaraItem->current_anim_state != LS_WATER_OUT) {
-            return;
-        }
-        break;
-    }
-    // end of g_Lara gym routines
-
-    flags = Music_GetTrackFlags(track);
     if (flags & IF_ONE_SHOT) {
         return;
     }
