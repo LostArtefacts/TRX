@@ -345,4 +345,4 @@ cleanup:
     return result;
 }
 
-REGISTER_CONSOLE_COMMAND("set", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("set", M_Entrypoint, GS_ID(CONSOLE_HELP_SET))

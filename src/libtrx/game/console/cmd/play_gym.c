@@ -25,4 +25,5 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 }
 
-REGISTER_CONSOLE_COMMAND("gym|home", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("gym", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_GYM))
+REGISTER_CONSOLE_COMMAND("home", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_GYM))

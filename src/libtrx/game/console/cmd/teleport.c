@@ -252,4 +252,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return M_TeleportToObject(ctx->args);
 }
 
-REGISTER_CONSOLE_COMMAND("tp", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("tp", M_Entrypoint, GS_ID(CONSOLE_HELP_TP))

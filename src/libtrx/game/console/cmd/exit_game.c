@@ -14,4 +14,5 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("exit|quit", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("exit", M_Entrypoint, GS_ID(CONSOLE_HELP_EXIT))
+REGISTER_CONSOLE_COMMAND("quit", M_Entrypoint, GS_ID(CONSOLE_HELP_EXIT))

@@ -32,4 +32,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_FAILURE;
 }
 
-REGISTER_CONSOLE_COMMAND("cheats|wireframe|fps", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("cheats", M_Entrypoint, GS_ID(CONSOLE_HELP_CHEATS))
+REGISTER_CONSOLE_COMMAND(
+    "wireframe", M_Entrypoint, GS_ID(CONSOLE_HELP_WIREFRAME))
+REGISTER_CONSOLE_COMMAND("fps", M_Entrypoint, GS_ID(CONSOLE_HELP_FPS))

@@ -33,4 +33,5 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("flip|flipmap", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("flip", M_Entrypoint, GS_ID(CONSOLE_HELP_FLIPMAP))
+REGISTER_CONSOLE_COMMAND("flipmap", M_Entrypoint, GS_ID(CONSOLE_HELP_FLIPMAP))

@@ -22,4 +22,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_BAD_INVOCATION;
 }
 
-REGISTER_CONSOLE_COMMAND("speed", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("speed", M_Entrypoint, GS_ID(CONSOLE_HELP_SPEED))

@@ -44,3 +44,7 @@ GS_DEFINE(OSD_DOOR_OPEN_FAIL, "No doors in Lara's proximity")
 GS_DEFINE(ITEM_EXAMINE_ROLE, "\\{button empty} %s: Examine")
 GS_DEFINE(ITEM_USE_ROLE, "\\{button empty} %s: Use")
 GS_DEFINE(MISC_EMPTY_SLOT_FMT, "- EMPTY SLOT %d -")
+
+GS_DEFINE(CONSOLE_HELP_DEBUG, "Toggles visual debug information.")
+GS_DEFINE(CONSOLE_HELP_BRAID, "Toggles Lara's braid.")
+GS_DEFINE(CONSOLE_HELP_VSYNC, "Toggles vertical sync.")
