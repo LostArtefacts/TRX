@@ -163,6 +163,8 @@ GS_DEFINE(DETAIL_FOV, "Field of view")
 GS_DEFINE(PAGINATION_NAV, "%d / %d")
 GS_DEFINE(MISC_EMPTY_SLOT_FMT, "- EMPTY SLOT -")
 
+GS_DEFINE(CONSOLE_CMD_HELP_LIST,      "Available commands:")
+GS_DEFINE(CONSOLE_HELP_HELP,          "Shows help for all commands or detailed help for one.")
 GS_DEFINE(CONSOLE_HELP_FLOOD,         "Submerges the current room with water.")
 GS_DEFINE(CONSOLE_HELP_DRAIN,         "Dries the current room, removing the water.")
 GS_DEFINE(CONSOLE_HELP_END_LEVEL,     "Ends the current level.")

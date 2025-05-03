@@ -464,6 +464,7 @@
     },
 
     "game_strings": {
+        "CONSOLE_CMD_HELP_LIST": "Available commands:",
         "CONSOLE_HELP_CHEATS": "Toggles in-game cheats on or off.",
         "CONSOLE_HELP_DRAIN": "Dries the current room, removing the water.",
         "CONSOLE_HELP_END_LEVEL": "Ends the current level.",
@@ -474,6 +475,7 @@
         "CONSOLE_HELP_FPS": "Changes the FPS value.",
         "CONSOLE_HELP_GIVE": "Adds a given item to Lara's inventory.",
         "CONSOLE_HELP_HEAL": "Heals Lara back to full health.",
+        "CONSOLE_HELP_HELP": "Shows help for all commands or detailed help for one.",
         "CONSOLE_HELP_HP": "Sets Lara's health to the specified value.",
         "CONSOLE_HELP_KILL": "Kills nearby enemies.",
         "CONSOLE_HELP_LOAD": "Loads game from the given save slot.",

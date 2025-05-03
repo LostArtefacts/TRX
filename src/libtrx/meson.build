@@ -117,6 +117,7 @@ sources = [
   'game/console/cmd/sfx.c',
   'game/console/cmd/speed.c',
   'game/console/cmd/teleport.c',
+  'game/console/cmd/help.c',
   'game/console/common.c',
   'game/console/history.c',
   'game/console/registry.c',
