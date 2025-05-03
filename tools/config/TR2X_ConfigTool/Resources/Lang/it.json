@@ -6,6 +6,19 @@
     "window_title_about": "Informazioni sul Programma di configurazione di TR2X",
     "label_about_details": "Per ulteriori informazioni, visita la pagina GitHub di TR2X."
   },
+  "Enums": {
+    "ui_color": {
+      "red": "Rosso (predefinito per la salute)",
+      "grey": "Grigio",
+      "blue": "Blu (predefinito per l'ossigeno)",
+      "silver": "Argento",
+      "green": "Verde",
+      "gold": "Oro",
+      "gold2": "Oro (alternativo)",
+      "blue2": "Blu (alternativo)",
+      "pink": "Rosa"
+    }
+  },
   "Properties": {
     "enable_tr3_sidesteps": {
       "Title": "Passi laterali migliorati",
@@ -106,6 +119,42 @@
     "underwater_music_mode": {
       "Title": "Comportamento della musica sott'acqua",
       "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica è riprodotta normalmente sott'acqua.\n- Attenuata: la musica è riprodotta a metà volume sott'acqua.\n- Completa ma senza suoni ambientali: la musica è riprodotta normalmente sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Attenuata ma senza suoni ambientali: la musica è riprodotta a metà volume sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Assente: nessuna musica viene riprodotta sott'acqua (TR2)."
+    },
+    "healthbar_show_mode": {
+      "Title": "Comportamento della barra della salute",
+      "Description": "Modifica la modalità di visualizzazione della barra della salute.\n- Predefinito: mostra la barra della salute all'inizio di un livello, dopo essere stato colpito o mentre si equipaggiano\n  le armi; se già sullo schermo, la barra della salute lampeggia quando la salute di Lara è pari o inferiore al 20%\n  (TombATI).\n- Lampeggiante o predefinito: la barra della salute lampeggia costantemente quando la salute di Lara è pari o\n  inferiore al 20%, oppure viene visualizzata in circostanze predefinite.\n- Solo lampeggiante: mostra la barra della salute *solo* quando la salute di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Sempre: mostra sempre la barra della salute.\n- Mai: non visualizzare mai la barra della salute (per le sfide).\n- PS1: mostra la barra della salute in circostanze predefinite senza mai lampeggiare."
+    },
+    "healthbar_location": {
+      "Title": "Posizione della barra della salute",
+      "Description": "Posizione in cui viene visualizzata la barra della salute."
+    },
+    "healthbar_color": {
+      "Title": "Colore della barra della salute",
+      "Description": "Colore utilizzato per la barra della salute."
+    },
+    "airbar_show_mode": {
+      "Title": "Comportamento della barra dell'ossigeno",
+      "Description": "Modifica la modalità di visualizzazione della barra dell'ossigeno.\n- Predefinito: mostra la barra dell'ossigeno solo in acqua e lampeggia quando l'ossigeno di Lara è pari o inferiore\n  al 20% (TombATI).\n- Solo lampeggiante: mostra la barra dell'ossigeno *solo* quando l'ossigeno di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Mai: non visualizzare mai la barra dell'ossigeno (per le sfide).\n- PS1: mostra la barra dell'ossigeno in circostanze predefinite senza mai lampeggiare."
+    },
+    "airbar_location": {
+      "Title": "Posizione della barra dell'ossigeno",
+      "Description": "Posizione in cui viene visualizzata la barra dell'ossigeno."
+    },
+    "airbar_color": {
+      "Title": "Colore della barra dell'ossigeno",
+      "Description": "Colore utilizzato per la barra dell'ossigeno."
+    },
+    "enemy_healthbar_show_mode": {
+      "Title": "Mostra la barra della salute dei nemici",
+      "Description": "Abilita la visualizzazione della barra della salute per il nemico ingaggiato."
+    },
+    "enemy_healthbar_location": {
+      "Title": "Posizione della barra della salute dei nemici",
+      "Description": "Posizione in cui viene visualizzata la barra della salute dei nemici."
+    },
+    "enemy_healthbar_color": {
+      "Title": "Colore della barra della salute dei nemici",
+      "Description": "Colore utilizzato per la barra della salute dei nemici."
     },
     "enable_fade_effects": {
       "Title": "Effetti di dissolvenza",

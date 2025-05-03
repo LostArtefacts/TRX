@@ -7,33 +7,6 @@
     "label_about_details": "Per ulteriori informazioni, visita la pagina GitHub di TR1X."
   },
   "Enums": {
-    "airbar_mode": {
-      "default": "Predefinito",
-      "flashing-only": "Solo lampeggiante",
-      "never": "Mai",
-      "ps1": "PS1"
-    },
-    "healthbar_mode": {
-      "default": "Predefinito",
-      "flashing-or-default": "Lampeggiante o predefinito",
-      "flashing-only": "Solo lampeggiante",
-      "always": "Sempre",
-      "never": "Mai",
-      "ps1": "PS1"
-    },
-    "enemy_healthbar_mode": {
-      "never": "Mai",
-      "always": "Sempre",
-      "boss-only": "Solo per i boss"
-    },
-    "menu_style": {
-      "pc": "PC",
-      "ps1": "PS1"
-    },
-    "screenshot_format": {
-      "jpg": "JPEG",
-      "png": "PNG"
-    },
     "ui_color": {
       "gold": "Oro (predefinito per la salute)",
       "red": "Rosso",
@@ -45,13 +18,9 @@
       "blue2": "Blu (alternativo)",
       "pink": "Rosa"
     },
-    "ui_location": {
-      "top-left": "In alto a sinistra",
-      "top-center": "In alto al centro",
-      "top-right": "In alto a destra",
-      "bottom-left": "In basso a sinistra",
-      "bottom-center": "In basso al centro",
-      "bottom-right": "In basso a destra"
+    "menu_style": {
+      "pc": "PC",
+      "ps1": "PS1"
     },
     "target_mode": {
       "full-lock": "Completo",

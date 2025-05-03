@@ -19,14 +19,6 @@
       "always",
       "boss-only"
     ],
-    "menu_style": [
-      "pc",
-      "ps1"
-    ],
-    "screenshot_format": [
-      "jpg",
-      "png"
-    ],
     "ui_color": [
       "gold",
       "red",
@@ -45,6 +37,14 @@
       "bottom-left",
       "bottom-center",
       "bottom-right"
+    ],
+    "menu_style": [
+      "pc",
+      "ps1"
+    ],
+    "screenshot_format": [
+      "jpg",
+      "png"
     ],
     "target_mode": [
       "full-lock",

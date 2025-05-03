@@ -38,5 +38,50 @@
     "graphics": "Graphismes",
     "sound": "Son",
     "ui": "Interface (UI)"
+  },
+  "Enums": {
+    "airbar_mode": {
+      "default": "Défaut",
+      "flashing-only": "Clignotant uniquement",
+      "never": "Jamais",
+      "ps1": "PS1"
+    },
+    "healthbar_mode": {
+      "default": "Défaut",
+      "flashing-or-default": "Clignotant ou défaut",
+      "flashing-only": "Clignotant uniquement",
+      "always": "Toujours",
+      "never": "Jamais",
+      "ps1": "PS1"
+    },
+    "enemy_healthbar_mode": {
+      "never": "Jamais",
+      "always": "Toujours",
+      "boss-only": "Seulement les boss"
+    },
+    "ui_location": {
+      "top-left": "En haut à gauche",
+      "top-center": "En haut au centre",
+      "top-right": "En haut à droite",
+      "bottom-left": "En bas à gauche",
+      "bottom-center": "En bas au centre",
+      "bottom-right": "En bas à droite"
+    },
+    "screenshot_format": {
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "music_load_condition": {
+      "never": "Jamais",
+      "non-ambient": "Non ambiant",
+      "always": "Toujours"
+    },
+    "underwater_music": {
+      "full": "Complète",
+      "quiet": "Calme",
+      "full_no_ambient": "Plein mais sans ambiance",
+      "quiet_no_ambient": "Calme mais sans ambiance",
+      "none": "Aucune"
+    }
   }
 }

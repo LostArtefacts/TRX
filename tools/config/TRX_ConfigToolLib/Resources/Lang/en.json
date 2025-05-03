@@ -40,6 +40,33 @@
     "ui": "UI"
   },
   "Enums": {
+    "airbar_mode": {
+      "default": "Default",
+      "flashing-only": "Flashing only",
+      "never": "Never",
+      "ps1": "PS1"
+    },
+    "healthbar_mode": {
+      "default": "Default",
+      "flashing-or-default": "Flashing or default",
+      "flashing-only": "Flashing only",
+      "always": "Always",
+      "never": "Never",
+      "ps1": "PS1"
+    },
+    "enemy_healthbar_mode": {
+      "never": "Never",
+      "always": "Always",
+      "boss-only": "Bosses only"
+    },
+    "ui_location": {
+      "top-left": "Top left",
+      "top-center": "Top center",
+      "top-right": "Top right",
+      "bottom-left": "Bottom left",
+      "bottom-center": "Bottom center",
+      "bottom-right": "Bottom right"
+    },
     "screenshot_format": {
       "jpg": "JPEG",
       "png": "PNG"
