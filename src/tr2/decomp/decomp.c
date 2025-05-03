@@ -17,6 +17,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/utils.h>
 
@@ -99,7 +100,7 @@ void InitialiseGameFlags(void)
 {
     Music_ResetTrackFlags();
     Output_SetSunsetTimer(0);
-    g_LevelComplete = false;
+    Game_SetIsLevelComplete(false);
     g_DetonateAllMines = false;
     Creature_SetAlliesHostile(false);
 }

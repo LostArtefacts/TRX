@@ -1,8 +1,8 @@
 #include "game/item_actions/finish_level.h"
 
-#include "global/vars.h"
+#include <libtrx/game/game.h>
 
 void ItemAction_FinishLevel(ITEM *item)
 {
-    g_LevelComplete = true;
+    Game_SetIsLevelComplete(true);
 }

@@ -11,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/utils.h>
@@ -112,7 +113,7 @@ void M_LaraHandsFree(ITEM *const item)
 
 void M_FinishLevel(ITEM *const item)
 {
-    g_LevelComplete = true;
+    Game_SetIsLevelComplete(true);
 }
 
 void M_Turn180(ITEM *const item)

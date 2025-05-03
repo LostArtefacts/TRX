@@ -2,7 +2,6 @@
 
 #include "game/box.h"
 #include "game/camera.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lara/misc.h"
 #include "game/lot.h"
@@ -17,6 +16,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/utils.h>
 
@@ -76,7 +76,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
             if (gym_completion_counter == LOGIC_FPS * 4) {
-                g_LevelComplete = true;
+                Game_SetIsLevelComplete(true);
                 gym_completion_counter = 0;
             }
         } else if (g_LaraItem->current_anim_state != LS_WATER_OUT) {
@@ -621,7 +621,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
 
         case TO_FINISH:
-            g_LevelComplete = true;
+            Game_SetIsLevelComplete(true);
             break;
 
         case TO_CD:

@@ -109,7 +109,7 @@ static void M_ResetGunStatus(void)
 
 void Lara_Cheat_EndLevel(void)
 {
-    g_LevelComplete = true;
+    Game_SetIsLevelComplete(true);
     Console_Log(GS(OSD_COMPLETE_LEVEL));
 }
 

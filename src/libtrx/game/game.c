@@ -7,6 +7,7 @@
 static bool m_IsPlaying = false;
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GAME_BONUS_FLAG m_BonusFlag = GBF_NONE;
+static bool m_IsLevelComplete = false;
 
 void Game_SetIsPlaying(const bool is_playing)
 {
@@ -64,4 +65,14 @@ void Game_SetBonusFlag(const GAME_BONUS_FLAG flag)
 bool Game_IsBonusFlagSet(const GAME_BONUS_FLAG flag)
 {
     return (m_BonusFlag & flag) != 0;
+}
+
+void Game_SetIsLevelComplete(const bool is_complete)
+{
+    m_IsLevelComplete = is_complete;
+}
+
+bool Game_IsLevelComplete(void)
+{
+    return m_IsLevelComplete;
 }

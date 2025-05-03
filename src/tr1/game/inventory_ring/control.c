@@ -382,7 +382,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    m_StartLevel = g_LevelComplete ? g_GameInfo.select_level_num : -1;
+    m_StartLevel = Game_IsLevelComplete() ? g_GameInfo.select_level_num : -1;
 
     if (g_Config.gameplay.enable_timer_in_inventory) {
         Stats_UpdateTimer();
