@@ -1,6 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...develop) - ××××-××-××
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)
+- fixed some pickup sprites being too far embedded into the floor (#2903)
+- fixed vase room sprites in Return to Egypt and Temple of the Cat being embedded in the floor (#2095)
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 4.10)
 - fixed FPS counter turning off after a game relaunch (#2911)
 
