@@ -885,37 +885,12 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
 
 void Lara_CatchFire(void)
 {
-    if (g_Lara.water_status == LWS_CHEAT || g_LaraItem->hit_points < 0) {
-        return;
-    }
-
-    int16_t room_num = g_LaraItem->room_num;
-    const SECTOR *const sector = Room_GetSector(
-        g_LaraItem->pos.x, MAX_HEIGHT, g_LaraItem->pos.z, &room_num);
-    const int16_t height = Room_GetHeight(
-        sector, g_LaraItem->pos.x, MAX_HEIGHT, g_LaraItem->pos.z);
-
-    if (g_LaraItem->floor != height) {
-        return;
-    }
-
-    g_LaraItem->hit_points = -1;
-    g_LaraItem->hit_status = 1;
-
-    if (g_Lara.water_status != LWS_ABOVE_WATER) {
-        return;
-    }
-
-    for (int32_t i = 0; i < 10; i++) {
-        const int16_t effect_num = Effect_Create(g_LaraItem->room_num);
-        if (effect_num != NO_EFFECT) {
-            EFFECT *const effect = Effect_Get(effect_num);
-            const OBJECT *const obj = Object_Get(O_FLAME);
-            effect->object_id = O_FLAME;
-            effect->frame_num =
-                (obj->mesh_count * Random_GetControl()) / 0x7FFF;
-            effect->counter = -1 - Random_GetControl() * 24 / 0x7FFF;
-        }
+    const int16_t effect_num = Effect_Create(g_LaraItem->room_num);
+    if (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        effect->frame_num = 0;
+        effect->object_id = O_FLAME;
+        effect->counter = -1;
     }
 }
 

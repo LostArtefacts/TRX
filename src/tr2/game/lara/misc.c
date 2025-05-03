@@ -1670,36 +1670,6 @@ void Lara_CatchFire(void)
     g_Lara.burn = 1;
 }
 
-void Lara_TouchLava(ITEM *const item)
-{
-    if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT) {
-        return;
-    }
-
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, MAX_HEIGHT, item->pos.z);
-    if (item->floor != height) {
-        return;
-    }
-
-    item->hit_points = -1;
-    item->hit_status = 1;
-
-    const OBJECT *const obj = Object_Get(O_FLAME);
-    for (int32_t i = 0; i < 10; i++) {
-        const int16_t effect_num = Effect_Create(item->room_num);
-        if (effect_num != NO_EFFECT) {
-            EFFECT *const effect = Effect_Get(effect_num);
-            effect->object_id = O_FLAME;
-            effect->frame_num = obj->mesh_count * Random_GetControl() / 0x7FFF;
-            effect->counter = -1 - 24 * Random_GetControl() / 0x7FFF;
-        }
-    }
-}
-
 void Lara_Extinguish(void)
 {
     if (!g_Lara.burn) {

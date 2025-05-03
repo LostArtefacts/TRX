@@ -4,6 +4,7 @@
 #include "../items/types.h"
 
 void Lara_Extinguish(void);
+void Lara_TouchLava(void);
 
 int16_t Lara_FloorFront(const ITEM *item, int16_t ang, int32_t dist);
 void Lara_GetCollisionInfo(const ITEM *item, COLL_INFO *coll);

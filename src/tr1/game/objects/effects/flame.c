@@ -1,11 +1,10 @@
 #include "game/effects.h"
-#include "game/lara/common.h"
-#include "game/lara/control.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara.h>
 
 #define FLAME_ON_FIRE_DAMAGE 5
 #define FLAME_TOO_NEAR_DAMAGE 3
@@ -80,14 +79,7 @@ static void M_Control(const int16_t effect_num)
 
         if (distance < SQUARE(300)) {
             effect->counter = 100;
-
-            const int16_t new_effect_num = Effect_Create(g_LaraItem->room_num);
-            if (new_effect_num != NO_EFFECT) {
-                effect = Effect_Get(new_effect_num);
-                effect->frame_num = 0;
-                effect->object_id = O_FLAME;
-                effect->counter = -1;
-            }
+            Lara_CatchFire();
         }
     }
 }

@@ -1,9 +1,47 @@
 #include "game/lara/misc.h"
 
+#include "game/effects.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/const.h"
+#include "game/random.h"
 #include "game/rooms.h"
+
+void Lara_TouchLava(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_item->hit_points < 0 || lara_info->water_status == LWS_CHEAT) {
+        return;
+    }
+
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(
+        lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z);
+    if (lara_item->floor != height) {
+        return;
+    }
+
+    lara_item->hit_points = -1;
+    lara_item->hit_status = 1;
+
+    if (lara_info->water_status != LWS_ABOVE_WATER) {
+        return;
+    }
+
+    const OBJECT *const obj = Object_Get(O_FLAME);
+    for (int32_t i = 0; i < 10; i++) {
+        const int16_t effect_num = Effect_Create(lara_item->room_num);
+        if (effect_num != NO_EFFECT) {
+            EFFECT *const effect = Effect_Get(effect_num);
+            effect->object_id = O_FLAME;
+            effect->frame_num = obj->mesh_count * Random_GetControl() / 0x7FFF;
+            effect->counter = -1 - 24 * Random_GetControl() / 0x7FFF;
+        }
+    }
+}
 
 int16_t Lara_FloorFront(
     const ITEM *const item, const int16_t ang, const int32_t dist)
