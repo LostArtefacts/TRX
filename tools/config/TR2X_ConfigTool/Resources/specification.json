@@ -1,5 +1,43 @@
 {
   "Enums": {
+    "airbar_mode": [
+      "default",
+      "flashing-only",
+      "never",
+      "ps1"
+    ],
+    "healthbar_mode": [
+      "default",
+      "flashing-or-default",
+      "flashing-only",
+      "always",
+      "never",
+      "ps1"
+    ],
+    "enemy_healthbar_mode": [
+      "never",
+      "always",
+      "boss-only"
+    ],
+    "ui_color": [
+      "gold",
+      "red",
+      "grey",
+      "blue",
+      "silver",
+      "green",
+      "gold2",
+      "blue2",
+      "pink"
+    ],
+    "ui_location": [
+      "top-left",
+      "top-center",
+      "top-right",
+      "bottom-left",
+      "bottom-center",
+      "bottom-right"
+    ],
     "screenshot_format": [
       "jpg",
       "png"
@@ -191,6 +229,60 @@
       "ID": "ui",
       "Image": "Graphics/graphic7.jpg",
       "Properties": [
+        {
+          "Field": "healthbar_show_mode",
+          "DataType": "Enum",
+          "EnumKey": "healthbar_mode",
+          "DefaultValue": "flashing-or-default"
+        },
+        {
+          "Field": "healthbar_location",
+          "DataType": "Enum",
+          "EnumKey": "ui_location",
+          "DefaultValue": "top-left"
+        },
+        {
+          "Field": "healthbar_color",
+          "DataType": "Enum",
+          "EnumKey": "ui_color",
+          "DefaultValue": "red"
+        },
+        {
+          "Field": "airbar_show_mode",
+          "DataType": "Enum",
+          "EnumKey": "airbar_mode",
+          "DefaultValue": "default"
+        },
+        {
+          "Field": "airbar_location",
+          "DataType": "Enum",
+          "EnumKey": "ui_location",
+          "DefaultValue": "top-right"
+        },
+        {
+          "Field": "airbar_color",
+          "DataType": "Enum",
+          "EnumKey": "ui_color",
+          "DefaultValue": "blue"
+        },
+        {
+          "Field": "enemy_healthbar_show_mode",
+          "DataType": "Enum",
+          "EnumKey": "enemy_healthbar_mode",
+          "DefaultValue": "always"
+        },
+        {
+          "Field": "enemy_healthbar_location",
+          "DataType": "Enum",
+          "EnumKey": "ui_location",
+          "DefaultValue": "bottom-left"
+        },
+        {
+          "Field": "enemy_healthbar_color",
+          "DataType": "Enum",
+          "EnumKey": "ui_color",
+          "DefaultValue": "grey"
+        },
         {
           "Field": "enable_fade_effects",
           "DataType": "Bool",

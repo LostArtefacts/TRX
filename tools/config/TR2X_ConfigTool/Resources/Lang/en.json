@@ -6,6 +6,19 @@
     "window_title_about": "About TR2X Config Tool",
     "label_about_details": "Visit the TR2X GitHub page for further information."
   },
+  "Enums": {
+    "ui_color": {
+      "red": "Red (default for health)",
+      "grey": "Gray",
+      "blue": "Blue (default for air)",
+      "silver": "Silver",
+      "green": "Green",
+      "gold": "Gold",
+      "gold2": "Gold (alternative)",
+      "blue2": "Blue (alternative)",
+      "pink": "Pink"
+    }
+  },
   "Properties": {
     "enable_tr3_sidesteps": {
       "Title": "Enhanced sidesteps",
@@ -106,6 +119,42 @@
     "underwater_music_mode": {
       "Title": "Underwater music behavior",
       "Description": "Changes how music is played when the camera is underwater.\n- Full: music plays normally while underwater.\n- Quiet: music plays at half volume while underwater.\n- Full but no ambient: music plays normally while underwater, but ambient music is muted.\n- Quiet but no ambient: music plays at half volume while underwater, but ambient music is muted.\n- None: no music plays while underwater (OG TR2)."
+    },
+    "healthbar_show_mode": {
+      "Title": "Healthbar behavior",
+      "Description": "Changes how the healthbar is displayed.\n- Default: show the healthbar at the start of a level, after getting hit, or while having weapons equipped; flash the healthbar if it's already on screen when Lara's health is 20% or below (TombATI).\n- Flashing or default: constantly flash the healthbar when Lara's health is 20% or below, or show under default circumstances.\n- Flashing only: show the healthbar *only* when Lara's health is 20% or below (for challenge runs).\n- Always: always show the healthbar.\n- Never: never display the healthbar (for challenge runs).\n- PS1: show the healthbar under default circumstances with no flashing."
+    },
+    "healthbar_location": {
+      "Title": "Healthbar location",
+      "Description": "Location where the healthbar is displayed."
+    },
+    "healthbar_color": {
+      "Title": "Healthbar color",
+      "Description": "Color of the healthbar."
+    },
+    "airbar_show_mode": {
+      "Title": "Airbar behavior",
+      "Description": "Changes how the airbar is displayed.\n- Default: show the airbar only in the water and flash the airbar when Lara's oxygen is 20% or below (TombATI).\n- Flashing only: show the airbar *only* when Lara's oxygen is 20% or below (for challenge runs).\n- Never: never display the airbar (for challenge runs).\n- PS1: show the airbar under default circumstances with no flashing."
+    },
+    "airbar_location": {
+      "Title": "Airbar location",
+      "Description": "Location where the airbar is displayed."
+    },
+    "airbar_color": {
+      "Title": "Airbar color",
+      "Description": "Color of the airbar."
+    },
+    "enemy_healthbar_show_mode": {
+      "Title": "Show enemy healthbars",
+      "Description": "Enables showing a healthbar for the active enemy."
+    },
+    "enemy_healthbar_location": {
+      "Title": "Enemy healthbar location",
+      "Description": "Location where the enemy healthbar is displayed."
+    },
+    "enemy_healthbar_color": {
+      "Title": "Enemy healthbar color",
+      "Description": "Color of the enemy healthbar."
     },
     "enable_fade_effects": {
       "Title": "Fade effects",
