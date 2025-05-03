@@ -93,6 +93,9 @@ static char *M_FormatRowValue(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
     const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    if (option->custom_handler.format_value != nullptr) {
+        return option->custom_handler.format_value(option);
+    }
     switch (option->option_type) {
     case COT_BOOL:
         return String_Format(
@@ -123,6 +126,9 @@ static bool M_CanChangeValue(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx, const int32_t dir)
 {
     const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    if (option->custom_handler.can_change_value != nullptr) {
+        return option->custom_handler.can_change_value(option, dir);
+    }
     switch (option->option_type) {
     case COT_BOOL:
         return true;
@@ -186,6 +192,13 @@ static bool M_RequestChangeValue(
     }
     delta *= dir;
 
+    if (option->custom_handler.request_change_value != nullptr) {
+        if (option->custom_handler.request_change_value(option, dir)) {
+            goto changed;
+        }
+        return false;
+    }
+
     switch (option->option_type) {
     case COT_BOOL:
         *(bool *)option->target = !*(bool *)option->target;
@@ -220,6 +233,8 @@ static bool M_RequestChangeValue(
     default:
         return false;
     }
+
+changed:
     Config_Write();
     return true;
 }
@@ -249,7 +264,7 @@ void UI_Settings_Init(
 {
     s->options = options;
     int32_t row_count = 0;
-    for (int32_t i = 0; s->options[i].target != nullptr; i++) {
+    for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
         row_count++;
     }
     UI_Requester_Init(&s->req, row_count, row_count, true);

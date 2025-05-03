@@ -152,6 +152,10 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         Option_Passport_Draw(inv_item);
         break;
 
+    case O_DETAIL_OPTION:
+        Option_Graphics_Draw(inv_item);
+        break;
+
     case O_CONTROL_OPTION:
         switch (m_ControlMode) {
         case CM_KEYBOARD:
