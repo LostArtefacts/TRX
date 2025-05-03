@@ -18,6 +18,7 @@
         "data/injections/explosion.bin",
         "data/injections/font.bin",
         "data/injections/pickup_aid.bin",
+        "data/injections/sprite_alignment.bin",
     ],
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,

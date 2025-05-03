@@ -581,8 +581,8 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 78, 85 and 87, a missing texture in room 27, and stretched textures in rooms 13, 49 and 50
     - **Atlantis Cutscene**: incorrect and stretched textures in room 16
     - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
-    - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, and a stretched texture in room 47
-    - **Temple of the Cat**: incorrect textures in rooms 50, 70, 71, 76, 78, 87 and 96, and a missing texture in 75
+    - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, a stretched texture in room 47, and a  misplaced vase room sprite in room 9
+    - **Temple of the Cat**: incorrect textures in rooms 50, 70, 71, 76, 78, 87 and 96, a missing texture in 75, and misplaced vase room sprites in room 60
     - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
