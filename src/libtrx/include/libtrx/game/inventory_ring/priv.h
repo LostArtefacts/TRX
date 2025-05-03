@@ -54,6 +54,7 @@ void InvRing_RemoveHeader(void);
 void InvRing_HideArrow(INV_RING_ARROW arrow, bool hide);
 void InvRing_ShowVersionText(void);
 void InvRing_RemoveVersionText(void);
+const char *InvRing_GetItemQuantityText(void);
 
 void InvRing_UpdateInventoryItem(
     const INV_RING *ring, INVENTORY_ITEM *inv_item, int32_t num_frames);
