@@ -3,7 +3,6 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/output.h"
-#include "game/room.h"
 
 #include <libtrx/game/collision.h>
 

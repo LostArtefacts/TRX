@@ -1,6 +1,5 @@
 #include "game/items.h"
 #include "game/output.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

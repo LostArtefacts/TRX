@@ -16,7 +16,6 @@
 #include "game/lara/state.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/room.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"

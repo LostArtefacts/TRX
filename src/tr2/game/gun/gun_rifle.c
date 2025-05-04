@@ -6,7 +6,6 @@
 #include "game/items.h"
 #include "game/lara/misc.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"

@@ -6,7 +6,6 @@
 #include "game/objects/general/window.h"
 #include "game/output.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"

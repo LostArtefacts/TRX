@@ -12,7 +12,6 @@
 #include "game/music.h"
 #include "game/overlay.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/stats.h"

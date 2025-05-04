@@ -14,7 +14,6 @@
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/room.h"
 #include "game/stats.h"
 #include "global/vars.h"
 

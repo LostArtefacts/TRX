@@ -1,5 +1,4 @@
 #include "game/effects.h"
-#include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>

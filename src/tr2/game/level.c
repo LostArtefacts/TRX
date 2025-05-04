@@ -13,7 +13,6 @@
 #include "game/overlay.h"
 #include "game/random.h"
 #include "game/render/common.h"
-#include "game/room.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"

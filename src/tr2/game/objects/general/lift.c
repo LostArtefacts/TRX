@@ -1,7 +1,6 @@
 #include "game/objects/general/lift.h"
 
 #include "game/items.h"
-#include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>

@@ -4,7 +4,6 @@
 #include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/common.h>
