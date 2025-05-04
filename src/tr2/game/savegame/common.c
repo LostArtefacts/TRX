@@ -60,23 +60,23 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.available = 1;
 
         resume->flags.has_pistols = 1;
-        resume->flags.has_shotgun = 1;
+        resume->flags.has_shotgun = 0;
         resume->flags.has_magnums = 0;
         resume->flags.has_uzis = 0;
         resume->flags.has_harpoon = 0;
         resume->flags.has_m16 = 0;
         resume->flags.has_grenade = 0;
 
-        resume->shotgun_ammo = 2 * SHOTGUN_AMMO_CLIP;
+        resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
         resume->uzi_ammo = 0;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
         resume->grenade_ammo = 0;
 
-        resume->flares = 2;
-        resume->small_medipacks = 1;
-        resume->large_medipacks = 1;
+        resume->flares = 0;
+        resume->small_medipacks = 0;
+        resume->large_medipacks = 0;
         resume->gun_status = LGS_ARMLESS;
     }
 

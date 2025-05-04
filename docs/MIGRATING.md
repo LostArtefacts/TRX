@@ -43,3 +43,13 @@
    item titles or item names need to be configured entirely in the new file, so
    all `"strings"` keys can be safely removed from the game flow. Refer to
    [GAME_STRINGS.md](GAME_STRINGS.md) for more details.
+
+## TR2X
+
+### Version 1.0.2 to 1.1
+
+1. **Update first level inventory allocation**  
+   The first level no longer hard-codes the shotgun, flare and small/large medi
+   pack allocations. To continue to have Lara start with these items, refer to
+   the shipped game flow file's `Great Wall` sequences, specifically the
+   `give_item` entries.

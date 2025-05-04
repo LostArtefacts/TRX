@@ -21,7 +21,9 @@
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 1.0)
 - fixed harpoon's ammo counter overlapping with the air bar (#2871)
 - fixed flames showing briefly when Lara enters water and a death tile is present
+- fixed being unable to load a save made in the first level if that level removes Lara's weapons but also has a shotgun pickup (#2934, regression from 0.9)
 - improved the `/set` console command to display available options if given an unknown argument
+- removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)

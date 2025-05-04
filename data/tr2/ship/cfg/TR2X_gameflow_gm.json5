@@ -55,6 +55,10 @@
             "path": "data/level1.tr2",
             "music_track": 33,
             "sequence": [
+                {"type": "give_item", "object_id": "shotgun"},
+                {"type": "give_item", "object_id": "small_medipack"},
+                {"type": "give_item", "object_id": "large_medipack"},
+                {"type": "give_item", "object_id": "flare", "quantity": 2},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
