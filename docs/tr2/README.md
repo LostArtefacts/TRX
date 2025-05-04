@@ -321,6 +321,7 @@ However, you can easily download them manually from these urls:
 - fixed Lara's hips appearing on Bartoli in the Temple of Xian cutscene
 - fixed the bird monster not having a shadow
 - fixed flames showing briefly when Lara enters water and a death tile is present
+- fixed Lara's braid pointing straight down when swimming below sloped ceilings
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
