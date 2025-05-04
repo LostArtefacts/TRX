@@ -205,6 +205,7 @@ sources = [
   'game/rooms/common.c',
   'game/rooms/draw.c',
   'game/rooms/floor_data.c',
+  'game/rooms/geometry.c',
   'game/savegame/common.c',
   'game/scaler.c',
   'game/shell/common.c',
