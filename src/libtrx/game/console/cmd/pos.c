@@ -48,7 +48,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     const ITEM *const lara_item = Lara_GetItem();
     int16_t room_num = lara_item->room_num;
     const ROOM *const room = Room_Get(room_num);
-    if (Room_GetFlipStatus() && room->flipped_room != NO_ROOM_NEG) {
+    if (Room_GetFlipStatus() && room->flipped_room != NO_ROOM) {
         room_num = room->flipped_room;
     }
     char *details = lara_item == nullptr

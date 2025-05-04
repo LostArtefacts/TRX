@@ -823,8 +823,8 @@ void Camera_UpdateCutscene(void)
     g_Camera.pos.y = pos->y + ref->cy;
     g_Camera.pos.z = pos->z + ((c * ref->cz - s * ref->cx) >> W2V_SHIFT);
     const int16_t room_num =
-        Room_FindByPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
-    if (room_num != NO_ROOM_NEG) {
+        Room_GetIndexFromPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
+    if (room_num != NO_ROOM) {
         g_Camera.pos.room_num = room_num;
     }
     g_Camera.roll = ref->roll;

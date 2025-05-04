@@ -35,8 +35,8 @@ static void M_Control(const int16_t item_num)
     XYZ_32 pos = {};
     Collide_GetJointAbsPosition(item, &pos, 0);
 
-    const int16_t room_num = Room_FindByPos(pos.x, pos.y, pos.z);
-    if (room_num != NO_ROOM_NEG) {
+    const int16_t room_num = Room_GetIndexFromPos(pos.x, pos.y, pos.z);
+    if (room_num != NO_ROOM) {
         Item_UpdateRoom(item_num, room_num);
     }
 

@@ -5,7 +5,7 @@ void Room_InitCinematic(void)
     const int32_t room_count = Room_GetCount();
     for (int32_t i = 0; i < room_count; i++) {
         ROOM *const room = Room_Get(i);
-        if (room->flipped_room != NO_ROOM_NEG) {
+        if (room->flipped_room != NO_ROOM) {
             Room_Get(room->flipped_room)->bound_active = 1;
         }
         room->flags |= RF_OUTSIDE;
