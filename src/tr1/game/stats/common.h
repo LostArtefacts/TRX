@@ -16,7 +16,6 @@ void Stats_UpdateTimer(void);
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
 
 void Stats_AddKill(void);
-bool Stats_AddSecret(int16_t secret_number);
 void Stats_AddPickup(void);
 void Stats_AddAmmoHits(void);
 void Stats_AddAmmoUsed(void);

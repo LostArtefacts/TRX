@@ -149,6 +149,12 @@ bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
     return stats.found_secrets >= stats.total_secrets;
 }
 
+bool Stats_AddSecret(const int16_t secret_number)
+{
+    // TODO: implement support for TR1-style secrets as an option, see #2047
+    return false;
+}
+
 void Stats_AddKill(void)
 {
     RESUME_INFO *const current_info =
