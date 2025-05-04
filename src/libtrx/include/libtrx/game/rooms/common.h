@@ -24,11 +24,6 @@ extern void Room_AlterFloorHeight(const ITEM *item, int32_t height);
 int32_t Room_GetAdjoiningRooms(
     int16_t init_room_num, int16_t out_room_nums[], int32_t max_room_num_count);
 
-void Room_ParseFloorData(const int16_t *floor_data);
-void Room_PopulateSectorData(
-    SECTOR *sector, const int16_t *floor_data, uint16_t start_index,
-    uint16_t null_index);
-
 int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
 int32_t Room_FindByPos(int32_t x, int32_t y, int32_t z);
 int32_t Room_GetFlippedBaseRoom(int32_t room_num);

@@ -13,22 +13,6 @@
 #include "game/sound/common.h"
 #include "utils.h"
 
-#define FD_NULL_INDEX 0
-#define FD_IS_DONE(t) ((t & 0x8000) == 0x8000)
-
-#define FD_ENTRY_TYPE(t) (t & 0x1F)
-#define FD_TRIG_TYPE(t) ((t & 0x7F00) >> 8)
-#define FD_TRIG_TIMER(t) (t & 0xFF)
-#define FD_TRIG_ONE_SHOT(t) ((t & 0x100) == 0x100)
-#define FD_TRIG_MASK(t) (t & 0x3E00)
-#define FD_TRIG_CMD_TYPE(t) ((t & 0x7C00) >> 10)
-#define FD_TRIG_CMD_ARG(t) (t & 0x3FF)
-#define FD_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)
-
-#if TR_VERSION == 2
-    #define FD_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
-#endif
-
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
 static bool m_FlipStatus = false;
@@ -39,83 +23,12 @@ static int16_t m_AbyssMinHeight = 0;
 static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
-static const int16_t *M_ReadTrigger(
-    const int16_t *data, int16_t fd_entry, SECTOR *sector);
 static void M_AddFlipItems(const ROOM *room);
 static void M_RemoveFlipItems(const ROOM *room);
 static int16_t M_GetFloorTiltHeight(
     const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
 static int16_t M_GetCeilingTiltHeight(
     const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
-
-static const int16_t *M_ReadTrigger(
-    const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
-{
-    TRIGGER *const trigger = GameBuf_Alloc(sizeof(TRIGGER), GBUF_FLOOR_DATA);
-
-    const int16_t trig_setup = *data++;
-    trigger->type = FD_TRIG_TYPE(fd_entry);
-    trigger->timer = FD_TRIG_TIMER(trig_setup);
-    trigger->one_shot = FD_TRIG_ONE_SHOT(trig_setup);
-    trigger->mask = FD_TRIG_MASK(trig_setup);
-    trigger->item_index = NO_ITEM;
-
-    if (trigger->type == TT_SWITCH || trigger->type == TT_KEY
-        || trigger->type == TT_PICKUP) {
-        const int16_t item_data = *data++;
-        trigger->item_index = FD_TRIG_CMD_ARG(item_data);
-        if (FD_IS_DONE(item_data)) {
-            return data;
-        }
-    }
-
-    TRIGGER_CMD *cmd;
-    if (sector->trigger == nullptr) {
-        sector->trigger = trigger;
-        sector->trigger->command =
-            GameBuf_Alloc(sizeof(TRIGGER_CMD), GBUF_FLOOR_DATA);
-        cmd = sector->trigger->command;
-    } else {
-        // Some old TRLEs have incorrectly formatted floor data, with multiple
-        // trigger entries defined where regular triggers overlap dummies. In
-        // this case we link the new commands onto the old.
-        cmd = sector->trigger->command;
-        while (cmd->next_cmd != nullptr) {
-            cmd = cmd->next_cmd;
-        }
-        cmd->next_cmd = GameBuf_Alloc(sizeof(TRIGGER_CMD), GBUF_FLOOR_DATA);
-        cmd = cmd->next_cmd;
-    }
-
-    while (true) {
-        int16_t command = *data++;
-        cmd->type = FD_TRIG_CMD_TYPE(command);
-
-        if (cmd->type == TO_CAMERA) {
-            TRIGGER_CAMERA_DATA *const cam_data =
-                GameBuf_Alloc(sizeof(TRIGGER_CAMERA_DATA), GBUF_FLOOR_DATA);
-            cmd->parameter = (void *)cam_data;
-            cam_data->camera_num = FD_TRIG_CMD_ARG(command);
-
-            command = *data++;
-            cam_data->timer = FD_TRIG_TIMER(command);
-            cam_data->glide = FD_TRIG_CAM_GLIDE(command);
-            cam_data->one_shot = FD_TRIG_ONE_SHOT(command);
-        } else {
-            cmd->parameter = (void *)(intptr_t)FD_TRIG_CMD_ARG(command);
-        }
-
-        if (FD_IS_DONE(command)) {
-            cmd->next_cmd = nullptr;
-            break;
-        }
-
-        cmd->next_cmd = GameBuf_Alloc(sizeof(TRIGGER_CMD), GBUF_FLOOR_DATA);
-        cmd = cmd->next_cmd;
-    }
-
-    return data;
-}
 
 static void M_AddFlipItems(const ROOM *const room)
 {
@@ -344,73 +257,6 @@ int32_t Room_GetFlipSlotFlags(const int32_t slot_idx)
 void Room_SetFlipSlotFlags(const int32_t slot_idx, const int32_t flags)
 {
     m_FlipSlotFlags[slot_idx] = flags;
-}
-
-void Room_ParseFloorData(const int16_t *floor_data)
-{
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        for (int32_t j = 0; j < room->size.x * room->size.z; j++) {
-            SECTOR *const sector = &room->sectors[j];
-            Room_PopulateSectorData(
-                &room->sectors[j], floor_data, sector->idx, FD_NULL_INDEX);
-        }
-    }
-}
-
-void Room_PopulateSectorData(
-    SECTOR *const sector, const int16_t *floor_data, const uint16_t start_index,
-    const uint16_t null_index)
-{
-    sector->floor.tilt = 0;
-    sector->ceiling.tilt = 0;
-    sector->portal_room.wall = NO_ROOM;
-    sector->is_death_sector = false;
-    sector->trigger = nullptr;
-#if TR_VERSION == 2
-    sector->ladder = LADDER_NONE;
-#endif
-
-    if (start_index == null_index) {
-        return;
-    }
-
-    const int16_t *data = &floor_data[start_index];
-    int16_t fd_entry;
-    do {
-        fd_entry = *data++;
-
-        switch (FD_ENTRY_TYPE(fd_entry)) {
-        case FT_TILT:
-            sector->floor.tilt = *data++;
-            break;
-
-        case FT_ROOF:
-            sector->ceiling.tilt = *data++;
-            break;
-
-        case FT_DOOR:
-            sector->portal_room.wall = *data++;
-            break;
-
-        case FT_LAVA:
-            sector->is_death_sector = true;
-            break;
-
-        case FT_TRIGGER:
-            data = M_ReadTrigger(data, fd_entry, sector);
-            break;
-
-#if TR_VERSION >= 2
-        case FT_CLIMB:
-            sector->ladder = (LADDER_DIRECTION)FD_LADDER_TYPE(fd_entry);
-            break;
-#endif
-
-        default:
-            break;
-        }
-    } while (!FD_IS_DONE(fd_entry));
 }
 
 int32_t Room_GetAdjoiningRooms(
