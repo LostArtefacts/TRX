@@ -2,17 +2,6 @@
 
 #include "game/box.h"
 
-int16_t Room_GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
-{
-    sector = Room_GetPitSector(sector, x, z);
-
-    if ((y + STEP_L * 2) < sector->floor.height) {
-        return 0;
-    }
-
-    return sector->floor.tilt;
-}
-
 int32_t Room_FindGridShift(int32_t src, int32_t dst)
 {
     int32_t srcw = src >> WALL_SHIFT;

@@ -204,6 +204,18 @@ HEIGHT_TYPE Room_GetHeightType(void)
     return m_HeightType;
 }
 
+int16_t Room_GetTiltType(
+    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z)
+{
+    sector = Room_GetPitSector(sector, x, z);
+
+    if ((y + STEP_L * 2) < sector->floor.height) {
+        return 0;
+    }
+
+    return sector->floor.tilt;
+}
+
 int16_t Room_GetHeight(
     const SECTOR *const sector, const int32_t x, const int32_t y,
     const int32_t z)
