@@ -2,22 +2,6 @@
 
 void Room_MarkToBeDrawn(int16_t room_num);
 
-int32_t Room_FindGridShift(int32_t src, const int32_t dst)
-{
-    const int32_t src_w = src >> WALL_SHIFT;
-    const int32_t dst_w = dst >> WALL_SHIFT;
-    if (src_w == dst_w) {
-        return 0;
-    }
-
-    src &= WALL_L - 1;
-    if (dst_w > src_w) {
-        return WALL_L - (src - 1);
-    } else {
-        return -(src + 1);
-    }
-}
-
 void Room_GetNearbyRooms(
     const int32_t x, const int32_t y, const int32_t z, const int32_t r,
     const int32_t h, const int16_t room_num)
