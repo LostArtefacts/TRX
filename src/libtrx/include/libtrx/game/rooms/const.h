@@ -9,6 +9,3 @@
 
 #define NO_HEIGHT (-32512)
 #define MAX_HEIGHT 32000
-
-#define NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
-#define POS_TILT(T, H) ((T * ((WALL_L - 1 - H) & (WALL_L - 1))) >> 2)
