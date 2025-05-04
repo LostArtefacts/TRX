@@ -1,6 +1,5 @@
 #include "game/effects.h"
 #include "game/lara/common.h"
-#include "game/room.h"
 
 #include <libtrx/game/math.h>
 

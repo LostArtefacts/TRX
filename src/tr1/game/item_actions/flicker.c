@@ -1,7 +1,5 @@
 #include "game/item_actions/flicker.h"
 
-#include "game/room.h"
-
 void ItemAction_Flicker(ITEM *item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();

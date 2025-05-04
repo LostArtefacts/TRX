@@ -1,6 +1,5 @@
 #include "game/item_actions/stairs2slope.h"
 
-#include "game/room.h"
 #include "game/sound.h"
 
 void ItemAction_Stairs2Slope(ITEM *item)

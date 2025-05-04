@@ -1,6 +1,5 @@
 #include "game/items.h"
 #include "game/objects/common.h"
-#include "game/room.h"
 
 typedef enum {
     CABIN_STATE_START = 0,

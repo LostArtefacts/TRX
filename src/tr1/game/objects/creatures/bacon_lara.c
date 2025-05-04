@@ -5,7 +5,6 @@
 #include "game/lara/common.h"
 #include "game/lara/draw.h"
 #include "game/objects/common.h"
-#include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
 

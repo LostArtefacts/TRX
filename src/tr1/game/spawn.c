@@ -3,7 +3,6 @@
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"

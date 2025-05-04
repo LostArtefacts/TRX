@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/objects/vars.h"
-#include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"

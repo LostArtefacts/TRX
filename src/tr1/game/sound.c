@@ -2,7 +2,6 @@
 
 #include "game/camera.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"

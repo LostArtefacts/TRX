@@ -7,7 +7,6 @@
 #include "game/lara/look.h"
 #include "game/objects/common.h"
 #include "game/objects/effects/twinkle.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"

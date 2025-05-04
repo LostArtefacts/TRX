@@ -3,7 +3,6 @@
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lot.h"
-#include "game/room.h"
 #include "game/spawn.h"
 #include "global/const.h"
 #include "global/vars.h"

@@ -7,7 +7,6 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
 

@@ -1,5 +1,4 @@
 #include "game/items.h"
-#include "game/room.h"
 
 typedef enum {
     COG_STATE_INACTIVE = 0,

@@ -1,8 +1,8 @@
 #include "game/los.h"
 
-#include "game/room.h"
 #include "global/const.h"
 
+#include <libtrx/game/rooms.h>
 #include <libtrx/utils.h>
 
 #include <stdint.h>
