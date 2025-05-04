@@ -25,7 +25,7 @@ int16_t Room_GetCeilingEx(
 int32_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Room_AlterFloorHeight(const ITEM *item, int32_t height);
 
-extern int32_t Room_FindGridShift(int32_t src, int32_t dst);
+int32_t Room_FindGridShift(int32_t src, int32_t dst);
 
 bool Room_IsOnWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
