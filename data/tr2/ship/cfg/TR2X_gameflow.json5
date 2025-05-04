@@ -58,6 +58,10 @@
             "music_track": 33,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 2},
+                {"type": "give_item", "object_id": "shotgun"},
+                {"type": "give_item", "object_id": "small_medipack"},
+                {"type": "give_item", "object_id": "large_medipack"},
+                {"type": "give_item", "object_id": "flare", "quantity": 2},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "add_secret_reward", "object_id": "small_medipack"},
