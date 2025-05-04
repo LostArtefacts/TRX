@@ -23,6 +23,7 @@
 - fixed harpoon's ammo counter overlapping with the air bar (#2871)
 - fixed flames showing briefly when Lara enters water and a death tile is present
 - fixed being unable to load a save made in the first level if that level removes Lara's weapons but also has a shotgun pickup (#2934, regression from 0.9)
+- fixed misplaced effects such as bubbles and dragon fire in 60 FPS (#2873, #2881, regression from 0.10)
 - improved the `/set` console command to display available options if given an unknown argument
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
 

@@ -108,6 +108,7 @@ void Memory_ArenaReset(MEMORY_ARENA_ALLOCATOR *const allocator)
 {
     MEMORY_ARENA_CHUNK *chunk = allocator->first_chunk;
     while (chunk != nullptr) {
+        memset(chunk->memory, 0, chunk->size);
         chunk->offset = 0;
         chunk = chunk->next;
     }
