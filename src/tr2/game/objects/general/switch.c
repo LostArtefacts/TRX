@@ -1,5 +1,3 @@
-#include "game/objects/general/switch.h"
-
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
