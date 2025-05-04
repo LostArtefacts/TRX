@@ -23,6 +23,7 @@ void Item_Initialise(int16_t item_num);
 void Item_Kill(int16_t item_num);
 void Item_RemoveActive(int16_t item_num);
 void Item_RemoveDrawn(int16_t item_num);
+void Item_ClearKilled(void);
 void Item_AddActive(int16_t item_num);
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);
 

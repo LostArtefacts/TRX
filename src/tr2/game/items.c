@@ -13,17 +13,3 @@ void Item_Control(void)
         item_num = next;
     }
 }
-
-void Item_ClearKilled(void)
-{
-    // Remove corpses and other killed items. Part of OG performance
-    // improvements, generously used in Opera House and Barkhang Monastery
-    int16_t link_num = Item_GetPrevActive();
-    while (link_num != NO_ITEM) {
-        ITEM *const item = Item_Get(link_num);
-        Item_Kill(link_num);
-        link_num = item->next_active;
-        item->next_active = NO_ITEM;
-    }
-    Item_SetPrevActive(NO_ITEM);
-}
