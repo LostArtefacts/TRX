@@ -6,7 +6,6 @@
 #include "game/output/textures.h"
 #include "game/output/utils.h"
 #include "game/output/vertex_range.h"
-#include "game/room.h"
 
 #include <libtrx/game/math/types.h>
 #include <libtrx/game/output/types.h>

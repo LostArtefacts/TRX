@@ -6,7 +6,6 @@
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/output/meshes/objects.h"
-#include "game/room.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"

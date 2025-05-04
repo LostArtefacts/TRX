@@ -5,7 +5,6 @@
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
 

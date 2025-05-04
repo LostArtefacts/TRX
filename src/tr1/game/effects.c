@@ -2,7 +2,6 @@
 
 #include "game/objects/vars.h"
 #include "game/output.h"
-#include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"

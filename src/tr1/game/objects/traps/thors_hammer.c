@@ -1,7 +1,6 @@
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
-#include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>

@@ -15,7 +15,6 @@
 #include "game/item_actions/sand.h"
 #include "game/item_actions/stairs2slope.h"
 #include "game/item_actions/turn_180.h"
-#include "game/room.h"
 
 typedef void (*M_FUNC)(ITEM *item);
 

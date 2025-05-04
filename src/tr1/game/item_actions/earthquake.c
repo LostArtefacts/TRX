@@ -1,7 +1,6 @@
 #include "game/item_actions/earthquake.h"
 
 #include "game/camera.h"
-#include "game/room.h"
 #include "game/sound.h"
 
 void ItemAction_Earthquake(ITEM *item)

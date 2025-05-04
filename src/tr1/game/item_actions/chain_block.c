@@ -1,6 +1,5 @@
 #include "game/item_actions/chain_block.h"
 
-#include "game/room.h"
 #include "game/sound.h"
 
 #include <libtrx/config.h>

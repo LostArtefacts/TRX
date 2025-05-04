@@ -1,5 +1,4 @@
 #include "game/items.h"
-#include "game/room.h"
 #include "global/const.h"
 
 static void M_Setup(OBJECT *obj);

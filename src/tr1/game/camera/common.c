@@ -5,7 +5,6 @@
 #include "game/los.h"
 #include "game/music.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/vars.h"

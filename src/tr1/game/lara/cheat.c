@@ -12,7 +12,6 @@
 #include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/const.h"

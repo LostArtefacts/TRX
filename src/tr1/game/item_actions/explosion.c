@@ -1,7 +1,6 @@
 #include "game/item_actions/explosion.h"
 
 #include "game/camera.h"
-#include "game/room.h"
 #include "game/sound.h"
 
 void ItemAction_Explosion(ITEM *item)
