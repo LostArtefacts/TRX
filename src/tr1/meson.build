@@ -249,7 +249,6 @@ sources = [
   'game/output/textures.c',
   'game/output/vertex_range.c',
   'game/overlay.c',
-  'game/room.c',
   'game/room_draw.c',
   'game/savegame/savegame.c',
   'game/savegame/savegame_bson.c',

@@ -27,5 +27,5 @@ int32_t Room_FindByPos(int32_t x, int32_t y, int32_t z);
 int32_t Room_GetFlippedBaseRoom(int32_t room_num);
 BOUNDS_32 Room_GetWorldBounds(void);
 
-extern void Room_GetNearbyRooms(
+void Room_GetNearbyRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
