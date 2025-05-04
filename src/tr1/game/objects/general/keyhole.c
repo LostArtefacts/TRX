@@ -1,5 +1,3 @@
-#include "game/objects/general/keyhole.h"
-
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -8,7 +6,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-XYZ_32 g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
+static XYZ_32 m_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
 
 static const OBJECT_BOUNDS m_KeyHoleBounds = {
     .shift = {
@@ -33,7 +31,7 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.item_num == item_num) {
-        Lara_AlignPosition(item, &g_KeyHolePosition);
+        Lara_AlignPosition(item, &m_KeyHolePosition);
         Lara_AnimateUntil(lara_item, LS_USE_KEY);
         lara_item->goal_anim_state = LS_STOP;
         g_Lara.gun_status = LGS_HANDS_BUSY;
@@ -78,7 +76,7 @@ static void M_Setup(OBJECT *const obj)
     obj->is_usable_func = M_IsUsable;
 }
 
-bool KeyHole_Trigger(int16_t item_num)
+bool Keyhole_Trigger(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status == IS_ACTIVE && g_Lara.gun_status != LGS_HANDS_BUSY) {

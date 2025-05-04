@@ -6,9 +6,6 @@
 #include "game/lara/misc.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/objects/general/keyhole.h"
-#include "game/objects/general/pickup.h"
-#include "game/objects/general/switch.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -17,6 +14,9 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/objects/general/keyhole.h>
+#include <libtrx/game/objects/general/pickup.h>
+#include <libtrx/game/objects/general/switch.h>
 #include <libtrx/utils.h>
 
 void Room_MarkToBeDrawn(int16_t room_num);

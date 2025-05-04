@@ -7,9 +7,6 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/common.h"
-#include "game/objects/general/keyhole.h"
-#include "game/objects/general/pickup.h"
-#include "game/objects/general/switch.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -19,6 +16,9 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/gym.h>
+#include <libtrx/game/objects/general/keyhole.h>
+#include <libtrx/game/objects/general/pickup.h>
+#include <libtrx/game/objects/general/switch.h>
 #include <libtrx/utils.h>
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
@@ -375,7 +375,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
 
         case TT_KEY: {
-            if (!KeyHole_Trigger(trigger->item_index)) {
+            if (!Keyhole_Trigger(trigger->item_index)) {
                 return;
             }
             break;
