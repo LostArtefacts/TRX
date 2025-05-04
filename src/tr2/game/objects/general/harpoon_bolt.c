@@ -1,7 +1,6 @@
 #include "game/gun/gun_misc.h"
 #include "game/items.h"
 #include "game/objects/general/window.h"
-#include "game/room.h"
 #include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"

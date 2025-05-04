@@ -13,7 +13,6 @@
 #include "game/lara/control.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/viewport.h"

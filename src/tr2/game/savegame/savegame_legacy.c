@@ -7,7 +7,6 @@
 #include "game/lara/misc.h"
 #include "game/lot.h"
 #include "game/objects/general/lift.h"
-#include "game/room.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "global/const.h"

@@ -1,7 +1,6 @@
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/music.h"
-#include "game/room.h"
 #include "global/vars.h"
 
 #define GONG_BONGER_STRIKE_FRAME 41

@@ -2,7 +2,6 @@
 #include "game/lara/control.h"
 #include "game/objects/common.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/spawn.h"
 
 #include <libtrx/game/lara/common.h>

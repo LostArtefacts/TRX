@@ -7,7 +7,6 @@
 #include "game/lara/look.h"
 #include "game/lara/misc.h"
 #include "game/music.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/const.h"

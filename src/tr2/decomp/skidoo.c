@@ -14,7 +14,6 @@
 #include "game/objects/vehicles/skidoo_armed.h"
 #include "game/output.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"

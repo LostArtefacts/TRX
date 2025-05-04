@@ -3,7 +3,6 @@
 #include "game/camera.h"
 #include "game/lara/hair.h"
 #include "game/random.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"
