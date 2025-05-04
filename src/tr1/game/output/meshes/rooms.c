@@ -65,7 +65,7 @@ static M_BATCH *M_GetBatch(const ROOM *const room)
     // that gets flipped to room 17 ends up getting the data from room 2,
     // whereas the VBO needs to take data from room 17.
     const int16_t room_num =
-        Room_GetFlipStatus() && room->flipped_room != NO_ROOM_NEG
+        Room_GetFlipStatus() && room->flipped_room != NO_ROOM
         ? room->flipped_room
         : Room_GetNumber(room);
     return &m_Priv.batches[room_num];

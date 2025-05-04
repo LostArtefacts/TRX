@@ -81,8 +81,8 @@ static void M_Shut(DOORPOS_DATA *const d)
     sector->floor.height = NO_HEIGHT;
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
-    sector->portal_room.sky = NO_ROOM_NEG;
-    sector->portal_room.pit = NO_ROOM_NEG;
+    sector->portal_room.sky = NO_ROOM;
+    sector->portal_room.pit = NO_ROOM;
     sector->portal_room.wall = NO_ROOM;
 
     const int16_t box_num = d->box_num;
@@ -160,7 +160,7 @@ static void M_Initialise(const int16_t item_num)
     const ROOM *room = Room_Get(room_num);
     M_InitialisePortal(room, item, dx, dz, &door->d1);
 
-    if (room->flipped_room == NO_ROOM_NEG) {
+    if (room->flipped_room == NO_ROOM) {
         door->d1flip.sector = nullptr;
     } else {
         room = Room_Get(room->flipped_room);
@@ -177,7 +177,7 @@ static void M_Initialise(const int16_t item_num)
     } else {
         room = Room_Get(room_num);
         M_InitialisePortal(room, item, 0, 0, &door->d2);
-        if (room->flipped_room == NO_ROOM_NEG) {
+        if (room->flipped_room == NO_ROOM) {
             door->d2flip.sector = nullptr;
         } else {
             room = Room_Get(room->flipped_room);

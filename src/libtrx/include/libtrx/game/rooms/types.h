@@ -46,8 +46,8 @@ typedef struct {
 #endif
     TRIGGER *trigger;
     struct {
-        uint8_t pit;
-        uint8_t sky;
+        int16_t pit;
+        int16_t sky;
         int16_t wall;
     } portal_room;
     struct {

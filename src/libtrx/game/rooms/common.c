@@ -89,7 +89,7 @@ ROOM *Room_Get(const int32_t room_num)
 int32_t Room_GetNumber(const ROOM *const room)
 {
     if (room == nullptr) {
-        return NO_ROOM_NEG;
+        return NO_ROOM;
     }
     return room - m_Rooms;
 }
@@ -215,16 +215,6 @@ int32_t Room_GetAdjoiningRooms(
 
 int16_t Room_GetIndexFromPos(const int32_t x, const int32_t y, const int32_t z)
 {
-    // TODO: merge this to Room_FindByPos!
-    const int32_t room_num = Room_FindByPos(x, y, z);
-    if (room_num == NO_ROOM_NEG) {
-        return NO_ROOM;
-    }
-    return room_num;
-}
-
-int32_t Room_FindByPos(const int32_t x, const int32_t y, const int32_t z)
-{
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         if (room->flip_status == RFS_FLIPPED) {
@@ -241,7 +231,7 @@ int32_t Room_FindByPos(const int32_t x, const int32_t y, const int32_t z)
         }
     }
 
-    return NO_ROOM_NEG;
+    return NO_ROOM;
 }
 
 int32_t Room_GetFlippedBaseRoom(const int32_t room_num)

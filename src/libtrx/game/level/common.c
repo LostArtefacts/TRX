@@ -25,6 +25,8 @@
 
 #include <string.h>
 
+#define M_NO_ROOM_LEGACY 255
+
 static LEVEL_INFO m_Info = {};
 
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
@@ -516,6 +518,12 @@ void Level_ReadRooms(VFILE *const file)
             sector->floor.height = VFile_ReadS8(file) * STEP_L;
             sector->portal_room.sky = VFile_ReadU8(file);
             sector->ceiling.height = VFile_ReadS8(file) * STEP_L;
+            if (sector->portal_room.pit == M_NO_ROOM_LEGACY) {
+                sector->portal_room.pit = NO_ROOM;
+            }
+            if (sector->portal_room.sky == M_NO_ROOM_LEGACY) {
+                sector->portal_room.sky = NO_ROOM;
+            }
         }
 
         room->ambient = VFile_ReadS16(file);
