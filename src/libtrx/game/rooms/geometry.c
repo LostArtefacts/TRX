@@ -332,17 +332,17 @@ int32_t Room_GetWaterHeight(
     if (room->flags & RF_UNDERWATER) {
         while (sector->portal_room.sky != NO_ROOM) {
             room = Room_Get(sector->portal_room.sky);
-            if (!(room->flags & RF_UNDERWATER)) {
+            if ((room->flags & RF_UNDERWATER) == 0) {
                 break;
             }
             sector = Room_GetWorldSector(room, x, z);
         }
-        return sector->ceiling.height;
+        return M_GetCeilingTiltHeight(sector, x, z, true);
     } else {
         while (sector->portal_room.pit != NO_ROOM) {
             room = Room_Get(sector->portal_room.pit);
-            if (room->flags & RF_UNDERWATER) {
-                return sector->floor.height;
+            if ((room->flags & RF_UNDERWATER) != 0) {
+                return M_GetFloorTiltHeight(sector, x, z, true);
             }
             sector = Room_GetWorldSector(room, x, z);
         }
