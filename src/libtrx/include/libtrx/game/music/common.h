@@ -22,11 +22,17 @@ bool Music_Play(MUSIC_TRACK_ID track, MUSIC_PLAY_MODE mode);
 // Stops any music, whether looped or active speech.
 extern void Music_Stop(void);
 
+// Stops the provided single track and restarts the looped track if applicable.
+extern void Music_StopTrack(MUSIC_TRACK_ID track);
+
 // Pauses the music.
 extern void Music_Pause(void);
 
 // Unpauses the music.
 extern void Music_Unpause(void);
+
+// Returns the delayed track. Ignores looped tracks.
+extern MUSIC_TRACK_ID Music_GetDelayedTrack(void);
 
 void Music_ResetTrackFlags(void);
 uint16_t Music_GetTrackFlags(int32_t track_idx);

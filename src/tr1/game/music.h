@@ -10,9 +10,6 @@ bool Music_Init(void);
 // Shuts music mixer down.
 void Music_Shutdown(void);
 
-// Stops the provided single track and restarts the looped track if applicable.
-void Music_StopTrack(MUSIC_TRACK_ID track);
-
 // Mutes the game music. Doesn't change the music volume.
 void Music_Mute(void);
 
@@ -27,9 +24,6 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 
 // Returns the last played track. Ignores looped tracks.
 MUSIC_TRACK_ID Music_GetLastPlayedTrack(void);
-
-// Returns the delayed track. Ignores looped tracks.
-MUSIC_TRACK_ID Music_GetDelayedTrack(void);
 
 // Get the duration of the current stream in seconds.
 double Music_GetDuration(void);
