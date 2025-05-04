@@ -50,68 +50,6 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     Room_MarkToBeDrawn(room_num);
 }
 
-SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
-{
-    int16_t portal_room;
-    SECTOR *sector;
-    const ROOM *room = Room_Get(*room_num);
-    do {
-        int32_t z_sector = (z - room->pos.z) >> WALL_SHIFT;
-        int32_t x_sector = (x - room->pos.x) >> WALL_SHIFT;
-
-        if (z_sector <= 0) {
-            z_sector = 0;
-            if (x_sector < 1) {
-                x_sector = 1;
-            } else if (x_sector > room->size.x - 2) {
-                x_sector = room->size.x - 2;
-            }
-        } else if (z_sector >= room->size.z - 1) {
-            z_sector = room->size.z - 1;
-            if (x_sector < 1) {
-                x_sector = 1;
-            } else if (x_sector > room->size.x - 2) {
-                x_sector = room->size.x - 2;
-            }
-        } else if (x_sector < 0) {
-            x_sector = 0;
-        } else if (x_sector >= room->size.x) {
-            x_sector = room->size.x - 1;
-        }
-
-        sector = Room_GetUnitSector(room, x_sector, z_sector);
-        portal_room = sector->portal_room.wall;
-        if (portal_room != NO_ROOM) {
-            *room_num = portal_room;
-            room = Room_Get(portal_room);
-        }
-    } while (portal_room != NO_ROOM);
-
-    if (y >= sector->floor.height) {
-        do {
-            if (sector->portal_room.pit == NO_ROOM) {
-                break;
-            }
-
-            *room_num = sector->portal_room.pit;
-            room = Room_Get(sector->portal_room.pit);
-            sector = Room_GetWorldSector(room, x, z);
-        } while (y >= sector->floor.height);
-    } else if (y < sector->ceiling.height) {
-        do {
-            if (sector->portal_room.sky == NO_ROOM) {
-                break;
-            }
-
-            *room_num = sector->portal_room.sky;
-            room = Room_Get(sector->portal_room.sky);
-            sector = Room_GetWorldSector(room, x, z);
-        } while (y < sector->ceiling.height);
-    }
-
-    return sector;
-}
-
 int32_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     const ROOM *room = Room_Get(room_num);

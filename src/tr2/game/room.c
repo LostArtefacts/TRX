@@ -58,68 +58,6 @@ int16_t Room_GetTiltType(
     return sector->floor.tilt;
 }
 
-SECTOR *Room_GetSector(
-    const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
-{
-    SECTOR *sector = nullptr;
-
-    while (true) {
-        const ROOM *room = Room_Get(*room_num);
-        int32_t z_sector = (z - room->pos.z) >> WALL_SHIFT;
-        int32_t x_sector = (x - room->pos.x) >> WALL_SHIFT;
-
-        if (z_sector <= 0) {
-            z_sector = 0;
-            if (x_sector < 1) {
-                x_sector = 1;
-            } else if (x_sector > room->size.x - 2) {
-                x_sector = room->size.x - 2;
-            }
-        } else if (z_sector >= room->size.z - 1) {
-            z_sector = room->size.z - 1;
-            if (x_sector < 1) {
-                x_sector = 1;
-            } else if (x_sector > room->size.x - 2) {
-                x_sector = room->size.x - 2;
-            }
-        } else if (x_sector < 0) {
-            x_sector = 0;
-        } else if (x_sector >= room->size.x) {
-            x_sector = room->size.x - 1;
-        }
-
-        sector = Room_GetUnitSector(room, x_sector, z_sector);
-        if (sector->portal_room.wall == NO_ROOM) {
-            break;
-        }
-        *room_num = sector->portal_room.wall;
-    }
-
-    ASSERT(sector != nullptr);
-
-    if (y >= sector->floor.height) {
-        while (sector->portal_room.pit != NO_ROOM) {
-            *room_num = sector->portal_room.pit;
-            const ROOM *const room = Room_Get(*room_num);
-            sector = Room_GetWorldSector(room, x, z);
-            if (y < sector->floor.height) {
-                break;
-            }
-        }
-    } else if (y < sector->ceiling.height) {
-        while (sector->portal_room.sky != NO_ROOM) {
-            *room_num = sector->portal_room.sky;
-            const ROOM *const room = Room_Get(sector->portal_room.sky);
-            sector = Room_GetWorldSector(room, x, z);
-            if (y >= sector->ceiling.height) {
-                break;
-            }
-        }
-    }
-
-    return sector;
-}
-
 int32_t Room_GetWaterHeight(
     const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
 {
