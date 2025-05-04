@@ -18,6 +18,7 @@ static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
 
 static void M_AddFlipItems(const ROOM *room);
 static void M_RemoveFlipItems(const ROOM *room);
+static void M_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
 static void M_AddFlipItems(const ROOM *const room)
 {
@@ -55,6 +56,13 @@ static void M_RemoveFlipItems(const ROOM *const room)
 
         item_num = item->next_item;
     }
+}
+
+static void M_GetNewRoom(
+    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+{
+    Room_GetSector(x, y, z, &room_num);
+    Room_MarkToBeDrawn(room_num);
 }
 
 void Room_InitialiseRooms(const int32_t num_rooms)
@@ -269,4 +277,21 @@ BOUNDS_32 Room_GetWorldBounds(void)
     }
 
     return bounds;
+}
+
+void Room_GetNearbyRooms(
+    const int32_t x, const int32_t y, const int32_t z, const int32_t r,
+    const int32_t h, const int16_t room_num)
+{
+    Room_DrawReset();
+    Room_MarkToBeDrawn(room_num);
+
+    M_GetNewRoom(r + x, y, r + z, room_num);
+    M_GetNewRoom(x - r, y, r + z, room_num);
+    M_GetNewRoom(r + x, y, z - r, room_num);
+    M_GetNewRoom(x - r, y, z - r, room_num);
+    M_GetNewRoom(r + x, y - h, r + z, room_num);
+    M_GetNewRoom(x - r, y - h, r + z, room_num);
+    M_GetNewRoom(r + x, y - h, z - r, room_num);
+    M_GetNewRoom(x - r, y - h, z - r, room_num);
 }
