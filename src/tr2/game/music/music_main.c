@@ -174,6 +174,20 @@ void Music_Stop(void)
     M_StopActiveStream();
 }
 
+void Music_StopTrack(const MUSIC_TRACK_ID track)
+{
+    if (track != m_TrackCurrent) {
+        return;
+    }
+
+    M_StopActiveStream();
+    m_TrackCurrent = MX_INACTIVE;
+
+    if (m_TrackLooped >= 0) {
+        Music_Play(m_TrackLooped, MPM_LOOPED);
+    }
+}
+
 bool Music_PlaySynced(int16_t track_id)
 {
     Music_Play(track_id, false);
