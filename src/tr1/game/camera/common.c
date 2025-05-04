@@ -834,44 +834,6 @@ void Camera_UpdateCutscene(void)
     Viewport_SetFOV(ref->fov);
 }
 
-void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
-{
-    int16_t target_ok = 2;
-    const TRIGGER_CMD *cmd = trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type == TO_CAMERA) {
-            const TRIGGER_CAMERA_DATA *const cam_data =
-                (TRIGGER_CAMERA_DATA *)cmd->parameter;
-            if (cam_data->camera_num == g_Camera.last) {
-                g_Camera.num = cam_data->camera_num;
-
-                if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
-                    || g_Camera.type == CAM_COMBAT) {
-                    g_Camera.timer = -1;
-                    target_ok = 0;
-                } else {
-                    g_Camera.type = CAM_FIXED;
-                    target_ok = 1;
-                }
-            } else {
-                target_ok = 0;
-            }
-        } else if (cmd->type == TO_TARGET) {
-            if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
-                g_Camera.item = Item_Get((int16_t)(intptr_t)cmd->parameter);
-            }
-        }
-    }
-
-    if (g_Camera.item != nullptr) {
-        if (!target_ok
-            || (target_ok == 2 && g_Camera.item->looked_at
-                && g_Camera.item != g_Camera.last_item)) {
-            g_Camera.item = nullptr;
-        }
-    }
-}
-
 void Camera_MoveManual(void)
 {
     const int16_t camera_delta = (const int)DEG_90 / (const int)LOGIC_FPS

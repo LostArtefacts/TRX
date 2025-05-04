@@ -28,4 +28,3 @@ void Camera_Look(const ITEM *item);
 void Camera_Fixed(void);
 void Camera_LoadCutsceneFrame(void);
 void Camera_UpdateCutscene(void);
-void Camera_RefreshFromTrigger(const TRIGGER *trigger);
