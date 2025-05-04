@@ -545,15 +545,6 @@ int32_t Room_GetWaterHeight(
     }
 }
 
-void Room_TestTriggers(const ITEM *const item)
-{
-    int16_t room_num = item->room_num;
-    const SECTOR *sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
-
-    Room_TestSectorTrigger(item, sector);
-}
-
 void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
 {
     if (height == 0) {

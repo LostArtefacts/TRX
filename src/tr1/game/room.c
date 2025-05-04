@@ -288,32 +288,6 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
     }
 }
 
-void Room_TestTriggers(const ITEM *const item)
-{
-    int16_t room_num = item->room_num;
-    const SECTOR *sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
-
-    Room_TestSectorTrigger(item, sector);
-    if (item->object_id != O_TORSO) {
-        return;
-    }
-
-    for (int32_t dx = -1; dx < 2; dx++) {
-        for (int32_t dz = -1; dz < 2; dz++) {
-            if (!dx && !dz) {
-                continue;
-            }
-
-            room_num = item->room_num;
-            sector = Room_GetSector(
-                item->pos.x + dx * WALL_L, MAX_HEIGHT,
-                item->pos.z + dz * WALL_L, &room_num);
-            Room_TestSectorTrigger(item, sector);
-        }
-    }
-}
-
 static bool M_TestLava(const ITEM *const item)
 {
     if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT

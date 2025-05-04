@@ -204,6 +204,7 @@ sources = [
   'game/random.c',
   'game/rooms/common.c',
   'game/rooms/draw.c',
+  'game/rooms/floor_data.c',
   'game/savegame/common.c',
   'game/scaler.c',
   'game/shell/common.c',
