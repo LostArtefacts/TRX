@@ -1,8 +1,18 @@
 #include "game/rooms/floor_data.h"
 
+#include "game/camera.h"
+#include "game/game.h"
 #include "game/game_buf.h"
+#include "game/gym.h"
 #include "game/items.h"
+#include "game/lara.h"
+#include "game/music.h"
+#include "game/objects/general/keyhole.h"
+#include "game/objects/general/pickup.h"
+#include "game/objects/general/switch.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
+#include "game/stats.h"
 
 #define M_NULL_INDEX 0
 #define M_IS_DONE(t) ((t & 0x8000) == 0x8000)
@@ -22,6 +32,8 @@
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
+static bool M_TestLava(const ITEM *item);
+static void M_TriggerMusicTrack(int16_t track, const TRIGGER *trigger);
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -90,6 +102,96 @@ static const int16_t *M_ReadTrigger(
     }
 
     return data;
+}
+
+static bool M_TestLava(const ITEM *const item)
+{
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (item->hit_points < 0 || lara_info->water_status == LWS_CHEAT
+        || (lara_info->water_status == LWS_ABOVE_WATER
+            && item->pos.y != item->floor)) {
+        return false;
+    }
+
+    // OG fix: check if floor index has lava
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    return sector->is_death_sector;
+}
+
+static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
+{
+    if (track == MX_UNUSED_0
+        && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER)) {
+        Music_Stop();
+        return;
+    }
+
+    if (track <= MX_UNUSED_1 || track >= MAX_MUSIC_TRACKS
+        || !Gym_CanPlayMusicTrack(&track)) {
+        return;
+    }
+
+    uint16_t flags = Music_GetTrackFlags(track);
+    // TODO: consolidate
+#if TR_VERSION == 1
+    if ((flags & IF_ONE_SHOT) != 0) {
+        return;
+    }
+
+    if (trigger->type == TT_SWITCH) {
+        flags ^= trigger->mask;
+    } else if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
+        flags &= -1 - trigger->mask;
+    } else if (trigger->mask) {
+        flags |= trigger->mask;
+    }
+
+    if ((flags & IF_CODE_BITS) == IF_CODE_BITS) {
+        if (trigger->one_shot) {
+            flags |= IF_ONE_SHOT;
+        }
+        Music_Play(track, MPM_TRACKED);
+    } else {
+        Music_StopTrack(track);
+    }
+#else
+    if (trigger->type != TT_SWITCH) {
+        const int32_t code = trigger->mask;
+        if ((flags & code) != 0) {
+            return;
+        }
+        if (trigger->one_shot) {
+            flags |= code;
+        }
+    }
+
+    if (trigger->timer == 0) {
+        Music_Play(track, MPM_TRACKED);
+        goto finish;
+    }
+
+    if (track != Music_GetDelayedTrack()) {
+        Music_Play(track, MPM_DELAYED);
+        flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
+        goto finish;
+    }
+
+    int32_t timer = flags & 0xFF;
+    if (timer == 0) {
+        goto finish;
+    }
+
+    timer--;
+    if (timer == 0) {
+        Music_Play(track, MPM_TRACKED);
+    }
+    flags = (flags & 0xFF00) | (timer & 0xFF);
+#endif
+
+finish:
+    Music_SetTrackFlags(track, flags);
 }
 
 void Room_ParseFloorData(const int16_t *floor_data)
@@ -185,4 +287,305 @@ void Room_TestTriggers(const ITEM *const item)
         }
     }
 #endif
+}
+
+void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const bool is_heavy = item->object_id != O_LARA;
+    if (!is_heavy) {
+        if (sector->is_death_sector && M_TestLava(item)) {
+            Lara_TouchLava();
+        }
+#if TR_VERSION >= 2
+        const LADDER_DIRECTION direction = 1 << Math_GetDirection(item->rot.y);
+        lara_info->climb_status = (sector->ladder & direction) == direction;
+#endif
+    }
+
+    const TRIGGER *const trigger = sector->trigger;
+    if (trigger == nullptr) {
+        return;
+    }
+
+    if (g_Camera.type != CAM_HEAVY) {
+        Camera_RefreshFromTrigger(trigger);
+    }
+
+    ITEM *camera_item = nullptr;
+    bool switch_off = false;
+    bool flip_map = false;
+    bool flip_available = false;
+    int32_t new_effect = -1;
+    const bool flip_status = Room_GetFlipStatus();
+
+    if (is_heavy) {
+        if (trigger->type != TT_HEAVY) {
+            return;
+        }
+    } else {
+        switch (trigger->type) {
+        case TT_PAD:
+        case TT_ANTIPAD:
+            if (item->pos.y != item->floor) {
+                return;
+            }
+            break;
+
+        case TT_SWITCH: {
+            if (!Switch_Trigger(trigger->item_index, trigger->timer)) {
+                return;
+            }
+            const ITEM *const switch_item = Item_Get(trigger->item_index);
+            switch_off = switch_item->current_anim_state == LS_RUN;
+            break;
+        }
+
+        case TT_KEY: {
+            if (!Keyhole_Trigger(trigger->item_index)) {
+                return;
+            }
+            break;
+        }
+
+        case TT_PICKUP: {
+            if (!Pickup_Trigger(trigger->item_index)) {
+                return;
+            }
+            break;
+        }
+
+        case TT_HEAVY:
+        case TT_DUMMY:
+            return;
+
+        case TT_COMBAT:
+            if (lara_info->gun_status != LGS_READY) {
+                return;
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    const TRIGGER_CMD *cmd = trigger->command;
+    for (; cmd != nullptr; cmd = cmd->next_cmd) {
+        switch (cmd->type) {
+        case TO_OBJECT: {
+            const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
+            ITEM *const trig_item = Item_Get(item_num);
+            if (trig_item->flags & IF_ONE_SHOT) {
+                break;
+            }
+
+            trig_item->timer = trigger->timer;
+            if (trig_item->timer != 1) {
+                trig_item->timer *= LOGIC_FPS;
+            }
+
+            if (trigger->type == TT_SWITCH) {
+                trig_item->flags ^= trigger->mask;
+            } else if (
+                trigger->type == TT_ANTIPAD
+                || trigger->type == TT_ANTITRIGGER) {
+                trig_item->flags &= ~trigger->mask;
+                if (trigger->one_shot) {
+                    trig_item->flags |= IF_ONE_SHOT;
+                }
+            } else {
+                trig_item->flags |= trigger->mask;
+            }
+
+            if ((trig_item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+                break;
+            }
+
+            if (trigger->one_shot) {
+                trig_item->flags |= IF_ONE_SHOT;
+            }
+
+            if (trig_item->active) {
+                break;
+            }
+
+            const OBJECT *const obj = Object_Get(trig_item->object_id);
+            if (obj->activate_func != nullptr) {
+                obj->activate_func(trig_item);
+            } else if (obj->intelligent) {
+                if (trig_item->status == IS_INACTIVE) {
+                    trig_item->touch_bits = 0;
+                    trig_item->status = IS_ACTIVE;
+                    Item_AddActive(item_num);
+                    LOT_EnableBaddieAI(item_num, true);
+                } else if (trig_item->status == IS_INVISIBLE) {
+                    trig_item->touch_bits = 0;
+                    if (LOT_EnableBaddieAI(item_num, false)) {
+                        trig_item->status = IS_ACTIVE;
+                    } else {
+                        trig_item->status = IS_INVISIBLE;
+                    }
+                    Item_AddActive(item_num);
+                }
+            } else {
+                trig_item->touch_bits = 0;
+                trig_item->status = IS_ACTIVE;
+                Item_AddActive(item_num);
+            }
+
+            break;
+        }
+
+        case TO_CAMERA: {
+            const TRIGGER_CAMERA_DATA *const cam_data =
+                (TRIGGER_CAMERA_DATA *)cmd->parameter;
+            OBJECT_VECTOR *const camera =
+                Camera_GetFixedObject(cam_data->camera_num);
+            if (camera->flags & IF_ONE_SHOT) {
+                break;
+            }
+
+            g_Camera.num = cam_data->camera_num;
+
+            if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
+                break;
+            }
+
+            if (trigger->type == TT_COMBAT) {
+                break;
+            }
+
+            if (trigger->type == TT_SWITCH && trigger->timer && switch_off) {
+                break;
+            }
+
+            if (g_Camera.num == g_Camera.last && trigger->type != TT_SWITCH) {
+                break;
+            }
+
+            g_Camera.timer = LOGIC_FPS * cam_data->timer;
+
+            if (cam_data->one_shot) {
+                camera->flags |= IF_ONE_SHOT;
+            }
+
+            g_Camera.speed = cam_data->glide + 1;
+            g_Camera.type = is_heavy ? CAM_HEAVY : CAM_FIXED;
+            break;
+        }
+
+        case TO_SINK: {
+            const OBJECT_VECTOR *const sink =
+                Camera_GetFixedObject((int16_t)(intptr_t)cmd->parameter);
+
+            if (lara_info->lot.required_box != sink->flags) {
+                lara_info->lot.target = sink->pos;
+                lara_info->lot.required_box = sink->flags;
+            }
+            lara_info->current_active = sink->data * 6;
+            break;
+        }
+
+        case TO_FLIPMAP: {
+            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            flip_available = true;
+
+            if (slot_flags & IF_ONE_SHOT) {
+                break;
+            }
+
+            if (trigger->type == TT_SWITCH) {
+                slot_flags ^= trigger->mask;
+            } else {
+                slot_flags |= trigger->mask;
+            }
+
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS) {
+                if (trigger->one_shot) {
+                    slot_flags |= IF_ONE_SHOT;
+                }
+
+                if (!flip_status) {
+                    flip_map = true;
+                }
+            } else if (flip_status) {
+                flip_map = true;
+            }
+
+            Room_SetFlipSlotFlags(flip_slot, slot_flags);
+            break;
+        }
+
+        case TO_FLIPON: {
+            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            flip_available = true;
+
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && !flip_status) {
+                flip_map = true;
+            }
+            break;
+        }
+
+        case TO_FLIPOFF: {
+            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            flip_available = true;
+
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && flip_status) {
+                flip_map = true;
+            }
+            break;
+        }
+
+        case TO_TARGET: {
+            const int16_t target_num = (int16_t)(intptr_t)cmd->parameter;
+            camera_item = Item_Get(target_num);
+            break;
+        }
+
+        case TO_FINISH:
+            Game_SetIsLevelComplete(true);
+            break;
+
+        case TO_FLIPEFFECT:
+            new_effect = (int16_t)(intptr_t)cmd->parameter;
+            break;
+
+        case TO_CD:
+            M_TriggerMusicTrack((int16_t)(intptr_t)cmd->parameter, trigger);
+            break;
+
+        case TO_SECRET: {
+            const int16_t secret_num = 1 << (int16_t)(intptr_t)cmd->parameter;
+            if (Stats_AddSecret(secret_num)) {
+                Music_Play(MX_SECRET, MPM_ALWAYS);
+            }
+            break;
+        }
+#if TR_VERSION == 2
+        case TO_BODY_BAG:
+            Item_ClearKilled();
+            break;
+#endif
+        default:
+            break;
+        }
+    }
+
+    if (camera_item != nullptr
+        && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY)) {
+        g_Camera.item = camera_item;
+    }
+
+    if (flip_map) {
+        Room_FlipMap();
+    }
+
+    if (new_effect != -1 && (flip_map || !flip_available)) {
+        Room_SetFlipEffect(new_effect);
+        Room_SetFlipTimer(0);
+    }
 }

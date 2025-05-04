@@ -8,4 +8,4 @@ void Room_PopulateSectorData(
     uint16_t null_index);
 
 void Room_TestTriggers(const ITEM *item);
-extern void Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
+void Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
