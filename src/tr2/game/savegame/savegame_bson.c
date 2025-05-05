@@ -11,6 +11,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
@@ -677,11 +678,27 @@ static JSON_ARRAY *M_DumpItems(void)
                     item_obj, "creature_flags", creature->flags);
                 JSON_ObjectAppendInt(item_obj, "creature_mood", creature->mood);
             }
-            if (obj->intelligent) {
-                JSON_ObjectAppendInt(
-                    item_obj, "carried_item", item->carried_item);
-            }
         }
+
+        JSON_ARRAY *const carried_items_arr = JSON_ArrayNew();
+
+        const CARRIED_ITEM *drop_item = item->carried_item;
+        while (drop_item != nullptr) {
+            JSON_OBJECT *drop_obj = JSON_ObjectNew();
+            JSON_ObjectAppendInt(drop_obj, "object_id", drop_item->object_id);
+            DUMP_XYZ(drop_obj, "pos", drop_item->pos);
+            JSON_ObjectAppendInt(drop_obj, "y_rot", drop_item->rot.y);
+            JSON_ObjectAppendInt(drop_obj, "room_num", drop_item->room_num);
+            JSON_ObjectAppendInt(drop_obj, "fall_speed", drop_item->fall_speed);
+
+            const DROP_STATUS status = Carrier_GetSaveStatus(drop_item);
+            JSON_ObjectAppendInt(drop_obj, "status", status);
+
+            JSON_ArrayAppendObject(carried_items_arr, drop_obj);
+            drop_item = drop_item->next_item;
+        }
+
+        JSON_ObjectAppendArray(item_obj, "carried_items", carried_items_arr);
 
         switch (item->object_id) {
         case O_BOAT: {
@@ -846,9 +863,35 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
                 }
             }
 
-            if (obj->intelligent) {
-                item->carried_item =
-                    JSON_ObjectGetInt(item_obj, "carried_item", NO_ITEM);
+            JSON_ARRAY *const carried_items =
+                JSON_ObjectGetArray(item_obj, "carried_items");
+            if (carried_items != nullptr) {
+                CARRIED_ITEM *carried_item = item->carried_item;
+                for (int32_t j = 0; j < (signed)carried_items->length; j++) {
+                    if (carried_item == nullptr) {
+                        LOG_ERROR("Malformed save: carried item mismatch");
+                        return false;
+                    }
+
+                    JSON_OBJECT *const carried_item_obj =
+                        JSON_ArrayGetObject(carried_items, j);
+                    carried_item->object_id = JSON_ObjectGetInt(
+                        carried_item_obj, "object_id", carried_item->object_id);
+                    LOAD_XYZ(carried_item_obj, "pos", carried_item->pos);
+                    carried_item->rot.y = JSON_ObjectGetInt(
+                        carried_item_obj, "y_rot", carried_item->rot.y);
+                    carried_item->room_num = JSON_ObjectGetInt(
+                        carried_item_obj, "room_num", carried_item->room_num);
+                    carried_item->fall_speed = JSON_ObjectGetInt(
+                        carried_item_obj, "fall_speed",
+                        carried_item->fall_speed);
+                    carried_item->status = JSON_ObjectGetInt(
+                        carried_item_obj, "status", carried_item->status);
+
+                    carried_item = carried_item->next_item;
+                }
+
+                Carrier_TestItemDrops(i);
             }
 
             switch (item->object_id) {

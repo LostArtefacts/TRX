@@ -29,7 +29,6 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     O_BEAR,
     O_CROW,
     O_TIGER,
-    O_BARTOLI,
     O_XIAN_SPEARMAN,
     O_XIAN_SPEARMAN_STATUE,
     O_XIAN_KNIGHT,
@@ -286,6 +285,7 @@ const GAME_OBJECT_ID g_BossObjects[] = {
 
 const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
+    O_BARTOLI,
     NO_OBJECT,
     // clang-format on
 };

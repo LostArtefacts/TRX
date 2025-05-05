@@ -1,5 +1,7 @@
 #include "game/items.h"
 
+#include <libtrx/game/carrier.h>
+
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextActive();
@@ -12,4 +14,6 @@ void Item_Control(void)
         }
         item_num = next;
     }
+
+    Carrier_AnimateDrops();
 }

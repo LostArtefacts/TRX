@@ -13,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
@@ -67,7 +68,7 @@ static const BITE m_DragonMouth = {
     .mesh_num = 12,
 };
 
-static void M_MarkDragonDead(const ITEM *dragon_back_item);
+static void M_MarkDragonDead(ITEM *dragon_back_item);
 static void M_PushLaraAway(ITEM *lara_item, ITEM *dragon_item, int32_t shift);
 static void M_PullDagger(ITEM *lara_item, ITEM *dragon_back_item);
 static void M_SetupFront(OBJECT *obj);
@@ -76,13 +77,20 @@ static void M_HandleSaveFront(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Control(int16_t item_num);
 
-static void M_MarkDragonDead(const ITEM *const dragon_back_item)
+static void M_MarkDragonDead(ITEM *const dragon_back_item)
 {
     const int16_t dragon_front_item_num = (intptr_t)dragon_back_item->data;
     const ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
     CREATURE *const creature = dragon_front_item->data;
     creature->flags = -1;
     Stats_AddKill();
+
+    // Allow drops to occur at the beginning of the cinematic camera for a
+    // better window to avoid seeing the items spawn.
+    const ITEM_STATUS current_status = dragon_back_item->status;
+    dragon_back_item->status = IS_DEACTIVATED;
+    Carrier_TestItemDrops(Item_GetIndex(dragon_back_item));
+    dragon_back_item->status = current_status;
 }
 
 static void M_PushLaraAway(

@@ -12,6 +12,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/utils.h>
 
@@ -132,6 +133,7 @@ static void M_Control(const int16_t item_num)
             Item_Kill(item_num);
             item->status = IS_DEACTIVATED;
             item->flags |= IF_ONE_SHOT;
+            Carrier_TestItemDrops(item_num);
         }
         return;
     }

@@ -17,6 +17,7 @@
 static int16_t m_AnimatingCount = 0;
 
 static ITEM *M_GetCarrier(int16_t item_num);
+static bool M_IsCarrierType(GAME_OBJECT_ID obj_id);
 static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *carrier);
 static void M_AnimateDrop(CARRIED_ITEM *item);
 static void M_InitialiseDataDrops(void);
@@ -52,21 +53,38 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     return item;
 }
 
+static bool M_IsCarrierType(const GAME_OBJECT_ID obj_id)
+{
+    bool is_enemy = Object_IsType(obj_id, g_EnemyObjects);
+#if TR_VERSION == 2
+    // Eels are hostile but cannot be killed, so must be excluded. Monks may be
+    // allocated drop items whether or not they are hostile. Drop items must be
+    // assigned to the skidoo and not the rider to avoid issues with /kill, and
+    // O_DRAGON_BACK is the active dragon, but having this in g_EnemyObjects
+    // also creates issues with /kill, hence a separate check is required here.
+    is_enemy &= obj_id != O_EEL && obj_id != O_BIG_EEL;
+    is_enemy &= obj_id != O_SKIDOO_DRIVER;
+    is_enemy |= obj_id == O_MONK_1 || obj_id == O_MONK_2;
+    is_enemy |= obj_id == O_DRAGON_BACK || obj_id == O_SKIDOO_ARMED;
+#endif
+    return is_enemy;
+}
+
 static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *const carrier)
 {
-    // TODO: consolidate/tidy
+    bool can_drop = carrier->hit_points <= 0;
 #if TR_VERSION == 1
-    if (carrier->hit_points > 0 && carrier->object_id != O_MUMMY) {
-        return nullptr;
-    }
-
-    if (carrier->object_id == O_PIERRE && !(carrier->flags & IF_ONE_SHOT)) {
-        return nullptr;
-    }
-    return carrier->carried_item;
+    // Qualopec mummy can drop items just from having touched it. Runaway Pierre
+    // can never drop items.
+    can_drop |= carrier->object_id == O_MUMMY;
+    can_drop &=
+        (carrier->object_id != O_PIERRE || (carrier->flags & IF_ONE_SHOT) != 0);
 #else
-    return nullptr;
+    can_drop &=
+        (carrier->object_id != O_DRAGON_BACK
+         || carrier->status == IS_DEACTIVATED);
 #endif
+    return can_drop ? carrier->carried_item : nullptr;
 }
 
 static void M_AnimateDrop(CARRIED_ITEM *const item)
@@ -117,13 +135,11 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
 
 static void M_InitialiseDataDrops(void)
 {
-#if TR_VERSION == 1
     VECTOR *const pickups = Vector_Create(sizeof(int16_t));
 
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const carrier = M_GetCarrier(i);
-        if (carrier == nullptr
-            || !Object_IsType(carrier->object_id, g_EnemyObjects)) {
+        if (carrier == nullptr || !M_IsCarrierType(carrier->object_id)) {
             continue;
         }
 
@@ -166,7 +182,6 @@ static void M_InitialiseDataDrops(void)
     }
 
     Vector_Free(pickups);
-#endif
 }
 
 static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
@@ -192,7 +207,7 @@ static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
             continue;
         }
 
-        if (!Object_IsType(item->object_id, g_EnemyObjects)) {
+        if (!M_IsCarrierType(item->object_id)) {
             LOG_WARNING(
                 "Item %d of type %d cannot carry items", data->enemy_num,
                 item->object_id);
@@ -243,7 +258,6 @@ void Carrier_InitialiseLevel(const GF_LEVEL *const level)
 
 int32_t Carrier_GetItemCount(const int16_t item_num)
 {
-#if TR_VERSION == 1
     const ITEM *const carrier = M_GetCarrier(item_num);
     if (carrier == nullptr) {
         return 0;
@@ -259,9 +273,6 @@ int32_t Carrier_GetItemCount(const int16_t item_num)
     }
 
     return count;
-#else
-    return 0;
-#endif
 }
 
 bool Carrier_IsItemCarried(const int16_t item_num)
@@ -339,7 +350,6 @@ void Carrier_TestItemDrops(const int16_t item_num)
 
 void Carrier_TestLegacyDrops(const int16_t item_num)
 {
-#if TR_VERSION == 1
     const ITEM *const carrier = Item_Get(item_num);
     if (carrier->hit_points > 0) {
         return;
@@ -365,7 +375,6 @@ void Carrier_TestLegacyDrops(const int16_t item_num)
             item = item->next_item;
         }
     }
-#endif
 }
 
 void Carrier_AnimateDrops(void)
@@ -373,7 +382,7 @@ void Carrier_AnimateDrops(void)
     if (m_AnimatingCount == 0) {
         return;
     }
-#if TR_VERSION == 1
+
     // Make items that spawn in mid-air or water gracefully fall to the floor.
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const carrier = Item_Get(i);
@@ -383,5 +392,4 @@ void Carrier_AnimateDrops(void)
             item = item->next_item;
         }
     }
-#endif
 }

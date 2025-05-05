@@ -11,6 +11,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/carrier.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -146,6 +147,7 @@ static void M_Control(const int16_t item_num)
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
         Sound_Effect(SFX_SPIDER_EXPLODE, &item->pos, SPM_NORMAL);
+        Carrier_TestItemDrops(item_num);
         return;
     }
 

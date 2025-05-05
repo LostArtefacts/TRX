@@ -7,6 +7,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/carrier.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -88,6 +89,7 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state != SHARK_STATE_DEATH) {
             Item_SwitchToAnim(item, SHARK_ANIM_DEATH, 0);
             item->current_anim_state = SHARK_STATE_DEATH;
+            Carrier_TestItemDrops(item_num);
         }
         Creature_Float(item_num);
     } else {

@@ -8,6 +8,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/utils.h>
 
 #define SKIDOO_DRIVER_MIN_TURN (SKIDOO_MAX_TURN / 3) // = 364
@@ -75,6 +76,7 @@ static void M_ControlDead(ITEM *const driver_item, ITEM *const skidoo_item)
         driver_item->room_num = skidoo_item->room_num;
         Item_SwitchToAnim(driver_item, SKIDOO_DRIVER_ANIM_DEATH, 0);
         driver_item->current_anim_state = SKIDOO_DRIVER_STATE_DEATH;
+        Carrier_TestItemDrops(Item_GetIndex(skidoo_item));
 
         if (g_Lara.target == skidoo_item) {
             g_Lara.target = nullptr;
