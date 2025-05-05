@@ -1,13 +1,13 @@
 #pragma once
 
-#if TR_VERSION == 1
 typedef enum {
-    DS_CARRIED = 0,
-    DS_FALLING = 1,
-    DS_DROPPED = 2,
+    // clang-format off
+    DS_CARRIED   = 0,
+    DS_FALLING   = 1,
+    DS_DROPPED   = 2,
     DS_COLLECTED = 3,
+    // clang-format on
 } DROP_STATUS;
-#endif
 
 typedef enum {
     // clang-format off

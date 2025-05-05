@@ -1,4 +1,3 @@
-#include "game/carrier.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -11,6 +10,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>

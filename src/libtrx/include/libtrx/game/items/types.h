@@ -5,7 +5,6 @@
 #include "../output/types.h"
 #include "./enum.h"
 
-#if TR_VERSION == 1
 typedef struct CARRIED_ITEM {
     GAME_OBJECT_ID object_id;
     int16_t spawn_num;
@@ -16,7 +15,6 @@ typedef struct CARRIED_ITEM {
     DROP_STATUS status;
     struct CARRIED_ITEM *next_item;
 } CARRIED_ITEM;
-#endif
 
 typedef struct {
     int32_t floor;

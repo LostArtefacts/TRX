@@ -1,5 +1,4 @@
 #include "game/camera.h"
-#include "game/carrier.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -17,6 +16,7 @@
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>

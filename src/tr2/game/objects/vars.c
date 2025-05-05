@@ -110,6 +110,19 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_GunObjects[] = {
+    // clang-format off
+    O_PISTOL_ITEM,
+    O_SHOTGUN_ITEM,
+    O_MAGNUM_ITEM,
+    O_UZI_ITEM,
+    O_HARPOON_ITEM,
+    O_M16_ITEM,
+    O_GRENADE_ITEM,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_SecretObjects[] = {
     // clang-format off
     O_SECRET_1,
@@ -268,6 +281,25 @@ const GAME_OBJECT_ID g_BossObjects[] = {
     O_SKIDOO_ARMED,
     O_DINO,
     NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_PlaceholderObjects[] = {
+    // clang-format off
+    NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
+    // clang-format off
+    { O_PISTOL_ITEM, O_PISTOL_AMMO_ITEM },
+    { O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM },
+    { O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM },
+    { O_UZI_ITEM, O_UZI_AMMO_ITEM },
+    { O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM },
+    { O_M16_ITEM, O_M16_AMMO_ITEM },
+    { O_GRENADE_ITEM, O_GRENADE_AMMO_ITEM },
+    { NO_OBJECT, NO_OBJECT },
     // clang-format on
 };
 
