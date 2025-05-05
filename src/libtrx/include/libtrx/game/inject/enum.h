@@ -79,13 +79,14 @@ typedef enum {
 } FACE_TYPE;
 
 typedef enum {
-    FET_TRIGGER_PARAM   = 0,
-    FET_MUSIC_ONESHOT   = 1,
-    FET_FD_INSERT       = 2,
-    FET_ROOM_SHIFT      = 3,
-    FET_TRIGGER_ITEM    = 4,
-    FET_ROOM_PROPERTIES = 5,
-    FET_TRIGGER_TYPE    = 6,
+    FET_TRIGGER_PARAM     = 0,
+    FET_MUSIC_ONESHOT     = 1,
+    FET_FD_INSERT         = 2,
+    FET_ROOM_SHIFT        = 3,
+    FET_TRIGGER_ITEM      = 4,
+    FET_ROOM_PROPERTIES   = 5,
+    FET_TRIGGER_TYPE      = 6,
+    FET_SECTOR_OVERWRITE  = 7,
 } FLOOR_EDIT_TYPE;
 
 typedef enum {
