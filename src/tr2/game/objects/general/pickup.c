@@ -280,15 +280,16 @@ static void M_Draw(const ITEM *const item)
         const int16_t y_off = frame->offset.y - bounds.max.y;
         bounds.max.y -= bounds.max.y;
         bounds.min.y -= bounds.max.y;
-        offset = item->pos.y + y_off;
+        offset = item->interp.result.pos.y + y_off;
     } else {
         bounds = Object_GetBoundingBox(obj, nullptr, item->mesh_bits);
         offset = item->pos.y - (bounds.max.y - bounds.min.y) / 2;
     }
 
     Matrix_Push();
-    Matrix_TranslateAbs(item->pos.x, offset, item->pos.z);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs(
+        item->interp.result.pos.x, offset, item->interp.result.pos.z);
+    Matrix_Rot16(item->interp.result.rot);
 
     Output_CalculateLight(item->pos, item->room_num);
 

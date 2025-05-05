@@ -43,11 +43,9 @@ typedef struct {
     SHADE shade;
     void *data;
     void *priv;
-#if TR_VERSION == 1
     CARRIED_ITEM *carried_item;
+#if TR_VERSION == 1
     bool enable_shadow;
-#elif TR_VERSION == 2
-    int16_t carried_item;
 #endif
 
     XYZ_32 pos;

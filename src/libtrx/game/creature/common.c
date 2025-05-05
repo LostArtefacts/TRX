@@ -1,4 +1,5 @@
 #include "game/camera/vars.h"
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/los.h"
@@ -32,10 +33,6 @@ static bool M_SwitchToWater(
 static bool M_SwitchToLand(
     int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
 static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
-
-#if TR_VERSION == 1
-extern void Carrier_TestItemDrops(int16_t item_num);
-#endif
 
 static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
 {
@@ -1004,19 +1001,9 @@ void Creature_Die(const int16_t item_num, const bool explode)
         item->next_active = Item_GetPrevActive();
         Item_SetPrevActive(item_num);
     }
-
-    if (obj->intelligent) {
-        int16_t pickup_num = item->carried_item;
-        while (pickup_num != NO_ITEM) {
-            ITEM *const pickup = Item_Get(pickup_num);
-            pickup->pos = item->pos;
-            Item_UpdateRoom(pickup_num, item->room_num);
-            pickup_num = pickup->carried_item;
-        }
-    }
-#else
-    Carrier_TestItemDrops(item_num);
 #endif
+
+    Carrier_TestItemDrops(item_num);
 }
 
 int32_t Creature_Vault(

@@ -25,6 +25,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/gym.h>
@@ -343,7 +344,7 @@ bool Level_Initialise(
     if (g_Lara.item_num != NO_ITEM) {
         Lara_Initialise(level);
     }
-    GetCarriedItems();
+    Carrier_InitialiseLevel(level);
 
     if (seq_ctx != GFSC_SAVED) {
         MovableBlock_SetupFloor();

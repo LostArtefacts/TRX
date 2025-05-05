@@ -138,6 +138,7 @@ void Item_Initialise(const int16_t item_num)
     item->touch_bits = 0;
     item->data = nullptr;
     item->priv = nullptr;
+    item->carried_item = nullptr;
 
     item->active = 0;
     item->status = IS_INACTIVE;
@@ -148,7 +149,6 @@ void Item_Initialise(const int16_t item_num)
     item->enable_interpolation = true;
 
 #if TR_VERSION == 1
-    item->carried_item = nullptr;
     item->enable_shadow = true;
 #else
     item->killed = 0;

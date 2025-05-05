@@ -267,6 +267,9 @@ However, you can easily download them manually from these urls:
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door
 - fixed Lara being able to equip guns and flares during in-game cutscenes
 - improved the animation of Lara's braid
+- improved handling of items that are dropped by enemies
+    - added the ability for any enemy type to drop items, excluding eels
+    - fixed items dropped by flying creatures not falling to the ground
 
 #### Cheats
 - added a fly cheat

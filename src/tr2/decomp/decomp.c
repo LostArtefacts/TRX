@@ -104,35 +104,6 @@ void InitialiseGameFlags(void)
     Creature_SetAlliesHostile(false);
 }
 
-void GetCarriedItems(void)
-{
-    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
-        ITEM *const item = Item_Get(item_num);
-        if (!Object_Get(item->object_id)->intelligent) {
-            continue;
-        }
-        item->carried_item = NO_ITEM;
-
-        const ROOM *const room = Room_Get(item->room_num);
-        int16_t pickup_item_num = room->item_num;
-        do {
-            ITEM *const pickup_item = Item_Get(pickup_item_num);
-
-            if (pickup_item->pos.x == item->pos.x
-                && pickup_item->pos.y == item->pos.y
-                && pickup_item->pos.z == item->pos.z
-                && Object_IsType(pickup_item->object_id, g_PickupObjects)) {
-                pickup_item->carried_item = item->carried_item;
-                item->carried_item = pickup_item_num;
-                Item_RemoveDrawn(pickup_item_num);
-                pickup_item->room_num = NO_ROOM;
-            }
-
-            pickup_item_num = pickup_item->next_item;
-        } while (pickup_item_num != NO_ITEM);
-    }
-}
-
 int32_t DoShift(
     ITEM *const vehicle, const XYZ_32 *const pos, const XYZ_32 *const old)
 {

@@ -13,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 
@@ -238,7 +239,7 @@ static void M_ReadItems(void)
             item->flags = M_ReadU16();
 
             if (obj->intelligent) {
-                item->carried_item = M_ReadS16();
+                M_Skip(sizeof(int16_t)); // legacy carried item
             }
             item->timer = M_ReadS16();
 
@@ -523,8 +524,10 @@ static void M_WriteItems(void)
                 flags |= SAVE_CREATURE;
             }
             M_WriteU16(flags);
-            if (obj->intelligent) {
-                M_WriteS16(item->carried_item);
+
+            const CARRIED_ITEM *const carried_item = item->carried_item;
+            if (carried_item != nullptr) {
+                M_WriteS16(carried_item->spawn_num);
             }
 
             M_WriteS16(item->timer);
