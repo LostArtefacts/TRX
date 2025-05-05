@@ -18,6 +18,7 @@
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door (#2215)
 - fixed Lara being able to equip guns and flares during in-game cutscenes (#2895)
 - fixed an illegal reachable slope in Barkhang Monastery room 96, which could lead to Lara becoming softlocked (#2900)
+- fixed the camera behaving erratically in rooms/sectors that have no pathfinding data (#2946)
 - fixed the game crashing on unknown sequencer events
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 1.0)
 - fixed harpoon's ammo counter overlapping with the air bar (#2871)

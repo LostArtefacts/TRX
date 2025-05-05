@@ -5,7 +5,25 @@
 #include "game/rooms.h"
 #include "utils.h"
 
+static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
+
+// TODO: make private once modules are ported.
+const BOX_INFO *Camera_GetBox(
+    const SECTOR *const sector, const int32_t x, const int32_t z)
+{
+    if (sector->box != NO_BOX) {
+        return Box_GetBox(sector->box);
+    }
+
+    // A level may have blocked specific sector or room pathfinding, so create a
+    // dummy one-sector box to prevent erratic camera positioning.
+    m_FixedBox.left = z & ~(WALL_L - 1);
+    m_FixedBox.top = x & ~(WALL_L - 1);
+    m_FixedBox.right = m_FixedBox.left + WALL_L - 1;
+    m_FixedBox.bottom = m_FixedBox.top + WALL_L - 1;
+    return &m_FixedBox;
+}
 
 bool Camera_IsChunky(void)
 {

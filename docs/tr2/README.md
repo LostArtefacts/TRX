@@ -221,6 +221,7 @@ However, you can easily download them manually from these urls:
 - fixed Lara at times not being able to jump immediately after going from her walking to running animation
 - fixed looking forward too far causing an upside down camera frame
 - fixed several instances of the camera going out of bounds
+- fixed the camera behaving erratically in rooms/sectors that have no pathfinding data
 - fixed Lara never stepping backwards off a step using her right foot
 - fixed the following floor data issues:
     - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204
