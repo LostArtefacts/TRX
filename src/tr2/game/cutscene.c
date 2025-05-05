@@ -9,7 +9,6 @@
 #include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/room.h"
 #include "game/room_draw.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -40,7 +39,6 @@ bool Cutscene_Start(const int32_t level_num)
     const GF_LEVEL *const level = GF_GetLevel(GFLT_CUTSCENES, level_num);
     ASSERT(GF_GetCurrentLevel() == level);
 
-    Room_InitCinematic();
     CutscenePlayer1_Initialise(g_Lara.item_num);
     CINE_DATA *const cine_data = Camera_GetCineData();
     g_Camera.target_angle = cine_data->position.target_angle;
