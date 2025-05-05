@@ -15,6 +15,7 @@ static void M_InsertFloorData(const INJECTION *injection, SECTOR *sector);
 static void M_RoomShift(const INJECTION *injection, int16_t room_num);
 static void M_TriggeredItem(const INJECTION *injection);
 static void M_RoomProperties(const INJECTION *injection, int16_t room_num);
+static void M_SectorOverwrite(const INJECTION *injection, SECTOR *sector);
 
 static void M_FloorDataEdits(
     const INJECTION *const injection, const int32_t data_count)
@@ -64,6 +65,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_ROOM_PROPERTIES:
                 M_RoomProperties(injection, room_num);
+                break;
+            case FET_SECTOR_OVERWRITE:
+                M_SectorOverwrite(injection, sector);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
@@ -228,6 +232,28 @@ static void M_RoomProperties(
     const uint16_t flags = VFile_ReadU16(injection->fp);
     ROOM *const room = Room_Get(room_num);
     room->flags = flags;
+}
+
+static void M_SectorOverwrite(
+    const INJECTION *const injection, SECTOR *const sector)
+{
+    const uint16_t fd_idx = VFile_ReadU16(injection->fp);
+    const int16_t box_idx = VFile_ReadS16(injection->fp);
+    const int16_t pit_room = VFile_ReadS16(injection->fp);
+    const int16_t floor = VFile_ReadS16(injection->fp);
+    const int16_t sky_room = VFile_ReadS16(injection->fp);
+    const int16_t ceiling = VFile_ReadS16(injection->fp);
+
+    if (sector == nullptr) {
+        return;
+    }
+
+    sector->idx = fd_idx;
+    sector->box = box_idx;
+    sector->portal_room.pit = pit_room;
+    sector->floor.height = floor;
+    sector->portal_room.sky = sky_room;
+    sector->ceiling.height = ceiling;
 }
 
 REGISTER_INJECT_EDITOR(IDT_FLOOR_EDITS, M_FloorDataEdits)
