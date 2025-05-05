@@ -91,6 +91,7 @@
             "injections": [
                 "data/injections/boat_bits.bin",
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/venice_textures.bin",
             ],
         },
 
@@ -107,6 +108,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/bartoli_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
             ],
         },
@@ -282,6 +284,7 @@
                 "data/injections/barkhang_fd.bin",
                 "data/injections/barkhang_itemrots.bin",
                 "data/injections/barkhang_pickup_meshes.bin",
+                "data/injections/barkhang_textures.bin",
             ],
         },
 
