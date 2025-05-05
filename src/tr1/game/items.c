@@ -1,6 +1,6 @@
 #include "game/items.h"
 
-#include "game/carrier.h"
+#include <libtrx/game/carrier.h>
 
 void Item_Control(void)
 {

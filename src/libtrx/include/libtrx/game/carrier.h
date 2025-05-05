@@ -1,7 +1,7 @@
 #pragma once
 
-#include "game/game_flow/types.h"
-#include "global/types.h"
+#include "./game_flow/types.h"
+#include "./items/types.h"
 
 void Carrier_InitialiseLevel(const GF_LEVEL *level);
 int32_t Carrier_GetItemCount(int16_t item_num);

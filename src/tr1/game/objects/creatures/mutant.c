@@ -1,6 +1,5 @@
 #include "game/objects/creatures/mutant.h"
 
-#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -11,6 +10,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/carrier.h>
 #include <libtrx/utils.h>
 
 #define FLYER_CHARGE_DAMAGE 100

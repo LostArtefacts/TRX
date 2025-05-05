@@ -90,6 +90,7 @@ sources = [
   'game/camera/fixed.c',
   'game/camera/photo_mode.c',
   'game/camera/vars.c',
+  'game/carrier.c',
   'game/clock/common.c',
   'game/clock/timer.c',
   'game/clock/turbo.c',

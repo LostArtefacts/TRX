@@ -1,4 +1,3 @@
-#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -8,6 +7,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/carrier.h>
 #include <libtrx/utils.h>
 
 #define CROCODILE_BITE_DAMAGE 100

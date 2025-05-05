@@ -1,22 +1,18 @@
 #include "game/carrier.h"
 
+#include "game/game_buf.h"
 #include "game/game_flow.h"
+#include "game/game_flow/vars.h"
 #include "game/inventory.h"
-#include "game/items.h"
-#include "game/objects/vars.h"
-#include "global/const.h"
-#include "global/types.h"
-#include "global/vars.h"
+#include "game/objects.h"
+#include "game/rooms.h"
+#include "log.h"
+#include "vector.h"
 
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/math.h>
-#include <libtrx/log.h>
-#include <libtrx/vector.h>
-
-#define DROP_FAST_RATE GRAVITY
-#define DROP_SLOW_RATE 1
-#define DROP_FAST_TURN (DEG_1 * 5)
-#define DROP_SLOW_TURN (DEG_1 * 3)
+#define M_DROP_FAST_RATE GRAVITY
+#define M_DROP_SLOW_RATE 1
+#define M_DROP_FAST_TURN (DEG_1 * 5)
+#define M_DROP_SLOW_TURN (DEG_1 * 3)
 
 static int16_t m_AnimatingCount = 0;
 
@@ -27,8 +23,10 @@ static void M_InitialiseDataDrops(void);
 static void M_InitialiseGameFlowDrops(const GF_LEVEL *level);
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
+#if TR_VERSION == 1
     { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUM_ITEM },
     { O_SKATEKID, O_UZI_ITEM },   { O_BALDY, O_SHOTGUN_ITEM },
+#endif
     { NO_OBJECT, NO_OBJECT },
 };
 
@@ -56,6 +54,8 @@ static ITEM *M_GetCarrier(const int16_t item_num)
 
 static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *const carrier)
 {
+    // TODO: consolidate/tidy
+#if TR_VERSION == 1
     if (carrier->hit_points > 0 && carrier->object_id != O_MUMMY) {
         return nullptr;
     }
@@ -63,8 +63,10 @@ static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *const carrier)
     if (carrier->object_id == O_PIERRE && !(carrier->flags & IF_ONE_SHOT)) {
         return nullptr;
     }
-
     return carrier->carried_item;
+#else
+    return nullptr;
+#endif
 }
 
 static void M_AnimateDrop(CARRIED_ITEM *const item)
@@ -82,7 +84,8 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
         pickup->pos.x, pickup->pos.y - 10, pickup->pos.z, &room_num);
     const int16_t height =
         Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
-    const bool in_water = Room_Get(pickup->room_num)->flags & RF_UNDERWATER;
+    const bool in_water =
+        (Room_Get(pickup->room_num)->flags & RF_UNDERWATER) != 0;
 
     if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
         item->status = DS_DROPPED;
@@ -92,10 +95,10 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
     } else {
         pickup->fall_speed +=
             (!in_water && pickup->fall_speed < FAST_FALL_SPEED)
-            ? DROP_FAST_RATE
-            : DROP_SLOW_RATE;
+            ? M_DROP_FAST_RATE
+            : M_DROP_SLOW_RATE;
         pickup->pos.y += pickup->fall_speed;
-        pickup->rot.y += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
+        pickup->rot.y += in_water ? M_DROP_SLOW_TURN : M_DROP_FAST_TURN;
 
         if (sector->portal_room.pit != NO_ROOM
             && pickup->pos.y > sector->floor.height) {
@@ -114,6 +117,7 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
 
 static void M_InitialiseDataDrops(void)
 {
+#if TR_VERSION == 1
     VECTOR *const pickups = Vector_Create(sizeof(int16_t));
 
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
@@ -162,10 +166,12 @@ static void M_InitialiseDataDrops(void)
     }
 
     Vector_Free(pickups);
+#endif
 }
 
 static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
 {
+#if TR_VERSION == 1
     int32_t total_item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < level->item_drops.count; i++) {
         const GF_DROP_ITEM_DATA *const data = &level->item_drops.data[i];
@@ -220,28 +226,32 @@ static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
             }
         }
     }
+#endif
 }
 
 void Carrier_InitialiseLevel(const GF_LEVEL *const level)
 {
     m_AnimatingCount = 0;
-    if (g_GameFlow.enable_tr2_item_drops) {
-        M_InitialiseDataDrops();
-    } else {
+#if TR_VERSION == 1
+    if (!g_GameFlow.enable_tr2_item_drops) {
         M_InitialiseGameFlowDrops(level);
+        return;
     }
+#endif
+    M_InitialiseDataDrops();
 }
 
 int32_t Carrier_GetItemCount(const int16_t item_num)
 {
+#if TR_VERSION == 1
     const ITEM *const carrier = M_GetCarrier(item_num);
-    if (!carrier) {
+    if (carrier == nullptr) {
         return 0;
     }
 
     const CARRIED_ITEM *item = carrier->carried_item;
     int32_t count = 0;
-    while (item) {
+    while (item != nullptr) {
         if (item->object_id != NO_OBJECT) {
             count++;
         }
@@ -249,13 +259,16 @@ int32_t Carrier_GetItemCount(const int16_t item_num)
     }
 
     return count;
+#else
+    return 0;
+#endif
 }
 
 bool Carrier_IsItemCarried(const int16_t item_num)
 {
     // This only applies to TR2-style drops; gameflow drop item numbers are not
     // assigned until they are dropped, so this would always logically be false.
-    const ITEM *item = Item_Get(item_num);
+    const ITEM *const item = Item_Get(item_num);
     return item->room_num == NO_ROOM;
 }
 
@@ -290,11 +303,13 @@ void Carrier_TestItemDrops(const int16_t item_num)
         }
 
         GAME_OBJECT_ID obj_id = item->object_id;
+#if TR_VERSION == 1
         if (g_GameFlow.convert_dropped_guns
             && Object_IsType(obj_id, g_GunObjects) && Inv_RequestItem(obj_id)
             && obj_id != O_PISTOL_ITEM) {
             obj_id = Object_GetCognate(obj_id, g_GunAmmoObjectMap);
         }
+#endif
 
         if (item->spawn_num == NO_ITEM) {
             // This is a gameflow-defined drop, so a spawn number is required.
@@ -319,11 +334,12 @@ void Carrier_TestItemDrops(const int16_t item_num)
             Item_UpdateRoom(item->spawn_num, item->room_num);
         }
 
-    } while ((item = item->next_item));
+    } while ((item = item->next_item) != nullptr);
 }
 
 void Carrier_TestLegacyDrops(const int16_t item_num)
 {
+#if TR_VERSION == 1
     const ITEM *const carrier = Item_Get(item_num);
     if (carrier->hit_points > 0) {
         return;
@@ -343,27 +359,29 @@ void Carrier_TestLegacyDrops(const int16_t item_num)
         Carrier_TestItemDrops(item_num);
     } else {
         CARRIED_ITEM *item = carrier->carried_item;
-        while (item) {
+        while (item != nullptr) {
             // Simulate Lara having picked up the item.
             item->status = DS_COLLECTED;
             item = item->next_item;
         }
     }
+#endif
 }
 
 void Carrier_AnimateDrops(void)
 {
-    if (!m_AnimatingCount) {
+    if (m_AnimatingCount == 0) {
         return;
     }
-
+#if TR_VERSION == 1
     // Make items that spawn in mid-air or water gracefully fall to the floor.
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const carrier = Item_Get(i);
         CARRIED_ITEM *item = carrier->carried_item;
-        while (item) {
+        while (item != nullptr) {
             M_AnimateDrop(item);
             item = item->next_item;
         }
     }
+#endif
 }
