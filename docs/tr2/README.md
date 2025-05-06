@@ -349,6 +349,7 @@ However, you can easily download them manually from these urls:
 - fixed the springboard not responding correctly when Lara drives across one on a skidoo
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow
+- removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise
 
 #### Miscellaneous
 - added Linux builds

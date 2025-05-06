@@ -80,8 +80,6 @@ static void M_Setup(OBJECT *const obj)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->pos.x -= 2 * STEP_L;
-    item->pos.z -= 2 * STEP_L;
 
     const int16_t item_dragon_back_num = Item_CreateLevelItem();
     const int16_t item_dragon_front_num = Item_CreateLevelItem();
