@@ -4,7 +4,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-#include <libtrx/game/game_buf.h>
 #include <libtrx/utils.h>
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
@@ -67,9 +66,7 @@ static void M_Initialise(const int16_t item_num)
         bug->shade.value_1 = -1;
 
         Item_Initialise(bug_item_num);
-
-        item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
-        *(int16_t *)item->data = bug_item_num;
+        item->data = (void *)(intptr_t)bug_item_num;
     }
 
     item->flags = 0;
@@ -113,7 +110,7 @@ static void M_Control(const int16_t item_num)
             item->collidable = 0;
             Item_Explode(item_num, 0xFFFE00, 0);
 
-            int16_t bug_item_num = *(int16_t *)item->data;
+            const int16_t bug_item_num = (intptr_t)item->data;
             ITEM *const bug = Item_Get(bug_item_num);
             if (Object_Get(bug->object_id)->loaded) {
                 bug->touch_bits = 0;
