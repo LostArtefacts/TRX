@@ -1,7 +1,6 @@
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/items.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/savegame.h"

@@ -2,7 +2,6 @@
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/item_actions.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"

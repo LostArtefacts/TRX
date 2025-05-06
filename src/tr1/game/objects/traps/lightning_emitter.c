@@ -1,5 +1,4 @@
 #include "game/game.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/output.h"
 #include "game/random.h"

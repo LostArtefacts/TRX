@@ -1,7 +1,5 @@
 #pragma once
 
-#include "game/items.h"
-
 #include <libtrx/game/item_actions.h>
 
 typedef enum {

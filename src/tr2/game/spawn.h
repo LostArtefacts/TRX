@@ -1,8 +1,8 @@
 #pragma once
 
-#include "game/items.h"
-
+#include <libtrx/game/items.h>
 #include <libtrx/game/spawn.h>
+#include <libtrx/game/types.h>
 
 int16_t Spawn_FireStream(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,

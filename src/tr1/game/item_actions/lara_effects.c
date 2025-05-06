@@ -1,7 +1,6 @@
 #include "game/item_actions/lara_effects.h"
 
 #include "game/camera.h"
-#include "game/items.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 

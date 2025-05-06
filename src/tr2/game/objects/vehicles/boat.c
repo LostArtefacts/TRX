@@ -2,7 +2,6 @@
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/look.h"
 #include "game/objects/common.h"
 #include "game/objects/traps/gondola.h"

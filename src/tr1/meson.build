@@ -142,7 +142,6 @@ sources = [
   'game/item_actions/sand.c',
   'game/item_actions/stairs2slope.c',
   'game/item_actions/turn_180.c',
-  'game/items.c',
   'game/lara/cheat.c',
   'game/lara/col.c',
   'game/lara/common.c',

@@ -6,7 +6,6 @@
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lara/look.h"
 #include "game/music.h"

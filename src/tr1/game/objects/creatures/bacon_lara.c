@@ -1,7 +1,6 @@
 #include "game/objects/creatures/bacon_lara.h"
 
 #include "game/creature.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/draw.h"
 #include "game/objects/common.h"

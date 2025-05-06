@@ -1,4 +1,3 @@
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/creatures/skidoo_driver.h"
 #include "global/vars.h"

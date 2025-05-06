@@ -4,7 +4,6 @@
 #include "game/camera.h"
 #include "game/gun.h"
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/cheat.h"
 #include "game/lara/col.h"
 #include "game/lara/common.h"

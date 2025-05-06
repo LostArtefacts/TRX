@@ -1,5 +1,6 @@
 #include "game/items/common.h"
 
+#include "game/carrier.h"
 #include "game/game.h"
 #include "game/game_buf.h"
 #include "game/game_flow.h"
@@ -188,6 +189,22 @@ void Item_Initialise(const int16_t item_num)
     if (obj->initialise_func != nullptr) {
         obj->initialise_func(item_num);
     }
+}
+
+void Item_Control(void)
+{
+    int16_t item_num = Item_GetNextActive();
+    while (item_num != NO_ITEM) {
+        const ITEM *const item = Item_Get(item_num);
+        const int16_t next = item->next_active;
+        const OBJECT *obj = Object_Get(item->object_id);
+        if ((item->flags & IF_KILLED) == 0 && obj->control_func != nullptr) {
+            obj->control_func(item_num);
+        }
+        item_num = next;
+    }
+
+    Carrier_AnimateDrops();
 }
 
 void Item_Kill(const int16_t item_num)

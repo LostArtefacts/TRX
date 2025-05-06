@@ -3,7 +3,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/level.h"
 #include "game/lot.h"

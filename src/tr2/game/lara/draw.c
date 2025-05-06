@@ -1,7 +1,6 @@
 #include "game/lara/draw.h"
 
 #include "game/gun/gun_misc.h"
-#include "game/items.h"
 #include "game/lara/hair.h"
 #include "game/lara/misc.h"
 #include "game/output.h"

@@ -1,6 +1,5 @@
 #include "game/los.h"
 
-#include "game/items.h"
 #include "game/objects/vars.h"
 #include "global/const.h"
 #include "global/vars.h"

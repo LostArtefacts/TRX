@@ -1,4 +1,3 @@
-#include "game/items.h"
 #include "global/vars.h"
 
 static void M_Setup(OBJECT *obj);

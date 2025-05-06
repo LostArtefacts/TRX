@@ -1,5 +1,4 @@
 #include "game/creature.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"

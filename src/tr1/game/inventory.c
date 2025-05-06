@@ -2,7 +2,6 @@
 
 #include "game/gun.h"
 #include "game/inventory_ring/vars.h"
-#include "game/items.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "global/const.h"

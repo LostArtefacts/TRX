@@ -1,6 +1,5 @@
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/sound.h"
 #include "global/const.h"

@@ -3,7 +3,6 @@
 #include "game/camera.h"
 #include "game/cutscene.h"
 #include "game/game_flow.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lara/draw.h"
 #include "game/level.h"

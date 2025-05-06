@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lot.h"
 #include "game/music.h"

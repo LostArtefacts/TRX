@@ -1,5 +1,4 @@
 #include "game/camera.h"
-#include "game/items.h"
 #include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "global/vars.h"

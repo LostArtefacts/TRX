@@ -1,4 +1,3 @@
-#include "game/items.h"
 #include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"

@@ -1,7 +1,6 @@
 #include "game/objects/general/window.h"
 
 #include "game/box.h"
-#include "game/items.h"
 #include "game/objects/common.h"
 #include "game/sound.h"
 #include "global/vars.h"

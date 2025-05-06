@@ -20,6 +20,7 @@ int16_t Item_CreateLevelItem(void);
 int16_t Item_Spawn(const ITEM *item, GAME_OBJECT_ID obj_id);
 
 void Item_Initialise(int16_t item_num);
+void Item_Control(void);
 void Item_Kill(int16_t item_num);
 void Item_RemoveActive(int16_t item_num);
 void Item_RemoveDrawn(int16_t item_num);

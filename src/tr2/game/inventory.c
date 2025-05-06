@@ -1,7 +1,6 @@
 #include "game/inventory.h"
 
 #include "game/inventory_ring.h"
-#include "game/items.h"
 #include "game/objects/vars.h"
 #include "game/stats.h"
 #include "global/vars.h"

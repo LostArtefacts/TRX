@@ -1,4 +1,3 @@
-#include "game/items.h"
 #include "game/objects/common.h"
 
 #include <libtrx/game/game.h>

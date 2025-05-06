@@ -1,4 +1,3 @@
-#include "game/items.h"
 #include "global/vars.h"
 
 static int32_t M_GetOrigin(GAME_OBJECT_ID obj_id);

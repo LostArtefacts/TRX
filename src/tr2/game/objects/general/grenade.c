@@ -1,7 +1,6 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
-#include "game/items.h"
 #include "game/objects/general/window.h"
 #include "game/sound.h"
 #include "game/stats.h"

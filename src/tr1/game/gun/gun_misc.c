@@ -3,7 +3,6 @@
 #include "game/game.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/items.h"
 #include "game/los.h"
 #include "game/random.h"
 #include "game/savegame.h"
