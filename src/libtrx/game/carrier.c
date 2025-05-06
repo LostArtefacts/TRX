@@ -76,7 +76,8 @@ static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *const carrier)
 #if TR_VERSION == 1
     // Qualopec mummy can drop items just from having touched it. Runaway Pierre
     // can never drop items.
-    can_drop |= carrier->object_id == O_MUMMY;
+    can_drop |=
+        carrier->object_id == O_MUMMY && carrier->status == IS_DEACTIVATED;
     can_drop &=
         (carrier->object_id != O_PIERRE || (carrier->flags & IF_ONE_SHOT) != 0);
 #else
