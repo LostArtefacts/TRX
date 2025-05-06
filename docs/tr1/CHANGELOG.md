@@ -12,6 +12,7 @@
 - fixed falling ceiling and Damocles Sword traps not falling through stacked rooms (#2924)
 - fixed health bar in top center position covering inventory text
 - fixed select level dialog not reacting to the menu back key (#2918, regression from 4.9)
+- fixed carried items falling from flying enemies not animating in 60 FPS (#2954, regression from 4.0)
 
 ## [4.10.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...tr1-4.10.1) - 2025-04-30
 - fixed water caustics appearance (#2896, regression from 4.10)
