@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/inventory_ring.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/random.h"
 #include "game/sound.h"

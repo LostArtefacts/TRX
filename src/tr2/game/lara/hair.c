@@ -1,6 +1,5 @@
 #include "game/lara/hair.h"
 
-#include "game/items.h"
 #include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/random.h"

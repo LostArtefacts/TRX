@@ -1,6 +1,5 @@
 #include "game/camera.h"
 
-#include "game/items.h"
 #include "game/los.h"
 #include "game/music.h"
 #include "game/output.h"

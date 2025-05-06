@@ -5,7 +5,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/cheat.h"
 #include "game/lara/control.h"
 #include "game/level.h"

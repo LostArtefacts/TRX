@@ -1,4 +1,3 @@
-#include "game/items.h"
 #include "game/objects/common.h"
 #include "game/sound.h"
 #include "global/vars.h"

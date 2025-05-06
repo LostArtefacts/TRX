@@ -2,7 +2,6 @@
 
 #include "game/camera.h"
 #include "game/creature.h"
-#include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/music.h"

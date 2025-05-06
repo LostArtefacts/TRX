@@ -2,7 +2,6 @@
 
 #include "game/camera.h"
 #include "game/effects.h"
-#include "game/items.h"
 #include "game/lara/draw.h"
 #include "game/output.h"
 #include "game/output/sprites.h"

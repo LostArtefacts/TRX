@@ -4,7 +4,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/inventory_ring/vars.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/state.h"
 #include "game/lot.h"

@@ -1,5 +1,4 @@
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "global/const.h"

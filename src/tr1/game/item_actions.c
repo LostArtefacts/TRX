@@ -16,6 +16,8 @@
 #include "game/item_actions/stairs2slope.h"
 #include "game/item_actions/turn_180.h"
 
+#include <libtrx/game/rooms.h>
+
 typedef void (*M_FUNC)(ITEM *item);
 
 static M_FUNC m_Actions[] = {

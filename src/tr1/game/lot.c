@@ -2,7 +2,6 @@
 
 #include "game/box.h"
 #include "game/camera.h"
-#include "game/items.h"
 #include "game/shell.h"
 #include "global/vars.h"
 

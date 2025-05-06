@@ -77,12 +77,6 @@ typedef enum {
 } TRAP_ANIM;
 
 typedef enum {
-    SPS_START = 0,
-    SPS_END = 1,
-    SPS_MOVING = 2,
-} SLIDING_PILLAR_STATE;
-
-typedef enum {
     BT_LARA_HEALTH = 0,
     BT_LARA_MAX_AIR = 1,
     BT_ENEMY_HEALTH = 2,

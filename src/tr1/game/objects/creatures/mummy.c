@@ -1,6 +1,5 @@
 #include "game/creature.h"
 #include "game/game.h"
-#include "game/items.h"
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"

@@ -1,5 +1,13 @@
-#include "game/items.h"
 #include "global/const.h"
+
+#include <libtrx/game/objects.h>
+#include <libtrx/game/rooms.h>
+
+typedef enum {
+    SPS_START = 0,
+    SPS_END = 1,
+    SPS_MOVING = 2,
+} SLIDING_PILLAR_STATE;
 
 static void M_Setup(OBJECT *obj);
 static void M_HandleFlip(ITEM *item, ROOM_FLIP_STATUS flip_status);

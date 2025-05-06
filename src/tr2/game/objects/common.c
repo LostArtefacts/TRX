@@ -1,6 +1,5 @@
 #include "game/objects/common.h"
 
-#include "game/items.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"

@@ -8,7 +8,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
-#include "game/items.h"
 #include "game/lara/cheat.h"
 #include "game/lara/col.h"
 #include "game/lara/look.h"

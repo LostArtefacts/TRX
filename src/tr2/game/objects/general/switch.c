@@ -1,5 +1,4 @@
 #include "game/input.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
 #include "global/vars.h"

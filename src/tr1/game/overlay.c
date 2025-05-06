@@ -5,7 +5,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/items.h"
 #include "game/output.h"
 #include "game/output/meshes/common.h"
 #include "game/output/shader.h"

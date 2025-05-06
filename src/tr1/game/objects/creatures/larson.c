@@ -1,5 +1,4 @@
 #include "game/creature.h"
-#include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/random.h"

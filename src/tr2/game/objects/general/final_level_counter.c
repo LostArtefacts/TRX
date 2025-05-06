@@ -3,7 +3,6 @@
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/objects/common.h"

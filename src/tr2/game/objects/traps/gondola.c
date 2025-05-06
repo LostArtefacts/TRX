@@ -1,6 +1,5 @@
 #include "game/objects/traps/gondola.h"
 
-#include "game/items.h"
 #include "game/objects/common.h"
 
 #define GONDOLA_SINK_SPEED 50

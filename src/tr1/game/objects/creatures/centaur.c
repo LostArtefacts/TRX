@@ -1,6 +1,5 @@
 #include "game/creature.h"
 #include "game/effects.h"
-#include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lot.h"
 #include "game/random.h"
