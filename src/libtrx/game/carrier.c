@@ -107,10 +107,12 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
 
     if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
         item->status = DS_DROPPED;
+        pickup->status = IS_INACTIVE;
         pickup->pos.y = height;
         pickup->fall_speed = 0;
         m_AnimatingCount--;
     } else {
+        pickup->status = IS_ACTIVE;
         pickup->fall_speed +=
             (!in_water && pickup->fall_speed < FAST_FALL_SPEED)
             ? M_DROP_FAST_RATE
