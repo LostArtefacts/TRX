@@ -99,7 +99,7 @@ static void M_CheckTriggers(
             if (item->object_id == O_PODS || item->object_id == O_BIG_POD) {
                 // Check for only valid pods
                 if (item->data != nullptr) {
-                    const int16_t bug_item_num = *(int16_t *)item->data;
+                    const int16_t bug_item_num = (intptr_t)item->data;
                     const ITEM *const bug_item = Item_Get(bug_item_num);
                     if (Object_Get(bug_item->object_id)->loaded) {
                         M_IncludeKillableItem(item_num);

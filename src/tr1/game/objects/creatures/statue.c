@@ -6,7 +6,6 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
-#include <libtrx/game/game_buf.h>
 #include <libtrx/utils.h>
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
@@ -53,8 +52,7 @@ static void M_Initialise(const int16_t item_num)
     centaur->goal_anim_state = centaur->current_anim_state;
     centaur->rot.y = item->rot.y;
 
-    item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
-    *(int16_t *)item->data = centaur_item_num;
+    item->data = (void *)(intptr_t)centaur_item_num;
 }
 
 static void M_Control(const int16_t item_num)
@@ -74,7 +72,7 @@ static void M_Control(const int16_t item_num)
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
 
-        int16_t centaur_item_num = *(int16_t *)item->data;
+        const int16_t centaur_item_num = (intptr_t)item->data;
         ITEM *const centaur = Item_Get(centaur_item_num);
         centaur->touch_bits = 0;
         Item_AddActive(centaur_item_num);
