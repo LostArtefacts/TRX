@@ -378,6 +378,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/lair_bartolipos.bin",
             ],
         },
 

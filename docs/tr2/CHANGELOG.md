@@ -28,6 +28,7 @@
 - fixed misplaced effects such as bubbles and dragon fire in 60 FPS (#2873, #2881, regression from 0.10)
 - improved the `/set` console command to display available options if given an unknown argument
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
+- removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise (#2950)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)
