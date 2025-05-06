@@ -14,6 +14,7 @@
 - fixed select level dialog not reacting to the menu back key (#2918, regression from 4.9)
 - fixed carried items falling from flying enemies not animating in 60 FPS (#2954, regression from 4.0)
 - fixed items carried by the Qualopec mummy spawning early after save/load (#2956, regression from 4.6)
+- fixed potential memory corruption if `/kill all` is used with a Qualopec mummy that is carrying items (#2957, regression from 4.6)
 
 ## [4.10.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...tr1-4.10.1) - 2025-04-30
 - fixed water caustics appearance (#2896, regression from 4.10)
