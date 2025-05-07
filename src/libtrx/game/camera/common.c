@@ -114,8 +114,12 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
                 && g_Camera.item != g_Camera.last_item))) {
         g_Camera.item = nullptr;
     }
-
+#if TR_VERSION >= 2
+    // TODO: check if this can be removed from TR2 during camera module merge.
+    // It is required not to be present in TR1 otherwise heavy triggers (that
+    // don't have camera data) can cancel active cameras triggered by Lara.
     if (g_Camera.num == -1 && g_Camera.timer > 0) {
         g_Camera.timer = -1;
     }
+#endif
 }
