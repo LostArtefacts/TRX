@@ -4,10 +4,12 @@
 #include <libtrx/game/rooms.h>
 
 typedef enum {
-    SPS_START = 0,
-    SPS_END = 1,
-    SPS_MOVING = 2,
-} SLIDING_PILLAR_STATE;
+    // clang-format off
+    STATE_START  = 0,
+    STATE_END    = 1,
+    STATE_MOVING = 2,
+    // clang-format on
+} M_ANIM_STATE;
 
 static void M_Setup(OBJECT *obj);
 static void M_HandleFlip(ITEM *item, ROOM_FLIP_STATUS flip_status);
@@ -49,7 +51,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         break;
 
     case SAVEGAME_STAGE_AFTER_LOAD:
-        if (item->current_anim_state != SPS_MOVING) {
+        if (item->current_anim_state != STATE_MOVING) {
             Room_AlterFloorHeight(item, -WALL_L * 2);
         }
         break;
@@ -63,12 +65,12 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == SPS_START) {
-            item->goal_anim_state = SPS_END;
+        if (item->current_anim_state == STATE_START) {
+            item->goal_anim_state = STATE_END;
             Room_AlterFloorHeight(item, WALL_L * 2);
         }
-    } else if (item->current_anim_state == SPS_END) {
-        item->goal_anim_state = SPS_START;
+    } else if (item->current_anim_state == STATE_END) {
+        item->goal_anim_state = STATE_START;
         Room_AlterFloorHeight(item, WALL_L * 2);
     }
 
