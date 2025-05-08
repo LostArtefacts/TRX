@@ -50,8 +50,11 @@ typedef enum {
 
 static BITE m_CrocodileBite = { .pos = { 5, -21, 467 }, .mesh_num = 9 };
 
+static void M_SetupBase(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_SetupCrocodile(OBJECT *obj);
 static void M_SetupAlligator(OBJECT *obj);
+static void M_UpdateCreatureLOT(const ITEM *item);
 static void M_ControlCrocodile(int16_t item_num);
 static void M_ControlAlligator(int16_t item_num);
 
@@ -62,6 +65,8 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .land.death_state = CROCODILE_STATE_DEATH,
     .water.id = O_ALLIGATOR,
     .water.active_anim = ALLIGATOR_STATE_EMPTY,
+    .water.death_anim = ALLIGATOR_DIE_ANIM,
+    .water.death_state = ALLIGATOR_STATE_DEATH,
 };
 
 static void M_SetupBase(OBJECT *const obj)
@@ -75,7 +80,18 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->handle_save_func = M_HandleSave;
     Object_GetBone(obj, 7)->rot.y = true;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (Creature_EnsureHabitat(
+                Item_GetIndex(item), nullptr, &m_CrocodileInfo)) {
+            M_UpdateCreatureLOT(item);
+        }
+    }
 }
 
 static void M_SetupCrocodile(OBJECT *const obj)
@@ -100,6 +116,24 @@ static void M_SetupAlligator(OBJECT *const obj)
     obj->hit_points = ALLIGATOR_HITPOINTS;
     obj->radius = ALLIGATOR_RADIUS;
     obj->smartness = ALLIGATOR_SMARTNESS;
+}
+
+static void M_UpdateCreatureLOT(const ITEM *const item)
+{
+    CREATURE *const creature = (CREATURE *)item->data;
+    if (creature == nullptr) {
+        return;
+    }
+
+    if (item->object_id == O_CROCODILE) {
+        creature->lot.step = STEP_L;
+        creature->lot.drop = -STEP_L;
+        creature->lot.fly = 0;
+    } else if (item->object_id == O_ALLIGATOR) {
+        creature->lot.step = WALL_L * 20;
+        creature->lot.drop = -WALL_L * 20;
+        creature->lot.fly = STEP_L / 16;
+    }
 }
 
 static void M_ControlCrocodile(const int16_t item_num)
@@ -205,11 +239,8 @@ static void M_ControlCrocodile(const int16_t item_num)
     }
 
     // Test conversion to alligator and set relevant pathfinding values.
-    int32_t wh;
-    if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo) && croc) {
-        croc->lot.step = WALL_L * 20;
-        croc->lot.drop = -WALL_L * 20;
-        croc->lot.fly = STEP_L / 16;
+    if (Creature_EnsureHabitat(item_num, nullptr, &m_CrocodileInfo)) {
+        M_UpdateCreatureLOT(item);
     }
 
     if (croc) {
@@ -316,9 +347,7 @@ static void M_ControlAlligator(const int16_t item_num)
 
     // Test alive conversion to crocodile and set relevant pathfinding values.
     if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
-        gator->lot.step = STEP_L;
-        gator->lot.drop = -STEP_L;
-        gator->lot.fly = 0;
+        M_UpdateCreatureLOT(item);
     } else if (item->pos.y < wh + STEP_L) {
         item->pos.y = wh + STEP_L;
     }

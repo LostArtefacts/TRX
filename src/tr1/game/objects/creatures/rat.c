@@ -45,6 +45,7 @@ typedef enum {
 static BITE m_RatBite = { .pos = { 0, -11, 108 }, .mesh_num = 3 };
 
 static void M_SetupBase(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_SetupRat(OBJECT *obj);
 static void M_SetupVole(OBJECT *obj);
 static void M_ControlRat(int16_t item_num);
@@ -57,6 +58,8 @@ static const HYBRID_INFO m_RatInfo = {
     .land.death_state = RAT_STATE_DEATH,
     .water.id = O_VOLE,
     .water.active_anim = VOLE_STATE_EMPTY,
+    .water.death_anim = VOLE_DIE_ANIM,
+    .water.death_state = VOLE_STATE_DEATH,
 };
 
 static void M_SetupBase(OBJECT *const obj)
@@ -73,6 +76,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->handle_save_func = M_HandleSave;
     Object_GetBone(obj, 1)->rot.y = true;
 }
 
@@ -92,6 +96,13 @@ static void M_SetupVole(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlVole;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        Creature_EnsureHabitat(Item_GetIndex(item), nullptr, &m_RatInfo);
+    }
 }
 
 static void M_ControlRat(const int16_t item_num)
@@ -177,8 +188,7 @@ static void M_ControlRat(const int16_t item_num)
 
     Creature_Head(item, head);
 
-    int32_t wh;
-    Creature_EnsureHabitat(item_num, &wh, &m_RatInfo);
+    Creature_EnsureHabitat(item_num, nullptr, &m_RatInfo);
 
     Creature_Animate(item_num, angle, 0);
 }
@@ -208,15 +218,7 @@ static void M_ControlVole(const int16_t item_num)
 
         Item_Animate(item);
 
-        int32_t wh = Room_GetWaterHeight(
-            item->pos.x, item->pos.y, item->pos.z, item->room_num);
-        if (wh == NO_HEIGHT) {
-            item->object_id = O_RAT;
-            item->current_anim_state = RAT_STATE_DEATH;
-            item->goal_anim_state = RAT_STATE_DEATH;
-            Item_SwitchToAnim(item, RAT_DIE_ANIM, -1);
-            item->pos.y = item->floor;
-        }
+        Creature_EnsureHabitat(item_num, nullptr, &m_RatInfo);
     } else {
         AI_INFO info;
         Creature_AIInfo(item, &info);
