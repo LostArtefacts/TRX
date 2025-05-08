@@ -17,6 +17,7 @@
 - fixed potential memory corruption if `/kill all` is used with a Qualopec mummy that is carrying items (#2957, regression from 4.6)
 - fixed a crash when portal debugging is enabled in rooms that have no portals (#2968, regression from 4.8)
 - fixed the final statistics always showing zero deaths regardless of the actual total (#2965, regression from 4.10)
+- fixed rats/voles and crocodiles/alligators at times not assuming the correct death pose after reloading a save (#2960, regression from 0.12)
 
 ## [4.10.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...tr1-4.10.1) - 2025-04-30
 - fixed water caustics appearance (#2896, regression from 4.10)

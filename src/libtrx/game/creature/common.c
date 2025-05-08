@@ -29,9 +29,9 @@ static bool m_AlliesHostile = false;
 
 static ITEM *M_ChooseEnemy(const ITEM *item);
 static bool M_SwitchToWater(
-    int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
+    int16_t item_num, int32_t wh, const HYBRID_INFO *info);
 static bool M_SwitchToLand(
-    int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
+    int16_t item_num, int32_t wh, const HYBRID_INFO *info);
 static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
 
 static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
@@ -130,40 +130,41 @@ static ITEM *M_ChooseEnemy(const ITEM *const item)
 }
 
 static bool M_SwitchToWater(
-    const int16_t item_num, const int32_t *const wh,
-    const HYBRID_INFO *const info)
+    const int16_t item_num, const int32_t wh, const HYBRID_INFO *const info)
 {
-    if (*wh == NO_HEIGHT) {
+    if (wh == NO_HEIGHT) {
         return false;
     }
 
     ITEM *const item = Item_Get(item_num);
 
-    if (item->hit_points <= 0) {
+    if (item->hit_points <= 0
+        && item->current_anim_state == info->land.death_state) {
         // Dead land creatures should remain in their pose permanently.
         return false;
     }
 
-    // The land creature is alive and the room has been flooded. Switch to the
-    // water creature.
+    // Switch to the water creature, but only switch animations if the creature
+    // is alive to avoid savegame reload issues.
     if (!M_TestSwitchOrKill(item_num, info->water.id)) {
         return false;
     }
 
     item->object_id = info->water.id;
-    Item_SwitchToAnim(item, info->water.active_anim, 0);
-    item->current_anim_state = Item_GetAnim(item)->current_anim_state;
-    item->goal_anim_state = item->current_anim_state;
-    item->pos.y = *wh;
+    if (item->hit_points > 0) {
+        Item_SwitchToAnim(item, info->water.active_anim, 0);
+        item->current_anim_state = Item_GetAnim(item)->current_anim_state;
+        item->goal_anim_state = item->current_anim_state;
+    }
+    item->pos.y = wh;
 
     return true;
 }
 
 static bool M_SwitchToLand(
-    const int16_t item_num, const int32_t *const wh,
-    const HYBRID_INFO *const info)
+    const int16_t item_num, const int32_t wh, const HYBRID_INFO *const info)
 {
-    if (*wh != NO_HEIGHT) {
+    if (wh != NO_HEIGHT) {
         return false;
     }
 
@@ -297,12 +298,18 @@ bool Creature_EnsureHabitat(
     // Test the environment for a hybrid creature. Record the water height and
     // return whether or not a type conversion has taken place.
     const ITEM *const item = Item_Get(item_num);
-    *wh = Room_GetWaterHeight(
+    const int32_t water_height = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    if (wh != nullptr) {
+        *wh = water_height;
+    }
+    if (item->status == IS_INACTIVE) {
+        return false;
+    }
 
     return item->object_id == info->land.id
-        ? M_SwitchToWater(item_num, wh, info)
-        : M_SwitchToLand(item_num, wh, info);
+        ? M_SwitchToWater(item_num, water_height, info)
+        : M_SwitchToLand(item_num, water_height, info);
 }
 
 void Creature_Mood(
