@@ -84,6 +84,10 @@
       "Title": "Correggi la collisione dei ponti",
       "Description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo."
     },
+    "fix_glide_cameras": {
+      "Title": "Correggi le telecamere di planata",
+      "Description": "Corregge le telecamere glide affinché rispettino il timer impostato nei trigger di livello invece di tornare alla velocità predefinita dopo il primo fotogramma."
+    },
     "fix_floor_data_issues": {
       "Title": "Correggi i dati dei livelli",
       "Description": "Risolve i problemi dei livelli originali relativi a dati/eventi."

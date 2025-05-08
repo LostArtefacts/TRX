@@ -73,6 +73,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/wall_cameras.bin",
                 "data/injections/wall_itemrots.bin",
             ],
         },
@@ -167,6 +168,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/diving_cameras.bin",
                 "data/injections/diving_itemrots.bin",
                 "data/injections/diving_pickup_meshes.bin",
             ],
@@ -203,6 +205,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/wreck_cameras.bin",
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
@@ -241,6 +244,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/deck_cameras.bin",
                 "data/injections/deck_fd.bin",
                 "data/injections/deck_itemrots.bin",
                 "data/injections/deck_pickup_meshes.bin",
@@ -281,6 +285,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barkhang_cameras.bin",
                 "data/injections/barkhang_fd.bin",
                 "data/injections/barkhang_itemrots.bin",
                 "data/injections/barkhang_pickup_meshes.bin",

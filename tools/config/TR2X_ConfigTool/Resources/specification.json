@@ -102,6 +102,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "fix_glide_cameras",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "fix_floor_data_issues",
           "DataType": "Bool",
           "DefaultValue": true

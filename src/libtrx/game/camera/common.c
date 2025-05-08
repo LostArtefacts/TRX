@@ -1,5 +1,6 @@
 #include "game/camera/common.h"
 
+#include "config.h"
 #include "game/camera/vars.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
@@ -81,6 +82,11 @@ finish:
 void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 {
     int16_t target_ok = 2;
+#if TR_VERSION == 1
+    const bool fix_glide_cameras = false;
+#else
+    const bool fix_glide_cameras = g_Config.visuals.fix_glide_cameras;
+#endif
 
     const TRIGGER_CMD *cmd = trigger->command;
     for (; cmd != nullptr; cmd = cmd->next_cmd) {
@@ -96,6 +102,9 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
                     target_ok = 0;
                 } else {
                     g_Camera.type = CAM_FIXED;
+                    if (fix_glide_cameras && cam_data->glide != 0) {
+                        g_Camera.speed = cam_data->glide + 1;
+                    }
                     target_ok = 1;
                 }
             } else {

@@ -123,6 +123,7 @@
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/guardian_death_commands.bin",
+                "data/injections/kingdom_cameras.bin",
             ],
         },
 

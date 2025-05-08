@@ -13,6 +13,7 @@
 - changed the dev console to no longer add duplicate entries to the history
 - changed the health bar and the air bar sizes to be slightly bigger
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
+- fixed glide cameras using a default speed rather than maintaining the values set in the level file (#2962)
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
 - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used (#2851)
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door (#2215)
