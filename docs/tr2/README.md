@@ -326,6 +326,13 @@ However, you can easily download them manually from these urls:
 - fixed the bird monster not having a shadow
 - fixed flames showing briefly when Lara enters water and a death tile is present
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings
+- fixed glide cameras using a default speed rather than maintaining the values set in the level file - the following OG areas have glide cameras restored
+    - **The Great Wall**: room 0
+    - **Diving Area**: rooms 54 and 57
+    - **Wreck of the Maria Doria**: room 43
+    - **The Deck**: room 42
+    - **Barkhang Monastery**: room 26
+    - **Kingdom**: room 80
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals

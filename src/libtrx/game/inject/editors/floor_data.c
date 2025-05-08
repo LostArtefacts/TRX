@@ -1,3 +1,5 @@
+#include "config.h"
+#include "game/camera.h"
 #include "game/inject.h"
 #include "game/items.h"
 #include "game/rooms.h"
@@ -11,6 +13,7 @@ static void M_TriggerTypeChange(
 static void M_TriggerParameterChange(
     const INJECTION *injection, const SECTOR *sector);
 static void M_SetMusicOneShot(const SECTOR *sector);
+static void M_FixGlideCamera(const INJECTION *injection, const SECTOR *sector);
 static void M_InsertFloorData(const INJECTION *injection, SECTOR *sector);
 static void M_RoomShift(const INJECTION *injection, int16_t room_num);
 static void M_TriggeredItem(const INJECTION *injection);
@@ -53,6 +56,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_MUSIC_ONESHOT:
                 M_SetMusicOneShot(sector);
+                break;
+            case FET_GLIDE_CAMERA:
+                M_FixGlideCamera(injection, sector);
                 break;
             case FET_FD_INSERT:
                 M_InsertFloorData(injection, sector);
@@ -133,6 +139,46 @@ static void M_SetMusicOneShot(const SECTOR *const sector)
             sector->trigger->one_shot = true;
             break;
         }
+    }
+}
+
+static void M_FixGlideCamera(
+    const INJECTION *const injection, const SECTOR *const sector)
+{
+    const uint8_t camera_timer = VFile_ReadU8(injection->fp);
+    const uint8_t glide_timer = VFile_ReadU8(injection->fp);
+    const XYZ_16 camera_shift = {
+        .x = VFile_ReadS16(injection->fp),
+        .y = VFile_ReadS16(injection->fp),
+        .z = VFile_ReadS16(injection->fp),
+    };
+
+    if (sector == nullptr || sector->trigger == nullptr) {
+        return;
+    }
+#if TR_VERSION >= 2
+    if (!g_Config.visuals.fix_glide_cameras) {
+        return;
+    }
+#endif
+
+    const TRIGGER_CMD *cmd = sector->trigger->command;
+    for (; cmd != nullptr; cmd = cmd->next_cmd) {
+        if (cmd->type != TO_CAMERA) {
+            continue;
+        }
+
+        TRIGGER_CAMERA_DATA *const cam_data =
+            (TRIGGER_CAMERA_DATA *)cmd->parameter;
+        cam_data->timer = camera_timer;
+        cam_data->glide = glide_timer << 3;
+
+        OBJECT_VECTOR *const camera =
+            Camera_GetFixedObject(cam_data->camera_num);
+        camera->pos.x += camera_shift.x;
+        camera->pos.y += camera_shift.y;
+        camera->pos.z += camera_shift.z;
+        break;
     }
 }
 
