@@ -139,6 +139,10 @@ void Output_DrawRoomMesh(ROOM *const room)
 
 void Output_DrawRoomPortals(const ROOM *const room)
 {
+    if (room->portals == nullptr) {
+        return;
+    }
+
     const int32_t vertex_count = room->portals->count * 8;
     OUTPUT_MESH_VERTEX vertices[vertex_count];
     OUTPUT_MESH_VERTEX *out_vertex = vertices;
