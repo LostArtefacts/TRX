@@ -146,6 +146,7 @@ void Stats_ComputeFinal(GF_LEVEL_TYPE level_type, FINAL_STATS *final_stats)
         final_stats->ammo_used += level_stats->ammo_used;
         final_stats->medipacks_used += level_stats->medipacks_used;
         final_stats->distance_travelled += level_stats->distance_travelled;
+        final_stats->death_count = level_stats->death_count;
     }
 }
 
