@@ -16,6 +16,7 @@
 - fixed items carried by the Qualopec mummy spawning early after save/load (#2956, regression from 4.6)
 - fixed potential memory corruption if `/kill all` is used with a Qualopec mummy that is carrying items (#2957, regression from 4.6)
 - fixed a crash when portal debugging is enabled in rooms that have no portals (#2968, regression from 4.8)
+- fixed the final statistics always showing zero deaths regardless of the actual total (#2965, regression from 4.10)
 
 ## [4.10.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...tr1-4.10.1) - 2025-04-30
 - fixed water caustics appearance (#2896, regression from 4.10)
