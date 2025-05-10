@@ -10,7 +10,6 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
-#include <libtrx/game/matrix.h>
 
 // Camera speed option ranges from 1-10, so index 0 is unused.
 static double m_ManualCameraMultiplier[11] = {
@@ -485,14 +484,6 @@ static void M_Shift(
         *x = right;
         *y = top;
     }
-}
-
-void Camera_Initialise(void)
-{
-    Matrix_ResetStack();
-    g_Camera.underwater = false;
-    Camera_ResetPosition();
-    Camera_Update();
 }
 
 void Camera_Update(void)

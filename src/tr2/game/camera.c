@@ -26,16 +26,6 @@
 
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
 
-void Camera_Initialise(void)
-{
-    Matrix_ResetStack();
-    g_Camera.underwater = false;
-    g_Camera.last = NO_CAMERA;
-    Camera_ResetPosition();
-    Viewport_AlterFOV(-1);
-    Camera_Update();
-}
-
 void Camera_Clip(
     int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
     int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom)
