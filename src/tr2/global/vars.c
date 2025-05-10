@@ -54,8 +54,6 @@ LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
-bool g_CameraUnderwater;
-
 WEAPON_INFO g_Weapons[] = {
     {},
     {

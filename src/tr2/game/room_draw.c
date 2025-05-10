@@ -363,10 +363,10 @@ void Room_DrawSingleRoomGeometry(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
 
-    if (room->flags & RF_UNDERWATER) {
-        Output_SetupBelowWater(g_CameraUnderwater);
+    if ((room->flags & RF_UNDERWATER) != 0) {
+        Output_SetupBelowWater(g_Camera.underwater);
     } else {
-        Output_SetupAboveWater(g_CameraUnderwater);
+        Output_SetupAboveWater(g_Camera.underwater);
     }
 
     Matrix_TranslateAbs32(room->pos);
@@ -390,10 +390,10 @@ void Room_DrawSingleRoomObjects(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
 
-    if (room->flags & RF_UNDERWATER) {
-        Output_SetupBelowWater(g_CameraUnderwater);
+    if ((room->flags & RF_UNDERWATER) != 0) {
+        Output_SetupBelowWater(g_Camera.underwater);
     } else {
-        Output_SetupAboveWater(g_CameraUnderwater);
+        Output_SetupAboveWater(g_Camera.underwater);
     }
 
     room->bound_active = 0;
@@ -488,7 +488,6 @@ void Room_DrawAllRooms(const int16_t current_room)
         m_OutsideRight = 0;
     }
 
-    g_CameraUnderwater = room->flags & RF_UNDERWATER;
     Room_GetBounds();
 
     g_MidSort = 0;
@@ -500,7 +499,7 @@ void Room_DrawAllRooms(const int16_t current_room)
 
         const OBJECT *const skybox = Object_Get(O_SKYBOX);
         if (skybox->loaded) {
-            Output_SetupAboveWater(g_CameraUnderwater);
+            Output_SetupAboveWater(g_Camera.underwater);
             Matrix_Push();
             g_MatrixPtr->_03 = 0;
             g_MatrixPtr->_13 = 0;
@@ -515,10 +514,10 @@ void Room_DrawAllRooms(const int16_t current_room)
 
     if (Object_Get(O_LARA)->loaded && !(g_LaraItem->flags & IF_ONE_SHOT)) {
         const ROOM *const lara_room = Room_Get(g_LaraItem->room_num);
-        if (lara_room->flags & RF_UNDERWATER) {
-            Output_SetupBelowWater(g_CameraUnderwater);
+        if ((lara_room->flags & RF_UNDERWATER) != 0) {
+            Output_SetupBelowWater(g_Camera.underwater);
         } else {
-            Output_SetupAboveWater(g_CameraUnderwater);
+            Output_SetupAboveWater(g_Camera.underwater);
         }
         g_MidSort = lara_room->bound_active >> 8;
         if (g_MidSort) {

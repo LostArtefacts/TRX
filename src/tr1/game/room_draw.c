@@ -259,14 +259,11 @@ static void M_DrawSkybox(void)
 
 void Room_DrawSingleRoom(int16_t room_num)
 {
-    bool camera_underwater =
-        Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER;
-
     ROOM *const room = Room_Get(room_num);
     if (room->flags & RF_UNDERWATER) {
-        Output_SetupBelowWater(camera_underwater);
+        Output_SetupBelowWater(g_Camera.underwater);
     } else {
-        Output_SetupAboveWater(camera_underwater);
+        Output_SetupAboveWater(g_Camera.underwater);
     }
 
     room->bound_active = 0;

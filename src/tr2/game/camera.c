@@ -84,6 +84,7 @@ static void M_EnsureEnvironment(void)
 void Camera_Initialise(void)
 {
     Matrix_ResetStack();
+    g_Camera.underwater = false;
     g_Camera.last = NO_CAMERA;
     Camera_ResetPosition();
     Viewport_AlterFOV(-1);
