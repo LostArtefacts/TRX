@@ -547,6 +547,7 @@ static void M_Shift(
 void Camera_Initialise(void)
 {
     Matrix_ResetStack();
+    g_Camera.underwater = false;
     Camera_ResetPosition();
     Camera_Update();
 }

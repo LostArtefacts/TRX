@@ -368,7 +368,6 @@ bool Level_Initialise(
     }
 
     Gym_ResetAssault();
-    g_Camera.underwater = 0;
     return true;
 }
 

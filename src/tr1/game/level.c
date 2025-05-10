@@ -409,7 +409,6 @@ bool Level_Initialise(
 
     Viewport_SetFOV(-1);
 
-    g_Camera.underwater = false;
     Benchmark_End(&benchmark, nullptr);
     return true;
 }

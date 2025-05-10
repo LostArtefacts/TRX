@@ -54,7 +54,6 @@ extern uint16_t g_SoundOptionLine;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern CREATURE *g_BaddieSlots;
-extern bool g_CameraUnderwater;
 extern WEAPON_INFO g_Weapons[];
 extern int16_t g_FinalBossActive;
 extern uint16_t g_FinalLevelCount;
