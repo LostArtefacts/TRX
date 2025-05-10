@@ -115,6 +115,51 @@ const SECTOR *Camera_GetSector(
 }
 
 // TODO: make private.
+int32_t Camera_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
+{
+    const int32_t x = pos->x;
+    const int32_t y = pos->y;
+    const int32_t z = pos->z;
+
+    const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
+    const BOX_INFO *const box = Camera_GetBox(sector, x, z);
+
+    const int32_t left = box->left + clamp;
+    const int32_t right = box->right - clamp;
+    if (z < left && !Camera_IsGoodPosition(x, y, z - clamp, pos->room_num)) {
+        pos->z = left;
+    } else if (
+        z > right && !Camera_IsGoodPosition(x, y, z + clamp, pos->room_num)) {
+        pos->z = right;
+    }
+
+    const int32_t top = box->top + clamp;
+    const int32_t bottom = box->bottom - clamp;
+    if (x < top && !Camera_IsGoodPosition(x - clamp, y, z, pos->room_num)) {
+        pos->x = top;
+    } else if (
+        x > bottom && !Camera_IsGoodPosition(x + clamp, y, z, pos->room_num)) {
+        pos->x = bottom;
+    }
+
+    int32_t height = Room_GetHeight(sector, x, y, z) - clamp;
+    int32_t ceiling = Room_GetCeiling(sector, x, y, z) + clamp;
+
+    if (height < ceiling) {
+        ceiling = (height + ceiling) >> 1;
+        height = ceiling;
+    }
+
+    if (y > height) {
+        return height - y;
+    } else if (y < ceiling) {
+        return ceiling - y;
+    }
+
+    return 0;
+}
+
+// TODO: make private.
 void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
 {
     const GAME_VECTOR old_pos = g_Camera.pos;
