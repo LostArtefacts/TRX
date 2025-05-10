@@ -10,5 +10,4 @@ void Sound_Init(void);
 void Sound_Shutdown(void);
 
 void Sound_UpdateEffects(void);
-void Sound_StopEffect(SOUND_EFFECT_ID sample_id);
 void Sound_EndScene(void);

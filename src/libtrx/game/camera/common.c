@@ -4,9 +4,12 @@
 #include "game/camera/vars.h"
 #include "game/lara.h"
 #include "game/los.h"
+#include "game/matrix.h"
+#include "game/music.h"
 #include "game/pathing.h"
 #include "game/random.h"
 #include "game/rooms.h"
+#include "game/sound.h"
 #include "utils.h"
 
 #if TR_VERSION == 2
@@ -16,6 +19,59 @@ extern int32_t g_PhdPersp;
 
 static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
+
+static void M_AdjustMusicVolume(bool underwater);
+static void M_EnsureEnvironment(void);
+
+static void M_AdjustMusicVolume(const bool underwater)
+{
+    const bool is_ambient =
+        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+    double multiplier = 1.0;
+
+    if (underwater) {
+        switch (g_Config.audio.underwater_music_mode) {
+        case UMM_QUIET:
+            multiplier = 0.5;
+            break;
+        case UMM_NONE:
+            multiplier = 0.0;
+            break;
+        case UMM_FULL_NO_AMBIENT:
+            multiplier = is_ambient ? 0.0 : 1.0;
+            break;
+        case UMM_QUIET_NO_AMBIENT:
+            multiplier = is_ambient ? 0.0 : 0.5;
+            break;
+        case UMM_FULL:
+        default:
+            multiplier = 1.0;
+            break;
+        }
+    }
+
+    Music_SetVolume(g_Config.audio.music_volume * multiplier);
+}
+
+static void M_EnsureEnvironment(void)
+{
+    if (g_Camera.pos.room_num == NO_ROOM) {
+        return;
+    }
+
+    const ROOM *const room = Room_Get(g_Camera.pos.room_num);
+    if ((room->flags & RF_UNDERWATER) != 0) {
+        M_AdjustMusicVolume(true);
+        Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
+        g_Camera.underwater = true;
+    } else {
+        M_AdjustMusicVolume(false);
+        if (g_Camera.underwater) {
+            Sound_StopEffect(SFX_UNDERWATER);
+            g_Camera.underwater = false;
+        }
+    }
+}
 
 // TODO: make private once modules are ported.
 const BOX_INFO *Camera_GetBox(
@@ -234,4 +290,15 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
         g_Camera.timer = -1;
     }
 #endif
+}
+
+void Camera_Apply(void)
+{
+    M_EnsureEnvironment();
+    Matrix_LookAt(
+        g_Camera.interp.result.pos.x,
+        g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+        g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
+        g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
+        g_Camera.roll);
 }

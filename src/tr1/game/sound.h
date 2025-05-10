@@ -9,7 +9,6 @@
 
 bool Sound_Init(void);
 void Sound_Shutdown(void);
-void Sound_StopEffect(SOUND_EFFECT_ID sfx_num);
 void Sound_UpdateEffects(void);
 void Sound_ResetEffects(void);
 void Sound_StopAmbientSounds(void);

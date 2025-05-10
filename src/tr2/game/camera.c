@@ -1,10 +1,8 @@
 #include "game/camera.h"
 
 #include "game/los.h"
-#include "game/music.h"
 #include "game/output.h"
 #include "game/random.h"
-#include "game/sound.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -27,59 +25,6 @@
 #define LOOK_SPEED 4
 
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
-
-static void M_AdjustMusicVolume(bool underwater);
-static void M_EnsureEnvironment(void);
-
-static void M_AdjustMusicVolume(const bool underwater)
-{
-    const bool is_ambient =
-        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
-    double multiplier = 1.0;
-
-    if (underwater) {
-        switch (g_Config.audio.underwater_music_mode) {
-        case UMM_QUIET:
-            multiplier = 0.5;
-            break;
-        case UMM_NONE:
-            multiplier = 0.0;
-            break;
-        case UMM_FULL_NO_AMBIENT:
-            multiplier = is_ambient ? 0.0 : 1.0;
-            break;
-        case UMM_QUIET_NO_AMBIENT:
-            multiplier = is_ambient ? 0.0 : 0.5;
-            break;
-        case UMM_FULL:
-        default:
-            multiplier = 1.0;
-            break;
-        }
-    }
-
-    Music_SetVolume(g_Config.audio.music_volume * multiplier);
-}
-
-static void M_EnsureEnvironment(void)
-{
-    if (g_Camera.pos.room_num == NO_ROOM) {
-        return;
-    }
-
-    const ROOM *const room = Room_Get(g_Camera.pos.room_num);
-    if ((room->flags & RF_UNDERWATER) != 0) {
-        M_AdjustMusicVolume(true);
-        Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
-        g_Camera.underwater = true;
-    } else {
-        M_AdjustMusicVolume(false);
-        if (g_Camera.underwater) {
-            Sound_StopEffect(SFX_UNDERWATER);
-            g_Camera.underwater = false;
-        }
-    }
-}
 
 void Camera_Initialise(void)
 {
@@ -860,15 +805,4 @@ void Camera_UpdateCutscene(void)
     g_Camera.roll = roll;
     g_Camera.shift = 0;
     Viewport_AlterFOV(fov);
-}
-
-void Camera_Apply(void)
-{
-    M_EnsureEnvironment();
-    Matrix_LookAt(
-        g_Camera.interp.result.pos.x,
-        g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
-        g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
-        g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
-        g_Camera.roll);
 }

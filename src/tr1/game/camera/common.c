@@ -2,9 +2,7 @@
 
 #include "game/input.h"
 #include "game/los.h"
-#include "game/music.h"
 #include "game/random.h"
-#include "game/sound.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -28,9 +26,6 @@ static void M_LoadCutsceneFrame(void);
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
-
-static void M_AdjustMusicVolume(bool underwater);
-static void M_EnsureEnvironment(void);
 
 static bool M_BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
 static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
@@ -229,58 +224,6 @@ static void M_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
-}
-
-static void M_AdjustMusicVolume(const bool underwater)
-{
-    const bool is_ambient =
-        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
-
-    double multiplier = 1.0;
-
-    if (underwater) {
-        switch (g_Config.audio.underwater_music_mode) {
-        case UMM_FULL:
-            multiplier = 1.0;
-            break;
-        case UMM_QUIET:
-            multiplier = 0.5;
-            break;
-        case UMM_NONE:
-            multiplier = 0.0;
-            break;
-        case UMM_FULL_NO_AMBIENT:
-            multiplier = is_ambient ? 0.0 : 1.0;
-            break;
-        case UMM_QUIET_NO_AMBIENT:
-            multiplier = is_ambient ? 0.0 : 0.5;
-            break;
-        default:
-            multiplier = 1.0;
-            break;
-        }
-    }
-
-    Music_SetVolume(g_Config.audio.music_volume * multiplier);
-}
-
-static void M_EnsureEnvironment(void)
-{
-    if (g_Camera.pos.room_num == NO_ROOM) {
-        return;
-    }
-
-    if (Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER) {
-        M_AdjustMusicVolume(true);
-        Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
-        g_Camera.underwater = true;
-    } else {
-        M_AdjustMusicVolume(false);
-        if (g_Camera.underwater) {
-            Sound_StopEffect(SFX_UNDERWATER);
-            g_Camera.underwater = false;
-        }
-    }
 }
 
 static bool M_BadPosition(
@@ -791,15 +734,4 @@ void Camera_MoveManual(void)
     if (g_Input.camera_reset) {
         M_OffsetReset();
     }
-}
-
-void Camera_Apply(void)
-{
-    M_EnsureEnvironment();
-    Matrix_LookAt(
-        g_Camera.interp.result.pos.x,
-        g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
-        g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
-        g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
-        g_Camera.roll);
 }
