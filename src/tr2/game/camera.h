@@ -17,7 +17,6 @@ void Camera_SmartShift(
         int32_t target_h, int32_t left, int32_t top, int32_t right,
         int32_t bottom));
 void Camera_Chase(const ITEM *item);
-int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
 void Camera_Combat(const ITEM *item);
 void Camera_Look(const ITEM *item);
 void Camera_Fixed(void);

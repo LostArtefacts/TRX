@@ -18,3 +18,4 @@ const BOX_INFO *Camera_GetBox(const SECTOR *sector, int32_t x, int32_t z);
 bool Camera_IsGoodPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
 const SECTOR *Camera_GetSector(
     int32_t x, int32_t y, int32_t z, int16_t room_num);
+int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
