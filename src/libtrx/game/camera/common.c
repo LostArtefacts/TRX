@@ -12,6 +12,7 @@
 #include "game/random.h"
 #include "game/rooms.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 #include "utils.h"
 
 #if TR_VERSION == 2
@@ -195,6 +196,18 @@ bool Camera_IsChunky(void)
 void Camera_SetChunky(const bool is_chunky)
 {
     m_IsChunky = is_chunky;
+}
+
+void Camera_Initialise(void)
+{
+    Matrix_ResetStack();
+    g_Camera.underwater = false;
+    g_Camera.last = NO_CAMERA;
+    Camera_ResetPosition();
+#if TR_VERSION == 2
+    Viewport_AlterFOV(-1);
+#endif
+    Camera_Update();
 }
 
 void Camera_ResetPosition(void)
