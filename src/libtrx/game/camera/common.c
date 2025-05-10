@@ -2,9 +2,17 @@
 
 #include "config.h"
 #include "game/camera/vars.h"
+#include "game/lara.h"
+#include "game/los.h"
 #include "game/pathing.h"
+#include "game/random.h"
 #include "game/rooms.h"
 #include "utils.h"
+
+#if TR_VERSION == 2
+// TODO: consolidate with Viewport API
+extern int32_t g_PhdPersp;
+#endif
 
 static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
@@ -24,6 +32,101 @@ const BOX_INFO *Camera_GetBox(
     m_FixedBox.right = m_FixedBox.left + WALL_L - 1;
     m_FixedBox.bottom = m_FixedBox.top + WALL_L - 1;
     return &m_FixedBox;
+}
+
+// TODO: make private.
+void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
+{
+    const GAME_VECTOR old_pos = g_Camera.pos;
+    GAME_VECTOR pos = g_Camera.pos;
+    pos.x += (target->x - pos.x) / speed;
+    pos.z += (target->z - pos.z) / speed;
+    pos.y += (target->y - pos.y) / speed;
+    pos.room_num = target->room_num;
+
+    Camera_SetChunky(false);
+
+    const SECTOR *sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+    int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    if (height == NO_HEIGHT) {
+        // Attempt to clamp within the previous sector's height bounds. Only if
+        // that fails continue to revert fully to the last good Y position.
+        pos.room_num = old_pos.room_num;
+        sector = Room_GetSector(old_pos.x, old_pos.y, old_pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, old_pos.x, old_pos.y, old_pos.z);
+        const int32_t old_ceiling =
+            Room_GetCeiling(sector, old_pos.x, old_pos.y, old_pos.z);
+        CLAMP(pos.y, old_ceiling + STEP_L, height - STEP_L);
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+        if (height == NO_HEIGHT) {
+            pos.y = old_pos.y;
+            pos.room_num = old_pos.room_num;
+            sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+            height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+        }
+    }
+
+    height -= STEP_L;
+    if (pos.y >= height && target->y >= height) {
+        LOS_Check(&g_Camera.target, &pos);
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, pos.x, pos.y, pos.z) - STEP_L;
+    }
+
+    g_Camera.pos = pos;
+
+    int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z) + STEP_L;
+    if (height < ceiling) {
+        ceiling = (height + ceiling) >> 1;
+        height = ceiling;
+    }
+
+    if (g_Camera.bounce > 0) {
+        g_Camera.pos.y += g_Camera.bounce;
+        g_Camera.target.y += g_Camera.bounce;
+        g_Camera.bounce = 0;
+    } else if (g_Camera.bounce < 0) {
+        const XYZ_32 shake = {
+            .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+        };
+        g_Camera.pos.x += shake.x;
+        g_Camera.pos.y += shake.y;
+        g_Camera.pos.z += shake.z;
+        g_Camera.target.y += shake.x;
+        g_Camera.target.y += shake.y;
+        g_Camera.target.z += shake.z;
+        g_Camera.bounce += 5;
+    }
+
+    if (g_Camera.pos.y > height) {
+        g_Camera.shift = height - g_Camera.pos.y;
+    } else if (g_Camera.pos.y < ceiling) {
+        g_Camera.shift = ceiling - g_Camera.pos.y;
+    } else {
+        g_Camera.shift = 0;
+    }
+
+#if TR_VERSION == 2
+    if (g_Config.audio.enable_lara_mic) {
+        const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+        const ITEM *const lara_item = Lara_GetItem();
+        g_Camera.actual_angle =
+            lara_info->torso_rot.y + lara_info->head_rot.y + lara_item->rot.y;
+        g_Camera.mic_pos = lara_item->pos;
+    } else {
+        g_Camera.actual_angle = Math_Atan(
+            g_Camera.target.z - g_Camera.pos.z,
+            g_Camera.target.x - g_Camera.pos.x);
+        g_Camera.mic_pos.x = g_Camera.pos.x
+            + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
+        g_Camera.mic_pos.z = g_Camera.pos.z
+            + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
+        g_Camera.mic_pos.y = g_Camera.pos.y;
+    }
+#endif
 }
 
 bool Camera_IsChunky(void)
