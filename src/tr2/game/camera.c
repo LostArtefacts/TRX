@@ -36,35 +36,6 @@ void Camera_Initialise(void)
     Camera_Update();
 }
 
-void Camera_ResetPosition(void)
-{
-    ASSERT(g_LaraItem != nullptr);
-    g_Camera.shift = g_LaraItem->pos.y - WALL_L;
-
-    g_Camera.target.x = g_LaraItem->pos.x;
-    g_Camera.target.y = g_Camera.shift;
-    g_Camera.target.z = g_LaraItem->pos.z;
-    g_Camera.target.room_num = g_LaraItem->room_num;
-
-    g_Camera.pos.x = g_Camera.target.x;
-    g_Camera.pos.y = g_Camera.target.y;
-    g_Camera.pos.z = g_Camera.target.z - 100;
-    g_Camera.pos.room_num = g_Camera.target.room_num;
-
-    g_Camera.target_distance = WALL_L * 3 / 2;
-    g_Camera.item = nullptr;
-
-    if (!g_Lara.extra_anim) {
-        g_Camera.type = CAM_CHASE;
-    }
-
-    g_Camera.speed = 1;
-    g_Camera.flags = CF_NORMAL;
-    g_Camera.bounce = 0;
-    g_Camera.num = NO_CAMERA;
-    g_Camera.fixed_camera = false;
-}
-
 void Camera_Clip(
     int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
     int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom)
