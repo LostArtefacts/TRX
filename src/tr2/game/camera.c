@@ -91,19 +91,6 @@ void Camera_Shift(
     }
 }
 
-const SECTOR *Camera_GoodPosition(
-    int32_t x, int32_t y, int32_t z, int16_t room_num)
-{
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    if (y > height || y < ceiling) {
-        return nullptr;
-    }
-
-    return sector;
-}
-
 void Camera_SmartShift(
     GAME_VECTOR *target,
     void (*shift)(
@@ -135,9 +122,9 @@ void Camera_SmartShift(
     int32_t test;
 
     test = (target->z - WALL_L) | (WALL_L - 1);
-    const SECTOR *good_left =
-        Camera_GoodPosition(target->x, target->y, test, target->room_num);
-    if (good_left) {
+    const SECTOR *const good_left =
+        Camera_GetSector(target->x, target->y, test, target->room_num);
+    if (good_left != nullptr) {
         box = Camera_GetBox(good_left, target->x, test);
         if (box->left < left) {
             left = box->left;
@@ -147,9 +134,9 @@ void Camera_SmartShift(
     }
 
     test = (target->z + WALL_L) & (~(WALL_L - 1));
-    const SECTOR *good_right =
-        Camera_GoodPosition(target->x, target->y, test, target->room_num);
-    if (good_right) {
+    const SECTOR *const good_right =
+        Camera_GetSector(target->x, target->y, test, target->room_num);
+    if (good_right != nullptr) {
         box = Camera_GetBox(good_right, target->x, test);
         if (box->right > right) {
             right = box->right;
@@ -159,9 +146,9 @@ void Camera_SmartShift(
     }
 
     test = (target->x - WALL_L) | (WALL_L - 1);
-    const SECTOR *good_top =
-        Camera_GoodPosition(test, target->y, target->z, target->room_num);
-    if (good_top) {
+    const SECTOR *const good_top =
+        Camera_GetSector(test, target->y, target->z, target->room_num);
+    if (good_top != nullptr) {
         box = Camera_GetBox(good_top, test, target->z);
         if (box->top < top) {
             top = box->top;
@@ -171,9 +158,9 @@ void Camera_SmartShift(
     }
 
     test = (target->x + WALL_L) & (~(WALL_L - 1));
-    const SECTOR *good_bottom =
-        Camera_GoodPosition(test, target->y, target->z, target->room_num);
-    if (good_bottom) {
+    const SECTOR *const good_bottom =
+        Camera_GetSector(test, target->y, target->z, target->room_num);
+    if (good_bottom != nullptr) {
         box = Camera_GetBox(good_bottom, test, target->z);
         if (box->bottom > bottom) {
             bottom = box->bottom;
@@ -355,19 +342,19 @@ int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
 
     const int32_t left = box->left + clamp;
     const int32_t right = box->right - clamp;
-    if (z < left && !Camera_GoodPosition(x, y, z - clamp, pos->room_num)) {
+    if (z < left && !Camera_IsGoodPosition(x, y, z - clamp, pos->room_num)) {
         pos->z = left;
     } else if (
-        z > right && !Camera_GoodPosition(x, y, z + clamp, pos->room_num)) {
+        z > right && !Camera_IsGoodPosition(x, y, z + clamp, pos->room_num)) {
         pos->z = right;
     }
 
     const int32_t top = box->top + clamp;
     const int32_t bottom = box->bottom - clamp;
-    if (x < top && !Camera_GoodPosition(x - clamp, y, z, pos->room_num)) {
+    if (x < top && !Camera_IsGoodPosition(x - clamp, y, z, pos->room_num)) {
         pos->x = top;
     } else if (
-        x > bottom && !Camera_GoodPosition(x + clamp, y, z, pos->room_num)) {
+        x > bottom && !Camera_IsGoodPosition(x + clamp, y, z, pos->room_num)) {
         pos->x = bottom;
     }
 
@@ -465,7 +452,7 @@ void Camera_Look(const ITEM *item)
     g_Camera.target.z += (g_Camera.shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
     g_Camera.target.x += (g_Camera.shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
 
-    if (!Camera_GoodPosition(
+    if (!Camera_IsGoodPosition(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
             g_Camera.target.room_num)) {
         g_Camera.target.x = item->pos.x;
