@@ -109,7 +109,7 @@ void Lara_Control(void)
             item->pos.y += 100;
             item->gravity = 0;
             Lara_UpdateRoomToHeight(0);
-            Sound_StopEffect(SFX_LARA_FALL, nullptr);
+            Sound_StopEffect(SFX_LARA_FALL);
             if (item->current_anim_state == LS_SWAN_DIVE) {
                 item->goal_anim_state = LS_DIVE;
                 item->rot.x = -45 * DEG_1;

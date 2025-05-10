@@ -432,7 +432,7 @@ void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll)
             item->current_anim_state = LS_STOP;
             Item_SwitchToAnim(item, LA_LAND_FAR, 0);
         }
-        Sound_StopEffect(SFX_LARA_FALL, nullptr);
+        Sound_StopEffect(SFX_LARA_FALL);
         item->pos.y += coll->side_mid.floor;
         item->gravity = 0;
         item->fall_speed = 0;
