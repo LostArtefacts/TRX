@@ -277,7 +277,7 @@ static void M_EnsureEnvironment(void)
     } else {
         M_AdjustMusicVolume(false);
         if (g_Camera.underwater) {
-            Sound_StopEffect(SFX_UNDERWATER, nullptr);
+            Sound_StopEffect(SFX_UNDERWATER);
             g_Camera.underwater = false;
         }
     }

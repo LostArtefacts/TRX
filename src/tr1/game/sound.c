@@ -440,27 +440,21 @@ bool Sound_Effect(
     return false;
 }
 
-bool Sound_StopEffect(const SOUND_EFFECT_ID sfx_num, const XYZ_32 *const pos)
+void Sound_StopEffect(const SOUND_EFFECT_ID sfx_num)
 {
     if (!m_SoundIsActive) {
-        return false;
+        return;
     }
 
-    for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *slot = &m_SFXPlaying[i];
-        if ((slot->flags & SOUND_FLAG_USED)
+    for (int32_t i = 0; i < MAX_PLAYING_FX; i++) {
+        SOUND_SLOT *const slot = &m_SFXPlaying[i];
+        if ((slot->flags & SOUND_FLAG_USED) != 0 && slot->effect_num == sfx_num
             && Audio_Sample_IsPlaying(slot->sound_id)) {
-            if ((!pos && slot->effect_num == sfx_num)
-                || (pos && sfx_num >= 0 && slot->effect_num == sfx_num)
-                || (pos && sfx_num < 0)) {
-                Audio_Sample_Close(slot->sound_id);
-                M_ClearSlot(slot);
-                return true;
-            }
+            Audio_Sample_Close(slot->sound_id);
+            M_ClearSlot(slot);
+            break;
         }
     }
-
-    return false;
 }
 
 void Sound_ResetEffects(void)
