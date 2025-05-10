@@ -32,7 +32,6 @@ static void M_OffsetReset(void);
 static void M_AdjustMusicVolume(bool underwater);
 static void M_EnsureEnvironment(void);
 
-static void M_Move(const GAME_VECTOR *ideal, int32_t speed);
 static bool M_BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
 static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
 static void M_SmartShift(
@@ -75,9 +74,9 @@ static void M_Chase(const ITEM *const item)
     M_SmartShift(&ideal, M_Shift);
 
     if (g_Camera.fixed_camera) {
-        M_Move(&ideal, g_Camera.speed);
+        Camera_Move(&ideal, g_Camera.speed);
     } else {
-        M_Move(&ideal, CHASE_SPEED);
+        Camera_Move(&ideal, CHASE_SPEED);
     }
 }
 
@@ -114,7 +113,7 @@ static void M_Combat(const ITEM *const item)
     ideal.room_num = g_Camera.pos.room_num;
 
     M_SmartShift(&ideal, M_Shift);
-    M_Move(&ideal, g_Camera.speed);
+    Camera_Move(&ideal, g_Camera.speed);
 }
 
 static void M_Look(const ITEM *const item)
@@ -166,7 +165,7 @@ static void M_Look(const ITEM *const item)
     g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
     g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
 
-    M_Move(&ideal, g_Camera.speed);
+    Camera_Move(&ideal, g_Camera.speed);
     g_Camera.debuff = 5;
 }
 
@@ -182,7 +181,7 @@ static void M_Fixed(void)
 
     g_Camera.fixed_camera = true;
 
-    M_Move(&ideal, g_Camera.speed);
+    Camera_Move(&ideal, g_Camera.speed);
 
     if (g_Camera.timer) {
         g_Camera.timer--;
@@ -281,79 +280,6 @@ static void M_EnsureEnvironment(void)
             Sound_StopEffect(SFX_UNDERWATER, nullptr);
             g_Camera.underwater = false;
         }
-    }
-}
-
-static void M_Move(const GAME_VECTOR *const ideal, const int32_t speed)
-{
-    const GAME_VECTOR old_pos = g_Camera.pos;
-    GAME_VECTOR pos = g_Camera.pos;
-    pos.x += (ideal->x - pos.x) / speed;
-    pos.z += (ideal->z - pos.z) / speed;
-    pos.y += (ideal->y - pos.y) / speed;
-    pos.room_num = ideal->room_num;
-
-    Camera_SetChunky(false);
-
-    const SECTOR *sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
-    int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
-    if (height == NO_HEIGHT) {
-        pos.room_num = old_pos.room_num;
-        sector = Room_GetSector(old_pos.x, old_pos.y, old_pos.z, &pos.room_num);
-        height = Room_GetHeight(sector, old_pos.x, old_pos.y, old_pos.z);
-        const int32_t old_ceiling =
-            Room_GetCeiling(sector, old_pos.x, old_pos.y, old_pos.z);
-        CLAMP(pos.y, old_ceiling + STEP_L, height - STEP_L);
-        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
-        height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
-        if (height == NO_HEIGHT) {
-            pos.y = old_pos.y;
-            pos.room_num = old_pos.room_num;
-            sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
-            height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
-        }
-    }
-
-    height -= STEP_L;
-    if (pos.y >= height && ideal->y >= height) {
-        LOS_Check(&g_Camera.target, &pos);
-        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
-        height = Room_GetHeight(sector, pos.x, pos.y, pos.z) - STEP_L;
-    }
-
-    g_Camera.pos = pos;
-
-    int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z) + STEP_L;
-    if (height < ceiling) {
-        ceiling = (height + ceiling) >> 1;
-        height = ceiling;
-    }
-
-    if (g_Camera.bounce > 0) {
-        g_Camera.pos.y += g_Camera.bounce;
-        g_Camera.target.y += g_Camera.bounce;
-        g_Camera.bounce = 0;
-    } else if (g_Camera.bounce < 0) {
-        const XYZ_32 shake = {
-            .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
-            .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
-            .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
-        };
-        g_Camera.pos.x += shake.x;
-        g_Camera.pos.y += shake.y;
-        g_Camera.pos.z += shake.z;
-        g_Camera.target.y += shake.x;
-        g_Camera.target.y += shake.y;
-        g_Camera.target.z += shake.z;
-        g_Camera.bounce += 5;
-    }
-
-    if (g_Camera.pos.y > height) {
-        g_Camera.shift = height - g_Camera.pos.y;
-    } else if (g_Camera.pos.y < ceiling) {
-        g_Camera.shift = ceiling - g_Camera.pos.y;
-    } else {
-        g_Camera.shift = 0;
     }
 }
 
