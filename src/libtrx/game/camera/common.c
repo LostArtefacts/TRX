@@ -94,6 +94,27 @@ const BOX_INFO *Camera_GetBox(
 }
 
 // TODO: make private.
+bool Camera_IsGoodPosition(
+    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+{
+    return Camera_GetSector(x, y, z, room_num) != nullptr;
+}
+
+// TODO: make private.
+const SECTOR *Camera_GetSector(
+    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+{
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    const int32_t height = Room_GetHeight(sector, x, y, z);
+    const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
+    if (y > height || y < ceiling) {
+        return nullptr;
+    }
+
+    return sector;
+}
+
+// TODO: make private.
 void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
 {
     const GAME_VECTOR old_pos = g_Camera.pos;
