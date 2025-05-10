@@ -34,6 +34,12 @@ extern void Music_Unpause(void);
 // Returns the delayed track. Ignores looped tracks.
 extern MUSIC_TRACK_ID Music_GetDelayedTrack(void);
 
+// Returns the currently playing track. Includes looped music.
+extern MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
+
+// Returns the looped track.
+extern MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
+
 void Music_ResetTrackFlags(void);
 uint16_t Music_GetTrackFlags(int32_t track_idx);
 void Music_SetTrackFlags(int32_t track, uint16_t flags);

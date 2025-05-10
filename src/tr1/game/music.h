@@ -16,12 +16,6 @@ void Music_Mute(void);
 // Unmutes the game music. Doesn't change the music volume.
 void Music_Unmute(void);
 
-// Returns the currently playing track. Includes looped music.
-MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
-
-// Returns the looped track.
-MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
-
 // Returns the last played track. Ignores looped tracks.
 MUSIC_TRACK_ID Music_GetLastPlayedTrack(void);
 
