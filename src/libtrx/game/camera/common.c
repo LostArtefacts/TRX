@@ -1,6 +1,8 @@
 #include "game/camera/common.h"
 
 #include "config.h"
+#include "debug.h"
+#include "game/camera/const.h"
 #include "game/camera/vars.h"
 #include "game/lara.h"
 #include "game/los.h"
@@ -193,6 +195,42 @@ bool Camera_IsChunky(void)
 void Camera_SetChunky(const bool is_chunky)
 {
     m_IsChunky = is_chunky;
+}
+
+void Camera_ResetPosition(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    ASSERT(lara_item != nullptr);
+    g_Camera.shift = lara_item->pos.y - WALL_L;
+
+    g_Camera.target.x = lara_item->pos.x;
+    g_Camera.target.y = g_Camera.shift;
+    g_Camera.target.z = lara_item->pos.z;
+    g_Camera.target.room_num = lara_item->room_num;
+
+    g_Camera.pos.x = g_Camera.target.x;
+    g_Camera.pos.y = g_Camera.target.y;
+    g_Camera.pos.z = g_Camera.target.z - 100;
+    g_Camera.pos.room_num = g_Camera.target.room_num;
+
+    g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
+    g_Camera.item = nullptr;
+
+    g_Camera.speed = 1;
+    g_Camera.flags = CF_NORMAL;
+    g_Camera.bounce = 0;
+    g_Camera.num = NO_CAMERA;
+    g_Camera.fixed_camera = false;
+#if TR_VERSION == 1
+    g_Camera.additional_angle = 0;
+    g_Camera.additional_elevation = 0;
+    g_Camera.type = CAM_CHASE;
+#else
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (!lara_info->extra_anim) {
+        g_Camera.type = CAM_CHASE;
+    }
+#endif
 }
 
 void Camera_Reset(void)

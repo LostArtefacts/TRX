@@ -8,6 +8,7 @@ void Camera_Apply(void);
 void Camera_Move(const GAME_VECTOR *target, int32_t speed);
 bool Camera_IsChunky(void);
 void Camera_SetChunky(bool is_chunky);
+void Camera_ResetPosition(void);
 void Camera_Reset(void);
 void Camera_ClampInterpResult(void);
 void Camera_RefreshFromTrigger(const TRIGGER *trigger);

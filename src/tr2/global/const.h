@@ -19,7 +19,6 @@
 #define MIN_SQUARE SQUARE(WALL_L / 3)
 #define NO_BOX (-1)
 #define NO_ITEM (-1)
-#define NO_CAMERA (-1)
 
 #define SUNSET_TIMEOUT (40 * 60 * (FRAMES_PER_SECOND)) // = 72000
 

@@ -39,7 +39,6 @@
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
-#define NO_CAMERA (-1)
 #define DEATH_WAIT (10 * LOGIC_FPS)
 #define DEATH_WAIT_MIN (2 * LOGIC_FPS)
 #define MAX_HEAD_ROTATION (50 * DEG_1) // = 9100
