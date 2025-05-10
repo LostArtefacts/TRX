@@ -298,10 +298,20 @@ static void M_Move(const GAME_VECTOR *const ideal, const int32_t speed)
     const SECTOR *sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
     int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
     if (height == NO_HEIGHT) {
-        pos.y = old_pos.y;
         pos.room_num = old_pos.room_num;
+        sector = Room_GetSector(old_pos.x, old_pos.y, old_pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, old_pos.x, old_pos.y, old_pos.z);
+        const int32_t old_ceiling =
+            Room_GetCeiling(sector, old_pos.x, old_pos.y, old_pos.z);
+        CLAMP(pos.y, old_ceiling + STEP_L, height - STEP_L);
         sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
         height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+        if (height == NO_HEIGHT) {
+            pos.y = old_pos.y;
+            pos.room_num = old_pos.room_num;
+            sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+            height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+        }
     }
 
     height -= STEP_L;
