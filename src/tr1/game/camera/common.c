@@ -26,17 +26,9 @@ static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
 
-static void M_SmartShift(
-    GAME_VECTOR *ideal,
-    void (*shift)(
-        int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
-        int32_t left, int32_t top, int32_t right, int32_t bottom));
-static void M_Clip(
-    int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
-    int32_t top, int32_t right, int32_t bottom);
-static void M_Shift(
-    int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
-    int32_t top, int32_t right, int32_t bottom);
+static void M_SmartShift(GAME_VECTOR *ideal, void (*shift)(CAMERA_SHIFT_ARGS));
+static void M_Clip(CAMERA_SHIFT_ARGS);
+static void M_Shift(CAMERA_SHIFT_ARGS);
 
 static void M_Chase(const ITEM *const item)
 {
@@ -224,11 +216,7 @@ static void M_OffsetReset(void)
 }
 
 static void M_SmartShift(
-    GAME_VECTOR *const ideal,
-    void (*shift)(
-        int32_t *const x, int32_t *const y, const int32_t target_x,
-        const int32_t target_y, const int32_t left, const int32_t top,
-        const int32_t right, const int32_t bottom))
+    GAME_VECTOR *const ideal, void (*shift)(CAMERA_SHIFT_ARGS))
 {
     LOS_Check(&g_Camera.target, ideal);
 
@@ -305,23 +293,23 @@ static void M_SmartShift(
         noclip = 0;
         if (ideal->x < g_Camera.target.x) {
             shift(
-                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
-                left, top, right, bottom);
+                &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
+                g_Camera.target.x, g_Camera.target.y, left, top, right, bottom);
         } else {
             shift(
-                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
-                left, bottom, right, top);
+                &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
+                g_Camera.target.x, g_Camera.target.y, left, bottom, right, top);
         }
     } else if (ideal->z > right && good_right == nullptr) {
         noclip = 0;
         if (ideal->x < g_Camera.target.x) {
             shift(
-                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
-                right, top, left, bottom);
+                &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
+                g_Camera.target.x, g_Camera.target.y, right, top, left, bottom);
         } else {
             shift(
-                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
-                right, bottom, left, top);
+                &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
+                g_Camera.target.x, g_Camera.target.y, right, bottom, left, top);
         }
     }
 
@@ -330,23 +318,27 @@ static void M_SmartShift(
             noclip = 0;
             if (ideal->z < g_Camera.target.z) {
                 shift(
-                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
-                    top, left, bottom, right);
+                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                    g_Camera.target.z, g_Camera.target.y, top, left, bottom,
+                    right);
             } else {
                 shift(
-                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
-                    top, right, bottom, left);
+                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                    g_Camera.target.z, g_Camera.target.y, top, right, bottom,
+                    left);
             }
         } else if (ideal->x > bottom && good_bottom == nullptr) {
             noclip = 0;
             if (ideal->z < g_Camera.target.z) {
                 shift(
-                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
-                    bottom, left, top, right);
+                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                    g_Camera.target.z, g_Camera.target.y, bottom, left, top,
+                    right);
             } else {
                 shift(
-                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
-                    bottom, right, top, left);
+                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                    g_Camera.target.z, g_Camera.target.y, bottom, right, top,
+                    left);
             }
         }
     }
@@ -356,10 +348,7 @@ static void M_SmartShift(
     }
 }
 
-static void M_Clip(
-    int32_t *const x, int32_t *const y, const int32_t target_x,
-    const int32_t target_y, const int32_t left, const int32_t top,
-    const int32_t right, const int32_t bottom)
+static void M_Clip(CAMERA_SHIFT_ARGS)
 {
     const int32_t x_diff = *x - target_x;
     const int32_t y_diff = *y - target_y;
@@ -380,10 +369,7 @@ static void M_Clip(
     }
 }
 
-static void M_Shift(
-    int32_t *const x, int32_t *const y, const int32_t target_x,
-    const int32_t target_y, const int32_t left, const int32_t top,
-    const int32_t right, const int32_t bottom)
+static void M_Shift(CAMERA_SHIFT_ARGS)
 {
     const int32_t tl_square = SQUARE(target_x - left) + SQUARE(target_y - top);
     const int32_t bl_square =

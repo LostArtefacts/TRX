@@ -26,9 +26,7 @@
 
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
 
-void Camera_Clip(
-    int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
-    int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom)
+void Camera_Clip(CAMERA_SHIFT_ARGS)
 {
     if ((right > left) != (target_x < left)) {
         *y = target_y + (left - target_x) * (*y - target_y) / (*x - target_x);
@@ -44,9 +42,7 @@ void Camera_Clip(
     }
 }
 
-void Camera_Shift(
-    int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
-    int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom)
+void Camera_Shift(CAMERA_SHIFT_ARGS)
 {
     int32_t shift;
 
@@ -92,11 +88,7 @@ void Camera_Shift(
 }
 
 void Camera_SmartShift(
-    GAME_VECTOR *target,
-    void (*shift)(
-        int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
-        int32_t target_h, int32_t left, int32_t top, int32_t right,
-        int32_t bottom))
+    GAME_VECTOR *const target, void (*shift)(CAMERA_SHIFT_ARGS))
 {
     LOS_Check(&g_Camera.target, target);
 
