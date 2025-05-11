@@ -21,6 +21,7 @@
 #else
     #define M_MIN_SQUARE SQUARE(WALL_L / 3)
 #endif
+#define M_COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 #define M_LOOK_DISTANCE (WALL_L * 3 / 2) // = 1536
 #define M_LOOK_CLAMP (STEP_L + 50) // = 296
 
@@ -540,6 +541,63 @@ void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
         g_Camera.mic_pos.y = g_Camera.pos.y;
     }
 #endif
+}
+
+// TODO: make private.
+void Camera_Combat(const ITEM *const item)
+{
+    g_Camera.target.z = item->pos.z;
+    g_Camera.target.x = item->pos.x;
+    g_Camera.target_distance = M_COMBAT_DISTANCE;
+
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->target != nullptr) {
+        g_Camera.target_angle = lara_info->target_angles[0] + item->rot.y;
+        g_Camera.target_elevation = lara_info->target_angles[1] + item->rot.x;
+    } else {
+        g_Camera.target_angle =
+            lara_info->torso_rot.y + lara_info->head_rot.y + item->rot.y;
+        g_Camera.target_elevation =
+            lara_info->torso_rot.x + lara_info->head_rot.x + item->rot.x;
+    }
+
+    const int32_t distance =
+        (M_COMBAT_DISTANCE * Math_Cos(g_Camera.target_elevation)) >> W2V_SHIFT;
+
+    const XYZ_32 offset = {
+        .y =
+            +((g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
+              >> W2V_SHIFT),
+        .x = -((distance * Math_Sin(g_Camera.target_angle)) >> W2V_SHIFT),
+        .z = -((distance * Math_Cos(g_Camera.target_angle)) >> W2V_SHIFT),
+    };
+
+    GAME_VECTOR target = {
+        .x = g_Camera.target.x + offset.x,
+        .y = g_Camera.target.y + offset.y,
+        .z = g_Camera.target.z + offset.z,
+        .room_num = g_Camera.pos.room_num,
+    };
+
+    if (lara_info->water_status == LWS_UNDERWATER) {
+        const ITEM *const lara_item = Lara_GetItem();
+        const int32_t water_height =
+            lara_info->water_surface_dist + lara_item->pos.y;
+        if (g_Camera.target.y > water_height && water_height > target.y) {
+            target.y = lara_info->water_surface_dist + lara_item->pos.y;
+            target.z = g_Camera.target.z
+                + (water_height - g_Camera.target.y)
+                    * (target.z - g_Camera.target.z)
+                    / (target.y - g_Camera.target.y);
+            target.x = g_Camera.target.x
+                + (water_height - g_Camera.target.y)
+                    * (target.x - g_Camera.target.x)
+                    / (target.y - g_Camera.target.y);
+        }
+    }
+
+    Camera_SmartShift(&target, Camera_Shift);
+    Camera_Move(&target, g_Camera.speed);
 }
 
 // TODO: make private.
