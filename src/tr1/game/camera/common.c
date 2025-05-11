@@ -17,7 +17,6 @@ static double m_ManualCameraMultiplier[11] = {
 };
 
 static void M_Chase(const ITEM *item);
-static void M_Combat(const ITEM *item);
 static void M_LoadCutsceneFrame(void);
 
 static void M_OffsetAdditionalAngle(int16_t delta);
@@ -56,42 +55,6 @@ static void M_Chase(const ITEM *const item)
     } else {
         Camera_Move(&ideal, CHASE_SPEED);
     }
-}
-
-static void M_Combat(const ITEM *const item)
-{
-    GAME_VECTOR ideal;
-
-    g_Camera.target.z = item->pos.z;
-    g_Camera.target.x = item->pos.x;
-
-    if (g_Lara.target) {
-        g_Camera.target_angle = item->rot.y + g_Lara.target_angles[0];
-        g_Camera.target_elevation = item->rot.x + g_Lara.target_angles[1];
-    } else {
-        g_Camera.target_angle =
-            item->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-        g_Camera.target_elevation =
-            item->rot.x + g_Lara.torso_rot.x + g_Lara.head_rot.x;
-    }
-
-    g_Camera.target_distance = COMBAT_DISTANCE;
-
-    const int32_t distance =
-        g_Camera.target_distance * Math_Cos(g_Camera.target_elevation)
-        >> W2V_SHIFT;
-
-    ideal.x = g_Camera.target.x
-        - (distance * Math_Sin(g_Camera.target_angle) >> W2V_SHIFT);
-    ideal.y = g_Camera.target.y
-        + (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation)
-           >> W2V_SHIFT);
-    ideal.z = g_Camera.target.z
-        - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
-    ideal.room_num = g_Camera.pos.room_num;
-
-    Camera_SmartShift(&ideal, Camera_Shift);
-    Camera_Move(&ideal, g_Camera.speed);
 }
 
 static void M_LoadCutsceneFrame(void)
@@ -224,7 +187,7 @@ void Camera_Update(void)
         if (g_Camera.type == CAM_LOOK) {
             Camera_Look(item);
         } else {
-            M_Combat(item);
+            Camera_Combat(item);
         }
     } else {
         if (g_Camera.debuff > 0) {

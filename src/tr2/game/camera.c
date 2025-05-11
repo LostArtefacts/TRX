@@ -18,7 +18,6 @@
 #define CHASE_ELEVATION (WALL_L * 3 / 2) // = 1536
 
 #define COMBAT_SPEED 8
-#define COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 
 #define LOOK_SPEED 4
 
@@ -50,60 +49,6 @@ void Camera_Chase(const ITEM *item)
         .z = g_Camera.target.z + offset.z,
         .room_num = g_Camera.pos.room_num,
     };
-
-    Camera_SmartShift(&target, Camera_Shift);
-    Camera_Move(&target, g_Camera.speed);
-}
-
-void Camera_Combat(const ITEM *item)
-{
-    g_Camera.target.z = item->pos.z;
-    g_Camera.target.x = item->pos.x;
-
-    g_Camera.target_distance = COMBAT_DISTANCE;
-    if (g_Lara.target) {
-        g_Camera.target_angle = g_Lara.target_angles[0] + item->rot.y;
-        g_Camera.target_elevation = g_Lara.target_angles[1] + item->rot.x;
-    } else {
-        g_Camera.target_angle =
-            g_Lara.torso_rot.y + g_Lara.head_rot.y + item->rot.y;
-        g_Camera.target_elevation =
-            g_Lara.torso_rot.x + g_Lara.head_rot.x + item->rot.x;
-    }
-
-    int32_t distance =
-        (COMBAT_DISTANCE * Math_Cos(g_Camera.target_elevation)) >> W2V_SHIFT;
-    int16_t angle = g_Camera.target_angle;
-
-    const XYZ_32 offset = {
-        .y =
-            +((g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
-              >> W2V_SHIFT),
-        .x = -((distance * Math_Sin(angle)) >> W2V_SHIFT),
-        .z = -((distance * Math_Cos(angle)) >> W2V_SHIFT),
-    };
-
-    GAME_VECTOR target = {
-        .x = g_Camera.target.x + offset.x,
-        .y = g_Camera.target.y + offset.y,
-        .z = g_Camera.target.z + offset.z,
-        .room_num = g_Camera.pos.room_num,
-    };
-
-    if (g_Lara.water_status == LWS_UNDERWATER) {
-        int32_t water_height = g_Lara.water_surface_dist + g_LaraItem->pos.y;
-        if (g_Camera.target.y > water_height && water_height > target.y) {
-            target.y = g_Lara.water_surface_dist + g_LaraItem->pos.y;
-            target.z = g_Camera.target.z
-                + (water_height - g_Camera.target.y)
-                    * (target.z - g_Camera.target.z)
-                    / (target.y - g_Camera.target.y);
-            target.x = g_Camera.target.x
-                + (water_height - g_Camera.target.y)
-                    * (target.x - g_Camera.target.x)
-                    / (target.y - g_Camera.target.y);
-        }
-    }
 
     Camera_SmartShift(&target, Camera_Shift);
     Camera_Move(&target, g_Camera.speed);
