@@ -6,7 +6,6 @@
 
 void Camera_Clip(CAMERA_SHIFT_ARGS);
 void Camera_Shift(CAMERA_SHIFT_ARGS);
-void Camera_SmartShift(GAME_VECTOR *target, void (*shift)(CAMERA_SHIFT_ARGS));
 void Camera_Chase(const ITEM *item);
 void Camera_Combat(const ITEM *item);
 void Camera_Look(const ITEM *item);

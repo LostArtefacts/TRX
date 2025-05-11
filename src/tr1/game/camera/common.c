@@ -26,7 +26,6 @@ static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
 
-static void M_SmartShift(GAME_VECTOR *ideal, void (*shift)(CAMERA_SHIFT_ARGS));
 static void M_Clip(CAMERA_SHIFT_ARGS);
 static void M_Shift(CAMERA_SHIFT_ARGS);
 
@@ -55,7 +54,7 @@ static void M_Chase(const ITEM *const item)
     ideal.z = g_Camera.target.z - (distance * Math_Cos(angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    M_SmartShift(&ideal, M_Shift);
+    Camera_SmartShift(&ideal, M_Shift);
 
     if (g_Camera.fixed_camera) {
         Camera_Move(&ideal, g_Camera.speed);
@@ -96,7 +95,7 @@ static void M_Combat(const ITEM *const item)
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    M_SmartShift(&ideal, M_Shift);
+    Camera_SmartShift(&ideal, M_Shift);
     Camera_Move(&ideal, g_Camera.speed);
 }
 
@@ -144,7 +143,7 @@ static void M_Look(const ITEM *const item)
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    M_SmartShift(&ideal, M_Clip);
+    Camera_SmartShift(&ideal, M_Clip);
 
     g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
     g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
@@ -213,119 +212,6 @@ static void M_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
-}
-
-static void M_SmartShift(
-    GAME_VECTOR *const ideal, void (*shift)(CAMERA_SHIFT_ARGS))
-{
-    LOS_Check(&g_Camera.target, ideal);
-
-    const ROOM *room = Room_Get(g_Camera.target.room_num);
-    const SECTOR *sector =
-        Room_GetWorldSector(room, g_Camera.target.x, g_Camera.target.z);
-    const BOX_INFO *box =
-        Camera_GetBox(sector, g_Camera.target.x, g_Camera.target.z);
-
-    room = Room_Get(ideal->room_num);
-    sector = Room_GetWorldSector(room, ideal->x, ideal->z);
-
-    if (ideal->z < box->left || ideal->z > box->right || ideal->x < box->top
-        || ideal->x > box->bottom) {
-        box = Camera_GetBox(sector, ideal->x, ideal->z);
-    }
-
-    int32_t left = box->left;
-    int32_t right = box->right;
-    int32_t top = box->top;
-    int32_t bottom = box->bottom;
-
-    int32_t test = (ideal->z - WALL_L) | (WALL_L - 1);
-    const SECTOR *const good_left =
-        Camera_GetSector(ideal->x, ideal->y, test, ideal->room_num);
-    if (good_left != nullptr) {
-        box = Camera_GetBox(good_left, ideal->x, test);
-        if (box->left < left) {
-            left = box->left;
-        }
-    }
-
-    test = (ideal->z + WALL_L) & (~(WALL_L - 1));
-    const SECTOR *const good_right =
-        Camera_GetSector(ideal->x, ideal->y, test, ideal->room_num);
-    if (good_right != nullptr) {
-        box = Camera_GetBox(good_right, ideal->x, test);
-        if (box->right > right) {
-            right = box->right;
-        }
-    }
-
-    test = (ideal->x - WALL_L) | (WALL_L - 1);
-    const SECTOR *const good_top =
-        Camera_GetSector(test, ideal->y, ideal->z, ideal->room_num);
-    if (good_top != nullptr) {
-        box = Camera_GetBox(good_top, test, ideal->z);
-        if (box->top < top) {
-            top = box->top;
-        }
-    }
-
-    test = (ideal->x + WALL_L) & (~(WALL_L - 1));
-    const SECTOR *const good_bottom =
-        Camera_GetSector(test, ideal->y, ideal->z, ideal->room_num);
-    if (good_bottom != nullptr) {
-        box = Camera_GetBox(good_bottom, test, ideal->z);
-        if (box->bottom > bottom) {
-            bottom = box->bottom;
-        }
-    }
-
-    left += STEP_L;
-    right -= STEP_L;
-    top += STEP_L;
-    bottom -= STEP_L;
-
-    bool clip = false;
-
-#define SHIFT(axis1, axis2, l1, l2, r1, r2)                                    \
-    shift(                                                                     \
-        &ideal->axis1, &ideal->axis2, &ideal->y, g_Camera.target.axis1,        \
-        g_Camera.target.axis2, g_Camera.target.y, l1, l2, r1, r2);
-
-    if (ideal->z < left && good_left == nullptr) {
-        clip = true;
-        if (ideal->x < g_Camera.target.x) {
-            SHIFT(z, x, left, top, right, bottom);
-        } else {
-            SHIFT(z, x, left, bottom, right, top);
-        }
-    } else if (ideal->z > right && good_right == nullptr) {
-        clip = true;
-        if (ideal->x < g_Camera.target.x) {
-            SHIFT(z, x, right, top, left, bottom);
-        } else {
-            SHIFT(z, x, right, bottom, left, top);
-        }
-    } else if (ideal->x < top && good_top == nullptr) {
-        clip = true;
-        if (ideal->z < g_Camera.target.z) {
-            SHIFT(x, z, top, left, bottom, right);
-        } else {
-            SHIFT(x, z, top, right, bottom, left);
-        }
-    } else if (ideal->x > bottom && good_bottom == nullptr) {
-        clip = true;
-        if (ideal->z < g_Camera.target.z) {
-            SHIFT(x, z, bottom, left, top, right);
-        } else {
-            SHIFT(x, z, bottom, right, top, left);
-        }
-    }
-
-#undef SHIFT
-
-    if (clip) {
-        Room_GetSector(ideal->x, ideal->y, ideal->z, &ideal->room_num);
-    }
 }
 
 static void M_Clip(CAMERA_SHIFT_ARGS)

@@ -159,6 +159,201 @@ int32_t Camera_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
     return 0;
 }
 
+// TODO: make private
+void Camera_SmartShift(
+    GAME_VECTOR *const target, void (*shift)(CAMERA_SHIFT_ARGS))
+{
+    LOS_Check(&g_Camera.target, target);
+
+    const ROOM *room = Room_Get(g_Camera.target.room_num);
+    const SECTOR *sector =
+        Room_GetWorldSector(room, g_Camera.target.x, g_Camera.target.z);
+    const BOX_INFO *box =
+        Camera_GetBox(sector, g_Camera.target.x, g_Camera.target.z);
+
+    room = Room_Get(target->room_num);
+    sector = Room_GetWorldSector(room, target->x, target->z);
+
+    if (target->z < box->left || target->z > box->right || target->x < box->top
+        || target->x > box->bottom) {
+        box = Camera_GetBox(sector, target->x, target->z);
+    }
+
+    int32_t left = box->left;
+    int32_t right = box->right;
+    int32_t top = box->top;
+    int32_t bottom = box->bottom;
+
+    int32_t test = (target->z - WALL_L) | (WALL_L - 1);
+    const SECTOR *const good_left =
+        Camera_GetSector(target->x, target->y, test, target->room_num);
+    if (good_left != nullptr) {
+        box = Camera_GetBox(good_left, target->x, test);
+        if (box->left < left) {
+            left = box->left;
+        }
+    } else if (TR_VERSION == 2) {
+        left = test;
+    }
+
+    test = (target->z + WALL_L) & (~(WALL_L - 1));
+    const SECTOR *const good_right =
+        Camera_GetSector(target->x, target->y, test, target->room_num);
+    if (good_right != nullptr) {
+        box = Camera_GetBox(good_right, target->x, test);
+        if (box->right > right) {
+            right = box->right;
+        }
+    } else if (TR_VERSION == 2) {
+        right = test;
+    }
+
+    test = (target->x - WALL_L) | (WALL_L - 1);
+    const SECTOR *const good_top =
+        Camera_GetSector(test, target->y, target->z, target->room_num);
+    if (good_top != nullptr) {
+        box = Camera_GetBox(good_top, test, target->z);
+        if (box->top < top) {
+            top = box->top;
+        }
+    } else if (TR_VERSION == 2) {
+        top = test;
+    }
+
+    test = (target->x + WALL_L) & (~(WALL_L - 1));
+    const SECTOR *const good_bottom =
+        Camera_GetSector(test, target->y, target->z, target->room_num);
+    if (good_bottom != nullptr) {
+        box = Camera_GetBox(good_bottom, test, target->z);
+        if (box->bottom > bottom) {
+            bottom = box->bottom;
+        }
+    } else if (TR_VERSION == 2) {
+        bottom = test;
+    }
+
+    left += STEP_L;
+    right -= STEP_L;
+    top += STEP_L;
+    bottom -= STEP_L;
+
+    GAME_VECTOR target_a = {
+        .x = target->x,
+        .y = target->y,
+        .z = target->z,
+        .room_num = target->room_num,
+    };
+
+    GAME_VECTOR target_b = {
+        .x = target->x,
+        .y = target->y,
+        .z = target->z,
+        .room_num = target->room_num,
+    };
+
+    bool clip = false;
+    bool prefer_a = true;
+
+#define SHIFT(axis1, axis2, l1, l2, r1, r2)                                    \
+    shift(                                                                     \
+        &target_a.axis1, &target_a.axis2, &target_a.y, g_Camera.target.axis1,  \
+        g_Camera.target.axis2, g_Camera.target.y, l1, l2, r1, r2);             \
+    shift(                                                                     \
+        &target_b.axis1, &target_b.axis2, &target_b.y, g_Camera.target.axis1,  \
+        g_Camera.target.axis2, g_Camera.target.y, l1, r2, r1, l2)
+
+#if TR_VERSION == 1
+    if (target->z < left && good_left == nullptr) {
+        clip = true;
+        if (target->x < g_Camera.target.x) {
+            SHIFT(z, x, left, top, right, bottom);
+        } else {
+            SHIFT(z, x, left, bottom, right, top);
+        }
+    } else if (target->z > right && good_right == nullptr) {
+        clip = true;
+        if (target->x < g_Camera.target.x) {
+            SHIFT(z, x, right, top, left, bottom);
+        } else {
+            SHIFT(z, x, right, bottom, left, top);
+        }
+    } else if (target->x < top && good_top == nullptr) {
+        clip = true;
+        if (target->z < g_Camera.target.z) {
+            SHIFT(x, z, top, left, bottom, right);
+        } else {
+            SHIFT(x, z, top, right, bottom, left);
+        }
+    } else if (target->x > bottom && good_bottom == nullptr) {
+        clip = true;
+        if (target->z < g_Camera.target.z) {
+            SHIFT(x, z, bottom, left, top, right);
+        } else {
+            SHIFT(x, z, bottom, right, top, left);
+        }
+    }
+#else
+    if (ABS(target->z - g_Camera.target.z)
+        > ABS(target->x - g_Camera.target.x)) {
+        if (target->z < left && good_left == nullptr) {
+            clip = true;
+            prefer_a = g_Camera.pos.x < g_Camera.target.x;
+            SHIFT(z, x, left, top, right, bottom);
+        } else if (target->z > right && good_right == nullptr) {
+            clip = true;
+            prefer_a = g_Camera.pos.x < g_Camera.target.x;
+            SHIFT(z, x, right, top, left, bottom);
+        } else if (target->x < top && good_top == nullptr) {
+            clip = true;
+            prefer_a = target->z < g_Camera.target.z;
+            SHIFT(x, z, top, left, bottom, right);
+        } else if (target->x > bottom && good_bottom == nullptr) {
+            clip = true;
+            prefer_a = target->z < g_Camera.target.z;
+            SHIFT(x, z, bottom, left, top, right);
+        }
+    } else {
+        if (target->x < top && good_top == nullptr) {
+            clip = true;
+            prefer_a = g_Camera.pos.z < g_Camera.target.z;
+            SHIFT(x, z, top, left, bottom, right);
+        } else if (target->x > bottom && good_bottom == nullptr) {
+            clip = true;
+            prefer_a = g_Camera.pos.z < g_Camera.target.z;
+            SHIFT(x, z, bottom, left, top, right);
+        } else if (target->z < left && good_left == nullptr) {
+            clip = true;
+            prefer_a = target->x < g_Camera.target.x;
+            SHIFT(z, x, left, top, right, bottom);
+        } else if (target->z > right && good_right == nullptr) {
+            clip = true;
+            prefer_a = target->x < g_Camera.target.x;
+            SHIFT(z, x, right, top, left, bottom);
+        }
+    }
+#endif
+
+#undef SHIFT
+
+    if (!clip) {
+        return;
+    }
+#if TR_VERSION == 2
+    if (prefer_a) {
+        prefer_a = LOS_Check(&g_Camera.target, &target_a) != 0;
+    } else {
+        prefer_a = LOS_Check(&g_Camera.target, &target_b) == 0;
+    }
+#endif
+    if (prefer_a) {
+        target->pos = target_a.pos;
+    } else {
+        target->pos = target_b.pos;
+    }
+
+    Room_GetSector(target->x, target->y, target->z, &target->room_num);
+}
+
 // TODO: make private.
 void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
 {
