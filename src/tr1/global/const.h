@@ -75,8 +75,6 @@
 #define VAULT_ANGLE (30 * DEG_1)
 #define HANG_ANGLE (35 * DEG_1)
 
-#define MIN_SQUARE SQUARE(WALL_L / 4) // = 65536
-
 #define DEFAULT_RADIUS 10
 
 #define RINGSWITCH_FRAMES (96 / 2)
