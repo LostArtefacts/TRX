@@ -6,7 +6,6 @@
 
 void Camera_Chase(const ITEM *item);
 void Camera_Combat(const ITEM *item);
-void Camera_Look(const ITEM *item);
 void Camera_Fixed(void);
 void Camera_LoadCutsceneFrame(void);
 void Camera_UpdateCutscene(void);

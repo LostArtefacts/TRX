@@ -20,6 +20,8 @@
 #else
     #define M_MIN_SQUARE SQUARE(WALL_L / 3)
 #endif
+#define M_LOOK_DISTANCE (WALL_L * 3 / 2) // = 1536
+#define M_LOOK_CLAMP (STEP_L + 50) // = 296
 
 #if TR_VERSION == 2
 // TODO: consolidate with Viewport API
@@ -537,6 +539,64 @@ void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
         g_Camera.mic_pos.y = g_Camera.pos.y;
     }
 #endif
+}
+
+// TODO: make private.
+void Camera_Look(const ITEM *const item)
+{
+    const XYZ_32 old = {
+        .x = g_Camera.target.x,
+        .y = g_Camera.target.y,
+        .z = g_Camera.target.z,
+    };
+
+    g_Camera.target.z = item->pos.z;
+    g_Camera.target.x = item->pos.x;
+    g_Camera.target_distance = M_LOOK_DISTANCE;
+
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    g_Camera.target_angle =
+        item->rot.y + lara_info->torso_rot.y + lara_info->head_rot.y;
+    g_Camera.target_elevation =
+        item->rot.x + lara_info->torso_rot.x + lara_info->head_rot.x;
+
+    const int32_t distance =
+        (M_LOOK_DISTANCE * Math_Cos(g_Camera.target_elevation)) >> W2V_SHIFT;
+
+    g_Camera.shift =
+        (-STEP_L * 2 * Math_Sin(g_Camera.target_elevation)) >> W2V_SHIFT;
+    g_Camera.target.z += (g_Camera.shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+    g_Camera.target.x += (g_Camera.shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+
+    if (!Camera_IsGoodPosition(
+            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
+            g_Camera.target.room_num)) {
+        g_Camera.target.x = item->pos.x;
+        g_Camera.target.z = item->pos.z;
+    }
+
+    g_Camera.target.y += Camera_ShiftClamp(&g_Camera.target, M_LOOK_CLAMP);
+
+    const XYZ_32 offset = {
+        .y =
+            +((g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
+              >> W2V_SHIFT),
+        .x = -((distance * Math_Sin(g_Camera.target_angle)) >> W2V_SHIFT),
+        .z = -((distance * Math_Cos(g_Camera.target_angle)) >> W2V_SHIFT),
+    };
+
+    GAME_VECTOR target = {
+        .x = g_Camera.target.x + offset.x,
+        .y = g_Camera.target.y + offset.y,
+        .z = g_Camera.target.z + offset.z,
+        .room_num = g_Camera.pos.room_num,
+    };
+
+    Camera_SmartShift(&target, Camera_Clip);
+    g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
+    g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
+    Camera_Move(&target, g_Camera.speed);
+    g_Camera.debuff = 5;
 }
 
 bool Camera_IsChunky(void)

@@ -20,8 +20,6 @@
 #define COMBAT_SPEED 8
 #define COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 
-#define LOOK_DISTANCE (WALL_L * 3 / 2) // = 1536
-#define LOOK_CLAMP (STEP_L + 50) // = 296
 #define LOOK_SPEED 4
 
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
@@ -109,61 +107,6 @@ void Camera_Combat(const ITEM *item)
 
     Camera_SmartShift(&target, Camera_Shift);
     Camera_Move(&target, g_Camera.speed);
-}
-
-void Camera_Look(const ITEM *item)
-{
-    XYZ_32 old = {
-        .x = g_Camera.target.x,
-        .y = g_Camera.target.y,
-        .z = g_Camera.target.z,
-    };
-
-    g_Camera.target.z = item->pos.z;
-    g_Camera.target.x = item->pos.x;
-    g_Camera.target_angle =
-        item->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-    g_Camera.target_distance = LOOK_DISTANCE;
-    g_Camera.target_elevation =
-        g_Lara.torso_rot.x + g_Lara.head_rot.x + item->rot.x;
-
-    int32_t distance =
-        (LOOK_DISTANCE * Math_Cos(g_Camera.target_elevation)) >> W2V_SHIFT;
-
-    g_Camera.shift =
-        (-STEP_L * 2 * Math_Sin(g_Camera.target_elevation)) >> W2V_SHIFT;
-    g_Camera.target.z += (g_Camera.shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    g_Camera.target.x += (g_Camera.shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-
-    if (!Camera_IsGoodPosition(
-            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
-            g_Camera.target.room_num)) {
-        g_Camera.target.x = item->pos.x;
-        g_Camera.target.z = item->pos.z;
-    }
-
-    g_Camera.target.y += Camera_ShiftClamp(&g_Camera.target, LOOK_CLAMP);
-
-    const XYZ_32 offset = {
-        .y =
-            +((g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
-              >> W2V_SHIFT),
-        .x = -((distance * Math_Sin(g_Camera.target_angle)) >> W2V_SHIFT),
-        .z = -((distance * Math_Cos(g_Camera.target_angle)) >> W2V_SHIFT),
-    };
-
-    GAME_VECTOR target = {
-        .x = g_Camera.target.x + offset.x,
-        .y = g_Camera.target.y + offset.y,
-        .z = g_Camera.target.z + offset.z,
-        .room_num = g_Camera.pos.room_num,
-    };
-
-    Camera_SmartShift(&target, Camera_Clip);
-    g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
-    g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
-    Camera_Move(&target, g_Camera.speed);
-    g_Camera.debuff = 5;
 }
 
 void Camera_Fixed(void)

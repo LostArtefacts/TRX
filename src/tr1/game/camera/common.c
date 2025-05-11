@@ -18,7 +18,6 @@ static double m_ManualCameraMultiplier[11] = {
 
 static void M_Chase(const ITEM *item);
 static void M_Combat(const ITEM *item);
-static void M_Look(const ITEM *item);
 static void M_Fixed(void);
 static void M_LoadCutsceneFrame(void);
 
@@ -94,59 +93,6 @@ static void M_Combat(const ITEM *const item)
 
     Camera_SmartShift(&ideal, Camera_Shift);
     Camera_Move(&ideal, g_Camera.speed);
-}
-
-static void M_Look(const ITEM *const item)
-{
-    const GAME_VECTOR old = {
-        .x = g_Camera.target.x,
-        .z = g_Camera.target.z,
-    };
-
-    g_Camera.target.z = item->pos.z;
-    g_Camera.target.x = item->pos.x;
-
-    g_Camera.target_angle =
-        item->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-    g_Camera.target_elevation =
-        item->rot.x + g_Lara.torso_rot.x + g_Lara.head_rot.x;
-    g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
-
-    const int32_t distance =
-        g_Camera.target_distance * Math_Cos(g_Camera.target_elevation)
-        >> W2V_SHIFT;
-
-    g_Camera.shift =
-        -STEP_L * 2 * Math_Sin(g_Camera.target_elevation) >> W2V_SHIFT;
-    g_Camera.target.z += g_Camera.shift * Math_Cos(item->rot.y) >> W2V_SHIFT;
-    g_Camera.target.x += g_Camera.shift * Math_Sin(item->rot.y) >> W2V_SHIFT;
-
-    if (!Camera_IsGoodPosition(
-            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
-            g_Camera.target.room_num)) {
-        g_Camera.target.x = item->pos.x;
-        g_Camera.target.z = item->pos.z;
-    }
-
-    g_Camera.target.y += Camera_ShiftClamp(&g_Camera.target, STEP_L + 50);
-
-    GAME_VECTOR ideal;
-    ideal.x = g_Camera.target.x
-        - (distance * Math_Sin(g_Camera.target_angle) >> W2V_SHIFT);
-    ideal.y = g_Camera.target.y
-        + (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation)
-           >> W2V_SHIFT);
-    ideal.z = g_Camera.target.z
-        - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
-    ideal.room_num = g_Camera.pos.room_num;
-
-    Camera_SmartShift(&ideal, Camera_Clip);
-
-    g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
-    g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
-
-    Camera_Move(&ideal, g_Camera.speed);
-    g_Camera.debuff = 5;
 }
 
 static void M_Fixed(void)
@@ -299,7 +245,7 @@ void Camera_Update(void)
         g_Camera.fixed_camera = false;
 
         if (g_Camera.type == CAM_LOOK) {
-            M_Look(item);
+            Camera_Look(item);
         } else {
             M_Combat(item);
         }
