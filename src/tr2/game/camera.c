@@ -180,13 +180,13 @@ void Camera_SmartShift(
         .room_num = target->room_num,
     };
 
-    int32_t noclip = 1;
-    int32_t prefer_a;
+    bool clip = false;
+    bool prefer_a;
 
     if (ABS(target->z - g_Camera.target.z)
         > ABS(target->x - g_Camera.target.x)) {
-        if (target->z < left && !good_left) {
-            noclip = 0;
+        if (target->z < left && good_left == nullptr) {
+            clip = true;
             prefer_a = g_Camera.pos.x < g_Camera.target.x;
             shift(
                 &a.z, &a.x, &a.y, g_Camera.target.z, g_Camera.target.x,
@@ -194,8 +194,8 @@ void Camera_SmartShift(
             shift(
                 &b.z, &b.x, &b.y, g_Camera.target.z, g_Camera.target.x,
                 g_Camera.target.y, left, bottom, right, top);
-        } else if (target->z > right && !good_right) {
-            noclip = 0;
+        } else if (target->z > right && good_right == nullptr) {
+            clip = true;
             prefer_a = g_Camera.pos.x < g_Camera.target.x;
             shift(
                 &a.z, &a.x, &a.y, g_Camera.target.z, g_Camera.target.x,
@@ -203,42 +203,18 @@ void Camera_SmartShift(
             shift(
                 &b.z, &b.x, &b.y, g_Camera.target.z, g_Camera.target.x,
                 g_Camera.target.y, right, bottom, left, top);
-        }
-
-        if (noclip) {
-            if (target->x < top && !good_top) {
-                noclip = 0;
-                prefer_a = target->z < g_Camera.target.z;
-                shift(
-                    &a.x, &a.z, &a.y, g_Camera.target.x, g_Camera.target.z,
-                    g_Camera.target.y, top, left, bottom, right);
-                shift(
-                    &b.x, &b.z, &b.y, g_Camera.target.x, g_Camera.target.z,
-                    g_Camera.target.y, top, right, bottom, left);
-            } else if (target->x > bottom && !good_bottom) {
-                noclip = 0;
-                prefer_a = target->z < g_Camera.target.z;
-                shift(
-                    &a.x, &a.z, &a.y, g_Camera.target.x, g_Camera.target.z,
-                    g_Camera.target.y, bottom, left, top, right);
-                shift(
-                    &b.x, &b.z, &b.y, g_Camera.target.x, g_Camera.target.z,
-                    g_Camera.target.y, bottom, right, top, left);
-            }
-        }
-    } else {
-        if (target->x < top && !good_top) {
-            noclip = 0;
-            prefer_a = g_Camera.pos.z < g_Camera.target.z;
+        } else if (target->x < top && good_top == nullptr) {
+            clip = true;
+            prefer_a = target->z < g_Camera.target.z;
             shift(
                 &a.x, &a.z, &a.y, g_Camera.target.x, g_Camera.target.z,
                 g_Camera.target.y, top, left, bottom, right);
             shift(
                 &b.x, &b.z, &b.y, g_Camera.target.x, g_Camera.target.z,
                 g_Camera.target.y, top, right, bottom, left);
-        } else if (target->x > bottom && !good_bottom) {
-            noclip = 0;
-            prefer_a = g_Camera.pos.z < g_Camera.target.z;
+        } else if (target->x > bottom && good_bottom == nullptr) {
+            clip = true;
+            prefer_a = target->z < g_Camera.target.z;
             shift(
                 &a.x, &a.z, &a.y, g_Camera.target.x, g_Camera.target.z,
                 g_Camera.target.y, bottom, left, top, right);
@@ -246,31 +222,47 @@ void Camera_SmartShift(
                 &b.x, &b.z, &b.y, g_Camera.target.x, g_Camera.target.z,
                 g_Camera.target.y, bottom, right, top, left);
         }
-
-        if (noclip) {
-            if (target->z < left && !good_left) {
-                noclip = 0;
-                prefer_a = target->x < g_Camera.target.x;
-                shift(
-                    &a.z, &a.x, &a.y, g_Camera.target.z, g_Camera.target.x,
-                    g_Camera.target.y, left, top, right, bottom);
-                shift(
-                    &b.z, &b.x, &b.y, g_Camera.target.z, g_Camera.target.x,
-                    g_Camera.target.y, left, bottom, right, top);
-            } else if (target->z > right && !good_right) {
-                noclip = 0;
-                prefer_a = target->x < g_Camera.target.x;
-                shift(
-                    &a.z, &a.x, &a.y, g_Camera.target.z, g_Camera.target.x,
-                    g_Camera.target.y, right, top, left, bottom);
-                shift(
-                    &b.z, &b.x, &b.y, g_Camera.target.z, g_Camera.target.x,
-                    g_Camera.target.y, right, bottom, left, top);
-            }
+    } else {
+        if (target->x < top && good_top == nullptr) {
+            clip = true;
+            prefer_a = g_Camera.pos.z < g_Camera.target.z;
+            shift(
+                &a.x, &a.z, &a.y, g_Camera.target.x, g_Camera.target.z,
+                g_Camera.target.y, top, left, bottom, right);
+            shift(
+                &b.x, &b.z, &b.y, g_Camera.target.x, g_Camera.target.z,
+                g_Camera.target.y, top, right, bottom, left);
+        } else if (target->x > bottom && good_bottom == nullptr) {
+            clip = true;
+            prefer_a = g_Camera.pos.z < g_Camera.target.z;
+            shift(
+                &a.x, &a.z, &a.y, g_Camera.target.x, g_Camera.target.z,
+                g_Camera.target.y, bottom, left, top, right);
+            shift(
+                &b.x, &b.z, &b.y, g_Camera.target.x, g_Camera.target.z,
+                g_Camera.target.y, bottom, right, top, left);
+        } else if (target->z < left && good_left == nullptr) {
+            clip = true;
+            prefer_a = target->x < g_Camera.target.x;
+            shift(
+                &a.z, &a.x, &a.y, g_Camera.target.z, g_Camera.target.x,
+                g_Camera.target.y, left, top, right, bottom);
+            shift(
+                &b.z, &b.x, &b.y, g_Camera.target.z, g_Camera.target.x,
+                g_Camera.target.y, left, bottom, right, top);
+        } else if (target->z > right && good_right == nullptr) {
+            clip = true;
+            prefer_a = target->x < g_Camera.target.x;
+            shift(
+                &a.z, &a.x, &a.y, g_Camera.target.z, g_Camera.target.x,
+                g_Camera.target.y, right, top, left, bottom);
+            shift(
+                &b.z, &b.x, &b.y, g_Camera.target.z, g_Camera.target.x,
+                g_Camera.target.y, right, bottom, left, top);
         }
     }
 
-    if (noclip) {
+    if (!clip) {
         return;
     }
 
@@ -281,13 +273,9 @@ void Camera_SmartShift(
     }
 
     if (prefer_a) {
-        target->x = a.x;
-        target->y = a.y;
-        target->z = a.z;
+        target->pos = a.pos;
     } else {
-        target->x = b.x;
-        target->y = b.y;
-        target->z = b.z;
+        target->pos = b.pos;
     }
 
     Room_GetSector(target->x, target->y, target->z, &target->room_num);

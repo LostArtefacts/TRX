@@ -288,9 +288,9 @@ static void M_SmartShift(
     top += STEP_L;
     bottom -= STEP_L;
 
-    int32_t noclip = 1;
+    bool clip = false;
     if (ideal->z < left && good_left == nullptr) {
-        noclip = 0;
+        clip = true;
         if (ideal->x < g_Camera.target.x) {
             shift(
                 &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
@@ -301,7 +301,7 @@ static void M_SmartShift(
                 g_Camera.target.x, g_Camera.target.y, left, bottom, right, top);
         }
     } else if (ideal->z > right && good_right == nullptr) {
-        noclip = 0;
+        clip = true;
         if (ideal->x < g_Camera.target.x) {
             shift(
                 &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
@@ -311,39 +311,31 @@ static void M_SmartShift(
                 &ideal->z, &ideal->x, &ideal->y, g_Camera.target.z,
                 g_Camera.target.x, g_Camera.target.y, right, bottom, left, top);
         }
-    }
-
-    if (noclip) {
-        if (ideal->x < top && good_top == nullptr) {
-            noclip = 0;
-            if (ideal->z < g_Camera.target.z) {
-                shift(
-                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
-                    g_Camera.target.z, g_Camera.target.y, top, left, bottom,
-                    right);
-            } else {
-                shift(
-                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
-                    g_Camera.target.z, g_Camera.target.y, top, right, bottom,
-                    left);
-            }
-        } else if (ideal->x > bottom && good_bottom == nullptr) {
-            noclip = 0;
-            if (ideal->z < g_Camera.target.z) {
-                shift(
-                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
-                    g_Camera.target.z, g_Camera.target.y, bottom, left, top,
-                    right);
-            } else {
-                shift(
-                    &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
-                    g_Camera.target.z, g_Camera.target.y, bottom, right, top,
-                    left);
-            }
+    } else if (ideal->x < top && good_top == nullptr) {
+        clip = true;
+        if (ideal->z < g_Camera.target.z) {
+            shift(
+                &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                g_Camera.target.z, g_Camera.target.y, top, left, bottom, right);
+        } else {
+            shift(
+                &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                g_Camera.target.z, g_Camera.target.y, top, right, bottom, left);
+        }
+    } else if (ideal->x > bottom && good_bottom == nullptr) {
+        clip = true;
+        if (ideal->z < g_Camera.target.z) {
+            shift(
+                &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                g_Camera.target.z, g_Camera.target.y, bottom, left, top, right);
+        } else {
+            shift(
+                &ideal->x, &ideal->z, &ideal->y, g_Camera.target.x,
+                g_Camera.target.z, g_Camera.target.y, bottom, right, top, left);
         }
     }
 
-    if (!noclip) {
+    if (clip) {
         Room_GetSector(ideal->x, ideal->y, ideal->z, &ideal->room_num);
     }
 }
