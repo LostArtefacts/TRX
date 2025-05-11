@@ -4,18 +4,9 @@
 
 #include <libtrx/game/camera.h>
 
-void Camera_Clip(
-    int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
-    int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom);
-void Camera_Shift(
-    int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
-    int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom);
-void Camera_SmartShift(
-    GAME_VECTOR *target,
-    void (*shift)(
-        int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,
-        int32_t target_h, int32_t left, int32_t top, int32_t right,
-        int32_t bottom));
+void Camera_Clip(CAMERA_SHIFT_ARGS);
+void Camera_Shift(CAMERA_SHIFT_ARGS);
+void Camera_SmartShift(GAME_VECTOR *target, void (*shift)(CAMERA_SHIFT_ARGS));
 void Camera_Chase(const ITEM *item);
 void Camera_Combat(const ITEM *item);
 void Camera_Look(const ITEM *item);
