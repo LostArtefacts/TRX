@@ -26,22 +26,6 @@
 
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
 
-void Camera_Clip(CAMERA_SHIFT_ARGS)
-{
-    if ((right > left) != (target_x < left)) {
-        *y = target_y + (left - target_x) * (*y - target_y) / (*x - target_x);
-        *h = target_h + (left - target_x) * (*h - target_h) / (*x - target_x);
-        *x = left;
-    }
-
-    if ((bottom > top && target_y > top && (*y) < top)
-        || (bottom < top && target_y < top && (*y) > top)) {
-        *x = target_x + (top - target_y) * (*x - target_x) / (*y - target_y);
-        *h = target_h + (top - target_y) * (*h - target_h) / (*y - target_y);
-        *y = top;
-    }
-}
-
 void Camera_Shift(CAMERA_SHIFT_ARGS)
 {
     int32_t shift;

@@ -4,7 +4,6 @@
 
 #include <libtrx/game/camera.h>
 
-void Camera_Clip(CAMERA_SHIFT_ARGS);
 void Camera_Shift(CAMERA_SHIFT_ARGS);
 void Camera_Chase(const ITEM *item);
 void Camera_Combat(const ITEM *item);

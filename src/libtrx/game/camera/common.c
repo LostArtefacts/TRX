@@ -355,6 +355,36 @@ void Camera_SmartShift(
 }
 
 // TODO: make private.
+void Camera_Clip(CAMERA_SHIFT_ARGS)
+{
+    const int32_t x_diff = *x - target_x;
+    const int32_t y_diff = *y - target_y;
+    const int32_t h_diff = *h - target_h;
+    int32_t height = *h;
+
+    if ((right > left) != (target_x < left)) {
+        if (x_diff != 0) {
+            *y = target_y + (left - target_x) * y_diff / x_diff;
+            height = target_h + (left - target_x) * h_diff / x_diff;
+        }
+        *x = left;
+    }
+
+    if ((bottom > top && target_y > top && (*y) < top)
+        || (bottom < top && target_y < top && (*y) > top)) {
+        if (y_diff != 0) {
+            *x = target_x + (top - target_y) * x_diff / y_diff;
+            height = target_h + (top - target_y) * h_diff / y_diff;
+        }
+        *y = top;
+    }
+
+#if TR_VERSION >= 2
+    *h = height;
+#endif
+}
+
+// TODO: make private.
 void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
 {
     const GAME_VECTOR old_pos = g_Camera.pos;
