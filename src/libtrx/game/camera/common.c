@@ -17,10 +17,13 @@
 #include "utils.h"
 
 #if TR_VERSION == 1
+    #define M_CHASE_SPEED 12
     #define M_MIN_SQUARE SQUARE(WALL_L / 4)
 #else
+    #define M_CHASE_SPEED 10
     #define M_MIN_SQUARE SQUARE(WALL_L / 3)
 #endif
+#define M_MAX_ELEVATION (85 * DEG_1) // = 15470
 #define M_COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 #define M_LOOK_DISTANCE (WALL_L * 3 / 2) // = 1536
 #define M_LOOK_CLAMP (STEP_L + 50) // = 296
@@ -541,6 +544,42 @@ void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
         g_Camera.mic_pos.y = g_Camera.pos.y;
     }
 #endif
+}
+
+// TODO: make private.
+void Camera_Chase(const ITEM *const item)
+{
+    g_Camera.target_elevation += item->rot.x;
+    g_Camera.target_elevation = MIN(g_Camera.target_elevation, M_MAX_ELEVATION);
+    g_Camera.target_elevation =
+        MAX(g_Camera.target_elevation, -M_MAX_ELEVATION);
+
+    const int32_t distance =
+        (g_Camera.target_distance * Math_Cos(g_Camera.target_elevation))
+        >> W2V_SHIFT;
+    const int16_t angle = g_Camera.target_angle + item->rot.y;
+
+    g_Camera.target_square = SQUARE(distance);
+
+    const XYZ_32 offset = {
+        .y = (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
+            >> W2V_SHIFT,
+        .x = -((distance * Math_Sin(angle)) >> W2V_SHIFT),
+        .z = -((distance * Math_Cos(angle)) >> W2V_SHIFT),
+    };
+
+    GAME_VECTOR target = {
+        .x = g_Camera.target.x + offset.x,
+        .y = g_Camera.target.y + offset.y,
+        .z = g_Camera.target.z + offset.z,
+        .room_num = g_Camera.pos.room_num,
+    };
+
+    const int16_t speed = TR_VERSION == 2 || g_Camera.fixed_camera
+        ? g_Camera.speed
+        : M_CHASE_SPEED;
+    Camera_SmartShift(&target, Camera_Shift);
+    Camera_Move(&target, speed);
 }
 
 // TODO: make private.

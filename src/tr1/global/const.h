@@ -58,8 +58,6 @@
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
 #define LOOK_SPEED 4
 #define COMBAT_SPEED 8
-#define CHASE_SPEED 12
-#define MAX_ELEVATION (85 * DEG_1) // = 15470
 #define DEFAULT_RADIUS 10
 #define NO_BAD_POS (-NO_HEIGHT)
 #define NO_BAD_NEG NO_HEIGHT

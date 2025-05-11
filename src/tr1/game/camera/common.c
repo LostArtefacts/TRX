@@ -16,46 +16,11 @@ static double m_ManualCameraMultiplier[11] = {
     1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
 };
 
-static void M_Chase(const ITEM *item);
 static void M_LoadCutsceneFrame(void);
 
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
-
-static void M_Chase(const ITEM *const item)
-{
-    GAME_VECTOR ideal;
-
-    g_Camera.target_elevation += item->rot.x;
-    if (g_Camera.target_elevation > MAX_ELEVATION) {
-        g_Camera.target_elevation = MAX_ELEVATION;
-    } else if (g_Camera.target_elevation < -MAX_ELEVATION) {
-        g_Camera.target_elevation = -MAX_ELEVATION;
-    }
-
-    const int32_t distance =
-        g_Camera.target_distance * Math_Cos(g_Camera.target_elevation)
-        >> W2V_SHIFT;
-    ideal.y = g_Camera.target.y
-        + (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation)
-           >> W2V_SHIFT);
-
-    g_Camera.target_square = SQUARE(distance);
-
-    const PHD_ANGLE angle = item->rot.y + g_Camera.target_angle;
-    ideal.x = g_Camera.target.x - (distance * Math_Sin(angle) >> W2V_SHIFT);
-    ideal.z = g_Camera.target.z - (distance * Math_Cos(angle) >> W2V_SHIFT);
-    ideal.room_num = g_Camera.pos.room_num;
-
-    Camera_SmartShift(&ideal, Camera_Shift);
-
-    if (g_Camera.fixed_camera) {
-        Camera_Move(&ideal, g_Camera.speed);
-    } else {
-        Camera_Move(&ideal, CHASE_SPEED);
-    }
-}
 
 static void M_LoadCutsceneFrame(void)
 {
@@ -227,7 +192,7 @@ void Camera_Update(void)
         }
 
         if (g_Camera.type == CAM_CHASE || g_Camera.flags == CF_CHASE_OBJECT) {
-            M_Chase(item);
+            Camera_Chase(item);
         } else {
             Camera_Fixed();
         }

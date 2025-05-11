@@ -21,39 +21,6 @@
 
 #define LOOK_SPEED 4
 
-#define MAX_ELEVATION (85 * DEG_1) // = 15470
-
-void Camera_Chase(const ITEM *item)
-{
-    g_Camera.target_elevation += item->rot.x;
-    g_Camera.target_elevation = MIN(g_Camera.target_elevation, MAX_ELEVATION);
-    g_Camera.target_elevation = MAX(g_Camera.target_elevation, -MAX_ELEVATION);
-
-    int32_t distance =
-        (g_Camera.target_distance * Math_Cos(g_Camera.target_elevation))
-        >> W2V_SHIFT;
-    int16_t angle = g_Camera.target_angle + item->rot.y;
-
-    g_Camera.target_square = SQUARE(distance);
-
-    const XYZ_32 offset = {
-        .y = (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
-            >> W2V_SHIFT,
-        .x = -((distance * Math_Sin(angle)) >> W2V_SHIFT),
-        .z = -((distance * Math_Cos(angle)) >> W2V_SHIFT),
-    };
-
-    GAME_VECTOR target = {
-        .x = g_Camera.target.x + offset.x,
-        .y = g_Camera.target.y + offset.y,
-        .z = g_Camera.target.z + offset.z,
-        .room_num = g_Camera.pos.room_num,
-    };
-
-    Camera_SmartShift(&target, Camera_Shift);
-    Camera_Move(&target, g_Camera.speed);
-}
-
 void Camera_Update(void)
 {
     if (g_Camera.type == CAM_PHOTO_MODE) {
