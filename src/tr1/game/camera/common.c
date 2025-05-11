@@ -26,8 +26,6 @@ static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
 
-static void M_Shift(CAMERA_SHIFT_ARGS);
-
 static void M_Chase(const ITEM *const item)
 {
     GAME_VECTOR ideal;
@@ -53,7 +51,7 @@ static void M_Chase(const ITEM *const item)
     ideal.z = g_Camera.target.z - (distance * Math_Cos(angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    Camera_SmartShift(&ideal, M_Shift);
+    Camera_SmartShift(&ideal, Camera_Shift);
 
     if (g_Camera.fixed_camera) {
         Camera_Move(&ideal, g_Camera.speed);
@@ -94,7 +92,7 @@ static void M_Combat(const ITEM *const item)
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    Camera_SmartShift(&ideal, M_Shift);
+    Camera_SmartShift(&ideal, Camera_Shift);
     Camera_Move(&ideal, g_Camera.speed);
 }
 
@@ -211,53 +209,6 @@ static void M_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
-}
-
-static void M_Shift(CAMERA_SHIFT_ARGS)
-{
-    const int32_t tl_square = SQUARE(target_x - left) + SQUARE(target_y - top);
-    const int32_t bl_square =
-        SQUARE(target_x - left) + SQUARE(target_y - bottom);
-    const int32_t tr_square = SQUARE(target_x - right) + SQUARE(target_y - top);
-
-    int32_t shift;
-    if (g_Camera.target_square < tl_square) {
-        *x = left;
-        shift = g_Camera.target_square - SQUARE(target_x - left);
-        if (shift < 0) {
-            return;
-        }
-
-        shift = Math_Sqrt(shift);
-        *y = target_y + ((top < bottom) ? -shift : shift);
-    } else if (tl_square > MIN_SQUARE) {
-        *x = left;
-        *y = top;
-    } else if (g_Camera.target_square < bl_square) {
-        *x = left;
-        shift = g_Camera.target_square - SQUARE(target_x - left);
-        if (shift < 0) {
-            return;
-        }
-
-        shift = Math_Sqrt(shift);
-        *y = target_y + ((top < bottom) ? shift : -shift);
-    } else if (bl_square > MIN_SQUARE) {
-        *x = left;
-        *y = bottom;
-    } else if (g_Camera.target_square < tr_square) {
-        shift = g_Camera.target_square - SQUARE(target_y - top);
-        if (shift < 0) {
-            return;
-        }
-
-        shift = Math_Sqrt(shift);
-        *x = target_x + ((left < right) ? shift : -shift);
-        *y = top;
-    } else {
-        *x = right;
-        *y = top;
-    }
 }
 
 void Camera_Update(void)

@@ -26,51 +26,6 @@
 
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
 
-void Camera_Shift(CAMERA_SHIFT_ARGS)
-{
-    int32_t shift;
-
-    int32_t l_square = SQUARE(target_x - left);
-    int32_t r_square = SQUARE(target_x - right);
-    int32_t t_square = SQUARE(target_y - top);
-    int32_t b_square = SQUARE(target_y - bottom);
-    int32_t tl_square = t_square + l_square;
-    int32_t tr_square = t_square + r_square;
-    int32_t bl_square = b_square + l_square;
-
-    if (g_Camera.target_square < tl_square) {
-        *x = left;
-        shift = g_Camera.target_square - l_square;
-        if (shift >= 0) {
-            shift = Math_Sqrt(shift);
-            *y = target_y + (top >= bottom ? shift : -shift);
-        }
-    } else if (tl_square > MIN_SQUARE) {
-        *x = left;
-        *y = top;
-    } else if (g_Camera.target_square < bl_square) {
-        *x = left;
-        shift = g_Camera.target_square - l_square;
-        if (shift >= 0) {
-            shift = Math_Sqrt(shift);
-            *y = target_y + (top < bottom ? shift : -shift);
-        }
-    } else if (2 * g_Camera.target_square < tr_square) {
-        shift = 2 * g_Camera.target_square - t_square;
-        if (shift >= 0) {
-            shift = Math_Sqrt(shift);
-            *x = target_x + (left < right ? shift : -shift);
-            *y = top;
-        }
-    } else if (bl_square <= tr_square) {
-        *x = right;
-        *y = top;
-    } else {
-        *x = left;
-        *y = bottom;
-    }
-}
-
 void Camera_Chase(const ITEM *item)
 {
     g_Camera.target_elevation += item->rot.x;

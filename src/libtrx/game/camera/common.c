@@ -15,6 +15,12 @@
 #include "game/viewport.h"
 #include "utils.h"
 
+#if TR_VERSION == 1
+    #define M_MIN_SQUARE SQUARE(WALL_L / 4)
+#else
+    #define M_MIN_SQUARE SQUARE(WALL_L / 3)
+#endif
+
 #if TR_VERSION == 2
 // TODO: consolidate with Viewport API
 extern int32_t g_PhdPersp;
@@ -382,6 +388,60 @@ void Camera_Clip(CAMERA_SHIFT_ARGS)
 #if TR_VERSION >= 2
     *h = height;
 #endif
+}
+
+// TODO: make private.
+void Camera_Shift(CAMERA_SHIFT_ARGS)
+{
+    const int32_t l_square = SQUARE(target_x - left);
+    const int32_t r_square = SQUARE(target_x - right);
+    const int32_t t_square = SQUARE(target_y - top);
+    const int32_t b_square = SQUARE(target_y - bottom);
+
+    const int32_t tl_square = t_square + l_square;
+    const int32_t tr_square = t_square + r_square;
+    const int32_t bl_square = b_square + l_square;
+#if TR_VERSION == 1
+    const int32_t scaled_target = g_Camera.target_square;
+#else
+    const int32_t scaled_target = g_Camera.target_square * 2;
+#endif
+
+    int32_t shift;
+    if (g_Camera.target_square < tl_square) {
+        *x = left;
+        shift = g_Camera.target_square - l_square;
+        if (shift >= 0) {
+            shift = Math_Sqrt(shift);
+            *y = target_y + (top >= bottom ? shift : -shift);
+        }
+    } else if (tl_square > M_MIN_SQUARE) {
+        *x = left;
+        *y = top;
+    } else if (g_Camera.target_square < bl_square) {
+        *x = left;
+        shift = g_Camera.target_square - l_square;
+        if (shift >= 0) {
+            shift = Math_Sqrt(shift);
+            *y = target_y + (top < bottom ? shift : -shift);
+        }
+    } else if (TR_VERSION == 1 && bl_square > M_MIN_SQUARE) {
+        *x = left;
+        *y = bottom;
+    } else if (scaled_target < tr_square) {
+        shift = scaled_target - t_square;
+        if (shift >= 0) {
+            shift = Math_Sqrt(shift);
+            *x = target_x + (left < right ? shift : -shift);
+            *y = top;
+        }
+    } else if (TR_VERSION == 1 || bl_square <= tr_square) {
+        *x = right;
+        *y = top;
+    } else {
+        *x = left;
+        *y = bottom;
+    }
 }
 
 // TODO: make private.

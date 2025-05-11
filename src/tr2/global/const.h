@@ -16,7 +16,6 @@
 #define LIGHT_MAP_SIZE 32
 #define MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
 
-#define MIN_SQUARE SQUARE(WALL_L / 3)
 #define NO_BOX (-1)
 #define NO_ITEM (-1)
 
