@@ -26,7 +26,6 @@ static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
 
-static void M_Clip(CAMERA_SHIFT_ARGS);
 static void M_Shift(CAMERA_SHIFT_ARGS);
 
 static void M_Chase(const ITEM *const item)
@@ -143,7 +142,7 @@ static void M_Look(const ITEM *const item)
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    Camera_SmartShift(&ideal, M_Clip);
+    Camera_SmartShift(&ideal, Camera_Clip);
 
     g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
     g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
@@ -212,27 +211,6 @@ static void M_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
-}
-
-static void M_Clip(CAMERA_SHIFT_ARGS)
-{
-    const int32_t x_diff = *x - target_x;
-    const int32_t y_diff = *y - target_y;
-
-    if ((right > left) != (target_x < left)) {
-        if (x_diff) {
-            *y = target_y + (left - target_x) * y_diff / x_diff;
-        }
-        *x = left;
-    }
-
-    if ((bottom > top && target_y > top && *y < top)
-        || (bottom < top && target_y < top && (*y) > top)) {
-        if (y_diff) {
-            *x = target_x + (top - target_y) * x_diff / y_diff;
-        }
-        *y = top;
-    }
 }
 
 static void M_Shift(CAMERA_SHIFT_ARGS)

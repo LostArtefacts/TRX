@@ -26,3 +26,4 @@ const SECTOR *Camera_GetSector(
     int32_t x, int32_t y, int32_t z, int16_t room_num);
 int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
 void Camera_SmartShift(GAME_VECTOR *target, void (*shift)(CAMERA_SHIFT_ARGS));
+void Camera_Clip(CAMERA_SHIFT_ARGS);
