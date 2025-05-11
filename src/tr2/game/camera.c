@@ -109,30 +109,6 @@ void Camera_Combat(const ITEM *item)
     Camera_Move(&target, g_Camera.speed);
 }
 
-void Camera_Fixed(void)
-{
-    const OBJECT_VECTOR *const fixed = Camera_GetFixedObject(g_Camera.num);
-    GAME_VECTOR target = {
-        .x = fixed->x,
-        .y = fixed->y,
-        .z = fixed->z,
-        .room_num = fixed->data,
-    };
-    if (!LOS_Check(&g_Camera.target, &target)) {
-        Camera_ShiftClamp(&target, STEP_L);
-    }
-
-    g_Camera.fixed_camera = true;
-    Camera_Move(&target, g_Camera.speed);
-
-    if (g_Camera.timer) {
-        g_Camera.timer--;
-        if (!g_Camera.timer) {
-            g_Camera.timer = -1;
-        }
-    }
-}
-
 void Camera_Update(void)
 {
     if (g_Camera.type == CAM_PHOTO_MODE) {

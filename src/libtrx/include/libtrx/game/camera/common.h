@@ -28,4 +28,5 @@ int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
 void Camera_SmartShift(GAME_VECTOR *target, void (*shift)(CAMERA_SHIFT_ARGS));
 void Camera_Clip(CAMERA_SHIFT_ARGS);
 void Camera_Shift(CAMERA_SHIFT_ARGS);
+void Camera_Fixed(void);
 void Camera_Look(const ITEM *item);

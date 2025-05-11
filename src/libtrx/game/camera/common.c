@@ -3,6 +3,7 @@
 #include "config.h"
 #include "debug.h"
 #include "game/camera/const.h"
+#include "game/camera/fixed.h"
 #include "game/camera/vars.h"
 #include "game/lara.h"
 #include "game/los.h"
@@ -539,6 +540,33 @@ void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
         g_Camera.mic_pos.y = g_Camera.pos.y;
     }
 #endif
+}
+
+// TODO: make private.
+void Camera_Fixed(void)
+{
+    const OBJECT_VECTOR *const fixed = Camera_GetFixedObject(g_Camera.num);
+    GAME_VECTOR target = {
+        .x = fixed->x,
+        .y = fixed->y,
+        .z = fixed->z,
+        .room_num = fixed->data,
+    };
+#if TR_VERSION >= 2
+    if (!LOS_Check(&g_Camera.target, &target)) {
+        Camera_ShiftClamp(&target, STEP_L);
+    }
+#endif
+
+    g_Camera.fixed_camera = true;
+    Camera_Move(&target, g_Camera.speed);
+
+    if (g_Camera.timer != 0) {
+        g_Camera.timer--;
+        if (g_Camera.timer == 0) {
+            g_Camera.timer = -1;
+        }
+    }
 }
 
 // TODO: make private.

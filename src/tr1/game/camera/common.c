@@ -18,7 +18,6 @@ static double m_ManualCameraMultiplier[11] = {
 
 static void M_Chase(const ITEM *item);
 static void M_Combat(const ITEM *item);
-static void M_Fixed(void);
 static void M_LoadCutsceneFrame(void);
 
 static void M_OffsetAdditionalAngle(int16_t delta);
@@ -93,28 +92,6 @@ static void M_Combat(const ITEM *const item)
 
     Camera_SmartShift(&ideal, Camera_Shift);
     Camera_Move(&ideal, g_Camera.speed);
-}
-
-static void M_Fixed(void)
-{
-    const OBJECT_VECTOR *const fixed = Camera_GetFixedObject(g_Camera.num);
-    GAME_VECTOR ideal = {
-        .x = fixed->x,
-        .y = fixed->y,
-        .z = fixed->z,
-        .room_num = fixed->data,
-    };
-
-    g_Camera.fixed_camera = true;
-
-    Camera_Move(&ideal, g_Camera.speed);
-
-    if (g_Camera.timer) {
-        g_Camera.timer--;
-        if (!g_Camera.timer) {
-            g_Camera.timer = -1;
-        }
-    }
 }
 
 static void M_LoadCutsceneFrame(void)
@@ -289,7 +266,7 @@ void Camera_Update(void)
         if (g_Camera.type == CAM_CHASE || g_Camera.flags == CF_CHASE_OBJECT) {
             M_Chase(item);
         } else {
-            M_Fixed();
+            Camera_Fixed();
         }
     }
 
