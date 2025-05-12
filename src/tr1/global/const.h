@@ -44,8 +44,6 @@
 #define MAX_HEAD_ROTATION (50 * DEG_1) // = 9100
 #define MAX_HEAD_TILT_LOOK (22 * DEG_1) // = 4004
 #define MIN_HEAD_TILT_LOOK (-42 * DEG_1) // = -7644
-#define MAX_HEAD_TILT_CAM (85 * DEG_1) // = 15470
-#define MIN_HEAD_TILT_CAM (-85 * DEG_1) // = 15470
 #define HEAD_TURN (4 * DEG_1) // = 728
 #define HEAD_TURN_SURF (3 * DEG_1) // = 546
 #define MAX_HEAD_ROTATION_SURF (50 * DEG_1) // = 9100
@@ -56,8 +54,6 @@
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * DEG_1) // = -10920
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
-#define LOOK_SPEED 4
-#define COMBAT_SPEED 8
 #define DEFAULT_RADIUS 10
 #define NO_BAD_POS (-NO_HEIGHT)
 #define NO_BAD_NEG NO_HEIGHT

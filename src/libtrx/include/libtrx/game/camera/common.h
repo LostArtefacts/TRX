@@ -9,7 +9,7 @@
         int32_t target_h, int32_t left, int32_t top, int32_t right,            \
         int32_t bottom
 
-extern void Camera_Update(void);
+void Camera_Update(void);
 void Camera_MoveManual(void);
 void Camera_Apply(void);
 void Camera_Move(const GAME_VECTOR *target, int32_t speed);

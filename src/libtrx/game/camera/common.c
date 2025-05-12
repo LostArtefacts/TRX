@@ -2,9 +2,7 @@
 
 #include "config.h"
 #include "debug.h"
-#include "game/camera/const.h"
-#include "game/camera/fixed.h"
-#include "game/camera/vars.h"
+#include "game/camera.h"
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/los.h"
@@ -17,17 +15,27 @@
 #include "game/viewport.h"
 #include "utils.h"
 
+// clang-format off
 #if TR_VERSION == 1
     #define M_CHASE_SPEED 12
-    #define M_MIN_SQUARE SQUARE(WALL_L / 4)
+    #define M_MIN_SQUARE  SQUARE(WALL_L / 4)
 #else
     #define M_CHASE_SPEED 10
-    #define M_MIN_SQUARE SQUARE(WALL_L / 3)
+    #define M_MIN_SQUARE  SQUARE(WALL_L / 3)
 #endif
-#define M_MAX_ELEVATION (85 * DEG_1) // = 15470
-#define M_COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
-#define M_LOOK_DISTANCE (WALL_L * 3 / 2) // = 1536
-#define M_LOOK_CLAMP (STEP_L + 50) // = 296
+#define M_MAX_ELEVATION     (85 * DEG_1) // = 15470
+#define M_COMBAT_DISTANCE   (WALL_L * 5 / 2) // = 2560
+#define M_LOOK_DISTANCE     (WALL_L * 3 / 2) // = 1536
+#define M_LOOK_CLAMP        (STEP_L + 50) // = 296
+#define M_MAX_HEAD_ROTATION (50 * DEG_1) // = 9100
+#define M_MIN_HEAD_ROTATION (-M_MAX_HEAD_ROTATION) // = -9100
+#define M_MAX_HEAD_TILT     (85 * DEG_1) // = 15470
+#define M_MIN_HEAD_TILT     (-M_MAX_HEAD_TILT) // = -15470
+#define M_HEAD_TURN         (4 * DEG_1) // = 728
+#define M_CHASE_ELEVATION   (WALL_L * 3 / 2) // = 1536
+#define M_COMBAT_SPEED      8
+#define M_LOOK_SPEED        4
+// clang-format on
 
 #if TR_VERSION == 2
 // TODO: consolidate with Viewport API
@@ -906,6 +914,168 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
         g_Camera.timer = -1;
     }
 #endif
+}
+
+void Camera_Update(void)
+{
+    if (g_Camera.type == CAM_PHOTO_MODE) {
+        Camera_UpdatePhotoMode();
+        return;
+    }
+
+    if (g_Camera.type == CAM_CINEMATIC) {
+        Camera_LoadCutsceneFrame();
+        return;
+    }
+
+    if (g_Camera.flags != CF_NO_CHUNKY) {
+        Camera_SetChunky(true);
+    }
+
+    const bool fixed_camera = g_Camera.item != nullptr
+        && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
+    const ITEM *const item = fixed_camera ? g_Camera.item : Lara_GetItem();
+
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
+
+    int32_t y = item->pos.y;
+    if (fixed_camera) {
+        y += (bounds->min.y + bounds->max.y) / 2;
+    } else {
+        y += bounds->max.y
+            + (((int32_t)(bounds->min.y - bounds->max.y)) * 3 >> 2);
+    }
+
+    if (g_Camera.item != nullptr && !fixed_camera) {
+        bounds = Item_GetBoundsAccurate(g_Camera.item);
+
+        const int32_t dx = g_Camera.item->pos.x - item->pos.x;
+        const int32_t dz = g_Camera.item->pos.z - item->pos.z;
+        const int32_t shift = Math_Sqrt(SQUARE(dx) + SQUARE(dz));
+        int16_t angle = Math_Atan(dz, dx) - item->rot.y;
+
+        int16_t tilt = Math_Atan(
+            shift,
+            y - (bounds->min.y + bounds->max.y) / 2 - g_Camera.item->pos.y);
+        angle >>= 1;
+        tilt >>= 1;
+
+        if (angle > M_MIN_HEAD_ROTATION && angle < M_MAX_HEAD_ROTATION
+            && tilt > M_MIN_HEAD_TILT && tilt < M_MAX_HEAD_TILT) {
+            LARA_INFO *const lara_info = Lara_GetLaraInfo();
+            int16_t change = angle - lara_info->head_rot.y;
+            if (change > M_HEAD_TURN) {
+                lara_info->head_rot.y += M_HEAD_TURN;
+            } else if (change < -M_HEAD_TURN) {
+                lara_info->head_rot.y -= M_HEAD_TURN;
+            } else {
+                lara_info->head_rot.y = angle;
+            }
+
+            change = tilt - lara_info->head_rot.x;
+            if (change > M_HEAD_TURN) {
+                lara_info->head_rot.x += M_HEAD_TURN;
+            } else if (change < -M_HEAD_TURN) {
+                lara_info->head_rot.x -= M_HEAD_TURN;
+            } else {
+                lara_info->head_rot.x += change;
+            }
+            lara_info->torso_rot.x = lara_info->head_rot.x;
+            lara_info->torso_rot.y = lara_info->head_rot.y;
+            g_Camera.type = CAM_LOOK;
+            g_Camera.item->looked_at = 1;
+        }
+    }
+
+    if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
+        y -= STEP_L;
+        g_Camera.target.room_num = item->room_num;
+        if (g_Camera.fixed_camera) {
+            g_Camera.target.y = y;
+            g_Camera.speed = 1;
+        } else {
+            g_Camera.target.y += (y - g_Camera.target.y) >> 2;
+            g_Camera.speed =
+                g_Camera.type == CAM_LOOK ? M_LOOK_SPEED : M_COMBAT_SPEED;
+        }
+        g_Camera.fixed_camera = false;
+        if (g_Camera.type == CAM_LOOK) {
+            Camera_Look(item);
+        } else {
+            Camera_Combat(item);
+        }
+    } else {
+        if (g_Camera.debuff > 0) {
+            const XYZ_32 old = g_Camera.target.pos;
+            g_Camera.target.x = (item->pos.x + old.x) / 2;
+            g_Camera.target.z = (item->pos.z + old.z) / 2;
+            g_Camera.debuff--;
+        } else {
+            g_Camera.target.x = item->pos.x;
+            g_Camera.target.z = item->pos.z;
+        }
+
+        if (g_Camera.flags == CF_FOLLOW_CENTRE) {
+            const int32_t shift = (bounds->min.z + bounds->max.z) / 2;
+            g_Camera.target.z += (shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+            g_Camera.target.x += (shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+        }
+
+        g_Camera.target.room_num = item->room_num;
+        if (g_Camera.fixed_camera != fixed_camera) {
+            g_Camera.target.y = y;
+            g_Camera.fixed_camera = true;
+            g_Camera.speed = 1;
+        } else {
+            g_Camera.fixed_camera = false;
+            g_Camera.target.y += (y - g_Camera.target.y) / 4;
+        }
+
+        const SECTOR *const sector = Room_GetSector(
+            g_Camera.target.x, y, g_Camera.target.z, &g_Camera.target.room_num);
+        const int32_t height = Room_GetHeight(
+            sector, g_Camera.target.x, g_Camera.target.y, g_Camera.target.z);
+        if (g_Camera.target.y > height) {
+            Camera_SetChunky(false);
+        }
+
+        if (g_Camera.type == CAM_CHASE || g_Camera.flags == CF_CHASE_OBJECT) {
+            Camera_Chase(item);
+        } else {
+            Camera_Fixed();
+        }
+    }
+
+    g_Camera.last = g_Camera.num;
+    g_Camera.fixed_camera = fixed_camera;
+
+    switch (g_Camera.type) {
+    case CAM_LOOK:
+    case CAM_CINEMATIC:
+    case CAM_COMBAT:
+    case CAM_FIXED:
+        g_Camera.additional_angle = 0;
+        g_Camera.additional_elevation = 0;
+        break;
+
+    default:
+        break;
+    }
+
+    if (g_Camera.type != CAM_HEAVY || g_Camera.timer == -1) {
+        g_Camera.type = CAM_CHASE;
+        g_Camera.num = NO_CAMERA;
+        g_Camera.last_item = g_Camera.item;
+        g_Camera.item = nullptr;
+        g_Camera.target_angle = g_Camera.additional_angle;
+        g_Camera.target_elevation = g_Camera.additional_elevation;
+        g_Camera.target_distance = M_CHASE_ELEVATION;
+        g_Camera.flags = CF_NORMAL;
+#if TR_VERSION >= 2
+        g_Camera.speed = M_CHASE_SPEED;
+#endif
+    }
+    Camera_SetChunky(false);
 }
 
 void Camera_MoveManual(void)
