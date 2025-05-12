@@ -4,5 +4,4 @@
 
 #include <libtrx/game/camera.h>
 
-void Camera_LoadCutsceneFrame(void);
 void Camera_UpdateCutscene(void);
