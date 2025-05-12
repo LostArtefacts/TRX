@@ -340,9 +340,9 @@ void Camera_SmartShift(
     }
 #if TR_VERSION == 2
     if (prefer_a) {
-        prefer_a = LOS_Check(&g_Camera.target, &target_a) != 0;
+        prefer_a = LOS_Check(&g_Camera.target, &target_a);
     } else {
-        prefer_a = LOS_Check(&g_Camera.target, &target_b) == 0;
+        prefer_a = !LOS_Check(&g_Camera.target, &target_b);
     }
 #endif
     if (prefer_a) {
