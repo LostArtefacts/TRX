@@ -8,6 +8,7 @@
 - added ability to reposition the health bar and the air bar (#1611)
 - added enemy health bars (#2909)
 - added an FPS counter (#2910)
+- added the ability to move the camera around with W,A,S,D (rebindable) (#2978)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
 - changed the installer to always allow downloading music files (#2891)
 - changed the dev console to no longer add duplicate entries to the history

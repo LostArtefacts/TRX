@@ -152,14 +152,28 @@ void Camera_Update(void)
 
     g_Camera.last = g_Camera.num;
     g_Camera.fixed_camera = fixed_camera;
+
+    switch (g_Camera.type) {
+    case CAM_LOOK:
+    case CAM_CINEMATIC:
+    case CAM_COMBAT:
+    case CAM_FIXED:
+        g_Camera.additional_angle = 0;
+        g_Camera.additional_elevation = 0;
+        break;
+
+    default:
+        break;
+    }
+
     if (g_Camera.type != CAM_HEAVY || g_Camera.timer == -1) {
         g_Camera.type = CAM_CHASE;
         g_Camera.speed = CHASE_SPEED;
         g_Camera.num = NO_CAMERA;
         g_Camera.last_item = g_Camera.item;
         g_Camera.item = nullptr;
-        g_Camera.target_elevation = 0;
-        g_Camera.target_angle = 0;
+        g_Camera.target_angle = g_Camera.additional_angle;
+        g_Camera.target_elevation = g_Camera.additional_elevation;
         g_Camera.target_distance = CHASE_ELEVATION;
         g_Camera.flags = CF_NORMAL;
     }

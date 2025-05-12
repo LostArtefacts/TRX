@@ -643,6 +643,8 @@ void Lara_Control(const int16_t item_num)
         g_Lara.death_timer = 9 * FRAMES_PER_SECOND;
     }
 
+    Camera_MoveManual();
+
     COLL_INFO coll;
     switch (g_Lara.water_status) {
     case LWS_ABOVE_WATER:

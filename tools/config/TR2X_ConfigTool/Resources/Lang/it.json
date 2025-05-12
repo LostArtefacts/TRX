@@ -28,6 +28,10 @@
       "Title": "Abilita passaporto reattivo",
       "Description": "Disabilita il blocco dell'input dell'utente mentre scorrono le pagine del passaporto, programmando invece le pagine da sfogliare."
     },
+    "camera_speed": {
+      "Title": "Velocità di movimento della visuale",
+      "Description": "Modifica la velocità di movimento della visuale manuale."
+    },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
       "Description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D."

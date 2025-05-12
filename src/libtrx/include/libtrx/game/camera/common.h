@@ -10,6 +10,7 @@
         int32_t bottom
 
 extern void Camera_Update(void);
+void Camera_MoveManual(void);
 void Camera_Apply(void);
 void Camera_Move(const GAME_VECTOR *target, int32_t speed);
 bool Camera_IsChunky(void);
