@@ -5,6 +5,7 @@
 #include "game/camera/const.h"
 #include "game/camera/fixed.h"
 #include "game/camera/vars.h"
+#include "game/input.h"
 #include "game/lara.h"
 #include "game/los.h"
 #include "game/matrix.h"
@@ -33,11 +34,20 @@
 extern int32_t g_PhdPersp;
 #endif
 
+// Camera speed option ranges from 1-10, so index 0 is unused.
+static const double m_ManualCameraMultiplier[11] = {
+    1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
+};
+
 static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
 
 static void M_AdjustMusicVolume(bool underwater);
 static void M_EnsureEnvironment(void);
+
+static void M_OffsetAdditionalAngle(int16_t delta);
+static void M_OffsetAdditionalElevation(int16_t delta);
+static void M_OffsetReset(void);
 
 static void M_AdjustMusicVolume(const bool underwater)
 {
@@ -87,6 +97,25 @@ static void M_EnsureEnvironment(void)
             g_Camera.underwater = false;
         }
     }
+}
+
+static void M_OffsetAdditionalAngle(const int16_t delta)
+{
+    g_Camera.additional_angle += delta;
+}
+
+static void M_OffsetAdditionalElevation(const int16_t delta)
+{
+    // Do not allow elevation to overflow.
+    int32_t new_elevation = g_Camera.additional_elevation + delta;
+    CLAMP(new_elevation, INT16_MIN, INT16_MAX);
+    g_Camera.additional_elevation = new_elevation;
+}
+
+static void M_OffsetReset(void)
+{
+    g_Camera.additional_angle = 0;
+    g_Camera.additional_elevation = 0;
 }
 
 // TODO: make private once modules are ported.
@@ -770,9 +799,9 @@ void Camera_ResetPosition(void)
     g_Camera.bounce = 0;
     g_Camera.num = NO_CAMERA;
     g_Camera.fixed_camera = false;
-#if TR_VERSION == 1
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
+#if TR_VERSION == 1
     g_Camera.type = CAM_CHASE;
 #else
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -877,6 +906,26 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
         g_Camera.timer = -1;
     }
 #endif
+}
+
+void Camera_MoveManual(void)
+{
+    const int16_t camera_delta = (const int32_t)(DEG_90 / LOGIC_FPS)
+        * (double)m_ManualCameraMultiplier[g_Config.gameplay.camera_speed];
+
+    if (g_Input.camera_left) {
+        M_OffsetAdditionalAngle(camera_delta);
+    } else if (g_Input.camera_right) {
+        M_OffsetAdditionalAngle(-camera_delta);
+    }
+    if (g_Input.camera_forward) {
+        M_OffsetAdditionalElevation(-camera_delta);
+    } else if (g_Input.camera_back) {
+        M_OffsetAdditionalElevation(camera_delta);
+    }
+    if (g_Input.camera_reset) {
+        M_OffsetReset();
+    }
 }
 
 void Camera_Apply(void)

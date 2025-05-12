@@ -69,6 +69,13 @@
           "Field": "enable_responsive_passport",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "camera_speed",
+          "DataType": "Numeric",
+          "DefaultValue": 5,
+          "MinimumValue": 1,
+          "MaximumValue": 10
         }
       ]
     },

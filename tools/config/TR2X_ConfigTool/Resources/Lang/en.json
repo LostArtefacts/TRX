@@ -28,6 +28,10 @@
       "Title": "Enable more responsive passport",
       "Description": "Disables blocking user input when passport flips pages, scheduling the page flips instead."
     },
+    "camera_speed": {
+      "Title": "Camera speed",
+      "Description": "Changes how fast the manual camera moves."
+    },
     "enable_3d_pickups": {
       "Title": "3D pickups",
       "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."

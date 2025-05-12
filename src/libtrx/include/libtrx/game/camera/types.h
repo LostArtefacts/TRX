@@ -30,11 +30,10 @@ typedef struct {
 
     int32_t debuff;
 
-#if TR_VERSION == 1
     // used for the manual camera control
     int16_t additional_angle;
     int16_t additional_elevation;
-#else
+#if TR_VERSION == 2
     XYZ_32 mic_pos;
 #endif
 

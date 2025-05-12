@@ -11,16 +11,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
 
-// Camera speed option ranges from 1-10, so index 0 is unused.
-static double m_ManualCameraMultiplier[11] = {
-    1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
-};
-
 static void M_LoadCutsceneFrame(void);
-
-static void M_OffsetAdditionalAngle(int16_t delta);
-static void M_OffsetAdditionalElevation(int16_t delta);
-static void M_OffsetReset(void);
 
 static void M_LoadCutsceneFrame(void)
 {
@@ -31,35 +22,6 @@ static void M_LoadCutsceneFrame(void)
     }
 
     Camera_UpdateCutscene();
-}
-
-static void M_OffsetAdditionalAngle(const int16_t delta)
-{
-    g_Camera.additional_angle += delta;
-}
-
-static void M_OffsetAdditionalElevation(const int16_t delta)
-{
-    // don't let this value wrap, so clamp it.
-    if (delta > 0) {
-        if (g_Camera.additional_elevation > INT16_MAX - delta) {
-            g_Camera.additional_elevation = INT16_MAX;
-        } else {
-            g_Camera.additional_elevation += delta;
-        }
-    } else {
-        if (g_Camera.additional_elevation < INT16_MIN - delta) {
-            g_Camera.additional_elevation = INT16_MIN;
-        } else {
-            g_Camera.additional_elevation += delta;
-        }
-    }
-}
-
-static void M_OffsetReset(void)
-{
-    g_Camera.additional_angle = 0;
-    g_Camera.additional_elevation = 0;
 }
 
 void Camera_Update(void)
@@ -255,24 +217,4 @@ void Camera_UpdateCutscene(void)
     g_Camera.shift = 0;
 
     Viewport_SetFOV(ref->fov);
-}
-
-void Camera_MoveManual(void)
-{
-    const int16_t camera_delta = (const int)DEG_90 / (const int)LOGIC_FPS
-        * (double)m_ManualCameraMultiplier[g_Config.gameplay.camera_speed];
-
-    if (g_Input.camera_left) {
-        M_OffsetAdditionalAngle(camera_delta);
-    } else if (g_Input.camera_right) {
-        M_OffsetAdditionalAngle(-camera_delta);
-    }
-    if (g_Input.camera_forward) {
-        M_OffsetAdditionalElevation(-camera_delta);
-    } else if (g_Input.camera_back) {
-        M_OffsetAdditionalElevation(camera_delta);
-    }
-    if (g_Input.camera_reset) {
-        M_OffsetReset();
-    }
 }
