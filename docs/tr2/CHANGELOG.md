@@ -29,6 +29,7 @@
 - fixed being unable to load a save made in the first level if that level removes Lara's weapons but also has a shotgun pickup (#2934, regression from 0.9)
 - fixed misplaced effects such as bubbles and dragon fire in 60 FPS (#2873, #2881, regression from 0.10)
 - fixed incorrect camera shifts when some fixed cameras return to normal view (#2971, regression from 0.10)
+- fixed blood not spawning when Lara is run down by boulders/barrels (#2982, regression from 0.7)
 - improved the `/set` console command to display available options if given an unknown argument
 - improved handling of items that are dropped by enemies (#2952)
     - added the ability for any enemy type to drop items, excluding eels

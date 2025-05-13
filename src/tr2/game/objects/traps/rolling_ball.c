@@ -200,8 +200,8 @@ static void M_Collision(
             for (int32_t i = 0; i < 15; i++) {
                 Spawn_Blood(
                     lara_item->pos.x + (Random_GetControl() - 0x4000) / 256,
-                    lara_item->pos.z + (Random_GetControl() - 0x4000) / 256,
                     lara_item->pos.y - Random_GetControl() / 64,
+                    lara_item->pos.z + (Random_GetControl() - 0x4000) / 256,
                     2 * item->speed,
                     item->rot.y + (Random_GetControl() - 0x4000) / 8,
                     item->room_num);
