@@ -254,7 +254,7 @@ void Room_InitialiseFlipStatus(void)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         ROOM *const room = Room_Get(i);
-        if (room->flipped_room == -1) {
+        if (room->flipped_room == NO_ROOM_NEG) {
             room->flip_status = RFS_NONE;
         } else if (room->flip_status != RFS_FLIPPED) {
             ROOM *const flipped_room = Room_Get(room->flipped_room);
@@ -290,20 +290,25 @@ void Room_FlipMap(void)
         *flipped = temp;
 
         room->flipped_room = flipped->flipped_room;
-        flipped->flipped_room = -1;
         room->flip_status = RFS_UNFLIPPED;
+        flipped->flipped_room = NO_ROOM_NEG;
         flipped->flip_status = RFS_FLIPPED;
 
         room->item_num = flipped->item_num;
         room->effect_num = flipped->effect_num;
 
         M_AddFlipItems(room);
-        Output_ObserveRoomFlip(flipped);
-        Output_ObserveRoomFlip(room);
     }
 
     MovableBlock_HandleFlipMap(RFS_FLIPPED);
     m_FlipStatus = !m_FlipStatus;
+
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        if (room->flip_status != RFS_NONE) {
+            Output_ObserveRoomFlip(room);
+        }
+    }
 }
 
 bool Room_GetFlipStatus(void)
