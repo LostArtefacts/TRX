@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...develop) - ××××-××-××
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - added a /help command (#2917)
+- fixed animated textures not working the right way in flipped rooms (#2966, regression from 4.10)
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)

@@ -61,6 +61,9 @@ static M_MESH_SHADE M_ShadeCaustics(M_MESH_SHADE source, uint8_t caustic)
 
 static M_BATCH *M_GetBatch(const ROOM *const room)
 {
+    if (room->flip_status == RFS_FLIPPED) {
+        return nullptr;
+    }
     // Room data gets swapped when flipping, but the VBOs do not. So a room 2
     // that gets flipped to room 17 ends up getting the data from room 2,
     // whereas the VBO needs to take data from room 17.
@@ -139,6 +142,9 @@ static void M_UpdateRoomGeometry(const ROOM *const room)
 static void M_UpdateRoomShades(const ROOM *const room)
 {
     M_BATCH *const batch = M_GetBatch(room);
+    if (batch == nullptr) {
+        return;
+    }
     M_MESH_SHADE *out_shade = &m_Priv.shade_vbo_data[batch->vertex_start];
     for (int32_t i = 0; i < room->mesh.num_face4s; i++) {
         const FACE4 *const face = &room->mesh.face4s[i];
@@ -216,7 +222,7 @@ static void M_PrepareBuffers(void)
     int32_t current_vertex = 0;
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
-        M_BATCH *const batch = M_GetBatch(room);
+        M_BATCH *const batch = &m_Priv.batches[i];
         batch->animated_vertices = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
         for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
             const FACE4 *const face = &room->mesh.face4s[j];
@@ -359,6 +365,9 @@ void Output_Meshes_ObserveLevelLoadRooms(void)
 static void M_FillAnimatedTextures(const ROOM *const room)
 {
     const M_BATCH *const batch = M_GetBatch(room);
+    if (batch == nullptr) {
+        return;
+    }
     OUTPUT_MESH_TEXTURE *out_texture =
         &m_Priv.tex_vbo_data[batch->vertex_start];
     for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
@@ -394,6 +403,9 @@ static void M_FillAnimatedTextures(const ROOM *const room)
 static void M_UpdateAnimatedTextures(const ROOM *const room)
 {
     const M_BATCH *const batch = M_GetBatch(room);
+    if (batch == nullptr) {
+        return;
+    }
     glBindBuffer(GL_ARRAY_BUFFER, m_Priv.tex_vbo);
     for (int32_t i = 0; i < batch->animated_vertices->count; i++) {
         const OUTPUT_VERTEX_RANGE *const range =
@@ -425,6 +437,9 @@ void Output_Meshes_RenderRoomMesh(
     const MATRIX *const matrix, const RGB_F tint, const ROOM *const room)
 {
     const M_BATCH *const batch = M_GetBatch(room);
+    if (batch == nullptr) {
+        return;
+    }
 
     M_UpdateRoomShades(room);
 
