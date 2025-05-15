@@ -9,5 +9,5 @@ CINE_FRAME *Camera_GetCurrentCineFrame(void);
 CINE_DATA *Camera_GetCineData(void);
 void Camera_InvokeCinematic(
     const ITEM *item, int32_t frame_idx, int16_t extra_y_rot);
-
-extern void Camera_LoadCutsceneFrame(void);
+void Camera_LoadCutsceneFrame(void);
+extern void Camera_UpdateCutscene(void);
