@@ -11,17 +11,6 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
 
-void Camera_LoadCutsceneFrame(void)
-{
-    CINE_DATA *const cine_data = Camera_GetCineData();
-    cine_data->frame_idx++;
-    if (cine_data->frame_idx >= cine_data->frame_count) {
-        cine_data->frame_idx = cine_data->frame_count - 1;
-    }
-
-    Camera_UpdateCutscene();
-}
-
 void Camera_UpdateCutscene(void)
 {
     const CINE_DATA *const cine_data = Camera_GetCineData();

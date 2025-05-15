@@ -3,5 +3,3 @@
 #include "global/types.h"
 
 #include <stdint.h>
-
-void Camera_UpdateCutscene(void);

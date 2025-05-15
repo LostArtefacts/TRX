@@ -1,6 +1,9 @@
-#include "game/camera/types.h"
-#include "game/camera/vars.h"
+#include "game/camera/cinematic.h"
+
+#include "game/camera.h"
 #include "game/game_buf.h"
+#include "game/rooms.h"
+#include "game/viewport.h"
 
 static CINE_FRAME *m_CineFrames = nullptr;
 static CINE_DATA m_CineData = {};
@@ -40,4 +43,55 @@ void Camera_InvokeCinematic(
     m_CineData.position.pos = item->pos;
     m_CineData.position.rot = item->rot;
     m_CineData.position.rot.y += extra_y_rot;
+}
+
+void Camera_LoadCutsceneFrame(void)
+{
+    CINE_DATA *const cine_data = Camera_GetCineData();
+    if (cine_data->frame_count == 0) {
+        return;
+    }
+
+    cine_data->frame_idx++;
+    if (cine_data->frame_idx >= cine_data->frame_count) {
+        cine_data->frame_idx = cine_data->frame_count - 1;
+    }
+
+#if TR_VERSION == 1
+    Camera_UpdateCutscene();
+#else
+    const CINE_FRAME *const frame = Camera_GetCurrentCineFrame();
+    int32_t tx = frame->tx;
+    int32_t ty = frame->ty;
+    int32_t tz = frame->tz;
+    int32_t cx = frame->cx;
+    int32_t cy = frame->cy;
+    int32_t cz = frame->cz;
+    int32_t fov = frame->fov;
+    int32_t roll = frame->roll;
+    int32_t c = Math_Cos(cine_data->position.rot.y);
+    int32_t s = Math_Sin(cine_data->position.rot.y);
+
+    g_Camera.target.x =
+        cine_data->position.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
+    g_Camera.target.y = cine_data->position.pos.y + ty;
+    g_Camera.target.z =
+        cine_data->position.pos.z + ((tz * c - tx * s) >> W2V_SHIFT);
+    g_Camera.pos.x =
+        cine_data->position.pos.x + ((cx * c + cz * s) >> W2V_SHIFT);
+    g_Camera.pos.y = cine_data->position.pos.y + cy;
+    g_Camera.pos.z =
+        cine_data->position.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
+    g_Camera.roll = roll;
+    g_Camera.shift = 0;
+
+    const int16_t room_num =
+        Room_GetIndexFromPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
+    if (room_num != NO_ROOM) {
+        g_Camera.pos.room_num = room_num;
+    }
+
+    Viewport_AlterFOV(fov);
+    Camera_UpdateMicPosition();
+#endif
 }
