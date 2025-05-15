@@ -9,6 +9,50 @@
 static CINE_FRAME *m_CineFrames = nullptr;
 static CINE_DATA m_CineData = {};
 
+static void M_UpdateCutscene(XYZ_32 base_pos, int16_t angle);
+
+static void M_UpdateCutscene(const XYZ_32 base_pos, const int16_t angle)
+{
+    const CINE_FRAME *const frame = Camera_GetCurrentCineFrame();
+    const int32_t c = Math_Cos(angle);
+    const int32_t s = Math_Sin(angle);
+
+#define SHIFT(prop, axis1, op, axis2)                                          \
+    (((frame->prop.shift.axis1 * c) op(frame->prop.shift.axis2 * s))           \
+     >> W2V_SHIFT)
+
+    const XYZ_32 camera_target = {
+        .x = base_pos.x + SHIFT(target, x, +, z),
+        .y = base_pos.y + frame->target.shift.y,
+        .z = base_pos.z + SHIFT(target, z, -, x),
+    };
+
+    const XYZ_32 camera_pos = {
+        .x = base_pos.x + SHIFT(camera, x, +, z),
+        .y = base_pos.y + frame->camera.shift.y,
+        .z = base_pos.z + SHIFT(camera, z, -, x),
+    };
+
+#undef SHIFT
+
+    const int16_t room_num =
+        Room_GetIndexFromPos(camera_pos.x, camera_pos.y, camera_pos.z);
+    if (room_num != NO_ROOM) {
+        g_Camera.pos.room_num = room_num;
+    }
+
+    g_Camera.target.pos = camera_target;
+    g_Camera.pos.pos = camera_pos;
+    g_Camera.roll = frame->roll;
+    g_Camera.shift = 0;
+
+#if TR_VERSION == 1
+    Viewport_SetFOV(frame->fov);
+#else
+    Viewport_AlterFOV(frame->fov);
+#endif
+}
+
 void Camera_InitialiseCineFrames(const int32_t num_frames)
 {
     m_CineData.frame_count = num_frames;
@@ -58,43 +102,8 @@ void Camera_LoadCutsceneFrame(void)
         cine_data->frame_idx = cine_data->frame_count - 1;
     }
 
-#if TR_VERSION == 1
-    Camera_UpdateCutscene();
-#else
-    const CINE_FRAME *const frame = Camera_GetCurrentCineFrame();
-    int32_t tx = frame->tx;
-    int32_t ty = frame->ty;
-    int32_t tz = frame->tz;
-    int32_t cx = frame->cx;
-    int32_t cy = frame->cy;
-    int32_t cz = frame->cz;
-    int32_t fov = frame->fov;
-    int32_t roll = frame->roll;
-    int32_t c = Math_Cos(cine_data->position.rot.y);
-    int32_t s = Math_Sin(cine_data->position.rot.y);
-
-    g_Camera.target.x =
-        cine_data->position.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
-    g_Camera.target.y = cine_data->position.pos.y + ty;
-    g_Camera.target.z =
-        cine_data->position.pos.z + ((tz * c - tx * s) >> W2V_SHIFT);
-    g_Camera.pos.x =
-        cine_data->position.pos.x + ((cx * c + cz * s) >> W2V_SHIFT);
-    g_Camera.pos.y = cine_data->position.pos.y + cy;
-    g_Camera.pos.z =
-        cine_data->position.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
-    g_Camera.roll = roll;
-    g_Camera.shift = 0;
-
-    const int16_t room_num =
-        Room_GetIndexFromPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
-
-    Viewport_AlterFOV(fov);
+    M_UpdateCutscene(cine_data->position.pos, cine_data->position.rot.y);
     Camera_UpdateMicPosition();
-#endif
 }
 
 void Camera_UpdateCutscene(void)
@@ -104,59 +113,10 @@ void Camera_UpdateCutscene(void)
         return;
     }
 
-    const CINE_FRAME *const frame = Camera_GetCurrentCineFrame();
 #if TR_VERSION == 1
-    const int32_t c = Math_Cos(cine_data->position.rot.y);
-    const int32_t s = Math_Sin(cine_data->position.rot.y);
-    const XYZ_32 *const pos = &cine_data->position.pos;
-    g_Camera.target.x = pos->x + ((c * frame->tx + s * frame->tz) >> W2V_SHIFT);
-    g_Camera.target.y = pos->y + frame->ty;
-    g_Camera.target.z = pos->z + ((c * frame->tz - s * frame->tx) >> W2V_SHIFT);
-    g_Camera.pos.x = pos->x + ((s * frame->cz + c * frame->cx) >> W2V_SHIFT);
-    g_Camera.pos.y = pos->y + frame->cy;
-    g_Camera.pos.z = pos->z + ((c * frame->cz - s * frame->cx) >> W2V_SHIFT);
-    const int16_t room_num =
-        Room_GetIndexFromPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
-    g_Camera.roll = frame->roll;
-    g_Camera.shift = 0;
-
-    Viewport_SetFOV(frame->fov);
+    M_UpdateCutscene(cine_data->position.pos, cine_data->position.rot.y);
 #else
-    int32_t tx = frame->tx;
-    int32_t ty = frame->ty;
-    int32_t tz = frame->tz;
-    int32_t cx = frame->cx;
-    int32_t cy = frame->cy;
-    int32_t cz = frame->cz;
-    int32_t fov = frame->fov;
-    int32_t roll = frame->roll;
-    int32_t c = Math_Cos(g_Camera.target_angle);
-    int32_t s = Math_Sin(g_Camera.target_angle);
-
     const ITEM *const lara_item = Lara_GetItem();
-    const XYZ_32 camera_target = {
-        .x = lara_item->pos.x + ((tx * c + tz * s) >> W2V_SHIFT),
-        .y = lara_item->pos.y + ty,
-        .z = lara_item->pos.z + ((tz * c - tx * s) >> W2V_SHIFT),
-    };
-    const XYZ_32 camera_pos = {
-        .x = lara_item->pos.x + ((cx * c + cz * s) >> W2V_SHIFT),
-        .y = lara_item->pos.y + cy,
-        .z = lara_item->pos.z + ((cz * c - cx * s) >> W2V_SHIFT),
-    };
-    const int16_t room_num =
-        Room_GetIndexFromPos(camera_pos.x, camera_pos.y, camera_pos.z);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
-
-    g_Camera.pos.pos = camera_pos;
-    g_Camera.target.pos = camera_target;
-    g_Camera.roll = roll;
-    g_Camera.shift = 0;
-    Viewport_AlterFOV(fov);
+    M_UpdateCutscene(lara_item->pos, g_Camera.target_angle);
 #endif
 }

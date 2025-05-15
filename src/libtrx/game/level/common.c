@@ -1070,12 +1070,8 @@ void Level_ReadCinematicFrames(VFILE *const file)
     Camera_InitialiseCineFrames(num_frames);
     for (int32_t i = 0; i < num_frames; i++) {
         CINE_FRAME *const frame = Camera_GetCineFrame(i);
-        frame->tx = VFile_ReadS16(file);
-        frame->ty = VFile_ReadS16(file);
-        frame->tz = VFile_ReadS16(file);
-        frame->cx = VFile_ReadS16(file);
-        frame->cy = VFile_ReadS16(file);
-        frame->cz = VFile_ReadS16(file);
+        M_ReadVertex(&frame->target.shift, file);
+        M_ReadVertex(&frame->camera.shift, file);
         frame->fov = VFile_ReadS16(file);
         frame->roll = VFile_ReadS16(file);
     }
