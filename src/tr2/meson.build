@@ -91,7 +91,6 @@ sources = [
   'decomp/decomp.c',
   'decomp/flares.c',
   'decomp/skidoo.c',
-  'game/camera.c',
   'game/clock.c',
   'game/console/cmd/easy_config.c',
   'game/console/common.c',
