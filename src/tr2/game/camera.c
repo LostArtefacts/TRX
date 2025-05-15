@@ -58,23 +58,7 @@ void Camera_LoadCutsceneFrame(void)
     }
 
     Viewport_AlterFOV(fov);
-
-    if (g_Config.audio.enable_lara_mic) {
-        g_Camera.actual_angle =
-            g_Lara.torso_rot.y + g_Lara.head_rot.y + g_LaraItem->rot.y;
-        g_Camera.mic_pos.x = g_LaraItem->pos.x;
-        g_Camera.mic_pos.y = g_LaraItem->pos.y;
-        g_Camera.mic_pos.z = g_LaraItem->pos.z;
-    } else {
-        g_Camera.actual_angle = Math_Atan(
-            g_Camera.target.z - g_Camera.pos.z,
-            g_Camera.target.x - g_Camera.pos.x);
-        g_Camera.mic_pos.x = g_Camera.pos.x
-            + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.z = g_Camera.pos.z
-            + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.y = g_Camera.pos.y;
-    }
+    Camera_UpdateMicPosition();
 }
 
 void Camera_UpdateCutscene(void)

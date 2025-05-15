@@ -563,24 +563,7 @@ void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
         g_Camera.shift = 0;
     }
 
-#if TR_VERSION == 2
-    if (g_Config.audio.enable_lara_mic) {
-        const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-        const ITEM *const lara_item = Lara_GetItem();
-        g_Camera.actual_angle =
-            lara_info->torso_rot.y + lara_info->head_rot.y + lara_item->rot.y;
-        g_Camera.mic_pos = lara_item->pos;
-    } else {
-        g_Camera.actual_angle = Math_Atan(
-            g_Camera.target.z - g_Camera.pos.z,
-            g_Camera.target.x - g_Camera.pos.x);
-        g_Camera.mic_pos.x = g_Camera.pos.x
-            + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.z = g_Camera.pos.z
-            + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.y = g_Camera.pos.y;
-    }
-#endif
+    Camera_UpdateMicPosition();
 }
 
 // TODO: make private.
@@ -1076,6 +1059,28 @@ void Camera_Update(void)
 #endif
     }
     Camera_SetChunky(false);
+}
+
+void Camera_UpdateMicPosition(void)
+{
+#if TR_VERSION == 2
+    if (g_Config.audio.enable_lara_mic) {
+        const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+        const ITEM *const lara_item = Lara_GetItem();
+        g_Camera.actual_angle =
+            lara_info->torso_rot.y + lara_info->head_rot.y + lara_item->rot.y;
+        g_Camera.mic_pos = lara_item->pos;
+    } else {
+        g_Camera.actual_angle = Math_Atan(
+            g_Camera.target.z - g_Camera.pos.z,
+            g_Camera.target.x - g_Camera.pos.x);
+        g_Camera.mic_pos.x = g_Camera.pos.x
+            + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
+        g_Camera.mic_pos.z = g_Camera.pos.z
+            + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
+        g_Camera.mic_pos.y = g_Camera.pos.y;
+    }
+#endif
 }
 
 void Camera_MoveManual(void)
