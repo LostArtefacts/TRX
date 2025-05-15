@@ -1,7 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.2...develop) - ××××-××-××
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - added a /help command (#2917)
-- fixed animated textures not working the right way in flipped rooms (#2966, regression from 4.10)
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)
@@ -18,9 +17,12 @@
 - fixed items carried by the Qualopec mummy spawning early after save/load (#2956, regression from 4.6)
 - fixed potential memory corruption if `/kill all` is used with a Qualopec mummy that is carrying items (#2957, regression from 4.6)
 - fixed a crash when portal debugging is enabled in rooms that have no portals (#2968, regression from 4.8)
-- fixed the final statistics always showing zero deaths regardless of the actual total (#2965, regression from 4.10)
 - fixed rats/voles and crocodiles/alligators at times not assuming the correct death pose after reloading a save (#2960, regression from 0.12)
 - fixed incorrect camera shifts when some fixed cameras return to normal view (#2971, regression from 4.9)
+
+## [4.10.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...tr1-4.10.2) - 2025-05-15
+- fixed animated textures not working the right way in flipped rooms (#2966, regression from 4.10)
+- fixed the final statistics always showing zero deaths regardless of the actual total (#2965, regression from 4.10)
 
 ## [4.10.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.10...tr1-4.10.1) - 2025-04-30
 - fixed water caustics appearance (#2896, regression from 4.10)
