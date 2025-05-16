@@ -193,6 +193,7 @@ sources = [
   'game/overlay.c',
   'game/packer.c',
   'game/pathing/box.c',
+  'game/pathing/lot.c',
   'game/phase/executor.c',
   'game/phase/phase_cutscene.c',
   'game/phase/phase_demo.c',

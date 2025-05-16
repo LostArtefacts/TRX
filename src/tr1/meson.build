@@ -152,7 +152,6 @@ sources = [
   'game/lara/state.c',
   'game/level.c',
   'game/los.c',
-  'game/lot.c',
   'game/music.c',
   'game/objects/common.c',
   'game/objects/creatures/ape.c',
