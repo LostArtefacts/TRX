@@ -523,9 +523,9 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.current_active = 0;
 
     LOT_InitialiseLOT(&g_Lara.lot);
-    g_Lara.lot.step = WALL_L * 20;
-    g_Lara.lot.drop = -WALL_L * 20;
-    g_Lara.lot.fly = STEP_L;
+    g_Lara.lot.setup.step = WALL_L * 20;
+    g_Lara.lot.setup.drop = -WALL_L * 20;
+    g_Lara.lot.setup.fly = STEP_L;
 
     Lara_InitialiseInventory(level);
 }

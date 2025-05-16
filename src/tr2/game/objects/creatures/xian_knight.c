@@ -136,16 +136,16 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    creature->lot.step = STEP_L;
-    creature->lot.drop = -STEP_L;
-    creature->lot.fly = 0;
+    creature->lot.setup.step = STEP_L;
+    creature->lot.setup.drop = -STEP_L;
+    creature->lot.setup.fly = 0;
     AI_INFO info;
     Creature_AIInfo(item, &info);
     if (item->current_anim_state == XIAN_KNIGHT_STATE_FLY
         && info.zone_num != info.enemy_zone_num) {
-        creature->lot.step = WALL_L * 20;
-        creature->lot.drop = -WALL_L * 20;
-        creature->lot.fly = STEP_L / 4;
+        creature->lot.setup.step = WALL_L * 20;
+        creature->lot.setup.drop = -WALL_L * 20;
+        creature->lot.setup.fly = STEP_L / 4;
         Creature_AIInfo(item, &info);
     }
     Creature_Mood(item, &info, MOOD_ATTACK);
@@ -207,7 +207,7 @@ static void M_Control(const int16_t item_num)
             neck = info.angle;
         }
         M_SparkleTrail(item);
-        if (creature->lot.fly == 0) {
+        if (creature->lot.setup.fly == 0) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
         }
         break;

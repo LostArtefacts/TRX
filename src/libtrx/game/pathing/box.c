@@ -83,8 +83,9 @@ int16_t *Box_GetGroundZone(const bool flip_status, const int32_t zone_idx)
 int16_t *Box_GetLotZone(const LOT_INFO *const lot)
 {
     const bool flip_status = Room_GetFlipStatus();
-    return lot->fly ? Box_GetFlyZone(flip_status)
-                    : Box_GetGroundZone(flip_status, BOX_ZONE(lot->step));
+    return lot->setup.fly != 0
+        ? Box_GetFlyZone(flip_status)
+        : Box_GetGroundZone(flip_status, BOX_ZONE(lot->setup.step));
 }
 
 bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
@@ -118,7 +119,7 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 
             const BOX_INFO *const box = Box_GetBox(box_num);
             const int32_t change = box->height - head_box->height;
-            if (change > lot->step || change < lot->drop) {
+            if (change > lot->setup.step || change < lot->setup.drop) {
                 continue;
             }
 
@@ -146,7 +147,7 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
                     continue;
                 }
 
-                if ((box->overlap_index & lot->block_mask) != 0) {
+                if ((box->overlap_index & lot->setup.block_mask) != 0) {
                     expand->search_num = node->search_num | BOX_BLOCKED_SEARCH;
                 } else {
                     expand->search_num = node->search_num;
@@ -204,7 +205,7 @@ void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
         + (Random_GetControl() * (box->bottom + shift - box->top - WALL_L)
            >> 15);
     lot->required_box = box_num;
-    if (lot->fly != 0) {
+    if (lot->setup.fly != 0) {
         lot->target.y = box->height - STEP_L * 3 / 2;
     } else {
         lot->target.y = box->height;
@@ -272,7 +273,7 @@ bool Box_ValidBox(
     }
 
     const BOX_INFO *const box = Box_GetBox(box_num);
-    if ((box->overlap_index & creature->lot.block_mask) != 0) {
+    if ((box->overlap_index & creature->lot.setup.block_mask) != 0) {
         return false;
     }
 
@@ -304,7 +305,7 @@ TARGET_TYPE Box_CalculateTarget(
     int32_t prime_free = BOX_CLIP_ALL;
     do {
         box = Box_GetBox(box_num);
-        if (lot->fly != 0) {
+        if (lot->setup.fly != 0) {
             CLAMPG(target->y, box->height - WALL_L);
         } else {
             CLAMPG(target->y, box->height);
@@ -409,7 +410,8 @@ TARGET_TYPE Box_CalculateTarget(
 
         box_num = lot->node[box_num].exit_box;
         if (box_num != NO_BOX
-            && (Box_GetBox(box_num)->overlap_index & lot->block_mask) != 0) {
+            && (Box_GetBox(box_num)->overlap_index & lot->setup.block_mask)
+                != 0) {
             break;
         }
     } while (box_num != NO_BOX);
@@ -428,7 +430,7 @@ TARGET_TYPE Box_CalculateTarget(
         CLAMP(target->x, box->top + BOX_BIFF, box->bottom - BOX_BIFF);
     }
 
-    if (lot->fly != 0) {
+    if (lot->setup.fly != 0) {
         target->y = box->height - STEP_L * 3 / 2;
     } else {
         target->y = box->height;
@@ -447,18 +449,19 @@ bool Box_BadFloor(
     }
 
     const BOX_INFO *const box = Box_GetBox(sector->box);
-    if ((box->overlap_index & lot->block_mask) != 0) {
+    if ((box->overlap_index & lot->setup.block_mask) != 0) {
         return true;
     }
 
     const int32_t height = box->height;
-    if (box_height - height > lot->step || box_height - height < lot->drop) {
+    if (box_height - height > lot->setup.step
+        || box_height - height < lot->setup.drop) {
         return true;
     }
-    if (box_height - height < -lot->step && height > next_height) {
+    if (box_height - height < -lot->setup.step && height > next_height) {
         return true;
     }
-    if (lot->fly != 0 && y > height + lot->fly) {
+    if (lot->setup.fly != 0 && y > height + lot->setup.fly) {
         return true;
     }
     return false;

@@ -105,41 +105,41 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
     creature->maximum_turn = DEG_1;
     creature->flags = 0;
     creature->enemy = nullptr;
-    creature->lot.step = STEP_L;
+    creature->lot.setup.step = STEP_L;
 #if TR_VERSION == 1
-    creature->lot.drop = -STEP_L;
+    creature->lot.setup.drop = -STEP_L;
 #else
-    creature->lot.drop = -STEP_L * 2;
+    creature->lot.setup.drop = -STEP_L * 2;
 #endif
-    creature->lot.block_mask = BOX_BLOCKED;
-    creature->lot.fly = 0;
+    creature->lot.setup.block_mask = BOX_BLOCKED;
+    creature->lot.setup.fly = 0;
 
     switch (item->object_id) {
 #if TR_VERSION == 1
     case O_BAT:
     case O_ALLIGATOR:
     case O_FISH:
-        creature->lot.step = WALL_L * 20;
-        creature->lot.drop = -WALL_L * 20;
-        creature->lot.fly = STEP_L / 16;
+        creature->lot.setup.step = WALL_L * 20;
+        creature->lot.setup.drop = -WALL_L * 20;
+        creature->lot.setup.fly = STEP_L / 16;
         break;
 
     case O_TREX:
     case O_WARRIOR_1:
     case O_CENTAUR:
-        creature->lot.block_mask = BOX_BLOCKABLE;
+        creature->lot.setup.block_mask = BOX_BLOCKABLE;
         break;
 
     case O_WOLF:
     case O_LION:
     case O_LIONESS:
     case O_PUMA:
-        creature->lot.drop = -WALL_L;
+        creature->lot.setup.drop = -WALL_L;
         break;
 
     case O_APE:
-        creature->lot.step = WALL_L / 2;
-        creature->lot.drop = -WALL_L;
+        creature->lot.setup.step = WALL_L / 2;
+        creature->lot.setup.drop = -WALL_L;
         break;
 #else
     case O_SHARK:
@@ -148,29 +148,29 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
     case O_JELLY:
     case O_CROW:
     case O_EAGLE:
-        creature->lot.step = WALL_L * 20;
-        creature->lot.drop = -WALL_L * 20;
-        creature->lot.fly = STEP_L / 16;
+        creature->lot.setup.step = WALL_L * 20;
+        creature->lot.setup.drop = -WALL_L * 20;
+        creature->lot.setup.fly = STEP_L / 16;
         if (item->object_id == O_SHARK) {
-            creature->lot.block_mask = BOX_BLOCKABLE;
+            creature->lot.setup.block_mask = BOX_BLOCKABLE;
         }
         break;
 
     case O_WORKER_3:
     case O_WORKER_4:
     case O_YETI:
-        creature->lot.step = WALL_L;
-        creature->lot.drop = -WALL_L;
+        creature->lot.setup.step = WALL_L;
+        creature->lot.setup.drop = -WALL_L;
         break;
 
     case O_SPIDER:
     case O_SKIDOO_ARMED:
-        creature->lot.step = WALL_L / 2;
-        creature->lot.drop = -WALL_L;
+        creature->lot.setup.step = WALL_L / 2;
+        creature->lot.setup.drop = -WALL_L;
         break;
 
     case O_DINO:
-        creature->lot.block_mask = BOX_BLOCKABLE;
+        creature->lot.setup.block_mask = BOX_BLOCKABLE;
         break;
 #endif
     default:
@@ -189,12 +189,12 @@ void LOT_CreateZone(ITEM *const item)
 
     const int16_t *zone;
     const int16_t *flip;
-    if (creature->lot.fly) {
+    if (creature->lot.setup.fly) {
         zone = Box_GetFlyZone(false);
         flip = Box_GetFlyZone(true);
     } else {
-        zone = Box_GetGroundZone(false, BOX_ZONE(creature->lot.step));
-        flip = Box_GetGroundZone(true, BOX_ZONE(creature->lot.step));
+        zone = Box_GetGroundZone(false, BOX_ZONE(creature->lot.setup.step));
+        flip = Box_GetGroundZone(true, BOX_ZONE(creature->lot.setup.step));
     }
 
     const ROOM *const room = Room_Get(item->room_num);
