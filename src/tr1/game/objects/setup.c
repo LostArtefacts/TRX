@@ -70,6 +70,7 @@ void Object_SetupAllObjects(void)
         obj->shadow_size = 0;
         obj->hit_points = DONT_TARGET;
         obj->enable_interpolation = true;
+        obj->lot_setup = g_LOT_Default;
 
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);

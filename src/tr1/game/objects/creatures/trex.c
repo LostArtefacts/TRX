@@ -55,6 +55,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 2000;
     obj->radius = TREX_RADIUS;
     obj->smartness = TREX_SMARTNESS;
+    obj->lot_setup = g_LOT_Beast;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;

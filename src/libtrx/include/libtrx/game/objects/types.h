@@ -3,6 +3,7 @@
 #include "../anims/types.h"
 #include "../collision.h"
 #include "../items/types.h"
+#include "../pathing/types.h"
 #include "../rooms/enum.h"
 #include "../savegame/enum.h"
 #include "../types.h"
@@ -77,6 +78,7 @@ typedef struct OBJECT {
     int16_t smartness;
     bool enable_interpolation;
     XYZ_BOOL base_rot;
+    LOT_SETUP lot_setup;
 
     union {
         uint16_t flags;

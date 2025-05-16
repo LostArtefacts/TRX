@@ -8,7 +8,6 @@
 
 static void M_SetupLara(void);
 static void M_SetupLaraExtra(void);
-static void M_SetupGeneralObjects(void);
 
 static void M_SetupLara(void)
 {
@@ -46,6 +45,7 @@ void Object_SetupAllObjects(void)
         obj->radius = DEFAULT_RADIUS;
         obj->shadow_size = 0;
         obj->enable_interpolation = true;
+        obj->lot_setup = g_LOT_Default;
 
         obj->save_position = 0;
         obj->save_hitpoints = 0;

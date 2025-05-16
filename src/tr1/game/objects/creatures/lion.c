@@ -53,6 +53,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
+    obj->lot_setup = g_LOT_Quadruped;
     obj->pivot_length = 400;
     obj->intelligent = 1;
     obj->save_position = 1;

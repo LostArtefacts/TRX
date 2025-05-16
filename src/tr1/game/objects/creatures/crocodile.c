@@ -115,6 +115,7 @@ static void M_SetupAlligator(OBJECT *const obj)
     obj->hit_points = ALLIGATOR_HITPOINTS;
     obj->radius = ALLIGATOR_RADIUS;
     obj->smartness = ALLIGATOR_SMARTNESS;
+    obj->lot_setup = g_LOT_Flyer;
 }
 
 static void M_UpdateCreatureLOT(const ITEM *const item)
@@ -124,15 +125,8 @@ static void M_UpdateCreatureLOT(const ITEM *const item)
         return;
     }
 
-    if (item->object_id == O_CROCODILE) {
-        creature->lot.setup.step = STEP_L;
-        creature->lot.setup.drop = -STEP_L;
-        creature->lot.setup.fly = 0;
-    } else if (item->object_id == O_ALLIGATOR) {
-        creature->lot.setup.step = WALL_L * 20;
-        creature->lot.setup.drop = -WALL_L * 20;
-        creature->lot.setup.fly = STEP_L / 16;
-    }
+    OBJECT *const obj = Object_Get(item->object_id);
+    creature->lot.setup = obj->lot_setup;
 }
 
 static void M_ControlCrocodile(const int16_t item_num)
