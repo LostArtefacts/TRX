@@ -1,8 +1,9 @@
 #include "game/item_actions/powerup.h"
 
-#include "game/camera.h"
 #include "game/sound.h"
 #include "global/const.h"
+
+#include <libtrx/game/camera.h>
 
 void ItemAction_PowerUp(ITEM *item)
 {

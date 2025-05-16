@@ -1,4 +1,3 @@
-#include "game/camera.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/lot.h"
@@ -7,6 +6,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 

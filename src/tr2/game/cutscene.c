@@ -1,7 +1,6 @@
 #include "game/cutscene.h"
 
 #include "decomp/decomp.h"
-#include "game/camera.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
 #include "game/lara/hair.h"
@@ -15,6 +14,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/utils.h>
 

@@ -1,6 +1,5 @@
 #include "game/gun.h"
 
-#include "game/camera.h"
 #include "game/gun/gun_misc.h"
 #include "game/gun/gun_pistols.h"
 #include "game/gun/gun_rifle.h"
@@ -14,6 +13,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/matrix.h>
 
 void Gun_Control(void)

@@ -1,9 +1,9 @@
-#include "game/camera.h"
 #include "game/lot.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/utils.h>
 
 #define BOOM_TIME 130

@@ -1,6 +1,5 @@
 #include "game/room_draw.h"
 
-#include "game/camera.h"
 #include "game/effects.h"
 #include "game/lara/draw.h"
 #include "game/output.h"
@@ -12,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/log.h>
 

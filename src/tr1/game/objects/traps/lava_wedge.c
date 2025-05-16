@@ -1,7 +1,8 @@
-#include "game/camera.h"
 #include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
+
+#include <libtrx/game/camera.h>
 
 #define LAVA_WEDGE_SPEED 25
 

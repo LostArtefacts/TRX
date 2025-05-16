@@ -1,4 +1,3 @@
-#include "game/camera.h"
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -9,6 +8,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/game/lara.h>
 
 #define EXPLOSION_START_FRAME 76

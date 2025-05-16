@@ -1,7 +1,6 @@
 #include "game/game.h"
 
 #include "decomp/decomp.h"
-#include "game/camera.h"
 #include "game/demo.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
@@ -22,6 +21,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/interpolation.h>
 

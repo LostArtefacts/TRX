@@ -1,4 +1,3 @@
-#include "game/camera.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_flow/common.h"
@@ -15,6 +14,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/phase.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);

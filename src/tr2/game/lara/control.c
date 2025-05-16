@@ -1,7 +1,6 @@
 #include "game/lara/control.h"
 
 #include "decomp/skidoo.h"
-#include "game/camera.h"
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
@@ -21,6 +20,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>

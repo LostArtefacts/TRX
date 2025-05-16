@@ -1,4 +1,3 @@
-#include "game/camera.h"
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -7,6 +6,8 @@
 #include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
+
+#include <libtrx/game/camera.h>
 
 #define EXTRA_ANIM_PLACE_BAR 0
 #define EXTRA_ANIM_DIE_GOLD 1

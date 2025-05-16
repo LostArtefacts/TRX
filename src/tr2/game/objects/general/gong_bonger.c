@@ -1,6 +1,7 @@
-#include "game/camera.h"
 #include "game/music.h"
 #include "global/vars.h"
+
+#include <libtrx/game/camera.h>
 
 #define GONG_BONGER_STRIKE_FRAME 41
 #define GONG_BONGER_END_FRAME 79

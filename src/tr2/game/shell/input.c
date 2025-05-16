@@ -1,7 +1,6 @@
 #include "game/shell/input.h"
 
 #include "decomp/decomp.h"
-#include "game/camera.h"
 #include "game/clock.h"
 #include "game/console/common.h"
 #include "game/game_flow.h"
@@ -15,6 +14,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/enum_map.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/screenshot.h>
 #include <libtrx/utils.h>
 

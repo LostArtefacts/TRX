@@ -1,7 +1,6 @@
 // Tomb of Qualopec and Sanctuary Scion pickup.
 // Triggers O_LARA_EXTRA pedestal pickup animation.
 
-#include "game/camera.h"
 #include "game/game.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -12,6 +11,8 @@
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
+
+#include <libtrx/game/camera.h>
 
 #define EXTRA_ANIM_PEDESTAL_SCION 0
 #define LF_PICKUPSCION 44

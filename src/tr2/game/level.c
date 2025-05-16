@@ -1,7 +1,6 @@
 #include "game/level.h"
 
 #include "decomp/decomp.h"
-#include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -24,6 +23,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>

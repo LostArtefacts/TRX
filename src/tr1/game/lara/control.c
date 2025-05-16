@@ -1,7 +1,6 @@
 #include "game/lara/control.h"
 
 #include "game/box.h"
-#include "game/camera.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/lara/cheat.h"
@@ -15,6 +14,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
