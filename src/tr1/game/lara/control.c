@@ -1,6 +1,5 @@
 #include "game/lara/control.h"
 
-#include "game/box.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/lara/cheat.h"
