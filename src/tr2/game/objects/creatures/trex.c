@@ -56,6 +56,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = TREX_RADIUS;
     obj->shadow_size = 64;
     obj->pivot_length = 1800;
+    obj->lot_setup = g_LOT_Beast;
 
     obj->intelligent = 1;
     obj->save_position = 1;

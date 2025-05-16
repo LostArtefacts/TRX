@@ -23,6 +23,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = SKIDOO_ARMED_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
+    obj->lot_setup = g_LOT_Jumper;
 
     obj->intelligent = 1;
     obj->save_position = 1;

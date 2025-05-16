@@ -63,6 +63,8 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = SHARK_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 200;
+    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup.block_mask = BOX_BLOCKABLE;
 
     obj->intelligent = 1;
     obj->save_position = 1;

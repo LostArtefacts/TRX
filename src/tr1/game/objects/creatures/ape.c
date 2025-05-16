@@ -117,6 +117,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 250;
     obj->radius = APE_RADIUS;
     obj->smartness = APE_SMARTNESS;
+    obj->lot_setup = g_LOT_Jumper;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;

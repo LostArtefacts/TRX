@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "game/camera.h"
 #include "game/game_buf.h"
+#include "game/objects.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
 #include "utils.h"
@@ -105,77 +106,9 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
     creature->maximum_turn = DEG_1;
     creature->flags = 0;
     creature->enemy = nullptr;
-    creature->lot.setup.step = STEP_L;
-#if TR_VERSION == 1
-    creature->lot.setup.drop = -STEP_L;
-#else
-    creature->lot.setup.drop = -STEP_L * 2;
-#endif
-    creature->lot.setup.block_mask = BOX_BLOCKED;
-    creature->lot.setup.fly = 0;
 
-    switch (item->object_id) {
-#if TR_VERSION == 1
-    case O_BAT:
-    case O_ALLIGATOR:
-    case O_FISH:
-        creature->lot.setup.step = WALL_L * 20;
-        creature->lot.setup.drop = -WALL_L * 20;
-        creature->lot.setup.fly = STEP_L / 16;
-        break;
-
-    case O_TREX:
-    case O_WARRIOR_1:
-    case O_CENTAUR:
-        creature->lot.setup.block_mask = BOX_BLOCKABLE;
-        break;
-
-    case O_WOLF:
-    case O_LION:
-    case O_LIONESS:
-    case O_PUMA:
-        creature->lot.setup.drop = -WALL_L;
-        break;
-
-    case O_APE:
-        creature->lot.setup.step = WALL_L / 2;
-        creature->lot.setup.drop = -WALL_L;
-        break;
-#else
-    case O_SHARK:
-    case O_BARRACUDA:
-    case O_DIVER:
-    case O_JELLY:
-    case O_CROW:
-    case O_EAGLE:
-        creature->lot.setup.step = WALL_L * 20;
-        creature->lot.setup.drop = -WALL_L * 20;
-        creature->lot.setup.fly = STEP_L / 16;
-        if (item->object_id == O_SHARK) {
-            creature->lot.setup.block_mask = BOX_BLOCKABLE;
-        }
-        break;
-
-    case O_WORKER_3:
-    case O_WORKER_4:
-    case O_YETI:
-        creature->lot.setup.step = WALL_L;
-        creature->lot.setup.drop = -WALL_L;
-        break;
-
-    case O_SPIDER:
-    case O_SKIDOO_ARMED:
-        creature->lot.setup.step = WALL_L / 2;
-        creature->lot.setup.drop = -WALL_L;
-        break;
-
-    case O_DINO:
-        creature->lot.setup.block_mask = BOX_BLOCKABLE;
-        break;
-#endif
-    default:
-        break;
-    }
+    const OBJECT *const obj = Object_Get(item->object_id);
+    creature->lot.setup = obj->lot_setup;
 
     LOT_ClearLOT(&creature->lot);
     LOT_CreateZone(item);
