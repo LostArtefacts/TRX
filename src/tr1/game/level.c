@@ -5,7 +5,6 @@
 #include "game/inventory_ring/vars.h"
 #include "game/lara/common.h"
 #include "game/lara/state.h"
-#include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/creatures/mutant.h"
 #include "game/objects/creatures/pierre.h"

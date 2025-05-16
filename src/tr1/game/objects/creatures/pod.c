@@ -1,4 +1,3 @@
-#include "game/lot.h"
 #include "game/objects/common.h"
 #include "global/const.h"
 #include "global/vars.h"

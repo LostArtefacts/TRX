@@ -1,5 +1,4 @@
 #include "game/creature.h"
-#include "game/lot.h"
 #include "game/music.h"
 #include "global/const.h"
 #include "global/vars.h"

@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/lara/common.h"
 #include "game/level.h"
-#include "game/lot.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"

@@ -12,7 +12,6 @@
 #include "game/lara/look.h"
 #include "game/lara/misc.h"
 #include "game/lara/state.h"
-#include "game/lot.h"
 #include "game/music.h"
 #include "game/savegame.h"
 #include "game/sound.h"
