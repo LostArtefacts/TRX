@@ -115,12 +115,12 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
 
     const int16_t max_dist = winfo->target_dist;
     for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
-        const int16_t item_num = g_BaddieSlots[i].item_num;
-        if (item_num == NO_ITEM || item_num == g_Lara.item_num) {
+        const CREATURE *const creature = LOT_GetBaddieSlot(i);
+        if (creature->item_num == NO_ITEM) {
             continue;
         }
 
-        ITEM *const item = Item_Get(item_num);
+        ITEM *const item = Item_Get(creature->item_num);
         if (item->hit_points <= 0) {
             continue;
         }
