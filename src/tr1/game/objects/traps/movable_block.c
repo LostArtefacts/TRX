@@ -1,4 +1,3 @@
-#include "game/camera.h"
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/item_actions.h"
@@ -10,6 +9,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>

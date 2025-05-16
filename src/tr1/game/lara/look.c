@@ -1,12 +1,12 @@
 #include "game/lara/look.h"
 
-#include "game/camera.h"
 #include "game/input.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 
 #include <stdint.h>
 

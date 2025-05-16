@@ -1,7 +1,6 @@
 #include "game/lara/cheat.h"
 
 #include "decomp/flares.h"
-#include "game/camera.h"
 #include "game/console/common.h"
 #include "game/creature.h"
 #include "game/game.h"
@@ -17,6 +16,7 @@
 #include "game/viewport.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 #include <libtrx/vector.h>

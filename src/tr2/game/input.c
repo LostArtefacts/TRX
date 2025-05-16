@@ -1,6 +1,5 @@
 #include "game/input.h"
 
-#include "game/camera.h"
 #include "game/clock.h"
 #include "game/console/common.h"
 #include "game/game_string.h"
@@ -8,6 +7,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/input/backends/base.h>
 #include <libtrx/game/input/backends/controller.h>
 #include <libtrx/game/input/backends/keyboard.h>

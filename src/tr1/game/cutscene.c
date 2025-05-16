@@ -1,6 +1,5 @@
 #include "game/cutscene.h"
 
-#include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -17,6 +16,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/memory.h>
 

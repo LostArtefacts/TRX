@@ -1,6 +1,5 @@
 #include "game/game.h"
 
-#include "game/camera.h"
 #include "game/clock.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
@@ -22,6 +21,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/ui.h>
 

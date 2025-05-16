@@ -1,5 +1,4 @@
 #include "decomp/flares.h"
-#include "game/camera.h"
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
@@ -9,6 +8,7 @@
 #include "game/savegame.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/utils.h>
 
 #define CUTSCENE_DELAY (5 * FRAMES_PER_SECOND) // = 150

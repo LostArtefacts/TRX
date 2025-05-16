@@ -1,11 +1,11 @@
 #include "game/lot.h"
 
 #include "game/box.h"
-#include "game/camera.h"
 #include "game/shell.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/utils.h>
 

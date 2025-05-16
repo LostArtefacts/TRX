@@ -1,8 +1,9 @@
-#include "game/camera.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
+
+#include <libtrx/game/camera.h>
 
 static void M_Activate(int16_t earth_item_num);
 static void M_Setup(OBJECT *obj);

@@ -1,6 +1,5 @@
 #include "game/lara/state.h"
 
-#include "game/camera.h"
 #include "game/input.h"
 #include "game/lara/common.h"
 #include "game/lara/look.h"
@@ -11,6 +10,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/lara/misc.h>
 #include <libtrx/game/math.h>
 

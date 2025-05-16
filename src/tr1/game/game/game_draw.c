@@ -1,6 +1,5 @@
 #include "game/game.h"
 
-#include "game/camera.h"
 #include "game/lara/draw.h"
 #include "game/lara/hair.h"
 #include "game/output.h"
@@ -12,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 
 #include <stdint.h>

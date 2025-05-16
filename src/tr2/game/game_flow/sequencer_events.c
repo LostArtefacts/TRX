@@ -1,5 +1,4 @@
 #include "decomp/decomp.h"
-#include "game/camera.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -14,6 +13,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);

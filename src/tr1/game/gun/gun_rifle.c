@@ -1,6 +1,5 @@
 #include "game/gun/gun_rifle.h"
 
-#include "game/camera.h"
 #include "game/gun.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
@@ -10,6 +9,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 
 #include <stdint.h>
 

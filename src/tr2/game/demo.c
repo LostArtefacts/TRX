@@ -1,6 +1,5 @@
 #include "game/demo.h"
 
-#include "game/camera.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
@@ -18,6 +17,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/log.h>
 

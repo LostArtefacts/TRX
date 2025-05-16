@@ -1,7 +1,8 @@
 #include "game/item_actions/explosion.h"
 
-#include "game/camera.h"
 #include "game/sound.h"
+
+#include <libtrx/game/camera.h>
 
 void ItemAction_Explosion(ITEM *item)
 {

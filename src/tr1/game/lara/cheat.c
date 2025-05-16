@@ -1,6 +1,5 @@
 #include "game/lara/cheat.h"
 
-#include "game/camera.h"
 #include "game/console/common.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -16,6 +15,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>

@@ -1,7 +1,8 @@
 #include "game/item_actions/earthquake.h"
 
-#include "game/camera.h"
 #include "game/sound.h"
+
+#include <libtrx/game/camera.h>
 
 void ItemAction_Earthquake(ITEM *item)
 {
