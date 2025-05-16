@@ -1,6 +1,5 @@
 #include "game/creature.h"
 
-#include "game/box.h"
 #include "game/gun/gun_misc.h"
 #include "game/los.h"
 #include "game/random.h"

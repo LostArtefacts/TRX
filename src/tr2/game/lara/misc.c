@@ -1,7 +1,6 @@
 #include "game/lara/misc.h"
 
 #include "decomp/decomp.h"
-#include "game/box.h"
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/inventory_ring.h"
