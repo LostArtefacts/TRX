@@ -16,13 +16,6 @@
 #include "utils.h"
 
 // clang-format off
-#if TR_VERSION == 1
-    #define M_CHASE_SPEED 12
-    #define M_MIN_SQUARE  SQUARE(WALL_L / 4)
-#else
-    #define M_CHASE_SPEED 10
-    #define M_MIN_SQUARE  SQUARE(WALL_L / 3)
-#endif
 #define M_MAX_ELEVATION     (85 * DEG_1) // = 15470
 #define M_COMBAT_DISTANCE   (WALL_L * 5 / 2) // = 2560
 #define M_LOOK_DISTANCE     (WALL_L * 3 / 2) // = 1536
@@ -42,10 +35,33 @@
         int32_t target_h, int32_t left, int32_t top, int32_t right,            \
         int32_t bottom
 
-#if TR_VERSION == 2
-// TODO: consolidate with Viewport API
-extern int32_t g_PhdPersp;
-#endif
+typedef struct {
+    int16_t chase_speed;
+    int32_t min_square;
+    int32_t shift_scale;
+    bool test_shift_pair;
+    bool clip_shift_height;
+    bool test_early_lb_shift;
+} M_SETTINGS;
+
+static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
+    [CAMERA_MODE_TR1] = {
+        .chase_speed = 12,
+        .min_square = SQUARE(WALL_L / 4),
+        .shift_scale = 1,
+        .test_shift_pair = false,
+        .clip_shift_height = false,
+        .test_early_lb_shift = true,
+    },
+    [CAMERA_MODE_TR2] = {
+        .chase_speed = 10,
+        .min_square = SQUARE(WALL_L / 3),
+        .shift_scale = 2,
+        .test_shift_pair = true,
+        .clip_shift_height = true,
+        .test_early_lb_shift = false,
+    },
+};
 
 // Camera speed option ranges from 1-10, so index 0 is unused.
 static const double m_ManualCameraMultiplier[11] = {
@@ -54,7 +70,12 @@ static const double m_ManualCameraMultiplier[11] = {
 
 static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
+#if TR_VERSION == 2
+// TODO: consolidate with Viewport API
+extern int32_t g_PhdPersp;
+#endif
 
+static M_SETTINGS M_GetSettings(void);
 static void M_AdjustMusicVolume(bool underwater);
 static void M_EnsureEnvironment(void);
 
@@ -77,6 +98,11 @@ static void M_Chase(const ITEM *item);
 static void M_Combat(const ITEM *item);
 static void M_Fixed(void);
 static void M_Look(const ITEM *item);
+
+static M_SETTINGS M_GetSettings(void)
+{
+    return m_CameraSettings[g_Config.visuals.camera_mode];
+}
 
 static void M_AdjustMusicVolume(const bool underwater)
 {
@@ -248,6 +274,8 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     int32_t top = box->top;
     int32_t bottom = box->bottom;
 
+    const M_SETTINGS settings = M_GetSettings();
+
     int32_t test = (target->z - WALL_L) | (WALL_L - 1);
     const SECTOR *const good_left =
         M_GetSector(target->x, target->y, test, target->room_num);
@@ -256,7 +284,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box->left < left) {
             left = box->left;
         }
-    } else if (TR_VERSION == 2) {
+    } else if (settings.test_shift_pair) {
         left = test;
     }
 
@@ -268,7 +296,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box->right > right) {
             right = box->right;
         }
-    } else if (TR_VERSION == 2) {
+    } else if (settings.test_shift_pair) {
         right = test;
     }
 
@@ -280,7 +308,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box->top < top) {
             top = box->top;
         }
-    } else if (TR_VERSION == 2) {
+    } else if (settings.test_shift_pair) {
         top = test;
     }
 
@@ -292,7 +320,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box->bottom > bottom) {
             bottom = box->bottom;
         }
-    } else if (TR_VERSION == 2) {
+    } else if (settings.test_shift_pair) {
         bottom = test;
     }
 
@@ -316,7 +344,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     };
 
     bool clip = false;
-    bool prefer_a = true;
+    bool prefer_a = !settings.test_shift_pair;
 
 #define SHIFT(axis1, axis2, l1, l2, r1, r2)                                    \
     shift(                                                                     \
@@ -326,89 +354,91 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         &target_b.axis1, &target_b.axis2, &target_b.y, g_Camera.target.axis1,  \
         g_Camera.target.axis2, g_Camera.target.y, l1, r2, r1, l2)
 
-#if TR_VERSION == 1
-    if (target->z < left && good_left == nullptr) {
-        clip = true;
-        if (target->x < g_Camera.target.x) {
-            SHIFT(z, x, left, top, right, bottom);
-        } else {
-            SHIFT(z, x, left, bottom, right, top);
-        }
-    } else if (target->z > right && good_right == nullptr) {
-        clip = true;
-        if (target->x < g_Camera.target.x) {
-            SHIFT(z, x, right, top, left, bottom);
-        } else {
-            SHIFT(z, x, right, bottom, left, top);
-        }
-    } else if (target->x < top && good_top == nullptr) {
-        clip = true;
-        if (target->z < g_Camera.target.z) {
-            SHIFT(x, z, top, left, bottom, right);
-        } else {
-            SHIFT(x, z, top, right, bottom, left);
-        }
-    } else if (target->x > bottom && good_bottom == nullptr) {
-        clip = true;
-        if (target->z < g_Camera.target.z) {
-            SHIFT(x, z, bottom, left, top, right);
-        } else {
-            SHIFT(x, z, bottom, right, top, left);
-        }
-    }
-#else
-    if (ABS(target->z - g_Camera.target.z)
-        > ABS(target->x - g_Camera.target.x)) {
+    if (!settings.test_shift_pair) {
         if (target->z < left && good_left == nullptr) {
             clip = true;
-            prefer_a = g_Camera.pos.x < g_Camera.target.x;
-            SHIFT(z, x, left, top, right, bottom);
+            if (target->x < g_Camera.target.x) {
+                SHIFT(z, x, left, top, right, bottom);
+            } else {
+                SHIFT(z, x, left, bottom, right, top);
+            }
         } else if (target->z > right && good_right == nullptr) {
             clip = true;
-            prefer_a = g_Camera.pos.x < g_Camera.target.x;
-            SHIFT(z, x, right, top, left, bottom);
+            if (target->x < g_Camera.target.x) {
+                SHIFT(z, x, right, top, left, bottom);
+            } else {
+                SHIFT(z, x, right, bottom, left, top);
+            }
         } else if (target->x < top && good_top == nullptr) {
             clip = true;
-            prefer_a = target->z < g_Camera.target.z;
-            SHIFT(x, z, top, left, bottom, right);
+            if (target->z < g_Camera.target.z) {
+                SHIFT(x, z, top, left, bottom, right);
+            } else {
+                SHIFT(x, z, top, right, bottom, left);
+            }
         } else if (target->x > bottom && good_bottom == nullptr) {
             clip = true;
-            prefer_a = target->z < g_Camera.target.z;
-            SHIFT(x, z, bottom, left, top, right);
+            if (target->z < g_Camera.target.z) {
+                SHIFT(x, z, bottom, left, top, right);
+            } else {
+                SHIFT(x, z, bottom, right, top, left);
+            }
         }
     } else {
-        if (target->x < top && good_top == nullptr) {
-            clip = true;
-            prefer_a = g_Camera.pos.z < g_Camera.target.z;
-            SHIFT(x, z, top, left, bottom, right);
-        } else if (target->x > bottom && good_bottom == nullptr) {
-            clip = true;
-            prefer_a = g_Camera.pos.z < g_Camera.target.z;
-            SHIFT(x, z, bottom, left, top, right);
-        } else if (target->z < left && good_left == nullptr) {
-            clip = true;
-            prefer_a = target->x < g_Camera.target.x;
-            SHIFT(z, x, left, top, right, bottom);
-        } else if (target->z > right && good_right == nullptr) {
-            clip = true;
-            prefer_a = target->x < g_Camera.target.x;
-            SHIFT(z, x, right, top, left, bottom);
+        if (ABS(target->z - g_Camera.target.z)
+            > ABS(target->x - g_Camera.target.x)) {
+            if (target->z < left && good_left == nullptr) {
+                clip = true;
+                prefer_a = g_Camera.pos.x < g_Camera.target.x;
+                SHIFT(z, x, left, top, right, bottom);
+            } else if (target->z > right && good_right == nullptr) {
+                clip = true;
+                prefer_a = g_Camera.pos.x < g_Camera.target.x;
+                SHIFT(z, x, right, top, left, bottom);
+            } else if (target->x < top && good_top == nullptr) {
+                clip = true;
+                prefer_a = target->z < g_Camera.target.z;
+                SHIFT(x, z, top, left, bottom, right);
+            } else if (target->x > bottom && good_bottom == nullptr) {
+                clip = true;
+                prefer_a = target->z < g_Camera.target.z;
+                SHIFT(x, z, bottom, left, top, right);
+            }
+        } else {
+            if (target->x < top && good_top == nullptr) {
+                clip = true;
+                prefer_a = g_Camera.pos.z < g_Camera.target.z;
+                SHIFT(x, z, top, left, bottom, right);
+            } else if (target->x > bottom && good_bottom == nullptr) {
+                clip = true;
+                prefer_a = g_Camera.pos.z < g_Camera.target.z;
+                SHIFT(x, z, bottom, left, top, right);
+            } else if (target->z < left && good_left == nullptr) {
+                clip = true;
+                prefer_a = target->x < g_Camera.target.x;
+                SHIFT(z, x, left, top, right, bottom);
+            } else if (target->z > right && good_right == nullptr) {
+                clip = true;
+                prefer_a = target->x < g_Camera.target.x;
+                SHIFT(z, x, right, top, left, bottom);
+            }
         }
     }
-#endif
 
 #undef SHIFT
 
     if (!clip) {
         return;
     }
-#if TR_VERSION == 2
-    if (prefer_a) {
-        prefer_a = LOS_Check(&g_Camera.target, &target_a);
-    } else {
-        prefer_a = !LOS_Check(&g_Camera.target, &target_b);
+
+    if (settings.test_shift_pair) {
+        if (prefer_a) {
+            prefer_a = LOS_Check(&g_Camera.target, &target_a);
+        } else {
+            prefer_a = !LOS_Check(&g_Camera.target, &target_b);
+        }
     }
-#endif
+
     if (prefer_a) {
         target->pos = target_a.pos;
     } else {
@@ -442,9 +472,10 @@ static void M_Clip(M_SHIFT_ARGS)
         *y = top;
     }
 
-#if TR_VERSION >= 2
-    *h = height;
-#endif
+    const M_SETTINGS settings = M_GetSettings();
+    if (settings.clip_shift_height) {
+        *h = height;
+    }
 }
 
 static void M_Shift(M_SHIFT_ARGS)
@@ -457,11 +488,9 @@ static void M_Shift(M_SHIFT_ARGS)
     const int32_t tl_square = t_square + l_square;
     const int32_t tr_square = t_square + r_square;
     const int32_t bl_square = b_square + l_square;
-#if TR_VERSION == 1
-    const int32_t scaled_target = g_Camera.target_square;
-#else
-    const int32_t scaled_target = g_Camera.target_square * 2;
-#endif
+
+    const M_SETTINGS settings = M_GetSettings();
+    const int32_t scaled_target = g_Camera.target_square * settings.shift_scale;
 
     int32_t shift;
     if (g_Camera.target_square < tl_square) {
@@ -471,7 +500,7 @@ static void M_Shift(M_SHIFT_ARGS)
             shift = Math_Sqrt(shift);
             *y = target_y + (top >= bottom ? shift : -shift);
         }
-    } else if (tl_square > M_MIN_SQUARE) {
+    } else if (tl_square > settings.min_square) {
         *x = left;
         *y = top;
     } else if (g_Camera.target_square < bl_square) {
@@ -481,7 +510,8 @@ static void M_Shift(M_SHIFT_ARGS)
             shift = Math_Sqrt(shift);
             *y = target_y + (top < bottom ? shift : -shift);
         }
-    } else if (TR_VERSION == 1 && bl_square > M_MIN_SQUARE) {
+    } else if (
+        settings.test_early_lb_shift && bl_square > settings.min_square) {
         *x = left;
         *y = bottom;
     } else if (scaled_target < tr_square) {
@@ -491,7 +521,7 @@ static void M_Shift(M_SHIFT_ARGS)
             *x = target_x + (left < right ? shift : -shift);
             *y = top;
         }
-    } else if (TR_VERSION == 1 || bl_square <= tr_square) {
+    } else if (settings.test_early_lb_shift || bl_square <= tr_square) {
         *x = right;
         *y = top;
     } else {
@@ -605,9 +635,10 @@ static void M_Chase(const ITEM *const item)
         .room_num = g_Camera.pos.room_num,
     };
 
+    const M_SETTINGS settings = M_GetSettings();
     const int16_t speed = TR_VERSION == 2 || g_Camera.fixed_camera
         ? g_Camera.speed
-        : M_CHASE_SPEED;
+        : settings.chase_speed;
     M_SmartShift(&target, M_Shift);
     M_Move(&target, speed);
 }
@@ -1062,7 +1093,8 @@ void Camera_Update(void)
         g_Camera.target_distance = M_CHASE_ELEVATION;
         g_Camera.flags = CF_NORMAL;
 #if TR_VERSION >= 2
-        g_Camera.speed = M_CHASE_SPEED;
+        const M_SETTINGS settings = M_GetSettings();
+        g_Camera.speed = settings.chase_speed;
 #endif
     }
     Camera_SetChunky(false);

@@ -52,6 +52,7 @@ typedef struct {
         bool fix_glide_cameras;
         int32_t fov;
         bool use_psx_fov;
+        CAMERA_MODE camera_mode;
 
         RGB_888 water_color;
         int32_t fog_start;

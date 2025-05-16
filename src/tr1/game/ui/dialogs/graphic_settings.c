@@ -5,6 +5,12 @@
 #include <libtrx/config.h>
 #include <libtrx/strings.h>
 
+static const UI_SETTINGS_ENUM_ENTRY m_CameraModeOptions[] = {
+    { CAMERA_MODE_TR1, GS_ID(DETAIL_CAMERA_MODE_TR1) },
+    { CAMERA_MODE_TR2, GS_ID(DETAIL_CAMERA_MODE_TR2) },
+    { -1, nullptr },
+};
+
 static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterOptions[] = {
     { GFX_TF_NN, GS_ID(MISC_OFF) },
     { GFX_TF_BILINEAR, GS_ID(DETAIL_BILINEAR) },
@@ -105,6 +111,15 @@ static const UI_SETTINGS_OPTION m_Options[] = {
         .delta_slow = 1,
         .delta_fast = 10,
         .misc = (void *)(intptr_t)2,
+    },
+
+    {
+        .option_type = COT_ENUM,
+        .label_id = GS_ID(DETAIL_CAMERA_MODE),
+        .target = &g_Config.visuals.camera_mode,
+        .delta_slow = 1,
+        .delta_fast = 1,
+        .misc = m_CameraModeOptions,
     },
 
     {

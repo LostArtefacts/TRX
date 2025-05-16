@@ -42,6 +42,7 @@ typedef struct {
         bool enable_exit_fade_effects;
         int32_t fov_value;
         bool fov_vertical;
+        CAMERA_MODE camera_mode;
         float brightness;
 
         bool enable_reflections;

@@ -56,6 +56,12 @@ typedef struct {
     uint32_t total_attempts;
 } ASSAULT_STATS;
 
+typedef enum {
+    CAMERA_MODE_TR1,
+    CAMERA_MODE_TR2,
+    CAMERA_MODE_NUMBER_OF,
+} CAMERA_MODE;
+
 #if TR_VERSION == 1
     #include "./types_tr1.h"
 #elif TR_VERSION == 2

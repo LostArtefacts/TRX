@@ -556,6 +556,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon; custom level builders can use object slot `184`
 - added reflections of Midas Hand death animation and savegame crystals
 - added optional dynamic lighting for gun flashes and explosions, similar to TR2+
+- added an option to toggle between TR1 and TR2 camera modes
 - changed the Scion in The Great Pyramid from spawning blood when hit to a ricochet effect
 - fixed thin black lines between polygons
 - fixed black screen flashing when navigating the inventory
