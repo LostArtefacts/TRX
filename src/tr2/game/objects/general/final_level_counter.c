@@ -3,7 +3,6 @@
 #include "game/game.h"
 #include "game/gun/gun.h"
 #include "game/los.h"
-#include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "global/vars.h"

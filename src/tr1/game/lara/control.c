@@ -8,7 +8,6 @@
 #include "game/lara/common.h"
 #include "game/lara/look.h"
 #include "game/lara/state.h"
-#include "game/lot.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"

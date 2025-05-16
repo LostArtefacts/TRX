@@ -9,7 +9,6 @@
 #include "game/lara/cheat.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
-#include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"

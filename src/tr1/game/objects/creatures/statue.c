@@ -1,4 +1,3 @@
-#include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/sound.h"
 #include "global/const.h"

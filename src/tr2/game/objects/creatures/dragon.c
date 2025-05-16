@@ -1,7 +1,6 @@
 #include "game/creature.h"
 #include "game/input.h"
 #include "game/lara/control.h"
-#include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/random.h"

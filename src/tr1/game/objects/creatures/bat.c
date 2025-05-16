@@ -1,6 +1,5 @@
 #include "game/creature.h"
 #include "game/lara/common.h"
-#include "game/lot.h"
 #include "game/spawn.h"
 #include "global/const.h"
 #include "global/types.h"

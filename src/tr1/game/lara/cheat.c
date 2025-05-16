@@ -6,7 +6,6 @@
 #include "game/game_string.h"
 #include "game/inventory.h"
 #include "game/lara/common.h"
-#include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/sound.h"

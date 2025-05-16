@@ -1,4 +1,3 @@
-#include "game/lot.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
