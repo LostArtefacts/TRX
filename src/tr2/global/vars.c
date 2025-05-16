@@ -52,7 +52,6 @@ SORT_ITEM *g_Sort3DPtr = nullptr;
 uint16_t g_SoundOptionLine;
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
-CREATURE *g_BaddieSlots = nullptr;
 
 WEAPON_INFO g_Weapons[] = {
     {},
