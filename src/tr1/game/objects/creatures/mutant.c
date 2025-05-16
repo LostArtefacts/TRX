@@ -138,9 +138,9 @@ static void M_Control(const int16_t item_num)
         Carrier_TestItemDrops(item_num);
         return;
     } else {
-        flyer->lot.step = STEP_L;
-        flyer->lot.drop = -STEP_L;
-        flyer->lot.fly = 0;
+        flyer->lot.setup.step = STEP_L;
+        flyer->lot.setup.drop = -STEP_L;
+        flyer->lot.setup.fly = 0;
 
         AI_INFO info;
         Creature_AIInfo(item, &info);
@@ -169,9 +169,9 @@ static void M_Control(const int16_t item_num)
                     Creature_Mood(item, &info, true);
                 }
 
-                flyer->lot.step = WALL_L * 30;
-                flyer->lot.drop = -WALL_L * 30;
-                flyer->lot.fly = STEP_L / 8;
+                flyer->lot.setup.step = WALL_L * 30;
+                flyer->lot.setup.drop = -WALL_L * 30;
+                flyer->lot.setup.fly = STEP_L / 8;
                 Creature_AIInfo(item, &info);
             } else if (
                 (info.zone_num != info.enemy_zone && !shoot1 && !shoot2

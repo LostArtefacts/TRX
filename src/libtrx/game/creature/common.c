@@ -261,8 +261,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         info->enemy_zone_num = zone[enemy->box_num];
     }
 
-    if (((Box_GetBox(enemy->box_num)->overlap_index & creature->lot.block_mask)
-         != 0)
+    const BOX_INFO *const enemy_box = Box_GetBox(enemy->box_num);
+    if (((enemy_box->overlap_index & creature->lot.setup.block_mask) != 0)
         || (creature->lot.node[item->box_num].search_num
             == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
         info->enemy_zone_num |= BOX_BLOCKED;
@@ -431,7 +431,7 @@ void Creature_Mood(
             || Random_GetControl() < Object_Get(item->object_id)->smartness) {
             lot->target = enemy->pos;
             lot->required_box = enemy->box_num;
-            if (lot->fly != 0
+            if (lot->setup.fly != 0
                 && Lara_GetLaraInfo()->water_status == LWS_ABOVE_WATER) {
                 lot->target.y += Item_GetBestFrame(enemy)->bounds.min.y;
             }
@@ -705,7 +705,8 @@ bool Creature_Animate(
 
     const int32_t box_height = Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX || zone[item->box_num] != zone[sector->box]
-        || box_height - height > lot->step || box_height - height < lot->drop) {
+        || box_height - height > lot->setup.step
+        || box_height - height < lot->setup.drop) {
         const int32_t pos_x = item->pos.x >> WALL_SHIFT;
         const int32_t shift_x = old.x >> WALL_SHIFT;
         const int32_t shift_z = old.z >> WALL_SHIFT;
@@ -837,9 +838,9 @@ bool Creature_Animate(
         return true;
     }
 
-    if (lot->fly) {
+    if (lot->setup.fly != 0) {
         int32_t dy = creature->target.y - item->pos.y;
-        CLAMP(dy, -lot->fly, lot->fly);
+        CLAMP(dy, -lot->setup.fly, lot->setup.fly);
 
         height = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
         if (item->pos.y + dy <= height) {
@@ -863,7 +864,7 @@ bool Creature_Animate(
                 if (item->pos.y + min_y < ceiling) {
                     item->pos.x = old.x;
                     item->pos.z = old.z;
-                    dy = lot->fly;
+                    dy = lot->setup.fly;
                 } else {
                     dy = 0;
                 }
@@ -874,7 +875,7 @@ bool Creature_Animate(
         } else {
             item->pos.x = old.x;
             item->pos.z = old.z;
-            dy = -lot->fly;
+            dy = -lot->setup.fly;
         }
 
         item->pos.y += dy;

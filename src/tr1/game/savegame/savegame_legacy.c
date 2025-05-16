@@ -321,10 +321,10 @@ static void M_ReadLOT(LOT_INFO *const lot)
     lot->head = M_ReadS16();
     lot->tail = M_ReadS16();
     lot->search_num = M_ReadU16();
-    lot->block_mask = M_ReadU16();
-    lot->step = M_ReadS16();
-    lot->drop = M_ReadS16();
-    lot->fly = M_ReadS16();
+    lot->setup.block_mask = M_ReadU16();
+    lot->setup.step = M_ReadS16();
+    lot->setup.drop = M_ReadS16();
+    lot->setup.fly = M_ReadS16();
     lot->zone_count = M_ReadS16();
     lot->target_box = M_ReadS16();
     lot->required_box = M_ReadS16();

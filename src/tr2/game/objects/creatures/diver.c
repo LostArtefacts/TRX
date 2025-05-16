@@ -198,7 +198,7 @@ static void M_Control(const int16_t item_num)
             neck = -info.angle;
         }
         if (creature->target.y < water_level
-            && item->pos.y < water_level + creature->lot.fly) {
+            && item->pos.y < water_level + creature->lot.setup.fly) {
             item->goal_anim_state = DIVER_STATE_SWIM_2;
         } else if (creature->mood != MOOD_ESCAPE && shoot) {
             item->goal_anim_state = DIVER_STATE_AIM_1;
@@ -244,7 +244,7 @@ static void M_Control(const int16_t item_num)
         }
         if (!shoot || creature->mood == MOOD_ESCAPE
             || (creature->target.y < water_level
-                && item->pos.y < water_level + creature->lot.fly)) {
+                && item->pos.y < water_level + creature->lot.setup.fly)) {
             item->goal_anim_state = DIVER_STATE_SWIM_1;
         } else {
             item->goal_anim_state = DIVER_STATE_SHOOT_1;

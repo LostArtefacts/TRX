@@ -19,14 +19,18 @@ typedef struct {
 } BOX_NODE;
 
 typedef struct {
+    int16_t step;
+    int16_t drop;
+    int16_t fly;
+    uint16_t block_mask;
+} LOT_SETUP;
+
+typedef struct {
+    LOT_SETUP setup;
     BOX_NODE *node;
     int16_t head;
     int16_t tail;
     uint16_t search_num;
-    uint16_t block_mask;
-    int16_t step;
-    int16_t drop;
-    int16_t fly;
     int16_t zone_count;
     int16_t target_box;
     int16_t required_box;

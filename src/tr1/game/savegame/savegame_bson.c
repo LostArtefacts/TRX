@@ -758,10 +758,11 @@ static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot)
     lot->head = JSON_ObjectGetInt(lot_obj, "head", lot->head);
     lot->tail = JSON_ObjectGetInt(lot_obj, "tail", lot->tail);
     lot->search_num = JSON_ObjectGetInt(lot_obj, "search_num", lot->search_num);
-    lot->block_mask = JSON_ObjectGetInt(lot_obj, "block_mask", lot->block_mask);
-    lot->step = JSON_ObjectGetInt(lot_obj, "step", lot->step);
-    lot->drop = JSON_ObjectGetInt(lot_obj, "drop", lot->drop);
-    lot->fly = JSON_ObjectGetInt(lot_obj, "fly", lot->fly);
+    lot->setup.block_mask =
+        JSON_ObjectGetInt(lot_obj, "block_mask", lot->setup.block_mask);
+    lot->setup.step = JSON_ObjectGetInt(lot_obj, "step", lot->setup.step);
+    lot->setup.drop = JSON_ObjectGetInt(lot_obj, "drop", lot->setup.drop);
+    lot->setup.fly = JSON_ObjectGetInt(lot_obj, "fly", lot->setup.fly);
     lot->zone_count = JSON_ObjectGetInt(lot_obj, "zone_count", lot->zone_count);
     lot->target_box = JSON_ObjectGetInt(lot_obj, "target_box", lot->target_box);
     lot->required_box =
@@ -1239,10 +1240,10 @@ static JSON_OBJECT *M_DumpLOT(LOT_INFO *lot)
     JSON_ObjectAppendInt(lot_obj, "head", lot->head);
     JSON_ObjectAppendInt(lot_obj, "tail", lot->tail);
     JSON_ObjectAppendInt(lot_obj, "search_num", lot->search_num);
-    JSON_ObjectAppendInt(lot_obj, "block_mask", lot->block_mask);
-    JSON_ObjectAppendInt(lot_obj, "step", lot->step);
-    JSON_ObjectAppendInt(lot_obj, "drop", lot->drop);
-    JSON_ObjectAppendInt(lot_obj, "fly", lot->fly);
+    JSON_ObjectAppendInt(lot_obj, "block_mask", lot->setup.block_mask);
+    JSON_ObjectAppendInt(lot_obj, "step", lot->setup.step);
+    JSON_ObjectAppendInt(lot_obj, "drop", lot->setup.drop);
+    JSON_ObjectAppendInt(lot_obj, "fly", lot->setup.fly);
     JSON_ObjectAppendInt(lot_obj, "zone_count", lot->zone_count);
     JSON_ObjectAppendInt(lot_obj, "target_box", lot->target_box);
     JSON_ObjectAppendInt(lot_obj, "required_box", lot->required_box);

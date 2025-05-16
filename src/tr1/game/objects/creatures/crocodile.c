@@ -125,13 +125,13 @@ static void M_UpdateCreatureLOT(const ITEM *const item)
     }
 
     if (item->object_id == O_CROCODILE) {
-        creature->lot.step = STEP_L;
-        creature->lot.drop = -STEP_L;
-        creature->lot.fly = 0;
+        creature->lot.setup.step = STEP_L;
+        creature->lot.setup.drop = -STEP_L;
+        creature->lot.setup.fly = 0;
     } else if (item->object_id == O_ALLIGATOR) {
-        creature->lot.step = WALL_L * 20;
-        creature->lot.drop = -WALL_L * 20;
-        creature->lot.fly = STEP_L / 16;
+        creature->lot.setup.step = WALL_L * 20;
+        creature->lot.setup.drop = -WALL_L * 20;
+        creature->lot.setup.fly = STEP_L / 16;
     }
 }
 
