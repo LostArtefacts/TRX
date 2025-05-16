@@ -37,6 +37,11 @@
 #define M_LOOK_SPEED        4
 // clang-format on
 
+#define M_SHIFT_ARGS                                                           \
+    int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y,    \
+        int32_t target_h, int32_t left, int32_t top, int32_t right,            \
+        int32_t bottom
+
 #if TR_VERSION == 2
 // TODO: consolidate with Viewport API
 extern int32_t g_PhdPersp;
@@ -56,6 +61,22 @@ static void M_EnsureEnvironment(void);
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
+
+static const BOX_INFO *M_GetBox(const SECTOR *sector, int32_t x, int32_t z);
+static bool M_IsGoodPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
+static const SECTOR *M_GetSector(
+    int32_t x, int32_t y, int32_t z, int16_t room_num);
+
+static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
+static void M_SmartShift(GAME_VECTOR *target, void (*shift)(M_SHIFT_ARGS));
+static void M_Clip(M_SHIFT_ARGS);
+static void M_Shift(M_SHIFT_ARGS);
+static void M_Move(const GAME_VECTOR *target, int32_t speed);
+
+static void M_Chase(const ITEM *item);
+static void M_Combat(const ITEM *item);
+static void M_Fixed(void);
+static void M_Look(const ITEM *item);
 
 static void M_AdjustMusicVolume(const bool underwater)
 {
@@ -126,8 +147,7 @@ static void M_OffsetReset(void)
     g_Camera.additional_elevation = 0;
 }
 
-// TODO: make private once modules are ported.
-const BOX_INFO *Camera_GetBox(
+static const BOX_INFO *M_GetBox(
     const SECTOR *const sector, const int32_t x, const int32_t z)
 {
     if (sector->box != NO_BOX) {
@@ -143,15 +163,13 @@ const BOX_INFO *Camera_GetBox(
     return &m_FixedBox;
 }
 
-// TODO: make private.
-bool Camera_IsGoodPosition(
+static bool M_IsGoodPosition(
     const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
 {
-    return Camera_GetSector(x, y, z, room_num) != nullptr;
+    return M_GetSector(x, y, z, room_num) != nullptr;
 }
 
-// TODO: make private.
-const SECTOR *Camera_GetSector(
+static const SECTOR *M_GetSector(
     const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
 {
     const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
@@ -164,31 +182,29 @@ const SECTOR *Camera_GetSector(
     return sector;
 }
 
-// TODO: make private.
-int32_t Camera_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
+static int32_t M_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
 {
     const int32_t x = pos->x;
     const int32_t y = pos->y;
     const int32_t z = pos->z;
 
     const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
-    const BOX_INFO *const box = Camera_GetBox(sector, x, z);
+    const BOX_INFO *const box = M_GetBox(sector, x, z);
 
     const int32_t left = box->left + clamp;
     const int32_t right = box->right - clamp;
-    if (z < left && !Camera_IsGoodPosition(x, y, z - clamp, pos->room_num)) {
+    if (z < left && !M_IsGoodPosition(x, y, z - clamp, pos->room_num)) {
         pos->z = left;
-    } else if (
-        z > right && !Camera_IsGoodPosition(x, y, z + clamp, pos->room_num)) {
+    } else if (z > right && !M_IsGoodPosition(x, y, z + clamp, pos->room_num)) {
         pos->z = right;
     }
 
     const int32_t top = box->top + clamp;
     const int32_t bottom = box->bottom - clamp;
-    if (x < top && !Camera_IsGoodPosition(x - clamp, y, z, pos->room_num)) {
+    if (x < top && !M_IsGoodPosition(x - clamp, y, z, pos->room_num)) {
         pos->x = top;
     } else if (
-        x > bottom && !Camera_IsGoodPosition(x + clamp, y, z, pos->room_num)) {
+        x > bottom && !M_IsGoodPosition(x + clamp, y, z, pos->room_num)) {
         pos->x = bottom;
     }
 
@@ -209,9 +225,7 @@ int32_t Camera_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
     return 0;
 }
 
-// TODO: make private
-void Camera_SmartShift(
-    GAME_VECTOR *const target, void (*shift)(CAMERA_SHIFT_ARGS))
+static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 {
     LOS_Check(&g_Camera.target, target);
 
@@ -219,14 +233,14 @@ void Camera_SmartShift(
     const SECTOR *sector =
         Room_GetWorldSector(room, g_Camera.target.x, g_Camera.target.z);
     const BOX_INFO *box =
-        Camera_GetBox(sector, g_Camera.target.x, g_Camera.target.z);
+        M_GetBox(sector, g_Camera.target.x, g_Camera.target.z);
 
     room = Room_Get(target->room_num);
     sector = Room_GetWorldSector(room, target->x, target->z);
 
     if (target->z < box->left || target->z > box->right || target->x < box->top
         || target->x > box->bottom) {
-        box = Camera_GetBox(sector, target->x, target->z);
+        box = M_GetBox(sector, target->x, target->z);
     }
 
     int32_t left = box->left;
@@ -236,9 +250,9 @@ void Camera_SmartShift(
 
     int32_t test = (target->z - WALL_L) | (WALL_L - 1);
     const SECTOR *const good_left =
-        Camera_GetSector(target->x, target->y, test, target->room_num);
+        M_GetSector(target->x, target->y, test, target->room_num);
     if (good_left != nullptr) {
-        box = Camera_GetBox(good_left, target->x, test);
+        box = M_GetBox(good_left, target->x, test);
         if (box->left < left) {
             left = box->left;
         }
@@ -248,9 +262,9 @@ void Camera_SmartShift(
 
     test = (target->z + WALL_L) & (~(WALL_L - 1));
     const SECTOR *const good_right =
-        Camera_GetSector(target->x, target->y, test, target->room_num);
+        M_GetSector(target->x, target->y, test, target->room_num);
     if (good_right != nullptr) {
-        box = Camera_GetBox(good_right, target->x, test);
+        box = M_GetBox(good_right, target->x, test);
         if (box->right > right) {
             right = box->right;
         }
@@ -260,9 +274,9 @@ void Camera_SmartShift(
 
     test = (target->x - WALL_L) | (WALL_L - 1);
     const SECTOR *const good_top =
-        Camera_GetSector(test, target->y, target->z, target->room_num);
+        M_GetSector(test, target->y, target->z, target->room_num);
     if (good_top != nullptr) {
-        box = Camera_GetBox(good_top, test, target->z);
+        box = M_GetBox(good_top, test, target->z);
         if (box->top < top) {
             top = box->top;
         }
@@ -272,9 +286,9 @@ void Camera_SmartShift(
 
     test = (target->x + WALL_L) & (~(WALL_L - 1));
     const SECTOR *const good_bottom =
-        Camera_GetSector(test, target->y, target->z, target->room_num);
+        M_GetSector(test, target->y, target->z, target->room_num);
     if (good_bottom != nullptr) {
-        box = Camera_GetBox(good_bottom, test, target->z);
+        box = M_GetBox(good_bottom, test, target->z);
         if (box->bottom > bottom) {
             bottom = box->bottom;
         }
@@ -404,8 +418,7 @@ void Camera_SmartShift(
     Room_GetSector(target->x, target->y, target->z, &target->room_num);
 }
 
-// TODO: make private.
-void Camera_Clip(CAMERA_SHIFT_ARGS)
+static void M_Clip(M_SHIFT_ARGS)
 {
     const int32_t x_diff = *x - target_x;
     const int32_t y_diff = *y - target_y;
@@ -434,8 +447,7 @@ void Camera_Clip(CAMERA_SHIFT_ARGS)
 #endif
 }
 
-// TODO: make private.
-void Camera_Shift(CAMERA_SHIFT_ARGS)
+static void M_Shift(M_SHIFT_ARGS)
 {
     const int32_t l_square = SQUARE(target_x - left);
     const int32_t r_square = SQUARE(target_x - right);
@@ -488,8 +500,7 @@ void Camera_Shift(CAMERA_SHIFT_ARGS)
     }
 }
 
-// TODO: make private.
-void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
+static void M_Move(const GAME_VECTOR *const target, const int32_t speed)
 {
     const GAME_VECTOR old_pos = g_Camera.pos;
     GAME_VECTOR pos = g_Camera.pos;
@@ -566,8 +577,7 @@ void Camera_Move(const GAME_VECTOR *const target, const int32_t speed)
     Camera_UpdateMicPosition();
 }
 
-// TODO: make private.
-void Camera_Chase(const ITEM *const item)
+static void M_Chase(const ITEM *const item)
 {
     g_Camera.target_elevation += item->rot.x;
     g_Camera.target_elevation = MIN(g_Camera.target_elevation, M_MAX_ELEVATION);
@@ -598,12 +608,11 @@ void Camera_Chase(const ITEM *const item)
     const int16_t speed = TR_VERSION == 2 || g_Camera.fixed_camera
         ? g_Camera.speed
         : M_CHASE_SPEED;
-    Camera_SmartShift(&target, Camera_Shift);
-    Camera_Move(&target, speed);
+    M_SmartShift(&target, M_Shift);
+    M_Move(&target, speed);
 }
 
-// TODO: make private.
-void Camera_Combat(const ITEM *const item)
+static void M_Combat(const ITEM *const item)
 {
     g_Camera.target.z = item->pos.z;
     g_Camera.target.x = item->pos.x;
@@ -655,12 +664,11 @@ void Camera_Combat(const ITEM *const item)
         }
     }
 
-    Camera_SmartShift(&target, Camera_Shift);
-    Camera_Move(&target, g_Camera.speed);
+    M_SmartShift(&target, M_Shift);
+    M_Move(&target, g_Camera.speed);
 }
 
-// TODO: make private.
-void Camera_Fixed(void)
+static void M_Fixed(void)
 {
     const OBJECT_VECTOR *const fixed = Camera_GetFixedObject(g_Camera.num);
     GAME_VECTOR target = {
@@ -671,12 +679,12 @@ void Camera_Fixed(void)
     };
 #if TR_VERSION >= 2
     if (!LOS_Check(&g_Camera.target, &target)) {
-        Camera_ShiftClamp(&target, STEP_L);
+        M_ShiftClamp(&target, STEP_L);
     }
 #endif
 
     g_Camera.fixed_camera = true;
-    Camera_Move(&target, g_Camera.speed);
+    M_Move(&target, g_Camera.speed);
 
     if (g_Camera.timer != 0) {
         g_Camera.timer--;
@@ -686,8 +694,7 @@ void Camera_Fixed(void)
     }
 }
 
-// TODO: make private.
-void Camera_Look(const ITEM *const item)
+static void M_Look(const ITEM *const item)
 {
     const XYZ_32 old = {
         .x = g_Camera.target.x,
@@ -713,14 +720,14 @@ void Camera_Look(const ITEM *const item)
     g_Camera.target.z += (g_Camera.shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
     g_Camera.target.x += (g_Camera.shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
 
-    if (!Camera_IsGoodPosition(
+    if (!M_IsGoodPosition(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
             g_Camera.target.room_num)) {
         g_Camera.target.x = item->pos.x;
         g_Camera.target.z = item->pos.z;
     }
 
-    g_Camera.target.y += Camera_ShiftClamp(&g_Camera.target, M_LOOK_CLAMP);
+    g_Camera.target.y += M_ShiftClamp(&g_Camera.target, M_LOOK_CLAMP);
 
     const XYZ_32 offset = {
         .y =
@@ -737,10 +744,10 @@ void Camera_Look(const ITEM *const item)
         .room_num = g_Camera.pos.room_num,
     };
 
-    Camera_SmartShift(&target, Camera_Clip);
+    M_SmartShift(&target, M_Clip);
     g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
     g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
-    Camera_Move(&target, g_Camera.speed);
+    M_Move(&target, g_Camera.speed);
     g_Camera.debuff = 5;
 }
 
@@ -983,9 +990,9 @@ void Camera_Update(void)
         }
         g_Camera.fixed_camera = false;
         if (g_Camera.type == CAM_LOOK) {
-            Camera_Look(item);
+            M_Look(item);
         } else {
-            Camera_Combat(item);
+            M_Combat(item);
         }
     } else {
         if (g_Camera.debuff > 0) {
@@ -1023,9 +1030,9 @@ void Camera_Update(void)
         }
 
         if (g_Camera.type == CAM_CHASE || g_Camera.flags == CF_CHASE_OBJECT) {
-            Camera_Chase(item);
+            M_Chase(item);
         } else {
-            Camera_Fixed();
+            M_Fixed();
         }
     }
 
