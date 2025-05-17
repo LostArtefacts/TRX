@@ -51,7 +51,6 @@ void InvRing_RemoveItemTexts(void);
 void InvRing_SelectMeshes(INVENTORY_ITEM *inv_item);
 void InvRing_ShowHeader(INV_RING *ring);
 void InvRing_RemoveHeader(void);
-void InvRing_HideArrow(INV_RING_ARROW arrow, bool hide);
 void InvRing_ShowVersionText(void);
 void InvRing_RemoveVersionText(void);
 void InvRing_DrawUI(INV_RING *ring);

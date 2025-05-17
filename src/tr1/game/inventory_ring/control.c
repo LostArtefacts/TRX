@@ -176,11 +176,6 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
     }
 
-    InvRing_HideArrow(INV_RING_ARROW_TL, false);
-    InvRing_HideArrow(INV_RING_ARROW_TR, false);
-    InvRing_HideArrow(INV_RING_ARROW_BL, false);
-    InvRing_HideArrow(INV_RING_ARROW_BR, false);
-
     if (m_ExamineItemText != nullptr) {
         Text_Hide(m_ExamineItemText, !show_examine_option);
         Text_Hide(m_UseItemText, !show_examine_option);

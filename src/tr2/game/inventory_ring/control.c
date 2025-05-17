@@ -135,11 +135,6 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
     default:
         break;
     }
-
-    InvRing_HideArrow(
-        INV_RING_ARROW_TL,
-        inv_item->object_id == O_SMALL_MEDIPACK_OPTION
-            || inv_item->object_id == O_LARGE_MEDIPACK_OPTION);
 }
 
 static void M_RingActive(void)
