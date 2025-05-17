@@ -51,8 +51,10 @@ void Gun_Control(void)
                     && (g_Lara.request_gun_type == LGT_HARPOON
                         || g_Lara.water_status == LWS_ABOVE_WATER
                         || (g_Lara.water_status == LWS_WADE
-                            && g_Lara.water_surface_dist
-                                > -g_Weapons[g_Lara.gun_type].gun_height)))) {
+                            && (g_Lara.gun_status == LGS_ARMLESS
+                                || g_Lara.water_surface_dist
+                                    > -g_Weapons[g_Lara.gun_type]
+                                           .gun_height))))) {
                 if (g_Lara.gun_type == LGT_FLARE) {
                     Flare_Create(0);
                     Flare_UndrawMeshes();

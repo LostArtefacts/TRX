@@ -12,6 +12,7 @@
 - fixed falling ceiling and Damocles Sword traps not falling through stacked rooms (#2924)
 - fixed health bar in top center position covering inventory text
 - fixed the save crystal animation skipping a frame in 60 FPS (#1528)
+- fixed Lara unable to equip pistols after getting the Shotgun wet while wading (#2994)
 - fixed select level dialog not reacting to the menu back key (#2918, regression from 4.9)
 - fixed carried items falling from flying enemies not animating in 60 FPS (#2954, regression from 4.0)
 - fixed items carried by the Qualopec mummy spawning early after save/load (#2956, regression from 4.6)
