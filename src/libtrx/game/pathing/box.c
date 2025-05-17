@@ -56,27 +56,6 @@ int16_t *Box_InitialiseOverlaps(const int32_t num_overlaps)
     return m_Overlaps;
 }
 
-bool Box_IsUsableZoneIndex(const int32_t zone_idx)
-{
-#if TR_VERSION == 2
-    // TODO: work out why these checks are in OG.
-    if (zone_idx == 2) {
-        return false;
-    }
-
-    if (zone_idx == 1 && !Object_Get(O_SPIDER)->loaded
-        && !Object_Get(O_SKIDOO_ARMED)->loaded) {
-        return false;
-    }
-
-    if (zone_idx == 3 && !Object_Get(O_YETI)->loaded
-        && !Object_Get(O_WORKER_3)->loaded) {
-        return false;
-    }
-#endif
-    return true;
-}
-
 int32_t Box_GetCount(void)
 {
     return m_BoxCount;

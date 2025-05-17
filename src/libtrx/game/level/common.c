@@ -987,11 +987,6 @@ void Level_ReadPathingData(VFILE *const file)
 
     for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
         for (int32_t zone_idx = 0; zone_idx < MAX_ZONES; zone_idx++) {
-            if (!Box_IsUsableZoneIndex(zone_idx)) {
-                VFile_Skip(file, sizeof(int16_t) * num_boxes);
-                continue;
-            }
-
             int16_t *const ground_zone =
                 Box_GetGroundZone(flip_status, zone_idx);
             VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);
