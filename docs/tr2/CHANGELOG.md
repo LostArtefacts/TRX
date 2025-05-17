@@ -37,6 +37,7 @@
     - fixed items dropped by flying creatures not falling to the ground
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
 - removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise (#2950)
+- fixed inventory ring items not being animated when the ring is rotating (#2964, regression from 0.9)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)
