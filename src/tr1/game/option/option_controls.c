@@ -19,7 +19,7 @@
 #define BOX_PADDING 10
 
 #define KC_TITLE -1
-#define COL_END -1
+#define COL_END ((INPUT_ROLE) - 1)
 #define BUTTON_HOLD_TIME 2
 #define HOLD_DELAY_FRAMES 300 * LOGIC_FPS / 1000
 
@@ -50,8 +50,7 @@ typedef enum {
 } CONTROL_TEXT;
 
 typedef struct {
-    int role;
-    GAME_STRING_ID game_string;
+    INPUT_ROLE role;
     bool can_unbind;
 } TEXT_COLUMN_PLACEMENT;
 
@@ -94,86 +93,86 @@ static MENU m_ControlMenu = {
     .prev_row_num = KC_TITLE,
 };
 
-static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
-    { INPUT_ROLE_UP, GS_ID(KEYMAP_RUN), false },
-    { INPUT_ROLE_DOWN, GS_ID(KEYMAP_BACK), false },
-    { INPUT_ROLE_LEFT, GS_ID(KEYMAP_LEFT), false },
-    { INPUT_ROLE_RIGHT, GS_ID(KEYMAP_RIGHT), false },
-    { INPUT_ROLE_DRAW, GS_ID(KEYMAP_DRAW_WEAPON), false },
-    { INPUT_ROLE_ACTION, GS_ID(KEYMAP_ACTION), false },
-    { INPUT_ROLE_JUMP, GS_ID(KEYMAP_JUMP), false },
-    { INPUT_ROLE_ROLL, GS_ID(KEYMAP_ROLL), false },
-    { INPUT_ROLE_LOOK, GS_ID(KEYMAP_LOOK), false },
-    { INPUT_ROLE_SLOW, GS_ID(KEYMAP_WALK), false },
-    { INPUT_ROLE_STEP_L, GS_ID(KEYMAP_STEP_LEFT), true },
-    { INPUT_ROLE_STEP_R, GS_ID(KEYMAP_STEP_RIGHT), true },
-    { INPUT_ROLE_OPTION, GS_ID(KEYMAP_INVENTORY), false },
-    { INPUT_ROLE_PAUSE, GS_ID(KEYMAP_PAUSE), true },
-    { INPUT_ROLE_CHANGE_TARGET, GS_ID(KEYMAP_CHANGE_TARGET), true },
-    { INPUT_ROLE_TOGGLE_PHOTO_MODE, GS_ID(KEYMAP_TOGGLE_PHOTO_MODE), true },
-    { INPUT_ROLE_CAMERA_UP, GS_ID(KEYMAP_CAMERA_UP), true },
-    { INPUT_ROLE_CAMERA_DOWN, GS_ID(KEYMAP_CAMERA_DOWN), true },
-    { INPUT_ROLE_CAMERA_FORWARD, GS_ID(KEYMAP_CAMERA_FORWARD), true },
-    { INPUT_ROLE_CAMERA_BACK, GS_ID(KEYMAP_CAMERA_BACK), true },
-    { INPUT_ROLE_CAMERA_LEFT, GS_ID(KEYMAP_CAMERA_LEFT), true },
-    { INPUT_ROLE_CAMERA_RIGHT, GS_ID(KEYMAP_CAMERA_RIGHT), true },
-    { INPUT_ROLE_EQUIP_PISTOLS, GS_ID(KEYMAP_EQUIP_PISTOLS), true },
-    { INPUT_ROLE_EQUIP_SHOTGUN, GS_ID(KEYMAP_EQUIP_SHOTGUN), true },
-    { INPUT_ROLE_EQUIP_MAGNUMS, GS_ID(KEYMAP_EQUIP_MAGNUMS), true },
-    { INPUT_ROLE_EQUIP_UZIS, GS_ID(KEYMAP_EQUIP_UZIS), true },
-    { INPUT_ROLE_USE_SMALL_MEDI, GS_ID(KEYMAP_USE_SMALL_MEDI), true },
-    { INPUT_ROLE_USE_BIG_MEDI, GS_ID(KEYMAP_USE_BIG_MEDI), true },
-    { INPUT_ROLE_SAVE, GS_ID(KEYMAP_SAVE), true },
-    { INPUT_ROLE_LOAD, GS_ID(KEYMAP_LOAD), true },
-    { INPUT_ROLE_FPS, GS_ID(KEYMAP_FPS), true },
-    { INPUT_ROLE_BILINEAR, GS_ID(KEYMAP_BILINEAR), true },
-    { INPUT_ROLE_ENTER_CONSOLE, GS_ID(KEYMAP_ENTER_CONSOLE), true },
-    { INPUT_ROLE_TOGGLE_UI, GS_ID(KEYMAP_TOGGLE_UI), true },
+static const TEXT_COLUMN_PLACEMENT m_CtrlTextPlacementNormal[] = {
+    { INPUT_ROLE_UP, false },
+    { INPUT_ROLE_DOWN, false },
+    { INPUT_ROLE_LEFT, false },
+    { INPUT_ROLE_RIGHT, false },
+    { INPUT_ROLE_DRAW, false },
+    { INPUT_ROLE_ACTION, false },
+    { INPUT_ROLE_JUMP, false },
+    { INPUT_ROLE_ROLL, false },
+    { INPUT_ROLE_LOOK, false },
+    { INPUT_ROLE_SLOW, false },
+    { INPUT_ROLE_STEP_L, true },
+    { INPUT_ROLE_STEP_R, true },
+    { INPUT_ROLE_OPTION, false },
+    { INPUT_ROLE_PAUSE, true },
+    { INPUT_ROLE_CHANGE_TARGET, true },
+    { INPUT_ROLE_TOGGLE_PHOTO_MODE, true },
+    { INPUT_ROLE_CAMERA_UP, true },
+    { INPUT_ROLE_CAMERA_DOWN, true },
+    { INPUT_ROLE_CAMERA_FORWARD, true },
+    { INPUT_ROLE_CAMERA_BACK, true },
+    { INPUT_ROLE_CAMERA_LEFT, true },
+    { INPUT_ROLE_CAMERA_RIGHT, true },
+    { INPUT_ROLE_EQUIP_PISTOLS, true },
+    { INPUT_ROLE_EQUIP_SHOTGUN, true },
+    { INPUT_ROLE_EQUIP_MAGNUMS, true },
+    { INPUT_ROLE_EQUIP_UZIS, true },
+    { INPUT_ROLE_USE_SMALL_MEDI, true },
+    { INPUT_ROLE_USE_BIG_MEDI, true },
+    { INPUT_ROLE_SAVE, true },
+    { INPUT_ROLE_LOAD, true },
+    { INPUT_ROLE_FPS, true },
+    { INPUT_ROLE_BILINEAR, true },
+    { INPUT_ROLE_ENTER_CONSOLE, true },
+    { INPUT_ROLE_TOGGLE_UI, true },
     // end
-    { COL_END, nullptr, false },
+    { COL_END, false },
 };
 
-static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
-    { INPUT_ROLE_UP, GS_ID(KEYMAP_RUN), false },
-    { INPUT_ROLE_DOWN, GS_ID(KEYMAP_BACK), false },
-    { INPUT_ROLE_LEFT, GS_ID(KEYMAP_LEFT), false },
-    { INPUT_ROLE_RIGHT, GS_ID(KEYMAP_RIGHT), false },
-    { INPUT_ROLE_DRAW, GS_ID(KEYMAP_DRAW_WEAPON), false },
-    { INPUT_ROLE_ACTION, GS_ID(KEYMAP_ACTION), false },
-    { INPUT_ROLE_JUMP, GS_ID(KEYMAP_JUMP), false },
-    { INPUT_ROLE_ROLL, GS_ID(KEYMAP_ROLL), false },
-    { INPUT_ROLE_LOOK, GS_ID(KEYMAP_LOOK), false },
-    { INPUT_ROLE_SLOW, GS_ID(KEYMAP_WALK), false },
-    { INPUT_ROLE_STEP_L, GS_ID(KEYMAP_STEP_LEFT), true },
-    { INPUT_ROLE_STEP_R, GS_ID(KEYMAP_STEP_RIGHT), true },
-    { INPUT_ROLE_OPTION, GS_ID(KEYMAP_INVENTORY), false },
-    { INPUT_ROLE_PAUSE, GS_ID(KEYMAP_PAUSE), true },
-    { INPUT_ROLE_CHANGE_TARGET, GS_ID(KEYMAP_CHANGE_TARGET), true },
-    { INPUT_ROLE_TOGGLE_PHOTO_MODE, GS_ID(KEYMAP_TOGGLE_PHOTO_MODE), true },
-    { INPUT_ROLE_CAMERA_UP, GS_ID(KEYMAP_CAMERA_UP), true },
-    { INPUT_ROLE_CAMERA_DOWN, GS_ID(KEYMAP_CAMERA_DOWN), true },
-    { INPUT_ROLE_CAMERA_FORWARD, GS_ID(KEYMAP_CAMERA_FORWARD), true },
-    { INPUT_ROLE_CAMERA_BACK, GS_ID(KEYMAP_CAMERA_BACK), true },
-    { INPUT_ROLE_CAMERA_LEFT, GS_ID(KEYMAP_CAMERA_LEFT), true },
-    { INPUT_ROLE_CAMERA_RIGHT, GS_ID(KEYMAP_CAMERA_RIGHT), true },
-    { INPUT_ROLE_EQUIP_PISTOLS, GS_ID(KEYMAP_EQUIP_PISTOLS), true },
-    { INPUT_ROLE_EQUIP_SHOTGUN, GS_ID(KEYMAP_EQUIP_SHOTGUN), true },
-    { INPUT_ROLE_EQUIP_MAGNUMS, GS_ID(KEYMAP_EQUIP_MAGNUMS), true },
-    { INPUT_ROLE_EQUIP_UZIS, GS_ID(KEYMAP_EQUIP_UZIS), true },
-    { INPUT_ROLE_USE_SMALL_MEDI, GS_ID(KEYMAP_USE_SMALL_MEDI), true },
-    { INPUT_ROLE_USE_BIG_MEDI, GS_ID(KEYMAP_USE_BIG_MEDI), true },
-    { INPUT_ROLE_SAVE, GS_ID(KEYMAP_SAVE), true },
-    { INPUT_ROLE_LOAD, GS_ID(KEYMAP_LOAD), true },
-    { INPUT_ROLE_FPS, GS_ID(KEYMAP_FPS), true },
-    { INPUT_ROLE_BILINEAR, GS_ID(KEYMAP_BILINEAR), true },
-    { INPUT_ROLE_FLY_CHEAT, GS_ID(KEYMAP_FLY_CHEAT), true },
-    { INPUT_ROLE_ITEM_CHEAT, GS_ID(KEYMAP_ITEM_CHEAT), true },
-    { INPUT_ROLE_LEVEL_SKIP_CHEAT, GS_ID(KEYMAP_LEVEL_SKIP_CHEAT), true },
-    { INPUT_ROLE_TURBO_CHEAT, GS_ID(KEYMAP_TURBO_CHEAT), true },
-    { INPUT_ROLE_ENTER_CONSOLE, GS_ID(KEYMAP_ENTER_CONSOLE), true },
-    { INPUT_ROLE_TOGGLE_UI, GS_ID(KEYMAP_TOGGLE_UI), true },
+static const TEXT_COLUMN_PLACEMENT m_CtrlTextPlacementCheats[] = {
+    { INPUT_ROLE_UP, false },
+    { INPUT_ROLE_DOWN, false },
+    { INPUT_ROLE_LEFT, false },
+    { INPUT_ROLE_RIGHT, false },
+    { INPUT_ROLE_DRAW, false },
+    { INPUT_ROLE_ACTION, false },
+    { INPUT_ROLE_JUMP, false },
+    { INPUT_ROLE_ROLL, false },
+    { INPUT_ROLE_LOOK, false },
+    { INPUT_ROLE_SLOW, false },
+    { INPUT_ROLE_STEP_L, true },
+    { INPUT_ROLE_STEP_R, true },
+    { INPUT_ROLE_OPTION, false },
+    { INPUT_ROLE_PAUSE, true },
+    { INPUT_ROLE_CHANGE_TARGET, true },
+    { INPUT_ROLE_TOGGLE_PHOTO_MODE, true },
+    { INPUT_ROLE_CAMERA_UP, true },
+    { INPUT_ROLE_CAMERA_DOWN, true },
+    { INPUT_ROLE_CAMERA_FORWARD, true },
+    { INPUT_ROLE_CAMERA_BACK, true },
+    { INPUT_ROLE_CAMERA_LEFT, true },
+    { INPUT_ROLE_CAMERA_RIGHT, true },
+    { INPUT_ROLE_EQUIP_PISTOLS, true },
+    { INPUT_ROLE_EQUIP_SHOTGUN, true },
+    { INPUT_ROLE_EQUIP_MAGNUMS, true },
+    { INPUT_ROLE_EQUIP_UZIS, true },
+    { INPUT_ROLE_USE_SMALL_MEDI, true },
+    { INPUT_ROLE_USE_BIG_MEDI, true },
+    { INPUT_ROLE_SAVE, true },
+    { INPUT_ROLE_LOAD, true },
+    { INPUT_ROLE_FPS, true },
+    { INPUT_ROLE_BILINEAR, true },
+    { INPUT_ROLE_FLY_CHEAT, true },
+    { INPUT_ROLE_ITEM_CHEAT, true },
+    { INPUT_ROLE_LEVEL_SKIP_CHEAT, true },
+    { INPUT_ROLE_TURBO_CHEAT, true },
+    { INPUT_ROLE_ENTER_CONSOLE, true },
+    { INPUT_ROLE_TOGGLE_UI, true },
     // end
-    { COL_END, nullptr, false },
+    { COL_END, false },
 };
 
 static void M_InitMenu(void);
@@ -201,8 +200,8 @@ static void M_InitMenu(void)
     m_ControlMenu.vis_options = visible_lines;
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
-        ? CtrlTextPlacementCheats
-        : CtrlTextPlacementNormal;
+        ? m_CtrlTextPlacementCheats
+        : m_CtrlTextPlacementNormal;
 
     m_ControlMenu.top_row = cols;
     m_ControlMenu.cur_row = cols;
@@ -226,8 +225,8 @@ static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], true);
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
-        ? CtrlTextPlacementCheats
-        : CtrlTextPlacementNormal;
+        ? m_CtrlTextPlacementCheats
+        : m_CtrlTextPlacementNormal;
 
     const TEXT_COLUMN_PLACEMENT *col = cols;
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
@@ -237,7 +236,7 @@ static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
     int16_t y = TOP_Y + ROW_HEIGHT + BORDER * 2;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         m_ControlMenu.role_texts[i] =
-            Text_Create(x_roles, y, GameString_Get(col->game_string));
+            Text_Create(x_roles, y, Input_GetRoleName(col->role));
         Text_CentreV(m_ControlMenu.role_texts[i], true);
 
         m_ControlMenu.key_texts[i] = Text_Create(
@@ -371,7 +370,7 @@ static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
     const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_ChangeText(
-            m_ControlMenu.role_texts[i], GameString_Get(col->game_string));
+            m_ControlMenu.role_texts[i], Input_GetRoleName(col->role));
         Text_ChangeText(
             m_ControlMenu.key_texts[i],
             Input_GetKeyName(backend, layout, col->role));
@@ -464,8 +463,8 @@ static void M_ShutdownText(void)
 static void M_FlashConflicts(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
-        ? CtrlTextPlacementCheats
-        : CtrlTextPlacementNormal;
+        ? m_CtrlTextPlacementCheats
+        : m_CtrlTextPlacementNormal;
 
     const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
@@ -645,8 +644,8 @@ CONTROL_MODE Option_Controls_Control(
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
-        ? CtrlTextPlacementCheats
-        : CtrlTextPlacementNormal;
+        ? m_CtrlTextPlacementCheats
+        : m_CtrlTextPlacementNormal;
 
     switch (m_KeyMode) {
     case KM_BROWSE:
@@ -697,10 +696,12 @@ CONTROL_MODE Option_Controls_Control(
                 m_ControlMenu.cur_row = cols + m_ControlMenu.num_options;
             } else {
                 if (m_ControlMenu.row_num > 0
-                    && m_ControlMenu.cur_role != m_ControlMenu.top_row->role) {
+                    && (int32_t)m_ControlMenu.top_row->role
+                        != m_ControlMenu.cur_role) {
                     m_ControlMenu.row_num--;
                 } else if (
-                    m_ControlMenu.top_row->role != m_ControlMenu.first_role) {
+                    (int32_t)m_ControlMenu.top_row->role
+                    != m_ControlMenu.first_role) {
                     m_ControlMenu.top_row--;
                     m_ControlMenu.bot_row--;
                 } else {

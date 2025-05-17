@@ -5,6 +5,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/game_string.h>
 #include <libtrx/game/input/backends/base.h>
 #include <libtrx/game/input/backends/controller.h>
 #include <libtrx/game/input/backends/keyboard.h>
@@ -132,6 +133,47 @@ void Input_Update(void)
 
 const char *Input_GetRoleName(const INPUT_ROLE role)
 {
-    // TODO: implement me
-    return nullptr;
+    // clang-format off
+    switch (role) {
+    case INPUT_ROLE_UP:                return GS(KEYMAP_RUN);
+    case INPUT_ROLE_DOWN:              return GS(KEYMAP_BACK);
+    case INPUT_ROLE_LEFT:              return GS(KEYMAP_LEFT);
+    case INPUT_ROLE_RIGHT:             return GS(KEYMAP_RIGHT);
+    case INPUT_ROLE_DRAW:              return GS(KEYMAP_DRAW_WEAPON);
+    case INPUT_ROLE_ACTION:            return GS(KEYMAP_ACTION);
+    case INPUT_ROLE_JUMP:              return GS(KEYMAP_JUMP);
+    case INPUT_ROLE_ROLL:              return GS(KEYMAP_ROLL);
+    case INPUT_ROLE_LOOK:              return GS(KEYMAP_LOOK);
+    case INPUT_ROLE_SLOW:              return GS(KEYMAP_WALK);
+    case INPUT_ROLE_STEP_L:            return GS(KEYMAP_STEP_LEFT);
+    case INPUT_ROLE_STEP_R:            return GS(KEYMAP_STEP_RIGHT);
+    case INPUT_ROLE_OPTION:            return GS(KEYMAP_INVENTORY);
+    case INPUT_ROLE_PAUSE:             return GS(KEYMAP_PAUSE);
+    case INPUT_ROLE_CHANGE_TARGET:     return GS(KEYMAP_CHANGE_TARGET);
+    case INPUT_ROLE_TOGGLE_PHOTO_MODE: return GS(KEYMAP_TOGGLE_PHOTO_MODE);
+    case INPUT_ROLE_CAMERA_UP:         return GS(KEYMAP_CAMERA_UP);
+    case INPUT_ROLE_CAMERA_DOWN:       return GS(KEYMAP_CAMERA_DOWN);
+    case INPUT_ROLE_CAMERA_FORWARD:    return GS(KEYMAP_CAMERA_FORWARD);
+    case INPUT_ROLE_CAMERA_BACK:       return GS(KEYMAP_CAMERA_BACK);
+    case INPUT_ROLE_CAMERA_LEFT:       return GS(KEYMAP_CAMERA_LEFT);
+    case INPUT_ROLE_CAMERA_RIGHT:      return GS(KEYMAP_CAMERA_RIGHT);
+    case INPUT_ROLE_EQUIP_PISTOLS:     return GS(KEYMAP_EQUIP_PISTOLS);
+    case INPUT_ROLE_EQUIP_SHOTGUN:     return GS(KEYMAP_EQUIP_SHOTGUN);
+    case INPUT_ROLE_EQUIP_MAGNUMS:     return GS(KEYMAP_EQUIP_MAGNUMS);
+    case INPUT_ROLE_EQUIP_UZIS:        return GS(KEYMAP_EQUIP_UZIS);
+    case INPUT_ROLE_USE_SMALL_MEDI:    return GS(KEYMAP_USE_SMALL_MEDI);
+    case INPUT_ROLE_USE_BIG_MEDI:      return GS(KEYMAP_USE_BIG_MEDI);
+    case INPUT_ROLE_SAVE:              return GS(KEYMAP_SAVE);
+    case INPUT_ROLE_LOAD:              return GS(KEYMAP_LOAD);
+    case INPUT_ROLE_FPS:               return GS(KEYMAP_FPS);
+    case INPUT_ROLE_BILINEAR:          return GS(KEYMAP_BILINEAR);
+    case INPUT_ROLE_ENTER_CONSOLE:     return GS(KEYMAP_ENTER_CONSOLE);
+    case INPUT_ROLE_TOGGLE_UI:         return GS(KEYMAP_TOGGLE_UI);
+    case INPUT_ROLE_FLY_CHEAT:         return GS(KEYMAP_FLY_CHEAT);
+    case INPUT_ROLE_ITEM_CHEAT:        return GS(KEYMAP_ITEM_CHEAT);
+    case INPUT_ROLE_LEVEL_SKIP_CHEAT:  return GS(KEYMAP_LEVEL_SKIP_CHEAT);
+    case INPUT_ROLE_TURBO_CHEAT:       return GS(KEYMAP_TURBO_CHEAT);
+    default:                           return "";
+    }
+    // clang-format on
 }
