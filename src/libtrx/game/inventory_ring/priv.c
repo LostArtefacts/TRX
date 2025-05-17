@@ -486,11 +486,6 @@ void InvRing_RemoveHeader(void)
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, false);
 }
 
-void InvRing_HideArrow(const INV_RING_ARROW arrow, const bool hide)
-{
-    Overlay_ShowArrow((UI_OVERLAY_ARROW)arrow, hide);
-}
-
 void InvRing_ShowVersionText(void)
 {
     Overlay_ShowVersion(true);
