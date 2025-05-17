@@ -22,6 +22,7 @@ static const MUSIC_BACKEND *m_Backend = nullptr;
 static const MUSIC_BACKEND *M_FindBackend(void);
 static void M_StopActiveStream(void);
 static void M_StreamFinished(int32_t stream_id, void *user_data);
+static int32_t M_GetRealTrack(int32_t track_id);
 
 static const MUSIC_BACKEND *M_FindBackend(void)
 {
@@ -136,7 +137,7 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
         goto finish;
     }
 
-    const int32_t real_track_id = Music_GetRealTrack(track_id);
+    const int32_t real_track_id = M_GetRealTrack(track_id);
     LOG_DEBUG(
         "Playing track %d (real: %d), mode: %d", track_id, real_track_id, mode);
 
@@ -253,7 +254,7 @@ void Music_Unpause(void)
     Audio_Stream_Unpause(m_AudioStreamID);
 }
 
-int32_t Music_GetRealTrack(const int32_t track_id)
+static int32_t M_GetRealTrack(const int32_t track_id)
 {
     const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
     int32_t idx = 0;
