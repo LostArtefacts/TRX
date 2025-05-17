@@ -464,6 +464,8 @@
     },
 
     "game_strings": {
+        "ACTION_EXAMINE_ITEM": "Examine",
+        "ACTION_USE_ITEM": "Use",
         "CONSOLE_CMD_HELP_LIST": "Available commands:",
         "CONSOLE_HELP_CHEATS": "Toggles in-game cheats on or off.",
         "CONSOLE_HELP_DRAIN": "Dries the current room, removing the water.",

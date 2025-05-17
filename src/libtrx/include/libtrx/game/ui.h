@@ -18,6 +18,7 @@
 #include "./ui/elements/bar_enemy_hp.h"
 #include "./ui/elements/bar_lara_air.h"
 #include "./ui/elements/bar_lara_hp.h"
+#include "./ui/elements/button_label.h"
 #include "./ui/elements/fade.h"
 #include "./ui/elements/fixed.h"
 #include "./ui/elements/flash.h"

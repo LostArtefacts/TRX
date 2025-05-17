@@ -32,16 +32,11 @@
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
 #define INV_RING_FADE_TIME_TITLE_FINISH 0.25
 
-static TEXTSTRING *m_ExamineItemText = nullptr;
-static TEXTSTRING *m_UseItemText = nullptr;
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
+static bool m_EnableExamine;
 static int32_t m_StartLevel;
 static GAME_OBJECT_ID m_InvChosen;
 
-static TEXTSTRING *M_InitExamineText(
-    int32_t x_pos, const char *role_str, const char *input_str);
-static void M_InitExamineOverlay(INV_RING *ring);
-static void M_RemoveExamineOverlay(void);
 static void M_ShowAmmoQuantity(const char *fmt, int32_t qty);
 
 static void M_RingIsOpen(INV_RING *ring);
@@ -55,46 +50,6 @@ static GF_COMMAND M_Finish(INV_RING *ring, bool apply_changes);
 static GF_COMMAND M_Control(INV_RING *ring);
 static bool M_CheckDemoTimer(const INV_RING *ring);
 
-static TEXTSTRING *M_InitExamineText(
-    const int32_t x_pos, const char *const role_str,
-    const char *const input_str)
-{
-    char role[100];
-    sprintf(role, role_str, input_str);
-
-    TEXTSTRING *const text = Text_Create(x_pos, -100, role);
-    Text_AlignBottom(text, true);
-    Text_CentreH(text, true);
-    Text_Hide(text, true);
-    return text;
-}
-
-static void M_InitExamineOverlay(INV_RING *const ring)
-{
-    if ((ring->mode != INV_GAME_MODE && ring->mode != INV_KEYS_MODE)
-        || !g_Config.gameplay.enable_item_examining
-        || m_ExamineItemText != nullptr) {
-        return;
-    }
-
-    m_ExamineItemText =
-        M_InitExamineText(-100, GS(ITEM_EXAMINE_ROLE), GS(KEYMAP_LOOK));
-    m_UseItemText =
-        M_InitExamineText(100, GS(ITEM_USE_ROLE), GS(KEYMAP_ACTION));
-}
-
-static void M_RemoveExamineOverlay(void)
-{
-    if (m_ExamineItemText == nullptr) {
-        return;
-    }
-
-    Text_Remove(m_ExamineItemText);
-    Text_Remove(m_UseItemText);
-    m_ExamineItemText = nullptr;
-    m_UseItemText = nullptr;
-}
-
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
@@ -105,13 +60,12 @@ static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 static void M_RingIsOpen(INV_RING *const ring)
 {
     InvRing_ShowHeader(ring);
-    M_InitExamineOverlay(ring);
 }
 
 static void M_RingIsNotOpen(INV_RING *const ring)
 {
     InvRing_RemoveHeader();
-    M_RemoveExamineOverlay();
+    InvRing_ShowExamine(false);
 }
 
 static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
@@ -119,7 +73,7 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
     InvRing_ShowItemName(inv_item);
 
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
-    bool show_examine_option = false;
+    m_EnableExamine = false;
 
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
@@ -168,7 +122,7 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
             InvRing_ShowItemQuantity("%d", qty);
         }
 
-        show_examine_option = !Option_Examine_IsActive()
+        m_EnableExamine = !Option_Examine_IsActive()
             && Option_Examine_CanExamine(inv_item->object_id);
         break;
 
@@ -176,10 +130,7 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
     }
 
-    if (m_ExamineItemText != nullptr) {
-        Text_Hide(m_ExamineItemText, !show_examine_option);
-        Text_Hide(m_UseItemText, !show_examine_option);
-    }
+    InvRing_ShowExamine(m_EnableExamine);
 }
 
 static void M_RingActive(INV_RING *const ring)
@@ -806,15 +757,13 @@ static bool M_CheckDemoTimer(const INV_RING *const ring)
 
 bool InvRing_CanExamine(void)
 {
-    return g_Config.gameplay.enable_item_examining
-        && m_ExamineItemText != nullptr && !m_ExamineItemText->flags.hide;
+    return g_Config.gameplay.enable_item_examining && m_EnableExamine;
 }
 
 void InvRing_RemoveAllText(void)
 {
     InvRing_RemoveHeader();
     InvRing_RemoveItemTexts();
-    M_RemoveExamineOverlay();
 }
 
 INV_RING *InvRing_Open(const INVENTORY_MODE mode)

@@ -38,7 +38,6 @@ typedef struct {
     const uint32_t *demo_ptr;
     const GF_LEVEL *level;
     CONFIG old_config;
-    TEXTSTRING *text;
 } M_PRIV;
 
 static int32_t m_LastDemoNum = 0;

@@ -24,7 +24,6 @@
 typedef struct {
     const uint32_t *demo_ptr;
     const GF_LEVEL *level;
-    TEXTSTRING *text;
 
     struct {
         GAME_BONUS_FLAG bonus_flag;

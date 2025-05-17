@@ -165,6 +165,8 @@ GS_DEFINE(DETAIL_UI_SCROLL_WRAPAROUND, "UI scroll wrap")
 GS_DEFINE(DETAIL_FOV, "Field of view")
 GS_DEFINE(PAGINATION_NAV, "%d / %d")
 GS_DEFINE(MISC_EMPTY_SLOT_FMT, "- EMPTY SLOT -")
+GS_DEFINE(ACTION_EXAMINE_ITEM, "Examine")
+GS_DEFINE(ACTION_USE_ITEM, "Use")
 
 GS_DEFINE(CONSOLE_CMD_HELP_LIST,      "Available commands:")
 GS_DEFINE(CONSOLE_HELP_HELP,          "Shows help for all commands or detailed help for one.")
