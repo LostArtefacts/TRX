@@ -18,6 +18,8 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/ui.h>
 
+#define M_CAMERA_2_RING 598
+
 static int32_t M_GetFrames(
     const INV_RING *ring, const INVENTORY_ITEM *inv_item,
     ANIM_FRAME **out_frame1, ANIM_FRAME **out_frame2, int32_t *out_rate);
@@ -102,6 +104,8 @@ static void M_DrawItem(
 
 void InvRing_Draw(INV_RING *const ring)
 {
+    InvRing_DrawUI(ring);
+
     const int32_t num_frames = round(
         ClockTimer_TakeElapsed(&ring->motion_timer) * LOGIC_FPS
         * INV_RING_FRAMES);
@@ -110,7 +114,7 @@ void InvRing_Draw(INV_RING *const ring)
         InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
     }
 
-    ring->camera.pos.z = ring->radius + CAMERA_2_RING;
+    ring->camera.pos.z = ring->radius + M_CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
         Interpolation_Interpolate();
@@ -170,24 +174,26 @@ void InvRing_Draw(INV_RING *const ring)
             || ring->motion.status == RNG_DESELECTING
             || ring->motion.status == RNG_DESELECT
             || ring->motion.status == RNG_CLOSING_ITEM)) {
-        const INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
-        switch (inv_item->object_id) {
-        case O_SMALL_MEDIPACK_OPTION:
-        case O_LARGE_MEDIPACK_OPTION:
-            Overlay_ForceHealthBar(true);
-            break;
+        const INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
+        if (inv_item != nullptr) {
+            switch (inv_item->object_id) {
+            case O_SMALL_MEDIPACK_OPTION:
+            case O_LARGE_MEDIPACK_OPTION:
+                Overlay_ForceHealthBar(true);
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
     }
 
     Matrix_Pop();
     Viewport_SetFOV(old_fov);
+    Output_DrawPolyList();
 
-    Output_ClearDepthBuffer();
     if (ring->motion.status == RNG_SELECTED) {
-        INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
+        INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item->object_id == O_PASSPORT_CLOSED) {
             inv_item->object_id = O_PASSPORT_OPTION;
         }
@@ -202,15 +208,6 @@ void InvRing_Draw(INV_RING *const ring)
         for (int32_t i = 0; i < num_frames; i++) {
             InvRing_DoMotions(ring);
         }
-    }
-
-    const char *const count_text = InvRing_GetItemQuantityText();
-    if (count_text != nullptr) {
-        UI_BeginModal(0.5f, 1.0f);
-        UI_BeginOffset(64.0f, -56.0f);
-        UI_Label(count_text);
-        UI_EndOffset();
-        UI_EndModal();
     }
 
     Fader_Draw(&ring->top_fader);
