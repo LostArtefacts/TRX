@@ -31,8 +31,9 @@ void Gun_Control(void)
     } else if (
         g_Lara.water_status == LWS_ABOVE_WATER
         || (g_Lara.water_status == LWS_WADE
-            && g_Lara.water_surface_dist
-                > -g_Weapons[g_Lara.gun_type].gun_height)) {
+            && (g_Lara.gun_status == LGS_ARMLESS
+                || g_Lara.water_surface_dist
+                    > -g_Weapons[g_Lara.gun_type].gun_height))) {
         if (g_Lara.request_gun_type != LGT_UNARMED
             && (g_Lara.request_gun_type != g_Lara.gun_type
                 || g_Lara.gun_status == LGS_ARMLESS)) {
