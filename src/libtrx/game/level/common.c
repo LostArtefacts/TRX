@@ -987,18 +987,11 @@ void Level_ReadPathingData(VFILE *const file)
 
     for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
         for (int32_t zone_idx = 0; zone_idx < MAX_ZONES; zone_idx++) {
-#if TR_VERSION == 2
-            const bool skip = zone_idx == 2
-                || (zone_idx == 1 && !Object_Get(O_SPIDER)->loaded
-                    && !Object_Get(O_SKIDOO_ARMED)->loaded)
-                || (zone_idx == 3 && !Object_Get(O_YETI)->loaded
-                    && !Object_Get(O_WORKER_3)->loaded);
-
-            if (skip) {
+            if (!Box_IsUsableZoneIndex(zone_idx)) {
                 VFile_Skip(file, sizeof(int16_t) * num_boxes);
                 continue;
             }
-#endif
+
             int16_t *const ground_zone =
                 Box_GetGroundZone(flip_status, zone_idx);
             VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);

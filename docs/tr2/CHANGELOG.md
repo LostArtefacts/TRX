@@ -24,6 +24,7 @@
 - fixed an illegal reachable slope in Barkhang Monastery room 96, which could lead to Lara becoming softlocked (#2900)
 - fixed the camera behaving erratically in rooms/sectors that have no pathfinding data (#2946)
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery (#2944)
+- fixed faulty zoning data in Ice Palace rooms 48/110 that could result in the yetis becoming stuck (#3000)
 - fixed the game crashing on unknown sequencer events
 - fixed the game crashing when editing long dev console history entries (#2913, regression from 1.0)
 - fixed harpoon's ammo counter overlapping with the air bar (#2871)

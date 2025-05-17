@@ -2,6 +2,7 @@
 #include "game/camera.h"
 #include "game/inject.h"
 #include "game/items.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
 #include "log.h"
 
@@ -19,6 +20,7 @@ static void M_RoomShift(const INJECTION *injection, int16_t room_num);
 static void M_TriggeredItem(const INJECTION *injection);
 static void M_RoomProperties(const INJECTION *injection, int16_t room_num);
 static void M_SectorOverwrite(const INJECTION *injection, SECTOR *sector);
+static void M_FixZones(const INJECTION *injection, const SECTOR *sector);
 
 static void M_FloorDataEdits(
     const INJECTION *const injection, const int32_t data_count)
@@ -74,6 +76,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_SECTOR_OVERWRITE:
                 M_SectorOverwrite(injection, sector);
+                break;
+            case FET_ZONE_FIX:
+                M_FixZones(injection, sector);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
@@ -300,6 +305,32 @@ static void M_SectorOverwrite(
     sector->floor.height = floor;
     sector->portal_room.sky = sky_room;
     sector->ceiling.height = ceiling;
+}
+
+static void M_FixZones(
+    const INJECTION *const injection, const SECTOR *const sector)
+{
+    if (sector == nullptr || sector->box == NO_BOX) {
+        VFile_Skip(injection->fp, 2 * sizeof(int16_t) * (MAX_ZONES + 1));
+        return;
+    }
+
+    const int16_t box_idx = sector->box;
+    for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
+        for (int32_t zone_idx = 0; zone_idx < MAX_ZONES; zone_idx++) {
+            if (!Box_IsUsableZoneIndex(zone_idx)) {
+                VFile_Skip(injection->fp, sizeof(int16_t));
+                continue;
+            }
+
+            int16_t *const ground_zone =
+                Box_GetGroundZone(flip_status, zone_idx);
+            ground_zone[box_idx] = VFile_ReadS16(injection->fp);
+        }
+
+        int16_t *const fly_zone = Box_GetFlyZone(flip_status);
+        fly_zone[box_idx] = VFile_ReadS16(injection->fp);
+    }
 }
 
 REGISTER_INJECT_EDITOR(IDT_FLOOR_EDITS, M_FloorDataEdits)
