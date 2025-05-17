@@ -788,10 +788,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         M_RingActive(ring);
     }
 
-    for (int32_t i = 0; i < ring->number_of_objects; i++) {
-        InvRing_UpdateInventoryItem(ring, ring->list[i], INV_RING_FRAMES);
-    }
-
     Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
 }

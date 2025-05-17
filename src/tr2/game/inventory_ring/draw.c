@@ -119,6 +119,10 @@ void InvRing_Draw(INV_RING *const ring)
         ClockTimer_TakeElapsed(&ring->motion_timer) * LOGIC_FPS
         * INV_RING_FRAMES);
 
+    for (int32_t i = 0; i < ring->number_of_objects; i++) {
+        InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
+    }
+
     ring->camera.pos.z = ring->radius + 598;
 
     if (ring->mode == INV_TITLE_MODE) {
