@@ -1,6 +1,5 @@
 #include "game/creature.h"
 #include "game/effects.h"
-#include "game/music.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
@@ -9,6 +8,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/music.h>
 
 #define NATLA_SHOT_DAMAGE 100
 #define NATLA_NEAR_DEATH 200

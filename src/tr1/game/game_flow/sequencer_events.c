@@ -6,7 +6,6 @@
 #include "game/inventory.h"
 #include "game/lara/common.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/savegame.h"
 #include "game/stats.h"
@@ -15,6 +14,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/phase.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);

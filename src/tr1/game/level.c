@@ -5,7 +5,6 @@
 #include "game/inventory_ring/vars.h"
 #include "game/lara/common.h"
 #include "game/lara/state.h"
-#include "game/music.h"
 #include "game/objects/creatures/mutant.h"
 #include "game/objects/creatures/pierre.h"
 #include "game/output.h"
@@ -29,6 +28,7 @@
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/inject.h>
 #include <libtrx/game/level.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>

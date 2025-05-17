@@ -10,7 +10,6 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/objects/creatures/big_spider.h"
 #include "game/objects/creatures/monk.h"
 #include "game/objects/creatures/spider.h"
@@ -30,6 +29,7 @@
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/objects/creatures/bear.h>
 #include <libtrx/game/objects/creatures/wolf.h>
 #include <libtrx/game/shell.h>

@@ -5,7 +5,6 @@
 #include "game/game_flow.h"
 #include "game/lara/hair.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/output.h"
 #include "game/room_draw.h"
 #include "game/shell.h"
@@ -16,6 +15,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
 static CAMERA_INFO m_LocalCamera = {};

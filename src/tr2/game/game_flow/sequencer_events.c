@@ -4,7 +4,6 @@
 #include "game/game_flow.h"
 #include "game/game_flow/sequencer.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/output.h"
 #include "game/phase.h"
 #include "game/savegame.h"
@@ -14,6 +13,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/music.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);

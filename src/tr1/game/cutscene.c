@@ -7,7 +7,6 @@
 #include "game/lara/common.h"
 #include "game/lara/hair.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -18,6 +17,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 
 static void M_InitialiseLara(const GF_LEVEL *level);

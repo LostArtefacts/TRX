@@ -10,7 +10,6 @@
 #include "game/lara/common.h"
 #include "game/lara/hair.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -23,6 +22,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 
 #define FRAME_BUFFER(key)                                                      \

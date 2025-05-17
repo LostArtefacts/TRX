@@ -1,9 +1,9 @@
 #include "game/creature.h"
-#include "game/music.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
 #define LARSON_POSE_CHANCE 0x60 // = 96

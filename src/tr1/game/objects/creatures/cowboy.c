@@ -1,10 +1,10 @@
 #include "game/creature.h"
 #include "game/effects.h"
-#include "game/music.h"
 #include "game/spawn.h"
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
 #define COWBOY_SHOT_DAMAGE 70
