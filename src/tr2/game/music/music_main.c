@@ -188,12 +188,6 @@ void Music_StopTrack(const MUSIC_TRACK_ID track)
     }
 }
 
-bool Music_PlaySynced(int16_t track_id)
-{
-    Music_Play(track_id, false);
-    return true;
-}
-
 double Music_GetTimestamp(void)
 {
     if (m_AudioStreamID < 0) {
