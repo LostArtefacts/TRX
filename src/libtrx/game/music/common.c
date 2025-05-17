@@ -1,4 +1,6 @@
-#include "game/music.h"
+#include "game/music/common.h"
+
+#include "game/music/const.h"
 
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
 
