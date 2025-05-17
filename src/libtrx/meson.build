@@ -174,6 +174,8 @@ sources = [
   'game/math/util.c',
   'game/matrix.c',
   'game/music.c',
+  'game/music/backend_cdaudio.c',
+  'game/music/backend_files.c',
   'game/objects/common.c',
   'game/objects/creatures/bear.c',
   'game/objects/creatures/wolf.c',

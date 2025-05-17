@@ -1,16 +1,15 @@
+#include "game/music/backend_files.h"
 
-#include "game/music/music_backend_files.h"
-
-#include <libtrx/debug.h>
-#include <libtrx/engine/audio.h>
-#include <libtrx/filesystem.h>
-#include <libtrx/log.h>
-#include <libtrx/memory.h>
+#include "debug.h"
+#include "engine/audio.h"
+#include "filesystem.h"
+#include "log.h"
+#include "memory.h"
 
 typedef struct {
     const char *dir;
     const char *description;
-} BACKEND_DATA;
+} M_BACKEND_DATA;
 
 static const char *m_ExtensionsToTry[] = { ".flac", ".ogg", ".mp3", ".wav",
                                            nullptr };
@@ -37,7 +36,7 @@ static char *M_GetTrackFileName(const char *base_dir, int32_t track)
 static bool M_Init(MUSIC_BACKEND *const backend)
 {
     ASSERT(backend != nullptr);
-    const BACKEND_DATA *data = backend->data;
+    const M_BACKEND_DATA *data = backend->data;
     ASSERT(data->dir != nullptr);
     return File_DirExists(data->dir);
 }
@@ -45,7 +44,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
 static const char *M_Describe(const MUSIC_BACKEND *const backend)
 {
     ASSERT(backend != nullptr);
-    const BACKEND_DATA *const data = backend->data;
+    const M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
     return data->description;
 }
@@ -54,7 +53,7 @@ static int32_t M_Play(
     const MUSIC_BACKEND *const backend, const int32_t track_id)
 {
     ASSERT(backend != nullptr);
-    const BACKEND_DATA *const data = backend->data;
+    const M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
     char *file_path = M_GetTrackFileName(data->dir, track_id);
@@ -75,7 +74,7 @@ static void M_Shutdown(MUSIC_BACKEND *backend)
     }
 
     if (backend->data != nullptr) {
-        BACKEND_DATA *const data = backend->data;
+        M_BACKEND_DATA *const data = backend->data;
         Memory_FreePointer(&data->dir);
         Memory_FreePointer(&data->description);
     }
@@ -92,11 +91,11 @@ MUSIC_BACKEND *Music_Backend_Files_Factory(const char *path)
     char *description = Memory_Alloc(description_size + 1);
     sprintf(description, description_fmt, path);
 
-    BACKEND_DATA *data = Memory_Alloc(sizeof(BACKEND_DATA));
+    M_BACKEND_DATA *const data = Memory_Alloc(sizeof(M_BACKEND_DATA));
     data->dir = Memory_DupStr(path);
     data->description = description;
 
-    MUSIC_BACKEND *backend = Memory_Alloc(sizeof(MUSIC_BACKEND));
+    MUSIC_BACKEND *const backend = Memory_Alloc(sizeof(MUSIC_BACKEND));
     backend->data = data;
     backend->init = M_Init;
     backend->describe = M_Describe;

@@ -1,5 +1,5 @@
 #pragma once
 
-#include "game/music/music_backend.h"
+#include "./types.h"
 
 MUSIC_BACKEND *Music_Backend_CDAudio_Factory(const char *path);

@@ -1,13 +1,12 @@
-#include "game/music/music_backend_cdaudio.h"
+#include "game/music/backend_cdaudio.h"
 
-#include <libtrx/debug.h>
-#include <libtrx/engine/audio.h>
-#include <libtrx/filesystem.h>
-#include <libtrx/game/music/const.h>
-#include <libtrx/log.h>
-#include <libtrx/memory.h>
+#include "debug.h"
+#include "engine/audio.h"
+#include "filesystem.h"
+#include "game/music/const.h"
+#include "log.h"
+#include "memory.h"
 
-#include <global/const.h>
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -16,21 +15,21 @@ typedef struct {
     uint64_t from;
     uint64_t to;
     bool active;
-} CDAUDIO_TRACK;
+} M_CDAUDIO_TRACK;
 
 typedef struct {
     const char *path;
     const char *description;
-    CDAUDIO_TRACK *tracks;
-} BACKEND_DATA;
+    M_CDAUDIO_TRACK *tracks;
+} M_BACKEND_DATA;
 
-static bool M_Parse(BACKEND_DATA *data);
+static bool M_Parse(M_BACKEND_DATA *data);
 static bool M_Init(MUSIC_BACKEND *backend);
 static const char *M_Describe(const MUSIC_BACKEND *backend);
 static int32_t M_Play(const MUSIC_BACKEND *backend, int32_t track_id);
 static void M_Shutdown(MUSIC_BACKEND *backend);
 
-static bool M_Parse(BACKEND_DATA *const data)
+static bool M_Parse(M_BACKEND_DATA *const data)
 {
     ASSERT(data != nullptr);
 
@@ -41,7 +40,7 @@ static bool M_Parse(BACKEND_DATA *const data)
         return false;
     }
 
-    data->tracks = Memory_Alloc(sizeof(CDAUDIO_TRACK) * MAX_MUSIC_TRACKS);
+    data->tracks = Memory_Alloc(sizeof(M_CDAUDIO_TRACK) * MAX_MUSIC_TRACKS);
 
     size_t offset = 0;
     while (offset < track_content_size) {
@@ -54,12 +53,12 @@ static bool M_Parse(BACKEND_DATA *const data)
         uint64_t track_num;
         uint64_t from;
         uint64_t to;
-        int32_t result = sscanf(
+        const int32_t result = sscanf(
             &track_content[offset], "%" PRIu64 " %" PRIu64 " %" PRIu64,
             &track_num, &from, &to);
 
         if (result == 3 && track_num > 0 && track_num <= MAX_MUSIC_TRACKS) {
-            int32_t track_idx = track_num - 1;
+            const int32_t track_idx = track_num - 1;
             data->tracks[track_idx].active = true;
             data->tracks[track_idx].from = from;
             data->tracks[track_idx].to = to;
@@ -107,7 +106,7 @@ parse_end:
 static bool M_Init(MUSIC_BACKEND *const backend)
 {
     ASSERT(backend != nullptr);
-    BACKEND_DATA *data = backend->data;
+    M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
     MYFILE *const fp = File_Open(data->path, FILE_OPEN_READ);
@@ -126,7 +125,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
 static const char *M_Describe(const MUSIC_BACKEND *const backend)
 {
     ASSERT(backend != nullptr);
-    const BACKEND_DATA *const data = backend->data;
+    const M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
     return data->description;
 }
@@ -135,11 +134,11 @@ static int32_t M_Play(
     const MUSIC_BACKEND *const backend, const int32_t track_id)
 {
     ASSERT(backend != nullptr);
-    const BACKEND_DATA *const data = backend->data;
+    const M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
     const int32_t track_idx = track_id - 1;
-    const CDAUDIO_TRACK *track = &data->tracks[track_idx];
+    const M_CDAUDIO_TRACK *track = &data->tracks[track_idx];
     if (track_idx < 0 || track_idx >= MAX_MUSIC_TRACKS) {
         LOG_ERROR("Invalid track: %d", track_id);
         return -1;
@@ -150,7 +149,7 @@ static int32_t M_Play(
         return -1;
     }
 
-    int32_t audio_stream_id = Audio_Stream_CreateFromFile(data->path);
+    const int32_t audio_stream_id = Audio_Stream_CreateFromFile(data->path);
     Audio_Stream_SetStartTimestamp(audio_stream_id, track->from / 1000.0);
     Audio_Stream_SetStopTimestamp(audio_stream_id, track->to / 1000.0);
     Audio_Stream_SeekTimestamp(audio_stream_id, track->from / 1000.0);
@@ -164,7 +163,7 @@ static void M_Shutdown(MUSIC_BACKEND *backend)
     }
 
     if (backend->data != nullptr) {
-        BACKEND_DATA *const data = backend->data;
+        M_BACKEND_DATA *const data = backend->data;
         Memory_FreePointer(&data->path);
         Memory_FreePointer(&data->description);
         Memory_FreePointer(&data->tracks);
@@ -182,11 +181,11 @@ MUSIC_BACKEND *Music_Backend_CDAudio_Factory(const char *path)
     char *description = Memory_Alloc(description_size + 1);
     sprintf(description, description_fmt, path);
 
-    BACKEND_DATA *data = Memory_Alloc(sizeof(BACKEND_DATA));
+    M_BACKEND_DATA *const data = Memory_Alloc(sizeof(M_BACKEND_DATA));
     data->path = Memory_DupStr(path);
     data->description = description;
 
-    MUSIC_BACKEND *backend = Memory_Alloc(sizeof(MUSIC_BACKEND));
+    MUSIC_BACKEND *const backend = Memory_Alloc(sizeof(MUSIC_BACKEND));
     backend->data = data;
     backend->init = M_Init;
     backend->describe = M_Describe;
