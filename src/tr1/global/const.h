@@ -74,7 +74,6 @@
 #define SELECTING_FRAMES (32 / 2)
 #define OPTION_RING_OBJECTS 4
 #define TITLE_RING_OBJECTS 5
-#define CAMERA_2_RING 598
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function

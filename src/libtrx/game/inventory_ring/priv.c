@@ -420,9 +420,15 @@ void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
     UI_AmmoLabel_MakeString(m_CountText);
 }
 
-const char *InvRing_GetItemQuantityText(void)
+void InvRing_DrawUI(INV_RING *const ring)
 {
-    return m_CountText;
+    if (m_CountText[0] != '\0') {
+        UI_BeginModal(0.5f, 1.0f);
+        UI_BeginOffset(64.0f, -56.0f);
+        UI_Label(m_CountText);
+        UI_EndOffset();
+        UI_EndModal();
+    }
 }
 
 void InvRing_RemoveItemTexts(void)
