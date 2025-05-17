@@ -41,8 +41,6 @@ GS_DEFINE(OSD_TEXTURE_FILTER_BILINEAR, "bilinear")
 GS_DEFINE(OSD_DOOR_OPEN, "Open Sesame!")
 GS_DEFINE(OSD_DOOR_CLOSE, "Close Sesame!")
 GS_DEFINE(OSD_DOOR_OPEN_FAIL, "No doors in Lara's proximity")
-GS_DEFINE(ITEM_EXAMINE_ROLE, "\\{button empty} %s: Examine")
-GS_DEFINE(ITEM_USE_ROLE, "\\{button empty} %s: Use")
 GS_DEFINE(MISC_EMPTY_SLOT_FMT, "- EMPTY SLOT %d -")
 
 GS_DEFINE(CONSOLE_HELP_DEBUG, "Toggles visual debug information.")

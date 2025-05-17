@@ -29,6 +29,7 @@ typedef enum {
     // clang-format on
 } PASS_MESH;
 
+static bool m_ShowExamine = false;
 static char m_CountText[128];
 static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
@@ -422,6 +423,16 @@ void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 
 void InvRing_DrawUI(INV_RING *const ring)
 {
+    if (m_ShowExamine) {
+        UI_BeginModal(0.5f, 0.8f);
+        UI_BeginStack(UI_STACK_HORIZONTAL);
+        UI_ButtonLabel(INPUT_ROLE_LOOK, GS(ACTION_EXAMINE_ITEM));
+        UI_Spacer(60.0f, 0.0f);
+        UI_ButtonLabel(INPUT_ROLE_ACTION, GS(ACTION_USE_ITEM));
+        UI_EndStack();
+        UI_EndModal();
+    }
+
     if (m_CountText[0] != '\0') {
         UI_BeginModal(0.5f, 1.0f);
         UI_BeginOffset(64.0f, -56.0f);
@@ -484,6 +495,11 @@ void InvRing_RemoveHeader(void)
     Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, false);
+}
+
+void InvRing_ShowExamine(const bool show)
+{
+    m_ShowExamine = show;
 }
 
 void InvRing_ShowVersionText(void)
