@@ -3,7 +3,6 @@
 #include "game/console/common.h"
 #include "game/fmv.h"
 #include "game/input.h"
-#include "game/music.h"
 #include "game/option/option_controls.h"
 #include "game/output.h"
 #include "game/shell.h"
@@ -12,6 +11,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/gfx/common.h>
 #include <libtrx/gfx/context.h>

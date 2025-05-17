@@ -2,7 +2,6 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/lara/control.h"
-#include "game/music.h"
 #include "game/objects/general/lift.h"
 #include "game/savegame.h"
 #include "global/vars.h"

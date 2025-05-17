@@ -5,7 +5,6 @@
 #include "game/lara/control.h"
 #include "game/lara/draw.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/phase.h"
@@ -17,6 +16,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
 // TODO: delegate these constants to individual vehicle code

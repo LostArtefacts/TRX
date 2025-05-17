@@ -5,7 +5,6 @@
 #include "game/lara/control.h"
 #include "game/lara/look.h"
 #include "game/lara/misc.h"
-#include "game/music.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -14,6 +13,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
 #define LF_ROLL 2

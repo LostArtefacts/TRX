@@ -7,7 +7,6 @@
 #include "game/lara/cheat.h"
 #include "game/lara/control.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/overlay.h"
 #include "game/random.h"
 #include "game/savegame.h"
@@ -19,6 +18,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/music.h>
 #include <libtrx/log.h>
 
 typedef struct {

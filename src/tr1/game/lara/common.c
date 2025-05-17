@@ -9,7 +9,6 @@
 #include "game/lara/cheat.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
-#include "game/music.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/savegame.h"
@@ -24,6 +23,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/music.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 

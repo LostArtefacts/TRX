@@ -8,7 +8,6 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -27,6 +26,7 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>

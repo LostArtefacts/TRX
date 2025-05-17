@@ -8,7 +8,6 @@
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara/common.h"
-#include "game/music.h"
 #include "game/option.h"
 #include "game/option/option_compass.h"
 #include "game/option/option_examine.h"
@@ -26,6 +25,7 @@
 #include <libtrx/game/gun/const.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
+#include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 
 #define INV_RING_FADE_TIME_FAST                                                \

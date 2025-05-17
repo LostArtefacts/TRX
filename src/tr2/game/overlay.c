@@ -5,7 +5,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/music.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
@@ -17,6 +16,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/scaler.h>
 #include <libtrx/utils.h>
 
