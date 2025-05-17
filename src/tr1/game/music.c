@@ -2,33 +2,52 @@
 
 #include "game/game_flow.h"
 #include "game/sound.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/engine/audio.h>
-#include <libtrx/filesystem.h>
+#include <libtrx/game/music/backend_files.h>
 #include <libtrx/log.h>
-#include <libtrx/memory.h>
-
-#include <stdio.h>
-
-static const char *m_Extensions[] = {
-    ".flac", ".ogg", ".mp3", ".wav", nullptr,
-};
 
 static bool m_Muted = false;
 static int16_t m_Volume = 0;
 static int m_AudioStreamID = -1;
+static const MUSIC_BACKEND *m_Backend = nullptr;
 static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackDelayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 
+static const MUSIC_BACKEND *M_FindBackend(void);
 static void M_SyncVolume(const int32_t audio_stream_id);
 static bool M_IsBrokenTrack(MUSIC_TRACK_ID track);
 static void M_StopActiveStream(void);
 static void M_StreamFinished(int stream_id, void *user_data);
-static char *M_GetTrackFileName(MUSIC_TRACK_ID track);
+
+static const MUSIC_BACKEND *M_FindBackend(void)
+{
+    MUSIC_BACKEND *all_backends[] = {
+        Music_Backend_Files_Factory("music"),
+        nullptr,
+    };
+
+    const MUSIC_BACKEND *result = nullptr;
+    for (MUSIC_BACKEND **backend_ptr = all_backends; *backend_ptr != nullptr;
+         backend_ptr++) {
+        if ((*backend_ptr)->init(*backend_ptr)) {
+            result = *backend_ptr;
+            break;
+        }
+    }
+
+    for (MUSIC_BACKEND **backend_ptr = all_backends; *backend_ptr != nullptr;
+         backend_ptr++) {
+        if (*backend_ptr != result) {
+            (*backend_ptr)->shutdown(*backend_ptr);
+        }
+    }
+
+    return result;
+}
 
 static void M_SyncVolume(const int32_t audio_stream_id)
 {
@@ -58,13 +77,6 @@ static void M_StopActiveStream(void)
     Audio_Stream_Close(m_AudioStreamID);
 }
 
-static char *M_GetTrackFileName(MUSIC_TRACK_ID track)
-{
-    char file_path[64];
-    sprintf(file_path, "music/track%02d.flac", track);
-    return File_GuessExtension(file_path, m_Extensions);
-}
-
 static void M_StreamFinished(int stream_id, void *user_data)
 {
     // When a stream finishes, play the remembered background BGM.
@@ -80,7 +92,20 @@ static void M_StreamFinished(int stream_id, void *user_data)
 
 bool Music_Init(void)
 {
-    return Audio_Init();
+    bool result = false;
+
+    m_Backend = M_FindBackend();
+    if (m_Backend == nullptr) {
+        LOG_ERROR("No music backend is available");
+        goto finish;
+    }
+
+    LOG_INFO("Chosen music backend: %s", m_Backend->describe(m_Backend));
+    result = true;
+    Music_SetVolume(g_Config.audio.music_volume);
+
+finish:
+    return result && Audio_Init();
 }
 
 void Music_Shutdown(void)
@@ -123,19 +148,23 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
 
     M_StopActiveStream();
 
-    char *file_path = M_GetTrackFileName(track_id);
-    m_AudioStreamID = Audio_Stream_CreateFromFile(file_path);
-    Memory_FreePointer(&file_path);
+    if (m_Backend == nullptr) {
+        LOG_WARNING(
+            "Not playing track %d because no backend is available", track_id);
+        goto finish;
+    }
 
+    m_AudioStreamID = m_Backend->play(m_Backend, track_id);
     if (m_AudioStreamID < 0) {
-        LOG_ERROR("All music streams are busy");
-        return false;
+        LOG_ERROR("Failed to create music stream for track %d", track_id);
+        goto finish;
     }
 
     M_SyncVolume(m_AudioStreamID);
     Audio_Stream_SetIsLooped(m_AudioStreamID, mode == MPM_LOOPED);
     Audio_Stream_SetFinishCallback(m_AudioStreamID, M_StreamFinished, nullptr);
 
+finish:
     m_TrackDelayed = MX_INACTIVE;
     if (mode == MPM_LOOPED) {
         m_TrackLooped = track_id;
