@@ -7,7 +7,6 @@
 bool Music_Init(void);
 void Music_Shutdown(void);
 void Music_Stop(void);
-bool Music_PlaySynced(int16_t track_id);
 double Music_GetTimestamp(void);
 bool Music_SeekTimestamp(double timestamp);
 void Music_SetVolume(int32_t volume);

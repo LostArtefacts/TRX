@@ -784,7 +784,7 @@ void Lara_State_Extra_DinoKill(ITEM *item, COLL_INFO *coll)
 void Lara_State_Extra_PullDagger(ITEM *item, COLL_INFO *coll)
 {
     if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_PULLED)) {
-        Music_PlaySynced(MX_DAGGER_PULL);
+        Music_Play(MX_DAGGER_PULL, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_STORED)) {
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
         Inv_AddItem(O_PUZZLE_ITEM_2);
@@ -806,7 +806,7 @@ void Lara_State_Extra_StartAnim(ITEM *item, COLL_INFO *coll)
 void Lara_State_Extra_StartHouse(ITEM *item, COLL_INFO *coll)
 {
     if (Item_TestFrameEqual(item, LF_START_HOUSE_BEGIN)) {
-        Music_PlaySynced(MX_REVEAL_2);
+        Music_Play(MX_REVEAL_2, MPM_ALWAYS);
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
         Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
     } else if (Item_TestFrameEqual(item, LF_START_HOUSE_DAGGER_STORED)) {
@@ -828,7 +828,7 @@ void Lara_State_Extra_FinalAnim(ITEM *item, COLL_INFO *coll)
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
         Lara_SwapSingleMesh(LM_HEAD, O_LARA);
         Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
-        Music_PlaySynced(MX_CUTSCENE_BATH);
+        Music_Play(MX_CUTSCENE_BATH, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, LF_SHOWER_SHOTGUN_PICKUP)) {
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA_SHOTGUN);
     } else if (Item_TestFrameEqual(item, LF_SHOWER_END)) {
