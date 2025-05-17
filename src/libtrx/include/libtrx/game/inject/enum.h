@@ -88,6 +88,7 @@ typedef enum {
     FET_TRIGGER_TYPE      = 6,
     FET_SECTOR_OVERWRITE  = 7,
     FET_GLIDE_CAMERA      = 8,
+    FET_ZONE_FIX          = 9,
 } FLOOR_EDIT_TYPE;
 
 typedef enum {

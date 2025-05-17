@@ -231,7 +231,7 @@ However, you can easily download them manually from these urls:
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
     - **Barkhang Monastery**: fixed the illegal slope in room 96
     - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
-    - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, and added an extra pickup trigger beside the Gong Hammer in room 29
+    - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, added an extra pickup trigger beside the Gong Hammer in room 29, and fixed faulty zoning data in rooms 48/110
     - **Temple of Xian**: fixed missing death tiles in room 91; adding trigger workarounds to avoid a softlock after (missing) the final key
     - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it; added extra zipline reset triggers to avoid softlock
     - **Nightmare in Vegas**: added additional triggers for the bird monster and final flip map to avoid softlock

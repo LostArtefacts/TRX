@@ -1,5 +1,6 @@
 #include "game/creature.h"
 #include "game/game_buf.h"
+#include "game/objects.h"
 #include "game/pathing.h"
 #include "game/random.h"
 #include "game/rooms.h"
@@ -53,6 +54,27 @@ int16_t *Box_InitialiseOverlaps(const int32_t num_overlaps)
         ? nullptr
         : GameBuf_Alloc(sizeof(int16_t) * num_overlaps, GBUF_OVERLAPS);
     return m_Overlaps;
+}
+
+bool Box_IsUsableZoneIndex(const int32_t zone_idx)
+{
+#if TR_VERSION == 2
+    // TODO: work out why these checks are in OG.
+    if (zone_idx == 2) {
+        return false;
+    }
+
+    if (zone_idx == 1 && !Object_Get(O_SPIDER)->loaded
+        && !Object_Get(O_SKIDOO_ARMED)->loaded) {
+        return false;
+    }
+
+    if (zone_idx == 3 && !Object_Get(O_YETI)->loaded
+        && !Object_Get(O_WORKER_3)->loaded) {
+        return false;
+    }
+#endif
+    return true;
 }
 
 int32_t Box_GetCount(void)
