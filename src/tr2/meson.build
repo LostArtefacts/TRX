@@ -128,7 +128,6 @@ sources = [
   'game/lara/state.c',
   'game/level.c',
   'game/los.c',
-  'game/music/music_main.c',
   'game/objects/common.c',
   'game/objects/creatures/bandit_1.c',
   'game/objects/creatures/bandit_2.c',
