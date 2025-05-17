@@ -16,4 +16,3 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 MUSIC_TRACK_ID Music_GetLastPlayedTrack(void);
 void Music_Pause(void);
 void Music_Unpause(void);
-int32_t Music_GetRealTrack(int32_t track_id);
