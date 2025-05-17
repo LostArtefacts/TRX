@@ -5,6 +5,9 @@
 
 #include <stdint.h>
 
+bool Music_Init(void);
+void Music_Shutdown(void);
+
 // Stops playing current track and plays a single track.
 //
 // MPM_ALWAYS:
@@ -20,38 +23,52 @@
 bool Music_Play(MUSIC_TRACK_ID track, MUSIC_PLAY_MODE mode);
 
 // Stops any music, whether looped or active speech.
-extern void Music_Stop(void);
+void Music_Stop(void);
 
 // Stops the provided single track and restarts the looped track if applicable.
-extern void Music_StopTrack(MUSIC_TRACK_ID track);
+void Music_StopTrack(MUSIC_TRACK_ID track);
 
 // Pauses the music.
-extern void Music_Pause(void);
+void Music_Pause(void);
 
 // Unpauses the music.
-extern void Music_Unpause(void);
+void Music_Unpause(void);
+
+// Get the current timestamp of the current stream in seconds.
+double Music_GetTimestamp(void);
+
+// Seek to timestamp of current stream.
+bool Music_SeekTimestamp(double timestamp);
 
 // Returns the delayed track. Ignores looped tracks.
-extern MUSIC_TRACK_ID Music_GetDelayedTrack(void);
+MUSIC_TRACK_ID Music_GetDelayedTrack(void);
 
 // Returns the currently playing track. Includes looped music.
-extern MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
+MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
 
 // Returns the looped track.
-extern MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
-
-void Music_ResetTrackFlags(void);
-uint16_t Music_GetTrackFlags(int32_t track_idx);
-void Music_SetTrackFlags(int32_t track, uint16_t flags);
+MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 
 // Gets the minimum possible game volume.
-extern int32_t Music_GetMinVolume(void);
+int32_t Music_GetMinVolume(void);
 
 // Gets the maximum possible game volume.
-extern int32_t Music_GetMaxVolume(void);
-
-// Gets the game volume.
-extern int32_t Music_GetVolume(void);
+int32_t Music_GetMaxVolume(void);
 
 // Sets the game volume.
-extern void Music_SetVolume(int32_t volume);
+void Music_SetVolume(int32_t volume);
+
+// Mutes the game music. Doesn't change the music volume.
+void Music_Mute(void);
+
+// Unmutes the game music. Doesn't change the music volume.
+void Music_Unmute(void);
+
+// Resets all track trigger mask flags.
+void Music_ResetTrackFlags(void);
+
+// Returns trigger mask flags for the given track.
+uint16_t Music_GetTrackFlags(int32_t track_idx);
+
+// Sets the trigger mask flags for the given track.
+void Music_SetTrackFlags(int32_t track, uint16_t flags);
