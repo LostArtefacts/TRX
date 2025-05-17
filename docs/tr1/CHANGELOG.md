@@ -20,6 +20,7 @@
 - fixed a crash when portal debugging is enabled in rooms that have no portals (#2968, regression from 4.8)
 - fixed rats/voles and crocodiles/alligators at times not assuming the correct death pose after reloading a save (#2960, regression from 0.12)
 - fixed incorrect camera shifts when some fixed cameras return to normal view (#2971, regression from 4.9)
+- fixed Lara not having weapons when playing a level with -l/--level (#2995, regression from 4.9)
 
 ## [4.10.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...tr1-4.10.2) - 2025-05-15
 - fixed animated textures not working the right way in flipped rooms (#2966, regression from 4.10)

@@ -116,11 +116,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     default:
         if (level->type == GFL_GYM) {
             Savegame_ResetCurrentInfo(level);
-            Savegame_ApplyLogicToCurrentInfo(level);
         } else if (level->type == GFL_BONUS) {
             Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
-            Savegame_ApplyLogicToCurrentInfo(level);
         }
+        Savegame_ApplyLogicToCurrentInfo(level);
     }
 
     // clear the save slot information so that /play starts with a fresh state
