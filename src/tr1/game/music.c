@@ -260,14 +260,6 @@ MUSIC_TRACK_ID Music_GetDelayedTrack(void)
     return m_TrackDelayed;
 }
 
-double Music_GetDuration(void)
-{
-    if (m_AudioStreamID < 0) {
-        return -1.0;
-    }
-    return Audio_Stream_GetDuration(m_AudioStreamID);
-}
-
 double Music_GetTimestamp(void)
 {
     if (m_AudioStreamID < 0) {

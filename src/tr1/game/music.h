@@ -19,9 +19,6 @@ void Music_Unmute(void);
 // Returns the last played track. Ignores looped tracks.
 MUSIC_TRACK_ID Music_GetLastPlayedTrack(void);
 
-// Get the duration of the current stream in seconds.
-double Music_GetDuration(void);
-
 // Get the current timestamp of the current stream in seconds.
 double Music_GetTimestamp(void);
 
