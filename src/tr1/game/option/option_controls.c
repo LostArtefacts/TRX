@@ -51,15 +51,14 @@ typedef enum {
 
 typedef struct {
     INPUT_ROLE role;
-    bool can_unbind;
-} TEXT_COLUMN_PLACEMENT;
+} M_ENTRY;
 
 typedef struct {
     int32_t num_options;
     int32_t vis_options;
-    const TEXT_COLUMN_PLACEMENT *top_row;
-    const TEXT_COLUMN_PLACEMENT *bot_row;
-    const TEXT_COLUMN_PLACEMENT *cur_row;
+    const M_ENTRY *top_row;
+    const M_ENTRY *bot_row;
+    const M_ENTRY *cur_row;
     int32_t cur_role;
     int32_t first_role;
     int32_t last_role;
@@ -93,86 +92,84 @@ static MENU m_ControlMenu = {
     .prev_row_num = KC_TITLE,
 };
 
-static const TEXT_COLUMN_PLACEMENT m_CtrlTextPlacementNormal[] = {
-    { INPUT_ROLE_UP, false },
-    { INPUT_ROLE_DOWN, false },
-    { INPUT_ROLE_LEFT, false },
-    { INPUT_ROLE_RIGHT, false },
-    { INPUT_ROLE_DRAW, false },
-    { INPUT_ROLE_ACTION, false },
-    { INPUT_ROLE_JUMP, false },
-    { INPUT_ROLE_ROLL, false },
-    { INPUT_ROLE_LOOK, false },
-    { INPUT_ROLE_SLOW, false },
-    { INPUT_ROLE_STEP_L, true },
-    { INPUT_ROLE_STEP_R, true },
-    { INPUT_ROLE_OPTION, false },
-    { INPUT_ROLE_PAUSE, true },
-    { INPUT_ROLE_CHANGE_TARGET, true },
-    { INPUT_ROLE_TOGGLE_PHOTO_MODE, true },
-    { INPUT_ROLE_CAMERA_UP, true },
-    { INPUT_ROLE_CAMERA_DOWN, true },
-    { INPUT_ROLE_CAMERA_FORWARD, true },
-    { INPUT_ROLE_CAMERA_BACK, true },
-    { INPUT_ROLE_CAMERA_LEFT, true },
-    { INPUT_ROLE_CAMERA_RIGHT, true },
-    { INPUT_ROLE_EQUIP_PISTOLS, true },
-    { INPUT_ROLE_EQUIP_SHOTGUN, true },
-    { INPUT_ROLE_EQUIP_MAGNUMS, true },
-    { INPUT_ROLE_EQUIP_UZIS, true },
-    { INPUT_ROLE_USE_SMALL_MEDI, true },
-    { INPUT_ROLE_USE_BIG_MEDI, true },
-    { INPUT_ROLE_SAVE, true },
-    { INPUT_ROLE_LOAD, true },
-    { INPUT_ROLE_FPS, true },
-    { INPUT_ROLE_BILINEAR, true },
-    { INPUT_ROLE_ENTER_CONSOLE, true },
-    { INPUT_ROLE_TOGGLE_UI, true },
-    // end
-    { COL_END, false },
+static const M_ENTRY m_CtrlTextPlacementNormal[] = {
+    { .role = INPUT_ROLE_UP },
+    { .role = INPUT_ROLE_DOWN },
+    { .role = INPUT_ROLE_LEFT },
+    { .role = INPUT_ROLE_RIGHT },
+    { .role = INPUT_ROLE_DRAW },
+    { .role = INPUT_ROLE_ACTION },
+    { .role = INPUT_ROLE_JUMP },
+    { .role = INPUT_ROLE_ROLL },
+    { .role = INPUT_ROLE_LOOK },
+    { .role = INPUT_ROLE_SLOW },
+    { .role = INPUT_ROLE_STEP_L },
+    { .role = INPUT_ROLE_STEP_R },
+    { .role = INPUT_ROLE_OPTION },
+    { .role = INPUT_ROLE_PAUSE },
+    { .role = INPUT_ROLE_CHANGE_TARGET },
+    { .role = INPUT_ROLE_TOGGLE_PHOTO_MODE },
+    { .role = INPUT_ROLE_CAMERA_UP },
+    { .role = INPUT_ROLE_CAMERA_DOWN },
+    { .role = INPUT_ROLE_CAMERA_FORWARD },
+    { .role = INPUT_ROLE_CAMERA_BACK },
+    { .role = INPUT_ROLE_CAMERA_LEFT },
+    { .role = INPUT_ROLE_CAMERA_RIGHT },
+    { .role = INPUT_ROLE_EQUIP_PISTOLS },
+    { .role = INPUT_ROLE_EQUIP_SHOTGUN },
+    { .role = INPUT_ROLE_EQUIP_MAGNUMS },
+    { .role = INPUT_ROLE_EQUIP_UZIS },
+    { .role = INPUT_ROLE_USE_SMALL_MEDI },
+    { .role = INPUT_ROLE_USE_BIG_MEDI },
+    { .role = INPUT_ROLE_SAVE },
+    { .role = INPUT_ROLE_LOAD },
+    { .role = INPUT_ROLE_FPS },
+    { .role = INPUT_ROLE_BILINEAR },
+    { .role = INPUT_ROLE_ENTER_CONSOLE },
+    { .role = INPUT_ROLE_TOGGLE_UI },
+    { .role = COL_END },
 };
 
-static const TEXT_COLUMN_PLACEMENT m_CtrlTextPlacementCheats[] = {
-    { INPUT_ROLE_UP, false },
-    { INPUT_ROLE_DOWN, false },
-    { INPUT_ROLE_LEFT, false },
-    { INPUT_ROLE_RIGHT, false },
-    { INPUT_ROLE_DRAW, false },
-    { INPUT_ROLE_ACTION, false },
-    { INPUT_ROLE_JUMP, false },
-    { INPUT_ROLE_ROLL, false },
-    { INPUT_ROLE_LOOK, false },
-    { INPUT_ROLE_SLOW, false },
-    { INPUT_ROLE_STEP_L, true },
-    { INPUT_ROLE_STEP_R, true },
-    { INPUT_ROLE_OPTION, false },
-    { INPUT_ROLE_PAUSE, true },
-    { INPUT_ROLE_CHANGE_TARGET, true },
-    { INPUT_ROLE_TOGGLE_PHOTO_MODE, true },
-    { INPUT_ROLE_CAMERA_UP, true },
-    { INPUT_ROLE_CAMERA_DOWN, true },
-    { INPUT_ROLE_CAMERA_FORWARD, true },
-    { INPUT_ROLE_CAMERA_BACK, true },
-    { INPUT_ROLE_CAMERA_LEFT, true },
-    { INPUT_ROLE_CAMERA_RIGHT, true },
-    { INPUT_ROLE_EQUIP_PISTOLS, true },
-    { INPUT_ROLE_EQUIP_SHOTGUN, true },
-    { INPUT_ROLE_EQUIP_MAGNUMS, true },
-    { INPUT_ROLE_EQUIP_UZIS, true },
-    { INPUT_ROLE_USE_SMALL_MEDI, true },
-    { INPUT_ROLE_USE_BIG_MEDI, true },
-    { INPUT_ROLE_SAVE, true },
-    { INPUT_ROLE_LOAD, true },
-    { INPUT_ROLE_FPS, true },
-    { INPUT_ROLE_BILINEAR, true },
-    { INPUT_ROLE_FLY_CHEAT, true },
-    { INPUT_ROLE_ITEM_CHEAT, true },
-    { INPUT_ROLE_LEVEL_SKIP_CHEAT, true },
-    { INPUT_ROLE_TURBO_CHEAT, true },
-    { INPUT_ROLE_ENTER_CONSOLE, true },
-    { INPUT_ROLE_TOGGLE_UI, true },
-    // end
-    { COL_END, false },
+static const M_ENTRY m_CtrlTextPlacementCheats[] = {
+    { .role = INPUT_ROLE_UP },
+    { .role = INPUT_ROLE_DOWN },
+    { .role = INPUT_ROLE_LEFT },
+    { .role = INPUT_ROLE_RIGHT },
+    { .role = INPUT_ROLE_DRAW },
+    { .role = INPUT_ROLE_ACTION },
+    { .role = INPUT_ROLE_JUMP },
+    { .role = INPUT_ROLE_ROLL },
+    { .role = INPUT_ROLE_LOOK },
+    { .role = INPUT_ROLE_SLOW },
+    { .role = INPUT_ROLE_STEP_L },
+    { .role = INPUT_ROLE_STEP_R },
+    { .role = INPUT_ROLE_OPTION },
+    { .role = INPUT_ROLE_PAUSE },
+    { .role = INPUT_ROLE_CHANGE_TARGET },
+    { .role = INPUT_ROLE_TOGGLE_PHOTO_MODE },
+    { .role = INPUT_ROLE_CAMERA_UP },
+    { .role = INPUT_ROLE_CAMERA_DOWN },
+    { .role = INPUT_ROLE_CAMERA_FORWARD },
+    { .role = INPUT_ROLE_CAMERA_BACK },
+    { .role = INPUT_ROLE_CAMERA_LEFT },
+    { .role = INPUT_ROLE_CAMERA_RIGHT },
+    { .role = INPUT_ROLE_EQUIP_PISTOLS },
+    { .role = INPUT_ROLE_EQUIP_SHOTGUN },
+    { .role = INPUT_ROLE_EQUIP_MAGNUMS },
+    { .role = INPUT_ROLE_EQUIP_UZIS },
+    { .role = INPUT_ROLE_USE_SMALL_MEDI },
+    { .role = INPUT_ROLE_USE_BIG_MEDI },
+    { .role = INPUT_ROLE_SAVE },
+    { .role = INPUT_ROLE_LOAD },
+    { .role = INPUT_ROLE_FPS },
+    { .role = INPUT_ROLE_BILINEAR },
+    { .role = INPUT_ROLE_FLY_CHEAT },
+    { .role = INPUT_ROLE_ITEM_CHEAT },
+    { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT },
+    { .role = INPUT_ROLE_TURBO_CHEAT },
+    { .role = INPUT_ROLE_ENTER_CONSOLE },
+    { .role = INPUT_ROLE_TOGGLE_UI },
+    { .role = COL_END },
 };
 
 static void M_InitMenu(void);
@@ -199,7 +196,7 @@ static void M_InitMenu(void)
     }
     m_ControlMenu.vis_options = visible_lines;
 
-    const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
+    const M_ENTRY *cols = g_Config.gameplay.enable_cheats
         ? m_CtrlTextPlacementCheats
         : m_CtrlTextPlacementNormal;
 
@@ -207,7 +204,7 @@ static void M_InitMenu(void)
     m_ControlMenu.cur_row = cols;
     m_ControlMenu.bot_row = cols + m_ControlMenu.vis_options - 1;
 
-    for (const TEXT_COLUMN_PLACEMENT *col = cols; col->role != COL_END; col++) {
+    for (const M_ENTRY *col = cols; col->role != COL_END; col++) {
         m_ControlMenu.num_options++;
         m_ControlMenu.last_role = col->role;
     }
@@ -224,11 +221,11 @@ static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], true);
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], true);
 
-    const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
+    const M_ENTRY *cols = g_Config.gameplay.enable_cheats
         ? m_CtrlTextPlacementCheats
         : m_CtrlTextPlacementNormal;
 
-    const TEXT_COLUMN_PLACEMENT *col = cols;
+    const M_ENTRY *col = cols;
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
     int16_t x_roles = centre - 150;
     int16_t box_width = 315;
@@ -331,7 +328,7 @@ static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
         Text_Hide(m_Text[TEXT_RESET], false);
 
         if (m_ControlMenu.cur_role == KC_TITLE
-            || !m_ControlMenu.cur_row->can_unbind) {
+            || !Input_IsRoleUnbindable(m_ControlMenu.cur_row->role)) {
             Text_Hide(m_Text[TEXT_UNBIND], true);
         } else {
             Text_Hide(m_Text[TEXT_UNBIND], false);
@@ -367,7 +364,7 @@ static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
         Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
     }
 
-    const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
+    const M_ENTRY *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_ChangeText(
             m_ControlMenu.role_texts[i], Input_GetRoleName(col->role));
@@ -462,11 +459,11 @@ static void M_ShutdownText(void)
 
 static void M_FlashConflicts(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
-    const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
+    const M_ENTRY *cols = g_Config.gameplay.enable_cheats
         ? m_CtrlTextPlacementCheats
         : m_CtrlTextPlacementNormal;
 
-    const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
+    const M_ENTRY *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_Flash(
             m_ControlMenu.key_texts[i],
@@ -643,7 +640,7 @@ CONTROL_MODE Option_Controls_Control(
         M_InitText(backend, layout);
     }
 
-    const TEXT_COLUMN_PLACEMENT *cols = g_Config.gameplay.enable_cheats
+    const M_ENTRY *cols = g_Config.gameplay.enable_cheats
         ? m_CtrlTextPlacementCheats
         : m_CtrlTextPlacementNormal;
 
@@ -655,7 +652,7 @@ CONTROL_MODE Option_Controls_Control(
             }
 
             if (m_ResetKeyMode == KM_INACTIVE
-                && m_ControlMenu.cur_row->can_unbind) {
+                && Input_IsRoleUnbindable(m_ControlMenu.cur_row->role)) {
                 M_CheckUnbindKey(backend, layout);
             }
         }

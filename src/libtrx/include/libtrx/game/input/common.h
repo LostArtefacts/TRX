@@ -48,6 +48,9 @@ void Input_Update(void);
 // controls dialog).
 bool Input_IsRoleRebindable(INPUT_ROLE role);
 
+// Checks whether the given role can be completely unbound by the player.
+bool Input_IsRoleUnbindable(INPUT_ROLE role);
+
 // Returns whether the key assigned to the given role is also used elsewhere
 // within the custom layout.
 bool Input_IsKeyConflicted(
