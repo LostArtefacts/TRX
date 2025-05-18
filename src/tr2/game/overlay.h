@@ -8,6 +8,5 @@ void Overlay_HideGameInfo(void);
 void Overlay_DrawGameInfo(void);
 
 void Overlay_AddDisplayPickup(GAME_OBJECT_ID obj_id);
-void Overlay_DisplayModeInfo(const char *string);
 
 void Overlay_Animate(int32_t frames);

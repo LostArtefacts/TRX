@@ -12,6 +12,7 @@
 - added an option to toggle between TR1 and TR2 camera modes (#2990)
 - added the ability to reset active inputs layout
 - added the ability to unbind non-essential keys
+- changed on-screen messages (such as `Z-Buffer on` to use the dev console, like in TR1X)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
 - changed the installer to always allow downloading music files (#2891)
 - changed the dev console to no longer add duplicate entries to the history

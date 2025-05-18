@@ -56,10 +56,6 @@ static DISPLAY_PICKUP m_Pickups[MAX_PICKUPS] = {};
 static int32_t m_OldHitPoints = -1;
 static bool m_FlashState = false;
 static int32_t m_FlashCounter = 0;
-static int32_t m_DisplayModeInfoTimer = 0;
-static TEXTSTRING *m_DisplayModeTextInfo = nullptr;
-static int32_t m_AmmoTextY = 0;
-static TEXTSTRING *m_AmmoTextInfo = nullptr;
 
 static float M_Ease(int32_t cur_frame, int32_t max_frames);
 static bool M_AnimateFlash(int32_t frames);
@@ -69,7 +65,6 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *pickup);
 static void M_DrawPickupSprite(const DISPLAY_PICKUP *pickup);
 static void M_DrawPickups(void);
 static void M_DrawAssaultTimer(void);
-static void M_DrawModeInfo(void);
 
 static float M_Ease(const int32_t cur_frame, const int32_t max_frames)
 {
@@ -215,19 +210,6 @@ static void M_DrawAssaultTimer(void)
     }
 }
 
-void M_DrawModeInfo(void)
-{
-    if (m_DisplayModeTextInfo == nullptr) {
-        return;
-    }
-
-    m_DisplayModeInfoTimer--;
-    if (m_DisplayModeInfoTimer <= 0) {
-        Text_Remove(m_DisplayModeTextInfo);
-        m_DisplayModeTextInfo = nullptr;
-    }
-}
-
 void Overlay_Reset(void)
 {
     Overlay_HideGameInfo();
@@ -238,12 +220,10 @@ void Overlay_Reset(void)
 
 void Overlay_DrawGameInfo(void)
 {
-    m_AmmoTextY = ABS(AMMO_X) + TEXT_HEIGHT;
     if (Game_IsPlaying()) {
         M_DrawPickups();
         M_DrawAssaultTimer();
     }
-    M_DrawModeInfo();
 }
 
 void Overlay_Animate(int32_t frames)
@@ -256,11 +236,6 @@ void Overlay_Animate(int32_t frames)
 
 void Overlay_HideGameInfo(void)
 {
-    Text_Remove(m_AmmoTextInfo);
-    m_AmmoTextInfo = nullptr;
-
-    Text_Remove(m_DisplayModeTextInfo);
-    m_DisplayModeTextInfo = nullptr;
 }
 
 static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
@@ -446,27 +421,4 @@ void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
             break;
         }
     }
-}
-
-void Overlay_DisplayModeInfo(const char *const string)
-{
-    if (string == nullptr) {
-        Text_Remove(m_DisplayModeTextInfo);
-        m_DisplayModeTextInfo = nullptr;
-        return;
-    }
-
-    if (m_DisplayModeTextInfo != nullptr) {
-        Text_ChangeText(m_DisplayModeTextInfo, string);
-    } else {
-        m_DisplayModeTextInfo = Text_Create(MODE_INFO_X, MODE_INFO_Y, string);
-        Text_AlignRight(m_DisplayModeTextInfo, 1);
-        Text_AlignBottom(m_DisplayModeTextInfo, 1);
-    }
-    m_DisplayModeInfoTimer = 2.5 * FRAMES_PER_SECOND;
-}
-
-void Overlay_DrawModeInfo(void)
-{
-    M_DrawModeInfo();
 }
