@@ -17,6 +17,7 @@ static VECTOR *m_UnsortedBlocks = nullptr;
 static int16_t *m_SortedBlocks = nullptr;
 
 static int32_t M_CompareBlock(const void *item_idx1, const void *item_idx2);
+static bool M_IsValidFloorShiftState(const ITEM *item);
 static void M_ShiftGlobalFloorUp(void);
 static void M_ShiftGlobalFloorDown(void);
 
@@ -30,12 +31,19 @@ static int32_t M_CompareBlock(const void *item_idx1, const void *item_idx2)
     return item1->pos.y < item2->pos.y ? 1 : -1;
 }
 
+static bool M_IsValidFloorShiftState(const ITEM *const item)
+{
+    return (item->status == IS_INACTIVE
+            || (item->status == IS_ACTIVE && !(bool)(intptr_t)item->priv))
+        && (item->flags & IF_KILLED) == 0
+        && item->pos.y >= Item_GetHeight(item);
+}
+
 static void M_ShiftGlobalFloorUp(void)
 {
     for (int32_t i = 0; i < m_BlockCount; i++) {
         ITEM *const item = Item_Get(m_SortedBlocks[i]);
-        if (item->status == IS_INACTIVE
-            && item->pos.y >= Item_GetHeight(item)) {
+        if (M_IsValidFloorShiftState(item)) {
             Room_AlterFloorHeight(item, -WALL_L);
         }
     }
@@ -45,8 +53,7 @@ static void M_ShiftGlobalFloorDown(void)
 {
     for (int32_t i = m_BlockCount - 1; i >= 0; i--) {
         ITEM *const item = Item_Get(m_SortedBlocks[i]);
-        if (item->status == IS_INACTIVE
-            && item->pos.y >= Item_GetHeight(item)) {
+        if (M_IsValidFloorShiftState(item)) {
             Room_AlterFloorHeight(item, WALL_L);
         }
     }
