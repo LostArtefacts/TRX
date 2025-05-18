@@ -244,7 +244,7 @@ static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
     // Measure the maximum width of the value label to prevent the entire
     // dialog from changing its size as the player changes the levels.
     float result = -1.0f;
-    for (int32_t i = 0; i < s->req.max_rows; i++) {
+    for (int32_t i = 0; i < s->req.scroll.max_items; i++) {
         const UI_SETTINGS_OPTION *const option = &s->options[i];
         if (option->option_type == COT_ENUM) {
             const UI_SETTINGS_ENUM_ENTRY *entry =
@@ -315,7 +315,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
     const float max_value_w = M_GetValueWidth(s) / g_Config.ui.text_scale;
 
-    for (int32_t i = 0; i < s->req.max_rows; i++) {
+    for (int32_t i = 0; i < s->req.scroll.max_items; i++) {
         if (!UI_Requester_IsRowVisible(&s->req, i)) {
             UI_BeginResize(-1.0f, 0.0f);
         } else {

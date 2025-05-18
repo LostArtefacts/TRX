@@ -118,8 +118,7 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
     s->type = type;
 
     UI_BasePassportDialog_Init(&s->req, Savegame_GetSlotCount());
-    s->req.sel_row = save_slot;
-    CLAMP(s->req.sel_row, 0, s->req.max_rows);
+    UI_Requester_SelectRow(&s->req, save_slot);
     return s;
 }
 

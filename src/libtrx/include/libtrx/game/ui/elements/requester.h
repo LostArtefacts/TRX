@@ -3,6 +3,7 @@
 // A window to select a single option from a list of predefined choices.
 
 #include "../common.h"
+#include "../scrollable.h"
 
 #include <stdint.h>
 
@@ -11,10 +12,7 @@
 
 typedef struct {
     bool is_selectable;
-    int32_t vis_rows;
-    int32_t max_rows;
-    int32_t vis_row;
-    int32_t sel_row;
+    UI_SCROLLABLE scroll;
     float row_pad;
     float row_spacing;
     bool show_arrows;
@@ -29,6 +27,7 @@ void UI_Requester_Free(UI_REQUESTER_STATE *s);
 int32_t UI_Requester_Control(UI_REQUESTER_STATE *s);
 void UI_Requester_SetMaxRows(UI_REQUESTER_STATE *s, size_t max_rows);
 void UI_Requester_SetVisibleRows(UI_REQUESTER_STATE *s, size_t visible_rows);
+void UI_Requester_SelectRow(UI_REQUESTER_STATE *s, int32_t i);
 int32_t UI_Requester_GetFirstRow(const UI_REQUESTER_STATE *s);
 int32_t UI_Requester_GetLastRow(const UI_REQUESTER_STATE *s);
 int32_t UI_Requester_GetCurrentRow(const UI_REQUESTER_STATE *s);

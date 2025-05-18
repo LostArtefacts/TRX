@@ -131,7 +131,7 @@ void UI_SoundSettings(UI_SOUND_SETTINGS_STATE *const s)
     float value_w = -1.0f;
     UI_Label_Measure("10", &value_w, nullptr);
 
-    for (int32_t i = 0; i < s->req.max_rows; ++i) {
+    for (int32_t i = 0; i < s->req.scroll.max_items; ++i) {
         if (!UI_Requester_IsRowVisible(&s->req, i)) {
             UI_BeginResize(-1.0f, 0.0f);
         } else {
