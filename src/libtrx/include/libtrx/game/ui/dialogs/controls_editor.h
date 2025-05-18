@@ -8,6 +8,7 @@
 #include "../common.h"
 #include "../elements/flash.h"
 #include "../elements/requester.h"
+#include "../scrollable.h"
 
 typedef struct {
     GAME_STRING_ID header;
@@ -20,12 +21,13 @@ typedef struct {
     int32_t active_layout;
     INPUT_ROLE active_role;
     const UI_CONTROLS_EDITOR_GROUP *active_group;
-    int32_t active_row;
     UI_FLASH_STATE flash;
     EVENT_MANAGER *events;
 
     INPUT_ROLE hold_role;
     int32_t hold_timer;
+
+    UI_SCROLLABLE scroll;
 
     int32_t max_group_items;
     int32_t input_size;
