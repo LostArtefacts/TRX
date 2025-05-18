@@ -1,4 +1,4 @@
-#include "game/sound.h"
+#include "game/sound/common.h"
 
 #include "engine/audio.h"
 #include "game/game_buf.h"

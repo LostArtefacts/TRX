@@ -215,7 +215,7 @@ sources = [
   'game/scaler.c',
   'game/shell/common.c',
   'game/shell/main.c',
-  'game/sound.c',
+  'game/sound/common.c',
   'game/text.c',
   'game/ui/common.c',
   'game/ui/dialogs/base_passport.c',
