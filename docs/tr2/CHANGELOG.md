@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...develop) - ××××-××-××
 - added a /help command (#2917)
 - added a flashing Demo Mode caption to demos (#1556)
 - added arrows to the passport text like in TR1X (#2926)
