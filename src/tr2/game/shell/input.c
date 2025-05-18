@@ -204,7 +204,7 @@ void Shell_ProcessInput(void)
         M_ToggleBilinearFiltering();
     }
 
-    // XXX: this is a poor hack
+    // TODO: this is a poor hack
     if (g_InputDB.toggle_perspective_filter
         || g_InputDB.toggle_trapezoid_filter) {
         if (g_Config.rendering.render_mode == RM_HARDWARE) {
