@@ -2,6 +2,7 @@
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - added a /help command (#2917)
 - added an option to toggle between TR1 and TR2 camera modes (#2990)
+- changed the all items cheat to include the lead bar if present in the level (#3008)
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)
