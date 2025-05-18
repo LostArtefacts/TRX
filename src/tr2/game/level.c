@@ -19,7 +19,6 @@
 #include <libtrx/benchmark.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
@@ -190,13 +189,8 @@ static void M_InitialiseSoundEffects(const char *file_name)
         char *sample_data = Memory_Alloc(size);
         memcpy(sample_data, header, header_size);
         File_ReadData(fp, sample_data + header_size, aligned_size);
-        const bool result =
-            Audio_Sample_LoadSingle(entry->game_index, sample_data, size);
+        Sound_LoadSample(entry->game_index, sample_data, size);
         Memory_FreePointer(&sample_data);
-
-        if (!result) {
-            LOG_WARNING("Failed to load sample %d", entry->game_index);
-        }
 
         current_sample++;
     }
@@ -291,9 +285,7 @@ bool Level_Load(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-    Audio_Sample_CloseAll();
-    Audio_Sample_UnloadAll();
-
+    Sound_Reset();
     Object_Reset();
 
     Inject_InitLevel(level);
@@ -353,8 +345,6 @@ bool Level_Initialise(
 
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
-
-    Sound_StopAll();
 
     if (Object_Get(O_FINAL_LEVEL_COUNTER)->loaded) {
         InitialiseFinalLevel();

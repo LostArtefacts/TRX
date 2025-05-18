@@ -28,9 +28,7 @@ bool Audio_Stream_SeekTimestamp(int32_t sound_id, double timestamp);
 bool Audio_Stream_SetStartTimestamp(int32_t sound_id, double timestamp);
 bool Audio_Stream_SetStopTimestamp(int32_t sound_id, double timestamp);
 
-bool Audio_Sample_LoadMany(size_t count, const char **contents, size_t *sizes);
-bool Audio_Sample_LoadSingle(
-    int32_t sample_num, const char *content, size_t size);
+bool Audio_Sample_Load(int32_t sample_num, const char *content, size_t size);
 bool Audio_Sample_Unload(int32_t sample_id);
 bool Audio_Sample_UnloadAll(void);
 

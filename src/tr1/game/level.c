@@ -47,6 +47,7 @@ typedef enum {
 
 static bool M_TryLayout(VFILE *file, LEVEL_LAYOUT layout);
 static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
+static void M_InitialiseSoundEffects(void);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
@@ -167,6 +168,29 @@ static LEVEL_LAYOUT M_GuessLayout(VFILE *const file)
     return result;
 }
 
+static void M_InitialiseSoundEffects(void)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    LEVEL_INFO *const info = Level_GetInfo();
+    const int32_t sample_count = info->samples.offset_count;
+
+    // TODO: this assumes that sample pointers are sorted - adopt TR2's approach
+    // of sorting by index, verifying WAV headers and using WAV sample size.
+    for (int32_t i = 0; i < sample_count; i++) {
+        const int32_t current_offset = info->samples.offsets[i];
+        const int32_t next_offset = i + 1 >= sample_count
+            ? info->samples.data_size
+            : info->samples.offsets[i + 1];
+
+        const char *const sample_data = &info->samples.data[current_offset];
+        const size_t sample_size = next_offset - current_offset;
+        Sound_LoadSample(i, sample_data, sample_size);
+    }
+
+    Memory_FreePointer(&info->samples.offsets);
+    Benchmark_End(&benchmark, nullptr);
+}
+
 static void M_LoadFromFile(const GF_LEVEL *const level)
 {
     GameBuf_Reset();
@@ -261,30 +285,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadPalettes();
     Level_LoadFaces();
     Output_ObserveLevelLoad();
-
-    // Initialise the sound effects.
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t sample_count = info->samples.offset_count;
-    size_t *sample_sizes = Memory_Alloc(sizeof(size_t) * sample_count);
-    const char **sample_pointers = Memory_Alloc(sizeof(char *) * sample_count);
-    for (int i = 0; i < sample_count; i++) {
-        sample_pointers[i] = info->samples.data + info->samples.offsets[i];
-    }
-
-    // NOTE: this assumes that sample pointers are sorted
-    for (int32_t i = 0; i < sample_count; i++) {
-        const int32_t current_offset = info->samples.offsets[i];
-        const int32_t next_offset = i + 1 >= sample_count
-            ? info->samples.data_size
-            : info->samples.offsets[i + 1];
-        sample_sizes[i] = next_offset - current_offset;
-    }
-
-    Sound_LoadSamples(sample_count, sample_pointers, sample_sizes);
-
-    Memory_FreePointer(&sample_pointers);
-    Memory_FreePointer(&sample_sizes);
-    Memory_FreePointer(&info->samples.offsets);
+    M_InitialiseSoundEffects();
 
     Benchmark_End(&benchmark, nullptr);
 }
@@ -369,6 +370,7 @@ bool Level_Initialise(
 
     Music_ResetTrackFlags();
 
+    Sound_Reset();
     Object_Reset();
     Camera_Reset();
     Pierre_Reset();

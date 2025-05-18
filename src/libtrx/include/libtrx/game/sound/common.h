@@ -6,8 +6,14 @@
 #include "ids.h"
 #include "types.h"
 
+#include <stddef.h>
+
+// Stops and unloads all samples
+extern void Sound_Reset(void);
+
 void Sound_InitialiseSources(int32_t num_sources);
 void Sound_InitialiseSampleInfos(int32_t num_sample_infos);
+bool Sound_LoadSample(int32_t sample_num, const char *sample_data, size_t size);
 int32_t Sound_GetSourceCount(void);
 OBJECT_VECTOR *Sound_GetSource(int32_t source_idx);
 int16_t *Sound_GetSampleLUT(void);

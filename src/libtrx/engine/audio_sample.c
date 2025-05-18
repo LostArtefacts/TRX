@@ -523,7 +523,7 @@ bool Audio_Sample_UnloadAll(void)
     return true;
 }
 
-bool Audio_Sample_LoadSingle(
+bool Audio_Sample_Load(
     const int32_t sample_id, const char *const data, const size_t size)
 {
     ASSERT(data != nullptr);
@@ -551,30 +551,6 @@ bool Audio_Sample_LoadSingle(
     memcpy(sample->original_data, data, size);
     m_LoadedSamplesCount++;
     return true;
-}
-
-bool Audio_Sample_LoadMany(size_t count, const char **contents, size_t *sizes)
-{
-    ASSERT(contents != nullptr);
-    ASSERT(sizes != nullptr);
-
-    if (!g_AudioDeviceID) {
-        return false;
-    }
-
-    ASSERT(count <= AUDIO_MAX_SAMPLES);
-
-    Audio_Sample_CloseAll();
-    Audio_Sample_UnloadAll();
-
-    bool result = true;
-    for (int32_t i = 0; i < (int32_t)count; i++) {
-        result &= Audio_Sample_LoadSingle(i, contents[i], sizes[i]);
-    }
-    if (!result) {
-        Audio_Sample_UnloadAll();
-    }
-    return result;
 }
 
 int32_t Audio_Sample_Play(

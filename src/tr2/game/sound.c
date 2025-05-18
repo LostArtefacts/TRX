@@ -324,6 +324,13 @@ void Sound_StopEffect(const SOUND_EFFECT_ID sample_id)
     }
 }
 
+void Sound_Reset(void)
+{
+    Audio_Sample_CloseAll();
+    Audio_Sample_UnloadAll();
+    M_ClearAllSlots();
+}
+
 void Sound_StopAll(void)
 {
     Audio_Sample_CloseAll();
