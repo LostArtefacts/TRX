@@ -38,18 +38,35 @@ static M_HOLD_CHECK m_HoldChecks[] = {
 };
 
 static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
-    0,
-    [INPUT_ROLE_RESET_BINDINGS] = 1,
+    // clang-format off
+    [INPUT_ROLE_RESET_BINDINGS]           = true,
 #if TR_VERSION == 1
-    [INPUT_ROLE_UNBIND_KEY] = 1,
-    [INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER] = 1,
+    [INPUT_ROLE_UNBIND_KEY]               = true,
+    [INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER]  = true,
 #endif
-    [INPUT_ROLE_MENU_CONFIRM] = 1,
-    [INPUT_ROLE_MENU_BACK] = 1,
-    [INPUT_ROLE_MENU_LEFT] = 1,
-    [INPUT_ROLE_MENU_RIGHT] = 1,
-    [INPUT_ROLE_MENU_UP] = 1,
-    [INPUT_ROLE_MENU_DOWN] = 1,
+    [INPUT_ROLE_MENU_CONFIRM]             = true,
+    [INPUT_ROLE_MENU_BACK]                = true,
+    [INPUT_ROLE_MENU_LEFT]                = true,
+    [INPUT_ROLE_MENU_RIGHT]               = true,
+    [INPUT_ROLE_MENU_UP]                  = true,
+    [INPUT_ROLE_MENU_DOWN]                = true,
+    // clang-format on
+};
+
+static bool m_IsRoleNonUnbindable[INPUT_ROLE_NUMBER_OF] = {
+    // clang-format off
+    [INPUT_ROLE_UP]     = true,
+    [INPUT_ROLE_DOWN]   = true,
+    [INPUT_ROLE_LEFT]   = true,
+    [INPUT_ROLE_RIGHT]  = true,
+    [INPUT_ROLE_DRAW]   = true,
+    [INPUT_ROLE_ACTION] = true,
+    [INPUT_ROLE_JUMP]   = true,
+    [INPUT_ROLE_ROLL]   = true,
+    [INPUT_ROLE_LOOK]   = true,
+    [INPUT_ROLE_SLOW]   = true,
+    [INPUT_ROLE_OPTION] = true,
+    // clang-format on
 };
 
 static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
@@ -140,6 +157,11 @@ void Input_Discover(void)
 bool Input_IsRoleRebindable(const INPUT_ROLE role)
 {
     return !m_IsRoleHardcoded[role];
+}
+
+bool Input_IsRoleUnbindable(const INPUT_ROLE role)
+{
+    return !m_IsRoleNonUnbindable[role];
 }
 
 bool Input_IsPressed(
