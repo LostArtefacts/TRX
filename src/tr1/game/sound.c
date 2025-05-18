@@ -510,10 +510,10 @@ void Sound_StopAmbientSounds(void)
     }
 }
 
-void Sound_LoadSamples(
-    size_t num_samples, const char **sample_pointers, size_t *sizes)
+void Sound_Reset(void)
 {
-    Audio_Sample_LoadMany(num_samples, sample_pointers, sizes);
+    Audio_Sample_CloseAll();
+    Audio_Sample_UnloadAll();
 }
 
 void Sound_StopAll(void)

@@ -31,6 +31,12 @@ void Sound_InitialiseSampleInfos(const int32_t num_sample_infos)
               sizeof(SAMPLE_INFO) * num_sample_infos, GBUF_SAMPLE_INFOS);
 }
 
+bool Sound_LoadSample(
+    const int32_t sample_num, const char *const sample_data, const size_t size)
+{
+    return Audio_Sample_Load(sample_num, sample_data, size);
+}
+
 int32_t Sound_GetSourceCount(void)
 {
     return m_SourceCount;
