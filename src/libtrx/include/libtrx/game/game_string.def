@@ -169,6 +169,7 @@ GS_DEFINE(PAGINATION_NAV, "%d / %d")
 GS_DEFINE(ACTION_EXAMINE_ITEM, "Examine")
 GS_DEFINE(ACTION_USE_ITEM, "Use")
 GS_DEFINE(ACTION_RESET_DEFAULTS, "Reset All")
+GS_DEFINE(ACTION_UNBIND, "Unbind")
 
 GS_DEFINE(CONSOLE_CMD_HELP_LIST,      "Available commands:")
 GS_DEFINE(CONSOLE_HELP_HELP,          "Shows help for all commands or detailed help for one.")

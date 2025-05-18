@@ -33,6 +33,8 @@ typedef enum {
     M_PHASE_EXIT,
 } M_PHASE;
 
+typedef void (*M_HOLD_ACTION_FUNC)(const UI_CONTROLS_EDITOR_STATE *);
+
 static const INPUT_ROLE m_LeftRoles[] = {
     // clang-format off
     INPUT_ROLE_UP,
@@ -97,6 +99,11 @@ static INPUT_ROLE M_GetInputRole(int32_t col, int32_t row);
 static int32_t M_GetInputRoleCount(int32_t col);
 static void M_CycleLayout(UI_CONTROLS_EDITOR_STATE *s, int32_t dir);
 static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
+static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
+static bool M_HandleHoldAction(
+    UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role,
+    M_HOLD_ACTION_FUNC action_func);
+static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(UI_CONTROLS_EDITOR_STATE *s);
@@ -107,6 +114,8 @@ static void M_Title(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_InputChoice(UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
 static void M_InputLabel(const UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
 static void M_Column(UI_CONTROLS_EDITOR_STATE *s, const INPUT_ROLE *roles);
+static void M_FooterButton(
+    UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role, const char *role_label);
 static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
 
 static INPUT_ROLE M_GetInputRole(const int32_t col, const int32_t row)
@@ -152,24 +161,46 @@ static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
     Config_Write();
 }
 
+static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *const s)
+{
+#if TR_VERSION == 1
+    Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_NORMAL);
+#else
+    Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
+#endif
+    Input_UnassignRole(s->backend, s->active_layout, s->active_role);
+    Config_Write();
+}
+
+static bool M_HandleHoldAction(
+    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role,
+    const M_HOLD_ACTION_FUNC action_func)
+{
+    if (!Input_IsPressed(s->backend, s->active_layout, role)) {
+        return false;
+    }
+    if (s->hold_timer != -1) {
+        s->hold_timer++;
+        s->hold_role = role;
+        if (s->hold_timer - M_HOLD_TIMER_DEBUFF > M_HOLD_TIMER_MAX) {
+            action_func(s);
+            s->hold_timer = -1; // Debounce the key
+        }
+    }
+    return true;
+}
+
 static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *const s)
 {
-    if (s->active_layout == INPUT_LAYOUT_DEFAULT) {
-        return;
+    bool held = false;
+    if (s->active_layout != INPUT_LAYOUT_DEFAULT) {
+        held |= M_HandleHoldAction(s, INPUT_ROLE_RESET_BINDINGS, M_ResetLayout);
+        if (s->active_role == (INPUT_ROLE)-1
+            || Input_IsRoleUnbindable(s->active_role)) {
+            held |= M_HandleHoldAction(s, INPUT_ROLE_UNBIND_KEY, M_UnbindKey);
+        }
     }
-    const bool reset_layout = Input_IsPressed(
-        s->backend, s->active_layout, INPUT_ROLE_RESET_BINDINGS);
-    if (reset_layout) {
-        if (s->hold_timer != -1) {
-            s->hold_timer++;
-        }
-        if (s->hold_timer - M_HOLD_TIMER_DEBUFF > M_HOLD_TIMER_MAX) {
-            // Debounce the key so that it doesn't immediately start another
-            // cycle
-            M_ResetLayout(s);
-            s->hold_timer = -1;
-        }
-    } else {
+    if (!held) {
         s->hold_timer = 0;
     }
 }
@@ -349,24 +380,24 @@ static void M_Column(
     UI_EndStack();
 }
 
-static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
+static void M_FooterButton(
+    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role,
+    const char *const role_label)
 {
-    char buf1[60];
-    char buf2[80];
+    char tmp_buf[60];
+    char button_label[80];
     sprintf(
-        buf1, GS(MISC_HOLD_FMT),
-        Input_GetKeyName(
-            s->backend, s->active_layout, INPUT_ROLE_RESET_BINDINGS));
-    sprintf(buf2, "%s: %s", GS(ACTION_RESET_DEFAULTS), buf1);
+        tmp_buf, GS(MISC_HOLD_FMT),
+        Input_GetKeyName(s->backend, s->active_layout, role));
+    sprintf(button_label, "%s: %s", role_label, tmp_buf);
 
     const float pad[2] = { 6.0f, 3.0f };
 
-    UI_BeginHide(s->active_layout == INPUT_LAYOUT_DEFAULT);
     UI_BeginSpan();
     UI_BeginPad(pad[0], pad[1]);
-    UI_Label(buf2);
+    UI_Label(button_label);
     UI_EndPad();
-    if (s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
+    if (s->hold_role == role && s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
         UI_Bar((UI_BAR_SETTINGS) {
             .color = TR_VERSION == 2 ? BC_GREEN : BC_GOLD,
             .value = s->hold_timer - M_HOLD_TIMER_DEBUFF,
@@ -376,7 +407,25 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
         });
     }
     UI_EndSpan();
+}
+
+static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
+{
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_HORIZONTAL,
+        .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+    });
+    UI_BeginHide(s->active_layout == INPUT_LAYOUT_DEFAULT);
+    M_FooterButton(s, INPUT_ROLE_RESET_BINDINGS, GS(ACTION_RESET_DEFAULTS));
     UI_EndHide();
+
+    UI_BeginHide(
+        s->active_layout == INPUT_LAYOUT_DEFAULT
+        || s->active_role == (INPUT_ROLE)-1
+        || !Input_IsRoleUnbindable(s->active_role));
+    M_FooterButton(s, INPUT_ROLE_UNBIND_KEY, GS(ACTION_UNBIND));
+    UI_EndHide();
+    UI_EndStack();
 }
 
 void UI_ControlsEditor_Init(
@@ -427,7 +476,10 @@ UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
 void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
 {
     UI_BeginModal(0.5f, 0.55f);
-    UI_BeginStack(UI_STACK_VERTICAL);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    });
 
     UI_BeginWindow();
     UI_WindowTitle(GS(CONTROLS_CUSTOMIZE));

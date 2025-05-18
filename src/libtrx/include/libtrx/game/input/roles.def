@@ -45,6 +45,7 @@ INPUT_ROLE_DEFINE(TOGGLE_UI,               toggle_ui)
 
 INPUT_ROLE_DEFINE(TOGGLE_TRAPEZOID_FILTER, toggle_trapezoid_filter)
 INPUT_ROLE_DEFINE(RESET_BINDINGS,          reset_bindings)
+INPUT_ROLE_DEFINE(UNBIND_KEY,              unbind_key)
 
 INPUT_ROLE_DEFINE(CAMERA_FORWARD,          camera_forward)
 INPUT_ROLE_DEFINE(CAMERA_BACK,             camera_back)
