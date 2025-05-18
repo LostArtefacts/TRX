@@ -24,6 +24,7 @@
 - fixed incorrect camera shifts when some fixed cameras return to normal view (#2971, regression from 4.9)
 - fixed Lara not having weapons when playing a level with -l/--level (#2995, regression from 4.9)
 - fixed inventory ring items not being animated when the ring is rotating (#2964, regression from 4.9)
+- fixed a hole appearing in the floor in Natla's Mines room 84 after exploding the TNT box (#3007, regression from 4.9)
 
 ## [4.10.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...tr1-4.10.2) - 2025-05-15
 - fixed animated textures not working the right way in flipped rooms (#2966, regression from 4.10)
