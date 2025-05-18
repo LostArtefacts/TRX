@@ -49,53 +49,30 @@ static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
 #define M_ICON_R2 "\\{button r2}"
 
 // TODO: replace all of the text with icons
-#if TR_VERSION == 1
-    #define M_NAME_L_ANALOG_LEFT "L STICK " M_ICON_LEFT
-    #define M_NAME_L_ANALOG_UP "L STICK " M_ICON_UP
-    #define M_NAME_L_ANALOG_RIGHT "L STICK " M_ICON_RIGHT
-    #define M_NAME_L_ANALOG_DOWN "L STICK " M_ICON_DOWN
-    #define M_NAME_R_ANALOG_LEFT "R STICK " M_ICON_LEFT
-    #define M_NAME_R_ANALOG_UP "R STICK " M_ICON_UP
-    #define M_NAME_R_ANALOG_RIGHT "R STICK " M_ICON_RIGHT
-    #define M_NAME_R_ANALOG_DOWN "R STICK " M_ICON_DOWN
-    #define M_NAME_L_TRIGGER "L TRIGGER"
-    #define M_NAME_R_TRIGGER "R TRIGGER"
-    #define M_NAME_ZL "ZL"
-#elif TR_VERSION == 2
-    #define M_NAME_L_ANALOG_LEFT "LSTK" M_ICON_LEFT
-    #define M_NAME_L_ANALOG_UP "LSTK " M_ICON_UP
-    #define M_NAME_L_ANALOG_RIGHT "LSTK" M_ICON_RIGHT
-    #define M_NAME_L_ANALOG_DOWN "LSTK" M_ICON_DOWN
-    #define M_NAME_R_ANALOG_LEFT "RSTK" M_ICON_LEFT
-    #define M_NAME_R_ANALOG_UP "RSTK" M_ICON_UP
-    #define M_NAME_R_ANALOG_RIGHT "RSTK" M_ICON_RIGHT
-    #define M_NAME_R_ANALOG_DOWN "RSTK" M_ICON_DOWN
-    #define M_NAME_L_TRIGGER "LTRIG"
-    #define M_NAME_R_TRIGGER "RTRIG"
-    #define M_NAME_ZL "ZL"
-#endif
+#define M_NAME_L_ANALOG_LEFT "LSTK" M_ICON_LEFT
+#define M_NAME_L_ANALOG_UP "LSTK" M_ICON_UP
+#define M_NAME_L_ANALOG_RIGHT "LSTK" M_ICON_RIGHT
+#define M_NAME_L_ANALOG_DOWN "LSTK" M_ICON_DOWN
+#define M_NAME_R_ANALOG_LEFT "RSTK" M_ICON_LEFT
+#define M_NAME_R_ANALOG_UP "RSTK" M_ICON_UP
+#define M_NAME_R_ANALOG_RIGHT "RSTK" M_ICON_RIGHT
+#define M_NAME_R_ANALOG_DOWN "RSTK" M_ICON_DOWN
+#define M_NAME_L_TRIGGER "LTRIG"
+#define M_NAME_R_TRIGGER "RTRIG"
+#define M_NAME_ZL "ZL"
 
 #define M_NAME_ZR "ZR"
 #define M_NAME_BACK "BACK"
 
-#if TR_VERSION == 1
-    #define M_NAME_CAPTURE "CAPTURE"
-    #define M_NAME_CREATE "CREATE"
-#elif TR_VERSION == 2
-    #define M_NAME_CAPTURE "CAPTR"
-    #define M_NAME_CREATE "CREAT"
-#endif
+#define M_NAME_CAPTURE "CAPTR"
+#define M_NAME_CREATE "CREAT"
 
 #define M_NAME_HOME "HOME"
 #define M_NAME_XBOX "XBOX"
 #define M_NAME_START "START"
 #define M_NAME_SHARE "SHARE"
 
-#if TR_VERSION == 1
-    #define M_NAME_TOUCHPAD "TOUCHPAD"
-#elif TR_VERSION == 2
-    #define M_NAME_TOUCHPAD "TOUCH"
-#endif
+#define M_NAME_TOUCHPAD "TOUCH"
 
 #define M_NAME_L3 "L3"
 #define M_NAME_R3 "R3"
@@ -105,17 +82,10 @@ static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
 #define M_NAME_PADDLE_3 "PADDLE 3"
 #define M_NAME_PADDLE_4 "PADDLE 4"
 
-#if TR_VERSION == 1
-    #define M_NAME_L_STICK "L STICK"
-    #define M_NAME_R_STICK "R STICK"
-    #define M_NAME_L_BUMPER "L BUMPER"
-    #define M_NAME_R_BUMPER "R BUMPER"
-#elif TR_VERSION == 2
-    #define M_NAME_L_STICK "LSTIC"
-    #define M_NAME_R_STICK "RSTIC"
-    #define M_NAME_L_BUMPER "LBUMP"
-    #define M_NAME_R_BUMPER "RBUMP"
-#endif
+#define M_NAME_L_STICK "LSTK"
+#define M_NAME_R_STICK "RSTK"
+#define M_NAME_L_BUMPER "LBUMP"
+#define M_NAME_R_BUMPER "RBUMP"
 
 #define M_NAME_A "A"
 #define M_NAME_B "B"
