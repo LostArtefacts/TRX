@@ -500,7 +500,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 #### Input
 - added ability to sidestep like in TR3
 - added ability to hold arrows to move through menus more quickly
-- added ability to move camera around with W,A,S,D
+- added ability to move the camera around with W,A,S,D
 - added ability to unbind unessential keys
 - added ability to reset control schemes to default
 - added additional custom control schemes
