@@ -21,7 +21,7 @@ static void M_DownArrow(const UI_REQUESTER_STATE *s);
 
 static void M_UpArrow(const UI_REQUESTER_STATE *const s)
 {
-    UI_BeginHide(s->vis_row == 0);
+    UI_BeginHide(s->scroll.first_item == 0);
     UI_Spacer(0.0f, TR_VERSION == 2 ? 6.0f : 4.0f);
     UI_BeginAnchor(0.5f, 0.5f);
     UI_BeginFixed(0.5f, TR_VERSION == 2 ? 0.7f : 1.1f);
@@ -33,7 +33,8 @@ static void M_UpArrow(const UI_REQUESTER_STATE *const s)
 
 static void M_DownArrow(const UI_REQUESTER_STATE *const s)
 {
-    UI_BeginHide(s->vis_row + s->vis_rows >= s->max_rows);
+    UI_BeginHide(
+        s->scroll.first_item + s->scroll.vis_items >= s->scroll.max_items);
     UI_BeginAnchor(0.5f, 0.0f);
     UI_BeginFixed(0.5f, -0.3f);
     UI_LabelEx("\\{arrow down}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
@@ -47,10 +48,12 @@ void UI_Requester_Init(
     UI_REQUESTER_STATE *const s, const int32_t vis_rows, const int32_t max_rows,
     const bool is_selectable)
 {
-    s->vis_row = 0;
-    s->sel_row = 0;
-    s->vis_rows = vis_rows;
-    s->max_rows = max_rows;
+    s->scroll = (UI_SCROLLABLE) {
+        .first_item = 0,
+        .sel_item = 0,
+        .vis_items = vis_rows,
+        .max_items = max_rows,
+    };
     s->is_selectable = is_selectable;
     s->row_pad = 20.0f;
     s->row_spacing = 3.0f;
@@ -66,44 +69,24 @@ int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
 {
     if (s->is_selectable) {
         if (g_InputDB.menu_down) {
-            if (s->sel_row + 1 < s->max_rows) {
-                s->sel_row++;
-            } else if (g_Config.ui.enable_wraparound) {
-                s->sel_row = 0;
-            }
+            UI_Scrollable_SelectNext(&s->scroll, g_Config.ui.enable_wraparound);
         } else if (g_InputDB.menu_up) {
-            if (s->sel_row > 0) {
-                s->sel_row--;
-            } else if (g_Config.ui.enable_wraparound) {
-                s->sel_row = s->max_rows - 1;
-            }
+            UI_Scrollable_SelectPrev(&s->scroll, g_Config.ui.enable_wraparound);
         }
-        CLAMP(s->vis_row, s->sel_row - s->vis_rows + 1, s->sel_row);
     } else {
         if (g_InputDB.menu_down) {
-            if (s->vis_row + 1 <= s->max_rows - s->vis_rows) {
-                s->vis_row++;
-            } else if (g_Config.ui.enable_wraparound) {
-                s->vis_row = 0;
-            }
+            UI_Scrollable_ScrollDown(&s->scroll, g_Config.ui.enable_wraparound);
         } else if (g_InputDB.menu_up) {
-            if (s->vis_row > 0) {
-                s->vis_row--;
-            } else if (g_Config.ui.enable_wraparound) {
-                s->vis_row = s->max_rows - 1;
-            }
+            UI_Scrollable_ScrollUp(&s->scroll, g_Config.ui.enable_wraparound);
         }
     }
-
-    CLAMPG(s->vis_row, s->max_rows - s->vis_rows);
-    CLAMPL(s->vis_row, 0);
 
     if (s->is_selectable) {
         if (g_InputDB.menu_back) {
             return UI_REQUESTER_CANCEL;
         }
         if (g_InputDB.menu_confirm) {
-            return s->sel_row;
+            return s->scroll.sel_item;
         }
     }
     return UI_REQUESTER_NO_CHOICE;
@@ -111,33 +94,28 @@ int32_t UI_Requester_Control(UI_REQUESTER_STATE *const s)
 
 void UI_Requester_SetMaxRows(UI_REQUESTER_STATE *const s, const size_t max_rows)
 {
-    s->max_rows = max_rows;
+    UI_Scrollable_SetMaxItems(&s->scroll, max_rows);
 }
 
 void UI_Requester_SetVisibleRows(
     UI_REQUESTER_STATE *const s, const size_t visible_rows)
 {
-    s->vis_rows = visible_rows;
-    CLAMPL(s->vis_rows, 0);
-    if (s->sel_row != -1) {
-        CLAMP(s->vis_row, s->sel_row - s->vis_rows + 1, s->sel_row);
-    }
-    CLAMP(s->vis_row, 0, s->max_rows - s->vis_rows);
+    UI_Scrollable_SetVisibleItems(&s->scroll, visible_rows);
 }
 
 int32_t UI_Requester_GetFirstRow(const UI_REQUESTER_STATE *const s)
 {
-    return s->vis_row;
+    return UI_Scrollable_GetFirstVisibleItem(&s->scroll);
 }
 
 int32_t UI_Requester_GetLastRow(const UI_REQUESTER_STATE *const s)
 {
-    return MIN(s->vis_row + s->vis_rows, s->max_rows);
+    return UI_Scrollable_GetLastVisibleItem(&s->scroll) + 1;
 }
 
 int32_t UI_Requester_GetCurrentRow(const UI_REQUESTER_STATE *s)
 {
-    return s->sel_row;
+    return UI_Scrollable_GetSelectedItem(&s->scroll);
 }
 
 bool UI_Requester_IsRowVisible(
@@ -149,7 +127,12 @@ bool UI_Requester_IsRowVisible(
 bool UI_Requester_IsRowSelected(
     const UI_REQUESTER_STATE *const s, const int32_t i)
 {
-    return i == s->sel_row;
+    return i == UI_Scrollable_GetSelectedItem(&s->scroll);
+}
+
+void UI_Requester_SelectRow(UI_REQUESTER_STATE *const s, const int32_t i)
+{
+    UI_Scrollable_SelectItem(&s->scroll, i);
 }
 
 void UI_BeginRequester(
@@ -170,8 +153,8 @@ void UI_BeginRequester(
     if (s->reserve_space) {
         UI_BeginResize(
             -1.0f,
-            s->vis_rows * TEXT_HEIGHT_FIXED
-                + (s->vis_rows - 1) * s->row_spacing);
+            s->scroll.vis_items * TEXT_HEIGHT_FIXED
+                + (s->scroll.vis_items - 1) * s->row_spacing);
     }
 
     UI_BeginStackEx((UI_STACK_SETTINGS) {
