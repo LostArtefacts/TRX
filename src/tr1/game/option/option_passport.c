@@ -422,6 +422,17 @@ static void M_Restart(INVENTORY_ITEM *inv_item)
     }
 }
 
+static int32_t M_GetCurrentPage(const INVENTORY_ITEM *const inv_item)
+{
+    const int32_t frame = inv_item->goal_frame - inv_item->open_frame;
+    return frame % 5 == 0 ? frame / 5 : -1;
+}
+
+static bool M_IsFlipping(const INVENTORY_ITEM *const inv_item)
+{
+    return M_GetCurrentPage(inv_item) == -1;
+}
+
 static void M_FlipLeft(INVENTORY_ITEM *inv_item)
 {
     inv_item->anim_direction = -1;
@@ -524,15 +535,11 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
         return;
     }
 
-    const int32_t frame = inv_item->goal_frame - inv_item->open_frame;
-    const int32_t page = frame % 5 == 0 ? frame / 5 : -1;
-    const bool is_flipping = page == -1;
-    if (is_flipping) {
+    if (M_IsFlipping(inv_item)) {
         return;
     }
 
-    m_State.current_page = page;
-
+    m_State.current_page = M_GetCurrentPage(inv_item);
     if (m_State.current_page < m_State.active_page) {
         M_FlipRight(inv_item);
     } else if (m_State.current_page > m_State.active_page) {
@@ -560,7 +567,7 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     }
 }
 
-void Option_Passport_Draw(INVENTORY_ITEM *const item)
+void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
 {
     switch (m_State.mode) {
     case PASSPORT_MODE_NEW_GAME:

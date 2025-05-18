@@ -430,7 +430,7 @@ static void M_HandleFlipInputs(void)
     }
 }
 
-void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
+void Option_Passport_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     if (m_State.active_page == -1) {
         M_InitRequesters();
@@ -446,33 +446,33 @@ void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
 
     InvRing_RemoveAllText();
 
-    if (M_IsFlipping(item)) {
+    if (M_IsFlipping(inv_item)) {
         return;
     }
 
-    m_State.current_page = M_GetCurrentPage(item);
+    m_State.current_page = M_GetCurrentPage(inv_item);
     if (m_State.current_page < m_State.active_page) {
-        M_FlipRight(item);
+        M_FlipRight(inv_item);
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
     } else if (m_State.current_page > m_State.active_page) {
-        M_FlipLeft(item);
+        M_FlipLeft(inv_item);
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
     } else {
         m_State.is_ready = true;
         M_SyncArrowsVisibility();
-        M_ShowPage(item);
+        M_ShowPage(inv_item);
         if (g_InputDB.menu_confirm) {
             g_Inv_ExtraData[0] = m_State.active_page;
             g_Inv_ExtraData[1] = m_State.selection;
-            M_Close(item);
+            M_Close(inv_item);
         } else if (g_InputDB.menu_back) {
             if (g_Inv_Mode == INV_DEATH_MODE) {
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             } else {
-                M_Close(item);
+                M_Close(inv_item);
             }
         } else {
             M_HandleFlipInputs();
@@ -480,7 +480,7 @@ void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
     }
 }
 
-void Option_Passport_Draw(INVENTORY_ITEM *const item)
+void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
 {
     switch (m_State.pages[m_State.active_page].role) {
     case M_ROLE_NEW_GAME:

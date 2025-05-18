@@ -67,7 +67,7 @@ void Option_Controls_Shutdown(void)
     M_Shutdown(&m_Priv);
 }
 
-void Option_Controls_Control(INVENTORY_ITEM *const item, const bool is_busy)
+void Option_Controls_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     M_PRIV *const p = &m_Priv;
     if (is_busy) {
@@ -86,7 +86,7 @@ void Option_Controls_Control(INVENTORY_ITEM *const item, const bool is_busy)
     }
 }
 
-void Option_Controls_Draw(INVENTORY_ITEM *const item)
+void Option_Controls_Draw(INVENTORY_ITEM *const inv_item)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ui.is_ready) {

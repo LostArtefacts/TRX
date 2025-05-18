@@ -3,23 +3,23 @@
 #include "game/input.h"
 #include "global/vars.h"
 
-void Option_Control(INVENTORY_ITEM *const item, const bool is_busy)
+void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
-    switch (item->object_id) {
+    switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
-        Option_Passport_Control(item, is_busy);
+        Option_Passport_Control(inv_item, is_busy);
         break;
     case O_COMPASS_OPTION:
-        Option_Compass_Control(item, is_busy);
+        Option_Compass_Control(inv_item, is_busy);
         break;
     case O_DETAIL_OPTION:
-        Option_Detail_Control(item, is_busy);
+        Option_Detail_Control(inv_item, is_busy);
         break;
     case O_SOUND_OPTION:
-        Option_Sound_Control(item, is_busy);
+        Option_Sound_Control(inv_item, is_busy);
         break;
     case O_CONTROL_OPTION:
-        Option_Controls_Control(item, is_busy);
+        Option_Controls_Control(inv_item, is_busy);
         break;
     case O_GAMMA_OPTION:
         break;
@@ -59,30 +59,30 @@ void Option_Control(INVENTORY_ITEM *const item, const bool is_busy)
 
     default:
         if (!is_busy && (g_InputDB.menu_confirm || g_InputDB.menu_back)) {
-            item->goal_frame = 0;
-            item->anim_direction = -1;
+            inv_item->goal_frame = 0;
+            inv_item->anim_direction = -1;
         }
         break;
     }
 }
 
-void Option_Draw(INVENTORY_ITEM *const item)
+void Option_Draw(INVENTORY_ITEM *const inv_item)
 {
-    switch (item->object_id) {
+    switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
-        Option_Passport_Draw(item);
+        Option_Passport_Draw(inv_item);
         break;
     case O_COMPASS_OPTION:
         Option_Compass_Draw();
         break;
     case O_DETAIL_OPTION:
-        Option_Detail_Draw(item);
+        Option_Detail_Draw(inv_item);
         break;
     case O_SOUND_OPTION:
-        Option_Sound_Draw(item);
+        Option_Sound_Draw(inv_item);
         break;
     case O_CONTROL_OPTION:
-        Option_Controls_Draw(item);
+        Option_Controls_Draw(inv_item);
         break;
     case O_GAMMA_OPTION:
         break;
@@ -91,9 +91,9 @@ void Option_Draw(INVENTORY_ITEM *const item)
     }
 }
 
-void Option_Shutdown(INVENTORY_ITEM *const item)
+void Option_Shutdown(INVENTORY_ITEM *const inv_item)
 {
-    switch (item->object_id) {
+    switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport_Shutdown();
         break;
