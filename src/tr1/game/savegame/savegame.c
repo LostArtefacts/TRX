@@ -22,6 +22,10 @@ void Savegame_HighlightNewestSlot(void)
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 {
     RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+    if (current == nullptr) {
+        return;
+    }
+
     LOG_INFO("Applying game logic to level #%d", level->num);
 
     if (!g_Config.gameplay.disable_healing_between_levels
