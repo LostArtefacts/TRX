@@ -252,6 +252,7 @@ sources = [
   'game/ui/elements/requester.c',
   'game/ui/elements/resize.c',
   'game/ui/elements/spacer.c',
+  'game/ui/elements/span.c',
   'game/ui/elements/stack.c',
   'game/ui/elements/window.c',
   'game/ui/events.c',

@@ -32,6 +32,7 @@
 #include "./ui/elements/requester.h"
 #include "./ui/elements/resize.h"
 #include "./ui/elements/spacer.h"
+#include "./ui/elements/span.h"
 #include "./ui/elements/stack.h"
 #include "./ui/elements/window.h"
 #include "./ui/events.h"

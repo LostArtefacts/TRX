@@ -17,6 +17,7 @@ typedef struct {
     int32_t active_row;
     UI_FLASH_STATE flash;
     EVENT_MANAGER *events;
+    int32_t hold_timer;
 } UI_CONTROLS_EDITOR_STATE;
 
 typedef enum {

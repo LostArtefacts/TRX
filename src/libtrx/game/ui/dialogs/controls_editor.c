@@ -5,16 +5,24 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/shell.h"
+#include "game/sound.h"
+#include "game/text.h"
 #include "game/ui/elements/anchor.h"
+#include "game/ui/elements/bar.h"
 #include "game/ui/elements/frame.h"
+#include "game/ui/elements/hide.h"
 #include "game/ui/elements/label.h"
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/requester.h"
 #include "game/ui/elements/spacer.h"
+#include "game/ui/elements/span.h"
 #include "game/ui/elements/stack.h"
 #include "game/ui/elements/window.h"
 #include "utils.h"
+
+#define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
+#define M_HOLD_TIMER_MAX LOGIC_FPS
 
 typedef enum {
     M_PHASE_NAVIGATE_LAYOUT,
@@ -88,6 +96,7 @@ static const INPUT_ROLE *m_RightRoles = nullptr;
 static INPUT_ROLE M_GetInputRole(int32_t col, int32_t row);
 static int32_t M_GetInputRoleCount(int32_t col);
 static void M_CycleLayout(UI_CONTROLS_EDITOR_STATE *s, int32_t dir);
+static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(UI_CONTROLS_EDITOR_STATE *s);
@@ -98,6 +107,7 @@ static void M_Title(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_InputChoice(UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
 static void M_InputLabel(const UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
 static void M_Column(UI_CONTROLS_EDITOR_STATE *s, const INPUT_ROLE *roles);
+static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
 
 static INPUT_ROLE M_GetInputRole(const int32_t col, const int32_t row)
 {
@@ -131,8 +141,42 @@ static void M_CycleLayout(UI_CONTROLS_EDITOR_STATE *const s, const int32_t dir)
     EventManager_Fire(s->events, &event);
 }
 
+static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
+{
+#if TR_VERSION == 1
+    Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_NORMAL);
+#else
+    Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
+#endif
+    Input_ResetLayout(s->backend, s->active_layout);
+    Config_Write();
+}
+
+static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *const s)
+{
+    if (s->active_layout == INPUT_LAYOUT_DEFAULT) {
+        return;
+    }
+    const bool reset_layout = Input_IsPressed(
+        s->backend, s->active_layout, INPUT_ROLE_RESET_BINDINGS);
+    if (reset_layout) {
+        if (s->hold_timer != -1) {
+            s->hold_timer++;
+        }
+        if (s->hold_timer - M_HOLD_TIMER_DEBUFF > M_HOLD_TIMER_MAX) {
+            // Debounce the key so that it doesn't immediately start another
+            // cycle
+            M_ResetLayout(s);
+            s->hold_timer = -1;
+        }
+    } else {
+        s->hold_timer = 0;
+    }
+}
+
 static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
 {
+    M_CheckResetKeys(s);
     if (g_InputDB.menu_confirm) {
         return UI_CONTROLS_CHOICE_EXIT;
     } else if (g_InputDB.menu_back) {
@@ -158,6 +202,7 @@ static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
 
 static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
 {
+    M_CheckResetKeys(s);
     if (g_InputDB.menu_confirm) {
         s->phase = M_PHASE_NAVIGATE_INPUTS_DEBOUNCE;
     } else if (g_InputDB.menu_back) {
@@ -304,12 +349,43 @@ static void M_Column(
     UI_EndStack();
 }
 
+static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
+{
+    char buf1[60];
+    char buf2[80];
+    sprintf(
+        buf1, GS(MISC_HOLD_FMT),
+        Input_GetKeyName(
+            s->backend, s->active_layout, INPUT_ROLE_RESET_BINDINGS));
+    sprintf(buf2, "%s: %s", GS(ACTION_RESET_DEFAULTS), buf1);
+
+    const float pad[2] = { 6.0f, 3.0f };
+
+    UI_BeginHide(s->active_layout == INPUT_LAYOUT_DEFAULT);
+    UI_BeginSpan();
+    UI_BeginPad(pad[0], pad[1]);
+    UI_Label(buf2);
+    UI_EndPad();
+    if (s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
+        UI_Bar((UI_BAR_SETTINGS) {
+            .color = TR_VERSION == 2 ? BC_GREEN : BC_GOLD,
+            .value = s->hold_timer - M_HOLD_TIMER_DEBUFF,
+            .max_value = M_HOLD_TIMER_MAX,
+            .w = 0.0, // Span will make it expand anyway!
+            .h = 0.0,
+        });
+    }
+    UI_EndSpan();
+    UI_EndHide();
+}
+
 void UI_ControlsEditor_Init(
     UI_CONTROLS_EDITOR_STATE *const s, EVENT_MANAGER *events)
 {
     m_RightRoles = g_Config.gameplay.enable_cheats ? m_RightRoles_CheatsOn
                                                    : m_RightRoles_CheatsOff;
     s->events = events;
+    s->hold_timer = 0;
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
 }
 
@@ -350,7 +426,9 @@ UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
 
 void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
 {
-    UI_BeginModal(0.5f, 0.5f);
+    UI_BeginModal(0.5f, 0.55f);
+    UI_BeginStack(UI_STACK_VERTICAL);
+
     UI_BeginWindow();
     UI_WindowTitle(GS(CONTROLS_CUSTOMIZE));
     UI_BeginWindowBody();
@@ -371,5 +449,9 @@ void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
     UI_EndStack();
     UI_EndWindowBody();
     UI_EndWindow();
+
+    UI_Spacer(0.0f, 5.f);
+    M_Footer(s);
+    UI_EndStack();
     UI_EndModal();
 }

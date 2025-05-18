@@ -53,9 +53,6 @@ bool Input_IsRoleRebindable(INPUT_ROLE role);
 bool Input_IsKeyConflicted(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
 
-// Checks if the given key is being pressed. Works regardless of Input_Update.
-bool Input_CheckKeypress(INPUT_LAYOUT layout, INPUT_ROLE role);
-
 // Given the input layout and input key role, check if the assorted key is
 // pressed, bypassing Input_Update.
 bool Input_IsPressed(

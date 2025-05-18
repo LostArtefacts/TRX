@@ -39,9 +39,9 @@ static M_HOLD_CHECK m_HoldChecks[] = {
 
 static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
     0,
+    [INPUT_ROLE_RESET_BINDINGS] = 1,
 #if TR_VERSION == 1
     [INPUT_ROLE_UNBIND_KEY] = 1,
-    [INPUT_ROLE_RESET_BINDINGS] = 1,
     [INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER] = 1,
 #endif
     [INPUT_ROLE_MENU_CONFIRM] = 1,

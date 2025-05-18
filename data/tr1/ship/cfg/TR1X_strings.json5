@@ -342,6 +342,7 @@
 
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Examine",
+        "ACTION_RESET_DEFAULTS": "Reset All",
         "ACTION_USE_ITEM": "Use",
         "CONSOLE_CMD_HELP_LIST": "Available commands:",
         "CONSOLE_HELP_BRAID": "Toggles Lara's braid.",
@@ -456,6 +457,7 @@
         "MISC_DEMO_MODE": "Demo Mode",
         "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
         "MISC_EXIT": "Exit",
+        "MISC_HOLD_FMT": "Hold %s",
         "MISC_OFF": "Off",
         "MISC_ON": "On",
         "MISC_TOGGLE_HELP": "Toggle help",
