@@ -3,23 +3,33 @@
 // A controls remapper dialog.
 
 #include "../../../event_manager.h"
+#include "../../game_string.h"
 #include "../../input.h"
 #include "../common.h"
 #include "../elements/flash.h"
 #include "../elements/requester.h"
 
 typedef struct {
+    GAME_STRING_ID header;
+    INPUT_ROLE *roles;
+} UI_CONTROLS_EDITOR_GROUP;
+
+typedef struct {
     int32_t phase;
     INPUT_BACKEND backend;
     int32_t active_layout;
     INPUT_ROLE active_role;
-    int32_t active_col;
+    const UI_CONTROLS_EDITOR_GROUP *active_group;
     int32_t active_row;
     UI_FLASH_STATE flash;
     EVENT_MANAGER *events;
 
     INPUT_ROLE hold_role;
     int32_t hold_timer;
+
+    int32_t max_group_items;
+    int32_t input_size;
+    int32_t label_size;
 } UI_CONTROLS_EDITOR_STATE;
 
 typedef enum {
