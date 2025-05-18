@@ -31,7 +31,7 @@ static void M_Shutdown(M_PRIV *const p)
     }
 }
 
-void Option_Graphics_Control(INVENTORY_ITEM *const item, const bool is_busy)
+void Option_Graphics_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     M_PRIV *const p = &m_Priv;
     if (is_busy) {
@@ -43,7 +43,7 @@ void Option_Graphics_Control(INVENTORY_ITEM *const item, const bool is_busy)
     UI_GraphicSettings_Control(&p->ui.state);
 }
 
-void Option_Graphics_Draw(INVENTORY_ITEM *const item)
+void Option_Graphics_Draw(INVENTORY_ITEM *const inv_item)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ui.is_ready) {
