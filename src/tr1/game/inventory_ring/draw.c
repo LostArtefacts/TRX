@@ -110,8 +110,11 @@ void InvRing_Draw(INV_RING *const ring)
         ClockTimer_TakeElapsed(&ring->motion_timer) * LOGIC_FPS
         * INV_RING_FRAMES);
 
-    for (int32_t i = 0; i < ring->number_of_objects; i++) {
-        InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
+    if (ring->motion.status != RNG_OPENING && ring->motion.status != RNG_DONE
+        && ring->motion.status != RNG_FADING_OUT) {
+        for (int32_t i = 0; i < ring->number_of_objects; i++) {
+            InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
+        }
     }
 
     ring->camera.pos.z = ring->radius + M_CAMERA_2_RING;
