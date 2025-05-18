@@ -10,7 +10,6 @@ void Overlay_Control(void);
 void Overlay_Draw(void);
 
 extern void Overlay_HideGameInfo(void);
-extern void Overlay_DrawModeInfo(void);
 
 void Overlay_ForceHealthBar(bool show);
 void Overlay_SetHealthBarTimer(int16_t health_bar_timer);

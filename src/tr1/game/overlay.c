@@ -458,7 +458,3 @@ void Overlay_AddPickup(const GAME_OBJECT_ID obj_id)
         }
     }
 }
-
-void Overlay_DrawModeInfo(void)
-{
-}

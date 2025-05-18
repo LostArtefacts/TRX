@@ -57,7 +57,6 @@ static void M_Draw(PHASE *const phase)
     ASSERT(p->ring != nullptr);
     Output_DrawBackground();
     InvRing_Draw(p->ring);
-    Overlay_DrawModeInfo();
     Text_Draw();
     Output_DrawPolyList();
 }
