@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/game_string.h"
 #include "game/input.h"
+#include "game/scaler.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
@@ -20,6 +21,7 @@
 #include "game/ui/elements/span.h"
 #include "game/ui/elements/stack.h"
 #include "game/ui/elements/window.h"
+#include "game/viewport.h"
 #include "utils.h"
 
 #define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
@@ -132,6 +134,8 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 };
 
+static int32_t M_GetVisibleRows(void);
+
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *group, int32_t row);
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *group);
@@ -159,6 +163,37 @@ static void M_FooterButton(
 static void M_Group(
     UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_GROUP *group);
 static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
+
+#include "log.h"
+static int32_t M_GetVisibleRows(void)
+{
+    const int32_t res_h =
+        Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+    LOG_INFO("%d", res_h);
+    if (res_h <= 240) {
+        return 5;
+    } else if (res_h <= 252) {
+        return 6;
+    } else if (res_h <= 266) {
+        return 7;
+    } else if (res_h <= 282) {
+        return 8;
+    } else if (res_h <= 300) {
+        return 9;
+    } else if (res_h <= 320) {
+        return 10;
+    } else if (res_h <= 342) {
+        return 11;
+    } else if (res_h <= 370) {
+        return 12;
+    } else if (res_h <= 420) {
+        return 13;
+    } else if (res_h <= 480) {
+        return 15;
+    } else {
+        return 16;
+    }
+}
 
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t row)
@@ -206,7 +241,7 @@ static void M_CycleGroup(UI_CONTROLS_EDITOR_STATE *const s, const int32_t dir)
             s->active_group++;
         }
     }
-    CLAMP(s->active_row, 0, M_GetInputRoleCount(s->active_group) - 1);
+    UI_Scrollable_SetMaxItems(&s->scroll, M_GetInputRoleCount(s->active_group));
 }
 
 static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
@@ -279,11 +314,12 @@ static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
         s->phase = M_PHASE_NAVIGATE_GROUP;
     } else if (g_InputDB.menu_up && s->active_layout != 0) {
         s->phase = M_PHASE_NAVIGATE_INPUTS;
-        s->active_row = M_GetInputRoleCount(s->active_group) - 1;
+        UI_Scrollable_SelectLastItem(&s->scroll);
+        s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
     } else {
         return UI_CONTROLS_CHOICE_NOOP;
     }
-    s->active_role = M_GetInputRole(s->active_group, s->active_row);
+    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
     return UI_CONTROLS_CHOICE_NOOP;
 }
 
@@ -300,8 +336,8 @@ static UI_CONTROLS_CHOICE M_NavigateGroup(UI_CONTROLS_EDITOR_STATE *const s)
         M_CycleGroup(s, 1);
     } else if (g_InputDB.menu_down && s->active_layout != 0) {
         s->phase = M_PHASE_NAVIGATE_INPUTS;
-        s->active_row = 0;
-        s->active_role = M_GetInputRole(s->active_group, s->active_row);
+        UI_Scrollable_SelectFirstItem(&s->scroll);
+        s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
     } else if (g_InputDB.menu_up) {
         s->phase = M_PHASE_NAVIGATE_LAYOUT;
     }
@@ -320,19 +356,17 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
     } else if (g_InputDB.menu_right) {
         M_CycleGroup(s, 1);
     } else if (g_InputDB.menu_up) {
-        s->active_row--;
-        if (s->active_row < 0) {
+        if (!UI_Scrollable_SelectPrev(&s->scroll, false)) {
             s->phase = M_PHASE_NAVIGATE_GROUP;
         }
     } else if (g_InputDB.menu_down) {
-        s->active_row++;
-        if (s->active_row >= M_GetInputRoleCount(s->active_group)) {
+        if (!UI_Scrollable_SelectNext(&s->scroll, false)) {
             s->phase = M_PHASE_NAVIGATE_LAYOUT;
         }
     } else {
         return UI_CONTROLS_CHOICE_NOOP;
     }
-    s->active_role = M_GetInputRole(s->active_group, s->active_row);
+    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
     return UI_CONTROLS_CHOICE_NOOP;
 }
 
@@ -492,27 +526,28 @@ static void M_Group(
     UI_CONTROLS_EDITOR_STATE *const s,
     const UI_CONTROLS_EDITOR_GROUP *const group)
 {
-    UI_BeginResize(-1.0, TEXT_HEIGHT_FIXED * s->max_group_items);
-    UI_BeginAnchor(0.0f, 0.0f);
     UI_BeginStack(UI_STACK_VERTICAL);
-    for (int32_t row = 0; group->roles[row] != (INPUT_ROLE)-1; row++) {
-        const INPUT_ROLE role = group->roles[row];
-        UI_BeginStack(UI_STACK_HORIZONTAL);
-        UI_BeginResize(s->input_size, -1.0f);
-        UI_BeginAnchor(0.0f, 0.5f);
-        M_InputChoice(s, role);
-        UI_EndAnchor();
-        UI_EndResize();
-        UI_BeginResize(s->label_size, -1.0f);
-        UI_BeginAnchor(0.0f, 0.5f);
-        M_InputLabel(s, role);
-        UI_EndAnchor();
-        UI_EndResize();
-        UI_EndStack();
+    for (int32_t i = 0; i < s->scroll.vis_items; i++) {
+        const int32_t row = s->scroll.first_item + i;
+        if (row >= s->scroll.max_items) {
+            UI_Spacer(0.0f, TEXT_HEIGHT_FIXED);
+        } else {
+            const INPUT_ROLE role = group->roles[row];
+            UI_BeginStack(UI_STACK_HORIZONTAL);
+            UI_BeginResize(s->input_size, -1.0f);
+            UI_BeginAnchor(0.0f, 0.5f);
+            M_InputChoice(s, role);
+            UI_EndAnchor();
+            UI_EndResize();
+            UI_BeginResize(s->label_size, -1.0f);
+            UI_BeginAnchor(0.0f, 0.5f);
+            M_InputLabel(s, role);
+            UI_EndAnchor();
+            UI_EndResize();
+            UI_EndStack();
+        }
     }
     UI_EndStack();
-    UI_EndAnchor();
-    UI_EndResize();
 }
 
 static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
@@ -520,6 +555,7 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+        .spacing = { .h = 40.0f },
     });
     UI_BeginHide(s->active_layout == INPUT_LAYOUT_DEFAULT);
     M_FooterButton(s, INPUT_ROLE_RESET_BINDINGS, GS(ACTION_RESET_DEFAULTS));
@@ -541,14 +577,20 @@ void UI_ControlsEditor_Init(
     s->hold_timer = 0;
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
 
+    s->active_group = &m_Groups[0];
+    s->scroll.first_item = 0;
+    s->scroll.sel_item = -1;
+    s->scroll.vis_items = M_GetVisibleRows();
+    s->scroll.max_items = M_GetInputRoleCount(s->active_group);
+
     s->label_size = 0.0f;
     for (int32_t i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
         float w;
         UI_Label_Measure(Input_GetRoleName(i), &w, nullptr);
-        s->label_size = MAX(s->label_size, w);
+        s->label_size = MAX(s->label_size, w / g_Config.ui.text_scale);
     }
-    s->input_size = s->label_size / 2;
-    s->active_group = &m_Groups[0];
+    s->input_size = 80;
+
     s->max_group_items = 0;
     for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
          group->header != nullptr; group++) {
@@ -567,8 +609,8 @@ void UI_ControlsEditor_Reinit(
 {
     s->backend = backend;
     s->active_layout = layout;
-    s->active_row = 0;
-    s->active_role = M_GetInputRole(s->active_group, s->active_row);
+    s->scroll.sel_item = 0;
+    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
     s->phase = M_PHASE_NAVIGATE_LAYOUT;
 }
 
