@@ -3,15 +3,12 @@
 #include "game/input.h"
 #include "game/option/option_compass.h"
 #include "game/option/option_controls.h"
-#include "game/option/option_controls_pick.h"
 #include "game/option/option_examine.h"
 #include "game/option/option_graphics.h"
 #include "game/option/option_passport.h"
 #include "game/option/option_sound.h"
 #include "global/types.h"
 #include "global/vars.h"
-
-static CONTROL_MODE m_ControlMode = CM_PICK;
 
 void Option_Shutdown(INVENTORY_ITEM *inv_item)
 {
@@ -33,11 +30,7 @@ void Option_Shutdown(INVENTORY_ITEM *inv_item)
         break;
 
     case O_CONTROL_OPTION:
-        if (m_ControlMode == CM_PICK) {
-            Option_ControlsPick_Shutdown();
-        } else {
-            Option_Control_Shutdown();
-        }
+        Option_Controls_Shutdown();
         break;
 
     case O_PICKUP_OPTION_1:
@@ -80,19 +73,7 @@ void Option_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
         break;
 
     case O_CONTROL_OPTION:
-        switch (m_ControlMode) {
-        case CM_PICK:
-            m_ControlMode = Option_ControlsPick_Control(is_busy);
-            break;
-        case CM_KEYBOARD:
-            m_ControlMode = Option_Controls_Control(
-                inv_item, is_busy, INPUT_BACKEND_KEYBOARD);
-            break;
-        case CM_CONTROLLER:
-            m_ControlMode = Option_Controls_Control(
-                inv_item, is_busy, INPUT_BACKEND_CONTROLLER);
-            break;
-        }
+        Option_Controls_Control(inv_item, is_busy);
         break;
 
     case O_GAMMA_OPTION:
@@ -157,16 +138,7 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         break;
 
     case O_CONTROL_OPTION:
-        switch (m_ControlMode) {
-        case CM_KEYBOARD:
-            Option_Controls_Draw(inv_item, INPUT_BACKEND_KEYBOARD);
-            break;
-        case CM_CONTROLLER:
-            Option_Controls_Draw(inv_item, INPUT_BACKEND_CONTROLLER);
-            break;
-        default:
-            break;
-        }
+        Option_Controls_Draw(inv_item);
         break;
 
     case O_COMPASS_OPTION:

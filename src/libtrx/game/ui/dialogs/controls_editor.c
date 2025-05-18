@@ -85,6 +85,9 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .header = GS_ID(CONTROLS_SECTION_MISC),
         .roles =
             (INPUT_ROLE[]) {
+#if TR_VERSION == 1
+                INPUT_ROLE_CHANGE_TARGET,
+#endif
                 INPUT_ROLE_CAMERA_UP,
                 INPUT_ROLE_CAMERA_DOWN,
                 INPUT_ROLE_CAMERA_LEFT,
@@ -164,12 +167,10 @@ static void M_Group(
     UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_GROUP *group);
 static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
 
-#include "log.h"
 static int32_t M_GetVisibleRows(void)
 {
     const int32_t res_h =
         Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
-    LOG_INFO("%d", res_h);
     if (res_h <= 240) {
         return 5;
     } else if (res_h <= 252) {
@@ -287,7 +288,7 @@ static bool M_HandleHoldAction(
 static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *const s)
 {
     bool held = false;
-    if (s->active_layout != INPUT_LAYOUT_DEFAULT) {
+    if (!Input_IsInListenMode() && s->active_layout != INPUT_LAYOUT_DEFAULT) {
         held |= M_HandleHoldAction(s, INPUT_ROLE_RESET_BINDINGS, M_ResetLayout);
         if (s->active_role == (INPUT_ROLE)-1
             || Input_IsRoleUnbindable(s->active_role)) {
@@ -557,12 +558,13 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         .spacing = { .h = 40.0f },
     });
-    UI_BeginHide(s->active_layout == INPUT_LAYOUT_DEFAULT);
+    UI_BeginHide(
+        Input_IsInListenMode() || s->active_layout == INPUT_LAYOUT_DEFAULT);
     M_FooterButton(s, INPUT_ROLE_RESET_BINDINGS, GS(ACTION_RESET_DEFAULTS));
     UI_EndHide();
 
     UI_BeginHide(
-        s->active_layout == INPUT_LAYOUT_DEFAULT
+        Input_IsInListenMode() || s->active_layout == INPUT_LAYOUT_DEFAULT
         || s->active_role == (INPUT_ROLE)-1
         || !Input_IsRoleUnbindable(s->active_role));
     M_FooterButton(s, INPUT_ROLE_UNBIND_KEY, GS(ACTION_UNBIND));
@@ -577,10 +579,17 @@ void UI_ControlsEditor_Init(
     s->hold_timer = 0;
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
 
+    s->max_group_items = 0;
+    for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
+         group->header != nullptr; group++) {
+        s->max_group_items =
+            MAX(s->max_group_items, M_GetInputRoleCount(group));
+    }
+
     s->active_group = &m_Groups[0];
     s->scroll.first_item = 0;
     s->scroll.sel_item = -1;
-    s->scroll.vis_items = M_GetVisibleRows();
+    s->scroll.vis_items = MIN(s->max_group_items, M_GetVisibleRows());
     s->scroll.max_items = M_GetInputRoleCount(s->active_group);
 
     s->label_size = 0.0f;
@@ -590,13 +599,6 @@ void UI_ControlsEditor_Init(
         s->label_size = MAX(s->label_size, w / g_Config.ui.text_scale);
     }
     s->input_size = 80;
-
-    s->max_group_items = 0;
-    for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
-         group->header != nullptr; group++) {
-        s->max_group_items =
-            MAX(s->max_group_items, M_GetInputRoleCount(group));
-    }
 }
 
 void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *const s)

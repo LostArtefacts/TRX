@@ -180,7 +180,7 @@ void Shell_ProcessEvents(void)
             // some keypresses if the player types really fast, so we need to
             // react sooner.
             if (!FMV_IsPlaying() && g_Config.gameplay.enable_console
-                && !Console_IsOpened() && !Option_Controls_IsKeyChangeMode()
+                && !Console_IsOpened() && !Input_IsInListenMode()
                 && Input_IsPressed(
                     INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
                     INPUT_ROLE_ENTER_CONSOLE)) {
