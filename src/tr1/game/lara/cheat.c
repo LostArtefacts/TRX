@@ -222,6 +222,7 @@ bool Lara_Cheat_GiveAllKeys(void)
     Inv_AddItem(O_KEY_ITEM_4);
     Inv_AddItem(O_PICKUP_ITEM_1);
     Inv_AddItem(O_PICKUP_ITEM_2);
+    Inv_AddItem(O_LEADBAR_ITEM);
 
     Sound_Effect(SFX_LARA_KEY, nullptr, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
@@ -308,6 +309,9 @@ bool Lara_Cheat_GiveAllItems(void)
     }
     if (!Inv_RequestItem(O_PICKUP_ITEM_2)) {
         Inv_AddItem(O_PICKUP_ITEM_2);
+    }
+    if (!Inv_RequestItem(O_LEADBAR_ITEM)) {
+        Inv_AddItem(O_LEADBAR_ITEM);
     }
 
     Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
