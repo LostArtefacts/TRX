@@ -51,7 +51,7 @@
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)
 - fixed Lara voiding if she stops on a tile with a closing door, and the door isn't on a portal (#2848)
 - fixed guns carried by enemies not being converted to ammo if Lara has picked up the same gun elsewhere in the same level (#2856)
-- fixed button mashing triggering load instead of save on a specific passport animation frame (#2863, regression from 1.0)
+- fixed button mashing causing quick save/load to misbehave on a specific passport animation frame  (#2863, regression from 1.0)
 - fixed guns carried by enemies not being converted to ammo if Lara starts the level with the gun and the game has later been reloaded (#2850, regression from 1.0)
 - fixed 1920x1080 screenshots in 16:9 aspect mode being saved as 1919x1080 (#2845, regression from 0.8)
 - fixed clicks in audio sounds (#2846, regression from 0.2)

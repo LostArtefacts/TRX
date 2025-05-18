@@ -542,8 +542,12 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     m_State.current_page = M_GetCurrentPage(inv_item);
     if (m_State.current_page < m_State.active_page) {
         M_FlipRight(inv_item);
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
     } else if (m_State.current_page > m_State.active_page) {
         M_FlipLeft(inv_item);
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
     } else {
         m_State.is_ready = true;
         M_SyncArrowsVisibility();
