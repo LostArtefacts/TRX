@@ -40,10 +40,7 @@ static M_HOLD_CHECK m_HoldChecks[] = {
 static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     [INPUT_ROLE_RESET_BINDINGS]           = true,
-#if TR_VERSION == 1
     [INPUT_ROLE_UNBIND_KEY]               = true,
-    [INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER]  = true,
-#endif
     [INPUT_ROLE_MENU_CONFIRM]             = true,
     [INPUT_ROLE_MENU_BACK]                = true,
     [INPUT_ROLE_MENU_LEFT]                = true,
