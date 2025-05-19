@@ -75,6 +75,7 @@ RUN apt-get install -y \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     libpulse-dev \
+    libasound2-dev \
     libxkbcommon-dev \
     libwayland-client0 \
     libwayland-cursor0 \
