@@ -177,6 +177,7 @@ However, you can easily download them manually from these urls:
 - added an FPS counter
 - added an option to toggle in-game UI, such as healthbars and ammo text
 - improved support for windowed mode
+- improved passport animations
 
 #### Gameplay
 - added an option to fix M16 accuracy while running

@@ -395,6 +395,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added a wireframe mode
 - added an option to toggle in-game UI, such as healthbars and ammo text
 - improved support for windowed mode
+- improved passport animations
 
 #### Gameplay
 - added ability to select weapons / using items with numeric keys

@@ -39,13 +39,14 @@
 - fixed incorrect camera shifts when some fixed cameras return to normal view (#2971, regression from 0.10)
 - fixed blood not spawning when Lara is run down by boulders/barrels (#2982, regression from 0.7)
 - fixed floors being lowered too much under pushable blocks that are killed in the same trigger that flips the map (#3007, regression from 0.9)
+- fixed inventory ring items not being animated when the ring is rotating (#2964, regression from 0.9)
+- fixed passport faces partially invisible
 - improved the `/set` console command to display available options if given an unknown argument
 - improved handling of items that are dropped by enemies (#2952)
     - added the ability for any enemy type to drop items, excluding eels
     - fixed items dropped by flying creatures not falling to the ground
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
 - removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise (#2950)
-- fixed inventory ring items not being animated when the ring is rotating (#2964, regression from 0.9)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)

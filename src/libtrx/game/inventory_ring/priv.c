@@ -364,7 +364,6 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
             int32_t frame;
             uint32_t meshes;
         } frame_map[] = {
-#if TR_VERSION == 1
             { 14, PASS_MESH_IN_FRONT | PASS_MESH_PAGE_1 },
             { 18, PASS_MESH_IN_FRONT | PASS_MESH_PAGE_1 | PASS_MESH_PAGE_2 },
             { 19, PASS_MESH_PAGE_1 | PASS_MESH_PAGE_2 },
@@ -372,16 +371,6 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
             { 28, PASS_MESH_PAGE_2 | PASS_MESH_IN_BACK },
             { 29, 0 },
             { -1, -1 }, // sentinel
-#elif TR_VERSION == 2
-            { 3, PASS_MESH_IN_FRONT },
-            { 16, PASS_MESH_IN_FRONT | PASS_MESH_PAGE_1 },
-            { 18, PASS_MESH_IN_FRONT | PASS_MESH_PAGE_1 | PASS_MESH_PAGE_2 },
-            { 19, PASS_MESH_PAGE_1 | PASS_MESH_PAGE_2 },
-            { 23, PASS_MESH_IN_BACK | PASS_MESH_PAGE_1 | PASS_MESH_PAGE_2 },
-            { 28, PASS_MESH_IN_BACK | PASS_MESH_PAGE_2 },
-            { 29, 0 },
-            { -1, -1 }, // sentinel
-#endif
         };
 
         for (int32_t i = 0; frame_map[i].frame != -1; i++) {
