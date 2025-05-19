@@ -229,6 +229,9 @@ static void M_InitSaveRequester(const M_PAGE_ROLE role)
     if (save_slot == -1) {
         save_slot = Savegame_GetMostRecentlyCreatedSlot();
     }
+    if (save_slot == -1) {
+        save_slot = 0;
+    }
 
     const UI_SAVE_SLOT_DIALOG_TYPE dialog_type = role == M_ROLE_LOAD_GAME
         ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
