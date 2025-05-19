@@ -19,6 +19,7 @@
 - changed the installer to always allow downloading music files (#2891)
 - changed the dev console to no longer add duplicate entries to the history
 - changed the health bar and the air bar sizes to be slightly bigger
+- changed the pause screen to have a darker black overlay transparency (#2252)
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
 - fixed glide cameras using a default speed rather than maintaining the values set in the level file (#2962)
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
