@@ -346,6 +346,7 @@ void Level_Unload(void)
 {
     Lara_InitialiseLoad(NO_ITEM);
     Output_ObserveLevelUnload();
+    Item_ShutdownWalkables();
 }
 
 bool Level_Initialise(

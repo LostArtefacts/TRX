@@ -6,3 +6,9 @@ void MovableBlock_Initialise(int16_t item_num);
 void MovableBlock_UpdateRotation(ITEM *item, int16_t rot_y);
 void MovableBlock_SetupFloor(void);
 void MovableBlock_HandleFlipMap(ROOM_FLIP_STATUS flip_status);
+void MovableBlock_SetPushPull(ITEM *item, bool enable);
+bool MovableBlock_IsPushPull(const ITEM *item);
+void MovableBlock_SetGravityFrames(ITEM *item, uint8_t frames);
+uint8_t MovableBlock_GetGravityFrames(const ITEM *item);
+void MovableBlock_ActivateStack(
+    const ITEM *base_item, int32_t x, int32_t y, int32_t z);

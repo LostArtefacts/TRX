@@ -7,6 +7,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/game_string_manager.h"
+#include "game/items.h"
 #include "game/lara/pose.h"
 #include "game/lua.h"
 #include "game/music.h"
@@ -92,6 +93,7 @@ void Shell_CommonInit(void)
 void Shell_ShutdownCommonModules(void)
 {
     Lara_Pose_Shutdown();
+    Item_ShutdownWalkables();
 
     Console_Shutdown();
     Savegame_Shutdown();

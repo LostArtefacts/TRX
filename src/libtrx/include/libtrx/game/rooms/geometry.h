@@ -28,4 +28,10 @@ void Room_AlterFloorHeight(const ITEM *item, int32_t height);
 int32_t Room_FindGridShift(int32_t src, int32_t dst);
 
 bool Room_IsOnWalkable(
+    const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height,
+    int16_t ignore_item_num);
+bool Room_IsOnTriggeredWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
+int16_t Room_GetHeightIgnore(
+    const SECTOR *sector, int32_t x, int32_t y, int32_t z, bool fix_tilts,
+    int16_t ignore_item_num);

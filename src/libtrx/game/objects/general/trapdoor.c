@@ -1,11 +1,15 @@
 #include "game/const.h"
 #include "game/objects.h"
+#include "game/objects/traps/movable_block.h"
+#include "log.h"
 
 typedef enum {
     TRAPDOOR_STATE_CLOSED,
     TRAPDOOR_STATE_OPEN,
 } TRAPDOOR_STATE;
 
+// static void M_Initialise(const int16_t item_num);
+// static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
@@ -14,17 +18,49 @@ static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
 
+// static void M_Initialise(const int16_t item_num)
+// {
+//     ITEM *const item = Item_Get(item_num);
+//     if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
+//         Item_RemoveWalkable(item_num);
+//         LOG_DEBUG("INIT TRAPDOOR OPEN");
+//     }
+// }
+
+// static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+// {
+//     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+//         const int16_t item_num = Item_GetIndex(item);
+//         if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
+//             Item_RemoveWalkable(item_num);
+//             LOG_DEBUG("LOAD TRAPDOOR OPEN");
+//         }
+//     }
+// }
+
 static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
+
+    if (item->pos.y != -4992) {
+        return height;
+    }
+    LOG_DEBUG(
+        "item xyz: %d %d %d; test xyz: %d %d %d; height: %d", item->pos.x,
+        item->pos.y, item->pos.z, x, y, z, height);
+
     if (!M_IsItemOnTop(item, x, z)) {
+        // LOG_DEBUG("not on top");
         return height;
     } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+        // LOG_DEBUG("not closed");
         return height;
     } else if (y > item->pos.y || item->pos.y > height) {
+        // LOG_DEBUG("either or");
         return height;
     } else {
+        // LOG_DEBUG("ON TRAPDOOR");
         return item->pos.y;
     }
 }
@@ -90,6 +126,8 @@ static bool M_IsItemOnTop(
 
 static void M_Setup(OBJECT *const obj)
 {
+    // obj->initialise_func = M_Initialise;
+    // obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
@@ -103,10 +141,20 @@ static void M_Control(const int16_t item_num)
     if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == TRAPDOOR_STATE_CLOSED) {
             item->goal_anim_state = TRAPDOOR_STATE_OPEN;
+            // TODO Needed? Floor height functions should take care?
+            // Item_RemoveWalkable(item_num);
+            // Item_SortWalkables();
+            MovableBlock_ActivateStack(
+                item, item->pos.x, item->pos.y, item->pos.z);
         }
     } else {
         if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
             item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
+            // TODO Needed? Floor height functions should take care?
+            // Item_AddWalkable(item_num);
+            // Item_SortWalkables();
+            MovableBlock_ActivateStack(
+                item, item->pos.x, item->pos.y, item->pos.z);
         }
     }
     Item_Animate(item);

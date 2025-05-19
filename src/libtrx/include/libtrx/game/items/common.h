@@ -31,3 +31,11 @@ void Item_UpdateRoom(int16_t item_num, int16_t room_num);
 int32_t Item_GlobalReplace(
     GAME_OBJECT_ID src_obj_id, GAME_OBJECT_ID dst_obj_id);
 bool Item_IsTriggerActive(ITEM *item);
+
+void Item_InitialiseWalkables(void);
+void Item_AddWalkable(int16_t item_num);
+void Item_RemoveWalkable(int16_t item_num);
+int16_t Item_GetWalkableNum(int32_t index);
+int32_t Item_GetWalkableCount(void);
+void Item_SortWalkables(void);
+void Item_ShutdownWalkables(void);

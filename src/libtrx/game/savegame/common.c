@@ -145,6 +145,7 @@ static void M_LoadPostprocess(void)
     }
 
     MovableBlock_SetupFloor();
+    Item_SortWalkables();
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
 #if TR_VERSION == 1

@@ -77,6 +77,34 @@ const GAME_OBJECT_ID g_BossObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_WalkableObjects[] = {
+    // clang-format off
+    O_DRAWBRIDGE,
+    O_MOVABLE_BLOCK_1,
+    O_MOVABLE_BLOCK_2,
+    O_MOVABLE_BLOCK_3,
+    O_MOVABLE_BLOCK_4,
+    O_SLIDING_PILLAR,
+    O_TRAPDOOR_TYPE_1,
+    O_TRAPDOOR_TYPE_2,
+    O_TRAPDOOR_TYPE_3,
+    O_BRIDGE_FLAT,
+    O_BRIDGE_TILT_1,
+    O_BRIDGE_TILT_2,
+    NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_MovableBlockObjects[] = {
+    // clang-format off
+    O_MOVABLE_BLOCK_1,
+    O_MOVABLE_BLOCK_2,
+    O_MOVABLE_BLOCK_3,
+    O_MOVABLE_BLOCK_4,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
     O_STATUE,

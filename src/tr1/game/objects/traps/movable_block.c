@@ -14,6 +14,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/log.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19
@@ -36,6 +37,11 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
 static bool M_TestDestination(ITEM *item, int32_t block_height);
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
@@ -51,6 +57,131 @@ static void M_Draw(const ITEM *item);
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MovableBlock_Bounds;
+}
+
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, int32_t x, int32_t y, int32_t z, int16_t height)
+{
+    if (item->status == IS_INVISIBLE) {
+        return height;
+    }
+
+    // TODO Makes camera and shadow behave like OG during push/pull.
+    // Still on top of block at end of a pull like OG.
+    if (MovableBlock_IsPushPull(item)) {
+        return height;
+    }
+
+    // Only care if we are inside the block footprint.
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    }
+
+    // If inside the block.
+    if (y <= item->pos.y && y > item->pos.y - WALL_L) {
+        return item->pos.y - WALL_L;
+    }
+
+    // If under the bottom of the block.
+    if (y > item->pos.y) {
+        return height;
+    }
+
+    // If the the top of the block is under the floor height.
+    if (item->pos.y - WALL_L >= height) {
+        return height;
+    }
+
+    // LOG_DEBUG(
+    //     "Raise floor for block. block xyz: %d %d %d; height: %d; xyz: "
+    //     "%d %d %d",
+    //     item->pos.x, item->pos.y, item->pos.z, height, x, y, z);
+
+    return item->pos.y - WALL_L;
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height)
+{
+    if (item->status == IS_INVISIBLE) {
+        return height;
+    }
+
+    // TODO Makes camera and shadow behave like OG during push/pull.
+    if (MovableBlock_IsPushPull(item)) {
+        return height;
+    }
+
+    // Only care if we are inside the block footprint.
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    }
+
+    // If inside the block.
+    if (y <= item->pos.y && y > item->pos.y - WALL_L) {
+        // return item->pos.y - WALL_L;
+        return height;
+    }
+
+    // If above the top of the block.
+    if (y <= item->pos.y - WALL_L) {
+        return height;
+    }
+
+    // If the the bottom of the block is above the ceiling height.
+    if (item->pos.y <= height) {
+        return height;
+    }
+
+    // LOG_DEBUG(
+    //     "Raise ceiling for block. block xyz: %d %d %d; height: %d; xyz: "
+    //     "%d %d %d",
+    //     item->pos.x, item->pos.y, item->pos.z, height, x, y, z);
+
+    return item->pos.y;
+}
+
+static bool M_IsItemOnTop(
+    const ITEM *const item, const int32_t x, const int32_t z)
+{
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    if (bounds == nullptr) {
+        return false;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    // Creature setups run before Lara is initialized.
+    if (lara_item == nullptr) {
+        return false;
+    }
+
+    int32_t dx = x - item->pos.x;
+    int32_t dz = z - item->pos.z;
+
+    DIRECTION quadrant = ((uint16_t)lara_item->rot.y + DEG_45) / DEG_90;
+    switch (quadrant) {
+    case DIR_NORTH:
+        dx = -dx;
+        dz = -dz;
+        break;
+    case DIR_EAST:
+        int32_t t1 = dx;
+        dx = dz;
+        dz = -t1;
+        break;
+    case DIR_SOUTH:
+        break;
+    case DIR_WEST:
+        int32_t t2 = dx;
+        dx = -dz;
+        dz = t2;
+        break;
+    default:
+        break;
+    }
+
+    return dx >= bounds->min.x && dx <= bounds->max.x && dz >= bounds->min.z
+        && dz <= bounds->max.z;
 }
 
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
@@ -86,12 +217,15 @@ static bool M_TestDestination(ITEM *item, int32_t block_height)
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    // Check if there is a wall above.
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
         == NO_HEIGHT) {
         return true;
     }
 
-    if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
+    // Make sure floor above block has nothing on it.
+    if (Room_GetHeight(
+            sector, item->pos.x, item->pos.y - block_height, item->pos.z)
         != item->pos.y - block_height) {
         return false;
     }
@@ -149,6 +283,7 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
 
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
+    // Make sure current sector is safe.
     if (!M_TestDestination(item, block_height)) {
         return false;
     }
@@ -172,12 +307,15 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
         break;
     }
 
+    // Check sector block will be pulled to.
     int32_t x = item->pos.x + x_add;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z + z_add;
 
     int16_t room_num = item->room_num;
+
     const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -273,6 +411,8 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = MovableBlock_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->draw_func = M_Draw;
     obj->collision_func = M_Collision;
     obj->save_position = true;
@@ -285,12 +425,17 @@ static void M_Setup(OBJECT *const obj)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->flags & IF_KILLED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveWalkable(item_num);
+        }
         if (item->status == IS_ACTIVE && !item->gravity
             && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
             Item_RemoveActive(Item_GetIndex(item));
             item->status = IS_INACTIVE;
         }
-        item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
+        const bool is_push_pull = item->status == IS_ACTIVE ? true : false;
+        MovableBlock_SetPushPull(item, is_push_pull);
         MovableBlock_UpdateRotation(item, item->rot.y);
     }
 }
@@ -299,31 +444,94 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
+    if (item->status == IS_INVISIBLE) {
+        return;
+    }
+
+    if (MovableBlock_GetGravityFrames(item) > 0) {
+        LOG_DEBUG(
+            "DELAY item_num: %d; gravity frames: %d", item_num,
+            MovableBlock_GetGravityFrames(item) - 1);
+        MovableBlock_SetGravityFrames(
+            item, MovableBlock_GetGravityFrames(item) - 1);
+        return;
+    }
+
     if (item->flags & IF_ONE_SHOT) {
-        Room_AlterFloorHeight(item, WALL_L);
         Item_Kill(item_num);
+        Item_RemoveWalkable(item_num);
+        Item_SortWalkables();
+        // TODO Fix enemy boxes.
+        // Room_AlterFloorHeight(item, WALL_L);
         return;
     }
 
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(
-        item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
-    const int32_t height = Room_GetHeight(
-        sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
+    LOG_DEBUG(
+        "initial item_num: %d; item->room_num: %d", item_num, item->room_num);
 
-    if (item->pos.y < height) {
+    // Check if the block is floating, on a walkable, or on the pit floor.
+    // Gets the put room number which can break behavior.
+    const ROOM *const room = Room_Get(room_num);
+    const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    const int32_t top_of_block_height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    int32_t under_block_height = Room_GetHeightIgnore(
+        sector, item->pos.x, item->pos.y, item->pos.z, false, item_num);
+    const SECTOR *room_num_sector = Room_GetSector(
+        item->pos.x, top_of_block_height, item->pos.z, &room_num);
+
+    LOG_DEBUG("OG under_block_height: %d", under_block_height);
+    // Checks if the block fell through a walkable. Can't check before it
+    // happens because it will stop gravity one frame early. Can't nicely check
+    // after it falls through because under_block_height will then be the floor
+    // under the walkable that fell through.
+    const bool fell_through_walkable = Room_IsOnWalkable(
+        sector, item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z,
+        ROUND_TO_HALF_CLICK(item->pos.y), item_num);
+    if (fell_through_walkable) {
+        under_block_height = ROUND_TO_HALF_CLICK(item->pos.y);
+    }
+
+    LOG_DEBUG(
+        "status: %d; gravity: %d; pos.y: %d; top_of_block_height: %d, "
+        "under_block_height: %d; room_num: %d; "
+        "ROUND_TO_HALF_CLICK(item->pos.y): "
+        "%d; fell_through_walkable: %d; push/pull: %d; gravity frames: %d; "
+        "fall_speed: %d",
+        item->status, item->gravity, item->pos.y, top_of_block_height,
+        under_block_height, room_num, ROUND_TO_HALF_CLICK(item->pos.y),
+        fell_through_walkable, MovableBlock_IsPushPull(item),
+        MovableBlock_GetGravityFrames(item), item->fall_speed);
+
+    // Don't continue gravity if on a walkable.
+    // But walkable is affected by falling speed and bridges
+    // can have non click heights.
+    // ROUND_TO_CLICK_UP(item->pos.y) != under_block_height fixes blocks
+    // falling through bridges/trapdoors. BUT turns off gravity a frame early
+    // which breaks a death block just above Lara's head.
+    // && ROUND_TO_CLICK_UP(item->pos.y) != under_block_height
+    if (item->pos.y < under_block_height && !MovableBlock_IsPushPull(item)) {
+        // Start falling because the block is floating in the air.
+        LOG_DEBUG("Start gravity!");
         item->gravity = true;
     } else if (item->gravity) {
+        // The block hits the ground or walkable.
+        LOG_DEBUG("Stop gravity!");
         item->gravity = false;
-        item->pos.y = height;
+        item->pos.y = under_block_height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
         Sound_Effect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
     } else if (
-        item->pos.y >= height && !item->gravity
-        && !(bool)(intptr_t)item->priv) {
+        // If block is at/under floor height, no gravity, and isn't being
+        // pushed/pulled anymore.
+        // Prevents blocks from getting stuck in IS_INACTIVE if retriggered.
+        item->pos.y >= under_block_height && !item->gravity
+        && !MovableBlock_IsPushPull(item)) {
+        LOG_DEBUG("Remove active bc of height!");
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
     }
@@ -333,8 +541,11 @@ static void M_Control(const int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
-        Room_AlterFloorHeight(item, -WALL_L);
+        // TODO Fix enemy boxes.
+        // Room_AlterFloorHeight(item, -WALL_L);
+        Item_SortWalkables();
         Room_TestTriggers(item);
+        LOG_DEBUG("Remove active bc IS_DEACTIVATED!");
     }
 }
 
@@ -344,13 +555,17 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
+    if (item->status == IS_INVISIBLE) {
+        return;
+    }
+
     if (M_TestDeathCollision(item, lara_item)) {
         M_KillLara(item, lara_item);
         return;
     }
 
     if (item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
-        item->priv = (void *)false;
+        MovableBlock_SetPushPull(item, false);
     }
 
     if (!g_Input.action || item->status == IS_ACTIVE || lara_item->gravity
@@ -445,12 +660,14 @@ static void M_Collision(
             return;
         }
 
-        Item_AddActive(item_num);
-        Room_AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
+        Item_AddActive(item_num);
+        // TODO Fix enemy boxes.
+        // Room_AlterFloorHeight(item, WALL_L);
         Item_Animate(item);
         Lara_Animate(lara_item);
-        item->priv = (void *)true;
+        MovableBlock_SetPushPull(item, true);
+        LOG_DEBUG("Start push/pull item_num: %d", item_num);
     }
 }
 

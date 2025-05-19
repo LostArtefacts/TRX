@@ -9,6 +9,9 @@
 #include "game/output/const.h"
 #include "game/rooms.h"
 #include "utils.h"
+#include "vector.h"
+
+#include <stdlib.h>
 
 static int32_t m_LevelItemCount = 0;
 static int16_t m_MaxUsedItemCount = 0;
@@ -16,6 +19,7 @@ static ITEM *m_Items = nullptr;
 static int16_t m_NextItemActive = NO_ITEM;
 static int16_t m_PrevItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
+static VECTOR *m_Walkables = nullptr;
 
 void Item_InitialiseItems(const int32_t num_items)
 {
@@ -386,4 +390,60 @@ bool Item_IsTriggerActive(ITEM *const item)
     }
 
     return ok;
+}
+
+static int32_t M_CompareWalkables(const void *item_idx1, const void *item_idx2)
+{
+    const ITEM *const item1 = Item_Get(*(int16_t *)item_idx1);
+    const ITEM *const item2 = Item_Get(*(int16_t *)item_idx2);
+    if (item1->pos.y == item2->pos.y) {
+        return 0;
+    }
+    // Sort lowest to highest.
+    return item1->pos.y < item2->pos.y ? 1 : -1;
+}
+
+void Item_InitialiseWalkables(void)
+{
+    m_Walkables = Vector_Create(sizeof(int16_t));
+}
+
+void Item_AddWalkable(const int16_t item_num)
+{
+    Vector_Add(m_Walkables, (void *)&item_num);
+}
+
+void Item_RemoveWalkable(const int16_t item_num)
+{
+    Vector_Remove(m_Walkables, (void *)&item_num);
+}
+
+int16_t Item_GetWalkableNum(const int32_t index)
+{
+    return *(const int16_t *)Vector_Get(m_Walkables, index);
+}
+
+int32_t Item_GetWalkableCount(void)
+{
+    return m_Walkables->count;
+}
+
+void Item_SortWalkables(void)
+{
+    if (m_Walkables == nullptr || m_Walkables->count == 0) {
+        return;
+    }
+    int16_t *first_item_num = Vector_GetData(m_Walkables);
+    // Sort walkables by ascending item y position.
+    qsort(
+        first_item_num, Item_GetWalkableCount(), sizeof(int16_t),
+        M_CompareWalkables);
+}
+
+void Item_ShutdownWalkables(void)
+{
+    if (m_Walkables != nullptr) {
+        Vector_Free(m_Walkables);
+        m_Walkables = nullptr;
+    }
 }

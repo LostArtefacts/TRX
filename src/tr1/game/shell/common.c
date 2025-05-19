@@ -8,6 +8,10 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_string_manager.h>
+#include <libtrx/game/items.h>
+#include <libtrx/game/music.h>
+#include <libtrx/game/option.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 

@@ -12,6 +12,7 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/setup.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
@@ -1115,6 +1116,22 @@ void Level_ReadItems(VFILE *const file)
                 "Bad object number (%d) on item %d", item->object_id, i);
             goto finish;
         }
+    }
+
+    Item_InitialiseWalkables();
+    for (int32_t item_num = 0; item_num < num_items; item_num++) {
+        const ITEM *const item = Item_Get(item_num);
+        if (Object_IsType(item->object_id, g_WalkableObjects)) {
+            LOG_DEBUG(
+                "Add walkable: item_num: %d; object_id: %d", item_num,
+                item->object_id);
+            Item_AddWalkable(item_num);
+        }
+    }
+    Item_SortWalkables();
+    for (int32_t i = 0; i < Item_GetWalkableCount(); i++) {
+        const int16_t item_num = Item_GetWalkableNum(i);
+        LOG_DEBUG("Sorted item_num: %d", item_num);
     }
 
 finish:
