@@ -80,6 +80,12 @@ typedef struct {
 } GF_FMV;
 
 typedef struct {
+    bool is_present;
+    int32_t count;
+    MUSIC_TRACK_ID *ids;
+} GF_AMBIENT_DATA;
+
+typedef struct {
     struct {
         bool is_present;
         float value;
@@ -91,6 +97,7 @@ typedef struct {
 #if TR_VERSION == 2
     char *sfx_path;
 #endif
+    GF_AMBIENT_DATA ambient_tracks;
 } GF_LEVEL_SETTINGS;
 
 #if TR_VERSION == 1

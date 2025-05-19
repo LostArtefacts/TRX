@@ -345,6 +345,7 @@ However, you can easily download them manually from these urls:
 #### Audio
 - added an option to control how music is played while underwater rather than simply muting it
 - added the current music track and timestamp to the savegame so they now persist on load
+- added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
 - fixed music not playing with certain game versions
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace
 - fixed sound settings resuming the music

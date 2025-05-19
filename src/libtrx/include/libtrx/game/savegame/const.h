@@ -1,3 +1,3 @@
 #pragma once
 
-#define SAVEGAME_CURRENT_VERSION 8
+#define SAVEGAME_CURRENT_VERSION 9

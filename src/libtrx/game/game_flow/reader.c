@@ -132,6 +132,21 @@ static void M_LoadCommonSettings(
             }
         }
     }
+
+    {
+        const JSON_ARRAY *const tmp_arr =
+            JSON_ObjectGetArray(obj, "ambient_tracks");
+        if (tmp_arr != nullptr && tmp_arr->length != 0) {
+            settings->ambient_tracks.is_present = true;
+            settings->ambient_tracks.count = tmp_arr->length;
+            settings->ambient_tracks.ids =
+                Memory_Alloc(sizeof(MUSIC_TRACK_ID) * tmp_arr->length);
+            for (size_t i = 0; i < tmp_arr->length; i++) {
+                settings->ambient_tracks.ids[i] =
+                    JSON_ArrayGetInt(tmp_arr, i, MX_INACTIVE);
+            }
+        }
+    }
 }
 
 static void M_LoadCommonRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)

@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/game_flow.h"
+#include "game/game_flow/vars.h"
 
 RGB_888 Level_GetWaterColor(void)
 {
@@ -28,4 +29,16 @@ float Level_GetFogEnd(void)
         return level->settings.fog_end.value;
     }
     return g_Config.visuals.fog_end;
+}
+
+const GF_AMBIENT_DATA *Level_GetAmbientData(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.ambient_tracks.is_present) {
+        return &level->settings.ambient_tracks;
+    }
+    if (g_GameFlow.settings.ambient_tracks.is_present) {
+        return &g_GameFlow.settings.ambient_tracks;
+    }
+    return nullptr;
 }
