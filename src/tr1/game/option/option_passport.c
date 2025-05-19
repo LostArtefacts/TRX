@@ -247,6 +247,9 @@ static void M_InitSaveRequester(const int16_t page_num)
     if (save_slot == -1) {
         save_slot = Savegame_GetMostRecentlyCreatedSlot();
     }
+    if (save_slot == -1) {
+        save_slot = 0;
+    }
 
     const UI_SAVE_SLOT_DIALOG_TYPE dialog_type = page_num == PAGE_1
         ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
