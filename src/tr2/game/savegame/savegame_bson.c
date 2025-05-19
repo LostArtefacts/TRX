@@ -41,7 +41,7 @@
         value.z = JSON_ObjectGetInt(sub_obj, "z", value.z);                    \
     } while (0)
 
-static void M_SaveRaw(MYFILE *fp, const JSON_VALUE *root);
+static void M_SaveRaw(MYFILE *fp, const JSON_VALUE *root, int32_t level_num);
 static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
 static JSON_VALUE *M_ParseFromBuffer(const char *buffer, int32_t *version_out);
 
@@ -135,11 +135,12 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
 
     JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
-    M_SaveRaw(fp, root);
+    M_SaveRaw(fp, root, current_level->num);
     JSON_ValueFree(root);
 }
 
-static void M_SaveRaw(MYFILE *const fp, const JSON_VALUE *const root)
+static void M_SaveRaw(
+    MYFILE *const fp, const JSON_VALUE *const root, const int32_t level_num)
 {
     size_t uncompressed_size;
     char *uncompressed = BSON_Write(root, &uncompressed_size);
@@ -153,7 +154,7 @@ static void M_SaveRaw(MYFILE *const fp, const JSON_VALUE *const root)
         Shell_ExitSystem("Failed to compress savegame data");
     }
 
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
     const SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
         .initial_version = Savegame_GetInitialVersion(),

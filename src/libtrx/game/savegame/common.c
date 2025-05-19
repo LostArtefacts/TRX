@@ -607,7 +607,8 @@ bool Savegame_UpdateDeathCounters(
             MYFILE *const fp =
                 File_Open(savegame_info->full_path, FILE_OPEN_READ_WRITE);
             if (fp != nullptr) {
-                ret = strategy.update_death_counters_func(fp, death_count);
+                ret = strategy.update_death_counters_func(
+                    fp, savegame_info->level_num, death_count);
                 File_Close(fp);
             }
             break;
