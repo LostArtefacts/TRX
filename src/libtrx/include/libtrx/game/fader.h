@@ -7,6 +7,7 @@
 #define FADER_ANY (-1)
 #define FADER_TRANSPARENT 0
 #define FADER_SEMI_BLACK 127
+#define FADER_ALMOST_BLACK 192
 #define FADER_BLACK 255
 
 typedef struct {

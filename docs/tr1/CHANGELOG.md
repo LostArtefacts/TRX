@@ -4,6 +4,7 @@
 - added an option to toggle between TR1 and TR2 camera modes (#2990)
 - changed the all items cheat to include the lead bar if present in the level (#3008)
 - changed the design of the controls dialog to use pages, making it match the new TR2X controls dialog
+- changed the pause screen to have a darker black overlay transparency (#2252)
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+ (#2904)
 - fixed an illegal reachable slope in Lost Valley room 58, which could lead to Lara becoming softlocked (#2900)

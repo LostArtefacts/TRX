@@ -51,7 +51,8 @@ static void M_Draw(PHASE *phase);
 static void M_FadeIn(M_PRIV *const p)
 {
     p->state = STATE_FADE_IN;
-    Fader_Init(&p->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK, FADE_TIME);
+    Fader_Init(
+        &p->back_fader, FADER_TRANSPARENT, FADER_ALMOST_BLACK, FADE_TIME);
 }
 
 static void M_FadeOut(M_PRIV *const p)
