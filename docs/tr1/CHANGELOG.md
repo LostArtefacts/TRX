@@ -30,6 +30,7 @@
 - fixed a hole appearing in the floor in Natla's Mines room 84 after exploding the TNT box (#3007, regression from 4.9)
 - fixed button mashing causing quick save/load to misbehave on a specific passport animation frame (#3021, regression from 4.10)
 - fixed save level numbers being replaced incorrectly if Lara dies in a level and the last save was in the previous level (#3026, regression from 4.9)
+- fixed ambient music not looping correctly after reloading a save with the option to reload ambient timestamps enabled (#3032, regression from 4.6)
 
 ## [4.10.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.1...tr1-4.10.2) - 2025-05-15
 - fixed animated textures not working the right way in flipped rooms (#2966, regression from 4.10)
