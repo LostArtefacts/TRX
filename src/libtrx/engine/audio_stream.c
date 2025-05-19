@@ -707,7 +707,6 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
     }
 
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-    stream->start_at = timestamp;
     if (!stream->is_used) {
         return false;
     }
