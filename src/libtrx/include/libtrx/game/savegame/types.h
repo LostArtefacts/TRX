@@ -69,5 +69,6 @@ typedef struct {
     bool (*load_from_file_func)(MYFILE *fp);
     bool (*load_only_resume_info_func)(MYFILE *fp);
     void (*save_to_file_func)(MYFILE *fp, SAVEGAME_INFO *savegame_info);
-    bool (*update_death_counters_func)(MYFILE *fp, int32_t death_count);
+    bool (*update_death_counters_func)(
+        MYFILE *fp, int32_t level_num, int32_t death_count);
 } SAVEGAME_STRATEGY;

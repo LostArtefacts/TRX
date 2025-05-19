@@ -34,7 +34,8 @@ typedef struct {
     int16_t id_map[MAX_EFFECTS];
 } SAVEGAME_BSON_FX_ORDER;
 
-static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version);
+static void M_SaveRaw(
+    MYFILE *fp, JSON_VALUE *root, int32_t version, int32_t level_num);
 static JSON_VALUE *M_ParseFromBuffer(
     const char *buffer, size_t buffer_size, int32_t *version_out);
 static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out);
@@ -77,7 +78,8 @@ static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
 static bool M_LoadFromFile(MYFILE *fp);
 static bool M_LoadOnlyResumeInfo(MYFILE *fp);
 static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *savegame_info);
-static bool M_UpdateDeathCounters(MYFILE *fp, int32_t death_count);
+static bool M_UpdateDeathCounters(
+    MYFILE *fp, int32_t level_num, int32_t death_count);
 
 static SAVEGAME_STRATEGY m_Strategy = {
     .allow_load = true,
@@ -91,7 +93,8 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .update_death_counters_func = M_UpdateDeathCounters,
 };
 
-static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
+static void M_SaveRaw(
+    MYFILE *fp, JSON_VALUE *root, int32_t version, const int32_t level_num)
 {
     size_t uncompressed_size;
     char *uncompressed = BSON_Write(root, &uncompressed_size);
@@ -118,7 +121,7 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
 
     File_WriteData(fp, compressed, compressed_size);
 
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
     const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag(),
         .counter = Savegame_GetCounter(),
@@ -1524,13 +1527,14 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
         root_obj, "music_track_flags", M_DumpMusicTrackFlags());
 
     JSON_VALUE *root = JSON_ValueFromObject(root_obj);
-    M_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);
+    M_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION, current_level->num);
     JSON_ValueFree(root);
 
     savegame_info->features.restart = true;
 }
 
-static bool M_UpdateDeathCounters(MYFILE *const fp, const int32_t death_count)
+static bool M_UpdateDeathCounters(
+    MYFILE *const fp, int32_t level_num, const int32_t death_count)
 {
     bool result = false;
     int32_t version;
@@ -1550,7 +1554,7 @@ static bool M_UpdateDeathCounters(MYFILE *const fp, const int32_t death_count)
     JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
 
     File_Seek(fp, 0, FILE_SEEK_SET);
-    M_SaveRaw(fp, root, version);
+    M_SaveRaw(fp, root, version, level_num);
     result = true;
 
 cleanup:
