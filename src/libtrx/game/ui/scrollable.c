@@ -3,6 +3,17 @@
 #include "config.h"
 #include "utils.h"
 
+static void M_Clamp(UI_SCROLLABLE *s, bool include_selected_item);
+
+static void M_Clamp(UI_SCROLLABLE *const s, const bool include_selected_item)
+{
+    if (include_selected_item && s->sel_item != -1) {
+        CLAMP(s->first_item, s->sel_item - s->vis_items + 1, s->sel_item);
+    }
+    CLAMPG(s->first_item, s->max_items - s->vis_items);
+    CLAMPL(s->first_item, 0);
+}
+
 bool UI_Scrollable_SelectNext(
     UI_SCROLLABLE *const s, const bool enable_wraparound)
 {
@@ -13,9 +24,7 @@ bool UI_Scrollable_SelectNext(
     } else {
         return false;
     }
-    CLAMP(s->first_item, s->sel_item - s->vis_items + 1, s->sel_item);
-    CLAMPG(s->first_item, s->max_items - s->vis_items);
-    CLAMPL(s->first_item, 0);
+    M_Clamp(s, true);
     return true;
 }
 
@@ -29,9 +38,7 @@ bool UI_Scrollable_SelectPrev(
     } else {
         return false;
     }
-    CLAMP(s->first_item, s->sel_item - s->vis_items + 1, s->sel_item);
-    CLAMPG(s->first_item, s->max_items - s->vis_items);
-    CLAMPL(s->first_item, 0);
+    M_Clamp(s, true);
     return true;
 }
 
@@ -45,8 +52,7 @@ bool UI_Scrollable_ScrollDown(
     } else {
         return false;
     }
-    CLAMPG(s->first_item, s->max_items - s->vis_items);
-    CLAMPL(s->first_item, 0);
+    M_Clamp(s, false);
     return true;
 }
 
@@ -60,20 +66,16 @@ bool UI_Scrollable_ScrollUp(
     } else {
         return false;
     }
-    CLAMPG(s->first_item, s->max_items - s->vis_items);
-    CLAMPL(s->first_item, 0);
+    M_Clamp(s, false);
     return true;
 }
 
 void UI_Scrollable_SetVisibleItems(
-    UI_SCROLLABLE *const s, const int32_t visible_rows)
+    UI_SCROLLABLE *const s, const int32_t visible_items)
 {
-    s->vis_items = visible_rows;
+    s->vis_items = visible_items;
     CLAMPL(s->vis_items, 0);
-    if (s->sel_item != -1) {
-        CLAMP(s->first_item, s->sel_item - s->vis_items + 1, s->sel_item);
-    }
-    CLAMP(s->first_item, 0, s->max_items - s->vis_items);
+    M_Clamp(s, true);
 }
 
 void UI_Scrollable_SetMaxItems(UI_SCROLLABLE *const s, const int32_t max_items)
