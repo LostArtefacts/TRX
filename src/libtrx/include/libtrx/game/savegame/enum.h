@@ -30,4 +30,8 @@ typedef enum {
 
     // Added the current TRX version string.
     VERSION_8 = 8,
+
+    // Added the current ambient track to allow triggers to change it at
+    // different stages of the level.
+    VERSION_9 = 9,
 } SAVEGAME_VERSION;

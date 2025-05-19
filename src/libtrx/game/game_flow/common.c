@@ -39,6 +39,7 @@ static void M_FreeLevel(GF_LEVEL *const level)
 {
     Memory_FreePointer(&level->path);
     Memory_FreePointer(&level->title);
+    Memory_FreePointer(&level->settings.ambient_tracks.ids);
     M_FreeInjections(&level->injections);
     M_FreeSequence(&level->sequence);
 
@@ -92,6 +93,7 @@ void GF_Shutdown(void)
     Memory_FreePointer(&gf->main_menu_background_path);
     Memory_FreePointer(&gf->savegame_fmt_legacy);
     Memory_FreePointer(&gf->savegame_fmt_bson);
+    Memory_FreePointer(&gf->settings.ambient_tracks.ids);
 #if TR_VERSION == 2
     Memory_FreePointer(&gf->settings.sfx_path);
 #endif

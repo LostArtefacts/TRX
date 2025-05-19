@@ -2,6 +2,7 @@
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - added a /help command (#2917)
 - added an option to toggle between TR1 and TR2 camera modes (#2990)
+- added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves (#811)
 - changed the all items cheat to include the lead bar if present in the level (#3008)
 - changed the design of the controls dialog to use pages, making it match the new TR2X controls dialog
 - changed the pause screen to have a darker black overlay transparency (#2252)

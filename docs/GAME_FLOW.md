@@ -201,6 +201,18 @@ remains distinct for each game.
       See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
+  <tr valign="top">
+    <td>
+      <a name="ambient-tracks"></a>
+      <code>ambient_tracks</code>
+    </td>
+    <td>Integer array</td>
+    <td>
+      A list of music track IDs, which will be treated as ambient music. If
+      Lara crosses a trigger for any of these, it will become the current looped
+      track, and will persist on save/load.
+    </td>
+  </tr>
 </table>
 
 **\*** Required property.
@@ -346,6 +358,17 @@ remains distinct for each game.
       See <a href="#water-color-table">this table</a> for reference values.</a>
     </td>
   </tr>
+  <tr valign="top">
+    <td>
+      <code>ambient_tracks</code>
+    </td>
+    <td>Integer array</td>
+    <td>
+      A list of music track IDs, which will be treated as ambient music. If
+      Lara crosses a trigger for any of these, it will become the current looped
+      track, and will persist on save/load.
+    </td>
+  </tr>
 </table>
 
 ## Game flow commands
@@ -464,6 +487,7 @@ Following are each of the properties available within a level.
         "data/level_injection1.bin",
         "data/level_injection2.bin",
     ],
+    "ambient_tracks": [30, 31, 32, 33],
     "item_drops": [
         {"enemy_num": 17, "object_ids": [86]},
         {"enemy_num": 50, "object_ids": [87]},
@@ -630,6 +654,14 @@ Following are each of the properties available within a level.
     <td>Float array</td>
     <td colspan="2">
       Can be customized per level. See <a href="#water-color">above</a> for
+      details.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>ambient_tracks</code></td>
+    <td>Integer array</td>
+    <td colspan="2">
+      Can be customized per level. See <a href="#ambient-tracks">above</a> for
       details.
     </td>
   </tr>

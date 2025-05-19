@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "engine/audio.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/music/backend_cdaudio.h"
 #include "game/music/backend_files.h"
@@ -10,9 +11,12 @@
 
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
 static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
-static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackDelayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
+// Remember the last played track, whether normal or looped, to prevent
+// immediately restarting it if Lara remains on the same trigger.
+static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
+static MUSIC_TRACK_ID m_TrackLastLooped = MX_INACTIVE;
 
 static bool m_Muted = false;
 static int16_t m_MusicVolume = 0;
@@ -24,6 +28,7 @@ static void M_StopActiveStream(void);
 static void M_StreamFinished(int32_t stream_id, void *user_data);
 static bool M_IsBrokenTrack(MUSIC_TRACK_ID track);
 static int32_t M_GetRealTrack(int32_t track_id);
+static bool M_IsAmbientTrack(MUSIC_TRACK_ID track_id);
 static void M_SyncVolume(int32_t audio_stream_id);
 
 static const MUSIC_BACKEND *M_FindBackend(void)
@@ -77,6 +82,7 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
         m_TrackCurrent = MX_INACTIVE;
         m_AudioStreamID = -1;
         if (m_TrackLooped >= 0) {
+            m_TrackLastLooped = MX_INACTIVE;
             Music_Play(m_TrackLooped, MPM_LOOPED);
         }
     }
@@ -111,6 +117,22 @@ static int32_t M_GetRealTrack(const int32_t track_id)
 #endif
 }
 
+static bool M_IsAmbientTrack(const MUSIC_TRACK_ID track_id)
+{
+    const GF_AMBIENT_DATA *const ambient_data = Level_GetAmbientData();
+    if (ambient_data == nullptr) {
+        return false;
+    }
+
+    for (int32_t i = 0; i < ambient_data->count; i++) {
+        if (ambient_data->ids[i] == track_id) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static void M_SyncVolume(const int32_t audio_stream_id)
 {
     if (audio_stream_id < 0) {
@@ -140,6 +162,7 @@ finish:
     m_TrackLastPlayed = MX_INACTIVE;
     m_TrackDelayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
+    m_TrackLastLooped = MX_INACTIVE;
     return result && Audio_Init();
 }
 
@@ -160,6 +183,11 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
     }
 
     if (mode == MPM_TRACKED && track_id == m_TrackLastPlayed) {
+        return false;
+    }
+
+    const bool is_looped = mode == MPM_LOOPED || M_IsAmbientTrack(track_id);
+    if (is_looped && track_id == m_TrackLastLooped) {
         return false;
     }
 
@@ -205,13 +233,18 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
     }
 
     M_SyncVolume(m_AudioStreamID);
-    Audio_Stream_SetIsLooped(m_AudioStreamID, mode == MPM_LOOPED);
+    Audio_Stream_SetIsLooped(m_AudioStreamID, is_looped);
     Audio_Stream_SetFinishCallback(m_AudioStreamID, M_StreamFinished, nullptr);
 
 finish:
     m_TrackDelayed = MX_INACTIVE;
-    if (mode == MPM_LOOPED) {
+    if (is_looped) {
+        // Reset the regular track outside of M_StreamFinished so that
+        // Music_GetCurrentPlayingTrack returns the looped track; otherwise, the
+        // stopped track could be stored in the savegame despite being inactive.
+        m_TrackCurrent = MX_INACTIVE;
         m_TrackLooped = track_id;
+        m_TrackLastLooped = track_id;
     } else {
         m_TrackCurrent = track_id;
         m_TrackLastPlayed = track_id;
@@ -225,6 +258,7 @@ void Music_Stop(void)
     m_TrackLastPlayed = MX_INACTIVE;
     m_TrackDelayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
+    m_TrackLastLooped = MX_INACTIVE;
     M_StopActiveStream();
 }
 

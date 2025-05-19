@@ -602,6 +602,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added the current music track and timestamp to the savegame so they now persist on load
 - added the triggered music tracks to the savegame so one shot tracks don't replay on load
 - added detection for animation commands to play SFX on land, water or both
+- added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
 - fixed the sound of collecting a secret killing the music
 - fixed audio mixer stopping playing sounds on big explosions
 - fixed game audio not muting when game is minimized

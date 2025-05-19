@@ -53,7 +53,7 @@ static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo);
 static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot);
 static bool M_LoadLara(
     JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version);
-static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj);
+static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj, uint16_t header_version);
 static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr);
 static JSON_ARRAY *M_DumpResumeInfo(void);
 static JSON_OBJECT *M_DumpMisc(void);
@@ -918,37 +918,52 @@ static bool M_LoadLara(
     return true;
 }
 
-static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj)
+static bool M_LoadCurrentMusic(
+    JSON_OBJECT *music_obj, const uint16_t header_version)
 {
-    if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
-        return true;
-    }
-
-    if (!music_obj) {
+    if (music_obj == nullptr) {
         LOG_WARNING("Malformed save: invalid or missing current music");
         return true;
     }
 
-    int16_t current_track = JSON_ObjectGetInt(music_obj, "current_track", -1);
-    double timestamp = JSON_ObjectGetDouble(music_obj, "timestamp", -1.0);
-    if (current_track != MX_INACTIVE) {
-        const bool is_ambient =
-            JSON_ObjectGetBool(music_obj, "is_ambient", false);
-        if (is_ambient) {
-            if (g_Config.audio.music_load_condition == MUSIC_LOAD_NON_AMBIENT) {
-                return true;
-            }
-            Music_Play(current_track, MPM_LOOPED);
-        } else {
-            Music_Play(current_track, MPM_ALWAYS);
-        }
+    const MUSIC_TRACK_ID current_track =
+        JSON_ObjectGetInt(music_obj, "current_track", MX_INACTIVE);
+    MUSIC_TRACK_ID ambient_track =
+        JSON_ObjectGetInt(music_obj, "current_ambient", MX_INACTIVE);
+    const double timestamp = JSON_ObjectGetDouble(music_obj, "timestamp", -1.0);
 
-        if (!Music_SeekTimestamp(timestamp)) {
-            LOG_WARNING(
-                "Could not load current track %d at timestamp %" PRId64 ".",
-                current_track, timestamp);
+    if (header_version < VERSION_9) {
+        const bool legacy_ambient =
+            JSON_ObjectGetBool(music_obj, "is_ambient", false);
+        if (legacy_ambient && current_track != MX_INACTIVE) {
+            ambient_track = current_track;
         }
     }
+
+    if (ambient_track != MX_INACTIVE) {
+        // Always restart the ambient as it may have changed based on the
+        // current position in the level.
+        Music_Play(ambient_track, MPM_LOOPED);
+    }
+
+    if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
+        return true;
+    }
+
+    const bool is_ambient =
+        current_track != MX_INACTIVE && current_track == ambient_track;
+    if (!is_ambient && current_track != MX_INACTIVE) {
+        Music_Play(current_track, MPM_ALWAYS);
+    }
+
+    const bool load_timestamp =
+        !is_ambient || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
+    if (load_timestamp && !Music_SeekTimestamp(timestamp)) {
+        LOG_WARNING(
+            "Could not load current track %d at timestamp %" PRId64 ".",
+            current_track, timestamp);
+    }
+
     return true;
 }
 
@@ -1327,12 +1342,12 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
 static JSON_OBJECT *M_DumpCurrentMusic(void)
 {
     const MUSIC_TRACK_ID current_track = Music_GetCurrentPlayingTrack();
-    const bool is_ambient = current_track == Music_GetCurrentLoopedTrack();
+    const MUSIC_TRACK_ID current_ambient = Music_GetCurrentLoopedTrack();
     JSON_OBJECT *const current_music_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(current_music_obj, "current_track", current_track);
+    JSON_ObjectAppendInt(current_music_obj, "current_ambient", current_ambient);
     JSON_ObjectAppendDouble(
         current_music_obj, "timestamp", Music_GetTimestamp());
-    JSON_ObjectAppendBool(current_music_obj, "is_ambient", is_ambient);
 
     return current_music_obj;
 }
@@ -1453,7 +1468,8 @@ static bool M_LoadFromFile(MYFILE *const fp)
     }
 
     if (version >= VERSION_3) {
-        if (!M_LoadCurrentMusic(JSON_ObjectGetObject(root_obj, "music"))) {
+        if (!M_LoadCurrentMusic(
+                JSON_ObjectGetObject(root_obj, "music"), version)) {
             goto cleanup;
         }
 
