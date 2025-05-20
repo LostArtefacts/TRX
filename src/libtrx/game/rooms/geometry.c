@@ -232,7 +232,7 @@ int16_t Room_GetHeightEx(
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
     int32_t height = pit_sector->floor.height;
-    LOG_DEBUG("pit floor: %d; y: %d", pit_sector->floor.height, y);
+    // LOG_DEBUG("pit floor: %d; y: %d", pit_sector->floor.height, y);
 
     if (Room_IsAbyssHeight(height)) {
         height = m_AbyssMaxHeight;
@@ -271,17 +271,23 @@ int16_t Room_GetHeightEx(
         if (obj->floor_height_func != nullptr) {
             const int32_t walkable_height =
                 obj->floor_height_func(item, x, test_y, z, height);
+            // LOG_DEBUG(
+            //     "Stack check height: %d; walkable_height: %d; test_y: %d; "
+            //     "item_num: %d; object_id: %d",
+            //     height, walkable_height, test_y, item_num, item->object_id);
             if (walkable_height != height) {
                 height = walkable_height;
-                // Only update the y value if it's lower.
+                // Only update the y value if it's lower to fix up+jump working
+                // on the lowest block in a stack.
+                // TODO Should this be test_y?
                 if (y > walkable_height) {
                     test_y = walkable_height;
                 }
-                LOG_DEBUG(
-                    "Change floor height: %d; y: %d; test_y: %d; item_num: "
-                    "%d; object_id: "
-                    "%d",
-                    height, y, test_y, item_num, item->object_id);
+                // LOG_DEBUG(
+                //     "Change floor height: %d; y: %d; test_y: %d; item_num: "
+                //     "%d; object_id: "
+                //     "%d",
+                //     height, y, test_y, item_num, item->object_id);
             }
         }
     }
@@ -302,7 +308,7 @@ int16_t Room_GetCeilingEx(
 {
     const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
     int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z, fix_tilts);
-    LOG_DEBUG("M_GetCeilingTiltHeight height: %d; y: %d", height, y);
+    // LOG_DEBUG("M_GetCeilingTiltHeight height: %d; y: %d", height, y);
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
     // if (pit_sector->trigger == nullptr) {
@@ -328,9 +334,9 @@ int16_t Room_GetCeilingEx(
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
             height = obj->ceiling_height_func(item, x, y, z, height);
-            LOG_DEBUG(
-                "Change ceiling height: %d; item_num: %d; object_id: %d",
-                height, item_num, item->object_id);
+            // LOG_DEBUG(
+            //     "Change ceiling height: %d; item_num: %d; object_id: %d",
+            //     height, item_num, item->object_id);
         }
     }
 
@@ -564,9 +570,9 @@ int16_t Room_GetHeightIgnore(
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
             height = obj->floor_height_func(item, x, y, z, height);
-            LOG_DEBUG(
-                "Change height: %d; item_num: %d; object_id: %d", height,
-                item_num, item->object_id);
+            // LOG_DEBUG(
+            //     "Change height: %d; item_num: %d; object_id: %d", height,
+            //     item_num, item->object_id);
         }
     }
 

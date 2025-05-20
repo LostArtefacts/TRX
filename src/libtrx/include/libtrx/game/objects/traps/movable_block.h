@@ -10,5 +10,4 @@ void MovableBlock_SetPushPull(ITEM *item, bool enable);
 bool MovableBlock_IsPushPull(const ITEM *item);
 void MovableBlock_SetGravityFrames(ITEM *item, uint8_t frames);
 uint8_t MovableBlock_GetGravityFrames(const ITEM *item);
-void MovableBlock_ActivateStack(
-    const ITEM *base_item, int32_t x, int32_t y, int32_t z);
+void MovableBlock_ActivateStack(const ITEM *base_item, XYZ_32 sector_pos);
