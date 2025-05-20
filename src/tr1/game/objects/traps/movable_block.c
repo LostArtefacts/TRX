@@ -488,10 +488,10 @@ static void M_Control(const int16_t item_num)
     // happens because it will stop gravity one frame early. Can't nicely check
     // after it falls through because under_block_height will then be the floor
     // under the walkable that fell through.
-    const bool fell_through_walkable = Room_IsOnWalkable(
+    const bool rounded_on_walkable = Room_IsOnWalkable(
         sector, item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z,
         ROUND_TO_HALF_CLICK(item->pos.y), item_num);
-    if (fell_through_walkable) {
+    if (rounded_on_walkable) {
         under_block_height = ROUND_TO_HALF_CLICK(item->pos.y);
     }
 
@@ -499,11 +499,11 @@ static void M_Control(const int16_t item_num)
         "status: %d; gravity: %d; pos.y: %d; top_of_block_height: %d, "
         "under_block_height: %d; room_num: %d; "
         "ROUND_TO_HALF_CLICK(item->pos.y): "
-        "%d; fell_through_walkable: %d; push/pull: %d; gravity frames: %d; "
+        "%d; rounded_on_walkable: %d; push/pull: %d; gravity frames: %d; "
         "fall_speed: %d",
         item->status, item->gravity, item->pos.y, top_of_block_height,
         under_block_height, room_num, ROUND_TO_HALF_CLICK(item->pos.y),
-        fell_through_walkable, MovableBlock_IsPushPull(item),
+        rounded_on_walkable, MovableBlock_IsPushPull(item),
         MovableBlock_GetGravityFrames(item), item->fall_speed);
 
     // Don't continue gravity if on a walkable.
@@ -536,7 +536,11 @@ static void M_Control(const int16_t item_num)
         Item_RemoveActive(item_num);
     }
 
-    Item_UpdateRoom(item_num, room_num);
+    // Don't update room number if on a walkable because
+    // room number can fall through trapdoors to a pit room.
+    if (!rounded_on_walkable) {
+        Item_UpdateRoom(item_num, room_num);
+    }
 
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_INACTIVE;
