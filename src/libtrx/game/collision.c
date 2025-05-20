@@ -5,7 +5,6 @@
 #include "game/lara/common.h"
 #include "game/matrix.h"
 #include "game/rooms.h"
-#include "log.h"
 #include "utils.h"
 
 static bool M_IsOnWalkable(
@@ -181,7 +180,6 @@ void Collide_GetCollisionInfo(
     }
 
     coll->side_mid.floor = height;
-    // LOG_DEBUG("Mid height: %d; y_pos: %d", height, y_pos);
     coll->side_mid.ceiling = ceiling;
     coll->side_mid.type = Room_GetHeightType();
 
@@ -254,7 +252,6 @@ void Collide_GetCollisionInfo(
     z = z_pos + z_front;
     sector = Room_GetSector(x, y_top, z, &room_num);
     height = Room_GetHeight(sector, x, y_top, z);
-    LOG_DEBUG("Front height: %d; y_pos: %d", height, y_pos);
     room_height = height;
     if (height != NO_HEIGHT) {
         height -= y_pos;
@@ -266,7 +263,6 @@ void Collide_GetCollisionInfo(
 
     coll->side_front.floor = height;
     coll->side_front.ceiling = ceiling;
-    LOG_DEBUG("Set coll->side_front.floor: %d; ceiling: %d", height, ceiling);
     coll->side_front.type = Room_GetHeightType();
 
     is_on_walkable = M_IsOnWalkable(sector, x, y_top, z, room_height);

@@ -1,7 +1,6 @@
 #include "game/const.h"
 #include "game/objects.h"
 #include "game/objects/traps/movable_block.h"
-#include "log.h"
 #include "utils.h"
 
 typedef enum {
@@ -23,7 +22,7 @@ static void M_ActivateSectors(const ITEM *item)
     if (!orig_bounds)
         return;
 
-    // Rotate local bounds into the world X-Z axes.
+    // Rotate bounds to the correct x and z.
     BOUNDS_16 rot_bounds;
     switch (item->rot.y) {
     case 0:
@@ -61,8 +60,6 @@ static void M_ActivateSectors(const ITEM *item)
     // Walk every covered sector.
     for (int32_t x = min_x; x <= max_x; x += WALL_L) {
         for (int32_t z = min_z; z <= max_z; z += WALL_L) {
-            LOG_DEBUG(
-                "Activate x: %d; z: %d; item->pos.y: %d", x, z, item->pos.y);
             const XYZ_32 sector_pos = {
                 .x = x,
                 .y = item->pos.y,
@@ -77,21 +74,14 @@ static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    // LOG_DEBUG(
-    //     "item xyz: %d %d %d; test xyz: %d %d %d; height: %d", item->pos.x,
-    //     item->pos.y, item->pos.z, x, y, z, height);
 
     if (!M_IsItemOnTop(item, x, z)) {
-        // LOG_DEBUG("not on top");
         return height;
     } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
-        // LOG_DEBUG("not closed");
         return height;
     } else if (y > item->pos.y || item->pos.y > height) {
-        // LOG_DEBUG("either or");
         return height;
     } else {
-        // LOG_DEBUG("ON TRAPDOOR");
         return item->pos.y;
     }
 }
@@ -175,7 +165,6 @@ static void M_Control(const int16_t item_num)
             // TODO Needed? Floor height functions should take care?
             // Item_RemoveWalkable(item_num);
             // Item_SortWalkables();
-            LOG_DEBUG("Trapdoor opened item_num: %d", item_num);
             M_ActivateSectors(item);
         }
     } else {
@@ -184,7 +173,6 @@ static void M_Control(const int16_t item_num)
             // TODO Needed? Floor height functions should take care?
             // Item_AddWalkable(item_num);
             // Item_SortWalkables();
-            LOG_DEBUG("Trapdoor closed item_num: %d", item_num);
             // M_ActivateSectors(item);
         }
     }

@@ -14,7 +14,6 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
-#include <libtrx/log.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19
@@ -87,11 +86,6 @@ static int16_t M_GetFloorHeight(
         return height;
     }
 
-    // LOG_DEBUG(
-    //     "Raise floor for block. block xyz: %d %d %d; height: %d; xyz: "
-    //     "%d %d %d",
-    //     item->pos.x, item->pos.y, item->pos.z, height, x, y, z);
-
     return item->pos.y - WALL_L;
 }
 
@@ -126,11 +120,6 @@ static int16_t M_GetCeilingHeight(
     if (item->pos.y <= height) {
         return height;
     }
-
-    // LOG_DEBUG(
-    //     "Raise ceiling for block. block xyz: %d %d %d; height: %d; xyz: "
-    //     "%d %d %d",
-    //     item->pos.x, item->pos.y, item->pos.z, height, x, y, z);
 
     return item->pos.y;
 }
@@ -362,7 +351,6 @@ static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
         "killer: %d; gravity: %d; collide: %d",
         g_GameFlow.enable_killer_pushblocks, item->gravity,
         Lara_TestBoundsCollide(item, 0));
-
     return g_GameFlow.enable_killer_pushblocks
         && !g_Config.debug.enable_invulnerability && item->gravity
         && Lara_TestBoundsCollide(item, 0);
@@ -450,9 +438,6 @@ static void M_Control(const int16_t item_num)
     }
 
     if (MovableBlock_GetGravityFrames(item) > 0) {
-        LOG_DEBUG(
-            "DELAY item_num: %d; gravity frames: %d", item_num,
-            MovableBlock_GetGravityFrames(item) - 1);
         MovableBlock_SetGravityFrames(
             item, MovableBlock_GetGravityFrames(item) - 1);
         return;
@@ -470,8 +455,6 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    LOG_DEBUG(
-        "initial item_num: %d; item->room_num: %d", item_num, item->room_num);
 
     // Check if the block is floating, on a walkable, or on the pit floor.
     // Gets the put room number which can break behavior.
@@ -484,7 +467,6 @@ static void M_Control(const int16_t item_num)
     const SECTOR *room_num_sector = Room_GetSector(
         item->pos.x, top_of_block_height, item->pos.z, &room_num);
 
-    LOG_DEBUG("OG under_block_height: %d", under_block_height);
     // Checks if the block fell through a walkable. Can't check before it
     // happens because it will stop gravity one frame early. Can't nicely check
     // after it falls through because under_block_height will then be the floor
@@ -496,17 +478,6 @@ static void M_Control(const int16_t item_num)
         under_block_height = ROUND_TO_HALF_CLICK(item->pos.y);
     }
 
-    LOG_DEBUG(
-        "status: %d; gravity: %d; pos.y: %d; top_of_block_height: %d, "
-        "under_block_height: %d; room_num: %d; "
-        "ROUND_TO_HALF_CLICK(item->pos.y): "
-        "%d; rounded_on_walkable: %d; push/pull: %d; gravity frames: %d; "
-        "fall_speed: %d",
-        item->status, item->gravity, item->pos.y, top_of_block_height,
-        under_block_height, room_num, ROUND_TO_HALF_CLICK(item->pos.y),
-        rounded_on_walkable, MovableBlock_IsPushPull(item),
-        MovableBlock_GetGravityFrames(item), item->fall_speed);
-
     // Don't continue gravity if on a walkable.
     // But walkable is affected by falling speed and bridges
     // can have non click heights.
@@ -516,11 +487,9 @@ static void M_Control(const int16_t item_num)
     // && ROUND_TO_CLICK_UP(item->pos.y) != under_block_height
     if (item->pos.y < under_block_height && !MovableBlock_IsPushPull(item)) {
         // Start falling because the block is floating in the air.
-        LOG_DEBUG("Start gravity!");
         item->gravity = true;
     } else if (item->gravity) {
         // The block hits the ground or walkable.
-        LOG_DEBUG("Stop gravity!");
         item->gravity = false;
         item->pos.y = under_block_height;
         item->status = IS_DEACTIVATED;
@@ -532,7 +501,6 @@ static void M_Control(const int16_t item_num)
         // Prevents blocks from getting stuck in IS_INACTIVE if retriggered.
         item->pos.y >= under_block_height && !item->gravity
         && !MovableBlock_IsPushPull(item)) {
-        LOG_DEBUG("Remove active bc of height!");
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
     }
@@ -550,7 +518,6 @@ static void M_Control(const int16_t item_num)
         // Room_AlterFloorHeight(item, -WALL_L);
         Item_SortWalkables();
         Room_TestTriggers(item);
-        LOG_DEBUG("Remove active bc IS_DEACTIVATED!");
     }
 }
 
@@ -672,7 +639,6 @@ static void M_Collision(
         Item_Animate(item);
         Lara_Animate(lara_item);
         MovableBlock_SetPushPull(item, true);
-        LOG_DEBUG("Start push/pull item_num: %d", item_num);
     }
 }
 

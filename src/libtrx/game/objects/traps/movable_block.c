@@ -6,7 +6,6 @@
 #include "game/objects/vars.h"
 #include "vector.h"
 
-#include <log.h>
 #include <stdlib.h>
 
 /* -------------------------------------------------------------------------
@@ -193,9 +192,6 @@ void MovableBlock_ActivateStack(
                     && item->pos.z == sector_pos.z) {
                     stack_height += WALL_L;
                     triggered_items[triggered_count++] = item_num;
-                    LOG_DEBUG(
-                        "Activate item_num: %d; object_id: %d", item_num,
-                        item->object_id);
                 }
             }
         }
@@ -209,7 +205,6 @@ void MovableBlock_ActivateStack(
         item->status = IS_ACTIVE;
         Item_AddActive(item_num);
         Item_Animate(item);
-        LOG_DEBUG("Trigger item_num: %d; delay: %d", item_num, i);
     }
 
     free(triggered_items);
