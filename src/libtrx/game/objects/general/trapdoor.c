@@ -22,6 +22,8 @@ static void M_ActivateSectors(const ITEM *item)
     if (!orig_bounds)
         return;
 
+    // TODO Trapdoor item number 36 doesn't travel second sector.
+    // pos: 26112, -1024, 9728. angle: 32767.
     // Rotate bounds to the correct x and z.
     BOUNDS_16 rot_bounds;
     switch (item->rot.y) {
