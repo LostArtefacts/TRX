@@ -2,14 +2,13 @@
 #include "game/objects.h"
 #include "game/objects/traps/movable_block.h"
 #include "log.h"
+#include "utils.h"
 
 typedef enum {
     TRAPDOOR_STATE_CLOSED,
     TRAPDOOR_STATE_OPEN,
 } TRAPDOOR_STATE;
 
-// static void M_Initialise(const int16_t item_num);
-// static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
@@ -18,25 +17,61 @@ static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
 
-// static void M_Initialise(const int16_t item_num)
-// {
-//     ITEM *const item = Item_Get(item_num);
-//     if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
-//         Item_RemoveWalkable(item_num);
-//         LOG_DEBUG("INIT TRAPDOOR OPEN");
-//     }
-// }
+static void M_ActivateSectors(const ITEM *item)
+{
+    const BOUNDS_16 *orig_bounds = &Item_GetBestFrame(item)->bounds;
+    if (!orig_bounds)
+        return;
 
-// static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
-// {
-//     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-//         const int16_t item_num = Item_GetIndex(item);
-//         if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
-//             Item_RemoveWalkable(item_num);
-//             LOG_DEBUG("LOAD TRAPDOOR OPEN");
-//         }
-//     }
-// }
+    // Rotate local bounds into the world X-Z axes.
+    BOUNDS_16 rot_bounds;
+    switch (item->rot.y) {
+    case 0:
+        rot_bounds = *orig_bounds;
+        break;
+    case DEG_90:
+        rot_bounds.min.x = orig_bounds->min.z;
+        rot_bounds.max.x = orig_bounds->max.z;
+        rot_bounds.min.z = -orig_bounds->max.x;
+        rot_bounds.max.z = -orig_bounds->min.x;
+        break;
+    case -DEG_180:
+        rot_bounds.min.x = -orig_bounds->max.x;
+        rot_bounds.max.x = -orig_bounds->min.x;
+        rot_bounds.min.z = -orig_bounds->max.z;
+        rot_bounds.max.z = -orig_bounds->min.z;
+        break;
+    case -DEG_90:
+        rot_bounds.min.x = -orig_bounds->max.z;
+        rot_bounds.max.x = -orig_bounds->min.z;
+        rot_bounds.min.z = orig_bounds->min.x;
+        rot_bounds.max.z = orig_bounds->max.x;
+        break;
+    default:
+        rot_bounds = *orig_bounds;
+        break;
+    }
+
+    // World-space rectangle spanned by those bounds.
+    int32_t min_x = item->pos.x;
+    int32_t max_x = item->pos.x + rot_bounds.max.x;
+    int32_t min_z = item->pos.z;
+    int32_t max_z = item->pos.z + rot_bounds.max.z;
+
+    // Walk every covered sector.
+    for (int32_t x = min_x; x <= max_x; x += WALL_L) {
+        for (int32_t z = min_z; z <= max_z; z += WALL_L) {
+            LOG_DEBUG(
+                "Activate x: %d; z: %d; item->pos.y: %d", x, z, item->pos.y);
+            const XYZ_32 sector_pos = {
+                .x = x,
+                .y = item->pos.y,
+                .z = z,
+            };
+            MovableBlock_ActivateStack(item, sector_pos);
+        }
+    }
+}
 
 static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
@@ -140,8 +175,8 @@ static void M_Control(const int16_t item_num)
             // TODO Needed? Floor height functions should take care?
             // Item_RemoveWalkable(item_num);
             // Item_SortWalkables();
-            MovableBlock_ActivateStack(
-                item, item->pos.x, item->pos.y, item->pos.z);
+            LOG_DEBUG("Trapdoor opened item_num: %d", item_num);
+            M_ActivateSectors(item);
         }
     } else {
         if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
@@ -149,10 +184,11 @@ static void M_Control(const int16_t item_num)
             // TODO Needed? Floor height functions should take care?
             // Item_AddWalkable(item_num);
             // Item_SortWalkables();
-            MovableBlock_ActivateStack(
-                item, item->pos.x, item->pos.y, item->pos.z);
+            LOG_DEBUG("Trapdoor closed item_num: %d", item_num);
+            // M_ActivateSectors(item);
         }
     }
+
     Item_Animate(item);
 }
 

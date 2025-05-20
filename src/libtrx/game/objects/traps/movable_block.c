@@ -174,40 +174,28 @@ uint8_t MovableBlock_GetGravityFrames(const ITEM *const item)
 }
 
 void MovableBlock_ActivateStack(
-    const ITEM *const base_item, const int32_t x, const int32_t y,
-    const int32_t z)
+    const ITEM *const base_item, const XYZ_32 sector_pos)
 {
-    const ROOM *const room = Room_Get(base_item->room_num);
-    const SECTOR *sector =
-        Room_GetWorldSector(room, base_item->pos.x, base_item->pos.z);
-    const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
-    int32_t height = pit_sector->floor.height;
-    LOG_DEBUG("pit floor: %d; y: %d", pit_sector->floor.height, y);
-
     int16_t *triggered_items =
         (int16_t *)malloc((size_t)Item_GetWalkableCount() * sizeof(int16_t));
     int32_t triggered_count = 0;
 
-    // Climb the stack of walkables and trigger each one.
-    int32_t test_y = y;
+    // Check for a stack of movable blocks and trigger each one.
+    // Only trigger stacked blocks resting on the trapdoor pos.y.
+    int32_t stack_height = base_item->pos.y;
     for (int32_t i = 0; i < Item_GetWalkableCount(); i++) {
         const int16_t item_num = Item_GetWalkableNum(i);
         ITEM *const item = Item_Get(item_num);
         if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
             const OBJECT *const obj = Object_Get(item->object_id);
             if (obj->floor_height_func != nullptr) {
-                const int32_t walkable_height =
-                    obj->floor_height_func(item, x, test_y, z, height);
-                if (walkable_height != height) {
-                    test_y = walkable_height;
-                    height = walkable_height;
+                if (item->pos.x == sector_pos.x && item->pos.y == stack_height
+                    && item->pos.z == sector_pos.z) {
+                    stack_height += WALL_L;
                     triggered_items[triggered_count++] = item_num;
                     LOG_DEBUG(
-                        "Activate floor height: %d; y: %d; test_y: %d; "
-                        "item_num: "
-                        "%d; object_id: "
-                        "%d",
-                        height, y, test_y, item_num, item->object_id);
+                        "Activate item_num: %d; object_id: %d", item_num,
+                        item->object_id);
                 }
             }
         }
