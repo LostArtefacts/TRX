@@ -190,7 +190,7 @@ void MovableBlock_ActivateStack(
             if (obj->floor_height_func != nullptr) {
                 if (item->pos.x == sector_pos.x && item->pos.y == stack_height
                     && item->pos.z == sector_pos.z) {
-                    stack_height += WALL_L;
+                    stack_height -= WALL_L;
                     triggered_items[triggered_count++] = item_num;
                 }
             }
