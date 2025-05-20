@@ -42,13 +42,9 @@ static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-
-    if (item->pos.y != -4992) {
-        return height;
-    }
-    LOG_DEBUG(
-        "item xyz: %d %d %d; test xyz: %d %d %d; height: %d", item->pos.x,
-        item->pos.y, item->pos.z, x, y, z, height);
+    // LOG_DEBUG(
+    //     "item xyz: %d %d %d; test xyz: %d %d %d; height: %d", item->pos.x,
+    //     item->pos.y, item->pos.z, x, y, z, height);
 
     if (!M_IsItemOnTop(item, x, z)) {
         // LOG_DEBUG("not on top");

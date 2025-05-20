@@ -77,11 +77,6 @@ static int16_t M_GetFloorHeight(
         return height;
     }
 
-    // If inside the block.
-    if (y <= item->pos.y && y > item->pos.y - WALL_L) {
-        return item->pos.y - WALL_L;
-    }
-
     // If under the bottom of the block.
     if (y > item->pos.y) {
         return height;
@@ -119,7 +114,6 @@ static int16_t M_GetCeilingHeight(
 
     // If inside the block.
     if (y <= item->pos.y && y > item->pos.y - WALL_L) {
-        // return item->pos.y - WALL_L;
         return height;
     }
 
