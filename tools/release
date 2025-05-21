@@ -44,7 +44,6 @@ class CommitCommand(BaseCommand):
         )
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
-        # self.git.checkout_branch("develop")
         old_tag = self.git.get_branch_version(
             pattern=f"tr{args.game_version}-*",
             branch="origin/stable",
@@ -74,19 +73,14 @@ class CommitCommand(BaseCommand):
         self.git.commit(f"docs/tr{args.game_version}: release {args.version}")
 
 
-class BranchCommand(BaseCommand):
-    name = "branch"
-    help = "Merge branch to the specified tag"
+class TagCommand(BaseCommand):
+    name = "tag"
+    help = "Tag the current commit with the target version"
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
         new_tag = f"tr{args.game_version}-{args.version}"
-        self.git.checkout_branch("stable")
-        self.git.merge_reset(
-            "develop", text=f"tr{args.game_version}: release {args.version}"
-        )
         self.git.delete_tag(new_tag)
         self.git.create_tag(new_tag)
-        self.git.checkout_branch("develop")
 
 
 class PushCommand(BaseCommand):
