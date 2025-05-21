@@ -143,6 +143,11 @@ void UI_PopCurrent(void)
     }
 }
 
+const UI_NODE *UI_GetCurrent(void)
+{
+    return m_Priv.current;
+}
+
 // Scene management
 void UI_BeginScene(void)
 {

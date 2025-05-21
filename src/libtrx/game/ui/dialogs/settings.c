@@ -10,6 +10,7 @@
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/requester.h"
 #include "game/ui/elements/resize.h"
+#include "game/ui/elements/row_arrows.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "game/viewport.h"
@@ -18,8 +19,6 @@
 #include "utils.h"
 
 #include <math.h>
-
-#define M_ARROW_SPACING 2.0f
 
 typedef struct {
     const UI_SETTINGS_ENUM_ENTRY *entry;
@@ -268,7 +267,7 @@ static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
     result += arrow_w;
     UI_Label_Measure("\\{button right}", &arrow_w, nullptr);
     result += arrow_w;
-    result += M_ARROW_SPACING * 2;
+    result += UI_ROW_ARROWS_TIGHT * 2;
     return result;
 }
 
@@ -332,21 +331,13 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
         UI_BeginResize(max_value_w, -1.0f);
         UI_BeginAnchor(1.0f, 0.5f);
-        UI_BeginStackEx((UI_STACK_SETTINGS) {
-            .orientation = UI_STACK_HORIZONTAL,
-            .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
-            .spacing = { .h = M_ARROW_SPACING },
-        });
-        UI_BeginHide(i != sel_row || !M_CanChangeValue(s, i, -1));
-        UI_Label("\\{button left}");
-        UI_EndHide();
 
+        UI_BeginRowArrows(
+            i == sel_row && M_CanChangeValue(s, i, -1),
+            i == sel_row && M_CanChangeValue(s, i, +1), UI_ROW_ARROWS_TIGHT);
         UI_Label(M_FormatRowValue(s, i));
+        UI_EndRowArrows();
 
-        UI_BeginHide(i != sel_row || !M_CanChangeValue(s, i, +1));
-        UI_Label("\\{button right}");
-        UI_EndHide();
-        UI_EndStack();
         UI_EndAnchor();
         UI_EndResize();
 

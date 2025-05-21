@@ -31,6 +31,7 @@
 #include "./ui/elements/prompt.h"
 #include "./ui/elements/requester.h"
 #include "./ui/elements/resize.h"
+#include "./ui/elements/row_arrows.h"
 #include "./ui/elements/spacer.h"
 #include "./ui/elements/span.h"
 #include "./ui/elements/stack.h"

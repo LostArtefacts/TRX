@@ -16,6 +16,7 @@
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/resize.h"
+#include "game/ui/elements/row_arrows.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "memory.h"
@@ -201,7 +202,7 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
         }
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
-            .spacing = { .h = 20 },
+            .spacing = { .h = UI_ROW_ARROWS_WIDE },
             .align = { .v = UI_STACK_V_ALIGN_CENTER },
         });
         M_Arrow(s, UI_OVERLAY_ARROW_BCL);
