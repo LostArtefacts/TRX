@@ -42,6 +42,7 @@
 - fixed blood not spawning when Lara is run down by boulders/barrels (#2982, regression from 0.7)
 - fixed floors being lowered too much under pushable blocks that are killed in the same trigger that flips the map (#3007, regression from 0.9)
 - fixed inventory ring items not being animated when the ring is rotating (#2964, regression from 0.9)
+- fixed the camera jumping if going from a look at trigger to a fixed camera, such as in The Cold War room 36 (#3033, regression from 0.9)
 - fixed passport faces partially invisible
 - improved the `/set` console command to display available options if given an unknown argument
 - improved handling of items that are dropped by enemies (#2952)

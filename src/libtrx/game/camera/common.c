@@ -1026,6 +1026,9 @@ void Camera_Update(void)
             M_Combat(item);
         }
     } else {
+        if (fixed_camera) {
+            g_Camera.debuff = 0;
+        }
         if (g_Camera.debuff > 0) {
             const XYZ_32 old = g_Camera.target.pos;
             g_Camera.target.x = (item->pos.x + old.x) / 2;
