@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11...develop) - ××××-××-××
+
+## [4.11](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.2...tr1-4.11) - 2025-05-21
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - added a /help command (#2917)
 - added an option to toggle between TR1 and TR2 camera modes (#2990)
