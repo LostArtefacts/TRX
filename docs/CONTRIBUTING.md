@@ -298,6 +298,7 @@ git merge develop
 # relevant changelog file. Then tag it with `tr1-X.Y.Z` or `tr2-X.Y.Z`.
 # You can do that by hand, or run the command below:
 tools/release commit ${TR_VERSION} ${RELEASE_VERSION}
+tools/release tag ${TR_VERSION} ${RELEASE_VERSION}
 
 # Review the changelog content.
 
