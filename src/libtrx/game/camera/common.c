@@ -83,7 +83,8 @@ static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
 
-static const BOX_INFO *M_GetBox(const SECTOR *sector, int32_t x, int32_t z);
+static const BOX_INFO *M_GetBox(
+    const SECTOR *sector, int32_t x, int32_t z, bool generate_box);
 static bool M_IsGoodPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
 static const SECTOR *M_GetSector(
     int32_t x, int32_t y, int32_t z, int16_t room_num);
@@ -174,10 +175,15 @@ static void M_OffsetReset(void)
 }
 
 static const BOX_INFO *M_GetBox(
-    const SECTOR *const sector, const int32_t x, const int32_t z)
+    const SECTOR *const sector, const int32_t x, const int32_t z,
+    const bool generate_box)
 {
     if (sector->box != NO_BOX) {
         return Box_GetBox(sector->box);
+    }
+
+    if (!generate_box) {
+        return nullptr;
     }
 
     // A level may have blocked specific sector or room pathfinding, so create a
@@ -215,7 +221,7 @@ static int32_t M_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
     const int32_t z = pos->z;
 
     const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
-    const BOX_INFO *const box = M_GetBox(sector, x, z);
+    const BOX_INFO *const box = M_GetBox(sector, x, z, true);
 
     const int32_t left = box->left + clamp;
     const int32_t right = box->right - clamp;
@@ -259,14 +265,14 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     const SECTOR *sector =
         Room_GetWorldSector(room, g_Camera.target.x, g_Camera.target.z);
     const BOX_INFO *box =
-        M_GetBox(sector, g_Camera.target.x, g_Camera.target.z);
+        M_GetBox(sector, g_Camera.target.x, g_Camera.target.z, true);
 
     room = Room_Get(target->room_num);
     sector = Room_GetWorldSector(room, target->x, target->z);
 
     if (target->z < box->left || target->z > box->right || target->x < box->top
         || target->x > box->bottom) {
-        box = M_GetBox(sector, target->x, target->z);
+        box = M_GetBox(sector, target->x, target->z, true);
     }
 
     int32_t left = box->left;
@@ -280,8 +286,8 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     const SECTOR *const good_left =
         M_GetSector(target->x, target->y, test, target->room_num);
     if (good_left != nullptr) {
-        box = M_GetBox(good_left, target->x, test);
-        if (box->left < left) {
+        box = M_GetBox(good_left, target->x, test, false);
+        if (box != nullptr && box->left < left) {
             left = box->left;
         }
     } else if (settings.test_shift_pair) {
@@ -292,8 +298,8 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     const SECTOR *const good_right =
         M_GetSector(target->x, target->y, test, target->room_num);
     if (good_right != nullptr) {
-        box = M_GetBox(good_right, target->x, test);
-        if (box->right > right) {
+        box = M_GetBox(good_right, target->x, test, false);
+        if (box != nullptr && box->right > right) {
             right = box->right;
         }
     } else if (settings.test_shift_pair) {
@@ -304,8 +310,8 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     const SECTOR *const good_top =
         M_GetSector(test, target->y, target->z, target->room_num);
     if (good_top != nullptr) {
-        box = M_GetBox(good_top, test, target->z);
-        if (box->top < top) {
+        box = M_GetBox(good_top, test, target->z, false);
+        if (box != nullptr && box->top < top) {
             top = box->top;
         }
     } else if (settings.test_shift_pair) {
@@ -316,8 +322,8 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     const SECTOR *const good_bottom =
         M_GetSector(test, target->y, target->z, target->room_num);
     if (good_bottom != nullptr) {
-        box = M_GetBox(good_bottom, test, target->z);
-        if (box->bottom > bottom) {
+        box = M_GetBox(good_bottom, test, target->z, false);
+        if (box != nullptr && box->bottom > bottom) {
             bottom = box->bottom;
         }
     } else if (settings.test_shift_pair) {
