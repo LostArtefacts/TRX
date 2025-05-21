@@ -90,7 +90,8 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BEAR_STATE_DEATH:
-            if (bear->flags && (item->touch_bits & BEAR_TOUCH)) {
+            if (bear != nullptr && bear->flags != 0
+                && (item->touch_bits & BEAR_TOUCH) != 0) {
                 Lara_TakeDamage(BEAR_SLAM_DAMAGE, true);
                 bear->flags = 0;
             }
