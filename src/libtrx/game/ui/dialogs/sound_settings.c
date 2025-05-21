@@ -11,6 +11,7 @@
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/requester.h"
 #include "game/ui/elements/resize.h"
+#include "game/ui/elements/row_arrows.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "memory.h"
@@ -146,25 +147,16 @@ void UI_SoundSettings(UI_SOUND_SETTINGS_STATE *const s)
         UI_Label(GameString_Get(m_Labels[i]));
         UI_Spacer(20.0f, 0.0f);
 
-        UI_BeginStackEx((UI_STACK_SETTINGS) {
-            .orientation = UI_STACK_HORIZONTAL,
-            .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
-            .spacing = { .h = 5.0f },
-        });
-        UI_BeginHide(i != sel || !M_CanChange(i, -1));
-        UI_Label("\\{button left}");
-        UI_EndHide();
-
+        UI_BeginRowArrows(
+            i == sel && M_CanChange(i, -1), i == sel && M_CanChange(i, +1),
+            UI_ROW_ARROWS_MEDIUM);
         UI_BeginResize(value_w, -1.0f);
         UI_BeginAnchor(0.5f, 0.5f);
         UI_Label(M_FormatRowValue(i));
         UI_EndAnchor();
         UI_EndResize();
+        UI_EndRowArrows();
 
-        UI_BeginHide(i != sel || !M_CanChange(i, +1));
-        UI_Label("\\{button right}");
-        UI_EndHide();
-        UI_EndStack();
         UI_EndStack();
 
         UI_EndRequesterRow(&s->req, i);

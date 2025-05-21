@@ -64,6 +64,7 @@ UI_NODE *UI_AllocNode(const UI_WIDGET_OPS *ops, size_t additional_size);
 void UI_AddChild(UI_NODE *child);
 void UI_PushCurrent(UI_NODE *child);
 void UI_PopCurrent(void);
+const UI_NODE *UI_GetCurrent(void);
 
 void UI_Init(void);
 void UI_Shutdown(void);
