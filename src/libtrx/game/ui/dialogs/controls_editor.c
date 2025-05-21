@@ -467,7 +467,7 @@ static void M_InputLabel(
 {
     const bool is_selected = s->active_role == role
         && (s->phase == M_PHASE_NAVIGATE_INPUTS
-            || s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE);
+            || s->phase == M_PHASE_LISTEN_DEBOUNCE);
     if (is_selected) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
@@ -482,8 +482,9 @@ static void M_InputChoice(
 {
     const bool is_flashing =
         Input_IsKeyConflicted(s->backend, s->active_layout, role);
-    const bool is_selected =
-        s->active_role == role && s->phase == M_PHASE_LISTEN;
+    const bool is_selected = s->active_role == role
+        && (s->phase == M_PHASE_LISTEN
+            || s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE);
 
     if (is_flashing) {
         UI_BeginFlash(&s->flash);
@@ -565,12 +566,14 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
         .spacing = { .h = 40.0f },
     });
     UI_BeginHide(
-        Input_IsInListenMode() || s->active_layout == INPUT_LAYOUT_DEFAULT);
+        s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE || Input_IsInListenMode()
+        || s->active_layout == INPUT_LAYOUT_DEFAULT);
     M_FooterButton(s, INPUT_ROLE_RESET_BINDINGS, GS(ACTION_RESET_DEFAULTS));
     UI_EndHide();
 
     UI_BeginHide(
-        Input_IsInListenMode() || s->active_layout == INPUT_LAYOUT_DEFAULT
+        s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE || Input_IsInListenMode()
+        || s->active_layout == INPUT_LAYOUT_DEFAULT
         || s->active_role == (INPUT_ROLE)-1
         || !Input_IsRoleUnbindable(s->active_role));
     M_FooterButton(s, INPUT_ROLE_UNBIND_KEY, GS(ACTION_UNBIND));
