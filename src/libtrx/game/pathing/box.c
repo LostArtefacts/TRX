@@ -63,6 +63,8 @@ int32_t Box_GetCount(void)
 
 BOX_INFO *Box_GetBox(const int32_t box_idx)
 {
+    // TODO: in many cases, NO_BOX is blindly passed here and goes unchecked.
+    // Update each instance to handle NO_BOX safely.
     return m_Boxes == nullptr ? nullptr : &m_Boxes[box_idx];
 }
 
