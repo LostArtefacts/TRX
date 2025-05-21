@@ -17,6 +17,7 @@
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/requester.h"
 #include "game/ui/elements/resize.h"
+#include "game/ui/elements/row_arrows.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/span.h"
 #include "game/ui/elements/stack.h"
@@ -414,22 +415,27 @@ static UI_CONTROLS_CHOICE M_ListenDebounce(UI_CONTROLS_EDITOR_STATE *const s)
 
 static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *const s)
 {
+    const bool is_focused = s->phase == M_PHASE_NAVIGATE_LAYOUT;
     UI_BeginAnchor(0.5f, 0.5f);
-    if (s->phase == M_PHASE_NAVIGATE_LAYOUT) {
+    UI_BeginRowArrows(is_focused, is_focused, UI_ROW_ARROWS_MEDIUM);
+    if (is_focused) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
     UI_BeginPad(2.0f, 1.0f);
     UI_Label(Input_GetLayoutName(s->active_layout));
     UI_EndPad();
-    if (s->phase == M_PHASE_NAVIGATE_LAYOUT) {
+    if (is_focused) {
         UI_EndFrame();
     }
+    UI_EndRowArrows();
     UI_EndAnchor();
 }
 
 static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
 {
+    const bool is_focused = s->phase == M_PHASE_NAVIGATE_GROUP;
     UI_BeginAnchor(0.5f, 0.5f);
+    UI_BeginRowArrows(is_focused, is_focused, UI_ROW_ARROWS_MEDIUM);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
         .align = { .h = UI_STACK_H_ALIGN_CENTER },
@@ -440,8 +446,7 @@ static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
         UI_BeginAnchor(0.5f, 0.5f);
         if (group == s->active_group) {
             UI_BeginFrame(
-                s->phase == M_PHASE_NAVIGATE_GROUP ? UI_FRAME_SELECTED_OPTION
-                                                   : UI_FRAME_OUTLINE_ONLY);
+                is_focused ? UI_FRAME_SELECTED_OPTION : UI_FRAME_OUTLINE_ONLY);
         }
         UI_BeginPad(2.0f, 1.0f);
         UI_Label(GameString_Get(group->header));
@@ -453,6 +458,7 @@ static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
         group++;
     }
     UI_EndStack();
+    UI_EndRowArrows();
     UI_EndAnchor();
 }
 
