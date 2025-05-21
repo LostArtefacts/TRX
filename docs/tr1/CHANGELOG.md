@@ -85,6 +85,7 @@
 - fixed clicks in audio sounds (#2846, regression from 2.0)
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 4.9)
 - fixed game crashing if the music folder was not present (#2887, regression from 4.9)
+- fixed the camera jumping if going from a look at trigger to a fixed camera (#3033, regression from 4.8)
 - fixed game crashing on unknown sequencer events
 - improved bubble appearance (#2672)
 - improved rendering performance
