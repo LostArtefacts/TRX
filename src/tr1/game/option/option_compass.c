@@ -4,7 +4,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
-#include "game/text.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

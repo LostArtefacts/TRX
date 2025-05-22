@@ -618,8 +618,7 @@ void Output_DrawPickup(
 
 void Output_DrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
-    const int32_t scale_v, const int16_t sprite_idx, const int16_t shade,
-    const uint16_t flags)
+    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
 {
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     ASSERT(sprite != nullptr);
@@ -1037,29 +1036,25 @@ void Output_DrawTextOutline(
     const int32_t y0 = y + offset;
     const int32_t x1 = x0 + width - offset * 2;
     const int32_t y1 = y0 + height - offset * 2;
-    const int32_t scale_h = TEXT_BASE_SCALE;
-    const int32_t scale_v = TEXT_BASE_SCALE;
+    const int32_t scale_h = PHD_ONE;
+    const int32_t scale_v = PHD_ONE;
 
     Output_DrawScreenSprite(
-        x0, y0, z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL, 0);
+        x0, y0, z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL);
     Output_DrawScreenSprite(
-        x1, y0, z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL, 0);
+        x1, y0, z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL);
     Output_DrawScreenSprite(
-        x1, y1, z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL, 0);
+        x1, y1, z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL);
     Output_DrawScreenSprite(
-        x0, y1, z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL, 0);
+        x0, y1, z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL);
 
-    int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
-    int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
+    int32_t w = (width - offset * 2) * PHD_ONE / 8;
+    int32_t h = (height - offset * 2) * PHD_ONE / 8;
 
-    Output_DrawScreenSprite(
-        x0, y0, z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL, 0);
-    Output_DrawScreenSprite(
-        x1, y0, z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL, 0);
-    Output_DrawScreenSprite(
-        x0, y1, z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL, 0);
-    Output_DrawScreenSprite(
-        x0, y0, z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL, 0);
+    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL);
 }
 
 void Output_DrawTextBackground(

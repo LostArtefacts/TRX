@@ -48,6 +48,7 @@
 - fixed the camera jumping if going from a look at trigger to a fixed camera, such as in The Cold War room 36 (#3033, regression from 0.9)
 - fixed a crash in The Golden Mask if the bear is killed with the grenade launcher (#3037, regression from 1.0)
 - fixed passport faces partially invisible
+- improved word wrapping algorithm in the dev console
 - improved the `/set` console command to display available options if given an unknown argument
 - improved handling of items that are dropped by enemies (#2952)
     - added the ability for any enemy type to drop items, excluding eels

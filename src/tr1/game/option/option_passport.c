@@ -10,7 +10,6 @@
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
 

@@ -1,6 +1,5 @@
 #include "game/ui/elements/modal.h"
 
-#include "game/text.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/helpers.h"
 

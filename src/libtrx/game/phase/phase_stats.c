@@ -8,7 +8,6 @@
 #include "game/input.h"
 #include "game/interpolation.h"
 #include "game/shell.h"
-#include "game/text.h"
 #include "game/ui.h"
 #include "memory.h"
 

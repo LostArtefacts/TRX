@@ -1,15 +1,11 @@
 #pragma once
 
 #include "../common.h"
-
-#include <stdint.h>
+#include "../text.h"
 
 // Basic text widget.
 
-typedef struct {
-    float scale;
-    int32_t z;
-} UI_LABEL_SETTINGS;
+typedef UI_TEXT_SETTINGS UI_LABEL_SETTINGS;
 
 void UI_Label(const char *text);
 void UI_LabelFmt(const char *fmt, ...);

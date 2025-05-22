@@ -13,10 +13,13 @@ static void M_AddPage(
     const char *text, int32_t start_pos, int32_t length, VECTOR *pages);
 
 static void M_AddPage(
-    const char *text, const int32_t start_pos, const int32_t length,
-    VECTOR *const pages)
+    const char *text, int32_t start_pos, int32_t length, VECTOR *const pages)
 {
     char substr[length + 1];
+    while (text[start_pos] == '\n' && text[start_pos] != '\0') {
+        start_pos++;
+        length--;
+    }
     strncpy(substr, text + start_pos, length);
     substr[length] = '\0';
 
@@ -201,81 +204,6 @@ char *String_ToUpper(const char *text)
 
     *dest = '\0';
     return upper_text;
-}
-
-char *String_WordWrap(const char *text, const size_t line_len)
-{
-    if (text == nullptr || line_len == 0) {
-        return nullptr;
-    }
-
-    const size_t text_len = strlen(text);
-    char *const wrapped_text = Memory_Alloc(text_len + text_len / line_len + 2);
-
-    size_t cur_line_len = 0;
-    char *dest = wrapped_text;
-
-    while (*text != '\0') {
-        // Handle pre-existing newlines and leading spaces
-        if (*text == '\n' || (cur_line_len == 0 && isspace(*text))) {
-            if (*text == '\n') {
-                cur_line_len = 0;
-            }
-            *dest++ = *text++;
-            while (cur_line_len == 0 && isspace(*text) && *text != '\n') {
-                text++;
-            }
-            continue;
-        }
-
-        // Find the length of the next word
-        const char *end = text;
-        while (*end != '\0' && !isspace(*end) && *end != '\n') {
-            end++;
-        }
-        const size_t word_len = end - text;
-
-        if (cur_line_len + word_len > line_len) {
-            if (cur_line_len > 0) {
-                *dest++ = '\n';
-                cur_line_len = 0;
-                continue;
-            } else {
-                for (size_t i = 0; i < word_len; i++) {
-                    if (cur_line_len >= line_len) {
-                        *dest++ = '\n';
-                        cur_line_len = 0;
-                    }
-                    *dest++ = *text++;
-                    cur_line_len++;
-                }
-                continue;
-            }
-        }
-
-        // Copy the word to the destination
-        for (size_t i = 0; i < word_len; i++) {
-            *dest++ = *text++;
-            cur_line_len++;
-        }
-
-        // Copy any spaces (handle overflow within the loop)
-        while (*text != '\0' && isspace(*text) && *text != '\n') {
-            if (cur_line_len >= line_len) {
-                *dest++ = '\n';
-                cur_line_len = 0;
-                while (isspace(*text) && *text != '\n') {
-                    text++;
-                }
-                break;
-            }
-            *dest++ = *text++;
-            cur_line_len++;
-        }
-    }
-
-    *dest = '\0';
-    return wrapped_text;
 }
 
 VECTOR *String_Paginate(const char *const text, const int32_t max_lines)

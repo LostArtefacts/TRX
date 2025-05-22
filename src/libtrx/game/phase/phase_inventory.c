@@ -4,7 +4,6 @@
 #include "game/inventory_ring.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/text.h"
 #include "memory.h"
 
 typedef struct {

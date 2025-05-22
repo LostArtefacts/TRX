@@ -9,7 +9,6 @@
 #include "game/output/meshes/common.h"
 #include "game/output/shader.h"
 #include "game/screen.h"
-#include "game/text.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"

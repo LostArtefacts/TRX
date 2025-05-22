@@ -20,7 +20,6 @@ bool String_ParseRGB888(const char *value, RGB_888 *target);
 
 char *String_ToUpper(const char *text);
 
-char *String_WordWrap(const char *text, size_t line_length);
 VECTOR *String_Paginate(const char *text, int32_t max_lines);
 
 char *String_Format(const char *fmt, ...);

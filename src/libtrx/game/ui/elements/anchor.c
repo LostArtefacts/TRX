@@ -1,7 +1,7 @@
 #include "game/ui/elements/anchor.h"
 
-#include "game/text.h"
 #include "game/ui/helpers.h"
+#include "game/ui/text.h"
 
 typedef struct {
     float x;
@@ -20,7 +20,7 @@ static const UI_WIDGET_OPS m_Ops = {
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = UI_GetCanvasWidth();
-    node->measure_h = UI_GetCanvasHeight() - TEXT_HEIGHT;
+    node->measure_h = UI_GetCanvasHeight() - UI_TEXT_HEIGHT;
 }
 
 static void M_Layout(

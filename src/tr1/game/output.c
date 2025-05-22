@@ -761,8 +761,7 @@ void Output_DrawScreenFBox(
 
 void Output_DrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
-    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade,
-    const uint16_t flags, const int32_t page)
+    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
 {
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     const int32_t x0 = sx + (scale_h * sprite->x0 / PHD_ONE);

@@ -7,6 +7,7 @@
 #include "game/scaler.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/events.h"
+#include "game/ui/text.h"
 #include "game/viewport.h"
 #include "memory.h"
 
@@ -170,10 +171,12 @@ void UI_EndScene(void)
 void UI_Init(void)
 {
     UI_InitEvents();
+    UI_InitText();
 }
 
 void UI_Shutdown(void)
 {
+    UI_ShutdownText();
     Memory_ArenaFree(&m_Priv.alloc);
     UI_ShutdownEvents();
 }

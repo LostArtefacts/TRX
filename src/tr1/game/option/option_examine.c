@@ -5,7 +5,7 @@
 #include <libtrx/game/objects/names.h>
 #include <libtrx/game/ui.h>
 
-#define MAX_LINES 10
+#define M_MAX_LINES 10
 
 typedef struct {
     struct {
@@ -24,7 +24,7 @@ static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
     p->ui.is_ready = true;
     UI_ExamineItem_Init(
         &p->ui.state, Object_GetName(obj_id), Object_GetDescription(obj_id),
-        MAX_LINES);
+        M_MAX_LINES);
 }
 
 static void M_Shutdown(M_PRIV *const p)

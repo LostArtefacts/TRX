@@ -20,7 +20,6 @@
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound/enum.h>
 #include <libtrx/game/sound/ids.h>
-#include <libtrx/game/text.h>
 #include <libtrx/game/types.h>
 
 #include <stdint.h>
