@@ -65,7 +65,7 @@ void Text_DrawText(TEXTSTRING *const text)
     const GLYPH_INFO **glyph_ptr = text->glyphs;
     while (*glyph_ptr != nullptr) {
         const GLYPH_INFO *glyph = *glyph_ptr;
-        if (text->flags.multiline && glyph->role == GLYPH_NEWLINE) {
+        if (glyph->role == GLYPH_NEWLINE) {
             y += TEXT_HEIGHT_FIXED * text->scale.v / TEXT_BASE_SCALE;
             x = start_x;
             goto loop_end;

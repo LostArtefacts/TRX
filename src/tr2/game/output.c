@@ -643,7 +643,6 @@ bool Output_MakeScreenshot(const char *const path)
 void Output_BeginScene(void)
 {
     Matrix_ResetStack();
-    Text_DrawReset();
     Render_BeginScene();
 }
 

@@ -120,24 +120,6 @@ void Text_Shutdown(void)
     m_GlyphLookupKeyCap = 0;
 }
 
-void Text_DrawReset(void)
-{
-    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *const text = &m_TextStrings[i];
-        text->flags.drawn = 0;
-    }
-}
-
-void Text_Draw(void)
-{
-    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *const text = &m_TextStrings[i];
-        if (text->flags.active && !text->flags.manual_draw) {
-            Text_DrawText(text);
-        }
-    }
-}
-
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *const content)
 {
     if (content == nullptr) {
@@ -322,117 +304,6 @@ void Text_SetScale(
     text->scale.v = scale_v;
 }
 
-void Text_Flash(TEXTSTRING *const text, const bool enable, const int16_t rate)
-{
-    if (text == nullptr) {
-        return;
-    }
-    if (enable) {
-        text->flags.flash = 1;
-        text->flash.rate = rate;
-        text->flash.count = rate;
-    } else {
-        text->flags.flash = 0;
-    }
-}
-
-void Text_Hide(TEXTSTRING *const text, const bool enable)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.hide = enable;
-}
-
-void Text_AddBackground(
-    TEXTSTRING *const text, const int16_t w, const int16_t h, const int16_t x,
-    const int16_t y, const TEXT_STYLE style)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.background = 1;
-    text->background.size.x = w;
-    text->background.size.y = h;
-    text->background.offset.x = x;
-    text->background.offset.y = y;
-    switch (style) {
-    case TS_HEADING:
-    case TS_REQUESTED:
-        text->background.offset.z = 80;
-        break;
-    case TS_BACKGROUND:
-        text->background.offset.z = 160;
-        break;
-    }
-    text->background.style = style;
-}
-
-void Text_RemoveBackground(TEXTSTRING *const text)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.background = 0;
-}
-
-void Text_AddOutline(TEXTSTRING *const text, const TEXT_STYLE style)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.outline = 1;
-    text->outline.style = style;
-}
-
-void Text_RemoveOutline(TEXTSTRING *const text)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.outline = 0;
-}
-
-void Text_CentreH(TEXTSTRING *const text, const bool enable)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.centre_h = enable;
-}
-
-void Text_CentreV(TEXTSTRING *const text, const bool enable)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.centre_v = enable;
-}
-
-void Text_AlignRight(TEXTSTRING *const text, const bool enable)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.right = enable;
-}
-
-void Text_AlignBottom(TEXTSTRING *const text, const bool enable)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.bottom = enable;
-}
-
-void Text_SetMultiline(TEXTSTRING *const text, const bool enable)
-{
-    if (text == nullptr) {
-        return;
-    }
-    text->flags.multiline = enable;
-}
-
 int32_t Text_GetWidth(const TEXTSTRING *const text)
 {
     if (text == nullptr || text->glyphs == nullptr) {
@@ -467,7 +338,7 @@ int32_t Text_GetHeight(const TEXTSTRING *const text)
     int32_t height = TEXT_HEIGHT_FIXED;
     char *content = text->content;
     for (char letter = *content; letter != '\0'; letter = *content++) {
-        if (text->flags.multiline && letter == '\n') {
+        if (letter == '\n') {
             height += TEXT_HEIGHT_FIXED;
         }
     }

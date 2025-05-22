@@ -82,7 +82,6 @@ static void M_Draw(PHASE *const phase)
 
     Overlay_Draw();
     Console_Draw();
-    Text_Draw();
     UI_EndScene();
     Output_DrawPolyList();
     Fader_Draw(&m_ExitFader);

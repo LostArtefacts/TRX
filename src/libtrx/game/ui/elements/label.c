@@ -40,7 +40,6 @@ static TEXTSTRING *M_CreateText(
     Text_SetPos(
         textstring, x / g_Config.ui.text_scale,
         y / g_Config.ui.text_scale + settings.scale * TEXT_HEIGHT_FIXED - 1);
-    Text_SetMultiline(textstring, true);
     Text_SetScale(
         textstring, settings.scale * TEXT_BASE_SCALE,
         settings.scale * TEXT_BASE_SCALE);
