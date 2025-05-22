@@ -200,15 +200,11 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
         if (s->bottom_text.flash_enabled) {
             UI_BeginFlash(&s->flash_state);
         }
-        UI_BeginStackEx((UI_STACK_SETTINGS) {
-            .orientation = UI_STACK_HORIZONTAL,
-            .spacing = { .h = UI_ROW_ARROWS_WIDE },
-            .align = { .v = UI_STACK_V_ALIGN_CENTER },
-        });
-        M_Arrow(s, UI_OVERLAY_ARROW_BCL);
+        UI_BeginRowArrows(
+            s->show_arrows[UI_OVERLAY_ARROW_BCL],
+            s->show_arrows[UI_OVERLAY_ARROW_BCR], UI_ROW_ARROWS_WIDE);
         UI_Label(s->bottom_text.text);
-        M_Arrow(s, UI_OVERLAY_ARROW_BCR);
-        UI_EndStack();
+        UI_EndRowArrows();
         if (s->bottom_text.flash_enabled) {
             UI_EndFlash();
         }
