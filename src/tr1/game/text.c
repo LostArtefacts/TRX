@@ -13,12 +13,7 @@
 
 void Text_DrawText(TEXTSTRING *const text)
 {
-    if (text->flags.drawn) {
-        return;
-    }
-    text->flags.drawn = 1;
-
-    if (text->flags.hide || text->glyphs == nullptr) {
+    if (text->glyphs == nullptr) {
         return;
     }
 
@@ -27,34 +22,9 @@ void Text_DrawText(TEXTSTRING *const text)
         return;
     }
 
-    if (text->flags.flash) {
-        text->flash.count -= Clock_GetFrameAdvance();
-        if (text->flash.count <= -text->flash.rate) {
-            text->flash.count = text->flash.rate;
-        } else if (text->flash.count < 0) {
-            return;
-        }
-    }
-
     double x = text->pos.x;
     double y = text->pos.y;
     int32_t text_width = Text_GetWidth(text);
-
-    if (text->flags.centre_h) {
-        x += (Screen_GetResWidthDownscaled(RSR_TEXT) - text_width) / 2;
-    } else if (text->flags.right) {
-        x += (Screen_GetResWidthDownscaled(RSR_TEXT) - text_width);
-    }
-
-    if (text->flags.centre_v) {
-        y += Screen_GetResHeightDownscaled(RSR_TEXT) / 2.0;
-    } else if (text->flags.bottom) {
-        y += Screen_GetResHeightDownscaled(RSR_TEXT);
-    }
-
-    int32_t bxpos = text->background.offset.x + x - TEXT_BOX_OFFSET_X;
-    int32_t bypos =
-        text->background.offset.y + y + TEXT_BOX_OFFSET_Y1 - TEXT_HEIGHT_FIXED;
 
     int32_t sx;
     int32_t sy;
@@ -104,41 +74,6 @@ void Text_DrawText(TEXTSTRING *const text)
         }
     loop_end:
         glyph_ptr++;
-    }
-
-    int32_t bwidth = 0;
-    int32_t bheight = 0;
-    if (text->flags.background || text->flags.outline) {
-        if (text->background.size.x) {
-            bxpos += text_width / 2;
-            bxpos -= text->background.size.x / 2;
-            bwidth = text->background.size.x + TEXT_BOX_OFFSET_X * 2;
-        } else {
-            bwidth = text_width + TEXT_BOX_OFFSET_X * 2;
-        }
-        if (text->background.size.y) {
-            bheight = text->background.size.y;
-        } else {
-            bheight = TEXT_HEIGHT_FIXED + TEXT_BOX_OFFSET_Y2;
-        }
-    }
-
-    if (text->flags.background) {
-        sx = Screen_GetRenderScale(bxpos, RSR_TEXT);
-        sy = Screen_GetRenderScale(bypos, RSR_TEXT);
-        sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
-        sv = Screen_GetRenderScale(bheight, RSR_TEXT);
-        Output_DrawTextBackground(
-            g_Config.ui.menu_style, sx, sy, sh, sv, 0, text->background.style);
-    }
-
-    if (text->flags.outline) {
-        sx = Screen_GetRenderScale(bxpos, RSR_TEXT);
-        sy = Screen_GetRenderScale(bypos, RSR_TEXT);
-        sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
-        sv = Screen_GetRenderScale(bheight, RSR_TEXT);
-        Output_DrawTextOutline(
-            g_Config.ui.menu_style, sx, sy, sh, sv, 0, text->outline.style);
     }
 }
 

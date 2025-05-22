@@ -17,12 +17,7 @@ static int32_t M_Scale(const int32_t value)
 
 void Text_DrawText(TEXTSTRING *const text)
 {
-    if (text->flags.drawn) {
-        return;
-    }
-    text->flags.drawn = 1;
-
-    if (text->flags.hide || text->glyphs == nullptr) {
+    if (text->glyphs == nullptr) {
         return;
     }
 
@@ -36,42 +31,12 @@ void Text_DrawText(TEXTSTRING *const text)
     const int32_t scale_h = M_Scale(text->scale.h);
     const int32_t scale_v = M_Scale(text->scale.v);
 
-    if (text->flags.flash) {
-        text->flash.count -= Clock_GetFrameAdvance();
-        if (text->flash.count <= -text->flash.rate) {
-            text->flash.count = text->flash.rate;
-        } else if (text->flash.count < 0) {
-            return;
-        }
-    }
-
     int32_t x = (text->pos.x * M_Scale(TEXT_BASE_SCALE)) / TEXT_BASE_SCALE;
     int32_t y = (text->pos.y * M_Scale(TEXT_BASE_SCALE)) / TEXT_BASE_SCALE;
     int32_t z = text->pos.z;
     int32_t text_width =
         Text_GetWidth(text) * M_Scale(TEXT_BASE_SCALE) / TEXT_BASE_SCALE;
 
-    if (text->flags.centre_h) {
-        x += (g_PhdWinWidth - text_width) / 2;
-    } else if (text->flags.right) {
-        x += g_PhdWinWidth - text_width;
-    }
-
-    if (text->flags.centre_v) {
-        y += g_PhdWinHeight / 2;
-    } else if (text->flags.bottom) {
-        y += g_PhdWinHeight;
-    }
-
-    int32_t box_x = x
-        + (text->background.offset.x * M_Scale(TEXT_BASE_SCALE))
-            / TEXT_BASE_SCALE
-        - ((2 * scale_h) / TEXT_BASE_SCALE);
-    int32_t box_y = y
-        + (text->background.offset.y * M_Scale(TEXT_BASE_SCALE))
-            / TEXT_BASE_SCALE
-        - ((4 * scale_v) / TEXT_BASE_SCALE)
-        - ((11 * scale_v) / TEXT_BASE_SCALE);
     const int32_t start_x = x;
 
     const GLYPH_INFO **glyph_ptr = text->glyphs;
@@ -136,33 +101,6 @@ void Text_DrawText(TEXTSTRING *const text)
 
     loop_end:
         glyph_ptr++;
-    }
-
-    if (text->flags.outline || text->flags.background) {
-        if (text->background.size.x) {
-            const int32_t background_width =
-                (text->background.size.x * scale_h) / TEXT_BASE_SCALE;
-            box_x += (text_width - background_width) / 2;
-            box_w = background_width + 4;
-        } else {
-            box_w = text_width + 4;
-        }
-
-        const int32_t background_height =
-            (text->background.size.y * scale_v) / TEXT_BASE_SCALE;
-        box_h = text->background.size.y ? background_height
-                                        : ((16 * scale_v) / TEXT_BASE_SCALE);
-    }
-
-    if (text->flags.background) {
-        Output_DrawTextBackground(
-            UI_STYLE_PC, box_x, box_y, box_w, box_h,
-            z + text->background.offset.z, TS_REQUESTED);
-    }
-
-    if (text->flags.outline) {
-        Output_DrawTextOutline(
-            UI_STYLE_PC, box_x, box_y, box_w, box_h, z, TS_REQUESTED);
     }
 }
 

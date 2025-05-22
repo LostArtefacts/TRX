@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./math/types.h"
 #include "./output/draw.h"
 
 #include <stddef.h>
@@ -35,60 +36,15 @@ typedef struct {
 } GLYPH_INFO;
 
 typedef struct {
-    union {
-        uint32_t all;
-        struct {
-            uint32_t active : 1;
-            uint32_t flash : 1;
-            uint32_t rotate_h : 1;
-            uint32_t centre_h : 1;
-            uint32_t centre_v : 1;
-            uint32_t right : 1;
-            uint32_t bottom : 1;
-            uint32_t background : 1;
-            uint32_t outline : 1;
-            uint32_t hide : 1;
-
-            uint32_t manual_draw : 1;
-            uint32_t drawn : 1;
-        };
-    } flags;
-
-    struct {
-        int32_t x;
-        int32_t y;
-        int32_t z;
-    } pos;
+    XYZ_32 pos;
 
     int16_t letter_spacing;
     int16_t word_spacing;
 
     struct {
-        int16_t rate;
-        int16_t count;
-    } flash;
-
-    struct {
         int32_t h;
         int32_t v;
     } scale;
-
-    struct {
-        TEXT_STYLE style;
-        struct {
-            int32_t x;
-            int32_t y;
-            int32_t z;
-        } offset;
-        struct {
-            int16_t x;
-            int16_t y;
-        } size;
-    } background;
-
-    struct {
-        TEXT_STYLE style;
-    } outline;
 
     size_t content_cap;
     char *content;

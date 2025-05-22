@@ -65,11 +65,6 @@ static size_t M_GetGlyphSize(const char *const ptr)
 
 void Text_Init(void)
 {
-    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *const text = &m_TextStrings[i];
-        text->flags.all = 0;
-    }
-
     // Convert the linear array coming from the .def macros to a hash lookup
     // table for faster text-to-glyph resolution.
     for (GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
@@ -129,7 +124,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *const content)
     int32_t free_idx = -1;
     for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *const text = &m_TextStrings[i];
-        if (!text->flags.active) {
+        if (text->content == nullptr || text->content[0] == '\0') {
             free_idx = i;
             break;
         }
@@ -154,14 +149,6 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *const content)
     text->letter_spacing = 1;
     text->word_spacing = 6;
 
-    text->background.size.x = 0;
-    text->background.size.y = 0;
-    text->background.offset.x = 0;
-    text->background.offset.y = 0;
-    text->background.offset.z = 0;
-    text->flags.all = 0;
-    text->flags.active = 1;
-
     Text_ChangeText(text, content);
 
     return text;
@@ -172,14 +159,11 @@ void Text_Remove(TEXTSTRING *const text)
     if (text == nullptr) {
         return;
     }
-    if (text->flags.active) {
-        text->flags.active = 0;
-        if (text->content != nullptr) {
-            text->content[0] = '\0';
-        }
-        if (text->glyphs != nullptr) {
-            text->glyphs[0] = nullptr;
-        }
+    if (text->content != nullptr) {
+        text->content[0] = '\0';
+    }
+    if (text->glyphs != nullptr) {
+        text->glyphs[0] = nullptr;
     }
 }
 
@@ -260,9 +244,6 @@ void Text_ChangeText(TEXTSTRING *const text, const char *const content)
     }
     if (text->glyphs != nullptr) {
         text->glyphs[0] = nullptr;
-    }
-    if (!text->flags.active) {
-        return;
     }
 
     const size_t content_size = strlen(content) + 1;
