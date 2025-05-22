@@ -107,7 +107,7 @@ void UI_ExamineItem(UI_EXAMINE_ITEM_STATE *const state)
         } else if (state->page_content->count == 1) {
             UI_BeginResize(-1.0f, -1.0f);
         } else {
-            UI_BeginResize(-1.0f, TEXT_HEIGHT_FIXED * state->max_lines);
+            UI_BeginResize(-1.0f, TEXT_HEIGHT * state->max_lines);
         }
         UI_Label(*(char **)Vector_Get(state->page_content, i));
         UI_EndResize();

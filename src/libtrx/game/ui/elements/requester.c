@@ -153,7 +153,7 @@ void UI_BeginRequester(
     if (s->reserve_space) {
         UI_BeginResize(
             -1.0f,
-            s->scroll.vis_items * TEXT_HEIGHT_FIXED
+            s->scroll.vis_items * TEXT_HEIGHT
                 + (s->scroll.vis_items - 1) * s->row_spacing);
     }
 
