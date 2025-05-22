@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...develop) - ××××-××-××
+
+## [4.11.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.11...tr1-4.11.1) - 2025-05-23
 - fixed "Load Game" bottom text arrows jumping when entering the load game dialog (regression from 4.11)
 - fixed missing arrows around focused navigation elements in the controls dialog (#3042, regression from 4.11)
 - fixed text outline being a bit laggy when rebinding the inputs in the controls dialog
