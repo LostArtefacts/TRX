@@ -157,7 +157,7 @@ void UI_Console(UI_CONSOLE_STATE *const s)
     if (Console_IsOpened()) {
         UI_Prompt(&s->prompt);
     } else {
-        UI_Spacer(0.0f, TEXT_HEIGHT_FIXED);
+        UI_Spacer(0.0f, TEXT_HEIGHT);
     }
 
     UI_EndStack();

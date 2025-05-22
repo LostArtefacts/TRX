@@ -8,6 +8,8 @@
 #include <string.h>
 #include <uthash.h>
 
+#define M_MAX_STRINGS 128
+
 typedef struct {
     GLYPH_INFO *glyph;
     UT_hash_handle hh;
@@ -20,7 +22,7 @@ typedef struct {
     UT_hash_handle hh;
 } M_TEXT_MAP_ENTRY;
 
-static TEXTSTRING m_TextStrings[TEXT_MAX_STRINGS] = {};
+static TEXTSTRING m_TextStrings[M_MAX_STRINGS] = {};
 
 static GLYPH_INFO m_Glyphs[] = {
 #define GLYPH_DEFINE(text_, role_, width_, mesh_idx_, ...)                     \
@@ -83,7 +85,7 @@ void Text_Init(void)
 
 void Text_Shutdown(void)
 {
-    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
+    for (int32_t i = 0; i < M_MAX_STRINGS; i++) {
         TEXTSTRING *const text = &m_TextStrings[i];
         Memory_FreePointer(&text->content);
         text->content_cap = 0;
@@ -122,7 +124,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *const content)
     }
 
     int32_t free_idx = -1;
-    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
+    for (int32_t i = 0; i < M_MAX_STRINGS; i++) {
         TEXTSTRING *const text = &m_TextStrings[i];
         if (text->content == nullptr || text->content[0] == '\0') {
             free_idx = i;
@@ -316,11 +318,11 @@ int32_t Text_GetHeight(const TEXTSTRING *const text)
     if (text == nullptr) {
         return 0;
     }
-    int32_t height = TEXT_HEIGHT_FIXED;
+    int32_t height = TEXT_HEIGHT;
     char *content = text->content;
     for (char letter = *content; letter != '\0'; letter = *content++) {
         if (letter == '\n') {
-            height += TEXT_HEIGHT_FIXED;
+            height += TEXT_HEIGHT;
         }
     }
     return height * text->scale.v / (float)TEXT_BASE_SCALE;

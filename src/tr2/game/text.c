@@ -26,16 +26,12 @@ void Text_DrawText(TEXTSTRING *const text)
         return;
     }
 
-    int32_t box_w = 0;
-    int32_t box_h = 0;
     const int32_t scale_h = M_Scale(text->scale.h);
     const int32_t scale_v = M_Scale(text->scale.v);
 
     int32_t x = (text->pos.x * M_Scale(TEXT_BASE_SCALE)) / TEXT_BASE_SCALE;
     int32_t y = (text->pos.y * M_Scale(TEXT_BASE_SCALE)) / TEXT_BASE_SCALE;
     int32_t z = text->pos.z;
-    int32_t text_width =
-        Text_GetWidth(text) * M_Scale(TEXT_BASE_SCALE) / TEXT_BASE_SCALE;
 
     const int32_t start_x = x;
 

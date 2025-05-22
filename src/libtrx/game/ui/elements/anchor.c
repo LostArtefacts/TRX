@@ -20,7 +20,7 @@ static const UI_WIDGET_OPS m_Ops = {
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = UI_GetCanvasWidth();
-    node->measure_h = UI_GetCanvasHeight() - TEXT_HEIGHT_FIXED;
+    node->measure_h = UI_GetCanvasHeight() - TEXT_HEIGHT;
 }
 
 static void M_Layout(
