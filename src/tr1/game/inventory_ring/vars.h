@@ -4,7 +4,6 @@
 
 #include <libtrx/game/clock.h>
 #include <libtrx/game/inventory_ring/vars.h>
-#include <libtrx/game/text.h>
 
 extern INVENTORY_ITEM g_InvRing_Item_Compass;
 extern INVENTORY_ITEM g_InvRing_Item_Medi;

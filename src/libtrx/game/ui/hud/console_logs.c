@@ -2,7 +2,6 @@
 
 #include "debug.h"
 #include "game/clock.h"
-#include "game/text.h"
 #include "game/ui/elements/label.h"
 #include "game/ui/elements/stack.h"
 #include "game/ui/events.h"
@@ -61,7 +60,7 @@ static void M_HandleLog(const EVENT *const event, void *const user_data)
 
     s->logs[0].expire_at =
         Clock_GetRealTime() + strlen(text) * M_DELAY_PER_CHAR;
-    s->logs[0].text = String_WordWrap(text, Text_GetMaxLineLength());
+    s->logs[0].text = UI_Text_WordWrap(text, M_LOG_SCALE, UI_GetCanvasWidth());
     M_UpdateLogCount(s);
 }
 

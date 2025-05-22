@@ -1,8 +1,8 @@
 #include "game/ui/elements/label.h"
 
 #include "config.h"
-#include "game/text.h"
 #include "game/ui/helpers.h"
+#include "game/ui/text.h"
 #include "strings.h"
 
 #include <stdarg.h>
@@ -28,47 +28,34 @@ static const UI_WIDGET_OPS m_Ops = {
     .draw = M_Draw,
 };
 
-static TEXTSTRING *M_CreateText(
-    const float x, const float y, const char *text,
-    const UI_LABEL_SETTINGS settings);
-
-static TEXTSTRING *M_CreateText(
-    const float x, const float y, const char *text,
-    const UI_LABEL_SETTINGS settings)
-{
-    TEXTSTRING *const textstring = Text_Create(x, y, text);
-    Text_SetPos(
-        textstring, x / g_Config.ui.text_scale,
-        y / g_Config.ui.text_scale + settings.scale * TEXT_HEIGHT - 1);
-    Text_SetScale(
-        textstring, settings.scale * TEXT_BASE_SCALE,
-        settings.scale * TEXT_BASE_SCALE);
-    return textstring;
-}
-
 static void M_Measure(UI_NODE *const node)
 {
     M_DATA *const data = node->data;
-    UI_Label_MeasureEx(
-        data->text, &node->measure_w, &node->measure_h, data->settings);
+    float w = 0.0f, h = 0.0f;
+    UI_Text_Measure(data->text, &w, &h, data->settings);
+    node->measure_w = w;
+    node->measure_h = h;
 }
 
 static void M_Draw(const UI_NODE *const node)
 {
     M_DATA *const data = node->data;
-    TEXTSTRING *const textstring =
-        M_CreateText(node->x, node->y, data->text, data->settings);
-    if (data->settings.z != 0) {
-        textstring->pos.z = data->settings.z;
-    }
-    Text_DrawText(textstring);
-    Text_Remove(textstring);
+    UI_Text_Draw(data->text, node->x, node->y, data->settings);
     UI_DrawWrapper(node);
 }
 
 void UI_Label(const char *const text)
 {
     UI_LabelEx(text, m_DefaultSettings);
+}
+
+void UI_LabelFmt(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    String_FormatIntoV(&m_TempString.buf, &m_TempString.cap, fmt, args);
+    va_end(args);
+    UI_Label(m_TempString.buf);
 }
 
 void UI_LabelEx(const char *text, const UI_LABEL_SETTINGS settings)
@@ -95,22 +82,12 @@ void UI_Label_MeasureEx(
     const char *const text, float *const out_w, float *const out_h,
     const UI_LABEL_SETTINGS settings)
 {
-    TEXTSTRING *const textstring = M_CreateText(0, 0, text, settings);
+    float w = 0.0f, h = 0.0f;
+    UI_Text_Measure(text, &w, &h, settings);
     if (out_w != nullptr) {
-        *out_w = Text_GetWidth(textstring) * g_Config.ui.text_scale;
+        *out_w = w;
     }
     if (out_h != nullptr) {
-        *out_h = Text_GetHeight(textstring) * g_Config.ui.text_scale;
+        *out_h = h;
     }
-    Text_Remove(textstring);
-}
-
-// Format a label using printf-style formatting into a reusable buffer
-void UI_LabelFmt(const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    String_FormatIntoV(&m_TempString.buf, &m_TempString.cap, fmt, args);
-    va_end(args);
-    UI_Label(m_TempString.buf);
 }

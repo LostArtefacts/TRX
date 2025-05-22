@@ -1,6 +1,5 @@
 #include "game/input.h"
 #include "game/option/option.h"
-#include "game/text.h"
 #include "game/ui/dialogs/graphic_settings.h"
 #include "global/vars.h"
 

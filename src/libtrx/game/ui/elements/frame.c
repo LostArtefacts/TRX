@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/output.h"
-#include "game/text.h"
 #include "game/ui/helpers.h"
 
 typedef struct {

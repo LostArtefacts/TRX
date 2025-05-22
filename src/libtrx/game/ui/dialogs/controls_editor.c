@@ -7,7 +7,6 @@
 #include "game/scaler.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/elements/bar.h"
 #include "game/ui/elements/frame.h"
@@ -540,7 +539,7 @@ static void M_Group(
     for (int32_t i = 0; i < s->scroll.vis_items; i++) {
         const int32_t row = s->scroll.first_item + i;
         if (row >= s->scroll.max_items) {
-            UI_Spacer(0.0f, TEXT_HEIGHT);
+            UI_Spacer(0.0f, UI_TEXT_HEIGHT);
         } else {
             const INPUT_ROLE role = group->roles[row];
             UI_BeginStack(UI_STACK_HORIZONTAL);

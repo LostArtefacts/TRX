@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/input.h"
-#include "game/text.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/elements/fixed.h"
 #include "game/ui/elements/frame.h"
@@ -153,7 +152,7 @@ void UI_BeginRequester(
     if (s->reserve_space) {
         UI_BeginResize(
             -1.0f,
-            s->scroll.vis_items * TEXT_HEIGHT
+            s->scroll.vis_items * UI_TEXT_HEIGHT
                 + (s->scroll.vis_items - 1) * s->row_spacing);
     }
 

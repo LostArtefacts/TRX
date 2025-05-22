@@ -10,7 +10,6 @@
 #include "game/overlay.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "game/ui.h"
 #include "memory.h"
 

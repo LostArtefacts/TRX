@@ -15,7 +15,6 @@
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_shell.h"
@@ -145,7 +144,6 @@ void Shell_Shutdown(void)
     Sound_Shutdown();
     Overlay_Shutdown();
     UI_Shutdown();
-    Text_Shutdown();
     Config_Shutdown();
     Log_Shutdown();
 }
@@ -198,7 +196,6 @@ int32_t Shell_Main(void)
     EnumMap_Init();
     Config_Init();
 
-    Text_Init();
     UI_Init();
     Overlay_Init();
 

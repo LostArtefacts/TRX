@@ -13,7 +13,6 @@
 #include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/text.h"
 #include "game/ui.h"
 #include "gfx/gl/track.h"
 

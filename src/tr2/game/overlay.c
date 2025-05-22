@@ -9,7 +9,6 @@
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/savegame.h"
-#include "game/text.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -203,8 +202,7 @@ static void M_DrawAssaultTimer(void)
             glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
         Output_DrawScreenSprite(
             x, y, 0, scale_h, scale_v,
-            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, SHADE_NEUTRAL,
-            0);
+            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, SHADE_NEUTRAL);
         x += Scaler_Calc(
             glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
     }

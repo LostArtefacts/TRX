@@ -258,7 +258,6 @@ sources = [
   'game/sound.c',
   'game/spawn.c',
   'game/stats.c',
-  'game/text.c',
   'game/ui/dialogs/graphic_settings.c',
   'game/ui/elements/bar.c',
   'game/ui/dialogs/stats.c',

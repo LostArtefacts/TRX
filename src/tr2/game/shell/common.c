@@ -20,7 +20,6 @@
 #include "game/render/common.h"
 #include "game/savegame.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -464,7 +463,6 @@ int32_t Shell_Main(void)
     GameString_Init();
     EnumMap_Init();
     Config_Init();
-    Text_Init();
     UI_Init();
     Console_Init();
     Overlay_Init();
@@ -608,7 +606,6 @@ void Shell_Shutdown(void)
     Render_Shutdown();
     Console_Shutdown();
     Overlay_Shutdown();
-    Text_Shutdown();
     UI_Shutdown();
     GameBuf_Shutdown();
     Config_Shutdown();

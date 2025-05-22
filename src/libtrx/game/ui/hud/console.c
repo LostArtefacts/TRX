@@ -1,7 +1,6 @@
 #include "game/ui/hud/console.h"
 
 #include "game/console.h"
-#include "game/text.h"
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/prompt.h"
@@ -10,6 +9,7 @@
 #include "game/ui/events.h"
 #include "game/ui/helpers.h"
 #include "game/ui/hud/console_logs.h"
+#include "game/ui/text.h"
 #include "utils.h"
 
 static void M_Draw(const UI_NODE *node);
@@ -157,7 +157,7 @@ void UI_Console(UI_CONSOLE_STATE *const s)
     if (Console_IsOpened()) {
         UI_Prompt(&s->prompt);
     } else {
-        UI_Spacer(0.0f, TEXT_HEIGHT);
+        UI_Spacer(0.0f, UI_TEXT_HEIGHT);
     }
 
     UI_EndStack();

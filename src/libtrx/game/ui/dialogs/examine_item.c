@@ -3,7 +3,6 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/label.h"
@@ -44,7 +43,7 @@ void UI_ExamineItem_Init(
     state->title = String_ToUpper(title);
 
     const char *wrapped =
-        String_WordWrap(text, Text_GetMaxLineLength() - PADDING_SCALED);
+        UI_Text_WordWrap(text, 1.0f, UI_GetCanvasWidth() * 2.0 / 3.0f);
     state->page_content = String_Paginate(wrapped, max_lines);
     state->is_empty = String_IsEmpty(text);
     Memory_FreePointer(&wrapped);
@@ -107,7 +106,7 @@ void UI_ExamineItem(UI_EXAMINE_ITEM_STATE *const state)
         } else if (state->page_content->count == 1) {
             UI_BeginResize(-1.0f, -1.0f);
         } else {
-            UI_BeginResize(-1.0f, TEXT_HEIGHT * state->max_lines);
+            UI_BeginResize(-1.0f, UI_TEXT_HEIGHT * state->max_lines);
         }
         UI_Label(*(char **)Vector_Get(state->page_content, i));
         UI_EndResize();

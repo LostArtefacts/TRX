@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...develop) - ××××-××-××
+- changed examine item descriptions to remove extra blank lines
+- improved word wrapping algorithm in the dev console
 
 ## [4.11.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.11...tr1-4.11.1) - 2025-05-23
 - fixed "Load Game" bottom text arrows jumping when entering the load game dialog (regression from 4.11)

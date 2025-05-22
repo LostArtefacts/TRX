@@ -40,3 +40,4 @@
 #include "./ui/hud/console.h"
 #include "./ui/hud/console_logs.h"
 #include "./ui/hud/overlay.h"
+#include "./ui/text.h"
