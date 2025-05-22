@@ -6,8 +6,6 @@
 
 void UI_ButtonLabel(INPUT_ROLE input_role, const char *const label)
 {
-    char *buf = String_Format(
+    UI_LabelFmt(
         "\\{button empty} %s: %s", Input_GetRoleName(input_role), label);
-    UI_Label(buf);
-    Memory_FreePointer(&buf);
 }

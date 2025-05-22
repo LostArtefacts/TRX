@@ -28,9 +28,7 @@ void UI_FPSCounter_Free(UI_FPS_COUNTER_STATE *const s)
 
 void UI_FPSCounter(UI_FPS_COUNTER_STATE *const s)
 {
-    char text[20];
-    sprintf(text, "%d FPS", s->fps_counter);
-    UI_Label(text);
+    UI_LabelFmt("%d FPS", s->fps_counter);
     s->drawn_frames++;
     if (ClockTimer_CheckElapsedAndTake(&s->timer, 1.0)) {
         s->fps_counter = s->drawn_frames;

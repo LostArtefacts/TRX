@@ -2,6 +2,7 @@
 - fixed "Load Game" bottom text arrows jumping when entering the load game dialog (regression from 4.11)
 - fixed missing arrows around focused navigation elements in the controls dialog (#3042, regression from 4.11)
 - fixed text outline being a bit laggy when rebinding the inputs in the controls dialog
+- fixed crashes in the save dialog on Linux (#3046, regression from 4.11)
 
 ## [4.11](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.2...tr1-4.11) - 2025-05-21
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)

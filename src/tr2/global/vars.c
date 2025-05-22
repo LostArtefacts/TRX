@@ -167,9 +167,6 @@ uint16_t g_FinalLevelCount;
 int16_t g_FinalBossCount;
 int16_t g_FinalBossItem[5];
 
-static char m_LoadGameRequesterStrings1[MAX_LEVELS][50];
-static char m_LoadGameRequesterStrings2[MAX_LEVELS][50];
-
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
 int32_t g_GF_LaraStartAnim;

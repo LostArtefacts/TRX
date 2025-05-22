@@ -3,6 +3,7 @@
 #include "../colors.h"
 #include "../vector.h"
 
+#include <stdarg.h>
 #include <stdint.h>
 
 bool String_EndsWith(const char *str, const char *suffix);
@@ -23,3 +24,12 @@ char *String_WordWrap(const char *text, size_t line_length);
 VECTOR *String_Paginate(const char *text, int32_t max_lines);
 
 char *String_Format(const char *fmt, ...);
+
+// Like String_Format, but prints into a specified string buffer.
+// If the buffer is too small, reallocates it to fit the string.
+void String_FormatInto(
+    char **target_buf, size_t *target_cap, const char *fmt, ...);
+
+// Like String_FormatInto, but accepts a va_list of arguments
+void String_FormatIntoV(
+    char **target_buf, size_t *target_cap, const char *fmt, va_list args);

@@ -3,13 +3,20 @@
 #include "config.h"
 #include "game/text.h"
 #include "game/ui/helpers.h"
+#include "strings.h"
 
+#include <stdarg.h>
 #include <string.h>
 
 typedef struct {
     UI_LABEL_SETTINGS settings;
     char *text;
 } M_DATA;
+
+static struct {
+    char *buf;
+    size_t cap;
+} m_TempString;
 
 static void M_Measure(UI_NODE *node);
 static void M_Draw(const UI_NODE *node);
@@ -97,4 +104,14 @@ void UI_Label_MeasureEx(
         *out_h = Text_GetHeight(textstring) * g_Config.ui.text_scale;
     }
     Text_Remove(textstring);
+}
+
+// Format a label using printf-style formatting into a reusable buffer
+void UI_LabelFmt(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    String_FormatIntoV(&m_TempString.buf, &m_TempString.cap, fmt, args);
+    va_end(args);
+    UI_Label(m_TempString.buf);
 }
