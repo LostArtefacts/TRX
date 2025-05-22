@@ -18,7 +18,10 @@ void UI_BeginRowArrows(
     *(bool *)node->data = right_arrow;
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
-        .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+        .align = {
+            .h = UI_STACK_H_ALIGN_DISTRIBUTE,
+            .v = UI_STACK_V_ALIGN_CENTER,
+        },
         .spacing = { .h = spacing },
     });
     UI_BeginHide(!left_arrow);
