@@ -48,7 +48,6 @@ typedef struct {
             uint32_t background : 1;
             uint32_t outline : 1;
             uint32_t hide : 1;
-            uint32_t multiline : 1;
 
             uint32_t manual_draw : 1;
             uint32_t drawn : 1;
@@ -110,24 +109,6 @@ void Text_Remove(TEXTSTRING *text);
 void Text_ChangeText(TEXTSTRING *text, const char *content);
 void Text_SetPos(TEXTSTRING *text, int16_t x, int16_t y);
 void Text_SetScale(TEXTSTRING *text, int32_t scale_h, int32_t scale_v);
-void Text_Flash(TEXTSTRING *text, bool enable, int16_t rate);
-void Text_Hide(TEXTSTRING *text, bool enable);
-
-void Text_AddBackground(
-    TEXTSTRING *text, int16_t w, int16_t h, int16_t x, int16_t y,
-    TEXT_STYLE style);
-void Text_RemoveBackground(TEXTSTRING *text);
-void Text_AddOutline(TEXTSTRING *text, TEXT_STYLE style);
-void Text_RemoveOutline(TEXTSTRING *text);
-
-void Text_CentreH(TEXTSTRING *text, bool enable);
-void Text_CentreV(TEXTSTRING *text, bool enable);
-void Text_AlignRight(TEXTSTRING *text, bool enable);
-void Text_AlignBottom(TEXTSTRING *text, bool enable);
-void Text_SetMultiline(TEXTSTRING *text, bool enable);
 
 int32_t Text_GetWidth(const TEXTSTRING *text);
 int32_t Text_GetHeight(const TEXTSTRING *text);
-
-void Text_DrawReset(void);
-void Text_Draw(void);

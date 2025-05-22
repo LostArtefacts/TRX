@@ -517,7 +517,6 @@ void Output_FlushTranslucentObjects(void)
 void Output_BeginScene(void)
 {
     Output_ApplyFOV();
-    Text_DrawReset();
 
     Output_RememberState();
     Output_Sprites_RenderBegin();
