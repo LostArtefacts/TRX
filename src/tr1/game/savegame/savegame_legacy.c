@@ -180,7 +180,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        ITEM tmp_item;
+        ITEM tmp_item = {};
 
         if (obj->save_position) {
             tmp_item.pos.x = M_ReadS32();
