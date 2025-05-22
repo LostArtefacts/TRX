@@ -28,6 +28,11 @@
 #define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
 #define M_HOLD_TIMER_MAX LOGIC_FPS
 
+static struct {
+    char *buf;
+    size_t cap;
+} m_TempString;
+
 typedef enum {
     M_PHASE_NAVIGATE_LAYOUT,
     M_PHASE_NAVIGATE_GROUP,
@@ -505,18 +510,15 @@ static void M_FooterButton(
     UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role,
     const char *const role_label)
 {
-    char tmp_buf[60];
-    char button_label[80];
-    sprintf(
-        tmp_buf, GS(MISC_HOLD_FMT),
+    String_FormatInto(
+        &m_TempString.buf, &m_TempString.cap, GS(MISC_HOLD_FMT),
         Input_GetKeyName(s->backend, s->active_layout, role));
-    sprintf(button_label, "%s: %s", role_label, tmp_buf);
 
     const float pad[2] = { 6.0f, 3.0f };
 
     UI_BeginSpan();
     UI_BeginPad(pad[0], pad[1]);
-    UI_Label(button_label);
+    UI_LabelFmt("%s: %s", role_label, m_TempString.buf);
     UI_EndPad();
     if (s->hold_role == role && s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
         UI_Bar((UI_BAR_SETTINGS) {

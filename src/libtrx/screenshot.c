@@ -6,6 +6,7 @@
 #include "game/game_flow/common.h"
 #include "game/output.h"
 #include "memory.h"
+#include "strings.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -86,12 +87,9 @@ static char *M_GetScreenshotBaseName(void)
     Clock_GetDateTime(date_time, 30);
 
     // Full screenshot name
-    const char *const fmt = "%s_%s";
-    const size_t out_size =
-        snprintf(nullptr, 0, fmt, date_time, screenshot_title) + 1;
-    char *out = Memory_Alloc(out_size);
-    snprintf(out, out_size, "%s_%s", date_time, screenshot_title);
-    return out;
+    char *const result = String_Format("%s_%s", date_time, screenshot_title);
+    Memory_FreePointer(&screenshot_title);
+    return result;
 }
 
 static const char *M_GetScreenshotFileExt(const SCREENSHOT_FORMAT format)

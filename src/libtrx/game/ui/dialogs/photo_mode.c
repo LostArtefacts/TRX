@@ -18,8 +18,6 @@ void UI_PhotoMode(void)
         return;
     }
 
-    char tmp[50];
-
     UI_BeginModal(0.0f, 0.0f);
     UI_BeginPad(8.0f, 8.0f);
     UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
@@ -35,8 +33,8 @@ void UI_PhotoMode(void)
 
     // Inputs column
     UI_BeginStack(UI_STACK_VERTICAL);
-    sprintf(
-        tmp, "%s%s%s%s%s%s: ",
+    UI_LabelFmt(
+        "%s%s%s%s%s%s: ",
         Input_GetKeyName(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_CAMERA_UP),
@@ -55,35 +53,27 @@ void UI_PhotoMode(void)
         Input_GetKeyName(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_CAMERA_RIGHT));
-    UI_Label(tmp);
     UI_Label(
         "\\{button left} \\{button up} "
         "\\{button down} \\{button right} : ");
-    sprintf(tmp, "%s: ", GS(PHOTO_MODE_ROLL_ROLE));
-    UI_Label(tmp);
-    sprintf(tmp, "%s: ", GS(KEYMAP_ROLL));
-    UI_Label(tmp);
-    sprintf(tmp, "%s: ", GS(PHOTO_MODE_FOV_ROLE));
-    UI_Label(tmp);
-    sprintf(tmp, "%s: ", GS(KEYMAP_LOOK));
-    UI_Label(tmp);
-    sprintf(
-        tmp, "%s: ",
+    UI_LabelFmt("%s: ", GS(PHOTO_MODE_ROLL_ROLE));
+    UI_LabelFmt("%s: ", GS(KEYMAP_ROLL));
+    UI_LabelFmt("%s: ", GS(PHOTO_MODE_FOV_ROLE));
+    UI_LabelFmt("%s: ", GS(KEYMAP_LOOK));
+    UI_LabelFmt(
+        "%s: ",
         Input_GetKeyName(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_TOGGLE_UI));
-    UI_Label(tmp);
-    sprintf(tmp, "%s: ", GS(KEYMAP_ACTION));
-    UI_Label(tmp);
-    sprintf(
-        tmp, "%s/%s: ",
+    UI_LabelFmt("%s: ", GS(KEYMAP_ACTION));
+    UI_LabelFmt(
+        "%s/%s: ",
         Input_GetKeyName(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_TOGGLE_PHOTO_MODE),
         Input_GetKeyName(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_OPTION));
-    UI_Label(tmp);
     UI_EndStack();
 
     UI_Spacer(4.0f, 0.0f);

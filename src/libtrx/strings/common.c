@@ -330,3 +330,30 @@ char *String_Format(const char *const fmt, ...)
     va_end(args);
     return result;
 }
+
+void String_FormatInto(
+    char **target_buf, size_t *target_cap, const char *const fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    String_FormatIntoV(target_buf, target_cap, fmt, args);
+    va_end(args);
+}
+
+void String_FormatIntoV(
+    char **target_buf, size_t *target_cap, const char *const fmt, va_list args)
+{
+    va_list args_copy;
+    va_copy(args_copy, args);
+    const int32_t len = vsnprintf(nullptr, 0, fmt, args_copy);
+    va_end(args_copy);
+    if (len < 0) {
+        return;
+    }
+    const size_t needed = (size_t)len + 1;
+    if (*target_cap < needed) {
+        *target_buf = Memory_Realloc(*target_buf, needed);
+        *target_cap = needed;
+    }
+    vsnprintf(*target_buf, *target_cap, fmt, args);
+}

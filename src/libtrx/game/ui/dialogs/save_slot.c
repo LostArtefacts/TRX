@@ -79,9 +79,7 @@ static void M_NonEmptySlot(
     UI_Label(info->level_title);
     if (info->counter > 0) {
         UI_Spacer(8.0f, 0.0f);
-        char buf[16];
-        sprintf(buf, "%d", info->counter);
-        UI_Label(buf);
+        UI_LabelFmt("%d", info->counter);
     }
 
     if (show_details) {
@@ -103,10 +101,8 @@ static void M_NonEmptySlot(
 static void M_EmptySlot(
     const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx)
 {
-    char buf[16];
-    sprintf(buf, GS(MISC_EMPTY_SLOT_FMT), slot_idx + 1);
     UI_BeginAnchor(0.5f, 0.5f);
-    UI_Label(buf);
+    UI_LabelFmt(GS(MISC_EMPTY_SLOT_FMT), slot_idx + 1);
     UI_EndAnchor();
 }
 
@@ -125,6 +121,7 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
 void UI_SaveSlotDialog_Free(UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
     UI_Requester_Free(&s->req);
+    Memory_Free(s);
 }
 
 UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
