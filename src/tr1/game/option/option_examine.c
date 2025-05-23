@@ -1,11 +1,11 @@
 #include "game/option/option_examine.h"
 
 #include "game/input.h"
+#include "game/viewport.h"
 
 #include <libtrx/game/objects/names.h>
+#include <libtrx/game/scaler.h>
 #include <libtrx/game/ui.h>
-
-#define M_MAX_LINES 10
 
 typedef struct {
     struct {
@@ -16,15 +16,29 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static int32_t M_GetMaxRows(void);
 static void M_Init(M_PRIV *p, GAME_OBJECT_ID obj_id);
 static void M_Shutdown(M_PRIV *p);
+
+static int32_t M_GetMaxRows(void)
+{
+    const int32_t res_h =
+        Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+    if (res_h <= 240) {
+        return 5;
+    } else if (res_h <= 384) {
+        return 7;
+    } else {
+        return 12;
+    }
+}
 
 static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
 {
     p->ui.is_ready = true;
     UI_ExamineItem_Init(
         &p->ui.state, Object_GetName(obj_id), Object_GetDescription(obj_id),
-        M_MAX_LINES);
+        M_GetMaxRows());
 }
 
 static void M_Shutdown(M_PRIV *const p)

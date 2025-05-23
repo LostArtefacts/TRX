@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...develop) - ××××-××-××
 - changed examine item descriptions to remove extra blank lines
+- fixed examine item overlapping with other UI elements at large text scales
 - improved word wrapping algorithm in the dev console
 
 ## [4.11.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.11...tr1-4.11.1) - 2025-05-23
