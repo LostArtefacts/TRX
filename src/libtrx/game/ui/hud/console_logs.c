@@ -76,6 +76,9 @@ void UI_ConsoleLogs_Init(UI_CONSOLE_LOGS *const s)
 
 void UI_ConsoleLogs_Free(UI_CONSOLE_LOGS *const s)
 {
+    for (int32_t i = 0; i < M_MAX_LOG_LINES; i++) {
+        Memory_FreePointer(&s->logs[i].text);
+    }
     Memory_FreePointer(&s->logs);
     UI_Unsubscribe(s->listener_id);
 }
