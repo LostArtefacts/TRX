@@ -74,6 +74,7 @@ static void M_PrepareCutscene(const int16_t item_num)
     Gun_SetLaraHandLMesh(LGT_UNARMED);
     Gun_SetLaraHandRMesh(LGT_UNARMED);
     g_Lara.water_status = LWS_ABOVE_WATER;
+    g_Lara.target = nullptr;
 
     ITEM *const item = Item_Get(item_num);
     Creature_SpecialKill(item, 0, 0, LA_EXTRA_FINAL_ANIM);
