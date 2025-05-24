@@ -65,6 +65,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/coldwar_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/shark_sfx.bin",
             ],
@@ -124,6 +125,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/kingdom_cameras.bin",
+                "data/injections/kingdom_textures.bin",
             ],
         },
 

@@ -340,6 +340,7 @@ However, you can easily download them manually from these urls:
     - **Barkhang Monastery**: room 26
     - **Kingdom**: room 80
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
+- fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
