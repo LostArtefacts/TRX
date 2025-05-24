@@ -129,6 +129,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/loose_boards_sfx.bin",
                 "data/injections/opera_fd.bin",
                 "data/injections/opera_itemrots.bin",
             ],
@@ -306,6 +307,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/breakable_tile_sfx.bin",
                 "data/injections/catacombs_fd.bin",
                 "data/injections/catacombs_itemrots.bin",
                 "data/injections/common_pickup_meshes.bin",

@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
+- fixed missing sound effects for collapsible tiles in Opera House and Catacombs of the Talion (#2262, #2872)
 - improved word wrapping algorithm in the dev console
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23

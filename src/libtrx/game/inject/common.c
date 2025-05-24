@@ -158,6 +158,8 @@ static void M_InitialiseBlock(VFILE *const file)
                 m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
                 VFile_Skip(file, sizeof(char) * sample_length);
             }
+#else
+            VFile_Skip(file, sizeof(uint32_t));
 #endif
         }
 
