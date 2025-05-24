@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
+- fixed a missing collapsible tile trigger in The Cold War room 82 (#3058)
 - fixed missing sound effects for collapsible tiles in Opera House and Catacombs of the Talion (#2262, #2872)
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom (#3056)
 - improved word wrapping algorithm in the dev console

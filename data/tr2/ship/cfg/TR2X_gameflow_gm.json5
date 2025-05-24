@@ -65,6 +65,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/coldwar_fd.bin",
                 "data/injections/coldwar_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/shark_sfx.bin",
