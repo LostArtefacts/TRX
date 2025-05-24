@@ -148,7 +148,7 @@ static void M_InitialiseDataDrops(void)
 
         const ROOM *const room = Room_Get(carrier->room_num);
         int16_t pickup_num = room->item_num;
-        do {
+        while (pickup_num != NO_ITEM) {
             ITEM *const pickup = Item_Get(pickup_num);
             if (Object_IsType(pickup->object_id, g_PickupObjects)
                 && XYZ_32_AreEquivalent(&pickup->pos, &carrier->pos)) {
@@ -158,7 +158,7 @@ static void M_InitialiseDataDrops(void)
             }
 
             pickup_num = pickup->next_item;
-        } while (pickup_num != NO_ITEM);
+        }
 
         if (pickups->count == 0) {
             continue;
@@ -217,11 +217,18 @@ static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
             continue;
         }
 
+        if (data->count == 0) {
+            LOG_WARNING(
+                "There are no drop items defined for enemy %d",
+                data->enemy_num);
+            continue;
+        }
+
         item->carried_item =
             GameBuf_Alloc(sizeof(CARRIED_ITEM) * data->count, GBUF_ITEMS);
         CARRIED_ITEM *drop = item->carried_item;
-        for (int32_t i = 0; i < data->count; i++) {
-            drop->object_id = data->object_ids[i];
+        for (int32_t j = 0; j < data->count; j++) {
+            drop->object_id = data->object_ids[j];
             drop->spawn_num = NO_ITEM;
             drop->room_num = NO_ROOM;
             drop->fall_speed = 0;
@@ -236,7 +243,7 @@ static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
                 drop->status = DS_COLLECTED;
             }
 
-            if (i < data->count - 1) {
+            if (j < data->count - 1) {
                 drop->next_item = drop + 1;
                 drop++;
             } else {
