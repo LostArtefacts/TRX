@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...develop) - ××××-××-××
+
+## [4.11.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...tr1-4.11.2) - 2025-05-24
 - changed examine item descriptions to remove extra blank lines
 - fixed examine item overlapping with other UI elements at large text scales
 - fixed a crash related to carried items if using saves made prior to 4.11 (#3052, regression from 4.11)
