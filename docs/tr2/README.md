@@ -356,6 +356,7 @@ However, you can easily download them manually from these urls:
 - fixed music not playing if triggered while the game is muted, but the volume is then increased
 - fixed being unable to load a level that contains no sound effect data
 - fixed missing enemy sound effects in the underwater levels
+- fixed missing sound effects for collapsible tiles in Opera House and Catacombs of the Talion
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
