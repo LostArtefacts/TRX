@@ -383,6 +383,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/dagger_sprite.bin",
                 "data/injections/lair_bartolipos.bin",
             ],
         },
