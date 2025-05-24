@@ -28,6 +28,7 @@
 #include <zlib.h>
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
+#define M_NO_ROOM_LEGACY 255
 
 typedef struct {
     int16_t count;
@@ -651,6 +652,11 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
                     carried_item_obj, "fall_speed", carried_item->fall_speed);
                 carried_item->status = JSON_ObjectGetInt(
                     carried_item_obj, "status", carried_item->status);
+
+                if (header_version < VERSION_10
+                    && carried_item->room_num == M_NO_ROOM_LEGACY) {
+                    carried_item->room_num = NO_ROOM;
+                }
 
                 carried_item = carried_item->next_item;
             }
