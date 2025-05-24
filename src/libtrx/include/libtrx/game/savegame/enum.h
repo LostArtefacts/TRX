@@ -34,4 +34,8 @@ typedef enum {
     // Added the current ambient track to allow triggers to change it at
     // different stages of the level.
     VERSION_9 = 9,
+
+    // Resolved an issue with TR1 game flow carried items and the NO_ROOM change
+    // from 255 to -1.
+    VERSION_10 = 10,
 } SAVEGAME_VERSION;
