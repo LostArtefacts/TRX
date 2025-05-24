@@ -5,6 +5,7 @@
 #include "game/lara/control.h"
 #include "game/lara/look.h"
 #include "game/lara/misc.h"
+#include "game/overlay.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -26,6 +27,7 @@
 #define LF_YETI_DEATH_TIMER_DELAY 70
 #define LF_DRAGON_DAGGER_PULLED 1
 #define LF_DRAGON_DAGGER_STORED 180
+#define LF_DRAGON_DAGGER_DISPLAY 210
 #define LF_DRAGON_DAGGER_ANIM_END 239
 #define LF_START_HOUSE_BEGIN 1
 #define LF_START_HOUSE_DAGGER_STORED 401
@@ -788,6 +790,8 @@ void Lara_State_Extra_PullDagger(ITEM *item, COLL_INFO *coll)
     } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_STORED)) {
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
         Inv_AddItem(O_PUZZLE_ITEM_2);
+    } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_DISPLAY)) {
+        Overlay_AddDisplayPickup(O_PUZZLE_ITEM_2);
     } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_ANIM_END)) {
         item->rot.y += DEG_90;
 
