@@ -148,10 +148,9 @@ void Item_Initialise(const int16_t item_num)
     item->collidable = 1;
     item->looked_at = 0;
     item->enable_interpolation = true;
-
-#if TR_VERSION == 1
     item->enable_shadow = true;
-#else
+
+#if TR_VERSION >= 2
     item->killed = 0;
     if ((item->flags & IF_KILLED) != 0) {
         item->killed = 1;
