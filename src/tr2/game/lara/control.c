@@ -791,7 +791,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.death_timer = 0;
     g_Lara.hit_effect_count = 0;
     g_Lara.flare_age = 0;
-    g_Lara.back_gun = 0;
+    g_Lara.back_gun = O_LARA;
     g_Lara.flare_frame = 0;
     g_Lara.flare_control_left = 0;
     g_Lara.flare_control_right = 0;

@@ -98,7 +98,8 @@ static void M_CommandEdits(
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
     int16_t cmd_idx = cached_info.anims.command_count;
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id = VFile_ReadS32(injection->fp);
+        const GAME_OBJECT_ID obj_id =
+            Object_UnmapGameID(VFile_ReadS32(injection->fp));
         const int32_t anim_idx = VFile_ReadS32(injection->fp);
         const int32_t num_raw_cmds = VFile_ReadS32(injection->fp);
         const int32_t num_anim_cmds = VFile_ReadS32(injection->fp);

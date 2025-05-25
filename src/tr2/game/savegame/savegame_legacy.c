@@ -325,7 +325,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->flare_age = M_ReadS16();
     lara->skidoo = M_ReadS16();
     lara->weapon_item = M_ReadS16();
-    lara->back_gun = M_ReadS16();
+    lara->back_gun = Object_UnmapGameID(M_ReadS16());
     lara->flare_frame = M_ReadS16();
 
     const uint16_t flags = M_ReadU16();
@@ -583,7 +583,7 @@ static void M_WriteLara(const LARA_INFO *const lara)
     M_WriteS16(lara->flare_age);
     M_WriteS16(lara->skidoo);
     M_WriteS16(lara->weapon_item);
-    M_WriteS16(lara->back_gun);
+    M_WriteS16(Object_MakeGameID(lara->back_gun));
     M_WriteS16(lara->flare_frame);
 
     uint16_t flags = 0;
@@ -868,7 +868,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         g_Lara.weapon_item = Item_Create();
 
         ITEM *const weapon_item = Item_Get(g_Lara.weapon_item);
-        weapon_item->object_id = M_ReadS16();
+        weapon_item->object_id = Object_UnmapGameID(M_ReadS16());
         weapon_item->anim_num = M_ReadS16();
         weapon_item->frame_num = M_ReadS16();
         weapon_item->current_anim_state = M_ReadS16();

@@ -16,7 +16,7 @@ static int32_t m_MeshCount = 0;
 
 void Object_Reset(void)
 {
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         m_Objects[i].loaded = false;
     }
     for (int32_t i = 0; i < MAX_STATIC_OBJECTS_3D; i++) {
@@ -27,9 +27,9 @@ void Object_Reset(void)
     }
 }
 
-OBJECT *Object_Get(const GAME_OBJECT_ID obj_id)
+OBJECT *Object_Get(const GAME_OBJECT_ID object_id)
 {
-    return &m_Objects[obj_id];
+    return &m_Objects[object_id];
 }
 
 STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
@@ -42,10 +42,21 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
     return &m_StaticObjects2D[static_id];
 }
 
-bool Object_IsType(const GAME_OBJECT_ID obj_id, const GAME_OBJECT_ID *test_arr)
+GAME_OBJECT_ID Object_UnmapGameID(const int32_t game_id)
+{
+    return game_id + O_FIRST;
+}
+
+int32_t Object_MakeGameID(const GAME_OBJECT_ID game_id)
+{
+    return game_id - O_FIRST;
+}
+
+bool Object_IsType(
+    const GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr)
 {
     for (int32_t i = 0; test_arr[i] != NO_OBJECT; i++) {
-        if (test_arr[i] == obj_id) {
+        if (test_arr[i] == object_id) {
             return true;
         }
     }

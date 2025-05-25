@@ -96,7 +96,7 @@ static void M_ModifyInventory_Item(
 
 void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
 {
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         m_SecretInvItems[i] = 0;
         m_Add2InvItems[i] = 0;
     }
@@ -114,7 +114,7 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
             || event->type == GFS_ADD_SECRET_REWARD) {
             const GF_ADD_ITEM_DATA *const data =
                 (const GF_ADD_ITEM_DATA *)event->data;
-            if (data->object_id < 0 || data->object_id >= O_NUMBER_OF) {
+            if (data->object_id < O_FIRST || data->object_id >= O_NUMBER_OF) {
                 continue;
             }
             if (data->inv_type == GF_INV_SECRET) {

@@ -2,6 +2,7 @@
 #include "game/camera.h"
 #include "game/inject.h"
 #include "game/items.h"
+#include "game/objects/common.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
 #include "log.h"
@@ -264,7 +265,7 @@ static void M_TriggeredItem(const INJECTION *const injection)
     const int16_t item_num = Item_CreateLevelItem();
     ITEM *const item = Item_Get(item_num);
 
-    item->object_id = VFile_ReadS16(injection->fp);
+    item->object_id = Object_UnmapGameID(VFile_ReadS16(injection->fp));
     item->room_num = VFile_ReadS16(injection->fp);
     item->pos.x = VFile_ReadS32(injection->fp);
     item->pos.y = VFile_ReadS32(injection->fp);

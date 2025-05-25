@@ -33,7 +33,7 @@ static void M_ClearNames(void);
 
 static void M_ClearNames(void)
 {
-    for (GAME_OBJECT_ID obj_id = 0; obj_id < O_NUMBER_OF; obj_id++) {
+    for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
         M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
         Memory_FreePointer(&entry->name);
         Memory_FreePointer(&entry->description);
@@ -42,6 +42,7 @@ static void M_ClearNames(void)
 
 void Object_SetName(const GAME_OBJECT_ID obj_id, const char *const name)
 {
+    ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
     M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
     Memory_FreePointer(&entry->name);
     ASSERT(name != nullptr);
@@ -95,7 +96,7 @@ GAME_OBJECT_ID *Object_IdsFromName(
 {
     VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
 
-    for (GAME_OBJECT_ID obj_id = 0; obj_id < O_NUMBER_OF; obj_id++) {
+    for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
         if (filter != nullptr && !filter(obj_id)) {
             continue;
         }

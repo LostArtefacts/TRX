@@ -46,13 +46,14 @@ static void M_SpriteEdits(
     const INJECTION *const injection, const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id = VFile_ReadS32(injection->fp);
+        const GAME_OBJECT_ID obj_id =
+            Object_UnmapGameID(VFile_ReadS32(injection->fp));
         int16_t x0 = VFile_ReadS16(injection->fp);
         int16_t y0 = VFile_ReadS16(injection->fp);
         int16_t x1 = VFile_ReadS16(injection->fp);
         int16_t y1 = VFile_ReadS16(injection->fp);
 
-        if (obj_id < 0 || obj_id >= O_NUMBER_OF) {
+        if (obj_id < O_FIRST || obj_id >= O_NUMBER_OF) {
             continue;
         }
 

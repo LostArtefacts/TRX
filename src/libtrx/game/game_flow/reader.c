@@ -6,6 +6,7 @@
 #include "game/game_flow/common.h"
 #include "game/game_flow/types.h"
 #include "game/game_flow/vars.h"
+#include "game/objects/common.h"
 #include "game/objects/names.h"
 #include "game/shell.h"
 #include "json.h"
@@ -244,8 +245,11 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
 
 static GAME_OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
 {
-    int32_t object_id = JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
-    if (object_id == JSON_INVALID_NUMBER) {
+    GAME_OBJECT_ID object_id;
+    int32_t game_id = JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
+    if (game_id != JSON_INVALID_NUMBER) {
+        object_id = Object_UnmapGameID(game_id);
+    } else {
         const char *const object_key =
             JSON_ValueGetString(value, JSON_INVALID_STRING);
         if (object_key == JSON_INVALID_STRING) {
@@ -253,7 +257,7 @@ static GAME_OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
         }
         object_id = Object_IdFromKey(object_key);
     }
-    if (object_id < 0 || object_id >= O_NUMBER_OF) {
+    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
         return NO_OBJECT;
     }
     return object_id;

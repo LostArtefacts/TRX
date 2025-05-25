@@ -19,7 +19,8 @@ static void M_HandleObjectData(const INJECTION_CHUNK chunk)
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
 
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id = VFile_ReadS32(chunk.injection->fp);
+        const GAME_OBJECT_ID obj_id =
+            Object_UnmapGameID(VFile_ReadS32(chunk.injection->fp));
         OBJECT *const obj = Object_Get(obj_id);
 
         const int16_t num_meshes = VFile_ReadS16(chunk.injection->fp);

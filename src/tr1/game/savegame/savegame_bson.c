@@ -520,7 +520,7 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
         const OBJECT *const obj = Object_Get(item->object_id);
 
         const GAME_OBJECT_ID obj_id =
-            JSON_ObjectGetInt(item_obj, "obj_num", -1);
+            Object_UnmapGameID(JSON_ObjectGetInt(item_obj, "obj_num", -1));
         if (!M_IsValidItemObject(obj_id, item->object_id)) {
             LOG_ERROR(
                 "Malformed save: expected object %d, got %d", item->object_id,
@@ -636,8 +636,11 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
                 JSON_OBJECT *carried_item_obj =
                     JSON_ArrayGetObject(carried_items, j);
 
-                carried_item->object_id = JSON_ObjectGetInt(
-                    carried_item_obj, "object_id", carried_item->object_id);
+                const int32_t object_id =
+                    JSON_ObjectGetInt(carried_item_obj, "object_id", -1);
+                if (object_id != -1) {
+                    carried_item->object_id = Object_UnmapGameID(object_id);
+                }
                 carried_item->pos.x = JSON_ObjectGetInt(
                     carried_item_obj, "x", carried_item->pos.x);
                 carried_item->pos.y = JSON_ObjectGetInt(
@@ -700,7 +703,8 @@ static bool M_LoadEffects(JSON_ARRAY *fx_arr)
         int32_t y = JSON_ObjectGetInt(fx_obj, "y", 0);
         int32_t z = JSON_ObjectGetInt(fx_obj, "z", 0);
         int16_t room_num = JSON_ObjectGetInt(fx_obj, "room_number", 0);
-        GAME_OBJECT_ID obj_id = JSON_ObjectGetInt(fx_obj, "object_number", 0);
+        GAME_OBJECT_ID obj_id =
+            Object_UnmapGameID(JSON_ObjectGetInt(fx_obj, "object_number", -1));
         int16_t speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
         int16_t fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
         int16_t frame_num = JSON_ObjectGetInt(fx_obj, "frame_number", 0);
@@ -1117,7 +1121,8 @@ static JSON_ARRAY *M_DumpItems(void)
         const ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        JSON_ObjectAppendInt(item_obj, "obj_num", item->object_id);
+        JSON_ObjectAppendInt(
+            item_obj, "obj_num", Object_MakeGameID(item->object_id));
 
         if (obj->save_position) {
             JSON_ObjectAppendInt(item_obj, "x", item->pos.x);
@@ -1184,7 +1189,8 @@ static JSON_ARRAY *M_DumpItems(void)
         const CARRIED_ITEM *drop_item = item->carried_item;
         while (drop_item) {
             JSON_OBJECT *drop_obj = JSON_ObjectNew();
-            JSON_ObjectAppendInt(drop_obj, "object_id", drop_item->object_id);
+            JSON_ObjectAppendInt(
+                drop_obj, "object_id", Object_MakeGameID(drop_item->object_id));
             JSON_ObjectAppendInt(drop_obj, "x", drop_item->pos.x);
             JSON_ObjectAppendInt(drop_obj, "y", drop_item->pos.y);
             JSON_ObjectAppendInt(drop_obj, "z", drop_item->pos.z);
@@ -1221,7 +1227,8 @@ static JSON_ARRAY *M_DumpEffects(void)
         JSON_ObjectAppendInt(fx_obj, "y", effect->pos.y);
         JSON_ObjectAppendInt(fx_obj, "z", effect->pos.z);
         JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
-        JSON_ObjectAppendInt(fx_obj, "object_number", effect->object_id);
+        JSON_ObjectAppendInt(
+            fx_obj, "object_number", Object_MakeGameID(effect->object_id));
         JSON_ObjectAppendInt(fx_obj, "speed", effect->speed);
         JSON_ObjectAppendInt(fx_obj, "fall_speed", effect->fall_speed);
         JSON_ObjectAppendInt(fx_obj, "frame_number", effect->frame_num);
