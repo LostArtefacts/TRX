@@ -99,7 +99,6 @@ void InitialiseGameFlags(void)
     Music_ResetTrackFlags();
     Output_SetSunsetTimer(0);
     Game_SetIsLevelComplete(false);
-    g_DetonateAllMines = false;
     Creature_SetAlliesHostile(false);
 }
 

@@ -7,6 +7,8 @@
 
 #include <libtrx/utils.h>
 
+static bool m_DetonateAllMines = false;
+
 static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *room_num);
 static void M_DetonateAll(
     const ITEM *mine_item, int16_t boat_item_num, int16_t boat_room_num);
@@ -57,7 +59,7 @@ static void M_DetonateAll(
 
     Room_TestTriggers(mine_item);
 
-    g_DetonateAllMines = true;
+    m_DetonateAllMines = true;
 }
 
 static void M_Explode(ITEM *const mine_item)
@@ -89,6 +91,8 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->save_flags = 1;
     obj->enable_interpolation = false;
+
+    m_DetonateAllMines = false;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -107,7 +111,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (!g_DetonateAllMines) {
+    if (!m_DetonateAllMines) {
         int16_t boat_room_num = item->room_num;
         XYZ_32 test_pos = {
             .x = item->pos.x,
