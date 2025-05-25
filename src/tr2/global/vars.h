@@ -64,4 +64,3 @@ extern bool g_GF_RemoveWeapons;
 extern int32_t g_GF_LaraStartAnim;
 
 extern XYZ_32 g_InteractPosition;
-extern bool g_DetonateAllMines;

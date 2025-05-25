@@ -173,4 +173,3 @@ int32_t g_GF_LaraStartAnim;
 int32_t g_GF_ScriptVersion;
 
 XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
-bool g_DetonateAllMines = false;
