@@ -1010,7 +1010,7 @@ void Camera_Update(void)
             lara_info->torso_rot.x = lara_info->head_rot.x;
             lara_info->torso_rot.y = lara_info->head_rot.y;
             g_Camera.type = CAM_LOOK;
-            g_Camera.item->looked_at = 1;
+            g_Camera.item->looked_at = true;
         }
     }
 

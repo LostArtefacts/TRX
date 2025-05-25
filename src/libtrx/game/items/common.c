@@ -146,7 +146,7 @@ void Item_Initialise(const int16_t item_num)
     item->gravity = false;
     item->hit_status = false;
     item->collidable = true;
-    item->looked_at = 0;
+    item->looked_at = false;
     item->enable_interpolation = true;
     item->enable_shadow = true;
 
