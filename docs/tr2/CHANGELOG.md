@@ -3,6 +3,7 @@
 - fixed a missing collapsible tile trigger in The Cold War room 82 (#3058)
 - fixed missing sound effects for collapsible tiles in Opera House and Catacombs of the Talion (#2262, #2872)
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom (#3056)
+- fixed the same boss item always being selected in Home Sweet Home, regardless of Lara's proximity (#3062)
 - improved word wrapping algorithm in the dev console
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23

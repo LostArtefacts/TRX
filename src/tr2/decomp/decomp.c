@@ -253,11 +253,6 @@ void InitialiseFinalLevel(void)
         case O_CULT_3:
             g_FinalBossItem[g_FinalBossCount] = item_num;
             g_FinalBossCount++;
-            if (item->status == IS_ACTIVE) {
-                g_FinalBossActive = 1;
-            } else if (item->status == IS_DEACTIVATED) {
-                g_FinalBossActive = 2;
-            }
             break;
 
         default:
