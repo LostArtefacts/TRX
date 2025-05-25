@@ -20,10 +20,17 @@ static void M_Control(int16_t item_num);
 
 static int16_t M_FindBestBoss(void)
 {
-    int32_t best_dist = 0;
+    // Note that in the original, the first boss item was always selected here.
+    // For speedruns, the change here means that is no longer guaranteed, but
+    // positional manipulation can be used for the best outcome.
+    int32_t best_dist = INT32_MAX;
     int16_t best_item = g_FinalBossItem[0];
     for (int32_t i = 0; i < g_FinalBossCount; i++) {
         const ITEM *const item = Item_Get(g_FinalBossItem[i]);
+        if (item->status == IS_ACTIVE || item->status == IS_DEACTIVATED) {
+            best_item = g_FinalBossItem[i];
+            break;
+        }
 
         GAME_VECTOR start;
         start.pos.x = g_LaraItem->pos.x;
@@ -55,11 +62,13 @@ static void M_ActivateLastBoss(void)
 {
     const int16_t item_num = M_FindBestBoss();
     ITEM *const item = Item_Get(item_num);
-    item->touch_bits = 0;
-    item->status = IS_ACTIVE;
-    item->mesh_bits = 0xFFFF1FFF;
-    Item_AddActive(item_num);
-    LOT_EnableBaddieAI(item_num, true);
+    if (item->status != IS_ACTIVE && item->status != IS_DEACTIVATED) {
+        item->touch_bits = 0;
+        item->status = IS_ACTIVE;
+        item->mesh_bits = 0xFFFF1FFF;
+        Item_AddActive(item_num);
+        LOT_EnableBaddieAI(item_num, true);
+    }
     g_FinalBossActive = 1;
 }
 
