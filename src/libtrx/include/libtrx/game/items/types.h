@@ -44,11 +44,12 @@ typedef struct {
     XYZ_32 pos;
     XYZ_16 rot;
 
+    ITEM_STATUS status;
     bool enable_interpolation;
     bool enable_shadow;
     bool active;
     uint16_t pad_1 : 1; // 0x0001
-    uint16_t status : 2; // 0x0002…0x0004
+    uint16_t pad_2 : 2; // 0x0002…0x0004
     uint16_t gravity : 1; // 0x0008
     uint16_t hit_status : 1; // 0x0010
     uint16_t collidable : 1; // 0x0020
