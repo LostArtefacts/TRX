@@ -1,4 +1,6 @@
-#include "global/vars.h"
+#include "game/objects/general/combat_end.h"
+
+#include <libtrx/game/objects.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
@@ -13,7 +15,7 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (g_FinalBossActive >= 5 * FRAMES_PER_SECOND) {
+    if (CombatEnd_IsComplete()) {
         item->status = IS_ACTIVE;
         Item_Animate(item);
     } else {

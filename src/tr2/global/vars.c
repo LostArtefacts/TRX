@@ -162,9 +162,6 @@ WEAPON_INFO g_Weapons[] = {
     },
 };
 
-int16_t g_FinalBossActive;
-uint16_t g_FinalLevelCount;
-
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
 int32_t g_GF_LaraStartAnim;
