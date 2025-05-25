@@ -285,12 +285,12 @@ void M_InvisibilityOff(ITEM *const item)
 
 void M_DynamicLightOn(ITEM *const item)
 {
-    item->dynamic_light = 1;
+    item->dynamic_light = true;
 }
 
 void M_DynamicLightOff(ITEM *const item)
 {
-    item->dynamic_light = 0;
+    item->dynamic_light = false;
 }
 
 void M_ResetHair(ITEM *const item)
