@@ -8,11 +8,19 @@
 #include "types.h"
 
 void Object_Reset(void);
-OBJECT *Object_Get(GAME_OBJECT_ID obj_id);
+OBJECT *Object_Get(GAME_OBJECT_ID object_id);
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
 
-bool Object_IsType(GAME_OBJECT_ID obj_id, const GAME_OBJECT_ID *test_arr);
+// Convert a game-specific ID compatible with level files and saves to an
+// internal object ID.
+GAME_OBJECT_ID Object_UnmapGameID(int32_t game_id);
+
+// Convert an internal object ID to a game-specific ID compatible with level
+// files and saves (opposite of Object_UnmapGameID).
+int32_t Object_MakeGameID(GAME_OBJECT_ID object_id);
+
+bool Object_IsType(GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr);
 
 GAME_OBJECT_ID Object_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);

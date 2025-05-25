@@ -186,7 +186,7 @@ void Stats_CalculateStats(void)
         for (int i = 0; i < m_CachedItemCount; i++) {
             const ITEM *const item = Item_Get(i);
 
-            if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
+            if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
                 LOG_ERROR(
                     "Bad Object number (%d) on Item %d", item->object_id, i);
                 continue;

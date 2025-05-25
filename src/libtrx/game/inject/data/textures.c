@@ -138,7 +138,8 @@ static void M_HandleSpriteSequences(
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id = VFile_ReadS32(injection->fp);
+        const GAME_OBJECT_ID obj_id =
+            Object_UnmapGameID(VFile_ReadS32(injection->fp));
         const int16_t num_meshes = VFile_ReadS16(injection->fp);
         const int16_t mesh_idx = VFile_ReadS16(injection->fp);
 

@@ -824,8 +824,8 @@ void Level_ReadObjects(VFILE *const file)
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
-        const GAME_OBJECT_ID obj_id = VFile_ReadS32(file);
-        if (obj_id < 0 || obj_id >= O_NUMBER_OF) {
+        const GAME_OBJECT_ID obj_id = Object_UnmapGameID(VFile_ReadS32(file));
+        if (obj_id < O_FIRST || obj_id >= O_NUMBER_OF) {
             Shell_ExitSystemFmt(
                 "Invalid object ID: %d (max=%d)", obj_id, O_NUMBER_OF);
         }
@@ -935,11 +935,11 @@ void Level_ReadSpriteSequences(VFILE *const file)
     const int32_t num_sequences = VFile_ReadS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
     for (int32_t i = 0; i < num_sequences; i++) {
-        const int32_t object_id = VFile_ReadS32(file);
+        const int32_t object_id = Object_UnmapGameID(VFile_ReadS32(file));
         const int16_t num_meshes = VFile_ReadS16(file);
         const int16_t mesh_idx = VFile_ReadS16(file);
 
-        if (object_id >= 0 && object_id < O_NUMBER_OF) {
+        if (object_id >= O_FIRST && object_id < O_NUMBER_OF) {
             OBJECT *const obj = Object_Get(object_id);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx;
@@ -1093,13 +1093,13 @@ void Level_ReadItems(VFILE *const file)
     Item_InitialiseItems(num_items);
     for (int32_t i = 0; i < num_items; i++) {
         ITEM *const item = Item_Get(i);
-        item->object_id = VFile_ReadS16(file);
+        item->object_id = Object_UnmapGameID(VFile_ReadS16(file));
         item->room_num = VFile_ReadS16(file);
         M_ReadPosition(&item->pos, file);
         item->rot.y = VFile_ReadS16(file);
         M_ReadShade(&item->shade, file);
         item->flags = VFile_ReadS16(file);
-        if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
+        if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
             Shell_ExitSystemFmt(
                 "Bad object number (%d) on item %d", item->object_id, i);
             goto finish;

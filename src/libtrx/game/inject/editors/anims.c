@@ -10,7 +10,8 @@ static void M_FrameEdits(
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id = VFile_ReadS32(injection->fp);
+        const GAME_OBJECT_ID obj_id =
+            Object_UnmapGameID(VFile_ReadS32(injection->fp));
         const int32_t anim_idx = VFile_ReadS32(injection->fp);
         const int32_t packed_rot = VFile_ReadS32(injection->fp);
 

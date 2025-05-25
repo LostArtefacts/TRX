@@ -1,12 +1,14 @@
 #include "game/inject.h"
 #include "game/items.h"
+#include "game/objects/common.h"
 
 static bool M_TestItemMeta(const INJECTION *injection);
 
 static bool M_TestItemMeta(const INJECTION *const injection)
 {
     const int32_t item_num = VFile_ReadS32(injection->fp);
-    const GAME_OBJECT_ID obj_id = VFile_ReadS16(injection->fp);
+    const GAME_OBJECT_ID obj_id =
+        Object_UnmapGameID(VFile_ReadS16(injection->fp));
     const XYZ_32 pos = {
         .x = VFile_ReadS32(injection->fp),
         .y = VFile_ReadS32(injection->fp),

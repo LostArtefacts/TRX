@@ -828,7 +828,7 @@ void Lara_State_Extra_FinalAnim(ITEM *item, COLL_INFO *coll)
     item->hit_points = 1000;
 
     if (Item_TestFrameEqual(item, LF_SHOWER_START)) {
-        g_Lara.back_gun = 0;
+        g_Lara.back_gun = O_LARA;
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
         Lara_SwapSingleMesh(LM_HEAD, O_LARA);
         Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);

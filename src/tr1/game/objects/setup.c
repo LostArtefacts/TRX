@@ -51,7 +51,7 @@ static void M_DisableObject(const GAME_OBJECT_ID obj_id)
 
 void Object_SetupAllObjects(void)
 {
-    for (int i = 0; i < O_NUMBER_OF; i++) {
+    for (int i = O_FIRST; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
         obj->intelligent = 0;
         obj->save_position = 0;

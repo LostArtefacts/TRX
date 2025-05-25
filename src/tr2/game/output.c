@@ -345,7 +345,7 @@ static void M_ReserveVertexBuffer(void)
 {
     BENCHMARK benchmark = Benchmark_Start();
     int32_t max_vertices = 1500;
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         const OBJECT *const obj = Object_Get(i);
         if (!obj->loaded) {
             continue;

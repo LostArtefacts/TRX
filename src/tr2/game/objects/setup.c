@@ -32,7 +32,7 @@ static void M_SetupLaraExtra(void)
 
 void Object_SetupAllObjects(void)
 {
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
         obj->initialise_func = nullptr;
         obj->control_func = nullptr;
