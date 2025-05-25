@@ -366,6 +366,7 @@ However, you can easily download them manually from these urls:
 - added ability to disable FMVs
 - added per-level customizable fog distance
 - added the ability for spike walls to be reset (antitriggered)
+- changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - fixed the lift to work in any cardinal direction in custom levels, not just South
 - fixed the springboard not responding correctly when Lara drives across one on a skidoo
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels

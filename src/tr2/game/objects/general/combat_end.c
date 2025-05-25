@@ -8,19 +8,11 @@
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/objects/vars.h>
 #include <libtrx/utils.h>
 
 #define M_CUTSCENE_DELAY (5 * FRAMES_PER_SECOND) // = 150
 #define M_BOSS_TYPE O_CULT_3
-
-static const GAME_OBJECT_ID m_EnemyTypes[] = {
-    // clang-format off
-    O_DOG,
-    O_CULT_1,
-    O_WORKER_3,
-    NO_OBJECT,
-    // clang-format on
-};
 
 static int16_t m_BossTimer = 0;
 static uint16_t m_EnemyCount = 0;
@@ -128,7 +120,8 @@ static void M_Initialise(const int16_t item_num)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (Object_IsType(item->object_id, m_EnemyTypes)) {
+        if (Object_IsType(item->object_id, g_EnemyObjects)
+            && item->object_id != M_BOSS_TYPE) {
             m_EnemyCount++;
         }
     }
