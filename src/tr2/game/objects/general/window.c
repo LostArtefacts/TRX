@@ -89,7 +89,7 @@ static void M_Control2(const int16_t item_num)
     M_SetBoxBlocked(item, false);
 
     item->mesh_bits = ~1;
-    item->collidable = 0;
+    item->collidable = false;
     Item_Explode(item_num, 65278, 0);
     Sound_Effect(SFX_BRITTLE_GROUND_BREAK, &item->pos, SPM_NORMAL);
 
@@ -117,7 +117,7 @@ void Window_Smash(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_SetBoxBlocked(item, false);
 
-    item->collidable = 0;
+    item->collidable = false;
     item->mesh_bits = ~1;
     Item_Explode(item_num, 65278, 0);
     Sound_Effect(SFX_GLASS_BREAK, &item->pos, SPM_NORMAL);

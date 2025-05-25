@@ -76,7 +76,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
             item->mesh_bits = 0x1FF;
-            item->collidable = 0;
+            item->collidable = false;
         }
     }
 }
@@ -105,7 +105,7 @@ static void M_Control(const int16_t item_num)
         if (explode) {
             item->goal_anim_state = POD_STATE_EXPLODE;
             item->mesh_bits = 0xFFFFFF;
-            item->collidable = 0;
+            item->collidable = false;
             Item_Explode(item_num, 0xFFFE00, 0);
 
             const int16_t bug_item_num = (intptr_t)item->data;

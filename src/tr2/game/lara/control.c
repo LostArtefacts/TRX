@@ -776,7 +776,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     ITEM *const item = g_LaraItem;
 
     item->data = &g_Lara;
-    item->collidable = 0;
+    item->collidable = false;
     item->hit_points = LARA_MAX_HITPOINTS;
 
     g_Lara.hit_direction = -1;
