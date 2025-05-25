@@ -138,7 +138,7 @@ static void M_Control(const int16_t item_num)
 
         if (pierre->flags) {
             info.enemy_zone = -1;
-            item->hit_status = 1;
+            item->hit_status = true;
         }
         Creature_Mood(item, &info, false);
 

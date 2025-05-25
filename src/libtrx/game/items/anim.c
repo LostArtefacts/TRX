@@ -142,7 +142,7 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
 
 void Item_Animate(ITEM *const item)
 {
-    item->hit_status = 0;
+    item->hit_status = false;
     item->touch_bits = 0;
     item->frame_num++;
 
