@@ -312,9 +312,9 @@ static void M_Control(const int16_t item_num)
         sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
     if (item->pos.y < height) {
-        item->gravity = 1;
+        item->gravity = true;
     } else if (item->gravity) {
-        item->gravity = 0;
+        item->gravity = false;
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);

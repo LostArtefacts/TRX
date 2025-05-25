@@ -252,7 +252,7 @@ static void M_ReadItems(void)
 
                 item->status = (item->flags & 6) >> 1;
                 if (item->flags & 8) {
-                    item->gravity = 1;
+                    item->gravity = true;
                 }
                 if (!(item->flags & 0x10)) {
                     item->collidable = 0;

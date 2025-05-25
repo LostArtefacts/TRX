@@ -51,7 +51,7 @@ static void M_Control(const int16_t item_num)
 
         if (item->pos.y < item->floor) {
             if (!item->gravity) {
-                item->gravity = 1;
+                item->gravity = true;
                 item->fall_speed = -10;
             }
         } else if (item->current_anim_state == TRAP_SET) {
@@ -72,7 +72,7 @@ static void M_Control(const int16_t item_num)
         Room_TestTriggers(item);
 
         if (item->pos.y >= item->floor - STEP_L) {
-            item->gravity = 0;
+            item->gravity = false;
             item->fall_speed = 0;
             item->pos.y = item->floor;
             if (item->object_id == O_ROLLING_BALL_2) {

@@ -70,7 +70,7 @@ static void M_Control(const int16_t item_num)
 
     case TRAP_WORKING:
         if (item->goal_anim_state != TRAP_FINISHED) {
-            item->gravity = 1;
+            item->gravity = true;
         }
         break;
 
@@ -96,7 +96,7 @@ static void M_Control(const int16_t item_num)
         item->goal_anim_state = TRAP_FINISHED;
         item->pos.y = item->floor;
         item->fall_speed = 0;
-        item->gravity = 0;
+        item->gravity = false;
     }
 }
 

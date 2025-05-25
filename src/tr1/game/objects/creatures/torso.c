@@ -112,7 +112,7 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case TORSO_STATE_SET:
             item->goal_anim_state = TORSO_STATE_FALL;
-            item->gravity = 1;
+            item->gravity = true;
             break;
 
         case TORSO_STATE_STOP:
@@ -241,7 +241,7 @@ static void M_Control(const int16_t item_num)
 
         if (item->pos.y > item->floor) {
             item->goal_anim_state = TORSO_STATE_STOP;
-            item->gravity = 0;
+            item->gravity = false;
             item->pos.y = item->floor;
             g_Camera.bounce = 500;
         }

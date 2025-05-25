@@ -86,7 +86,7 @@ static void M_Control(const int16_t item_num)
             Item_SwitchToAnim(item, LA_FAST_FALL, BLF_FASTFALL);
             item->speed = 0;
             item->fall_speed = 0;
-            item->gravity = 1;
+            item->gravity = true;
             item->data = (void *)-1;
             item->pos.y += 50;
         }
@@ -109,7 +109,7 @@ static void M_Control(const int16_t item_num)
             item->floor = h;
             item->pos.y = h;
             Room_TestTriggers(item);
-            item->gravity = 0;
+            item->gravity = false;
             item->fall_speed = 0;
             item->goal_anim_state = LS_DEATH;
             item->required_anim_state = LS_DEATH;

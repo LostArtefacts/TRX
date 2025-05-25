@@ -35,7 +35,7 @@ static void M_Control(const int16_t item_num)
 
     case ICICLE_FALL:
         if (!item->gravity) {
-            item->gravity = 1;
+            item->gravity = true;
             item->fall_speed = 50;
         }
         if (item->touch_bits != 0) {
@@ -44,7 +44,7 @@ static void M_Control(const int16_t item_num)
         break;
 
     case ICICLE_LAND:
-        item->gravity = 0;
+        item->gravity = false;
         break;
     }
 
@@ -63,7 +63,7 @@ static void M_Control(const int16_t item_num)
 
     item->floor = height;
     if (item->current_anim_state == ICICLE_FALL && item->pos.y >= height) {
-        item->gravity = 0;
+        item->gravity = false;
         item->goal_anim_state = ICICLE_LAND;
         item->pos.y = height;
         item->fall_speed = 0;

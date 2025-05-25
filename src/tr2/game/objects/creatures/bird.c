@@ -116,7 +116,7 @@ static void M_Control(const int16_t item_num)
         case BIRD_STATE_FALL:
             if (item->pos.y > item->floor) {
                 item->pos.y = item->floor;
-                item->gravity = 0;
+                item->gravity = false;
                 item->fall_speed = 0;
                 item->goal_anim_state = BIRD_STATE_DEATH;
             }
@@ -131,7 +131,7 @@ static void M_Control(const int16_t item_num)
                 item->object_id == O_CROW ? CROW_DIE_ANIM : BIRD_DIE_ANIM;
             Item_SwitchToAnim(item, anim_idx, 0);
             item->current_anim_state = BIRD_STATE_FALL;
-            item->gravity = 1;
+            item->gravity = true;
             item->speed = 0;
             break;
         }

@@ -98,11 +98,11 @@ static void M_Control(const int16_t item_num)
     PHD_ANGLE angle = 0;
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {
-            item->gravity = 1;
+            item->gravity = true;
             item->goal_anim_state = BAT_STATE_FALL;
             item->speed = 0;
         } else {
-            item->gravity = 0;
+            item->gravity = false;
             item->fall_speed = 0;
             item->goal_anim_state = BAT_STATE_DEATH;
             item->pos.y = item->floor;

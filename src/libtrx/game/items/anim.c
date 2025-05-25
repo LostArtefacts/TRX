@@ -226,7 +226,7 @@ void Item_Animate(ITEM *const item)
         }
     }
 
-    if (item->gravity != 0) {
+    if (item->gravity) {
         item->fall_speed += item->fall_speed < FAST_FALL_SPEED ? GRAVITY : 1;
         item->pos.y += item->fall_speed;
     } else {

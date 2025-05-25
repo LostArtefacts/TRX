@@ -23,7 +23,7 @@ static void M_Control(const int16_t item_num)
 
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
-        item->gravity = 1;
+        item->gravity = true;
     } else if (
         item->current_anim_state == TRAP_ACTIVATE && item->touch_bits != 0) {
         Lara_TakeDamage(FALLING_CEILING_DAMAGE, true);
@@ -47,7 +47,7 @@ static void M_Control(const int16_t item_num)
         item->pos.y = height;
         item->goal_anim_state = TRAP_WORKING;
         item->fall_speed = 0;
-        item->gravity = 0;
+        item->gravity = false;
     }
 }
 
