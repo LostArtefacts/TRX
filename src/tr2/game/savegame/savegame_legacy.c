@@ -255,7 +255,7 @@ static void M_ReadItems(void)
                     item->gravity = true;
                 }
                 if (!(item->flags & 0x10)) {
-                    item->collidable = 0;
+                    item->collidable = false;
                 }
             }
 

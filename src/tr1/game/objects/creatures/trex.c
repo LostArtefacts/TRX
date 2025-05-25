@@ -179,7 +179,7 @@ static void M_Control(const int16_t item_num)
     Creature_Head(item, head >> 1);
     dino->neck_rotation = dino->head_rotation;
     Creature_Animate(item_num, angle, 0);
-    item->collidable = 1;
+    item->collidable = true;
 }
 
 static void M_KillLara(ITEM *const item)

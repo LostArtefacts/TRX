@@ -218,7 +218,7 @@ void Creature_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->rot.y += (Random_GetControl() - DEG_90) >> 1;
-    item->collidable = 1;
+    item->collidable = true;
     item->data = nullptr;
 }
 
@@ -989,7 +989,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         break;
     }
 
-    item->collidable = 0;
+    item->collidable = false;
     item->hit_points = DONT_TARGET;
     if (explode) {
         Item_Explode(item_num, -1, 0);

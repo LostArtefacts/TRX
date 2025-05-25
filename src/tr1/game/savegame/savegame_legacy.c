@@ -539,7 +539,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
                     item->gravity = true;
                 }
                 if (!(item->flags & 16)) {
-                    item->collidable = 0;
+                    item->collidable = false;
                 }
             }
 
