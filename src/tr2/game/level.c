@@ -346,10 +346,6 @@ bool Level_Initialise(
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
 
-    if (Object_Get(O_COMBAT_END)->loaded) {
-        InitialiseFinalLevel();
-    }
-
     if (level->music_track != MX_INACTIVE) {
         Music_Play(
             level->music_track,

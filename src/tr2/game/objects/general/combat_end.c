@@ -16,6 +16,7 @@ static int16_t M_FindBestBoss(void);
 static void M_ActivateLastBoss(void);
 static void M_PrepareCutscene(int16_t item_num);
 static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
 
 static int16_t M_FindBestBoss(void)
@@ -94,8 +95,36 @@ static void M_PrepareCutscene(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->initialise_func = M_Initialise;
     obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
+
+    g_FinalBossActive = 0;
+    g_FinalBossCount = 0;
+    g_FinalLevelCount = 0;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+
+        switch (item->object_id) {
+        case O_DOG:
+        case O_CULT_1:
+        case O_WORKER_3:
+            g_FinalLevelCount++;
+            break;
+
+        case O_CULT_3:
+            g_FinalBossItem[g_FinalBossCount] = i;
+            g_FinalBossCount++;
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 static void M_Control(const int16_t item_num)

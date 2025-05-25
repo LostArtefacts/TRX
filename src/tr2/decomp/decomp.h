@@ -20,4 +20,3 @@ void InitialiseGameFlags(void);
 int32_t DoShift(ITEM *vehicle, const XYZ_32 *pos, const XYZ_32 *old);
 int32_t DoDynamics(int32_t height, int32_t fall_speed, int32_t *out_y);
 int32_t GetCollisionAnim(const ITEM *vehicle, XYZ_32 *moved);
-void InitialiseFinalLevel(void);
