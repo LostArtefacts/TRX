@@ -52,19 +52,9 @@ typedef struct {
     bool hit_status;
     bool collidable;
     bool looked_at;
-    uint16_t pad_1 : 1; // 0x0001
-    uint16_t pad_2 : 2; // 0x0002…0x0004
-    uint16_t pad_3 : 1; // 0x0008
-    uint16_t pad_4 : 1; // 0x0010
-    uint16_t pad_5 : 1; // 0x0020
-    uint16_t pad_6 : 1; // 0x0040
-#if TR_VERSION == 1
-    uint16_t pad : 9; // 0x0080…0x8000
-#elif TR_VERSION == 2
+#if TR_VERSION == 2
     bool dynamic_light;
-    uint16_t pad_7 : 1; // 0x0080
-    uint16_t killed : 1; // 0x0100
-    uint16_t pad : 7; // 0x0200…0x8000
+    bool killed;
 #endif
 
     struct {
