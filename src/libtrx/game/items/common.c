@@ -28,7 +28,7 @@ void Item_InitialiseItems(const int32_t num_items)
 
     for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
         ITEM *const item = &m_Items[i];
-        item->active = 0;
+        item->active = false;
         item->next_item = i + 1;
     }
     m_Items[MAX_ITEMS - 1].next_item = NO_ITEM;
@@ -141,7 +141,7 @@ void Item_Initialise(const int16_t item_num)
     item->priv = nullptr;
     item->carried_item = nullptr;
 
-    item->active = 0;
+    item->active = false;
     item->status = IS_INACTIVE;
     item->gravity = 0;
     item->hit_status = 0;
@@ -243,7 +243,7 @@ void Item_RemoveActive(const int16_t item_num)
         return;
     }
 
-    item->active = 0;
+    item->active = false;
 
     int16_t link_num = m_NextItemActive;
     if (link_num == item_num) {
@@ -309,7 +309,7 @@ void Item_AddActive(const int16_t item_num)
         return;
     }
 
-    item->active = 1;
+    item->active = true;
     item->next_active = m_NextItemActive;
     m_NextItemActive = item_num;
 }
