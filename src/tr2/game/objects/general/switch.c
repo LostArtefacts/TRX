@@ -74,6 +74,9 @@ static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
     case O_SWITCH_TYPE_BUTTON:
         Lara_AlignPosition(switch_item, &g_PushSwitchPosition);
         break;
+
+    default:
+        break;
     }
 }
 

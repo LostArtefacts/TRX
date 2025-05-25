@@ -20,11 +20,7 @@ typedef struct {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
-#if TR_VERSION == 1
     GAME_OBJECT_ID object_id;
-#elif TR_VERSION == 2
-    int16_t object_id;
-#endif
     int16_t current_anim_state;
     int16_t goal_anim_state;
     int16_t required_anim_state;

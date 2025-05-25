@@ -293,6 +293,9 @@ static void M_ReadItems(void)
         case O_LIFT:
             M_Read(item->data, sizeof(LIFT_INFO));
             break;
+
+        default:
+            break;
         }
 
         if (obj->handle_save_func != nullptr) {
@@ -551,6 +554,9 @@ static void M_WriteItems(void)
 
         case O_LIFT:
             M_Write(item->data, sizeof(LIFT_INFO));
+            break;
+
+        default:
             break;
         }
     }
