@@ -11,6 +11,16 @@
 #include <libtrx/utils.h>
 
 #define CUTSCENE_DELAY (5 * FRAMES_PER_SECOND) // = 150
+#define M_BOSS_TYPE O_CULT_3
+
+static const GAME_OBJECT_ID m_EnemyTypes[] = {
+    // clang-format off
+    O_DOG,
+    O_CULT_1,
+    O_WORKER_3,
+    NO_OBJECT,
+    // clang-format on
+};
 
 static int16_t M_FindBestBoss(void);
 static void M_ActivateLastBoss(void);
@@ -25,11 +35,15 @@ static int16_t M_FindBestBoss(void)
     // For speedruns, the change here means that is no longer guaranteed, but
     // positional manipulation can be used for the best outcome.
     int32_t best_dist = INT32_MAX;
-    int16_t best_item = g_FinalBossItem[0];
-    for (int32_t i = 0; i < g_FinalBossCount; i++) {
-        const ITEM *const item = Item_Get(g_FinalBossItem[i]);
+    int16_t best_item = NO_ITEM;
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+        if (item->object_id != M_BOSS_TYPE) {
+            continue;
+        }
+
         if (item->status == IS_ACTIVE || item->status == IS_DEACTIVATED) {
-            best_item = g_FinalBossItem[i];
+            best_item = i;
             break;
         }
 
@@ -52,7 +66,7 @@ static int16_t M_FindBestBoss(void)
             const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
             if (dist < best_dist) {
                 best_dist = dist;
-                best_item = g_FinalBossItem[i];
+                best_item = i;
             }
         }
     }
@@ -62,6 +76,10 @@ static int16_t M_FindBestBoss(void)
 static void M_ActivateLastBoss(void)
 {
     const int16_t item_num = M_FindBestBoss();
+    if (item_num == NO_ITEM) {
+        return;
+    }
+
     ITEM *const item = Item_Get(item_num);
     if (item->status != IS_ACTIVE && item->status != IS_DEACTIVATED) {
         item->touch_bits = 0;
@@ -100,7 +118,6 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = 1;
 
     g_FinalBossActive = 0;
-    g_FinalBossCount = 0;
     g_FinalLevelCount = 0;
 }
 
@@ -108,21 +125,8 @@ static void M_Initialise(const int16_t item_num)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
-
-        switch (item->object_id) {
-        case O_DOG:
-        case O_CULT_1:
-        case O_WORKER_3:
+        if (Object_IsType(item->object_id, m_EnemyTypes)) {
             g_FinalLevelCount++;
-            break;
-
-        case O_CULT_3:
-            g_FinalBossItem[g_FinalBossCount] = i;
-            g_FinalBossCount++;
-            break;
-
-        default:
-            break;
         }
     }
 }

@@ -56,8 +56,6 @@ extern ITEM *g_LaraItem;
 extern WEAPON_INFO g_Weapons[];
 extern int16_t g_FinalBossActive;
 extern uint16_t g_FinalLevelCount;
-extern int16_t g_FinalBossCount;
-extern int16_t g_FinalBossItem[5];
 
 extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;

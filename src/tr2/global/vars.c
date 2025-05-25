@@ -164,8 +164,6 @@ WEAPON_INFO g_Weapons[] = {
 
 int16_t g_FinalBossActive;
 uint16_t g_FinalLevelCount;
-int16_t g_FinalBossCount;
-int16_t g_FinalBossItem[5];
 
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
