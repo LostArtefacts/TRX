@@ -49,10 +49,11 @@ typedef struct {
     bool enable_shadow;
     bool active;
     bool gravity;
+    bool hit_status;
     uint16_t pad_1 : 1; // 0x0001
     uint16_t pad_2 : 2; // 0x0002…0x0004
     uint16_t pad_3 : 1; // 0x0008
-    uint16_t hit_status : 1; // 0x0010
+    uint16_t pad_4 : 1; // 0x0010
     uint16_t collidable : 1; // 0x0020
     uint16_t looked_at : 1; // 0x0040
 #if TR_VERSION == 1

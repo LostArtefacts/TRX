@@ -20,7 +20,7 @@ void Item_TakeDamage(
     CLAMPL(item->hit_points, 0);
 
     if (hit_status) {
-        item->hit_status = 1;
+        item->hit_status = true;
     }
 }
 

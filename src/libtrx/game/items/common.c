@@ -144,7 +144,7 @@ void Item_Initialise(const int16_t item_num)
     item->active = false;
     item->status = IS_INACTIVE;
     item->gravity = false;
-    item->hit_status = 0;
+    item->hit_status = false;
     item->collidable = 1;
     item->looked_at = 0;
     item->enable_interpolation = true;
