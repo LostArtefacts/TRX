@@ -67,7 +67,7 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
     camera->pos.room_num = item->room_num;
 
     item->rot.y = 0;
-    item->dynamic_light = 0;
+    item->dynamic_light = false;
     item->goal_anim_state = 0;
     item->current_anim_state = 0;
     item->frame_num = 0;

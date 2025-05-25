@@ -61,7 +61,8 @@ typedef struct {
 #if TR_VERSION == 1
     uint16_t pad : 9; // 0x0080…0x8000
 #elif TR_VERSION == 2
-    uint16_t dynamic_light : 1; // 0x0080
+    bool dynamic_light;
+    uint16_t pad_7 : 1; // 0x0080
     uint16_t killed : 1; // 0x0100
     uint16_t pad : 7; // 0x0200…0x8000
 #endif
