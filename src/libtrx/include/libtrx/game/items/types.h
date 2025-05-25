@@ -44,8 +44,10 @@ typedef struct {
     XYZ_32 pos;
     XYZ_16 rot;
 
+    bool enable_interpolation;
     bool enable_shadow;
-    uint16_t active : 1; // 0x0001
+    bool active;
+    uint16_t pad_1 : 1; // 0x0001
     uint16_t status : 2; // 0x0002…0x0004
     uint16_t gravity : 1; // 0x0008
     uint16_t hit_status : 1; // 0x0010
@@ -58,8 +60,6 @@ typedef struct {
     uint16_t killed : 1; // 0x0100
     uint16_t pad : 7; // 0x0200…0x8000
 #endif
-
-    bool enable_interpolation;
 
     struct {
         struct {
