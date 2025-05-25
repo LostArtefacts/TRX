@@ -151,9 +151,9 @@ void Item_Initialise(const int16_t item_num)
     item->enable_shadow = true;
 
 #if TR_VERSION >= 2
-    item->killed = 0;
+    item->killed = false;
     if ((item->flags & IF_KILLED) != 0) {
-        item->killed = 1;
+        item->killed = true;
         item->flags &= ~IF_KILLED;
     }
 #endif
