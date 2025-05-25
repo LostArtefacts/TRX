@@ -10,7 +10,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/utils.h>
 
-#define CUTSCENE_DELAY (5 * FRAMES_PER_SECOND) // = 150
+#define M_CUTSCENE_DELAY (5 * FRAMES_PER_SECOND) // = 150
 #define M_BOSS_TYPE O_CULT_3
 
 static const GAME_OBJECT_ID m_EnemyTypes[] = {
@@ -21,6 +21,9 @@ static const GAME_OBJECT_ID m_EnemyTypes[] = {
     NO_OBJECT,
     // clang-format on
 };
+
+static int16_t m_BossTimer = 0;
+static uint16_t m_EnemyCount = 0;
 
 static int16_t M_FindBestBoss(void);
 static void M_ActivateLastBoss(void);
@@ -88,7 +91,7 @@ static void M_ActivateLastBoss(void)
         Item_AddActive(item_num);
         LOT_EnableBaddieAI(item_num, true);
     }
-    g_FinalBossActive = 1;
+    m_BossTimer = 1;
 }
 
 static void M_PrepareCutscene(const int16_t item_num)
@@ -117,8 +120,8 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 
-    g_FinalBossActive = 0;
-    g_FinalLevelCount = 0;
+    m_BossTimer = 0;
+    m_EnemyCount = 0;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -126,7 +129,7 @@ static void M_Initialise(const int16_t item_num)
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
         if (Object_IsType(item->object_id, m_EnemyTypes)) {
-            g_FinalLevelCount++;
+            m_EnemyCount++;
         }
     }
 }
@@ -135,18 +138,22 @@ static void M_Control(const int16_t item_num)
 {
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (current_info->stats.kill_count == g_FinalLevelCount
-        && !g_FinalBossActive) {
+    if (current_info->stats.kill_count == m_EnemyCount && m_BossTimer == 0) {
         M_ActivateLastBoss();
         return;
     }
 
-    if (current_info->stats.kill_count > g_FinalLevelCount) {
-        g_FinalBossActive++;
-        if (g_FinalBossActive == CUTSCENE_DELAY) {
+    if (current_info->stats.kill_count > m_EnemyCount) {
+        m_BossTimer++;
+        if (m_BossTimer == M_CUTSCENE_DELAY) {
             M_PrepareCutscene(item_num);
         }
     }
+}
+
+bool CombatEnd_IsComplete(void)
+{
+    return m_BossTimer >= M_CUTSCENE_DELAY;
 }
 
 REGISTER_OBJECT(O_COMBAT_END, M_Setup)

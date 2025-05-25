@@ -54,8 +54,6 @@ extern uint16_t g_SoundOptionLine;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern WEAPON_INFO g_Weapons[];
-extern int16_t g_FinalBossActive;
-extern uint16_t g_FinalLevelCount;
 
 extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;
