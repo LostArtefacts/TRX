@@ -536,7 +536,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
                 }
                 item->status = (item->flags & 6) >> 1;
                 if (item->flags & 8) {
-                    item->gravity = 1;
+                    item->gravity = true;
                 }
                 if (!(item->flags & 16)) {
                     item->collidable = 0;

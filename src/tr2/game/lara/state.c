@@ -1126,7 +1126,7 @@ void Lara_State_Dive(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_UWDeath(ITEM *item, COLL_INFO *coll)
 {
-    item->gravity = 0;
+    item->gravity = false;
     item->fall_speed -= 8;
     CLAMPL(item->fall_speed, 0);
 

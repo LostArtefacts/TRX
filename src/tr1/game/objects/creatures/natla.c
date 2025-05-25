@@ -113,10 +113,10 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case NATLA_STATE_FALL:
             if (item->pos.y < item->floor) {
-                item->gravity = 1;
+                item->gravity = true;
                 item->speed = 0;
             } else {
-                item->gravity = 0;
+                item->gravity = false;
                 item->goal_anim_state = NATLA_STATE_SEMIDEATH;
                 item->pos.y = item->floor;
                 timer = 0;

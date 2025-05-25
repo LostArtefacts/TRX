@@ -61,7 +61,7 @@ static void M_Control(const int16_t item_num)
         if (item->pos.y > item->floor) {
             Sound_Effect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
             item->pos.y = item->floor + 10;
-            item->gravity = 0;
+            item->gravity = false;
             item->status = IS_DEACTIVATED;
             Item_RemoveActive(item_num);
         }
@@ -75,7 +75,7 @@ static void M_Control(const int16_t item_num)
             && y < WALL_L * 3) {
             item->current_anim_state = x / 32;
             item->goal_anim_state = z / 32;
-            item->gravity = 1;
+            item->gravity = true;
         }
     }
 }

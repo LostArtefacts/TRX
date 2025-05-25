@@ -703,7 +703,7 @@ void Lara_State_UseMidas(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_DieMidas(ITEM *item, COLL_INFO *coll)
 {
-    item->gravity = 0;
+    item->gravity = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
 

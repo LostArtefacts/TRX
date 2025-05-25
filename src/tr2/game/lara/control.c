@@ -474,7 +474,7 @@ void Lara_Control(const int16_t item_num)
             } else if (room_submerged) {
                 g_Lara.air = LARA_MAX_AIR;
                 g_Lara.water_status = LWS_UNDERWATER;
-                item->gravity = 0;
+                item->gravity = false;
                 item->pos.y += 100;
                 Lara_UpdateRoomToHeight(0);
                 Sound_StopEffect(SFX_LARA_FALL);
@@ -513,7 +513,7 @@ void Lara_Control(const int16_t item_num)
                 Item_SwitchToAnim(item, LA_FALL_START, 0);
                 item->goal_anim_state = LS_JUMP_FORWARD;
                 item->current_anim_state = LS_JUMP_FORWARD;
-                item->gravity = 1;
+                item->gravity = true;
                 item->speed = item->fall_speed / 4;
                 item->fall_speed = 0;
                 item->rot.x = 0;
@@ -551,7 +551,7 @@ void Lara_Control(const int16_t item_num)
                 Item_SwitchToAnim(item, LA_FALL_START, 0);
                 item->goal_anim_state = LS_JUMP_FORWARD;
                 item->current_anim_state = LS_JUMP_FORWARD;
-                item->gravity = 1;
+                item->gravity = true;
                 item->speed = item->fall_speed / 4;
             } else {
                 g_Lara.water_status = LWS_WADE;
@@ -608,7 +608,7 @@ void Lara_Control(const int16_t item_num)
 
                 item->rot.z = 0;
                 item->rot.x = 0;
-                item->gravity = 0;
+                item->gravity = false;
                 item->fall_speed = 0;
                 g_Lara.dive_count = 0;
                 g_Lara.torso_rot.y = 0;

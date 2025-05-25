@@ -95,7 +95,7 @@ void Lara_Animate(ITEM *const item)
         }
     }
 
-    if (item->gravity != 0) {
+    if (item->gravity) {
         int32_t speed = anim->velocity
             + anim->acceleration * (item->frame_num - anim->frame_base - 1);
         item->speed -= (int16_t)(speed >> 16);

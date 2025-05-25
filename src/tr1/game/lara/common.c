@@ -106,7 +106,7 @@ void Lara_Control(void)
             g_Lara.water_status = LWS_UNDERWATER;
             g_Lara.air = LARA_MAX_AIR;
             item->pos.y += 100;
-            item->gravity = 0;
+            item->gravity = false;
             Lara_UpdateRoomToHeight(0);
             Sound_StopEffect(SFX_LARA_FALL);
             if (item->current_anim_state == LS_SWAN_DIVE) {
@@ -149,7 +149,7 @@ void Lara_Control(void)
             Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
-            item->gravity = 1;
+            item->gravity = true;
             item->rot.x = 0;
             item->rot.z = 0;
             g_Lara.head_rot.x = 0;
@@ -197,7 +197,7 @@ void Lara_Control(void)
             Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
-            item->gravity = 1;
+            item->gravity = true;
             item->rot.x = 0;
             item->rot.z = 0;
             g_Lara.head_rot.x = 0;
@@ -248,7 +248,7 @@ void Lara_Control(void)
 
             item->rot.z = 0;
             item->rot.x = 0;
-            item->gravity = 0;
+            item->gravity = false;
             item->fall_speed = 0;
             g_Lara.dive_timer = 0;
             g_Lara.torso_rot.y = 0;

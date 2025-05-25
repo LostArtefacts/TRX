@@ -34,7 +34,7 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
     }
 
     g_Lara.move_angle = item->rot.y;
-    item->gravity = 0;
+    item->gravity = false;
     item->fall_speed = 0;
 
     PHD_ANGLE angle = (uint16_t)(item->rot.y + DEG_45) / DEG_90;
@@ -73,7 +73,7 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
         }
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
-        item->gravity = 1;
+        item->gravity = true;
         item->fall_speed = 1;
         item->speed = 2;
         g_Lara.gun_status = LGS_ARMLESS;
@@ -138,7 +138,7 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
             item->goal_anim_state = LS_FALL_BACK;
             Item_SwitchToAnim(item, LA_FALL_BACK, 0);
         }
-        item->gravity = 1;
+        item->gravity = true;
         item->fall_speed = 0;
         return;
     }
@@ -160,7 +160,7 @@ bool Lara_Fallen(ITEM *item, COLL_INFO *coll)
     item->current_anim_state = LS_JUMP_FORWARD;
     item->goal_anim_state = LS_JUMP_FORWARD;
     Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
-    item->gravity = 1;
+    item->gravity = true;
     item->fall_speed = 0;
     return true;
 }
@@ -177,7 +177,7 @@ bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
     item->goal_anim_state = LS_STOP;
     item->current_anim_state = LS_STOP;
     Item_SwitchToAnim(item, LA_STOP, 0);
-    item->gravity = 0;
+    item->gravity = false;
     item->fall_speed = 0;
     item->speed = 0;
     return true;
@@ -188,7 +188,7 @@ bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
         Lara_ShiftCol(coll);
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
-        item->gravity = 0;
+        item->gravity = false;
         item->speed = 0;
         return true;
     }
@@ -400,7 +400,7 @@ bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
     item->rot.y = angle;
-    item->gravity = 0;
+    item->gravity = false;
     item->fall_speed = 0;
     item->speed = 0;
     g_Lara.gun_status = LGS_HANDS_BUSY;
@@ -486,7 +486,7 @@ bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
     item->rot.y = angle;
-    item->gravity = 0;
+    item->gravity = false;
     item->fall_speed = 0;
     item->speed = 0;
     g_Lara.gun_status = LGS_HANDS_BUSY;
@@ -699,7 +699,7 @@ void Lara_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
     item->goal_anim_state = LS_STOP;
     item->rot.x = 0;
     item->rot.z = 0;
-    item->gravity = 0;
+    item->gravity = false;
     item->speed = 0;
     item->fall_speed = 0;
     g_Lara.water_status = LWS_WADE;
@@ -729,7 +729,7 @@ bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 
     item->pos.y += coll->side_front.floor + SURF_HEIGHT - 5;
     Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
-    item->gravity = 0;
+    item->gravity = false;
     item->rot.x = 0;
     item->rot.z = 0;
     item->speed = 0;
@@ -799,7 +799,7 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.y = Math_DirectionToAngle(dir);
     item->rot.z = 0;
-    item->gravity = 0;
+    item->gravity = false;
     item->fall_speed = 0;
     item->speed = 0;
     g_Lara.gun_status = LGS_HANDS_BUSY;
