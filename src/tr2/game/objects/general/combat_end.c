@@ -116,4 +116,4 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-REGISTER_OBJECT(O_FINAL_LEVEL_COUNTER, M_Setup)
+REGISTER_OBJECT(O_COMBAT_END, M_Setup)
