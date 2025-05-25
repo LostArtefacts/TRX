@@ -458,7 +458,7 @@
         "mini_copter":           {"name": "Helicopter 2"},
         "winston":               {"name": "Winston"},
         "assault_digits":        {"name": "Assault Digits"},
-        "final_level_counter":   {"name": "Final Level Counter"},
+        "combat_end":            {"name": "Combat End"},
         "cut_shotgun":           {"name": "Shotgun Shower Animation"},
         "earthquake":            {"name": "Earthquake"},
     },

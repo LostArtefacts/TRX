@@ -216,7 +216,7 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     O_SKYBOX,
     O_ALPHABET,
     O_ASSAULT_DIGITS,
-    O_FINAL_LEVEL_COUNTER,
+    O_COMBAT_END,
     O_CUT_SHOTGUN,
     O_EARTHQUAKE,
     // clang-format on

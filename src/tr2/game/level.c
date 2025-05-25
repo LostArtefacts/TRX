@@ -346,7 +346,7 @@ bool Level_Initialise(
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
 
-    if (Object_Get(O_FINAL_LEVEL_COUNTER)->loaded) {
+    if (Object_Get(O_COMBAT_END)->loaded) {
         InitialiseFinalLevel();
     }
 
