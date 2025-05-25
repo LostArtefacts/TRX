@@ -40,13 +40,11 @@ typedef struct {
     void *data;
     void *priv;
     CARRIED_ITEM *carried_item;
-#if TR_VERSION == 1
-    bool enable_shadow;
-#endif
 
     XYZ_32 pos;
     XYZ_16 rot;
 
+    bool enable_shadow;
     uint16_t active : 1; // 0x0001
     uint16_t status : 2; // 0x0002…0x0004
     uint16_t gravity : 1; // 0x0008

@@ -762,6 +762,10 @@ void Output_DrawScreenFlatQuad(
 void Output_InsertShadow(
     int16_t radius, const BOUNDS_16 *bounds, const ITEM *item)
 {
+    if (!item->enable_shadow) {
+        return;
+    }
+
     const int32_t x1 = bounds->min.x;
     const int32_t x2 = bounds->max.x;
     const int32_t z1 = bounds->min.z;
