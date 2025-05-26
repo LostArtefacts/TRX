@@ -3,6 +3,7 @@
 // clang-format off
 typedef enum {
     INJ_VERSION_1  = 1,
+    INJ_VERSION_2  = 2,
 } INJECTION_VERSION;
 
 typedef enum {
@@ -101,3 +102,9 @@ typedef enum {
     RMET_ADD_SPRITE   = 6,
 } ROOM_MESH_EDIT_TYPE;
 // clang-format on
+
+typedef enum {
+    OBJ_TYPE_OBJECT = 0,
+    OBJ_TYPE_STATIC2D = 1,
+    OBJ_TYPE_STATIC3D = 2,
+} INJECT_OBJECT_TYPE;

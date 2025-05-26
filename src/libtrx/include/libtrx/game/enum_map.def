@@ -1,12 +1,15 @@
-#undef OBJ_ID_DEFINE
-#define OBJ_ID_DEFINE(object_id, value)                                        \
-    EnumMap_Define("GAME_OBJECT_ID", object_id, #object_id);
+#define OBJ_ID_DEFINE(game_id, uuid_str, enum_value)                           \
+    EnumMap_Define("GAME_OBJECT_ID", game_id, #game_id);
+#define OBJ_ID_ALIAS_DEFINE(source_id, target_id) \
+    EnumMap_Define("GAME_OBJECT_ID", source_id, #source_id);
 #include <libtrx/game/objects/ids.def>
+#undef OBJ_ID_DEFINE
+#undef OBJ_ID_ALIAS_DEFINE
 
-#undef INPUT_ROLE_DEFINE
 #define INPUT_ROLE_DEFINE(role_name, state_name)                               \
     EnumMap_Define("INPUT_ROLE", INPUT_ROLE_##role_name, #state_name);
 #include <libtrx/game/input/roles.def>
+#undef INPUT_ROLE_DEFINE
 
 ENUM_MAP_DEFINE(SCREENSHOT_FORMAT, SCREENSHOT_FORMAT_JPEG, "jpg")
 ENUM_MAP_DEFINE(SCREENSHOT_FORMAT, SCREENSHOT_FORMAT_JPEG, "jpeg")

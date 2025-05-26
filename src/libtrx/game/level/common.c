@@ -931,28 +931,33 @@ void Level_AppendSpriteTextures(
 
 void Level_ReadSpriteSequences(VFILE *const file)
 {
+    int32_t max_obj_id = -1;
+    for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id <= O_NUMBER_OF; obj_id++) {
+        max_obj_id = MAX(max_obj_id, Object_MakeGameID(obj_id));
+    }
+
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = VFile_ReadS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
     for (int32_t i = 0; i < num_sequences; i++) {
-        const int32_t object_id = Object_UnmapGameID(VFile_ReadS32(file));
+        const int32_t id = VFile_ReadS32(file);
         const int16_t num_meshes = VFile_ReadS16(file);
         const int16_t mesh_idx = VFile_ReadS16(file);
 
-        if (object_id >= O_FIRST && object_id < O_NUMBER_OF) {
-            OBJECT *const obj = Object_Get(object_id);
+        if (id >= 0 && id < max_obj_id) {
+            OBJECT *const obj = Object_GetByGameID(id);
+            ASSERT(obj != nullptr);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx;
             obj->anim_idx = NO_ANIM;
             obj->loaded = true;
-        } else if (object_id - O_NUMBER_OF < MAX_STATIC_OBJECTS_2D) {
-            STATIC_OBJECT_2D *const obj =
-                Object_Get2DStatic(object_id - O_NUMBER_OF);
+        } else if (id - max_obj_id < MAX_STATIC_OBJECTS_2D) {
+            STATIC_OBJECT_2D *const obj = Object_Get2DStatic(id - max_obj_id);
             obj->frame_count = ABS(num_meshes);
             obj->texture_idx = mesh_idx;
             obj->loaded = true;
         } else {
-            Shell_ExitSystemFmt("Invalid sprite slot (%d)", object_id);
+            Shell_ExitSystemFmt("Invalid sprite slot (%d)", id);
         }
     }
 

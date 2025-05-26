@@ -8,17 +8,38 @@
 #include "types.h"
 
 void Object_Reset(void);
+
+// Retrieve an object by its TRX internal index. Trying to retrieve an invalid
+// object is a fatal error.
 OBJECT *Object_Get(GAME_OBJECT_ID object_id);
+
+// Filesystem helper functions ================================================
+// In general, in TRX the objects are identified in three ways:
+// - GAME_OBJECT_ID - a TRX internal ID, essentially an arbitrary linear enum
+// - game ID - an ID used by the original game in its level files
+// - UUID (aka GUID) - a 128-bit globally unique identifier that allows us to
+//   clearly and immutably identify the objects across all game engines.
+//   Preferred where possible over the OG IDs (in filesystem applications).
+// For all purposes outside of filesystem interaction and exposing the objects
+// to the world, the code should just use the GAME_OBJECT_ID enum.
+
+// Retrieve an object by its game ID. Returns nullptr if not found.
+OBJECT *Object_GetByGameID(int32_t game_id);
+// Retrieve an object by its UUID. Returns nullptr if not found.
+OBJECT *Object_GetByUUID(const UUID uuid);
+
+// Convert a game ID to GAME_OBJECT_ID.
+GAME_OBJECT_ID Object_UnmapGameID(int32_t game_id);
+// Convert a UUID to GAME_OBJECT_ID.
+GAME_OBJECT_ID Object_UnmapUUID(const UUID uuid);
+
+// Convert a GAME_OBJECT_ID to a game ID (opposite of Object_UnmapGameID).
+int32_t Object_MakeGameID(GAME_OBJECT_ID object_id);
+
+// Other functions ============================================================
+
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
-
-// Convert a game-specific ID compatible with level files and saves to an
-// internal object ID.
-GAME_OBJECT_ID Object_UnmapGameID(int32_t game_id);
-
-// Convert an internal object ID to a game-specific ID compatible with level
-// files and saves (opposite of Object_UnmapGameID).
-int32_t Object_MakeGameID(GAME_OBJECT_ID object_id);
 
 bool Object_IsType(GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr);
 

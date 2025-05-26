@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "game/anims.h"
 #include "game/inject.h"
+#include "game/inject/utils.h"
 #include "game/objects.h"
 #include "memory.h"
 
@@ -98,13 +99,13 @@ static void M_CommandEdits(
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
     int16_t cmd_idx = cached_info.anims.command_count;
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id =
-            Object_UnmapGameID(VFile_ReadS32(injection->fp));
+        const INJECTION_OBJECT_INFO obj_info =
+            Inject_ReadObjectPtr(injection->fp);
         const int32_t anim_idx = VFile_ReadS32(injection->fp);
         const int32_t num_raw_cmds = VFile_ReadS32(injection->fp);
         const int32_t num_anim_cmds = VFile_ReadS32(injection->fp);
 
-        const OBJECT *const obj = Object_Get(obj_id);
+        const OBJECT *const obj = Object_Get(obj_info.id);
         if (!obj->loaded) {
             continue;
         }

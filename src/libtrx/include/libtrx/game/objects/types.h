@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../uuid.h"
 #include "../anims/types.h"
 #include "../collision.h"
 #include "../items/types.h"
@@ -95,6 +96,7 @@ typedef struct OBJECT {
         };
         // clang-format on
     };
+    UUID uuid;
 } OBJECT;
 
 typedef struct {

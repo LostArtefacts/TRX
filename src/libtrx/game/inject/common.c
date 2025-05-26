@@ -13,7 +13,7 @@
 #include <zlib.h>
 
 #define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
-#define INJECTION_CURRENT_VERSION 1
+#define INJECTION_CURRENT_VERSION 2
 
 static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};
 static void (*m_Handlers[ICT_NUMBER_OF])(INJECTION_CHUNK chunk) = {};
@@ -51,7 +51,7 @@ static void M_LoadFromFile(
     }
 
     injection->version = VFile_ReadS32(file);
-    if (injection->version < INJ_VERSION_1
+    if (injection->version < INJ_VERSION_2
         || injection->version > INJECTION_CURRENT_VERSION) {
         LOG_WARNING(
             "%s uses unsupported version %d", filename, injection->version);

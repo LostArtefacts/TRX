@@ -265,7 +265,8 @@ static void M_TriggeredItem(const INJECTION *const injection)
     const int16_t item_num = Item_CreateLevelItem();
     ITEM *const item = Item_Get(item_num);
 
-    item->object_id = Object_UnmapGameID(VFile_ReadS16(injection->fp));
+    const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection->fp);
+    item->object_id = obj_info.id;
     item->room_num = VFile_ReadS16(injection->fp);
     item->pos.x = VFile_ReadS32(injection->fp);
     item->pos.y = VFile_ReadS32(injection->fp);
