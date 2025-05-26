@@ -49,4 +49,4 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-REGISTER_OBJECT(O_PENDULUM, M_Setup)
+REGISTER_OBJECT(O_PENDULUM_1, M_Setup)

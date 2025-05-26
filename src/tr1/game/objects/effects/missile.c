@@ -40,7 +40,7 @@ static void M_Control(const int16_t effect_num)
 
     if (effect->pos.y >= height || effect->pos.y <= ceiling) {
         if (effect->object_id == O_MISSILE_2) {
-            effect->object_id = O_RICOCHET_1;
+            effect->object_id = O_RICOCHET;
             effect->frame_num = -Random_GetControl() / 11000;
             effect->speed = 0;
             effect->counter = 6;

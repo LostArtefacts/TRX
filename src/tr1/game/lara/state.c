@@ -776,7 +776,7 @@ void Lara_State_DieMidas(ITEM *item, COLL_INFO *coll)
         break;
 
     case 225:
-        Object_SetReflective(O_HAIR, true);
+        Object_SetReflective(O_LARA_HAIR, true);
         g_Lara.mesh_effects |= (1 << LM_HEAD);
         Lara_SwapSingleMesh(LM_HEAD, O_LARA_EXTRA);
         break;

@@ -49,7 +49,7 @@ static void M_Control(const int16_t item_num)
             effect->speed = 0;
             effect->counter = 6;
             effect->frame_num = -3 * Random_GetControl() / 0x8000;
-            effect->object_id = O_RICOCHET_1;
+            effect->object_id = O_RICOCHET;
         }
     }
 }

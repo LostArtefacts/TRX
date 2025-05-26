@@ -173,4 +173,4 @@ static void M_Collision(
     }
 }
 
-REGISTER_OBJECT(O_ROLLING_BALL, M_Setup)
+REGISTER_OBJECT(O_ROLLING_BALL_1, M_Setup)

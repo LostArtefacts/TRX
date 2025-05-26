@@ -142,11 +142,11 @@ const GAME_OBJECT_ID g_TrapdoorObjects[] = {
 
 const GAME_OBJECT_ID g_AnimObjects[] = {
     // clang-format off
-    O_PISTOL_ANIM,
-    O_SHOTGUN_ANIM,
-    O_MAGNUM_ANIM,
-    O_UZI_ANIM,
-    O_HAIR,
+    O_LARA_PISTOLS,
+    O_LARA_SHOTGUN,
+    O_LARA_MAGNUMS,
+    O_LARA_UZIS,
+    O_LARA_HAIR,
     O_LARA_EXTRA,
     // clang-format on
 };
@@ -157,13 +157,13 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     O_EXPLOSION_2,
     O_SPLASH_1,
     O_SPLASH_2,
-    O_BUBBLES_1,
-    O_BUBBLES_2,
+    O_BUBBLE_1,
+    O_BUBBLE_2,
     O_BUBBLE_EMITTER,
     O_BLOOD_1,
     O_BLOOD_2,
     O_DART_EFFECT,
-    O_RICOCHET_1,
+    O_RICOCHET,
     O_TWINKLE,
     O_GUN_FLASH,
     O_DUST,
@@ -221,8 +221,8 @@ const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
     O_WATERFALL,
     O_SPLASH_1,
     O_SPLASH_2,
-    O_BUBBLES_1,
-    O_BUBBLES_2,
+    O_BUBBLE_1,
+    O_BUBBLE_2,
     NO_OBJECT,
     // clang-format on
 };

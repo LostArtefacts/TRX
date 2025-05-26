@@ -66,7 +66,7 @@ void Missile_Control(const int16_t effect_num)
         if (effect->object_id == O_MISSILE_KNIFE
             || effect->object_id == O_MISSILE_HARPOON) {
             g_LaraItem->hit_points -= 50;
-            effect->object_id = O_BLOOD;
+            effect->object_id = O_BLOOD_1;
             Sound_Effect(SFX_CRUNCH_1, &effect->pos, SPM_NORMAL);
         }
         g_LaraItem->hit_status = 1;

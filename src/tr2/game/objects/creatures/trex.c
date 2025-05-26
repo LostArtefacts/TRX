@@ -170,4 +170,4 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, tilt);
 }
 
-REGISTER_OBJECT(O_DINO, M_Setup)
+REGISTER_OBJECT(O_TREX, M_Setup)

@@ -24,6 +24,6 @@ void ItemAction_LaraHandsFree(ITEM *item)
 
 void ItemAction_LaraDrawRightGun(ITEM *item)
 {
-    Object_SwapMesh(item->object_id, O_PISTOL_ANIM, LM_THIGH_R);
-    Object_SwapMesh(item->object_id, O_PISTOL_ANIM, LM_HAND_R);
+    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_R);
+    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_R);
 }

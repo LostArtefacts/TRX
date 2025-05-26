@@ -40,7 +40,7 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     O_BANDIT_2,
     O_BANDIT_2B,
     O_SKIDOO_DRIVER,
-    O_DINO,
+    O_TREX,
     NO_OBJECT,
     // clang-format on
 };
@@ -195,11 +195,11 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     O_INV_BACKGROUND,
     O_FX_RESERVED,
     O_GONG_BONGER,
-    O_EXPLOSION,
-    O_SPLASH,
-    O_BUBBLE,
+    O_EXPLOSION_1,
+    O_SPLASH_1,
+    O_BUBBLE_1,
     O_BUBBLE_EMITTER,
-    O_BLOOD,
+    O_BLOOD_1,
     O_DART_EFFECT,
     O_FLARE_FIRE,
     O_GLOW,
@@ -265,8 +265,8 @@ const GAME_OBJECT_ID g_InvObjects[] = {
 const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format off
     O_WATERFALL,
-    O_SPLASH,
-    O_BUBBLE,
+    O_SPLASH_1,
+    O_BUBBLE_1,
     // clang-format on
 };
 
@@ -278,7 +278,7 @@ const GAME_OBJECT_ID g_BossObjects[] = {
     O_BIRD_GUARDIAN,
     O_SKIDOO_DRIVER,
     O_SKIDOO_ARMED,
-    O_DINO,
+    O_TREX,
     NO_OBJECT,
     // clang-format on
 };

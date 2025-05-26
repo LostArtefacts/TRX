@@ -139,7 +139,7 @@ void Gun_Control(void)
         switch (g_Lara.gun_type) {
         case LGT_PISTOLS:
             if (g_Lara.pistol_ammo.ammo && g_Input.action) {
-                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
+                Lara_SwapSingleMesh(LM_HEAD, O_LARA_UZIS);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -149,7 +149,7 @@ void Gun_Control(void)
 
         case LGT_MAGNUMS:
             if (g_Lara.magnum_ammo.ammo && g_Input.action) {
-                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
+                Lara_SwapSingleMesh(LM_HEAD, O_LARA_UZIS);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -159,7 +159,7 @@ void Gun_Control(void)
 
         case LGT_UZIS:
             if (g_Lara.uzi_ammo.ammo && g_Input.action) {
-                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
+                Lara_SwapSingleMesh(LM_HEAD, O_LARA_UZIS);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -169,7 +169,7 @@ void Gun_Control(void)
 
         case LGT_SHOTGUN:
             if (g_Lara.shotgun_ammo.ammo && g_Input.action) {
-                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
+                Lara_SwapSingleMesh(LM_HEAD, O_LARA_UZIS);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -206,7 +206,7 @@ void Gun_InitialiseNewWeapon(void)
     g_Lara.left_arm.frame_base = obj->frame_base;
 
     if (g_Lara.gun_status != LGS_ARMLESS) {
-        if (anim_type == O_SHOTGUN_ANIM) {
+        if (anim_type == O_LARA_SHOTGUN) {
             Gun_Rifle_DrawMeshes(g_Lara.gun_type);
         } else {
             Gun_Pistols_DrawMeshes(g_Lara.gun_type);
@@ -220,9 +220,9 @@ GAME_OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
     case LGT_UZIS:
-        return O_PISTOL_ANIM;
+        return O_LARA_PISTOLS;
     case LGT_SHOTGUN:
-        return O_SHOTGUN_ANIM;
+        return O_LARA_SHOTGUN;
     default:
         return O_LARA;
     }
@@ -232,13 +232,13 @@ GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     switch (gun_type) {
     case LGT_PISTOLS:
-        return O_PISTOL_ANIM;
+        return O_LARA_PISTOLS;
     case LGT_MAGNUMS:
-        return O_MAGNUM_ANIM;
+        return O_LARA_MAGNUMS;
     case LGT_UZIS:
-        return O_UZI_ANIM;
+        return O_LARA_UZIS;
     case LGT_SHOTGUN:
-        return O_SHOTGUN_ANIM;
+        return O_LARA_SHOTGUN;
     default:
         return NO_OBJECT;
     }

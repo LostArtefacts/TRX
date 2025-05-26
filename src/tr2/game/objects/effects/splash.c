@@ -28,4 +28,4 @@ static void M_Control(const int16_t effect_num)
     effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
 }
 
-REGISTER_OBJECT(O_SPLASH, M_Setup)
+REGISTER_OBJECT(O_SPLASH_1, M_Setup)

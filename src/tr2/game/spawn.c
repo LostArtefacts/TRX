@@ -84,7 +84,7 @@ void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
 
     EFFECT *const effect = Effect_Get(effect_num);
     effect->pos = *pos;
-    effect->object_id = O_BUBBLE;
+    effect->object_id = O_BUBBLE_1;
     effect->frame_num = -((Random_GetDraw() * 3) / 0x8000);
     effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
 }
@@ -103,7 +103,7 @@ void Spawn_Splash(const ITEM *const item)
         }
 
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_SPLASH;
+        effect->object_id = O_SPLASH_1;
         effect->pos.x = item->pos.x;
         effect->pos.y = water_height;
         effect->pos.z = item->pos.z;
@@ -209,7 +209,7 @@ int16_t Spawn_Blood(
         effect->rot.y = y_rot;
         effect->speed = speed;
         effect->frame_num = 0;
-        effect->object_id = O_BLOOD;
+        effect->object_id = O_BLOOD_1;
         effect->counter = 0;
     }
     return effect_num;

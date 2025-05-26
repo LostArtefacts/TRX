@@ -694,7 +694,7 @@ void Skidoo_Explode(const ITEM *const skidoo)
         effect->speed = 0;
         effect->frame_num = 0;
         effect->counter = 0;
-        effect->object_id = O_EXPLOSION;
+        effect->object_id = O_EXPLOSION_1;
     }
 
     Item_Explode(g_Lara.skidoo, ~(SKIDOO_GUN_MESH - 1), 0);

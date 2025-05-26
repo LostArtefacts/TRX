@@ -256,5 +256,5 @@ bool Switch_Trigger(int16_t item_num, int16_t timer)
     return true;
 }
 
-REGISTER_OBJECT(O_SWITCH_TYPE_1, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_2, M_SetupUW)
+REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
