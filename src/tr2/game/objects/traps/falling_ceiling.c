@@ -51,4 +51,4 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-REGISTER_OBJECT(O_FALLING_CEILING, M_Setup)
+REGISTER_OBJECT(O_FALLING_CEILING_1, M_Setup)

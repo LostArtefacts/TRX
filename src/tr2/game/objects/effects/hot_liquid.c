@@ -33,7 +33,7 @@ static void M_Control(const int16_t effect_num)
 
     if (effect->pos.y >= height) {
         Sound_Effect(SFX_WATERFALL_2, &effect->pos, SPM_NORMAL);
-        effect->object_id = O_SPLASH;
+        effect->object_id = O_SPLASH_1;
         effect->pos.y = height;
         effect->rot.y = 2 * Random_GetDraw();
         effect->fall_speed = 0;

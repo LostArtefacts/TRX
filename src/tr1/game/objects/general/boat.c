@@ -37,4 +37,4 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-REGISTER_OBJECT(O_BOAT, M_Setup)
+REGISTER_OBJECT(O_MOTOR_BOAT, M_Setup)

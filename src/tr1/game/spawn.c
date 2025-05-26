@@ -41,7 +41,7 @@ void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
 
     EFFECT *const effect = Effect_Get(effect_num);
     effect->pos = *pos;
-    effect->object_id = O_BUBBLES_1;
+    effect->object_id = O_BUBBLE_1;
     effect->frame_num = -((Random_GetDraw() * 3) / 0x8000);
     effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
 }
@@ -199,7 +199,7 @@ void Spawn_Ricochet(GAME_VECTOR *pos)
         effect->pos.y = pos->y;
         effect->pos.z = pos->z;
         effect->counter = 4;
-        effect->object_id = O_RICOCHET_1;
+        effect->object_id = O_RICOCHET;
         effect->frame_num = -3 * Random_GetDraw() / 0x8000;
         Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
     }

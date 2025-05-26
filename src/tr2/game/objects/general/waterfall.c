@@ -38,7 +38,7 @@ static void M_Control(const int16_t item_num)
     const int16_t effect_num = Effect_Create(item->room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_SPLASH;
+        effect->object_id = O_SPLASH_1;
         effect->pos.x =
             item->pos.x + ((Random_GetDraw() - 0x4000) << 10) / 0x7FFF;
         effect->pos.y = item->pos.y;

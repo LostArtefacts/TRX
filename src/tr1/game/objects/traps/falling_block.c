@@ -90,4 +90,4 @@ static int16_t M_GetCeilingHeight(
     return height;
 }
 
-REGISTER_OBJECT(O_FALLING_BLOCK, M_Setup)
+REGISTER_OBJECT(O_FALLING_BLOCK_1, M_Setup)

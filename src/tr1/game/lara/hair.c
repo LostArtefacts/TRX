@@ -47,7 +47,7 @@ HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n)
 
 bool Lara_Hair_IsActive(void)
 {
-    return g_Config.visuals.enable_braid && Object_Get(O_HAIR)->loaded
+    return g_Config.visuals.enable_braid && Object_Get(O_LARA_HAIR)->loaded
         && Object_Get(m_LaraType)->loaded;
 }
 
@@ -56,7 +56,7 @@ void Lara_Hair_Initialise(void)
     m_FirstHair = true;
     Lara_Hair_SetLaraType(O_LARA);
 
-    const OBJECT *const obj = Object_Get(O_HAIR);
+    const OBJECT *const obj = Object_Get(O_LARA_HAIR);
 
     m_Hair[0].rot.y = 0;
     m_Hair[0].rot.x = -DEG_90;
@@ -268,7 +268,7 @@ void Lara_Hair_Control(void)
     pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     Matrix_Pop();
 
-    const OBJECT *const hair_obj = Object_Get(O_HAIR);
+    const OBJECT *const hair_obj = Object_Get(O_LARA_HAIR);
 
     m_Hair[0].pos = pos;
 
@@ -407,7 +407,7 @@ void Lara_Hair_Draw(void)
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_HAIR);
+    const OBJECT *const obj = Object_Get(O_LARA_HAIR);
     int16_t mesh_idx = obj->mesh_idx;
     if ((g_Lara.mesh_effects & (1 << LM_HEAD))
         && obj->mesh_count >= HAIR_SEGMENTS * 2) {

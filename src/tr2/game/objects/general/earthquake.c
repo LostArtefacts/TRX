@@ -38,7 +38,7 @@ static void M_Control(const int16_t item_num)
     if (random < 512) {
         obj_id_to_activate = O_FLAME_EMITTER;
     } else if (random < 1024) {
-        obj_id_to_activate = O_FALLING_CEILING;
+        obj_id_to_activate = O_FALLING_CEILING_1;
     } else {
         return;
     }

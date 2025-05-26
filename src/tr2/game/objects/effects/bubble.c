@@ -44,4 +44,4 @@ static void M_Control(const int16_t effect_num)
     effect->pos.z = z;
 }
 
-REGISTER_OBJECT(O_BUBBLE, M_Setup)
+REGISTER_OBJECT(O_BUBBLE_1, M_Setup)

@@ -29,4 +29,4 @@ static void M_Control(const int16_t effect_num)
     }
 }
 
-REGISTER_OBJECT(O_BLOOD, M_Setup)
+REGISTER_OBJECT(O_BLOOD_1, M_Setup)

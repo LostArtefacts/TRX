@@ -42,7 +42,7 @@ static void M_Control(const int16_t effect_num)
             splash_fx->rot.y = 0;
             splash_fx->speed = 0;
             splash_fx->frame_num = 0;
-            splash_fx->object_id = O_SPLASH;
+            splash_fx->object_id = O_SPLASH_1;
         }
     }
 
@@ -60,7 +60,7 @@ static void M_Control(const int16_t effect_num)
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
-            effect->object_id = O_EXPLOSION;
+            effect->object_id = O_EXPLOSION_1;
             effect->shade = SHADE_NEUTRAL;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
         } else {
@@ -76,7 +76,7 @@ static void M_Control(const int16_t effect_num)
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
-            effect->object_id = O_EXPLOSION;
+            effect->object_id = O_EXPLOSION_1;
             effect->shade = SHADE_NEUTRAL;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
             g_Lara.hit_effect_count = 5;

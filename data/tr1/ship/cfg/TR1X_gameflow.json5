@@ -459,8 +459,8 @@
             "sequence": [
                 {"type": "set_cutscene_pos", "x": 51962, "z": 53760},
                 {"type": "set_cutscene_angle", "value": 16380},
-                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "pistol_anim", "mesh_id": 1},
-                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "pistol_anim", "mesh_id": 4},
+                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "lara_pistols", "mesh_id": 1},
+                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "lara_pistols", "mesh_id": 4},
                 {"type": "loop_game"},
             ],
         },
@@ -499,8 +499,8 @@
             ],
             "sequence": [
                 {"type": "set_cutscene_angle", "value": 16384},
-                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "pistol_anim", "mesh_id": 1},
-                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "pistol_anim", "mesh_id": 4},
+                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "lara_pistols", "mesh_id": 1},
+                {"type": "mesh_swap", "object1_id": "player_1", "object2_id": "lara_pistols", "mesh_id": 4},
                 {"type": "loop_game"},
             ],
         },
