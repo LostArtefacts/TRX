@@ -220,20 +220,21 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
         return;
     }
 
-    int32_t screen_width = Screen_GetResWidth();
-    int32_t screen_height = Screen_GetResHeight();
-    int32_t pickup_width = screen_width / 8;
-    int32_t pickup_height = screen_height / 8;
-    int32_t padding_x = ((screen_width + screen_height) / 2) / 8;
-    int32_t padding_y = padding_x * 3 / 4;
-    int32_t scale = 768;
+    struct {
+        GLint x, y, w, h;
+    } old_vp, new_vp;
+    glGetIntegerv(GL_VIEWPORT, &old_vp.x);
 
-    float aspect_ratio = (float)screen_height / screen_width;
+    const int32_t pickup_width = old_vp.w / 8;
+    const int32_t pickup_height = old_vp.h / 8;
+    const int32_t padding_x = ((old_vp.w + old_vp.h) / 2) / 8;
+    const int32_t padding_y = padding_x * 3 / 4;
+    const int32_t scale = 768;
 
-    int32_t vp_x1 = screen_width / 2 - padding_x - pu->grid_x * pickup_width;
-    int32_t vp_x2 = vp_x1 + screen_width;
-    int32_t vp_y1 = screen_height / 2 - padding_y - pu->grid_y * pickup_height;
-    int32_t vp_y2 = vp_y1 + screen_height;
+    new_vp.x = old_vp.x + old_vp.w / 2 - padding_x - pu->grid_x * pickup_width;
+    new_vp.y = old_vp.y - old_vp.h / 2 + padding_y - pu->grid_y * pickup_height;
+    new_vp.w = old_vp.w;
+    new_vp.h = old_vp.h;
 
     int32_t dst_x = 0;
     int32_t dst_y = 0;
@@ -263,8 +264,8 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     // screen corners.
     int16_t old_fov = Viewport_GetFOV();
     Viewport_SetFOV(PICKUPS_FOV * DEG_1);
-    Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
-    glViewport(vp_x1, -vp_y1, screen_width, screen_height);
+    Viewport_Init(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
+    glViewport(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
     Output_ApplyFOV();
 
     Matrix_PushUnit();
@@ -311,7 +312,8 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     Matrix_Pop();
     Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
     Viewport_SetFOV(old_fov);
-    glViewport(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
+    glViewport(old_vp.x, old_vp.y, old_vp.w, old_vp.h);
+    Output_ApplyFOV();
 }
 
 static void M_DrawPickups3D(void)
