@@ -138,22 +138,23 @@ static void M_HandleSpriteSequences(
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const GAME_OBJECT_ID obj_id =
-            Object_UnmapGameID(VFile_ReadS32(injection->fp));
+        const INJECTION_OBJECT_INFO obj_info =
+            Inject_ReadObjectPtr(injection->fp);
         const int16_t num_meshes = VFile_ReadS16(injection->fp);
         const int16_t mesh_idx = VFile_ReadS16(injection->fp);
 
-        if (obj_id < O_NUMBER_OF) {
-            OBJECT *const obj = Object_Get(obj_id);
+        if (obj_info.type == OBJ_TYPE_OBJECT) {
+            OBJECT *const obj = Object_Get(obj_info.id);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
             obj->loaded = true;
-        } else if (obj_id - O_NUMBER_OF < MAX_STATIC_OBJECTS_2D) {
-            STATIC_OBJECT_2D *const obj =
-                Object_Get2DStatic(obj_id - O_NUMBER_OF);
+        } else if (obj_info.type == OBJ_TYPE_STATIC2D) {
+            STATIC_OBJECT_2D *const obj = Object_Get2DStatic(obj_info.id);
             obj->frame_count = ABS(num_meshes);
             obj->texture_idx = mesh_idx + level_info->textures.sprite_count;
             obj->loaded = true;
+        } else {
+            LOG_WARNING("Invalid object type %d", obj_info.type);
         }
         level_info->textures.sprite_count += ABS(num_meshes);
     }

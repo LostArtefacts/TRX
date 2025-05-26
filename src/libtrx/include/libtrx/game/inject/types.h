@@ -26,3 +26,8 @@ typedef struct {
     int16_t num_triangles;
     int16_t num_sprites;
 } INJECTION_MESH_META;
+
+typedef struct {
+    INJECT_OBJECT_TYPE type;
+    int32_t id;
+} INJECTION_OBJECT_INFO;

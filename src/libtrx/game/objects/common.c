@@ -4,15 +4,95 @@
 #include "game/anims.h"
 #include "game/const.h"
 #include "game/game_buf.h"
-#include "game/matrix.h"
-#include "game/output.h"
 #include "game/output/objects.h"
+
+#include <string.h>
 
 static OBJECT m_Objects[O_NUMBER_OF] = {};
 static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS_3D] = {};
 static STATIC_OBJECT_2D m_StaticObjects2D[MAX_STATIC_OBJECTS_2D] = {};
 static OBJECT_MESH **m_MeshPointers = nullptr;
 static int32_t m_MeshCount = 0;
+static bool m_UUIDsParsed = false;
+
+static const char *m_ObjectUUIDStrings[O_NUMBER_OF] = {
+#undef OBJ_ID_DEFINE
+#define OBJ_ID_ALIAS_DEFINE(source_id, target_id)
+#define OBJ_ID_DEFINE(game_id, uuid_str, enum_value) [game_id] = uuid_str,
+#include "game/objects/ids.def"
+#undef OBJ_ID_DEFINE
+#undef OBJ_ID_ALIAS_DEFINE
+};
+
+static bool M_HexCharValue(char c, uint8_t *val);
+static void M_ParseUUIDString(const char *str, UUID *uuid_out);
+static void M_InitUUIDs(void);
+
+static bool M_HexCharValue(const char c, uint8_t *const val)
+{
+    if (c >= '0' && c <= '9') {
+        *val = c - '0';
+        return true;
+    }
+    if (c >= 'a' && c <= 'f') {
+        *val = c - 'a' + 10;
+        return true;
+    }
+    if (c >= 'A' && c <= 'F') {
+        *val = c - 'A' + 10;
+        return true;
+    }
+    return false;
+}
+
+static void M_ParseUUIDString(const char *str, UUID *const uuid_out)
+{
+    if (str == nullptr || *str == '\0') {
+        memset(uuid_out->bytes, 0, 16);
+        return;
+    }
+
+    // UUID field sizes
+    const int32_t field_sizes[] = { 4, 2, 2, 2, 6 };
+    uint8_t *byte_ptr = uuid_out->bytes;
+
+    for (int32_t field = 0; field < 5; field++) {
+        const int32_t num_bytes = field_sizes[field];
+
+        for (int32_t i = 0; i < num_bytes; i++) {
+            while (*str == '-') {
+                str++;
+            }
+
+            uint8_t hi, lo;
+            if (!M_HexCharValue(*str++, &hi) || !M_HexCharValue(*str++, &lo)) {
+                memset(uuid_out->bytes, 0, 16);
+                return;
+            }
+
+            // For fields 0, 1, and 2, handle endianness swap
+            if (field < 3) {
+                byte_ptr[num_bytes - 1 - i] = (hi << 4) | lo;
+            } else {
+                byte_ptr[i] = (hi << 4) | lo;
+            }
+        }
+
+        // Move the pointer forward for each field size
+        byte_ptr += num_bytes;
+    }
+}
+
+static void M_InitUUIDs(void)
+{
+    if (m_UUIDsParsed) {
+        return;
+    }
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+        M_ParseUUIDString(m_ObjectUUIDStrings[i], &m_Objects[i].uuid);
+    }
+    m_UUIDsParsed = true;
+}
 
 void Object_Reset(void)
 {
@@ -25,11 +105,31 @@ void Object_Reset(void)
     for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
         m_StaticObjects2D[i].loaded = false;
     }
+    m_UUIDsParsed = false;
 }
 
 OBJECT *Object_Get(const GAME_OBJECT_ID object_id)
 {
+    ASSERT(object_id >= O_FIRST && object_id < O_NUMBER_OF);
     return &m_Objects[object_id];
+}
+
+OBJECT *Object_GetByGameID(const int32_t game_id)
+{
+    GAME_OBJECT_ID obj_id = Object_UnmapGameID(game_id);
+    if (obj_id == NO_OBJECT) {
+        return nullptr;
+    }
+    return &m_Objects[obj_id];
+}
+
+OBJECT *Object_GetByUUID(const UUID uuid)
+{
+    GAME_OBJECT_ID obj_id = Object_UnmapUUID(uuid);
+    if (obj_id == NO_OBJECT) {
+        return nullptr;
+    }
+    return &m_Objects[obj_id];
 }
 
 STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
@@ -44,7 +144,23 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
 
 GAME_OBJECT_ID Object_UnmapGameID(const int32_t game_id)
 {
+    if (game_id < O_FIRST || game_id >= O_NUMBER_OF) {
+        return NO_OBJECT;
+    }
     return game_id + O_FIRST;
+}
+
+GAME_OBJECT_ID Object_UnmapUUID(const UUID uuid)
+{
+    if (!m_UUIDsParsed) {
+        M_InitUUIDs();
+    }
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+        if (memcmp(&m_Objects[i].uuid, &uuid, sizeof(UUID)) == 0) {
+            return i;
+        }
+    }
+    return NO_OBJECT;
 }
 
 int32_t Object_MakeGameID(const GAME_OBJECT_ID game_id)
@@ -173,101 +289,4 @@ ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)
 ANIM_BONE *Object_GetBone(const OBJECT *const obj, const int32_t bone_idx)
 {
     return Anim_GetBone(obj->bone_idx + bone_idx);
-}
-
-void Object_DrawInterpolatedObject(
-    const OBJECT *const obj, const uint32_t meshes,
-    const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
-    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
-{
-    ASSERT(frame1 != nullptr);
-    const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
-    if (clip == 0) {
-        return;
-    }
-
-    ASSERT(rate != 0);
-    Matrix_Push();
-
-    if (frac != 0) {
-        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
-            if (mesh_idx == 0) {
-                Matrix_InitInterpolate(frac, rate);
-                Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
-                Matrix_Rot16_ID(
-                    frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(&extra_rotation, obj->base_rot, true);
-            } else {
-                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-                if (bone->matrix_pop) {
-                    Matrix_Pop_I();
-                }
-                if (bone->matrix_push) {
-                    Matrix_Push_I();
-                }
-
-                Matrix_TranslateRel32_I(bone->pos);
-                Matrix_Rot16_ID(
-                    frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
-            }
-
-            if (meshes & (1 << mesh_idx)) {
-                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, true);
-            }
-        }
-    } else {
-        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
-            if (mesh_idx == 0) {
-                Matrix_TranslateRel16(frame1->offset);
-                Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(
-                    &extra_rotation, obj->base_rot, false);
-            } else {
-                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-                if (bone->matrix_pop) {
-                    Matrix_Pop();
-                }
-                if (bone->matrix_push) {
-                    Matrix_Push();
-                }
-
-                Matrix_TranslateRel32(bone->pos);
-                Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
-            }
-
-            if (meshes & (1 << mesh_idx)) {
-                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
-            }
-        }
-    }
-
-    Matrix_Pop();
-}
-
-void Object_ApplyExtraRotation(
-    const int16_t **extra_rotation, const XYZ_BOOL rot_flags,
-    const bool interpolated)
-{
-    const int16_t *rot_ptr = *extra_rotation;
-    if (rot_ptr == nullptr) {
-        return;
-    }
-
-#define APPLY_ROTATION(axis_, flag_)                                           \
-    if (rot_flags.flag_) {                                                     \
-        if (interpolated) {                                                    \
-            Matrix_Rot##axis_##_I(*rot_ptr++);                                 \
-        } else {                                                               \
-            Matrix_Rot##axis_(*rot_ptr++);                                     \
-        }                                                                      \
-    }
-
-    APPLY_ROTATION(Y, y);
-    APPLY_ROTATION(X, x);
-    APPLY_ROTATION(Z, z);
-
-#undef APPLY_ROTATION
-    *extra_rotation = rot_ptr;
 }

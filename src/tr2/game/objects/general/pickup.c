@@ -259,6 +259,11 @@ static void M_Draw(const ITEM *const item)
 
     // Convert item to menu display item.
     const GAME_OBJECT_ID inv_obj_id = Inv_GetItemOption(item->object_id);
+    if (inv_obj_id == NO_OBJECT) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
     const OBJECT *const obj = Object_Get(inv_obj_id);
     if (!obj->loaded || obj->mesh_count < 0) {
         Object_DrawSpriteItem(item);

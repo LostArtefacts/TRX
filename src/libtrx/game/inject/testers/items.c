@@ -7,8 +7,7 @@ static bool M_TestItemMeta(const INJECTION *injection);
 static bool M_TestItemMeta(const INJECTION *const injection)
 {
     const int32_t item_num = VFile_ReadS32(injection->fp);
-    const GAME_OBJECT_ID obj_id =
-        Object_UnmapGameID(VFile_ReadS16(injection->fp));
+    const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection->fp);
     const XYZ_32 pos = {
         .x = VFile_ReadS32(injection->fp),
         .y = VFile_ReadS32(injection->fp),
@@ -22,8 +21,9 @@ static bool M_TestItemMeta(const INJECTION *const injection)
     }
 
     const ITEM *const item = Item_Get(item_num);
-    return item->object_id == obj_id && XYZ_32_AreEquivalent(&item->pos, &pos)
-        && item->room_num == room_num && item->rot.y == y_rot;
+    return item->object_id == obj_info.id
+        && XYZ_32_AreEquivalent(&item->pos, &pos) && item->room_num == room_num
+        && item->rot.y == y_rot;
 }
 
 REGISTER_INJECT_TESTER(ITT_ITEM_META, M_TestItemMeta)
