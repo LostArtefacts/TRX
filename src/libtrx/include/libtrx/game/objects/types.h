@@ -87,21 +87,7 @@ typedef struct OBJECT {
     bool save_hitpoints;
     bool save_flags;
     bool save_anim;
-    union {
-        uint16_t flags;
-        // clang-format off
-        struct {
-            uint16_t pad_1:            1; // 0x01 1
-            uint16_t pad_2:            1; // 0x02 2
-            uint16_t pad_3:            1; // 0x04 4
-            uint16_t pad_4:            1; // 0x08 8
-            uint16_t pad_5:            1; // 0x10 16
-            uint16_t pad_6:            1; // 0x20 32
-            uint16_t semi_transparent: 1; // 0x40 64
-            uint16_t pad:              9;
-        };
-        // clang-format on
-    };
+    bool semi_transparent;
     UUID uuid;
 } OBJECT;
 
