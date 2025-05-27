@@ -94,7 +94,7 @@ static void M_Setup(OBJECT *const obj)
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)

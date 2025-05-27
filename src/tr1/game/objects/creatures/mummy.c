@@ -34,7 +34,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = MUMMY_HITPOINTS;
     obj->save_flags = true;
     obj->save_hitpoints = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 
     Object_GetBone(obj, 2)->rot.y = true;
 }

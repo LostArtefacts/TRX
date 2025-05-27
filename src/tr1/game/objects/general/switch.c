@@ -72,7 +72,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
-    obj->save_anim = 1;
+    obj->save_anim = true;
     obj->save_flags = true;
     obj->bounds_func = M_Bounds;
 }
@@ -81,7 +81,7 @@ static void M_SetupUW(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = M_CollisionUW;
-    obj->save_anim = 1;
+    obj->save_anim = true;
     obj->save_flags = true;
     obj->bounds_func = M_BoundsUW;
 }

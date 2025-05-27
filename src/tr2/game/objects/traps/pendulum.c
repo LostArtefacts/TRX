@@ -16,7 +16,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->shadow_size = 128;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)

@@ -155,7 +155,7 @@ static void M_Setup(OBJECT *const obj)
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_position = true;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 static void M_Initialise(const int16_t item_num)

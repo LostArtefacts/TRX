@@ -76,7 +76,7 @@ static void M_Setup2(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->bounds_func = Pickup_Bounds;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)

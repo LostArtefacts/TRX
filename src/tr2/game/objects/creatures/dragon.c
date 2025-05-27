@@ -188,7 +188,7 @@ static void M_SetupFront(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 
     Object_GetBone(obj, 10)->rot.z = true;
 }
@@ -206,7 +206,7 @@ static void M_SetupBack(OBJECT *const obj)
 
     obj->save_position = true;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 static void M_HandleSaveFront(ITEM *const item, const SAVEGAME_STAGE stage)

@@ -16,7 +16,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Object_Collision;
-    obj->save_anim = 1;
+    obj->save_anim = true;
     obj->save_flags = true;
 }
 
