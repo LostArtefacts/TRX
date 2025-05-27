@@ -99,6 +99,7 @@
             ],
             "injections": [
                 "data/injections/furnace_pickup_meshes.bin",
+                "data/injections/furnace_textures.bin",
             ],
         },
 
