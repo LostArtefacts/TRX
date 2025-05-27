@@ -77,15 +77,16 @@ typedef struct OBJECT {
     int16_t radius;
     int16_t shadow_size;
     int16_t smartness;
-    bool enable_interpolation;
     XYZ_BOOL base_rot;
     LOT_SETUP lot_setup;
 
+    bool enable_interpolation;
+    bool loaded;
     union {
         uint16_t flags;
         // clang-format off
         struct {
-            uint16_t loaded:           1; // 0x01 1
+            uint16_t pad_1:            1; // 0x01 1
             uint16_t intelligent:      1; // 0x02 2
             uint16_t save_position:    1; // 0x04 4
             uint16_t save_hitpoints:   1; // 0x08 8
