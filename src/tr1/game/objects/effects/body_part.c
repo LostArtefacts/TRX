@@ -13,7 +13,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->mesh_count = 0;
-    obj->loaded = 1;
+    obj->loaded = true;
 }
 
 static void M_Control(const int16_t effect_num)

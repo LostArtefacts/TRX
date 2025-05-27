@@ -80,7 +80,7 @@ static void M_DrawItem(
     Matrix_RotY(inv_item->y_rot);
     Matrix_RotX(inv_item->x_rot);
     const OBJECT *const obj = Object_Get(inv_item->object_id);
-    if ((obj->flags & 1) == 0) {
+    if (!obj->loaded) {
         return;
     }
 
