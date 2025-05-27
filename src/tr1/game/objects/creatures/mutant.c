@@ -79,7 +79,7 @@ static void M_Setup(OBJECT *const obj)
     obj->lot_setup = g_LOT_Beast;
     obj->intelligent = true;
     obj->save_position = true;
-    obj->save_hitpoints = 1;
+    obj->save_hitpoints = true;
     obj->save_anim = 1;
     obj->save_flags = 1;
     Object_GetBone(obj, 0)->rot.y = true;

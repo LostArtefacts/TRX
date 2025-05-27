@@ -67,7 +67,7 @@ static void M_Setup2A(OBJECT *const obj)
 
     obj->intelligent = true;
     obj->save_position = true;
-    obj->save_hitpoints = 1;
+    obj->save_hitpoints = true;
     obj->save_flags = 1;
     obj->save_anim = 1;
 
@@ -96,7 +96,7 @@ static void M_Setup2B(OBJECT *const obj)
 
     obj->intelligent = true;
     obj->save_position = true;
-    obj->save_hitpoints = 1;
+    obj->save_hitpoints = true;
     obj->save_flags = 1;
     obj->save_anim = 1;
 

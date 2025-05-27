@@ -33,7 +33,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->hit_points = MUMMY_HITPOINTS;
     obj->save_flags = 1;
-    obj->save_hitpoints = 1;
+    obj->save_hitpoints = true;
     obj->save_anim = 1;
 
     Object_GetBone(obj, 2)->rot.y = true;
