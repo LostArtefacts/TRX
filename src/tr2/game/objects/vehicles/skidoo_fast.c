@@ -8,7 +8,7 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Skidoo_Draw;
     obj->collision_func = Skidoo_Collision;
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

@@ -37,7 +37,7 @@ static void M_Setup(OBJECT *const obj)
         obj->handle_save_func = M_HandleSave;
         obj->control_func = M_Control;
         obj->collision_func = M_Collision;
-        obj->save_flags = 1;
+        obj->save_flags = true;
     }
     obj->bounds_func = M_Bounds;
     Object_SetReflective(O_SAVEGAME_ITEM, true);

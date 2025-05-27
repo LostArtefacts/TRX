@@ -26,7 +26,7 @@ static void M_SetupHandle(OBJECT *const obj)
     obj->control_func = M_ControlHandle;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = M_CollisionHandle;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 
@@ -163,7 +163,7 @@ static void M_SetupHead(OBJECT *const obj)
 {
     obj->collision_func = M_CollisionHead;
     obj->draw_func = Object_DrawUnclippedItem;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

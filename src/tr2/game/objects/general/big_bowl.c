@@ -34,7 +34,7 @@ static void M_CreateHotLiquid(const ITEM *const bowl_item)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

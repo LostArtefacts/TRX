@@ -69,7 +69,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->bounds_func = M_Bounds;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_Collision(

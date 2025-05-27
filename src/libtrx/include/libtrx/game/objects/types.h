@@ -85,6 +85,7 @@ typedef struct OBJECT {
     bool intelligent;
     bool save_position;
     bool save_hitpoints;
+    bool save_flags;
     union {
         uint16_t flags;
         // clang-format off
@@ -93,7 +94,7 @@ typedef struct OBJECT {
             uint16_t pad_2:            1; // 0x02 2
             uint16_t pad_3:            1; // 0x04 4
             uint16_t pad_4:            1; // 0x08 8
-            uint16_t save_flags:       1; // 0x10 16
+            uint16_t pad_5:            1; // 0x10 16
             uint16_t save_anim:        1; // 0x20 32
             uint16_t semi_transparent: 1; // 0x40 64
             uint16_t pad:              9;

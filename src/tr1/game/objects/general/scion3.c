@@ -14,7 +14,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->hit_points = 5;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_hitpoints = true;
 }
 

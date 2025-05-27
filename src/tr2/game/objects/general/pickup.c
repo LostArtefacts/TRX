@@ -215,7 +215,7 @@ static void M_Setup(OBJECT *const obj)
     obj->bounds_func = Pickup_Bounds;
     obj->draw_func = M_Draw;
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

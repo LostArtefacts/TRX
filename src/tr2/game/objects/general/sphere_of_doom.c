@@ -21,7 +21,7 @@ static void M_SetupBase(OBJECT *const obj, const bool transparent)
     obj->control_func = M_Control;
     obj->draw_func = M_Draw;
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->semi_transparent = transparent;
 }
 

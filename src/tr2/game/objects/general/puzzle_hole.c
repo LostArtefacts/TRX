@@ -82,12 +82,12 @@ static void M_SetupEmpty(OBJECT *const obj)
     obj->collision_func = M_Collision;
     obj->handle_save_func = M_HandleSave;
     obj->bounds_func = M_Bounds;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_SetupDone(OBJECT *const obj)
 {
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

@@ -53,7 +53,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = EEL_HITPOINTS;
 
     obj->save_hitpoints = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

@@ -23,7 +23,7 @@ static void M_Setup(OBJECT *const obj)
     obj->shadow_size = UNIT_SHADOW;
     obj->save_position = true;
     obj->save_anim = 1;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_Initialise(const int16_t item_num)

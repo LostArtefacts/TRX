@@ -133,7 +133,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->draw_func = Object_DrawPickupItem;
     obj->collision_func = M_Collision;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->bounds_func = M_Bounds;
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;

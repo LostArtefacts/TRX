@@ -182,7 +182,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = 1;
 
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

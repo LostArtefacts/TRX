@@ -132,7 +132,7 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
 static void M_SetupBase(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 
