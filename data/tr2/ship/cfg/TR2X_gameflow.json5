@@ -50,6 +50,9 @@
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
+            "injections": [
+                "data/injections/gym_textures.bin",
+            ],
         },
 
         // 1. The Great Wall
@@ -417,6 +420,7 @@
             "injections": [
                 "data/injections/explosion.bin",
                 "data/injections/house_itemrots.bin",
+                "data/injections/house_textures.bin",
             ],
         },
     ],
