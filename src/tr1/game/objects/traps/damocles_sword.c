@@ -22,7 +22,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = M_Collision;
     obj->shadow_size = UNIT_SHADOW;
     obj->save_position = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
     obj->save_flags = true;
 }
 

@@ -170,7 +170,7 @@ void Spider_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_SPIDER, Spider_Setup)

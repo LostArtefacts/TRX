@@ -17,7 +17,7 @@ static void M_SetupLara(void)
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = true;
     obj->save_hitpoints = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
     obj->save_flags = true;
 }
 
@@ -57,7 +57,7 @@ void Object_SetupAllObjects(void)
         obj->save_position = false;
         obj->save_hitpoints = false;
         obj->save_flags = false;
-        obj->save_anim = 0;
+        obj->save_anim = false;
         obj->initialise_func = nullptr;
         obj->collision_func = nullptr;
         obj->control_func = nullptr;

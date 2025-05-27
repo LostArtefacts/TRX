@@ -69,7 +69,7 @@ static void M_Setup2A(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 8)->rot.y = true;
@@ -98,7 +98,7 @@ static void M_Setup2B(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 8)->rot.y = true;

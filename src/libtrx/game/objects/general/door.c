@@ -135,7 +135,7 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Door_Collision;
     obj->save_flags = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
 }
 
 static void M_Initialise(const int16_t item_num)

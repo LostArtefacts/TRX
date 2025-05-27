@@ -56,7 +56,7 @@ static void M_Setup(OBJECT *const obj)
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
-    obj->save_anim = 1;
+    obj->save_anim = true;
     obj->save_flags = true;
 
     Object_GetBone(obj, 0)->rot.y = true;
