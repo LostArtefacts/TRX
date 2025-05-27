@@ -185,7 +185,7 @@ static void M_SetupFront(OBJECT *const obj)
     obj->pivot_length = 300;
 
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -204,7 +204,7 @@ static void M_SetupBack(OBJECT *const obj)
 
     obj->radius = DRAGON_RADIUS;
 
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

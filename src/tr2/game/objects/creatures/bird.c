@@ -58,7 +58,7 @@ static void M_SetupEagle(OBJECT *const obj)
     obj->lot_setup = g_LOT_Flyer;
 
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -81,7 +81,7 @@ static void M_SetupCrow(OBJECT *const obj)
     obj->lot_setup = g_LOT_Flyer;
 
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

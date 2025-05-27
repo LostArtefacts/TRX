@@ -51,7 +51,7 @@ static void M_Setup(OBJECT *const obj)
     obj->smartness = CENTAUR_SMARTNESS;
     obj->lot_setup = g_LOT_Beast;
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

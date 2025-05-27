@@ -83,13 +83,14 @@ typedef struct OBJECT {
     bool enable_interpolation;
     bool loaded;
     bool intelligent;
+    bool save_position;
     union {
         uint16_t flags;
         // clang-format off
         struct {
             uint16_t pad_1:            1; // 0x01 1
             uint16_t pad_2:            1; // 0x02 2
-            uint16_t save_position:    1; // 0x04 4
+            uint16_t pad_3:            1; // 0x04 4
             uint16_t save_hitpoints:   1; // 0x08 8
             uint16_t save_flags:       1; // 0x10 16
             uint16_t save_anim:        1; // 0x20 32

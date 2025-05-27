@@ -83,7 +83,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 0;
 
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -107,7 +107,7 @@ static void M_Setup5(OBJECT *const obj)
     obj->pivot_length = 0;
 
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

@@ -6,7 +6,7 @@ static void M_Setup(OBJECT *obj);
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = Missile_Control;
-    obj->save_position = 1;
+    obj->save_position = true;
 }
 
 REGISTER_OBJECT(O_MISSILE_KNIFE, M_Setup)

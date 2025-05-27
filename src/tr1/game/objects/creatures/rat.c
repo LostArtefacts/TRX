@@ -71,7 +71,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->radius = RAT_RADIUS;
     obj->smartness = RAT_SMARTNESS;
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

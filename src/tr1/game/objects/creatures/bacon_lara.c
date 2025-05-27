@@ -25,7 +25,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->hit_points = LARA_MAX_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
