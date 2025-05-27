@@ -202,7 +202,7 @@ static void M_Setup(OBJECT *const obj)
     obj->bounds_func = M_Bounds;
     obj->draw_func = M_Draw;
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
     obj->base_rot.y = true;
 }

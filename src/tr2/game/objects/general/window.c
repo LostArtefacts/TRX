@@ -22,7 +22,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->collision_func = Object_Collision;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

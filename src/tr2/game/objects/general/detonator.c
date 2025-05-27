@@ -75,7 +75,7 @@ static void M_Setup2(OBJECT *const obj)
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
     obj->bounds_func = Pickup_Bounds;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

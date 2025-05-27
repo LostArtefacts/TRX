@@ -54,7 +54,7 @@ static bool M_IsUsable(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->bounds_func = M_Bounds;
     obj->handle_save_func = M_HandleSave;
     obj->is_usable_func = M_IsUsable;
@@ -62,7 +62,7 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_SetupDone(OBJECT *const obj)
 {
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

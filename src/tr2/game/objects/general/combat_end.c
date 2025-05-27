@@ -110,7 +110,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->initialise_func = M_Initialise;
     obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 
     m_BossTimer = 0;
     m_EnemyCount = 0;

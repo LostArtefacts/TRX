@@ -59,7 +59,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_anim = 1;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 
     Object_GetBone(obj, 19)->rot.y = true;
 }

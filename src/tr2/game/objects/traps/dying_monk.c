@@ -16,7 +16,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_Initialise(const int16_t item_num)

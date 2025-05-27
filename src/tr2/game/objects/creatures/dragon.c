@@ -187,7 +187,7 @@ static void M_SetupFront(OBJECT *const obj)
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 
     Object_GetBone(obj, 10)->rot.z = true;
@@ -205,7 +205,7 @@ static void M_SetupBack(OBJECT *const obj)
     obj->radius = DRAGON_RADIUS;
 
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

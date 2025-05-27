@@ -21,7 +21,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = Propeller_Control;
     obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 

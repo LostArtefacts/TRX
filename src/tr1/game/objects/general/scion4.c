@@ -35,7 +35,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->bounds_func = M_Bounds;
 }
 

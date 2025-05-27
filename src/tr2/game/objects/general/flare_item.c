@@ -10,7 +10,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = Flare_Control;
     obj->draw_func = Flare_DrawInAir;
     obj->save_position = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_FLARE_ITEM, M_Setup)

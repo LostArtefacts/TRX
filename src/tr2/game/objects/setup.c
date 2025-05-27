@@ -20,7 +20,7 @@ static void M_SetupLara(void)
 
     obj->save_position = true;
     obj->save_hitpoints = true;
-    obj->save_flags = 1;
+    obj->save_flags = true;
     obj->save_anim = 1;
 }
 
@@ -49,7 +49,7 @@ void Object_SetupAllObjects(void)
 
         obj->save_position = false;
         obj->save_hitpoints = false;
-        obj->save_flags = 0;
+        obj->save_flags = false;
         obj->save_anim = 0;
         obj->intelligent = false;
 

@@ -22,7 +22,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = 1;
+    obj->save_flags = true;
 }
 
 static void M_Control(const int16_t item_num)
