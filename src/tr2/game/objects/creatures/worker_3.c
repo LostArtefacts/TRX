@@ -80,7 +80,7 @@ static void M_SetupBase(OBJECT *const obj)
 
     obj->intelligent = true;
     obj->save_position = true;
-    obj->save_hitpoints = 1;
+    obj->save_hitpoints = true;
     obj->save_flags = 1;
     obj->save_anim = 1;
 
