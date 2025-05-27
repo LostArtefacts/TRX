@@ -118,7 +118,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = APE_RADIUS;
     obj->smartness = APE_SMARTNESS;
     obj->lot_setup = g_LOT_Jumper;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

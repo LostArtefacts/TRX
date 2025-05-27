@@ -53,7 +53,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = SKATE_KID_HITPOINTS;
     obj->radius = SKATE_KID_RADIUS;
     obj->smartness = SKATE_KID_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

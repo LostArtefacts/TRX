@@ -77,7 +77,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = FLYER_RADIUS;
     obj->smartness = FLYER_SMARTNESS;
     obj->lot_setup = g_LOT_Beast;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

@@ -46,7 +46,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = COWBOY_HITPOINTS;
     obj->radius = COWBOY_RADIUS;
     obj->smartness = COWBOY_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

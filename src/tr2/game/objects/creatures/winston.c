@@ -37,7 +37,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = WINSTON_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 4;
 
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

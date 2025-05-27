@@ -184,7 +184,7 @@ static void M_SetupFront(OBJECT *const obj)
     obj->radius = DRAGON_RADIUS;
     obj->pivot_length = 300;
 
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;

@@ -126,7 +126,7 @@ void BigSpider_Setup(OBJECT *const obj)
     obj->radius = BIG_SPIDER_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;

@@ -66,7 +66,7 @@ static void M_Setup(OBJECT *const obj)
     obj->lot_setup = g_LOT_Flyer;
     obj->lot_setup.block_mask = BOX_BLOCKABLE;
 
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;

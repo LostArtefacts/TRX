@@ -54,7 +54,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = NATLA_HITPOINTS;
     obj->radius = NATLA_RADIUS;
     obj->smartness = NATLA_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

@@ -53,7 +53,7 @@ void Object_SetupAllObjects(void)
 {
     for (int i = O_FIRST; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
-        obj->intelligent = 0;
+        obj->intelligent = false;
         obj->save_position = 0;
         obj->save_hitpoints = 0;
         obj->save_flags = 0;
