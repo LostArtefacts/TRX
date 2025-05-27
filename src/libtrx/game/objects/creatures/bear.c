@@ -238,7 +238,7 @@ void Bear_Setup(OBJECT *const obj)
     obj->hit_points = BEAR_HITPOINTS;
     obj->radius = BEAR_RADIUS;
     obj->smartness = BEAR_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

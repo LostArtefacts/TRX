@@ -51,7 +51,7 @@ void Object_SetupAllObjects(void)
         obj->save_hitpoints = 0;
         obj->save_flags = 0;
         obj->save_anim = 0;
-        obj->intelligent = 0;
+        obj->intelligent = false;
 
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);

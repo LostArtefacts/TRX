@@ -56,7 +56,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = PIERRE_HITPOINTS;
     obj->radius = PIERRE_RADIUS;
     obj->smartness = PIERRE_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

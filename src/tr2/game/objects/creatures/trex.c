@@ -58,7 +58,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 1800;
     obj->lot_setup = g_LOT_Beast;
 
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;

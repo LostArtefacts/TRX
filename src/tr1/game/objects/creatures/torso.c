@@ -61,7 +61,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = TORSO_HITPOINTS;
     obj->radius = TORSO_RADIUS;
     obj->smartness = TORSO_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;

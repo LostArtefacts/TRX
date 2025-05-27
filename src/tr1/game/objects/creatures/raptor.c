@@ -52,7 +52,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 400;
     obj->radius = RAPTOR_RADIUS;
     obj->smartness = RAPTOR_SMARTNESS;
-    obj->intelligent = 1;
+    obj->intelligent = true;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
