@@ -18,7 +18,7 @@ static void M_SetupLara(void)
     obj->hit_points = LARA_MAX_HITPOINTS;
     obj->draw_func = Object_DrawDummyItem;
 
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -47,7 +47,7 @@ void Object_SetupAllObjects(void)
         obj->enable_interpolation = true;
         obj->lot_setup = g_LOT_Default;
 
-        obj->save_position = 0;
+        obj->save_position = false;
         obj->save_hitpoints = 0;
         obj->save_flags = 0;
         obj->save_anim = 0;

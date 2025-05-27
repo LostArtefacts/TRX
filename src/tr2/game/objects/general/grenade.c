@@ -35,7 +35,7 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->save_position = 1;
+    obj->save_position = true;
 }
 
 static void M_Control(const int16_t item_num)

@@ -75,7 +75,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->pivot_length = 600;
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

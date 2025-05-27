@@ -9,7 +9,7 @@ static void M_Setup(OBJECT *const obj)
     obj->bounds_func = Pickup_Bounds;
     obj->control_func = Flare_Control;
     obj->draw_func = Flare_DrawInAir;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_flags = 1;
 }
 

@@ -10,7 +10,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = Object_CollisionTrap;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }

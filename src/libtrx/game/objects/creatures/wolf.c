@@ -228,7 +228,7 @@ void Wolf_Setup(OBJECT *const obj)
     obj->smartness = WOLF_SMARTNESS;
     obj->lot_setup = g_LOT_Quadruped;
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

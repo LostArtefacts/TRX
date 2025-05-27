@@ -47,7 +47,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = LARSON_RADIUS;
     obj->smartness = LARSON_SMARTNESS;
     obj->intelligent = true;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

@@ -15,7 +15,7 @@ static void M_SetupLara(void)
     obj->draw_func = Object_DrawDummyItem;
     obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
@@ -54,7 +54,7 @@ void Object_SetupAllObjects(void)
     for (int i = O_FIRST; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
         obj->intelligent = false;
-        obj->save_position = 0;
+        obj->save_position = false;
         obj->save_hitpoints = 0;
         obj->save_flags = 0;
         obj->save_anim = 0;

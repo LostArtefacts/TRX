@@ -20,7 +20,7 @@ static void M_SetupBase(OBJECT *const obj, const bool transparent)
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
     obj->draw_func = M_Draw;
-    obj->save_position = 1;
+    obj->save_position = true;
     obj->save_flags = 1;
     obj->semi_transparent = transparent;
 }
