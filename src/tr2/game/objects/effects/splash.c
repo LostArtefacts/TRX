@@ -10,7 +10,7 @@ static void M_Control(int16_t effect_num);
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->semi_transparent = 1;
+    obj->semi_transparent = true;
 }
 
 static void M_Control(const int16_t effect_num)

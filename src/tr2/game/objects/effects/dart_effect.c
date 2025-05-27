@@ -9,7 +9,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawSpriteItem;
-    obj->semi_transparent = 1;
+    obj->semi_transparent = true;
 }
 
 static void M_Control(const int16_t effect_num)
