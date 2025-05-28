@@ -83,9 +83,9 @@ typedef struct {
 typedef struct {
     int16_t item_num;
     LARA_GUN_STATE gun_status;
-    int16_t gun_type;
-    int16_t request_gun_type;
-    int16_t last_gun_type;
+    LARA_GUN_TYPE gun_type;
+    LARA_GUN_TYPE request_gun_type;
+    LARA_GUN_TYPE last_gun_type;
     int16_t calc_fall_speed;
     int16_t water_status;
     int16_t pose_count;
