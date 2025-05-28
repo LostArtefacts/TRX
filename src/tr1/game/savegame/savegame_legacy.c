@@ -311,8 +311,8 @@ static void M_ReadArm(LARA_ARM *const arm)
 static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
 {
     ammo_info->ammo = M_ReadS32();
-    ammo_info->hit = M_ReadS32();
-    ammo_info->miss = M_ReadS32();
+    M_Skip(sizeof(int32_t)); // Legacy hits value
+    M_Skip(sizeof(int32_t)); // Legacy miss value
 }
 
 static void M_ReadLOT(LOT_INFO *const lot)

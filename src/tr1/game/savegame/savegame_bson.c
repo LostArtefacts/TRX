@@ -755,8 +755,6 @@ static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo)
     }
 
     ammo->ammo = JSON_ObjectGetInt(ammo_obj, "ammo", ammo->ammo);
-    ammo->hit = JSON_ObjectGetInt(ammo_obj, "hit", ammo->hit);
-    ammo->miss = JSON_ObjectGetInt(ammo_obj, "miss", ammo->miss);
     return true;
 }
 
@@ -1258,8 +1256,6 @@ static JSON_OBJECT *M_DumpAmmo(AMMO_INFO *ammo)
     ASSERT(ammo != nullptr);
     JSON_OBJECT *ammo_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(ammo_obj, "ammo", ammo->ammo);
-    JSON_ObjectAppendInt(ammo_obj, "hit", ammo->hit);
-    JSON_ObjectAppendInt(ammo_obj, "miss", ammo->miss);
     return ammo_obj;
 }
 

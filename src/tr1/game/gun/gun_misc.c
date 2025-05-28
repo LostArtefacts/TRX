@@ -471,7 +471,6 @@ int32_t Gun_FireWeapon(
 
     GAME_VECTOR vdest;
     if (best >= 0) {
-        ammo->hit++;
         Stats_AddAmmoHits();
         vdest.x = vsrc.x + ((bestdist * g_MatrixPtr->_20) >> W2V_SHIFT);
         vdest.y = vsrc.y + ((bestdist * g_MatrixPtr->_21) >> W2V_SHIFT);
@@ -482,7 +481,6 @@ int32_t Gun_FireWeapon(
         return 1;
     }
 
-    ammo->miss++;
     vdest.x = vsrc.x + g_MatrixPtr->_20;
     vdest.y = vsrc.y + g_MatrixPtr->_21;
     vdest.z = vsrc.z + g_MatrixPtr->_22;
