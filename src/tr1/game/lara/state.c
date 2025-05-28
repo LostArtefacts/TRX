@@ -363,8 +363,8 @@ void Lara_State_Hang(ITEM *item, COLL_INFO *coll)
 
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_A_HANG;
-    g_Camera.target_elevation = CAM_E_HANG;
+    g_Camera.target_angle = CAM_HANG_ANGLE;
+    g_Camera.target_elevation = CAM_HANG_ELEVATION;
     if (g_Input.left || g_Input.step_left) {
         item->goal_anim_state = LS_HANG_LEFT;
     } else if (g_Input.right || g_Input.step_right) {
@@ -374,7 +374,7 @@ void Lara_State_Hang(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_Reach(ITEM *item, COLL_INFO *coll)
 {
-    g_Camera.target_angle = 85 * DEG_1;
+    g_Camera.target_angle = CAM_REACH_ANGLE;
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
@@ -514,7 +514,7 @@ void Lara_State_StepLeft(ITEM *item, COLL_INFO *coll)
 void Lara_State_Slide(ITEM *item, COLL_INFO *coll)
 {
     g_Camera.flags = CF_NO_CHUNKY;
-    g_Camera.target_elevation = -45 * DEG_1;
+    g_Camera.target_elevation = CAM_SLIDE_ELEVATION;
     if (g_Input.jump
         && (!g_Config.gameplay.enable_jump_twists || !g_Input.back)) {
         item->goal_anim_state = LS_JUMP_FORWARD;
@@ -523,7 +523,7 @@ void Lara_State_Slide(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_BackJump(ITEM *item, COLL_INFO *coll)
 {
-    g_Camera.target_angle = DEG_1 * 135;
+    g_Camera.target_angle = CAM_BACK_JUMP_ANGLE;
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     } else if (item->goal_anim_state == LS_RUN) {
@@ -572,8 +572,8 @@ void Lara_State_HangLeft(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_A_HANG;
-    g_Camera.target_elevation = CAM_E_HANG;
+    g_Camera.target_angle = CAM_HANG_ANGLE;
+    g_Camera.target_elevation = CAM_HANG_ELEVATION;
     if (!g_Input.left && !g_Input.step_left) {
         item->goal_anim_state = LS_HANG;
     }
@@ -583,8 +583,8 @@ void Lara_State_HangRight(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_A_HANG;
-    g_Camera.target_elevation = CAM_E_HANG;
+    g_Camera.target_angle = CAM_HANG_ANGLE;
+    g_Camera.target_elevation = CAM_HANG_ELEVATION;
     if (!g_Input.right && !g_Input.step_right) {
         item->goal_anim_state = LS_HANG;
     }
@@ -603,8 +603,8 @@ void Lara_State_PushBlock(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = 35 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
+    g_Camera.target_angle = CAM_PUSH_BLOCK_ANGLE;
+    g_Camera.target_elevation = CAM_PUSH_BLOCK_ELEVATION;
 }
 
 void Lara_State_PullBlock(ITEM *item, COLL_INFO *coll)
@@ -612,15 +612,15 @@ void Lara_State_PullBlock(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = 35 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
+    g_Camera.target_angle = CAM_PUSH_BLOCK_ANGLE;
+    g_Camera.target_elevation = CAM_PUSH_BLOCK_ELEVATION;
 }
 
 void Lara_State_PPReady(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = 75 * DEG_1;
+    g_Camera.target_angle = CAM_PP_READY_ANGLE;
     if (!g_Input.action) {
         item->goal_anim_state = LS_STOP;
     }
@@ -630,9 +630,9 @@ void Lara_State_Pickup(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = -130 * DEG_1;
-    g_Camera.target_elevation = -15 * DEG_1;
-    g_Camera.target_distance = WALL_L;
+    g_Camera.target_angle = CAM_PICKUP_ANGLE;
+    g_Camera.target_elevation = CAM_PICKUP_ELEVATION;
+    g_Camera.target_distance = CAM_PICKUP_DISTANCE;
 }
 
 void Lara_State_Controlled(ITEM *item, COLL_INFO *coll)
@@ -645,36 +645,36 @@ void Lara_State_SwitchOn(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = 80 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
-    g_Camera.target_distance = WALL_L;
+    g_Camera.target_angle = CAM_SWITCH_ON_ANGLE;
+    g_Camera.target_elevation = CAM_SWITCH_ON_ELEVATION;
+    g_Camera.target_distance = CAM_SWITCH_ON_DISTANCE;
 }
 
 void Lara_State_SwitchOff(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = 80 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
-    g_Camera.target_distance = WALL_L;
+    g_Camera.target_angle = CAM_SWITCH_ON_ANGLE;
+    g_Camera.target_elevation = CAM_SWITCH_ON_ELEVATION;
+    g_Camera.target_distance = CAM_SWITCH_ON_DISTANCE;
 }
 
 void Lara_State_UseKey(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = -80 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
-    g_Camera.target_distance = WALL_L;
+    g_Camera.target_angle = CAM_USE_KEY_ANGLE;
+    g_Camera.target_elevation = CAM_USE_KEY_ELEVATION;
+    g_Camera.target_distance = CAM_USE_KEY_DISTANCE;
 }
 
 void Lara_State_UsePuzzle(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = -80 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
-    g_Camera.target_distance = WALL_L;
+    g_Camera.target_angle = CAM_USE_KEY_ANGLE;
+    g_Camera.target_elevation = CAM_USE_KEY_ELEVATION;
+    g_Camera.target_distance = CAM_USE_KEY_DISTANCE;
 }
 
 void Lara_State_Special(ITEM *item, COLL_INFO *coll)
@@ -685,13 +685,12 @@ void Lara_State_Special(ITEM *item, COLL_INFO *coll)
         g_Camera.flags = CF_CHASE_OBJECT;
         g_Camera.type = CAM_FIXED;
         g_Camera.target_angle = item->rot.y;
-        g_Camera.target_distance = WALL_L * 2;
-        g_Camera.target_elevation = -25 * DEG_1;
+        g_Camera.target_distance = CAM_SPECIAL_DISTANCE;
     } else {
         g_Camera.flags = CF_FOLLOW_CENTRE;
-        g_Camera.target_angle = 170 * DEG_1;
-        g_Camera.target_elevation = -25 * DEG_1;
+        g_Camera.target_angle = CAM_SPECIAL_ANGLE;
     }
+    g_Camera.target_elevation = CAM_SPECIAL_ELEVATION;
 }
 
 void Lara_State_UseMidas(ITEM *item, COLL_INFO *coll)
