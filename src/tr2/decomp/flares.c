@@ -259,7 +259,7 @@ void Flare_Draw(void)
     if (g_LaraItem->current_anim_state == LS_FLARE_PICKUP
         || g_LaraItem->current_anim_state == LS_PICKUP) {
         Flare_DoInHand(g_Lara.flare_age);
-        g_Lara.flare_control = 0;
+        g_Lara.flare_control = false;
         g_Lara.left_arm.frame_num = LF_FL_2_HOLD - 2;
         Flare_SetArm(g_Lara.left_arm.frame_num);
         return;
@@ -267,7 +267,7 @@ void Flare_Draw(void)
 
     int32_t frame_num = g_Lara.left_arm.frame_num + 1;
 
-    g_Lara.flare_control = 1;
+    g_Lara.flare_control = true;
 
     if (frame_num < LF_FL_DRAW || frame_num > LF_FL_2_HOLD - 1) {
         frame_num = LF_FL_DRAW;
@@ -296,7 +296,7 @@ void Flare_Undraw(void)
     int16_t frame_num_1 = g_Lara.left_arm.frame_num;
     int16_t frame_num_2 = g_Lara.flare_frame;
 
-    g_Lara.flare_control = 1;
+    g_Lara.flare_control = true;
 
     if (g_LaraItem->goal_anim_state == LS_STOP
         && g_Lara.vehicle_item_num == NO_ITEM) {
@@ -307,7 +307,7 @@ void Flare_Undraw(void)
         }
 
         if (Item_TestAnimEqual(g_LaraItem, LA_FLARE_THROW)) {
-            g_Lara.flare_control = 0;
+            g_Lara.flare_control = false;
 
             if (frame_num_2 >= Anim_GetAnim(LA_FLARE_THROW)->frame_base
                     + LF_FL_THROW_FT - 1) {
@@ -351,7 +351,7 @@ void Flare_Undraw(void)
             g_Lara.gun_status = LGS_ARMLESS;
             Gun_InitialiseNewWeapon();
             g_Lara.target = nullptr;
-            g_Lara.flare_control = 0;
+            g_Lara.flare_control = false;
             g_Lara.right_arm.lock = 0;
             g_Lara.left_arm.lock = 0;
             g_Lara.flare_frame = 0;
