@@ -29,16 +29,19 @@ typedef struct {
     int32_t ammo;
 } AMMO_INFO;
 
-#if TR_VERSION == 1
 typedef struct {
     int16_t item_num;
     LARA_GUN_STATE gun_status;
     LARA_GUN_TYPE gun_type;
     LARA_GUN_TYPE request_gun_type;
-    LARA_GUN_TYPE holsters_gun_type;
-    LARA_GUN_TYPE back_gun_type;
-    int16_t calc_fall_speed;
+
     LARA_WATER_STATE water_status;
+    int32_t water_surface_dist;
+    int16_t turn_rate;
+    int16_t move_angle;
+    XYZ_16 head_rot;
+    XYZ_16 torso_rot;
+    int16_t calc_fall_speed;
     int16_t pose_count;
     int16_t hit_frame;
     int16_t hit_direction;
@@ -46,30 +49,23 @@ typedef struct {
     int16_t dive_timer;
     int16_t death_timer;
     int16_t current_active;
-    int32_t water_surface_dist;
+    LOT_INFO lot;
     XYZ_32 last_pos;
+
     int16_t hit_effect_count;
     EFFECT *hit_effect;
     int32_t mesh_effects;
     OBJECT_MESH *mesh_ptrs[LM_NUMBER_OF];
+
     ITEM *target;
     int16_t target_angles[2];
-    int16_t turn_rate;
-    int16_t move_angle;
-    XYZ_16 head_rot;
-    XYZ_16 torso_rot;
+
     LARA_ARM left_arm;
     LARA_ARM right_arm;
     AMMO_INFO pistol_ammo;
     AMMO_INFO magnum_ammo;
     AMMO_INFO uzi_ammo;
     AMMO_INFO shotgun_ammo;
-    LOT_INFO lot;
-    struct {
-        int32_t item_num;
-        int32_t move_count;
-        bool is_moving;
-    } interact_target;
 
     struct {
         struct {
@@ -77,66 +73,35 @@ typedef struct {
             XYZ_16 torso_rot;
         } result, prev;
     } interp;
-} LARA_INFO;
 
-#elif TR_VERSION == 2
-typedef struct {
-    int16_t item_num;
-    LARA_GUN_STATE gun_status;
-    LARA_GUN_TYPE gun_type;
-    LARA_GUN_TYPE request_gun_type;
+#if TR_VERSION == 1
+    LARA_GUN_TYPE holsters_gun_type;
+    LARA_GUN_TYPE back_gun_type;
+
+    struct {
+        int32_t item_num;
+        int32_t move_count;
+        bool is_moving;
+    } interact_target;
+#else
     LARA_GUN_TYPE last_gun_type;
-    int16_t calc_fall_speed;
-    int16_t water_status;
-    int16_t pose_count;
-    int16_t hit_frame;
-    int16_t hit_direction;
-    int16_t air;
-    int16_t dive_timer;
-    int16_t death_timer;
-    int16_t current_active;
-    int16_t hit_effect_count;
-    int16_t vehicle_item_num;
-    int16_t gun_item_num;
     GAME_OBJECT_ID back_gun_obj_id;
+    int16_t gun_item_num;
+    int16_t vehicle_item_num;
+
     bool climb_status;
     bool extra_anim;
     bool enable_look;
     bool burn;
-    int32_t water_surface_dist;
-    XYZ_32 last_pos;
-    EFFECT *hit_effect;
-    uint32_t mesh_effects;
-    OBJECT_MESH *mesh_ptrs[LM_NUMBER_OF];
-    ITEM *target;
-    int16_t target_angles[2];
-    int16_t turn_rate;
-    int16_t move_angle;
-    XYZ_16 head_rot;
-    XYZ_16 torso_rot;
-    LARA_ARM left_arm;
-    LARA_ARM right_arm;
-    AMMO_INFO pistol_ammo;
-    AMMO_INFO magnum_ammo;
-    AMMO_INFO uzi_ammo;
-    AMMO_INFO shotgun_ammo;
+
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;
     AMMO_INFO m16_ammo;
-    LOT_INFO lot;
 
     struct {
         bool control;
         int16_t age;
         int16_t frame_num;
     } flare;
-
-    struct {
-        struct {
-            XYZ_16 head_rot;
-            XYZ_16 torso_rot;
-        } result, prev;
-    } interp;
-} LARA_INFO;
-
 #endif
+} LARA_INFO;

@@ -1109,7 +1109,7 @@ static JSON_OBJECT *M_DumpLara(void)
     JSON_ObjectAppendInt(
         lara_obj, "water_surface_dist", lara->water_surface_dist);
 
-    JSON_ObjectAppendBool(lara_obj, "flare_control", lara->flare.control);
+    JSON_ObjectAppendBool(lara_obj, "flare_control_left", lara->flare.control);
     JSON_ObjectAppendBool(lara_obj, "extra_anim", lara->extra_anim);
     JSON_ObjectAppendBool(lara_obj, "look", lara->enable_look);
     JSON_ObjectAppendBool(lara_obj, "burn", lara->burn);
@@ -1212,7 +1212,7 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
         lara_obj, "water_surface_dist", lara->water_surface_dist);
 
     lara->flare.control =
-        JSON_ObjectGetBool(lara_obj, "flare_control", lara->flare.control);
+        JSON_ObjectGetBool(lara_obj, "flare_control_left", lara->flare.control);
     lara->extra_anim =
         JSON_ObjectGetBool(lara_obj, "extra_anim", lara->extra_anim);
     lara->enable_look = JSON_ObjectGetBool(lara_obj, "look", lara->enable_look);
