@@ -59,7 +59,7 @@ void Gun_Control(void)
                 if (g_Lara.gun_type == LGT_FLARE) {
                     Flare_Create(0);
                     Flare_UndrawMeshes();
-                    g_Lara.flare_control = 0;
+                    g_Lara.flare_control = false;
                 }
                 g_Lara.gun_type = g_Lara.request_gun_type;
                 Gun_InitialiseNewWeapon();
@@ -103,7 +103,7 @@ void Gun_Control(void)
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state)) {
                 if (!g_Lara.flare_control) {
                     g_Lara.left_arm.frame_num = LF_FL_2_HOLD;
-                    g_Lara.flare_control = 1;
+                    g_Lara.flare_control = true;
                 } else if (g_Lara.left_arm.frame_num != LF_FL_HOLD) {
                     g_Lara.left_arm.frame_num++;
                     if (g_Lara.left_arm.frame_num == LF_FL_END) {
@@ -111,7 +111,7 @@ void Gun_Control(void)
                     }
                 }
             } else {
-                g_Lara.flare_control = 0;
+                g_Lara.flare_control = false;
             }
             Flare_DoInHand(g_Lara.flare_age);
             Flare_SetArm(g_Lara.left_arm.frame_num);

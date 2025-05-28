@@ -223,7 +223,7 @@ void Skidoo_Collision(
     if (g_Lara.gun_type == LGT_FLARE) {
         Flare_Create(false);
         Flare_UndrawMeshes();
-        g_Lara.flare_control = 0;
+        g_Lara.flare_control = false;
         g_Lara.gun_type = LGT_UNARMED;
         g_Lara.request_gun_type = LGT_UNARMED;
     }

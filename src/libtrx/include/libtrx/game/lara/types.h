@@ -102,8 +102,9 @@ typedef struct {
     int16_t gun_item_num;
     GAME_OBJECT_ID back_gun;
     int16_t flare_frame;
+    bool flare_control;
     // clang-format off
-    uint16_t flare_control: 1; // 0x01 1
+    uint16_t pad_0:         1; // 0x01 1
     uint16_t pad_1:         1; // 0x02 2
     uint16_t extra_anim:    1; // 0x04 4
     uint16_t look:          1; // 0x08 8
