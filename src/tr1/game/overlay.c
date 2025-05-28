@@ -10,7 +10,6 @@
 #include "game/output/shader.h"
 #include "game/screen.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 

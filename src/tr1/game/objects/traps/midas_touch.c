@@ -4,7 +4,6 @@
 #include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "game/overlay.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>

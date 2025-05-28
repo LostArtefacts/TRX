@@ -22,6 +22,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 

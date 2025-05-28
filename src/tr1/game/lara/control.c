@@ -8,7 +8,6 @@
 #include "game/lara/look.h"
 #include "game/lara/state.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

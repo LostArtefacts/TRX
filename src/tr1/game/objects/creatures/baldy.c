@@ -1,5 +1,4 @@
 #include "game/creature.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/music.h>

@@ -1,7 +1,6 @@
 #include "game/item_actions/sand.h"
 
 #include "game/sound.h"
-#include "global/const.h"
 
 #include <libtrx/game/camera.h>
 

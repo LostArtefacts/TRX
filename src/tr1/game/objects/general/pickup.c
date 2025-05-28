@@ -9,7 +9,6 @@
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

@@ -3,8 +3,9 @@
 #include "game/inventory.h"
 #include "game/lara/common.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
+
+#include <libtrx/game/lara/const.h>
 
 #define LF_USEPUZZLE 80
 

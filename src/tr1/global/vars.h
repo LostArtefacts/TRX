@@ -1,6 +1,5 @@
 #pragma once
 
-#include "global/const.h"
 #include "global/types.h"
 
 #include <libtrx/game/camera/vars.h>

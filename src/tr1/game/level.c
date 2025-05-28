@@ -15,7 +15,6 @@
 #include "game/sound.h"
 #include "game/stats.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 

@@ -10,7 +10,6 @@
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 

@@ -1,7 +1,6 @@
 #include "game/item_actions/flood.h"
 
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>

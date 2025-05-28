@@ -1,7 +1,5 @@
 #pragma once
 
-#include "global/const.h"
-
 #include <libtrx/game/anims.h>
 #include <libtrx/game/camera/enum.h>
 #include <libtrx/game/camera/types.h>

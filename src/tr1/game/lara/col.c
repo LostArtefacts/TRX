@@ -4,11 +4,11 @@
 #include "game/lara/common.h"
 #include "game/lara/misc.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara/const.h>
 
 #include <stdint.h>
 

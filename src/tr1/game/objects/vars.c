@@ -1,7 +1,5 @@
 #include "game/objects/vars.h"
 
-#include "global/const.h"
-
 const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format off
     O_WOLF,

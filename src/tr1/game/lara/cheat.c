@@ -10,12 +10,12 @@
 #include "game/objects/vars.h"
 #include "game/sound.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 #include <libtrx/vector.h>

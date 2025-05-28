@@ -1,4 +1,3 @@
-#include "global/const.h"
 #include "global/vars.h"
 
 static void M_Setup(OBJECT *obj);

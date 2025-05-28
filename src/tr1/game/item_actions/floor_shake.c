@@ -1,7 +1,5 @@
 #include "game/item_actions/floor_shake.h"
 
-#include "global/const.h"
-
 #include <libtrx/game/camera.h>
 #include <libtrx/utils.h>
 
