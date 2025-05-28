@@ -607,15 +607,6 @@ void Lara_State_PushBlock(ITEM *item, COLL_INFO *coll)
     g_Camera.target_elevation = CAM_PUSH_BLOCK_ELEVATION;
 }
 
-void Lara_State_PullBlock(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = CAM_PUSH_BLOCK_ANGLE;
-    g_Camera.target_elevation = CAM_PUSH_BLOCK_ELEVATION;
-}
-
 void Lara_State_PPReady(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
@@ -650,25 +641,7 @@ void Lara_State_SwitchOn(ITEM *item, COLL_INFO *coll)
     g_Camera.target_distance = CAM_SWITCH_ON_DISTANCE;
 }
 
-void Lara_State_SwitchOff(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_SWITCH_ON_ANGLE;
-    g_Camera.target_elevation = CAM_SWITCH_ON_ELEVATION;
-    g_Camera.target_distance = CAM_SWITCH_ON_DISTANCE;
-}
-
 void Lara_State_UseKey(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_USE_KEY_ANGLE;
-    g_Camera.target_elevation = CAM_USE_KEY_ELEVATION;
-    g_Camera.target_distance = CAM_USE_KEY_DISTANCE;
-}
-
-void Lara_State_UsePuzzle(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
