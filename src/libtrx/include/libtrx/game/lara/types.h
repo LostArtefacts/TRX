@@ -8,13 +8,15 @@
 #include "../types.h"
 #include "enum.h"
 
-#if TR_VERSION == 1
 typedef struct {
     ANIM_FRAME *frame_base;
     int16_t frame_num;
+#if TR_VERSION >= 2
+    int16_t anim_num;
+#endif
     int16_t lock;
     XYZ_16 rot;
-    uint16_t flash_gun;
+    int16_t flash_gun;
 
     struct {
         struct {
@@ -23,6 +25,7 @@ typedef struct {
     } interp;
 } LARA_ARM;
 
+#if TR_VERSION == 1
 typedef struct {
     int32_t ammo;
     int32_t hit;
@@ -82,21 +85,6 @@ typedef struct {
 typedef struct {
     int32_t ammo;
 } AMMO_INFO;
-
-typedef struct {
-    ANIM_FRAME *frame_base;
-    int16_t frame_num;
-    int16_t anim_num;
-    int16_t lock;
-    XYZ_16 rot;
-    int16_t flash_gun;
-
-    struct {
-        struct {
-            XYZ_16 rot;
-        } result, prev;
-    } interp;
-} LARA_ARM;
 
 typedef struct {
     int16_t item_num;
