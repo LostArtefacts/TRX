@@ -151,7 +151,7 @@ static void M_Collision(
 
     Item_Animate(lara_item);
 
-    g_Lara.extra_anim = 1;
+    g_Lara.extra_anim = true;
     g_Lara.gun_status = LGS_HANDS_BUSY;
 
     if (item->object_id == O_DETONATOR_2) {

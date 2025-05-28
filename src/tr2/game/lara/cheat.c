@@ -156,7 +156,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     g_Lara.death_timer = 0;
     g_Lara.mesh_effects = 0;
     g_Lara.burn = 0;
-    g_Lara.extra_anim = 0;
+    g_Lara.extra_anim = false;
     g_LaraItem->enable_shadow = true;
     g_LaraItem->hit_points = LARA_MAX_HITPOINTS;
 
@@ -412,7 +412,7 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
             g_Lara.torso_rot.y = 0;
         }
 
-        g_Lara.extra_anim = 0;
+        g_Lara.extra_anim = false;
         M_ResetGunStatus();
         M_ReinitialiseGunMeshes();
     }

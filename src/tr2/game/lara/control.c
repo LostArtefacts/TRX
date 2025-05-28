@@ -794,7 +794,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.back_gun = O_LARA;
     g_Lara.flare_frame = 0;
     g_Lara.flare_control = false;
-    g_Lara.extra_anim = 0;
+    g_Lara.extra_anim = false;
     g_Lara.look = 1;
     g_Lara.burn = 0;
     g_Lara.water_surface_dist = 100;
@@ -830,7 +830,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
         item->current_anim_state = LA_EXTRA_BREATH;
         item->goal_anim_state = g_GF_LaraStartAnim;
         Lara_Animate(item);
-        g_Lara.extra_anim = 1;
+        g_Lara.extra_anim = true;
         Camera_InvokeCinematic(item, 0, 0);
     } else if ((Room_Get(item->room_num)->flags & RF_UNDERWATER)) {
         g_Lara.water_status = LWS_UNDERWATER;
