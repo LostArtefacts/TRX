@@ -9,13 +9,10 @@
 // they'll need to be properly modularized. The same applies to all files
 // within the decomp/ directory which are scheduled for extensive refactoring.
 
-void Game_SetCutsceneTrack(int32_t track);
 void Lara_Control_Cutscene(int16_t item_num);
 void CutscenePlayer1_Initialise(int16_t item_num);
-void S_InitialisePolyList(bool clear_back_buffer);
 void DecreaseScreenSize(void);
 void IncreaseScreenSize(void);
-void S_UnloadLevelFile(void);
 void InitialiseGameFlags(void);
 int32_t DoShift(ITEM *vehicle, const XYZ_32 *pos, const XYZ_32 *old);
 int32_t DoDynamics(int32_t height, int32_t fall_speed, int32_t *out_y);
