@@ -13,7 +13,6 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>

@@ -6,7 +6,6 @@
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/carrier.h>

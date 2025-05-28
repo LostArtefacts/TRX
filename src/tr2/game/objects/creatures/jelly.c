@@ -2,7 +2,6 @@
 #include "game/lara/control.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 // clang-format off

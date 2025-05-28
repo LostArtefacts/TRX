@@ -3,7 +3,6 @@
 #include "game/output.h"
 #include "game/render/common.h"
 #include "game/shell/common.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

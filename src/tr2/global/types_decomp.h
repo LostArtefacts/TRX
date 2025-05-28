@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "const.h"
-
 #include <libtrx/game/camera/enum.h>
 #include <libtrx/game/camera/types.h>
 #include <libtrx/game/items.h>

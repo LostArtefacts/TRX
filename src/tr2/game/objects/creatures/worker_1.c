@@ -3,7 +3,6 @@
 #include "game/objects/creatures/worker_common.h"
 #include "game/random.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/utils.h>

@@ -8,6 +8,8 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <libtrx/game/lara/const.h>
+
 #define LF_USE_PUZZLE 80
 
 static XYZ_32 m_PuzzleHolePosition = {

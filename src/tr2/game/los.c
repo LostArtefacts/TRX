@@ -1,7 +1,6 @@
 #include "game/los.h"
 
 #include "game/objects/vars.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>

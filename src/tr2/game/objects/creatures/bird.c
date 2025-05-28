@@ -1,6 +1,5 @@
 #include "game/creature.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 

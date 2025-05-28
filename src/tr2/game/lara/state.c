@@ -8,12 +8,12 @@
 #include "game/overlay.h"
 #include "game/sound.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
