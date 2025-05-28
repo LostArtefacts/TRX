@@ -4,6 +4,8 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/game/lara/const.h>
+
 #define DEFAULT_RADIUS 10
 
 static void M_SetupLara(void);

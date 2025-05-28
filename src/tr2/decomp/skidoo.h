@@ -1,6 +1,5 @@
 #pragma once
 
-#include "global/const.h"
 #include "global/types.h"
 
 #define SKIDOO_MIN_SPEED 15

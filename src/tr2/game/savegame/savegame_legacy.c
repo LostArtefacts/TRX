@@ -7,7 +7,6 @@
 #include "game/objects/general/lift.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>

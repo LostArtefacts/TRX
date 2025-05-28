@@ -8,6 +8,8 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <libtrx/game/lara/const.h>
+
 static XYZ_32 m_KeyholePosition = {
     .x = 0,
     .y = 0,

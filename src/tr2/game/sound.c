@@ -1,7 +1,6 @@
 #include "game/sound.h"
 
 #include "game/random.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

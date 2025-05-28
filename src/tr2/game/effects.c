@@ -2,7 +2,6 @@
 
 #include "game/objects/common.h"
 #include "game/output.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>

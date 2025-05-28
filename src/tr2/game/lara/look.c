@@ -1,10 +1,10 @@
 #include "game/lara/look.h"
 
 #include "game/input.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara/const.h>
 
 void Lara_LookUpDown(void)
 {

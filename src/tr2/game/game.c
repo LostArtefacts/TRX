@@ -23,6 +23,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/music.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
