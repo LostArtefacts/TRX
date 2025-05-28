@@ -17,7 +17,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define USE_REAL_CLOCK 0
+#define M_USE_REAL_CLOCK 0
+#define M_MAX_SECRETS 16
 
 static int32_t m_CachedItemCount = 0;
 static SECTOR **m_CachedSectorArray = nullptr;
@@ -28,7 +29,7 @@ static uint32_t m_SecretRoom = 0;
 static bool m_KillableItems[MAX_ITEMS] = {};
 static bool m_IfKillable[O_NUMBER_OF] = {};
 
-#if USE_REAL_CLOCK
+#if M_USE_REAL_CLOCK
 static struct {
     CLOCK_TIMER timer;
     int32_t start_timer;
@@ -232,7 +233,7 @@ bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
     return final_stats.secret_count >= final_stats.max_secret_count;
 }
 
-#if USE_REAL_CLOCK
+#if M_USE_REAL_CLOCK
 void Stats_StartTimer(void)
 {
     ClockTimer_Sync(&m_StatsTimer.timer);
@@ -267,7 +268,7 @@ void Stats_UpdateTimer(void)
 void Stats_UpdateSecrets(LEVEL_STATS *const stats)
 {
     stats->secret_count = 0;
-    for (int32_t i = 0; i < MAX_SECRETS; i++) {
+    for (int32_t i = 0; i < M_MAX_SECRETS; i++) {
         stats->secret_count += (stats->secret_flags & (1 << i)) ? 1 : 0;
     }
 }

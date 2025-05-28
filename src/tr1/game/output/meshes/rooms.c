@@ -7,6 +7,7 @@
 #include "game/output/vertex_range.h"
 #include "game/random.h"
 
+#include <libtrx/game/level/const.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
 #include <libtrx/vector.h>

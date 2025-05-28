@@ -19,6 +19,7 @@
 #include <libtrx/game/ui.h>
 
 #define M_CAMERA_2_RING 598
+#define M_PASSPORT_FOV 65
 
 static int32_t M_GetFrames(
     const INV_RING *ring, const INVENTORY_ITEM *inv_item,
@@ -139,7 +140,7 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     int16_t old_fov = Viewport_GetFOV();
-    Viewport_SetFOV(PASSPORT_FOV * DEG_1);
+    Viewport_SetFOV(M_PASSPORT_FOV * DEG_1);
     Output_ApplyFOV();
 
     XYZ_32 view_pos;

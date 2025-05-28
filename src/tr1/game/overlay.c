@@ -23,13 +23,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#define COLOR_STEPS 5
-#define MAX_PICKUP_COLUMNS 4
-#define MAX_PICKUP_DURATION_DISPLAY 2.0 // seconds
-#define MAX_PICKUP_DURATION_EASE_IN 0.5 // seconds
-#define MAX_PICKUP_DURATION_EASE_OUT 1.0 // seconds
-#define MAX_PICKUPS 16
-#define BLINK_THRESHOLD 20
+#define M_COLOR_STEPS 5
+#define M_MAX_PICKUP_COLUMNS 4
+#define M_MAX_PICKUP_DURATION_DISPLAY 2.0 // seconds
+#define M_MAX_PICKUP_DURATION_EASE_IN 0.5 // seconds
+#define M_MAX_PICKUP_DURATION_EASE_OUT 1.0 // seconds
+#define M_MAX_PICKUPS 16
+#define M_BLINK_THRESHOLD 20
+#define M_PICKUPS_FOV 65
 
 typedef enum {
     DPP_EASE_IN,
@@ -47,11 +48,11 @@ typedef struct {
     DISPLAY_PICKUP_PHASE phase;
 } DISPLAY_PICKUP;
 
-static DISPLAY_PICKUP m_Pickups[MAX_PICKUPS] = {};
+static DISPLAY_PICKUP m_Pickups[M_MAX_PICKUPS] = {};
 static CLOCK_TIMER m_PickupsTimer = { .type = CLOCK_TIMER_SIM };
 static CLOCK_TIMER m_BlinkTimer = { .type = CLOCK_TIMER_SIM };
 
-static RGBA_8888 m_ColorBarMap[][COLOR_STEPS] = {
+static RGBA_8888 m_ColorBarMap[][M_COLOR_STEPS] = {
     // gold
     { { 124, 94, 37, 255 },
       { 161, 131, 60, 255 },
@@ -136,7 +137,7 @@ static void M_BarBlink(BAR_INFO *bar_info)
     }
 
     const int32_t percent = M_BarGetPercent(bar_info);
-    if (percent > BLINK_THRESHOLD) {
+    if (percent > M_BLINK_THRESHOLD) {
         bar_info->blink = false;
         return;
     }
@@ -186,18 +187,18 @@ void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
         sh = Screen_GetRenderScale(height, scale_ref);
 
         if (g_Config.ui.enable_smooth_bars) {
-            for (int i = 0; i < COLOR_STEPS - 1; i++) {
+            for (int i = 0; i < M_COLOR_STEPS - 1; i++) {
                 RGBA_8888 c1 = m_ColorBarMap[bar_info->color][i];
                 RGBA_8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
-                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
-                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
+                int32_t lsy = sy + i * sh / (M_COLOR_STEPS - 1);
+                int32_t lsh = sy + (i + 1) * sh / (M_COLOR_STEPS - 1) - lsy;
                 Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
             }
         } else {
-            for (int i = 0; i < COLOR_STEPS; i++) {
+            for (int i = 0; i < M_COLOR_STEPS; i++) {
                 RGBA_8888 color = m_ColorBarMap[bar_info->color][i];
-                int32_t lsy = sy + i * sh / COLOR_STEPS;
-                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
+                int32_t lsy = sy + i * sh / M_COLOR_STEPS;
+                int32_t lsh = sy + (i + 1) * sh / M_COLOR_STEPS - lsy;
                 Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
             }
         }
@@ -244,12 +245,12 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     float ease = 1.0f;
     switch (pu->phase) {
     case DPP_EASE_IN:
-        ease = M_Ease(pu->elapsed, MAX_PICKUP_DURATION_EASE_IN);
+        ease = M_Ease(pu->elapsed, M_MAX_PICKUP_DURATION_EASE_IN);
         break;
     case DPP_EASE_OUT:
         ease = M_Ease(
-            MAX_PICKUP_DURATION_EASE_OUT - pu->elapsed,
-            MAX_PICKUP_DURATION_EASE_OUT);
+            M_MAX_PICKUP_DURATION_EASE_OUT - pu->elapsed,
+            M_MAX_PICKUP_DURATION_EASE_OUT);
         break;
     case DPP_DISPLAY:
         ease = 1.0f;
@@ -263,7 +264,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     // translating the object in order to avoid perspective distortion in the
     // screen corners.
     int16_t old_fov = Viewport_GetFOV();
-    Viewport_SetFOV(PICKUPS_FOV * DEG_1);
+    Viewport_SetFOV(M_PICKUPS_FOV * DEG_1);
     Viewport_Init(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
     glViewport(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
     Output_ApplyFOV();
@@ -320,7 +321,7 @@ static void M_DrawPickups3D(void)
 {
     const double elapsed = ClockTimer_TakeElapsed(&m_PickupsTimer);
 
-    for (int i = 0; i < MAX_PICKUPS; i++) {
+    for (int i = 0; i < M_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pu = &m_Pickups[i];
 
         switch (pu->phase) {
@@ -329,7 +330,7 @@ static void M_DrawPickups3D(void)
 
         case DPP_EASE_IN:
             pu->elapsed += elapsed;
-            if (pu->elapsed >= MAX_PICKUP_DURATION_EASE_IN) {
+            if (pu->elapsed >= M_MAX_PICKUP_DURATION_EASE_IN) {
                 pu->phase = DPP_DISPLAY;
                 pu->elapsed = 0.0;
             }
@@ -337,7 +338,7 @@ static void M_DrawPickups3D(void)
 
         case DPP_DISPLAY:
             pu->elapsed += elapsed;
-            if (pu->elapsed >= MAX_PICKUP_DURATION_DISPLAY) {
+            if (pu->elapsed >= M_MAX_PICKUP_DURATION_DISPLAY) {
                 pu->phase = DPP_EASE_OUT;
                 pu->elapsed = 0.0;
             }
@@ -345,7 +346,7 @@ static void M_DrawPickups3D(void)
 
         case DPP_EASE_OUT:
             pu->elapsed += elapsed;
-            if (pu->elapsed >= MAX_PICKUP_DURATION_EASE_OUT) {
+            if (pu->elapsed >= M_MAX_PICKUP_DURATION_EASE_OUT) {
                 pu->phase = DPP_DEAD;
                 pu->elapsed = 0.0;
             }
@@ -366,14 +367,14 @@ static void M_DrawPickupsSprites(void)
         MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
     const int32_t sprite_width = sprite_height * 4 / 3;
 
-    for (int i = 0; i < MAX_PICKUPS; i++) {
+    for (int i = 0; i < M_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pu = &m_Pickups[i];
         if (pu->phase == DPP_DEAD) {
             continue;
         }
 
         pu->elapsed += elapsed;
-        if (pu->elapsed >= MAX_PICKUP_DURATION_DISPLAY) {
+        if (pu->elapsed >= M_MAX_PICKUP_DURATION_DISPLAY) {
             pu->phase = DPP_DEAD;
             continue;
         }
@@ -403,7 +404,7 @@ static void M_DrawPickups(void)
 
 void Overlay_Reset(void)
 {
-    for (int i = 0; i < MAX_PICKUPS; i++) {
+    for (int i = 0; i < M_MAX_PICKUPS; i++) {
         m_Pickups[i].phase = DPP_DEAD;
     }
 }
@@ -425,11 +426,11 @@ void Overlay_AddPickup(const GAME_OBJECT_ID obj_id)
 {
     int32_t grid_x = -1;
     int32_t grid_y = -1;
-    for (int i = 0; i < MAX_PICKUPS; i++) {
-        int x = i % MAX_PICKUP_COLUMNS;
-        int y = i / MAX_PICKUP_COLUMNS;
+    for (int i = 0; i < M_MAX_PICKUPS; i++) {
+        int x = i % M_MAX_PICKUP_COLUMNS;
+        int y = i / M_MAX_PICKUP_COLUMNS;
         bool is_occupied = false;
-        for (int j = 0; j < MAX_PICKUPS; j++) {
+        for (int j = 0; j < M_MAX_PICKUPS; j++) {
             bool is_dead_or_dying = m_Pickups[j].phase == DPP_DEAD
                 || m_Pickups[j].phase == DPP_EASE_OUT;
             if (m_Pickups[j].grid_x == x && m_Pickups[j].grid_y == y
@@ -446,7 +447,7 @@ void Overlay_AddPickup(const GAME_OBJECT_ID obj_id)
         }
     }
 
-    for (int i = 0; i < MAX_PICKUPS; i++) {
+    for (int i = 0; i < M_MAX_PICKUPS; i++) {
         if (m_Pickups[i].phase == DPP_DEAD) {
             m_Pickups[i].object_id = obj_id;
             m_Pickups[i].elapsed = 0.0;

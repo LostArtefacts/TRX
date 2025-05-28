@@ -28,9 +28,13 @@
 #include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 
-#define INV_RING_FADE_TIME_FAST                                                \
+#define M_INV_RING_FADE_TIME_FAST                                              \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
-#define INV_RING_FADE_TIME_TITLE_FINISH 0.25
+#define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
+#define M_RING_SWITCH_FRAMES (96 / 2)
+#define M_SELECTING_FRAMES (32 / 2)
+#define M_OPTION_RING_OBJECTS 4
+#define M_TITLE_RING_OBJECTS 5
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static bool m_EnableExamine;
@@ -296,7 +300,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 (FADER_ARGS) {
                     .initial = FADER_ANY,
                     .target = FADER_BLACK,
-                    .duration = INV_RING_FADE_TIME_TITLE_FINISH,
+                    .duration = M_INV_RING_FADE_TIME_TITLE_FINISH,
                     .debuff = 1. / (double)LOGIC_FPS,
                 });
         }
@@ -389,7 +393,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
                 Fader_Init(
                     &ring->back_fader, FADER_ANY, FADER_TRANSPARENT,
-                    INV_RING_FADE_TIME_FAST);
+                    M_INV_RING_FADE_TIME_FAST);
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -419,7 +423,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             inv_item->action = examine ? ACTION_EXAMINE : ACTION_USE;
 
             InvRing_MotionSetup(
-                ring, RNG_SELECTING, RNG_SELECTED, SELECTING_FRAMES);
+                ring, RNG_SELECTING, RNG_SELECTED, M_SELECTING_FRAMES);
             InvRing_MotionRotation(
                 ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
             InvRing_MotionItemSelect(ring, inv_item);
@@ -458,7 +462,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (g_InvRing_Source[RT_KEYS].count != 0) {
                     InvRing_MotionSetup(
                         ring, RNG_CLOSING, RNG_MAIN2KEYS,
-                        RINGSWITCH_FRAMES / 2);
+                        M_RING_SWITCH_FRAMES / 2);
                     InvRing_MotionRadius(ring, 0);
                     InvRing_MotionRotation(
                         ring, INV_RING_CLOSE_ROTATION,
@@ -472,7 +476,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (g_InvRing_Source[RT_MAIN].count) {
                     InvRing_MotionSetup(
                         ring, RNG_CLOSING, RNG_OPTION2MAIN,
-                        RINGSWITCH_FRAMES / 2);
+                        M_RING_SWITCH_FRAMES / 2);
                     InvRing_MotionRadius(ring, 0);
                     InvRing_MotionRotation(
                         ring, INV_RING_CLOSE_ROTATION,
@@ -489,7 +493,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (g_InvRing_Source[RT_MAIN].count) {
                     InvRing_MotionSetup(
                         ring, RNG_CLOSING, RNG_KEYS2MAIN,
-                        RINGSWITCH_FRAMES / 2);
+                        M_RING_SWITCH_FRAMES / 2);
                     InvRing_MotionRadius(ring, 0);
                     InvRing_MotionRotation(
                         ring, INV_RING_CLOSE_ROTATION,
@@ -503,7 +507,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (g_InvRing_Source[RT_OPTION].count != 0) {
                     InvRing_MotionSetup(
                         ring, RNG_CLOSING, RNG_MAIN2OPTION,
-                        RINGSWITCH_FRAMES / 2);
+                        M_RING_SWITCH_FRAMES / 2);
                     InvRing_MotionRadius(ring, 0);
                     InvRing_MotionRotation(
                         ring, INV_RING_CLOSE_ROTATION,
@@ -517,11 +521,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_MAIN2OPTION:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
         ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_rate =
-            ring->motion.misc / (RINGSWITCH_FRAMES / 2);
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         ring->motion.camera_pitch_target = 0;
         g_InvRing_Source[RT_MAIN].current = ring->current_object;
         ring->type = RT_OPTION;
@@ -537,11 +542,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_MAIN2KEYS:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
         ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_rate =
-            ring->motion.misc / (RINGSWITCH_FRAMES / 2);
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         ring->motion.camera_pitch_target = 0;
         g_InvRing_Source[RT_MAIN].current = ring->current_object;
         g_InvRing_Source[RT_MAIN].count = ring->number_of_objects;
@@ -558,11 +564,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_KEYS2MAIN:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
         ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_rate =
-            ring->motion.misc / (RINGSWITCH_FRAMES / 2);
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         ring->motion.camera_pitch_target = 0;
         g_InvRing_Source[RT_KEYS].current = ring->current_object;
         ring->type = RT_MAIN;
@@ -578,11 +585,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_OPTION2MAIN:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
         ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_rate =
-            ring->motion.misc / (RINGSWITCH_FRAMES / 2);
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         ring->motion.camera_pitch_target = 0;
         g_InvRing_Source[RT_OPTION].count = ring->number_of_objects;
         g_InvRing_Source[RT_OPTION].current = ring->current_object;
@@ -658,7 +666,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         Option_Shutdown(inv_item);
         Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
-        InvRing_MotionSetup(ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
+        InvRing_MotionSetup(
+            ring, RNG_DESELECTING, RNG_OPEN, M_SELECTING_FRAMES);
         InvRing_MotionRotation(
             ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
         g_Input = (INPUT_STATE) {};
@@ -674,7 +683,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     inv_item->object_id = O_PASSPORT_CLOSED;
                     inv_item->current_frame = 0;
                 }
-                ring->motion.count = SELECTING_FRAMES;
+                ring->motion.count = M_SELECTING_FRAMES;
                 ring->motion.status = ring->motion.status_target;
                 InvRing_MotionItemDeselect(ring, inv_item);
                 break;
@@ -695,7 +704,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
                 Fader_Init(
                     &ring->back_fader, FADER_ANY, FADER_TRANSPARENT,
-                    INV_RING_FADE_TIME_FAST);
+                    M_INV_RING_FADE_TIME_FAST);
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -781,11 +790,11 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     m_StartLevel = -1;
 
     if (mode == INV_TITLE_MODE) {
-        g_InvRing_Source[RT_OPTION].count = TITLE_RING_OBJECTS;
+        g_InvRing_Source[RT_OPTION].count = M_TITLE_RING_OBJECTS;
         InvRing_ShowVersionText();
         Savegame_ScanSavedGames();
     } else {
-        g_InvRing_Source[RT_OPTION].count = OPTION_RING_OBJECTS;
+        g_InvRing_Source[RT_OPTION].count = M_OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();
     }
 
@@ -856,12 +865,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Output_LoadBackgroundFromFile(g_GameFlow.main_menu_background_path);
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
-            INV_RING_FADE_TIME_FAST);
+            M_INV_RING_FADE_TIME_FAST);
     } else {
         Output_UnloadBackground();
         Fader_Init(
             &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
-            INV_RING_FADE_TIME_FAST);
+            M_INV_RING_FADE_TIME_FAST);
     }
 
     return ring;

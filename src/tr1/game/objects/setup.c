@@ -4,6 +4,8 @@
 
 #include <libtrx/config.h>
 
+#define M_DEFAULT_RADIUS 10
+
 static void M_SetupLara(void);
 static void M_SetupLaraExtra(void);
 static void M_DisableObject(GAME_OBJECT_ID obj_id);
@@ -66,7 +68,7 @@ void Object_SetupAllObjects(void)
         obj->floor_height_func = nullptr;
         obj->is_usable_func = nullptr;
         obj->pivot_length = 0;
-        obj->radius = DEFAULT_RADIUS;
+        obj->radius = M_DEFAULT_RADIUS;
         obj->shadow_size = 0;
         obj->hit_points = DONT_TARGET;
         obj->enable_interpolation = true;
