@@ -10,9 +10,6 @@
 #define LOT_SLOT_COUNT 32
 #define MAX_SECRETS 16
 
-#define CAM_A_HANG 0
-#define CAM_E_HANG (-60 * DEG_1) // = -10920
-#define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
 #define DEFAULT_RADIUS 10
 
 #define MAX_WIBBLE 2
