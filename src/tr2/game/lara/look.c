@@ -41,7 +41,8 @@ void Lara_LookLeftRight(void)
             g_Lara.head_rot.y += HEAD_TURN;
     }
 
-    if (g_Lara.gun_status != LGS_HANDS_BUSY && g_Lara.skidoo == NO_ITEM) {
+    if (g_Lara.gun_status != LGS_HANDS_BUSY
+        && g_Lara.vehicle_item_num == NO_ITEM) {
         g_Lara.torso_rot.y = g_Lara.head_rot.y;
     }
 }

@@ -116,10 +116,10 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
     case O_LARA_EXTRA: {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         if (lara == nullptr || lara->item_num == NO_ITEM
-            || lara->skidoo == NO_ITEM) {
+            || lara->vehicle_item_num == NO_ITEM) {
             break;
         }
-        return M_GetItemMaxDelta(Item_Get(lara->skidoo));
+        return M_GetItemMaxDelta(Item_Get(lara->vehicle_item_num));
     }
 #endif
 
@@ -314,7 +314,8 @@ static void M_InterpolateItems(const double ratio)
         ITEM *const item = Item_Get(i);
 #if TR_VERSION == 2
         const LARA_INFO *const lara = Lara_GetLaraInfo();
-        const bool is_mounted = lara != nullptr && (i == lara->skidoo);
+        const bool is_mounted =
+            lara != nullptr && (i == lara->vehicle_item_num);
 #else
         const bool is_mounted = false;
 #endif

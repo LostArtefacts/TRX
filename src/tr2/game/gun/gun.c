@@ -47,7 +47,8 @@ void Gun_Control(void)
 
         if (g_Lara.request_gun_type != g_Lara.gun_type || g_Input.draw) {
             if (g_Lara.request_gun_type == LGT_FLARE
-                || (g_Lara.skidoo == NO_ITEM && g_Lara.water_status != LWS_CHEAT
+                || (g_Lara.vehicle_item_num == NO_ITEM
+                    && g_Lara.water_status != LWS_CHEAT
                     && (g_Lara.request_gun_type == LGT_HARPOON
                         || g_Lara.water_status == LWS_ABOVE_WATER
                         || (g_Lara.water_status == LWS_WADE
@@ -98,7 +99,7 @@ void Gun_Control(void)
     switch (g_Lara.gun_status) {
     case LGS_ARMLESS:
         if (g_Lara.gun_type == LGT_FLARE) {
-            if (g_Lara.skidoo != NO_ITEM
+            if (g_Lara.vehicle_item_num != NO_ITEM
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state)) {
                 if (!g_Lara.flare_control_left) {
                     g_Lara.left_arm.frame_num = LF_FL_2_HOLD;
@@ -119,7 +120,7 @@ void Gun_Control(void)
 
     case LGS_HANDS_BUSY:
         if (g_Lara.gun_type == LGT_FLARE) {
-            g_Lara.flare_control_left = g_Lara.skidoo != NO_ITEM
+            g_Lara.flare_control_left = g_Lara.vehicle_item_num != NO_ITEM
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state);
             Flare_DoInHand(g_Lara.flare_age);
             Flare_SetArm(g_Lara.left_arm.frame_num);

@@ -298,7 +298,8 @@ void Flare_Undraw(void)
 
     g_Lara.flare_control_left = 1;
 
-    if (g_LaraItem->goal_anim_state == LS_STOP && g_Lara.skidoo == NO_ITEM) {
+    if (g_LaraItem->goal_anim_state == LS_STOP
+        && g_Lara.vehicle_item_num == NO_ITEM) {
         if (Item_TestAnimEqual(g_LaraItem, LA_STAND_IDLE)) {
             Item_SwitchToAnim(g_LaraItem, LA_FLARE_THROW, frame_num_1);
             g_Lara.flare_frame = g_LaraItem->frame_num;
@@ -326,7 +327,8 @@ void Flare_Undraw(void)
             g_Lara.flare_frame = frame_num_2 + 1;
         }
     } else if (
-        g_LaraItem->current_anim_state == LS_STOP && g_Lara.skidoo == -1) {
+        g_LaraItem->current_anim_state == LS_STOP
+        && g_Lara.vehicle_item_num == -1) {
         Item_SwitchToAnim(g_LaraItem, LA_STAND_STILL, 0);
     }
 

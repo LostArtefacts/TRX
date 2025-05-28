@@ -98,7 +98,7 @@ typedef struct {
     int16_t current_active;
     int16_t hit_effect_count;
     int16_t flare_age;
-    int16_t skidoo;
+    int16_t vehicle_item_num;
     int16_t gun_item_num;
     GAME_OBJECT_ID back_gun;
     int16_t flare_frame;

@@ -64,7 +64,7 @@ static void M_Control1(const int16_t item_num)
         return;
     }
 
-    if (g_Lara.skidoo != NO_ITEM) {
+    if (g_Lara.vehicle_item_num != NO_ITEM) {
         if (Lara_IsNearItem(&item->pos, 512)) {
             Window_Smash(item_num);
         }

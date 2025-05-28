@@ -35,8 +35,8 @@ static void M_Control(const int16_t item_num)
         }
 
         const LARA_INFO *const lara = Lara_GetLaraInfo();
-        if (lara->skidoo != NO_ITEM) {
-            ITEM *const skidoo = Item_Get(lara->skidoo);
+        if (lara->vehicle_item_num != NO_ITEM) {
+            ITEM *const skidoo = Item_Get(lara->vehicle_item_num);
             if (skidoo->object_id != O_SKIDOO_FAST
                 && skidoo->object_id != O_SKIDOO_ARMED) {
                 return;

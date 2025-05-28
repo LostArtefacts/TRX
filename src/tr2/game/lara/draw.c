@@ -58,7 +58,7 @@ void Lara_Draw(const ITEM *const item)
         hit_frame == nullptr ? frames[0] : hit_frame;
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (g_Lara.skidoo == NO_ITEM) {
+    if (g_Lara.vehicle_item_num == NO_ITEM) {
         Output_InsertShadow(obj->shadow_size, &frame->bounds, item);
     }
 
@@ -289,7 +289,7 @@ void Lara_Draw_I(
     const OBJECT *const obj = Object_Get(item->object_id);
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
-    if (g_Lara.skidoo == NO_ITEM) {
+    if (g_Lara.vehicle_item_num == NO_ITEM) {
         Output_InsertShadow(obj->shadow_size, bounds, item);
     }
 
