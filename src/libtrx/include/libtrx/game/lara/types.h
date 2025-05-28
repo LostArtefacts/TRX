@@ -32,7 +32,7 @@ typedef struct {
 #if TR_VERSION == 1
 typedef struct {
     int16_t item_num;
-    int16_t gun_status;
+    LARA_GUN_STATE gun_status;
     LARA_GUN_TYPE gun_type;
     LARA_GUN_TYPE request_gun_type;
     LARA_GUN_TYPE holsters_gun_type;
@@ -82,7 +82,7 @@ typedef struct {
 #elif TR_VERSION == 2
 typedef struct {
     int16_t item_num;
-    int16_t gun_status;
+    LARA_GUN_STATE gun_status;
     int16_t gun_type;
     int16_t request_gun_type;
     int16_t last_gun_type;
