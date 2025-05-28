@@ -148,7 +148,7 @@ void Lara_Draw(const ITEM *const item)
 
         Matrix_Push();
         Matrix_TranslateRel32(bone[10].pos);
-        if (g_Lara.flare_control_left) {
+        if (g_Lara.flare_control) {
             const ANIM *const anim = Anim_GetAnim(g_Lara.left_arm.anim_num);
             mesh_rots =
                 g_Lara.left_arm
@@ -386,7 +386,7 @@ void Lara_Draw_I(
 
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[10].pos);
-        if (g_Lara.flare_control_left) {
+        if (g_Lara.flare_control) {
             const ANIM *const anim = Anim_GetAnim(g_Lara.left_arm.anim_num);
             mesh_rots_1 =
                 g_Lara.left_arm
