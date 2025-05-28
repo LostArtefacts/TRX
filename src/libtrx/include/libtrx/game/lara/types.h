@@ -25,13 +25,11 @@ typedef struct {
     } interp;
 } LARA_ARM;
 
-#if TR_VERSION == 1
 typedef struct {
     int32_t ammo;
-    int32_t hit;
-    int32_t miss;
 } AMMO_INFO;
 
+#if TR_VERSION == 1
 typedef struct {
     int16_t item_num;
     int16_t gun_status;
@@ -82,10 +80,6 @@ typedef struct {
 } LARA_INFO;
 
 #elif TR_VERSION == 2
-typedef struct {
-    int32_t ammo;
-} AMMO_INFO;
-
 typedef struct {
     int16_t item_num;
     int16_t gun_status;
