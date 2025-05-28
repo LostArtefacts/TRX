@@ -137,19 +137,19 @@ static void M_WaterCurrent(COLL_INFO *coll)
     coll->facing = (int16_t)Math_Atan(
         item->pos.z - coll->old.z, item->pos.x - coll->old.x);
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
-        item->room_num, UW_HEIGHT);
+        coll, item->pos.x, item->pos.y + LARA_HEIGHT_UW / 2, item->pos.z,
+        item->room_num, LARA_HEIGHT_UW);
 
     if (coll->coll_type == COLL_FRONT) {
         if (item->rot.x > 35 * DEG_1) {
-            item->rot.x += UW_WALLDEFLECT;
+            item->rot.x += LARA_UW_WALL_DEFLECT;
         } else if (item->rot.x < -35 * DEG_1) {
-            item->rot.x -= UW_WALLDEFLECT;
+            item->rot.x -= LARA_UW_WALL_DEFLECT;
         } else {
             item->fall_speed = 0;
         }
     } else if (coll->coll_type == COLL_TOP) {
-        item->rot.x -= UW_WALLDEFLECT;
+        item->rot.x -= LARA_UW_WALL_DEFLECT;
     } else if (coll->coll_type == COLL_TOP_FRONT) {
         item->fall_speed = 0;
     } else if (coll->coll_type == COLL_LEFT) {
@@ -160,7 +160,7 @@ static void M_WaterCurrent(COLL_INFO *coll)
 
     if (coll->side_mid.floor < 0) {
         item->pos.y += coll->side_mid.floor;
-        item->rot.x += UW_WALLDEFLECT;
+        item->rot.x += LARA_UW_WALL_DEFLECT;
     }
     Lara_ShiftCol(coll);
 
@@ -240,7 +240,7 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
     coll->old_anim_state = item->current_anim_state;
     coll->old_anim_num = item->anim_num;
     coll->old_frame_num = item->frame_num;
-    coll->radius = LARA_RAD;
+    coll->radius = LARA_RADIUS;
 
     coll->lava_is_pit = 0;
     coll->slopes_are_walls = 0;
@@ -314,7 +314,7 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
-    coll->radius = SURF_RADIUS;
+    coll->radius = LARA_RADIUS_SURF;
     coll->slopes_are_walls = 0;
     coll->slopes_are_pits = 0;
     coll->lava_is_pit = 0;
@@ -374,12 +374,12 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
 void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -UW_HEIGHT;
-    coll->bad_ceiling = UW_HEIGHT;
+    coll->bad_neg = -LARA_HEIGHT_UW;
+    coll->bad_ceiling = LARA_HEIGHT_UW;
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
-    coll->radius = UW_RADIUS;
+    coll->radius = LARA_RADIUS_UW;
     coll->slopes_are_walls = 0;
     coll->slopes_are_pits = 0;
     coll->lava_is_pit = 0;

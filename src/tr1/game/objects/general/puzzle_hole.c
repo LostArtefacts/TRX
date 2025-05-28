@@ -11,7 +11,7 @@
 static XYZ_32 m_PuzzleHolePosition = {
     .x = 0,
     .y = 0,
-    .z = WALL_L / 2 - LARA_RAD - 85,
+    .z = WALL_L / 2 - LARA_RADIUS - 85,
 };
 
 static const OBJECT_BOUNDS m_PuzzleHoleBounds = {

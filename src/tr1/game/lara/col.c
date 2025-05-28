@@ -406,7 +406,7 @@ void Lara_Col_Death(ITEM *item, COLL_INFO *coll)
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
-    coll->radius = LARA_RAD * 4;
+    coll->radius = LARA_RADIUS * 4;
     Lara_GetCollisionInfo(item, coll);
 
     Lara_ShiftCol(coll);

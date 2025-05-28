@@ -284,7 +284,7 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
-    coll->radius = LARA_RADIUS;
+    coll->radius = LARA_RADIUS_SURF;
 
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEP_L / 2;
@@ -531,7 +531,7 @@ void Lara_Control(const int16_t item_num)
                 item->pos.y += 1 - water_height_diff;
                 item->rot.z = 0;
                 item->rot.x = 0;
-                g_Lara.dive_timer = 11;
+                g_Lara.dive_timer = LARA_DIVE_WAIT + 1;
                 g_Lara.torso_rot.y = 0;
                 g_Lara.torso_rot.x = 0;
                 g_Lara.head_rot.y = 0;

@@ -25,7 +25,7 @@ typedef enum {
 
 static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
     .shift = {
-        .min = { .x = -300, .y = 0, .z = -WALL_L / 2 - (LARA_RAD + 80), },
+        .min = { .x = -300, .y = 0, .z = -WALL_L / 2 - (LARA_RADIUS + 80), },
         .max = { .x = +300, .y = 0, .z = -WALL_L / 2, },
     },
     .rot = {
@@ -212,7 +212,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
     z = g_LaraItem->pos.z + z_add;
     room_num = g_LaraItem->room_num;
     sector = Room_GetSector(x, y, z, &room_num);
-    coll.radius = LARA_RAD;
+    coll.radius = LARA_RADIUS;
     coll.quadrant = (quadrant + 2) & 3;
     if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
         return false;
@@ -392,19 +392,19 @@ static void M_Collision(
         switch (quadrant) {
         case DIR_NORTH:
             lara_item->pos.z &= -WALL_L;
-            lara_item->pos.z += WALL_L - LARA_RAD;
+            lara_item->pos.z += WALL_L - LARA_RADIUS;
             break;
         case DIR_SOUTH:
             lara_item->pos.z &= -WALL_L;
-            lara_item->pos.z += LARA_RAD;
+            lara_item->pos.z += LARA_RADIUS;
             break;
         case DIR_EAST:
             lara_item->pos.x &= -WALL_L;
-            lara_item->pos.x += WALL_L - LARA_RAD;
+            lara_item->pos.x += WALL_L - LARA_RADIUS;
             break;
         case DIR_WEST:
             lara_item->pos.x &= -WALL_L;
-            lara_item->pos.x += LARA_RAD;
+            lara_item->pos.x += LARA_RADIUS;
             break;
         default:
             break;
