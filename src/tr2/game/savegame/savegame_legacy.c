@@ -318,7 +318,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->hit_frame = M_ReadS16();
     lara->hit_direction = M_ReadS16();
     lara->air = M_ReadS16();
-    lara->dive_count = M_ReadS16();
+    lara->dive_timer = M_ReadS16();
     lara->death_timer = M_ReadS16();
     lara->current_active = M_ReadS16();
     lara->hit_effect_count = M_ReadS16();
@@ -576,7 +576,7 @@ static void M_WriteLara(const LARA_INFO *const lara)
     M_WriteS16(lara->hit_frame);
     M_WriteS16(lara->hit_direction);
     M_WriteS16(lara->air);
-    M_WriteS16(lara->dive_count);
+    M_WriteS16(lara->dive_timer);
     M_WriteS16(lara->death_timer);
     M_WriteS16(lara->current_active);
     M_WriteS16(lara->hit_effect_count);
