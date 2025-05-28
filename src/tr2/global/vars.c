@@ -49,7 +49,6 @@ float g_FltWinRight;
 int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
-uint16_t g_SoundOptionLine;
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 
@@ -165,6 +164,5 @@ WEAPON_INFO g_Weapons[] = {
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
 int32_t g_GF_LaraStartAnim;
-int32_t g_GF_ScriptVersion;
 
 XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
