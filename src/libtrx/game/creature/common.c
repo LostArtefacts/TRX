@@ -954,7 +954,7 @@ void Creature_SpecialKill(
     lara_item->goal_anim_state = lara_kill_state;
     lara_item->current_anim_state = lara_kill_state;
 #if TR_VERSION == 2
-    lara->extra_anim = 1;
+    lara->extra_anim = true;
 #endif
     lara->gun_status = LGS_HANDS_BUSY;
     lara->gun_type = LGT_UNARMED;

@@ -110,7 +110,7 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
         lara_item->current_anim_state = LA_EXTRA_BREATH;
         lara_item->goal_anim_state = LA_EXTRA_AIRLOCK;
         Item_Animate(lara_item);
-        g_Lara.extra_anim = 1;
+        g_Lara.extra_anim = true;
         break;
 
     case O_SWITCH_TYPE_SMALL:

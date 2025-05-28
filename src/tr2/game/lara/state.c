@@ -722,7 +722,7 @@ void Lara_State_Extra_Breath(ITEM *item, COLL_INFO *coll)
     Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
     item->goal_anim_state = LS_STOP;
     item->current_anim_state = LS_STOP;
-    g_Lara.extra_anim = 0;
+    g_Lara.extra_anim = false;
     g_Lara.gun_status = LGS_ARMLESS;
     if (g_Camera.type != CAM_HEAVY) {
         g_Camera.type = CAM_CHASE;
