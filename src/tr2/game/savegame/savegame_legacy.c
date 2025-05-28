@@ -324,7 +324,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->hit_effect_count = M_ReadS16();
     lara->flare_age = M_ReadS16();
     lara->skidoo = M_ReadS16();
-    lara->weapon_item = M_ReadS16();
+    lara->gun_item_num = M_ReadS16();
     lara->back_gun = Object_UnmapGameID(M_ReadS16());
     lara->flare_frame = M_ReadS16();
 
@@ -582,7 +582,7 @@ static void M_WriteLara(const LARA_INFO *const lara)
     M_WriteS16(lara->hit_effect_count);
     M_WriteS16(lara->flare_age);
     M_WriteS16(lara->skidoo);
-    M_WriteS16(lara->weapon_item);
+    M_WriteS16(lara->gun_item_num);
     M_WriteS16(Object_MakeGameID(lara->back_gun));
     M_WriteS16(lara->flare_frame);
 
@@ -784,8 +784,8 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     M_WriteItems();
     M_WriteLara(&g_Lara);
 
-    if (g_Lara.weapon_item != NO_ITEM) {
-        const ITEM *const weapon_item = Item_Get(g_Lara.weapon_item);
+    if (g_Lara.gun_item_num != NO_ITEM) {
+        const ITEM *const weapon_item = Item_Get(g_Lara.gun_item_num);
         M_WriteS16(weapon_item->object_id);
         M_WriteS16(weapon_item->anim_num);
         M_WriteS16(weapon_item->frame_num);
@@ -864,10 +864,10 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_ReadItems();
     M_ReadLara(&g_Lara);
 
-    if (g_Lara.weapon_item != NO_ITEM) {
-        g_Lara.weapon_item = Item_Create();
+    if (g_Lara.gun_item_num != NO_ITEM) {
+        g_Lara.gun_item_num = Item_Create();
 
-        ITEM *const weapon_item = Item_Get(g_Lara.weapon_item);
+        ITEM *const weapon_item = Item_Get(g_Lara.gun_item_num);
         weapon_item->object_id = Object_UnmapGameID(M_ReadS16());
         weapon_item->anim_num = M_ReadS16();
         weapon_item->frame_num = M_ReadS16();

@@ -91,7 +91,7 @@ static void M_ResetGunStatus(void)
     g_Lara.gun_status = LGS_ARMLESS;
     g_Lara.gun_type = LGT_UNARMED;
     g_Lara.request_gun_type = LGT_UNARMED;
-    g_Lara.weapon_item = NO_ITEM;
+    g_Lara.gun_item_num = NO_ITEM;
     g_Lara.gun_status = LGS_ARMLESS;
     g_Lara.left_arm.frame_num = 0;
     g_Lara.left_arm.lock = 0;
@@ -193,7 +193,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         g_Lara.torso_rot.y = 0;
     }
 
-    if (g_Lara.weapon_item != NO_ITEM) {
+    if (g_Lara.gun_item_num != NO_ITEM) {
         g_Lara.gun_status = LGS_UNDRAW;
     } else {
         g_Lara.gun_status = LGS_ARMLESS;

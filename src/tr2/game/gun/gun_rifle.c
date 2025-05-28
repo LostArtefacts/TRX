@@ -245,11 +245,11 @@ void Gun_Rifle_FireGrenade(void)
 void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
 {
     ITEM *item;
-    if (g_Lara.weapon_item != NO_ITEM) {
-        item = Item_Get(g_Lara.weapon_item);
+    if (g_Lara.gun_item_num != NO_ITEM) {
+        item = Item_Get(g_Lara.gun_item_num);
     } else {
-        g_Lara.weapon_item = Item_Create();
-        item = Item_Get(g_Lara.weapon_item);
+        g_Lara.gun_item_num = Item_Create();
+        item = Item_Get(g_Lara.gun_item_num);
         item->object_id = Gun_GetWeaponAnim(weapon_type);
         if (weapon_type == LGT_GRENADE) {
             Item_SwitchToObjAnim(item, 0, 0, O_LARA_GRENADE);
@@ -285,7 +285,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
 {
-    ITEM *const item = Item_Get(g_Lara.weapon_item);
+    ITEM *const item = Item_Get(g_Lara.gun_item_num);
     if (g_Lara.water_status == LWS_SURFACE) {
         item->goal_anim_state = LA_G_SURF_UNDRAW;
     } else {
@@ -294,8 +294,8 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
     M_AnimateGun(item);
 
     if (item->status == IS_DEACTIVATED) {
-        Item_Kill(g_Lara.weapon_item);
-        g_Lara.weapon_item = NO_ITEM;
+        Item_Kill(g_Lara.gun_item_num);
+        g_Lara.gun_item_num = NO_ITEM;
         g_Lara.gun_status = LGS_ARMLESS;
         g_Lara.target = nullptr;
         g_Lara.left_arm.frame_num = 0;
@@ -319,7 +319,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
 void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
 {
     const bool running = weapon_type == LGT_M16 && g_LaraItem->speed != 0;
-    ITEM *const item = Item_Get(g_Lara.weapon_item);
+    ITEM *const item = Item_Get(g_Lara.gun_item_num);
 
     switch (item->current_anim_state) {
     case LA_G_AIM:

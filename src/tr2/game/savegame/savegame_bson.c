@@ -1146,9 +1146,9 @@ static JSON_OBJECT *M_DumpLara(void)
         lara_obj, "grenade", M_DumpAmmo(&lara->grenade_ammo));
     JSON_ObjectAppendObject(lara_obj, "m16", M_DumpAmmo(&lara->m16_ammo));
 
-    if (lara->weapon_item != NO_ITEM) {
+    if (lara->gun_item_num != NO_ITEM) {
         JSON_OBJECT *const weapon_obj = JSON_ObjectNew();
-        const ITEM *const weapon_item = Item_Get(lara->weapon_item);
+        const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         JSON_ObjectAppendInt(
             weapon_obj, "obj_id", Object_MakeGameID(weapon_item->object_id));
         JSON_ObjectAppendInt(weapon_obj, "anim_num", weapon_item->anim_num);
@@ -1302,8 +1302,8 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     const JSON_OBJECT *const weapon_obj =
         JSON_ObjectGetObject(lara_obj, "weapon");
     if (weapon_obj != nullptr) {
-        lara->weapon_item = Item_Create();
-        ITEM *const weapon_item = Item_Get(lara->weapon_item);
+        lara->gun_item_num = Item_Create();
+        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         weapon_item->object_id = Object_UnmapGameID(
             JSON_ObjectGetInt(weapon_obj, "obj_id", weapon_item->object_id));
         weapon_item->anim_num =
