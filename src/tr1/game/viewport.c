@@ -8,6 +8,8 @@
 #include <libtrx/config.h>
 #include <libtrx/game/math.h>
 
+#define M_INITIAL_FOV 65
+
 static int32_t m_MinX = 0;
 static int32_t m_MinY = 0;
 static int32_t m_CenterX = 0;
@@ -16,7 +18,7 @@ static int32_t m_MaxX = 0;
 static int32_t m_MaxY = 0;
 static int32_t m_Width = 0;
 static int32_t m_Height = 0;
-static int16_t m_CurrentFOV = PASSPORT_FOV;
+static int16_t m_CurrentFOV = M_INITIAL_FOV;
 
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
