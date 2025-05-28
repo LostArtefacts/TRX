@@ -1027,7 +1027,7 @@ void Lara_State_SurfTread(ITEM *item, COLL_INFO *coll)
 
     if (g_Input.jump) {
         g_Lara.dive_timer++;
-        if (g_Lara.dive_timer == 10) {
+        if (g_Lara.dive_timer == LARA_DIVE_WAIT) {
             Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;

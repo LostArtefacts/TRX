@@ -5,7 +5,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-static XYZ_32 m_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
+static XYZ_32 m_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RADIUS - 50 };
 
 static const OBJECT_BOUNDS m_KeyHoleBounds = {
     .shift = {

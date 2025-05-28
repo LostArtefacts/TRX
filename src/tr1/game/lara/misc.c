@@ -195,10 +195,10 @@ bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
 
     if (coll->coll_type == COLL_LEFT) {
         Lara_ShiftCol(coll);
-        item->rot.y += LARA_DEF_ADD_EDGE;
+        item->rot.y += LARA_DEFLECT_ANGLE;
     } else if (coll->coll_type == COLL_RIGHT) {
         Lara_ShiftCol(coll);
-        item->rot.y -= LARA_DEF_ADD_EDGE;
+        item->rot.y -= LARA_DEFLECT_ANGLE;
     }
     return false;
 }
@@ -208,11 +208,11 @@ void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
     Lara_ShiftCol(coll);
     switch (coll->coll_type) {
     case COLL_LEFT:
-        item->rot.y += LARA_DEF_ADD_EDGE;
+        item->rot.y += LARA_DEFLECT_ANGLE;
         break;
 
     case COLL_RIGHT:
-        item->rot.y -= LARA_DEF_ADD_EDGE;
+        item->rot.y -= LARA_DEFLECT_ANGLE;
         break;
 
     case COLL_FRONT:
@@ -250,11 +250,11 @@ void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
     Lara_ShiftCol(coll);
     switch (coll->coll_type) {
     case COLL_LEFT:
-        item->rot.y += LARA_DEF_ADD_EDGE;
+        item->rot.y += LARA_DEFLECT_ANGLE;
         break;
 
     case COLL_RIGHT:
-        item->rot.y -= LARA_DEF_ADD_EDGE;
+        item->rot.y -= LARA_DEFLECT_ANGLE;
         break;
 
     case COLL_TOP:
@@ -285,16 +285,19 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
     }
 
     PHD_ANGLE angle = item->rot.y;
-    if (angle >= 0 - VAULT_ANGLE && angle <= 0 + VAULT_ANGLE) {
+    if (angle >= 0 - LARA_VAULT_ANGLE && angle <= 0 + LARA_VAULT_ANGLE) {
         angle = 0;
-    } else if (angle >= DEG_90 - VAULT_ANGLE && angle <= DEG_90 + VAULT_ANGLE) {
+    } else if (
+        angle >= DEG_90 - LARA_VAULT_ANGLE
+        && angle <= DEG_90 + LARA_VAULT_ANGLE) {
         angle = DEG_90;
     } else if (
-        angle >= (DEG_180 - 1) - VAULT_ANGLE
-        || angle <= -(DEG_180 - 1) + VAULT_ANGLE) {
+        angle >= (DEG_180 - 1) - LARA_VAULT_ANGLE
+        || angle <= -(DEG_180 - 1) + LARA_VAULT_ANGLE) {
         angle = -DEG_180;
     } else if (
-        angle >= -DEG_90 - VAULT_ANGLE && angle <= -DEG_90 + VAULT_ANGLE) {
+        angle >= -DEG_90 - LARA_VAULT_ANGLE
+        && angle <= -DEG_90 + LARA_VAULT_ANGLE) {
         angle = -DEG_90;
     }
 
@@ -371,15 +374,19 @@ bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
     }
 
     PHD_ANGLE angle = item->rot.y;
-    if (angle >= -HANG_ANGLE && angle <= HANG_ANGLE) {
+    if (angle >= -LARA_HANG_ANGLE && angle <= LARA_HANG_ANGLE) {
         angle = 0;
-    } else if (angle >= DEG_90 - HANG_ANGLE && angle <= DEG_90 + HANG_ANGLE) {
+    } else if (
+        angle >= DEG_90 - LARA_HANG_ANGLE
+        && angle <= DEG_90 + LARA_HANG_ANGLE) {
         angle = DEG_90;
     } else if (
-        angle >= (DEG_180 - 1) - HANG_ANGLE
-        || angle <= -(DEG_180 - 1) + HANG_ANGLE) {
+        angle >= (DEG_180 - 1) - LARA_HANG_ANGLE
+        || angle <= -(DEG_180 - 1) + LARA_HANG_ANGLE) {
         angle = -DEG_180;
-    } else if (angle >= -DEG_90 - HANG_ANGLE && angle <= -DEG_90 + HANG_ANGLE) {
+    } else if (
+        angle >= -DEG_90 - LARA_HANG_ANGLE
+        && angle <= -DEG_90 + LARA_HANG_ANGLE) {
         angle = -DEG_90;
     }
 
@@ -462,15 +469,19 @@ bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
     }
 
     PHD_ANGLE angle = item->rot.y;
-    if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
+    if (angle >= 0 - LARA_HANG_ANGLE && angle <= 0 + LARA_HANG_ANGLE) {
         angle = 0;
-    } else if (angle >= DEG_90 - HANG_ANGLE && angle <= DEG_90 + HANG_ANGLE) {
+    } else if (
+        angle >= DEG_90 - LARA_HANG_ANGLE
+        && angle <= DEG_90 + LARA_HANG_ANGLE) {
         angle = DEG_90;
     } else if (
-        angle >= (DEG_180 - 1) - HANG_ANGLE
-        || angle <= -(DEG_180 - 1) + HANG_ANGLE) {
+        angle >= (DEG_180 - 1) - LARA_HANG_ANGLE
+        || angle <= -(DEG_180 - 1) + LARA_HANG_ANGLE) {
         angle = -DEG_180;
-    } else if (angle >= -DEG_90 - HANG_ANGLE && angle <= -DEG_90 + HANG_ANGLE) {
+    } else if (
+        angle >= -DEG_90 - LARA_HANG_ANGLE
+        && angle <= -DEG_90 + LARA_HANG_ANGLE) {
         angle = -DEG_90;
     }
 
@@ -576,12 +587,12 @@ void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
 
-    int32_t obj_height = SURF_HEIGHT;
+    int32_t obj_height = LARA_HEIGHT_SURF;
     if (g_Config.gameplay.enable_wading) {
         obj_height += 100;
     }
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
+        coll, item->pos.x, item->pos.y + LARA_HEIGHT_SURF, item->pos.z,
         item->room_num, obj_height);
 
     Lara_ShiftCol(coll);
@@ -727,7 +738,7 @@ bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA_WADE, 0);
     }
 
-    item->pos.y += coll->side_front.floor + SURF_HEIGHT - 5;
+    item->pos.y += coll->side_front.floor + LARA_HEIGHT_SURF - 5;
     Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
     item->gravity = false;
     item->rot.x = 0;
@@ -754,12 +765,12 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
         return false;
     }
 
-    const int32_t hdif = coll->side_front.floor + SURF_HEIGHT;
-    if (hdif <= -STEP_L * 2 || hdif > SURF_HEIGHT - STEPUP_HEIGHT) {
+    const int32_t hdif = coll->side_front.floor + LARA_HEIGHT_SURF;
+    if (hdif <= -STEP_L * 2 || hdif > LARA_HEIGHT_SURF - STEPUP_HEIGHT) {
         return false;
     }
 
-    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, HANG_ANGLE);
+    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
     if (dir == DIR_UNKNOWN) {
         return false;
     }
@@ -769,16 +780,16 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
 
     switch (dir) {
     case DIR_NORTH:
-        item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RAD;
+        item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RADIUS;
         break;
     case DIR_WEST:
-        item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RAD;
+        item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RADIUS;
         break;
     case DIR_SOUTH:
-        item->pos.z = (item->pos.z & -WALL_L) - LARA_RAD;
+        item->pos.z = (item->pos.z & -WALL_L) - LARA_RADIUS;
         break;
     case DIR_EAST:
-        item->pos.x = (item->pos.x & -WALL_L) - LARA_RAD;
+        item->pos.x = (item->pos.x & -WALL_L) - LARA_RADIUS;
         break;
     case DIR_UNKNOWN:
         return false;
@@ -826,7 +837,7 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
         CLAMPL(height, 200);
         coll->bad_neg = -height;
     } else {
-        height = UW_HEIGHT;
+        height = LARA_HEIGHT_UW;
     }
 
     Collide_GetCollisionInfo(
@@ -837,11 +848,11 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
     switch (coll->coll_type) {
     case COLL_FRONT:
         if (item->rot.x > 35 * DEG_1) {
-            item->rot.x = item->rot.x + UW_WALLDEFLECT;
+            item->rot.x = item->rot.x + LARA_UW_WALL_DEFLECT;
             break;
         }
         if (item->rot.x < -35 * DEG_1) {
-            item->rot.x = item->rot.x - UW_WALLDEFLECT;
+            item->rot.x = item->rot.x - LARA_UW_WALL_DEFLECT;
             break;
         }
         item->fall_speed = 0;
@@ -849,7 +860,7 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
 
     case COLL_TOP:
         if (item->rot.x >= -45 * DEG_1) {
-            item->rot.x -= UW_WALLDEFLECT;
+            item->rot.x -= LARA_UW_WALL_DEFLECT;
         }
         break;
 
@@ -873,7 +884,7 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
 
     if (coll->side_mid.floor < 0) {
         item->pos.y += coll->side_mid.floor;
-        item->rot.x += UW_WALLDEFLECT;
+        item->rot.x += LARA_UW_WALL_DEFLECT;
     }
 
     if (g_Config.gameplay.enable_wading && g_Lara.water_status != LWS_CHEAT) {

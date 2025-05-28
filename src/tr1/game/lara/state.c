@@ -239,7 +239,7 @@ void Lara_State_ForwardJump(ITEM *item, COLL_INFO *coll)
         if (g_Input.slow && g_Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_SWAN_DIVE;
         }
-        if (item->fall_speed > LARA_FASTFALL_SPEED) {
+        if (item->fall_speed > LARA_FAST_FALL_SPEED) {
             item->goal_anim_state = LS_FAST_FALL;
         }
     }
@@ -375,7 +375,7 @@ void Lara_State_Hang(ITEM *item, COLL_INFO *coll)
 void Lara_State_Reach(ITEM *item, COLL_INFO *coll)
 {
     g_Camera.target_angle = 85 * DEG_1;
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
@@ -408,7 +408,7 @@ void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
         }
     }
 
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
@@ -524,7 +524,7 @@ void Lara_State_Slide(ITEM *item, COLL_INFO *coll)
 void Lara_State_BackJump(ITEM *item, COLL_INFO *coll)
 {
     g_Camera.target_angle = DEG_1 * 135;
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     } else if (item->goal_anim_state == LS_RUN) {
         item->goal_anim_state = LS_STOP;
@@ -537,14 +537,14 @@ void Lara_State_BackJump(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_RightJump(ITEM *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
 
 void Lara_State_LeftJump(ITEM *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
@@ -552,15 +552,15 @@ void Lara_State_LeftJump(ITEM *item, COLL_INFO *coll)
 void Lara_State_UpJump(ITEM *item, COLL_INFO *coll)
 {
     if (item->fall_speed
-        > (g_Config.gameplay.enable_swing_cancel ? LARA_SWING_FASTFALL_SPEED
-                                                 : LARA_FASTFALL_SPEED)) {
+        > (g_Config.gameplay.enable_swing_cancel ? LARA_SWING_FAST_FALL_SPEED
+                                                 : LARA_FAST_FALL_SPEED)) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
 
 void Lara_State_FallBack(ITEM *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
     if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS) {
@@ -789,7 +789,7 @@ void Lara_State_SwanDive(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 1;
-    if (item->fall_speed > LARA_FASTFALL_SPEED
+    if (item->fall_speed > LARA_FAST_FALL_SPEED
         && item->goal_anim_state != LS_DIVE) {
         item->goal_anim_state = LS_FAST_DIVE;
     }
@@ -852,8 +852,8 @@ void Lara_State_SurfSwim(ITEM *item, COLL_INFO *coll)
     }
 
     item->fall_speed += 8;
-    if (item->fall_speed > SURF_MAXSPEED) {
-        item->fall_speed = SURF_MAXSPEED;
+    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
+        item->fall_speed = LARA_MAX_SURF_SPEED;
     }
 }
 
@@ -869,9 +869,9 @@ void Lara_State_SurfBack(ITEM *item, COLL_INFO *coll)
 
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
         if (g_Input.left) {
-            item->rot.y -= LARA_SLOW_TURN / 2;
+            item->rot.y -= LARA_SURF_TURN;
         } else if (g_Input.right) {
-            item->rot.y += LARA_SLOW_TURN / 2;
+            item->rot.y += LARA_SURF_TURN;
         }
     }
 
@@ -880,8 +880,8 @@ void Lara_State_SurfBack(ITEM *item, COLL_INFO *coll)
     }
 
     item->fall_speed += 8;
-    if (item->fall_speed > SURF_MAXSPEED) {
-        item->fall_speed = SURF_MAXSPEED;
+    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
+        item->fall_speed = LARA_MAX_SURF_SPEED;
     }
 }
 
@@ -897,16 +897,16 @@ void Lara_State_SurfLeft(ITEM *item, COLL_INFO *coll)
 
     if (g_Config.input.enable_tr3_sidesteps && g_Input.slow && g_Input.left) {
         item->fall_speed += 8;
-        if (item->fall_speed > SURF_MAXSPEED) {
-            item->fall_speed = SURF_MAXSPEED;
+        if (item->fall_speed > LARA_MAX_SURF_SPEED) {
+            item->fall_speed = LARA_MAX_SURF_SPEED;
         }
         return;
     }
 
     if (g_Input.left) {
-        item->rot.y -= LARA_SLOW_TURN / 2;
+        item->rot.y -= LARA_SURF_TURN;
     } else if (g_Input.right) {
-        item->rot.y += LARA_SLOW_TURN / 2;
+        item->rot.y += LARA_SURF_TURN;
     }
 
     if (!g_Input.step_left) {
@@ -914,8 +914,8 @@ void Lara_State_SurfLeft(ITEM *item, COLL_INFO *coll)
     }
 
     item->fall_speed += 8;
-    if (item->fall_speed > SURF_MAXSPEED) {
-        item->fall_speed = SURF_MAXSPEED;
+    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
+        item->fall_speed = LARA_MAX_SURF_SPEED;
     }
 }
 
@@ -931,16 +931,16 @@ void Lara_State_SurfRight(ITEM *item, COLL_INFO *coll)
 
     if (g_Config.input.enable_tr3_sidesteps && g_Input.slow && g_Input.right) {
         item->fall_speed += 8;
-        if (item->fall_speed > SURF_MAXSPEED) {
-            item->fall_speed = SURF_MAXSPEED;
+        if (item->fall_speed > LARA_MAX_SURF_SPEED) {
+            item->fall_speed = LARA_MAX_SURF_SPEED;
         }
         return;
     }
 
     if (g_Input.left) {
-        item->rot.y -= LARA_SLOW_TURN / 2;
+        item->rot.y -= LARA_SURF_TURN;
     } else if (g_Input.right) {
-        item->rot.y += LARA_SLOW_TURN / 2;
+        item->rot.y += LARA_SURF_TURN;
     }
 
     if (!g_Input.step_right) {
@@ -948,8 +948,8 @@ void Lara_State_SurfRight(ITEM *item, COLL_INFO *coll)
     }
 
     item->fall_speed += 8;
-    if (item->fall_speed > SURF_MAXSPEED) {
-        item->fall_speed = SURF_MAXSPEED;
+    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
+        item->fall_speed = LARA_MAX_SURF_SPEED;
     }
 }
 
@@ -1001,7 +1001,7 @@ void Lara_State_SurfTread(ITEM *item, COLL_INFO *coll)
 
     if (g_Input.jump) {
         g_Lara.dive_timer++;
-        if (g_Lara.dive_timer == DIVE_WAIT) {
+        if (g_Lara.dive_timer == LARA_DIVE_WAIT) {
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;
             Item_SwitchToAnim(item, LA_SURF_DIVE, 0);
@@ -1056,11 +1056,11 @@ void Lara_State_Swim(ITEM *item, COLL_INFO *coll)
 
     item->fall_speed += 8;
     if (g_Lara.water_status == LWS_CHEAT) {
-        if (item->fall_speed > UW_MAXSPEED * 2) {
-            item->fall_speed = UW_MAXSPEED * 2;
+        if (item->fall_speed > LARA_MAX_SWIM_SPEED * 2) {
+            item->fall_speed = LARA_MAX_SWIM_SPEED * 2;
         }
-    } else if (item->fall_speed > UW_MAXSPEED) {
-        item->fall_speed = UW_MAXSPEED;
+    } else if (item->fall_speed > LARA_MAX_SWIM_SPEED) {
+        item->fall_speed = LARA_MAX_SWIM_SPEED;
     }
 
     if (!g_Input.jump) {
@@ -1114,12 +1114,12 @@ void Lara_State_Glide(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_SWIM;
     }
 
-    item->fall_speed -= WATER_FRICTION;
+    item->fall_speed -= LARA_UW_FRICTION;
     if (item->fall_speed < 0) {
         item->fall_speed = 0;
     }
 
-    if (item->fall_speed <= (UW_MAXSPEED * 2) / 3) {
+    if (item->fall_speed <= (LARA_MAX_SWIM_SPEED * 2) / 3) {
         item->goal_anim_state = LS_TREAD;
     }
 }
@@ -1173,7 +1173,7 @@ void Lara_State_Tread(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_SWIM;
     }
 
-    item->fall_speed -= WATER_FRICTION;
+    item->fall_speed -= LARA_UW_FRICTION;
     if (item->fall_speed < 0) {
         item->fall_speed = 0;
     }

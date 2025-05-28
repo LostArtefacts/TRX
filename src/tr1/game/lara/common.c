@@ -158,7 +158,7 @@ void Lara_Control(void)
             g_Lara.torso_rot.y = 0;
         } else {
             g_Lara.water_status = LWS_SURFACE;
-            g_Lara.dive_timer = DIVE_WAIT + 1;
+            g_Lara.dive_timer = LARA_DIVE_WAIT + 1;
             item->current_anim_state = LS_SURF_TREAD;
             item->goal_anim_state = LS_SURF_TREAD;
             Item_SwitchToAnim(item, LA_SURF_TREAD, 0);
