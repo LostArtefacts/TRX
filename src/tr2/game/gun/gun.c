@@ -59,7 +59,7 @@ void Gun_Control(void)
                 if (g_Lara.gun_type == LGT_FLARE) {
                     Flare_Create(0);
                     Flare_UndrawMeshes();
-                    g_Lara.flare_control = false;
+                    g_Lara.flare.control = false;
                 }
                 g_Lara.gun_type = g_Lara.request_gun_type;
                 Gun_InitialiseNewWeapon();
@@ -101,9 +101,9 @@ void Gun_Control(void)
         if (g_Lara.gun_type == LGT_FLARE) {
             if (g_Lara.vehicle_item_num != NO_ITEM
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state)) {
-                if (!g_Lara.flare_control) {
+                if (!g_Lara.flare.control) {
                     g_Lara.left_arm.frame_num = LF_FL_2_HOLD;
-                    g_Lara.flare_control = true;
+                    g_Lara.flare.control = true;
                 } else if (g_Lara.left_arm.frame_num != LF_FL_HOLD) {
                     g_Lara.left_arm.frame_num++;
                     if (g_Lara.left_arm.frame_num == LF_FL_END) {
@@ -111,18 +111,18 @@ void Gun_Control(void)
                     }
                 }
             } else {
-                g_Lara.flare_control = false;
+                g_Lara.flare.control = false;
             }
-            Flare_DoInHand(g_Lara.flare_age);
+            Flare_DoInHand(g_Lara.flare.age);
             Flare_SetArm(g_Lara.left_arm.frame_num);
         }
         break;
 
     case LGS_HANDS_BUSY:
         if (g_Lara.gun_type == LGT_FLARE) {
-            g_Lara.flare_control = g_Lara.vehicle_item_num != NO_ITEM
+            g_Lara.flare.control = g_Lara.vehicle_item_num != NO_ITEM
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state);
-            Flare_DoInHand(g_Lara.flare_age);
+            Flare_DoInHand(g_Lara.flare.age);
             Flare_SetArm(g_Lara.left_arm.frame_num);
         }
         break;

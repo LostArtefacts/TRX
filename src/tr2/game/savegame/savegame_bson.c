@@ -1099,17 +1099,17 @@ static JSON_OBJECT *M_DumpLara(void)
     JSON_ObjectAppendInt(lara_obj, "death_count", lara->death_timer);
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);
     JSON_ObjectAppendInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
-    JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare_age);
+    JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare.age);
     JSON_ObjectAppendInt(
         lara_obj, "vehicle_item_number", lara->vehicle_item_num);
     JSON_ObjectAppendInt(
         lara_obj, "back_gun_obj_id", Object_MakeGameID(lara->back_gun));
-    JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare_frame);
+    JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare.frame_num);
     JSON_ObjectAppendInt(lara_obj, "mesh_effects", lara->mesh_effects);
     JSON_ObjectAppendInt(
         lara_obj, "water_surface_dist", lara->water_surface_dist);
 
-    JSON_ObjectAppendBool(lara_obj, "flare_control", lara->flare_control);
+    JSON_ObjectAppendBool(lara_obj, "flare_control", lara->flare.control);
     JSON_ObjectAppendBool(lara_obj, "extra_anim", lara->extra_anim);
     JSON_ObjectAppendBool(lara_obj, "look", lara->enable_look);
     JSON_ObjectAppendBool(lara_obj, "burn", lara->burn);
@@ -1199,20 +1199,20 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
         JSON_ObjectGetInt(lara_obj, "current_active", lara->current_active);
     lara->hit_effect_count =
         JSON_ObjectGetInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
-    lara->flare_age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare_age);
+    lara->flare.age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare.age);
     lara->vehicle_item_num = JSON_ObjectGetInt(
         lara_obj, "vehicle_item_number", lara->vehicle_item_num);
     lara->back_gun = Object_UnmapGameID(
         JSON_ObjectGetInt(lara_obj, "back_gun_obj_id", lara->back_gun));
-    lara->flare_frame =
-        JSON_ObjectGetInt(lara_obj, "flare_frame", lara->flare_frame);
+    lara->flare.frame_num =
+        JSON_ObjectGetInt(lara_obj, "flare_frame", lara->flare.frame_num);
     lara->mesh_effects =
         JSON_ObjectGetInt(lara_obj, "mesh_effects", lara->mesh_effects);
     lara->water_surface_dist = JSON_ObjectGetInt(
         lara_obj, "water_surface_dist", lara->water_surface_dist);
 
-    lara->flare_control =
-        JSON_ObjectGetBool(lara_obj, "flare_control", lara->flare_control);
+    lara->flare.control =
+        JSON_ObjectGetBool(lara_obj, "flare_control", lara->flare.control);
     lara->extra_anim =
         JSON_ObjectGetBool(lara_obj, "extra_anim", lara->extra_anim);
     lara->enable_look = JSON_ObjectGetBool(lara_obj, "look", lara->enable_look);
