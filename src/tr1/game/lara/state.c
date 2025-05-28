@@ -6,12 +6,11 @@
 #include "game/objects/common.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
-#include <libtrx/game/lara/misc.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 
 #include <stdint.h>

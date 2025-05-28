@@ -7,7 +7,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>

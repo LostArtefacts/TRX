@@ -1,5 +1,4 @@
 #include "game/effects.h"
-#include "global/const.h"
 
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects.h>

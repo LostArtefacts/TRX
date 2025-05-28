@@ -1,5 +1,4 @@
 #include "game/objects/common.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/utils.h>

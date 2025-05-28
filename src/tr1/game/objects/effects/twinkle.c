@@ -3,7 +3,6 @@
 #include "game/effects.h"
 #include "game/random.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>

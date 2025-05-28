@@ -1,5 +1,3 @@
-#include "global/const.h"
-
 #include <libtrx/game/objects.h>
 #include <libtrx/game/rooms.h>
 

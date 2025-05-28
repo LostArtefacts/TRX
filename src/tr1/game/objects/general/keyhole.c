@@ -2,8 +2,9 @@
 #include "game/input.h"
 #include "game/lara/common.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
+
+#include <libtrx/game/lara/const.h>
 
 static XYZ_32 m_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RADIUS - 50 };
 

@@ -5,7 +5,6 @@
 #include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 

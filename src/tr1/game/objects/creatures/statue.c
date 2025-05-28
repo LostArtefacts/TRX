@@ -1,6 +1,5 @@
 #include "game/objects/common.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>

@@ -6,7 +6,6 @@
 #include "game/output/sprites.h"
 #include "game/shell.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 

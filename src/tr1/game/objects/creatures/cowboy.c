@@ -1,7 +1,6 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/music.h>

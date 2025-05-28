@@ -4,7 +4,6 @@
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>

@@ -2,7 +2,6 @@
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #define PENDULUM_DAMAGE 100

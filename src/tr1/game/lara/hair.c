@@ -1,7 +1,6 @@
 #include "game/lara/hair.h"
 
 #include "game/output.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 
