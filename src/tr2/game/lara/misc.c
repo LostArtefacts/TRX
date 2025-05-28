@@ -1664,7 +1664,7 @@ void Lara_CatchFire(void)
     effect->frame_num = 0;
     effect->object_id = O_FLAME;
     effect->counter = -1;
-    g_Lara.burn = 1;
+    g_Lara.burn = true;
 }
 
 void Lara_Extinguish(void)
@@ -1673,7 +1673,7 @@ void Lara_Extinguish(void)
         return;
     }
 
-    g_Lara.burn = 0;
+    g_Lara.burn = false;
 
     // put out flame objects
     int16_t effect_num = Effect_GetActiveNum();

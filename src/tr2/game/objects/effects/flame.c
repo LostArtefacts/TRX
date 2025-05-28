@@ -61,11 +61,11 @@ static void M_Control(const int16_t effect_num)
             || g_Lara.water_status == LWS_CHEAT) {
             effect->counter = 0;
             Effect_Kill(effect_num);
-            g_Lara.burn = 0;
+            g_Lara.burn = false;
         } else {
             Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_ALWAYS);
             Lara_TakeDamage(7, false);
-            g_Lara.burn = 1;
+            g_Lara.burn = true;
         }
     }
 }
