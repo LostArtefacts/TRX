@@ -120,9 +120,9 @@ void Lara_Draw(const ITEM *const item)
 
     Matrix_Pop();
 
-    if (g_Lara.back_gun != O_LARA) {
+    if (g_Lara.back_gun_obj_id != O_LARA) {
         Matrix_Push();
-        const OBJECT *const back_obj = Object_Get(g_Lara.back_gun);
+        const OBJECT *const back_obj = Object_Get(g_Lara.back_gun_obj_id);
         const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
         Matrix_TranslateRel32(bone_c[13].pos);
         mesh_rots_c = back_obj->frame_base->mesh_rots;
@@ -357,9 +357,9 @@ void Lara_Draw_I(
     Lara_Hair_Draw();
     Matrix_Pop_I();
 
-    if (g_Lara.back_gun != O_LARA) {
+    if (g_Lara.back_gun_obj_id != O_LARA) {
         Matrix_Push_I();
-        const OBJECT *const back_obj = Object_Get(g_Lara.back_gun);
+        const OBJECT *const back_obj = Object_Get(g_Lara.back_gun_obj_id);
         const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
         Matrix_TranslateRel32_I(bone_c[13].pos);
         mesh_rots_1_c = back_obj->frame_base->mesh_rots;
