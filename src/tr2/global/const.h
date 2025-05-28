@@ -3,26 +3,16 @@
 
 #define TICKS_PER_FRAME 2
 
-#define PHD_ONE 0x10000
 #define PHD_HALF 0x100
 
 #define MAX_WIBBLE 2
 #define LIGHT_MAP_SIZE 32
 #define MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
 
-#define NO_BOX (-1)
-#define NO_ITEM (-1)
-
 #define SUNSET_TIMEOUT (40 * 60 * (LOGIC_FPS)) // = 72000
 
-#define MAX_AUDIO_SAMPLE_BUFFERS 256
-#define MAX_AUDIO_SAMPLE_TRACKS 32
-#define MAX_PALETTES 16
 #define MAX_VERTICES 0x2000
 #define MAX_BOUND_ROOMS 128
-#define MAX_LEVELS 24
-#define MAX_LEVEL_NAME_SIZE 50 // TODO: get rid of this limit
-#define MAX_DEMO_FILES MAX_LEVELS
 #define MAX_REQUESTER_ITEMS 24
 
 #define SW_DETAIL_LOW (0 * WALL_L << W2V_SHIFT) // = 0
@@ -43,7 +33,5 @@
 #define SPRITE_COLOUR(r, g, b) ((r) | ((g) << 8) | ((b) << 16))
 
 #define PITCH_SHIFT 4
-
-#define IDS_DX5_REQUIRED 1
 
 #define MONK_FRIENDLY_FIRE_THRESHOLD 10
