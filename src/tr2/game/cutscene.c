@@ -24,12 +24,12 @@ static void M_FixAudioDrift(void);
 
 static void M_FixAudioDrift(void)
 {
-    const int32_t audio_frame_idx = Music_GetTimestamp() * FRAMES_PER_SECOND;
+    const int32_t audio_frame_idx = Music_GetTimestamp() * LOGIC_FPS;
     const int32_t game_frame_idx = Camera_GetCineData()->frame_idx;
     const int32_t audio_drift = ABS(audio_frame_idx - game_frame_idx);
-    if (audio_drift >= FRAMES_PER_SECOND * 0.2) {
+    if (audio_drift >= LOGIC_FPS * 0.2) {
         LOG_DEBUG("Detected audio drift: %d frames", audio_drift);
-        Music_SeekTimestamp(game_frame_idx / (double)FRAMES_PER_SECOND);
+        Music_SeekTimestamp(game_frame_idx / (double)LOGIC_FPS);
     }
 }
 

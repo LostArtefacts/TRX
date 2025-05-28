@@ -19,9 +19,9 @@
 
 #define FLARE_INTENSITY 12
 #define FLARE_FALL_OFF 11
-#define MAX_FLARE_AGE (60 * FRAMES_PER_SECOND) // = 1800
-#define FLARE_OLD_AGE (MAX_FLARE_AGE - 2 * FRAMES_PER_SECOND) // = 1740
-#define FLARE_YOUNG_AGE (FRAMES_PER_SECOND) // = 30
+#define MAX_FLARE_AGE (60 * LOGIC_FPS) // = 1800
+#define FLARE_OLD_AGE (MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
+#define FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
 
 typedef enum {
     // clang-format off

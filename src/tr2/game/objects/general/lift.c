@@ -5,7 +5,7 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
 
-#define LIFT_WAIT_TIME (3 * FRAMES_PER_SECOND) // = 90
+#define LIFT_WAIT_TIME (3 * LOGIC_FPS) // = 90
 #define LIFT_SHIFT 16
 #define LIFT_HEIGHT (STEP_L * 5) // = 1280
 #define LIFT_TRAVEL_DIST (STEP_L * 22)

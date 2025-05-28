@@ -11,7 +11,7 @@
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/utils.h>
 
-#define M_CUTSCENE_DELAY (5 * FRAMES_PER_SECOND) // = 150
+#define M_CUTSCENE_DELAY (5 * LOGIC_FPS) // = 150
 #define M_BOSS_TYPE O_CULT_3
 
 static int16_t m_BossTimer = 0;

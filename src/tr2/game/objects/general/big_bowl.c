@@ -45,7 +45,7 @@ static void M_Control(const int16_t item_num)
     if (item->current_anim_state == BIG_BOWL_STATE_POUR) {
         M_CreateHotLiquid(item);
         item->timer++;
-        if (item->timer == 5 * FRAMES_PER_SECOND && !Room_GetFlipStatus()) {
+        if (item->timer == 5 * LOGIC_FPS && !Room_GetFlipStatus()) {
             // TODO: poorly hardcoded flimap number
             Room_SetFlipSlotFlags(4, IF_CODE_BITS | IF_ONE_SHOT);
             Room_FlipMap();
@@ -54,8 +54,7 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED
-        && item->timer >= FRAMES_PER_SECOND * 7) {
+    if (item->status == IS_DEACTIVATED && item->timer >= LOGIC_FPS * 7) {
         Item_RemoveActive(item_num);
     }
 }
