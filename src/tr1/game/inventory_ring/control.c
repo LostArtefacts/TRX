@@ -410,8 +410,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 ring->is_pass_open = true;
             }
 
-            g_OptionSelected = 0;
-
             g_InvRing_Source[ring->type].current = ring->current_object;
             INVENTORY_ITEM *const inv_item =
                 g_InvRing_Source[ring->type].items[ring->current_object];
@@ -803,8 +801,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     if (GF_GetGymLevel() == nullptr) {
         Inv_RemoveItem(O_PHOTO_OPTION);
     }
-
-    g_OptionSelected = 0;
 
     if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {
         Music_Pause();

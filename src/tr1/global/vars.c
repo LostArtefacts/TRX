@@ -1,9 +1,5 @@
 #include "global/vars.h"
 
-int32_t g_FPSCounter = 0;
-
-int32_t g_OptionSelected = 0;
-
 int32_t g_PhdPersp = 0;
 int32_t g_PhdLeft = 0;
 int32_t g_PhdBottom = 0;
