@@ -103,12 +103,12 @@ typedef struct {
     GAME_OBJECT_ID back_gun;
     int16_t flare_frame;
     // clang-format off
-    uint16_t flare_control_left:  1; // 0x01 1
-    uint16_t flare_control_right: 1; // 0x02 2
-    uint16_t extra_anim:          1; // 0x04 4
-    uint16_t look:                1; // 0x08 8
-    uint16_t burn:                1; // 0x10 16
-    uint16_t pad:                 11;
+    uint16_t flare_control: 1; // 0x01 1
+    uint16_t pad_1:         1; // 0x02 2
+    uint16_t extra_anim:    1; // 0x04 4
+    uint16_t look:          1; // 0x08 8
+    uint16_t burn:          1; // 0x10 16
+    uint16_t pad:           11;
     // clang-format on
     int32_t water_surface_dist;
     XYZ_32 last_pos;
