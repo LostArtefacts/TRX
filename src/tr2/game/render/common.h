@@ -7,6 +7,12 @@
 
 #include <stdint.h>
 
+// TODO: get rid of these consts
+#define SW_DETAIL_LOW (0 * WALL_L << W2V_SHIFT) // = 0
+#define SW_DETAIL_MEDIUM (3 * WALL_L << W2V_SHIFT) // = 50331648
+#define SW_DETAIL_HIGH (6 * WALL_L << W2V_SHIFT) // = 100663296
+#define SW_DETAIL_ULTRA (20 * WALL_L << W2V_SHIFT) // = 335544320
+
 typedef enum {
     ST_AVG_Z = 0,
     ST_MAX_Z = 1,

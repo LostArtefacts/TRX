@@ -9,6 +9,8 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
+#define M_MAX_BOUND_ROOMS 128
+
 static int32_t m_Outside;
 static int32_t m_OutsideRight;
 static int32_t m_OutsideLeft;
@@ -17,7 +19,7 @@ static int32_t m_OutsideBottom;
 
 static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
-static int32_t m_BoundRooms[MAX_BOUND_ROOMS] = {};
+static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
 
 static int32_t m_BoxLines[12][2] = {
     { 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 0 }, { 4, 5 }, { 5, 6 },
@@ -27,7 +29,8 @@ static int32_t m_BoxLines[12][2] = {
 void Room_GetBounds(void)
 {
     while (m_BoundStart != m_BoundEnd) {
-        const int16_t room_num = m_BoundRooms[m_BoundStart++ % MAX_BOUND_ROOMS];
+        const int16_t room_num =
+            m_BoundRooms[m_BoundStart++ % M_MAX_BOUND_ROOMS];
         ROOM *const room = Room_Get(room_num);
         room->bound_active &= ~2;
         g_MidSort = (room->bound_active >> 8) + 1;
@@ -227,7 +230,7 @@ void Room_SetBounds(
             room->test_bottom = bottom;
         }
     } else {
-        m_BoundRooms[m_BoundEnd++ % MAX_BOUND_ROOMS] = room_num;
+        m_BoundRooms[m_BoundEnd++ % M_MAX_BOUND_ROOMS] = room_num;
         room->bound_active |= 2;
         room->bound_active += (int16_t)(g_MidSort << 8);
         room->test_left = left;

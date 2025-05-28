@@ -3,10 +3,9 @@
 #include "./math/const.h"
 
 #define LOGIC_FPS 30
+#define TICKS_PER_FRAME 2
 
 #define DONT_TARGET (-16384)
-
-#define PHD_ONE 0x10000
 
 #define STEP_L 256
 #define WALL_L 1024 // = 1 << WALL_SHIFT

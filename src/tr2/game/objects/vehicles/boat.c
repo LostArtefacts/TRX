@@ -765,14 +765,14 @@ static void M_Control(const int16_t item_num)
     } else if (boat->speed > 20) {
         Sound_Effect(
             SFX_BOAT_MOVING, &boat->pos,
-            PITCH_SHIFT
-                + ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
+            SPM_PITCH
+                | ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
 
     } else if (drive) {
         Sound_Effect(
             SFX_BOAT_IDLE, &boat->pos,
-            PITCH_SHIFT
-                + ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
+            SPM_PITCH
+                | ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
     }
 
     if (boat->speed && water_height + BOAT_SHIFT_Y == boat->pos.y) {
