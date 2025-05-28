@@ -1690,11 +1690,11 @@ void Lara_Extinguish(void)
 
 bool Lara_IsM16Active(void)
 {
-    if (g_Lara.weapon_item == NO_ITEM || g_Lara.gun_type != LGT_M16) {
+    if (g_Lara.gun_item_num == NO_ITEM || g_Lara.gun_type != LGT_M16) {
         return false;
     }
 
-    const ITEM *const item = Item_Get(g_Lara.weapon_item);
+    const ITEM *const item = Item_Get(g_Lara.gun_item_num);
     return item->current_anim_state == 0 || item->current_anim_state == 2
         || item->current_anim_state == 4;
 }
