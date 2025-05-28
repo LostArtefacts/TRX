@@ -273,7 +273,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
     if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
         item->timer = timer;
         if (timer != 1) {
-            item->timer = timer * FRAMES_PER_SECOND;
+            item->timer = timer * LOGIC_FPS;
         }
         item->status = IS_ACTIVE;
     } else {

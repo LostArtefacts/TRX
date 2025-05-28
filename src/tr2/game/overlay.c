@@ -156,11 +156,11 @@ static void M_DrawAssaultTimer(void)
     char buffer[32];
     const RESUME_INFO *const resume =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    const int32_t total_sec = resume->stats.timer / FRAMES_PER_SECOND;
-    const int32_t frame = resume->stats.timer % FRAMES_PER_SECOND;
+    const int32_t total_sec = resume->stats.timer / LOGIC_FPS;
+    const int32_t frame = resume->stats.timer % LOGIC_FPS;
     sprintf(
         buffer, "%d:%02d.%d", total_sec / 60, total_sec % 60,
-        frame * 10 / FRAMES_PER_SECOND);
+        frame * 10 / LOGIC_FPS);
 
     const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
     const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);

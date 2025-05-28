@@ -1,7 +1,6 @@
 #include <libtrx/game/const.h>
 #include <libtrx/game/lara/const.h>
 
-#define FRAMES_PER_SECOND LOGIC_FPS
 #define TICKS_PER_FRAME 2
 
 #define PHD_ONE 0x10000
@@ -14,7 +13,7 @@
 #define NO_BOX (-1)
 #define NO_ITEM (-1)
 
-#define SUNSET_TIMEOUT (40 * 60 * (FRAMES_PER_SECOND)) // = 72000
+#define SUNSET_TIMEOUT (40 * 60 * (LOGIC_FPS)) // = 72000
 
 #define MAX_AUDIO_SAMPLE_BUFFERS 256
 #define MAX_AUDIO_SAMPLE_TRACKS 32

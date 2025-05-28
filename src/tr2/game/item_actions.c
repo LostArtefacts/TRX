@@ -155,7 +155,7 @@ void M_Boiler(ITEM *const item)
 void M_Flood(ITEM *const item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();
-    if (flip_timer > 4 * FRAMES_PER_SECOND) {
+    if (flip_timer > 4 * LOGIC_FPS) {
         Room_SetFlipEffect(-1);
         Room_IncrementFlipTimer(1);
         return;
@@ -167,10 +167,10 @@ void M_Flood(ITEM *const item)
         .z = g_LaraItem->pos.z,
     };
 
-    if (flip_timer >= FRAMES_PER_SECOND) {
-        pos.y += 100 * (flip_timer - FRAMES_PER_SECOND);
+    if (flip_timer >= LOGIC_FPS) {
+        pos.y += 100 * (flip_timer - LOGIC_FPS);
     } else {
-        pos.y += 100 * (FRAMES_PER_SECOND - flip_timer);
+        pos.y += 100 * (LOGIC_FPS - flip_timer);
     }
 
     Sound_Effect(SFX_WATERFALL_LOOP, &pos, SPM_NORMAL);
@@ -188,7 +188,7 @@ void M_Chandelier(ITEM *const item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();
     Sound_Effect(SFX_CHAIN_PULLEY, nullptr, SPM_NORMAL);
-    if (flip_timer >= FRAMES_PER_SECOND) {
+    if (flip_timer >= LOGIC_FPS) {
         Room_SetFlipEffect(-1);
     }
     Room_IncrementFlipTimer(1);

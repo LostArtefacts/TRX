@@ -416,7 +416,7 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
         if (m_OpenDoorsCheatCooldown) {
             m_OpenDoorsCheatCooldown--;
         } else if (g_InputDB.draw) {
-            m_OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
+            m_OpenDoorsCheatCooldown = LOGIC_FPS;
             Lara_Cheat_OpenNearestDoor();
         }
     }
@@ -639,7 +639,7 @@ void Lara_Control(const int16_t item_num)
         }
     } else if (Room_IsAbyssHeight(item->pos.y)) {
         item->hit_points = -1;
-        g_Lara.death_timer = 9 * FRAMES_PER_SECOND;
+        g_Lara.death_timer = 9 * LOGIC_FPS;
     }
 
     Camera_MoveManual();

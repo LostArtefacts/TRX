@@ -218,11 +218,10 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
                 left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
                 stats.entries[i].attempt_num);
 
-            const int32_t sec = stats.entries[i].time / FRAMES_PER_SECOND;
+            const int32_t sec = stats.entries[i].time / LOGIC_FPS;
             sprintf(
                 right_buf, "%02d:%02d.%-2d", sec / 60, sec % 60,
-                stats.entries[i].time % FRAMES_PER_SECOND
-                    / (FRAMES_PER_SECOND / 10));
+                stats.entries[i].time % LOGIC_FPS / (LOGIC_FPS / 10));
 
             M_Row(s, left_buf, right_buf);
         }
