@@ -42,7 +42,7 @@ static void M_DetonateAll(
     int16_t boat_room_num)
 {
     ITEM *const boat_item = Item_Get(boat_item_num);
-    if (g_Lara.skidoo == boat_item_num) {
+    if (g_Lara.vehicle_item_num == boat_item_num) {
         Item_Explode(g_Lara.item_num, -1, 0);
         g_LaraItem->hit_points = 0;
         g_LaraItem->flags |= IF_ONE_SHOT;

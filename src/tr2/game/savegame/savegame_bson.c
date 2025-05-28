@@ -1100,7 +1100,8 @@ static JSON_OBJECT *M_DumpLara(void)
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);
     JSON_ObjectAppendInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare_age);
-    JSON_ObjectAppendInt(lara_obj, "vehicle_item_number", lara->skidoo);
+    JSON_ObjectAppendInt(
+        lara_obj, "vehicle_item_number", lara->vehicle_item_num);
     JSON_ObjectAppendInt(
         lara_obj, "back_gun_obj_id", Object_MakeGameID(lara->back_gun));
     JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare_frame);
@@ -1202,8 +1203,8 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     lara->hit_effect_count =
         JSON_ObjectGetInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     lara->flare_age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare_age);
-    lara->skidoo =
-        JSON_ObjectGetInt(lara_obj, "vehicle_item_number", lara->skidoo);
+    lara->vehicle_item_num = JSON_ObjectGetInt(
+        lara_obj, "vehicle_item_number", lara->vehicle_item_num);
     lara->back_gun = Object_UnmapGameID(
         JSON_ObjectGetInt(lara_obj, "back_gun_obj_id", lara->back_gun));
     lara->flare_frame =

@@ -209,7 +209,7 @@ int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
 void Skidoo_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    if (lara_item->hit_points < 0 || g_Lara.skidoo != NO_ITEM) {
+    if (lara_item->hit_points < 0 || g_Lara.vehicle_item_num != NO_ITEM) {
         return;
     }
 
@@ -219,7 +219,7 @@ void Skidoo_Collision(
         return;
     }
 
-    g_Lara.skidoo = item_num;
+    g_Lara.vehicle_item_num = item_num;
     if (g_Lara.gun_type == LGT_FLARE) {
         Flare_Create(false);
         Flare_UndrawMeshes();
@@ -442,7 +442,7 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
         const int32_t dz = skidoo->pos.z - old.z;
         const int32_t new_speed = (s * dx + c * dz) >> W2V_SHIFT;
 
-        if (skidoo == Item_Get(g_Lara.skidoo)
+        if (skidoo == Item_Get(g_Lara.vehicle_item_num)
             && skidoo->speed > SKIDOO_MAX_SPEED + SKIDOO_ACCELERATION
             && new_speed < skidoo->speed - SKIDOO_ACCELERATION) {
             Lara_TakeDamage((skidoo->speed - new_speed) / 2, true);
@@ -539,7 +539,7 @@ int32_t Skidoo_UserControl(
 
 int32_t Skidoo_CheckGetOffOK(int32_t direction)
 {
-    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+    ITEM *const skidoo = Item_Get(g_Lara.vehicle_item_num);
 
     int16_t rot;
     if (direction == LARA_STATE_SKIDOO_GET_OFF_L) {
@@ -697,14 +697,14 @@ void Skidoo_Explode(const ITEM *const skidoo)
         effect->object_id = O_EXPLOSION_1;
     }
 
-    Item_Explode(g_Lara.skidoo, ~(SKIDOO_GUN_MESH - 1), 0);
+    Item_Explode(g_Lara.vehicle_item_num, ~(SKIDOO_GUN_MESH - 1), 0);
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
-    g_Lara.skidoo = NO_ITEM;
+    g_Lara.vehicle_item_num = NO_ITEM;
 }
 
 int32_t Skidoo_CheckGetOff(void)
 {
-    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+    ITEM *const skidoo = Item_Get(g_Lara.vehicle_item_num);
 
     if ((g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_R
          || g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_L)
@@ -723,7 +723,7 @@ int32_t Skidoo_CheckGetOff(void)
             (SKIDOO_GET_OFF_DIST * Math_Cos(g_LaraItem->rot.y)) >> W2V_SHIFT;
         g_LaraItem->rot.x = 0;
         g_LaraItem->rot.z = 0;
-        g_Lara.skidoo = NO_ITEM;
+        g_Lara.vehicle_item_num = NO_ITEM;
         g_Lara.gun_status = LGS_ARMLESS;
         return true;
     }
@@ -780,14 +780,14 @@ void Skidoo_Guns(void)
     Sound_Effect(winfo->sample_num, &g_LaraItem->pos, SPM_NORMAL);
     Gun_AddDynamicLight();
 
-    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+    ITEM *const skidoo = Item_Get(g_Lara.vehicle_item_num);
     Creature_Effect(skidoo, &g_Skidoo_LeftGun, Spawn_GunShot);
     Creature_Effect(skidoo, &g_Skidoo_RightGun, Spawn_GunShot);
 }
 
 int32_t Skidoo_Control(void)
 {
-    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+    ITEM *const skidoo = Item_Get(g_Lara.vehicle_item_num);
     SKIDOO_INFO *const skidoo_data = skidoo->data;
     int32_t collide = Skidoo_Dynamics(skidoo);
 
@@ -872,7 +872,7 @@ int32_t Skidoo_Control(void)
 
     if (skidoo->flags & IF_ONE_SHOT) {
         Room_TestTriggers(g_LaraItem);
-        Item_UpdateRoom(g_Lara.skidoo, room_num);
+        Item_UpdateRoom(g_Lara.vehicle_item_num, room_num);
         if (skidoo->pos.y == skidoo->floor) {
             Skidoo_Explode(skidoo);
         }
@@ -880,7 +880,7 @@ int32_t Skidoo_Control(void)
     }
 
     Skidoo_Animation(skidoo, collide, dead);
-    Item_UpdateRoom(g_Lara.skidoo, room_num);
+    Item_UpdateRoom(g_Lara.vehicle_item_num, room_num);
     Item_UpdateRoom(g_Lara.item_num, room_num);
 
     if (g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_FALLOFF) {

@@ -49,7 +49,7 @@ static void M_Collision(
             item, coll, item->speed > 0 ? coll->enable_hit : false, false);
     }
 
-    if (g_Lara.skidoo == NO_ITEM && item->speed > 0) {
+    if (g_Lara.vehicle_item_num == NO_ITEM && item->speed > 0) {
         Lara_TakeDamage(100, true);
     }
 }

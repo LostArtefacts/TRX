@@ -227,8 +227,8 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
     }
     g_Lara.look = 1;
 
-    if (g_Lara.skidoo != NO_ITEM) {
-        if (Item_Get(g_Lara.skidoo)->object_id == O_SKIDOO_FAST) {
+    if (g_Lara.vehicle_item_num != NO_ITEM) {
+        if (Item_Get(g_Lara.vehicle_item_num)->object_id == O_SKIDOO_FAST) {
             // TODO: make this Object_Get(O_SKIDOO_FAST)->control
             if (Skidoo_Control()) {
                 return;
@@ -267,7 +267,7 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
     const SECTOR *const sector = M_GetCurrentSector(item);
     if (!g_Lara.extra_anim && g_Lara.water_status != LWS_CHEAT) {
         Lara_BaddieCollision(item, coll);
-        if (g_Lara.skidoo == NO_ITEM) {
+        if (g_Lara.vehicle_item_num == NO_ITEM) {
             m_CollisionRoutines[item->current_anim_state](item, coll);
         }
     }
@@ -329,7 +329,7 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
 
     Lara_BaddieCollision(item, coll);
 
-    if (g_Lara.skidoo == NO_ITEM) {
+    if (g_Lara.vehicle_item_num == NO_ITEM) {
         m_CollisionRoutines[item->current_anim_state](item, coll);
     }
 
@@ -456,7 +456,7 @@ void Lara_Control(const int16_t item_num)
 
     g_Lara.water_surface_dist = -water_height_diff;
 
-    if (g_Lara.skidoo == NO_ITEM && !g_Lara.extra_anim) {
+    if (g_Lara.vehicle_item_num == NO_ITEM && !g_Lara.extra_anim) {
         switch (g_Lara.water_status) {
         case LWS_ABOVE_WATER:
             if (water_height_diff == NO_HEIGHT
@@ -780,7 +780,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     item->hit_points = LARA_MAX_HITPOINTS;
 
     g_Lara.hit_direction = -1;
-    g_Lara.skidoo = NO_ITEM;
+    g_Lara.vehicle_item_num = NO_ITEM;
     g_Lara.gun_item_num = NO_ITEM;
     g_Lara.calc_fall_speed = 0;
     g_Lara.climb_status = 0;
@@ -1001,10 +1001,10 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
 
 void Lara_GetOffVehicle(void)
 {
-    if (g_Lara.skidoo != NO_ITEM) {
-        ITEM *const vehicle = Item_Get(g_Lara.skidoo);
+    if (g_Lara.vehicle_item_num != NO_ITEM) {
+        ITEM *const vehicle = Item_Get(g_Lara.vehicle_item_num);
         Item_SwitchToAnim(vehicle, 0, 0);
-        g_Lara.skidoo = NO_ITEM;
+        g_Lara.vehicle_item_num = NO_ITEM;
 
         g_LaraItem->current_anim_state = LS_STOP;
         g_LaraItem->goal_anim_state = LS_STOP;

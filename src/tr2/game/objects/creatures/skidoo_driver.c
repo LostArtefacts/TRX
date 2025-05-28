@@ -148,7 +148,7 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
         if (driver_data->flags == 0
             && ABS(info.angle) < SKIDOO_DRIVER_TARGET_ANGLE
             && g_LaraItem->hit_points > 0) {
-            const int32_t damage = g_Lara.skidoo != NO_ITEM
+            const int32_t damage = g_Lara.vehicle_item_num != NO_ITEM
                 ? SKIDOO_DRIVER_SHOT_DAMAGE
                 : SKIDOO_DRIVER_LARA_DAMAGE;
 
