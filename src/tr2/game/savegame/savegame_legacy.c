@@ -332,7 +332,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     // clang-format off
     lara->flare_control = flags >> 0;
     lara->extra_anim    = flags >> 2;
-    lara->look          = flags >> 3;
+    lara->enable_look   = flags >> 3;
     lara->burn          = flags >> 4;
     // clang-format on
 
@@ -589,7 +589,7 @@ static void M_WriteLara(const LARA_INFO *const lara)
     // clang-format off
     if (lara->flare_control) { flags |= 1 << 0; }
     if (lara->extra_anim)    { flags |= 1 << 2; }
-    if (lara->look)          { flags |= 1 << 3; }
+    if (lara->enable_look)   { flags |= 1 << 3; }
     if (lara->burn)          { flags |= 1 << 4; }
     // clang-format on
     M_WriteU16(flags);

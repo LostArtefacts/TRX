@@ -220,12 +220,12 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 1;
     coll->enable_hit = 1;
 
-    if (g_Input.look && !g_Lara.extra_anim && g_Lara.look) {
+    if (g_Input.look && !g_Lara.extra_anim && g_Lara.enable_look) {
         Lara_LookLeftRight();
     } else {
         Lara_ResetLook();
     }
-    g_Lara.look = 1;
+    g_Lara.enable_look = true;
 
     if (g_Lara.vehicle_item_num != NO_ITEM) {
         if (Item_Get(g_Lara.vehicle_item_num)->object_id == O_SKIDOO_FAST) {
@@ -296,12 +296,12 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 0;
     coll->enable_hit = 0;
 
-    if (g_Input.look && g_Lara.look) {
+    if (g_Input.look && g_Lara.enable_look) {
         Lara_LookLeftRight();
     } else {
         Lara_ResetLook();
     }
-    g_Lara.look = 1;
+    g_Lara.enable_look = true;
 
     m_ControlRoutines[item->current_anim_state](item, coll);
 
@@ -355,12 +355,12 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 1;
     coll->enable_hit = 0;
 
-    if (g_Input.look && g_Lara.look) {
+    if (g_Input.look && g_Lara.enable_look) {
         Lara_LookLeftRight();
     } else {
         Lara_ResetLook();
     }
-    g_Lara.look = 1;
+    g_Lara.enable_look = true;
 
     if (g_Lara.extra_anim) {
         m_ExtraControlRoutines[item->current_anim_state](item, coll);
@@ -795,7 +795,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.flare_frame = 0;
     g_Lara.flare_control = false;
     g_Lara.extra_anim = false;
-    g_Lara.look = 1;
+    g_Lara.enable_look = true;
     g_Lara.burn = 0;
     g_Lara.water_surface_dist = 100;
     g_Lara.last_pos = item->pos;

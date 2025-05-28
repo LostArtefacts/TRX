@@ -311,7 +311,7 @@ void Lara_State_TurnLeft(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_Death(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
 }
@@ -351,7 +351,7 @@ void Lara_State_Reach(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_Splat(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
 }
 
 void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
@@ -437,7 +437,7 @@ void Lara_State_FastTurn(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_StepRight(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
         return;
@@ -458,7 +458,7 @@ void Lara_State_StepRight(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_StepLeft(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
         return;
@@ -504,7 +504,7 @@ void Lara_State_BackJump(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_RightJump(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
@@ -517,7 +517,7 @@ void Lara_State_RightJump(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_LeftJump(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
@@ -578,7 +578,7 @@ void Lara_State_SlideBack(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_PushBlock(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.flags = CF_FOLLOW_CENTRE;
@@ -598,7 +598,7 @@ void Lara_State_PPReady(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_Pickup(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_angle = CAM_PICKUP_ANGLE;
@@ -619,7 +619,7 @@ void Lara_State_PickupFlare(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_SwitchOn(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_angle = CAM_SWITCH_ON_ANGLE;
@@ -630,7 +630,7 @@ void Lara_State_SwitchOn(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_UseKey(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.look = 0;
+    g_Lara.enable_look = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_angle = CAM_USE_KEY_ANGLE;
