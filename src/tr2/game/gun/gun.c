@@ -408,7 +408,7 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_SwapSingleMesh(LM_TORSO, obj_id);
-    g_Lara.back_gun = obj_id;
+    g_Lara.back_gun_obj_id = obj_id;
 }
 
 void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)

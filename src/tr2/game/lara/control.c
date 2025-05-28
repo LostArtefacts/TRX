@@ -791,7 +791,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.death_timer = 0;
     g_Lara.hit_effect_count = 0;
     g_Lara.flare.age = 0;
-    g_Lara.back_gun = O_LARA;
+    g_Lara.back_gun_obj_id = O_LARA;
     g_Lara.flare.frame_num = 0;
     g_Lara.flare.control = false;
     g_Lara.extra_anim = false;
@@ -972,15 +972,15 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
 
     switch (resume->equipped_gun_type) {
     case LGT_M16:
-        g_Lara.back_gun = O_LARA_M16;
+        g_Lara.back_gun_obj_id = O_LARA_M16;
         return;
 
     case LGT_GRENADE:
-        g_Lara.back_gun = O_LARA_GRENADE;
+        g_Lara.back_gun_obj_id = O_LARA_GRENADE;
         return;
 
     case LGT_HARPOON:
-        g_Lara.back_gun = O_LARA_HARPOON;
+        g_Lara.back_gun_obj_id = O_LARA_HARPOON;
         return;
 
     default:
@@ -988,13 +988,13 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
     }
 
     if (resume->flags.has_shotgun) {
-        g_Lara.back_gun = O_LARA_SHOTGUN;
+        g_Lara.back_gun_obj_id = O_LARA_SHOTGUN;
     } else if (resume->flags.has_m16) {
-        g_Lara.back_gun = O_LARA_M16;
+        g_Lara.back_gun_obj_id = O_LARA_M16;
     } else if (resume->flags.has_grenade) {
-        g_Lara.back_gun = O_LARA_GRENADE;
+        g_Lara.back_gun_obj_id = O_LARA_GRENADE;
     } else if (resume->flags.has_harpoon) {
-        g_Lara.back_gun = O_LARA_HARPOON;
+        g_Lara.back_gun_obj_id = O_LARA_HARPOON;
     }
 }
 

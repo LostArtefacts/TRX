@@ -65,8 +65,8 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         if (g_Lara.last_gun_type == LGT_UNARMED) {
             g_Lara.last_gun_type = LGT_SHOTGUN;
         }
-        if (g_Lara.back_gun == O_LARA) {
-            g_Lara.back_gun = O_LARA_SHOTGUN;
+        if (g_Lara.back_gun_obj_id == O_LARA) {
+            g_Lara.back_gun_obj_id = O_LARA_SHOTGUN;
         }
         Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
         return false;

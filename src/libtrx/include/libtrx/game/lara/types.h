@@ -98,7 +98,7 @@ typedef struct {
     int16_t hit_effect_count;
     int16_t vehicle_item_num;
     int16_t gun_item_num;
-    GAME_OBJECT_ID back_gun;
+    GAME_OBJECT_ID back_gun_obj_id;
     bool climb_status;
     bool extra_anim;
     bool enable_look;
