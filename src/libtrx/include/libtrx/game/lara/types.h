@@ -88,7 +88,6 @@ typedef struct {
     int16_t last_gun_type;
     int16_t calc_fall_speed;
     int16_t water_status;
-    int16_t climb_status;
     int16_t pose_count;
     int16_t hit_frame;
     int16_t hit_direction;
@@ -100,6 +99,7 @@ typedef struct {
     int16_t vehicle_item_num;
     int16_t gun_item_num;
     GAME_OBJECT_ID back_gun;
+    bool climb_status;
     bool extra_anim;
     bool enable_look;
     bool burn;

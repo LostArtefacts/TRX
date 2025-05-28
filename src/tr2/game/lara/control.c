@@ -783,7 +783,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.vehicle_item_num = NO_ITEM;
     g_Lara.gun_item_num = NO_ITEM;
     g_Lara.calc_fall_speed = 0;
-    g_Lara.climb_status = 0;
+    g_Lara.climb_status = false;
     g_Lara.pose_count = 0;
     g_Lara.hit_frame = 0;
     g_Lara.air = LARA_MAX_AIR;
