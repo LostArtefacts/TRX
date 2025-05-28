@@ -16,10 +16,6 @@ extern int32_t g_PhdTop;
 extern float g_FltResZ;
 extern float g_FltResZBuf;
 
-extern int32_t g_OptionSelected;
-
-extern int32_t g_FPSCounter;
-
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern GAME_INFO g_GameInfo;

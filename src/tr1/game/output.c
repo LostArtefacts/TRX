@@ -539,7 +539,6 @@ void Output_EndScene(void)
     GFX_3D_Renderer_RenderEnd(m_Renderer3D);
     M_FlipScreen();
     Shell_ProcessEvents();
-    g_FPSCounter++;
 }
 
 void Output_ClearDepthBuffer(void)
