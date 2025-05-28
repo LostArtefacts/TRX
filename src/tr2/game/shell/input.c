@@ -9,6 +9,7 @@
 #include "game/inventory.h"
 #include "game/lara/control.h"
 #include "game/overlay.h"
+#include "game/render/common.h"
 #include "global/const.h"
 #include "global/vars.h"
 

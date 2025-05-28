@@ -16,7 +16,8 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
-#define NEAR_ANGLE (DEG_1 * 15) // = 2730
+#define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
+#define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
 
 static LARA_STATE m_HoldStates[] = {
     LS_WALK,   LS_STOP,      LS_POSE,       LS_TURN_RIGHT,  LS_TURN_LEFT,
@@ -155,7 +156,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
             && angles[1] >= winfo->lock_angles[2]
             && angles[1] <= winfo->lock_angles[3]) {
             const int16_t y_rot = ABS(angles[0]);
-            if (y_rot < best_y_rot + NEAR_ANGLE && dist < best_dist) {
+            if (y_rot < best_y_rot + M_NEAR_ANGLE && dist < best_dist) {
                 best_dist = dist;
                 best_y_rot = y_rot;
                 best_target = item;
@@ -331,7 +332,7 @@ void Gun_HitTarget(
         && (item->object_id == O_MONK_1 || item->object_id == O_MONK_2)) {
         CREATURE *const creature = item->data;
         creature->flags += damage;
-        if ((creature->flags & 0xFFF) > MONK_FRIENDLY_FIRE_THRESHOLD
+        if ((creature->flags & 0xFFF) > M_ALLY_FRIENDLY_FIRE_THRESHOLD
             || creature->mood == MOOD_BORED) {
             Creature_SetAlliesHostile(true);
         }

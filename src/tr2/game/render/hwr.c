@@ -12,8 +12,9 @@
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
-#define MAKE_DEPTH_FROM_RHW(rhw) (g_FltResZBuf - g_FltResZORhw * (rhw))
-#define MAKE_DEPTH(v) MAKE_DEPTH_FROM_RHW((v)->rhw)
+#define M_MAKE_DEPTH_FROM_RHW(rhw) (g_FltResZBuf - g_FltResZORhw * (rhw))
+#define M_MAKE_DEPTH(v) M_MAKE_DEPTH_FROM_RHW((v)->rhw)
+#define M_MAX_VERTICES 0x2000
 
 typedef enum {
     POLY_HWR_GTMAP,
@@ -34,7 +35,7 @@ typedef struct {
 
 static VERTEX_INFO m_VBuffer[32] = {};
 static GFX_3D_VERTEX m_VBufferGL[32] = {};
-static GFX_3D_VERTEX m_HWR_VertexBuffer[MAX_VERTICES] = {};
+static GFX_3D_VERTEX m_HWR_VertexBuffer[M_MAX_VERTICES] = {};
 static GFX_3D_VERTEX *m_HWR_VertexPtr = nullptr;
 
 static void M_ShadeColor(
@@ -232,7 +233,7 @@ static void M_EnableColorKey(RENDERER *const renderer, const bool state)
 static bool M_VertexBufferFull(void)
 {
     const int32_t index = m_HWR_VertexPtr - m_HWR_VertexBuffer;
-    return index >= MAX_VERTICES - 0x200;
+    return index >= M_MAX_VERTICES - 0x200;
 }
 
 static void M_DrawPrimitive(
@@ -251,7 +252,7 @@ static void M_DrawPolyTextured(
         GFX_3D_VERTEX *const vbuf_gl = &m_VBufferGL[i];
         vbuf_gl->x = vbuf->pos.x;
         vbuf_gl->y = vbuf->pos.y;
-        vbuf_gl->z = MAKE_DEPTH(vbuf);
+        vbuf_gl->z = M_MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
         vbuf_gl->t = vbuf->tex.v / vbuf->rhw / 65536.0f;
         vbuf_gl->s = vbuf->tex.u / vbuf->rhw / 65536.0f;
@@ -272,7 +273,7 @@ static void M_DrawPolyFlat(
         GFX_3D_VERTEX *const vbuf_gl = &m_VBufferGL[i];
         vbuf_gl->x = vbuf->pos.x;
         vbuf_gl->y = vbuf->pos.y;
-        vbuf_gl->z = MAKE_DEPTH(vbuf);
+        vbuf_gl->z = M_MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
         M_ShadeLightColor(
             vbuf_gl, vbuf->g, false, color.r, color.g, color.b, 0xFF);
@@ -299,7 +300,7 @@ static void M_InsertPolyTextured(
         GFX_3D_VERTEX *const vbuf_gl = &m_HWR_VertexPtr[i];
         vbuf_gl->x = vbuf->pos.x;
         vbuf_gl->y = vbuf->pos.y;
-        vbuf_gl->z = MAKE_DEPTH(vbuf);
+        vbuf_gl->z = M_MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
         vbuf_gl->s = vbuf->tex.u / vbuf->rhw / 65536.0f;
         vbuf_gl->t = vbuf->tex.v / vbuf->rhw / 65536.0f;
@@ -334,7 +335,7 @@ static void M_InsertPolyFlat(
         GFX_3D_VERTEX *const vbuf_gl = &m_HWR_VertexPtr[i];
         vbuf_gl->x = vbuf->pos.x;
         vbuf_gl->y = vbuf->pos.y;
-        vbuf_gl->z = MAKE_DEPTH(vbuf);
+        vbuf_gl->z = M_MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
         M_ShadeLightColor(
             vbuf_gl, vbuf->g, false, color.r, color.g, color.b,
@@ -592,7 +593,7 @@ static void M_InsertGT3_Sorted(
                 GFX_3D_VERTEX *const vbuf_gl = &m_HWR_VertexPtr[i];
                 vbuf_gl->x = vtx[i]->xs;
                 vbuf_gl->y = vtx[i]->ys;
-                vbuf_gl->z = MAKE_DEPTH(vtx[i]);
+                vbuf_gl->z = M_MAKE_DEPTH(vtx[i]);
                 vbuf_gl->w = vtx[i]->rhw;
                 vbuf_gl->s = (double)uv[i]->u / 65536.0f;
                 vbuf_gl->t = (double)uv[i]->v / 65536.0f;
@@ -685,7 +686,7 @@ static void M_InsertGT4_Sorted(
                 GFX_3D_VERTEX *const vbuf_gl = &m_HWR_VertexPtr[i];
                 vbuf_gl->x = vtx[i]->xs;
                 vbuf_gl->y = vtx[i]->ys;
-                vbuf_gl->z = MAKE_DEPTH(vtx[i]);
+                vbuf_gl->z = M_MAKE_DEPTH(vtx[i]);
                 vbuf_gl->w = vtx[i]->rhw;
                 vbuf_gl->s = texture->uv[i].u / 65536.0f;
                 vbuf_gl->t = texture->uv[i].v / 65536.0f;
@@ -742,7 +743,7 @@ static void M_InsertFlatRect_Sorted(
     g_Info3DPtr += sizeof(GFX_3D_VERTEX *) / sizeof(int16_t);
 
     const double rhw = g_RhwFactor / (double)z;
-    const double sz = MAKE_DEPTH_FROM_RHW(rhw);
+    const double sz = M_MAKE_DEPTH_FROM_RHW(rhw);
 
     m_HWR_VertexPtr[0].x = x1;
     m_HWR_VertexPtr[0].y = y1;
@@ -770,7 +771,7 @@ static void M_InsertLine_Sorted(
     const int32_t x2, const int32_t y2, int32_t z, const uint8_t color_idx)
 {
     const double rhw = g_RhwFactor / (double)z;
-    const double sz = MAKE_DEPTH_FROM_RHW(rhw);
+    const double sz = M_MAKE_DEPTH_FROM_RHW(rhw);
 
     g_Sort3DPtr->_0 = g_Info3DPtr;
     g_Sort3DPtr->_1 = MAKE_ZSORT(z);
@@ -878,7 +879,7 @@ static void M_InsertTransQuad(
     const double x1 = (double)(x + width);
     const double y1 = (double)(y + height);
     const double rhw = g_RhwFactor / (double)z;
-    const double sz = MAKE_DEPTH_FROM_RHW(rhw);
+    const double sz = M_MAKE_DEPTH_FROM_RHW(rhw);
 
     g_Sort3DPtr->_0 = g_Info3DPtr;
     g_Sort3DPtr->_1 = MAKE_ZSORT(z);
@@ -984,7 +985,7 @@ static void M_InsertGT3_ZBuffered(
                 GFX_3D_VERTEX *const vbuf_gl = &m_VBufferGL[i];
                 vbuf_gl->x = vtx[i]->xs;
                 vbuf_gl->y = vtx[i]->ys;
-                vbuf_gl->z = MAKE_DEPTH(vtx[i]);
+                vbuf_gl->z = M_MAKE_DEPTH(vtx[i]);
                 vbuf_gl->w = vtx[i]->rhw;
                 vbuf_gl->s = (double)uv[i]->u / 65536.0f;
                 vbuf_gl->t = (double)uv[i]->v / 65536.0f;
@@ -1078,7 +1079,7 @@ static void M_InsertGT4_ZBuffered(
         GFX_3D_VERTEX *const vbuf_gl = &m_VBufferGL[i];
         vbuf_gl->x = vtx[i]->xs;
         vbuf_gl->y = vtx[i]->ys;
-        vbuf_gl->z = MAKE_DEPTH(vtx[i]);
+        vbuf_gl->z = M_MAKE_DEPTH(vtx[i]);
         vbuf_gl->w = vtx[i]->rhw;
         vbuf_gl->s = texture->uv[i].u / 65536.0f;
         vbuf_gl->t = texture->uv[i].v / 65536.0f;
@@ -1147,7 +1148,7 @@ static void M_InsertFlatRect_ZBuffered(
     CLAMP(z, g_PhdNearZ, g_PhdFarZ);
 
     const double rhw = g_RhwFactor / (double)z;
-    const double sz = MAKE_DEPTH_FROM_RHW(rhw);
+    const double sz = M_MAKE_DEPTH_FROM_RHW(rhw);
 
     m_VBufferGL[0].x = x1;
     m_VBufferGL[0].y = y1;
@@ -1180,7 +1181,7 @@ static void M_InsertLine_ZBuffered(
     CLAMPL(z, g_PhdNearZ);
 
     const double rhw = g_RhwFactor / (double)z;
-    const double sz = MAKE_DEPTH_FROM_RHW(rhw);
+    const double sz = M_MAKE_DEPTH_FROM_RHW(rhw);
 
     m_VBufferGL[0].x = x1;
     m_VBufferGL[0].y = y1;

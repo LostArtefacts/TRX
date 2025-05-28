@@ -12,3 +12,7 @@
 #define SHADE_NEUTRAL 0x1000
 
 #define WIBBLE_SIZE 32
+
+// TODO: get rid of these
+#define PHD_ONE 0x10000
+#define PHD_HALF 0x100

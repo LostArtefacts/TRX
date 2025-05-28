@@ -21,6 +21,10 @@
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
+#define M_MAX_WIBBLE 2
+#define M_MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
+#define M_SUNSET_TIMEOUT (40 * 60 * (LOGIC_FPS)) // = 72000
+
 static int32_t m_VBufCapacity = 0;
 static int32_t m_TickComp = 0;
 static int32_t m_LsAdder = 0;
@@ -815,12 +819,12 @@ void Output_CalculateWibbleTable(void)
 {
     for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
         const int32_t sine = Math_Sin(i * DEG_360 / WIBBLE_SIZE);
-        m_WibbleTable[i] = (sine * MAX_WIBBLE) >> W2V_SHIFT;
+        m_WibbleTable[i] = (sine * M_MAX_WIBBLE) >> W2V_SHIFT;
         m_ShadesTable[i] = (sine * SHADE_CAUSTICS) >> W2V_SHIFT;
         m_RandomTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
         for (int32_t j = 0; j < WIBBLE_SIZE; j++) {
             m_RoomLightTables[i].table[j] = (j - (WIBBLE_SIZE / 2)) * i
-                * MAX_ROOM_LIGHT_UNIT / (WIBBLE_SIZE - 1);
+                * M_MAX_ROOM_LIGHT_UNIT / (WIBBLE_SIZE - 1);
         }
     }
 }
@@ -971,9 +975,9 @@ void Output_AnimateTextures(const int32_t ticks)
 
     if (m_IsSunsetEnabled) {
         m_SunsetTimer += ticks;
-        CLAMPG(m_SunsetTimer, SUNSET_TIMEOUT);
+        CLAMPG(m_SunsetTimer, M_SUNSET_TIMEOUT);
         m_RoomLightShades[RLM_SUNSET] =
-            m_SunsetTimer * (WIBBLE_SIZE - 1) / SUNSET_TIMEOUT;
+            m_SunsetTimer * (WIBBLE_SIZE - 1) / M_SUNSET_TIMEOUT;
     }
 
     m_TickComp += ticks;

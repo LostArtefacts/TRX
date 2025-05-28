@@ -9,8 +9,8 @@
 #include <libtrx/game/gun/const.h>
 #include <libtrx/utils.h>
 
-// TODO: make configurable
-#define MAX_SAVE_SLOTS MAX_REQUESTER_ITEMS
+// TODO: make configurable (legacy MAX_REQUESTER_ITEMS)
+#define MAX_SAVE_SLOTS 24
 
 int32_t Savegame_GetSlotCount(void)
 {

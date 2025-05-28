@@ -10,12 +10,13 @@
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
-#define MAKE_Q_ID(g) ((g >> 16) & 0xFF)
-#define MAKE_TEX_ID(v, u) ((((v >> 16) & 0xFF) << 8) | ((u >> 16) & 0xFF))
-#define MAKE_PAL_IDX(c) (c)
-#define PIX_FMT uint8_t
-#define PIX_FMT_GL GL_UNSIGNED_BYTE
-#define ALPHA_FMT uint8_t
+#define M_MAKE_Q_ID(g) ((g >> 16) & 0xFF)
+#define M_MAKE_TEX_ID(v, u) ((((v >> 16) & 0xFF) << 8) | ((u >> 16) & 0xFF))
+#define M_MAKE_PAL_IDX(c) (c)
+#define M_PIX_FMT uint8_t
+#define M_PIX_FMT_GL GL_UNSIGNED_BYTE
+#define M_ALPHA_FMT uint8_t
+#define M_LIGHT_MAP_SIZE 32
 
 typedef enum {
     POLY_GTMAP,
@@ -213,17 +214,17 @@ static void M_FlatA(
     const XBUF_X *xbuf = (const XBUF_X *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
 
     while (y_size > 0) {
         const int32_t x = xbuf->x1 / PHD_ONE;
         const int32_t x_size = (xbuf->x2 / PHD_ONE) - x;
         if (x_size > 0) {
             memset(
-                target_ptr + x, MAKE_PAL_IDX(color_idx),
-                x_size * sizeof(PIX_FMT));
-            memset(alpha_ptr + x, 255, x_size * sizeof(ALPHA_FMT));
+                target_ptr + x, M_MAKE_PAL_IDX(color_idx),
+                x_size * sizeof(M_PIX_FMT));
+            memset(alpha_ptr + x, 255, x_size * sizeof(M_ALPHA_FMT));
         }
         y_size--;
         xbuf++;
@@ -237,15 +238,15 @@ static void M_TransA(
     const int32_t y1, const int32_t y2, const uint8_t depth)
 {
     int32_t y_size = y2 - y1;
-    if (y_size <= 0 || depth >= LIGHT_MAP_SIZE) {
+    if (y_size <= 0 || depth >= M_LIGHT_MAP_SIZE) {
         return;
     }
 
     const XBUF_X *xbuf = (const XBUF_X *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
     const LIGHT_MAP *const map = Output_GetLightMap(depth);
 
     while (y_size > 0) {
@@ -255,10 +256,10 @@ static void M_TransA(
             goto loop_end;
         }
 
-        PIX_FMT *target_line_ptr = target_ptr + x;
-        ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
+        M_PIX_FMT *target_line_ptr = target_ptr + x;
+        M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         while (x_size > 0) {
-            *target_line_ptr = MAKE_PAL_IDX(map->index[*target_line_ptr]);
+            *target_line_ptr = M_MAKE_PAL_IDX(map->index[*target_line_ptr]);
             target_line_ptr++;
             *alpha_line_ptr++ = 255;
             x_size--;
@@ -284,8 +285,8 @@ static void M_GourA(
     const XBUF_XG *xbuf = (const XBUF_XG *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
     const SHADE_MAP *const map = Output_GetShadeMap(color_idx);
 
     while (y_size > 0) {
@@ -298,10 +299,10 @@ static void M_GourA(
         int32_t g = xbuf->g1;
         const int32_t g_add = (xbuf->g2 - g) / x_size;
 
-        PIX_FMT *target_line_ptr = target_ptr + x;
-        ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
+        M_PIX_FMT *target_line_ptr = target_ptr + x;
+        M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         while (x_size > 0) {
-            *target_line_ptr++ = MAKE_PAL_IDX(map->index[MAKE_Q_ID(g)]);
+            *target_line_ptr++ = M_MAKE_PAL_IDX(map->index[M_MAKE_Q_ID(g)]);
             *alpha_line_ptr++ = 255;
             g += g_add;
             x_size--;
@@ -327,8 +328,8 @@ static void M_GTMapA(
     const XBUF_XGUV *xbuf = (const XBUF_XGUV *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
 
     while (y_size > 0) {
         const int32_t x = xbuf->x1 / PHD_ONE;
@@ -344,12 +345,12 @@ static void M_GTMapA(
         const int32_t u_add = (xbuf->u2 - u) / x_size;
         const int32_t v_add = (xbuf->v2 - v) / x_size;
 
-        PIX_FMT *target_line_ptr = target_ptr + x;
-        ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
+        M_PIX_FMT *target_line_ptr = target_ptr + x;
+        M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         while (x_size > 0) {
-            uint8_t color_idx = tex_page[MAKE_TEX_ID(v, u)];
-            *target_line_ptr++ = MAKE_PAL_IDX(
-                Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx]);
+            uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v, u)];
+            *target_line_ptr++ = M_MAKE_PAL_IDX(
+                Output_GetLightMap(M_MAKE_Q_ID(g))->index[color_idx]);
             *alpha_line_ptr++ = 255;
             g += g_add;
             u += u_add;
@@ -377,8 +378,8 @@ static void M_WGTMapA(
     const XBUF_XGUV *xbuf = (const XBUF_XGUV *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
 
     while (y_size > 0) {
         const int32_t x = xbuf->x1 / PHD_ONE;
@@ -394,13 +395,13 @@ static void M_WGTMapA(
         const int32_t u_add = (xbuf->u2 - u) / x_size;
         const int32_t v_add = (xbuf->v2 - v) / x_size;
 
-        PIX_FMT *target_line_ptr = target_ptr + x;
-        ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
+        M_PIX_FMT *target_line_ptr = target_ptr + x;
+        M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         while (x_size > 0) {
-            const uint8_t color_idx = tex_page[MAKE_TEX_ID(v, u)];
+            const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v, u)];
             if (color_idx != 0) {
-                *target_line_ptr = MAKE_PAL_IDX(
-                    Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx]);
+                *target_line_ptr = M_MAKE_PAL_IDX(
+                    Output_GetLightMap(M_MAKE_Q_ID(g))->index[color_idx]);
                 *alpha_line_ptr = 255;
             }
             target_line_ptr++;
@@ -431,8 +432,8 @@ static void M_GTMapPersp32FP(
     const XBUF_XGUVP *xbuf = (const XBUF_XGUVP *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
 
     while (y_size > 0) {
         const int32_t x = xbuf->x1 / PHD_ONE;
@@ -451,8 +452,8 @@ static void M_GTMapPersp32FP(
         int32_t u0 = PHD_HALF * u / rhw;
         int32_t v0 = PHD_HALF * v / rhw;
 
-        PIX_FMT *target_line_ptr = target_ptr + x;
-        ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
+        M_PIX_FMT *target_line_ptr = target_ptr + x;
+        M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         int32_t batch_size = 32;
 
         if (x_size >= batch_size) {
@@ -477,11 +478,12 @@ static void M_GTMapPersp32FP(
                 if ((ABS(u0_add) + ABS(v0_add)) < (PHD_ONE / 2)) {
                     int32_t batch_counter = batch_size / 2;
                     while (batch_counter--) {
-                        const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
-                        const uint8_t color =
-                            Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                        *target_line_ptr++ = MAKE_PAL_IDX(color);
-                        *target_line_ptr++ = MAKE_PAL_IDX(color);
+                        const uint8_t color_idx =
+                            tex_page[M_MAKE_TEX_ID(v0, u0)];
+                        const uint8_t color = Output_GetLightMap(M_MAKE_Q_ID(g))
+                                                  ->index[color_idx];
+                        *target_line_ptr++ = M_MAKE_PAL_IDX(color);
+                        *target_line_ptr++ = M_MAKE_PAL_IDX(color);
                         *alpha_line_ptr++ = 255;
                         *alpha_line_ptr++ = 255;
                         g += g_add * 2;
@@ -491,10 +493,11 @@ static void M_GTMapPersp32FP(
                 } else {
                     int32_t batch_counter = batch_size;
                     while (batch_counter--) {
-                        const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
-                        const uint8_t color =
-                            Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                        *target_line_ptr++ = MAKE_PAL_IDX(color);
+                        const uint8_t color_idx =
+                            tex_page[M_MAKE_TEX_ID(v0, u0)];
+                        const uint8_t color = Output_GetLightMap(M_MAKE_Q_ID(g))
+                                                  ->index[color_idx];
+                        *target_line_ptr++ = M_MAKE_PAL_IDX(color);
                         *alpha_line_ptr++ = 255;
                         g += g_add;
                         u0 += u0_add;
@@ -520,11 +523,11 @@ static void M_GTMapPersp32FP(
             if ((ABS(u0_add) + ABS(v0_add)) < (PHD_ONE / 2)) {
                 int32_t batch_counter = batch_size / 2;
                 while (batch_counter--) {
-                    const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+                    const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v0, u0)];
                     const uint8_t color =
-                        Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                    *target_line_ptr++ = MAKE_PAL_IDX(color);
-                    *target_line_ptr++ = MAKE_PAL_IDX(color);
+                        Output_GetLightMap(M_MAKE_Q_ID(g))->index[color_idx];
+                    *target_line_ptr++ = M_MAKE_PAL_IDX(color);
+                    *target_line_ptr++ = M_MAKE_PAL_IDX(color);
                     *alpha_line_ptr++ = 255;
                     *alpha_line_ptr++ = 255;
                     g += g_add * 2;
@@ -534,10 +537,10 @@ static void M_GTMapPersp32FP(
             } else {
                 int32_t batch_counter = batch_size;
                 while (batch_counter--) {
-                    const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+                    const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v0, u0)];
                     const uint8_t color =
-                        Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                    *target_line_ptr++ = MAKE_PAL_IDX(color);
+                        Output_GetLightMap(M_MAKE_Q_ID(g))->index[color_idx];
+                    *target_line_ptr++ = M_MAKE_PAL_IDX(color);
                     *alpha_line_ptr++ = 255;
                     g += g_add;
                     u0 += u0_add;
@@ -547,10 +550,10 @@ static void M_GTMapPersp32FP(
         }
 
         if (x_size == 1) {
-            const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+            const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v0, u0)];
             const uint8_t color =
-                Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-            *target_line_ptr = MAKE_PAL_IDX(color);
+                Output_GetLightMap(M_MAKE_Q_ID(g))->index[color_idx];
+            *target_line_ptr = M_MAKE_PAL_IDX(color);
             *alpha_line_ptr = 255;
         }
 
@@ -574,8 +577,8 @@ static void M_WGTMapPersp32FP(
     const XBUF_XGUVP *xbuf = (const XBUF_XGUVP *)m_XBuffer + y1;
     const int32_t target_stride = target_surface->desc.pitch;
     const int32_t alpha_stride = alpha_surface->desc.pitch;
-    PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
-    ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
+    M_PIX_FMT *target_ptr = target_surface->buffer + y1 * target_stride;
+    M_ALPHA_FMT *alpha_ptr = alpha_surface->buffer + y1 * alpha_stride;
 
     while (y_size > 0) {
         const int32_t x = xbuf->x1 / PHD_ONE;
@@ -594,8 +597,8 @@ static void M_WGTMapPersp32FP(
         int32_t u0 = PHD_HALF * u / rhw;
         int32_t v0 = PHD_HALF * v / rhw;
 
-        PIX_FMT *target_line_ptr = target_ptr + x;
-        ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
+        M_PIX_FMT *target_line_ptr = target_ptr + x;
+        M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         int32_t batch_size = 32;
 
         if (x_size >= batch_size) {
@@ -620,13 +623,14 @@ static void M_WGTMapPersp32FP(
                 if ((ABS(u0_add) + ABS(v0_add)) < (PHD_ONE / 2)) {
                     int32_t batch_counter = batch_size / 2;
                     while (batch_counter--) {
-                        const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+                        const uint8_t color_idx =
+                            tex_page[M_MAKE_TEX_ID(v0, u0)];
                         if (color_idx != 0) {
                             const uint8_t color =
-                                Output_GetLightMap(MAKE_Q_ID(g))
+                                Output_GetLightMap(M_MAKE_Q_ID(g))
                                     ->index[color_idx];
-                            target_line_ptr[0] = MAKE_PAL_IDX(color);
-                            target_line_ptr[1] = MAKE_PAL_IDX(color);
+                            target_line_ptr[0] = M_MAKE_PAL_IDX(color);
+                            target_line_ptr[1] = M_MAKE_PAL_IDX(color);
                             alpha_line_ptr[0] = 255;
                             alpha_line_ptr[1] = 255;
                         }
@@ -639,12 +643,13 @@ static void M_WGTMapPersp32FP(
                 } else {
                     int32_t batch_counter = batch_size;
                     while (batch_counter--) {
-                        const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+                        const uint8_t color_idx =
+                            tex_page[M_MAKE_TEX_ID(v0, u0)];
                         if (color_idx != 0) {
                             const uint8_t color =
-                                Output_GetLightMap(MAKE_Q_ID(g))
+                                Output_GetLightMap(M_MAKE_Q_ID(g))
                                     ->index[color_idx];
-                            *target_line_ptr = MAKE_PAL_IDX(color);
+                            *target_line_ptr = M_MAKE_PAL_IDX(color);
                             *alpha_line_ptr = 255;
                         }
                         target_line_ptr++;
@@ -673,12 +678,12 @@ static void M_WGTMapPersp32FP(
             if ((ABS(u0_add) + ABS(v0_add)) < (PHD_ONE / 2)) {
                 int32_t batch_counter = batch_size / 2;
                 while (batch_counter--) {
-                    const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+                    const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v0, u0)];
                     if (color_idx != 0) {
-                        const uint8_t color =
-                            Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                        target_line_ptr[0] = MAKE_PAL_IDX(color);
-                        target_line_ptr[1] = MAKE_PAL_IDX(color);
+                        const uint8_t color = Output_GetLightMap(M_MAKE_Q_ID(g))
+                                                  ->index[color_idx];
+                        target_line_ptr[0] = M_MAKE_PAL_IDX(color);
+                        target_line_ptr[1] = M_MAKE_PAL_IDX(color);
                         alpha_line_ptr[0] = 255;
                         alpha_line_ptr[1] = 255;
                     }
@@ -691,11 +696,11 @@ static void M_WGTMapPersp32FP(
             } else {
                 int32_t batch_counter = batch_size;
                 while (batch_counter--) {
-                    const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+                    const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v0, u0)];
                     if (color_idx != 0) {
-                        const uint8_t color =
-                            Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                        *target_line_ptr = MAKE_PAL_IDX(color);
+                        const uint8_t color = Output_GetLightMap(M_MAKE_Q_ID(g))
+                                                  ->index[color_idx];
+                        *target_line_ptr = M_MAKE_PAL_IDX(color);
                         *alpha_line_ptr = 255;
                     }
                     target_line_ptr++;
@@ -708,11 +713,11 @@ static void M_WGTMapPersp32FP(
         }
 
         if (x_size == 1) {
-            const uint8_t color_idx = tex_page[MAKE_TEX_ID(v0, u0)];
+            const uint8_t color_idx = tex_page[M_MAKE_TEX_ID(v0, u0)];
             if (color_idx != 0) {
                 const uint8_t color =
-                    Output_GetLightMap(MAKE_Q_ID(g))->index[color_idx];
-                *target_line_ptr = MAKE_PAL_IDX(color);
+                    Output_GetLightMap(M_MAKE_Q_ID(g))->index[color_idx];
+                *target_line_ptr = M_MAKE_PAL_IDX(color);
                 *alpha_line_ptr = 255;
             }
         }
@@ -1171,8 +1176,8 @@ static void M_DrawPolyLine(
 
     int32_t x_size = x2 - x1;
     int32_t y_size = y2 - y1;
-    PIX_FMT *target_ptr = &target_surface->buffer[x1 + target_stride * y1];
-    ALPHA_FMT *alpha_ptr = &alpha_surface->buffer[x1 + target_stride * y1];
+    M_PIX_FMT *target_ptr = &target_surface->buffer[x1 + target_stride * y1];
+    M_ALPHA_FMT *alpha_ptr = &alpha_surface->buffer[x1 + target_stride * y1];
 
     if (!x_size && !y_size) {
         *target_ptr = lcolor;
@@ -1269,8 +1274,8 @@ static void M_DrawScaledSpriteC(
 
     const uint8_t *const page = Output_GetTexturePage8(sprite->tex_page);
     const uint8_t *const src_base = &page[sprite->offset];
-    PIX_FMT *target_ptr = &target_surface->buffer[y0 * target_stride + x0];
-    ALPHA_FMT *alpha_ptr = &alpha_surface->buffer[y0 * target_stride + x0];
+    M_PIX_FMT *target_ptr = &target_surface->buffer[y0 * target_stride + x0];
+    M_ALPHA_FMT *alpha_ptr = &alpha_surface->buffer[y0 * target_stride + x0];
     const int32_t dst_add = target_stride - width;
 
     const bool use_light_map = map != Output_GetLightMap(16);
@@ -1317,10 +1322,10 @@ static void M_Open(RENDERER *const renderer)
         GFX_2D_SURFACE_DESC surface_desc = {
             .width = g_PhdWinWidth,
             .height = g_PhdWinHeight,
-            .pitch = g_PhdWinWidth * sizeof(PIX_FMT),
-            .bit_count = sizeof(PIX_FMT) * 8,
+            .pitch = g_PhdWinWidth * sizeof(M_PIX_FMT),
+            .bit_count = sizeof(M_PIX_FMT) * 8,
             .tex_format = GL_RED,
-            .tex_type = PIX_FMT_GL,
+            .tex_type = M_PIX_FMT_GL,
         };
         priv->surface = GFX_2D_Surface_Create(&surface_desc);
         ASSERT(priv->surface != nullptr);
