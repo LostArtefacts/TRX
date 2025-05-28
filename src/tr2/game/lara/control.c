@@ -531,7 +531,7 @@ void Lara_Control(const int16_t item_num)
                 item->pos.y += 1 - water_height_diff;
                 item->rot.z = 0;
                 item->rot.x = 0;
-                g_Lara.dive_count = 11;
+                g_Lara.dive_timer = 11;
                 g_Lara.torso_rot.y = 0;
                 g_Lara.torso_rot.x = 0;
                 g_Lara.head_rot.y = 0;
@@ -610,7 +610,7 @@ void Lara_Control(const int16_t item_num)
                 item->rot.x = 0;
                 item->gravity = false;
                 item->fall_speed = 0;
-                g_Lara.dive_count = 0;
+                g_Lara.dive_timer = 0;
                 g_Lara.torso_rot.y = 0;
                 g_Lara.torso_rot.x = 0;
                 g_Lara.head_rot.y = 0;
@@ -787,7 +787,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.pose_count = 0;
     g_Lara.hit_frame = 0;
     g_Lara.air = LARA_MAX_AIR;
-    g_Lara.dive_count = 0;
+    g_Lara.dive_timer = 0;
     g_Lara.death_timer = 0;
     g_Lara.hit_effect_count = 0;
     g_Lara.flare_age = 0;

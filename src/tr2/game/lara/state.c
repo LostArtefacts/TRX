@@ -912,7 +912,7 @@ void Lara_State_SurfSwim(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    g_Lara.dive_count = 0;
+    g_Lara.dive_timer = 0;
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
         if (g_Input.left) {
             item->rot.y -= LARA_SLOW_TURN;
@@ -934,7 +934,7 @@ void Lara_State_SurfBack(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    g_Lara.dive_count = 0;
+    g_Lara.dive_timer = 0;
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
         if (g_Input.left) {
             item->rot.y -= LARA_SURF_TURN;
@@ -956,7 +956,7 @@ void Lara_State_SurfLeft(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    g_Lara.dive_count = 0;
+    g_Lara.dive_timer = 0;
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
         if (g_Input.left) {
             item->rot.y -= LARA_SURF_TURN;
@@ -978,7 +978,7 @@ void Lara_State_SurfRight(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    g_Lara.dive_count = 0;
+    g_Lara.dive_timer = 0;
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
         if (g_Input.left) {
             item->rot.y -= LARA_SURF_TURN;
@@ -1026,8 +1026,8 @@ void Lara_State_SurfTread(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.jump) {
-        g_Lara.dive_count++;
-        if (g_Lara.dive_count == 10) {
+        g_Lara.dive_timer++;
+        if (g_Lara.dive_timer == 10) {
             Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;
@@ -1036,7 +1036,7 @@ void Lara_State_SurfTread(ITEM *item, COLL_INFO *coll)
             g_Lara.water_status = LWS_UNDERWATER;
         }
     } else {
-        g_Lara.dive_count = 0;
+        g_Lara.dive_timer = 0;
     }
 }
 
