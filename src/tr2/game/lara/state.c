@@ -254,7 +254,7 @@ void Lara_State_TurnRight(ITEM *item, COLL_INFO *coll)
 
     g_Lara.turn_rate += LARA_TURN_RATE;
 
-    if (g_Lara.gun_status == LWS_WADE) {
+    if (g_Lara.gun_status == LGS_READY) {
         item->goal_anim_state = LS_FAST_TURN;
     } else if (g_Lara.turn_rate > LARA_SLOW_TURN) {
         if (g_Input.slow) {

@@ -181,6 +181,9 @@ void Gun_Control(void)
             break;
         }
         break;
+
+    default:
+        break;
     }
 }
 
