@@ -155,7 +155,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     g_Lara.air = LARA_MAX_AIR;
     g_Lara.death_timer = 0;
     g_Lara.mesh_effects = 0;
-    g_Lara.burn = 0;
+    g_Lara.burn = false;
     g_Lara.extra_anim = false;
     g_LaraItem->enable_shadow = true;
     g_LaraItem->hit_points = LARA_MAX_HITPOINTS;

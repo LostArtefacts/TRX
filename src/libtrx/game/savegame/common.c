@@ -153,7 +153,7 @@ static void M_LoadPostprocess(void)
     LOT_ClearLOT(&lara->lot);
 #else
     if (lara->burn) {
-        lara->burn = 0;
+        lara->burn = false;
         Lara_CatchFire();
     }
 #endif
