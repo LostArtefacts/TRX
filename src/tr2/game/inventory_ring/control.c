@@ -416,7 +416,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 ring->is_pass_open = true;
             }
 
-            g_SoundOptionLine = 0;
             INVENTORY_ITEM *inv_item;
             if (ring->type == RT_MAIN) {
                 g_InvRing_Source[RT_MAIN].current = ring->current_object;
@@ -799,8 +798,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             }
         }
     }
-
-    g_SoundOptionLine = 0;
 
     INV_RING *const ring = Memory_Alloc(sizeof(INV_RING));
     ring->mode = mode;

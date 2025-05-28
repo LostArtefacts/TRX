@@ -50,7 +50,6 @@ extern float g_FltWinRight;
 extern int32_t g_PhdWinRight;
 extern int32_t g_SurfaceCount;
 extern SORT_ITEM *g_Sort3DPtr;
-extern uint16_t g_SoundOptionLine;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern WEAPON_INFO g_Weapons[];
