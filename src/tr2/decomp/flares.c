@@ -125,8 +125,8 @@ void Flare_DoInHand(const int32_t flare_age)
 
     g_Lara.left_arm.flash_gun = Flare_DoLight(&vec, flare_age);
 
-    if (g_Lara.flare_age < MAX_FLARE_AGE) {
-        g_Lara.flare_age++;
+    if (g_Lara.flare.age < MAX_FLARE_AGE) {
+        g_Lara.flare.age++;
         M_DoBurnEffects(g_LaraItem->pos, vec, g_LaraItem->room_num);
     } else if (M_CanThrowFlare()) {
         g_Lara.gun_status = LGS_UNDRAW;
@@ -223,10 +223,10 @@ void Flare_Create(const bool thrown)
         item->fall_speed = g_LaraItem->fall_speed + 50;
     }
 
-    if (Flare_DoLight(&item->pos, g_Lara.flare_age)) {
-        item->data = (void *)(intptr_t)(g_Lara.flare_age | 0x8000);
+    if (Flare_DoLight(&item->pos, g_Lara.flare.age)) {
+        item->data = (void *)(intptr_t)(g_Lara.flare.age | 0x8000);
     } else {
-        item->data = (void *)(intptr_t)(g_Lara.flare_age & ~0x8000);
+        item->data = (void *)(intptr_t)(g_Lara.flare.age & ~0x8000);
     }
 
     Item_AddActive(item_num);
@@ -258,8 +258,8 @@ void Flare_Draw(void)
 {
     if (g_LaraItem->current_anim_state == LS_FLARE_PICKUP
         || g_LaraItem->current_anim_state == LS_PICKUP) {
-        Flare_DoInHand(g_Lara.flare_age);
-        g_Lara.flare_control = false;
+        Flare_DoInHand(g_Lara.flare.age);
+        g_Lara.flare.control = false;
         g_Lara.left_arm.frame_num = LF_FL_2_HOLD - 2;
         Flare_SetArm(g_Lara.left_arm.frame_num);
         return;
@@ -267,7 +267,7 @@ void Flare_Draw(void)
 
     int32_t frame_num = g_Lara.left_arm.frame_num + 1;
 
-    g_Lara.flare_control = true;
+    g_Lara.flare.control = true;
 
     if (frame_num < LF_FL_DRAW || frame_num > LF_FL_2_HOLD - 1) {
         frame_num = LF_FL_DRAW;
@@ -278,12 +278,12 @@ void Flare_Draw(void)
         }
     } else if (frame_num >= LF_FL_IGNITE && frame_num <= LF_FL_2_HOLD - 2) {
         if (frame_num == LF_FL_IGNITE) {
-            g_Lara.flare_age = 0;
+            g_Lara.flare.age = 0;
         }
-        Flare_DoInHand(g_Lara.flare_age);
+        Flare_DoInHand(g_Lara.flare.age);
     } else if (frame_num == LF_FL_2_HOLD - 1) {
         Flare_Ready();
-        Flare_DoInHand(g_Lara.flare_age);
+        Flare_DoInHand(g_Lara.flare.age);
         frame_num = LF_FL_HOLD;
     }
 
@@ -294,20 +294,20 @@ void Flare_Draw(void)
 void Flare_Undraw(void)
 {
     int16_t frame_num_1 = g_Lara.left_arm.frame_num;
-    int16_t frame_num_2 = g_Lara.flare_frame;
+    int16_t frame_num_2 = g_Lara.flare.frame_num;
 
-    g_Lara.flare_control = true;
+    g_Lara.flare.control = true;
 
     if (g_LaraItem->goal_anim_state == LS_STOP
         && g_Lara.vehicle_item_num == NO_ITEM) {
         if (Item_TestAnimEqual(g_LaraItem, LA_STAND_IDLE)) {
             Item_SwitchToAnim(g_LaraItem, LA_FLARE_THROW, frame_num_1);
-            g_Lara.flare_frame = g_LaraItem->frame_num;
+            g_Lara.flare.frame_num = g_LaraItem->frame_num;
             frame_num_2 = g_LaraItem->frame_num;
         }
 
         if (Item_TestAnimEqual(g_LaraItem, LA_FLARE_THROW)) {
-            g_Lara.flare_control = false;
+            g_Lara.flare.control = false;
 
             if (frame_num_2 >= Anim_GetAnim(LA_FLARE_THROW)->frame_base
                     + LF_FL_THROW_FT - 1) {
@@ -319,12 +319,12 @@ void Flare_Undraw(void)
                 g_Lara.right_arm.lock = 0;
                 g_Lara.left_arm.lock = 0;
                 Item_SwitchToAnim(g_LaraItem, LA_STAND_STILL, 0);
-                g_Lara.flare_frame = g_LaraItem->frame_num;
+                g_Lara.flare.frame_num = g_LaraItem->frame_num;
                 g_LaraItem->current_anim_state = LS_STOP;
                 g_LaraItem->goal_anim_state = LS_STOP;
                 return;
             }
-            g_Lara.flare_frame = frame_num_2 + 1;
+            g_Lara.flare.frame_num = frame_num_2 + 1;
         }
     } else if (
         g_LaraItem->current_anim_state == LS_STOP
@@ -351,10 +351,10 @@ void Flare_Undraw(void)
             g_Lara.gun_status = LGS_ARMLESS;
             Gun_InitialiseNewWeapon();
             g_Lara.target = nullptr;
-            g_Lara.flare_control = false;
+            g_Lara.flare.control = false;
             g_Lara.right_arm.lock = 0;
             g_Lara.left_arm.lock = 0;
-            g_Lara.flare_frame = 0;
+            g_Lara.flare.frame_num = 0;
         }
     } else if (frame_num_1 >= LF_FL_2_HOLD && frame_num_1 < LF_FL_END) {
         frame_num_1++;
@@ -364,7 +364,7 @@ void Flare_Undraw(void)
     }
 
     if (frame_num_1 >= LF_FL_THROW && frame_num_1 < LF_FL_THROW_RELEASE) {
-        Flare_DoInHand(g_Lara.flare_age);
+        Flare_DoInHand(g_Lara.flare.age);
     }
 
     g_Lara.left_arm.frame_num = frame_num_1;

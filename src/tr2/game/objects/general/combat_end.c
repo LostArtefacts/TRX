@@ -90,7 +90,7 @@ static void M_PrepareCutscene(const int16_t item_num)
 {
     if (g_Lara.gun_type == LGT_FLARE) {
         Flare_Undraw();
-        g_Lara.flare_control = false;
+        g_Lara.flare.control = false;
         g_Lara.left_arm.lock = false;
     }
 

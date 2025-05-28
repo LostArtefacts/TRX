@@ -322,15 +322,15 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->death_timer = M_ReadS16();
     lara->current_active = M_ReadS16();
     lara->hit_effect_count = M_ReadS16();
-    lara->flare_age = M_ReadS16();
+    lara->flare.age = M_ReadS16();
     lara->vehicle_item_num = M_ReadS16();
     lara->gun_item_num = M_ReadS16();
     lara->back_gun = Object_UnmapGameID(M_ReadS16());
-    lara->flare_frame = M_ReadS16();
+    lara->flare.frame_num = M_ReadS16();
 
     const uint16_t flags = M_ReadU16();
     // clang-format off
-    lara->flare_control = flags >> 0;
+    lara->flare.control = flags >> 0;
     lara->extra_anim    = flags >> 2;
     lara->enable_look   = flags >> 3;
     lara->burn          = flags >> 4;
@@ -579,15 +579,15 @@ static void M_WriteLara(const LARA_INFO *const lara)
     M_WriteS16(lara->death_timer);
     M_WriteS16(lara->current_active);
     M_WriteS16(lara->hit_effect_count);
-    M_WriteS16(lara->flare_age);
+    M_WriteS16(lara->flare.age);
     M_WriteS16(lara->vehicle_item_num);
     M_WriteS16(lara->gun_item_num);
     M_WriteS16(Object_MakeGameID(lara->back_gun));
-    M_WriteS16(lara->flare_frame);
+    M_WriteS16(lara->flare.frame_num);
 
     uint16_t flags = 0;
     // clang-format off
-    if (lara->flare_control) { flags |= 1 << 0; }
+    if (lara->flare.control) { flags |= 1 << 0; }
     if (lara->extra_anim)    { flags |= 1 << 2; }
     if (lara->enable_look)   { flags |= 1 << 3; }
     if (lara->burn)          { flags |= 1 << 4; }

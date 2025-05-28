@@ -86,7 +86,7 @@ static void M_DoFlarePickup(const int16_t item_num)
     g_Lara.gun_type = LGT_FLARE;
     Gun_InitialiseNewWeapon();
     g_Lara.gun_status = LGS_SPECIAL;
-    g_Lara.flare_age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
+    g_Lara.flare.age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
     Item_Kill(item_num);
 }
 

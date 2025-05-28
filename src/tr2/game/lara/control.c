@@ -790,10 +790,10 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.dive_timer = 0;
     g_Lara.death_timer = 0;
     g_Lara.hit_effect_count = 0;
-    g_Lara.flare_age = 0;
+    g_Lara.flare.age = 0;
     g_Lara.back_gun = O_LARA;
-    g_Lara.flare_frame = 0;
-    g_Lara.flare_control = false;
+    g_Lara.flare.frame_num = 0;
+    g_Lara.flare.control = false;
     g_Lara.extra_anim = false;
     g_Lara.enable_look = true;
     g_Lara.burn = false;
