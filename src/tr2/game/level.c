@@ -40,13 +40,21 @@ typedef struct {
     int32_t file_index;
 } SAMPLE_ENTRY;
 
+typedef enum {
+    LEVEL_LAYOUT_UNKNOWN = -1,
+    LEVEL_LAYOUT_TR2X,
+    LEVEL_LAYOUT_TR2,
+    LEVEL_LAYOUT_NUMBER_OF,
+} M_LAYOUT;
+
 static int32_t M_CompareSampleOffsets(const void *a, const void *b);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_InitialiseSoundEffects(const char *const file_name);
 static void M_CompleteSetup(const GF_LEVEL *level);
-static bool M_SkimLevel(VFILE *file);
+static bool M_SkimLevel(VFILE *file, M_LAYOUT layout, bool read_items);
 
-static bool M_SkimLevel(VFILE *const file)
+static bool M_SkimLevel(
+    VFILE *const file, const M_LAYOUT layout, const bool read_items)
 {
 #define TRY_OR_FAIL(call)                                                      \
     if (!call) {                                                               \
@@ -120,13 +128,44 @@ static bool M_SkimLevel(VFILE *const file)
     TRY_OR_FAIL(VFile_TrySkip(file, box_count * 20)); // zones
 
     TRY_OR_FAIL_ARR_S32(2); // animated texture ranges
-    Level_ReadItems(file);
+    if (read_items) {
+        Level_ReadItems(file);
+    } else {
+        TRY_OR_FAIL_ARR_S32(24); // items
+    }
+
+    TRY_OR_FAIL(VFile_TrySkip(file, 32 * 256)); // light table
+    TRY_OR_FAIL_ARR_U16(16); // cinematic frames
+    TRY_OR_FAIL_ARR_U16(1); // demo data
+    TRY_OR_FAIL(VFile_TrySkip(file, 2 * SFX_NUMBER_OF)); // sample lut
+    TRY_OR_FAIL_ARR_S32(8); // sample infos
+    TRY_OR_FAIL_ARR_S32(4); // samples
+
+    if (layout == LEVEL_LAYOUT_TR2X) {
+        uint32_t inj_magic;
+        TRY_OR_FAIL(VFile_TryReadU32(file, &inj_magic));
+        TRY_OR_FAIL((inj_magic == INJECTION_MAGIC));
+    }
 
 #undef TRY_OR_FAIL
 #undef TRY_OR_FAIL_ARR_U16
 #undef TRY_OR_FAIL_ARR_S32
 
     return true;
+}
+
+static M_LAYOUT M_GuessLayout(VFILE *const file)
+{
+    M_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
+    BENCHMARK benchmark = Benchmark_Start();
+    for (M_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
+        if (M_SkimLevel(file, layout, false)) {
+            result = layout;
+            break;
+        }
+    }
+    Benchmark_End(&benchmark, nullptr);
+    return result;
 }
 
 static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
@@ -214,6 +253,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     VFILE *const file = VFile_CreateFromPath(full_path);
     Memory_FreePointer(&full_path);
 
+    const M_LAYOUT layout = M_GuessLayout(file);
+    if (layout == LEVEL_LAYOUT_UNKNOWN) {
+        Shell_ExitSystemFmt("Failed to load %s", level->path);
+    }
+
+    VFile_SetPos(file, 0);
     const int32_t version = VFile_ReadS32(file);
     if (version != 45) {
         Shell_ExitSystemFmt(
@@ -251,6 +296,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadCinematicFrames(file);
     Level_ReadDemoData(file);
     Level_ReadSamples(file);
+
+    if (layout == LEVEL_LAYOUT_TR2X) {
+        VFILE *const embedded_injection = VFile_CreateFromBuffer(
+            file->cur_ptr, file->size - VFile_GetPos(file));
+        Inject_AppendInjection(embedded_injection);
+    }
 
     VFile_Close(file);
     Benchmark_End(&benchmark, nullptr);
@@ -376,7 +427,7 @@ void Level_Init(void)
             continue;
         }
 
-        const bool result = M_SkimLevel(file);
+        const bool result = M_SkimLevel(file, LEVEL_LAYOUT_TR2, true);
         VFile_Close(file);
 
         if (result) {

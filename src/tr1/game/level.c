@@ -39,6 +39,7 @@
 
 typedef enum {
     LEVEL_LAYOUT_UNKNOWN = -1,
+    LEVEL_LAYOUT_TR1X,
     LEVEL_LAYOUT_TR1,
     LEVEL_LAYOUT_TR1_DEMO_PC,
     LEVEL_LAYOUT_NUMBER_OF,
@@ -147,6 +148,12 @@ static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
     TRY_OR_FAIL_ARR_S32(1); // sample data
     TRY_OR_FAIL_ARR_S32(4); // samples
 
+    if (layout == LEVEL_LAYOUT_TR1X) {
+        uint32_t inj_magic;
+        TRY_OR_FAIL(VFile_TryReadU32(file, &inj_magic));
+        TRY_OR_FAIL((inj_magic == INJECTION_MAGIC));
+    }
+
 #undef TRY_OR_FAIL
 #undef TRY_OR_FAIL_ARR_U16
 #undef TRY_OR_FAIL_ARR_S32
@@ -246,6 +253,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadCinematicFrames(file);
     Level_ReadDemoData(file);
     Level_ReadSamples(file);
+
+    if (layout == LEVEL_LAYOUT_TR1X) {
+        VFILE *const embedded_injection = VFile_CreateFromBuffer(
+            file->cur_ptr, file->size - VFile_GetPos(file));
+        Inject_AppendInjection(embedded_injection);
+    }
 
     VFile_SetPos(file, 4);
     Level_ReadTexturePages(file);
