@@ -16,7 +16,7 @@
 
 void Gun_Control(void)
 {
-    if (g_Lara.extra_anim) {
+    if (g_Lara.extra_anim && g_Lara.gun_status != LGS_HANDS_BUSY) {
         g_Lara.request_gun_type = LGT_UNARMED;
         return;
     }
