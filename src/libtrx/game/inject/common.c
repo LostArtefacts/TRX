@@ -7,13 +7,12 @@
 #include "game/level.h"
 #include "game/rooms.h"
 #include "memory.h"
-#include "utils.h"
 
 #include <string.h>
 #include <zlib.h>
 
-#define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
-#define INJECTION_CURRENT_VERSION 2
+#define M_INJECTION_CURRENT_VERSION 2
+#define M_VIRTUAL_NAME "virtual_injection"
 
 static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};
 static void (*m_Handlers[ICT_NUMBER_OF])(INJECTION_CHUNK chunk) = {};
@@ -27,40 +26,50 @@ static INJECTION_MESH_META *m_RoomMeta = nullptr;
 static LEVEL_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
 
-static void M_LoadFromFile(INJECTION *injection, const char *filename);
+static void M_LoadFromFile(INJECTION *injection, const char *file_name);
+static void M_ReadVFile(
+    INJECTION *injection, VFILE *file, const char *file_name);
 static INJECTION_CHUNK M_ReadChunk(const INJECTION *injection);
 static void M_InitialiseBlock(VFILE *file);
 static bool M_IsRelevant(INJECTION_FILE_TYPE type);
 static bool M_IsApplicable(const INJECTION *injection);
 
 static void M_LoadFromFile(
-    INJECTION *const injection, const char *const filename)
+    INJECTION *const injection, const char *const file_name)
 {
-    VFILE *const file = VFile_CreateFromPath(filename);
+    VFILE *const file = VFile_CreateFromPath(file_name);
     if (file == nullptr) {
-        LOG_WARNING("Could not open %s", filename);
+        LOG_WARNING("Could not open %s", file_name);
         return;
     }
 
+    M_ReadVFile(injection, file, file_name);
+}
+
+static void M_ReadVFile(
+    INJECTION *const injection, VFILE *const file, const char *const file_name)
+{
+    const char *const inj_name =
+        file_name == nullptr ? M_VIRTUAL_NAME : file_name;
     char *payload = nullptr;
 
     const uint32_t magic = VFile_ReadU32(file);
     if (magic != INJECTION_MAGIC) {
-        LOG_WARNING("Invalid injection magic in %s", filename);
+        LOG_WARNING("Invalid injection magic in %s", inj_name);
         goto cleanup;
     }
 
     injection->version = VFile_ReadS32(file);
     if (injection->version < INJ_VERSION_2
-        || injection->version > INJECTION_CURRENT_VERSION) {
+        || injection->version > M_INJECTION_CURRENT_VERSION) {
         LOG_WARNING(
-            "%s uses unsupported version %d", filename, injection->version);
+            "%s uses unsupported version %d", inj_name, injection->version);
         goto cleanup;
     }
 
     injection->type = VFile_ReadS32(file);
     if (injection->type < 0 || injection->type >= IFT_NUMBER_OF) {
-        LOG_WARNING("%s is of unknown type %d", filename, injection->type);
+        LOG_WARNING("%s is of unknown type %d", inj_name, injection->type);
         goto cleanup;
     }
 
@@ -103,7 +112,7 @@ static void M_LoadFromFile(
     }
 
     VFile_SetPos(injection->fp, 0);
-    LOG_INFO("%s queued for injection", filename);
+    LOG_INFO("%s queued for injection", inj_name);
 
 cleanup:
     Memory_FreePointer(&payload);
@@ -266,6 +275,14 @@ void Inject_InitLevel(const GF_LEVEL *const level)
     }
 
     Benchmark_End(&benchmark, nullptr);
+}
+
+void Inject_AppendInjection(VFILE *const file)
+{
+    m_Injections =
+        Memory_Realloc(m_Injections, sizeof(INJECTION) * (m_NumInjections + 1));
+    INJECTION *const injection = &m_Injections[m_NumInjections++];
+    M_ReadVFile(injection, file, nullptr);
 }
 
 void Inject_AllInjections(void)

@@ -1,8 +1,12 @@
+#include "../../utils.h"
 #include "../game_flow.h"
 #include "../level.h"
 #include "./types.h"
 
+#define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
+
 void Inject_InitLevel(const GF_LEVEL *level);
+void Inject_AppendInjection(VFILE *file);
 void Inject_AllInjections(void);
 void Inject_Cleanup(void);
 
