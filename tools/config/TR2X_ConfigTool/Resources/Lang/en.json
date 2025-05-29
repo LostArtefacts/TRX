@@ -32,6 +32,10 @@
       "Title": "Camera speed",
       "Description": "Changes how fast the manual camera moves."
     },
+    "enable_braid": {
+      "Title": "Braid",
+      "Description": "Enables Lara's braid."
+    },
     "enable_3d_pickups": {
       "Title": "3D pickups",
       "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."

@@ -32,6 +32,10 @@
       "Title": "Velocità di movimento della visuale",
       "Description": "Modifica la velocità di movimento della visuale manuale."
     },
+    "enable_braid": {
+      "Title": "Treccia",
+      "Description": "Abilita la treccia di Lara."
+    },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
       "Description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D."

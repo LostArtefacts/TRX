@@ -50,6 +50,10 @@ Currently supported commands:
   `/cheats off`  
   Enables or disables cheat keys. It's not like disabling them will make this console any less of a cheat.
 
+- `/braid on`  
+  `/braid off`  
+  Grants the power to switch Lara's iconic braid on and off.
+
 - `/wireframe on`  
   `/wireframe off`  
   Enables or disables the wireframe mode. Enter the debugging realm!
