@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../math.h"
+#include "../objects/types.h"
 
 typedef struct {
     XYZ_32 pos;
@@ -13,9 +14,11 @@ typedef struct {
     } interp;
 } HAIR_SEGMENT;
 
-extern void Lara_Hair_Initialise(void);
-extern bool Lara_Hair_IsActive(void);
-extern void Lara_Hair_Draw(void);
+void Lara_Hair_SetLaraType(GAME_OBJECT_ID lara_type);
+void Lara_Hair_Initialise(void);
+bool Lara_Hair_IsActive(void);
+void Lara_Hair_Control(bool in_cutscene);
+void Lara_Hair_Draw(void);
 
-extern int32_t Lara_Hair_GetSegmentCount(void);
-extern HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n);
+int32_t Lara_Hair_GetSegmentCount(void);
+HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n);

@@ -8,7 +8,6 @@
 #include "game/item_actions.h"
 #include "game/lara/cheat_keys.h"
 #include "game/lara/control.h"
-#include "game/lara/hair.h"
 #include "game/level.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -23,7 +22,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/interpolation.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)

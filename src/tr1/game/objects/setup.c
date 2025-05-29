@@ -1,8 +1,8 @@
 #include "game/lara/common.h"
-#include "game/lara/hair.h"
 #include "game/objects/common.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara/hair.h>
 
 #define M_DEFAULT_RADIUS 10
 

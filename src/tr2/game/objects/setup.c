@@ -1,10 +1,9 @@
 #include "game/lara/control.h"
-#include "game/lara/hair.h"
 #include "game/objects/common.h"
 #include "global/types.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 
 #define DEFAULT_RADIUS 10
 

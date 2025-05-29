@@ -122,7 +122,6 @@ sources = [
   'game/lara/common.c',
   'game/lara/control.c',
   'game/lara/draw.c',
-  'game/lara/hair.c',
   'game/lara/look.c',
   'game/lara/misc.c',
   'game/lara/state.c',

@@ -1,13 +1,12 @@
 #include "game/lara/draw.h"
 
 #include "game/gun/gun_misc.h"
-#include "game/lara/hair.h"
 #include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 
 static void M_DrawBodyPart(
