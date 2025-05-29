@@ -257,7 +257,7 @@ GF_COMMAND Demo_Control(void)
     Effect_Control();
 
     Lara_Control();
-    Lara_Hair_Control();
+    Lara_Hair_Control(false);
 
     Camera_Update();
     Sound_ResetAmbient();

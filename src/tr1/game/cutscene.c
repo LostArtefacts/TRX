@@ -110,7 +110,7 @@ GF_COMMAND Cutscene_Control(void)
 
     Item_Control();
     Effect_Control();
-    Lara_Hair_Control();
+    Lara_Hair_Control(true);
     Camera_UpdateCutscene();
     Output_AnimateTextures(1);
 

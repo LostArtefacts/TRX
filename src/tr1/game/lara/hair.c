@@ -77,7 +77,7 @@ void Lara_Hair_SetLaraType(GAME_OBJECT_ID lara_type)
     m_LaraType = lara_type;
 }
 
-void Lara_Hair_Control(void)
+void Lara_Hair_Control(const bool in_cutscene)
 {
     if (!Lara_Hair_IsActive()) {
         return;
@@ -100,7 +100,6 @@ void Lara_Hair_Control(void)
     int32_t y;
     int32_t z;
 
-    const bool in_cutscene = m_LaraType != O_LARA;
     const ANIM_FRAME *const hit_frame = Lara_GetHitFrame(g_LaraItem);
     const ANIM_FRAME *frame;
     if (!in_cutscene && hit_frame != nullptr) {
