@@ -312,6 +312,7 @@ However, you can easily download them manually from these urls:
 - added support for animated sprites
 - added the ability for custom levels to have up to two of each secret type per level
 - added an option to toggle between TR1 and TR2 camera modes
+- added an option to disable Lara's braid
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode

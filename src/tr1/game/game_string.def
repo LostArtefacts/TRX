@@ -34,5 +34,4 @@ GS_DEFINE(OSD_DOOR_OPEN_FAIL, "No doors in Lara's proximity")
 GS_DEFINE(MISC_EMPTY_SLOT_FMT, "- EMPTY SLOT %d -")
 
 GS_DEFINE(CONSOLE_HELP_DEBUG, "Toggles visual debug information.")
-GS_DEFINE(CONSOLE_HELP_BRAID, "Toggles Lara's braid.")
 GS_DEFINE(CONSOLE_HELP_VSYNC, "Toggles vertical sync.")

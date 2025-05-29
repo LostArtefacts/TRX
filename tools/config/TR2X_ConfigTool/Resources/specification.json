@@ -197,6 +197,11 @@
       "Image": "Graphics/graphic5.jpg",
       "Properties": [
         {
+          "Field": "enable_braid",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_3d_pickups",
           "DataType": "Bool",
           "DefaultValue": true

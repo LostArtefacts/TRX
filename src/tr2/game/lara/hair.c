@@ -5,6 +5,7 @@
 #include "game/random.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/math.h>
@@ -201,6 +202,10 @@ void Lara_Hair_Initialise(void)
 
 void Lara_Hair_Control(const bool in_cutscene)
 {
+    if (!Lara_Hair_IsActive()) {
+        return;
+    }
+
     const ANIM_FRAME *frame_1;
     const ANIM_FRAME *frame_2;
     int32_t frac;
@@ -383,6 +388,10 @@ void Lara_Hair_Control(const bool in_cutscene)
 
 void Lara_Hair_Draw(void)
 {
+    if (!Lara_Hair_IsActive()) {
+        return;
+    }
+
     const OBJECT *const obj = Object_Get(O_LARA_HAIR);
     for (int32_t i = 0; i < HAIR_SEGMENTS; i++) {
         const HAIR_SEGMENT *const s = &m_HairSegments[i];
@@ -397,7 +406,8 @@ void Lara_Hair_Draw(void)
 
 bool Lara_Hair_IsActive(void)
 {
-    return Object_Get(O_LARA_HAIR)->loaded && Object_Get(O_LARA)->loaded;
+    return g_Config.visuals.enable_braid && Object_Get(O_LARA_HAIR)->loaded
+        && Object_Get(O_LARA)->loaded;
 }
 
 int32_t Lara_Hair_GetSegmentCount(void)

@@ -9,6 +9,7 @@ typedef struct {
 } COMMAND_TO_OPTION_MAP;
 
 static COMMAND_TO_OPTION_MAP m_CommandToOptionMap[] = {
+    { "braid", &g_Config.visuals.enable_braid },
     { "cheats", &g_Config.gameplay.enable_cheats },
     { "wireframe", &g_Config.rendering.enable_wireframe },
     { "fps", &g_Config.rendering.fps },
@@ -32,6 +33,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_FAILURE;
 }
 
+REGISTER_CONSOLE_COMMAND("braid", M_Entrypoint, GS_ID(CONSOLE_HELP_BRAID))
 REGISTER_CONSOLE_COMMAND("cheats", M_Entrypoint, GS_ID(CONSOLE_HELP_CHEATS))
 REGISTER_CONSOLE_COMMAND(
     "wireframe", M_Entrypoint, GS_ID(CONSOLE_HELP_WIREFRAME))
