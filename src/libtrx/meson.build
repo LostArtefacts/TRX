@@ -167,6 +167,7 @@ sources = [
   'game/items/common.c',
   'game/items/utils.c',
   'game/lara/common.c',
+  'game/lara/hair.c',
   'game/lara/misc.c',
   'game/level/common.c',
   'game/level/faces.c',

@@ -3,7 +3,6 @@
 #include "decomp/decomp.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
-#include "game/lara/hair.h"
 #include "game/level.h"
 #include "game/output.h"
 #include "game/room_draw.h"
@@ -15,6 +14,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/lara/hair.h>
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 

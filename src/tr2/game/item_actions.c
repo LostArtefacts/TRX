@@ -1,6 +1,5 @@
 #include "game/item_actions.h"
 
-#include "game/lara/hair.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
@@ -12,7 +11,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/gym.h>
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/utils.h>
 
 typedef void (*M_FUNC)(ITEM *item);

@@ -69,7 +69,3 @@ void Lara_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
 void Lara_SwimCollision(ITEM *item, COLL_INFO *coll);
 
 void Lara_WaterCurrent(COLL_INFO *coll);
-
-// Returns true if Lara has the M16 equipped and is in either anim state: 0
-// (start aim); 2 (firing); or 4 (stopping firing).
-bool Lara_IsM16Active(void);

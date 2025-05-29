@@ -8,7 +8,6 @@
 #include "game/item_actions.h"
 #include "game/lara/cheat.h"
 #include "game/lara/common.h"
-#include "game/lara/hair.h"
 #include "game/level.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -22,7 +21,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 

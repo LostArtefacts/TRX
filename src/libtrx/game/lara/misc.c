@@ -92,3 +92,19 @@ void Lara_ShiftCol(COLL_INFO *const coll)
     coll->shift.y = 0;
     coll->shift.x = 0;
 }
+
+bool Lara_IsM16Active(void)
+{
+#if TR_VERSION == 1
+    return false;
+#else
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->gun_item_num == NO_ITEM || lara->gun_type != LGT_M16) {
+        return false;
+    }
+
+    const ITEM *const item = Item_Get(lara->gun_item_num);
+    return item->current_anim_state == 0 || item->current_anim_state == 2
+        || item->current_anim_state == 4;
+#endif
+}
