@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...develop) - ××××-××-××
+- changed the `/tp` command to align Lara to switches and pickups
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
 
 ## [4.11.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...tr1-4.11.2) - 2025-05-24

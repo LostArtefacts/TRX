@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
+- changed the `/tp` command to align Lara to switches and pickups
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - changed the rotation of some pickups in The Golden Mask to better suit the 3D pickups option (#1973)
 - fixed a missing collapsible tile trigger in The Cold War room 82 (#3058)
