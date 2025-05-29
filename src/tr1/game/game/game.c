@@ -175,7 +175,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         Effect_Control();
 
         Lara_Control();
-        Lara_Hair_Control();
+        Lara_Hair_Control(false);
 
         Camera_Update();
         Sound_ResetAmbient();
