@@ -25,6 +25,7 @@ static bool M_CanTargetItem(
 static const ITEM *M_GetItemToTeleporTo(const char *user_input);
 static bool M_IsFloatRound(float num);
 
+static void M_AlignLaraToItem(const ITEM *item);
 static COMMAND_RESULT M_TeleportToXYZ(float x, float y, float z);
 static COMMAND_RESULT M_TeleportToRoom(int16_t room_num);
 static COMMAND_RESULT M_TeleportToObject(const char *user_input);
@@ -147,6 +148,31 @@ static inline bool M_IsFloatRound(const float num)
     return (fabsf(num) - roundf(num)) < 0.0001f;
 }
 
+static void M_AlignLaraToItem(const ITEM *const item)
+{
+    typedef enum {
+        L_DIR_NONE = -1,
+        L_DIR_SAME = 0,
+        L_DIR_OPPOSITE = 1,
+    } L_DIR;
+
+    L_DIR dir = L_DIR_NONE;
+    if (Object_IsType(item->object_id, g_PickupObjects)) {
+        dir = L_DIR_OPPOSITE;
+    } else if (Object_IsType(item->object_id, g_SwitchObjects)) {
+        dir = L_DIR_SAME;
+    }
+    if (dir != L_DIR_NONE) {
+        ITEM *const lara_item = Lara_GetItem();
+        lara_item->rot.x = 0;
+        lara_item->rot.y = item->rot.y;
+        lara_item->rot.z = 0;
+        if (dir == L_DIR_OPPOSITE) {
+            lara_item->rot.y += DEG_180;
+        }
+    }
+}
+
 static COMMAND_RESULT M_TeleportToXYZ(float x, const float y, float z)
 {
     if (M_IsFloatRound(x)) {
@@ -221,6 +247,7 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
     if (Lara_Cheat_Teleport(
             best_item->pos.x, best_item->pos.y - STEP_L / 4, best_item->pos.z,
             best_item->room_num)) {
+        M_AlignLaraToItem(best_item);
         Console_Log(GS(OSD_POS_SET_ITEM), obj_name);
     } else {
         Console_Log(GS(OSD_POS_SET_ITEM_FAIL), obj_name);

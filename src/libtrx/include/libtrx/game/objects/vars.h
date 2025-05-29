@@ -7,6 +7,7 @@ extern const GAME_OBJECT_ID g_EnemyObjects[];
 extern const GAME_OBJECT_ID g_WaterObjects[];
 extern const GAME_OBJECT_ID g_AllyObjects[];
 extern const GAME_OBJECT_ID g_PickupObjects[];
+extern const GAME_OBJECT_ID g_SwitchObjects[];
 extern const GAME_OBJECT_ID g_GunObjects[];
 extern const GAME_OBJECT_ID g_AnimObjects[];
 extern const GAME_OBJECT_ID g_NullObjects[];

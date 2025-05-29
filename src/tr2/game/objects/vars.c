@@ -109,6 +109,16 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_SwitchObjects[] = {
+    // clang-format off
+    O_SWITCH_TYPE_AIRLOCK,
+    O_SWITCH_TYPE_BUTTON,
+    O_SWITCH_TYPE_NORMAL,
+    O_SWITCH_TYPE_SMALL,
+    O_SWITCH_TYPE_UW,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_GunObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
