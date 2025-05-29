@@ -66,6 +66,7 @@
             ],
             "injections": [
                 "data/injections/coldwar_fd.bin",
+                "data/injections/coldwar_itemrots.bin",
                 "data/injections/coldwar_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/shark_sfx.bin",
@@ -83,6 +84,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/fools_itemrots.bin",
                 "data/injections/fools_pickup_meshes.bin",
             ],
         },
@@ -98,6 +100,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/furnace_itemrots.bin",
                 "data/injections/furnace_pickup_meshes.bin",
                 "data/injections/furnace_textures.bin",
             ],
@@ -127,6 +130,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/kingdom_cameras.bin",
+                "data/injections/kingdom_itemrots.bin",
                 "data/injections/kingdom_textures.bin",
             ],
         },
@@ -151,6 +155,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/vegas_fd.bin",
+                "data/injections/vegas_itemrots.bin",
             ],
         },
     ],
