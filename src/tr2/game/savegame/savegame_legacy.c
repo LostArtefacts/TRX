@@ -329,10 +329,10 @@ static void M_ReadLara(LARA_INFO *const lara)
 
     const uint16_t flags = M_ReadU16();
     // clang-format off
-    lara->flare.control = flags >> 0;
-    lara->extra_anim    = flags >> 2;
-    lara->enable_look   = flags >> 3;
-    lara->burn          = flags >> 4;
+    lara->flare.control = (flags & (1 << 0)) != 0;
+    lara->extra_anim    = (flags & (1 << 2)) != 0;
+    lara->enable_look   = (flags & (1 << 3)) != 0;
+    lara->burn          = (flags & (1 << 4)) != 0;
     // clang-format on
 
     lara->water_surface_dist = M_ReadS32();
