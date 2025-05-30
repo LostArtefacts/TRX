@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stdint.h>
+#include <libtrx/game/lara/cheat.h>
 
-void Lara_Cheat_EndLevel(void);
 bool Lara_Cheat_EnterFlyMode(void);
 bool Lara_Cheat_ExitFlyMode(void);
 void Lara_Cheat_GetStuff(void);
