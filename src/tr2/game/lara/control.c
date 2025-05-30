@@ -7,7 +7,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
-#include "game/lara/cheat.h"
 #include "game/lara/col.h"
 #include "game/lara/look.h"
 #include "game/lara/misc.h"
@@ -20,7 +19,7 @@
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/gym.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>

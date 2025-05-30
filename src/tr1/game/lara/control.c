@@ -2,7 +2,6 @@
 
 #include "game/gun.h"
 #include "game/input.h"
-#include "game/lara/cheat.h"
 #include "game/lara/col.h"
 #include "game/lara/common.h"
 #include "game/lara/look.h"
