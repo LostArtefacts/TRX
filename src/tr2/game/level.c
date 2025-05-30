@@ -47,14 +47,15 @@ typedef enum {
     LEVEL_LAYOUT_NUMBER_OF,
 } M_LAYOUT;
 
+static bool M_TryLayout(VFILE *file, M_LAYOUT layout);
+static void M_SkimLevel(VFILE *file, M_LAYOUT layout);
+static M_LAYOUT M_GuessLayout(VFILE *file);
 static int32_t M_CompareSampleOffsets(const void *a, const void *b);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_InitialiseSoundEffects(const char *const file_name);
 static void M_CompleteSetup(const GF_LEVEL *level);
-static bool M_SkimLevel(VFILE *file, M_LAYOUT layout, bool read_items);
 
-static bool M_SkimLevel(
-    VFILE *const file, const M_LAYOUT layout, const bool read_items)
+static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 {
 #define TRY_OR_FAIL(call)                                                      \
     if (!call) {                                                               \
@@ -128,11 +129,7 @@ static bool M_SkimLevel(
     TRY_OR_FAIL(VFile_TrySkip(file, box_count * 20)); // zones
 
     TRY_OR_FAIL_ARR_S32(2); // animated texture ranges
-    if (read_items) {
-        Level_ReadItems(file);
-    } else {
-        TRY_OR_FAIL_ARR_S32(24); // items
-    }
+    TRY_OR_FAIL_ARR_S32(24); // items
 
     TRY_OR_FAIL(VFile_TrySkip(file, 32 * 256)); // light table
     TRY_OR_FAIL_ARR_U16(16); // cinematic frames
@@ -154,12 +151,77 @@ static bool M_SkimLevel(
     return true;
 }
 
+static void M_SkimLevel(VFILE *const file, M_LAYOUT layout)
+{
+#define SKIP_ARR_S32(size)                                                     \
+    {                                                                          \
+        const int32_t num = VFile_ReadS32(file);                               \
+        VFile_Skip(file, num *size);                                           \
+    }
+#define SKIP_ARR_U16(size)                                                     \
+    {                                                                          \
+        const uint16_t num = VFile_ReadU16(file);                              \
+        VFile_Skip(file, num *size);                                           \
+    }
+
+    ASSERT(layout != LEVEL_LAYOUT_UNKNOWN);
+    VFile_SetPos(file, 4); // start after version number
+    VFile_Skip(file, 1792); // palettes
+    SKIP_ARR_S32(TEXTURE_PAGE_SIZE * 3); // texture pages
+    VFile_Skip(file, 4); // unused version number
+
+    const uint16_t room_count = VFile_ReadU16(file);
+    for (int32_t i = 0; i < room_count; i++) {
+        VFile_Skip(file, 16);
+        SKIP_ARR_S32(2); // meshes
+        SKIP_ARR_U16(32); // portals
+
+        const int16_t size_z = VFile_ReadS16(file);
+        const int16_t size_x = VFile_ReadS16(file);
+        VFile_Skip(file, size_z * size_x * 8); // sectors
+
+        VFile_Skip(file, 6); // lighting
+        SKIP_ARR_U16(24); // lights
+        SKIP_ARR_U16(20); // static meshes
+        VFile_Skip(file, 4);
+    }
+
+    SKIP_ARR_S32(2); // floor data
+    SKIP_ARR_S32(2); // object meshes
+    SKIP_ARR_S32(4); // object mesh pointers
+    SKIP_ARR_S32(32); // animations
+    SKIP_ARR_S32(6); // animation changes
+    SKIP_ARR_S32(8); // animation ranges
+    SKIP_ARR_S32(2); // animation commands
+    SKIP_ARR_S32(4); // animation bones
+    SKIP_ARR_S32(2); // animation frames
+    SKIP_ARR_S32(18); // objects
+    SKIP_ARR_S32(32); // static objects
+    SKIP_ARR_S32(20); // object textures
+    SKIP_ARR_S32(16); // sprite textures
+    SKIP_ARR_S32(8); // sprites sequences
+    SKIP_ARR_S32(16); // cameras/sinks
+    SKIP_ARR_S32(16); // sound sources
+
+    const int32_t box_count = VFile_ReadS32(file);
+    VFile_Skip(file, box_count * 8);
+    SKIP_ARR_S32(2); // overlaps
+    VFile_Skip(file, box_count * 20); // zones
+
+    SKIP_ARR_S32(2); // animated texture ranges
+
+    Level_ReadItems(file);
+
+#undef SKIP_ARR_S32
+#undef SKIP_ARR_U16
+}
+
 static M_LAYOUT M_GuessLayout(VFILE *const file)
 {
     M_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
     BENCHMARK benchmark = Benchmark_Start();
     for (M_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
-        if (M_SkimLevel(file, layout, false)) {
+        if (M_TryLayout(file, layout)) {
             result = layout;
             break;
         }
@@ -258,13 +320,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
         Shell_ExitSystemFmt("Failed to load %s", level->path);
     }
 
-    VFile_SetPos(file, 0);
-    const int32_t version = VFile_ReadS32(file);
-    if (version != 45) {
-        Shell_ExitSystemFmt(
-            "Unexpected level version (%d, expected: %d, path: %s)", level->num,
-            45, level->path);
-    }
+    VFile_SetPos(file, 4);
 
     Level_ReadPalettes(file);
     Level_ReadTexturePages(file);
@@ -427,16 +483,16 @@ void Level_Init(void)
             continue;
         }
 
-        const bool result = M_SkimLevel(file, LEVEL_LAYOUT_TR2, true);
-        VFile_Close(file);
-
-        if (result) {
+        const M_LAYOUT layout = M_GuessLayout(file);
+        if (layout != LEVEL_LAYOUT_UNKNOWN) {
+            M_SkimLevel(file, layout);
             Stats_CalculateStats();
             STATS_COMMON stats = {};
             stats.max_secret_count = Stats_GetSecrets();
             Savegame_SetDefaultStats(level, stats);
         }
         GameBuf_Reset();
+        VFile_Close(file);
     }
 
     Benchmark_End(&benchmark, nullptr);
