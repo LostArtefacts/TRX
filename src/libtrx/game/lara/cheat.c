@@ -110,3 +110,15 @@ void Lara_Cheat_EndLevel(void)
     Game_SetIsLevelComplete(true);
     Console_Log(GS(OSD_COMPLETE_LEVEL));
 }
+
+bool Lara_Cheat_KillEnemy(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if ((item->flags & IF_KILLED) != 0) {
+        return false;
+    }
+
+    Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
+    Creature_Die(item_num, true);
+    return true;
+}
