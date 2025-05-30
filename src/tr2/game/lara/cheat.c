@@ -255,19 +255,6 @@ void Lara_Cheat_GetStuff(void)
     M_GiveAllMedpacksImpl();
 }
 
-bool Lara_Cheat_GiveAllKeys(void)
-{
-    if (g_LaraItem == nullptr) {
-        return false;
-    }
-
-    M_GiveAllKeysImpl();
-
-    Sound_Effect(SFX_LARA_KEY, nullptr, SPM_ALWAYS);
-    Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
-    return true;
-}
-
 bool Lara_Cheat_GiveAllGuns(void)
 {
     if (g_LaraItem == nullptr) {
