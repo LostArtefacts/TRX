@@ -9,6 +9,7 @@
 - fixed the same boss item always being selected in Home Sweet Home, regardless of Lara's proximity (#3062)
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels (#3072)
 - fixed transparent eyes on the wolf model in Furnace of the Gods (#3073)
+- fixed Lara getting stuck in her hit animation if she is hit while using an airlock door, the detonator or the gong (#3092)
 - fixed Lara dropping flares after certain special animations, such as pulling the dagger from the dragon (#3084, regression from 1.1)
 - improved word wrapping algorithm in the dev console
 

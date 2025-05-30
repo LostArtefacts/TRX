@@ -111,6 +111,7 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
         lara_item->goal_anim_state = LA_EXTRA_AIRLOCK;
         Item_Animate(lara_item);
         g_Lara.extra_anim = true;
+        g_Lara.hit_direction = -1;
         break;
 
     case O_SWITCH_TYPE_SMALL:

@@ -211,7 +211,7 @@ However, you can easily download them manually from these urls:
 - fixed harpoon bolts damaging inactive enemies
 - fixed the distorted skybox in room 5 of Barkhang Monastery
 - fixed new saves not displaying the save count in the passport
-- fixed Lara getting stuck in her hit animation if she is hit while mounting the boat or skidoo
+- fixed Lara getting stuck in her hit animation if she is hit while mounting the boat or skidoo, or when using an airlock door, the detonator or the gong
 - fixed the detonator key and gong hammer not activating their target items when manually selected from the inventory
 - fixed a potential crash if Lara is on the skidoo in a room with many other adjoining rooms
 - fixed a softlock in Home Sweet Home if the final cutscene is triggered while Lara is on water surface

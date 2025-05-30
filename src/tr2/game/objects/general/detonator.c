@@ -153,6 +153,7 @@ static void M_Collision(
 
     g_Lara.extra_anim = true;
     g_Lara.gun_status = LGS_HANDS_BUSY;
+    g_Lara.hit_direction = -1;
 
     if (item->object_id == O_DETONATOR_2) {
         item->status = IS_ACTIVE;
