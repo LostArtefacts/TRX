@@ -298,6 +298,10 @@
       "Title": "Treccia",
       "Description": "Abilita la treccia di Lara."
     },
+    "enable_breeze": {
+      "Title": "Brezza",
+      "Description": "Attiva l'effetto brezza sulla treccia di Lara nelle stanze appropriate."
+    },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
       "Description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D."

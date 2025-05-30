@@ -443,6 +443,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_breeze",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_3d_pickups",
           "DataType": "Bool",
           "DefaultValue": true
