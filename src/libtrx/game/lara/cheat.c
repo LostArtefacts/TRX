@@ -8,6 +8,7 @@
 #include "game/sound.h"
 
 static void M_GiveAllKeysImpl(void);
+static void M_GiveAllGunsImpl(void);
 
 static void M_GiveAllKeysImpl(void)
 {
@@ -26,6 +27,27 @@ static void M_GiveAllKeysImpl(void)
 #endif
 }
 
+static void M_GiveAllGunsImpl(void)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const bool bonus_flag = Game_IsBonusFlagSet(GBF_NGPLUS);
+    Inv_AddItem(O_PISTOL_ITEM);
+    Inv_AddItem(O_SHOTGUN_ITEM);
+    Inv_AddItem(O_MAGNUM_ITEM);
+    Inv_AddItem(O_UZI_ITEM);
+    lara_info->shotgun_ammo.ammo = bonus_flag ? 10001 : 300;
+    lara_info->magnum_ammo.ammo = bonus_flag ? 10001 : 1000;
+    lara_info->uzi_ammo.ammo = bonus_flag ? 10001 : 2000;
+#if TR_VERSION >= 2
+    Inv_AddItem(O_HARPOON_ITEM);
+    Inv_AddItem(O_M16_ITEM);
+    Inv_AddItem(O_GRENADE_ITEM);
+    lara_info->harpoon_ammo.ammo = bonus_flag ? 10001 : 300;
+    lara_info->m16_ammo.ammo = bonus_flag ? 10001 : 300;
+    lara_info->grenade_ammo.ammo = bonus_flag ? 10001 : 300;
+#endif
+}
+
 bool Lara_Cheat_GiveAllKeys(void)
 {
     if (Lara_GetItem() == nullptr) {
@@ -36,6 +58,19 @@ bool Lara_Cheat_GiveAllKeys(void)
 
     Sound_Effect(SFX_LARA_KEY, nullptr, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
+    return true;
+}
+
+bool Lara_Cheat_GiveAllGuns(void)
+{
+    if (Lara_GetItem() == nullptr) {
+        return false;
+    }
+
+    M_GiveAllGunsImpl();
+
+    Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
+    Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
     return true;
 }
 
