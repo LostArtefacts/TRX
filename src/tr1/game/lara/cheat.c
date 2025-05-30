@@ -98,29 +98,6 @@ bool Lara_Cheat_ExitFlyMode(void)
     return true;
 }
 
-bool Lara_Cheat_GiveAllKeys(void)
-{
-    if (g_LaraItem == nullptr) {
-        return false;
-    }
-
-    Inv_AddItem(O_PUZZLE_ITEM_1);
-    Inv_AddItem(O_PUZZLE_ITEM_2);
-    Inv_AddItem(O_PUZZLE_ITEM_3);
-    Inv_AddItem(O_PUZZLE_ITEM_4);
-    Inv_AddItem(O_KEY_ITEM_1);
-    Inv_AddItem(O_KEY_ITEM_2);
-    Inv_AddItem(O_KEY_ITEM_3);
-    Inv_AddItem(O_KEY_ITEM_4);
-    Inv_AddItem(O_PICKUP_ITEM_1);
-    Inv_AddItem(O_PICKUP_ITEM_2);
-    Inv_AddItem(O_LEADBAR_ITEM);
-
-    Sound_Effect(SFX_LARA_KEY, nullptr, SPM_ALWAYS);
-    Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
-    return true;
-}
-
 bool Lara_Cheat_GiveAllGuns(void)
 {
     if (g_LaraItem == nullptr) {
