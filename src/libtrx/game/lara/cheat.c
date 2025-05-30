@@ -9,6 +9,7 @@
 
 static void M_GiveAllKeysImpl(void);
 static void M_GiveAllGunsImpl(void);
+static void M_GiveAllMedpacksImpl(void);
 
 static void M_GiveAllKeysImpl(void)
 {
@@ -48,6 +49,15 @@ static void M_GiveAllGunsImpl(void)
 #endif
 }
 
+static void M_GiveAllMedpacksImpl(void)
+{
+#if TR_VERSION >= 2
+    Inv_AddItemNTimes(O_FLARES_ITEM, 10);
+#endif
+    Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
+    Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 10);
+}
+
 bool Lara_Cheat_GiveAllKeys(void)
 {
     if (Lara_GetItem() == nullptr) {
@@ -71,6 +81,21 @@ bool Lara_Cheat_GiveAllGuns(void)
 
     Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
+    return true;
+}
+
+bool Lara_Cheat_GiveAllItems(void)
+{
+    if (Lara_GetItem() == nullptr) {
+        return false;
+    }
+
+    M_GiveAllGunsImpl();
+    M_GiveAllKeysImpl();
+    M_GiveAllMedpacksImpl();
+
+    Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_NORMAL);
+    Console_Log(GS(OSD_GIVE_ITEM_CHEAT));
     return true;
 }
 

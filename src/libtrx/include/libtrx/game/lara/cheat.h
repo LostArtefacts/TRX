@@ -4,7 +4,7 @@
 
 bool Lara_Cheat_GiveAllKeys(void);
 bool Lara_Cheat_GiveAllGuns(void);
-extern bool Lara_Cheat_GiveAllItems(void);
+bool Lara_Cheat_GiveAllItems(void);
 extern bool Lara_Cheat_EnterFlyMode(void);
 extern bool Lara_Cheat_ExitFlyMode(void);
 extern bool Lara_Cheat_KillEnemy(int16_t item_num);

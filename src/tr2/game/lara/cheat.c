@@ -255,21 +255,6 @@ void Lara_Cheat_GetStuff(void)
     M_GiveAllMedpacksImpl();
 }
 
-bool Lara_Cheat_GiveAllItems(void)
-{
-    if (g_LaraItem == nullptr) {
-        return false;
-    }
-
-    M_GiveAllGunsImpl();
-    M_GiveAllKeysImpl();
-    M_GiveAllMedpacksImpl();
-
-    Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
-    Console_Log(GS(OSD_GIVE_ITEM_CHEAT));
-    return true;
-}
-
 bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     if (room_num == NO_ROOM) {
