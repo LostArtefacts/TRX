@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 bool Lara_Cheat_GiveAllKeys(void);
-extern bool Lara_Cheat_GiveAllGuns(void);
+bool Lara_Cheat_GiveAllGuns(void);
 extern bool Lara_Cheat_GiveAllItems(void);
 extern bool Lara_Cheat_EnterFlyMode(void);
 extern bool Lara_Cheat_ExitFlyMode(void);

@@ -98,25 +98,6 @@ bool Lara_Cheat_ExitFlyMode(void)
     return true;
 }
 
-bool Lara_Cheat_GiveAllGuns(void)
-{
-    if (g_LaraItem == nullptr) {
-        return false;
-    }
-
-    Inv_AddItem(O_PISTOL_ITEM);
-    Inv_AddItem(O_MAGNUM_ITEM);
-    Inv_AddItem(O_UZI_ITEM);
-    Inv_AddItem(O_SHOTGUN_ITEM);
-    g_Lara.shotgun_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 300;
-    g_Lara.magnum_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 1000;
-    g_Lara.uzi_ammo.ammo = Game_IsBonusFlagSet(GBF_NGPLUS) ? 10001 : 2000;
-
-    Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
-    Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
-    return true;
-}
-
 bool Lara_Cheat_GiveAllItems(void)
 {
     if (g_LaraItem == nullptr) {
