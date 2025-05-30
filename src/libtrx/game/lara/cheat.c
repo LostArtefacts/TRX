@@ -99,6 +99,12 @@ bool Lara_Cheat_GiveAllItems(void)
     return true;
 }
 
+void Lara_Cheat_GetStuff(void)
+{
+    M_GiveAllGunsImpl();
+    M_GiveAllMedpacksImpl();
+}
+
 void Lara_Cheat_EndLevel(void)
 {
     Game_SetIsLevelComplete(true);
