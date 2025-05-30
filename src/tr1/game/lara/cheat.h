@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-void Lara_Cheat_Control(void);
 void Lara_Cheat_EndLevel(void);
 bool Lara_Cheat_EnterFlyMode(void);
 bool Lara_Cheat_ExitFlyMode(void);

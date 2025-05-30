@@ -6,7 +6,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
-#include "game/lara/cheat.h"
 #include "game/lara/common.h"
 #include "game/level.h"
 #include "game/output.h"
@@ -114,7 +113,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Interpolation_Remember();
     Stats_UpdateTimer();
 
-    Lara_Cheat_Control();
+    Lara_Cheat_CheckKeys();
     if (Game_IsLevelComplete()) {
         Sound_StopAll();
         Music_Stop();
