@@ -6,7 +6,6 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
-#include "game/lara/cheat_keys.h"
 #include "game/lara/control.h"
 #include "game/level.h"
 #include "game/output.h"

@@ -6,7 +6,6 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/item_actions.h"
-#include "game/lara/cheat.h"
 #include "game/lara/common.h"
 #include "game/level.h"
 #include "game/output.h"
@@ -22,7 +21,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
-#include <libtrx/game/lara/hair.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/log.h>
 
 #define MODIFY_CONFIG()                                                        \
@@ -247,7 +246,7 @@ GF_COMMAND Demo_Control(void)
             .param = p->level->num,
         };
     }
-    Lara_Cheat_Control();
+    Lara_Cheat_CheckKeys();
 
     Game_ProcessInput();
 
