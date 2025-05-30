@@ -36,6 +36,10 @@
       "Title": "Braid",
       "Description": "Enables Lara's braid."
     },
+    "enable_breeze": {
+      "Title": "Breeze",
+      "Description": "Enables the breeze effect on Lara's braid in appropriate rooms."
+    },
     "enable_3d_pickups": {
       "Title": "3D pickups",
       "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."

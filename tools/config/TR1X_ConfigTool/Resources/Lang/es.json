@@ -102,6 +102,10 @@
       "Title": "Trenza",
       "Description": "Habilita la trenza de Lara."
     },
+    "enable_breeze": {
+      "Title": "Brisa",
+      "Description": "Activa el efecto de brisa en la trenza de Lara en las habitaciones adecuadas."
+    },
     "enable_cheats": {
       "Title": "Trucos",
       "Description": "Habilita varios trucos:\n- L: finaliza inmediatamente el nivel.\n- I: da a Lara todas las armas, munición, botiquines y todos los elementos de la trama para el nivel actual.\n- O: habilita el truco DOZY (nadar en el aire).\n     - Tecla CAMINAR: salir DOZY.\n     - Tecla ARMAS: abre la puerta más cercana (no funciona en ciertos lugares)."

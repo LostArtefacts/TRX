@@ -298,6 +298,10 @@
       "Title": "Tresse de Lara",
       "Description": "Active la tresse de Lara."
     },
+    "enable_breeze": {
+      "Title": "Brise",
+      "Description": "Active l'effet de brise sur la tresse de Lara dans les pièces appropriées."
+    },
     "enable_3d_pickups": {
       "Title": "Collectibles 3D",
       "Description": "Active les collectibles en 3D au lieu des objets en 2D."
