@@ -106,12 +106,6 @@ static void M_ResetGunStatus(void)
     g_Lara.right_arm.frame_base = anim->frame_ptr;
 }
 
-void Lara_Cheat_EndLevel(void)
-{
-    Game_SetIsLevelComplete(true);
-    Console_Log(GS(OSD_COMPLETE_LEVEL));
-}
-
 bool Lara_Cheat_EnterFlyMode(void)
 {
     if (g_LaraItem == nullptr) {

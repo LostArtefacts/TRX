@@ -22,12 +22,6 @@
 
 #include <stdint.h>
 
-void Lara_Cheat_EndLevel(void)
-{
-    Game_SetIsLevelComplete(true);
-    Console_Log(GS(OSD_COMPLETE_LEVEL));
-}
-
 bool Lara_Cheat_EnterFlyMode(void)
 {
     if (g_LaraItem == nullptr) {
