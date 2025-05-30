@@ -4,7 +4,7 @@
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - changed the rotation of some pickups in The Golden Mask to better suit the 3D pickups option (#1973)
 - fixed a missing collapsible tile trigger in The Cold War room 82 (#3058)
-- fixed missing sound effects for collapsible tiles in Opera House and Catacombs of the Talion (#2262, #2872)
+- fixed missing sound effects for collapsible tiles in Opera House, The Deck and Catacombs of the Talion (#2262, #2872, #3087)
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom (#3056)
 - fixed the same boss item always being selected in Home Sweet Home, regardless of Lara's proximity (#3062)
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels (#3072)

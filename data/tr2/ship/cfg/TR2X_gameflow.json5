@@ -248,6 +248,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/breakable_tile_sfx.bin",
                 "data/injections/deck_cameras.bin",
                 "data/injections/deck_fd.bin",
                 "data/injections/deck_itemrots.bin",
