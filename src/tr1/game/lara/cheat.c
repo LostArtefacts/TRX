@@ -1,26 +1,14 @@
-#include "game/lara/cheat.h"
-
 #include "game/console/common.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/inventory.h"
 #include "game/lara/common.h"
-#include "game/objects/common.h"
-#include "game/objects/vars.h"
-#include "game/sound.h"
 #include "game/viewport.h"
-#include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
-#include <libtrx/game/carrier.h>
 #include <libtrx/game/lara/const.h>
-#include <libtrx/game/math.h>
-#include <libtrx/utils.h>
 #include <libtrx/vector.h>
-
-#include <stdint.h>
 
 bool Lara_Cheat_EnterFlyMode(void)
 {
