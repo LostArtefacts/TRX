@@ -7,6 +7,7 @@
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/lara/control.h"
+#include "game/lara/flare.h"
 #include "game/lara/look.h"
 #include "game/objects/common.h"
 #include "game/objects/vehicles/skidoo_armed.h"
@@ -222,7 +223,7 @@ void Skidoo_Collision(
     g_Lara.vehicle_item_num = item_num;
     if (g_Lara.gun_type == LGT_FLARE) {
         Flare_Create(false);
-        Flare_UndrawMeshes();
+        Lara_Flare_UndrawMeshes();
         g_Lara.flare.control = false;
         g_Lara.gun_type = LGT_UNARMED;
         g_Lara.request_gun_type = LGT_UNARMED;

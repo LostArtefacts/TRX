@@ -202,7 +202,7 @@ void Flare_Draw(void)
     if (frame_num < LF_FL_DRAW || frame_num > LF_FL_2_HOLD - 1) {
         frame_num = LF_FL_DRAW;
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
-        Flare_DrawMeshes();
+        Lara_Flare_DrawMeshes();
         if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
             Inv_RemoveItem(O_FLARES_ITEM);
         }
@@ -273,7 +273,7 @@ void Flare_Undraw(void)
         frame_num_1++;
         if (frame_num_1 == LF_FL_THROW_RELEASE) {
             Flare_Create(true);
-            Flare_UndrawMeshes();
+            Lara_Flare_UndrawMeshes();
         } else if (frame_num_1 == LF_FL_DRAW) {
             frame_num_1 = 0;
             g_Lara.gun_type = g_Lara.last_gun_type;
@@ -299,16 +299,6 @@ void Flare_Undraw(void)
 
     g_Lara.left_arm.frame_num = frame_num_1;
     Lara_Flare_SetArm(frame_num_1);
-}
-
-void Flare_DrawMeshes(void)
-{
-    Lara_SwapSingleMesh(LM_HAND_L, O_LARA_FLARE);
-}
-
-void Flare_UndrawMeshes(void)
-{
-    Lara_SwapSingleMesh(LM_HAND_L, O_LARA);
 }
 
 void Flare_Ready(void)
