@@ -220,7 +220,7 @@
     },
     "enable_legal": {
       "Title": "Abilita il contenuto legale",
-      "Description": "Abilita il logo EIDOS, il FMV di Core Design e il FMV del codec video Bink all'avvio del gioco."
+      "Description": "Abilita il logo EIDOS e filmati di Core Design e del codec video Bink all'avvio del gioco."
     },
     "enable_loading_screens": {
       "Title": "Abilita le schermate di caricamento",
@@ -300,7 +300,7 @@
     },
     "enable_breeze": {
       "Title": "Brezza",
-      "Description": "Attiva l'effetto brezza sulla treccia di Lara nelle stanze appropriate."
+      "Description": "Abilita l'effetto brezza sulla treccia di Lara nelle stanze appropriate."
     },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
@@ -372,7 +372,7 @@
     },
     "healthbar_show_mode": {
       "Title": "Comportamento della barra della salute",
-      "Description": "Modifica la modalità di visualizzazione della barra della salute.\n- Predefinito: mostra la barra della salute all'inizio di un livello, dopo essere stato colpito o mentre si equipaggiano\n  le armi; se già sullo schermo, la barra della salute lampeggia quando la salute di Lara è pari o inferiore al 20%\n  (TombATI).\n- Lampeggiante o predefinito: la barra della salute lampeggia costantemente quando la salute di Lara è pari o\n  inferiore al 20%, oppure viene visualizzata in circostanze predefinite.\n- Solo lampeggiante: mostra la barra della salute *solo* quando la salute di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Sempre: mostra sempre la barra della salute.\n- Mai: non visualizzare mai la barra della salute (per le sfide).\n- PS1: mostra la barra della salute in circostanze predefinite senza mai lampeggiare."
+      "Description": "Modifica la modalità di visualizzazione della barra della salute.\n- Predefinito: mostra la barra della salute all'inizio di un livello, dopo essere stato colpito o mentre si equipaggiano\n  le armi; se già sullo schermo, la barra della salute lampeggia quando la salute di Lara è pari o inferiore al 20%\n  (TombATI).\n- Lampeggiante o predefinito: la barra della salute lampeggia costantemente quando la salute di Lara è pari o\n  inferiore al 20%, oppure viene visualizzata in circostanze predefinite.\n- Solo lampeggiante: mostra la barra della salute *solo* quando la salute di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Sempre: mostra sempre la barra della salute.\n- Mai: non visualizza mai la barra della salute (per le sfide).\n- PS1: mostra la barra della salute in circostanze predefinite senza mai lampeggiare."
     },
     "healthbar_location": {
       "Title": "Posizione della barra della salute",
@@ -384,7 +384,7 @@
     },
     "airbar_show_mode": {
       "Title": "Comportamento della barra dell'ossigeno",
-      "Description": "Modifica la modalità di visualizzazione della barra dell'ossigeno.\n- Predefinito: mostra la barra dell'ossigeno solo in acqua e lampeggia quando l'ossigeno di Lara è pari o inferiore\n  al 20% (TombATI).\n- Solo lampeggiante: mostra la barra dell'ossigeno *solo* quando l'ossigeno di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Mai: non visualizzare mai la barra dell'ossigeno (per le sfide).\n- PS1: mostra la barra dell'ossigeno in circostanze predefinite senza mai lampeggiare."
+      "Description": "Modifica la modalità di visualizzazione della barra dell'ossigeno.\n- Predefinito: mostra la barra dell'ossigeno solo in acqua e lampeggia quando l'ossigeno di Lara è pari o inferiore\n  al 20% (TombATI).\n- Solo lampeggiante: mostra la barra dell'ossigeno *solo* quando l'ossigeno di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Mai: non visualizza mai la barra dell'ossigeno (per le sfide).\n- PS1: mostra la barra dell'ossigeno in circostanze predefinite senza mai lampeggiare."
     },
     "airbar_location": {
       "Title": "Posizione della barra dell'ossigeno",

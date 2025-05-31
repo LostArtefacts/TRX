@@ -38,7 +38,7 @@
     },
     "enable_breeze": {
       "Title": "Brezza",
-      "Description": "Attiva l'effetto brezza sulla treccia di Lara nelle stanze appropriate."
+      "Description": "Abilita l'effetto brezza sulla treccia di Lara nelle stanze appropriate."
     },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
@@ -58,7 +58,7 @@
     },
     "enable_game_modes": {
       "Title": "Abilita le modalità di gioco",
-      "Description": "Consente di selezionare diverse modalità di gioco dal menu passaporto.\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi infliggono danni doppi, i razzi di segnalazione contengono 8 anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese."
+      "Description": "Consente di selezionare diverse modalità di gioco dal menu passaporto.\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni, le scatole di bengala contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese."
     },
     "fix_m16_accuracy": {
       "Title": "Correggi precisione M16",
@@ -97,8 +97,8 @@
       "Description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo."
     },
     "fix_glide_cameras": {
-      "Title": "Correggi le telecamere di planata",
-      "Description": "Corregge le telecamere glide affinché rispettino il timer impostato nei trigger di livello invece di tornare alla velocità predefinita dopo il primo fotogramma."
+      "Title": "Correggi le telecamere a scorrimento",
+      "Description": "Corregge le telecamere a scorrimento affinché rispettino il tempo impostato negli eventi di livello invece di tornare alla velocità predefinita dopo il primo fotogramma."
     },
     "fix_floor_data_issues": {
       "Title": "Correggi i dati dei livelli",
@@ -138,7 +138,7 @@
     },
     "healthbar_show_mode": {
       "Title": "Comportamento della barra della salute",
-      "Description": "Modifica la modalità di visualizzazione della barra della salute.\n- Predefinito: mostra la barra della salute all'inizio di un livello, dopo essere stato colpito o mentre si equipaggiano\n  le armi; se già sullo schermo, la barra della salute lampeggia quando la salute di Lara è pari o inferiore al 20%\n  (TombATI).\n- Lampeggiante o predefinito: la barra della salute lampeggia costantemente quando la salute di Lara è pari o\n  inferiore al 20%, oppure viene visualizzata in circostanze predefinite.\n- Solo lampeggiante: mostra la barra della salute *solo* quando la salute di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Sempre: mostra sempre la barra della salute.\n- Mai: non visualizzare mai la barra della salute (per le sfide).\n- PS1: mostra la barra della salute in circostanze predefinite senza mai lampeggiare."
+      "Description": "Modifica la modalità di visualizzazione della barra della salute.\n- Predefinito: mostra la barra della salute all'inizio di un livello, dopo essere stato colpito o mentre si equipaggiano\n  le armi; se già sullo schermo, la barra della salute lampeggia quando la salute di Lara è pari o inferiore al 20%\n  (TombATI).\n- Lampeggiante o predefinito: la barra della salute lampeggia costantemente quando la salute di Lara è pari o\n  inferiore al 20%, oppure viene visualizzata in circostanze predefinite.\n- Solo lampeggiante: mostra la barra della salute *solo* quando la salute di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Sempre: mostra sempre la barra della salute.\n- Mai: non visualizza mai la barra della salute (per le sfide).\n- PS1: mostra la barra della salute in circostanze predefinite senza mai lampeggiare."
     },
     "healthbar_location": {
       "Title": "Posizione della barra della salute",
@@ -150,7 +150,7 @@
     },
     "airbar_show_mode": {
       "Title": "Comportamento della barra dell'ossigeno",
-      "Description": "Modifica la modalità di visualizzazione della barra dell'ossigeno.\n- Predefinito: mostra la barra dell'ossigeno solo in acqua e lampeggia quando l'ossigeno di Lara è pari o inferiore\n  al 20% (TombATI).\n- Solo lampeggiante: mostra la barra dell'ossigeno *solo* quando l'ossigeno di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Mai: non visualizzare mai la barra dell'ossigeno (per le sfide).\n- PS1: mostra la barra dell'ossigeno in circostanze predefinite senza mai lampeggiare."
+      "Description": "Modifica la modalità di visualizzazione della barra dell'ossigeno.\n- Predefinito: mostra la barra dell'ossigeno solo in acqua e lampeggia quando l'ossigeno di Lara è pari o inferiore\n  al 20% (TombATI).\n- Solo lampeggiante: mostra la barra dell'ossigeno *solo* quando l'ossigeno di Lara è pari o inferiore al 20%\n  (per le sfide).\n- Mai: non visualizza mai la barra dell'ossigeno (per le sfide).\n- PS1: mostra la barra dell'ossigeno in circostanze predefinite senza mai lampeggiare."
     },
     "airbar_location": {
       "Title": "Posizione della barra dell'ossigeno",
@@ -182,7 +182,7 @@
     },
     "fix_bear_ai": {
       "Title": "Correggi IA degli orsi",
-      "Description": "Risolve un problema per cui gli attacchi con le zampe d'orso non colpivano Lara quando indossava la Maschera d'oro."
+      "Description": "Risolve il problema in The Golden Mask per cui gli attacchi con la zampa degli orsi non colpiscono Lara."
     }
   }
 }
