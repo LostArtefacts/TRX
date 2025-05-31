@@ -37,6 +37,7 @@ static int32_t M_GetVisibleRows(void);
 static uint8_t *M_GetColorComponent(const UI_SETTINGS_OPTION *option);
 static M_ENUM_LOOKUP M_GetEnumEntry(const UI_SETTINGS_OPTION *option);
 static char *M_FormatRowValue(const UI_SETTINGS_STATE *s, int32_t row_idx);
+static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *option);
 static bool M_CanChangeValue(
     const UI_SETTINGS_STATE *s, int32_t row_idx, int32_t dir);
 static bool M_RequestChangeValue(
@@ -137,6 +138,75 @@ static char *M_FormatRowValue(
         break;
     }
     return nullptr;
+}
+
+static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
+{
+    if (option->custom_handler.format_value != nullptr) {
+        char *value = option->custom_handler.format_value(option);
+        float result;
+        UI_Label_Measure(value, &result, nullptr);
+        Memory_Free(value);
+        return result;
+    }
+
+    switch (option->option_type) {
+    case COT_BOOL: {
+        float min_value_w;
+        float max_value_w;
+        UI_Label_Measure(GS(MISC_OFF), &min_value_w, nullptr);
+        UI_Label_Measure(GS(MISC_ON), &max_value_w, nullptr);
+        return MAX(min_value_w, max_value_w);
+    }
+    case COT_INT32: {
+        float min_value_w;
+        float max_value_w;
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
+            option->min_value);
+        UI_Label_Measure(m_TempString, &min_value_w, nullptr);
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
+            option->max_value);
+        UI_Label_Measure(m_TempString, &max_value_w, nullptr);
+        return MAX(min_value_w, max_value_w);
+    }
+    case COT_DOUBLE:
+    case COT_FLOAT: {
+        float min_value_w;
+        float max_value_w;
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
+            (double)option->min_value / 100);
+        UI_Label_Measure(m_TempString, &min_value_w, nullptr);
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
+            (double)option->max_value / 100);
+        UI_Label_Measure(m_TempString, &max_value_w, nullptr);
+        return MAX(min_value_w, max_value_w);
+    }
+    case COT_RGB888: {
+        float value_w;
+        UI_Label_Measure("255", &value_w, nullptr);
+        return value_w;
+    }
+    case COT_ENUM: {
+        float result = 0.0f;
+        const UI_SETTINGS_ENUM_ENTRY *entry =
+            &((UI_SETTINGS_ENUM_ENTRY *)option->misc)[0];
+        while (entry->value != -1) {
+            const char *const value = GameString_Get(entry->name);
+            float value_w;
+            UI_Label_Measure(value, &value_w, nullptr);
+            result = MAX(result, value_w);
+            entry++;
+        }
+        return result;
+    }
+    default:
+        break;
+    }
+    return 0.0f;
 }
 
 static bool M_CanChangeValue(
@@ -263,22 +333,8 @@ static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
     float result = -1.0f;
     for (int32_t i = 0; i < s->scroll.max_items; i++) {
         const UI_SETTINGS_OPTION *const option = &s->options[i];
-        if (option->option_type == COT_ENUM) {
-            const UI_SETTINGS_ENUM_ENTRY *entry =
-                &((UI_SETTINGS_ENUM_ENTRY *)option->misc)[0];
-            while (entry->value != -1) {
-                const char *const value = GameString_Get(entry->name);
-                float value_w;
-                UI_Label_Measure(value, &value_w, nullptr);
-                result = MAX(result, value_w);
-                entry++;
-            }
-        } else {
-            const char *const value = M_FormatRowValue(s, i);
-            float value_w;
-            UI_Label_Measure(value, &value_w, nullptr);
-            result = MAX(result, value_w);
-        }
+        const float value_w = M_MeasureMaxValueWidth(option);
+        result = MAX(result, value_w);
     }
     float arrow_w;
     UI_Label_Measure("\\{button left}", &arrow_w, nullptr);
