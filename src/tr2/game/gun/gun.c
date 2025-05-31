@@ -58,8 +58,6 @@ void Gun_Control(void)
                                            .gun_height))))) {
                 if (g_Lara.gun_type == LGT_FLARE) {
                     Lara_Flare_Dispose(false);
-                    Lara_Flare_UndrawMeshes();
-                    g_Lara.flare.control = false;
                 }
                 g_Lara.gun_type = g_Lara.request_gun_type;
                 Gun_InitialiseNewWeapon();

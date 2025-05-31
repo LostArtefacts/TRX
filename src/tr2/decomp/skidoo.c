@@ -222,8 +222,6 @@ void Skidoo_Collision(
     g_Lara.vehicle_item_num = item_num;
     if (g_Lara.gun_type == LGT_FLARE) {
         Lara_Flare_Dispose(false);
-        Lara_Flare_UndrawMeshes();
-        g_Lara.flare.control = false;
         g_Lara.gun_type = LGT_UNARMED;
         g_Lara.request_gun_type = LGT_UNARMED;
     }
