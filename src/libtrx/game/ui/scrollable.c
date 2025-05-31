@@ -117,3 +117,16 @@ int32_t UI_Scrollable_GetLastVisibleItem(const UI_SCROLLABLE *const s)
 {
     return MIN(s->first_item + s->vis_items - 1, s->max_items - 1);
 }
+
+bool UI_Scrollable_IsItemVisible(
+    const UI_SCROLLABLE *const s, const int32_t item)
+{
+    return item >= UI_Scrollable_GetFirstVisibleItem(s)
+        && item <= UI_Scrollable_GetLastVisibleItem(s);
+}
+
+bool UI_Scrollable_IsItemSelected(
+    const UI_SCROLLABLE *const s, const int32_t item)
+{
+    return item == UI_Scrollable_GetSelectedItem(s);
+}
