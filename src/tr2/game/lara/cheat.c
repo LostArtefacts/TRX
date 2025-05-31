@@ -5,6 +5,7 @@
 #include "game/game_string.h"
 #include "game/gun/gun.h"
 #include "game/lara/control.h"
+#include "game/lara/flare.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -25,7 +26,7 @@ static void M_ReinitialiseGunMeshes(void)
     Lara_InitialiseMeshes(Game_GetCurrentLevel());
     Gun_InitialiseNewWeapon();
     if (has_flare) {
-        Flare_DrawMeshes();
+        Lara_Flare_DrawMeshes();
     }
 }
 

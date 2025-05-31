@@ -59,7 +59,7 @@ void Gun_Control(void)
                                            .gun_height))))) {
                 if (g_Lara.gun_type == LGT_FLARE) {
                     Flare_Create(0);
-                    Flare_UndrawMeshes();
+                    Lara_Flare_UndrawMeshes();
                     g_Lara.flare.control = false;
                 }
                 g_Lara.gun_type = g_Lara.request_gun_type;
@@ -288,7 +288,7 @@ void Gun_InitialiseNewWeapon(void)
         g_Lara.left_arm.frame_base = obj->frame_base;
         g_Lara.right_arm.frame_base = obj->frame_base;
         if (g_Lara.gun_status != LGS_ARMLESS) {
-            Flare_DrawMeshes();
+            Lara_Flare_DrawMeshes();
         }
         break;
     }

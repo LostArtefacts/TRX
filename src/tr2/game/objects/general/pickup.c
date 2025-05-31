@@ -8,6 +8,7 @@
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/lara/control.h"
+#include "game/lara/flare.h"
 #include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
@@ -173,7 +174,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
             && item->object_id == O_FLARE_ITEM
             && g_Lara.gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
-            Flare_DrawMeshes();
+            Lara_Flare_DrawMeshes();
         }
         goto cleanup;
     }

@@ -35,3 +35,13 @@ void Lara_Flare_SetArm(const int32_t flare_frame)
     lara_info->left_arm.anim_num = obj->anim_idx + anim_idx;
     lara_info->left_arm.frame_base = anim->frame_ptr;
 }
+
+void Lara_Flare_DrawMeshes(void)
+{
+    Lara_SwapSingleMesh(LM_HAND_L, O_LARA_FLARE);
+}
+
+void Lara_Flare_UndrawMeshes(void)
+{
+    Lara_SwapSingleMesh(LM_HAND_L, O_LARA);
+}
