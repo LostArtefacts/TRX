@@ -19,7 +19,9 @@ typedef enum {
     LF_FL_DRAW_GOT_IT = (LF_FL_DRAW + 13), // = 46
 } LARA_FLARE_ANIMATION_FRAME;
 
-int32_t Flare_DoLight(const XYZ_32 *pos, int32_t flare_age);
+void Flare_GenerateEffects(
+    XYZ_32 sound_pos, XYZ_32 flare_pos, int16_t room_num);
+bool Flare_GenerateLight(XYZ_32 pos, int32_t flare_age);
 void Flare_DoInHand(int32_t flare_age);
 void Flare_DrawInAir(const ITEM *item);
 void Flare_Create(bool thrown);

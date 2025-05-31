@@ -17,11 +17,11 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
-#define FLARE_INTENSITY 12
-#define FLARE_FALL_OFF 11
-#define MAX_FLARE_AGE (60 * LOGIC_FPS) // = 1800
-#define FLARE_OLD_AGE (MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
-#define FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
+#define M_FLARE_INTENSITY 12
+#define M_FLARE_FALL_OFF 11
+#define M_MAX_FLARE_AGE (60 * LOGIC_FPS) // = 1800
+#define M_FLARE_OLD_AGE (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
+#define M_FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
 
 typedef enum {
     // clang-format off
@@ -31,12 +31,10 @@ typedef enum {
     LA_FLARES_IGNITE = 3,
     LA_FLARES_IDLE   = 4,
     // clang-format on
-} LARA_FLARES_ANIMATION;
+} M_LARA_FLARE_ANIMATION;
 
 static bool M_CanThrowFlare(void);
 static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
-static void M_DoBurnEffects(
-    XYZ_32 sound_pos, XYZ_32 flare_pos, int16_t room_num);
 
 static bool M_CanThrowFlare(void)
 {
@@ -60,7 +58,7 @@ static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
     Sound_Effect(SFX_LARA_FLARE_IGNITE, &flare_pos, mode);
 }
 
-static void M_DoBurnEffects(
+void Flare_GenerateEffects(
     const XYZ_32 sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
     Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
@@ -74,39 +72,39 @@ static void M_DoBurnEffects(
     }
 }
 
-int32_t Flare_DoLight(const XYZ_32 *const pos, const int32_t flare_age)
+bool Flare_GenerateLight(const XYZ_32 pos, const int32_t flare_age)
 {
-    if (flare_age >= MAX_FLARE_AGE) {
+    if (flare_age >= M_MAX_FLARE_AGE) {
         return false;
     }
 
     const int32_t random = Random_GetDraw();
     const XYZ_32 light_pos = {
-        .x = pos->x + (random & 0xA0),
-        .y = pos->y,
-        .z = pos->z,
+        .x = pos.x + (random & 0xA0),
+        .y = pos.y,
+        .z = pos.z,
     };
 
-    if (flare_age < FLARE_YOUNG_AGE) {
-        const int32_t intensity = FLARE_INTENSITY
-                * (flare_age - FLARE_YOUNG_AGE) / (2 * FLARE_YOUNG_AGE)
-            + FLARE_INTENSITY;
-        Output_AddDynamicLight(light_pos, intensity, FLARE_FALL_OFF);
+    if (flare_age < M_FLARE_YOUNG_AGE) {
+        const int32_t intensity = M_FLARE_INTENSITY
+                * (flare_age - M_FLARE_YOUNG_AGE) / (2 * M_FLARE_YOUNG_AGE)
+            + M_FLARE_INTENSITY;
+        Output_AddDynamicLight(light_pos, intensity, M_FLARE_FALL_OFF);
         return true;
     }
 
-    if (flare_age < FLARE_OLD_AGE) {
-        Output_AddDynamicLight(light_pos, FLARE_INTENSITY, FLARE_FALL_OFF);
+    if (flare_age < M_FLARE_OLD_AGE) {
+        Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF);
         return true;
     }
 
     if (random > 0x2000) {
         Output_AddDynamicLight(
-            light_pos, FLARE_INTENSITY - (random & 3), FLARE_FALL_OFF);
+            light_pos, M_FLARE_INTENSITY - (random & 3), M_FLARE_FALL_OFF);
         return true;
     }
 
-    Output_AddDynamicLight(light_pos, FLARE_INTENSITY, FLARE_FALL_OFF / 2);
+    Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF / 2);
     return false;
 }
 
@@ -123,11 +121,11 @@ void Flare_DoInHand(const int32_t flare_age)
         M_DoIgniteEffects(vec, g_LaraItem->room_num);
     }
 
-    g_Lara.left_arm.flash_gun = Flare_DoLight(&vec, flare_age);
+    g_Lara.left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
 
-    if (g_Lara.flare.age < MAX_FLARE_AGE) {
+    if (g_Lara.flare.age < M_MAX_FLARE_AGE) {
         g_Lara.flare.age++;
-        M_DoBurnEffects(g_LaraItem->pos, vec, g_LaraItem->room_num);
+        Flare_GenerateEffects(g_LaraItem->pos, vec, g_LaraItem->room_num);
     } else if (M_CanThrowFlare()) {
         g_Lara.gun_status = LGS_UNDRAW;
     }
@@ -223,7 +221,7 @@ void Flare_Create(const bool thrown)
         item->fall_speed = g_LaraItem->fall_speed + 50;
     }
 
-    if (Flare_DoLight(&item->pos, g_Lara.flare.age)) {
+    if (Flare_GenerateLight(item->pos, g_Lara.flare.age)) {
         item->data = (void *)(intptr_t)(g_Lara.flare.age | 0x8000);
     } else {
         item->data = (void *)(intptr_t)(g_Lara.flare.age & ~0x8000);
@@ -457,16 +455,16 @@ void Flare_Control(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 
     int32_t flare_age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
-    if (flare_age < MAX_FLARE_AGE) {
+    if (flare_age < M_MAX_FLARE_AGE) {
         flare_age++;
     } else if (item->fall_speed == 0 && item->speed == 0) {
         Item_Kill(item_num);
         return;
     }
 
-    if (Flare_DoLight(&item->pos, flare_age)) {
+    if (Flare_GenerateLight(item->pos, flare_age)) {
         flare_age |= 0x8000u;
-        M_DoBurnEffects(item->pos, item->pos, item->room_num);
+        Flare_GenerateEffects(item->pos, item->pos, item->room_num);
     }
 
     item->data = (void *)(intptr_t)flare_age;
