@@ -364,13 +364,3 @@ void Sound_EndScene(void)
         }
     }
 }
-
-int32_t Sound_GetMinVolume(void)
-{
-    return 0;
-}
-
-int32_t Sound_GetMaxVolume(void)
-{
-    return 10;
-}

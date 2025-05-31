@@ -119,9 +119,8 @@ static bool M_Play(const char *const file_name)
     while (video->is_playing) {
         Video_SetVolume(
             video,
-            m_Muted
-                ? 0
-                : g_Config.audio.sound_volume / (float)Sound_GetMaxVolume());
+            m_Muted ? 0
+                    : g_Config.audio.sound_volume / (float)SOUND_MAX_VOLUME);
 
         const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
         Video_SetSurfaceSize(video, display_size.w, display_size.h);
