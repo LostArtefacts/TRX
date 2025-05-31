@@ -996,19 +996,3 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
         g_Lara.back_gun_obj_id = O_LARA_HARPOON;
     }
 }
-
-void Lara_GetOffVehicle(void)
-{
-    if (g_Lara.vehicle_item_num != NO_ITEM) {
-        ITEM *const vehicle = Item_Get(g_Lara.vehicle_item_num);
-        Item_SwitchToAnim(vehicle, 0, 0);
-        g_Lara.vehicle_item_num = NO_ITEM;
-
-        g_LaraItem->current_anim_state = LS_STOP;
-        g_LaraItem->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(g_LaraItem, LA_STAND_STILL, 0);
-
-        g_LaraItem->rot.x = 0;
-        g_LaraItem->rot.z = 0;
-    }
-}

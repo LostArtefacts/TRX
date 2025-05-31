@@ -4,6 +4,7 @@
 #include "lara/cheat_keys.h"
 #include "lara/common.h"
 #include "lara/const.h"
+#include "lara/control.h"
 #include "lara/enum.h"
 #include "lara/flare.h"
 #include "lara/hair.h"
