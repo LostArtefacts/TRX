@@ -9,52 +9,6 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/vector.h>
 
-bool Lara_Cheat_EnterFlyMode(void)
-{
-    if (g_LaraItem == nullptr) {
-        return false;
-    }
-
-    if ((g_LaraItem->flags & IF_INVISIBLE) != 0) {
-        // The explosion cheat has been used, so Lara's death is permanent.
-        return false;
-    }
-
-    g_Lara.request_gun_type = LGT_UNARMED;
-    if (g_LaraItem->hit_points <= 0) {
-        g_Lara.gun_status = LGS_ARMLESS;
-        Lara_InitialiseMeshes(GF_GetCurrentLevel());
-    }
-
-    if (g_Lara.water_status != LWS_UNDERWATER || g_LaraItem->hit_points <= 0) {
-        g_LaraItem->pos.y -= STEP_L;
-        g_LaraItem->current_anim_state = LS_SWIM;
-        g_LaraItem->goal_anim_state = LS_SWIM;
-        Item_SwitchToAnim(g_LaraItem, LA_UNDERWATER_SWIM_FORWARD_DRIFT, 0);
-        g_LaraItem->gravity = 0;
-        g_LaraItem->rot.x = 30 * DEG_1;
-        g_LaraItem->fall_speed = 30;
-        g_Lara.head_rot.x = 0;
-        g_Lara.head_rot.y = 0;
-        g_Lara.torso_rot.x = 0;
-        g_Lara.torso_rot.y = 0;
-    }
-    g_Lara.water_status = LWS_CHEAT;
-    g_Lara.hit_effect_count = 0;
-    g_Lara.hit_effect = nullptr;
-    g_Lara.hit_frame = 0;
-    g_Lara.hit_direction = -1;
-    g_Lara.air = LARA_MAX_AIR;
-    g_Lara.death_timer = 0;
-    g_Lara.mesh_effects = 0;
-    g_LaraItem->enable_shadow = true;
-    g_LaraItem->hit_points = LARA_MAX_HITPOINTS;
-    g_Camera.type = CAM_CHASE;
-    Viewport_SetFOV(-1);
-    Console_Log(GS(OSD_FLY_MODE_ON));
-    return true;
-}
-
 bool Lara_Cheat_ExitFlyMode(void)
 {
     if (g_LaraItem == nullptr) {

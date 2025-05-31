@@ -1,17 +1,22 @@
 #include "game/lara/cheat.h"
 
+#include "game/camera.h"
 #include "game/console.h"
 #include "game/const.h"
 #include "game/game.h"
 #include "game/game_string.h"
+#include "game/gun.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 
 static void M_GiveAllKeysImpl(void);
 static void M_GiveAllGunsImpl(void);
 static void M_GiveAllMedpacksImpl(void);
+static void M_ReinitialiseGunMeshes(void);
+static void M_ResetGunStatus(void);
 
 static void M_GiveAllKeysImpl(void)
 {
@@ -58,6 +63,47 @@ static void M_GiveAllMedpacksImpl(void)
 #endif
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 10);
+}
+
+static void M_ReinitialiseGunMeshes(void)
+{
+#if TR_VERSION >= 2
+    const bool has_flare = Lara_Flare_IsMeshActive();
+    Lara_InitialiseMeshes(Game_GetCurrentLevel());
+    Gun_InitialiseNewWeapon();
+    if (has_flare) {
+        Lara_Flare_DrawMeshes();
+    }
+#endif
+}
+
+static void M_ResetGunStatus(void)
+{
+#if TR_VERSION >= 2
+    const ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const bool has_flare = Lara_Flare_IsMeshActive();
+    if (has_flare) {
+        lara_info->gun_type = LGT_FLARE;
+        return;
+    }
+
+    lara_info->gun_status = LGS_ARMLESS;
+    lara_info->gun_type = LGT_UNARMED;
+    lara_info->request_gun_type = LGT_UNARMED;
+    lara_info->gun_item_num = NO_ITEM;
+    lara_info->gun_status = LGS_ARMLESS;
+    lara_info->left_arm.frame_num = 0;
+    lara_info->left_arm.lock = 0;
+    lara_info->right_arm.frame_num = 0;
+    lara_info->right_arm.lock = 0;
+    lara_info->left_arm.anim_num = lara_item->anim_num;
+    lara_info->right_arm.anim_num = lara_item->anim_num;
+
+    const ANIM *const anim = Item_GetAnim(lara_item);
+    lara_info->left_arm.frame_base = anim->frame_ptr;
+    lara_info->right_arm.frame_base = anim->frame_ptr;
+#endif
 }
 
 bool Lara_Cheat_GiveAllKeys(void)
@@ -173,4 +219,72 @@ bool Lara_Cheat_OpenNearestDoor(void)
     }
     Console_Log(GS(OSD_DOOR_OPEN_FAIL));
     return false;
+}
+
+bool Lara_Cheat_EnterFlyMode(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_item == nullptr) {
+        return false;
+    }
+
+    if ((lara_item->flags & IF_INVISIBLE) != 0) {
+        // The explosion cheat has been used, so Lara's death is permanent.
+        return false;
+    }
+
+#if TR_VERSION == 1
+    Viewport_SetFOV(-1);
+    lara_info->request_gun_type = LGT_UNARMED;
+    if (lara_item->hit_points <= 0) {
+        lara_info->gun_status = LGS_ARMLESS;
+        Lara_InitialiseMeshes(GF_GetCurrentLevel());
+    }
+#else
+    Viewport_AlterFOV(-1);
+    if (lara_info->extra_anim) {
+        M_ResetGunStatus();
+    }
+
+    if (lara_info->gun_status == LGS_HANDS_BUSY
+        || (lara_info->gun_status == LGS_UNDRAW
+            && lara_info->back_gun_obj_id != O_LARA)) {
+        lara_info->gun_status = LGS_ARMLESS;
+    }
+
+    lara_info->extra_anim = false;
+#endif
+
+    Lara_DismountVehicle();
+    if (lara_info->water_status != LWS_UNDERWATER
+        || lara_item->hit_points <= 0) {
+        lara_item->pos.y -= STEP_L;
+        lara_item->current_anim_state = LS_SWIM;
+        lara_item->goal_anim_state = LS_SWIM;
+        Item_SwitchToAnim(lara_item, LA_UNDERWATER_SWIM_FORWARD_DRIFT, 0);
+        lara_item->gravity = 0;
+        lara_item->rot.x = 30 * DEG_1;
+        lara_item->fall_speed = 30;
+        lara_info->head_rot.x = 0;
+        lara_info->head_rot.y = 0;
+        lara_info->torso_rot.x = 0;
+        lara_info->torso_rot.y = 0;
+    }
+    lara_info->water_status = LWS_CHEAT;
+    lara_info->hit_effect_count = 0;
+    lara_info->hit_effect = nullptr;
+    lara_info->hit_frame = 0;
+    lara_info->hit_direction = -1;
+    lara_info->air = LARA_MAX_AIR;
+    lara_info->death_timer = 0;
+    lara_info->mesh_effects = 0;
+    lara_item->enable_shadow = true;
+    lara_item->hit_points = LARA_MAX_HITPOINTS;
+
+    M_ReinitialiseGunMeshes();
+    g_Camera.type = CAM_CHASE;
+
+    Console_Log(GS(OSD_FLY_MODE_ON));
+    return true;
 }
