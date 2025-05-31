@@ -18,8 +18,3 @@ typedef enum {
     LF_FL_END = (LF_FL_2_HOLD + LF_FL_2_HOLD_FT), // = 110
     LF_FL_DRAW_GOT_IT = (LF_FL_DRAW + 13), // = 46
 } LARA_FLARE_ANIMATION_FRAME;
-
-void Flare_GenerateEffects(
-    XYZ_32 sound_pos, XYZ_32 flare_pos, int16_t room_num);
-bool Flare_GenerateLight(XYZ_32 pos, int32_t flare_age);
-int32_t Flare_GetMaxAge(void);
