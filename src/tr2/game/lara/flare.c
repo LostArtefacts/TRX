@@ -281,7 +281,6 @@ void Lara_Flare_Undraw(void)
         frame_num_1++;
         if (frame_num_1 == LF_FL_THROW_RELEASE) {
             Lara_Flare_Dispose(true);
-            Lara_Flare_UndrawMeshes();
         } else if (frame_num_1 == LF_FL_DRAW) {
             frame_num_1 = 0;
             lara_info->gun_type = lara_info->last_gun_type;
@@ -313,11 +312,11 @@ void Lara_Flare_Dispose(const bool thrown)
 {
     const int16_t item_num = Item_Create();
     if (item_num == NO_ITEM) {
-        return;
+        goto finish;
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     ITEM *const item = Item_Get(item_num);
     item->object_id = O_FLARE_ITEM;
@@ -372,4 +371,10 @@ void Lara_Flare_Dispose(const bool thrown)
 
     Item_AddActive(item_num);
     item->status = IS_ACTIVE;
+
+finish:
+    Lara_Flare_UndrawMeshes();
+    if (!thrown) {
+        lara_info->flare.control = false;
+    }
 }
