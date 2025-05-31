@@ -7,6 +7,7 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara/control.h"
+#include "game/lara/flare.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -114,7 +115,7 @@ void Gun_Control(void)
                 g_Lara.flare.control = false;
             }
             Flare_DoInHand(g_Lara.flare.age);
-            Flare_SetArm(g_Lara.left_arm.frame_num);
+            Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
         }
         break;
 
@@ -123,7 +124,7 @@ void Gun_Control(void)
             g_Lara.flare.control = g_Lara.vehicle_item_num != NO_ITEM
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state);
             Flare_DoInHand(g_Lara.flare.age);
-            Flare_SetArm(g_Lara.left_arm.frame_num);
+            Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
         }
         break;
 
