@@ -53,49 +53,7 @@ static bool M_ScreenResolution_RequestChangeValue(
     return true;
 }
 
-static const UI_SETTINGS_OPTION m_UIOptions[] = {
-    {
-        .option_type = COT_DOUBLE,
-        .label_id = GS_ID(DETAIL_UI_TEXT_SCALE),
-        .target = &g_Config.ui.text_scale,
-        .min_value = 50,
-        .max_value = 200,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-
-    {
-        .option_type = COT_DOUBLE,
-        .label_id = GS_ID(DETAIL_UI_BAR_SCALE),
-        .target = &g_Config.ui.bar_scale,
-        .min_value = 50,
-        .max_value = 200,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-
-    {
-        .option_type = COT_BOOL,
-        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
-        .target = &g_Config.ui.enable_wraparound,
-    },
-
-    {
-        .target = nullptr,
-    },
-};
-
-static const UI_SETTINGS_OPTION m_RenderOptions[] = {
-    {
-        .option_type = COT_INT32,
-        .label_id = GS_ID(DETAIL_FPS),
-        .target = &g_Config.rendering.fps,
-        .min_value = 30,
-        .max_value = 60,
-        .delta_slow = 30,
-        .delta_fast = 30,
-    },
-
+static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
     {
         .option_type = COT_INT32,
         .label_id = GS_ID(DETAIL_FOG_START),
@@ -162,6 +120,54 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .max_value = 150,
         .delta_slow = 1,
         .delta_fast = 10,
+    },
+
+    {
+        .target = nullptr,
+    },
+};
+
+static const UI_SETTINGS_OPTION m_UIOptions[] = {
+    {
+        .option_type = COT_DOUBLE,
+        .label_id = GS_ID(DETAIL_UI_TEXT_SCALE),
+        .target = &g_Config.ui.text_scale,
+        .min_value = 50,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_DOUBLE,
+        .label_id = GS_ID(DETAIL_UI_BAR_SCALE),
+        .target = &g_Config.ui.bar_scale,
+        .min_value = 50,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
+        .target = &g_Config.ui.enable_wraparound,
+    },
+
+    {
+        .target = nullptr,
+    },
+};
+
+static const UI_SETTINGS_OPTION m_RenderOptions[] = {
+    {
+        .option_type = COT_INT32,
+        .label_id = GS_ID(DETAIL_FPS),
+        .target = &g_Config.rendering.fps,
+        .min_value = 30,
+        .max_value = 60,
+        .delta_slow = 30,
+        .delta_fast = 30,
     },
 
     {
@@ -234,6 +240,7 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
 };
 
 static const UI_SETTINGS_TAB m_Tabs[] = {
+    { GS_ID(DETAIL_VISUALS_TAB), m_VisualsOptions },
     { GS_ID(DETAIL_UI_TAB), m_UIOptions },
     { GS_ID(DETAIL_RENDERING_TAB), m_RenderOptions },
 };
