@@ -1,7 +1,6 @@
 #include "decomp/skidoo.h"
 
 #include "decomp/decomp.h"
-#include "decomp/flares.h"
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
