@@ -53,7 +53,39 @@ static bool M_ScreenResolution_RequestChangeValue(
     return true;
 }
 
-static const UI_SETTINGS_OPTION m_Options[] = {
+static const UI_SETTINGS_OPTION m_UIOptions[] = {
+    {
+        .option_type = COT_DOUBLE,
+        .label_id = GS_ID(DETAIL_UI_TEXT_SCALE),
+        .target = &g_Config.ui.text_scale,
+        .min_value = 50,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_DOUBLE,
+        .label_id = GS_ID(DETAIL_UI_BAR_SCALE),
+        .target = &g_Config.ui.bar_scale,
+        .min_value = 50,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
+        .target = &g_Config.ui.enable_wraparound,
+    },
+
+    {
+        .target = nullptr,
+    },
+};
+
+static const UI_SETTINGS_OPTION m_RenderOptions[] = {
     {
         .option_type = COT_INT32,
         .label_id = GS_ID(DETAIL_FPS),
@@ -197,39 +229,19 @@ static const UI_SETTINGS_OPTION m_Options[] = {
     },
 
     {
-        .option_type = COT_DOUBLE,
-        .label_id = GS_ID(DETAIL_UI_TEXT_SCALE),
-        .target = &g_Config.ui.text_scale,
-        .min_value = 50,
-        .max_value = 200,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-
-    {
-        .option_type = COT_DOUBLE,
-        .label_id = GS_ID(DETAIL_UI_BAR_SCALE),
-        .target = &g_Config.ui.bar_scale,
-        .min_value = 50,
-        .max_value = 200,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-
-    {
-        .option_type = COT_BOOL,
-        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
-        .target = &g_Config.ui.enable_wraparound,
-    },
-
-    {
         .target = nullptr,
     },
 };
 
+static const UI_SETTINGS_TAB m_Tabs[] = {
+    { GS_ID(DETAIL_UI_TAB), m_UIOptions },
+    { GS_ID(DETAIL_RENDERING_TAB), m_RenderOptions },
+};
+
 void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *const s)
 {
-    UI_Settings_Init(s, m_Options);
+    UI_Settings_InitWithTabs(
+        s, GS_ID(DETAIL_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]), m_Tabs);
 }
 
 void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *const s)

@@ -36,15 +36,19 @@ static void M_DownArrow(const UI_SCROLLABLE *const s)
 
 void UI_BeginScrollableArea(const UI_SCROLLABLE *const s)
 {
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = UI_STACK_H_ALIGN_SPAN },
-    });
-    M_UpArrow(s);
+    if (s->vis_items < s->max_items) {
+        UI_BeginStackEx((UI_STACK_SETTINGS) {
+            .orientation = UI_STACK_VERTICAL,
+            .align = { .h = UI_STACK_H_ALIGN_SPAN },
+        });
+        M_UpArrow(s);
+    }
 }
 
 void UI_EndScrollableArea(const UI_SCROLLABLE *const s)
 {
-    M_DownArrow(s);
-    UI_EndStack();
+    if (s->vis_items < s->max_items) {
+        M_DownArrow(s);
+        UI_EndStack();
+    }
 }

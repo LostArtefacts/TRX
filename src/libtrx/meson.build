@@ -257,6 +257,7 @@ sources = [
   'game/ui/elements/requester.c',
   'game/ui/elements/resize.c',
   'game/ui/elements/row_arrows.c',
+  'game/ui/elements/scrollable_area.c',
   'game/ui/elements/spacer.c',
   'game/ui/elements/span.c',
   'game/ui/elements/stack.c',
