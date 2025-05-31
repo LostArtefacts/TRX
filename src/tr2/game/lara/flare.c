@@ -2,10 +2,13 @@
 
 #include "decomp/flares.h"
 #include "game/gun/gun.h"
+#include "game/lara/misc.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/sound.h>
 
 typedef enum {
     // clang-format off
@@ -18,6 +21,8 @@ typedef enum {
 } M_LARA_FLARE_ANIMATION;
 
 static void M_InitialiseState(void);
+static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
+static bool M_CanThrowFlare(void);
 
 static void M_InitialiseState(void)
 {
@@ -32,6 +37,55 @@ static void M_InitialiseState(void)
     lara_info->left_arm.lock = 0;
     lara_info->right_arm.lock = 0;
     lara_info->target = nullptr;
+}
+
+static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
+{
+    Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
+    const ROOM *const room = Room_Get(room_num);
+    const SOUND_PLAY_MODE mode =
+        (room->flags & RF_UNDERWATER) != 0 ? SPM_UNDERWATER : SPM_NORMAL;
+    Sound_Effect(SFX_LARA_FLARE_IGNITE, &flare_pos, mode);
+}
+
+static bool M_CanThrowFlare(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->gun_status != LGS_ARMLESS) {
+        return false;
+    }
+
+    return !g_Config.gameplay.fix_flare_throw_priority
+        || (!lara_item->gravity && !g_Input.jump)
+        || lara_item->current_anim_state == LS_FAST_FALL
+        || lara_item->current_anim_state == LS_SWAN_DIVE
+        || lara_item->current_anim_state == LS_FAST_DIVE;
+}
+
+void Lara_Flare_DoInHand(const int32_t flare_age)
+{
+    XYZ_32 vec = {
+        .x = 11,
+        .y = 32,
+        .z = 41,
+    };
+    Lara_GetJointAbsPosition(&vec, LM_HAND_L);
+
+    const ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (flare_age == 0) {
+        M_DoIgniteEffects(vec, lara_item->room_num);
+    }
+
+    lara_info->left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
+
+    if (lara_info->flare.age < Flare_GetMaxAge()) {
+        lara_info->flare.age++;
+        Flare_GenerateEffects(lara_item->pos, vec, lara_item->room_num);
+    } else if (M_CanThrowFlare()) {
+        lara_info->gun_status = LGS_UNDRAW;
+    }
 }
 
 void Lara_Flare_SetArm(const int32_t flare_frame)
@@ -73,7 +127,7 @@ void Lara_Flare_Draw(void)
 
     if (lara_item->current_anim_state == LS_FLARE_PICKUP
         || lara_item->current_anim_state == LS_PICKUP) {
-        Flare_DoInHand(lara_info->flare.age);
+        Lara_Flare_DoInHand(lara_info->flare.age);
         lara_info->flare.control = false;
         lara_info->left_arm.frame_num = LF_FL_2_HOLD - 2;
         Lara_Flare_SetArm(lara_info->left_arm.frame_num);
@@ -94,10 +148,10 @@ void Lara_Flare_Draw(void)
         if (frame_num == LF_FL_IGNITE) {
             lara_info->flare.age = 0;
         }
-        Flare_DoInHand(lara_info->flare.age);
+        Lara_Flare_DoInHand(lara_info->flare.age);
     } else if (frame_num == LF_FL_2_HOLD - 1) {
         M_InitialiseState();
-        Flare_DoInHand(lara_info->flare.age);
+        Lara_Flare_DoInHand(lara_info->flare.age);
         frame_num = LF_FL_HOLD;
     }
 
@@ -180,7 +234,7 @@ void Lara_Flare_Undraw(void)
     }
 
     if (frame_num_1 >= LF_FL_THROW && frame_num_1 < LF_FL_THROW_RELEASE) {
-        Flare_DoInHand(lara_info->flare.age);
+        Lara_Flare_DoInHand(lara_info->flare.age);
     }
 
     lara_info->left_arm.frame_num = frame_num_1;
