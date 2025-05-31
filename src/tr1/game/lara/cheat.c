@@ -2,12 +2,11 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/lara/common.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/vector.h>
 
 bool Lara_Cheat_EnterFlyMode(void)

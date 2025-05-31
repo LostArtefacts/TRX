@@ -21,7 +21,3 @@ void Lara_InitialiseLoad(int16_t item_num);
 void Lara_Initialise(const GF_LEVEL *level);
 
 void Lara_InitialiseInventory(const GF_LEVEL *level);
-
-void Lara_InitialiseMeshes(const GF_LEVEL *level);
-
-void Lara_GetOffVehicle(void);

@@ -2,12 +2,11 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/gun/gun.h"
-#include "game/lara/control.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/vector.h>
 
@@ -70,7 +69,7 @@ bool Lara_Cheat_EnterFlyMode(void)
         g_Lara.gun_status = LGS_ARMLESS;
     }
 
-    Lara_GetOffVehicle();
+    Lara_DismountVehicle();
 
     if (g_Lara.water_status != LWS_UNDERWATER || g_LaraItem->hit_points <= 0) {
         g_LaraItem->pos.y -= STEP_L;
@@ -228,7 +227,7 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
         g_Lara.gun_status = LGS_ARMLESS;
     }
 
-    Lara_GetOffVehicle();
+    Lara_DismountVehicle();
 
     if (g_Lara.extra_anim) {
         const ROOM *const room = Room_Get(g_LaraItem->room_num);
