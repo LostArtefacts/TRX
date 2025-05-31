@@ -121,7 +121,7 @@ static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
         break;
 
     default:
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         break;
     }
 }
@@ -159,7 +159,7 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
                     item, LF_WALK_STEP_L_2_START, LF_WALK_STEP_L_2_END))) {
             Item_SwitchToAnim(item, LA_STOP_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_STOP, 0);
+            Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         }
     }
 
@@ -233,7 +233,7 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
                 return;
             }
         }
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     }
 
     if (Lara_Fallen(item, coll)) {
@@ -361,7 +361,7 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     }
 
     item->pos.y += coll->side_mid.floor;
@@ -508,7 +508,7 @@ void Lara_Col_Compress(ITEM *item, COLL_INFO *coll)
     if (coll->side_mid.ceiling > -100) {
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         item->gravity = false;
         item->fall_speed = 0;
         item->speed = 0;
@@ -539,7 +539,7 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     }
 
     if (g_Config.gameplay.fix_descending_glitch && Lara_Fallen(item, coll)) {
@@ -594,7 +594,7 @@ void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     }
 
     if (g_Config.gameplay.fix_descending_glitch && Lara_Fallen(item, coll)) {
@@ -629,7 +629,7 @@ void Lara_Col_StepLeft(ITEM *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     }
 
     if (g_Config.gameplay.fix_descending_glitch && Lara_Fallen(item, coll)) {
