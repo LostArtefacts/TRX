@@ -212,7 +212,7 @@ void Lara_Flare_Undraw(void)
     } else if (frame_num_1 >= LF_FL_THROW && frame_num_1 < LF_FL_DRAW) {
         frame_num_1++;
         if (frame_num_1 == LF_FL_THROW_RELEASE) {
-            Flare_Create(true);
+            Lara_Flare_Dispose(true);
             Lara_Flare_UndrawMeshes();
         } else if (frame_num_1 == LF_FL_DRAW) {
             frame_num_1 = 0;
@@ -239,4 +239,69 @@ void Lara_Flare_Undraw(void)
 
     lara_info->left_arm.frame_num = frame_num_1;
     Lara_Flare_SetArm(frame_num_1);
+}
+
+void Lara_Flare_Dispose(const bool thrown)
+{
+    const int16_t item_num = Item_Create();
+    if (item_num == NO_ITEM) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    ITEM *const item = Item_Get(item_num);
+    item->object_id = O_FLARE_ITEM;
+    item->room_num = lara_item->room_num;
+
+    XYZ_32 vec = {
+        .x = -16,
+        .y = 32,
+        .z = 42,
+    };
+    Lara_GetJointAbsPosition(&vec, LM_HAND_L);
+
+    const SECTOR *const sector =
+        Room_GetSector(vec.x, vec.y, vec.z, &item->room_num);
+    const int32_t height = Room_GetHeight(sector, vec.x, vec.y, vec.z);
+    if (height < vec.y) {
+        item->pos.x = lara_item->pos.x;
+        item->pos.y = vec.y;
+        item->pos.z = lara_item->pos.z;
+        item->rot.y = -lara_item->rot.y;
+        item->room_num = lara_item->room_num;
+    } else {
+        item->pos.x = vec.x;
+        item->pos.y = vec.y;
+        item->pos.z = vec.z;
+        if (thrown) {
+            item->rot.y = lara_item->rot.y;
+        } else {
+            item->rot.y = lara_item->rot.y - DEG_45;
+        }
+    }
+
+    Item_Initialise(item_num);
+
+    item->rot.z = 0;
+    item->rot.x = 0;
+    item->shade.value_1 = -1;
+
+    if (thrown) {
+        item->speed = lara_item->speed + 50;
+        item->fall_speed = lara_item->fall_speed - 50;
+    } else {
+        item->speed = lara_item->speed + 10;
+        item->fall_speed = lara_item->fall_speed + 50;
+    }
+
+    if (Flare_GenerateLight(item->pos, lara_info->flare.age)) {
+        item->data = (void *)(intptr_t)(lara_info->flare.age | 0x8000);
+    } else {
+        item->data = (void *)(intptr_t)(lara_info->flare.age & ~0x8000);
+    }
+
+    Item_AddActive(item_num);
+    item->status = IS_ACTIVE;
 }
