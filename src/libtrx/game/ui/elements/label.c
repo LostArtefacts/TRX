@@ -78,6 +78,13 @@ void UI_Label_Measure(
     UI_Label_MeasureEx(text, out_w, out_h, m_DefaultSettings);
 }
 
+float UI_Label_MeasureW(const char *const text)
+{
+    float result;
+    UI_Label_Measure(text, &result, nullptr);
+    return result;
+}
+
 void UI_Label_MeasureEx(
     const char *const text, float *const out_w, float *const out_h,
     const UI_LABEL_SETTINGS settings)
