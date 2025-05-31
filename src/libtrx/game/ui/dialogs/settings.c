@@ -24,6 +24,9 @@
 
 #include <math.h>
 
+static char *m_TempString = nullptr;
+static size_t m_TempStringCap = 0;
+
 typedef struct {
     const UI_SETTINGS_ENUM_ENTRY *entry;
     int32_t position;
@@ -101,18 +104,29 @@ static char *M_FormatRowValue(
     }
     switch (option->option_type) {
     case COT_BOOL:
-        return String_Format(
-            "%s", *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, "%s",
+            *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
+        return m_TempString;
     case COT_INT32:
-        return String_Format(
-            GS(DETAIL_INTEGER_FMT), *(int32_t *)option->target);
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
+            *(int32_t *)option->target);
+        return m_TempString;
     case COT_DOUBLE:
-        return String_Format(GS(DETAIL_FLOAT_FMT), *(double *)option->target);
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
+            *(double *)option->target);
+        return m_TempString;
     case COT_FLOAT:
-        return String_Format(GS(DETAIL_FLOAT_FMT), *(float *)option->target);
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
+            *(float *)option->target);
+        return m_TempString;
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
-        return String_Format("%d", *component);
+        String_FormatInto(&m_TempString, &m_TempStringCap, "%d", *component);
+        return m_TempString;
     }
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
