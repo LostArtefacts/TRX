@@ -4,7 +4,8 @@
 #include "../../../config/types.h"
 #include "../../game_string.h"
 #include "../common.h"
-#include "../elements/requester.h"
+#include "../elements/tab_switch.h"
+#include "../scrollable.h"
 
 typedef struct {
     int32_t value;
@@ -39,15 +40,42 @@ typedef struct UI_SETTINGS_OPTION {
     };
 } UI_SETTINGS_OPTION;
 
-typedef struct {
+typedef enum {
+    UI_SETTINGS_PHASE_NAVIGATE_TABS,
+    UI_SETTINGS_PHASE_EDIT_SETTINGS,
+} UI_SETTINGS_PHASE;
+
+// A tab for grouping settings into separate, labeled pages.
+// Each tab has its own nullptr-terminated UI_SETTINGS_OPTION array.
+typedef struct UI_SETTINGS_TAB {
+    GAME_STRING_ID header;
     const UI_SETTINGS_OPTION *options;
-    UI_REQUESTER_STATE req;
+} UI_SETTINGS_TAB;
+
+typedef struct {
+    UI_SETTINGS_PHASE phase;
+    const UI_SETTINGS_OPTION *options;
+    UI_SCROLLABLE scroll;
     float arrow_spacing;
+    float row_pad;
     float value_w;
+
+    int32_t tab_count;
+    const UI_SETTINGS_TAB *tabs;
+    int32_t active_tab_idx;
+    UI_TAB_SWITCH_STATE *tab_switch;
+    GAME_STRING_ID title;
 } UI_SETTINGS_STATE;
 
-void UI_Settings_Init(UI_SETTINGS_STATE *s, const UI_SETTINGS_OPTION *options);
+// state functions
+void UI_Settings_Init(
+    UI_SETTINGS_STATE *s, GAME_STRING_ID title,
+    const UI_SETTINGS_OPTION *options);
+void UI_Settings_InitWithTabs(
+    UI_SETTINGS_STATE *s, GAME_STRING_ID title, int32_t tab_count,
+    const UI_SETTINGS_TAB *tabs);
 void UI_Settings_Free(UI_SETTINGS_STATE *s);
 bool UI_Settings_Control(UI_SETTINGS_STATE *s);
 
+// draw functions
 void UI_Settings(UI_SETTINGS_STATE *s);

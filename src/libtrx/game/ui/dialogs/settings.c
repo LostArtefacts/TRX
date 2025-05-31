@@ -5,14 +5,18 @@
 #include "game/input.h"
 #include "game/scaler.h"
 #include "game/ui/elements/anchor.h"
+#include "game/ui/elements/frame.h"
 #include "game/ui/elements/hide.h"
 #include "game/ui/elements/label.h"
 #include "game/ui/elements/modal.h"
-#include "game/ui/elements/requester.h"
+#include "game/ui/elements/pad.h"
 #include "game/ui/elements/resize.h"
 #include "game/ui/elements/row_arrows.h"
+#include "game/ui/elements/scrollable_area.h"
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
+#include "game/ui/elements/tab_switch.h"
+#include "game/ui/elements/window.h"
 #include "game/viewport.h"
 #include "memory.h"
 #include "strings.h"
@@ -243,7 +247,7 @@ static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
     // Measure the maximum width of the value label to prevent the entire
     // dialog from changing its size as the player changes the levels.
     float result = -1.0f;
-    for (int32_t i = 0; i < s->req.scroll.max_items; i++) {
+    for (int32_t i = 0; i < s->scroll.max_items; i++) {
         const UI_SETTINGS_OPTION *const option = &s->options[i];
         if (option->option_type == COT_ENUM) {
             const UI_SETTINGS_ENUM_ENTRY *entry =
@@ -271,57 +275,137 @@ static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
     return result;
 }
 
-void UI_Settings_Init(
-    UI_SETTINGS_STATE *const s, const UI_SETTINGS_OPTION *const options)
+static void M_OptionsChanged(UI_SETTINGS_STATE *const s)
 {
-    s->options = options;
     int32_t row_count = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
         row_count++;
     }
-    UI_Requester_Init(&s->req, row_count, row_count, true);
-    s->req.row_pad = 2.0f;
-    s->req.row_spacing = 0.0f;
-    s->req.show_arrows = true;
+    UI_Scrollable_SetMaxItems(&s->scroll, row_count);
+}
+
+void UI_Settings_Init(
+    UI_SETTINGS_STATE *const s, const GAME_STRING_ID title,
+    const UI_SETTINGS_OPTION *const options)
+{
+    s->title = title;
+    s->options = options;
+    M_OptionsChanged(s);
+    s->tab_count = 0;
+    s->tabs = nullptr;
+    s->tab_switch = nullptr;
+    s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
+}
+
+void UI_Settings_InitWithTabs(
+    UI_SETTINGS_STATE *s, const GAME_STRING_ID title, const int32_t tab_count,
+    const UI_SETTINGS_TAB *const tabs)
+{
+    UI_Settings_Init(s, title, tabs[0].options);
+    s->tab_count = tab_count;
+    s->tabs = tabs;
+    UI_TAB_SWITCH_TAB tab_switch_tabs[tab_count];
+    for (int32_t i = 0; i < tab_count; i++) {
+        tab_switch_tabs[i].header = tabs[i].header;
+    }
+    s->tab_switch = UI_TabSwitch_Init(tab_count, tab_switch_tabs);
+    s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
 }
 
 void UI_Settings_Free(UI_SETTINGS_STATE *const s)
 {
-    UI_Requester_Free(&s->req);
+    if (s->tab_switch != nullptr) {
+        UI_TabSwitch_Free(s->tab_switch);
+        s->tab_switch = nullptr;
+    }
 }
 
 bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
 {
-    UI_Requester_SetVisibleRows(&s->req, M_GetVisibleRows());
-    const int32_t choice = UI_Requester_Control(&s->req);
-    if (choice == UI_REQUESTER_CANCEL) {
-        return true;
-    }
-    const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
-    if (g_InputDB.menu_left && sel_row >= 0) {
-        M_RequestChangeValue(s, sel_row, -1);
-    } else if (g_InputDB.menu_right && sel_row >= 0) {
-        M_RequestChangeValue(s, sel_row, +1);
+    UI_Scrollable_SetVisibleItems(&s->scroll, M_GetVisibleRows());
+
+    if (s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS) {
+        if (UI_TabSwitch_Control(s->tab_switch)) {
+            s->options = s->tabs[s->tab_switch->active_tab_idx].options;
+            M_OptionsChanged(s);
+            return false;
+        } else if (g_InputDB.menu_down) {
+            s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
+            UI_Scrollable_SelectFirstItem(&s->scroll);
+        } else if (g_InputDB.menu_up) {
+            s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
+            UI_Scrollable_SelectLastItem(&s->scroll);
+        }
+    } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
+        if (g_InputDB.menu_up) {
+            if (!UI_Scrollable_SelectPrev(&s->scroll, false)) {
+                if (s->tab_switch != nullptr) {
+                    s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
+                } else {
+                    UI_Scrollable_SelectLastItem(&s->scroll);
+                }
+            }
+        } else if (g_InputDB.menu_down) {
+            if (!UI_Scrollable_SelectNext(&s->scroll, false)) {
+                if (s->tab_switch != nullptr) {
+                    s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
+                } else {
+                    UI_Scrollable_SelectFirstItem(&s->scroll);
+                }
+            }
+        } else if (g_InputDB.menu_back) {
+            return true;
+        } else {
+            const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
+            if (g_InputDB.menu_left && sel_row >= 0) {
+                M_RequestChangeValue(s, sel_row, -1);
+            } else if (g_InputDB.menu_right && sel_row >= 0) {
+                M_RequestChangeValue(s, sel_row, +1);
+            }
+        }
     }
     return false;
 }
 
 void UI_Settings(UI_SETTINGS_STATE *const s)
 {
-    const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
+    const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
     UI_BeginModal(0.5f, 0.6f);
-    UI_BeginRequester(&s->req, GS(DETAIL_TITLE));
+
+    UI_BeginWindow();
+    UI_WindowTitle(GameString_Get(s->title));
+    UI_BeginWindowBody();
+
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    });
+    if (s->tab_switch != nullptr) {
+        UI_TabSwitch(
+            s->tab_switch, s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS);
+        UI_Spacer(0.0f, 8.0f);
+    }
+
+    UI_BeginScrollableArea(&s->scroll);
 
     const float max_value_w = M_GetValueWidth(s) / g_Config.ui.text_scale;
-
-    for (int32_t i = 0; i < s->req.scroll.max_items; i++) {
-        if (!UI_Requester_IsRowVisible(&s->req, i)) {
+    for (int32_t i = 0; i < s->scroll.max_items; i++) {
+        const bool is_row_focused =
+            s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS && i == sel_row;
+        if (!UI_Scrollable_IsItemVisible(&s->scroll, i)) {
             UI_BeginResize(-1.0f, 0.0f);
         } else {
             UI_BeginResize(-1.0f, -1.0f);
         }
 
-        UI_BeginRequesterRow(&s->req, i);
+        UI_BeginPad(
+            TR_VERSION == 1 ? -1.0f : 0.0f, TR_VERSION == 1 ? -1.0f : 0.0f);
+        if (is_row_focused) {
+            UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
+        }
+        UI_BeginPad(
+            s->row_pad + (TR_VERSION == 1 ? 1.0f : 0.0f),
+            TR_VERSION == 1 ? 1.0f : 0.0f);
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
@@ -333,8 +417,8 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         UI_BeginAnchor(1.0f, 0.5f);
 
         UI_BeginRowArrows(
-            i == sel_row && M_CanChangeValue(s, i, -1),
-            i == sel_row && M_CanChangeValue(s, i, +1), UI_ROW_ARROWS_TIGHT);
+            is_row_focused && M_CanChangeValue(s, i, -1),
+            is_row_focused && M_CanChangeValue(s, i, +1), UI_ROW_ARROWS_MEDIUM);
         UI_Label(M_FormatRowValue(s, i));
         UI_EndRowArrows();
 
@@ -342,9 +426,19 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         UI_EndResize();
 
         UI_EndStack();
-        UI_EndRequesterRow(&s->req, i);
+
+        UI_EndPad();
+        if (is_row_focused) {
+            UI_EndFrame();
+        }
+        UI_EndPad();
+
         UI_EndResize();
     }
-    UI_EndRequester(&s->req);
+    UI_EndScrollableArea(&s->scroll);
+
+    UI_EndStack();
+    UI_EndWindowBody();
+    UI_EndWindow();
     UI_EndModal();
 }

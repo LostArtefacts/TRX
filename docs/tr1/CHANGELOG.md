@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...develop) - ××××-××-××
 - added an optional breeze effect for Lara's braid in appropriate outside rooms (#3090)
+- changed the graphic settings dialog to use tabs
 - changed the `/tp` command to align Lara to switches and pickups
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion

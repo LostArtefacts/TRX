@@ -2,13 +2,13 @@
 
 #include <libtrx/config.h>
 
-static const UI_SETTINGS_ENUM_ENTRY m_CameraModeOptions[] = {
+static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
     { CAMERA_MODE_TR1, GS_ID(DETAIL_CAMERA_MODE_TR1) },
     { CAMERA_MODE_TR2, GS_ID(DETAIL_CAMERA_MODE_TR2) },
     { -1, nullptr },
 };
 
-static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterOptions[] = {
+static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterEnumEntries[] = {
     // clang-format off
     { GFX_TF_NN, GS_ID(MISC_OFF), },
     { GFX_TF_BILINEAR, GS_ID(DETAIL_BILINEAR), },
@@ -16,7 +16,7 @@ static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterOptions[] = {
     // clang-format on
 };
 
-static const UI_SETTINGS_ENUM_ENTRY m_LightingContrastOptions[] = {
+static const UI_SETTINGS_ENUM_ENTRY m_LightingContrastEnumEntries[] = {
     // clang-format off
     { LIGHTING_CONTRAST_LOW, GS_ID(DETAIL_LIGHTING_CONTRAST_LOW), },
     { LIGHTING_CONTRAST_MEDIUM, GS_ID(DETAIL_LIGHTING_CONTRAST_MEDIUM), },
@@ -25,7 +25,7 @@ static const UI_SETTINGS_ENUM_ENTRY m_LightingContrastOptions[] = {
     // clang-format on
 };
 
-static const UI_SETTINGS_ENUM_ENTRY m_RenderModeOptions[] = {
+static const UI_SETTINGS_ENUM_ENTRY m_RenderModeEnumEntries[] = {
     // clang-format off
     { RM_SOFTWARE, GS_ID(DETAIL_RENDER_MODE_SOFTWARE), },
     { RM_HARDWARE, GS_ID(DETAIL_RENDER_MODE_HARDWARE), },
@@ -33,7 +33,7 @@ static const UI_SETTINGS_ENUM_ENTRY m_RenderModeOptions[] = {
     // clang-format on
 };
 
-static const UI_SETTINGS_ENUM_ENTRY m_AspectModeOptions[] = {
+static const UI_SETTINGS_ENUM_ENTRY m_AspectModeEnumEntries[] = {
     // clang-format off
     { AM_4_3, GS_ID(DETAIL_ASPECT_MODE_4_3), },
     { AM_16_9, GS_ID(DETAIL_ASPECT_MODE_16_9), },
@@ -42,7 +42,39 @@ static const UI_SETTINGS_ENUM_ENTRY m_AspectModeOptions[] = {
     // clang-format on
 };
 
-static const UI_SETTINGS_OPTION m_Options[] = {
+static const UI_SETTINGS_OPTION m_UIOptions[] = {
+    {
+        .option_type = COT_DOUBLE,
+        .label_id = GS_ID(DETAIL_UI_TEXT_SCALE),
+        .target = &g_Config.ui.text_scale,
+        .min_value = 50,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_DOUBLE,
+        .label_id = GS_ID(DETAIL_UI_BAR_SCALE),
+        .target = &g_Config.ui.bar_scale,
+        .min_value = 50,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
+        .target = &g_Config.ui.enable_wraparound,
+    },
+
+    {
+        .target = nullptr,
+    },
+};
+
+static const UI_SETTINGS_OPTION m_RenderOptions[] = {
     {
         .option_type = COT_INT32,
         .label_id = GS_ID(DETAIL_FPS),
@@ -108,7 +140,7 @@ static const UI_SETTINGS_OPTION m_Options[] = {
         .target = &g_Config.visuals.camera_mode,
         .delta_slow = 1,
         .delta_fast = 1,
-        .misc = m_CameraModeOptions,
+        .misc = m_CameraModeEnumEntries,
     },
 
     {
@@ -133,7 +165,7 @@ static const UI_SETTINGS_OPTION m_Options[] = {
         .target = &g_Config.rendering.texture_filter,
         .delta_slow = 1,
         .delta_fast = 1,
-        .misc = m_TextureFilterOptions,
+        .misc = m_TextureFilterEnumEntries,
     },
 
     {
@@ -154,7 +186,7 @@ static const UI_SETTINGS_OPTION m_Options[] = {
         .target = &g_Config.rendering.lighting_contrast,
         .delta_slow = 1,
         .delta_fast = 1,
-        .misc = m_LightingContrastOptions,
+        .misc = m_LightingContrastEnumEntries,
     },
 
     {
@@ -163,7 +195,7 @@ static const UI_SETTINGS_OPTION m_Options[] = {
         .target = &g_Config.rendering.render_mode,
         .delta_slow = 1,
         .delta_fast = 1,
-        .misc = m_RenderModeOptions,
+        .misc = m_RenderModeEnumEntries,
     },
 
     {
@@ -172,33 +204,7 @@ static const UI_SETTINGS_OPTION m_Options[] = {
         .target = &g_Config.rendering.aspect_mode,
         .delta_slow = 1,
         .delta_fast = 1,
-        .misc = m_AspectModeOptions,
-    },
-
-    {
-        .option_type = COT_DOUBLE,
-        .label_id = GS_ID(DETAIL_UI_TEXT_SCALE),
-        .target = &g_Config.ui.text_scale,
-        .min_value = 50,
-        .max_value = 200,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-
-    {
-        .option_type = COT_DOUBLE,
-        .label_id = GS_ID(DETAIL_UI_BAR_SCALE),
-        .target = &g_Config.ui.bar_scale,
-        .min_value = 50,
-        .max_value = 200,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-
-    {
-        .option_type = COT_BOOL,
-        .label_id = GS_ID(DETAIL_UI_SCROLL_WRAPAROUND),
-        .target = &g_Config.ui.enable_wraparound,
+        .misc = m_AspectModeEnumEntries,
     },
 
     {
@@ -226,9 +232,15 @@ static const UI_SETTINGS_OPTION m_Options[] = {
     },
 };
 
+static const UI_SETTINGS_TAB m_Tabs[] = {
+    { GS_ID(DETAIL_UI_TAB), m_UIOptions },
+    { GS_ID(DETAIL_RENDERING_TAB), m_RenderOptions },
+};
+
 void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *const s)
 {
-    UI_Settings_Init(s, m_Options);
+    UI_Settings_InitWithTabs(
+        s, GS_ID(DETAIL_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]), m_Tabs);
 }
 
 void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *const s)
