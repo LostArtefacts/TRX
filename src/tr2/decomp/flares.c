@@ -131,44 +131,6 @@ void Flare_DoInHand(const int32_t flare_age)
     }
 }
 
-void Flare_DrawInAir(const ITEM *const item)
-{
-    int32_t rate;
-    ANIM_FRAME *frames[2];
-    Item_GetFrames(item, frames, &rate);
-    Matrix_Push();
-    Matrix_TranslateAbs32(item->interp.result.pos);
-    Matrix_Rot16(item->interp.result.rot);
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
-
-    const XYZ_32 flare_size = {
-        .x = frames[0]->bounds.max.x - frames[0]->bounds.min.x,
-        .y = frames[0]->bounds.max.y - frames[0]->bounds.min.y,
-        .z = frames[0]->bounds.max.z - frames[0]->bounds.min.z,
-    };
-    const XYZ_32 flare_offset = {
-        .x = -flare_size.x,
-        .y = -flare_size.y,
-        .z = -flare_size.z,
-    };
-    Matrix_TranslateRel32(flare_offset);
-
-    if (clip != 0) {
-        Output_CalculateObjectLighting(item, &frames[0]->bounds);
-        Output_SetDepthBias(-20);
-        Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
-        if (((int32_t)(intptr_t)item->data) & 0x8000) {
-            Matrix_TranslateRel(-6, 6, 80);
-            Matrix_RotX(-90 * DEG_1);
-            Matrix_RotY((int16_t)(2 * Random_GetDraw()));
-            Output_CalculateStaticLight(8 * 256);
-            Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
-        }
-        Output_SetDepthBias(0);
-    }
-    Matrix_Pop();
-}
-
 void Flare_Create(const bool thrown)
 {
     const int16_t item_num = Item_Create();
