@@ -31,4 +31,4 @@ void Flare_Undraw(void);
 void Flare_DrawMeshes(void);
 void Flare_UndrawMeshes(void);
 void Flare_Ready(void);
-void Flare_Control(int16_t item_num);
+int32_t Flare_GetMaxAge(void);
