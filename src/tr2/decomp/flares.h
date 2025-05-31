@@ -23,7 +23,6 @@ void Flare_GenerateEffects(
     XYZ_32 sound_pos, XYZ_32 flare_pos, int16_t room_num);
 bool Flare_GenerateLight(XYZ_32 pos, int32_t flare_age);
 void Flare_DoInHand(int32_t flare_age);
-void Flare_DrawInAir(const ITEM *item);
 void Flare_Create(bool thrown);
 void Flare_SetArm(int32_t frame);
 void Flare_Draw(void);
