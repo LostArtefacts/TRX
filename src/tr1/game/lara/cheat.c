@@ -9,36 +9,6 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/vector.h>
 
-bool Lara_Cheat_ExitFlyMode(void)
-{
-    if (g_LaraItem == nullptr) {
-        return false;
-    }
-
-    const ROOM *const room = Room_Get(g_LaraItem->room_num);
-    const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
-    const int16_t water_height = Room_GetWaterHeight(
-        g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,
-        g_LaraItem->room_num);
-
-    if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
-        g_Lara.water_status = LWS_UNDERWATER;
-    } else {
-        g_Lara.water_status = LWS_ABOVE_WATER;
-        Item_SwitchToAnim(g_LaraItem, LA_STAND_STILL, 0);
-        g_LaraItem->rot.x = 0;
-        g_LaraItem->rot.z = 0;
-        g_Lara.head_rot.x = 0;
-        g_Lara.head_rot.y = 0;
-        g_Lara.torso_rot.x = 0;
-        g_Lara.torso_rot.y = 0;
-    }
-    g_Lara.gun_status = LGS_ARMLESS;
-    Lara_InitialiseMeshes(GF_GetCurrentLevel());
-    Console_Log(GS(OSD_FLY_MODE_OFF));
-    return true;
-}
-
 bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     if (room_num == NO_ROOM) {
