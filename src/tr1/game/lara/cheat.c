@@ -30,7 +30,7 @@ bool Lara_Cheat_EnterFlyMode(void)
         g_LaraItem->pos.y -= STEP_L;
         g_LaraItem->current_anim_state = LS_SWIM;
         g_LaraItem->goal_anim_state = LS_SWIM;
-        Item_SwitchToAnim(g_LaraItem, LA_SWIM_GLIDE, 0);
+        Item_SwitchToAnim(g_LaraItem, LA_UNDERWATER_SWIM_FORWARD_DRIFT, 0);
         g_LaraItem->gravity = 0;
         g_LaraItem->rot.x = 30 * DEG_1;
         g_LaraItem->fall_speed = 30;
@@ -71,7 +71,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         g_Lara.water_status = LWS_UNDERWATER;
     } else {
         g_Lara.water_status = LWS_ABOVE_WATER;
-        Item_SwitchToAnim(g_LaraItem, LA_STOP, 0);
+        Item_SwitchToAnim(g_LaraItem, LA_STAND_STILL, 0);
         g_LaraItem->rot.x = 0;
         g_LaraItem->rot.z = 0;
         g_Lara.head_rot.x = 0;

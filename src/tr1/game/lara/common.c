@@ -515,7 +515,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
         g_Lara.water_status = LWS_ABOVE_WATER;
         g_LaraItem->goal_anim_state = LS_STOP;
         g_LaraItem->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(g_LaraItem, LA_STOP, 0);
+        Item_SwitchToAnim(g_LaraItem, LA_STAND_STILL, 0);
     }
 
     g_Lara.current_active = 0;

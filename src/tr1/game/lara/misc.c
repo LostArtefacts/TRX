@@ -175,7 +175,7 @@ bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
     item->pos.z = coll->old.z;
     item->goal_anim_state = LS_STOP;
     item->current_anim_state = LS_STOP;
-    Item_SwitchToAnim(item, LA_STOP, 0);
+    Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     item->gravity = false;
     item->fall_speed = 0;
     item->speed = 0;
@@ -338,7 +338,7 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
         hdif >= -STEP_L * 7 - STEP_L / 2 && hdif <= -STEP_L * 4 + STEP_L / 2) {
         item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_STOP, 0);
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         g_Lara.calc_fall_speed =
             -(int16_t)(Math_Sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         Lara_Animate(item);
