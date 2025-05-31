@@ -12,16 +12,16 @@
 
 #include <math.h>
 
-#define MAX_PLAYING_FX AUDIO_MAX_ACTIVE_SAMPLES
-#define MAX_AMBIENT_FX 8
-#define DECIBEL_LUT_SIZE 512
-#define SOUND_RANGE 8
-#define SOUND_RANGE_MULT_CONSTANT 4
-#define SOUND_RADIUS (SOUND_RANGE * WALL_L)
-#define SOUND_MAX_VOLUME ((SOUND_RADIUS * SOUND_RANGE_MULT_CONSTANT) - 1)
-#define SOUND_MAX_VOLUME_CHANGE 0x2000
-#define SOUND_MAX_PITCH_CHANGE 10
-#define SOUND_NOT_AUDIBLE -1
+#define M_MAX_PLAYING_FX AUDIO_MAX_ACTIVE_SAMPLES
+#define M_MAX_AMBIENT_FX 8
+#define M_DECIBEL_LUT_SIZE 512
+#define M_SOUND_RANGE 8
+#define M_SOUND_RANGE_MULT_CONSTANT 4
+#define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L)
+#define M_SOUND_MAX_VOLUME ((M_SOUND_RADIUS * M_SOUND_RANGE_MULT_CONSTANT) - 1)
+#define M_SOUND_MAX_VOLUME_CHANGE 0x2000
+#define M_SOUND_MAX_PITCH_CHANGE 10
+#define M_SOUND_NOT_AUDIBLE -1
 
 typedef struct {
     int sound_id;
@@ -46,12 +46,12 @@ typedef enum {
     SOUND_FLAG_RESTARTED = 1 << 2,
 } SOUND_FLAG;
 
-static SOUND_SLOT m_SFXPlaying[MAX_PLAYING_FX] = {};
+static SOUND_SLOT m_SFXPlaying[M_MAX_PLAYING_FX] = {};
 static int32_t m_MasterVolume = 0;
 static int32_t m_MasterVolumeDefault = 0;
-static int16_t m_AmbientLookup[MAX_AMBIENT_FX] = {};
+static int16_t m_AmbientLookup[M_MAX_AMBIENT_FX] = {};
 static int32_t m_AmbientLookupIdx = 0;
-static int m_DecibelLUT[DECIBEL_LUT_SIZE] = {};
+static int m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
 static bool m_SoundIsActive = false;
 
 static int32_t M_ConvertVolumeToDecibel(int volume);
@@ -68,17 +68,17 @@ static void M_ResetAmbientLoudness(void);
 static int32_t M_ConvertVolumeToDecibel(int volume)
 {
     return m_DecibelLUT
-        [(volume & SOUND_MAX_VOLUME) * DECIBEL_LUT_SIZE
-         / (SOUND_MAX_VOLUME + 1)];
+        [(volume & M_SOUND_MAX_VOLUME) * M_DECIBEL_LUT_SIZE
+         / (M_SOUND_MAX_VOLUME + 1)];
 }
 
 static int32_t M_ConvertPanToDecibel(uint16_t pan)
 {
-    int32_t result = sin((pan / 32767.0) * M_PI) * (DECIBEL_LUT_SIZE / 2);
+    int32_t result = sin((pan / 32767.0) * M_PI) * (M_DECIBEL_LUT_SIZE / 2);
     if (result > 0) {
-        return -m_DecibelLUT[DECIBEL_LUT_SIZE - result];
+        return -m_DecibelLUT[M_DECIBEL_LUT_SIZE - result];
     } else if (result < 0) {
-        return m_DecibelLUT[DECIBEL_LUT_SIZE + result];
+        return m_DecibelLUT[M_DECIBEL_LUT_SIZE + result];
     } else {
         return 0;
     }
@@ -96,7 +96,7 @@ static SOUND_SLOT *M_GetSlot(
     case SOUND_MODE_WAIT:
     case SOUND_MODE_RESTART: {
         SOUND_SLOT *last_free_slot = nullptr;
-        for (int i = m_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
+        for (int i = m_AmbientLookupIdx; i < M_MAX_PLAYING_FX; i++) {
             SOUND_SLOT *result = &m_SFXPlaying[i];
             if ((result->flags & SOUND_FLAG_USED)
                 && result->effect_num == sfx_num && result->pos == pos) {
@@ -110,7 +110,7 @@ static SOUND_SLOT *M_GetSlot(
     }
 
     case SOUND_MODE_AMBIENT:
-        for (int i = 0; i < MAX_AMBIENT_FX; i++) {
+        for (int i = 0; i < M_MAX_AMBIENT_FX; i++) {
             if (m_AmbientLookup[i] == sfx_num) {
                 SOUND_SLOT *result = &m_SFXPlaying[i];
                 if (result->flags != SOUND_FLAG_UNUSED
@@ -133,21 +133,21 @@ static void M_UpdateSlotParams(SOUND_SLOT *slot)
     int32_t x = slot->pos->x - g_Camera.target.x;
     int32_t y = slot->pos->y - g_Camera.target.y;
     int32_t z = slot->pos->z - g_Camera.target.z;
-    if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
-        || ABS(z) > SOUND_RADIUS) {
+    if (ABS(x) > M_SOUND_RADIUS || ABS(y) > M_SOUND_RADIUS
+        || ABS(z) > M_SOUND_RADIUS) {
         slot->volume = 0;
         return;
     }
 
     uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
     int32_t volume =
-        info->volume - Math_Sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
+        info->volume - Math_Sqrt(distance) * M_SOUND_RANGE_MULT_CONSTANT;
     if (volume < 0) {
         slot->volume = 0;
         return;
     }
 
-    CLAMPG(volume, SOUND_MAX_VOLUME);
+    CLAMPG(volume, M_SOUND_MAX_VOLUME);
 
     slot->volume = volume;
 
@@ -169,13 +169,13 @@ static void M_ClearSlot(SOUND_SLOT *slot)
     slot->flags = SOUND_FLAG_UNUSED;
     slot->volume = 0;
     slot->pan = 0;
-    slot->loudness = SOUND_NOT_AUDIBLE;
+    slot->loudness = M_SOUND_NOT_AUDIBLE;
     slot->effect_num = SFX_INVALID;
 }
 
 static void M_ClearSlotHandles(SOUND_SLOT *slot)
 {
-    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+    for (int i = 0; i < M_MAX_PLAYING_FX; i++) {
         SOUND_SLOT *rslot = &m_SFXPlaying[i];
         if (rslot != slot && rslot->sound_id == slot->sound_id) {
             rslot->sound_id = AUDIO_NO_SOUND;
@@ -191,15 +191,16 @@ static void M_ResetAmbientLoudness(void)
 
     for (int i = 0; i < m_AmbientLookupIdx; i++) {
         SOUND_SLOT *slot = &m_SFXPlaying[i];
-        slot->loudness = SOUND_NOT_AUDIBLE;
+        slot->loudness = M_SOUND_NOT_AUDIBLE;
     }
 }
 
 bool Sound_Init(void)
 {
     m_DecibelLUT[0] = -10000;
-    for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
-        m_DecibelLUT[i] = (log2(1.0 / DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
+    for (int i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
+        m_DecibelLUT[i] =
+            (log2(1.0 / M_DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
     }
 
     m_MasterVolume = 32;
@@ -219,14 +220,14 @@ void Sound_UpdateEffects(void)
         return;
     }
 
-    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+    for (int i = 0; i < M_MAX_PLAYING_FX; i++) {
         SOUND_SLOT *slot = &m_SFXPlaying[i];
         if (!(slot->flags & SOUND_FLAG_USED)) {
             continue;
         }
 
         if (slot->flags & SOUND_FLAG_AMBIENT) {
-            if (slot->loudness != (uint32_t)SOUND_NOT_AUDIBLE
+            if (slot->loudness != (uint32_t)M_SOUND_NOT_AUDIBLE
                 && slot->sound_id != AUDIO_NO_SOUND) {
                 Audio_Sample_SetPan(
                     slot->sound_id, M_ConvertPanToDecibel(slot->pan));
@@ -293,8 +294,8 @@ bool Sound_Effect(
         int32_t x = pos->x - g_Camera.target.x;
         int32_t y = pos->y - g_Camera.target.y;
         int32_t z = pos->z - g_Camera.target.z;
-        if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
-            || ABS(z) > SOUND_RADIUS) {
+        if (ABS(x) > M_SOUND_RADIUS || ABS(y) > M_SOUND_RADIUS
+            || ABS(z) > M_SOUND_RADIUS) {
             return false;
         }
         distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
@@ -307,9 +308,9 @@ bool Sound_Effect(
     }
     distance = Math_Sqrt(distance);
 
-    int32_t volume = info->volume - distance * SOUND_RANGE_MULT_CONSTANT;
+    int32_t volume = info->volume - distance * M_SOUND_RANGE_MULT_CONSTANT;
     if (info->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
-        volume -= Random_GetDraw() * SOUND_MAX_VOLUME_CHANGE >> 15;
+        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
     }
 
     if (info->flags & SAMPLE_FLAG_NO_PAN) {
@@ -330,8 +331,8 @@ bool Sound_Effect(
     int32_t pitch = 100;
     if (g_Config.audio.enable_pitched_sounds
         && (info->flags & SAMPLE_FLAG_PITCH_WIBBLE)) {
-        pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 0x4000)
-            - SOUND_MAX_PITCH_CHANGE;
+        pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
+            - M_SOUND_MAX_PITCH_CHANGE;
     }
 
     int32_t vars = (info->flags >> 2) & 15;
@@ -340,7 +341,7 @@ bool Sound_Effect(
         sfx_id += (Random_GetDraw() * vars) / 0x8000;
     }
 
-    CLAMPG(volume, SOUND_MAX_VOLUME);
+    CLAMPG(volume, M_SOUND_MAX_VOLUME);
 
     volume = (m_MasterVolume * volume) >> 6;
 
@@ -407,7 +408,7 @@ bool Sound_Effect(
                 fxslot->pan = pan;
                 fxslot->volume = volume;
             } else {
-                fxslot->loudness = SOUND_NOT_AUDIBLE;
+                fxslot->loudness = M_SOUND_NOT_AUDIBLE;
                 fxslot->volume = 0;
             }
             return true;
@@ -431,7 +432,7 @@ bool Sound_Effect(
             return true;
         }
 
-        fxslot->loudness = SOUND_NOT_AUDIBLE;
+        fxslot->loudness = M_SOUND_NOT_AUDIBLE;
         return true;
     }
     }
@@ -445,7 +446,7 @@ void Sound_StopEffect(const SOUND_EFFECT_ID sfx_num)
         return;
     }
 
-    for (int32_t i = 0; i < MAX_PLAYING_FX; i++) {
+    for (int32_t i = 0; i < M_MAX_PLAYING_FX; i++) {
         SOUND_SLOT *const slot = &m_SFXPlaying[i];
         if ((slot->flags & SOUND_FLAG_USED) != 0 && slot->effect_num == sfx_num
             && Audio_Sample_IsPlaying(slot->sound_id)) {
@@ -463,7 +464,7 @@ void Sound_ResetEffects(void)
     }
     m_MasterVolume = m_MasterVolumeDefault;
 
-    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+    for (int i = 0; i < M_MAX_PLAYING_FX; i++) {
         M_ClearSlot(&m_SFXPlaying[i]);
     }
 
@@ -484,7 +485,7 @@ void Sound_ResetEffects(void)
 
         const int32_t mode = info->flags & 3;
         if (mode == SOUND_MODE_AMBIENT) {
-            if (m_AmbientLookupIdx >= MAX_AMBIENT_FX) {
+            if (m_AmbientLookupIdx >= M_MAX_AMBIENT_FX) {
                 Shell_ExitSystem(
                     "Ran out of ambient effect slots in Sound_ResetEffects()");
             }
