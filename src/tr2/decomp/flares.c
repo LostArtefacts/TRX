@@ -3,6 +3,7 @@
 #include "game/gun/gun.h"
 #include "game/input.h"
 #include "game/inventory.h"
+#include "game/lara/flare.h"
 #include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/random.h"
@@ -22,16 +23,6 @@
 #define M_MAX_FLARE_AGE (60 * LOGIC_FPS) // = 1800
 #define M_FLARE_OLD_AGE (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
 #define M_FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
-
-typedef enum {
-    // clang-format off
-    LA_FLARES_HOLD   = 0,
-    LA_FLARES_THROW  = 1,
-    LA_FLARES_DRAW   = 2,
-    LA_FLARES_IGNITE = 3,
-    LA_FLARES_IDLE   = 4,
-    // clang-format on
-} M_LARA_FLARE_ANIMATION;
 
 static bool M_CanThrowFlare(void);
 static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
@@ -193,27 +184,6 @@ void Flare_Create(const bool thrown)
     item->status = IS_ACTIVE;
 }
 
-void Flare_SetArm(const int32_t frame)
-{
-    int16_t anim_idx;
-    if (frame < LF_FL_THROW) {
-        anim_idx = LA_FLARES_HOLD;
-    } else if (frame < LF_FL_DRAW) {
-        anim_idx = LA_FLARES_THROW;
-    } else if (frame < LF_FL_IGNITE) {
-        anim_idx = LA_FLARES_DRAW;
-    } else if (frame < LF_FL_2_HOLD) {
-        anim_idx = LA_FLARES_IGNITE;
-    } else {
-        anim_idx = LA_FLARES_IDLE;
-    }
-
-    const OBJECT *const obj = Object_Get(O_LARA_FLARE);
-    const ANIM *const anim = Object_GetAnim(obj, anim_idx);
-    g_Lara.left_arm.anim_num = obj->anim_idx + anim_idx;
-    g_Lara.left_arm.frame_base = anim->frame_ptr;
-}
-
 void Flare_Draw(void)
 {
     if (g_LaraItem->current_anim_state == LS_FLARE_PICKUP
@@ -221,7 +191,7 @@ void Flare_Draw(void)
         Flare_DoInHand(g_Lara.flare.age);
         g_Lara.flare.control = false;
         g_Lara.left_arm.frame_num = LF_FL_2_HOLD - 2;
-        Flare_SetArm(g_Lara.left_arm.frame_num);
+        Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
         return;
     }
 
@@ -248,7 +218,7 @@ void Flare_Draw(void)
     }
 
     g_Lara.left_arm.frame_num = frame_num;
-    Flare_SetArm(frame_num);
+    Lara_Flare_SetArm(frame_num);
 }
 
 void Flare_Undraw(void)
@@ -328,7 +298,7 @@ void Flare_Undraw(void)
     }
 
     g_Lara.left_arm.frame_num = frame_num_1;
-    Flare_SetArm(frame_num_1);
+    Lara_Flare_SetArm(frame_num_1);
 }
 
 void Flare_DrawMeshes(void)

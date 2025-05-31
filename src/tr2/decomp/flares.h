@@ -24,7 +24,6 @@ void Flare_GenerateEffects(
 bool Flare_GenerateLight(XYZ_32 pos, int32_t flare_age);
 void Flare_DoInHand(int32_t flare_age);
 void Flare_Create(bool thrown);
-void Flare_SetArm(int32_t frame);
 void Flare_Draw(void);
 void Flare_Undraw(void);
 void Flare_DrawMeshes(void);
