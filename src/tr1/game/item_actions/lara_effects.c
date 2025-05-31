@@ -10,6 +10,7 @@
 
 void ItemAction_LaraNormal(ITEM *item)
 {
+    g_Lara.extra_anim = false;
     item->current_anim_state = LS_STOP;
     item->goal_anim_state = LS_STOP;
     Item_SwitchToAnim(item, LA_STAND_STILL, 0);

@@ -199,6 +199,7 @@ static void M_KillLara(ITEM *const item)
     Lara_SwapMeshExtra();
 
     g_LaraItem->hit_points = -1;
+    g_Lara.extra_anim = true;
     g_Lara.air = -1;
     g_Lara.gun_status = LGS_HANDS_BUSY;
     g_Lara.gun_type = LGT_UNARMED;

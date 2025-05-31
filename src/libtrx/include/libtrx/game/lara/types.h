@@ -74,6 +74,8 @@ typedef struct {
         } result, prev;
     } interp;
 
+    bool extra_anim;
+
 #if TR_VERSION == 1
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
@@ -90,7 +92,6 @@ typedef struct {
     int16_t vehicle_item_num;
 
     bool climb_status;
-    bool extra_anim;
     bool enable_look;
     bool burn;
 
