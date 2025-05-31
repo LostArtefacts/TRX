@@ -323,16 +323,6 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
     return m_TrackLooped;
 }
 
-int32_t Music_GetMinVolume(void)
-{
-    return 0;
-}
-
-int32_t Music_GetMaxVolume(void)
-{
-    return 10;
-}
-
 void Music_SetVolume(const int32_t volume)
 {
     if (volume != m_MusicVolume) {

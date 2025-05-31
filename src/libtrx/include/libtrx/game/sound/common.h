@@ -8,6 +8,9 @@
 
 #include <stddef.h>
 
+#define SOUND_MIN_VOLUME 0
+#define SOUND_MAX_VOLUME 10
+
 // Stops and unloads all samples
 extern void Sound_Reset(void);
 
@@ -20,8 +23,6 @@ int16_t *Sound_GetSampleLUT(void);
 SAMPLE_INFO *Sound_GetSampleInfo(SOUND_EFFECT_ID sfx_num);
 SAMPLE_INFO *Sound_GetSampleInfoByIdx(int32_t info_idx);
 
-extern int32_t Sound_GetMinVolume(void);
-extern int32_t Sound_GetMaxVolume(void);
 extern int32_t Sound_GetMasterVolume(void);
 extern void Sound_SetMasterVolume(int32_t volume);
 

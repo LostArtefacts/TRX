@@ -521,16 +521,6 @@ void Sound_StopAll(void)
     Audio_Sample_CloseAll();
 }
 
-int32_t Sound_GetMinVolume(void)
-{
-    return 0;
-}
-
-int32_t Sound_GetMaxVolume(void)
-{
-    return 10;
-}
-
 void Sound_SetMasterVolume(int32_t volume)
 {
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
