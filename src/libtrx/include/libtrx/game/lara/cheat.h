@@ -9,7 +9,7 @@ void Lara_Cheat_GetStuff(void);
 void Lara_Cheat_EndLevel(void);
 bool Lara_Cheat_KillEnemy(int16_t item_num);
 bool Lara_Cheat_OpenNearestDoor(void);
-extern bool Lara_Cheat_EnterFlyMode(void);
+bool Lara_Cheat_EnterFlyMode(void);
 extern bool Lara_Cheat_ExitFlyMode(void);
 extern bool Lara_Cheat_Teleport(
     int32_t x, int32_t y, int32_t z, int16_t room_num);
