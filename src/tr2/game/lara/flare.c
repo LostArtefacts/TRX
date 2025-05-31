@@ -3,6 +3,7 @@
 #include "decomp/flares.h"
 #include "game/gun/gun.h"
 #include "game/lara/misc.h"
+#include "game/objects/general/flare_item.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/game.h>

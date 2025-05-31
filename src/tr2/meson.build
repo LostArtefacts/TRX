@@ -89,7 +89,6 @@ endif
 sources = [
   init,
   'decomp/decomp.c',
-  'decomp/flares.c',
   'decomp/skidoo.c',
   'game/clock.c',
   'game/console/cmd/easy_config.c',
