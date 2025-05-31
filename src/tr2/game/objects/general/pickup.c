@@ -6,9 +6,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
-#include "game/lara/control.h"
-#include "game/lara/flare.h"
-#include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
@@ -17,6 +14,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 
 #define LF_PICKUP_ERASE 42

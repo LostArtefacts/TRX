@@ -45,6 +45,7 @@ static void M_ControlInHand(int32_t flare_age);
 static void M_ControlArmless(void);
 static void M_ControlBusyHands(void);
 static void M_SetArm(int32_t flare_frame);
+static void M_UndrawMeshes(void);
 
 static void M_InitialiseState(void)
 {
@@ -168,6 +169,11 @@ static void M_SetArm(const int32_t flare_frame)
     lara_info->left_arm.frame_base = anim->frame_ptr;
 }
 
+static void M_UndrawMeshes(void)
+{
+    Lara_SwapSingleMesh(LM_HAND_L, O_LARA);
+}
+
 void Lara_Flare_Control(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -176,16 +182,6 @@ void Lara_Flare_Control(void)
     } else if (lara_info->gun_status == LGS_HANDS_BUSY) {
         M_ControlBusyHands();
     }
-}
-
-void Lara_Flare_DrawMeshes(void)
-{
-    Lara_SwapSingleMesh(LM_HAND_L, O_LARA_FLARE);
-}
-
-void Lara_Flare_UndrawMeshes(void)
-{
-    Lara_SwapSingleMesh(LM_HAND_L, O_LARA);
 }
 
 void Lara_Flare_Draw(void)
@@ -373,7 +369,7 @@ void Lara_Flare_Dispose(const bool thrown)
     item->status = IS_ACTIVE;
 
 finish:
-    Lara_Flare_UndrawMeshes();
+    M_UndrawMeshes();
     if (!thrown) {
         lara_info->flare.control = false;
     }

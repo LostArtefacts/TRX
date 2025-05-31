@@ -4,12 +4,11 @@
 #include "game/game_string.h"
 #include "game/gun/gun.h"
 #include "game/lara/control.h"
-#include "game/lara/flare.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/vector.h>
 
 static void M_ReinitialiseGunMeshes(void);
@@ -17,11 +16,7 @@ static void M_ResetGunStatus(void);
 
 static void M_ReinitialiseGunMeshes(void)
 {
-    // TODO: consider refactoring flare check once more is known about overall
-    // flare control.
-    const bool has_flare = Lara_GetMesh(LM_HAND_L)
-        == Object_GetMesh(Object_Get(O_LARA_FLARE)->mesh_idx + LM_HAND_L);
-
+    const bool has_flare = Lara_Flare_IsMeshActive();
     Lara_InitialiseMeshes(Game_GetCurrentLevel());
     Gun_InitialiseNewWeapon();
     if (has_flare) {
@@ -31,8 +26,7 @@ static void M_ReinitialiseGunMeshes(void)
 
 static void M_ResetGunStatus(void)
 {
-    const bool has_flare = Lara_GetMesh(LM_HAND_L)
-        == Object_GetMesh(Object_Get(O_LARA_FLARE)->mesh_idx + LM_HAND_L);
+    const bool has_flare = Lara_Flare_IsMeshActive();
     if (has_flare) {
         g_Lara.gun_type = LGT_FLARE;
         return;
