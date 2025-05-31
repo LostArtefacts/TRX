@@ -154,7 +154,7 @@ void Gun_Control(void)
             break;
 
         case LGT_FLARE:
-            Flare_Draw();
+            Lara_Flare_Draw();
             break;
 
         default:
@@ -181,7 +181,7 @@ void Gun_Control(void)
             break;
 
         case LGT_FLARE:
-            Flare_Undraw();
+            Lara_Flare_Undraw();
             break;
         default:
             return;
@@ -232,7 +232,7 @@ void Gun_Control(void)
         break;
 
     case LGS_SPECIAL:
-        Flare_Draw();
+        Lara_Flare_Draw();
         break;
 
     default:

@@ -2,6 +2,7 @@
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
+#include "game/lara/flare.h"
 #include "game/los.h"
 #include "game/objects/common.h"
 #include "game/savegame.h"
@@ -89,7 +90,7 @@ static void M_ActivateLastBoss(void)
 static void M_PrepareCutscene(const int16_t item_num)
 {
     if (g_Lara.gun_type == LGT_FLARE) {
-        Flare_Undraw();
+        Lara_Flare_Undraw();
         g_Lara.flare.control = false;
         g_Lara.left_arm.lock = false;
     }

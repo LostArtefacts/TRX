@@ -24,7 +24,4 @@ void Flare_GenerateEffects(
 bool Flare_GenerateLight(XYZ_32 pos, int32_t flare_age);
 void Flare_DoInHand(int32_t flare_age);
 void Flare_Create(bool thrown);
-void Flare_Draw(void);
-void Flare_Undraw(void);
-void Flare_Ready(void);
 int32_t Flare_GetMaxAge(void);
