@@ -2,7 +2,6 @@
 
 #include "game/camera.h"
 #include "game/console.h"
-#include "game/const.h"
 #include "game/game.h"
 #include "game/game_string.h"
 #include "game/gun.h"
@@ -12,6 +11,7 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 #include "game/viewport.h"
+#include "vector.h"
 
 static void M_GiveAllKeysImpl(void);
 static void M_GiveAllGunsImpl(void);
@@ -330,5 +330,140 @@ bool Lara_Cheat_ExitFlyMode(void)
 #endif
 
     Console_Log(GS(OSD_FLY_MODE_OFF));
+    return true;
+}
+
+bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
+{
+    if (room_num == NO_ROOM) {
+        room_num = Room_GetIndexFromPos(x, y, z);
+    }
+    if (room_num == NO_ROOM) {
+        return false;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flip_status == RFS_FLIPPED && Room_GetFlipStatus()) {
+        room_num = Room_GetFlippedBaseRoom(room_num);
+        if (room_num == NO_ROOM) {
+            return false;
+        }
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+    int16_t height = Room_GetHeight(sector, x, y, z);
+
+    if (height == NO_HEIGHT) {
+        // Sample a sphere of points around target x, y, z
+        // and teleport to the first available location.
+        VECTOR *const points = Vector_Create(sizeof(XYZ_32));
+
+        const int32_t radius = 10;
+        const int32_t unit = STEP_L;
+        for (int32_t dx = -radius; dx <= radius; dx++) {
+            for (int32_t dz = -radius; dz <= radius; dz++) {
+                if (SQUARE(dx) + SQUARE(dz) > SQUARE(radius)) {
+                    continue;
+                }
+
+                const XYZ_32 point = {
+                    .x = ROUND_TO_SECTOR(x + dx * unit) + WALL_L / 2,
+                    .y = y,
+                    .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
+                };
+                sector = Room_GetSector(point.x, point.y, point.z, &room_num);
+                height =
+                    Room_GetHeightEx(sector, point.x, point.y, point.z, true);
+                if (height == NO_HEIGHT) {
+                    continue;
+                }
+                Vector_Add(points, (void *)&point);
+            }
+        }
+
+        int32_t best_distance = INT32_MAX;
+        for (int32_t i = 0; i < points->count; i++) {
+            const XYZ_32 *const point = (const XYZ_32 *)Vector_Get(points, i);
+            const int32_t distance = XYZ_32_GetDistance(point, &lara_item->pos);
+            if (distance < best_distance) {
+                best_distance = distance;
+                x = point->x;
+                y = point->y;
+                z = point->z;
+            }
+        }
+
+        Vector_Free(points);
+        if (best_distance == INT32_MAX) {
+            return false;
+        }
+    }
+
+    sector = Room_GetSector(x, y, z, &room_num);
+    height = Room_GetHeightEx(sector, x, y, z, true);
+    if (height == NO_HEIGHT) {
+        return false;
+    }
+
+    lara_item->pos.x = x;
+    lara_item->pos.y = y;
+    lara_item->pos.z = z;
+    lara_item->floor = height;
+
+    const int16_t item_num = Item_GetIndex(lara_item);
+    Item_UpdateRoom(item_num, room_num);
+
+    if (lara_info->gun_status == LGS_HANDS_BUSY) {
+        lara_info->gun_status = LGS_ARMLESS;
+    }
+
+    Lara_DismountVehicle();
+#if TR_VERSION >= 2
+    if (lara_info->extra_anim) {
+        const ROOM *const room = Room_Get(lara_item->room_num);
+        const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
+        const int16_t water_height = Room_GetWaterHeight(
+            lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
+            lara_item->room_num);
+
+        if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
+            lara_info->water_status = LWS_UNDERWATER;
+            lara_item->current_anim_state = LS_SWIM;
+            lara_item->goal_anim_state = LS_SWIM;
+            Item_SwitchToAnim(lara_item, LA_UNDERWATER_SWIM_FORWARD_DRIFT, 0);
+        } else {
+            lara_info->water_status = LWS_ABOVE_WATER;
+            lara_item->current_anim_state = LS_STOP;
+            lara_item->goal_anim_state = LS_STOP;
+            Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+            lara_item->rot.x = 0;
+            lara_item->rot.z = 0;
+            lara_info->head_rot.x = 0;
+            lara_info->head_rot.y = 0;
+            lara_info->torso_rot.x = 0;
+            lara_info->torso_rot.y = 0;
+        }
+
+        lara_info->extra_anim = false;
+        M_ResetGunStatus();
+        M_ReinitialiseGunMeshes();
+    }
+
+    lara_info->hit_effect_count = 0;
+    lara_info->hit_effect = nullptr;
+    lara_info->hit_frame = 0;
+    lara_info->hit_direction = -1;
+    lara_info->air = LARA_MAX_AIR;
+    lara_info->death_timer = 0;
+    lara_info->mesh_effects = 0;
+
+    g_Camera.type = CAM_CHASE;
+    Viewport_AlterFOV(-1);
+#endif
+
+    Camera_ResetPosition();
+
     return true;
 }
