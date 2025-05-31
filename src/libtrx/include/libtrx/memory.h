@@ -49,7 +49,7 @@ void Memory_FreePointer(void *memory);
 // Duplicates a buffer. In case the memory allocation fails, shows an error to
 // the user and exits the application.
 // Giving a nullptr to this function is a fatal error.
-char *Memory_Dup(const char *buffer, size_t size);
+void *Memory_Dup(const void *buffer, size_t size);
 
 // Duplicates a string. In case the memory allocation fails, shows an error to
 // the user and exits the application. The string must be nullptr-terminated.

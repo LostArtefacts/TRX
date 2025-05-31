@@ -8,6 +8,7 @@
 #include "../common.h"
 #include "../elements/flash.h"
 #include "../elements/requester.h"
+#include "../elements/tab_switch.h"
 #include "../scrollable.h"
 
 typedef struct {
@@ -32,6 +33,7 @@ typedef struct {
     int32_t max_group_items;
     int32_t input_size;
     int32_t label_size;
+    UI_TAB_SWITCH_STATE *tab_switch;
 } UI_CONTROLS_EDITOR_STATE;
 
 typedef enum {

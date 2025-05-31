@@ -262,6 +262,7 @@ sources = [
   'game/ui/elements/spacer.c',
   'game/ui/elements/span.c',
   'game/ui/elements/stack.c',
+  'game/ui/elements/tab_switch.c',
   'game/ui/elements/window.c',
   'game/ui/events.c',
   'game/ui/helpers.c',
