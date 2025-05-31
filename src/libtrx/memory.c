@@ -53,7 +53,7 @@ void Memory_FreePointer(void *arg)
     Memory_Free(memory);
 }
 
-char *Memory_Dup(const char *const buffer, const size_t size)
+void *Memory_Dup(const void *const buffer, const size_t size)
 {
     ASSERT(buffer != nullptr);
     char *memory = Memory_Alloc(size);
