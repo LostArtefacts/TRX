@@ -9,6 +9,7 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects.h"
+#include "game/rooms.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 
@@ -286,5 +287,48 @@ bool Lara_Cheat_EnterFlyMode(void)
     g_Camera.type = CAM_CHASE;
 
     Console_Log(GS(OSD_FLY_MODE_ON));
+    return true;
+}
+
+bool Lara_Cheat_ExitFlyMode(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_item == nullptr) {
+        return false;
+    }
+
+    const ROOM *const room = Room_Get(lara_item->room_num);
+    const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
+    const int16_t water_height = Room_GetWaterHeight(
+        lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
+        lara_item->room_num);
+
+    if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
+        lara_info->water_status = LWS_UNDERWATER;
+    } else {
+        lara_info->water_status = LWS_ABOVE_WATER;
+        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+        lara_item->rot.x = 0;
+        lara_item->rot.z = 0;
+        lara_info->head_rot.x = 0;
+        lara_info->head_rot.y = 0;
+        lara_info->torso_rot.x = 0;
+        lara_info->torso_rot.y = 0;
+    }
+
+#if TR_VERSION == 1
+    lara_info->gun_status = LGS_ARMLESS;
+    Lara_InitialiseMeshes(GF_GetCurrentLevel());
+#else
+    if (lara_info->gun_item_num != NO_ITEM) {
+        lara_info->gun_status = LGS_UNDRAW;
+    } else {
+        lara_info->gun_status = LGS_ARMLESS;
+        M_ReinitialiseGunMeshes();
+    }
+#endif
+
+    Console_Log(GS(OSD_FLY_MODE_OFF));
     return true;
 }

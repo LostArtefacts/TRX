@@ -1,4 +1,3 @@
-GS_DEFINE(OSD_FLY_MODE_OFF, "Fly mode disabled")
 GS_DEFINE(OSD_FLIPMAP_ON, "Flipmap set to ON")
 GS_DEFINE(OSD_FLIPMAP_OFF, "Flipmap set to OFF")
 GS_DEFINE(OSD_FLIPMAP_FAIL_ALREADY_ON, "Flipmap is already ON")
