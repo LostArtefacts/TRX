@@ -42,20 +42,25 @@ static bool M_CanChangeValue(
     const UI_SETTINGS_STATE *s, int32_t row_idx, int32_t dir);
 static bool M_RequestChangeValue(
     const UI_SETTINGS_STATE *s, int32_t row_idx, int32_t dir);
-static float M_GetValueWidth(const UI_SETTINGS_STATE *s);
+static float M_GetMaxLabelWidth(const UI_SETTINGS_STATE *s);
+static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *s);
 
 static int32_t M_GetVisibleRows(void)
 {
     const int32_t res_h =
         Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
-    if (res_h <= 240) {
-        return 5;
-    } else if (res_h <= 384) {
-        return 7;
-    } else if (res_h < 480) {
-        return 10;
-    } else {
-        return 12;
+    static struct {
+        int32_t threshold;
+        int32_t rows;
+    } thresholds[] = {
+        { 240, 5 },  { 252, 6 },  { 266, 7 },  { 282, 8 },
+        { 300, 9 },  { 320, 10 }, { 342, 11 }, { 370, 12 },
+        { 420, 13 }, { 480, 15 }, { -1, 16 },
+    };
+    for (int32_t i = 0;; i++) {
+        if (res_h <= thresholds[i].threshold || thresholds[i].threshold == -1) {
+            return thresholds[i].rows;
+        }
     }
 }
 
@@ -144,60 +149,49 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
 {
     if (option->custom_handler.format_value != nullptr) {
         char *value = option->custom_handler.format_value(option);
-        float result;
-        UI_Label_Measure(value, &result, nullptr);
+        const float result = UI_Label_MeasureW(value);
         Memory_Free(value);
         return result;
     }
 
     switch (option->option_type) {
     case COT_BOOL: {
-        float min_value_w;
-        float max_value_w;
-        UI_Label_Measure(GS(MISC_OFF), &min_value_w, nullptr);
-        UI_Label_Measure(GS(MISC_ON), &max_value_w, nullptr);
+        const float min_value_w = UI_Label_MeasureW(GS(MISC_OFF));
+        const float max_value_w = UI_Label_MeasureW(GS(MISC_ON));
         return MAX(min_value_w, max_value_w);
     }
     case COT_INT32: {
-        float min_value_w;
-        float max_value_w;
         String_FormatInto(
             &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
             option->min_value);
-        UI_Label_Measure(m_TempString, &min_value_w, nullptr);
+        const float min_value_w = UI_Label_MeasureW(m_TempString);
         String_FormatInto(
             &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
             option->max_value);
-        UI_Label_Measure(m_TempString, &max_value_w, nullptr);
+        const float max_value_w = UI_Label_MeasureW(m_TempString);
         return MAX(min_value_w, max_value_w);
     }
     case COT_DOUBLE:
     case COT_FLOAT: {
-        float min_value_w;
-        float max_value_w;
         String_FormatInto(
             &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
             (double)option->min_value / 100);
-        UI_Label_Measure(m_TempString, &min_value_w, nullptr);
+        const float min_value_w = UI_Label_MeasureW(m_TempString);
         String_FormatInto(
             &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
             (double)option->max_value / 100);
-        UI_Label_Measure(m_TempString, &max_value_w, nullptr);
+        const float max_value_w = UI_Label_MeasureW(m_TempString);
         return MAX(min_value_w, max_value_w);
     }
     case COT_RGB888: {
-        float value_w;
-        UI_Label_Measure("255", &value_w, nullptr);
-        return value_w;
+        return UI_Label_MeasureW("255");
     }
     case COT_ENUM: {
         float result = 0.0f;
-        const UI_SETTINGS_ENUM_ENTRY *entry =
-            &((UI_SETTINGS_ENUM_ENTRY *)option->misc)[0];
+        const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
         while (entry->value != -1) {
             const char *const value = GameString_Get(entry->name);
-            float value_w;
-            UI_Label_Measure(value, &value_w, nullptr);
+            const float value_w = UI_Label_MeasureW(value);
             result = MAX(result, value_w);
             entry++;
         }
@@ -326,21 +320,57 @@ changed:
     return true;
 }
 
-static float M_GetValueWidth(const UI_SETTINGS_STATE *const s)
+static float M_GetMaxLabelWidth(const UI_SETTINGS_STATE *const s)
+{
+    // Measure the maximum width of the key label to prevent the entire
+    // dialog from changing its size as the player navigates the dialog.
+    float result = -1.0f;
+    if (s->tabs != nullptr) {
+        for (int32_t i = 0; i < s->tab_count; i++) {
+            for (int32_t j = 0; s->tabs[i].options[j].label_id != nullptr;
+                 j++) {
+                const UI_SETTINGS_OPTION *const option = &s->tabs[i].options[j];
+                const float label_w =
+                    UI_Label_MeasureW(GameString_Get(option->label_id));
+                result = MAX(label_w, result);
+            }
+        }
+    } else {
+        for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+            const UI_SETTINGS_OPTION *const option = &s->options[i];
+            const float label_w =
+                UI_Label_MeasureW(GameString_Get(option->label_id));
+            result = MAX(label_w, result);
+        }
+    }
+    return result;
+}
+
+static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *const s)
 {
     // Measure the maximum width of the value label to prevent the entire
-    // dialog from changing its size as the player changes the levels.
+    // dialog from changing its size as the player changes the settings.
     float result = -1.0f;
-    for (int32_t i = 0; i < s->scroll.max_items; i++) {
-        const UI_SETTINGS_OPTION *const option = &s->options[i];
-        const float value_w = M_MeasureMaxValueWidth(option);
-        result = MAX(result, value_w);
+
+    if (s->tabs != nullptr) {
+        for (int32_t i = 0; i < s->tab_count; i++) {
+            for (int32_t j = 0; s->tabs[i].options[j].label_id != nullptr;
+                 j++) {
+                const UI_SETTINGS_OPTION *const option = &s->tabs[i].options[j];
+                const float value_w = M_MeasureMaxValueWidth(option);
+                result = MAX(value_w, result);
+            }
+        }
+    } else {
+        for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+            const UI_SETTINGS_OPTION *const option = &s->options[i];
+            const float value_w = M_MeasureMaxValueWidth(option);
+            result = MAX(value_w, result);
+        }
     }
-    float arrow_w;
-    UI_Label_Measure("\\{button left}", &arrow_w, nullptr);
-    result += arrow_w;
-    UI_Label_Measure("\\{button right}", &arrow_w, nullptr);
-    result += arrow_w;
+
+    result += UI_Label_MeasureW("\\{button left}");
+    result += UI_Label_MeasureW("\\{button right}");
     result += UI_ROW_ARROWS_TIGHT * 2;
     return result;
 }
@@ -352,6 +382,8 @@ static void M_OptionsChanged(UI_SETTINGS_STATE *const s)
         row_count++;
     }
     UI_Scrollable_SetMaxItems(&s->scroll, row_count);
+    s->max_label_w = M_GetMaxLabelWidth(s) / g_Config.ui.text_scale;
+    s->max_value_w = M_GetMaxValueWidth(s) / g_Config.ui.text_scale;
 }
 
 void UI_Settings_Init(
@@ -360,26 +392,39 @@ void UI_Settings_Init(
 {
     s->title = title;
     s->options = options;
-    M_OptionsChanged(s);
+    s->max_group_items = 0;
+    for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+        s->max_group_items++;
+    }
     s->tab_count = 0;
     s->tabs = nullptr;
     s->tab_switch = nullptr;
     s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
+    M_OptionsChanged(s);
 }
 
 void UI_Settings_InitWithTabs(
     UI_SETTINGS_STATE *s, const GAME_STRING_ID title, const int32_t tab_count,
     const UI_SETTINGS_TAB *const tabs)
 {
-    UI_Settings_Init(s, title, tabs[0].options);
+    ASSERT(tabs != nullptr);
+    s->title = title;
+    s->options = tabs[0].options;
     s->tab_count = tab_count;
     s->tabs = tabs;
+    s->max_group_items = 0;
     UI_TAB_SWITCH_TAB tab_switch_tabs[tab_count];
     for (int32_t i = 0; i < tab_count; i++) {
         tab_switch_tabs[i].header = tabs[i].header;
+        int32_t tab_items = 0;
+        for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
+            tab_items++;
+        }
+        s->max_group_items = MAX(tab_items, s->max_group_items);
     }
     s->tab_switch = UI_TabSwitch_Init(tab_count, tab_switch_tabs);
     s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
+    M_OptionsChanged(s);
 }
 
 void UI_Settings_Free(UI_SETTINGS_STATE *const s)
@@ -392,7 +437,8 @@ void UI_Settings_Free(UI_SETTINGS_STATE *const s)
 
 bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
 {
-    UI_Scrollable_SetVisibleItems(&s->scroll, M_GetVisibleRows());
+    UI_Scrollable_SetVisibleItems(
+        &s->scroll, MIN(s->max_group_items, M_GetVisibleRows()));
 
     if (s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS) {
         if (UI_TabSwitch_Control(s->tab_switch)) {
@@ -458,11 +504,16 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
     UI_BeginScrollableArea(&s->scroll);
 
-    const float max_value_w = M_GetValueWidth(s) / g_Config.ui.text_scale;
-    for (int32_t i = 0; i < s->scroll.max_items; i++) {
+    for (int32_t i = 0; i < s->scroll.vis_items; i++) {
+        const int32_t row = s->scroll.first_item + i;
+        if (row >= s->scroll.max_items) {
+            UI_Spacer(0.0f, UI_TEXT_HEIGHT);
+            continue;
+        }
+
         const bool is_row_focused =
-            s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS && i == sel_row;
-        if (!UI_Scrollable_IsItemVisible(&s->scroll, i)) {
+            s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS && row == sel_row;
+        if (!UI_Scrollable_IsItemVisible(&s->scroll, row)) {
             UI_BeginResize(-1.0f, 0.0f);
         } else {
             UI_BeginResize(-1.0f, -1.0f);
@@ -480,16 +531,19 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         });
-        UI_Label(GameString_Get(s->options[i].label_id));
+        UI_BeginResize(s->max_label_w, -1.0f);
+        UI_Label(GameString_Get(s->options[row].label_id));
+        UI_EndResize();
         UI_Spacer(20.0f, 0.0f);
 
-        UI_BeginResize(max_value_w, -1.0f);
+        UI_BeginResize(s->max_value_w, -1.0f);
         UI_BeginAnchor(1.0f, 0.5f);
 
         UI_BeginRowArrows(
-            is_row_focused && M_CanChangeValue(s, i, -1),
-            is_row_focused && M_CanChangeValue(s, i, +1), UI_ROW_ARROWS_MEDIUM);
-        UI_Label(M_FormatRowValue(s, i));
+            is_row_focused && M_CanChangeValue(s, row, -1),
+            is_row_focused && M_CanChangeValue(s, row, +1),
+            UI_ROW_ARROWS_MEDIUM);
+        UI_Label(M_FormatRowValue(s, row));
         UI_EndRowArrows();
 
         UI_EndAnchor();

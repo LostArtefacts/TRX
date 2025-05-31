@@ -495,21 +495,22 @@ static void M_Group(
         const int32_t row = s->scroll.first_item + i;
         if (row >= s->scroll.max_items) {
             UI_Spacer(0.0f, UI_TEXT_HEIGHT);
-        } else {
-            const INPUT_ROLE role = group->roles[row];
-            UI_BeginStack(UI_STACK_HORIZONTAL);
-            UI_BeginResize(s->input_size, -1.0f);
-            UI_BeginAnchor(0.0f, 0.5f);
-            M_InputChoice(s, role);
-            UI_EndAnchor();
-            UI_EndResize();
-            UI_BeginResize(s->label_size, -1.0f);
-            UI_BeginAnchor(0.0f, 0.5f);
-            M_InputLabel(s, role);
-            UI_EndAnchor();
-            UI_EndResize();
-            UI_EndStack();
+            continue;
         }
+
+        const INPUT_ROLE role = group->roles[row];
+        UI_BeginStack(UI_STACK_HORIZONTAL);
+        UI_BeginResize(s->input_size, -1.0f);
+        UI_BeginAnchor(0.0f, 0.5f);
+        M_InputChoice(s, role);
+        UI_EndAnchor();
+        UI_EndResize();
+        UI_BeginResize(s->label_size, -1.0f);
+        UI_BeginAnchor(0.0f, 0.5f);
+        M_InputLabel(s, role);
+        UI_EndAnchor();
+        UI_EndResize();
+        UI_EndStack();
     }
     UI_EndStack();
 }

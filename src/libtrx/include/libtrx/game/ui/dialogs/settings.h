@@ -53,12 +53,15 @@ typedef struct UI_SETTINGS_TAB {
 } UI_SETTINGS_TAB;
 
 typedef struct {
+    float row_pad;
+
     UI_SETTINGS_PHASE phase;
     const UI_SETTINGS_OPTION *options;
     UI_SCROLLABLE scroll;
-    float arrow_spacing;
-    float row_pad;
-    float value_w;
+
+    int32_t max_group_items;
+    float max_label_w;
+    float max_value_w;
 
     int32_t tab_count;
     const UI_SETTINGS_TAB *tabs;
