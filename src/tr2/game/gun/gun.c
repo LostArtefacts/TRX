@@ -114,7 +114,7 @@ void Gun_Control(void)
             } else {
                 g_Lara.flare.control = false;
             }
-            Flare_DoInHand(g_Lara.flare.age);
+            Lara_Flare_DoInHand(g_Lara.flare.age);
             Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
         }
         break;
@@ -123,7 +123,7 @@ void Gun_Control(void)
         if (g_Lara.gun_type == LGT_FLARE) {
             g_Lara.flare.control = g_Lara.vehicle_item_num != NO_ITEM
                 || Gun_CheckForHoldingState(g_LaraItem->current_anim_state);
-            Flare_DoInHand(g_Lara.flare.age);
+            Lara_Flare_DoInHand(g_Lara.flare.age);
             Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
         }
         break;

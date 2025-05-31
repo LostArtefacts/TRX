@@ -24,31 +24,6 @@
 #define M_FLARE_OLD_AGE (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
 #define M_FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
 
-static bool M_CanThrowFlare(void);
-static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
-
-static bool M_CanThrowFlare(void)
-{
-    if (g_Lara.gun_status != LGS_ARMLESS) {
-        return false;
-    }
-
-    return !g_Config.gameplay.fix_flare_throw_priority
-        || (!g_LaraItem->gravity && !g_Input.jump)
-        || g_LaraItem->current_anim_state == LS_FAST_FALL
-        || g_LaraItem->current_anim_state == LS_SWAN_DIVE
-        || g_LaraItem->current_anim_state == LS_FAST_DIVE;
-}
-
-static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
-{
-    Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
-    const ROOM *const room = Room_Get(room_num);
-    const SOUND_PLAY_MODE mode =
-        (room->flags & RF_UNDERWATER) != 0 ? SPM_UNDERWATER : SPM_NORMAL;
-    Sound_Effect(SFX_LARA_FLARE_IGNITE, &flare_pos, mode);
-}
-
 void Flare_GenerateEffects(
     const XYZ_32 sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
@@ -97,29 +72,6 @@ bool Flare_GenerateLight(const XYZ_32 pos, const int32_t flare_age)
 
     Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF / 2);
     return false;
-}
-
-void Flare_DoInHand(const int32_t flare_age)
-{
-    XYZ_32 vec = {
-        .x = 11,
-        .y = 32,
-        .z = 41,
-    };
-    Lara_GetJointAbsPosition(&vec, LM_HAND_L);
-
-    if (flare_age == 0) {
-        M_DoIgniteEffects(vec, g_LaraItem->room_num);
-    }
-
-    g_Lara.left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
-
-    if (g_Lara.flare.age < M_MAX_FLARE_AGE) {
-        g_Lara.flare.age++;
-        Flare_GenerateEffects(g_LaraItem->pos, vec, g_LaraItem->room_num);
-    } else if (M_CanThrowFlare()) {
-        g_Lara.gun_status = LGS_UNDRAW;
-    }
 }
 
 void Flare_Create(const bool thrown)
