@@ -92,6 +92,7 @@ static void M_Collision(
         Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_DIE_GOLD, 0, O_LARA_EXTRA);
         lara_item->hit_points = -1;
         lara_item->gravity = 0;
+        g_Lara.extra_anim = true;
         g_Lara.air = -1;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Lara.gun_type = LGT_UNARMED;
@@ -104,6 +105,7 @@ static void M_Collision(
         lara_item->current_anim_state = LS_USE_MIDAS;
         lara_item->goal_anim_state = LS_USE_MIDAS;
         Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
+        g_Lara.extra_anim = true;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Lara.interact_target.is_moving = false;
     }

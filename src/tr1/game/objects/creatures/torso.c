@@ -217,6 +217,7 @@ static void M_Control(const int16_t item_num)
                 g_LaraItem->rot.z = 0;
                 g_LaraItem->gravity = 0;
                 g_LaraItem->hit_points = -1;
+                g_Lara.extra_anim = true;
                 g_Lara.air = -1;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
                 g_Lara.gun_type = LGT_UNARMED;

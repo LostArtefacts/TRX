@@ -253,10 +253,9 @@ bool Lara_Cheat_EnterFlyMode(void)
             && lara_info->back_gun_obj_id != O_LARA)) {
         lara_info->gun_status = LGS_ARMLESS;
     }
-
-    lara_info->extra_anim = false;
 #endif
 
+    lara_info->extra_anim = false;
     Lara_DismountVehicle();
     if (lara_info->water_status != LWS_UNDERWATER
         || lara_item->hit_points <= 0) {
@@ -420,7 +419,6 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 
     Lara_DismountVehicle();
-#if TR_VERSION >= 2
     if (lara_info->extra_anim) {
         const ROOM *const room = Room_Get(lara_item->room_num);
         const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
@@ -460,9 +458,11 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z, int16_t room_num)
     lara_info->mesh_effects = 0;
 
     g_Camera.type = CAM_CHASE;
+#if TR_VERSION == 1
+    Viewport_SetFOV(-1);
+#else
     Viewport_AlterFOV(-1);
 #endif
-
     Camera_ResetPosition();
 
     return true;

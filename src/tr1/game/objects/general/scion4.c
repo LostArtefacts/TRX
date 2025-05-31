@@ -68,6 +68,7 @@ static void M_Collision(
         Item_SwitchToObjAnim(
             lara_item, EXTRA_ANIM_HOLDER_SCION, 0, O_LARA_EXTRA);
         g_Lara.gun_status = LGS_HANDS_BUSY;
+        g_Lara.extra_anim = true;
         Camera_InvokeCinematic(lara_item, 0, -DEG_90);
     }
 cleanup:
