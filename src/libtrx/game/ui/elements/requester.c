@@ -2,46 +2,14 @@
 
 #include "config.h"
 #include "game/input.h"
-#include "game/ui/elements/anchor.h"
-#include "game/ui/elements/fixed.h"
 #include "game/ui/elements/frame.h"
-#include "game/ui/elements/hide.h"
-#include "game/ui/elements/label.h"
-#include "game/ui/elements/offset.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/resize.h"
-#include "game/ui/elements/spacer.h"
+#include "game/ui/elements/scrollable_area.h"
 #include "game/ui/elements/stack.h"
 #include "game/ui/elements/window.h"
+#include "game/ui/text.h"
 #include "utils.h"
-
-static void M_UpArrow(const UI_REQUESTER_STATE *s);
-static void M_DownArrow(const UI_REQUESTER_STATE *s);
-
-static void M_UpArrow(const UI_REQUESTER_STATE *const s)
-{
-    UI_BeginHide(s->scroll.first_item == 0);
-    UI_Spacer(0.0f, TR_VERSION == 2 ? 6.0f : 4.0f);
-    UI_BeginAnchor(0.5f, 0.5f);
-    UI_BeginFixed(0.5f, TR_VERSION == 2 ? 0.7f : 1.1f);
-    UI_LabelEx("\\{arrow up}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
-    UI_EndFixed();
-    UI_EndAnchor();
-    UI_EndHide();
-}
-
-static void M_DownArrow(const UI_REQUESTER_STATE *const s)
-{
-    UI_BeginHide(
-        s->scroll.first_item + s->scroll.vis_items >= s->scroll.max_items);
-    UI_BeginAnchor(0.5f, 0.0f);
-    UI_BeginFixed(0.5f, -0.3f);
-    UI_LabelEx("\\{arrow down}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
-    UI_EndFixed();
-    UI_EndAnchor();
-    UI_EndHide();
-    UI_Spacer(0.0f, TR_VERSION == 2 ? 6.0f : 4.0f);
-}
 
 void UI_Requester_Init(
     UI_REQUESTER_STATE *const s, const int32_t vis_rows, const int32_t max_rows,
@@ -147,7 +115,7 @@ void UI_BeginRequester(
     });
 
     if (s->show_arrows) {
-        M_UpArrow(s);
+        UI_BeginScrollableArea(&s->scroll);
     }
     if (s->reserve_space) {
         UI_BeginResize(
@@ -171,7 +139,7 @@ void UI_EndRequester(const UI_REQUESTER_STATE *const s)
         UI_EndResize();
     }
     if (s->show_arrows) {
-        M_DownArrow(s);
+        UI_EndScrollableArea(&s->scroll);
     }
 
     UI_EndStack();
