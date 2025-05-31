@@ -1,4 +1,3 @@
-#include "decomp/flares.h"
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"

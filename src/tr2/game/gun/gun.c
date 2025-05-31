@@ -1,6 +1,5 @@
 #include "game/gun/gun.h"
 
-#include "decomp/flares.h"
 #include "game/gun/gun_misc.h"
 #include "game/gun/gun_pistols.h"
 #include "game/gun/gun_rifle.h"
@@ -99,32 +98,9 @@ void Gun_Control(void)
 
     switch (g_Lara.gun_status) {
     case LGS_ARMLESS:
-        if (g_Lara.gun_type == LGT_FLARE) {
-            if (g_Lara.vehicle_item_num != NO_ITEM
-                || Gun_CheckForHoldingState(g_LaraItem->current_anim_state)) {
-                if (!g_Lara.flare.control) {
-                    g_Lara.left_arm.frame_num = LF_FL_2_HOLD;
-                    g_Lara.flare.control = true;
-                } else if (g_Lara.left_arm.frame_num != LF_FL_HOLD) {
-                    g_Lara.left_arm.frame_num++;
-                    if (g_Lara.left_arm.frame_num == LF_FL_END) {
-                        g_Lara.left_arm.frame_num = LF_FL_HOLD;
-                    }
-                }
-            } else {
-                g_Lara.flare.control = false;
-            }
-            Lara_Flare_DoInHand(g_Lara.flare.age);
-            Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
-        }
-        break;
-
     case LGS_HANDS_BUSY:
         if (g_Lara.gun_type == LGT_FLARE) {
-            g_Lara.flare.control = g_Lara.vehicle_item_num != NO_ITEM
-                || Gun_CheckForHoldingState(g_LaraItem->current_anim_state);
-            Lara_Flare_DoInHand(g_Lara.flare.age);
-            Lara_Flare_SetArm(g_Lara.left_arm.frame_num);
+            Lara_Flare_Control();
         }
         break;
 

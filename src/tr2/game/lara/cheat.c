@@ -1,4 +1,3 @@
-#include "decomp/flares.h"
 #include "game/console/common.h"
 #include "game/game.h"
 #include "game/game_flow.h"
