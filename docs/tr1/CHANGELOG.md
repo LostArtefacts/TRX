@@ -5,6 +5,7 @@
 - changed the `/tp` command to align Lara to switches and pickups
 - changed the music track slot limit from 64 to 1024 (#3101)
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
+- fixed text glyphs having cut off right and bottom borders (regression from 4.7)
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion
 
 ## [4.11.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...tr1-4.11.2) - 2025-05-24

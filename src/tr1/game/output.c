@@ -352,8 +352,8 @@ static void M_DrawSprite(
 
     const float u0 = (sprite->offset & 0xFF) / 256.0f;
     const float v0 = (sprite->offset >> 8) / 256.0f;
-    const float u1 = (sprite->width >> 8) / 256.0f + u0;
-    const float v1 = (sprite->height >> 8) / 256.0f + v0;
+    const float u1 = u0 + sprite->width / 65536.0f;
+    const float v1 = v0 + sprite->height / 65536.0f;
     const float vz = MAP_DEPTH(z);
     const float rhw = 1.0f / z;
 
