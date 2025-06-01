@@ -2,6 +2,7 @@
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
 - added an option to disable Lara's braid (#3089)
 - added an option to disable the breeze effect on Lara's braid (#3090)
+- changed the music track slot limit from 64 to 1024 (#3101)
 - changed the `/tp` command to align Lara to switches and pickups
 - changed the graphic settings dialog to use tabs
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss

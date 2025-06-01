@@ -334,9 +334,9 @@ static bool M_LoadMusic(
         return true;
     }
 
-    if ((signed)track_arr->length != MAX_MUSIC_TRACKS) {
+    if ((signed)track_arr->length > MAX_MUSIC_TRACKS) {
         LOG_WARNING(
-            "Malformed save: expected %d music track flags, got %d",
+            "Malformed save: expected at most %d music track flags, got %d",
             MAX_MUSIC_TRACKS, track_arr->length);
         return true;
     }

@@ -980,14 +980,14 @@ static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr)
         return true;
     }
 
-    if (!music_track_arr) {
+    if (music_track_arr == nullptr) {
         LOG_WARNING("Malformed save: invalid or missing music track array");
         return true;
     }
 
-    if ((signed)music_track_arr->length != MAX_MUSIC_TRACKS) {
+    if ((signed)music_track_arr->length > MAX_MUSIC_TRACKS) {
         LOG_WARNING(
-            "Malformed save: expected %d music track flags, got %d",
+            "Malformed save: expected at most %d music track flags, got %d",
             MAX_MUSIC_TRACKS, music_track_arr->length);
         return true;
     }

@@ -18,9 +18,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SAVE_CREATURE (1 << 7)
-#define SAVEGAME_LEGACY_TOTAL_SIZE (1170 + 6272) // header + OG buffer size
-#define SAVEGAME_LEGACY_TITLE_SIZE 75
+#define M_SAVE_CREATURE (1 << 7)
+#define M_SAVEGAME_LEGACY_TOTAL_SIZE (1170 + 6272) // header + OG buffer size
+#define M_SAVEGAME_LEGACY_TITLE_SIZE 75
 
 #define SPECIAL_READ_WRITES                                                    \
     SPECIAL_READ_WRITE(S8, int8_t)                                             \
@@ -112,7 +112,7 @@ static void M_Reset(char *const buffer)
 
 static void M_Read(void *const ptr, const size_t size)
 {
-    ASSERT(m_BufPos + size <= SAVEGAME_LEGACY_TOTAL_SIZE);
+    ASSERT(m_BufPos + size <= M_SAVEGAME_LEGACY_TOTAL_SIZE);
     m_BufPos += size;
     memcpy(ptr, m_BufPtr, size);
     m_BufPtr += size;
@@ -258,7 +258,7 @@ static void M_ReadItems(void)
                 }
             }
 
-            if (item->flags & SAVE_CREATURE) {
+            if ((item->flags & M_SAVE_CREATURE) != 0) {
                 LOT_EnableBaddieAI(item_num, true);
                 CREATURE *const creature = item->data;
                 if (creature != nullptr) {
@@ -419,7 +419,7 @@ static void M_ReadFlares(void)
 static void M_Write(const void *ptr, const size_t size)
 {
     m_BufPos += size;
-    if (m_BufPos >= SAVEGAME_LEGACY_TOTAL_SIZE) {
+    if (m_BufPos >= M_SAVEGAME_LEGACY_TOTAL_SIZE) {
         Shell_ExitSystem("Savegame is too big to fit in buffer");
     }
 
@@ -521,7 +521,7 @@ static void M_WriteItems(void)
             uint16_t flags = item->flags + item->active + (item->status << 1)
                 + (item->gravity << 3) + (item->collidable << 4);
             if (obj->intelligent && item->data != nullptr) {
-                flags |= SAVE_CREATURE;
+                flags |= M_SAVE_CREATURE;
             }
             M_WriteU16(flags);
 
@@ -531,7 +531,7 @@ static void M_WriteItems(void)
             }
 
             M_WriteS16(item->timer);
-            if (flags & SAVE_CREATURE) {
+            if ((flags & M_SAVE_CREATURE) != 0) {
                 const CREATURE *const creature = item->data;
                 M_WriteS16(creature->head_rotation);
                 M_WriteS16(creature->neck_rotation);
@@ -732,16 +732,16 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
-    char *buffer = Memory_Alloc(SAVEGAME_LEGACY_TOTAL_SIZE);
+    char *buffer = Memory_Alloc(M_SAVEGAME_LEGACY_TOTAL_SIZE);
     M_Reset(buffer);
 
     const GF_LEVEL *const current_level = GF_GetCurrentLevel();
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(current_level);
 
-    char title[SAVEGAME_LEGACY_TITLE_SIZE];
-    snprintf(title, SAVEGAME_LEGACY_TITLE_SIZE, "%s", current_level->title);
-    M_Write(title, SAVEGAME_LEGACY_TITLE_SIZE);
+    char title[M_SAVEGAME_LEGACY_TITLE_SIZE];
+    snprintf(title, M_SAVEGAME_LEGACY_TITLE_SIZE, "%s", current_level->title);
+    M_Write(title, M_SAVEGAME_LEGACY_TITLE_SIZE);
     M_WriteS32(Savegame_GetCounter());
 
     M_WriteResumeInfos();
@@ -770,7 +770,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
         M_WriteU8(tflag);
     }
 
-    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+    for (int32_t i = 0; i < LEGACY_MAX_MUSIC_TRACKS; i++) {
         M_WriteU16(Music_GetTrackFlags(i));
     }
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
@@ -796,7 +796,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 
     M_WriteFlares();
 
-    File_WriteData(fp, buffer, SAVEGAME_LEGACY_TOTAL_SIZE);
+    File_WriteData(fp, buffer, M_SAVEGAME_LEGACY_TOTAL_SIZE);
     Memory_FreePointer(&buffer);
 }
 
@@ -807,7 +807,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     File_ReadData(fp, buffer, File_Size(fp));
 
     M_Reset(buffer);
-    M_Skip(SAVEGAME_LEGACY_TITLE_SIZE);
+    M_Skip(M_SAVEGAME_LEGACY_TITLE_SIZE);
     M_Skip(sizeof(int32_t)); // save counter
 
     M_ReadResumeInfos();
@@ -849,7 +849,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
     }
 
-    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+    for (int32_t i = 0; i < LEGACY_MAX_MUSIC_TRACKS; i++) {
         Music_SetTrackFlags(i, M_ReadU16());
     }
 
