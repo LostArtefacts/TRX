@@ -97,9 +97,13 @@ static bool M_IsBrokenTrack(const MUSIC_TRACK_ID track)
 #endif
 }
 
+// TODO: get rid of this, retain only for legacy saved flags
 static int32_t M_GetRealTrack(const int32_t track_id)
 {
 #if TR_VERSION == 2
+    if (track_id > LEGACY_MAX_MUSIC_TRACKS) {
+        return track_id;
+    }
     const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
     int32_t idx = 0;
     int32_t ret_track_id = 2;
