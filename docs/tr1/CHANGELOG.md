@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...develop) - ××××-××-××
 - added an optional breeze effect for Lara's braid in appropriate outside rooms (#3090)
+- added key icons to the controls settings dialog
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting
 - changed the `/tp` command to align Lara to switches and pickups

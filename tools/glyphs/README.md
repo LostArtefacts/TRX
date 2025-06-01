@@ -40,6 +40,11 @@ multiple bytes. Icons and buttons follow the same approach and are represented
 by ASCII sequences like `\{button x}`. The game processes these similarly to
 other glyphs.
 
+### `generate_keyboard_map`
+
+Takes blank keycap bitmaps and a bitmap font and outputs a sprite sheet and a
+mapping.txt suitable for the `generate_defs` script.
+
 ### `generate_defs`
 
 This tool processes `mapping.txt` and the associated source images to create
