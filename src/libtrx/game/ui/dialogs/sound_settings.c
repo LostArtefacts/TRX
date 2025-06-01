@@ -8,14 +8,34 @@
 #include "strings.h"
 #include "utils.h"
 
+static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
+    { MUSIC_LOAD_NEVER, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER) },
+    { MUSIC_LOAD_NON_AMBIENT,
+      GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NON_AMBIENT) },
+    { MUSIC_LOAD_ALWAYS, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_ALWAYS) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_UnderwaterMusicModeEnumEntries[] = {
+    { UMM_FULL, GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_FULL) },
+    { UMM_QUIET, GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_QUIET) },
+    { UMM_FULL_NO_AMBIENT,
+      GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_FULL_NO_AMBIENT) },
+    { UMM_QUIET_NO_AMBIENT,
+      GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_QUIET_NO_AMBIENT) },
+    { UMM_NONE, GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_NONE) },
+    { -1, nullptr },
+};
+
 // Custom handlers for changing sound settings.
 static bool M_CanChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 static bool M_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
+#define KEEP_IT_SIMPLE (TR_VERSION > 1)
 static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .option_type = COT_INT32,
-        .label_id = GS_ID(SOUND_DIALOG_SOUND),
+        .label_id = GS_ID(SOUND_SETTINGS_SOUND_VOLUME),
         .custom_handler = {
             .format_value = nullptr,
             .can_change_value = M_CanChange,
@@ -27,7 +47,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     },
     {
         .option_type = COT_INT32,
-        .label_id = GS_ID(SOUND_DIALOG_MUSIC),
+        .label_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME),
         .custom_handler = {
             .format_value = nullptr,
             .can_change_value = M_CanChange,
@@ -37,16 +57,63 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .min_value = MUSIC_MIN_VOLUME,
         .max_value = MUSIC_MAX_VOLUME,
     },
+#if !KEEP_IT_SIMPLE
     {
-        .target = NULL,
+        .target = &g_Config.audio.music_load_condition,
+        .label_id = GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION),
+        .option_type = COT_ENUM,
+        .misc = &m_MusicLoadConditionEnumEntries,
+    },
+    #if TR_VERSION == 1
+    {
+        .target = &g_Config.audio.enable_music_in_menu,
+        .label_id = GS_ID(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU),
+        .option_type = COT_BOOL,
+    },
+    {
+        .target = &g_Config.audio.enable_pitched_sounds,
+        .label_id = GS_ID(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS),
+        .option_type = COT_BOOL,
+    },
+    {
+        .target = &g_Config.audio.enable_music_in_inventory,
+        .label_id = GS_ID(SOUND_SETTINGS_ENABLE_MUSIC_IN_INVENTORY),
+        .option_type = COT_BOOL,
+    },
+    {
+        .target = &g_Config.audio.fix_secrets_killing_music,
+        .label_id = GS_ID(SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC),
+        .option_type = COT_BOOL,
+    },
+    {
+        .target = &g_Config.audio.fix_speeches_killing_music,
+        .label_id = GS_ID(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC),
+        .option_type = COT_BOOL,
+    },
+    {
+        .target = &g_Config.audio.enable_ps_uzi_sfx,
+        .label_id = GS_ID(SOUND_SETTINGS_PS_UZI_SFX),
+        .option_type = COT_BOOL,
+    },
+    #endif
+    {
+        .target = &g_Config.audio.underwater_music_mode,
+        .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE),
+        .option_type = COT_ENUM,
+        .misc = &m_UnderwaterMusicModeEnumEntries,
+    },
+#endif
+    {
+        .target = nullptr,
     },
 };
+#undef KEEP_IT_SIMPLE
 
 UI_SOUND_SETTINGS_STATE *UI_SoundSettings_Init(void)
 {
     UI_SOUND_SETTINGS_STATE *s = Memory_Alloc(sizeof(UI_SETTINGS_STATE));
     s->row_pad = 10.0f;
-    UI_Settings_Init(s, GS_ID(SOUND_DIALOG_TITLE), m_SoundOptions);
+    UI_Settings_Init(s, GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
     return s;
 }
 
@@ -70,19 +137,20 @@ static bool M_CanChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
     const int32_t *value = option->target;
-    if (option->label_id == GS_ID(SOUND_DIALOG_SOUND)) {
+    if (option->target == &g_Config.audio.music_volume) {
         if (dir < 0) {
             return *value > MUSIC_MIN_VOLUME;
         } else {
             return *value < MUSIC_MAX_VOLUME;
         }
-    } else {
+    } else if (option->target == &g_Config.audio.sound_volume) {
         if (dir < 0) {
             return *value > SOUND_MIN_VOLUME;
         } else {
             return *value < SOUND_MAX_VOLUME;
         }
     }
+    return false;
 }
 
 static bool M_RequestChange(
@@ -93,11 +161,11 @@ static bool M_RequestChange(
         return false;
     }
     *value += dir;
-    if (option->label_id == GS_ID(SOUND_DIALOG_SOUND)) {
+    if (option->target == &g_Config.audio.music_volume) {
         Music_SetVolume(*value);
-    } else {
+    } else if (option->target == &g_Config.audio.sound_volume) {
         Sound_SetMasterVolume(*value);
     }
-    Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+    Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
     return true;
 }

@@ -33,8 +33,8 @@
 #define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
 #define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_SELECTING_FRAMES (32 / 2)
-#define M_OPTION_RING_OBJECTS 4
-#define M_TITLE_RING_OBJECTS 5
+#define M_OPTION_RING_OBJECTS 5
+#define M_TITLE_RING_OBJECTS 6
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static bool m_EnableExamine;
@@ -647,6 +647,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (ring->mode == INV_TITLE_MODE
                     && (inv_item->object_id == O_DETAIL_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
+                        || inv_item->object_id == O_MAP_OPTION
                         || inv_item->object_id == O_CONTROL_OPTION
                         || inv_item->object_id == O_GAMMA_OPTION)) {
                     InvRing_MotionSetup(

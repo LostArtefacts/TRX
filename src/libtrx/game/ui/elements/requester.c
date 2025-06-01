@@ -115,7 +115,7 @@ void UI_BeginRequester(
     });
 
     if (s->show_arrows) {
-        UI_BeginScrollableArea(&s->scroll);
+        UI_BeginScrollableArea(&s->scroll, false);
     }
     if (s->reserve_space) {
         UI_BeginResize(
@@ -139,7 +139,7 @@ void UI_EndRequester(const UI_REQUESTER_STATE *const s)
         UI_EndResize();
     }
     if (s->show_arrows) {
-        UI_EndScrollableArea(&s->scroll);
+        UI_EndScrollableArea(&s->scroll, false);
     }
 
     UI_EndStack();

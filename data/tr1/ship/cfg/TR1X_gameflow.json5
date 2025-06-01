@@ -19,6 +19,7 @@
         "data/injections/font.bin",
         "data/injections/pickup_aid.bin",
         "data/injections/sprite_alignment.bin",
+        "data/injections/pda_model.bin",
     ],
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
@@ -63,6 +64,7 @@
                 "data/injections/lara_animations.bin",
                 "data/injections/uzi_sfx.bin",
                 "data/injections/explosion.bin",
+                "data/injections/pda_model.bin",
                 "data/injections/font.bin",
             ],
         },
@@ -435,6 +437,7 @@
                 "data/injections/backpack_cut.bin",
                 "data/injections/braid_cut1.bin",
                 "data/injections/photo.bin",
+                "data/injections/pda_model.bin",
                 "data/injections/font.bin",
             ],
             "sequence": [
@@ -453,8 +456,9 @@
             "injections": [
                 "data/injections/backpack_cut.bin",
                 "data/injections/braid_cut2_cut4.bin",
-                "data/injections/font.bin",
                 "data/injections/photo.bin",
+                "data/injections/pda_model.bin",
+                "data/injections/font.bin",
             ],
             "sequence": [
                 {"type": "set_cutscene_pos", "x": 51962, "z": 53760},
@@ -473,6 +477,7 @@
             "injections": [
                 "data/injections/cut3_textures.bin",
                 "data/injections/photo.bin",
+                "data/injections/pda_model.bin",
                 "data/injections/font.bin",
             ],
             "sequence": [
@@ -495,6 +500,7 @@
                 "data/injections/braid_cut2_cut4.bin",
                 "data/injections/cut4_textures.bin",
                 "data/injections/photo.bin",
+                "data/injections/pda_model.bin",
                 "data/injections/font.bin",
             ],
             "sequence": [
