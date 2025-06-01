@@ -448,7 +448,7 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         } else if (g_InputDB.menu_down) {
             s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
             UI_Scrollable_SelectFirstItem(&s->scroll);
-        } else if (g_InputDB.menu_up) {
+        } else if (g_InputDB.menu_up && g_Config.ui.enable_wraparound) {
             s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
             UI_Scrollable_SelectLastItem(&s->scroll);
         }
@@ -457,12 +457,13 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
             if (!UI_Scrollable_SelectPrev(&s->scroll, false)) {
                 if (s->tab_switch != nullptr) {
                     s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
-                } else {
+                } else if (g_Config.ui.enable_wraparound) {
                     UI_Scrollable_SelectLastItem(&s->scroll);
                 }
             }
         } else if (g_InputDB.menu_down) {
-            if (!UI_Scrollable_SelectNext(&s->scroll, false)) {
+            if (!UI_Scrollable_SelectNext(&s->scroll, false)
+                && g_Config.ui.enable_wraparound) {
                 if (s->tab_switch != nullptr) {
                     s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
                 } else {

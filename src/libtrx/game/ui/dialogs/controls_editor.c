@@ -148,7 +148,7 @@ static int32_t M_GetVisibleRows(void);
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *group, int32_t row);
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *group);
-static void M_CycleLayout(UI_CONTROLS_EDITOR_STATE *s, int32_t dir);
+static bool M_CycleLayout(UI_CONTROLS_EDITOR_STATE *s, int32_t dir);
 static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
 static bool M_HandleHoldAction(
@@ -216,8 +216,14 @@ static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
     return row;
 }
 
-static void M_CycleLayout(UI_CONTROLS_EDITOR_STATE *const s, const int32_t dir)
+static bool M_CycleLayout(UI_CONTROLS_EDITOR_STATE *const s, const int32_t dir)
 {
+    if (!g_Config.ui.enable_wraparound
+        && (s->active_layout + dir < INPUT_LAYOUT_DEFAULT
+            || s->active_layout + dir >= INPUT_LAYOUT_NUMBER_OF)) {
+        return false;
+    }
+
     s->active_layout += dir;
     s->active_layout += INPUT_LAYOUT_NUMBER_OF;
     s->active_layout %= INPUT_LAYOUT_NUMBER_OF;
@@ -228,6 +234,7 @@ static void M_CycleLayout(UI_CONTROLS_EDITOR_STATE *const s, const int32_t dir)
         .data = nullptr,
     };
     EventManager_Fire(s->events, &event);
+    return true;
 }
 
 static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
@@ -298,7 +305,9 @@ static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
         M_CycleLayout(s, 1);
     } else if (g_InputDB.menu_down) {
         s->phase = M_PHASE_NAVIGATE_GROUP;
-    } else if (g_InputDB.menu_up && s->active_layout != 0) {
+    } else if (
+        g_InputDB.menu_up && s->active_layout != 0
+        && g_Config.ui.enable_wraparound) {
         s->phase = M_PHASE_NAVIGATE_INPUTS;
         UI_Scrollable_SelectLastItem(&s->scroll);
         s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
@@ -347,7 +356,8 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
             s->phase = M_PHASE_NAVIGATE_GROUP;
         }
     } else if (g_InputDB.menu_down) {
-        if (!UI_Scrollable_SelectNext(&s->scroll, false)) {
+        if (!UI_Scrollable_SelectNext(&s->scroll, false)
+            && g_Config.ui.enable_wraparound) {
             s->phase = M_PHASE_NAVIGATE_LAYOUT;
         }
     } else {
@@ -402,7 +412,14 @@ static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *const s)
 {
     const bool is_focused = s->phase == M_PHASE_NAVIGATE_LAYOUT;
     UI_BeginAnchor(0.5f, 0.5f);
-    UI_BeginRowArrows(is_focused, is_focused, UI_ROW_ARROWS_MEDIUM);
+    UI_BeginRowArrows(
+        is_focused
+            && (g_Config.ui.enable_wraparound
+                || s->active_layout != INPUT_LAYOUT_DEFAULT),
+        is_focused
+            && (g_Config.ui.enable_wraparound
+                || s->active_layout + 1 < INPUT_LAYOUT_NUMBER_OF),
+        UI_ROW_ARROWS_MEDIUM);
     if (is_focused) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }

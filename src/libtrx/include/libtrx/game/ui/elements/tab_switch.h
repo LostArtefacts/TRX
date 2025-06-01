@@ -29,7 +29,7 @@ bool UI_TabSwitch_Control(UI_TAB_SWITCH_STATE *state);
 
 // Advances the active tab by dir (-1 for previous, +1 for next), wrapping
 // around.
-void UI_TabSwitch_Cycle(UI_TAB_SWITCH_STATE *state, int32_t dir);
+bool UI_TabSwitch_Cycle(UI_TAB_SWITCH_STATE *state, int32_t dir);
 
 // draw functions
 void UI_TabSwitch(const UI_TAB_SWITCH_STATE *state, bool is_focused);
