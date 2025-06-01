@@ -69,6 +69,7 @@ static bool M_LoadLara(JSON_OBJECT *lara_obj);
 static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm);
 static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo);
 
+static int32_t M_ConvertMusicTrack(int32_t track_id, uint16_t header_version);
 static bool M_IsValidItemObject(
     GAME_OBJECT_ID saved_obj_id, GAME_OBJECT_ID initial_obj_id);
 
@@ -342,7 +343,8 @@ static bool M_LoadMusic(
     }
 
     for (int32_t i = 0; i < (signed)track_arr->length; i++) {
-        Music_SetTrackFlags(i, JSON_ArrayGetInt(track_arr, i, 0));
+        const int32_t track_id = M_ConvertMusicTrack(i, header_version);
+        Music_SetTrackFlags(track_id, JSON_ArrayGetInt(track_arr, i, 0));
     }
 
     const JSON_OBJECT *const current_obj =
@@ -351,7 +353,7 @@ static bool M_LoadMusic(
         return true;
     }
 
-    const MUSIC_TRACK_ID current_track =
+    MUSIC_TRACK_ID current_track =
         JSON_ObjectGetInt(current_obj, "current_track", MX_INACTIVE);
     MUSIC_TRACK_ID ambient_track =
         JSON_ObjectGetInt(current_obj, "current_ambient", MX_INACTIVE);
@@ -365,6 +367,11 @@ static bool M_LoadMusic(
             ambient_track = current_track;
         }
     }
+
+    // Added in 1.2 after removing OG music track shifting, so allowing previous
+    // saves to still load. Remove after a suitable period.
+    current_track = M_ConvertMusicTrack(current_track, header_version);
+    ambient_track = M_ConvertMusicTrack(ambient_track, header_version);
 
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
@@ -992,6 +999,15 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
     }
 
     return true;
+}
+
+static int32_t M_ConvertMusicTrack(
+    const int32_t track_id, const uint16_t header_version)
+{
+    if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
+        return track_id;
+    }
+    return Music_ConvertLegacyTrack(track_id);
 }
 
 static bool M_IsValidItemObject(

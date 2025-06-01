@@ -404,4 +404,5 @@ However, you can easily download them manually from these urls:
 - fixed screenshots key not getting debounced
 - changed screenshots to be put in the screenshots/ directory
 - changed saves to be put in the saves/ directory
+- changed the music track behaviour to no longer shift track numbers
 - removed `-setup` dialog

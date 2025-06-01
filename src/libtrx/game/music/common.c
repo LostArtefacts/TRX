@@ -27,7 +27,6 @@ static const MUSIC_BACKEND *M_FindBackend(void);
 static void M_StopActiveStream(void);
 static void M_StreamFinished(int32_t stream_id, void *user_data);
 static bool M_IsBrokenTrack(MUSIC_TRACK_ID track);
-static int32_t M_GetRealTrack(int32_t track_id);
 static bool M_IsAmbientTrack(MUSIC_TRACK_ID track_id);
 static void M_SyncVolume(int32_t audio_stream_id);
 
@@ -94,30 +93,6 @@ static bool M_IsBrokenTrack(const MUSIC_TRACK_ID track)
     return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
 #else
     return false;
-#endif
-}
-
-// TODO: get rid of this, retain only for legacy saved flags
-static int32_t M_GetRealTrack(const int32_t track_id)
-{
-#if TR_VERSION == 2
-    if (track_id > LEGACY_MAX_MUSIC_TRACKS) {
-        return track_id;
-    }
-    const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
-    int32_t idx = 0;
-    int32_t ret_track_id = 2;
-
-    for (int32_t i = 2; i < track_id; i++) {
-        if ((skipped_track_ids[idx] >= 0) && (i == skipped_track_ids[idx])) {
-            idx++;
-        } else {
-            ret_track_id++;
-        }
-    }
-    return ret_track_id;
-#else
-    return track_id;
 #endif
 }
 
@@ -226,11 +201,9 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
         goto finish;
     }
 
-    const int32_t real_track_id = M_GetRealTrack(track_id);
-    LOG_INFO(
-        "Playing track %d (real: %d), mode: %d", track_id, real_track_id, mode);
+    LOG_INFO("Playing track %d, mode: %d", track_id, mode);
 
-    m_AudioStreamID = m_Backend->play(m_Backend, real_track_id);
+    m_AudioStreamID = m_Backend->play(m_Backend, track_id);
     if (m_AudioStreamID < 0) {
         LOG_ERROR("Failed to create music stream for track %d", track_id);
         goto finish;
@@ -362,4 +335,24 @@ uint16_t Music_GetTrackFlags(const int32_t track_idx)
 void Music_SetTrackFlags(const int32_t track, const uint16_t flags)
 {
     m_MusicTrackFlags[track] = flags;
+}
+
+int32_t Music_ConvertLegacyTrack(const int32_t track_id)
+{
+#if TR_VERSION == 1
+    return track_id;
+#else
+    const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
+    int32_t idx = 0;
+    int32_t ret_track_id = 2;
+
+    for (int32_t i = 2; i < track_id; i++) {
+        if ((skipped_track_ids[idx] >= 0) && (i == skipped_track_ids[idx])) {
+            idx++;
+        } else {
+            ret_track_id++;
+        }
+    }
+    return ret_track_id;
+#endif
 }

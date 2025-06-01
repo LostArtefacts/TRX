@@ -6,6 +6,7 @@
 #include "game/music/const.h"
 #include "log.h"
 #include "memory.h"
+#include "vector.h"
 
 #include <inttypes.h>
 #include <stdarg.h>
@@ -20,6 +21,7 @@ typedef struct {
 typedef struct {
     const char *path;
     const char *description;
+    int32_t num_tracks;
     M_CDAUDIO_TRACK *tracks;
 } M_BACKEND_DATA;
 
@@ -40,9 +42,7 @@ static bool M_Parse(M_BACKEND_DATA *const data)
         return false;
     }
 
-    data->tracks =
-        Memory_Alloc(sizeof(M_CDAUDIO_TRACK) * LEGACY_MAX_MUSIC_TRACKS);
-
+    VECTOR *const tracks = Vector_Create(sizeof(M_CDAUDIO_TRACK));
     size_t offset = 0;
     while (offset < track_content_size) {
         while (track_content[offset] == '\n' || track_content[offset] == '\r') {
@@ -58,13 +58,13 @@ static bool M_Parse(M_BACKEND_DATA *const data)
             &track_content[offset], "%" PRIu64 " %" PRIu64 " %" PRIu64,
             &track_num, &from, &to);
 
-        if (result == 3 && track_num > 0
-            && track_num <= LEGACY_MAX_MUSIC_TRACKS) {
-            const int32_t track_idx = track_num - 1;
-            data->tracks[track_idx].active = true;
-            data->tracks[track_idx].from = from;
-            data->tracks[track_idx].to = to;
+        M_CDAUDIO_TRACK track = {};
+        if (result == 3 && track_num > 0) {
+            track.active = true;
+            track.from = from;
+            track.to = to;
         }
+        Vector_Add(tracks, (void *)&track);
 
         while (track_content[offset] != '\n' && track_content[offset] != '\r') {
             if (++offset >= track_content_size) {
@@ -76,15 +76,21 @@ static bool M_Parse(M_BACKEND_DATA *const data)
 parse_end:
     Memory_Free(track_content);
 
+    data->num_tracks = tracks->count;
+    const size_t data_size = sizeof(M_CDAUDIO_TRACK) * data->num_tracks;
+    data->tracks = Memory_Alloc(data_size);
+    memcpy(data->tracks, Vector_GetData(tracks), data_size);
+    Vector_Free(tracks);
+
     // reindex wrong track boundaries
-    for (int32_t i = 0; i < LEGACY_MAX_MUSIC_TRACKS; i++) {
+    for (int32_t i = 0; i < data->num_tracks; i++) {
         if (!data->tracks[i].active) {
             continue;
         }
 
-        if (i < LEGACY_MAX_MUSIC_TRACKS - 1
+        if (i < data->num_tracks - 1
             && data->tracks[i].from >= data->tracks[i].to) {
-            for (int32_t j = i + 1; j < LEGACY_MAX_MUSIC_TRACKS; j++) {
+            for (int32_t j = i + 1; j < data->num_tracks; j++) {
                 if (data->tracks[j].active) {
                     data->tracks[i].to = data->tracks[j].from;
                     break;
@@ -141,7 +147,7 @@ static int32_t M_Play(
 
     const int32_t track_idx = track_id - 1;
     const M_CDAUDIO_TRACK *track = &data->tracks[track_idx];
-    if (track_idx < 0 || track_idx >= LEGACY_MAX_MUSIC_TRACKS) {
+    if (track_idx < 0 || track_idx >= data->num_tracks) {
         LOG_ERROR("Invalid track: %d", track_id);
         return -1;
     }

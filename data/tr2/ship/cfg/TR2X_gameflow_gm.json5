@@ -22,11 +22,11 @@
     "single_level": -1,
 
     "demo_delay": 30,
-    "secret_track": 47,
+    "secret_track": 43,
 
     "title": {
         "path": "data/title_gm.tr2",
-        "music_track": 64,
+        "music_track": 60,
         "sequence": [
             {"type": "display_picture", "path": "data/images/legal_eu_gm.webp", "legal": true},
             {"type": "exit_to_title"},
@@ -53,20 +53,21 @@
         // 1. The Cold War
         {
             "path": "data/level1.tr2",
-            "music_track": 33,
+            "music_track": 29,
             "sequence": [
                 {"type": "give_item", "object_id": "shotgun"},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
                 {"type": "give_item", "object_id": "flare", "quantity": 2},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/coldwar_fd.bin",
                 "data/injections/coldwar_itemrots.bin",
+                "data/injections/coldwar_music_tracks.bin",
                 "data/injections/coldwar_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/shark_sfx.bin",
@@ -76,15 +77,16 @@
         // 2. Fool's Gold
         {
             "path": "data/level2.tr2",
-            "music_track": 58,
+            "music_track": 54,
             "sequence": [
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/fools_itemrots.bin",
+                "data/injections/fools_music_tracks.bin",
                 "data/injections/fools_pickup_meshes.bin",
             ],
         },
@@ -92,15 +94,16 @@
         // 3. Furnace of the Gods
         {
             "path": "data/level3.tr2",
-            "music_track": 59,
+            "music_track": 55,
             "sequence": [
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/furnace_itemrots.bin",
+                "data/injections/furnace_music_tracks.bin",
                 "data/injections/furnace_pickup_meshes.bin",
                 "data/injections/furnace_textures.bin",
             ],
@@ -109,11 +112,11 @@
         // 4. Kingdom
         {
             "path": "data/level4.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "give_item", "object_id": "puzzle_1"},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 52},
+                {"type": "play_music", "music_track": 48},
                 {"type": "display_picture", "path": "data/images/credit00_gm.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "path": "data/images/credit01.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "path": "data/images/credit02.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
@@ -131,6 +134,7 @@
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/kingdom_cameras.bin",
                 "data/injections/kingdom_itemrots.bin",
+                "data/injections/kingdom_music_tracks.bin",
                 "data/injections/kingdom_textures.bin",
             ],
         },
@@ -139,7 +143,7 @@
         {
             "path": "data/level5.tr2",
             "type": "bonus",
-            "music_track": 34,
+            "music_track": 30,
             "sequence": [
                 {"type": "remove_weapons"},
                 {"type": "remove_ammo"},
@@ -147,7 +151,7 @@
                 {"type": "remove_medipacks"},
                 {"type": "give_item", "object_id": "pistols"},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -156,6 +160,7 @@
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/vegas_fd.bin",
                 "data/injections/vegas_itemrots.bin",
+                "data/injections/vegas_music_tracks.bin",
             ],
         },
     ],

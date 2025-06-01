@@ -1,4 +1,3 @@
 #pragma once
 
 #define MAX_MUSIC_TRACKS 1024
-#define LEGACY_MAX_MUSIC_TRACKS 64

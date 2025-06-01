@@ -21,7 +21,7 @@
     "single_level": 0,
 
     "demo_delay": 30,
-    "secret_track": 47,
+    "secret_track": 43,
 
     "sfx_path": "data/main.sfx",
     "injections": [
