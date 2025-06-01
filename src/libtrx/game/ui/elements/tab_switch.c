@@ -10,6 +10,47 @@
 #include "game/ui/elements/stack.h"
 #include "memory.h"
 
+static void M_Draw(const UI_TAB_SWITCH_STATE *s, bool is_focused, bool single);
+
+static void M_Draw(
+    const UI_TAB_SWITCH_STATE *const s, const bool is_focused,
+    const bool single)
+{
+    UI_BeginAnchor(0.5f, 0.5f);
+    UI_BeginRowArrows(
+        is_focused && (g_Config.ui.enable_wraparound || s->active_tab_idx > 0),
+        is_focused
+            && (g_Config.ui.enable_wraparound
+                || s->active_tab_idx + 1 < s->tab_count),
+        UI_ROW_ARROWS_MEDIUM);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_HORIZONTAL,
+        .align = { .h = UI_STACK_H_ALIGN_CENTER },
+        .spacing = { .h = 10.0f },
+    });
+    for (int32_t i = 0; i < s->tab_count; i++) {
+        if (single && i != s->active_tab_idx) {
+            continue;
+        }
+        const UI_TAB_SWITCH_TAB *const tab = &s->tabs[i];
+        UI_BeginAnchor(0.5f, 0.5f);
+        if (i == s->active_tab_idx) {
+            UI_BeginFrame(
+                is_focused ? UI_FRAME_SELECTED_OPTION : UI_FRAME_OUTLINE_ONLY);
+        }
+        UI_BeginPad(2.0f, 1.0f);
+        UI_Label(tab->header);
+        UI_EndPad();
+        if (i == s->active_tab_idx) {
+            UI_EndFrame();
+        }
+        UI_EndAnchor();
+    }
+    UI_EndStack();
+    UI_EndRowArrows();
+    UI_EndAnchor();
+}
+
 UI_TAB_SWITCH_STATE *UI_TabSwitch_Init(
     const int32_t tab_count, const UI_TAB_SWITCH_TAB *const tabs)
 {
@@ -57,34 +98,11 @@ bool UI_TabSwitch_Control(UI_TAB_SWITCH_STATE *const s)
 
 void UI_TabSwitch(const UI_TAB_SWITCH_STATE *const s, const bool is_focused)
 {
-    UI_BeginAnchor(0.5f, 0.5f);
-    UI_BeginRowArrows(
-        is_focused && (g_Config.ui.enable_wraparound || s->active_tab_idx > 0),
-        is_focused
-            && (g_Config.ui.enable_wraparound
-                || s->active_tab_idx + 1 < s->tab_count),
-        UI_ROW_ARROWS_MEDIUM);
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_HORIZONTAL,
-        .align = { .h = UI_STACK_H_ALIGN_CENTER },
-        .spacing = { .h = 10.0f },
-    });
-    for (int32_t i = 0; i < s->tab_count; i++) {
-        const UI_TAB_SWITCH_TAB *const tab = &s->tabs[i];
-        UI_BeginAnchor(0.5f, 0.5f);
-        if (i == s->active_tab_idx) {
-            UI_BeginFrame(
-                is_focused ? UI_FRAME_SELECTED_OPTION : UI_FRAME_OUTLINE_ONLY);
-        }
-        UI_BeginPad(2.0f, 1.0f);
-        UI_Label(GameString_Get(tab->header));
-        UI_EndPad();
-        if (i == s->active_tab_idx) {
-            UI_EndFrame();
-        }
-        UI_EndAnchor();
-    }
-    UI_EndStack();
-    UI_EndRowArrows();
-    UI_EndAnchor();
+    M_Draw(s, is_focused, false);
+}
+
+void UI_TabSwitchSingle(
+    const UI_TAB_SWITCH_STATE *const s, const bool is_focused)
+{
+    M_Draw(s, is_focused, true);
 }

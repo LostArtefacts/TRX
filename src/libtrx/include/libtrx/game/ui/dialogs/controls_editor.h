@@ -19,7 +19,7 @@ typedef struct {
 typedef struct {
     int32_t phase;
     INPUT_BACKEND backend;
-    int32_t active_layout;
+    INPUT_LAYOUT active_layout;
     INPUT_ROLE active_role;
     const UI_CONTROLS_EDITOR_GROUP *active_group;
     UI_FLASH_STATE flash;
@@ -33,7 +33,8 @@ typedef struct {
     int32_t max_group_items;
     int32_t input_size;
     int32_t label_size;
-    UI_TAB_SWITCH_STATE *tab_switch;
+    UI_TAB_SWITCH_STATE *layout_tab_switch;
+    UI_TAB_SWITCH_STATE *controls_tab_switch;
 } UI_CONTROLS_EDITOR_STATE;
 
 typedef enum {
@@ -46,7 +47,7 @@ typedef enum {
 void UI_ControlsEditor_Init(UI_CONTROLS_EDITOR_STATE *s, EVENT_MANAGER *events);
 void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *s);
 void UI_ControlsEditor_Reinit(
-    UI_CONTROLS_EDITOR_STATE *s, INPUT_BACKEND backend, int32_t layout);
+    UI_CONTROLS_EDITOR_STATE *s, INPUT_BACKEND backend, INPUT_LAYOUT layout);
 UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *s);
 
 // draw functions

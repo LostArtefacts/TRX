@@ -148,7 +148,6 @@ static int32_t M_GetVisibleRows(void);
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *group, int32_t row);
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *group);
-static bool M_CycleLayout(UI_CONTROLS_EDITOR_STATE *s, int32_t dir);
 static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
 static bool M_HandleHoldAction(
@@ -216,27 +215,6 @@ static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
     return row;
 }
 
-static bool M_CycleLayout(UI_CONTROLS_EDITOR_STATE *const s, const int32_t dir)
-{
-    if (!g_Config.ui.enable_wraparound
-        && (s->active_layout + dir < INPUT_LAYOUT_DEFAULT
-            || s->active_layout + dir >= INPUT_LAYOUT_NUMBER_OF)) {
-        return false;
-    }
-
-    s->active_layout += dir;
-    s->active_layout += INPUT_LAYOUT_NUMBER_OF;
-    s->active_layout %= INPUT_LAYOUT_NUMBER_OF;
-
-    const EVENT event = {
-        .name = "layout_change",
-        .sender = nullptr,
-        .data = nullptr,
-    };
-    EventManager_Fire(s->events, &event);
-    return true;
-}
-
 static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
 {
 #if TR_VERSION == 1
@@ -299,10 +277,14 @@ static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
         return UI_CONTROLS_CHOICE_EXIT;
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
-    } else if (g_InputDB.menu_left) {
-        M_CycleLayout(s, -1);
-    } else if (g_InputDB.menu_right) {
-        M_CycleLayout(s, 1);
+    } else if (UI_TabSwitch_Control(s->layout_tab_switch)) {
+        s->active_layout = s->layout_tab_switch->active_tab_idx;
+        const EVENT event = {
+            .name = "layout_change",
+            .sender = nullptr,
+            .data = nullptr,
+        };
+        EventManager_Fire(s->events, &event);
     } else if (g_InputDB.menu_down) {
         s->phase = M_PHASE_NAVIGATE_GROUP;
     } else if (
@@ -325,8 +307,8 @@ static UI_CONTROLS_CHOICE M_NavigateGroup(UI_CONTROLS_EDITOR_STATE *const s)
         return UI_CONTROLS_CHOICE_EXIT;
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
-    } else if (UI_TabSwitch_Control(s->tab_switch)) {
-        s->active_group = &m_Groups[s->tab_switch->active_tab_idx];
+    } else if (UI_TabSwitch_Control(s->controls_tab_switch)) {
+        s->active_group = &m_Groups[s->controls_tab_switch->active_tab_idx];
         UI_Scrollable_SetMaxItems(
             &s->scroll, M_GetInputRoleCount(s->active_group));
     } else if (g_InputDB.menu_down && s->active_layout != 0) {
@@ -347,8 +329,8 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
         s->phase = M_PHASE_NAVIGATE_INPUTS_DEBOUNCE;
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
-    } else if (UI_TabSwitch_Control(s->tab_switch)) {
-        s->active_group = &m_Groups[s->tab_switch->active_tab_idx];
+    } else if (UI_TabSwitch_Control(s->controls_tab_switch)) {
+        s->active_group = &m_Groups[s->controls_tab_switch->active_tab_idx];
         UI_Scrollable_SetMaxItems(
             &s->scroll, M_GetInputRoleCount(s->active_group));
     } else if (g_InputDB.menu_up) {
@@ -410,32 +392,13 @@ static UI_CONTROLS_CHOICE M_ListenDebounce(UI_CONTROLS_EDITOR_STATE *const s)
 
 static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *const s)
 {
-    const bool is_focused = s->phase == M_PHASE_NAVIGATE_LAYOUT;
-    UI_BeginAnchor(0.5f, 0.5f);
-    UI_BeginRowArrows(
-        is_focused
-            && (g_Config.ui.enable_wraparound
-                || s->active_layout != INPUT_LAYOUT_DEFAULT),
-        is_focused
-            && (g_Config.ui.enable_wraparound
-                || s->active_layout + 1 < INPUT_LAYOUT_NUMBER_OF),
-        UI_ROW_ARROWS_MEDIUM);
-    if (is_focused) {
-        UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
-    }
-    UI_BeginPad(2.0f, 1.0f);
-    UI_Label(Input_GetLayoutName(s->active_layout));
-    UI_EndPad();
-    if (is_focused) {
-        UI_EndFrame();
-    }
-    UI_EndRowArrows();
-    UI_EndAnchor();
+    UI_TabSwitchSingle(
+        s->layout_tab_switch, s->phase == M_PHASE_NAVIGATE_LAYOUT);
 }
 
 static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
 {
-    UI_TabSwitch(s->tab_switch, s->phase == M_PHASE_NAVIGATE_GROUP);
+    UI_TabSwitch(s->controls_tab_switch, s->phase == M_PHASE_NAVIGATE_GROUP);
 }
 
 static void M_InputLabel(
@@ -562,15 +525,26 @@ void UI_ControlsEditor_Init(
     s->hold_timer = 0;
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
 
-    int32_t tab_count = 0;
-    for (int32_t i = 0; m_Groups[i].header != nullptr; i++) {
-        tab_count++;
+    {
+        UI_TAB_SWITCH_TAB layout_tabs[INPUT_LAYOUT_NUMBER_OF];
+        for (INPUT_LAYOUT i = 0; i < INPUT_LAYOUT_NUMBER_OF; i++) {
+            layout_tabs[i].header = Input_GetLayoutName(i);
+        }
+        s->layout_tab_switch =
+            UI_TabSwitch_Init(INPUT_LAYOUT_NUMBER_OF, layout_tabs);
     }
-    UI_TAB_SWITCH_TAB tabs[tab_count];
-    for (int32_t i = 0; m_Groups[i].header != nullptr; i++) {
-        tabs[i].header = m_Groups[i].header;
+
+    {
+        int32_t tab_count = 0;
+        for (int32_t i = 0; m_Groups[i].header != nullptr; i++) {
+            tab_count++;
+        }
+        UI_TAB_SWITCH_TAB controls_tabs[tab_count];
+        for (int32_t i = 0; m_Groups[i].header != nullptr; i++) {
+            controls_tabs[i].header = GameString_Get(m_Groups[i].header);
+        }
+        s->controls_tab_switch = UI_TabSwitch_Init(tab_count, controls_tabs);
     }
-    s->tab_switch = UI_TabSwitch_Init(tab_count, tabs);
 
     s->max_group_items = 0;
     for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
@@ -597,15 +571,19 @@ void UI_ControlsEditor_Init(
 void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *const s)
 {
     UI_Flash_Free(&s->flash);
-    UI_TabSwitch_Free(s->tab_switch);
-    s->tab_switch = nullptr;
+    UI_TabSwitch_Free(s->layout_tab_switch);
+    s->layout_tab_switch = nullptr;
+    UI_TabSwitch_Free(s->controls_tab_switch);
+    s->controls_tab_switch = nullptr;
 }
 
 void UI_ControlsEditor_Reinit(
-    UI_CONTROLS_EDITOR_STATE *s, INPUT_BACKEND backend, int32_t layout)
+    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_BACKEND backend,
+    const INPUT_LAYOUT layout)
 {
     s->backend = backend;
     s->active_layout = layout;
+    s->layout_tab_switch->active_tab_idx = s->active_layout;
     s->scroll.sel_item = 0;
     s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
     s->phase = M_PHASE_NAVIGATE_LAYOUT;

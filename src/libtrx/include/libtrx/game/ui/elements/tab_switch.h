@@ -9,7 +9,7 @@
 
 // Represents a single tab page for use with UI_TabSwitch_Control.
 typedef struct {
-    GAME_STRING_ID header;
+    const char *header;
 } UI_TAB_SWITCH_TAB;
 
 typedef struct {
@@ -33,3 +33,4 @@ bool UI_TabSwitch_Cycle(UI_TAB_SWITCH_STATE *state, int32_t dir);
 
 // draw functions
 void UI_TabSwitch(const UI_TAB_SWITCH_STATE *state, bool is_focused);
+void UI_TabSwitchSingle(const UI_TAB_SWITCH_STATE *state, bool is_focused);
