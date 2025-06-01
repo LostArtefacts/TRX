@@ -10,6 +10,7 @@
 - changed the graphic settings dialog to use tabs
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - changed the rotation of some pickups in The Golden Mask to better suit the 3D pickups option (#1973)
+- changed text kerning to a smaller value
 - fixed a missing collapsible tile trigger in The Cold War room 82 (#3058)
 - fixed missing sound effects for collapsible tiles in Opera House, The Deck and Catacombs of the Talion (#2262, #2872, #3087)
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom (#3056)

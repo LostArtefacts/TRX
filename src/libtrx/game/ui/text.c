@@ -12,8 +12,8 @@
 #include <ctype.h>
 #include <uthash.h>
 
-#define M_LETTER_SPACING 1
-#define M_WORD_SPACING 6
+#define M_LETTER_SPACING 0.5f
+#define M_WORD_SPACING 6.0f
 
 typedef enum {
     // special non-printable glyph roles
@@ -225,8 +225,8 @@ void UI_Text_Measure(
     ASSERT(glyphs != nullptr);
 
     if (out_w != nullptr) {
-        int32_t width = 0;
-        int32_t max_width = 0;
+        float width = 0.0f;
+        float max_width = 0.0f;
         const M_GLYPH_INFO **glyph_ptr = glyphs;
         while (*glyph_ptr != nullptr) {
             if ((*glyph_ptr)->role == GLYPH_SPACE) {
@@ -281,12 +281,12 @@ void UI_Text_Draw(
 
     const int32_t scale = M_Scale(UI_TEXT_BASE_SCALE * settings.scale);
 
-    int32_t x = M_Scale(base_x / g_Config.ui.text_scale);
-    int32_t y = M_Scale(
+    float x = M_Scale(base_x / g_Config.ui.text_scale);
+    float y = M_Scale(
         base_y / g_Config.ui.text_scale + settings.scale * UI_TEXT_HEIGHT - 1);
     int32_t z = settings.z;
 
-    const int32_t start_x = x;
+    const float start_x = x;
 
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
@@ -345,7 +345,7 @@ void UI_Text_Draw(
             SHADE_NEUTRAL);
 
         if (glyph->role != GLYPH_COMBINING) {
-            const int32_t spacing = glyph->width + M_LETTER_SPACING;
+            const float spacing = glyph->width + M_LETTER_SPACING;
             x += spacing * scale / UI_TEXT_BASE_SCALE;
         }
 
