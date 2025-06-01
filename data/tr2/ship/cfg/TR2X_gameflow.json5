@@ -22,11 +22,11 @@
     "single_level": -1,
 
     "demo_delay": 30,
-    "secret_track": 47,
+    "secret_track": 43,
 
     "title": {
         "path": "data/title.tr2",
-        "music_track": 64,
+        "music_track": 60,
         "sequence": [
             {"type": "display_picture", "path": "data/images/legal_eu.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
@@ -51,6 +51,7 @@
                 {"type": "level_stats"},
             ],
             "injections": [
+                "data/injections/gym_music_tracks.bin",
                 "data/injections/gym_textures.bin",
             ],
         },
@@ -58,7 +59,7 @@
         // 1. The Great Wall
         {
             "path": "data/wall.tr2",
-            "music_track": 33,
+            "music_track": 29,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "give_item", "object_id": "shotgun"},
@@ -70,7 +71,7 @@
                 {"type": "add_secret_reward", "object_id": "small_medipack"},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 0},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -78,6 +79,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/wall_cameras.bin",
                 "data/injections/wall_itemrots.bin",
+                "data/injections/wall_music_tracks.bin",
             ],
         },
 
@@ -88,13 +90,14 @@
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/boat_bits.bin",
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/venice_music_tracks.bin",
                 "data/injections/venice_textures.bin",
             ],
         },
@@ -107,11 +110,12 @@
                 {"type": "enable_sunset"},
                 {"type": "add_secret_reward", "object_id": "shotgun_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/bartoli_music_tracks.bin",
                 "data/injections/bartoli_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
             ],
@@ -120,13 +124,13 @@
         // 4. Opera House
         {
             "path": "data/opera.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "uzis"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 1},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -135,13 +139,14 @@
                 "data/injections/loose_boards_sfx.bin",
                 "data/injections/opera_fd.bin",
                 "data/injections/opera_itemrots.bin",
+                "data/injections/opera_music_tracks.bin",
             ],
         },
 
         // 5. Offshore Rig
         {
             "path": "data/rig.tr2",
-            "music_track": 58,
+            "music_track": 54,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "set_lara_start_anim", "anim": 8},
@@ -149,12 +154,13 @@
                 {"type": "add_secret_reward", "object_id": "uzis"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 2},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/rig_itemrots.bin",
+                "data/injections/rig_music_tracks.bin",
                 "data/injections/rig_pickup_meshes.bin",
             ],
         },
@@ -162,18 +168,19 @@
         // 6. Diving Area
         {
             "path": "data/platform.tr2",
-            "music_track": 58,
+            "music_track": 54,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 2},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/diving_cameras.bin",
                 "data/injections/diving_itemrots.bin",
+                "data/injections/diving_music_tracks.bin",
                 "data/injections/diving_pickup_meshes.bin",
             ],
         },
@@ -181,30 +188,31 @@
         // 7. 40 Fathoms
         {
             "path": "data/unwater.tr2",
-            "music_track": 34,
+            "music_track": 30,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "add_secret_reward", "object_id": "harpoon_gun_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/fathoms_goon_sfx.bin",
+                "data/injections/fathoms_music_tracks.bin",
             ],
         },
 
         // 8. Wreck of the Maria Doria
         {
             "path": "data/keel.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -213,6 +221,7 @@
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
+                "data/injections/wreck_music_tracks.bin",
                 "data/injections/wreck_pickup_meshes.bin",
             ],
         },
@@ -220,17 +229,18 @@
         // 9. Living Quarters
         {
             "path": "data/living.tr2",
-            "music_track": 34,
+            "music_track": 30,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/living_deck_goon_sfx.bin",
                 "data/injections/living_fd.bin",
+                "data/injections/living_music_tracks.bin",
                 "data/injections/living_pickup_meshes.bin",
                 "data/injections/seaweed_collision.bin",
             ],
@@ -239,11 +249,11 @@
         // 10. The Deck
         {
             "path": "data/deck.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -252,6 +262,7 @@
                 "data/injections/deck_cameras.bin",
                 "data/injections/deck_fd.bin",
                 "data/injections/deck_itemrots.bin",
+                "data/injections/deck_music_tracks.bin",
                 "data/injections/deck_pickup_meshes.bin",
                 "data/injections/living_deck_goon_sfx.bin",
             ],
@@ -260,13 +271,13 @@
         // 11. Tibetan Foothills
         {
             "path": "data/skidoo.tr2",
-            "music_track": 33,
+            "music_track": 29,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 5},
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -274,6 +285,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/tibet_fd.bin",
                 "data/injections/tibet_itemrots.bin",
+                "data/injections/tibet_music_tracks.bin",
             ],
         },
 
@@ -285,7 +297,7 @@
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -293,6 +305,7 @@
                 "data/injections/barkhang_cameras.bin",
                 "data/injections/barkhang_fd.bin",
                 "data/injections/barkhang_itemrots.bin",
+                "data/injections/barkhang_music_tracks.bin",
                 "data/injections/barkhang_pickup_meshes.bin",
                 "data/injections/barkhang_textures.bin",
             ],
@@ -301,12 +314,12 @@
         // 13. Catacombs of the Talion
         {
             "path": "data/catacomb.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 2},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -314,6 +327,7 @@
                 "data/injections/breakable_tile_sfx.bin",
                 "data/injections/catacombs_fd.bin",
                 "data/injections/catacombs_itemrots.bin",
+                "data/injections/catacombs_music_tracks.bin",
                 "data/injections/common_pickup_meshes.bin",
             ],
         },
@@ -321,11 +335,11 @@
         // 14. Ice Palace
         {
             "path": "data/icecave.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 4},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
@@ -334,25 +348,27 @@
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/palace_fd.bin",
                 "data/injections/palace_itemrots.bin",
+                "data/injections/palace_music_tracks.bin",
             ],
         },
 
         // 15. Temple of Xian
         {
             "path": "data/emprtomb.tr2",
-            "music_track": 59,
+            "music_track": 55,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 6},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 8},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 3},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/xian_fd.bin",
                 "data/injections/xian_itemrots.bin",
+                "data/injections/xian_music_tracks.bin",
                 "data/injections/xian_pickup_meshes.bin",
             ],
         },
@@ -360,18 +376,19 @@
         // 16. Floating Islands
         {
             "path": "data/floating.tr2",
-            "music_track": 59,
+            "music_track": 55,
             "sequence": [
                 {"type": "disable_floor", "height": 9728},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 8},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/floating_fd.bin",
                 "data/injections/floating_itemrots.bin",
+                "data/injections/floating_music_tracks.bin",
                 "data/injections/floating_pickup_meshes.bin",
             ],
         },
@@ -379,10 +396,10 @@
         // 17. The Dragon's Lair
         {
             "path": "data/xian.tr2",
-            "music_track": 59,
+            "music_track": 55,
             "sequence": [
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 41},
+                {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
                 {"type": "play_fmv", "fmv_id": 7},
                 {"type": "level_complete"},
@@ -391,6 +408,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/dagger_sprite.bin",
                 "data/injections/lair_bartolipos.bin",
+                "data/injections/lair_music_tracks.bin",
             ],
         },
 
@@ -406,7 +424,7 @@
                 {"type": "remove_flares"},
                 {"type": "remove_medipacks"},
                 {"type": "loop_game"},
-                {"type": "play_music", "music_track": 52},
+                {"type": "play_music", "music_track": 48},
                 {"type": "level_complete"},
                 {"type": "display_picture", "path": "data/images/credit01.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "path": "data/images/credit02.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
@@ -421,6 +439,7 @@
             "injections": [
                 "data/injections/explosion.bin",
                 "data/injections/house_itemrots.bin",
+                "data/injections/house_music_tracks.bin",
                 "data/injections/house_textures.bin",
             ],
         },
@@ -438,13 +457,14 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/venice_music_tracks.bin",
             ],
         },
 
         // Demo 2: Wreck of the Maria Doria
         {
             "path": "data/keel.tr2",
-            "music_track": 31,
+            "music_track": 27,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
@@ -455,6 +475,7 @@
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
+                "data/injections/wreck_music_tracks.bin",
                 "data/injections/wreck_pickup_meshes.bin",
             ],
         },
@@ -462,7 +483,7 @@
         // Demo 3: Tibetan Foothills
         {
             "path": "data/skidoo.tr2",
-            "music_track": 33,
+            "music_track": 29,
             "sequence": [
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
@@ -473,6 +494,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/tibet_fd.bin",
                 "data/injections/tibet_itemrots.bin",
+                "data/injections/tibet_music_tracks.bin",
             ],
         },
     ],
@@ -480,7 +502,7 @@
     "cutscenes": [
         {
             "path": "data/cut1.tr2",
-            "music_track": 3,
+            "music_track": 2,
             "sequence": [
                 {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
@@ -491,7 +513,7 @@
         },
         {
             "path": "data/cut2.tr2",
-            "music_track": 4,
+            "music_track": 3,
             "sequence": [{"type": "loop_game"}],
             "injections": [
                 "data/injections/photo.bin",
@@ -499,7 +521,7 @@
         },
         {
             "path": "data/cut3.tr2",
-            "music_track": 5,
+            "music_track": 4,
             "sequence": [{"type": "loop_game"}],
             "injections": [
                 "data/injections/photo.bin",
@@ -507,7 +529,7 @@
         },
         {
             "path": "data/cut4.tr2",
-            "music_track": 30,
+            "music_track": 26,
             "sequence": [
                 {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},

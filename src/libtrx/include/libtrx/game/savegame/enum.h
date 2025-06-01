@@ -38,4 +38,8 @@ typedef enum {
     // Resolved an issue with TR1 game flow carried items and the NO_ROOM change
     // from 255 to -1.
     VERSION_10 = 10,
+
+    // Changed TR2 music tracks to no longer shift IDs, legacy saves require to
+    // do the shifting on load.
+    VERSION_11 = 11,
 } SAVEGAME_VERSION;

@@ -69,3 +69,5 @@ uint16_t Music_GetTrackFlags(int32_t track_idx);
 
 // Sets the trigger mask flags for the given track.
 void Music_SetTrackFlags(int32_t track, uint16_t flags);
+
+int32_t Music_ConvertLegacyTrack(int32_t track_id);

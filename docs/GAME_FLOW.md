@@ -1306,6 +1306,16 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>*_music_tracks.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Injects trigger adjustments to convert music track numbers to match file
+      names. These are suitable for OG levels only.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>*_pickup_meshes.bin</code>
     </td>
     <td>TR1, TR2</td>

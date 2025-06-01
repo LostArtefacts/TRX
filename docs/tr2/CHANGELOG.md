@@ -3,6 +3,9 @@
 - added an option to disable Lara's braid (#3089)
 - added an option to disable the breeze effect on Lara's braid (#3090)
 - changed the music track slot limit from 64 to 1024 (#3101)
+- ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
+  - if playing original levels, make sure to update the game flow and injection files from this release
+  - if building levels, use track numbers that correspond to the file names; previously built levels will need to be manually adjusted
 - changed the `/tp` command to align Lara to switches and pickups
 - changed the graphic settings dialog to use tabs
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss

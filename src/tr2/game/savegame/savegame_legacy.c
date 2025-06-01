@@ -21,6 +21,7 @@
 #define M_SAVE_CREATURE (1 << 7)
 #define M_SAVEGAME_LEGACY_TOTAL_SIZE (1170 + 6272) // header + OG buffer size
 #define M_SAVEGAME_LEGACY_TITLE_SIZE 75
+#define M_LEGACY_MAX_MUSIC_TRACKS 64
 
 #define SPECIAL_READ_WRITES                                                    \
     SPECIAL_READ_WRITE(S8, int8_t)                                             \
@@ -770,7 +771,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
         M_WriteU8(tflag);
     }
 
-    for (int32_t i = 0; i < LEGACY_MAX_MUSIC_TRACKS; i++) {
+    for (int32_t i = 0; i < M_LEGACY_MAX_MUSIC_TRACKS; i++) {
         M_WriteU16(Music_GetTrackFlags(i));
     }
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
@@ -849,8 +850,9 @@ static bool M_LoadFromFile(MYFILE *const fp)
         Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
     }
 
-    for (int32_t i = 0; i < LEGACY_MAX_MUSIC_TRACKS; i++) {
-        Music_SetTrackFlags(i, M_ReadU16());
+    for (int32_t i = 0; i < M_LEGACY_MAX_MUSIC_TRACKS; i++) {
+        const int32_t track_id = Music_ConvertLegacyTrack(i);
+        Music_SetTrackFlags(track_id, M_ReadU16());
     }
 
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
