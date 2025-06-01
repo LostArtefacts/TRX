@@ -2,6 +2,7 @@
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
 - added an option to disable Lara's braid (#3089)
 - added an option to disable the breeze effect on Lara's braid (#3090)
+- added key icons to the controls settings dialog
 - changed the music track slot limit from 64 to 1024 (#3101)
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
   - if playing original levels, make sure to update the game flow and injection files from this release
