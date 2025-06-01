@@ -15,9 +15,10 @@
         "data/injections/lara_animations.bin",
         "data/injections/uzi_sfx.bin",
         "data/injections/explosion.bin",
-        "data/injections/font.bin",
         "data/injections/pickup_aid.bin",
         "data/injections/sprite_alignment.bin",
+        "data/injections/pda_model.bin",
+        "data/injections/font.bin",
     ],
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
@@ -33,6 +34,7 @@
         "inherit_injections": false,
         "injections": [
             "data/injections/pda_model.bin",
+            "data/injections/font.bin",
         ],
         "sequence": [
             {"type": "display_picture", "path": "data/images/eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},

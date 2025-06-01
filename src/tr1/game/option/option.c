@@ -4,6 +4,7 @@
 #include "game/option/option_compass.h"
 #include "game/option/option_controls.h"
 #include "game/option/option_examine.h"
+#include "game/option/option_gameplay.h"
 #include "game/option/option_graphics.h"
 #include "game/option/option_passport.h"
 #include "game/option/option_sound.h"
@@ -19,6 +20,10 @@ void Option_Shutdown(INVENTORY_ITEM *inv_item)
 
     case O_COMPASS_OPTION:
         Option_Compass_Shutdown();
+        break;
+
+    case O_MAP_OPTION:
+        Option_Gameplay_Shutdown();
         break;
 
     case O_DETAIL_OPTION:
@@ -62,6 +67,10 @@ void Option_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 
     case O_COMPASS_OPTION:
         Option_Compass_Control(inv_item, is_busy);
+        break;
+
+    case O_MAP_OPTION:
+        Option_Gameplay_Control(inv_item, is_busy);
         break;
 
     case O_DETAIL_OPTION:
@@ -131,6 +140,10 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport_Draw(inv_item);
+        break;
+
+    case O_MAP_OPTION:
+        Option_Gameplay_Draw(inv_item);
         break;
 
     case O_DETAIL_OPTION:

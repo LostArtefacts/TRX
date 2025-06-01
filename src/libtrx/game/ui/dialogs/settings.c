@@ -503,7 +503,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         UI_Spacer(0.0f, 8.0f);
     }
 
-    UI_BeginScrollableArea(&s->scroll);
+    UI_BeginScrollableArea(&s->scroll, s->tab_count > 0);
 
     for (int32_t i = 0; i < s->scroll.vis_items; i++) {
         const int32_t row = s->scroll.first_item + i;
@@ -560,7 +560,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
         UI_EndResize();
     }
-    UI_EndScrollableArea(&s->scroll);
+    UI_EndScrollableArea(&s->scroll, s->tab_count > 0);
 
     UI_EndStack();
     UI_EndWindowBody();

@@ -8,6 +8,9 @@ void Object_DrawInterpolatedObject(
     const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
+    if (frame1 == nullptr) {
+        return;
+    }
     ASSERT(frame1 != nullptr);
     const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
     if (clip == 0) {
