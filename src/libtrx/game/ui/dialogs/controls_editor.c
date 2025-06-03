@@ -153,6 +153,8 @@ static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
 static bool M_HandleHoldAction(
     UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role,
     M_HOLD_ACTION_FUNC action_func);
+static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
+static bool M_CanUnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *s);
 static UI_CONTROLS_CHOICE M_NavigateGroup(UI_CONTROLS_EDITOR_STATE *s);
@@ -255,15 +257,31 @@ static bool M_HandleHoldAction(
     return true;
 }
 
+static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
+{
+    return !Input_IsInListenMode()
+        && s->phase != M_PHASE_NAVIGATE_INPUTS_DEBOUNCE
+        && s->active_layout != INPUT_LAYOUT_DEFAULT;
+}
+
+static bool M_CanUnbindKey(const UI_CONTROLS_EDITOR_STATE *const s)
+{
+    return !Input_IsInListenMode()
+        && (s->phase == M_PHASE_NAVIGATE_INPUTS
+            || s->phase == M_PHASE_LISTEN_DEBOUNCE)
+        && s->active_layout != INPUT_LAYOUT_DEFAULT
+        && s->active_role != (INPUT_ROLE)-1
+        && Input_IsRoleUnbindable(s->active_role);
+}
+
 static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *const s)
 {
     bool held = false;
-    if (!Input_IsInListenMode() && s->active_layout != INPUT_LAYOUT_DEFAULT) {
+    if (M_CanResetLayout(s)) {
         held |= M_HandleHoldAction(s, INPUT_ROLE_RESET_BINDINGS, M_ResetLayout);
-        if (s->active_role == (INPUT_ROLE)-1
-            || Input_IsRoleUnbindable(s->active_role)) {
-            held |= M_HandleHoldAction(s, INPUT_ROLE_UNBIND_KEY, M_UnbindKey);
-        }
+    }
+    if (M_CanUnbindKey(s)) {
+        held |= M_HandleHoldAction(s, INPUT_ROLE_UNBIND_KEY, M_UnbindKey);
     }
     if (!held) {
         s->hold_timer = 0;
@@ -502,17 +520,11 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         .spacing = { .h = 40.0f },
     });
-    UI_BeginHide(
-        s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE || Input_IsInListenMode()
-        || s->active_layout == INPUT_LAYOUT_DEFAULT);
+    UI_BeginHide(!M_CanResetLayout(s));
     M_FooterButton(s, INPUT_ROLE_RESET_BINDINGS, GS(ACTION_RESET_DEFAULTS));
     UI_EndHide();
 
-    UI_BeginHide(
-        s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE || Input_IsInListenMode()
-        || s->active_layout == INPUT_LAYOUT_DEFAULT
-        || s->active_role == (INPUT_ROLE)-1
-        || !Input_IsRoleUnbindable(s->active_role));
+    UI_BeginHide(!M_CanUnbindKey(s));
     M_FooterButton(s, INPUT_ROLE_UNBIND_KEY, GS(ACTION_UNBIND));
     UI_EndHide();
     UI_EndStack();
