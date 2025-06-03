@@ -21,6 +21,7 @@
 - fixed transparent eyes on the wolf model in Furnace of the Gods (#3073)
 - fixed Lara getting stuck in her hit animation if she is hit while using an airlock door, the detonator or the gong (#3092)
 - fixed Lara dropping flares after certain special animations, such as pulling the dagger from the dragon (#3084, regression from 1.1)
+- fixed unbind key option being available when it shouldn't (#3111, regression from 1.1)
 - improved word wrapping algorithm in the dev console
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23
