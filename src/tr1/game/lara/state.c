@@ -45,7 +45,7 @@ static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
 void Lara_State_Initialise(void)
 {
     m_HasResponsiveJumping = M_HasResponsiveState(LA_RUN);
-    m_HasResponsiveSwimming = M_HasResponsiveState(LA_SWIM_FORWARD);
+    m_HasResponsiveSwimming = M_HasResponsiveState(LA_UNDERWATER_SWIM_FORWARD);
 }
 
 void Lara_State_Empty(ITEM *item, COLL_INFO *coll)
@@ -95,7 +95,7 @@ void Lara_State_Run(ITEM *item, COLL_INFO *coll)
     if (g_Input.roll) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL, LF_ROLL);
+        Item_SwitchToAnim(item, LA_ROLL_START, LF_ROLL);
         return;
     }
 
@@ -161,7 +161,7 @@ void Lara_State_Stop(ITEM *item, COLL_INFO *coll)
     if (g_Input.roll && g_Lara.water_status != LWS_WADE) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL, LF_ROLL);
+        Item_SwitchToAnim(item, LA_ROLL_START, LF_ROLL);
         return;
     }
 
@@ -975,7 +975,7 @@ void Lara_State_SurfTread(ITEM *item, COLL_INFO *coll)
         if (g_Lara.dive_timer == LARA_DIVE_WAIT) {
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;
-            Item_SwitchToAnim(item, LA_SURF_DIVE, 0);
+            Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
             item->rot.x = -45 * DEG_1;
             item->fall_speed = 80;
             g_Lara.water_status = LWS_UNDERWATER;

@@ -120,7 +120,7 @@ void Lara_Control(void)
             } else {
                 item->current_anim_state = LS_DIVE;
                 item->goal_anim_state = LS_SWIM;
-                Item_SwitchToAnim(item, LA_JUMP_IN, 0);
+                Item_SwitchToAnim(item, LA_FREEFALL_TO_UNDERWATER, 0);
                 item->rot.x = -45 * DEG_1;
                 item->fall_speed = (item->fall_speed * 3) / 2;
             }
@@ -144,7 +144,7 @@ void Lara_Control(void)
             g_Lara.gun_status = LGS_ARMLESS;
             item->current_anim_state = LS_JUMP_FORWARD;
             item->goal_anim_state = LS_JUMP_FORWARD;
-            Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
+            Item_SwitchToAnim(item, LA_FALL_START, 0);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
             item->gravity = true;
@@ -159,7 +159,7 @@ void Lara_Control(void)
             g_Lara.dive_timer = LARA_DIVE_WAIT + 1;
             item->current_anim_state = LS_SURF_TREAD;
             item->goal_anim_state = LS_SURF_TREAD;
-            Item_SwitchToAnim(item, LA_SURF_TREAD, 0);
+            Item_SwitchToAnim(item, LA_UNDERWATER_TO_ONWATER, 0);
             item->fall_speed = 0;
             item->pos.y += 1 - water_height_diff;
             item->rot.x = 0;
@@ -192,7 +192,7 @@ void Lara_Control(void)
             g_Lara.gun_status = LGS_ARMLESS;
             item->current_anim_state = LS_JUMP_FORWARD;
             item->goal_anim_state = LS_JUMP_FORWARD;
-            Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
+            Item_SwitchToAnim(item, LA_FALL_START, 0);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
             item->gravity = true;
@@ -222,22 +222,22 @@ void Lara_Control(void)
             switch (item->current_anim_state) {
             case LS_BACK:
                 item->goal_anim_state = LS_SURF_BACK;
-                anim = LA_SURF_SWIM_BACK;
+                anim = LA_ONWATER_IDLE_TO_SWIM_BACK;
                 break;
 
             case LS_STEP_RIGHT:
                 item->goal_anim_state = LS_SURF_RIGHT;
-                anim = LA_SURF_SWIM_RIGHT;
+                anim = LA_ONWATER_SWIM_RIGHT;
                 break;
 
             case LS_STEP_LEFT:
                 item->goal_anim_state = LS_SURF_LEFT;
-                anim = LA_SURF_SWIM_LEFT;
+                anim = LA_ONWATER_SWIM_LEFT;
                 break;
 
             default:
                 item->goal_anim_state = LS_SURF_SWIM;
-                anim = LA_SURF_SWIM_FORWARD;
+                anim = LA_ONWATER_SWIM_FORWARD;
                 break;
             }
 
@@ -511,7 +511,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
         g_LaraItem->fall_speed = 0;
         g_LaraItem->goal_anim_state = LS_TREAD;
         g_LaraItem->current_anim_state = LS_TREAD;
-        Item_SwitchToAnim(g_LaraItem, LA_TREAD, 0);
+        Item_SwitchToAnim(g_LaraItem, LA_UNDERWATER_IDLE, 0);
     } else {
         g_Lara.water_status = LWS_ABOVE_WATER;
         g_LaraItem->goal_anim_state = LS_STOP;

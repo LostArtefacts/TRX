@@ -150,14 +150,14 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
         if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && Item_TestFrameRange(
                 item, LF_WALK_STEP_R_START, LF_WALK_STEP_R_END)) {
-            Item_SwitchToAnim(item, LA_STOP_RIGHT, 0);
+            Item_SwitchToAnim(item, LA_WALK_STOP_RIGHT, 0);
         } else if (
             Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && (Item_TestFrameRange(
                     item, LF_WALK_STEP_L_START, LF_WALK_STEP_L_END)
                 || Item_TestFrameRange(
                     item, LF_WALK_STEP_L_2_START, LF_WALK_STEP_L_2_END))) {
-            Item_SwitchToAnim(item, LA_STOP_LEFT, 0);
+            Item_SwitchToAnim(item, LA_WALK_STOP_LEFT, 0);
         } else {
             Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         }
@@ -171,9 +171,9 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
         if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && Item_TestFrameRange(
                 item, LF_WALK_STEP_L_END, LF_WALK_STEP_R_NEAR_END)) {
-            Item_SwitchToAnim(item, LA_WALK_STEP_DOWN_RIGHT, 0);
+            Item_SwitchToAnim(item, LA_WALK_DOWN_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_WALK_STEP_DOWN_LEFT, 0);
+            Item_SwitchToAnim(item, LA_WALK_DOWN_RIGHT, 0);
         }
     }
 
@@ -182,9 +182,9 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
         if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && Item_TestFrameRange(
                 item, LF_WALK_STEP_L_NEAR_END, LF_WALK_STEP_R_MID)) {
-            Item_SwitchToAnim(item, LA_WALK_STEP_UP_RIGHT, 0);
+            Item_SwitchToAnim(item, LA_WALK_UP_STEP_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_WALK_STEP_UP_LEFT, 0);
+            Item_SwitchToAnim(item, LA_WALK_UP_STEP_RIGHT, 0);
         }
     }
 
@@ -224,12 +224,12 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
             item->current_anim_state = LS_SPLAT;
             if (Item_TestAnimEqual(item, LA_RUN)
                 && Item_TestFrameRange(item, LF_RUN_L_START, LF_RUN_L_END)) {
-                Item_SwitchToAnim(item, LA_HIT_WALL_LEFT, 0);
+                Item_SwitchToAnim(item, LA_WALL_SMASH_LEFT, 0);
                 return;
             }
             if (Item_TestAnimEqual(item, LA_RUN)
                 && Item_TestFrameRange(item, LF_RUN_R_START, LF_RUN_R_END)) {
-                Item_SwitchToAnim(item, LA_HIT_WALL_RIGHT, 0);
+                Item_SwitchToAnim(item, LA_WALL_SMASH_RIGHT, 0);
                 return;
             }
         }
@@ -245,9 +245,9 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
         if (Item_TestAnimEqual(item, LA_RUN)
             && Item_TestFrameRange(
                 item, LF_RUN_L_HEEL_GROUND, LF_RUN_R_FOOT_GROUND)) {
-            Item_SwitchToAnim(item, LA_RUN_STEP_UP_LEFT, 0);
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_RUN_STEP_UP_RIGHT, 0);
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_RIGHT, 0);
         }
     }
 
@@ -285,7 +285,7 @@ void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
     if (coll->side_mid.floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
         item->gravity = true;
         item->fall_speed = 0;
         return;
@@ -382,7 +382,7 @@ void Lara_Col_TurnR(ITEM *item, COLL_INFO *coll)
     if (coll->side_mid.floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
         item->gravity = true;
         item->fall_speed = 0;
         return;
@@ -430,7 +430,7 @@ void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll)
         } else {
             item->goal_anim_state = LS_STOP;
             item->current_anim_state = LS_STOP;
-            Item_SwitchToAnim(item, LA_LAND_FAR, 0);
+            Item_SwitchToAnim(item, LA_FREEFALL_LAND, 0);
         }
         Sound_StopEffect(SFX_LARA_FALL);
         item->pos.y += coll->side_mid.floor;
@@ -550,9 +550,9 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
         && coll->side_mid.floor < (STEP_L * 3) / 2) {
         if (Item_TestAnimEqual(item, LA_WALK_BACK)
             && Item_TestFrameRange(item, LF_BACK_R_START, LF_BACK_R_END)) {
-            Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_RIGHT, 0);
+            Item_SwitchToAnim(item, LA_WALK_DOWN_BACK_RIGHT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_LEFT, 0);
+            Item_SwitchToAnim(item, LA_WALK_DOWN_BACK_LEFT, 0);
         }
     }
 
@@ -832,7 +832,7 @@ void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
     if (coll->side_mid.floor > 200) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
         item->gravity = true;
         item->fall_speed = 0;
         return;
@@ -1026,11 +1026,11 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
             && Item_TestAnimEqual(item, LA_WADE)) {
             item->current_anim_state = LS_SPLAT;
             if (Item_TestFrameRange(item, LF_WADE_L_START, LF_WADE_L_END)) {
-                Item_SwitchToAnim(item, LA_HIT_WALL_LEFT, 0);
+                Item_SwitchToAnim(item, LA_WALL_SMASH_LEFT, 0);
                 return;
             }
             if (Item_TestFrameRange(item, LF_WADE_R_START, LF_WADE_R_END)) {
-                Item_SwitchToAnim(item, LA_HIT_WALL_RIGHT, 0);
+                Item_SwitchToAnim(item, LA_WALL_SMASH_RIGHT, 0);
                 return;
             }
         }
@@ -1045,9 +1045,9 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
         && coll->side_mid.floor < -STEP_L / 2) {
         if (Item_TestFrameRange(
                 item, LF_WADE_STEP_L_START, LF_WADE_STEP_L_END)) {
-            Item_SwitchToAnim(item, LA_RUN_STEP_UP_LEFT, 0);
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_RUN_STEP_UP_RIGHT, 0);
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_RIGHT, 0);
         }
     }
 
