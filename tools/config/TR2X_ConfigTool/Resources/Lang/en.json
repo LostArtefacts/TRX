@@ -132,10 +132,6 @@
       "Title": "Microphone at Lara",
       "Description": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position."
     },
-    "underwater_music_mode": {
-      "Title": "Underwater music behavior",
-      "Description": "Changes how music is played when the camera is underwater.\n- Full: music plays normally while underwater.\n- Quiet: music plays at half volume while underwater.\n- Full but no ambient: music plays normally while underwater, but ambient music is muted.\n- Quiet but no ambient: music plays at half volume while underwater, but ambient music is muted.\n- None: no music plays while underwater (OG TR2)."
-    },
     "healthbar_show_mode": {
       "Title": "Healthbar behavior",
       "Description": "Changes how the healthbar is displayed.\n- Default: show the healthbar at the start of a level, after getting hit, or while having weapons equipped; flash the healthbar if it's already on screen when Lara's health is 20% or below (TombATI).\n- Flashing or default: constantly flash the healthbar when Lara's health is 20% or below, or show under default circumstances.\n- Flashing only: show the healthbar *only* when Lara's health is 20% or below (for challenge runs).\n- Always: always show the healthbar.\n- Never: never display the healthbar (for challenge runs).\n- PS1: show the healthbar under default circumstances with no flashing."

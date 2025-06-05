@@ -109,29 +109,9 @@ static void M_AdjustMusicVolume(const bool underwater)
 {
     const bool is_ambient =
         Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
-    double multiplier = 1.0;
-
-    if (underwater) {
-        switch (g_Config.audio.underwater_music_mode) {
-        case UMM_QUIET:
-            multiplier = 0.5;
-            break;
-        case UMM_NONE:
-            multiplier = 0.0;
-            break;
-        case UMM_FULL_NO_AMBIENT:
-            multiplier = is_ambient ? 0.0 : 1.0;
-            break;
-        case UMM_QUIET_NO_AMBIENT:
-            multiplier = is_ambient ? 0.0 : 0.5;
-            break;
-        case UMM_FULL:
-        default:
-            multiplier = 1.0;
-            break;
-        }
-    }
-
+    const double multiplier = !underwater ? 1.0
+        : is_ambient ? g_Config.audio.underwater_ambient_volume
+                     : g_Config.audio.underwater_music_volume;
     Music_SetVolume(g_Config.audio.music_volume * multiplier);
 }
 

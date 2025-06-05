@@ -362,10 +362,6 @@
       "Title": "Enable PS Uzi SFX",
       "Description": "Changes the Uzi sound effects to match the PlayStation version."
     },
-    "underwater_music_mode": {
-      "Title": "Underwater music behavior",
-      "Description": "Changes how the music is played underwater.\n- Full: music plays normally while underwater (OG TR1).\n- Quiet: music plays at half volume while underwater.\n- Full but no ambient: music plays normally while underwater except ambient music is muted.\n- Quiet but no ambient: music plays at half volume while underwater except ambient music is muted.\n- None: no music plays while underwater."
-    },
     "menu_style": {
       "Title": "Menu style",
       "Description": "Changes how menus are displayed.\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version."

@@ -36,7 +36,8 @@ typedef struct {
 static int32_t M_GetVisibleRows(void);
 static uint8_t *M_GetColorComponent(const UI_SETTINGS_OPTION *option);
 static M_ENUM_LOOKUP M_GetEnumEntry(const UI_SETTINGS_OPTION *option);
-static char *M_FormatRowValue(const UI_SETTINGS_STATE *s, int32_t row_idx);
+static const char *M_FormatRowValue(
+    const UI_SETTINGS_STATE *s, int32_t row_idx);
 static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *option);
 static bool M_CanChangeValue(
     const UI_SETTINGS_STATE *s, int32_t row_idx, int32_t dir);
@@ -101,7 +102,7 @@ static M_ENUM_LOOKUP M_GetEnumEntry(const UI_SETTINGS_OPTION *const option)
     return result;
 }
 
-static char *M_FormatRowValue(
+static const char *M_FormatRowValue(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
     const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
@@ -148,9 +149,8 @@ static char *M_FormatRowValue(
 static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
 {
     if (option->custom_handler.format_value != nullptr) {
-        char *value = option->custom_handler.format_value(option);
+        const char *const value = option->custom_handler.format_value(option);
         const float result = UI_Label_MeasureW(value);
-        Memory_Free(value);
         return result;
     }
 

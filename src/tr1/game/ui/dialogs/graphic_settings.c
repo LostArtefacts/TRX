@@ -6,6 +6,9 @@
 #include <libtrx/config.h>
 #include <libtrx/strings.h>
 
+static char *m_TempString = nullptr;
+static size_t m_TempStringCap = 0;
+
 static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
     { CAMERA_MODE_TR1, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR1) },
     { CAMERA_MODE_TR2, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR2) },
@@ -109,17 +112,20 @@ static const UI_SETTINGS_ENUM_ENTRY m_BarColorEnumEntries[] = {
     { -1, nullptr },
 };
 
-static char *M_ScreenResolution_FormatValue(const UI_SETTINGS_OPTION *option);
+static const char *M_ScreenResolution_FormatValue(
+    const UI_SETTINGS_OPTION *option);
 static bool M_ScreenResolution_CanChangeValue(
     const UI_SETTINGS_OPTION *option, int32_t dir);
 static bool M_ScreenResolution_RequestChangeValue(
     const UI_SETTINGS_OPTION *option, int32_t dir);
 
-static char *M_ScreenResolution_FormatValue(
+static const char *M_ScreenResolution_FormatValue(
     const UI_SETTINGS_OPTION *const option)
 {
-    return String_Format(
-        GS(DETAIL_RESOLUTION_FMT), Screen_GetResWidth(), Screen_GetResHeight());
+    String_FormatInto(
+        &m_TempString, &m_TempStringCap, GS(DETAIL_RESOLUTION_FMT),
+        Screen_GetResWidth(), Screen_GetResHeight());
+    return m_TempString;
 }
 
 static bool M_ScreenResolution_CanChangeValue(

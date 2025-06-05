@@ -362,10 +362,6 @@
       "Title": "Abilita gli effetti sonori PS per le Uzi",
       "Description": "Sostituisce gli effetti sonori delle Uzi con quelli della versione PlayStation."
     },
-    "underwater_music_mode": {
-      "Title": "Comportamento della musica sott'acqua",
-      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica è riprodotta normalmente sott'acqua (TR1).\n- Attenuata: la musica è riprodotta a metà volume sott'acqua.\n- Completa ma senza suoni ambientali: la musica è riprodotta normalmente sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Attenuata ma senza suoni ambientali: la musica è riprodotta a metà volume sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Assente: nessuna musica viene riprodotta sott'acqua."
-    },
     "menu_style": {
       "Title": "Stile del menu",
       "Description": "Modifica la grafica dei menu.\n - PC: Lo stile dell'interfaccia utente corrisponde alla versione PC.\n - PS1: Lo stile dell'interfaccia utente corrisponde alla versione PS1."

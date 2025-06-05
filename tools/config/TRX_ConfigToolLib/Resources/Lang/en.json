@@ -75,13 +75,6 @@
       "never": "Never",
       "non-ambient": "Non-ambient",
       "always": "Always"
-    },
-    "underwater_music": {
-      "full": "Full",
-      "quiet": "Quiet",
-      "full_no_ambient": "Full but no ambient",
-      "quiet_no_ambient": "Quiet but no ambient",
-      "none": "None"
     }
   }
 }

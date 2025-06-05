@@ -8,6 +8,9 @@
 #include "strings.h"
 #include "utils.h"
 
+static char *m_TempString = nullptr;
+static size_t m_TempStringCap = 0;
+
 static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_NEVER, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER) },
     { MUSIC_LOAD_NON_AMBIENT,
@@ -16,18 +19,8 @@ static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
     { -1, nullptr },
 };
 
-static const UI_SETTINGS_ENUM_ENTRY m_UnderwaterMusicModeEnumEntries[] = {
-    { UMM_FULL, GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_FULL) },
-    { UMM_QUIET, GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_QUIET) },
-    { UMM_FULL_NO_AMBIENT,
-      GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_FULL_NO_AMBIENT) },
-    { UMM_QUIET_NO_AMBIENT,
-      GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_QUIET_NO_AMBIENT) },
-    { UMM_NONE, GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE_NONE) },
-    { -1, nullptr },
-};
-
 // Custom handlers for changing sound settings.
+static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *option);
 static bool M_CanChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 static bool M_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
@@ -97,10 +90,32 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     },
     #endif
     {
-        .target = &g_Config.audio.underwater_music_mode,
-        .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_MODE),
-        .option_type = COT_ENUM,
-        .misc = &m_UnderwaterMusicModeEnumEntries,
+        .target = &g_Config.audio.underwater_ambient_volume,
+        .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME),
+        .option_type = COT_FLOAT,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
+        .custom_handler = {
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
+            .request_change_value = nullptr,
+        },
+    },
+    {
+        .target = &g_Config.audio.underwater_music_volume,
+        .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME),
+        .option_type = COT_FLOAT,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
+        .custom_handler = {
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
+            .request_change_value = nullptr,
+        },
     },
 #endif
     {
@@ -109,28 +124,12 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
 };
 #undef KEEP_IT_SIMPLE
 
-UI_SOUND_SETTINGS_STATE *UI_SoundSettings_Init(void)
+static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *const option)
 {
-    UI_SOUND_SETTINGS_STATE *s = Memory_Alloc(sizeof(UI_SETTINGS_STATE));
-    s->row_pad = 10.0f;
-    UI_Settings_Init(s, GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
-    return s;
-}
-
-void UI_SoundSettings_Free(UI_SOUND_SETTINGS_STATE *const s)
-{
-    UI_Settings_Free(s);
-    Memory_Free(s);
-}
-
-bool UI_SoundSettings_Control(UI_SOUND_SETTINGS_STATE *const s)
-{
-    return UI_Settings_Control(s);
-}
-
-void UI_SoundSettings(UI_SOUND_SETTINGS_STATE *const s)
-{
-    UI_Settings(s);
+    const float value = *(float *)option->target;
+    String_FormatInto(
+        &m_TempString, &m_TempStringCap, "%.00f%%", value * 100.0f);
+    return m_TempString;
 }
 
 static bool M_CanChange(
@@ -168,4 +167,28 @@ static bool M_RequestChange(
     }
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
     return true;
+}
+
+UI_SOUND_SETTINGS_STATE *UI_SoundSettings_Init(void)
+{
+    UI_SOUND_SETTINGS_STATE *s = Memory_Alloc(sizeof(UI_SETTINGS_STATE));
+    s->row_pad = 10.0f;
+    UI_Settings_Init(s, GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
+    return s;
+}
+
+void UI_SoundSettings_Free(UI_SOUND_SETTINGS_STATE *const s)
+{
+    UI_Settings_Free(s);
+    Memory_Free(s);
+}
+
+bool UI_SoundSettings_Control(UI_SOUND_SETTINGS_STATE *const s)
+{
+    return UI_Settings_Control(s);
+}
+
+void UI_SoundSettings(UI_SOUND_SETTINGS_STATE *const s)
+{
+    UI_Settings(s);
 }
