@@ -42,7 +42,7 @@ bool Cutscene_Start(const int32_t level_num)
     CINE_DATA *const cine_data = Camera_GetCineData();
     g_Camera.target_angle = cine_data->position.target_angle;
 
-    Music_SetVolume(10);
+    Music_SetVolume(1.0f);
     cine_data->frame_idx = 0;
     return true;
 }

@@ -521,11 +521,10 @@ void Sound_StopAll(void)
     Audio_Sample_CloseAll();
 }
 
-void Sound_SetMasterVolume(int32_t volume)
+void Sound_SetMasterVolume(const float volume)
 {
-    int8_t raw_volume = volume ? 6 * volume + 3 : 0;
-    m_MasterVolumeDefault = raw_volume & 0x3F;
-    m_MasterVolume = raw_volume & 0x3F;
+    m_MasterVolumeDefault = volume * 64.0f;
+    m_MasterVolume = volume * 64.0f;
 }
 
 int32_t Sound_GetMasterVolume(void)

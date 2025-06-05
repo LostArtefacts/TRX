@@ -95,6 +95,7 @@ int JSON_ValueGetBool(const JSON_VALUE *value, int d);
 int JSON_ValueGetInt(const JSON_VALUE *value, int d);
 int64_t JSON_ValueGetInt64(const JSON_VALUE *value, int64_t d);
 double JSON_ValueGetDouble(const JSON_VALUE *value, double d);
+const JSON_NUMBER *JSON_ValueGetNumber(const JSON_VALUE *value);
 const char *JSON_ValueGetString(const JSON_VALUE *value, const char *d);
 JSON_ARRAY *JSON_ValueAsArray(JSON_VALUE *value);
 JSON_OBJECT *JSON_ValueAsObject(JSON_VALUE *value);

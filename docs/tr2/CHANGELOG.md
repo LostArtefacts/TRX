@@ -7,6 +7,7 @@
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
   - if playing original levels, make sure to update the game flow and injection files from this release
   - if building levels, use track numbers that correspond to the file names; previously built levels will need to be manually adjusted
+- changed sound and music volumes to be displayed as percentage instead of 0-10
 - changed the `/tp` command to align Lara to switches and pickups
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting

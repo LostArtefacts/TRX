@@ -81,8 +81,8 @@ typedef struct {
     } ui;
 
     struct {
-        int32_t sound_volume;
-        int32_t music_volume;
+        float sound_volume;
+        float music_volume;
         bool fix_tihocan_secret_sound;
         bool fix_secrets_killing_music;
         bool fix_speeches_killing_music;

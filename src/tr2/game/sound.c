@@ -155,9 +155,9 @@ void Sound_Shutdown(void)
     M_ClearAllSlots();
 }
 
-void Sound_SetMasterVolume(int32_t volume)
+void Sound_SetMasterVolume(const float volume)
 {
-    m_MasterVolume = volume * 64.0f / 10.0f;
+    m_MasterVolume = volume * 64.0f;
 }
 
 void Sound_UpdateEffects(void)

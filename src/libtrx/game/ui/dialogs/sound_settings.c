@@ -21,34 +21,37 @@ static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
 
 // Custom handlers for changing sound settings.
 static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *option);
-static bool M_CanChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 static bool M_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
 #define KEEP_IT_SIMPLE (TR_VERSION > 1)
 static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
-        .option_type = COT_INT32,
+        .option_type = COT_FLOAT,
         .label_id = GS_ID(SOUND_SETTINGS_SOUND_VOLUME),
         .custom_handler = {
-            .format_value = nullptr,
-            .can_change_value = M_CanChange,
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
             .request_change_value = M_RequestChange,
         },
         .target = &g_Config.audio.music_volume,
-        .min_value = SOUND_MIN_VOLUME,
-        .max_value = SOUND_MAX_VOLUME,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
     },
     {
-        .option_type = COT_INT32,
+        .option_type = COT_FLOAT,
         .label_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME),
         .custom_handler = {
-            .format_value = nullptr,
-            .can_change_value = M_CanChange,
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
             .request_change_value = M_RequestChange,
         },
         .target = &g_Config.audio.sound_volume,
-        .min_value = MUSIC_MIN_VOLUME,
-        .max_value = MUSIC_MAX_VOLUME,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
     },
 #if !KEEP_IT_SIMPLE
     {
@@ -132,34 +135,11 @@ static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *const option)
     return m_TempString;
 }
 
-static bool M_CanChange(
-    const UI_SETTINGS_OPTION *const option, const int32_t dir)
-{
-    const int32_t *value = option->target;
-    if (option->target == &g_Config.audio.music_volume) {
-        if (dir < 0) {
-            return *value > MUSIC_MIN_VOLUME;
-        } else {
-            return *value < MUSIC_MAX_VOLUME;
-        }
-    } else if (option->target == &g_Config.audio.sound_volume) {
-        if (dir < 0) {
-            return *value > SOUND_MIN_VOLUME;
-        } else {
-            return *value < SOUND_MAX_VOLUME;
-        }
-    }
-    return false;
-}
-
 static bool M_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
-    int32_t *value = option->target;
-    if (!M_CanChange(option, dir)) {
-        return false;
-    }
-    *value += dir;
+    float *value = (float *)option->target;
+    (*value) += dir / 10.0f;
     if (option->target == &g_Config.audio.music_volume) {
         Music_SetVolume(*value);
     } else if (option->target == &g_Config.audio.sound_volume) {
