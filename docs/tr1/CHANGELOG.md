@@ -2,6 +2,7 @@
 - added UI for all config tool settings
 - added an optional breeze effect for Lara's braid in appropriate outside rooms (#3090)
 - added key icons to the controls settings dialog
+- changed sound and music volumes to be displayed as percentage instead of 0-10
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting
 - changed the `/tp` command to align Lara to switches and pickups

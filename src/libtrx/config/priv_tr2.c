@@ -10,6 +10,7 @@
 #include "utils.h"
 
 #include <stdio.h>
+#include <string.h>
 
 static void M_LoadInputConfig(JSON_OBJECT *root_obj);
 static void M_LoadInputLayout(
@@ -107,6 +108,27 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 
     // ..0.10
     READ_FALLBACK_BOOL(g_Config.visuals.use_psx_fov, "use_pcx_fov");
+
+    // ..1.1
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "sound_volume");
+        const JSON_NUMBER *const num =
+            value != nullptr ? JSON_ValueGetNumber(value) : nullptr;
+        if (num != nullptr && strchr(num->number, '.') == nullptr) {
+            g_Config.audio.sound_volume = JSON_ValueGetInt(value, 0) / 10.0f;
+        }
+    }
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "music_volume");
+        const JSON_NUMBER *const num =
+            value != nullptr ? JSON_ValueGetNumber(value) : nullptr;
+        if (value != nullptr && value->type == JSON_TYPE_NUMBER
+            && strchr(num->number, '.') == nullptr) {
+            g_Config.audio.music_volume = JSON_ValueGetInt(value, 0) / 10.0f;
+        }
+    }
 }
 
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)

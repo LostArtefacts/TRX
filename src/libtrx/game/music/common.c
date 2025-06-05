@@ -19,7 +19,7 @@ static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastLooped = MX_INACTIVE;
 
 static bool m_Muted = false;
-static int16_t m_MusicVolume = 0;
+static float m_MusicVolume = 0.0f;
 static int32_t m_AudioStreamID = -1;
 static const MUSIC_BACKEND *m_Backend = nullptr;
 
@@ -117,9 +117,7 @@ static void M_SyncVolume(const int32_t audio_stream_id)
     if (audio_stream_id < 0) {
         return;
     }
-
-    const float multiplier = m_MusicVolume != 0 ? m_MusicVolume / 10.0f : 0.0f;
-    Audio_Stream_SetVolume(audio_stream_id, m_Muted ? 0 : multiplier);
+    Audio_Stream_SetVolume(audio_stream_id, m_Muted ? 0.0f : m_MusicVolume);
 }
 
 bool Music_Init(void)
@@ -300,7 +298,7 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
     return m_TrackLooped;
 }
 
-void Music_SetVolume(const int32_t volume)
+void Music_SetVolume(const float volume)
 {
     if (volume != m_MusicVolume) {
         m_MusicVolume = volume;

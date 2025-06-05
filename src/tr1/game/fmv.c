@@ -106,10 +106,7 @@ static bool M_Play(const char *const file_path)
 
     Video_Start(video);
     while (video->is_playing) {
-        Video_SetVolume(
-            video,
-            m_Muted ? 0
-                    : g_Config.audio.sound_volume / (float)SOUND_MAX_VOLUME);
+        Video_SetVolume(video, m_Muted ? 0.0f : g_Config.audio.sound_volume);
         Video_SetSurfaceSize(
             video, Screen_GetResWidth(), Screen_GetResHeight());
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);

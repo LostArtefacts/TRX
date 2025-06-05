@@ -9,6 +9,7 @@
 #include "utils.h"
 
 #include <stdio.h>
+#include <string.h>
 
 static void M_LoadKeyboardLayout(JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
 static void M_LoadControllerLayout(
@@ -122,6 +123,27 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     // ..4.9
     READ_FALLBACK_BOOL(g_Config.gameplay.enable_cutscenes, "enable_cine");
     READ_FALLBACK_BOOL(g_Config.gameplay.enable_legal, "enable_eidos_logo");
+
+    // ..4.11: 0…10 scale volumes to 0.0f…1.0f
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "sound_volume");
+        const JSON_NUMBER *const num =
+            value != nullptr ? JSON_ValueGetNumber(value) : nullptr;
+        if (num != nullptr && strchr(num->number, '.') == nullptr) {
+            g_Config.audio.sound_volume = JSON_ValueGetInt(value, 0) / 10.0f;
+        }
+    }
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "music_volume");
+        const JSON_NUMBER *const num =
+            value != nullptr ? JSON_ValueGetNumber(value) : nullptr;
+        if (value != nullptr && value->type == JSON_TYPE_NUMBER
+            && strchr(num->number, '.') == nullptr) {
+            g_Config.audio.music_volume = JSON_ValueGetInt(value, 0) / 10.0f;
+        }
+    }
 }
 
 static void M_DumpKeyboardLayout(

@@ -5,9 +5,6 @@
 
 #include <stdint.h>
 
-#define MUSIC_MIN_VOLUME 0
-#define MUSIC_MAX_VOLUME 10
-
 bool Music_Init(void);
 void Music_Shutdown(void);
 
@@ -53,7 +50,7 @@ MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
 MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 
 // Sets the game volume.
-void Music_SetVolume(int32_t volume);
+void Music_SetVolume(float volume);
 
 // Mutes the game music. Doesn't change the music volume.
 void Music_Mute(void);

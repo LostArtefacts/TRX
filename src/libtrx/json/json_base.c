@@ -255,6 +255,11 @@ int JSON_ValueGetBool(const JSON_VALUE *const value, const int d)
     return d;
 }
 
+const JSON_NUMBER *JSON_ValueGetNumber(const JSON_VALUE *const value)
+{
+    return M_ValueAsNumber(value);
+}
+
 int JSON_ValueGetInt(const JSON_VALUE *const value, const int d)
 {
     const JSON_NUMBER *const num = M_ValueAsNumber(value);
