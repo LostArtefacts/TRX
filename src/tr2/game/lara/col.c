@@ -551,7 +551,7 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
         } else if (g_Input.slow) {
             item->goal_anim_state = LS_GYMNAST;
         } else {
-            item->goal_anim_state = LS_NULL;
+            item->goal_anim_state = LS_PULL_UP;
         }
     } else if (
         g_Input.back && g_Lara.climb_status
@@ -1051,7 +1051,7 @@ void Lara_Col_ClimbStance(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.forward) {
-        if (item->goal_anim_state == LS_NULL) {
+        if (item->goal_anim_state == LS_PULL_UP) {
             return;
         }
 
@@ -1077,7 +1077,7 @@ void Lara_Col_ClimbStance(ITEM *item, COLL_INFO *coll)
             if (ABS(ledge_l - ledge_r) > 120) {
                 return;
             }
-            item->goal_anim_state = LS_NULL;
+            item->goal_anim_state = LS_PULL_UP;
             item->pos.y += (ledge_l + ledge_r) / 2 - STEP_L;
             return;
         }
@@ -1191,7 +1191,7 @@ void Lara_Col_Climbing(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_CLIMB_STANCE;
         Lara_Animate(item);
         if (ABS(ledge_l - ledge_r) <= 120) {
-            item->goal_anim_state = LS_NULL;
+            item->goal_anim_state = LS_PULL_UP;
             item->pos.y += (ledge_r + ledge_l) / 2 - STEP_L;
         }
         return;

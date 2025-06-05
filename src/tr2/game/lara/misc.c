@@ -643,7 +643,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
             return 0;
         }
         item->goal_anim_state = LS_STOP;
-        item->current_anim_state = LS_NULL;
+        item->current_anim_state = LS_PULL_UP;
         Item_SwitchToAnim(item, LA_CLIMB_2CLICK, 0);
         item->pos.y += front_floor + STEP_L * 2;
         g_Lara.gun_status = LGS_HANDS_BUSY;
@@ -655,7 +655,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
             return 0;
         }
         item->goal_anim_state = LS_STOP;
-        item->current_anim_state = LS_NULL;
+        item->current_anim_state = LS_PULL_UP;
         Item_SwitchToAnim(item, LA_CLIMB_3CLICK, 0);
         item->pos.y += front_floor + STEP_L * 3;
         g_Lara.gun_status = LGS_HANDS_BUSY;

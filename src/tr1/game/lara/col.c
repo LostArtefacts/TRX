@@ -448,7 +448,7 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
             && coll->side_left.floor - coll->side_left.ceiling >= 0
             && coll->side_right.floor - coll->side_right.ceiling >= 0
             && !coll->hit_static) {
-            item->goal_anim_state = g_Input.slow ? LS_GYMNAST : LS_CLIMB_UP;
+            item->goal_anim_state = g_Input.slow ? LS_GYMNAST : LS_PULL_UP;
         }
     }
 }

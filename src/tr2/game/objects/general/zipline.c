@@ -156,7 +156,7 @@ static void M_Collision(
     lara_item->goal_anim_state = LS_ZIPLINE;
     do {
         Item_Animate(lara_item);
-    } while (lara_item->current_anim_state != LS_NULL);
+    } while (lara_item->current_anim_state != LS_PULL_UP);
 
     if (!item->active) {
         Item_AddActive(item_num);

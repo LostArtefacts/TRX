@@ -58,11 +58,7 @@ typedef enum {
     LS_BACK          = 16,
     LS_SWIM          = 17,
     LS_GLIDE         = 18,
-#if TR_VERSION      >= 2
-    LS_NULL          = 19,
-#elif TR_VERSION    == 1
-    LS_CLIMB_UP      = 19,
-#endif
+    LS_PULL_UP       = 19,
     LS_FAST_TURN     = 20,
     LS_STEP_RIGHT    = 21,
     LS_STEP_LEFT     = 22,
@@ -118,7 +114,7 @@ typedef enum {
 #elif TR_VERSION    == 1
     LS_CONTROLLED    = 56,
     LS_TWIST         = 57,
-    LS_UW_ROLL       = 58,
+    LS_WATER_ROLL    = 58,
     LS_WADE          = 59,
     LS_RESPONSIVE    = 60,
 #endif
