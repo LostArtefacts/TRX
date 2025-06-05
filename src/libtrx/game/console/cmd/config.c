@@ -89,6 +89,9 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
     case COT_BOOL:
         return Memory_DupStr(GS(OSD_COMMAND_BOOL));
 
+    case COT_INVERTED_BOOL:
+        return Memory_DupStr(GS(OSD_COMMAND_BOOL));
+
     case COT_INT32:
         return Memory_DupStr(GS(OSD_COMMAND_INTEGER));
 
@@ -154,6 +157,11 @@ bool Console_Cmd_Config_GetCurrentValue(
             target, target_size, "%s",
             *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
         break;
+    case COT_INVERTED_BOOL:
+        snprintf(
+            target, target_size, "%s",
+            *(bool *)option->target ? GS(MISC_OFF) : GS(MISC_ON));
+        break;
     case COT_INT32:
         snprintf(target, target_size, "%d", *(int32_t *)option->target);
         break;
@@ -194,6 +202,16 @@ bool Console_Cmd_Config_SetCurrentValue(
             return true;
         } else if (String_Match(new_value, "^(off|false|0)$")) {
             *(bool *)option->target = false;
+            return true;
+        }
+        break;
+
+    case COT_INVERTED_BOOL:
+        if (String_Match(new_value, "^(on|true|1)$")) {
+            *(bool *)option->target = false;
+            return true;
+        } else if (String_Match(new_value, "^(off|false|0)$")) {
+            *(bool *)option->target = true;
             return true;
         }
         break;

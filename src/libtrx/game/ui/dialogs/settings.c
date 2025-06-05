@@ -115,6 +115,11 @@ static const char *M_FormatRowValue(
             &m_TempString, &m_TempStringCap, "%s",
             *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
         return m_TempString;
+    case COT_INVERTED_BOOL:
+        String_FormatInto(
+            &m_TempString, &m_TempStringCap, "%s",
+            *(bool *)option->target ? GS(MISC_OFF) : GS(MISC_ON));
+        return m_TempString;
     case COT_INT32:
         String_FormatInto(
             &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
@@ -155,7 +160,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     }
 
     switch (option->option_type) {
-    case COT_BOOL: {
+    case COT_BOOL:
+    case COT_INVERTED_BOOL: {
         const float min_value_w = UI_Label_MeasureW(GS(MISC_OFF));
         const float max_value_w = UI_Label_MeasureW(GS(MISC_ON));
         return MAX(min_value_w, max_value_w);
@@ -212,6 +218,7 @@ static bool M_CanChangeValue(
     }
     switch (option->option_type) {
     case COT_BOOL:
+    case COT_INVERTED_BOOL:
         return true;
     case COT_INT32:
         if (dir < 0) {
@@ -282,6 +289,7 @@ static bool M_RequestChangeValue(
 
     switch (option->option_type) {
     case COT_BOOL:
+    case COT_INVERTED_BOOL:
         *(bool *)option->target = !*(bool *)option->target;
         break;
     case COT_INT32:

@@ -208,7 +208,7 @@ GS_DEFINE(SOUND_SETTINGS_MUSIC_VOLUME,                           "\\{icon sound}
 GS_DEFINE(SOUND_SETTINGS_MUSIC_LOAD_CONDITION,                   "Restore music on load")
 GS_DEFINE(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU,                   "Main menu music")
 GS_DEFINE(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS,                  "Pitched sounds")
-GS_DEFINE(SOUND_SETTINGS_ENABLE_MUSIC_IN_INVENTORY,              "Game sounds in inventory")
+GS_DEFINE(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY,               "Pause music in inventory")
 GS_DEFINE(SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC,              "Layered secret music")
 GS_DEFINE(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC,             "Layered enemy speech")
 GS_DEFINE(SOUND_SETTINGS_PS_UZI_SFX,                             "PS1 Uzi sound")
