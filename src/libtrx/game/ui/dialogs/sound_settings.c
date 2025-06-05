@@ -93,6 +93,34 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     },
     #endif
     {
+        .target = &g_Config.audio.inventory_ambient_volume,
+        .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME),
+        .option_type = COT_FLOAT,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
+        .custom_handler = {
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
+            .request_change_value = nullptr,
+        },
+    },
+    {
+        .target = &g_Config.audio.inventory_music_volume,
+        .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME),
+        .option_type = COT_FLOAT,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
+        .custom_handler = {
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
+            .request_change_value = nullptr,
+        },
+    },
+    {
         .target = &g_Config.audio.underwater_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME),
         .option_type = COT_FLOAT,

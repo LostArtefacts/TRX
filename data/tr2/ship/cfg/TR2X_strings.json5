@@ -731,6 +731,8 @@
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS": "Pitched sounds",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC": "Layered secret music",
         "SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC": "Layered enemy speech",
+        "SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME": "Inventory ambient volume",
+        "SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME": "Inventory music volume",
         "SOUND_SETTINGS_MUSIC_LOAD_CONDITION": "Restore music on load",
         "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_ALWAYS": "Always",
         "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER": "Never",

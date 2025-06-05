@@ -3,6 +3,7 @@
 #include "config.h"
 #include "debug.h"
 #include "game/camera.h"
+#include "game/game.h"
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/los.h"
@@ -109,6 +110,9 @@ static void M_AdjustMusicVolume(const bool underwater)
 {
     const bool is_ambient =
         Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+    if (!Game_IsPlaying()) {
+        return;
+    }
     const double multiplier = !underwater ? 1.0
         : is_ambient ? g_Config.audio.underwater_ambient_volume
                      : g_Config.audio.underwater_music_volume;
