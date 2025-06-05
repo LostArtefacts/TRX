@@ -535,7 +535,7 @@ void Lara_State_UpJump(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_State_Fallback(ITEM *item, COLL_INFO *coll)
+void Lara_State_FallBack(ITEM *item, COLL_INFO *coll)
 {
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;

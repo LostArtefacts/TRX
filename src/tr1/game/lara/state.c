@@ -272,7 +272,7 @@ void Lara_State_FastBack(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_State_TurnR(ITEM *item, COLL_INFO *coll)
+void Lara_State_TurnRight(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
@@ -306,7 +306,7 @@ void Lara_State_TurnR(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_State_TurnL(ITEM *item, COLL_INFO *coll)
+void Lara_State_TurnLeft(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
@@ -778,7 +778,7 @@ void Lara_State_FastDive(ITEM *item, COLL_INFO *coll)
     item->speed = (item->speed * 95) / 100;
 }
 
-void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll)
+void Lara_State_UWTwist(ITEM *item, COLL_INFO *coll)
 {
     item->fall_speed = 0;
     item->goal_anim_state = LS_TREAD;
