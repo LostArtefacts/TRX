@@ -352,7 +352,7 @@ static void M_CollisionControlled(
 
             if (Lara_TestPosition(item, obj->bounds_func())) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
-                    Item_SwitchToAnim(lara_item, LA_PICKUP_UW, 0);
+                    Item_SwitchToAnim(lara_item, LA_UNDERWATER_PICKUP, 0);
                     lara_item->current_anim_state = LS_PICKUP;
 
                     lara_item->goal_anim_state = LS_TREAD;

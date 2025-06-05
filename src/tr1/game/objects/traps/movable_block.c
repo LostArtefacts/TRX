@@ -243,7 +243,7 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
     lara->enable_shadow = false;
     lara->current_anim_state = LS_SPECIAL;
     lara->goal_anim_state = LS_SPECIAL;
-    Item_SwitchToAnim(lara, LA_ROLLING_BALL_DEATH, 0);
+    Item_SwitchToAnim(lara, LA_BOULDER_DEATH, 0);
 
     for (int32_t i = 0; i < 15; i++) {
         const int32_t x = lara->pos.x + (Random_GetControl() - 0x4000) / 256;

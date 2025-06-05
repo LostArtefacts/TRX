@@ -156,7 +156,7 @@ static void M_Collision(
 
             lara_item->current_anim_state = LS_SPECIAL;
             lara_item->goal_anim_state = LS_SPECIAL;
-            Item_SwitchToAnim(lara_item, LA_ROLLING_BALL_DEATH, 0);
+            Item_SwitchToAnim(lara_item, LA_BOULDER_DEATH, 0);
 
             g_Camera.flags = CF_FOLLOW_CENTRE;
             g_Camera.target_angle = 170 * DEG_1;
