@@ -212,6 +212,12 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 *(bool *)opt->default_value);
             break;
 
+        case COT_INVERTED_BOOL:
+            *(bool *)opt->target = !JSON_ObjectGetBool(
+                root_obj, M_ResolveOptionName(opt->name),
+                *(bool *)opt->default_value);
+            break;
+
         case COT_INT32: {
             JSON_VALUE *const value =
                 JSON_ObjectGetValue(root_obj, M_ResolveOptionName(opt->name));
@@ -285,6 +291,12 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
         case COT_BOOL:
             JSON_ObjectAppendBool(
                 root_obj, M_ResolveOptionName(opt->name), *(bool *)opt->target);
+            break;
+
+        case COT_INVERTED_BOOL:
+            JSON_ObjectAppendBool(
+                root_obj, M_ResolveOptionName(opt->name),
+                !*(bool *)opt->target);
             break;
 
         case COT_INT32:
