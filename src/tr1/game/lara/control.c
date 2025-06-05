@@ -40,7 +40,7 @@ static void (*m_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_BACK]         = Lara_State_Back,
     [LS_SWIM]         = Lara_State_Swim,
     [LS_GLIDE]        = Lara_State_Glide,
-    [LS_CLIMB_UP]     = Lara_State_Null,
+    [LS_PULL_UP]      = Lara_State_Null,
     [LS_FAST_TURN]    = Lara_State_FastTurn,
     [LS_STEP_RIGHT]   = Lara_State_StepRight,
     [LS_STEP_LEFT]    = Lara_State_StepLeft,
@@ -79,7 +79,7 @@ static void (*m_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_WATER_OUT]    = Lara_State_WaterOut,
     [LS_CONTROLLED]   = Lara_State_Controlled,
     [LS_TWIST]        = Lara_State_Empty,
-    [LS_UW_ROLL]      = Lara_State_UWRoll,
+    [LS_WATER_ROLL]   = Lara_State_UWRoll,
     [LS_WADE]         = Lara_State_Wade,
     [LS_RESPONSIVE]   = Lara_State_Empty,
     // clang-format on

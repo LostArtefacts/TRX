@@ -995,7 +995,7 @@ void Lara_State_Swim(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->goal_anim_state = LS_UW_ROLL;
+        item->goal_anim_state = LS_WATER_ROLL;
         return;
     }
 
@@ -1052,7 +1052,7 @@ void Lara_State_Glide(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->goal_anim_state = LS_UW_ROLL;
+        item->goal_anim_state = LS_WATER_ROLL;
         return;
     }
 
@@ -1111,7 +1111,7 @@ void Lara_State_Tread(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->goal_anim_state = LS_UW_ROLL;
+        item->goal_anim_state = LS_WATER_ROLL;
         return;
     }
 
