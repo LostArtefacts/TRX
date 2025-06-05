@@ -7,6 +7,7 @@
 - changed the `/tp` command to align Lara to switches and pickups
 - changed the music track slot limit from 64 to 1024 (#3101)
 - changed text kerning to a smaller value
+- changed the underwater music volume setting to separate ambient and music volume sliders
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
 - fixed text glyphs having cut off right and bottom borders (regression from 4.7)
 - fixed unbind key option being available when it shouldn't (#3111, regression from 4.11)

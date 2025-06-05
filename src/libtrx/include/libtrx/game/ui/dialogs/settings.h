@@ -15,7 +15,7 @@ typedef struct {
 typedef struct UI_SETTINGS_OPTION UI_SETTINGS_OPTION;
 
 typedef struct {
-    char *(*format_value)(const struct UI_SETTINGS_OPTION *option);
+    const char *(*format_value)(const struct UI_SETTINGS_OPTION *option);
     bool (*can_change_value)(
         const struct UI_SETTINGS_OPTION *option, int32_t dir);
     bool (*request_change_value)(

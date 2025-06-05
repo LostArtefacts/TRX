@@ -91,7 +91,8 @@ typedef struct {
         bool enable_ps_uzi_sfx;
         bool enable_pitched_sounds;
         bool load_music_triggers;
-        UNDERWATER_MUSIC_MODE underwater_music_mode;
+        float underwater_ambient_volume;
+        float underwater_music_volume;
         MUSIC_LOAD_CONDITION music_load_condition;
     } audio;
 
