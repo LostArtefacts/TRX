@@ -80,6 +80,8 @@ typedef struct {
         float sound_volume;
         float music_volume;
         bool enable_lara_mic;
+        float inventory_ambient_volume;
+        float inventory_music_volume;
         float underwater_ambient_volume;
         float underwater_music_volume;
         MUSIC_LOAD_CONDITION music_load_condition;

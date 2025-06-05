@@ -212,6 +212,8 @@ GS_DEFINE(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY,               "Pause music in
 GS_DEFINE(SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC,              "Layered secret music")
 GS_DEFINE(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC,             "Layered enemy speech")
 GS_DEFINE(SOUND_SETTINGS_PS_UZI_SFX,                             "PS1 Uzi sound")
+GS_DEFINE(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME,               "Inventory ambient volume")
+GS_DEFINE(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME,                 "Inventory music volume")
 GS_DEFINE(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME,              "Underwater ambient volume")
 GS_DEFINE(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME,                "Underwater music volume")
 

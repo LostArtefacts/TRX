@@ -889,6 +889,7 @@ void InvRing_Close(INV_RING *const ring)
 
 GF_COMMAND InvRing_Control(INV_RING *const ring, const int32_t num_frames)
 {
+    InvRing_AdjustMusicVolume(ring);
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     for (int32_t i = 0; i < num_frames; i++) {
         gf_cmd = M_Control(ring);

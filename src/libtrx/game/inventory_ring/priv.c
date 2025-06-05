@@ -1,11 +1,13 @@
 #include "game/inventory_ring/priv.h"
 
+#include "config.h"
 #include "game/const.h"
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/math.h"
+#include "game/music.h"
 #include "game/objects/names.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -50,6 +52,19 @@ static void M_HandleRequestedObject(INV_RING *const ring)
     }
 
     m_RequestedObjectID = NO_OBJECT;
+}
+
+void InvRing_AdjustMusicVolume(const INV_RING *const ring)
+{
+    if (ring->mode == INV_TITLE_MODE) {
+        return;
+    }
+    const bool is_ambient =
+        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+    const double multiplier = is_ambient
+        ? g_Config.audio.inventory_ambient_volume
+        : g_Config.audio.inventory_music_volume;
+    Music_SetVolume(g_Config.audio.music_volume * multiplier);
 }
 
 void InvRing_SetRequestedObjectID(const GAME_OBJECT_ID obj_id)
