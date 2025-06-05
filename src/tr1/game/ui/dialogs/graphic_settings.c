@@ -219,46 +219,61 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .label_id = GS_ID(GRAPHIC_SETTINGS_FOV_VERTICAL),
         .option_type = COT_BOOL,
     },
+
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_REFLECTIONS),
+        .target = &g_Config.visuals.enable_reflections,
+    },
+
     {
         .target = &g_Config.visuals.enable_skybox,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_SKYBOX),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_braid,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_BRAID),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_breeze,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_BREEZE),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_3d_pickups,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_3D_PICKUPS),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.gameplay.enable_pickup_aids,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_ps1_crystals,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_round_shadow,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_gun_lighting,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_shotgun_flash,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_SHOTGUN_FLASH),
@@ -390,6 +405,21 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
     },
 
     {
+        .option_type = COT_ENUM,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_TEXTURE_FILTER),
+        .target = &g_Config.rendering.texture_filter,
+        .delta_slow = 1,
+        .delta_fast = 1,
+        .misc = m_TextureFilterEnumEntries,
+    },
+
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_TRAPEZOID_FILTER),
+        .target = &g_Config.rendering.enable_trapezoid_filter,
+    },
+
+    {
         .target = &g_Config.rendering.anisotropy_filter,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ANISOTROPY_FILTER),
         .option_type = COT_FLOAT,
@@ -397,22 +427,6 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .max_value = 32 * 100,
         .delta_slow = 10,
         .delta_fast = 100,
-    },
-
-    {
-        .target = &g_Config.rendering.screenshot_format,
-        .label_id = GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT),
-        .option_type = COT_ENUM,
-        .misc = &m_ScreenshotFormatEnumEntries,
-    },
-
-    {
-        .option_type = COT_ENUM,
-        .label_id = GS_ID(GRAPHIC_SETTINGS_TEXTURE_FILTER),
-        .target = &g_Config.rendering.texture_filter,
-        .delta_slow = 1,
-        .delta_fast = 1,
-        .misc = m_TextureFilterEnumEntries,
     },
 
     {
@@ -444,18 +458,6 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
 
     {
         .option_type = COT_BOOL,
-        .label_id = GS_ID(GRAPHIC_SETTINGS_TRAPEZOID_FILTER),
-        .target = &g_Config.rendering.enable_trapezoid_filter,
-    },
-
-    {
-        .option_type = COT_BOOL,
-        .label_id = GS_ID(GRAPHIC_SETTINGS_REFLECTIONS),
-        .target = &g_Config.visuals.enable_reflections,
-    },
-
-    {
-        .option_type = COT_BOOL,
         .label_id = GS_ID(GRAPHIC_SETTINGS_VSYNC),
         .target = &g_Config.rendering.enable_vsync,
     },
@@ -468,6 +470,13 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .max_value = CONFIG_MAX_BRIGHTNESS * 100,
         .delta_slow = 10,
         .delta_fast = 10,
+    },
+
+    {
+        .target = &g_Config.rendering.screenshot_format,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT),
+        .option_type = COT_ENUM,
+        .misc = &m_ScreenshotFormatEnumEntries,
     },
 
     {

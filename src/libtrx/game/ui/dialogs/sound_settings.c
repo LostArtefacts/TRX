@@ -54,27 +54,11 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .delta_fast = 10,
     },
 #if !KEEP_IT_SIMPLE
-    {
-        .target = &g_Config.audio.music_load_condition,
-        .label_id = GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION),
-        .option_type = COT_ENUM,
-        .misc = &m_MusicLoadConditionEnumEntries,
-    },
     #if TR_VERSION == 1
     {
         .target = &g_Config.audio.enable_music_in_menu,
         .label_id = GS_ID(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU),
         .option_type = COT_BOOL,
-    },
-    {
-        .target = &g_Config.audio.enable_pitched_sounds,
-        .label_id = GS_ID(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS),
-        .option_type = COT_BOOL,
-    },
-    {
-        .target = &g_Config.audio.enable_music_in_inventory,
-        .label_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY),
-        .option_type = COT_INVERTED_BOOL,
     },
     {
         .target = &g_Config.audio.fix_secrets_killing_music,
@@ -87,9 +71,9 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .option_type = COT_BOOL,
     },
     {
-        .target = &g_Config.audio.enable_ps_uzi_sfx,
-        .label_id = GS_ID(SOUND_SETTINGS_PS_UZI_SFX),
-        .option_type = COT_BOOL,
+        .target = &g_Config.audio.enable_music_in_inventory,
+        .label_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY),
+        .option_type = COT_INVERTED_BOOL,
     },
     #endif
     {
@@ -148,6 +132,24 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
             .request_change_value = nullptr,
         },
     },
+    {
+        .target = &g_Config.audio.music_load_condition,
+        .label_id = GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION),
+        .option_type = COT_ENUM,
+        .misc = &m_MusicLoadConditionEnumEntries,
+    },
+    #if TR_VERSION == 1
+    {
+        .target = &g_Config.audio.enable_pitched_sounds,
+        .label_id = GS_ID(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS),
+        .option_type = COT_BOOL,
+    },
+    {
+        .target = &g_Config.audio.enable_ps_uzi_sfx,
+        .label_id = GS_ID(SOUND_SETTINGS_PS_UZI_SFX),
+        .option_type = COT_BOOL,
+    },
+    #endif
 #endif
     {
         .target = nullptr,
