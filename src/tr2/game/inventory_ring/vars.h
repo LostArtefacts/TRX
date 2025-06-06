@@ -40,3 +40,4 @@ extern INVENTORY_ITEM g_InvRing_Item_Graphics;
 extern INVENTORY_ITEM g_InvRing_Item_Sound;
 extern INVENTORY_ITEM g_InvRing_Item_Controls;
 extern INVENTORY_ITEM g_InvRing_Item_Photo;
+extern INVENTORY_ITEM g_InvRing_Item_NatlasPDA;

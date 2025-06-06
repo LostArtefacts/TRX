@@ -12,6 +12,9 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_COMPASS_OPTION:
         Option_Compass_Control(inv_item, is_busy);
         break;
+    case O_COMPASS_ITEM:
+        Option_Gameplay_Control(inv_item, is_busy);
+        break;
     case O_DETAIL_OPTION:
         Option_Detail_Control(inv_item, is_busy);
         break;
@@ -75,6 +78,9 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     case O_COMPASS_OPTION:
         Option_Compass_Draw();
         break;
+    case O_COMPASS_ITEM:
+        Option_Gameplay_Draw(inv_item);
+        break;
     case O_DETAIL_OPTION:
         Option_Detail_Draw(inv_item);
         break;
@@ -97,7 +103,9 @@ void Option_Shutdown(INVENTORY_ITEM *const inv_item)
     case O_PASSPORT_OPTION:
         Option_Passport_Shutdown();
         break;
-
+    case O_COMPASS_ITEM:
+        Option_Gameplay_Shutdown();
+        break;
     case O_DETAIL_OPTION:
         Option_Detail_Shutdown();
         break;

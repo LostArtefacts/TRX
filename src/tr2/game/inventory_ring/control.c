@@ -32,8 +32,8 @@
 
 #include <stdio.h>
 
-#define TITLE_RING_OBJECTS 4
-#define OPTION_RING_OBJECTS 4
+#define TITLE_RING_OBJECTS 5
+#define OPTION_RING_OBJECTS 5
 #define INV_RING_FADE_TIME_FAST                                                \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
 #define INV_RING_FADE_TIME_TITLE_FINISH 0.25
@@ -641,6 +641,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (ring->mode == INV_TITLE_MODE
                     && (inv_item->object_id == O_DETAIL_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
+                        || inv_item->object_id == O_COMPASS_ITEM
                         || inv_item->object_id == O_CONTROL_OPTION
                         || inv_item->object_id == O_GAMMA_OPTION)) {
                     InvRing_MotionSetup(

@@ -783,7 +783,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 void Lara_InitialiseInventory(const GF_LEVEL *const level)
 {
     Inv_RemoveAllItems();
-    Inv_AddItem(O_COMPASS_ITEM);
+    Inv_AddItem(O_COMPASS_OPTION);
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (resume != nullptr) {

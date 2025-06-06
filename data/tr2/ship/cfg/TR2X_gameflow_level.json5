@@ -25,6 +25,7 @@
 
     "sfx_path": "data/main.sfx",
     "injections": [
+        "data/injections/pda_model.bin",
         "data/injections/font.bin",
     ],
 

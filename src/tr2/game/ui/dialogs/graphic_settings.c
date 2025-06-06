@@ -2,6 +2,79 @@
 
 #include <libtrx/config.h>
 
+static const UI_SETTINGS_ENUM_ENTRY m_HealthBarShowModeEnumEntries[] = {
+    { BSM_DEFAULT, GS_ID(GRAPHIC_SETTINGS_DEFAULT) },
+    { BSM_FLASHING_OR_DEFAULT, GS_ID(GRAPHIC_SETTINGS_FLASHING_OR_DEFAULT) },
+    { BSM_FLASHING_ONLY, GS_ID(GRAPHIC_SETTINGS_FLASHING_ONLY) },
+    { BSM_ALWAYS, GS_ID(GRAPHIC_SETTINGS_ALWAYS) },
+    { BSM_NEVER, GS_ID(GRAPHIC_SETTINGS_NEVER) },
+    { BSM_PS1, GS_ID(GRAPHIC_SETTINGS_PS1) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_AirBarShowModeEnumEntries[] = {
+    { BSM_DEFAULT, GS_ID(GRAPHIC_SETTINGS_DEFAULT) },
+    { BSM_FLASHING_ONLY, GS_ID(GRAPHIC_SETTINGS_FLASHING_ONLY) },
+    { BSM_NEVER, GS_ID(GRAPHIC_SETTINGS_NEVER) },
+    { BSM_PS1, GS_ID(GRAPHIC_SETTINGS_PS1) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_EnemyHealthBarShowModeEnumEntries[] = {
+    { BSM_ALWAYS, GS_ID(GRAPHIC_SETTINGS_ALWAYS) },
+    { BSM_NEVER, GS_ID(GRAPHIC_SETTINGS_NEVER) },
+    { BSM_BOSS_ONLY, GS_ID(GRAPHIC_SETTINGS_BOSS_ONLY) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_BarLocationEnumEntries[] = {
+    { BL_TOP_LEFT, GS_ID(GRAPHIC_SETTINGS_BAR_LOCATION_TOP_LEFT) },
+    { BL_TOP_CENTER, GS_ID(GRAPHIC_SETTINGS_BAR_LOCATION_TOP_CENTER) },
+    { BL_TOP_RIGHT, GS_ID(GRAPHIC_SETTINGS_BAR_LOCATION_TOP_RIGHT) },
+    { BL_BOTTOM_LEFT, GS_ID(GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_LEFT) },
+    { BL_BOTTOM_CENTER, GS_ID(GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_CENTER) },
+    { BL_BOTTOM_RIGHT, GS_ID(GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_RIGHT) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_BarColorEnumEntries[] = {
+    {
+        BC_GOLD,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_GOLD),
+    },
+    {
+        BC_BLUE,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_BLUE),
+    },
+    {
+        BC_GREY,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_GREY),
+    },
+    {
+        BC_RED,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_RED),
+    },
+    {
+        BC_SILVER,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_SILVER),
+    },
+    {
+        BC_GREEN,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_GREEN),
+    },
+    {
+        BC_GOLD2,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_GOLD2),
+    },
+    {
+        BC_BLUE2,
+        GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_BLUE2),
+    },
+    { BC_PINK, GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_PINK) },
+    { BC_PURPLE, GS_ID(GRAPHIC_SETTINGS_BAR_COLOR_PURPLE) },
+    { -1, nullptr },
+};
+
 static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
     { CAMERA_MODE_TR1, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR1) },
     { CAMERA_MODE_TR2, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR2) },
@@ -9,37 +82,36 @@ static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
 };
 
 static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterEnumEntries[] = {
-    // clang-format off
-    { GFX_TF_NN, GS_ID(MISC_OFF), },
-    { GFX_TF_BILINEAR, GS_ID(GRAPHIC_SETTINGS_BILINEAR), },
-    { -1, nullptr, },
-    // clang-format on
+    { GFX_TF_NN, GS_ID(MISC_OFF) },
+    { GFX_TF_BILINEAR, GS_ID(GRAPHIC_SETTINGS_BILINEAR) },
+    { -1, nullptr },
 };
 
 static const UI_SETTINGS_ENUM_ENTRY m_LightingContrastEnumEntries[] = {
-    // clang-format off
-    { LIGHTING_CONTRAST_LOW, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_LOW), },
-    { LIGHTING_CONTRAST_MEDIUM, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_MEDIUM), },
-    { LIGHTING_CONTRAST_HIGH, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_HIGH), },
-    { -1, nullptr, },
-    // clang-format on
+    { LIGHTING_CONTRAST_LOW, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_LOW) },
+    { LIGHTING_CONTRAST_MEDIUM,
+      GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_MEDIUM) },
+    { LIGHTING_CONTRAST_HIGH, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_HIGH) },
+    { -1, nullptr },
 };
 
 static const UI_SETTINGS_ENUM_ENTRY m_RenderModeEnumEntries[] = {
-    // clang-format off
-    { RM_SOFTWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE), },
-    { RM_HARDWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE), },
-    { -1, nullptr, },
-    // clang-format on
+    { RM_SOFTWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE) },
+    { RM_HARDWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE) },
+    { -1, nullptr },
 };
 
 static const UI_SETTINGS_ENUM_ENTRY m_AspectModeEnumEntries[] = {
-    // clang-format off
-    { AM_4_3, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_4_3), },
-    { AM_16_9, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_16_9), },
-    { AM_ANY, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_ANY), },
-    { -1, nullptr, },
-    // clang-format on
+    { AM_4_3, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_4_3) },
+    { AM_16_9, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_16_9) },
+    { AM_ANY, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_ANY) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_ScreenshotFormatEnumEntries[] = {
+    { SCREENSHOT_FORMAT_JPEG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_JPG) },
+    { SCREENSHOT_FORMAT_PNG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_PNG) },
+    { -1, nullptr },
 };
 
 static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
@@ -118,6 +190,42 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
     },
 
     {
+        .target = &g_Config.visuals.enable_braid,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_BRAID),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.enable_breeze,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_BREEZE),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.enable_3d_pickups,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_3D_PICKUPS),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.enable_gun_lighting,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.enable_fade_effects,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.enable_exit_fade_effects,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS),
+        .option_type = COT_BOOL,
+    },
+
+    {
         .target = nullptr,
     },
 };
@@ -147,6 +255,61 @@ static const UI_SETTINGS_OPTION m_UIOptions[] = {
         .option_type = COT_BOOL,
         .label_id = GS_ID(GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND),
         .target = &g_Config.ui.enable_wraparound,
+    },
+
+    {
+        .target = &g_Config.ui.lara_health_bar.show_mode,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE),
+        .option_type = COT_ENUM,
+        .misc = &m_HealthBarShowModeEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.lara_health_bar.location,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_HEALTHBAR_LOCATION),
+        .option_type = COT_ENUM,
+        .misc = &m_BarLocationEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.lara_health_bar.color,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_HEALTHBAR_COLOR),
+        .option_type = COT_ENUM,
+        .misc = &m_BarColorEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.lara_air_bar.show_mode,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE),
+        .option_type = COT_ENUM,
+        .misc = &m_AirBarShowModeEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.lara_air_bar.location,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_AIRBAR_LOCATION),
+        .option_type = COT_ENUM,
+        .misc = &m_BarLocationEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.lara_air_bar.color,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_AIRBAR_COLOR),
+        .option_type = COT_ENUM,
+        .misc = &m_BarColorEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.enemy_health_bar.show_mode,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE),
+        .option_type = COT_ENUM,
+        .misc = &m_EnemyHealthBarShowModeEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.enemy_health_bar.location,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION),
+        .option_type = COT_ENUM,
+        .misc = &m_BarLocationEnumEntries,
+    },
+    {
+        .target = &g_Config.ui.enemy_health_bar.color,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR),
+        .option_type = COT_ENUM,
+        .misc = &m_BarColorEnumEntries,
     },
 
     {
@@ -231,6 +394,13 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .max_value = 200,
         .delta_slow = 10,
         .delta_fast = 10,
+    },
+
+    {
+        .target = &g_Config.rendering.screenshot_format,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT),
+        .option_type = COT_ENUM,
+        .misc = &m_ScreenshotFormatEnumEntries,
     },
 
     {
