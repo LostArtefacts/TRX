@@ -294,11 +294,6 @@ void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Pose(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_Stop(item, coll);
-}
-
 void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - DEG_180;
@@ -455,11 +450,6 @@ void Lara_Col_Splat(ITEM *item, COLL_INFO *coll)
     Lara_ShiftCol(coll);
 }
 
-void Lara_Col_Land(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_Stop(item, coll);
-}
-
 void Lara_Col_Compress(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = false;
@@ -536,11 +526,6 @@ void Lara_Col_Null(ITEM *item, COLL_INFO *coll)
     coll->slopes_are_pits = 1;
     coll->slopes_are_walls = 1;
     Lara_GetCollisionInfo(item, coll);
-}
-
-void Lara_Col_FastTurn(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_Stop(item, coll);
 }
 
 void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll)
