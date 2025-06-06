@@ -2,7 +2,6 @@
 
 #include "game/gun.h"
 #include "game/input.h"
-#include "game/lara/col.h"
 #include "game/lara/common.h"
 #include "game/lara/look.h"
 #include "game/lara/state.h"
@@ -82,72 +81,6 @@ static void (*m_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_WATER_ROLL]   = Lara_State_UWTwist,
     [LS_WADE]         = Lara_State_Wade,
     [LS_RESPONSIVE]   = Lara_State_Empty,
-    // clang-format on
-};
-
-static void (*m_LaraCollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
-    // clang-format off
-    [LS_WALK]         = Lara_Col_Walk,
-    [LS_RUN]          = Lara_Col_Run,
-    [LS_STOP]         = Lara_Col_Stop,
-    [LS_JUMP_FORWARD] = Lara_Col_ForwardJump,
-    [LS_POSE]         = Lara_Col_Stop,
-    [LS_FAST_BACK]    = Lara_Col_FastBack,
-    [LS_TURN_RIGHT]   = Lara_Col_Turn,
-    [LS_TURN_LEFT]    = Lara_Col_Turn,
-    [LS_DEATH]        = Lara_Col_Death,
-    [LS_FAST_FALL]    = Lara_Col_FastFall,
-    [LS_HANG]         = Lara_Col_Hang,
-    [LS_REACH]        = Lara_Col_Reach,
-    [LS_SPLAT]        = Lara_Col_Splat,
-    [LS_TREAD]        = Lara_Col_Swim,
-    [LS_LAND]         = Lara_Col_Stop,
-    [LS_COMPRESS]     = Lara_Col_Compress,
-    [LS_BACK]         = Lara_Col_Back,
-    [LS_SWIM]         = Lara_Col_Swim,
-    [LS_GLIDE]        = Lara_Col_Swim,
-    [LS_PULL_UP]      = Lara_Col_Null,
-    [LS_FAST_TURN]    = Lara_Col_Stop,
-    [LS_STEP_RIGHT]   = Lara_Col_SideStep,
-    [LS_STEP_LEFT]    = Lara_Col_SideStep,
-    [LS_HIT]          = Lara_Col_Roll2,
-    [LS_SLIDE]        = Lara_Col_Slide,
-    [LS_JUMP_BACK]    = Lara_Col_BackJump,
-    [LS_JUMP_RIGHT]   = Lara_Col_RightJump,
-    [LS_JUMP_LEFT]    = Lara_Col_LeftJump,
-    [LS_JUMP_UP]      = Lara_Col_UpJump,
-    [LS_FALL_BACK]    = Lara_Col_FallBack,
-    [LS_HANG_LEFT]    = Lara_Col_HangLeft,
-    [LS_HANG_RIGHT]   = Lara_Col_HangRight,
-    [LS_SLIDE_BACK]   = Lara_Col_SlideBack,
-    [LS_SURF_TREAD]   = Lara_Col_SurfTread,
-    [LS_SURF_SWIM]    = Lara_Col_SurfSwim,
-    [LS_DIVE]         = Lara_Col_Swim,
-    [LS_PUSH_BLOCK]   = Lara_Col_Null,
-    [LS_PULL_BLOCK]   = Lara_Col_Null,
-    [LS_PP_READY]     = Lara_Col_Null,
-    [LS_PICKUP]       = Lara_Col_Null,
-    [LS_SWITCH_ON]    = Lara_Col_Null,
-    [LS_SWITCH_OFF]   = Lara_Col_Null,
-    [LS_USE_KEY]      = Lara_Col_Null,
-    [LS_USE_PUZZLE]   = Lara_Col_Null,
-    [LS_UW_DEATH]     = Lara_Col_UWDeath,
-    [LS_ROLL]         = Lara_Col_Roll,
-    [LS_SPECIAL]      = Lara_Col_Empty,
-    [LS_SURF_BACK]    = Lara_Col_SurfBack,
-    [LS_SURF_LEFT]    = Lara_Col_SurfLeft,
-    [LS_SURF_RIGHT]   = Lara_Col_SurfRight,
-    [LS_USE_MIDAS]    = Lara_Col_Null,
-    [LS_DIE_MIDAS]    = Lara_Col_Null,
-    [LS_SWAN_DIVE]    = Lara_Col_SwanDive,
-    [LS_FAST_DIVE]    = Lara_Col_FastDive,
-    [LS_GYMNAST]      = Lara_Col_Null,
-    [LS_WATER_OUT]    = Lara_Col_Null,
-    [LS_CONTROLLED]   = Lara_Col_Null,
-    [LS_TWIST]        = Lara_Col_Empty,
-    [LS_WATER_ROLL]   = Lara_Col_Swim,
-    [LS_WADE]         = Lara_Col_Wade,
-    [LS_RESPONSIVE]   = Lara_Col_Empty,
     // clang-format on
 };
 
@@ -362,7 +295,7 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
     const SECTOR *const sector = M_GetCurrentSector(item);
 
     M_BaddieCollision(item, coll);
-    m_LaraCollisionRoutines[item->current_anim_state](item, coll);
+    Lara_Col_Update(item, coll);
     Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
@@ -429,7 +362,7 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
     const SECTOR *const sector = M_GetCurrentSector(item);
 
     M_BaddieCollision(item, coll);
-    m_LaraCollisionRoutines[item->current_anim_state](item, coll);
+    Lara_Col_Update(item, coll);
     Lara_UpdateRoomToHeight(100);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
@@ -520,7 +453,7 @@ void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
         }
     }
 
-    m_LaraCollisionRoutines[item->current_anim_state](item, coll);
+    Lara_Col_Update(item, coll);
     Lara_UpdateRoomToHeight(0);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);

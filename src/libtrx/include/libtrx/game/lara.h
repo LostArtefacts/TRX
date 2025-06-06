@@ -2,6 +2,7 @@
 
 #include "lara/cheat.h"
 #include "lara/cheat_keys.h"
+#include "lara/col.h"
 #include "lara/common.h"
 #include "lara/const.h"
 #include "lara/control.h"
