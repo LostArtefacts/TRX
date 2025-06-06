@@ -835,7 +835,13 @@ void Lara_Col_SlideBack(ITEM *item, COLL_INFO *coll)
 
 void Lara_Col_Null(ITEM *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    g_Lara.move_angle = item->rot.y;
+    coll->slopes_are_walls = 1;
+    coll->slopes_are_pits = 1;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    Lara_GetCollisionInfo(item, coll);
 }
 
 void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
@@ -979,17 +985,6 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
     }
 
     item->pos.y += MIN(coll->side_mid.floor, 50);
-}
-
-void Lara_Col_Default(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_walls = 1;
-    coll->slopes_are_pits = 1;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
 }
 
 void Lara_Col_Jumper(ITEM *item, COLL_INFO *coll)

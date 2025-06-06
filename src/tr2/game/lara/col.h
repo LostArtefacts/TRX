@@ -42,7 +42,6 @@ void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll);
 void Lara_Col_SwanDive(ITEM *item, COLL_INFO *coll);
 void Lara_Col_FastDive(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Wade(ITEM *item, COLL_INFO *coll);
-void Lara_Col_Default(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Jumper(ITEM *item, COLL_INFO *coll);
 void Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll);
 void Lara_Col_ClimbRight(ITEM *item, COLL_INFO *coll);
