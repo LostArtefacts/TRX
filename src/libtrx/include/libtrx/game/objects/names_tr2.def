@@ -33,10 +33,10 @@ OBJ_NAME_DEFINE(O_PICKUP_ITEM_2,         "pickup_2",              "Pickup Item 2
 
 // inventory ring
 OBJ_ALIAS_DEFINE(O_COMPASS_OPTION,       O_COMPASS_ITEM)
-OBJ_NAME_DEFINE(O_COMPASS_ITEM,          "compass",               "Statistics")
+OBJ_NAME_DEFINE(O_COMPASS_ITEM,          "compass",               "Gameplay")
 OBJ_NAME_DEFINE(O_PASSPORT_OPTION,       "passport",              "Game")
 OBJ_NAME_DEFINE(O_PHOTO_OPTION,          "photo",                 "Lara's Home")
-OBJ_NAME_DEFINE(O_DETAIL_OPTION,         "graphics",              "Detail Levels")
+OBJ_NAME_DEFINE(O_DETAIL_OPTION,         "graphics",              "Graphics")
 OBJ_NAME_DEFINE(O_CONTROL_OPTION,        "controls",              "Controls")
 OBJ_NAME_DEFINE(O_SOUND_OPTION,          "sound",                 "Sound")
 

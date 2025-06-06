@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 PROJECTS = ["tr1", "tr2", "libtrx"]
-RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z_]+),.*\)")
-RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID)?\(([A-Z_]+)\)")
+RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),.*\)")
+RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID)?\(([A-Z0-9_]+)\)")
 
 
 @dataclass

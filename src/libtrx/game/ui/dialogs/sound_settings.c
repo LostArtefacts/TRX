@@ -23,7 +23,6 @@ static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
 static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *option);
 static bool M_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
-#define KEEP_IT_SIMPLE (TR_VERSION > 1)
 static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .option_type = COT_FLOAT,
@@ -53,8 +52,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .delta_slow = 10,
         .delta_fast = 10,
     },
-#if !KEEP_IT_SIMPLE
-    #if TR_VERSION == 1
+#if TR_VERSION == 1
     {
         .target = &g_Config.audio.enable_music_in_menu,
         .label_id = GS_ID(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU),
@@ -75,7 +73,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .label_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY),
         .option_type = COT_INVERTED_BOOL,
     },
-    #endif
+#endif
     {
         .target = &g_Config.audio.inventory_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME),
@@ -138,7 +136,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .option_type = COT_ENUM,
         .misc = &m_MusicLoadConditionEnumEntries,
     },
-    #if TR_VERSION == 1
+#if TR_VERSION == 1
     {
         .target = &g_Config.audio.enable_pitched_sounds,
         .label_id = GS_ID(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS),
@@ -149,13 +147,17 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .label_id = GS_ID(SOUND_SETTINGS_PS_UZI_SFX),
         .option_type = COT_BOOL,
     },
-    #endif
+#elif TR_VERSION >= 2
+    {
+        .target = &g_Config.audio.enable_lara_mic,
+        .label_id = GS_ID(SOUND_SETTINGS_ENABLE_LARA_MIC),
+        .option_type = COT_BOOL,
+    },
 #endif
     {
         .target = nullptr,
     },
 };
-#undef KEEP_IT_SIMPLE
 
 static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *const option)
 {
