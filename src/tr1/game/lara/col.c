@@ -523,44 +523,14 @@ void Lara_Col_Null(ITEM *item, COLL_INFO *coll)
     Lara_GetCollisionInfo(item, coll);
 }
 
-void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll)
+void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
 {
-    g_Lara.move_angle = item->rot.y + DEG_90;
-    item->gravity = false;
-    item->fall_speed = 0;
-    if (g_Lara.water_status == LWS_WADE) {
-        coll->bad_pos = NO_BAD_POS;
+    if (item->current_anim_state == LS_STEP_RIGHT) {
+        g_Lara.move_angle = item->rot.y + DEG_90;
     } else {
-        coll->bad_pos = STEP_L / 2;
-    }
-    coll->bad_neg = -STEP_L / 2;
-    coll->bad_ceiling = 0;
-    coll->slopes_are_walls = 1;
-    coll->slopes_are_pits = 1;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (Lara_HitCeiling(item, coll)) {
-        return;
+        g_Lara.move_angle = item->rot.y - DEG_90;
     }
 
-    if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
-    }
-
-    if (g_Config.gameplay.fix_descending_glitch && Lara_Fallen(item, coll)) {
-        return;
-    }
-
-    if (Lara_TestSlide(item, coll)) {
-        return;
-    }
-
-    item->pos.y += coll->side_mid.floor;
-}
-
-void Lara_Col_StepLeft(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y - DEG_90;
     item->gravity = false;
     item->fall_speed = 0;
     if (g_Lara.water_status == LWS_WADE) {

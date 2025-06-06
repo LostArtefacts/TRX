@@ -672,7 +672,7 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll)
+void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
 {
     if (item->current_anim_state == LS_STEP_RIGHT) {
         g_Lara.move_angle = item->rot.y + DEG_90;
@@ -704,11 +704,6 @@ void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll)
     if (!Lara_Fallen(item, coll) && !Lara_TestSlide(item, coll)) {
         item->pos.y += coll->side_mid.floor;
     }
-}
-
-void Lara_Col_StepLeft(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_StepRight(item, coll);
 }
 
 void Lara_Col_Slide(ITEM *item, COLL_INFO *coll)
