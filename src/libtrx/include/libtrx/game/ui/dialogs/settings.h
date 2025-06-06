@@ -70,6 +70,8 @@ typedef struct {
     GAME_STRING_ID title;
 } UI_SETTINGS_STATE;
 
+void UI_Settings_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
+
 // state functions
 void UI_Settings_Init(
     UI_SETTINGS_STATE *s, GAME_STRING_ID title,

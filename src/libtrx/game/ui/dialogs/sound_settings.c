@@ -168,12 +168,11 @@ static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *const option)
 static bool M_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
-    float *value = (float *)option->target;
-    (*value) += dir / 10.0f;
+    UI_Settings_RequestChange(option, dir);
     if (option->target == &g_Config.audio.music_volume) {
-        Music_SetVolume(*value);
+        Music_SetVolume(g_Config.audio.music_volume);
     } else if (option->target == &g_Config.audio.sound_volume) {
-        Sound_SetMasterVolume(*value);
+        Sound_SetMasterVolume(g_Config.audio.sound_volume);
     }
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
     return true;
