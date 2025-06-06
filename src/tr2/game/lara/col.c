@@ -773,7 +773,7 @@ void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_Fallback(ITEM *item, COLL_INFO *coll)
+void Lara_Col_FallBack(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y + DEG_180;
     coll->bad_pos = NO_BAD_POS;
