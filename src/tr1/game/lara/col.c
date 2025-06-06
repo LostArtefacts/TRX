@@ -326,7 +326,7 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_TurnR(ITEM *item, COLL_INFO *coll)
+void Lara_Col_Turn(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
     item->gravity = false;
@@ -352,11 +352,6 @@ void Lara_Col_TurnR(ITEM *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->side_mid.floor;
-}
-
-void Lara_Col_TurnL(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_TurnR(item, coll);
 }
 
 void Lara_Col_Death(ITEM *item, COLL_INFO *coll)

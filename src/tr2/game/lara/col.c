@@ -452,7 +452,7 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_TurnRight(ITEM *item, COLL_INFO *coll)
+void Lara_Col_Turn(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = false;
     item->fall_speed = 0;
@@ -476,11 +476,6 @@ void Lara_Col_TurnRight(ITEM *item, COLL_INFO *coll)
         item->gravity = true;
         item->fall_speed = 0;
     }
-}
-
-void Lara_Col_TurnLeft(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_TurnRight(item, coll);
 }
 
 void Lara_Col_Death(ITEM *item, COLL_INFO *coll)
