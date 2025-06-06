@@ -29,7 +29,7 @@ void Lara_Col_BackJump(ITEM *item, COLL_INFO *coll);
 void Lara_Col_RightJump(ITEM *item, COLL_INFO *coll);
 void Lara_Col_LeftJump(ITEM *item, COLL_INFO *coll);
 void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll);
-void Lara_Col_Fallback(ITEM *item, COLL_INFO *coll);
+void Lara_Col_FallBack(ITEM *item, COLL_INFO *coll);
 void Lara_Col_HangLeft(ITEM *item, COLL_INFO *coll);
 void Lara_Col_HangRight(ITEM *item, COLL_INFO *coll);
 void Lara_Col_SlideBack(ITEM *item, COLL_INFO *coll);
