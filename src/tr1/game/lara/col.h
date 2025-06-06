@@ -4,8 +4,6 @@
 
 #include "global/types.h"
 
-extern void (*g_LaraCollisionRoutines[])(ITEM *item, COLL_INFO *coll);
-
 void Lara_Col_Walk(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Run(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Stop(ITEM *item, COLL_INFO *coll);

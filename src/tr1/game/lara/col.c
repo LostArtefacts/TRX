@@ -40,30 +40,6 @@
 #define LF_WADE_STEP_L_START 3
 #define LF_WADE_STEP_L_END 14
 
-void (*g_LaraCollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
-    Lara_Col_Walk,        Lara_Col_Run,       Lara_Col_Stop,
-    Lara_Col_ForwardJump, Lara_Col_Pose,      Lara_Col_FastBack,
-    Lara_Col_TurnR,       Lara_Col_TurnL,     Lara_Col_Death,
-    Lara_Col_FastFall,    Lara_Col_Hang,      Lara_Col_Reach,
-    Lara_Col_Splat,       Lara_Col_Tread,     Lara_Col_Land,
-    Lara_Col_Compress,    Lara_Col_Back,      Lara_Col_Swim,
-    Lara_Col_Glide,       Lara_Col_Null,      Lara_Col_FastTurn,
-    Lara_Col_StepRight,   Lara_Col_StepLeft,  Lara_Col_Roll2,
-    Lara_Col_Slide,       Lara_Col_BackJump,  Lara_Col_RightJump,
-    Lara_Col_LeftJump,    Lara_Col_UpJump,    Lara_Col_FallBack,
-    Lara_Col_HangLeft,    Lara_Col_HangRight, Lara_Col_SlideBack,
-    Lara_Col_SurfTread,   Lara_Col_SurfSwim,  Lara_Col_Dive,
-    Lara_Col_PushBlock,   Lara_Col_PullBlock, Lara_Col_PPReady,
-    Lara_Col_Pickup,      Lara_Col_SwitchOn,  Lara_Col_SwitchOff,
-    Lara_Col_UseKey,      Lara_Col_UsePuzzle, Lara_Col_UWDeath,
-    Lara_Col_Roll,        Lara_Col_Special,   Lara_Col_SurfBack,
-    Lara_Col_SurfLeft,    Lara_Col_SurfRight, Lara_Col_UseMidas,
-    Lara_Col_DieMidas,    Lara_Col_SwanDive,  Lara_Col_FastDive,
-    Lara_Col_Gymnast,     Lara_Col_WaterOut,  Lara_Col_Controlled,
-    Lara_Col_Twist,       Lara_Col_UWRoll,    Lara_Col_Wade,
-    Lara_Col_Responsive,
-};
-
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Jumper(ITEM *item, COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
