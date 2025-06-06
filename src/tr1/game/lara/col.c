@@ -510,17 +510,6 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_Null(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    Lara_GetCollisionInfo(item, coll);
-}
-
 void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
 {
     if (item->current_anim_state == LS_STEP_RIGHT) {
@@ -880,8 +869,4 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
     }
 
     item->pos.y += MIN(coll->side_mid.floor, 50);
-}
-
-void Lara_Col_Empty(ITEM *item, COLL_INFO *coll)
-{
 }
