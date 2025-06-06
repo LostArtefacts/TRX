@@ -675,11 +675,6 @@ void Lara_Col_SlideBack(ITEM *item, COLL_INFO *coll)
     Lara_SlideSlope(item, coll);
 }
 
-void Lara_Col_UWRoll(ITEM *item, COLL_INFO *coll)
-{
-    Lara_SwimCollision(item, coll);
-}
-
 void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
@@ -819,21 +814,6 @@ void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll)
 }
 
 void Lara_Col_Swim(ITEM *item, COLL_INFO *coll)
-{
-    Lara_SwimCollision(item, coll);
-}
-
-void Lara_Col_Glide(ITEM *item, COLL_INFO *coll)
-{
-    Lara_SwimCollision(item, coll);
-}
-
-void Lara_Col_Tread(ITEM *item, COLL_INFO *coll)
-{
-    Lara_SwimCollision(item, coll);
-}
-
-void Lara_Col_Dive(ITEM *item, COLL_INFO *coll)
 {
     Lara_SwimCollision(item, coll);
 }
