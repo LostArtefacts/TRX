@@ -227,20 +227,18 @@ static bool M_CanChangeValue(
             return *(int32_t *)option->target < option->max_value;
         }
         break;
-    case COT_DOUBLE:
-        if (dir < 0) {
-            return *(double *)option->target > (double)option->min_value / 100;
-        } else if (dir > 0) {
-            return *(double *)option->target < (double)option->max_value / 100;
-        }
-        break;
-    case COT_FLOAT:
-        if (dir < 0) {
-            return *(float *)option->target > (float)option->min_value / 100;
-        } else if (dir > 0) {
-            return *(float *)option->target < (float)option->max_value / 100;
-        }
-        break;
+    case COT_DOUBLE: {
+        const double target_value =
+            (round(*(double *)option->target * 10) + (dir / 10.0f)) / 10.0;
+        return target_value >= (double)option->min_value / 100.0
+            && target_value <= (double)option->max_value / 100.0;
+    }
+    case COT_FLOAT: {
+        const float target_value =
+            (round(*(float *)option->target * 10) + (dir / 10.0f)) / 10.0f;
+        return target_value >= (float)option->min_value / 100.0f
+            && target_value <= (float)option->max_value / 100.0f;
+    }
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
         if (dir < 0) {
@@ -274,12 +272,6 @@ static bool M_RequestChangeValue(
     }
 
     const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
-    int32_t delta = g_Input.slow ? option->delta_slow : option->delta_fast;
-    if (delta == 0) {
-        delta = 1;
-    }
-    delta *= dir;
-
     if (option->custom_handler.request_change_value != nullptr) {
         if (option->custom_handler.request_change_value(option, dir)) {
             goto changed;
@@ -287,42 +279,7 @@ static bool M_RequestChangeValue(
         return false;
     }
 
-    switch (option->option_type) {
-    case COT_BOOL:
-    case COT_INVERTED_BOOL:
-        *(bool *)option->target = !*(bool *)option->target;
-        break;
-    case COT_INT32:
-        *(int32_t *)option->target += delta;
-        break;
-    case COT_DOUBLE:
-        *(double *)option->target =
-            (round(*(double *)option->target * 10) + (delta / 10.0f)) / 10.0f;
-        break;
-    case COT_FLOAT:
-        *(float *)option->target =
-            (round(*(float *)option->target * 10) + (delta / 10.0f)) / 10.0f;
-        break;
-    case COT_RGB888: {
-        uint8_t *const component = M_GetColorComponent(option);
-        int32_t component_i = *component;
-        component_i += delta;
-        CLAMP(component_i, 0, 255);
-        *component = component_i;
-        break;
-    }
-    case COT_ENUM: {
-        const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
-        const UI_SETTINGS_ENUM_ENTRY *const next_entry =
-            &((UI_SETTINGS_ENUM_ENTRY *)
-                  option->misc)[enum_lookup.position + delta];
-        *(int32_t *)option->target = next_entry->value;
-        break;
-    }
-    default:
-        return false;
-    }
-
+    UI_Settings_RequestChange(option, dir);
 changed:
     Config_Write();
     return true;
@@ -490,6 +447,56 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         }
     }
     return false;
+}
+
+void UI_Settings_RequestChange(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    int32_t delta = g_Input.slow ? option->delta_slow : option->delta_fast;
+    if (delta == 0) {
+        delta = 1;
+    }
+    delta *= dir;
+
+    switch (option->option_type) {
+    case COT_BOOL:
+    case COT_INVERTED_BOOL:
+        *(bool *)option->target = !*(bool *)option->target;
+        break;
+    case COT_INT32:
+        *(int32_t *)option->target += delta;
+        break;
+    case COT_DOUBLE:
+        *(double *)option->target =
+            (round(*(double *)option->target * 10) + (delta / 10.0f)) / 10.0f;
+        if (*(double *)option->target == -0.0) {
+            *(double *)option->target = 0.0;
+        }
+        break;
+    case COT_FLOAT:
+        *(float *)option->target =
+            (round(*(float *)option->target * 10) + (delta / 10.0f)) / 10.0f;
+        if (*(float *)option->target == -0.0f) {
+            *(float *)option->target = 0.0f;
+        }
+        break;
+    case COT_RGB888: {
+        uint8_t *const component = M_GetColorComponent(option);
+        int32_t component_i = *component;
+        component_i += delta;
+        CLAMP(component_i, 0, 255);
+        *component = component_i;
+        break;
+    }
+    case COT_ENUM: {
+        const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
+        const UI_SETTINGS_ENUM_ENTRY *const next_entry =
+            &((UI_SETTINGS_ENUM_ENTRY *)
+                  option->misc)[enum_lookup.position + delta];
+        *(int32_t *)option->target = next_entry->value;
+        break;
+    }
+    }
 }
 
 void UI_Settings(UI_SETTINGS_STATE *const s)
