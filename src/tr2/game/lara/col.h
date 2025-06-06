@@ -2,13 +2,6 @@
 
 #include "global/types.h"
 
-// TODO: make static
-void Lara_CollideStop(ITEM *item, const COLL_INFO *coll);
-bool Lara_Fallen(ITEM *item, const COLL_INFO *coll);
-bool Lara_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
-bool Lara_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
-void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll);
-
 void Lara_Col_Empty(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Walk(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Run(ITEM *item, COLL_INFO *coll);

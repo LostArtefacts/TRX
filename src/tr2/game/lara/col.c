@@ -45,7 +45,13 @@
 #define LF_CLIMB_L_SHIFT_END 29
 #define LF_CLIMB_R_SHIFT 57
 
-void Lara_CollideStop(ITEM *const item, const COLL_INFO *const coll)
+static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
+static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
+static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
+static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
+static void M_SurfaceCollision(ITEM *item, COLL_INFO *coll);
+
+static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
     switch (coll->old_anim_state) {
     case LS_STOP:
@@ -71,7 +77,7 @@ void Lara_CollideStop(ITEM *const item, const COLL_INFO *const coll)
     }
 }
 
-bool Lara_Fallen(ITEM *const item, const COLL_INFO *const coll)
+static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
 {
     if (coll->side_mid.floor <= STEPUP_HEIGHT
         || g_Lara.water_status == LWS_WADE) {
@@ -85,7 +91,7 @@ bool Lara_Fallen(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
-bool Lara_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
+static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || coll->side_front.type == HT_BIG_SLOPE) {
@@ -163,7 +169,7 @@ bool Lara_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
-bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
+static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 {
     if (coll->coll_type == COLL_FRONT || coll->side_mid.type == HT_BIG_SLOPE
         || coll->side_mid.floor >= 0) {
@@ -195,7 +201,7 @@ bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
-void Lara_SurfaceCollision(ITEM *const item, COLL_INFO *const coll)
+static void M_SurfaceCollision(ITEM *const item, COLL_INFO *const coll)
 {
     coll->facing = g_Lara.move_angle;
     Collide_GetCollisionInfo(
@@ -229,7 +235,7 @@ void Lara_SurfaceCollision(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    Lara_TestWaterStepOut(item, coll);
+    M_TestWaterStepOut(item, coll);
 }
 
 void Lara_Col_Empty(ITEM *item, COLL_INFO *coll)
@@ -266,11 +272,11 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
                     item, LF_WALK_STEP_L_2_START, LF_WALK_STEP_L_2_END))) {
             Item_SwitchToAnim(item, LA_WALK_STOP_LEFT, 0);
         } else {
-            Lara_CollideStop(item, coll);
+            M_CollideStop(item, coll);
         }
     }
 
-    if (Lara_Fallen(item, coll)) {
+    if (M_Fallen(item, coll)) {
         return;
     }
 
@@ -334,10 +340,10 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
                 return;
             }
         }
-        Lara_CollideStop(item, coll);
+        M_CollideStop(item, coll);
     }
 
-    if (Lara_Fallen(item, coll)) {
+    if (M_Fallen(item, coll)) {
         return;
     }
 
@@ -376,7 +382,7 @@ void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
 
-    if (Lara_HitCeiling(item, coll) || Lara_Fallen(item, coll)
+    if (Lara_HitCeiling(item, coll) || M_Fallen(item, coll)
         || Lara_TestSlide(item, coll)) {
         return;
     }
@@ -440,7 +446,7 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
 
     if (coll->side_mid.floor <= 200) {
         if (Lara_DeflectEdge(item, coll)) {
-            Lara_CollideStop(item, coll);
+            M_CollideStop(item, coll);
         }
         item->pos.y += coll->side_mid.floor;
     } else {
@@ -651,10 +657,10 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Lara_CollideStop(item, coll);
+        M_CollideStop(item, coll);
     }
 
-    if (Lara_Fallen(item, coll)) {
+    if (M_Fallen(item, coll)) {
         return;
     }
 
@@ -698,10 +704,10 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Lara_CollideStop(item, coll);
+        M_CollideStop(item, coll);
     }
 
-    if (!Lara_Fallen(item, coll) && !Lara_TestSlide(item, coll)) {
+    if (!M_Fallen(item, coll) && !Lara_TestSlide(item, coll)) {
         item->pos.y += coll->side_mid.floor;
     }
 }
@@ -841,7 +847,7 @@ void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
 
     Lara_GetCollisionInfo(item, coll);
     if (Lara_HitCeiling(item, coll) || Lara_TestSlide(item, coll)
-        || Lara_Fallen(item, coll)) {
+        || M_Fallen(item, coll)) {
         return;
     }
 
@@ -948,10 +954,10 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
                 return;
             }
         }
-        Lara_CollideStop(item, coll);
+        M_CollideStop(item, coll);
     }
 
-    if (Lara_Fallen(item, coll)) {
+    if (M_Fallen(item, coll)) {
         return;
     }
 
@@ -1256,32 +1262,32 @@ void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll)
 {
     coll->bad_neg = -STEPUP_HEIGHT;
     g_Lara.move_angle = item->rot.y;
-    Lara_SurfaceCollision(item, coll);
-    Lara_TestWaterClimbOut(item, coll);
+    M_SurfaceCollision(item, coll);
+    M_TestWaterClimbOut(item, coll);
 }
 
 void Lara_Col_SurfBack(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y + DEG_180;
-    Lara_SurfaceCollision(item, coll);
+    M_SurfaceCollision(item, coll);
 }
 
 void Lara_Col_SurfLeft(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - DEG_90;
-    Lara_SurfaceCollision(item, coll);
+    M_SurfaceCollision(item, coll);
 }
 
 void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y + DEG_90;
-    Lara_SurfaceCollision(item, coll);
+    M_SurfaceCollision(item, coll);
 }
 
 void Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
-    Lara_SurfaceCollision(item, coll);
+    M_SurfaceCollision(item, coll);
 }
 
 void Lara_Col_Swim(ITEM *item, COLL_INFO *coll)
