@@ -744,10 +744,6 @@ void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_Special(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_Col_SwanDive(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;

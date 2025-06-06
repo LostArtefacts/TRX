@@ -37,7 +37,6 @@ void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Dive(ITEM *item, COLL_INFO *coll);
 void Lara_Col_UWDeath(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Roll(ITEM *item, COLL_INFO *coll);
-void Lara_Col_Special(ITEM *item, COLL_INFO *coll);
 void Lara_Col_SurfBack(ITEM *item, COLL_INFO *coll);
 void Lara_Col_SurfLeft(ITEM *item, COLL_INFO *coll);
 void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll);
