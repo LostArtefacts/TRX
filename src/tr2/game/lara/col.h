@@ -22,7 +22,6 @@ void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Hang(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Reach(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Splat(ITEM *item, COLL_INFO *coll);
-void Lara_Col_Land(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Compress(ITEM *item, COLL_INFO *coll);
 void Lara_Col_Back(ITEM *item, COLL_INFO *coll);
 void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll);

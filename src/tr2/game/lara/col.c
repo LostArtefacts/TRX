@@ -608,11 +608,6 @@ void Lara_Col_Splat(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Land(ITEM *item, COLL_INFO *coll)
-{
-    Lara_Col_Stop(item, coll);
-}
-
 void Lara_Col_Compress(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = false;
