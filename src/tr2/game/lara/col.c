@@ -1,5 +1,3 @@
-#include "game/lara/col.h"
-
 #include "game/input.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
@@ -8,7 +6,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 

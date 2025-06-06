@@ -168,6 +168,7 @@ sources = [
   'game/items/utils.c',
   'game/lara/cheat.c',
   'game/lara/cheat_keys.c',
+  'game/lara/col.c',
   'game/lara/common.c',
   'game/lara/control.c',
   'game/lara/flare.c',
