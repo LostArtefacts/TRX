@@ -1,6 +1,9 @@
 #include "game/lara/col.h"
 
+#include "game/const.h"
 #include "game/lara.h"
+
+static void M_Default(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -23,7 +26,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_BACK]         = Lara_Col_Back,
     [LS_SWIM]         = Lara_Col_Swim,
     [LS_GLIDE]        = Lara_Col_Swim,
-    [LS_PULL_UP]      = Lara_Col_Null,
+    [LS_PULL_UP]      = M_Default,
     [LS_FAST_TURN]    = Lara_Col_Stop,
     [LS_STEP_RIGHT]   = Lara_Col_SideStep,
     [LS_STEP_LEFT]    = Lara_Col_SideStep,
@@ -40,53 +43,67 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_SURF_TREAD]   = Lara_Col_SurfTread,
     [LS_SURF_SWIM]    = Lara_Col_SurfSwim,
     [LS_DIVE]         = Lara_Col_Swim,
-    [LS_PUSH_BLOCK]   = Lara_Col_Null,
-    [LS_PULL_BLOCK]   = Lara_Col_Null,
-    [LS_PP_READY]     = Lara_Col_Null,
-    [LS_PICKUP]       = Lara_Col_Null,
-    [LS_SWITCH_ON]    = Lara_Col_Null,
-    [LS_SWITCH_OFF]   = Lara_Col_Null,
-    [LS_USE_KEY]      = Lara_Col_Null,
-    [LS_USE_PUZZLE]   = Lara_Col_Null,
+    [LS_PUSH_BLOCK]   = M_Default,
+    [LS_PULL_BLOCK]   = M_Default,
+    [LS_PP_READY]     = M_Default,
+    [LS_PICKUP]       = M_Default,
+    [LS_SWITCH_ON]    = M_Default,
+    [LS_SWITCH_OFF]   = M_Default,
+    [LS_USE_KEY]      = M_Default,
+    [LS_USE_PUZZLE]   = M_Default,
     [LS_UW_DEATH]     = Lara_Col_UWDeath,
     [LS_ROLL]         = Lara_Col_Roll,
-    [LS_SPECIAL]      = Lara_Col_Empty,
+    [LS_SPECIAL]      = nullptr,
     [LS_SURF_BACK]    = Lara_Col_SurfBack,
     [LS_SURF_LEFT]    = Lara_Col_SurfLeft,
     [LS_SURF_RIGHT]   = Lara_Col_SurfRight,
-    [LS_USE_MIDAS]    = Lara_Col_Null,
-    [LS_DIE_MIDAS]    = Lara_Col_Null,
+    [LS_USE_MIDAS]    = M_Default,
+    [LS_DIE_MIDAS]    = M_Default,
     [LS_SWAN_DIVE]    = Lara_Col_SwanDive,
     [LS_FAST_DIVE]    = Lara_Col_FastDive,
-    [LS_GYMNAST]      = Lara_Col_Null,
-    [LS_WATER_OUT]    = Lara_Col_Null,
+    [LS_GYMNAST]      = M_Default,
+    [LS_WATER_OUT]    = M_Default,
 #if TR_VERSION == 1
-    [LS_CONTROLLED]   = Lara_Col_Null,
-    [LS_TWIST]        = Lara_Col_Empty,
+    [LS_CONTROLLED]   = M_Default,
+    [LS_TWIST]        = nullptr,
     [LS_WATER_ROLL]   = Lara_Col_Swim,
     [LS_WADE]         = Lara_Col_Wade,
-    [LS_RESPONSIVE]   = Lara_Col_Empty,
+    [LS_RESPONSIVE]   = nullptr,
 #else
     [LS_CLIMB_STANCE] = Lara_Col_ClimbStance,
     [LS_CLIMBING]     = Lara_Col_Climbing,
     [LS_CLIMB_LEFT]   = Lara_Col_ClimbLeft,
-    [LS_CLIMB_END]    = Lara_Col_Empty,
+    [LS_CLIMB_END]    = nullptr,
     [LS_CLIMB_RIGHT]  = Lara_Col_ClimbRight,
     [LS_CLIMB_DOWN]   = Lara_Col_ClimbDown,
-    [LS_LARA_TEST1]   = Lara_Col_Empty,
-    [LS_LARA_TEST2]   = Lara_Col_Empty,
-    [LS_LARA_TEST3]   = Lara_Col_Empty,
+    [LS_LARA_TEST1]   = nullptr,
+    [LS_LARA_TEST2]   = nullptr,
+    [LS_LARA_TEST3]   = nullptr,
     [LS_WADE]         = Lara_Col_Wade,
     [LS_WATER_ROLL]   = Lara_Col_Swim,
-    [LS_FLARE_PICKUP] = Lara_Col_Null,
-    [LS_TWIST]        = Lara_Col_Empty,
-    [LS_KICK]         = Lara_Col_Empty,
-    [LS_ZIPLINE]      = Lara_Col_Empty,
+    [LS_FLARE_PICKUP] = M_Default,
+    [LS_TWIST]        = nullptr,
+    [LS_KICK]         = nullptr,
+    [LS_ZIPLINE]      = nullptr,
 #endif
     // clang-format on
 };
 
+static void M_Default(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    Lara_GetCollisionInfo(item, coll);
+}
+
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
 {
-    m_CollisionRoutines[item->current_anim_state](item, coll);
+    if (m_CollisionRoutines[item->current_anim_state] != nullptr) {
+        m_CollisionRoutines[item->current_anim_state](item, coll);
+    }
 }
