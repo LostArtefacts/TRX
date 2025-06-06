@@ -40,20 +40,8 @@
 #define LF_WADE_STEP_L_START 3
 #define LF_WADE_STEP_L_END 14
 
-static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Jumper(ITEM *item, COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
-
-static void M_Default(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    Lara_GetCollisionInfo(item, coll);
-}
 
 static void M_Jumper(ITEM *item, COLL_INFO *coll)
 {
@@ -541,7 +529,13 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
 
 void Lara_Col_Null(ITEM *item, COLL_INFO *coll)
 {
-    M_Default(item, coll);
+    g_Lara.move_angle = item->rot.y;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    Lara_GetCollisionInfo(item, coll);
 }
 
 void Lara_Col_FastTurn(ITEM *item, COLL_INFO *coll)
@@ -731,59 +725,9 @@ void Lara_Col_SlideBack(ITEM *item, COLL_INFO *coll)
     Lara_SlideSlope(item, coll);
 }
 
-void Lara_Col_PushBlock(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_PullBlock(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_PPReady(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_Pickup(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_Controlled(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_Twist(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
 void Lara_Col_UWRoll(ITEM *item, COLL_INFO *coll)
 {
     Lara_SwimCollision(item, coll);
-}
-
-void Lara_Col_SwitchOn(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_SwitchOff(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_UseKey(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_UsePuzzle(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
 }
 
 void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
@@ -854,16 +798,6 @@ void Lara_Col_Special(ITEM *item, COLL_INFO *coll)
 {
 }
 
-void Lara_Col_UseMidas(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_DieMidas(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
 void Lara_Col_SwanDive(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
@@ -902,16 +836,6 @@ void Lara_Col_FastDive(ITEM *item, COLL_INFO *coll)
         item->fall_speed = 0;
         item->pos.y += coll->side_mid.floor;
     }
-}
-
-void Lara_Col_Gymnast(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
-}
-
-void Lara_Col_WaterOut(ITEM *item, COLL_INFO *coll)
-{
-    M_Default(item, coll);
 }
 
 void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll)
@@ -1034,6 +958,6 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
     item->pos.y += MIN(coll->side_mid.floor, 50);
 }
 
-void Lara_Col_Responsive(ITEM *item, COLL_INFO *coll)
+void Lara_Col_Empty(ITEM *item, COLL_INFO *coll)
 {
 }
