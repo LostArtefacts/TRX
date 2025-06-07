@@ -13,6 +13,7 @@ static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
+static void M_Shimmy(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -46,8 +47,8 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_JUMP_LEFT]    = Lara_Col_LeftJump,
     [LS_JUMP_UP]      = Lara_Col_UpJump,
     [LS_FALL_BACK]    = M_FallBack,
-    [LS_HANG_LEFT]    = Lara_Col_HangLeft,
-    [LS_HANG_RIGHT]   = Lara_Col_HangRight,
+    [LS_SHIMMY_LEFT]  = M_Shimmy,
+    [LS_SHIMMY_RIGHT] = M_Shimmy,
     [LS_SLIDE_BACK]   = Lara_Col_SlideBack,
     [LS_SURF_TREAD]   = Lara_Col_SurfTread,
     [LS_SURF_SWIM]    = Lara_Col_SurfSwim,
@@ -273,6 +274,16 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
+{
+    const int32_t angle =
+        item->current_anim_state == LS_SHIMMY_LEFT ? -DEG_90 : DEG_90;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + angle;
+    Lara_HangTest(item, coll);
+    lara->move_angle = item->rot.y + angle;
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)

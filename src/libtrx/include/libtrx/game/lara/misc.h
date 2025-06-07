@@ -17,6 +17,7 @@ extern bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 extern bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
+extern void Lara_HangTest(ITEM *item, COLL_INFO *coll);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
 // (start aim); 2 (firing); or 4 (stopping firing).
