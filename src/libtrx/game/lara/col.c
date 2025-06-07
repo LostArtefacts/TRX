@@ -12,6 +12,7 @@ static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
+static void M_FallBack(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -44,7 +45,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_JUMP_RIGHT]   = Lara_Col_RightJump,
     [LS_JUMP_LEFT]    = Lara_Col_LeftJump,
     [LS_JUMP_UP]      = Lara_Col_UpJump,
-    [LS_FALL_BACK]    = Lara_Col_FallBack,
+    [LS_FALL_BACK]    = M_FallBack,
     [LS_HANG_LEFT]    = Lara_Col_HangLeft,
     [LS_HANG_RIGHT]   = Lara_Col_HangRight,
     [LS_SLIDE_BACK]   = Lara_Col_SlideBack,
@@ -246,6 +247,32 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
     Lara_SlideSlope(item, coll);
+}
+
+static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + DEG_180;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+
+    Lara_GetCollisionInfo(item, coll);
+    Lara_DeflectEdgeJump(item, coll);
+
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+        return;
+    }
+
+    if (Lara_LandedBad(item, coll)) {
+        item->goal_anim_state = LS_DEATH;
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
