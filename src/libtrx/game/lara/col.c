@@ -2,6 +2,7 @@
 
 #include "game/const.h"
 #include "game/lara.h"
+#include "game/rooms.h"
 #include "game/sound.h"
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
@@ -17,6 +18,7 @@ static void M_Shimmy(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
+static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -64,7 +66,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_SWITCH_OFF]   = M_Default,
     [LS_USE_KEY]      = M_Default,
     [LS_USE_PUZZLE]   = M_Default,
-    [LS_UW_DEATH]     = Lara_Col_UWDeath,
+    [LS_UW_DEATH]     = M_UWDeath,
     [LS_ROLL]         = Lara_Col_Roll,
     [LS_SPECIAL]      = nullptr,
     [LS_SURF_BACK]    = Lara_Col_SurfBack,
@@ -363,6 +365,20 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    item->hit_points = -1;
+    const int32_t water_height = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    if (water_height != NO_HEIGHT && water_height < item->pos.y - 100) {
+        item->pos.y -= 5;
+    }
+    Lara_SwimCollision(item, coll);
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)

@@ -50,6 +50,4 @@ int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
 void Lara_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
 
-void Lara_SwimCollision(ITEM *item, COLL_INFO *coll);
-
 void Lara_WaterCurrent(COLL_INFO *coll);
