@@ -338,28 +338,6 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Compress(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed = 0;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = NO_BAD_NEG;
-    coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (coll->side_mid.ceiling > -100) {
-        item->goal_anim_state = LS_STOP;
-        item->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
-        item->gravity = false;
-        item->fall_speed = 0;
-        item->speed = 0;
-        item->pos.x = coll->old.x;
-        item->pos.y = coll->old.y;
-        item->pos.z = coll->old.z;
-    }
-}
-
 void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - DEG_180;
