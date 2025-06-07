@@ -11,7 +11,6 @@ extern void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Hang(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Back(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Roll(ITEM *item, COLL_INFO *coll);

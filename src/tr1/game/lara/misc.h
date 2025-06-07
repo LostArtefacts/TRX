@@ -7,7 +7,6 @@
 bool Lara_Fallen(ITEM *item, COLL_INFO *coll);
 bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
-bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 bool Lara_TestHangSwingIn(ITEM *item, PHD_ANGLE angle);
 void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll);
 int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
