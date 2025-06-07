@@ -452,23 +452,6 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Death(ITEM *item, COLL_INFO *coll)
-{
-    Sound_StopEffect(SFX_LARA_FALL);
-    g_Lara.move_angle = item->rot.y;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    coll->radius = 400;
-
-    Lara_GetCollisionInfo(item, coll);
-    Lara_ShiftCol(coll);
-
-    item->pos.y += coll->side_mid.floor;
-    item->hit_points = -1;
-    g_Lara.air = -1;
-}
-
 void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = true;

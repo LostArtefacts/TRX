@@ -2,9 +2,11 @@
 
 #include "game/const.h"
 #include "game/lara.h"
+#include "game/sound.h"
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
+static void M_Death(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -16,7 +18,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_FAST_BACK]    = Lara_Col_FastBack,
     [LS_TURN_RIGHT]   = M_Turn,
     [LS_TURN_LEFT]    = M_Turn,
-    [LS_DEATH]        = Lara_Col_Death,
+    [LS_DEATH]        = M_Death,
     [LS_FAST_FALL]    = Lara_Col_FastFall,
     [LS_HANG]         = Lara_Col_Hang,
     [LS_REACH]        = Lara_Col_Reach,
@@ -119,6 +121,26 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
         item->gravity = true;
         item->fall_speed = 0;
     }
+}
+
+static void M_Death(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    Sound_StopEffect(SFX_LARA_FALL);
+#endif
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->radius = LARA_RADIUS * 4;
+
+    Lara_GetCollisionInfo(item, coll);
+    Lara_ShiftCol(coll);
+
+    item->pos.y += coll->side_mid.floor;
+    item->hit_points = -1;
+    lara->air = -1;
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
