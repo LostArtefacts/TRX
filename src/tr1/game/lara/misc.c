@@ -88,8 +88,8 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
-        if (item->current_anim_state == LS_HANG_LEFT
-            || item->current_anim_state == LS_HANG_RIGHT) {
+        if (item->current_anim_state == LS_SHIMMY_LEFT
+            || item->current_anim_state == LS_SHIMMY_RIGHT) {
             item->goal_anim_state = LS_HANG;
             item->current_anim_state = LS_HANG;
             Item_SwitchToAnim(item, LA_REACH_TO_HANG, LF_HANG);

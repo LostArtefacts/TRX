@@ -365,9 +365,9 @@ void Lara_State_Hang(ITEM *item, COLL_INFO *coll)
     g_Camera.target_angle = CAM_HANG_ANGLE;
     g_Camera.target_elevation = CAM_HANG_ELEVATION;
     if (g_Input.left || g_Input.step_left) {
-        item->goal_anim_state = LS_HANG_LEFT;
+        item->goal_anim_state = LS_SHIMMY_LEFT;
     } else if (g_Input.right || g_Input.step_right) {
-        item->goal_anim_state = LS_HANG_RIGHT;
+        item->goal_anim_state = LS_SHIMMY_RIGHT;
     }
 }
 

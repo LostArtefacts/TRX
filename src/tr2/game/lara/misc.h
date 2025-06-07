@@ -14,8 +14,6 @@ int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
 
 int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
 
-void Lara_HangTest(ITEM *item, COLL_INFO *coll);
-
 int32_t Lara_TestEdgeCatch(ITEM *item, COLL_INFO *coll, int32_t *edge);
 
 int32_t Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);

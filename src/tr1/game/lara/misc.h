@@ -4,7 +4,6 @@
 
 #include <libtrx/game/lara/misc.h>
 
-void Lara_HangTest(ITEM *item, COLL_INFO *coll);
 bool Lara_Fallen(ITEM *item, COLL_INFO *coll);
 bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll);
 bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
