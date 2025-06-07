@@ -15,6 +15,7 @@ static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
+static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -70,7 +71,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_SURF_RIGHT]   = Lara_Col_SurfRight,
     [LS_USE_MIDAS]    = M_Default,
     [LS_DIE_MIDAS]    = M_Default,
-    [LS_SWAN_DIVE]    = Lara_Col_SwanDive,
+    [LS_SWAN_DIVE]    = M_SwanDive,
     [LS_FAST_DIVE]    = Lara_Col_FastDive,
     [LS_GYMNAST]      = M_Default,
     [LS_WATER_OUT]    = M_Default,
@@ -316,6 +317,26 @@ static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
         Lara_ShiftCol(coll);
         item->pos.y += coll->side_mid.floor;
     }
+}
+
+static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+
+    Lara_GetCollisionInfo(item, coll);
+    Lara_DeflectEdgeJump(item, coll);
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+        return;
+    }
+
+    item->goal_anim_state = LS_STOP;
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
