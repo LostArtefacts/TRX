@@ -1,43 +1,7 @@
 #include "game/ui/dialogs/graphic_settings.h"
 
-#include "game/input.h"
-#include "game/screen.h"
-
-#include <libtrx/config.h>
-#include <libtrx/strings.h>
-
-static char *m_TempString = nullptr;
-static size_t m_TempStringCap = 0;
-
-static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
-    { CAMERA_MODE_TR1, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR1) },
-    { CAMERA_MODE_TR2, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR2) },
-    { -1, nullptr },
-};
-
-static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterEnumEntries[] = {
-    { GFX_TF_NN, GS_ID(MISC_OFF) },
-    { GFX_TF_BILINEAR, GS_ID(GRAPHIC_SETTINGS_BILINEAR) },
-    { -1, nullptr },
-};
-
-static const UI_SETTINGS_ENUM_ENTRY m_RenderModeEnumEntries[] = {
-    { GFX_RM_LEGACY, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_LEGACY) },
-    { GFX_RM_FRAMEBUFFER, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_FBO) },
-    { -1, nullptr },
-};
-
-static const UI_SETTINGS_ENUM_ENTRY m_ScreenshotFormatEnumEntries[] = {
-    { SCREENSHOT_FORMAT_JPEG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_JPG) },
-    { SCREENSHOT_FORMAT_PNG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_PNG) },
-    { -1, nullptr },
-};
-
-static const UI_SETTINGS_ENUM_ENTRY m_MenuStyleEnumEntries[] = {
-    { UI_STYLE_PS1, GS_ID(GRAPHIC_SETTINGS_UI_STYLE_PS1) },
-    { UI_STYLE_PC, GS_ID(GRAPHIC_SETTINGS_UI_STYLE_PC) },
-    { -1, nullptr },
-};
+#include "config.h"
+#include "strings.h"
 
 static const UI_SETTINGS_ENUM_ENTRY m_HealthBarShowModeEnumEntries[] = {
     { BSM_DEFAULT, GS_ID(GRAPHIC_SETTINGS_DEFAULT) },
@@ -112,6 +76,75 @@ static const UI_SETTINGS_ENUM_ENTRY m_BarColorEnumEntries[] = {
     { -1, nullptr },
 };
 
+static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
+    { CAMERA_MODE_TR1, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR1) },
+    { CAMERA_MODE_TR2, GS_ID(GRAPHIC_SETTINGS_CAMERA_MODE_TR2) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterEnumEntries[] = {
+    { GFX_TF_NN, GS_ID(MISC_OFF) },
+    { GFX_TF_BILINEAR, GS_ID(GRAPHIC_SETTINGS_BILINEAR) },
+    { -1, nullptr },
+};
+
+#if TR_VERSION == 1
+
+static const UI_SETTINGS_ENUM_ENTRY m_RenderModeEnumEntries[] = {
+    { GFX_RM_LEGACY, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_LEGACY) },
+    { GFX_RM_FRAMEBUFFER, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_FBO) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_MenuStyleEnumEntries[] = {
+    { UI_STYLE_PS1, GS_ID(GRAPHIC_SETTINGS_UI_STYLE_PS1) },
+    { UI_STYLE_PC, GS_ID(GRAPHIC_SETTINGS_UI_STYLE_PC) },
+    { -1, nullptr },
+};
+
+#elif TR_VERSION == 2
+
+static const UI_SETTINGS_ENUM_ENTRY m_LightingContrastEnumEntries[] = {
+    { LIGHTING_CONTRAST_LOW, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_LOW) },
+    { LIGHTING_CONTRAST_MEDIUM,
+      GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_MEDIUM) },
+    { LIGHTING_CONTRAST_HIGH, GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST_HIGH) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_RenderModeEnumEntries[] = {
+    { RM_SOFTWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE) },
+    { RM_HARDWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE) },
+    { -1, nullptr },
+};
+
+static const UI_SETTINGS_ENUM_ENTRY m_AspectModeEnumEntries[] = {
+    { AM_4_3, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_4_3) },
+    { AM_16_9, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_16_9) },
+    { AM_ANY, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_ANY) },
+    { -1, nullptr },
+};
+
+#endif
+
+static const UI_SETTINGS_ENUM_ENTRY m_ScreenshotFormatEnumEntries[] = {
+    { SCREENSHOT_FORMAT_JPEG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_JPG) },
+    { SCREENSHOT_FORMAT_PNG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_PNG) },
+    { -1, nullptr },
+};
+
+static char *m_TempString = nullptr;
+static size_t m_TempStringCap = 0;
+
+#if TR_VERSION == 1
+// TODO: tidy me once we decide what to do about screen.c
+extern int32_t Screen_GetResWidth(void);
+extern int32_t Screen_GetResHeight(void);
+extern bool Screen_CanSetPrevRes(void);
+extern bool Screen_CanSetNextRes(void);
+extern bool Screen_SetPrevRes(void);
+extern bool Screen_SetNextRes(void);
+
 static const char *M_ScreenResolution_FormatValue(
     const UI_SETTINGS_OPTION *option);
 static bool M_ScreenResolution_CanChangeValue(
@@ -123,8 +156,8 @@ static const char *M_ScreenResolution_FormatValue(
     const UI_SETTINGS_OPTION *const option)
 {
     String_FormatInto(
-        &m_TempString, &m_TempStringCap, GS(DETAIL_RESOLUTION_FMT),
-        Screen_GetResWidth(), Screen_GetResHeight());
+        &m_TempString, &m_TempStringCap, "%dx%d", Screen_GetResWidth(),
+        Screen_GetResHeight());
     return m_TempString;
 }
 
@@ -144,6 +177,7 @@ static bool M_ScreenResolution_RequestChangeValue(
     }
     return true;
 }
+#endif
 
 static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
     {
@@ -204,6 +238,7 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .misc = m_CameraModeEnumEntries,
     },
 
+#if TR_VERSION == 1
     {
         .option_type = COT_INT32,
         .label_id = GS_ID(GRAPHIC_SETTINGS_FOV),
@@ -219,7 +254,25 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .label_id = GS_ID(GRAPHIC_SETTINGS_FOV_VERTICAL),
         .option_type = COT_BOOL,
     },
+#elif TR_VERSION == 2
+    {
+        .option_type = COT_INT32,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_FOV),
+        .target = &g_Config.visuals.fov,
+        .min_value = 30,
+        .max_value = 150,
+        .delta_slow = 1,
+        .delta_fast = 10,
+    },
 
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_USE_PSX_FOV),
+        .target = &g_Config.visuals.use_psx_fov,
+    },
+#endif
+
+#if TR_VERSION == 1
     {
         .option_type = COT_BOOL,
         .label_id = GS_ID(GRAPHIC_SETTINGS_REFLECTIONS),
@@ -231,6 +284,7 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_SKYBOX),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.visuals.enable_braid,
@@ -250,6 +304,7 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_pickup_aids,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS),
@@ -267,6 +322,7 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.visuals.enable_gun_lighting,
@@ -274,11 +330,13 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.visuals.enable_shotgun_flash,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_SHOTGUN_FLASH),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = nullptr,
@@ -312,12 +370,15 @@ static const UI_SETTINGS_OPTION m_UIOptions[] = {
         .target = &g_Config.ui.enable_wraparound,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.ui.menu_style,
         .label_id = GS_ID(GRAPHIC_SETTINGS_MENU_STYLE),
         .option_type = COT_ENUM,
         .misc = &m_MenuStyleEnumEntries,
     },
+#endif
+
     {
         .target = &g_Config.ui.lara_health_bar.show_mode,
         .label_id = GS_ID(GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE),
@@ -336,6 +397,7 @@ static const UI_SETTINGS_OPTION m_UIOptions[] = {
         .option_type = COT_ENUM,
         .misc = &m_BarColorEnumEntries,
     },
+
     {
         .target = &g_Config.ui.lara_air_bar.show_mode,
         .label_id = GS_ID(GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE),
@@ -354,6 +416,7 @@ static const UI_SETTINGS_OPTION m_UIOptions[] = {
         .option_type = COT_ENUM,
         .misc = &m_BarColorEnumEntries,
     },
+
     {
         .target = &g_Config.ui.enemy_health_bar.show_mode,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE),
@@ -372,16 +435,21 @@ static const UI_SETTINGS_OPTION m_UIOptions[] = {
         .option_type = COT_ENUM,
         .misc = &m_BarColorEnumEntries,
     },
+
+#if TR_VERSION == 1
     {
         .target = &g_Config.ui.enable_smooth_bars,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_SMOOTH_BARS),
         .option_type = COT_BOOL,
     },
+#endif
+
     {
         .target = &g_Config.visuals.enable_fade_effects,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS),
         .option_type = COT_BOOL,
     },
+
     {
         .target = &g_Config.visuals.enable_exit_fade_effects,
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS),
@@ -418,6 +486,8 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .label_id = GS_ID(GRAPHIC_SETTINGS_TRAPEZOID_FILTER),
         .target = &g_Config.rendering.enable_trapezoid_filter,
     },
+
+#if TR_VERSION == 1
 
     {
         .target = &g_Config.rendering.anisotropy_filter,
@@ -471,6 +541,61 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .delta_slow = 10,
         .delta_fast = 10,
     },
+
+#elif TR_VERSION == 2
+    {
+        .option_type = COT_BOOL,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_DEPTH_BUFFER),
+        .target = &g_Config.rendering.enable_zbuffer,
+    },
+
+    {
+        .option_type = COT_ENUM,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_LIGHTING_CONTRAST),
+        .target = &g_Config.rendering.lighting_contrast,
+        .delta_slow = 1,
+        .delta_fast = 1,
+        .misc = m_LightingContrastEnumEntries,
+    },
+
+    {
+        .option_type = COT_ENUM,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_RENDER_MODE),
+        .target = &g_Config.rendering.render_mode,
+        .delta_slow = 1,
+        .delta_fast = 1,
+        .misc = m_RenderModeEnumEntries,
+    },
+
+    {
+        .option_type = COT_ENUM,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE),
+        .target = &g_Config.rendering.aspect_mode,
+        .delta_slow = 1,
+        .delta_fast = 1,
+        .misc = m_AspectModeEnumEntries,
+    },
+
+    {
+        .option_type = COT_INT32,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_SCALER),
+        .target = &g_Config.rendering.scaler,
+        .min_value = 1,
+        .max_value = 4,
+        .delta_slow = 1,
+        .delta_fast = 1,
+    },
+
+    {
+        .option_type = COT_FLOAT,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_SIZER),
+        .target = &g_Config.rendering.sizer,
+        .min_value = 40,
+        .max_value = 200,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
+#endif
 
     {
         .target = &g_Config.rendering.screenshot_format,
