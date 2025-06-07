@@ -10,6 +10,7 @@ static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
+static void M_Compress(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -28,7 +29,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_SPLAT]        = M_Splat,
     [LS_TREAD]        = Lara_Col_Swim,
     [LS_LAND]         = Lara_Col_Stop,
-    [LS_COMPRESS]     = Lara_Col_Compress,
+    [LS_COMPRESS]     = M_Compress,
     [LS_BACK]         = Lara_Col_Back,
     [LS_SWIM]         = Lara_Col_Swim,
     [LS_GLIDE]        = Lara_Col_Swim,
@@ -206,6 +207,32 @@ static void M_Splat(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
     Lara_ShiftCol(coll);
+#if TR_VERSION >= 2
+    if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
+        item->pos.y += coll->side_mid.floor;
+    }
+#endif
+}
+
+static void M_Compress(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = NO_BAD_NEG;
+    coll->bad_ceiling = 0;
+
+    Lara_GetCollisionInfo(item, coll);
+
+    if (coll->side_mid.ceiling > -100) {
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+        item->goal_anim_state = LS_STOP;
+        item->current_anim_state = LS_STOP;
+        item->gravity = false;
+        item->speed = 0;
+        item->fall_speed = 0;
+        item->pos = coll->old;
+    }
 #if TR_VERSION >= 2
     if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
         item->pos.y += coll->side_mid.floor;
