@@ -30,14 +30,6 @@
 #define LF_BACK_R_START 26
 #define LF_BACK_R_END 55
 
-#define LF_WADE_L_START 0
-#define LF_WADE_L_END 9
-#define LF_WADE_R_START 10
-#define LF_WADE_R_END 21
-
-#define LF_WADE_STEP_L_START 3
-#define LF_WADE_STEP_L_END 14
-
 #define LF_HANG 21
 #define LF_CLIMB_L_SHIFT_START 28
 #define LF_CLIMB_L_SHIFT_END 29
@@ -375,59 +367,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     if (!M_Fallen(item, coll) && !Lara_TestSlide(item, coll)) {
         item->pos.y += coll->side_mid.floor;
     }
-}
-
-void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_walls = 1;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-
-    Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
-        return;
-    }
-
-    if (Lara_DeflectEdge(item, coll)) {
-        item->rot.z = 0;
-        if (coll->side_front.type != COLL_NONE
-            && coll->side_front.floor < -STEP_L * 5 / 2
-            && coll->old_anim_state == LS_WADE
-            && Item_TestAnimEqual(item, LA_WADE)) {
-            item->current_anim_state = LS_SPLAT;
-            if (Item_TestFrameRange(item, LF_WADE_L_START, LF_WADE_L_END)) {
-                Item_SwitchToAnim(item, LA_WALL_SMASH_LEFT, 0);
-                return;
-            }
-            if (Item_TestFrameRange(item, LF_WADE_R_START, LF_WADE_R_END)) {
-                Item_SwitchToAnim(item, LA_WALL_SMASH_RIGHT, 0);
-                return;
-            }
-        }
-        M_CollideStop(item, coll);
-    }
-
-    if (M_Fallen(item, coll)) {
-        return;
-    }
-
-    if (coll->side_mid.floor >= -STEPUP_HEIGHT
-        && coll->side_mid.floor < -STEP_L / 2) {
-        if (Item_TestFrameRange(
-                item, LF_WADE_STEP_L_START, LF_WADE_STEP_L_END)) {
-            Item_SwitchToAnim(item, LA_RUN_UP_STEP_LEFT, 0);
-        } else {
-            Item_SwitchToAnim(item, LA_RUN_UP_STEP_RIGHT, 0);
-        }
-    }
-
-    if (Lara_TestSlide(item, coll)) {
-        return;
-    }
-
-    item->pos.y += MIN(coll->side_mid.floor, 50);
 }
 
 void Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll)

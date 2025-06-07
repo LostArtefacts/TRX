@@ -7,10 +7,18 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
+#define M_LF_WADE_L_START 0
+#define M_LF_WADE_L_END 9
+#define M_LF_WADE_R_START 10
+#define M_LF_WADE_R_END 21
+#define M_LF_WADE_STEP_L_START 3
+#define M_LF_WADE_STEP_L_END 14
+
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
 static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
+static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
@@ -34,6 +42,7 @@ static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
 static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
+static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -97,7 +106,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_CONTROLLED]   = M_Default,
     [LS_TWIST]        = nullptr,
     [LS_WATER_ROLL]   = M_Swim,
-    [LS_WADE]         = Lara_Col_Wade,
+    [LS_WADE]         = M_Wade,
     [LS_RESPONSIVE]   = nullptr,
 #else
     [LS_CLIMB_STANCE] = Lara_Col_ClimbStance,
@@ -109,7 +118,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_LARA_TEST1]   = nullptr,
     [LS_LARA_TEST2]   = nullptr,
     [LS_LARA_TEST3]   = nullptr,
-    [LS_WADE]         = Lara_Col_Wade,
+    [LS_WADE]         = M_Wade,
     [LS_WATER_ROLL]   = M_Swim,
     [LS_FLARE_PICKUP] = M_Default,
     [LS_TWIST]        = nullptr,
@@ -272,6 +281,32 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
         lara->water_status = LWS_WADE;
         item->pos.y =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    }
+}
+
+static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
+{
+    switch (coll->old_anim_state) {
+    case LS_STOP:
+    case LS_TURN_RIGHT:
+    case LS_TURN_LEFT:
+    case LS_FAST_TURN:
+        item->current_anim_state = coll->old_anim_state;
+        item->anim_num = coll->old_anim_num;
+        item->frame_num = coll->old_frame_num;
+        if (g_Input.left) {
+            item->goal_anim_state = LS_TURN_LEFT;
+        } else if (g_Input.right) {
+            item->goal_anim_state = LS_TURN_RIGHT;
+        } else {
+            item->goal_anim_state = LS_STOP;
+        }
+        Lara_Animate(item);
+        break;
+
+    default:
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+        break;
     }
 }
 
@@ -889,6 +924,60 @@ static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
         item->pos.y -= 5;
     }
     M_Swim(item, coll);
+}
+
+static void M_Wade(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->slopes_are_walls = 1;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+
+    Lara_GetCollisionInfo(item, coll);
+    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
+        return;
+    }
+
+    if (Lara_DeflectEdge(item, coll)) {
+        item->rot.z = 0;
+        if (coll->side_front.type == HT_WALL
+            && coll->side_front.floor < -STEP_L * 5 / 2
+            && coll->old_anim_state == LS_WADE
+            && Item_TestAnimEqual(item, LA_WADE)) {
+            item->current_anim_state = LS_SPLAT;
+            if (Item_TestFrameRange(item, M_LF_WADE_L_START, M_LF_WADE_L_END)) {
+                Item_SwitchToAnim(item, LA_WALL_SMASH_LEFT, 0);
+                return;
+            }
+            if (Item_TestFrameRange(item, M_LF_WADE_R_START, M_LF_WADE_R_END)) {
+                Item_SwitchToAnim(item, LA_WALL_SMASH_RIGHT, 0);
+                return;
+            }
+        }
+        M_CollideStop(item, coll);
+    }
+
+    if (M_Fallen(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
+        if (Item_TestFrameRange(
+                item, M_LF_WADE_STEP_L_START, M_LF_WADE_STEP_L_END)) {
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_LEFT, 0);
+        } else {
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_RIGHT, 0);
+        }
+    }
+
+    if (Lara_TestSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += MIN(coll->side_mid.floor, 50);
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
