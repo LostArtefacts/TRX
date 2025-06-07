@@ -749,7 +749,7 @@ bool Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     return true;
 }
 
-int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)
+bool Lara_LandedBad(ITEM *item, COLL_INFO *coll)
 {
     const int32_t x = item->pos.x;
     const int32_t y = item->pos.y;
@@ -765,7 +765,7 @@ int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)
     int32_t land_speed = item->fall_speed - DAMAGE_START;
     item->pos.y = y;
     if (land_speed <= 0) {
-        return 0;
+        return false;
     }
     if (land_speed <= DAMAGE_LENGTH) {
         Lara_TakeDamage(

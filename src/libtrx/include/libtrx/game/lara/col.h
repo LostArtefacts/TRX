@@ -9,7 +9,6 @@ extern void Lara_Col_Run(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Stop(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Hang(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Reach(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Splat(ITEM *item, COLL_INFO *coll);
