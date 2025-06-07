@@ -370,38 +370,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    item->gravity = false;
-    item->fall_speed = 0;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    coll->slopes_are_walls = 1;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (Lara_HitCeiling(item, coll)) {
-        return;
-    }
-
-    if (Lara_TestSlide(item, coll)) {
-        return;
-    }
-
-    if (coll->side_mid.floor > 200) {
-        item->current_anim_state = LS_JUMP_FORWARD;
-        item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_START, 0);
-        item->gravity = true;
-        item->fall_speed = 0;
-        return;
-    }
-
-    Lara_ShiftCol(coll);
-    item->pos.y += coll->side_mid.floor;
-}
-
 void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll)
 {
     coll->bad_neg = -STEPUP_HEIGHT;
