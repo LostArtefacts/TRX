@@ -49,7 +49,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_FALL_BACK]    = M_FallBack,
     [LS_SHIMMY_LEFT]  = M_Shimmy,
     [LS_SHIMMY_RIGHT] = M_Shimmy,
-    [LS_SLIDE_BACK]   = Lara_Col_SlideBack,
+    [LS_SLIDE_BACK]   = M_Slide,
     [LS_SURF_TREAD]   = Lara_Col_SurfTread,
     [LS_SURF_SWIM]    = Lara_Col_SurfSwim,
     [LS_DIVE]         = Lara_Col_Swim,
@@ -247,6 +247,9 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
+    if (item->current_anim_state == LS_SLIDE_BACK) {
+        lara->move_angle += DEG_180;
+    }
     Lara_SlideSlope(item, coll);
 }
 
