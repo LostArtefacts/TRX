@@ -564,24 +564,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_BackJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y + DEG_180;
-    Lara_Col_Jumper(item, coll);
-}
-
-void Lara_Col_RightJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y + DEG_90;
-    Lara_Col_Jumper(item, coll);
-}
-
-void Lara_Col_LeftJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y - DEG_90;
-    Lara_Col_Jumper(item, coll);
-}
-
 void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
@@ -696,28 +678,6 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
     }
 
     item->pos.y += MIN(coll->side_mid.floor, 50);
-}
-
-void Lara_Col_Jumper(ITEM *item, COLL_INFO *coll)
-{
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
-
-    Lara_GetCollisionInfo(item, coll);
-    Lara_DeflectEdgeJump(item, coll);
-    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
-        return;
-    }
-
-    if (Lara_LandedBad(item, coll)) {
-        item->goal_anim_state = LS_DEATH;
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-    item->gravity = false;
-    item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll)
