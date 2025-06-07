@@ -553,11 +553,6 @@ void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll)
     Lara_SurfaceCollision(item, coll);
 }
 
-void Lara_Col_Swim(ITEM *item, COLL_INFO *coll)
-{
-    Lara_SwimCollision(item, coll);
-}
-
 void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
