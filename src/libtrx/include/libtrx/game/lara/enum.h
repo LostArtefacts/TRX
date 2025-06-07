@@ -62,7 +62,7 @@ typedef enum {
     LS_FAST_TURN     = 20,
     LS_STEP_RIGHT    = 21,
     LS_STEP_LEFT     = 22,
-    LS_HIT           = 23,
+    LS_ROLL_CONT     = 23,
     LS_SLIDE         = 24,
     LS_JUMP_BACK     = 25,
     LS_JUMP_RIGHT    = 26,

@@ -75,10 +75,10 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
     }
 }
 
-int32_t Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
+bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {
-        return 0;
+        return false;
     }
 
     item->pos.x = coll->old.x;
@@ -90,7 +90,7 @@ int32_t Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
     item->speed = 0;
     item->gravity = false;
     item->fall_speed = 0;
-    return 1;
+    return true;
 }
 
 int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)

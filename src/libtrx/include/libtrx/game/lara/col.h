@@ -13,7 +13,6 @@ extern void Lara_Col_Hang(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Back(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Swim(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_BackJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_RightJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_LeftJump(ITEM *item, COLL_INFO *coll);

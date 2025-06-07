@@ -14,6 +14,7 @@ static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
+static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -40,7 +41,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_FAST_TURN]    = Lara_Col_Stop,
     [LS_STEP_RIGHT]   = Lara_Col_SideStep,
     [LS_STEP_LEFT]    = Lara_Col_SideStep,
-    [LS_HIT]          = Lara_Col_Roll2,
+    [LS_ROLL_CONT]    = M_RollContinue,
     [LS_SLIDE]        = M_Slide,
     [LS_JUMP_BACK]    = Lara_Col_BackJump,
     [LS_JUMP_RIGHT]   = Lara_Col_RightJump,
@@ -287,6 +288,34 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y + angle;
     Lara_HangTest(item, coll);
     lara->move_angle = item->rot.y + angle;
+}
+
+static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    item->gravity = false;
+    item->fall_speed = 0;
+    lara->move_angle = item->rot.y + DEG_180;
+    coll->slopes_are_walls = 1;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+
+    Lara_GetCollisionInfo(item, coll);
+    if (Lara_HitCeiling(item, coll) || Lara_TestSlide(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor > 200) {
+        Item_SwitchToAnim(item, LA_FALL_BACK, 0);
+        item->current_anim_state = LS_FALL_BACK;
+        item->goal_anim_state = LS_FALL_BACK;
+        item->gravity = true;
+        item->fall_speed = 0;
+    } else {
+        Lara_ShiftCol(coll);
+        item->pos.y += coll->side_mid.floor;
+    }
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)

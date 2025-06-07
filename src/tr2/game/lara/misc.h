@@ -4,8 +4,6 @@
 
 #include <libtrx/game/lara/misc.h>
 
-int32_t Lara_HitCeiling(ITEM *item, COLL_INFO *coll);
-
 int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
 
 int32_t Lara_TestWall(ITEM *item, int32_t front, int32_t right, int32_t down);
