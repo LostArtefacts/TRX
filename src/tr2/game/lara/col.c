@@ -488,23 +488,6 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Splat(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-
-    Lara_GetCollisionInfo(item, coll);
-    Lara_ShiftCol(coll);
-
-    if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
-        item->pos.y += coll->side_mid.floor;
-    }
-}
-
 void Lara_Col_Compress(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = false;

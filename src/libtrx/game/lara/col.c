@@ -9,6 +9,7 @@ static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
+static void M_Splat(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -24,7 +25,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_FAST_FALL]    = M_FastFall,
     [LS_HANG]         = Lara_Col_Hang,
     [LS_REACH]        = M_Reach,
-    [LS_SPLAT]        = Lara_Col_Splat,
+    [LS_SPLAT]        = M_Splat,
     [LS_TREAD]        = Lara_Col_Swim,
     [LS_LAND]         = Lara_Col_Stop,
     [LS_COMPRESS]     = Lara_Col_Compress,
@@ -199,6 +200,17 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_Splat(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
+    Lara_ShiftCol(coll);
+#if TR_VERSION >= 2
+    if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
+        item->pos.y += coll->side_mid.floor;
+    }
+#endif
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
