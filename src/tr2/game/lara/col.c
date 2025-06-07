@@ -452,32 +452,6 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Turn(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed = 0;
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-
-    Lara_GetCollisionInfo(item, coll);
-
-    if (coll->side_mid.floor <= 100) {
-        if (!Lara_TestSlide(item, coll)) {
-            item->pos.y += coll->side_mid.floor;
-        }
-    } else {
-        Item_SwitchToAnim(item, LA_FALL_START, 0);
-        item->current_anim_state = LS_JUMP_FORWARD;
-        item->goal_anim_state = LS_JUMP_FORWARD;
-        item->gravity = true;
-        item->fall_speed = 0;
-    }
-}
-
 void Lara_Col_Death(ITEM *item, COLL_INFO *coll)
 {
     Sound_StopEffect(SFX_LARA_FALL);

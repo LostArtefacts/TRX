@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../collision.h"
-#include "../items/types.h"
 
 void Lara_Extinguish(void);
 void Lara_TouchLava(void);
@@ -12,6 +11,7 @@ extern void Lara_CatchFire(void);
 
 void Lara_UpdateRoomToHeight(int32_t height);
 void Lara_ShiftCol(COLL_INFO *coll);
+extern bool Lara_TestSlide(ITEM *item, COLL_INFO *coll);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
 // (start aim); 2 (firing); or 4 (stopping firing).

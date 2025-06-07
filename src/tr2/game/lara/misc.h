@@ -32,8 +32,6 @@ int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle);
 
 int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll);
 
-int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll);
-
 int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 
 int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll);
