@@ -93,7 +93,7 @@ bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
     return true;
 }
 
-int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
+bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
 {
     switch (coll->coll_type) {
     case COLL_FRONT:
@@ -103,20 +103,20 @@ int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
         item->current_anim_state = LS_STOP;
         item->gravity = false;
         item->speed = 0;
-        return 1;
+        return true;
 
     case COLL_LEFT:
         Lara_ShiftCol(coll);
         item->rot.y += LARA_DEFLECT_ANGLE;
-        return 0;
+        return false;
 
     case COLL_RIGHT:
         Lara_ShiftCol(coll);
         item->rot.y -= LARA_DEFLECT_ANGLE;
-        return 0;
+        return false;
 
     default:
-        return 0;
+        return false;
     }
 }
 
@@ -614,16 +614,16 @@ int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle)
     return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
 }
 
-int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
+bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS) {
-        return 0;
+        return false;
     }
 
     DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_VAULT_ANGLE);
     if (dir == DIR_UNKNOWN) {
-        return 0;
+        return false;
     }
     int16_t angle = Math_DirectionToAngle(dir);
 
@@ -640,7 +640,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
         if (slope || front_floor - front_ceiling < 0
             || left_floor - left_ceiling < 0
             || right_floor - right_ceiling < 0) {
-            return 0;
+            return false;
         }
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_PULL_UP;
@@ -652,7 +652,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
         if (slope || front_floor - front_ceiling < 0
             || left_floor - left_ceiling < 0
             || right_floor - right_ceiling < 0) {
-            return 0;
+            return false;
         }
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_PULL_UP;
@@ -690,16 +690,16 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
             Lara_Animate(item);
             item->rot.y = angle;
             g_Lara.gun_status = LGS_HANDS_BUSY;
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     } else {
-        return 0;
+        return false;
     }
 
     item->rot.y = angle;
     Lara_ShiftCol(coll);
-    return 1;
+    return true;
 }
 
 bool Lara_TestSlide(ITEM *item, COLL_INFO *coll)

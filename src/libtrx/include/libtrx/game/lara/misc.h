@@ -18,8 +18,10 @@ extern bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 extern bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll);
 extern bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
+extern bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
 extern void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_HangTest(ITEM *item, COLL_INFO *coll);
+extern bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
 int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0

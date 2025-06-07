@@ -11,7 +11,6 @@ extern void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Hang(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Back(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_Wade(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_ClimbRight(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_ClimbStance(ITEM *item, COLL_INFO *coll);
