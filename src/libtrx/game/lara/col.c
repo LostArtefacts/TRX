@@ -18,6 +18,7 @@ static void M_Shimmy(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
+static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
@@ -35,12 +36,12 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_HANG]         = Lara_Col_Hang,
     [LS_REACH]        = M_Reach,
     [LS_SPLAT]        = M_Splat,
-    [LS_TREAD]        = Lara_Col_Swim,
+    [LS_TREAD]        = M_Swim,
     [LS_LAND]         = Lara_Col_Stop,
     [LS_COMPRESS]     = M_Compress,
     [LS_BACK]         = Lara_Col_Back,
-    [LS_SWIM]         = Lara_Col_Swim,
-    [LS_GLIDE]        = Lara_Col_Swim,
+    [LS_SWIM]         = M_Swim,
+    [LS_GLIDE]        = M_Swim,
     [LS_PULL_UP]      = M_Default,
     [LS_FAST_TURN]    = Lara_Col_Stop,
     [LS_STEP_RIGHT]   = Lara_Col_SideStep,
@@ -57,7 +58,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_SLIDE_BACK]   = M_Slide,
     [LS_SURF_TREAD]   = Lara_Col_SurfTread,
     [LS_SURF_SWIM]    = Lara_Col_SurfSwim,
-    [LS_DIVE]         = Lara_Col_Swim,
+    [LS_DIVE]         = M_Swim,
     [LS_PUSH_BLOCK]   = M_Default,
     [LS_PULL_BLOCK]   = M_Default,
     [LS_PP_READY]     = M_Default,
@@ -81,7 +82,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
 #if TR_VERSION == 1
     [LS_CONTROLLED]   = M_Default,
     [LS_TWIST]        = nullptr,
-    [LS_WATER_ROLL]   = Lara_Col_Swim,
+    [LS_WATER_ROLL]   = M_Swim,
     [LS_WADE]         = Lara_Col_Wade,
     [LS_RESPONSIVE]   = nullptr,
 #else
@@ -95,7 +96,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_LARA_TEST2]   = nullptr,
     [LS_LARA_TEST3]   = nullptr,
     [LS_WADE]         = Lara_Col_Wade,
-    [LS_WATER_ROLL]   = Lara_Col_Swim,
+    [LS_WATER_ROLL]   = M_Swim,
     [LS_FLARE_PICKUP] = M_Default,
     [LS_TWIST]        = nullptr,
     [LS_KICK]         = nullptr,
@@ -365,6 +366,11 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_Swim(ITEM *const item, COLL_INFO *const coll)
+{
+    Lara_SwimCollision(item, coll);
 }
 
 static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)

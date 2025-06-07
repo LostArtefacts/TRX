@@ -1009,8 +1009,3 @@ void Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll)
     g_Lara.move_angle = item->rot.y;
     M_SurfaceCollision(item, coll);
 }
-
-void Lara_Col_Swim(ITEM *item, COLL_INFO *coll)
-{
-    Lara_SwimCollision(item, coll);
-}
