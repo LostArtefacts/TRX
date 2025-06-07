@@ -1,6 +1,8 @@
 #include "game/lara/col.h"
 
+#include "config.h"
 #include "game/const.h"
+#include "game/input.h"
 #include "game/lara.h"
 #include "game/rooms.h"
 #include "game/sound.h"
@@ -13,6 +15,7 @@ static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
+static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
 static void M_SideBackJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
@@ -27,7 +30,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_WALK]         = Lara_Col_Walk,
     [LS_RUN]          = Lara_Col_Run,
     [LS_STOP]         = Lara_Col_Stop,
-    [LS_JUMP_FORWARD] = Lara_Col_ForwardJump,
+    [LS_JUMP_FORWARD] = M_ForwardJump,
     [LS_POSE]         = Lara_Col_Stop,
     [LS_FAST_BACK]    = Lara_Col_FastBack,
     [LS_TURN_RIGHT]   = M_Turn,
@@ -258,6 +261,56 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         lara->move_angle += DEG_180;
     }
     Lara_SlideSlope(item, coll);
+}
+
+static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    // TODO: TR1's wall bug actually stems from Lara_DeflectEdgeJump, see about
+    // fixing it there.
+    const bool backward_momentum = false;
+    const bool fix_wall_bug = g_Config.gameplay.fix_wall_jump_glitch;
+#else
+    const bool backward_momentum = item->speed < 0;
+    const bool fix_wall_bug = false;
+#endif
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (backward_momentum) {
+        lara->move_angle = item->rot.y + DEG_180;
+    } else {
+        lara->move_angle = item->rot.y;
+    }
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+
+    Lara_GetCollisionInfo(item, coll);
+    Lara_DeflectEdgeJump(item, coll);
+    if (backward_momentum) {
+        lara->move_angle = item->rot.y;
+    }
+
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+        return;
+    }
+
+    if (Lara_LandedBad(item, coll)) {
+        item->goal_anim_state = LS_DEATH;
+    } else if (
+        lara->water_status != LWS_WADE && g_Input.forward && !g_Input.slow) {
+        item->goal_anim_state = LS_RUN;
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y += coll->side_mid.floor;
+    item->speed = 0;
+    if (!fix_wall_bug) {
+        Lara_Animate(item);
+    }
 }
 
 static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)

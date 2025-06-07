@@ -239,37 +239,6 @@ void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
-    Lara_GetCollisionInfo(item, coll);
-
-    Lara_DeflectEdgeJump(item, coll);
-
-    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
-        if (Lara_LandedBad(item, coll)) {
-            item->goal_anim_state = LS_DEATH;
-        } else if (
-            g_Lara.water_status != LWS_WADE && g_Input.forward
-            && !g_Input.slow) {
-            item->goal_anim_state = LS_RUN;
-        } else {
-            item->goal_anim_state = LS_STOP;
-        }
-        item->pos.y += coll->side_mid.floor;
-        item->gravity = false;
-        item->fall_speed = 0;
-        item->speed = 0;
-
-        if (!g_Config.gameplay.fix_wall_jump_glitch) {
-            Lara_Animate(item);
-        }
-    }
-}
-
 void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - DEG_180;
