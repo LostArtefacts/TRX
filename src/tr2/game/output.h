@@ -70,10 +70,6 @@ void Output_DrawScreenFrame(
     int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height,
     uint8_t color_idx, const void *gour, uint16_t flags);
 
-void Output_DrawScreenFBox(
-    int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height,
-    uint8_t color_idx, const void *gour, uint16_t flags);
-
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t z, RGB_888 color);
 

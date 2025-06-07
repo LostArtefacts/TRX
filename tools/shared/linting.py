@@ -6,7 +6,8 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-PROJECTS = ["tr1", "tr2", "libtrx"]
+CHILD_PROJECTS = ["tr1", "tr2"]
+PROJECTS = ["libtrx"] + CHILD_PROJECTS
 RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),.*\)")
 RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID)?\(([A-Z0-9_]+)\)")
 
@@ -140,9 +141,18 @@ def lint_undefined_game_strings(
         for i, line in enumerate(path.open("r"), 1):
             for match in re.finditer(RE_GAME_STRING_USAGE, line):
                 def_ = match.group(1)
+                # For child project: it needs to be defined in libtrx or the child project
+                # For libtrx: it needs to be defined in libtrx…
                 if any(
                     def_ in def_string_map[project]
                     for project in relevant_projects
+                ):
+                    continue
+
+                # …or every child project
+                if all(
+                    def_ in def_string_map[project]
+                    for project in CHILD_PROJECTS
                 ):
                     continue
 
@@ -179,7 +189,8 @@ def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
             "tr2": ["tr2", "libtrx"],
         }[project]
         for def_ in defs:
-            used_projects = {rel_project
+            used_projects = {
+                rel_project
                 for rel_project in relevant_projects
                 if def_ in used_strings[rel_project]
             }
@@ -187,9 +198,14 @@ def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
                 yield LintWarning(
                     project_paths[project], f"unused game string: {def_}."
                 )
-            elif project == 'libtrx' and 'libtrx' not in used_projects and len(used_projects) == 1:
+            elif (
+                project == "libtrx"
+                and "libtrx" not in used_projects
+                and len(used_projects) == 1
+            ):
                 yield LintWarning(
-                    project_paths[project], f"game string used only in a single child project: {def_} ({used_projects!s})."
+                    project_paths[project],
+                    f"game string used only in a single child project: {def_} ({used_projects!s}).",
                 )
 
 

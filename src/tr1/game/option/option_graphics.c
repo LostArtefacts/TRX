@@ -1,5 +1,6 @@
 #include "game/option/option_graphics.h"
 
+#include <libtrx/game/input.h>
 #include <libtrx/game/ui/dialogs/graphic_settings.h>
 
 typedef struct {
@@ -37,7 +38,12 @@ void Option_Graphics_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     if (!p->ui.is_ready) {
         M_Init(p);
     }
-    UI_GraphicSettings_Control(&p->ui.state);
+    if (UI_GraphicSettings_Control(&p->ui.state)) {
+        M_Shutdown(p);
+    } else {
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
+    }
 }
 
 void Option_Graphics_Draw(INVENTORY_ITEM *const inv_item)

@@ -752,9 +752,11 @@ void Output_DrawCentreGradientScreenBox(
 }
 
 void Output_DrawScreenFBox(
-    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h)
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const TEXT_STYLE text_style)
 {
-    RGBA_8888 color = { 0, 0, 0, 128 };
+    RGBA_8888 color = { 0, 0, 0,
+                        text_style == TS_BACKGROUND_HEAVY ? 224 : 128 };
     M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
@@ -878,14 +880,14 @@ void Output_DrawTextBackground(
     int32_t h, const int32_t z, const TEXT_STYLE text_style)
 {
     if (ui_style == UI_STYLE_PC) {
-        Output_DrawScreenFBox(sx, sy, w, h);
+        Output_DrawScreenFBox(sx, sy, w, h, text_style);
         return;
     }
 
     // Make sure height and width divisible by 2.
     w = 2 * ((w + 1) / 2);
     h = 2 * ((h + 1) / 2);
-    Output_DrawScreenFBox(sx - 1, sy - 1, w + 1, h + 1);
+    Output_DrawScreenFBox(sx - 1, sy - 1, w + 1, h + 1, text_style);
 
     QUAD_INFO gradient_quads[4] = {
         { sx, sy, w / 2, h / 2 },

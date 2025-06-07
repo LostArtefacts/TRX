@@ -44,7 +44,7 @@ typedef struct RENDERER {
         SORT_TYPE sort_type);
     void (*InsertTransQuad)(
         struct RENDERER *renderer, int32_t x, int32_t y, int32_t width,
-        int32_t height, int32_t z);
+        int32_t height, int32_t z, uint8_t alpha);
     void (*InsertTransOctagon)(
         struct RENDERER *renderer, const PHD_VBUF *vbuf, int16_t shade);
     void (*InsertFlatRect)(

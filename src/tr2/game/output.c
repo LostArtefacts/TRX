@@ -748,14 +748,6 @@ void Output_DrawScreenFrame(
         sx - 1, height + sy + 1, z, width + 1, 0, col_2, nullptr, flags);
 }
 
-void Output_DrawScreenFBox(
-    const int32_t sx, const int32_t sy, const int32_t z, const int32_t width,
-    const int32_t height, const uint8_t color_idx, const void *const gour,
-    const uint16_t flags)
-{
-    Render_InsertTransQuad(sx, sy, width + 1, height + 1, g_PhdNearZ + 8 * z);
-}
-
 void Output_DrawScreenFlatQuad(
     const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
     int32_t z, const RGB_888 color)
@@ -1069,7 +1061,9 @@ void Output_DrawTextBackground(
     const UI_STYLE ui_style, const int32_t x, const int32_t y, const int32_t w,
     const int32_t h, const int32_t z, const TEXT_STYLE text_style)
 {
-    Output_DrawScreenFBox(x, y, z, w, h, 0, nullptr, 0);
+    Render_InsertTransQuad(
+        x, y, w + 1, h + 1, g_PhdNearZ + 8 * z,
+        text_style == TS_BACKGROUND_HEAVY ? 224 : 128);
 }
 
 int32_t Output_GetDepthBias(void)

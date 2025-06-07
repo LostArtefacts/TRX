@@ -10,7 +10,7 @@
 typedef struct {
     struct {
         bool is_ready;
-        UI_EXAMINE_ITEM_STATE state;
+        UI_TEXT_DIALOG_STATE state;
     } ui;
 } M_PRIV;
 
@@ -36,15 +36,15 @@ static int32_t M_GetMaxRows(void)
 static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
 {
     p->ui.is_ready = true;
-    UI_ExamineItem_Init(
+    UI_TextDialog_Init(
         &p->ui.state, Object_GetName(obj_id), Object_GetDescription(obj_id),
-        M_GetMaxRows());
+        UI_GetCanvasWidth() * 2.0 / 3.0f, M_GetMaxRows(), false);
 }
 
 static void M_Shutdown(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
-        UI_ExamineItem_Free(&p->ui.state);
+        UI_TextDialog_Free(&p->ui.state);
         p->ui.is_ready = false;
     }
 }
@@ -70,7 +70,7 @@ void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
     if (!p->ui.is_ready) {
         M_Init(p, obj_id);
     }
-    UI_ExamineItem_Control(&p->ui.state);
+    UI_TextDialog_Control(&p->ui.state);
 
     if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
         M_Shutdown(p);
@@ -81,7 +81,7 @@ void Option_Examine_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ui.is_ready) {
-        UI_ExamineItem(&p->ui.state);
+        UI_TextDialog(&p->ui.state);
     }
 }
 

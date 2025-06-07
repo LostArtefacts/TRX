@@ -1,6 +1,7 @@
 #include "game/option/option.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/ui.h>
 
 typedef struct {
@@ -31,7 +32,12 @@ void Option_Sound_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     if (p->ui == nullptr) {
         M_Init(p);
     }
-    UI_SoundSettings_Control(p->ui);
+    if (UI_SoundSettings_Control(p->ui)) {
+        M_Shutdown(p);
+    } else {
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
+    }
 }
 
 void Option_Sound_Draw(INVENTORY_ITEM *const inv_item)
@@ -44,5 +50,6 @@ void Option_Sound_Draw(INVENTORY_ITEM *const inv_item)
 
 void Option_Sound_Shutdown(void)
 {
-    M_Shutdown(&m_Priv);
+    M_PRIV *const p = &m_Priv;
+    M_Shutdown(p);
 }

@@ -45,6 +45,8 @@ static bool M_RequestChangeValue(
     const UI_SETTINGS_STATE *s, int32_t row_idx, int32_t dir);
 static float M_GetMaxLabelWidth(const UI_SETTINGS_STATE *s);
 static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *s);
+static bool M_CanExamine(const UI_SETTINGS_STATE *s);
+static void M_OptionsChanged(UI_SETTINGS_STATE *s);
 
 static int32_t M_GetVisibleRows(void)
 {
@@ -340,6 +342,21 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *const s)
     return result;
 }
 
+static bool M_CanExamine(const UI_SETTINGS_STATE *const s)
+{
+    if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS) {
+        return false;
+    }
+    const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
+    if (sel_row < 0 || s->options[sel_row].description_id == nullptr) {
+        return false;
+    }
+    const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
+    const char *const title = GameString_Get(option->label_id);
+    const char *const text = GameString_Get(option->description_id);
+    return title != nullptr && text != nullptr;
+}
+
 static void M_OptionsChanged(UI_SETTINGS_STATE *const s)
 {
     int32_t row_count = 0;
@@ -398,12 +415,25 @@ void UI_Settings_Free(UI_SETTINGS_STATE *const s)
         UI_TabSwitch_Free(s->tab_switch);
         s->tab_switch = nullptr;
     }
+    if (s->description.show) {
+        UI_TextDialog_Free(&s->description.state);
+        s->description.show = false;
+    }
 }
 
 bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
 {
     UI_Scrollable_SetVisibleItems(
         &s->scroll, MIN(s->max_group_items, M_GetVisibleRows()));
+    if (s->description.show) {
+        UI_TextDialog_Control(&s->description.state);
+        if (g_InputDB.menu_back || g_InputDB.look) {
+            UI_TextDialog_Free(&s->description.state);
+            s->description.show = false;
+            return false;
+        }
+        return false;
+    }
 
     if (s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS) {
         if (UI_TabSwitch_Control(s->tab_switch)) {
@@ -416,8 +446,25 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         } else if (g_InputDB.menu_up && g_Config.ui.enable_wraparound) {
             s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
             UI_Scrollable_SelectLastItem(&s->scroll);
+        } else if (g_InputDB.menu_back) {
+            return true;
         }
     } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
+        const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
+        if (g_InputDB.look && M_CanExamine(s)) {
+            const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
+            const char *const title = GameString_Get(option->label_id);
+            const char *const text = GameString_Get(option->description_id);
+            if (title != nullptr && text != nullptr) {
+                UI_TextDialog_Init(
+                    &s->description.state, title, text,
+                    MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
+                        s->max_label_w + s->max_value_w + 10),
+                    (size_t)M_GetVisibleRows(), true);
+                s->description.show = true;
+            }
+            return false;
+        }
         if (g_InputDB.menu_up) {
             if (!UI_Scrollable_SelectPrev(&s->scroll, false)) {
                 if (s->tab_switch != nullptr) {
@@ -438,7 +485,6 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         } else if (g_InputDB.menu_back) {
             return true;
         } else {
-            const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
             if (g_InputDB.menu_left && sel_row >= 0) {
                 M_RequestChangeValue(s, sel_row, -1);
             } else if (g_InputDB.menu_right && sel_row >= 0) {
@@ -503,6 +549,11 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 {
     const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
     UI_BeginModal(0.5f, 0.6f);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .spacing = { .v = 5.0f },
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    });
 
     UI_BeginWindow();
     UI_WindowTitle(GameString_Get(s->title));
@@ -576,9 +627,24 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         UI_EndResize();
     }
     UI_EndScrollableArea(&s->scroll, s->tab_count > 0);
-
     UI_EndStack();
     UI_EndWindowBody();
     UI_EndWindow();
+
+    // Button hint strip
+    UI_BeginHide(!M_CanExamine(s));
+    UI_LabelFmt(
+        "%s %s",
+        Input_GetKeyName(
+            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
+            INPUT_ROLE_LOOK),
+        GS(MISC_TOGGLE_HELP));
+    UI_EndHide();
+    UI_EndStack();
+
     UI_EndModal();
+
+    if (s->description.show) {
+        UI_TextDialog(&s->description.state);
+    }
 }

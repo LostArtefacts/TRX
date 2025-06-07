@@ -70,7 +70,8 @@ void Render_InsertFlatRect(
     int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z,
     uint8_t color_idx);
 void Render_InsertTransQuad(
-    int32_t x, int32_t y, int32_t width, int32_t height, int32_t z);
+    int32_t x, int32_t y, int32_t width, int32_t height, int32_t z,
+    uint8_t alpha);
 void Render_InsertTransOctagon(const PHD_VBUF *vbuf, int16_t shade);
 void Render_InsertSprite(
     int32_t z, int32_t x0, int32_t y0, int32_t x1, int32_t y1,

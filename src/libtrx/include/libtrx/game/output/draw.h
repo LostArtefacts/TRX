@@ -5,9 +5,10 @@
 #include <stdint.h>
 
 typedef enum {
-    TS_HEADING = 0,
-    TS_BACKGROUND = 1,
-    TS_REQUESTED = 2,
+    TS_HEADING,
+    TS_BACKGROUND,
+    TS_BACKGROUND_HEAVY,
+    TS_REQUESTED,
 } TEXT_STYLE;
 
 extern void Output_DrawTextBackground(
