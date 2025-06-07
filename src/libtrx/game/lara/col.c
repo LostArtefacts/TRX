@@ -8,6 +8,8 @@
 #include "game/sound.h"
 
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
+static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
+static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
@@ -26,6 +28,9 @@ static void M_Roll(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
+static void M_CommonSurface(ITEM *item, COLL_INFO *coll);
+static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
+static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 
@@ -64,8 +69,8 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_SHIMMY_LEFT]  = M_Shimmy,
     [LS_SHIMMY_RIGHT] = M_Shimmy,
     [LS_SLIDE_BACK]   = M_Slide,
-    [LS_SURF_TREAD]   = Lara_Col_SurfTread,
-    [LS_SURF_SWIM]    = Lara_Col_SurfSwim,
+    [LS_SURF_TREAD]   = M_SideBackSurface,
+    [LS_SURF_SWIM]    = M_ForwardSurface,
     [LS_DIVE]         = M_Swim,
     [LS_PUSH_BLOCK]   = M_Default,
     [LS_PULL_BLOCK]   = M_Default,
@@ -78,9 +83,9 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_UW_DEATH]     = M_UWDeath,
     [LS_ROLL]         = M_Roll,
     [LS_SPECIAL]      = nullptr,
-    [LS_SURF_BACK]    = Lara_Col_SurfBack,
-    [LS_SURF_LEFT]    = Lara_Col_SurfLeft,
-    [LS_SURF_RIGHT]   = Lara_Col_SurfRight,
+    [LS_SURF_BACK]    = M_SideBackSurface,
+    [LS_SURF_LEFT]    = M_SideBackSurface,
+    [LS_SURF_RIGHT]   = M_SideBackSurface,
     [LS_USE_MIDAS]    = M_Default,
     [LS_DIE_MIDAS]    = M_Default,
     [LS_SWAN_DIVE]    = M_SwanDive,
@@ -125,6 +130,120 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
     Item_SwitchToAnim(item, LA_FALL_START, 0);
     item->gravity = true;
     item->fall_speed = 0;
+    return true;
+}
+
+static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
+{
+    if (coll->coll_type == COLL_FRONT || coll->side_mid.type == HT_BIG_SLOPE
+        || coll->side_mid.floor >= 0) {
+        return false;
+    }
+
+    if (coll->side_mid.floor < -STEP_L / 2) {
+        item->current_anim_state = LS_WATER_OUT;
+        item->goal_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_ONWATER_TO_WADE, 0);
+    } else if (item->goal_anim_state == LS_SURF_LEFT) {
+        item->goal_anim_state = LS_STEP_LEFT;
+    } else if (item->goal_anim_state == LS_SURF_RIGHT) {
+        item->goal_anim_state = LS_STEP_RIGHT;
+    } else {
+        item->current_anim_state = LS_WADE;
+        item->goal_anim_state = LS_WADE;
+        Item_SwitchToAnim(item, LA_WADE, 0);
+    }
+
+    item->pos.y += coll->side_front.floor + LARA_HEIGHT_SURF - 5;
+    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
+    item->gravity = false;
+    item->rot.x = 0;
+    item->rot.z = 0;
+    item->speed = 0;
+    item->fall_speed = 0;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->water_status = LWS_WADE;
+    return true;
+}
+
+static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
+{
+    const int32_t coll_hdif =
+        ABS(coll->side_left.floor - coll->side_right.floor);
+    if (coll->coll_type != COLL_FRONT || !g_Input.action
+        || coll_hdif >= SLOPE_DIF) {
+        return false;
+    }
+
+    if (coll->side_front.ceiling > 0
+        || coll->side_mid.ceiling > -STEPUP_HEIGHT) {
+        return false;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION == 1
+    if (item->rot.y != lara->move_angle) {
+        return false;
+    }
+#else
+    if (coll->side_front.type == HT_BIG_SLOPE) {
+        return false;
+    }
+    if (lara->gun_status != LGS_ARMLESS
+        && (lara->gun_status != LGS_READY || lara->gun_type != LGT_FLARE)) {
+        return false;
+    }
+#endif
+
+    const int32_t lara_hdif = coll->side_front.floor + LARA_HEIGHT_SURF;
+    if (lara_hdif <= -STEP_L * 2
+        || lara_hdif > LARA_HEIGHT_SURF - STEPUP_HEIGHT) {
+        return false;
+    }
+
+    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
+    if (dir == DIR_UNKNOWN) {
+        return false;
+    }
+
+    item->pos.y += lara_hdif - 5;
+    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
+
+    switch (dir) {
+    case DIR_NORTH:
+        item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RADIUS;
+        break;
+    case DIR_WEST:
+        item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RADIUS;
+        break;
+    case DIR_SOUTH:
+        item->pos.z = (item->pos.z & -WALL_L) - LARA_RADIUS;
+        break;
+    case DIR_EAST:
+        item->pos.x = (item->pos.x & -WALL_L) - LARA_RADIUS;
+        break;
+    case DIR_UNKNOWN:
+        return false;
+    }
+
+    if (lara_hdif < -STEP_L / 2) {
+        Item_SwitchToAnim(item, LA_ONWATER_TO_STAND_HIGH, 0);
+    } else if (lara_hdif < STEP_L / 2) {
+        Item_SwitchToAnim(item, LA_ONWATER_TO_STAND_MEDIUM, 0);
+    } else {
+        Item_SwitchToAnim(item, LA_ONWATER_TO_WADE_LOW, 0);
+    }
+
+    item->current_anim_state = LS_WATER_OUT;
+    item->goal_anim_state = LS_STOP;
+    item->rot.y = Math_DirectionToAngle(dir);
+    item->rot.x = 0;
+    item->rot.z = 0;
+    item->gravity = false;
+    item->speed = 0;
+    item->fall_speed = 0;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->water_status = LWS_ABOVE_WATER;
     return true;
 }
 
@@ -564,6 +683,92 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    const bool enable_wading = g_Config.gameplay.enable_wading;
+#else
+    const bool enable_wading = true;
+#endif
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    coll->facing = lara->move_angle;
+
+    int32_t obj_height = LARA_HEIGHT_SURF;
+    if (enable_wading) {
+        obj_height += 100;
+    }
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + LARA_HEIGHT_SURF, item->pos.z,
+        item->room_num, obj_height);
+
+    Lara_ShiftCol(coll);
+
+    if (coll->coll_type == COLL_LEFT) {
+        item->rot.y += 5 * DEG_1;
+    } else if (coll->coll_type == COLL_RIGHT) {
+        item->rot.y -= 5 * DEG_1;
+    } else if (
+        coll->coll_type != COLL_NONE
+        || (coll->side_mid.floor < 0 && coll->side_mid.type == HT_BIG_SLOPE)) {
+        item->fall_speed = 0;
+        item->pos = coll->old;
+    }
+
+    const int32_t water_height = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    if (water_height - item->pos.y <= -100) {
+        item->current_anim_state = LS_DIVE;
+        item->goal_anim_state = LS_SWIM;
+        Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
+        item->rot.x = -45 * DEG_1;
+        item->fall_speed = 80;
+        lara->water_status = LWS_UNDERWATER;
+        return;
+    }
+
+    if (enable_wading) {
+        M_TestWaterStepOut(item, coll);
+    } else {
+        M_TestWaterClimbOut(item, coll);
+    }
+}
+
+static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    const bool enable_wading = g_Config.gameplay.enable_wading;
+#else
+    const bool enable_wading = true;
+#endif
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    M_CommonSurface(item, coll);
+    if (enable_wading) {
+        M_TestWaterClimbOut(item, coll);
+    }
+}
+
+static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
+{
+    int32_t angle = 0;
+    switch (item->current_anim_state) {
+    case LS_SURF_BACK:
+        angle = -DEG_180;
+        break;
+    case LS_SURF_LEFT:
+        angle = -DEG_90;
+        break;
+    case LS_SURF_RIGHT:
+        angle = DEG_90;
+        break;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + angle;
+    M_CommonSurface(item, coll);
 }
 
 static void M_Swim(ITEM *const item, COLL_INFO *const coll)
