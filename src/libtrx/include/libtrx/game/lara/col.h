@@ -24,7 +24,6 @@ extern void Lara_Col_Roll(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfBack(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfLeft(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_SwanDive(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_FastDive(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Wade(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Jumper(ITEM *item, COLL_INFO *coll);
