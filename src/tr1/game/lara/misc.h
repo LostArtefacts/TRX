@@ -8,7 +8,6 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll);
 bool Lara_Fallen(ITEM *item, COLL_INFO *coll);
 bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll);
 bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
-void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
 bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 bool Lara_TestHangSwingIn(ITEM *item, PHD_ANGLE angle);
