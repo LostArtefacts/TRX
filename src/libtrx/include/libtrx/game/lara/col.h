@@ -13,7 +13,6 @@ extern void Lara_Col_Back(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_Roll(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfBack(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfLeft(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll);

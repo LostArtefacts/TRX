@@ -527,26 +527,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed = 0;
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_walls = 1;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-
-    Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || Lara_TestSlide(item, coll)
-        || M_Fallen(item, coll)) {
-        return;
-    }
-
-    Lara_ShiftCol(coll);
-    item->pos.y += coll->side_mid.floor;
-}
-
 void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;

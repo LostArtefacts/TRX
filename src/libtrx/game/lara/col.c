@@ -7,6 +7,8 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
+static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
+
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
@@ -20,6 +22,7 @@ static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_SideBackJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
+static void M_Roll(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
@@ -73,7 +76,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_USE_KEY]      = M_Default,
     [LS_USE_PUZZLE]   = M_Default,
     [LS_UW_DEATH]     = M_UWDeath,
-    [LS_ROLL]         = Lara_Col_Roll,
+    [LS_ROLL]         = M_Roll,
     [LS_SPECIAL]      = nullptr,
     [LS_SURF_BACK]    = Lara_Col_SurfBack,
     [LS_SURF_LEFT]    = Lara_Col_SurfLeft,
@@ -109,6 +112,21 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
 #endif
     // clang-format on
 };
+
+static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (coll->side_mid.floor <= STEPUP_HEIGHT
+        || lara->water_status == LWS_WADE) {
+        return false;
+    }
+    item->current_anim_state = LS_JUMP_FORWARD;
+    item->goal_anim_state = LS_JUMP_FORWARD;
+    Item_SwitchToAnim(item, LA_FALL_START, 0);
+    item->gravity = true;
+    item->fall_speed = 0;
+    return true;
+}
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
 {
@@ -437,6 +455,42 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y + angle;
     Lara_HangTest(item, coll);
     lara->move_angle = item->rot.y + angle;
+}
+
+static void M_Roll(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    item->gravity = false;
+    item->fall_speed = 0;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+
+    Lara_GetCollisionInfo(item, coll);
+    if (Lara_HitCeiling(item, coll) || Lara_TestSlide(item, coll)) {
+        return;
+    }
+
+#if TR_VERSION == 1
+    // TODO: offer as an option to allow roll-boosting off one-click steps.
+    if (coll->side_mid.floor > 200) {
+        item->current_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS_JUMP_FORWARD;
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
+        item->gravity = true;
+        item->fall_speed = 0;
+        return;
+    }
+#else
+    if (M_Fallen(item, coll)) {
+        return;
+    }
+#endif
+
+    Lara_ShiftCol(coll);
+    item->pos.y += coll->side_mid.floor;
 }
 
 static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
