@@ -13,6 +13,7 @@ static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
+static void M_SideBackJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
@@ -48,9 +49,9 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_STEP_LEFT]    = Lara_Col_SideStep,
     [LS_ROLL_CONT]    = M_RollContinue,
     [LS_SLIDE]        = M_Slide,
-    [LS_JUMP_BACK]    = Lara_Col_BackJump,
-    [LS_JUMP_RIGHT]   = Lara_Col_RightJump,
-    [LS_JUMP_LEFT]    = Lara_Col_LeftJump,
+    [LS_JUMP_BACK]    = M_SideBackJump,
+    [LS_JUMP_RIGHT]   = M_SideBackJump,
+    [LS_JUMP_LEFT]    = M_SideBackJump,
     [LS_JUMP_UP]      = Lara_Col_UpJump,
     [LS_FALL_BACK]    = M_FallBack,
     [LS_SHIMMY_LEFT]  = M_Shimmy,
@@ -257,6 +258,45 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         lara->move_angle += DEG_180;
     }
     Lara_SlideSlope(item, coll);
+}
+
+static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
+{
+    int32_t angle = 0;
+    switch (item->current_anim_state) {
+    case LS_JUMP_BACK:
+        angle = DEG_180;
+        break;
+    case LS_JUMP_RIGHT:
+        angle = DEG_90;
+        break;
+    case LS_JUMP_LEFT:
+        angle = -DEG_90;
+        break;
+    default:
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + angle;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+
+    Lara_GetCollisionInfo(item, coll);
+    Lara_DeflectEdgeJump(item, coll);
+    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
+        return;
+    }
+
+    if (Lara_LandedBad(item, coll)) {
+        item->goal_anim_state = LS_DEATH;
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y += coll->side_mid.floor;
 }
 
 static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
