@@ -20,8 +20,7 @@ extern bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_HangTest(ITEM *item, COLL_INFO *coll);
-extern int32_t Lara_GetWaterDepth(
-    int32_t x, int32_t y, int32_t z, int16_t room_num);
+int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
 // (start aim); 2 (firing); or 4 (stopping firing).
