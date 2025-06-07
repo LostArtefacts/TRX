@@ -13,6 +13,7 @@ void Lara_UpdateRoomToHeight(int32_t height);
 void Lara_ShiftCol(COLL_INFO *coll);
 extern bool Lara_TestSlide(ITEM *item, COLL_INFO *coll);
 extern bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
+extern bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
