@@ -10,7 +10,6 @@ extern void Lara_Col_Stop(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Hang(ITEM *item, COLL_INFO *coll);
-extern void Lara_Col_Splat(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Compress(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Back(ITEM *item, COLL_INFO *coll);
 extern void Lara_Col_Swim(ITEM *item, COLL_INFO *coll);
