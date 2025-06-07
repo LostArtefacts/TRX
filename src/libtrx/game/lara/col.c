@@ -10,6 +10,7 @@
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
+static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
@@ -245,6 +246,33 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
     lara->gun_status = LGS_HANDS_BUSY;
     lara->water_status = LWS_ABOVE_WATER;
     return true;
+}
+
+static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t water_depth =
+        Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
+
+    if (water_depth == NO_HEIGHT) {
+        item->pos = coll->old;
+        item->fall_speed = 0;
+    } else if (water_depth <= STEP_L * 2) {
+        Item_SwitchToAnim(item, LA_UNDERWATER_TO_STAND, 0);
+        item->current_anim_state = LS_WATER_OUT;
+        item->goal_anim_state = LS_STOP;
+        item->rot.x = 0;
+        item->rot.z = 0;
+        item->gravity = false;
+        item->speed = 0;
+        item->fall_speed = 0;
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->water_status = LWS_WADE;
+        item->pos.y =
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    }
 }
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -773,7 +801,80 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 {
-    Lara_SwimCollision(item, coll);
+#if TR_VERSION == 1
+    const bool enable_wading = g_Config.gameplay.enable_wading;
+#else
+    const bool enable_wading = true;
+#endif
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->rot.x < -DEG_90 || item->rot.x > DEG_90) {
+        lara->move_angle = item->rot.y + DEG_180;
+    } else {
+        lara->move_angle = item->rot.y;
+    }
+
+    coll->facing = lara->move_angle;
+
+    int32_t height;
+    if (enable_wading) {
+        height = (LARA_HEIGHT * Math_Sin(item->rot.x)) >> W2V_SHIFT;
+        if (height < 0) {
+            height = -height;
+        }
+        CLAMPL(height, 200);
+        coll->bad_neg = -height;
+    } else {
+        height = LARA_HEIGHT_UW;
+    }
+
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
+        item->room_num, height);
+    Lara_ShiftCol(coll);
+
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+        if (item->rot.x > 35 * DEG_1) {
+            item->rot.x += LARA_UW_WALL_DEFLECT;
+        } else if (item->rot.x < -35 * DEG_1) {
+            item->rot.x -= LARA_UW_WALL_DEFLECT;
+        } else {
+            item->fall_speed = 0;
+        }
+        break;
+
+    case COLL_TOP:
+        if (item->rot.x >= -45 * DEG_1) {
+            item->rot.x -= LARA_UW_WALL_DEFLECT;
+        }
+        break;
+
+    case COLL_TOP_FRONT:
+        item->fall_speed = 0;
+        break;
+
+    case COLL_LEFT:
+        item->rot.y += 5 * DEG_1;
+        break;
+
+    case COLL_RIGHT:
+        item->rot.y -= 5 * DEG_1;
+        break;
+
+    case COLL_CLAMP:
+        item->pos = coll->old;
+        item->fall_speed = 0;
+        return;
+    }
+
+    if (coll->side_mid.floor < 0) {
+        item->rot.x += LARA_UW_WALL_DEFLECT;
+        item->pos.y = coll->side_mid.floor + item->pos.y;
+    }
+
+    if (enable_wading && lara->water_status != LWS_CHEAT && !lara->extra_anim) {
+        M_TestWaterDepth(item, coll);
+    }
 }
 
 static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
@@ -787,7 +888,7 @@ static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
     if (water_height != NO_HEIGHT && water_height < item->pos.y - 100) {
         item->pos.y -= 5;
     }
-    Lara_SwimCollision(item, coll);
+    M_Swim(item, coll);
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)

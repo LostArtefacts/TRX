@@ -44,8 +44,4 @@ int32_t Lara_TestClimbUpPos(
     const ITEM *item, int32_t front, int32_t right, int32_t *shift,
     int32_t *ledge);
 
-int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
-
-void Lara_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
-
 void Lara_WaterCurrent(COLL_INFO *coll);
