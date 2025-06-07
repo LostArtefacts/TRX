@@ -1,8 +1,8 @@
 #include "game/option/option_gameplay.h"
 
 #include "game/input.h"
-#include "game/ui/dialogs/gameplay_settings.h"
-#include "global/vars.h"
+
+#include <libtrx/game/ui/dialogs/gameplay_settings.h>
 
 typedef struct {
     struct {

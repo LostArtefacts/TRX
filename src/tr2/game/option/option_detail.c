@@ -1,7 +1,6 @@
-#include "game/input.h"
 #include "game/option/option.h"
-#include "game/ui/dialogs/graphic_settings.h"
-#include "global/vars.h"
+
+#include <libtrx/game/ui/dialogs/graphic_settings.h>
 
 typedef struct {
     struct {

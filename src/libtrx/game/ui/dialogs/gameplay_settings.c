@@ -1,12 +1,9 @@
 #include "game/ui/dialogs/gameplay_settings.h"
 
-#include "game/input.h"
-#include "game/screen.h"
+#include "config.h"
+#include "game/lara/const.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/lara/const.h>
-#include <libtrx/strings.h>
-
+#if TR_VERSION == 1
 static const UI_SETTINGS_ENUM_ENTRY m_StatDetailModeEnumEntries[] = {
     { SDM_MINIMAL, GS_ID(GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_MINIMAL) },
     { SDM_DETAILED, GS_ID(GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_DETAILED) },
@@ -20,6 +17,7 @@ static const UI_SETTINGS_ENUM_ENTRY m_TargetModeEnumEntries[] = {
     { TLM_NONE, GS_ID(GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_NONE) },
     { -1, nullptr },
 };
+#endif
 
 static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
     {
@@ -34,11 +32,13 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_demo,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_DEMO),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.enable_cutscenes,
@@ -46,11 +46,13 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_loading_screens,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.enable_game_modes,
@@ -58,11 +60,13 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_save_crystals,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.enable_auto_item_selection,
@@ -70,6 +74,7 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_item_examining,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING),
@@ -148,6 +153,7 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_DISABLE_TREX_COLLISION),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = nullptr,
@@ -161,6 +167,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.input.enable_numeric_keys,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS),
@@ -172,6 +179,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.input.enable_tr3_sidesteps,
@@ -179,6 +187,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_enhanced_look,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_ENHANCED_LOOK),
@@ -253,6 +262,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.camera_speed,
@@ -262,6 +272,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .max_value = 10,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.input.enable_buffering,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_BUFFERING),
@@ -273,90 +284,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING),
         .option_type = COT_BOOL,
     },
-
-    {
-        .target = nullptr,
-    },
-};
-
-static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
-    {
-        .target = &g_Config.gameplay.fix_floor_data_issues,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_FLOOR_DATA_ISSUES),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.visuals.fix_texture_issues,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.visuals.fix_item_rots,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_ROTS),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.audio.load_music_triggers,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.visuals.fix_animated_sprites,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ANIMATED_SPRITES),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_bridge_collision,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_BRIDGE_COLLISION),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_descending_glitch,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_wall_jump_glitch,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_qwop_glitch,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_item_duplication_glitch,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_alligator_ai,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ALLIGATOR_AI),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.gameplay.fix_bear_ai,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_BEAR_AI),
-        .option_type = COT_BOOL,
-    },
-
-    {
-        .target = &g_Config.audio.fix_tihocan_secret_sound,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND),
-        .option_type = COT_BOOL,
-    },
+#endif
 
     {
         .target = nullptr,
@@ -376,6 +304,7 @@ static const UI_SETTINGS_OPTION m_GameplayModOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.start_lara_hitpoints,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_START_LARA_HITPOINTS),
@@ -415,6 +344,149 @@ static const UI_SETTINGS_OPTION m_GameplayModOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_DISABLE_UZIS),
         .option_type = COT_BOOL,
     },
+#endif
+
+    {
+        .target = nullptr,
+    },
+};
+
+static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
+    {
+        .target = &g_Config.gameplay.fix_floor_data_issues,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_FLOOR_DATA_ISSUES),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.fix_texture_issues,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.fix_item_rots,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_ROTS),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_bridge_collision,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_BRIDGE_COLLISION),
+        .option_type = COT_BOOL,
+    },
+
+#if TR_VERSION == 1
+    {
+        .target = &g_Config.audio.load_music_triggers,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.visuals.fix_animated_sprites,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ANIMATED_SPRITES),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_bridge_collision,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_BRIDGE_COLLISION),
+        .option_type = COT_BOOL,
+    },
+#elif TR_VERSION == 2
+    {
+        .target = &g_Config.visuals.fix_glide_cameras,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_GLIDE_CAMERAS),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_walk_run_jump,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_flare_throw_priority,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_FLARE_THROW_PRIORITY),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_m16_accuracy,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_M16_ACCURACY),
+        .option_type = COT_BOOL,
+    },
+#endif
+
+#if TR_VERSION == 1
+    {
+        .target = &g_Config.gameplay.fix_descending_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_wall_jump_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH),
+        .option_type = COT_BOOL,
+    },
+#endif
+
+    {
+        .target = &g_Config.gameplay.fix_qwop_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_item_duplication_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH),
+        .option_type = COT_BOOL,
+    },
+
+#if TR_VERSION == 2
+    {
+        .target = &g_Config.gameplay.fix_step_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_free_flare_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_FREE_FLARE_GLITCH),
+        .option_type = COT_BOOL,
+    },
+
+    {
+        .target = &g_Config.gameplay.fix_pickup_drift_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_PICKUP_DRIFT_GLITCH),
+        .option_type = COT_BOOL,
+    },
+#endif
+
+#if TR__VERSION == 1
+    {
+        .target = &g_Config.gameplay.fix_alligator_ai,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ALLIGATOR_AI),
+        .option_type = COT_BOOL,
+    },
+#endif
+
+    {
+        .target = &g_Config.gameplay.fix_bear_ai,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_BEAR_AI),
+        .option_type = COT_BOOL,
+    },
+
+#if TR_VERSION == 1
+    {
+        .target = &g_Config.audio.fix_tihocan_secret_sound,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND),
+        .option_type = COT_BOOL,
+    },
+#endif
 
     {
         .target = nullptr,

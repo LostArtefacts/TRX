@@ -1,7 +1,7 @@
 #pragma once
 
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/dialogs/settings.h>
+#include "../common.h"
+#include "./settings.h"
 
 typedef UI_SETTINGS_STATE UI_GRAPHIC_SETTINGS_STATE;
 
