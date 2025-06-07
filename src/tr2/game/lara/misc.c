@@ -540,25 +540,25 @@ int32_t Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
     return 1;
 }
 
-int32_t Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
+bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS || coll->hit_static
         || coll->side_mid.ceiling > -STEPUP_HEIGHT
         || coll->side_mid.floor < 200) {
-        return 0;
+        return false;
     }
 
     int32_t edge;
     int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
     if (!edge_catch
         || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
-        return 0;
+        return false;
     }
 
     DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
     if (dir == DIR_UNKNOWN) {
-        return 0;
+        return false;
     }
     int16_t angle = Math_DirectionToAngle(dir);
 
@@ -584,7 +584,7 @@ int32_t Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
     item->gravity = true;
     item->fall_speed = 1;
     g_Lara.gun_status = LGS_HANDS_BUSY;
-    return 1;
+    return true;
 }
 
 int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle)

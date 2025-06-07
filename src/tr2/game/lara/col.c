@@ -488,34 +488,6 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_Col_Reach(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = true;
-    g_Lara.move_angle = item->rot.y;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = 0;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
-
-    Lara_GetCollisionInfo(item, coll);
-    if (Lara_TestHangJump(item, coll)) {
-        return;
-    }
-
-    Lara_SlideEdgeJump(item, coll);
-    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
-        return;
-    }
-
-    if (Lara_LandedBad(item, coll)) {
-        item->goal_anim_state = LS_DEATH;
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-    item->gravity = false;
-    item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
-}
-
 void Lara_Col_Splat(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
