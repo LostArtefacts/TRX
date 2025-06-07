@@ -370,40 +370,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll)
-{
-    coll->bad_neg = -STEPUP_HEIGHT;
-    g_Lara.move_angle = item->rot.y;
-    Lara_SurfaceCollision(item, coll);
-    if (g_Config.gameplay.enable_wading) {
-        Lara_TestWaterClimbOut(item, coll);
-    }
-}
-
-void Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    Lara_SurfaceCollision(item, coll);
-}
-
-void Lara_Col_SurfBack(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y - DEG_180;
-    Lara_SurfaceCollision(item, coll);
-}
-
-void Lara_Col_SurfLeft(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y - DEG_90;
-    Lara_SurfaceCollision(item, coll);
-}
-
-void Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y + DEG_90;
-    Lara_SurfaceCollision(item, coll);
-}
-
 void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
