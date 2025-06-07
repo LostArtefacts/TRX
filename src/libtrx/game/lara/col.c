@@ -283,10 +283,11 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
     const int32_t water_depth =
         Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
 
-    if (water_depth == NO_HEIGHT) {
+    // TODO: offer ability for non-standard water exit in TR2. See #1782.
+    if (TR_VERSION >= 2 && water_depth == NO_HEIGHT) {
         item->pos = coll->old;
         item->fall_speed = 0;
-    } else if (water_depth <= STEP_L * 2) {
+    } else if (water_depth != NO_HEIGHT && water_depth <= STEP_L * 2) {
         Item_SwitchToAnim(item, LA_UNDERWATER_TO_STAND, 0);
         item->current_anim_state = LS_WATER_OUT;
         item->goal_anim_state = LS_STOP;
