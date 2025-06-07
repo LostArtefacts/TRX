@@ -7,6 +7,13 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
+#define M_LF_RUN_L_START 0
+#define M_LF_RUN_L_HEEL_GROUND 3
+#define M_LF_RUN_L_END 9
+#define M_LF_RUN_R_START 10
+#define M_LF_RUN_R_FOOT_GROUND 14
+#define M_LF_RUN_R_END 21
+
 #define M_LF_WADE_L_START 0
 #define M_LF_WADE_L_END 9
 #define M_LF_WADE_R_START 10
@@ -22,6 +29,7 @@ static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
+static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
@@ -48,7 +56,7 @@ static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
     [LS_WALK]         = Lara_Col_Walk,
-    [LS_RUN]          = Lara_Col_Run,
+    [LS_RUN]          = M_Run,
     [LS_STOP]         = Lara_Col_Stop,
     [LS_JUMP_FORWARD] = M_ForwardJump,
     [LS_POSE]         = Lara_Col_Stop,
@@ -296,6 +304,16 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
 
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
+#if TR_VERSION == 1
+    // TODO: this routine gives smoother recovery after splatting against a wall
+    // - offer it fully in TR1 as its only scope is currently for wading.
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status != LWS_WADE) {
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+        return;
+    }
+#endif
+
     switch (coll->old_anim_state) {
     case LS_STOP:
     case LS_TURN_RIGHT:
@@ -330,6 +348,78 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_pits = 1;
     coll->slopes_are_walls = 1;
     Lara_GetCollisionInfo(item, coll);
+}
+
+static void M_Run(ITEM *const item, COLL_INFO *const coll)
+{
+    if (g_Config.gameplay.fix_qwop_glitch) {
+        item->gravity = false;
+        item->fall_speed = 0;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->slopes_are_walls = 1;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    Lara_GetCollisionInfo(item, coll);
+
+    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
+        return;
+    }
+
+    if (Lara_DeflectEdge(item, coll)) {
+        item->rot.z = 0;
+        if (Lara_TestWall(item, STEP_L, 0, -STEP_L * 5 / 2)) {
+            item->current_anim_state = LS_SPLAT;
+            const bool is_run_anim = Item_TestAnimEqual(item, LA_RUN);
+            if (is_run_anim
+                && Item_TestFrameRange(
+                    item, M_LF_RUN_L_START, M_LF_RUN_L_END)) {
+                Item_SwitchToAnim(item, LA_WALL_SMASH_LEFT, 0);
+                return;
+            }
+            if (is_run_anim
+                && Item_TestFrameRange(
+                    item, M_LF_RUN_R_START, M_LF_RUN_R_END)) {
+                Item_SwitchToAnim(item, LA_WALL_SMASH_RIGHT, 0);
+                return;
+            }
+        }
+        M_CollideStop(item, coll);
+    }
+
+    if (M_Fallen(item, coll)) {
+        return;
+    }
+
+#if TR_VERSION == 1
+    const bool fix_step_glitch = true;
+#else
+    const bool fix_step_glitch = g_Config.gameplay.fix_step_glitch;
+#endif
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
+        if (fix_step_glitch
+            && (coll->side_front.floor < -STEPUP_HEIGHT
+                || coll->side_front.floor >= -STEP_L / 2)) {
+            coll->side_mid.floor = 0;
+        } else {
+            if (Item_TestFrameRange(
+                    item, M_LF_RUN_L_HEEL_GROUND, M_LF_RUN_R_FOOT_GROUND)) {
+                Item_SwitchToAnim(item, LA_RUN_UP_STEP_LEFT, 0);
+            } else {
+                Item_SwitchToAnim(item, LA_RUN_UP_STEP_RIGHT, 0);
+            }
+        }
+    }
+
+    if (Lara_TestSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += MIN(coll->side_mid.floor, 50);
 }
 
 static void M_Turn(ITEM *const item, COLL_INFO *const coll)

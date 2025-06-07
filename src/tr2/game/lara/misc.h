@@ -4,7 +4,6 @@
 
 #include <libtrx/game/lara/misc.h>
 
-int32_t Lara_TestWall(ITEM *item, int32_t front, int32_t right, int32_t down);
 int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
 int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
 int32_t Lara_TestEdgeCatch(ITEM *item, COLL_INFO *coll, int32_t *edge);

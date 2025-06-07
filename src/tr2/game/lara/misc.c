@@ -202,62 +202,6 @@ void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
     }
 }
 
-int32_t Lara_TestWall(ITEM *item, int32_t front, int32_t right, int32_t down)
-{
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y + down;
-    int32_t z = item->pos.z;
-
-    DIRECTION dir = Math_GetDirection(item->rot.y);
-    switch (dir) {
-    case DIR_NORTH:
-        x -= right;
-        break;
-    case DIR_EAST:
-        z -= right;
-        break;
-    case DIR_SOUTH:
-        x += right;
-        break;
-    case DIR_WEST:
-        z += right;
-        break;
-    default:
-        break;
-    }
-
-    int16_t room_num = item->room_num;
-    Room_GetSector(x, y, z, &room_num);
-
-    switch (dir) {
-    case DIR_NORTH:
-        z += front;
-        break;
-    case DIR_EAST:
-        x += front;
-        break;
-    case DIR_SOUTH:
-        z -= front;
-        break;
-    case DIR_WEST:
-        x -= front;
-        break;
-    default:
-        break;
-    }
-
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t height = Room_GetHeight(sector, x, y, z);
-    const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    if (height == NO_HEIGHT) {
-        return 1;
-    }
-    if (height - y > 0 && ceiling - y < 0) {
-        return 0;
-    }
-    return 2;
-}
-
 int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll)
 {
     if (!g_Lara.climb_status || item->fall_speed < 0) {
