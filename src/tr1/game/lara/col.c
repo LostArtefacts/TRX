@@ -423,12 +423,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_Slide(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    Lara_SlideSlope(item, coll);
-}
-
 void Lara_Col_BackJump(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - DEG_180;

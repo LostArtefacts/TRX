@@ -11,6 +11,7 @@ static void M_FastFall(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
+static void M_Slide(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -38,7 +39,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_STEP_RIGHT]   = Lara_Col_SideStep,
     [LS_STEP_LEFT]    = Lara_Col_SideStep,
     [LS_HIT]          = Lara_Col_Roll2,
-    [LS_SLIDE]        = Lara_Col_Slide,
+    [LS_SLIDE]        = M_Slide,
     [LS_JUMP_BACK]    = Lara_Col_BackJump,
     [LS_JUMP_RIGHT]   = Lara_Col_RightJump,
     [LS_JUMP_LEFT]    = Lara_Col_LeftJump,
@@ -238,6 +239,13 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
         item->pos.y += coll->side_mid.floor;
     }
 #endif
+}
+
+static void M_Slide(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    Lara_SlideSlope(item, coll);
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
