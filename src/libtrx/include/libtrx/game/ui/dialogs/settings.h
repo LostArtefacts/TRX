@@ -6,6 +6,7 @@
 #include "../common.h"
 #include "../elements/tab_switch.h"
 #include "../scrollable.h"
+#include "./text.h"
 
 typedef struct {
     int32_t value;
@@ -25,6 +26,7 @@ typedef struct {
 typedef struct UI_SETTINGS_OPTION {
     CONFIG_OPTION_TYPE option_type;
     GAME_STRING_ID label_id;
+    GAME_STRING_ID description_id;
 
     // A custom handler that must have all the function pointers filled,
     UI_SETTINGS_CUSTOM_OPITON_HANDLER custom_handler;
@@ -68,6 +70,11 @@ typedef struct {
     int32_t active_tab_idx;
     UI_TAB_SWITCH_STATE *tab_switch;
     GAME_STRING_ID title;
+
+    struct {
+        bool show;
+        UI_TEXT_DIALOG_STATE state;
+    } description;
 } UI_SETTINGS_STATE;
 
 void UI_Settings_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);

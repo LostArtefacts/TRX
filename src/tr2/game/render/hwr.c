@@ -93,7 +93,7 @@ static void M_InsertSprite(
     int32_t y1, int32_t sprite_idx, int16_t shade);
 static void M_InsertTransQuad(
     RENDERER *renderer, int32_t x, int32_t y, int32_t width, int32_t height,
-    int32_t z);
+    int32_t z, uint8_t alpha);
 static void M_InsertTransOctagon(
     RENDERER *renderer, const PHD_VBUF *vbuf, int16_t shade);
 
@@ -872,7 +872,8 @@ static void M_InsertSprite(
 
 static void M_InsertTransQuad(
     RENDERER *const renderer, const int32_t x, const int32_t y,
-    const int32_t width, const int32_t height, const int32_t z)
+    const int32_t width, const int32_t height, const int32_t z,
+    const uint8_t alpha)
 {
     const double x0 = (double)x;
     const double y0 = (double)y;
@@ -906,7 +907,7 @@ static void M_InsertTransQuad(
         vbuf_gl->r = 0;
         vbuf_gl->g = 0;
         vbuf_gl->b = 0;
-        vbuf_gl->a = 0x80;
+        vbuf_gl->a = alpha;
     }
 
     m_HWR_VertexPtr += 4;

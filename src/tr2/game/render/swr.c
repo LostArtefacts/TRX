@@ -180,7 +180,7 @@ static void M_InsertFlatRect(
     int32_t z, uint8_t color_idx);
 static void M_InsertTransQuad(
     RENDERER *renderer, int32_t x, int32_t y, int32_t width, int32_t height,
-    int32_t z);
+    int32_t z, uint8_t alpha);
 static void M_InsertTransOctagon(
     RENDERER *renderer, const PHD_VBUF *vbuf, int16_t shade);
 static void M_InsertSprite(
@@ -2271,7 +2271,7 @@ static void M_InsertTransOctagon(
 
 static void M_InsertTransQuad(
     RENDERER *const renderer, const int32_t x, const int32_t y,
-    const int32_t width, int32_t height, const int32_t z)
+    const int32_t width, int32_t height, const int32_t z, const uint8_t alpha)
 {
     g_Sort3DPtr->_0 = g_Info3DPtr;
     g_Sort3DPtr->_1 = MAKE_ZSORT(g_PhdNearZ + 8 * z);

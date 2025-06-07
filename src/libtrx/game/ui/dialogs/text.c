@@ -1,4 +1,4 @@
-#include "game/ui/dialogs/examine_item.h"
+#include "game/ui/dialogs/text.h"
 
 #include "game/game_string.h"
 #include "game/input.h"
@@ -18,14 +18,12 @@
 #include <stdio.h>
 
 #define TITLE_MARGIN 5.0f
-#define WINDOW_MARGIN 10.0f
 #define DIALOG_PADDING 8.0f
-#define PADDING_SCALED (3.5f * (DIALOG_PADDING + WINDOW_MARGIN))
 
-static bool M_SelectPage(UI_EXAMINE_ITEM_STATE *state, int32_t new_page);
+static bool M_SelectPage(UI_TEXT_DIALOG_STATE *state, int32_t new_page);
 
 static bool M_SelectPage(
-    UI_EXAMINE_ITEM_STATE *const state, const int32_t new_page)
+    UI_TEXT_DIALOG_STATE *const state, const int32_t new_page)
 {
     if (new_page == state->current_page || new_page < 0
         || new_page >= state->page_content->count) {
@@ -35,15 +33,16 @@ static bool M_SelectPage(
     return true;
 }
 
-void UI_ExamineItem_Init(
-    UI_EXAMINE_ITEM_STATE *const state, const char *const title,
-    const char *const text, size_t max_lines)
+void UI_TextDialog_Init(
+    UI_TEXT_DIALOG_STATE *const state, const char *const title,
+    const char *const text, const size_t width, const size_t max_lines,
+    const bool is_heavy)
 {
     state->current_page = 0;
     state->title = String_ToUpper(title);
+    state->is_heavy = is_heavy;
 
-    const char *wrapped =
-        UI_Text_WordWrap(text, 1.0f, UI_GetCanvasWidth() * 2.0 / 3.0f);
+    const char *wrapped = UI_Text_WordWrap(text, 1.0f, width);
     state->page_content = String_Paginate(wrapped, max_lines);
     state->is_empty = String_IsEmpty(text);
     Memory_FreePointer(&wrapped);
@@ -62,7 +61,7 @@ void UI_ExamineItem_Init(
     state->max_lines = max_vis_lines;
 }
 
-void UI_ExamineItem_Control(UI_EXAMINE_ITEM_STATE *const state)
+void UI_TextDialog_Control(UI_TEXT_DIALOG_STATE *const state)
 {
     const int32_t page_shift =
         g_InputDB.menu_left ? -1 : (g_InputDB.menu_right ? 1 : 0);
@@ -71,7 +70,7 @@ void UI_ExamineItem_Control(UI_EXAMINE_ITEM_STATE *const state)
     }
 }
 
-void UI_ExamineItem_Free(UI_EXAMINE_ITEM_STATE *const state)
+void UI_TextDialog_Free(UI_TEXT_DIALOG_STATE *const state)
 {
     Memory_FreePointer(&state->title);
     for (int32_t i = state->page_content->count - 1; i >= 0; i--) {
@@ -81,14 +80,16 @@ void UI_ExamineItem_Free(UI_EXAMINE_ITEM_STATE *const state)
     Vector_Free(state->page_content);
 }
 
-void UI_ExamineItem(UI_EXAMINE_ITEM_STATE *const state)
+void UI_TextDialog(UI_TEXT_DIALOG_STATE *const state)
 {
     if (state->is_empty) {
         return;
     }
 
     UI_BeginModal(0.5f, 0.5f);
-    UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
+    UI_BeginFrame(
+        state->is_heavy ? UI_FRAME_DIALOG_BACKGROUND_HEAVY
+                        : UI_FRAME_DIALOG_BACKGROUND);
     UI_BeginPad(DIALOG_PADDING, DIALOG_PADDING);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,

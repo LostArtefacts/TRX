@@ -53,7 +53,8 @@ void Output_DrawGradientScreenBox(
 void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
     RGBA_8888 center, int32_t thickness);
-void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
+void Output_DrawScreenFBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, TEXT_STYLE text_style);
 
 void Output_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade, RGB_F tint);

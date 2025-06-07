@@ -27,20 +27,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .option_type = COT_FLOAT,
         .label_id = GS_ID(SOUND_SETTINGS_SOUND_VOLUME),
-        .custom_handler = {
-            .format_value = M_FormatPercentage,
-            .can_change_value = nullptr,
-            .request_change_value = M_RequestChange,
-        },
-        .target = &g_Config.audio.music_volume,
-        .min_value = 0,
-        .max_value = 100,
-        .delta_slow = 10,
-        .delta_fast = 10,
-    },
-    {
-        .option_type = COT_FLOAT,
-        .label_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME),
+        .description_id = GS_ID(SOUND_SETTINGS_SOUND_VOLUME_DESCRIPTION),
         .custom_handler = {
             .format_value = M_FormatPercentage,
             .can_change_value = nullptr,
@@ -52,31 +39,51 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .delta_slow = 10,
         .delta_fast = 10,
     },
+    {
+        .option_type = COT_FLOAT,
+        .label_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME),
+        .description_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME_DESCRIPTION),
+        .custom_handler = {
+            .format_value = M_FormatPercentage,
+            .can_change_value = nullptr,
+            .request_change_value = M_RequestChange,
+        },
+        .target = &g_Config.audio.music_volume,
+        .min_value = 0,
+        .max_value = 100,
+        .delta_slow = 10,
+        .delta_fast = 10,
+    },
 #if TR_VERSION == 1
     {
         .target = &g_Config.audio.enable_music_in_menu,
         .label_id = GS_ID(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU),
+        .description_id = GS_ID(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU_DESCRIPTION),
         .option_type = COT_BOOL,
     },
     {
         .target = &g_Config.audio.fix_secrets_killing_music,
         .label_id = GS_ID(SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC),
+        .description_id = GS_ID(SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC_DESCRIPTION),
         .option_type = COT_BOOL,
     },
     {
         .target = &g_Config.audio.fix_speeches_killing_music,
         .label_id = GS_ID(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC),
+        .description_id = GS_ID(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC_DESCRIPTION),
         .option_type = COT_BOOL,
     },
     {
         .target = &g_Config.audio.enable_music_in_inventory,
         .label_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY),
+        .description_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION),
         .option_type = COT_INVERTED_BOOL,
     },
 #endif
     {
         .target = &g_Config.audio.inventory_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME),
+        .description_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME_DESCRIPTION),
         .option_type = COT_FLOAT,
         .min_value = 0,
         .max_value = 100,
@@ -91,6 +98,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .target = &g_Config.audio.inventory_music_volume,
         .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME),
+        .description_id = GS_ID(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME_DESCRIPTION),
         .option_type = COT_FLOAT,
         .min_value = 0,
         .max_value = 100,
@@ -105,6 +113,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .target = &g_Config.audio.underwater_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME),
+        .description_id = GS_ID(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME_DESCRIPTION),
         .option_type = COT_FLOAT,
         .min_value = 0,
         .max_value = 100,
@@ -119,6 +128,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .target = &g_Config.audio.underwater_music_volume,
         .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME),
+        .description_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME_DESCRIPTION),
         .option_type = COT_FLOAT,
         .min_value = 0,
         .max_value = 100,
@@ -133,6 +143,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .target = &g_Config.audio.music_load_condition,
         .label_id = GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION),
+        .description_id = GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_MusicLoadConditionEnumEntries,
     },
@@ -140,17 +151,20 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
         .target = &g_Config.audio.enable_pitched_sounds,
         .label_id = GS_ID(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS),
+        .description_id = GS_ID(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS_DESCRIPTION),
         .option_type = COT_BOOL,
     },
     {
         .target = &g_Config.audio.enable_ps_uzi_sfx,
         .label_id = GS_ID(SOUND_SETTINGS_PS_UZI_SFX),
+        .description_id = GS_ID(SOUND_SETTINGS_PS_UZI_SFX_DESCRIPTION),
         .option_type = COT_BOOL,
     },
 #elif TR_VERSION >= 2
     {
         .target = &g_Config.audio.enable_lara_mic,
         .label_id = GS_ID(SOUND_SETTINGS_ENABLE_LARA_MIC),
+        .description_id = GS_ID(SOUND_SETTINGS_ENABLE_LARA_MIC_DESCRIPTION),
         .option_type = COT_BOOL,
     },
 #endif

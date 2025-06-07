@@ -378,11 +378,11 @@ void Render_InsertFlatRect(
 
 void Render_InsertTransQuad(
     const int32_t x, const int32_t y, const int32_t width, const int32_t height,
-    const int32_t z)
+    const int32_t z, const uint8_t alpha)
 {
     RENDERER *const r = M_GetRenderer();
     if (r->InsertTransQuad != nullptr) {
-        r->InsertTransQuad(r, x, y, width, height, z);
+        r->InsertTransQuad(r, x, y, width, height, z, alpha);
     }
 }
 

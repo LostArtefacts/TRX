@@ -53,6 +53,11 @@ void UI_BeginFrame(UI_FRAME_STYLE style)
         data->background_z = 160;
         data->text_style = TS_BACKGROUND;
         break;
+    case UI_FRAME_DIALOG_BACKGROUND_HEAVY:
+        data->outline_z = 160;
+        data->background_z = 160;
+        data->text_style = TS_BACKGROUND_HEAVY;
+        break;
     case UI_FRAME_DIALOG_HEADING:
         data->outline_z = 80;
         data->background_z = 80;

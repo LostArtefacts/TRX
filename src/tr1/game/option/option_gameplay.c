@@ -1,7 +1,6 @@
 #include "game/option/option_gameplay.h"
 
-#include "game/input.h"
-
+#include <libtrx/game/input.h>
 #include <libtrx/game/ui/dialogs/gameplay_settings.h>
 
 typedef struct {
@@ -39,11 +38,15 @@ void Option_Gameplay_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     if (!p->ui.is_ready) {
         M_Init(p);
     }
-    UI_GameplaySettings_Control(&p->ui.state);
-
-    if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        inv_item->anim_direction = 1;
-        inv_item->goal_frame = inv_item->frames_total - 1;
+    if (UI_GameplaySettings_Control(&p->ui.state)) {
+        M_Shutdown(p);
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+            inv_item->anim_direction = 1;
+            inv_item->goal_frame = inv_item->frames_total - 1;
+        }
+    } else {
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
     }
 }
 
