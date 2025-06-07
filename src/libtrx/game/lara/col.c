@@ -16,6 +16,7 @@ static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
+static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_SideBackJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
@@ -55,7 +56,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_JUMP_BACK]    = M_SideBackJump,
     [LS_JUMP_RIGHT]   = M_SideBackJump,
     [LS_JUMP_LEFT]    = M_SideBackJump,
-    [LS_JUMP_UP]      = Lara_Col_UpJump,
+    [LS_JUMP_UP]      = M_UpJump,
     [LS_FALL_BACK]    = M_FallBack,
     [LS_SHIMMY_LEFT]  = M_Shimmy,
     [LS_SHIMMY_RIGHT] = M_Shimmy,
@@ -311,6 +312,56 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     if (!fix_wall_bug) {
         Lara_Animate(item);
     }
+}
+
+static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    const bool enable_lean_jumping = g_Config.gameplay.enable_lean_jumping;
+#else
+    const bool enable_lean_jumping = true;
+#endif
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->facing = lara->move_angle;
+    if (enable_lean_jumping && item->speed < 0) {
+        coll->facing += DEG_180;
+    }
+
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num, 870);
+    if (Lara_TestHangJumpUp(item, coll)) {
+        return;
+    }
+
+    Lara_SlideEdgeJump(item, coll);
+    if (enable_lean_jumping) {
+        if (coll->coll_type != COLL_NONE) {
+            item->speed = item->speed > 0 ? 2 : -2;
+        } else if (item->fall_speed < -70) {
+            if (g_Input.forward && item->speed < 5) {
+                item->speed++;
+            } else if (g_Input.back && item->speed > -5) {
+                item->speed -= 2;
+            }
+        }
+    }
+
+    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
+        return;
+    }
+
+    if (Lara_LandedBad(item, coll)) {
+        item->goal_anim_state = LS_DEATH;
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y += coll->side_mid.floor;
 }
 
 static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)

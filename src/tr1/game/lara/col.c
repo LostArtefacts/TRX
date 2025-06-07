@@ -370,52 +370,6 @@ void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
     item->pos.y += coll->side_mid.floor;
 }
 
-void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
-    coll->facing = g_Lara.move_angle;
-    if (g_Config.gameplay.enable_lean_jumping && item->speed < 0) {
-        coll->facing += DEG_180;
-    }
-
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num, 870);
-
-    if (Lara_TestHangJumpUp(item, coll)) {
-        return;
-    }
-
-    Lara_SlideEdgeJump(item, coll);
-
-    if (g_Config.gameplay.enable_lean_jumping) {
-        if (coll->coll_type != COLL_NONE) {
-            item->speed = item->speed > 0 ? 2 : -2;
-        } else if (item->fall_speed < -70) {
-            if (g_Input.forward && item->speed < 5) {
-                item->speed++;
-            } else if (g_Input.back && item->speed > -5) {
-                item->speed -= 2;
-            }
-        }
-    }
-
-    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
-        return;
-    }
-
-    if (Lara_LandedBad(item, coll)) {
-        item->goal_anim_state = LS_DEATH;
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-    item->pos.y += coll->side_mid.floor;
-    item->gravity = false;
-    item->fall_speed = 0;
-}
-
 void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
