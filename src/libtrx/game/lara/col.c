@@ -15,6 +15,7 @@
 #define M_LF_WADE_STEP_L_END 14
 
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
+static bool M_IsWadingEnabled(void);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
 static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
@@ -141,6 +142,15 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
     item->gravity = true;
     item->fall_speed = 0;
     return true;
+}
+
+static bool M_IsWadingEnabled(void)
+{
+#if TR_VERSION == 1
+    return g_Config.gameplay.enable_wading;
+#else
+    return true;
+#endif
 }
 
 static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
@@ -750,11 +760,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
 
 static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool enable_wading = g_Config.gameplay.enable_wading;
-#else
-    const bool enable_wading = true;
-#endif
+    const bool enable_wading = M_IsWadingEnabled();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     coll->facing = lara->move_angle;
 
@@ -800,16 +806,11 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
 
 static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool enable_wading = g_Config.gameplay.enable_wading;
-#else
-    const bool enable_wading = true;
-#endif
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
     coll->bad_neg = -STEPUP_HEIGHT;
     M_CommonSurface(item, coll);
-    if (enable_wading) {
+    if (M_IsWadingEnabled()) {
         M_TestWaterClimbOut(item, coll);
     }
 }
@@ -836,11 +837,7 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool enable_wading = g_Config.gameplay.enable_wading;
-#else
-    const bool enable_wading = true;
-#endif
+    const bool enable_wading = M_IsWadingEnabled();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->rot.x < -DEG_90 || item->rot.x > DEG_90) {
         lara->move_angle = item->rot.y + DEG_180;
