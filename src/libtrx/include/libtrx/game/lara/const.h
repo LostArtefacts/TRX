@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../rooms/const.h"
+
 #define LARA_MAX_HITPOINTS 1000
 #define LARA_MAX_AIR 1800
 #define LARA_DIVE_WAIT 10

@@ -7,6 +7,7 @@
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
+static void M_FastFall(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -19,7 +20,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_TURN_RIGHT]   = M_Turn,
     [LS_TURN_LEFT]    = M_Turn,
     [LS_DEATH]        = M_Death,
-    [LS_FAST_FALL]    = Lara_Col_FastFall,
+    [LS_FAST_FALL]    = M_FastFall,
     [LS_HANG]         = Lara_Col_Hang,
     [LS_REACH]        = Lara_Col_Reach,
     [LS_SPLAT]        = Lara_Col_Splat,
@@ -141,6 +142,33 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
     item->pos.y += coll->side_mid.floor;
     item->hit_points = -1;
     lara->air = -1;
+}
+
+static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = true;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+
+    Lara_GetCollisionInfo(item, coll);
+    Lara_SlideEdgeJump(item, coll);
+    if (coll->side_mid.floor > 0) {
+        return;
+    }
+
+    if (Lara_LandedBad(item, coll)) {
+        item->goal_anim_state = LS_DEATH;
+    } else {
+        item->goal_anim_state = LS_STOP;
+        item->current_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_FREEFALL_LAND, 0);
+    }
+
+    Sound_StopEffect(SFX_LARA_FALL);
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)

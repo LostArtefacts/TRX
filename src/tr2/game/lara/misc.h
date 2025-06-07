@@ -12,8 +12,6 @@ int32_t Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
 
 void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
 
-void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
-
 int32_t Lara_TestWall(ITEM *item, int32_t front, int32_t right, int32_t down);
 
 int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
@@ -31,8 +29,6 @@ int32_t Lara_TestHangJump(ITEM *item, COLL_INFO *coll);
 int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle);
 
 int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll);
-
-int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 
 int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll);
 
