@@ -15,7 +15,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
 bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll);
 bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 bool Lara_TestHangSwingIn(ITEM *item, PHD_ANGLE angle);
-bool Lara_TestSlide(ITEM *item, COLL_INFO *coll);
 bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 void Lara_SwimCollision(ITEM *item, COLL_INFO *coll);
 void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll);

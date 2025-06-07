@@ -4,6 +4,7 @@
 #include "game/lara.h"
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
+static void M_Turn(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -13,8 +14,8 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_JUMP_FORWARD] = Lara_Col_ForwardJump,
     [LS_POSE]         = Lara_Col_Stop,
     [LS_FAST_BACK]    = Lara_Col_FastBack,
-    [LS_TURN_RIGHT]   = Lara_Col_Turn,
-    [LS_TURN_LEFT]    = Lara_Col_Turn,
+    [LS_TURN_RIGHT]   = M_Turn,
+    [LS_TURN_LEFT]    = M_Turn,
     [LS_DEATH]        = Lara_Col_Death,
     [LS_FAST_FALL]    = Lara_Col_FastFall,
     [LS_HANG]         = Lara_Col_Hang,
@@ -99,6 +100,25 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_pits = 1;
     coll->slopes_are_walls = 1;
     Lara_GetCollisionInfo(item, coll);
+}
+
+static void M_Turn(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+    M_Default(item, coll);
+
+    if (coll->side_mid.floor <= 100) {
+        if (!Lara_TestSlide(item, coll)) {
+            item->pos.y += coll->side_mid.floor;
+        }
+    } else {
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
+        item->current_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS_JUMP_FORWARD;
+        item->gravity = true;
+        item->fall_speed = 0;
+    }
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)

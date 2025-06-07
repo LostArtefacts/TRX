@@ -702,10 +702,10 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
     return 1;
 }
 
-int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
+bool Lara_TestSlide(ITEM *item, COLL_INFO *coll)
 {
     if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
-        return 0;
+        return false;
     }
 
     int16_t angle = 0;
@@ -718,7 +718,7 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
         angle = -DEG_180;
     } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
-        angle = 0;
+        angle = false;
     }
 
     const int16_t angle_dif = angle - item->rot.y;
@@ -727,7 +727,7 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
         if (item->current_anim_state == LS_SLIDE
             && m_LaraOldSlideAngle == angle) {
-            return 1;
+            return true;
         }
         item->goal_anim_state = LS_SLIDE;
         item->current_anim_state = LS_SLIDE;
@@ -736,7 +736,7 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     } else {
         if (item->current_anim_state == LS_SLIDE_BACK
             && m_LaraOldSlideAngle == angle) {
-            return 1;
+            return true;
         }
         item->goal_anim_state = LS_SLIDE_BACK;
         item->current_anim_state = LS_SLIDE_BACK;
@@ -746,7 +746,7 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
 
     g_Lara.move_angle = angle;
     m_LaraOldSlideAngle = angle;
-    return 1;
+    return true;
 }
 
 int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)
