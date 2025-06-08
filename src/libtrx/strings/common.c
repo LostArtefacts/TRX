@@ -7,7 +7,17 @@
 #include <pcre2.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+static bool m_ExitRegistered = false;
+static char *m_StaticBuf = nullptr;
+static size_t m_StaticBufCap = 0;
+
+static void M_Shutdown(void)
+{
+    Memory_Free(m_StaticBuf);
+}
 
 static void M_AddPage(
     const char *text, int32_t start_pos, int32_t length, VECTOR *pages);
@@ -284,4 +294,23 @@ void String_FormatIntoV(
         *target_cap = needed;
     }
     vsnprintf(*target_buf, *target_cap, fmt, args);
+}
+
+const char *String_FormatStatic(const char *const fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    const char *const result = String_FormatStaticV(fmt, args);
+    va_end(args);
+    return result;
+}
+
+const char *String_FormatStaticV(const char *const fmt, va_list args)
+{
+    if (!m_ExitRegistered) {
+        atexit(M_Shutdown);
+        m_ExitRegistered = true;
+    }
+    String_FormatIntoV(&m_StaticBuf, &m_StaticBufCap, fmt, args);
+    return m_StaticBuf;
 }

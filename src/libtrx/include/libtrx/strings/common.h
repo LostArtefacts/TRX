@@ -29,6 +29,13 @@ char *String_Format(const char *fmt, ...);
 void String_FormatInto(
     char **target_buf, size_t *target_cap, const char *fmt, ...);
 
-// Like String_FormatInto, but accepts a va_list of arguments
+// Like String_FormatInto, but accepts a va_list of arguments.
 void String_FormatIntoV(
     char **target_buf, size_t *target_cap, const char *fmt, va_list args);
+
+// Like String_Format, but writes into a static buffer that grows as needed.
+// The caller must not free() the result; it will be freed on program exit.
+const char *String_FormatStatic(const char *fmt, ...);
+
+// Like String_FormatStatic, but accepts a va_list of arguments.
+const char *String_FormatStaticV(const char *fmt, va_list args);
