@@ -31,3 +31,6 @@
 "\\{ammo uzis}"       N grid_sprite("buttons.png", 9, 1, index=105)
 "\\{arrow up}"        N grid_sprite("buttons.png", 8, 2, index=80)
 "\\{arrow down}"      N grid_sprite("buttons.png", 9, 2, index=81) translate(y=-2)
+"\\{small hyphen}"    N grid_sprite("buttons.png", 4, 1)
+"\\{small comma}"     N grid_sprite("buttons.png", 5, 1)
+"\\{small degree}"    N grid_sprite("buttons.png", 6, 1)
