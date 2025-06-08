@@ -33,10 +33,13 @@
 #define M_LF_WADE_STEP_L_START 3
 #define M_LF_WADE_STEP_L_END 14
 
+#define M_LF_HANG 21
+
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_FixDescendingGlitch(void);
 static bool M_FixStepGlitch(void);
 static bool M_IsWadingEnabled(void);
+static bool M_GetClimbStatus(void);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
 static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
@@ -52,6 +55,7 @@ static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
+static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
@@ -84,7 +88,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_TURN_LEFT]    = M_Turn,
     [LS_DEATH]        = M_Death,
     [LS_FAST_FALL]    = M_FastFall,
-    [LS_HANG]         = Lara_Col_Hang,
+    [LS_HANG]         = M_Hang,
     [LS_REACH]        = M_Reach,
     [LS_SPLAT]        = M_Splat,
     [LS_TREAD]        = M_Swim,
@@ -195,6 +199,15 @@ static bool M_IsWadingEnabled(void)
     return g_Config.gameplay.enable_wading;
 #else
     return true;
+#endif
+}
+
+static bool M_GetClimbStatus(void)
+{
+#if TR_VERSION == 1
+    return false;
+#else
+    return Lara_GetLaraInfo()->climb_status;
 #endif
 }
 
@@ -718,6 +731,44 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_Hang(ITEM *const item, COLL_INFO *const coll)
+{
+    Lara_HangTest(item, coll);
+    if (item->goal_anim_state != LS_HANG) {
+        return;
+    }
+
+    const bool climb_status = M_GetClimbStatus();
+    if (g_Input.forward) {
+        if (coll->side_front.floor <= -850 || coll->side_front.floor >= -650
+            || coll->side_front.floor - coll->side_front.ceiling < 0
+            || coll->side_left.floor - coll->side_left.ceiling < 0
+            || coll->side_right.floor - coll->side_right.ceiling < 0
+            || coll->hit_static) {
+#if TR_VERSION >= 2
+            if (climb_status && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
+                && Item_TestFrameEqual(item, M_LF_HANG)
+                && coll->side_mid.ceiling <= -256) {
+                item->goal_anim_state = LS_HANG;
+                item->current_anim_state = LS_HANG;
+                Item_SwitchToAnim(item, LA_LADDER_UP_HANGING, 0);
+            }
+#endif
+        } else {
+            item->goal_anim_state = g_Input.slow ? LS_GYMNAST : LS_PULL_UP;
+        }
+    } else if (
+        g_Input.back && climb_status
+        && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
+        && Item_TestFrameEqual(item, M_LF_HANG)) {
+#if TR_VERSION >= 2
+        item->goal_anim_state = LS_HANG;
+        item->current_anim_state = LS_HANG;
+        Item_SwitchToAnim(item, LA_LADDER_DOWN_HANGING, 0);
+#endif
+    }
 }
 
 static void M_Reach(ITEM *const item, COLL_INFO *const coll)
