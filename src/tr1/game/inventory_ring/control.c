@@ -82,15 +82,16 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity(
-            "%5d A", g_Lara.shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+            "%5d \\{ammo shotgun}",
+            g_Lara.shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
 
     case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity("%5d B", g_Lara.magnum_ammo.ammo);
+        M_ShowAmmoQuantity("%5d \\{ammo magnums}", g_Lara.magnum_ammo.ammo);
         break;
 
     case O_UZI_OPTION:
-        M_ShowAmmoQuantity("%5d C", g_Lara.uzi_ammo.ammo);
+        M_ShowAmmoQuantity("%5d \\{ammo uzis}", g_Lara.uzi_ammo.ammo);
         break;
 
     case O_SHOTGUN_AMMO_OPTION:

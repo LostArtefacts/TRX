@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -14,13 +15,23 @@ static bool m_ExitRegistered = false;
 static char *m_StaticBuf = nullptr;
 static size_t m_StaticBufCap = 0;
 
+static void M_Shutdown(void);
+static void M_EnsureShutdown(void);
+static void M_AddPage(
+    const char *text, int32_t start_pos, int32_t length, VECTOR *pages);
+
 static void M_Shutdown(void)
 {
     Memory_Free(m_StaticBuf);
 }
 
-static void M_AddPage(
-    const char *text, int32_t start_pos, int32_t length, VECTOR *pages);
+static void M_EnsureShutdown(void)
+{
+    if (!m_ExitRegistered) {
+        atexit(M_Shutdown);
+        m_ExitRegistered = true;
+    }
+}
 
 static void M_AddPage(
     const char *text, int32_t start_pos, int32_t length, VECTOR *const pages)
@@ -307,10 +318,66 @@ const char *String_FormatStatic(const char *const fmt, ...)
 
 const char *String_FormatStaticV(const char *const fmt, va_list args)
 {
-    if (!m_ExitRegistered) {
-        atexit(M_Shutdown);
-        m_ExitRegistered = true;
-    }
+    M_EnsureShutdown();
     String_FormatIntoV(&m_StaticBuf, &m_StaticBufCap, fmt, args);
     return m_StaticBuf;
+}
+
+const char *String_StylizeSmallDigitsStatic(const char *const text)
+{
+    M_EnsureShutdown();
+    String_StylizeSmallDigitsInto(&m_StaticBuf, &m_StaticBufCap, text);
+    return m_StaticBuf;
+}
+
+void String_StylizeSmallDigitsInto(
+    char **target_buf, size_t *target_cap, const char *const text)
+{
+    ASSERT(target_buf != nullptr);
+    ASSERT(target_cap != nullptr);
+    const bool same_buf = text == *target_buf;
+    const char *src = text;
+    size_t src_len = strlen(src);
+
+    static const char prefix[] = "\\{small digit ";
+    const size_t prefix_len = sizeof(prefix) - 1;
+
+    // Count how many digits we’ll expand
+    size_t digit_count = 0;
+    for (size_t i = 0; i < src_len; i++) {
+        if (src[i] >= '0' && src[i] <= '9')
+            digit_count++;
+    }
+
+    // Compute final length & ensure capacity once
+    size_t final_len = src_len + digit_count * (prefix_len + 1);
+    size_t needed = final_len + 1; // include '\0'
+    if (*target_cap < needed) {
+        *target_buf = Memory_Realloc(*target_buf, needed);
+        *target_cap = needed;
+    }
+
+    char *const buf = *target_buf;
+    // Adjust the source in case src==buf and the target buffer got reallocated
+    if (same_buf) {
+        src = buf;
+    }
+
+    // Backwards in-place rewrite—always safe, even if src==buf
+    size_t read_idx = src_len;
+    size_t write_idx = final_len;
+    buf[write_idx--] = '\0';
+    while (read_idx--) {
+        char c = src[read_idx];
+        if (c >= '0' && c <= '9') {
+            buf[write_idx--] = '}';
+            buf[write_idx--] = c;
+            // Copy prefix in reverse
+            for (size_t k = 0; k < prefix_len; k++) {
+                buf[write_idx--] = prefix[prefix_len - 1 - k];
+            }
+        } else {
+            buf[write_idx--] = c;
+        }
+    }
 }

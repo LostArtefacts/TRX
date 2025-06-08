@@ -12,6 +12,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/ui.h"
+#include "strings.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -32,7 +33,8 @@ typedef enum {
 } PASS_MESH;
 
 static bool m_ShowExamine = false;
-static char m_CountText[128];
+static char *m_CountText = nullptr;
+static size_t m_CountTextCap = 0;
 static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
 static void M_HandleRequestedObject(INV_RING *ring);
@@ -421,8 +423,8 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
 
 void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 {
-    sprintf(m_CountText, fmt, qty);
-    UI_AmmoLabel_MakeString(m_CountText);
+    const char *const tmp = String_FormatStatic(fmt, qty);
+    String_StylizeSmallDigitsInto(&m_CountText, &m_CountTextCap, tmp);
 }
 
 void InvRing_DrawUI(INV_RING *const ring)
@@ -437,7 +439,7 @@ void InvRing_DrawUI(INV_RING *const ring)
         UI_EndModal();
     }
 
-    if (m_CountText[0] != '\0') {
+    if (m_CountText != nullptr && m_CountText[0] != '\0') {
         UI_BeginModal(0.5f, 1.0f);
         UI_BeginOffset(64.0f, -56.0f);
         UI_Label(m_CountText);
@@ -449,7 +451,9 @@ void InvRing_DrawUI(INV_RING *const ring)
 void InvRing_RemoveItemTexts(void)
 {
     Overlay_SetBottomText(nullptr, false);
-    strcpy(m_CountText, "");
+    if (m_CountText != nullptr) {
+        strcpy(m_CountText, "");
+    }
 }
 
 void InvRing_ShowHeader(INV_RING *const ring)
