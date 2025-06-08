@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../const.h"
 #include "../rooms/const.h"
 
 #define LARA_MAX_HITPOINTS 1000
