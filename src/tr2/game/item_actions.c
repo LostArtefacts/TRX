@@ -82,7 +82,7 @@ static M_FUNC m_Actions[] = {
     // clang-format on
 };
 
-void M_Bubbles(ITEM *const item)
+static void M_Bubbles(ITEM *const item)
 {
     // XXX: until we get RoboLara, it makes sense for her to breathe underwater
     if (g_Lara.water_status == LWS_CHEAT
@@ -104,23 +104,23 @@ void M_Bubbles(ITEM *const item)
     }
 }
 
-void M_LaraHandsFree(ITEM *const item)
+static void M_LaraHandsFree(ITEM *const item)
 {
     g_Lara.gun_status = LGS_ARMLESS;
 }
 
-void M_FinishLevel(ITEM *const item)
+static void M_FinishLevel(ITEM *const item)
 {
     Game_SetIsLevelComplete(true);
 }
 
-void M_Turn180(ITEM *const item)
+static void M_Turn180(ITEM *const item)
 {
     item->rot.x = -item->rot.x;
     item->rot.y += DEG_180;
 }
 
-void M_FloorShake(ITEM *const item)
+static void M_FloorShake(ITEM *const item)
 {
     const int32_t max_dist = WALL_L * 16; // = 0x4000
     const int32_t max_bounce = 100;
@@ -136,7 +136,7 @@ void M_FloorShake(ITEM *const item)
     }
 }
 
-void M_LaraNormal(ITEM *const item)
+static void M_LaraNormal(ITEM *const item)
 {
     item->current_anim_state = LS_STOP;
     item->goal_anim_state = LS_STOP;
@@ -145,13 +145,13 @@ void M_LaraNormal(ITEM *const item)
     Viewport_AlterFOV(-1);
 }
 
-void M_Boiler(ITEM *const item)
+static void M_Boiler(ITEM *const item)
 {
     Sound_Effect(SFX_UNKNOWN_1, nullptr, SPM_NORMAL);
     Room_SetFlipEffect(-1);
 }
 
-void M_Flood(ITEM *const item)
+static void M_Flood(ITEM *const item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();
     if (flip_timer > 4 * LOGIC_FPS) {
@@ -176,14 +176,14 @@ void M_Flood(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
-void M_Rubble(ITEM *const item)
+static void M_Rubble(ITEM *const item)
 {
     Sound_Effect(SFX_MASSIVE_CRASH, nullptr, SPM_NORMAL);
     g_Camera.bounce = -350;
     Room_SetFlipEffect(-1);
 }
 
-void M_Chandelier(ITEM *const item)
+static void M_Chandelier(ITEM *const item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();
     Sound_Effect(SFX_CHAIN_PULLEY, nullptr, SPM_NORMAL);
@@ -193,43 +193,43 @@ void M_Chandelier(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
-void M_Explosion(ITEM *const item)
+static void M_Explosion(ITEM *const item)
 {
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     g_Camera.bounce = -75;
     Room_SetFlipEffect(-1);
 }
 
-void M_Piston(ITEM *const item)
+static void M_Piston(ITEM *const item)
 {
     Sound_Effect(SFX_PULLEY_CRANE, nullptr, SPM_NORMAL);
     Room_SetFlipEffect(-1);
 }
 
-void M_Curtain(ITEM *const item)
+static void M_Curtain(ITEM *const item)
 {
     Sound_Effect(SFX_CURTAIN, nullptr, SPM_NORMAL);
     Room_SetFlipEffect(-1);
 }
 
-void M_Statue(ITEM *const item)
+static void M_Statue(ITEM *const item)
 {
     Sound_Effect(SFX_STONE_DOOR_SLIDE, nullptr, SPM_NORMAL);
     Room_SetFlipEffect(-1);
 }
 
-void M_SetChange(ITEM *const item)
+static void M_SetChange(ITEM *const item)
 {
     Sound_Effect(SFX_STAGE_BACKDROP, nullptr, SPM_NORMAL);
     Room_SetFlipEffect(-1);
 }
 
-void M_FlipMap(ITEM *const item)
+static void M_FlipMap(ITEM *const item)
 {
     Room_FlipMap();
 }
 
-void M_LaraDrawRightGun(ITEM *const item)
+static void M_LaraDrawRightGun(ITEM *const item)
 {
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_R);
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_R);
@@ -237,7 +237,7 @@ void M_LaraDrawRightGun(ITEM *const item)
     Lara_SwapSingleMesh(LM_HAND_R, item->object_id);
 }
 
-void M_LaraDrawLeftGun(ITEM *const item)
+static void M_LaraDrawLeftGun(ITEM *const item)
 {
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_L);
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_L);
@@ -245,7 +245,7 @@ void M_LaraDrawLeftGun(ITEM *const item)
     Lara_SwapSingleMesh(LM_HAND_L, item->object_id);
 }
 
-void M_SwapMeshesWithMeshSwap1(ITEM *const item)
+static void M_SwapMeshesWithMeshSwap1(ITEM *const item)
 {
     const OBJECT *const obj_1 = Object_Get(item->object_id);
     for (int32_t mesh_idx = 0; mesh_idx < obj_1->mesh_count; mesh_idx++) {
@@ -253,7 +253,7 @@ void M_SwapMeshesWithMeshSwap1(ITEM *const item)
     }
 }
 
-void M_SwapMeshesWithMeshSwap2(ITEM *const item)
+static void M_SwapMeshesWithMeshSwap2(ITEM *const item)
 {
     const OBJECT *const obj_1 = Object_Get(item->object_id);
     for (int32_t mesh_idx = 0; mesh_idx < obj_1->mesh_count; mesh_idx++) {
@@ -261,7 +261,7 @@ void M_SwapMeshesWithMeshSwap2(ITEM *const item)
     }
 }
 
-void M_SwapMeshesWithMeshSwap3(ITEM *const item)
+static void M_SwapMeshesWithMeshSwap3(ITEM *const item)
 {
     const OBJECT *const obj_1 = Object_Get(item->object_id);
     for (int32_t mesh_idx = 0; mesh_idx < obj_1->mesh_count; mesh_idx++) {
@@ -272,50 +272,50 @@ void M_SwapMeshesWithMeshSwap3(ITEM *const item)
     }
 }
 
-void M_InvisibilityOn(ITEM *const item)
+static void M_InvisibilityOn(ITEM *const item)
 {
     item->status = IS_INVISIBLE;
 }
 
-void M_InvisibilityOff(ITEM *const item)
+static void M_InvisibilityOff(ITEM *const item)
 {
     item->status = IS_ACTIVE;
 }
 
-void M_DynamicLightOn(ITEM *const item)
+static void M_DynamicLightOn(ITEM *const item)
 {
     item->dynamic_light = true;
 }
 
-void M_DynamicLightOff(ITEM *const item)
+static void M_DynamicLightOff(ITEM *const item)
 {
     item->dynamic_light = false;
 }
 
-void M_ResetHair(ITEM *const item)
+static void M_ResetHair(ITEM *const item)
 {
     Lara_Hair_Initialise();
 }
 
-void M_AssaultStart(ITEM *const item)
+static void M_AssaultStart(ITEM *const item)
 {
     Gym_StartAssault();
     Room_SetFlipEffect(-1);
 }
 
-void M_AssaultStop(ITEM *const item)
+static void M_AssaultStop(ITEM *const item)
 {
     Gym_StopAssault();
     Room_SetFlipEffect(-1);
 }
 
-void M_AssaultReset(ITEM *const item)
+static void M_AssaultReset(ITEM *const item)
 {
     Gym_ResetAssault();
     Room_SetFlipEffect(-1);
 }
 
-void M_AssaultFinished(ITEM *const item)
+static void M_AssaultFinished(ITEM *const item)
 {
     Gym_FinishAssault();
     Room_SetFlipEffect(-1);

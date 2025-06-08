@@ -12,7 +12,7 @@
 VECTOR *m_History = nullptr;
 static const char *m_Path = "cfg/" PROJECT_NAME "_console_history.json5";
 
-void M_LoadFromJSON(JSON_OBJECT *const root_obj)
+static void M_LoadFromJSON(JSON_OBJECT *const root_obj)
 {
     JSON_ARRAY *const arr = JSON_ObjectGetArray(root_obj, "entries");
     if (arr == nullptr) {
@@ -28,7 +28,7 @@ void M_LoadFromJSON(JSON_OBJECT *const root_obj)
     }
 }
 
-void M_DumpToJSON(JSON_OBJECT *const root_obj)
+static void M_DumpToJSON(JSON_OBJECT *const root_obj)
 {
     JSON_ARRAY *const arr = JSON_ArrayNew();
 

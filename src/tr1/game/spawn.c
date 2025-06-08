@@ -15,7 +15,7 @@
 
 static void M_ShootAtLara(EFFECT *effect);
 
-void M_ShootAtLara(EFFECT *effect)
+static void M_ShootAtLara(EFFECT *const effect)
 {
     int32_t x = g_LaraItem->pos.x - effect->pos.x;
     int32_t y = g_LaraItem->pos.y - effect->pos.y;
