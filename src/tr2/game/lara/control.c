@@ -43,7 +43,7 @@ static void (*m_ControlRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_TREAD]        = Lara_State_Tread,
     [LS_LAND]         = Lara_State_Empty,
     [LS_COMPRESS]     = Lara_State_Compress,
-    [LS_BACK]         = Lara_State_Back,
+    [LS_WALK_BACK]    = Lara_State_Back,
     [LS_SWIM]         = Lara_State_Swim,
     [LS_GLIDE]        = Lara_State_Glide,
     [LS_PULL_UP]      = Lara_State_Null,
@@ -505,7 +505,7 @@ void Lara_Control(const int16_t item_num)
 
                 LARA_ANIMATION anim_idx;
                 switch (item->current_anim_state) {
-                case LS_BACK:
+                case LS_WALK_BACK:
                     item->goal_anim_state = LS_SURF_BACK;
                     anim_idx = LA_ONWATER_IDLE_TO_SWIM_BACK;
                     break;

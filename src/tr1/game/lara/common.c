@@ -220,7 +220,7 @@ void Lara_Control(void)
 
             LARA_ANIMATION anim;
             switch (item->current_anim_state) {
-            case LS_BACK:
+            case LS_WALK_BACK:
                 item->goal_anim_state = LS_SURF_BACK;
                 anim = LA_ONWATER_IDLE_TO_SWIM_BACK;
                 break;

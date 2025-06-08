@@ -124,12 +124,12 @@ void Lara_Cheat_CheckKeys(void)
 
     case CHEAT_STEP_FORWARD_STOP:
         if (ls != LS_STOP) {
-            m_CheatState = ls == LS_BACK ? CHEAT_STEP_BACK : CHEAT_INITIAL;
+            m_CheatState = ls == LS_WALK_BACK ? CHEAT_STEP_BACK : CHEAT_INITIAL;
         }
         break;
 
     case CHEAT_STEP_BACK:
-        if (ls != LS_BACK) {
+        if (ls != LS_WALK_BACK) {
             m_CheatState = ls == LS_STOP ? CHEAT_STEP_BACK_STOP : CHEAT_INITIAL;
         }
         break;

@@ -45,7 +45,7 @@ static void M_Control(const int16_t item_num)
             skidoo->fall_speed = -200;
             skidoo->pos.y -= STEP_L;
         } else {
-            if (lara_item->current_anim_state == LS_BACK
+            if (lara_item->current_anim_state == LS_WALK_BACK
                 || lara_item->current_anim_state == LS_FAST_BACK) {
                 lara_item->speed = -lara_item->speed;
             }
