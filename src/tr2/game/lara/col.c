@@ -61,27 +61,6 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
-void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed = 0;
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (Lara_HitCeiling(item, coll) || M_Fallen(item, coll)
-        || Lara_TestSlide(item, coll)) {
-        return;
-    }
-
-    Lara_ShiftCol(coll);
-    item->pos.y += coll->side_mid.floor;
-}
-
 void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = false;

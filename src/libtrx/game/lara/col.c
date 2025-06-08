@@ -41,6 +41,7 @@ static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
+static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
@@ -68,9 +69,9 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
     [LS_WALK]         = M_Walk,
     [LS_RUN]          = M_Run,
-    [LS_STOP]         = Lara_Col_Stop,
+    [LS_STOP]         = M_Stop,
     [LS_JUMP_FORWARD] = M_ForwardJump,
-    [LS_POSE]         = Lara_Col_Stop,
+    [LS_POSE]         = M_Stop,
     [LS_FAST_BACK]    = Lara_Col_FastBack,
     [LS_TURN_RIGHT]   = M_Turn,
     [LS_TURN_LEFT]    = M_Turn,
@@ -80,13 +81,13 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_REACH]        = M_Reach,
     [LS_SPLAT]        = M_Splat,
     [LS_TREAD]        = M_Swim,
-    [LS_LAND]         = Lara_Col_Stop,
+    [LS_LAND]         = M_Stop,
     [LS_COMPRESS]     = M_Compress,
     [LS_BACK]         = Lara_Col_Back,
     [LS_SWIM]         = M_Swim,
     [LS_GLIDE]        = M_Swim,
     [LS_PULL_UP]      = M_Default,
-    [LS_FAST_TURN]    = Lara_Col_Stop,
+    [LS_FAST_TURN]    = M_Stop,
     [LS_STEP_RIGHT]   = Lara_Col_SideStep,
     [LS_STEP_LEFT]    = Lara_Col_SideStep,
     [LS_ROLL_CONT]    = M_RollContinue,
@@ -492,6 +493,40 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     item->pos.y += MIN(coll->side_mid.floor, 50);
+}
+
+static void M_Stop(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+    M_Default(item, coll);
+
+#if TR_VERSION == 1
+    const bool fix_desc_glitch = g_Config.gameplay.fix_descending_glitch;
+#else
+    const bool fix_desc_glitch = true;
+#endif
+    if (Lara_HitCeiling(item, coll) || (fix_desc_glitch && M_Fallen(item, coll))
+        || Lara_TestSlide(item, coll)) {
+        return;
+    }
+
+#if TR_VERSION == 1
+    const bool fix_step_glitch = true;
+#else
+    const bool fix_step_glitch = g_Config.gameplay.fix_step_glitch;
+#endif
+    if (fix_step_glitch && coll->side_mid.floor > 100) {
+        item->current_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS_JUMP_FORWARD;
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
+        item->gravity = true;
+        item->fall_speed = 0;
+        return;
+    }
+
+    Lara_ShiftCol(coll);
+    item->pos.y += coll->side_mid.floor;
 }
 
 static void M_Turn(ITEM *const item, COLL_INFO *const coll)

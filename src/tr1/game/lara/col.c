@@ -13,43 +13,6 @@
 #define LF_BACK_R_START 26
 #define LF_BACK_R_END 55
 
-void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.move_angle = item->rot.y;
-    item->gravity = false;
-    item->fall_speed = 0;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (Lara_HitCeiling(item, coll)) {
-        return;
-    }
-
-    if (g_Config.gameplay.fix_descending_glitch && Lara_Fallen(item, coll)) {
-        return;
-    }
-
-    if (coll->side_mid.floor > 100) {
-        item->current_anim_state = LS_JUMP_FORWARD;
-        item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_START, 0);
-        item->gravity = true;
-        item->fall_speed = 0;
-        return;
-    }
-
-    if (Lara_TestSlide(item, coll)) {
-        return;
-    }
-
-    Lara_ShiftCol(coll);
-    item->pos.y += coll->side_mid.floor;
-}
-
 void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - DEG_180;
