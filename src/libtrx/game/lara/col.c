@@ -34,6 +34,9 @@
 #define M_LF_WADE_STEP_L_END 14
 
 #define M_LF_HANG 21
+#define M_LF_CLIMB_L_SHIFT_START 28
+#define M_LF_CLIMB_L_SHIFT_END 29
+#define M_LF_CLIMB_R_SHIFT 57
 
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_FixDescendingGlitch(void);
@@ -78,6 +81,7 @@ static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
 static void M_SideLadder(ITEM *item, COLL_INFO *coll);
+static void M_UpLadder(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -145,7 +149,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_RESPONSIVE]   = nullptr,
 #else
     [LS_CLIMB_STANCE] = M_StanceLadder,
-    [LS_CLIMBING]     = Lara_Col_Climbing,
+    [LS_CLIMBING]     = M_UpLadder,
     [LS_CLIMB_LEFT]   = M_SideLadder,
     [LS_CLIMB_END]    = nullptr,
     [LS_CLIMB_RIGHT]  = M_SideLadder,
@@ -1498,6 +1502,64 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
         item, coll->radius, right, -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT,
         &shift);
     Lara_DoClimbLeftRight(item, coll, result, shift);
+#endif
+}
+
+static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    if (M_TestLadderRelease(item) || !Item_TestAnimEqual(item, LA_LADDER_UP)) {
+        return;
+    }
+
+    int32_t yshift;
+    if (Item_TestFrameEqual(item, 0)) {
+        yshift = 0;
+    } else if (Item_TestFrameRange(
+                   item, M_LF_CLIMB_L_SHIFT_START, M_LF_CLIMB_L_SHIFT_END)) {
+        yshift = -STEP_L;
+    } else if (Item_TestFrameEqual(item, M_LF_CLIMB_R_SHIFT)) {
+        yshift = -STEP_L * 2;
+    } else {
+        return;
+    }
+
+    item->pos.y += yshift - STEP_L;
+
+    int32_t shift_r = 0;
+    int32_t ledge_r = 0;
+    int32_t result_r = Lara_TestClimbUpPos(
+        item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT, &shift_r,
+        &ledge_r);
+
+    int32_t shift_l = 0;
+    int32_t ledge_l = 0;
+    int32_t result_l = Lara_TestClimbUpPos(
+        item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT), &shift_l,
+        &ledge_l);
+
+    item->pos.y += STEP_L;
+
+    if (!result_r || !result_l || !g_Input.forward) {
+        item->goal_anim_state = LS_CLIMB_STANCE;
+        if (yshift) {
+            Lara_Animate(item);
+        }
+        return;
+    }
+
+    if (result_r < 0 || result_l < 0) {
+        item->goal_anim_state = LS_CLIMB_STANCE;
+        Lara_Animate(item);
+        if (ABS(ledge_l - ledge_r) <= 120) {
+            item->goal_anim_state = LS_PULL_UP;
+            item->pos.y += (ledge_r + ledge_l) / 2 - STEP_L;
+        }
+        return;
+    }
+
+    item->goal_anim_state = LS_CLIMBING;
+    item->pos.y -= yshift;
 #endif
 }
 
