@@ -134,9 +134,6 @@ static const UI_SETTINGS_ENUM_ENTRY m_ScreenshotFormatEnumEntries[] = {
     { -1, nullptr },
 };
 
-static char *m_TempString = nullptr;
-static size_t m_TempStringCap = 0;
-
 #if TR_VERSION == 1
 // TODO: tidy me once we decide what to do about screen.c
 extern int32_t Screen_GetResWidth(void);
@@ -156,10 +153,8 @@ static bool M_ScreenResolution_RequestChangeValue(
 static const char *M_ScreenResolution_FormatValue(
     const UI_SETTINGS_OPTION *const option)
 {
-    String_FormatInto(
-        &m_TempString, &m_TempStringCap, "%dx%d", Screen_GetResWidth(),
-        Screen_GetResHeight());
-    return m_TempString;
+    return String_FormatStatic(
+        "%dx%d", Screen_GetResWidth(), Screen_GetResHeight());
 }
 
 static bool M_ScreenResolution_CanChangeValue(

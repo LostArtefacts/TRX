@@ -24,9 +24,6 @@
 
 #include <math.h>
 
-static char *m_TempString = nullptr;
-static size_t m_TempStringCap = 0;
-
 typedef struct {
     const UI_SETTINGS_ENUM_ENTRY *entry;
     int32_t position;
@@ -113,31 +110,20 @@ static const char *M_FormatRowValue(
     }
     switch (option->option_type) {
     case COT_BOOL:
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%s",
-            *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
-        return m_TempString;
+        return String_FormatStatic(
+            "%s", *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
     case COT_INVERTED_BOOL:
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%s",
-            *(bool *)option->target ? GS(MISC_OFF) : GS(MISC_ON));
-        return m_TempString;
+        return String_FormatStatic(
+            "%s", *(bool *)option->target ? GS(MISC_OFF) : GS(MISC_ON));
     case COT_INT32:
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%d", *(int32_t *)option->target);
-        return m_TempString;
+        return String_FormatStatic("%d", *(int32_t *)option->target);
     case COT_DOUBLE:
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%.2f", *(double *)option->target);
-        return m_TempString;
+        return String_FormatStatic("%.2f", *(double *)option->target);
     case COT_FLOAT:
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%.2f", *(float *)option->target);
-        return m_TempString;
+        return String_FormatStatic("%.2f", *(float *)option->target);
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
-        String_FormatInto(&m_TempString, &m_TempStringCap, "%d", *component);
-        return m_TempString;
+        return String_FormatStatic("%d", *component);
     }
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
@@ -166,24 +152,22 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return MAX(min_value_w, max_value_w);
     }
     case COT_INT32: {
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%d", option->min_value);
-        const float min_value_w = UI_Label_MeasureW(m_TempString);
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%d", option->max_value);
-        const float max_value_w = UI_Label_MeasureW(m_TempString);
+        const char *const min_value_s =
+            String_FormatStatic("%d", option->min_value);
+        const float min_value_w = UI_Label_MeasureW(min_value_s);
+        const char *const max_value_s =
+            String_FormatStatic("%d", option->max_value);
+        const float max_value_w = UI_Label_MeasureW(max_value_s);
         return MAX(min_value_w, max_value_w);
     }
     case COT_DOUBLE:
     case COT_FLOAT: {
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%.2f",
-            (double)option->min_value / 100.0);
-        const float min_value_w = UI_Label_MeasureW(m_TempString);
-        String_FormatInto(
-            &m_TempString, &m_TempStringCap, "%.2f",
-            (double)option->max_value / 100.0);
-        const float max_value_w = UI_Label_MeasureW(m_TempString);
+        const char *const min_value_s =
+            String_FormatStatic("%.2f", (double)option->min_value / 100.0);
+        const float min_value_w = UI_Label_MeasureW(min_value_s);
+        const char *const max_value_s =
+            String_FormatStatic("%.2f", (double)option->max_value / 100.0);
+        const float max_value_w = UI_Label_MeasureW(max_value_s);
         return MAX(min_value_w, max_value_w);
     }
     case COT_RGB888: {

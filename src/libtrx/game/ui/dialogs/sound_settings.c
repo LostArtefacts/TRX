@@ -8,9 +8,6 @@
 #include "strings.h"
 #include "utils.h"
 
-static char *m_TempString = nullptr;
-static size_t m_TempStringCap = 0;
-
 static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_NEVER, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER) },
     { MUSIC_LOAD_NON_AMBIENT,
@@ -176,9 +173,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
 static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *const option)
 {
     const float value = *(float *)option->target;
-    String_FormatInto(
-        &m_TempString, &m_TempStringCap, "%.00f%%", value * 100.0f);
-    return m_TempString;
+    return String_FormatStatic("%.00f%%", value * 100.0f);
 }
 
 static bool M_RequestChange(
