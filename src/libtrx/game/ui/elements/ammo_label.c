@@ -14,19 +14,14 @@ void UI_AmmoLabel_MakeString(char *const string)
 
     char *ptr = string;
     while (*ptr != '\0') {
-        if (*ptr == ' ') {
-            strcat(result, " ");
-        } else if (*ptr == 'A') {
-            strcat(result, "\\{ammo shotgun}");
-        } else if (*ptr == 'B') {
-            strcat(result, "\\{ammo magnums}");
-        } else if (*ptr == 'C') {
-            strcat(result, "\\{ammo uzis}");
-        } else if (*ptr >= '0' && *ptr <= '9') {
+        if (*ptr >= '0' && *ptr <= '9') {
             strcat(result, "\\{small digit ");
             char tmp[2] = { *ptr, '\0' };
             strcat(result, tmp);
             strcat(result, "}");
+        } else {
+            result[strlen(result) + 1] = '\0';
+            result[strlen(result)] = *ptr;
         }
         ptr++;
     }
@@ -44,13 +39,15 @@ void UI_AmmoLabel(void)
     case LGT_PISTOLS:
         return;
     case LGT_SHOTGUN:
-        sprintf(buf, "%6d A", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+        sprintf(
+            buf, "%6d \\{ammo shotgun}",
+            lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
     case LGT_UZIS:
-        sprintf(buf, "%6d C", lara->uzi_ammo.ammo);
+        sprintf(buf, "%6d \\{ammo uzis}", lara->uzi_ammo.ammo);
         break;
     case LGT_MAGNUMS:
-        sprintf(buf, "%6d B", lara->magnum_ammo.ammo);
+        sprintf(buf, "%6d \\{ammo magnums}", lara->magnum_ammo.ammo);
         break;
     default:
         return;
