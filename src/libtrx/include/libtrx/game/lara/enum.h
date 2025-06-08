@@ -118,6 +118,7 @@ typedef enum {
     LS_WADE          = 59,
     LS_RESPONSIVE    = 60,
 #endif
+    LS_NUMBER_OF,
 } LARA_STATE;
 
 typedef enum {
