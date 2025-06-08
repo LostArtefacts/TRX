@@ -171,15 +171,18 @@ typedef struct {
         bool enable_trapezoid_filter;
         GFX_TEXTURE_FILTER texture_filter;
         GFX_TEXTURE_FILTER fbo_filter;
-        bool enable_debug_triggers;
-        bool enable_debug_portals;
-        bool enable_debug_spheres;
         bool enable_wireframe;
         double wireframe_width;
         bool enable_vsync;
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
     } rendering;
+
+    struct {
+        bool enable_debug_triggers;
+        bool enable_debug_portals;
+        bool enable_debug_spheres;
+    } debug;
 
     struct {
         bool new_game_plus_unlock;
