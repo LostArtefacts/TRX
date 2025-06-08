@@ -29,7 +29,7 @@ static void M_Measure(UI_NODE *const node)
     }
 }
 
-void M_Draw(const UI_NODE *const node)
+static void M_Draw(const UI_NODE *const node)
 {
     if (node->measure_w <= 0.0f || node->measure_h <= 0.0f) {
         return;

@@ -306,7 +306,7 @@ static void M_AssignButton(
     M_CheckConflicts(layout);
 }
 
-void M_AssignAxis(
+static void M_AssignAxis(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int16_t axis,
     const int16_t axis_dir)
 {
