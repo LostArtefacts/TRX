@@ -15,49 +15,6 @@
 #define LF_CLIMB_L_SHIFT_END 29
 #define LF_CLIMB_R_SHIFT 57
 
-static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
-static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
-
-static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
-{
-    switch (coll->old_anim_state) {
-    case LS_STOP:
-    case LS_TURN_RIGHT:
-    case LS_TURN_LEFT:
-    case LS_FAST_TURN:
-        item->current_anim_state = coll->old_anim_state;
-        item->anim_num = coll->old_anim_num;
-        item->frame_num = coll->old_frame_num;
-        if (g_Input.left) {
-            item->goal_anim_state = LS_TURN_LEFT;
-        } else if (g_Input.right) {
-            item->goal_anim_state = LS_TURN_RIGHT;
-        } else {
-            item->goal_anim_state = LS_STOP;
-        }
-        Lara_Animate(item);
-        break;
-
-    default:
-        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
-        break;
-    }
-}
-
-static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
-{
-    if (coll->side_mid.floor <= STEPUP_HEIGHT
-        || g_Lara.water_status == LWS_WADE) {
-        return false;
-    }
-    item->current_anim_state = LS_JUMP_FORWARD;
-    item->goal_anim_state = LS_JUMP_FORWARD;
-    Item_SwitchToAnim(item, LA_FALL_START, 0);
-    item->gravity = true;
-    item->fall_speed = 0;
-    return true;
-}
-
 void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
 {
     Lara_HangTest(item, coll);
@@ -91,40 +48,6 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_HANG;
         item->current_anim_state = LS_HANG;
         Item_SwitchToAnim(item, LA_LADDER_DOWN_HANGING, 0);
-    }
-}
-
-void Lara_Col_SideStep(ITEM *item, COLL_INFO *coll)
-{
-    if (item->current_anim_state == LS_STEP_RIGHT) {
-        g_Lara.move_angle = item->rot.y + DEG_90;
-    } else {
-        g_Lara.move_angle = item->rot.y - DEG_90;
-    }
-
-    item->gravity = false;
-    item->fall_speed = 0;
-    if (g_Lara.water_status == LWS_WADE) {
-        coll->bad_pos = NO_BAD_POS;
-    } else {
-        coll->bad_pos = STEP_L / 2;
-    }
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    coll->bad_neg = -STEP_L / 2;
-    coll->bad_ceiling = 0;
-
-    Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll)) {
-        return;
-    }
-
-    if (Lara_DeflectEdge(item, coll)) {
-        M_CollideStop(item, coll);
-    }
-
-    if (!M_Fallen(item, coll) && !Lara_TestSlide(item, coll)) {
-        item->pos.y += coll->side_mid.floor;
     }
 }
 

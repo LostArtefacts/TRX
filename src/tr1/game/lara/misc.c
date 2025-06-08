@@ -150,20 +150,6 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
     }
 }
 
-bool Lara_Fallen(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->side_mid.floor <= STEPUP_HEIGHT
-        || g_Lara.water_status == LWS_WADE) {
-        return false;
-    }
-    item->current_anim_state = LS_JUMP_FORWARD;
-    item->goal_anim_state = LS_JUMP_FORWARD;
-    Item_SwitchToAnim(item, LA_FALL_START, 0);
-    item->gravity = true;
-    item->fall_speed = 0;
-    return true;
-}
-
 bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {

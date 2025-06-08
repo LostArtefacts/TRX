@@ -44,6 +44,7 @@ static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
+static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
@@ -93,8 +94,8 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_GLIDE]        = M_Swim,
     [LS_PULL_UP]      = M_Default,
     [LS_FAST_TURN]    = M_Stop,
-    [LS_STEP_RIGHT]   = Lara_Col_SideStep,
-    [LS_STEP_LEFT]    = Lara_Col_SideStep,
+    [LS_STEP_RIGHT]   = M_SideStep,
+    [LS_STEP_LEFT]    = M_SideStep,
     [LS_ROLL_CONT]    = M_RollContinue,
     [LS_SLIDE]        = M_Slide,
     [LS_JUMP_BACK]    = M_SideBackJump,
@@ -474,6 +475,45 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         } else {
             Item_SwitchToAnim(item, LA_WALK_DOWN_BACK_LEFT, 0);
         }
+    }
+
+    if (!Lara_TestSlide(item, coll)) {
+        item->pos.y += coll->side_mid.floor;
+    }
+}
+
+static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->current_anim_state == LS_STEP_RIGHT) {
+        lara->move_angle = item->rot.y + DEG_90;
+    } else {
+        lara->move_angle = item->rot.y - DEG_90;
+    }
+
+    item->gravity = false;
+    item->fall_speed = 0;
+    if (lara->water_status == LWS_WADE) {
+        coll->bad_pos = NO_BAD_POS;
+    } else {
+        coll->bad_pos = STEP_L / 2;
+    }
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    coll->bad_neg = -STEP_L / 2;
+    coll->bad_ceiling = 0;
+
+    Lara_GetCollisionInfo(item, coll);
+    if (Lara_HitCeiling(item, coll)) {
+        return;
+    }
+
+    if (Lara_DeflectEdge(item, coll)) {
+        M_CollideStop(item, coll);
+    }
+
+    if (M_FixDescendingGlitch() && M_Fallen(item, coll)) {
+        return;
     }
 
     if (!Lara_TestSlide(item, coll)) {
