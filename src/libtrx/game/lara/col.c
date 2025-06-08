@@ -35,6 +35,7 @@
 
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_FixDescendingGlitch(void);
+static bool M_FixStepGlitch(void);
 static bool M_IsWadingEnabled(void);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
@@ -176,6 +177,15 @@ static bool M_FixDescendingGlitch(void)
     return g_Config.gameplay.fix_descending_glitch;
 #else
     return true;
+#endif
+}
+
+static bool M_FixStepGlitch(void)
+{
+#if TR_VERSION == 1
+    return true;
+#else
+    return g_Config.gameplay.fix_step_glitch;
 #endif
 }
 
@@ -565,14 +575,9 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
-    const bool fix_step_glitch = true;
-#else
-    const bool fix_step_glitch = g_Config.gameplay.fix_step_glitch;
-#endif
     if (coll->side_mid.floor >= -STEPUP_HEIGHT
         && coll->side_mid.floor < -STEP_L / 2) {
-        if (fix_step_glitch
+        if (M_FixStepGlitch()
             && (coll->side_front.floor < -STEPUP_HEIGHT
                 || coll->side_front.floor >= -STEP_L / 2)) {
             coll->side_mid.floor = 0;
@@ -605,12 +610,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
-    const bool fix_step_glitch = true;
-#else
-    const bool fix_step_glitch = g_Config.gameplay.fix_step_glitch;
-#endif
-    if (fix_step_glitch && coll->side_mid.floor > 100) {
+    if (M_FixStepGlitch() && coll->side_mid.floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_START, 0);
