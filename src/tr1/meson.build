@@ -102,7 +102,6 @@ endif
 sources = [
   init,
   'game/clock.c',
-  'game/console/cmd/debug.c',
   'game/console/cmd/easy_config.c',
   'game/console/common.c',
   'game/creature.c',

@@ -182,6 +182,7 @@ typedef struct {
         bool enable_debug_triggers;
         bool enable_debug_portals;
         bool enable_debug_spheres;
+        bool enable_debug_pos;
     } debug;
 
     struct {

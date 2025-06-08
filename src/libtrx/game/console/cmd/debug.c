@@ -1,16 +1,17 @@
-#include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/game/console/cmd/config.h>
-#include <libtrx/game/console/registry.h>
-#include <libtrx/game/game_string.h>
-#include <libtrx/memory.h>
-#include <libtrx/strings.h>
+#include "config.h"
+#include "debug.h"
+#include "game/console/cmd/config.h"
+#include "game/console/registry.h"
+#include "game/game_string.h"
+#include "memory.h"
+#include "strings.h"
 
 static bool *const m_AllOptions[] = {
-    &g_Config.debug.enable_debug_portals,
-    &g_Config.debug.enable_debug_triggers,
+#if TR_VERSION == 1
+    &g_Config.debug.enable_debug_portals, &g_Config.debug.enable_debug_triggers,
     &g_Config.debug.enable_debug_spheres,
-    nullptr,
+#endif
+    &g_Config.debug.enable_debug_pos,     nullptr,
 };
 
 static void M_Toggle(const bool enable);

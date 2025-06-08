@@ -2,7 +2,9 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/const.h"
 #include "game/game.h"
+#include "game/lara/common.h"
 #include "game/scaler.h"
 #include "game/ui/elements/ammo_label.h"
 #include "game/ui/elements/bar.h"
@@ -20,6 +22,7 @@
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 #include "memory.h"
+#include "strings.h"
 #include "version.h"
 
 typedef struct UI_OVERLAY_STATE {
@@ -54,6 +57,8 @@ static bool M_LaraHealthBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
 static bool M_LaraAirBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
 static bool M_EnemyHealthBar(const BAR_LOCATION location);
 static void M_Arrow(const UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow);
+static void M_DebugPosTopLeft(void);
+static void M_DebugPosTopRight(void);
 static void M_TopLeftRegion(const UI_OVERLAY_STATE *s);
 static void M_TopCenterRegion(const UI_OVERLAY_STATE *s);
 static void M_TopRightRegion(const UI_OVERLAY_STATE *s);
@@ -130,6 +135,64 @@ static void M_Arrow(
     }
 }
 
+static void M_DebugPosTopLeft(void)
+{
+    const ITEM *const lara = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara == nullptr) {
+        return;
+    }
+
+#if TR_VERSION == 1
+    const ITEM *const vehicle = nullptr;
+#else
+    const ITEM *const vehicle =
+        lara_info != nullptr && lara_info->vehicle_item_num != NO_ITEM
+        ? Item_Get(lara_info->vehicle_item_num)
+        : nullptr;
+#endif
+    UI_BeginStack(UI_STACK_HORIZONTAL);
+    UI_BeginStack(UI_STACK_VERTICAL);
+    UI_Label("Position: ");
+    UI_Label("Rotation: ");
+    UI_Label("Speed: ");
+    UI_EndStack();
+    UI_BeginStack(UI_STACK_VERTICAL);
+    UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
+        "%d, %d, %d ", lara->pos.x / WALL_L, lara->pos.y / WALL_L,
+        lara->pos.z / WALL_L)));
+    UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
+        "%d°, %d°, %d° ", (int32_t)lara->rot.x * 360 / DEG_360,
+        (int32_t)lara->rot.y * 360 / DEG_360,
+        (int32_t)lara->rot.z * 360 / DEG_360)));
+    UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
+        "%d, %d", vehicle != nullptr ? vehicle->speed : lara->speed,
+        vehicle != nullptr ? vehicle->fall_speed : lara->fall_speed)));
+    UI_EndStack();
+    UI_EndStack();
+}
+
+static void M_DebugPosTopRight(void)
+{
+    const ITEM *const lara = Lara_GetItem();
+    if (lara == nullptr) {
+        return;
+    }
+
+    UI_BeginStack(UI_STACK_HORIZONTAL);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_RIGHT },
+    });
+    ;
+    UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
+        "%d, %d, %d", lara->pos.x, lara->pos.y, lara->pos.z)));
+    UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
+        "%d, %d, %d", lara->rot.x, lara->rot.y, lara->rot.z)));
+    UI_EndStack();
+    UI_EndStack();
+}
+
 static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.0f, 0.0f);
@@ -140,8 +203,13 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_TL);
     }
-    if (g_Config.ui.enable_fps_counter && g_Config.ui.enable_game_ui) {
-        UI_FPSCounter(s->fps);
+    if (g_Config.ui.enable_game_ui) {
+        if (Game_IsPlaying() && g_Config.debug.enable_debug_pos) {
+            M_DebugPosTopLeft();
+        }
+        if (g_Config.ui.enable_fps_counter) {
+            UI_FPSCounter(s->fps);
+        }
     }
     UI_EndOverlayRegion();
 }
@@ -175,6 +243,9 @@ static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
         M_Arrow(s, UI_OVERLAY_ARROW_TR);
     }
     if (Game_IsPlaying() && g_Config.ui.enable_game_ui) {
+        if (g_Config.debug.enable_debug_pos) {
+            M_DebugPosTopRight();
+        }
         UI_AmmoLabel();
     }
     UI_EndOverlayRegion();

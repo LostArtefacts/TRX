@@ -4,6 +4,7 @@
 - added an optional breeze effect for Lara's braid in appropriate outside rooms (#3090)
 - added key icons to the controls settings dialog
 - added an option to adjust music and ambient volume while in inventory
+- added `enable_debug_pos` setting that shows Lara's position in realtime (reachable via `/debug`, fine-tuned `/set`)
 - changed sound and music volumes to be displayed as percentage instead of 0-10
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting
