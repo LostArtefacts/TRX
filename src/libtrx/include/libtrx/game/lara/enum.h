@@ -55,7 +55,7 @@ typedef enum {
     LS_TREAD         = 13,
     LS_LAND          = 14,
     LS_COMPRESS      = 15,
-    LS_BACK          = 16,
+    LS_WALK_BACK     = 16,
     LS_SWIM          = 17,
     LS_GLIDE         = 18,
     LS_PULL_UP       = 19,

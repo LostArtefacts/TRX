@@ -344,7 +344,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
                 LS_STEP_LEFT,
                 LS_WALK,
                 LS_STEP_RIGHT,
-                LS_BACK,
+                LS_WALK_BACK,
             };
 
             const int32_t dx = lara_item->pos.x - new_pos.x;

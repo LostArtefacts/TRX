@@ -395,7 +395,7 @@ void Lara_State_Back(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.back && (g_Input.slow || g_Lara.water_status == LWS_WADE)) {
-        item->goal_anim_state = LS_BACK;
+        item->goal_anim_state = LS_WALK_BACK;
     } else {
         item->goal_anim_state = LS_STOP;
     }

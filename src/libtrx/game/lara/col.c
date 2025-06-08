@@ -16,6 +16,8 @@
 #define M_LF_WALK_STEP_R_END 25
 #define M_LF_WALK_STEP_L_2_START 26
 #define M_LF_WALK_STEP_L_2_END 35
+#define M_LF_WALK_BACK_R_START 26
+#define M_LF_WALK_BACK_R_END 55
 
 #define M_LF_RUN_L_START 0
 #define M_LF_RUN_L_HEEL_GROUND 3
@@ -32,6 +34,7 @@
 #define M_LF_WADE_STEP_L_END 14
 
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
+static bool M_FixDescendingGlitch(void);
 static bool M_IsWadingEnabled(void);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
@@ -40,6 +43,7 @@ static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
+static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
@@ -84,7 +88,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_TREAD]        = M_Swim,
     [LS_LAND]         = M_Stop,
     [LS_COMPRESS]     = M_Compress,
-    [LS_BACK]         = Lara_Col_Back,
+    [LS_WALK_BACK]    = M_WalkBack,
     [LS_SWIM]         = M_Swim,
     [LS_GLIDE]        = M_Swim,
     [LS_PULL_UP]      = M_Default,
@@ -163,6 +167,15 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
     item->gravity = true;
     item->fall_speed = 0;
     return true;
+}
+
+static bool M_FixDescendingGlitch(void)
+{
+#if TR_VERSION == 1
+    return g_Config.gameplay.fix_descending_glitch;
+#else
+    return true;
+#endif
 }
 
 static bool M_IsWadingEnabled(void)
@@ -424,6 +437,50 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     item->pos.y += coll->side_mid.floor;
 }
 
+static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + DEG_180;
+    item->gravity = false;
+    item->fall_speed = 0;
+    if (lara->water_status == LWS_WADE) {
+        coll->bad_pos = NO_BAD_POS;
+    } else {
+        coll->bad_pos = STEPUP_HEIGHT;
+    }
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+
+    Lara_GetCollisionInfo(item, coll);
+    if (Lara_HitCeiling(item, coll)) {
+        return;
+    }
+
+    if (Lara_DeflectEdge(item, coll)) {
+        M_CollideStop(item, coll);
+    }
+
+    if (M_FixDescendingGlitch() && M_Fallen(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor > STEP_L / 2
+        && coll->side_mid.floor < STEPUP_HEIGHT) {
+        if (Item_TestFrameRange(
+                item, M_LF_WALK_BACK_R_START, M_LF_WALK_BACK_R_END)) {
+            Item_SwitchToAnim(item, LA_WALK_DOWN_BACK_RIGHT, 0);
+        } else {
+            Item_SwitchToAnim(item, LA_WALK_DOWN_BACK_LEFT, 0);
+        }
+    }
+
+    if (!Lara_TestSlide(item, coll)) {
+        item->pos.y += coll->side_mid.floor;
+    }
+}
+
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.fix_qwop_glitch) {
@@ -502,12 +559,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     M_Default(item, coll);
 
-#if TR_VERSION == 1
-    const bool fix_desc_glitch = g_Config.gameplay.fix_descending_glitch;
-#else
-    const bool fix_desc_glitch = true;
-#endif
-    if (Lara_HitCeiling(item, coll) || (fix_desc_glitch && M_Fallen(item, coll))
+    if (Lara_HitCeiling(item, coll)
+        || (M_FixDescendingGlitch() && M_Fallen(item, coll))
         || Lara_TestSlide(item, coll)) {
         return;
     }
