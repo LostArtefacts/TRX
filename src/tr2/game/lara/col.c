@@ -10,46 +10,9 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-#define LF_HANG 21
 #define LF_CLIMB_L_SHIFT_START 28
 #define LF_CLIMB_L_SHIFT_END 29
 #define LF_CLIMB_R_SHIFT 57
-
-void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
-{
-    Lara_HangTest(item, coll);
-    if (item->goal_anim_state != LS_HANG) {
-        return;
-    }
-
-    if (g_Input.forward) {
-        if (coll->side_front.floor <= -850 || coll->side_front.floor >= -650
-            || coll->side_front.floor - coll->side_front.ceiling < 0
-            || coll->side_left.floor - coll->side_left.ceiling < 0
-            || coll->side_right.floor - coll->side_right.ceiling < 0
-            || coll->hit_static) {
-            if (g_Lara.climb_status
-                && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
-                && Item_TestFrameEqual(item, LF_HANG)
-                && coll->side_mid.ceiling <= -256) {
-                item->goal_anim_state = LS_HANG;
-                item->current_anim_state = LS_HANG;
-                Item_SwitchToAnim(item, LA_LADDER_UP_HANGING, 0);
-            }
-        } else if (g_Input.slow) {
-            item->goal_anim_state = LS_GYMNAST;
-        } else {
-            item->goal_anim_state = LS_PULL_UP;
-        }
-    } else if (
-        g_Input.back && g_Lara.climb_status
-        && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
-        && Item_TestFrameEqual(item, LF_HANG)) {
-        item->goal_anim_state = LS_HANG;
-        item->current_anim_state = LS_HANG;
-        Item_SwitchToAnim(item, LA_LADDER_DOWN_HANGING, 0);
-    }
-}
 
 void Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll)
 {
