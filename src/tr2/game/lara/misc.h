@@ -15,14 +15,6 @@ void Lara_GetJointAbsPosition_I(
     int32_t frac, int32_t rate);
 void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
 void Lara_TakeHit(ITEM *lara_item, const COLL_INFO *coll);
-int32_t Lara_TestClimb(
-    int32_t x, int32_t y, int32_t z, int32_t x_front, int32_t z_front,
-    int32_t item_height, int16_t item_room, int32_t *shift);
-int32_t Lara_TestClimbPos(
-    const ITEM *item, int32_t front, int32_t right, int32_t origin,
-    int32_t height, int32_t *shift);
-void Lara_DoClimbLeftRight(
-    ITEM *item, const COLL_INFO *coll, int32_t result, int32_t shift);
 int32_t Lara_TestClimbUpPos(
     const ITEM *item, int32_t front, int32_t right, int32_t *shift,
     int32_t *ledge);

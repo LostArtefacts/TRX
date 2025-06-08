@@ -1,11 +1,142 @@
 #include "game/lara/misc.h"
 
 #include "game/effects.h"
+#include "game/input.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/const.h"
 #include "game/random.h"
 #include "game/rooms.h"
+
+#define M_CLIMB_SHIFT 70
+#define M_CLIMB_HANG 900
+
+static int32_t M_TestClimb(
+    int32_t x, int32_t y, int32_t z, int32_t x_front, int32_t z_front,
+    int32_t item_height, int16_t item_room, int32_t *shift);
+
+static int32_t M_TestClimb(
+    const int32_t x, const int32_t y, const int32_t z, const int32_t x_front,
+    const int32_t z_front, const int32_t item_height, const int16_t item_room,
+    int32_t *const shift)
+{
+#if TR_VERSION == 1
+    return 0;
+#else
+    *shift = 0;
+    bool hang = true;
+    if (!Lara_GetLaraInfo()->climb_status) {
+        return 0;
+    }
+
+    const SECTOR *sector;
+    int32_t height;
+    int32_t ceiling;
+
+    int16_t room_num = item_room;
+    sector = Room_GetSector(x, y - 128, z, &room_num);
+    height = Room_GetHeight(sector, x, y, z);
+    if (height == NO_HEIGHT) {
+        return 0;
+    }
+
+    height -= y + item_height + STEP_L / 2;
+    if (height < -M_CLIMB_SHIFT) {
+        return 0;
+    }
+    if (height < 0) {
+        *shift = height;
+    }
+
+    ceiling = Room_GetCeiling(sector, x, y, z) - y;
+    if (ceiling > M_CLIMB_SHIFT) {
+        return 0;
+    }
+    if (ceiling > 0) {
+        if (*shift) {
+            return 0;
+        }
+        *shift = ceiling;
+    }
+
+    if (item_height + height < M_CLIMB_HANG) {
+        hang = false;
+    }
+
+    const int32_t x2 = x + x_front;
+    const int32_t z2 = z + z_front;
+    sector = Room_GetSector(x2, y, z2, &room_num);
+    height = Room_GetHeight(sector, x2, y, z2);
+    if (height != NO_HEIGHT) {
+        height -= y;
+    }
+
+    if (height > M_CLIMB_SHIFT) {
+        ceiling = Room_GetCeiling(sector, x2, y, z2) - y;
+        if (ceiling >= LARA_CLIMB_HEIGHT) {
+            return 1;
+        }
+
+        if (ceiling > LARA_CLIMB_HEIGHT - M_CLIMB_SHIFT) {
+            if (*shift > 0) {
+                return hang ? -1 : 0;
+            }
+            *shift = ceiling - LARA_CLIMB_HEIGHT;
+            return 1;
+        }
+
+        if (ceiling > 0) {
+            return hang ? -1 : 0;
+        }
+
+        if (ceiling > -M_CLIMB_SHIFT && hang && *shift <= 0) {
+            if (*shift > ceiling) {
+                *shift = ceiling;
+            }
+
+            return -1;
+        }
+
+        return 0;
+    }
+
+    if (height > 0) {
+        if (*shift < 0) {
+            return 0;
+        }
+        if (height > *shift) {
+            *shift = height;
+        }
+    }
+
+    room_num = item_room;
+    sector = Room_GetSector(x, item_height + y, z, &room_num);
+    sector = Room_GetSector(x2, item_height + y, z2, &room_num);
+    ceiling = Room_GetCeiling(sector, x2, item_height + y, z2);
+    if (ceiling == NO_HEIGHT) {
+        return 1;
+    }
+
+    ceiling -= y;
+    if (ceiling <= height) {
+        return 1;
+    }
+
+    if (ceiling >= LARA_CLIMB_HEIGHT) {
+        return 1;
+    }
+
+    if (ceiling > LARA_CLIMB_HEIGHT - M_CLIMB_SHIFT) {
+        if (*shift > 0) {
+            return hang ? -1 : 0;
+        }
+        *shift = ceiling - LARA_CLIMB_HEIGHT;
+        return 1;
+    }
+
+    return hang ? -1 : 0;
+#endif
+}
 
 void Lara_TouchLava(void)
 {
@@ -209,6 +340,92 @@ bool Lara_TestWall(
         return false;
     }
     return true;
+}
+
+int32_t Lara_TestClimbPos(
+    const ITEM *const item, const int32_t front, const int32_t right,
+    const int32_t origin, const int32_t height, int32_t *const shift)
+{
+    const int32_t y = item->pos.y + origin;
+    int32_t x;
+    int32_t z;
+    int32_t x_front = 0;
+    int32_t z_front = 0;
+
+    switch (Math_GetDirection(item->rot.y)) {
+    case DIR_NORTH:
+        x = item->pos.x + right;
+        z = item->pos.z + front;
+        z_front = 2;
+        break;
+
+    case DIR_EAST:
+        x = item->pos.x + front;
+        z = item->pos.z - right;
+        x_front = 2;
+        break;
+
+    case DIR_SOUTH:
+        x = item->pos.x - right;
+        z = item->pos.z - front;
+        z_front = -2;
+        break;
+
+    case DIR_WEST:
+        x = item->pos.x - front;
+        z = item->pos.z + right;
+        x_front = -2;
+        break;
+
+    default:
+        x = front;
+        z = front;
+        break;
+    }
+
+    return M_TestClimb(
+        x, y, z, x_front, z_front, height, item->room_num, shift);
+}
+
+void Lara_DoClimbLeftRight(
+    ITEM *const item, const COLL_INFO *const coll, const int32_t result,
+    const int32_t shift)
+{
+#if TR_VERSION >= 2
+    if (result == 1) {
+        if (g_Input.left) {
+            item->goal_anim_state = LS_CLIMB_LEFT;
+        } else if (g_Input.right) {
+            item->goal_anim_state = LS_CLIMB_RIGHT;
+        } else {
+            item->goal_anim_state = LS_CLIMB_STANCE;
+        }
+        item->pos.y += shift;
+        return;
+    }
+
+    if (result) {
+        item->goal_anim_state = LS_HANG;
+        do {
+            Item_Animate(item);
+        } while (item->current_anim_state != LS_HANG);
+        item->pos.x = coll->old.x;
+        item->pos.z = coll->old.z;
+        return;
+    }
+
+    item->pos.x = coll->old.x;
+    item->pos.z = coll->old.z;
+    item->goal_anim_state = LS_CLIMB_STANCE;
+    item->current_anim_state = LS_CLIMB_STANCE;
+    if (coll->old_anim_state == LS_CLIMB_STANCE) {
+        item->frame_num = coll->old_frame_num;
+        item->anim_num = coll->old_anim_num;
+        Lara_Animate(item);
+    } else {
+        Item_SwitchToAnim(item, LA_LADDER_IDLE, 0);
+    }
+#endif
 }
 
 bool Lara_IsM16Active(void)
