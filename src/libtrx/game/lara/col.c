@@ -7,6 +7,16 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
+#define M_LF_WALK_STEP_L_START 0
+#define M_LF_WALK_STEP_L_NEAR_END 5
+#define M_LF_WALK_STEP_L_END 6
+#define M_LF_WALK_STEP_R_START 7
+#define M_LF_WALK_STEP_R_MID 22
+#define M_LF_WALK_STEP_R_NEAR_END 23
+#define M_LF_WALK_STEP_R_END 25
+#define M_LF_WALK_STEP_L_2_START 26
+#define M_LF_WALK_STEP_L_2_END 35
+
 #define M_LF_RUN_L_START 0
 #define M_LF_RUN_L_HEEL_GROUND 3
 #define M_LF_RUN_L_END 9
@@ -29,6 +39,7 @@ static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
+static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
@@ -55,7 +66,7 @@ static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
-    [LS_WALK]         = Lara_Col_Walk,
+    [LS_WALK]         = M_Walk,
     [LS_RUN]          = M_Run,
     [LS_STOP]         = Lara_Col_Stop,
     [LS_JUMP_FORWARD] = M_ForwardJump,
@@ -349,6 +360,66 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_pits = 1;
     coll->slopes_are_walls = 1;
     Lara_GetCollisionInfo(item, coll);
+}
+
+static void M_Walk(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+    coll->lava_is_pit = 1;
+    M_Default(item, coll);
+
+    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
+        return;
+    }
+
+    if (Lara_DeflectEdge(item, coll)) {
+        if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
+            && Item_TestFrameRange(
+                item, M_LF_WALK_STEP_R_START, M_LF_WALK_STEP_R_END)) {
+            Item_SwitchToAnim(item, LA_WALK_STOP_RIGHT, 0);
+        } else if (
+            Item_TestAnimEqual(item, LA_WALK_FORWARD)
+            && (Item_TestFrameRange(
+                    item, M_LF_WALK_STEP_L_START, M_LF_WALK_STEP_L_END)
+                || Item_TestFrameRange(
+                    item, M_LF_WALK_STEP_L_2_START, M_LF_WALK_STEP_L_2_END))) {
+            Item_SwitchToAnim(item, LA_WALK_STOP_LEFT, 0);
+        } else {
+            M_CollideStop(item, coll);
+        }
+    }
+
+    if (M_Fallen(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor > STEP_L / 2) {
+        if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
+            && Item_TestFrameRange(
+                item, M_LF_WALK_STEP_L_END, M_LF_WALK_STEP_R_NEAR_END)) {
+            Item_SwitchToAnim(item, LA_WALK_DOWN_LEFT, 0);
+        } else {
+            Item_SwitchToAnim(item, LA_WALK_DOWN_RIGHT, 0);
+        }
+    }
+
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
+        if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
+            && Item_TestFrameRange(
+                item, M_LF_WALK_STEP_L_NEAR_END, M_LF_WALK_STEP_R_MID)) {
+            Item_SwitchToAnim(item, LA_WALK_UP_STEP_LEFT, 0);
+        } else {
+            Item_SwitchToAnim(item, LA_WALK_UP_STEP_RIGHT, 0);
+        }
+    }
+
+    if (Lara_TestSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += coll->side_mid.floor;
 }
 
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
