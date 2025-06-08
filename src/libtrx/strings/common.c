@@ -335,22 +335,50 @@ void String_StylizeSmallDigitsInto(
 {
     ASSERT(target_buf != nullptr);
     ASSERT(target_cap != nullptr);
-    const bool same_buf = text == *target_buf;
+
+    // Remember if text was our buffer to re-sync it after a potential realloc.
+    const bool same_buf = (text == *target_buf);
     const char *src = text;
     size_t src_len = strlen(src);
 
-    static const char prefix[] = "\\{small digit ";
-    const size_t prefix_len = sizeof(prefix) - 1;
+    // The single source of truth on the stylized replacements.
+    static struct {
+        const char *from; // Literal to look for
+        const char *to; // Literal to emit instead
+    } replacements[] = {
+        { "0", "\\{small digit 0}" }, { "1", "\\{small digit 1}" },
+        { "2", "\\{small digit 2}" }, { "3", "\\{small digit 3}" },
+        { "4", "\\{small digit 4}" }, { "5", "\\{small digit 5}" },
+        { "6", "\\{small digit 6}" }, { "7", "\\{small digit 7}" },
+        { "8", "\\{small digit 8}" }, { "9", "\\{small digit 9}" },
+        { "-", "\\{small hyphen}" },  { ",", "\\{small comma}" },
+        { "°", "\\{small degree}" },  { nullptr, nullptr },
+    };
 
-    // Count how many digits we’ll expand
-    size_t digit_count = 0;
-    for (size_t i = 0; i < src_len; i++) {
-        if (src[i] >= '0' && src[i] <= '9')
-            digit_count++;
+    // —— PASS 1: figure out how much extra room we need ——
+    size_t extra = 0;
+    for (size_t i = 0; i < src_len;) {
+        bool matched = false;
+        for (int r = 0; replacements[r].from != nullptr; r++) {
+            size_t f_len = strlen(replacements[r].from);
+            size_t t_len = strlen(replacements[r].to);
+            if (i + f_len <= src_len
+                && memcmp(src + i, replacements[r].from, f_len) == 0) {
+                // Account for the delta: new length minus old length.
+                if (t_len > f_len)
+                    extra += (t_len - f_len);
+                i += f_len; // Skip past this match.
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            i++;
+        }
     }
 
-    // Compute final length & ensure capacity once
-    size_t final_len = src_len + digit_count * (prefix_len + 1);
+    // Compute final length & ensure capacity once.
+    size_t final_len = src_len + extra;
     size_t needed = final_len + 1; // include '\0'
     if (*target_cap < needed) {
         *target_buf = Memory_Realloc(*target_buf, needed);
@@ -358,26 +386,43 @@ void String_StylizeSmallDigitsInto(
     }
 
     char *const buf = *target_buf;
-    // Adjust the source in case src==buf and the target buffer got reallocated
     if (same_buf) {
+        // If we reallocated our own buffer, rebase src.
         src = buf;
     }
 
-    // Backwards in-place rewrite—always safe, even if src==buf
+    // —— PASS 2: backwards rewrite into buf ——
     size_t read_idx = src_len;
     size_t write_idx = final_len;
-    buf[write_idx--] = '\0';
-    while (read_idx--) {
-        char c = src[read_idx];
-        if (c >= '0' && c <= '9') {
-            buf[write_idx--] = '}';
-            buf[write_idx--] = c;
-            // Copy prefix in reverse
-            for (size_t k = 0; k < prefix_len; k++) {
-                buf[write_idx--] = prefix[prefix_len - 1 - k];
+    buf[write_idx] = '\0';
+    if (write_idx > 0) {
+        --write_idx;
+    }
+
+    while (read_idx > 0) {
+        bool replaced = false;
+
+        // Try each replacement (multi-byte or single-byte) at the read head.
+        for (int r = 0; replacements[r].from != nullptr; r++) {
+            size_t f_len = strlen(replacements[r].from);
+            size_t t_len = strlen(replacements[r].to);
+
+            if (read_idx >= f_len
+                && memcmp(src + read_idx - f_len, replacements[r].from, f_len)
+                    == 0) {
+                // Blast the replacement text in reverse.
+                for (size_t k = 0; k < t_len; k++) {
+                    buf[write_idx--] = replacements[r].to[t_len - 1 - k];
+                }
+                read_idx -= f_len;
+                replaced = true;
+                break;
             }
-        } else {
-            buf[write_idx--] = c;
+        }
+
+        if (!replaced) {
+            // No match: copy one byte.
+            buf[write_idx--] = src[--read_idx];
         }
     }
 }
