@@ -109,7 +109,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
     Output_Meshes_RenderObjectMesh(g_MatrixPtr, Output_GetTint(), mesh);
     Output_RestoreState();
 
-    if (g_Config.rendering.enable_debug_spheres) {
+    if (g_Config.debug.enable_debug_spheres) {
         M_DrawSphere(
             (XYZ_32) { mesh->center.x, mesh->center.y, mesh->center.z },
             mesh->radius);

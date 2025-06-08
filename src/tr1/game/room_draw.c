@@ -310,10 +310,10 @@ void Room_DrawSingleRoom(int16_t room_num)
         Effect_Draw(i);
     }
 
-    if (g_Config.rendering.enable_debug_triggers) {
+    if (g_Config.debug.enable_debug_triggers) {
         Output_DrawRoomTriggers(room);
     }
-    if (g_Config.rendering.enable_debug_portals) {
+    if (g_Config.debug.enable_debug_portals) {
         Output_DrawRoomPortals(room);
     }
 
