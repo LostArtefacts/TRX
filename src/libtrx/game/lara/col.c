@@ -42,6 +42,7 @@ static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
+static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
@@ -72,7 +73,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_STOP]         = M_Stop,
     [LS_JUMP_FORWARD] = M_ForwardJump,
     [LS_POSE]         = M_Stop,
-    [LS_FAST_BACK]    = Lara_Col_FastBack,
+    [LS_FAST_BACK]    = M_FastBack,
     [LS_TURN_RIGHT]   = M_Turn,
     [LS_TURN_LEFT]    = M_Turn,
     [LS_DEATH]        = M_Death,
@@ -527,6 +528,37 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
     Lara_ShiftCol(coll);
     item->pos.y += coll->side_mid.floor;
+}
+
+static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + DEG_180;
+    item->gravity = false;
+    item->fall_speed = 0;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+
+    Lara_GetCollisionInfo(item, coll);
+    if (Lara_HitCeiling(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor <= 200) {
+        if (Lara_DeflectEdge(item, coll)) {
+            M_CollideStop(item, coll);
+        }
+        item->pos.y += coll->side_mid.floor;
+    } else {
+        Item_SwitchToAnim(item, LA_FALL_BACK, 0);
+        item->current_anim_state = LS_FALL_BACK;
+        item->goal_anim_state = LS_FALL_BACK;
+        item->gravity = true;
+        item->fall_speed = 0;
+    }
 }
 
 static void M_Turn(ITEM *const item, COLL_INFO *const coll)
