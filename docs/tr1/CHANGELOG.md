@@ -14,6 +14,7 @@
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
 - fixed text glyphs having cut off right and bottom borders (regression from 4.7)
 - fixed unbind key option being available when it shouldn't (#3111, regression from 4.11)
+- fixed vertical FOV option not working properly (#3120, regression from 4.10)
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion
 
 ## [4.11.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...tr1-4.11.2) - 2025-05-24

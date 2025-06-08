@@ -865,9 +865,8 @@ void Output_ApplyFOV(void)
         fov = round((fov_rad_v / M_PI) * (180 * DEG_1));
     }
 
-    int16_t c = Math_Cos(fov / 2);
-    int16_t s = Math_Sin(fov / 2);
-
+    const int16_t c = Math_Cos(fov / 2);
+    const int16_t s = Math_Sin(fov / 2);
     g_PhdPersp = Screen_GetResWidth() / 2;
     if (s != 0) {
         g_PhdPersp *= c;
