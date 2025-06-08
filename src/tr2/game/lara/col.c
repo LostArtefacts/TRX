@@ -14,35 +14,6 @@
 #define LF_CLIMB_L_SHIFT_END 29
 #define LF_CLIMB_R_SHIFT 57
 
-void Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll)
-{
-    if (Lara_CheckForLetGo(item, coll)) {
-        return;
-    }
-    g_Lara.move_angle = item->rot.y - DEG_90;
-
-    int32_t shift;
-    int32_t result = Lara_TestClimbPos(
-        item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT),
-        -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT, &shift);
-
-    Lara_DoClimbLeftRight(item, coll, result, shift);
-}
-
-void Lara_Col_ClimbRight(ITEM *item, COLL_INFO *coll)
-{
-    if (Lara_CheckForLetGo(item, coll)) {
-        return;
-    }
-    g_Lara.move_angle = item->rot.y + DEG_90;
-
-    int32_t shift;
-    int32_t result = Lara_TestClimbPos(
-        item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT,
-        -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT, &shift);
-    Lara_DoClimbLeftRight(item, coll, result, shift);
-}
-
 void Lara_Col_ClimbStance(ITEM *item, COLL_INFO *coll)
 {
     if (Lara_CheckForLetGo(item, coll)

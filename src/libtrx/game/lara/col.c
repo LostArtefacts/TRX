@@ -40,6 +40,7 @@ static bool M_FixDescendingGlitch(void);
 static bool M_FixStepGlitch(void);
 static bool M_IsWadingEnabled(void);
 static bool M_GetClimbStatus(void);
+static bool M_TestLadderRelease(ITEM *item);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
 static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
@@ -75,6 +76,7 @@ static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
+static void M_SideLadder(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -143,9 +145,9 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
 #else
     [LS_CLIMB_STANCE] = Lara_Col_ClimbStance,
     [LS_CLIMBING]     = Lara_Col_Climbing,
-    [LS_CLIMB_LEFT]   = Lara_Col_ClimbLeft,
+    [LS_CLIMB_LEFT]   = M_SideLadder,
     [LS_CLIMB_END]    = nullptr,
-    [LS_CLIMB_RIGHT]  = Lara_Col_ClimbRight,
+    [LS_CLIMB_RIGHT]  = M_SideLadder,
     [LS_CLIMB_DOWN]   = Lara_Col_ClimbDown,
     [LS_LARA_TEST1]   = nullptr,
     [LS_LARA_TEST2]   = nullptr,
@@ -209,6 +211,26 @@ static bool M_GetClimbStatus(void)
 #else
     return Lara_GetLaraInfo()->climb_status;
 #endif
+}
+
+static bool M_TestLadderRelease(ITEM *const item)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+
+    if (g_Input.action && item->hit_points > 0) {
+        return false;
+    }
+
+    item->goal_anim_state = LS_JUMP_FORWARD;
+    item->current_anim_state = LS_JUMP_FORWARD;
+    Item_SwitchToAnim(item, LA_FALL_START, 0);
+    item->gravity = true;
+    item->speed = 2;
+    item->fall_speed = 1;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->gun_status = LGS_ARMLESS;
+    return true;
 }
 
 static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
@@ -1348,6 +1370,31 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     }
 
     item->pos.y += MIN(coll->side_mid.floor, 50);
+}
+
+static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    if (M_TestLadderRelease(item)) {
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    int32_t right;
+    if (item->current_anim_state == LS_CLIMB_LEFT) {
+        lara->move_angle = item->rot.y - DEG_90;
+        right = -(coll->radius + LARA_CLIMB_WIDTH_LEFT);
+    } else {
+        lara->move_angle = item->rot.y + DEG_90;
+        right = coll->radius + LARA_CLIMB_WIDTH_RIGHT;
+    }
+
+    int32_t shift;
+    int32_t result = Lara_TestClimbPos(
+        item, coll->radius, right, -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT,
+        &shift);
+    Lara_DoClimbLeftRight(item, coll, result, shift);
+#endif
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
