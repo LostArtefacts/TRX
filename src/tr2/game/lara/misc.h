@@ -15,7 +15,4 @@ void Lara_GetJointAbsPosition_I(
     int32_t frac, int32_t rate);
 void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
 void Lara_TakeHit(ITEM *lara_item, const COLL_INFO *coll);
-int32_t Lara_TestClimbUpPos(
-    const ITEM *item, int32_t front, int32_t right, int32_t *shift,
-    int32_t *ledge);
 void Lara_WaterCurrent(COLL_INFO *coll);
