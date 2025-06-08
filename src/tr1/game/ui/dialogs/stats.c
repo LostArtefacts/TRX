@@ -131,7 +131,7 @@ static void M_RowFromRole(
         break;
 
     case M_ROW_MEDIPACKS_USED:
-        sprintf(buf, GS(DETAIL_FLOAT_FMT), stats->medipacks_used);
+        sprintf(buf, "%.1f", stats->medipacks_used);
         M_Row(s, GS(STATS_MEDIPACKS_USED), buf);
         break;
 

@@ -124,18 +124,15 @@ static const char *M_FormatRowValue(
         return m_TempString;
     case COT_INT32:
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
-            *(int32_t *)option->target);
+            &m_TempString, &m_TempStringCap, "%d", *(int32_t *)option->target);
         return m_TempString;
     case COT_DOUBLE:
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
-            *(double *)option->target);
+            &m_TempString, &m_TempStringCap, "%.2f", *(double *)option->target);
         return m_TempString;
     case COT_FLOAT:
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
-            *(float *)option->target);
+            &m_TempString, &m_TempStringCap, "%.2f", *(float *)option->target);
         return m_TempString;
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
@@ -170,24 +167,22 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     }
     case COT_INT32: {
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
-            option->min_value);
+            &m_TempString, &m_TempStringCap, "%d", option->min_value);
         const float min_value_w = UI_Label_MeasureW(m_TempString);
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_INTEGER_FMT),
-            option->max_value);
+            &m_TempString, &m_TempStringCap, "%d", option->max_value);
         const float max_value_w = UI_Label_MeasureW(m_TempString);
         return MAX(min_value_w, max_value_w);
     }
     case COT_DOUBLE:
     case COT_FLOAT: {
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
-            (double)option->min_value / 100);
+            &m_TempString, &m_TempStringCap, "%.2f",
+            (double)option->min_value / 100.0);
         const float min_value_w = UI_Label_MeasureW(m_TempString);
         String_FormatInto(
-            &m_TempString, &m_TempStringCap, GS(DETAIL_FLOAT_FMT),
-            (double)option->max_value / 100);
+            &m_TempString, &m_TempStringCap, "%.2f",
+            (double)option->max_value / 100.0);
         const float max_value_w = UI_Label_MeasureW(m_TempString);
         return MAX(min_value_w, max_value_w);
     }
