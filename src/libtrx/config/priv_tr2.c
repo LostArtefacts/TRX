@@ -158,6 +158,7 @@ void Config_Sanitize(void)
         g_Config.gameplay.turbo_speed, CLOCK_TURBO_SPEED_MIN,
         CLOCK_TURBO_SPEED_MAX);
     CLAMP(g_Config.rendering.scaler, 1, 4);
+    CLAMP(g_Config.rendering.sizer, 0.4, 2.0);
 
     if (g_Config.rendering.render_mode != RM_HARDWARE
         && g_Config.rendering.render_mode != RM_SOFTWARE) {

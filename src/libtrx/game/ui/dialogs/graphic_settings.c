@@ -657,7 +657,7 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .description_id = GS_ID(GRAPHIC_SETTINGS_SIZER_DESCRIPTION),
         .target = &g_Config.rendering.sizer,
         .min_value = 40,
-        .max_value = 200,
+        .max_value = 100,
         .delta_slow = 10,
         .delta_fast = 10,
     },
