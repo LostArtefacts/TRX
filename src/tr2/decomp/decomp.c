@@ -79,7 +79,7 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
 void IncreaseScreenSize(void)
 {
     if (g_Config.rendering.sizer < 1.0) {
-        g_Config.rendering.sizer += 0.08;
+        g_Config.rendering.sizer += 0.05;
         CLAMPG(g_Config.rendering.sizer, 1.0);
         Viewport_Reset();
     }
@@ -88,8 +88,8 @@ void IncreaseScreenSize(void)
 void DecreaseScreenSize(void)
 {
     if (g_Config.rendering.sizer > 0.44) {
-        g_Config.rendering.sizer -= 0.08;
-        CLAMPL(g_Config.rendering.sizer, 0.44);
+        g_Config.rendering.sizer -= 0.05;
+        CLAMPL(g_Config.rendering.sizer, 0.4);
         Viewport_Reset();
     }
 }

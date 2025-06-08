@@ -226,13 +226,13 @@ static bool M_CanChangeValue(
         break;
     case COT_DOUBLE: {
         const double target_value =
-            (round(*(double *)option->target * 10) + (dir / 10.0f)) / 10.0;
+            (round(*(double *)option->target * 100) + dir) / 100.0;
         return target_value >= (double)option->min_value / 100.0
             && target_value <= (double)option->max_value / 100.0;
     }
     case COT_FLOAT: {
         const float target_value =
-            (round(*(float *)option->target * 10) + (dir / 10.0f)) / 10.0f;
+            (round(*(float *)option->target * 100) + dir) / 100.0f;
         return target_value >= (float)option->min_value / 100.0f
             && target_value <= (float)option->max_value / 100.0f;
     }
@@ -509,14 +509,14 @@ void UI_Settings_RequestChange(
         break;
     case COT_DOUBLE:
         *(double *)option->target =
-            (round(*(double *)option->target * 10) + (delta / 10.0f)) / 10.0f;
+            (round(*(double *)option->target * 100) + delta) / 100.0f;
         if (*(double *)option->target == -0.0) {
             *(double *)option->target = 0.0;
         }
         break;
     case COT_FLOAT:
         *(float *)option->target =
-            (round(*(float *)option->target * 10) + (delta / 10.0f)) / 10.0f;
+            (round(*(float *)option->target * 100) + delta) / 100.0f;
         if (*(float *)option->target == -0.0f) {
             *(float *)option->target = 0.0f;
         }

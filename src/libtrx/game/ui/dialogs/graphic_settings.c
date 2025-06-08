@@ -658,8 +658,8 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
         .target = &g_Config.rendering.sizer,
         .min_value = 40,
         .max_value = 100,
-        .delta_slow = 10,
-        .delta_fast = 10,
+        .delta_slow = 5,
+        .delta_fast = 5,
     },
 #endif
 
