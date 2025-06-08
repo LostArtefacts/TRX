@@ -508,8 +508,6 @@
         "CONTROLS_SECTION_ITEMS": "Items",
         "CONTROLS_SECTION_MISC": "Misc",
         "CONTROLS_SECTION_SYSTEM": "System",
-        "DETAIL_FLOAT_FMT": "%.1f",
-        "DETAIL_INTEGER_FMT": "%d",
         "GAMEPLAY_SETTINGS_CAMERA_SPEED": "Camera speed",
         "GAMEPLAY_SETTINGS_CAMERA_SPEED_DESCRIPTION": "Changes how fast the manual camera moves.",
         "GAMEPLAY_SETTINGS_CHANGE_PIERRE_SPAWN": "Change Pierre spawn mode",
