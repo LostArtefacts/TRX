@@ -171,6 +171,7 @@ sources = [
   'game/lara/col.c',
   'game/lara/col/climb.c',
   'game/lara/col/jump.c',
+  'game/lara/col/land.c',
   'game/lara/col/swim.c',
   'game/lara/common.c',
   'game/lara/control.c',
