@@ -198,6 +198,7 @@ GS_DEFINE(CONSOLE_HELP_WIREFRAME,     "Toggles wireframe rendering.")
 GS_DEFINE(CONSOLE_HELP_BRAID,         "Toggles Lara's braid.")
 GS_DEFINE(CONSOLE_HELP_CHEATS,        "Toggles in-game cheats on or off.")
 GS_DEFINE(CONSOLE_HELP_FPS,           "Changes the FPS value.")
+GS_DEFINE(CONSOLE_HELP_DEBUG, "Toggles visual debug information.")
 
 GS_DEFINE(SOUND_SETTINGS_TITLE,                            "Sound Options")
 
