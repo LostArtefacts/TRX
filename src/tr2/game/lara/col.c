@@ -10,16 +10,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-#define LF_WALK_STEP_L_START 0
-#define LF_WALK_STEP_L_NEAR_END 5
-#define LF_WALK_STEP_L_END 6
-#define LF_WALK_STEP_R_START 7
-#define LF_WALK_STEP_R_MID 22
-#define LF_WALK_STEP_R_NEAR_END 23
-#define LF_WALK_STEP_R_END 25
-#define LF_WALK_STEP_L_2_START 26
-#define LF_WALK_STEP_L_2_END 35
-
 #define LF_BACK_R_START 26
 #define LF_BACK_R_END 55
 
@@ -69,72 +59,6 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
     item->gravity = true;
     item->fall_speed = 0;
     return true;
-}
-
-void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed = 0;
-    g_Lara.move_angle = item->rot.y;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    coll->lava_is_pit = 1;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
-        return;
-    }
-
-    if (Lara_DeflectEdge(item, coll)) {
-        if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
-            && Item_TestFrameRange(
-                item, LF_WALK_STEP_R_START, LF_WALK_STEP_R_END)) {
-            Item_SwitchToAnim(item, LA_WALK_STOP_RIGHT, 0);
-        } else if (
-            Item_TestAnimEqual(item, LA_WALK_FORWARD)
-            && (Item_TestFrameRange(
-                    item, LF_WALK_STEP_L_START, LF_WALK_STEP_L_END)
-                || Item_TestFrameRange(
-                    item, LF_WALK_STEP_L_2_START, LF_WALK_STEP_L_2_END))) {
-            Item_SwitchToAnim(item, LA_WALK_STOP_LEFT, 0);
-        } else {
-            M_CollideStop(item, coll);
-        }
-    }
-
-    if (M_Fallen(item, coll)) {
-        return;
-    }
-
-    if (coll->side_mid.floor > STEP_L / 2) {
-        if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
-            && Item_TestFrameRange(
-                item, LF_WALK_STEP_L_END, LF_WALK_STEP_R_NEAR_END)) {
-            Item_SwitchToAnim(item, LA_WALK_DOWN_LEFT, 0);
-        } else {
-            Item_SwitchToAnim(item, LA_WALK_DOWN_RIGHT, 0);
-        }
-    }
-
-    if (coll->side_mid.floor >= -STEPUP_HEIGHT
-        && coll->side_mid.floor < -STEP_L / 2) {
-        if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
-            && Item_TestFrameRange(
-                item, LF_WALK_STEP_L_NEAR_END, LF_WALK_STEP_R_MID)) {
-            Item_SwitchToAnim(item, LA_WALK_UP_STEP_LEFT, 0);
-        } else {
-            Item_SwitchToAnim(item, LA_WALK_UP_STEP_RIGHT, 0);
-        }
-    }
-
-    if (Lara_TestSlide(item, coll)) {
-        return;
-    }
-
-    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
