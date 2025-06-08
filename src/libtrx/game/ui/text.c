@@ -10,6 +10,7 @@
 #include "utils.h"
 
 #include <ctype.h>
+#include <string.h>
 #include <uthash.h>
 
 #define M_LETTER_SPACING 0.5f
@@ -69,6 +70,9 @@ static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
 static int32_t M_Scale(const int32_t value);
 static size_t M_GetGlyphByteSize(const char *ptr);
+static size_t M_WordWrap(
+    const M_GLYPH_INFO **glyphs, size_t glyph_count, float scale_f,
+    float max_width, char *dst);
 
 static int32_t M_Scale(const int32_t value)
 {
@@ -354,42 +358,51 @@ void UI_Text_Draw(
     }
 }
 
-char *UI_Text_WordWrap(
-    const char *text, const float scale, const float max_width)
+static size_t M_WordWrap(
+    const M_GLYPH_INFO **glyphs, const size_t glyph_count, const float scale_f,
+    const float max_width, char *const dst)
 {
-    if (text == nullptr || max_width <= 0) {
-        return nullptr;
-    }
-
-    size_t glyph_count = 0;
-    const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, &glyph_count);
-
-    // Prepare output buffer
-    // Assume worst case scenario instead of using a growing buffer or
-    // computing the exact capacity for the sake of simplicity
-    char *const wrapped_text = Memory_Alloc(strlen(text) * 2 + 1);
-    char *dst = wrapped_text;
-
-    const float scale_f = scale * g_Config.ui.text_scale;
+    size_t out_len = 0;
     float cur_width = 0.0f;
+    bool in_bullet = false;
+
+    const float space_width = M_WORD_SPACING * scale_f;
+
+#define L_CONCAT_CHAR(part)                                                    \
+    if (dst != nullptr) {                                                      \
+        dst[out_len] = part;                                                   \
+    }                                                                          \
+    out_len++;
+#define L_CONCAT_STR(part)                                                     \
+    if (dst != nullptr) {                                                      \
+        strcpy(dst + out_len, part);                                           \
+    }                                                                          \
+    out_len += strlen(part);
 
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
         const M_GLYPH_INFO *const glyph = glyphs[i];
         if (glyph->role == GLYPH_NEW_LINE) {
-            *dst++ = '\n';
+            L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
+            in_bullet = false;
         } else if (glyph->role == GLYPH_NEW_PAGE) {
-            *dst++ = '\f';
+            L_CONCAT_CHAR('\f')
             cur_width = 0.0f;
+            in_bullet = false;
         } else if (glyph->role == GLYPH_SPACE) {
             if (cur_width > 0.0f) {
                 const float w = M_WORD_SPACING * scale_f;
                 if (cur_width + w > max_width) {
-                    *dst++ = '\n';
+                    L_CONCAT_CHAR('\n')
                     cur_width = 0.0f;
+                    if (in_bullet) {
+                        L_CONCAT_CHAR(' ')
+                        L_CONCAT_CHAR(' ')
+                        cur_width += 2 * space_width;
+                    }
                 } else {
-                    *dst++ = ' ';
+                    L_CONCAT_CHAR(' ')
                     cur_width += w;
                 }
             }
@@ -405,6 +418,13 @@ char *UI_Text_WordWrap(
                 word_len++;
             }
 
+            // Detect bullet start marker ("- " at line start)
+            if (cur_width == 0.0f && word_len == 1 && glyphs[i]->text[0] == '-'
+                && (i + 1 < glyph_count
+                    && glyphs[i + 1]->role == GLYPH_SPACE)) {
+                in_bullet = true;
+            }
+
             // Compute width (sum widths + spacing)
             float word_width = 0.0f;
             for (size_t j = i; j < i + word_len; j++) {
@@ -418,8 +438,13 @@ char *UI_Text_WordWrap(
             // Wrap line if needed
             if (cur_width + word_width > max_width) {
                 if (cur_width > 0.0f) {
-                    *dst++ = '\n';
+                    L_CONCAT_CHAR('\n')
                     cur_width = 0.0f;
+                    if (in_bullet) {
+                        L_CONCAT_CHAR(' ')
+                        L_CONCAT_CHAR(' ')
+                        cur_width += 2 * space_width;
+                    }
                 }
 
                 // Break word if longer than line
@@ -429,18 +454,21 @@ char *UI_Text_WordWrap(
                         const float glyph_width =
                             (glyph->width + M_LETTER_SPACING) * scale_f;
                         if (cur_width + glyph_width > max_width) {
-                            *dst++ = '\n';
+                            L_CONCAT_CHAR('\n')
                             cur_width = 0.0f;
+                            if (in_bullet) {
+                                L_CONCAT_CHAR(' ')
+                                L_CONCAT_CHAR(' ')
+                                cur_width += 2 * space_width;
+                            }
                         }
-                        strcpy(dst, glyph->text);
-                        dst += strlen(glyph->text);
+                        L_CONCAT_STR(glyph->text)
                         cur_width += glyph_width;
                     }
                 } else {
                     for (size_t j = i; j < i + word_len; j++) {
                         const M_GLYPH_INFO *const glyph = glyphs[j];
-                        strcpy(dst, glyph->text);
-                        dst += strlen(glyph->text);
+                        L_CONCAT_STR(glyph->text)
                     }
                     cur_width = word_width;
                 }
@@ -448,17 +476,37 @@ char *UI_Text_WordWrap(
                 // Copy word as is
                 for (size_t j = i; j < i + word_len; j++) {
                     const M_GLYPH_INFO *const glyph = glyphs[j];
-                    strcpy(dst, glyph->text);
-                    dst += strlen(glyph->text);
+                    L_CONCAT_STR(glyph->text)
                 }
                 cur_width += word_width;
             }
-            // Skip forward the characters, bearing in mind the default loop
+
+            // Skip forward the characters, respecting the default loop
             // accumulator
             i += word_len - 1;
         }
     }
-    *dst = '\0';
 
+    L_CONCAT_CHAR('\0')
+
+#undef L_CONCAT_CHAR
+#undef L_CONCAT_STR
+    return out_len;
+}
+
+char *UI_Text_WordWrap(
+    const char *text, const float scale, const float max_width)
+{
+    if (text == nullptr || max_width <= 0) {
+        return nullptr;
+    }
+
+    size_t glyph_count = 0;
+    const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, &glyph_count);
+
+    const float scale_f = scale * g_Config.ui.text_scale;
+    size_t len = M_WordWrap(glyphs, glyph_count, scale_f, max_width, nullptr);
+    char *const wrapped_text = Memory_Alloc(len);
+    M_WordWrap(glyphs, glyph_count, scale_f, max_width, wrapped_text);
     return wrapped_text;
 }
