@@ -4,6 +4,7 @@
 #include "game/viewport.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/gfx/gl/utils.h>
 
@@ -63,17 +64,25 @@ void Output_GetProjectionMatrix(GLfloat output[][4])
     const float bottom = Viewport_GetHeight();
     const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
     const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
-    const float aspect = (float)right / (float)bottom;
+    const float aspect = (float)(right - left) / (float)(bottom - top);
     const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
-    const float f = 1.0f / tan(fov / 2.0f);
 
-    output[0][0] = f / aspect;
+    float f_x, f_y;
+    if (g_Config.visuals.fov_vertical) {
+        f_y = 1.0f / tanf(fov * 0.5f);
+        f_x = f_y / aspect;
+    } else {
+        f_x = 1.0f / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+    }
+
+    output[0][0] = f_x;
     output[0][1] = 0.0f;
     output[0][2] = 0.0f;
     output[0][3] = 0.0f;
 
     output[1][0] = 0.0f;
-    output[1][1] = -f;
+    output[1][1] = -f_y;
     output[1][2] = 0.0f;
     output[1][3] = 0.0f;
 

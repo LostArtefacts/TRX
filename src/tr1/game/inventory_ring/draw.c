@@ -139,7 +139,7 @@ void InvRing_Draw(INV_RING *const ring)
         Viewport_Init(0, 0, width, height);
     }
 
-    int16_t old_fov = Viewport_GetFOV();
+    const int16_t old_fov = Viewport_GetFOV();
     Viewport_SetFOV(M_PASSPORT_FOV * DEG_1);
     Output_ApplyFOV();
 

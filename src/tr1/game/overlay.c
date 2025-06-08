@@ -263,8 +263,8 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     // translating the object in order to avoid perspective distortion in the
     // screen corners.
     int16_t old_fov = Viewport_GetFOV();
-    Viewport_SetFOV(M_PICKUPS_FOV * DEG_1);
     Viewport_Init(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
+    Viewport_SetFOV(M_PICKUPS_FOV * DEG_1);
     glViewport(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
     Output_ApplyFOV();
 
