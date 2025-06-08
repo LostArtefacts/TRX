@@ -115,7 +115,6 @@ sources = [
   'game/inventory_ring/draw.c',
   'game/inventory_ring/vars.c',
   'game/item_actions.c',
-  'game/lara/col.c',
   'game/lara/common.c',
   'game/lara/control.c',
   'game/lara/draw.c',

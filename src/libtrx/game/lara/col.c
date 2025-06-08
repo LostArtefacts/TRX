@@ -82,6 +82,7 @@ static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
 static void M_SideLadder(ITEM *item, COLL_INFO *coll);
 static void M_UpLadder(ITEM *item, COLL_INFO *coll);
+static void M_DownLadder(ITEM *item, COLL_INFO *coll);
 
 static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
@@ -153,7 +154,7 @@ static void (*m_CollisionRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_CLIMB_LEFT]   = M_SideLadder,
     [LS_CLIMB_END]    = nullptr,
     [LS_CLIMB_RIGHT]  = M_SideLadder,
-    [LS_CLIMB_DOWN]   = Lara_Col_ClimbDown,
+    [LS_CLIMB_DOWN]   = M_DownLadder,
     [LS_LARA_TEST1]   = nullptr,
     [LS_LARA_TEST2]   = nullptr,
     [LS_LARA_TEST3]   = nullptr,
@@ -1559,6 +1560,79 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
     }
 
     item->goal_anim_state = LS_CLIMBING;
+    item->pos.y -= yshift;
+#endif
+}
+
+static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    if (M_TestLadderRelease(item)
+        || !Item_TestAnimEqual(item, LA_LADDER_DOWN)) {
+        return;
+    }
+
+    int32_t yshift;
+    if (Item_TestFrameEqual(item, 0)) {
+        yshift = 0;
+    } else if (Item_TestFrameRange(
+                   item, M_LF_CLIMB_L_SHIFT_START, M_LF_CLIMB_L_SHIFT_END)) {
+        yshift = STEP_L;
+    } else if (Item_TestFrameEqual(item, M_LF_CLIMB_R_SHIFT)) {
+        yshift = STEP_L * 2;
+    } else {
+        return;
+    }
+
+    item->pos.y += yshift + STEP_L;
+
+    int32_t shift_r = 0;
+    int32_t result_r = Lara_TestClimbPos(
+        item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT,
+        -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT, &shift_r);
+
+    int32_t shift_l = 0;
+    int32_t result_l = Lara_TestClimbPos(
+        item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT),
+        -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT, &shift_l);
+
+    item->pos.y -= STEP_L;
+
+    if (!result_r || !result_l || !g_Input.back) {
+        item->goal_anim_state = LS_CLIMB_STANCE;
+        if (yshift) {
+            Lara_Animate(item);
+        }
+        return;
+    }
+
+    #if 0
+    int32_t shift = shift_l;
+    #endif
+    if (shift_r && shift_l) {
+        if ((shift_r < 0) != (shift_l < 0)) {
+            item->goal_anim_state = LS_CLIMB_STANCE;
+            Lara_Animate(item);
+            return;
+        }
+    #if 0
+        if (shift_r < 0 && shift_r < shift_l) {
+            shift = shift_r;
+        } else if (shift_r > 0 && shift_r > shift_l) {
+            shift = shift_r;
+        }
+    #endif
+    }
+
+    if (result_r == -1 || result_l == -1) {
+        Item_SwitchToAnim(item, LA_LADDER_IDLE, 0);
+        item->current_anim_state = LS_CLIMB_STANCE;
+        item->goal_anim_state = LS_HANG;
+        Lara_Animate(item);
+        return;
+    }
+
+    item->goal_anim_state = LS_CLIMB_DOWN;
     item->pos.y -= yshift;
 #endif
 }

@@ -721,25 +721,6 @@ bool Lara_LandedBad(ITEM *item, COLL_INFO *coll)
     return item->hit_points < 0;
 }
 
-int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed = 0;
-
-    if (g_Input.action && item->hit_points > 0) {
-        return 0;
-    }
-
-    item->goal_anim_state = LS_JUMP_FORWARD;
-    item->current_anim_state = LS_JUMP_FORWARD;
-    Item_SwitchToAnim(item, LA_FALL_START, 0);
-    item->gravity = true;
-    item->speed = 2;
-    item->fall_speed = 1;
-    g_Lara.gun_status = LGS_ARMLESS;
-    return 1;
-}
-
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
 {
     ANIM_FRAME *frmptr[2] = { nullptr, nullptr };
