@@ -12,7 +12,6 @@ extern void Lara_CatchFire(void);
 void Lara_UpdateRoomToHeight(int32_t height);
 void Lara_ShiftCol(COLL_INFO *coll);
 extern bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll);
-extern bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 extern bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
 extern int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
 extern int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
