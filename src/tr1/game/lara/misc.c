@@ -103,41 +103,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
     return false;
 }
 
-bool Lara_LandedBad(ITEM *item, COLL_INFO *coll)
-{
-    int16_t room_num = item->room_num;
-
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-
-    const int32_t old_y = item->pos.y;
-    const int32_t height = Room_GetHeight(
-        sector, item->pos.x, item->pos.y - LARA_HEIGHT, item->pos.z);
-
-    item->floor = height;
-    item->pos.y = height;
-    Room_TestTriggers(item);
-    item->pos.y = old_y;
-
-    int landspeed = item->fall_speed - DAMAGE_START;
-    if (landspeed <= 0) {
-        return false;
-    } else if (landspeed > DAMAGE_LENGTH) {
-        item->hit_points = -1;
-    } else {
-        Lara_TakeDamage(
-            (LARA_MAX_HITPOINTS * landspeed * landspeed)
-                / (DAMAGE_LENGTH * DAMAGE_LENGTH),
-            false);
-    }
-
-    // #675: Original bug to keep. Correct operator would be <=
-    if (item->hit_points < 0) {
-        return true;
-    }
-    return false;
-}
-
 void Lara_CatchFire(void)
 {
     const int16_t effect_num = Effect_Create(g_LaraItem->room_num);

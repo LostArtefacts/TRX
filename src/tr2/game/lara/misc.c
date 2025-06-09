@@ -227,34 +227,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
     return true;
 }
 
-bool Lara_LandedBad(ITEM *item, COLL_INFO *coll)
-{
-    const int32_t x = item->pos.x;
-    const int32_t y = item->pos.y;
-    const int32_t z = item->pos.z;
-
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t height = Room_GetHeight(sector, x, y - LARA_HEIGHT, z);
-    item->pos.y = height;
-    item->floor = height;
-
-    Room_TestTriggers(item);
-    int32_t land_speed = item->fall_speed - DAMAGE_START;
-    item->pos.y = y;
-    if (land_speed <= 0) {
-        return false;
-    }
-    if (land_speed <= DAMAGE_LENGTH) {
-        Lara_TakeDamage(
-            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
-            false);
-    } else {
-        item->hit_points = -1;
-    }
-    return item->hit_points < 0;
-}
-
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
 {
     ANIM_FRAME *frmptr[2] = { nullptr, nullptr };
