@@ -332,6 +332,29 @@ int32_t Lara_TestClimbPos(
         x, y, z, x_front, z_front, height, item->room_num, shift);
 }
 
+int32_t Lara_TestEdgeCatch(
+    const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
+{
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    int32_t hdif1 = coll->side_front.floor - bounds->min.y;
+    int32_t hdif2 = hdif1 + item->fall_speed;
+    if ((hdif1 < 0 && hdif2 < 0) || (hdif1 > 0 && hdif2 > 0)) {
+        hdif1 = item->pos.y + bounds->min.y;
+        hdif2 = hdif1 + item->fall_speed;
+        if ((hdif1 >> (WALL_SHIFT - 2)) == (hdif2 >> (WALL_SHIFT - 2))) {
+            return 0;
+        }
+        if (item->fall_speed > 0) {
+            *edge = hdif2 & ~(STEP_L - 1);
+        } else {
+            *edge = hdif1 & ~(STEP_L - 1);
+        }
+        return -1;
+    }
+
+    return ABS(coll->side_left.floor - coll->side_right.floor) < SLOPE_DIF;
+}
+
 bool Lara_IsM16Active(void)
 {
 #if TR_VERSION == 1

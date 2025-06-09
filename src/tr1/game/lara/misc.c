@@ -1,5 +1,3 @@
-#include "game/lara/misc.h"
-
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/lara/common.h"
@@ -8,11 +6,9 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
-
-#include <stdint.h>
 
 #define LF_FASTFALL 1
 #define LF_STARTHANG 12
@@ -236,102 +232,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
         return true;
     }
 
-    return false;
-}
-
-bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || g_Lara.gun_status != LGS_ARMLESS
-        || ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF) {
-        return false;
-    }
-
-    if (coll->side_front.ceiling > 0 || coll->side_mid.ceiling > -384
-        || coll->side_mid.floor < 200) {
-        return false;
-    }
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    const int32_t hdif = coll->side_front.floor - bounds->min.y;
-    if (hdif < 0 && hdif + item->fall_speed < 0) {
-        return false;
-    }
-    if (hdif > 0 && hdif + item->fall_speed > 0) {
-        return false;
-    }
-
-    PHD_ANGLE angle = item->rot.y;
-    if (angle >= -LARA_HANG_ANGLE && angle <= LARA_HANG_ANGLE) {
-        angle = 0;
-    } else if (
-        angle >= DEG_90 - LARA_HANG_ANGLE
-        && angle <= DEG_90 + LARA_HANG_ANGLE) {
-        angle = DEG_90;
-    } else if (
-        angle >= (DEG_180 - 1) - LARA_HANG_ANGLE
-        || angle <= -(DEG_180 - 1) + LARA_HANG_ANGLE) {
-        angle = -DEG_180;
-    } else if (
-        angle >= -DEG_90 - LARA_HANG_ANGLE
-        && angle <= -DEG_90 + LARA_HANG_ANGLE) {
-        angle = -DEG_90;
-    }
-
-    if (angle & (DEG_90 - 1)) {
-        return false;
-    }
-
-    if (Lara_TestHangSwingIn(item, angle)) {
-        Item_SwitchToAnim(item, LA_REACH_TO_THIN_LEDGE, 0);
-    } else {
-        Item_SwitchToAnim(item, LA_REACH_TO_HANG, 0);
-    }
-    item->current_anim_state = LS_HANG;
-    item->goal_anim_state = LS_HANG;
-
-    // bounds = Item_GetBoundsAccurate(item);
-    item->pos.y += hdif;
-    item->pos.x += coll->shift.x;
-    item->pos.z += coll->shift.z;
-    item->rot.y = angle;
-    item->gravity = false;
-    item->fall_speed = 0;
-    item->speed = 0;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    return true;
-}
-
-bool Lara_TestHangSwingIn(ITEM *item, PHD_ANGLE angle)
-{
-    int x = item->pos.x;
-    int y = item->pos.y;
-    int z = item->pos.z;
-    int16_t room_num = item->room_num;
-    switch (angle) {
-    case 0:
-        z += 256;
-        break;
-    case DEG_90:
-        x += 256;
-        break;
-    case -DEG_90:
-        x -= 256;
-        break;
-    case -DEG_180:
-        z -= 256;
-        break;
-    }
-
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t h = Room_GetHeight(sector, x, y, z);
-    const int32_t c = Room_GetCeiling(sector, x, y, z);
-
-    if (h != NO_HEIGHT) {
-        if ((h - y) > 0 && (c - y) < -400) {
-            return true;
-        }
-    }
     return false;
 }
 

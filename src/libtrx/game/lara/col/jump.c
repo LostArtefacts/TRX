@@ -2,7 +2,11 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
+#include "game/rooms.h"
 #include "game/sound.h"
+
+static bool M_TestHangJump(ITEM *item, COLL_INFO *coll);
+static bool M_TestHangSwingIn(const ITEM *item, int16_t angle);
 
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
@@ -13,6 +17,94 @@ static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
+
+static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (coll->coll_type != COLL_FRONT || !g_Input.action
+        || lara->gun_status != LGS_ARMLESS || coll->hit_static
+        || coll->side_mid.ceiling > -STEPUP_HEIGHT
+        || coll->side_mid.floor < 200) {
+        return false;
+    }
+
+    int32_t edge;
+    const int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
+#if TR_VERSION == 1
+    if (edge_catch <= 0) {
+        return false;
+    }
+#else
+    if (edge_catch == 0
+        || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
+        return false;
+    }
+#endif
+
+    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
+    if (dir == DIR_UNKNOWN) {
+        return false;
+    }
+    const int16_t angle = Math_DirectionToAngle(dir);
+
+#if TR_VERSION == 1
+    // Retain original bug for #3132, whereby bounds are not updated after
+    // switching animation.
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+#endif
+    if (M_TestHangSwingIn(item, angle)) {
+        Item_SwitchToAnim(item, LA_REACH_TO_THIN_LEDGE, 0);
+    } else {
+        Item_SwitchToAnim(item, LA_REACH_TO_HANG, 0);
+    }
+    item->current_anim_state = LS_HANG;
+    item->goal_anim_state = LS_HANG;
+
+#if TR_VERSION >= 2
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+#endif
+    if (edge_catch > 0) {
+        item->pos.y += coll->side_front.floor - bounds->min.y;
+        item->pos.x += coll->shift.x;
+        item->pos.z += coll->shift.z;
+    } else {
+        item->pos.y = edge - bounds->min.y;
+    }
+
+    item->rot.y = angle;
+    item->speed = 2;
+    item->gravity = true;
+    item->fall_speed = 1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    return true;
+}
+
+static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
+{
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_num;
+    switch (angle) {
+    case 0:
+        z += STEP_L;
+        break;
+    case DEG_90:
+        x += STEP_L;
+        break;
+    case -DEG_180:
+        z -= STEP_L;
+        break;
+    case -DEG_90:
+        x -= STEP_L;
+        break;
+    }
+
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    int32_t height = Room_GetHeight(sector, x, y, z);
+    int32_t ceiling = Room_GetCeiling(sector, x, y, z);
+    return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
+}
 
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
@@ -215,7 +307,7 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_TestHangJump(item, coll)) {
+    if (M_TestHangJump(item, coll)) {
         return;
     }
 
