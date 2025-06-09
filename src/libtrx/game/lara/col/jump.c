@@ -89,11 +89,6 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-#if TR_VERSION == 1
-    // Retain original bug for #3132, whereby bounds are not updated after
-    // switching animation.
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-#endif
     if (M_TestHangSwingIn(item, angle)) {
         Item_SwitchToAnim(item, LA_REACH_TO_THIN_LEDGE, 0);
     } else {
@@ -102,9 +97,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     item->current_anim_state = LS_HANG;
     item->goal_anim_state = LS_HANG;
 
-#if TR_VERSION >= 2
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-#endif
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
         item->pos.x += coll->shift.x;
