@@ -387,47 +387,6 @@ int32_t Lara_TestClimbPos(
         x, y, z, x_front, z_front, height, item->room_num, shift);
 }
 
-void Lara_DoClimbLeftRight(
-    ITEM *const item, const COLL_INFO *const coll, const int32_t result,
-    const int32_t shift)
-{
-#if TR_VERSION >= 2
-    if (result == 1) {
-        if (g_Input.left) {
-            item->goal_anim_state = LS_CLIMB_LEFT;
-        } else if (g_Input.right) {
-            item->goal_anim_state = LS_CLIMB_RIGHT;
-        } else {
-            item->goal_anim_state = LS_CLIMB_STANCE;
-        }
-        item->pos.y += shift;
-        return;
-    }
-
-    if (result) {
-        item->goal_anim_state = LS_HANG;
-        do {
-            Item_Animate(item);
-        } while (item->current_anim_state != LS_HANG);
-        item->pos.x = coll->old.x;
-        item->pos.z = coll->old.z;
-        return;
-    }
-
-    item->pos.x = coll->old.x;
-    item->pos.z = coll->old.z;
-    item->goal_anim_state = LS_CLIMB_STANCE;
-    item->current_anim_state = LS_CLIMB_STANCE;
-    if (coll->old_anim_state == LS_CLIMB_STANCE) {
-        item->frame_num = coll->old_frame_num;
-        item->anim_num = coll->old_anim_num;
-        Lara_Animate(item);
-    } else {
-        Item_SwitchToAnim(item, LA_LADDER_IDLE, 0);
-    }
-#endif
-}
-
 bool Lara_IsM16Active(void)
 {
 #if TR_VERSION == 1
