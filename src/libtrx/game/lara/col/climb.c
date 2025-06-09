@@ -648,6 +648,97 @@ static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
 #endif
 }
 
+bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (coll->coll_type != COLL_FRONT || !g_Input.action
+        || lara->gun_status != LGS_ARMLESS) {
+        return false;
+    }
+
+    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_VAULT_ANGLE);
+    if (dir == DIR_UNKNOWN) {
+        return false;
+    }
+    const int16_t angle = Math_DirectionToAngle(dir);
+
+    const int32_t left_floor = coll->side_left.floor;
+    const int32_t left_ceiling = coll->side_left.ceiling;
+    const int32_t right_floor = coll->side_right.floor;
+    const int32_t right_ceiling = coll->side_right.ceiling;
+    const int32_t front_floor = coll->side_front.floor;
+    const int32_t front_ceiling = coll->side_front.ceiling;
+    const bool slope = ABS(left_floor - right_floor) >= SLOPE_DIF;
+    const bool climb_status = M_GetClimbStatus();
+    const int32_t mid = STEP_L / 2;
+
+    if (front_floor >= -STEP_L * 2 - mid && front_floor <= -STEP_L * 2 + mid) {
+        if (slope || front_floor - front_ceiling < 0
+            || left_floor - left_ceiling < 0
+            || right_floor - right_ceiling < 0) {
+            return false;
+        }
+        item->goal_anim_state = LS_STOP;
+        item->current_anim_state = LS_PULL_UP;
+        Item_SwitchToAnim(item, LA_CLIMB_2CLICK, 0);
+        item->pos.y += front_floor + STEP_L * 2;
+        lara->gun_status = LGS_HANDS_BUSY;
+    } else if (
+        front_floor >= -STEP_L * 3 - mid && front_floor <= -STEP_L * 3 + mid) {
+        if (slope || front_floor - front_ceiling < 0
+            || left_floor - left_ceiling < 0
+            || right_floor - right_ceiling < 0) {
+            return false;
+        }
+        item->goal_anim_state = LS_STOP;
+        item->current_anim_state = LS_PULL_UP;
+        Item_SwitchToAnim(item, LA_CLIMB_3CLICK, 0);
+        item->pos.y += front_floor + STEP_L * 3;
+        lara->gun_status = LGS_HANDS_BUSY;
+    } else if (
+        !slope && front_floor >= -STEP_L * 7 - mid
+        && front_floor <= -STEP_L * 4 + mid) {
+        item->goal_anim_state = LS_JUMP_UP;
+        item->current_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+        lara->calc_fall_speed =
+            -(Math_Sqrt(-2 * GRAVITY * (front_floor + 800)) + 3);
+        Lara_Animate(item);
+    } else if (
+        climb_status && front_floor <= -1920 && lara->water_status != LWS_WADE
+        && left_floor <= -STEP_L * 8 + mid && right_floor <= -STEP_L * 8
+        && coll->side_mid.ceiling <= -STEP_L * 8 + mid + LARA_HEIGHT) {
+        item->goal_anim_state = LS_JUMP_UP;
+        item->current_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+        lara->calc_fall_speed = -116;
+        Lara_Animate(item);
+    } else if (
+        climb_status
+        && (front_floor < -STEP_L * 4 || front_ceiling >= LARA_HEIGHT - STEP_L)
+        && coll->side_mid.ceiling <= -STEP_L * 5 + LARA_HEIGHT) {
+#if TR_VERSION >= 2
+        Lara_ShiftCol(coll);
+        if (Lara_TestClimbStance(item, coll)) {
+            item->goal_anim_state = LS_CLIMB_STANCE;
+            item->current_anim_state = LS_STOP;
+            Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+            Lara_Animate(item);
+            item->rot.y = angle;
+            lara->gun_status = LGS_HANDS_BUSY;
+            return true;
+        }
+        return false;
+#endif
+    } else {
+        return false;
+    }
+
+    item->rot.y = angle;
+    Lara_ShiftCol(coll);
+    return true;
+}
+
 // clang-format off
 REGISTER_LARA_COL(LS_HANG,         M_Hang)
 REGISTER_LARA_COL(LS_SHIMMY_LEFT,  M_Shimmy)
