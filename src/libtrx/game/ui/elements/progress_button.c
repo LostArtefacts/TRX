@@ -63,6 +63,7 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
 
     const float pad[2] = { 6.0f, 3.0f };
 
+    UI_BeginPad(0.0f, -pad[1]);
     UI_BeginSpan();
     UI_BeginPad(pad[0], pad[1]);
     UI_LabelFmt("%s: %s", GameString_Get(s->text), value_label);
@@ -77,4 +78,5 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
         });
     }
     UI_EndSpan();
+    UI_EndPad();
 }

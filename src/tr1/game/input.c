@@ -66,6 +66,8 @@ static void M_UpdateFromBackend(
     s->menu_right                |= backend->is_pressed(layout, INPUT_ROLE_MENU_RIGHT);
     s->menu_confirm              |= backend->is_pressed(layout, INPUT_ROLE_MENU_CONFIRM);
     s->menu_back                 |= backend->is_pressed(layout, INPUT_ROLE_MENU_BACK);
+    s->reset_bindings            |= backend->is_pressed(layout, INPUT_ROLE_RESET_BINDINGS);
+    s->unbind_key                |= backend->is_pressed(layout, INPUT_ROLE_UNBIND_KEY);
 
     s->screenshot                |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
     s->toggle_fps_counter        |= backend->is_pressed(layout, INPUT_ROLE_FPS);
