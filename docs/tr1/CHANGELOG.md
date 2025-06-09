@@ -9,6 +9,7 @@
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting
 - changed the `/tp` command to align Lara to switches and pickups
+- changed the `/set` command to accept `-`, which will restore the given setting to its default state
 - changed the music track slot limit from 64 to 1024 (#3101)
 - changed text kerning to a smaller value
 - changed the underwater music volume setting to separate ambient and music volume sliders

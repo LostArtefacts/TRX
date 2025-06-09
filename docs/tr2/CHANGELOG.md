@@ -14,6 +14,7 @@
   - if building levels, use track numbers that correspond to the file names; previously built levels will need to be manually adjusted
 - changed sound and music volumes to be displayed as percentage instead of 0-10
 - changed the `/tp` command to align Lara to switches and pickups
+- changed the `/set` command to accept `-`, which will restore the given setting to its default state
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
