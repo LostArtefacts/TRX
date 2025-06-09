@@ -258,6 +258,7 @@
 - fixed scale of secret icons on level complete summary (#1631)
 - fixed showing inventory ring up/down arrows when uncalled for (#2225)
 - fixed Lara never stepping backwards off a step using her right foot (#1602)
+- fixed flawed frame number checks which prevented Lara's wall hit animation while wading
 - fixed blood spawning on Lara from gunshots using incorrect positioning data (#2253)
 - fixed ghost meshes appearing near statics in custom levels (#2310)
 - fixed potential memory corruption when reading a custom level with more than 512 sprite textures (#2338)

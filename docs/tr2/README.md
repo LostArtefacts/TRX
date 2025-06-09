@@ -225,6 +225,7 @@ However, you can easily download them manually from these urls:
 - fixed several instances of the camera going out of bounds
 - fixed the camera behaving erratically in rooms/sectors that have no pathfinding data
 - fixed Lara never stepping backwards off a step using her right foot
+- fixed flawed frame number checks which prevented Lara's wall hit animation while wading
 - fixed the following floor data issues:
     - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204
     - **Wreck of the Maria Doria**: fixed room 98 not having water
