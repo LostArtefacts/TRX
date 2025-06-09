@@ -29,8 +29,6 @@ bool Lara_TestWall(
 int32_t Lara_TestClimbPos(
     const ITEM *item, int32_t front, int32_t right, int32_t origin,
     int32_t height, int32_t *shift);
-void Lara_DoClimbLeftRight(
-    ITEM *item, const COLL_INFO *coll, int32_t result, int32_t shift);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
 // (start aim); 2 (firing); or 4 (stopping firing).
