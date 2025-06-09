@@ -22,8 +22,6 @@ extern bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
 extern int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
 extern int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
 int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
-int32_t Lara_TestEdgeCatch(
-    const ITEM *item, const COLL_INFO *coll, int32_t *edge);
 
 int32_t Lara_TestClimbPos(
     const ITEM *item, int32_t front, int32_t right, int32_t origin,
