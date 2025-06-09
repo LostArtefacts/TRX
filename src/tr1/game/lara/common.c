@@ -7,7 +7,6 @@
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara/control.h"
-#include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/savegame.h"

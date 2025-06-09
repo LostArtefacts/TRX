@@ -287,28 +287,6 @@ int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll)
     return 1;
 }
 
-int32_t Lara_TestEdgeCatch(ITEM *item, COLL_INFO *coll, int32_t *edge)
-{
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    int32_t hdif1 = coll->side_front.floor - bounds->min.y;
-    int32_t hdif2 = hdif1 + item->fall_speed;
-    if ((hdif1 < 0 && hdif2 < 0) || (hdif1 > 0 && hdif2 > 0)) {
-        hdif1 = item->pos.y + bounds->min.y;
-        hdif2 = hdif1 + item->fall_speed;
-        if ((hdif1 >> (WALL_SHIFT - 2)) == (hdif2 >> (WALL_SHIFT - 2))) {
-            return 0;
-        }
-        if (item->fall_speed > 0) {
-            *edge = hdif2 & ~(STEP_L - 1);
-        } else {
-            *edge = hdif1 & ~(STEP_L - 1);
-        }
-        return -1;
-    }
-
-    return ABS(coll->side_left.floor - coll->side_right.floor) < SLOPE_DIF;
-}
-
 bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
@@ -348,80 +326,6 @@ bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
     item->fall_speed = 0;
     g_Lara.gun_status = LGS_HANDS_BUSY;
     return true;
-}
-
-bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || g_Lara.gun_status != LGS_ARMLESS || coll->hit_static
-        || coll->side_mid.ceiling > -STEPUP_HEIGHT
-        || coll->side_mid.floor < 200) {
-        return false;
-    }
-
-    int32_t edge;
-    int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
-    if (!edge_catch
-        || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
-        return false;
-    }
-
-    DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
-    if (dir == DIR_UNKNOWN) {
-        return false;
-    }
-    int16_t angle = Math_DirectionToAngle(dir);
-
-    if (Lara_TestHangSwingIn(item, angle)) {
-        Item_SwitchToAnim(item, LA_REACH_TO_THIN_LEDGE, 0);
-    } else {
-        Item_SwitchToAnim(item, LA_REACH_TO_HANG, 0);
-    }
-    item->current_anim_state = LS_HANG;
-    item->goal_anim_state = LS_HANG;
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    if (edge_catch > 0) {
-        item->pos.y += coll->side_front.floor - bounds->min.y;
-        item->pos.x += coll->shift.x;
-        item->pos.z += coll->shift.z;
-    } else {
-        item->pos.y = edge - bounds->min.y;
-    }
-
-    item->rot.y = angle;
-    item->speed = 2;
-    item->gravity = true;
-    item->fall_speed = 1;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    return true;
-}
-
-int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle)
-{
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
-    int16_t room_num = item->room_num;
-    switch (angle) {
-    case 0:
-        z += STEP_L;
-        break;
-    case DEG_90:
-        x += STEP_L;
-        break;
-    case -DEG_180:
-        z -= STEP_L;
-        break;
-    case -DEG_90:
-        x -= STEP_L;
-        break;
-    }
-
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
 }
 
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
