@@ -39,6 +39,7 @@ static bool M_TestWall(
     const ITEM *item, int32_t front, int32_t right, int32_t down);
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_TestSlide(ITEM *item, COLL_INFO *coll);
+static bool M_DeflectEdge(ITEM *item, COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
@@ -191,6 +192,33 @@ static bool M_TestSlide(ITEM *const item, COLL_INFO *const coll)
     return true;
 }
 
+static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
+{
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+    case COLL_TOP_FRONT:
+        Lara_ShiftCol(coll);
+        item->goal_anim_state = LS_STOP;
+        item->current_anim_state = LS_STOP;
+        item->gravity = false;
+        item->speed = 0;
+        return true;
+
+    case COLL_LEFT:
+        Lara_ShiftCol(coll);
+        item->rot.y += LARA_DEFLECT_ANGLE;
+        return false;
+
+    case COLL_RIGHT:
+        Lara_ShiftCol(coll);
+        item->rot.y -= LARA_DEFLECT_ANGLE;
+        return false;
+
+    default:
+        return false;
+    }
+}
+
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
 #if TR_VERSION == 1
@@ -250,7 +278,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_DeflectEdge(item, coll)) {
+    if (M_DeflectEdge(item, coll)) {
         if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && Item_TestFrameRange(
                 item, M_LF_WALK_STEP_R_START, M_LF_WALK_STEP_R_END)) {
@@ -320,7 +348,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_DeflectEdge(item, coll)) {
+    if (M_DeflectEdge(item, coll)) {
         M_CollideStop(item, coll);
     }
 
@@ -369,7 +397,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_DeflectEdge(item, coll)) {
+    if (M_DeflectEdge(item, coll)) {
         M_CollideStop(item, coll);
     }
 
@@ -401,7 +429,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_DeflectEdge(item, coll)) {
+    if (M_DeflectEdge(item, coll)) {
         item->rot.z = 0;
         if (M_TestWall(item, STEP_L, 0, -STEP_L * 5 / 2)) {
             item->current_anim_state = LS_SPLAT;
@@ -492,7 +520,7 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor <= 200) {
-        if (Lara_DeflectEdge(item, coll)) {
+        if (M_DeflectEdge(item, coll)) {
             M_CollideStop(item, coll);
         }
         item->pos.y += coll->side_mid.floor;
@@ -572,7 +600,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    Lara_DeflectEdge(item, coll);
+    M_DeflectEdge(item, coll);
 
     if (coll->side_mid.floor > 200) {
         if (item->current_anim_state == LS_SLIDE) {
@@ -674,7 +702,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_DeflectEdge(item, coll)) {
+    if (M_DeflectEdge(item, coll)) {
         item->rot.z = 0;
         if (coll->side_front.type == HT_WALL
             && coll->side_front.floor < -STEP_L * 5 / 2
