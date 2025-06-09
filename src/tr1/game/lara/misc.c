@@ -123,50 +123,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
     return false;
 }
 
-bool Lara_TestSlide(ITEM *item, COLL_INFO *coll)
-{
-    static PHD_ANGLE old_angle = 1;
-
-    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
-        return false;
-    }
-
-    PHD_ANGLE ang = 0;
-    if (coll->tilt_x > 2) {
-        ang = -DEG_90;
-    } else if (coll->tilt_x < -2) {
-        ang = DEG_90;
-    }
-    if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
-        ang = -DEG_180;
-    } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
-        ang = 0;
-    }
-
-    PHD_ANGLE adif = ang - item->rot.y;
-    Lara_ShiftCol(coll);
-    if (adif >= -DEG_90 && adif <= DEG_90) {
-        if (item->current_anim_state != LS_SLIDE || old_angle != ang) {
-            item->goal_anim_state = LS_SLIDE;
-            item->current_anim_state = LS_SLIDE;
-            Item_SwitchToAnim(item, LA_SLIDE_FORWARD, 0);
-            item->rot.y = ang;
-            g_Lara.move_angle = ang;
-            old_angle = ang;
-        }
-    } else {
-        if (item->current_anim_state != LS_SLIDE_BACK || old_angle != ang) {
-            item->goal_anim_state = LS_SLIDE_BACK;
-            item->current_anim_state = LS_SLIDE_BACK;
-            Item_SwitchToAnim(item, LA_SLIDE_BACKWARD_START, 0);
-            item->rot.y = ang - DEG_180;
-            g_Lara.move_angle = ang;
-            old_angle = ang;
-        }
-    }
-    return true;
-}
-
 bool Lara_LandedBad(ITEM *item, COLL_INFO *coll)
 {
     int16_t room_num = item->room_num;

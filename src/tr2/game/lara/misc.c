@@ -18,8 +18,6 @@
 
 #define MAX_BADDIE_COLLISION 20
 
-static int16_t m_LaraOldSlideAngle = 1;
-
 static void M_TakeHit(
     ITEM *const lara_item, const int32_t dx, const int32_t dz);
 
@@ -253,53 +251,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 
     item->rot.y = angle;
     Lara_ShiftCol(coll);
-    return true;
-}
-
-bool Lara_TestSlide(ITEM *item, COLL_INFO *coll)
-{
-    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
-        return false;
-    }
-
-    int16_t angle = 0;
-    if (coll->tilt_x > 2) {
-        angle = -DEG_90;
-    } else if (coll->tilt_x < -2) {
-        angle = DEG_90;
-    }
-
-    if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
-        angle = -DEG_180;
-    } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
-        angle = false;
-    }
-
-    const int16_t angle_dif = angle - item->rot.y;
-    Lara_ShiftCol(coll);
-
-    if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
-        if (item->current_anim_state == LS_SLIDE
-            && m_LaraOldSlideAngle == angle) {
-            return true;
-        }
-        item->goal_anim_state = LS_SLIDE;
-        item->current_anim_state = LS_SLIDE;
-        Item_SwitchToAnim(item, LA_SLIDE_FORWARD, 0);
-        item->rot.y = angle;
-    } else {
-        if (item->current_anim_state == LS_SLIDE_BACK
-            && m_LaraOldSlideAngle == angle) {
-            return true;
-        }
-        item->goal_anim_state = LS_SLIDE_BACK;
-        item->current_anim_state = LS_SLIDE_BACK;
-        Item_SwitchToAnim(item, LA_SLIDE_BACKWARD_START, 0);
-        item->rot.y = angle + DEG_180;
-    }
-
-    g_Lara.move_angle = angle;
-    m_LaraOldSlideAngle = angle;
     return true;
 }
 

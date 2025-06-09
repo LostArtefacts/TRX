@@ -31,11 +31,14 @@
 #define M_LF_WADE_STEP_L_START 3
 #define M_LF_WADE_STEP_L_END 14
 
+static int16_t m_OldSlideAngle = 1;
+
 static bool M_FixDescendingGlitch(void);
 static bool M_FixStepGlitch(void);
 static bool M_TestWall(
     const ITEM *item, int32_t front, int32_t right, int32_t down);
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
+static bool M_TestSlide(ITEM *item, COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
@@ -141,6 +144,53 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
+static bool M_TestSlide(ITEM *const item, COLL_INFO *const coll)
+{
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
+        return false;
+    }
+
+    int16_t angle = 0;
+    if (coll->tilt_x > 2) {
+        angle = -DEG_90;
+    } else if (coll->tilt_x < -2) {
+        angle = DEG_90;
+    }
+
+    if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
+        angle = -DEG_180;
+    } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
+        angle = 0;
+    }
+
+    const int16_t angle_dif = angle - item->rot.y;
+    Lara_ShiftCol(coll);
+
+    if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
+        if (item->current_anim_state == LS_SLIDE && m_OldSlideAngle == angle) {
+            return true;
+        }
+        item->goal_anim_state = LS_SLIDE;
+        item->current_anim_state = LS_SLIDE;
+        Item_SwitchToAnim(item, LA_SLIDE_FORWARD, 0);
+        item->rot.y = angle;
+    } else {
+        if (item->current_anim_state == LS_SLIDE_BACK
+            && m_OldSlideAngle == angle) {
+            return true;
+        }
+        item->goal_anim_state = LS_SLIDE_BACK;
+        item->current_anim_state = LS_SLIDE_BACK;
+        Item_SwitchToAnim(item, LA_SLIDE_BACKWARD_START, 0);
+        item->rot.y = angle + DEG_180;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = angle;
+    m_OldSlideAngle = angle;
+    return true;
+}
+
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
 #if TR_VERSION == 1
@@ -242,7 +292,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (Lara_TestSlide(item, coll)) {
+    if (M_TestSlide(item, coll)) {
         return;
     }
 
@@ -288,7 +338,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (!Lara_TestSlide(item, coll)) {
+    if (!M_TestSlide(item, coll)) {
         item->pos.y += coll->side_mid.floor;
     }
 }
@@ -327,7 +377,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (!Lara_TestSlide(item, coll)) {
+    if (!M_TestSlide(item, coll)) {
         item->pos.y += coll->side_mid.floor;
     }
 }
@@ -392,7 +442,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (Lara_TestSlide(item, coll)) {
+    if (M_TestSlide(item, coll)) {
         return;
     }
 
@@ -407,7 +457,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
     if (Lara_HitCeiling(item, coll)
         || (M_FixDescendingGlitch() && M_Fallen(item, coll))
-        || Lara_TestSlide(item, coll)) {
+        || M_TestSlide(item, coll)) {
         return;
     }
 
@@ -462,7 +512,7 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     M_Default(item, coll);
 
     if (coll->side_mid.floor <= 100) {
-        if (!Lara_TestSlide(item, coll)) {
+        if (!M_TestSlide(item, coll)) {
             item->pos.y += coll->side_mid.floor;
         }
     } else {
@@ -539,7 +589,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    Lara_TestSlide(item, coll);
+    M_TestSlide(item, coll);
     item->pos.y += coll->side_mid.floor;
     if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         item->goal_anim_state = LS_STOP;
@@ -558,7 +608,7 @@ static void M_Roll(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || Lara_TestSlide(item, coll)) {
+    if (Lara_HitCeiling(item, coll) || M_TestSlide(item, coll)) {
         return;
     }
 
@@ -594,7 +644,7 @@ static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || Lara_TestSlide(item, coll)) {
+    if (Lara_HitCeiling(item, coll) || M_TestSlide(item, coll)) {
         return;
     }
 
@@ -657,7 +707,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (Lara_TestSlide(item, coll)) {
+    if (M_TestSlide(item, coll)) {
         return;
     }
 
