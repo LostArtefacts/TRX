@@ -166,7 +166,7 @@ static bool M_TestSlide(ITEM *const item, COLL_INFO *const coll)
     }
 
     const int16_t angle_dif = angle - item->rot.y;
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
 
     if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
         if (item->current_anim_state == LS_SLIDE && m_OldSlideAngle == angle) {
@@ -198,7 +198,7 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
     switch (coll->coll_type) {
     case COLL_FRONT:
     case COLL_TOP_FRONT:
-        Lara_ShiftCol(coll);
+        Lara_Col_Shift(coll);
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
         item->gravity = false;
@@ -206,12 +206,12 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
         return true;
 
     case COLL_LEFT:
-        Lara_ShiftCol(coll);
+        Lara_Col_Shift(coll);
         item->rot.y += LARA_DEFLECT_ANGLE;
         return false;
 
     case COLL_RIGHT:
-        Lara_ShiftCol(coll);
+        Lara_Col_Shift(coll);
         item->rot.y -= LARA_DEFLECT_ANGLE;
         return false;
 
@@ -281,7 +281,7 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     coll->slopes_are_pits = 1;
     coll->slopes_are_walls = 1;
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
 }
 
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
@@ -360,7 +360,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll)) {
         return;
     }
@@ -409,7 +409,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEP_L / 2;
     coll->bad_ceiling = 0;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll)) {
         return;
     }
@@ -440,7 +440,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
 
     if (M_TestCeiling(item, coll) || Lara_Col_TestVault(item, coll)) {
         return;
@@ -515,7 +515,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
     item->pos.y += coll->side_mid.floor;
 }
 
@@ -531,7 +531,7 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll)) {
         return;
     }
@@ -581,8 +581,8 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     coll->radius = LARA_RADIUS * 4;
 
-    Lara_GetCollisionInfo(item, coll);
-    Lara_ShiftCol(coll);
+    Lara_Col_GetInfo(item, coll);
+    Lara_Col_Shift(coll);
 
     item->pos.y += coll->side_mid.floor;
     item->hit_points = -1;
@@ -592,7 +592,7 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
 static void M_Splat(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
 #if TR_VERSION >= 2
     if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
         item->pos.y += coll->side_mid.floor;
@@ -611,7 +611,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEP_L * 2;
     coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
 
     if (M_TestCeiling(item, coll)) {
         return;
@@ -652,7 +652,7 @@ static void M_Roll(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     coll->slopes_are_walls = 1;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll) || M_TestSlide(item, coll)) {
         return;
     }
@@ -673,7 +673,7 @@ static void M_Roll(ITEM *const item, COLL_INFO *const coll)
     }
 #endif
 
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
     item->pos.y += coll->side_mid.floor;
 }
 
@@ -688,7 +688,7 @@ static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll) || M_TestSlide(item, coll)) {
         return;
     }
@@ -700,7 +700,7 @@ static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
         item->gravity = true;
         item->fall_speed = 0;
     } else {
-        Lara_ShiftCol(coll);
+        Lara_Col_Shift(coll);
         item->pos.y += coll->side_mid.floor;
     }
 }
@@ -714,7 +714,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll) || Lara_Col_TestVault(item, coll)) {
         return;
     }

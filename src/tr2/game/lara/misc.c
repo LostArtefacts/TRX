@@ -1,19 +1,13 @@
 #include "game/lara/misc.h"
 
-#include "decomp/decomp.h"
 #include "game/effects.h"
-#include "game/input.h"
 #include "game/inventory_ring.h"
 #include "game/lara/control.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
-#include <libtrx/game/collision.h>
-#include <libtrx/game/lara/const.h>
-#include <libtrx/game/math.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
-#include <libtrx/game/pathing/lot.h>
 #include <libtrx/utils.h>
 
 #define MAX_BADDIE_COLLISION 20
@@ -418,7 +412,7 @@ void Lara_WaterCurrent(COLL_INFO *const coll)
         item->pos.y += coll->side_mid.floor;
         item->rot.x += LARA_UW_WALL_DEFLECT;
     }
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
 
     coll->old = item->pos;
 }

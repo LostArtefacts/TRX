@@ -180,7 +180,7 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
         coll, item->pos.x, item->pos.y + LARA_HEIGHT_SURF, item->pos.z,
         item->room_num, obj_height);
 
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
 
     if (coll->coll_type == COLL_LEFT) {
         item->rot.y += 5 * DEG_1;
@@ -270,7 +270,7 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
         item->room_num, height);
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
 
     switch (coll->coll_type) {
     case COLL_FRONT:

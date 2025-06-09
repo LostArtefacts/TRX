@@ -1,14 +1,5 @@
 #include "game/effects.h"
-#include "game/input.h"
-#include "game/lara/common.h"
-#include "game/random.h"
 #include "global/vars.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/collision.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/utils.h>
 
 void Lara_CatchFire(void)
 {
