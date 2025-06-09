@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "debug.h"
+#include "game/const.h"
 #include "game/input.h"
 #include "game/scaler.h"
 #include "game/ui/elements/anchor.h"
@@ -24,6 +25,9 @@
 
 #include <math.h>
 
+#define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
+#define M_HOLD_TIMER_MAX LOGIC_FPS
+
 typedef struct {
     const UI_SETTINGS_ENUM_ENTRY *entry;
     int32_t position;
@@ -42,8 +46,12 @@ static bool M_RequestChangeValue(
     const UI_SETTINGS_STATE *s, int32_t row_idx, int32_t dir);
 static float M_GetMaxLabelWidth(const UI_SETTINGS_STATE *s);
 static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *s);
-static bool M_CanExamine(const UI_SETTINGS_STATE *s);
+static bool M_CanExamine(const UI_SETTINGS_STATE *s, int32_t row_idx);
+static bool M_CanRestoreDefault(const UI_SETTINGS_STATE *s, int32_t row_idx);
+static void M_RestoreDefault(const UI_SETTINGS_STATE *s, int32_t row_idx);
 static void M_OptionsChanged(UI_SETTINGS_STATE *s);
+static void M_Footer(const UI_SETTINGS_STATE *s);
+static void M_InitCommon(UI_SETTINGS_STATE *s, GAME_STRING_ID title);
 
 static int32_t M_GetVisibleRows(void)
 {
@@ -324,19 +332,99 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *const s)
     return result;
 }
 
-static bool M_CanExamine(const UI_SETTINGS_STATE *const s)
+static bool M_CanExamine(
+    const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
     if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS) {
         return false;
     }
-    const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
-    if (sel_row < 0 || s->options[sel_row].description_id == nullptr) {
+    if (row_idx < 0 || s->options[row_idx].description_id == nullptr) {
         return false;
     }
-    const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
+    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
     const char *const title = GameString_Get(option->label_id);
     const char *const text = GameString_Get(option->description_id);
     return title != nullptr && text != nullptr;
+}
+
+// Returns whether the selected setting may be reset to its default.
+static bool M_CanRestoreDefault(
+    const UI_SETTINGS_STATE *const s, const int32_t row_idx)
+{
+    if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS) {
+        return false;
+    }
+    if (row_idx < 0) {
+        return false;
+    }
+    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    if (option->target == nullptr || Config_IsOptionEnforced(option->target)) {
+        return false;
+    }
+    const CONFIG_OPTION *cfg = Config_GetOptionMap();
+    while (cfg->target != nullptr) {
+        if (cfg->target == option->target) {
+            switch (cfg->type) {
+            case COT_BOOL:
+            case COT_INVERTED_BOOL:
+                return *(bool *)cfg->target != *(bool *)cfg->default_value;
+            case COT_INT32:
+                return *(int32_t *)cfg->target
+                    != *(int32_t *)cfg->default_value;
+            case COT_FLOAT:
+                return *(float *)cfg->target != *(float *)cfg->default_value;
+            case COT_DOUBLE:
+                return *(double *)cfg->target != *(double *)cfg->default_value;
+            case COT_RGB888: {
+                const RGB_888 src = *(RGB_888 *)cfg->target;
+                const RGB_888 dst = *(RGB_888 *)cfg->default_value;
+                return src.r != dst.r || src.g != dst.g || src.b != dst.b;
+            }
+            case COT_ENUM:
+                return *(int32_t *)cfg->target
+                    != *(int32_t *)cfg->default_value;
+            }
+            break;
+        }
+        cfg++;
+    }
+    return true;
+}
+
+// Reset the selected setting back to its compiled-in default value.
+static void M_RestoreDefault(
+    const UI_SETTINGS_STATE *const s, const int32_t row_idx)
+{
+    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    const CONFIG_OPTION *cfg = Config_GetOptionMap();
+    while (cfg->target != nullptr) {
+        if (cfg->target == option->target) {
+            switch (cfg->type) {
+            case COT_BOOL:
+            case COT_INVERTED_BOOL:
+                *(bool *)cfg->target = *(bool *)cfg->default_value;
+                break;
+            case COT_INT32:
+                *(int32_t *)cfg->target = *(int32_t *)cfg->default_value;
+                break;
+            case COT_FLOAT:
+                *(float *)cfg->target = *(float *)cfg->default_value;
+                break;
+            case COT_DOUBLE:
+                *(double *)cfg->target = *(double *)cfg->default_value;
+                break;
+            case COT_RGB888:
+                *(RGB_888 *)cfg->target = *(RGB_888 *)cfg->default_value;
+                break;
+            case COT_ENUM:
+                *(int32_t *)cfg->target = *(int32_t *)cfg->default_value;
+                break;
+            }
+            break;
+        }
+        cfg++;
+    }
+    Config_Write();
 }
 
 static void M_OptionsChanged(UI_SETTINGS_STATE *const s)
@@ -350,11 +438,43 @@ static void M_OptionsChanged(UI_SETTINGS_STATE *const s)
     s->max_value_w = M_GetMaxValueWidth(s) / g_Config.ui.text_scale;
 }
 
+static void M_Footer(const UI_SETTINGS_STATE *const s)
+{
+    const int32_t row_idx = UI_Scrollable_GetSelectedItem(&s->scroll);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_HORIZONTAL,
+        .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+        .spacing = { .h = 20 },
+    });
+    UI_BeginHide(!M_CanExamine(s, row_idx));
+    UI_LabelFmt(
+        "%s %s",
+        Input_GetKeyName(
+            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
+            INPUT_ROLE_LOOK),
+        GS(COMMON_SETTINGS_TOGGLE_HELP));
+    UI_EndHide();
+    UI_BeginHide(!M_CanRestoreDefault(s, row_idx));
+    UI_LabelFmt(
+        "%s %s",
+        Input_GetKeyName(
+            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
+            INPUT_ROLE_UNBIND_KEY),
+        GS(COMMON_SETTINGS_RESTORE_DEFAULT));
+    UI_EndHide();
+    UI_EndStack();
+}
+
+static void M_InitCommon(UI_SETTINGS_STATE *const s, const GAME_STRING_ID title)
+{
+    s->title = title;
+}
+
 void UI_Settings_Init(
     UI_SETTINGS_STATE *const s, const GAME_STRING_ID title,
     const UI_SETTINGS_OPTION *const options)
 {
-    s->title = title;
+    M_InitCommon(s, title);
     s->options = options;
     s->max_group_items = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
@@ -372,7 +492,7 @@ void UI_Settings_InitWithTabs(
     const UI_SETTINGS_TAB *const tabs)
 {
     ASSERT(tabs != nullptr);
-    s->title = title;
+    M_InitCommon(s, title);
     s->options = tabs[0].options;
     s->tab_count = tab_count;
     s->tabs = tabs;
@@ -433,7 +553,7 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         }
     } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
-        if (g_InputDB.look && M_CanExamine(s)) {
+        if (g_InputDB.look && M_CanExamine(s, sel_row)) {
             const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
             const char *title = GameString_Get(option->label_id);
             const char *text = GameString_Get(option->description_id);
@@ -472,12 +592,14 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
             }
         } else if (g_InputDB.menu_back) {
             return true;
-        } else {
-            if (g_InputDB.menu_left && sel_row >= 0) {
-                M_RequestChangeValue(s, sel_row, -1);
-            } else if (g_InputDB.menu_right && sel_row >= 0) {
-                M_RequestChangeValue(s, sel_row, +1);
-            }
+        } else if (
+            g_InputDB.unbind_key && sel_row >= 0
+            && M_CanRestoreDefault(s, sel_row)) {
+            M_RestoreDefault(s, sel_row);
+        } else if (g_InputDB.menu_left && sel_row >= 0) {
+            M_RequestChangeValue(s, sel_row, -1);
+        } else if (g_InputDB.menu_right && sel_row >= 0) {
+            M_RequestChangeValue(s, sel_row, +1);
         }
     }
     return false;
@@ -628,16 +750,9 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
     UI_EndWindow();
 
     // Button hint strip
-    UI_BeginHide(!M_CanExamine(s));
-    UI_LabelFmt(
-        "%s %s",
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_LOOK),
-        GS(COMMON_SETTINGS_TOGGLE_HELP));
-    UI_EndHide();
-    UI_EndStack();
+    M_Footer(s);
 
+    UI_EndStack();
     UI_EndModal();
 
     if (s->description.show) {

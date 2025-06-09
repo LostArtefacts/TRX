@@ -202,6 +202,7 @@ GS_DEFINE(CONSOLE_HELP_DEBUG, "Toggles visual debug information.")
 
 GS_DEFINE(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER, "This setting is enforced by the level builder and cannot be changed.")
 GS_DEFINE(COMMON_SETTINGS_TOGGLE_HELP, "Toggle help")
+GS_DEFINE(COMMON_SETTINGS_RESTORE_DEFAULT, "Restore default")
 
 GS_DEFINE(SOUND_SETTINGS_TITLE,                            "Sound Options")
 
