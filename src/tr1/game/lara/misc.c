@@ -86,48 +86,6 @@ bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
     return false;
 }
 
-void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
-{
-    Lara_ShiftCol(coll);
-    switch (coll->coll_type) {
-    case COLL_LEFT:
-        item->rot.y += LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_RIGHT:
-        item->rot.y -= LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_FRONT:
-    case COLL_TOP_FRONT:
-        item->goal_anim_state = LS_FAST_FALL;
-        item->current_anim_state = LS_FAST_FALL;
-        Item_SwitchToAnim(item, LA_SMASH_JUMP, LF_FASTFALL);
-        item->speed /= 4;
-        g_Lara.move_angle -= DEG_180;
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 1;
-        }
-        break;
-
-    case COLL_TOP:
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 1;
-        }
-        break;
-
-    case COLL_CLAMP:
-        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
-        item->speed = 0;
-        coll->side_mid.floor = 0;
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 16;
-        }
-        break;
-    }
-}
-
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action

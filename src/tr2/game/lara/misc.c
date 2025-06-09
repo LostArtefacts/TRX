@@ -17,7 +17,6 @@
 #include <libtrx/utils.h>
 
 #define MAX_BADDIE_COLLISION 20
-#define LF_FAST_FALL 1
 
 static int16_t m_LaraOldSlideAngle = 1;
 
@@ -112,55 +111,6 @@ bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
 
     default:
         return false;
-    }
-}
-
-void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
-{
-    Lara_ShiftCol(coll);
-    switch (coll->coll_type) {
-    case COLL_FRONT:
-    case COLL_TOP_FRONT:
-        if (!g_Lara.climb_status || item->speed != 2) {
-            if (coll->side_mid.floor > 512) {
-                item->goal_anim_state = LS_FAST_FALL;
-                item->current_anim_state = LS_FAST_FALL;
-                Item_SwitchToAnim(item, LA_SMASH_JUMP, LF_FAST_FALL);
-            } else if (coll->side_mid.floor <= 128) {
-                item->goal_anim_state = LS_LAND;
-                item->current_anim_state = LS_LAND;
-                Item_SwitchToAnim(item, LA_JUMP_UP_LAND, 0);
-            }
-            item->speed /= 4;
-            g_Lara.move_angle += DEG_180;
-            CLAMPL(item->fall_speed, 1);
-        }
-        break;
-
-    case COLL_LEFT:
-        item->rot.y += LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_RIGHT:
-        item->rot.y -= LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_TOP:
-        CLAMPL(item->fall_speed, 1);
-        break;
-
-    case COLL_CLAMP:
-        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
-        item->speed = 0;
-        coll->side_mid.floor = 0;
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 16;
-        }
-        break;
-
-    default:
-        break;
     }
 }
 

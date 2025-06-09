@@ -6,6 +6,7 @@
 #include "game/sound.h"
 
 #define M_LF_START_HANG 12
+#define M_LF_FAST_FALL 1
 
 typedef enum {
     // clang-format off
@@ -225,6 +226,62 @@ static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
+{
+    Lara_ShiftCol(coll);
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+    case COLL_TOP_FRONT:
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        // TODO: this is the root of the wall-bug in TR1. Merge that config
+        // option into TR2, plus tidy this all up with TR1 ladder support.
+#if TR_VERSION == 1
+        item->goal_anim_state = LS_FAST_FALL;
+        item->current_anim_state = LS_FAST_FALL;
+        Item_SwitchToAnim(item, LA_SMASH_JUMP, M_LF_FAST_FALL);
+#else
+        if (lara->climb_status && item->speed == 2) {
+            break;
+        }
+        if (coll->side_mid.floor > (STEP_L * 2)) {
+            item->goal_anim_state = LS_FAST_FALL;
+            item->current_anim_state = LS_FAST_FALL;
+            Item_SwitchToAnim(item, LA_SMASH_JUMP, M_LF_FAST_FALL);
+        } else if (coll->side_mid.floor <= (STEP_L / 2)) {
+            item->goal_anim_state = LS_LAND;
+            item->current_anim_state = LS_LAND;
+            Item_SwitchToAnim(item, LA_JUMP_UP_LAND, 0);
+        }
+#endif
+        item->speed /= 4;
+        lara->move_angle += DEG_180;
+        CLAMPL(item->fall_speed, 1);
+        break;
+
+    case COLL_LEFT:
+        item->rot.y += LARA_DEFLECT_ANGLE;
+        break;
+
+    case COLL_RIGHT:
+        item->rot.y -= LARA_DEFLECT_ANGLE;
+        break;
+
+    case COLL_TOP:
+        CLAMPL(item->fall_speed, 1);
+        break;
+
+    case COLL_CLAMP:
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->speed = 0;
+        coll->side_mid.floor = 0;
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 16;
+        }
+        break;
+    }
+}
+
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
@@ -304,8 +361,6 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 {
 #if TR_VERSION == 1
-    // TODO: TR1's wall bug actually stems from Lara_DeflectEdgeJump, see about
-    // fixing it there.
     const bool backward_momentum = false;
     const bool fix_wall_bug = g_Config.gameplay.fix_wall_jump_glitch;
 #else
@@ -324,7 +379,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    Lara_DeflectEdgeJump(item, coll);
+    M_DeflectEdgeJump(item, coll);
     if (backward_momentum) {
         lara->move_angle = item->rot.y;
     }
@@ -375,7 +430,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    Lara_DeflectEdgeJump(item, coll);
+    M_DeflectEdgeJump(item, coll);
     if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
         return;
     }
@@ -399,7 +454,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    Lara_DeflectEdgeJump(item, coll);
+    M_DeflectEdgeJump(item, coll);
 
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
@@ -454,7 +509,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    Lara_DeflectEdgeJump(item, coll);
+    M_DeflectEdgeJump(item, coll);
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
     }
@@ -474,7 +529,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    Lara_DeflectEdgeJump(item, coll);
+    M_DeflectEdgeJump(item, coll);
 
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
