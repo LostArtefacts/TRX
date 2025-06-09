@@ -15,7 +15,6 @@ extern bool Lara_TestSlide(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideSlope(ITEM *item, COLL_INFO *coll);
 extern bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll);
 extern bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
-extern bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
 extern bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
 extern void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);

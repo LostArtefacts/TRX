@@ -5,7 +5,10 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
+#define M_LF_START_HANG 12
+
 static bool M_TestHangJump(ITEM *item, COLL_INFO *coll);
+static bool M_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangSwingIn(const ITEM *item, int16_t angle);
 
 static void M_Compress(ITEM *item, COLL_INFO *coll);
@@ -75,6 +78,54 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     item->speed = 2;
     item->gravity = true;
     item->fall_speed = 1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    return true;
+}
+
+static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (coll->coll_type != COLL_FRONT || !g_Input.action
+        || lara->gun_status != LGS_ARMLESS || coll->hit_static
+        || coll->side_mid.ceiling > -STEPUP_HEIGHT) {
+        return false;
+    }
+
+    int32_t edge;
+    const int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
+#if TR_VERSION == 1
+    if (edge_catch <= 0) {
+        return false;
+    }
+#else
+    if (edge_catch == 0
+        || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
+        return false;
+    }
+#endif
+
+    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
+    if (dir == DIR_UNKNOWN) {
+        return false;
+    }
+    const int16_t angle = Math_DirectionToAngle(dir);
+
+    item->goal_anim_state = LS_HANG;
+    item->current_anim_state = LS_HANG;
+    Item_SwitchToAnim(item, LA_REACH_TO_HANG, M_LF_START_HANG);
+
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    if (edge_catch > 0) {
+        item->pos.y += coll->side_front.floor - bounds->min.y;
+    } else {
+        item->pos.y = edge - bounds->min.y;
+    }
+    item->pos.x += coll->shift.x;
+    item->pos.z += coll->shift.z;
+    item->rot.y = angle;
+    item->speed = 0;
+    item->gravity = false;
+    item->fall_speed = 0;
     lara->gun_status = LGS_HANDS_BUSY;
     return true;
 }
@@ -151,7 +202,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_num, 870);
-    if (Lara_TestHangJumpUp(item, coll)) {
+    if (M_TestHangJumpUp(item, coll)) {
         return;
     }
 

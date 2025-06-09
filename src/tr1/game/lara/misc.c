@@ -11,7 +11,6 @@
 #include <libtrx/utils.h>
 
 #define LF_FASTFALL 1
-#define LF_STARTHANG 12
 
 void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 {
@@ -233,63 +232,6 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
     }
 
     return false;
-}
-
-bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || g_Lara.gun_status != LGS_ARMLESS
-        || ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF) {
-        return false;
-    }
-
-    if (coll->side_front.ceiling > 0 || coll->side_mid.ceiling > -384) {
-        return false;
-    }
-
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
-    const int32_t hdif = coll->side_front.floor - bounds->min.y;
-    if (hdif < 0 && hdif + item->fall_speed < 0) {
-        return false;
-    }
-    if (hdif > 0 && hdif + item->fall_speed > 0) {
-        return false;
-    }
-
-    PHD_ANGLE angle = item->rot.y;
-    if (angle >= 0 - LARA_HANG_ANGLE && angle <= 0 + LARA_HANG_ANGLE) {
-        angle = 0;
-    } else if (
-        angle >= DEG_90 - LARA_HANG_ANGLE
-        && angle <= DEG_90 + LARA_HANG_ANGLE) {
-        angle = DEG_90;
-    } else if (
-        angle >= (DEG_180 - 1) - LARA_HANG_ANGLE
-        || angle <= -(DEG_180 - 1) + LARA_HANG_ANGLE) {
-        angle = -DEG_180;
-    } else if (
-        angle >= -DEG_90 - LARA_HANG_ANGLE
-        && angle <= -DEG_90 + LARA_HANG_ANGLE) {
-        angle = -DEG_90;
-    }
-
-    if (angle & (DEG_90 - 1)) {
-        return false;
-    }
-
-    item->goal_anim_state = LS_HANG;
-    item->current_anim_state = LS_HANG;
-    Item_SwitchToAnim(item, LA_REACH_TO_HANG, LF_STARTHANG);
-    bounds = Item_GetBoundsAccurate(item);
-    item->pos.y += coll->side_front.floor - bounds->min.y;
-    item->pos.x += coll->shift.x;
-    item->pos.z += coll->shift.z;
-    item->rot.y = angle;
-    item->gravity = false;
-    item->fall_speed = 0;
-    item->speed = 0;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    return true;
 }
 
 bool Lara_TestSlide(ITEM *item, COLL_INFO *coll)

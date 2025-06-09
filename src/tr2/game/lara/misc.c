@@ -18,7 +18,6 @@
 
 #define MAX_BADDIE_COLLISION 20
 #define LF_FAST_FALL 1
-#define LF_START_HANG 12
 
 static int16_t m_LaraOldSlideAngle = 1;
 
@@ -285,47 +284,6 @@ int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll)
 
     item->pos.y += shift;
     return 1;
-}
-
-bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || g_Lara.gun_status != LGS_ARMLESS || coll->hit_static
-        || coll->side_mid.ceiling > -STEPUP_HEIGHT) {
-        return false;
-    }
-
-    int32_t edge;
-    int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
-    if (!edge_catch
-        || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
-        return false;
-    }
-
-    DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
-    if (dir == DIR_UNKNOWN) {
-        return false;
-    }
-    int16_t angle = Math_DirectionToAngle(dir);
-
-    item->goal_anim_state = LS_HANG;
-    item->current_anim_state = LS_HANG;
-    Item_SwitchToAnim(item, LA_REACH_TO_HANG, LF_START_HANG);
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    if (edge_catch > 0) {
-        item->pos.y += coll->side_front.floor - bounds->min.y;
-    } else {
-        item->pos.y = edge - bounds->min.y;
-    }
-    item->pos.x += coll->shift.x;
-    item->pos.z += coll->shift.z;
-    item->rot.y = angle;
-    item->speed = 0;
-    item->gravity = false;
-    item->fall_speed = 0;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    return true;
 }
 
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
