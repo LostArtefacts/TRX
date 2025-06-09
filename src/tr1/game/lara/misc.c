@@ -27,26 +27,6 @@ bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
     item->speed = 0;
     return true;
 }
-bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOP_FRONT) {
-        Lara_ShiftCol(coll);
-        item->goal_anim_state = LS_STOP;
-        item->current_anim_state = LS_STOP;
-        item->gravity = false;
-        item->speed = 0;
-        return true;
-    }
-
-    if (coll->coll_type == COLL_LEFT) {
-        Lara_ShiftCol(coll);
-        item->rot.y += LARA_DEFLECT_ANGLE;
-    } else if (coll->coll_type == COLL_RIGHT) {
-        Lara_ShiftCol(coll);
-        item->rot.y -= LARA_DEFLECT_ANGLE;
-    }
-    return false;
-}
 
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 {

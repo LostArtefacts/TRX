@@ -50,33 +50,6 @@ bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
     return true;
 }
 
-bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
-{
-    switch (coll->coll_type) {
-    case COLL_FRONT:
-    case COLL_TOP_FRONT:
-        Lara_ShiftCol(coll);
-        item->goal_anim_state = LS_STOP;
-        item->current_anim_state = LS_STOP;
-        item->gravity = false;
-        item->speed = 0;
-        return true;
-
-    case COLL_LEFT:
-        Lara_ShiftCol(coll);
-        item->rot.y += LARA_DEFLECT_ANGLE;
-        return false;
-
-    case COLL_RIGHT:
-        Lara_ShiftCol(coll);
-        item->rot.y -= LARA_DEFLECT_ANGLE;
-        return false;
-
-    default:
-        return false;
-    }
-}
-
 int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll)
 {
     if (!g_Lara.climb_status || item->fall_speed < 0) {
