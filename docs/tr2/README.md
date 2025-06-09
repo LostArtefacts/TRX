@@ -270,6 +270,7 @@ However, you can easily download them manually from these urls:
 - fixed Lara snapping to face forwards if she has a slight angle and action is pressed after using an airlock door
 - fixed Lara being able to equip guns and flares during in-game cutscenes
 - fixed the same boss item always being selected in Home Sweet Home, regardless of Lara's proximity
+- fixed Lara behaving erratically if she is killed while hanging from a ledge
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels

@@ -138,9 +138,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
         item->current_anim_state = LS_JUMP_UP;
         Item_SwitchToAnim(item, LA_JUMP_UP, M_LF_STOP_HANG);
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-        // Retain original bug for #3134, whereby in TR2 Lara perpatually swing
-        // cancels on death.
-        if (enable_swing_cancel && (TR_VERSION >= 2 || item->hit_points > 0)) {
+        if (enable_swing_cancel && item->hit_points > 0) {
             item->pos.y += bounds->max.y;
         } else {
             item->pos.y += coll->side_front.floor - bounds->min.y + 2;
