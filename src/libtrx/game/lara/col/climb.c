@@ -27,6 +27,7 @@ static bool M_TestLadderRelease(ITEM *item);
 static M_CLIMB_RESULT M_TestClimbUpPos(
     const ITEM *item, int32_t front, int32_t right, int32_t *shift,
     int32_t *ledge);
+static bool M_TestClimbStance(ITEM *item, COLL_INFO *coll);
 
 static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
@@ -121,7 +122,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
 
         if (Item_TestAnimEqual(item, LA_REACH_TO_HANG)
             && Item_TestFrameEqual(item, M_LF_HANG)
-            && Lara_TestClimbStance(item, coll)) {
+            && M_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS_CLIMB_STANCE;
         }
         return;
@@ -305,6 +306,48 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
         return CLIMB_RESULT_POS;
     }
     return CLIMB_RESULT_NONE;
+}
+
+static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
+{
+    int32_t shift_r;
+    int32_t result_r = Lara_TestClimbPos(
+        item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT, -700,
+        STEP_L * 2, &shift_r);
+    if (result_r != 1) {
+        return false;
+    }
+
+    int32_t shift_l;
+    int32_t result_l = Lara_TestClimbPos(
+        item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT), -700,
+        STEP_L * 2, &shift_l);
+    if (result_l != 1) {
+        return false;
+    }
+
+    int32_t shift = 0;
+    if (shift_r) {
+        if (shift_l) {
+            if ((shift_r < 0) != (shift_l < 0)) {
+                return false;
+            }
+            if (shift_r < 0 && shift_l < shift_r) {
+                shift = shift_l;
+            } else if (shift_r > 0 && shift_l > shift_r) {
+                shift = shift_l;
+            } else {
+                shift = shift_r;
+            }
+        } else {
+            shift = shift_r;
+        }
+    } else if (shift_l) {
+        shift = shift_l;
+    }
+
+    item->pos.y += shift;
+    return true;
 }
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
@@ -719,7 +762,7 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
         && coll->side_mid.ceiling <= -STEP_L * 5 + LARA_HEIGHT) {
 #if TR_VERSION >= 2
         Lara_ShiftCol(coll);
-        if (Lara_TestClimbStance(item, coll)) {
+        if (M_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS_CLIMB_STANCE;
             item->current_anim_state = LS_STOP;
             Item_SwitchToAnim(item, LA_STAND_STILL, 0);

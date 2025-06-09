@@ -12,7 +12,6 @@ extern void Lara_CatchFire(void);
 void Lara_UpdateRoomToHeight(int32_t height);
 void Lara_ShiftCol(COLL_INFO *coll);
 extern int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
-extern int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
 int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
 int32_t Lara_TestClimbPos(
