@@ -17,6 +17,19 @@ const CONFIG_OPTION *Config_GetOptionMap(void);
 int32_t Config_SubscribeChanges(EVENT_LISTENER listener, void *user_data);
 void Config_UnsubscribeChanges(int32_t listener_id);
 
-// Returns true if a given setting (a pointer into a g_Config member)
-// was forced by the game flow file.
+// Retrieves CONFIG_OPTION related to the target setting (a pointer into a
+// g_Config property).
+const CONFIG_OPTION *Config_GetOption(const void *target);
+
+// Returns true if a given setting was enforced by the game flow file.
 bool Config_IsOptionEnforced(const void *target);
+
+// Returns whether the given setting's current value is the same as its default.
+bool Config_IsOptionAtDefault(const void *target);
+
+// Restores the given setting's default value.
+bool Config_RestoreOptionDefault(const void *target);
+
+// Updates the given setting's value from string.
+bool Config_SetOptionValueFromString(
+    const CONFIG_OPTION *option, const char *new_value);

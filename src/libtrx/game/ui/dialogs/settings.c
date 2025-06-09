@@ -361,34 +361,7 @@ static bool M_CanRestoreDefault(
     if (option->target == nullptr || Config_IsOptionEnforced(option->target)) {
         return false;
     }
-    const CONFIG_OPTION *cfg = Config_GetOptionMap();
-    while (cfg->target != nullptr) {
-        if (cfg->target == option->target) {
-            switch (cfg->type) {
-            case COT_BOOL:
-            case COT_INVERTED_BOOL:
-                return *(bool *)cfg->target != *(bool *)cfg->default_value;
-            case COT_INT32:
-                return *(int32_t *)cfg->target
-                    != *(int32_t *)cfg->default_value;
-            case COT_FLOAT:
-                return *(float *)cfg->target != *(float *)cfg->default_value;
-            case COT_DOUBLE:
-                return *(double *)cfg->target != *(double *)cfg->default_value;
-            case COT_RGB888: {
-                const RGB_888 src = *(RGB_888 *)cfg->target;
-                const RGB_888 dst = *(RGB_888 *)cfg->default_value;
-                return src.r != dst.r || src.g != dst.g || src.b != dst.b;
-            }
-            case COT_ENUM:
-                return *(int32_t *)cfg->target
-                    != *(int32_t *)cfg->default_value;
-            }
-            break;
-        }
-        cfg++;
-    }
-    return true;
+    return !Config_IsOptionAtDefault(option->target);
 }
 
 // Reset the selected setting back to its compiled-in default value.
@@ -396,34 +369,7 @@ static void M_RestoreDefault(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
     const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
-    const CONFIG_OPTION *cfg = Config_GetOptionMap();
-    while (cfg->target != nullptr) {
-        if (cfg->target == option->target) {
-            switch (cfg->type) {
-            case COT_BOOL:
-            case COT_INVERTED_BOOL:
-                *(bool *)cfg->target = *(bool *)cfg->default_value;
-                break;
-            case COT_INT32:
-                *(int32_t *)cfg->target = *(int32_t *)cfg->default_value;
-                break;
-            case COT_FLOAT:
-                *(float *)cfg->target = *(float *)cfg->default_value;
-                break;
-            case COT_DOUBLE:
-                *(double *)cfg->target = *(double *)cfg->default_value;
-                break;
-            case COT_RGB888:
-                *(RGB_888 *)cfg->target = *(RGB_888 *)cfg->default_value;
-                break;
-            case COT_ENUM:
-                *(int32_t *)cfg->target = *(int32_t *)cfg->default_value;
-                break;
-            }
-            break;
-        }
-        cfg++;
-    }
+    Config_RestoreOptionDefault(option->target);
     Config_Write();
 }
 
