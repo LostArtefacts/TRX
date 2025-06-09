@@ -78,7 +78,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 #else
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
-            && !Lara_TestHangOnClimbWall(item, coll))) {
+            && !Lara_Col_TestLadderHang(item, coll))) {
         return false;
     }
 #endif
@@ -139,7 +139,7 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
 #else
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
-            && !Lara_TestHangOnClimbWall(item, coll))) {
+            && !Lara_Col_TestLadderHang(item, coll))) {
         return false;
     }
 #endif
