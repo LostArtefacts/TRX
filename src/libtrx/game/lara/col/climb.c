@@ -1,15 +1,29 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
+#include "game/rooms.h"
+
+#define M_CLIMB_SHIFT 70
 
 #define M_LF_HANG 21
 #define M_LF_CLIMB_L_SHIFT_START 28
 #define M_LF_CLIMB_L_SHIFT_END 29
 #define M_LF_CLIMB_R_SHIFT 57
 
+typedef enum {
+    // clang-format off
+    CLIMB_RESULT_NEG  = -1,
+    CLIMB_RESULT_NONE = 0,
+    CLIMB_RESULT_POS  = 1,
+    // clang-format on
+} M_CLIMB_RESULT;
+
 // TODO: move all dependent climb functions from misc.c here
 static bool M_GetClimbStatus(void);
 static bool M_TestLadderRelease(ITEM *item);
+static M_CLIMB_RESULT M_TestClimbUpPos(
+    const ITEM *item, int32_t front, int32_t right, int32_t *shift,
+    int32_t *ledge);
 
 static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
@@ -45,6 +59,107 @@ static bool M_TestLadderRelease(ITEM *const item)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->gun_status = LGS_ARMLESS;
     return true;
+}
+
+static M_CLIMB_RESULT M_TestClimbUpPos(
+    const ITEM *const item, const int32_t front, const int32_t right,
+    int32_t *const shift, int32_t *const ledge)
+{
+    const int32_t y = item->pos.y - LARA_CLIMB_HEIGHT - STEP_L;
+    int32_t x;
+    int32_t z;
+    int32_t x_front = 0;
+    int32_t z_front = 0;
+
+    switch (Math_GetDirection(item->rot.y)) {
+    case DIR_NORTH:
+        x = item->pos.x + right;
+        z = item->pos.z + front;
+        z_front = 2;
+        break;
+
+    case DIR_EAST:
+        x = item->pos.x + front;
+        z = item->pos.z - right;
+        x_front = 2;
+        break;
+
+    case DIR_SOUTH:
+        x = item->pos.x - right;
+        z = item->pos.z - front;
+        z_front = -2;
+        break;
+
+    case DIR_WEST:
+        z = item->pos.z + right;
+        x = item->pos.x - front;
+        x_front = -2;
+        break;
+
+    default:
+        x = front;
+        z = front;
+        break;
+    }
+
+    *shift = 0;
+
+    const SECTOR *sector;
+    int32_t height;
+    int32_t ceiling;
+
+    int16_t room_num = item->room_num;
+    sector = Room_GetSector(x, y, z, &room_num);
+    ceiling = Room_GetCeiling(sector, x, y, z) + STEP_L - y;
+    if (ceiling > M_CLIMB_SHIFT) {
+        return CLIMB_RESULT_NONE;
+    }
+
+    if (ceiling > 0) {
+        *shift = ceiling;
+    }
+
+    const int32_t x2 = x + x_front;
+    const int32_t z2 = z + z_front;
+    sector = Room_GetSector(x2, y, z2, &room_num);
+    height = Room_GetHeight(sector, x2, y, z2);
+    if (height == NO_HEIGHT) {
+        *ledge = NO_HEIGHT;
+        return CLIMB_RESULT_POS;
+    }
+
+    height -= y;
+    *ledge = height;
+    if (height > STEP_L / 2) {
+        ceiling = Room_GetCeiling(sector, x2, y, z2) - y;
+        if (ceiling >= LARA_CLIMB_HEIGHT) {
+            return CLIMB_RESULT_POS;
+        }
+
+        if (height - ceiling > LARA_HEIGHT) {
+            *shift = height;
+            return CLIMB_RESULT_NEG;
+        }
+
+        return CLIMB_RESULT_NONE;
+    }
+
+    if (height > 0 && height > *shift) {
+        *shift = height;
+    }
+
+    room_num = item->room_num;
+    sector = Room_GetSector(x, y + LARA_CLIMB_HEIGHT, z, &room_num);
+    sector = Room_GetSector(x2, y + LARA_CLIMB_HEIGHT, z2, &room_num);
+    ceiling = Room_GetCeiling(sector, x2, y + LARA_CLIMB_HEIGHT, z2) - y;
+    if (ceiling <= height) {
+        return CLIMB_RESULT_POS;
+    }
+
+    if (ceiling >= LARA_CLIMB_HEIGHT) {
+        return CLIMB_RESULT_POS;
+    }
+    return CLIMB_RESULT_NONE;
 }
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
@@ -112,21 +227,21 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
 
         int32_t shift_r = 0;
         int32_t ledge_r = 0;
-        int32_t result_r = Lara_TestClimbUpPos(
+        M_CLIMB_RESULT result_r = M_TestClimbUpPos(
             item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT, &shift_r,
             &ledge_r);
 
         int32_t shift_l = 0;
         int32_t ledge_l = 0;
-        int32_t result_l = Lara_TestClimbUpPos(
+        M_CLIMB_RESULT result_l = M_TestClimbUpPos(
             item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT),
             &shift_l, &ledge_l);
 
-        if (!result_r || !result_l) {
+        if (result_r == CLIMB_RESULT_NONE || result_l == CLIMB_RESULT_NONE) {
             return;
         }
 
-        if (result_r < 0 || result_l < 0) {
+        if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
             if (ABS(ledge_l - ledge_r) > 120) {
                 return;
             }
@@ -162,17 +277,17 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
         item->pos.y += STEP_L;
 
         int32_t shift_r = 0;
-        int32_t result_r = Lara_TestClimbPos(
+        M_CLIMB_RESULT result_r = Lara_TestClimbPos(
             item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT,
             -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT, &shift_r);
 
         int32_t shift_l = 0;
-        int32_t result_l = Lara_TestClimbPos(
+        M_CLIMB_RESULT result_l = Lara_TestClimbPos(
             item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT),
             -LARA_CLIMB_HEIGHT, LARA_CLIMB_HEIGHT, &shift_l);
 
         item->pos.y -= STEP_L;
-        if (!result_r || !result_l) {
+        if (result_r == CLIMB_RESULT_NONE || result_l == CLIMB_RESULT_NONE) {
             return;
         }
 
@@ -188,7 +303,7 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
             }
         }
 
-        if (result_r == 1 && result_l == 1) {
+        if (result_r == CLIMB_RESULT_POS && result_l == CLIMB_RESULT_POS) {
             item->goal_anim_state = LS_CLIMB_DOWN;
             item->pos.y += shift;
         } else {
@@ -246,19 +361,20 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
 
     int32_t shift_r = 0;
     int32_t ledge_r = 0;
-    int32_t result_r = Lara_TestClimbUpPos(
+    M_CLIMB_RESULT result_r = M_TestClimbUpPos(
         item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT, &shift_r,
         &ledge_r);
 
     int32_t shift_l = 0;
     int32_t ledge_l = 0;
-    int32_t result_l = Lara_TestClimbUpPos(
+    M_CLIMB_RESULT result_l = M_TestClimbUpPos(
         item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT), &shift_l,
         &ledge_l);
 
     item->pos.y += STEP_L;
 
-    if (!result_r || !result_l || !g_Input.forward) {
+    if (result_r == CLIMB_RESULT_NONE || result_l == CLIMB_RESULT_NONE
+        || !g_Input.forward) {
         item->goal_anim_state = LS_CLIMB_STANCE;
         if (yshift) {
             Lara_Animate(item);
@@ -266,7 +382,7 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (result_r < 0 || result_l < 0) {
+    if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
         item->goal_anim_state = LS_CLIMB_STANCE;
         Lara_Animate(item);
         if (ABS(ledge_l - ledge_r) <= 120) {
