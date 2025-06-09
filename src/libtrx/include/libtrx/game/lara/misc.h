@@ -20,8 +20,9 @@ extern bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 extern void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
 extern bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);
 extern void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
-extern void Lara_HangTest(ITEM *item, COLL_INFO *coll);
 extern bool Lara_TestVault(ITEM *item, COLL_INFO *coll);
+extern int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
+extern int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
 int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
 bool Lara_TestWall(
     const ITEM *item, int32_t front, int32_t right, int32_t down);

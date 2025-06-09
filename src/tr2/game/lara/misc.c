@@ -17,12 +17,8 @@
 #include <libtrx/utils.h>
 
 #define MAX_BADDIE_COLLISION 20
-#define CLIMB_HANG 900
-#define CLIMB_SHIFT 70
 #define LF_FAST_FALL 1
-#define LF_STOP_HANG 9
 #define LF_START_HANG 12
-#define LF_HANG 21
 
 static int16_t m_LaraOldSlideAngle = 1;
 
@@ -289,136 +285,6 @@ int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll)
 
     item->pos.y += shift;
     return 1;
-}
-
-void Lara_HangTest(ITEM *item, COLL_INFO *coll)
-{
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = NO_BAD_NEG;
-    coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
-    bool flag = coll->side_front.floor < 200;
-
-    item->gravity = false;
-    item->fall_speed = 0;
-    g_Lara.move_angle = item->rot.y;
-
-    DIRECTION dir = Math_GetDirection(item->rot.y);
-    switch (dir) {
-    case DIR_NORTH:
-        item->pos.z += 2;
-        break;
-    case DIR_EAST:
-        item->pos.x += 2;
-        break;
-    case DIR_SOUTH:
-        item->pos.z -= 2;
-        break;
-    case DIR_WEST:
-        item->pos.x -= 2;
-        break;
-    default:
-        break;
-    }
-
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
-
-    if (g_Lara.climb_status) {
-        if (!g_Input.action || item->hit_points <= 0) {
-            XYZ_32 pos = {
-                .x = 0,
-                .y = 0,
-                .z = 0,
-            };
-            Collide_GetJointAbsPosition(item, &pos, 0);
-            if (dir == DIR_NORTH || dir == DIR_SOUTH) {
-                item->pos.x = pos.x;
-            } else {
-                item->pos.z = pos.z;
-            }
-
-            item->goal_anim_state = LS_JUMP_FORWARD;
-            item->current_anim_state = LS_JUMP_FORWARD;
-            Item_SwitchToAnim(item, LA_FALL_START, 0);
-            item->pos.y += STEP_L;
-            item->gravity = true;
-            item->speed = 2;
-            item->fall_speed = 1;
-            g_Lara.gun_status = LGS_ARMLESS;
-            return;
-        }
-
-        if (!Lara_TestHangOnClimbWall(item, coll)) {
-            item->pos.x = coll->old.x;
-            item->pos.y = coll->old.y;
-            item->pos.z = coll->old.z;
-            item->goal_anim_state = LS_HANG;
-            item->current_anim_state = LS_HANG;
-            Item_SwitchToAnim(item, LA_REACH_TO_HANG, LF_HANG);
-            return;
-        }
-
-        if (Item_TestAnimEqual(item, LA_REACH_TO_HANG)
-            && Item_TestFrameEqual(item, LF_HANG)
-            && Lara_TestClimbStance(item, coll)) {
-            item->goal_anim_state = LS_CLIMB_STANCE;
-        }
-        return;
-    }
-
-    if (!g_Input.action || item->hit_points <= 0
-        || coll->side_front.floor > 0) {
-        item->goal_anim_state = LS_JUMP_UP;
-        item->current_anim_state = LS_JUMP_UP;
-        Item_SwitchToAnim(item, LA_JUMP_UP, LF_STOP_HANG);
-        const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-        item->pos.y += bounds->max.y;
-        item->pos.x += coll->shift.x;
-        item->pos.z += coll->shift.z;
-        item->gravity = true;
-        item->speed = 2;
-        item->fall_speed = 1;
-        g_Lara.gun_status = LGS_ARMLESS;
-        return;
-    }
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    int32_t hdif = coll->side_front.floor - bounds->min.y;
-
-    if (ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF
-        || coll->side_mid.ceiling >= 0 || coll->coll_type != COLL_FRONT || flag
-        || coll->hit_static || hdif < -SLOPE_DIF || hdif > SLOPE_DIF) {
-        item->pos.x = coll->old.x;
-        item->pos.y = coll->old.y;
-        item->pos.z = coll->old.z;
-        if (item->current_anim_state == LS_SHIMMY_LEFT
-            || item->current_anim_state == LS_SHIMMY_RIGHT) {
-            item->goal_anim_state = LS_HANG;
-            item->current_anim_state = LS_HANG;
-            Item_SwitchToAnim(item, LA_REACH_TO_HANG, LF_HANG);
-        }
-        return;
-    }
-
-    switch (dir) {
-    case DIR_NORTH:
-    case DIR_SOUTH:
-        item->pos.z += coll->shift.z;
-        break;
-
-    case DIR_EAST:
-    case DIR_WEST:
-        item->pos.x += coll->shift.x;
-        break;
-
-    default:
-        break;
-    }
-
-    item->pos.y += hdif;
 }
 
 int32_t Lara_TestEdgeCatch(ITEM *item, COLL_INFO *coll, int32_t *edge)
