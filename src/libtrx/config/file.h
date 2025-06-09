@@ -4,6 +4,7 @@
 #include "enum_map.h"
 #include "game/gym.h"
 #include "json.h"
+#include "vector.h"
 
 #include <stdint.h>
 
@@ -11,6 +12,7 @@ typedef struct {
     const char *default_path;
     const char *enforced_path;
     void (*action)(JSON_OBJECT *root_obj);
+    VECTOR *enforced_targets;
 } CONFIG_IO_ARGS;
 
 bool ConfigFile_Read(const CONFIG_IO_ARGS *control);

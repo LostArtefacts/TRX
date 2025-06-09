@@ -5,13 +5,17 @@
 #include "config/vars.h"
 #include "debug.h"
 #include "game/shell.h"
+#include "vector.h"
 
 typedef enum {
     CFT_DEFAULT,
     CFT_ENFORCED,
 } CONFIG_FILE_TYPE;
 
-EVENT_MANAGER *m_EventManager = nullptr;
+// In-memory list of pointers to config options enforced by the game flow.
+static VECTOR *m_EnforcedOptions = nullptr;
+
+static EVENT_MANAGER *m_EventManager = nullptr;
 
 static const char *M_GetPath(CONFIG_FILE_TYPE file_type);
 
@@ -30,14 +34,25 @@ void Config_Shutdown(void)
 {
     EventManager_Free(m_EventManager);
     m_EventManager = nullptr;
+
+    if (m_EnforcedOptions != nullptr) {
+        Vector_Free(m_EnforcedOptions);
+        m_EnforcedOptions = nullptr;
+    }
 }
 
 bool Config_Read(void)
 {
+    if (m_EnforcedOptions == nullptr) {
+        m_EnforcedOptions = Vector_Create(sizeof(void *));
+    } else {
+        Vector_Clear(m_EnforcedOptions);
+    }
     const CONFIG_IO_ARGS args = {
         .default_path = M_GetPath(CFT_DEFAULT),
         .enforced_path = M_GetPath(CFT_ENFORCED),
         .action = &Config_LoadFromJSON,
+        .enforced_targets = m_EnforcedOptions,
     };
     const bool result = ConfigFile_Read(&args);
     if (result) {
@@ -82,4 +97,10 @@ void Config_UnsubscribeChanges(const int32_t listener_id)
 {
     ASSERT(m_EventManager != nullptr);
     EventManager_Unsubscribe(m_EventManager, listener_id);
+}
+
+bool Config_IsOptionEnforced(const void *const target)
+{
+    return m_EnforcedOptions != nullptr
+        && Vector_Contains(m_EnforcedOptions, &target);
 }
