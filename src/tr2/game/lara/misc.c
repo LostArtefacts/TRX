@@ -79,48 +79,6 @@ int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll)
     }
 }
 
-int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll)
-{
-    int32_t shift_r;
-    int32_t result_r = Lara_TestClimbPos(
-        item, coll->radius, coll->radius + LARA_CLIMB_WIDTH_RIGHT, -700,
-        STEP_L * 2, &shift_r);
-    if (result_r != 1) {
-        return 0;
-    }
-
-    int32_t shift_l;
-    int32_t result_l = Lara_TestClimbPos(
-        item, coll->radius, -(coll->radius + LARA_CLIMB_WIDTH_LEFT), -700,
-        STEP_L * 2, &shift_l);
-    if (result_l != 1) {
-        return 0;
-    }
-
-    int32_t shift = 0;
-    if (shift_r) {
-        if (shift_l) {
-            if ((shift_r < 0) != (shift_l < 0)) {
-                return 0;
-            }
-            if (shift_r < 0 && shift_l < shift_r) {
-                shift = shift_l;
-            } else if (shift_r > 0 && shift_l > shift_r) {
-                shift = shift_l;
-            } else {
-                shift = shift_r;
-            }
-        } else {
-            shift = shift_r;
-        }
-    } else if (shift_l) {
-        shift = shift_l;
-    }
-
-    item->pos.y += shift;
-    return 1;
-}
-
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
 {
     ANIM_FRAME *frmptr[2] = { nullptr, nullptr };
