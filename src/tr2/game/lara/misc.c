@@ -32,53 +32,6 @@ static void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
     CLAMPG(g_Lara.hit_frame, 34);
 }
 
-int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll)
-{
-    if (!g_Lara.climb_status || item->fall_speed < 0) {
-        return 0;
-    }
-
-    DIRECTION dir = Math_GetDirection(item->rot.y);
-    switch (dir) {
-    case DIR_NORTH:
-    case DIR_SOUTH:
-        item->pos.z += coll->shift.z;
-        break;
-
-    case DIR_EAST:
-    case DIR_WEST:
-        item->pos.x += coll->shift.x;
-        break;
-
-    default:
-        break;
-    }
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    int32_t y = bounds->min.y;
-    int32_t h = bounds->max.y - y;
-
-    int32_t shift;
-    if (!Lara_TestClimbPos(item, coll->radius, coll->radius, y, h, &shift)) {
-        return 0;
-    }
-
-    if (!Lara_TestClimbPos(item, coll->radius, -coll->radius, y, h, &shift)) {
-        return 0;
-    }
-
-    int32_t result = Lara_TestClimbPos(item, coll->radius, 0, y, h, &shift);
-    switch (result) {
-    case 0:
-    case 1:
-        return result;
-
-    default:
-        item->pos.y += shift;
-        return 1;
-    }
-}
-
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
 {
     ANIM_FRAME *frmptr[2] = { nullptr, nullptr };

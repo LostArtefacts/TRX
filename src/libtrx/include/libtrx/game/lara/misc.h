@@ -11,12 +11,7 @@ extern void Lara_CatchFire(void);
 
 void Lara_UpdateRoomToHeight(int32_t height);
 void Lara_ShiftCol(COLL_INFO *coll);
-extern int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
 int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
-
-int32_t Lara_TestClimbPos(
-    const ITEM *item, int32_t front, int32_t right, int32_t origin,
-    int32_t height, int32_t *shift);
 
 // Returns true if Lara has the M16 equipped and is in either anim state: 0
 // (start aim); 2 (firing); or 4 (stopping firing).
