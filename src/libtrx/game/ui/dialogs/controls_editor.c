@@ -24,9 +24,6 @@
 #include "game/viewport.h"
 #include "utils.h"
 
-#define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
-#define M_HOLD_TIMER_MAX LOGIC_FPS
-
 typedef enum {
     M_PHASE_NAVIGATE_LAYOUT,
     M_PHASE_NAVIGATE_GROUP,
@@ -36,8 +33,6 @@ typedef enum {
     M_PHASE_LISTEN_DEBOUNCE,
     M_PHASE_EXIT,
 } M_PHASE;
-
-typedef void (*M_HOLD_ACTION_FUNC)(const UI_CONTROLS_EDITOR_STATE *);
 
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
@@ -143,11 +138,8 @@ static int32_t M_GetVisibleRows(void);
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *group, int32_t row);
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *group);
-static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
-static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
-static bool M_HandleHoldAction(
-    UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role,
-    M_HOLD_ACTION_FUNC action_func);
+static void M_ResetLayout(void *s);
+static void M_UnbindKey(void *s);
 static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
 static bool M_CanUnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *s);
@@ -162,8 +154,6 @@ static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_InputChoice(UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
 static void M_InputLabel(const UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
-static void M_FooterButton(
-    UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role, const char *role_label);
 static void M_Group(
     UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_GROUP *group);
 static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
@@ -212,8 +202,9 @@ static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
     return row;
 }
 
-static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
+static void M_ResetLayout(void *const arg)
 {
+    const UI_CONTROLS_EDITOR_STATE *const s = arg;
 #if TR_VERSION == 1
     Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_NORMAL);
 #else
@@ -223,8 +214,9 @@ static void M_ResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
     Config_Write();
 }
 
-static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *const s)
+static void M_UnbindKey(void *const arg)
 {
+    const UI_CONTROLS_EDITOR_STATE *const s = arg;
 #if TR_VERSION == 1
     Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_NORMAL);
 #else
@@ -232,24 +224,6 @@ static void M_UnbindKey(const UI_CONTROLS_EDITOR_STATE *const s)
 #endif
     Input_UnassignRole(s->backend, s->active_layout, s->active_role);
     Config_Write();
-}
-
-static bool M_HandleHoldAction(
-    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role,
-    const M_HOLD_ACTION_FUNC action_func)
-{
-    if (!Input_IsPressed(s->backend, s->active_layout, role)) {
-        return false;
-    }
-    if (s->hold_timer != -1) {
-        s->hold_timer++;
-        s->hold_role = role;
-        if (s->hold_timer - M_HOLD_TIMER_DEBUFF > M_HOLD_TIMER_MAX) {
-            action_func(s);
-            s->hold_timer = -1; // Debounce the key
-        }
-    }
-    return true;
 }
 
 static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
@@ -271,15 +245,11 @@ static bool M_CanUnbindKey(const UI_CONTROLS_EDITOR_STATE *const s)
 
 static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *const s)
 {
-    bool held = false;
     if (M_CanResetLayout(s)) {
-        held |= M_HandleHoldAction(s, INPUT_ROLE_RESET_BINDINGS, M_ResetLayout);
+        UI_ProgressButton_Control(s->reset_bindings_button);
     }
     if (M_CanUnbindKey(s)) {
-        held |= M_HandleHoldAction(s, INPUT_ROLE_UNBIND_KEY, M_UnbindKey);
-    }
-    if (!held) {
-        s->hold_timer = 0;
+        UI_ProgressButton_Control(s->unbind_key_button);
     }
 }
 
@@ -453,32 +423,6 @@ static void M_InputChoice(
     }
 }
 
-static void M_FooterButton(
-    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role,
-    const char *const role_label)
-{
-    const char *const value_label = String_FormatStatic(
-        GS(MISC_HOLD_FMT),
-        Input_GetKeyName(s->backend, s->active_layout, role));
-
-    const float pad[2] = { 6.0f, 3.0f };
-
-    UI_BeginSpan();
-    UI_BeginPad(pad[0], pad[1]);
-    UI_LabelFmt("%s: %s", role_label, value_label);
-    UI_EndPad();
-    if (s->hold_role == role && s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
-        UI_Bar((UI_BAR_SETTINGS) {
-            .color = TR_VERSION == 2 ? BC_GREEN : BC_GOLD,
-            .value = s->hold_timer - M_HOLD_TIMER_DEBUFF,
-            .max_value = M_HOLD_TIMER_MAX,
-            .w = 0.0, // Span will make it expand anyway!
-            .h = 0.0,
-        });
-    }
-    UI_EndSpan();
-}
-
 static void M_Group(
     UI_CONTROLS_EDITOR_STATE *const s,
     const UI_CONTROLS_EDITOR_GROUP *const group)
@@ -516,11 +460,11 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
         .spacing = { .h = 40.0f },
     });
     UI_BeginHide(!M_CanResetLayout(s));
-    M_FooterButton(s, INPUT_ROLE_RESET_BINDINGS, GS(ACTION_RESET_DEFAULTS));
+    UI_ProgressButton(s->reset_bindings_button);
     UI_EndHide();
 
     UI_BeginHide(!M_CanUnbindKey(s));
-    M_FooterButton(s, INPUT_ROLE_UNBIND_KEY, GS(ACTION_UNBIND));
+    UI_ProgressButton(s->unbind_key_button);
     UI_EndHide();
     UI_EndStack();
 }
@@ -529,8 +473,14 @@ void UI_ControlsEditor_Init(
     UI_CONTROLS_EDITOR_STATE *const s, EVENT_MANAGER *events)
 {
     s->events = events;
-    s->hold_timer = 0;
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
+
+    s->reset_bindings_button = UI_ProgressButton_Init(
+        s->backend, INPUT_ROLE_RESET_BINDINGS, GS_ID(ACTION_RESET_DEFAULTS),
+        M_ResetLayout, s);
+    s->unbind_key_button = UI_ProgressButton_Init(
+        s->backend, INPUT_ROLE_UNBIND_KEY, GS_ID(ACTION_UNBIND), M_UnbindKey,
+        s);
 
     {
         UI_TAB_SWITCH_TAB layout_tabs[INPUT_LAYOUT_NUMBER_OF];
@@ -582,6 +532,10 @@ void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *const s)
     s->layout_tab_switch = nullptr;
     UI_TabSwitch_Free(s->controls_tab_switch);
     s->controls_tab_switch = nullptr;
+    UI_ProgressButton_Free(s->reset_bindings_button);
+    s->reset_bindings_button = nullptr;
+    UI_ProgressButton_Free(s->unbind_key_button);
+    s->unbind_key_button = nullptr;
 }
 
 void UI_ControlsEditor_Reinit(

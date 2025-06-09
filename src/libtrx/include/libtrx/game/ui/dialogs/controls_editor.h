@@ -7,6 +7,7 @@
 #include "../../input.h"
 #include "../common.h"
 #include "../elements/flash.h"
+#include "../elements/progress_button.h"
 #include "../elements/requester.h"
 #include "../elements/tab_switch.h"
 #include "../scrollable.h"
@@ -25,9 +26,6 @@ typedef struct {
     UI_FLASH_STATE flash;
     EVENT_MANAGER *events;
 
-    INPUT_ROLE hold_role;
-    int32_t hold_timer;
-
     UI_SCROLLABLE scroll;
 
     int32_t max_group_items;
@@ -35,6 +33,8 @@ typedef struct {
     int32_t label_size;
     UI_TAB_SWITCH_STATE *layout_tab_switch;
     UI_TAB_SWITCH_STATE *controls_tab_switch;
+    UI_PROGRESS_BUTTON_STATE *reset_bindings_button;
+    UI_PROGRESS_BUTTON_STATE *unbind_key_button;
 } UI_CONTROLS_EDITOR_STATE;
 
 typedef enum {
