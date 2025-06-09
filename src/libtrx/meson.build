@@ -263,6 +263,7 @@ sources = [
   'game/ui/elements/modal.c',
   'game/ui/elements/offset.c',
   'game/ui/elements/pad.c',
+  'game/ui/elements/progress_button.c',
   'game/ui/elements/prompt.c',
   'game/ui/elements/requester.c',
   'game/ui/elements/resize.c',
