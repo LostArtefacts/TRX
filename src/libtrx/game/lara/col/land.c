@@ -512,7 +512,38 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     if (item->current_anim_state == LS_SLIDE_BACK) {
         lara->move_angle += DEG_180;
     }
-    Lara_SlideSlope(item, coll);
+
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEP_L * 2;
+    coll->bad_ceiling = 0;
+    Lara_GetCollisionInfo(item, coll);
+
+    if (Lara_HitCeiling(item, coll)) {
+        return;
+    }
+
+    Lara_DeflectEdge(item, coll);
+
+    if (coll->side_mid.floor > 200) {
+        if (item->current_anim_state == LS_SLIDE) {
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            item->current_anim_state = LS_JUMP_FORWARD;
+            Item_SwitchToAnim(item, LA_FALL_START, 0);
+        } else {
+            item->goal_anim_state = LS_FALL_BACK;
+            item->current_anim_state = LS_FALL_BACK;
+            Item_SwitchToAnim(item, LA_FALL_BACK, 0);
+        }
+        item->gravity = true;
+        item->fall_speed = 0;
+        return;
+    }
+
+    Lara_TestSlide(item, coll);
+    item->pos.y += coll->side_mid.floor;
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
+        item->goal_anim_state = LS_STOP;
+    }
 }
 
 static void M_Roll(ITEM *const item, COLL_INFO *const coll)
