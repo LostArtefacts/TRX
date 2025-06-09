@@ -86,7 +86,7 @@ void UI_PhotoMode(void)
     UI_Label(GS(PHOTO_MODE_ROTATE90_PROMPT));
     UI_Label(GS(PHOTO_MODE_FOV_PROMPT));
     UI_Label(GS(PHOTO_MODE_RESET_PROMPT));
-    UI_Label(GS(MISC_TOGGLE_HELP));
+    UI_Label(GS(PHOTO_MODE_TOGGLE_HELP));
     UI_Label(GS(PHOTO_MODE_SNAP_PROMPT));
     UI_Label(GS(MISC_EXIT));
     UI_EndStack();

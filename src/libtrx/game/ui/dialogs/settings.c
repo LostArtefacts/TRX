@@ -435,9 +435,15 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
         if (g_InputDB.look && M_CanExamine(s)) {
             const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
-            const char *const title = GameString_Get(option->label_id);
-            const char *const text = GameString_Get(option->description_id);
+            const char *title = GameString_Get(option->label_id);
+            const char *text = GameString_Get(option->description_id);
             if (title != nullptr && text != nullptr) {
+                if (Config_IsOptionEnforced(option->target)) {
+                    title = String_FormatStatic("%s*", title);
+                    text = String_FormatStatic(
+                        "* %s\n\n%s",
+                        GS(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER), text);
+                }
                 UI_TextDialog_Init(
                     &s->description.state, title, text,
                     MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
@@ -581,7 +587,15 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         });
         UI_BeginResize(s->max_label_w, -1.0f);
-        UI_Label(GameString_Get(s->options[row].label_id));
+        {
+            const UI_SETTINGS_OPTION *const option = &s->options[row];
+            const char *const name = GameString_Get(option->label_id);
+            if (Config_IsOptionEnforced(option->target)) {
+                UI_LabelFmt("%s*", name);
+            } else {
+                UI_Label(name);
+            }
+        }
         UI_EndResize();
         UI_Spacer(20.0f, 0.0f);
 
@@ -620,7 +634,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         Input_GetKeyName(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_LOOK),
-        GS(MISC_TOGGLE_HELP));
+        GS(COMMON_SETTINGS_TOGGLE_HELP));
     UI_EndHide();
     UI_EndStack();
 
