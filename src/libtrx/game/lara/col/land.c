@@ -40,6 +40,7 @@ static bool M_TestWall(
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_TestSlide(ITEM *item, COLL_INFO *coll);
 static bool M_DeflectEdge(ITEM *item, COLL_INFO *coll);
+static bool M_TestCeiling(ITEM *item, const COLL_INFO *coll);
 static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
@@ -219,6 +220,22 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static bool M_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
+{
+    if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {
+        return false;
+    }
+
+    item->pos = coll->old;
+    item->goal_anim_state = LS_STOP;
+    item->current_anim_state = LS_STOP;
+    Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+    item->speed = 0;
+    item->gravity = false;
+    item->fall_speed = 0;
+    return true;
+}
+
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
 #if TR_VERSION == 1
@@ -274,7 +291,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     coll->lava_is_pit = 1;
     M_Default(item, coll);
 
-    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
+    if (M_TestCeiling(item, coll) || Lara_TestVault(item, coll)) {
         return;
     }
 
@@ -344,7 +361,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll)) {
+    if (M_TestCeiling(item, coll)) {
         return;
     }
 
@@ -393,7 +410,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll)) {
+    if (M_TestCeiling(item, coll)) {
         return;
     }
 
@@ -425,7 +442,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
 
-    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
+    if (M_TestCeiling(item, coll) || Lara_TestVault(item, coll)) {
         return;
     }
 
@@ -483,7 +500,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     M_Default(item, coll);
 
-    if (Lara_HitCeiling(item, coll)
+    if (M_TestCeiling(item, coll)
         || (M_FixDescendingGlitch() && M_Fallen(item, coll))
         || M_TestSlide(item, coll)) {
         return;
@@ -515,7 +532,7 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll)) {
+    if (M_TestCeiling(item, coll)) {
         return;
     }
 
@@ -596,7 +613,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
 
-    if (Lara_HitCeiling(item, coll)) {
+    if (M_TestCeiling(item, coll)) {
         return;
     }
 
@@ -636,7 +653,7 @@ static void M_Roll(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || M_TestSlide(item, coll)) {
+    if (M_TestCeiling(item, coll) || M_TestSlide(item, coll)) {
         return;
     }
 
@@ -672,7 +689,7 @@ static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || M_TestSlide(item, coll)) {
+    if (M_TestCeiling(item, coll) || M_TestSlide(item, coll)) {
         return;
     }
 
@@ -698,7 +715,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (Lara_HitCeiling(item, coll) || Lara_TestVault(item, coll)) {
+    if (M_TestCeiling(item, coll) || Lara_TestVault(item, coll)) {
         return;
     }
 
