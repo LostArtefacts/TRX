@@ -11,18 +11,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Number of static buffers in a rotating ring for String_FormatStatic, etc.
+#define M_MAX_STATIC_BUFFERS 8
+
+typedef struct {
+    char *buf;
+    size_t capacity;
+} M_STATIC_BUFFER;
+
+static M_STATIC_BUFFER m_StaticBufferRing[M_MAX_STATIC_BUFFERS] = {};
+static int m_StaticBufNext = 0;
 static bool m_ExitRegistered = false;
-static char *m_StaticBuf = nullptr;
-static size_t m_StaticBufCap = 0;
 
 static void M_Shutdown(void);
 static void M_EnsureShutdown(void);
+static M_STATIC_BUFFER *M_CycleStaticBuffer(void);
 static void M_AddPage(
     const char *text, int32_t start_pos, int32_t length, VECTOR *pages);
 
 static void M_Shutdown(void)
 {
-    Memory_Free(m_StaticBuf);
+    for (int32_t i = 0; i < M_MAX_STATIC_BUFFERS; i++) {
+        Memory_Free(m_StaticBufferRing[i].buf);
+    }
 }
 
 static void M_EnsureShutdown(void)
@@ -31,6 +42,13 @@ static void M_EnsureShutdown(void)
         atexit(M_Shutdown);
         m_ExitRegistered = true;
     }
+}
+
+static M_STATIC_BUFFER *M_CycleStaticBuffer(void)
+{
+    const int32_t idx = m_StaticBufNext;
+    m_StaticBufNext = (m_StaticBufNext + 1) % M_MAX_STATIC_BUFFERS;
+    return &m_StaticBufferRing[idx];
 }
 
 static void M_AddPage(
@@ -319,15 +337,17 @@ const char *String_FormatStatic(const char *const fmt, ...)
 const char *String_FormatStaticV(const char *const fmt, va_list args)
 {
     M_EnsureShutdown();
-    String_FormatIntoV(&m_StaticBuf, &m_StaticBufCap, fmt, args);
-    return m_StaticBuf;
+    M_STATIC_BUFFER *const buffer = M_CycleStaticBuffer();
+    String_FormatIntoV(&buffer->buf, &buffer->capacity, fmt, args);
+    return buffer->buf;
 }
 
 const char *String_StylizeSmallDigitsStatic(const char *const text)
 {
     M_EnsureShutdown();
-    String_StylizeSmallDigitsInto(&m_StaticBuf, &m_StaticBufCap, text);
-    return m_StaticBuf;
+    M_STATIC_BUFFER *const buffer = M_CycleStaticBuffer();
+    String_StylizeSmallDigitsInto(&buffer->buf, &buffer->capacity, text);
+    return buffer->buf;
 }
 
 void String_StylizeSmallDigitsInto(
