@@ -199,7 +199,7 @@ static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
 
 static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
 {
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
 
     switch (coll->coll_type) {
     case COLL_LEFT:
@@ -229,7 +229,7 @@ static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
 {
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
     switch (coll->coll_type) {
     case COLL_FRONT:
     case COLL_TOP_FRONT:
@@ -322,7 +322,7 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = NO_BAD_NEG;
     coll->bad_ceiling = 0;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
 
     if (coll->side_mid.ceiling > -100) {
         Item_SwitchToAnim(item, LA_STAND_STILL, 0);
@@ -410,7 +410,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
     if (backward_momentum) {
         lara->move_angle = item->rot.y;
@@ -461,7 +461,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
     if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
         return;
@@ -485,7 +485,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
 
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
@@ -512,7 +512,7 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = 0;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     if (M_TestHangJump(item, coll)) {
         return;
     }
@@ -540,7 +540,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
@@ -560,7 +560,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
 
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
@@ -584,7 +584,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     M_SlideEdgeJump(item, coll);
     if (coll->side_mid.floor > 0) {
         return;

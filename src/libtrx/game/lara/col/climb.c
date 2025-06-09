@@ -53,7 +53,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = NO_BAD_NEG;
     coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
     const bool flag = coll->side_front.floor < 200;
 
     item->gravity = false;
@@ -82,7 +82,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
-    Lara_GetCollisionInfo(item, coll);
+    Lara_Col_GetInfo(item, coll);
 
 #if TR_VERSION == 1
     const bool enable_swing_cancel = g_Config.gameplay.enable_swing_cancel;
@@ -920,7 +920,7 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
         && (front_floor < -STEP_L * 4 || front_ceiling >= LARA_HEIGHT - STEP_L)
         && coll->side_mid.ceiling <= -STEP_L * 5 + LARA_HEIGHT) {
 #if TR_VERSION >= 2
-        Lara_ShiftCol(coll);
+        Lara_Col_Shift(coll);
         if (M_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS_CLIMB_STANCE;
             item->current_anim_state = LS_STOP;
@@ -937,7 +937,7 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     }
 
     item->rot.y = angle;
-    Lara_ShiftCol(coll);
+    Lara_Col_Shift(coll);
     return true;
 }
 

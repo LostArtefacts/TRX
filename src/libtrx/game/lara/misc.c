@@ -1,10 +1,7 @@
 #include "game/lara/misc.h"
 
 #include "game/effects.h"
-#include "game/input.h"
-#include "game/items.h"
-#include "game/lara/common.h"
-#include "game/lara/const.h"
+#include "game/lara.h"
 #include "game/random.h"
 #include "game/rooms.h"
 
@@ -59,15 +56,6 @@ int16_t Lara_FloorFront(
     return height;
 }
 
-void Lara_GetCollisionInfo(const ITEM *const item, COLL_INFO *const coll)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    coll->facing = lara->move_angle;
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT);
-}
-
 void Lara_UpdateRoomToHeight(const int32_t height)
 {
     ITEM *const lara_item = Lara_GetItem();
@@ -81,17 +69,6 @@ void Lara_UpdateRoomToHeight(const int32_t height)
 
     const int16_t item_num = Item_GetIndex(lara_item);
     Item_UpdateRoom(item_num, room_num);
-}
-
-void Lara_ShiftCol(COLL_INFO *const coll)
-{
-    ITEM *const lara_item = Lara_GetItem();
-    lara_item->pos.x += coll->shift.x;
-    lara_item->pos.y += coll->shift.y;
-    lara_item->pos.z += coll->shift.z;
-    coll->shift.z = 0;
-    coll->shift.y = 0;
-    coll->shift.x = 0;
 }
 
 int32_t Lara_GetWaterDepth(
