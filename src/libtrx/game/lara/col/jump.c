@@ -7,6 +7,16 @@
 
 #define M_LF_START_HANG 12
 
+typedef enum {
+    // clang-format off
+    EDGE_CATCH_NEG  = -1,
+    EDGE_CATCH_NONE = 0,
+    EDGE_CATCH_POS  = 1,
+    // clang-format on
+} M_EDGE_CATCH;
+
+static M_EDGE_CATCH M_TestEdgeCatch(
+    const ITEM *item, const COLL_INFO *coll, int32_t *edge);
 static bool M_TestHangJump(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangSwingIn(const ITEM *item, int16_t angle);
@@ -21,6 +31,31 @@ static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
 
+static M_EDGE_CATCH M_TestEdgeCatch(
+    const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
+{
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    int32_t hdif1 = coll->side_front.floor - bounds->min.y;
+    int32_t hdif2 = hdif1 + item->fall_speed;
+    if ((hdif1 < 0 && hdif2 < 0) || (hdif1 > 0 && hdif2 > 0)) {
+        hdif1 = item->pos.y + bounds->min.y;
+        hdif2 = hdif1 + item->fall_speed;
+        if ((hdif1 >> (WALL_SHIFT - 2)) == (hdif2 >> (WALL_SHIFT - 2))) {
+            return EDGE_CATCH_NONE;
+        }
+        if (item->fall_speed > 0) {
+            *edge = hdif2 & ~(STEP_L - 1);
+        } else {
+            *edge = hdif1 & ~(STEP_L - 1);
+        }
+        return EDGE_CATCH_NEG;
+    }
+
+    return ABS(coll->side_left.floor - coll->side_right.floor) < SLOPE_DIF
+        ? EDGE_CATCH_POS
+        : EDGE_CATCH_NONE;
+}
+
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -32,14 +67,15 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
 
     int32_t edge;
-    const int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
+    const M_EDGE_CATCH edge_catch = M_TestEdgeCatch(item, coll, &edge);
 #if TR_VERSION == 1
-    if (edge_catch <= 0) {
+    if (edge_catch != EDGE_CATCH_POS) {
         return false;
     }
 #else
-    if (edge_catch == 0
-        || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
+    if (edge_catch == EDGE_CATCH_NONE
+        || (edge_catch == EDGE_CATCH_NEG
+            && !Lara_TestHangOnClimbWall(item, coll))) {
         return false;
     }
 #endif
@@ -66,7 +102,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 #if TR_VERSION >= 2
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 #endif
-    if (edge_catch > 0) {
+    if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
@@ -92,14 +128,15 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     }
 
     int32_t edge;
-    const int32_t edge_catch = Lara_TestEdgeCatch(item, coll, &edge);
+    const M_EDGE_CATCH edge_catch = M_TestEdgeCatch(item, coll, &edge);
 #if TR_VERSION == 1
-    if (edge_catch <= 0) {
+    if (edge_catch != EDGE_CATCH_POS) {
         return false;
     }
 #else
-    if (edge_catch == 0
-        || (edge_catch < 0 && !Lara_TestHangOnClimbWall(item, coll))) {
+    if (edge_catch == EDGE_CATCH_NONE
+        || (edge_catch == EDGE_CATCH_NEG
+            && !Lara_TestHangOnClimbWall(item, coll))) {
         return false;
     }
 #endif
@@ -115,7 +152,7 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     Item_SwitchToAnim(item, LA_REACH_TO_HANG, M_LF_START_HANG);
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    if (edge_catch > 0) {
+    if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
     } else {
         item->pos.y = edge - bounds->min.y;
