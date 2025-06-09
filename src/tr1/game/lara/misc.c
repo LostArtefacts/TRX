@@ -10,24 +10,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
-{
-    if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {
-        return false;
-    }
-
-    item->pos.x = coll->old.x;
-    item->pos.y = coll->old.y;
-    item->pos.z = coll->old.z;
-    item->goal_anim_state = LS_STOP;
-    item->current_anim_state = LS_STOP;
-    Item_SwitchToAnim(item, LA_STAND_STILL, 0);
-    item->gravity = false;
-    item->fall_speed = 0;
-    item->speed = 0;
-    return true;
-}
-
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
