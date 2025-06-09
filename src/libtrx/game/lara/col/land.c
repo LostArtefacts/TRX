@@ -291,7 +291,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     coll->lava_is_pit = 1;
     M_Default(item, coll);
 
-    if (M_TestCeiling(item, coll) || Lara_TestVault(item, coll)) {
+    if (M_TestCeiling(item, coll) || Lara_Col_TestVault(item, coll)) {
         return;
     }
 
@@ -442,7 +442,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
 
-    if (M_TestCeiling(item, coll) || Lara_TestVault(item, coll)) {
+    if (M_TestCeiling(item, coll) || Lara_Col_TestVault(item, coll)) {
         return;
     }
 
@@ -715,7 +715,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
 
     Lara_GetCollisionInfo(item, coll);
-    if (M_TestCeiling(item, coll) || Lara_TestVault(item, coll)) {
+    if (M_TestCeiling(item, coll) || Lara_Col_TestVault(item, coll)) {
         return;
     }
 
