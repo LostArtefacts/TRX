@@ -4,8 +4,6 @@
 
 #include <libtrx/game/lara/misc.h>
 
-int32_t Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);
-int32_t Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);
 int32_t Lara_TestEdgeCatch(ITEM *item, COLL_INFO *coll, int32_t *edge);
 int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle);
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint);
