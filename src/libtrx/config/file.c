@@ -1,12 +1,14 @@
 #include "config/file.h"
 
 #include "colors.h"
+#include "config/common.h"
 #include "debug.h"
 #include "filesystem.h"
 #include "game/console/history.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
+#include "vector.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -16,7 +18,7 @@
 
 static bool M_ReadFromJSON(
     const char *def_json, const char *enf_json,
-    void (*load)(JSON_OBJECT *root_obj));
+    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets);
 static void M_PreserveEnforcedState(
     JSON_OBJECT *root_obj, JSON_VALUE *old_root, JSON_VALUE *enf_root);
 static char *M_WriteToJSON(
@@ -45,8 +47,8 @@ static JSON_VALUE *M_ReadRoot(const char *const cfg_data)
 }
 
 static bool M_ReadFromJSON(
-    const char *cfg_data, const char *enf_data,
-    void (*load)(JSON_OBJECT *root_obj))
+    const char *const cfg_data, const char *const enf_data,
+    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets)
 {
     bool result = false;
 
@@ -61,8 +63,24 @@ static bool M_ReadFromJSON(
     JSON_OBJECT *cfg_root_obj = JSON_ValueAsObject(cfg_root);
     JSON_OBJECT *enf_root_obj = JSON_ValueAsObject(enf_root);
 
-    JSON_OBJECT *enforced_config =
+    JSON_OBJECT *const enforced_config =
         JSON_ObjectGetObject(enf_root_obj, ENFORCED_KEY);
+    if (enforced_config != nullptr && enforced_targets != nullptr) {
+        Vector_Clear(enforced_targets);
+        const JSON_OBJECT_ELEMENT *elem = enforced_config->start;
+        while (elem != nullptr) {
+            const char *const name = elem->name->string;
+            const CONFIG_OPTION *opt = Config_GetOptionMap();
+            while (opt->target != nullptr) {
+                if (strcmp(M_ResolveOptionName(opt->name), name) == 0) {
+                    Vector_Add(enforced_targets, &opt->target);
+                    break;
+                }
+                opt++;
+            }
+            elem = elem->next;
+        }
+    }
     if (enforced_config != nullptr) {
         JSON_ObjectMerge(cfg_root_obj, enforced_config);
     }
@@ -159,7 +177,8 @@ bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
         File_Load(args->enforced_path, &enforced_data, nullptr);
     }
 
-    bool result = M_ReadFromJSON(default_data, enforced_data, args->action);
+    bool result = M_ReadFromJSON(
+        default_data, enforced_data, args->action, args->enforced_targets);
 
     Memory_FreePointer(&default_data);
     Memory_FreePointer(&enforced_data);
@@ -204,7 +223,7 @@ bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
 void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
 {
     const CONFIG_OPTION *opt = options;
-    while (opt->target) {
+    while (opt->target != nullptr) {
         switch (opt->type) {
         case COT_BOOL:
             *(bool *)opt->target = JSON_ObjectGetBool(
@@ -286,7 +305,7 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
 void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
 {
     const CONFIG_OPTION *opt = options;
-    while (opt->target) {
+    while (opt->target != nullptr) {
         switch (opt->type) {
         case COT_BOOL:
             JSON_ObjectAppendBool(

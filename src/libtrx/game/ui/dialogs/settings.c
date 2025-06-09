@@ -194,6 +194,9 @@ static bool M_CanChangeValue(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx, const int32_t dir)
 {
     const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    if (Config_IsOptionEnforced(option->target)) {
+        return false;
+    }
     if (option->custom_handler.can_change_value != nullptr) {
         return option->custom_handler.can_change_value(option, dir);
     }
