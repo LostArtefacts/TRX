@@ -20,6 +20,7 @@ static M_EDGE_CATCH M_TestEdgeCatch(
 static bool M_TestHangJump(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangSwingIn(const ITEM *item, int16_t angle);
+static void M_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
 
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
@@ -194,6 +195,36 @@ static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
     return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
 }
 
+static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
+{
+    Lara_ShiftCol(coll);
+
+    switch (coll->coll_type) {
+    case COLL_LEFT:
+        item->rot.y += LARA_DEFLECT_ANGLE;
+        break;
+
+    case COLL_RIGHT:
+        item->rot.y -= LARA_DEFLECT_ANGLE;
+        break;
+
+    case COLL_TOP:
+    case COLL_TOP_FRONT:
+        CLAMPL(item->fall_speed, 1);
+        break;
+
+    case COLL_CLAMP:
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->speed = 0;
+        coll->side_mid.floor = 0;
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 16;
+        }
+        break;
+    }
+}
+
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
@@ -243,7 +274,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    Lara_SlideEdgeJump(item, coll);
+    M_SlideEdgeJump(item, coll);
     if (enable_lean_jumping) {
         if (coll->coll_type != COLL_NONE) {
             item->speed = item->speed > 0 ? 2 : -2;
@@ -399,7 +430,7 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    Lara_SlideEdgeJump(item, coll);
+    M_SlideEdgeJump(item, coll);
     if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
         return;
     }
@@ -467,7 +498,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
 
     Lara_GetCollisionInfo(item, coll);
-    Lara_SlideEdgeJump(item, coll);
+    M_SlideEdgeJump(item, coll);
     if (coll->side_mid.floor > 0) {
         return;
     }

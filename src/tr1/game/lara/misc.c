@@ -128,37 +128,6 @@ void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
-{
-    Lara_ShiftCol(coll);
-    switch (coll->coll_type) {
-    case COLL_LEFT:
-        item->rot.y += LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_RIGHT:
-        item->rot.y -= LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_TOP:
-    case COLL_TOP_FRONT:
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 1;
-        }
-        break;
-
-    case COLL_CLAMP:
-        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
-        item->speed = 0;
-        coll->side_mid.floor = 0;
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 16;
-        }
-        break;
-    }
-}
-
 bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
