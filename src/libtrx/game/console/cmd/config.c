@@ -99,6 +99,9 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
     case COT_FLOAT:
         return Memory_DupStr(GS(OSD_COMMAND_DECIMAL));
 
+    case COT_FLOAT_PERCENT:
+        return Memory_DupStr(GS(OSD_COMMAND_PERCENT));
+
     case COT_ENUM: {
         const char *enum_name = (const char *)option->param;
         VECTOR *const values = EnumMap_ListValues(enum_name);
@@ -208,6 +211,11 @@ bool Console_Cmd_Config_GetCurrentValue(
         break;
     case COT_FLOAT:
         snprintf(target, target_size, "%.2f", *(float *)option->target);
+        break;
+    case COT_FLOAT_PERCENT:
+        snprintf(
+            target, target_size, "%.00f%%",
+            (*(float *)option->target) * 100.0f);
         break;
     case COT_DOUBLE:
         snprintf(target, target_size, "%.2f", *(double *)option->target);

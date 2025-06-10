@@ -729,6 +729,7 @@
         "OSD_COMMAND_BOOL": "on, off",
         "OSD_COMMAND_DECIMAL": "[decimal]",
         "OSD_COMMAND_INTEGER": "[integer]",
+        "OSD_COMMAND_PERCENT": "[integer]",
         "OSD_COMMAND_UNAVAILABLE": "This command is not currently available",
         "OSD_COMMAND_VALID_VALUES": "Valid values: %s",
         "OSD_COMPLETE_LEVEL": "Level complete!",

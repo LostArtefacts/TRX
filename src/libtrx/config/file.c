@@ -256,6 +256,7 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
         }
 
         case COT_FLOAT:
+        case COT_FLOAT_PERCENT:
             *(float *)opt->target = JSON_ObjectGetDouble(
                 root_obj, M_ResolveOptionName(opt->name),
                 *(float *)opt->default_value);
@@ -325,6 +326,7 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             break;
 
         case COT_FLOAT:
+        case COT_FLOAT_PERCENT:
             JSON_ObjectAppendDouble(
                 root_obj, M_ResolveOptionName(opt->name),
                 *(float *)opt->target);
