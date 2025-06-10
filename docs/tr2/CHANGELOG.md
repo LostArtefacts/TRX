@@ -12,6 +12,7 @@
 - added an option to control whether or not Lara responds to hitting a wall while wading (#3138)
 - added an option to fix the breakable floor descending glitch (#3152)
 - added an option to disable swing cancelling (#3150)
+- added an option to disable lean jumping (#3151)
 - changed the music track slot limit from 64 to 1024 (#3101)
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
   - if playing original levels, make sure to update the game flow and injection files from this release

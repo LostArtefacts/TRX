@@ -256,6 +256,7 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
             GS_ID(GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.enable_lean_jumping,
@@ -264,7 +265,6 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
             GS_ID(GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION),
         .option_type = COT_BOOL,
     },
-#endif
 
     {
         .target = &g_Config.gameplay.enable_swing_cancel,

@@ -437,7 +437,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS": "Jump twists",
         "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "Enables TR2+ style jump twists and somersaults i.e. press roll during jump and swan dive animations.",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING": "Lean jumping",
-        "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed, similar to TR2+.",
+        "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed.",
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL": "Legal screens",
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION": "Enables legal screen and Core Design FMV at the game start.",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS": "Loading screens",
