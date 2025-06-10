@@ -282,6 +282,14 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .option_type = COT_BOOL,
     },
 
+    {
+        .target = &g_Config.gameplay.enable_step_roll_boost,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST),
+        .description_id =
+            GS_ID(GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
 #if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_uw_roll,

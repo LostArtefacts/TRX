@@ -625,21 +625,18 @@ static void M_Roll(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
-    // TODO: offer as an option to allow roll-boosting off one-click steps.
-    if (coll->side_mid.floor > 200) {
-        item->current_anim_state = LS_JUMP_FORWARD;
-        item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_START, 0);
-        item->gravity = true;
-        item->fall_speed = 0;
+    if (g_Config.gameplay.enable_step_roll_boost) {
+        if (coll->side_mid.floor > 200) {
+            item->current_anim_state = LS_JUMP_FORWARD;
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            Item_SwitchToAnim(item, LA_FALL_START, 0);
+            item->gravity = true;
+            item->fall_speed = 0;
+            return;
+        }
+    } else if (M_Fallen(item, coll)) {
         return;
     }
-#else
-    if (M_Fallen(item, coll)) {
-        return;
-    }
-#endif
 
     Lara_Col_Shift(coll);
     item->pos.y += coll->side_mid.floor;
