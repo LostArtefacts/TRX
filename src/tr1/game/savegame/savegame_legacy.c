@@ -77,7 +77,6 @@ static void M_ReadArm(LARA_ARM *arm);
 static void M_ReadAmmoInfo(AMMO_INFO *ammo_info);
 static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLOT(LOT_INFO *lot);
-static void M_SetCurrentPosition(int32_t level_num);
 static void M_ReadResumeInfo(MYFILE *fp);
 
 static const char *M_GetSaveFilePattern(void);
@@ -332,18 +331,6 @@ static void M_ReadLOT(LOT_INFO *const lot)
     lot->target.z = M_ReadS32();
 }
 
-static void M_SetCurrentPosition(const int32_t level_num)
-{
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_CURRENT) {
-            Savegame_SetCurrentInfo(current_level->num, i);
-        }
-    }
-}
-
 static void M_ReadResumeInfo(MYFILE *const fp)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
@@ -379,7 +366,6 @@ static void M_ReadResumeInfo(MYFILE *const fp)
     const uint32_t temp_kill_count = M_ReadU32();
     const uint16_t temp_secret_flags = M_ReadU16();
     const uint16_t current_level = M_ReadU16();
-    M_SetCurrentPosition(current_level);
 
     RESUME_INFO *const resume_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
