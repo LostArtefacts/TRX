@@ -232,6 +232,9 @@ bool Console_Cmd_Config_GetCurrentValue(
             color->b);
         break;
     }
+    case COT_STRING:
+        snprintf(target, target_size, "%s", *(char **)option->target);
+        break;
     }
     return true;
 }

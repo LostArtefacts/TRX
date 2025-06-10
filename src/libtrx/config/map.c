@@ -57,6 +57,13 @@
       .default_value = &(RGB_888) { default_r, default_g, default_b },         \
       .param = nullptr },
 
+#define CFG_STRING(parent, target_, default_value_)                            \
+    { .name = QUOTE(target_),                                                  \
+      .type = COT_STRING,                                                      \
+      .target = &parent.target_,                                               \
+      .default_value = default_value_,                                         \
+      .param = nullptr },
+
 static const CONFIG_OPTION m_ConfigOptionMap[] = {
 #include "map.def"
     {}, // sentinel
