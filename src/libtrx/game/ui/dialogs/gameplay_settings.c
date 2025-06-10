@@ -557,6 +557,13 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
     },
 
     {
+        .target = &g_Config.gameplay.fix_water_exit,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WATER_EXIT),
+        .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WATER_EXIT_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
+    {
         .target = &g_Config.gameplay.fix_qwop_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH),
         .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH_DESCRIPTION),
