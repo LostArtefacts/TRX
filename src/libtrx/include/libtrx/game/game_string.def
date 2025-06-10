@@ -435,7 +435,7 @@ GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION,         "Enables
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION,            "Enables quick weapon draws and medipack usage.\n\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw uzis\n- 8: Use small medipack\n- 9: Use large medipack")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION,     "Disables blocking user input when passport flips pages, scheduling the page flips instead.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS_DESCRIPTION,           "Limits saving to the beginning of levels and save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level.")
-GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION,            "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again, similar to TR2+.")
+GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION,            "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE_DESCRIPTION,           "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY_DESCRIPTION,      "Makes the in-game timer work even while the game is showing the inventory.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS_DESCRIPTION,             "Enables a total game statistics screen that plays after the credits.")

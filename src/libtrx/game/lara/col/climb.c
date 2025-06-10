@@ -84,10 +84,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_Col_GetInfo(item, coll);
 
-#if TR_VERSION == 1
-    const bool enable_swing_cancel = g_Config.gameplay.enable_swing_cancel;
-#else
-    const bool enable_swing_cancel = true;
+#if TR_VERSION >= 2
     if (M_GetClimbStatus()) {
         if (!g_Input.action || item->hit_points <= 0) {
             XYZ_32 pos = {
@@ -138,7 +135,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
         item->current_anim_state = LS_JUMP_UP;
         Item_SwitchToAnim(item, LA_JUMP_UP, M_LF_STOP_HANG);
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-        if (enable_swing_cancel && item->hit_points > 0) {
+        if (g_Config.gameplay.enable_swing_cancel && item->hit_points > 0) {
             item->pos.y += bounds->max.y;
         } else {
             item->pos.y += coll->side_front.floor - bounds->min.y + 2;
