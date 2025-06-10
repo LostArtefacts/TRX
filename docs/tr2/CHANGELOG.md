@@ -31,6 +31,7 @@
 - fixed Lara dropping flares after certain special animations, such as pulling the dagger from the dragon (#3084, regression from 1.1)
 - fixed unbind key option being available when it shouldn't (#3111, regression from 1.1)
 - fixed the sizer option accepting values above 1 which made no sense (#3123, regression from 1.0)
+- fixed a rare crash when editing certain dev console history entries (#2913, regression from 1.0)
 - improved word wrapping algorithm in the dev console
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23
