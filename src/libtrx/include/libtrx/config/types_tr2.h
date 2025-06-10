@@ -103,6 +103,7 @@ typedef struct {
         bool fix_walk_run_jump;
         bool fix_bear_ai;
         bool fix_bridge_collision;
+        bool fix_wade_wall_hit;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;

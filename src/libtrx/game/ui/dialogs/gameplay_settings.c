@@ -533,6 +533,14 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
 #endif
 
     {
+        .target = &g_Config.gameplay.fix_wade_wall_hit,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT),
+        .description_id =
+            GS_ID(GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
+    {
         .target = &g_Config.gameplay.fix_qwop_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH),
         .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH_DESCRIPTION),
