@@ -134,7 +134,7 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order)
+static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
 {
     order->count = 0;
     for (int32_t i = 0; i < MAX_EFFECTS; i++) {

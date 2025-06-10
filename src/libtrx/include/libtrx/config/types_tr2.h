@@ -108,6 +108,7 @@ typedef struct {
         bool enable_fmv;
         bool enable_legal;
         bool enable_cutscenes;
+        bool enable_enhanced_saves;
         bool enable_auto_item_selection;
         int32_t turbo_speed;
         int32_t camera_speed;

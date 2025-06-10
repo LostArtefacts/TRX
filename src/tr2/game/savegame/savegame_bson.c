@@ -1,3 +1,4 @@
+#include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
@@ -23,6 +24,11 @@
 #include <zlib.h>
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '2', 'X', 'B')
+
+typedef struct {
+    int16_t count;
+    int16_t id_map[MAX_EFFECTS];
+} SAVEGAME_BSON_FX_ORDER;
 
 #define DUMP_XYZ(obj, key, value)                                              \
     do {                                                                       \
@@ -52,6 +58,7 @@ static JSON_OBJECT *M_DumpInventory(void);
 static JSON_OBJECT *M_DumpFlipmaps(void);
 static JSON_ARRAY *M_DumpCameras(void);
 static JSON_ARRAY *M_DumpItems(void);
+static JSON_ARRAY *M_DumpEffects(void);
 static JSON_ARRAY *M_DumpFlares(void);
 static JSON_OBJECT *M_DumpLara(void);
 static JSON_OBJECT *M_DumpArm(const LARA_ARM *arm);
@@ -64,12 +71,14 @@ static bool M_LoadInventory(JSON_OBJECT *inv_obj);
 static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj);
 static bool M_LoadCameras(JSON_ARRAY *cameras_arr);
 static bool M_LoadItems(JSON_ARRAY *items_arr);
+static bool M_LoadEffects(JSON_ARRAY *fx_arr);
 static bool M_LoadFlares(JSON_ARRAY *flares_arr);
 static bool M_LoadLara(JSON_OBJECT *lara_obj);
 static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm);
 static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo);
 
 static int32_t M_ConvertMusicTrack(int32_t track_id, uint16_t header_version);
+static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
 static bool M_IsValidItemObject(
     GAME_OBJECT_ID saved_obj_id, GAME_OBJECT_ID initial_obj_id);
 
@@ -132,6 +141,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
+    JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
     JSON_ObjectAppendArray(root_obj, "flares", M_DumpFlares());
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
 
@@ -216,6 +226,10 @@ static bool M_LoadFromFile(MYFILE *const fp)
     }
 
     if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
         goto cleanup;
     }
 
@@ -651,6 +665,9 @@ static JSON_ARRAY *M_DumpItems(void)
 {
     Savegame_ProcessItemsBeforeSave();
 
+    SAVEGAME_BSON_FX_ORDER fx_order;
+    M_GetFXOrder(&fx_order);
+
     JSON_ARRAY *const items_arr = JSON_ArrayNew();
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         JSON_OBJECT *const item_obj = JSON_ObjectNew();
@@ -702,6 +719,12 @@ static JSON_ARRAY *M_DumpItems(void)
                 JSON_ObjectAppendInt(
                     item_obj, "creature_flags", creature->flags);
                 JSON_ObjectAppendInt(item_obj, "creature_mood", creature->mood);
+            }
+
+            if (item->object_id == O_FLAME_EMITTER && item->data != nullptr) {
+                int32_t effect_num = (int32_t)(intptr_t)item->data - 1;
+                effect_num = fx_order.id_map[effect_num];
+                JSON_ObjectAppendInt(item_obj, "fx_num", effect_num);
             }
         }
 
@@ -778,6 +801,33 @@ static JSON_ARRAY *M_DumpItems(void)
         JSON_ArrayAppendObject(items_arr, item_obj);
     }
     return items_arr;
+}
+
+static JSON_ARRAY *M_DumpEffects(void)
+{
+    JSON_ARRAY *const fx_arr = JSON_ArrayNew();
+
+    SAVEGAME_BSON_FX_ORDER fx_order;
+    M_GetFXOrder(&fx_order);
+
+    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
+         link_num = Effect_Get(link_num)->next_active) {
+        JSON_OBJECT *const fx_obj = JSON_ObjectNew();
+        EFFECT *const effect = Effect_Get(link_num);
+        DUMP_XYZ(fx_obj, "pos", effect->pos);
+        DUMP_XYZ(fx_obj, "rot", effect->rot);
+        JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
+        JSON_ObjectAppendInt(
+            fx_obj, "object_number", Object_MakeGameID(effect->object_id));
+        JSON_ObjectAppendInt(fx_obj, "speed", effect->speed);
+        JSON_ObjectAppendInt(fx_obj, "fall_speed", effect->fall_speed);
+        JSON_ObjectAppendInt(fx_obj, "frame_number", effect->frame_num);
+        JSON_ObjectAppendInt(fx_obj, "counter", effect->counter);
+        JSON_ObjectAppendInt(fx_obj, "shade", effect->shade);
+        JSON_ArrayAppendObject(fx_arr, fx_obj);
+    }
+
+    return fx_arr;
 }
 
 static bool M_LoadItems(JSON_ARRAY *const items_arr)
@@ -886,6 +936,15 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
                     && !(item->flags & IF_KILLED)) {
                     item->next_active = Item_GetPrevActive();
                     Item_SetPrevActive(i);
+                }
+            }
+
+            if (item->object_id == O_FLAME_EMITTER
+                && g_Config.gameplay.enable_enhanced_saves) {
+                const int32_t effect_num =
+                    JSON_ObjectGetInt(item_obj, "fx_num", NO_EFFECT);
+                if (effect_num != NO_EFFECT) {
+                    item->data = (void *)(intptr_t)(effect_num + 1);
                 }
             }
 
@@ -1001,6 +1060,53 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
     return true;
 }
 
+static bool M_LoadEffects(JSON_ARRAY *const fx_arr)
+{
+    if (!g_Config.gameplay.enable_enhanced_saves) {
+        return true;
+    }
+
+    if (fx_arr == nullptr) {
+        // ..1.1 saves do not contain effects.
+        return true;
+    }
+
+    if ((signed)fx_arr->length >= MAX_EFFECTS) {
+        LOG_WARNING(
+            "Malformed save: expected a max of %d effect, got %d. effect over "
+            "the maximum will not be created.",
+            MAX_EFFECTS - 1, fx_arr->length);
+    }
+
+    for (int i = 0; i < (signed)fx_arr->length; i++) {
+        JSON_OBJECT *const fx_obj = JSON_ArrayGetObject(fx_arr, i);
+        if (fx_obj == nullptr) {
+            LOG_ERROR("Malformed save: invalid effect data");
+            return false;
+        }
+
+        const int16_t room_num =
+            JSON_ObjectGetInt(fx_obj, "room_number", NO_ROOM);
+        ASSERT(room_num != NO_ROOM);
+        const int16_t effect_num = Effect_Create(room_num);
+        if (effect_num != NO_EFFECT) {
+            EFFECT *const effect = Effect_Get(effect_num);
+            LOAD_XYZ(fx_obj, "pos", effect->pos);
+            LOAD_XYZ(fx_obj, "rot", effect->rot);
+            effect->room_num = room_num;
+            effect->object_id = Object_UnmapGameID(
+                JSON_ObjectGetInt(fx_obj, "object_number", NO_OBJECT));
+            effect->speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
+            effect->fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
+            effect->frame_num = JSON_ObjectGetInt(fx_obj, "frame_number", 0);
+            effect->counter = JSON_ObjectGetInt(fx_obj, "counter", 0);
+            effect->shade = JSON_ObjectGetInt(fx_obj, "shade", 0);
+        }
+    }
+
+    return true;
+}
+
 static int32_t M_ConvertMusicTrack(
     const int32_t track_id, const uint16_t header_version)
 {
@@ -1008,6 +1114,20 @@ static int32_t M_ConvertMusicTrack(
         return track_id;
     }
     return Music_ConvertLegacyTrack(track_id);
+}
+
+static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
+{
+    order->count = 0;
+    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
+        order->id_map[i] = -1;
+    }
+
+    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
+         link_num = Effect_Get(link_num)->next_active) {
+        order->id_map[link_num] = order->count;
+        order->count++;
+    }
 }
 
 static bool M_IsValidItemObject(
