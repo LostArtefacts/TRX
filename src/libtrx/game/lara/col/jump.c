@@ -335,18 +335,13 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 
 static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool enable_lean_jumping = g_Config.gameplay.enable_lean_jumping;
-#else
-    const bool enable_lean_jumping = true;
-#endif
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
     coll->facing = lara->move_angle;
-    if (enable_lean_jumping && item->speed < 0) {
+    if (g_Config.gameplay.enable_lean_jumping && item->speed < 0) {
         coll->facing += DEG_180;
     }
 
@@ -357,7 +352,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
     }
 
     M_SlideEdgeJump(item, coll);
-    if (enable_lean_jumping) {
+    if (g_Config.gameplay.enable_lean_jumping) {
         if (coll->coll_type != COLL_NONE) {
             item->speed = item->speed > 0 ? 2 : -2;
         } else if (item->fall_speed < -70) {

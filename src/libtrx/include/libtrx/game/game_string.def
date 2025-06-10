@@ -429,7 +429,7 @@ GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION,              "Allows 
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK_DESCRIPTION,           "Inverts the Y axis controls when Lara looks.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING_DESCRIPTION,          "For custom levels - allows item descriptions to be displayed in the inventory where the level author has provided suitable data.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION,             "Enables TR2+ style jump twists and somersaults i.e. press roll during jump and swan dive animations.")
-GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION,            "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed, similar to TR2+.")
+GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION,            "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION,                   "Enables legal screen and Core Design FMV at the game start.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION,         "Enables PS1 style loading screens before each level.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION,            "Enables quick weapon draws and medipack usage.\n\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw uzis\n- 8: Use small medipack\n- 9: Use large medipack")
