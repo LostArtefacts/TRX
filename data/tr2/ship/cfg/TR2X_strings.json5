@@ -630,6 +630,8 @@
         "GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES_DESCRIPTION": "Fixes original issues with missing or incorrect textures/meshes.",
         "GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND": "Fix chain block sound",
         "GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND_DESCRIPTION": "Prevents the secret sound from incorrectly playing when using the golden key in Tomb of Tihocan.",
+        "GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT": "Fix wading wall hit",
+        "GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT_DESCRIPTION": "Fixes Lara not responding to hitting a wall while wading.",
         "GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP": "Fix walk run jump",
         "GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP_DESCRIPTION": "Fixes Lara at times not being able to jump immediately after going from her walking to running animation.",
         "GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH": "Fix wall jump glitch",
