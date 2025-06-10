@@ -134,6 +134,7 @@ typedef struct {
         bool enable_tr2_swimming;
         bool enable_tr2_swim_cancel;
         bool enable_swing_cancel;
+        bool enable_smooth_wall_deflect;
         bool fix_floor_data_issues;
         bool fix_descending_glitch;
         bool fix_wall_jump_glitch;

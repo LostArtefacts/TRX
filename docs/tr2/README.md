@@ -199,6 +199,7 @@ However, you can easily download them manually from these urls:
 - added an option to fix jumping against walls in a certain way allowing teleporting
 - added an option to disable swing cancelling
 - added an option to disable lean jumping
+- added an option to disable smooth wall deflection when Lara comes to a stop at a wall, similar to TR1
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed assault course best times not being retained between game relaunches
