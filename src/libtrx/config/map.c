@@ -26,6 +26,13 @@
       .default_value = &(float) { default_value_ },                            \
       .param = nullptr },
 
+#define CFG_FLOAT_PERCENT(parent, target_, default_value_)                     \
+    { .name = QUOTE(target_),                                                  \
+      .type = COT_FLOAT_PERCENT,                                               \
+      .target = &parent.target_,                                               \
+      .default_value = &(float) { default_value_ },                            \
+      .param = nullptr },
+
 #define CFG_DOUBLE(parent, target_, default_value_)                            \
     { .name = QUOTE(target_),                                                  \
       .type = COT_DOUBLE,                                                      \

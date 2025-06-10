@@ -8,6 +8,9 @@
 #include "strings.h"
 #include "utils.h"
 
+static char *m_TempString = nullptr;
+static size_t m_TempStringCap = 0;
+
 static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_NEVER, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER) },
     { MUSIC_LOAD_NON_AMBIENT,
@@ -17,16 +20,15 @@ static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
 };
 
 // Custom handlers for changing sound settings.
-static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *option);
 static bool M_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
 static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
-        .option_type = COT_FLOAT,
+        .option_type = COT_FLOAT_PERCENT,
         .label_id = GS_ID(SOUND_SETTINGS_SOUND_VOLUME),
         .description_id = GS_ID(SOUND_SETTINGS_SOUND_VOLUME_DESCRIPTION),
         .custom_handler = {
-            .format_value = M_FormatPercentage,
+            .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = M_RequestChange,
         },
@@ -37,11 +39,11 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .delta_fast = 10,
     },
     {
-        .option_type = COT_FLOAT,
+        .option_type = COT_FLOAT_PERCENT,
         .label_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME),
         .description_id = GS_ID(SOUND_SETTINGS_MUSIC_VOLUME_DESCRIPTION),
         .custom_handler = {
-            .format_value = M_FormatPercentage,
+            .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = M_RequestChange,
         },
@@ -81,13 +83,13 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .target = &g_Config.audio.inventory_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME),
         .description_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME_DESCRIPTION),
-        .option_type = COT_FLOAT,
+        .option_type = COT_FLOAT_PERCENT,
         .min_value = 0,
         .max_value = 100,
         .delta_slow = 10,
         .delta_fast = 10,
         .custom_handler = {
-            .format_value = M_FormatPercentage,
+            .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = nullptr,
         },
@@ -96,13 +98,13 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .target = &g_Config.audio.inventory_music_volume,
         .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME),
         .description_id = GS_ID(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME_DESCRIPTION),
-        .option_type = COT_FLOAT,
+        .option_type = COT_FLOAT_PERCENT,
         .min_value = 0,
         .max_value = 100,
         .delta_slow = 10,
         .delta_fast = 10,
         .custom_handler = {
-            .format_value = M_FormatPercentage,
+            .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = nullptr,
         },
@@ -111,13 +113,13 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .target = &g_Config.audio.underwater_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME),
         .description_id = GS_ID(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME_DESCRIPTION),
-        .option_type = COT_FLOAT,
+        .option_type = COT_FLOAT_PERCENT,
         .min_value = 0,
         .max_value = 100,
         .delta_slow = 10,
         .delta_fast = 10,
         .custom_handler = {
-            .format_value = M_FormatPercentage,
+            .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = nullptr,
         },
@@ -126,13 +128,13 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .target = &g_Config.audio.underwater_music_volume,
         .label_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME),
         .description_id = GS_ID(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME_DESCRIPTION),
-        .option_type = COT_FLOAT,
+        .option_type = COT_FLOAT_PERCENT,
         .min_value = 0,
         .max_value = 100,
         .delta_slow = 10,
         .delta_fast = 10,
         .custom_handler = {
-            .format_value = M_FormatPercentage,
+            .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = nullptr,
         },
@@ -169,12 +171,6 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .target = nullptr,
     },
 };
-
-static const char *M_FormatPercentage(const UI_SETTINGS_OPTION *const option)
-{
-    const float value = *(float *)option->target;
-    return String_FormatStatic("%.00f%%", value * 100.0f);
-}
 
 static bool M_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)

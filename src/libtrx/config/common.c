@@ -130,6 +130,7 @@ bool Config_IsOptionAtDefault(const void *const target)
     case COT_INT32:
         return *(int32_t *)option->target == *(int32_t *)option->default_value;
     case COT_FLOAT:
+    case COT_FLOAT_PERCENT:
         return *(float *)option->target == *(float *)option->default_value;
     case COT_DOUBLE:
         return *(double *)option->target == *(double *)option->default_value;
@@ -160,6 +161,7 @@ bool Config_RestoreOptionDefault(const void *const target)
         *(int32_t *)option->target = *(int32_t *)option->default_value;
         return true;
     case COT_FLOAT:
+    case COT_FLOAT_PERCENT:
         *(float *)option->target = *(float *)option->default_value;
         return true;
     case COT_DOUBLE:
@@ -214,6 +216,15 @@ bool Config_SetOptionValueFromString(
         float new_value_typed;
         if (sscanf(new_value, "%f", &new_value_typed) == 1) {
             *(float *)option->target = new_value_typed;
+            return true;
+        }
+        break;
+    }
+
+    case COT_FLOAT_PERCENT: {
+        float new_value_typed;
+        if (sscanf(new_value, "%f", &new_value_typed) == 1) {
+            *(float *)option->target = new_value_typed / 100.0f;
             return true;
         }
         break;

@@ -5,6 +5,7 @@ typedef enum {
     COT_INVERTED_BOOL,
     COT_INT32,
     COT_FLOAT,
+    COT_FLOAT_PERCENT,
     COT_DOUBLE,
     COT_ENUM,
     COT_RGB888,

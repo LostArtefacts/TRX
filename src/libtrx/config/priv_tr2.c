@@ -154,6 +154,7 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 
 void Config_Sanitize(void)
 {
+    Config_SanitizeCommon();
     CLAMP(
         g_Config.gameplay.turbo_speed, CLOCK_TURBO_SPEED_MIN,
         CLOCK_TURBO_SPEED_MAX);

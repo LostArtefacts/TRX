@@ -129,6 +129,9 @@ static const char *M_FormatRowValue(
         return String_FormatStatic("%.2f", *(double *)option->target);
     case COT_FLOAT:
         return String_FormatStatic("%.2f", *(float *)option->target);
+    case COT_FLOAT_PERCENT:
+        return String_FormatStatic(
+            "%.00f%%", (*(float *)option->target) * 100.0f);
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
         return String_FormatStatic("%d", *component);
@@ -175,6 +178,15 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         const float min_value_w = UI_Label_MeasureW(min_value_s);
         const char *const max_value_s =
             String_FormatStatic("%.2f", (double)option->max_value / 100.0);
+        const float max_value_w = UI_Label_MeasureW(max_value_s);
+        return MAX(min_value_w, max_value_w);
+    }
+    case COT_FLOAT_PERCENT: {
+        const char *const min_value_s =
+            String_FormatStatic("%.00f%%", (double)option->min_value);
+        const float min_value_w = UI_Label_MeasureW(min_value_s);
+        const char *const max_value_s =
+            String_FormatStatic("%.00f%%", (double)option->max_value);
         const float max_value_w = UI_Label_MeasureW(max_value_s);
         return MAX(min_value_w, max_value_w);
     }
@@ -225,7 +237,8 @@ static bool M_CanChangeValue(
         return target_value >= (double)option->min_value / 100.0
             && target_value <= (double)option->max_value / 100.0;
     }
-    case COT_FLOAT: {
+    case COT_FLOAT:
+    case COT_FLOAT_PERCENT: {
         const float target_value =
             (round(*(float *)option->target * 100) + dir) / 100.0f;
         return target_value >= (float)option->min_value / 100.0f
@@ -576,6 +589,7 @@ void UI_Settings_RequestChange(
         }
         break;
     case COT_FLOAT:
+    case COT_FLOAT_PERCENT:
         *(float *)option->target =
             (round(*(float *)option->target * 100) + delta) / 100.0f;
         if (*(float *)option->target == -0.0f) {
