@@ -196,6 +196,7 @@ However, you can easily download them manually from these urls:
 - added graphics effects, waterfalls to the savegame so that they now persist on load
 - added a pickup overlay display when Lara pulls the dagger from the dragon
 - added an option to fix the breakable floor descending glitch
+- added an option to disable swing cancelling
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed assault course best times not being retained between game relaunches

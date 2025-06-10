@@ -112,6 +112,7 @@ typedef struct {
         bool enable_cutscenes;
         bool enable_enhanced_saves;
         bool enable_auto_item_selection;
+        bool enable_swing_cancel;
         int32_t turbo_speed;
         int32_t camera_speed;
         bool enable_game_modes;
