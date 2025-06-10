@@ -72,14 +72,15 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION == 1
-    if (item->rot.y != lara->move_angle) {
+    if (g_Config.gameplay.fix_water_exit) {
+        if (coll->side_front.type == HT_BIG_SLOPE) {
+            return false;
+        }
+    } else if (item->rot.y != lara->move_angle) {
         return false;
     }
-#else
-    if (coll->side_front.type == HT_BIG_SLOPE) {
-        return false;
-    }
+
+#if TR_VERSION >= 2
     if (lara->gun_status != LGS_ARMLESS
         && (lara->gun_status != LGS_READY || lara->gun_type != LGT_FLARE)) {
         return false;
@@ -146,24 +147,27 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
     const int32_t water_depth =
         Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
 
-    // TODO: offer ability for non-standard water exit in TR2. See #1782.
-    if (TR_VERSION >= 2 && water_depth == NO_HEIGHT) {
+    if (g_Config.gameplay.fix_water_exit && water_depth == NO_HEIGHT) {
         item->pos = coll->old;
         item->fall_speed = 0;
-    } else if (water_depth != NO_HEIGHT && water_depth <= STEP_L * 2) {
-        Item_SwitchToAnim(item, LA_UNDERWATER_TO_STAND, 0);
-        item->current_anim_state = LS_WATER_OUT;
-        item->goal_anim_state = LS_STOP;
-        item->rot.x = 0;
-        item->rot.z = 0;
-        item->gravity = false;
-        item->speed = 0;
-        item->fall_speed = 0;
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->water_status = LWS_WADE;
-        item->pos.y =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        return;
     }
+
+    if (water_depth == NO_HEIGHT || water_depth > STEP_L * 2) {
+        return;
+    }
+
+    Item_SwitchToAnim(item, LA_UNDERWATER_TO_STAND, 0);
+    item->current_anim_state = LS_WATER_OUT;
+    item->goal_anim_state = LS_STOP;
+    item->rot.x = 0;
+    item->rot.z = 0;
+    item->gravity = false;
+    item->speed = 0;
+    item->fall_speed = 0;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->water_status = LWS_WADE;
+    item->pos.y = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 }
 
 static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)

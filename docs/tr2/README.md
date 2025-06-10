@@ -201,6 +201,7 @@ However, you can easily download them manually from these urls:
 - added an option to disable lean jumping
 - added an option to disable smooth wall deflection when Lara comes to a stop at a wall, similar to TR1
 - added an option to have Lara boost forward when rolling off one-click steps, similar to TR1
+- added an option to toggle allowing Lara to exit from water horizontally, below, or climbing out onto non-standable slopes
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed assault course best times not being retained between game relaunches

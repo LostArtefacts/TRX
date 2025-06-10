@@ -517,6 +517,8 @@
         "GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP_DESCRIPTION": "Fixes Lara at times not being able to jump immediately after going from her walking to running animation.",
         "GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH": "Fix wall jump glitch",
         "GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH_DESCRIPTION": "Fixes Lara jumping through objects and moving up certain slopes.",
+        "GAMEPLAY_SETTINGS_FIX_WATER_EXIT": "Fix water exit",
+        "GAMEPLAY_SETTINGS_FIX_WATER_EXIT_DESCRIPTION": "Fixes Lara being able to go directly from a water room to an adjacent dry room, or to a dry room below. Additionally, this will prevent Lara from being able to climb out of water onto non-standable slopes.",
         "GAMEPLAY_SETTINGS_GENERAL_TAB": "General",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS": "Fix one-shot music triggers",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS_DESCRIPTION": "Loads previously triggered, one shot music so one shot music tracks do not replay.",

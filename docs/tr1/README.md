@@ -413,6 +413,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added an option for smooth wall deflection when Lara comes to a stop at a wall, similar to TR2
 - added an option to fix the step glitch where Lara can be pushed into walls
 - added an option to have Lara always roll off one-click steps rather than boosting forward
+- added an option to toggle allowing Lara to exit from water horizontally, below, or climbing out onto non-standable slopes
 - added support for 60 FPS rendering
 - added a pause screen
 - added a choice whether to play NG or NG+ without having to play the entire game
