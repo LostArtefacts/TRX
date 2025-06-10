@@ -76,7 +76,7 @@ jobs:
           assets: "*.*"
 
       - name: "Publish a release"
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ inputs.tag_name }}
