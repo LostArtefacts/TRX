@@ -33,7 +33,6 @@
 
 static int16_t m_OldSlideAngle = 1;
 
-static bool M_FixDescendingGlitch(void);
 static bool M_FixStepGlitch(void);
 static bool M_TestWall(
     const ITEM *item, int32_t front, int32_t right, int32_t down);
@@ -57,15 +56,6 @@ static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_Roll(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
-
-static bool M_FixDescendingGlitch(void)
-{
-#if TR_VERSION == 1
-    return g_Config.gameplay.fix_descending_glitch;
-#else
-    return true;
-#endif
-}
 
 static bool M_FixStepGlitch(void)
 {
@@ -369,7 +359,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         M_CollideStop(item, coll);
     }
 
-    if (M_FixDescendingGlitch() && M_Fallen(item, coll)) {
+    if (g_Config.gameplay.fix_descending_glitch && M_Fallen(item, coll)) {
         return;
     }
 
@@ -418,7 +408,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
         M_CollideStop(item, coll);
     }
 
-    if (M_FixDescendingGlitch() && M_Fallen(item, coll)) {
+    if (g_Config.gameplay.fix_descending_glitch && M_Fallen(item, coll)) {
         return;
     }
 
@@ -500,8 +490,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     M_Default(item, coll);
 
-    if (M_TestCeiling(item, coll)
-        || (M_FixDescendingGlitch() && M_Fallen(item, coll))
+    if (M_TestCeiling(item, coll) || M_Fallen(item, coll)
         || M_TestSlide(item, coll)) {
         return;
     }
