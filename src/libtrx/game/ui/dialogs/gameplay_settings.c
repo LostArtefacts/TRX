@@ -148,6 +148,7 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .delta_fast = 10,
         .delta_slow = 1,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.enable_enhanced_saves,
@@ -157,6 +158,7 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.revert_to_pistols,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_REMEMBER_GUNS_BETWEEN_LEVELS),

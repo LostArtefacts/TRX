@@ -152,7 +152,7 @@ static void M_LoadPostprocess(void)
     }
     LOT_ClearLOT(&lara->lot);
 #else
-    if (lara->burn) {
+    if (lara->burn && !g_Config.gameplay.enable_enhanced_saves) {
         lara->burn = false;
         Lara_CatchFire();
     }
