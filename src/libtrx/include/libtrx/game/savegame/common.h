@@ -36,10 +36,12 @@ void Savegame_UnbindSlot(void);
 // Returns the currently bound slot number. If there is none, returns -1.
 int32_t Savegame_GetBoundSlot(void);
 
-// Returns the most recently created slot number. If there is none, returns -1.
+// Returns the most recently created save slot number. If there is none,
+// returns -1.
 int32_t Savegame_GetMostRecentlyCreatedSlot(void);
 
-// Returns the most recently created slot number. If there is none, returns -1.
+// Returns the most recently used slot save number. If there is none, returns
+// -1.
 int32_t Savegame_GetMostRecentlyUsedSlot(void);
 
 void Savegame_ProcessItemsBeforeLoad(void);

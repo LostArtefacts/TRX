@@ -77,7 +77,8 @@ static void M_ReadArm(LARA_ARM *arm);
 static void M_ReadAmmoInfo(AMMO_INFO *ammo_info);
 static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLOT(LOT_INFO *lot);
-static void M_ReadResumeInfo(MYFILE *fp);
+static void M_ReadResumeInfo(RESUME_INFO *resume);
+static void M_ReadResumeInfos(MYFILE *fp);
 
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
@@ -239,6 +240,7 @@ static void M_Skip(const size_t size)
 static void M_Read(void *const ptr, const size_t size)
 {
     ASSERT(m_SGBufPos + size <= SAVEGAME_LEGACY_MAX_BUFFER_SIZE);
+    ASSERT(m_SGBufPtr != nullptr);
     m_SGBufPos += size;
     memcpy(ptr, m_SGBufPtr, size);
     m_SGBufPtr += size;
@@ -331,54 +333,69 @@ static void M_ReadLOT(LOT_INFO *const lot)
     lot->target.z = M_ReadS32();
 }
 
-static void M_ReadResumeInfo(MYFILE *const fp)
+static void M_ReadResumeInfo(RESUME_INFO *const resume)
+{
+    resume->pistol_ammo = M_ReadU16();
+    resume->magnum_ammo = M_ReadU16();
+    resume->uzi_ammo = M_ReadU16();
+    resume->shotgun_ammo = M_ReadU16();
+    resume->small_medipacks = M_ReadU8();
+    resume->large_medipacks = M_ReadU8();
+    resume->num_scions = M_ReadU8();
+    resume->gun_status = M_ReadS8();
+    resume->equipped_gun_type = M_ReadS8();
+    resume->holsters_gun_type = LGT_UNKNOWN;
+    resume->back_gun_type = LGT_UNKNOWN;
+
+    const uint16_t flags = M_ReadU16();
+    resume->flags.available = flags & 1 ? 1 : 0;
+    resume->flags.has_pistols = flags & 2 ? 1 : 0;
+    resume->flags.has_magnums = flags & 4 ? 1 : 0;
+    resume->flags.has_uzis = flags & 8 ? 1 : 0;
+    resume->flags.has_shotgun = flags & 16 ? 1 : 0;
+    resume->flags.costume = flags & 32 ? 1 : 0;
+}
+
+static void M_ReadResumeInfos(MYFILE *const fp)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
-        current->pistol_ammo = M_ReadU16();
-        current->magnum_ammo = M_ReadU16();
-        current->uzi_ammo = M_ReadU16();
-        current->shotgun_ammo = M_ReadU16();
-        current->small_medipacks = M_ReadU8();
-        current->large_medipacks = M_ReadU8();
-        current->num_scions = M_ReadU8();
-        current->gun_status = M_ReadS8();
-        current->equipped_gun_type = M_ReadS8();
-        current->holsters_gun_type = LGT_UNKNOWN;
-        current->back_gun_type = LGT_UNKNOWN;
+    for (int32_t i = 0; i < 22; i++) {
+        if (i < level_table->count) {
+            const GF_LEVEL *const level = &level_table->levels[i];
+            M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
 
-        const uint16_t flags = M_ReadU16();
-        current->flags.available = flags & 1 ? 1 : 0;
-        current->flags.has_pistols = flags & 2 ? 1 : 0;
-        current->flags.has_magnums = flags & 4 ? 1 : 0;
-        current->flags.has_uzis = flags & 8 ? 1 : 0;
-        current->flags.has_shotgun = flags & 16 ? 1 : 0;
-        current->flags.costume = flags & 32 ? 1 : 0;
-        // Gym and first level have special starting items.
-        if (level == GF_GetFirstLevel() || level == GF_GetGymLevel()) {
-            Savegame_ApplyLogicToCurrentInfo(level);
+            // Gym and first level have special starting items.
+            if (level == GF_GetFirstLevel() || level == GF_GetGymLevel()) {
+                Savegame_ApplyLogicToCurrentInfo(level);
+            }
+        } else {
+            RESUME_INFO dummy_resume_info;
+            M_ReadResumeInfo(&dummy_resume_info);
         }
     }
 
     const uint32_t temp_timer = M_ReadU32();
     const uint32_t temp_kill_count = M_ReadU32();
     const uint16_t temp_secret_flags = M_ReadU16();
-    const uint16_t current_level = M_ReadU16();
+    const uint16_t current_level_num = M_ReadU16();
+    const uint8_t temp_pickup_count = M_ReadU8();
+    const uint8_t temp_flags = M_ReadU8();
 
-    RESUME_INFO *const resume_info =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    resume_info->stats.timer = temp_timer;
-    resume_info->stats.kill_count = temp_kill_count;
-    resume_info->stats.secret_flags = temp_secret_flags;
-    Stats_UpdateSecrets(&resume_info->stats);
-    resume_info->stats.pickup_count = M_ReadU8();
-    const bool is_ng_plus = M_ReadU8() != 0;
+    const GF_LEVEL *current_level = Game_GetCurrentLevel();
+    if (current_level != nullptr) {
+        RESUME_INFO *const resume_info = Savegame_GetCurrentInfo(current_level);
+        resume_info->stats.timer = temp_timer;
+        resume_info->stats.kill_count = temp_kill_count;
+        resume_info->stats.secret_flags = temp_secret_flags;
+        Stats_UpdateSecrets(&resume_info->stats);
+        resume_info->stats.pickup_count = temp_pickup_count;
+        resume_info->stats.death_count = -1;
+    }
+
+    const bool is_ng_plus = temp_flags != 0;
     if (is_ng_plus) {
         Game_SetBonusFlag(GBF_NGPLUS);
     }
-    resume_info->stats.death_count = -1;
 }
 
 static const char *M_GetSaveFilePattern(void)
@@ -439,7 +456,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfo(fp);
+    M_ReadResumeInfos(fp);
     g_Lara.holsters_gun_type = LGT_UNKNOWN;
     g_Lara.back_gun_type = LGT_UNKNOWN;
 
@@ -561,10 +578,11 @@ static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
 
+    M_Reset(buffer);
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfo(fp);
+    M_ReadResumeInfos(fp);
 
     Memory_FreePointer(&buffer);
     return true;
