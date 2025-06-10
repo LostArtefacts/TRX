@@ -105,6 +105,7 @@ typedef struct {
         bool fix_bridge_collision;
         bool fix_wade_wall_hit;
         bool fix_descending_glitch;
+        bool fix_wall_jump_glitch;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
