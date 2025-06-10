@@ -5,7 +5,10 @@
 #include "config/vars.h"
 #include "debug.h"
 #include "game/shell.h"
+#include "memory.h"
 #include "vector.h"
+
+#include <string.h>
 
 typedef enum {
     CFT_DEFAULT,
@@ -135,13 +138,18 @@ bool Config_IsOptionAtDefault(const void *const target)
     case COT_DOUBLE:
         return *(double *)option->target == *(double *)option->default_value;
     case COT_RGB888: {
-        const RGB_888 src = *(RGB_888 *)option->target;
-        const RGB_888 dst = *(RGB_888 *)option->default_value;
-        return src.r == dst.r || src.g == dst.g || src.b == dst.b;
+        const RGB_888 cur = *(RGB_888 *)option->target;
+        const RGB_888 def = *(RGB_888 *)option->default_value;
+        return cur.r == def.r || cur.g == def.g || cur.b == def.b;
     }
     case COT_ENUM:
         return *(int32_t *)option->target == *(int32_t *)option->default_value;
         break;
+    case COT_STRING: {
+        const char *const cur = *(char **)option->target;
+        const char *const def = (const char *)option->default_value;
+        return strcmp(cur, def) == 0;
+    }
     }
     return true;
 }
@@ -173,6 +181,16 @@ bool Config_RestoreOptionDefault(const void *const target)
     case COT_ENUM:
         *(int32_t *)option->target = *(int32_t *)option->default_value;
         return true;
+    case COT_STRING: {
+        char **const p = (char **)option->target;
+        char *const old = *p;
+        *p = Memory_DupStr((const char *)option->default_value);
+        // VERY IMPORTANT: free the memory AFTER we allocate, so that we force
+        // the pointer to get a different macro, so that change subscribers
+        // can see the string has changed by comparing just the pointers.
+        Memory_Free(old);
+        return true;
+    }
     }
     return false;
 }
@@ -259,6 +277,17 @@ bool Config_SetOptionValueFromString(
             return true;
         }
         break;
+    }
+
+    case COT_STRING: {
+        char **const p = (char **)option->target;
+        char *const old = *p;
+        *p = Memory_DupStr(new_value);
+        // VERY IMPORTANT: free the memory AFTER we allocate, so that we force
+        // the pointer to get a different macro, so that change subscribers
+        // can see the string has changed by comparing just the pointers.
+        Memory_Free(old);
+        return true;
     }
     }
 

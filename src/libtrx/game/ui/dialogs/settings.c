@@ -132,6 +132,8 @@ static const char *M_FormatRowValue(
     case COT_FLOAT_PERCENT:
         return String_FormatStatic(
             "%.00f%%", (*(float *)option->target) * 100.0f);
+    case COT_STRING:
+        return String_FormatStatic("%s", *(char **)option->target);
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
         return String_FormatStatic("%d", *component);
@@ -190,9 +192,10 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         const float max_value_w = UI_Label_MeasureW(max_value_s);
         return MAX(min_value_w, max_value_w);
     }
-    case COT_RGB888: {
+    case COT_RGB888:
         return UI_Label_MeasureW("255");
-    }
+    case COT_STRING:
+        return UI_Label_MeasureW(*(char **)option->target);
     case COT_ENUM: {
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
@@ -220,10 +223,12 @@ static bool M_CanChangeValue(
     if (option->custom_handler.can_change_value != nullptr) {
         return option->custom_handler.can_change_value(option, dir);
     }
+
     switch (option->option_type) {
     case COT_BOOL:
     case COT_INVERTED_BOOL:
         return true;
+
     case COT_INT32:
         if (dir < 0) {
             return *(int32_t *)option->target > option->min_value;
@@ -231,12 +236,14 @@ static bool M_CanChangeValue(
             return *(int32_t *)option->target < option->max_value;
         }
         break;
+
     case COT_DOUBLE: {
         const double target_value =
             (round(*(double *)option->target * 100) + dir) / 100.0;
         return target_value >= (double)option->min_value / 100.0
             && target_value <= (double)option->max_value / 100.0;
     }
+
     case COT_FLOAT:
     case COT_FLOAT_PERCENT: {
         const float target_value =
@@ -244,6 +251,7 @@ static bool M_CanChangeValue(
         return target_value >= (float)option->min_value / 100.0f
             && target_value <= (float)option->max_value / 100.0f;
     }
+
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
         if (dir < 0) {
@@ -253,6 +261,10 @@ static bool M_CanChangeValue(
         }
         break;
     }
+
+    case COT_STRING:
+        return false;
+
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
         ASSERT(enum_lookup.entry != nullptr);
@@ -263,6 +275,7 @@ static bool M_CanChangeValue(
         }
         break;
     }
+
     default:
         break;
     }
@@ -612,6 +625,9 @@ void UI_Settings_RequestChange(
         *(int32_t *)option->target = next_entry->value;
         break;
     }
+    case COT_STRING:
+        // It doesn't make sense to cycle strings like this
+        break;
     }
 }
 

@@ -9,6 +9,7 @@ typedef enum {
     COT_DOUBLE,
     COT_ENUM,
     COT_RGB888,
+    COT_STRING,
 } CONFIG_OPTION_TYPE;
 
 typedef struct {

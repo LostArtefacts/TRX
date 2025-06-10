@@ -274,6 +274,16 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 *(int *)opt->default_value, opt->param);
             break;
 
+        case COT_STRING: {
+            const char *const val = JSON_ObjectGetString(
+                root_obj, M_ResolveOptionName(opt->name),
+                (const char *)opt->default_value);
+            char **const p = (char **)opt->target;
+            Memory_FreePointer(p);
+            *p = Memory_DupStr(val);
+            break;
+        }
+
         case COT_RGB888: {
             RGB_888 *const target = (RGB_888 *)opt->target;
             JSON_VALUE *const value =
@@ -342,6 +352,12 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             ConfigFile_WriteEnum(
                 root_obj, M_ResolveOptionName(opt->name), *(int *)opt->target,
                 (const char *)opt->param);
+            break;
+
+        case COT_STRING:
+            JSON_ObjectAppendString(
+                root_obj, M_ResolveOptionName(opt->name),
+                *(char **)opt->target);
             break;
 
         case COT_RGB888: {
