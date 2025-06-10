@@ -249,6 +249,6 @@ void UI_Prompt_ChangeText(UI_PROMPT_STATE *const s, const char *const new_text)
 {
     Memory_FreePointer(&s->current_text);
     s->current_text = Memory_DupStr(new_text);
-    s->current_text_capacity = strlen(new_text);
+    s->current_text_capacity = strlen(new_text) + 1;
     s->caret_pos = strlen(new_text);
 }
