@@ -196,6 +196,7 @@ However, you can easily download them manually from these urls:
 - added graphics effects, waterfalls to the savegame so that they now persist on load
 - added a pickup overlay display when Lara pulls the dagger from the dragon
 - added an option to fix the breakable floor descending glitch
+- added an option to fix jumping against walls in a certain way allowing teleporting
 - added an option to disable swing cancelling
 - added an option to disable lean jumping
 - changed inventory to pause the music rather than muting it

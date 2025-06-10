@@ -227,17 +227,13 @@ static void M_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
     case COLL_FRONT:
     case COLL_TOP_FRONT:
         LARA_INFO *const lara = Lara_GetLaraInfo();
-        // TODO: this is the root of the wall-bug in TR1. Merge that config
-        // option into TR2, plus tidy this all up with TR1 ladder support.
-#if TR_VERSION == 1
-        item->goal_anim_state = LS_FAST_FALL;
-        item->current_anim_state = LS_FAST_FALL;
-        Item_SwitchToAnim(item, LA_SMASH_JUMP, M_LF_FAST_FALL);
-#else
+#if TR_VERSION >= 2
         if (lara->climb_status && item->speed == 2) {
             break;
         }
-        if (coll->side_mid.floor > (STEP_L * 2)) {
+#endif
+        if (!g_Config.gameplay.fix_wall_jump_glitch
+            || coll->side_mid.floor > (STEP_L * 2)) {
             item->goal_anim_state = LS_FAST_FALL;
             item->current_anim_state = LS_FAST_FALL;
             Item_SwitchToAnim(item, LA_SMASH_JUMP, M_LF_FAST_FALL);
@@ -246,7 +242,6 @@ static void M_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
             item->current_anim_state = LS_LAND;
             Item_SwitchToAnim(item, LA_JUMP_UP_LAND, 0);
         }
-#endif
         item->speed /= 4;
         lara->move_angle += DEG_180;
         CLAMPL(item->fall_speed, 1);
@@ -380,16 +375,8 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool backward_momentum = false;
-    const bool fix_wall_bug = g_Config.gameplay.fix_wall_jump_glitch;
-#else
-    const bool backward_momentum = item->speed < 0;
-    const bool fix_wall_bug = false;
-#endif
-
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (backward_momentum) {
+    if (item->speed < 0) {
         lara->move_angle = item->rot.y + DEG_180;
     } else {
         lara->move_angle = item->rot.y;
@@ -400,7 +387,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
-    if (backward_momentum) {
+    if (item->speed < 0) {
         lara->move_angle = item->rot.y;
     }
 
@@ -421,9 +408,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
     item->speed = 0;
-    if (!fix_wall_bug) {
-        Lara_Animate(item);
-    }
+    Lara_Animate(item);
 }
 
 static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)

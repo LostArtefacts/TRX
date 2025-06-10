@@ -524,7 +524,6 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
         .option_type = COT_BOOL,
     },
 
-#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.fix_wall_jump_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH),
@@ -532,7 +531,6 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
             GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH_DESCRIPTION),
         .option_type = COT_BOOL,
     },
-#endif
 
     {
         .target = &g_Config.gameplay.fix_wade_wall_hit,
