@@ -556,6 +556,13 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
     },
 
     {
+        .target = &g_Config.gameplay.fix_step_glitch,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH),
+        .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
+    {
         .target = &g_Config.gameplay.fix_item_duplication_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH),
         .description_id =
@@ -564,13 +571,6 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
     },
 
 #if TR_VERSION == 2
-    {
-        .target = &g_Config.gameplay.fix_step_glitch,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH),
-        .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH_DESCRIPTION),
-        .option_type = COT_BOOL,
-    },
-
     {
         .target = &g_Config.gameplay.fix_free_flare_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_FREE_FLARE_GLITCH),

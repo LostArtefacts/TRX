@@ -145,6 +145,7 @@ typedef struct {
         bool fix_shotgun_targeting;
         bool fix_bear_ai;
         bool fix_wade_wall_hit;
+        bool fix_step_glitch;
         bool revert_to_pistols;
         bool change_pierre_spawn;
         bool disable_trex_collision;

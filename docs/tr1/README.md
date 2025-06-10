@@ -411,6 +411,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added ability to wade, similar to TR2+
 - added Lara's exit-water-to-medium-height animation from TR2+
 - added an option for smooth wall deflection when Lara comes to a stop at a wall, similar to TR2
+- added an option to fix the step glitch where Lara can be pushed into walls
 - added support for 60 FPS rendering
 - added a pause screen
 - added a choice whether to play NG or NG+ without having to play the entire game

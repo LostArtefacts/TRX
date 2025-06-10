@@ -33,7 +33,6 @@
 
 static int16_t m_OldSlideAngle = 1;
 
-static bool M_FixStepGlitch(void);
 static bool M_TestWall(
     const ITEM *item, int32_t front, int32_t right, int32_t down);
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
@@ -56,15 +55,6 @@ static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_Roll(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
-
-static bool M_FixStepGlitch(void)
-{
-#if TR_VERSION == 1
-    return true;
-#else
-    return g_Config.gameplay.fix_step_glitch;
-#endif
-}
 
 static bool M_TestWall(
     const ITEM *const item, const int32_t front, const int32_t right,
@@ -453,7 +443,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
 
     if (coll->side_mid.floor >= -STEPUP_HEIGHT
         && coll->side_mid.floor < -STEP_L / 2) {
-        if (M_FixStepGlitch()
+        if (g_Config.gameplay.fix_step_glitch
             && (coll->side_front.floor < -STEPUP_HEIGHT
                 || coll->side_front.floor >= -STEP_L / 2)) {
             coll->side_mid.floor = 0;
@@ -485,7 +475,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_FixStepGlitch() && coll->side_mid.floor > 100) {
+    if (g_Config.gameplay.fix_step_glitch && coll->side_mid.floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_START, 0);
@@ -572,11 +562,10 @@ static void M_Splat(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
     Lara_Col_Shift(coll);
-#if TR_VERSION >= 2
-    if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
+    if (!g_Config.gameplay.fix_step_glitch && coll->side_mid.floor > -STEP_L
+        && coll->side_mid.floor < STEP_L) {
         item->pos.y += coll->side_mid.floor;
     }
-#endif
 }
 
 static void M_Slide(ITEM *const item, COLL_INFO *const coll)
