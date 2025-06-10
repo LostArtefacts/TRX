@@ -28,6 +28,11 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_Initialise(const int16_t item_num)
 {
+    OBJECT *const obj = Object_Get(O_CENTAUR);
+    if (!obj->loaded) {
+        return;
+    }
+
     ITEM *const item = Item_Get(item_num);
 
     const int16_t centaur_item_num = Item_CreateLevelItem();
@@ -69,14 +74,17 @@ static void M_Control(const int16_t item_num)
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
 
-        const int16_t centaur_item_num = (intptr_t)item->data;
-        ITEM *const centaur = Item_Get(centaur_item_num);
-        centaur->touch_bits = 0;
-        Item_AddActive(centaur_item_num);
-        LOT_EnableBaddieAI(centaur_item_num, 1);
-        centaur->status = IS_ACTIVE;
-
-        Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
+        if (item->data != nullptr) {
+            const int16_t centaur_item_num = (intptr_t)item->data;
+            ITEM *const centaur = Item_Get(centaur_item_num);
+            centaur->touch_bits = 0;
+            Item_AddActive(centaur_item_num);
+            LOT_EnableBaddieAI(centaur_item_num, 1);
+            centaur->status = IS_ACTIVE;
+            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
+        } else {
+            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &item->pos, SPM_NORMAL);
+        }
     }
 }
 
