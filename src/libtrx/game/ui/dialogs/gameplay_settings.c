@@ -514,7 +514,6 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
     },
 #endif
 
-#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.fix_descending_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH),
@@ -523,6 +522,7 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.fix_wall_jump_glitch,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH),

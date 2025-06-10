@@ -104,6 +104,7 @@ typedef struct {
         bool fix_bear_ai;
         bool fix_bridge_collision;
         bool fix_wade_wall_hit;
+        bool fix_descending_glitch;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
