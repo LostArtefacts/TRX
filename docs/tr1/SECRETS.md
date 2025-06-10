@@ -79,5 +79,5 @@ MacOS builds require a paid Apple Developer account.
 
        The result is to be put as the value of the `MACOS_CERTIFICATE` secret.
 
-- `MAOS_CERTIFICATE_PWD`:  
+- `MACOS_CERTIFICATE_PWD`:  
     The password to the `MACOS_CERTIFICATE`.
