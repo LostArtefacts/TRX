@@ -83,12 +83,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         }
         break;
 
-    case GFSC_SELECT:
-        if (g_GameInfo.select_save_slot != -1) {
+    case GFSC_SELECT: {
+        const int16_t slot_num = Savegame_GetBoundSlot();
+        if (slot_num != -1) {
             // select level feature
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
-                Savegame_LoadOnlyResumeInfo(g_GameInfo.select_save_slot);
+                Savegame_LoadOnlyResumeInfo(slot_num);
                 const GF_LEVEL *tmp_level = level;
                 while (tmp_level != nullptr) {
                     Savegame_ResetCurrentInfo(tmp_level);
@@ -112,6 +113,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             }
         }
         break;
+    }
 
     default:
         if (level->type == GFL_GYM) {
