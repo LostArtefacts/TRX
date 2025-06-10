@@ -15,6 +15,7 @@
 - changed the underwater music volume setting to separate ambient and music volume sliders
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
 - fixed the `/play` command crashing when the game has only ATI saves (#3137, regression from 4.10)
+- fixed the `/play` command taking resume information from the highlighted slot (#3137, regression from 4.10)
 - fixed text glyphs having cut off right and bottom borders (regression from 4.7)
 - fixed unbind key option being available when it shouldn't (#3111, regression from 4.11)
 - fixed vertical FOV option not working properly (#3120, regression from 4.10)
