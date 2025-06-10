@@ -573,6 +573,8 @@
         "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Limits saving to the beginning of levels and save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level.",
         "GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT": "Smooth wall deflection",
         "GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Allows Lara to recover more quickly after hitting a wall and a direction key is held together with forward.",
+        "GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST": "Step roll boost",
+        "GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Allows Lara to be boosted off a one-click high step if roll is pressed near the edge.",
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL": "Swing cancels",
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
         "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE": "Target change",

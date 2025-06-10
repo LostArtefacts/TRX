@@ -116,6 +116,7 @@ typedef struct {
         bool enable_swing_cancel;
         bool enable_lean_jumping;
         bool enable_smooth_wall_deflect;
+        bool enable_step_roll_boost;
         int32_t turbo_speed;
         int32_t camera_speed;
         bool enable_game_modes;
