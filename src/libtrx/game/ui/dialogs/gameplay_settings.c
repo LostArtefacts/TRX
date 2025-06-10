@@ -274,6 +274,14 @@ static const UI_SETTINGS_OPTION m_ControlOptions[] = {
         .option_type = COT_BOOL,
     },
 
+    {
+        .target = &g_Config.gameplay.enable_smooth_wall_deflect,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT),
+        .description_id =
+            GS_ID(GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
 #if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_uw_roll,

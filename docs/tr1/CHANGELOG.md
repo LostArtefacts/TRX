@@ -6,6 +6,7 @@
 - added an option to adjust music and ambient volume while in inventory
 - added `enable_debug_pos` setting that shows Lara's position in realtime (reachable via `/debug`, fine-tuned `/set`)
 - added an option to control whether or not Lara responds to hitting a wall while wading (#3138)
+- added an option for smooth wall deflection when Lara comes to a stop at a wall, similar to TR2 (#3148)
 - changed sound and music volumes to be displayed as percentage instead of 0-10
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting

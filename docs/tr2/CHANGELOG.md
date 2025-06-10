@@ -14,6 +14,7 @@
 - added an option to fix jumping against walls in a certain way allowing teleporting (#3153)
 - added an option to disable swing cancelling (#3150)
 - added an option to disable lean jumping (#3151)
+- added an option to disable smooth wall deflection when Lara comes to a stop at a wall, similar to TR1 (#3148)
 - changed the music track slot limit from 64 to 1024 (#3101)
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
   - if playing original levels, make sure to update the game flow and injection files from this release

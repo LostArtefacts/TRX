@@ -228,38 +228,28 @@ static bool M_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
 
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    // TODO: this routine gives smoother recovery after splatting against a wall
-    // - offer it fully in TR1 as its only scope is currently for wading.
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->water_status != LWS_WADE) {
-        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
-        return;
-    }
-#endif
-
-    switch (coll->old_anim_state) {
-    case LS_STOP:
-    case LS_TURN_RIGHT:
-    case LS_TURN_LEFT:
-    case LS_FAST_TURN:
-        item->current_anim_state = coll->old_anim_state;
-        item->anim_num = coll->old_anim_num;
-        item->frame_num = coll->old_frame_num;
-        if (g_Input.left) {
-            item->goal_anim_state = LS_TURN_LEFT;
-        } else if (g_Input.right) {
-            item->goal_anim_state = LS_TURN_RIGHT;
-        } else {
-            item->goal_anim_state = LS_STOP;
+    if (g_Config.gameplay.enable_smooth_wall_deflect) {
+        switch (coll->old_anim_state) {
+        case LS_STOP:
+        case LS_TURN_RIGHT:
+        case LS_TURN_LEFT:
+        case LS_FAST_TURN:
+            item->current_anim_state = coll->old_anim_state;
+            item->anim_num = coll->old_anim_num;
+            item->frame_num = coll->old_frame_num;
+            if (g_Input.left) {
+                item->goal_anim_state = LS_TURN_LEFT;
+            } else if (g_Input.right) {
+                item->goal_anim_state = LS_TURN_RIGHT;
+            } else {
+                item->goal_anim_state = LS_STOP;
+            }
+            Lara_Animate(item);
+            return;
         }
-        Lara_Animate(item);
-        break;
-
-    default:
-        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
-        break;
     }
+
+    Item_SwitchToAnim(item, LA_STAND_STILL, 0);
 }
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
