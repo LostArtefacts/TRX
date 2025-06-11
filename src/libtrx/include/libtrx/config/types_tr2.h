@@ -34,6 +34,7 @@ typedef enum {
 
 typedef struct {
     bool loaded;
+    char *language;
 
     struct {
         int32_t keyboard_layout;

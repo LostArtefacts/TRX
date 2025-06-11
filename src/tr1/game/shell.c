@@ -24,7 +24,7 @@
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/game_buf.h>
-#include <libtrx/game/game_string_table.h>
+#include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
@@ -116,6 +116,10 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         Savegame_HighlightNewestSlot();
     }
 
+    if (CHANGED(language)) {
+        GameStringManager_ReloadLanguage(g_Config.language);
+    }
+
     Output_ApplyRenderSettings();
 }
 
@@ -134,7 +138,7 @@ void Shell_Shutdown(void)
     GameBuf_Shutdown();
     Savegame_Shutdown();
 
-    GameStringTable_Shutdown();
+    GameStringManager_Shutdown();
     GF_Shutdown();
 
     Overlay_Shutdown();
@@ -220,12 +224,10 @@ int32_t Shell_Main(void)
 
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
-    GameStringTable_Init();
-    if (m_Args.mod != M_MOD_OG) {
-        GameStringTable_Load(m_ModPaths[M_MOD_OG].game_strings_path, false);
-    }
-    GameStringTable_Load(m_ModPaths[m_Args.mod].game_strings_path, true);
-    GameStringTable_Apply(nullptr);
+    GameStringManager_SetBaseFiles(
+        m_ModPaths[M_MOD_OG].game_strings_path,
+        m_ModPaths[m_Args.mod].game_strings_path);
+    GameStringManager_ReloadLanguage(g_Config.language);
 
     Savegame_Init();
     Savegame_ScanSavedGames();

@@ -1,4 +1,6 @@
 {
+    "language_name": "English",
+
     "levels": [
         // Level 1: Return to Egypt
         {
@@ -35,5 +37,5 @@
         {
             "title": "Current Position",
         },
-    ],
+    ]
 }

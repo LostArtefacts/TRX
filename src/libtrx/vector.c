@@ -89,14 +89,14 @@ bool Vector_Contains(const VECTOR *const vector, const void *const item)
     return Vector_IndexOf(vector, item) != -1;
 }
 
-void *Vector_Get(VECTOR *const vector, const int32_t index)
+void *Vector_Get(const VECTOR *const vector, const int32_t index)
 {
     ASSERT(index >= 0 && index < vector->count);
     char *const items = P(vector).items;
     return (void *)(items + index * vector->item_size);
 }
 
-void *Vector_GetData(VECTOR *const vector)
+void *Vector_GetData(const VECTOR *const vector)
 {
     return P(vector).items;
 }

@@ -1,4 +1,5 @@
 CFG_BOOL(g_Config, gameplay.fix_m16_accuracy, true)
+CFG_STRING(g_Config, language, "en")
 CFG_BOOL(g_Config, gameplay.fix_item_duplication_glitch, false)
 CFG_BOOL(g_Config, gameplay.fix_qwop_glitch, false)
 CFG_BOOL(g_Config, gameplay.fix_step_glitch, false)

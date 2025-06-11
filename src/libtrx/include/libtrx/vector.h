@@ -22,8 +22,8 @@ int32_t Vector_IndexOf(const VECTOR *vector, const void *item);
 int32_t Vector_LastIndexOf(const VECTOR *vector, const void *item);
 bool Vector_Contains(const VECTOR *vector, const void *item);
 
-void *Vector_Get(VECTOR *vector, int32_t index);
-void *Vector_GetData(VECTOR *vector);
+void *Vector_Get(const VECTOR *vector, int32_t index);
+void *Vector_GetData(const VECTOR *vector);
 void Vector_Add(VECTOR *vector, const void *item);
 void Vector_Insert(VECTOR *vector, int32_t index, const void *item);
 void Vector_Swap(VECTOR *vector, int32_t index1, int32_t index2);

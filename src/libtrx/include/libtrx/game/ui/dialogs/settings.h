@@ -75,6 +75,8 @@ typedef struct {
         bool show;
         UI_TEXT_DIALOG_STATE state;
     } description;
+
+    int32_t listener_id;
 } UI_SETTINGS_STATE;
 
 void UI_Settings_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);

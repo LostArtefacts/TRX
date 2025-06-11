@@ -796,6 +796,8 @@
         "GRAPHIC_SETTINGS_TRAPEZOID_FILTER_DESCRIPTION": "Corrects rendering of quadrilaterals.",
         "GRAPHIC_SETTINGS_UI_BAR_SCALE": "Bar scale",
         "GRAPHIC_SETTINGS_UI_BAR_SCALE_DESCRIPTION": "Changes size of health, air and enemy bars.",
+        "GRAPHIC_SETTINGS_UI_LANGUAGE": "Language",
+        "GRAPHIC_SETTINGS_UI_LANGUAGE_DESCRIPTION": "Changes the language of the UI text.",
         "GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND": "Scroll wrap",
         "GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND_DESCRIPTION": "Lets directional navigation in menus loop around.",
         "GRAPHIC_SETTINGS_UI_STYLE_PC": "PC",

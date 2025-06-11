@@ -8,8 +8,3 @@ void GameString_Init(void)
 // force order
 #include "game_string.def"
 }
-
-void GameString_Shutdown(void)
-{
-    GameString_Clear();
-}
