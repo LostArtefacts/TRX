@@ -1,6 +1,8 @@
+#include "config.h"
 #include "game/camera/vars.h"
 #include "game/carrier.h"
 #include "game/creature.h"
+#include "game/game_flow.h"
 #include "game/lara/common.h"
 #include "game/los.h"
 #include "game/objects/vars.h"
@@ -217,7 +219,11 @@ static bool M_TestSwitchOrKill(
 void Creature_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->rot.y += (Random_GetControl() - DEG_90) >> 1;
+    // TODO: remove GF check once demo config reset is run before level load
+    if (g_Config.gameplay.enable_enemy_rotation
+        || GF_GetCurrentLevel()->type == GFL_DEMO) {
+        item->rot.y += (Random_GetControl() - DEG_90) >> 1;
+    }
     item->collidable = true;
     item->data = nullptr;
 }

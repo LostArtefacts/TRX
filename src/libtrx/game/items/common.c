@@ -180,6 +180,7 @@ void Item_Initialise(const int16_t item_num)
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     item->floor = sector->floor.height;
 
+    // TODO: remove GF check once demo config reset is run before level load
     if (Game_IsBonusFlagSet(GBF_NGPLUS)
         && GF_GetCurrentLevel()->type != GFL_DEMO) {
         item->hit_points *= 2;
