@@ -13,40 +13,11 @@
 
 typedef void (*M_LOAD_STRING_FUNC)(const char *, const char *);
 
-static struct {
-    GAME_OBJECT_ID target_object_id;
-    GAME_OBJECT_ID source_object_id;
-} m_ObjectAliases[] = {
-#define OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)                 \
-    { .target_object_id = target_object_id_,                                   \
-      .source_object_id = source_object_id_ },
-#define OBJ_NAME_DEFINE(object_id_, key_name_, default_name)
-#include "game/objects/names.def"
-#undef OBJ_ALIAS_DEFINE
-#undef OBJ_NAME_DEFINE
-    { .target_object_id = NO_OBJECT },
-};
-
 static VECTOR *m_GST_Layers = nullptr;
 
 static void M_Apply(const GS_TABLE *table);
 static void M_ApplyLevelTitles(
     const GS_FILE *gs_file, GF_LEVEL_TABLE_TYPE level_table_type);
-
-static void M_DoObjectAliases(void)
-{
-    for (int32_t i = 0; m_ObjectAliases[i].target_object_id != NO_OBJECT; i++) {
-        const GAME_OBJECT_ID target_object_id =
-            m_ObjectAliases[i].target_object_id;
-        const GAME_OBJECT_ID source_object_id =
-            m_ObjectAliases[i].source_object_id;
-        Object_SetName(target_object_id, Object_GetName(source_object_id));
-        const char *const description = Object_GetDescription(source_object_id);
-        if (description != nullptr) {
-            Object_SetDescription(target_object_id, description);
-        }
-    }
-}
 
 static void M_Apply(const GS_TABLE *const table)
 {
@@ -140,7 +111,6 @@ void GameStringTable_Apply(const GF_LEVEL *const level)
         const GS_FILE *const gs_file = *(GS_FILE **)Vector_Get(m_GST_Layers, i);
         M_ApplyLayer(level, gs_file);
     }
-    M_DoObjectAliases();
 }
 
 void GameStringTable_Init(void)
