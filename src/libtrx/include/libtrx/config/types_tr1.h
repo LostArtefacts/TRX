@@ -152,6 +152,7 @@ typedef struct {
         bool change_pierre_spawn;
         bool disable_trex_collision;
         bool restore_ps1_enemies;
+        bool enable_enemy_rotation;
         int32_t turbo_speed;
         int32_t start_lara_hitpoints;
         int32_t maximum_save_slots;

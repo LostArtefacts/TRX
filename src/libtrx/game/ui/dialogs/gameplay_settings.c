@@ -193,6 +193,14 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
 #endif
 
     {
+        .target = &g_Config.gameplay.enable_enemy_rotation,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_ENEMY_ROTATION),
+        .description_id =
+            GS_ID(GAMEPLAY_SETTINGS_ENABLE_ENEMY_ROTATION_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
+    {
         .target = nullptr,
     },
 };

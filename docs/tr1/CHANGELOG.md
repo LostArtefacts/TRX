@@ -10,6 +10,7 @@
 - added an option to fix the step glitch where Lara can be pushed into walls (#3148)
 - added an option to have Lara always roll off one-click steps rather than boosting forward (#3149)
 - added an option to toggle allowing Lara to exit from water horizontally, below, or climbing out onto non-standable slopes (#3154)
+- added an option to toggle random enemy initial angle adjustment (#3129)
 - changed sound and music volumes to be displayed as percentage instead of 0-10
 - changed the graphic settings dialog to use tabs
 - changed the setting dialogs to respect the UI wraparound setting

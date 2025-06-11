@@ -118,6 +118,7 @@ typedef struct {
         bool enable_lean_jumping;
         bool enable_smooth_wall_deflect;
         bool enable_step_roll_boost;
+        bool enable_enemy_rotation;
         int32_t turbo_speed;
         int32_t camera_speed;
         bool enable_game_modes;
