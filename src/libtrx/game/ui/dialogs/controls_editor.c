@@ -36,7 +36,7 @@ typedef enum {
 
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
-        .header = GS_ID(CONTROLS_SECTION_BASICS),
+        .header_gs = GS_ID(CONTROLS_SECTION_BASICS),
         .roles =
             (INPUT_ROLE[]) {
                 INPUT_ROLE_UP,
@@ -56,7 +56,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header = GS_ID(CONTROLS_SECTION_ITEMS),
+        .header_gs = GS_ID(CONTROLS_SECTION_ITEMS),
         .roles =
             (INPUT_ROLE[]) {
 #if TR_VERSION == 2
@@ -78,7 +78,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header = GS_ID(CONTROLS_SECTION_MISC),
+        .header_gs = GS_ID(CONTROLS_SECTION_MISC),
         .roles =
             (INPUT_ROLE[]) {
 #if TR_VERSION == 1
@@ -99,7 +99,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header = GS_ID(CONTROLS_SECTION_SYSTEM),
+        .header_gs = GS_ID(CONTROLS_SECTION_SYSTEM),
         .roles =
             (INPUT_ROLE[]) {
                 INPUT_ROLE_OPTION,
@@ -129,7 +129,8 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header = nullptr,
+        .header_gs = nullptr,
+        .roles = nullptr,
     },
 };
 
@@ -485,7 +486,8 @@ void UI_ControlsEditor_Init(
     {
         UI_TAB_SWITCH_TAB layout_tabs[INPUT_LAYOUT_NUMBER_OF];
         for (INPUT_LAYOUT i = 0; i < INPUT_LAYOUT_NUMBER_OF; i++) {
-            layout_tabs[i].header = Input_GetLayoutName(i);
+            layout_tabs[i].header_str = Input_GetLayoutName(i);
+            layout_tabs[i].header_gs = nullptr;
         }
         s->layout_tab_switch =
             UI_TabSwitch_Init(INPUT_LAYOUT_NUMBER_OF, layout_tabs);
@@ -493,19 +495,20 @@ void UI_ControlsEditor_Init(
 
     {
         int32_t tab_count = 0;
-        for (int32_t i = 0; m_Groups[i].header != nullptr; i++) {
+        for (int32_t i = 0; m_Groups[i].roles != nullptr; i++) {
             tab_count++;
         }
         UI_TAB_SWITCH_TAB controls_tabs[tab_count];
-        for (int32_t i = 0; m_Groups[i].header != nullptr; i++) {
-            controls_tabs[i].header = GameString_Get(m_Groups[i].header);
+        for (int32_t i = 0; m_Groups[i].roles != nullptr; i++) {
+            controls_tabs[i].header_gs = m_Groups[i].header_gs;
+            controls_tabs[i].header_str = nullptr;
         }
         s->controls_tab_switch = UI_TabSwitch_Init(tab_count, controls_tabs);
     }
 
     s->max_group_items = 0;
     for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
-         group->header != nullptr; group++) {
+         group->roles != nullptr; group++) {
         s->max_group_items =
             MAX(s->max_group_items, M_GetInputRoleCount(group));
     }
