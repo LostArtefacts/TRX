@@ -129,7 +129,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
 
     if (track <= MX_UNUSED_1 || track >= MAX_MUSIC_TRACKS
-        || !Gym_CanPlayMusicTrack(&track)) {
+        || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track))) {
         return;
     }
 

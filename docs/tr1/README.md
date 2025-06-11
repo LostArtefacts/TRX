@@ -629,6 +629,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **The Hive**: converted track 9 in room 8, track 6 in room 18, track 12 in room 30, track 18 in room 31, track 3 in room 32, and track 20 in room 35 to one shot
 - fixed being unable to load a level that contains no sound effect data
 - fixed the panther at times not making a sound when it dies
+- fixed being unable to re-purpose some gym music tracks in custom levels
 - restored Skate Kid's death SFX
 
 #### Mods
