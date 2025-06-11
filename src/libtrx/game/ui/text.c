@@ -7,6 +7,7 @@
 #include "game/scaler.h"
 #include "log.h"
 #include "memory.h"
+#include "strings.h"
 #include "utils.h"
 
 #include <ctype.h>
@@ -69,7 +70,6 @@ static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
 static int32_t M_Scale(const int32_t value);
-static size_t M_GetGlyphByteSize(const char *ptr);
 static const M_GLYPH_INFO **M_Decompose(
     const char *content, size_t *out_glyph_count);
 static const M_GLYPH_INFO **M_DecomposeWithCache(
@@ -83,29 +83,6 @@ static int32_t M_Scale(const int32_t value)
     return Scaler_Calc(value, SCALER_TARGET_TEXT);
 }
 
-static size_t M_GetGlyphByteSize(const char *const ptr)
-{
-    // Check for named escape sequence.
-    if (*ptr == '\\' && *(ptr + 1) == '{') {
-        const char *end = strchr(ptr + 2, '}');
-        if (end != nullptr) {
-            return end + 1 - ptr;
-        }
-        return 1;
-    }
-
-    // clang-format off
-    // UTF-8 sequence lengths
-    if ((*ptr & 0x80) == 0x00) { return 1; } // 1-byte sequence
-    if ((*ptr & 0xE0) == 0xC0) { return 2; } // 2-byte sequence
-    if ((*ptr & 0xF0) == 0xE0) { return 3; } // 3-byte sequence
-    if ((*ptr & 0xF8) == 0xF0) { return 4; } // 4-byte sequence
-    // clang-format on
-
-    // Fallback to 1
-    return 1;
-}
-
 static const M_GLYPH_INFO **M_Decompose(
     const char *const content, size_t *const out_glyph_count)
 {
@@ -113,7 +90,7 @@ static const M_GLYPH_INFO **M_Decompose(
     size_t glyph_count = 0;
     const char *content_ptr = content;
     while (*content_ptr != '\0') {
-        const size_t glyph_size = M_GetGlyphByteSize(content_ptr);
+        const size_t glyph_size = String_GetCharByteSize(content_ptr);
         content_ptr += glyph_size;
         glyph_count++;
     }
@@ -124,7 +101,7 @@ static const M_GLYPH_INFO **M_Decompose(
     content_ptr = content;
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*content_ptr != '\0') {
-        const size_t glyph_size = M_GetGlyphByteSize(content_ptr);
+        const size_t glyph_size = String_GetCharByteSize(content_ptr);
         if (m_GlyphLookupKeyCap <= glyph_size) {
             m_GlyphLookupKeyCap = glyph_size + 10;
             m_GlyphLookupKey =

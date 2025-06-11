@@ -305,6 +305,7 @@ sources = [
   'memory.c',
   'screenshot.c',
   'strings/common.c',
+  'strings/case_funcs.c',
   'strings/fuzzy_match.c',
   'vector.c',
   'virtual_file.c',

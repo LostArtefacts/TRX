@@ -226,25 +226,6 @@ bool String_ParseRGB888(const char *value, RGB_888 *const target)
         == 3;
 }
 
-char *String_ToUpper(const char *text)
-{
-    if (text == nullptr) {
-        return nullptr;
-    }
-
-    const size_t text_len = strlen(text);
-    char *const upper_text = Memory_Alloc(text_len + 1);
-
-    char *dest = upper_text;
-
-    while (*text != '\0') {
-        *dest++ = toupper(*text++);
-    }
-
-    *dest = '\0';
-    return upper_text;
-}
-
 VECTOR *String_Paginate(const char *const text, const int32_t max_lines)
 {
     VECTOR *const pages = Vector_Create(sizeof(char *));
