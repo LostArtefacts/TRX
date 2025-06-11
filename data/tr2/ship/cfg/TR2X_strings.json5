@@ -778,7 +778,7 @@
         "GRAPHIC_SETTINGS_RESOLUTION_DESCRIPTION": "Overrides game resolution.",
         "GRAPHIC_SETTINGS_SCALER": "Scaler",
         "GRAPHIC_SETTINGS_SCALER_DESCRIPTION": "Upscales game by a set factor, maintaining pixellated look.",
-        "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Screeenshot format",
+        "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Screenshot format",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_DESCRIPTION": "Screenshot file format.",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_JPG": "JPG",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_PNG": "PNG",
