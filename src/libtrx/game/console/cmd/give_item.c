@@ -60,19 +60,17 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     bool found = false;
     int32_t match_count = 0;
-    GAME_OBJECT_ID *matching_objs =
+    OBJECT_NAME_MATCH *matches =
         Object_IdsFromName(args, &match_count, M_CanTargetObjectPickup);
     for (int32_t i = 0; i < match_count; i++) {
-        const GAME_OBJECT_ID obj_id = matching_objs[i];
-        const char *obj_name = Object_GetName(obj_id);
-        if (obj_name == nullptr) {
-            obj_name = args;
-        }
+        const GAME_OBJECT_ID obj_id = matches[i].object_id;
+        const char *const obj_name =
+            matches[i].matched_name != nullptr ? matches[i].matched_name : args;
         Inv_AddItemNTimes(obj_id, num);
         Console_Log(GS(OSD_GIVE_ITEM), obj_name);
         found = true;
     }
-    Memory_FreePointer(&matching_objs);
+    Memory_FreePointer(&matches);
 
     if (!found) {
         Console_Log(GS(OSD_INVALID_ITEM), args);
