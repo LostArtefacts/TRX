@@ -116,7 +116,7 @@ void Object_ResetNames(void)
 #undef OBJ_ALIAS_DEFINE
 }
 
-GAME_OBJECT_ID *Object_IdsFromName(
+OBJECT_NAME_MATCH *Object_IdsFromName(
     const char *user_input, int32_t *out_match_count,
     bool (*filter)(GAME_OBJECT_ID))
 {
@@ -127,6 +127,7 @@ GAME_OBJECT_ID *Object_IdsFromName(
             continue;
         }
 
+        const M_NAME_ENTRY *const name_entry = M_ResolveNameEntry(obj_id);
         {
             STRING_FUZZY_SOURCE source_item = {
                 .key = Object_GetName(obj_id),
@@ -149,21 +150,21 @@ GAME_OBJECT_ID *Object_IdsFromName(
     }
 
     VECTOR *matches = String_FuzzyMatch(user_input, source);
-    GAME_OBJECT_ID *results =
-        Memory_Alloc(sizeof(GAME_OBJECT_ID) * (matches->count + 1));
+    OBJECT_NAME_MATCH *results =
+        Memory_Alloc(sizeof(OBJECT_NAME_MATCH) * (matches->count + 1));
     for (int32_t i = 0; i < matches->count; i++) {
         const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
-        results[i] = (GAME_OBJECT_ID)(intptr_t)match->value;
+        results[i].object_id = (GAME_OBJECT_ID)(intptr_t)match->value;
+        results[i].matched_name = match->key;
     }
-    results[matches->count] = NO_OBJECT;
+    results[matches->count].object_id = NO_OBJECT;
+    results[matches->count].matched_name = nullptr;
     if (out_match_count != nullptr) {
         *out_match_count = matches->count;
     }
 
     Vector_Free(matches);
     Vector_Free(source);
-    matches = nullptr;
-
     return results;
 }
 

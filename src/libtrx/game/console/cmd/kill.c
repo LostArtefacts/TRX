@@ -119,7 +119,7 @@ static COMMAND_RESULT M_KillEnemyType(const char *const enemy_name)
     bool matches_found = false;
     int32_t num_killed = 0;
     int32_t match_count = 0;
-    GAME_OBJECT_ID *matching_objs =
+    OBJECT_NAME_MATCH *matches =
         Object_IdsFromName(enemy_name, &match_count, M_CanTargetObjectCreature);
 
     for (int16_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
@@ -127,7 +127,7 @@ static COMMAND_RESULT M_KillEnemyType(const char *const enemy_name)
 
         bool is_matched = false;
         for (int32_t i = 0; i < match_count; i++) {
-            if (matching_objs[i] == item->object_id) {
+            if (matches[i].object_id == item->object_id) {
                 is_matched = true;
                 break;
             }
@@ -141,7 +141,7 @@ static COMMAND_RESULT M_KillEnemyType(const char *const enemy_name)
             num_killed++;
         }
     }
-    Memory_FreePointer(&matching_objs);
+    Memory_FreePointer(&matches);
 
     if (!matches_found) {
         Console_Log(GS(OSD_INVALID_OBJECT), enemy_name);

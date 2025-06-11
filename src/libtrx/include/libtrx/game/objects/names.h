@@ -4,6 +4,11 @@
 
 #include <stdint.h>
 
+typedef struct {
+    GAME_OBJECT_ID object_id;
+    const char *matched_name;
+} OBJECT_NAME_MATCH;
+
 const char *Object_GetName(GAME_OBJECT_ID obj_id);
 const char *Object_GetDescription(GAME_OBJECT_ID obj_id);
 
@@ -12,10 +17,10 @@ void Object_ResetNames(void);
 void Object_SetName(GAME_OBJECT_ID obj_id, const char *name);
 void Object_SetDescription(GAME_OBJECT_ID obj_id, const char *description);
 
-// Return a list of object ids that match given string.
-// out_match_count may be nullptr.
-// The result must be freed by the caller.
-GAME_OBJECT_ID *Object_IdsFromName(
+// Return a list of matching names, with an optional filter callback to only
+// consider objects satisfying certain criteria. out_match_count may be
+// nullptr. The result must be freed by the caller with Memory_Free().
+OBJECT_NAME_MATCH *Object_IdsFromName(
     const char *name, int32_t *out_match_count, bool (*filter)(GAME_OBJECT_ID));
 
 // Return an unique object id for a given programmatic string.

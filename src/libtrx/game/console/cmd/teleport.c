@@ -21,7 +21,7 @@ static int16_t m_LastTeleportedItemNum = NO_ITEM;
 
 static bool M_CanTargetObject(GAME_OBJECT_ID obj_id);
 static bool M_CanTargetItem(
-    const ITEM *item, const GAME_OBJECT_ID *matching_objs, int32_t match_count);
+    const ITEM *item, const OBJECT_NAME_MATCH *matches, int32_t match_count);
 static const ITEM *M_GetItemToTeleporTo(const char *user_input);
 static bool M_IsFloatRound(float num);
 
@@ -55,7 +55,7 @@ static bool M_CanTargetObject(const GAME_OBJECT_ID obj_id)
 }
 
 static bool M_CanTargetItem(
-    const ITEM *const item, const GAME_OBJECT_ID *const matching_objs,
+    const ITEM *const item, const OBJECT_NAME_MATCH *const matches,
     const int32_t match_count)
 {
     // Collected pickups
@@ -73,7 +73,7 @@ static bool M_CanTargetItem(
     // Non-matches to user input
     bool is_matched = false;
     for (int32_t j = 0; j < match_count; j++) {
-        if (matching_objs[j] == item->object_id) {
+        if (matches[j].object_id == item->object_id) {
             is_matched = true;
             break;
         }
@@ -88,7 +88,7 @@ static bool M_CanTargetItem(
 static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
 {
     int32_t match_count = 0;
-    GAME_OBJECT_ID *matching_objs =
+    OBJECT_NAME_MATCH *matches =
         Object_IdsFromName(user_input, &match_count, M_CanTargetObject);
 
     const ITEM *const lara_item = Lara_GetItem();
@@ -101,7 +101,7 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
     int32_t closest_distance = INT32_MAX;
     for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
-        if (!M_CanTargetItem(item, matching_objs, match_count)) {
+        if (!M_CanTargetItem(item, matches, match_count)) {
             continue;
         }
 
@@ -125,7 +125,7 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
             }
 
             const ITEM *const item = Item_Get(item_num);
-            if (!M_CanTargetItem(item, matching_objs, match_count)) {
+            if (!M_CanTargetItem(item, matches, match_count)) {
                 continue;
             }
 
@@ -139,7 +139,7 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
         }
     }
 
-    Memory_FreePointer(&matching_objs);
+    Memory_FreePointer(&matches);
     return Item_Get(best_item_num);
 }
 
@@ -239,18 +239,28 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
         return CR_FAILURE;
     }
 
-    const char *obj_name = Object_GetName(best_item->object_id);
-    if (obj_name == nullptr) {
-        obj_name = user_input;
+    // Determine which alias matched via Object_IdsFromName
+    int32_t match_count = 0;
+    OBJECT_NAME_MATCH *matches =
+        Object_IdsFromName(user_input, &match_count, M_CanTargetObject);
+    const char *reported_name = user_input;
+    for (int32_t i = 0; i < match_count; i++) {
+        if (matches[i].object_id == best_item->object_id) {
+            if (matches[i].matched_name != nullptr) {
+                reported_name = matches[i].matched_name;
+            }
+            break;
+        }
     }
+    Memory_FreePointer(&matches);
 
     if (Lara_Cheat_Teleport(
             best_item->pos.x, best_item->pos.y - STEP_L / 4, best_item->pos.z,
             best_item->room_num)) {
         M_AlignLaraToItem(best_item);
-        Console_Log(GS(OSD_POS_SET_ITEM), obj_name);
+        Console_Log(GS(OSD_POS_SET_ITEM), reported_name);
     } else {
-        Console_Log(GS(OSD_POS_SET_ITEM_FAIL), obj_name);
+        Console_Log(GS(OSD_POS_SET_ITEM_FAIL), reported_name);
     }
     return CR_SUCCESS;
 }
