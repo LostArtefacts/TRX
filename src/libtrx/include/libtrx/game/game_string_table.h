@@ -1,5 +1,7 @@
 #pragma once
 
+#include "./game_flow/types.h"
+
 #include <stdint.h>
 
 void GameStringTable_Init(void);

@@ -49,9 +49,10 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *s);
 static bool M_CanExamine(const UI_SETTINGS_STATE *s, int32_t row_idx);
 static bool M_CanRestoreDefault(const UI_SETTINGS_STATE *s, int32_t row_idx);
 static void M_RestoreDefault(const UI_SETTINGS_STATE *s, int32_t row_idx);
-static void M_OptionsChanged(UI_SETTINGS_STATE *s);
+static void M_RecomputeSizes(UI_SETTINGS_STATE *s);
 static void M_Footer(const UI_SETTINGS_STATE *s);
 static void M_InitCommon(UI_SETTINGS_STATE *s, GAME_STRING_ID title);
+static void M_HandleConfigChange(const EVENT *event, void *data);
 
 static int32_t M_GetVisibleRows(void)
 {
@@ -399,7 +400,7 @@ static void M_RestoreDefault(
     Config_Write();
 }
 
-static void M_OptionsChanged(UI_SETTINGS_STATE *const s)
+static void M_RecomputeSizes(UI_SETTINGS_STATE *const s)
 {
     int32_t row_count = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
@@ -437,9 +438,16 @@ static void M_Footer(const UI_SETTINGS_STATE *const s)
     UI_EndStack();
 }
 
+static void M_HandleConfigChange(const EVENT *const event, void *const data)
+{
+    UI_SETTINGS_STATE *const s = data;
+    M_RecomputeSizes(s);
+}
+
 static void M_InitCommon(UI_SETTINGS_STATE *const s, const GAME_STRING_ID title)
 {
     s->title = title;
+    s->listener_id = Config_SubscribeChanges(M_HandleConfigChange, s);
 }
 
 void UI_Settings_Init(
@@ -456,7 +464,7 @@ void UI_Settings_Init(
     s->tabs = nullptr;
     s->tab_switch = nullptr;
     s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
-    M_OptionsChanged(s);
+    M_RecomputeSizes(s);
 }
 
 void UI_Settings_InitWithTabs(
@@ -480,11 +488,15 @@ void UI_Settings_InitWithTabs(
     }
     s->tab_switch = UI_TabSwitch_Init(tab_count, tab_switch_tabs);
     s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
-    M_OptionsChanged(s);
+    M_RecomputeSizes(s);
 }
 
 void UI_Settings_Free(UI_SETTINGS_STATE *const s)
 {
+    if (s->listener_id >= 0) {
+        Config_UnsubscribeChanges(s->listener_id);
+        s->listener_id = -1;
+    }
     if (s->tab_switch != nullptr) {
         UI_TabSwitch_Free(s->tab_switch);
         s->tab_switch = nullptr;
@@ -512,7 +524,7 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
     if (s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS) {
         if (UI_TabSwitch_Control(s->tab_switch)) {
             s->options = s->tabs[s->tab_switch->active_tab_idx].options;
-            M_OptionsChanged(s);
+            M_RecomputeSizes(s);
             return false;
         } else if (g_InputDB.menu_down) {
             s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;

@@ -1,7 +1,11 @@
 #include "game/ui/dialogs/graphic_settings.h"
 
 #include "config.h"
+#include "game/game_string_manager.h"
+#include "memory.h"
 #include "strings.h"
+
+#include <stdlib.h>
 
 static const UI_SETTINGS_ENUM_ENTRY m_HealthBarShowModeEnumEntries[] = {
     { BSM_DEFAULT, GS_ID(GRAPHIC_SETTINGS_BAR_MODE_DEFAULT) },
@@ -174,6 +178,89 @@ static bool M_ScreenResolution_RequestChangeValue(
     return true;
 }
 #endif
+
+// Custom handlers for changing UI language
+static VECTOR *m_Languages = nullptr;
+
+static void M_Language_Cleanup(void);
+static const VECTOR *M_Language_GetLanguages(void);
+static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *option);
+static bool M_Language_CanChangeValue(
+    const UI_SETTINGS_OPTION *option, int32_t dir);
+static bool M_Language_RequestChangeValue(
+    const UI_SETTINGS_OPTION *option, int32_t dir);
+
+static void M_Language_Cleanup(void)
+{
+    // Free the languages vector and its strings.
+    if (m_Languages != nullptr) {
+        for (int32_t i = 0; i < m_Languages->count; i++) {
+            char *lang = *(char **)Vector_Get(m_Languages, i);
+            Memory_Free(lang);
+        }
+        Vector_Free(m_Languages);
+        m_Languages = nullptr;
+    }
+}
+
+static const VECTOR *M_Language_GetLanguages(void)
+{
+    if (m_Languages == nullptr) {
+        // Initialize available languages for the language option.
+        m_Languages = GameStringManager_GetAvailableLanguages();
+        atexit(M_Language_Cleanup);
+    }
+    return m_Languages;
+}
+
+static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *const option)
+{
+    const VECTOR *const langs = M_Language_GetLanguages();
+    const char *const cur = *(char **)option->target;
+    for (int32_t i = 0; i < langs->count; i++) {
+        const char *const lang = *(char **)Vector_Get(langs, i);
+        if (String_Equivalent(lang, cur)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static const char *M_Language_FormatValue(
+    const UI_SETTINGS_OPTION *const option)
+{
+    const char *const code = *(const char **)option->target;
+    const char *const name = GameStringManager_GetLanguageName(code);
+    return name != nullptr ? name : code;
+}
+
+static bool M_Language_CanChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    const VECTOR *const langs = M_Language_GetLanguages();
+    if (langs->count < 2) {
+        return false;
+    }
+    const int32_t idx = M_Language_FindIndex(option);
+    if (idx < 0) {
+        return false;
+    }
+    return idx + dir >= 0 && idx + dir < langs->count;
+}
+
+static bool M_Language_RequestChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    const VECTOR *const langs = M_Language_GetLanguages();
+    if (!M_Language_CanChangeValue(option, dir)) {
+        return false;
+    }
+    int32_t idx = M_Language_FindIndex(option);
+    const char *const new_lang = *(char **)Vector_Get(langs, idx + dir);
+    Config_SetOptionValueFromString(Config_GetOption(option->target), new_lang);
+    GameStringManager_ReloadLanguage(new_lang);
+    return true;
+}
 
 static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
     {
@@ -364,7 +451,19 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
     },
 };
 
-static const UI_SETTINGS_OPTION m_UIOptions[] = {
+static UI_SETTINGS_OPTION m_UIOptions[] = {
+    {
+        .option_type = COT_STRING,
+        .label_id = GS_ID(GRAPHIC_SETTINGS_UI_LANGUAGE),
+        .description_id = GS_ID(GRAPHIC_SETTINGS_UI_LANGUAGE_DESCRIPTION),
+        .target = &g_Config.language,
+        .custom_handler = {
+            .format_value = M_Language_FormatValue,
+            .can_change_value = M_Language_CanChangeValue,
+            .request_change_value = M_Language_RequestChangeValue,
+        },
+    },
+
     {
         .option_type = COT_DOUBLE,
         .label_id = GS_ID(GRAPHIC_SETTINGS_UI_TEXT_SCALE),

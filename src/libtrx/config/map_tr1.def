@@ -1,4 +1,5 @@
 CFG_BOOL(g_Config, gameplay.disable_healing_between_levels, false)
+CFG_STRING(g_Config, language, "en")
 CFG_BOOL(g_Config, gameplay.disable_medpacks, false)
 CFG_BOOL(g_Config, gameplay.disable_magnums, false)
 CFG_BOOL(g_Config, gameplay.disable_uzis, false)

@@ -12,3 +12,4 @@ void GameString_Define(const char *key, const char *value);
 bool GameString_IsKnown(const char *key);
 const char *GameString_Get(const char *key);
 void GameString_Clear(void);
+void GameString_Shutdown(void);

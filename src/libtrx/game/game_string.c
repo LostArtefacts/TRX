@@ -55,3 +55,8 @@ void GameString_Clear(void)
         Memory_Free(entry);
     }
 }
+
+void GameString_Shutdown(void)
+{
+    GameString_Clear();
+}

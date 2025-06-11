@@ -13,6 +13,8 @@ repos:
     entry: tools/additional_lint
     language: python
     stages: [pre-commit]
+    additional_dependencies:
+      - pyjson5
 
   - id: additional-lint -a
     name: Run additional linters (repo-wide)
@@ -20,6 +22,8 @@ repos:
     language: python
     stages: [pre-commit]
     pass_filenames: false
+    additional_dependencies:
+      - pyjson5
 
   - id: imports
     name: imports
@@ -32,3 +36,5 @@ repos:
     entry: tools/update_gameflow
     language: python
     stages: [pre-commit]
+    additional_dependencies:
+      - pyjson5

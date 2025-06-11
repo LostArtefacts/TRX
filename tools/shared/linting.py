@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
 import json
 import re
+import sys
 from collections import defaultdict
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
+
+# enable importing translation_utils from this directory
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from translation_utils import (
+    REVIEW_MARKER,
+    JSONPointers,
+    clean,
+    find_base_file,
+    is_translation_file,
+    load_json5,
+    should_skip_object_name,
+)
 
 SHARED_PROJECT = "libtrx"
 CHILD_PROJECTS = ["tr1", "tr2"]
@@ -84,6 +98,41 @@ def lint_const_primitives(
             yield LintWarning(path, "useless const", line=i)
         if re.search(r"\*\s*const", line):
             yield LintWarning(path, "useless const", line=i)
+
+
+def lint_untranslated_game_strings(
+    context: LintContext, path: Path
+) -> Iterable[LintWarning]:
+    # Warn when translation JSON5 files are missing or have extra keys compared to their base file
+    if not is_translation_file(path):
+        return
+    try:
+        base_file = find_base_file(path)
+    except ValueError:
+        return
+    if not base_file.exists():
+        return
+
+    try:
+        base_data = load_json5(base_file)
+    except Exception as exc:
+        yield LintWarning(base_file, f"unable to parse base JSON5: {exc}")
+        return
+    try:
+        trans_data = load_json5(path)
+    except Exception as exc:
+        yield LintWarning(path, f"unable to parse JSON5: {exc}")
+        return
+
+    base_ptr = JSONPointers(base_data)
+    trans_ptr = JSONPointers(trans_data)
+    base_paths = list(base_ptr)
+
+    for ptr in base_paths:
+        if should_skip_object_name(ptr, trans_data):
+            continue
+        if not clean(trans_ptr.get(ptr)):
+            yield LintWarning(ptr, f"untranslated key '{ptr}'")
 
 
 def get_relevant_project(context: LintContext, path: Path) -> str:
@@ -268,6 +317,7 @@ ALL_FILE_LINTERS: list[
     lint_newlines,
     lint_trailing_whitespace,
     lint_const_primitives,
+    lint_untranslated_game_strings,
 ]
 
 ALL_BULK_LINTERS: list[

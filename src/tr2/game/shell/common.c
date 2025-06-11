@@ -27,7 +27,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_buf.h>
-#include <libtrx/game/game_string_table.h>
+#include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/creatures/bear.h>
 #include <libtrx/game/objects/creatures/wolf.h>
@@ -378,6 +378,10 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         Music_SetVolume(g_Config.audio.music_volume);
     }
 
+    if (CHANGED(language)) {
+        GameStringManager_ReloadLanguage(g_Config.language);
+    }
+
     if (CHANGED(window.is_fullscreen) || CHANGED(window.is_maximized)
         || CHANGED(window.width) || CHANGED(window.height)
         || CHANGED(rendering.scaler) || CHANGED(rendering.sizer)
@@ -491,12 +495,10 @@ int32_t Shell_Main(void)
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
 
-    GameStringTable_Init();
-    if (m_Args.mod != M_MOD_OG) {
-        GameStringTable_Load(m_ModPaths[M_MOD_OG].game_strings_path, false);
-    }
-    GameStringTable_Load(m_ModPaths[m_Args.mod].game_strings_path, true);
-    GameStringTable_Apply(nullptr);
+    GameStringManager_SetBaseFiles(
+        m_ModPaths[M_MOD_OG].game_strings_path,
+        m_ModPaths[m_Args.mod].game_strings_path);
+    GameStringManager_ReloadLanguage(g_Config.language);
 
     GameBuf_Init();
     Level_Init();
@@ -600,7 +602,7 @@ int32_t Shell_Main(void)
 
 void Shell_Shutdown(void)
 {
-    GameStringTable_Shutdown();
+    GameStringManager_Shutdown();
     GF_Shutdown();
 
     Render_Shutdown();
