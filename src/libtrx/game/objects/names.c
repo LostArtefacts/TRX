@@ -14,6 +14,9 @@ typedef struct {
     char *description;
 } M_NAME_ENTRY;
 
+static M_NAME_ENTRY m_NamesTable[O_NUMBER_OF] = {};
+static M_NAME_ENTRY *m_NamesResolver[O_NUMBER_OF] = {};
+
 static struct {
     GAME_OBJECT_ID object_id;
     const char *key_name;
@@ -27,9 +30,28 @@ static struct {
     { .object_id = NO_OBJECT },
 };
 
-static M_NAME_ENTRY m_NamesTable[O_NUMBER_OF] = {};
+// Compile-time aliases (ignoring key strings and names)
+static struct {
+    GAME_OBJECT_ID target_object_id;
+    GAME_OBJECT_ID source_object_id;
+} m_ObjectAliases[] = {
+#define OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)                 \
+    { .target_object_id = target_object_id_,                                   \
+      .source_object_id = source_object_id_ },
+#define OBJ_NAME_DEFINE(object_id_, key_name_, default_name)
+#include "game/objects/names.def"
+#undef OBJ_ALIAS_DEFINE
+#undef OBJ_NAME_DEFINE
+    { .target_object_id = NO_OBJECT },
+};
 
+static M_NAME_ENTRY *M_ResolveNameEntry(GAME_OBJECT_ID obj_id);
 static void M_ClearNames(void);
+
+static M_NAME_ENTRY *M_ResolveNameEntry(const GAME_OBJECT_ID obj_id)
+{
+    return m_NamesResolver[obj_id];
+}
 
 static void M_ClearNames(void)
 {
@@ -43,7 +65,7 @@ static void M_ClearNames(void)
 void Object_SetName(const GAME_OBJECT_ID obj_id, const char *const name)
 {
     ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
-    M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
+    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
     Memory_FreePointer(&entry->name);
     ASSERT(name != nullptr);
     entry->name = Memory_DupStr(name);
@@ -52,7 +74,7 @@ void Object_SetName(const GAME_OBJECT_ID obj_id, const char *const name)
 void Object_SetDescription(
     const GAME_OBJECT_ID obj_id, const char *const description)
 {
-    M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
+    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
     Memory_FreePointer(&entry->description);
     ASSERT(description != nullptr);
     entry->description = Memory_DupStr(description);
@@ -60,13 +82,13 @@ void Object_SetDescription(
 
 const char *Object_GetName(const GAME_OBJECT_ID obj_id)
 {
-    M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
+    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
     return entry != nullptr ? entry->name : nullptr;
 }
 
 const char *Object_GetDescription(GAME_OBJECT_ID obj_id)
 {
-    M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
+    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
     return entry != nullptr ? entry->description : nullptr;
 }
 
@@ -74,17 +96,21 @@ void Object_ResetNames(void)
 {
     M_ClearNames();
 
-// first set up the names
+    // Install compile-time aliases
+    for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
+        m_NamesResolver[obj_id] = &m_NamesTable[obj_id];
+    }
+    for (int32_t i = 0; m_ObjectAliases[i].target_object_id != NO_OBJECT; i++) {
+        const GAME_OBJECT_ID target_object_id =
+            m_ObjectAliases[i].target_object_id;
+        const GAME_OBJECT_ID source_object_id =
+            m_ObjectAliases[i].source_object_id;
+        m_NamesResolver[target_object_id] = &m_NamesTable[source_object_id];
+    }
+
+    // Then set up the names
 #define OBJ_ALIAS_DEFINE(target_object_id, source_object_id)
 #define OBJ_NAME_DEFINE(object_id, key, name) Object_SetName(object_id, name);
-#include "game/objects/names.def"
-#undef OBJ_NAME_DEFINE
-#undef OBJ_ALIAS_DEFINE
-
-// then do the aliases
-#define OBJ_ALIAS_DEFINE(target_object_id, source_object_id)                   \
-    Object_SetName(target_object_id, Object_GetName(source_object_id));
-#define OBJ_NAME_DEFINE(object_id, key, name)
 #include "game/objects/names.def"
 #undef OBJ_NAME_DEFINE
 #undef OBJ_ALIAS_DEFINE
