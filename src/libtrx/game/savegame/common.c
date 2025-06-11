@@ -66,6 +66,15 @@ static bool M_FillSlot(
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
     if (fp != nullptr) {
         if (strategy.fill_info_func(fp, savegame_info)) {
+#if SAVEGAME_USE_TRANSLATED_TITLES
+            const GF_LEVEL *const level =
+                GF_GetLevel(GFLT_MAIN, savegame_info->level_num);
+            if (level != nullptr) {
+                Memory_FreePointer(&savegame_info->level_title);
+                savegame_info->level_title = Memory_DupStr(level->title);
+            }
+#endif
+
             savegame_info->format = strategy.format;
             Memory_FreePointer(&savegame_info->full_path);
             savegame_info->full_path = Memory_DupStr(path);
