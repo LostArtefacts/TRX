@@ -12,9 +12,10 @@ typedef struct {
 const char *Object_GetName(GAME_OBJECT_ID obj_id);
 const char *Object_GetDescription(GAME_OBJECT_ID obj_id);
 
-void Object_ResetNames(void);
+void Object_ResetAllNames(void);
+void Object_ClearNames(GAME_OBJECT_ID obj_id);
+void Object_AddName(GAME_OBJECT_ID obj_id, const char *name);
 
-void Object_SetName(GAME_OBJECT_ID obj_id, const char *name);
 void Object_SetDescription(GAME_OBJECT_ID obj_id, const char *description);
 
 // Return a list of matching names, with an optional filter callback to only

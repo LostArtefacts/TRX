@@ -38,6 +38,7 @@ The document is organized as follows:
     },
     "objects": {
         "lara": {"name": "Lara"},
+        "dog": {"names": ["Dog", "Doberman"]},
         // etc
     },
     "game_strings": {
@@ -109,6 +110,20 @@ The document is organized as follows:
     <td>No</td>
     <td colspan="2">
       Allows to rename any object, including key items and pickups.
+    </td>
+  </tr>
+
+  <tr valign="top">
+    <td>
+      <code>names</code>
+    </td>
+    <td>String</td>
+    <td>No</td>
+    <td colspan="2">
+      Allows to give more than a single name to any object. Objects that show
+      up in the inventory ring will use the first name. Other than that, the
+      additional names can be used with various console commands such as
+      <code>/tp</code> and <code>/give</code>
     </td>
   </tr>
 

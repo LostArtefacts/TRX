@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
 - added UI for all config tool settings
 - added ingame help for all settings
+- added support for object name aliases; added aliases for dev commands
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
 - added an option to disable Lara's braid (#3089)
 - added an option to disable the breeze effect on Lara's braid (#3090)
