@@ -18,6 +18,7 @@ bool String_ParseInteger(const char *value, int32_t *target);
 bool String_ParseDecimal(const char *value, float *target);
 bool String_ParseRGB888(const char *value, RGB_888 *target);
 
+size_t String_GetCharByteSize(const char *ptr);
 char *String_ToUpper(const char *text);
 
 VECTOR *String_Paginate(const char *text, int32_t max_lines);
