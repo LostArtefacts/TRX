@@ -39,7 +39,9 @@ static void M_Draw(
                 is_focused ? UI_FRAME_SELECTED_OPTION : UI_FRAME_OUTLINE_ONLY);
         }
         UI_BeginPad(2.0f, 1.0f);
-        UI_Label(tab->header);
+        UI_Label(
+            tab->header_gs != nullptr ? GameString_Get(tab->header_gs)
+                                      : tab->header_str);
         UI_EndPad();
         if (i == s->active_tab_idx) {
             UI_EndFrame();

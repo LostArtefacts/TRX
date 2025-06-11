@@ -50,7 +50,7 @@ typedef enum {
 // A tab for grouping settings into separate, labeled pages.
 // Each tab has its own nullptr-terminated UI_SETTINGS_OPTION array.
 typedef struct UI_SETTINGS_TAB {
-    GAME_STRING_ID header;
+    GAME_STRING_ID header_gs;
     const UI_SETTINGS_OPTION *options;
 } UI_SETTINGS_TAB;
 

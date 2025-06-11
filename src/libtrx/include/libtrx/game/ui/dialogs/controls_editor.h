@@ -13,7 +13,7 @@
 #include "../scrollable.h"
 
 typedef struct {
-    GAME_STRING_ID header;
+    GAME_STRING_ID header_gs;
     INPUT_ROLE *roles;
 } UI_CONTROLS_EDITOR_GROUP;
 
