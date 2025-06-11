@@ -6,28 +6,35 @@
 #include "game/objects/vars.h"
 #include "memory.h"
 #include "strings/fuzzy_match.h"
+#include "vector.h"
 
 #include <string.h>
 
 typedef struct {
-    char *name;
+    VECTOR *names;
     char *description;
 } M_NAME_ENTRY;
 
 static M_NAME_ENTRY m_NamesTable[O_NUMBER_OF] = {};
 static M_NAME_ENTRY *m_NamesResolver[O_NUMBER_OF] = {};
 
-static struct {
+// Compile-time default names (ignoring key aliases)
+static const struct {
     GAME_OBJECT_ID object_id;
-    const char *key_name;
-} m_ObjectKeyNames[] = {
-#define OBJ_ALIAS_DEFINE(object_id_, source_object_id_)
-#define OBJ_NAME_DEFINE(object_id_, key_name_, default_name)                   \
-    { .object_id = object_id_, .key_name = key_name_ },
+    const char *key;
+    const char **default_names;
+} m_DefaultNames[] = {
+#define X_OBJ_NAMES(...) ((const char *[]) { __VA_ARGS__, nullptr })
+#define X_OBJ_NAME_DEFINE(object_id_, key_name_, names_array_)                 \
+    { .object_id = object_id_,                                                 \
+      .key = key_name_,                                                        \
+      .default_names = names_array_ },
+#define X_OBJ_ALIAS_DEFINE(target_object_id, source_object_id)
 #include "game/objects/names.def"
-#undef OBJ_ALIAS_DEFINE
-#undef OBJ_NAME_DEFINE
-    { .object_id = NO_OBJECT },
+#undef X_OBJ_ALIAS_DEFINE
+#undef X_OBJ_NAME_DEFINE
+#undef X_OBJ_NAMES
+    { .object_id = NO_OBJECT, .key = nullptr, .default_names = nullptr },
 };
 
 // Compile-time aliases (ignoring key strings and names)
@@ -35,40 +42,65 @@ static struct {
     GAME_OBJECT_ID target_object_id;
     GAME_OBJECT_ID source_object_id;
 } m_ObjectAliases[] = {
-#define OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)                 \
+#define X_OBJ_NAMES(...)
+#define X_OBJ_NAME_DEFINE(object_id_, key_name_, default_name)
+#define X_OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)               \
     { .target_object_id = target_object_id_,                                   \
       .source_object_id = source_object_id_ },
-#define OBJ_NAME_DEFINE(object_id_, key_name_, default_name)
 #include "game/objects/names.def"
-#undef OBJ_ALIAS_DEFINE
-#undef OBJ_NAME_DEFINE
+#undef X_OBJ_ALIAS_DEFINE
+#undef X_OBJ_NAME_DEFINE
+#undef X_OBJ_NAMES
     { .target_object_id = NO_OBJECT },
 };
 
 static M_NAME_ENTRY *M_ResolveNameEntry(GAME_OBJECT_ID obj_id);
-static void M_ClearNames(void);
+static void M_ClearAllNames(void);
 
 static M_NAME_ENTRY *M_ResolveNameEntry(const GAME_OBJECT_ID obj_id)
 {
     return m_NamesResolver[obj_id];
 }
 
-static void M_ClearNames(void)
+static void M_ClearAllNames(void)
 {
     for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
         M_NAME_ENTRY *const entry = &m_NamesTable[obj_id];
-        Memory_FreePointer(&entry->name);
+        if (entry->names != nullptr) {
+            for (int32_t i = 0; i < entry->names->count; i++) {
+                char *n = *(char **)Vector_Get(entry->names, i);
+                Memory_FreePointer(&n);
+            }
+            Vector_Free(entry->names);
+            entry->names = nullptr;
+        }
         Memory_FreePointer(&entry->description);
     }
 }
 
-void Object_SetName(const GAME_OBJECT_ID obj_id, const char *const name)
+void Object_ClearNames(const GAME_OBJECT_ID obj_id)
 {
     ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
     M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    Memory_FreePointer(&entry->name);
+    if (entry->names != nullptr) {
+        for (int32_t i = 0; i < entry->names->count; i++) {
+            char *n = *(char **)Vector_Get(entry->names, i);
+            Memory_FreePointer(&n);
+        }
+        Vector_Clear(entry->names);
+    }
+}
+
+void Object_AddName(const GAME_OBJECT_ID obj_id, const char *const name)
+{
+    ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
     ASSERT(name != nullptr);
-    entry->name = Memory_DupStr(name);
+    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
+    if (entry->names == nullptr) {
+        entry->names = Vector_Create(sizeof(char *));
+    }
+    char *const dup = Memory_DupStr(name);
+    Vector_Add(entry->names, &dup);
 }
 
 void Object_SetDescription(
@@ -76,14 +108,19 @@ void Object_SetDescription(
 {
     M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
     Memory_FreePointer(&entry->description);
-    ASSERT(description != nullptr);
-    entry->description = Memory_DupStr(description);
+    if (description != nullptr) {
+        entry->description = Memory_DupStr(description);
+    }
 }
 
 const char *Object_GetName(const GAME_OBJECT_ID obj_id)
 {
     M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    return entry != nullptr ? entry->name : nullptr;
+    if (entry != nullptr && entry->names != nullptr
+        && entry->names->count > 0) {
+        return *(char **)Vector_Get(entry->names, 0);
+    }
+    return nullptr;
 }
 
 const char *Object_GetDescription(GAME_OBJECT_ID obj_id)
@@ -92,9 +129,9 @@ const char *Object_GetDescription(GAME_OBJECT_ID obj_id)
     return entry != nullptr ? entry->description : nullptr;
 }
 
-void Object_ResetNames(void)
+void Object_ResetAllNames(void)
 {
-    M_ClearNames();
+    M_ClearAllNames();
 
     // Install compile-time aliases
     for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
@@ -108,12 +145,14 @@ void Object_ResetNames(void)
         m_NamesResolver[target_object_id] = &m_NamesTable[source_object_id];
     }
 
-    // Then set up the names
-#define OBJ_ALIAS_DEFINE(target_object_id, source_object_id)
-#define OBJ_NAME_DEFINE(object_id, key, name) Object_SetName(object_id, name);
-#include "game/objects/names.def"
-#undef OBJ_NAME_DEFINE
-#undef OBJ_ALIAS_DEFINE
+    // Now apply default names
+    for (size_t i = 0; m_DefaultNames[i].object_id != NO_OBJECT; i++) {
+        for (size_t j = 0; m_DefaultNames[i].default_names[j] != nullptr; j++) {
+            Object_AddName(
+                m_DefaultNames[i].object_id,
+                m_DefaultNames[i].default_names[j]);
+        }
+    }
 }
 
 OBJECT_NAME_MATCH *Object_IdsFromName(
@@ -128,14 +167,17 @@ OBJECT_NAME_MATCH *Object_IdsFromName(
         }
 
         const M_NAME_ENTRY *const name_entry = M_ResolveNameEntry(obj_id);
-        {
-            STRING_FUZZY_SOURCE source_item = {
-                .key = Object_GetName(obj_id),
-                .value = (void *)(intptr_t)obj_id,
-                .weight = 2,
-            };
-            if (source_item.key != nullptr) {
-                Vector_Add(source, &source_item);
+        if (name_entry->names != nullptr) {
+            for (int32_t i = 0; i < name_entry->names->count; i++) {
+                const char *name = *(char **)Vector_Get(name_entry->names, i);
+                if (name != nullptr) {
+                    STRING_FUZZY_SOURCE source_item = {
+                        .key = name,
+                        .value = (void *)(intptr_t)obj_id,
+                        .weight = 2,
+                    };
+                    Vector_Add(source, &source_item);
+                }
             }
         }
 
@@ -170,9 +212,9 @@ OBJECT_NAME_MATCH *Object_IdsFromName(
 
 GAME_OBJECT_ID Object_IdFromKey(const char *const key)
 {
-    for (int32_t i = 0; m_ObjectKeyNames[i].object_id != NO_OBJECT; i++) {
-        if (strcmp(m_ObjectKeyNames[i].key_name, key) == 0) {
-            return m_ObjectKeyNames[i].object_id;
+    for (int32_t i = 0; m_DefaultNames[i].object_id != NO_OBJECT; i++) {
+        if (strcmp(m_DefaultNames[i].key, key) == 0) {
+            return m_DefaultNames[i].object_id;
         }
     }
     return NO_OBJECT;

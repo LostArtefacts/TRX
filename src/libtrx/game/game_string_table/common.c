@@ -21,37 +21,31 @@ static void M_ApplyLevelTitles(
 
 static void M_Apply(const GS_TABLE *const table)
 {
-    {
-        const GS_GAME_STRING_ENTRY *cur = table->game_strings;
-        while (cur != nullptr && cur->key != nullptr) {
-            if (!GameString_IsKnown(cur->key)) {
-                LOG_ERROR("Invalid game string key: %s", cur->key);
-            } else if (cur->value == nullptr) {
-                LOG_ERROR("Invalid game string value: %s", cur->key);
-            } else {
-                GameString_Define(cur->key, cur->value);
-            }
-            cur++;
+    for (const GS_GAME_STRING_ENTRY *cur = table->game_strings;
+         cur != nullptr && cur->key != nullptr; cur++) {
+        if (!GameString_IsKnown(cur->key)) {
+            LOG_ERROR("Invalid game string key: %s", cur->key);
+        } else if (cur->value == nullptr) {
+            LOG_ERROR("Invalid game string value: %s", cur->key);
+        } else {
+            GameString_Define(cur->key, cur->value);
         }
     }
 
-    {
-        const GS_OBJECT_ENTRY *cur = table->objects;
-        while (cur != nullptr && cur->key != nullptr) {
-            const GAME_OBJECT_ID obj_id = Object_IdFromKey(cur->key);
-            if (obj_id == NO_OBJECT) {
-                LOG_ERROR("Invalid object id: %s", cur->key);
-            } else {
-                if (cur->name == nullptr) {
-                    LOG_ERROR("Invalid object name: %s", cur->key);
-                } else {
-                    Object_SetName(obj_id, cur->name);
-                }
-                if (cur->description != nullptr) {
-                    Object_SetDescription(obj_id, cur->description);
-                }
+    for (const GS_OBJECT_ENTRY *cur = table->objects;
+         cur != nullptr && cur->key != nullptr; cur++) {
+        const GAME_OBJECT_ID obj_id = Object_IdFromKey(cur->key);
+        if (obj_id == NO_OBJECT) {
+            LOG_ERROR("Invalid object id: %s", cur->key);
+        } else if (cur->names == nullptr) {
+            LOG_ERROR("Invalid object name(s): %s", cur->key);
+        } else {
+            Object_ClearNames(obj_id);
+            for (const char *const *name = cur->names; *name != nullptr;
+                 name++) {
+                Object_AddName(obj_id, *name);
             }
-            cur++;
+            Object_SetDescription(obj_id, cur->description);
         }
     }
 }
@@ -105,7 +99,7 @@ static void M_ApplyLayer(
 
 void GameStringTable_Apply(const GF_LEVEL *const level)
 {
-    Object_ResetNames();
+    Object_ResetAllNames();
     ASSERT(m_GST_Layers != nullptr);
     for (int32_t i = 0; i < m_GST_Layers->count; i++) {
         const GS_FILE *const gs_file = *(GS_FILE **)Vector_Get(m_GST_Layers, i);

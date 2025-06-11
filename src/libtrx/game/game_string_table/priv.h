@@ -7,7 +7,7 @@
 
 typedef struct {
     const char *key;
-    const char *name;
+    const char **names;
     const char *description;
 } GS_OBJECT_ENTRY;
 

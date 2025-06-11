@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...develop) - ××××-××-××
 - added UI for all config tool settings
 - added ingame help for all settings
+- added support for object name aliases; added aliases for dev commands
 - added an optional breeze effect for Lara's braid in appropriate outside rooms (#3090)
 - added key icons to the controls settings dialog
 - added an option to adjust music and ambient volume while in inventory

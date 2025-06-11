@@ -6,15 +6,24 @@ from pathlib import Path
 from shared.paths import PROJECT_PATHS, SHARED_INCLUDE_DIR
 
 
-def get_objects_map(paths: list[Path]) -> dict[str, str]:
-    result: dict[str, str] = {}
+def get_objects_map(paths: list[Path]) -> dict[str, list[str]]:
+    """
+    Parse object-name definitions from names.def-like files.
+    Supports:
+      X_OBJ_NAME_DEFINE(..., "key", X_OBJ_NAMES("Name1", "Name2", ...))
+    """
+    result: dict[str, list[str]] = {}
     for path in paths:
         for line in path.read_text().splitlines():
-            if match := re.match(
-                r'^OBJ_NAME_DEFINE\((\w+),\s*"([^"]+)",\s*"([^"]+)"\)$',
-                line.strip(),
-            ):
-                result[match.group(2)] = match.group(3)
+            text = line.strip()
+            match = re.match(
+                r'^X_OBJ_NAME_DEFINE\(\s*\w+\s*,\s*"([^"]+)"\s*,\s*X_OBJ_NAMES\(\s*(.+?)\s*\)\s*\)$',
+                text,
+            )
+            if match:
+                key = match.group(1)
+                names_list = re.findall(r'"([^"]+)"', match.group(2))
+                result.setdefault(key, []).extend(names_list)
     return result
 
 
@@ -31,7 +40,7 @@ def get_strings_map(paths: list[Path]) -> dict[str, str]:
 
 def postprocess_game_strings(
     content: str,
-    object_names_map: dict[str, str],
+    object_names_map: dict[str, list[str]],
     game_strings_map: dict[str, str],
 ) -> str:
     max_key_length = (
@@ -42,8 +51,15 @@ def postprocess_game_strings(
         r'^(    "objects": {)[\S\s]*?^(    })',
         '    "objects": {\n'
         + "\n".join(
-            f"{indent}{f'{json.dumps(key)}: '.ljust(max_key_length)}{json.dumps({'name': value})},"
-            for key, value in object_names_map.items()
+            (
+                f"{indent}{f'{json.dumps(key)}: '.ljust(max_key_length)}"
+                f"{json.dumps({'name': names[0]})},"
+                if len(names) == 1
+                else
+                f"{indent}{f'{json.dumps(key)}: '.ljust(max_key_length)}"
+                f"{json.dumps({'names': names})},"
+            )
+            for key, names in object_names_map.items()
         )
         + "\n    }",
         content,

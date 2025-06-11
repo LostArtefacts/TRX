@@ -28,25 +28,54 @@ static void M_LoadTableFromJSON(
             JSON_OBJECT *const jobj_obj = JSON_ValueAsObject(jobj_elem->value);
 
             const char *const key = jobj_elem->name->string;
-            const char *const name =
-                JSON_ObjectGetString(jobj_obj, "name", JSON_INVALID_STRING);
-            const char *const description = JSON_ObjectGetString(
-                jobj_obj, "description", JSON_INVALID_STRING);
-
             if (key == JSON_INVALID_STRING) {
                 LOG_WARNING(
                     "Invalid game string object entry %d: missing key.", i);
-            } else if (name == JSON_INVALID_STRING) {
-                LOG_WARNING(
-                    "Invalid game string object entry %s: missing value.", key);
-            } else {
-                GS_OBJECT_ENTRY *const object_entry = &out_table->objects[i];
-                object_entry->key = Memory_DupStr(key);
-                object_entry->name = Memory_DupStr(name);
-                object_entry->description = description != JSON_INVALID_STRING
-                    ? Memory_DupStr(description)
-                    : nullptr;
+                continue;
             }
+
+            const char *const single_name =
+                JSON_ObjectGetString(jobj_obj, "name", JSON_INVALID_STRING);
+            JSON_ARRAY *jnames_arr = JSON_ObjectGetArray(jobj_obj, "name");
+            if (jnames_arr == nullptr) {
+                jnames_arr = JSON_ObjectGetArray(jobj_obj, "names");
+            }
+
+            if (single_name == JSON_INVALID_STRING
+                && (jnames_arr == nullptr || jnames_arr->length == 0)) {
+                LOG_WARNING(
+                    "Invalid game string object entry %s: missing name.", key);
+                continue;
+            }
+
+            GS_OBJECT_ENTRY *const object_entry = &out_table->objects[i];
+            object_entry->key = Memory_DupStr(key);
+            if (jnames_arr != nullptr) {
+                object_entry->names = Memory_Alloc(
+                    sizeof(const char *) * (jnames_arr->length + 1));
+                JSON_ARRAY_ELEMENT *elem = jnames_arr->start;
+                size_t count = 0;
+                for (size_t j = 0; j < jnames_arr->length;
+                     j++, elem = elem->next) {
+                    const char *const name =
+                        JSON_ValueGetString(elem->value, JSON_INVALID_STRING);
+                    if (name != JSON_INVALID_STRING) {
+                        object_entry->names[count] = Memory_DupStr(name);
+                        count++;
+                    }
+                }
+                object_entry->names[count] = nullptr;
+            } else {
+                object_entry->names = Memory_Alloc(sizeof(const char *) * 2);
+                object_entry->names[0] = Memory_DupStr(single_name);
+                object_entry->names[1] = nullptr;
+            }
+
+            const char *const description = JSON_ObjectGetString(
+                jobj_obj, "description", JSON_INVALID_STRING);
+            object_entry->description = description != JSON_INVALID_STRING
+                ? Memory_DupStr(description)
+                : nullptr;
         }
     }
 
