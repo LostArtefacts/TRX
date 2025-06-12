@@ -138,7 +138,7 @@ typedef struct {
         bool enable_step_roll_boost;
         bool fix_floor_data_issues;
         bool fix_descending_glitch;
-        bool fix_wall_jump_glitch;
+        WALL_GLITCH_MODE wall_glitch_mode;
         bool fix_bridge_collision;
         bool fix_qwop_glitch;
         bool fix_item_duplication_glitch;

@@ -19,6 +19,13 @@ static const UI_SETTINGS_ENUM_ENTRY m_TargetModeEnumEntries[] = {
 };
 #endif
 
+static const UI_SETTINGS_ENUM_ENTRY m_WallGlitchEnumEntries[] = {
+    { WALL_GLITCH_FIXED, GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_FIXED) },
+    { WALL_GLITCH_TR1, GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_TR1) },
+    { WALL_GLITCH_TR2, GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_TR2) },
+    { -1, nullptr },
+};
+
 static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
     {
         .target = &g_Config.gameplay.enable_legal,
@@ -549,11 +556,13 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
     },
 
     {
-        .target = &g_Config.gameplay.fix_wall_jump_glitch,
-        .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH),
-        .description_id =
-            GS_ID(GAMEPLAY_SETTINGS_FIX_WALL_JUMP_GLITCH_DESCRIPTION),
-        .option_type = COT_BOOL,
+        .target = &g_Config.gameplay.wall_glitch_mode,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_MODE),
+        .description_id = GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_MODE_DESCRIPTION),
+        .option_type = COT_ENUM,
+        .delta_slow = 1,
+        .delta_fast = 1,
+        .misc = m_WallGlitchEnumEntries,
     },
 
     {

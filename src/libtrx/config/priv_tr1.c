@@ -124,7 +124,7 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     READ_FALLBACK_BOOL(g_Config.gameplay.enable_cutscenes, "enable_cine");
     READ_FALLBACK_BOOL(g_Config.gameplay.enable_legal, "enable_eidos_logo");
 
-    // ..4.11: 0…10 scale volumes to 0.0f…1.0f
+    // ..4.11: 0…10 scale volumes to 0.0f…1.0f and convert wall bug fix
     {
         const JSON_VALUE *const value =
             JSON_ObjectGetValue(parent_obj, "sound_volume");
@@ -142,6 +142,13 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         if (value != nullptr && value->type == JSON_TYPE_NUMBER
             && strchr(num->number, '.') == nullptr) {
             g_Config.audio.music_volume = JSON_ValueGetInt(value, 0) / 10.0f;
+        }
+    }
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "fix_wall_jump_glitch");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.gameplay.wall_glitch_mode = WALL_GLITCH_FIXED;
         }
     }
 }

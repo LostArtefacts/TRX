@@ -62,6 +62,12 @@ typedef enum {
     CAMERA_MODE_NUMBER_OF,
 } CAMERA_MODE;
 
+typedef enum {
+    WALL_GLITCH_FIXED,
+    WALL_GLITCH_TR1,
+    WALL_GLITCH_TR2,
+} WALL_GLITCH_MODE;
+
 #if TR_VERSION == 1
     #include "./types_tr1.h"
 #elif TR_VERSION == 2
