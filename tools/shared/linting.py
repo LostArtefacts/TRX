@@ -6,9 +6,13 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
+SHARED_PROJECT = "libtrx"
 CHILD_PROJECTS = ["tr1", "tr2"]
-PROJECTS = ["libtrx"] + CHILD_PROJECTS
-RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),.*\)")
+PROJECTS = [SHARED_PROJECT] + CHILD_PROJECTS
+RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),\s*\"(.*)\"\)")
+RE_GAME_STRING_DEFINE_VAL = re.compile(
+    r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"([^"]*)"\)'
+)
 RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID)?\(([A-Z0-9_]+)\)")
 
 
@@ -16,6 +20,14 @@ RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID)?\(([A-Z0-9_]+)\)")
 class LintContext:
     root_dir: Path
     versioned_files: list[Path]
+
+
+@dataclass
+class GameString:
+    project: str
+    path: Path
+    key: str
+    text: str
 
 
 @dataclass
@@ -98,28 +110,70 @@ def get_project_game_strings_paths(
     }
 
 
-def get_project_game_string_maps(context: LintContext) -> dict[str, set[str]]:
-    return {
-        project: [
-            match.group(1)
-            for path in def_paths
-            for match in re.finditer(RE_GAME_STRING_DEFINE, path.read_text())
-        ]
-        for project, def_paths in get_project_game_strings_paths(
-            context
-        ).items()
-    }
+def get_all_game_strings(context: LintContext) -> Iterable[GameString]:
+    for project, def_paths in get_project_game_strings_paths(context).items():
+        for path in def_paths:
+            for match in re.finditer(RE_GAME_STRING_DEFINE, path.read_text()):
+                yield GameString(
+                    project=project,
+                    path=path,
+                    key=match.group(1),
+                    text=match.group(2),
+                )
+
+
+def lint_duplicate_game_strings(context: LintContext) -> Iterable[LintWarning]:
+    project_game_strings = defaultdict(lambda: defaultdict(dict))
+    for game_string in get_all_game_strings(context):
+        project_game_strings[game_string.project][
+            game_string.key
+        ] = game_string
+    for child_project in CHILD_PROJECTS:
+        for child_string in project_game_strings.get(
+            child_project, []
+        ).values():
+            shared_string = project_game_strings.get(SHARED_PROJECT, []).get(
+                child_string.key
+            )
+            if shared_string and child_string.text == shared_string.text:
+                yield LintWarning(
+                    child_string.path,
+                    f"duplicate game string definition: {child_string.key} "
+                    f"in {child_project} matches {SHARED_PROJECT}",
+                )
+
+            sibling_projects = [
+                project
+                for project in CHILD_PROJECTS
+                if project != child_project
+            ]
+            sibling_strings = [
+                project_game_strings.get(sibling_project, []).get(
+                    child_string.key
+                )
+                for sibling_project in sibling_projects
+            ]
+            if all(
+                sibling_string and sibling_string.text == child_string.text
+                for sibling_string in sibling_strings
+            ):
+                yield LintWarning(
+                    sibling_strings[0].path,
+                    f"duplicate game string definition: {child_string.key} "
+                    f"in {child_project} matches all other child projects "
+                    "and should be moved to libtrx",
+                )
 
 
 def lint_undefined_game_strings(
     context: LintContext, paths: list[Path]
 ) -> Iterable[LintWarning]:
-    project_paths = get_project_paths(context)
     project_game_strings_paths = get_project_game_strings_paths(context)
-    def_string_map = get_project_game_string_maps(context)
-    if not def_string_map:
-        yield LintWarning("Unable to list game string definitions")
-        return
+    def_string_map: list[set[str]] = defaultdict(set)
+    game_strings = list(get_all_game_strings(context))
+    assert game_strings
+    for game_string in game_strings:
+        def_string_map[game_string.project].add(game_string.key)
 
     for path in paths:
         if path.suffix != ".c":
@@ -167,10 +221,7 @@ def lint_undefined_game_strings(
 def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
     project_paths = get_project_paths(context)
     project_game_strings_paths = get_project_game_strings_paths(context)
-    project_game_strings_maps = get_project_game_string_maps(context)
-    if not project_game_strings_maps:
-        yield LintWarning("Unable to list game string definitions")
-        return
+    game_strings = list(get_all_game_strings(context))
 
     used_strings = defaultdict(set)
     for path in context.versioned_files:
@@ -182,31 +233,32 @@ def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
             for match in re.finditer(RE_GAME_STRING_USAGE, line):
                 used_strings[relevant_project].add(match.group(1))
 
-    for project, defs in project_game_strings_maps.items():
+    for game_string in game_strings:
         relevant_projects = {
-            "libtrx": PROJECTS,
-            "tr1": ["tr1", "libtrx"],
-            "tr2": ["tr2", "libtrx"],
-        }[project]
-        for def_ in defs:
-            used_projects = {
-                rel_project
-                for rel_project in relevant_projects
-                if def_ in used_strings[rel_project]
-            }
-            if len(used_projects) == 0:
-                yield LintWarning(
-                    project_paths[project], f"unused game string: {def_}."
-                )
-            elif (
-                project == "libtrx"
-                and "libtrx" not in used_projects
-                and len(used_projects) == 1
-            ):
-                yield LintWarning(
-                    project_paths[project],
-                    f"game string used only in a single child project: {def_} ({used_projects!s}).",
-                )
+            SHARED_PROJECT: PROJECTS,
+            **{
+                child_project: [child_project, SHARED_PROJECT]
+                for child_project in CHILD_PROJECTS
+            },
+        }[game_string.project]
+        used_projects = {
+            rel_project
+            for rel_project in relevant_projects
+            if game_string.key in used_strings[rel_project]
+        }
+        if len(used_projects) == 0:
+            yield LintWarning(
+                game_string.path, f"unused game string: {game_string.key}."
+            )
+        elif (
+            game_string.project == SHARED_PROJECT
+            and SHARED_PROJECT not in used_projects
+            and len(used_projects) == 1
+        ):
+            yield LintWarning(
+                game_string.path,
+                f"game string used only in a single child project: {game_string.key} ({used_projects!s}).",
+            )
 
 
 ALL_FILE_LINTERS: list[
@@ -227,6 +279,7 @@ ALL_BULK_LINTERS: list[
 ALL_REPO_LINTERS: list[
     Callable[[LintContext, list[Path]], Iterable[LintWarning]]
 ] = [
+    lint_duplicate_game_strings,
     lint_unused_game_strings,
 ]
 
