@@ -149,3 +149,45 @@ bool Lara_IsM16Active(void)
         || item->current_anim_state == 4;
 #endif
 }
+
+void Lara_CatchFire(void)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->burn || lara_info->water_status == LWS_CHEAT) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const int16_t effect_num = Effect_Create(lara_item->room_num);
+    if (effect_num == NO_EFFECT) {
+        return;
+    }
+
+    EFFECT *const effect = Effect_Get(effect_num);
+    effect->frame_num = 0;
+    effect->object_id = O_FLAME;
+    effect->counter = -1;
+    lara_info->burn = true;
+}
+
+void Lara_Extinguish(void)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (!lara_info->burn) {
+        return;
+    }
+
+    lara_info->burn = false;
+
+    // put out flame objects
+    int16_t effect_num = Effect_GetActiveNum();
+    while (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        const int16_t next_effect_num = effect->next_active;
+        if (effect->object_id == O_FLAME && effect->counter < 0) {
+            effect->counter = 0;
+            Effect_Kill(effect_num);
+        }
+        effect_num = next_effect_num;
+    }
+}
