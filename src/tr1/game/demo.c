@@ -31,7 +31,8 @@
     PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, false);                    \
     PROCESS_CONFIG(gameplay.enable_wading, false);                             \
     PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                            \
-    PROCESS_CONFIG(gameplay.fix_bear_ai, false);
+    PROCESS_CONFIG(gameplay.fix_bear_ai, false);                               \
+    PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR1);
 
 typedef struct {
     const uint32_t *demo_ptr;

@@ -21,11 +21,15 @@
 #include <libtrx/game/music.h>
 #include <libtrx/log.h>
 
+#define MODIFY_CONFIG()                                                        \
+    PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR2);
+
 typedef struct {
     const uint32_t *demo_ptr;
     const GF_LEVEL *level;
 
     struct {
+        CONFIG config;
         GAME_BONUS_FLAG bonus_flag;
     } old_config;
 } M_PRIV;
@@ -40,13 +44,20 @@ static void M_RestoreConfig(M_PRIV *p);
 
 static void M_PrepareConfig(M_PRIV *const p)
 {
+    p->old_config.config = g_Config;
     p->old_config.bonus_flag = Game_GetBonusFlag();
     Game_SetBonusFlag(GBF_NONE);
+#undef PROCESS_CONFIG
+#define PROCESS_CONFIG(var, value) g_Config.var = value;
+    MODIFY_CONFIG();
 }
 
 static void M_RestoreConfig(M_PRIV *const p)
 {
     Game_SetBonusFlag(p->old_config.bonus_flag);
+#undef PROCESS_CONFIG
+#define PROCESS_CONFIG(var, value) g_Config.var = p->old_config.config.var;
+    MODIFY_CONFIG();
 }
 
 bool Demo_GetInput(void)
