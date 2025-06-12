@@ -232,7 +232,7 @@ static void M_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
             break;
         }
 #endif
-        if (!g_Config.gameplay.fix_wall_jump_glitch
+        if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_TR1
             || coll->side_mid.floor > (STEP_L * 2)) {
             item->goal_anim_state = LS_FAST_FALL;
             item->current_anim_state = LS_FAST_FALL;
@@ -376,7 +376,8 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (item->speed < 0) {
+    if (item->speed < 0
+        && g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_TR1) {
         lara->move_angle = item->rot.y + DEG_180;
     } else {
         lara->move_angle = item->rot.y;
@@ -387,7 +388,8 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
-    if (item->speed < 0) {
+    if (item->speed < 0
+        && g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_TR1) {
         lara->move_angle = item->rot.y;
     }
 
@@ -408,7 +410,9 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
     item->speed = 0;
-    Lara_Animate(item);
+    if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
+        Lara_Animate(item);
+    }
 }
 
 static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)

@@ -410,6 +410,8 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added ability to use Lara's underwater swimming physics from TR2+
 - added ability to wade, similar to TR2+
 - added Lara's exit-water-to-medium-height animation from TR2+
+- added an option to fix the breakable floor descending glitch
+- added an option to fix wall glitches, or to use TR2 wall glitch behaviour
 - added an option for smooth wall deflection when Lara comes to a stop at a wall, similar to TR2
 - added an option to fix the step glitch where Lara can be pushed into walls
 - added an option to have Lara always roll off one-click steps rather than boosting forward
