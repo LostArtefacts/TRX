@@ -19,6 +19,7 @@
 
 typedef enum {
     // special non-printable glyph roles
+    GLYPH_INVISIBLE,
     GLYPH_NORMAL,
     GLYPH_SPACE,
     GLYPH_NEW_LINE,
@@ -61,6 +62,7 @@ static M_GLYPH_INFO m_Glyphs[] = {
       .mesh_idx = mesh_idx_,                                                   \
       __VA_ARGS__ },
 #include "./text.def"
+    { .text = "\\{review}", .role = GLYPH_INVISIBLE },
     { .text = nullptr }, // guard
 };
 
@@ -172,7 +174,8 @@ static size_t M_WordWrap(
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
         const M_GLYPH_INFO *const glyph = glyphs[i];
-        if (glyph->role == GLYPH_NEW_LINE) {
+        if (glyph->role == GLYPH_INVISIBLE) {
+        } else if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
             in_bullet = false;
@@ -350,7 +353,8 @@ void UI_Text_Measure(
         float max_width = 0.0f;
         const M_GLYPH_INFO **glyph_ptr = glyphs;
         while (*glyph_ptr != nullptr) {
-            if ((*glyph_ptr)->role == GLYPH_SPACE) {
+            if ((*glyph_ptr)->role == GLYPH_INVISIBLE) {
+            } else if ((*glyph_ptr)->role == GLYPH_SPACE) {
                 width += M_WORD_SPACING;
             } else if (
                 (*glyph_ptr)->role == GLYPH_NEW_LINE
@@ -412,6 +416,10 @@ void UI_Text_Draw(
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
         const M_GLYPH_INFO *glyph = *glyph_ptr;
+        if (glyph->role == GLYPH_INVISIBLE) {
+            goto loop_end;
+        }
+
         if (glyph->role == GLYPH_NEW_LINE || glyph->role == GLYPH_NEW_PAGE) {
             y += UI_TEXT_HEIGHT * scale / UI_TEXT_BASE_SCALE;
             x = start_x;
