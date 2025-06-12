@@ -4,6 +4,7 @@
 #include "game/clock.h"
 #include "game/const.h"
 #include "game/game.h"
+#include "game/game_string.h"
 #include "game/lara/common.h"
 #include "game/scaler.h"
 #include "game/ui/elements/ammo_label.h"
@@ -153,16 +154,16 @@ static void M_DebugPosTopLeft(void)
 #endif
     UI_BeginStack(UI_STACK_HORIZONTAL);
     UI_BeginStack(UI_STACK_VERTICAL);
-    UI_Label("Position: ");
-    UI_Label("Rotation: ");
-    UI_Label("Speed: ");
+    UI_Label(GS(OVERLAY_DEBUG_POSITION));
+    UI_Label(GS(OVERLAY_DEBUG_ROTATION));
+    UI_Label(GS(OVERLAY_DEBUG_SPEED));
     UI_EndStack();
     UI_BeginStack(UI_STACK_VERTICAL);
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-        "%d, %d, %d ", lara->pos.x / WALL_L, lara->pos.y / WALL_L,
+        "%d, %d, %d", lara->pos.x / WALL_L, lara->pos.y / WALL_L,
         lara->pos.z / WALL_L)));
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-        "%d°, %d°, %d° ", (int32_t)lara->rot.x * 360 / DEG_360,
+        "%d°, %d°, %d°", (int32_t)lara->rot.x * 360 / DEG_360,
         (int32_t)lara->rot.y * 360 / DEG_360,
         (int32_t)lara->rot.z * 360 / DEG_360)));
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
