@@ -21,6 +21,9 @@
 - changed the music track slot limit from 64 to 1024 (#3101)
 - changed text kerning to a smaller value
 - changed the underwater music volume setting to separate ambient and music volume sliders
+- fixed a game crash in custom levels if centaur statues exploded without having centaur objects in the level file (#3155)
+- fixed being unable to re-purpose some gym music tracks in custom levels (#3164)
+- fixed Lara not catching fire after reloading a save made when she was on fire and enhanced saves are disabled (applies to new saves only) (#3157)
 - fixed 3D pickups misplacing or hiding UI elements with render mode set to window size and the game windowed (#3067, regression from 4.10)
 - fixed the `/play` command crashing when the game has only ATI saves (#3137, regression from 4.10)
 - fixed the `/play` command taking resume information from the highlighted slot (#3137, regression from 4.10)
@@ -29,8 +32,6 @@
 - fixed vertical FOV option not working properly (#3120, regression from 4.10)
 - fixed Lara's position on a ledge after grabbing it extremely late (#3132, regression from 2.2.1)
 - fixed a rare crash when editing certain dev console history entries (#2913, regression from 4.10)
-- fixed a game crash in custom levels if centaur statues exploded without having centaur objects in the level file (#3155)
-- fixed being unable to re-purpose some gym music tracks in custom levels (#3164)
 - fixed a desync in the Vilcabamba demo if the wall glitch fix option was enabled (#3172, regression from 1.3)
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion
 

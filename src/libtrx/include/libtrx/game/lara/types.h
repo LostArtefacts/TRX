@@ -75,6 +75,7 @@ typedef struct {
     } interp;
 
     bool extra_anim;
+    bool burn;
 
 #if TR_VERSION == 1
     LARA_GUN_TYPE holsters_gun_type;
@@ -93,7 +94,6 @@ typedef struct {
 
     bool climb_status;
     bool enable_look;
-    bool burn;
 
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;

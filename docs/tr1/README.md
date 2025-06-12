@@ -497,6 +497,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed pushblocks being rotated when Lara grabs them, most noticeable if asymmetric textures have been used
 - fixed Lara becoming clamped if she picks up an item under a steeply sloped ceiling
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+
+- fixed Lara not catching fire after reloading a save made when she was on fire
 
 #### Cheats
 - added a fly cheat

@@ -30,6 +30,7 @@ static void M_Control(const int16_t effect_num)
             effect->counter = 0;
             Sound_StopEffect(SFX_FIRE);
             Effect_Kill(effect_num);
+            g_Lara.burn = false;
             return;
         }
 
@@ -52,12 +53,14 @@ static void M_Control(const int16_t effect_num)
             effect->counter = 0;
             Sound_StopEffect(SFX_FIRE);
             Effect_Kill(effect_num);
+            g_Lara.burn = false;
         } else {
             if (effect->room_num != g_LaraItem->room_num) {
                 Effect_NewRoom(effect_num, g_LaraItem->room_num);
             }
             Sound_Effect(SFX_FIRE, &effect->pos, SPM_NORMAL);
             Lara_TakeDamage(FLAME_ON_FIRE_DAMAGE, true);
+            g_Lara.burn = true;
         }
         return;
     }

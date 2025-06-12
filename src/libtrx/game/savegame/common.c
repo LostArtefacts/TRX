@@ -151,12 +151,11 @@ static void M_LoadPostprocess(void)
         g_Config.profile.new_game_plus_unlock = true;
     }
     LOT_ClearLOT(&lara->lot);
-#else
+#endif
     if (lara->burn && !g_Config.gameplay.enable_enhanced_saves) {
         lara->burn = false;
         Lara_CatchFire();
     }
-#endif
 }
 
 SAVEGAME_VERSION Savegame_GetInitialVersion(void)
