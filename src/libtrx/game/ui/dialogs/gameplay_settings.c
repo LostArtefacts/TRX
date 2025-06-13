@@ -419,6 +419,19 @@ static const UI_SETTINGS_OPTION m_GameplayModOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 2
+    {
+        .target = &g_Config.gameplay.harpoon_recoil,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_HARPOON_RECOIL),
+        .description_id = GS_ID(GAMEPLAY_SETTINGS_HARPOON_RECOIL_DESCRIPTION),
+        .option_type = COT_INT32,
+        .min_value = 0,
+        .max_value = 1000,
+        .delta_slow = 1,
+        .delta_fast = 1,
+    },
+#endif
+
     {
         .target = &g_Config.gameplay.start_lara_hitpoints,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_START_LARA_HITPOINTS),

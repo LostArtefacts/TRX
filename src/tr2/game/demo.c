@@ -22,6 +22,7 @@
 #include <libtrx/log.h>
 
 #define MODIFY_CONFIG()                                                        \
+    PROCESS_CONFIG(gameplay.harpoon_recoil, 4);                                \
     PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);         \
     PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);            \
     PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR2);
