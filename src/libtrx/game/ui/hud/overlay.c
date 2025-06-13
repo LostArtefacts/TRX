@@ -73,7 +73,8 @@ static bool M_LaraHealthBar(
     if (location != g_Config.ui.lara_health_bar.location) {
         return false;
     }
-    if (!Game_IsPlaying() && !s->force_show_healthbar) {
+    if (!Lara_IsControllable()
+        || (!Game_IsPlaying() && !s->force_show_healthbar)) {
         return false;
     }
     if (!g_Config.ui.enable_game_ui) {
@@ -91,7 +92,7 @@ static bool M_LaraAirBar(
     if (location != g_Config.ui.lara_air_bar.location) {
         return false;
     }
-    if (!Game_IsPlaying()) {
+    if (!Lara_IsControllable() || !Game_IsPlaying()) {
         return false;
     }
     if (!g_Config.ui.enable_game_ui) {

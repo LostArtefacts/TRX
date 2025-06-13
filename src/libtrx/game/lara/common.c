@@ -11,6 +11,18 @@
 #define M_MOVE_SPEED 16
 #define M_MOVE_ANGLE (2 * DEG_1) // = 364
 
+static bool m_Controllable = false;
+
+bool Lara_IsControllable(void)
+{
+    return m_Controllable;
+}
+
+void Lara_SetControllable(const bool controllable)
+{
+    m_Controllable = controllable;
+}
+
 void Lara_Animate(ITEM *const item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
