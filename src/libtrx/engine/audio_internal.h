@@ -10,6 +10,7 @@
 #define AUDIO_SAMPLES 500
 #define AUDIO_WORKING_CHANNELS 2
 
+extern SDL_AudioSpec g_AudioDeviceParms;
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
 int32_t Audio_GetAVChannelLayout(int32_t sample_fmt);
@@ -23,3 +24,4 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len);
 void Audio_Stream_Init(void);
 void Audio_Stream_Shutdown(void);
 void Audio_Stream_Mix(float *dst_buffer, size_t len);
+void Audio_Stream_Reload(void);

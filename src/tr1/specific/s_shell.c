@@ -10,6 +10,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
@@ -205,6 +206,11 @@ void Shell_ProcessEvents(void)
 
         case SDL_TEXTINPUT:
             UI_HandleTextEdit(event.text.text);
+            break;
+
+        case SDL_AUDIODEVICEADDED:
+        case SDL_AUDIODEVICEREMOVED:
+            Audio_HandleSDLEvent(&event);
             break;
 
         case SDL_CONTROLLERDEVICEADDED:
