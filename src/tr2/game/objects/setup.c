@@ -3,6 +3,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/lara.h>
 
 #define DEFAULT_RADIUS 10
@@ -16,7 +17,7 @@ static void M_SetupLara(void)
     obj->initialise_func = Lara_InitialiseLoad;
 
     obj->shadow_size = (UNIT_SHADOW / 16) * 10;
-    obj->hit_points = LARA_MAX_HITPOINTS;
+    obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
     obj->draw_func = Object_DrawDummyItem;
 
     obj->save_position = true;

@@ -6,6 +6,7 @@
 #include "game/clock.h"
 #include "game/gym.h"
 #include "game/input.h"
+#include "game/lara/const.h"
 #include "log.h"
 #include "utils.h"
 
@@ -185,4 +186,5 @@ void Config_Sanitize(void)
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
+    CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
 }

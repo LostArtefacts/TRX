@@ -1,5 +1,5 @@
+#include "game/lara/const.h"
 #if TR_VERSION == 1
-    #include "game/lara/const.h"
     #include "map_tr1.def"
 #elif TR_VERSION == 2
     #include "map_tr2.def"

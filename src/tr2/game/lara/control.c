@@ -16,6 +16,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/lara.h>
@@ -695,11 +696,16 @@ void Lara_InitialiseLoad(const int16_t item_num)
 
 void Lara_Initialise(const GF_LEVEL *const level)
 {
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     ITEM *const item = g_LaraItem;
 
     item->data = &g_Lara;
     item->collidable = false;
-    item->hit_points = LARA_MAX_HITPOINTS;
+    if (resume != nullptr) {
+        item->hit_points = g_Config.gameplay.disable_healing_between_levels
+            ? resume->lara_hitpoints
+            : g_Config.gameplay.start_lara_hitpoints;
+    }
 
     g_Lara.hit_direction = -1;
     g_Lara.vehicle_item_num = NO_ITEM;

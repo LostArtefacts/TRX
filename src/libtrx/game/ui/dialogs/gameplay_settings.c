@@ -419,7 +419,6 @@ static const UI_SETTINGS_OPTION m_GameplayModOptions[] = {
         .option_type = COT_BOOL,
     },
 
-#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.start_lara_hitpoints,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_START_LARA_HITPOINTS),
@@ -432,12 +431,14 @@ static const UI_SETTINGS_OPTION m_GameplayModOptions[] = {
         .delta_fast = 100,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.disable_medpacks,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_DISABLE_MEDPACKS),
         .description_id = GS_ID(GAMEPLAY_SETTINGS_DISABLE_MEDPACKS_DESCRIPTION),
         .option_type = COT_BOOL,
     },
+#endif
 
     {
         .target = &g_Config.gameplay.disable_healing_between_levels,
@@ -447,6 +448,7 @@ static const UI_SETTINGS_OPTION m_GameplayModOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.disable_shotgun,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_DISABLE_SHOTGUN),
