@@ -630,32 +630,9 @@ void Audio_Stream_Mix(float *dst_buffer, size_t len)
             const float *src_ptr = &m_MixBuffer[0];
             float *dst_ptr = dst_buffer;
 
-            const int32_t channels =
-                stream->av.codec_ctx->ch_layout.nb_channels;
-            if (channels == AUDIO_WORKING_CHANNELS) {
-                for (int32_t s = 0; s < samples_gotten; s++) {
-                    for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
-                        *dst_ptr++ += *src_ptr++ * stream->volume;
-                    }
-                }
-            } else if (channels == 1) {
-                for (int32_t s = 0; s < samples_gotten; s++) {
-                    for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
-                        *dst_ptr++ += *src_ptr * stream->volume;
-                    }
-                    src_ptr++;
-                }
-            } else {
-                for (int32_t s = 0; s < samples_gotten; s++) {
-                    // downmix to mono
-                    float src_sample = 0.0f;
-                    for (int32_t i = 0; i < channels; i++) {
-                        src_sample += *src_ptr++;
-                    }
-                    src_sample /= (float)channels;
-                    for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
-                        *dst_ptr++ += src_sample * stream->volume;
-                    }
+            for (int32_t s = 0; s < samples_gotten; s++) {
+                for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
+                    *dst_ptr++ += *src_ptr++ * stream->volume;
                 }
             }
         }
