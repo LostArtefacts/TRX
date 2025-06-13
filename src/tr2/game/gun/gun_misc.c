@@ -126,6 +126,10 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
             continue;
         }
 
+        if (!Creature_IsTargetable(item)) {
+            continue;
+        }
+
         const int32_t dx = item->pos.x - start.pos.x;
         const int32_t dy = item->pos.y - start.pos.y;
         const int32_t dz = item->pos.z - start.pos.z;

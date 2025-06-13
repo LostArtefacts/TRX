@@ -143,7 +143,9 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
         if (item->current_anim_state == TRAP_ACTIVATE) {
             Lara_TakeDamage(100, true);
         }
-    } else if (obj->intelligent && item->status == IS_ACTIVE) {
+    } else if (
+        obj->intelligent && item->status == IS_ACTIVE
+        && Creature_IsTargetable(item)) {
         Spawn_BloodBath(
             item->pos.x, skidoo->pos.y - STEP_L, item->pos.z, skidoo->speed,
             skidoo->rot.y, item->room_num, 3);
