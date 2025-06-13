@@ -736,7 +736,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         M_RingActive();
     }
 
-    Sound_EndScene();
     Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
 }
@@ -853,9 +852,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
     Overlay_HideGameInfo();
 
-    if (mode != INV_TITLE_MODE) {
+    if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {
         Music_Pause();
-        Sound_StopAll();
+        Sound_PauseAll();
+    } else {
+        Sound_ResetSources();
+        Sound_UpdateEffects();
     }
     Viewport_AlterFOV(80 * DEG_1);
 
