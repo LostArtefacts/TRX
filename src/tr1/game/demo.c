@@ -25,6 +25,8 @@
 #include <libtrx/log.h>
 
 #define MODIFY_CONFIG()                                                        \
+    PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);         \
+    PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);            \
     PROCESS_CONFIG(gameplay.enable_enhanced_look, false);                      \
     PROCESS_CONFIG(gameplay.enable_tr2_jumping, false);                        \
     PROCESS_CONFIG(gameplay.enable_tr2_swimming, false);                       \
