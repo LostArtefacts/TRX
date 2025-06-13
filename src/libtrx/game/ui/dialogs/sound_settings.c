@@ -72,13 +72,13 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .description_id = GS_ID(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC_DESCRIPTION),
         .option_type = COT_BOOL,
     },
+#endif
     {
         .target = &g_Config.audio.enable_music_in_inventory,
         .label_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY),
         .description_id = GS_ID(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION),
         .option_type = COT_INVERTED_BOOL,
     },
-#endif
     {
         .target = &g_Config.audio.inventory_ambient_volume,
         .label_id = GS_ID(SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME),

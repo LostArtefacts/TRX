@@ -7,7 +7,8 @@
 - added an option to disable Lara's braid (#3089)
 - added an option to disable the breeze effect on Lara's braid (#3090)
 - added key icons to the controls settings dialog
-- added an option to adjust music and ambient volume while in inventory
+- added an option to continue playing music while in the inventory (#1702)
+- added an option to adjust music and ambient volume while in the inventory (#2870)
 - added a `/debug` command
 - added `enable_debug_pos` setting that shows Lara's position in realtime (reachable via `/debug`)
 - added graphics effects to the savegame so they now persist on load (#2736)
