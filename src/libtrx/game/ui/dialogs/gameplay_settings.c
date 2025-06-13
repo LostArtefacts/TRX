@@ -207,6 +207,16 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 2
+    {
+        .target = &g_Config.gameplay.enable_ally_targeting,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_ALLY_TARGETING),
+        .description_id =
+            GS_ID(GAMEPLAY_SETTINGS_ENABLE_ALLY_TARGETING_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+#endif
+
     {
         .target = nullptr,
     },

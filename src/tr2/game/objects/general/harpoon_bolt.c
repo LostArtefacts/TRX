@@ -57,6 +57,10 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
+        if (!Creature_IsTargetable(target_item)) {
+            continue;
+        }
+
         const ANIM_FRAME *const frame = Item_GetBestFrame(target_item);
         if (frame == nullptr) {
             continue;

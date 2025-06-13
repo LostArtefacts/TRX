@@ -1096,6 +1096,15 @@ bool Creature_IsAlly(const ITEM *const item)
     return Object_IsType(item->object_id, g_AllyObjects);
 }
 
+bool Creature_IsTargetable(const ITEM *const item)
+{
+#if TR_VERSION == 1
+    return true;
+#else
+    return g_Config.gameplay.enable_ally_targeting || !Creature_IsAlly(item);
+#endif
+}
+
 int16_t Creature_Effect(
     const ITEM *const item, const BITE *const bite,
     int16_t (*const spawn)(
