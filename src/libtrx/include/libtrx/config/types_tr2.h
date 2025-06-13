@@ -124,6 +124,8 @@ typedef struct {
         int32_t turbo_speed;
         int32_t camera_speed;
         bool enable_game_modes;
+        int32_t start_lara_hitpoints;
+        bool disable_healing_between_levels;
     } gameplay;
 
     struct {

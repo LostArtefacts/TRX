@@ -21,6 +21,8 @@
 - added an option to toggle allowing Lara to exit from water horizontally, below, or climbing out onto non-standable slopes (#3154)
 - added an option to toggle random enemy initial angle adjustment (#3129)
 - added an option to prevent Lara targeting allies, either with weapons or the skidoo (#3012)
+- added an option to alter Lara's HP for the beginning of each level (#3179)
+- added an option to not restore Lara's HP at the beginning of each level (#3179)
 - changed the music track slot limit from 64 to 1024 (#3101)
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
   - if playing original levels, make sure to update the game flow and injection files from this release

@@ -5,6 +5,7 @@
 #include "global/types_decomp.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/gun/const.h>
 #include <libtrx/utils.h>
@@ -26,6 +27,11 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     RESUME_INFO *resume = Savegame_GetCurrentInfo(level);
     if (resume == nullptr) {
         return;
+    }
+
+    if (!g_Config.gameplay.disable_healing_between_levels
+        || level == GF_GetGymLevel() || level == GF_GetFirstLevel()) {
+        resume->lara_hitpoints = g_Config.gameplay.start_lara_hitpoints;
     }
 
     resume->flags.has_pistols = 1;

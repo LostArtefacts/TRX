@@ -251,6 +251,7 @@ void Savegame_Init(void)
     for (int32_t i = 0; i < level_table->count; i++) {
         RESUME_INFO *const resume_info =
             Savegame_GetCurrentInfo(&level_table->levels[i]);
+        resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
         resume_info->flags.available = 1;
         resume_info->flags.has_pistols = 1;
         resume_info->pistol_ammo = 1000;
@@ -259,7 +260,6 @@ void Savegame_Init(void)
 #if TR_VERSION == 1
         resume_info->holsters_gun_type = LGT_PISTOLS;
         resume_info->back_gun_type = LGT_UNARMED;
-        resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
 #endif
     }
 }
@@ -343,9 +343,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-#if TR_VERSION == 1
     resume->lara_hitpoints = Lara_GetItem()->hit_points;
-#endif
     resume->flags.available = 1;
     resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);

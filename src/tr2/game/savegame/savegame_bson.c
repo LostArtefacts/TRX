@@ -421,6 +421,8 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         JSON_OBJECT *const resume_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(
+            resume_obj, "lara_hitpoints", resume->lara_hitpoints);
         JSON_ObjectAppendInt(resume_obj, "pistol_ammo", resume->pistol_ammo);
         JSON_ObjectAppendInt(resume_obj, "magnum_ammo", resume->magnum_ammo);
         JSON_ObjectAppendInt(resume_obj, "uzi_ammo", resume->uzi_ammo);
@@ -488,6 +490,9 @@ static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
 
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        resume->lara_hitpoints = JSON_ObjectGetInt(
+            resume_obj, "lara_hitpoints",
+            g_Config.gameplay.start_lara_hitpoints);
         resume->pistol_ammo = JSON_ObjectGetInt(resume_obj, "pistol_ammo", 0);
         resume->magnum_ammo = JSON_ObjectGetInt(resume_obj, "magnum_ammo", 0);
         resume->uzi_ammo = JSON_ObjectGetInt(resume_obj, "uzi_ammo", 0);
