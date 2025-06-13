@@ -6,7 +6,6 @@
 #include "game/clock.h"
 #include "game/gym.h"
 #include "game/input.h"
-#include "game/lara/const.h"
 #include "log.h"
 #include "utils.h"
 
@@ -156,12 +155,8 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
-    CLAMP(
-        g_Config.gameplay.turbo_speed, CLOCK_TURBO_SPEED_MIN,
-        CLOCK_TURBO_SPEED_MAX);
     CLAMP(g_Config.rendering.scaler, 1, 4);
     CLAMP(g_Config.rendering.sizer, 0.4, 2.0);
-
     if (g_Config.rendering.render_mode != RM_HARDWARE
         && g_Config.rendering.render_mode != RM_SOFTWARE) {
         g_Config.rendering.render_mode = RM_SOFTWARE;
@@ -176,15 +171,5 @@ void Config_Sanitize(void)
     }
     CLAMP(g_Config.rendering.nearest_adjustment, 0, 256);
     CLAMP(g_Config.rendering.linear_adjustment, 0, 256);
-    if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
-        g_Config.rendering.fps = 30;
-    }
-
-    CLAMP(g_Config.gameplay.camera_speed, 1, 10);
-    CLAMP(g_Config.visuals.fog_start, 1, 100);
-    CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov, 30, 150);
-    CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
-    CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
-    CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
 }

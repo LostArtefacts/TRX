@@ -243,26 +243,10 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
-    CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
-    CLAMP(g_Config.visuals.fog_start, 1, 100);
-    CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov_value, 30, 150);
-    CLAMP(g_Config.gameplay.camera_speed, 1, 10);
-    CLAMP(g_Config.input.keyboard_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
-    CLAMP(g_Config.input.controller_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
     CLAMP(
         g_Config.visuals.brightness, CONFIG_MIN_BRIGHTNESS,
         CONFIG_MAX_BRIGHTNESS);
-    CLAMP(g_Config.ui.text_scale, CONFIG_MIN_TEXT_SCALE, CONFIG_MAX_TEXT_SCALE);
-    CLAMP(g_Config.ui.bar_scale, CONFIG_MIN_BAR_SCALE, CONFIG_MAX_BAR_SCALE);
-    CLAMP(
-        g_Config.gameplay.turbo_speed, CLOCK_TURBO_SPEED_MIN,
-        CLOCK_TURBO_SPEED_MAX);
     CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
     CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
-    CLAMP(g_Config.rendering.wireframe_width, 1.0, 100.0);
-
-    if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
-        g_Config.rendering.fps = 30;
-    }
 }
