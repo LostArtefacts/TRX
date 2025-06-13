@@ -827,7 +827,8 @@ void Lara_State_Extra_StartHouse(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_Extra_FinalAnim(ITEM *item, COLL_INFO *coll)
 {
-    item->hit_points = 1000;
+    item->hit_points = LARA_MAX_HITPOINTS;
+    Lara_SetControllable(false);
 
     if (Item_TestFrameEqual(item, LF_SHOWER_START)) {
         g_Lara.back_gun_obj_id = O_LARA;
