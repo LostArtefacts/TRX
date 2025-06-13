@@ -467,6 +467,7 @@ void Lara_InitialiseLoad(int16_t item_num)
 
 void Lara_Initialise(const GF_LEVEL *const level)
 {
+    Lara_SetControllable(true);
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
     g_LaraItem->collidable = 0;

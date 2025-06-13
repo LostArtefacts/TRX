@@ -35,6 +35,7 @@
 - fixed a rare crash when editing certain dev console history entries (#2913, regression from 4.10)
 - fixed a desync in the Vilcabamba demo if the wall glitch fix option was enabled (#3172, regression from 1.3)
 - fixed demos being affected if Lara's starting HP has been altered (#3180, regression from 2.6)
+- fixed Lara's health bar showing at the start of cutscenes (#3182, regression from 4.11)
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion
 
 ## [4.11.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...tr1-4.11.2) - 2025-05-24

@@ -2,6 +2,7 @@
 
 #include "game/cutscene.h"
 #include "game/game.h"
+#include "game/lara/common.h"
 #include "game/output.h"
 #include "memory.h"
 
@@ -26,6 +27,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         };
     }
     Game_SetIsPlaying(true);
+    Lara_SetControllable(false);
     return (PHASE_CONTROL) {};
 }
 

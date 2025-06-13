@@ -696,6 +696,7 @@ void Lara_InitialiseLoad(const int16_t item_num)
 
 void Lara_Initialise(const GF_LEVEL *const level)
 {
+    Lara_SetControllable(true);
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     ITEM *const item = g_LaraItem;
 
