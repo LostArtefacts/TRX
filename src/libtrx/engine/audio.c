@@ -9,26 +9,100 @@
 #include <stdint.h>
 #include <string.h>
 
+SDL_AudioSpec g_AudioDeviceParms = {};
 SDL_AudioDeviceID g_AudioDeviceID = 0;
+
 static int32_t m_RefCount = 0;
 static size_t m_MixBufferCapacity = 0;
 static float *m_MixBuffer = nullptr;
 static Uint8 m_Silence = 0;
+static Uint64 m_ReopenDebounce = 0;
 
+static int M_HandleSDLEvent(void *userdata, SDL_Event *event);
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len);
+static bool M_OpenDevice(void);
+static void M_CloseDevice(void);
+static bool M_ReopenDevice(void);
+
+void Audio_HandleSDLEvent(const SDL_Event *const event)
+{
+    if (event->type == SDL_AUDIODEVICEADDED) {
+        if ((SDL_GetTicks() - m_ReopenDebounce) > 500) {
+            M_ReopenDevice();
+        }
+    }
+}
 
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
 {
+    if (m_MixBuffer == nullptr) {
+        return;
+    }
     memset(m_MixBuffer, m_Silence, len);
     Audio_Stream_Mix(m_MixBuffer, len);
     Audio_Sample_Mix(m_MixBuffer, len);
     memcpy(stream_data, m_MixBuffer, len);
 }
 
+static bool M_OpenDevice(void)
+{
+    if (g_AudioDeviceID != 0) {
+        return true;
+    }
+
+    Memory_FreePointer(&m_MixBuffer);
+    SDL_AudioSpec desired;
+    SDL_memset(&desired, 0, sizeof(desired));
+    desired.freq = AUDIO_WORKING_RATE;
+    desired.format = AUDIO_WORKING_FORMAT;
+    desired.channels = AUDIO_WORKING_CHANNELS;
+    desired.samples = AUDIO_SAMPLES;
+    desired.callback = M_MixerCallback;
+    desired.userdata = nullptr;
+
+    g_AudioDeviceID = SDL_OpenAudioDevice(
+        nullptr, 0, &desired, &g_AudioDeviceParms,
+        SDL_AUDIO_ALLOW_FREQUENCY_CHANGE | SDL_AUDIO_ALLOW_CHANNELS_CHANGE);
+
+    if (g_AudioDeviceID == 0) {
+        LOG_ERROR("Failed to open audio device: %s", SDL_GetError());
+        return false;
+    }
+
+    LOG_INFO("Opened audio device (%x)", g_AudioDeviceID);
+    m_ReopenDebounce = SDL_GetTicks();
+    m_Silence = desired.silence;
+    m_MixBufferCapacity = desired.samples * desired.channels
+        * SDL_AUDIO_BITSIZE(desired.format) / 8;
+    m_MixBuffer = Memory_Alloc(m_MixBufferCapacity);
+    SDL_PauseAudioDevice(g_AudioDeviceID, 0);
+    return true;
+}
+
+static void M_CloseDevice(void)
+{
+    if (g_AudioDeviceID != 0) {
+        LOG_INFO("Closing audio device (%x)", g_AudioDeviceID);
+        SDL_PauseAudioDevice(g_AudioDeviceID, 1);
+        SDL_CloseAudioDevice(g_AudioDeviceID);
+        g_AudioDeviceID = 0;
+    }
+}
+
+static bool M_ReopenDevice(void)
+{
+    M_CloseDevice();
+    if (M_OpenDevice()) {
+        Audio_Stream_Reload();
+        return true;
+    }
+    return false;
+}
+
 bool Audio_Init(void)
 {
     m_RefCount++;
-    if (g_AudioDeviceID) {
+    if (g_AudioDeviceID != 0) {
         // already initialized
         return true;
     }
@@ -39,34 +113,12 @@ bool Audio_Init(void)
         return false;
     }
 
-    SDL_AudioSpec desired;
-    SDL_memset(&desired, 0, sizeof(desired));
-    desired.freq = AUDIO_WORKING_RATE;
-    desired.format = AUDIO_WORKING_FORMAT;
-    desired.channels = AUDIO_WORKING_CHANNELS;
-    desired.samples = AUDIO_SAMPLES;
-    desired.callback = M_MixerCallback;
-    desired.userdata = nullptr;
-
-    SDL_AudioSpec delivered;
-    g_AudioDeviceID = SDL_OpenAudioDevice(nullptr, 0, &desired, &delivered, 0);
-
-    if (!g_AudioDeviceID) {
-        LOG_ERROR("Failed to open audio device: %s", SDL_GetError());
+    if (!M_OpenDevice()) {
         return false;
     }
 
-    m_Silence = desired.silence;
-    m_MixBufferCapacity = desired.samples * desired.channels
-        * SDL_AUDIO_BITSIZE(desired.format) / 8;
-
-    m_MixBuffer = Memory_Alloc(m_MixBufferCapacity);
-
-    SDL_PauseAudioDevice(g_AudioDeviceID, 0);
-
     Audio_Sample_Init();
     Audio_Stream_Init();
-
     return true;
 }
 
@@ -77,14 +129,11 @@ bool Audio_Shutdown(void)
         return false;
     }
 
-    if (g_AudioDeviceID) {
-        SDL_PauseAudioDevice(g_AudioDeviceID, 1);
-        SDL_CloseAudioDevice(g_AudioDeviceID);
-        g_AudioDeviceID = 0;
+    if (g_AudioDeviceID != 0) {
+        M_CloseDevice();
     }
 
     Memory_FreePointer(&m_MixBuffer);
-
     Audio_Sample_Shutdown();
     Audio_Stream_Shutdown();
     return true;

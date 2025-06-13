@@ -53,6 +53,7 @@
 - fixed a rare crash when editing certain dev console history entries (#2913, regression from 1.0)
 - fixed Lara's health bar showing at the start of cutscenes (#3182, regression from 1.1)
 - fixed broken playback of mono music tracks (regression from 0.2)
+- fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 0.2)
 - improved word wrapping algorithm in the dev console
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23
