@@ -28,7 +28,6 @@
     #define HARPOON_AMMO_CLIP 3
     #define HARPOON_AMMO_QTY HARPOON_AMMO_CLIP // = 3
     #define HARPOON_BOLT_SPEED 150
-    #define HARPOON_RECOIL 4
 
     #define GRENADE_AMMO_CLIP 1
     #define GRENADE_AMMO_QTY (GRENADE_AMMO_CLIP * 2) // = 2

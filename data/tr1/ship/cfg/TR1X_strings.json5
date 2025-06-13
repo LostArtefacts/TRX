@@ -524,6 +524,8 @@
         "GAMEPLAY_SETTINGS_FIX_WATER_EXIT": "Fix water exit",
         "GAMEPLAY_SETTINGS_FIX_WATER_EXIT_DESCRIPTION": "Fixes Lara being able to go directly from a water room to an adjacent dry room, or to a dry room below. Additionally, this will prevent Lara from being able to climb out of water onto non-standable slopes.",
         "GAMEPLAY_SETTINGS_GENERAL_TAB": "General",
+        "GAMEPLAY_SETTINGS_HARPOON_RECOIL": "Harpoon recoil",
+        "GAMEPLAY_SETTINGS_HARPOON_RECOIL_DESCRIPTION": "Sets how often Lara must reload the harpoon gun, based on her current ammo count. For example, if set to 3, she'll need to reload after every third shot. Set to 0 to disable reloading entirely.",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS": "Fix one-shot music triggers",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS_DESCRIPTION": "Loads previously triggered, one shot music so one shot music tracks do not replay.",
         "GAMEPLAY_SETTINGS_MAXIMUM_SAVE_SLOTS": "Number of save slots",
