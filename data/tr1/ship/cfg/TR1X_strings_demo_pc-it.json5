@@ -1,0 +1,12 @@
+{
+    "levels": [
+        // Level 2: City of Vilcabamba
+        {
+            "title": "Città di Vilcabamba",
+            "objects": {
+                "key_1": {"name": "Chiave d'argento"},
+                "puzzle_1": {"name": "Idolo d'oro"},
+            },
+        },
+    ],
+}

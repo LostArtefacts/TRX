@@ -1,0 +1,41 @@
+{
+    "language_name": "Italiano",
+
+    "levels": [
+        // Level 1: Return to Egypt
+        {
+            "title": "Ritorno in Egitto",
+            "objects": {
+                "key_1": {"name": "Chiave d'oro"},
+            },
+        },
+
+        // Level 2: Temple of the Cat
+        {
+            "title": "Tempio del gatto",
+            "objects": {
+                "key_1": {"name": "Chiave cesellata"},
+            },
+        },
+
+        // Level 3: Atlantean Stronghold
+        {
+            "title": "Fortezza atlantidea",
+        },
+
+        // Level 4: The Hive
+        {
+            "title": "L'alveare",
+        },
+
+        // Level 5: Title
+        {
+            "title": "Titoli",
+        },
+
+        // Level 6: Current Position
+        {
+            "title": "Posizione attuale",
+        },
+    ]
+}
