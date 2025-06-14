@@ -26,82 +26,6 @@
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
-static void (*m_ControlRoutines[])(ITEM *item, COLL_INFO *coll) = {
-    // clang-format off
-    [LS_WALK]         = Lara_State_Walk,
-    [LS_RUN]          = Lara_State_Run,
-    [LS_STOP]         = Lara_State_Stop,
-    [LS_JUMP_FORWARD] = Lara_State_ForwardJump,
-    [LS_POSE]         = Lara_State_Empty,
-    [LS_FAST_BACK]    = Lara_State_FastBack,
-    [LS_TURN_RIGHT]   = Lara_State_TurnRight,
-    [LS_TURN_LEFT]    = Lara_State_TurnLeft,
-    [LS_DEATH]        = Lara_State_Death,
-    [LS_FAST_FALL]    = Lara_State_FastFall,
-    [LS_HANG]         = Lara_State_Hang,
-    [LS_REACH]        = Lara_State_Reach,
-    [LS_SPLAT]        = Lara_State_Splat,
-    [LS_TREAD]        = Lara_State_Tread,
-    [LS_LAND]         = Lara_State_Empty,
-    [LS_COMPRESS]     = Lara_State_Compress,
-    [LS_WALK_BACK]    = Lara_State_Back,
-    [LS_SWIM]         = Lara_State_Swim,
-    [LS_GLIDE]        = Lara_State_Glide,
-    [LS_PULL_UP]      = Lara_State_Null,
-    [LS_FAST_TURN]    = Lara_State_FastTurn,
-    [LS_STEP_RIGHT]   = Lara_State_StepRight,
-    [LS_STEP_LEFT]    = Lara_State_StepLeft,
-    [LS_ROLL_CONT]    = Lara_State_Empty,
-    [LS_SLIDE]        = Lara_State_Slide,
-    [LS_JUMP_BACK]    = Lara_State_BackJump,
-    [LS_JUMP_RIGHT]   = Lara_State_RightJump,
-    [LS_JUMP_LEFT]    = Lara_State_LeftJump,
-    [LS_JUMP_UP]      = Lara_State_UpJump,
-    [LS_FALL_BACK]    = Lara_State_FallBack,
-    [LS_SHIMMY_LEFT]  = Lara_State_HangLeft,
-    [LS_SHIMMY_RIGHT] = Lara_State_HangRight,
-    [LS_SLIDE_BACK]   = Lara_State_SlideBack,
-    [LS_SURF_TREAD]   = Lara_State_SurfTread,
-    [LS_SURF_SWIM]    = Lara_State_SurfSwim,
-    [LS_DIVE]         = Lara_State_Dive,
-    [LS_PUSH_BLOCK]   = Lara_State_PushBlock,
-    [LS_PULL_BLOCK]   = Lara_State_PushBlock,
-    [LS_PP_READY]     = Lara_State_PPReady,
-    [LS_PICKUP]       = Lara_State_Pickup,
-    [LS_SWITCH_ON]    = Lara_State_SwitchOn,
-    [LS_SWITCH_OFF]   = Lara_State_SwitchOn,
-    [LS_USE_KEY]      = Lara_State_UseKey,
-    [LS_USE_PUZZLE]   = Lara_State_UseKey,
-    [LS_UW_DEATH]     = Lara_State_UWDeath,
-    [LS_ROLL]         = Lara_State_Empty,
-    [LS_SPECIAL]      = Lara_State_Special,
-    [LS_SURF_BACK]    = Lara_State_SurfBack,
-    [LS_SURF_LEFT]    = Lara_State_SurfLeft,
-    [LS_SURF_RIGHT]   = Lara_State_SurfRight,
-    [LS_USE_MIDAS]    = Lara_State_Empty,
-    [LS_DIE_MIDAS]    = Lara_State_Empty,
-    [LS_SWAN_DIVE]    = Lara_State_SwanDive,
-    [LS_FAST_DIVE]    = Lara_State_FastDive,
-    [LS_GYMNAST]      = Lara_State_Null,
-    [LS_WATER_OUT]    = Lara_State_WaterOut,
-    [LS_CLIMB_STANCE] = Lara_State_ClimbStance,
-    [LS_CLIMBING]     = Lara_State_Climbing,
-    [LS_CLIMB_LEFT]   = Lara_State_ClimbLeft,
-    [LS_CLIMB_END]    = Lara_State_ClimbEnd,
-    [LS_CLIMB_RIGHT]  = Lara_State_ClimbRight,
-    [LS_CLIMB_DOWN]   = Lara_State_ClimbDown,
-    [LS_LARA_TEST1]   = Lara_State_Empty,
-    [LS_LARA_TEST2]   = Lara_State_Empty,
-    [LS_LARA_TEST3]   = Lara_State_Empty,
-    [LS_WADE]         = Lara_State_Wade,
-    [LS_WATER_ROLL]   = Lara_State_UWTwist,
-    [LS_FLARE_PICKUP] = Lara_State_PickupFlare,
-    [LS_TWIST]        = Lara_State_Empty,
-    [LS_KICK]         = Lara_State_Empty,
-    [LS_ZIPLINE]      = Lara_State_Zipline,
-    // clang-format on
-};
-
 static void (*m_ExtraControlRoutines[])(ITEM *item, COLL_INFO *coll) = {
     // clang-format off
     [LA_EXTRA_BREATH]      = Lara_State_Extra_Breath,
@@ -165,7 +89,7 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
     if (g_Lara.extra_anim) {
         m_ExtraControlRoutines[item->current_anim_state](item, coll);
     } else {
-        m_ControlRoutines[item->current_anim_state](item, coll);
+        Lara_State_Update(item, coll);
     }
 
     if (item->rot.z < -LARA_LEAN_UNDO) {
@@ -226,7 +150,7 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
     }
     g_Lara.enable_look = true;
 
-    m_ControlRoutines[item->current_anim_state](item, coll);
+    Lara_State_Update(item, coll);
 
     if (item->rot.z > LARA_LEAN_UNDO_SURF) {
         item->rot.z -= LARA_LEAN_UNDO_SURF;
@@ -288,7 +212,7 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
     if (g_Lara.extra_anim) {
         m_ExtraControlRoutines[item->current_anim_state](item, coll);
     } else {
-        m_ControlRoutines[item->current_anim_state](item, coll);
+        Lara_State_Update(item, coll);
     }
 
     if (item->rot.z > LARA_LEAN_UNDO_UW) {
