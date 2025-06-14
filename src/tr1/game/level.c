@@ -291,8 +291,6 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
 
     Level_LoadObjectsAndItems();
 
-    Lara_State_Initialise();
-
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level);
 

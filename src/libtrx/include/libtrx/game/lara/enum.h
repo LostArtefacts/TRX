@@ -367,6 +367,7 @@ typedef enum {
     LA_ZIPLINE_RIDE                          = 216,
     LA_ZIPLINE_FALL                          = 217,
 #endif
+    LA_NUMBER_OF,
 } LARA_ANIMATION;
 // clang-format on
 
