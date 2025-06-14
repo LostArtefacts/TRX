@@ -4,7 +4,6 @@
 #include "game/input.h"
 #include "game/lara/common.h"
 #include "game/lara/look.h"
-#include "game/lara/state.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
