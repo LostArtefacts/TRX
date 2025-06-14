@@ -21,10 +21,6 @@
 
 static bool m_JumpPermitted = true;
 
-void Lara_State_Empty(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_State_Walk(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -1186,7 +1182,6 @@ REGISTER_LARA_STATE(LS_WALK,          Lara_State_Walk)
 REGISTER_LARA_STATE(LS_RUN,           Lara_State_Run)
 REGISTER_LARA_STATE(LS_STOP,          Lara_State_Stop)
 REGISTER_LARA_STATE(LS_JUMP_FORWARD,  Lara_State_ForwardJump)
-REGISTER_LARA_STATE(LS_POSE,          Lara_State_Empty)
 REGISTER_LARA_STATE(LS_FAST_BACK,     Lara_State_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,    Lara_State_TurnRight)
 REGISTER_LARA_STATE(LS_TURN_LEFT,     Lara_State_TurnLeft)
@@ -1194,9 +1189,7 @@ REGISTER_LARA_STATE(LS_DEATH,         Lara_State_Death)
 REGISTER_LARA_STATE(LS_FAST_FALL,     Lara_State_FastFall)
 REGISTER_LARA_STATE(LS_HANG,          Lara_State_Hang)
 REGISTER_LARA_STATE(LS_REACH,         Lara_State_Reach)
-REGISTER_LARA_STATE(LS_SPLAT,         Lara_State_Empty)
 REGISTER_LARA_STATE(LS_TREAD,         Lara_State_Tread)
-REGISTER_LARA_STATE(LS_LAND,          Lara_State_Empty)
 REGISTER_LARA_STATE(LS_COMPRESS,      Lara_State_Compress)
 REGISTER_LARA_STATE(LS_WALK_BACK,     Lara_State_Back)
 REGISTER_LARA_STATE(LS_SWIM,          Lara_State_Swim)
@@ -1205,7 +1198,6 @@ REGISTER_LARA_STATE(LS_PULL_UP,       Lara_State_Null)
 REGISTER_LARA_STATE(LS_FAST_TURN,     Lara_State_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,    Lara_State_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,     Lara_State_StepLeft)
-REGISTER_LARA_STATE(LS_ROLL_CONT,     Lara_State_Empty)
 REGISTER_LARA_STATE(LS_SLIDE,         Lara_State_Slide)
 REGISTER_LARA_STATE(LS_JUMP_BACK,     Lara_State_BackJump)
 REGISTER_LARA_STATE(LS_JUMP_RIGHT,    Lara_State_RightJump)
@@ -1227,7 +1219,6 @@ REGISTER_LARA_STATE(LS_SWITCH_OFF,    Lara_State_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,       Lara_State_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,    Lara_State_UseKey)
 REGISTER_LARA_STATE(LS_UW_DEATH,      Lara_State_UWDeath)
-REGISTER_LARA_STATE(LS_ROLL,          Lara_State_Empty)
 REGISTER_LARA_STATE(LS_SPECIAL,       Lara_State_Special)
 REGISTER_LARA_STATE(LS_SURF_BACK,     Lara_State_SurfBack)
 REGISTER_LARA_STATE(LS_SURF_LEFT,     Lara_State_SurfLeft)
@@ -1239,8 +1230,6 @@ REGISTER_LARA_STATE(LS_FAST_DIVE,     Lara_State_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,       Lara_State_Null)
 REGISTER_LARA_STATE(LS_WATER_OUT,     Lara_State_WaterOut)
 REGISTER_LARA_STATE(LS_CONTROLLED,    Lara_State_Controlled)
-REGISTER_LARA_STATE(LS_TWIST,         Lara_State_Empty)
 REGISTER_LARA_STATE(LS_WATER_ROLL,    Lara_State_UWTwist)
 REGISTER_LARA_STATE(LS_WADE,          Lara_State_Wade)
-REGISTER_LARA_STATE(LS_RESPONSIVE,    Lara_State_Empty)
 // clang-format on
