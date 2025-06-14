@@ -115,7 +115,7 @@ static void M_PrepareCutscene(const int16_t item_num)
     g_Lara.target = nullptr;
 
     ITEM *const item = Item_Get(item_num);
-    Creature_SpecialKill(item, 0, 0, LA_EXTRA_FINAL_ANIM);
+    Creature_SpecialKill(item, 0, 0, LS_EXTRA_FINAL_ANIM);
 
     Camera_InvokeCinematic(item, 428, 0);
 }

@@ -942,8 +942,8 @@ void Creature_SpecialKill(
     item->current_anim_state = kill_state;
 
 #if TR_VERSION == 2
-    Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LA_EXTRA_BREATH;
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
 #endif
     lara_item->goal_anim_state = lara_kill_state;
     lara_item->pos = item->pos;

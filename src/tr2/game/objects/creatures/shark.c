@@ -162,7 +162,7 @@ static void M_Control(const int16_t item_num)
 
         if (lara_alive && g_LaraItem->hit_points <= 0) {
             Creature_SpecialKill(
-                item, SHARK_ANIM_KILL, SHARK_STATE_KILL, LA_EXTRA_SHARK_KILL);
+                item, SHARK_ANIM_KILL, SHARK_STATE_KILL, LS_EXTRA_SHARK_KILL);
         } else if (item->current_anim_state == SHARK_STATE_KILL) {
             Item_Animate(item);
         } else {

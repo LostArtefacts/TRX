@@ -370,6 +370,25 @@ typedef enum {
 } LARA_ANIMATION;
 // clang-format on
 
+// clang-format off
+typedef enum {
+    LS_EXTRA_BREATH      = 0,
+#if TR_VERSION == 2
+    LS_EXTRA_PLUNGER     = 1,
+    LS_EXTRA_YETI_KILL   = 2,
+    LS_EXTRA_SHARK_KILL  = 3,
+    LS_EXTRA_AIRLOCK     = 4,
+    LS_EXTRA_GONG_BONG   = 5,
+    LS_EXTRA_TREX_KILL   = 6,
+    LS_EXTRA_PULL_DAGGER = 7,
+    LS_EXTRA_START_ANIM  = 8,
+    LS_EXTRA_START_HOUSE = 9,
+    LS_EXTRA_FINAL_ANIM  = 10,
+#endif
+    LS_EXTRA_NUMBER_OF,
+} LARA_EXTRA_STATE;
+// clang-format on
+
 #if TR_VERSION == 1
     #include "enum_tr1.h"
 #elif TR_VERSION == 2
