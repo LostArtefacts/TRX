@@ -26,22 +26,6 @@
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
-static void (*m_ExtraControlRoutines[])(ITEM *item, COLL_INFO *coll) = {
-    // clang-format off
-    [LA_EXTRA_BREATH]      = Lara_State_Extra_Breath,
-    [LA_EXTRA_PLUNGER]     = Lara_State_Empty,
-    [LA_EXTRA_YETI_KILL]   = Lara_State_Extra_YetiKill,
-    [LA_EXTRA_SHARK_KILL]  = Lara_State_Extra_SharkKill,
-    [LA_EXTRA_AIRLOCK]     = Lara_State_Extra_Airlock,
-    [LA_EXTRA_GONG_BONG]   = Lara_State_Extra_GongBong,
-    [LA_EXTRA_TREX_KILL]   = Lara_State_Extra_DinoKill,
-    [LA_EXTRA_PULL_DAGGER] = Lara_State_Extra_PullDagger,
-    [LA_EXTRA_START_ANIM]  = Lara_State_Extra_StartAnim,
-    [LA_EXTRA_START_HOUSE] = Lara_State_Extra_StartHouse,
-    [LA_EXTRA_FINAL_ANIM]  = Lara_State_Extra_FinalAnim,
-    // clang-format on
-};
-
 static SECTOR *M_GetCurrentSector(const ITEM *lara_item);
 
 static SECTOR *M_GetCurrentSector(const ITEM *const lara_item)
@@ -86,11 +70,7 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (g_Lara.extra_anim) {
-        m_ExtraControlRoutines[item->current_anim_state](item, coll);
-    } else {
-        Lara_State_Update(item, coll);
-    }
+    Lara_State_Update(item, coll);
 
     if (item->rot.z < -LARA_LEAN_UNDO) {
         item->rot.z += LARA_LEAN_UNDO;
@@ -209,11 +189,7 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
     }
     g_Lara.enable_look = true;
 
-    if (g_Lara.extra_anim) {
-        m_ExtraControlRoutines[item->current_anim_state](item, coll);
-    } else {
-        Lara_State_Update(item, coll);
-    }
+    Lara_State_Update(item, coll);
 
     if (item->rot.z > LARA_LEAN_UNDO_UW) {
         item->rot.z -= LARA_LEAN_UNDO_UW;
@@ -707,8 +683,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
         && g_GF_LaraStartAnim) {
         g_Lara.water_status = LWS_ABOVE_WATER;
         g_Lara.gun_status = LGS_HANDS_BUSY;
-        Item_SwitchToObjAnim(item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
-        item->current_anim_state = LA_EXTRA_BREATH;
+        Item_SwitchToObjAnim(item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+        item->current_anim_state = LS_EXTRA_BREATH;
         item->goal_anim_state = g_GF_LaraStartAnim;
         Lara_Animate(item);
         g_Lara.extra_anim = true;

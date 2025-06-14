@@ -40,12 +40,12 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     Lara_AlignPosition(receptacle_item, &m_DetonatorPosition);
-    Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LA_EXTRA_BREATH;
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
     if (receptacle_item->object_id == O_DETONATOR_2) {
-        lara_item->goal_anim_state = LA_EXTRA_PLUNGER;
+        lara_item->goal_anim_state = LS_EXTRA_PLUNGER;
     } else {
-        lara_item->goal_anim_state = LA_EXTRA_GONG_BONG;
+        lara_item->goal_anim_state = LS_EXTRA_GONG_BONG;
         lara_item->rot.y += DEG_180;
     }
     Item_Animate(lara_item);

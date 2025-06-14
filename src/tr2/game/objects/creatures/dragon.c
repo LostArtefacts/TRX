@@ -103,9 +103,9 @@ static void M_PushLaraAway(
 
 static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
 {
-    Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LA_EXTRA_BREATH;
-    lara_item->goal_anim_state = LA_EXTRA_PULL_DAGGER;
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
+    lara_item->goal_anim_state = LS_EXTRA_PULL_DAGGER;
     lara_item->pos.x = dragon_back_item->pos.x;
     lara_item->pos.y = dragon_back_item->pos.y;
     lara_item->pos.z = dragon_back_item->pos.z;

@@ -148,7 +148,7 @@ static void M_Control(const int16_t item_num)
             if ((item->touch_bits & TREX_TOUCH_BITS) != 0) {
                 Lara_TakeDamage(TREX_BITE_DAMAGE, true);
                 Creature_SpecialKill(
-                    item, TREX_ANIM_KILL, TREX_STATE_KILL, LA_EXTRA_TREX_KILL);
+                    item, TREX_ANIM_KILL, TREX_STATE_KILL, LS_EXTRA_TREX_KILL);
                 return;
             }
             item->required_anim_state = TREX_STATE_WALK;
