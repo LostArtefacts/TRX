@@ -39,7 +39,9 @@
 
 static bool m_JumpPermitted = true;
 
-void Lara_SwimTurn(ITEM *const item)
+static void M_SwimTurn(ITEM *item);
+
+static void M_SwimTurn(ITEM *const item)
 {
     if (g_Input.forward) {
         item->rot.x -= LARA_TURN_RATE_UW;
@@ -1053,7 +1055,7 @@ void Lara_State_Swim(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    Lara_SwimTurn(item);
+    M_SwimTurn(item);
     item->fall_speed += 8;
     if (g_Lara.water_status == LWS_CHEAT) {
         CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED * 2);
@@ -1079,7 +1081,7 @@ void Lara_State_Glide(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    Lara_SwimTurn(item);
+    M_SwimTurn(item);
     if (g_Input.jump) {
         item->goal_anim_state = LS_SWIM;
     }
@@ -1106,7 +1108,7 @@ void Lara_State_Tread(ITEM *item, COLL_INFO *coll)
     if (g_Input.look) {
         Lara_LookUpDown();
     }
-    Lara_SwimTurn(item);
+    M_SwimTurn(item);
     if (g_Input.jump) {
         item->goal_anim_state = LS_SWIM;
     }
