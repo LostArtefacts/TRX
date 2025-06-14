@@ -9,6 +9,7 @@
 #include "game/effects/const.h"
 #include "game/game_buf.h"
 #include "game/inject.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/setup.h"
 #include "game/output.h"
@@ -1280,6 +1281,8 @@ void Level_LoadObjectsAndItems(void)
     for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }
+
+    Lara_State_Initialise();
 }
 
 LEVEL_INFO *Level_GetInfo(void)

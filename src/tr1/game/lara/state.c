@@ -20,34 +20,6 @@
 #define LF_JUMP_READY 3
 
 static bool m_JumpPermitted = true;
-static bool m_HasResponsiveJumping = false;
-static bool m_HasResponsiveSwimming = false;
-
-static bool M_HasResponsiveState(LARA_ANIMATION anim_idx);
-
-static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
-{
-    const OBJECT *const obj = Object_Get(O_LARA);
-    if (!obj->loaded) {
-        return false;
-    }
-
-    const ANIM *const anim = Object_GetAnim(obj, anim_idx);
-    for (int32_t i = 0; i < anim->num_changes; i++) {
-        const ANIM_CHANGE *const change = Anim_GetChange(anim->change_idx + i);
-        if (change->goal_anim_state == LS_RESPONSIVE) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void Lara_State_Initialise(void)
-{
-    m_HasResponsiveJumping = M_HasResponsiveState(LA_RUN);
-    m_HasResponsiveSwimming = M_HasResponsiveState(LA_UNDERWATER_SWIM_FORWARD);
-}
 
 void Lara_State_Empty(ITEM *item, COLL_INFO *coll)
 {
@@ -133,8 +105,8 @@ void Lara_State_Run(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.jump && m_JumpPermitted && !item->gravity) {
-        item->goal_anim_state =
-            g_Config.gameplay.enable_tr2_jumping && m_HasResponsiveJumping
+        item->goal_anim_state = g_Config.gameplay.enable_tr2_jumping
+                && Lara_State_IsResponsive(LA_RUN)
             ? LS_RESPONSIVE
             : LS_JUMP_FORWARD;
     } else if (g_Input.forward) {
@@ -1036,8 +1008,8 @@ void Lara_State_Swim(ITEM *item, COLL_INFO *coll)
     }
 
     if (!g_Input.jump) {
-        item->goal_anim_state =
-            g_Config.gameplay.enable_tr2_swim_cancel && m_HasResponsiveSwimming
+        item->goal_anim_state = g_Config.gameplay.enable_tr2_swim_cancel
+                && Lara_State_IsResponsive(LA_UNDERWATER_SWIM_FORWARD)
             ? LS_RESPONSIVE
             : LS_GLIDE;
     }

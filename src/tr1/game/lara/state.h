@@ -4,8 +4,6 @@
 
 #include "global/types.h"
 
-void Lara_State_Initialise(void);
-
 void Lara_State_Empty(ITEM *item, COLL_INFO *coll);
 void Lara_State_Walk(ITEM *item, COLL_INFO *coll);
 void Lara_State_Run(ITEM *item, COLL_INFO *coll);
