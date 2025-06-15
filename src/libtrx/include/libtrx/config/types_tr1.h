@@ -186,6 +186,7 @@ typedef struct {
         bool enable_debug_portals;
         bool enable_debug_spheres;
         bool enable_debug_pos;
+        bool enable_review_markers;
     } debug;
 
     struct {
