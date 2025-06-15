@@ -46,9 +46,13 @@ def find_base_file(path: Path) -> Path:
 
 def load_json5(path: Path):
     """Load and parse a JSON5 file as Python data structures. Requires `pyjson5`."""
+    return load_json5_from_string(path.read_text(encoding="utf-8"))
+
+
+def load_json5_from_string(content: str):
     if pyjson5 is None:
         raise RuntimeError("pyjson5 is required to parse JSON5 files")
-    return pyjson5.loads(path.read_text(encoding="utf-8"))
+    return pyjson5.loads(content)
 
 
 def write_json(path: Path, data) -> None:
