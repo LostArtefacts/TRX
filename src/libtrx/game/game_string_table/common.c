@@ -124,14 +124,16 @@ void GameStringTable_Shutdown(void)
     }
 }
 
-void GameStringTable_Load(const char *const path, const bool load_levels)
+bool GameStringTable_Load(const char *const path, const bool load_levels)
 {
     char *data = nullptr;
     if (!File_Load(path, &data, nullptr)) {
-        Shell_ExitSystemFmt("failed to open strings file (path: %d)", path);
+        LOG_ERROR("failed to open strings file (path: %d)", path);
+        return false;
     }
     GS_FILE *gs_file = GS_File_CreateFromString(data, load_levels);
     ASSERT(m_GST_Layers != nullptr);
     Vector_Add(m_GST_Layers, &gs_file);
     Memory_FreePointer(&data);
+    return true;
 }
