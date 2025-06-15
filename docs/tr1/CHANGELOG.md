@@ -1,6 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...develop) - ××××-××-××
-- Added Italian translation for ingame strings
 - added builtin support for ingame string translations
+    - added Italian translation
 - added UI for all config tool settings
 - added ingame help for all settings
 - added support for object name aliases; added aliases for dev commands
