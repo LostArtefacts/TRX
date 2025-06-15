@@ -30,5 +30,13 @@ void UI_Overlay_ShowArrow(
     UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow, bool show);
 void UI_Overlay_ShowVersion(UI_OVERLAY_STATE *s, bool show);
 void UI_Overlay_SetTopText(UI_OVERLAY_STATE *s, const char *text, bool flash);
+
 void UI_Overlay_SetBottomText(
     UI_OVERLAY_STATE *s, const char *text, bool flash);
+
+// Like UI_Overlay_SetTopText(), but takes a stable indirect pointer.
+void UI_Overlay_SetTopTextPtr(
+    UI_OVERLAY_STATE *s, const char *const *ptr, bool flash);
+// Like UI_Overlay_SetBottomText(), but takes a stable indirect pointer.
+void UI_Overlay_SetBottomTextPtr(
+    UI_OVERLAY_STATE *s, const char *const *ptr, bool flash);

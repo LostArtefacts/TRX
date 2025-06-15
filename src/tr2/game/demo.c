@@ -171,7 +171,7 @@ bool Demo_Start(const int32_t level_num)
     Camera_Initialise();
     Stats_StartTimer();
 
-    Overlay_SetBottomText(GS(MISC_DEMO_MODE), true);
+    Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
     return true;
 }
 
@@ -198,7 +198,7 @@ void Demo_Unpause(void)
     M_PRIV *const p = &m_Priv;
     M_PrepareConfig(p);
     Stats_StartTimer();
-    Overlay_SetBottomText(GS(MISC_DEMO_MODE), true);
+    Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
 }
 
 int32_t Demo_ChooseLevel(const int32_t demo_num)
@@ -221,5 +221,5 @@ GF_COMMAND Demo_Control(void)
 
 void Demo_StopFlashing(void)
 {
-    Overlay_SetBottomText(GS(MISC_DEMO_MODE), false);
+    Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), false);
 }

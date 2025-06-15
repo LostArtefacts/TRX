@@ -26,7 +26,7 @@ RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),\s*\"(.*)\"\)")
 RE_GAME_STRING_DEFINE_VAL = re.compile(
     r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"([^"]*)"\)'
 )
-RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID)?\(([A-Z0-9_]+)\)")
+RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID|_PTR)?\(([A-Z0-9_]+)\)")
 
 
 @dataclass
@@ -95,7 +95,7 @@ def lint_const_primitives(
     for i, line in enumerate(path.open("r"), 1):
         if re.search(r"const (int[a-z0-9_]*|bool)\b\s*[a-z]", line):
             yield LintWarning(path, "useless const", line=i)
-        if re.search(r"\*\s*const", line):
+        if re.search(r"\*\s*const(?!\s?\*)", line):
             yield LintWarning(path, "useless const", line=i)
 
 

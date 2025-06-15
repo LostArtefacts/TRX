@@ -9,7 +9,12 @@ typedef struct {
     const char *matched_name;
 } OBJECT_NAME_MATCH;
 
+// Get the current name for an object (may change on language reload).
 const char *Object_GetName(GAME_OBJECT_ID obj_id);
+
+// Get a stable pointer-to-pointer for the object name, content of which
+// automatically udpates on each language reload.
+const char *const *Object_GetNamePtr(GAME_OBJECT_ID obj_id);
 const char *Object_GetDescription(GAME_OBJECT_ID obj_id);
 
 void Object_ResetAllNames(void);

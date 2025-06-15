@@ -418,7 +418,7 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
     if (inv_item->object_id == O_PASSPORT_OPTION) {
         return;
     }
-    Overlay_SetBottomText(Object_GetName(inv_item->object_id), false);
+    Overlay_SetBottomTextPtr(Object_GetNamePtr(inv_item->object_id), false);
 }
 
 void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
@@ -464,17 +464,17 @@ void InvRing_ShowHeader(INV_RING *const ring)
 
     switch (ring->type) {
     case RT_MAIN:
-        Overlay_SetTopText(GS(HEADING_INVENTORY), false);
+        Overlay_SetTopTextPtr(GS_PTR(HEADING_INVENTORY), false);
         break;
     case RT_OPTION:
         if (ring->mode == INV_DEATH_MODE) {
-            Overlay_SetTopText(GS(HEADING_GAME_OVER), false);
+            Overlay_SetTopTextPtr(GS_PTR(HEADING_GAME_OVER), false);
         } else {
-            Overlay_SetTopText(GS(HEADING_OPTION), false);
+            Overlay_SetTopTextPtr(GS_PTR(HEADING_OPTION), false);
         }
         break;
     case RT_KEYS:
-        Overlay_SetTopText(GS(HEADING_ITEMS), false);
+        Overlay_SetTopTextPtr(GS_PTR(HEADING_ITEMS), false);
         break;
     case RT_NUMBER_OF:
         break;
