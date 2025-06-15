@@ -1,10 +1,57 @@
 # TRX Game Strings Configuration
 
-This document describes how to use the game strings. Game strings let users
-translate the game and change the built-in object names for the purpose of
-building custom levels. The configuration includes definitions for game levels,
-objects, and all UI elements, and is structured in a JSON5 format which
-permits comments.
+## Overview
+This document describes how to use and translate the TRX game strings. Game
+strings let level builders customize built-in object and level names in custom
+levels, and translators translate the entire game (including UI) into other
+languages. The configuration is structured in JSON5 format, which permits
+comments and supports a layering mechanism for overrides.
+
+## Audiences
+
+This document serves two main audiences:
+
+- **Level builders**: Customize object names, level titles, and UI strings for
+  custom levels and mod packs.
+- **Translators**: Translate the full game text (gameplay, UI, and menus) into
+  different languages.
+
+## Quick‑start example
+
+```json5
+{
+    // Override only the key_1 pickup in Level 0
+    "levels": [
+        {
+            "title": "City of Vilcabamba",
+            "objects": { "key_1": { "name": "Gold Key" } }
+        }
+    ]
+}
+```
+
+## Layering and Override Mechanism
+
+TRX supports multiple layers of strings files that are loaded in a specific
+order. Later layers override earlier ones, allowing expansion packs and custom
+mods to selectively override base text. The default load order is:
+
+1. `TRX_common_strings.json5` — Common defaults for all engines and languages.
+2. `TR1X_strings.json5` — Base strings for the main game.
+3. `TR1X_strings_ub.json5` — Overrides for the Unfinished Business expansion pack
+   (or other expansion packs/mods).
+
+   Depending on which mod or pack you run, the third layer may vary:
+   - `TR1X_strings_ub.json5` for the Unfinished Business expansion pack
+   - `TR2X_strings_gm.json5` for the Golden Mask TR2 expansion pack
+   - `TR1X_strings_demo_pc.json5` for the PC TR1 demo
+   - `TR*X_strings_level.json5` for the -l/--level command line switch
+
+For example, if the same key exists in both `TRX_common_strings.json5` and
+`TR1X_strings.json5`, the value `TR1X_strings.json5` will take precedence.
+
+Each layer can also have a variant translated to other languages - see
+[this section](#translating-each-layer).
 
 ## General structure
 
@@ -123,7 +170,7 @@ The document is organized as follows:
       Allows to give more than a single name to any object. Objects that show
       up in the inventory ring will use the first name. Other than that, the
       additional names can be used with various console commands such as
-      <code>/tp</code> and <code>/give</code>
+      <code>/tp</code> and <code>/give</code>.
     </td>
   </tr>
 
@@ -140,6 +187,18 @@ The document is organized as follows:
       use <code>\f</code> to force a page break. Long text will be automatically
       wrapped and paginated as necessary. If an empty string is defined, the UI
       will not be shown and the inventory item simply focused instead.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>language_name</code>
+    </td>
+    <td>String</td>
+    <td>No (only in common file)</td>
+    <td colspan="2">
+      The display name of the language (e.g., "English", "Français") shown in
+      the language selection UI. Should only be defined in the
+      <code>TRX_common_strings.json5</code> file.
     </td>
   </tr>
 </table>
@@ -169,31 +228,101 @@ The document is organized as follows:
 > inventory ring in the original game. For convenience, both forms are defined
 > using a single key.
 
-## Usage Guidelines
-- Levels are zero-indexed and match the order with the game flow file.
-- It doesn't make sense to ship a custom level with all of the strings defined.
-  We encourage you to make your strings file as small as possible - the game
-  will fall back to the built-in defaults for you! For example, the following
-  document is perfectly fine:
+## Translation Workflow
+
+### Translating each layer
+
+To provide localized translations, place language-specific overrides alongside
+each base file using the naming pattern `<basename>-<lang>.json5`. Translation
+files must live in the same directory as their base (e.g. `cfg/`). For example,
+to add French translations:
+
+```text
+cfg/TRX_common_strings-fr.json5    # common strings
+cfg/TR1X_strings-fr.json5          # base game strings
+cfg/TR1X_strings_ub-fr.json5       # Unfinished Business overrides
+cfg/TR2X_strings_gm-fr.json5       # Golden Mask TR2 overrides
+cfg/TR1X_strings_demo_pc-fr.json5  # TR1 demo overrides
+cfg/TR1X_strings_level-fr.json5    # custom-level pack overrides
+```
+
+When the game starts, TRX will detect these files and load them in place of the
+default layer for that language code (`fr` in this example). Omit any
+translation file for a layer you do not need; the game will fall back to the
+English base for that layer by default.
+
+### Live reloading (`/strings`)
+
+To apply changes to string files without restarting the game, use the `/strings`
+console command. It reloads all string layers for the current language (common,
+base, and mod-specific), making it easy to test translation or custom overrides
+on the fly.
+
+In addition, languages can be switched at runtime without the need to use the
+UI with the `/set language <code>` console command (e.g. `/set language fr`).
+
+New language files are only detected at the game launch. If you create a new
+layer file, you'll need to relaunch the game to see the effects.
+
+### Review system
+
+The development team uses AI-assisted tools to create initial translations.
+Automated translations are tagged with a special marker `\{review}` indicating
+that the text needs human review. By default, review markers are hidden in-game.
+To enable review mode and display markers, run:
+
+```
+/set review 1
+```
+
+Translators should remove the `\{review}` tags once the translation has been
+reviewed and finalized.
+
+### `language_name`
+
+Only supported in the common strings file (`TRX_common_strings.json5`), the
+`language_name` property sets the display name of the language in the options
+menu. For example:
+
+```json5
+{
+    "language_name": "Français"
+}
+```
+
+## Custom levels
+
+### General tips
+
+- **Zero-indexed levels**: Levels are zero-indexed and match the order in the
+  game flow file.
+- **Minimal overrides**: Only define the strings you need; the game will fall
+  back to built-in defaults for any missing entries. For example:
   ```json5
   {
       "levels": [
           {
               "title": "City of Vilcabamba",
               "objects": {
-                  {"name": "key_1": "Gold Key"},
-              },
-          },
+                  "key_1": {"name": "Gold Key"}
+              }
+          }
       ]
   }
   ```
-- Sometimes it makes sense to rename not just puzzle items and keys, but also
-  other objects, such as enemies. A great example of this is TR2 object
-  #&NoBreak;39 - usually it's a tiger, but in the snow levels it becomes a snow
-  leopard.
-- TRX gives a name to all objects. Even when the player cannot normally see
-  names of objects other than pickups and special inventory ring items, these
-  are used in console commands such as `/tp` and `/give` – for example, `/tp
-  tiger` should teleport Lara to the object #&NoBreak;39.
-- For a full list of object IDs for a particular engine, please refer to the
-  game strings files shipped with relevant TRX builds.
+- **Renaming any object**: You can rename puzzle items, keys, enemies, or any
+  other in-game object. For example, TR2 object #&NoBreak;39 (tiger) can be
+  renamed to "Snow Leopard" in a winter-themed level.
+
+### Console and object IDs
+
+All objects have names, even if they are not shown in the UI. Use these names
+with console commands such as `/tp` or `/give`. For example, `/tp tiger`
+teleports Lara to object #&NoBreak;39. Console commands accept partial,
+case-insensitive names, and will match unique substrings to objects (powered by
+fuzzy matching). In case the player uses languages other than English, the
+commands also accept builtin English names (so even though wolf is called a
+wilk in Polish, on top of `/tp wilk` the players can still `/tp wolf`).
+
+For a complete list of object IDs for a specific engine, refer to the game
+strings files shipped with the relevant TRX builds.
