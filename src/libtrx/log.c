@@ -2,6 +2,10 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
+
+#define M_FORMAT "%s [%s:%d:%s] "
 
 FILE *m_LogHandle = nullptr;
 
@@ -19,12 +23,22 @@ void Log_Message(
     va_list va;
     va_start(va, fmt);
 
+    char timestamp_str[32];
+    struct timeval tv;
+    gettimeofday(&tv, nullptr);
+    struct tm *const tm_info = localtime(&tv.tv_sec);
+    const size_t timestamp_len = strftime(
+        timestamp_str, sizeof(timestamp_str), "%Y-%m-%d %H:%M:%S", tm_info);
+    snprintf(
+        timestamp_str + timestamp_len, sizeof(timestamp_str) - timestamp_len,
+        ".%03d", (int)(tv.tv_usec / 1000));
+
     // print to log file
     if (m_LogHandle != nullptr) {
         va_list vb;
 
         va_copy(vb, va);
-        fprintf(m_LogHandle, "%s %d %s ", file, line, func);
+        fprintf(m_LogHandle, M_FORMAT, timestamp_str, file, line, func);
         vfprintf(m_LogHandle, fmt, vb);
         fprintf(m_LogHandle, "\n");
         fflush(m_LogHandle);
@@ -33,7 +47,7 @@ void Log_Message(
     }
 
     // print to stdout
-    printf("%s %d %s ", file, line, func);
+    printf(M_FORMAT, timestamp_str, file, line, func);
     vprintf(fmt, va);
     printf("\n");
     fflush(stdout);

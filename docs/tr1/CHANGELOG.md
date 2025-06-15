@@ -26,6 +26,7 @@
 - changed the music track slot limit from 64 to 1024 (#3101)
 - changed text kerning to a smaller value
 - changed the underwater music volume setting to separate ambient and music volume sliders
+- changed logs format to include timestamps
 - fixed a game crash in custom levels if centaur statues exploded without having centaur objects in the level file (#3155)
 - fixed being unable to re-purpose some gym music tracks in custom levels (#3164)
 - fixed Lara not catching fire after reloading a save made when she was on fire and enhanced saves are disabled (applies to new saves only) (#3157)
