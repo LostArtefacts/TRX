@@ -544,6 +544,9 @@
         "STATS_FINAL_STATISTICS": "Statistiche Finali",
         "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION": "Consente di selezionare delle modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di bengala contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",
         "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO -",
-        "OVERLAY_DEBUG_ANIMATION": "Animazione: "
+        "OVERLAY_DEBUG_ANIMATION": "Animazione: ",
+        "CONSOLE_HELP_STRINGS": "\\{review}Ricarica i file di lingua correnti dal disco.",
+        "OSD_STRINGS_FAILED": "\\{review}Impossibile ricaricare i file di lingua",
+        "OSD_STRINGS_RELOADED": "\\{review}File di lingua ricaricati"
     }
 }

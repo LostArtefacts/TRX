@@ -39,4 +39,4 @@ const char *GameStringManager_GetLanguageName(const char *code);
 // Clears any previously loaded strings, loads OG fallback and mod overrides.
 // lang: language code (e.g. "en", "fr"). Must be one returned by
 // GetAvailableLanguages.
-void GameStringManager_ReloadLanguage(const char *lang);
+bool GameStringManager_ReloadLanguage(const char *lang);

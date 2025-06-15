@@ -280,8 +280,9 @@ VECTOR *GameStringManager_GetAvailableLanguages(void)
     return out;
 }
 
-void GameStringManager_ReloadLanguage(const char *const lang)
+bool GameStringManager_ReloadLanguage(const char *const lang)
 {
+    bool success = false;
     const M_LANG_ENTRY *lang_entry =
         m_LangEntries != nullptr ? M_FindLangEntry(lang) : nullptr;
     GameStringTable_Shutdown();
@@ -291,13 +292,18 @@ void GameStringManager_ReloadLanguage(const char *const lang)
         lang_entry = M_FindLangEntry("en");
     }
     if (lang_entry != nullptr) {
+        success = true;
         for (int32_t i = 0; i < lang_entry->files->count; i++) {
             const M_FILE_ENTRY *const file_entry =
                 Vector_Get(lang_entry->files, i);
-            GameStringTable_Load(file_entry->path, file_entry->load_levels);
+            if (!GameStringTable_Load(
+                    file_entry->path, file_entry->load_levels)) {
+                success = false;
+            }
         }
         GameStringTable_Apply(nullptr);
     }
+    return success;
 }
 
 const char *GameStringManager_GetLanguageName(const char *const code)
