@@ -54,6 +54,8 @@ static void M_MarkWaterEdgeVertices(void);
 
 static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
 {
+    // TODO: clang-format <20 formats this wrongly
+    // clang-format off
 #define TRY_OR_FAIL(call)                                                      \
     if (!call) {                                                               \
         return false;                                                          \
@@ -62,14 +64,15 @@ static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
     {                                                                          \
         int32_t num;                                                           \
         TRY_OR_FAIL(VFile_TryReadS32(file, &num));                             \
-        TRY_OR_FAIL(VFile_TrySkip(file, num *size));                           \
+        TRY_OR_FAIL(VFile_TrySkip(file, num * size));                          \
     }
 #define TRY_OR_FAIL_ARR_U16(size)                                              \
     {                                                                          \
         uint16_t num;                                                          \
         TRY_OR_FAIL(VFile_TryReadU16(file, &num));                             \
-        TRY_OR_FAIL(VFile_TrySkip(file, num *size));                           \
+        TRY_OR_FAIL(VFile_TrySkip(file, num * size));                          \
     }
+    // clang-format on
 
     VFile_SetPos(file, 0);
 

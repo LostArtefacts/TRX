@@ -57,6 +57,8 @@ static void M_CompleteSetup(const GF_LEVEL *level);
 
 static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 {
+    // TODO: clang-format <20 formats this wrongly
+    // clang-format off
 #define TRY_OR_FAIL(call)                                                      \
     if (!call) {                                                               \
         return false;                                                          \
@@ -65,14 +67,15 @@ static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
     {                                                                          \
         int32_t num;                                                           \
         TRY_OR_FAIL(VFile_TryReadS32(file, &num));                             \
-        TRY_OR_FAIL(VFile_TrySkip(file, num *size));                           \
+        TRY_OR_FAIL(VFile_TrySkip(file, num * size));                          \
     }
 #define TRY_OR_FAIL_ARR_U16(size)                                              \
     {                                                                          \
         uint16_t num;                                                          \
         TRY_OR_FAIL(VFile_TryReadU16(file, &num));                             \
-        TRY_OR_FAIL(VFile_TrySkip(file, num *size));                           \
+        TRY_OR_FAIL(VFile_TrySkip(file, num * size));                          \
     }
+    // clang-format on
 
     VFile_SetPos(file, 0);
 
@@ -153,16 +156,19 @@ static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 
 static void M_SkimLevel(VFILE *const file, M_LAYOUT layout)
 {
+    // TODO: clang-format <20 formats this wrongly
+    // clang-format off
 #define SKIP_ARR_S32(size)                                                     \
     {                                                                          \
         const int32_t num = VFile_ReadS32(file);                               \
-        VFile_Skip(file, num *size);                                           \
+        VFile_Skip(file, num * size);                                          \
     }
 #define SKIP_ARR_U16(size)                                                     \
     {                                                                          \
         const uint16_t num = VFile_ReadU16(file);                              \
-        VFile_Skip(file, num *size);                                           \
+        VFile_Skip(file, num * size);                                          \
     }
+    // clang-format on
 
     ASSERT(layout != LEVEL_LAYOUT_UNKNOWN);
     VFile_SetPos(file, 4); // start after version number
