@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
+- Added Italian translation for ingame strings
 - added buitin support for ingame string translations
 - added UI for all config tool settings
 - added ingame help for all settings

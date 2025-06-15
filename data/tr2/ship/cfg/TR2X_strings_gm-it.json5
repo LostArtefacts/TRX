@@ -1,0 +1,63 @@
+{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+
+    "language_name": "Italiano",
+
+    "levels": [
+        // 0. Lara's Home
+        {
+            "title": "Casa di Lara",
+        },
+
+        // 1. The Cold War
+        {
+            "title": "La Guerra Fredda",
+            "objects": {
+                "tiger": {"name": "Leopardo delle nevi"},
+                "key_1": {"name": "Chiave guardiola"},
+                "key_2": {"name": "Chiave 'B' del pozzo"},
+            },
+        },
+
+        // 2. Fool's Gold
+        {
+            "title": "L'oro degli sciocchi",
+            "objects": {
+                "key_1": {"name": "Carta d'accesso 1"},
+                "key_4": {"name": "Carta d'accesso 2"},
+                "puzzle_1": {"name": "Scheda circuito"},
+            },
+        },
+
+        // 3. Furnace of the Gods
+        {
+            "title": "Crogiolo degli dèi",
+            "objects": {
+                "big_spider": {"name": "Orso polare"},
+                "spider": {"name": "Lupo"},
+                "puzzle_1": {"name": "Maschera di Tornarsuk"},
+                "puzzle_2": {"name": "Pepita d'oro"},
+            },
+        },
+
+        // 4. Kingdom
+        {
+            "title": "Regno",
+            "objects": {
+                "tiger": {"name": "leopardo delle nevi"},
+                "puzzle_1": {"name": "Maschera di Tornarsuk"},
+            },
+        },
+
+        // 5. Nightmare in Vegas
+        {
+            "title": "Incubo a Las Vegas",
+            "objects": {
+                "key_1": {"name": "Chiave dell'hotel"},
+                "puzzle_1": {"name": "Raccordo dell'ascensore"},
+                "puzzle_2": {"name": "Circuito della porta"},
+            },
+        },
+    ],
+}
