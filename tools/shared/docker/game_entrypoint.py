@@ -44,8 +44,11 @@ class PackageOptions(BaseOptions):
         )
 
     @property
-    def ship_dir(self) -> Path:
-        return Path(f"/app/data/tr{self.tr_version}/ship/")
+    def ship_dirs(self) -> list[Path]:
+        return [
+            Path(f"/app/data/common/ship/"),
+            Path(f"/app/data/tr{self.tr_version}/ship/"),
+        ]
 
     @property
     def release_zip_files(self) -> list[tuple[Path, str]]:
@@ -173,8 +176,9 @@ class PackageCommand(BaseCommand):
 
         source_files = [
             *[
-                (path, str(path.relative_to(options.ship_dir)))
-                for path in options.ship_dir.rglob("*")
+                (path, str(path.relative_to(ship_dir)))
+                for ship_dir in options.ship_dirs
+                for path in ship_dir.rglob("*")
                 if path.is_file()
             ],
             *options.release_zip_files,
