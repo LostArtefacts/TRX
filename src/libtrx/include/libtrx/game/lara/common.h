@@ -8,6 +8,7 @@ LARA_INFO *Lara_GetLaraInfo(void);
 ITEM *Lara_GetItem(void);
 bool Lara_IsControllable(void);
 void Lara_SetControllable(bool controllable);
+GAME_OBJECT_ID Lara_GetAnimationObject(void);
 void Lara_Animate(ITEM *item);
 void Lara_SwapSingleMesh(LARA_MESH mesh, GAME_OBJECT_ID obj_id);
 OBJECT_MESH *Lara_GetMesh(LARA_MESH mesh);

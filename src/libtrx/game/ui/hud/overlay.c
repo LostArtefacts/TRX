@@ -145,6 +145,7 @@ static void M_DebugPosTopLeft(void)
         return;
     }
 
+    const GAME_OBJECT_ID obj_id = Lara_GetAnimationObject();
 #if TR_VERSION == 1
     const ITEM *const vehicle = nullptr;
 #else
@@ -158,6 +159,7 @@ static void M_DebugPosTopLeft(void)
     UI_Label(GS(OVERLAY_DEBUG_POSITION));
     UI_Label(GS(OVERLAY_DEBUG_ROTATION));
     UI_Label(GS(OVERLAY_DEBUG_SPEED));
+    UI_Label(GS(OVERLAY_DEBUG_ANIMATION));
     UI_EndStack();
     UI_BeginStack(UI_STACK_VERTICAL);
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
@@ -170,6 +172,9 @@ static void M_DebugPosTopLeft(void)
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
         "%d, %d", vehicle != nullptr ? vehicle->speed : lara->speed,
         vehicle != nullptr ? vehicle->fall_speed : lara->fall_speed)));
+    UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
+        "%d, %d, %d", obj_id, Item_GetRelativeObjAnim(lara, obj_id),
+        Item_GetRelativeFrame(lara))));
     UI_EndStack();
     UI_EndStack();
 }

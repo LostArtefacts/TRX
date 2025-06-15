@@ -822,6 +822,7 @@
         "OSD_UI_OFF": "UI disabled",
         "OSD_UI_ON": "UI enabled",
         "OSD_UNKNOWN_COMMAND": "Unknown command: %s",
+        "OVERLAY_DEBUG_ANIMATION": "Animation: ",
         "OVERLAY_DEBUG_POSITION": "Position: ",
         "OVERLAY_DEBUG_ROTATION": "Rotation: ",
         "OVERLAY_DEBUG_SPEED": "Speed: ",

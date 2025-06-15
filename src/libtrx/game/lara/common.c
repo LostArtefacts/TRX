@@ -23,6 +23,21 @@ void Lara_SetControllable(const bool controllable)
     m_Controllable = controllable;
 }
 
+GAME_OBJECT_ID Lara_GetAnimationObject(void)
+{
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->extra_anim) {
+        return O_LARA_EXTRA;
+    }
+#if TR_VERSION >= 2
+    if (lara_info->vehicle_item_num != NO_ITEM) {
+        const ITEM *const vehicle = Item_Get(lara_info->vehicle_item_num);
+        return vehicle->object_id == O_BOAT ? O_LARA_BOAT : O_LARA_SKIDOO;
+    }
+#endif
+    return O_LARA;
+}
+
 void Lara_Animate(ITEM *const item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
