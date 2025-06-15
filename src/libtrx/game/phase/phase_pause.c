@@ -89,7 +89,7 @@ static void M_ExitToTitle(M_PRIV *const p)
 
 static void M_CreateText(M_PRIV *const p)
 {
-    Overlay_SetBottomText(GS(PAUSE_PAUSED), false);
+    Overlay_SetBottomTextPtr(GS_PTR(PAUSE_PAUSED), false);
 }
 
 static void M_RemoveText(M_PRIV *const p)

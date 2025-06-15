@@ -36,7 +36,8 @@ typedef struct UI_OVERLAY_STATE {
     bool show_arrows[6];
     bool show_version;
     struct {
-        const char *text;
+        const char *one_off;
+        const char *const *live_ptr;
         bool flash_enabled;
     } top_text, bottom_text;
     UI_FLASH_STATE flash_state;
@@ -227,13 +228,17 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
     M_LaraHealthBar(s, BL_TOP_CENTER);
     M_LaraAirBar(s, BL_TOP_CENTER);
     M_EnemyHealthBar(BL_TOP_CENTER);
-    if (s->top_text.text != nullptr) {
-        if (s->top_text.flash_enabled) {
-            UI_BeginFlash(&s->flash_state);
-        }
-        UI_Label(s->top_text.text);
-        if (s->top_text.flash_enabled) {
-            UI_EndFlash();
+    {
+        const char *const txt =
+            s->top_text.live_ptr ? *s->top_text.live_ptr : s->top_text.one_off;
+        if (txt != nullptr) {
+            if (s->top_text.flash_enabled) {
+                UI_BeginFlash(&s->flash_state);
+            }
+            UI_Label(txt);
+            if (s->top_text.flash_enabled) {
+                UI_EndFlash();
+            }
         }
     }
     UI_EndOverlayRegion();
@@ -274,17 +279,22 @@ static void M_BottomLeftRegion(const UI_OVERLAY_STATE *const s)
 static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.5f, 1.0f);
-    if (s->bottom_text.text != nullptr) {
-        if (s->bottom_text.flash_enabled) {
-            UI_BeginFlash(&s->flash_state);
-        }
-        UI_BeginRowArrows(
-            s->show_arrows[UI_OVERLAY_ARROW_BCL],
-            s->show_arrows[UI_OVERLAY_ARROW_BCR], UI_ROW_ARROWS_WIDE);
-        UI_Label(s->bottom_text.text);
-        UI_EndRowArrows();
-        if (s->bottom_text.flash_enabled) {
-            UI_EndFlash();
+    {
+        const char *const txt = s->bottom_text.live_ptr
+            ? *s->bottom_text.live_ptr
+            : s->bottom_text.one_off;
+        if (txt != nullptr) {
+            if (s->bottom_text.flash_enabled) {
+                UI_BeginFlash(&s->flash_state);
+            }
+            UI_BeginRowArrows(
+                s->show_arrows[UI_OVERLAY_ARROW_BCL],
+                s->show_arrows[UI_OVERLAY_ARROW_BCR], UI_ROW_ARROWS_WIDE);
+            UI_Label(txt);
+            UI_EndRowArrows();
+            if (s->bottom_text.flash_enabled) {
+                UI_EndFlash();
+            }
         }
     }
     M_LaraHealthBar(s, BL_BOTTOM_CENTER);
@@ -396,13 +406,31 @@ void UI_Overlay_ShowVersion(UI_OVERLAY_STATE *const s, const bool show)
 void UI_Overlay_SetTopText(
     UI_OVERLAY_STATE *const s, const char *const text, const bool flash)
 {
-    s->top_text.text = text;
+    s->top_text.one_off = text;
+    s->top_text.live_ptr = nullptr;
     s->top_text.flash_enabled = flash;
 }
 
 void UI_Overlay_SetBottomText(
     UI_OVERLAY_STATE *const s, const char *const text, const bool flash)
 {
-    s->bottom_text.text = text;
+    s->bottom_text.one_off = text;
+    s->bottom_text.live_ptr = nullptr;
+    s->bottom_text.flash_enabled = flash;
+}
+
+void UI_Overlay_SetTopTextPtr(
+    UI_OVERLAY_STATE *const s, const char *const *const ptr, const bool flash)
+{
+    s->top_text.one_off = nullptr;
+    s->top_text.live_ptr = ptr;
+    s->top_text.flash_enabled = flash;
+}
+
+void UI_Overlay_SetBottomTextPtr(
+    UI_OVERLAY_STATE *const s, const char *const *const ptr, const bool flash)
+{
+    s->bottom_text.one_off = nullptr;
+    s->bottom_text.live_ptr = ptr;
     s->bottom_text.flash_enabled = flash;
 }

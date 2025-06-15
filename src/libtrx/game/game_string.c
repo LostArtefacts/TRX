@@ -4,43 +4,55 @@
 
 #include <uthash.h>
 
+// One-slot-per-string for stable indirection on reload.
+typedef struct M_SLOT {
+    const char *value;
+} M_SLOT;
+
 typedef struct {
     char *key;
-    char *value;
+    M_SLOT *slot;
     UT_hash_handle hh;
 } M_STRING_ENTRY;
 
 static M_STRING_ENTRY *m_StringTable = nullptr;
 
-void GameString_Define(const char *key, const char *value)
+void GameString_Define(const char *const key, const char *value)
 {
     M_STRING_ENTRY *entry;
 
     HASH_FIND_STR(m_StringTable, key, entry);
     if (entry == nullptr) {
-        entry = (M_STRING_ENTRY *)Memory_Alloc(sizeof(M_STRING_ENTRY));
+        entry = Memory_Alloc(sizeof(*entry));
         entry->key = Memory_DupStr(key);
-        entry->value = Memory_DupStr(value);
+        entry->slot = Memory_Alloc(sizeof(*entry->slot));
+        entry->slot->value = nullptr;
         HASH_ADD_KEYPTR(
             hh, m_StringTable, entry->key, strlen(entry->key), entry);
-    } else {
-        Memory_Free(entry->value);
-        entry->value = Memory_DupStr(value);
     }
+    Memory_Free((void *)entry->slot->value);
+    entry->slot->value = Memory_DupStr(value);
 }
 
-bool GameString_IsKnown(const char *key)
+bool GameString_IsKnown(const char *const key)
 {
     M_STRING_ENTRY *entry;
     HASH_FIND_STR(m_StringTable, key, entry);
     return entry != nullptr;
 }
 
-const char *GameString_Get(const char *key)
+const char *GameString_Get(const char *const key)
 {
     M_STRING_ENTRY *entry;
     HASH_FIND_STR(m_StringTable, key, entry);
-    return entry ? entry->value : nullptr;
+    return entry ? entry->slot->value : nullptr;
+}
+
+const char *const *GameString_GetPtr(const char *const key)
+{
+    M_STRING_ENTRY *entry;
+    HASH_FIND_STR(m_StringTable, key, entry);
+    return entry ? &entry->slot->value : nullptr;
 }
 
 void GameString_Clear(void)
@@ -51,7 +63,8 @@ void GameString_Clear(void)
     {
         HASH_DEL(m_StringTable, entry);
         Memory_Free(entry->key);
-        Memory_Free(entry->value);
+        Memory_Free((void *)entry->slot->value);
+        Memory_Free(entry->slot);
         Memory_Free(entry);
     }
 }

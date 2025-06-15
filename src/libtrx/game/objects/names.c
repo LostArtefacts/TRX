@@ -24,6 +24,7 @@ typedef struct {
 typedef struct {
     VECTOR *names;
     char *description;
+    const char *slot; // stable first-name slot for this object
 } M_NAME_ENTRY;
 
 static M_NAME_ENTRY m_NamesTable[O_NUMBER_OF] = {};
@@ -91,6 +92,7 @@ static void M_ClearAllNames(void)
             entry->names = nullptr;
         }
         Memory_FreePointer(&entry->description);
+        entry->slot = nullptr;
     }
 }
 
@@ -105,6 +107,7 @@ void Object_ClearNames(const GAME_OBJECT_ID obj_id)
         }
         Vector_Clear(entry->names);
     }
+    entry->slot = nullptr;
 }
 
 void Object_AddName(const GAME_OBJECT_ID obj_id, const char *const name)
@@ -117,6 +120,10 @@ void Object_AddName(const GAME_OBJECT_ID obj_id, const char *const name)
     }
     char *const dup = Memory_DupStr(name);
     Vector_Add(entry->names, &dup);
+    // on first insertion, update stable slot
+    if (entry->names->count == 1) {
+        entry->slot = dup;
+    }
 }
 
 void Object_SetDescription(
@@ -132,11 +139,13 @@ void Object_SetDescription(
 const char *Object_GetName(const GAME_OBJECT_ID obj_id)
 {
     M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    if (entry != nullptr && entry->names != nullptr
-        && entry->names->count > 0) {
-        return *(char **)Vector_Get(entry->names, 0);
-    }
-    return nullptr;
+    return entry ? entry->slot : nullptr;
+}
+
+const char *const *Object_GetNamePtr(const GAME_OBJECT_ID obj_id)
+{
+    M_NAME_ENTRY *entry = M_ResolveNameEntry(obj_id);
+    return entry ? &entry->slot : nullptr;
 }
 
 const char *Object_GetDescription(GAME_OBJECT_ID obj_id)
