@@ -1,1056 +1,1136 @@
 {
-    // For usage, refer to the documentation here:
-    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
-
-    "language_name": "English",
-
     "levels": [
-        // 0. Lara's Home
         {
-            "title": "Lara's Home",
+            "title": "Lara's Home"
         },
-
-        // 1. The Great Wall
         {
             "title": "The Great Wall",
             "objects": {
-                "key_1": {"name": "Guardhouse Key"},
-                "key_2": {"name": "Rusty Key"},
-            },
+                "key_1": {
+                    "name": "Guardhouse Key"
+                },
+                "key_2": {
+                    "name": "Rusty Key"
+                }
+            }
         },
-
-        // 2. Venice
         {
             "title": "Venice",
             "objects": {
-                "key_1": {"name": "Boathouse Key"},
-                "key_2": {"name": "Steel Key"},
-                "key_3": {"name": "Iron Key"},
-            },
+                "key_1": {
+                    "name": "Boathouse Key"
+                },
+                "key_2": {
+                    "name": "Steel Key"
+                },
+                "key_3": {
+                    "name": "Iron Key"
+                }
+            }
         },
-
-        // 3. Bartoli's Hideout
         {
             "title": "Bartoli's Hideout",
             "objects": {
-                "key_1": {"name": "Library Key"},
-                "key_2": {"name": "Detonator Key"},
-            },
+                "key_1": {
+                    "name": "Library Key"
+                },
+                "key_2": {
+                    "name": "Detonator Key"
+                }
+            }
         },
-
-        // 4. Opera House
         {
             "title": "Opera House",
             "objects": {
-                "key_1": {"name": "Ornate Key"},
-                "puzzle_1": {"name": "Relay Box"},
-                "puzzle_2": {"name": "Circuit Board"},
-            },
+                "key_1": {
+                    "name": "Ornate Key"
+                },
+                "puzzle_1": {
+                    "name": "Relay Box"
+                },
+                "puzzle_2": {
+                    "name": "Circuit Board"
+                }
+            }
         },
-
-        // 5. Offshore Rig
         {
             "title": "Offshore Rig",
             "objects": {
-                "key_1": {"name": "Red Pass Card"},
-                "key_2": {"name": "Yellow Pass Card"},
-                "key_3": {"name": "Green Pass Card"},
-            },
+                "key_1": {
+                    "name": "Red Pass Card"
+                },
+                "key_2": {
+                    "name": "Yellow Pass Card"
+                },
+                "key_3": {
+                    "name": "Green Pass Card"
+                }
+            }
         },
-
-        // 6. Diving Area
         {
             "title": "Diving Area",
             "objects": {
-                "key_1": {"name": "Red Pass Card"},
-                "key_4": {"name": "Blue Pass Card"},
-                "puzzle_1": {"name": "Machine Chip"},
-            },
+                "key_1": {
+                    "name": "Red Pass Card"
+                },
+                "key_4": {
+                    "name": "Blue Pass Card"
+                },
+                "puzzle_1": {
+                    "name": "Machine Chip"
+                }
+            }
         },
-
-        // 7. 40 Fathoms
         {
-            "title": "40 Fathoms",
+            "title": "40 Fathoms"
         },
-
-        // 8. Wreck of the Maria Doria
         {
             "title": "Wreck of the Maria Doria",
             "objects": {
-                 "key_1": {"name": "Rest Room Key"},
-                 "key_2": {"name": "Rusty Key"},
-                 "key_3": {"name": "Cabin Key"},
-                 "puzzle_1": {"name": "Circuit Breaker"},
-            },
+                "key_1": {
+                    "name": "Rest Room Key"
+                },
+                "key_2": {
+                    "name": "Rusty Key"
+                },
+                "key_3": {
+                    "name": "Cabin Key"
+                },
+                "puzzle_1": {
+                    "name": "Circuit Breaker"
+                }
+            }
         },
-
-        // 9. Living Quarters
         {
             "title": "Living Quarters",
             "objects": {
-                "key_1": {"name": "Theatre Key"},
-                "key_2": {"name": "Rusty Key"},
-            },
+                "key_1": {
+                    "name": "Theatre Key"
+                },
+                "key_2": {
+                    "name": "Rusty Key"
+                }
+            }
         },
-
-        // 10. The Deck
         {
             "title": "The Deck",
             "objects": {
-                "key_2": {"name": "Stern Key"},
-                "key_3": {"name": "Storage Key"},
-                "key_4": {"name": "Cabin Key"},
-                "puzzle_4": {"name": "The Seraph"},
-            },
+                "key_2": {
+                    "name": "Stern Key"
+                },
+                "key_3": {
+                    "name": "Storage Key"
+                },
+                "key_4": {
+                    "name": "Cabin Key"
+                },
+                "puzzle_4": {
+                    "name": "The Seraph"
+                }
+            }
         },
-
-        // 11. Tibetan Foothills
         {
             "title": "Tibetan Foothills",
             "objects": {
-                "tiger": {"name": "Snow Leopard"},
-                "key_1": {"name": "Drawbridge Key"},
-                "key_2": {"name": "Hut Key"},
-                "puzzle_4": {"name": "The Seraph"},
-            },
+                "tiger": {
+                    "name": "Snow Leopard"
+                },
+                "key_1": {
+                    "name": "Drawbridge Key"
+                },
+                "key_2": {
+                    "name": "Hut Key"
+                },
+                "puzzle_4": {
+                    "name": "The Seraph"
+                }
+            }
         },
-
-        // 12. Barkhang Monastery
         {
             "title": "Barkhang Monastery",
             "objects": {
-                "key_1": {"name": "Strongroom Key"},
-                "key_2": {"name": "Trapdoor Key"},
-                "key_3": {"name": "Rooftops Key"},
-                "key_4": {"name": "Main Hall Key"},
-                "puzzle_1": {"name": "Prayer Wheels"},
-                "puzzle_2": {"name": "Gemstones"},
-                "puzzle_4": {"name": "The Seraph"},
-            },
+                "key_1": {
+                    "name": "Strongroom Key"
+                },
+                "key_2": {
+                    "name": "Trapdoor Key"
+                },
+                "key_3": {
+                    "name": "Rooftops Key"
+                },
+                "key_4": {
+                    "name": "Main Hall Key"
+                },
+                "puzzle_1": {
+                    "name": "Prayer Wheels"
+                },
+                "puzzle_2": {
+                    "name": "Gemstones"
+                },
+                "puzzle_4": {
+                    "name": "The Seraph"
+                }
+            }
         },
-
-        // 13. Catacombs of the Talion
         {
             "title": "Catacombs of the Talion",
             "objects": {
-                "tiger": {"name": "Snow Leopard"},
-                "pickup_1": {"name": "Gong Hammer"},
-                "puzzle_1": {"name": "Tibetan Mask"},
-            },
+                "tiger": {
+                    "name": "Snow Leopard"
+                },
+                "pickup_1": {
+                    "name": "Gong Hammer"
+                },
+                "puzzle_1": {
+                    "name": "Tibetan Mask"
+                }
+            }
         },
-
-        // 14. Ice Palace
         {
             "title": "Ice Palace",
             "objects": {
-                "tiger": {"name": "White Tiger"},
-                "key_2": {"name": "Gong Hammer"},
-                "pickup_2": {"name": "Talion"},
-                "puzzle_1": {"name": "Tibetan Mask"},
-            },
+                "tiger": {
+                    "name": "White Tiger"
+                },
+                "key_2": {
+                    "name": "Gong Hammer"
+                },
+                "pickup_2": {
+                    "name": "Talion"
+                },
+                "puzzle_1": {
+                    "name": "Tibetan Mask"
+                }
+            }
         },
-
-        // 15. Temple of Xian
         {
             "title": "Temple of Xian",
             "objects": {
-                "key_2": {"name": "Gold Key"},
-                "key_3": {"name": "Silver Key"},
-                "key_4": {"name": "Main Chamber Key"},
-                "puzzle_1": {"name": "The Dragon Seal"},
-            },
+                "key_2": {
+                    "name": "Gold Key"
+                },
+                "key_3": {
+                    "name": "Silver Key"
+                },
+                "key_4": {
+                    "name": "Main Chamber Key"
+                },
+                "puzzle_1": {
+                    "name": "The Dragon Seal"
+                }
+            }
         },
-
-        // 16. Floating Islands
         {
             "title": "Floating Islands",
             "objects": {
-                "puzzle_1": {"name": "Mystic Plaque"},
-                "puzzle_2": {"name": "Mystic Plaque"},
-            },
+                "puzzle_1": {
+                    "name": "Mystic Plaque"
+                },
+                "puzzle_2": {
+                    "name": "Mystic Plaque"
+                }
+            }
         },
-
-        // 17. The Dragon's Lair
         {
             "title": "The Dragon's Lair",
             "objects": {
-                "puzzle_1": {"name": "Mystic Plaque"},
-                "puzzle_2": {"name": "Dagger of Xian"},
-            },
+                "puzzle_1": {
+                    "name": "Mystic Plaque"
+                },
+                "puzzle_2": {
+                    "name": "Dagger of Xian"
+                }
+            }
         },
-
-        // 18. Home Sweet Home
         {
             "title": "Home Sweet Home",
             "objects": {
-                "key_1": {"name": "Gun Cupboard Key"},
-                "puzzle_1": {"name": "Dagger of Xian"},
-            },
-        },
+                "key_1": {
+                    "name": "Gun Cupboard Key"
+                },
+                "puzzle_1": {
+                    "name": "Dagger of Xian"
+                }
+            }
+        }
     ],
-
     "demos": [
         {
             "title": "Venice",
             "objects": {
-                "key_1": {"name": "Boathouse Key"},
-                "key_2": {"name": "Steel Key"},
-                "key_3": {"name": "Iron Key"},
-            },
+                "key_1": {
+                    "name": "Boathouse Key"
+                },
+                "key_2": {
+                    "name": "Steel Key"
+                },
+                "key_3": {
+                    "name": "Iron Key"
+                }
+            }
         },
-
         {
             "title": "Wreck of the Maria Doria",
             "objects": {
-                 "key_1": {"name": "Rest Room Key"},
-                 "key_2": {"name": "Rusty Key"},
-                 "key_3": {"name": "Cabin Key"},
-                 "puzzle_1": {"name": "Circuit Breaker"},
-            },
+                "key_1": {
+                    "name": "Rest Room Key"
+                },
+                "key_2": {
+                    "name": "Rusty Key"
+                },
+                "key_3": {
+                    "name": "Cabin Key"
+                },
+                "puzzle_1": {
+                    "name": "Circuit Breaker"
+                }
+            }
         },
-
         {
             "title": "Tibetan Foothills",
             "objects": {
-                "tiger": {"name": "Snow Leopard"},
-                "key_1": {"name": "Drawbridge Key"},
-                "key_2": {"name": "Hut Key"},
-                "puzzle_4": {"name": "The Seraph"},
-            },
-        },
+                "tiger": {
+                    "name": "Snow Leopard"
+                },
+                "key_1": {
+                    "name": "Drawbridge Key"
+                },
+                "key_2": {
+                    "name": "Hut Key"
+                },
+                "puzzle_4": {
+                    "name": "The Seraph"
+                }
+            }
+        }
     ],
-
     "cutscenes": [
-        {"title": "Cutscene 1"},
-        {"title": "Cutscene 2"},
-        {"title": "Cutscene 3"},
-        {"title": "Cutscene 4"},
+        {
+            "title": "Cutscene 1"
+        },
+        {
+            "title": "Cutscene 2"
+        },
+        {
+            "title": "Cutscene 3"
+        },
+        {
+            "title": "Cutscene 4"
+        }
     ],
-
     "objects": {
-        "small_medipack":        {"name": "Small Medipack"},
-        "large_medipack":        {"name": "Large Medipack"},
-        "flare":                 {"name": "Flare"},
-        "flares_box":            {"name": "Flares Box"},
-        "secret_1":              {"name": "Secret 1"},
-        "secret_2":              {"name": "Secret 2"},
-        "secret_3":              {"name": "Secret 3"},
-        "pistols":               {"name": "Pistols"},
-        "shotgun":               {"name": "Shotgun"},
-        "magnums":               {"name": "Automatic Pistols"},
-        "uzis":                  {"name": "Uzis"},
-        "harpoon_gun":           {"name": "Harpoon Gun"},
-        "m16":                   {"name": "M16"},
-        "grenade_launcher":      {"name": "Grenade Launcher"},
-        "pistols_ammo":          {"name": "Pistol Clips"},
-        "shotgun_ammo":          {"name": "Shotgun Shells"},
-        "magnums_ammo":          {"name": "Automatic Pistol Clips"},
-        "uzis_ammo":             {"name": "Uzi Clips"},
-        "harpoon_gun_ammo":      {"name": "Harpoons"},
-        "m16_ammo":              {"name": "M16 Clips"},
-        "grenade_launcher_ammo": {"name": "Grenades"},
-        "key_1":                 {"name": "Key 1"},
-        "key_2":                 {"name": "Key 2"},
-        "key_3":                 {"name": "Key 3"},
-        "key_4":                 {"name": "Key 4"},
-        "puzzle_1":              {"name": "Puzzle Item 1"},
-        "puzzle_2":              {"name": "Puzzle Item 2"},
-        "puzzle_3":              {"name": "Puzzle Item 3"},
-        "puzzle_4":              {"name": "Puzzle Item 4"},
-        "pickup_1":              {"name": "Pickup Item 1"},
-        "pickup_2":              {"name": "Pickup Item 2"},
-        "compass":               {"name": "Gameplay"},
-        "passport":              {"name": "Game"},
-        "photo":                 {"name": "Lara's Home"},
-        "graphics":              {"name": "Graphics"},
-        "controls":              {"name": "Controls"},
-        "sound":                 {"name": "Sound"},
-        "lara":                  {"name": "Lara"},
-        "lara_pistols":          {"name": "Pistols Animation"},
-        "lara_hair":             {"name": "Lara's Braid"},
-        "lara_shotgun":          {"name": "Shotgun Animation"},
-        "lara_magnums":          {"name": "Magnums Animation"},
-        "lara_uzis":             {"name": "Uzis Animation"},
-        "lara_m16":              {"name": "M16 Animation"},
-        "lara_grenade":          {"name": "Grenade Launcher Animation"},
-        "lara_harpoon":          {"name": "Harpoon Animation"},
-        "lara_flare":            {"name": "Flare Animation"},
-        "lara_skidoo":           {"name": "Snowmobile Animation"},
-        "lara_boat":             {"name": "Boat Animation"},
-        "lara_extra":            {"name": "Lara's Extra Animation"},
-        "skidoo_fast":           {"name": "Red Snowmobile"},
-        "boat":                  {"name": "Boat"},
-        "dog":                   {"names": ["Dog", "Doberman"]},
-        "cult_1":                {"name": "Masked Goon 1"},
-        "cult_1a":               {"name": "Masked Goon 2"},
-        "cult_1b":               {"name": "Masked Goon 3"},
-        "cult_2":                {"name": "Knife Thrower"},
-        "cult_3":                {"name": "Shotgun Goon"},
-        "mouse":                 {"name": "Rat"},
-        "dragon_front":          {"name": "Dragon Front"},
-        "dragon_back":           {"name": "Dragon Back"},
-        "gondola":               {"name": "Gondola"},
-        "shark":                 {"name": "Shark"},
-        "eel":                   {"name": "Eel"},
-        "big_eel":               {"name": "Big Eel"},
-        "barracuda":             {"name": "Barracuda"},
-        "diver":                 {"name": "Scuba Diver"},
-        "worker_1":              {"name": "Gunman Goon 1"},
-        "worker_2":              {"name": "Gunman Goon 2"},
-        "worker_3":              {"name": "Stick Wielding Goon 1"},
-        "worker_4":              {"name": "Stick Wielding Goon 2"},
-        "worker_5":              {"name": "Flamethrower Goon"},
-        "jelly":                 {"name": "Jellyfish"},
-        "spider":                {"name": "Spider"},
-        "big_spider":            {"name": "Giant Spider"},
-        "crow":                  {"name": "Crow"},
-        "tiger":                 {"name": "Tiger"},
-        "bartoli":               {"name": "Marco Bartoli"},
-        "xian_spearman":         {"name": "Xian Spearman"},
-        "xian_spearman_statue":  {"name": "Xian Spearman Statue"},
-        "xian_knight":           {"name": "Xian Knight"},
-        "xian_knight_statue":    {"name": "Xian Knight Statue"},
-        "yeti":                  {"name": "Yeti"},
-        "bird_guardian":         {"name": "Bird Monster"},
-        "eagle":                 {"name": "Eagle"},
-        "bandit_1":              {"names": ["Mercenary 1", "Masked Goon 1"]},
-        "bandit_2":              {"names": ["Mercenary 2", "Masked Goon 2"]},
-        "bandit_2b":             {"names": ["Mercenary 3", "Masked Goon 3"]},
-        "skidoo_armed":          {"name": "Black Snowmobile"},
-        "skidoo_driver":         {"name": "Black Snowmobile Driver"},
-        "monk_1":                {"name": "Monk 1"},
-        "monk_2":                {"name": "Monk 2"},
-        "falling_block_1":       {"names": ["Falling Block 1", "Collapsible Floor 1", "Collapsible Tiles 1"]},
-        "falling_block_2":       {"names": ["Falling Block 2", "Collapsible Floor 2", "Collapsible Tiles 2"]},
-        "falling_block_3":       {"names": ["Falling Block 3", "Collapsible Floor 3", "Collapsible Tiles 3", "Loose Boards"]},
-        "pendulum_1":            {"name": "Sandbag"},
-        "spikes":                {"name": "Spikes"},
-        "rolling_ball_1":        {"names": ["Boulder 1", "Rolling Ball"]},
-        "dart":                  {"name": "Disc"},
-        "dart_emitter":          {"name": "Disc Emitter"},
-        "drawbridge":            {"name": "Drawbridge"},
-        "teeth_trap":            {"name": "Teeth Trap"},
-        "lift":                  {"name": "Lift"},
-        "general":               {"name": "Minisub"},
-        "movable_block_1":       {"names": ["Push Block 1", "Movable Block 1"]},
-        "movable_block_2":       {"names": ["Push Block 2", "Movable Block 2"]},
-        "movable_block_3":       {"names": ["Push Block 3", "Movable Block 3"]},
-        "movable_block_4":       {"names": ["Push Block 4", "Movable Block 4"]},
-        "big_bowl":              {"name": "Lava Bowl"},
-        "window_1":              {"name": "Breakable Window 1"},
-        "window_2":              {"name": "Breakable Window 2"},
-        "window_3":              {"name": "Breakable Window 3"},
-        "window_4":              {"name": "Breakable Window 4"},
-        "propeller_1":           {"name": "Airplane Propeller"},
-        "power_saw":             {"name": "Power Saw"},
-        "hook":                  {"name": "Hook"},
-        "falling_ceiling_1":     {"name": "Falling Ceiling 1"},
-        "spinning_blade":        {"name": "Spinning Blade"},
-        "blade":                 {"name": "Wall-mounted Blade"},
-        "killer_statue":         {"name": "Statue with Sword"},
-        "rolling_ball_2":        {"names": ["Boulder 2", "Rolling Ball 2"]},
-        "icicle":                {"name": "Icicles"},
-        "spike_wall":            {"name": "Spike Wall"},
-        "springboard":           {"name": "Springboard"},
-        "ceiling_spikes":        {"name": "Spiky Ceiling"},
-        "bell":                  {"name": "Bell"},
-        "water_sprite":          {"name": "Boat Wake"},
-        "snow_sprite":           {"name": "Snowmobile Wake"},
-        "skidoo_track":          {"name": "Snowmobile Track"},
-        "switch_type_airlock":   {"name": "Airlock Switch"},
-        "switch_type_small":     {"name": "Small Switch"},
-        "propeller_2":           {"name": "Underwater Propeller"},
-        "propeller_3":           {"name": "Air Fan"},
-        "pendulum_2":            {"name": "Swinging Box"},
-        "mesh_swap_1":           {"name": "Mesh Swap 1"},
-        "mesh_swap_2":           {"name": "Mesh Swap 2"},
-        "lara_swap":             {"name": "Lara Mesh Swap"},
-        "text_box":              {"name": "UI Frame"},
-        "rolling_ball_3":        {"names": ["Boulder 3", "Rolling Ball 3"]},
-        "zipline_handle":        {"name": "Zipline Handle"},
-        "switch_type_button":    {"names": ["Button", "Push Button", "Switch"]},
-        "switch_type_normal":    {"names": ["Lever", "Switch"]},
-        "switch_type_uw":        {"names": ["Underwater Lever", "Underwater Switch"]},
-        "door_type_1":           {"name": "Door 1"},
-        "door_type_2":           {"name": "Door 2"},
-        "door_type_3":           {"name": "Door 3"},
-        "door_type_4":           {"name": "Door 4"},
-        "door_type_5":           {"name": "Door 5"},
-        "door_type_6":           {"name": "Door 6"},
-        "door_type_7":           {"name": "Door 7"},
-        "door_type_8":           {"name": "Door 8"},
-        "trapdoor_type_1":       {"name": "Trapdoor 1"},
-        "trapdoor_type_2":       {"name": "Trapdoor 2"},
-        "trapdoor_type_3":       {"name": "Trapdoor 3"},
-        "bridge_flat":           {"name": "Bridge Flat"},
-        "bridge_tilt_1":         {"name": "Bridge Tilt 1"},
-        "bridge_tilt_2":         {"name": "Bridge Tilt 2"},
-        "player_1":              {"name": "Cutscene Actor 1"},
-        "player_2":              {"name": "Cutscene Actor 2"},
-        "player_3":              {"name": "Cutscene Actor 3"},
-        "player_4":              {"name": "Cutscene Actor 4"},
-        "player_5":              {"name": "Cutscene Actor 5"},
-        "player_6":              {"name": "Cutscene Actor 6"},
-        "player_7":              {"name": "Cutscene Actor 7"},
-        "player_8":              {"name": "Cutscene Actor 8"},
-        "player_9":              {"name": "Cutscene Actor 9"},
-        "player_10":             {"name": "Cutscene Actor 10"},
-        "key_hole_1":            {"name": "Keyhole 1"},
-        "key_hole_2":            {"name": "Keyhole 2"},
-        "key_hole_3":            {"name": "Keyhole 3"},
-        "key_hole_4":            {"name": "Keyhole 4"},
-        "puzzle_hole_1":         {"name": "Puzzle Hole 1 (Empty)"},
-        "puzzle_hole_2":         {"name": "Puzzle Hole 2 (Empty)"},
-        "puzzle_hole_3":         {"name": "Puzzle Hole 3 (Empty)"},
-        "puzzle_hole_4":         {"name": "Puzzle Hole 4 (Empty)"},
-        "puzzle_done_1":         {"name": "Puzzle Hole 1 (Done)"},
-        "puzzle_done_2":         {"name": "Puzzle Hole 2 (Done)"},
-        "puzzle_done_3":         {"name": "Puzzle Hole 3 (Done)"},
-        "puzzle_done_4":         {"name": "Puzzle Hole 4 (Done)"},
-        "sphere_of_doom_1":      {"name": "Dragon Explosion 1"},
-        "sphere_of_doom_2":      {"name": "Dragon Explosion 2"},
-        "sphere_of_doom_3":      {"name": "Dragon Explosion 3"},
-        "alarm_sound":           {"name": "Alarm"},
-        "bird_tweeter_1":        {"name": "Dripping Water"},
-        "trex":                  {"name": "T-Rex"},
-        "bird_tweeter_2":        {"name": "Singing Birds"},
-        "clock_chimes":          {"name": "Bartoli Hideout clock"},
-        "dragon_bones_1":        {"name": "Placeholder"},
-        "dragon_bones_2":        {"name": "Dragon Bones Front"},
-        "dragon_bones_3":        {"name": "Dragon Bones Back"},
-        "hot_liquid":            {"name": "Extra Fire"},
-        "boat_bits":             {"name": "Boat Bits"},
-        "mine":                  {"name": "Aquatic Mine"},
-        "inv_background":        {"name": "Menu Background"},
-        "fx_reserved":           {"name": "Gray disk"},
-        "gong_bonger":           {"name": "Gong Stick"},
-        "detonator_1":           {"name": "Gong"},
-        "detonator_2":           {"name": "Detonator Box"},
-        "copter":                {"name": "Helicopter"},
-        "explosion_1":           {"name": "Explosion 1"},
-        "splash_1":              {"name": "Water Ripples 1"},
-        "bubble_1":              {"name": "Bubble 1"},
-        "bubble_emitter":        {"name": "Bubble Emitter"},
-        "blood_1":               {"name": "Blood 1"},
-        "dart_effect":           {"name": "Dart Effect"},
-        "flare_fire":            {"name": "Flare sparks"},
-        "glow":                  {"name": "Glow"},
-        "glow_reserved":         {"name": "Map Glow"},
-        "ricochet":              {"name": "Ricochet"},
-        "twinkle":               {"name": "Sparkles"},
-        "gun_flash":             {"name": "Gun Flash"},
-        "m16_flash":             {"name": "M16 Flash"},
-        "body_part":             {"name": "Body Part"},
-        "camera_target":         {"name": "Camera Target"},
-        "waterfall":             {"name": "Waterfall Mist"},
-        "missile_harpoon":       {"name": "Missile Harpoon"},
-        "missile_flame":         {"name": "Missile Flame"},
-        "missile_knife":         {"name": "Missile Knife"},
-        "grenade":               {"name": "Grenade"},
-        "harpoon_bolt":          {"name": "Harpoon Bolt"},
-        "ember":                 {"name": "Ember"},
-        "ember_emitter":         {"name": "Ember Emitter"},
-        "flame":                 {"names": ["Flame", "Fire"]},
-        "flame_emitter":         {"names": ["Flame Emitter", "Fire Emitter"]},
-        "skybox":                {"name": "Skybox"},
-        "alphabet":              {"name": "Alphabet"},
-        "dying_monk":            {"name": "Dying monk"},
-        "ding_dong":             {"name": "Doorbell"},
-        "lara_alarm":            {"name": "Alarm Bell"},
-        "mini_copter":           {"name": "Helicopter 2"},
-        "winston":               {"name": "Winston"},
-        "assault_digits":        {"name": "Assault Digits"},
-        "combat_end":            {"name": "Combat End"},
-        "cut_shotgun":           {"name": "Shotgun Shower Animation"},
-        "earthquake":            {"name": "Earthquake"},
+        "small_medipack": {
+            "name": "Small Medipack"
+        },
+        "large_medipack": {
+            "name": "Large Medipack"
+        },
+        "flare": {
+            "name": "Flare"
+        },
+        "flares_box": {
+            "name": "Flares Box"
+        },
+        "secret_1": {
+            "name": "Secret 1"
+        },
+        "secret_2": {
+            "name": "Secret 2"
+        },
+        "secret_3": {
+            "name": "Secret 3"
+        },
+        "pistols": {
+            "name": "Pistols"
+        },
+        "shotgun": {
+            "name": "Shotgun"
+        },
+        "magnums": {
+            "name": "Automatic Pistols"
+        },
+        "uzis": {
+            "name": "Uzis"
+        },
+        "harpoon_gun": {
+            "name": "Harpoon Gun"
+        },
+        "m16": {
+            "name": "M16"
+        },
+        "grenade_launcher": {
+            "name": "Grenade Launcher"
+        },
+        "pistols_ammo": {
+            "name": "Pistol Clips"
+        },
+        "shotgun_ammo": {
+            "name": "Shotgun Shells"
+        },
+        "magnums_ammo": {
+            "name": "Automatic Pistol Clips"
+        },
+        "uzis_ammo": {
+            "name": "Uzi Clips"
+        },
+        "harpoon_gun_ammo": {
+            "name": "Harpoons"
+        },
+        "m16_ammo": {
+            "name": "M16 Clips"
+        },
+        "grenade_launcher_ammo": {
+            "name": "Grenades"
+        },
+        "key_1": {
+            "name": "Key 1"
+        },
+        "key_2": {
+            "name": "Key 2"
+        },
+        "key_3": {
+            "name": "Key 3"
+        },
+        "key_4": {
+            "name": "Key 4"
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1"
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2"
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3"
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4"
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1"
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2"
+        },
+        "compass": {
+            "name": "Gameplay"
+        },
+        "passport": {
+            "name": "Game"
+        },
+        "photo": {
+            "name": "Lara's Home"
+        },
+        "graphics": {
+            "name": "Graphics"
+        },
+        "controls": {
+            "name": "Controls"
+        },
+        "sound": {
+            "name": "Sound"
+        },
+        "lara": {
+            "name": "Lara"
+        },
+        "lara_pistols": {
+            "name": "Pistols Animation"
+        },
+        "lara_hair": {
+            "name": "Lara's Braid"
+        },
+        "lara_shotgun": {
+            "name": "Shotgun Animation"
+        },
+        "lara_magnums": {
+            "name": "Magnums Animation"
+        },
+        "lara_uzis": {
+            "name": "Uzis Animation"
+        },
+        "lara_m16": {
+            "name": "M16 Animation"
+        },
+        "lara_grenade": {
+            "name": "Grenade Launcher Animation"
+        },
+        "lara_harpoon": {
+            "name": "Harpoon Animation"
+        },
+        "lara_flare": {
+            "name": "Flare Animation"
+        },
+        "lara_skidoo": {
+            "name": "Snowmobile Animation"
+        },
+        "lara_boat": {
+            "name": "Boat Animation"
+        },
+        "lara_extra": {
+            "name": "Lara's Extra Animation"
+        },
+        "skidoo_fast": {
+            "name": "Red Snowmobile"
+        },
+        "boat": {
+            "name": "Boat"
+        },
+        "dog": {
+            "names": [
+                "Dog",
+                "Doberman"
+            ]
+        },
+        "cult_1": {
+            "name": "Masked Goon 1"
+        },
+        "cult_1a": {
+            "name": "Masked Goon 2"
+        },
+        "cult_1b": {
+            "name": "Masked Goon 3"
+        },
+        "cult_2": {
+            "name": "Knife Thrower"
+        },
+        "cult_3": {
+            "name": "Shotgun Goon"
+        },
+        "mouse": {
+            "name": "Rat"
+        },
+        "dragon_front": {
+            "name": "Dragon Front"
+        },
+        "dragon_back": {
+            "name": "Dragon Back"
+        },
+        "gondola": {
+            "name": "Gondola"
+        },
+        "shark": {
+            "name": "Shark"
+        },
+        "eel": {
+            "name": "Eel"
+        },
+        "big_eel": {
+            "name": "Big Eel"
+        },
+        "barracuda": {
+            "name": "Barracuda"
+        },
+        "diver": {
+            "name": "Scuba Diver"
+        },
+        "worker_1": {
+            "name": "Gunman Goon 1"
+        },
+        "worker_2": {
+            "name": "Gunman Goon 2"
+        },
+        "worker_3": {
+            "name": "Stick Wielding Goon 1"
+        },
+        "worker_4": {
+            "name": "Stick Wielding Goon 2"
+        },
+        "worker_5": {
+            "name": "Flamethrower Goon"
+        },
+        "jelly": {
+            "name": "Jellyfish"
+        },
+        "spider": {
+            "name": "Spider"
+        },
+        "big_spider": {
+            "name": "Giant Spider"
+        },
+        "crow": {
+            "name": "Crow"
+        },
+        "tiger": {
+            "name": "Tiger"
+        },
+        "bartoli": {
+            "name": "Marco Bartoli"
+        },
+        "xian_spearman": {
+            "name": "Xian Spearman"
+        },
+        "xian_spearman_statue": {
+            "name": "Xian Spearman Statue"
+        },
+        "xian_knight": {
+            "name": "Xian Knight"
+        },
+        "xian_knight_statue": {
+            "name": "Xian Knight Statue"
+        },
+        "yeti": {
+            "name": "Yeti"
+        },
+        "bird_guardian": {
+            "name": "Bird Monster"
+        },
+        "eagle": {
+            "name": "Eagle"
+        },
+        "bandit_1": {
+            "names": [
+                "Mercenary 1",
+                "Masked Goon 1"
+            ]
+        },
+        "bandit_2": {
+            "names": [
+                "Mercenary 2",
+                "Masked Goon 2"
+            ]
+        },
+        "bandit_2b": {
+            "names": [
+                "Mercenary 3",
+                "Masked Goon 3"
+            ]
+        },
+        "skidoo_armed": {
+            "name": "Black Snowmobile"
+        },
+        "skidoo_driver": {
+            "name": "Black Snowmobile Driver"
+        },
+        "monk_1": {
+            "name": "Monk 1"
+        },
+        "monk_2": {
+            "name": "Monk 2"
+        },
+        "falling_block_1": {
+            "names": [
+                "Falling Block 1",
+                "Collapsible Floor 1",
+                "Collapsible Tiles 1"
+            ]
+        },
+        "falling_block_2": {
+            "names": [
+                "Falling Block 2",
+                "Collapsible Floor 2",
+                "Collapsible Tiles 2"
+            ]
+        },
+        "falling_block_3": {
+            "names": [
+                "Falling Block 3",
+                "Collapsible Floor 3",
+                "Collapsible Tiles 3",
+                "Loose Boards"
+            ]
+        },
+        "pendulum_1": {
+            "name": "Sandbag"
+        },
+        "spikes": {
+            "name": "Spikes"
+        },
+        "rolling_ball_1": {
+            "names": [
+                "Boulder 1",
+                "Rolling Ball"
+            ]
+        },
+        "dart": {
+            "name": "Disc"
+        },
+        "dart_emitter": {
+            "name": "Disc Emitter"
+        },
+        "drawbridge": {
+            "name": "Drawbridge"
+        },
+        "teeth_trap": {
+            "name": "Teeth Trap"
+        },
+        "lift": {
+            "name": "Lift"
+        },
+        "general": {
+            "name": "Minisub"
+        },
+        "movable_block_1": {
+            "names": [
+                "Push Block 1",
+                "Movable Block 1"
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "Push Block 2",
+                "Movable Block 2"
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "Push Block 3",
+                "Movable Block 3"
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "Push Block 4",
+                "Movable Block 4"
+            ]
+        },
+        "big_bowl": {
+            "name": "Lava Bowl"
+        },
+        "window_1": {
+            "name": "Breakable Window 1"
+        },
+        "window_2": {
+            "name": "Breakable Window 2"
+        },
+        "window_3": {
+            "name": "Breakable Window 3"
+        },
+        "window_4": {
+            "name": "Breakable Window 4"
+        },
+        "propeller_1": {
+            "name": "Airplane Propeller"
+        },
+        "power_saw": {
+            "name": "Power Saw"
+        },
+        "hook": {
+            "name": "Hook"
+        },
+        "falling_ceiling_1": {
+            "name": "Falling Ceiling 1"
+        },
+        "spinning_blade": {
+            "name": "Spinning Blade"
+        },
+        "blade": {
+            "name": "Wall-mounted Blade"
+        },
+        "killer_statue": {
+            "name": "Statue with Sword"
+        },
+        "rolling_ball_2": {
+            "names": [
+                "Boulder 2",
+                "Rolling Ball 2"
+            ]
+        },
+        "icicle": {
+            "name": "Icicles"
+        },
+        "spike_wall": {
+            "name": "Spike Wall"
+        },
+        "springboard": {
+            "name": "Springboard"
+        },
+        "ceiling_spikes": {
+            "name": "Spiky Ceiling"
+        },
+        "bell": {
+            "name": "Bell"
+        },
+        "water_sprite": {
+            "name": "Boat Wake"
+        },
+        "snow_sprite": {
+            "name": "Snowmobile Wake"
+        },
+        "skidoo_track": {
+            "name": "Snowmobile Track"
+        },
+        "switch_type_airlock": {
+            "name": "Airlock Switch"
+        },
+        "switch_type_small": {
+            "name": "Small Switch"
+        },
+        "propeller_2": {
+            "name": "Underwater Propeller"
+        },
+        "propeller_3": {
+            "name": "Air Fan"
+        },
+        "pendulum_2": {
+            "name": "Swinging Box"
+        },
+        "mesh_swap_1": {
+            "name": "Mesh Swap 1"
+        },
+        "mesh_swap_2": {
+            "name": "Mesh Swap 2"
+        },
+        "lara_swap": {
+            "name": "Lara Mesh Swap"
+        },
+        "text_box": {
+            "name": "UI Frame"
+        },
+        "rolling_ball_3": {
+            "names": [
+                "Boulder 3",
+                "Rolling Ball 3"
+            ]
+        },
+        "zipline_handle": {
+            "name": "Zipline Handle"
+        },
+        "switch_type_button": {
+            "names": [
+                "Button",
+                "Push Button",
+                "Switch"
+            ]
+        },
+        "switch_type_normal": {
+            "names": [
+                "Lever",
+                "Switch"
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Underwater Lever",
+                "Underwater Switch"
+            ]
+        },
+        "door_type_1": {
+            "name": "Door 1"
+        },
+        "door_type_2": {
+            "name": "Door 2"
+        },
+        "door_type_3": {
+            "name": "Door 3"
+        },
+        "door_type_4": {
+            "name": "Door 4"
+        },
+        "door_type_5": {
+            "name": "Door 5"
+        },
+        "door_type_6": {
+            "name": "Door 6"
+        },
+        "door_type_7": {
+            "name": "Door 7"
+        },
+        "door_type_8": {
+            "name": "Door 8"
+        },
+        "trapdoor_type_1": {
+            "name": "Trapdoor 1"
+        },
+        "trapdoor_type_2": {
+            "name": "Trapdoor 2"
+        },
+        "trapdoor_type_3": {
+            "name": "Trapdoor 3"
+        },
+        "bridge_flat": {
+            "name": "Bridge Flat"
+        },
+        "bridge_tilt_1": {
+            "name": "Bridge Tilt 1"
+        },
+        "bridge_tilt_2": {
+            "name": "Bridge Tilt 2"
+        },
+        "player_1": {
+            "name": "Cutscene Actor 1"
+        },
+        "player_2": {
+            "name": "Cutscene Actor 2"
+        },
+        "player_3": {
+            "name": "Cutscene Actor 3"
+        },
+        "player_4": {
+            "name": "Cutscene Actor 4"
+        },
+        "player_5": {
+            "name": "Cutscene Actor 5"
+        },
+        "player_6": {
+            "name": "Cutscene Actor 6"
+        },
+        "player_7": {
+            "name": "Cutscene Actor 7"
+        },
+        "player_8": {
+            "name": "Cutscene Actor 8"
+        },
+        "player_9": {
+            "name": "Cutscene Actor 9"
+        },
+        "player_10": {
+            "name": "Cutscene Actor 10"
+        },
+        "key_hole_1": {
+            "name": "Keyhole 1"
+        },
+        "key_hole_2": {
+            "name": "Keyhole 2"
+        },
+        "key_hole_3": {
+            "name": "Keyhole 3"
+        },
+        "key_hole_4": {
+            "name": "Keyhole 4"
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Hole 1 (Empty)"
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Hole 2 (Empty)"
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Hole 3 (Empty)"
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Hole 4 (Empty)"
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Hole 1 (Done)"
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Hole 2 (Done)"
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Hole 3 (Done)"
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Hole 4 (Done)"
+        },
+        "sphere_of_doom_1": {
+            "name": "Dragon Explosion 1"
+        },
+        "sphere_of_doom_2": {
+            "name": "Dragon Explosion 2"
+        },
+        "sphere_of_doom_3": {
+            "name": "Dragon Explosion 3"
+        },
+        "alarm_sound": {
+            "name": "Alarm"
+        },
+        "bird_tweeter_1": {
+            "name": "Dripping Water"
+        },
+        "trex": {
+            "name": "T-Rex"
+        },
+        "bird_tweeter_2": {
+            "name": "Singing Birds"
+        },
+        "clock_chimes": {
+            "name": "Bartoli Hideout clock"
+        },
+        "dragon_bones_1": {
+            "name": "Placeholder"
+        },
+        "dragon_bones_2": {
+            "name": "Dragon Bones Front"
+        },
+        "dragon_bones_3": {
+            "name": "Dragon Bones Back"
+        },
+        "hot_liquid": {
+            "name": "Extra Fire"
+        },
+        "boat_bits": {
+            "name": "Boat Bits"
+        },
+        "mine": {
+            "name": "Aquatic Mine"
+        },
+        "inv_background": {
+            "name": "Menu Background"
+        },
+        "fx_reserved": {
+            "name": "Gray disk"
+        },
+        "gong_bonger": {
+            "name": "Gong Stick"
+        },
+        "detonator_1": {
+            "name": "Gong"
+        },
+        "detonator_2": {
+            "name": "Detonator Box"
+        },
+        "copter": {
+            "name": "Helicopter"
+        },
+        "explosion_1": {
+            "name": "Explosion 1"
+        },
+        "splash_1": {
+            "name": "Water Ripples 1"
+        },
+        "bubble_1": {
+            "name": "Bubble 1"
+        },
+        "bubble_emitter": {
+            "name": "Bubble Emitter"
+        },
+        "blood_1": {
+            "name": "Blood 1"
+        },
+        "dart_effect": {
+            "name": "Dart Effect"
+        },
+        "flare_fire": {
+            "name": "Flare sparks"
+        },
+        "glow": {
+            "name": "Glow"
+        },
+        "glow_reserved": {
+            "name": "Map Glow"
+        },
+        "ricochet": {
+            "name": "Ricochet"
+        },
+        "twinkle": {
+            "name": "Sparkles"
+        },
+        "gun_flash": {
+            "name": "Gun Flash"
+        },
+        "m16_flash": {
+            "name": "M16 Flash"
+        },
+        "body_part": {
+            "name": "Body Part"
+        },
+        "camera_target": {
+            "name": "Camera Target"
+        },
+        "waterfall": {
+            "name": "Waterfall Mist"
+        },
+        "missile_harpoon": {
+            "name": "Missile Harpoon"
+        },
+        "missile_flame": {
+            "name": "Missile Flame"
+        },
+        "missile_knife": {
+            "name": "Missile Knife"
+        },
+        "grenade": {
+            "name": "Grenade"
+        },
+        "harpoon_bolt": {
+            "name": "Harpoon Bolt"
+        },
+        "ember": {
+            "name": "Ember"
+        },
+        "ember_emitter": {
+            "name": "Ember Emitter"
+        },
+        "flame": {
+            "names": [
+                "Flame",
+                "Fire"
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Flame Emitter",
+                "Fire Emitter"
+            ]
+        },
+        "skybox": {
+            "name": "Skybox"
+        },
+        "alphabet": {
+            "name": "Alphabet"
+        },
+        "dying_monk": {
+            "name": "Dying monk"
+        },
+        "ding_dong": {
+            "name": "Doorbell"
+        },
+        "lara_alarm": {
+            "name": "Alarm Bell"
+        },
+        "mini_copter": {
+            "name": "Helicopter 2"
+        },
+        "winston": {
+            "name": "Winston"
+        },
+        "assault_digits": {
+            "name": "Assault Digits"
+        },
+        "combat_end": {
+            "name": "Combat End"
+        },
+        "cut_shotgun": {
+            "name": "Shotgun Shower Animation"
+        },
+        "earthquake": {
+            "name": "Earthquake"
+        }
     },
-
     "game_strings": {
-        "ACTION_EXAMINE_ITEM": "Examine",
-        "ACTION_RESET_DEFAULTS": "Reset All",
-        "ACTION_UNBIND": "Unbind",
-        "ACTION_USE_ITEM": "Use",
-        "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "This setting is enforced by the level builder and cannot be changed.",
-        "COMMON_SETTINGS_RESTORE_DEFAULT": "Restore default",
-        "COMMON_SETTINGS_TOGGLE_HELP": "Toggle help",
-        "CONSOLE_CMD_HELP_LIST": "Available commands:",
-        "CONSOLE_HELP_BRAID": "Toggles Lara's braid.",
-        "CONSOLE_HELP_CHEATS": "Toggles in-game cheats on or off.",
-        "CONSOLE_HELP_DEBUG": "Toggles visual debug information.",
-        "CONSOLE_HELP_DRAIN": "Dries the current room, removing the water.",
-        "CONSOLE_HELP_END_LEVEL": "Ends the current level.",
-        "CONSOLE_HELP_EXIT": "Exits the game.",
-        "CONSOLE_HELP_FLIPMAP": "Toggles the flip map.",
-        "CONSOLE_HELP_FLOOD": "Submerges the current room with water.",
-        "CONSOLE_HELP_FLY": "Toggles the fly-mode cheat.",
-        "CONSOLE_HELP_FPS": "Changes the FPS value.",
-        "CONSOLE_HELP_GIVE": "Adds a given item to Lara's inventory.",
-        "CONSOLE_HELP_HEAL": "Heals Lara back to full health.",
-        "CONSOLE_HELP_HELP": "Shows help for all commands or detailed help for one.",
-        "CONSOLE_HELP_HP": "Sets Lara's health to the specified value.",
-        "CONSOLE_HELP_KILL": "Kills nearby enemies.",
-        "CONSOLE_HELP_LOAD": "Loads game from the given save slot.",
-        "CONSOLE_HELP_MUSIC": "Plays a music track with the given id.",
-        "CONSOLE_HELP_PLAY_CUTSCENE": "Plays a cutscene with the given number.",
-        "CONSOLE_HELP_PLAY_DEMO": "Plays a demo with the given number.",
-        "CONSOLE_HELP_PLAY_GYM": "Plays the Gym level.",
-        "CONSOLE_HELP_PLAY_LEVEL": "Plays a level with the given name or number.",
-        "CONSOLE_HELP_POS": "Shows Lara's position.",
-        "CONSOLE_HELP_SAVE": "Saves game to the given save slot.",
-        "CONSOLE_HELP_SET": "Displays or updates the given configuration setting.",
-        "CONSOLE_HELP_SFX": "Plays a sound effect with the given id.",
-        "CONSOLE_HELP_SPEED": "Changes the game's speed.",
-        "CONSOLE_HELP_TITLE": "Returns to the title screen.",
-        "CONSOLE_HELP_TP": "Teleports Lara to a given position or room number.",
-        "CONSOLE_HELP_WIREFRAME": "Toggles wireframe rendering.",
-        "CONTROLS_BACKEND_CONTROLLER": "Controller",
-        "CONTROLS_BACKEND_KEYBOARD": "Keyboard",
-        "CONTROLS_CUSTOMIZE": "Customize Controls",
-        "CONTROLS_CUSTOM_1": "User Keys 1",
-        "CONTROLS_CUSTOM_2": "User Keys 2",
-        "CONTROLS_CUSTOM_3": "User Keys 3",
-        "CONTROLS_DEFAULT_KEYS": "Default Keys",
-        "CONTROLS_SECTION_BASICS": "Movement",
-        "CONTROLS_SECTION_ITEMS": "Items",
-        "CONTROLS_SECTION_MISC": "Misc",
-        "CONTROLS_SECTION_SYSTEM": "System",
-        "GAMEPLAY_SETTINGS_CAMERA_SPEED": "Camera speed",
-        "GAMEPLAY_SETTINGS_CAMERA_SPEED_DESCRIPTION": "Changes how fast the manual camera moves.",
-        "GAMEPLAY_SETTINGS_CHANGE_PIERRE_SPAWN": "Change Pierre spawn mode",
-        "GAMEPLAY_SETTINGS_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Makes a freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre.",
-        "GAMEPLAY_SETTINGS_CONTROLS_TAB": "Controls",
-        "GAMEPLAY_SETTINGS_DISABLE_HEALING_BETWEEN_LEVELS": "Persistent damage",
-        "GAMEPLAY_SETTINGS_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Stops Lara from healing when starting a new level (for no Heal challenge runs).",
-        "GAMEPLAY_SETTINGS_DISABLE_MAGNUMS": "Remove magnums",
-        "GAMEPLAY_SETTINGS_DISABLE_MAGNUMS_DESCRIPTION": "Removes all magnum guns and magnum ammo pickups from the game.",
-        "GAMEPLAY_SETTINGS_DISABLE_MEDPACKS": "Remove medipacks",
-        "GAMEPLAY_SETTINGS_DISABLE_MEDPACKS_DESCRIPTION": "Removes all medipacks from the game (for No Meds challenge runs).",
-        "GAMEPLAY_SETTINGS_DISABLE_SHOTGUN": "Remove shotgun",
-        "GAMEPLAY_SETTINGS_DISABLE_SHOTGUN_DESCRIPTION": "Removes all shotgun and shotgun shell pickups from the game.",
-        "GAMEPLAY_SETTINGS_DISABLE_TREX_COLLISION": "Remove dead T-Rex collision",
-        "GAMEPLAY_SETTINGS_DISABLE_TREX_COLLISION_DESCRIPTION": "Removes all collision with T-Rex upon death. This helps when the T-Rex's body blocks the passage out.",
-        "GAMEPLAY_SETTINGS_DISABLE_UZIS": "Remove uzis",
-        "GAMEPLAY_SETTINGS_DISABLE_UZIS_DESCRIPTION": "Removes all uzi guns and uzi ammo pickups from the game.",
-        "GAMEPLAY_SETTINGS_ENABLE_ALLY_TARGETING": "Allow targeting allies",
-        "GAMEPLAY_SETTINGS_ENABLE_ALLY_TARGETING_DESCRIPTION": "Allows Lara to target allies, such as monks. If disabled, allies will be immune to Lara's ammunition.",
-        "GAMEPLAY_SETTINGS_ENABLE_AUTO_ITEM_SELECTION": "Key item pre-selection",
-        "GAMEPLAY_SETTINGS_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected.",
-        "GAMEPLAY_SETTINGS_ENABLE_BUFFERING": "Input buffering",
-        "GAMEPLAY_SETTINGS_ENABLE_BUFFERING_DESCRIPTION": "Enables F-key (1-frame) and inventory (2-frame) buffering to achieve precise control of Lara's movement.",
-        "GAMEPLAY_SETTINGS_ENABLE_CHEATS": "Cheats",
-        "GAMEPLAY_SETTINGS_ENABLE_CHEATS_DESCRIPTION": "Enables various cheats:\n\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable DOZY cheat (swimming midair).\n     - WALK key: exit DOZY.\n     - GUN key: open the closest door (doesn't work in certain places).",
-        "GAMEPLAY_SETTINGS_ENABLE_COMPASS_STATS": "Level statistics in compass",
-        "GAMEPLAY_SETTINGS_ENABLE_COMPASS_STATS_DESCRIPTION": "Enables showing level statistics when the compass is selected.",
-        "GAMEPLAY_SETTINGS_ENABLE_CONSOLE": "Console",
-        "GAMEPLAY_SETTINGS_ENABLE_CONSOLE_DESCRIPTION": "Enables the developer console.",
-        "GAMEPLAY_SETTINGS_ENABLE_CUTSCENES": "Cutscenes",
-        "GAMEPLAY_SETTINGS_ENABLE_CUTSCENES_DESCRIPTION": "Enables cutscenes playing.",
-        "GAMEPLAY_SETTINGS_ENABLE_DEATHS_COUNTER": "Count Lara's deaths",
-        "GAMEPLAY_SETTINGS_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Enables showing a deaths counter in the compass and in the level statistics. Death count is updated in the currently loaded save as soon as Lara dies.",
-        "GAMEPLAY_SETTINGS_ENABLE_DEMO": "Demo mode",
-        "GAMEPLAY_SETTINGS_ENABLE_DEMO_DESCRIPTION": "Enables demos showing in the main menu.",
-        "GAMEPLAY_SETTINGS_ENABLE_ENEMY_ROTATION": "Randomize enemy start angle",
-        "GAMEPLAY_SETTINGS_ENABLE_ENEMY_ROTATION_DESCRIPTION": "Applies an additional random angle to some enemies when they are initialised.",
-        "GAMEPLAY_SETTINGS_ENABLE_ENHANCED_LOOK": "Look while running",
-        "GAMEPLAY_SETTINGS_ENABLE_ENHANCED_LOOK_DESCRIPTION": "Allows Lara to look while running, jumping, hanging, etc. - similar to TR2 style.",
-        "GAMEPLAY_SETTINGS_ENABLE_ENHANCED_SAVES": "Save effects",
-        "GAMEPLAY_SETTINGS_ENABLE_ENHANCED_SAVES_DESCRIPTION": "Enhances savegames so that graphic effects, waterfall mist, flame emitters, and more are saved instead of disappearing on load.",
-        "GAMEPLAY_SETTINGS_ENABLE_FMV": "FMVs",
-        "GAMEPLAY_SETTINGS_ENABLE_FMV_DESCRIPTION": "Enables FMVs playing.",
-        "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES": "Game mode selection",
-        "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.",
-        "GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK": "Inverted look",
-        "GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK_DESCRIPTION": "Inverts the Y axis controls when Lara looks.",
-        "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING": "Item examination",
-        "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING_DESCRIPTION": "For custom levels - allows item descriptions to be displayed in the inventory where the level author has provided suitable data.",
-        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS": "Jump twists",
-        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "Enables TR2+ style jump twists and somersaults i.e. press roll during jump and swan dive animations.",
-        "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING": "Lean jumping",
-        "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed.",
-        "GAMEPLAY_SETTINGS_ENABLE_LEGAL": "Legal screens",
-        "GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION": "Enables legal screen and Core Design FMV at the game start.",
-        "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS": "Loading screens",
-        "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION": "Enables PS1 style loading screens before each level.",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS": "Hotkey item use",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION": "Enables quick weapon draws and medipack usage.\n\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw uzis\n- 8: Use small medipack\n- 9: Use large medipack",
-        "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT": "Responsive passport",
-        "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
-        "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS": "Save crystals",
-        "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Limits saving to the beginning of levels and save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level.",
-        "GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT": "Smooth wall deflection",
-        "GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Allows Lara to recover more quickly after hitting a wall and a direction key is held together with forward.",
-        "GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST": "Step roll boost",
-        "GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Allows Lara to be boosted off a one-click high step if roll is pressed near the edge.",
-        "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL": "Swing cancels",
-        "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
-        "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE": "Target change",
-        "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE_DESCRIPTION": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets.",
-        "GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY": "Timer counts in inventory",
-        "GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY_DESCRIPTION": "Makes the in-game timer work even while the game is showing the inventory.",
-        "GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS": "Final statistics screen",
-        "GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS_DESCRIPTION": "Enables a total game statistics screen that plays after the credits.",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING": "Responsive jumping",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING_DESCRIPTION": "Allows Lara to jump at any point while running, similar to TR2+.",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING": "Smooth swimming",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING_DESCRIPTION": "Gives Lara's underwater turn rate an acceleration curve for smoother movement, similar to TR2+.",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL": "Responsive swim cancel",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Allows Lara to stop more responsively underwater when the swim key is released, similar to TR2+.",
-        "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Enhanced sidesteps",
-        "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work.",
-        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL": "Underwater roll",
-        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "Allows Lara to roll while underwater, similar to TR2+.",
-        "GAMEPLAY_SETTINGS_ENABLE_WADING": "Wading",
-        "GAMEPLAY_SETTINGS_ENABLE_WADING_DESCRIPTION": "Allows Lara to wade through shallow water, similar to TR2+, rather than becoming stuck on the water surface.",
-        "GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS": "Animated interactions",
-        "GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Makes Lara walk to pickups and switches when nearby instead of teleporting to them.",
-        "GAMEPLAY_SETTINGS_FIXES_TAB": "Fixes",
-        "GAMEPLAY_SETTINGS_FIX_ALLIGATOR_AI": "Fix alligator AI",
-        "GAMEPLAY_SETTINGS_FIX_ALLIGATOR_AI_DESCRIPTION": "Fixes alligators dealing no damage if Lara remains still in the water.",
-        "GAMEPLAY_SETTINGS_FIX_ANIMATED_SPRITES": "Fix sprite animations",
-        "GAMEPLAY_SETTINGS_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.",
-        "GAMEPLAY_SETTINGS_FIX_BEAR_AI": "Fix bear AI",
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
-        "GAMEPLAY_SETTINGS_FIX_BRIDGE_COLLISION": "Fix bridge collision",
-        "GAMEPLAY_SETTINGS_FIX_BRIDGE_COLLISION_DESCRIPTION": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.",
-        "GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH": "Fix breakable floor falls",
-        "GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH_DESCRIPTION": "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath.",
-        "GAMEPLAY_SETTINGS_FIX_FLARE_THROW_PRIORITY": "Fix flare throw priority",
-        "GAMEPLAY_SETTINGS_FIX_FLARE_THROW_PRIORITY_DESCRIPTION": "Fixes Lara prioritising throwing a spent flare while in mid-air, which can lead to being unable to grab ledges.",
-        "GAMEPLAY_SETTINGS_FIX_FLOOR_DATA_ISSUES": "Fix floor data issues",
-        "GAMEPLAY_SETTINGS_FIX_FLOOR_DATA_ISSUES_DESCRIPTION": "Fixes original issues with floor data/triggers.",
-        "GAMEPLAY_SETTINGS_FIX_FREE_FLARE_GLITCH": "Fix free flare glitch",
-        "GAMEPLAY_SETTINGS_FIX_FREE_FLARE_GLITCH_DESCRIPTION": "Fixes the ability to spawn a free flare when pressing the flare input while picking up any item.",
-        "GAMEPLAY_SETTINGS_FIX_GLIDE_CAMERAS": "Fix glide cameras",
-        "GAMEPLAY_SETTINGS_FIX_GLIDE_CAMERAS_DESCRIPTION": "Fixes glide cameras to respect the timer set in level triggers rather than defaulting the speed after the first frame.",
-        "GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH": "Fix item duplication glitch",
-        "GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH_DESCRIPTION": "Fixes the ability to duplicate usage of key items in the inventory.",
-        "GAMEPLAY_SETTINGS_FIX_ITEM_ROTS": "Fix item rotation issues",
-        "GAMEPLAY_SETTINGS_FIX_ITEM_ROTS_DESCRIPTION": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option.",
-        "GAMEPLAY_SETTINGS_FIX_M16_ACCURACY": "Fix M16 accuracy",
-        "GAMEPLAY_SETTINGS_FIX_M16_ACCURACY_DESCRIPTION": "Fixes the accuracy of the M16 while Lara is running.",
-        "GAMEPLAY_SETTINGS_FIX_PICKUP_DRIFT_GLITCH": "Fix pickup drift glitch",
-        "GAMEPLAY_SETTINGS_FIX_PICKUP_DRIFT_GLITCH_DESCRIPTION": "Fixes Lara sometimes drifting when collecting underwater items, which can push her into walls.",
-        "GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH": "Fix QWOP glitch",
-        "GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH_DESCRIPTION": "Fixes Lara jumping on small steps sometimes resulting in a weird running animation, known as a QWOP state.",
-        "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING": "Enhanced shotgun targeting",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.",
-        "GAMEPLAY_SETTINGS_FIX_STEP_GLITCH": "Fix step glitch",
-        "GAMEPLAY_SETTINGS_FIX_STEP_GLITCH_DESCRIPTION": "Fixes Lara sometimes being pushed into walls adjacent to steps when running up them in a specific way.",
-        "GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES": "Fix texture issues",
-        "GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES_DESCRIPTION": "Fixes original issues with missing or incorrect textures/meshes.",
-        "GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND": "Fix chain block sound",
-        "GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND_DESCRIPTION": "Prevents the secret sound from incorrectly playing when using the golden key in Tomb of Tihocan.",
-        "GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT": "Fix wading wall hit",
-        "GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT_DESCRIPTION": "Fixes Lara not responding to hitting a wall while wading.",
-        "GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP": "Fix walk run jump",
-        "GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP_DESCRIPTION": "Fixes Lara at times not being able to jump immediately after going from her walking to running animation.",
-        "GAMEPLAY_SETTINGS_FIX_WATER_EXIT": "Fix water exit",
-        "GAMEPLAY_SETTINGS_FIX_WATER_EXIT_DESCRIPTION": "Fixes Lara being able to go directly from a water room to an adjacent dry room, or to a dry room below. Additionally, this will prevent Lara from being able to climb out of water onto non-standable slopes.",
-        "GAMEPLAY_SETTINGS_GENERAL_TAB": "General",
-        "GAMEPLAY_SETTINGS_HARPOON_RECOIL": "Harpoon recoil",
-        "GAMEPLAY_SETTINGS_HARPOON_RECOIL_DESCRIPTION": "Sets how often Lara must reload the harpoon gun, based on her current ammo count. For example, if set to 3, she'll need to reload after every third shot. Set to 0 to disable reloading entirely.",
-        "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS": "Fix one-shot music triggers",
-        "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS_DESCRIPTION": "Loads previously triggered, one shot music so one shot music tracks do not replay.",
-        "GAMEPLAY_SETTINGS_MAXIMUM_SAVE_SLOTS": "Number of save slots",
-        "GAMEPLAY_SETTINGS_MAXIMUM_SAVE_SLOTS_DESCRIPTION": "Changes the number of available save slots.",
-        "GAMEPLAY_SETTINGS_MODS_TAB": "Mods",
-        "GAMEPLAY_SETTINGS_REMEMBER_GUNS_BETWEEN_LEVELS": "Remember guns between levels",
-        "GAMEPLAY_SETTINGS_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Makes Lara remember which gun she was using last in the previous level when starting a new level. If disabled, Lara will revert to pistols.",
-        "GAMEPLAY_SETTINGS_RESTORE_PS1_ENEMIES": "Restore PS1 enemies",
-        "GAMEPLAY_SETTINGS_RESTORE_PS1_ENEMIES_DESCRIPTION": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the level.",
-        "GAMEPLAY_SETTINGS_START_LARA_HITPOINTS": "Lara's starting health",
-        "GAMEPLAY_SETTINGS_START_LARA_HITPOINTS_DESCRIPTION": "Sets Lara's health value for the beginning of each level.",
-        "GAMEPLAY_SETTINGS_STAT_DETAIL_MODE": "Statistics details",
-        "GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_DESCRIPTION": "Allows various levels of stat detail.\n\n- Minimal: shows kills, pickups, secrets, and time taken.\n- Detailed: shows all stats from minimal as well as the maximum pickup count and kill count of each level.\n- Full: shows all stats from detailed as well as ammo hits, ammo used, health packs used, and distance travelled.",
-        "GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_DETAILED": "Detailed",
-        "GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_FULL": "Full",
-        "GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_MINIMAL": "Minimal",
-        "GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_FULL": "Full lock",
-        "GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_NONE": "No lock",
-        "GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_SEMI": "Semi lock",
-        "GAMEPLAY_SETTINGS_TARGET_MODE": "Weapon lock mode",
-        "GAMEPLAY_SETTINGS_TARGET_MODE_DESCRIPTION": "Changes the behavior of how weapons lock onto targets.\n\n- Full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1).\n- Semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies.\n- No lock: lose target lock if the enemy goes out of sight or dies (TR4+).",
-        "GAMEPLAY_SETTINGS_TITLE": "Gameplay Options",
-        "GAMEPLAY_SETTINGS_WALL_GLITCH_FIXED": "Fixed",
-        "GAMEPLAY_SETTINGS_WALL_GLITCH_MODE": "Wall glitch mode",
-        "GAMEPLAY_SETTINGS_WALL_GLITCH_MODE_DESCRIPTION": "Allows using TR1 wall glitch behaviour in TR2 and vice-versa; equally allows fixing all types of wall glitch.",
-        "GAMEPLAY_SETTINGS_WALL_GLITCH_TR1": "TR1",
-        "GAMEPLAY_SETTINGS_WALL_GLITCH_TR2": "TR2",
-        "GRAPHIC_SETTINGS_AIRBAR_COLOR": "Airbar color",
-        "GRAPHIC_SETTINGS_AIRBAR_COLOR_DESCRIPTION": "Color of the airbar.",
-        "GRAPHIC_SETTINGS_AIRBAR_LOCATION": "Airbar location",
-        "GRAPHIC_SETTINGS_AIRBAR_LOCATION_DESCRIPTION": "Location where the airbar is displayed.",
-        "GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE": "Airbar mode",
-        "GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE_DESCRIPTION": "Changes how the airbar is displayed.\n\n- Default: show the airbar only in the water and flash the airbar when Lara's oxygen is 20% or below.\n- Default, no flashing: same as default, but disable flashing.\n- Flashing only: show the airbar *only* when Lara's oxygen is 20% or below (for challenge runs).\n- Never: never display the airbar (for challenge runs).",
-        "GRAPHIC_SETTINGS_ANISOTROPY_FILTER": "Anisotropy filter",
-        "GRAPHIC_SETTINGS_ANISOTROPY_FILTER_DESCRIPTION": "Enhances texture filtering at distances.",
-        "GRAPHIC_SETTINGS_ASPECT_MODE": "Aspect mode",
-        "GRAPHIC_SETTINGS_ASPECT_MODE_16_9": "16:9",
-        "GRAPHIC_SETTINGS_ASPECT_MODE_4_3": "4:3",
-        "GRAPHIC_SETTINGS_ASPECT_MODE_ANY": "Any",
-        "GRAPHIC_SETTINGS_ASPECT_MODE_DESCRIPTION": "Forces certain game aspect ratios with letterbox.",
-        "GRAPHIC_SETTINGS_BAR_COLOR_BLUE": "Blue",
-        "GRAPHIC_SETTINGS_BAR_COLOR_BLUE2": "Blue 2",
-        "GRAPHIC_SETTINGS_BAR_COLOR_GOLD": "Gold",
-        "GRAPHIC_SETTINGS_BAR_COLOR_GOLD2": "Gold 2",
-        "GRAPHIC_SETTINGS_BAR_COLOR_GREEN": "Green",
-        "GRAPHIC_SETTINGS_BAR_COLOR_GREY": "Grey",
-        "GRAPHIC_SETTINGS_BAR_COLOR_PINK": "Pink",
-        "GRAPHIC_SETTINGS_BAR_COLOR_PURPLE": "Purple",
-        "GRAPHIC_SETTINGS_BAR_COLOR_RED": "Red",
-        "GRAPHIC_SETTINGS_BAR_COLOR_SILVER": "Silver",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_CENTER": "Bottom center",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_LEFT": "Bottom left",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_RIGHT": "Bottom right",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_TOP_CENTER": "Top center",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_TOP_LEFT": "Top left",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_TOP_RIGHT": "Top right",
-        "GRAPHIC_SETTINGS_BAR_MODE_ALWAYS": "Always",
-        "GRAPHIC_SETTINGS_BAR_MODE_BOSS_ONLY": "Boss only",
-        "GRAPHIC_SETTINGS_BAR_MODE_DEFAULT": "Default",
-        "GRAPHIC_SETTINGS_BAR_MODE_FLASHING_ONLY": "Flashing only",
-        "GRAPHIC_SETTINGS_BAR_MODE_FLASHING_OR_DEFAULT": "Default or flashing",
-        "GRAPHIC_SETTINGS_BAR_MODE_NEVER": "Never",
-        "GRAPHIC_SETTINGS_BAR_MODE_PS1": "Default, no flashing",
-        "GRAPHIC_SETTINGS_BILINEAR": "Bilinear",
-        "GRAPHIC_SETTINGS_BRIGHTNESS": "Brightness",
-        "GRAPHIC_SETTINGS_BRIGHTNESS_DESCRIPTION": "Changes game brightness.",
-        "GRAPHIC_SETTINGS_CAMERA_MODE": "Camera mode",
-        "GRAPHIC_SETTINGS_CAMERA_MODE_DESCRIPTION": "Adjusts how camera behaves during actions like using keys.",
-        "GRAPHIC_SETTINGS_CAMERA_MODE_TR1": "TR1",
-        "GRAPHIC_SETTINGS_CAMERA_MODE_TR2": "TR2",
-        "GRAPHIC_SETTINGS_DEPTH_BUFFER": "Z-Buffer",
-        "GRAPHIC_SETTINGS_DEPTH_BUFFER_DESCRIPTION": "Turns the depth buffer on or off. Best kept on.",
-        "GRAPHIC_SETTINGS_ENABLE_3D_PICKUPS": "3D pickups",
-        "GRAPHIC_SETTINGS_ENABLE_3D_PICKUPS_DESCRIPTION": "Enables 3D models to be rendered in place of the sprites for pickup items.",
-        "GRAPHIC_SETTINGS_ENABLE_BRAID": "Lara's braid",
-        "GRAPHIC_SETTINGS_ENABLE_BRAID_DESCRIPTION": "Enables Lara's braid.",
-        "GRAPHIC_SETTINGS_ENABLE_BREEZE": "Breeze",
-        "GRAPHIC_SETTINGS_ENABLE_BREEZE_DESCRIPTION": "Enables the breeze effect on Lara's braid in appropriate rooms.",
-        "GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS": "Fade on game exit",
-        "GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS_DESCRIPTION": "Enables the fade effects when exiting the game to desktop.",
-        "GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS": "Fade effects",
-        "GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS_DESCRIPTION": "Enable fade transitions, for example between credit graphics or for inventory and pause screen transitions.",
-        "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING": "Gun lighting",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions.",
-        "GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS": "Pickup aids",
-        "GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS_DESCRIPTION": "Enables an intermittent twinkling effect near pickup items to highlight their presence.",
-        "GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS": "PS1 crystal tint",
-        "GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Save crystals will be drawn with a purple tint, more similar to the PS1 type.",
-        "GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW": "Round shadows",
-        "GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW_DESCRIPTION": "Enables round shadows instead of the default octagonal ones.",
-        "GRAPHIC_SETTINGS_ENABLE_SHOTGUN_FLASH": "Shotgun flash",
-        "GRAPHIC_SETTINGS_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Draws flames when firing the shotgun, like for other guns.",
-        "GRAPHIC_SETTINGS_ENABLE_SKYBOX": "Skyboxes",
-        "GRAPHIC_SETTINGS_ENABLE_SKYBOX_DESCRIPTION": "Enables the skybox in supported levels.",
-        "GRAPHIC_SETTINGS_ENABLE_SMOOTH_BARS": "Smooth bars",
-        "GRAPHIC_SETTINGS_ENABLE_SMOOTH_BARS_DESCRIPTION": "Makes the health, air and enemy bars use smooth color transitions.",
-        "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR": "Enemy bar color",
-        "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Color of the enemy healthbar.",
-        "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION": "Enemy bar location",
-        "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION_DESCRIPTION": "Location where the enemy healthbar is displayed.",
-        "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE": "Enemy bar mode",
-        "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE_DESCRIPTION": "Enables showing a healthbar for the active enemy.",
-        "GRAPHIC_SETTINGS_FBO_FILTER": "FBO filter",
-        "GRAPHIC_SETTINGS_FBO_FILTER_DESCRIPTION": "Switches smooth or pixel look for the whole screen.",
-        "GRAPHIC_SETTINGS_FOG_END": "Fog end",
-        "GRAPHIC_SETTINGS_FOG_END_DESCRIPTION": "Sets distance in tiles where fog makes everything fully obscured.",
-        "GRAPHIC_SETTINGS_FOG_START": "Fog start",
-        "GRAPHIC_SETTINGS_FOG_START_DESCRIPTION": "Sets distance in tiles where fog begins to appear.",
-        "GRAPHIC_SETTINGS_FOV": "Field of view",
-        "GRAPHIC_SETTINGS_FOV_DESCRIPTION": "The desired field of view in degrees, which overrides the hardcoded default. The default values are 80 (horizontal) and 65 (vertical).",
-        "GRAPHIC_SETTINGS_FOV_VERTICAL": "Vertical FOV",
-        "GRAPHIC_SETTINGS_FOV_VERTICAL_DESCRIPTION": "Interprets the field of view as vertical instead of horizontal. May be advantageous for widescreen resolutions, especially for multi-screen setups, since it distorts the left and right side instead of cropping away the top and bottom part of the screen.",
-        "GRAPHIC_SETTINGS_FPS": "FPS",
-        "GRAPHIC_SETTINGS_FPS_DESCRIPTION": "Sets game frames per second.",
-        "GRAPHIC_SETTINGS_HEALTHBAR_COLOR": "Healthbar color",
-        "GRAPHIC_SETTINGS_HEALTHBAR_COLOR_DESCRIPTION": "Color of the healthbar.",
-        "GRAPHIC_SETTINGS_HEALTHBAR_LOCATION": "Healthbar location",
-        "GRAPHIC_SETTINGS_HEALTHBAR_LOCATION_DESCRIPTION": "Location where the healthbar is displayed.",
-        "GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE": "Healthbar mode",
-        "GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE_DESCRIPTION": "Changes how the healthbar is displayed.\n\n- Default: show the healthbar at the start of a level, when hit, or when weapons are equipped; flash if 20% or below.\n- Default, no flashing: same as default, but disable flashing.\n- Default or flashing: same as default, except show it even if it's flashing.\n- Flashing only: show the healthbar *only* when Lara's health is 20% or below (for challenge runs).\n- Always: always show the healthbar.\n- Never: never display the healthbar (for challenge runs).",
-        "GRAPHIC_SETTINGS_LIGHTING_CONTRAST": "Lighting contrast",
-        "GRAPHIC_SETTINGS_LIGHTING_CONTRAST_DESCRIPTION": "Boosts contrast for dynamic light sources such as flares and gun flashes.",
-        "GRAPHIC_SETTINGS_LIGHTING_CONTRAST_HIGH": "High",
-        "GRAPHIC_SETTINGS_LIGHTING_CONTRAST_LOW": "Low",
-        "GRAPHIC_SETTINGS_LIGHTING_CONTRAST_MEDIUM": "Medium",
-        "GRAPHIC_SETTINGS_MENU_STYLE": "Menu style",
-        "GRAPHIC_SETTINGS_MENU_STYLE_DESCRIPTION": "Changes how menus are displayed.\n\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version.",
-        "GRAPHIC_SETTINGS_REFLECTIONS": "Reflections",
-        "GRAPHIC_SETTINGS_REFLECTIONS_DESCRIPTION": "Enables reflections on certain objects.",
-        "GRAPHIC_SETTINGS_RENDERING_TAB": "Rendering",
-        "GRAPHIC_SETTINGS_RENDER_MODE": "Render mode",
         "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Chooses rendering with CPU (slower, more oldschool) or GPU (faster and better).",
-        "GRAPHIC_SETTINGS_RENDER_MODE_FBO": "Framebuffer",
-        "GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE": "Hardware",
-        "GRAPHIC_SETTINGS_RENDER_MODE_LEGACY": "Window size",
-        "GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE": "Software",
-        "GRAPHIC_SETTINGS_RESOLUTION": "Resolution",
-        "GRAPHIC_SETTINGS_RESOLUTION_DESCRIPTION": "Overrides game resolution.",
-        "GRAPHIC_SETTINGS_SCALER": "Scaler",
-        "GRAPHIC_SETTINGS_SCALER_DESCRIPTION": "Upscales game by a set factor, maintaining pixellated look.",
-        "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Screenshot format",
-        "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_DESCRIPTION": "Screenshot file format.",
-        "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_JPG": "JPG",
-        "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_PNG": "PNG",
-        "GRAPHIC_SETTINGS_SIZER": "Sizer",
-        "GRAPHIC_SETTINGS_SIZER_DESCRIPTION": "Adds black borders around the game window.",
-        "GRAPHIC_SETTINGS_TEXTURE_FILTER": "Texture filter",
-        "GRAPHIC_SETTINGS_TEXTURE_FILTER_DESCRIPTION": "Switches between smooth and pixel object textures.",
-        "GRAPHIC_SETTINGS_TITLE": "Graphic Options",
-        "GRAPHIC_SETTINGS_TRAPEZOID_FILTER": "Trapezoid filter",
-        "GRAPHIC_SETTINGS_TRAPEZOID_FILTER_DESCRIPTION": "Corrects rendering of quadrilaterals.",
-        "GRAPHIC_SETTINGS_UI_BAR_SCALE": "Bar scale",
-        "GRAPHIC_SETTINGS_UI_BAR_SCALE_DESCRIPTION": "Changes size of health, air and enemy bars.",
-        "GRAPHIC_SETTINGS_UI_LANGUAGE": "Language",
-        "GRAPHIC_SETTINGS_UI_LANGUAGE_DESCRIPTION": "Changes the language of the UI text.",
-        "GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND": "Scroll wrap",
-        "GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND_DESCRIPTION": "Lets directional navigation in menus loop around.",
-        "GRAPHIC_SETTINGS_UI_STYLE_PC": "PC",
-        "GRAPHIC_SETTINGS_UI_STYLE_PS1": "PS1",
-        "GRAPHIC_SETTINGS_UI_TAB": "UI",
-        "GRAPHIC_SETTINGS_UI_TEXT_SCALE": "Text scale",
-        "GRAPHIC_SETTINGS_UI_TEXT_SCALE_DESCRIPTION": "Changes the size of UI text.",
-        "GRAPHIC_SETTINGS_USE_PSX_FOV": "Use PSX FOV",
-        "GRAPHIC_SETTINGS_USE_PSX_FOV_DESCRIPTION": "Uses field of view formula from the PS1 version.",
-        "GRAPHIC_SETTINGS_VISUALS_TAB": "Visuals",
-        "GRAPHIC_SETTINGS_VSYNC": "VSync",
-        "GRAPHIC_SETTINGS_VSYNC_DESCRIPTION": "Turns V-Sync on or off.",
-        "GRAPHIC_SETTINGS_WATER_COLOR_B": "Water color (B)",
-        "GRAPHIC_SETTINGS_WATER_COLOR_G": "Water color (G)",
-        "GRAPHIC_SETTINGS_WATER_COLOR_R": "Water color (R)",
-        "HEADING_GAME_OVER": "GAME OVER",
-        "HEADING_INVENTORY": "INVENTORY",
-        "HEADING_ITEMS": "ITEMS",
-        "HEADING_OPTION": "OPTION",
-        "KEYMAP_ACTION": "Action",
-        "KEYMAP_BACK": "Back",
-        "KEYMAP_CAMERA_BACK": "Camera Back",
-        "KEYMAP_CAMERA_DOWN": "Camera Down",
-        "KEYMAP_CAMERA_FORWARD": "Camera Forward",
-        "KEYMAP_CAMERA_LEFT": "Camera Left",
         "KEYMAP_CAMERA_RESET": "Camera Reset",
-        "KEYMAP_CAMERA_RIGHT": "Camera Right",
-        "KEYMAP_CAMERA_UP": "Camera Up",
         "KEYMAP_CYCLE_LIGHTING_CONTRAST": "Cycle Lighting Contrast",
-        "KEYMAP_DRAW_WEAPON": "Draw Weapon",
-        "KEYMAP_ENTER_CONSOLE": "Dev Console",
         "KEYMAP_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
         "KEYMAP_EQUIP_HARPOON": "Equip Harpoon Gun",
         "KEYMAP_EQUIP_M16": "Equip M16",
         "KEYMAP_EQUIP_MAGNUMS": "Equip Automatic Pistols",
-        "KEYMAP_EQUIP_PISTOLS": "Equip Pistols",
-        "KEYMAP_EQUIP_SHOTGUN": "Equip Shotgun",
-        "KEYMAP_EQUIP_UZIS": "Equip Uzis",
-        "KEYMAP_FLY_CHEAT": "Fly Cheat",
-        "KEYMAP_FPS": "Show FPS",
-        "KEYMAP_INVENTORY": "Inventory",
-        "KEYMAP_ITEM_CHEAT": "Item Cheat",
-        "KEYMAP_JUMP": "Jump",
-        "KEYMAP_LEFT": "Left",
-        "KEYMAP_LEVEL_SKIP_CHEAT": "Level Skip",
-        "KEYMAP_LOAD": "Quick Load",
-        "KEYMAP_LOOK": "Look",
-        "KEYMAP_PAUSE": "Pause",
-        "KEYMAP_RIGHT": "Right",
-        "KEYMAP_ROLL": "Roll",
-        "KEYMAP_RUN": "Run",
-        "KEYMAP_SAVE": "Quick Save",
         "KEYMAP_SCREENSHOT": "Screenshot",
-        "KEYMAP_STEP_LEFT": "Step Left",
-        "KEYMAP_STEP_RIGHT": "Step Right",
         "KEYMAP_SWITCH_INTERNAL_SCREEN_SIZE": "Switch Screen Size",
         "KEYMAP_SWITCH_RESOLUTION": "Switch Resolution",
         "KEYMAP_TOGGLE_BILINEAR_FILTER": "Toggle Bilinear Filter",
         "KEYMAP_TOGGLE_FULLSCREEN": "Toggle Fullscreen",
         "KEYMAP_TOGGLE_PERSPECTIVE_FILTER": "Toggle Perspective Filter",
-        "KEYMAP_TOGGLE_PHOTO_MODE": "Toggle Photo Mode",
         "KEYMAP_TOGGLE_RENDERING_MODE": "Cycle Rendering Mode",
         "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Toggle Trapezoid Filter",
-        "KEYMAP_TOGGLE_UI": "Toggle UI",
         "KEYMAP_TOGGLE_Z_BUFFER": "Toggle Z Buffer",
-        "KEYMAP_TURBO_CHEAT": "Turbo Speed",
-        "KEYMAP_USE_BIG_MEDI": "Large Medi",
         "KEYMAP_USE_FLARE": "Flare",
-        "KEYMAP_USE_SMALL_MEDI": "Small Medi",
-        "KEYMAP_WALK": "Walk",
-        "MISC_DEMO_MODE": "Demo Mode",
-        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT -",
-        "MISC_EXIT": "Exit",
-        "MISC_HOLD_FMT": "Hold %s",
         "MISC_NONE": "None",
-        "MISC_OFF": "Off",
-        "MISC_ON": "On",
-        "OSD_AMBIGUOUS_INPUT_2": "Ambiguous input: %s and %s",
-        "OSD_AMBIGUOUS_INPUT_3": "Ambiguous input: %s, %s, ...",
         "OSD_BILINEAR_FILTER_OFF": "Bilinear filter: off",
         "OSD_BILINEAR_FILTER_ON": "Bilinear filter: on",
-        "OSD_COMMAND_BAD_INVOCATION": "Invalid invocation: %s",
-        "OSD_COMMAND_BOOL": "on, off",
-        "OSD_COMMAND_DECIMAL": "[decimal]",
-        "OSD_COMMAND_INTEGER": "[integer]",
-        "OSD_COMMAND_PERCENT": "[integer]",
-        "OSD_COMMAND_UNAVAILABLE": "This command is not currently available",
-        "OSD_COMMAND_VALID_VALUES": "Valid values: %s",
-        "OSD_COMPLETE_LEVEL": "Level complete!",
-        "OSD_CONFIG_OPTION_GET": "%s is currently set to %s",
-        "OSD_CONFIG_OPTION_SET": "%s changed to %s",
-        "OSD_CONFIG_OPTION_UNKNOWN_OPTION": "Unknown option: %s",
-        "OSD_CURRENT_HEALTH_GET": "Current Lara's health: %d",
-        "OSD_CURRENT_HEALTH_SET": "Lara's health set to %d",
         "OSD_DEPTH_BUFFER_OFF": "Z-Buffer: off",
         "OSD_DEPTH_BUFFER_ON": "Z-Buffer: on",
-        "OSD_DOOR_CLOSE": "Close Sesame!",
-        "OSD_DOOR_OPEN": "Open Sesame!",
-        "OSD_DOOR_OPEN_FAIL": "No doors in Lara's proximity",
-        "OSD_FLIPMAP_FAIL_ALREADY_OFF": "Flipmap is already OFF",
-        "OSD_FLIPMAP_FAIL_ALREADY_ON": "Flipmap is already ON",
-        "OSD_FLIPMAP_OFF": "Flipmap set to OFF",
-        "OSD_FLIPMAP_ON": "Flipmap set to ON",
-        "OSD_FLY_MODE_OFF": "Fly mode disabled",
-        "OSD_FLY_MODE_ON": "Fly mode enabled",
-        "OSD_FPS_COUNTER_OFF": "FPS counter disabled",
-        "OSD_FPS_COUNTER_ON": "FPS counter enabled",
-        "OSD_GIVE_ITEM": "Added %s to Lara's inventory",
-        "OSD_GIVE_ITEM_ALL_GUNS": "Lock'n'load - Lara's armed to the teeth!",
-        "OSD_GIVE_ITEM_ALL_KEYS": "Surprise! Every key item Lara needs is now in her backpack.",
-        "OSD_GIVE_ITEM_CHEAT": "Lara's backpack just got way heavier!",
         "OSD_HARDWARE_RENDERING": "Hardware rendering",
-        "OSD_HEAL_ALREADY_FULL_HP": "Lara's already at full health",
-        "OSD_HEAL_SUCCESS": "Healed Lara back to full health",
-        "OSD_INVALID_CUTSCENE": "Invalid cutscene",
-        "OSD_INVALID_DEMO": "Invalid demo",
-        "OSD_INVALID_ITEM": "Unknown item: %s",
-        "OSD_INVALID_LEVEL": "Invalid level",
-        "OSD_INVALID_MUSIC_TRACK": "Invalid music track",
-        "OSD_INVALID_OBJECT": "Invalid object",
-        "OSD_INVALID_ROOM": "Invalid room: %d. Valid rooms are 0-%d",
-        "OSD_INVALID_SAMPLE": "Invalid sound: %d",
-        "OSD_KILL": "Bye-bye!",
-        "OSD_KILL_ALL": "Poof! %d enemies gone!",
-        "OSD_KILL_ALL_FAIL": "Uh-oh, there are no enemies left to kill...",
-        "OSD_KILL_FAIL": "No enemy nearby...",
         "OSD_LIGHTNING_CONTRAST_FMT": "Lighting Contrast: %s",
-        "OSD_LOAD_GAME": "Loaded game from save slot %d",
-        "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
-        "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Save slot %d is not available",
-        "OSD_OBJECT_NOT_FOUND": "Object not found",
         "OSD_PERSPECTIVE_FILTER_OFF": "Perspective correction: off",
         "OSD_PERSPECTIVE_FILTER_ON": "Perspective correction: on",
-        "OSD_PHOTO_MODE_LAUNCHED": "Entering photo mode, press %s for help",
-        "OSD_PLAY_CUTSCENE": "Loading cutscene %d",
-        "OSD_PLAY_DEMO": "Loading demo %d",
-        "OSD_PLAY_LEVEL": "Loading %s",
-        "OSD_PLAY_MUSIC_TRACK": "Playing music track %d",
-        "OSD_POS_LARA_MISSING": "Lara not present",
-        "OSD_POS_LARA_POS_FMT": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
-        "OSD_POS_LEVEL_FMT": "Level %d",
-        "OSD_POS_LEVEL_FMT_CUTSCENE": "Cutscene %d",
-        "OSD_POS_LEVEL_FMT_DEMO": "Demo %d",
-        "OSD_POS_SET_ITEM": "Teleported to object: %s",
-        "OSD_POS_SET_ITEM_FAIL": "Failed to teleport to object: %s",
-        "OSD_POS_SET_POS": "Teleported to position: %.3f %.3f %.3f",
-        "OSD_POS_SET_POS_FAIL": "Failed to teleport to position: %.3f %.3f %.3f",
-        "OSD_POS_SET_ROOM": "Teleported to room: %d",
-        "OSD_POS_SET_ROOM_FAIL": "Failed to teleport to room: %d",
-        "OSD_SAVE_GAME": "Saved game to save slot %d",
-        "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
         "OSD_SCALER_FMT": "Scaler: x%d",
         "OSD_SOFTWARE_RENDERING": "Software rendering",
-        "OSD_SOUND_AVAILABLE_SAMPLES": "Available sounds: %s",
-        "OSD_SOUND_PLAYING_SAMPLE": "Playing sound %d",
-        "OSD_SPEED_GET": "Current speed: %d",
-        "OSD_SPEED_SET": "Speed set to %d",
-        "OSD_TRAPEZOID_FILTER_OFF": "Trapezoid filter disabled",
-        "OSD_TRAPEZOID_FILTER_ON": "Trapezoid filter enabled",
-        "OSD_UI_OFF": "UI disabled",
-        "OSD_UI_ON": "UI enabled",
-        "OSD_UNKNOWN_COMMAND": "Unknown command: %s",
         "OSD_WIREFRAME_MODE_OFF": "Wireframe mode: off",
         "OSD_WIREFRAME_MODE_ON": "Wireframe mode: on",
-        "OVERLAY_DEBUG_ANIMATION": "Animation: ",
-        "OVERLAY_DEBUG_POSITION": "Position: ",
-        "OVERLAY_DEBUG_ROTATION": "Rotation: ",
-        "OVERLAY_DEBUG_SPEED": "Speed: ",
-        "PAGINATION_NAV": "%d / %d",
         "PASSPORT_EXIT_DEMO": "Exit Demo",
-        "PASSPORT_EXIT_GAME": "Exit Game",
-        "PASSPORT_EXIT_TO_TITLE": "Exit to Title",
-        "PASSPORT_LEGACY_SELECT_LEVEL_1": "Legacy saves do not",
-        "PASSPORT_LEGACY_SELECT_LEVEL_2": "support this feature.",
-        "PASSPORT_LOAD_GAME": "Load Game",
-        "PASSPORT_MODE_NEW_GAME": "New Game",
-        "PASSPORT_MODE_NEW_GAME_JP": "Japanese NG",
-        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "Japanese NG+",
-        "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",
-        "PASSPORT_NEW_GAME": "New Game",
-        "PASSPORT_SAVE_GAME": "Save Game",
-        "PASSPORT_SELECT_LEVEL": "Select Level",
-        "PASSPORT_SELECT_MODE": "Select Mode",
-        "PASSPORT_STORY_SO_FAR": "Story so far...",
-        "PAUSE_ARE_YOU_SURE": "Are you sure?",
-        "PAUSE_CONTINUE": "Continue",
-        "PAUSE_EXIT_TO_TITLE": "Exit to title?",
-        "PAUSE_NO": "No",
-        "PAUSE_PAUSED": "Paused",
-        "PAUSE_QUIT": "Quit",
-        "PAUSE_YES": "Yes",
-        "PHOTO_MODE_FOV_PROMPT": "Adjust FOV",
-        "PHOTO_MODE_FOV_ROLE": "Draw <+Walk>",
-        "PHOTO_MODE_MOVE_PROMPT": "Move camera",
-        "PHOTO_MODE_RESET_PROMPT": "Reset camera",
-        "PHOTO_MODE_ROLL_PROMPT": "Roll camera",
-        "PHOTO_MODE_ROLL_ROLE": "Sidestep L/R",
-        "PHOTO_MODE_ROTATE90_PROMPT": "Rotate 90 degrees",
-        "PHOTO_MODE_ROTATE_PROMPT": "Rotate camera",
-        "PHOTO_MODE_SNAP_PROMPT": "Take picture",
-        "PHOTO_MODE_TITLE": "Photo Mode",
-        "PHOTO_MODE_TOGGLE_HELP": "Toggle help",
-        "SOUND_SETTINGS_ENABLE_LARA_MIC": "Microphone near Lara",
-        "SOUND_SETTINGS_ENABLE_LARA_MIC_DESCRIPTION": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position.",
-        "SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU": "Main menu music",
-        "SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Plays music in the main menu.",
-        "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS": "Pitched sounds",
-        "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Allows sound effects to be randomly, slightly pitched to vary the game sounds.",
-        "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC": "Layered secret music",
-        "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC_DESCRIPTION": "Fixes the sound of collecting a secret stopping the active music track.",
-        "SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC": "Layered enemy speech",
-        "SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC_DESCRIPTION": "Fixes enemies stopping the active music track when they speak.",
-        "SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME": "Inventory ambient volume",
-        "SOUND_SETTINGS_INVENTORY_AMBIENT_VOLUME_DESCRIPTION": "Adjust ambient volume in inventory screen.",
-        "SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME": "Inventory music volume",
-        "SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME_DESCRIPTION": "Adjust music volume in inventory screen.",
-        "SOUND_SETTINGS_MUSIC_LOAD_CONDITION": "Restore music on load",
-        "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_ALWAYS": "Always",
-        "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_DESCRIPTION": "Loads the music track that was playing when the game was saved.\n\n- Never: do not restore music tracks on load.\n- Non-ambient: restore only non-ambient music tracks on load.\n- Always: restore any kind of music track on load.",
-        "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER": "Never",
-        "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NON_AMBIENT": "Non-ambient",
-        "SOUND_SETTINGS_MUSIC_VOLUME": "\\{icon sound} Music volume",
-        "SOUND_SETTINGS_MUSIC_VOLUME_DESCRIPTION": "Adjusts music and ambient volume.",
-        "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY": "Pause music in inventory",
-        "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Pauses game sounds, ambient and music in the inventory screen.",
-        "SOUND_SETTINGS_PS_UZI_SFX": "PS1 uzi sound",
-        "SOUND_SETTINGS_PS_UZI_SFX_DESCRIPTION": "Changes the uzi sound effects to match the PlayStation version.",
-        "SOUND_SETTINGS_SOUND_VOLUME": "\\{icon music} Sound volume",
-        "SOUND_SETTINGS_SOUND_VOLUME_DESCRIPTION": "Adjusts sound effects volume.",
-        "SOUND_SETTINGS_TITLE": "Sound Options",
-        "SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME": "Underwater ambient volume",
-        "SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME_DESCRIPTION": "Adjust ambient volume when underwater.",
-        "SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME": "Underwater music volume",
-        "SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME_DESCRIPTION": "Adjust music volume when underwater.",
         "STATS_AMMO_HITS": "Hits",
         "STATS_AMMO_USED": "Ammo Used",
         "STATS_ASSAULT_FINISH": "Finish",
         "STATS_ASSAULT_NO_TIMES_SET": "No Times Set",
         "STATS_ASSAULT_TITLE": "BEST TIMES",
-        "STATS_BASIC_FMT": "%d",
-        "STATS_BONUS_STATISTICS": "Bonus Statistics",
-        "STATS_DETAIL_FMT": "%d of %d",
         "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
-        "STATS_FINAL_STATISTICS": "Final Statistics",
         "STATS_KILLS": "Kills",
         "STATS_MEDIPACKS_USED": "Health Packs Used",
         "STATS_SECRETS": "Secrets Found",
-        "STATS_TIME_TAKEN": "Time Taken",
-    },
+        "STATS_TIME_TAKEN": "Time Taken"
+    }
 }
