@@ -12,13 +12,18 @@ void GameStringManager_Init(void);
 // Shutdown the string bundle manager.
 void GameStringManager_Shutdown(void);
 
-// Set the OG and active mod base strings file paths.
-// og_base_path: path to vanilla (OG) base strings file.
-// mod_base_path: path to current mod's base strings file.
-// After calling this, call GameStringManager_ReloadLanguage to load the
-// strings.
-void GameStringManager_SetBaseFiles(
-    const char *og_base_path, const char *mod_base_path);
+// Clear all previously set source strings files.
+// Must be called before GameStringManager_AddSourceFile.
+void GameStringManager_ClearSourceFiles(void);
+
+// Add a source strings file for language discovery and loading.
+// base_path: path to a base strings JSON5 file (e.g. cfg/TR1X_strings.json5).
+// load_levels: true to load level names from this source; false otherwise.
+void GameStringManager_AddSourceFile(const char *base_path, bool load_levels);
+
+// Discover all available languages from the added source files.
+// Must be called after AddSourceFile calls and before ReloadLanguage.
+void GameStringManager_DiscoverLanguages(void);
 
 // Returns a vector of char* of available language codes discovered.
 // Caller owns the returned VECTOR and must free it via Vector_Free and free
