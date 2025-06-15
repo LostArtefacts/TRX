@@ -7,15 +7,16 @@ from shared.json_utils import (
     JSONPointers,
     load_json5,
     load_json5_from_string,
-    write_json,
     write_json_to_string,
 )
-from shared.paths import PROJECT_PATHS, DATA_DIR, CommonPaths
+from shared.paths import DATA_DIR, PROJECT_PATHS, CommonPaths
 from shared.translation_utils import (
     REVIEW_MARKER,
+    format_strings_file,
     is_translation_file,
     should_skip_object_name,
 )
+from shared.vfs import VirtualFilesystem
 
 
 def get_objects_map(paths: list[Path]) -> dict[str, list[str]]:
@@ -76,7 +77,8 @@ def postprocess_game_strings(
 
 
 class ReviewTracker:
-    def __init__(self) -> None:
+    def __init__(self, vfs: VirtualFilesystem) -> None:
+        self.vfs = vfs
         self.changed_ptrs: dict[Path, list[str]] = {}
 
     def track_change(
@@ -100,20 +102,24 @@ class ReviewTracker:
             for trans_path in eng_path.parent.glob(f"{eng_path.stem}-*.json5"):
                 if not is_translation_file(trans_path):
                     continue
-                trans_data = load_json5(trans_path)
+                trans_data = load_json5_from_string(self.vfs.get(trans_path))
                 trans_ptr = JSONPointers(trans_data)
                 for ptr in ptrs:
                     trans_ptr[ptr] = REVIEW_MARKER
-                write_json(trans_path, trans_data)
+                self.vfs.put(
+                    trans_path, write_json_to_string(trans_data) + "\n"
+                )
 
 
 def process_game_strings(
-    game_strings_def_path: Path, target_dir: Path
+    vfs: VirtualFilesystem,
+    review_tracker: ReviewTracker,
+    game_strings_def_path: Path,
+    target_dir: Path,
 ) -> None:
     game_strings_map = get_strings_map([game_strings_def_path])
 
     # Update English base files
-    review_tracker = ReviewTracker()
     for path in target_dir.rglob("*strings.json*"):
         # Skip translation files; handle only base (English) files here
         if is_translation_file(path):
@@ -124,19 +130,18 @@ def process_game_strings(
         new_content = postprocess_game_strings(new_content, game_strings_map)
         if new_content != old_content:
             # Write updated English file
-            path.write_text(new_content)
+            vfs.put(path, new_content)
             review_tracker.track_change(path, old_content, new_content)
-
-    review_tracker.mark_for_review()
 
 
 def process_object_names(
-    object_names_def_path: Path, target_dir: Path
+    vfs: VirtualFilesystem,
+    review_tracker: ReviewTracker,
+    object_names_def_path: Path,
+    target_dir: Path,
 ) -> None:
     object_names_map = get_objects_map([object_names_def_path])
     assert object_names_map
-
-    review_tracker = ReviewTracker()
 
     # Update English base files
     changed_ptrs: dict[Path, list[str]] = {}
@@ -144,31 +149,49 @@ def process_object_names(
         # Skip translation files; handle only base (English) files here
         if is_translation_file(path):
             continue
-        old_content = path.read_text()
+        old_content = vfs.get(path)
         new_content = old_content
         new_content = postprocess_object_strings(new_content, object_names_map)
         if new_content != old_content:
             # Write updated English file
-            path.write_text(new_content)
+            vfs.put(path, new_content)
             review_tracker.track_change(path, old_content, new_content)
 
-    review_tracker.mark_for_review()
+
+def update_formatting(vfs: VirtualFilesystem, path: Path) -> None:
+    vfs.put(path, format_strings_file(load_json5_from_string(vfs.get(path))))
 
 
 def main() -> None:
+    vfs = VirtualFilesystem()
+    review_tracker = ReviewTracker(vfs)
+
     process_game_strings(
+        vfs,
+        review_tracker,
         CommonPaths.include_dir / "game/game_string.def",
         CommonPaths.shipped_data_dir,
     )
     for game, project_paths in PROJECT_PATHS.items():
         process_game_strings(
+            vfs,
+            review_tracker,
             project_paths.src_dir / "game/game_string.def",
             project_paths.shipped_data_dir,
         )
         process_object_names(
+            vfs,
+            review_tracker,
             CommonPaths.include_dir / f"game/objects/names_tr{game}.def",
             project_paths.shipped_data_dir,
         )
+
+    review_tracker.mark_for_review()
+
+    for path in DATA_DIR.rglob("**/*strings*.json5"):
+        update_formatting(vfs, path)
+
+    vfs.commit()
 
 
 if __name__ == "__main__":
