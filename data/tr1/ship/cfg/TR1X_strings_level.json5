@@ -1,4 +1,10 @@
 {
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
     "language_name": "English",
-    "levels": [{"title": "Test Level"}]
+    "levels": [
+        {
+            "title": "Test Level"
+        }
+    ]
 }

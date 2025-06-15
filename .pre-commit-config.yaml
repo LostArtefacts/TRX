@@ -36,5 +36,6 @@ repos:
     entry: tools/update_game_strings
     language: python
     stages: [pre-commit]
+    pass_filenames: false
     additional_dependencies:
       - pyjson5

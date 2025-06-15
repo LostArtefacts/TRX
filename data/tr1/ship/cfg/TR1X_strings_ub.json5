@@ -1,41 +1,35 @@
 {
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
     "language_name": "English",
-
     "levels": [
-        // Level 1: Return to Egypt
         {
             "title": "Return to Egypt",
             "objects": {
-                "key_1": {"name": "Gold Key"},
-            },
+                "key_1": {
+                    "name": "Gold Key"
+                }
+            }
         },
-
-        // Level 2: Temple of the Cat
         {
             "title": "Temple of the Cat",
             "objects": {
-                "key_1": {"name": "Ornate Key"},
-            },
+                "key_1": {
+                    "name": "Ornate Key"
+                }
+            }
         },
-
-        // Level 3: Atlantean Stronghold
         {
-            "title": "Atlantean Stronghold",
+            "title": "Atlantean Stronghold"
         },
-
-        // Level 4: The Hive
         {
-            "title": "The Hive",
+            "title": "The Hive"
         },
-
-        // Level 5: Title
         {
-            "title": "Title",
+            "title": "Title"
         },
-
-        // Level 6: Current Position
         {
-            "title": "Current Position",
-        },
+            "title": "Current Position"
+        }
     ]
 }

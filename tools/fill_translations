@@ -16,13 +16,14 @@ try:
 except ImportError:
     openai = None
 
-from shared.json_utils import JSONPointers, load_json5, write_json
+from shared.json_utils import JSONPointers, load_json5
 from shared.paths import PROJECT_PATHS, CommonPaths
 from shared.translation_utils import (
     REVIEW_MARKER,
     chunks,
     clean,
     find_base_file,
+    format_strings_file,
     is_translation_file,
     should_skip_object_name,
 )
@@ -187,7 +188,7 @@ def process_file(path: Path, args: argparse.Namespace) -> None:
         )
         sys.stdout.writelines(diff)
     else:
-        write_json(path, merged)
+        path.write_text(format_strings_file(merged))
         print(f"Wrote {path}")
 
 

@@ -5,6 +5,8 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any
 
+from shared.json_utils import write_json_to_string
+
 _OBJECT_NAMES_PTR_RE = re.compile(r"^/objects/([^/]+)/(names/\d+|name)$")
 REVIEW_MARKER = r"\{review}"
 
@@ -59,3 +61,16 @@ def should_skip_object_name(ptr: str, trans_data: Any) -> bool:
     if not isinstance(obj_trans, dict):
         return False
     return clean(obj_trans.get("name")) or clean(obj_trans.get("names", []))
+
+
+def format_strings_file(source: Any) -> str:
+    content = write_json_to_string(source)
+    content = (
+        """{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    """
+        + content[1:].strip()
+        + "\n"
+    )
+    return content

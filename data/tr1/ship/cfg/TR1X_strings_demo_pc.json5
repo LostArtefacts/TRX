@@ -1,13 +1,18 @@
 {
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
     "language_name": "English",
     "levels": [
-        // Level 2: City of Vilcabamba
         {
             "title": "City of Vilcabamba",
             "objects": {
-                "key_1": {"name": "Silver Key"},
-                "puzzle_1": {"name": "Gold Idol"},
-            },
-        },
-    ],
+                "key_1": {
+                    "name": "Silver Key"
+                },
+                "puzzle_1": {
+                    "name": "Gold Idol"
+                }
+            }
+        }
+    ]
 }
