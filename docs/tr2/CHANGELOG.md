@@ -3,6 +3,7 @@
     - changed duplicate game strings between TR1 and TR2 to be placed in a single file TRX_common_strings.json5
     - added a new setting, `enable_review_markers`, which display which text requires review (only available via `/set`)
     - added Italian translation
+    - added Polish translation
     - added support for non-breaking spaces
     - fixed game crashing when trying to word-wrap unknown characters
 - added UI for all config tool settings
