@@ -140,7 +140,10 @@ static void M_Initialise(const int16_t item_num)
         item->mesh_bits &= ~0b00110000;
     }
     if (item->object_id == O_CULT_1B) {
+        // clang-format off
+        // TODO: clang-format >=20 formats this wrongly
         item->mesh_bits &= ~0b00011111'10000000'00000000;
+        // clang-format on
     }
 }
 
