@@ -354,7 +354,7 @@
             "name": "Uzi"
         },
         "harpoon_gun": {
-            "name": "Fucile ad arpione"
+            "name": "Fucile subacqueo"
         },
         "m16": {
             "name": "M16"
@@ -456,7 +456,7 @@
             "name": "Animazione lanciagranate"
         },
         "lara_harpoon": {
-            "name": "Animazione fucile ad arpione"
+            "name": "Animazione fucile subacqueo"
         },
         "lara_flare": {
             "name": "Animazione bengala"
@@ -1271,7 +1271,7 @@
         "GAMEPLAY_SETTINGS_FIX_WATER_EXIT_DESCRIPTION": "Risolve il problema che permette a Lara di passare direttamente da una stanza con acqua ad una senza acqua adiacente o sottostante. Inoltre, questo impedirà a Lara di uscire dall'acqua su pendii non calpestabili.",
         "GAMEPLAY_SETTINGS_GENERAL_TAB": "Generale",
         "GAMEPLAY_SETTINGS_HARPOON_RECOIL": "Ricarica arpione",
-        "GAMEPLAY_SETTINGS_HARPOON_RECOIL_DESCRIPTION": "Imposta la frequenza con cui Lara deve ricaricare il fucile ad arpione, in base al numero attuale di munizioni. Ad esempio, se impostato a 3, dovrà ricaricare dopo ogni terzo colpo. Impostare a 0 per disabilitare completamente la ricarica.",
+        "GAMEPLAY_SETTINGS_HARPOON_RECOIL_DESCRIPTION": "Imposta la frequenza con cui Lara deve ricaricare il fucile subacqueo, in base al numero attuale di munizioni. Ad esempio, se impostato a 3, dovrà ricaricare dopo ogni terzo colpo. Impostare a 0 per disabilitare completamente la ricarica.",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS": "Ricorda musica riprodotta",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS_DESCRIPTION": "Contrassegna le tracce musicali riprodotte nel file di salvataggio, in modo che le tracce legate ad eventi non vengano rieseguite dopo il caricamento della partita.",
         "GAMEPLAY_SETTINGS_MAXIMUM_SAVE_SLOTS": "Numero slot di salvataggio",
@@ -1591,6 +1591,7 @@
         "OSD_UNKNOWN_COMMAND": "Comando sconosciuto: %s",
         "OSD_WIREFRAME_MODE_OFF": "Modalità reticolo: disattivato",
         "OSD_WIREFRAME_MODE_ON": "Modalità reticolo: attivato",
+        "OVERLAY_DEBUG_ANIMATION": "Animazione: ",
         "OVERLAY_DEBUG_POSITION": "Posizione: ",
         "OVERLAY_DEBUG_ROTATION": "Rotazione: ",
         "OVERLAY_DEBUG_SPEED": "Velocità: ",
