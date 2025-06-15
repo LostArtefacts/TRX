@@ -170,10 +170,15 @@ static bool M_ScreenResolution_CanChangeValue(
 static bool M_ScreenResolution_RequestChangeValue(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
+    bool result = false;
     if (dir < 0) {
-        Screen_SetPrevRes();
+        result = Screen_SetPrevRes();
     } else {
-        Screen_SetNextRes();
+        result = Screen_SetNextRes();
+    }
+    if (result) {
+        g_Config.rendering.resolution_width = Screen_GetResWidth();
+        g_Config.rendering.resolution_height = Screen_GetResHeight();
     }
     return true;
 }

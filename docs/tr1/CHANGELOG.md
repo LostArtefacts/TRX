@@ -34,6 +34,7 @@
 - fixed the `/play` command taking resume information from the highlighted slot (#3137, regression from 4.10)
 - fixed text glyphs having cut off right and bottom borders (regression from 4.7)
 - fixed unbind key option being available when it shouldn't (#3111, regression from 4.11)
+- fixed not saving screen resolution (regression from 4.11)
 - fixed vertical FOV option not working properly (#3120, regression from 4.10)
 - fixed Lara's position on a ledge after grabbing it extremely late (#3132, regression from 2.2.1)
 - fixed a rare crash when editing certain dev console history entries (#2913, regression from 4.10)
