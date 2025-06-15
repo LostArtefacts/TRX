@@ -29,6 +29,7 @@
 - added an option to alter Lara's HP for the beginning of each level (#3179)
 - added an option to not restore Lara's HP at the beginning of each level (#3179)
 - added an option to configure how many shots Lara can take with the harpoon gun before reloading, including disabling reloading altogether (#3057)
+- changed logs format to include timestamps
 - changed the music track slot limit from 64 to 1024 (#3101)
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
   - if playing original levels, make sure to update the game flow and injection files from this release
