@@ -238,11 +238,13 @@ static bool M_Language_CanChangeValue(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
     const VECTOR *const langs = M_Language_GetLanguages();
-    if (langs->count < 2) {
-        return false;
-    }
     const int32_t idx = M_Language_FindIndex(option);
     if (idx < 0) {
+        // If the language from the user config somehow is no longer on the list
+        // (the file was deleted), let the player return to the default language
+        return true;
+    }
+    if (langs->count < 2) {
         return false;
     }
     return idx + dir >= 0 && idx + dir < langs->count;
@@ -255,8 +257,15 @@ static bool M_Language_RequestChangeValue(
     if (!M_Language_CanChangeValue(option, dir)) {
         return false;
     }
-    int32_t idx = M_Language_FindIndex(option);
-    const char *const new_lang = *(char **)Vector_Get(langs, idx + dir);
+    const char *new_lang;
+    const int32_t idx = M_Language_FindIndex(option);
+    if (idx != -1) {
+        new_lang = *(char **)Vector_Get(langs, idx + dir);
+    } else {
+        // If the language from the user config somehow is no longer on the list
+        // (the file was deleted), default to the first entry, which is English
+        new_lang = *(char **)Vector_Get(langs, 0);
+    }
     Config_SetOptionValueFromString(Config_GetOption(option->target), new_lang);
     GameStringManager_ReloadLanguage(new_lang);
     return true;
