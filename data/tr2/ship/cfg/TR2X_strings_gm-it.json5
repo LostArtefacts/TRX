@@ -19,7 +19,7 @@
             }
         },
         {
-            "title": "L'oro degli sciocchi",
+            "title": "L'oro degli stupidi",
             "objects": {
                 "key_1": {
                     "name": "Carta d'accesso 1"
@@ -28,12 +28,12 @@
                     "name": "Carta d'accesso 2"
                 },
                 "puzzle_1": {
-                    "name": "Scheda circuito"
+                    "name": "Chip"
                 }
             }
         },
         {
-            "title": "Crogiolo degli dèi",
+            "title": "Fornace degli dèi",
             "objects": {
                 "big_spider": {
                     "name": "Orso polare"
@@ -50,7 +50,7 @@
             }
         },
         {
-            "title": "Regno",
+            "title": "Il Regno",
             "objects": {
                 "tiger": {
                     "name": "leopardo delle nevi"
@@ -67,7 +67,7 @@
                     "name": "Chiave dell'hotel"
                 },
                 "puzzle_1": {
-                    "name": "Raccordo dell'ascensore"
+                    "name": "Scatola Fusibili"
                 },
                 "puzzle_2": {
                     "name": "Circuito della porta"
