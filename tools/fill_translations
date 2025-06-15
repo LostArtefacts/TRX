@@ -11,25 +11,20 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-script_dir = Path(__file__).resolve().parent
-sys.path.insert(0, str(script_dir / "shared"))
-
 try:
     import openai
 except ImportError:
     openai = None
 
-from paths import PROJECT_PATHS
-from translation_utils import (
+from shared.json_utils import JSONPointers, load_json5, write_json
+from shared.paths import PROJECT_PATHS, CommonPaths
+from shared.translation_utils import (
     REVIEW_MARKER,
-    JSONPointers,
     chunks,
     clean,
     find_base_file,
     is_translation_file,
-    load_json5,
     should_skip_object_name,
-    write_json,
 )
 
 
@@ -200,10 +195,19 @@ def main() -> None:
     args = parse_args()
     # Discover all translation JSON5 files under each project's shipped_data_dir
     files: list[Path] = []
-    for project in PROJECT_PATHS.values():
-        for path in project.shipped_data_dir.rglob("*.json5"):
-            if is_translation_file(path):
-                files.append(path)
+
+    source_dirs = [
+        CommonPaths.shipped_data_dir,
+        *(project.shipped_data_dir for project in PROJECT_PATHS.values()),
+    ]
+
+    files = [
+        path
+        for source_dir in source_dirs
+        for path in source_dir.rglob("*strings*.json5")
+        if is_translation_file(path)
+    ]
+
     for path in files:
         process_file(path, args=args)
 

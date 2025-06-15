@@ -31,9 +31,9 @@ repos:
     language: system
     files: \.[ch](pp)?$
 
-  - id: update-gameflow
-    name: Update game flow files
-    entry: tools/update_gameflow
+  - id: update-game-strings
+    name: Update game strings to match source code
+    entry: tools/update_game_strings
     language: python
     stages: [pre-commit]
     additional_dependencies:

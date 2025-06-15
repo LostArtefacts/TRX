@@ -53,6 +53,8 @@ typedef struct {
     int32_t save_to_load;
 } SHELL_ARGS;
 
+static const char *const m_CommonStringsPath = "cfg/TRX_common_strings.json5";
+
 static struct {
     char *game_flow_path;
     char *game_strings_path;
@@ -496,6 +498,7 @@ int32_t Shell_Main(void)
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
 
     GameStringManager_ClearSourceFiles();
+    GameStringManager_AddSourceFile(m_CommonStringsPath, false);
     GameStringManager_AddSourceFile(
         m_ModPaths[M_MOD_OG].game_strings_path, false);
     GameStringManager_AddSourceFile(

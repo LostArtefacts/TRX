@@ -10,13 +10,12 @@ from pathlib import Path
 # enable importing translation_utils from this directory
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from json_utils import JSONPointers, load_json5
 from translation_utils import (
     REVIEW_MARKER,
-    JSONPointers,
     clean,
     find_base_file,
     is_translation_file,
-    load_json5,
     should_skip_object_name,
 )
 

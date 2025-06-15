@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
 - added buitin support for ingame string translations
+    - changed duplicate game strings between TR1 and TR2 to be placed in a single file TRX_common_strings.json5
     - added Italian translation
 - added UI for all config tool settings
 - added ingame help for all settings
