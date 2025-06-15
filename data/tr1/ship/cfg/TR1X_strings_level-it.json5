@@ -1,4 +1,8 @@
 {
     "language_name": "Italiano",
-    "levels": [{"title": "Livello di prova"}]
+    "levels": [
+        {
+            "title": "Livello di prova"
+        }
+    ]
 }
