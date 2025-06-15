@@ -50,7 +50,7 @@
                     "name": "Scatola fusibili"
                 },
                 "puzzle_2": {
-                    "name": "Scheda circuito"
+                    "name": "Chip"
                 }
             }
         },
@@ -103,7 +103,7 @@
             }
         },
         {
-            "title": "Alloggi",
+            "title": "Saloni Abitati",
             "objects": {
                 "key_1": {
                     "name": "Chiave teatro"
@@ -114,7 +114,7 @@
             }
         },
         {
-            "title": "Sul ponte",
+            "title": "Il Porto",
             "objects": {
                 "key_2": {
                     "name": "Chiave di poppa"
@@ -151,7 +151,7 @@
             "title": "Monastero di Barkhang",
             "objects": {
                 "key_1": {
-                    "name": "Chiave palestra"
+                    "name": "Chiave ripostiglio"
                 },
                 "key_2": {
                     "name": "Chiave botola"
@@ -188,7 +188,7 @@
             }
         },
         {
-            "title": "Palazzo di ghiaccio",
+            "title": "Palazzo del ghiaccio",
             "objects": {
                 "tiger": {
                     "name": "Tigre bianca"
@@ -321,10 +321,10 @@
     ],
     "objects": {
         "small_medipack": {
-            "name": "Kit medico piccolo"
+            "name": "Medikit Piccolo"
         },
         "large_medipack": {
-            "name": "Kit medico grande"
+            "name": "Medikit Grande"
         },
         "flare": {
             "name": "Bengala"
@@ -354,7 +354,7 @@
             "name": "Uzi"
         },
         "harpoon_gun": {
-            "name": "Fucile ad arpione"
+            "name": "Fiocina"
         },
         "m16": {
             "name": "M16"
