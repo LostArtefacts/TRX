@@ -9,6 +9,7 @@ from shared.translation_utils import (
     JSONPointers,
     is_translation_file,
     load_json5,
+    load_json5_from_string,
     should_skip_object_name,
     write_json,
 )
@@ -117,8 +118,8 @@ def process(game: int) -> None:
             # Write updated English file
             path.write_text(new_content)
             # Determine which entries changed for later marking in translations
-            old_data = load_json5(old_content)
-            new_data = load_json5(new_content)
+            old_data = load_json5_from_string(old_content)
+            new_data = load_json5_from_string(new_content)
             old_ptr = JSONPointers(old_data)
             new_ptr = JSONPointers(new_data)
             changed_ptrs[path] = [
