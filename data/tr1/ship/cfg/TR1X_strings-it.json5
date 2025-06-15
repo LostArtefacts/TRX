@@ -1,346 +1,749 @@
 {
-    // For usage, refer to the documentation here:
-    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
-
     "language_name": "Italiano",
-
     "levels": [
-        // Level 0: Lara's Home
         {
-            "title": "Casa di Lara",
+            "title": "Casa di Lara"
         },
-
-        // Level 1: Caves
         {
-            "title": "Caverne",
+            "title": "Caverne"
         },
-
-        // Level 2: City of Vilcabamba
         {
             "title": "Città di Vilcabamba",
             "objects": {
-                "key_1": {"name": "Chiave d'argento"},
-                "puzzle_1": {"name": "Idolo d'oro"},
-            },
+                "key_1": {
+                    "name": "Chiave d'argento"
+                },
+                "puzzle_1": {
+                    "name": "Idolo d'oro"
+                }
+            }
         },
-
-        // Level 3: Lost Valley
         {
             "title": "Valle perduta",
             "objects": {
-                "puzzle_1": {"name": "Ruota dentata"},
-            },
+                "puzzle_1": {
+                    "name": "Ruota dentata"
+                }
+            }
         },
-
-        // Level 4: Tomb of Qualopec
         {
-            "title": "Tomba di Qualopec",
+            "title": "Tomba di Qualopec"
         },
-
-        // Level 5: St. Francis' Folly
         {
             "title": "Rovine di St. Francis",
             "objects": {
-                "key_1": {"name": "Chiave di Nettuno"},
-                "key_2": {"name": "Chiave di Atlante"},
-                "key_3": {"name": "Chiave di Damocle"},
-                "key_4": {"name": "Chiave di Thor"},
-            },
+                "key_1": {
+                    "name": "Chiave di Nettuno"
+                },
+                "key_2": {
+                    "name": "Chiave di Atlante"
+                },
+                "key_3": {
+                    "name": "Chiave di Damocle"
+                },
+                "key_4": {
+                    "name": "Chiave di Thor"
+                }
+            }
         },
-
-        // Level 6: Colosseum
         {
             "title": "Colosseo",
             "objects": {
-                "key_1": {"name": "Chiave arrugginita"},
-            },
+                "key_1": {
+                    "name": "Chiave arrugginita"
+                }
+            }
         },
-
-        // Level 7: Palace Midas
         {
             "title": "Palazzo di Mida",
             "objects": {
-                "puzzle_1": {"name": "Lingotto d'oro"},
-            },
+                "puzzle_1": {
+                    "name": "Lingotto d'oro"
+                }
+            }
         },
-
-        // Level 8: The Cistern
         {
             "title": "La cisterna",
             "objects": {
-                "key_1": {"name": "Chiave d'oro"},
-                "key_2": {"name": "Chiave d'argento"},
-                "key_3": {"name": "Chiave arrugginita"},
-            },
+                "key_1": {
+                    "name": "Chiave d'oro"
+                },
+                "key_2": {
+                    "name": "Chiave d'argento"
+                },
+                "key_3": {
+                    "name": "Chiave arrugginita"
+                }
+            }
         },
-
-        // Level 9: Tomb of Tihocan
         {
             "title": "Tomba di Tihocan",
             "objects": {
-                "key_1": {"name": "Chiave d'oro"},
-                "key_2": {"name": "Chiave arrugginita"},
-                "key_3": {"name": "Chiave arrugginita"},
-            },
+                "key_1": {
+                    "name": "Chiave d'oro"
+                },
+                "key_2": {
+                    "name": "Chiave arrugginita"
+                },
+                "key_3": {
+                    "name": "Chiave arrugginita"
+                }
+            }
         },
-
-        // Level 10: City of Khamoon
         {
             "title": "Città di Khamoon",
             "objects": {
-                "key_1": {"name": "Chiave di zaffiro"},
-            },
+                "key_1": {
+                    "name": "Chiave di zaffiro"
+                }
+            }
         },
-
-        // Level 11: Obelisk of Khamoon
         {
             "title": "Obelisco di Khamoon",
             "objects": {
-                "key_1": {"name": "Chiave di zaffiro"},
-                "puzzle_1": {"name": "Occhio di Horus"},
-                "puzzle_2": {"name": "Scarabeo"},
-                "puzzle_3": {"name": "Sigillo di Anubi"},
-                "puzzle_4": {"name": "Ankh"},
-            },
+                "key_1": {
+                    "name": "Chiave di zaffiro"
+                },
+                "puzzle_1": {
+                    "name": "Occhio di Horus"
+                },
+                "puzzle_2": {
+                    "name": "Scarabeo"
+                },
+                "puzzle_3": {
+                    "name": "Sigillo di Anubi"
+                },
+                "puzzle_4": {
+                    "name": "Ankh"
+                }
+            }
         },
-
-        // Level 12: Sanctuary of the Scion
         {
             "title": "Santuario dello Scion",
             "objects": {
-                "key_1": {"name": "Chiave d'oro"},
-                "puzzle_1": {"name": "Ankh"},
-                "puzzle_2": {"name": "Scarabeo"},
-            },
+                "key_1": {
+                    "name": "Chiave d'oro"
+                },
+                "puzzle_1": {
+                    "name": "Ankh"
+                },
+                "puzzle_2": {
+                    "name": "Scarabeo"
+                }
+            }
         },
-
-        // Level 13: Natla's Mines
         {
             "title": "Miniere di Natla",
             "objects": {
-                "puzzle_1": {"name": "Fusibile"},
-                "puzzle_2": {"name": "Chiave della Piramide"},
-            },
+                "puzzle_1": {
+                    "name": "Fusibile"
+                },
+                "puzzle_2": {
+                    "name": "Chiave della Piramide"
+                }
+            }
         },
-
-        // Level 14: Atlantis
         {
-            "title": "Atlantide",
+            "title": "Atlantide"
         },
-
-        // Level 15: The Great Pyramid
         {
-            "title": "La Grande Piramide",
+            "title": "La Grande Piramide"
         },
-
-        // Level 16-19: Legacy savegame placeholders
-        {"title": "Vuoto"},
-        {"title": "Vuoto"},
-        {"title": "Vuoto"},
-        {"title": "Vuoto"},
-
-        // Level 20: Title
         {
-            "title": "Titoli",
+            "title": "Vuoto"
         },
-
-        // Level 21: Current Position
         {
-            "title": "Posizione attuale",
+            "title": "Vuoto"
         },
+        {
+            "title": "Vuoto"
+        },
+        {
+            "title": "Vuoto"
+        },
+        {
+            "title": "Titoli"
+        },
+        {
+            "title": "Posizione attuale"
+        }
     ],
-
     "cutscenes": [
-        {"title": "Intermezzo 1"},
-        {"title": "Intermezzo 2"},
-        {"title": "Intermezzo 3"},
-        {"title": "Intermezzo 4"},
+        {
+            "title": "Intermezzo 1"
+        },
+        {
+            "title": "Intermezzo 2"
+        },
+        {
+            "title": "Intermezzo 3"
+        },
+        {
+            "title": "Intermezzo 4"
+        }
     ],
-
     "demos": [
         {
             "title": "Città di Vilcabamba",
             "objects": {
-                "key_1": {"name": "Chiave d'argento"},
-                "puzzle_1": {"name": "Idolo d'oro"},
-            },
+                "key_1": {
+                    "name": "Chiave d'argento"
+                },
+                "puzzle_1": {
+                    "name": "Idolo d'oro"
+                }
+            }
         },
-
         {
             "title": "Valle perduta",
             "objects": {
-                "puzzle_1": {"name": "Ruota dentata"},
-            },
-        },
+                "puzzle_1": {
+                    "name": "Ruota dentata"
+                }
+            }
+        }
     ],
-
     "objects": {
-        "small_medipack":     {"name": "Kit medico piccolo"},
-        "large_medipack":     {"name": "Kit medico grande"},
-        "pistols":            {"name": "Pistole"},
-        "shotgun":            {"name": "Fucile a pompa"},
-        "magnums":            {"name": "Magnum"},
-        "uzis":               {"name": "Uzi"},
-        "pistol_ammo":        {"name": "Caricatori pistola"},
-        "shotgun_ammo":       {"name": "Cartucce fucile a pompa"},
-        "magnums_ammo":       {"name": "Caricatori magnum"},
-        "uzis_ammo":          {"name": "Caricatori uzi"},
-        "grenade":            {"name": "Granata"},
-        "key_1":              {"name": "Chiave 1"},
-        "key_2":              {"name": "Chiave 2"},
-        "key_3":              {"name": "Chiave 3"},
-        "key_4":              {"name": "Chiave 4"},
-        "puzzle_1":           {"name": "Oggetto Enigma 1"},
-        "puzzle_2":           {"name": "Oggetto Enigma 2"},
-        "puzzle_3":           {"name": "Oggetto Enigma 3"},
-        "puzzle_4":           {"name": "Oggetto Enigma 4"},
-        "pickup_1":           {"name": "Oggetto Recuperabile 1"},
-        "pickup_2":           {"name": "Oggetto Recuperabile 2"},
-        "lead_bar":           {"name": "Lingotto di piombo"},
-        "scion":              {"name": "Scion"},
-        "compass":            {"name": "Bussola"},
-        "passport":           {"name": "Partita"},
-        "photo":              {"name": "Casa di Lara"},
-        "graphics":           {"name": "Grafica"},
-        "controls":           {"name": "Comandi"},
-        "sound":              {"name": "Suono"},
-        "gamma":              {"name": "Gamma"},
-        "gameplay":           {"name": "Opzioni di Gioco"},
-        "lara":               {"name": "Lara"},
-        "lara_pistols":       {"name": "Animazione pistole"},
-        "lara_shotgun":       {"name": "Animazione fucile a pompa"},
-        "lara_magnums":       {"name": "Animazione magnum"},
-        "lara_uzis":          {"name": "Animazione uzi"},
-        "lara_extra":         {"name": "Animazione aggiuntiva di Lara"},
-        "bacon_lara":         {"name": "Sosia di Lara"},
-        "wolf":               {"name": "Lupo"},
-        "bear":               {"name": "Orso"},
-        "bat":                {"name": "Pipistrello"},
-        "crocodile":          {"name": "Coccodrillo"},
-        "alligator":          {"name": "Alligatore"},
-        "lion":               {"name": "Leone"},
-        "lioness":            {"names": ["Leonessa", "Leone"]},
-        "puma":               {"name": "Puma"},
-        "ape":                {"name": "Scimmia"},
-        "rat":                {"names": ["Ratto", "Ratto terrestre"]},
-        "vole":               {"names": ["Arvicola", "Ratto acquatico"]},
-        "trex":               {"name": "T-Rex"},
-        "raptor":             {"name": "Rapace"},
-        "mutant_1":           {"name": "Mutante 1"},
-        "mutant_2":           {"name": "Mutante 2"},
-        "mutant_3":           {"name": "Mutante 3"},
-        "centaur":            {"name": "Centauro"},
-        "mummy":              {"name": "Mummia"},
-        "dino_mutant":        {"name": "Dinosauro mutante"},
-        "fish_mutant":        {"name": "Pesce mutante"},
-        "larson":             {"name": "Larson"},
-        "pierre":             {"name": "Pierre"},
-        "skateboard":         {"name": "Skateboard"},
-        "skate_kid":          {"name": "Skate Kid"},
-        "cowboy":             {"name": "Cowboy"},
-        "baldy":              {"name": "Il calvo"},
-        "natla":              {"name": "Natla"},
-        "torso":              {"names": ["Torso", "Adam", "Mutante gigante"]},
-        "falling_block_1":    {"names": ["Blocco cedevole", "Pavimento fragile", "Piastrelle fragili"]},
-        "pendulum_1":         {"name": "Pendolo"},
-        "spikes":             {"name": "Spuntoni"},
-        "rolling_ball_1":     {"names": ["Masso", "Masso rotolante"]},
-        "dart":               {"name": "Dardo"},
-        "dart_emitter":       {"name": "Emettitore di dardi"},
-        "drawbridge":         {"name": "Ponte levatoio"},
-        "teeth_trap":         {"names": ["Trappola con spuntoni", "Porta con spuntoni"]},
-        "damocles_sword":     {"name": "Spada di Damocle"},
-        "thors_handle":       {"name": "Manico del martello di Thor"},
-        "thors_head":         {"name": "Martello di Thor"},
-        "lightning_emitter":  {"name": "Emettitore di fulmini"},
-        "moving_bar":         {"name": "Barra mobile"},
-        "movable_block_1":    {"names": ["Blocco spostabile 1", "Blocco movibile 1"]},
-        "movable_block_2":    {"names": ["Blocco spostabile 2", "Blocco movibile 2"]},
-        "movable_block_3":    {"names": ["Blocco spostabile 3", "Blocco movibile 3"]},
-        "movable_block_4":    {"names": ["Blocco spostabile 4", "Blocco movibile 4"]},
-        "sliding_pillar":     {"name": "Pilastro scorrevole"},
-        "falling_ceiling_1":  {"name": "Soffitto cedevole 1"},
-        "falling_ceiling_2":  {"name": "Soffitto cedevole 2"},
-        "switch_type_normal": {"names": ["Leva", "Interruttore"]},
-        "switch_type_uw":     {"names": ["Leva subacquea", "Interruttore subacqueo"]},
-        "door_1":             {"name": "Porta 1"},
-        "door_2":             {"name": "Porta 2"},
-        "door_3":             {"name": "Porta 3"},
-        "door_4":             {"name": "Porta 4"},
-        "door_5":             {"name": "Porta 5"},
-        "door_6":             {"name": "Porta 6"},
-        "door_7":             {"name": "Porta 7"},
-        "door_8":             {"name": "Porta 8"},
-        "trapdoor_1":         {"name": "Botola 1"},
-        "trapdoor_2":         {"name": "Botola 2"},
-        "trapdoor_3":         {"name": "Botola 3"},
-        "bridge_flat":        {"name": "Ponte piano"},
-        "bridge_tilt_1":      {"name": "Ponte inclinato 1"},
-        "bridge_tilt_2":      {"name": "Ponte inclinato 2"},
-        "cog_1":              {"name": "Ingranaggio 1"},
-        "cog_2":              {"name": "Ingranaggio 2"},
-        "cog_3":              {"name": "Ingranaggio 3"},
-        "player_1":           {"name": "Attore intermezzo 1"},
-        "player_2":           {"name": "Attore intermezzo 2"},
-        "player_3":           {"name": "Attore intermezzo 3"},
-        "player_4":           {"name": "Attore intermezzo 4"},
-        "save_crystal":       {"name": "Cristallo di salvataggio"},
-        "puzzle_hole_1":      {"name": "Serratura enigma 1 (Vuoto)"},
-        "puzzle_hole_2":      {"name": "Serratura enigma 2 (Vuoto)"},
-        "puzzle_hole_3":      {"name": "Serratura enigma 3 (Vuoto)"},
-        "puzzle_hole_4":      {"name": "Serratura enigma 4 (Vuoto)"},
-        "puzzle_done_1":      {"name": "Serratura enigma 1 (Usato)"},
-        "puzzle_done_2":      {"name": "Serratura enigma 2 (Usato)"},
-        "puzzle_done_3":      {"name": "Serratura enigma 3 (Usato)"},
-        "puzzle_done_4":      {"name": "Serratura enigma 4 (Usato)"},
-        "midas_touch":        {"name": "Mano di Mida"},
-        "key_hole_1":         {"name": "Buco della serratura 1"},
-        "key_hole_2":         {"name": "Buco della serratura 1"},
-        "key_hole_3":         {"name": "Buco della serratura 1"},
-        "key_hole_4":         {"name": "Buco della serratura 1"},
-        "scion_holder":       {"name": "Supporto Scion"},
-        "explosion_1":        {"name": "Esplosione 1"},
-        "explosion_2":        {"name": "Esplosione 2"},
-        "splash_1":           {"name": "Increspatura acqua 1"},
-        "splash_2":           {"name": "Increspatura acqua 2"},
-        "bubble_1":           {"name": "Bolla 1"},
-        "bubble_2":           {"name": "Bolla 2"},
-        "bubble_emitter":     {"name": "Emettitore di bolle"},
-        "blood_1":            {"name": "Sangue 1"},
-        "blood_2":            {"name": "Sangue 2"},
-        "dart_effect":        {"name": "Effetto dardo"},
-        "statue":             {"name": "Statua"},
-        "portacabin":         {"name": "Cabina portatile"},
-        "pods":               {"name": "Guscio"},
-        "ricochet":           {"name": "Ricochet"},
-        "twinkle":            {"name": "Scintille"},
-        "gun_flash":          {"name": "Lampo pistola"},
-        "dust":               {"name": "Polvere"},
-        "body_part":          {"name": "Parte del corpo"},
-        "camera_target":      {"name": "Obiettivo telecamera"},
-        "waterfall":          {"name": "Foschia cascata"},
-        "missile_1":          {"name": "Missile 1"},
-        "missile_2":          {"name": "Missile 2"},
-        "missile_3":          {"name": "Missile 3"},
-        "missile_4":          {"name": "Missile 4"},
-        "missile_5":          {"name": "Missile 5"},
-        "ember":              {"name": "Brace"},
-        "ember_emitter":      {"name": "Emettitore di brace"},
-        "flame":              {"names": ["Fiamma", "Fuoco"]},
-        "flame_emitter":      {"names": ["Emettitore di fiamme", "Emettitore di fuoco"]},
-        "lava_wedge":         {"name": "Cascata di lava"},
-        "big_pod":            {"name": "Guscio grande"},
-        "boat":               {"name": "Barca"},
-        "earthquake":         {"name": "Terremoto"},
-        "skybox":             {"name": "Cielo"},
-        "pickup_aid":         {"name": "Segnalazione oggetti"},
-        "temp_7":             {"name": "Temp 7"},
-        "temp_8":             {"name": "Temp 8"},
-        "temp_9":             {"name": "Temp 9"},
-        "lara_hair":          {"name": "Treccia di Lara"},
-        "alphabet":           {"name": "Alfabeto"},
+        "small_medipack": {
+            "name": "Kit medico piccolo"
+        },
+        "large_medipack": {
+            "name": "Kit medico grande"
+        },
+        "pistols": {
+            "name": "Pistole"
+        },
+        "shotgun": {
+            "name": "Fucile a pompa"
+        },
+        "magnums": {
+            "name": "Magnum"
+        },
+        "uzis": {
+            "name": "Uzi"
+        },
+        "pistol_ammo": {
+            "name": "Caricatori pistola"
+        },
+        "shotgun_ammo": {
+            "name": "Cartucce fucile a pompa"
+        },
+        "magnums_ammo": {
+            "name": "Caricatori magnum"
+        },
+        "uzis_ammo": {
+            "name": "Caricatori uzi"
+        },
+        "grenade": {
+            "name": "Granata"
+        },
+        "key_1": {
+            "name": "Chiave 1"
+        },
+        "key_2": {
+            "name": "Chiave 2"
+        },
+        "key_3": {
+            "name": "Chiave 3"
+        },
+        "key_4": {
+            "name": "Chiave 4"
+        },
+        "puzzle_1": {
+            "name": "Oggetto Enigma 1"
+        },
+        "puzzle_2": {
+            "name": "Oggetto Enigma 2"
+        },
+        "puzzle_3": {
+            "name": "Oggetto Enigma 3"
+        },
+        "puzzle_4": {
+            "name": "Oggetto Enigma 4"
+        },
+        "pickup_1": {
+            "name": "Oggetto Recuperabile 1"
+        },
+        "pickup_2": {
+            "name": "Oggetto Recuperabile 2"
+        },
+        "lead_bar": {
+            "name": "Lingotto di piombo"
+        },
+        "scion": {
+            "name": "Scion"
+        },
+        "compass": {
+            "name": "Bussola"
+        },
+        "passport": {
+            "name": "Partita"
+        },
+        "photo": {
+            "name": "Casa di Lara"
+        },
+        "graphics": {
+            "name": "Grafica"
+        },
+        "controls": {
+            "name": "Comandi"
+        },
+        "sound": {
+            "name": "Suono"
+        },
+        "gamma": {
+            "name": "Gamma"
+        },
+        "gameplay": {
+            "name": "Opzioni di Gioco"
+        },
+        "lara": {
+            "name": "Lara"
+        },
+        "lara_pistols": {
+            "name": "Animazione pistole"
+        },
+        "lara_shotgun": {
+            "name": "Animazione fucile a pompa"
+        },
+        "lara_magnums": {
+            "name": "Animazione magnum"
+        },
+        "lara_uzis": {
+            "name": "Animazione uzi"
+        },
+        "lara_extra": {
+            "name": "Animazione aggiuntiva di Lara"
+        },
+        "bacon_lara": {
+            "name": "Sosia di Lara"
+        },
+        "wolf": {
+            "name": "Lupo"
+        },
+        "bear": {
+            "name": "Orso"
+        },
+        "bat": {
+            "name": "Pipistrello"
+        },
+        "crocodile": {
+            "name": "Coccodrillo"
+        },
+        "alligator": {
+            "name": "Alligatore"
+        },
+        "lion": {
+            "name": "Leone"
+        },
+        "lioness": {
+            "names": [
+                "Leonessa",
+                "Leone"
+            ]
+        },
+        "puma": {
+            "name": "Puma"
+        },
+        "ape": {
+            "name": "Scimmia"
+        },
+        "rat": {
+            "names": [
+                "Ratto",
+                "Ratto terrestre"
+            ]
+        },
+        "vole": {
+            "names": [
+                "Arvicola",
+                "Ratto acquatico"
+            ]
+        },
+        "trex": {
+            "name": "T-Rex"
+        },
+        "raptor": {
+            "name": "Rapace"
+        },
+        "mutant_1": {
+            "name": "Mutante 1"
+        },
+        "mutant_2": {
+            "name": "Mutante 2"
+        },
+        "mutant_3": {
+            "name": "Mutante 3"
+        },
+        "centaur": {
+            "name": "Centauro"
+        },
+        "mummy": {
+            "name": "Mummia"
+        },
+        "dino_mutant": {
+            "name": "Dinosauro mutante"
+        },
+        "fish_mutant": {
+            "name": "Pesce mutante"
+        },
+        "larson": {
+            "name": "Larson"
+        },
+        "pierre": {
+            "name": "Pierre"
+        },
+        "skateboard": {
+            "name": "Skateboard"
+        },
+        "skate_kid": {
+            "name": "Skate Kid"
+        },
+        "cowboy": {
+            "name": "Cowboy"
+        },
+        "baldy": {
+            "name": "Il calvo"
+        },
+        "natla": {
+            "name": "Natla"
+        },
+        "torso": {
+            "names": [
+                "Torso",
+                "Adam",
+                "Mutante gigante"
+            ]
+        },
+        "falling_block_1": {
+            "names": [
+                "Blocco cedevole",
+                "Pavimento fragile",
+                "Piastrelle fragili"
+            ]
+        },
+        "pendulum_1": {
+            "name": "Pendolo"
+        },
+        "spikes": {
+            "name": "Spuntoni"
+        },
+        "rolling_ball_1": {
+            "names": [
+                "Masso",
+                "Masso rotolante"
+            ]
+        },
+        "dart": {
+            "name": "Dardo"
+        },
+        "dart_emitter": {
+            "name": "Emettitore di dardi"
+        },
+        "drawbridge": {
+            "name": "Ponte levatoio"
+        },
+        "teeth_trap": {
+            "names": [
+                "Trappola con spuntoni",
+                "Porta con spuntoni"
+            ]
+        },
+        "damocles_sword": {
+            "name": "Spada di Damocle"
+        },
+        "thors_handle": {
+            "name": "Manico del martello di Thor"
+        },
+        "thors_head": {
+            "name": "Martello di Thor"
+        },
+        "lightning_emitter": {
+            "name": "Emettitore di fulmini"
+        },
+        "moving_bar": {
+            "name": "Barra mobile"
+        },
+        "movable_block_1": {
+            "names": [
+                "Blocco spostabile 1",
+                "Blocco movibile 1"
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "Blocco spostabile 2",
+                "Blocco movibile 2"
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "Blocco spostabile 3",
+                "Blocco movibile 3"
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "Blocco spostabile 4",
+                "Blocco movibile 4"
+            ]
+        },
+        "sliding_pillar": {
+            "name": "Pilastro scorrevole"
+        },
+        "falling_ceiling_1": {
+            "name": "Soffitto cedevole 1"
+        },
+        "falling_ceiling_2": {
+            "name": "Soffitto cedevole 2"
+        },
+        "switch_type_normal": {
+            "names": [
+                "Leva",
+                "Interruttore"
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Leva subacquea",
+                "Interruttore subacqueo"
+            ]
+        },
+        "door_1": {
+            "name": "Porta 1"
+        },
+        "door_2": {
+            "name": "Porta 2"
+        },
+        "door_3": {
+            "name": "Porta 3"
+        },
+        "door_4": {
+            "name": "Porta 4"
+        },
+        "door_5": {
+            "name": "Porta 5"
+        },
+        "door_6": {
+            "name": "Porta 6"
+        },
+        "door_7": {
+            "name": "Porta 7"
+        },
+        "door_8": {
+            "name": "Porta 8"
+        },
+        "trapdoor_1": {
+            "name": "Botola 1"
+        },
+        "trapdoor_2": {
+            "name": "Botola 2"
+        },
+        "trapdoor_3": {
+            "name": "Botola 3"
+        },
+        "bridge_flat": {
+            "name": "Ponte piano"
+        },
+        "bridge_tilt_1": {
+            "name": "Ponte inclinato 1"
+        },
+        "bridge_tilt_2": {
+            "name": "Ponte inclinato 2"
+        },
+        "cog_1": {
+            "name": "Ingranaggio 1"
+        },
+        "cog_2": {
+            "name": "Ingranaggio 2"
+        },
+        "cog_3": {
+            "name": "Ingranaggio 3"
+        },
+        "player_1": {
+            "name": "Attore intermezzo 1"
+        },
+        "player_2": {
+            "name": "Attore intermezzo 2"
+        },
+        "player_3": {
+            "name": "Attore intermezzo 3"
+        },
+        "player_4": {
+            "name": "Attore intermezzo 4"
+        },
+        "save_crystal": {
+            "name": "Cristallo di salvataggio"
+        },
+        "puzzle_hole_1": {
+            "name": "Serratura enigma 1 (Vuoto)"
+        },
+        "puzzle_hole_2": {
+            "name": "Serratura enigma 2 (Vuoto)"
+        },
+        "puzzle_hole_3": {
+            "name": "Serratura enigma 3 (Vuoto)"
+        },
+        "puzzle_hole_4": {
+            "name": "Serratura enigma 4 (Vuoto)"
+        },
+        "puzzle_done_1": {
+            "name": "Serratura enigma 1 (Usato)"
+        },
+        "puzzle_done_2": {
+            "name": "Serratura enigma 2 (Usato)"
+        },
+        "puzzle_done_3": {
+            "name": "Serratura enigma 3 (Usato)"
+        },
+        "puzzle_done_4": {
+            "name": "Serratura enigma 4 (Usato)"
+        },
+        "midas_touch": {
+            "name": "Mano di Mida"
+        },
+        "key_hole_1": {
+            "name": "Buco della serratura 1"
+        },
+        "key_hole_2": {
+            "name": "Buco della serratura 1"
+        },
+        "key_hole_3": {
+            "name": "Buco della serratura 1"
+        },
+        "key_hole_4": {
+            "name": "Buco della serratura 1"
+        },
+        "scion_holder": {
+            "name": "Supporto Scion"
+        },
+        "explosion_1": {
+            "name": "Esplosione 1"
+        },
+        "explosion_2": {
+            "name": "Esplosione 2"
+        },
+        "splash_1": {
+            "name": "Increspatura acqua 1"
+        },
+        "splash_2": {
+            "name": "Increspatura acqua 2"
+        },
+        "bubble_1": {
+            "name": "Bolla 1"
+        },
+        "bubble_2": {
+            "name": "Bolla 2"
+        },
+        "bubble_emitter": {
+            "name": "Emettitore di bolle"
+        },
+        "blood_1": {
+            "name": "Sangue 1"
+        },
+        "blood_2": {
+            "name": "Sangue 2"
+        },
+        "dart_effect": {
+            "name": "Effetto dardo"
+        },
+        "statue": {
+            "name": "Statua"
+        },
+        "portacabin": {
+            "name": "Cabina portatile"
+        },
+        "pods": {
+            "name": "Guscio"
+        },
+        "ricochet": {
+            "name": "Ricochet"
+        },
+        "twinkle": {
+            "name": "Scintille"
+        },
+        "gun_flash": {
+            "name": "Lampo pistola"
+        },
+        "dust": {
+            "name": "Polvere"
+        },
+        "body_part": {
+            "name": "Parte del corpo"
+        },
+        "camera_target": {
+            "name": "Obiettivo telecamera"
+        },
+        "waterfall": {
+            "name": "Foschia cascata"
+        },
+        "missile_1": {
+            "name": "Missile 1"
+        },
+        "missile_2": {
+            "name": "Missile 2"
+        },
+        "missile_3": {
+            "name": "Missile 3"
+        },
+        "missile_4": {
+            "name": "Missile 4"
+        },
+        "missile_5": {
+            "name": "Missile 5"
+        },
+        "ember": {
+            "name": "Brace"
+        },
+        "ember_emitter": {
+            "name": "Emettitore di brace"
+        },
+        "flame": {
+            "names": [
+                "Fiamma",
+                "Fuoco"
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Emettitore di fiamme",
+                "Emettitore di fuoco"
+            ]
+        },
+        "lava_wedge": {
+            "name": "Cascata di lava"
+        },
+        "big_pod": {
+            "name": "Guscio grande"
+        },
+        "boat": {
+            "name": "Barca"
+        },
+        "earthquake": {
+            "name": "Terremoto"
+        },
+        "skybox": {
+            "name": "Cielo"
+        },
+        "pickup_aid": {
+            "name": "Segnalazione oggetti"
+        },
+        "temp_7": {
+            "name": "Temp 7"
+        },
+        "temp_8": {
+            "name": "Temp 8"
+        },
+        "temp_9": {
+            "name": "Temp 9"
+        },
+        "lara_hair": {
+            "name": "Treccia di Lara"
+        },
+        "alphabet": {
+            "name": "Alfabeto"
+        }
     },
-
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Esamina",
         "ACTION_RESET_DEFAULTS": "Ripristina",
@@ -902,6 +1305,6 @@
         "STATS_MEDIPACKS_USED": "KIT MEDICI USATI",
         "STATS_PICKUPS": "OGGETTI",
         "STATS_SECRETS": "SEGRETI",
-        "STATS_TIME_TAKEN": "TEMPO IMPIEGATO",
-    },
+        "STATS_TIME_TAKEN": "TEMPO IMPIEGATO"
+    }
 }
