@@ -132,7 +132,7 @@ def lint_untranslated_game_strings(
         if should_skip_object_name(ptr, trans_data):
             continue
         if not clean(trans_ptr.get(ptr)):
-            yield LintWarning(ptr, f"untranslated key '{ptr}'")
+            yield LintWarning(path, f"untranslated key '{ptr}'")
 
 
 def get_relevant_project(context: LintContext, path: Path) -> str:
