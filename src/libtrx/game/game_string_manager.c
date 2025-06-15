@@ -22,16 +22,16 @@ typedef struct {
     char *display_name;
 } M_LANG_ENTRY;
 
-static char *m_OGBase = nullptr;
-static char *m_ModBase = nullptr;
+static VECTOR *m_SourceFiles = nullptr;
 static VECTOR *m_LangEntries = nullptr;
 
 static void M_ClearFileEntries(VECTOR *files);
 static void M_ClearManager(void);
+static void M_ClearLanguageEntries(void);
 static M_LANG_ENTRY *M_FindLangEntry(const char *lang);
 static void M_AddPathForLang(const char *lang, char *path, bool load_levels);
-static void M_ScanBase(const char *base_path, bool load_levels_for_base);
 static void M_LoadLanguageNames(void);
+static void M_ReorderLanguages(void);
 
 static void M_ClearFileEntries(VECTOR *const files)
 {
@@ -42,7 +42,7 @@ static void M_ClearFileEntries(VECTOR *const files)
     Vector_Free(files);
 }
 
-static void M_ClearManager(void)
+static void M_ClearLanguageEntries(void)
 {
     if (m_LangEntries != nullptr) {
         for (int32_t i = 0; i < m_LangEntries->count; i++) {
@@ -54,8 +54,15 @@ static void M_ClearManager(void)
         Vector_Free(m_LangEntries);
         m_LangEntries = nullptr;
     }
-    Memory_FreePointer(&m_OGBase);
-    Memory_FreePointer(&m_ModBase);
+}
+
+static void M_ClearManager(void)
+{
+    M_ClearLanguageEntries();
+    if (m_SourceFiles != nullptr) {
+        M_ClearFileEntries(m_SourceFiles);
+        m_SourceFiles = nullptr;
+    }
 }
 
 static M_LANG_ENTRY *M_FindLangEntry(const char *const lang)
@@ -89,60 +96,6 @@ static void M_AddPathForLang(
     Vector_Add(lang_entry->files, &file_entry);
 }
 
-// Search for language variants inside the parent directory of a given file.
-static void M_ScanBase(
-    const char *const base_path, const bool load_levels_for_base)
-{
-    void *dir_handle = nullptr;
-    char *const dir = File_GetParentDirectory(base_path);
-    if (dir == nullptr) {
-        LOG_WARNING("cannot get directory for '%s'", base_path);
-        return;
-    }
-
-    const char *base_name =
-        MAX(strrchr(base_path, '\\'), strrchr(base_path, '/'));
-    base_name = base_name != nullptr ? base_name + 1 : base_path;
-    const char *const ext = strrchr(base_name, '.');
-    if (ext == nullptr) {
-        goto cleanup;
-    }
-    const size_t base_len = (size_t)(ext - base_name);
-
-    dir_handle = File_OpenDirectory(dir);
-    const char *entry;
-    while ((entry = File_ReadDirectory(dir_handle))) {
-        if (entry[0] == '.') {
-            continue;
-        }
-        if (!String_EndsWith(entry, ext)
-            || strncmp(entry, base_name, base_len) != 0) {
-            continue;
-        }
-
-        // Got a match - add the entry to the relevant language table
-        const size_t name_len = strlen(entry);
-        if (name_len == base_len + strlen(ext)) {
-            char *const lang_path = String_Format("%s/%s", dir, entry);
-            M_AddPathForLang("en", lang_path, load_levels_for_base);
-        } else if (entry[base_len] == '-') {
-            const size_t code_len = name_len - base_len - strlen(ext) - 1;
-            char *const code =
-                String_Format("%.*s", (int32_t)code_len, entry + base_len + 1);
-            char *const lang_path = String_Format("%s/%s", dir, entry);
-            M_AddPathForLang(code, lang_path, load_levels_for_base);
-            Memory_Free(code);
-        }
-    }
-
-cleanup:
-    if (dir_handle != nullptr) {
-        File_CloseDirectory(dir_handle);
-    }
-    Memory_Free(dir);
-}
-
-// Load the 'language_name' field from each language's JSON5 strings file.
 static void M_LoadLanguageNames(void)
 {
     if (m_LangEntries == nullptr) {
@@ -180,37 +133,8 @@ static void M_LoadLanguageNames(void)
     }
 }
 
-void GameStringManager_Init(void)
+static void M_ReorderLanguages(void)
 {
-    M_ClearManager();
-    m_LangEntries = Vector_Create(sizeof(M_LANG_ENTRY));
-}
-
-void GameStringManager_Shutdown(void)
-{
-    GameStringTable_Shutdown();
-    M_ClearManager();
-}
-
-void GameStringManager_SetBaseFiles(
-    const char *const og_base_path, const char *const mod_base_path)
-{
-    if (m_LangEntries == nullptr) {
-        GameStringManager_Init();
-    }
-    M_ClearManager();
-    m_LangEntries = Vector_Create(sizeof(M_LANG_ENTRY));
-    m_OGBase = Memory_DupStr(og_base_path);
-    m_ModBase = Memory_DupStr(mod_base_path);
-    bool same = String_Equivalent(m_OGBase, m_ModBase);
-    if (same) {
-        M_ScanBase(m_ModBase, true);
-    } else {
-        M_ScanBase(m_OGBase, false);
-        M_ScanBase(m_ModBase, true);
-    }
-    M_LoadLanguageNames();
-
     if (m_LangEntries->count > 1) {
         VECTOR *ordered = Vector_Create(sizeof(M_LANG_ENTRY));
         const M_LANG_ENTRY *en_orig = M_FindLangEntry("en");
@@ -246,6 +170,100 @@ void GameStringManager_SetBaseFiles(
         Vector_Free(m_LangEntries);
         m_LangEntries = ordered;
     }
+}
+
+void GameStringManager_Init(void)
+{
+    M_ClearManager();
+    m_SourceFiles = Vector_Create(sizeof(M_FILE_ENTRY));
+}
+
+void GameStringManager_Shutdown(void)
+{
+    GameStringTable_Shutdown();
+    M_ClearManager();
+}
+
+// Clear all previously set source strings files.
+// Must be called before GameStringManager_AddSourceFile.
+void GameStringManager_ClearSourceFiles(void)
+{
+    M_ClearManager();
+    m_SourceFiles = Vector_Create(sizeof(M_FILE_ENTRY));
+}
+
+// Add a source strings file for language discovery and loading.
+// base_path: path to a base strings JSON5 file.
+// load_levels: true to load level entries from this source; false otherwise.
+void GameStringManager_AddSourceFile(
+    const char *const base_path, const bool load_levels)
+{
+    if (m_SourceFiles == nullptr) {
+        GameStringManager_Init();
+    }
+    M_FILE_ENTRY fe = { .path = Memory_DupStr(base_path),
+                        .load_levels = load_levels };
+    Vector_Add(m_SourceFiles, &fe);
+}
+
+void GameStringManager_DiscoverLanguages(void)
+{
+    if (m_SourceFiles == nullptr) {
+        return;
+    }
+    M_ClearLanguageEntries();
+    m_LangEntries = Vector_Create(sizeof(M_LANG_ENTRY));
+
+    for (int32_t i = 0; i < m_SourceFiles->count; ++i) {
+        const M_FILE_ENTRY *src = Vector_Get(m_SourceFiles, i);
+        char *dir = File_GetParentDirectory(src->path);
+        const char *base =
+            MAX(strrchr(src->path, '\\'), strrchr(src->path, '/'));
+        base = (base != nullptr) ? base + 1 : src->path;
+        const char *ext = strrchr(base, '.');
+        if (dir == nullptr || ext == nullptr) {
+            Memory_Free(dir);
+            continue;
+        }
+        size_t stem_len = (size_t)(ext - base);
+        size_t ext_len = strlen(ext);
+
+        void *dh = File_OpenDirectory(dir);
+        if (dh != nullptr) {
+            const char *ent;
+            while ((ent = File_ReadDirectory(dh))) {
+                if (ent[0] == '.') {
+                    continue;
+                }
+                size_t name_len = strlen(ent);
+                if (name_len < stem_len + ext_len) {
+                    continue;
+                }
+                if (strncmp(ent, base, stem_len) != 0
+                    || strcmp(ent + name_len - ext_len, ext) != 0) {
+                    continue;
+                }
+                char *code;
+                if (name_len == stem_len + ext_len) {
+                    code = Memory_DupStr("en");
+                } else if (ent[stem_len] == '-') {
+                    size_t code_len = name_len - stem_len - ext_len - 1;
+                    code = String_Format(
+                        "%.*s", (int32_t)code_len, ent + stem_len + 1);
+                } else {
+                    continue;
+                }
+                char *path = String_Format("%s/%s", dir, ent);
+                M_AddPathForLang(code, path, src->load_levels);
+                Memory_Free(code);
+            }
+            File_CloseDirectory(dh);
+        }
+        Memory_Free(dir);
+    }
+
+    M_LoadLanguageNames();
+    M_ReorderLanguages();
 }
 
 VECTOR *GameStringManager_GetAvailableLanguages(void)

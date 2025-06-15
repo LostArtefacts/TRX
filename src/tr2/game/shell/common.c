@@ -495,9 +495,12 @@ int32_t Shell_Main(void)
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
 
-    GameStringManager_SetBaseFiles(
-        m_ModPaths[M_MOD_OG].game_strings_path,
-        m_ModPaths[m_Args.mod].game_strings_path);
+    GameStringManager_ClearSourceFiles();
+    GameStringManager_AddSourceFile(
+        m_ModPaths[M_MOD_OG].game_strings_path, false);
+    GameStringManager_AddSourceFile(
+        m_ModPaths[m_Args.mod].game_strings_path, true);
+    GameStringManager_DiscoverLanguages();
     GameStringManager_ReloadLanguage(g_Config.language);
 
     GameBuf_Init();
