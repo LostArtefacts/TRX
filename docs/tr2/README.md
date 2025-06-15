@@ -406,7 +406,8 @@ However, you can easily download them manually from these urls:
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)
 - expanded maximum texture pages from 32 to 128
-- expanded the number of static mesh slots from 50 to 256
+- expanded the number of 3D static mesh slots from 50 to 256
+- expanded the number of 2D static mesh slots from 50 to 256
 - expanded maximum number of items (moveables) from 256 to 10240 (1024 remains the limit for triggered items)
 - expanded maximum number of visible enemies from 5 to 32
 - expanded the maximum number of effects (flames, embers, exploding parts etc) from 100 to 1000
