@@ -12,7 +12,7 @@ except ImportError:
     pyjson5 = None
 
 
-_OBJECT_NAMES_PTR_RE = re.compile(r"^/objects/([^/]+)/names/\d+$")
+_OBJECT_NAMES_PTR_RE = re.compile(r"^/objects/([^/]+)/(names/\d+|name)$")
 REVIEW_MARKER = r"\{review}"
 
 
@@ -172,9 +172,11 @@ class JSONPointers:
         return token
 
 
-def clean(source: str | None) -> str | None:
+def clean(source: str | list[str] | None) -> str | list[str] | None:
     if not source:
         return source
+    if isinstance(source, list):
+        return [clean(item) for item in source]
     return source.replace(REVIEW_MARKER, "")
 
 
@@ -191,6 +193,4 @@ def should_skip_object_name(ptr: str, trans_data: Any) -> bool:
     obj_trans = trans_data.get("objects", {}).get(obj)
     if not isinstance(obj_trans, dict):
         return False
-    return clean(obj_trans.get("name")) or any(
-        clean(name) for name in obj_trans.get("names", [])
-    )
+    return clean(obj_trans.get("name")) or clean(obj_trans.get("names", []))
