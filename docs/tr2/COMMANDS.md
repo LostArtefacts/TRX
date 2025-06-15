@@ -112,3 +112,6 @@ Currently supported commands:
 - `/sfx`  
 - `/sfx {sound}`  
   Plays a given sound sample.
+
+- `/strings`  
+  Reloads the current language. Useful when editing translation files.
