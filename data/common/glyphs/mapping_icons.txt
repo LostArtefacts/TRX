@@ -34,3 +34,4 @@
 "\\{small hyphen}"    N grid_sprite("buttons.png", 4, 1)
 "\\{small comma}"     N grid_sprite("buttons.png", 5, 1)
 "\\{small degree}"    N grid_sprite("buttons.png", 6, 1)
+"\\{review}"          R grid_sprite("buttons.png", 7, 2)

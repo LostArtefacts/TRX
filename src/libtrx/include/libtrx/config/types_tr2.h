@@ -64,6 +64,7 @@ typedef struct {
 
     struct {
         bool enable_debug_pos;
+        bool enable_review_markers;
     } debug;
 
     struct {

@@ -19,7 +19,6 @@
 
 typedef enum {
     // special non-printable glyph roles
-    GLYPH_INVISIBLE,
     GLYPH_NORMAL,
     GLYPH_SPACE,
     GLYPH_NEW_LINE,
@@ -27,6 +26,7 @@ typedef enum {
     GLYPH_COMBINING,
     GLYPH_COMPOUND,
     GLYPH_SECRET,
+    GLYPH_REVIEW_MARKER,
 } M_GLYPH_ROLE;
 
 typedef struct {
@@ -62,7 +62,6 @@ static M_GLYPH_INFO m_Glyphs[] = {
       .mesh_idx = mesh_idx_,                                                   \
       __VA_ARGS__ },
 #include "./text.def"
-    { .text = "\\{review}", .role = GLYPH_INVISIBLE },
     { .text = nullptr }, // guard
 };
 
@@ -174,8 +173,7 @@ static size_t M_WordWrap(
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
         const M_GLYPH_INFO *const glyph = glyphs[i];
-        if (glyph->role == GLYPH_INVISIBLE) {
-        } else if (glyph->role == GLYPH_NEW_LINE) {
+        if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
             in_bullet = false;
@@ -199,6 +197,10 @@ static size_t M_WordWrap(
                     cur_width += w;
                 }
             }
+        } else if (
+            glyph->role == GLYPH_REVIEW_MARKER
+            && !g_Config.debug.enable_review_markers) {
+            continue;
         } else {
             // Gather next word glyphs
             size_t word_len = 0;
@@ -353,7 +355,8 @@ void UI_Text_Measure(
         float max_width = 0.0f;
         const M_GLYPH_INFO **glyph_ptr = glyphs;
         while (*glyph_ptr != nullptr) {
-            if ((*glyph_ptr)->role == GLYPH_INVISIBLE) {
+            if ((*glyph_ptr)->role == GLYPH_REVIEW_MARKER
+                && !g_Config.debug.enable_review_markers) {
             } else if ((*glyph_ptr)->role == GLYPH_SPACE) {
                 width += M_WORD_SPACING;
             } else if (
@@ -416,7 +419,8 @@ void UI_Text_Draw(
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
         const M_GLYPH_INFO *glyph = *glyph_ptr;
-        if (glyph->role == GLYPH_INVISIBLE) {
+        if (glyph->role == GLYPH_REVIEW_MARKER
+            && !g_Config.debug.enable_review_markers) {
             goto loop_end;
         }
 
