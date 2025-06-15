@@ -9,6 +9,7 @@
 #endif
 
 #include <libavcodec/version.h>
+#include <libavutil/log.h>
 #include <stdio.h>
 
 static bool m_IsExiting = false;
@@ -58,6 +59,8 @@ static void M_SetupLibAV(void)
 #if LIBAVCODEC_VERSION_MAJOR <= 57
     av_register_all();
 #endif
+
+    av_log_set_level(AV_LOG_ERROR);
 }
 
 static void M_SetupSDL(void)
