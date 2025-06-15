@@ -968,6 +968,7 @@
         "OSD_UNKNOWN_COMMAND": "Unknown command: %s",
         "OSD_WIREFRAME_MODE_OFF": "Wireframe mode: off",
         "OSD_WIREFRAME_MODE_ON": "Wireframe mode: on",
+        "OVERLAY_DEBUG_ANIMATION": "Animation: ",
         "OVERLAY_DEBUG_POSITION": "Position: ",
         "OVERLAY_DEBUG_ROTATION": "Rotation: ",
         "OVERLAY_DEBUG_SPEED": "Speed: ",
