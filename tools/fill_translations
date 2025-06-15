@@ -181,7 +181,7 @@ def process_file(path: Path, args: argparse.Namespace) -> None:
         resolver = BlankResolver(base_data, trans_data)
 
     merged = resolver.fill()
-    new_text = json.dumps(merged, ensure_ascii=False, indent=2) + "\n"
+    new_text = json.dumps(merged, ensure_ascii=False, indent=4) + "\n"
     if args.dry_run:
         old_text = path.read_text(encoding="utf-8") if path.exists() else ""
         diff = difflib.unified_diff(

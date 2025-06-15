@@ -54,7 +54,7 @@ def load_json5(path: Path):
 def write_json(path: Path, data) -> None:
     """Serialize `data` as pretty-printed JSON to `path`, with UTF-8 encoding."""
     path.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        json.dumps(data, ensure_ascii=False, indent=4) + "\n", encoding="utf-8"
     )
 
 
