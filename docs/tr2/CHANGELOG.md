@@ -4,6 +4,7 @@
     - added Italian translation
 - added UI for all config tool settings
 - added ingame help for all settings
+- added the ability to use `.avi`, `.mkv`, `.mp4`, `.mpeg`, and `.webm` files for FMVs, as well as the default `.rpl` (#3190)
 - added support for object name aliases; added aliases for dev commands
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
 - added an option to disable Lara's braid (#3089)
