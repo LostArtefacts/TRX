@@ -752,7 +752,6 @@
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fa in modo che il fucile a pompa non spari più quando un bersaglio agganciato esce dal campo visivo di Lara, in modo simile alle altre armi.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+.",
         "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Scegli di renderizzare tramite framebuffer o direttamente nella finestra.",
-        "GRAPHIC_SETTINGS_USE_PSX_FOV": "Usa il campo visivo PSX",
         "KEYMAP_BILINEAR": "Attiva/Disattiva Filtro Texture",
         "KEYMAP_CHANGE_TARGET": "Cambia Bersaglio",
         "KEYMAP_EQUIP_MAGNUMS": "Equipaggia Magnum",

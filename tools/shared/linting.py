@@ -132,6 +132,13 @@ def lint_untranslated_game_strings(
             continue
         if not clean(trans_ptr.get(ptr)):
             yield LintWarning(path, f"untranslated key '{ptr}'")
+    # Warn about extra translation keys not present in the base file (unused by the game)
+    base_set = set(base_paths)
+    for ptr in trans_ptr:
+        if should_skip_object_name(ptr, trans_data):
+            continue
+        if ptr not in base_set:
+            yield LintWarning(path, f"extra translation key '{ptr}'")
 
 
 def get_relevant_project(context: LintContext, path: Path) -> str:
