@@ -479,7 +479,9 @@ void UI_Settings_InitWithTabs(
     s->max_group_items = 0;
     UI_TAB_SWITCH_TAB tab_switch_tabs[tab_count];
     for (int32_t i = 0; i < tab_count; i++) {
-        tab_switch_tabs[i].header_gs = tabs[i].header_gs;
+        tab_switch_tabs[i].header.one_off = nullptr;
+        tab_switch_tabs[i].header.live_ptr =
+            GameString_GetPtr(tabs[i].header_gs);
         int32_t tab_items = 0;
         for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
             tab_items++;

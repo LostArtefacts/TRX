@@ -320,9 +320,9 @@ bool Input_AssignToJSONObject(
     return M_GetBackend(backend)->assign_to_json_object(layout, role, bind_obj);
 }
 
-const char *Input_GetLayoutName(const INPUT_LAYOUT layout)
+const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout)
 {
-    return GameString_Get(m_LayoutMap[layout]);
+    return GameString_GetPtr(m_LayoutMap[layout]);
 }
 
 INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
