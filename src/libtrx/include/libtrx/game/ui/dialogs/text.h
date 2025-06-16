@@ -5,19 +5,21 @@
 
 // A widget to cycle through several pages of a text content.
 
-typedef struct {
-    char *title;
-    size_t max_lines;
-    int32_t current_page;
-    VECTOR *page_content;
-    bool is_empty;
-    bool is_heavy;
-} UI_TEXT_DIALOG_STATE;
+typedef struct UI_TEXT_DIALOG_STATE UI_TEXT_DIALOG_STATE;
 
-void UI_TextDialog_Init(
-    UI_TEXT_DIALOG_STATE *state, const char *title, const char *text,
-    size_t width, size_t max_lines, bool is_heavy);
+// state functions
+UI_TEXT_DIALOG_STATE *UI_TextDialog_Init(
+    size_t wrap_width, size_t wrap_max_lines, bool is_heavy);
+
+// Handle page-left/right input.  Call before UI_TextDialog().
 void UI_TextDialog_Control(UI_TEXT_DIALOG_STATE *state);
+
+// Free any allocated buffers.  Call when dialog is dismissed.
 void UI_TextDialog_Free(UI_TEXT_DIALOG_STATE *state);
 
-void UI_TextDialog(UI_TEXT_DIALOG_STATE *state);
+// draw functions
+
+// Draw and manage a text dialog in one call.  Rewraps/recapitalizes only
+// when title_raw/text_raw differ (compared via strcmp).  Call every frame.
+void UI_TextDialog(
+    UI_TEXT_DIALOG_STATE *state, const char *title_raw, const char *text_raw);

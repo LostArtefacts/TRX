@@ -504,7 +504,8 @@ void UI_Settings_Free(UI_SETTINGS_STATE *const s)
         s->tab_switch = nullptr;
     }
     if (s->description.show) {
-        UI_TextDialog_Free(&s->description.state);
+        UI_TextDialog_Free(s->description.state);
+        s->description.state = nullptr;
         s->description.show = false;
     }
 }
@@ -514,9 +515,10 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
     UI_Scrollable_SetVisibleItems(
         &s->scroll, MIN(s->max_group_items, M_GetVisibleRows()));
     if (s->description.show) {
-        UI_TextDialog_Control(&s->description.state);
+        UI_TextDialog_Control(s->description.state);
         if (g_InputDB.menu_back || g_InputDB.look) {
-            UI_TextDialog_Free(&s->description.state);
+            UI_TextDialog_Free(s->description.state);
+            s->description.state = nullptr;
             s->description.show = false;
             return false;
         }
@@ -540,23 +542,11 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
     } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
         if (g_InputDB.look && M_CanExamine(s, sel_row)) {
-            const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
-            const char *title = GameString_Get(option->label_id);
-            const char *text = GameString_Get(option->description_id);
-            if (title != nullptr && text != nullptr) {
-                if (Config_IsOptionEnforced(option->target)) {
-                    title = String_FormatStatic("%s*", title);
-                    text = String_FormatStatic(
-                        "* %s\n\n%s",
-                        GS(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER), text);
-                }
-                UI_TextDialog_Init(
-                    &s->description.state, title, text,
-                    MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
-                        s->max_label_w + s->max_value_w + 10),
-                    (size_t)M_GetVisibleRows(), true);
-                s->description.show = true;
-            }
+            s->description.show = true;
+            s->description.state = UI_TextDialog_Init(
+                MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
+                    s->max_label_w + s->max_value_w + 10),
+                (size_t)M_GetVisibleRows(), true);
             return false;
         }
         if (g_InputDB.menu_up) {
@@ -746,6 +736,18 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
     UI_EndModal();
 
     if (s->description.show) {
-        UI_TextDialog(&s->description.state);
+        const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
+        const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
+        const char *title = GameString_Get(option->label_id);
+        const char *text = GameString_Get(option->description_id);
+        if (title != nullptr && text != nullptr) {
+            if (Config_IsOptionEnforced(option->target)) {
+                title = String_FormatStatic("%s*", title);
+                text = String_FormatStatic(
+                    "* %s\n\n%s",
+                    *GS_PTR(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER), text);
+            }
+            UI_TextDialog(s->description.state, title, text);
+        }
     }
 }
