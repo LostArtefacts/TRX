@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/game/objects/types.h>
+#include "../objects/types.h"
 
 bool Option_Examine_CanExamine(GAME_OBJECT_ID obj_id);
 bool Option_Examine_IsActive(void);

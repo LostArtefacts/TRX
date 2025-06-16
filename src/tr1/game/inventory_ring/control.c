@@ -10,7 +10,6 @@
 #include "game/lara/common.h"
 #include "game/option.h"
 #include "game/option/option_compass.h"
-#include "game/option/option_examine.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -26,6 +25,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/option/examine.h>
 #include <libtrx/memory.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \
