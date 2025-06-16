@@ -115,7 +115,7 @@ static bool M_Play(const char *const file_path)
         Shell_ProcessEvents();
 
         Input_Update();
-
+        Shell_ProcessInput();
         if (g_InputDB.menu_confirm || g_InputDB.menu_back
             || Shell_IsExiting()) {
             Video_Stop(video);
