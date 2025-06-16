@@ -475,11 +475,6 @@ void UI_Text_Measure(
         text, out_w, out_h, settings, 0.0f, 0.0f, M_ScaleNeutral, nullptr);
 }
 
-int32_t UI_Text_GetMaxLineLength(void)
-{
-    return 640 / (UI_TEXT_HEIGHT * 0.6);
-}
-
 void UI_Text_Draw(
     const char *const text, const float base_x, const float base_y,
     const UI_TEXT_SETTINGS settings)
