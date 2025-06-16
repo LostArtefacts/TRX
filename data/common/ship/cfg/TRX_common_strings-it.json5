@@ -37,6 +37,7 @@
         "CONSOLE_HELP_SET": "Visualizza o aggiorna l'impostazione di configurazione specificata.",
         "CONSOLE_HELP_SFX": "Riproduce un effetto sonoro con l'ID specificato.",
         "CONSOLE_HELP_SPEED": "Modifica la velocità di gioco.",
+        "CONSOLE_HELP_STRINGS": "Ricarica i file di lingua correnti dal disco.",
         "CONSOLE_HELP_TITLE": "Ritorna al menu principale.",
         "CONSOLE_HELP_TP": "Teletrasporta Lara in una posizione o in un numero di stanza specifici.",
         "CONSOLE_HELP_WIREFRAME": "Attiva/disattiva la renderizzazione in modalità reticolo.",
@@ -95,6 +96,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_FMV": "FMV",
         "GAMEPLAY_SETTINGS_ENABLE_FMV_DESCRIPTION": "Abilita la riproduzione dei filmati.",
         "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES": "Selezione modalità di gioco",
+        "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION": "Consente di selezionare delle modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di bengala contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",
         "GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK": "Visuale invertita",
         "GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK_DESCRIPTION": "Inverte i controlli dell'asse Y quando Lara si guarda intorno.",
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING": "Esame degli oggetti",
@@ -391,6 +393,7 @@
         "KEYMAP_USE_SMALL_MEDI": "Kit Medico Piccolo",
         "KEYMAP_WALK": "Cammina",
         "MISC_DEMO_MODE": "Modalità Demo",
+        "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO -",
         "MISC_EXIT": "Esci",
         "MISC_HOLD_FMT": "Premere %s",
         "MISC_OFF": "Spento",
@@ -465,11 +468,14 @@
         "OSD_SOUND_PLAYING_SAMPLE": "Riproduzione del suono %d",
         "OSD_SPEED_GET": "Velocità attuale: %d",
         "OSD_SPEED_SET": "Velocità impostata su %d",
+        "OSD_STRINGS_FAILED": "Impossibile ricaricare i file di lingua",
+        "OSD_STRINGS_RELOADED": "File di lingua ricaricati"
         "OSD_TRAPEZOID_FILTER_OFF": "Filtro trapezoidale disabilitato",
         "OSD_TRAPEZOID_FILTER_ON": "Filtro trapezoidale abilitato",
         "OSD_UI_OFF": "Interfaccia utente disabilitata",
         "OSD_UI_ON": "Interfaccia utente abilitata",
         "OSD_UNKNOWN_COMMAND": "Comando sconosciuto: %s",
+        "OVERLAY_DEBUG_ANIMATION": "Animazione: ",
         "OVERLAY_DEBUG_POSITION": "Posizione: ",
         "OVERLAY_DEBUG_ROTATION": "Rotazione: ",
         "OVERLAY_DEBUG_SPEED": "Velocità: ",
@@ -541,12 +547,6 @@
         "STATS_BASIC_FMT": "%d",
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
         "STATS_DETAIL_FMT": "%d di %d",
-        "STATS_FINAL_STATISTICS": "Statistiche Finali",
-        "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION": "Consente di selezionare delle modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di bengala contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",
-        "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO -",
-        "OVERLAY_DEBUG_ANIMATION": "Animazione: ",
-        "CONSOLE_HELP_STRINGS": "\\{review}Ricarica i file di lingua correnti dal disco.",
-        "OSD_STRINGS_FAILED": "\\{review}Impossibile ricaricare i file di lingua",
-        "OSD_STRINGS_RELOADED": "\\{review}File di lingua ricaricati"
+        "STATS_FINAL_STATISTICS": "Statistiche Finali"
     }
 }
