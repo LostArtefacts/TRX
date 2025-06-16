@@ -59,18 +59,22 @@ static void M_FormatTime(char *const out, const int32_t total_frames)
 static void M_FormatSecrets(
     char *const out, const LEVEL_STATS *const level_stats)
 {
+    // TODO: implement optional support for TR1-style secrets in TR2, see #2047
     char *ptr = out;
     int32_t num_secrets = 0;
     for (int32_t i = 1; i >= 0; i--) {
         for (int32_t j = 0; j < 3; j++) {
-            const int32_t flag = 1 << (j + i * 3);
-            if ((level_stats->secret_flags & flag) != 0) {
-                sprintf(ptr, "\\{secret %d}", j + 1);
+            const int32_t num = j + i * 3;
+            if (num >= level_stats->max_secret_count) {
+                // Do not reserve space for secrets that don't exist
+                continue;
+            }
+            if (Stats_HasSecret(num)) {
+                ptr += sprintf(ptr, "\\{secret %d}", j + 1);
                 num_secrets++;
             } else {
-                sprintf(ptr, "\\{i}\\{secret %d}\\{/i}", j + 1);
+                ptr += sprintf(ptr, "\\{i}\\{secret %d}\\{/i}", j + 1);
             }
-            ptr += strlen(ptr);
         }
     }
 
@@ -96,7 +100,7 @@ static void M_Row(
 {
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
-        .spacing = { .h = TR_VERSION == 1 ? 30.0f : 90.0f },
+        .spacing = { .h = 25.0f },
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
     });
     UI_Label(key);
