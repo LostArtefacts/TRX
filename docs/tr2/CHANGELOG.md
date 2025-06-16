@@ -61,6 +61,7 @@
 - fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 0.2)
 - fixed logging not outputting anything on Windows terminals
 - improved word wrapping algorithm in the dev console
+- improved the dev console commands documentation
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23
 - added a /help command (#2917)
