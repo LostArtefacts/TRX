@@ -73,7 +73,7 @@ typedef struct {
 
     struct {
         bool show;
-        UI_TEXT_DIALOG_STATE state;
+        UI_TEXT_DIALOG_STATE *state;
     } description;
 
     int32_t listener_id;
