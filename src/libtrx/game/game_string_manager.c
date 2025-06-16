@@ -2,6 +2,7 @@
 
 #include "debug.h"
 #include "filesystem.h"
+#include "game/game_flow/common.h"
 #include "game/game_string_table.h"
 #include "json.h"
 #include "memory.h"
@@ -301,7 +302,7 @@ bool GameStringManager_ReloadLanguage(const char *const lang)
                 success = false;
             }
         }
-        GameStringTable_Apply(nullptr);
+        GameStringTable_Apply(GF_GetCurrentLevel());
     }
     return success;
 }
