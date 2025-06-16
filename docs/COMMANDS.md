@@ -8,19 +8,19 @@ Currently supported commands:
 
 - `/help`  
   `/help {command}`  
-  Shows a list of the available commands or a detailed help for the chosen one. Even Lara needs a lifeline!
+  Shows a list of the available commands or a detailed help message for the chosen one. Even Lara needs a lifeline!
 
 - `/pos`  
-  Retrieves precise information about Lara's coordinates. Knowledge is power!
+  Reveals Lara's exact coordinates in the universe. Knowledge is power!
 
 - `/tp {room_number}`  
   `/tp {x} {y} {z}`  
   `/tp {object}`  
-  Instant travel! Teleports Lara into a random spot within the specified room, the specified X,Y,Z coordinates, or at the nearest object of specific type.
+  Instant travel! Teleports Lara to a random spot within the specified room, the specified X,Y,Z coordinates, or the nearest object of specific type.
 
 - `/hp`  
   `/hp {health}`  
-  Sets Lara's health points to the specified value. Tougher trials await!
+  Displays or sets Lara's health. Tougher trials await!
 
 - `/heal`  
   Tough day, Lara? Heals our girl back to full health.
@@ -28,13 +28,13 @@ Currently supported commands:
 - `/flip`  
   `/flip off`  
   `/flip on`  
-  Switches the global flipmap on or off, turning the reality around you on its head.
+  Switches the global flipmap on or off. Turn the reality around you on its head.
 
 - `/flood`  
   `/drain`  
   `/flood {room_num}`  
   `/drain {room_num}`  
-  Floods or drains the chosen room at will. For when drowning is preferable to puzzles!
+  Floods or drains rooms at will. Act like you're Poseidon with a plumbing license, for when drowning is preferable to puzzles!
 
 - `/give {item_name}`  
   `/give {num} {item_name}`  
@@ -46,18 +46,18 @@ Currently supported commands:
 - `/kill`  
   `/kill all`  
   `/kill {enemy_type}`  
-  Tired of bats, crocs, rats, lions, Frenchmen and literally every living thing trying to spoil your adventure? This command instantly disposes of the nearest enemy, or kills them all at once.
+  Tired of all of those pesky creatures and goons trying to spoil your adventure? Instantly dispose of the nearest one, or kill them all at once.
 
 - `/fly`  
-  Turns on the fly cheat. Why even walk?
+  Turns on the fly cheat. Why even walk? Levitate like a legend.
 
 - `/cheats on`  
   `/cheats off`  
-  Enables or disables cheat keys. It's not like disabling them will make this console any less of a cheat.
+  Enables or disables the cheater's toolkit. But let's face it — you're reading _this_, so that ship has sailed.
 
 - `/braid on`  
   `/braid off`  
-  Grants the power to switch Lara's iconic braid on and off.
+  Toggle Lara's braid like it's a fashion accessory. Hair today, gone tomorrow.
 
 - `/wireframe on`  
   `/wireframe off`  
@@ -65,67 +65,72 @@ Currently supported commands:
 
 - `/debug on`  
   `/debug off`  
-  Enables or disables the debug mode. Draws all room triggers, portals, and object mesh spheres.
+  Toggles debug mode, turning your screen into a glorious display of dev scribbles.
+  - (TR1) floor triggers - enemy skips incoming!
+  - (TR1) room portals - wait, there are _how_ many rooms?!
+  - (TR1) object mesh spheres - see hitboxes in their natural habitat.
+  - Lara's position and animation details - nerdy stats, you've gotta love them.
 
 - `/endlevel`  
   `/nextlevel`  
-  Ends the current level. Ideal for speedruns.
+  Too cool to finish puzzles? Smash-cut to the ending! Lara doesn't have time for this nonsense.
 
 - `/level {num}`  
   `/level {name}`  
   `/play {num}`  
   `/play {name}`  
-  Plays the specified level. `/play 0` plays the gym level if it's available – regular levels always start with number 1.
+  Launches any level you like. Start with `/play 0` to warm up in the gym — or skip straight to the danger zone with `/play 1` onwards.
 
 - `/cut {num}`  
   `/cutscene {num}`  
-  Plays the specified cutscene, starting at 1.
+  Plays a dramatic cinematic. Follow the lore!
 
 - `/gym`  
   `/home`  
-  Plays Lara's Home, if available. Alias of `/play 0`.
+  Sends Lara to her humble abode. Even tomb raiders can't skip leg day.
 
 - `/save {slot_num}`  
-  Saves the game to the specified savegame slot.
+  Save your progress to the given slot. Perfect for future regrettable decisions.
 
 - `/load {slot_num}`  
-  Loads the specified savegame slot.
+  Time-travel to a previous save. Don't make that regrettable decision again!
 
 - `/demo`  
   `/demo {num}`  
-  Starts the specified demo, starting at 1. If no number is chosen, the demos will cycle.
+  Starts a demo. No number? They'll just cycle.
 
 - `/title`  
-  Exits the game to main screen.
+  Had enough? Let's return to the main menu.
 
 - `/exit`  
-  Closes the game.
+  Closes the game. Ends the adventure. We're done here.
 
 - `/speed`  
   `/speed {num}`  
-  Retrieves or sets current game speed.
+  Displays or sets the speed of the game. Because sometimes you want to moonwalk through mayhem.
 
 - `/vsync on`  
   `/vsync off`  
-  Enables or disables VSync.
+  Turns vertical sync on or off (TR1 only). For the smooth freaks among us.
 
 - `/fps`  
   `/fps {num}`  
-  Retrieves or sets current frames per second.
+  Displays or sets the game's frames per second. Higher FPS = smoother Lara.
 
 - `/set {option}`  
   `/set {option} {value}`  
   `/set {option} -`  
-  Retrieves or assigns a new value to the given configuration option. Some
-  options need a game re-launch to apply. The option names use `-` rather than
-  `_`. Use `-` as `{value}` to restore the option to its default state.
+  Retrieve or change specific configuration options, like a tech-savvy wizard.
+  - use `-` as `{value}` to restore the option to default.
+  - some options need a game or level re-launch to apply.
+  - option names use `-`, not `_`, because reasons.
 
 - `/music {track_id}`  
-  Plays a given music track. It uses internal game IDs that for historic reasons don't align with the music folder's file names.
+  Plays a music track by its ID. Perfect for setting the mood at will.
 
 - `/sfx`  
   `/sfx {sound}`  
-  Plays a given sound sample.
+  Plays a sound effect on demand. Because sometimes you just need Lara to grunt on cue.
 
 - `/strings`  
-  Reloads the current language. Useful when editing translation files.
+  Reloads the current language files on the fly. Très utile for translators.
