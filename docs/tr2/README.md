@@ -324,6 +324,7 @@ However, you can easily download them manually from these urls:
 - added the ability for custom levels to have up to two of each secret type per level
 - added an option to toggle between TR1 and TR2 camera modes
 - added an option to disable Lara's braid
+- added the ability to use `.avi`, `.mkv`, `.mp4`, `.mpeg`, and `.webm` files for FMVs
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode

@@ -18,6 +18,9 @@
 
 static bool m_Muted = false;
 static bool m_IsFMVPlaying = false;
+static const char *m_Extensions[] = {
+    ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
+};
 
 static void *M_AllocateSurface(int32_t width, int32_t height, void *user_data);
 static void M_DeallocateSurface(void *surface, void *user_data);
@@ -154,7 +157,9 @@ bool FMV_Play(const char *const file_name)
         return false;
     }
 
-    const bool result = M_Play(file_name);
+    char *final_path = File_GuessExtension(file_name, m_Extensions);
+    const bool result = M_Play(final_path);
+    Memory_FreePointer(&final_path);
     if (!Shell_IsExiting()) {
         Render_Reset(RENDER_RESET_ALL);
     }
