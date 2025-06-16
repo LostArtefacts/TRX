@@ -27,6 +27,7 @@ typedef enum {
     GLYPH_COMPOUND,
     GLYPH_SECRET,
     GLYPH_REVIEW_MARKER,
+    GLYPH_VISIBILITY_MARKER,
 } M_GLYPH_ROLE;
 
 typedef struct {
@@ -417,11 +418,17 @@ void UI_Text_Draw(
 
     const float start_x = x;
 
+    bool visible = true;
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
         const M_GLYPH_INFO *glyph = *glyph_ptr;
         if (glyph->role == GLYPH_REVIEW_MARKER
             && !g_Config.debug.enable_review_markers) {
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_VISIBILITY_MARKER) {
+            visible = glyph->mesh_idx;
             goto loop_end;
         }
 
@@ -449,9 +456,11 @@ void UI_Text_Draw(
             const float input_scale = MIN(input_scale_h, input_scale_v);
             const float output_scale =
                 M_Scale(UI_TEXT_BASE_SCALE * glyph->width * input_scale);
-            Output_DrawScreenSprite(
-                x + M_Scale(10), y, z, output_scale, output_scale, sprite_idx,
-                SHADE_NEUTRAL);
+            if (visible) {
+                Output_DrawScreenSprite(
+                    x + M_Scale(10), y, z, output_scale, output_scale,
+                    sprite_idx, SHADE_NEUTRAL);
+            }
             x += glyph->width * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
         }
@@ -467,15 +476,20 @@ void UI_Text_Draw(
                 goto loop_end;
             }
 
-            Output_DrawScreenSprite(
-                cx, cy, 0, scale, scale,
-                obj->mesh_idx + glyph->combine_with.mesh_idx, SHADE_NEUTRAL);
+            if (visible) {
+                Output_DrawScreenSprite(
+                    cx, cy, 0, scale, scale,
+                    obj->mesh_idx + glyph->combine_with.mesh_idx,
+                    SHADE_NEUTRAL);
+            }
         }
 
         if (glyph->mesh_idx >= 0 && glyph->mesh_idx < ABS(obj->mesh_count)) {
-            Output_DrawScreenSprite(
-                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
-                SHADE_NEUTRAL);
+            if (visible) {
+                Output_DrawScreenSprite(
+                    x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
+                    SHADE_NEUTRAL);
+            }
         }
 
         if (glyph->role != GLYPH_COMBINING) {

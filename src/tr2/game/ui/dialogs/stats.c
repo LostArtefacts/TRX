@@ -68,7 +68,7 @@ static void M_FormatSecrets(
                 sprintf(ptr, "\\{secret %d}", j + 1);
                 num_secrets++;
             } else {
-                strcpy(ptr, "   ");
+                sprintf(ptr, "\\{i}\\{secret %d}\\{/i}", j + 1);
             }
             ptr += strlen(ptr);
         }
@@ -108,7 +108,7 @@ static void M_RowFromRole(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
     const STATS_COMMON *const stats)
 {
-    char buf[64];
+    char buf[256];
 
     switch (role) {
     case M_ROW_TIMER: {
