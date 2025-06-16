@@ -12,6 +12,7 @@
 - added an optional breeze effect for Lara's braid in appropriate outside rooms (#3090)
 - added key icons to the controls settings dialog
 - added an option to adjust music and ambient volume while in inventory
+- added a `/secret` console command for easier debugging of secrets
 - added `enable_debug_pos` setting that shows Lara's position in realtime (reachable via `/debug`, fine-tuned `/set`)
 - added an option to control whether or not Lara responds to hitting a wall while wading (#3138)
 - added an option for smooth wall deflection when Lara comes to a stop at a wall, similar to TR2 (#3148)

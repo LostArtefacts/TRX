@@ -548,6 +548,12 @@
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
         "STATS_DETAIL_FMT": "%d di %d",
         "STATS_FINAL_STATISTICS": "Statistiche Finali",
-        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Spento"
+        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Spento",
+        "CMD_GIVE_SECRET_GIVEN": "\\{review}Aggiunto segreto %d all'inventario di Lara",
+        "CMD_GIVE_SECRET_LIST": "\\{review}Segreti raccolti: %s",
+        "CMD_GIVE_SECRET_NONE": "\\{review}Nessun segreto raccolto",
+        "CMD_GIVE_SECRET_TAKEN": "\\{review}Rimosso segreto %d dall'inventario di Lara",
+        "CONSOLE_HELP_GIVE_SECRET": "\\{review}Elenca i segreti di Lara, oppure prende/dà un segreto per numero.",
+        "CMD_INVALID_SECRET": "\\{review}Segreto non valido: %d"
     }
 }

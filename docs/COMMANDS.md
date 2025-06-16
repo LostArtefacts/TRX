@@ -43,6 +43,11 @@ Currently supported commands:
   `/give keys`  
   Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching!
 
+- `/secret`  
+  `/secret take {num}`  
+  `/secret give {num}`  
+  Uncovers Lara's secret stash: list discovered secrets, pilfer one with `take`, or gift one back with `give`.
+
 - `/kill`  
   `/kill all`  
   `/kill {enemy_type}`  
