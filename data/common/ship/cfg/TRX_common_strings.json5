@@ -122,7 +122,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL": "Swing cancels",
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
         "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE": "Target change",
-        "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE_DESCRIPTION": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets.",
+        "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE_DESCRIPTION": "Enables TR4+ target changing while aiming weapons. Press the Change Target button while aiming to change targets.",
         "GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY": "Timer counts in inventory",
         "GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY_DESCRIPTION": "Makes the in-game timer work even while the game is showing the inventory.",
         "GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS": "Final statistics screen",
