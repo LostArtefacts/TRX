@@ -7,7 +7,19 @@
 
 #define M_FORMAT "%s | %s [%s:%d:%s] "
 
+#define M_ANSI_COLOR_RED "\x1b[31m"
+#define M_ANSI_COLOR_GREEN "\x1b[32m"
+#define M_ANSI_COLOR_YELLOW "\x1b[33m"
+#define M_ANSI_COLOR_CYAN "\x1b[36m"
+#define M_ANSI_COLOR_RESET "\x1b[0m"
+
 static FILE *m_LogHandle = nullptr;
+static const char *const m_LogLevelColors[] = {
+    [LOG_LEVEL_INFO] = M_ANSI_COLOR_RESET,
+    [LOG_LEVEL_WARNING] = M_ANSI_COLOR_YELLOW,
+    [LOG_LEVEL_ERROR] = M_ANSI_COLOR_RED,
+    [LOG_LEVEL_DEBUG] = M_ANSI_COLOR_CYAN,
+};
 static const char *const m_LogLevelStrings[] = {
     [LOG_LEVEL_INFO] = "INF",
     [LOG_LEVEL_WARNING] = "WRN",
@@ -40,7 +52,8 @@ void Log_Message(
         timestamp_str + timestamp_len, sizeof(timestamp_str) - timestamp_len,
         ".%03d", (int)(tv.tv_usec / 1000));
 
-    const char *log_str = m_LogLevelStrings[level];
+    const char *const log_str = m_LogLevelStrings[level];
+    const char *const log_color = m_LogLevelColors[level];
 
     // print to log file
     if (m_LogHandle != nullptr) {
@@ -57,9 +70,10 @@ void Log_Message(
     }
 
     // print to stdout
+    printf("%s", log_color);
     printf(M_FORMAT, log_str, timestamp_str, file, line, func);
     vprintf(fmt, va);
-    printf("\n");
+    printf("%s", M_ANSI_COLOR_RESET "\n");
     fflush(stdout);
 
     va_end(va);
