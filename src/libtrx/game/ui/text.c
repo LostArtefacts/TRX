@@ -471,19 +471,19 @@ void UI_Text_Draw(
                 obj->mesh_idx + glyph->combine_with.mesh_idx, SHADE_NEUTRAL);
         }
 
-        if (glyph->mesh_idx >= ABS(obj->mesh_count)) {
+        if (glyph->mesh_idx < 0 || glyph->mesh_idx >= ABS(obj->mesh_count)) {
             goto loop_end;
         }
         Output_DrawScreenSprite(
             x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
             SHADE_NEUTRAL);
 
+    loop_end:
         if (glyph->role != GLYPH_COMBINING) {
             const float spacing = glyph->width + M_LETTER_SPACING;
             x += spacing * scale / UI_TEXT_BASE_SCALE;
         }
 
-    loop_end:
         glyph_ptr++;
     }
 }
