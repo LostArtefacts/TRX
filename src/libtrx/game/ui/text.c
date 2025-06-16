@@ -71,7 +71,8 @@ static char *m_GlyphLookupKey = nullptr;
 static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
-static int32_t M_Scale(const int32_t value);
+static int32_t M_ScaleScreen(const int32_t value);
+static int32_t M_ScaleNeutral(const int32_t value);
 static const M_GLYPH_INFO **M_Decompose(
     const char *content, size_t *out_glyph_count);
 static const M_GLYPH_INFO **M_DecomposeWithCache(
@@ -79,10 +80,20 @@ static const M_GLYPH_INFO **M_DecomposeWithCache(
 static size_t M_WordWrap(
     const M_GLYPH_INFO **glyphs, size_t glyph_count, float scale_f,
     float max_width, char *dst);
+void M_Process(
+    const char *text, float *out_w, float *out_h, UI_TEXT_SETTINGS settings,
+    float base_x, float base_y, int32_t (*scale_func)(int32_t),
+    void (*draw_func)(
+        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int16_t));
 
-static int32_t M_Scale(const int32_t value)
+static int32_t M_ScaleScreen(const int32_t value)
 {
     return Scaler_Calc(value, SCALER_TARGET_TEXT);
+}
+
+static int32_t M_ScaleNeutral(const int32_t value)
+{
+    return value * g_Config.ui.text_scale;
 }
 
 static const M_GLYPH_INFO **M_Decompose(
@@ -291,6 +302,127 @@ static size_t M_WordWrap(
     return out_len;
 }
 
+void M_Process(
+    const char *const text, float *const out_w, float *const out_h,
+    const UI_TEXT_SETTINGS settings, const float base_x, const float base_y,
+    int32_t (*const scale_func)(int32_t),
+    void (*const draw_func)(
+        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int16_t))
+{
+    if (text == nullptr) {
+        return;
+    }
+
+    const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, nullptr);
+    ASSERT(glyphs != nullptr);
+
+    const OBJECT *const obj = Object_Get(O_ALPHABET);
+    const int32_t scale = scale_func(UI_TEXT_BASE_SCALE * settings.scale);
+
+    float x = scale_func(base_x / g_Config.ui.text_scale);
+    float y = scale_func(
+        base_y / g_Config.ui.text_scale + settings.scale * UI_TEXT_HEIGHT);
+    int32_t z = settings.z;
+
+    float max_width = 0.0f;
+    const float start_x = x;
+
+    bool visible = true;
+    const M_GLYPH_INFO **glyph_ptr = glyphs;
+    while (*glyph_ptr != nullptr) {
+        const M_GLYPH_INFO *glyph = *glyph_ptr;
+        if (glyph->role == GLYPH_REVIEW_MARKER
+            && !g_Config.debug.enable_review_markers) {
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_VISIBILITY_MARKER) {
+            visible = glyph->mesh_idx;
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_NEW_LINE || glyph->role == GLYPH_NEW_PAGE) {
+            y += UI_TEXT_HEIGHT * scale / UI_TEXT_BASE_SCALE;
+            x = start_x;
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_SPACE) {
+            if (glyph_ptr[1] == nullptr
+                || (glyph_ptr[1]->role != GLYPH_NEW_LINE
+                    && glyph_ptr[1]->role != GLYPH_NEW_PAGE)) {
+                x += M_WORD_SPACING * scale / UI_TEXT_BASE_SCALE;
+            }
+            goto loop_end;
+        }
+
+#if TR_VERSION == 2
+        if (glyph->role == GLYPH_SECRET) {
+            const int16_t sprite_idx =
+                Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
+            const SPRITE_TEXTURE *const sprite =
+                Output_GetSpriteTexture(sprite_idx);
+            const float input_scale_h =
+                settings.scale / (sprite->x1 - sprite->x0);
+            const float input_scale_v =
+                settings.scale / (sprite->y1 - sprite->y0);
+            const float input_scale = MIN(input_scale_h, input_scale_v);
+            const float output_scale =
+                scale_func(UI_TEXT_BASE_SCALE * glyph->width * input_scale);
+            if (visible && draw_func != nullptr) {
+                draw_func(
+                    x + scale_func(10), y, z, output_scale, output_scale,
+                    sprite_idx, SHADE_NEUTRAL);
+            }
+            x += glyph->width * scale / UI_TEXT_BASE_SCALE;
+            goto loop_end;
+        }
+#endif
+
+        if (glyph->role == GLYPH_COMPOUND && obj->loaded
+            && glyph->combine_with.mesh_idx >= 0
+            && glyph->combine_with.mesh_idx < ABS(obj->mesh_count) && visible
+            && draw_func != nullptr) {
+            const int32_t cx =
+                x + (glyph->combine_with.offset_x * scale / UI_TEXT_BASE_SCALE);
+            const int32_t cy =
+                y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
+            draw_func(
+                cx, cy, 0, scale, scale,
+                obj->mesh_idx + glyph->combine_with.mesh_idx, SHADE_NEUTRAL);
+        }
+
+        if (obj->loaded && glyph->mesh_idx >= 0
+            && glyph->mesh_idx < ABS(obj->mesh_count) && visible
+            && draw_func != nullptr) {
+            draw_func(
+                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
+                SHADE_NEUTRAL);
+        }
+
+        if (glyph->role != GLYPH_COMBINING) {
+            float spacing = glyph->width;
+            if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
+                && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
+                spacing += M_LETTER_SPACING;
+            }
+            x += spacing * scale / UI_TEXT_BASE_SCALE;
+        }
+
+    loop_end:
+        max_width = MAX(max_width, x);
+        glyph_ptr++;
+    }
+
+    if (out_w != nullptr) {
+        *out_w = max_width;
+    }
+
+    if (out_h != nullptr) {
+        *out_h = y;
+    }
+}
+
 void UI_InitText(void)
 {
     // Convert the linear array coming from the .def macros to a hash lookup
@@ -339,53 +471,8 @@ void UI_Text_Measure(
     const char *const text, float *const out_w, float *const out_h,
     const UI_TEXT_SETTINGS settings)
 {
-    if (text == nullptr) {
-        if (out_w != nullptr) {
-            *out_w = 0.0f;
-        }
-        if (out_h != nullptr) {
-            *out_h = 0.0f;
-        }
-        return;
-    }
-
-    const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, nullptr);
-    ASSERT(glyphs != nullptr);
-
-    if (out_w != nullptr) {
-        float width = 0.0f;
-        float max_width = 0.0f;
-        const M_GLYPH_INFO **glyph_ptr = glyphs;
-        while (*glyph_ptr != nullptr) {
-            if ((*glyph_ptr)->role == GLYPH_REVIEW_MARKER
-                && !g_Config.debug.enable_review_markers) {
-            } else if ((*glyph_ptr)->role == GLYPH_SPACE) {
-                width += M_WORD_SPACING;
-            } else if (
-                (*glyph_ptr)->role == GLYPH_NEW_LINE
-                || (*glyph_ptr)->role == GLYPH_NEW_PAGE) {
-                max_width = MAX(max_width, width);
-                width = 0;
-            } else {
-                width += (*glyph_ptr)->width + M_LETTER_SPACING;
-            }
-            glyph_ptr++;
-        }
-
-        width = MAX(max_width, width);
-        width -= M_LETTER_SPACING;
-        *out_w = width * settings.scale * g_Config.ui.text_scale;
-    }
-
-    if (out_h != nullptr) {
-        int32_t height = UI_TEXT_HEIGHT;
-        for (const char *ptr = text; *ptr != '\0'; ptr++) {
-            if (*ptr == '\n') {
-                height += UI_TEXT_HEIGHT;
-            }
-        }
-        *out_h = height * settings.scale * g_Config.ui.text_scale;
-    }
+    M_Process(
+        text, out_w, out_h, settings, 0.0f, 0.0f, M_ScaleNeutral, nullptr);
 }
 
 int32_t UI_Text_GetMaxLineLength(void)
@@ -397,109 +484,10 @@ void UI_Text_Draw(
     const char *const text, const float base_x, const float base_y,
     const UI_TEXT_SETTINGS settings)
 {
-    if (text == nullptr) {
-        return;
-    }
-
-    const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, nullptr);
-    ASSERT(glyphs != nullptr);
-
-    const OBJECT *const obj = Object_Get(O_ALPHABET);
-    if (!obj->loaded) {
-        return;
-    }
-
-    const int32_t scale = M_Scale(UI_TEXT_BASE_SCALE * settings.scale);
-
-    float x = M_Scale(base_x / g_Config.ui.text_scale);
-    float y = M_Scale(
-        base_y / g_Config.ui.text_scale + settings.scale * UI_TEXT_HEIGHT - 1);
-    int32_t z = settings.z;
-
-    const float start_x = x;
-
-    bool visible = true;
-    const M_GLYPH_INFO **glyph_ptr = glyphs;
-    while (*glyph_ptr != nullptr) {
-        const M_GLYPH_INFO *glyph = *glyph_ptr;
-        if (glyph->role == GLYPH_REVIEW_MARKER
-            && !g_Config.debug.enable_review_markers) {
-            goto loop_end;
-        }
-
-        if (glyph->role == GLYPH_VISIBILITY_MARKER) {
-            visible = glyph->mesh_idx;
-            goto loop_end;
-        }
-
-        if (glyph->role == GLYPH_NEW_LINE || glyph->role == GLYPH_NEW_PAGE) {
-            y += UI_TEXT_HEIGHT * scale / UI_TEXT_BASE_SCALE;
-            x = start_x;
-            goto loop_end;
-        }
-
-        if (glyph->role == GLYPH_SPACE) {
-            x += M_WORD_SPACING * scale / UI_TEXT_BASE_SCALE;
-            goto loop_end;
-        }
-
-#if TR_VERSION == 2
-        if (glyph->role == GLYPH_SECRET) {
-            const int16_t sprite_idx =
-                Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
-            const SPRITE_TEXTURE *const sprite =
-                Output_GetSpriteTexture(sprite_idx);
-            const float input_scale_h =
-                settings.scale / (sprite->x1 - sprite->x0);
-            const float input_scale_v =
-                settings.scale / (sprite->y1 - sprite->y0);
-            const float input_scale = MIN(input_scale_h, input_scale_v);
-            const float output_scale =
-                M_Scale(UI_TEXT_BASE_SCALE * glyph->width * input_scale);
-            if (visible) {
-                Output_DrawScreenSprite(
-                    x + M_Scale(10), y, z, output_scale, output_scale,
-                    sprite_idx, SHADE_NEUTRAL);
-            }
-            x += glyph->width * scale / UI_TEXT_BASE_SCALE;
-            goto loop_end;
-        }
-#endif
-
-        if (glyph->role == GLYPH_COMPOUND) {
-            const int32_t cx =
-                x + (glyph->combine_with.offset_x * scale / UI_TEXT_BASE_SCALE);
-            const int32_t cy =
-                y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
-            if (glyph->combine_with.mesh_idx < 0
-                || glyph->combine_with.mesh_idx >= ABS(obj->mesh_count)) {
-                goto loop_end;
-            }
-
-            if (visible) {
-                Output_DrawScreenSprite(
-                    cx, cy, 0, scale, scale,
-                    obj->mesh_idx + glyph->combine_with.mesh_idx,
-                    SHADE_NEUTRAL);
-            }
-        }
-
-        if (glyph->mesh_idx >= 0 && glyph->mesh_idx < ABS(obj->mesh_count)) {
-            if (visible) {
-                Output_DrawScreenSprite(
-                    x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
-                    SHADE_NEUTRAL);
-            }
-        }
-
-        if (glyph->role != GLYPH_COMBINING) {
-            const float spacing = glyph->width + M_LETTER_SPACING;
-            x += spacing * scale / UI_TEXT_BASE_SCALE;
-        }
-
-    loop_end:
-        glyph_ptr++;
-    }
+    M_Process(
+        text, nullptr, nullptr, settings, base_x,
+        base_y - g_Config.ui.text_scale, M_ScaleScreen,
+        Output_DrawScreenSprite);
 }
 
 char *UI_Text_WordWrap(
