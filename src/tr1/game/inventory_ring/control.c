@@ -37,7 +37,6 @@
 #define M_TITLE_RING_OBJECTS 6
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
-static bool m_EnableExamine;
 static int32_t m_StartLevel;
 static GAME_OBJECT_ID m_InvChosen;
 
@@ -77,7 +76,7 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
     InvRing_ShowItemName(inv_item);
 
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
-    m_EnableExamine = false;
+    bool enable_examine = false;
 
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
@@ -127,7 +126,7 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
             InvRing_ShowItemQuantity("%d", qty);
         }
 
-        m_EnableExamine = !Option_Examine_IsActive()
+        enable_examine = !Option_Examine_IsActive()
             && Option_Examine_CanExamine(inv_item->object_id);
         break;
 
@@ -135,14 +134,13 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         break;
     }
 
-    InvRing_ShowExamine(m_EnableExamine);
+    InvRing_ShowExamine(enable_examine);
 }
 
 static void M_RingActive(INV_RING *const ring)
 {
     InvRing_RemoveItemTexts();
-    m_EnableExamine = false;
-    InvRing_ShowExamine(m_EnableExamine);
+    InvRing_ShowExamine(false);
 }
 
 static bool M_AnimateInventoryItem(INVENTORY_ITEM *const inv_item)
@@ -764,11 +762,6 @@ static bool M_CheckDemoTimer(const INV_RING *const ring)
 
     return ring->motion.status == RNG_OPEN
         && ClockTimer_CheckElapsed(&m_DemoTimer, g_GameFlow.demo_delay);
-}
-
-bool InvRing_CanExamine(void)
-{
-    return g_Config.gameplay.enable_item_examining && m_EnableExamine;
 }
 
 void InvRing_RemoveAllText(void)
