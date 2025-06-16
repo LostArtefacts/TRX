@@ -40,8 +40,8 @@ static void M_Draw(
         }
         UI_BeginPad(2.0f, 1.0f);
         UI_Label(
-            tab->header_gs != nullptr ? GameString_Get(tab->header_gs)
-                                      : tab->header_str);
+            tab->header.live_ptr != nullptr ? *tab->header.live_ptr
+                                            : tab->header.one_off);
         UI_EndPad();
         if (i == s->active_tab_idx) {
             UI_EndFrame();

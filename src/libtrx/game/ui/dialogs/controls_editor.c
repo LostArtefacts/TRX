@@ -486,8 +486,8 @@ void UI_ControlsEditor_Init(
     {
         UI_TAB_SWITCH_TAB layout_tabs[INPUT_LAYOUT_NUMBER_OF];
         for (INPUT_LAYOUT i = 0; i < INPUT_LAYOUT_NUMBER_OF; i++) {
-            layout_tabs[i].header_str = Input_GetLayoutName(i);
-            layout_tabs[i].header_gs = nullptr;
+            layout_tabs[i].header.one_off = nullptr;
+            layout_tabs[i].header.live_ptr = Input_GetLayoutNamePtr(i);
         }
         s->layout_tab_switch =
             UI_TabSwitch_Init(INPUT_LAYOUT_NUMBER_OF, layout_tabs);
@@ -500,8 +500,9 @@ void UI_ControlsEditor_Init(
         }
         UI_TAB_SWITCH_TAB controls_tabs[tab_count];
         for (int32_t i = 0; m_Groups[i].roles != nullptr; i++) {
-            controls_tabs[i].header_gs = m_Groups[i].header_gs;
-            controls_tabs[i].header_str = nullptr;
+            controls_tabs[i].header.one_off = nullptr;
+            controls_tabs[i].header.live_ptr =
+                GameString_GetPtr(m_Groups[i].header_gs);
         }
         s->controls_tab_switch = UI_TabSwitch_Init(tab_count, controls_tabs);
     }

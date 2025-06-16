@@ -9,8 +9,10 @@
 
 // Represents a single tab page for use with UI_TabSwitch_Control.
 typedef struct {
-    GAME_STRING_ID header_gs;
-    const char *header_str;
+    struct {
+        const char *one_off;
+        const char *const *live_ptr;
+    } header;
 } UI_TAB_SWITCH_TAB;
 
 typedef struct {
