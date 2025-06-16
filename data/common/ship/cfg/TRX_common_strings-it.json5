@@ -547,6 +547,7 @@
         "STATS_BASIC_FMT": "%d",
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
         "STATS_DETAIL_FMT": "%d di %d",
-        "STATS_FINAL_STATISTICS": "Statistiche Finali"
+        "STATS_FINAL_STATISTICS": "Statistiche Finali",
+        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Spento"
     }
 }

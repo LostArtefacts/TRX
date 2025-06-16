@@ -88,7 +88,7 @@ static const UI_SETTINGS_ENUM_ENTRY m_CameraModeEnumEntries[] = {
 };
 
 static const UI_SETTINGS_ENUM_ENTRY m_TextureFilterEnumEntries[] = {
-    { GFX_TF_NN, GS_ID(MISC_OFF) },
+    { GFX_TF_NN, GS_ID(GRAPHIC_SETTINGS_NEAREST_NEIGHBOR) },
     { GFX_TF_BILINEAR, GS_ID(GRAPHIC_SETTINGS_BILINEAR) },
     { -1, nullptr },
 };

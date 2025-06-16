@@ -311,6 +311,7 @@
         "GRAPHIC_SETTINGS_LIGHTING_CONTRAST_MEDIUM": "Medium",
         "GRAPHIC_SETTINGS_MENU_STYLE": "Menu style",
         "GRAPHIC_SETTINGS_MENU_STYLE_DESCRIPTION": "Changes how menus are displayed.\n\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version.",
+        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Off",
         "GRAPHIC_SETTINGS_REFLECTIONS": "Reflections",
         "GRAPHIC_SETTINGS_REFLECTIONS_DESCRIPTION": "Enables reflections on certain objects.",
         "GRAPHIC_SETTINGS_RENDERING_TAB": "Rendering",
