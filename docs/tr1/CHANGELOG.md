@@ -41,6 +41,7 @@
 - fixed Lara's health bar showing at the start of cutscenes (#3182, regression from 4.11)
 - fixed broken playback of mono music tracks (regression from 2.0)
 - fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 2.0)
+- fixed being unable to toggle fullscreen mode during FMV sequences (#3188, regression from 4.6)
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion
 
 ## [4.11.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.1...tr1-4.11.2) - 2025-05-24
