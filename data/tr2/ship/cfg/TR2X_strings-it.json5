@@ -414,6 +414,9 @@
         "pickup_2": {
             "name": "Oggetto Recuperabile 2"
         },
+        "pda": {
+            "name": "Opzioni di Gioco"
+        },
         "compass": {
             "name": "Statistiche"
         },
@@ -879,16 +882,16 @@
             "name": "Attore intermezzo 10"
         },
         "key_hole_1": {
-            "name": "Buco della serratura 1"
+            "name": "Serratura 1"
         },
         "key_hole_2": {
-            "name": "Buco della serratura 2"
+            "name": "Serratura 2"
         },
         "key_hole_3": {
-            "name": "Buco della serratura 3"
+            "name": "Serratura 3"
         },
         "key_hole_4": {
-            "name": "Buco della serratura 4"
+            "name": "Serratura 4"
         },
         "puzzle_hole_1": {
             "name": "Serratura enigma 1 (Vuoto)"
@@ -1087,10 +1090,7 @@
         },
         "earthquake": {
             "name": "Terremoto"
-        },
-        "pda": {
-            "name": "Opzioni di Gioco"
-        }
+        }        
     },
     "game_strings": {
         "GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION": "Consente di selezionare delle modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di bengala contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",

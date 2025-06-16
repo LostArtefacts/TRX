@@ -401,10 +401,10 @@
             "name": "Skate Kid"
         },
         "cowboy": {
-            "name": "Cowboy"
+            "name": "Il Cowboy"
         },
         "baldy": {
-            "name": "Il calvo"
+            "name": "Il Calvo"
         },
         "natla": {
             "name": "Natla"
@@ -604,16 +604,16 @@
             "name": "Mano di Mida"
         },
         "key_hole_1": {
-            "name": "Buco della serratura 1"
+            "name": "Serratura 1"
         },
         "key_hole_2": {
-            "name": "Buco della serratura 1"
+            "name": "Serratura 2"
         },
         "key_hole_3": {
-            "name": "Buco della serratura 1"
+            "name": "Serratura 3"
         },
         "key_hole_4": {
-            "name": "Buco della serratura 1"
+            "name": "Serratura 4"
         },
         "scion_holder": {
             "name": "Supporto Scion"
