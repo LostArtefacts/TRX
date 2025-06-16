@@ -528,6 +528,7 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
     if (s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS) {
         if (UI_TabSwitch_Control(s->tab_switch)) {
             s->options = s->tabs[s->tab_switch->active_tab_idx].options;
+            UI_Scrollable_SelectFirstItem(&s->scroll);
             M_RecomputeSizes(s);
             return false;
         } else if (g_InputDB.menu_down) {
