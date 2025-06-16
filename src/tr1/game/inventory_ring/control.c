@@ -141,6 +141,8 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
 static void M_RingActive(INV_RING *const ring)
 {
     InvRing_RemoveItemTexts();
+    m_EnableExamine = false;
+    InvRing_ShowExamine(m_EnableExamine);
 }
 
 static bool M_AnimateInventoryItem(INVENTORY_ITEM *const inv_item)

@@ -47,6 +47,7 @@
 - fixed broken playback of mono music tracks (regression from 2.0)
 - fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 2.0)
 - fixed being unable to toggle fullscreen mode during FMV sequences (#3188, regression from 4.6)
+- fixed examine hint text lingering on screen when moving to a different item in the inventory (#3228, regression from 4.8)
 - fixed logging not outputting anything on Windows terminals
 - improved the teleport cheat if used when Lara is in a special animation, such as grabbing the Scion
 - improved the dev console commands documentation
