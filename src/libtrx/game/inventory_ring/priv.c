@@ -508,6 +508,11 @@ void InvRing_ShowExamine(const bool show)
     m_ShowExamine = show;
 }
 
+bool InvRing_CanExamine(void)
+{
+    return g_Config.gameplay.enable_item_examining && m_ShowExamine;
+}
+
 void InvRing_ShowVersionText(void)
 {
     Overlay_ShowVersion(true);
