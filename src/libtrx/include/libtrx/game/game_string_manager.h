@@ -2,6 +2,7 @@
 // mod/OG fallback.
 #pragma once
 
+#include "../event_manager.h"
 #include "../vector.h"
 
 #include <stdbool.h>
@@ -40,3 +41,12 @@ const char *GameStringManager_GetLanguageName(const char *code);
 // lang: language code (e.g. "en", "fr"). Must be one returned by
 // GetAvailableLanguages.
 bool GameStringManager_ReloadLanguage(const char *lang);
+
+// Subscribe to be notified when the game strings language is reloaded.
+// The listener will receive an EVENT with name "reload_language",
+// and .data pointing to the language code (const char *).
+int32_t GameStringManager_SubscribeReload(
+    EVENT_LISTENER listener, void *user_data);
+
+// Unsubscribe from language reload events.
+void GameStringManager_UnsubscribeReload(int32_t listener_id);

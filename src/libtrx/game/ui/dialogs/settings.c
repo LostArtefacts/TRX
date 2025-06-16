@@ -3,6 +3,7 @@
 #include "config.h"
 #include "debug.h"
 #include "game/const.h"
+#include "game/game_string_manager.h"
 #include "game/input.h"
 #include "game/scaler.h"
 #include "game/ui/elements/anchor.h"
@@ -438,7 +439,7 @@ static void M_Footer(const UI_SETTINGS_STATE *const s)
     UI_EndStack();
 }
 
-static void M_HandleConfigChange(const EVENT *const event, void *const data)
+static void M_HandleLanguageReload(const EVENT *const event, void *const data)
 {
     UI_SETTINGS_STATE *const s = data;
     M_RecomputeSizes(s);
@@ -447,7 +448,8 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 static void M_InitCommon(UI_SETTINGS_STATE *const s, const GAME_STRING_ID title)
 {
     s->title = title;
-    s->listener_id = Config_SubscribeChanges(M_HandleConfigChange, s);
+    s->listener_id =
+        GameStringManager_SubscribeReload(M_HandleLanguageReload, s);
 }
 
 void UI_Settings_Init(
@@ -496,7 +498,7 @@ void UI_Settings_InitWithTabs(
 void UI_Settings_Free(UI_SETTINGS_STATE *const s)
 {
     if (s->listener_id >= 0) {
-        Config_UnsubscribeChanges(s->listener_id);
+        GameStringManager_UnsubscribeReload(s->listener_id);
         s->listener_id = -1;
     }
     if (s->tab_switch != nullptr) {

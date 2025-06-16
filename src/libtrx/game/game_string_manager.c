@@ -25,6 +25,7 @@ typedef struct {
 
 static VECTOR *m_SourceFiles = nullptr;
 static VECTOR *m_LangEntries = nullptr;
+static EVENT_MANAGER *m_EventManager = nullptr;
 
 static void M_ClearFileEntries(VECTOR *files);
 static void M_ClearManager(void);
@@ -175,12 +176,17 @@ static void M_ReorderLanguages(void)
 
 void GameStringManager_Init(void)
 {
+    m_EventManager = EventManager_Create();
     M_ClearManager();
     m_SourceFiles = Vector_Create(sizeof(M_FILE_ENTRY));
 }
 
 void GameStringManager_Shutdown(void)
 {
+    if (m_EventManager != nullptr) {
+        EventManager_Free(m_EventManager);
+        m_EventManager = nullptr;
+    }
     GameStringTable_Shutdown();
     M_ClearManager();
 }
@@ -199,11 +205,11 @@ void GameStringManager_ClearSourceFiles(void)
 void GameStringManager_AddSourceFile(
     const char *const base_path, const bool load_levels)
 {
-    if (m_SourceFiles == nullptr) {
-        GameStringManager_Init();
-    }
-    M_FILE_ENTRY fe = { .path = Memory_DupStr(base_path),
-                        .load_levels = load_levels };
+    ASSERT(m_SourceFiles != nullptr);
+    const M_FILE_ENTRY fe = {
+        .path = Memory_DupStr(base_path),
+        .load_levels = load_levels,
+    };
     Vector_Add(m_SourceFiles, &fe);
 }
 
@@ -303,6 +309,10 @@ bool GameStringManager_ReloadLanguage(const char *const lang)
             }
         }
         GameStringTable_Apply(GF_GetCurrentLevel());
+        if (m_EventManager != nullptr) {
+            EVENT event = { "reload_language", nullptr, (void *)lang };
+            EventManager_Fire(m_EventManager, &event);
+        }
     }
     return success;
 }
@@ -314,4 +324,18 @@ const char *GameStringManager_GetLanguageName(const char *const code)
     }
     const M_LANG_ENTRY *const ent = M_FindLangEntry(code);
     return ent != nullptr ? ent->display_name : nullptr;
+}
+
+int32_t GameStringManager_SubscribeReload(
+    const EVENT_LISTENER listener, void *const user_data)
+{
+    ASSERT(m_EventManager != nullptr);
+    return EventManager_Subscribe(
+        m_EventManager, "reload_language", nullptr, listener, user_data);
+}
+
+void GameStringManager_UnsubscribeReload(const int32_t listener_id)
+{
+    ASSERT(m_EventManager != nullptr);
+    EventManager_Unsubscribe(m_EventManager, listener_id);
 }

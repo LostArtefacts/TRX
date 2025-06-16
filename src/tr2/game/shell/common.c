@@ -467,6 +467,7 @@ int32_t Shell_Main(void)
     }
 
     GameString_Init();
+    GameStringManager_Init();
     EnumMap_Init();
     Config_Init();
     UI_Init();
