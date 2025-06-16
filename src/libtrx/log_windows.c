@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+    #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
 static char *m_MiniDumpPath = nullptr;
 static char *M_GetMiniDumpPath(const char *log_path);
 static void M_CreateMiniDump(EXCEPTION_POINTERS *ex, const char *path);
@@ -103,6 +107,15 @@ LONG WINAPI Log_CrashHandler(EXCEPTION_POINTERS *ex)
 
 void Log_Init_Extra(const char *log_path)
 {
+    // enable ANSI escape codes processing
+    HANDLE h_out = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (h_out != INVALID_HANDLE_VALUE) {
+        DWORD mode = 0;
+        if (GetConsoleMode(h_out, &mode)) {
+            SetConsoleMode(h_out, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
+    }
+
     if (log_path != nullptr) {
         m_MiniDumpPath = M_GetMiniDumpPath(log_path);
         SetUnhandledExceptionFilter(Log_CrashHandler);
