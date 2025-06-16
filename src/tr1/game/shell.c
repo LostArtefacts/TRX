@@ -199,6 +199,7 @@ bool Shell_ParseArgs(const int32_t arg_count, const char **args)
 int32_t Shell_Main(void)
 {
     GameString_Init();
+    GameStringManager_Init();
     EnumMap_Init();
     Config_Init();
 
