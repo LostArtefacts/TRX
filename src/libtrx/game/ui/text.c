@@ -55,7 +55,7 @@ typedef struct {
 } M_TEXT_MAP_ENTRY;
 
 static M_GLYPH_INFO m_Glyphs[] = {
-#define GLYPH_DEFINE(text_, role_, width_, mesh_idx_, ...)                     \
+#define X_GLYPH_DEFINE(text_, role_, width_, mesh_idx_, ...)                   \
     { .text = text_,                                                           \
       .role = role_,                                                           \
       .width = width_,                                                         \
