@@ -65,6 +65,7 @@
 - fixed scaler/sizer options not working under some circumstances (#3240, regression from 0.7)
 - fixed broken playback of mono music tracks (regression from 0.2)
 - fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 0.2)
+- fixed stats dialog reserving too much space for extra secrets (#3237, regression from 1.0)
 - fixed logging not outputting anything on Windows terminals
 - improved word wrapping algorithm in the dev console
 - improved the dev console commands documentation
