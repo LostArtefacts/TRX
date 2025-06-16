@@ -1,11 +1,10 @@
-#include "game/option/option_examine.h"
+#include "game/option/examine.h"
 
 #include "game/input.h"
+#include "game/objects/names.h"
+#include "game/scaler.h"
+#include "game/ui.h"
 #include "game/viewport.h"
-
-#include <libtrx/game/objects/names.h>
-#include <libtrx/game/scaler.h>
-#include <libtrx/game/ui.h>
 
 typedef struct {
     GAME_OBJECT_ID object_id;
