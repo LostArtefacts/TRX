@@ -158,11 +158,9 @@ static void M_LoadLevelsFromJSON(
     }
 }
 
-GS_FILE *GS_File_CreateFromString(
-    const char *const data, const bool load_levels)
+void GS_File_LoadFromString(
+    GS_FILE *const gs_file, const char *const data, const bool load_levels)
 {
-    GS_FILE *const gs_file = Memory_Alloc(sizeof(GS_FILE));
-
     JSON_PARSE_RESULT parse_result;
 
     JSON_VALUE *root = JSON_ParseEx(
@@ -186,5 +184,4 @@ GS_FILE *GS_File_CreateFromString(
         JSON_ValueFree(root);
         root = nullptr;
     }
-    return gs_file;
 }

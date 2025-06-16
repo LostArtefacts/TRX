@@ -32,11 +32,13 @@ typedef struct {
 } GS_LEVEL_TABLE;
 
 typedef struct {
+    char *path;
     GS_TABLE global;
     GS_LEVEL_TABLE level_tables[GFLT_NUMBER_OF];
 } GS_FILE;
 
 void GS_Table_Free(GS_TABLE *gs_table);
 
-GS_FILE *GS_File_CreateFromString(const char *data, bool load_levels);
+GS_FILE *GS_File_CreateFromPath(const char *path, bool load_levels);
+void GS_File_LoadFromString(GS_FILE *file, const char *data, bool load_levels);
 void GS_File_Free(GS_FILE *gs_file);

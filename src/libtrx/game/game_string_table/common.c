@@ -1,5 +1,4 @@
 #include "debug.h"
-#include "filesystem.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/game_string_table.h"
@@ -70,6 +69,7 @@ static void M_ApplyLevelTitles(
 static void M_ApplyLayer(
     const GF_LEVEL *const level, const GS_FILE *const gs_file)
 {
+    LOG_DEBUG("applying layer: %s", gs_file->path);
     M_Apply(&gs_file->global);
 
     for (int32_t i = 0; i < GFLT_NUMBER_OF; i++) {
@@ -126,14 +126,11 @@ void GameStringTable_Shutdown(void)
 
 bool GameStringTable_Load(const char *const path, const bool load_levels)
 {
-    char *data = nullptr;
-    if (!File_Load(path, &data, nullptr)) {
-        LOG_ERROR("failed to open strings file (path: %d)", path);
+    GS_FILE *gs_file = GS_File_CreateFromPath(path, load_levels);
+    if (gs_file == nullptr) {
         return false;
     }
-    GS_FILE *gs_file = GS_File_CreateFromString(data, load_levels);
     ASSERT(m_GST_Layers != nullptr);
     Vector_Add(m_GST_Layers, &gs_file);
-    Memory_FreePointer(&data);
     return true;
 }

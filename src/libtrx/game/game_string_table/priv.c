@@ -1,5 +1,7 @@
 #include "game/game_string_table/priv.h"
 
+#include "filesystem.h"
+#include "log.h"
 #include "memory.h"
 
 static void M_FreeTable(GS_TABLE *const gs_table)
@@ -49,6 +51,20 @@ static void M_FreeLevelsTable(GS_LEVEL_TABLE *const levels)
     levels->count = 0;
 }
 
+GS_FILE *GS_File_CreateFromPath(const char *const path, const bool load_levels)
+{
+    char *data = nullptr;
+    if (!File_Load(path, &data, nullptr)) {
+        LOG_ERROR("failed to open strings file (path: %d)", path);
+        return nullptr;
+    }
+    GS_FILE *file = Memory_Alloc(sizeof(*file));
+    file->path = Memory_DupStr(path);
+    GS_File_LoadFromString(file, data, load_levels);
+    Memory_FreePointer(&data);
+    return file;
+}
+
 void GS_File_Free(GS_FILE *const gs_file)
 {
     if (gs_file == nullptr) {
@@ -58,5 +74,6 @@ void GS_File_Free(GS_FILE *const gs_file)
     for (int32_t i = 0; i < GFLT_NUMBER_OF; i++) {
         M_FreeLevelsTable(&gs_file->level_tables[i]);
     }
+    Memory_FreePointer(&gs_file->path);
     Memory_Free(gs_file);
 }
