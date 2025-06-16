@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/const.h"
+#include "game/game_flow.h"
 #include "game/item_actions.h"
 #include "game/lara/const.h"
 #include "game/matrix.h"
@@ -29,13 +30,16 @@ GAME_OBJECT_ID Lara_GetAnimationObject(void)
     if (lara_info->extra_anim) {
         return O_LARA_EXTRA;
     }
-#if TR_VERSION >= 2
+#if TR_VERSION == 1
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return level->lara_type;
+#else
     if (lara_info->vehicle_item_num != NO_ITEM) {
         const ITEM *const vehicle = Item_Get(lara_info->vehicle_item_num);
         return vehicle->object_id == O_BOAT ? O_LARA_BOAT : O_LARA_SKIDOO;
     }
-#endif
     return O_LARA;
+#endif
 }
 
 void Lara_Animate(ITEM *const item)
