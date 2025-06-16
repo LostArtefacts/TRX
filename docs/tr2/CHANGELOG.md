@@ -17,7 +17,8 @@
 - added key icons to the controls settings dialog
 - added an option to continue playing music while in the inventory (#1702)
 - added an option to adjust music and ambient volume while in the inventory (#2870)
-- added a `/debug` command
+- added a `/debug` console command
+- added a `/secret` console command for easier debugging of secrets
 - added `enable_debug_pos` setting that shows Lara's position in realtime (reachable via `/debug`)
 - added graphics effects to the savegame so they now persist on load (#2736)
 - added an option to control whether or not Lara responds to hitting a wall while wading (#3138)

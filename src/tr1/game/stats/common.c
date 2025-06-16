@@ -279,18 +279,6 @@ void Stats_AddKill(void)
     current_info->stats.kill_count++;
 }
 
-bool Stats_AddSecret(const int16_t secret_number)
-{
-    RESUME_INFO *const current_info =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (current_info->stats.secret_flags & secret_number) {
-        return false;
-    }
-    current_info->stats.secret_flags |= secret_number;
-    current_info->stats.secret_count++;
-    return true;
-}
-
 void Stats_AddPickup(void)
 {
     RESUME_INFO *const current_info =
