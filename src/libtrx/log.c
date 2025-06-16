@@ -5,9 +5,15 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define M_FORMAT "%s [%s:%d:%s] "
+#define M_FORMAT "%s | %s [%s:%d:%s] "
 
-FILE *m_LogHandle = nullptr;
+static FILE *m_LogHandle = nullptr;
+static const char *const m_LogLevelStrings[] = {
+    [LOG_LEVEL_INFO] = "INF",
+    [LOG_LEVEL_WARNING] = "WRN",
+    [LOG_LEVEL_ERROR] = "ERR",
+    [LOG_LEVEL_DEBUG] = "DBG",
+};
 
 void Log_Init(const char *path)
 {
@@ -18,7 +24,8 @@ void Log_Init(const char *path)
 }
 
 void Log_Message(
-    const char *file, int line, const char *func, const char *fmt, ...)
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
@@ -33,12 +40,15 @@ void Log_Message(
         timestamp_str + timestamp_len, sizeof(timestamp_str) - timestamp_len,
         ".%03d", (int)(tv.tv_usec / 1000));
 
+    const char *log_str = m_LogLevelStrings[level];
+
     // print to log file
     if (m_LogHandle != nullptr) {
         va_list vb;
 
         va_copy(vb, va);
-        fprintf(m_LogHandle, M_FORMAT, timestamp_str, file, line, func);
+        fprintf(
+            m_LogHandle, M_FORMAT, log_str, timestamp_str, file, line, func);
         vfprintf(m_LogHandle, fmt, vb);
         fprintf(m_LogHandle, "\n");
         fflush(m_LogHandle);
@@ -47,7 +57,7 @@ void Log_Message(
     }
 
     // print to stdout
-    printf(M_FORMAT, timestamp_str, file, line, func);
+    printf(M_FORMAT, log_str, timestamp_str, file, line, func);
     vprintf(fmt, va);
     printf("\n");
     fflush(stdout);

@@ -16,20 +16,24 @@ static void M_Log(
 
     if (closing) {
         if (message == nullptr) {
-            Log_Message(file, line, func, "took %.02f ms", elapsed_start);
+            Log_Message(
+                LOG_LEVEL_DEBUG, file, line, func, "took %.02f ms",
+                elapsed_start);
         } else {
             Log_Message(
-                file, line, func, "%s: took %.02f ms", message, elapsed_start);
+                LOG_LEVEL_DEBUG, file, line, func, "%s: took %.02f ms", message,
+                elapsed_start);
         }
     } else {
         if (message == nullptr) {
             Log_Message(
-                file, line, func, "took %.02f ms (%.02f ms)", elapsed_start,
-                elapsed_last);
+                LOG_LEVEL_DEBUG, file, line, func, "took %.02f ms (%.02f ms)",
+                elapsed_start, elapsed_last);
         } else {
             Log_Message(
-                file, line, func, "%s: took %.02f ms (%.02f ms)", message,
-                elapsed_start, elapsed_last);
+                LOG_LEVEL_DEBUG, file, line, func,
+                "%s: took %.02f ms (%.02f ms)", message, elapsed_start,
+                elapsed_last);
         }
     }
 }
