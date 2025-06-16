@@ -118,6 +118,7 @@ static const M_GLYPH_INFO **M_Decompose(
             *glyph_ptr++ = entry->glyph;
         } else {
             LOG_WARNING("Unknown glyph: %s", m_GlyphLookupKey);
+            glyph_count--;
         }
 
         content_ptr += glyph_size;
