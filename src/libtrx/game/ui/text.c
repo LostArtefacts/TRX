@@ -462,7 +462,8 @@ void UI_Text_Draw(
                 x + (glyph->combine_with.offset_x * scale / UI_TEXT_BASE_SCALE);
             const int32_t cy =
                 y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
-            if (glyph->combine_with.mesh_idx >= ABS(obj->mesh_count)) {
+            if (glyph->combine_with.mesh_idx < 0
+                || glyph->combine_with.mesh_idx >= ABS(obj->mesh_count)) {
                 goto loop_end;
             }
 
@@ -471,19 +472,18 @@ void UI_Text_Draw(
                 obj->mesh_idx + glyph->combine_with.mesh_idx, SHADE_NEUTRAL);
         }
 
-        if (glyph->mesh_idx < 0 || glyph->mesh_idx >= ABS(obj->mesh_count)) {
-            goto loop_end;
+        if (glyph->mesh_idx >= 0 && glyph->mesh_idx < ABS(obj->mesh_count)) {
+            Output_DrawScreenSprite(
+                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
+                SHADE_NEUTRAL);
         }
-        Output_DrawScreenSprite(
-            x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
-            SHADE_NEUTRAL);
 
-    loop_end:
         if (glyph->role != GLYPH_COMBINING) {
             const float spacing = glyph->width + M_LETTER_SPACING;
             x += spacing * scale / UI_TEXT_BASE_SCALE;
         }
 
+    loop_end:
         glyph_ptr++;
     }
 }
