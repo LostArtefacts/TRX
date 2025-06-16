@@ -143,9 +143,7 @@ void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
     inv_item->y_rot = 0;
     inv_item->y_trans = 0;
     inv_item->z_trans = 0;
-#if TR_VERSION == 1
     inv_item->action = ACTION_USE;
-#endif
     if (inv_item->object_id == O_PASSPORT_OPTION) {
         inv_item->object_id = O_PASSPORT_CLOSED;
     }
