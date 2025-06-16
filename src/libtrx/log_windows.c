@@ -107,6 +107,14 @@ LONG WINAPI Log_CrashHandler(EXCEPTION_POINTERS *ex)
 
 void Log_Init_Extra(const char *log_path)
 {
+    // let the game (a gui app) log output to a terminal
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        FILE *fp;
+        freopen_s(&fp, "CONOUT$", "w", stdout);
+        freopen_s(&fp, "CONOUT$", "w", stderr);
+        freopen_s(&fp, "CONIN$", "r", stdin);
+    }
+
     // enable ANSI escape codes processing
     HANDLE h_out = GetStdHandle(STD_OUTPUT_HANDLE);
     if (h_out != INVALID_HANDLE_VALUE) {
