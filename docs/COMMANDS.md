@@ -1,5 +1,9 @@
 # Commands
-TR1X introduces a developer console, by default accessible with the <kbd>/</kbd> key.
+TRX introduces a developer console, by default accessible with the <kbd>/</kbd> key.
+This key can be rebound in the controls dialog to anything of your choice. Note that
+where <kbd>/</kbd> is used in command documentation, you should interpret that as
+whichever key you have bound, and not include it as part of the command itself.
+
 Currently supported commands:
 
 - `/help`  
@@ -28,7 +32,7 @@ Currently supported commands:
 
 - `/flood`  
   `/drain`  
-- `/flood {room_num}`  
+  `/flood {room_num}`  
   `/drain {room_num}`  
   Floods or drains the chosen room at will. For when drowning is preferable to puzzles!
 
@@ -81,11 +85,11 @@ Currently supported commands:
   `/home`  
   Plays Lara's Home, if available. Alias of `/play 0`.
 
-- `/load {slot_num}`  
-  Loads the specified savegame slot.
-
 - `/save {slot_num}`  
   Saves the game to the specified savegame slot.
+
+- `/load {slot_num}`  
+  Loads the specified savegame slot.
 
 - `/demo`  
   `/demo {num}`  
@@ -98,20 +102,20 @@ Currently supported commands:
   Closes the game.
 
 - `/speed`  
-- `/speed {num}`  
+  `/speed {num}`  
   Retrieves or sets current game speed.
 
 - `/vsync on`  
-- `/vsync off`  
+  `/vsync off`  
   Enables or disables VSync.
 
 - `/fps`  
-- `/fps {num}`  
+  `/fps {num}`  
   Retrieves or sets current frames per second.
 
 - `/set {option}`  
-- `/set {option} {value}`  
-- `/set {option} -`  
+  `/set {option} {value}`  
+  `/set {option} -`  
   Retrieves or assigns a new value to the given configuration option. Some
   options need a game re-launch to apply. The option names use `-` rather than
   `_`. Use `-` as `{value}` to restore the option to its default state.
@@ -120,7 +124,7 @@ Currently supported commands:
   Plays a given music track. It uses internal game IDs that for historic reasons don't align with the music folder's file names.
 
 - `/sfx`  
-- `/sfx {sound}`  
+  `/sfx {sound}`  
   Plays a given sound sample.
 
 - `/strings`  
