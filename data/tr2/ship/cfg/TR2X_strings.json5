@@ -414,8 +414,11 @@
         "pickup_2": {
             "name": "Pickup Item 2"
         },
-        "compass": {
+        "pda": {
             "name": "Gameplay"
+        },
+        "compass": {
+            "name": "Statistics"
         },
         "passport": {
             "name": "Game"

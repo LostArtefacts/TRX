@@ -415,7 +415,7 @@
             "name": "Oggetto Recuperabile 2"
         },
         "compass": {
-            "name": "Opzioni di Gioco"
+            "name": "Statistiche"
         },
         "passport": {
             "name": "Partita"
@@ -1087,6 +1087,9 @@
         },
         "earthquake": {
             "name": "Terremoto"
+        },
+        "pda": {
+            "name": "Opzioni di Gioco"
         }
     },
     "game_strings": {
