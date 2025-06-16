@@ -93,7 +93,6 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
-#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.enable_item_examining,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING),
@@ -102,6 +101,7 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
         .option_type = COT_BOOL,
     },
 
+#if TR_VERSION == 1
     {
         .target = &g_Config.gameplay.stat_detail_mode,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_STAT_DETAIL_MODE),

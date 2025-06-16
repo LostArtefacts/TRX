@@ -28,6 +28,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/names.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/option/examine.h>
 #include <libtrx/memory.h>
 
 #include <stdio.h>
@@ -39,6 +40,7 @@
 #define INV_RING_FADE_TIME_TITLE_FINISH 0.25
 
 static int32_t m_NoInputCounter = 0;
+static bool m_EnableExamine;
 
 static void M_ShowAmmoQuantity(const char *fmt, int32_t qty);
 
@@ -67,11 +69,13 @@ static void M_RingIsOpen(INV_RING *const ring)
 static void M_RingIsNotOpen(INV_RING *const ring)
 {
     InvRing_RemoveHeader();
+    InvRing_ShowExamine(false);
 }
 
 static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
 {
     InvRing_ShowItemName(inv_item);
+    m_EnableExamine = false;
 
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
     switch (inv_item->object_id) {
@@ -130,16 +134,23 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
         if (qty > 1) {
             InvRing_ShowItemQuantity("%d", qty);
         }
+
+        m_EnableExamine = !Option_Examine_IsActive()
+            && Option_Examine_CanExamine(inv_item->object_id);
         break;
 
     default:
         break;
     }
+
+    InvRing_ShowExamine(m_EnableExamine);
 }
 
 static void M_RingActive(void)
 {
     InvRing_RemoveItemTexts();
+    m_EnableExamine = false;
+    InvRing_ShowExamine(m_EnableExamine);
 }
 
 static bool M_AnimateInventoryItem(INVENTORY_ITEM *const inv_item)
@@ -366,6 +377,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     switch (ring->motion.status) {
     case RNG_OPEN:
         if (g_Input.menu_right && ring->number_of_objects > 1) {
+            m_EnableExamine = false;
             InvRing_RotateLeft(ring);
             Sound_Effect(SFX_MENU_ROTATE, nullptr, SPM_ALWAYS);
             break;
@@ -409,7 +421,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             g_InputDB = (INPUT_STATE) {};
         }
 
-        if (g_InputDB.menu_confirm) {
+        const bool examine = g_InputDB.look && InvRing_CanExamine();
+        if (g_InputDB.menu_confirm || examine) {
             if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_LOAD_MODE
                  || ring->mode == INV_DEATH_MODE)
                 && !ring->is_pass_open) {
@@ -433,6 +446,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
             inv_item->goal_frame = inv_item->open_frame;
             inv_item->anim_direction = 1;
+            inv_item->action = examine ? ACTION_EXAMINE : ACTION_USE;
             InvRing_MotionSetup(ring, RNG_SELECTING, RNG_SELECTED, 16);
             InvRing_MotionRotation(
                 ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
@@ -738,6 +752,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
     Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+bool InvRing_CanExamine(void)
+{
+    return g_Config.gameplay.enable_item_examining && m_EnableExamine;
 }
 
 void InvRing_RemoveAllText(void)
