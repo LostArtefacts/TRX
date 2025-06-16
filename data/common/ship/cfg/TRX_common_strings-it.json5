@@ -122,7 +122,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL": "Annulla oscillazione",
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION": "Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente",
         "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE": "Cambio bersaglio",
-        "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE_DESCRIPTION": "\\{review}Abilita il cambio di bersaglio in stile TR4+ mentre si punta l'arma. Premi Guarda mentre miri per cambiare bersaglio.",
+        "GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE_DESCRIPTION": "Abilita il cambio di bersaglio in stile TR4+ mentre si punta l'arma. Premi il tasto Cambia Bersaglio mentre miri per cambiare bersaglio.",
         "GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY": "Cronometro nell'inventario",
         "GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY_DESCRIPTION": "Fa in modo che il tempo di gioco scorra anche nel menu dell'inventario.",
         "GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS": "Schermata statistiche finali",
