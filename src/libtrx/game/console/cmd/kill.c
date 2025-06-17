@@ -14,6 +14,11 @@
 #include "memory.h"
 #include "strings.h"
 
+#if TR_VERSION == 2
+extern bool CombatEnd_IsWaitingForBoss(void);
+extern GAME_OBJECT_ID CombatEnd_GetBossType(void);
+#endif
+
 static bool M_CanTargetObjectCreature(GAME_OBJECT_ID obj_id);
 static bool M_KillSingleEnemyInRange(int32_t max_dist);
 static int32_t M_KillAllEnemiesInRange(int32_t max_dist);
@@ -76,11 +81,18 @@ static int32_t M_KillAllEnemiesInRange(const int32_t max_dist)
 static COMMAND_RESULT M_KillAllEnemies(void)
 {
     int32_t num_killed = 0;
+
     for (int16_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
         if (!Creature_IsHostile(item)) {
             continue;
         }
+#if TR_VERSION == 2
+        if (item->object_id == CombatEnd_GetBossType()
+            && CombatEnd_IsWaitingForBoss()) {
+            continue;
+        }
+#endif
         if (Lara_Cheat_KillEnemy(item_num)) {
             num_killed++;
         }

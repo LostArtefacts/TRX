@@ -15,14 +15,29 @@
 #define M_BOSS_TYPE O_CULT_3
 
 static int16_t m_BossTimer = 0;
-static uint16_t m_EnemyCount = 0;
+static uint16_t m_BossCount = 0;
 
+static int32_t M_CountAliveEnemies(bool include_boss);
 static int16_t M_FindBestBoss(void);
 static void M_ActivateLastBoss(void);
 static void M_PrepareCutscene(int16_t item_num);
 static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
+
+static int32_t M_CountAliveEnemies(const bool include_boss)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+        if (!include_boss && item->object_id == M_BOSS_TYPE) {
+            continue;
+        }
+        if (Creature_IsAlive(item) && Creature_IsHostile(item)) {
+            count++;
+        }
+    }
+    return count;
+}
 
 static int16_t M_FindBestBoss(void)
 {
@@ -108,40 +123,44 @@ static void M_PrepareCutscene(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->initialise_func = M_Initialise;
     obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = true;
 
     m_BossTimer = 0;
-    m_EnemyCount = 0;
-}
-
-static void M_Initialise(const int16_t item_num)
-{
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        const ITEM *const item = Item_Get(i);
-        if (Object_IsType(item->object_id, g_EnemyObjects)
-            && item->object_id != M_BOSS_TYPE) {
-            m_EnemyCount++;
-        }
-    }
+    m_BossCount = 0;
 }
 
 static void M_Control(const int16_t item_num)
 {
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (current_info->stats.kill_count == m_EnemyCount && m_BossTimer == 0) {
+    if (m_BossTimer == 0 && M_CountAliveEnemies(false) == 0) {
+        m_BossCount = M_CountAliveEnemies(true);
         M_ActivateLastBoss();
         return;
     }
 
-    if (current_info->stats.kill_count > m_EnemyCount) {
+    if (M_CountAliveEnemies(true) < m_BossCount) {
         m_BossTimer++;
         if (m_BossTimer == M_CUTSCENE_DELAY) {
             M_PrepareCutscene(item_num);
         }
     }
+}
+
+GAME_OBJECT_ID CombatEnd_GetBossType(void)
+{
+    return M_BOSS_TYPE;
+}
+
+bool CombatEnd_IsWaitingForBoss(void)
+{
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (Item_Get(i)->object_id == O_COMBAT_END) {
+            return m_BossTimer == 0;
+        }
+    }
+    return false;
 }
 
 bool CombatEnd_IsComplete(void)
