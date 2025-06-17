@@ -51,7 +51,7 @@
     results.push(
       ...content
         .matchAll(
-          /manual_sprite\("(?<name>[^"]+)",\s*(?<x>\d+),\s*(?<y>\d+),\s*(?<w>\d+),\s*(?<h>\d+)(?:,\s*offset_y=(?<offset_y>-?\d+))?(?:,\s*index=(?<index>\d+))?\)/g,
+          /^(?<text>.*?)\s+\w\s+manual_sprite\("(?<name>[^"]+)",\s*(?<x>\d+),\s*(?<y>\d+),\s*(?<w>\d+),\s*(?<h>\d+)(?:,\s*offset_y=(?<offset_y>-?\d+))?(?:,\s*index=(?<index>\d+))?\)/gm,
         )
         .map((match) => ({
           name: match.groups.name,
@@ -59,14 +59,14 @@
           y: +match.groups.y,
           w: +match.groups.w,
           h: +match.groups.h,
-          text: match.groups.text,
+          text: match.groups.text.trim(),
         })),
     );
 
     results.push(
       ...content
         .matchAll(
-          /grid_sprite\("(?<name>[^"]+)",\s*(?<x>\d+),\s*(?<y>\d+)(?:[^\)]*)?\)/g,
+          /^(?<text>.*?)\s+\w\s+grid_sprite\("(?<name>[^"]+)",\s*(?<x>\d+),\s*(?<y>\d+)(?:[^\)]*)?\)/gm,
         )
         .map((match) => ({
           name: match.groups.name,
@@ -74,7 +74,7 @@
           y: +match.groups.y * 20,
           w: 20,
           h: 20,
-          text: match.groups.text,
+          text: match.groups.text.trim(),
         })),
     );
 
@@ -93,15 +93,20 @@
       const image = images.find((img) => img.src.includes(filename));
       const relevantDefs = defs.filter((def) => def.name === filename);
 
-      const container = document.createElement("div");
+      const outerContainer = document.createElement("div");
       const header = document.createElement("h1");
       header.textContent = `${filename}`;
-      container.appendChild(header);
+
+      const container = document.createElement("div");
+      container.style.position = "relative";
       const canvas = document.createElement("canvas");
       canvas.width = image.width;
       canvas.height = image.height;
+
       container.appendChild(canvas);
-      wrapper.appendChild(container);
+      outerContainer.appendChild(header);
+      outerContainer.appendChild(container);
+      wrapper.appendChild(outerContainer);
 
       const ctx = canvas.getContext("2d");
       ctx.canvas.width = image.width;
@@ -115,6 +120,19 @@
       drawImage(ctx, image, 0, 0);
 
       upscaleCanvas(canvas, scale);
+
+      for (const def of relevantDefs) {
+        const zone = document.createElement("div");
+        zone.title = def.text || def.name;
+        zone.style.position = "absolute";
+        zone.style.left = `${def.x * scale}px`;
+        zone.style.top = `${def.y * scale}px`;
+        zone.style.width = `${def.w * scale}px`;
+        zone.style.height = `${def.h * scale}px`;
+        zone.style.cursor = "help";
+        zone.style.background = "transparent";
+        container.appendChild(zone);
+      }
     }
   }
 
@@ -137,14 +155,8 @@
   }
 
   function drawDef(ctx, def, idx) {
-    drawRect(
-      ctx,
-      def.x,
-      def.y,
-      def.x + def.w,
-      def.y + def.h,
-      idx % 2 === 0 ? color1 : color2,
-    );
+    const strokeColor = idx % 2 === 0 ? color1 : color2;
+    drawRect(ctx, def.x, def.y, def.x + def.w, def.y + def.h, strokeColor);
   }
 
   function drawRect(ctx, x1, y1, x2, y2, color) {
