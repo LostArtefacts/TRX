@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...develop) - ××××-××-××
+
+## [1.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...tr2-1.2) - 2025-06-17
 - added builtin support for ingame string translations
     - changed duplicate game strings between TR1 and TR2 to be placed in a single file TRX_common_strings.json5
     - added a new setting, `enable_review_markers`, which display which text requires review (only available via `/set`)
