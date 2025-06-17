@@ -56,9 +56,10 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         M_Shutdown(p);
         inv_item->anim_direction = 1;
         inv_item->goal_frame = inv_item->frames_total - 1;
+        Sound_StopEffect(SFX_MENU_STOPWATCH);
+    } else {
+        Sound_Effect(SFX_MENU_STOPWATCH, 0, SPM_ALWAYS);
     }
-
-    Sound_Effect(SFX_MENU_STOPWATCH, 0, SPM_ALWAYS);
 }
 
 void Option_Compass_Draw(void)
