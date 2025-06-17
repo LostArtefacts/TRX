@@ -394,6 +394,7 @@
         "KEYMAP_STEP_LEFT": "Step Left",
         "KEYMAP_STEP_RIGHT": "Step Right",
         "KEYMAP_TOGGLE_PHOTO_MODE": "Toggle Photo Mode",
+        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Toggle Trapezoid Filter",
         "KEYMAP_TOGGLE_UI": "Toggle UI",
         "KEYMAP_TURBO_CHEAT": "Turbo Speed",
         "KEYMAP_USE_BIG_MEDI": "Large Medi",

@@ -554,6 +554,7 @@
         "CMD_GIVE_SECRET_NONE": "Nie zebrano żadnych sekretów",
         "CMD_GIVE_SECRET_TAKEN": "Usunięto sekret %d z ekwipunku Lary",
         "CMD_INVALID_SECRET": "Nieprawidłowy sekret: %d",
-        "CONSOLE_HELP_GIVE_SECRET": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru."
+        "CONSOLE_HELP_GIVE_SECRET": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru.",
+        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Włącz/wyłącz filtr trapezowy"
     }
 }

@@ -554,6 +554,7 @@
         "CMD_GIVE_SECRET_NONE": "\\{review}Nessun segreto raccolto",
         "CMD_GIVE_SECRET_TAKEN": "\\{review}Rimosso segreto %d dall'inventario di Lara",
         "CONSOLE_HELP_GIVE_SECRET": "\\{review}Elenca i segreti di Lara, oppure prende/dà un segreto per numero.",
-        "CMD_INVALID_SECRET": "\\{review}Segreto non valido: %d"
+        "CMD_INVALID_SECRET": "\\{review}Segreto non valido: %d",
+        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Attiva/Disattiva Filtro Trapezoidale"
     }
 }
