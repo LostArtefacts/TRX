@@ -453,7 +453,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
             switch (inv_item->object_id) {
             case O_COMPASS_OPTION:
-                Sound_Effect(SFX_MENU_STOPWATCH, nullptr, SPM_ALWAYS);
                 break;
 
             case O_PHOTO_OPTION:
