@@ -1110,7 +1110,6 @@
         "KEYMAP_TOGGLE_FULLSCREEN": "Toggle Fullscreen",
         "KEYMAP_TOGGLE_PERSPECTIVE_FILTER": "Toggle Perspective Filter",
         "KEYMAP_TOGGLE_RENDERING_MODE": "Cycle Rendering Mode",
-        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Toggle Trapezoid Filter",
         "KEYMAP_TOGGLE_Z_BUFFER": "Toggle Z Buffer",
         "KEYMAP_USE_FLARE": "Flare",
         "MISC_NONE": "None",

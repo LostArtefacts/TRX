@@ -116,8 +116,10 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 INPUT_ROLE_BILINEAR,
 #elif TR_VERSION == 2
                 INPUT_ROLE_TOGGLE_BILINEAR_FILTER,
-                // INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER, // handled specially
+// INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER, // handled specially
+#endif
                 INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER,
+#if TR_VERSION == 2
                 INPUT_ROLE_SWITCH_INTERNAL_SCREEN_SIZE,
                 INPUT_ROLE_SWITCH_RESOLUTION,
                 INPUT_ROLE_TOGGLE_Z_BUFFER,

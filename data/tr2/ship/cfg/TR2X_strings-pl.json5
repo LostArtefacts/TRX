@@ -1083,7 +1083,6 @@
         "KEYMAP_TOGGLE_FULLSCREEN": "Włącz/wyłącz tryb pełnoekranowy",
         "KEYMAP_TOGGLE_PERSPECTIVE_FILTER": "Włącz/wyłącz filtr perspektywy",
         "KEYMAP_TOGGLE_RENDERING_MODE": "Przełącz tryb renderowania",
-        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Włącz/wyłącz filtr trapezowy",
         "KEYMAP_TOGGLE_Z_BUFFER": "Włącz/wyłącz bufor głębi",
         "KEYMAP_USE_FLARE": "Flara",
         "MISC_NONE": "Brak",
