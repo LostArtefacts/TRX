@@ -82,14 +82,16 @@ def trim_transparent_pixels(
     rows = np.any(non_transparent, axis=1)
     cols = np.any(non_transparent, axis=0)
 
-    # Trim the image
-    trimmed_image = image[rows, :][:, cols]
-
     # Calculate the number of rows and columns removed
     top = int(np.argmax(rows))
     bottom = int(np.argmax(rows[::-1]))
     left = int(np.argmax(cols))
     right = int(np.argmax(cols[::-1]))
+    height, width, _ = image.shape
+
+    # Trim the image
+    trimmed_image = image[top : height - bottom, left : width - right]
+
     return trimmed_image, (top, bottom, left, right)
 
 
@@ -299,7 +301,7 @@ class Glyph:
 
     def __str__(self) -> str:
         if len(self.text) == 1:
-            return f'U+{ord(self.text):04X}:{self.text}'
+            return f"U+{ord(self.text):04X}:{self.text}"
         return self.text
 
 
