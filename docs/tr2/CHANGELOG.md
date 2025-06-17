@@ -14,7 +14,7 @@
 - added a pickup overlay display when Lara pulls the dagger from the dragon (#1830)
 - added an option to disable Lara's braid (#3089)
 - added an option to disable the breeze effect on Lara's braid (#3090)
-- added key icons to the controls settings dialog
+- added keyboard and controller input icons to the controls settings dialog
 - added an option to continue playing music while in the inventory (#1702)
 - added an option to adjust music and ambient volume while in the inventory (#2870)
 - added a `/debug` console command

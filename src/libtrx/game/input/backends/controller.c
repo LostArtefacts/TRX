@@ -35,62 +35,61 @@ static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
     { -1, { 0, { 0 }, 0 } },
 };
 
-#define M_ICON_X "\\{button x}"
-#define M_ICON_CIRCLE "\\{button circle}"
-#define M_ICON_SQUARE "\\{button square}"
-#define M_ICON_TRIANGLE "\\{button triangle}"
-#define M_ICON_UP "\\{button up} "
-#define M_ICON_DOWN "\\{button down} "
-#define M_ICON_LEFT "\\{button left} "
-#define M_ICON_RIGHT "\\{button right} "
-#define M_ICON_L1 "\\{button l1}"
-#define M_ICON_R1 "\\{button r1}"
-#define M_ICON_L2 "\\{button l2}"
-#define M_ICON_R2 "\\{button r2}"
+// clang-format off
+#define M_ICON_X              "\\{controller button cross}"
+#define M_ICON_CIRCLE         "\\{controller button circle}"
+#define M_ICON_SQUARE         "\\{controller button square}"
+#define M_ICON_TRIANGLE       "\\{controller button triangle}"
+#define M_ICON_UP             "\\{controller dpad up}"
+#define M_ICON_DOWN           "\\{controller dpad down}"
+#define M_ICON_LEFT           "\\{controller dpad left}"
+#define M_ICON_RIGHT          "\\{controller dpad right}"
+#define M_ICON_L1             "\\{controller button l1}"
+#define M_ICON_R1             "\\{controller button r1}"
+#define M_ICON_L2             "\\{controller button l2}"
+#define M_ICON_R2             "\\{controller button r2}"
 
-// TODO: replace all of the text with icons
-#define M_NAME_L_ANALOG_LEFT "LSTK" M_ICON_LEFT
-#define M_NAME_L_ANALOG_UP "LSTK" M_ICON_UP
-#define M_NAME_L_ANALOG_RIGHT "LSTK" M_ICON_RIGHT
-#define M_NAME_L_ANALOG_DOWN "LSTK" M_ICON_DOWN
-#define M_NAME_R_ANALOG_LEFT "RSTK" M_ICON_LEFT
-#define M_NAME_R_ANALOG_UP "RSTK" M_ICON_UP
-#define M_NAME_R_ANALOG_RIGHT "RSTK" M_ICON_RIGHT
-#define M_NAME_R_ANALOG_DOWN "RSTK" M_ICON_DOWN
-#define M_NAME_L_TRIGGER "LTRIG"
-#define M_NAME_R_TRIGGER "RTRIG"
-#define M_NAME_ZL "ZL"
+#define M_NAME_L_STICK        "\\{controller lstick}"
+#define M_NAME_L_ANALOG_UP    "\\{controller lstick up}"
+#define M_NAME_L_ANALOG_RIGHT "\\{controller lstick right}"
+#define M_NAME_L_ANALOG_DOWN  "\\{controller lstick down}"
+#define M_NAME_L_ANALOG_LEFT  "\\{controller lstick left}"
+#define M_NAME_R_STICK        "\\{controller rstick}"
+#define M_NAME_R_ANALOG_UP    "\\{controller rstick up}"
+#define M_NAME_R_ANALOG_RIGHT "\\{controller rstick right}"
+#define M_NAME_R_ANALOG_DOWN  "\\{controller rstick down}"
+#define M_NAME_R_ANALOG_LEFT  "\\{controller rstick left}"
+#define M_NAME_L_TRIGGER      "\\{controller trigger left}"
+#define M_NAME_R_TRIGGER      "\\{controller trigger right}"
 
-#define M_NAME_ZR "ZR"
-#define M_NAME_BACK "BACK"
+#define M_NAME_ZL             "\\{controller button zl}"
+#define M_NAME_ZR             "\\{controller button zr}"
 
-#define M_NAME_CAPTURE "CAPTR"
-#define M_NAME_CREATE "CREAT"
+#define M_NAME_XBOX           "\\{controller button xbox}"
+#define M_NAME_PS             "\\{controller button ps}"
+#define M_NAME_PS_SHARE       "\\{controller button share}"
+#define M_NAME_PS_OPTIONS     "\\{controller button options}"
 
-#define M_NAME_HOME "HOME"
-#define M_NAME_XBOX "XBOX"
-#define M_NAME_START "START"
-#define M_NAME_SHARE "SHARE"
+#define M_NAME_BACK           "\\{controller button back}"
+#define M_NAME_HOME           "\\{controller button home}"
+#define M_NAME_START          "\\{controller button home}"
+#define M_NAME_SHARE          "\\{controller button share}"
+#define M_NAME_CAPTURE        "\\{controller button capture}"
+#define M_NAME_TOUCHPAD       "\\{controller button touch}"
+#define M_NAME_MIC            "\\{controller button mic}"
+#define M_NAME_PADDLE_1       "\\{controller button paddle 1}"
+#define M_NAME_PADDLE_2       "\\{controller button paddle 2}"
+#define M_NAME_PADDLE_3       "\\{controller button paddle 3}"
+#define M_NAME_PADDLE_4       "\\{controller button paddle 4}"
 
-#define M_NAME_TOUCHPAD "TOUCH"
+#define M_NAME_L_BUMPER       "\\{controller bumper left}"
+#define M_NAME_R_BUMPER       "\\{controller bumper right}"
 
-#define M_NAME_L3 "L3"
-#define M_NAME_R3 "R3"
-#define M_NAME_MIC "MIC"
-#define M_NAME_PADDLE_1 "PADDLE 1"
-#define M_NAME_PADDLE_2 "PADDLE 2"
-#define M_NAME_PADDLE_3 "PADDLE 3"
-#define M_NAME_PADDLE_4 "PADDLE 4"
-
-#define M_NAME_L_STICK "LSTK"
-#define M_NAME_R_STICK "RSTK"
-#define M_NAME_L_BUMPER "LBUMP"
-#define M_NAME_R_BUMPER "RBUMP"
-
-#define M_NAME_A "A"
-#define M_NAME_B "B"
-#define M_NAME_X "X"
-#define M_NAME_Y "Y"
+#define M_NAME_A              "\\{controller button a}"
+#define M_NAME_B              "\\{controller button b}"
+#define M_NAME_X              "\\{controller button x}"
+#define M_NAME_Y              "\\{controller button y}"
+// clang-format on
 
 static CONTROLLER_MAP m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF];
 
@@ -150,13 +149,14 @@ static const char *M_GetButtonName(const SDL_GameControllerButton button)
         case SDL_CONTROLLER_BUTTON_B:             return M_ICON_CIRCLE;
         case SDL_CONTROLLER_BUTTON_X:             return M_ICON_SQUARE;
         case SDL_CONTROLLER_BUTTON_Y:             return M_ICON_TRIANGLE;
-        case SDL_CONTROLLER_BUTTON_BACK:          return M_NAME_CREATE;
-        case SDL_CONTROLLER_BUTTON_START:         return M_NAME_START;
-        case SDL_CONTROLLER_BUTTON_LEFTSTICK:     return M_NAME_L3;
-        case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return M_NAME_R3;
+        case SDL_CONTROLLER_BUTTON_BACK:          return M_NAME_PS_OPTIONS;
+        case SDL_CONTROLLER_BUTTON_START:         return M_NAME_PS_SHARE;
+        case SDL_CONTROLLER_BUTTON_LEFTSTICK:     return M_NAME_L_STICK;
+        case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return M_NAME_R_STICK;
         case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return M_ICON_L1;
         case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return M_ICON_R1;
         case SDL_CONTROLLER_BUTTON_MISC1:         return M_NAME_MIC;
+        case SDL_CONTROLLER_BUTTON_GUIDE:         return M_NAME_PS;
         default: break;
         }
         // clang-format on
