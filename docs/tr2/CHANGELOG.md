@@ -62,6 +62,7 @@
 - fixed the sizer option accepting values above 1 which made no sense (#3123, regression from 1.0)
 - fixed a rare crash when editing certain dev console history entries (#2913, regression from 1.0)
 - fixed Lara's health bar showing at the start of cutscenes (#3182, regression from 1.1)
+- fixed scaler/sizer options not working under some circumstances (#3240, regression from 0.7)
 - fixed broken playback of mono music tracks (regression from 0.2)
 - fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 0.2)
 - fixed logging not outputting anything on Windows terminals

@@ -136,10 +136,6 @@ static void M_ToggleRenderingMode(void)
 
 static void M_DecreaseResolutionOrBPP(void)
 {
-    if (g_Camera.type == CAM_CINEMATIC) {
-        return;
-    }
-
     g_Config.rendering.scaler--;
     Config_Write();
     Console_Log(GS(OSD_SCALER_FMT), g_Config.rendering.scaler);
@@ -147,10 +143,6 @@ static void M_DecreaseResolutionOrBPP(void)
 
 static void M_IncreaseResolutionOrBPP(void)
 {
-    if (g_Camera.type == CAM_CINEMATIC) {
-        return;
-    }
-
     g_Config.rendering.scaler++;
     Config_Write();
     Console_Log(GS(OSD_SCALER_FMT), g_Config.rendering.scaler);
@@ -158,19 +150,11 @@ static void M_IncreaseResolutionOrBPP(void)
 
 static void M_DecreaseInternalScreenSize(void)
 {
-    if (g_Camera.type == CAM_CINEMATIC) {
-        return;
-    }
-
     DecreaseScreenSize();
 }
 
 static void M_IncreaseInternalScreenSize(void)
 {
-    if (g_Camera.type == CAM_CINEMATIC) {
-        return;
-    }
-
     IncreaseScreenSize();
 }
 
