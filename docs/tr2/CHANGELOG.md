@@ -67,6 +67,7 @@
 - fixed hot-plugging certain audio devices causing glitchy playback (partial fix; regression from 0.2)
 - fixed stats dialog reserving too much space for extra secrets (#3237, regression from 1.0)
 - fixed logging not outputting anything on Windows terminals
+- fixed `/kill all` command softlocking the game in Home Sweet Home
 - improved word wrapping algorithm in the dev console
 - improved the dev console commands documentation
 
