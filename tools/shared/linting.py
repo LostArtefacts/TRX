@@ -248,6 +248,7 @@ def lint_undefined_game_strings(
         )
 
         for i, line in enumerate(path.open("r"), 1):
+            line = re.sub('//.*', '', line)
             for match in re.finditer(RE_GAME_STRING_USAGE, line):
                 def_ = match.group(1)
                 # For child project: it needs to be defined in libtrx or the child project

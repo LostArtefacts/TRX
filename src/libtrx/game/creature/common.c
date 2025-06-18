@@ -1087,7 +1087,8 @@ void Creature_SetAlliesHostile(bool enable)
 
 bool Creature_IsAlive(const ITEM *const item)
 {
-    return item->hit_points > 0;
+    return (item->hit_points > 0)
+        || (item->hit_points == DONT_TARGET && item->active);
 }
 
 bool Creature_IsHostile(const ITEM *const item)

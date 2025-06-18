@@ -1135,6 +1135,10 @@
         "STATS_KILLS": "Uccisioni",
         "STATS_MEDIPACKS_USED": "Kit Medici Usati",
         "STATS_SECRETS": "Segreti Scoperti",
-        "STATS_TIME_TAKEN": "Tempo Impiegato"
+        "STATS_TIME_TAKEN": "Tempo Impiegato",
+        "CMD_WINSTON_DEAD": "\\{review}Il tuo maggiordomo è morto. Mostro!",
+        "CMD_WINSTON_SPAWNED": "\\{review}Spawnato Winston vicino a Lara",
+        "CMD_WINSTON_TELEPORTED": "\\{review}Teletrasportato Winston vicino a Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "\\{review}Impossibile evocare Winston"
     }
 }

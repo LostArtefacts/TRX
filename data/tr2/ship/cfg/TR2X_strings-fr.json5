@@ -1135,6 +1135,10 @@
         "STATS_KILLS": "\\{review}Tués",
         "STATS_MEDIPACKS_USED": "\\{review}Trousse de santé utilisée",
         "STATS_SECRETS": "\\{review}Secrets trouvés",
-        "STATS_TIME_TAKEN": "\\{review}Temps écoulé"
+        "STATS_TIME_TAKEN": "\\{review}Temps écoulé",
+        "CMD_WINSTON_DEAD": "\\{review}Votre majordome est mort. Monstre !",
+        "CMD_WINSTON_SPAWNED": "\\{review}Fait apparaître Winston près de Lara",
+        "CMD_WINSTON_TELEPORTED": "\\{review}Téléporté Winston près de Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "\\{review}Échec d'invoquer Winston"
     }
 }

@@ -1108,6 +1108,10 @@
         "STATS_KILLS": "Zabójstwa",
         "STATS_MEDIPACKS_USED": "Zużyte apteczki",
         "STATS_SECRETS": "Odnalezione sekrety",
-        "STATS_TIME_TAKEN": "Spędzony czas"
+        "STATS_TIME_TAKEN": "Spędzony czas",
+        "CMD_WINSTON_DEAD": "Twój lokaj jest martwy. Ty potworze!",
+        "CMD_WINSTON_SPAWNED": "Przywołano Winstona w pobliżu Lary",
+        "CMD_WINSTON_TELEPORTED": "Przywołano Winstona w pobliżu Lary",
+        "CMD_WINSTON_SPAWN_FAILED": "\\{review}Nie udało się przywołać Winstona"
     }
 }
