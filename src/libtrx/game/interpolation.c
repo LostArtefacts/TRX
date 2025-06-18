@@ -407,6 +407,11 @@ double Interpolation_GetCameraRate(void)
     return m_CameraRate;
 }
 
+double Interpolation_GetRate(void)
+{
+    return m_Rate;
+}
+
 void Interpolation_SetRate(double rate)
 {
     m_Rate = rate;

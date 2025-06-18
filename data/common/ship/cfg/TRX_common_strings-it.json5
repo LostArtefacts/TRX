@@ -555,6 +555,7 @@
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
         "STATS_DETAIL_FMT": "%d di %d",
         "STATS_FINAL_STATISTICS": "Statistiche Finali",
-        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Spento"
+        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Spento",
+        "PHOTO_MODE_ADVANCE_FRAME": "\\{review}Avanza fotogramma"
     }
 }

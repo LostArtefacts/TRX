@@ -170,3 +170,11 @@ finish:
 
     return gf_cmd;
 }
+
+PHASE *PhaseExecutor_GetOuterPhase(void)
+{
+    if (m_PhaseStackSize < 2) {
+        return nullptr;
+    }
+    return m_PhaseStack[m_PhaseStackSize - 2];
+}

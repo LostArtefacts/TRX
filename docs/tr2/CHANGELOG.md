@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...develop) - ××××-××-××
 - added French translation
+- added the ability to advance individual frames to the photo mode
 - added a new easter egg command
 - changed death timer skip to only trigger with Action and Inventory keys
 - removed config tool (we have ingame setting dialogs now)

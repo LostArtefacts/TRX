@@ -555,6 +555,7 @@
         "CMD_INVALID_SECRET": "\\{review}Secret invalide : %d",
         "CONSOLE_HELP_GIVE_SECRET": "\\{review}Liste les secrets de Lara, ou prend/donne un secret par numéro.",
         "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "\\{review}Désactivé",
-        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "\\{review}Basculer le filtre trapézoïdal"
+        "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "\\{review}Basculer le filtre trapézoïdal",
+        "PHOTO_MODE_ADVANCE_FRAME": "\\{review}Avancer le cadre"
     }
 }
