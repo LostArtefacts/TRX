@@ -125,7 +125,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Game_ProcessInput();
 
     if (g_Lara.death_timer > DEATH_WAIT
-        || (g_Lara.death_timer > DEATH_WAIT_INPUT && g_Input.any
+        || (g_Lara.death_timer > DEATH_WAIT_INPUT
+            && (g_InputDB.menu_confirm || g_InputDB.menu_back)
             && !g_Input.fly_cheat)
         || g_OverlayFlag == 2) {
         if (g_OverlayFlag == 2) {
