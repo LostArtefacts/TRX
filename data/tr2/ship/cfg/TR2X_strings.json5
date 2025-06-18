@@ -1093,6 +1093,10 @@
         }
     },
     "game_strings": {
+        "CMD_WINSTON_DEAD": "Your butler is death. You monster!",
+        "CMD_WINSTON_SPAWNED": "Summoned Winston near Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "Failed to summon Winston",
+        "CMD_WINSTON_TELEPORTED": "Summoned Winston near Lara",
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions.",

@@ -222,6 +222,7 @@ void Item_Kill(const int16_t item_num)
     item->hit_points = -1;
     item->flags |= IF_KILLED;
 #else
+    // NOTE: if changing this, test if GS(CMD_WINSTON_DEAD) works as expected
     if (item_num < m_LevelItemCount) {
         item->flags |= IF_KILLED;
     }
