@@ -28,3 +28,5 @@ BOUNDS_32 Room_GetWorldBounds(void);
 
 void Room_GetNearbyRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
+
+bool Room_FindValidPos(XYZ_32 *out_pos, int16_t *out_room_num);
