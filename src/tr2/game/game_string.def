@@ -41,7 +41,7 @@ GS_DEFINE(OSD_PERSPECTIVE_FILTER_OFF, "Perspective correction: off")
 GS_DEFINE(CMD_WINSTON_SPAWNED,      "Summoned Winston near Lara")
 GS_DEFINE(CMD_WINSTON_SPAWN_FAILED, "Failed to summon Winston")
 GS_DEFINE(CMD_WINSTON_TELEPORTED,   "Summoned Winston near Lara")
-GS_DEFINE(CMD_WINSTON_DEAD,         "Your butler is death. You monster!")
+GS_DEFINE(CMD_WINSTON_DEAD,         "Your butler is dead. You monster!")
 
 GS_DEFINE(GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION,                    "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.")
 GS_DEFINE(GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION,          "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.")
