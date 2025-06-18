@@ -274,7 +274,7 @@ static void M_InitialiseSoundEffects(const char *file_name)
 
     for (int32_t i = 0, current_sample = 0; current_sample < sample_count;
          i++) {
-        uint32_t header[11];
+        uint32_t header[11] = {};
         File_ReadData(fp, header, 11 * sizeof(uint32_t));
         if (header[0] != MKTAG('R', 'I', 'F', 'F')
             || header[2] != MKTAG('W', 'A', 'V', 'E')
