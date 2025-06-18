@@ -60,6 +60,7 @@ void UI_PhotoMode(void)
     UI_LabelFmt("%s: ", GS(KEYMAP_ROLL));
     UI_LabelFmt("%s: ", GS(PHOTO_MODE_FOV_ROLE));
     UI_LabelFmt("%s: ", GS(KEYMAP_LOOK));
+    UI_LabelFmt("%s: ", GS(KEYMAP_PAUSE));
     UI_LabelFmt(
         "%s: ",
         Input_GetKeyName(
@@ -86,6 +87,7 @@ void UI_PhotoMode(void)
     UI_Label(GS(PHOTO_MODE_ROTATE90_PROMPT));
     UI_Label(GS(PHOTO_MODE_FOV_PROMPT));
     UI_Label(GS(PHOTO_MODE_RESET_PROMPT));
+    UI_Label(GS(PHOTO_MODE_ADVANCE_FRAME));
     UI_Label(GS(PHOTO_MODE_TOGGLE_HELP));
     UI_Label(GS(PHOTO_MODE_SNAP_PROMPT));
     UI_Label(GS(MISC_EXIT));

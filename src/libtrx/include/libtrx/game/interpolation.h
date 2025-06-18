@@ -6,6 +6,7 @@ void Interpolation_Enable(void);
 
 double Interpolation_GetWorldRate(void);
 double Interpolation_GetCameraRate(void);
+double Interpolation_GetRate(void);
 void Interpolation_SetRate(double rate);
 
 void Interpolation_Interpolate(void);
