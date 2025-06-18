@@ -1,7 +1,9 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...develop) - ××××-××-××
 - added French translation
-- fixed certain secrets not registering (#3252, regression from 4.12)
 - removed config tool (we have ingame setting dialogs now)
+
+## [4.12.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...tr1-4.12.1) - 2025-06-18
+- fixed certain secrets not registering (#3252, regression from 4.12)
 
 ## [4.12](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...tr1-4.12) - 2025-06-17
 - added builtin support for ingame string translations
