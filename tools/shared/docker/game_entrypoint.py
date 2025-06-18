@@ -65,13 +65,7 @@ class PackageOptions(BaseOptions):
                 (
                     self.build_root / f"TR{self.tr_version}X.exe",
                     f"TR{self.tr_version}X.exe",
-                ),
-                (
-                    Path(
-                        f"/app/tools/config/out/TR{self.tr_version}X_ConfigTool.exe"
-                    ),
-                    f"TR{self.tr_version}X_ConfigTool.exe",
-                ),
+                )
             ]
 
         return []

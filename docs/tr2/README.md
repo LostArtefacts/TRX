@@ -135,16 +135,8 @@ less like this (click to expand):
 │   ├── fade.glsl
 │   └── fbo.glsl
 ├── TR2X.exe
-└── TR2X_ConfigTool.exe
 </pre>
 </details>
-
-### Configuring
-
-To configure TR2X, run the `TR2X_ConfigTool.exe` application. All the
-configuration is explained in this tool. Alternatively, after running the game
-at least once, you can edit `TR2X.json5` manually in a text editor such
-as Notepad.
 
 ## macOS
 

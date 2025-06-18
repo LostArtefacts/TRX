@@ -11,17 +11,6 @@
 
 <hr/>
 
-> [!NOTE]
->
-> We've merged TR1X and TR2X into a single codebase, now renamed **TRX**.
->
-> - TR1 and TR2 remain distinct with their own release cycles.
-> - Config tools and TR1 installer remain separate.
-> - Simplifies internal code merges and feature sharing, replacing **libtrx**.
->
-> Thanks for your support!
-
-
 Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and **Tomb Raider 2**, respectively. Both projects aim to enhance these classic games through decompilation and the implementation of open-source alternatives to proprietary components.
 
 ## TR1X - Tomb Raider 1

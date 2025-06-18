@@ -1,8 +1,0 @@
-{
-  "AppImage": "TR2X.png",
-  "ConfigPath": "cfg\\TR2X.json5",
-  "GameFlowName": "TR2X_gameflow.json5",
-  "ExecutableName": "TR2X.exe",
-  "GoldSupported": true,
-  "GitHubURL": "https://github.com/LostArtefacts/TRX"
-}

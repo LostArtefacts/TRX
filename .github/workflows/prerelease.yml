@@ -21,7 +21,7 @@ jobs:
     name: TR1 (Windows)
     uses: ./.github/workflows/job_build_tr1.yml
     with:
-      platform: win-all
+      platform: win
       target: debug
     secrets: inherit
 
@@ -48,7 +48,7 @@ jobs:
     name: TR2 (Windows)
     uses: ./.github/workflows/job_build_tr2.yml
     with:
-      platform: win-all
+      platform: win
       target: debug
     secrets: inherit
 

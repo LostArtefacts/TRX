@@ -1588,10 +1588,9 @@ Following are each of the properties available within an FMV.
 **\*** Required property.
 
 ## User Configuration
-TRX ships with a configuration tool to allow users to adjust game settings to
-their taste. This tool writes to `cfg\TR1X.json5` and `cfg\TR2X.json5`. As a
-level builder, you may however wish to enforce some settings to match how your
-level is designed.
+TRX allows the players to configure the game to their taste. The ingame setting
+dialogs write to `cfg\TR1X.json5` and `cfg\TR2X.json5`. As a level builder, you
+may however wish to enforce some settings to match how your level is designed.
 
 As an example, let's say you do not wish to add save crystals to your level, and
 as a result you wish to prevent the player from enabling that option in the
@@ -1605,8 +1604,8 @@ editor and add the following.
 ```
 
 This means that the game will enforce your chosen value for this particular
-config setting. If the player launches the config tool, the option to toggle
-save crystals will be greyed out.
+config setting. If the player tries to edit the settings, the option to toggle
+save crystals will be disabled.
 
 You can add as many settings within the `enforced_config` section as needed.
 Refer to the key names within `cfg\TR1X.json5` and `cfg\TR2X.json5` for

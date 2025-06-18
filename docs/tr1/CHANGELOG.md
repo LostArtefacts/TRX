@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...develop) - ××××-××-××
 - added French translation
+- removed config tool (we have ingame setting dialogs now)
 
 ## [4.12](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...tr1-4.12) - 2025-06-17
 - added builtin support for ingame string translations
