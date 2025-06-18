@@ -561,7 +561,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_SECRET: {
             // TODO: implement support for TR1-style secrets as an option
             // in TR2, see #2047
-            const int16_t secret_num = 1 << (int16_t)(intptr_t)cmd->parameter;
+            const int16_t secret_num = (int16_t)(intptr_t)cmd->parameter;
             if (Stats_AddSecret(secret_num)) {
                 Music_Play(MX_SECRET, MPM_ALWAYS);
             }
