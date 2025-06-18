@@ -1,5 +1,6 @@
 #include "game/rooms/common.h"
 
+#include "debug.h"
 #include "game/const.h"
 #include "game/game_buf.h"
 #include "game/objects/common.h"
@@ -8,6 +9,7 @@
 #include "game/rooms.h"
 #include "game/sound/common.h"
 #include "utils.h"
+#include "vector.h"
 
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
@@ -289,4 +291,85 @@ void Room_GetNearbyRooms(
     M_GetNewRoom(x - r, y - h, r + z, room_num);
     M_GetNewRoom(r + x, y - h, z - r, room_num);
     M_GetNewRoom(x - r, y - h, z - r, room_num);
+}
+
+bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
+{
+    ASSERT(out_pos != nullptr);
+    ASSERT(out_room_num != nullptr);
+    XYZ_32 initial_pos = *out_pos;
+    int32_t x = out_pos->x;
+    int32_t y = out_pos->y;
+    int32_t z = out_pos->z;
+    int16_t room_num = *out_room_num;
+    if (room_num == NO_ROOM) {
+        room_num = Room_GetIndexFromPos(x, y, z);
+    }
+    if (room_num == NO_ROOM) {
+        return false;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flip_status == RFS_FLIPPED && Room_GetFlipStatus()) {
+        room_num = Room_GetFlippedBaseRoom(room_num);
+        if (room_num == NO_ROOM) {
+            return false;
+        }
+    }
+
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+    int16_t height = Room_GetHeight(sector, x, y, z);
+
+    if (height == NO_HEIGHT) {
+        // Sample a sphere of points around target x, y, z
+        // and teleport to the first available location.
+        VECTOR *const points = Vector_Create(sizeof(XYZ_32));
+
+        const int32_t radius = 10;
+        const int32_t unit = STEP_L;
+        for (int32_t dx = -radius; dx <= radius; dx++) {
+            for (int32_t dz = -radius; dz <= radius; dz++) {
+                if (SQUARE(dx) + SQUARE(dz) > SQUARE(radius)) {
+                    continue;
+                }
+
+                const XYZ_32 point = {
+                    .x = ROUND_TO_SECTOR(x + dx * unit) + WALL_L / 2,
+                    .y = y,
+                    .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
+                };
+                sector = Room_GetSector(point.x, point.y, point.z, &room_num);
+                height =
+                    Room_GetHeightEx(sector, point.x, point.y, point.z, true);
+                if (height == NO_HEIGHT) {
+                    continue;
+                }
+                Vector_Add(points, (void *)&point);
+            }
+        }
+
+        int32_t best_distance = INT32_MAX;
+        for (int32_t i = 0; i < points->count; i++) {
+            const XYZ_32 *const point = (const XYZ_32 *)Vector_Get(points, i);
+            const int32_t distance = XYZ_32_GetDistance(point, &initial_pos);
+            if (distance < best_distance) {
+                best_distance = distance;
+                x = point->x;
+                y = point->y;
+                z = point->z;
+            }
+        }
+
+        Vector_Free(points);
+        if (best_distance == INT32_MAX) {
+            return false;
+        }
+    }
+
+    out_pos->x = x;
+    out_pos->y = y;
+    out_pos->z = z;
+    *out_room_num = room_num;
+
+    return true;
 }
