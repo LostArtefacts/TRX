@@ -191,16 +191,8 @@ less like this (click to expand):
 │   ├── fbo.glsl
 │   └── sprites.glsl
 ├── TR1X.exe
-└── TR1X_ConfigTool.exe
 </pre>
 </details>
-
-### Configuring
-
-To configure TR1X, run the `TR1X_ConfigTool.exe` application. All the
-configuration is explained in this tool. Alternatively, after running the game
-at least once, you can edit `TR1X.json5` manually in a text editor such
-as Notepad.
 
 ## macOS
 
@@ -383,7 +375,7 @@ However, you can easily download them manually from these urls:
 
 ## Improvements over original game
 
-Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for details.
+Not all options are turned on by default. Refer to the ingame settings for details.
 
 #### UI
 - added proper UI and bar scaling

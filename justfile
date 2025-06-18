@@ -40,7 +40,6 @@ _docker_run *args:
 
 image-win force="1": (_docker_build "tools/shared/docker/game-win/Dockerfile" "rrdash/trx-win" force)
 image-linux force="1": (_docker_build "tools/shared/docker/game-linux/Dockerfile" "rrdash/trx-linux" force)
-image-win-config force="1": (_docker_build "tools/shared/docker/config/Dockerfile" "rrdash/trx-config" force)
 image-win-installer force="1": (_docker_build "tools/shared/docker/installer/Dockerfile" "rrdash/trx-installer" force)
 
 push-image-linux: (image-linux "0") (_docker_push "rrdash/trx-linux")

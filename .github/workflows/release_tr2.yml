@@ -42,7 +42,7 @@ jobs:
     if: vars.RELEASE_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr2.yml
     with:
-      platform: win-all
+      platform: win
       target: release
     secrets: inherit
 
