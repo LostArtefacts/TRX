@@ -413,7 +413,9 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
-    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+    if (stage == SAVEGAME_STAGE_BEFORE_LOAD) {
+        MovableBlock_UpdateBox(item, false);
+    } else if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->flags & IF_KILLED) {
             const int16_t item_num = Item_GetIndex(item);
             Item_RemoveWalkable(item_num);
@@ -426,6 +428,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         const bool is_push_pull = item->status == IS_ACTIVE ? true : false;
         MovableBlock_SetPushPull(item, is_push_pull);
         MovableBlock_UpdateRotation(item, item->rot.y);
+        MovableBlock_UpdateBox(item, true);
     }
 }
 
@@ -447,8 +450,7 @@ static void M_Control(const int16_t item_num)
         Item_Kill(item_num);
         Item_RemoveWalkable(item_num);
         Item_SortWalkables();
-        // TODO Fix enemy boxes.
-        // Room_AlterFloorHeight(item, WALL_L);
+        MovableBlock_UpdateBox(item, false);
         return;
     }
 
@@ -514,8 +516,7 @@ static void M_Control(const int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
-        // TODO Fix enemy boxes.
-        // Room_AlterFloorHeight(item, -WALL_L);
+        MovableBlock_UpdateBox(item, false);
         Item_SortWalkables();
         Room_TestTriggers(item);
     }
@@ -634,8 +635,7 @@ static void M_Collision(
 
         item->status = IS_ACTIVE;
         Item_AddActive(item_num);
-        // TODO Fix enemy boxes.
-        // Room_AlterFloorHeight(item, WALL_L);
+        MovableBlock_UpdateBox(item, false);
         Item_Animate(item);
         Lara_Animate(lara_item);
         MovableBlock_SetPushPull(item, true);

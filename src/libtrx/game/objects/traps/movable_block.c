@@ -4,6 +4,7 @@
 #include "game/game_buf.h"
 #include "game/items.h"
 #include "game/objects/vars.h"
+#include "game/pathing.h"
 #include "vector.h"
 
 #include <stdlib.h>
@@ -105,6 +106,7 @@ void MovableBlock_Initialise(const int16_t item_num)
     data->original_rot =
         (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
     MovableBlock_UpdateRotation(item, data->original_rot);
+    MovableBlock_UpdateBox(item, true);
 }
 
 // TODO: make private
@@ -113,6 +115,29 @@ void MovableBlock_UpdateRotation(ITEM *const item, const int16_t rot_y)
     item->rot.y = rot_y;
     M_PRIV *const data = (M_PRIV *)item->data;
     data->counter_rot[0] = data->original_rot - rot_y;
+}
+
+// TODO: make private
+void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)
+{
+    // TODO Might be other cases...
+    if (blocked
+        && (item->status == IS_ACTIVE || item->status == IS_INVISIBLE
+            || (item->flags & IF_KILLED) != 0)) {
+        return;
+    }
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (sector->floor.height == item->pos.y && sector->box != NO_BOX) {
+        BOX_INFO *const box = Box_GetBox(sector->box);
+        if (blocked) {
+            box->overlap_index |= BOX_BLOCKED;
+        } else {
+            box->overlap_index &= ~BOX_BLOCKED;
+        }
+    }
 }
 
 void MovableBlock_SetupFloor(void)
