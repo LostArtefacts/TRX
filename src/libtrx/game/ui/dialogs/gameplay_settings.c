@@ -35,6 +35,13 @@ static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
     },
 
     {
+        .target = &g_Config.gameplay.enable_credits,
+        .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_CREDITS),
+        .description_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION),
+        .option_type = COT_BOOL,
+    },
+
+    {
         .target = &g_Config.gameplay.enable_fmv,
         .label_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_FMV),
         .description_id = GS_ID(GAMEPLAY_SETTINGS_ENABLE_FMV_DESCRIPTION),

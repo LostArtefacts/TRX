@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...develop) - ××××-××-××
 - added French translation
 - added the ability to advance individual frames to the photo mode
+- added the ability to skip end game credits (#3266)
 - changed death timer skip to only trigger with Action and Inventory keys
 - removed config tool (we have ingame setting dialogs now)
 

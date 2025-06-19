@@ -556,6 +556,8 @@
         "CMD_INVALID_SECRET": "Nieprawidłowy sekret: %d",
         "CONSOLE_HELP_GIVE_SECRET": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru.",
         "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Włącz/wyłącz filtr trapezowy",
-        "PHOTO_MODE_ADVANCE_FRAME": "Pomiń klatkę"
+        "PHOTO_MODE_ADVANCE_FRAME": "Pomiń klatkę",
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS": "Napisy końcowe",
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "Włącza ekrany z napisami końcowymi wyświetlane po ukończeniu gry. Ustawienie nie ma wpływu na ekran końcowych statystyk."
     }
 }

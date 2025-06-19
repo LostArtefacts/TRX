@@ -114,6 +114,7 @@ typedef struct {
         bool enable_console;
         bool enable_fmv;
         bool enable_legal;
+        bool enable_credits;
         bool enable_cutscenes;
         bool enable_enhanced_saves;
         bool enable_item_examining;

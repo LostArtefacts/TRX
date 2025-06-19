@@ -65,7 +65,7 @@ bool GF_HasAvailableStory(const int32_t slot_num)
             if (ev->type == GFS_PLAY_FMV) {
                 const int32_t fmv_id = (int32_t)(intptr_t)ev->data;
                 const GF_FMV *const fmv = &g_GameFlow.fmvs[fmv_id];
-                if (!fmv->is_legal) {
+                if (!fmv->is_legal && !fmv->is_credit) {
                     return true;
                 }
             }
@@ -93,7 +93,7 @@ bool GF_HasAvailableStory(const int32_t slot_num)
             if (ev->type == GFS_PLAY_FMV) {
                 const int32_t fmv_id = (int32_t)(intptr_t)ev->data;
                 const GF_FMV *const fmv = &g_GameFlow.fmvs[fmv_id];
-                if (!fmv->is_legal) {
+                if (!fmv->is_legal && !fmv->is_credit) {
                     return true;
                 }
             }

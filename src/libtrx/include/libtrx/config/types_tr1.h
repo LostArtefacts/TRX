@@ -108,6 +108,7 @@ typedef struct {
         bool enable_console;
         bool enable_fmv;
         bool enable_legal;
+        bool enable_credits;
         bool enable_compass_stats;
         bool enable_total_stats;
         bool enable_timer_in_inventory;
