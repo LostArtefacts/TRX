@@ -283,6 +283,8 @@ static bool M_LoadResumeInfo(
             resume_obj, "pickups", resume->stats.pickup_count);
         resume->stats.max_secret_count = JSON_ObjectGetInt(
             resume_obj, "max_secrets", resume->stats.max_secret_count);
+        resume->stats.all_secrets_mask = JSON_ObjectGetInt(
+            resume_obj, "all_secrets_mask", resume->stats.all_secrets_mask);
         resume->stats.max_kill_count = JSON_ObjectGetInt(
             resume_obj, "max_kills", resume->stats.max_kill_count);
         resume->stats.max_pickup_count = JSON_ObjectGetInt(
@@ -387,6 +389,8 @@ static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr)
             JSON_ObjectGetInt(end_obj, "pickups", end->pickup_count);
         end->max_secret_count =
             JSON_ObjectGetInt(end_obj, "max_secrets", end->max_secret_count);
+        end->all_secrets_mask = JSON_ObjectGetInt(
+            end_obj, "all_secrets_mask", end->all_secrets_mask);
         end->max_kill_count =
             JSON_ObjectGetInt(end_obj, "max_kills", end->max_kill_count);
         end->max_pickup_count =

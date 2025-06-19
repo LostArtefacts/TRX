@@ -136,4 +136,5 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
     resume->stats.max_secret_count = default_stats.max_secret_count;
+    resume->stats.all_secrets_mask = default_stats.all_secrets_mask;
 }

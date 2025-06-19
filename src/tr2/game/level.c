@@ -493,8 +493,10 @@ void Level_Init(void)
         if (layout != LEVEL_LAYOUT_UNKNOWN) {
             M_SkimLevel(file, layout);
             Stats_CalculateStats();
-            STATS_COMMON stats = {};
-            stats.max_secret_count = Stats_GetSecrets();
+            const STATS_COMMON stats = {
+                .max_secret_count = Stats_GetMaxSecrets(),
+                .all_secrets_mask = Stats_GetMaxSecretFlags(),
+            };
             Savegame_SetDefaultStats(level, stats);
         }
         GameBuf_Reset();

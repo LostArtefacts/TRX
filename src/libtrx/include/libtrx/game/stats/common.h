@@ -1,10 +1,13 @@
 #pragma once
 
-#include <stdint.h>
+#include "./types.h"
 
 extern void Stats_StartTimer(void);
 extern void Stats_ObserveItemsLoad(void);
 
-extern bool Stats_HasSecret(int16_t secret_num);
-extern bool Stats_TakeSecret(int16_t secret_num);
-extern bool Stats_AddSecret(int16_t secret_num);
+bool Stats_HasSecret(int16_t secret_num);
+bool Stats_TakeSecret(int16_t secret_num);
+bool Stats_AddSecret(int16_t secret_num);
+extern uint32_t Stats_GetMaxSecretFlags(void);
+
+void Stats_UpdateSecrets(LEVEL_STATS *stats);

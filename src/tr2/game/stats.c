@@ -10,14 +10,19 @@
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 
-#define USE_REAL_CLOCK 0
+#define M_USE_REAL_CLOCK 0
+
+typedef struct {
+    int32_t secret_count;
+    int32_t secret_flags;
+} M_MAX_STATS;
 
 static int32_t m_CachedItemCount = 0;
-static int32_t m_LevelSecrets = 0;
+static M_MAX_STATS m_LevelMax = {};
 
 static bool M_SetSecretFlag(uint16_t *flags, GAME_OBJECT_ID obj_id);
 
-#if USE_REAL_CLOCK
+#if M_USE_REAL_CLOCK
 static CLOCK_TIMER m_StartCounter = { .type = CLOCK_TYPE_REAL };
 static int32_t m_StartTimer = 0;
 
@@ -82,13 +87,8 @@ FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
         result.kill_count += stats->kill_count;
         result.distance_travelled += stats->distance_travelled;
         result.medipacks_used += stats->medipacks_used;
-
-        for (int32_t j = 0; j < stats->max_secret_count; j++) {
-            if (stats->secret_flags & (1 << j)) {
-                result.found_secrets++;
-            }
-            result.total_secrets++;
-        }
+        result.secret_count += stats->secret_count;
+        result.max_secret_count += stats->max_secret_count;
     }
 
     return result;
@@ -101,7 +101,7 @@ void Stats_ObserveItemsLoad(void)
 
 void Stats_CalculateStats(void)
 {
-    m_LevelSecrets = 0;
+    m_LevelMax.secret_count = 0;
     uint16_t secret_flags = 0;
 
     for (int32_t i = 0; i < m_CachedItemCount; i++) {
@@ -113,14 +113,19 @@ void Stats_CalculateStats(void)
 
         if (Object_IsType(item->object_id, g_SecretObjects)
             && M_SetSecretFlag(&secret_flags, item->object_id)) {
-            m_LevelSecrets++;
+            m_LevelMax.secret_count++;
         }
     }
 }
 
-int32_t Stats_GetSecrets(void)
+int32_t Stats_GetMaxSecrets(void)
 {
-    return m_LevelSecrets;
+    return m_LevelMax.secret_count;
+}
+
+uint32_t Stats_GetMaxSecretFlags(void)
+{
+    return (1 << m_LevelMax.secret_count) - 1;
 }
 
 void Stats_MarkSecretCollected(const GAME_OBJECT_ID obj_id)
@@ -146,7 +151,7 @@ bool Stats_CheckAllLevelSecretsCollected(void)
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
 {
     const FINAL_STATS stats = Stats_ComputeFinalStats(level_type);
-    return stats.found_secrets >= stats.total_secrets;
+    return stats.secret_count >= stats.max_secret_count;
 }
 
 void Stats_AddKill(void)

@@ -2,6 +2,7 @@
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 - fixed Lara's braid not being reflective (on Midas' hand) (#3257, regression from 4.9)
 - fixed turbo cheat causing audio desync in cutscenes (#3263)
+- fixed support for non-linear secret flags in custom levels (#3262, regression from 4.12)
 
 ## [4.12.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...tr1-4.12.1) - 2025-06-18
 - fixed certain secrets not registering (#3252, regression from 4.12)
