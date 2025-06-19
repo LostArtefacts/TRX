@@ -15,6 +15,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
+#include <libtrx/game/stats.h>
 #include <libtrx/json.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -462,6 +463,8 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
             resume_obj, "medipacks_used", resume->stats.medipacks_used);
         JSON_ObjectAppendInt(
             resume_obj, "max_secrets", resume->stats.max_secret_count);
+        JSON_ObjectAppendInt(
+            resume_obj, "all_secrets_mask", resume->stats.all_secrets_mask);
         JSON_ArrayAppendObject(resume_arr, resume_obj);
     }
     return resume_arr;
@@ -532,10 +535,13 @@ static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
         resume->stats.kill_count = JSON_ObjectGetInt(resume_obj, "kills", 0);
         resume->stats.secret_flags =
             JSON_ObjectGetInt(resume_obj, "secrets", 0);
+        Stats_UpdateSecrets(&resume->stats);
         resume->stats.medipacks_used =
             JSON_ObjectGetDouble(resume_obj, "medipacks_used", 0);
         resume->stats.max_secret_count =
             JSON_ObjectGetInt(resume_obj, "max_secrets", 0);
+        resume->stats.all_secrets_mask =
+            JSON_ObjectGetInt(resume_obj, "all_secrets_mask", 0);
     }
 
     return true;

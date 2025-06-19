@@ -170,9 +170,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     Stats_CalculateStats();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (resume != nullptr) {
-        resume->stats.max_pickup_count = Stats_GetPickups();
-        resume->stats.max_kill_count = Stats_GetKillables();
-        resume->stats.max_secret_count = Stats_GetSecrets();
+        resume->stats.max_pickup_count = Stats_GetMaxPickups();
+        resume->stats.max_kill_count = Stats_GetMaxKillables();
+        resume->stats.max_secret_count = Stats_GetMaxSecrets();
+        resume->stats.all_secrets_mask = Stats_GetMaxSecretFlags();
     }
 
     g_GameInfo.ask_for_save = g_Config.gameplay.enable_save_crystals

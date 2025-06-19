@@ -129,8 +129,8 @@ static void M_RowFromRole(
 
     case M_ROW_ALL_SECRETS:
         sprintf(
-            buf, GS(STATS_DETAIL_FMT), ((FINAL_STATS *)stats)->found_secrets,
-            ((FINAL_STATS *)stats)->total_secrets);
+            buf, GS(STATS_DETAIL_FMT), stats->secret_count,
+            stats->max_secret_count);
         M_Row(s, GS(STATS_SECRETS), buf);
         break;
 

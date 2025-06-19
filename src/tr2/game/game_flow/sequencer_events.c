@@ -134,8 +134,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     Stats_CalculateStats();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (resume != nullptr) {
-        const int32_t secret_count = Stats_GetSecrets();
-        resume->stats.max_secret_count = secret_count;
+        resume->stats.max_secret_count = Stats_GetMaxSecrets();
+        resume->stats.all_secrets_mask = Stats_GetMaxSecretFlags();
     }
 
     ASSERT(GF_GetCurrentLevel() == level);
