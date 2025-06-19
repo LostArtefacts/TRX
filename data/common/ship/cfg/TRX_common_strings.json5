@@ -87,6 +87,8 @@
         "GAMEPLAY_SETTINGS_ENABLE_COMPASS_STATS_DESCRIPTION": "Enables showing level statistics when the compass is selected.",
         "GAMEPLAY_SETTINGS_ENABLE_CONSOLE": "Console",
         "GAMEPLAY_SETTINGS_ENABLE_CONSOLE_DESCRIPTION": "Enables the developer console.",
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS": "Credit screens",
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "Enables credits screens shown after completing the game. Does not influence the final statistics screen.",
         "GAMEPLAY_SETTINGS_ENABLE_CUTSCENES": "Cutscenes",
         "GAMEPLAY_SETTINGS_ENABLE_CUTSCENES_DESCRIPTION": "Enables cutscenes playing.",
         "GAMEPLAY_SETTINGS_ENABLE_DEATHS_COUNTER": "Count Lara's deaths",

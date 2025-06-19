@@ -556,6 +556,8 @@
         "STATS_DETAIL_FMT": "%d di %d",
         "STATS_FINAL_STATISTICS": "Statistiche Finali",
         "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "Spento",
-        "PHOTO_MODE_ADVANCE_FRAME": "\\{review}Avanza fotogramma"
+        "PHOTO_MODE_ADVANCE_FRAME": "\\{review}Avanza fotogramma",
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS": "\\{review}Schermate di credito",
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "\\{review}Abilita le schermate di credito mostrate dopo aver completato il gioco. Non influisce sulla schermata finale delle statistiche."
     }
 }

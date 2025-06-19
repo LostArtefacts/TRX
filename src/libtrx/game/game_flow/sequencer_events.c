@@ -61,6 +61,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV)
     if (fmv->is_legal && !g_Config.gameplay.enable_legal) {
         return gf_cmd;
     }
+    if (fmv->is_credit && !g_Config.gameplay.enable_credits) {
+        return gf_cmd;
+    }
     FMV_Play(fmv->path);
     return gf_cmd;
 }
@@ -80,6 +83,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
 
     GF_DISPLAY_PICTURE_DATA *data = event->data;
     if (data->is_legal && !g_Config.gameplay.enable_legal) {
+        return gf_cmd;
+    }
+    if (data->is_credit && !g_Config.gameplay.enable_credits) {
         return gf_cmd;
     }
 
