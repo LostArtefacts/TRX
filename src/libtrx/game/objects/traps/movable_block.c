@@ -9,14 +9,14 @@
 
 #include <stdlib.h>
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------
  * Bit‑layout of ITEM->priv for movable blocks
- * -------------------------------------------------------------------------
+ * --------------------------------------------------------
  * bit 0      : LARA_PUSH_PULL flag (boolean)
  * bits 1–7   : free (reserved for future one‑bit flags)
  * bits 8–15  : CONSTANT_GRAVITY frame counter (0‑255)
- * higher bits: currently unused – still available
- * -------------------------------------------------------------------------*/
+ * higher bits: free
+ * -------------------------------------------------------*/
 #define LARA_PUSH_PULL ((uintptr_t)1u << 0)
 #define GRAVITY_SHIFT 8u
 #define GRAVITY_MASK ((uintptr_t)0xFFu << GRAVITY_SHIFT)

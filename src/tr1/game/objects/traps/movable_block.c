@@ -132,35 +132,33 @@ static bool M_IsItemOnTop(
         return false;
     }
 
-    const ITEM *const lara_item = Lara_GetItem();
-    // Creature setups run before Lara is initialized.
-    if (lara_item == nullptr) {
-        return false;
-    }
-
     int32_t dx = x - item->pos.x;
     int32_t dz = z - item->pos.z;
 
-    DIRECTION quadrant = ((uint16_t)lara_item->rot.y + DEG_45) / DEG_90;
-    switch (quadrant) {
-    case DIR_NORTH:
-        dx = -dx;
-        dz = -dz;
-        break;
-    case DIR_EAST:
-        int32_t t1 = dx;
-        dx = dz;
-        dz = -t1;
-        break;
-    case DIR_SOUTH:
-        break;
-    case DIR_WEST:
-        int32_t t2 = dx;
-        dx = -dz;
-        dz = t2;
-        break;
-    default:
-        break;
+    const ITEM *const lara_item = Lara_GetItem();
+    // Creature setups run before Lara is initialized.
+    if (lara_item != nullptr && !Camera_IsChunky()) {
+        DIRECTION quadrant = ((uint16_t)lara_item->rot.y + DEG_45) / DEG_90;
+        switch (quadrant) {
+        case DIR_NORTH:
+            dx = -dx;
+            dz = -dz;
+            break;
+        case DIR_EAST:
+            int32_t t1 = dx;
+            dx = dz;
+            dz = -t1;
+            break;
+        case DIR_SOUTH:
+            break;
+        case DIR_WEST:
+            int32_t t2 = dx;
+            dx = -dz;
+            dz = t2;
+            break;
+        default:
+            break;
+        }
     }
 
     return dx >= bounds->min.x && dx <= bounds->max.x && dz >= bounds->min.z
