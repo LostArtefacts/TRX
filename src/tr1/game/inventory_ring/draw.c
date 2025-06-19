@@ -133,6 +133,7 @@ void InvRing_Draw(INV_RING *const ring)
         Interpolation_Enable();
 
         Fader_Draw(&ring->back_fader);
+        Output_DrawPolyList();
 
         int32_t width = Screen_GetResWidth();
         int32_t height = Screen_GetResHeight();
