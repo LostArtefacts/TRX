@@ -52,7 +52,10 @@
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
+            "inherit_injections": false,
             "injections": [
+                "data/injections/pda_model.bin",
+                "data/injections/font.bin",
                 "data/injections/gym_music_tracks.bin",
                 "data/injections/gym_textures.bin",
             ],
