@@ -2,6 +2,7 @@
 - added French translation
 - added the ability to advance individual frames to the photo mode
 - changed death timer skip to only trigger with Action and Inventory keys
+- fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 - removed config tool (we have ingame setting dialogs now)
 
 ## [4.12.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...tr1-4.12.1) - 2025-06-18
