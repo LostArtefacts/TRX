@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...develop) - ××××-××-××
+- fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 
 ## [4.12.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...tr1-4.12.1) - 2025-06-18
 - fixed certain secrets not registering (#3252, regression from 4.12)
