@@ -17,16 +17,18 @@
 #include <string.h>
 
 #define M_USE_REAL_CLOCK 0
-#define M_MAX_SECRETS 16
+
+typedef struct {
+    int32_t pickup_count;
+    int32_t killable_count;
+    int32_t secret_count;
+    int32_t secret_flags;
+} M_MAX_STATS;
 
 static int32_t m_CachedItemCount = 0;
 static SECTOR **m_CachedSectorArray = nullptr;
-static int32_t m_LevelPickups = 0;
-static int32_t m_LevelKillables = 0;
-static int32_t m_LevelSecrets = 0;
-static uint32_t m_SecretRoom = 0;
+static M_MAX_STATS m_LevelMax;
 static bool m_KillableItems[MAX_ITEMS] = {};
-static bool m_IfKillable[O_NUMBER_OF] = {};
 
 #if M_USE_REAL_CLOCK
 static struct {
@@ -75,9 +77,9 @@ static void M_CheckTriggers(
     for (; cmd != nullptr; cmd = cmd->next_cmd) {
         if (cmd->type == TO_SECRET) {
             const int16_t secret_num = 1 << (int16_t)(intptr_t)cmd->parameter;
-            if (!(m_SecretRoom & secret_num)) {
-                m_SecretRoom |= secret_num;
-                m_LevelSecrets++;
+            if (!(m_LevelMax.secret_flags & secret_num)) {
+                m_LevelMax.secret_flags |= secret_num;
+                m_LevelMax.secret_count++;
             }
         } else if (cmd->type == TO_OBJECT) {
             const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
@@ -119,8 +121,8 @@ static void M_CheckTriggers(
 static void M_IncludeKillableItem(int16_t item_num)
 {
     m_KillableItems[item_num] = true;
-    m_LevelKillables += 1;
-    m_LevelPickups += Carrier_GetItemCount(item_num);
+    m_LevelMax.killable_count += 1;
+    m_LevelMax.pickup_count += Carrier_GetItemCount(item_num);
 }
 
 void Stats_ComputeFinal(GF_LEVEL_TYPE level_type, FINAL_STATS *final_stats)
@@ -171,19 +173,19 @@ void Stats_ObserveItemsLoad(void)
 
 void Stats_CalculateStats(void)
 {
-    m_LevelPickups = 0;
-    m_LevelKillables = 0;
-    m_LevelSecrets = 0;
-    m_SecretRoom = 0;
+    m_LevelMax.pickup_count = 0;
+    m_LevelMax.killable_count = 0;
+    m_LevelMax.secret_count = 0;
+    m_LevelMax.secret_flags = 0;
     memset(&m_KillableItems, 0, sizeof(m_KillableItems));
 
-    if (m_CachedItemCount) {
+    if (m_CachedItemCount != 0) {
         if (m_CachedItemCount > MAX_ITEMS) {
             LOG_ERROR("Too many items");
             return;
         }
 
-        for (int i = 0; i < m_CachedItemCount; i++) {
+        for (int32_t i = 0; i < m_CachedItemCount; i++) {
             const ITEM *const item = Item_Get(i);
 
             if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
@@ -194,7 +196,7 @@ void Stats_CalculateStats(void)
 
             if (Object_IsType(item->object_id, g_PickupObjects)
                 && !Carrier_IsItemCarried(i)) {
-                m_LevelPickups++;
+                m_LevelMax.pickup_count++;
             }
         }
     }
@@ -204,25 +206,30 @@ void Stats_CalculateStats(void)
 
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     if (current_level != nullptr) {
-        m_LevelPickups -= current_level->unobtainable.pickups;
-        m_LevelKillables -= current_level->unobtainable.kills;
-        m_LevelSecrets -= current_level->unobtainable.secrets;
+        m_LevelMax.pickup_count -= current_level->unobtainable.pickups;
+        m_LevelMax.killable_count -= current_level->unobtainable.kills;
+        m_LevelMax.secret_count -= current_level->unobtainable.secrets;
     }
 }
 
-int32_t Stats_GetPickups(void)
+int32_t Stats_GetMaxPickups(void)
 {
-    return m_LevelPickups;
+    return m_LevelMax.pickup_count;
 }
 
-int32_t Stats_GetKillables(void)
+int32_t Stats_GetMaxKillables(void)
 {
-    return m_LevelKillables;
+    return m_LevelMax.killable_count;
 }
 
-int32_t Stats_GetSecrets(void)
+int32_t Stats_GetMaxSecrets(void)
 {
-    return m_LevelSecrets;
+    return m_LevelMax.secret_count;
+}
+
+uint32_t Stats_GetMaxSecretFlags(void)
+{
+    return m_LevelMax.secret_flags;
 }
 
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
@@ -263,14 +270,6 @@ void Stats_UpdateTimer(void)
     Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.timer++;
 }
 #endif
-
-void Stats_UpdateSecrets(LEVEL_STATS *const stats)
-{
-    stats->secret_count = 0;
-    for (int32_t i = 0; i < M_MAX_SECRETS; i++) {
-        stats->secret_count += (stats->secret_flags & (1 << i)) ? 1 : 0;
-    }
-}
 
 void Stats_AddKill(void)
 {

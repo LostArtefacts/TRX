@@ -13,6 +13,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/stats.h>
 #include <libtrx/memory.h>
 
 #include <stdio.h>
@@ -198,6 +199,7 @@ static void M_ReadStats(LEVEL_STATS *const stats)
     stats->kill_count = M_ReadU16();
     stats->secret_flags = M_ReadU8();
     stats->medipacks_used = M_ReadU8() / 2.0f;
+    Stats_UpdateSecrets(stats);
 }
 
 static void M_ReadItems(void)

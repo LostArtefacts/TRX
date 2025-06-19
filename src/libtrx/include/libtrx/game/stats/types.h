@@ -9,9 +9,10 @@ typedef struct STATS_COMMON {
     uint32_t ammo_hits;
     uint32_t distance_travelled;
     uint16_t max_secret_count;
+    uint16_t all_secrets_mask; // bit mask containing valid secret slots
     double medipacks_used;
-#if TR_VERSION == 1
     uint16_t secret_count;
+#if TR_VERSION == 1
     uint16_t pickup_count;
     uint32_t max_kill_count;
     uint16_t max_pickup_count;
@@ -26,8 +27,4 @@ typedef struct {
 
 typedef struct {
     struct STATS_COMMON;
-#if TR_VERSION == 2
-    int32_t found_secrets;
-    int32_t total_secrets;
-#endif
 } FINAL_STATS;
