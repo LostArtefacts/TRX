@@ -13,12 +13,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EMPTY_ROOT "{}"
-#define ENFORCED_KEY "enforced_config"
+#define M_EMPTY_ROOT "{}"
+#define M_ENFORCED_KEY "enforced_config"
+#define M_HIDDEN_KEY "hidden_config"
 
 static bool M_ReadFromJSON(
     const char *def_json, const char *enf_json,
-    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets);
+    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets,
+    VECTOR *const hidden_targets);
 static void M_PreserveEnforcedState(
     JSON_OBJECT *root_obj, JSON_VALUE *old_root, JSON_VALUE *enf_root);
 static char *M_WriteToJSON(
@@ -48,14 +50,15 @@ static JSON_VALUE *M_ReadRoot(const char *const cfg_data)
 
 static bool M_ReadFromJSON(
     const char *const cfg_data, const char *const enf_data,
-    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets)
+    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets,
+    VECTOR *const hidden_targets)
 {
     bool result = false;
 
     JSON_VALUE *cfg_root =
-        M_ReadRoot(cfg_data == nullptr ? EMPTY_ROOT : cfg_data);
+        M_ReadRoot(cfg_data == nullptr ? M_EMPTY_ROOT : cfg_data);
     JSON_VALUE *enf_root =
-        M_ReadRoot(enf_data == nullptr ? EMPTY_ROOT : enf_data);
+        M_ReadRoot(enf_data == nullptr ? M_EMPTY_ROOT : enf_data);
     if (cfg_root != nullptr) {
         result = true;
     }
@@ -63,8 +66,9 @@ static bool M_ReadFromJSON(
     JSON_OBJECT *cfg_root_obj = JSON_ValueAsObject(cfg_root);
     JSON_OBJECT *enf_root_obj = JSON_ValueAsObject(enf_root);
 
+    // Merge settings from the game flow file.
     JSON_OBJECT *const enforced_config =
-        JSON_ObjectGetObject(enf_root_obj, ENFORCED_KEY);
+        JSON_ObjectGetObject(enf_root_obj, M_ENFORCED_KEY);
     if (enforced_config != nullptr && enforced_targets != nullptr) {
         Vector_Clear(enforced_targets);
         const JSON_OBJECT_ELEMENT *elem = enforced_config->start;
@@ -83,6 +87,31 @@ static bool M_ReadFromJSON(
     }
     if (enforced_config != nullptr) {
         JSON_ObjectMerge(cfg_root_obj, enforced_config);
+    }
+
+    // Record hidden settings from the game flow file.
+    JSON_ARRAY *const hidden_config_arr =
+        JSON_ObjectGetArray(enf_root_obj, M_HIDDEN_KEY);
+    if (hidden_config_arr != nullptr && hidden_targets != nullptr) {
+        Vector_Clear(hidden_targets);
+        for (size_t i = 0; i < hidden_config_arr->length; i++) {
+            const char *const name =
+                JSON_ArrayGetString(hidden_config_arr, i, nullptr);
+            if (name == nullptr) {
+                LOG_WARNING(
+                    "Expected element %d in \"%s\" to be a string", i,
+                    M_HIDDEN_KEY);
+                continue;
+            }
+            const CONFIG_OPTION *opt = Config_GetOptionMap();
+            while (opt->target != nullptr) {
+                if (strcmp(M_ResolveOptionName(opt->name), name) == 0) {
+                    Vector_Add(hidden_targets, &opt->target);
+                    break;
+                }
+                opt++;
+            }
+        }
     }
 
     load(cfg_root_obj);
@@ -108,7 +137,7 @@ static void M_PreserveEnforcedState(
     JSON_OBJECT *old_root_obj = JSON_ValueAsObject(old_root);
     JSON_OBJECT *enf_root_obj = JSON_ValueAsObject(enf_root);
     JSON_OBJECT *enforced_obj =
-        JSON_ObjectGetObject(enf_root_obj, ENFORCED_KEY);
+        JSON_ObjectGetObject(enf_root_obj, M_ENFORCED_KEY);
     if (enforced_obj == nullptr) {
         return;
     }
@@ -178,7 +207,8 @@ bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
     }
 
     bool result = M_ReadFromJSON(
-        default_data, enforced_data, args->action, args->enforced_targets);
+        default_data, enforced_data, args->action, args->enforced_targets,
+        args->hidden_targets);
 
     Memory_FreePointer(&default_data);
     Memory_FreePointer(&enforced_data);

@@ -18,8 +18,9 @@ static void M_Draw(
 {
     UI_BeginAnchor(0.5f, 0.5f);
     UI_BeginRowArrows(
-        is_focused && (g_Config.ui.enable_wraparound || s->active_tab_idx > 0),
-        is_focused
+        is_focused && s->tab_count > 0
+            && (g_Config.ui.enable_wraparound || s->active_tab_idx > 0),
+        is_focused && s->tab_count > 0
             && (g_Config.ui.enable_wraparound
                 || s->active_tab_idx + 1 < s->tab_count),
         UI_ROW_ARROWS_MEDIUM);
@@ -71,7 +72,9 @@ void UI_TabSwitch_Free(UI_TAB_SWITCH_STATE *const s)
 
 bool UI_TabSwitch_Cycle(UI_TAB_SWITCH_STATE *const s, const int32_t dir)
 {
-    if (s->active_tab_idx + dir < 0) {
+    if (s->tab_count == 0) {
+        return false;
+    } else if (s->active_tab_idx + dir < 0) {
         if (g_Config.ui.enable_wraparound) {
             s->active_tab_idx = s->tab_count - 1;
             return true;

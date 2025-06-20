@@ -45,6 +45,9 @@ remains distinct for each game.
 "enforced_config": {
     "enable_save_crystals": false,
 },
+"hidden_config": [
+    "enable_legal",
+],
 "levels": [
     {
         "path": "data/gym.phd",
@@ -155,6 +158,16 @@ remains distinct for each game.
     <td>
       This allows <em>any</em> regular game config setting to be overriden. See
       <a href="#user-configuration">User configuration</a> for full details.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="hidden-config"></a>
+    <code>hidden_config</code></td>
+    <td>String array</td>
+    <td>
+      This allows <em>any</em> regular game config setting to be hidden from
+      the ingame settings dialogs. See <a href="#user-configuration">User
+      configuration</a> for full details.
     </td>
   </tr>
   <tr valign="top">
@@ -1617,6 +1630,23 @@ keyboard or controller layouts defined.
 
 If you do not have any requirement to enforce settings, you can omit the
 `enforced_config` section from your game flow altogether.
+
+### Hiding settings from the in-game UI
+
+If you prefer to hide certain configuration options entirely (rather than
+merely enforce their values), you can add a `hidden_config` section in your
+game flow JSON. Any setting listed here will be omitted from the settings
+dialogs. For example:
+
+```json
+"hidden_config": [
+  "enable_legal",
+  "enable_save_crystals",
+]
+```
+
+When all settings in a given tab are hidden, that tab will also be removed from
+the UI.
 
 ## Water colors<a id="user-content-water-color-table"></a>
 
