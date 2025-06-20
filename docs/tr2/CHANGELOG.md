@@ -8,6 +8,7 @@
 - changed the examine dialog to be close-able with Look button (#3225)
 - changed some settings to be hidden when they're only applicable to specific games or custom levels (#3242)
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
+- fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - removed config tool (we have ingame setting dialogs now)
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...tr2-1.2) - 2025-06-17
