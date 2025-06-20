@@ -73,6 +73,9 @@ void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
     }
     UI_TextDialog_Control(p->ui.state);
 
+    if (g_InputDB.look) {
+        g_InputDB.menu_back = true;
+    }
     if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
         M_Shutdown(p);
     }

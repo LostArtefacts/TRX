@@ -4,6 +4,7 @@
 - added the ability to skip end game credits (#3266)
 - added a new easter egg command
 - changed death timer skip to only trigger with Action and Inventory keys
+- changed the examine dialog to be close-able with Look button (#3225)
 - removed config tool (we have ingame setting dialogs now)
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...tr2-1.2) - 2025-06-17

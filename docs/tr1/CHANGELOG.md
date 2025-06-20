@@ -3,6 +3,7 @@
 - added the ability to advance individual frames to the photo mode
 - added the ability to skip end game credits (#3266)
 - changed death timer skip to only trigger with Action and Inventory keys
+- changed the examine dialog to be close-able with Look button (#3225)
 - fixed turbo cheat causing audio desync in cutscenes (#3263)
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 - fixed Lara's braid not being reflective (on Midas' hand) (#3257, regression from 4.9)
