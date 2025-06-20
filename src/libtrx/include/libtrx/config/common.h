@@ -24,6 +24,9 @@ const CONFIG_OPTION *Config_GetOption(const void *target);
 // Returns true if a given setting was enforced by the game flow file.
 bool Config_IsOptionEnforced(const void *target);
 
+// Returns true if a given setting should be hidden in settings dialogs.
+bool Config_IsOptionHidden(const void *target);
+
 // Returns whether the given setting's current value is the same as its default.
 bool Config_IsOptionAtDefault(const void *target);
 

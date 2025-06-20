@@ -17,6 +17,8 @@ typedef enum {
 
 // In-memory list of pointers to config options enforced by the game flow.
 static VECTOR *m_EnforcedOptions = nullptr;
+// In-memory list of pointers to config options hidden by the game flow.
+static VECTOR *m_HiddenOptions = nullptr;
 
 static EVENT_MANAGER *m_EventManager = nullptr;
 
@@ -42,6 +44,10 @@ void Config_Shutdown(void)
         Vector_Free(m_EnforcedOptions);
         m_EnforcedOptions = nullptr;
     }
+    if (m_HiddenOptions != nullptr) {
+        Vector_Free(m_HiddenOptions);
+        m_HiddenOptions = nullptr;
+    }
 }
 
 bool Config_Read(void)
@@ -51,11 +57,17 @@ bool Config_Read(void)
     } else {
         Vector_Clear(m_EnforcedOptions);
     }
+    if (m_HiddenOptions == nullptr) {
+        m_HiddenOptions = Vector_Create(sizeof(void *));
+    } else {
+        Vector_Clear(m_HiddenOptions);
+    }
     const CONFIG_IO_ARGS args = {
         .default_path = M_GetPath(CFT_DEFAULT),
         .enforced_path = M_GetPath(CFT_ENFORCED),
         .action = &Config_LoadFromJSON,
         .enforced_targets = m_EnforcedOptions,
+        .hidden_targets = m_HiddenOptions,
     };
     const bool result = ConfigFile_Read(&args);
     if (result) {
@@ -118,6 +130,12 @@ bool Config_IsOptionEnforced(const void *const target)
 {
     return m_EnforcedOptions != nullptr
         && Vector_Contains(m_EnforcedOptions, &target);
+}
+
+bool Config_IsOptionHidden(const void *const target)
+{
+    return m_HiddenOptions != nullptr
+        && Vector_Contains(m_HiddenOptions, &target);
 }
 
 bool Config_IsOptionAtDefault(const void *const target)

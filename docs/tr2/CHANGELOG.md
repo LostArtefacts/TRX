@@ -2,6 +2,7 @@
 - added French translation
 - added the ability to advance individual frames to the photo mode
 - added the ability to skip end game credits (#3266)
+- added the ability to hide specific game settings (#3242)
 - added a new easter egg command
 - changed death timer skip to only trigger with Action and Inventory keys
 - changed the examine dialog to be close-able with Look button (#3225)

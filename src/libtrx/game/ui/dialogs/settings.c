@@ -54,6 +54,8 @@ static void M_RecomputeSizes(UI_SETTINGS_STATE *s);
 static void M_Footer(const UI_SETTINGS_STATE *s);
 static void M_InitCommon(UI_SETTINGS_STATE *s, GAME_STRING_ID title);
 static void M_HandleConfigChange(const EVENT *event, void *data);
+static const UI_SETTINGS_OPTION *M_GetOptionByRow(
+    const UI_SETTINGS_STATE *s, int32_t row_idx);
 
 static int32_t M_GetVisibleRows(void)
 {
@@ -72,6 +74,24 @@ static int32_t M_GetVisibleRows(void)
             return thresholds[i].rows;
         }
     }
+}
+
+// Map a visible row index to the corresponding option, skipping hidden ones.
+static const UI_SETTINGS_OPTION *M_GetOptionByRow(
+    const UI_SETTINGS_STATE *const s, const int32_t row_idx)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+        const UI_SETTINGS_OPTION *const opt = &s->options[i];
+        if (Config_IsOptionHidden(opt->target)) {
+            continue;
+        }
+        if (count == row_idx) {
+            return opt;
+        }
+        count++;
+    }
+    return nullptr;
 }
 
 static uint8_t *M_GetColorComponent(const UI_SETTINGS_OPTION *const option)
@@ -114,7 +134,10 @@ static M_ENUM_LOOKUP M_GetEnumEntry(const UI_SETTINGS_OPTION *const option)
 static const char *M_FormatRowValue(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
-    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
+    if (option == nullptr) {
+        return nullptr;
+    }
     if (option->custom_handler.format_value != nullptr) {
         return option->custom_handler.format_value(option);
     }
@@ -218,8 +241,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
 static bool M_CanChangeValue(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx, const int32_t dir)
 {
-    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
-    if (Config_IsOptionEnforced(option->target)) {
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
+    if (option == nullptr || Config_IsOptionEnforced(option->target)) {
         return false;
     }
     if (option->custom_handler.can_change_value != nullptr) {
@@ -291,7 +314,7 @@ static bool M_RequestChangeValue(
         return false;
     }
 
-    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
     if (option->custom_handler.request_change_value != nullptr) {
         if (option->custom_handler.request_change_value(option, dir)) {
             goto changed;
@@ -363,13 +386,13 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *const s)
 static bool M_CanExamine(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
-    if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS) {
+    if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS || row_idx < 0) {
         return false;
     }
-    if (row_idx < 0 || s->options[row_idx].description_id == nullptr) {
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
+    if (option == nullptr || option->description_id == 0) {
         return false;
     }
-    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
     const char *const title = GameString_Get(option->label_id);
     const char *const text = GameString_Get(option->description_id);
     return title != nullptr && text != nullptr;
@@ -379,14 +402,12 @@ static bool M_CanExamine(
 static bool M_CanRestoreDefault(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
-    if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS) {
+    if (s->phase != UI_SETTINGS_PHASE_EDIT_SETTINGS || row_idx < 0) {
         return false;
     }
-    if (row_idx < 0) {
-        return false;
-    }
-    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
-    if (option->target == nullptr || Config_IsOptionEnforced(option->target)) {
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
+    if (option == nullptr || option->target == nullptr
+        || Config_IsOptionEnforced(option->target)) {
         return false;
     }
     return !Config_IsOptionAtDefault(option->target);
@@ -396,16 +417,20 @@ static bool M_CanRestoreDefault(
 static void M_RestoreDefault(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
-    const UI_SETTINGS_OPTION *const option = &s->options[row_idx];
-    Config_RestoreOptionDefault(option->target);
-    Config_Write();
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
+    if (option != nullptr) {
+        Config_RestoreOptionDefault(option->target);
+        Config_Write();
+    }
 }
 
 static void M_RecomputeSizes(UI_SETTINGS_STATE *const s)
 {
     int32_t row_count = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
-        row_count++;
+        if (!Config_IsOptionHidden(s->options[i].target)) {
+            row_count++;
+        }
     }
     UI_Scrollable_SetMaxItems(&s->scroll, row_count);
     s->max_label_w = M_GetMaxLabelWidth(s) / g_Config.ui.text_scale;
@@ -460,7 +485,9 @@ void UI_Settings_Init(
     s->options = options;
     s->max_group_items = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
-        s->max_group_items++;
+        if (!Config_IsOptionHidden(s->options[i].target)) {
+            s->max_group_items++;
+        }
     }
     s->tab_count = 0;
     s->tabs = nullptr;
@@ -475,22 +502,55 @@ void UI_Settings_InitWithTabs(
 {
     ASSERT(tabs != nullptr);
     M_InitCommon(s, title);
-    s->options = tabs[0].options;
-    s->tab_count = tab_count;
-    s->tabs = tabs;
-    s->max_group_items = 0;
-    UI_TAB_SWITCH_TAB tab_switch_tabs[tab_count];
+
+    // Filter tabs to only those with visible (non-hidden) options.
+    int32_t visible_tab_count = 0;
     for (int32_t i = 0; i < tab_count; i++) {
-        tab_switch_tabs[i].header.one_off = nullptr;
-        tab_switch_tabs[i].header.live_ptr =
-            GameString_GetPtr(tabs[i].header_gs);
         int32_t tab_items = 0;
         for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
-            tab_items++;
+            if (!Config_IsOptionHidden(tabs[i].options[j].target)) {
+                tab_items++;
+            }
         }
-        s->max_group_items = MAX(tab_items, s->max_group_items);
+        if (tab_items > 0) {
+            visible_tab_count++;
+        }
     }
-    s->tab_switch = UI_TabSwitch_Init(tab_count, tab_switch_tabs);
+
+    // Gather visible tabs.
+    UI_TAB_SWITCH_TAB tab_switch_tabs[tab_count];
+    UI_SETTINGS_TAB *visible_tabs = nullptr;
+    if (visible_tab_count > 0) {
+        visible_tabs =
+            Memory_Alloc(sizeof(UI_SETTINGS_TAB) * visible_tab_count);
+    }
+    int32_t vt = 0;
+    s->max_group_items = 0;
+    for (int32_t i = 0; i < tab_count; i++) {
+        int32_t tab_items = 0;
+        for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
+            if (!Config_IsOptionHidden(tabs[i].options[j].target)) {
+                tab_items++;
+            }
+        }
+        if (tab_items <= 0) {
+            continue;
+        }
+        visible_tabs[vt] = tabs[i];
+        tab_switch_tabs[vt].header.one_off = nullptr;
+        tab_switch_tabs[vt].header.live_ptr =
+            GameString_GetPtr(tabs[i].header_gs);
+        s->max_group_items = MAX(tab_items, s->max_group_items);
+        vt++;
+    }
+
+    // Always use visible_tabs (may be zero-length if every tab hidden).
+    s->tabs = visible_tabs;
+    s->tab_count = visible_tab_count;
+    s->options =
+        (visible_tab_count > 0) ? visible_tabs[0].options : tabs[0].options;
+    s->tab_switch = UI_TabSwitch_Init(s->tab_count, tab_switch_tabs);
+
     s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
     M_RecomputeSizes(s);
 }
@@ -505,6 +565,7 @@ void UI_Settings_Free(UI_SETTINGS_STATE *const s)
         UI_TabSwitch_Free(s->tab_switch);
         s->tab_switch = nullptr;
     }
+    Memory_FreePointer(&s->tabs);
     if (s->description.show) {
         UI_TextDialog_Free(s->description.state);
         s->description.state = nullptr;
@@ -693,9 +754,10 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         });
         UI_BeginResize(s->max_label_w, -1.0f);
         {
-            const UI_SETTINGS_OPTION *const option = &s->options[row];
-            const char *const name = GameString_Get(option->label_id);
-            if (Config_IsOptionEnforced(option->target)) {
+            const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row);
+            const char *const name =
+                option != nullptr ? GameString_Get(option->label_id) : "";
+            if (option != nullptr && Config_IsOptionEnforced(option->target)) {
                 UI_LabelFmt("%s*", name);
             } else {
                 UI_Label(name);
@@ -740,17 +802,20 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
     if (s->description.show) {
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
-        const UI_SETTINGS_OPTION *const option = &s->options[sel_row];
-        const char *title = GameString_Get(option->label_id);
-        const char *text = GameString_Get(option->description_id);
-        if (title != nullptr && text != nullptr) {
-            if (Config_IsOptionEnforced(option->target)) {
-                title = String_FormatStatic("%s*", title);
-                text = String_FormatStatic(
-                    "* %s\n\n%s",
-                    *GS_PTR(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER), text);
+        const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, sel_row);
+        if (option != nullptr) {
+            const char *title = GameString_Get(option->label_id);
+            const char *text = GameString_Get(option->description_id);
+            if (title != nullptr && text != nullptr) {
+                if (Config_IsOptionEnforced(option->target)) {
+                    title = String_FormatStatic("%s*", title);
+                    text = String_FormatStatic(
+                        "* %s\n\n%s",
+                        *GS_PTR(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER),
+                        text);
+                }
+                UI_TextDialog(s->description.state, title, text);
             }
-            UI_TextDialog(s->description.state, title, text);
         }
     }
 }
