@@ -559,4 +559,9 @@
         {"path": "fmv/JEEP.RPL"},
         {"path": "fmv/END.RPL"},
     ],
+
+    "hidden_config": [
+        "enable_item_examining", // TR2 has no special item descriptions
+        "fix_bear_ai", // TR2 has no bears
+    ],
 }
