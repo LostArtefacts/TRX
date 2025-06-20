@@ -9,21 +9,11 @@
 
 #include <stdlib.h>
 
-/* --------------------------------------------------------
- * Bit‑layout of ITEM->priv for movable blocks
- * --------------------------------------------------------
- * bit 0      : LARA_PUSH_PULL flag (boolean)
- * bits 1–7   : free (reserved for future one‑bit flags)
- * bits 8–15  : CONSTANT_GRAVITY frame counter (0‑255)
- * higher bits: free
- * -------------------------------------------------------*/
-#define LARA_PUSH_PULL ((uintptr_t)1u << 0)
-#define GRAVITY_SHIFT 8u
-#define GRAVITY_MASK ((uintptr_t)0xFFu << GRAVITY_SHIFT)
-
 typedef struct {
     int16_t counter_rot[3];
     int16_t original_rot;
+    uint16_t gravity_frames;
+    bool is_push_pull;
 } M_PRIV;
 
 static int32_t m_BlockCount = 0;
@@ -34,8 +24,6 @@ static int32_t M_CompareBlock(const void *item_idx1, const void *item_idx2);
 static bool M_IsValidFloorShiftState(const ITEM *item);
 static void M_ShiftGlobalFloorUp(void);
 static void M_ShiftGlobalFloorDown(void);
-static void M_SetPrivBits(ITEM *item, uintptr_t mask, uintptr_t value_shifted);
-static bool M_TestPrivFlag(const ITEM *item, uintptr_t mask);
 
 static int32_t M_CompareBlock(const void *item_idx1, const void *item_idx2)
 {
@@ -75,20 +63,6 @@ static void M_ShiftGlobalFloorDown(void)
     }
 }
 
-static void M_SetPrivBits(
-    ITEM *const item, const uintptr_t mask, const uintptr_t value_shifted)
-{
-    uintptr_t bits = (uintptr_t)item->priv;
-    bits = (bits & ~mask) | value_shifted;
-    item->priv = (void *)bits;
-}
-
-static uintptr_t M_GetPrivBits(
-    const ITEM *item, const uintptr_t mask, const uint32_t shift)
-{
-    return (((uintptr_t)item->priv & mask) >> shift);
-}
-
 // TODO: make private once M_Setup can be migrated
 void MovableBlock_Initialise(const int16_t item_num)
 {
@@ -106,6 +80,8 @@ void MovableBlock_Initialise(const int16_t item_num)
     data->original_rot =
         (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
     MovableBlock_UpdateRotation(item, data->original_rot);
+    data->gravity_frames = 0;
+    data->is_push_pull = false;
     MovableBlock_UpdateBox(item, true);
 }
 
@@ -178,23 +154,26 @@ void MovableBlock_HandleFlipMap(const ROOM_FLIP_STATUS flip_status)
 
 void MovableBlock_SetPushPull(ITEM *const item, const bool enable)
 {
-    uintptr_t value = enable ? LARA_PUSH_PULL : 0u;
-    M_SetPrivBits(item, LARA_PUSH_PULL, value);
+    M_PRIV *const data = (M_PRIV *)item->data;
+    data->is_push_pull = enable;
 }
 
 bool MovableBlock_IsPushPull(const ITEM *const item)
 {
-    return ((uintptr_t)item->priv & LARA_PUSH_PULL) != 0u;
+    const M_PRIV *const data = (M_PRIV *)item->data;
+    return data ? data->is_push_pull : false;
 }
 
 void MovableBlock_SetGravityFrames(ITEM *const item, const uint8_t frames)
 {
-    M_SetPrivBits(item, GRAVITY_MASK, (uintptr_t)frames << GRAVITY_SHIFT);
+    M_PRIV *const data = (M_PRIV *)item->data;
+    data->gravity_frames = frames;
 }
 
-uint8_t MovableBlock_GetGravityFrames(const ITEM *const item)
+uint16_t MovableBlock_GetGravityFrames(const ITEM *const item)
 {
-    return (uint8_t)M_GetPrivBits(item, GRAVITY_MASK, GRAVITY_SHIFT);
+    const M_PRIV *const data = (M_PRIV *)item->data;
+    return data ? data->gravity_frames : 0;
 }
 
 void MovableBlock_ActivateStack(
