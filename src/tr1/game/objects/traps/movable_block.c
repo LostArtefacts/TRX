@@ -491,6 +491,7 @@ static void M_Control(const int16_t item_num)
     } else if (item->gravity) {
         // The block hits the ground or walkable.
         item->gravity = false;
+        item->fall_speed = 0;
         item->pos.y = under_block_height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
