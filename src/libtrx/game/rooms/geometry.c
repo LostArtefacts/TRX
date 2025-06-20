@@ -282,6 +282,12 @@ int16_t Room_GetHeightEx(
         }
     }
 
+    // Stops Lara from grabbing floor to ceiling blocks.
+    const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
+    if (height == sky_sector->ceiling.height) {
+        return NO_HEIGHT;
+    }
+
     return height;
 }
 
@@ -544,6 +550,12 @@ int16_t Room_GetHeightIgnore(
         if (obj->floor_height_func != nullptr) {
             height = obj->floor_height_func(item, x, y, z, height);
         }
+    }
+
+    // Stops Lara from grabbing floor to ceiling blocks.
+    const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
+    if (height == sky_sector->ceiling.height) {
+        return NO_HEIGHT;
     }
 
     return height;
