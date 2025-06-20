@@ -9,13 +9,6 @@
 
 #include <stdlib.h>
 
-typedef struct {
-    int16_t counter_rot[3];
-    int16_t original_rot;
-    uint16_t gravity_frames;
-    bool is_push_pull;
-} M_PRIV;
-
 static int32_t m_BlockCount = 0;
 static VECTOR *m_UnsortedBlocks = nullptr;
 static int16_t *m_SortedBlocks = nullptr;
@@ -75,7 +68,8 @@ void MovableBlock_Initialise(const int16_t item_num)
     // during collision tests and can appear jarring. Additional angles are
     // stored to preserve item appearance in spite of control angle changes.
     ITEM *const item = Item_Get(item_num);
-    M_PRIV *const data = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
+    MovableBlock_Info *const data =
+        GameBuf_Alloc(sizeof(MovableBlock_Info), GBUF_ITEM_DATA);
     item->data = data;
     data->original_rot =
         (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
@@ -89,7 +83,7 @@ void MovableBlock_Initialise(const int16_t item_num)
 void MovableBlock_UpdateRotation(ITEM *const item, const int16_t rot_y)
 {
     item->rot.y = rot_y;
-    M_PRIV *const data = (M_PRIV *)item->data;
+    MovableBlock_Info *const data = (MovableBlock_Info *)item->data;
     data->counter_rot[0] = data->original_rot - rot_y;
 }
 
@@ -154,25 +148,25 @@ void MovableBlock_HandleFlipMap(const ROOM_FLIP_STATUS flip_status)
 
 void MovableBlock_SetPushPull(ITEM *const item, const bool enable)
 {
-    M_PRIV *const data = (M_PRIV *)item->data;
+    MovableBlock_Info *const data = (MovableBlock_Info *)item->data;
     data->is_push_pull = enable;
 }
 
 bool MovableBlock_IsPushPull(const ITEM *const item)
 {
-    const M_PRIV *const data = (M_PRIV *)item->data;
+    const MovableBlock_Info *const data = (MovableBlock_Info *)item->data;
     return data ? data->is_push_pull : false;
 }
 
 void MovableBlock_SetGravityFrames(ITEM *const item, const uint8_t frames)
 {
-    M_PRIV *const data = (M_PRIV *)item->data;
+    MovableBlock_Info *const data = (MovableBlock_Info *)item->data;
     data->gravity_frames = frames;
 }
 
 uint16_t MovableBlock_GetGravityFrames(const ITEM *const item)
 {
-    const M_PRIV *const data = (M_PRIV *)item->data;
+    const MovableBlock_Info *const data = (MovableBlock_Info *)item->data;
     return data ? data->gravity_frames : 0;
 }
 
