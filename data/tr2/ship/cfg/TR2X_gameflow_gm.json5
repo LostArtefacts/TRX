@@ -174,4 +174,8 @@
 
     "fmvs": [
     ],
+
+    "hidden_config": [
+        "enable_item_examining", // TR2G has no special item descriptions
+    ],
 }

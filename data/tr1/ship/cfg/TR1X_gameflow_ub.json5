@@ -141,4 +141,18 @@
         {"path": "fmv/core.avi", "legal": true},
         {"path": "fmv/escape.avi", "legal": true},
     ],
+
+    "hidden_config": [
+        "enable_demo",            // UB has no demos
+        "enable_save_crystals",   // UB has no save crystals
+        "enable_ps1_crystals",    // UB has no save crystals
+        "enable_item_examining",  // UB has no special item descriptions
+        "enable_loading_screens", // UB has no loading screens yet
+        "enable_reflections",     // UB has no reflective objects
+        "change_pierre_spawn",
+        "fix_bear_ai",
+        "restore_ps1_enemies",
+        "disable_trex_collision",
+        "fix_tihocan_secret_sound",
+    ],
 }
