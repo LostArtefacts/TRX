@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/game_string.h"
-#include "game/input.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/label.h"
 #include "game/ui/elements/modal.h"
@@ -29,52 +28,28 @@ void UI_PhotoMode(void)
     });
     UI_Label(GS(PHOTO_MODE_TITLE));
 
-    UI_BeginStack(UI_STACK_HORIZONTAL);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_HORIZONTAL,
+        .spacing = { .h = 8.0f },
+    });
 
     // Inputs column
     UI_BeginStack(UI_STACK_VERTICAL);
-    UI_LabelFmt(
-        "%s%s%s%s%s%s: ",
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_CAMERA_UP),
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_CAMERA_DOWN),
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_CAMERA_FORWARD),
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_CAMERA_BACK),
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_CAMERA_LEFT),
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_CAMERA_RIGHT));
     UI_Label(
-        "\\{button left} \\{button up} "
-        "\\{button down} \\{button right} : ");
-    UI_LabelFmt("%s: ", GS(PHOTO_MODE_ROLL_ROLE));
-    UI_LabelFmt("%s: ", GS(KEYMAP_ROLL));
-    UI_LabelFmt("%s: ", GS(PHOTO_MODE_FOV_ROLE));
-    UI_LabelFmt("%s: ", GS(KEYMAP_LOOK));
-    UI_LabelFmt("%s: ", GS(KEYMAP_PAUSE));
-    UI_LabelFmt(
-        "%s: ",
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_TOGGLE_UI));
-    UI_LabelFmt("%s: ", GS(KEYMAP_ACTION));
-    UI_LabelFmt(
-        "%s/%s: ",
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_TOGGLE_PHOTO_MODE),
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_OPTION));
+        "\\{input camera_up}\\{input camera_down}"
+        "\\{input camera_forward}\\{input camera_back}"
+        "\\{input camera_left}\\{input camera_right}");
+    UI_Label(
+        "\\{input left}\\{input forward}"
+        "\\{input back}\\{input right}");
+    UI_Label("\\{input step_left}\\{input step_right}");
+    UI_Label("\\{input roll}");
+    UI_Label("[\\{input slow}+]\\{input draw}");
+    UI_Label("\\{input look}");
+    UI_Label("[\\{input slow}+]\\{input pause}");
+    UI_Label("\\{input toggle_ui}");
+    UI_Label("\\{input action}");
+    UI_Label("\\{input toggle_photo_mode}/\\{input option}");
     UI_EndStack();
 
     UI_Spacer(4.0f, 0.0f);
