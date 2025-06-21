@@ -17,14 +17,22 @@ void UI_Controls_Init(UI_CONTROLS_STATE *const s)
     s->events = EventManager_Create();
     s->phase = M_PHASE_BACKEND;
     s->backend = INPUT_BACKEND_KEYBOARD;
-    s->active_layout = g_Config.input.keyboard_layout;
+    s->active_layout = g_Config.input.layout[s->backend];
     UI_ControlsBackend_Init(&s->backend_state);
-    UI_ControlsEditor_Init(&s->editor_state, s->events);
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        UI_ControlsEditor_Init(
+            &s->editor_state[backend], backend, g_Config.input.layout[backend],
+            s->events);
+    }
 }
 
 void UI_Controls_Free(UI_CONTROLS_STATE *const s)
 {
-    UI_ControlsEditor_Free(&s->editor_state);
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        UI_ControlsEditor_Free(&s->editor_state[backend]);
+    }
     UI_ControlsBackend_Free(&s->backend_state);
     EventManager_Free(s->events);
     s->events = nullptr;
@@ -43,14 +51,10 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
         case INPUT_BACKEND_KEYBOARD:
             s->backend = choice;
             s->phase = M_PHASE_EDITOR;
-            UI_ControlsEditor_Reinit(
-                &s->editor_state, choice, g_Config.input.keyboard_layout);
             break;
         case INPUT_BACKEND_CONTROLLER:
             s->backend = choice;
             s->phase = M_PHASE_EDITOR;
-            UI_ControlsEditor_Reinit(
-                &s->editor_state, choice, g_Config.input.controller_layout);
             break;
         }
         break;
@@ -58,7 +62,7 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
 
     case M_PHASE_EDITOR: {
         const UI_CONTROLS_CHOICE choice =
-            UI_ControlsEditor_Control(&s->editor_state);
+            UI_ControlsEditor_Control(&s->editor_state[s->backend]);
         switch (choice) {
         case UI_CONTROLS_CHOICE_NOOP:
             break;
@@ -82,7 +86,7 @@ void UI_Controls(UI_CONTROLS_STATE *const s)
         UI_ControlsBackend(&s->backend_state);
         break;
     case M_PHASE_EDITOR:
-        UI_ControlsEditor(&s->editor_state);
+        UI_ControlsEditor(&s->editor_state[s->backend]);
         break;
     }
 }

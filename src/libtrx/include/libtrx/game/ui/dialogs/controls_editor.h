@@ -44,10 +44,10 @@ typedef enum {
 } UI_CONTROLS_CHOICE;
 
 // state functions
-void UI_ControlsEditor_Init(UI_CONTROLS_EDITOR_STATE *s, EVENT_MANAGER *events);
+void UI_ControlsEditor_Init(
+    UI_CONTROLS_EDITOR_STATE *s, INPUT_BACKEND backend, int32_t layout,
+    EVENT_MANAGER *events);
 void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *s);
-void UI_ControlsEditor_Reinit(
-    UI_CONTROLS_EDITOR_STATE *s, INPUT_BACKEND backend, INPUT_LAYOUT layout);
 UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *s);
 
 // draw functions
