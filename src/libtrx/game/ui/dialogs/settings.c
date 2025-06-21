@@ -433,6 +433,8 @@ static void M_RecomputeSizes(UI_SETTINGS_STATE *const s)
         }
     }
     UI_Scrollable_SetMaxItems(&s->scroll, row_count);
+    UI_Scrollable_SetVisibleItems(
+        &s->scroll, MIN(s->max_group_items, M_GetVisibleRows()));
     s->max_label_w = M_GetMaxLabelWidth(s) / g_Config.ui.text_scale;
     s->max_value_w = M_GetMaxValueWidth(s) / g_Config.ui.text_scale;
 }
@@ -598,7 +600,6 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         if (s->tab_switch != nullptr
             && UI_TabSwitch_Control(s->tab_switch, UI_TAB_SWITCH_NO_ARROWS)) {
             s->options = s->tabs[s->tab_switch->active_tab_idx].options;
-            UI_Scrollable_SelectFirstItem(&s->scroll);
             M_RecomputeSizes(s);
             return false;
         } else if (g_InputDB.look && M_CanExamine(s, sel_row)) {
