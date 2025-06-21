@@ -4,6 +4,7 @@
 - fixed turbo cheat causing audio desync in cutscenes (#3263)
 - fixed support for non-linear secret flags in custom levels (#3262, regression from 4.12)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
+- fixed PS touchpad input missing an icon (#3288, regression from 4.12)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 4.12)
 
 ## [4.12.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...tr1-4.12.1) - 2025-06-18
