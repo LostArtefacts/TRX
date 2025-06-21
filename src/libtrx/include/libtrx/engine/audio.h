@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_events.h>
 #include <libavutil/samplefmt.h>
 #include <stdint.h>
 
@@ -12,8 +11,6 @@
 
 bool Audio_Init(void);
 bool Audio_Shutdown(void);
-
-void Audio_HandleSDLEvent(const SDL_Event *event);
 
 bool Audio_Stream_Pause(int32_t sound_id);
 bool Audio_Stream_Unpause(int32_t sound_id);
