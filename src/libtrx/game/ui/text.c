@@ -189,8 +189,8 @@ static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
     if (glyph->role != GLYPH_INPUT) {
         return glyph;
     }
-    const char *keyname = Input_GetKeyName(
-        INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
+    const char *const key_name = Input_GetKeyName(
+        g_Config.input.backend, g_Config.input.layout[g_Config.input.backend],
         glyph->input_role);
     // NOTE: this aliasing approach assumes that Input_GetKeyName returns
     // text that resolves to a single glyph.
