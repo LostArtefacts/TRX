@@ -1,8 +1,8 @@
-#include "game/option/option_sound.h"
+#include "game/option/sound.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/input.h>
-#include <libtrx/game/ui.h>
+#include "config.h"
+#include "game/input.h"
+#include "game/ui.h"
 
 typedef struct {
     UI_SOUND_SETTINGS_STATE *ui;

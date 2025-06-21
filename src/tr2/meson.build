@@ -240,7 +240,6 @@ sources = [
   'game/option/option_detail.c',
   'game/option/option_gameplay.c',
   'game/option/option_passport.c',
-  'game/option/option_sound.c',
   'game/output.c',
   'game/overlay.c',
   'game/render/common.c',

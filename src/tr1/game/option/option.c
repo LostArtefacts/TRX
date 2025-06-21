@@ -6,11 +6,11 @@
 #include "game/option/option_gameplay.h"
 #include "game/option/option_graphics.h"
 #include "game/option/option_passport.h"
-#include "game/option/option_sound.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/option/sound.h>
 
 void Option_Close(INVENTORY_ITEM *inv_item)
 {
