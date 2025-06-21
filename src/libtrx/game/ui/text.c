@@ -39,6 +39,8 @@ typedef enum {
     GLYPH_REVIEW_MARKER,
     // Marker that toggles the visibility of the following text.
     GLYPH_VISIBILITY_MARKER,
+    // Marker that toggles the dimming of the following text.
+    GLYPH_DIM_MARKER,
     // Glyph that dynamically expands a key role to its current key icon.
     GLYPH_INPUT,
 } M_GLYPH_ROLE;
@@ -374,6 +376,7 @@ void M_Process(
     const float start_x = x;
 
     bool visible = true;
+    bool dimmed = false;
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
         const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(*glyph_ptr);
@@ -388,6 +391,11 @@ void M_Process(
 
         if (glyph->role == GLYPH_VISIBILITY_MARKER) {
             visible = glyph->mesh_idx;
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_DIM_MARKER) {
+            dimmed = glyph->mesh_idx;
             goto loop_end;
         }
 
@@ -406,6 +414,8 @@ void M_Process(
             goto loop_end;
         }
 
+        const int16_t shade = dimmed ? 0x1600 : SHADE_NEUTRAL;
+
 #if TR_VERSION == 2
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
@@ -422,7 +432,7 @@ void M_Process(
             if (visible && draw_func != nullptr) {
                 draw_func(
                     x + scale_func(10), y, z, output_scale, output_scale,
-                    sprite_idx, SHADE_NEUTRAL);
+                    sprite_idx, shade);
             }
             x += glyph->width * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
@@ -439,15 +449,14 @@ void M_Process(
                 y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
             draw_func(
                 cx, cy, 0, scale, scale,
-                obj->mesh_idx + glyph->combine_with.mesh_idx, SHADE_NEUTRAL);
+                obj->mesh_idx + glyph->combine_with.mesh_idx, shade);
         }
 
         if (obj->loaded && glyph->mesh_idx >= 0
             && glyph->mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
             draw_func(
-                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
-                SHADE_NEUTRAL);
+                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, shade);
         }
 
         if (glyph->role != GLYPH_COMBINING) {
