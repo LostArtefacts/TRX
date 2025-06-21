@@ -2,6 +2,8 @@
 
 #include "config.h"
 #include "debug.h"
+#include "enum_map.h"
+#include "game/input/common.h"
 #include "game/objects.h"
 #include "game/output.h"
 #include "game/scaler.h"
@@ -11,6 +13,7 @@
 #include "utils.h"
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 #include <uthash.h>
 
@@ -18,24 +21,39 @@
 #define M_WORD_SPACING 6.0f
 
 typedef enum {
-    // special non-printable glyph roles
+    // Normal character.
     GLYPH_NORMAL,
+    // Spacing between words.
     GLYPH_SPACE,
+    // Line break.
     GLYPH_NEW_LINE,
+    // Marker used in the examine item dialog and others to force a new page.
     GLYPH_NEW_PAGE,
+    // Accent/diacritic modifier to another character.
     GLYPH_COMBINING,
+    // Character that needs to be combined with an accent/diacritic.
     GLYPH_COMPOUND,
+    // Icon for collectible secrets, taking the sprite from O_SECRET
     GLYPH_SECRET,
+    // Icon requesting translators to verify AI-translated text.
     GLYPH_REVIEW_MARKER,
+    // Marker that toggles the visibility of the following text.
     GLYPH_VISIBILITY_MARKER,
+    // Glyph that dynamically expands a key role to its current key icon.
+    GLYPH_INPUT,
 } M_GLYPH_ROLE;
 
 typedef struct {
     const char *text;
     M_GLYPH_ROLE role;
     int32_t width;
-    int32_t mesh_idx;
 
+    union {
+        int32_t mesh_idx;
+        INPUT_ROLE input_role; // for role == GLYPH_INPUT
+    };
+
+    // For compound accents or combined glyphs
     struct {
         int32_t mesh_idx;
         int32_t offset_x;
@@ -77,6 +95,8 @@ static const M_GLYPH_INFO **M_Decompose(
     const char *content, size_t *out_glyph_count);
 static const M_GLYPH_INFO **M_DecomposeWithCache(
     const char *content, size_t *out_glyph_count);
+static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph);
+
 static size_t M_WordWrap(
     const M_GLYPH_INFO **glyphs, size_t glyph_count, float scale_f,
     float max_width, char *dst);
@@ -162,6 +182,23 @@ static const M_GLYPH_INFO **M_DecomposeWithCache(
     return entry->glyphs;
 }
 
+// Replace input placeholder glyph with the actual keyboard glyph for the
+// current binding
+static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
+{
+    if (glyph->role != GLYPH_INPUT) {
+        return glyph;
+    }
+    const char *keyname = Input_GetKeyName(
+        INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
+        glyph->input_role);
+    // NOTE: this aliasing approach assumes that Input_GetKeyName returns
+    // text that resolves to a single glyph.
+    M_GLYPH_MAP_ENTRY *entry = nullptr;
+    HASH_FIND_STR(m_GlyphMap, keyname, entry);
+    return (entry != nullptr) ? entry->glyph : glyph;
+}
+
 static size_t M_WordWrap(
     const M_GLYPH_INFO **glyphs, const size_t glyph_count, const float scale_f,
     const float max_width, char *const dst)
@@ -185,7 +222,9 @@ static size_t M_WordWrap(
 
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
-        const M_GLYPH_INFO *const glyph = glyphs[i];
+        const M_GLYPH_INFO *resolved = M_GetResolvedGlyph(glyphs[i]);
+        const M_GLYPH_INFO *const glyph = resolved;
+
         if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
@@ -330,7 +369,7 @@ void M_Process(
     bool visible = true;
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
-        const M_GLYPH_INFO *glyph = *glyph_ptr;
+        const M_GLYPH_INFO *glyph = M_GetResolvedGlyph(*glyph_ptr);
         if (glyph->role == GLYPH_REVIEW_MARKER
             && !g_Config.debug.enable_review_markers) {
             goto loop_end;
@@ -429,8 +468,8 @@ void UI_InitText(void)
     // table for faster text-to-glyph resolution.
     for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
          glyph_ptr++) {
-        M_GLYPH_MAP_ENTRY *const hash_entry =
-            Memory_Alloc(sizeof(M_GLYPH_MAP_ENTRY));
+        // mark static glyphs as non-input
+        M_GLYPH_MAP_ENTRY *const hash_entry = Memory_Alloc(sizeof(*hash_entry));
         hash_entry->glyph = glyph_ptr;
         HASH_ADD_KEYPTR(
             hh, m_GlyphMap, glyph_ptr->text, strlen(glyph_ptr->text),
@@ -439,6 +478,29 @@ void UI_InitText(void)
 
     m_GlyphLookupKeyCap = 10;
     m_GlyphLookupKey = Memory_Alloc(m_GlyphLookupKeyCap);
+
+    // Create dynamic glyphs for "{key <role>}" tokens; resolution happens when
+    // drawing/wrapping
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; ++role) {
+        const char *role_str =
+            EnumMap_ToString(ENUM_MAP_NAME(INPUT_ROLE), role);
+        if (role_str == nullptr || *role_str == '\0') {
+            continue;
+        }
+        M_GLYPH_INFO *input_glyph = Memory_Alloc(sizeof(*input_glyph));
+        input_glyph->text = String_Format("\\{input %s}", role_str);
+        input_glyph->role = GLYPH_INPUT;
+        input_glyph->width = 0;
+        input_glyph->input_role = role;
+        input_glyph->combine_with.mesh_idx = -1;
+        input_glyph->combine_with.offset_x = 0;
+        input_glyph->combine_with.offset_y = 0;
+        M_GLYPH_MAP_ENTRY *entry = Memory_Alloc(sizeof(*entry));
+        entry->glyph = input_glyph;
+        HASH_ADD_KEYPTR(
+            hh, m_GlyphMap, input_glyph->text, strlen(input_glyph->text),
+            entry);
+    }
 }
 
 void UI_ShutdownText(void)
@@ -447,6 +509,9 @@ void UI_ShutdownText(void)
         M_GLYPH_MAP_ENTRY *current, *tmp;
         HASH_ITER(hh, m_GlyphMap, current, tmp)
         {
+            if (current->glyph->role == GLYPH_INPUT) {
+                Memory_FreePointer(&current->glyph->text);
+            }
             HASH_DEL(m_GlyphMap, current);
             Memory_Free(current);
         }
