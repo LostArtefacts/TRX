@@ -3,10 +3,10 @@
 #include "game/input.h"
 #include "game/option/option_compass.h"
 #include "game/option/option_controls.h"
-#include "game/option/option_gameplay.h"
 #include "game/option/option_passport.h"
 
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/option/gameplay.h>
 #include <libtrx/game/option/graphics.h>
 #include <libtrx/game/option/sound.h>
 

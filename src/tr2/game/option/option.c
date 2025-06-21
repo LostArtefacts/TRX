@@ -4,6 +4,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/option/gameplay.h>
 #include <libtrx/game/option/graphics.h>
 #include <libtrx/game/option/sound.h>
 
