@@ -29,9 +29,46 @@ const char *m_GameDir = nullptr;
 static void M_PathAppendSeparator(char *path);
 static void M_PathAppendPart(char *path, const char *part);
 static char *M_CasePath(const char *path);
+static FILE *M_UTF8Fopen(const char *path, const char *mode);
 static FILE *M_ResolveAndOpen(
     const char *path, const char *mode, char **out_full_path);
 static bool M_ExistsRaw(const char *path);
+
+#if defined(_WIN32)
+    #include <wchar.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include <windows.h>
+
+static wchar_t *M_UTF8ToWide(const char *utf8_str);
+
+static wchar_t *M_UTF8ToWide(const char *const utf8_str)
+{
+    const size_t len = strlen(utf8_str);
+    const size_t wide_len =
+        MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, NULL, 0);
+    wchar_t *wide_str = Memory_Alloc((wide_len + 1) * sizeof(wchar_t));
+    MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, wide_str, wide_len);
+    wide_str[wide_len] = L'\0';
+    return wide_str;
+}
+
+static FILE *M_UTF8Fopen(const char *path, const char *mode)
+{
+    wchar_t *const wide_title = M_UTF8ToWide(path);
+    wchar_t *const wide_mode = M_UTF8ToWide(mode);
+    FILE *const file = _wfopen(wide_title, wide_mode);
+    Memory_Free(wide_title);
+    Memory_Free(wide_mode);
+    return file;
+}
+
+#else
+static FILE *M_UTF8Fopen(const char *path, const char *mode)
+{
+    return fopen(path, mode);
+}
+#endif
 
 static void M_PathAppendSeparator(char *const path)
 {
@@ -133,7 +170,7 @@ static FILE *M_ResolveAndOpen(
         abs_path = Memory_DupStr(path);
     }
 
-    FILE *fp = fopen(abs_path, mode);
+    FILE *fp = M_UTF8Fopen(abs_path, mode);
     char *resolved_path = nullptr;
     if (fp != nullptr) {
         resolved_path = Memory_DupStr(abs_path);
@@ -141,7 +178,7 @@ static FILE *M_ResolveAndOpen(
     } else {
         resolved_path = M_CasePath(abs_path);
         if (resolved_path != nullptr) {
-            fp = fopen(resolved_path, mode);
+            fp = M_UTF8Fopen(resolved_path, mode);
         }
     }
 
@@ -157,7 +194,7 @@ finish:
 
 static bool M_ExistsRaw(const char *path)
 {
-    FILE *fp = fopen(path, "rb");
+    FILE *fp = M_UTF8Fopen(path, "rb");
     if (fp) {
         fclose(fp);
         return true;
