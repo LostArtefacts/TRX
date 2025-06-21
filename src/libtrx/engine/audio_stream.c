@@ -359,8 +359,7 @@ static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
 
     stream->sdl.stream = SDL_NewAudioStream(
         AUDIO_WORKING_FORMAT, sdl_channels, AUDIO_WORKING_RATE,
-        g_AudioDeviceParms.format, g_AudioDeviceParms.channels,
-        g_AudioDeviceParms.freq);
+        AUDIO_WORKING_FORMAT, sdl_channels, AUDIO_WORKING_RATE);
     if (!stream->sdl.stream) {
         LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
         goto cleanup;
@@ -743,28 +742,4 @@ bool Audio_Stream_SetStopTimestamp(int32_t sound_id, double timestamp)
 
     m_Streams[sound_id].stop_at = timestamp;
     return true;
-}
-
-void Audio_Stream_Reload(void)
-{
-    SDL_LockAudioDevice(g_AudioDeviceID);
-    for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
-         sound_id++) {
-        AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-        if (!stream->is_used) {
-            continue;
-        }
-        SDL_FreeAudioStream(stream->sdl.stream);
-        const int32_t sdl_channels =
-            stream->av.codec_ctx->ch_layout.nb_channels;
-        stream->sdl.stream = SDL_NewAudioStream(
-            AUDIO_WORKING_FORMAT, AUDIO_WORKING_CHANNELS, AUDIO_WORKING_RATE,
-            g_AudioDeviceParms.format, g_AudioDeviceParms.channels,
-            g_AudioDeviceParms.freq);
-        if (stream->sdl.stream == nullptr) {
-            LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
-            Audio_Stream_Close(sound_id);
-        }
-    }
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
 }
