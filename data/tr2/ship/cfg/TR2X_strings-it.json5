@@ -1093,6 +1093,10 @@
         }
     },
     "game_strings": {
+        "CMD_WINSTON_DEAD": "Il tuo maggiordomo è morto. Sei un mostro!",
+        "CMD_WINSTON_SPAWNED": "Winston è stato convocato vicino a Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "Impossibile convocare Winston",
+        "CMD_WINSTON_TELEPORTED": "Winston è stato teletrasportato vicino a Lara",
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Risolve il problema in The Golden Mask per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Risolve il problema del fucile a pompa che a volte, quando si spara, non produce un lampo o un suono.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
@@ -1105,7 +1109,7 @@
         "KEYMAP_EQUIP_MAGNUMS": "Equipaggia Pistole Automatiche",
         "KEYMAP_SCREENSHOT": "Istantanea Schermo",
         "KEYMAP_SWITCH_INTERNAL_SCREEN_SIZE": "Cambia Dimensione Schermo",
-        "KEYMAP_SWITCH_RESOLUTION": "Cambia risoluzione",
+        "KEYMAP_SWITCH_RESOLUTION": "Cambia Risoluzione",
         "KEYMAP_TOGGLE_BILINEAR_FILTER": "Attiva/Disattiva Filtro Bilineare",
         "KEYMAP_TOGGLE_FULLSCREEN": "Attiva/Disattiva Schermo Intero",
         "KEYMAP_TOGGLE_PERSPECTIVE_FILTER": "Attiva/Disattiva Filtro Prospettiva",
@@ -1135,10 +1139,6 @@
         "STATS_KILLS": "Uccisioni",
         "STATS_MEDIPACKS_USED": "Kit Medici Usati",
         "STATS_SECRETS": "Segreti Scoperti",
-        "STATS_TIME_TAKEN": "Tempo Impiegato",
-        "CMD_WINSTON_DEAD": "\\{review}Il tuo maggiordomo è morto. Mostro!",
-        "CMD_WINSTON_SPAWNED": "\\{review}Spawnato Winston vicino a Lara",
-        "CMD_WINSTON_TELEPORTED": "\\{review}Teletrasportato Winston vicino a Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "\\{review}Impossibile evocare Winston"
+        "STATS_TIME_TAKEN": "Tempo Impiegato"
     }
 }
