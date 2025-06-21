@@ -3,7 +3,6 @@
 #include "game/console/common.h"
 #include "game/fmv.h"
 #include "game/input.h"
-#include "game/option/option_controls.h"
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
