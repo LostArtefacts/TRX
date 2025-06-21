@@ -37,102 +37,103 @@ typedef enum {
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
         .header_gs = GS_ID(CONTROLS_SECTION_BASICS),
-        .roles =
-            (INPUT_ROLE[]) {
-                INPUT_ROLE_UP,
-                INPUT_ROLE_DOWN,
-                INPUT_ROLE_LEFT,
-                INPUT_ROLE_RIGHT,
-                INPUT_ROLE_JUMP,
-                INPUT_ROLE_STEP_L,
-                INPUT_ROLE_STEP_R,
-                INPUT_ROLE_ROLL,
-                INPUT_ROLE_SLOW,
-                INPUT_ROLE_ACTION,
-                INPUT_ROLE_DRAW,
-                INPUT_ROLE_LOOK,
-                (INPUT_ROLE)-1,
+        .rows =
+            (UI_CONTROLS_EDITOR_ROW[]) {
+                { .role = INPUT_ROLE_UP },
+                { .role = INPUT_ROLE_DOWN },
+                { .role = INPUT_ROLE_LEFT },
+                { .role = INPUT_ROLE_RIGHT },
+                { .role = INPUT_ROLE_JUMP },
+                { .role = INPUT_ROLE_STEP_L },
+                { .role = INPUT_ROLE_STEP_R },
+                { .role = INPUT_ROLE_ROLL },
+                { .role = INPUT_ROLE_SLOW },
+                { .role = INPUT_ROLE_ACTION },
+                { .role = INPUT_ROLE_DRAW },
+                { .role = INPUT_ROLE_LOOK },
+                { .role = (INPUT_ROLE)-1 },
             },
     },
 
     {
         .header_gs = GS_ID(CONTROLS_SECTION_ITEMS),
-        .roles =
-            (INPUT_ROLE[]) {
+        .rows =
+            (UI_CONTROLS_EDITOR_ROW[]) {
 #if TR_VERSION == 2
-                INPUT_ROLE_USE_FLARE,
+                { .role = INPUT_ROLE_USE_FLARE },
 #endif
-                INPUT_ROLE_USE_SMALL_MEDI,
-                INPUT_ROLE_USE_BIG_MEDI,
-                INPUT_ROLE_EQUIP_PISTOLS,
-                INPUT_ROLE_EQUIP_SHOTGUN,
-                INPUT_ROLE_EQUIP_MAGNUMS,
-                INPUT_ROLE_EQUIP_UZIS,
+                { .role = INPUT_ROLE_USE_SMALL_MEDI },
+                { .role = INPUT_ROLE_USE_BIG_MEDI },
+                { .role = INPUT_ROLE_EQUIP_PISTOLS },
+                { .role = INPUT_ROLE_EQUIP_SHOTGUN },
+                { .role = INPUT_ROLE_EQUIP_MAGNUMS },
+                { .role = INPUT_ROLE_EQUIP_UZIS },
 #if TR_VERSION == 2
-                INPUT_ROLE_EQUIP_HARPOON,
-                INPUT_ROLE_EQUIP_M16,
-                INPUT_ROLE_EQUIP_GRENADE_LAUNCHER,
+                { .role = INPUT_ROLE_EQUIP_HARPOON },
+                { .role = INPUT_ROLE_EQUIP_M16 },
+                { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
 #endif
-                (INPUT_ROLE)-1,
+                { .role = (INPUT_ROLE)-1 },
             },
     },
 
     {
         .header_gs = GS_ID(CONTROLS_SECTION_MISC),
-        .roles =
-            (INPUT_ROLE[]) {
+        .rows =
+            (UI_CONTROLS_EDITOR_ROW[]) {
 #if TR_VERSION == 1
-                INPUT_ROLE_CHANGE_TARGET,
+                { .role = INPUT_ROLE_CHANGE_TARGET },
 #endif
-                INPUT_ROLE_CAMERA_UP,
-                INPUT_ROLE_CAMERA_DOWN,
-                INPUT_ROLE_CAMERA_LEFT,
-                INPUT_ROLE_CAMERA_RIGHT,
-                INPUT_ROLE_CAMERA_FORWARD,
-                INPUT_ROLE_CAMERA_BACK,
-                INPUT_ROLE_FLY_CHEAT,
-                INPUT_ROLE_ITEM_CHEAT,
-                INPUT_ROLE_LEVEL_SKIP_CHEAT,
-                INPUT_ROLE_TURBO_CHEAT,
-                (INPUT_ROLE)-1,
+                { .role = INPUT_ROLE_CAMERA_UP },
+                { .role = INPUT_ROLE_CAMERA_DOWN },
+                { .role = INPUT_ROLE_CAMERA_LEFT },
+                { .role = INPUT_ROLE_CAMERA_RIGHT },
+                { .role = INPUT_ROLE_CAMERA_FORWARD },
+                { .role = INPUT_ROLE_CAMERA_BACK },
+                { .role = INPUT_ROLE_FLY_CHEAT },
+                { .role = INPUT_ROLE_ITEM_CHEAT },
+                { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT },
+                { .role = INPUT_ROLE_TURBO_CHEAT },
+                { .role = (INPUT_ROLE)-1 },
             },
     },
 
     {
         .header_gs = GS_ID(CONTROLS_SECTION_SYSTEM),
-        .roles =
-            (INPUT_ROLE[]) {
-                INPUT_ROLE_OPTION,
-                INPUT_ROLE_SAVE,
-                INPUT_ROLE_LOAD,
-                INPUT_ROLE_PAUSE,
-                // INPUT_ROLE_SCREENSHOT, // handled specially
-                INPUT_ROLE_FPS,
-                // INPUT_ROLE_TOGGLE_FULLSCREEN, // handled specially
-                INPUT_ROLE_ENTER_CONSOLE,
-                INPUT_ROLE_TOGGLE_PHOTO_MODE,
-                INPUT_ROLE_TOGGLE_UI,
+        .rows =
+            (UI_CONTROLS_EDITOR_ROW[]) {
+                { .role = INPUT_ROLE_OPTION },
+                { .role = INPUT_ROLE_SAVE },
+                { .role = INPUT_ROLE_LOAD },
+                { .role = INPUT_ROLE_PAUSE },
+                // { .role = INPUT_ROLE_SCREENSHOT }, // handled specially
+                { .role = INPUT_ROLE_FPS },
+                // { .role = INPUT_ROLE_TOGGLE_FULLSCREEN }, // handled
+                // specially
+                { .role = INPUT_ROLE_ENTER_CONSOLE },
+                { .role = INPUT_ROLE_TOGGLE_PHOTO_MODE },
+                { .role = INPUT_ROLE_TOGGLE_UI },
 #if TR_VERSION == 1
-                INPUT_ROLE_BILINEAR,
+                { .role = INPUT_ROLE_BILINEAR },
 #elif TR_VERSION == 2
-                INPUT_ROLE_TOGGLE_BILINEAR_FILTER,
-// INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER, // handled specially
+                { .role = INPUT_ROLE_TOGGLE_BILINEAR_FILTER },
+// { .role = INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER }, // handled specially
 #endif
-                INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER,
+                { .role = INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER },
 #if TR_VERSION == 2
-                INPUT_ROLE_SWITCH_INTERNAL_SCREEN_SIZE,
-                INPUT_ROLE_SWITCH_RESOLUTION,
-                INPUT_ROLE_TOGGLE_Z_BUFFER,
-                INPUT_ROLE_CYCLE_LIGHTING_CONTRAST,
-                INPUT_ROLE_TOGGLE_RENDERING_MODE,
+                { .role = INPUT_ROLE_SWITCH_INTERNAL_SCREEN_SIZE },
+                { .role = INPUT_ROLE_SWITCH_RESOLUTION },
+                { .role = INPUT_ROLE_TOGGLE_Z_BUFFER },
+                { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
+                { .role = INPUT_ROLE_TOGGLE_RENDERING_MODE },
 #endif
-                (INPUT_ROLE)-1,
+                { .role = (INPUT_ROLE)-1 },
             },
     },
 
     {
         .header_gs = nullptr,
-        .roles = nullptr,
+        .rows = nullptr,
     },
 };
 
@@ -155,8 +156,10 @@ static UI_CONTROLS_CHOICE M_ListenDebounce(UI_CONTROLS_EDITOR_STATE *s);
 
 static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *s);
 static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *s);
-static void M_InputChoice(UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
-static void M_InputLabel(const UI_CONTROLS_EDITOR_STATE *s, INPUT_ROLE role);
+static void M_InputChoice(
+    UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_ROW *row);
+static void M_InputLabel(
+    const UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_ROW *row);
 static void M_Group(
     UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_GROUP *group);
 static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
@@ -193,7 +196,7 @@ static int32_t M_GetVisibleRows(void)
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t row)
 {
-    return group->roles[row];
+    return group->rows[row].role;
 }
 
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
@@ -391,26 +394,32 @@ static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
 }
 
 static void M_InputLabel(
-    const UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role)
+    const UI_CONTROLS_EDITOR_STATE *const s,
+    const UI_CONTROLS_EDITOR_ROW *const row)
 {
-    const bool is_selected = s->active_role == role
+    const bool is_selected = s->active_role == row->role
         && (s->phase == M_PHASE_NAVIGATE_INPUTS
             || s->phase == M_PHASE_LISTEN_DEBOUNCE);
     if (is_selected) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
-    UI_Label(Input_GetRoleName(role));
+    const char *const role_name = Input_GetRoleName(row->role);
+    if (row->is_available != nullptr && !row->is_available()) {
+        UI_LabelFmt("\\{dim}%s\\{/dim}", role_name);
+    } else {
+        UI_Label(role_name);
+    }
     if (is_selected) {
         UI_EndFrame();
     }
 }
 
 static void M_InputChoice(
-    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_ROLE role)
+    UI_CONTROLS_EDITOR_STATE *const s, const UI_CONTROLS_EDITOR_ROW *const row)
 {
     const bool is_flashing =
-        Input_IsKeyConflicted(s->backend, s->active_layout, role);
-    const bool is_selected = s->active_role == role
+        Input_IsKeyConflicted(s->backend, s->active_layout, row->role);
+    const bool is_selected = s->active_role == row->role
         && (s->phase == M_PHASE_LISTEN
             || s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE);
 
@@ -420,9 +429,15 @@ static void M_InputChoice(
     if (is_selected) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
-    const char *const key_name =
-        Input_GetKeyName(s->backend, s->active_layout, role);
-    UI_Label(key_name != nullptr ? key_name : "");
+    const char *key_name =
+        Input_GetKeyName(s->backend, s->active_layout, row->role);
+    if (key_name == nullptr) {
+        UI_Label("");
+    } else if (row->is_available != nullptr && !row->is_available()) {
+        UI_LabelFmt("\\{dim}%s\\{/dim}", key_name);
+    } else {
+        UI_Label(key_name);
+    }
     if (is_selected) {
         UI_EndFrame();
     }
@@ -437,22 +452,22 @@ static void M_Group(
 {
     UI_BeginStack(UI_STACK_VERTICAL);
     for (int32_t i = 0; i < s->scroll.vis_items; i++) {
-        const int32_t row = s->scroll.first_item + i;
-        if (row >= s->scroll.max_items) {
+        const int32_t row_idx = s->scroll.first_item + i;
+        if (row_idx >= s->scroll.max_items) {
             UI_Spacer(0.0f, UI_TEXT_HEIGHT);
             continue;
         }
 
-        const INPUT_ROLE role = group->roles[row];
+        const UI_CONTROLS_EDITOR_ROW *const row = &group->rows[row_idx];
         UI_BeginStack(UI_STACK_HORIZONTAL);
         UI_BeginResize(s->input_size, -1.0f);
         UI_BeginAnchor(0.0f, 0.5f);
-        M_InputChoice(s, role);
+        M_InputChoice(s, row);
         UI_EndAnchor();
         UI_EndResize();
         UI_BeginResize(s->label_size, -1.0f);
         UI_BeginAnchor(0.0f, 0.5f);
-        M_InputLabel(s, role);
+        M_InputLabel(s, row);
         UI_EndAnchor();
         UI_EndResize();
         UI_EndStack();
@@ -508,11 +523,11 @@ void UI_ControlsEditor_Init(
 
     {
         int32_t tab_count = 0;
-        for (int32_t i = 0; m_Groups[i].roles != nullptr; i++) {
+        for (int32_t i = 0; m_Groups[i].rows != nullptr; i++) {
             tab_count++;
         }
         UI_TAB_SWITCH_TAB controls_tabs[tab_count];
-        for (int32_t i = 0; m_Groups[i].roles != nullptr; i++) {
+        for (int32_t i = 0; m_Groups[i].rows != nullptr; i++) {
             controls_tabs[i].header.one_off = nullptr;
             controls_tabs[i].header.live_ptr =
                 GameString_GetPtr(m_Groups[i].header_gs);
@@ -522,7 +537,7 @@ void UI_ControlsEditor_Init(
 
     s->max_group_items = 0;
     for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
-         group->roles != nullptr; group++) {
+         group->rows != nullptr; group++) {
         s->max_group_items =
             MAX(s->max_group_items, M_GetInputRoleCount(group));
     }

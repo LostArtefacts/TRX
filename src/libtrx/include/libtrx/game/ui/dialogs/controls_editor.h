@@ -13,8 +13,13 @@
 #include "../scrollable.h"
 
 typedef struct {
+    INPUT_ROLE role;
+    bool (*is_available)(void);
+} UI_CONTROLS_EDITOR_ROW;
+
+typedef struct {
     GAME_STRING_ID header_gs;
-    INPUT_ROLE *roles;
+    UI_CONTROLS_EDITOR_ROW *rows;
 } UI_CONTROLS_EDITOR_GROUP;
 
 typedef struct {
