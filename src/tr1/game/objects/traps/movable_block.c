@@ -423,9 +423,6 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
             Item_RemoveActive(Item_GetIndex(item));
             item->status = IS_INACTIVE;
         }
-        const bool is_push_pull = item->status == IS_ACTIVE ? true : false;
-        MovableBlock_SetPushPull(item, is_push_pull);
-        MovableBlock_UpdateRotation(item, item->rot.y);
         MovableBlock_UpdateBox(item, true);
     }
 }
