@@ -8,7 +8,6 @@
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara/common.h"
-#include "game/option.h"
 #include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -25,6 +24,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/option.h>
 #include <libtrx/game/option/examine.h>
 #include <libtrx/memory.h>
 

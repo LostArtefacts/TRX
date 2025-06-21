@@ -11,14 +11,16 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_Init(M_PRIV *p);
-static void M_Close(M_PRIV *p);
+static void M_Shutdown(M_PRIV *p);
 
 static void M_Init(M_PRIV *const p)
 {
-    p->ui = UI_SoundSettings_Init();
+    if (p->ui == nullptr) {
+        p->ui = UI_SoundSettings_Init();
+    }
 }
 
-static void M_Close(M_PRIV *const p)
+static void M_Shutdown(M_PRIV *const p)
 {
     if (p->ui != nullptr) {
         UI_SoundSettings_Free(p->ui);
@@ -35,9 +37,7 @@ void Option_Sound_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     if (p->ui == nullptr) {
         M_Init(p);
     }
-    if (UI_SoundSettings_Control(p->ui)) {
-        M_Close(p);
-    } else {
+    if (!UI_SoundSettings_Control(p->ui)) {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
     }
@@ -53,6 +53,10 @@ void Option_Sound_Draw(INVENTORY_ITEM *const inv_item)
 
 void Option_Sound_Close(void)
 {
+}
+
+void Option_Sound_Shutdown(void)
+{
     M_PRIV *const p = &m_Priv;
-    M_Close(p);
+    M_Shutdown(p);
 }

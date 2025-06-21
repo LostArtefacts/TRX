@@ -205,6 +205,7 @@ sources = [
   'game/objects/names.c',
   'game/objects/traps/movable_block.c',
   'game/objects/vars.c',
+  'game/option/common.c',
   'game/option/controls.c',
   'game/option/examine.c',
   'game/option/gameplay.c',

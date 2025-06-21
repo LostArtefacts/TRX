@@ -31,6 +31,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/creatures/bear.h>
 #include <libtrx/game/objects/creatures/wolf.h>
+#include <libtrx/game/option.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
@@ -615,6 +616,7 @@ void Shell_Shutdown(void)
     Render_Shutdown();
     Console_Shutdown();
     Overlay_Shutdown();
+    Option_Shutdown();
     UI_Shutdown();
     GameBuf_Shutdown();
     Config_Shutdown();
