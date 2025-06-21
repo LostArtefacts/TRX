@@ -42,11 +42,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     Sound_PauseAll();
 
     if (!g_Config.ui.enable_photo_mode_ui) {
-        Console_Log(
-            GS(OSD_PHOTO_MODE_LAUNCHED),
-            Input_GetKeyName(
-                INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-                INPUT_ROLE_TOGGLE_UI));
+        Console_Log(GS(OSD_PHOTO_MODE_LAUNCHED));
     }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
