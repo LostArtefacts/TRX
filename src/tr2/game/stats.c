@@ -132,6 +132,7 @@ void Stats_MarkSecretCollected(const GAME_OBJECT_ID obj_id)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     M_SetSecretFlag(&resume->stats.secret_flags, obj_id);
+    Stats_UpdateSecrets(&resume->stats);
 }
 
 bool Stats_CheckAllLevelSecretsCollected(void)
