@@ -49,12 +49,11 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
         case UI_REQUESTER_CANCEL:
             return true;
         case INPUT_BACKEND_KEYBOARD:
-            s->backend = choice;
-            s->phase = M_PHASE_EDITOR;
-            break;
         case INPUT_BACKEND_CONTROLLER:
             s->backend = choice;
             s->phase = M_PHASE_EDITOR;
+            g_Config.input.backend = s->backend;
+            Config_Write();
             break;
         }
         break;
