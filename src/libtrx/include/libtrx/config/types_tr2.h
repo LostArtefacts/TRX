@@ -37,8 +37,13 @@ typedef struct {
     char *language;
 
     struct {
-        int32_t keyboard_layout;
-        int32_t controller_layout;
+        union {
+            struct {
+                int32_t keyboard_layout;
+                int32_t controller_layout;
+            };
+            int32_t layout[INPUT_BACKEND_NUMBER_OF];
+        };
         bool enable_tr3_sidesteps;
         bool enable_responsive_passport;
     } input;

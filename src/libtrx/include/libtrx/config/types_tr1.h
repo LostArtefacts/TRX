@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../game/gym.h"
+#include "../game/input.h"
 #include "../game/output/types.h"
 #include "../game/sound/enum.h"
 #include "../gfx/common.h"
@@ -26,8 +27,13 @@ typedef struct {
     char *language;
 
     struct {
-        int32_t keyboard_layout;
-        int32_t controller_layout;
+        union {
+            struct {
+                int32_t keyboard_layout;
+                int32_t controller_layout;
+            };
+            int32_t layout[INPUT_BACKEND_NUMBER_OF];
+        };
         bool enable_numeric_keys;
         bool enable_tr3_sidesteps;
         bool enable_responsive_passport;

@@ -15,7 +15,7 @@ typedef struct {
 
     EVENT_MANAGER *events;
     UI_CONTROLS_BACKEND_STATE backend_state;
-    UI_CONTROLS_EDITOR_STATE editor_state;
+    UI_CONTROLS_EDITOR_STATE editor_state[INPUT_BACKEND_NUMBER_OF];
 } UI_CONTROLS_STATE;
 
 // state functions
