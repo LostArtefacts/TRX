@@ -13,15 +13,17 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_Init(M_PRIV *p);
-static void M_Close(M_PRIV *p);
+static void M_Shutdown(M_PRIV *p);
 
 static void M_Init(M_PRIV *const p)
 {
-    p->ui.is_ready = true;
-    UI_GraphicSettings_Init(&p->ui.state);
+    if (!p->ui.is_ready) {
+        p->ui.is_ready = true;
+        UI_GraphicSettings_Init(&p->ui.state);
+    }
 }
 
-static void M_Close(M_PRIV *const p)
+static void M_Shutdown(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
         p->ui.is_ready = false;
@@ -38,9 +40,7 @@ void Option_Graphics_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     if (!p->ui.is_ready) {
         M_Init(p);
     }
-    if (UI_GraphicSettings_Control(&p->ui.state)) {
-        M_Close(p);
-    } else {
+    if (!UI_GraphicSettings_Control(&p->ui.state)) {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
     }
@@ -56,6 +56,10 @@ void Option_Graphics_Draw(INVENTORY_ITEM *const inv_item)
 
 void Option_Graphics_Close(void)
 {
+}
+
+void Option_Graphics_Shutdown(void)
+{
     M_PRIV *const p = &m_Priv;
-    M_Close(p);
+    M_Shutdown(p);
 }

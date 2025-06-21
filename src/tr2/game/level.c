@@ -28,6 +28,7 @@
 #include <libtrx/game/level.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/game/option.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -455,6 +456,7 @@ bool Level_Initialise(
     Effect_InitialiseArray();
     LOT_InitialiseArray();
 
+    Option_Reset();
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
 

@@ -9,6 +9,7 @@
 - changed the examine dialog to be close-able with Look button (#3225)
 - changed some settings to be hidden when they're only applicable to specific games or custom levels (#3242)
 - changed photo mode help dialog to show icons for inputs
+- changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)

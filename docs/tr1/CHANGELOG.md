@@ -8,6 +8,7 @@
 - changed the examine dialog to be close-able with Look button (#3225)
 - changed some settings to be hidden when they're only applicable to specific games or custom levels (#3242)
 - changed photo mode help dialog to show icons for inputs
+- changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - fixed turbo cheat causing audio desync in cutscenes (#3263)
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 - fixed Lara's braid not being reflective (on Midas' hand) (#3257, regression from 4.9)

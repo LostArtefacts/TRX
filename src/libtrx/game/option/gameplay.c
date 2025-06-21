@@ -13,15 +13,17 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_Init(M_PRIV *p);
-static void M_Close(M_PRIV *p);
+static void M_Shutdown(M_PRIV *p);
 
 static void M_Init(M_PRIV *const p)
 {
-    p->ui.is_ready = true;
-    UI_GameplaySettings_Init(&p->ui.state);
+    if (!p->ui.is_ready) {
+        p->ui.is_ready = true;
+        UI_GameplaySettings_Init(&p->ui.state);
+    }
 }
 
-static void M_Close(M_PRIV *const p)
+static void M_Shutdown(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
         p->ui.is_ready = false;
@@ -39,7 +41,6 @@ void Option_Gameplay_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         M_Init(p);
     }
     if (UI_GameplaySettings_Control(&p->ui.state)) {
-        M_Close(p);
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;
@@ -60,6 +61,10 @@ void Option_Gameplay_Draw(INVENTORY_ITEM *const inv_item)
 
 void Option_Gameplay_Close(void)
 {
+}
+
+void Option_Gameplay_Shutdown(void)
+{
     M_PRIV *const p = &m_Priv;
-    M_Close(p);
+    M_Shutdown(p);
 }
