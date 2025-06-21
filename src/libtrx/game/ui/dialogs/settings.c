@@ -589,7 +589,7 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
     }
 
     if (s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS) {
-        if (UI_TabSwitch_Control(s->tab_switch)) {
+        if (UI_TabSwitch_Control(s->tab_switch, UI_TAB_SWITCH_NORMAL)) {
             s->options = s->tabs[s->tab_switch->active_tab_idx].options;
             UI_Scrollable_SelectFirstItem(&s->scroll);
             M_RecomputeSizes(s);
@@ -605,7 +605,13 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         }
     } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
-        if (g_InputDB.look && M_CanExamine(s, sel_row)) {
+        if (s->tab_switch != nullptr
+            && UI_TabSwitch_Control(s->tab_switch, UI_TAB_SWITCH_NO_ARROWS)) {
+            s->options = s->tabs[s->tab_switch->active_tab_idx].options;
+            UI_Scrollable_SelectFirstItem(&s->scroll);
+            M_RecomputeSizes(s);
+            return false;
+        } else if (g_InputDB.look && M_CanExamine(s, sel_row)) {
             s->description.show = true;
             s->description.state = UI_TextDialog_Init(
                 MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
