@@ -4,6 +4,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/option/graphics.h>
 #include <libtrx/game/option/sound.h>
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
@@ -19,7 +20,7 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         Option_Gameplay_Control(inv_item, is_busy);
         break;
     case O_DETAIL_OPTION:
-        Option_Detail_Control(inv_item, is_busy);
+        Option_Graphics_Control(inv_item, is_busy);
         break;
     case O_SOUND_OPTION:
         Option_Sound_Control(inv_item, is_busy);
@@ -92,7 +93,7 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         Option_Gameplay_Draw(inv_item);
         break;
     case O_DETAIL_OPTION:
-        Option_Detail_Draw(inv_item);
+        Option_Graphics_Draw(inv_item);
         break;
     case O_SOUND_OPTION:
         Option_Sound_Draw(inv_item);
@@ -129,7 +130,7 @@ void Option_Close(INVENTORY_ITEM *const inv_item)
         Option_Gameplay_Close();
         break;
     case O_DETAIL_OPTION:
-        Option_Detail_Close();
+        Option_Graphics_Close();
         break;
     case O_SOUND_OPTION:
         Option_Sound_Close();
