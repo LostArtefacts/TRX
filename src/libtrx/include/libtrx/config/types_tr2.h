@@ -37,6 +37,7 @@ typedef struct {
     char *language;
 
     struct {
+        INPUT_BACKEND backend; // Not decisive - mostly for UI visuals
         union {
             struct {
                 int32_t keyboard_layout;

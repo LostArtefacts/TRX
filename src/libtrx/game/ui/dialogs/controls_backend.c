@@ -1,5 +1,6 @@
 #include "game/ui/dialogs/controls_backend.h"
 
+#include "config.h"
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/ui/elements/anchor.h"
@@ -7,17 +8,33 @@
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/requester.h"
 
-static const GAME_STRING_ID m_Options[] = {
-    GS_ID(CONTROLS_BACKEND_KEYBOARD),
-    GS_ID(CONTROLS_BACKEND_CONTROLLER),
-    nullptr,
+typedef struct {
+    GAME_STRING_ID gs_id;
+    INPUT_BACKEND backend;
+} M_OPTION;
+
+static const M_OPTION m_Options[] = {
+    { .gs_id = GS_ID(CONTROLS_BACKEND_KEYBOARD),
+      .backend = INPUT_BACKEND_KEYBOARD },
+    { .gs_id = GS_ID(CONTROLS_BACKEND_CONTROLLER),
+      .backend = INPUT_BACKEND_CONTROLLER },
+    { .gs_id = nullptr },
 };
 
 void UI_ControlsBackend_Init(UI_CONTROLS_BACKEND_STATE *const s)
 {
     int32_t count = 0;
-    for (count = 0; m_Options[count] != nullptr; count++) { }
+    int32_t sel_row = -1;
+    for (int32_t i = 0; m_Options[i].gs_id != nullptr; i++) {
+        if (m_Options[i].backend == g_Config.input.backend) {
+            sel_row = i;
+        }
+        count++;
+    }
     UI_Requester_Init(&s->req, count, count, true);
+    if (sel_row != -1) {
+        UI_Requester_SelectRow(&s->req, sel_row);
+    }
 }
 
 void UI_ControlsBackend_Free(UI_CONTROLS_BACKEND_STATE *const s)
@@ -28,14 +45,10 @@ void UI_ControlsBackend_Free(UI_CONTROLS_BACKEND_STATE *const s)
 int32_t UI_ControlsBackend_Control(UI_CONTROLS_BACKEND_STATE *const s)
 {
     const int32_t choice = UI_Requester_Control(&s->req);
-    switch (choice) {
-    case 0:
-        return INPUT_BACKEND_KEYBOARD;
-    case 1:
-        return INPUT_BACKEND_CONTROLLER;
-    default:
-        return choice;
+    if (choice >= 0) {
+        return m_Options[choice].backend;
     }
+    return choice;
 }
 
 void UI_ControlsBackend(UI_CONTROLS_BACKEND_STATE *const s)
@@ -47,7 +60,7 @@ void UI_ControlsBackend(UI_CONTROLS_BACKEND_STATE *const s)
          i < UI_Requester_GetLastRow(&s->req); i++) {
         UI_BeginRequesterRow(&s->req, i);
         UI_BeginAnchor(0.5f, 0.5f);
-        UI_Label(GameString_Get(m_Options[i]));
+        UI_Label(GameString_Get(m_Options[i].gs_id));
         UI_EndAnchor();
         UI_EndRequesterRow(&s->req, i);
     }
