@@ -1,7 +1,7 @@
-#include "game/option/option_gameplay.h"
+#include "game/option/gameplay.h"
 
-#include <libtrx/game/input.h>
-#include <libtrx/game/ui/dialogs/gameplay_settings.h>
+#include "game/input.h"
+#include "game/ui/dialogs/gameplay_settings.h"
 
 typedef struct {
     struct {
