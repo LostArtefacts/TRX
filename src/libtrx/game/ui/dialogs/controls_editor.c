@@ -34,6 +34,23 @@ typedef enum {
     M_PHASE_EXIT,
 } M_PHASE;
 
+#if TR_VERSION == 1
+static bool M_AreNumericKeysEnabled(void);
+#endif
+static bool M_AreCheatsEnabled(void);
+
+#if TR_VERSION == 1
+static bool M_AreNumericKeysEnabled(void)
+{
+    return g_Config.input.enable_numeric_keys;
+}
+#endif
+
+static bool M_AreCheatsEnabled(void)
+{
+    return g_Config.gameplay.enable_cheats;
+}
+
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
         .header_gs = GS_ID(CONTROLS_SECTION_BASICS),
@@ -59,16 +76,27 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .header_gs = GS_ID(CONTROLS_SECTION_ITEMS),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
-#if TR_VERSION == 2
+#if TR_VERSION == 1
+                { .role = INPUT_ROLE_USE_SMALL_MEDI,
+                  .is_available = M_AreNumericKeysEnabled },
+                { .role = INPUT_ROLE_USE_BIG_MEDI,
+                  .is_available = M_AreNumericKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_PISTOLS,
+                  .is_available = M_AreNumericKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_SHOTGUN,
+                  .is_available = M_AreNumericKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_MAGNUMS,
+                  .is_available = M_AreNumericKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_UZIS,
+                  .is_available = M_AreNumericKeysEnabled },
+#else
                 { .role = INPUT_ROLE_USE_FLARE },
-#endif
                 { .role = INPUT_ROLE_USE_SMALL_MEDI },
                 { .role = INPUT_ROLE_USE_BIG_MEDI },
                 { .role = INPUT_ROLE_EQUIP_PISTOLS },
                 { .role = INPUT_ROLE_EQUIP_SHOTGUN },
                 { .role = INPUT_ROLE_EQUIP_MAGNUMS },
                 { .role = INPUT_ROLE_EQUIP_UZIS },
-#if TR_VERSION == 2
                 { .role = INPUT_ROLE_EQUIP_HARPOON },
                 { .role = INPUT_ROLE_EQUIP_M16 },
                 { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
@@ -90,10 +118,14 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_CAMERA_RIGHT },
                 { .role = INPUT_ROLE_CAMERA_FORWARD },
                 { .role = INPUT_ROLE_CAMERA_BACK },
-                { .role = INPUT_ROLE_FLY_CHEAT },
-                { .role = INPUT_ROLE_ITEM_CHEAT },
-                { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT },
-                { .role = INPUT_ROLE_TURBO_CHEAT },
+                { .role = INPUT_ROLE_FLY_CHEAT,
+                  .is_available = M_AreCheatsEnabled },
+                { .role = INPUT_ROLE_ITEM_CHEAT,
+                  .is_available = M_AreCheatsEnabled },
+                { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT,
+                  .is_available = M_AreCheatsEnabled },
+                { .role = INPUT_ROLE_TURBO_CHEAT,
+                  .is_available = M_AreCheatsEnabled },
                 { .role = (INPUT_ROLE)-1 },
             },
     },

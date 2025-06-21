@@ -19,8 +19,10 @@ static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
     { -1, nullptr },
 };
 
-// Custom handlers for changing sound settings.
-static bool M_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
+static bool M_Volume_RequestChange(
+    const UI_SETTINGS_OPTION *option, int32_t dir);
+static bool M_PauseMusicInInventory_IsAvailable(
+    const UI_SETTINGS_OPTION *option);
 
 static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     {
@@ -30,7 +32,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .custom_handler = {
             .format_value = nullptr,
             .can_change_value = nullptr,
-            .request_change_value = M_RequestChange,
+            .request_change_value = M_Volume_RequestChange,
         },
         .target = &g_Config.audio.sound_volume,
         .min_value = 0,
@@ -45,7 +47,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
         .custom_handler = {
             .format_value = nullptr,
             .can_change_value = nullptr,
-            .request_change_value = M_RequestChange,
+            .request_change_value = M_Volume_RequestChange,
         },
         .target = &g_Config.audio.music_volume,
         .min_value = 0,
@@ -92,6 +94,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
             .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = nullptr,
+            .is_available = M_PauseMusicInInventory_IsAvailable,
         },
     },
     {
@@ -107,6 +110,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
             .format_value = nullptr,
             .can_change_value = nullptr,
             .request_change_value = nullptr,
+            .is_available = M_PauseMusicInInventory_IsAvailable,
         },
     },
     {
@@ -172,7 +176,7 @@ static const UI_SETTINGS_OPTION m_SoundOptions[] = {
     },
 };
 
-static bool M_RequestChange(
+static bool M_Volume_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
     UI_Settings_RequestChange(option, dir);
@@ -183,6 +187,12 @@ static bool M_RequestChange(
     }
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
     return true;
+}
+
+static bool M_PauseMusicInInventory_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.audio.enable_music_in_inventory;
 }
 
 UI_SOUND_SETTINGS_STATE *UI_SoundSettings_Init(void)

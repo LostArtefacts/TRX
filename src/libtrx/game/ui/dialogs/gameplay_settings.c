@@ -26,6 +26,29 @@ static const UI_SETTINGS_ENUM_ENTRY m_WallGlitchEnumEntries[] = {
     { -1, nullptr },
 };
 
+static bool M_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *option);
+static bool M_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *option);
+static bool M_FixWadeWallHit_IsAvailable(const UI_SETTINGS_OPTION *option);
+
+static bool M_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.visuals.enable_3d_pickups;
+}
+
+static bool M_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.gameplay.enable_smooth_wall_deflect;
+}
+
+static bool M_FixWadeWallHit_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+#if TR_VERSION == 1
+    return g_Config.gameplay.enable_wading;
+#else
+    return true;
+#endif
+}
+
 static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
     {
         .target = &g_Config.gameplay.enable_legal,
@@ -518,6 +541,9 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_ROTS),
         .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_ITEM_ROTS_DESCRIPTION),
         .option_type = COT_BOOL,
+        .custom_handler = {
+            .is_available = M_FixItemRots_IsAvailable,
+        },
     },
 
 #if TR_VERSION == 1
@@ -603,6 +629,9 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
         .description_id =
             GS_ID(GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT_DESCRIPTION),
         .option_type = COT_BOOL,
+        .custom_handler = {
+            .is_available = M_FixWadeWallHit_IsAvailable,
+        },
     },
 
     {
@@ -624,6 +653,9 @@ static const UI_SETTINGS_OPTION m_GameplayFixOptions[] = {
         .label_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH),
         .description_id = GS_ID(GAMEPLAY_SETTINGS_FIX_STEP_GLITCH_DESCRIPTION),
         .option_type = COT_BOOL,
+        .custom_handler = {
+            .is_available = M_FixStepGlitch_IsAvailable,
+        },
     },
 
     {
