@@ -9,6 +9,7 @@
 
 #define M_NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
 #define M_POS_TILT(T, H) ((T * ((WALL_L - 1 - H) & (WALL_L - 1))) >> 2)
+#define WALKABLE_CLOSE_DIST (3 * WALL_L) // = 3072
 
 static int16_t m_AbyssMinHeight = 0;
 static int32_t m_AbyssMaxHeight = 0;
@@ -18,6 +19,7 @@ static int16_t M_GetFloorTiltHeight(
     const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
 static int16_t M_GetCeilingTiltHeight(
     const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
+static bool M_IsWalkableClose(int32_t x, int32_t z, const ITEM *item);
 
 static int16_t M_GetFloorTiltHeight(
     const SECTOR *const sector, const int32_t x, const int32_t z,
@@ -83,6 +85,17 @@ static int16_t M_GetCeilingTiltHeight(
     }
 
     return height;
+}
+
+static bool M_IsWalkableClose(int32_t x, int32_t z, const ITEM *const item)
+{
+    int32_t dist_x = x - item->pos.x;
+    int32_t dist_z = z - item->pos.z;
+    if (dist_x < -WALKABLE_CLOSE_DIST || dist_x > WALKABLE_CLOSE_DIST
+        || dist_z < -WALKABLE_CLOSE_DIST || dist_z > WALKABLE_CLOSE_DIST) {
+        return false;
+    }
+    return true;
 }
 
 SECTOR *Room_GetSector(
@@ -268,6 +281,9 @@ int16_t Room_GetHeightEx(
         const ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
+            if (!M_IsWalkableClose(x, z, item)) {
+                continue;
+            }
             const int32_t walkable_height =
                 obj->floor_height_func(item, x, test_y, z, height);
             if (walkable_height != height) {
@@ -328,6 +344,9 @@ int16_t Room_GetCeilingEx(
         const ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
+            if (!M_IsWalkableClose(x, z, item)) {
+                continue;
+            }
             height = obj->ceiling_height_func(item, x, y, z, height);
         }
     }
@@ -511,6 +530,9 @@ bool Room_IsOnWalkable(
         const ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
+            if (!M_IsWalkableClose(x, z, item)) {
+                continue;
+            }
             const int32_t test_height =
                 obj->floor_height_func(item, x, y, z, height);
             if (test_height != height) {
@@ -548,6 +570,9 @@ int16_t Room_GetHeightIgnore(
         const ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
+            if (!M_IsWalkableClose(x, z, item)) {
+                continue;
+            }
             height = obj->floor_height_func(item, x, y, z, height);
         }
     }
