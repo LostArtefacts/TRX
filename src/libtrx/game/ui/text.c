@@ -195,8 +195,11 @@ static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
     // NOTE: this aliasing approach assumes that Input_GetKeyName returns
     // text that resolves to a single glyph.
     M_GLYPH_MAP_ENTRY *entry = nullptr;
-    HASH_FIND_STR(m_GlyphMap, keyname, entry);
-    return (entry != nullptr) ? entry->glyph : glyph;
+    HASH_FIND_STR(m_GlyphMap, key_name, entry);
+    if (entry == nullptr) {
+        HASH_FIND_STR(m_GlyphMap, "?", entry);
+    }
+    return entry != nullptr ? entry->glyph : nullptr;
 }
 
 static size_t M_WordWrap(
@@ -222,8 +225,10 @@ static size_t M_WordWrap(
 
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
-        const M_GLYPH_INFO *resolved = M_GetResolvedGlyph(glyphs[i]);
-        const M_GLYPH_INFO *const glyph = resolved;
+        const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(glyphs[i]);
+        if (glyph == nullptr) {
+            continue;
+        }
 
         if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
@@ -369,7 +374,11 @@ void M_Process(
     bool visible = true;
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
-        const M_GLYPH_INFO *glyph = M_GetResolvedGlyph(*glyph_ptr);
+        const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(*glyph_ptr);
+        if (glyph == nullptr) {
+            goto loop_end;
+        }
+
         if (glyph->role == GLYPH_REVIEW_MARKER
             && !g_Config.debug.enable_review_markers) {
             goto loop_end;
