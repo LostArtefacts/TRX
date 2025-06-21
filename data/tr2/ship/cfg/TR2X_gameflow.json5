@@ -117,6 +117,7 @@
             ],
             "injections": [
                 "data/injections/bartoli_music_tracks.bin",
+                "data/injections/bartoli_secret_fd.bin",
                 "data/injections/bartoli_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
             ],
@@ -202,6 +203,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/fathoms_goon_sfx.bin",
                 "data/injections/fathoms_music_tracks.bin",
+                "data/injections/fathoms_secret_fd.bin",
             ],
         },
 
@@ -224,6 +226,7 @@
                 "data/injections/wreck_itemrots.bin",
                 "data/injections/wreck_music_tracks.bin",
                 "data/injections/wreck_pickup_meshes.bin",
+                "data/injections/wreck_secret_fd.bin",
             ],
         },
 
@@ -243,6 +246,7 @@
                 "data/injections/living_fd.bin",
                 "data/injections/living_music_tracks.bin",
                 "data/injections/living_pickup_meshes.bin",
+                "data/injections/living_secret_fd.bin",
                 "data/injections/seaweed_collision.bin",
             ],
         },
@@ -265,6 +269,7 @@
                 "data/injections/deck_itemrots.bin",
                 "data/injections/deck_music_tracks.bin",
                 "data/injections/deck_pickup_meshes.bin",
+                "data/injections/deck_secret_fd.bin",
                 "data/injections/living_deck_goon_sfx.bin",
             ],
         },
@@ -350,6 +355,7 @@
                 "data/injections/palace_fd.bin",
                 "data/injections/palace_itemrots.bin",
                 "data/injections/palace_music_tracks.bin",
+                "data/injections/palace_secret_fd.bin",
             ],
         },
 
