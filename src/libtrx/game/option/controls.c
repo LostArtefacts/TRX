@@ -1,8 +1,7 @@
-#include "game/option/option.h"
-#include "global/vars.h"
+#include "game/option/controls.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/ui.h>
+#include "config.h"
+#include "game/ui.h"
 
 typedef struct {
     int32_t listeners[2];

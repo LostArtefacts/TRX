@@ -236,7 +236,6 @@ sources = [
   'game/objects/vehicles/skidoo_fast.c',
   'game/option/option.c',
   'game/option/option_compass.c',
-  'game/option/option_controls.c',
   'game/option/option_passport.c',
   'game/output.c',
   'game/overlay.c',
