@@ -43,17 +43,8 @@ static void M_Shutdown(M_PRIV *const p)
 static void M_HandleLayoutChange(const EVENT *event, void *user_data)
 {
     const M_PRIV *const p = user_data;
-    switch (p->ui.state.backend) {
-    case INPUT_BACKEND_KEYBOARD:
-        g_Config.input.keyboard_layout = p->ui.state.editor_state.active_layout;
-        break;
-    case INPUT_BACKEND_CONTROLLER:
-        g_Config.input.controller_layout =
-            p->ui.state.editor_state.active_layout;
-        break;
-    default:
-        break;
-    }
+    g_Config.input.layout[p->ui.state.backend] =
+        p->ui.state.editor_state[p->ui.state.backend].active_layout;
     Config_Write();
 }
 

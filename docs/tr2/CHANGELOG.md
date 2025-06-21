@@ -2,6 +2,7 @@
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
+- fixed inability to use unbind key / reset layout buttons with controllers (#3290, regression from 1.2)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 1.2)
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...tr2-1.2) - 2025-06-17

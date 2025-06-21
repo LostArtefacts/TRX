@@ -473,8 +473,13 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
 }
 
 void UI_ControlsEditor_Init(
-    UI_CONTROLS_EDITOR_STATE *const s, EVENT_MANAGER *events)
+    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_BACKEND backend,
+    const int32_t layout, EVENT_MANAGER *const events)
 {
+    s->backend = backend;
+    s->active_layout = layout;
+    s->phase = M_PHASE_NAVIGATE_LAYOUT;
+
     s->events = events;
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
 
@@ -493,6 +498,7 @@ void UI_ControlsEditor_Init(
         }
         s->layout_tab_switch =
             UI_TabSwitch_Init(INPUT_LAYOUT_NUMBER_OF, layout_tabs);
+        s->layout_tab_switch->active_tab_idx = s->active_layout;
     }
 
     {
@@ -518,9 +524,10 @@ void UI_ControlsEditor_Init(
 
     s->active_group = &m_Groups[0];
     s->scroll.first_item = 0;
-    s->scroll.sel_item = -1;
+    s->scroll.sel_item = 0;
     s->scroll.vis_items = MIN(s->max_group_items, M_GetVisibleRows());
     s->scroll.max_items = M_GetInputRoleCount(s->active_group);
+    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
 
     s->label_size = 0.0f;
     for (int32_t i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
@@ -542,18 +549,6 @@ void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *const s)
     s->reset_bindings_button = nullptr;
     UI_ProgressButton_Free(s->unbind_key_button);
     s->unbind_key_button = nullptr;
-}
-
-void UI_ControlsEditor_Reinit(
-    UI_CONTROLS_EDITOR_STATE *const s, const INPUT_BACKEND backend,
-    const INPUT_LAYOUT layout)
-{
-    s->backend = backend;
-    s->active_layout = layout;
-    s->layout_tab_switch->active_tab_idx = s->active_layout;
-    s->scroll.sel_item = 0;
-    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
-    s->phase = M_PHASE_NAVIGATE_LAYOUT;
 }
 
 UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
