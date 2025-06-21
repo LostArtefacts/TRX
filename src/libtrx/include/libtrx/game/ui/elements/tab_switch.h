@@ -21,6 +21,11 @@ typedef struct {
     int32_t active_tab_idx;
 } UI_TAB_SWITCH_STATE;
 
+typedef enum {
+    UI_TAB_SWITCH_NORMAL,
+    UI_TAB_SWITCH_NO_ARROWS,
+} UI_TAB_SWITCH_FLAGS;
+
 // state functions
 UI_TAB_SWITCH_STATE *UI_TabSwitch_Init(
     int32_t tab_count, const UI_TAB_SWITCH_TAB *tabs);
@@ -28,7 +33,8 @@ void UI_TabSwitch_Free(UI_TAB_SWITCH_STATE *s);
 
 // Handles left/right input for switching tabs. Returns true if the active tab
 // changed.
-bool UI_TabSwitch_Control(UI_TAB_SWITCH_STATE *state);
+bool UI_TabSwitch_Control(
+    UI_TAB_SWITCH_STATE *state, UI_TAB_SWITCH_FLAGS flags);
 
 // Advances the active tab by dir (-1 for previous, +1 for next), wrapping
 // around.
