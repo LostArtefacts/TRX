@@ -28,6 +28,7 @@ typedef enum {
         float: LOG_DEBUG(#var ": %f", var),                                    \
         double: LOG_DEBUG(#var ": %f", var),                                   \
         char *: LOG_DEBUG(#var ": %s", var),                                   \
+        const char *: LOG_DEBUG(#var ": %s", var),                             \
         default: LOG_DEBUG(#var ": %p", var))
 
 void Log_Init(const char *path);
