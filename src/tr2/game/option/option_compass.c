@@ -17,7 +17,7 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_Init(M_PRIV *p);
-static void M_Shutdown(M_PRIV *p);
+static void M_Close(M_PRIV *p);
 
 static void M_Init(M_PRIV *const p)
 {
@@ -32,7 +32,7 @@ static void M_Init(M_PRIV *const p)
         });
 }
 
-static void M_Shutdown(M_PRIV *const p)
+static void M_Close(M_PRIV *const p)
 {
     if (p->ui_active) {
         p->ui_active = false;
@@ -53,7 +53,7 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     UI_StatsDialog_Control(&p->ui_state);
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        M_Shutdown(p);
+        M_Close(p);
         inv_item->anim_direction = 1;
         inv_item->goal_frame = inv_item->frames_total - 1;
         Sound_StopEffect(SFX_MENU_STOPWATCH);
@@ -70,8 +70,8 @@ void Option_Compass_Draw(void)
     }
 }
 
-void Option_Compass_Shutdown(void)
+void Option_Compass_Close(void)
 {
     M_PRIV *const p = &m_Priv;
-    M_Shutdown(p);
+    M_Close(p);
 }

@@ -18,7 +18,7 @@ static M_PRIV m_Priv = {};
 
 static int32_t M_GetMaxRows(void);
 static void M_Init(M_PRIV *p, GAME_OBJECT_ID obj_id);
-static void M_Shutdown(M_PRIV *p);
+static void M_Close(M_PRIV *p);
 
 static int32_t M_GetMaxRows(void)
 {
@@ -41,7 +41,7 @@ static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
         UI_GetCanvasWidth() * 2.0 / 3.0f, M_GetMaxRows(), false);
 }
 
-static void M_Shutdown(M_PRIV *const p)
+static void M_Close(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
         UI_TextDialog_Free(p->ui.state);
@@ -77,7 +77,7 @@ void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
         g_InputDB.menu_back = true;
     }
     if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
-        M_Shutdown(p);
+        M_Close(p);
     }
 }
 
@@ -91,8 +91,8 @@ void Option_Examine_Draw(void)
     }
 }
 
-void Option_Examine_Shutdown(void)
+void Option_Examine_Close(void)
 {
     M_PRIV *const p = &m_Priv;
-    M_Shutdown(p);
+    M_Close(p);
 }

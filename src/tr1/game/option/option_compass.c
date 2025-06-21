@@ -25,7 +25,7 @@ static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 
 static void M_Init(M_PRIV *p);
-static void M_Shutdown(M_PRIV *p);
+static void M_Close(M_PRIV *p);
 
 static void M_Init(M_PRIV *const p)
 {
@@ -39,7 +39,7 @@ static void M_Init(M_PRIV *const p)
         });
 }
 
-static void M_Shutdown(M_PRIV *const p)
+static void M_Close(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
         p->ui.is_ready = false;
@@ -60,7 +60,7 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     UI_StatsDialog_Control(&p->ui.state);
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        M_Shutdown(p);
+        M_Close(p);
         inv_item->anim_direction = 1;
         inv_item->goal_frame = inv_item->frames_total - 1;
     }
@@ -74,10 +74,10 @@ void Option_Compass_Draw(void)
     }
 }
 
-void Option_Compass_Shutdown(void)
+void Option_Compass_Close(void)
 {
     M_PRIV *const p = &m_Priv;
-    M_Shutdown(p);
+    M_Close(p);
 }
 
 void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)

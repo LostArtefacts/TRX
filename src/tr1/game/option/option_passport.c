@@ -599,7 +599,7 @@ void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
     }
 }
 
-void Option_Passport_Shutdown(void)
+void Option_Passport_Close(void)
 {
     M_RemoveAllText();
     m_State.active_page = -1;

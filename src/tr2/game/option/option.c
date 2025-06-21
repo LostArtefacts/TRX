@@ -118,26 +118,26 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     }
 }
 
-void Option_Shutdown(INVENTORY_ITEM *const inv_item)
+void Option_Close(INVENTORY_ITEM *const inv_item)
 {
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
-        Option_Passport_Shutdown();
+        Option_Passport_Close();
         break;
     case O_COMPASS_ITEM:
-        Option_Gameplay_Shutdown();
+        Option_Gameplay_Close();
         break;
     case O_DETAIL_OPTION:
-        Option_Detail_Shutdown();
+        Option_Detail_Close();
         break;
     case O_SOUND_OPTION:
-        Option_Sound_Shutdown();
+        Option_Sound_Close();
         break;
     case O_CONTROL_OPTION:
-        Option_Controls_Shutdown();
+        Option_Controls_Close();
         break;
     case O_COMPASS_OPTION:
-        Option_Compass_Shutdown();
+        Option_Compass_Close();
         break;
     case O_PICKUP_OPTION_1:
     case O_PICKUP_OPTION_2:
@@ -149,7 +149,7 @@ void Option_Shutdown(INVENTORY_ITEM *const inv_item)
     case O_KEY_OPTION_2:
     case O_KEY_OPTION_3:
     case O_KEY_OPTION_4:
-        Option_Examine_Shutdown();
+        Option_Examine_Close();
         break;
     default:
         break;

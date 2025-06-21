@@ -4,4 +4,4 @@
 
 void Option_Sound_Control(INVENTORY_ITEM *inv_item, bool is_busy);
 void Option_Sound_Draw(INVENTORY_ITEM *inv_item);
-void Option_Sound_Shutdown(void);
+void Option_Sound_Close(void);

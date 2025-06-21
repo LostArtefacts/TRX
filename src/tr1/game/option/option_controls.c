@@ -16,7 +16,7 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_Init(M_PRIV *p);
-static void M_Shutdown(M_PRIV *p);
+static void M_Close(M_PRIV *p);
 static void M_HandleLayoutChange(const EVENT *event, void *user_data);
 static void M_HandleKeyChange(const EVENT *event, void *user_data);
 
@@ -30,7 +30,7 @@ static void M_Init(M_PRIV *const p)
         p->ui.state.events, "key_change", nullptr, M_HandleKeyChange, p);
 }
 
-static void M_Shutdown(M_PRIV *const p)
+static void M_Close(M_PRIV *const p)
 {
     if (p->ui.is_ready) {
         EventManager_Unsubscribe(p->ui.state.events, p->listeners[0]);
@@ -53,9 +53,9 @@ static void M_HandleKeyChange(const EVENT *event, void *user_data)
     Config_Write();
 }
 
-void Option_Controls_Shutdown(void)
+void Option_Controls_Close(void)
 {
-    M_Shutdown(&m_Priv);
+    M_Close(&m_Priv);
 }
 
 void Option_Controls_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
@@ -70,7 +70,7 @@ void Option_Controls_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     }
 
     if (UI_Controls_Control(&p->ui.state)) {
-        M_Shutdown(p);
+        M_Close(p);
     } else {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
