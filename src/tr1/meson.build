@@ -224,7 +224,6 @@ sources = [
   'game/option/option_gameplay.c',
   'game/option/option_graphics.c',
   'game/option/option_passport.c',
-  'game/option/option_sound.c',
   'game/output.c',
   'game/output/draw_misc.c',
   'game/output/func.c',

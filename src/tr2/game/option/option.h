@@ -18,10 +18,6 @@ void Option_Gameplay_Control(INVENTORY_ITEM *inv_item, bool is_busy);
 void Option_Gameplay_Draw(INVENTORY_ITEM *inv_item);
 void Option_Gameplay_Close(void);
 
-void Option_Sound_Control(INVENTORY_ITEM *inv_item, bool is_busy);
-void Option_Sound_Draw(INVENTORY_ITEM *inv_item);
-void Option_Sound_Close(void);
-
 void Option_Controls_FlashConflicts(void);
 void Option_Controls_DefaultConflict(void);
 void Option_Controls_Control(INVENTORY_ITEM *inv_item, bool is_busy);

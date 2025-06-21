@@ -4,6 +4,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/option/sound.h>
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
