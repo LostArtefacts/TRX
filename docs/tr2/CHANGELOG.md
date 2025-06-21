@@ -11,6 +11,7 @@
 - changed photo mode help dialog to show icons for inputs
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
+- fixed PS touchpad input missing an icon (#3288, regression from 4.12)
 - removed config tool (we have ingame setting dialogs now)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 1.2)
 

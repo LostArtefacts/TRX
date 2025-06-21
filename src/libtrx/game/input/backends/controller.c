@@ -75,7 +75,7 @@ static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
 #define M_NAME_START          "\\{controller button home}"
 #define M_NAME_SHARE          "\\{controller button share}"
 #define M_NAME_CAPTURE        "\\{controller button capture}"
-#define M_NAME_TOUCHPAD       "\\{controller button touch}"
+#define M_NAME_TOUCHPAD       "\\{controller button touchpad}"
 #define M_NAME_MIC            "\\{controller button mic}"
 #define M_NAME_PADDLE_1       "\\{controller button paddle 1}"
 #define M_NAME_PADDLE_2       "\\{controller button paddle 2}"
