@@ -21,6 +21,7 @@ typedef struct {
         const struct UI_SETTINGS_OPTION *option, int32_t dir);
     bool (*request_change_value)(
         const struct UI_SETTINGS_OPTION *option, int32_t dir);
+    bool (*is_available)(const struct UI_SETTINGS_OPTION *option);
 } UI_SETTINGS_CUSTOM_OPITON_HANDLER;
 
 typedef struct UI_SETTINGS_OPTION {
