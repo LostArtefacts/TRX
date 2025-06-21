@@ -51,6 +51,9 @@ static bool M_CanExamine(const UI_SETTINGS_STATE *s, int32_t row_idx);
 static bool M_CanRestoreDefault(const UI_SETTINGS_STATE *s, int32_t row_idx);
 static void M_RestoreDefault(const UI_SETTINGS_STATE *s, int32_t row_idx);
 static void M_RecomputeSizes(UI_SETTINGS_STATE *s);
+
+static void M_OptionLabel(
+    const UI_SETTINGS_OPTION *option, const char *text, bool star_if_enforced);
 static void M_Footer(const UI_SETTINGS_STATE *s);
 static void M_InitCommon(UI_SETTINGS_STATE *s, GAME_STRING_ID title);
 static void M_HandleConfigChange(const EVENT *event, void *data);
@@ -439,6 +442,28 @@ static void M_RecomputeSizes(UI_SETTINGS_STATE *const s)
     s->max_value_w = M_GetMaxValueWidth(s) / g_Config.ui.text_scale;
 }
 
+// Helpers for label/value rendering: add a star if enforced,
+// and wrap entire string in {dim}…{/dim} if the option is grayed-out.
+static void M_OptionLabel(
+    const UI_SETTINGS_OPTION *const option, const char *const text,
+    const bool star_if_enforced)
+{
+    const bool is_available = option == nullptr
+        || option->custom_handler.is_available == nullptr
+        || option->custom_handler.is_available(option);
+    const bool is_enforced = star_if_enforced && option != nullptr
+        && Config_IsOptionEnforced(option->target);
+    const char *const suffix = is_enforced ? "*" : "";
+
+    if (!is_available) {
+        UI_LabelFmt("\\{dim}%s%s\\{/dim}", text, suffix);
+    } else if (is_enforced) {
+        UI_LabelFmt("%s%s", text, suffix);
+    } else {
+        UI_Label(text);
+    }
+}
+
 static void M_Footer(const UI_SETTINGS_STATE *const s)
 {
     const int32_t row_idx = UI_Scrollable_GetSelectedItem(&s->scroll);
@@ -753,12 +778,8 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         {
             const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row);
             const char *const name =
-                option != nullptr ? GameString_Get(option->label_id) : "";
-            if (option != nullptr && Config_IsOptionEnforced(option->target)) {
-                UI_LabelFmt("%s*", name);
-            } else {
-                UI_Label(name);
-            }
+                option ? GameString_Get(option->label_id) : "";
+            M_OptionLabel(option, name, /* star_if_enforced */ true);
         }
         UI_EndResize();
         UI_Spacer(20.0f, 0.0f);
@@ -770,7 +791,11 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
             is_row_focused && M_CanChangeValue(s, row, -1),
             is_row_focused && M_CanChangeValue(s, row, +1),
             UI_ROW_ARROWS_MEDIUM);
-        UI_Label(M_FormatRowValue(s, row));
+        {
+            const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row);
+            const char *const value = M_FormatRowValue(s, row);
+            M_OptionLabel(option, value, /* star_if_enforced */ false);
+        }
         UI_EndRowArrows();
 
         UI_EndAnchor();
