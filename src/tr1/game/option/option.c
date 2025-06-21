@@ -12,31 +12,31 @@
 
 #include <libtrx/game/option/examine.h>
 
-void Option_Shutdown(INVENTORY_ITEM *inv_item)
+void Option_Close(INVENTORY_ITEM *inv_item)
 {
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
-        Option_Passport_Shutdown();
+        Option_Passport_Close();
         break;
 
     case O_COMPASS_OPTION:
-        Option_Compass_Shutdown();
+        Option_Compass_Close();
         break;
 
     case O_MAP_OPTION:
-        Option_Gameplay_Shutdown();
+        Option_Gameplay_Close();
         break;
 
     case O_DETAIL_OPTION:
-        Option_Graphics_Shutdown();
+        Option_Graphics_Close();
         break;
 
     case O_SOUND_OPTION:
-        Option_Sound_Shutdown();
+        Option_Sound_Close();
         break;
 
     case O_CONTROL_OPTION:
-        Option_Controls_Shutdown();
+        Option_Controls_Close();
         break;
 
     case O_PICKUP_OPTION_1:
@@ -51,7 +51,7 @@ void Option_Shutdown(INVENTORY_ITEM *inv_item)
     case O_KEY_OPTION_4:
     case O_SCION_OPTION:
     case O_LEADBAR_OPTION:
-        Option_Examine_Shutdown();
+        Option_Examine_Close();
         break;
 
     default:

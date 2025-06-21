@@ -669,7 +669,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
     case RNG_DESELECT: {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
-        Option_Shutdown(inv_item);
+        Option_Close(inv_item);
         Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
         InvRing_MotionSetup(ring, RNG_DESELECTING, RNG_OPEN, 16);
         InvRing_MotionRotation(
@@ -882,7 +882,7 @@ void InvRing_Close(INV_RING *const ring)
     if (ring->list != nullptr) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item != nullptr) {
-            Option_Shutdown(inv_item);
+            Option_Close(inv_item);
         }
     }
     if (ring->mode == INV_TITLE_MODE) {
