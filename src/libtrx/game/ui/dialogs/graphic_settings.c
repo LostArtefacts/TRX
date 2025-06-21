@@ -276,6 +276,51 @@ static bool M_Language_RequestChangeValue(
     return true;
 }
 
+// Custom handlers for graying out dependent visual settings
+static bool M_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *option);
+#if TR_VERISON == 1
+static bool M_EnablePS1Crystals_IsAvailable(const UI_SETTINGS_OPTION *option);
+#endif
+static bool M_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
+static bool M_Airbar_IsAvailable(const UI_SETTINGS_OPTION *option);
+static bool M_EnemyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
+static bool M_EnableExitFadeEffects_IsAvailable(
+    const UI_SETTINGS_OPTION *option);
+
+static bool M_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.visuals.enable_braid;
+}
+
+#if TR_VERSION == 1
+static bool M_EnablePS1Crystals_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.gameplay.enable_save_crystals;
+}
+#endif
+
+static bool M_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.lara_health_bar.show_mode != BSM_NEVER;
+}
+
+static bool M_Airbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.lara_air_bar.show_mode != BSM_NEVER;
+}
+
+static bool M_EnemyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.enemy_health_bar.show_mode != BSM_NEVER;
+}
+
+static bool M_EnableExitFadeEffects_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.visuals.enable_fade_effects;
+}
+
 static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
     {
         .option_type = COT_INT32,
@@ -407,6 +452,9 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .label_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_BREEZE),
         .description_id = GS_ID(GRAPHIC_SETTINGS_ENABLE_BREEZE_DESCRIPTION),
         .option_type = COT_BOOL,
+        .custom_handler = {
+            .is_available = M_EnableBreeze_IsAvailable,
+        },
     },
 
     {
@@ -431,6 +479,9 @@ static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
         .description_id =
             GS_ID(GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS_DESCRIPTION),
         .option_type = COT_BOOL,
+        .custom_handler = {
+            .is_available = M_EnablePS1Crystals_IsAvailable,
+        },
     },
 
     {
@@ -533,6 +584,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
             GS_ID(GRAPHIC_SETTINGS_HEALTHBAR_LOCATION_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_BarLocationEnumEntries,
+        .custom_handler = {
+            .is_available = M_Healthbar_IsAvailable,
+        },
     },
     {
         .target = &g_Config.ui.lara_health_bar.color,
@@ -540,6 +594,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
         .description_id = GS_ID(GRAPHIC_SETTINGS_HEALTHBAR_COLOR_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_BarColorEnumEntries,
+        .custom_handler = {
+            .is_available = M_Healthbar_IsAvailable,
+        },
     },
 
     {
@@ -555,6 +612,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
         .description_id = GS_ID(GRAPHIC_SETTINGS_AIRBAR_LOCATION_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_BarLocationEnumEntries,
+        .custom_handler = {
+            .is_available = M_Airbar_IsAvailable,
+        },
     },
     {
         .target = &g_Config.ui.lara_air_bar.color,
@@ -562,6 +622,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
         .description_id = GS_ID(GRAPHIC_SETTINGS_AIRBAR_COLOR_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_BarColorEnumEntries,
+        .custom_handler = {
+            .is_available = M_Airbar_IsAvailable,
+        },
     },
 
     {
@@ -579,6 +642,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
             GS_ID(GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_BarLocationEnumEntries,
+        .custom_handler = {
+            .is_available = M_EnemyHealthbar_IsAvailable,
+        },
     },
     {
         .target = &g_Config.ui.enemy_health_bar.color,
@@ -587,6 +653,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
             GS_ID(GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR_DESCRIPTION),
         .option_type = COT_ENUM,
         .misc = &m_BarColorEnumEntries,
+        .custom_handler = {
+            .is_available = M_EnemyHealthbar_IsAvailable,
+        },
     },
 
 #if TR_VERSION == 1
@@ -613,6 +682,9 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
         .description_id =
             GS_ID(GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS_DESCRIPTION),
         .option_type = COT_BOOL,
+        .custom_handler = {
+            .is_available = M_EnableExitFadeEffects_IsAvailable,
+        },
     },
 
     {
