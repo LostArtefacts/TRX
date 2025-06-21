@@ -446,20 +446,10 @@ static void M_Footer(const UI_SETTINGS_STATE *const s)
         .spacing = { .h = 20 },
     });
     UI_BeginHide(!M_CanExamine(s, row_idx));
-    UI_LabelFmt(
-        "%s %s",
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_LOOK),
-        GS(COMMON_SETTINGS_TOGGLE_HELP));
+    UI_LabelFmt("\\{input look} %s", GS(COMMON_SETTINGS_TOGGLE_HELP));
     UI_EndHide();
     UI_BeginHide(!M_CanRestoreDefault(s, row_idx));
-    UI_LabelFmt(
-        "%s %s",
-        Input_GetKeyName(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_UNBIND_KEY),
-        GS(COMMON_SETTINGS_RESTORE_DEFAULT));
+    UI_LabelFmt("\\{input unbind_key} %s", GS(COMMON_SETTINGS_RESTORE_DEFAULT));
     UI_EndHide();
     UI_EndStack();
 }
