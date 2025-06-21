@@ -22,12 +22,13 @@ static char *M_GetScreenshotPath(SCREENSHOT_FORMAT format);
 static char *M_CleanScreenshotTitle(const char *const source)
 {
     // Sanitize screenshot title.
+    // - Remove filesystem-sensitive characters
     // - Replace spaces with underscores
-    // - Remove all non-alphanumeric characters
     // - Merge consecutive underscores together
     // - Remove leading underscores
     // - Remove trailing underscores
     char *result = Memory_Alloc(strlen(source) + 1);
+    const char *const sensitive_characters = "/\\:*?\"<>|";
 
     bool last_was_underscore = false;
     char *out = result;
@@ -37,10 +38,15 @@ static char *M_CleanScreenshotTitle(const char *const source)
                 *out++ = '_';
                 last_was_underscore = true;
             }
-        } else if (((source[i] >= 'A' && source[i] <= 'Z')
-                    || (source[i] >= 'a' && source[i] <= 'z')
-                    || (source[i] >= '0' && source[i] <= '9'))) {
-            *out++ = source[i];
+            continue;
+        }
+
+        const size_t char_size = String_GetCharByteSize(out);
+        if (char_size != 1
+            || strchr(sensitive_characters, source[i]) == nullptr) {
+            memcpy(out, source + i, char_size);
+            out += char_size;
+            i += char_size - 1;
             last_was_underscore = false;
         }
     }

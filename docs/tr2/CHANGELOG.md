@@ -4,6 +4,7 @@
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
 - fixed inability to use unbind key / reset layout buttons with controllers (#3290, regression from 1.2)
 - fixed inventory ring consuming too many items under severe frame drop conditions (#3295, regression from 1.0)
+- fixed screenshots stripping accented characters (#3238)
 - fixed accented lowercase `i` characters retaining the superscript dot (#3298)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 1.2)
 
