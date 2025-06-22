@@ -106,6 +106,7 @@ typedef struct {
 
     bool is_demo_needed;
     bool is_pass_open;
+    bool is_done;
     bool has_spun_out;
 #if TR_VERSION == 2
     int32_t old_fov;
