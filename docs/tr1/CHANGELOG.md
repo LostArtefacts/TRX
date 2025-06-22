@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...develop) - ××××-××-××
+
+## [4.12.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...tr1-4.12.2) - 2025-06-22
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 - fixed Lara's braid not being reflective (on Midas' hand) (#3257, regression from 4.9)
 - fixed turbo cheat causing audio desync in cutscenes (#3263)
