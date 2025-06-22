@@ -57,9 +57,13 @@ void UI_ProgressButton_Free(UI_PROGRESS_BUTTON_STATE *s)
 
 void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
 {
-    const char *const value_label = String_FormatStatic(
-        GS(MISC_HOLD_FMT),
-        Input_GetKeyName(s->backend, INPUT_LAYOUT_DEFAULT, s->role));
+    const char *const key_name =
+        Input_GetKeyName(s->backend, INPUT_LAYOUT_DEFAULT, s->role);
+    if (key_name == nullptr) {
+        return;
+    }
+    const char *const value_label =
+        String_FormatStatic(GS(MISC_HOLD_FMT), key_name);
 
     const float pad[2] = { 6.0f, 3.0f };
 
