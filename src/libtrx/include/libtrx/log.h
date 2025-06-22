@@ -20,6 +20,7 @@ typedef enum {
     _Generic(                                                                  \
         (var),                                                                 \
         int: LOG_DEBUG(#var ": %d", var),                                      \
+        bool: LOG_DEBUG(#var ": %d", var),                                     \
         int8_t: LOG_DEBUG(#var ": %d", var),                                   \
         int16_t: LOG_DEBUG(#var ": %d", var),                                  \
         uint8_t: LOG_DEBUG(#var ": %d", var),                                  \
