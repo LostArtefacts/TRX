@@ -9,6 +9,7 @@
     - removed default bindings for the "Sizer" and the "Scaler" options (#2853)
     - changed screenshots to always produce images at desktop resolution
 - added French translation
+- added Gaelic translation
 - added Italian translation to the installer
 - added dedicated British English translation (#3212)
 - added the ability to advance individual frames to the photo mode
