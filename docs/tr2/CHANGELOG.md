@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...develop) - ××××-××-××
+
+## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
