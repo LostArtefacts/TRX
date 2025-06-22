@@ -6,6 +6,7 @@
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
 - fixed inability to use unbind key / reset layout buttons with controllers (#3290, regression from 4.12)
+- fixed inventory ring consuming too many items under severe frame drop conditions (#3295, regression from 4.8)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 4.12)
 
 ## [4.12.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.12...tr1-4.12.1) - 2025-06-18
