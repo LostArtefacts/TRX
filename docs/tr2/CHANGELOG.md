@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...develop) - ××××-××-××
 - added French translation
 - added the ability to advance individual frames to the photo mode
 - added the ability to skip end game credits (#3266)
@@ -13,14 +13,16 @@
 - changed some settings to be dimmed when they're not taking effect due to other settings (#3166)
 - changed photo mode help dialog to show icons for inputs
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
-- fixed screenshots stripping accented characters (#3238)
-- fixed accented lowercase `i` characters retaining the superscript dot (#3298)
+- removed config tool (we have ingame setting dialogs now)
+
+## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
 - fixed inability to use unbind key / reset layout buttons with controllers (#3290, regression from 1.2)
 - fixed inventory ring consuming too many items under severe frame drop conditions (#3295, regression from 1.0)
-- removed config tool (we have ingame setting dialogs now)
+- fixed screenshots stripping accented characters (#3238)
+- fixed accented lowercase `i` characters retaining the superscript dot (#3298)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 1.2)
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...tr2-1.2) - 2025-06-17
