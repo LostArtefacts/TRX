@@ -137,21 +137,23 @@ static void M_LoadConfig(void)
 void Shell_Shutdown(void)
 {
     Console_Shutdown();
-    GameBuf_Shutdown();
     Savegame_Shutdown();
 
-    GameStringManager_Shutdown();
     GF_Shutdown();
-
     Overlay_Shutdown();
     Option_Shutdown();
     Output_Shutdown();
     Input_Shutdown();
     Music_Shutdown();
     Sound_Shutdown();
-    Overlay_Shutdown();
     UI_Shutdown();
+
+    GameStringManager_Shutdown();
+    GameString_Shutdown();
+    GameBuf_Shutdown();
+
     Config_Shutdown();
+    EnumMap_Shutdown();
     Log_Shutdown();
 }
 
@@ -334,8 +336,6 @@ int32_t Shell_Main(void)
     }
 
     Config_Write();
-    EnumMap_Shutdown();
-    GameString_Shutdown();
 
     if (m_Args.level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
