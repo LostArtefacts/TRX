@@ -336,6 +336,7 @@ int32_t GameStringManager_SubscribeReload(
 
 void GameStringManager_UnsubscribeReload(const int32_t listener_id)
 {
-    ASSERT(m_EventManager != nullptr);
-    EventManager_Unsubscribe(m_EventManager, listener_id);
+    if (m_EventManager != nullptr) {
+        EventManager_Unsubscribe(m_EventManager, listener_id);
+    }
 }

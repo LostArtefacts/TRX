@@ -610,18 +610,21 @@ int32_t Shell_Main(void)
 
 void Shell_Shutdown(void)
 {
-    GameStringManager_Shutdown();
-    GF_Shutdown();
-
-    Render_Shutdown();
     Console_Shutdown();
+
+    GF_Shutdown();
     Overlay_Shutdown();
     Option_Shutdown();
+    Render_Shutdown();
     UI_Shutdown();
+
+    GameStringManager_Shutdown();
     GameBuf_Shutdown();
+    GameString_Shutdown();
+
     Config_Shutdown();
     EnumMap_Shutdown();
-    GameString_Shutdown();
+    Log_Shutdown();
 }
 
 const char *Shell_GetConfigPath(void)
