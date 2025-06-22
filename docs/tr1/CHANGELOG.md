@@ -11,6 +11,7 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - fixed screenshots stripping accented characters (#3238)
 - fixed turbo cheat causing audio desync in cutscenes (#3263)
+- fixed accented lowercase `i` characters retaining the superscript dot (#3298)
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
 - fixed Lara's braid not being reflective (on Midas' hand) (#3257, regression from 4.9)
 - fixed support for non-linear secret flags in custom levels (#3262, regression from 4.12)

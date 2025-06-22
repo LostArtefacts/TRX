@@ -11,6 +11,7 @@
 - changed photo mode help dialog to show icons for inputs
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - fixed screenshots stripping accented characters (#3238)
+- fixed accented lowercase `i` characters retaining the superscript dot (#3298)
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
