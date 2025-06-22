@@ -285,7 +285,7 @@ static const char *M_GetScancodeName(SDL_Scancode scancode)
         case SDL_SCANCODE_APP2:               return "APP2";
         case SDL_SCANCODE_AUDIOREWIND:        return "RWND";
         case SDL_SCANCODE_AUDIOFASTFORWARD:   return "FF";
-        case SDL_SCANCODE_UNKNOWN:            return "";
+        case SDL_SCANCODE_UNKNOWN:            return nullptr;
 
         default:                              return "\\{keyboard unknown}";
     }

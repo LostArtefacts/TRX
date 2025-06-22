@@ -420,7 +420,9 @@ static void M_InputChoice(
     if (is_selected) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
-    UI_Label(Input_GetKeyName(s->backend, s->active_layout, role));
+    const char *const key_name =
+        Input_GetKeyName(s->backend, s->active_layout, role);
+    UI_Label(key_name != nullptr ? key_name : "");
     if (is_selected) {
         UI_EndFrame();
     }

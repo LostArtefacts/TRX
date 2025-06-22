@@ -195,7 +195,9 @@ static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
     // NOTE: this aliasing approach assumes that Input_GetKeyName returns
     // text that resolves to a single glyph.
     M_GLYPH_MAP_ENTRY *entry = nullptr;
-    HASH_FIND_STR(m_GlyphMap, key_name, entry);
+    if (key_name != nullptr) {
+        HASH_FIND_STR(m_GlyphMap, key_name, entry);
+    }
     if (entry == nullptr) {
         HASH_FIND_STR(m_GlyphMap, "?", entry);
     }

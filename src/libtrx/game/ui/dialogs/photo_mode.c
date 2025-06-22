@@ -11,6 +11,16 @@
 
 #include <stdio.h>
 
+static bool M_HasIcon(INPUT_ROLE role);
+
+static bool M_HasIcon(const INPUT_ROLE role)
+{
+    return Input_GetKeyName(
+               g_Config.input.backend,
+               g_Config.input.layout[g_Config.input.backend], role)
+        != nullptr;
+}
+
 void UI_PhotoMode(void)
 {
     if (!g_Config.ui.enable_photo_mode_ui) {
@@ -49,7 +59,16 @@ void UI_PhotoMode(void)
     UI_Label("[\\{input slow}+]\\{input pause}");
     UI_Label("\\{input toggle_ui}");
     UI_Label("\\{input action}");
-    UI_Label("\\{input toggle_photo_mode}/\\{input option}");
+
+    if (M_HasIcon(INPUT_ROLE_TOGGLE_PHOTO_MODE)
+        && M_HasIcon(INPUT_ROLE_OPTION)) {
+        UI_Label("\\{input toggle_photo_mode}/\\{input option}");
+    } else if (M_HasIcon(INPUT_ROLE_TOGGLE_PHOTO_MODE)) {
+        UI_Label("\\{input toggle_photo_mode}");
+    } else if (M_HasIcon(INPUT_ROLE_OPTION)) {
+        UI_Label("\\{input option}");
+    }
+
     UI_EndStack();
 
     UI_Spacer(4.0f, 0.0f);

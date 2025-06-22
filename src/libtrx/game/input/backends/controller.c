@@ -195,7 +195,7 @@ static const char *M_GetButtonName(const SDL_GameControllerButton button)
     switch (button) {
     case SDL_CONTROLLER_BUTTON_INVALID:
     case SDL_CONTROLLER_BUTTON_MAX:
-        return "";
+        return nullptr;
 
         // clang-format off
     case SDL_CONTROLLER_BUTTON_A:             return M_NAME_A;
@@ -430,28 +430,28 @@ static const char *M_GetAxisName(
         case SDL_CONTROLLER_TYPE_PS4:
         case SDL_CONTROLLER_TYPE_PS5:
             switch (axis) {
-                case SDL_CONTROLLER_AXIS_INVALID:         return "";
+                case SDL_CONTROLLER_AXIS_INVALID:         return nullptr;
                 case SDL_CONTROLLER_AXIS_LEFTX:           return axis_dir == -1 ? M_NAME_L_ANALOG_LEFT : M_NAME_L_ANALOG_RIGHT;
                 case SDL_CONTROLLER_AXIS_LEFTY:           return axis_dir == -1 ? M_NAME_L_ANALOG_UP : M_NAME_L_ANALOG_DOWN;
                 case SDL_CONTROLLER_AXIS_RIGHTX:          return axis_dir == -1 ? M_NAME_R_ANALOG_LEFT : M_NAME_R_ANALOG_RIGHT;
                 case SDL_CONTROLLER_AXIS_RIGHTY:          return axis_dir == -1 ? M_NAME_R_ANALOG_UP : M_NAME_R_ANALOG_DOWN;
                 case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return M_ICON_L2;
                 case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return M_ICON_R2;
-                case SDL_CONTROLLER_AXIS_MAX:             return "";
+                case SDL_CONTROLLER_AXIS_MAX:             return nullptr;
             }
             break;
 
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
             switch (axis) {
-                case SDL_CONTROLLER_AXIS_INVALID:         return "";
+                case SDL_CONTROLLER_AXIS_INVALID:         return nullptr;
                 case SDL_CONTROLLER_AXIS_LEFTX:           return axis_dir == -1 ? M_NAME_L_ANALOG_LEFT : M_NAME_L_ANALOG_RIGHT;
                 case SDL_CONTROLLER_AXIS_LEFTY:           return axis_dir == -1 ? M_NAME_L_ANALOG_UP : M_NAME_L_ANALOG_DOWN;
                 case SDL_CONTROLLER_AXIS_RIGHTX:          return axis_dir == -1 ? M_NAME_R_ANALOG_LEFT : M_NAME_R_ANALOG_RIGHT;
                 case SDL_CONTROLLER_AXIS_RIGHTY:          return axis_dir == -1 ? M_NAME_R_ANALOG_UP : M_NAME_R_ANALOG_DOWN;
                 case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return M_NAME_ZL;
                 case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return M_NAME_ZR;
-                case SDL_CONTROLLER_AXIS_MAX:             return "";
+                case SDL_CONTROLLER_AXIS_MAX:             return nullptr;
             }
             break;
 
@@ -459,20 +459,20 @@ static const char *M_GetAxisName(
         case SDL_CONTROLLER_TYPE_XBOXONE:
         default:
             switch (axis) {
-                case SDL_CONTROLLER_AXIS_INVALID:         return "";
+                case SDL_CONTROLLER_AXIS_INVALID:         return nullptr;
                 case SDL_CONTROLLER_AXIS_LEFTX:           return axis_dir == -1 ? M_NAME_L_ANALOG_LEFT : M_NAME_L_ANALOG_RIGHT;
                 case SDL_CONTROLLER_AXIS_LEFTY:           return axis_dir == -1 ? M_NAME_L_ANALOG_UP : M_NAME_L_ANALOG_DOWN;
                 case SDL_CONTROLLER_AXIS_RIGHTX:          return axis_dir == -1 ? M_NAME_R_ANALOG_LEFT : M_NAME_R_ANALOG_RIGHT;
                 case SDL_CONTROLLER_AXIS_RIGHTY:          return axis_dir == -1 ? M_NAME_R_ANALOG_UP : M_NAME_R_ANALOG_DOWN;
                 case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return M_NAME_L_TRIGGER;
                 case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return M_NAME_R_TRIGGER;
-                case SDL_CONTROLLER_AXIS_MAX:             return "";
+                case SDL_CONTROLLER_AXIS_MAX:             return nullptr;
             }
             break;
 
     }
     // clang-format on
-    return "????";
+    return nullptr;
 }
 
 static bool M_IsRoleConflicted(const INPUT_LAYOUT layout, const INPUT_ROLE role)
