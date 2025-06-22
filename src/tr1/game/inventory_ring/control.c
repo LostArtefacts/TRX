@@ -313,8 +313,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         ring->motion.status = RNG_DONE;
     }
 
-    if (ring->motion.status == RNG_DONE) {
+    if (ring->motion.status == RNG_DONE && !ring->is_done) {
         const GF_COMMAND gf_cmd = M_Finish(ring, true);
+        ring->is_done = true;
         // Returning to game – resume music
         if (gf_cmd.action == GF_NOOP) {
             Music_Unpause();

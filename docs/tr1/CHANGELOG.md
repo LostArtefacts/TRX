@@ -17,6 +17,7 @@
 - fixed movable blocks getting stuck in midair if the game is saved and loaded while they are falling (#3274)
 - fixed PS touchpad input missing an icon (#3288, regression from 4.12)
 - fixed inability to use unbind key / reset layout buttons with controllers (#3290, regression from 4.12)
+- fixed inventory ring consuming too many items under severe frame drop conditions (#3295, regression from 4.8)
 - removed config tool (we have ingame setting dialogs now)
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 4.12)
 
