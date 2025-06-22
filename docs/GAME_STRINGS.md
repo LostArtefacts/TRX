@@ -190,9 +190,7 @@ The document is organized as follows:
     </td>
   </tr>
   <tr valign="top">
-    <td>
-      <code>language_name</code>
-    </td>
+    <td><code>language_name</code></td>
     <td>String</td>
     <td>No (only in common file)</td>
     <td colspan="2">
@@ -201,7 +199,23 @@ The document is organized as follows:
       <code>TRX_common_strings.json5</code> file.
     </td>
   </tr>
+  <tr valign="top">
+    <td><code>extends</code></td>
+    <td>String</td>
+    <td>No</td>
+    <td colspan="2">
+      Fallback to another language code for missing entries. For dialects (e.g., "fr-ca"),
+      specify <code>"extends": "fr"</code> to inherit missing layers from the parent language.
+    </td>
+  </tr>
 </table>
+
+> [!NOTE]
+> The `extends` property now refers to another language code, not a file path.
+> When present in the common strings layer, the manager will first load the
+> parent language (and any further `extends` chains), then apply the current
+> file's overrides. Cyclic `extends` chains are detected and will emit a
+> warning rather than infinite recursion.
 
 ## Common Object IDs and names
 

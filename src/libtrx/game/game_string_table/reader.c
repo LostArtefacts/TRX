@@ -122,7 +122,6 @@ static void M_LoadLevelsFromJSON(
 
     JSON_ARRAY *const jlvl_arr = JSON_ObjectGetArray(obj, key);
     if (jlvl_arr == nullptr) {
-        Shell_ExitSystemFmt("'%s' must be a list", key);
         return;
     }
 
@@ -148,11 +147,9 @@ static void M_LoadLevelsFromJSON(
 
         const char *const title =
             JSON_ObjectGetString(jlvl_obj, "title", JSON_INVALID_STRING);
-        if (title == JSON_INVALID_STRING) {
-            Shell_ExitSystemFmt("Level %d is missing title.", i);
-            return;
+        if (title != JSON_INVALID_STRING) {
+            level->title = Memory_DupStr(title);
         }
-        level->title = Memory_DupStr(title);
 
         M_LoadTableFromJSON(jlvl_obj, &level->table);
     }
