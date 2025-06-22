@@ -122,6 +122,9 @@ def lint_untranslated_game_strings(
     except Exception as exc:
         yield LintWarning(path, f"unable to parse JSON5: {exc}")
         return
+    # Skip missing translation warnings if using 'extends' inheritance
+    if isinstance(trans_data, dict) and "extends" in trans_data:
+        return
 
     base_ptr = JSONPointers(base_data)
     trans_ptr = JSONPointers(trans_data)

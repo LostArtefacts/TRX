@@ -21,6 +21,7 @@ typedef struct {
     char *lang;
     VECTOR *files;
     char *display_name;
+    char *extends;
 } M_LANG_ENTRY;
 
 static VECTOR *m_SourceFiles = nullptr;
@@ -51,6 +52,7 @@ static void M_ClearLanguageEntries(void)
             const M_LANG_ENTRY *const lang_entry = Vector_Get(m_LangEntries, i);
             Memory_Free(lang_entry->lang);
             Memory_Free(lang_entry->display_name);
+            Memory_Free(lang_entry->extends);
             M_ClearFileEntries(lang_entry->files);
         }
         Vector_Free(m_LangEntries);
@@ -106,6 +108,7 @@ static void M_LoadLanguageNames(void)
     for (int32_t i = 0; i < m_LangEntries->count; i++) {
         M_LANG_ENTRY *const lang_entry = Vector_Get(m_LangEntries, i);
         Memory_FreePointer(&lang_entry->display_name);
+        Memory_FreePointer(&lang_entry->extends);
         if (lang_entry->files->count <= 0) {
             continue;
         }
@@ -119,11 +122,16 @@ static void M_LoadLanguageNames(void)
         JSON_VALUE *const root = JSON_ParseEx(
             data, size, JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr, nullptr, &pr);
         if (root != nullptr) {
-            JSON_OBJECT *obj = JSON_ValueAsObject(root);
-            const char *name =
+            JSON_OBJECT *const obj = JSON_ValueAsObject(root);
+            const char *const name =
                 JSON_ObjectGetString(obj, "language_name", JSON_INVALID_STRING);
             if (name != JSON_INVALID_STRING) {
                 lang_entry->display_name = Memory_DupStr(name);
+            }
+            const char *const ext =
+                JSON_ObjectGetString(obj, "extends", JSON_INVALID_STRING);
+            if (ext != JSON_INVALID_STRING) {
+                lang_entry->extends = Memory_DupStr(ext);
             }
             JSON_ValueFree(root);
         } else {
@@ -287,30 +295,57 @@ VECTOR *GameStringManager_GetAvailableLanguages(void)
     return out;
 }
 
-bool GameStringManager_ReloadLanguage(const char *const lang)
+// Recursive load of language chain (handles 'extends' fallback between
+// dialects)
+static bool M_ReloadLangRec(const char *const lang, VECTOR *const visited)
 {
-    bool success = false;
-    const M_LANG_ENTRY *lang_entry =
-        m_LangEntries != nullptr ? M_FindLangEntry(lang) : nullptr;
+    for (int32_t i = 0; i < visited->count; i++) {
+        const char *const prev = *(char **)Vector_Get(visited, i);
+        if (String_Equivalent(prev, lang)) {
+            LOG_WARNING("cyclic language extends detected: %s", lang);
+            return false;
+        }
+    }
+    Vector_Add(visited, &lang);
+    M_LANG_ENTRY *const entry = M_FindLangEntry(lang);
+    if (entry == nullptr) {
+        return false;
+    }
+    if (entry->extends) {
+        if (!M_ReloadLangRec(entry->extends, visited)) {
+            return false;
+        }
+    }
+    for (int32_t i = 0; i < entry->files->count; i++) {
+        const M_FILE_ENTRY *const fe = Vector_Get(entry->files, i);
+        if (!GameStringTable_Load(fe->path, fe->load_levels)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool GameStringManager_ReloadLanguage(const char *lang)
+{
+    const M_LANG_ENTRY *const base_entry =
+        m_LangEntries ? M_FindLangEntry(lang) : nullptr;
+    if (base_entry == nullptr) {
+        LOG_WARNING("language '%s' not found, defaulting to base", lang);
+        lang = "en";
+    }
     GameStringTable_Shutdown();
     GameStringTable_Init();
-    if (lang_entry == nullptr) {
-        LOG_WARNING("language '%s' not found, defaulting to base", lang);
-        lang_entry = M_FindLangEntry("en");
-    }
-    if (lang_entry != nullptr) {
-        success = true;
-        for (int32_t i = 0; i < lang_entry->files->count; i++) {
-            const M_FILE_ENTRY *const file_entry =
-                Vector_Get(lang_entry->files, i);
-            if (!GameStringTable_Load(
-                    file_entry->path, file_entry->load_levels)) {
-                success = false;
-            }
-        }
+    VECTOR *const visited = Vector_Create(sizeof(char *));
+    const bool success = M_ReloadLangRec(lang, visited);
+    Vector_Free(visited);
+    if (success) {
         GameStringTable_Apply(GF_GetCurrentLevel());
         if (m_EventManager != nullptr) {
-            EVENT event = { "reload_language", nullptr, (void *)lang };
+            const EVENT event = {
+                .name = "reload_language",
+                .sender = nullptr,
+                .data = (void *)lang,
+            };
             EventManager_Fire(m_EventManager, &event);
         }
     }

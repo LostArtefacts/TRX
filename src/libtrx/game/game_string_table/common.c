@@ -61,8 +61,10 @@ static void M_ApplyLevelTitles(
     }
     ASSERT(gs_level_table->count == level_table->count);
     for (int32_t i = 0; i < level_table->count; i++) {
-        GF_SetLevelTitle(
-            &level_table->levels[i], gs_level_table->entries[i].title);
+        if (gs_level_table->entries[i].title != nullptr) {
+            GF_SetLevelTitle(
+                &level_table->levels[i], gs_level_table->entries[i].title);
+        }
     }
 }
 
