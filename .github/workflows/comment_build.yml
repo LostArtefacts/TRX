@@ -21,6 +21,13 @@ jobs:
           script: |
             // Function Definitions
 
+            class NoMatchingPRError extends Error {
+              constructor(message) {
+                super(message);
+                this.name = "NoMatchingPRError";
+              }
+            }
+
             /**
              * Fetch PR details for a given commit SHA.
              * @returns {Object} PR details containing prNumber, prRef, prRepoId.
@@ -42,7 +49,7 @@ jobs:
                   }
                 }
               }
-              throw new Error("No matching PR found for the commit SHA");
+              throw new NoMatchingPRError("No matching PR found for the commit SHA");
             }
 
             /**
@@ -105,15 +112,21 @@ jobs:
              * @param {string} description - Description of the context where the error occurred.
              */
             function handleError(error, description, prNumber) {
-              core.error(`Failed to ${description}`);
-              core.error(`Message: ${error.message}`);
-              core.error(`Stack Trace: ${error.stack || 'No stack trace available'}`);
-              if (prNumber) {
-                core.error(`PR Number: ${prNumber}`);
+              let exitCode = 1;
+              let log = core.error;
+              if (error instanceof NoMatchingPRError) {
+                exitCode = 0;
+                log = core.warning;
               }
-              core.error(`PRs: https://api.github.com/repos/${context.repo.owner}/${context.repo.repo}/pulls`);
-              core.error(`SHA: ${{github.event.workflow_run.head_sha}}`);
-              process.exit(1);
+              log(`Failed to ${description}`);
+              log(`Message: ${error.message}`);
+              log(`Stack Trace: ${error.stack || 'No stack trace available'}`);
+              if (prNumber) {
+                log(`PR Number: ${prNumber}`);
+              }
+              log(`PRs: https://api.github.com/repos/${context.repo.owner}/${context.repo.repo}/pulls`);
+              log(`SHA: ${{github.event.workflow_run.head_sha}}`);
+              process.exit(exitCode);
             }
 
             // Main Code Execution
