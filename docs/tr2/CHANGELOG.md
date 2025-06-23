@@ -17,6 +17,7 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
+- fixed room 136 in Opera House not having water (#3214)
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
