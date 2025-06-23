@@ -16,6 +16,7 @@
 - changed photo mode help dialog to show icons for inputs
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - removed config tool (we have ingame setting dialogs now)
+- fixed underwater hum not playing properly (#3305, regression from 0.10)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)

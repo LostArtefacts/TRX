@@ -929,6 +929,8 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 
 void Camera_Update(void)
 {
+    M_EnsureEnvironment();
+
     if (g_Camera.type == CAM_PHOTO_MODE) {
         Camera_UpdatePhotoMode();
         return;
@@ -1137,7 +1139,6 @@ void Camera_MoveManual(void)
 
 void Camera_Apply(void)
 {
-    M_EnsureEnvironment();
     Matrix_LookAt(
         g_Camera.interp.result.pos.x,
         g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
