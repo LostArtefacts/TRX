@@ -24,6 +24,7 @@
 - fixed missing zipline sound in Home Sweet Home (#3102)
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
 - fixed game crashing when the expected resources are missing (#3310, regression from 1.2.1)
+- fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 1.2)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
