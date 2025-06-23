@@ -20,6 +20,7 @@
 - fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)
 - fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 4.12)
 - fixed pause screen rendered without background overlay if fade effects are disabled (#3316, regression from 4.11)
+- fixed `/pos` command crashing when the level title is not set (regression from 4.12)
 
 ## [4.12.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...tr1-4.12.2) - 2025-06-22
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
