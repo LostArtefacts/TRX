@@ -4,6 +4,7 @@
 
 void Camera_Update(void);
 void Camera_UpdateMicPosition(void);
+void Camera_EnsureEnvironment(void);
 void Camera_MoveManual(void);
 void Camera_Apply(void);
 bool Camera_IsChunky(void);

@@ -119,4 +119,5 @@ void Camera_UpdateCutscene(void)
     const ITEM *const lara_item = Lara_GetItem();
     M_UpdateCutscene(lara_item->pos, g_Camera.target_angle);
 #endif
+    Camera_EnsureEnvironment();
 }
