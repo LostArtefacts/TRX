@@ -140,7 +140,7 @@ bool Config_IsOptionAtDefault(const void *const target)
     case COT_RGB888: {
         const RGB_888 cur = *(RGB_888 *)option->target;
         const RGB_888 def = *(RGB_888 *)option->default_value;
-        return cur.r == def.r || cur.g == def.g || cur.b == def.b;
+        return cur.r == def.r && cur.g == def.g && cur.b == def.b;
     }
     case COT_ENUM:
         return *(int32_t *)option->target == *(int32_t *)option->default_value;
