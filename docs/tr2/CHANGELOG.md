@@ -21,6 +21,7 @@
 - fixed room 134 in Opera House having wrong textures (#3142)
 - fixed room 136 in Opera House not having water (#3214)
 - fixed Lara not saying 'aha' when picking up the secret in Lara's Home (#3103)
+- fixed missing zipline sound in Home Sweet Home (#3102)
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
