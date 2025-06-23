@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...develop) - ××××-××-××
+- fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)
 
 ## [4.12.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...tr1-4.12.2) - 2025-06-22
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
