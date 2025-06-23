@@ -56,6 +56,7 @@
             "injections": [
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
+                "data/injections/gym_sfx.bin",
                 "data/injections/gym_music_tracks.bin",
                 "data/injections/gym_textures.bin",
             ],
