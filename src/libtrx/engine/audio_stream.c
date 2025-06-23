@@ -526,6 +526,7 @@ bool Audio_Stream_Close(int32_t sound_id)
 
     if (stream->sdl.stream) {
         SDL_FreeAudioStream(stream->sdl.stream);
+        stream->sdl.stream = nullptr;
     }
 
     void (*finish_callback)(int32_t, void *) = stream->finish_callback;
