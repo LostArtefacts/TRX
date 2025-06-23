@@ -17,6 +17,7 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
+- fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)
 
 ## [4.12.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.1...tr1-4.12.2) - 2025-06-22
 - fixed depth buffer problems when closing the inventory ring with fade effects disabled (#3267, regression from 4.8)
