@@ -78,7 +78,6 @@ extern int32_t g_PhdPersp;
 
 static M_SETTINGS M_GetSettings(void);
 static void M_AdjustMusicVolume(bool underwater);
-static void M_EnsureEnvironment(void);
 
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
@@ -117,26 +116,6 @@ static void M_AdjustMusicVolume(const bool underwater)
         : is_ambient ? g_Config.audio.underwater_ambient_volume
                      : g_Config.audio.underwater_music_volume;
     Music_SetVolume(g_Config.audio.music_volume * multiplier);
-}
-
-static void M_EnsureEnvironment(void)
-{
-    if (g_Camera.pos.room_num == NO_ROOM) {
-        return;
-    }
-
-    const ROOM *const room = Room_Get(g_Camera.pos.room_num);
-    if ((room->flags & RF_UNDERWATER) != 0) {
-        M_AdjustMusicVolume(true);
-        Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
-        g_Camera.underwater = true;
-    } else {
-        M_AdjustMusicVolume(false);
-        if (g_Camera.underwater) {
-            Sound_StopEffect(SFX_UNDERWATER);
-            g_Camera.underwater = false;
-        }
-    }
 }
 
 static void M_OffsetAdditionalAngle(const int16_t delta)
@@ -785,13 +764,12 @@ void Camera_SetChunky(const bool is_chunky)
 void Camera_Initialise(void)
 {
     Matrix_ResetStack();
-    g_Camera.underwater = false;
     g_Camera.last = NO_CAMERA;
+    g_Camera.underwater = false;
     Camera_ResetPosition();
 #if TR_VERSION == 2
     Viewport_AlterFOV(-1);
 #endif
-    Camera_Update();
 }
 
 void Camera_ResetPosition(void)
@@ -927,15 +905,37 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 #endif
 }
 
+void Camera_EnsureEnvironment(void)
+{
+    if (g_Camera.pos.room_num == NO_ROOM) {
+        return;
+    }
+
+    const ROOM *const room = Room_Get(g_Camera.pos.room_num);
+    if ((room->flags & RF_UNDERWATER) != 0) {
+        M_AdjustMusicVolume(true);
+        Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
+        g_Camera.underwater = true;
+    } else {
+        M_AdjustMusicVolume(false);
+        if (g_Camera.underwater) {
+            Sound_StopEffect(SFX_UNDERWATER);
+            g_Camera.underwater = false;
+        }
+    }
+}
+
 void Camera_Update(void)
 {
     if (g_Camera.type == CAM_PHOTO_MODE) {
         Camera_UpdatePhotoMode();
+        Camera_EnsureEnvironment();
         return;
     }
 
     if (g_Camera.type == CAM_CINEMATIC) {
         Camera_LoadCutsceneFrame();
+        Camera_EnsureEnvironment();
         return;
     }
 
@@ -1091,6 +1091,7 @@ void Camera_Update(void)
 #endif
     }
     Camera_SetChunky(false);
+    Camera_EnsureEnvironment();
 }
 
 void Camera_UpdateMicPosition(void)
@@ -1137,7 +1138,6 @@ void Camera_MoveManual(void)
 
 void Camera_Apply(void)
 {
-    M_EnsureEnvironment();
     Matrix_LookAt(
         g_Camera.interp.result.pos.x,
         g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
