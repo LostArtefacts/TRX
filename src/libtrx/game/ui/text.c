@@ -572,3 +572,27 @@ char *UI_Text_WordWrap(
     M_WordWrap(glyphs, glyph_count, scale_f, max_width, wrapped_text);
     return wrapped_text;
 }
+
+char *UI_Text_FilterGlyphs(const char *const text)
+{
+    if (text == nullptr) {
+        return nullptr;
+    }
+    const size_t in_len = strlen(text);
+    char *out = Memory_Alloc(in_len + 1);
+    size_t out_len = 0;
+    const char *p = text;
+    while (*p != '\0') {
+        const size_t sz = String_GetCharByteSize(p);
+        const char *const key_buf = String_FormatStatic("%.*s", (int32_t)sz, p);
+        M_GLYPH_MAP_ENTRY *entry = nullptr;
+        HASH_FIND_STR(m_GlyphMap, key_buf, entry);
+        if (entry != nullptr) {
+            memcpy(out + out_len, p, sz);
+            out_len += sz;
+        }
+        p += sz;
+    }
+    out[out_len] = '\0';
+    return out;
+}

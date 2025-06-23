@@ -1,7 +1,7 @@
 #include "game/console/common.h"
 
-#include "./internal.h"
 #include "debug.h"
+#include "game/console/internal.h"
 #include "game/console/registry.h"
 #include "game/game_string.h"
 #include "game/ui.h"

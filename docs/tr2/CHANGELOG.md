@@ -15,6 +15,7 @@
 - changed some settings to be dimmed when they're not taking effect due to other settings (#3166)
 - changed photo mode help dialog to show icons for inputs
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
+- changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
