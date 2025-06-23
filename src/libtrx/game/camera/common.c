@@ -928,15 +928,15 @@ void Camera_EnsureEnvironment(void)
 
 void Camera_Update(void)
 {
-    Camera_EnsureEnvironment();
-
     if (g_Camera.type == CAM_PHOTO_MODE) {
         Camera_UpdatePhotoMode();
+        Camera_EnsureEnvironment();
         return;
     }
 
     if (g_Camera.type == CAM_CINEMATIC) {
         Camera_LoadCutsceneFrame();
+        Camera_EnsureEnvironment();
         return;
     }
 
@@ -1092,6 +1092,7 @@ void Camera_Update(void)
 #endif
     }
     Camera_SetChunky(false);
+    Camera_EnsureEnvironment();
 }
 
 void Camera_UpdateMicPosition(void)
