@@ -547,15 +547,16 @@
         "STATS_BONUS_STATISTICS": "Statystyki bonusowe",
         "STATS_DETAIL_FMT": "%d z %d",
         "STATS_FINAL_STATISTICS": "Statystyki końcowe",
-        "CMD_GIVE_SECRET_GIVEN": "\\{review}Dodano sekret #%d",
-        "CMD_GIVE_SECRET_LIST": "\\{review}Zebrane sekrety: %d z %d (%s)",
-        "CMD_GIVE_SECRET_NONE": "\\{review}Zebrane sekrety: %d z %d",
-        "CMD_GIVE_SECRET_TAKEN": "\\{review}Usunięto sekret #%d",
-        "CMD_INVALID_SECRET": "\\{review}Nieprawidłowy sekret: #%d (prawidłowe sekrety: %s)",
+        "CMD_GIVE_SECRET_GIVEN": "Dodano sekret #%d",
+        "CMD_GIVE_SECRET_LIST": "Zebrane sekrety: %d z %d (%s)",
+        "CMD_GIVE_SECRET_NONE": "Zebrane sekrety: %d z %d",
+        "CMD_GIVE_SECRET_TAKEN": "Usunięto sekret #%d",
+        "CMD_INVALID_SECRET": "Nieprawidłowy sekret: #%d (prawidłowe sekrety: %s)",
         "CONSOLE_HELP_GIVE_SECRET": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru.",
         "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "Włącz/wyłącz filtr trapezowy",
         "PHOTO_MODE_ADVANCE_FRAME": "Pomiń klatkę",
         "GAMEPLAY_SETTINGS_ENABLE_CREDITS": "Napisy końcowe",
-        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "Włącza ekrany z napisami końcowymi wyświetlane po ukończeniu gry. Ustawienie nie ma wpływu na ekran końcowych statystyk."
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "Włącza ekrany z napisami końcowymi wyświetlane po ukończeniu gry. Ustawienie nie ma wpływu na ekran końcowych statystyk.",
+        "CONSOLE_HELP_LIGHTING": "Włącza lub wyłącza system oświetlenia."
     }
 }

@@ -16,6 +16,7 @@ typedef enum {
     M_UNIFORM_ALPHA_DISCARD_ENABLED,
     M_UNIFORM_ALPHA_THRESHOLD,
     M_UNIFORM_TRAPEZOID_FILTER_ENABLED,
+    M_UNIFORM_LIGHTING_ENABLED,
     M_UNIFORM_REFLECTIONS_ENABLED,
     M_UNIFORM_BRIGHTNESS_MULTIPLIER,
     M_UNIFORM_GLOBAL_TINT,
@@ -55,6 +56,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_ALPHA_DISCARD_ENABLED] = "uAlphaDiscardEnabled",
         [M_UNIFORM_ALPHA_THRESHOLD] = "uAlphaThreshold",
         [M_UNIFORM_TRAPEZOID_FILTER_ENABLED] = "uTrapezoidFilterEnabled",
+        [M_UNIFORM_LIGHTING_ENABLED] = "uLightingEnabled",
         [M_UNIFORM_REFLECTIONS_ENABLED] = "uReflectionsEnabled",
         [M_UNIFORM_BRIGHTNESS_MULTIPLIER] = "uBrightnessMultiplier",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
@@ -104,6 +106,9 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_TRAPEZOID_FILTER_ENABLED],
         g_Config.rendering.enable_trapezoid_filter);
+    GFX_TRACK_UNIFORM(
+        glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_ENABLED],
+        g_Config.rendering.enable_lighting);
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_REFLECTIONS_ENABLED],
         g_Config.visuals.enable_reflections);

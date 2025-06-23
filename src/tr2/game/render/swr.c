@@ -6,11 +6,14 @@
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
-#define M_MAKE_Q_ID(g) ((g >> 16) & 0xFF)
+#define M_MAKE_Q_ID(g)                                                         \
+    (g_Config.rendering.enable_lighting ? ((g >> 16) & 0xFF)                   \
+                                        : LIGHT_MAP_NEUTRAL)
 #define M_MAKE_TEX_ID(v, u) ((((v >> 16) & 0xFF) << 8) | ((u >> 16) & 0xFF))
 #define M_MAKE_PAL_IDX(c) (c)
 #define M_PIX_FMT uint8_t
@@ -259,7 +262,10 @@ static void M_TransA(
         M_PIX_FMT *target_line_ptr = target_ptr + x;
         M_ALPHA_FMT *alpha_line_ptr = alpha_ptr + x;
         while (x_size > 0) {
-            *target_line_ptr = M_MAKE_PAL_IDX(map->index[*target_line_ptr]);
+            *target_line_ptr = M_MAKE_PAL_IDX(
+                map->index
+                    [g_Config.rendering.enable_lighting ? *target_line_ptr
+                                                        : LIGHT_MAP_NEUTRAL]);
             target_line_ptr++;
             *alpha_line_ptr++ = 255;
             x_size--;
@@ -1278,7 +1284,7 @@ static void M_DrawScaledSpriteC(
     M_ALPHA_FMT *alpha_ptr = &alpha_surface->buffer[y0 * target_stride + x0];
     const int32_t dst_add = target_stride - width;
 
-    const bool use_light_map = map != Output_GetLightMap(16);
+    const bool use_light_map = map != Output_GetLightMap(LIGHT_MAP_NEUTRAL);
 
     for (int32_t i = 0; i < height; i++) {
         int32_t u = u_base;

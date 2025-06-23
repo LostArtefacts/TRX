@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../colors.h"
+#include "./const.h"
 
 #include <stdint.h>
 
@@ -67,5 +68,5 @@ typedef struct {
 } LIGHT_MAP;
 
 typedef struct {
-    uint8_t index[32];
+    uint8_t index[LIGHT_MAP_SIZE];
 } SHADE_MAP;

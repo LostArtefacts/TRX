@@ -180,6 +180,7 @@ typedef struct {
         GFX_RENDER_MODE render_mode;
         int32_t fps;
         bool enable_trapezoid_filter;
+        bool enable_lighting;
         GFX_TEXTURE_FILTER texture_filter;
         GFX_TEXTURE_FILTER fbo_filter;
         bool enable_wireframe;

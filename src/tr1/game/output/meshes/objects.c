@@ -6,6 +6,7 @@
 #include "game/output/utils.h"
 #include "game/output/vertex_range.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/output/objects.h>
 #include <libtrx/gfx/gl/utils.h>
@@ -201,6 +202,13 @@ static void M_UpdateShades(
     M_MESH_SHADE *const out_shades =
         &m_Priv.shade_vbo_data[batch->vertex_start];
     int32_t *const light_idx_map = &m_Priv.light_idx_map[batch->vertex_start];
+
+    if (!g_Config.rendering.enable_lighting) {
+        for (int32_t i = 0; i < batch->vertex_count; i++) {
+            out_shades[i] = SHADE_NEUTRAL;
+        }
+        return;
+    }
 
     const int32_t ls_adder = Output_GetLightAdder();
     const int32_t ls_divider = Output_GetLightDivider();

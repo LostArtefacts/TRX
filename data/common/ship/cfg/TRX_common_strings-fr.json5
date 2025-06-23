@@ -556,6 +556,7 @@
         "KEYMAP_TOGGLE_TRAPEZOID_FILTER": "\\{review}Basculer le filtre trapézoïdal",
         "PHOTO_MODE_ADVANCE_FRAME": "\\{review}Avancer le cadre",
         "GAMEPLAY_SETTINGS_ENABLE_CREDITS": "\\{review}Écrans de crédits",
-        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "\\{review}Active les écrans de crédits affichés après avoir terminé le jeu. N'influence pas l'écran des statistiques finales."
+        "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "\\{review}Active les écrans de crédits affichés après avoir terminé le jeu. N'influence pas l'écran des statistiques finales.",
+        "CONSOLE_HELP_LIGHTING": "\\{review}Active le système d'éclairage."
     }
 }

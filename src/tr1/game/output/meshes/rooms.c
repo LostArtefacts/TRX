@@ -7,6 +7,7 @@
 #include "game/output/vertex_range.h"
 #include "game/random.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/level/const.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
@@ -147,6 +148,16 @@ static void M_UpdateRoomShades(const ROOM *const room)
         return;
     }
     M_MESH_SHADE *out_shade = &m_Priv.shade_vbo_data[batch->vertex_start];
+
+    if (!g_Config.rendering.enable_lighting) {
+        for (int32_t i = 0; i < room->mesh.num_face4s * OUTPUT_QUAD_VERTICES
+                 + room->mesh.num_face3s * OUTPUT_TRI_VERTICES;
+             i++) {
+            out_shade[i] = SHADE_NEUTRAL;
+        }
+        return;
+    }
+
     for (int32_t i = 0; i < room->mesh.num_face4s; i++) {
         const FACE4 *const face = &room->mesh.face4s[i];
         for (int32_t j = 0; j < OUTPUT_QUAD_VERTICES; j++) {

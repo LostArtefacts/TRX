@@ -63,6 +63,7 @@ uniform sampler2D uTexEnvMap;
 uniform bool uSmoothingEnabled;
 uniform bool uAlphaDiscardEnabled;
 uniform bool uTrapezoidFilterEnabled;
+uniform bool uLightingEnabled;
 uniform bool uReflectionsEnabled;
 uniform float uAlphaThreshold;
 uniform float uBrightnessMultiplier;
@@ -110,9 +111,11 @@ void main(void) {
     }
 
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        float shade = gShade;
-        shade = shadeFog(shade, gWorldPos.z, uFog);
-        texColor.rgb = applyShade(texColor.rgb, shade);
+        if (uLightingEnabled) {
+            float shade = gShade;
+            shade = shadeFog(shade, gWorldPos.z, uFog);
+            texColor.rgb = applyShade(texColor.rgb, shade);
+        }
         texColor.rgb *= uGlobalTint;
     }
 
