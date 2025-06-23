@@ -1,0 +1,10 @@
+{
+  "Controls": {
+    "window_title_main": "TR2X Installer",
+    "step_source_content": "TR2X richiede i file di gioco originali per essere eseguito.\nScegli da dove prendere i file di gioco.\nSe stai aggiornando un'installazione già esistente, scegli TR2X.",
+    "step_settings_music_content": "Quest'opzione ti permette di scaricare i file musicali compatibili per il gioco automaticamente (60 MB). La legalità di questi file è discutibile; il modo più legale do importare la musica nel PC è copiare le tracce audio da un disco fisico del gioco - TR2 supporta i file FLAC, OGG, MP3 e WAV.",
+    "step_settings_expansion_heading": "Scarica l'espansione The Golden Mask",
+    "step_settings_expansion_content": "L'espansione Golden Mask è stata resa gratis. Però, le versioni Steam e GOG non te lo copiano direttamente. Quest'opzione ti permette di scaricare l'espansione automaticamente (15 MB).",
+    "step_settings_saves_content": "Importa file di salvataggio già esistenti."
+  }
+}
