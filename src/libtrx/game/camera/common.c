@@ -764,13 +764,12 @@ void Camera_SetChunky(const bool is_chunky)
 void Camera_Initialise(void)
 {
     Matrix_ResetStack();
-    g_Camera.underwater = false;
     g_Camera.last = NO_CAMERA;
+    g_Camera.underwater = false;
     Camera_ResetPosition();
 #if TR_VERSION == 2
     Viewport_AlterFOV(-1);
 #endif
-    Camera_Update();
 }
 
 void Camera_ResetPosition(void)
