@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...develop) - ××××-××-××
 - added French translation
+- added Italian translation to the installer
 - added the ability to advance individual frames to the photo mode
 - added the ability to skip end game credits (#3266)
 - added the ability to hide specific game settings (#3242)
