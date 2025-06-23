@@ -42,8 +42,8 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         break;
     }
 
-    char *level_type =
-        String_Format(level_type_fmt, current_level->num + reindex);
+    const char *const level_type =
+        String_FormatStatic(level_type_fmt, current_level->num + reindex);
 
     const ITEM *const lara_item = Lara_GetItem();
     int16_t room_num = lara_item->room_num;
@@ -51,9 +51,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     if (Room_GetFlipStatus() && room->flipped_room != NO_ROOM) {
         room_num = room->flipped_room;
     }
-    char *details = lara_item == nullptr
-        ? String_Format("%s", GS(OSD_POS_LARA_MISSING))
-        : String_Format(
+    const char *const details = lara_item == nullptr
+        ? String_FormatStatic("%s", GS(OSD_POS_LARA_MISSING))
+        : String_FormatStatic(
               GS(OSD_POS_LARA_POS_FMT), room_num,
               lara_item->pos.x / (float)WALL_L,
               lara_item->pos.y / (float)WALL_L,
@@ -63,16 +63,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
               lara_item->rot.z * 360.0f / (float)DEG_360);
     const char *const glue = lara_item == nullptr ? "\n" : "  ";
 
-    char *message = strcmp(level_type, current_level->title) == 0
-        ? String_Format("%s%s%s", level_type, glue, details)
-        : String_Format(
+    const char *const message = current_level->title != nullptr
+            && strcmp(level_type, current_level->title) == 0
+        ? String_FormatStatic("%s%s%s", level_type, glue, details)
+        : String_FormatStatic(
               "%s (%s)%s%s", level_type, current_level->title, glue, details);
 
     Console_Log("%s", message);
-
-    Memory_FreePointer(&details);
-    Memory_FreePointer(&message);
-    Memory_FreePointer(&level_type);
 
     return CR_SUCCESS;
 }

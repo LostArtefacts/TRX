@@ -30,6 +30,7 @@
 - fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 1.2)
 - fixed pause screen rendered without background overlay if fade effects are disabled (#3316, regression from 1.1)
 - fixed title screen background not updating aspect ratio when moving fullscreen window between monitors (#2842)
+- fixed `/pos` command crashing when the level title is not set (regression from 1.2)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)
