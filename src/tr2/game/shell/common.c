@@ -206,6 +206,9 @@ static void M_SyncFromWindow(const bool update_viewport)
             g_Config.window.y = y;
             g_Config.window.width = width;
             g_Config.window.height = height;
+        } else {
+            g_Config.window.fs_width = width;
+            g_Config.window.fs_height = height;
         }
         if (g_Config.loaded) {
             m_IgnoreConfigChanges = true;
@@ -370,62 +373,64 @@ static void M_LoadConfig(void)
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
-    if (m_IgnoreConfigChanges) {
-        return;
-    }
-
     const CONFIG *const old = &g_Config;
     const CONFIG *const new = &g_SavedConfig;
 
-#define CHANGED(subject) (old->subject != new->subject)
+#define L_CHANGED(subject) (old->subject != new->subject)
 
-    if (CHANGED(audio.sound_volume)) {
+    if (L_CHANGED(audio.sound_volume)) {
         Sound_SetMasterVolume(g_Config.audio.sound_volume);
     }
-    if (CHANGED(audio.music_volume)) {
+    if (L_CHANGED(audio.music_volume)) {
         Music_SetVolume(g_Config.audio.music_volume);
     }
 
-    if (CHANGED(language)) {
+    if (L_CHANGED(language)) {
         GameStringManager_ReloadLanguage(g_Config.language);
     }
 
-    if (CHANGED(window.is_fullscreen) || CHANGED(window.is_maximized)
-        || CHANGED(window.width) || CHANGED(window.height)
-        || CHANGED(rendering.scaler) || CHANGED(rendering.sizer)
-        || CHANGED(rendering.aspect_mode) || CHANGED(visuals.use_psx_fov)) {
+    if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)
+        || L_CHANGED(window.width) || L_CHANGED(window.height)
+        || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
+        || L_CHANGED(rendering.scaler) || L_CHANGED(rendering.sizer)
+        || L_CHANGED(rendering.aspect_mode) || L_CHANGED(visuals.use_psx_fov)) {
         LOG_DEBUG("Change in settings detected");
-        M_SyncToWindow();
+        if (!m_IgnoreConfigChanges) {
+            M_SyncToWindow();
+        }
         M_RefreshRendererViewport();
     }
 
-    if (CHANGED(rendering.render_mode)) {
+    if (L_CHANGED(rendering.render_mode)) {
         Render_Reset(RENDER_RESET_ALL);
     } else if (
-        CHANGED(rendering.enable_zbuffer)
-        || CHANGED(rendering.enable_perspective_filter)
-        || CHANGED(rendering.enable_wireframe)
-        || CHANGED(rendering.wireframe_width)
-        || CHANGED(rendering.texture_filter)
-        || CHANGED(rendering.lighting_contrast)) {
+        L_CHANGED(rendering.enable_zbuffer)
+        || L_CHANGED(rendering.enable_perspective_filter)
+        || L_CHANGED(rendering.enable_wireframe)
+        || L_CHANGED(rendering.wireframe_width)
+        || L_CHANGED(rendering.texture_filter)
+        || L_CHANGED(rendering.lighting_contrast)) {
         Render_Reset(RENDER_RESET_PARAMS);
     }
 
-    if (CHANGED(visuals.fov) || CHANGED(visuals.use_psx_fov)) {
+    if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_psx_fov)) {
         if (Viewport_GetFOV(false) == -1) {
             Viewport_AlterFOV(-1);
         }
     }
 
-    if (CHANGED(visuals.fog_start) || CHANGED(visuals.fog_end)
-        || CHANGED(visuals.water_color.g) || CHANGED(visuals.water_color.b)
-        || CHANGED(visuals.water_color.r)) {
+    if (L_CHANGED(visuals.fog_start) || L_CHANGED(visuals.fog_end)
+        || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
+        || L_CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();
     }
 
-    if (CHANGED(rendering.aspect_mode)) {
+    if (L_CHANGED(rendering.aspect_mode) || L_CHANGED(window.width)
+        || L_CHANGED(window.height) || L_CHANGED(window.fs_width)
+        || L_CHANGED(window.fs_height)) {
         Output_ReloadBackgroundImage();
     }
+#undef L_CHANGED
 }
 
 bool Shell_ParseArgs(const int32_t arg_count, const char **args)

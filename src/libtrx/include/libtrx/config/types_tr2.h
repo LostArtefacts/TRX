@@ -146,6 +146,8 @@ typedef struct {
         int32_t y;
         int32_t width;
         int32_t height;
+        int32_t fs_width;
+        int32_t fs_height;
     } window;
 
     struct {

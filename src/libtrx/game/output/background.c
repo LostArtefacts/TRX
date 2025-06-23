@@ -22,6 +22,9 @@ typedef struct {
 } M_CANDIDATE;
 
 static char *m_LastPath = nullptr;
+static VECTOR *m_CachedCandidates = nullptr;
+static size_t m_CachedDirLen = 0;
+static char *m_CachedScanPath = nullptr;
 
 static IMAGE *M_CreateImageFromPath(const char *path);
 static float M_GetScreenAspectRatio(void);
@@ -159,11 +162,16 @@ static void M_FreeCandidates(VECTOR *const candidates)
 bool Output_LoadBackgroundFromFile(const char *const path)
 {
     LOG_INFO("Loading image %s", path);
-    size_t dir_len = 0;
     bool result = false;
 
-    // Try aspect-ratio specific directories.
-    VECTOR *candidates = M_ScanCandidates(path, &dir_len);
+    if (m_CachedScanPath == nullptr
+        || !String_Equivalent(path, m_CachedScanPath)) {
+        M_FreeCandidates(m_CachedCandidates);
+        Memory_FreePointer(&m_CachedScanPath);
+        m_CachedCandidates = M_ScanCandidates(path, &m_CachedDirLen);
+        m_CachedScanPath = Memory_DupStr(path);
+    }
+    VECTOR *candidates = m_CachedCandidates;
     if (candidates != nullptr) {
         M_CANDIDATE *raw_candidates = Vector_GetData(candidates);
         qsort(
@@ -175,7 +183,7 @@ bool Output_LoadBackgroundFromFile(const char *const path)
                 "Found candidate %s (diff=%.02f)", candidate->file_name,
                 candidate->diff);
         }
-        if (M_TryLoadCandidates(path, candidates, dir_len)) {
+        if (M_TryLoadCandidates(path, candidates, m_CachedDirLen)) {
             result = true;
         }
     }
@@ -190,7 +198,6 @@ bool Output_LoadBackgroundFromFile(const char *const path)
         }
     }
 
-    M_FreeCandidates(candidates);
     if (result) {
         char *prev = m_LastPath;
         m_LastPath = Memory_DupStr(path);
@@ -219,4 +226,8 @@ char *Output_GetLastBackgroundPath(void)
 void Output_ClearLastBackgroundPath(void)
 {
     Memory_FreePointer(&m_LastPath);
+    M_FreeCandidates(m_CachedCandidates);
+    m_CachedCandidates = nullptr;
+    m_CachedDirLen = 0;
+    Memory_FreePointer(&m_CachedScanPath);
 }
