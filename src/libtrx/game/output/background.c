@@ -208,6 +208,12 @@ bool Output_LoadBackgroundFromFile(const char *const path)
 
 void Output_ReloadBackgroundImage(void)
 {
+    if (Output_GetBackgroundType() == BK_OBJECT) {
+        Output_UnloadBackground();
+        Output_LoadBackgroundFromObject();
+        return;
+    }
+
     if (m_LastPath == nullptr) {
         return;
     }
