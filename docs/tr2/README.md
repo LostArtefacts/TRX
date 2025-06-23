@@ -370,6 +370,7 @@ However, you can easily download them manually from these urls:
 - fixed missing enemy sound effects in the underwater levels
 - fixed missing sound effects for collapsible tiles in Opera House, The Deck and Catacombs of the Talion
 - fixed missing 'aha' sound effect in Lara's Home
+- fixed missing zipline sound effect in Home Sweet Home
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)

@@ -451,6 +451,7 @@
             ],
             "injections": [
                 "data/injections/explosion.bin",
+                "data/injections/house_sfx.bin",
                 "data/injections/house_itemrots.bin",
                 "data/injections/house_music_tracks.bin",
                 "data/injections/house_textures.bin",
