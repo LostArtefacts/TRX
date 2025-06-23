@@ -26,3 +26,8 @@ void UI_Text_Measure(
 // Wrap a text into multiple lines to fit a specific width in pixels.
 char *UI_Text_WordWrap(
     const char *text, const float scale, const float max_width);
+
+// Filter out any characters not present in the glyph map.
+// Returns a newly-allocated string containing only known glyphs.
+// Caller must free the result with Memory_Free*().
+char *UI_Text_FilterGlyphs(const char *text);

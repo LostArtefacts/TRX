@@ -86,8 +86,6 @@ static M_GLYPH_INFO m_Glyphs[] = {
     { .text = nullptr }, // guard
 };
 
-static size_t m_GlyphLookupKeyCap = 0;
-static char *m_GlyphLookupKey = nullptr;
 static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
@@ -137,21 +135,15 @@ static const M_GLYPH_INFO **M_Decompose(
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*content_ptr != '\0') {
         const size_t glyph_size = String_GetCharByteSize(content_ptr);
-        if (m_GlyphLookupKeyCap <= glyph_size) {
-            m_GlyphLookupKeyCap = glyph_size + 10;
-            m_GlyphLookupKey =
-                Memory_Realloc(m_GlyphLookupKey, m_GlyphLookupKeyCap);
-        }
-        strncpy(m_GlyphLookupKey, content_ptr, glyph_size);
-        m_GlyphLookupKey[glyph_size] = '\0';
-
+        const char *const key_buf =
+            String_FormatStatic("%.*s", (int)glyph_size, content_ptr);
         M_GLYPH_MAP_ENTRY *entry;
-        HASH_FIND_STR(m_GlyphMap, m_GlyphLookupKey, entry);
+        HASH_FIND_STR(m_GlyphMap, key_buf, entry);
 
         if (entry != nullptr) {
             *glyph_ptr++ = entry->glyph;
         } else {
-            LOG_WARNING("Unknown glyph: %s", m_GlyphLookupKey);
+            LOG_WARNING("Unknown glyph: %s", key_buf);
             glyph_count--;
         }
 
@@ -496,9 +488,6 @@ void UI_InitText(void)
             hash_entry);
     }
 
-    m_GlyphLookupKeyCap = 10;
-    m_GlyphLookupKey = Memory_Alloc(m_GlyphLookupKeyCap);
-
     // Create dynamic glyphs for "{key <role>}" tokens; resolution happens when
     // drawing/wrapping
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; ++role) {
@@ -547,9 +536,6 @@ void UI_ShutdownText(void)
             Memory_FreePointer(&current);
         }
     }
-
-    Memory_FreePointer(&m_GlyphLookupKey);
-    m_GlyphLookupKeyCap = 0;
 }
 
 void UI_Text_Measure(
@@ -585,4 +571,28 @@ char *UI_Text_WordWrap(
     char *const wrapped_text = Memory_Alloc(len);
     M_WordWrap(glyphs, glyph_count, scale_f, max_width, wrapped_text);
     return wrapped_text;
+}
+
+char *UI_Text_FilterGlyphs(const char *const text)
+{
+    if (text == nullptr) {
+        return nullptr;
+    }
+    const size_t in_len = strlen(text);
+    char *out = Memory_Alloc(in_len + 1);
+    size_t out_len = 0;
+    const char *p = text;
+    while (*p != '\0') {
+        const size_t sz = String_GetCharByteSize(p);
+        const char *const key_buf = String_FormatStatic("%.*s", (int32_t)sz, p);
+        M_GLYPH_MAP_ENTRY *entry = nullptr;
+        HASH_FIND_STR(m_GlyphMap, key_buf, entry);
+        if (entry != nullptr) {
+            memcpy(out + out_len, p, sz);
+            out_len += sz;
+        }
+        p += sz;
+    }
+    out[out_len] = '\0';
+    return out;
 }

@@ -78,7 +78,7 @@ cleanup:
 }
 
 // Return a comma-delimited list of valid values for the option.
-// Caller must free the result via Memory_FreePointer.
+// Caller must free the result with Memory_Free*().
 static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
 {
     if (option == nullptr) {

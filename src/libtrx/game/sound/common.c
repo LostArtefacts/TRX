@@ -57,6 +57,9 @@ int16_t *Sound_GetSampleLUT(void)
 
 SAMPLE_INFO *Sound_GetSampleInfo(const SOUND_EFFECT_ID sfx_num)
 {
+    if (sfx_num == SFX_INVALID) {
+        return nullptr;
+    }
     const int16_t info_idx = m_SampleLUT[sfx_num];
     return info_idx < 0 ? nullptr : &m_SampleInfos[info_idx];
 }
