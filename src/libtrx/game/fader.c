@@ -42,8 +42,9 @@ void Fader_Init(
 int32_t Fader_GetCurrentValue(const FADER *const fader)
 {
     if (!g_Config.visuals.enable_fade_effects || fader->args.duration == 0.0) {
-        if (fader->args.target == FADER_SEMI_BLACK) {
-            return FADER_SEMI_BLACK;
+        if (fader->args.target == FADER_SEMI_BLACK
+            || fader->args.target == FADER_ALMOST_BLACK) {
+            return fader->args.target;
         }
         return FADER_TRANSPARENT;
     }
