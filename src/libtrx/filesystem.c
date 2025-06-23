@@ -44,6 +44,9 @@ static wchar_t *M_UTF8ToWide(const char *utf8_str);
 
 static wchar_t *M_UTF8ToWide(const char *const utf8_str)
 {
+    if (utf8_str == nullptr) {
+        return nullptr;
+    }
     const size_t len = strlen(utf8_str);
     const size_t wide_len =
         MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, NULL, 0);
@@ -55,10 +58,13 @@ static wchar_t *M_UTF8ToWide(const char *const utf8_str)
 
 static FILE *M_UTF8Fopen(const char *path, const char *mode)
 {
-    wchar_t *const wide_title = M_UTF8ToWide(path);
+    if (path == nullptr || mode == nullptr) {
+        return nullptr;
+    }
+    wchar_t *const wide_path = M_UTF8ToWide(path);
     wchar_t *const wide_mode = M_UTF8ToWide(mode);
-    FILE *const file = _wfopen(wide_title, wide_mode);
-    Memory_Free(wide_title);
+    FILE *const file = _wfopen(wide_path, wide_mode);
+    Memory_Free(wide_path);
     Memory_Free(wide_mode);
     return file;
 }
