@@ -140,6 +140,9 @@ static void M_ShadeColor(
 static void M_ShadeLight(
     GFX_3D_VERTEX *const target, uint32_t shade, const bool is_textured)
 {
+    if (!g_Config.rendering.enable_lighting) {
+        shade = SHADE_NEUTRAL;
+    }
     M_ShadeLightColor(target, shade, is_textured, 255, 255, 255, 255);
 }
 
@@ -147,6 +150,9 @@ static void M_ShadeLightColor(
     GFX_3D_VERTEX *const target, uint32_t shade, const bool is_textured,
     uint32_t red, uint32_t green, uint32_t blue, const uint8_t alpha)
 {
+    if (!g_Config.rendering.enable_lighting) {
+        shade = SHADE_NEUTRAL;
+    }
     CLAMPG(shade, SHADE_MAX);
 
     if (g_Config.rendering.lighting_contrast == LIGHTING_CONTRAST_MEDIUM) {

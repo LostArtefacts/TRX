@@ -13,6 +13,9 @@
 
 #define WIBBLE_SIZE 32
 
+#define LIGHT_MAP_SIZE 32
+#define LIGHT_MAP_NEUTRAL 16
+
 // TODO: get rid of these
 #define PHD_ONE 0x10000
 #define PHD_HALF 0x100

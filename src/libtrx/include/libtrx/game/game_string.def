@@ -215,6 +215,7 @@ GS_DEFINE(CONSOLE_HELP_BRAID,         "Toggles Lara's braid.")
 GS_DEFINE(CONSOLE_HELP_CHEATS,        "Toggles in-game cheats on or off.")
 GS_DEFINE(CONSOLE_HELP_FPS,           "Changes the FPS value.")
 GS_DEFINE(CONSOLE_HELP_DEBUG,         "Toggles visual debug information.")
+GS_DEFINE(CONSOLE_HELP_LIGHTING,      "Toggles lighting system.")
 
 GS_DEFINE(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER, "This setting is enforced by the level builder and cannot be changed.")
 GS_DEFINE(COMMON_SETTINGS_TOGGLE_HELP, "Toggle help")

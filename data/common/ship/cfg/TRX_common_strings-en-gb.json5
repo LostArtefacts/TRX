@@ -21,6 +21,7 @@
         "GRAPHIC_SETTINGS_WATER_COLOR_R": "Water colour (R)",
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
         "GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_DESCRIPTION": "Allows various levels of stat detail.\n\n- Minimal: shows kills, pickups, secrets, and time taken.\n- Detailed: shows all stats from minimal as well as the maximum pickup count and kill count of each level.\n- Full: shows all stats from detailed as well as ammo hits, ammo used, health packs used, and distance travelled.",
-        "GAMEPLAY_SETTINGS_WALL_GLITCH_MODE_DESCRIPTION": "Allows using TR1 wall glitch behaviour in TR2 and vice-versa; equally allows fixing all types of wall glitch."
+        "GAMEPLAY_SETTINGS_WALL_GLITCH_MODE_DESCRIPTION": "Allows using TR1 wall glitch behaviour in TR2 and vice-versa; equally allows fixing all types of wall glitch.",
+        "CONSOLE_HELP_LIGHTING": "\\{review}"
     }
 }

@@ -155,6 +155,7 @@ typedef struct {
         bool enable_zbuffer;
         bool enable_perspective_filter;
         bool enable_trapezoid_filter;
+        bool enable_lighting;
         bool enable_wireframe;
         float wireframe_width;
         GFX_TEXTURE_FILTER texture_filter;

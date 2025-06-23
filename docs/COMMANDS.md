@@ -68,6 +68,10 @@ Currently supported commands:
   `/wireframe off`  
   Enables or disables the wireframe mode. Enter the debugging realm!
 
+- `/lighting on`  
+  `/lighting off`  
+  Enables or disables the lighting system. Bask in dynamic shadows or embrace bright clarity!
+
 - `/debug on`  
   `/debug off`  
   Toggles debug mode, turning your screen into a glorious display of dev scribbles.

@@ -32,6 +32,7 @@
         "CONSOLE_HELP_HELP": "Shows help for all commands or detailed help for one.",
         "CONSOLE_HELP_HP": "Sets Lara's health to the specified value.",
         "CONSOLE_HELP_KILL": "Kills nearby enemies.",
+        "CONSOLE_HELP_LIGHTING": "Toggles lighting system.",
         "CONSOLE_HELP_LOAD": "Loads game from the given save slot.",
         "CONSOLE_HELP_MUSIC": "Plays a music track with the given id.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Plays a cutscene with the given number.",
