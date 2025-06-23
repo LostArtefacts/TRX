@@ -228,7 +228,7 @@ However, you can easily download them manually from these urls:
 - fixed Lara never stepping backwards off a step using her right foot
 - fixed flawed frame number checks which prevented Lara's wall hit animation while wading
 - fixed the following floor data issues:
-    - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204, fixed room 136 not having water
+    - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204, fixed incorrect textures in room 134, and fixed room 136 not having water
     - **Wreck of the Maria Doria**: fixed room 98 not having water
     - **Living Quarters** - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used
     - **The Deck**: fixed invalid portals between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms

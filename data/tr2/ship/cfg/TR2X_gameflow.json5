@@ -144,6 +144,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/loose_boards_sfx.bin",
                 "data/injections/opera_fd.bin",
+                "data/injections/opera_textures.bin",
                 "data/injections/opera_itemrots.bin",
                 "data/injections/opera_music_tracks.bin",
             ],
