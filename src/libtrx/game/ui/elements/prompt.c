@@ -7,6 +7,7 @@
 #include "game/ui/elements/label.h"
 #include "game/ui/events.h"
 #include "game/ui/helpers.h"
+#include "game/ui/text.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -17,9 +18,6 @@
 typedef struct {
     UI_PROMPT_STATE *state;
 } M_DATA;
-
-static const char m_ValidPromptChars[] =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-: ";
 
 static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
 
@@ -152,18 +150,18 @@ static void M_HandleKeyDown(const EVENT *const event, void *const user_data)
 
 static void M_HandleTextEdit(const EVENT *const event, void *const user_data)
 {
-    const char *insert_string = event->data;
-    const size_t insert_length = strlen(insert_string);
     UI_PROMPT_STATE *const s = user_data;
-
     if (!s->is_focused) {
         return;
     }
 
-    if (strlen(insert_string) != 1
-        || strstr(m_ValidPromptChars, insert_string) == nullptr) {
+    char *filtered = UI_Text_FilterGlyphs(event->data);
+    if (filtered == nullptr || filtered[0] == '\0') {
+        Memory_FreePointer(&filtered);
         return;
     }
+    const char *insert_string = filtered;
+    const size_t insert_length = strlen(insert_string);
 
     const size_t available_space =
         s->current_text_capacity - strlen(s->current_text);
@@ -180,6 +178,7 @@ static void M_HandleTextEdit(const EVENT *const event, void *const user_data)
     memcpy(s->current_text + s->caret_pos, insert_string, insert_length);
 
     s->caret_pos += insert_length;
+    Memory_FreePointer(&filtered);
 }
 
 void UI_Prompt_Init(UI_PROMPT_STATE *const s)

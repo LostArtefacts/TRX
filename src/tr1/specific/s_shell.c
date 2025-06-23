@@ -33,6 +33,9 @@
 
 static SDL_Window *m_Window = nullptr;
 
+// If true, next SDL_TEXT* event should be zeroed out.
+static bool m_ConsoleJustOpened = false;
+
 static void M_HandleQuit(void);
 static void M_SetWindowPos(int32_t x, int32_t y, bool update);
 static void M_SetWindowSize(int32_t width, int32_t height, bool update);
@@ -174,16 +177,19 @@ void Shell_ProcessEvents(void)
             break;
 
         case SDL_KEYDOWN: {
-            // NOTE: This normally would get handled by Input_Update,
-            // but by the time Input_Update gets ran, we may already have lost
-            // some keypresses if the player types really fast, so we need to
-            // react sooner.
+            // NOTE: Opening the console normally would get handled by
+            // Input_Update, but by the time Input_Update gets ran, we may
+            // already have lost some keypresses if the player types really
+            // fast, so we need to react sooner.
             if (!FMV_IsPlaying() && g_Config.gameplay.enable_console
                 && !Console_IsOpened() && !Input_IsInListenMode()
                 && Input_IsPressed(
                     INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
                     INPUT_ROLE_ENTER_CONSOLE)) {
                 Console_Open();
+                // Zero out the next text event so the console-open glyph never
+                // shows up.
+                m_ConsoleJustOpened = true;
             } else {
                 UI_HandleKeyDown(event.key.keysym.sym);
             }
@@ -199,11 +205,19 @@ void Shell_ProcessEvents(void)
             break;
 
         case SDL_TEXTEDITING:
-            UI_HandleTextEdit(event.text.text);
+            if (m_ConsoleJustOpened) {
+                m_ConsoleJustOpened = false;
+            } else {
+                UI_HandleTextEdit(event.text.text);
+            }
             break;
 
         case SDL_TEXTINPUT:
-            UI_HandleTextEdit(event.text.text);
+            if (m_ConsoleJustOpened) {
+                m_ConsoleJustOpened = false;
+            } else {
+                UI_HandleTextEdit(event.text.text);
+            }
             break;
 
         case SDL_CONTROLLERDEVICEADDED:
