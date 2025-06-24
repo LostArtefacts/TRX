@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...develop) - ××××-××-××
+
+## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...tr2-1.2.2) - 2025-06-24
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
 - fixed game crashing when the expected resources are missing (#3310, regression from 1.2.1)
 - fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 1.2)
