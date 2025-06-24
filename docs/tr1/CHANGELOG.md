@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...develop) - ××××-××-××
 - added French translation
 - added Italian translation to the installer
 - added the ability to advance individual frames to the photo mode
@@ -17,6 +17,8 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
+
+## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24
 - fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)
 - fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 4.12)
 - fixed pause screen rendered without background overlay if fade effects are disabled (#3316, regression from 4.11)
