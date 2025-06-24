@@ -23,6 +23,7 @@
 - fixed room 136 in Opera House not having water (#3214)
 - fixed Lara not saying 'aha' when picking up the secret in Lara's Home (#3103)
 - fixed missing zipline sound in Home Sweet Home (#3102)
+- fixed flare count getting corrupt on save/load if Lara had more than 255 flares (#1592)
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
 - fixed game crashing when the expected resources are missing (#3310, regression from 1.2.1)
 - fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 1.2)

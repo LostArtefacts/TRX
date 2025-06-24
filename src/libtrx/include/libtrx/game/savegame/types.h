@@ -23,7 +23,7 @@ typedef struct {
     uint16_t m16_ammo;
     uint16_t grenade_ammo;
     uint16_t harpoon_ammo;
-    uint8_t flares;
+    uint16_t flares;
 #endif
 
     union {

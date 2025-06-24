@@ -197,6 +197,7 @@ However, you can easily download them manually from these urls:
 - added an option to toggle random enemy initial angle adjustment
 - added an option to prevent Lara targeting allies, either with weapons or the skidoo
 - changed inventory to pause the music rather than muting it
+fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed assault course best times not being retained between game relaunches
 - fixed secret rewards not displaying shotgun ammo
