@@ -17,6 +17,8 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
+- fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
+- fixed Lara not saying 'no' near complete receptacles (#3337, regression from 4.0)
 
 ## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24
 - fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)

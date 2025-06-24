@@ -4,6 +4,7 @@
 #include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "game/overlay.h"
+#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
@@ -26,6 +27,7 @@ static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Refuse(const ITEM *lara_item);
 static bool M_IsUsable(int16_t item_num);
 static void M_Setup(OBJECT *obj);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -33,6 +35,15 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MidasTouch_Bounds;
+}
+
+static void M_Refuse(const ITEM *const lara_item)
+{
+    if (!XYZ_32_AreEquivalent(
+            &g_Lara.interact_target.initial_pos, &g_LaraItem->pos)) {
+        g_Lara.interact_target.initial_pos = g_LaraItem->pos;
+        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
+    }
 }
 
 static bool M_IsUsable(const int16_t item_num)
@@ -119,7 +130,9 @@ static void M_Collision(
         return;
     }
 
-    GF_ShowInventoryKeys(item->object_id);
+    if (!GF_ShowInventoryKeys(item->object_id)) {
+        M_Refuse(lara_item);
+    }
 }
 
 REGISTER_OBJECT(O_MIDAS_TOUCH, M_Setup)

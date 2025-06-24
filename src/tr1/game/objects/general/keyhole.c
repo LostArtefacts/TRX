@@ -4,11 +4,15 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 
-static XYZ_32 m_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RADIUS - 50 };
+static XYZ_32 m_KeyholePosition = {
+    .x = 0,
+    .y = 0,
+    .z = WALL_L / 2 - LARA_RADIUS - 50,
+};
 
-static const OBJECT_BOUNDS m_KeyHoleBounds = {
+static const OBJECT_BOUNDS m_KeyholeBounds = {
     .shift = {
         .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
         .max = { .x = +200, .y = +0, .z = +WALL_L / 2, },
@@ -19,10 +23,37 @@ static const OBJECT_BOUNDS m_KeyHoleBounds = {
     },
 };
 
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Use(ITEM *lara_item, ITEM *keyhole_item);
+static void M_Refuse(const ITEM *lara_item);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static bool M_IsUsable(int16_t item_num);
 static void M_Setup(OBJECT *obj);
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_KeyholeBounds;
+}
+
+static void M_Use(ITEM *const lara_item, ITEM *const keyhole_item)
+{
+    Lara_AlignPosition(keyhole_item, &m_KeyholePosition);
+    Lara_AnimateUntil(lara_item, LS_USE_KEY);
+    lara_item->goal_anim_state = LS_STOP;
+    g_Lara.gun_status = LGS_HANDS_BUSY;
+    keyhole_item->status = IS_ACTIVE;
+    g_Lara.interact_target.is_moving = false;
+    g_Lara.interact_target.item_num = NO_OBJECT;
+}
+
+static void M_Refuse(const ITEM *const lara_item)
+{
+    if (!XYZ_32_AreEquivalent(
+            &g_Lara.interact_target.initial_pos, &g_LaraItem->pos)) {
+        g_Lara.interact_target.initial_pos = g_LaraItem->pos;
+        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
+    }
+}
 
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
@@ -31,13 +62,7 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.item_num == item_num) {
-        Lara_AlignPosition(item, &m_KeyHolePosition);
-        Lara_AnimateUntil(lara_item, LS_USE_KEY);
-        lara_item->goal_anim_state = LS_STOP;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
-        item->status = IS_ACTIVE;
-        g_Lara.interact_target.is_moving = false;
-        g_Lara.interact_target.item_num = NO_OBJECT;
+        M_Use(lara_item, item);
     }
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
@@ -50,16 +75,13 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 
     if (item->status != IS_INACTIVE) {
-        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
+        M_Refuse(lara_item);
         return;
     }
 
-    GF_ShowInventoryKeys(item->object_id);
-}
-
-static const OBJECT_BOUNDS *M_Bounds(void)
-{
-    return &m_KeyHoleBounds;
+    if (!GF_ShowInventoryKeys(item->object_id)) {
+        M_Refuse(lara_item);
+    }
 }
 
 static bool M_IsUsable(const int16_t item_num)
