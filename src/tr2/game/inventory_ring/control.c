@@ -917,6 +917,14 @@ GF_COMMAND InvRing_Control(INV_RING *const ring, const int32_t num_frames)
     return gf_cmd;
 }
 
+bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
+{
+    if (ring_type == RT_OPTION && InvRing_IsOptionLockedOut()) {
+        return false;
+    }
+    return g_InvRing_Source[ring_type].count > 0;
+}
+
 bool InvRing_IsOptionLockedOut(void)
 {
     return g_GameFlow.lockout_option_ring;

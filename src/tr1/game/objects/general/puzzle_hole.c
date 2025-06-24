@@ -7,7 +7,7 @@
 
 #include <libtrx/game/lara/const.h>
 
-#define LF_USEPUZZLE 80
+#define LF_USE_PUZZLE 80
 
 static XYZ_32 m_PuzzleHolePosition = {
     .x = 0,
@@ -21,35 +21,43 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
         .max = { .x = +200, .y = 0, .z = WALL_L / 2, },
     },
     .rot = {
-        .min = {
-            .x = -10 * DEG_1,
-            .y = -30 * DEG_1,
-            .z = -10 * DEG_1,
-        },
-        .max = {
-            .x = +10 * DEG_1,
-            .y = +30 * DEG_1,
-            .z = +10 * DEG_1,
-        },
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
     },
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
-static bool M_IsUsable(int16_t item_num);
+static void M_Use(ITEM *lara_item, ITEM *keyhole_item);
+static void M_Refuse(const ITEM *lara_item);
 static void M_Setup(OBJECT *obj);
 static void M_SetupDone(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_CollisionDone(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_PuzzleHoleBounds;
 }
 
-static bool M_IsUsable(const int16_t item_num)
+static void M_Use(ITEM *const lara_item, ITEM *const keyhole_item)
 {
-    const ITEM *const item = Item_Get(item_num);
-    return item->status == IS_INACTIVE;
+    Lara_AlignPosition(keyhole_item, &m_PuzzleHolePosition);
+    Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
+    lara_item->goal_anim_state = LS_STOP;
+    g_Lara.gun_status = LGS_HANDS_BUSY;
+    keyhole_item->status = IS_ACTIVE;
+    g_Lara.interact_target.is_moving = false;
+    g_Lara.interact_target.item_num = NO_OBJECT;
+}
+
+static void M_Refuse(const ITEM *const lara_item)
+{
+    if (!XYZ_32_AreEquivalent(
+            &g_Lara.interact_target.initial_pos, &g_LaraItem->pos)) {
+        g_Lara.interact_target.initial_pos = g_LaraItem->pos;
+        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
+    }
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -58,12 +66,13 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->bounds_func = M_Bounds;
     obj->handle_save_func = M_HandleSave;
-    obj->is_usable_func = M_IsUsable;
 }
 
 static void M_SetupDone(OBJECT *const obj)
 {
+    obj->bounds_func = M_Bounds;
     obj->save_flags = true;
+    obj->collision_func = M_CollisionDone;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -86,7 +95,7 @@ static void M_Collision(
             return;
         }
 
-        if (Item_TestFrameEqual(lara_item, LF_USEPUZZLE)) {
+        if (Item_TestFrameEqual(lara_item, LF_USE_PUZZLE)) {
             switch (item->object_id) {
             case O_PUZZLE_HOLE_1:
                 item->object_id = O_PUZZLE_DONE_1;
@@ -116,13 +125,7 @@ static void M_Collision(
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.item_num == item_num) {
-        Lara_AlignPosition(item, &m_PuzzleHolePosition);
-        Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
-        lara_item->goal_anim_state = LS_STOP;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
-        item->status = IS_ACTIVE;
-        g_Lara.interact_target.is_moving = false;
-        g_Lara.interact_target.item_num = NO_OBJECT;
+        M_Use(lara_item, item);
     }
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
@@ -134,12 +137,25 @@ static void M_Collision(
         return;
     }
 
-    if (item->status != IS_INACTIVE) {
-        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
+    if (!GF_ShowInventoryKeys(item->object_id)) {
+        M_Refuse(lara_item);
+    }
+}
+
+static void M_CollisionDone(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
+        || lara_item->gravity || lara_item->current_anim_state != LS_STOP
+        || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 
-    GF_ShowInventoryKeys(item->object_id);
+    // Trying to interact with a complete puzzle hole
+    M_Refuse(lara_item);
 }
 
 REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_Setup)
