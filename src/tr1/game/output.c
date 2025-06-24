@@ -13,6 +13,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/output.h>
 #include <libtrx/memory.h>
 
 #define MAX_LIGHTNINGS 64
@@ -944,4 +945,9 @@ void Output_DrawTextOutline(
             sx, sy, w, h, M_GetMenuColor(MC_GREY_E), M_GetMenuColor(MC_GREY_C),
             TEXT_OUTLINE_THICKNESS);
     }
+}
+
+BACKGROUND_TYPE Output_GetBackgroundType(void)
+{
+    return BK_TRANSPARENT;
 }

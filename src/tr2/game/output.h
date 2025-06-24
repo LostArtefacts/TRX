@@ -73,7 +73,6 @@ void Output_DrawScreenFrame(
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t z, RGB_888 color);
 
-BACKGROUND_TYPE Output_GetBackgroundType(void);
 void Output_LoadBackgroundFromObject(void);
 
 void Output_InsertShadow(
