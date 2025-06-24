@@ -682,7 +682,10 @@ void Output_LoadBackgroundFromObject(void)
     const int32_t texture_idx = mesh->tex_face4s[0].texture_idx;
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(texture_idx);
     ASSERT(texture != nullptr);
-    Render_LoadBackgroundFromTexture(texture, 8, 6);
+    const int32_t repeat_y = 6;
+    const int32_t repeat_x =
+        repeat_y * Viewport_GetWidth() / (float)Viewport_GetHeight();
+    Render_LoadBackgroundFromTexture(texture, repeat_x, repeat_y);
     m_BackgroundType = BK_OBJECT;
     return;
 }
