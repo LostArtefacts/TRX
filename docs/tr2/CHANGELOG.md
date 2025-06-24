@@ -27,6 +27,7 @@
 - fixed missing zipline sound in Home Sweet Home (#3102)
 - fixed flare count getting corrupt on save/load if Lara had more than 255 flares (#1592)
 - fixed title screen background not updating aspect ratio when moving fullscreen window between monitors (#2842)
+- fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24
 - fixed underwater hum not playing properly (#3305, regression from 0.10)

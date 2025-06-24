@@ -42,7 +42,10 @@ bool GF_ShowInventoryKeys(const GAME_OBJECT_ID receptacle_type_id)
             receptacle_type_id, g_KeyItemToReceptacleMap);
         InvRing_SetRequestedObjectID(obj_id);
     }
-    GF_ShowInventory(INV_KEYS_MODE);
+    const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
+    if (gf_cmd.action != GF_NOOP) {
+        GF_OverrideCommand(gf_cmd);
+    }
     return true;
 }
 
