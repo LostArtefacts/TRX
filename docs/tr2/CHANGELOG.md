@@ -20,6 +20,7 @@
 - removed config tool (we have ingame setting dialogs now)
 - removed default bindings for the "sizer" and the "scaler" options (#2853)
 - fixed inventory screen carpet background texture stretched on non-4:3 aspect ratios (#2022)
+- fixed picked up guns not appearing in holsters / on Lara's back (#1588)
 - fixed room 134 in Opera House having wrong textures (#3142)
 - fixed room 136 in Opera House not having water (#3214)
 - fixed Lara not saying 'aha' when picking up the secret in Lara's Home (#3103)

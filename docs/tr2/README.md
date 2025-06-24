@@ -183,6 +183,8 @@ However, you can easily download them manually from these urls:
 - added support for 60 FPS rendering
 - added a pause screen
 - added a photo mode feature
+- added weapons to Lara's empty holsters on pickup
+- added options to quiet or mute music while underwater
 - added combined support for The Golden Mask
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport
 - added graphics effects, waterfalls to the savegame so that they now persist on load

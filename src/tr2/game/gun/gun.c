@@ -315,6 +315,22 @@ GAME_OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
+LARA_GUN_TYPE Gun_GetType(const GAME_OBJECT_ID obj_id)
+{
+    // clang-format off
+    switch (obj_id) {
+    case O_PISTOL_ITEM:  return LGT_PISTOLS;
+    case O_MAGNUM_ITEM:  return LGT_MAGNUMS;
+    case O_UZI_ITEM:     return LGT_UZIS;
+    case O_SHOTGUN_ITEM: return LGT_SHOTGUN;
+    case O_HARPOON_ITEM: return LGT_HARPOON;
+    case O_M16_ITEM:     return LGT_M16;
+    case O_GRENADE_ITEM: return LGT_GRENADE;
+    default:             return LGT_UNARMED;
+    }
+    // clang-format on
+}
+
 GAME_OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
@@ -364,6 +380,43 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
+void Gun_UpdateLaraMeshes(const GAME_OBJECT_ID obj_id)
+{
+    const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM)
+        || Inv_RequestItem(O_HARPOON_ITEM) || Inv_RequestItem(O_M16_ITEM)
+        || Inv_RequestItem(O_GRENADE_ITEM);
+    const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
+        || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_UZI_ITEM);
+
+    LARA_GUN_TYPE back_gun_type = LGT_UNARMED;
+    LARA_GUN_TYPE holsters_gun_type = LGT_UNARMED;
+
+    if (!lara_has_rifle && obj_id == O_SHOTGUN_ITEM) {
+        back_gun_type = LGT_SHOTGUN;
+    } else if (!lara_has_rifle && obj_id == O_HARPOON_ITEM) {
+        back_gun_type = LGT_HARPOON;
+    } else if (!lara_has_rifle && obj_id == O_M16_ITEM) {
+        back_gun_type = LGT_M16;
+    } else if (!lara_has_rifle && obj_id == O_GRENADE_ITEM) {
+        back_gun_type = LGT_GRENADE;
+    } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {
+        holsters_gun_type = LGT_PISTOLS;
+    } else if (!lara_has_pistols && obj_id == O_MAGNUM_ITEM) {
+        holsters_gun_type = LGT_MAGNUMS;
+    } else if (!lara_has_pistols && obj_id == O_UZI_ITEM) {
+        holsters_gun_type = LGT_UZIS;
+    }
+
+    if (back_gun_type != LGT_UNARMED) {
+        Gun_SetLaraBackMesh(back_gun_type);
+    }
+
+    if (holsters_gun_type != LGT_UNARMED) {
+        Gun_SetLaraHolsterLMesh(holsters_gun_type);
+        Gun_SetLaraHolsterRMesh(holsters_gun_type);
+    }
+}
+
 void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)
 {
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
@@ -382,7 +435,6 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
 {
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
-    Lara_SwapSingleMesh(LM_TORSO, obj_id);
     g_Lara.back_gun_obj_id = obj_id;
 }
 
