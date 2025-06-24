@@ -74,6 +74,9 @@ static void M_SetWindowSize(int32_t width, int32_t height, bool update)
     if (!g_Config.window.is_fullscreen && !g_Config.window.is_maximized) {
         g_Config.window.width = width;
         g_Config.window.height = height;
+    } else {
+        g_Config.window.fs_width = width;
+        g_Config.window.fs_height = height;
     }
 
     Output_SetWindowSize(width, height);

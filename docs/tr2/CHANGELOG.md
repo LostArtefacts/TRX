@@ -18,15 +18,18 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
+- removed default bindings for the "sizer" and the "scaler" options (#2853)
 - fixed picked up guns not appearing in holsters / on Lara's back (#1588)
 - fixed room 134 in Opera House having wrong textures (#3142)
 - fixed room 136 in Opera House not having water (#3214)
 - fixed Lara not saying 'aha' when picking up the secret in Lara's Home (#3103)
 - fixed missing zipline sound in Home Sweet Home (#3102)
+- fixed flare count getting corrupt on save/load if Lara had more than 255 flares (#1592)
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
 - fixed game crashing when the expected resources are missing (#3310, regression from 1.2.1)
 - fixed restore default pop-up requiring all 3 water color options to be adjusted instead of just one (#3314, regression from 1.2)
 - fixed pause screen rendered without background overlay if fade effects are disabled (#3316, regression from 1.1)
+- fixed title screen background not updating aspect ratio when moving fullscreen window between monitors (#2842)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.2...tr2-1.2.1) - 2025-06-22
 - fixed some secrets in some levels incorrectly registering by standing on specific tiles (#3280, regression from 1.2)

@@ -32,6 +32,7 @@
         "CONSOLE_HELP_HELP": "Mostra la guida per tutti i comandi o la guida dettagliata per uno solo.",
         "CONSOLE_HELP_HP": "Imposta la salute di Lara al valore specificato.",
         "CONSOLE_HELP_KILL": "Uccide i nemici vicini.",
+        "CONSOLE_HELP_LIGHTING": "Attiva/disattiva il sistema di illuminazione.",
         "CONSOLE_HELP_LOAD": "Carica la partita dallo slot di salvataggio specificato.",
         "CONSOLE_HELP_MUSIC": "Riproduce la traccia musicale con l'ID specificato.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Riproduce la scena di intermezzo con il numero specificato.",
@@ -556,7 +557,6 @@
         "STATS_BASIC_FMT": "%d",
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
         "STATS_DETAIL_FMT": "%d di %d",
-        "STATS_FINAL_STATISTICS": "Statistiche Finali",
-        "CONSOLE_HELP_LIGHTING": "\\{review}Attiva il sistema di illuminazione."
+        "STATS_FINAL_STATISTICS": "Statistiche Finali"
     }
 }
