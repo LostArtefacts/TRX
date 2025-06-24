@@ -1,12 +1,12 @@
 #include "game/inventory.h"
 
+#include "game/gun.h"
 #include "game/inventory_ring.h"
 #include "game/objects/vars.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game.h>
-#include <libtrx/game/gun/const.h>
 #include <libtrx/utils.h>
 
 static int32_t M_GetFlareQuantity(void);
@@ -19,6 +19,19 @@ static int32_t M_GetFlareQuantity(void)
 
 bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 {
+    if (Object_IsType(obj_id, g_GunObjects)) {
+        Gun_UpdateLaraMeshes(obj_id);
+        if (g_Lara.gun_type == LGT_UNARMED) {
+            g_Lara.gun_type = Gun_GetType(obj_id);
+            const bool hands_busy = g_Lara.gun_status == LGS_HANDS_BUSY;
+            g_Lara.gun_status = LGS_ARMLESS;
+            Gun_InitialiseNewWeapon();
+            if (hands_busy) {
+                g_Lara.gun_status = LGS_HANDS_BUSY;
+            }
+        }
+    }
+
     const GAME_OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
     const OBJECT *const object =
         Object_Get(inv_obj_id == NO_OBJECT ? obj_id : inv_obj_id);

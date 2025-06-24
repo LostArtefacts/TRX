@@ -18,6 +18,7 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - removed config tool (we have ingame setting dialogs now)
+- fixed picked up guns not appearing in holsters / on Lara's back (#1588)
 - fixed room 134 in Opera House having wrong textures (#3142)
 - fixed room 136 in Opera House not having water (#3214)
 - fixed Lara not saying 'aha' when picking up the secret in Lara's Home (#3103)
