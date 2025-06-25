@@ -9,11 +9,6 @@
 #include "../scrollable.h"
 #include "./text.h"
 
-typedef struct {
-    int32_t value;
-    GAME_STRING_ID name;
-} UI_SETTINGS_ENUM_ENTRY;
-
 typedef struct UI_SETTINGS_OPTION UI_SETTINGS_OPTION;
 
 typedef struct {

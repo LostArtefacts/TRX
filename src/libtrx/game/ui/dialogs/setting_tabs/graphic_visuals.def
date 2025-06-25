@@ -5,7 +5,7 @@ X_UI_CFG_RGB888(visuals.water_color,        GRAPHIC_SETTINGS_WATER_COLOR_R, 0)
 X_UI_CFG_RGB888(visuals.water_color,        GRAPHIC_SETTINGS_WATER_COLOR_G, 1)
 X_UI_CFG_RGB888(visuals.water_color,        GRAPHIC_SETTINGS_WATER_COLOR_B, 2)
 
-X_UI_CFG_ENUM(visuals.camera_mode,          GRAPHIC_SETTINGS_CAMERA_MODE, .misc = m_CameraModeEnumEntries)
+X_UI_CFG_ENUM(visuals.camera_mode,          GRAPHIC_SETTINGS_CAMERA_MODE, .misc = UI_Settings_CameraModeEnumEntries)
 
 #if TR_VERSION == 1
 X_UI_CFG_INT32(visuals.fov_value,           GRAPHIC_SETTINGS_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 10)

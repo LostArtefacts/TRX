@@ -18,7 +18,7 @@ X_UI_CFG_BOOL(gameplay.fix_m16_accuracy,            GAMEPLAY_SETTINGS_FIX_M16_AC
 
 X_UI_CFG_BOOL(gameplay.fix_descending_glitch,       GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH)
 
-X_UI_CFG_ENUM(gameplay.wall_glitch_mode,            GAMEPLAY_SETTINGS_WALL_GLITCH_MODE, .misc = m_WallGlitchEnumEntries)
+X_UI_CFG_ENUM(gameplay.wall_glitch_mode,            GAMEPLAY_SETTINGS_WALL_GLITCH_MODE, .misc = UI_Settings_WallGlitchEnumEntries)
 
 X_UI_CFG_BOOL(gameplay.fix_wade_wall_hit,           GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT, .custom_handler = { .is_available = M_FixWadeWallHit_IsAvailable })
 X_UI_CFG_BOOL(gameplay.fix_water_exit,              GAMEPLAY_SETTINGS_FIX_WATER_EXIT)

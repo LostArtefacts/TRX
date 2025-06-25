@@ -5,20 +5,20 @@ X_UI_CFG_DOUBLE(ui.bar_scale,                   GRAPHIC_SETTINGS_UI_BAR_SCALE, .
 X_UI_CFG_BOOL(ui.enable_wraparound,             GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND)
 
 #if TR_VERSION == 1
-X_UI_CFG_ENUM(ui.menu_style,                    GRAPHIC_SETTINGS_MENU_STYLE, .misc = &m_MenuStyleEnumEntries)
+X_UI_CFG_ENUM(ui.menu_style,                    GRAPHIC_SETTINGS_MENU_STYLE, .misc = UI_Settings_MenuStyleEnumEntries)
 #endif
 
-X_UI_CFG_ENUM(ui.lara_health_bar.show_mode,     GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE, .misc = &m_HealthBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.lara_health_bar.location,      GRAPHIC_SETTINGS_HEALTHBAR_LOCATION, .misc = &m_BarLocationEnumEntries, .custom_handler = { .is_available = M_Healthbar_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_health_bar.color,         GRAPHIC_SETTINGS_HEALTHBAR_COLOR, .misc = &m_BarColorEnumEntries, .custom_handler = { .is_available = M_Healthbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_health_bar.show_mode,     GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE, .misc = UI_Settings_HealthBarShowModeEnumEntries)
+X_UI_CFG_ENUM(ui.lara_health_bar.location,      GRAPHIC_SETTINGS_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = M_Healthbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_health_bar.color,         GRAPHIC_SETTINGS_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = M_Healthbar_IsAvailable })
 
-X_UI_CFG_ENUM(ui.lara_air_bar.show_mode,        GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE, .misc = &m_AirBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.lara_air_bar.location,         GRAPHIC_SETTINGS_AIRBAR_LOCATION, .misc = &m_BarLocationEnumEntries, .custom_handler = { .is_available = M_Airbar_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_air_bar.color,            GRAPHIC_SETTINGS_AIRBAR_COLOR, .misc = &m_BarColorEnumEntries, .custom_handler = { .is_available = M_Airbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_air_bar.show_mode,        GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE, .misc = UI_Settings_AirBarShowModeEnumEntries)
+X_UI_CFG_ENUM(ui.lara_air_bar.location,         GRAPHIC_SETTINGS_AIRBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = M_Airbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_air_bar.color,            GRAPHIC_SETTINGS_AIRBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = M_Airbar_IsAvailable })
 
-X_UI_CFG_ENUM(ui.enemy_health_bar.show_mode,    GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE, .misc = &m_EnemyHealthBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.enemy_health_bar.location,     GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION, .misc = &m_BarLocationEnumEntries, .custom_handler = { .is_available = M_EnemyHealthbar_IsAvailable })
-X_UI_CFG_ENUM(ui.enemy_health_bar.color,        GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR, .misc = &m_BarColorEnumEntries, .custom_handler = { .is_available = M_EnemyHealthbar_IsAvailable })
+X_UI_CFG_ENUM(ui.enemy_health_bar.show_mode,    GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE, .misc = UI_Settings_EnemyHealthBarShowModeEnumEntries)
+X_UI_CFG_ENUM(ui.enemy_health_bar.location,     GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = M_EnemyHealthbar_IsAvailable })
+X_UI_CFG_ENUM(ui.enemy_health_bar.color,        GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = M_EnemyHealthbar_IsAvailable })
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(ui.enable_smooth_bars,            GRAPHIC_SETTINGS_ENABLE_SMOOTH_BARS)
