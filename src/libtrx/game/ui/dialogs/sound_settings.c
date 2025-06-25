@@ -197,10 +197,7 @@ static bool M_PauseMusicInInventory_IsAvailable(
 
 UI_SETTINGS_STATE *UI_SoundSettings_Init(void)
 {
-    UI_SETTINGS_STATE *const s =
-        UI_Settings_Init(GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
-    s->row_pad = 10.0f;
-    return s;
+    return UI_Settings_Init(GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
 }
 
 void UI_SoundSettings_Free(UI_SETTINGS_STATE *const s)

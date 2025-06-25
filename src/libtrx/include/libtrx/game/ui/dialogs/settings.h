@@ -56,8 +56,6 @@ typedef struct UI_SETTINGS_TAB {
 } UI_SETTINGS_TAB;
 
 typedef struct {
-    float row_pad;
-
     UI_SETTINGS_PHASE phase;
     const UI_SETTINGS_OPTION *options;
     UI_SCROLLABLE scroll;
