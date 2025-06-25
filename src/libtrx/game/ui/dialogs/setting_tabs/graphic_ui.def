@@ -1,0 +1,28 @@
+X_UI_CFG_STRING(language,                       GRAPHIC_SETTINGS_UI_LANGUAGE, .custom_handler = { .format_value = M_Language_FormatValue, .can_change_value = M_Language_CanChangeValue, .request_change_value = M_Language_RequestChangeValue })
+
+X_UI_CFG_DOUBLE(ui.text_scale,                  GRAPHIC_SETTINGS_UI_TEXT_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 10, .delta_fast = 10)
+X_UI_CFG_DOUBLE(ui.bar_scale,                   GRAPHIC_SETTINGS_UI_BAR_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 10, .delta_fast = 10)
+X_UI_CFG_BOOL(ui.enable_wraparound,             GRAPHIC_SETTINGS_UI_SCROLL_WRAPAROUND)
+
+#if TR_VERSION == 1
+X_UI_CFG_ENUM(ui.menu_style,                    GRAPHIC_SETTINGS_MENU_STYLE, .misc = &m_MenuStyleEnumEntries)
+#endif
+
+X_UI_CFG_ENUM(ui.lara_health_bar.show_mode,     GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE, .misc = &m_HealthBarShowModeEnumEntries)
+X_UI_CFG_ENUM(ui.lara_health_bar.location,      GRAPHIC_SETTINGS_HEALTHBAR_LOCATION, .misc = &m_BarLocationEnumEntries, .custom_handler = { .is_available = M_Healthbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_health_bar.color,         GRAPHIC_SETTINGS_HEALTHBAR_COLOR, .misc = &m_BarColorEnumEntries, .custom_handler = { .is_available = M_Healthbar_IsAvailable })
+
+X_UI_CFG_ENUM(ui.lara_air_bar.show_mode,        GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE, .misc = &m_AirBarShowModeEnumEntries)
+X_UI_CFG_ENUM(ui.lara_air_bar.location,         GRAPHIC_SETTINGS_AIRBAR_LOCATION, .misc = &m_BarLocationEnumEntries, .custom_handler = { .is_available = M_Airbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_air_bar.color,            GRAPHIC_SETTINGS_AIRBAR_COLOR, .misc = &m_BarColorEnumEntries, .custom_handler = { .is_available = M_Airbar_IsAvailable })
+
+X_UI_CFG_ENUM(ui.enemy_health_bar.show_mode,    GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_SHOW_MODE, .misc = &m_EnemyHealthBarShowModeEnumEntries)
+X_UI_CFG_ENUM(ui.enemy_health_bar.location,     GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_LOCATION, .misc = &m_BarLocationEnumEntries, .custom_handler = { .is_available = M_EnemyHealthbar_IsAvailable })
+X_UI_CFG_ENUM(ui.enemy_health_bar.color,        GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR, .misc = &m_BarColorEnumEntries, .custom_handler = { .is_available = M_EnemyHealthbar_IsAvailable })
+
+#if TR_VERSION == 1
+X_UI_CFG_BOOL(ui.enable_smooth_bars,            GRAPHIC_SETTINGS_ENABLE_SMOOTH_BARS)
+#endif
+
+X_UI_CFG_BOOL(visuals.enable_fade_effects,      GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS)
+X_UI_CFG_BOOL(visuals.enable_exit_fade_effects, GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS, .custom_handler = { .is_available = M_EnableExitFadeEffects_IsAvailable })

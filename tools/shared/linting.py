@@ -27,6 +27,7 @@ RE_GAME_STRING_DEFINE_VAL = re.compile(
     r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"([^"]*)"\)'
 )
 RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID|_PTR)?\(([A-Z0-9_]+)\)")
+RE_UI_SETTING_USAGE = re.compile(r"(?:X_UI_CFG_MANUAL\(\s*|X_UI_CFG[A-Z0-9_]*\([^(),]*,\s*)([A-Z0-9_]+)[,)]", flags=re.M | re.DOTALL)
 
 
 @dataclass
@@ -223,6 +224,15 @@ def lint_duplicate_game_strings(context: LintContext) -> Iterable[LintWarning]:
                 )
 
 
+def get_used_strings(source: str) -> Iterable[tuple[int, str]]:
+    source = re.sub('//.*', '', source, flags=re.M)
+    for match in re.finditer(RE_GAME_STRING_USAGE, source):
+        yield source.count('\n', 0, match.start()) + 1, match.group(1)
+    for match in re.finditer(RE_UI_SETTING_USAGE, source):
+        yield source.count('\n', 0, match.start()) + 1, match.group(1)
+        yield source.count('\n', 0, match.start()) + 1, match.group(1) + "_DESCRIPTION"
+
+
 def lint_undefined_game_strings(
     context: LintContext, paths: list[Path]
 ) -> Iterable[LintWarning]:
@@ -234,7 +244,7 @@ def lint_undefined_game_strings(
         def_string_map[game_string.project].add(game_string.key)
 
     for path in paths:
-        if path.suffix != ".c":
+        if path.suffix not in {".c", ".def"}:
             continue
 
         relevant_projects = [get_relevant_project(context, path), "libtrx"]
@@ -250,31 +260,28 @@ def lint_undefined_game_strings(
             for relevant_path in relevant_paths
         )
 
-        for i, line in enumerate(path.open("r"), 1):
-            line = re.sub('//.*', '', line)
-            for match in re.finditer(RE_GAME_STRING_USAGE, line):
-                def_ = match.group(1)
-                # For child project: it needs to be defined in libtrx or the child project
-                # For libtrx: it needs to be defined in libtrx…
-                if any(
-                    def_ in def_string_map[project]
-                    for project in relevant_projects
-                ):
-                    continue
+        for line_num, def_ in get_used_strings(path.read_text()):
+            # For child project: it needs to be defined in libtrx or the child project
+            # For libtrx: it needs to be defined in libtrx…
+            if any(
+                def_ in def_string_map[project]
+                for project in relevant_projects
+            ):
+                continue
 
-                # …or every child project
-                if all(
-                    def_ in def_string_map[project]
-                    for project in CHILD_PROJECTS
-                ):
-                    continue
+            # …or every child project
+            if all(
+                def_ in def_string_map[project]
+                for project in CHILD_PROJECTS
+            ):
+                continue
 
-                yield LintWarning(
-                    path,
-                    f"undefined game string: {def_}. "
-                    f"Make sure it's defined in {path_hint}.",
-                    i,
-                )
+            yield LintWarning(
+                path,
+                f"undefined game string: {def_}. "
+                f"Make sure it's defined in {path_hint}.",
+                line_num,
+            )
 
 
 def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
@@ -288,9 +295,8 @@ def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
             continue
 
         relevant_project = get_relevant_project(context, path)
-        for i, line in enumerate(path.open("r"), 1):
-            for match in re.finditer(RE_GAME_STRING_USAGE, line):
-                used_strings[relevant_project].add(match.group(1))
+        for line_num, used_string in get_used_strings(path.read_text()):
+            used_strings[relevant_project].add(used_string)
 
     for game_string in game_strings:
         relevant_projects = {
