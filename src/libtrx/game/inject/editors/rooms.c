@@ -11,7 +11,8 @@ static void M_AlterRoomVertex(const INJECTION *injection);
 static void M_RotateRoomFace(const INJECTION *injection);
 static void M_AddRoomFace(const INJECTION *injection);
 static void M_AddRoomVertex(const INJECTION *injection);
-static void M_AddRoomSprite(const INJECTION *injection);
+static void M_AddRoomStatic2D(const INJECTION *injection);
+static void M_AddRoomStatic3D(const INJECTION *injection);
 static uint16_t *M_GetRoomTexture(
     int16_t room_num, FACE_TYPE face_type, int16_t face_index);
 static uint16_t *M_GetRoomFaceVertices(
@@ -41,8 +42,11 @@ static void M_RoomMeshEdits(
         case RMET_ADD_VERTEX:
             M_AddRoomVertex(injection);
             break;
-        case RMET_ADD_SPRITE:
-            M_AddRoomSprite(injection);
+        case RMET_ADD_STATIC_2D:
+            M_AddRoomStatic2D(injection);
+            break;
+        case RMET_ADD_STATIC_3D:
+            M_AddRoomStatic3D(injection);
             break;
         default:
             LOG_WARNING("Unrecognised room mesh edit type: %d", type);
@@ -212,7 +216,7 @@ static void M_AddRoomVertex(const INJECTION *const injection)
     room->mesh.num_vertices++;
 }
 
-static void M_AddRoomSprite(const INJECTION *const injection)
+static void M_AddRoomStatic2D(const INJECTION *const injection)
 {
     const int16_t target_room = VFile_ReadS16(injection->fp);
     VFile_Skip(injection->fp, sizeof(int32_t));
@@ -225,6 +229,26 @@ static void M_AddRoomSprite(const INJECTION *const injection)
     sprite->texture = texture;
 
     room->mesh.num_sprites++;
+}
+
+static void M_AddRoomStatic3D(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+    ROOM *const room = Room_Get(target_room);
+
+    STATIC_MESH *const mesh = &room->static_meshes[room->num_static_meshes];
+    mesh->pos.x = VFile_ReadS32(injection->fp);
+    mesh->pos.y = VFile_ReadS32(injection->fp);
+    mesh->pos.z = VFile_ReadS32(injection->fp);
+    mesh->rot.y = VFile_ReadS16(injection->fp);
+    mesh->shade.value_1 = VFile_ReadS16(injection->fp);
+#if TR_VERSION == 2
+    mesh->shade.value_2 = mesh->shade.value_1;
+#endif
+    mesh->static_num = VFile_ReadS16(injection->fp);
+
+    room->num_static_meshes++;
 }
 
 static uint16_t *M_GetRoomTexture(

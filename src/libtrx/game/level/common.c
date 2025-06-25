@@ -36,7 +36,8 @@ static void M_ReadShade(SHADE *shade, VFILE *file);
 static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
 static void M_ReadFace4(FACE4 *face, VFILE *file);
 static void M_ReadFace3(FACE3 *face, VFILE *file);
-static void M_ReadRoomMesh(int32_t room_num, VFILE *file);
+static void M_ReadRoomMesh(
+    int32_t room_num, VFILE *file, INJECTION_MESH_META inj_data);
 static void M_ReadObjectMesh(OBJECT_MESH *mesh, VFILE *file);
 static void M_ReadBounds16(BOUNDS_16 *bounds, VFILE *file);
 static void M_ReadObjectVector(OBJECT_VECTOR *obj, VFILE *file);
@@ -224,11 +225,11 @@ static void M_ReadFace3(FACE3 *const face, VFILE *const file)
     face->enable_reflections = false;
 }
 
-static void M_ReadRoomMesh(const int32_t room_num, VFILE *const file)
+static void M_ReadRoomMesh(
+    const int32_t room_num, VFILE *const file,
+    const INJECTION_MESH_META inj_data)
 {
     ROOM *const room = Room_Get(room_num);
-    const INJECTION_MESH_META inj_data = Inject_GetRoomMeshMeta(room_num);
-
     const uint32_t mesh_length = VFile_ReadU32(file);
     size_t start_pos = VFile_GetPos(file);
 
@@ -277,7 +278,7 @@ static void M_ReadRoomMesh(const int32_t room_num, VFILE *const file)
     {
         room->mesh.num_sprites = VFile_ReadS16(file);
         const int32_t alloc_count =
-            room->mesh.num_sprites + inj_data.num_sprites;
+            room->mesh.num_sprites + inj_data.num_static_2ds;
         room->mesh.sprites =
             GameBuf_Alloc(sizeof(ROOM_SPRITE) * alloc_count, GBUF_ROOM_MESH);
         for (int32_t i = 0; i < room->mesh.num_sprites; i++) {
@@ -484,7 +485,8 @@ void Level_ReadRooms(VFILE *const file)
         room->min_floor = VFile_ReadS32(file);
         room->max_ceiling = VFile_ReadS32(file);
 
-        M_ReadRoomMesh(i, file);
+        const INJECTION_MESH_META inj_data = Inject_GetRoomMeshMeta(i);
+        M_ReadRoomMesh(i, file, inj_data);
 
         const int16_t num_portals = VFile_ReadS16(file);
         if (num_portals <= 0) {
@@ -549,11 +551,12 @@ void Level_ReadRooms(VFILE *const file)
         }
 
         room->num_static_meshes = VFile_ReadS16(file);
-        room->static_meshes = room->num_static_meshes == 0
+        const int32_t static_count =
+            room->num_static_meshes + inj_data.num_static_3ds;
+        room->static_meshes = static_count == 0
             ? nullptr
             : GameBuf_Alloc(
-                  sizeof(STATIC_MESH) * room->num_static_meshes,
-                  GBUF_ROOM_STATIC_MESHES);
+                  sizeof(STATIC_MESH) * static_count, GBUF_ROOM_STATIC_MESHES);
         for (int32_t i = 0; i < room->num_static_meshes; i++) {
             STATIC_MESH *const mesh = &room->static_meshes[i];
             M_ReadPosition(&mesh->pos, file);
