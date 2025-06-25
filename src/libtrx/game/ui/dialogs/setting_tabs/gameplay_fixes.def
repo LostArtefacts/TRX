@@ -1,6 +1,6 @@
 X_UI_CFG_BOOL(gameplay.fix_floor_data_issues,       GAMEPLAY_SETTINGS_FIX_FLOOR_DATA_ISSUES)
 X_UI_CFG_BOOL(visuals.fix_texture_issues,           GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES)
-X_UI_CFG_BOOL(visuals.fix_item_rots,                GAMEPLAY_SETTINGS_FIX_ITEM_ROTS, .custom_handler = { .is_available = M_FixItemRots_IsAvailable })
+X_UI_CFG_BOOL(visuals.fix_item_rots,                GAMEPLAY_SETTINGS_FIX_ITEM_ROTS, .custom_handler = { .is_available = UI_Settings_FixItemRots_IsAvailable })
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.load_music_triggers,            GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS)
@@ -20,10 +20,10 @@ X_UI_CFG_BOOL(gameplay.fix_descending_glitch,       GAMEPLAY_SETTINGS_FIX_DESCEN
 
 X_UI_CFG_ENUM(gameplay.wall_glitch_mode,            GAMEPLAY_SETTINGS_WALL_GLITCH_MODE, .misc = UI_Settings_WallGlitchEnumEntries)
 
-X_UI_CFG_BOOL(gameplay.fix_wade_wall_hit,           GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT, .custom_handler = { .is_available = M_FixWadeWallHit_IsAvailable })
+X_UI_CFG_BOOL(gameplay.fix_wade_wall_hit,           GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT, .custom_handler = { .is_available = UI_Settings_FixWadeWallHit_IsAvailable })
 X_UI_CFG_BOOL(gameplay.fix_water_exit,              GAMEPLAY_SETTINGS_FIX_WATER_EXIT)
 X_UI_CFG_BOOL(gameplay.fix_qwop_glitch,             GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH)
-X_UI_CFG_BOOL(gameplay.fix_step_glitch,             GAMEPLAY_SETTINGS_FIX_STEP_GLITCH, .custom_handler = { .is_available = M_FixStepGlitch_IsAvailable })
+X_UI_CFG_BOOL(gameplay.fix_step_glitch,             GAMEPLAY_SETTINGS_FIX_STEP_GLITCH, .custom_handler = { .is_available = UI_Settings_FixStepGlitch_IsAvailable })
 X_UI_CFG_BOOL(gameplay.fix_item_duplication_glitch, GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH)
 
 #if TR_VERSION == 2

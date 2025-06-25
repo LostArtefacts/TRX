@@ -22,12 +22,12 @@ X_UI_CFG_BOOL(visuals.enable_skybox,        GRAPHIC_SETTINGS_ENABLE_SKYBOX)
 #endif
 
 X_UI_CFG_BOOL(visuals.enable_braid,         GRAPHIC_SETTINGS_ENABLE_BRAID)
-X_UI_CFG_BOOL(visuals.enable_breeze,        GRAPHIC_SETTINGS_ENABLE_BREEZE, .custom_handler = { .is_available = M_EnableBreeze_IsAvailable })
+X_UI_CFG_BOOL(visuals.enable_breeze,        GRAPHIC_SETTINGS_ENABLE_BREEZE, .custom_handler = { .is_available = UI_Settings_EnableBreeze_IsAvailable })
 X_UI_CFG_BOOL(visuals.enable_3d_pickups,    GRAPHIC_SETTINGS_ENABLE_3D_PICKUPS)
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_pickup_aids,  GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS)
-X_UI_CFG_BOOL(visuals.enable_ps1_crystals,  GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS, .custom_handler = { .is_available = M_EnablePS1Crystals_IsAvailable })
+X_UI_CFG_BOOL(visuals.enable_ps1_crystals,  GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS, .custom_handler = { .is_available = UI_Settings_EnablePS1Crystals_IsAvailable })
 X_UI_CFG_BOOL(visuals.enable_round_shadow,  GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW)
 #endif
 

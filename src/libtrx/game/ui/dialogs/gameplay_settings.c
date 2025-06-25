@@ -3,29 +3,7 @@
 #include "config.h"
 #include "game/lara/const.h"
 #include "game/ui/dialogs/setting_helpers/enums.h"
-
-static bool M_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *option);
-static bool M_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *option);
-static bool M_FixWadeWallHit_IsAvailable(const UI_SETTINGS_OPTION *option);
-
-static bool M_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *const option)
-{
-    return g_Config.visuals.enable_3d_pickups;
-}
-
-static bool M_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *const option)
-{
-    return g_Config.gameplay.enable_smooth_wall_deflect;
-}
-
-static bool M_FixWadeWallHit_IsAvailable(const UI_SETTINGS_OPTION *const option)
-{
-#if TR_VERSION == 1
-    return g_Config.gameplay.enable_wading;
-#else
-    return true;
-#endif
-}
+#include "game/ui/dialogs/setting_helpers/handlers.h"
 
 static const UI_SETTINGS_OPTION m_GeneralOptions[] = {
 #include "setting_tabs/gameplay_general.def"
