@@ -4,6 +4,7 @@
 typedef enum {
     INJ_VERSION_1  = 1,
     INJ_VERSION_2  = 2,
+    INJ_VERSION_3  = 3,
 } INJECTION_VERSION;
 
 typedef enum {
@@ -69,7 +70,8 @@ typedef enum {
     IDT_OBJECT_3D_EDITS  = 26,
     IDT_ANIM_CMD_EDITS   = 27,
     IDT_SPRITE_EDITS     = 28,
-    IDT_NUMBER_OF        = 29,
+    IDT_STATIC_OBJECTS   = 29,
+    IDT_NUMBER_OF        = 30,
 } INJECTION_DATA_TYPE;
 
 typedef enum {
@@ -93,13 +95,14 @@ typedef enum {
 } FLOOR_EDIT_TYPE;
 
 typedef enum {
-    RMET_TEXTURE_FACE = 0,
-    RMET_MOVE_FACE    = 1,
-    RMET_ALTER_VERTEX = 2,
-    RMET_ROTATE_FACE  = 3,
-    RMET_ADD_FACE     = 4,
-    RMET_ADD_VERTEX   = 5,
-    RMET_ADD_SPRITE   = 6,
+    RMET_TEXTURE_FACE  = 0,
+    RMET_MOVE_FACE     = 1,
+    RMET_ALTER_VERTEX  = 2,
+    RMET_ROTATE_FACE   = 3,
+    RMET_ADD_FACE      = 4,
+    RMET_ADD_VERTEX    = 5,
+    RMET_ADD_STATIC_2D = 6,
+    RMET_ADD_STATIC_3D = 7,
 } ROOM_MESH_EDIT_TYPE;
 // clang-format on
 

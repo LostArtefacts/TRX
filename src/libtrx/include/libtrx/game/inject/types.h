@@ -24,7 +24,8 @@ typedef struct {
     int16_t num_vertices;
     int16_t num_quads;
     int16_t num_triangles;
-    int16_t num_sprites;
+    int16_t num_static_2ds;
+    int16_t num_static_3ds;
 } INJECTION_MESH_META;
 
 typedef struct {

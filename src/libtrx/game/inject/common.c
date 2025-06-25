@@ -11,7 +11,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define M_INJECTION_CURRENT_VERSION 2
+#define M_INJECTION_CURRENT_VERSION 3
 #define M_VIRTUAL_NAME "virtual_injection"
 
 static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};
@@ -30,7 +30,7 @@ static void M_LoadFromFile(INJECTION *injection, const char *file_name);
 static void M_ReadVFile(
     INJECTION *injection, VFILE *file, const char *file_name);
 static INJECTION_CHUNK M_ReadChunk(const INJECTION *injection);
-static void M_InitialiseBlock(VFILE *file);
+static void M_InitialiseBlock(VFILE *file, INJECTION_VERSION version);
 static bool M_IsRelevant(INJECTION_FILE_TYPE type);
 static bool M_IsApplicable(const INJECTION *injection);
 
@@ -107,7 +107,7 @@ static void M_ReadVFile(
     for (int32_t i = 0; i < num_chunks; i++) {
         const INJECTION_CHUNK chunk = M_ReadChunk(injection);
         for (int32_t j = 0; j < chunk.num_blocks; j++) {
-            M_InitialiseBlock(injection->fp);
+            M_InitialiseBlock(injection->fp, injection->version);
         }
     }
 
@@ -129,7 +129,8 @@ static INJECTION_CHUNK M_ReadChunk(const INJECTION *const injection)
     };
 }
 
-static void M_InitialiseBlock(VFILE *const file)
+static void M_InitialiseBlock(
+    VFILE *const file, const INJECTION_VERSION version)
 {
     const INJECTION_DATA_TYPE data_type = VFile_ReadS32(file);
     const int32_t data_count = VFile_ReadS32(file);
@@ -149,7 +150,10 @@ static void M_InitialiseBlock(VFILE *const file)
             meta->num_vertices = VFile_ReadS16(file);
             meta->num_quads = VFile_ReadS16(file);
             meta->num_triangles = VFile_ReadS16(file);
-            meta->num_sprites = VFile_ReadS16(file);
+            meta->num_static_2ds = VFile_ReadS16(file);
+            if (version >= INJ_VERSION_3) {
+                meta->num_static_3ds = VFile_ReadS16(file);
+            }
         }
 
         return;
@@ -382,7 +386,8 @@ INJECTION_MESH_META Inject_GetRoomMeshMeta(const int32_t room_index)
             summed_meta.num_vertices += meta->num_vertices;
             summed_meta.num_quads += meta->num_quads;
             summed_meta.num_triangles += meta->num_triangles;
-            summed_meta.num_sprites += meta->num_sprites;
+            summed_meta.num_static_2ds += meta->num_static_2ds;
+            summed_meta.num_static_3ds += meta->num_static_3ds;
         }
     }
 
