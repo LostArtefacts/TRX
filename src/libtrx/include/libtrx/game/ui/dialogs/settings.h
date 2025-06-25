@@ -83,12 +83,10 @@ typedef struct {
 void UI_Settings_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
 // state functions
-void UI_Settings_Init(
-    UI_SETTINGS_STATE *s, GAME_STRING_ID title,
-    const UI_SETTINGS_OPTION *options);
-void UI_Settings_InitWithTabs(
-    UI_SETTINGS_STATE *s, GAME_STRING_ID title, int32_t tab_count,
-    const UI_SETTINGS_TAB *tabs);
+UI_SETTINGS_STATE *UI_Settings_Init(
+    GAME_STRING_ID title, const UI_SETTINGS_OPTION *options);
+UI_SETTINGS_STATE *UI_Settings_InitWithTabs(
+    GAME_STRING_ID title, int32_t tab_count, const UI_SETTINGS_TAB *tabs);
 void UI_Settings_Free(UI_SETTINGS_STATE *s);
 bool UI_Settings_Control(UI_SETTINGS_STATE *s);
 

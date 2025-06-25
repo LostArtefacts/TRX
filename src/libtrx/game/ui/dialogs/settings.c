@@ -55,7 +55,7 @@ static void M_RecomputeSizes(UI_SETTINGS_STATE *s);
 static void M_OptionLabel(
     const UI_SETTINGS_OPTION *option, const char *text, bool star_if_enforced);
 static void M_Footer(const UI_SETTINGS_STATE *s);
-static void M_InitCommon(UI_SETTINGS_STATE *s, GAME_STRING_ID title);
+static UI_SETTINGS_STATE *M_InitCommon(GAME_STRING_ID title);
 static void M_HandleConfigChange(const EVENT *event, void *data);
 static const UI_SETTINGS_OPTION *M_GetOptionByRow(
     const UI_SETTINGS_STATE *s, int32_t row_idx);
@@ -487,18 +487,19 @@ static void M_HandleLanguageReload(const EVENT *const event, void *const data)
     M_RecomputeSizes(s);
 }
 
-static void M_InitCommon(UI_SETTINGS_STATE *const s, const GAME_STRING_ID title)
+static UI_SETTINGS_STATE *M_InitCommon(const GAME_STRING_ID title)
 {
+    UI_SETTINGS_STATE *const s = Memory_Alloc(sizeof(*s));
     s->title = title;
     s->listener_id =
         GameStringManager_SubscribeReload(M_HandleLanguageReload, s);
+    return s;
 }
 
-void UI_Settings_Init(
-    UI_SETTINGS_STATE *const s, const GAME_STRING_ID title,
-    const UI_SETTINGS_OPTION *const options)
+UI_SETTINGS_STATE *UI_Settings_Init(
+    const GAME_STRING_ID title, const UI_SETTINGS_OPTION *const options)
 {
-    M_InitCommon(s, title);
+    UI_SETTINGS_STATE *const s = M_InitCommon(title);
     s->options = options;
     s->max_group_items = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
@@ -511,14 +512,15 @@ void UI_Settings_Init(
     s->tab_switch = nullptr;
     s->phase = UI_SETTINGS_PHASE_EDIT_SETTINGS;
     M_RecomputeSizes(s);
+    return s;
 }
 
-void UI_Settings_InitWithTabs(
-    UI_SETTINGS_STATE *s, const GAME_STRING_ID title, const int32_t tab_count,
+UI_SETTINGS_STATE *UI_Settings_InitWithTabs(
+    const GAME_STRING_ID title, const int32_t tab_count,
     const UI_SETTINGS_TAB *const tabs)
 {
     ASSERT(tabs != nullptr);
-    M_InitCommon(s, title);
+    UI_SETTINGS_STATE *const s = M_InitCommon(title);
 
     // Filter tabs to only those with visible (non-hidden) options.
     int32_t visible_tab_count = 0;
@@ -570,6 +572,7 @@ void UI_Settings_InitWithTabs(
 
     s->phase = UI_SETTINGS_PHASE_NAVIGATE_TABS;
     M_RecomputeSizes(s);
+    return s;
 }
 
 void UI_Settings_Free(UI_SETTINGS_STATE *const s)

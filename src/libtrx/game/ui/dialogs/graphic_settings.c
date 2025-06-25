@@ -862,24 +862,24 @@ static const UI_SETTINGS_TAB m_Tabs[] = {
     { GS_ID(GRAPHIC_SETTINGS_RENDERING_TAB), m_RenderOptions },
 };
 
-void UI_GraphicSettings_Init(UI_GRAPHIC_SETTINGS_STATE *const s)
+UI_SETTINGS_STATE *UI_GraphicSettings_Init(void)
 {
-    UI_Settings_InitWithTabs(
-        s, GS_ID(GRAPHIC_SETTINGS_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]),
+    return UI_Settings_InitWithTabs(
+        GS_ID(GRAPHIC_SETTINGS_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]),
         m_Tabs);
 }
 
-void UI_GraphicSettings_Free(UI_GRAPHIC_SETTINGS_STATE *const s)
+void UI_GraphicSettings_Free(UI_SETTINGS_STATE *const s)
 {
     UI_Settings_Free(s);
 }
 
-bool UI_GraphicSettings_Control(UI_GRAPHIC_SETTINGS_STATE *const s)
+bool UI_GraphicSettings_Control(UI_SETTINGS_STATE *const s)
 {
     return UI_Settings_Control(s);
 }
 
-void UI_GraphicSettings(UI_GRAPHIC_SETTINGS_STATE *const s)
+void UI_GraphicSettings(UI_SETTINGS_STATE *const s)
 {
     UI_Settings(s);
 }
