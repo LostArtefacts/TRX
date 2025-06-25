@@ -2,7 +2,6 @@
 
 #include "global/vars.h"
 
-int16_t g_Inv_Chosen = -1;
 int32_t g_Inv_ExtraData[8];
 int32_t g_Inv_NFrames = 2;
 

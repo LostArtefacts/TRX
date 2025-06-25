@@ -12,10 +12,9 @@
 
 #define MAX_BADDIE_COLLISION 20
 
-static void M_TakeHit(
-    ITEM *const lara_item, const int32_t dx, const int32_t dz);
+static void M_TakeHit(ITEM *lara_item, int32_t dx, int32_t dz);
 
-static void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
+void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
 {
     const int16_t hit_angle = lara_item->rot.y + DEG_180 - Math_Atan(dz, dx);
     g_Lara.hit_direction = Math_GetDirection(hit_angle);
@@ -23,6 +22,8 @@ static void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
         Sound_Effect(SFX_LARA_INJURY, &lara_item->pos, SPM_NORMAL);
     }
     g_Lara.hit_frame++;
+    g_Lara.interact_target.is_moving = false;
+    g_Lara.interact_target.item_num = NO_OBJECT;
     CLAMPG(g_Lara.hit_frame, 34);
 }
 
@@ -176,14 +177,6 @@ void Lara_GetJointAbsPosition_I(
     Matrix_Pop();
 }
 
-void Lara_TakeHit(ITEM *const lara_item, const COLL_INFO *const coll)
-{
-    const int32_t dx = g_Lara.hit_effect->pos.x - lara_item->pos.x;
-    const int32_t dz = g_Lara.hit_effect->pos.z - lara_item->pos.z;
-    M_TakeHit(lara_item, dx, dz);
-    g_Lara.hit_effect_count--;
-}
-
 void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
 {
     lara_item->hit_status = 0;
@@ -239,14 +232,15 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
     }
 
     if (g_Lara.hit_effect_count) {
-        Lara_TakeHit(lara_item, coll);
+        const int32_t dx = g_Lara.hit_effect->pos.x - lara_item->pos.x;
+        const int32_t dz = g_Lara.hit_effect->pos.z - lara_item->pos.z;
+        M_TakeHit(lara_item, dx, dz);
+        g_Lara.hit_effect_count--;
     }
 
     if (g_Lara.hit_direction == -1) {
         g_Lara.hit_frame = 0;
     }
-
-    g_Inv_Chosen = -1;
 }
 
 void Lara_Push(

@@ -683,6 +683,34 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         g_Lara.request_gun_type = LGT_FLARE;
         break;
 
+    case O_KEY_ITEM_1:
+    case O_KEY_OPTION_1:
+    case O_KEY_ITEM_2:
+    case O_KEY_OPTION_2:
+    case O_KEY_ITEM_3:
+    case O_KEY_OPTION_3:
+    case O_KEY_ITEM_4:
+    case O_KEY_OPTION_4:
+    case O_PUZZLE_ITEM_1:
+    case O_PUZZLE_OPTION_1:
+    case O_PUZZLE_ITEM_2:
+    case O_PUZZLE_OPTION_2:
+    case O_PUZZLE_ITEM_3:
+    case O_PUZZLE_OPTION_3:
+    case O_PUZZLE_ITEM_4:
+    case O_PUZZLE_OPTION_4: {
+        const int16_t receptacle_item_num = Object_FindReceptacle(obj_id);
+        if (receptacle_item_num == NO_OBJECT) {
+            Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+            return;
+        }
+        g_Lara.interact_target.item_num = receptacle_item_num;
+        g_Lara.interact_target.is_moving = true;
+        g_Lara.interact_target.move_count = 0;
+        Inv_RemoveItem(obj_id);
+        break;
+    }
+
     default:
         break;
     }

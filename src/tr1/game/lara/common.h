@@ -14,8 +14,8 @@ void Lara_Control(void);
 ITEM *Lara_GetDeathCameraTarget(void);
 void Lara_SetDeathCameraTarget(int16_t item_num);
 
+void Lara_TakeHit(ITEM *lara_item, int32_t x, int32_t z);
 void Lara_ControlExtra(int16_t item_num);
-void Lara_AnimateUntil(ITEM *lara_item, int32_t goal);
 
 void Lara_Initialise(const GF_LEVEL *level);
 void Lara_InitialiseLoad(int16_t item_num);

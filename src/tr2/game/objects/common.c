@@ -5,7 +5,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 

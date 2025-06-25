@@ -4,7 +4,6 @@
 
 #include <libtrx/game/inventory_ring/vars.h>
 
-extern int16_t g_Inv_Chosen;
 extern int32_t g_Inv_ExtraData[8];
 
 extern INVENTORY_ITEM g_InvRing_Item_Stopwatch;

@@ -10,6 +10,7 @@ bool Lara_IsControllable(void);
 void Lara_SetControllable(bool controllable);
 GAME_OBJECT_ID Lara_GetAnimationObject(void);
 void Lara_Animate(ITEM *item);
+void Lara_AnimateUntil(ITEM *lara_item, int32_t goal);
 void Lara_SwapSingleMesh(LARA_MESH mesh, GAME_OBJECT_ID obj_id);
 OBJECT_MESH *Lara_GetMesh(LARA_MESH mesh);
 void Lara_SetMesh(LARA_MESH mesh, OBJECT_MESH *mesh_ptr);

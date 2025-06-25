@@ -30,6 +30,17 @@
 
 static int16_t m_DeathCameraTarget = NO_ITEM;
 
+void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
+{
+    const int16_t hit_angle = lara_item->rot.y + DEG_180 - Math_Atan(dz, dx);
+    g_Lara.hit_direction = (hit_angle + DEG_45) / DEG_90;
+    if (g_Lara.hit_frame == 0) {
+        Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+    }
+    g_Lara.hit_frame++;
+    CLAMPG(g_Lara.hit_frame, 34);
+}
+
 LARA_INFO *Lara_GetLaraInfo(void)
 {
     return &g_Lara;
@@ -335,14 +346,6 @@ void Lara_SwapMeshExtra(void)
     for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
         Lara_SwapSingleMesh(mesh, O_LARA_EXTRA);
     }
-}
-
-void Lara_AnimateUntil(ITEM *lara_item, int32_t goal)
-{
-    lara_item->goal_anim_state = goal;
-    do {
-        Lara_Animate(lara_item);
-    } while (lara_item->current_anim_state != goal);
 }
 
 void Lara_UseItem(const GAME_OBJECT_ID obj_id)
@@ -744,16 +747,7 @@ void Lara_Push(
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 
         if (hit_on) {
-            PHD_ANGLE hitang = target_item->rot.y - (DEG_180 + Math_Atan(z, x));
-            g_Lara.hit_direction = (hitang + DEG_45) / DEG_90;
-            if (!g_Lara.hit_frame) {
-                Sound_Effect(SFX_LARA_BODYSL, &target_item->pos, SPM_NORMAL);
-            }
-
-            g_Lara.hit_frame++;
-            if (g_Lara.hit_frame > 34) {
-                g_Lara.hit_frame = 34;
-            }
+            Lara_TakeHit(target_item, x, z);
         }
 
         coll->bad_pos = NO_BAD_POS;

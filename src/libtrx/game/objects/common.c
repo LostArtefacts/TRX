@@ -4,6 +4,8 @@
 #include "game/anims.h"
 #include "game/const.h"
 #include "game/game_buf.h"
+#include "game/lara/common.h"
+#include "game/objects/vars.h"
 #include "game/output/objects.h"
 
 #include <string.h>
@@ -289,4 +291,43 @@ ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)
 ANIM_BONE *Object_GetBone(const OBJECT *const obj, const int32_t bone_idx)
 {
     return Anim_GetBone(obj->bone_idx + bone_idx);
+}
+
+int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
+{
+    // Iterate through all matching receptacles
+    const GAME_OBJECT_PAIR *const map = g_KeyItemToReceptacleMap;
+    for (int32_t i = 0; map[i].key_id != NO_OBJECT; i++) {
+        if (map[i].key_id != obj_id) {
+            continue;
+        }
+
+        // Iterate through all level items that match this receptacle
+        const GAME_OBJECT_ID receptacle_to_check = map[i].value_id;
+        LOG_INFO("looking for receptacle %d", map[i].value_id);
+        for (int16_t item_num = 0; item_num < Item_GetLevelCount();
+             item_num++) {
+            const ITEM *const item = Item_Get(item_num);
+            if (item->object_id != receptacle_to_check) {
+                continue;
+            }
+
+            const OBJECT *const obj = Object_Get(item->object_id);
+            if (obj->is_usable_func != nullptr
+                && !obj->is_usable_func(item_num)) {
+                continue;
+            }
+            LOG_INFO("got something.. testing item %d", item_num);
+
+            // If Lara is standing near one, that's our keyhole
+            if (Lara_TestPosition(item, obj->bounds_func())) {
+                LOG_INFO("almost there?");
+                return item_num;
+            } else
+                LOG_INFO("bounds didn't allow me");
+        }
+    }
+
+    LOG_INFO("not found anything for %d", obj_id);
+    return NO_OBJECT;
 }
