@@ -4,20 +4,13 @@
 #include "game/game_string.h"
 #include "game/music.h"
 #include "game/sound.h"
+#include "game/ui/dialogs/setting_helpers/enums.h"
 #include "memory.h"
 #include "strings.h"
 #include "utils.h"
 
 static char *m_TempString = nullptr;
 static size_t m_TempStringCap = 0;
-
-static const UI_SETTINGS_ENUM_ENTRY m_MusicLoadConditionEnumEntries[] = {
-    { MUSIC_LOAD_NEVER, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NEVER) },
-    { MUSIC_LOAD_NON_AMBIENT,
-      GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NON_AMBIENT) },
-    { MUSIC_LOAD_ALWAYS, GS_ID(SOUND_SETTINGS_MUSIC_LOAD_CONDITION_ALWAYS) },
-    { -1, nullptr },
-};
 
 static bool M_Volume_RequestChange(
     const UI_SETTINGS_OPTION *option, int32_t dir);

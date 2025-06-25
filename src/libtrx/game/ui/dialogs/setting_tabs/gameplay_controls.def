@@ -23,7 +23,7 @@ X_UI_CFG_BOOL(gameplay.enable_uw_roll,             GAMEPLAY_SETTINGS_ENABLE_UW_R
 X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING)
 X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL)
 X_UI_CFG_BOOL(gameplay.enable_wading,              GAMEPLAY_SETTINGS_ENABLE_WADING)
-X_UI_CFG_ENUM(gameplay.target_mode,                GAMEPLAY_SETTINGS_TARGET_MODE, .misc = m_TargetModeEnumEntries)
+X_UI_CFG_ENUM(gameplay.target_mode,                GAMEPLAY_SETTINGS_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
 X_UI_CFG_BOOL(gameplay.enable_target_change,       GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE)
 X_UI_CFG_BOOL(gameplay.enable_inverted_look,       GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK)
 #endif

@@ -2,29 +2,7 @@
 
 #include "config.h"
 #include "game/lara/const.h"
-
-#if TR_VERSION == 1
-static const UI_SETTINGS_ENUM_ENTRY m_StatDetailModeEnumEntries[] = {
-    { SDM_MINIMAL, GS_ID(GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_MINIMAL) },
-    { SDM_DETAILED, GS_ID(GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_DETAILED) },
-    { SDM_FULL, GS_ID(GAMEPLAY_SETTINGS_STAT_DETAIL_MODE_FULL) },
-    { -1, nullptr },
-};
-
-static const UI_SETTINGS_ENUM_ENTRY m_TargetModeEnumEntries[] = {
-    { TLM_FULL, GS_ID(GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_FULL) },
-    { TLM_SEMI, GS_ID(GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_SEMI) },
-    { TLM_NONE, GS_ID(GAMEPLAY_SETTINGS_TARGET_LOCK_MODE_NONE) },
-    { -1, nullptr },
-};
-#endif
-
-static const UI_SETTINGS_ENUM_ENTRY m_WallGlitchEnumEntries[] = {
-    { WALL_GLITCH_FIXED, GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_FIXED) },
-    { WALL_GLITCH_TR1, GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_TR1) },
-    { WALL_GLITCH_TR2, GS_ID(GAMEPLAY_SETTINGS_WALL_GLITCH_TR2) },
-    { -1, nullptr },
-};
+#include "game/ui/dialogs/setting_helpers/enums.h"
 
 static bool M_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *option);
 static bool M_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *option);

@@ -6,6 +6,7 @@
 #include "game/game_string_manager.h"
 #include "game/input.h"
 #include "game/scaler.h"
+#include "game/ui/dialogs/setting_helpers/enums.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/hide.h"
