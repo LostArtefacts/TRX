@@ -201,19 +201,9 @@ static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
     }
 
     if (g_Lara.hit_effect_count && g_Lara.hit_effect && coll->enable_hit) {
-        int32_t x = g_Lara.hit_effect->pos.x - lara_item->pos.x;
-        int32_t z = g_Lara.hit_effect->pos.z - lara_item->pos.z;
-        PHD_ANGLE hitang = lara_item->rot.y - (DEG_180 + Math_Atan(z, x));
-        g_Lara.hit_direction = (hitang + DEG_45) / DEG_90;
-        if (!g_Lara.hit_frame) {
-            Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
-        }
-
-        g_Lara.hit_frame++;
-        if (g_Lara.hit_frame > 34) {
-            g_Lara.hit_frame = 34;
-        }
-
+        const int32_t x = g_Lara.hit_effect->pos.x - lara_item->pos.x;
+        const int32_t z = g_Lara.hit_effect->pos.z - lara_item->pos.z;
+        Lara_TakeHit(lara_item, x, z);
         g_Lara.hit_effect_count--;
     }
 

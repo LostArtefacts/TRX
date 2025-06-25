@@ -45,6 +45,7 @@ typedef struct {
         XYZ_16 min;
         XYZ_16 max;
     } shift, rot;
+    bool ignore_rot;
 } OBJECT_BOUNDS;
 
 typedef struct OBJECT {
@@ -67,9 +68,7 @@ typedef struct OBJECT {
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
     const OBJECT_BOUNDS *(*bounds_func)(void);
-#if TR_VERSION == 1
     bool (*is_usable_func)(int16_t item_num);
-#endif
 
     int16_t anim_idx;
     int16_t hit_points;

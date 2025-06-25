@@ -38,7 +38,7 @@
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static int32_t m_StartLevel;
-static GAME_OBJECT_ID m_InvChosen;
+static GAME_OBJECT_ID m_InvChosen = NO_OBJECT;
 
 static void M_ShowAmmoQuantity(const char *fmt, int32_t qty);
 

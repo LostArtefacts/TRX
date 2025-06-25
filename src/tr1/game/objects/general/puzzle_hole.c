@@ -1,11 +1,10 @@
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
+#include "game/objects/vars.h"
 #include "game/sound.h"
 #include "global/vars.h"
-
-#include <libtrx/game/lara/const.h>
 
 #define LF_USE_PUZZLE 80
 
@@ -27,9 +26,10 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Use(ITEM *lara_item, ITEM *keyhole_item);
-static void M_Refuse(const ITEM *lara_item);
-static void M_Setup(OBJECT *obj);
+static bool M_IsUsable(int16_t item_num);
+static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
+static void M_MarkDone(ITEM *receptacle_item);
+static void M_SetupEmpty(OBJECT *obj);
 static void M_SetupDone(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -40,46 +40,53 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_PuzzleHoleBounds;
 }
 
-static void M_Use(ITEM *const lara_item, ITEM *const keyhole_item)
+static bool M_IsUsable(const int16_t item_num)
 {
-    Lara_AlignPosition(keyhole_item, &m_PuzzleHolePosition);
+    const ITEM *const item = Item_Get(item_num);
+    return item->status == IS_INACTIVE;
+}
+
+static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
+{
+    Lara_AlignPosition(receptacle_item, &m_PuzzleHolePosition);
     Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
     lara_item->goal_anim_state = LS_STOP;
     g_Lara.gun_status = LGS_HANDS_BUSY;
-    keyhole_item->status = IS_ACTIVE;
+    receptacle_item->status = IS_ACTIVE;
     g_Lara.interact_target.is_moving = false;
     g_Lara.interact_target.item_num = NO_OBJECT;
 }
 
-static void M_Refuse(const ITEM *const lara_item)
+static void M_MarkDone(ITEM *const receptacle_item)
 {
-    if (!XYZ_32_AreEquivalent(
-            &g_Lara.interact_target.initial_pos, &g_LaraItem->pos)) {
-        g_Lara.interact_target.initial_pos = g_LaraItem->pos;
-        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
+    const GAME_OBJECT_ID done_obj_id = Object_GetCognate(
+        receptacle_item->object_id, g_ReceptacleToReceptacleDoneMap);
+    if (done_obj_id != NO_OBJECT) {
+        receptacle_item->object_id = done_obj_id;
     }
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupEmpty(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    obj->save_flags = true;
-    obj->bounds_func = M_Bounds;
     obj->handle_save_func = M_HandleSave;
+    obj->is_usable_func = M_IsUsable;
+    obj->bounds_func = M_Bounds;
+    obj->save_flags = true;
 }
 
 static void M_SetupDone(OBJECT *const obj)
 {
+    obj->collision_func = M_CollisionDone;
     obj->bounds_func = M_Bounds;
     obj->save_flags = true;
-    obj->collision_func = M_CollisionDone;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED || item->status == IS_ACTIVE) {
-            item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
+            M_MarkDone(item);
         }
     }
 }
@@ -90,36 +97,12 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (lara_item->current_anim_state == LS_USE_PUZZLE) {
-        if (!Lara_TestPosition(item, obj->bounds_func())) {
-            return;
+    if (lara_item->current_anim_state != LS_STOP) {
+        if (lara_item->current_anim_state == LS_USE_PUZZLE
+            && Lara_TestPosition(item, obj->bounds_func())
+            && Item_TestFrameEqual(lara_item, LF_USE_PUZZLE)) {
+            M_MarkDone(item);
         }
-
-        if (Item_TestFrameEqual(lara_item, LF_USE_PUZZLE)) {
-            switch (item->object_id) {
-            case O_PUZZLE_HOLE_1:
-                item->object_id = O_PUZZLE_DONE_1;
-                break;
-
-            case O_PUZZLE_HOLE_2:
-                item->object_id = O_PUZZLE_DONE_2;
-                break;
-
-            case O_PUZZLE_HOLE_3:
-                item->object_id = O_PUZZLE_DONE_3;
-                break;
-
-            case O_PUZZLE_HOLE_4:
-                item->object_id = O_PUZZLE_DONE_4;
-                break;
-
-            default:
-                break;
-            }
-        }
-
-        return;
-    } else if (lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -138,7 +121,7 @@ static void M_Collision(
     }
 
     if (!GF_ShowInventoryKeys(item->object_id)) {
-        M_Refuse(lara_item);
+        Lara_RefuseInteraction();
     }
 }
 
@@ -155,13 +138,13 @@ static void M_CollisionDone(
     }
 
     // Trying to interact with a complete puzzle hole
-    M_Refuse(lara_item);
+    Lara_RefuseInteraction();
 }
 
-REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_HOLE_2, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_HOLE_3, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_HOLE_4, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_HOLE_2, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_HOLE_3, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_HOLE_4, M_SetupEmpty)
 REGISTER_OBJECT(O_PUZZLE_DONE_1, M_SetupDone)
 REGISTER_OBJECT(O_PUZZLE_DONE_2, M_SetupDone)
 REGISTER_OBJECT(O_PUZZLE_DONE_3, M_SetupDone)

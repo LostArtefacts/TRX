@@ -40,6 +40,7 @@
 #define INV_RING_FADE_TIME_TITLE_FINISH 0.25
 
 static int32_t m_NoInputCounter = 0;
+static GAME_OBJECT_ID m_InvChosen = NO_OBJECT;
 
 static void M_ShowAmmoQuantity(const char *fmt, int32_t qty);
 
@@ -187,11 +188,11 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         return GF_GetOverrideCommand();
     } else if (ring->is_demo_needed) {
         return (GF_COMMAND) { .action = GF_START_DEMO, .param = -1 };
-    } else if (g_Inv_Chosen == NO_OBJECT) {
+    } else if (m_InvChosen == NO_OBJECT) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
 
-    switch (g_Inv_Chosen) {
+    switch (m_InvChosen) {
     case O_PASSPORT_OPTION:
         if (g_Inv_ExtraData[0] == 0) {
             // first passport page: load game.
@@ -279,8 +280,16 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
     case O_FLARES_OPTION:
+    case O_KEY_OPTION_1:
+    case O_KEY_OPTION_2:
+    case O_KEY_OPTION_3:
+    case O_KEY_OPTION_4:
+    case O_PUZZLE_OPTION_1:
+    case O_PUZZLE_OPTION_2:
+    case O_PUZZLE_OPTION_3:
+    case O_PUZZLE_OPTION_4:
         if (apply_changes) {
-            Lara_UseItem(g_Inv_Chosen);
+            Lara_UseItem(m_InvChosen);
         }
         break;
 
@@ -391,7 +400,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             || ((g_InputDB.option || g_InputDB.menu_back)
                 && ring->mode != INV_TITLE_MODE)) {
             Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
-            g_Inv_Chosen = NO_OBJECT;
+            m_InvChosen = NO_OBJECT;
 
             if (ring->type == RT_MAIN) {
                 g_InvRing_Source[RT_MAIN].current = ring->current_object;
@@ -643,7 +652,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
 
             if (g_InputDB.menu_confirm) {
-                g_Inv_Chosen = inv_item->object_id;
+                m_InvChosen = inv_item->object_id;
                 if (ring->type == RT_MAIN) {
                     g_InvRing_Source[RT_MAIN].current = ring->current_object;
                 } else {
@@ -760,7 +769,7 @@ void InvRing_RemoveAllText(void)
 INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 {
     if (mode == INV_KEYS_MODE && g_InvRing_Source[RT_KEYS].count == 0) {
-        g_Inv_Chosen = NO_OBJECT;
+        m_InvChosen = NO_OBJECT;
         return nullptr;
     }
 
@@ -770,7 +779,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     g_PhdWinLeft = 0;
     g_PhdWinTop = 0;
     g_PhdWinBottom = g_PhdWinMaxY;
-    g_Inv_Chosen = NO_OBJECT;
+    m_InvChosen = NO_OBJECT;
 
     if (mode == INV_TITLE_MODE) {
         g_InvRing_Source[RT_OPTION].count = TITLE_RING_OBJECTS;

@@ -1,6 +1,6 @@
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -24,8 +24,7 @@ static const OBJECT_BOUNDS m_KeyholeBounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Use(ITEM *lara_item, ITEM *keyhole_item);
-static void M_Refuse(const ITEM *lara_item);
+static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static bool M_IsUsable(int16_t item_num);
 static void M_Setup(OBJECT *obj);
@@ -35,27 +34,19 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_KeyholeBounds;
 }
 
-static void M_Use(ITEM *const lara_item, ITEM *const keyhole_item)
+static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
-    Lara_AlignPosition(keyhole_item, &m_KeyholePosition);
+    Lara_AlignPosition(receptacle_item, &m_KeyholePosition);
     Lara_AnimateUntil(lara_item, LS_USE_KEY);
     lara_item->goal_anim_state = LS_STOP;
     g_Lara.gun_status = LGS_HANDS_BUSY;
-    keyhole_item->status = IS_ACTIVE;
+    receptacle_item->status = IS_ACTIVE;
     g_Lara.interact_target.is_moving = false;
     g_Lara.interact_target.item_num = NO_OBJECT;
 }
 
-static void M_Refuse(const ITEM *const lara_item)
-{
-    if (!XYZ_32_AreEquivalent(
-            &g_Lara.interact_target.initial_pos, &g_LaraItem->pos)) {
-        g_Lara.interact_target.initial_pos = g_LaraItem->pos;
-        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
-    }
-}
-
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -75,12 +66,9 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 
     if (item->status != IS_INACTIVE) {
-        M_Refuse(lara_item);
-        return;
-    }
-
-    if (!GF_ShowInventoryKeys(item->object_id)) {
-        M_Refuse(lara_item);
+        Lara_RefuseInteraction();
+    } else if (!GF_ShowInventoryKeys(item->object_id)) {
+        Lara_RefuseInteraction();
     }
 }
 
@@ -93,8 +81,8 @@ static bool M_IsUsable(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    obj->save_flags = true;
     obj->bounds_func = M_Bounds;
+    obj->save_flags = true;
     obj->is_usable_func = M_IsUsable;
 }
 

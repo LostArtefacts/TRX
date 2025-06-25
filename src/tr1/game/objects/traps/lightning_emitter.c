@@ -160,9 +160,7 @@ static void M_Collision(
 
     g_Lara.hit_direction = 1 + (Random_GetControl() * 4) / (DEG_180 - 1);
     g_Lara.hit_frame++;
-    if (g_Lara.hit_frame > 34) {
-        g_Lara.hit_frame = 34;
-    }
+    CLAMPG(g_Lara.hit_frame, 34);
 }
 
 static void M_Draw(const ITEM *const item)

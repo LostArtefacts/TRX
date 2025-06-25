@@ -2,6 +2,8 @@
 
 #include "../collision.h"
 
+void Lara_RefuseInteraction(void);
+
 void Lara_Extinguish(void);
 void Lara_TouchLava(void);
 

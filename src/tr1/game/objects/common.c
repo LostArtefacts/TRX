@@ -2,6 +2,7 @@
 
 #include "game/inventory.h"
 #include "game/lara/common.h"
+#include "game/lara/control.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/output/meshes/objects.h"
@@ -13,27 +14,6 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
-
-int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
-{
-    GAME_OBJECT_ID receptacle_to_check =
-        Object_GetCognate(obj_id, g_KeyItemToReceptacleMap);
-    for (int item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
-        const ITEM *const item = Item_Get(item_num);
-        if (item->object_id == receptacle_to_check) {
-            const OBJECT *const obj = Object_Get(item->object_id);
-            if (obj->is_usable_func != nullptr
-                && !obj->is_usable_func(item_num)) {
-                continue;
-            }
-            if (Lara_TestPosition(item, obj->bounds_func())) {
-                return item_num;
-            }
-        }
-    }
-
-    return NO_OBJECT;
-}
 
 void Object_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {

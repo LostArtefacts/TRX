@@ -2,6 +2,7 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/general/pickup.h"
 #include "game/output.h"
@@ -9,7 +10,6 @@
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
-#include <libtrx/game/lara.h>
 
 #define EXPLOSION_START_FRAME 76
 #define EXPLOSION_END_FRAME 99
@@ -26,14 +26,42 @@ static const OBJECT_BOUNDS m_GongBounds = {
         .min = { .x = -30 * DEG_1, .y = 0, .z = 0, },
         .max = { .x = +30 * DEG_1, .y = 0, .z = 0, },
     },
+    .ignore_rot = true,
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
 static void M_CreateGongBonger(ITEM *lara_item);
 static void M_Setup1(OBJECT *obj);
 static void M_Setup2(OBJECT *obj);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
+{
+    Lara_AlignPosition(receptacle_item, &m_DetonatorPosition);
+    Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LA_EXTRA_BREATH;
+    if (receptacle_item->object_id == O_DETONATOR_2) {
+        lara_item->goal_anim_state = LA_EXTRA_PLUNGER;
+    } else {
+        lara_item->goal_anim_state = LA_EXTRA_GONG_BONG;
+        lara_item->rot.y += DEG_180;
+    }
+    Item_Animate(lara_item);
+    g_Lara.extra_anim = true;
+    g_Lara.gun_status = LGS_HANDS_BUSY;
+    g_Lara.hit_direction = -1;
+
+    if (receptacle_item->object_id == O_DETONATOR_2) {
+        receptacle_item->status = IS_ACTIVE;
+        Item_AddActive(Item_GetIndex(receptacle_item));
+    } else {
+        M_CreateGongBonger(lara_item);
+    }
+    g_Lara.interact_target.is_moving = false;
+    g_Lara.interact_target.item_num = NO_OBJECT;
+}
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
@@ -55,7 +83,6 @@ static void M_CreateGongBonger(ITEM *const lara_item)
     item_gong_bonger->rot.x = 0;
     item_gong_bonger->rot.y = lara_item->rot.y;
     lara_item->rot.z = 0;
-
     item_gong_bonger->room_num = lara_item->room_num;
 
     Item_Initialise(item_gong_bonger_num);
@@ -108,63 +135,40 @@ static void M_Collision(
 
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
-    const XYZ_16 old_rot = item->rot;
-    const int16_t x = item->rot.x;
-    const int16_t y = item->rot.y;
-    const int16_t z = item->rot.z;
-    item->rot.x = 0;
-    item->rot.y = lara_item->rot.y;
-    item->rot.z = 0;
 
-    if (item->status == IS_DEACTIVATED
-        || (g_Inv_Chosen == NO_OBJECT && !g_Input.action)
+    if (g_Lara.interact_target.is_moving
+        && g_Lara.interact_target.item_num == item_num) {
+        M_Use(lara_item, item);
+        return;
+    }
+
+    if (item->status != IS_INACTIVE || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity
         || lara_item->current_anim_state != LS_STOP) {
         goto normal_collision;
     }
 
+    const XYZ_16 old_rot = item->rot;
+    item->rot.x = 0;
+    item->rot.y = lara_item->rot.y;
+    item->rot.z = 0;
+
     if (!Lara_TestPosition(item, obj->bounds_func())) {
+        item->rot = old_rot;
         goto normal_collision;
     }
+
     if (item->object_id == O_DETONATOR_1) {
         item->rot = old_rot;
     }
 
-    if (g_Inv_Chosen == NO_OBJECT) {
-        GF_ShowInventoryKeys(item->object_id);
+    if (!GF_ShowInventoryKeys(item->object_id)) {
+        Lara_RefuseInteraction();
     }
 
-    if (g_Inv_Chosen != O_KEY_OPTION_2) {
-        goto normal_collision;
-    }
-
-    Inv_RemoveItem(O_KEY_OPTION_2);
-    Lara_AlignPosition(item, &m_DetonatorPosition);
-    Item_SwitchToObjAnim(lara_item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LA_EXTRA_BREATH;
-    if (item->object_id == O_DETONATOR_2) {
-        lara_item->goal_anim_state = LA_EXTRA_PLUNGER;
-    } else {
-        lara_item->goal_anim_state = LA_EXTRA_GONG_BONG;
-        lara_item->rot.y += DEG_180;
-    }
-
-    Item_Animate(lara_item);
-
-    g_Lara.extra_anim = true;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    g_Lara.hit_direction = -1;
-
-    if (item->object_id == O_DETONATOR_2) {
-        item->status = IS_ACTIVE;
-        Item_AddActive(item_num);
-    } else {
-        M_CreateGongBonger(lara_item);
-    }
     return;
 
 normal_collision:
-    item->rot = old_rot;
     Object_Collision(item_num, lara_item, coll);
 }
 

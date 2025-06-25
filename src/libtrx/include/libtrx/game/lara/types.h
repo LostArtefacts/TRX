@@ -77,16 +77,16 @@ typedef struct {
     bool extra_anim;
     bool burn;
 
-#if TR_VERSION == 1
-    LARA_GUN_TYPE holsters_gun_type;
-    LARA_GUN_TYPE back_gun_type;
-
     struct {
         int32_t item_num;
         int32_t move_count;
         bool is_moving;
         XYZ_32 initial_pos;
     } interact_target;
+
+#if TR_VERSION == 1
+    LARA_GUN_TYPE holsters_gun_type;
+    LARA_GUN_TYPE back_gun_type;
 #else
     LARA_GUN_TYPE last_gun_type;
     GAME_OBJECT_ID back_gun_obj_id;

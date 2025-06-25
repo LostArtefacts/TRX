@@ -147,6 +147,14 @@ void Lara_Animate(ITEM *const item)
     item->pos.z += (item->speed * Math_Cos(lara->move_angle)) >> W2V_SHIFT;
 }
 
+void Lara_AnimateUntil(ITEM *lara_item, int32_t goal)
+{
+    lara_item->goal_anim_state = goal;
+    do {
+        Lara_Animate(lara_item);
+    } while (lara_item->current_anim_state != goal);
+}
+
 void Lara_SwapSingleMesh(const LARA_MESH mesh, const GAME_OBJECT_ID obj_id)
 {
     const OBJECT *const obj = Object_Get(obj_id);
@@ -199,10 +207,13 @@ bool Lara_TestPosition(
     const ITEM *const item, const OBJECT_BOUNDS *const bounds)
 {
     const ITEM *const lara = Lara_GetItem();
+    const XYZ_16 ref_rot = bounds->ignore_rot
+        ? (XYZ_16) { .x = 0, .y = lara->rot.y, .z = 0 }
+        : item->rot;
     const XYZ_16 rot = {
-        .x = lara->rot.x - item->rot.x,
-        .y = lara->rot.y - item->rot.y,
-        .z = lara->rot.z - item->rot.z,
+        .x = lara->rot.x - ref_rot.x,
+        .y = lara->rot.y - ref_rot.y,
+        .z = lara->rot.z - ref_rot.z,
     };
     const XYZ_32 dist = {
         .x = lara->pos.x - item->pos.x,
@@ -223,7 +234,7 @@ bool Lara_TestPosition(
     // clang-format on
 
     Matrix_PushUnit();
-    Matrix_Rot16(item->rot);
+    Matrix_Rot16(ref_rot);
     const MATRIX *const m = g_MatrixPtr;
     const XYZ_32 shift = {
         .x = (dist.x * m->_00 + dist.y * m->_10 + dist.z * m->_20) >> W2V_SHIFT,
