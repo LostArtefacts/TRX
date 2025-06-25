@@ -203,7 +203,6 @@ UI_SETTINGS_STATE *UI_SoundSettings_Init(void)
 void UI_SoundSettings_Free(UI_SETTINGS_STATE *const s)
 {
     UI_Settings_Free(s);
-    Memory_Free(s);
 }
 
 bool UI_SoundSettings_Control(UI_SETTINGS_STATE *const s)

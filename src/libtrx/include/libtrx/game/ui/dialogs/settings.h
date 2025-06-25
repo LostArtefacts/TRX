@@ -55,28 +55,7 @@ typedef struct UI_SETTINGS_TAB {
     const UI_SETTINGS_OPTION *options;
 } UI_SETTINGS_TAB;
 
-typedef struct {
-    UI_SETTINGS_PHASE phase;
-    const UI_SETTINGS_OPTION *options;
-    UI_SCROLLABLE scroll;
-
-    int32_t max_group_items;
-    float max_label_w;
-    float max_value_w;
-
-    int32_t tab_count;
-    const UI_SETTINGS_TAB *tabs;
-    int32_t active_tab_idx;
-    UI_TAB_SWITCH_STATE *tab_switch;
-    GAME_STRING_ID title;
-
-    struct {
-        bool show;
-        UI_TEXT_DIALOG_STATE *state;
-    } description;
-
-    int32_t listener_id;
-} UI_SETTINGS_STATE;
+typedef struct UI_SETTINGS_STATE UI_SETTINGS_STATE;
 
 void UI_Settings_RequestChange(const UI_SETTINGS_OPTION *option, int32_t dir);
 
