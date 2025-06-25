@@ -195,26 +195,26 @@ static bool M_PauseMusicInInventory_IsAvailable(
     return g_Config.audio.enable_music_in_inventory;
 }
 
-UI_SOUND_SETTINGS_STATE *UI_SoundSettings_Init(void)
+UI_SETTINGS_STATE *UI_SoundSettings_Init(void)
 {
-    UI_SOUND_SETTINGS_STATE *s = Memory_Alloc(sizeof(UI_SETTINGS_STATE));
+    UI_SETTINGS_STATE *const s =
+        UI_Settings_Init(GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
     s->row_pad = 10.0f;
-    UI_Settings_Init(s, GS_ID(SOUND_SETTINGS_TITLE), m_SoundOptions);
     return s;
 }
 
-void UI_SoundSettings_Free(UI_SOUND_SETTINGS_STATE *const s)
+void UI_SoundSettings_Free(UI_SETTINGS_STATE *const s)
 {
     UI_Settings_Free(s);
     Memory_Free(s);
 }
 
-bool UI_SoundSettings_Control(UI_SOUND_SETTINGS_STATE *const s)
+bool UI_SoundSettings_Control(UI_SETTINGS_STATE *const s)
 {
     return UI_Settings_Control(s);
 }
 
-void UI_SoundSettings(UI_SOUND_SETTINGS_STATE *const s)
+void UI_SoundSettings(UI_SETTINGS_STATE *const s)
 {
     UI_Settings(s);
 }

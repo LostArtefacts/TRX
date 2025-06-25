@@ -722,24 +722,24 @@ static const UI_SETTINGS_TAB m_Tabs[] = {
     { GS_ID(GAMEPLAY_SETTINGS_FIXES_TAB), m_GameplayFixOptions },
 };
 
-void UI_GameplaySettings_Init(UI_GAMEPLAY_SETTINGS_STATE *const s)
+UI_SETTINGS_STATE *UI_GameplaySettings_Init(void)
 {
-    UI_Settings_InitWithTabs(
-        s, GS_ID(GAMEPLAY_SETTINGS_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]),
+    return UI_Settings_InitWithTabs(
+        GS_ID(GAMEPLAY_SETTINGS_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]),
         m_Tabs);
 }
 
-void UI_GameplaySettings_Free(UI_GAMEPLAY_SETTINGS_STATE *const s)
+void UI_GameplaySettings_Free(UI_SETTINGS_STATE *const s)
 {
     UI_Settings_Free(s);
 }
 
-bool UI_GameplaySettings_Control(UI_GAMEPLAY_SETTINGS_STATE *const s)
+bool UI_GameplaySettings_Control(UI_SETTINGS_STATE *const s)
 {
     return UI_Settings_Control(s);
 }
 
-void UI_GameplaySettings(UI_GAMEPLAY_SETTINGS_STATE *const s)
+void UI_GameplaySettings(UI_SETTINGS_STATE *const s)
 {
     UI_Settings(s);
 }
