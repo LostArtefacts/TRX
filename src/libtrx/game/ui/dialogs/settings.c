@@ -622,7 +622,13 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         }
     } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
-        if (s->tab_switch != nullptr
+        if (g_InputDB.menu_left && sel_row >= 0) {
+            M_RequestChangeValue(s, sel_row, -1);
+        } else if (g_InputDB.menu_right && sel_row >= 0) {
+            M_RequestChangeValue(s, sel_row, +1);
+        } else if (
+            s->tab_switch != nullptr && !g_Input.menu_left
+            && !g_Input.menu_right
             && UI_TabSwitch_Control(s->tab_switch, UI_TAB_SWITCH_NO_ARROWS)) {
             s->options = s->tabs[s->tab_switch->active_tab_idx].options;
             M_RecomputeSizes(s);
@@ -658,10 +664,6 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
             g_InputDB.unbind_key && sel_row >= 0
             && M_CanRestoreDefault(s, sel_row)) {
             M_RestoreDefault(s, sel_row);
-        } else if (g_InputDB.menu_left && sel_row >= 0) {
-            M_RequestChangeValue(s, sel_row, -1);
-        } else if (g_InputDB.menu_right && sel_row >= 0) {
-            M_RequestChangeValue(s, sel_row, +1);
         }
     }
     return false;
