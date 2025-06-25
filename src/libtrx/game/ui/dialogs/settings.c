@@ -35,6 +35,29 @@ typedef struct {
     int32_t count;
 } M_ENUM_LOOKUP;
 
+typedef struct UI_SETTINGS_STATE {
+    UI_SETTINGS_PHASE phase;
+    const UI_SETTINGS_OPTION *options;
+    UI_SCROLLABLE scroll;
+
+    int32_t max_group_items;
+    float max_label_w;
+    float max_value_w;
+
+    int32_t tab_count;
+    const UI_SETTINGS_TAB *tabs;
+    int32_t active_tab_idx;
+    UI_TAB_SWITCH_STATE *tab_switch;
+    GAME_STRING_ID title;
+
+    struct {
+        bool show;
+        UI_TEXT_DIALOG_STATE *state;
+    } description;
+
+    int32_t listener_id;
+} UI_SETTINGS_STATE;
+
 static int32_t M_GetVisibleRows(void);
 static uint8_t *M_GetColorComponent(const UI_SETTINGS_OPTION *option);
 static M_ENUM_LOOKUP M_GetEnumEntry(const UI_SETTINGS_OPTION *option);
@@ -591,6 +614,7 @@ void UI_Settings_Free(UI_SETTINGS_STATE *const s)
         s->description.state = nullptr;
         s->description.show = false;
     }
+    Memory_Free(s);
 }
 
 bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
