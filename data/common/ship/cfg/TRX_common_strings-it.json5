@@ -557,6 +557,9 @@
         "STATS_BASIC_FMT": "%d",
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
         "STATS_DETAIL_FMT": "%d di %d",
-        "STATS_FINAL_STATISTICS": "Statistiche Finali"
+        "STATS_FINAL_STATISTICS": "Statistiche Finali",
+        "GRAPHIC_SETTINGS_WATER_COLOR_B_DESCRIPTION": "\\{review}Componente blu del colore dell'acqua.",
+        "GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION": "\\{review}Componente verde del colore dell'acqua.",
+        "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "\\{review}Componente rosso del colore dell'acqua."
     }
 }

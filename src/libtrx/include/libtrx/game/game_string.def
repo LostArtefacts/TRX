@@ -567,3 +567,6 @@ GS_DEFINE(SOUND_SETTINGS_INVENTORY_MUSIC_VOLUME_DESCRIPTION,            "Adjust 
 GS_DEFINE(SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME_DESCRIPTION,         "Adjust ambient volume when underwater.")
 GS_DEFINE(SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME_DESCRIPTION,           "Adjust music volume when underwater.")
 GS_DEFINE(GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS_DESCRIPTION,             "Enable fade transitions, for example between credit graphics or for inventory and pause screen transitions.")
+GS_DEFINE(GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION, "Red component of the water color.")
+GS_DEFINE(GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION, "Green component of the water color.")
+GS_DEFINE(GRAPHIC_SETTINGS_WATER_COLOR_B_DESCRIPTION, "Blue component of the water color.")

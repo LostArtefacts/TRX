@@ -1,0 +1,36 @@
+X_UI_CFG_BOOL(input.enable_responsive_passport,    GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT)
+
+#if TR_VERSION == 1
+X_UI_CFG_BOOL(input.enable_numeric_keys,           GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS)
+X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS)
+#endif
+
+X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS)
+
+#if TR_VERSION == 1
+X_UI_CFG_BOOL(gameplay.enable_enhanced_look,       GAMEPLAY_SETTINGS_ENABLE_ENHANCED_LOOK)
+X_UI_CFG_BOOL(gameplay.enable_tr2_jumping,         GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING)
+X_UI_CFG_BOOL(gameplay.enable_jump_twists,         GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS)
+#endif
+
+X_UI_CFG_BOOL(gameplay.enable_lean_jumping,        GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING)
+X_UI_CFG_BOOL(gameplay.enable_swing_cancel,        GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL)
+X_UI_CFG_BOOL(gameplay.enable_smooth_wall_deflect, GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT)
+X_UI_CFG_BOOL(gameplay.enable_step_roll_boost,     GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST)
+
+#if TR_VERSION == 1
+X_UI_CFG_BOOL(gameplay.enable_uw_roll,             GAMEPLAY_SETTINGS_ENABLE_UW_ROLL)
+X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING)
+X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL)
+X_UI_CFG_BOOL(gameplay.enable_wading,              GAMEPLAY_SETTINGS_ENABLE_WADING)
+X_UI_CFG_ENUM(gameplay.target_mode,                GAMEPLAY_SETTINGS_TARGET_MODE, .misc = m_TargetModeEnumEntries)
+X_UI_CFG_BOOL(gameplay.enable_target_change,       GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE)
+X_UI_CFG_BOOL(gameplay.enable_inverted_look,       GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK)
+#endif
+
+X_UI_CFG_INT32(gameplay.camera_speed,              GAMEPLAY_SETTINGS_CAMERA_SPEED, .min_value = 1, .max_value = 10)
+
+#if TR_VERSION == 1
+X_UI_CFG_BOOL(input.enable_buffering,              GAMEPLAY_SETTINGS_ENABLE_BUFFERING)
+X_UI_CFG_BOOL(gameplay.fix_shotgun_targeting,      GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING)
+#endif

@@ -557,6 +557,9 @@
         "PHOTO_MODE_ADVANCE_FRAME": "Pomiń klatkę",
         "GAMEPLAY_SETTINGS_ENABLE_CREDITS": "Napisy końcowe",
         "GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION": "Włącza ekrany z napisami końcowymi wyświetlane po ukończeniu gry. Ustawienie nie ma wpływu na ekran końcowych statystyk.",
-        "CONSOLE_HELP_LIGHTING": "Włącza lub wyłącza system oświetlenia."
+        "CONSOLE_HELP_LIGHTING": "Włącza lub wyłącza system oświetlenia.",
+        "GRAPHIC_SETTINGS_WATER_COLOR_B_DESCRIPTION": "Niebieska składowa koloru wody.",
+        "GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION": "Zielona składowa koloru wody.",
+        "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "Czerwona składowa koloru wody."
     }
 }

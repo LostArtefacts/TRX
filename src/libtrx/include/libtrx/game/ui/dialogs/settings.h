@@ -2,6 +2,7 @@
 
 #include "../../../config/option.h"
 #include "../../../config/types.h"
+#include "../../../utils.h"
 #include "../../game_string.h"
 #include "../common.h"
 #include "../elements/tab_switch.h"
@@ -42,6 +43,47 @@ typedef struct UI_SETTINGS_OPTION {
         const void *misc;
     };
 } UI_SETTINGS_OPTION;
+
+#define X_UI_CFG_MANUAL(label_id_, ...)                                        \
+    { .label_id = GS_ID(label_id_),                                            \
+      .description_id = GS_ID(label_id_##_DESCRIPTION),                        \
+      __VA_ARGS__ },
+
+#define X_UI_CFG(opt_type_, target_, label_id_, ...)                           \
+    X_UI_CFG_MANUAL(                                                           \
+        label_id_, .target = &g_Config.target_, .option_type = opt_type_,      \
+        __VA_ARGS__)
+
+#define X_UI_CFG_STRING(target_, label_id_, ...)                               \
+    X_UI_CFG(COT_STRING, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_BOOL(target_, label_id_, ...)                                 \
+    X_UI_CFG(COT_BOOL, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_BOOL_INV(target_, label_id_, ...)                             \
+    X_UI_CFG(COT_INVERTED_BOOL, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_INT32(target_, label_id_, ...)                                \
+    X_UI_CFG(COT_INT32, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_FLOAT(target_, label_id_, ...)                                \
+    X_UI_CFG(COT_FLOAT, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_FLOAT_PERCENT(target_, label_id_, ...)                        \
+    X_UI_CFG(COT_FLOAT, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_DOUBLE(target_, label_id_, ...)                               \
+    X_UI_CFG(COT_DOUBLE, target_, label_id_, ##__VA_ARGS__)
+
+#define X_UI_CFG_ENUM(target_, label_id_, ...)                                 \
+    X_UI_CFG(                                                                  \
+        COT_ENUM, target_, label_id_, .delta_slow = 1, .delta_fast = 1,        \
+        ##__VA_ARGS__)
+
+#define X_UI_CFG_RGB888(target_, label_id_, component)                         \
+    X_UI_CFG(                                                                  \
+        COT_RGB888, target_, label_id_, .delta_slow = 1, .delta_fast = 10,     \
+        .min_value = 0, .max_value = 255, .misc = (void *)(intptr_t)component)
 
 typedef enum {
     UI_SETTINGS_PHASE_NAVIGATE_TABS,

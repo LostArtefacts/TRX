@@ -2,6 +2,8 @@
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
+#define CONCAT_(a, b) a##b
+#define CONCAT(a, b) CONCAT_(a, b)
 
 #define SQUARE(A) ((A) * (A))
 #ifndef ABS
