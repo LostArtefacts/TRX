@@ -1,45 +1,13 @@
 #include "game/ui/dialogs/sound_settings.h"
 
 #include "config.h"
-#include "game/game_string.h"
-#include "game/music.h"
-#include "game/sound.h"
 #include "game/ui/dialogs/setting_helpers/enums.h"
-#include "memory.h"
-#include "strings.h"
-#include "utils.h"
-
-static char *m_TempString = nullptr;
-static size_t m_TempStringCap = 0;
-
-static bool M_Volume_RequestChange(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-static bool M_PauseMusicInInventory_IsAvailable(
-    const UI_SETTINGS_OPTION *option);
+#include "game/ui/dialogs/setting_helpers/handlers.h"
 
 static const UI_SETTINGS_OPTION m_SoundOptions[] = {
 #include "setting_tabs/sound_settings.def"
     { .target = nullptr },
 };
-
-static bool M_Volume_RequestChange(
-    const UI_SETTINGS_OPTION *const option, const int32_t dir)
-{
-    UI_Settings_RequestChange(option, dir);
-    if (option->target == &g_Config.audio.music_volume) {
-        Music_SetVolume(g_Config.audio.music_volume);
-    } else if (option->target == &g_Config.audio.sound_volume) {
-        Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    }
-    Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
-    return true;
-}
-
-static bool M_PauseMusicInInventory_IsAvailable(
-    const UI_SETTINGS_OPTION *const option)
-{
-    return g_Config.audio.enable_music_in_inventory;
-}
 
 UI_SETTINGS_STATE *UI_SoundSettings_Init(void)
 {

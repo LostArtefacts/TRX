@@ -9,9 +9,9 @@ X_UI_CFG_ENUM(rendering.fbo_filter,              GRAPHIC_SETTINGS_FBO_FILTER, .m
 X_UI_CFG_MANUAL(
     GRAPHIC_SETTINGS_RESOLUTION,
     .custom_handler = {
-        .format_value = M_ScreenResolution_FormatValue,
-        .can_change_value = M_ScreenResolution_CanChangeValue,
-        .request_change_value = M_ScreenResolution_RequestChangeValue,
+        .format_value = UI_Settings_ScreenResolution_FormatValue,
+        .can_change_value = UI_Settings_ScreenResolution_CanChangeValue,
+        .request_change_value = UI_Settings_ScreenResolution_RequestChangeValue,
     }
 )
 
