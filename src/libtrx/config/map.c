@@ -5,62 +5,62 @@
 #include "enum_map.h"
 #include "utils.h"
 
-#define CFG_BOOL(parent, target_, default_value_)                              \
+#define X_CFG_BOOL(target_, default_value_)                                    \
     { .name = QUOTE(target_),                                                  \
       .type = COT_BOOL,                                                        \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(bool) { default_value_ },                             \
       .param = nullptr },
 
-#define CFG_INT32(parent, target_, default_value_)                             \
+#define X_CFG_INT32(target_, default_value_)                                   \
     { .name = QUOTE(target_),                                                  \
       .type = COT_INT32,                                                       \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(int32_t) { default_value_ },                          \
       .param = nullptr },
 
-#define CFG_FLOAT(parent, target_, default_value_)                             \
+#define X_CFG_FLOAT(target_, default_value_)                                   \
     { .name = QUOTE(target_),                                                  \
       .type = COT_FLOAT,                                                       \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(float) { default_value_ },                            \
       .param = nullptr },
 
-#define CFG_FLOAT_PERCENT(parent, target_, default_value_)                     \
+#define X_CFG_FLOAT_PERCENT(target_, default_value_)                           \
     { .name = QUOTE(target_),                                                  \
       .type = COT_FLOAT_PERCENT,                                               \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(float) { default_value_ },                            \
       .param = nullptr },
 
-#define CFG_DOUBLE(parent, target_, default_value_)                            \
+#define X_CFG_DOUBLE(target_, default_value_)                                  \
     { .name = QUOTE(target_),                                                  \
       .type = COT_DOUBLE,                                                      \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(double) { default_value_ },                           \
       .param = nullptr },
 
-#define CFG_ENUM(parent, target_, default_value_, enum_map)                    \
-    CFG_ENUM_EX(parent, QUOTE(target_), target_, default_value_, enum_map)
+#define X_CFG_ENUM(target_, default_value_, enum_map)                          \
+    X_CFG_ENUM_EX(QUOTE(target_), target_, default_value_, enum_map)
 
-#define CFG_ENUM_EX(parent, name_, target_, default_value_, enum_map)          \
+#define X_CFG_ENUM_EX(name_, target_, default_value_, enum_map)                \
     { .name = name_,                                                           \
       .type = COT_ENUM,                                                        \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(int32_t) { default_value_ },                          \
       .param = ENUM_MAP_NAME(enum_map) },
 
-#define CFG_RGB888(parent, target_, default_r, default_g, default_b)           \
+#define X_CFG_RGB888(target_, default_r, default_g, default_b)                 \
     { .name = QUOTE(target_),                                                  \
       .type = COT_RGB888,                                                      \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = &(RGB_888) { default_r, default_g, default_b },         \
       .param = nullptr },
 
-#define CFG_STRING(parent, target_, default_value_)                            \
+#define X_CFG_STRING(target_, default_value_)                                  \
     { .name = QUOTE(target_),                                                  \
       .type = COT_STRING,                                                      \
-      .target = &parent.target_,                                               \
+      .target = &g_Config.target_,                                             \
       .default_value = default_value_,                                         \
       .param = nullptr },
 
@@ -68,6 +68,16 @@ static const CONFIG_OPTION m_ConfigOptionMap[] = {
 #include "map.def"
     {}, // sentinel
 };
+
+#undef X_CFG_BOOL
+#undef X_CFG_INT32
+#undef X_CFG_FLOAT
+#undef X_CFG_FLOAT_PERCENT
+#undef X_CFG_DOUBLE
+#undef X_CFG_ENUM
+#undef X_CFG_ENUM_EX
+#undef X_CFG_RGB888
+#undef X_CFG_STRING
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {
