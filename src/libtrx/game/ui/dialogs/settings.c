@@ -771,8 +771,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
             UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
         }
         UI_BeginPad(
-            s->row_pad + (TR_VERSION == 1 ? 1.0f : 0.0f),
-            TR_VERSION == 1 ? 1.0f : 0.0f);
+            (TR_VERSION == 1 ? 1.0f : 0.0f), TR_VERSION == 1 ? 1.0f : 0.0f);
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
