@@ -19,28 +19,6 @@
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 #define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
 
-static LARA_STATE m_HoldStates[] = {
-    LS_WALK,      LS_STOP,      LS_POSE,       LS_TURN_RIGHT,  LS_TURN_LEFT,
-    LS_WALK_BACK, LS_FAST_TURN, LS_STEP_LEFT,  LS_STEP_RIGHT,  LS_WADE,
-    LS_PICKUP,    LS_SWITCH_ON, LS_SWITCH_OFF, (LARA_STATE)-1,
-};
-
-int32_t Gun_CheckForHoldingState(const LARA_STATE state)
-{
-    if (g_Lara.extra_anim) {
-        return false;
-    }
-
-    const LARA_STATE *hold_state = m_HoldStates;
-    while (*hold_state != (LARA_STATE)-1) {
-        if (*hold_state == state) {
-            return true;
-        }
-        hold_state++;
-    }
-    return false;
-}
-
 void Gun_TargetInfo(const WEAPON_INFO *const winfo)
 {
     if (!g_Lara.target) {

@@ -29,7 +29,6 @@ typedef enum {
     LA_G_SURF_UNDRAW = 9,
 } LARA_GUN_ANIMATION;
 
-int32_t Gun_CheckForHoldingState(const LARA_STATE state);
 void Gun_TargetInfo(const WEAPON_INFO *winfo);
 void Gun_GetNewTarget(const WEAPON_INFO *winfo);
 void Gun_AimWeapon(const WEAPON_INFO *winfo, LARA_ARM *arm);
