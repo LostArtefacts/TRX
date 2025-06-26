@@ -6,6 +6,7 @@ X_UI_CFG_BOOL(ui.enable_wraparound,             GRAPHIC_SETTINGS_UI_SCROLL_WRAPA
 
 #if TR_VERSION == 1
 X_UI_CFG_ENUM(ui.menu_style,                    GRAPHIC_SETTINGS_MENU_STYLE, .misc = UI_Settings_MenuStyleEnumEntries)
+X_UI_CFG_ENUM(ui.stat_detail_mode,              GRAPHIC_SETTINGS_STAT_DETAIL_MODE, .misc = UI_Settings_StatDetailModeEnumEntries)
 #endif
 X_UI_CFG_BOOL(ui.enable_stats_level_header,     GRAPHIC_SETTINGS_STATS_LEVEL_HEADER)
 

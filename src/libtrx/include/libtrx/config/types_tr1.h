@@ -76,6 +76,8 @@ typedef struct {
         double text_scale;
         double bar_scale;
         UI_STYLE menu_style;
+        STAT_DETAIL_MODE stat_detail_mode;
+        bool enable_stats_level_header;
 
         bool enable_smooth_bars;
         struct {
@@ -89,7 +91,6 @@ typedef struct {
             BAR_COLOR color;
             BAR_COLOR color_allies;
         } enemy_health_bar;
-        bool enable_stats_level_header;
     } ui;
 
     struct {
@@ -130,7 +131,6 @@ typedef struct {
         bool enable_demo;
         bool enable_loading_screens;
         bool enable_cutscenes;
-        STAT_DETAIL_MODE stat_detail_mode;
         bool enable_walk_to_items;
         bool enable_enhanced_saves;
         bool enable_jump_twists;
