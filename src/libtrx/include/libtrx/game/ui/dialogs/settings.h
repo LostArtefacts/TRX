@@ -65,7 +65,7 @@ typedef struct UI_SETTINGS_OPTION {
     X_UI_CFG(COT_FLOAT, target_, label_id_, ##__VA_ARGS__)
 
 #define X_UI_CFG_FLOAT_PERCENT(target_, label_id_, ...)                        \
-    X_UI_CFG(COT_FLOAT, target_, label_id_, ##__VA_ARGS__)
+    X_UI_CFG(COT_FLOAT_PERCENT, target_, label_id_, ##__VA_ARGS__)
 
 #define X_UI_CFG_DOUBLE(target_, label_id_, ...)                               \
     X_UI_CFG(COT_DOUBLE, target_, label_id_, ##__VA_ARGS__)
