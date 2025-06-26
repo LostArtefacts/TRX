@@ -32,6 +32,7 @@ X_UI_CFG_BOOL(visuals.enable_round_shadow,  GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW
 #endif
 
 X_UI_CFG_BOOL(visuals.enable_gun_lighting,  GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING)
+X_UI_CFG_BOOL(visuals.enable_fire_lighting, GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING)
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(visuals.enable_shotgun_flash, GRAPHIC_SETTINGS_ENABLE_SHOTGUN_FLASH)

@@ -1,9 +1,14 @@
+#include "config.h"
 #include "game/effects.h"
 #include "game/lara.h"
+#include "game/output.h"
+#include "game/random.h"
 #include "game/rooms.h"
 #include "game/sound.h"
 #include "utils.h"
 
+#define M_LIGHT_INTENSITY 11
+#define M_LIGHT_FALLOFF 10
 #define M_DAMAGE_PROXIMITY 600
 #if TR_VERSION == 1
     #define M_IGNITE_PROXIMITY 300
@@ -15,8 +20,34 @@
     #define M_ON_FIRE_DAMAGE 7
 #endif
 
+static void M_DoEffects(const EFFECT *effect);
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t effect_num);
+
+static void M_DoEffects(const EFFECT *const effect)
+{
+    Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_ALWAYS);
+    if (!g_Config.visuals.enable_fire_lighting) {
+        return;
+    }
+
+    const int32_t random = Random_GetControl();
+    const XYZ_32 light_pos = {
+        .x = effect->pos.x + (random & 0x140) - 0xA0,
+        .y = effect->pos.y - STEP_L - (random & 0x50),
+        .z = effect->pos.z + (random & 0x140) - 0xA0,
+    };
+
+    if (random > 0x4000) {
+        Output_AddDynamicLight(light_pos, M_LIGHT_INTENSITY, M_LIGHT_FALLOFF);
+    } else if (random > 0x2000) {
+        Output_AddDynamicLight(
+            light_pos, M_LIGHT_INTENSITY - (random & 2), M_LIGHT_FALLOFF);
+    } else {
+        Output_AddDynamicLight(
+            light_pos, M_LIGHT_INTENSITY, M_LIGHT_FALLOFF / 2);
+    }
+}
 
 static void M_Setup(OBJECT *const obj)
 {
@@ -36,7 +67,7 @@ static void M_Control(const int16_t effect_num)
     }
 
     if (effect->counter >= 0) {
-        Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_ALWAYS);
+        M_DoEffects(effect);
         if (effect->counter != 0) {
             effect->counter--;
         } else if (Lara_IsNearItem(&effect->pos, M_DAMAGE_PROXIMITY)) {
@@ -73,7 +104,7 @@ static void M_Control(const int16_t effect_num)
             Effect_Kill(effect_num);
             lara_info->burn = false;
         } else {
-            Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_ALWAYS);
+            M_DoEffects(effect);
             Lara_TakeDamage(M_ON_FIRE_DAMAGE, false);
             lara_info->burn = true;
         }

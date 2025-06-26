@@ -562,6 +562,8 @@
         "GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION": "Zielona składowa koloru wody.",
         "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "Czerwona składowa koloru wody.",
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "Kolor paska sojuszników",
-        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia sojuszników. Wyświetlany w miejscu pasków zdrowia wrogów."
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia sojuszników. Wyświetlany w miejscu pasków zdrowia wrogów.",
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING": "\\{review}Rozpalanie ognia",
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Umożliwia generowanie dynamicznego oświetlenia obok aktywnych płomieni."
     }
 }
