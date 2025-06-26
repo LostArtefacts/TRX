@@ -21,7 +21,6 @@ X_UI_CFG_BOOL(gameplay.enable_auto_item_selection, GAMEPLAY_SETTINGS_ENABLE_AUTO
 X_UI_CFG_BOOL(gameplay.enable_item_examining,      GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING)
 
 #if TR_VERSION == 1
-X_UI_CFG_ENUM(gameplay.stat_detail_mode,           GAMEPLAY_SETTINGS_STAT_DETAIL_MODE, .misc = UI_Settings_StatDetailModeEnumEntries)
 X_UI_CFG_BOOL(gameplay.enable_compass_stats,       GAMEPLAY_SETTINGS_ENABLE_COMPASS_STATS)
 X_UI_CFG_BOOL(gameplay.enable_total_stats,         GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS)
 X_UI_CFG_BOOL(gameplay.enable_timer_in_inventory,  GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY)

@@ -109,7 +109,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
     }
 
 #if TR_VERSION == 1
-    const bool use_bare_style = g_Config.gameplay.stat_detail_mode != SDM_FULL;
+    const bool use_bare_style = g_Config.ui.stat_detail_mode != SDM_FULL;
 #else
     const bool use_bare_style = false;
 #endif
