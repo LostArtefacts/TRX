@@ -567,25 +567,26 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed the animation of Lara's left arm when the shotgun is equipped
 - fixed the following room texture issues:
     - **Gym**: incorrect textures in room 9
-    - **Caves**: an incorrect texture in room 6 and missing textures in rooms 1, 10, 14 and 30
-    - **City of Vilcabamba**: an incorrect texture in room 26, and a missing texture and a stretched texture in room 15
-    - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in room 63
-    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, and a misaligned texture in room 5
-    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18 and 35, and a misaligned texture in room 3
-    - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 37, 67, 75 and 82, and missing textures in rooms 2 and 7
-    - **Palace Midas**: incorrect textures in rooms 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
-    - **The Cistern**: missing textures in rooms 3 and 9 and a stretched texture in room 102
+    - **Caves**: incorrect textures in rooms 6, 14 and 22, and missing textures in rooms 1, 10, 14 and 30
+    - **City of Vilcabamba**: incorrect texture in rooms 26 and 73, missing textures in rooms 15 and 21, and stretched textures in rooms 15 and 26
+    - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in rooms 5, 27, 63, 66 and 88
+    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, a misaligned texture in room 5, and a stretched texture in room 14
+    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35, and a misaligned texture in room 3
+    - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 0, 37, 67, 75, 82 and 83, and missing textures in rooms 2 and 7
+    - **Palace Midas**: incorrect textures in rooms 28, 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
+    - **The Cistern**: missing textures in rooms 3 and 9 and stretched textures in rooms 22 and 102
     - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89 and a misaligned texture in room 104
     - **City of Khamoon**: incorrect textures in rooms 47, 48, 51, 60 and 64, and a missing texture in room 58
-    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42 and 65; added shading to the gaps into City of Khamoon in rooms 8 and 20/21
-    - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54
-    - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 23 and 24
+    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42, 65, 66; added shading to the gaps into City of Khamoon in rooms 8 and 20/21
+    - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54; stretched texture in room 11
+    - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 13, 23, 24, 29, 30, 31, 47, 84, 87 and 98 
     - **Pre-Atlantis Cutscene**: stretched textures in rooms 6 and 21
-    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 78, 85 and 87, a missing texture in room 27, and stretched textures in rooms 13, 49 and 50
-    - **Atlantis Cutscene**: incorrect and stretched textures in room 16
+    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 62, 78, 85, 87, 88 and 90, a missing texture in room 27, and stretched textures in rooms 13, 49 and 50
+    - **Atlantis Cutscene**: incorrect and stretched textures in rooms 2, 4 and 16
+    - **Atlantis and both cutscenes**: fixed inconsistencies regarding the absent lightning mesh above the scion and wrong or missing doors in Torso's platform area
     - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
     - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, a stretched texture in room 47, and a  misplaced vase room sprite in room 9
-    - **Temple of the Cat**: incorrect textures in rooms 50, 70, 71, 76, 78, 87 and 96, a missing texture in 75, and misplaced vase room sprites in room 60
+    - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98, a missing texture in 75, and misplaced vase room sprites in room 60
     - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
