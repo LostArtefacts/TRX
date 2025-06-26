@@ -278,6 +278,8 @@
         "GRAPHIC_SETTINGS_ENABLE_EXIT_FADE_EFFECTS_DESCRIPTION": "Enables the fade effects when exiting the game to desktop.",
         "GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS": "Fade effects",
         "GRAPHIC_SETTINGS_ENABLE_FADE_EFFECTS_DESCRIPTION": "Enable fade transitions, for example between credit graphics or for inventory and pause screen transitions.",
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING": "Fire lighting",
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated beside active flames.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING": "Gun lighting",
         "GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS": "Pickup aids",
         "GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS_DESCRIPTION": "Enables an intermittent twinkling effect near pickup items to highlight their presence.",

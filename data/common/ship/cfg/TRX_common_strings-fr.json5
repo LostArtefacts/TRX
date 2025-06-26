@@ -562,6 +562,8 @@
         "GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION": "\\{review}Composante verte de la couleur de l'eau.",
         "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "\\{review}Composante rouge de la couleur de l'eau.",
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "\\{review}Couleur de la barre des alliés",
-        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "\\{review}Couleur de la barre de vie des alliés. Affichée à l'emplacement des barres de vie des ennemis."
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "\\{review}Couleur de la barre de vie des alliés. Affichée à l'emplacement des barres de vie des ennemis.",
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING": "\\{review}Allumage de feu",
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Active l'éclairage dynamique généré à proximité des flammes actives."
     }
 }
