@@ -81,6 +81,7 @@ typedef struct {
         bool enable_fps_counter;
         double text_scale;
         double bar_scale;
+        bool enable_stats_level_header;
 
         struct {
             BAR_SHOW_MODE show_mode;

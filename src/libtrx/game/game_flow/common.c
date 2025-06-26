@@ -141,6 +141,38 @@ const GF_LEVEL_TABLE *GF_GetLevelTable(
     return &g_GameFlow.level_tables[level_table_type];
 }
 
+int32_t GF_GetLevelCount(const GF_LEVEL_TABLE_TYPE level_table_type)
+{
+    int32_t count = 0;
+    const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(level_table_type);
+    for (int32_t i = 0; i < tbl->count; i++) {
+        const GF_LEVEL *const level = &tbl->levels[i];
+        if (level->type == GFL_GYM || M_SkipLevel(level)) {
+            continue;
+        }
+        count++;
+    }
+    return count;
+}
+
+int32_t GF_GetLevelOrdinalNumber(
+    GF_LEVEL_TABLE_TYPE level_table_type, const GF_LEVEL *const ref_level)
+{
+    int32_t ordinal = 1;
+    const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(level_table_type);
+    for (int32_t i = 0; i < tbl->count; i++) {
+        const GF_LEVEL *level = &tbl->levels[i];
+        if (level == ref_level) {
+            // Special case: gym levels have no ordinal
+            return (level->type == GFL_GYM) ? 0 : ordinal;
+        }
+        if (level->type != GFL_GYM && !M_SkipLevel(level)) {
+            ordinal++;
+        }
+    }
+    return -1;
+}
+
 const GF_LEVEL *GF_GetCurrentLevel(void)
 {
     return m_CurrentLevel;

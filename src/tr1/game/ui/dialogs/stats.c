@@ -13,11 +13,13 @@
 #include <libtrx/game/ui/elements/modal.h>
 #include <libtrx/game/ui/elements/stack.h>
 #include <libtrx/game/ui/elements/window.h>
+#include <libtrx/strings.h>
 
 #include <stdio.h>
 #include <string.h>
 
 typedef enum {
+    M_ROW_LEVEL_COUNTER,
     M_ROW_KILLS,
     M_ROW_PICKUPS,
     M_ROW_SECRETS,
@@ -98,6 +100,16 @@ static void M_RowFromRole(
         : GS(STATS_DETAIL_FMT);
 
     switch (role) {
+    case M_ROW_LEVEL_COUNTER:
+        M_Row(
+            s, GS(STATS_LEVEL),
+            String_FormatStatic(
+                GS(STATS_DETAIL_FMT),
+                GF_GetLevelOrdinalNumber(
+                    GFLT_MAIN, GF_GetLevel(GFLT_MAIN, s->args.level_num)),
+                GF_GetLevelCount(GFLT_MAIN)));
+        break;
+
     case M_ROW_KILLS:
         sprintf(buf, num_fmt, stats->kill_count, stats->max_kill_count);
         M_Row(s, GS(STATS_KILLS), buf);
@@ -181,6 +193,9 @@ static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *const s)
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(current_level);
     const STATS_COMMON *const stats = (STATS_COMMON *)&current_info->stats;
+    if (g_Config.ui.enable_stats_level_header) {
+        M_RowFromRole(s, M_ROW_LEVEL_COUNTER, stats);
+    }
     M_CommonRows(s, stats);
 }
 

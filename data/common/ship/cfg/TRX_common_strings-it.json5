@@ -569,6 +569,8 @@
         "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE_DESCRIPTION": "\\{review}Per un salto più reattivo, consente di controllare quanto presto dopo l'inizio della corsa Lara può saltare.\n\n- Legacy: corrisponde al timing originale di TR2.\n- Regolato: il salto è possibile 2 fotogrammi prima rispetto a TR2 originale.\n- Disattivato: il salto è possibile subito dopo l'animazione di partenza.",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_DISABLED": "\\{review}Disattivato",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Legacy",
-        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Regolato"
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Regolato",
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER": "\\{review}Intestazione livello statistiche",
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Mostra il numero del livello attuale nella parte superiore delle statistiche di livello."
     }
 }

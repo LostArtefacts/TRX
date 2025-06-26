@@ -569,6 +569,8 @@
         "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE_DESCRIPTION": "\\{review}Dla bardziej responsywnego skoku umożliwia kontrolę, jak szybko po rozpoczęciu biegu Lara może skoczyć.\n\n- Klasyczny: odpowiada oryginalnemu timingowi z TR2.\n- Dostrojony: skok jest możliwy o 2 klatki wcześniej niż w oryginalnym TR2.\n- Wyłączony: skok jest możliwy natychmiast po animacji startu biegu.",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_DISABLED": "\\{review}Wyłączony",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Klasyczny",
-        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Dostrojony"
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Dostrojony",
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER": "Numer poziomu w statystykach",
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "Wyświetla numer bieżącego poziomu na ekranach statystyk."
     }
 }
