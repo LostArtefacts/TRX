@@ -30,7 +30,7 @@ static void M_Control(const int16_t item_num)
             item->data = (void *)(intptr_t)(effect_num + 1);
         }
     } else if (item->data) {
-        Sound_StopEffect(SFX_FIRE);
+        Sound_StopEffect(SFX_LOOP_FOR_SMALL_FIRES);
         Effect_Kill((int16_t)(intptr_t)item->data - 1);
         item->data = nullptr;
     }

@@ -175,7 +175,6 @@ sources = [
   'game/objects/effects/dart_effect.c',
   'game/objects/effects/ember.c',
   'game/objects/effects/explosion.c',
-  'game/objects/effects/flame.c',
   'game/objects/effects/gunshot.c',
   'game/objects/effects/missile.c',
   'game/objects/effects/natla_gun.c',

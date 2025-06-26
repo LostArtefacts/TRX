@@ -163,7 +163,6 @@ sources = [
   'game/objects/effects/dart_effect.c',
   'game/objects/effects/ember.c',
   'game/objects/effects/explosion.c',
-  'game/objects/effects/flame.c',
   'game/objects/effects/glow.c',
   'game/objects/effects/gun_flash.c',
   'game/objects/effects/hot_liquid.c',
