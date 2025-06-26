@@ -81,7 +81,13 @@ typedef struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
             BAR_COLOR color;
-        } enemy_health_bar, lara_health_bar, lara_air_bar;
+        } lara_health_bar, lara_air_bar;
+        struct {
+            BAR_SHOW_MODE show_mode;
+            BAR_LOCATION location;
+            BAR_COLOR color;
+            BAR_COLOR color_allies;
+        } enemy_health_bar;
     } ui;
 
     struct {

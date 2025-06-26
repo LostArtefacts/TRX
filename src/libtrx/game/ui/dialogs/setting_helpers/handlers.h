@@ -19,6 +19,7 @@ bool UI_Settings_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_EnemyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_AllyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 
 #if TR_VERSION == 1
 const char *UI_Settings_ScreenResolution_FormatValue(

@@ -560,6 +560,8 @@
         "CONSOLE_HELP_LIGHTING": "Włącza lub wyłącza system oświetlenia.",
         "GRAPHIC_SETTINGS_WATER_COLOR_B_DESCRIPTION": "Niebieska składowa koloru wody.",
         "GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION": "Zielona składowa koloru wody.",
-        "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "Czerwona składowa koloru wody."
+        "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "Czerwona składowa koloru wody.",
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "Kolor paska sojuszników",
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia sojuszników. Wyświetlany w miejscu pasków zdrowia wrogów."
     }
 }

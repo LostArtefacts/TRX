@@ -529,5 +529,6 @@
 
     "hidden_config": [
         "enable_item_examining", // TR1 has no special item descriptions
+        "enemy_healthbar_color_allies", // TR1 has no allies
     ],
 }

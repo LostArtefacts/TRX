@@ -227,6 +227,8 @@
         "GRAPHIC_SETTINGS_AIRBAR_LOCATION_DESCRIPTION": "Location where the airbar is displayed.",
         "GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE": "Airbar mode",
         "GRAPHIC_SETTINGS_AIRBAR_SHOW_MODE_DESCRIPTION": "Changes how the airbar is displayed.\n\n- Default: show the airbar only in the water and flash the airbar when Lara's oxygen is 20% or below.\n- Default, no flashing: same as default, but disable flashing.\n- Flashing only: show the airbar *only* when Lara's oxygen is 20% or below (for challenge runs).\n- Never: never display the airbar (for challenge runs).",
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "Ally bar color",
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Color of the allies healthbar. Shown in the location of the enemy healthbars.",
         "GRAPHIC_SETTINGS_ANISOTROPY_FILTER": "Anisotropy filter",
         "GRAPHIC_SETTINGS_ANISOTROPY_FILTER_DESCRIPTION": "Enhances texture filtering at distances.",
         "GRAPHIC_SETTINGS_ASPECT_MODE": "Aspect mode",
