@@ -149,6 +149,7 @@
         "enable_item_examining",  // UB has no special item descriptions
         "enable_loading_screens", // UB has no loading screens yet
         "enable_reflections",     // UB has no reflective objects
+        "enemy_healthbar_color_allies", // UB has no allies
         "change_pierre_spawn",
         "fix_bear_ai",
         "restore_ps1_enemies",

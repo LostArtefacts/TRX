@@ -24,6 +24,8 @@
         "GAMEPLAY_SETTINGS_WALL_GLITCH_MODE_DESCRIPTION": "Allows using TR1 wall glitch behaviour in TR2 and vice-versa; equally allows fixing all types of wall glitch.",
         "GRAPHIC_SETTINGS_WATER_COLOR_R_DESCRIPTION": "Red component of the water colour.",
         "GRAPHIC_SETTINGS_WATER_COLOR_G_DESCRIPTION": "Green component of the water colour.",
-        "GRAPHIC_SETTINGS_WATER_COLOR_B_DESCRIPTION": "Blue component of the water colour."
+        "GRAPHIC_SETTINGS_WATER_COLOR_B_DESCRIPTION": "Blue component of the water colour.",
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "Ally bar colour",
+        "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Colour of the allies healthbar. Shown in the location of the enemy healthbars."
     }
 }

@@ -15,6 +15,7 @@ bool UI_EnemyHealthBar(void)
         return false;
     }
     const OBJECT *const obj = Object_Get(target->object_id);
+    const bool is_ally = Object_IsType(target->object_id, g_AllyObjects);
 
     bool show = false;
     switch (g_Config.ui.enemy_health_bar.show_mode) {
@@ -37,7 +38,8 @@ bool UI_EnemyHealthBar(void)
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
-        .color = g_Config.ui.enemy_health_bar.color,
+        .color = is_ally ? g_Config.ui.enemy_health_bar.color_allies
+                         : g_Config.ui.enemy_health_bar.color,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = target->hit_points,
