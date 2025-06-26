@@ -17,6 +17,7 @@
 - changed photo mode help dialog to show icons for inputs
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
+- changed the item duplication glitch fix to be on by default
 - removed config tool (we have ingame setting dialogs now)
 - removed default bindings for the "sizer" and the "scaler" options (#2853)
 - fixed inventory screen carpet background texture stretched on non-4:3 aspect ratios (#2022)
