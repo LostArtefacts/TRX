@@ -29,3 +29,27 @@ const GAME_OBJECT_PAIR g_ReceptacleToReceptacleDoneMap[] = {
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
 };
+
+const GAME_OBJECT_ID g_ReceptacleObjects[] = {
+    // clang-format off
+    O_KEY_HOLE_1,
+    O_KEY_HOLE_2,
+    O_KEY_HOLE_3,
+    O_KEY_HOLE_4,
+    O_PUZZLE_HOLE_1,
+    O_PUZZLE_HOLE_2,
+    O_PUZZLE_HOLE_3,
+    O_PUZZLE_HOLE_4,
+    O_PUZZLE_DONE_1,
+    O_PUZZLE_DONE_2,
+    O_PUZZLE_DONE_3,
+    O_PUZZLE_DONE_4,
+#if TR_VERSION == 1
+    O_MIDAS_TOUCH,
+#elif TR_VERSION == 2
+    O_DETONATOR_1,
+    O_DETONATOR_2,
+#endif
+    NO_OBJECT,
+    // clang-format on
+};

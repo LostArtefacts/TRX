@@ -33,6 +33,7 @@
 - fixed Lara not saying 'no' near gong or detonator when applicable (#3337)
 - fixed Lara saying 'no' near receptacles after loading a game (#1603)
 - fixed Lara saying 'no' near receptacles when using guns, medikits or flares (#1601)
+- improved the `/tp` command to orient Lara towards keyholes and doors
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24
 - fixed underwater hum not playing properly (#3305, regression from 0.10)

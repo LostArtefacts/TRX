@@ -20,6 +20,7 @@
 - fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
 - fixed Lara not saying 'no' near complete receptacles (#3337, regression from 4.0)
 - fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
+- improved the `/tp` command to orient Lara towards keyholes and doors
 
 ## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24
 - fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)
