@@ -38,6 +38,12 @@ typedef enum {
     LF_FL_DRAW_GOT_IT = (LF_FL_DRAW + 13), // = 46
 } M_LARA_FLARE_FRAME;
 
+static const LARA_STATE m_HoldStates[] = {
+    LS_WALK,      LS_STOP,      LS_POSE,       LS_TURN_RIGHT,  LS_TURN_LEFT,
+    LS_WALK_BACK, LS_FAST_TURN, LS_STEP_LEFT,  LS_STEP_RIGHT,  LS_WADE,
+    LS_PICKUP,    LS_SWITCH_ON, LS_SWITCH_OFF, (LARA_STATE)-1,
+};
+
 static void M_InitialiseState(void);
 static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
 static bool M_CanThrowFlare(void);
@@ -116,8 +122,8 @@ static void M_ControlArmless(void)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
-    const bool is_mounted_or_armed = lara_info->vehicle_item_num != NO_ITEM
-        || Gun_CheckForHoldingState(lara_item->current_anim_state);
+    const bool is_mounted_or_armed =
+        lara_info->vehicle_item_num != NO_ITEM || Lara_HasState(m_HoldStates);
 
     if (is_mounted_or_armed) {
         if (!lara_info->flare.control) {
@@ -141,8 +147,8 @@ static void M_ControlBusyHands(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->flare.control = lara_info->vehicle_item_num != NO_ITEM
-        || Gun_CheckForHoldingState(lara_item->current_anim_state);
+    lara_info->flare.control =
+        lara_info->vehicle_item_num != NO_ITEM || Lara_HasState(m_HoldStates);
     M_ControlInHand(lara_info->flare.age);
     M_SetArm(lara_info->left_arm.frame_num);
 }
