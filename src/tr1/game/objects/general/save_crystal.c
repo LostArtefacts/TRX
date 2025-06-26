@@ -1,10 +1,10 @@
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara.h>
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
@@ -17,6 +17,24 @@ static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     },
 };
 
+static const OBJECT_BOUNDS m_UW_Bounds = {
+    .shift = {
+        .min = { .x = -STEP_L, .y = -WALL_L, .z = -STEP_L, },
+        .max = { .x = +STEP_L, .y = +WALL_L, .z = +STEP_L, },
+    },
+    .rot = {
+        .min = { .x = -DEG_90, .y = 0, .z = 0, },
+        .max = { .x = +DEG_90, .y = 0, .z = 0, },
+    },
+};
+
+static const LARA_STATE m_StopStates[] = {
+    LS_STOP,
+    LS_TREAD,
+    LS_SURF_TREAD,
+    (LARA_STATE)-1,
+};
+
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
@@ -26,7 +44,11 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    return &m_SaveCrystal_Bounds;
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    return lara->water_status == LWS_SURFACE
+            || lara->water_status == LWS_UNDERWATER
+        ? &m_UW_Bounds
+        : &m_SaveCrystal_Bounds;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -94,7 +116,7 @@ static void M_Collision(
         return;
     }
 
-    if (lara_item->current_anim_state != LS_STOP) {
+    if (!Lara_HasState(m_StopStates)) {
         return;
     }
 
@@ -109,7 +131,8 @@ static void M_Collision(
     const XYZ_32 pos = lara_item->pos;
     const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
     const int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
-    if (ceiling >= item->pos.y) {
+    const int32_t floor = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    if (ceiling >= item->pos.y || floor < item->pos.y) {
         return;
     }
 

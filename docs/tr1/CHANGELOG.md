@@ -7,6 +7,7 @@
 - added the ability to cycle UI tabs with sidestep keys (#3272)
 - added dedicated British English translation (#3212)
 - added a `/lighting` console command to let the player turn lighting system on/off
+- added support for underwater save crystals in custom levels (#3356)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys
