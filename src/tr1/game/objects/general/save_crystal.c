@@ -8,8 +8,8 @@
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
-        .min = { .x = -256, .y = -100, .z = -256, },
-        .max = { .x = +256, .y = +100, .z = +256, },
+        .min = { .x = -STEP_L, .y = -100, .z = -STEP_L, },
+        .max = { .x = +STEP_L, .y = +WALL_L, .z = +STEP_L, },
     },
     .rot = {
         .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
@@ -102,6 +102,14 @@ static void M_Collision(
     item->rot.z = 0;
     item->rot.x = 0;
     if (!Lara_TestPosition(item, obj->bounds_func())) {
+        return;
+    }
+
+    int16_t room_num = lara_item->room_num;
+    const XYZ_32 pos = lara_item->pos;
+    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
+    if (ceiling >= item->pos.y) {
         return;
     }
 
