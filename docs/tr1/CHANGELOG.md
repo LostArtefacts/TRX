@@ -9,6 +9,7 @@
 - added a `/lighting` console command to let the player turn lighting system on/off
 - added support for underwater save crystals in custom levels (#3356)
 - added an option to control responsive jumping lock behaviour (Gameplay settings → Controls → Jump lock mode) (#3389)
+- added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys

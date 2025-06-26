@@ -7,6 +7,7 @@ X_UI_CFG_BOOL(ui.enable_wraparound,             GRAPHIC_SETTINGS_UI_SCROLL_WRAPA
 #if TR_VERSION == 1
 X_UI_CFG_ENUM(ui.menu_style,                    GRAPHIC_SETTINGS_MENU_STYLE, .misc = UI_Settings_MenuStyleEnumEntries)
 #endif
+X_UI_CFG_BOOL(ui.enable_stats_level_header,     GRAPHIC_SETTINGS_STATS_LEVEL_HEADER)
 
 X_UI_CFG_ENUM(ui.lara_health_bar.show_mode,     GRAPHIC_SETTINGS_HEALTHBAR_SHOW_MODE, .misc = UI_Settings_HealthBarShowModeEnumEntries)
 X_UI_CFG_ENUM(ui.lara_health_bar.location,      GRAPHIC_SETTINGS_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Healthbar_IsAvailable })

@@ -89,6 +89,7 @@ typedef struct {
             BAR_COLOR color;
             BAR_COLOR color_allies;
         } enemy_health_bar;
+        bool enable_stats_level_header;
     } ui;
 
     struct {

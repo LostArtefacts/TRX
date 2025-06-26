@@ -10,6 +10,7 @@ GF_COMMAND GF_GetOverrideCommand(void);
 
 GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type);
 const GF_LEVEL_TABLE *GF_GetLevelTable(GF_LEVEL_TABLE_TYPE level_type);
+int32_t GF_GetLevelCount(GF_LEVEL_TABLE_TYPE level_table_type);
 
 const GF_LEVEL *GF_GetCurrentLevel(void);
 const GF_LEVEL *GF_GetTitleLevel(void);
@@ -19,6 +20,11 @@ const GF_LEVEL *GF_GetLastLevel(void);
 const GF_LEVEL *GF_GetLevel(GF_LEVEL_TABLE_TYPE level_table_type, int32_t num);
 const GF_LEVEL *GF_GetLevelAfter(const GF_LEVEL *level);
 const GF_LEVEL *GF_GetLevelBefore(const GF_LEVEL *level);
+
+// Get human-readable number (as opposed to index), starting with 1.
+// Returns 0 for Gym levels and -1 for unknown levels.
+int32_t GF_GetLevelOrdinalNumber(
+    GF_LEVEL_TABLE_TYPE level_table_type, const GF_LEVEL *level);
 
 void GF_SetCurrentLevel(const GF_LEVEL *level);
 void GF_SetLevelTitle(GF_LEVEL *level, const char *title);

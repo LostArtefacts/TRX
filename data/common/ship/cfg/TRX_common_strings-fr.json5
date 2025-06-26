@@ -569,6 +569,8 @@
         "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE_DESCRIPTION": "\\{review}Pour un saut réactif, permet de contrôler à quel moment après le début de la course Lara est autorisée à sauter.\n\n- Hérité : correspond au timing original de TR2.\n- Ajusté : le saut est possible 2 images plus tôt que dans TR2 d'origine.\n- Désactivé : le saut est possible immédiatement après l'animation de départ en course.",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_DISABLED": "\\{review}Désactivé",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Hérité",
-        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Ajusté"
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Ajusté",
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER": "\\{review}En-tête des statistiques de niveau",
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Affiche le numéro de niveau actuel en haut des statistiques de niveau."
     }
 }

@@ -1139,6 +1139,7 @@
         "STATS_KILLS": "Uccisioni",
         "STATS_MEDIPACKS_USED": "Kit Medici Usati",
         "STATS_SECRETS": "Segreti Scoperti",
-        "STATS_TIME_TAKEN": "Tempo Impiegato"
+        "STATS_TIME_TAKEN": "Tempo Impiegato",
+        "STATS_LEVEL": "\\{review}Livello"
     }
 }
