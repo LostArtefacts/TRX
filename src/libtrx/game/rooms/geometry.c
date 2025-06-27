@@ -294,6 +294,11 @@ int16_t Room_GetHeightEx(
                 if (y > walkable_height) {
                     test_y = walkable_height;
                 }
+                // LOG_DEBUG(
+                //     "Change floor height: %d; y: %d; test_y: %d; item_num: "
+                //     "%d; object_id: "
+                //     "%d",
+                //     height, y, test_y, item_num, item->object_id);
             }
         }
     }

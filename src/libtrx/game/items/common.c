@@ -8,9 +8,11 @@
 #include "game/objects/common.h"
 #include "game/output/const.h"
 #include "game/rooms.h"
+#include "log.h"
 #include "utils.h"
 #include "vector.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 static int32_t m_LevelItemCount = 0;
@@ -438,6 +440,28 @@ void Item_SortWalkables(void)
     qsort(
         first_item_num, Item_GetWalkableCount(), sizeof(int16_t),
         M_CompareWalkables);
+
+    LOG_DEBUG("Item_SortWalkables order:");
+    const size_t buf_sz = 32 + (size_t)Item_GetWalkableCount() * 7;
+    char *buf = malloc(buf_sz);
+    if (!buf) {
+        LOG_DEBUG("Item_SortWalkables order: <out-of-memory>");
+        return;
+    }
+
+    // Prefix
+    size_t len = snprintf(buf, buf_sz, "Item_SortWalkables order:");
+
+    // Append each item number
+    for (int32_t i = 0; i < Item_GetWalkableCount() && len < buf_sz; ++i) {
+        const int16_t item_num = Item_GetWalkableNum(i);
+        len += snprintf(buf + len, buf_sz - len, " %d", item_num);
+    }
+
+    // Emit one log entry
+    LOG_DEBUG("%s", buf);
+
+    free(buf);
 }
 
 void Item_ShutdownWalkables(void)

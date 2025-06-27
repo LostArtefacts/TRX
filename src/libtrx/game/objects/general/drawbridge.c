@@ -2,7 +2,9 @@
 #include "game/items.h"
 #include "game/objects.h"
 #include "game/objects/general/door.h"
+#include "game/objects/traps/movable_block.h"
 #include "game/rooms.h"
+#include "log.h"
 
 typedef enum {
     DRAWBRIDGE_STATE_CLOSED = DOOR_STATE_CLOSED,
@@ -89,6 +91,8 @@ static void M_Control(int16_t item_num)
         item->goal_anim_state = DRAWBRIDGE_STATE_OPEN;
     } else {
         item->goal_anim_state = DRAWBRIDGE_STATE_CLOSED;
+        LOG_DEBUG("Activate blocks on drawbridge item_num: %d", item_num);
+        MovableBlock_ActivateSectors(item);
     }
 
     Item_Animate(item);

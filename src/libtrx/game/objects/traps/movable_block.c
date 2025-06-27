@@ -5,6 +5,7 @@
 #include "game/items.h"
 #include "game/objects/vars.h"
 #include "game/pathing.h"
+#include "log.h"
 #include "vector.h"
 
 #include <stdlib.h>
@@ -234,6 +235,9 @@ void MovableBlock_ActivateStack(int32_t stack_height, const XYZ_32 sector_pos)
                     && item->pos.z == sector_pos.z) {
                     stack_height -= WALL_L;
                     triggered_items[triggered_count++] = item_num;
+                    LOG_DEBUG(
+                        "Add item_num: %d to stack. stack_height now: %d",
+                        item_num, stack_height);
                 }
             }
         }
@@ -244,6 +248,7 @@ void MovableBlock_ActivateStack(int32_t stack_height, const XYZ_32 sector_pos)
         int16_t item_num = triggered_items[i];
         ITEM *const item = Item_Get(item_num);
         MovableBlock_SetGravityFrames(item, i);
+        LOG_DEBUG("Trigger item_num: %d with gravity frames: %d", item_num, i);
         item->status = IS_ACTIVE;
         Item_AddActive(item_num);
         Item_Animate(item);

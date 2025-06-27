@@ -14,6 +14,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/log.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19
@@ -436,6 +437,9 @@ static void M_Control(const int16_t item_num)
     }
 
     if (MovableBlock_GetGravityFrames(item) > 0) {
+        LOG_DEBUG(
+            "Skip item_num: %d bc gravity frames %d", item_num,
+            MovableBlock_GetGravityFrames(item));
         MovableBlock_SetGravityFrames(
             item, MovableBlock_GetGravityFrames(item) - 1);
         return;
@@ -452,9 +456,11 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
+    LOG_DEBUG(
+        "initial item_num: %d; item->room_num: %d", item_num, item->room_num);
 
     // Check if the block is floating, on a walkable, or on the pit floor.
-    // Gets the put room number which can break behavior.
+    // Gets the pit room number which can break behavior.
     const ROOM *const room = Room_Get(room_num);
     const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
     const int32_t top_of_block_height =
@@ -474,6 +480,17 @@ static void M_Control(const int16_t item_num)
     if (rounded_on_walkable) {
         under_block_height = ROUND_TO_HALF_CLICK(item->pos.y);
     }
+
+    LOG_DEBUG(
+        "status: %d; gravity: %d; pos.y: %d; top_of_block_height: %d, "
+        "under_block_height: %d; room_num: %d; "
+        "ROUND_TO_HALF_CLICK(item->pos.y): "
+        "%d; rounded_on_walkable: %d; push/pull: %d; gravity frames: %d; "
+        "fall_speed: %d",
+        item->status, item->gravity, item->pos.y, top_of_block_height,
+        under_block_height, room_num, ROUND_TO_HALF_CLICK(item->pos.y),
+        rounded_on_walkable, MovableBlock_IsPushPull(item),
+        MovableBlock_GetGravityFrames(item), item->fall_speed);
 
     // Don't continue gravity if on a walkable.
     // But walkable is affected by falling speed and bridges
@@ -515,6 +532,7 @@ static void M_Control(const int16_t item_num)
         MovableBlock_UpdateBox(item, false);
         Item_SortWalkables();
         Room_TestTriggers(item);
+        LOG_DEBUG("IS_INACTIVE item_num: %d", item_num);
     }
 }
 
