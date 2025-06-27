@@ -960,6 +960,11 @@ void Output_SetSunsetTimer(const int32_t timer)
     m_SunsetTimer = timer;
 }
 
+int32_t Output_GetSunsetTimer(void)
+{
+    return m_SunsetTimer;
+}
+
 void Output_AnimateTextures(const int32_t ticks)
 {
     m_WibbleOffset = (m_WibbleOffset + (ticks / TICKS_PER_FRAME)) % WIBBLE_SIZE;

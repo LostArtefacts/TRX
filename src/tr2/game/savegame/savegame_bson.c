@@ -4,6 +4,7 @@
 #include "game/inventory.h"
 #include "game/lara/control.h"
 #include "game/objects/general/lift.h"
+#include "game/output.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
@@ -299,6 +300,7 @@ static JSON_OBJECT *M_DumpMisc(void)
     JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
     JSON_ObjectAppendBool(
         misc_obj, "are_monks_angry", Creature_AreAlliesHostile());
+    JSON_ObjectAppendInt(misc_obj, "sunset_timer", Output_GetSunsetTimer());
     return misc_obj;
 }
 
@@ -313,6 +315,8 @@ static bool M_LoadMisc(JSON_OBJECT *const misc_obj)
     Game_SetBonusFlag(bonus_flag);
     const bool hostile = JSON_ObjectGetBool(misc_obj, "are_monks_angry", false);
     Creature_SetAlliesHostile(hostile);
+    const int32_t sunset_timer = JSON_ObjectGetInt(misc_obj, "sunset_timer", 0);
+    Output_SetSunsetTimer(sunset_timer);
     return true;
 }
 

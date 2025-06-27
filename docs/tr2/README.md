@@ -354,6 +354,7 @@ fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
 - fixed transparent eyes on the wolf model in Furnace of the Gods
 - fixed Lara's health bar showing in the Home Sweet Home shower cutscene
+- fixed the Bartoli's Hideout sunset effect being reset after reloading a save
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
