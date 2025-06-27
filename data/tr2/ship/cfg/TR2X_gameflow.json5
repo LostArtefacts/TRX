@@ -59,6 +59,7 @@
                 "data/injections/gym_sfx.bin",
                 "data/injections/gym_music_tracks.bin",
                 "data/injections/gym_textures.bin",
+                "data/injections/lara_gym_guns.bin",
             ],
         },
 
@@ -455,6 +456,7 @@
                 "data/injections/house_itemrots.bin",
                 "data/injections/house_music_tracks.bin",
                 "data/injections/house_textures.bin",
+                "data/injections/lara_house_guns.bin",
             ],
         },
     ],
