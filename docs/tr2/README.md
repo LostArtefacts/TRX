@@ -324,6 +324,7 @@ fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode
 - changed dynamic lighting for gun flashes and explosions to be optional
+- changed the Bartoli's Hideout sunset effect to also apply to skybox lighting
 - fixed fullscreen issues
 - fixed black borders in windowed mode
 - fixed "Failed to create device" when toggling fullscreen
