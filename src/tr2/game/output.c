@@ -341,7 +341,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
 static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
 {
     for (int32_t i = 0; i < ABS(mesh->num_lights); i++) {
-        g_PhdVBuf[i].g = 0xFFF;
+        g_PhdVBuf[i].g = 0xFFF + 0x400 * m_SunsetTimer / M_SUNSET_TIMEOUT;
     }
 }
 
