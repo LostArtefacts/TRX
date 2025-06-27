@@ -17,6 +17,7 @@ static int32_t M_CompareBlock(const void *item_idx1, const void *item_idx2);
 static bool M_IsValidFloorShiftState(const ITEM *item);
 static void M_ShiftGlobalFloorUp(void);
 static void M_ShiftGlobalFloorDown(void);
+static int32_t M_GetSectorIndex(int32_t x, int32_t divisor);
 
 static int32_t M_CompareBlock(const void *item_idx1, const void *item_idx2)
 {
@@ -54,6 +55,11 @@ static void M_ShiftGlobalFloorDown(void)
             Room_AlterFloorHeight(item, WALL_L);
         }
     }
+}
+
+static int32_t M_GetSectorIndex(int32_t x, int32_t divisor)
+{
+    return (x >= 0) ? x / divisor : -((-x + divisor - 1) / divisor);
 }
 
 // TODO: make private once M_Setup can be migrated
@@ -170,16 +176,54 @@ uint16_t MovableBlock_GetGravityFrames(const ITEM *const item)
     return data ? data->gravity_frames : 0;
 }
 
-void MovableBlock_ActivateStack(
-    const ITEM *const base_item, const XYZ_32 sector_pos)
+void MovableBlock_ActivateSectors(const ITEM *const item)
+{
+    const BOUNDS_16 rot_bounds = Item_RotateBounds(item, item->rot.y);
+
+    // World space coordinates
+    const int32_t x0 = item->pos.x + rot_bounds.min.x;
+    const int32_t x1 = item->pos.x + rot_bounds.max.x;
+    const int32_t z0 = item->pos.z + rot_bounds.min.z;
+    const int32_t z1 = item->pos.z + rot_bounds.max.z;
+
+    // Convert to sector indices
+    int32_t sx0 = M_GetSectorIndex(x0, WALL_L);
+    int32_t sx1 = M_GetSectorIndex(x1, WALL_L);
+    int32_t sz0 = M_GetSectorIndex(z0, WALL_L);
+    int32_t sz1 = M_GetSectorIndex(z1, WALL_L);
+
+    // Swap direction if needed
+    if (sx0 > sx1) {
+        int32_t t = sx0;
+        sx0 = sx1;
+        sx1 = t;
+    }
+    if (sz0 > sz1) {
+        int32_t t = sz0;
+        sz0 = sz1;
+        sz1 = t;
+    }
+
+    // Walk every covered sector
+    for (int32_t sx = sx0; sx <= sx1; ++sx) {
+        for (int32_t sz = sz0; sz <= sz1; ++sz) {
+            const XYZ_32 pos = {
+                .x = sx * WALL_L + WALL_L / 2,
+                .y = item->pos.y,
+                .z = sz * WALL_L + WALL_L / 2,
+            };
+            MovableBlock_ActivateStack(item->pos.y, pos);
+        }
+    }
+}
+
+void MovableBlock_ActivateStack(int32_t stack_height, const XYZ_32 sector_pos)
 {
     int16_t *triggered_items =
         (int16_t *)malloc((size_t)Item_GetWalkableCount() * sizeof(int16_t));
     int32_t triggered_count = 0;
 
     // Check for a stack of movable blocks and trigger each one.
-    // Only trigger stacked blocks resting on the trapdoor pos.y.
-    int32_t stack_height = base_item->pos.y;
     for (int32_t i = 0; i < Item_GetWalkableCount(); i++) {
         const int16_t item_num = Item_GetWalkableNum(i);
         ITEM *const item = Item_Get(item_num);

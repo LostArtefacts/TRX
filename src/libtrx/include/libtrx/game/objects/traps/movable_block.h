@@ -11,7 +11,8 @@ void MovableBlock_SetPushPull(ITEM *item, bool enable);
 bool MovableBlock_IsPushPull(const ITEM *item);
 void MovableBlock_SetGravityFrames(ITEM *item, uint8_t frames);
 uint16_t MovableBlock_GetGravityFrames(const ITEM *item);
-void MovableBlock_ActivateStack(const ITEM *base_item, XYZ_32 sector_pos);
+void MovableBlock_ActivateSectors(const ITEM *item);
+void MovableBlock_ActivateStack(int32_t stack_height, XYZ_32 sector_pos);
 
 typedef struct {
     int16_t counter_rot[3];
