@@ -529,7 +529,7 @@ static void M_Control(const int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
-        MovableBlock_UpdateBox(item, false);
+        MovableBlock_UpdateBox(item, true);
         Item_SortWalkables();
         Room_TestTriggers(item);
         LOG_DEBUG("IS_INACTIVE item_num: %d", item_num);

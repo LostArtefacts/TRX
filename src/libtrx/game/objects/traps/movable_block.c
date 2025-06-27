@@ -109,10 +109,12 @@ void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (sector->floor.height == item->pos.y && sector->box != NO_BOX) {
         BOX_INFO *const box = Box_GetBox(sector->box);
-        if (blocked) {
-            box->overlap_index |= BOX_BLOCKED;
-        } else {
-            box->overlap_index &= ~BOX_BLOCKED;
+        if ((box->overlap_index & BOX_BLOCKABLE) != 0) {
+            if (blocked) {
+                box->overlap_index |= BOX_BLOCKED;
+            } else {
+                box->overlap_index &= ~BOX_BLOCKED;
+            }
         }
     }
 }
