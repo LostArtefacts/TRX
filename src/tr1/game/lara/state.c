@@ -30,7 +30,6 @@ static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
 static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
-static void M_Tread(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Back(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
@@ -810,64 +809,6 @@ static void M_Glide(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_Tread(ITEM *item, COLL_INFO *coll)
-{
-    if (g_Config.gameplay.enable_enhanced_look) {
-        if (g_Input.look) {
-            Lara_LookUpDown();
-        }
-    }
-
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    coll->enable_hit = 0;
-
-    if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->goal_anim_state = LS_WATER_ROLL;
-        return;
-    }
-
-    if (g_Input.forward) {
-        item->rot.x -= 2 * DEG_1;
-    } else if (g_Input.back) {
-        item->rot.x += 2 * DEG_1;
-    }
-    if (g_Config.gameplay.enable_tr2_swimming) {
-        if (g_Input.left) {
-            g_Lara.turn_rate -= LARA_TURN_RATE;
-            CLAMPL(g_Lara.turn_rate, -LARA_MED_TURN);
-            item->rot.z -= LARA_LEAN_RATE_SWIM;
-        } else if (g_Input.right) {
-            g_Lara.turn_rate += LARA_TURN_RATE;
-            CLAMPG(g_Lara.turn_rate, LARA_MED_TURN);
-            item->rot.z += LARA_LEAN_RATE_SWIM;
-        }
-    } else {
-        if (g_Input.left) {
-            item->rot.y -= LARA_MED_TURN;
-            item->rot.z -= LARA_LEAN_RATE * 2;
-        } else if (g_Input.right) {
-            item->rot.y += LARA_MED_TURN;
-            item->rot.z += LARA_LEAN_RATE * 2;
-        }
-    }
-
-    if (g_Input.jump) {
-        item->goal_anim_state = LS_SWIM;
-    }
-
-    item->fall_speed -= LARA_UW_FRICTION;
-    if (item->fall_speed < 0) {
-        item->fall_speed = 0;
-    }
-    if (g_Lara.gun_status == LGS_HANDS_BUSY) {
-        g_Lara.gun_status = LGS_ARMLESS;
-    }
-}
-
 static void M_Wade(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -911,7 +852,6 @@ REGISTER_LARA_STATE(LS_DEATH,         M_Death)
 REGISTER_LARA_STATE(LS_FAST_FALL,     M_FastFall)
 REGISTER_LARA_STATE(LS_HANG,          M_Hang)
 REGISTER_LARA_STATE(LS_REACH,         M_Reach)
-REGISTER_LARA_STATE(LS_TREAD,         M_Tread)
 REGISTER_LARA_STATE(LS_COMPRESS,      M_Compress)
 REGISTER_LARA_STATE(LS_WALK_BACK,     M_Back)
 REGISTER_LARA_STATE(LS_SWIM,          M_Swim)

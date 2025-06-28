@@ -4,6 +4,9 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
+static void M_SwimTurn(ITEM *item);
+
+static void M_Tread(ITEM *item, COLL_INFO *coll);
 static void M_SurfTread(ITEM *item, COLL_INFO *coll);
 static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
 static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
@@ -11,6 +14,77 @@ static void M_Dive(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_WaterOut(ITEM *item, COLL_INFO *coll);
 static void M_UWTwist(ITEM *item, COLL_INFO *coll);
+
+static void M_SwimTurn(ITEM *const item)
+{
+    if (g_Input.forward) {
+        item->rot.x -= LARA_TURN_RATE_UW;
+    } else if (g_Input.back) {
+        item->rot.x += LARA_TURN_RATE_UW;
+    }
+
+#if TR_VERSION == 1
+    if (!g_Config.gameplay.enable_tr2_swimming) {
+        if (g_Input.left) {
+            item->rot.y -= LARA_MED_TURN;
+            item->rot.z -= LARA_LEAN_RATE * 2;
+        } else if (g_Input.right) {
+            item->rot.y += LARA_MED_TURN;
+            item->rot.z += LARA_LEAN_RATE * 2;
+        }
+        return;
+    }
+#endif
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_MED_TURN);
+        item->rot.z -= LARA_LEAN_RATE_SWIM;
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, LARA_MED_TURN);
+        item->rot.z += LARA_LEAN_RATE_SWIM;
+    }
+}
+
+static void M_Tread(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_UW_DEATH;
+        return;
+    }
+
+#if TR_VERSION == 1
+    coll->enable_hit = 0;
+    const bool roll = g_Config.gameplay.enable_uw_roll && g_Input.roll;
+    const bool look = g_Config.gameplay.enable_enhanced_look && g_Input.look;
+#else
+    const bool roll = g_Input.roll;
+    const bool look = g_Input.look;
+#endif
+
+    if (roll) {
+        item->current_anim_state = LS_WATER_ROLL;
+        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
+        return;
+    }
+    if (look) {
+        Lara_LookUpDown();
+    }
+
+    M_SwimTurn(item);
+    if (g_Input.jump) {
+        item->goal_anim_state = LS_SWIM;
+    }
+    item->fall_speed -= LARA_UW_FRICTION;
+    CLAMPL(item->fall_speed, 0);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->gun_status == LGS_HANDS_BUSY) {
+        lara->gun_status = LGS_ARMLESS;
+    }
+}
 
 static void M_SurfTread(ITEM *const item, COLL_INFO *const coll)
 {
@@ -183,6 +257,7 @@ static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
+REGISTER_LARA_STATE(LS_TREAD,      M_Tread)
 REGISTER_LARA_STATE(LS_SURF_TREAD, M_SurfTread)
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_ForwardSurface)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
