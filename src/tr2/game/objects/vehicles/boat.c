@@ -1,7 +1,6 @@
 #include "decomp/decomp.h"
 #include "game/effects.h"
 #include "game/input.h"
-#include "game/lara/look.h"
 #include "game/objects/common.h"
 #include "game/objects/traps/gondola.h"
 #include "game/output.h"
@@ -13,6 +12,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>

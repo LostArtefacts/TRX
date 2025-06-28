@@ -4,12 +4,74 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
+static void M_SurfTread(ITEM *item, COLL_INFO *coll);
 static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
 static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
 static void M_Dive(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_WaterOut(ITEM *item, COLL_INFO *coll);
 static void M_UWTwist(ITEM *item, COLL_INFO *coll);
+
+static void M_SurfTread(ITEM *const item, COLL_INFO *const coll)
+{
+    item->fall_speed -= 4;
+    CLAMPL(item->fall_speed, 0);
+
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_UW_DEATH;
+        return;
+    }
+
+#if TR_VERSION == 1
+    coll->enable_hit = 0;
+    if (g_Input.look) {
+        Lara_LookLeftRightSurf();
+        Lara_LookUpDownSurf();
+        return;
+    }
+    if (g_Camera.type == CAM_LOOK) {
+        g_Camera.type = CAM_CHASE;
+    }
+#else
+    if (g_Input.look) {
+        Lara_LookUpDown();
+        return;
+    }
+#endif
+
+    if (g_Input.left) {
+        item->rot.y -= LARA_SLOW_TURN;
+    } else if (g_Input.right) {
+        item->rot.y += LARA_SLOW_TURN;
+    }
+
+    if (g_Input.forward) {
+        item->goal_anim_state = LS_SURF_SWIM;
+    } else if (g_Input.back) {
+        item->goal_anim_state = LS_SURF_BACK;
+    }
+
+    if (g_Input.step_left) {
+        item->goal_anim_state = LS_SURF_LEFT;
+    } else if (g_Input.step_right) {
+        item->goal_anim_state = LS_SURF_RIGHT;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.jump) {
+        lara->dive_timer++;
+        if (lara->dive_timer == LARA_DIVE_WAIT) {
+            Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
+            item->goal_anim_state = LS_SWIM;
+            item->current_anim_state = LS_DIVE;
+            item->rot.x = -45 * DEG_1;
+            item->fall_speed = 80;
+            lara->water_status = LWS_UNDERWATER;
+        }
+    } else {
+        lara->dive_timer = 0;
+    }
+}
 
 static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
 {
@@ -121,6 +183,7 @@ static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
+REGISTER_LARA_STATE(LS_SURF_TREAD, M_SurfTread)
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_ForwardSurface)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
 REGISTER_LARA_STATE(LS_UW_DEATH,   M_UWDeath)
