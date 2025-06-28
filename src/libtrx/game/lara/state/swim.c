@@ -7,7 +7,8 @@
 static void M_SwimTurn(ITEM *item);
 
 static void M_Tread(ITEM *item, COLL_INFO *coll);
-static void M_SurfTread(ITEM *item, COLL_INFO *coll);
+static void M_Swim(ITEM *item, COLL_INFO *coll);
+static void M_TreadSurface(ITEM *item, COLL_INFO *coll);
 static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
 static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
 static void M_Dive(ITEM *item, COLL_INFO *coll);
@@ -86,7 +87,48 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static void M_SurfTread(ITEM *const item, COLL_INFO *const coll)
+static void M_Swim(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_UW_DEATH;
+        return;
+    }
+
+#if TR_VERSION == 1
+    coll->enable_hit = 0;
+    const bool roll = g_Config.gameplay.enable_uw_roll && g_Input.roll;
+#else
+    const bool roll = g_Input.roll;
+#endif
+
+    if (roll) {
+        item->current_anim_state = LS_WATER_ROLL;
+        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
+        return;
+    }
+
+    M_SwimTurn(item);
+    item->fall_speed += 8;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_CHEAT) {
+        CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED * 2);
+    } else {
+        CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED);
+    }
+
+    if (!g_Input.jump) {
+#if TR_VERSION == 1
+        item->goal_anim_state = g_Config.gameplay.enable_tr2_swim_cancel
+                && Lara_State_IsResponsive(LA_UNDERWATER_SWIM_FORWARD)
+            ? LS_RESPONSIVE
+            : LS_GLIDE;
+#else
+        item->goal_anim_state = LS_GLIDE;
+#endif
+    }
+}
+
+static void M_TreadSurface(ITEM *const item, COLL_INFO *const coll)
 {
     item->fall_speed -= 4;
     CLAMPL(item->fall_speed, 0);
@@ -258,7 +300,8 @@ static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
 
 // clang-format off
 REGISTER_LARA_STATE(LS_TREAD,      M_Tread)
-REGISTER_LARA_STATE(LS_SURF_TREAD, M_SurfTread)
+REGISTER_LARA_STATE(LS_SWIM,       M_Swim)
+REGISTER_LARA_STATE(LS_SURF_TREAD, M_TreadSurface)
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_ForwardSurface)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
 REGISTER_LARA_STATE(LS_UW_DEATH,   M_UWDeath)

@@ -68,7 +68,6 @@ static void M_ClimbStance(ITEM *item, COLL_INFO *coll);
 static void M_Climbing(ITEM *item, COLL_INFO *coll);
 static void M_ClimbEnd(ITEM *item, COLL_INFO *coll);
 static void M_ClimbDown(ITEM *item, COLL_INFO *coll);
-static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_Glide(ITEM *item, COLL_INFO *coll);
 
 static void M_SwimTurn(ITEM *const item)
@@ -806,32 +805,6 @@ static void M_ClimbDown(ITEM *item, COLL_INFO *coll)
     g_Camera.target_elevation = CAM_CLIMB_DOWN_ELEVATION;
 }
 
-static void M_Swim(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    if (g_Input.roll) {
-        item->current_anim_state = LS_WATER_ROLL;
-        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
-        return;
-    }
-
-    M_SwimTurn(item);
-    item->fall_speed += 8;
-    if (g_Lara.water_status == LWS_CHEAT) {
-        CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED * 2);
-    } else {
-        CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED);
-    }
-
-    if (!g_Input.jump) {
-        item->goal_anim_state = LS_GLIDE;
-    }
-}
-
 static void M_Glide(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -871,7 +844,6 @@ REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_Back)
-REGISTER_LARA_STATE(LS_SWIM,         M_Swim)
 REGISTER_LARA_STATE(LS_GLIDE,        M_Glide)
 REGISTER_LARA_STATE(LS_PULL_UP,      M_Null)
 REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
