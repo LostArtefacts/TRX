@@ -108,17 +108,6 @@
 
 #if TR_VERSION == 2
     #define CAM_ZIPLINE_ANGLE (70 * DEG_1) // = 12740
-    #define CAM_YETI_KILL_ANGLE (160 * DEG_1) // = 29120
-    #define CAM_YETI_KILL_DISTANCE (3 * WALL_L) // = 3072
-    #define CAM_SHARK_KILL_ANGLE (160 * DEG_1) // = 29120
-    #define CAM_SHARK_KILL_DISTANCE (3 * WALL_L) // = 3072
-    #define CAM_AIRLOCK_ANGLE (80 * DEG_1) // = 14560
-    #define CAM_AIRLOCK_ELEVATION (-25 * DEG_1) // = -4550
-    #define CAM_GONG_BONG_ANGLE (-25 * DEG_1) // = -4550
-    #define CAM_GONG_BONG_ELEVATION (-20 * DEG_1) // = -3640
-    #define CAM_GONG_BONG_DISTANCE (3 * WALL_L) // = 3072
-    #define CAM_TREX_KILL_ANGLE (170 * DEG_1) // = 30940
-    #define CAM_TREX_KILL_ELEVATION (-25 * DEG_1) // = -4550
     #define CAM_CLIMB_LEFT_ANGLE (-30 * DEG_1) // = -5460
     #define CAM_CLIMB_LEFT_ELEVATION (-15 * DEG_1) // = -2730
     #define CAM_CLIMB_RIGHT_ANGLE (-CAM_CLIMB_LEFT_ANGLE) // = 5460

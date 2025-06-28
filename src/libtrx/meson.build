@@ -183,6 +183,7 @@ sources = [
   'game/lara/hair.c',
   'game/lara/misc.c',
   'game/lara/state.c',
+  'game/lara/state/extra.c',
   'game/level/common.c',
   'game/level/faces.c',
   'game/level/settings.c',

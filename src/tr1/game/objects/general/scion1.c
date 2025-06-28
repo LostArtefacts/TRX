@@ -77,7 +77,7 @@ static void M_Collision(
 
     if (lara_item->current_anim_state == LS_PICKUP) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUPSCION)) {
-            Overlay_AddPickup(item->object_id);
+            Overlay_AddDisplayPickup(item->object_id);
             Inv_AddItem(item->object_id);
             item->status = IS_INVISIBLE;
             Item_RemoveDrawn(item_num);
