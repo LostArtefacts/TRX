@@ -77,8 +77,6 @@
 #define DEATH_WAIT_INPUT (2 * LOGIC_FPS) // = 60
 
 // TODO: move to merged lara/state.c
-#define CAM_HANG_ANGLE 0
-#define CAM_HANG_ELEVATION (-60 * DEG_1) // = -10920
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
 #define CAM_REACH_ANGLE (85 * DEG_1) // = 15470
 #define CAM_SLIDE_ELEVATION (-45 * DEG_1) // = -8190

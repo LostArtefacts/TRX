@@ -5,6 +5,8 @@
 #include "game/lara/util.h"
 
 // clang-format off
+#define M_CAM_HANG_ANGLE             0
+#define M_CAM_HANG_ELEVATION         (-60 * DEG_1)              // = -10920
 #define M_CAM_CLIMB_LEFT_ANGLE       (-30 * DEG_1)              // = -5460
 #define M_CAM_CLIMB_LEFT_ELEVATION   (-15 * DEG_1)              // = -2730
 #define M_CAM_CLIMB_RIGHT_ANGLE      (-M_CAM_CLIMB_LEFT_ANGLE)  // = 5460
@@ -16,6 +18,7 @@
 // clang-format on
 
 static void M_Hang(ITEM *item, COLL_INFO *coll);
+static void M_Shimmy(ITEM *item, COLL_INFO *coll);
 static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
 static void M_SideLadder(ITEM *item, COLL_INFO *coll);
 static void M_UpDownLadder(ITEM *item, COLL_INFO *coll);
@@ -33,12 +36,27 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_HANG_ANGLE;
-    g_Camera.target_elevation = CAM_HANG_ELEVATION;
+    g_Camera.target_angle = M_CAM_HANG_ANGLE;
+    g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
     if (g_Input.left || g_Input.step_left) {
         item->goal_anim_state = LS_SHIMMY_LEFT;
     } else if (g_Input.right || g_Input.step_right) {
         item->goal_anim_state = LS_SHIMMY_RIGHT;
+    }
+}
+
+static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+    g_Camera.target_angle = M_CAM_HANG_ANGLE;
+    g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
+
+    const bool stop = item->current_anim_state == LS_SHIMMY_LEFT
+        ? (!g_Input.left && !g_Input.step_left)
+        : (!g_Input.right && !g_Input.step_right);
+    if (stop) {
+        item->goal_anim_state = LS_HANG;
     }
 }
 
@@ -108,6 +126,8 @@ static void M_UpDownLadder(ITEM *const item, COLL_INFO *const coll)
 
 // clang-format off
 REGISTER_LARA_STATE(LS_HANG,         M_Hang)
+REGISTER_LARA_STATE(LS_SHIMMY_LEFT,  M_Shimmy)
+REGISTER_LARA_STATE(LS_SHIMMY_RIGHT, M_Shimmy)
 #if TR_VERSION >= 2
 REGISTER_LARA_STATE(LS_CLIMB_STANCE, M_StanceLadder)
 REGISTER_LARA_STATE(LS_CLIMB_LEFT,   M_SideLadder)
