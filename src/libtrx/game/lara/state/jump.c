@@ -4,7 +4,10 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
+// clang-format off
 #define M_CAM_BACK_JUMP_ANGLE (135 * DEG_1) // = 24570
+#define M_CAM_REACH_ANGLE     (85 * DEG_1)  // = 15470
+// clang-format on
 
 static bool IsJumpTwistEnabled(void);
 
@@ -14,6 +17,7 @@ static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
 static void M_BackJump(ITEM *item, COLL_INFO *coll);
 static void M_SideJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
+static void M_Reach(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -151,6 +155,14 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Reach(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = M_CAM_REACH_ANGLE;
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+        item->goal_anim_state = LS_FAST_FALL;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
@@ -159,4 +171,5 @@ REGISTER_LARA_STATE(LS_JUMP_BACK,    M_BackJump)
 REGISTER_LARA_STATE(LS_JUMP_RIGHT,   M_SideJump)
 REGISTER_LARA_STATE(LS_JUMP_LEFT,    M_SideJump)
 REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
+REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 // clang-format on

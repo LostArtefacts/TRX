@@ -30,7 +30,6 @@ static void M_TurnRight(ITEM *item, COLL_INFO *coll);
 static void M_TurnLeft(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
-static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Back(ITEM *item, COLL_INFO *coll);
 static void M_Null(ITEM *item, COLL_INFO *coll);
@@ -279,14 +278,6 @@ static void M_FastFall(ITEM *item, COLL_INFO *coll)
     item->speed = item->speed * 95 / 100;
     if (item->fall_speed == DAMAGE_START + DAMAGE_LENGTH) {
         Sound_Effect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
-    }
-}
-
-static void M_Reach(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_REACH_ANGLE;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
     }
 }
 
@@ -544,7 +535,6 @@ REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_TurnRight)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_TurnLeft)
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_FAST_FALL,    M_FastFall)
-REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_Back)
 REGISTER_LARA_STATE(LS_PULL_UP,      M_Null)
