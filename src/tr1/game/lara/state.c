@@ -41,8 +41,6 @@ static void M_RightJump(ITEM *item, COLL_INFO *coll);
 static void M_LeftJump(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
-static void M_HangLeft(ITEM *item, COLL_INFO *coll);
-static void M_HangRight(ITEM *item, COLL_INFO *coll);
 static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
@@ -553,28 +551,6 @@ static void M_FallBack(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_HangLeft(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_HANG_ANGLE;
-    g_Camera.target_elevation = CAM_HANG_ELEVATION;
-    if (!g_Input.left && !g_Input.step_left) {
-        item->goal_anim_state = LS_HANG;
-    }
-}
-
-static void M_HangRight(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_HANG_ANGLE;
-    g_Camera.target_elevation = CAM_HANG_ELEVATION;
-    if (!g_Input.right && !g_Input.step_right) {
-        item->goal_anim_state = LS_HANG;
-    }
-}
-
 static void M_SlideBack(ITEM *item, COLL_INFO *coll)
 {
     if (g_Input.jump
@@ -733,8 +709,6 @@ REGISTER_LARA_STATE(LS_JUMP_RIGHT,    M_RightJump)
 REGISTER_LARA_STATE(LS_JUMP_LEFT,     M_LeftJump)
 REGISTER_LARA_STATE(LS_JUMP_UP,       M_UpJump)
 REGISTER_LARA_STATE(LS_FALL_BACK,     M_FallBack)
-REGISTER_LARA_STATE(LS_SHIMMY_LEFT,   M_HangLeft)
-REGISTER_LARA_STATE(LS_SHIMMY_RIGHT,  M_HangRight)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,    M_SlideBack)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,    M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,    M_PushBlock)
