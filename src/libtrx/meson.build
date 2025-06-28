@@ -184,6 +184,7 @@ sources = [
   'game/lara/hair.c',
   'game/lara/misc.c',
   'game/lara/state.c',
+  'game/lara/state/climb.c',
   'game/lara/state/extra.c',
   'game/lara/state/swim.c',
   'game/level/common.c',
