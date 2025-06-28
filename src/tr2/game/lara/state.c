@@ -33,7 +33,6 @@ static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
-static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_Back(ITEM *item, COLL_INFO *coll);
 static void M_Null(ITEM *item, COLL_INFO *coll);
 static void M_FastTurn(ITEM *item, COLL_INFO *coll);
@@ -332,39 +331,6 @@ static void M_Reach(ITEM *item, COLL_INFO *coll)
 static void M_Splat(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.enable_look = false;
-}
-
-static void M_Compress(ITEM *item, COLL_INFO *coll)
-{
-    if (g_Lara.water_status != LWS_WADE) {
-        if (g_Input.forward
-            && Lara_FloorFront(item, item->rot.y, STEP_L) >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_JUMP_FORWARD;
-            g_Lara.move_angle = item->rot.y;
-        } else if (
-            g_Input.left
-            && Lara_FloorFront(item, item->rot.y - DEG_90, STEP_L)
-                >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_JUMP_LEFT;
-            g_Lara.move_angle = item->rot.y - DEG_90;
-        } else if (
-            g_Input.right
-            && Lara_FloorFront(item, item->rot.y + DEG_90, STEP_L)
-                >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_JUMP_RIGHT;
-            g_Lara.move_angle = item->rot.y + DEG_90;
-        } else if (
-            g_Input.back
-            && Lara_FloorFront(item, item->rot.y + DEG_180, STEP_L)
-                >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_JUMP_BACK;
-            g_Lara.move_angle = item->rot.y + DEG_180;
-        }
-    }
-
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
-    }
 }
 
 static void M_Back(ITEM *item, COLL_INFO *coll)
@@ -682,7 +648,6 @@ REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_FAST_FALL,    M_FastFall)
 REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
-REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_Back)
 REGISTER_LARA_STATE(LS_PULL_UP,      M_Null)
 REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
