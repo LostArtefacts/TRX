@@ -6,6 +6,7 @@
 
 static void M_SurfSwim(ITEM *item, COLL_INFO *coll);
 static void M_Dive(ITEM *item, COLL_INFO *coll);
+static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_WaterOut(ITEM *item, COLL_INFO *coll);
 static void M_UWTwist(ITEM *item, COLL_INFO *coll);
 
@@ -42,6 +43,25 @@ static void M_Dive(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    coll->enable_hit = 0;
+#endif
+    item->gravity = false;
+    item->fall_speed -= 8;
+    CLAMPL(item->fall_speed, 0);
+
+    const int32_t angle = 2 * DEG_1;
+    if (item->rot.x >= -angle && item->rot.x <= angle) {
+        item->rot.x = 0;
+    } else if (item->rot.x >= 0) {
+        item->rot.x -= angle;
+    } else {
+        item->rot.x += angle;
+    }
+}
+
 static void M_WaterOut(ITEM *const item, COLL_INFO *const coll)
 {
     coll->enable_hit = 0;
@@ -58,6 +78,7 @@ static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
 // clang-format off
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_SurfSwim)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
+REGISTER_LARA_STATE(LS_UW_DEATH,   M_UWDeath)
 REGISTER_LARA_STATE(LS_WATER_OUT,  M_WaterOut)
 REGISTER_LARA_STATE(LS_WATER_ROLL, M_UWTwist)
 // clang-format on

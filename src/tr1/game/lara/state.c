@@ -55,7 +55,6 @@ static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_Controlled(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
-static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_SurfBack(ITEM *item, COLL_INFO *coll);
 static void M_SurfLeft(ITEM *item, COLL_INFO *coll);
@@ -1030,23 +1029,6 @@ static void M_Tread(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_UWDeath(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    item->fall_speed -= 8;
-    if (item->fall_speed <= 0) {
-        item->fall_speed = 0;
-    }
-
-    if (item->rot.x >= -2 * DEG_1 && item->rot.x <= 2 * DEG_1) {
-        item->rot.x = 0;
-    } else if (item->rot.x < 0) {
-        item->rot.x += 2 * DEG_1;
-    } else {
-        item->rot.x -= 2 * DEG_1;
-    }
-}
-
 static void M_Wade(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -1117,7 +1099,6 @@ REGISTER_LARA_STATE(LS_SWITCH_ON,     M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,       M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,    M_UseKey)
-REGISTER_LARA_STATE(LS_UW_DEATH,      M_UWDeath)
 REGISTER_LARA_STATE(LS_SPECIAL,       M_Special)
 REGISTER_LARA_STATE(LS_SURF_BACK,     M_SurfBack)
 REGISTER_LARA_STATE(LS_SURF_LEFT,     M_SurfLeft)
