@@ -1107,7 +1107,8 @@ bool Creature_IsTargetable(const ITEM *const item)
 #if TR_VERSION == 1
     return true;
 #else
-    return g_Config.gameplay.enable_ally_targeting || !Creature_IsAlly(item);
+    return item->hit_points != DONT_TARGET
+        && (g_Config.gameplay.enable_ally_targeting || !Creature_IsAlly(item));
 #endif
 }
 
