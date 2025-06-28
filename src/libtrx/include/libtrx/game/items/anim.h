@@ -11,6 +11,10 @@ int16_t Item_GetRelativeFrame(const ITEM *item);
 void Item_SwitchToAnim(ITEM *item, int16_t anim_idx, int16_t frame);
 void Item_SwitchToObjAnim(
     ITEM *item, int16_t anim_idx, int16_t frame, GAME_OBJECT_ID obj_id);
+
+// Tests if the given item's current relative animation frame matches the
+// provided value. If a negative value is passed, the test is performed from the
+// end of the animation's frame set.
 bool Item_TestFrameEqual(const ITEM *item, int16_t frame);
 bool Item_TestFrameRange(const ITEM *item, int16_t start, int16_t end);
 
