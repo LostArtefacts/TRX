@@ -61,7 +61,6 @@ static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
-static void M_WaterOut(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_Zipline(ITEM *item, COLL_INFO *coll);
 static void M_ClimbLeft(ITEM *item, COLL_INFO *coll);
@@ -705,13 +704,6 @@ static void M_FastDive(ITEM *item, COLL_INFO *coll)
     item->speed = item->speed * 95 / 100;
 }
 
-static void M_WaterOut(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-}
-
 static void M_Wade(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -1081,7 +1073,6 @@ REGISTER_LARA_STATE(LS_SURF_RIGHT,   M_SurfRight)
 REGISTER_LARA_STATE(LS_SWAN_DIVE,    M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,    M_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,      M_Null)
-REGISTER_LARA_STATE(LS_WATER_OUT,    M_WaterOut)
 REGISTER_LARA_STATE(LS_CLIMB_STANCE, M_ClimbStance)
 REGISTER_LARA_STATE(LS_CLIMBING,     M_Climbing)
 REGISTER_LARA_STATE(LS_CLIMB_LEFT,   M_ClimbLeft)
