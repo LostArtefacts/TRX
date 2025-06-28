@@ -62,8 +62,10 @@ void Item_SwitchToObjAnim(
 
 bool Item_TestFrameEqual(const ITEM *const item, const int16_t frame)
 {
-    return Anim_TestAbsFrameEqual(
-        item->frame_num, Item_GetAnim(item)->frame_base + frame);
+    const ANIM *const anim = Item_GetAnim(item);
+    const int16_t base_frame =
+        frame < 0 ? (anim->frame_end + 1) : anim->frame_base;
+    return Anim_TestAbsFrameEqual(item->frame_num, base_frame + frame);
 }
 
 bool Item_TestFrameRange(

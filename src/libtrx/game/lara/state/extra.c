@@ -23,7 +23,6 @@
 #define M_LF_START_HOUSE_END           427
 #define M_LF_SHOWER_START              1
 #define M_LF_SHOWER_SHOTGUN_PICKUP     316
-#define M_LF_SHOWER_END                349
 #define M_CAM_YETI_KILL_ANGLE         (160 * DEG_1) // = 29120
 #define M_CAM_YETI_KILL_DISTANCE      (3 * WALL_L)  // = 3072
 #define M_CAM_SHARK_KILL_ANGLE        (160 * DEG_1) // = 29120
@@ -288,7 +287,7 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
         Music_Play(MX_CUTSCENE_BATH, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, M_LF_SHOWER_SHOTGUN_PICKUP)) {
         Lara_SwapSingleMesh(LM_HAND_R, O_LARA_SHOTGUN);
-    } else if (Item_TestFrameEqual(item, M_LF_SHOWER_END)) {
+    } else if (Item_TestFrameEqual(item, -1)) {
         Game_SetIsLevelComplete(true);
     }
 #endif
