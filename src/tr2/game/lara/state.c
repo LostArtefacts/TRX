@@ -77,7 +77,6 @@ static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_Glide(ITEM *item, COLL_INFO *coll);
 static void M_Tread(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
-static void M_UWTwist(ITEM *item, COLL_INFO *coll);
 
 static void M_SwimTurn(ITEM *const item)
 {
@@ -1020,11 +1019,6 @@ static void M_UWDeath(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_UWTwist(ITEM *item, COLL_INFO *coll)
-{
-    item->fall_speed = 0;
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
@@ -1080,7 +1074,6 @@ REGISTER_LARA_STATE(LS_CLIMB_END,    M_ClimbEnd)
 REGISTER_LARA_STATE(LS_CLIMB_RIGHT,  M_ClimbRight)
 REGISTER_LARA_STATE(LS_CLIMB_DOWN,   M_ClimbDown)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
-REGISTER_LARA_STATE(LS_WATER_ROLL,   M_UWTwist)
 REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
 REGISTER_LARA_STATE(LS_ZIPLINE,      M_Zipline)
 // clang-format on

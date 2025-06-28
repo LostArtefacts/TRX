@@ -62,7 +62,6 @@ static void M_SurfLeft(ITEM *item, COLL_INFO *coll);
 static void M_SurfRight(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
-static void M_UWTwist(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Walk(ITEM *item, COLL_INFO *coll)
@@ -700,12 +699,6 @@ static void M_FastDive(ITEM *item, COLL_INFO *coll)
     item->speed = (item->speed * 95) / 100;
 }
 
-static void M_UWTwist(ITEM *item, COLL_INFO *coll)
-{
-    item->fall_speed = 0;
-    item->goal_anim_state = LS_TREAD;
-}
-
 static void M_Null(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
@@ -1133,6 +1126,5 @@ REGISTER_LARA_STATE(LS_SWAN_DIVE,     M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,     M_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,       M_Null)
 REGISTER_LARA_STATE(LS_CONTROLLED,    M_Controlled)
-REGISTER_LARA_STATE(LS_WATER_ROLL,    M_UWTwist)
 REGISTER_LARA_STATE(LS_WADE,          M_Wade)
 // clang-format on
