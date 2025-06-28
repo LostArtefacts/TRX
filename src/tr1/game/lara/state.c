@@ -34,7 +34,6 @@ static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
 static void M_StepLeft(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
-static void M_BackJump(ITEM *item, COLL_INFO *coll);
 static void M_RightJump(ITEM *item, COLL_INFO *coll);
 static void M_LeftJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
@@ -432,20 +431,6 @@ static void M_Slide(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_BackJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_BACK_JUMP_ANGLE;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
-    } else if (item->goal_anim_state == LS_RUN) {
-        item->goal_anim_state = LS_STOP;
-    } else if (
-        item->goal_anim_state != LS_STOP && g_Config.gameplay.enable_jump_twists
-        && (g_Input.roll || g_Input.forward)) {
-        item->goal_anim_state = LS_TWIST;
-    }
-}
-
 static void M_RightJump(ITEM *item, COLL_INFO *coll)
 {
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
@@ -621,7 +606,6 @@ REGISTER_LARA_STATE(LS_FAST_TURN,     M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,    M_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,     M_StepLeft)
 REGISTER_LARA_STATE(LS_SLIDE,         M_Slide)
-REGISTER_LARA_STATE(LS_JUMP_BACK,     M_BackJump)
 REGISTER_LARA_STATE(LS_JUMP_RIGHT,    M_RightJump)
 REGISTER_LARA_STATE(LS_JUMP_LEFT,     M_LeftJump)
 REGISTER_LARA_STATE(LS_FALL_BACK,     M_FallBack)
