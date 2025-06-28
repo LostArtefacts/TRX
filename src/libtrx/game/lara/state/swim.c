@@ -8,6 +8,7 @@ static void M_SwimTurn(ITEM *item);
 
 static void M_Tread(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
+static void M_Glide(ITEM *item, COLL_INFO *coll);
 static void M_TreadSurface(ITEM *item, COLL_INFO *coll);
 static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
 static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
@@ -125,6 +126,36 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 #else
         item->goal_anim_state = LS_GLIDE;
 #endif
+    }
+}
+
+static void M_Glide(ITEM *item, COLL_INFO *coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_UW_DEATH;
+        return;
+    }
+
+#if TR_VERSION == 1
+    coll->enable_hit = 0;
+    const bool roll = g_Config.gameplay.enable_uw_roll && g_Input.roll;
+#else
+    const bool roll = g_Input.roll;
+#endif
+    if (roll) {
+        item->current_anim_state = LS_WATER_ROLL;
+        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
+        return;
+    }
+
+    M_SwimTurn(item);
+    if (g_Input.jump) {
+        item->goal_anim_state = LS_SWIM;
+    }
+    item->fall_speed -= LARA_UW_FRICTION;
+    CLAMPL(item->fall_speed, 0);
+    if (item->fall_speed <= LARA_MAX_SWIM_SPEED * 2 / 3) {
+        item->goal_anim_state = LS_TREAD;
     }
 }
 
@@ -301,6 +332,7 @@ static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
 // clang-format off
 REGISTER_LARA_STATE(LS_TREAD,      M_Tread)
 REGISTER_LARA_STATE(LS_SWIM,       M_Swim)
+REGISTER_LARA_STATE(LS_GLIDE,      M_Glide)
 REGISTER_LARA_STATE(LS_SURF_TREAD, M_TreadSurface)
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_ForwardSurface)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)

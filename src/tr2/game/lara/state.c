@@ -22,8 +22,6 @@
 
 static bool m_JumpPermitted = true;
 
-static void M_SwimTurn(ITEM *item);
-
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
@@ -68,26 +66,6 @@ static void M_ClimbStance(ITEM *item, COLL_INFO *coll);
 static void M_Climbing(ITEM *item, COLL_INFO *coll);
 static void M_ClimbEnd(ITEM *item, COLL_INFO *coll);
 static void M_ClimbDown(ITEM *item, COLL_INFO *coll);
-static void M_Glide(ITEM *item, COLL_INFO *coll);
-
-static void M_SwimTurn(ITEM *const item)
-{
-    if (g_Input.forward) {
-        item->rot.x -= LARA_TURN_RATE_UW;
-    } else if (g_Input.back) {
-        item->rot.x += LARA_TURN_RATE_UW;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_MED_TURN);
-        item->rot.z -= LARA_LEAN_RATE_SWIM;
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, LARA_MED_TURN);
-        item->rot.z += LARA_LEAN_RATE_SWIM;
-    }
-}
 
 static void M_Walk(ITEM *item, COLL_INFO *coll)
 {
@@ -805,30 +783,6 @@ static void M_ClimbDown(ITEM *item, COLL_INFO *coll)
     g_Camera.target_elevation = CAM_CLIMB_DOWN_ELEVATION;
 }
 
-static void M_Glide(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    if (g_Input.roll) {
-        item->current_anim_state = LS_WATER_ROLL;
-        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
-        return;
-    }
-
-    M_SwimTurn(item);
-    if (g_Input.jump) {
-        item->goal_anim_state = LS_SWIM;
-    }
-    item->fall_speed -= LARA_UW_FRICTION;
-    CLAMPL(item->fall_speed, 0);
-    if (item->fall_speed <= LARA_MAX_SWIM_SPEED * 2 / 3) {
-        item->goal_anim_state = LS_TREAD;
-    }
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
@@ -844,7 +798,6 @@ REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_Back)
-REGISTER_LARA_STATE(LS_GLIDE,        M_Glide)
 REGISTER_LARA_STATE(LS_PULL_UP,      M_Null)
 REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_StepRight)
