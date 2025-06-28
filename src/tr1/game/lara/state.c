@@ -22,7 +22,6 @@ static bool m_JumpPermitted = true;
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
-static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_TurnRight(ITEM *item, COLL_INFO *coll);
 static void M_TurnLeft(ITEM *item, COLL_INFO *coll);
@@ -215,42 +214,6 @@ static void M_Stop(ITEM *item, COLL_INFO *coll)
             M_Back(item, coll);
         } else {
             item->goal_anim_state = LS_FAST_BACK;
-        }
-    }
-}
-
-static void M_ForwardJump(ITEM *item, COLL_INFO *coll)
-{
-    if (item->goal_anim_state == LS_SWAN_DIVE
-        || item->goal_anim_state == LS_REACH) {
-        item->goal_anim_state = LS_JUMP_FORWARD;
-    }
-    if (item->goal_anim_state != LS_DEATH && item->goal_anim_state != LS_STOP
-        && item->goal_anim_state != LS_RUN) {
-        if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS) {
-            item->goal_anim_state = LS_REACH;
-        }
-        if (g_Config.gameplay.enable_jump_twists
-            && (g_Input.roll || g_Input.back)) {
-            item->goal_anim_state = LS_TWIST;
-        }
-        if (g_Input.slow && g_Lara.gun_status == LGS_ARMLESS) {
-            item->goal_anim_state = LS_SWAN_DIVE;
-        }
-        if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-            item->goal_anim_state = LS_FAST_FALL;
-        }
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        if (g_Lara.turn_rate < -LARA_JUMP_TURN) {
-            g_Lara.turn_rate = -LARA_JUMP_TURN;
-        }
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        if (g_Lara.turn_rate > LARA_JUMP_TURN) {
-            g_Lara.turn_rate = LARA_JUMP_TURN;
         }
     }
 }
@@ -646,7 +609,6 @@ static void M_Wade(ITEM *item, COLL_INFO *coll)
 REGISTER_LARA_STATE(LS_WALK,          M_Walk)
 REGISTER_LARA_STATE(LS_RUN,           M_Run)
 REGISTER_LARA_STATE(LS_STOP,          M_Stop)
-REGISTER_LARA_STATE(LS_JUMP_FORWARD,  M_ForwardJump)
 REGISTER_LARA_STATE(LS_FAST_BACK,     M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,    M_TurnRight)
 REGISTER_LARA_STATE(LS_TURN_LEFT,     M_TurnLeft)

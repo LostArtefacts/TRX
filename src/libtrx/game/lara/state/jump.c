@@ -3,8 +3,20 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
+static bool IsJumpTwistEnabled(void);
+
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
+static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
+
+static bool IsJumpTwistEnabled(void)
+{
+#if TR_VERSION == 1
+    return g_Config.gameplay.enable_jump_twists;
+#else
+    return true;
+#endif
+}
 
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
@@ -50,7 +62,41 @@ static void M_UpJump(ITEM *item, COLL_INFO *coll)
     }
 }
 
+static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->goal_anim_state == LS_SWAN_DIVE
+        || item->goal_anim_state == LS_REACH) {
+        item->goal_anim_state = LS_JUMP_FORWARD;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->goal_anim_state != LS_DEATH && item->goal_anim_state != LS_STOP
+        && item->goal_anim_state != LS_RUN) {
+        if (g_Input.action && lara->gun_status == LGS_ARMLESS) {
+            item->goal_anim_state = LS_REACH;
+        }
+        if (IsJumpTwistEnabled() && (g_Input.roll || g_Input.back)) {
+            item->goal_anim_state = LS_TWIST;
+        }
+        if (g_Input.slow && lara->gun_status == LGS_ARMLESS) {
+            item->goal_anim_state = LS_SWAN_DIVE;
+        }
+        if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+            item->goal_anim_state = LS_FAST_FALL;
+        }
+    }
+
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_JUMP_TURN);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, +LARA_JUMP_TURN);
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
+REGISTER_LARA_STATE(LS_JUMP_FORWARD, M_ForwardJump)
 // clang-format on
