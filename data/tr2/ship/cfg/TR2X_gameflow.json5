@@ -455,6 +455,7 @@
                 "data/injections/house_sfx.bin",
                 "data/injections/house_itemrots.bin",
                 "data/injections/house_music_tracks.bin",
+                "data/injections/house_shower_frames.bin",
                 "data/injections/house_textures.bin",
                 "data/injections/lara_house_guns.bin",
             ],
