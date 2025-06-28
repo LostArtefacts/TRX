@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./objects/types.h"
 #include "./ui/hud/overlay.h"
 
 void Overlay_Init(void);
@@ -10,6 +11,7 @@ void Overlay_Control(void);
 void Overlay_Draw(void);
 
 extern void Overlay_HideGameInfo(void);
+extern void Overlay_AddDisplayPickup(GAME_OBJECT_ID obj_id);
 
 void Overlay_ForceHealthBar(bool show);
 void Overlay_SetHealthBarTimer(int16_t health_bar_timer);

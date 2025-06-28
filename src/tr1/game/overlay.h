@@ -27,5 +27,3 @@ typedef struct {
 void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_func);
 
 void Overlay_DrawGameInfo(void);
-
-void Overlay_AddPickup(GAME_OBJECT_ID obj_id);

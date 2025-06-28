@@ -102,7 +102,7 @@ static void M_SpawnPickupAid(const ITEM *const item)
 
 static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item)
 {
-    Overlay_AddPickup(item->object_id);
+    Overlay_AddDisplayPickup(item->object_id);
     Inv_AddItem(item->object_id);
 
     item->status = IS_INVISIBLE;

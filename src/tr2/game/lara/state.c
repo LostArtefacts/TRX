@@ -20,20 +20,6 @@
 #define LF_JUMP_READY 4
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
-#define LF_SHARK_DEATH_END 56
-#define LF_SHARK_DEATH_TIMER_DELAY 25
-#define LF_TREX_DEATH_TIMER_DELAY 45
-#define LF_YETI_DEATH_TIMER_DELAY 70
-#define LF_DRAGON_DAGGER_PULLED 1
-#define LF_DRAGON_DAGGER_STORED 180
-#define LF_DRAGON_DAGGER_DISPLAY 210
-#define LF_DRAGON_DAGGER_ANIM_END 239
-#define LF_START_HOUSE_BEGIN 1
-#define LF_START_HOUSE_DAGGER_STORED 401
-#define LF_START_HOUSE_END 427
-#define LF_SHOWER_START 1
-#define LF_SHOWER_SHOTGUN_PICKUP 316
-#define LF_SHOWER_END 349
 
 static bool m_JumpPermitted = true;
 
@@ -78,16 +64,6 @@ static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_WaterOut(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_Zipline(ITEM *item, COLL_INFO *coll);
-static void M_Extra_Breath(ITEM *item, COLL_INFO *coll);
-static void M_Extra_YetiKill(ITEM *item, COLL_INFO *coll);
-static void M_Extra_SharkKill(ITEM *item, COLL_INFO *coll);
-static void M_Extra_Airlock(ITEM *item, COLL_INFO *coll);
-static void M_Extra_GongBong(ITEM *item, COLL_INFO *coll);
-static void M_Extra_DinoKill(ITEM *item, COLL_INFO *coll);
-static void M_Extra_PullDagger(ITEM *item, COLL_INFO *coll);
-static void M_Extra_StartAnim(ITEM *item, COLL_INFO *coll);
-static void M_Extra_StartHouse(ITEM *item, COLL_INFO *coll);
-static void M_Extra_FinalAnim(ITEM *item, COLL_INFO *coll);
 static void M_ClimbLeft(ITEM *item, COLL_INFO *coll);
 static void M_ClimbRight(ITEM *item, COLL_INFO *coll);
 static void M_ClimbStance(ITEM *item, COLL_INFO *coll);
@@ -783,130 +759,6 @@ static void M_Zipline(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_Extra_Breath(ITEM *item, COLL_INFO *coll)
-{
-    Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
-    item->goal_anim_state = LS_STOP;
-    item->current_anim_state = LS_STOP;
-    g_Lara.extra_anim = false;
-    g_Lara.gun_status = LGS_ARMLESS;
-    if (g_Camera.type != CAM_HEAVY) {
-        g_Camera.type = CAM_CHASE;
-    }
-    Viewport_AlterFOV(-1);
-}
-
-static void M_Extra_YetiKill(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_YETI_KILL_ANGLE;
-    g_Camera.target_distance = CAM_YETI_KILL_DISTANCE;
-    g_Lara.hit_direction = -1;
-    if (Item_TestFrameRange(item, 0, LF_YETI_DEATH_TIMER_DELAY)) {
-        g_Lara.death_timer = 1;
-    }
-}
-
-static void M_Extra_SharkKill(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_SHARK_KILL_ANGLE;
-    g_Camera.target_distance = CAM_SHARK_KILL_DISTANCE;
-    g_Lara.hit_direction = -1;
-
-    if (Item_TestFrameEqual(item, LF_SHARK_DEATH_END)) {
-        const int32_t water_height = Room_GetWaterHeight(
-            item->pos.x, item->pos.y, item->pos.z, item->room_num);
-        if (water_height != NO_HEIGHT && water_height < item->pos.y - 100) {
-            item->pos.y -= 5;
-        }
-    }
-
-    if (Item_TestFrameRange(item, 0, LF_SHARK_DEATH_TIMER_DELAY)) {
-        g_Lara.death_timer = 1;
-    }
-}
-
-static void M_Extra_Airlock(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_AIRLOCK_ANGLE;
-    g_Camera.target_elevation = CAM_AIRLOCK_ELEVATION;
-}
-
-static void M_Extra_GongBong(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_GONG_BONG_ANGLE;
-    g_Camera.target_elevation = CAM_GONG_BONG_ELEVATION;
-    g_Camera.target_distance = CAM_GONG_BONG_DISTANCE;
-}
-
-static void M_Extra_DinoKill(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = CAM_TREX_KILL_ANGLE;
-    g_Camera.target_elevation = CAM_TREX_KILL_ELEVATION;
-    g_Lara.hit_direction = -1;
-    if (Item_TestFrameRange(item, 0, LF_TREX_DEATH_TIMER_DELAY)) {
-        g_Lara.death_timer = 1;
-    }
-}
-
-static void M_Extra_PullDagger(ITEM *item, COLL_INFO *coll)
-{
-    if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_PULLED)) {
-        Music_Play(MX_DAGGER_PULL, MPM_ALWAYS);
-    } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_STORED)) {
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
-        Inv_AddItem(O_PUZZLE_ITEM_2);
-    } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_DISPLAY)) {
-        Overlay_AddDisplayPickup(O_PUZZLE_ITEM_2);
-    } else if (Item_TestFrameEqual(item, LF_DRAGON_DAGGER_ANIM_END)) {
-        item->rot.y += DEG_90;
-
-        const ITEM *const dragon_bones = Item_Find(O_DRAGON_BONES_2);
-        if (dragon_bones != nullptr) {
-            Room_TestTriggers(dragon_bones);
-        }
-    }
-}
-
-static void M_Extra_StartAnim(ITEM *item, COLL_INFO *coll)
-{
-    Room_TestTriggers(item);
-}
-
-static void M_Extra_StartHouse(ITEM *item, COLL_INFO *coll)
-{
-    if (Item_TestFrameEqual(item, LF_START_HOUSE_BEGIN)) {
-        Music_Play(MX_REVEAL_2, MPM_ALWAYS);
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
-    } else if (Item_TestFrameEqual(item, LF_START_HOUSE_DAGGER_STORED)) {
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA);
-        Inv_AddItem(O_PUZZLE_ITEM_1);
-    } else if (Item_TestFrameEqual(item, LF_START_HOUSE_END)) {
-        g_Camera.type = CAM_CHASE;
-        Viewport_AlterFOV(-1);
-    }
-}
-
-static void M_Extra_FinalAnim(ITEM *item, COLL_INFO *coll)
-{
-    item->hit_points = LARA_MAX_HITPOINTS;
-    Lara_SetControllable(false);
-
-    if (Item_TestFrameEqual(item, LF_SHOWER_START)) {
-        g_Lara.back_gun_obj_id = O_LARA;
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
-        Lara_SwapSingleMesh(LM_HEAD, O_LARA);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
-        Music_Play(MX_CUTSCENE_BATH, MPM_ALWAYS);
-    } else if (Item_TestFrameEqual(item, LF_SHOWER_SHOTGUN_PICKUP)) {
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_SHOTGUN);
-    } else if (Item_TestFrameEqual(item, LF_SHOWER_END)) {
-        Game_SetIsLevelComplete(true);
-    }
-}
-
 static void M_ClimbLeft(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
@@ -1273,15 +1125,4 @@ REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 REGISTER_LARA_STATE(LS_WATER_ROLL,   M_UWTwist)
 REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
 REGISTER_LARA_STATE(LS_ZIPLINE,      M_Zipline)
-
-REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,      M_Extra_Breath)
-REGISTER_LARA_EXTRA(LS_EXTRA_YETI_KILL,   M_Extra_YetiKill)
-REGISTER_LARA_EXTRA(LS_EXTRA_SHARK_KILL,  M_Extra_SharkKill)
-REGISTER_LARA_EXTRA(LS_EXTRA_AIRLOCK,     M_Extra_Airlock)
-REGISTER_LARA_EXTRA(LS_EXTRA_GONG_BONG,   M_Extra_GongBong)
-REGISTER_LARA_EXTRA(LS_EXTRA_TREX_KILL,   M_Extra_DinoKill)
-REGISTER_LARA_EXTRA(LS_EXTRA_PULL_DAGGER, M_Extra_PullDagger)
-REGISTER_LARA_EXTRA(LS_EXTRA_START_ANIM,  M_Extra_StartAnim)
-REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE, M_Extra_StartHouse)
-REGISTER_LARA_EXTRA(LS_EXTRA_FINAL_ANIM,  M_Extra_FinalAnim)
 // clang-format on

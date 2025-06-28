@@ -421,7 +421,7 @@ void Overlay_DrawGameInfo(void)
     }
 }
 
-void Overlay_AddPickup(const GAME_OBJECT_ID obj_id)
+void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
 {
     int32_t grid_x = -1;
     int32_t grid_y = -1;
