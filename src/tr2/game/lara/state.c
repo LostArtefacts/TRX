@@ -1,7 +1,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara/control.h"
-#include "game/lara/look.h"
 #include "game/lara/misc.h"
 #include "game/overlay.h"
 #include "game/sound.h"
@@ -11,7 +10,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/game.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/lara/util.h>
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>
@@ -69,7 +68,6 @@ static void M_ClimbStance(ITEM *item, COLL_INFO *coll);
 static void M_Climbing(ITEM *item, COLL_INFO *coll);
 static void M_ClimbEnd(ITEM *item, COLL_INFO *coll);
 static void M_ClimbDown(ITEM *item, COLL_INFO *coll);
-static void M_SurfTread(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_Glide(ITEM *item, COLL_INFO *coll);
 static void M_Tread(ITEM *item, COLL_INFO *coll);
@@ -809,53 +807,6 @@ static void M_ClimbDown(ITEM *item, COLL_INFO *coll)
     g_Camera.target_elevation = CAM_CLIMB_DOWN_ELEVATION;
 }
 
-static void M_SurfTread(ITEM *item, COLL_INFO *coll)
-{
-    item->fall_speed -= 4;
-    CLAMPL(item->fall_speed, 0);
-
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-    if (g_Input.look) {
-        Lara_LookUpDown();
-        return;
-    }
-
-    if (g_Input.left) {
-        item->rot.y -= LARA_SLOW_TURN;
-    } else if (g_Input.right) {
-        item->rot.y += LARA_SLOW_TURN;
-    }
-
-    if (g_Input.forward) {
-        item->goal_anim_state = LS_SURF_SWIM;
-    } else if (g_Input.back) {
-        item->goal_anim_state = LS_SURF_BACK;
-    }
-
-    if (g_Input.step_left) {
-        item->goal_anim_state = LS_SURF_LEFT;
-    } else if (g_Input.step_right) {
-        item->goal_anim_state = LS_SURF_RIGHT;
-    }
-
-    if (g_Input.jump) {
-        g_Lara.dive_timer++;
-        if (g_Lara.dive_timer == LARA_DIVE_WAIT) {
-            Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
-            item->goal_anim_state = LS_SWIM;
-            item->current_anim_state = LS_DIVE;
-            item->rot.x = -45 * DEG_1;
-            item->fall_speed = 80;
-            g_Lara.water_status = LWS_UNDERWATER;
-        }
-    } else {
-        g_Lara.dive_timer = 0;
-    }
-}
-
 static void M_Swim(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -964,7 +915,6 @@ REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
 REGISTER_LARA_STATE(LS_SHIMMY_LEFT,  M_HangLeft)
 REGISTER_LARA_STATE(LS_SHIMMY_RIGHT, M_HangRight)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_SlideBack)
-REGISTER_LARA_STATE(LS_SURF_TREAD,   M_SurfTread)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)

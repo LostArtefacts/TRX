@@ -7,7 +7,6 @@
 #include "game/input.h"
 #include "game/lara/control.h"
 #include "game/lara/flare.h"
-#include "game/lara/look.h"
 #include "game/objects/common.h"
 #include "game/objects/vehicles/skidoo_armed.h"
 #include "game/output.h"
@@ -19,7 +18,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/gun.h>
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/music.h>
