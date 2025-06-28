@@ -95,7 +95,3 @@
 #define CAM_SPECIAL_ANGLE (170 * DEG_1) // = 30940
 #define CAM_SPECIAL_ELEVATION (-25 * DEG_1) // = -4550
 #define CAM_SPECIAL_DISTANCE (2 * WALL_L) // = 2048
-
-#if TR_VERSION == 2
-    #define CAM_ZIPLINE_ANGLE (70 * DEG_1) // = 12740
-#endif

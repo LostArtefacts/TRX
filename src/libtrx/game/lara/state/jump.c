@@ -8,6 +8,7 @@
 // clang-format off
 #define M_CAM_BACK_JUMP_ANGLE (135 * DEG_1) // = 24570
 #define M_CAM_REACH_ANGLE     (85 * DEG_1)  // = 15470
+#define M_CAM_ZIPLINE_ANGLE   (70 * DEG_1)  // = 12740
 // clang-format on
 
 static bool IsJumpTwistEnabled(void);
@@ -22,6 +23,7 @@ static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
+static void M_Zipline(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -201,6 +203,21 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Zipline(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = M_CAM_ZIPLINE_ANGLE;
+
+    if (!g_Input.action) {
+        item->goal_anim_state = LS_JUMP_FORWARD;
+        Lara_Animate(item);
+        item->gravity = true;
+        item->speed = 100;
+        item->fall_speed = 40;
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->move_angle = item->rot.y;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
@@ -213,4 +230,7 @@ REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SWAN_DIVE,    M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,    M_FastDive)
 REGISTER_LARA_STATE(LS_FAST_FALL,    M_FastFall)
+#if TR_VERSION >= 2
+REGISTER_LARA_STATE(LS_ZIPLINE,      M_Zipline)
+#endif
 // clang-format on
