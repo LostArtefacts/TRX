@@ -4,6 +4,7 @@
 #include "game/viewport.h"
 #include "global/vars.h"
 
+#include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
@@ -206,4 +207,9 @@ void Object_DrawMesh(
     } else {
         Output_DrawObjectMesh(mesh, clip);
     }
+}
+
+void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
+{
+    ASSERT_FAIL();
 }

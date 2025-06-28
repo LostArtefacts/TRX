@@ -62,8 +62,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_SurfBack(ITEM *item, COLL_INFO *coll);
 static void M_SurfLeft(ITEM *item, COLL_INFO *coll);
 static void M_SurfRight(ITEM *item, COLL_INFO *coll);
-static void M_UseMidas(ITEM *item, COLL_INFO *coll);
-static void M_DieMidas(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_WaterOut(ITEM *item, COLL_INFO *coll);
@@ -683,97 +681,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
     g_Camera.target_elevation = CAM_SPECIAL_ELEVATION;
 }
 
-static void M_UseMidas(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    Twinkle_SparkleItem(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
-}
-
-static void M_DieMidas(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-
-    Object_SetReflective(O_LARA_EXTRA, true);
-
-    const int32_t frame_num = Item_GetRelativeFrame(item);
-    switch (frame_num) {
-    case 5:
-        g_Lara.mesh_effects |= (1 << LM_FOOT_L);
-        g_Lara.mesh_effects |= (1 << LM_FOOT_R);
-        Lara_SwapSingleMesh(LM_FOOT_L, O_LARA_EXTRA);
-        Lara_SwapSingleMesh(LM_FOOT_R, O_LARA_EXTRA);
-        break;
-
-    case 70:
-        g_Lara.mesh_effects |= (1 << LM_CALF_L);
-        Lara_SwapSingleMesh(LM_CALF_L, O_LARA_EXTRA);
-        break;
-
-    case 90:
-        g_Lara.mesh_effects |= (1 << LM_THIGH_L);
-        Lara_SwapSingleMesh(LM_THIGH_L, O_LARA_EXTRA);
-        break;
-
-    case 100:
-        g_Lara.mesh_effects |= (1 << LM_CALF_R);
-        Lara_SwapSingleMesh(LM_CALF_R, O_LARA_EXTRA);
-        break;
-
-    case 120:
-        g_Lara.mesh_effects |= (1 << LM_HIPS);
-        g_Lara.mesh_effects |= (1 << LM_THIGH_R);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
-        Lara_SwapSingleMesh(LM_THIGH_R, O_LARA_EXTRA);
-        break;
-
-    case 135:
-        g_Lara.mesh_effects |= (1 << LM_TORSO);
-        Lara_SwapSingleMesh(LM_TORSO, O_LARA_EXTRA);
-        break;
-
-    case 150:
-        g_Lara.mesh_effects |= (1 << LM_UARM_L);
-        Lara_SwapSingleMesh(LM_UARM_L, O_LARA_EXTRA);
-        break;
-
-    case 163:
-        g_Lara.mesh_effects |= (1 << LM_LARM_L);
-        Lara_SwapSingleMesh(LM_LARM_L, O_LARA_EXTRA);
-        break;
-
-    case 174:
-        g_Lara.mesh_effects |= (1 << LM_HAND_L);
-        Lara_SwapSingleMesh(LM_HAND_L, O_LARA_EXTRA);
-        break;
-
-    case 186:
-        g_Lara.mesh_effects |= (1 << LM_UARM_R);
-        Lara_SwapSingleMesh(LM_UARM_R, O_LARA_EXTRA);
-        break;
-
-    case 195:
-        g_Lara.mesh_effects |= (1 << LM_LARM_R);
-        Lara_SwapSingleMesh(LM_LARM_R, O_LARA_EXTRA);
-        break;
-
-    case 218:
-        g_Lara.mesh_effects |= (1 << LM_HAND_R);
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
-        break;
-
-    case 225:
-        Object_SetReflective(O_LARA_HAIR, true);
-        g_Lara.mesh_effects |= (1 << LM_HEAD);
-        Lara_SwapSingleMesh(LM_HEAD, O_LARA_EXTRA);
-        break;
-    }
-
-    Twinkle_SparkleItem(item, g_Lara.mesh_effects);
-}
-
 static void M_SwanDive(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
@@ -1272,8 +1179,6 @@ REGISTER_LARA_STATE(LS_SPECIAL,       M_Special)
 REGISTER_LARA_STATE(LS_SURF_BACK,     M_SurfBack)
 REGISTER_LARA_STATE(LS_SURF_LEFT,     M_SurfLeft)
 REGISTER_LARA_STATE(LS_SURF_RIGHT,    M_SurfRight)
-REGISTER_LARA_STATE(LS_USE_MIDAS,     M_UseMidas)
-REGISTER_LARA_STATE(LS_DIE_MIDAS,     M_DieMidas)
 REGISTER_LARA_STATE(LS_SWAN_DIVE,     M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,     M_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,       M_Null)

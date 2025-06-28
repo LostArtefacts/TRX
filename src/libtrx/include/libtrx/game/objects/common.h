@@ -69,6 +69,7 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID obj_id);
 
 extern void Object_DrawUnclippedItem(const ITEM *item);
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
+extern void Object_SetReflective(GAME_OBJECT_ID obj_id, bool enabled);
 
 void Object_DrawInterpolatedObject(
     const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,

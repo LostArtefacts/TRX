@@ -9,6 +9,7 @@
 #include "game/viewport.h"
 
 // clang-format off
+#define M_LF_PICKUP_GOLD_BAR           113
 #define M_LF_SHARK_DEATH_END           56
 #define M_LF_SHARK_DEATH_TIMER_DELAY   25
 #define M_LF_TREX_DEATH_TIMER_DELAY    45
@@ -36,6 +37,12 @@
 #define M_CAM_TREX_KILL_ELEVATION     (-25 * DEG_1) // = -4550
 // clang-format on
 
+#if TR_VERSION == 1
+extern void Twinkle_SparkleItem(ITEM *item, uint32_t mesh_mask);
+#endif
+
+static void M_UseMidas(ITEM *item, COLL_INFO *coll);
+static void M_DieMidas(ITEM *item, COLL_INFO *coll);
 static void M_Breath(ITEM *item, COLL_INFO *coll);
 static void M_YetiKill(ITEM *item, COLL_INFO *coll);
 static void M_SharkKill(ITEM *item, COLL_INFO *coll);
@@ -46,6 +53,109 @@ static void M_PullDagger(ITEM *item, COLL_INFO *coll);
 static void M_StartAnim(ITEM *item, COLL_INFO *coll);
 static void M_StartHouse(ITEM *item, COLL_INFO *coll);
 static void M_FinalAnim(ITEM *item, COLL_INFO *coll);
+
+static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+    Twinkle_SparkleItem(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
+
+    if (Item_TestFrameEqual(item, M_LF_PICKUP_GOLD_BAR)) {
+        Overlay_AddDisplayPickup(O_PUZZLE_ITEM_1);
+        Inv_AddItem(O_PUZZLE_ITEM_1);
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->interact_target.item_num = NO_OBJECT;
+    }
+#endif
+}
+
+static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    item->gravity = false;
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+
+    Object_SetReflective(O_LARA_EXTRA, true);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const int32_t frame_num = Item_GetRelativeFrame(item);
+    switch (frame_num) {
+    case 5:
+        lara->mesh_effects |= (1 << LM_FOOT_L);
+        lara->mesh_effects |= (1 << LM_FOOT_R);
+        Lara_SwapSingleMesh(LM_FOOT_L, O_LARA_EXTRA);
+        Lara_SwapSingleMesh(LM_FOOT_R, O_LARA_EXTRA);
+        break;
+
+    case 70:
+        lara->mesh_effects |= (1 << LM_CALF_L);
+        Lara_SwapSingleMesh(LM_CALF_L, O_LARA_EXTRA);
+        break;
+
+    case 90:
+        lara->mesh_effects |= (1 << LM_THIGH_L);
+        Lara_SwapSingleMesh(LM_THIGH_L, O_LARA_EXTRA);
+        break;
+
+    case 100:
+        lara->mesh_effects |= (1 << LM_CALF_R);
+        Lara_SwapSingleMesh(LM_CALF_R, O_LARA_EXTRA);
+        break;
+
+    case 120:
+        lara->mesh_effects |= (1 << LM_HIPS);
+        lara->mesh_effects |= (1 << LM_THIGH_R);
+        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
+        Lara_SwapSingleMesh(LM_THIGH_R, O_LARA_EXTRA);
+        break;
+
+    case 135:
+        lara->mesh_effects |= (1 << LM_TORSO);
+        Lara_SwapSingleMesh(LM_TORSO, O_LARA_EXTRA);
+        break;
+
+    case 150:
+        lara->mesh_effects |= (1 << LM_UARM_L);
+        Lara_SwapSingleMesh(LM_UARM_L, O_LARA_EXTRA);
+        break;
+
+    case 163:
+        lara->mesh_effects |= (1 << LM_LARM_L);
+        Lara_SwapSingleMesh(LM_LARM_L, O_LARA_EXTRA);
+        break;
+
+    case 174:
+        lara->mesh_effects |= (1 << LM_HAND_L);
+        Lara_SwapSingleMesh(LM_HAND_L, O_LARA_EXTRA);
+        break;
+
+    case 186:
+        lara->mesh_effects |= (1 << LM_UARM_R);
+        Lara_SwapSingleMesh(LM_UARM_R, O_LARA_EXTRA);
+        break;
+
+    case 195:
+        lara->mesh_effects |= (1 << LM_LARM_R);
+        Lara_SwapSingleMesh(LM_LARM_R, O_LARA_EXTRA);
+        break;
+
+    case 218:
+        lara->mesh_effects |= (1 << LM_HAND_R);
+        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
+        break;
+
+    case 225:
+        Object_SetReflective(O_LARA_HAIR, true);
+        lara->mesh_effects |= (1 << LM_HEAD);
+        Lara_SwapSingleMesh(LM_HEAD, O_LARA_EXTRA);
+        break;
+    }
+
+    Twinkle_SparkleItem(item, lara->mesh_effects);
+#endif
+}
 
 static void M_Breath(ITEM *const item, COLL_INFO *const coll)
 {
@@ -184,8 +294,11 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
 #endif
 }
 
-#if TR_VERSION == 2
 // clang-format off
+#if TR_VERSION == 1
+REGISTER_LARA_STATE(LS_USE_MIDAS,         M_UseMidas)
+REGISTER_LARA_STATE(LS_DIE_MIDAS,         M_DieMidas)
+#else
 REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,      M_Breath)
 REGISTER_LARA_EXTRA(LS_EXTRA_YETI_KILL,   M_YetiKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHARK_KILL,  M_SharkKill)
@@ -196,5 +309,5 @@ REGISTER_LARA_EXTRA(LS_EXTRA_PULL_DAGGER, M_PullDagger)
 REGISTER_LARA_EXTRA(LS_EXTRA_START_ANIM,  M_StartAnim)
 REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE, M_StartHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_FINAL_ANIM,  M_FinalAnim)
-// clang-format on
 #endif
+// clang-format on

@@ -9,11 +9,13 @@
 
 #include <libtrx/game/camera.h>
 
-#define EXTRA_ANIM_PLACE_BAR 0
-#define EXTRA_ANIM_DIE_GOLD 1
-#define LF_PICKUP_GOLD_BAR 113
-#define MIDAS_RANGE_H (STEP_L * 2)
-#define MIDAS_RANGE_V (STEP_L * 3)
+#define M_RANGE_H (STEP_L * 2)
+#define M_RANGE_V (STEP_L * 3)
+
+typedef enum {
+    M_ANIM_USE = 0,
+    M_ANIM_DIE = 1,
+} M_EXTRA_ANIM;
 
 static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     .shift = {
@@ -55,7 +57,7 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    DIRECTION quadrant = (uint16_t)(lara_item->rot.y + DEG_45) / DEG_90;
+    const DIRECTION quadrant = (uint16_t)(lara_item->rot.y + DEG_45) / DEG_90;
     switch (quadrant) {
     case DIR_NORTH:
         item->rot.y = 0;
@@ -73,24 +75,16 @@ static void M_Collision(
         break;
     }
 
-    if (lara_item->current_anim_state == LS_USE_MIDAS
-        && g_Lara.interact_target.item_num == item_num
-        && Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
-        Overlay_AddDisplayPickup(O_PUZZLE_ITEM_1);
-        Inv_AddItem(O_PUZZLE_ITEM_1);
-        g_Lara.interact_target.item_num = NO_OBJECT;
-    }
-
     if (!lara_item->gravity && lara_item->current_anim_state == LS_STOP
-        && lara_item->pos.x > item->pos.x - MIDAS_RANGE_H
-        && lara_item->pos.x < item->pos.x + MIDAS_RANGE_H
-        && lara_item->pos.y > item->pos.y - MIDAS_RANGE_V
-        && lara_item->pos.y < item->pos.y + MIDAS_RANGE_V
-        && lara_item->pos.z > item->pos.z - MIDAS_RANGE_H
-        && lara_item->pos.z < item->pos.z + MIDAS_RANGE_H) {
+        && lara_item->pos.x > item->pos.x - M_RANGE_H
+        && lara_item->pos.x < item->pos.x + M_RANGE_H
+        && lara_item->pos.y > item->pos.y - M_RANGE_V
+        && lara_item->pos.y < item->pos.y + M_RANGE_V
+        && lara_item->pos.z > item->pos.z - M_RANGE_H
+        && lara_item->pos.z < item->pos.z + M_RANGE_H) {
         lara_item->current_anim_state = LS_DIE_MIDAS;
         lara_item->goal_anim_state = LS_DIE_MIDAS;
-        Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_DIE_GOLD, 0, O_LARA_EXTRA);
+        Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
         lara_item->hit_points = -1;
         lara_item->gravity = 0;
         g_Lara.extra_anim = true;
@@ -105,7 +99,7 @@ static void M_Collision(
         && g_Lara.interact_target.item_num == item_num) {
         lara_item->current_anim_state = LS_USE_MIDAS;
         lara_item->goal_anim_state = LS_USE_MIDAS;
-        Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
+        Item_SwitchToObjAnim(lara_item, M_ANIM_USE, 0, O_LARA_EXTRA);
         g_Lara.extra_anim = true;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Lara.interact_target.is_moving = false;
