@@ -56,9 +56,6 @@ static void M_Controlled(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-static void M_SurfBack(ITEM *item, COLL_INFO *coll);
-static void M_SurfLeft(ITEM *item, COLL_INFO *coll);
-static void M_SurfRight(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
@@ -704,102 +701,6 @@ static void M_Null(ITEM *item, COLL_INFO *coll)
     coll->enable_baddie_push = 0;
 }
 
-static void M_SurfBack(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    coll->enable_hit = 0;
-    g_Lara.dive_timer = 0;
-
-    if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
-        if (g_Input.left) {
-            item->rot.y -= LARA_SURF_TURN;
-        } else if (g_Input.right) {
-            item->rot.y += LARA_SURF_TURN;
-        }
-    }
-
-    if (!g_Input.back) {
-        item->goal_anim_state = LS_SURF_TREAD;
-    }
-
-    item->fall_speed += 8;
-    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
-        item->fall_speed = LARA_MAX_SURF_SPEED;
-    }
-}
-
-static void M_SurfLeft(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    coll->enable_hit = 0;
-    g_Lara.dive_timer = 0;
-
-    if (g_Config.input.enable_tr3_sidesteps && g_Input.slow && g_Input.left) {
-        item->fall_speed += 8;
-        if (item->fall_speed > LARA_MAX_SURF_SPEED) {
-            item->fall_speed = LARA_MAX_SURF_SPEED;
-        }
-        return;
-    }
-
-    if (g_Input.left) {
-        item->rot.y -= LARA_SURF_TURN;
-    } else if (g_Input.right) {
-        item->rot.y += LARA_SURF_TURN;
-    }
-
-    if (!g_Input.step_left) {
-        item->goal_anim_state = LS_SURF_TREAD;
-    }
-
-    item->fall_speed += 8;
-    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
-        item->fall_speed = LARA_MAX_SURF_SPEED;
-    }
-}
-
-static void M_SurfRight(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    coll->enable_hit = 0;
-    g_Lara.dive_timer = 0;
-
-    if (g_Config.input.enable_tr3_sidesteps && g_Input.slow && g_Input.right) {
-        item->fall_speed += 8;
-        if (item->fall_speed > LARA_MAX_SURF_SPEED) {
-            item->fall_speed = LARA_MAX_SURF_SPEED;
-        }
-        return;
-    }
-
-    if (g_Input.left) {
-        item->rot.y -= LARA_SURF_TURN;
-    } else if (g_Input.right) {
-        item->rot.y += LARA_SURF_TURN;
-    }
-
-    if (!g_Input.step_right) {
-        item->goal_anim_state = LS_SURF_TREAD;
-    }
-
-    item->fall_speed += 8;
-    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
-        item->fall_speed = LARA_MAX_SURF_SPEED;
-    }
-}
-
 static void M_SurfTread(ITEM *item, COLL_INFO *coll)
 {
     item->fall_speed -= 4;
@@ -1100,9 +1001,6 @@ REGISTER_LARA_STATE(LS_SWITCH_OFF,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,       M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,    M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,       M_Special)
-REGISTER_LARA_STATE(LS_SURF_BACK,     M_SurfBack)
-REGISTER_LARA_STATE(LS_SURF_LEFT,     M_SurfLeft)
-REGISTER_LARA_STATE(LS_SURF_RIGHT,    M_SurfRight)
 REGISTER_LARA_STATE(LS_SWAN_DIVE,     M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,     M_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,       M_Null)
