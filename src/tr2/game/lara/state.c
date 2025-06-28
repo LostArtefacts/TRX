@@ -45,7 +45,6 @@ static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
-static void M_Zipline(ITEM *item, COLL_INFO *coll);
 
 static void M_Walk(ITEM *item, COLL_INFO *coll)
 {
@@ -481,20 +480,6 @@ static void M_Wade(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_Zipline(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.target_angle = CAM_ZIPLINE_ANGLE;
-
-    if (!g_Input.action) {
-        item->goal_anim_state = LS_JUMP_FORWARD;
-        Lara_Animate(item);
-        g_LaraItem->gravity = 1;
-        g_LaraItem->speed = 100;
-        g_LaraItem->fall_speed = 40;
-        g_Lara.move_angle = item->rot.y;
-    }
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
@@ -523,5 +508,4 @@ REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 REGISTER_LARA_STATE(LS_GYMNAST,      M_Null)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
-REGISTER_LARA_STATE(LS_ZIPLINE,      M_Zipline)
 // clang-format on
