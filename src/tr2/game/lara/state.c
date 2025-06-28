@@ -60,12 +60,6 @@ static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_Zipline(ITEM *item, COLL_INFO *coll);
-static void M_ClimbLeft(ITEM *item, COLL_INFO *coll);
-static void M_ClimbRight(ITEM *item, COLL_INFO *coll);
-static void M_ClimbStance(ITEM *item, COLL_INFO *coll);
-static void M_Climbing(ITEM *item, COLL_INFO *coll);
-static void M_ClimbEnd(ITEM *item, COLL_INFO *coll);
-static void M_ClimbDown(ITEM *item, COLL_INFO *coll);
 
 static void M_Walk(ITEM *item, COLL_INFO *coll)
 {
@@ -718,71 +712,6 @@ static void M_Zipline(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_ClimbLeft(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_CLIMB_LEFT_ANGLE;
-    g_Camera.target_elevation = CAM_CLIMB_LEFT_ELEVATION;
-    if (!g_Input.left && !g_Input.step_left) {
-        item->goal_anim_state = LS_CLIMB_STANCE;
-    }
-}
-
-static void M_ClimbRight(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_CLIMB_RIGHT_ANGLE;
-    g_Camera.target_elevation = CAM_CLIMB_RIGHT_ELEVATION;
-    if (!g_Input.right && !g_Input.step_right) {
-        item->goal_anim_state = LS_CLIMB_STANCE;
-    }
-}
-
-static void M_ClimbStance(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_elevation = CAM_CLIMB_STANCE_ELEVATION;
-
-    if (g_Input.look) {
-        Lara_LookUpDown();
-    }
-
-    if (g_Input.left || g_Input.step_left) {
-        item->goal_anim_state = LS_CLIMB_LEFT;
-    } else if (g_Input.right || g_Input.step_right) {
-        item->goal_anim_state = LS_CLIMB_RIGHT;
-    } else if (g_Input.jump) {
-        item->goal_anim_state = LS_JUMP_BACK;
-        g_Lara.gun_status = LGS_ARMLESS;
-        g_Lara.move_angle = item->rot.y + DEG_180;
-    }
-}
-
-static void M_Climbing(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_elevation = CAM_CLIMBING_ELEVATION;
-}
-
-static void M_ClimbEnd(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = CAM_CLIMB_END_ELEVATION;
-}
-
-static void M_ClimbDown(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_elevation = CAM_CLIMB_DOWN_ELEVATION;
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
@@ -823,12 +752,6 @@ REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 REGISTER_LARA_STATE(LS_SWAN_DIVE,    M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,    M_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,      M_Null)
-REGISTER_LARA_STATE(LS_CLIMB_STANCE, M_ClimbStance)
-REGISTER_LARA_STATE(LS_CLIMBING,     M_Climbing)
-REGISTER_LARA_STATE(LS_CLIMB_LEFT,   M_ClimbLeft)
-REGISTER_LARA_STATE(LS_CLIMB_END,    M_ClimbEnd)
-REGISTER_LARA_STATE(LS_CLIMB_RIGHT,  M_ClimbRight)
-REGISTER_LARA_STATE(LS_CLIMB_DOWN,   M_ClimbDown)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
 REGISTER_LARA_STATE(LS_ZIPLINE,      M_Zipline)
