@@ -1,13 +1,17 @@
 #include "config.h"
+#include "game/camera.h"
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
+
+#define M_CAM_BACK_JUMP_ANGLE (135 * DEG_1) // = 24570
 
 static bool IsJumpTwistEnabled(void);
 
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
+static void M_BackJump(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -95,8 +99,26 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = M_CAM_BACK_JUMP_ANGLE;
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+        item->goal_anim_state = LS_FAST_FALL;
+        return;
+    }
+
+    if (item->goal_anim_state == LS_RUN) {
+        item->goal_anim_state = LS_STOP;
+    } else if (
+        IsJumpTwistEnabled() && (g_Input.forward || g_Input.roll)
+        && item->goal_anim_state != LS_STOP) {
+        item->goal_anim_state = LS_TWIST;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
 REGISTER_LARA_STATE(LS_JUMP_FORWARD, M_ForwardJump)
+REGISTER_LARA_STATE(LS_JUMP_BACK,    M_BackJump)
 // clang-format on
