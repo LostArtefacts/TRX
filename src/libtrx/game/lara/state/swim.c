@@ -1,10 +1,12 @@
 #include "config.h"
+#include "game/camera.h"
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
 
 static void M_SurfSwim(ITEM *item, COLL_INFO *coll);
 static void M_Dive(ITEM *item, COLL_INFO *coll);
+static void M_WaterOut(ITEM *item, COLL_INFO *coll);
 
 static void M_SurfSwim(ITEM *const item, COLL_INFO *const coll)
 {
@@ -39,7 +41,15 @@ static void M_Dive(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_WaterOut(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+    g_Camera.flags = CF_FOLLOW_CENTRE;
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_SurfSwim)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
+REGISTER_LARA_STATE(LS_WATER_OUT,  M_WaterOut)
 // clang-format on
