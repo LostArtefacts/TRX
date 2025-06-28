@@ -38,7 +38,6 @@ static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
 static void M_StepLeft(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
-static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
@@ -395,18 +394,6 @@ static void M_Slide(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_FallBack(ITEM *item, COLL_INFO *coll)
-{
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
-        return;
-    }
-
-    if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS) {
-        item->goal_anim_state = LS_REACH;
-    }
-}
-
 static void M_SlideBack(ITEM *item, COLL_INFO *coll)
 {
     if (g_Input.jump && !g_Input.forward) {
@@ -565,7 +552,6 @@ REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_StepLeft)
 REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
-REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_SlideBack)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)

@@ -13,6 +13,7 @@ static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
 static void M_BackJump(ITEM *item, COLL_INFO *coll);
 static void M_SideJump(ITEM *item, COLL_INFO *coll);
+static void M_FallBack(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -137,6 +138,19 @@ static void M_SideJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+        item->goal_anim_state = LS_FAST_FALL;
+        return;
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.action && lara->gun_status == LGS_ARMLESS) {
+        item->goal_anim_state = LS_REACH;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
@@ -144,4 +158,5 @@ REGISTER_LARA_STATE(LS_JUMP_FORWARD, M_ForwardJump)
 REGISTER_LARA_STATE(LS_JUMP_BACK,    M_BackJump)
 REGISTER_LARA_STATE(LS_JUMP_RIGHT,   M_SideJump)
 REGISTER_LARA_STATE(LS_JUMP_LEFT,    M_SideJump)
+REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
 // clang-format on
