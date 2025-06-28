@@ -50,6 +50,9 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->data;
+    if (creature == nullptr) {
+        return;
+    }
 
     AI_INFO info;
     Creature_AIInfo(item, &info);
