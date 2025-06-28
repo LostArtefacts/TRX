@@ -77,7 +77,6 @@ static void M_SurfTread(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_Glide(ITEM *item, COLL_INFO *coll);
 static void M_Tread(ITEM *item, COLL_INFO *coll);
-static void M_Dive(ITEM *item, COLL_INFO *coll);
 static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 static void M_UWTwist(ITEM *item, COLL_INFO *coll);
 
@@ -1013,13 +1012,6 @@ static void M_Tread(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_Dive(ITEM *item, COLL_INFO *coll)
-{
-    if (g_Input.forward) {
-        item->rot.x -= DEG_1;
-    }
-}
-
 static void M_UWDeath(ITEM *item, COLL_INFO *coll)
 {
     item->gravity = false;
@@ -1073,7 +1065,6 @@ REGISTER_LARA_STATE(LS_SHIMMY_LEFT,  M_HangLeft)
 REGISTER_LARA_STATE(LS_SHIMMY_RIGHT, M_HangRight)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_SlideBack)
 REGISTER_LARA_STATE(LS_SURF_TREAD,   M_SurfTread)
-REGISTER_LARA_STATE(LS_DIVE,         M_Dive)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)

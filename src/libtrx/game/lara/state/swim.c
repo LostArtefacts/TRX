@@ -4,6 +4,7 @@
 #include "game/lara/util.h"
 
 static void M_SurfSwim(ITEM *item, COLL_INFO *coll);
+static void M_Dive(ITEM *item, COLL_INFO *coll);
 
 static void M_SurfSwim(ITEM *const item, COLL_INFO *const coll)
 {
@@ -31,6 +32,14 @@ static void M_SurfSwim(ITEM *const item, COLL_INFO *const coll)
     CLAMPG(item->fall_speed, LARA_MAX_SURF_SPEED);
 }
 
+static void M_Dive(ITEM *const item, COLL_INFO *const coll)
+{
+    if (g_Input.forward) {
+        item->rot.x -= DEG_1;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_SurfSwim)
+REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
 // clang-format on
