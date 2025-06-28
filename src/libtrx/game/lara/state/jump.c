@@ -18,6 +18,7 @@ static void M_BackJump(ITEM *item, COLL_INFO *coll);
 static void M_SideJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
+static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -163,6 +164,16 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 1;
+    if (item->fall_speed > LARA_FAST_FALL_SPEED
+        && item->goal_anim_state != LS_DIVE) {
+        item->goal_anim_state = LS_FAST_DIVE;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
@@ -172,4 +183,5 @@ REGISTER_LARA_STATE(LS_JUMP_RIGHT,   M_SideJump)
 REGISTER_LARA_STATE(LS_JUMP_LEFT,    M_SideJump)
 REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
 REGISTER_LARA_STATE(LS_REACH,        M_Reach)
+REGISTER_LARA_STATE(LS_SWAN_DIVE,    M_SwanDive)
 // clang-format on

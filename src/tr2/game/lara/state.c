@@ -45,7 +45,6 @@ static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_Zipline(ITEM *item, COLL_INFO *coll);
@@ -461,16 +460,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
     g_Camera.target_elevation = CAM_SPECIAL_ELEVATION;
 }
 
-static void M_SwanDive(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 1;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED
-        && item->goal_anim_state != LS_DIVE) {
-        item->goal_anim_state = LS_FAST_DIVE;
-    }
-}
-
 static void M_FastDive(ITEM *item, COLL_INFO *coll)
 {
     if (g_Input.roll && item->goal_anim_state == LS_FAST_DIVE) {
@@ -552,7 +541,6 @@ REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
-REGISTER_LARA_STATE(LS_SWAN_DIVE,    M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,    M_FastDive)
 REGISTER_LARA_STATE(LS_GYMNAST,      M_Null)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
