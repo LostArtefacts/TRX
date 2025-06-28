@@ -76,7 +76,6 @@ static void M_SurfTread(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_Glide(ITEM *item, COLL_INFO *coll);
 static void M_Tread(ITEM *item, COLL_INFO *coll);
-static void M_UWDeath(ITEM *item, COLL_INFO *coll);
 
 static void M_SwimTurn(ITEM *const item)
 {
@@ -1003,22 +1002,6 @@ static void M_Tread(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_UWDeath(ITEM *item, COLL_INFO *coll)
-{
-    item->gravity = false;
-    item->fall_speed -= 8;
-    CLAMPL(item->fall_speed, 0);
-
-    int32_t angle = 2 * DEG_1;
-    if (item->rot.x >= -angle && item->rot.x <= angle) {
-        item->rot.x = 0;
-    } else if (item->rot.x >= 0) {
-        item->rot.x -= angle;
-    } else {
-        item->rot.x += angle;
-    }
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
@@ -1059,7 +1042,6 @@ REGISTER_LARA_STATE(LS_SWITCH_ON,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
-REGISTER_LARA_STATE(LS_UW_DEATH,     M_UWDeath)
 REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 REGISTER_LARA_STATE(LS_SURF_BACK,    M_SurfBack)
 REGISTER_LARA_STATE(LS_SURF_LEFT,    M_SurfLeft)
