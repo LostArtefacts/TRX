@@ -4,6 +4,14 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
+// clang-format off
+#define M_FRICTION       6
+#define M_LEAN_RATE      (2 * LARA_LEAN_RATE) // = 546
+#define M_TURN_RATE      (2 * DEG_1)          // = 364
+#define M_MAX_SURF_SPEED 60
+#define M_MAX_SWIM_SPEED 200
+// clang-format on
+
 static void M_SwimTurn(ITEM *item);
 
 static void M_Tread(ITEM *item, COLL_INFO *coll);
@@ -20,19 +28,19 @@ static void M_UWTwist(ITEM *item, COLL_INFO *coll);
 static void M_SwimTurn(ITEM *const item)
 {
     if (g_Input.forward) {
-        item->rot.x -= LARA_TURN_RATE_UW;
+        item->rot.x -= M_TURN_RATE;
     } else if (g_Input.back) {
-        item->rot.x += LARA_TURN_RATE_UW;
+        item->rot.x += M_TURN_RATE;
     }
 
 #if TR_VERSION == 1
     if (!g_Config.gameplay.enable_tr2_swimming) {
         if (g_Input.left) {
             item->rot.y -= LARA_MED_TURN;
-            item->rot.z -= LARA_LEAN_RATE * 2;
+            item->rot.z -= M_LEAN_RATE;
         } else if (g_Input.right) {
             item->rot.y += LARA_MED_TURN;
-            item->rot.z += LARA_LEAN_RATE * 2;
+            item->rot.z += M_LEAN_RATE;
         }
         return;
     }
@@ -42,11 +50,11 @@ static void M_SwimTurn(ITEM *const item)
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
         CLAMPL(lara->turn_rate, -LARA_MED_TURN);
-        item->rot.z -= LARA_LEAN_RATE_SWIM;
+        item->rot.z -= M_LEAN_RATE;
     } else if (g_Input.right) {
         lara->turn_rate += LARA_TURN_RATE;
         CLAMPG(lara->turn_rate, LARA_MED_TURN);
-        item->rot.z += LARA_LEAN_RATE_SWIM;
+        item->rot.z += M_LEAN_RATE;
     }
 }
 
@@ -79,7 +87,7 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.jump) {
         item->goal_anim_state = LS_SWIM;
     }
-    item->fall_speed -= LARA_UW_FRICTION;
+    item->fall_speed -= M_FRICTION;
     CLAMPL(item->fall_speed, 0);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -112,9 +120,9 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed += 8;
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->water_status == LWS_CHEAT) {
-        CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED * 2);
+        CLAMPG(item->fall_speed, M_MAX_SWIM_SPEED * 2);
     } else {
-        CLAMPG(item->fall_speed, LARA_MAX_SWIM_SPEED);
+        CLAMPG(item->fall_speed, M_MAX_SWIM_SPEED);
     }
 
     if (!g_Input.jump) {
@@ -152,9 +160,9 @@ static void M_Glide(ITEM *item, COLL_INFO *coll)
     if (g_Input.jump) {
         item->goal_anim_state = LS_SWIM;
     }
-    item->fall_speed -= LARA_UW_FRICTION;
+    item->fall_speed -= M_FRICTION;
     CLAMPL(item->fall_speed, 0);
-    if (item->fall_speed <= LARA_MAX_SWIM_SPEED * 2 / 3) {
+    if (item->fall_speed <= M_MAX_SWIM_SPEED * 2 / 3) {
         item->goal_anim_state = LS_TREAD;
     }
 }
@@ -243,7 +251,7 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS_SURF_TREAD;
     }
     item->fall_speed += 8;
-    CLAMPG(item->fall_speed, LARA_MAX_SURF_SPEED);
+    CLAMPG(item->fall_speed, M_MAX_SURF_SPEED);
 }
 
 static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
@@ -261,9 +269,9 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
 
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
         if (g_Input.left) {
-            item->rot.y -= LARA_SURF_TURN;
+            item->rot.y -= M_TURN_RATE;
         } else if (g_Input.right) {
-            item->rot.y += LARA_SURF_TURN;
+            item->rot.y += M_TURN_RATE;
         }
 
         bool stop = false;
@@ -287,7 +295,7 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
     }
 
     item->fall_speed += 8;
-    CLAMPG(item->fall_speed, LARA_MAX_SURF_SPEED);
+    CLAMPG(item->fall_speed, M_MAX_SURF_SPEED);
 }
 
 static void M_Dive(ITEM *const item, COLL_INFO *const coll)
@@ -306,13 +314,12 @@ static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed -= 8;
     CLAMPL(item->fall_speed, 0);
 
-    const int32_t angle = 2 * DEG_1;
-    if (item->rot.x >= -angle && item->rot.x <= angle) {
+    if (item->rot.x >= -M_TURN_RATE && item->rot.x <= M_TURN_RATE) {
         item->rot.x = 0;
     } else if (item->rot.x >= 0) {
-        item->rot.x -= angle;
+        item->rot.x -= M_TURN_RATE;
     } else {
-        item->rot.x += angle;
+        item->rot.x += M_TURN_RATE;
     }
 }
 
