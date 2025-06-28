@@ -37,7 +37,8 @@ typedef enum {
     ICT_OBJECT_DATA    = 4,
     ICT_SFX_DATA       = 5,
     ICT_DATA_EDITS     = 6,
-    ICT_NUMBER_OF      = 7,
+    ICT_CAMERA_DATA    = 7,
+    ICT_NUMBER_OF      = 8,
 } INJECTION_CHUNK_TYPE;
 
 typedef enum {
@@ -71,7 +72,8 @@ typedef enum {
     IDT_ANIM_CMD_EDITS   = 27,
     IDT_SPRITE_EDITS     = 28,
     IDT_STATIC_OBJECTS   = 29,
-    IDT_NUMBER_OF        = 30,
+    IDT_CINEMATIC_FRAMES = 30,
+    IDT_NUMBER_OF        = 31,
 } INJECTION_DATA_TYPE;
 
 typedef enum {

@@ -1063,8 +1063,9 @@ void Level_ReadCinematicFrames(VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int16_t num_frames = VFile_ReadS16(file);
+    const int32_t inj_frames = Inject_GetDataCount(IDT_CINEMATIC_FRAMES);
     LOG_INFO("cinematic frames: %d", num_frames);
-    Camera_InitialiseCineFrames(num_frames);
+    Camera_InitialiseCineFrames(MAX(num_frames, inj_frames));
     for (int32_t i = 0; i < num_frames; i++) {
         CINE_FRAME *const frame = Camera_GetCineFrame(i);
         M_ReadVertex(&frame->target.shift, file);
