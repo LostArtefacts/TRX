@@ -7,6 +7,7 @@
 static void M_SurfSwim(ITEM *item, COLL_INFO *coll);
 static void M_Dive(ITEM *item, COLL_INFO *coll);
 static void M_WaterOut(ITEM *item, COLL_INFO *coll);
+static void M_UWTwist(ITEM *item, COLL_INFO *coll);
 
 static void M_SurfSwim(ITEM *const item, COLL_INFO *const coll)
 {
@@ -48,8 +49,15 @@ static void M_WaterOut(ITEM *const item, COLL_INFO *const coll)
     g_Camera.flags = CF_FOLLOW_CENTRE;
 }
 
+static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
+{
+    item->fall_speed = 0;
+    item->goal_anim_state = LS_TREAD;
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_SURF_SWIM,  M_SurfSwim)
 REGISTER_LARA_STATE(LS_DIVE,       M_Dive)
 REGISTER_LARA_STATE(LS_WATER_OUT,  M_WaterOut)
+REGISTER_LARA_STATE(LS_WATER_ROLL, M_UWTwist)
 // clang-format on
