@@ -356,6 +356,7 @@ fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed transparent eyes on the wolf model in Furnace of the Gods
 - fixed Lara's health bar showing in the Home Sweet Home shower cutscene
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save
+- fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
@@ -376,6 +377,7 @@ fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed missing sound effects for collapsible tiles in Opera House, The Deck and Catacombs of the Talion
 - fixed missing 'aha' sound effect in Lara's Home
 - fixed missing zipline sound effect in Home Sweet Home
+- fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
