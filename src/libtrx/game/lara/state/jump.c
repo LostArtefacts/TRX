@@ -12,6 +12,7 @@ static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
 static void M_BackJump(ITEM *item, COLL_INFO *coll);
+static void M_SideJump(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -116,9 +117,31 @@ static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_SideJump(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+#endif
+    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+        item->goal_anim_state = LS_FAST_FALL;
+        return;
+    }
+
+    // TODO: unused animation transition, perhaps look at restoring
+    const bool twist_input =
+        item->current_anim_state == LS_JUMP_LEFT ? g_Input.right : g_Input.left;
+    if (IsJumpTwistEnabled() && twist_input
+        && item->goal_anim_state != LS_STOP) {
+        item->goal_anim_state = LS_TWIST;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
 REGISTER_LARA_STATE(LS_JUMP_FORWARD, M_ForwardJump)
 REGISTER_LARA_STATE(LS_JUMP_BACK,    M_BackJump)
+REGISTER_LARA_STATE(LS_JUMP_RIGHT,   M_SideJump)
+REGISTER_LARA_STATE(LS_JUMP_LEFT,    M_SideJump)
 // clang-format on

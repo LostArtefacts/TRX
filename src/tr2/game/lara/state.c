@@ -38,8 +38,6 @@ static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
 static void M_StepLeft(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
-static void M_RightJump(ITEM *item, COLL_INFO *coll);
-static void M_LeftJump(ITEM *item, COLL_INFO *coll);
 static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
@@ -397,32 +395,6 @@ static void M_Slide(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_RightJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
-        return;
-    }
-
-    if (g_Input.left && item->goal_anim_state != LS_STOP) {
-        item->goal_anim_state = LS_TWIST;
-    }
-}
-
-static void M_LeftJump(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
-        return;
-    }
-
-    if (g_Input.right && item->goal_anim_state != LS_STOP) {
-        item->goal_anim_state = LS_TWIST;
-    }
-}
-
 static void M_FallBack(ITEM *item, COLL_INFO *coll)
 {
     if (item->fall_speed > LARA_FAST_FALL_SPEED) {
@@ -593,8 +565,6 @@ REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_StepLeft)
 REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
-REGISTER_LARA_STATE(LS_JUMP_RIGHT,   M_RightJump)
-REGISTER_LARA_STATE(LS_JUMP_LEFT,    M_LeftJump)
 REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_SlideBack)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
