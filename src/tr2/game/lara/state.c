@@ -70,7 +70,6 @@ static void M_ClimbEnd(ITEM *item, COLL_INFO *coll);
 static void M_ClimbDown(ITEM *item, COLL_INFO *coll);
 static void M_Swim(ITEM *item, COLL_INFO *coll);
 static void M_Glide(ITEM *item, COLL_INFO *coll);
-static void M_Tread(ITEM *item, COLL_INFO *coll);
 
 static void M_SwimTurn(ITEM *const item)
 {
@@ -857,33 +856,6 @@ static void M_Glide(ITEM *item, COLL_INFO *coll)
     }
 }
 
-static void M_Tread(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    if (g_Input.roll) {
-        item->current_anim_state = LS_WATER_ROLL;
-        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
-        return;
-    }
-
-    if (g_Input.look) {
-        Lara_LookUpDown();
-    }
-    M_SwimTurn(item);
-    if (g_Input.jump) {
-        item->goal_anim_state = LS_SWIM;
-    }
-    item->fall_speed -= LARA_UW_FRICTION;
-    CLAMPL(item->fall_speed, 0);
-    if (g_Lara.gun_status == LGS_HANDS_BUSY) {
-        g_Lara.gun_status = LGS_ARMLESS;
-    }
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
@@ -897,7 +869,6 @@ REGISTER_LARA_STATE(LS_FAST_FALL,    M_FastFall)
 REGISTER_LARA_STATE(LS_HANG,         M_Hang)
 REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
-REGISTER_LARA_STATE(LS_TREAD,        M_Tread)
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_Back)
 REGISTER_LARA_STATE(LS_SWIM,         M_Swim)
