@@ -3,6 +3,7 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
+#include "game/sound.h"
 
 // clang-format off
 #define M_CAM_BACK_JUMP_ANGLE (135 * DEG_1) // = 24570
@@ -20,6 +21,7 @@ static void M_FallBack(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
+static void M_FastFall(ITEM *item, COLL_INFO *coll);
 
 static bool IsJumpTwistEnabled(void)
 {
@@ -186,6 +188,19 @@ static void M_FastDive(ITEM *item, COLL_INFO *coll)
     item->speed = item->speed * 95 / 100;
 }
 
+static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
+{
+    item->speed = item->speed * 95 / 100;
+#if TR_VERSION == 1
+    const bool scream = item->fall_speed >= DAMAGE_START + DAMAGE_LENGTH;
+#else
+    const bool scream = item->fall_speed == DAMAGE_START + DAMAGE_LENGTH;
+#endif
+    if (scream) {
+        Sound_Effect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
@@ -197,4 +212,5 @@ REGISTER_LARA_STATE(LS_FALL_BACK,    M_FallBack)
 REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SWAN_DIVE,    M_SwanDive)
 REGISTER_LARA_STATE(LS_FAST_DIVE,    M_FastDive)
+REGISTER_LARA_STATE(LS_FAST_FALL,    M_FastFall)
 // clang-format on
