@@ -145,6 +145,7 @@ sources = [
   'game/gym.c',
   'game/inject/common.c',
   'game/inject/data/anims.c',
+  'game/inject/data/camera.c',
   'game/inject/data/meshes.c',
   'game/inject/data/objects.c',
   'game/inject/data/sound.c',
