@@ -1,3 +1,4 @@
+#include "config.h"
 #include "game/camera.h"
 #include "game/input.h"
 #include "game/lara.h"
@@ -14,9 +15,32 @@
 #define M_CAM_CLIMB_DOWN_ELEVATION   M_CAM_CLIMB_END_ELEVATION  // = -8190
 // clang-format on
 
+static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
 static void M_SideLadder(ITEM *item, COLL_INFO *coll);
 static void M_UpDownLadder(ITEM *item, COLL_INFO *coll);
+
+static void M_Hang(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    const bool look = g_Config.gameplay.enable_enhanced_look && g_Input.look;
+#else
+    const bool look = g_Input.look;
+#endif
+    if (look) {
+        Lara_LookUpDown();
+    }
+
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+    g_Camera.target_angle = CAM_HANG_ANGLE;
+    g_Camera.target_elevation = CAM_HANG_ELEVATION;
+    if (g_Input.left || g_Input.step_left) {
+        item->goal_anim_state = LS_SHIMMY_LEFT;
+    } else if (g_Input.right || g_Input.step_right) {
+        item->goal_anim_state = LS_SHIMMY_RIGHT;
+    }
+}
 
 static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
 {
@@ -83,6 +107,7 @@ static void M_UpDownLadder(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
+REGISTER_LARA_STATE(LS_HANG,         M_Hang)
 #if TR_VERSION >= 2
 REGISTER_LARA_STATE(LS_CLIMB_STANCE, M_StanceLadder)
 REGISTER_LARA_STATE(LS_CLIMB_LEFT,   M_SideLadder)

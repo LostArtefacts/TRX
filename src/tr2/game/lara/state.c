@@ -31,7 +31,6 @@ static void M_TurnRight(ITEM *item, COLL_INFO *coll);
 static void M_TurnLeft(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
-static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_Reach(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Compress(ITEM *item, COLL_INFO *coll);
@@ -321,23 +320,6 @@ static void M_FastFall(ITEM *item, COLL_INFO *coll)
     item->speed = item->speed * 95 / 100;
     if (item->fall_speed == DAMAGE_START + DAMAGE_LENGTH) {
         Sound_Effect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
-    }
-}
-
-static void M_Hang(ITEM *item, COLL_INFO *coll)
-{
-    if (g_Input.look) {
-        Lara_LookUpDown();
-    }
-
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_HANG_ANGLE;
-    g_Camera.target_elevation = CAM_HANG_ELEVATION;
-    if (g_Input.left || g_Input.step_left) {
-        item->goal_anim_state = LS_SHIMMY_LEFT;
-    } else if (g_Input.right || g_Input.step_right) {
-        item->goal_anim_state = LS_SHIMMY_RIGHT;
     }
 }
 
@@ -722,7 +704,6 @@ REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_TurnRight)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_TurnLeft)
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_FAST_FALL,    M_FastFall)
-REGISTER_LARA_STATE(LS_HANG,         M_Hang)
 REGISTER_LARA_STATE(LS_REACH,        M_Reach)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
