@@ -6,9 +6,12 @@
 #include "game/sound.h"
 
 // clang-format off
-#define M_CAM_BACK_JUMP_ANGLE (135 * DEG_1) // = 24570
-#define M_CAM_REACH_ANGLE     (85 * DEG_1)  // = 15470
-#define M_CAM_ZIPLINE_ANGLE   (70 * DEG_1)  // = 12740
+#define M_JUMP_TURN             ((DEG_1 * 1) + LARA_TURN_UNDO) // = 546
+#define M_FAST_FALL_SPEED       (FAST_FALL_SPEED + 3)          // = 131
+#define M_SWING_FAST_FALL_SPEED (M_FAST_FALL_SPEED + 2)        // = 133
+#define M_CAM_BACK_JUMP_ANGLE   (135 * DEG_1)                  // = 24570
+#define M_CAM_REACH_ANGLE       (85 * DEG_1)                   // = 15470
+#define M_CAM_ZIPLINE_ANGLE     (70 * DEG_1)                   // = 12740
 // clang-format on
 
 static bool IsJumpTwistEnabled(void);
@@ -63,7 +66,7 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+    if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
@@ -71,8 +74,8 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 static void M_UpJump(ITEM *item, COLL_INFO *coll)
 {
     const int16_t fast_speed = g_Config.gameplay.enable_swing_cancel
-        ? LARA_SWING_FAST_FALL_SPEED
-        : LARA_FAST_FALL_SPEED;
+        ? M_SWING_FAST_FALL_SPEED
+        : M_FAST_FALL_SPEED;
     if (item->fall_speed > fast_speed) {
         item->goal_anim_state = LS_FAST_FALL;
     }
@@ -97,24 +100,24 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
         if (g_Input.slow && lara->gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_SWAN_DIVE;
         }
-        if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+        if (item->fall_speed > M_FAST_FALL_SPEED) {
             item->goal_anim_state = LS_FAST_FALL;
         }
     }
 
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
-        CLAMPL(lara->turn_rate, -LARA_JUMP_TURN);
+        CLAMPL(lara->turn_rate, -M_JUMP_TURN);
     } else if (g_Input.right) {
         lara->turn_rate += LARA_TURN_RATE;
-        CLAMPG(lara->turn_rate, +LARA_JUMP_TURN);
+        CLAMPG(lara->turn_rate, +M_JUMP_TURN);
     }
 }
 
 static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
 {
     g_Camera.target_angle = M_CAM_BACK_JUMP_ANGLE;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+    if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
     }
@@ -134,7 +137,7 @@ static void M_SideJump(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->enable_look = false;
 #endif
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+    if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
     }
@@ -150,7 +153,7 @@ static void M_SideJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
 {
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+    if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
     }
@@ -164,7 +167,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
 static void M_Reach(ITEM *const item, COLL_INFO *const coll)
 {
     g_Camera.target_angle = M_CAM_REACH_ANGLE;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED) {
+    if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }
@@ -173,7 +176,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 1;
-    if (item->fall_speed > LARA_FAST_FALL_SPEED
+    if (item->fall_speed > M_FAST_FALL_SPEED
         && item->goal_anim_state != LS_DIVE) {
         item->goal_anim_state = LS_FAST_DIVE;
     }
