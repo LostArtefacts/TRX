@@ -49,7 +49,6 @@ static void M_HangLeft(ITEM *item, COLL_INFO *coll);
 static void M_HangRight(ITEM *item, COLL_INFO *coll);
 static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_SurfTread(ITEM *item, COLL_INFO *coll);
-static void M_SurfSwim(ITEM *item, COLL_INFO *coll);
 static void M_Dive(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
@@ -722,37 +721,6 @@ static void M_WaterOut(ITEM *item, COLL_INFO *coll)
     g_Camera.flags = CF_FOLLOW_CENTRE;
 }
 
-static void M_SurfSwim(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
-        return;
-    }
-
-    coll->enable_hit = 0;
-    g_Lara.dive_timer = 0;
-
-    if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
-        if (g_Input.left) {
-            item->rot.y -= LARA_SLOW_TURN;
-        } else if (g_Input.right) {
-            item->rot.y += LARA_SLOW_TURN;
-        }
-    }
-
-    if (!g_Input.forward) {
-        item->goal_anim_state = LS_SURF_TREAD;
-    }
-    if (g_Input.jump) {
-        item->goal_anim_state = LS_SURF_TREAD;
-    }
-
-    item->fall_speed += 8;
-    if (item->fall_speed > LARA_MAX_SURF_SPEED) {
-        item->fall_speed = LARA_MAX_SURF_SPEED;
-    }
-}
-
 static void M_SurfBack(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -1164,7 +1132,6 @@ REGISTER_LARA_STATE(LS_SHIMMY_LEFT,   M_HangLeft)
 REGISTER_LARA_STATE(LS_SHIMMY_RIGHT,  M_HangRight)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,    M_SlideBack)
 REGISTER_LARA_STATE(LS_SURF_TREAD,    M_SurfTread)
-REGISTER_LARA_STATE(LS_SURF_SWIM,     M_SurfSwim)
 REGISTER_LARA_STATE(LS_DIVE,          M_Dive)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,    M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,    M_PushBlock)
