@@ -17,6 +17,7 @@ static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
+static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
@@ -214,6 +215,59 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Turn(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+#if TR_VERSION == 1
+    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+#endif
+
+    const bool left_turn = item->current_anim_state == LS_TURN_LEFT;
+    const bool turn_input = left_turn ? g_Input.left : g_Input.right;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (left_turn) {
+        lara->turn_rate -= LARA_TURN_RATE;
+    } else {
+        lara->turn_rate += LARA_TURN_RATE;
+    }
+
+    if (lara->gun_status == LGS_READY) {
+        item->goal_anim_state = LS_FAST_TURN;
+    } else if (left_turn && lara->turn_rate < -LARA_SLOW_TURN) {
+        if (g_Input.slow) {
+            lara->turn_rate = -LARA_SLOW_TURN;
+        } else {
+            item->goal_anim_state = LS_FAST_TURN;
+        }
+    } else if (!left_turn && lara->turn_rate > LARA_SLOW_TURN) {
+        if (g_Input.slow) {
+            lara->turn_rate = LARA_SLOW_TURN;
+        } else {
+            item->goal_anim_state = LS_FAST_TURN;
+        }
+    }
+
+    if (g_Input.forward) {
+        if (lara->water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else if (g_Input.slow) {
+            item->goal_anim_state = LS_WALK;
+        } else {
+            item->goal_anim_state = LS_RUN;
+        }
+    } else if (!turn_input) {
+        item->goal_anim_state = LS_STOP;
+    }
+}
+
 static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -274,6 +328,8 @@ REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
+REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_Turn)
+REGISTER_LARA_STATE(LS_TURN_LEFT,    M_Turn)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 // clang-format on
