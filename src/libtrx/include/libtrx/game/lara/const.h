@@ -26,7 +26,6 @@
 
 #define LARA_SLOW_TURN ((DEG_1 * 2) + LARA_TURN_UNDO) // = 728
 #define LARA_MED_TURN ((DEG_1 * 4) + LARA_TURN_UNDO) // = 1092
-#define LARA_FAST_TURN ((DEG_1 * 6) + LARA_TURN_UNDO) // = 1456
 
 #define LARA_LEAN_UNDO DEG_1 // = 182
 #define LARA_LEAN_UNDO_SURF (LARA_LEAN_UNDO * 2) // = 364
@@ -71,5 +70,4 @@
 #define DEATH_WAIT (5 * 2 * LOGIC_FPS) // = 300
 #define DEATH_WAIT_INPUT (2 * LOGIC_FPS) // = 60
 
-// TODO: move to merged lara/state.c
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
