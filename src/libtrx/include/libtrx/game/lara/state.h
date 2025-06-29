@@ -13,3 +13,4 @@ void Lara_State_Update(ITEM *item, COLL_INFO *coll);
 void Lara_State_Walk(ITEM *item, COLL_INFO *coll);
 void Lara_State_Run(ITEM *item, COLL_INFO *coll);
 void Lara_State_Wade(ITEM *item, COLL_INFO *coll);
+void Lara_State_WalkBack(ITEM *item, COLL_INFO *coll);
