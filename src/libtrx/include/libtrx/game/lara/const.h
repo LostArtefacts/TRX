@@ -17,9 +17,6 @@
 
 #define LARA_WADE_DEPTH 384
 #define LARA_SWIM_DEPTH 730
-#define LARA_CLIMB_WIDTH_LEFT 80
-#define LARA_CLIMB_WIDTH_RIGHT 120
-#define LARA_CLIMB_HEIGHT (WALL_L / 2) // = 512
 
 #define LARA_TURN_UNDO (2 * DEG_1) // = 364
 #define LARA_TURN_RATE ((DEG_1 / 4) + LARA_TURN_UNDO) // = 409
@@ -39,7 +36,6 @@
 
 #define LARA_DEFLECT_ANGLE (5 * DEG_1) // = 910
 #define LARA_HANG_ANGLE (35 * DEG_1) // = 6370
-#define LARA_VAULT_ANGLE (30 * DEG_1) // = 5460
 
 // TODO: tidy these
 #if TR_VERSION == 1
