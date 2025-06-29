@@ -39,6 +39,7 @@ static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
+static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -459,6 +460,19 @@ static void M_PickupFlare(ITEM *const item, COLL_INFO *const coll)
 #endif
 }
 
+static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+#endif
+    M_Default(item, coll);
+    g_Camera.target_angle = CAM_SWITCH_ON_ANGLE;
+    g_Camera.target_elevation = CAM_SWITCH_ON_ELEVATION;
+    g_Camera.target_distance = CAM_SWITCH_ON_DISTANCE;
+    g_Camera.speed = CAM_SWITCH_ON_SPEED;
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -512,6 +526,8 @@ REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)
 REGISTER_LARA_STATE(LS_PICKUP,       M_Pickup)
+REGISTER_LARA_STATE(LS_SWITCH_ON,    M_SwitchOn)
+REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
