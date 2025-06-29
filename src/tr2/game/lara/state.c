@@ -15,18 +15,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
-static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_UseKey(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_USE_KEY_ANGLE;
-    g_Camera.target_elevation = CAM_USE_KEY_ELEVATION;
-    g_Camera.target_distance = CAM_USE_KEY_DISTANCE;
-}
 
 static void M_Special(ITEM *item, COLL_INFO *coll)
 {
@@ -36,7 +25,5 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
-REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 // clang-format on
