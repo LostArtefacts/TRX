@@ -14,7 +14,6 @@
 
 #include <stdint.h>
 
-static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
 static void M_StepLeft(ITEM *item, COLL_INFO *coll);
@@ -27,12 +26,6 @@ static void M_Controlled(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_Death(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-}
 
 static void M_FastTurn(ITEM *item, COLL_INFO *coll)
 {
@@ -194,7 +187,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_DEATH,         M_Death)
 REGISTER_LARA_STATE(LS_FAST_TURN,     M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,    M_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,     M_StepLeft)
