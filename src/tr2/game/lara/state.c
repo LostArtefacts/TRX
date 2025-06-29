@@ -15,11 +15,9 @@
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
-#define LF_ROLL 2
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_TurnRight(ITEM *item, COLL_INFO *coll);
 static void M_TurnLeft(ITEM *item, COLL_INFO *coll);
@@ -38,66 +36,6 @@ static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_Stop(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_DEATH;
-        return;
-    }
-
-    if (g_Input.roll && g_Lara.water_status != LWS_WADE) {
-        item->current_anim_state = LS_ROLL;
-        item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL_START, LF_ROLL);
-        return;
-    }
-
-    item->goal_anim_state = LS_STOP;
-    if (g_Input.look) {
-        Lara_LookUpDown();
-    }
-
-    if (g_Input.step_left) {
-        item->goal_anim_state = LS_STEP_LEFT;
-    } else if (g_Input.step_right) {
-        item->goal_anim_state = LS_STEP_RIGHT;
-    } else if (g_Input.left) {
-        item->goal_anim_state = LS_TURN_LEFT;
-    } else if (g_Input.right) {
-        item->goal_anim_state = LS_TURN_RIGHT;
-    }
-
-    if (g_Lara.water_status == LWS_WADE) {
-        if (g_Input.jump) {
-            item->goal_anim_state = LS_COMPRESS;
-        }
-
-        if (g_Input.forward) {
-            if (g_Input.slow) {
-                Lara_State_Wade(item, coll);
-            } else {
-                Lara_State_Walk(item, coll);
-            }
-        } else if (g_Input.back) {
-            Lara_State_WalkBack(item, coll);
-        }
-    } else if (g_Input.jump) {
-        item->goal_anim_state = LS_COMPRESS;
-    } else if (g_Input.forward) {
-        if (g_Input.slow) {
-            Lara_State_Walk(item, coll);
-        } else {
-            Lara_State_Run(item, coll);
-        }
-    } else if (g_Input.back) {
-        if (g_Input.slow) {
-            Lara_State_WalkBack(item, coll);
-        } else {
-            item->goal_anim_state = LS_FAST_BACK;
-        }
-    }
-}
 
 static void M_FastBack(ITEM *item, COLL_INFO *coll)
 {
@@ -341,7 +279,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_STOP,         M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_TurnRight)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_TurnLeft)
