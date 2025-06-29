@@ -39,6 +39,7 @@
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save (#1617)
 - fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start (#1579)
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene (#3370)
+- fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24
