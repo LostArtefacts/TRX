@@ -15,35 +15,9 @@
 #include <libtrx/game/music.h>
 #include <libtrx/utils.h>
 
-#define LF_FLARE_PICKUP_END 89
-#define LF_UW_FLARE_PICKUP_END 35
-
-static void M_Pickup(ITEM *item, COLL_INFO *coll);
-static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_Pickup(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_PICKUP_ANGLE;
-    g_Camera.target_elevation = CAM_PICKUP_ELEVATION;
-    g_Camera.target_distance = CAM_PICKUP_DISTANCE;
-}
-
-static void M_PickupFlare(ITEM *item, COLL_INFO *coll)
-{
-    M_Pickup(item, coll);
-    const int16_t frame_num = Item_TestAnimEqual(item, LA_FLARE_PICKUP)
-        ? LF_FLARE_PICKUP_END
-        : LF_UW_FLARE_PICKUP_END;
-    if (Item_TestFrameEqual(item, frame_num)) {
-        g_Lara.gun_status = LGS_ARMLESS;
-    }
-}
 
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll)
 {
@@ -74,11 +48,9 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_PICKUP,       M_Pickup)
 REGISTER_LARA_STATE(LS_SWITCH_ON,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
-REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
 // clang-format on

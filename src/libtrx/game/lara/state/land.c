@@ -5,6 +5,8 @@
 #include "game/lara/util.h"
 
 #define M_LF_ROLL 2
+#define M_LF_FLARE_PICKUP_END 89
+#define M_LF_UW_FLARE_PICKUP_END 35
 #if TR_VERSION == 1
     #define M_LF_JUMP_READY 2
 #else
@@ -15,6 +17,9 @@
 #define M_CAM_PUSH_BLOCK_ANGLE (35 * DEG_1) // = 6370
 #define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1) // = -4550
 #define M_CAM_PP_READY_ANGLE (75 * DEG_1) // = 13650
+#define M_CAM_PICKUP_ANGLE (-130 * DEG_1) // = -23660
+#define M_CAM_PICKUP_ELEVATION (-15 * DEG_1) // = -2730
+#define M_CAM_PICKUP_DISTANCE WALL_L // = 1024
 
 static bool m_JumpPermitted = true;
 
@@ -32,6 +37,8 @@ static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
+static void M_Pickup(ITEM *item, COLL_INFO *coll);
+static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -426,6 +433,32 @@ static void M_PPReady(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+#endif
+    M_Default(item, coll);
+    g_Camera.target_angle = M_CAM_PICKUP_ANGLE;
+    g_Camera.target_elevation = M_CAM_PICKUP_ELEVATION;
+    g_Camera.target_distance = M_CAM_PICKUP_DISTANCE;
+}
+
+static void M_PickupFlare(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    M_Pickup(item, coll);
+    const int16_t frame_num = Item_TestAnimEqual(item, LA_FLARE_PICKUP)
+        ? M_LF_FLARE_PICKUP_END
+        : M_LF_UW_FLARE_PICKUP_END;
+    if (Item_TestFrameEqual(item, frame_num)) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->gun_status = LGS_ARMLESS;
+    }
+#endif
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -478,8 +511,11 @@ REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_Slide)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)
+REGISTER_LARA_STATE(LS_PICKUP,       M_Pickup)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
+#else
+REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
 #endif
 // clang-format on
