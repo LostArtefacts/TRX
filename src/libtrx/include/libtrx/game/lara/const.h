@@ -73,9 +73,6 @@
 
 // TODO: move to merged lara/state.c
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
-#define CAM_PICKUP_ANGLE (-130 * DEG_1) // = -23660
-#define CAM_PICKUP_ELEVATION (-15 * DEG_1) // = -2730
-#define CAM_PICKUP_DISTANCE WALL_L // = 1024
 #define CAM_SWITCH_ON_ANGLE (80 * DEG_1) // = 14560
 #define CAM_SWITCH_ON_ELEVATION (-25 * DEG_1) // = -4550
 #define CAM_SWITCH_ON_DISTANCE WALL_L // = 1024
