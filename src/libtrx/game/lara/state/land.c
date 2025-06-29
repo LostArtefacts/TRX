@@ -49,7 +49,6 @@ static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
-static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
@@ -449,23 +448,18 @@ static void M_PPReady(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
     M_Default(item, coll);
     g_Camera.target_angle = M_CAM_PICKUP_ANGLE;
     g_Camera.target_elevation = M_CAM_PICKUP_ELEVATION;
     g_Camera.target_distance = M_CAM_PICKUP_DISTANCE;
-}
-
-static void M_PickupFlare(ITEM *const item, COLL_INFO *const coll)
-{
-    M_Pickup(item, coll);
-    if (Item_TestFrameEqual(item, -1)) {
-        LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+    if (item->current_anim_state == LS_FLARE_PICKUP
+        && Item_TestFrameEqual(item, -1)) {
         lara->gun_status = LGS_ARMLESS;
     }
+#endif
 }
 
 static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
@@ -571,6 +565,6 @@ REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
 #else
-REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
+REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_Pickup)
 #endif
 // clang-format on
