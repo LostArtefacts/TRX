@@ -115,6 +115,29 @@ void Lara_State_Run(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+void Lara_State_WalkBack(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.back && (g_Input.slow || lara->water_status == LWS_WADE)) {
+        item->goal_anim_state = LS_WALK_BACK;
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_SLOW_TURN);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, LARA_SLOW_TURN);
+    }
+}
+
 void Lara_State_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -150,5 +173,6 @@ void Lara_State_Wade(ITEM *const item, COLL_INFO *const coll)
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         Lara_State_Walk)
 REGISTER_LARA_STATE(LS_RUN,          Lara_State_Run)
+REGISTER_LARA_STATE(LS_WALK_BACK,    Lara_State_WalkBack)
 REGISTER_LARA_STATE(LS_WADE,         Lara_State_Wade)
 // clang-format on
