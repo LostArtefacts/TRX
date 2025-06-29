@@ -16,6 +16,7 @@ static bool m_JumpPermitted = true;
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
+static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
@@ -200,6 +201,19 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
+{
+    item->goal_anim_state = LS_STOP;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_MED_TURN);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, LARA_MED_TURN);
+    }
+}
+
 static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -259,6 +273,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
+REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 // clang-format on
