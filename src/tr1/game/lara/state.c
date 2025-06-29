@@ -35,7 +35,6 @@ static void M_Controlled(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Stop(ITEM *item, COLL_INFO *coll)
 {
@@ -86,7 +85,7 @@ static void M_Stop(ITEM *item, COLL_INFO *coll)
 
         if (g_Input.forward) {
             if (g_Input.slow) {
-                M_Wade(item, coll);
+                Lara_State_Wade(item, coll);
             } else {
                 Lara_State_Walk(item, coll);
             }
@@ -390,37 +389,6 @@ static void M_Null(ITEM *item, COLL_INFO *coll)
     coll->enable_baddie_push = 0;
 }
 
-static void M_Wade(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    g_Camera.target_elevation = CAM_WADE_ELEVATION;
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_FAST_TURN);
-        item->rot.z -= LARA_LEAN_RATE;
-        CLAMPL(item->rot.z, -LARA_LEAN_MAX);
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, LARA_FAST_TURN);
-        item->rot.z += LARA_LEAN_RATE;
-        CLAMPG(item->rot.z, LARA_LEAN_MAX);
-    }
-
-    if (g_Input.forward) {
-        if (g_Lara.water_status != LWS_ABOVE_WATER) {
-            item->goal_anim_state = LS_WADE;
-        } else {
-            item->goal_anim_state = LS_RUN;
-        }
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-}
-
 // clang-format off
 REGISTER_LARA_STATE(LS_STOP,          M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,     M_FastBack)
@@ -445,5 +413,4 @@ REGISTER_LARA_STATE(LS_USE_PUZZLE,    M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,       M_Special)
 REGISTER_LARA_STATE(LS_GYMNAST,       M_Null)
 REGISTER_LARA_STATE(LS_CONTROLLED,    M_Controlled)
-REGISTER_LARA_STATE(LS_WADE,          M_Wade)
 // clang-format on
