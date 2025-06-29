@@ -19,6 +19,7 @@ static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
+static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
@@ -277,6 +278,34 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+#if TR_VERSION == 1
+    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+#endif
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->turn_rate >= 0) {
+        lara->turn_rate = LARA_FAST_TURN;
+        if (!g_Input.right) {
+            item->goal_anim_state = LS_STOP;
+        }
+    } else {
+        lara->turn_rate = -LARA_FAST_TURN;
+        if (!g_Input.left) {
+            item->goal_anim_state = LS_STOP;
+        }
+    }
+}
+
 static void M_Death(ITEM *item, COLL_INFO *coll)
 {
 #if TR_VERSION >= 2
@@ -358,6 +387,7 @@ REGISTER_LARA_STATE(LS_STOP,         M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_Turn)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_Turn)
+REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
