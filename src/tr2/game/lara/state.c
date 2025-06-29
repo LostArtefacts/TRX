@@ -20,7 +20,6 @@
 
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
-static void M_Null(ITEM *item, COLL_INFO *coll);
 static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
 static void M_StepLeft(ITEM *item, COLL_INFO *coll);
@@ -44,12 +43,6 @@ static void M_Death(ITEM *item, COLL_INFO *coll)
 static void M_Splat(ITEM *item, COLL_INFO *coll)
 {
     g_Lara.enable_look = false;
-}
-
-static void M_Null(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
 }
 
 static void M_FastTurn(ITEM *item, COLL_INFO *coll)
@@ -202,7 +195,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 // clang-format off
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
-REGISTER_LARA_STATE(LS_PULL_UP,      M_Null)
 REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_StepLeft)
@@ -217,6 +209,5 @@ REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
-REGISTER_LARA_STATE(LS_GYMNAST,      M_Null)
 REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_PickupFlare)
 // clang-format on

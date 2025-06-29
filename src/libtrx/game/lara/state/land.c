@@ -13,6 +13,7 @@
 
 static bool m_JumpPermitted = true;
 
+static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
@@ -20,6 +21,12 @@ static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
+
+static void M_Default(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+}
 
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 {
@@ -324,6 +331,8 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
+REGISTER_LARA_STATE(LS_PULL_UP,      M_Default)
+REGISTER_LARA_STATE(LS_GYMNAST,      M_Default)
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
