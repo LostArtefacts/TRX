@@ -16,14 +16,9 @@
 #include <libtrx/utils.h>
 
 #define LF_ROLL 2
-#define LF_JUMP_READY 4
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static bool m_JumpPermitted = true;
-
-static void M_Walk(ITEM *item, COLL_INFO *coll);
-static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_TurnRight(ITEM *item, COLL_INFO *coll);
@@ -45,86 +40,6 @@ static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
-
-static void M_Walk(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_SLOW_TURN);
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, +LARA_SLOW_TURN);
-    }
-
-    if (g_Input.forward) {
-        if (g_Lara.water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
-        } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
-        } else {
-            if (g_Config.gameplay.fix_walk_run_jump) {
-                m_JumpPermitted = true;
-            }
-            item->goal_anim_state = LS_RUN;
-        }
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-}
-
-static void M_Run(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_DEATH;
-        return;
-    }
-
-    if (g_Input.roll) {
-        item->current_anim_state = LS_ROLL;
-        item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL_START, LF_ROLL);
-        return;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_FAST_TURN);
-        item->rot.z -= LARA_LEAN_RATE;
-        CLAMPL(item->rot.z, -LARA_LEAN_MAX);
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, +LARA_FAST_TURN);
-        item->rot.z += LARA_LEAN_RATE;
-        CLAMPG(item->rot.z, +LARA_LEAN_MAX);
-    }
-
-    if (Item_TestAnimEqual(item, LA_RUN_START)) {
-        m_JumpPermitted = false;
-    } else if (
-        !Item_TestAnimEqual(item, LA_RUN)
-        || Item_TestFrameEqual(item, LF_JUMP_READY)) {
-        m_JumpPermitted = true;
-    }
-
-    if (g_Input.jump && m_JumpPermitted && !item->gravity) {
-        item->goal_anim_state = LS_JUMP_FORWARD;
-    } else if (g_Input.forward) {
-        if (g_Lara.water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
-        } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
-        } else {
-            item->goal_anim_state = LS_RUN;
-        }
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-}
 
 static void M_Stop(ITEM *item, COLL_INFO *coll)
 {
@@ -164,7 +79,7 @@ static void M_Stop(ITEM *item, COLL_INFO *coll)
             if (g_Input.slow) {
                 M_Wade(item, coll);
             } else {
-                M_Walk(item, coll);
+                Lara_State_Walk(item, coll);
             }
         } else if (g_Input.back) {
             M_Back(item, coll);
@@ -173,9 +88,9 @@ static void M_Stop(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_COMPRESS;
     } else if (g_Input.forward) {
         if (g_Input.slow) {
-            M_Walk(item, coll);
+            Lara_State_Walk(item, coll);
         } else {
-            M_Run(item, coll);
+            Lara_State_Run(item, coll);
         }
     } else if (g_Input.back) {
         if (g_Input.slow) {
@@ -481,8 +396,6 @@ static void M_Wade(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_WALK,         M_Walk)
-REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_TurnRight)

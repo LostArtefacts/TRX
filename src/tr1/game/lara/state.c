@@ -15,12 +15,7 @@
 #include <stdint.h>
 
 #define LF_ROLL 2
-#define LF_JUMP_READY 3
 
-static bool m_JumpPermitted = true;
-
-static void M_Walk(ITEM *item, COLL_INFO *coll);
-static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_TurnRight(ITEM *item, COLL_INFO *coll);
@@ -41,101 +36,6 @@ static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
-
-static void M_Walk(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        if (g_Lara.turn_rate < -LARA_SLOW_TURN) {
-            g_Lara.turn_rate = -LARA_SLOW_TURN;
-        }
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        if (g_Lara.turn_rate > LARA_SLOW_TURN) {
-            g_Lara.turn_rate = LARA_SLOW_TURN;
-        }
-    }
-
-    if (g_Input.forward) {
-        if (g_Lara.water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
-        } else {
-            item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
-            if (g_Config.gameplay.enable_tr2_jumping && !g_Input.slow) {
-                m_JumpPermitted = true;
-            }
-        }
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-}
-
-static void M_Run(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_DEATH;
-        return;
-    }
-
-    if (g_Input.roll) {
-        item->current_anim_state = LS_ROLL;
-        item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL_START, LF_ROLL);
-        return;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        if (g_Lara.turn_rate < -LARA_FAST_TURN) {
-            g_Lara.turn_rate = -LARA_FAST_TURN;
-        }
-        item->rot.z -= LARA_LEAN_RATE;
-        if (item->rot.z < -LARA_LEAN_MAX) {
-            item->rot.z = -LARA_LEAN_MAX;
-        }
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        if (g_Lara.turn_rate > LARA_FAST_TURN) {
-            g_Lara.turn_rate = LARA_FAST_TURN;
-        }
-        item->rot.z += LARA_LEAN_RATE;
-        if (item->rot.z > LARA_LEAN_MAX) {
-            item->rot.z = LARA_LEAN_MAX;
-        }
-    }
-
-    if (g_Config.gameplay.enable_tr2_jumping) {
-        if (Item_TestAnimEqual(item, LA_RUN_START)) {
-            m_JumpPermitted = false;
-        } else if (
-            !Item_TestAnimEqual(item, LA_RUN)
-            || Item_TestFrameEqual(item, LF_JUMP_READY - 1)) {
-            m_JumpPermitted = true;
-        }
-    } else {
-        m_JumpPermitted = true;
-    }
-
-    if (g_Input.jump && m_JumpPermitted && !item->gravity) {
-        item->goal_anim_state = g_Config.gameplay.enable_tr2_jumping
-                && Lara_State_IsResponsive(LA_RUN)
-            ? LS_RESPONSIVE
-            : LS_JUMP_FORWARD;
-    } else if (g_Input.forward) {
-        if (g_Lara.water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
-        } else {
-            item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
-        }
-    } else {
-        item->goal_anim_state = LS_STOP;
-    }
-}
 
 static void M_Stop(ITEM *item, COLL_INFO *coll)
 {
@@ -188,7 +88,7 @@ static void M_Stop(ITEM *item, COLL_INFO *coll)
             if (g_Input.slow) {
                 M_Wade(item, coll);
             } else {
-                M_Walk(item, coll);
+                Lara_State_Walk(item, coll);
             }
         } else if (g_Input.back) {
             M_Back(item, coll);
@@ -197,9 +97,9 @@ static void M_Stop(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_COMPRESS;
     } else if (g_Input.forward) {
         if (g_Input.slow) {
-            M_Walk(item, coll);
+            Lara_State_Walk(item, coll);
         } else {
-            M_Run(item, coll);
+            Lara_State_Run(item, coll);
         }
     } else if (g_Input.back) {
         if (g_Input.slow) {
@@ -522,8 +422,6 @@ static void M_Wade(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_WALK,          M_Walk)
-REGISTER_LARA_STATE(LS_RUN,           M_Run)
 REGISTER_LARA_STATE(LS_STOP,          M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,     M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,    M_TurnRight)

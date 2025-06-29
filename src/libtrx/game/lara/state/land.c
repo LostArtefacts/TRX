@@ -1,0 +1,120 @@
+#include "config.h"
+#include "game/input.h"
+#include "game/lara.h"
+#include "game/lara/util.h"
+
+#define M_LF_ROLL 2
+#if TR_VERSION == 1
+    #define M_LF_JUMP_READY 2
+#else
+    #define M_LF_JUMP_READY 4
+#endif
+
+static bool m_JumpPermitted = true;
+
+void Lara_State_Walk(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_SLOW_TURN);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, +LARA_SLOW_TURN);
+    }
+
+    if (g_Input.forward) {
+        if (lara->water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else if (g_Input.slow) {
+            item->goal_anim_state = LS_WALK;
+        } else {
+#if TR_VERSION == 1
+            const bool fix_walk_run_jump = true;
+#else
+            const bool fix_walk_run_jump = g_Config.gameplay.fix_walk_run_jump;
+#endif
+            if (fix_walk_run_jump) {
+                m_JumpPermitted = true;
+            }
+            item->goal_anim_state = LS_RUN;
+        }
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+}
+
+void Lara_State_Run(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_DEATH;
+        return;
+    }
+
+    if (g_Input.roll) {
+        item->current_anim_state = LS_ROLL;
+        item->goal_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_FAST_TURN);
+        item->rot.z -= LARA_LEAN_RATE;
+        CLAMPL(item->rot.z, -LARA_LEAN_MAX);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, +LARA_FAST_TURN);
+        item->rot.z += LARA_LEAN_RATE;
+        CLAMPG(item->rot.z, +LARA_LEAN_MAX);
+    }
+
+#if TR_VERSION == 1
+    const bool responsive_jumping =
+        g_Config.gameplay.enable_tr2_jumping && Lara_State_IsResponsive(LA_RUN);
+#else
+    const bool responsive_jumping = true;
+#endif
+    if (responsive_jumping) {
+        if (Item_TestAnimEqual(item, LA_RUN_START)) {
+            m_JumpPermitted = false;
+        } else if (
+            !Item_TestAnimEqual(item, LA_RUN)
+            || Item_TestFrameEqual(item, M_LF_JUMP_READY)) {
+            m_JumpPermitted = true;
+        }
+    } else {
+        m_JumpPermitted = true;
+    }
+
+    if (g_Input.jump && m_JumpPermitted && !item->gravity) {
+#if TR_VERSION == 1
+        item->goal_anim_state =
+            responsive_jumping ? LS_RESPONSIVE : LS_JUMP_FORWARD;
+#else
+        item->goal_anim_state = LS_JUMP_FORWARD;
+#endif
+    } else if (g_Input.forward) {
+        if (lara->water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else if (g_Input.slow) {
+            item->goal_anim_state = LS_WALK;
+        } else {
+            item->goal_anim_state = LS_RUN;
+        }
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+}
+
+// clang-format off
+REGISTER_LARA_STATE(LS_WALK,         Lara_State_Walk)
+REGISTER_LARA_STATE(LS_RUN,          Lara_State_Run)
+// clang-format on
