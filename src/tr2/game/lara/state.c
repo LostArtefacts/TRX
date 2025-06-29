@@ -18,8 +18,6 @@
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static void M_TurnRight(ITEM *item, COLL_INFO *coll);
-static void M_TurnLeft(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_Null(ITEM *item, COLL_INFO *coll);
@@ -35,70 +33,6 @@ static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_TurnRight(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    g_Lara.turn_rate += LARA_TURN_RATE;
-
-    if (g_Lara.gun_status == LGS_READY) {
-        item->goal_anim_state = LS_FAST_TURN;
-    } else if (g_Lara.turn_rate > LARA_SLOW_TURN) {
-        if (g_Input.slow) {
-            g_Lara.turn_rate = LARA_SLOW_TURN;
-        } else {
-            item->goal_anim_state = LS_FAST_TURN;
-        }
-    }
-
-    if (g_Input.forward) {
-        if (g_Lara.water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
-        } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
-        } else {
-            item->goal_anim_state = LS_RUN;
-        }
-    } else if (!g_Input.right) {
-        item->goal_anim_state = LS_STOP;
-    }
-}
-
-static void M_TurnLeft(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    g_Lara.turn_rate -= LARA_TURN_RATE;
-
-    if (g_Lara.gun_status == LGS_READY) {
-        item->goal_anim_state = LS_FAST_TURN;
-    } else if (g_Lara.turn_rate < -LARA_SLOW_TURN) {
-        if (g_Input.slow) {
-            g_Lara.turn_rate = -LARA_SLOW_TURN;
-        } else {
-            item->goal_anim_state = LS_FAST_TURN;
-        }
-    }
-
-    if (g_Input.forward) {
-        if (g_Lara.water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
-        } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
-        } else {
-            item->goal_anim_state = LS_RUN;
-        }
-    } else if (!g_Input.left) {
-        item->goal_anim_state = LS_STOP;
-    }
-}
 
 static void M_Death(ITEM *item, COLL_INFO *coll)
 {
@@ -266,8 +200,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_TurnRight)
-REGISTER_LARA_STATE(LS_TURN_LEFT,    M_TurnLeft)
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_PULL_UP,      M_Null)
