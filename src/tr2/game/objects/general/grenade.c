@@ -82,13 +82,14 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        if (target_item->object_id != O_WINDOW_1
+        const bool is_window = target_item->object_id == O_WINDOW_1;
+        if (!is_window
             && (!target_obj->intelligent || target_item->status == IS_INVISIBLE
                 || target_obj->collision_func == nullptr)) {
             continue;
         }
 
-        if (!Creature_IsTargetable(target_item)) {
+        if (!is_window && !Creature_IsTargetable(target_item)) {
             continue;
         }
 
@@ -121,7 +122,7 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        if (target_item->object_id == O_WINDOW_1) {
+        if (is_window) {
             Window_Smash(target_item_num);
         } else {
             explode = true;
