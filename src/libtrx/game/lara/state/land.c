@@ -19,6 +19,7 @@ static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
+static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
@@ -275,6 +276,15 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Death(ITEM *item, COLL_INFO *coll)
+{
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+#endif
+    M_Default(item, coll);
+}
+
 static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -339,6 +349,7 @@ REGISTER_LARA_STATE(LS_STOP,         M_Stop)
 REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_Turn)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_Turn)
+REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 // clang-format on

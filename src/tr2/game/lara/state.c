@@ -18,7 +18,6 @@
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
@@ -32,13 +31,6 @@ static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_Death(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-}
 
 static void M_Splat(ITEM *item, COLL_INFO *coll)
 {
@@ -193,7 +185,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_StepRight)
