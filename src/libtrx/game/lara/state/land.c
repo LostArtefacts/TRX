@@ -20,6 +20,13 @@
 #define M_CAM_PICKUP_ANGLE (-130 * DEG_1) // = -23660
 #define M_CAM_PICKUP_ELEVATION (-15 * DEG_1) // = -2730
 #define M_CAM_PICKUP_DISTANCE WALL_L // = 1024
+#define M_CAM_SWITCH_ON_ANGLE (80 * DEG_1) // = 14560
+#define M_CAM_SWITCH_ON_ELEVATION (-25 * DEG_1) // = -4550
+#define M_CAM_SWITCH_ON_DISTANCE WALL_L // = 1024
+#define M_CAM_SWITCH_ON_SPEED 6
+#define M_CAM_USE_KEY_ANGLE (-M_CAM_SWITCH_ON_ANGLE) // = -14560
+#define M_CAM_USE_KEY_ELEVATION M_CAM_SWITCH_ON_ELEVATION // = -4550
+#define M_CAM_USE_KEY_DISTANCE WALL_L // = 1024
 
 static bool m_JumpPermitted = true;
 
@@ -40,6 +47,7 @@ static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
+static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -467,10 +475,22 @@ static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
     lara->enable_look = false;
 #endif
     M_Default(item, coll);
-    g_Camera.target_angle = CAM_SWITCH_ON_ANGLE;
-    g_Camera.target_elevation = CAM_SWITCH_ON_ELEVATION;
-    g_Camera.target_distance = CAM_SWITCH_ON_DISTANCE;
-    g_Camera.speed = CAM_SWITCH_ON_SPEED;
+    g_Camera.target_angle = M_CAM_SWITCH_ON_ANGLE;
+    g_Camera.target_elevation = M_CAM_SWITCH_ON_ELEVATION;
+    g_Camera.target_distance = M_CAM_SWITCH_ON_DISTANCE;
+    g_Camera.speed = M_CAM_SWITCH_ON_SPEED;
+}
+
+static void M_UseKey(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+#endif
+    M_Default(item, coll);
+    g_Camera.target_angle = M_CAM_USE_KEY_ANGLE;
+    g_Camera.target_elevation = M_CAM_USE_KEY_ELEVATION;
+    g_Camera.target_distance = M_CAM_USE_KEY_DISTANCE;
 }
 
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
@@ -528,6 +548,8 @@ REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)
 REGISTER_LARA_STATE(LS_PICKUP,       M_Pickup)
 REGISTER_LARA_STATE(LS_SWITCH_ON,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
+REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
+REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
