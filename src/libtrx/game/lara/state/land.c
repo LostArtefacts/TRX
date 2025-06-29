@@ -11,6 +11,8 @@
     #define M_LF_JUMP_READY 4
 #endif
 
+#define M_CAM_SLIDE_ELEVATION (-45 * DEG_1) // = -8190
+
 static bool m_JumpPermitted = true;
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
@@ -24,6 +26,7 @@ static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_SideStep(ITEM *item, COLL_INFO *coll);
+static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -374,6 +377,29 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Slide(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION == 1
+    const bool enable_jump_twists = g_Config.gameplay.enable_jump_twists;
+#else
+    const bool enable_jump_twists = true;
+#endif
+    bool opposite_input;
+    if (item->current_anim_state == LS_SLIDE) {
+        g_Camera.flags = CF_NO_CHUNKY;
+        g_Camera.target_elevation = M_CAM_SLIDE_ELEVATION;
+        opposite_input = g_Input.back;
+    } else {
+        opposite_input = g_Input.forward;
+    }
+
+    if (g_Input.jump && (!enable_jump_twists || !opposite_input)) {
+        item->goal_anim_state = item->current_anim_state == LS_SLIDE
+            ? LS_JUMP_FORWARD
+            : LS_JUMP_BACK;
+    }
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -421,6 +447,8 @@ REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_SideStep)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_SideStep)
+REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
+REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_Slide)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
