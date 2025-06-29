@@ -1,4 +1,5 @@
 #include "config.h"
+#include "game/camera.h"
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
@@ -114,7 +115,40 @@ void Lara_State_Run(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+void Lara_State_Wade(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    g_Camera.target_elevation = CAM_WADE_ELEVATION;
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_FAST_TURN);
+        item->rot.z -= LARA_LEAN_RATE;
+        CLAMPL(item->rot.z, -LARA_LEAN_MAX);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, LARA_FAST_TURN);
+        item->rot.z += LARA_LEAN_RATE;
+        CLAMPG(item->rot.z, LARA_LEAN_MAX);
+    }
+
+    if (g_Input.forward) {
+        if (lara->water_status != LWS_ABOVE_WATER) {
+            item->goal_anim_state = LS_WADE;
+        } else {
+            item->goal_anim_state = LS_RUN;
+        }
+    } else {
+        item->goal_anim_state = LS_STOP;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         Lara_State_Walk)
 REGISTER_LARA_STATE(LS_RUN,          Lara_State_Run)
+REGISTER_LARA_STATE(LS_WADE,         Lara_State_Wade)
 // clang-format on
