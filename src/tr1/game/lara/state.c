@@ -14,7 +14,6 @@
 
 #include <stdint.h>
 
-static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_StepRight(ITEM *item, COLL_INFO *coll);
 static void M_StepLeft(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
@@ -25,31 +24,6 @@ static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_FastTurn(ITEM *item, COLL_INFO *coll)
-{
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    if (g_Lara.turn_rate >= 0) {
-        g_Lara.turn_rate = LARA_FAST_TURN;
-        if (!g_Input.right) {
-            item->goal_anim_state = LS_STOP;
-        }
-    } else {
-        g_Lara.turn_rate = -LARA_FAST_TURN;
-        if (!g_Input.left) {
-            item->goal_anim_state = LS_STOP;
-        }
-    }
-}
 
 static void M_StepRight(ITEM *item, COLL_INFO *coll)
 {
@@ -180,7 +154,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_FAST_TURN,     M_FastTurn)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,    M_StepRight)
 REGISTER_LARA_STATE(LS_STEP_LEFT,     M_StepLeft)
 REGISTER_LARA_STATE(LS_SLIDE,         M_Slide)
