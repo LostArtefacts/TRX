@@ -27,6 +27,9 @@
 #define M_CAM_USE_KEY_ANGLE (-M_CAM_SWITCH_ON_ANGLE) // = -14560
 #define M_CAM_USE_KEY_ELEVATION M_CAM_SWITCH_ON_ELEVATION // = -4550
 #define M_CAM_USE_KEY_DISTANCE WALL_L // = 1024
+#define M_CAM_SPECIAL_ANGLE (170 * DEG_1) // = 30940
+#define M_CAM_SPECIAL_ELEVATION (-25 * DEG_1) // = -4550
+#define M_CAM_SPECIAL_DISTANCE (2 * WALL_L) // = 2048
 
 static bool m_JumpPermitted = true;
 
@@ -48,6 +51,7 @@ static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
+static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -493,6 +497,22 @@ static void M_UseKey(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_distance = M_CAM_USE_KEY_DISTANCE;
 }
 
+static void M_Special(ITEM *const item, COLL_INFO *const coll)
+{
+    ITEM *const target_item = Lara_GetDeathCameraTarget();
+    if (target_item != nullptr) {
+        g_Camera.item = target_item;
+        g_Camera.flags = CF_CHASE_OBJECT;
+        g_Camera.type = CAM_FIXED;
+        g_Camera.target_angle = item->rot.y;
+        g_Camera.target_distance = M_CAM_SPECIAL_DISTANCE;
+    } else {
+        g_Camera.flags = CF_FOLLOW_CENTRE;
+        g_Camera.target_angle = M_CAM_SPECIAL_ANGLE;
+    }
+    g_Camera.target_elevation = M_CAM_SPECIAL_ELEVATION;
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -550,6 +570,7 @@ REGISTER_LARA_STATE(LS_SWITCH_ON,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
+REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)

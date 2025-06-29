@@ -144,7 +144,6 @@ sources = [
   'game/lara/control.c',
   'game/lara/draw.c',
   'game/lara/look.c',
-  'game/lara/state.c',
   'game/level.c',
   'game/los.c',
   'game/objects/common.c',

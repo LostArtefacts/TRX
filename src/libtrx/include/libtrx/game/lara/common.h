@@ -8,6 +8,8 @@ LARA_INFO *Lara_GetLaraInfo(void);
 ITEM *Lara_GetItem(void);
 bool Lara_IsControllable(void);
 void Lara_SetControllable(bool controllable);
+ITEM *Lara_GetDeathCameraTarget(void);
+void Lara_SetDeathCameraTarget(int16_t item_num);
 GAME_OBJECT_ID Lara_GetAnimationObject(void);
 void Lara_Animate(ITEM *item);
 void Lara_AnimateUntil(ITEM *lara_item, int32_t goal);

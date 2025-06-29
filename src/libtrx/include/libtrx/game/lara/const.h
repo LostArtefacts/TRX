@@ -73,6 +73,3 @@
 
 // TODO: move to merged lara/state.c
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
-#define CAM_SPECIAL_ANGLE (170 * DEG_1) // = 30940
-#define CAM_SPECIAL_ELEVATION (-25 * DEG_1) // = -4550
-#define CAM_SPECIAL_DISTANCE (2 * WALL_L) // = 2048
