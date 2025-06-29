@@ -14,6 +14,7 @@
 #define M_CAM_SLIDE_ELEVATION (-45 * DEG_1) // = -8190
 #define M_CAM_PUSH_BLOCK_ANGLE (35 * DEG_1) // = 6370
 #define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1) // = -4550
+#define M_CAM_PP_READY_ANGLE (75 * DEG_1) // = 13650
 
 static bool m_JumpPermitted = true;
 
@@ -30,6 +31,7 @@ static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
+static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -415,6 +417,15 @@ static void M_PushBlock(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = M_CAM_PUSH_BLOCK_ELEVATION;
 }
 
+static void M_PPReady(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
+    g_Camera.target_angle = M_CAM_PP_READY_ANGLE;
+    if (!g_Input.action) {
+        item->goal_anim_state = LS_STOP;
+    }
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -466,6 +477,7 @@ REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_Slide)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
+REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
