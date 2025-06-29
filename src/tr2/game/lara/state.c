@@ -18,8 +18,6 @@
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static void M_StepRight(ITEM *item, COLL_INFO *coll);
-static void M_StepLeft(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
@@ -29,48 +27,6 @@ static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_StepRight(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    if (!g_Input.step_right) {
-        item->goal_anim_state = LS_STOP;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_SLOW_TURN);
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, LARA_SLOW_TURN);
-    }
-}
-
-static void M_StepLeft(ITEM *item, COLL_INFO *coll)
-{
-    g_Lara.enable_look = false;
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
-        return;
-    }
-
-    if (!g_Input.step_left) {
-        item->goal_anim_state = LS_STOP;
-    }
-
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_SLOW_TURN);
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, LARA_SLOW_TURN);
-    }
-}
 
 static void M_Slide(ITEM *item, COLL_INFO *coll)
 {
@@ -158,8 +114,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_StepRight)
-REGISTER_LARA_STATE(LS_STEP_LEFT,    M_StepLeft)
 REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_SlideBack)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
