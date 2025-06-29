@@ -18,7 +18,6 @@
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_TurnRight(ITEM *item, COLL_INFO *coll);
 static void M_TurnLeft(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
@@ -36,18 +35,6 @@ static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_FastBack(ITEM *item, COLL_INFO *coll)
-{
-    item->goal_anim_state = LS_STOP;
-    if (g_Input.left) {
-        g_Lara.turn_rate -= LARA_TURN_RATE;
-        CLAMPL(g_Lara.turn_rate, -LARA_MED_TURN);
-    } else if (g_Input.right) {
-        g_Lara.turn_rate += LARA_TURN_RATE;
-        CLAMPG(g_Lara.turn_rate, LARA_MED_TURN);
-    }
-}
 
 static void M_TurnRight(ITEM *item, COLL_INFO *coll)
 {
@@ -279,7 +266,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_TurnRight)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_TurnLeft)
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
