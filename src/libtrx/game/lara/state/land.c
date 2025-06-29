@@ -4,32 +4,33 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
-#define M_LF_ROLL 2
-#define M_LF_FLARE_PICKUP_END 89
-#define M_LF_UW_FLARE_PICKUP_END 35
 #if TR_VERSION == 1
     #define M_LF_JUMP_READY 2
 #else
     #define M_LF_JUMP_READY 4
 #endif
 
-#define M_CAM_SLIDE_ELEVATION (-45 * DEG_1) // = -8190
-#define M_CAM_PUSH_BLOCK_ANGLE (35 * DEG_1) // = 6370
-#define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1) // = -4550
-#define M_CAM_PP_READY_ANGLE (75 * DEG_1) // = 13650
-#define M_CAM_PICKUP_ANGLE (-130 * DEG_1) // = -23660
-#define M_CAM_PICKUP_ELEVATION (-15 * DEG_1) // = -2730
-#define M_CAM_PICKUP_DISTANCE WALL_L // = 1024
-#define M_CAM_SWITCH_ON_ANGLE (80 * DEG_1) // = 14560
-#define M_CAM_SWITCH_ON_ELEVATION (-25 * DEG_1) // = -4550
-#define M_CAM_SWITCH_ON_DISTANCE WALL_L // = 1024
-#define M_CAM_SWITCH_ON_SPEED 6
-#define M_CAM_USE_KEY_ANGLE (-M_CAM_SWITCH_ON_ANGLE) // = -14560
-#define M_CAM_USE_KEY_ELEVATION M_CAM_SWITCH_ON_ELEVATION // = -4550
-#define M_CAM_USE_KEY_DISTANCE WALL_L // = 1024
-#define M_CAM_SPECIAL_ANGLE (170 * DEG_1) // = 30940
-#define M_CAM_SPECIAL_ELEVATION (-25 * DEG_1) // = -4550
-#define M_CAM_SPECIAL_DISTANCE (2 * WALL_L) // = 2048
+// clang-format off
+#define M_LF_ROLL                  2
+#define M_FAST_TURN                ((DEG_1 * 6) + LARA_TURN_UNDO) // = 1456
+#define M_CAM_SLIDE_ELEVATION      (-45 * DEG_1)                  // = -8190
+#define M_CAM_PUSH_BLOCK_ANGLE     (35 * DEG_1)                   // = 6370
+#define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1)                  // = -4550
+#define M_CAM_PP_READY_ANGLE       (75 * DEG_1)                   // = 13650
+#define M_CAM_PICKUP_ANGLE         (-130 * DEG_1)                 // = -23660
+#define M_CAM_PICKUP_ELEVATION     (-15 * DEG_1)                  // = -2730
+#define M_CAM_PICKUP_DISTANCE      WALL_L                         // = 1024
+#define M_CAM_SWITCH_ON_ANGLE      (80 * DEG_1)                   // = 14560
+#define M_CAM_SWITCH_ON_ELEVATION  (-25 * DEG_1)                  // = -4550
+#define M_CAM_SWITCH_ON_DISTANCE   WALL_L                         // = 1024
+#define M_CAM_SWITCH_ON_SPEED      6
+#define M_CAM_USE_KEY_ANGLE        (-M_CAM_SWITCH_ON_ANGLE)       // = -14560
+#define M_CAM_USE_KEY_ELEVATION    M_CAM_SWITCH_ON_ELEVATION      // = -4550
+#define M_CAM_USE_KEY_DISTANCE     WALL_L                         // = 1024
+#define M_CAM_SPECIAL_ANGLE        (170 * DEG_1)                  // = 30940
+#define M_CAM_SPECIAL_ELEVATION    (-25 * DEG_1)                  // = -4550
+#define M_CAM_SPECIAL_DISTANCE     (2 * WALL_L)                   // = 2048
+// clang-format on
 
 static bool m_JumpPermitted = true;
 
@@ -114,12 +115,12 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
-        CLAMPL(lara->turn_rate, -LARA_FAST_TURN);
+        CLAMPL(lara->turn_rate, -M_FAST_TURN);
         item->rot.z -= LARA_LEAN_RATE;
         CLAMPL(item->rot.z, -LARA_LEAN_MAX);
     } else if (g_Input.right) {
         lara->turn_rate += LARA_TURN_RATE;
-        CLAMPG(lara->turn_rate, +LARA_FAST_TURN);
+        CLAMPG(lara->turn_rate, +M_FAST_TURN);
         item->rot.z += LARA_LEAN_RATE;
         CLAMPG(item->rot.z, +LARA_LEAN_MAX);
     }
@@ -323,19 +324,19 @@ static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->turn_rate >= 0) {
-        lara->turn_rate = LARA_FAST_TURN;
+        lara->turn_rate = M_FAST_TURN;
         if (!g_Input.right) {
             item->goal_anim_state = LS_STOP;
         }
     } else {
-        lara->turn_rate = -LARA_FAST_TURN;
+        lara->turn_rate = -M_FAST_TURN;
         if (!g_Input.left) {
             item->goal_anim_state = LS_STOP;
         }
     }
 }
 
-static void M_Death(ITEM *item, COLL_INFO *coll)
+static void M_Death(ITEM *const item, COLL_INFO *const coll)
 {
 #if TR_VERSION >= 2
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -460,16 +461,11 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
 
 static void M_PickupFlare(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     M_Pickup(item, coll);
-    const int16_t frame_num = Item_TestAnimEqual(item, LA_FLARE_PICKUP)
-        ? M_LF_FLARE_PICKUP_END
-        : M_LF_UW_FLARE_PICKUP_END;
-    if (Item_TestFrameEqual(item, frame_num)) {
+    if (Item_TestFrameEqual(item, -1)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->gun_status = LGS_ARMLESS;
     }
-#endif
 }
 
 static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
@@ -524,12 +520,12 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = CAM_WADE_ELEVATION;
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
-        CLAMPL(lara->turn_rate, -LARA_FAST_TURN);
+        CLAMPL(lara->turn_rate, -M_FAST_TURN);
         item->rot.z -= LARA_LEAN_RATE;
         CLAMPL(item->rot.z, -LARA_LEAN_MAX);
     } else if (g_Input.right) {
         lara->turn_rate += LARA_TURN_RATE;
-        CLAMPG(lara->turn_rate, LARA_FAST_TURN);
+        CLAMPG(lara->turn_rate, M_FAST_TURN);
         item->rot.z += LARA_LEAN_RATE;
         CLAMPG(item->rot.z, LARA_LEAN_MAX);
     }
