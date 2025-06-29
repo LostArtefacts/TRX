@@ -13,6 +13,7 @@
 #define M_MOVE_ANGLE (2 * DEG_1) // = 364
 
 static bool m_Controllable = false;
+static int16_t m_DeathCameraTarget = NO_ITEM;
 
 bool Lara_IsControllable(void)
 {
@@ -22,6 +23,16 @@ bool Lara_IsControllable(void)
 void Lara_SetControllable(const bool controllable)
 {
     m_Controllable = controllable;
+}
+
+ITEM *Lara_GetDeathCameraTarget(void)
+{
+    return Item_Get(m_DeathCameraTarget);
+}
+
+void Lara_SetDeathCameraTarget(const int16_t item_num)
+{
+    m_DeathCameraTarget = item_num;
 }
 
 GAME_OBJECT_ID Lara_GetAnimationObject(void)

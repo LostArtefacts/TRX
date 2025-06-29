@@ -28,8 +28,6 @@
 #define LARA_PUSH_TIMEOUT 15
 #define LARA_UW_DAMAGE 5
 
-static int16_t m_DeathCameraTarget = NO_ITEM;
-
 void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
 {
     const int16_t hit_angle = lara_item->rot.y + DEG_180 - Math_Atan(dz, dx);
@@ -49,16 +47,6 @@ LARA_INFO *Lara_GetLaraInfo(void)
 ITEM *Lara_GetItem(void)
 {
     return g_LaraItem;
-}
-
-ITEM *Lara_GetDeathCameraTarget(void)
-{
-    return m_DeathCameraTarget == -1 ? nullptr : Item_Get(m_DeathCameraTarget);
-}
-
-void Lara_SetDeathCameraTarget(const int16_t item_num)
-{
-    m_DeathCameraTarget = item_num;
 }
 
 void Lara_Control(void)
@@ -471,6 +459,7 @@ void Lara_InitialiseLoad(int16_t item_num)
 void Lara_Initialise(const GF_LEVEL *const level)
 {
     Lara_SetControllable(true);
+    Lara_SetDeathCameraTarget(NO_ITEM);
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
     g_LaraItem->collidable = 0;
@@ -481,7 +470,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
         g_LaraItem->hit_points = g_Config.gameplay.start_lara_hitpoints;
     }
 
-    m_DeathCameraTarget = NO_ITEM;
     g_Lara.air = LARA_MAX_AIR;
     g_Lara.torso_rot.y = 0;
     g_Lara.torso_rot.x = 0;
