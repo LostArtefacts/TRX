@@ -14,32 +14,12 @@
 
 #include <stdint.h>
 
-static void M_Slide(ITEM *item, COLL_INFO *coll);
-static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_Slide(ITEM *item, COLL_INFO *coll)
-{
-    g_Camera.flags = CF_NO_CHUNKY;
-    g_Camera.target_elevation = CAM_SLIDE_ELEVATION;
-    if (g_Input.jump
-        && (!g_Config.gameplay.enable_jump_twists || !g_Input.back)) {
-        item->goal_anim_state = LS_JUMP_FORWARD;
-    }
-}
-
-static void M_SlideBack(ITEM *item, COLL_INFO *coll)
-{
-    if (g_Input.jump
-        && (!g_Config.gameplay.enable_jump_twists || !g_Input.forward)) {
-        item->goal_anim_state = LS_JUMP_BACK;
-    }
-}
 
 static void M_PushBlock(ITEM *item, COLL_INFO *coll)
 {
@@ -104,8 +84,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_SLIDE,         M_Slide)
-REGISTER_LARA_STATE(LS_SLIDE_BACK,    M_SlideBack)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,    M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,    M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,      M_PPReady)
