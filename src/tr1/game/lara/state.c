@@ -22,7 +22,6 @@ static void M_SlideBack(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
-static void M_Controlled(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
@@ -146,12 +145,6 @@ static void M_Pickup(ITEM *item, COLL_INFO *coll)
     g_Camera.target_distance = CAM_PICKUP_DISTANCE;
 }
 
-static void M_Controlled(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-}
-
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
@@ -201,5 +194,4 @@ REGISTER_LARA_STATE(LS_SWITCH_OFF,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,       M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,    M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,       M_Special)
-REGISTER_LARA_STATE(LS_CONTROLLED,    M_Controlled)
 // clang-format on
