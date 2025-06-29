@@ -13,9 +13,13 @@
 
 static bool m_JumpPermitted = true;
 
+static void M_Walk(ITEM *item, COLL_INFO *coll);
+static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
+static void M_WalkBack(ITEM *item, COLL_INFO *coll);
+static void M_Wade(ITEM *item, COLL_INFO *coll);
 
-void Lara_State_Walk(ITEM *const item, COLL_INFO *const coll)
+static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
@@ -52,7 +56,7 @@ void Lara_State_Walk(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-void Lara_State_Run(ITEM *const item, COLL_INFO *const coll)
+static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_DEATH;
@@ -172,31 +176,31 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
         if (g_Input.forward) {
             if (g_Input.slow) {
-                Lara_State_Wade(item, coll);
+                M_Wade(item, coll);
             } else {
-                Lara_State_Walk(item, coll);
+                M_Walk(item, coll);
             }
         } else if (g_Input.back) {
-            Lara_State_WalkBack(item, coll);
+            M_WalkBack(item, coll);
         }
     } else if (g_Input.jump) {
         item->goal_anim_state = LS_COMPRESS;
     } else if (g_Input.forward) {
         if (g_Input.slow) {
-            Lara_State_Walk(item, coll);
+            M_Walk(item, coll);
         } else {
-            Lara_State_Run(item, coll);
+            M_Run(item, coll);
         }
     } else if (g_Input.back) {
         if (g_Input.slow) {
-            Lara_State_WalkBack(item, coll);
+            M_WalkBack(item, coll);
         } else {
             item->goal_anim_state = LS_FAST_BACK;
         }
     }
 }
 
-void Lara_State_WalkBack(ITEM *const item, COLL_INFO *const coll)
+static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
@@ -219,7 +223,7 @@ void Lara_State_WalkBack(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-void Lara_State_Wade(ITEM *const item, COLL_INFO *const coll)
+static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
@@ -252,9 +256,9 @@ void Lara_State_Wade(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_WALK,         Lara_State_Walk)
-REGISTER_LARA_STATE(LS_RUN,          Lara_State_Run)
+REGISTER_LARA_STATE(LS_WALK,         M_Walk)
+REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
-REGISTER_LARA_STATE(LS_WALK_BACK,    Lara_State_WalkBack)
-REGISTER_LARA_STATE(LS_WADE,         Lara_State_Wade)
+REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
+REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 // clang-format on
