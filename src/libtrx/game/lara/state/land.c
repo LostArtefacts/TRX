@@ -12,6 +12,8 @@
 #endif
 
 #define M_CAM_SLIDE_ELEVATION (-45 * DEG_1) // = -8190
+#define M_CAM_PUSH_BLOCK_ANGLE (35 * DEG_1) // = 6370
+#define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1) // = -4550
 
 static bool m_JumpPermitted = true;
 
@@ -27,6 +29,7 @@ static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
+static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -400,6 +403,18 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_PushBlock(ITEM *const item, COLL_INFO *const coll)
+{
+#if TR_VERSION >= 2
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->enable_look = false;
+#endif
+    M_Default(item, coll);
+    g_Camera.flags = CF_FOLLOW_CENTRE;
+    g_Camera.target_angle = M_CAM_PUSH_BLOCK_ANGLE;
+    g_Camera.target_elevation = M_CAM_PUSH_BLOCK_ELEVATION;
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -449,6 +464,8 @@ REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_SideStep)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_SideStep)
 REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_Slide)
+REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
+REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
