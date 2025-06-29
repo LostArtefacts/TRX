@@ -73,8 +73,6 @@
 
 // TODO: move to merged lara/state.c
 #define CAM_WADE_ELEVATION (-22 * DEG_1) // = -4004
-#define CAM_PUSH_BLOCK_ANGLE (35 * DEG_1) // = 6370
-#define CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1) // = -4550
 #define CAM_PP_READY_ANGLE (75 * DEG_1) // = 13650
 #define CAM_PICKUP_ANGLE (-130 * DEG_1) // = -23660
 #define CAM_PICKUP_ELEVATION (-15 * DEG_1) // = -2730

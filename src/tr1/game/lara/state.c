@@ -14,21 +14,11 @@
 
 #include <stdint.h>
 
-static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_PushBlock(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = CAM_PUSH_BLOCK_ANGLE;
-    g_Camera.target_elevation = CAM_PUSH_BLOCK_ELEVATION;
-}
 
 static void M_PPReady(ITEM *item, COLL_INFO *coll)
 {
@@ -84,8 +74,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_PUSH_BLOCK,    M_PushBlock)
-REGISTER_LARA_STATE(LS_PULL_BLOCK,    M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,      M_PPReady)
 REGISTER_LARA_STATE(LS_PICKUP,        M_Pickup)
 REGISTER_LARA_STATE(LS_SWITCH_ON,     M_SwitchOn)
