@@ -13,6 +13,8 @@
 
 static bool m_JumpPermitted = true;
 
+static void M_Stop(ITEM *item, COLL_INFO *coll);
+
 void Lara_State_Walk(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -115,6 +117,85 @@ void Lara_State_Run(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Stop(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_DEATH;
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION == 1
+    if (lara->interact_target.is_moving) {
+        return;
+    }
+
+    const bool enable_enhanced_look = g_Config.gameplay.enable_enhanced_look;
+#else
+    const bool enable_enhanced_look = true;
+#endif
+
+    if (g_Input.roll && lara->water_status != LWS_WADE) {
+        item->current_anim_state = LS_ROLL;
+        item->goal_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
+        return;
+    }
+
+    item->goal_anim_state = LS_STOP;
+    if (g_Input.look) {
+        Lara_LookUpDown();
+        if (!enable_enhanced_look) {
+            Lara_LookLeftRight();
+            return;
+        }
+    }
+
+    if (!enable_enhanced_look && g_Camera.type == CAM_LOOK) {
+        g_Camera.type = CAM_CHASE;
+    }
+
+    if (g_Input.step_left) {
+        item->goal_anim_state = LS_STEP_LEFT;
+    } else if (g_Input.step_right) {
+        item->goal_anim_state = LS_STEP_RIGHT;
+    } else if (g_Input.left) {
+        item->goal_anim_state = LS_TURN_LEFT;
+    } else if (g_Input.right) {
+        item->goal_anim_state = LS_TURN_RIGHT;
+    }
+
+    if (lara->water_status == LWS_WADE) {
+        if (g_Input.jump) {
+            item->goal_anim_state = LS_COMPRESS;
+        }
+
+        if (g_Input.forward) {
+            if (g_Input.slow) {
+                Lara_State_Wade(item, coll);
+            } else {
+                Lara_State_Walk(item, coll);
+            }
+        } else if (g_Input.back) {
+            Lara_State_WalkBack(item, coll);
+        }
+    } else if (g_Input.jump) {
+        item->goal_anim_state = LS_COMPRESS;
+    } else if (g_Input.forward) {
+        if (g_Input.slow) {
+            Lara_State_Walk(item, coll);
+        } else {
+            Lara_State_Run(item, coll);
+        }
+    } else if (g_Input.back) {
+        if (g_Input.slow) {
+            Lara_State_WalkBack(item, coll);
+        } else {
+            item->goal_anim_state = LS_FAST_BACK;
+        }
+    }
+}
+
 void Lara_State_WalkBack(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -173,6 +254,7 @@ void Lara_State_Wade(ITEM *const item, COLL_INFO *const coll)
 // clang-format off
 REGISTER_LARA_STATE(LS_WALK,         Lara_State_Walk)
 REGISTER_LARA_STATE(LS_RUN,          Lara_State_Run)
+REGISTER_LARA_STATE(LS_STOP,         M_Stop)
 REGISTER_LARA_STATE(LS_WALK_BACK,    Lara_State_WalkBack)
 REGISTER_LARA_STATE(LS_WADE,         Lara_State_Wade)
 // clang-format on
