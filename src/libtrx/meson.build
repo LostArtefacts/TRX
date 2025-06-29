@@ -187,6 +187,7 @@ sources = [
   'game/lara/state/climb.c',
   'game/lara/state/extra.c',
   'game/lara/state/jump.c',
+  'game/lara/state/land.c',
   'game/lara/state/swim.c',
   'game/level/common.c',
   'game/level/faces.c',
