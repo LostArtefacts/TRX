@@ -18,22 +18,11 @@
 #define LF_FLARE_PICKUP_END 89
 #define LF_UW_FLARE_PICKUP_END 35
 
-static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
 static void M_PickupFlare(ITEM *item, COLL_INFO *coll);
 static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
-
-static void M_PPReady(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-    g_Camera.target_angle = CAM_PP_READY_ANGLE;
-    if (!g_Input.action) {
-        item->goal_anim_state = LS_STOP;
-    }
-}
 
 static void M_Pickup(ITEM *item, COLL_INFO *coll)
 {
@@ -85,7 +74,6 @@ static void M_Special(ITEM *item, COLL_INFO *coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)
 REGISTER_LARA_STATE(LS_PICKUP,       M_Pickup)
 REGISTER_LARA_STATE(LS_SWITCH_ON,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,   M_SwitchOn)
