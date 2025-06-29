@@ -23,6 +23,7 @@ static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_Death(ITEM *item, COLL_INFO *coll);
 static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
+static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
@@ -346,6 +347,33 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION >= 2
+    lara->enable_look = false;
+#endif
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+    const bool step_input = item->current_anim_state == LS_STEP_LEFT
+        ? g_Input.step_left
+        : g_Input.step_right;
+    if (!step_input) {
+        item->goal_anim_state = LS_STOP;
+    }
+
+    if (g_Input.left) {
+        lara->turn_rate -= LARA_TURN_RATE;
+        CLAMPL(lara->turn_rate, -LARA_SLOW_TURN);
+    } else if (g_Input.right) {
+        lara->turn_rate += LARA_TURN_RATE;
+        CLAMPG(lara->turn_rate, LARA_SLOW_TURN);
+    }
+}
+
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -391,6 +419,8 @@ REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
 REGISTER_LARA_STATE(LS_DEATH,        M_Death)
 REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
+REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_SideStep)
+REGISTER_LARA_STATE(LS_STEP_LEFT,    M_SideStep)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
