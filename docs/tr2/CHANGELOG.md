@@ -10,9 +10,10 @@
 - added a new easter egg command
 - added a `/lighting` console command to let the player turn lighting system on/off
 - added missing weapons to Lara's Home, Home Sweet Home and Nightmare in Vegas (for the weapons cheat) (#3360)
-- added an option to use TR1 snappy swim turn behaviour (#3387)
-- added an option to disable underwater twist, jump twist and swan-dive roll (#3388)
-- added an option to control responsive jumping lock behaviour (#3389)
+- added an option to use TR1 snappy swim turn behaviour (Gameplay settings → Controls → Smooth swimming) (#3387)
+- added an option to disable underwater twist (Gameplay settings → Controls → Underwater roll) (#3388)
+- added an option to disable jump twist and swan-dive roll (Gameplay settings → Controls → Jump twists) (#3388)
+- added an option to control responsive jumping lock behaviour (Gameplay settings → Controls → Jump lock mode) (#3389)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys
