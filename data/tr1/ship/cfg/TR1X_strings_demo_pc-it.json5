@@ -6,10 +6,10 @@
             "title": "Città di Vilcabamba",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'argento"
+                    "name": "Chiave d'argento",
                 },
                 "puzzle_1": {
-                    "name": "Idolo d'oro"
+                    "name": "Idolo d'oro",
                 }
             }
         }

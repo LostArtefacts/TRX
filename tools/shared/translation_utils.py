@@ -2,6 +2,7 @@
 
 import re
 from collections.abc import Callable, Iterable
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -64,6 +65,9 @@ def should_skip_object_name(ptr: str, trans_data: Any) -> bool:
 
 
 def format_strings_file(source: Any) -> str:
+    source = deepcopy(source)
+    if source.get("game_strings"):
+        source["game_strings"] = dict(sorted(source["game_strings"].items()))
     content = write_json_to_string(source)
     content = (
         """{
@@ -73,4 +77,5 @@ def format_strings_file(source: Any) -> str:
         + content[1:].strip()
         + "\n"
     )
+    content = re.sub(r'"\n(\s*[\]}])', r'",\n\1', content, flags=re.M)
     return content

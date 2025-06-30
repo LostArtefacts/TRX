@@ -6,7 +6,7 @@
             "title": "Return to Egypt",
             "objects": {
                 "key_1": {
-                    "name": "Gold Key"
+                    "name": "Gold Key",
                 }
             }
         },
@@ -14,21 +14,21 @@
             "title": "Temple of the Cat",
             "objects": {
                 "key_1": {
-                    "name": "Ornate Key"
+                    "name": "Ornate Key",
                 }
             }
         },
         {
-            "title": "Atlantean Stronghold"
+            "title": "Atlantean Stronghold",
         },
         {
-            "title": "The Hive"
+            "title": "The Hive",
         },
         {
-            "title": "Title"
+            "title": "Title",
         },
         {
-            "title": "Current Position"
+            "title": "Current Position",
         }
     ]
 }
