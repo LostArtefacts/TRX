@@ -125,6 +125,7 @@ typedef struct {
         bool fix_water_exit;
         bool enable_uw_roll;
         bool enable_tr2_swimming;
+        bool enable_jump_twists;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;

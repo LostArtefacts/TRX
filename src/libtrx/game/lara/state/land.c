@@ -404,11 +404,6 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool enable_jump_twists = g_Config.gameplay.enable_jump_twists;
-#else
-    const bool enable_jump_twists = true;
-#endif
     bool opposite_input;
     if (item->current_anim_state == LS_SLIDE) {
         g_Camera.flags = CF_NO_CHUNKY;
@@ -418,7 +413,8 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         opposite_input = g_Input.forward;
     }
 
-    if (g_Input.jump && (!enable_jump_twists || !opposite_input)) {
+    if (g_Input.jump
+        && (!g_Config.gameplay.enable_jump_twists || !opposite_input)) {
         item->goal_anim_state = item->current_anim_state == LS_SLIDE
             ? LS_JUMP_FORWARD
             : LS_JUMP_BACK;

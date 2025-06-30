@@ -460,7 +460,7 @@ GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_FMV_DESCRIPTION,                     "Enables
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION,              "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK_DESCRIPTION,           "Inverts the Y axis controls when Lara looks.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING_DESCRIPTION,          "For custom levels - allows item descriptions to be displayed in the inventory where the level author has provided suitable data.")
-GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION,             "Enables TR2+ style jump twists and somersaults i.e. press roll during jump and swan dive animations.")
+GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION,             "Enables jump twists and somersaults i.e. press roll during jump and swan dive animations.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION,            "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION,                   "Enables legal screen and Core Design FMV at the game start.")
 GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_CREDITS_DESCRIPTION,                 "Enables credits screens shown after completing the game. Does not influence the final statistics screen.")
