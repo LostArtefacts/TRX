@@ -8,7 +8,7 @@
 - added dedicated British English translation (#3212)
 - added a `/lighting` console command to let the player turn lighting system on/off
 - added support for underwater save crystals in custom levels (#3356)
-- added an option to control responsive jumping lock behaviour (#3389)
+- added an option to control responsive jumping lock behaviour (Gameplay settings → Controls → Jump lock mode) (#3389)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys
@@ -19,7 +19,7 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - changed save crystal collision to be more lenient for custom levels (#3343)
-- changed the walk-run-jump bug fix for responsive jumping to be optional (#3389)
+- changed the walk-run-jump bug fix for responsive jumping to be optional (Gameplay settings → Fixes → Fix walk run jump) (#3389)
 - removed config tool (we have ingame setting dialogs now)
 - fixed several more OG texture issues (refer to README for details) (#3352)
 - fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
