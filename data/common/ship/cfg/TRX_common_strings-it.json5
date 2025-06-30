@@ -145,7 +145,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Passi laterali migliorati",
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Abilita i passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare.",
         "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL": "Capriola sott'acqua",
-        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "Permette a Lara di fare capriole sott'acqua, in modo simile a TR2+.",
+        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "\\{review}Permette a Lara di fare capriole sott'acqua.",
         "GAMEPLAY_SETTINGS_ENABLE_WADING": "Guadare",
         "GAMEPLAY_SETTINGS_ENABLE_WADING_DESCRIPTION": "Permette a Lara di guadare acque poco profonde, simile a TR2+, invece di rimanere bloccata sulla superficie dell'acqua.",
         "GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS": "Interazioni animate",

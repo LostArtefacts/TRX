@@ -64,14 +64,12 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
 
 #if TR_VERSION == 1
     coll->enable_hit = 0;
-    const bool roll = g_Config.gameplay.enable_uw_roll && g_Input.roll;
     const bool look = g_Config.gameplay.enable_enhanced_look && g_Input.look;
 #else
-    const bool roll = g_Input.roll;
     const bool look = g_Input.look;
 #endif
 
-    if (roll) {
+    if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
         item->current_anim_state = LS_WATER_ROLL;
         Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
         return;
@@ -102,12 +100,9 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 
 #if TR_VERSION == 1
     coll->enable_hit = 0;
-    const bool roll = g_Config.gameplay.enable_uw_roll && g_Input.roll;
-#else
-    const bool roll = g_Input.roll;
 #endif
 
-    if (roll) {
+    if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
         item->current_anim_state = LS_WATER_ROLL;
         Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
         return;
@@ -143,11 +138,8 @@ static void M_Glide(ITEM *item, COLL_INFO *coll)
 
 #if TR_VERSION == 1
     coll->enable_hit = 0;
-    const bool roll = g_Config.gameplay.enable_uw_roll && g_Input.roll;
-#else
-    const bool roll = g_Input.roll;
 #endif
-    if (roll) {
+    if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
         item->current_anim_state = LS_WATER_ROLL;
         Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
         return;

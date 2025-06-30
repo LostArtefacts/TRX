@@ -18,9 +18,7 @@ X_UI_CFG_BOOL(gameplay.enable_swing_cancel,        GAMEPLAY_SETTINGS_ENABLE_SWIN
 X_UI_CFG_BOOL(gameplay.enable_smooth_wall_deflect, GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT)
 X_UI_CFG_BOOL(gameplay.enable_step_roll_boost,     GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST)
 
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_uw_roll,             GAMEPLAY_SETTINGS_ENABLE_UW_ROLL)
-#endif
 X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING)
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL)
