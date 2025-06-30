@@ -208,6 +208,7 @@ typedef struct {
         bool enable_debug_spheres;
         bool enable_debug_pos;
         bool enable_review_markers;
+        bool enable_invulnerability;
     } debug;
 
     struct {

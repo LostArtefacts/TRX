@@ -571,6 +571,10 @@
         "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Hérité",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Ajusté",
         "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER": "\\{review}En-tête des statistiques de niveau",
-        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Affiche le numéro de niveau actuel en haut des statistiques de niveau."
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Affiche le numéro de niveau actuel en haut des statistiques de niveau.",
+        "CMD_IMMUNE_SWITCHED_OFF": "\\{review}Lara est maintenant vulnérable",
+        "CMD_IMMUNE_SWITCHED_ON": "\\{review}Lara est maintenant imperméable aux dégâts",
+        "CONSOLE_HELP_IMMUNE": "\\{review}Active l'invulnérabilité. (Lara peut toujours être tuée dans certaines circonstances.)",
+        "OVERLAY_DEBUG_IMMUNE": "\\{review}Invulnérabilité activée"
     }
 }

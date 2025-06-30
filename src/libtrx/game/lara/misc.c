@@ -1,5 +1,6 @@
 #include "game/lara/misc.h"
 
+#include "config.h"
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/random.h"
@@ -19,6 +20,11 @@ void Lara_RefuseInteraction(void)
 
 void Lara_TouchLava(void)
 {
+    if (g_Config.debug.enable_invulnerability) {
+        Lara_CatchFire();
+        return;
+    }
+
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_item->hit_points < 0 || lara_info->water_status == LWS_CHEAT) {

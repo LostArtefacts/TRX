@@ -261,6 +261,10 @@ void Lara_Control(const int16_t item_num)
 {
     ITEM *const item = g_LaraItem;
 
+    if (item->hit_points > 0 && g_Config.debug.enable_invulnerability) {
+        item->hit_points = LARA_MAX_HITPOINTS;
+    }
+
     if (g_InputDB.level_skip_cheat) {
         Lara_Cheat_EndLevel();
     }

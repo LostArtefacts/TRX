@@ -206,6 +206,9 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
 
 void Lara_TakeDamage(const int16_t damage, const bool hit_status)
 {
+    if (g_Config.debug.enable_invulnerability) {
+        return;
+    }
     Item_TakeDamage(Lara_GetItem(), damage, hit_status);
 }
 

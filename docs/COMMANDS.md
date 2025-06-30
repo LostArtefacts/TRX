@@ -54,11 +54,18 @@ Currently supported commands:
   Tired of all of those pesky creatures and goons trying to spoil your adventure? Instantly dispose of the nearest one, or kill them all at once.
 
 - `/fly`  
+- `/fly on`  
+- `/fly off`  
   Turns on the fly cheat. Why even walk? Levitate like a legend.
+
+- `/immune`  
+- `/immune on`  
+- `/immune off`  
+  Turns on immunity, making Lara impervious to harm. Perfect for when you'd rather explore every nook than tiptoe past traps.
 
 - `/cheats on`  
   `/cheats off`  
-  Enables or disables the cheater's toolkit. But let's face it — you're reading _this_, so that ship has sailed.
+  Enables or disables the cheater's toolkit. But let's face it – you're reading _this_, so that ship has sailed.
 
 - `/braid on`  
   `/braid off`  
@@ -88,7 +95,7 @@ Currently supported commands:
   `/level {name}`  
   `/play {num}`  
   `/play {name}`  
-  Launches any level you like. Start with `/play 0` to warm up in the gym — or skip straight to the danger zone with `/play 1` onwards.
+  Launches any level you like. Start with `/play 0` to warm up in the gym – or skip straight to the danger zone with `/play 1` onwards.
 
 - `/cut {num}`  
   `/cutscene {num}`  

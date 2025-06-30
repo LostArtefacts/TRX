@@ -9,6 +9,7 @@
 - added dedicated British English translation (#3212)
 - added a new easter egg command
 - added a `/lighting` console command to let the player turn lighting system on/off
+- added an `/immune` console command to make Lara impervious to damage
 - added missing weapons to Lara's Home, Home Sweet Home and Nightmare in Vegas (for the weapons cheat) (#3360)
 - added an option to use TR1 snappy swim turn behaviour (Gameplay settings → Controls → Smooth swimming) (#3387)
 - added an option to disable underwater twist (Gameplay settings → Controls → Underwater roll) (#3388)

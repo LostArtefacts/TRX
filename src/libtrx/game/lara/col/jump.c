@@ -290,7 +290,9 @@ static bool M_LandedBad(ITEM *const item)
         return false;
     }
 
-    if (land_speed <= DAMAGE_LENGTH) {
+    if (g_Config.debug.enable_invulnerability) {
+        return false;
+    } else if (land_speed <= DAMAGE_LENGTH) {
         Lara_TakeDamage(
             LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
             false);

@@ -108,6 +108,7 @@ sources = [
   'game/console/cmd/give_secret.c',
   'game/console/cmd/heal.c',
   'game/console/cmd/help.c',
+  'game/console/cmd/immune.c',
   'game/console/cmd/kill.c',
   'game/console/cmd/load_game.c',
   'game/console/cmd/music.c',

@@ -187,17 +187,18 @@ static void M_DebugPosTopRight(void)
         return;
     }
 
-    UI_BeginStack(UI_STACK_HORIZONTAL);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_RIGHT },
     });
-    ;
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
         "%d, %d, %d", lara->pos.x, lara->pos.y, lara->pos.z)));
     UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
         "%d, %d, %d", lara->rot.x, lara->rot.y, lara->rot.z)));
-    UI_EndStack();
+    if (g_Config.debug.enable_invulnerability) {
+        UI_LabelEx(
+            GS(OVERLAY_DEBUG_IMMUNE), (UI_LABEL_SETTINGS) { .scale = 0.8 });
+    }
     UI_EndStack();
 }
 
