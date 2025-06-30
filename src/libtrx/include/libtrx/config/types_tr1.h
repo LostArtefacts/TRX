@@ -150,6 +150,7 @@ typedef struct {
         bool enable_step_roll_boost;
         bool fix_floor_data_issues;
         bool fix_descending_glitch;
+        JUMP_LOCK_MODE jump_lock_mode;
         WALL_GLITCH_MODE wall_glitch_mode;
         bool fix_bridge_collision;
         bool fix_qwop_glitch;

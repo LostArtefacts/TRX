@@ -564,6 +564,11 @@
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "Kolor paska sojuszników",
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia sojuszników. Wyświetlany w miejscu pasków zdrowia wrogów.",
         "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING": "\\{review}Rozpalanie ognia",
-        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Umożliwia generowanie dynamicznego oświetlenia obok aktywnych płomieni."
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Umożliwia generowanie dynamicznego oświetlenia obok aktywnych płomieni.",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE": "\\{review}Tryb blokady skoku",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE_DESCRIPTION": "\\{review}Dla bardziej responsywnego skoku umożliwia kontrolę, jak szybko po rozpoczęciu biegu Lara może skoczyć.\n\n- Klasyczny: odpowiada oryginalnemu timingowi z TR2.\n- Dostrojony: skok jest możliwy o 2 klatki wcześniej niż w oryginalnym TR2.\n- Wyłączony: skok jest możliwy natychmiast po animacji startu biegu.",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_DISABLED": "\\{review}Wyłączony",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Klasyczny",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Dostrojony"
     }
 }

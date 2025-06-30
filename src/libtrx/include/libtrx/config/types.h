@@ -68,6 +68,13 @@ typedef enum {
     WALL_GLITCH_TR2,
 } WALL_GLITCH_MODE;
 
+typedef enum {
+    JUMP_LOCK_LEGACY,
+    JUMP_LOCK_TUNED,
+    JUMP_LOCK_DISABLED,
+    JUMP_LOCK_NUMBER_OF,
+} JUMP_LOCK_MODE;
+
 #if TR_VERSION == 1
     #include "./types_tr1.h"
 #elif TR_VERSION == 2

@@ -4,12 +4,6 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 
-#if TR_VERSION == 1
-    #define M_LF_JUMP_READY 2
-#else
-    #define M_LF_JUMP_READY 4
-#endif
-
 // clang-format off
 #define M_LF_ROLL                  2
 #define M_FAST_TURN                ((DEG_1 * 6) + LARA_TURN_UNDO) // = 1456
@@ -33,6 +27,13 @@
 // clang-format on
 
 static bool m_JumpPermitted = true;
+static const int16_t m_JumpLockFrames[JUMP_LOCK_NUMBER_OF] = {
+    // clang-format off
+    [JUMP_LOCK_LEGACY]   = 4,
+    [JUMP_LOCK_TUNED]    = 2,
+    [JUMP_LOCK_DISABLED] = 19,
+    // clang-format on
+};
 
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
@@ -126,11 +127,13 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     const bool responsive_jumping = true;
 #endif
     if (responsive_jumping) {
+        const int16_t unlock_frame =
+            m_JumpLockFrames[g_Config.gameplay.jump_lock_mode];
         if (Item_TestAnimEqual(item, LA_RUN_START)) {
             m_JumpPermitted = false;
         } else if (
             !Item_TestAnimEqual(item, LA_RUN)
-            || Item_TestFrameEqual(item, M_LF_JUMP_READY)) {
+            || Item_TestFrameEqual(item, unlock_frame)) {
             m_JumpPermitted = true;
         }
     } else {

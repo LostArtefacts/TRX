@@ -564,6 +564,11 @@
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "\\{review}Couleur de la barre des alliés",
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "\\{review}Couleur de la barre de vie des alliés. Affichée à l'emplacement des barres de vie des ennemis.",
         "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING": "\\{review}Allumage de feu",
-        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Active l'éclairage dynamique généré à proximité des flammes actives."
+        "GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Active l'éclairage dynamique généré à proximité des flammes actives.",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE": "\\{review}Verrou saut",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_MODE_DESCRIPTION": "\\{review}Pour un saut réactif, permet de contrôler à quel moment après le début de la course Lara est autorisée à sauter.\n\n- Hérité : correspond au timing original de TR2.\n- Ajusté : le saut est possible 2 images plus tôt que dans TR2 d'origine.\n- Désactivé : le saut est possible immédiatement après l'animation de départ en course.",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_DISABLED": "\\{review}Désactivé",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Hérité",
+        "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Ajusté"
     }
 }
