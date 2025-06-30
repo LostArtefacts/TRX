@@ -197,7 +197,7 @@ However, you can easily download them manually from these urls:
 - added an option to have Lara boost forward when rolling off one-click steps, similar to TR1
 - added an option to toggle allowing Lara to exit from water horizontally, below, or climbing out onto non-standable slopes
 - added an option to use TR1 snappy swim turn behaviour
-- added an option to disable underwater twist
+- added an option to disable underwater twist, jump twist and swan-dive roll
 - added an option to toggle random enemy initial angle adjustment
 - added an option to prevent Lara targeting allies, either with weapons or the skidoo
 - changed inventory to pause the music rather than muting it

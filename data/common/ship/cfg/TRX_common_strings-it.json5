@@ -111,7 +111,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING": "Esame degli oggetti",
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Per livelli personalizzati: consente di visualizzare le descrizioni degli oggetti nell'inventario quando fornite dall'autore del livello.",
         "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS": "Capriole a mezz’aria",
-        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "Abilita i salti mortali e le capriole a mezz'aria in stile TR2+, ovvero premendo Rotola durante le animazioni del salto e del tuffo ad angelo.",
+        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "\\{review}Abilita i salti mortali e le capriole a mezz'aria, ovvero premendo Rotola durante le animazioni del salto e del tuffo ad angelo.",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING": "Salti inclinati",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION": "Permette a Lara di spostarsi ulteriormente in avanti o indietro quando esegue salti sul posto, premendo il relativo tasto.",
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL": "Contenuto legale",

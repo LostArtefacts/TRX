@@ -102,7 +102,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING": "Description des objets",
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Pour les niveaux personnalisés - permet d'afficher les descriptions des objets dans l'inventaire lorsque le créateur du niveau a fourni ces informations.",
         "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS": "Sauts périlleux",
-        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "Activer les demi-tours en plein saut et les cabrioles apparus depuis TR2.",
+        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "\\{review}Activer les demi-tours en plein saut et les cabrioles.",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING": "Contrôle du saut sur place",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION": "Permet à Lara d'avancer ou de reculer pendant les sauts sur place lorsque la touche correspondante est enfoncée, comme possible depuis TR2.",
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL": "Afficher le contenu juridique",

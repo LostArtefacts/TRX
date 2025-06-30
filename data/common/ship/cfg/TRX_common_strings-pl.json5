@@ -102,7 +102,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING": "Badanie przedmiotów",
         "GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Pozwala na wyświetlanie opisów przedmiotów w ekwipunku w niestandardowych poziomach, gdzie autor poziomu dostarczył odpowiednie dane.",
         "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS": "Skoki z obrotem",
-        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "Włącza salta, tzn. możliwość obrotu podczas skoku (tak jak w TR2+).",
+        "GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS_DESCRIPTION": "\\{review}Włącza salta, tzn. możliwość obrotu podczas skoku.",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING": "Dalekie skoki w miejscu",
         "GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING_DESCRIPTION": "Pozwala Larze na przesuwanie się do przodu lub do tyłu dalej podczas wykonywania skoków w miejscu z wciśniętym odpowiednim klawiszem (tak jak w TR2+).",
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL": "Informacje prawne",

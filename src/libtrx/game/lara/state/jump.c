@@ -14,8 +14,6 @@
 #define M_CAM_ZIPLINE_ANGLE     (70 * DEG_1)                   // = 12740
 // clang-format on
 
-static bool IsJumpTwistEnabled(void);
-
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
 static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
@@ -27,15 +25,6 @@ static void M_SwanDive(ITEM *item, COLL_INFO *coll);
 static void M_FastDive(ITEM *item, COLL_INFO *coll);
 static void M_FastFall(ITEM *item, COLL_INFO *coll);
 static void M_Zipline(ITEM *item, COLL_INFO *coll);
-
-static bool IsJumpTwistEnabled(void)
-{
-#if TR_VERSION == 1
-    return g_Config.gameplay.enable_jump_twists;
-#else
-    return true;
-#endif
-}
 
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
@@ -94,7 +83,8 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
         if (g_Input.action && lara->gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_REACH;
         }
-        if (IsJumpTwistEnabled() && (g_Input.roll || g_Input.back)) {
+        if (g_Config.gameplay.enable_jump_twists
+            && (g_Input.roll || g_Input.back)) {
             item->goal_anim_state = LS_TWIST;
         }
         if (g_Input.slow && lara->gun_status == LGS_ARMLESS) {
@@ -125,7 +115,8 @@ static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
     if (item->goal_anim_state == LS_RUN) {
         item->goal_anim_state = LS_STOP;
     } else if (
-        IsJumpTwistEnabled() && (g_Input.forward || g_Input.roll)
+        g_Config.gameplay.enable_jump_twists
+        && (g_Input.forward || g_Input.roll)
         && item->goal_anim_state != LS_STOP) {
         item->goal_anim_state = LS_TWIST;
     }
@@ -145,7 +136,7 @@ static void M_SideJump(ITEM *const item, COLL_INFO *const coll)
     // TODO: unused animation transition, perhaps look at restoring
     const bool twist_input =
         item->current_anim_state == LS_JUMP_LEFT ? g_Input.right : g_Input.left;
-    if (IsJumpTwistEnabled() && twist_input
+    if (g_Config.gameplay.enable_jump_twists && twist_input
         && item->goal_anim_state != LS_STOP) {
         item->goal_anim_state = LS_TWIST;
     }
@@ -184,7 +175,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
 
 static void M_FastDive(ITEM *item, COLL_INFO *coll)
 {
-    if (IsJumpTwistEnabled() && g_Input.roll
+    if (g_Config.gameplay.enable_jump_twists && g_Input.roll
         && item->goal_anim_state == LS_FAST_DIVE) {
         item->goal_anim_state = LS_TWIST;
     }
