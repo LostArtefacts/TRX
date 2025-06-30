@@ -396,7 +396,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added ability to look up and down while hanging
 - added ability to jump-twist and somersault like in TR2+
 - added ability to cancel ledge-swinging animation like in TR2+
-- added ability to jump at any point while running like in TR2+
+- added ability to jump at any point while running like in TR2+, together with the ability to control jump lock behaviour
 - added ability to automatically walk to items when nearby
 - added ability to roll while underwater like in TR2+
 - added ability to use Lara's underwater swimming physics from TR2+

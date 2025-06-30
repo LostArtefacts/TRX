@@ -12,6 +12,7 @@
 - added missing weapons to Lara's Home, Home Sweet Home and Nightmare in Vegas (for the weapons cheat) (#3360)
 - added an option to use TR1 snappy swim turn behaviour (#3387)
 - added an option to disable underwater twist, jump twist and swan-dive roll (#3388)
+- added an option to control responsive jumping lock behaviour (#3389)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys
