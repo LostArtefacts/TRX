@@ -308,6 +308,8 @@ bool Lara_Cheat_ExitFlyMode(void)
     } else {
         lara_info->water_status = LWS_ABOVE_WATER;
         Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+        lara_item->goal_anim_state = LS_STOP;
+        lara_item->current_anim_state = LS_STOP;
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         lara_info->head_rot.x = 0;
