@@ -136,7 +136,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Ulepszone kroki w bok",
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Umożliwia chodzenie w bok w stylu TR3+, tj. shift+strzałki kierunkowe. Naturalnie, przyciski dedykowane do kroków w bok nadal będą działać.",
         "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL": "Przewroty pod wodą",
-        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "Pozwala Larze na przewrót pod wodą (tak jak w TR2+).",
+        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "\\{review}Pozwala Larze na przewrót pod wodą.",
         "GAMEPLAY_SETTINGS_ENABLE_WADING": "Brodzenie",
         "GAMEPLAY_SETTINGS_ENABLE_WADING_DESCRIPTION": "Pozwala Larze na brodzenie w płytkiej wodzie (tak jak w TR2+). Wyłączenie powoduje utknięcie na powierzchni wody.",
         "GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS": "Animowane interakcje",

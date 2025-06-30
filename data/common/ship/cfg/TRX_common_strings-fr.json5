@@ -136,7 +136,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Pas de côtés améliorés",
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Permet d'effectuer des pas de côtés comme à partir de TR3 (exemple : Maj + touches directionelles). Les touches dédiées restent fonctionnelles.",
         "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL": "Roulade sous-marine",
-        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "Permet à Lara de faire une roulade pour se retourner sous l'eau, comme possible depuis TR2.",
+        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "\\{review}Permet à Lara de faire une roulade pour se retourner sous l'eau.",
         "GAMEPLAY_SETTINGS_ENABLE_WADING": "Patauger",
         "GAMEPLAY_SETTINGS_ENABLE_WADING_DESCRIPTION": "Permet à Lara de patauger dans les eaux peu profondes, comme possible depuis TR2, plutôt que de rester bloquée à la surface.",
         "GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS": "Animées les placements",

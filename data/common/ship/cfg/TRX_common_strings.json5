@@ -145,7 +145,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Enhanced sidesteps",
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work.",
         "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL": "Underwater roll",
-        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "Allows Lara to roll while underwater, similar to TR2+.",
+        "GAMEPLAY_SETTINGS_ENABLE_UW_ROLL_DESCRIPTION": "Allows Lara to roll while underwater.",
         "GAMEPLAY_SETTINGS_ENABLE_WADING": "Wading",
         "GAMEPLAY_SETTINGS_ENABLE_WADING_DESCRIPTION": "Allows Lara to wade through shallow water, similar to TR2+, rather than becoming stuck on the water surface.",
         "GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS": "Animated interactions",

@@ -123,6 +123,7 @@ typedef struct {
         bool fix_descending_glitch;
         WALL_GLITCH_MODE wall_glitch_mode;
         bool fix_water_exit;
+        bool enable_uw_roll;
         bool enable_tr2_swimming;
         bool enable_cheats;
         bool enable_console;
