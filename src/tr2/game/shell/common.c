@@ -499,7 +499,7 @@ int32_t Shell_Main(void)
     }
 
     Random_Seed();
-    Output_CalculateWibbleTable();
+    Output_Init();
 
     Shell_Start();
     Viewport_AlterFOV(-1);
@@ -625,6 +625,7 @@ void Shell_Shutdown(void)
     GF_Shutdown();
     Overlay_Shutdown();
     Option_Shutdown();
+    Output_Shutdown();
     Render_Shutdown();
     UI_Shutdown();
 

@@ -2,6 +2,9 @@
 
 #include "../rooms.h"
 
+extern bool Output_Init(void);
+extern void Output_Shutdown(void);
+
 extern void Output_ObserveLevelLoad(void);
 extern void Output_ObserveLevelUnload(void);
 extern void Output_ObserveRoomFlip(const ROOM *room);
@@ -27,6 +30,8 @@ extern int32_t Output_CalcFogShade(int32_t depth);
 extern int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);
 extern void Output_LightRoomVertices(const ROOM *room);
 
+void Output_InitLight(void);
+void Output_ShutdownLight(void);
 void Output_CalculateLight(XYZ_32 pos, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);
 void Output_CalculateStaticMeshLight(XYZ_32 pos, SHADE shade, const ROOM *room);

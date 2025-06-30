@@ -25,6 +25,8 @@
 #define M_MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
 #define M_SUNSET_TIMEOUT (40 * 60 * (LOGIC_FPS)) // = 72000
 
+static bool m_Initialized = false;
+
 static int32_t m_VBufCapacity = 0;
 static int32_t m_TickComp = 0;
 static int32_t m_LsAdder = 0;
@@ -50,6 +52,7 @@ static int32_t m_SunsetTimer = 0;
 
 static int32_t m_DepthBias = 0;
 
+static void M_CalculateWibbleTable(void);
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
 static void M_DrawRoomSprites(const ROOM_MESH *mesh);
@@ -57,6 +60,20 @@ static void M_DrawRoomSprites(const ROOM_MESH *mesh);
 static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
 static void M_CalcVerticeLight(const OBJECT_MESH *mesh);
 static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
+
+static void M_CalculateWibbleTable(void)
+{
+    for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
+        const int32_t sine = Math_Sin(i * DEG_360 / WIBBLE_SIZE);
+        m_WibbleTable[i] = (sine * M_MAX_WIBBLE) >> W2V_SHIFT;
+        m_ShadesTable[i] = (sine * SHADE_CAUSTICS) >> W2V_SHIFT;
+        m_RandomTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
+        for (int32_t j = 0; j < WIBBLE_SIZE; j++) {
+            m_RoomLightTables[i].table[j] = (j - (WIBBLE_SIZE / 2)) * i
+                * M_MAX_ROOM_LIGHT_UNIT / (WIBBLE_SIZE - 1);
+        }
+    }
+}
 
 static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
 {
@@ -381,6 +398,28 @@ static void M_ReserveVertexBuffer(void)
         g_PhdVBuf = Memory_Realloc(g_PhdVBuf, max_vertices * sizeof(PHD_VBUF));
         m_VBufCapacity = max_vertices;
     }
+}
+
+bool Output_Init(void)
+{
+    if (m_Initialized) {
+        return true;
+    }
+    m_Initialized = true;
+
+    M_CalculateWibbleTable();
+    Output_InitLight();
+    return true;
+}
+
+void Output_Shutdown(void)
+{
+    if (!m_Initialized) {
+        return;
+    }
+    m_Initialized = false;
+
+    Output_ShutdownLight();
 }
 
 void Output_ApplyLevelSettings(void)
@@ -808,20 +847,6 @@ void Output_InsertShadow(
         Render_InsertTransOctagon(g_PhdVBuf, 24);
     }
     Matrix_Pop();
-}
-
-void Output_CalculateWibbleTable(void)
-{
-    for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
-        const int32_t sine = Math_Sin(i * DEG_360 / WIBBLE_SIZE);
-        m_WibbleTable[i] = (sine * M_MAX_WIBBLE) >> W2V_SHIFT;
-        m_ShadesTable[i] = (sine * SHADE_CAUSTICS) >> W2V_SHIFT;
-        m_RandomTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
-        for (int32_t j = 0; j < WIBBLE_SIZE; j++) {
-            m_RoomLightTables[i].table[j] = (j - (WIBBLE_SIZE / 2)) * i
-                * M_MAX_ROOM_LIGHT_UNIT / (WIBBLE_SIZE - 1);
-        }
-    }
 }
 
 int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)

@@ -360,6 +360,7 @@ fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
+- removed the limit of 10 dynamic lights per frame
 
 #### Audio
 - added an option to control how music is played while underwater rather than simply muting it

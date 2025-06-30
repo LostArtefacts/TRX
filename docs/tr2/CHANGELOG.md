@@ -21,8 +21,6 @@
 - changed the dev console to accept compound characters (#2938)
 - changed the item duplication glitch fix to be on by default
 - changed the Bartoli's Hideout sunset effect to also apply to skybox lighting (#1617)
-- removed config tool (we have ingame setting dialogs now)
-- removed default bindings for the "sizer" and the "scaler" options (#2853)
 - fixed inventory screen carpet background texture stretched on non-4:3 aspect ratios (#2022)
 - fixed picked up guns not appearing in holsters / on Lara's back (#1588)
 - fixed room 134 in Opera House having wrong textures (#3142)
@@ -41,6 +39,9 @@
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene (#3370)
 - fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - improved the `/tp` command to orient Lara towards keyholes and doors
+- removed config tool (we have ingame setting dialogs now)
+- removed default bindings for the "sizer" and the "scaler" options (#2853)
+- removed the limit of 10 dynamic lights per frame (#3384)
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
