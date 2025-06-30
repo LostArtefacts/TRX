@@ -6,6 +6,7 @@
 #endif
 
 X_CFG_BOOL(audio.enable_music_in_inventory,          true)
+X_CFG_BOOL(audio.enable_underwater_anim_sfx,         true)
 X_CFG_BOOL(debug.enable_debug_pos,                   false)
 X_CFG_BOOL(debug.enable_review_markers,              false)
 X_CFG_BOOL(debug.enable_invulnerability,             false)

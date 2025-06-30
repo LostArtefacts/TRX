@@ -8,6 +8,32 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
+#define M_SFX_SURF_DISTANCE ((STEP_L * 2) + 1)
+
+static bool M_ShouldPlaySFXAlways(const ITEM *item, bool item_underwater);
+
+static bool M_ShouldPlaySFXAlways(
+    const ITEM *const item, const bool item_underwater)
+{
+    if (item == Lara_GetItem()) {
+        return true;
+    }
+
+#if TR_VERSION >= 2
+    if (item->object_id == O_LARA_HARPOON) {
+        return true;
+    }
+#endif
+
+    int16_t room_num = item->room_num;
+    const int32_t dist =
+        item_underwater ? -M_SFX_SURF_DISTANCE : +M_SFX_SURF_DISTANCE;
+    Room_GetSector(item->pos.x, item->pos.y + dist, item->pos.z, &room_num);
+    const ROOM *const nearby_room = Room_Get(room_num);
+    const bool near_underwater = (nearby_room->flags & RF_UNDERWATER) != 0;
+    return item_underwater != near_underwater;
+}
+
 ANIM *Item_GetAnim(const ITEM *const item)
 {
     return Anim_GetAnim(item->anim_num);
@@ -279,8 +305,8 @@ void Item_PlayAnimSFX(
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const bool item_underwater =
-        (Room_Get(item->room_num)->flags & RF_UNDERWATER) != 0;
+    const bool item_underwater = item->room_num != NO_ROOM
+        && (Room_Get(item->room_num)->flags & RF_UNDERWATER) != 0;
     const ANIM_COMMAND_ENVIRONMENT mode = data->environment;
 
     if (mode != ACE_ALL && item->room_num != NO_ROOM) {
@@ -291,25 +317,22 @@ void Item_PlayAnimSFX(
             height = -STEP_L;
         }
 
-        if ((mode == ACE_WATER && (height >= 0 || height == NO_HEIGHT))
-            || (mode == ACE_LAND && height < 0 && height != NO_HEIGHT)) {
+        const bool in_water = height < 0 && height != NO_HEIGHT;
+        if ((mode == ACE_WATER && !in_water)
+            || (mode == ACE_LAND && in_water)) {
             return;
         }
     }
 
+    const bool play_always = M_ShouldPlaySFXAlways(item, item_underwater);
     SOUND_PLAY_MODE play_mode = SPM_NORMAL;
-    if (item == lara_item) {
+    if (play_always) {
         play_mode = SPM_ALWAYS;
     } else if (
         Object_IsType(item->object_id, g_WaterObjects)
-        || (TR_VERSION == 1 && item_underwater)) {
+        || (g_Config.audio.enable_underwater_anim_sfx && item_underwater)) {
         play_mode = SPM_UNDERWATER;
     }
-#if TR_VERSION > 1
-    else if (item->object_id == O_LARA_HARPOON) {
-        play_mode = SPM_ALWAYS;
-    }
-#endif
 
     Sound_Effect(data->effect_num, &item->pos, play_mode);
 }

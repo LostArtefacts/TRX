@@ -16,6 +16,7 @@
 - added an option to disable jump twist and swan-dive roll (Gameplay settings → Controls → Jump twists) (#3388)
 - added an option to control responsive jumping lock behaviour (Gameplay settings → Controls → Jump lock mode) (#3389)
 - added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
+- added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - changed statistics details mode to be placed in the UI section
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
@@ -47,6 +48,7 @@
 - fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - fixed Lara getting stuck in the fly cheat in rare circumstances (#3392, regression from 0.3)
 - improved the `/tp` command to orient Lara towards keyholes and doors
+- improved handling of animation sound effects when in shallow water (#3385)
 - removed config tool (we have ingame setting dialogs now)
 - removed default bindings for the "sizer" and the "scaler" options (#2853)
 - removed the limit of 10 dynamic lights per frame (#3384)

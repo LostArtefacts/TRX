@@ -604,6 +604,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added the triggered music tracks to the savegame so one shot tracks don't replay on load
 - added detection for animation commands to play SFX on land, water or both
 - added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
+- added an option to control playing of certain animation sound effects such as doors when underwater
 - fixed the sound of collecting a secret killing the music
 - fixed audio mixer stopping playing sounds on big explosions
 - fixed game audio not muting when game is minimized

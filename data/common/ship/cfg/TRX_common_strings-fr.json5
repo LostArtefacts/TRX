@@ -546,6 +546,8 @@
         "SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Active ou non la musique dans le menu principal.",
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS": "Hauteurs aléatoires des sons",
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Modifie aléatoirement et légèrement la hauteur des effets sonores, afin de leur donner un peu de variation.",
+        "SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX": "\\{review}SFX anim. sous l'eau",
+        "SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX_DESCRIPTION": "\\{review}Permet de contrôler la lecture de certains effets sonores d'animation — pour des objets comme des portes ou des trappes — lorsque la caméra est sous l'eau.",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC": "Superposer le son du secret",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC_DESCRIPTION": "Corrige le fait que la musique est coupée à la découverte d'un secret.",
         "SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC": "Superposer les voix des ennemis",
