@@ -33,8 +33,18 @@ static void M_SwimTurn(ITEM *const item)
         item->rot.x += M_TURN_RATE;
     }
 
-#if TR_VERSION == 1
-    if (!g_Config.gameplay.enable_tr2_swimming) {
+    if (g_Config.gameplay.enable_tr2_swimming) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        if (g_Input.left) {
+            lara->turn_rate -= LARA_TURN_RATE;
+            CLAMPL(lara->turn_rate, -LARA_MED_TURN);
+            item->rot.z -= M_LEAN_RATE;
+        } else if (g_Input.right) {
+            lara->turn_rate += LARA_TURN_RATE;
+            CLAMPG(lara->turn_rate, LARA_MED_TURN);
+            item->rot.z += M_LEAN_RATE;
+        }
+    } else {
         if (g_Input.left) {
             item->rot.y -= LARA_MED_TURN;
             item->rot.z -= M_LEAN_RATE;
@@ -42,19 +52,6 @@ static void M_SwimTurn(ITEM *const item)
             item->rot.y += LARA_MED_TURN;
             item->rot.z += M_LEAN_RATE;
         }
-        return;
-    }
-#endif
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_Input.left) {
-        lara->turn_rate -= LARA_TURN_RATE;
-        CLAMPL(lara->turn_rate, -LARA_MED_TURN);
-        item->rot.z -= M_LEAN_RATE;
-    } else if (g_Input.right) {
-        lara->turn_rate += LARA_TURN_RATE;
-        CLAMPG(lara->turn_rate, LARA_MED_TURN);
-        item->rot.z += M_LEAN_RATE;
     }
 }
 

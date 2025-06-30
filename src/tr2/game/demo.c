@@ -26,6 +26,7 @@
     PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);         \
     PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);            \
     PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR2);                \
+    PROCESS_CONFIG(gameplay.enable_tr2_swimming, true);                        \
     PROCESS_CONFIG(visuals.enable_fire_lighting, false);
 
 typedef struct {

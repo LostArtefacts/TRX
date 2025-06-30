@@ -130,7 +130,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING": "Responsywne skakanie",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING_DESCRIPTION": "Pozwala Larze skakać w dowolnym momencie podczas biegu (tak jak w TR2+).",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING": "Zwinniejsze pływanie",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING_DESCRIPTION": "Daje Larze krzywą przyspieszenia dla obrotu pod wodą, co zapewnia płynniejszy ruch (tak jak w TR2+).",
+        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING_DESCRIPTION": "\\{review}Daje Larze krzywą przyspieszenia dla obrotu pod wodą, co zapewnia płynniejszy ruch (tak jak w oryginale w TR2+). Wyłączenie tej opcji zapewni Larze szybszą prędkość skrętu, zgodnie z oryginalnym TR1.",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL": "Mniejszy dryf pod wodą",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Pozwala Larze na bardziej responsywne zatrzymanie się pod wodą po zwolnieniu klawisza pływania (tak jak w TR2+).",
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Ulepszone kroki w bok",
