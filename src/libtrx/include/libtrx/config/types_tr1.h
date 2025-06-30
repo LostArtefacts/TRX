@@ -104,6 +104,7 @@ typedef struct {
         bool enable_ps_uzi_sfx;
         bool enable_pitched_sounds;
         bool load_music_triggers;
+        bool enable_underwater_anim_sfx;
         float inventory_ambient_volume;
         float inventory_music_volume;
         float underwater_ambient_volume;

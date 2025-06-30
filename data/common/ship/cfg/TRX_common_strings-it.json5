@@ -546,6 +546,8 @@
         "SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Riproduce la musica nel menu principale.",
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS": "Tonalità suoni",
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Per una maggiore varietà, consente di modificare in modo leggero e casuale la tonalità degli effetti sonori.",
+        "SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX": "\\{review}SFX animaz. subacquea",
+        "SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX_DESCRIPTION": "\\{review}Consente di controllare la riproduzione di effetti sonori specifici dell'animazione — per oggetti come porte e botole — quando la telecamera è sott'acqua.",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC": "Musica segreti in polifonia",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC_DESCRIPTION": "Risolve il problema per cui il suono riprodotto dalla scoperta di un segreto interrompe la traccia musicale attiva.",
         "SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC": "Dialoghi nemici in polifonia",

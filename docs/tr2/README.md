@@ -370,6 +370,7 @@ fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - added the current music track and timestamp to the savegame so they now persist on load
 - added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
 - added an option to continue playing music while in the inventory
+- added an option to control playing of certain animation sound effects such as doors when underwater
 - fixed music not playing with certain game versions
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace
 - fixed sound settings resuming the music

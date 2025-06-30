@@ -11,6 +11,7 @@
 - added support for underwater save crystals in custom levels (#3356)
 - added an option to control responsive jumping lock behaviour (Gameplay settings → Controls → Jump lock mode) (#3389)
 - added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
+- added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - changed statistics details mode to be placed in the UI section
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
@@ -23,12 +24,13 @@
 - changed the dev console to accept compound characters (#2938)
 - changed save crystal collision to be more lenient for custom levels (#3343)
 - changed the walk-run-jump bug fix for responsive jumping to be optional (Gameplay settings → Fixes → Fix walk run jump) (#3389)
-- removed config tool (we have ingame setting dialogs now)
 - fixed several more OG texture issues (refer to README for details) (#3352)
 - fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
 - fixed Lara not saying 'no' near complete receptacles (#3337, regression from 4.0)
 - fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
 - improved the `/tp` command to orient Lara towards keyholes and doors
+- improved handling of animation sound effects when in shallow water (#3385)
+- removed config tool (we have ingame setting dialogs now)
 
 ## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24
 - fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)

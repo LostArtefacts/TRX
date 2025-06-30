@@ -546,6 +546,8 @@
         "SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Plays music in the main menu.",
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS": "Pitched sounds",
         "SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Allows sound effects to be randomly, slightly pitched to vary the game sounds.",
+        "SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX": "Underwater animation SFX",
+        "SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX_DESCRIPTION": "Allows control over playing specific animation sound effects - for objects such as doors and trapdoors - when the camera is underwater.",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC": "Layered secret music",
         "SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC_DESCRIPTION": "Fixes the sound of collecting a secret stopping the active music track.",
         "SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC": "Layered enemy speech",

@@ -13,6 +13,7 @@ X_UI_CFG_FLOAT_PERCENT(audio.inventory_music_volume,    SOUND_SETTINGS_INVENTORY
 X_UI_CFG_FLOAT_PERCENT(audio.underwater_ambient_volume, SOUND_SETTINGS_UNDERWATER_AMBIENT_VOLUME, .min_value = 0, .max_value = 100, .delta_slow = 10, .delta_fast = 10)
 X_UI_CFG_FLOAT_PERCENT(audio.underwater_music_volume,   SOUND_SETTINGS_UNDERWATER_MUSIC_VOLUME, .min_value = 0, .max_value = 100, .delta_slow = 10, .delta_fast = 10)
 X_UI_CFG_ENUM(audio.music_load_condition,               SOUND_SETTINGS_MUSIC_LOAD_CONDITION, .misc = UI_Settings_MusicLoadConditionEnumEntries)
+X_UI_CFG_BOOL(audio.enable_underwater_anim_sfx,         SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX)
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.enable_pitched_sounds,              SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS)
