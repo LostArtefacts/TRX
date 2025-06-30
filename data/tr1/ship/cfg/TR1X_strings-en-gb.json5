@@ -4,6 +4,6 @@
     "extends": "en",
     "game_strings": {
         "OSD_TEXTURE_FILTER_NN": "nearest-neighbour",
-        "STATS_DISTANCE_TRAVELLED": "DISTANCE TRAVELLED"
+        "STATS_DISTANCE_TRAVELLED": "DISTANCE TRAVELLED",
     }
 }

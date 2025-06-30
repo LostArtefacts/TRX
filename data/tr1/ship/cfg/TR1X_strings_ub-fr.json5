@@ -6,7 +6,7 @@
             "title": "Retour en Égypte",
             "objects": {
                 "key_1": {
-                    "name": "Clé en or"
+                    "name": "Clé en or",
                 }
             }
         },
@@ -14,21 +14,21 @@
             "title": "Le Temple du Chat",
             "objects": {
                 "key_1": {
-                    "name": "Clé ornée"
+                    "name": "Clé ornée",
                 }
             }
         },
         {
-            "title": "La Forteresse Atlante"
+            "title": "La Forteresse Atlante",
         },
         {
-            "title": "La Ruche"
+            "title": "La Ruche",
         },
         {
-            "title": "Titre"
+            "title": "Titre",
         },
         {
-            "title": "Position actuelle"
+            "title": "Position actuelle",
         }
     ]
 }

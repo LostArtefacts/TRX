@@ -6,7 +6,7 @@
             "title": "Powrót do Egiptu",
             "objects": {
                 "key_1": {
-                    "name": "Złoty klucz"
+                    "name": "Złoty klucz",
                 }
             }
         },
@@ -14,21 +14,21 @@
             "title": "Świątynia Kota",
             "objects": {
                 "key_1": {
-                    "name": "Ozdobny klucz"
+                    "name": "Ozdobny klucz",
                 }
             }
         },
         {
-            "title": "Twierdza Atlantydów"
+            "title": "Twierdza Atlantydów",
         },
         {
-            "title": "Rój"
+            "title": "Rój",
         },
         {
-            "title": "Menu główne"
+            "title": "Menu główne",
         },
         {
-            "title": "Aktualna pozycja"
+            "title": "Aktualna pozycja",
         }
     ]
 }

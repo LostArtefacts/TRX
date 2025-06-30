@@ -575,6 +575,6 @@
         "STATS_BASIC_FMT": "%d",
         "STATS_BONUS_STATISTICS": "Bonus Statistics",
         "STATS_DETAIL_FMT": "%d of %d",
-        "STATS_FINAL_STATISTICS": "Final Statistics"
+        "STATS_FINAL_STATISTICS": "Final Statistics",
     }
 }

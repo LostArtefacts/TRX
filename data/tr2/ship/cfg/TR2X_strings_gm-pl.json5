@@ -3,19 +3,19 @@
     // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
     "levels": [
         {
-            "title": "Dom Lary"
+            "title": "Dom Lary",
         },
         {
             "title": "Zimna Wojna",
             "objects": {
                 "tiger": {
-                    "name": "Lampart śnieżny"
+                    "name": "Lampart śnieżny",
                 },
                 "key_1": {
-                    "name": "Klucz do strażnicy"
+                    "name": "Klucz do strażnicy",
                 },
                 "key_2": {
-                    "name": "Klucz do szybu 'B'"
+                    "name": "Klucz do szybu 'B'",
                 }
             }
         },
@@ -23,13 +23,13 @@
             "title": "Złoto głupców",
             "objects": {
                 "key_1": {
-                    "name": "Karta dostępu 1"
+                    "name": "Karta dostępu 1",
                 },
                 "key_4": {
-                    "name": "Karta dostępu 2"
+                    "name": "Karta dostępu 2",
                 },
                 "puzzle_1": {
-                    "name": "Układ elektroniczny"
+                    "name": "Układ elektroniczny",
                 }
             }
         },
@@ -37,16 +37,16 @@
             "title": "Piec bogów",
             "objects": {
                 "big_spider": {
-                    "name": "Niedźwiedź polarny"
+                    "name": "Niedźwiedź polarny",
                 },
                 "spider": {
-                    "name": "Wilk"
+                    "name": "Wilk",
                 },
                 "puzzle_1": {
-                    "name": "Maska Tornarsuka"
+                    "name": "Maska Tornarsuka",
                 },
                 "puzzle_2": {
-                    "name": "Złoty samorodek"
+                    "name": "Złoty samorodek",
                 }
             }
         },
@@ -54,10 +54,10 @@
             "title": "Królestwo",
             "objects": {
                 "tiger": {
-                    "name": "Lampart śnieżny"
+                    "name": "Lampart śnieżny",
                 },
                 "puzzle_1": {
-                    "name": "Maska Tornarsuka"
+                    "name": "Maska Tornarsuka",
                 }
             }
         },
@@ -65,13 +65,13 @@
             "title": "Koszmar w Vegas",
             "objects": {
                 "key_1": {
-                    "name": "Klucz do hotelu"
+                    "name": "Klucz do hotelu",
                 },
                 "puzzle_1": {
-                    "name": "Węzeł windy"
+                    "name": "Węzeł windy",
                 },
                 "puzzle_2": {
-                    "name": "Obwód drzwi"
+                    "name": "Obwód drzwi",
                 }
             }
         }

@@ -15,7 +15,7 @@
         {
             "objects": {
                 "key_1": {
-                    "name": "Theatre Key"
+                    "name": "Theatre Key",
                 }
             }
         },
@@ -30,6 +30,6 @@
         {}
     ],
     "game_strings": {
-        "STATS_DISTANCE_TRAVELLED": "Distance Travelled"
+        "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
     }
 }

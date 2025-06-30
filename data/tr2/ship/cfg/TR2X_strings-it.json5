@@ -3,16 +3,16 @@
     // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
     "levels": [
         {
-            "title": "Casa di Lara"
+            "title": "Casa di Lara",
         },
         {
             "title": "La Grande Muraglia",
             "objects": {
                 "key_1": {
-                    "name": "Chiave guardiola"
+                    "name": "Chiave guardiola",
                 },
                 "key_2": {
-                    "name": "Chiave arrugginita"
+                    "name": "Chiave arrugginita",
                 }
             }
         },
@@ -20,13 +20,13 @@
             "title": "Venezia",
             "objects": {
                 "key_1": {
-                    "name": "Chiave rimessa"
+                    "name": "Chiave rimessa",
                 },
                 "key_2": {
-                    "name": "Chiave d'acciaio"
+                    "name": "Chiave d'acciaio",
                 },
                 "key_3": {
-                    "name": "Chiave di ferro"
+                    "name": "Chiave di ferro",
                 }
             }
         },
@@ -34,10 +34,10 @@
             "title": "Covo di Bartoli",
             "objects": {
                 "key_1": {
-                    "name": "Chiave biblioteca"
+                    "name": "Chiave biblioteca",
                 },
                 "key_2": {
-                    "name": "Chiave detonatore"
+                    "name": "Chiave detonatore",
                 }
             }
         },
@@ -45,13 +45,13 @@
             "title": "Teatro dell'Opera",
             "objects": {
                 "key_1": {
-                    "name": "Chiave cesellata"
+                    "name": "Chiave cesellata",
                 },
                 "puzzle_1": {
-                    "name": "Scatola fusibili"
+                    "name": "Scatola fusibili",
                 },
                 "puzzle_2": {
-                    "name": "Scheda circuito"
+                    "name": "Scheda circuito",
                 }
             }
         },
@@ -59,13 +59,13 @@
             "title": "Piattaforma offshore",
             "objects": {
                 "key_1": {
-                    "name": "Tessera rossa"
+                    "name": "Tessera rossa",
                 },
                 "key_2": {
-                    "name": "Tessera gialla"
+                    "name": "Tessera gialla",
                 },
                 "key_3": {
-                    "name": "Tessera verde"
+                    "name": "Tessera verde",
                 }
             }
         },
@@ -73,33 +73,33 @@
             "title": "Area di immersione",
             "objects": {
                 "key_1": {
-                    "name": "Tessera rossa"
+                    "name": "Tessera rossa",
                 },
                 "key_4": {
-                    "name": "Tessera blu"
+                    "name": "Tessera blu",
                 },
                 "puzzle_1": {
-                    "name": "Circuito d'avvio"
+                    "name": "Circuito d'avvio",
                 }
             }
         },
         {
-            "title": "40 Atmosfere"
+            "title": "40 Atmosfere",
         },
         {
             "title": "Relitto della Maria Doria",
             "objects": {
                 "key_1": {
-                    "name": "Chiave guardaroba"
+                    "name": "Chiave guardaroba",
                 },
                 "key_2": {
-                    "name": "Chiave arrugginita"
+                    "name": "Chiave arrugginita",
                 },
                 "key_3": {
-                    "name": "Chiave cabina"
+                    "name": "Chiave cabina",
                 },
                 "puzzle_1": {
-                    "name": "Cortocircuitatore"
+                    "name": "Cortocircuitatore",
                 }
             }
         },
@@ -107,10 +107,10 @@
             "title": "Alloggi",
             "objects": {
                 "key_1": {
-                    "name": "Chiave teatro"
+                    "name": "Chiave teatro",
                 },
                 "key_2": {
-                    "name": "Chiave arrugginita"
+                    "name": "Chiave arrugginita",
                 }
             }
         },
@@ -118,16 +118,16 @@
             "title": "Sul ponte",
             "objects": {
                 "key_2": {
-                    "name": "Chiave di poppa"
+                    "name": "Chiave di poppa",
                 },
                 "key_3": {
-                    "name": "Chiave dispensa"
+                    "name": "Chiave dispensa",
                 },
                 "key_4": {
-                    "name": "Chiave cabina"
+                    "name": "Chiave cabina",
                 },
                 "puzzle_4": {
-                    "name": "Il Serafo"
+                    "name": "Il Serafo",
                 }
             }
         },
@@ -135,16 +135,16 @@
             "title": "Pendici tibetane",
             "objects": {
                 "tiger": {
-                    "name": "Leopardo delle nevi"
+                    "name": "Leopardo delle nevi",
                 },
                 "key_1": {
-                    "name": "Chiave ponte"
+                    "name": "Chiave ponte",
                 },
                 "key_2": {
-                    "name": "Chiave ripostiglio"
+                    "name": "Chiave ripostiglio",
                 },
                 "puzzle_4": {
-                    "name": "Il Serafo"
+                    "name": "Il Serafo",
                 }
             }
         },
@@ -152,25 +152,25 @@
             "title": "Monastero di Barkhang",
             "objects": {
                 "key_1": {
-                    "name": "Chiave palestra"
+                    "name": "Chiave palestra",
                 },
                 "key_2": {
-                    "name": "Chiave botola"
+                    "name": "Chiave botola",
                 },
                 "key_3": {
-                    "name": "Chiave solaio"
+                    "name": "Chiave solaio",
                 },
                 "key_4": {
-                    "name": "Chiave salone principale"
+                    "name": "Chiave salone principale",
                 },
                 "puzzle_1": {
-                    "name": "Ruote della preghiera"
+                    "name": "Ruote della preghiera",
                 },
                 "puzzle_2": {
-                    "name": "Gemme"
+                    "name": "Gemme",
                 },
                 "puzzle_4": {
-                    "name": "Il Serafo"
+                    "name": "Il Serafo",
                 }
             }
         },
@@ -178,13 +178,13 @@
             "title": "Catacombe di Talion",
             "objects": {
                 "tiger": {
-                    "name": "Leopardo delle nevi"
+                    "name": "Leopardo delle nevi",
                 },
                 "pickup_1": {
-                    "name": "Martello del gong"
+                    "name": "Martello del gong",
                 },
                 "puzzle_1": {
-                    "name": "Maschera tibetana"
+                    "name": "Maschera tibetana",
                 }
             }
         },
@@ -192,16 +192,16 @@
             "title": "Palazzo di ghiaccio",
             "objects": {
                 "tiger": {
-                    "name": "Tigre bianca"
+                    "name": "Tigre bianca",
                 },
                 "key_2": {
-                    "name": "Martello del gong"
+                    "name": "Martello del gong",
                 },
                 "pickup_2": {
-                    "name": "Talion"
+                    "name": "Talion",
                 },
                 "puzzle_1": {
-                    "name": "Maschera tibetana"
+                    "name": "Maschera tibetana",
                 }
             }
         },
@@ -209,16 +209,16 @@
             "title": "Tempio di Xian",
             "objects": {
                 "key_2": {
-                    "name": "Chiave d'oro"
+                    "name": "Chiave d'oro",
                 },
                 "key_3": {
-                    "name": "Chiave d'argento"
+                    "name": "Chiave d'argento",
                 },
                 "key_4": {
-                    "name": "Chiave camera principale"
+                    "name": "Chiave camera principale",
                 },
                 "puzzle_1": {
-                    "name": "Sigillo del Drago"
+                    "name": "Sigillo del Drago",
                 }
             }
         },
@@ -226,10 +226,10 @@
             "title": "Isole galleggianti",
             "objects": {
                 "puzzle_1": {
-                    "name": "Peste mistica"
+                    "name": "Peste mistica",
                 },
                 "puzzle_2": {
-                    "name": "Peste mistica"
+                    "name": "Peste mistica",
                 }
             }
         },
@@ -237,10 +237,10 @@
             "title": "La tana del Drago",
             "objects": {
                 "puzzle_1": {
-                    "name": "Peste mistica"
+                    "name": "Peste mistica",
                 },
                 "puzzle_2": {
-                    "name": "Pugnale di Xian"
+                    "name": "Pugnale di Xian",
                 }
             }
         },
@@ -248,10 +248,10 @@
             "title": "Casa dolce casa",
             "objects": {
                 "key_1": {
-                    "name": "Chiave arsenale"
+                    "name": "Chiave arsenale",
                 },
                 "puzzle_1": {
-                    "name": "Pugnale di Xian"
+                    "name": "Pugnale di Xian",
                 }
             }
         }
@@ -261,13 +261,13 @@
             "title": "Venezia",
             "objects": {
                 "key_1": {
-                    "name": "Chiave rimessa"
+                    "name": "Chiave rimessa",
                 },
                 "key_2": {
-                    "name": "Chiave d'acciaio"
+                    "name": "Chiave d'acciaio",
                 },
                 "key_3": {
-                    "name": "Chiave di ferro"
+                    "name": "Chiave di ferro",
                 }
             }
         },
@@ -275,16 +275,16 @@
             "title": "Relitto della Maria Doria",
             "objects": {
                 "key_1": {
-                    "name": "Chiave guardaroba"
+                    "name": "Chiave guardaroba",
                 },
                 "key_2": {
-                    "name": "Chiave arrugginita"
+                    "name": "Chiave arrugginita",
                 },
                 "key_3": {
-                    "name": "Chiave cabina"
+                    "name": "Chiave cabina",
                 },
                 "puzzle_1": {
-                    "name": "Cortocircuitatore"
+                    "name": "Cortocircuitatore",
                 }
             }
         },
@@ -292,338 +292,338 @@
             "title": "Pendici tibetane",
             "objects": {
                 "tiger": {
-                    "name": "Leopardo delle nevi"
+                    "name": "Leopardo delle nevi",
                 },
                 "key_1": {
-                    "name": "Chiave ponte"
+                    "name": "Chiave ponte",
                 },
                 "key_2": {
-                    "name": "Chiave ripostiglio"
+                    "name": "Chiave ripostiglio",
                 },
                 "puzzle_4": {
-                    "name": "Il Serafo"
+                    "name": "Il Serafo",
                 }
             }
         }
     ],
     "cutscenes": [
         {
-            "title": "Intermezzo 1"
+            "title": "Intermezzo 1",
         },
         {
-            "title": "Intermezzo 2"
+            "title": "Intermezzo 2",
         },
         {
-            "title": "Intermezzo 3"
+            "title": "Intermezzo 3",
         },
         {
-            "title": "Intermezzo 4"
+            "title": "Intermezzo 4",
         }
     ],
     "objects": {
         "small_medipack": {
-            "name": "Kit medico piccolo"
+            "name": "Kit medico piccolo",
         },
         "large_medipack": {
-            "name": "Kit medico grande"
+            "name": "Kit medico grande",
         },
         "flare": {
-            "name": "Bengala"
+            "name": "Bengala",
         },
         "flares_box": {
-            "name": "Scatola bengala"
+            "name": "Scatola bengala",
         },
         "secret_1": {
-            "name": "Segreto 1"
+            "name": "Segreto 1",
         },
         "secret_2": {
-            "name": "Segreto 2"
+            "name": "Segreto 2",
         },
         "secret_3": {
-            "name": "Segreto 3"
+            "name": "Segreto 3",
         },
         "pistols": {
-            "name": "Pistole"
+            "name": "Pistole",
         },
         "shotgun": {
-            "name": "Fucile a pompa"
+            "name": "Fucile a pompa",
         },
         "magnums": {
-            "name": "Pistole automatiche"
+            "name": "Pistole automatiche",
         },
         "uzis": {
-            "name": "Uzi"
+            "name": "Uzi",
         },
         "harpoon_gun": {
-            "name": "Fucile subacqueo"
+            "name": "Fucile subacqueo",
         },
         "m16": {
-            "name": "M16"
+            "name": "M16",
         },
         "grenade_launcher": {
-            "name": "Lanciagranate"
+            "name": "Lanciagranate",
         },
         "pistols_ammo": {
-            "name": "Caricatori pistola"
+            "name": "Caricatori pistola",
         },
         "shotgun_ammo": {
-            "name": "Cartucce fucile a pompa"
+            "name": "Cartucce fucile a pompa",
         },
         "magnums_ammo": {
-            "name": "Caricatori pistola automatica"
+            "name": "Caricatori pistola automatica",
         },
         "uzis_ammo": {
-            "name": "Caricatori uzi"
+            "name": "Caricatori uzi",
         },
         "harpoon_gun_ammo": {
-            "name": "Arpioni"
+            "name": "Arpioni",
         },
         "m16_ammo": {
-            "name": "Caricatori M16"
+            "name": "Caricatori M16",
         },
         "grenade_launcher_ammo": {
-            "name": "Granate"
+            "name": "Granate",
         },
         "key_1": {
-            "name": "Chiave 1"
+            "name": "Chiave 1",
         },
         "key_2": {
-            "name": "Chiave 2"
+            "name": "Chiave 2",
         },
         "key_3": {
-            "name": "Chiave 3"
+            "name": "Chiave 3",
         },
         "key_4": {
-            "name": "Chiave 4"
+            "name": "Chiave 4",
         },
         "puzzle_1": {
-            "name": "Oggetto Enigma 1"
+            "name": "Oggetto Enigma 1",
         },
         "puzzle_2": {
-            "name": "Oggetto Enigma 2"
+            "name": "Oggetto Enigma 2",
         },
         "puzzle_3": {
-            "name": "Oggetto Enigma 3"
+            "name": "Oggetto Enigma 3",
         },
         "puzzle_4": {
-            "name": "Oggetto Enigma 4"
+            "name": "Oggetto Enigma 4",
         },
         "pickup_1": {
-            "name": "Oggetto Recuperabile 1"
+            "name": "Oggetto Recuperabile 1",
         },
         "pickup_2": {
-            "name": "Oggetto Recuperabile 2"
+            "name": "Oggetto Recuperabile 2",
         },
         "pda": {
-            "name": "Opzioni di Gioco"
+            "name": "Opzioni di Gioco",
         },
         "compass": {
-            "name": "Statistiche"
+            "name": "Statistiche",
         },
         "passport": {
-            "name": "Partita"
+            "name": "Partita",
         },
         "photo": {
-            "name": "Casa di Lara"
+            "name": "Casa di Lara",
         },
         "graphics": {
-            "name": "Grafica"
+            "name": "Grafica",
         },
         "controls": {
-            "name": "Comandi"
+            "name": "Comandi",
         },
         "sound": {
-            "name": "Suono"
+            "name": "Suono",
         },
         "lara": {
-            "name": "Lara"
+            "name": "Lara",
         },
         "lara_pistols": {
-            "name": "Animazione pistole"
+            "name": "Animazione pistole",
         },
         "lara_hair": {
-            "name": "Treccia di Lara"
+            "name": "Treccia di Lara",
         },
         "lara_shotgun": {
-            "name": "Animazione fucile a pompa"
+            "name": "Animazione fucile a pompa",
         },
         "lara_magnums": {
-            "name": "Animazione magnum"
+            "name": "Animazione magnum",
         },
         "lara_uzis": {
-            "name": "Animazione uzi"
+            "name": "Animazione uzi",
         },
         "lara_m16": {
-            "name": "Animazione M16"
+            "name": "Animazione M16",
         },
         "lara_grenade": {
-            "name": "Animazione lanciagranate"
+            "name": "Animazione lanciagranate",
         },
         "lara_harpoon": {
-            "name": "Animazione fucile subacqueo"
+            "name": "Animazione fucile subacqueo",
         },
         "lara_flare": {
-            "name": "Animazione bengala"
+            "name": "Animazione bengala",
         },
         "lara_skidoo": {
-            "name": "Animazione motoslitta"
+            "name": "Animazione motoslitta",
         },
         "lara_boat": {
-            "name": "Animazione barca"
+            "name": "Animazione barca",
         },
         "lara_extra": {
-            "name": "Animazione aggiuntiva di Lara"
+            "name": "Animazione aggiuntiva di Lara",
         },
         "skidoo_fast": {
-            "name": "Motoslitta rossa"
+            "name": "Motoslitta rossa",
         },
         "boat": {
-            "name": "Barca"
+            "name": "Barca",
         },
         "dog": {
             "names": [
                 "Cane",
-                "Dobermann"
+                "Dobermann",
             ]
         },
         "cult_1": {
-            "name": "Scagnozzo mascherato 1"
+            "name": "Scagnozzo mascherato 1",
         },
         "cult_1a": {
-            "name": "Scagnozzo mascherato 2"
+            "name": "Scagnozzo mascherato 2",
         },
         "cult_1b": {
-            "name": "Scagnozzo mascherato 3"
+            "name": "Scagnozzo mascherato 3",
         },
         "cult_2": {
-            "name": "Lanciatore di coltelli"
+            "name": "Lanciatore di coltelli",
         },
         "cult_3": {
-            "name": "Scagnozzo con fucile"
+            "name": "Scagnozzo con fucile",
         },
         "mouse": {
-            "name": "Ratto"
+            "name": "Ratto",
         },
         "dragon_front": {
-            "name": "Fronte drago"
+            "name": "Fronte drago",
         },
         "dragon_back": {
-            "name": "Retro drago"
+            "name": "Retro drago",
         },
         "gondola": {
-            "name": "Gondola"
+            "name": "Gondola",
         },
         "shark": {
-            "name": "Squalo"
+            "name": "Squalo",
         },
         "eel": {
-            "name": "Anguilla"
+            "name": "Anguilla",
         },
         "big_eel": {
-            "name": "Anguilla grande"
+            "name": "Anguilla grande",
         },
         "barracuda": {
-            "name": "Barracuda"
+            "name": "Barracuda",
         },
         "diver": {
-            "name": "Subacqueo"
+            "name": "Subacqueo",
         },
         "worker_1": {
-            "name": "Scagnozzo pistolero 1"
+            "name": "Scagnozzo pistolero 1",
         },
         "worker_2": {
-            "name": "Scagnozzo pistolero 2"
+            "name": "Scagnozzo pistolero 2",
         },
         "worker_3": {
-            "name": "Scagnozzo con bastone 1"
+            "name": "Scagnozzo con bastone 1",
         },
         "worker_4": {
-            "name": "Scagnozzo con bastone 2"
+            "name": "Scagnozzo con bastone 2",
         },
         "worker_5": {
-            "name": "Scagnozzo con lanciafiamme"
+            "name": "Scagnozzo con lanciafiamme",
         },
         "jelly": {
-            "name": "Medusa"
+            "name": "Medusa",
         },
         "spider": {
-            "name": "Ragno"
+            "name": "Ragno",
         },
         "big_spider": {
-            "name": "Ragno gigante"
+            "name": "Ragno gigante",
         },
         "crow": {
-            "name": "Corvo"
+            "name": "Corvo",
         },
         "tiger": {
-            "name": "Tigre"
+            "name": "Tigre",
         },
         "bartoli": {
-            "name": "Marco Bartoli"
+            "name": "Marco Bartoli",
         },
         "xian_spearman": {
-            "name": "Lanciere di Xian"
+            "name": "Lanciere di Xian",
         },
         "xian_spearman_statue": {
-            "name": "Statua lanciere di Xian"
+            "name": "Statua lanciere di Xian",
         },
         "xian_knight": {
-            "name": "Cavaliere di Xian"
+            "name": "Cavaliere di Xian",
         },
         "xian_knight_statue": {
-            "name": "Statua cavaliere di Xian"
+            "name": "Statua cavaliere di Xian",
         },
         "yeti": {
-            "name": "Yeti"
+            "name": "Yeti",
         },
         "bird_guardian": {
-            "name": "Uccello mostro"
+            "name": "Uccello mostro",
         },
         "eagle": {
-            "name": "Aquila"
+            "name": "Aquila",
         },
         "bandit_1": {
             "names": [
                 "Mercenario 1",
-                "Scagnozzo mascherato 1"
+                "Scagnozzo mascherato 1",
             ]
         },
         "bandit_2": {
             "names": [
                 "Mercenario 2",
-                "Scagnozzo mascherato 2"
+                "Scagnozzo mascherato 2",
             ]
         },
         "bandit_2b": {
             "names": [
                 "Mercenario 3",
-                "Scagnozzo mascherato 3"
+                "Scagnozzo mascherato 3",
             ]
         },
         "skidoo_armed": {
-            "name": "Motoslitta nera"
+            "name": "Motoslitta nera",
         },
         "skidoo_driver": {
-            "name": "Pilota motoslitta nera"
+            "name": "Pilota motoslitta nera",
         },
         "monk_1": {
-            "name": "Monaco 1"
+            "name": "Monaco 1",
         },
         "monk_2": {
-            "name": "Monaco 2"
+            "name": "Monaco 2",
         },
         "falling_block_1": {
             "names": [
                 "Blocco cedevole 1",
                 "Pavimento fragile 1",
-                "Piastrelle fragili 1"
+                "Piastrelle fragili 1",
             ]
         },
         "falling_block_2": {
             "names": [
                 "Blocco cedevole 2",
                 "Pavimento fragile 2",
-                "Piastrelle fragili 2"
+                "Piastrelle fragili 2",
             ]
         },
         "falling_block_3": {
@@ -631,465 +631,465 @@
                 "Blocco cedevole 3",
                 "Pavimento fragile 3",
                 "Piastrelle fragili 3",
-                "Tavole allentate"
+                "Tavole allentate",
             ]
         },
         "pendulum_1": {
-            "name": "Sacco di sabbia"
+            "name": "Sacco di sabbia",
         },
         "spikes": {
-            "name": "Spuntoni"
+            "name": "Spuntoni",
         },
         "rolling_ball_1": {
             "names": [
                 "Masso 1",
-                "Masso rotolante"
+                "Masso rotolante",
             ]
         },
         "dart": {
-            "name": "Disco"
+            "name": "Disco",
         },
         "dart_emitter": {
-            "name": "Emettitore di dischi"
+            "name": "Emettitore di dischi",
         },
         "drawbridge": {
-            "name": "Ponte levatoio"
+            "name": "Ponte levatoio",
         },
         "teeth_trap": {
-            "name": "Trappola con spuntoni"
+            "name": "Trappola con spuntoni",
         },
         "lift": {
-            "name": "Ascensore"
+            "name": "Ascensore",
         },
         "general": {
-            "name": "Minisommergibile"
+            "name": "Minisommergibile",
         },
         "movable_block_1": {
             "names": [
                 "Blocco spostabile 1",
-                "Blocco movibile 1"
+                "Blocco movibile 1",
             ]
         },
         "movable_block_2": {
             "names": [
                 "Blocco spostabile 2",
-                "Blocco movibile 2"
+                "Blocco movibile 2",
             ]
         },
         "movable_block_3": {
             "names": [
                 "Blocco spostabile 3",
-                "Blocco movibile 3"
+                "Blocco movibile 3",
             ]
         },
         "movable_block_4": {
             "names": [
                 "Blocco spostabile 4",
-                "Blocco movibile 4"
+                "Blocco movibile 4",
             ]
         },
         "big_bowl": {
-            "name": "Ciotola di lava"
+            "name": "Ciotola di lava",
         },
         "window_1": {
-            "name": "Finestra frangibile 1"
+            "name": "Finestra frangibile 1",
         },
         "window_2": {
-            "name": "Finestra frangibile 2"
+            "name": "Finestra frangibile 2",
         },
         "window_3": {
-            "name": "Finestra frangibile 3"
+            "name": "Finestra frangibile 3",
         },
         "window_4": {
-            "name": "Finestra frangibile 4"
+            "name": "Finestra frangibile 4",
         },
         "propeller_1": {
-            "name": "Elica aeroplano"
+            "name": "Elica aeroplano",
         },
         "power_saw": {
-            "name": "Sega elettrica"
+            "name": "Sega elettrica",
         },
         "hook": {
-            "name": "Gancio"
+            "name": "Gancio",
         },
         "falling_ceiling_1": {
-            "name": "Soffitto cedevole 1"
+            "name": "Soffitto cedevole 1",
         },
         "spinning_blade": {
-            "name": "Lama rotante"
+            "name": "Lama rotante",
         },
         "blade": {
-            "name": "Lama a parete"
+            "name": "Lama a parete",
         },
         "killer_statue": {
-            "name": "Statua con spada"
+            "name": "Statua con spada",
         },
         "rolling_ball_2": {
             "names": [
                 "Masso 2",
-                "Masso rotolante 2"
+                "Masso rotolante 2",
             ]
         },
         "icicle": {
-            "name": "Ghiaccioli"
+            "name": "Ghiaccioli",
         },
         "spike_wall": {
-            "name": "Muro con spuntoni"
+            "name": "Muro con spuntoni",
         },
         "springboard": {
-            "name": "Trampolino"
+            "name": "Trampolino",
         },
         "ceiling_spikes": {
-            "name": "Soffitto con spuntoni"
+            "name": "Soffitto con spuntoni",
         },
         "bell": {
-            "name": "Campana"
+            "name": "Campana",
         },
         "water_sprite": {
-            "name": "Scia barca"
+            "name": "Scia barca",
         },
         "snow_sprite": {
-            "name": "Scia motoslitta"
+            "name": "Scia motoslitta",
         },
         "skidoo_track": {
-            "name": "Traccia motoslitta"
+            "name": "Traccia motoslitta",
         },
         "switch_type_airlock": {
-            "name": "Interruttore camera stagna"
+            "name": "Interruttore camera stagna",
         },
         "switch_type_small": {
-            "name": "Interruttore piccolo"
+            "name": "Interruttore piccolo",
         },
         "propeller_2": {
-            "name": "Elica subacquea"
+            "name": "Elica subacquea",
         },
         "propeller_3": {
-            "name": "Ventilatore d'aria"
+            "name": "Ventilatore d'aria",
         },
         "pendulum_2": {
-            "name": "Scatola oscillante"
+            "name": "Scatola oscillante",
         },
         "mesh_swap_1": {
-            "name": "Cambio costume 1"
+            "name": "Cambio costume 1",
         },
         "mesh_swap_2": {
-            "name": "Cambio costume 2"
+            "name": "Cambio costume 2",
         },
         "lara_swap": {
-            "name": "Cambio costume Lara"
+            "name": "Cambio costume Lara",
         },
         "text_box": {
-            "name": "Casella interfaccia"
+            "name": "Casella interfaccia",
         },
         "rolling_ball_3": {
             "names": [
                 "Masso 3",
-                "Masso rotolante 3"
+                "Masso rotolante 3",
             ]
         },
         "zipline_handle": {
-            "name": "Maniglia teleferica"
+            "name": "Maniglia teleferica",
         },
         "switch_type_button": {
             "names": [
                 "Pulsante",
                 "Pulsante a pressione",
-                "Interruttore"
+                "Interruttore",
             ]
         },
         "switch_type_normal": {
             "names": [
                 "Leva",
-                "Interruttore"
+                "Interruttore",
             ]
         },
         "switch_type_uw": {
             "names": [
                 "Leva subacquea",
-                "Interruttore subacqueo"
+                "Interruttore subacqueo",
             ]
         },
         "door_type_1": {
-            "name": "Porta 1"
+            "name": "Porta 1",
         },
         "door_type_2": {
-            "name": "Porta 2"
+            "name": "Porta 2",
         },
         "door_type_3": {
-            "name": "Porta 3"
+            "name": "Porta 3",
         },
         "door_type_4": {
-            "name": "Porta 4"
+            "name": "Porta 4",
         },
         "door_type_5": {
-            "name": "Porta 5"
+            "name": "Porta 5",
         },
         "door_type_6": {
-            "name": "Porta 6"
+            "name": "Porta 6",
         },
         "door_type_7": {
-            "name": "Porta 7"
+            "name": "Porta 7",
         },
         "door_type_8": {
-            "name": "Porta 8"
+            "name": "Porta 8",
         },
         "trapdoor_type_1": {
-            "name": "Botola 1"
+            "name": "Botola 1",
         },
         "trapdoor_type_2": {
-            "name": "Botola 2"
+            "name": "Botola 2",
         },
         "trapdoor_type_3": {
-            "name": "Botola 3"
+            "name": "Botola 3",
         },
         "bridge_flat": {
-            "name": "Ponte piano"
+            "name": "Ponte piano",
         },
         "bridge_tilt_1": {
-            "name": "Ponte inclinato 1"
+            "name": "Ponte inclinato 1",
         },
         "bridge_tilt_2": {
-            "name": "Ponte inclinato 2"
+            "name": "Ponte inclinato 2",
         },
         "player_1": {
-            "name": "Attore intermezzo 1"
+            "name": "Attore intermezzo 1",
         },
         "player_2": {
-            "name": "Attore intermezzo 2"
+            "name": "Attore intermezzo 2",
         },
         "player_3": {
-            "name": "Attore intermezzo 3"
+            "name": "Attore intermezzo 3",
         },
         "player_4": {
-            "name": "Attore intermezzo 4"
+            "name": "Attore intermezzo 4",
         },
         "player_5": {
-            "name": "Attore intermezzo 5"
+            "name": "Attore intermezzo 5",
         },
         "player_6": {
-            "name": "Attore intermezzo 6"
+            "name": "Attore intermezzo 6",
         },
         "player_7": {
-            "name": "Attore intermezzo 7"
+            "name": "Attore intermezzo 7",
         },
         "player_8": {
-            "name": "Attore intermezzo 8"
+            "name": "Attore intermezzo 8",
         },
         "player_9": {
-            "name": "Attore intermezzo 9"
+            "name": "Attore intermezzo 9",
         },
         "player_10": {
-            "name": "Attore intermezzo 10"
+            "name": "Attore intermezzo 10",
         },
         "key_hole_1": {
-            "name": "Serratura 1"
+            "name": "Serratura 1",
         },
         "key_hole_2": {
-            "name": "Serratura 2"
+            "name": "Serratura 2",
         },
         "key_hole_3": {
-            "name": "Serratura 3"
+            "name": "Serratura 3",
         },
         "key_hole_4": {
-            "name": "Serratura 4"
+            "name": "Serratura 4",
         },
         "puzzle_hole_1": {
-            "name": "Serratura enigma 1 (Vuoto)"
+            "name": "Serratura enigma 1 (Vuoto)",
         },
         "puzzle_hole_2": {
-            "name": "Serratura enigma 2 (Vuoto)"
+            "name": "Serratura enigma 2 (Vuoto)",
         },
         "puzzle_hole_3": {
-            "name": "Serratura enigma 3 (Vuoto)"
+            "name": "Serratura enigma 3 (Vuoto)",
         },
         "puzzle_hole_4": {
-            "name": "Serratura enigma 4 (Vuoto)"
+            "name": "Serratura enigma 4 (Vuoto)",
         },
         "puzzle_done_1": {
-            "name": "Serratura enigma 1 (Usato)"
+            "name": "Serratura enigma 1 (Usato)",
         },
         "puzzle_done_2": {
-            "name": "Serratura enigma 2 (Usato)"
+            "name": "Serratura enigma 2 (Usato)",
         },
         "puzzle_done_3": {
-            "name": "Serratura enigma 3 (Usato)"
+            "name": "Serratura enigma 3 (Usato)",
         },
         "puzzle_done_4": {
-            "name": "Serratura enigma 4 (Usato)"
+            "name": "Serratura enigma 4 (Usato)",
         },
         "sphere_of_doom_1": {
-            "name": "Esplosione drago 1"
+            "name": "Esplosione drago 1",
         },
         "sphere_of_doom_2": {
-            "name": "Esplosione drago 2"
+            "name": "Esplosione drago 2",
         },
         "sphere_of_doom_3": {
-            "name": "Esplosione drago 3"
+            "name": "Esplosione drago 3",
         },
         "alarm_sound": {
-            "name": "Allarme"
+            "name": "Allarme",
         },
         "bird_tweeter_1": {
-            "name": "Gocce d'acqua"
+            "name": "Gocce d'acqua",
         },
         "trex": {
-            "name": "T-Rex"
+            "name": "T-Rex",
         },
         "bird_tweeter_2": {
-            "name": "Uccelli canterini"
+            "name": "Uccelli canterini",
         },
         "clock_chimes": {
-            "name": "Orologio covo di Bartoli"
+            "name": "Orologio covo di Bartoli",
         },
         "dragon_bones_1": {
-            "name": "Segnaposto"
+            "name": "Segnaposto",
         },
         "dragon_bones_2": {
-            "name": "Fronte ossa del drago"
+            "name": "Fronte ossa del drago",
         },
         "dragon_bones_3": {
-            "name": "Retro ossa del drago"
+            "name": "Retro ossa del drago",
         },
         "hot_liquid": {
-            "name": "Fuoco extra"
+            "name": "Fuoco extra",
         },
         "boat_bits": {
-            "name": "Pezzi di barca"
+            "name": "Pezzi di barca",
         },
         "mine": {
-            "name": "Mina navale"
+            "name": "Mina navale",
         },
         "inv_background": {
-            "name": "Sfondo menu"
+            "name": "Sfondo menu",
         },
         "fx_reserved": {
-            "name": "Disco grigio"
+            "name": "Disco grigio",
         },
         "gong_bonger": {
-            "name": "Martello del gong"
+            "name": "Martello del gong",
         },
         "detonator_1": {
-            "name": "Gong"
+            "name": "Gong",
         },
         "detonator_2": {
-            "name": "Detonatore"
+            "name": "Detonatore",
         },
         "copter": {
-            "name": "Elicottero"
+            "name": "Elicottero",
         },
         "explosion_1": {
-            "name": "Esplosione 1"
+            "name": "Esplosione 1",
         },
         "splash_1": {
-            "name": "Increspatura acqua 1"
+            "name": "Increspatura acqua 1",
         },
         "bubble_1": {
-            "name": "Bolla 1"
+            "name": "Bolla 1",
         },
         "bubble_emitter": {
-            "name": "Emettitore di bolle"
+            "name": "Emettitore di bolle",
         },
         "blood_1": {
-            "name": "Sangue 1"
+            "name": "Sangue 1",
         },
         "dart_effect": {
-            "name": "Effetto dardo"
+            "name": "Effetto dardo",
         },
         "flare_fire": {
-            "name": "Scintille fiamma"
+            "name": "Scintille fiamma",
         },
         "glow": {
-            "name": "Bagliore"
+            "name": "Bagliore",
         },
         "glow_reserved": {
-            "name": "Bagliore mappa"
+            "name": "Bagliore mappa",
         },
         "ricochet": {
-            "name": "Ricochet"
+            "name": "Ricochet",
         },
         "twinkle": {
-            "name": "Scintille"
+            "name": "Scintille",
         },
         "gun_flash": {
-            "name": "Lampo pistola"
+            "name": "Lampo pistola",
         },
         "m16_flash": {
-            "name": "Lampo M16"
+            "name": "Lampo M16",
         },
         "body_part": {
-            "name": "Parte del corpo"
+            "name": "Parte del corpo",
         },
         "camera_target": {
-            "name": "Obiettivo telecamera"
+            "name": "Obiettivo telecamera",
         },
         "waterfall": {
-            "name": "Foschia cascata"
+            "name": "Foschia cascata",
         },
         "missile_harpoon": {
-            "name": "Missile arpione"
+            "name": "Missile arpione",
         },
         "missile_flame": {
-            "name": "Missile fiamma"
+            "name": "Missile fiamma",
         },
         "missile_knife": {
-            "name": "Missile coltello"
+            "name": "Missile coltello",
         },
         "grenade": {
-            "name": "Granata"
+            "name": "Granata",
         },
         "harpoon_bolt": {
-            "name": "Dardo arpione"
+            "name": "Dardo arpione",
         },
         "ember": {
-            "name": "Brace"
+            "name": "Brace",
         },
         "ember_emitter": {
-            "name": "Emettitore di brace"
+            "name": "Emettitore di brace",
         },
         "flame": {
             "names": [
                 "Fiamma",
-                "Fuoco"
+                "Fuoco",
             ]
         },
         "flame_emitter": {
             "names": [
                 "Emettitore di fiamme",
-                "Emettitore di fuoco"
+                "Emettitore di fuoco",
             ]
         },
         "skybox": {
-            "name": "Cielo"
+            "name": "Cielo",
         },
         "alphabet": {
-            "name": "Alfabeto"
+            "name": "Alfabeto",
         },
         "dying_monk": {
-            "name": "Monaco morente"
+            "name": "Monaco morente",
         },
         "ding_dong": {
-            "name": "Campanello"
+            "name": "Campanello",
         },
         "lara_alarm": {
-            "name": "Campanello d'allarme"
+            "name": "Campanello d'allarme",
         },
         "mini_copter": {
-            "name": "Elicottero 2"
+            "name": "Elicottero 2",
         },
         "winston": {
-            "name": "Winston"
+            "name": "Winston",
         },
         "assault_digits": {
-            "name": "Cifre corso d'assalto"
+            "name": "Cifre corso d'assalto",
         },
         "combat_end": {
-            "name": "Fine combattimento"
+            "name": "Fine combattimento",
         },
         "cut_shotgun": {
-            "name": "Animazione fucile nella doccia"
+            "name": "Animazione fucile nella doccia",
         },
         "earthquake": {
-            "name": "Terremoto"
+            "name": "Terremoto",
         }
     },
     "game_strings": {
@@ -1137,9 +1137,9 @@
         "STATS_ASSAULT_TITLE": "MIGLIORI TEMPI",
         "STATS_DISTANCE_TRAVELLED": "Distanza Percorsa",
         "STATS_KILLS": "Uccisioni",
+        "STATS_LEVEL": "\\{review}Livello",
         "STATS_MEDIPACKS_USED": "Kit Medici Usati",
         "STATS_SECRETS": "Segreti Scoperti",
         "STATS_TIME_TAKEN": "Tempo Impiegato",
-        "STATS_LEVEL": "\\{review}Livello"
     }
 }
