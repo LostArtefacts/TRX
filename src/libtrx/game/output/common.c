@@ -2,8 +2,7 @@
 #include "game/matrix.h"
 #include "game/output.h"
 #include "utils.h"
-
-#define MAX_DYNAMIC_LIGHTS 10
+#include "vector.h"
 
 typedef struct {
     XYZ_32 pos;
@@ -11,8 +10,7 @@ typedef struct {
 } COMMON_LIGHT;
 
 static int32_t m_FogStart = 0;
-static int32_t m_DynamicLightCount = 0;
-static LIGHT m_DynamicLights[MAX_DYNAMIC_LIGHTS] = {};
+static VECTOR *m_DynamicLights = nullptr;
 
 static void M_CalculateBrightestLight(
     XYZ_32 pos, const ROOM *room, COMMON_LIGHT *brightest_light);
@@ -73,8 +71,8 @@ static int32_t M_CalculateDynamicLight(
     const XYZ_32 pos, COMMON_LIGHT *const brightest_light)
 {
     int32_t adder = 0;
-    for (int32_t i = 0; i < m_DynamicLightCount; i++) {
-        const LIGHT *const light = &m_DynamicLights[i];
+    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
+        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
@@ -167,8 +165,8 @@ void Output_CalculateStaticMeshLight(
             (shade.value_2 - shade.value_1) * room_shade / (WIBBLE_SIZE - 1);
     }
 
-    for (int32_t i = 0; i < m_DynamicLightCount; i++) {
-        const LIGHT *const light = &m_DynamicLights[i];
+    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
+        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
@@ -239,8 +237,8 @@ void Output_LightRoom(ROOM *const room)
     const int32_t x_max = (room->size.x - 1) * WALL_L;
     const int32_t z_max = (room->size.z - 1) * WALL_L;
 
-    for (int32_t i = 0; i < m_DynamicLightCount; i++) {
-        const LIGHT *const light = &m_DynamicLights[i];
+    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
+        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
         const int32_t x = light->pos.x - room->pos.x;
         const int32_t y = light->pos.y;
         const int32_t z = light->pos.z - room->pos.z;
@@ -279,21 +277,36 @@ void Output_LightRoom(ROOM *const room)
     }
 }
 
+void Output_InitLight(void)
+{
+    // TODO: consolidate into Output_Init once common.
+    if (m_DynamicLights == nullptr) {
+        m_DynamicLights = Vector_Create(sizeof(LIGHT));
+    }
+}
+
+void Output_ShutdownLight(void)
+{
+    if (m_DynamicLights != nullptr) {
+        Vector_Free(m_DynamicLights);
+        m_DynamicLights = nullptr;
+    }
+}
+
 void Output_ResetDynamicLights(void)
 {
-    m_DynamicLightCount = 0;
+    Vector_Clear(m_DynamicLights);
 }
 
 void Output_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
-    const int32_t idx =
-        m_DynamicLightCount < MAX_DYNAMIC_LIGHTS ? m_DynamicLightCount++ : 0;
-
-    LIGHT *const light = &m_DynamicLights[idx];
-    light->pos = pos;
-    light->shade.value_1 = intensity;
-    light->falloff.value_1 = falloff;
+    const LIGHT light = {
+        .pos = pos,
+        .shade.value_1 = intensity,
+        .falloff.value_1 = falloff,
+    };
+    Vector_Add(m_DynamicLights, &light);
 }
 
 int32_t Output_GetFogStart(void)

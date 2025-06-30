@@ -8,9 +8,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-bool Output_Init(void);
-void Output_Shutdown(void);
-
 void Output_SetWindowSize(int32_t width, int32_t height);
 void Output_ApplyLevelSettings(void);
 void Output_ApplyRenderSettings(void);

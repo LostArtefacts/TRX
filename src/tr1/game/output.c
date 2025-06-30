@@ -410,6 +410,7 @@ bool Output_Init(void)
     Output_Textures_Init();
     Output_Meshes_Init();
     Output_Sprites_Init();
+    Output_InitLight();
     return true;
 }
 
@@ -423,6 +424,7 @@ void Output_Shutdown(void)
     Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();
+    Output_ShutdownLight();
 
     M_ReleaseTextures();
     M_ReleaseSurfaces();
