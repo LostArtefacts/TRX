@@ -82,12 +82,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
         } else if (g_Input.slow) {
             item->goal_anim_state = LS_WALK;
         } else {
-#if TR_VERSION == 1
-            const bool fix_walk_run_jump = true;
-#else
-            const bool fix_walk_run_jump = g_Config.gameplay.fix_walk_run_jump;
-#endif
-            if (fix_walk_run_jump) {
+            if (g_Config.gameplay.fix_walk_run_jump) {
                 m_JumpPermitted = true;
             }
             item->goal_anim_state = LS_RUN;
