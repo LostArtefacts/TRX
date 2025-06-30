@@ -571,6 +571,10 @@
         "GAMEPLAY_SETTINGS_JUMP_LOCK_LEGACY": "\\{review}Legacy",
         "GAMEPLAY_SETTINGS_JUMP_LOCK_TUNED": "\\{review}Regolato",
         "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER": "\\{review}Intestazione livello statistiche",
-        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Mostra il numero del livello attuale nella parte superiore delle statistiche di livello."
+        "GRAPHIC_SETTINGS_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Mostra il numero del livello attuale nella parte superiore delle statistiche di livello.",
+        "CMD_IMMUNE_SWITCHED_OFF": "\\{review}Lara è ora vulnerabile",
+        "CMD_IMMUNE_SWITCHED_ON": "\\{review}Lara è ora impervia ai danni",
+        "CONSOLE_HELP_IMMUNE": "\\{review}Attiva/disattiva l'immunità. (Lara può comunque essere uccisa in alcune circostanze.)",
+        "OVERLAY_DEBUG_IMMUNE": "\\{review}Immunità attivata"
     }
 }

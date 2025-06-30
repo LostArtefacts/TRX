@@ -192,7 +192,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
 #else
     const bool scream = item->fall_speed == DAMAGE_START + DAMAGE_LENGTH;
 #endif
-    if (scream) {
+    if (scream && !g_Config.debug.enable_invulnerability) {
         Sound_Effect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
     }
 }
