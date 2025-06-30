@@ -198,18 +198,23 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
         item->rot.z = 0;
     }
 
-    CLAMP(item->rot.x, -85 * DEG_1, 85 * DEG_1);
-    CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
+    if (g_Config.gameplay.enable_tr2_swimming) {
+        CLAMP(item->rot.x, -85 * DEG_1, 85 * DEG_1);
+        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
 
-    if (g_Lara.turn_rate < -LARA_TURN_UNDO) {
-        g_Lara.turn_rate += LARA_TURN_UNDO;
-    } else if (g_Lara.turn_rate > LARA_TURN_UNDO) {
-        g_Lara.turn_rate -= LARA_TURN_UNDO;
+        if (g_Lara.turn_rate < -LARA_TURN_UNDO) {
+            g_Lara.turn_rate += LARA_TURN_UNDO;
+        } else if (g_Lara.turn_rate > LARA_TURN_UNDO) {
+            g_Lara.turn_rate -= LARA_TURN_UNDO;
+        } else {
+            g_Lara.turn_rate = 0;
+        }
+        item->rot.y += g_Lara.turn_rate;
     } else {
-        g_Lara.turn_rate = 0;
+        CLAMP(item->rot.x, -100 * DEG_1, 100 * DEG_1);
+        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
     }
 
-    item->rot.y += g_Lara.turn_rate;
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         Lara_WaterCurrent(coll);
     } else {

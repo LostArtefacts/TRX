@@ -139,7 +139,7 @@
         "GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING": "Salti reattivi",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING_DESCRIPTION": "Permette a Lara di saltare in qualsiasi momento mentre corre, in modo simile a TR2+.",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING": "Nuoto naturale",
-        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING_DESCRIPTION": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, simile a TR2+.",
+        "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING_DESCRIPTION": "\\{review}Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, come originariamente in TR2+. Disattivando questa opzione, Lara avrà una velocità di virata più scattante, come nel TR1 originale.",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL": "Annullamento reattivo nuoto",
         "GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Permette a Lara di fermarsi in modo più istantaneo sott'acqua quando viene rilasciato il tasto per nuotare, simile a TR2+.",
         "GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS": "Passi laterali migliorati",

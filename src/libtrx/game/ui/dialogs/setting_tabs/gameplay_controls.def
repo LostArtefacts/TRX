@@ -20,7 +20,9 @@ X_UI_CFG_BOOL(gameplay.enable_step_roll_boost,     GAMEPLAY_SETTINGS_ENABLE_STEP
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_uw_roll,             GAMEPLAY_SETTINGS_ENABLE_UW_ROLL)
+#endif
 X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING)
+#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL)
 X_UI_CFG_BOOL(gameplay.enable_wading,              GAMEPLAY_SETTINGS_ENABLE_WADING)
 X_UI_CFG_ENUM(gameplay.target_mode,                GAMEPLAY_SETTINGS_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
