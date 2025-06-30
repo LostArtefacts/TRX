@@ -18,6 +18,7 @@
 - changed settings to retain their active position until exiting to title or starting a new level (#3271)
 - changed the dev console to accept compound characters (#2938)
 - changed save crystal collision to be more lenient for custom levels (#3343)
+- changed the walk-run-jump bug fix for responsive jumping to be optional (#3389)
 - removed config tool (we have ingame setting dialogs now)
 - fixed several more OG texture issues (refer to README for details) (#3352)
 - fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
