@@ -64,9 +64,6 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
 
 #if TR_VERSION == 1
     coll->enable_hit = 0;
-    const bool look = g_Config.gameplay.enable_enhanced_look && g_Input.look;
-#else
-    const bool look = g_Input.look;
 #endif
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
@@ -74,8 +71,9 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
         return;
     }
-    if (look) {
-        Lara_LookUpDown();
+
+    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+        Lara_Look_UpDown();
     }
 
     M_SwimTurn(item);
@@ -168,20 +166,12 @@ static void M_TreadSurface(ITEM *const item, COLL_INFO *const coll)
 
 #if TR_VERSION == 1
     coll->enable_hit = 0;
-    if (g_Input.look) {
-        Lara_LookLeftRightSurf();
-        Lara_LookUpDownSurf();
-        return;
-    }
-    if (g_Camera.type == CAM_LOOK) {
-        g_Camera.type = CAM_CHASE;
-    }
-#else
-    if (g_Input.look) {
-        Lara_LookUpDown();
-        return;
-    }
 #endif
+
+    if (g_Input.look) {
+        Lara_Look_UpDown();
+        return;
+    }
 
     if (g_Input.left) {
         item->rot.y -= LARA_SLOW_TURN;

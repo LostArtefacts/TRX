@@ -183,6 +183,7 @@ sources = [
   'game/lara/control.c',
   'game/lara/flare.c',
   'game/lara/hair.c',
+  'game/lara/look.c',
   'game/lara/misc.c',
   'game/lara/state.c',
   'game/lara/state/climb.c',

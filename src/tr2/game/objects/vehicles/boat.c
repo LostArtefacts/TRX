@@ -424,7 +424,7 @@ static int32_t M_UserControl(ITEM *const boat)
     }
 
     if (g_Input.look && !boat->speed) {
-        Lara_LookUpDown();
+        Lara_Look_UpDown();
         return no_turn;
     }
 

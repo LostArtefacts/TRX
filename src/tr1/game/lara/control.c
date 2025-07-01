@@ -3,7 +3,6 @@
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/lara/common.h"
-#include "game/lara/look.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -168,33 +167,8 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 1;
     coll->enable_baddie_push = 1;
 
-    if (g_Config.gameplay.enable_enhanced_look && item->hit_points > 0) {
-        if (g_Input.look) {
-            Lara_LookLeftRight();
-        } else {
-            Lara_ResetLook();
-        }
-    }
-
+    Lara_Look_Update();
     Lara_State_Update(item, coll);
-
-    if (g_Camera.type != CAM_LOOK) {
-        if (g_Lara.head_rot.x > -HEAD_TURN / 2
-            && g_Lara.head_rot.x < HEAD_TURN / 2) {
-            g_Lara.head_rot.x = 0;
-        } else {
-            g_Lara.head_rot.x -= g_Lara.head_rot.x / 8;
-        }
-        g_Lara.torso_rot.x = g_Lara.head_rot.x;
-
-        if (g_Lara.head_rot.y > -HEAD_TURN / 2
-            && g_Lara.head_rot.y < HEAD_TURN / 2) {
-            g_Lara.head_rot.y = 0;
-        } else {
-            g_Lara.head_rot.y -= g_Lara.head_rot.y / 8;
-        }
-        g_Lara.torso_rot.y = g_Lara.head_rot.y;
-    }
 
     if (item->rot.z >= -LARA_LEAN_UNDO && item->rot.z <= LARA_LEAN_UNDO) {
         item->rot.z = 0;
@@ -241,6 +215,7 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
 
+    Lara_Look_Update();
     Lara_State_Update(item, coll);
 
     if (item->rot.z >= -364 && item->rot.z <= 364) {
@@ -249,24 +224,6 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
         item->rot.z -= 364;
     } else {
         item->rot.z += 364;
-    }
-
-    if (g_Camera.type != CAM_LOOK) {
-        if (g_Lara.head_rot.y > -HEAD_TURN_SURF
-            && g_Lara.head_rot.y < HEAD_TURN_SURF) {
-            g_Lara.head_rot.y = 0;
-        } else {
-            g_Lara.head_rot.y -= g_Lara.head_rot.y / 8;
-        }
-        g_Lara.torso_rot.y = g_Lara.head_rot.x / 2;
-
-        if (g_Lara.head_rot.x > -HEAD_TURN_SURF
-            && g_Lara.head_rot.x < HEAD_TURN_SURF) {
-            g_Lara.head_rot.x = 0;
-        } else {
-            g_Lara.head_rot.x -= g_Lara.head_rot.x / 8;
-        }
-        g_Lara.torso_rot.x = 0;
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
@@ -306,14 +263,7 @@ void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
 
-    if (g_Config.gameplay.enable_enhanced_look && item->hit_points > 0) {
-        if (g_Input.look) {
-            Lara_LookLeftRight();
-        } else {
-            Lara_ResetLook();
-        }
-    }
-
+    Lara_Look_Update();
     Lara_State_Update(item, coll);
 
     if (item->rot.z >= -(2 * LARA_LEAN_UNDO)
