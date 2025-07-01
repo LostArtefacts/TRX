@@ -46,6 +46,12 @@
 
 ## TR2X
 
+### Version 1.2 to 1.3
+
+1. **Rename objects**
+    - Replace `"detonator_1"` with `"gong"`.
+    - Replace `"detonator_2"` with `"detonator_box"`.
+
 ### Version 1.0.2 to 1.1
 
 1. **Update first level inventory allocation**  

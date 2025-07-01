@@ -935,10 +935,10 @@
         "gong_bonger": {
             "name": "Pałka do gongu",
         },
-        "detonator_1": {
+        "gong": {
             "name": "Gong",
         },
-        "detonator_2": {
+        "detonator_box": {
             "name": "Skrzynka detonatora",
         },
         "copter": {

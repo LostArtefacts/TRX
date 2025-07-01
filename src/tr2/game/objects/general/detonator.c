@@ -11,9 +11,9 @@
 
 #include <libtrx/game/camera.h>
 
-#define EXPLOSION_START_FRAME 76
-#define EXPLOSION_END_FRAME 99
-#define EXPLOSION_ACTION_FRAME 80
+#define M_EXPLOSION_START_FRAME 76
+#define M_EXPLOSION_END_FRAME 99
+#define M_EXPLOSION_ACTION_FRAME 80
 
 static XYZ_32 m_DetonatorPosition = { .x = 0, .y = 0, .z = 0 };
 
@@ -33,9 +33,9 @@ static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
 static void M_ConsumeKeyItem(ITEM *receptacle_item);
 static void M_CreateGongBonger(ITEM *lara_item);
-static void M_Setup1(OBJECT *obj);
-static void M_Setup2(OBJECT *obj);
-static void M_Control(int16_t item_num);
+static void M_SetupGong(OBJECT *obj);
+static void M_SetupDetonator(OBJECT *obj);
+static void M_ControlDetonator(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
@@ -43,7 +43,7 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     Lara_AlignPosition(receptacle_item, &m_DetonatorPosition);
     Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
     lara_item->current_anim_state = LS_EXTRA_BREATH;
-    if (receptacle_item->object_id == O_DETONATOR_2) {
+    if (receptacle_item->object_id == O_DETONATOR_BOX) {
         lara_item->goal_anim_state = LS_EXTRA_PLUNGER;
     } else {
         lara_item->goal_anim_state = LS_EXTRA_GONG_BONG;
@@ -58,7 +58,7 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
         M_ConsumeKeyItem(receptacle_item);
     }
 
-    if (receptacle_item->object_id == O_DETONATOR_2) {
+    if (receptacle_item->object_id == O_DETONATOR_BOX) {
         receptacle_item->status = IS_ACTIVE;
         Item_AddActive(Item_GetIndex(receptacle_item));
     } else {
@@ -105,31 +105,32 @@ static void M_CreateGongBonger(ITEM *const lara_item)
     item_gong_bonger->shade.value_1 = -1;
 }
 
-static void M_Setup1(OBJECT *const obj)
+static void M_SetupGong(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->bounds_func = M_Bounds;
 }
 
-static void M_Setup2(OBJECT *const obj)
+static void M_SetupDetonator(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    obj->control_func = M_Control;
+    obj->control_func = M_ControlDetonator;
     obj->bounds_func = Pickup_Bounds;
     obj->save_flags = true;
     obj->save_anim = true;
 }
 
-static void M_Control(const int16_t item_num)
+static void M_ControlDetonator(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Item_Animate(item);
 
-    if (Item_TestFrameRange(item, EXPLOSION_START_FRAME, EXPLOSION_END_FRAME)) {
+    if (Item_TestFrameRange(
+            item, M_EXPLOSION_START_FRAME, M_EXPLOSION_END_FRAME)) {
         Output_AddDynamicLight(item->pos, 13, 11);
     }
 
-    if (Item_TestFrameEqual(item, EXPLOSION_ACTION_FRAME)) {
+    if (Item_TestFrameEqual(item, M_EXPLOSION_ACTION_FRAME)) {
         g_Camera.bounce = -150;
         Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_ALWAYS);
     }
@@ -172,7 +173,7 @@ static void M_Collision(
         goto normal_collision;
     }
 
-    if (item->object_id == O_DETONATOR_1) {
+    if (item->object_id == O_GONG) {
         item->rot = old_rot;
     }
 
@@ -186,5 +187,5 @@ normal_collision:
     Object_Collision(item_num, lara_item, coll);
 }
 
-REGISTER_OBJECT(O_DETONATOR_1, M_Setup1)
-REGISTER_OBJECT(O_DETONATOR_2, M_Setup2)
+REGISTER_OBJECT(O_GONG, M_SetupGong)
+REGISTER_OBJECT(O_DETONATOR_BOX, M_SetupDetonator)

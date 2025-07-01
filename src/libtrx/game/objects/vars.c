@@ -13,8 +13,8 @@ const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[] = {
     #if TR_VERSION == 1
     { O_LEADBAR_OPTION, O_MIDAS_TOUCH },
     #elif TR_VERSION == 2
-    { O_KEY_OPTION_2, O_DETONATOR_1 },
-    { O_KEY_OPTION_2, O_DETONATOR_2 },
+    { O_KEY_OPTION_2, O_GONG },
+    { O_KEY_OPTION_2, O_DETONATOR_BOX },
     #endif
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
@@ -47,8 +47,8 @@ const GAME_OBJECT_ID g_ReceptacleObjects[] = {
 #if TR_VERSION == 1
     O_MIDAS_TOUCH,
 #elif TR_VERSION == 2
-    O_DETONATOR_1,
-    O_DETONATOR_2,
+    O_GONG,
+    O_DETONATOR_BOX,
 #endif
     NO_OBJECT,
     // clang-format on
