@@ -27,6 +27,7 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
 static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_IsUsable(int16_t item_num);
 static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
+static void M_ConsumeKeyItem(ITEM *receptacle_item);
 static void M_MarkDone(ITEM *receptacle_item);
 static void M_SetupEmpty(OBJECT *obj);
 static void M_SetupDone(OBJECT *obj);
@@ -51,9 +52,18 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     Lara_AlignPosition(receptacle_item, &m_PuzzleHolePosition);
     Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
     lara_item->goal_anim_state = LS_STOP;
-    receptacle_item->status = IS_ACTIVE;
     lara->gun_status = LGS_HANDS_BUSY;
     lara->interact_target.is_moving = false;
+}
+
+static void M_ConsumeKeyItem(ITEM *const receptacle_item)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const GAME_OBJECT_ID key_object_id =
+        Object_FindReceptacleKey(receptacle_item->object_id);
+    if (key_object_id != NO_OBJECT) {
+        Inv_RemoveItem(key_object_id);
+    }
     lara->interact_target.item_num = NO_OBJECT;
 }
 
@@ -64,6 +74,7 @@ static void M_MarkDone(ITEM *const receptacle_item)
     if (done_obj_id != NO_OBJECT) {
         receptacle_item->object_id = done_obj_id;
     }
+    receptacle_item->status = IS_ACTIVE;
 }
 
 static void M_SetupEmpty(OBJECT *const obj)
@@ -102,6 +113,7 @@ static void M_Collision(
         if (lara_item->current_anim_state == LS_USE_PUZZLE
             && Lara_TestPosition(item, obj->bounds_func())
             && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
+            M_ConsumeKeyItem(item);
             M_MarkDone(item);
         }
         return;

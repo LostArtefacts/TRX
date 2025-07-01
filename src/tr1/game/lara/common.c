@@ -436,7 +436,6 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         g_Lara.interact_target.item_num = receptacle_item_num;
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
-        Inv_RemoveItem(obj_id);
         break;
     }
 
