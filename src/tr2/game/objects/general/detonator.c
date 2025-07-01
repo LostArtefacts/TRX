@@ -31,6 +31,7 @@ static const OBJECT_BOUNDS m_GongBounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
+static void M_ConsumeKeyItem(ITEM *receptacle_item);
 static void M_CreateGongBonger(ITEM *lara_item);
 static void M_Setup1(OBJECT *obj);
 static void M_Setup2(OBJECT *obj);
@@ -53,6 +54,10 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     g_Lara.gun_status = LGS_HANDS_BUSY;
     g_Lara.hit_direction = -1;
 
+    if (Item_TestFrameEqual(lara_item, 0)) {
+        M_ConsumeKeyItem(receptacle_item);
+    }
+
     if (receptacle_item->object_id == O_DETONATOR_2) {
         receptacle_item->status = IS_ACTIVE;
         Item_AddActive(Item_GetIndex(receptacle_item));
@@ -61,6 +66,15 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     }
     g_Lara.interact_target.is_moving = false;
     g_Lara.interact_target.item_num = NO_OBJECT;
+}
+
+static void M_ConsumeKeyItem(ITEM *const receptacle_item)
+{
+    const GAME_OBJECT_ID key_object_id =
+        Object_FindReceptacleKey(receptacle_item->object_id);
+    if (key_object_id != NO_OBJECT) {
+        Inv_RemoveItem(key_object_id);
+    }
 }
 
 static const OBJECT_BOUNDS *M_Bounds(void)

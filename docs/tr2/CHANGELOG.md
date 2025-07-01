@@ -42,6 +42,8 @@
 - fixed Lara not saying 'no' near gong or detonator when applicable (#3337)
 - fixed Lara saying 'no' near receptacles after loading a game (#1603)
 - fixed Lara saying 'no' near receptacles when using guns, medikits or flares (#1601)
+- fixed Lara being able to permanently discard a key item if she gets pushed on the exact frame she interact with a receptacle (#3398)
+- fixed key items getting consumed at the start of the interaction with receptacles (#3399)
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save (#1617)
 - fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start (#1579)
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene (#3370)

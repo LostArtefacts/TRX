@@ -27,6 +27,7 @@
 - fixed several more OG texture issues (refer to README for details) (#3352)
 - fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
 - fixed Lara not saying 'no' near complete receptacles (#3337, regression from 4.0)
+- fixed key items getting consumed at the start of the interaction with receptacles (#3399)
 - fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)

@@ -1,7 +1,10 @@
 #include "game/game_flow.h"
 #include "game/input.h"
+#include "game/inventory.h"
 #include "game/lara.h"
 #include "game/sound.h"
+
+#define M_LF_USE_KEYHOLE 104
 
 static XYZ_32 m_KeyholePosition = {
     .x = 0,
@@ -22,6 +25,8 @@ static const OBJECT_BOUNDS m_KeyholeBounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
+static void M_ConsumeKeyItem(ITEM *receptacle_item);
+static void M_MarkDone(ITEM *receptacle_item);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static bool M_IsUsable(int16_t item_num);
 static void M_Setup(OBJECT *obj);
@@ -37,10 +42,24 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     Lara_AlignPosition(receptacle_item, &m_KeyholePosition);
     Lara_AnimateUntil(lara_item, LS_USE_KEY);
     lara_item->goal_anim_state = LS_STOP;
-    receptacle_item->status = IS_ACTIVE;
     lara->gun_status = LGS_HANDS_BUSY;
     lara->interact_target.is_moving = false;
+}
+
+static void M_ConsumeKeyItem(ITEM *const receptacle_item)
+{
+    const GAME_OBJECT_ID key_object_id =
+        Object_FindReceptacleKey(receptacle_item->object_id);
+    if (key_object_id != NO_OBJECT) {
+        Inv_RemoveItem(key_object_id);
+    }
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.item_num = NO_OBJECT;
+}
+
+static void M_MarkDone(ITEM *const receptacle_item)
+{
+    receptacle_item->status = IS_ACTIVE;
 }
 
 static void M_Collision(
@@ -49,6 +68,16 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if (lara_item->current_anim_state != LS_STOP) {
+        if (lara_item->current_anim_state == LS_USE_KEY
+            && Lara_TestPosition(item, obj->bounds_func())
+            && Item_TestFrameEqual(lara_item, M_LF_USE_KEYHOLE)) {
+            M_ConsumeKeyItem(item);
+            M_MarkDone(item);
+        }
+        return;
+    }
 
     if (lara->interact_target.is_moving
         && lara->interact_target.item_num == item_num) {

@@ -900,9 +900,6 @@ void InvRing_Close(INV_RING *const ring)
         Sound_StopAll();
     }
     Output_UnloadBackground();
-    if (g_Config.gameplay.fix_item_duplication_glitch) {
-        Inv_ClearSelection();
-    }
     // enable buffering
     g_OldInputDB = (INPUT_STATE) {};
 

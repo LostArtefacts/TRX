@@ -1,5 +1,6 @@
 #include "game/inventory.h"
 
+#include "config.h"
 #include "game/inventory_ring/vars.h"
 #include "game/objects/vars.h"
 #include "utils.h"
@@ -56,17 +57,28 @@ bool Inv_RemoveItem(const GAME_OBJECT_ID obj_id)
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i]->object_id == inv_obj_id) {
-                source->qtys[i]--;
-                if (source->qtys[i] == 0) {
-                    source->count--;
-                    for (int32_t j = i; j < source->count; j++) {
-                        source->items[j] = source->items[j + 1];
-                        source->qtys[j] = source->qtys[j + 1];
+            if (source->items[i]->object_id != inv_obj_id) {
+                continue;
+            }
+
+            source->qtys[i]--;
+
+            if (g_Config.gameplay.fix_item_duplication_glitch) {
+                for (int32_t j = i; j < source->count; j++) {
+                    if (j == source->current) {
+                        source->current = 0;
                     }
                 }
-                return true;
             }
+
+            if (source->qtys[i] == 0) {
+                source->count--;
+                for (int32_t j = i; j < source->count; j++) {
+                    source->items[j] = source->items[j + 1];
+                    source->qtys[j] = source->qtys[j + 1];
+                }
+            }
+            return true;
         }
     }
     return false;

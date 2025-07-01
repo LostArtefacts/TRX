@@ -3,6 +3,7 @@
 #include "game/game_flow/common.h"
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/vars.h"
+#include "game/inventory.h"
 #include "game/inventory_ring/control.h"
 #include "game/objects/vars.h"
 #include "game/phase.h"
@@ -41,6 +42,8 @@ bool GF_ShowInventoryKeys(const GAME_OBJECT_ID receptacle_type_id)
         const GAME_OBJECT_ID obj_id = Object_GetCognateInverse(
             receptacle_type_id, g_KeyItemToReceptacleMap);
         InvRing_SetRequestedObjectID(obj_id);
+    } else {
+        Inv_ClearSelection();
     }
     const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
     if (gf_cmd.action != GF_NOOP) {
