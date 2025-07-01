@@ -1,23 +1,18 @@
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/inventory.h"
-#include "game/inventory_ring.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/general/pickup.h"
-#include "game/output.h"
 #include "game/sound.h"
 #include "global/vars.h"
-
-#include <libtrx/game/camera.h>
 
 #define M_EXPLOSION_START_FRAME 76
 #define M_EXPLOSION_END_FRAME 99
 #define M_EXPLOSION_ACTION_FRAME 80
 
-static XYZ_32 m_DetonatorPosition = { .x = 0, .y = 0, .z = 0 };
+static XYZ_32 m_Position = { .x = 0, .y = 0, .z = 0 };
 
-static const OBJECT_BOUNDS m_GongBounds = {
+static const OBJECT_BOUNDS m_Bounds = {
     .shift = {
         .min = { .x = -WALL_L / 2, .y = -100, .z = -WALL_L / 2 - 300, },
         .max = { .x = +WALL_L, .y = +100, .z = -WALL_L / 2 + 100, },
@@ -32,15 +27,14 @@ static const OBJECT_BOUNDS m_GongBounds = {
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
 static void M_ConsumeKeyItem(ITEM *receptacle_item);
-static void M_CreateGongBonger(ITEM *lara_item);
 static void M_SetupGong(OBJECT *obj);
-static void M_SetupDetonator(OBJECT *obj);
-static void M_ControlDetonator(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
-    Lara_AlignPosition(receptacle_item, &m_DetonatorPosition);
+    Lara_AlignPosition(receptacle_item, &m_Position);
     Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
     lara_item->current_anim_state = LS_EXTRA_BREATH;
     if (receptacle_item->object_id == O_DETONATOR_BOX) {
@@ -58,12 +52,9 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
         M_ConsumeKeyItem(receptacle_item);
     }
 
-    if (receptacle_item->object_id == O_DETONATOR_BOX) {
-        receptacle_item->status = IS_ACTIVE;
-        Item_AddActive(Item_GetIndex(receptacle_item));
-    } else {
-        M_CreateGongBonger(lara_item);
-    }
+    receptacle_item->status = IS_ACTIVE;
+    Item_AddActive(Item_GetIndex(receptacle_item));
+
     g_Lara.interact_target.is_moving = false;
     g_Lara.interact_target.item_num = NO_OBJECT;
 }
@@ -79,48 +70,19 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    return &m_GongBounds;
+    return &m_Bounds;
 }
 
-static void M_CreateGongBonger(ITEM *const lara_item)
-{
-    const int16_t item_gong_bonger_num = Item_Create();
-    if (item_gong_bonger_num == NO_ITEM) {
-        return;
-    }
-
-    ITEM *const item_gong_bonger = Item_Get(item_gong_bonger_num);
-    item_gong_bonger->object_id = O_GONG_BONGER;
-    item_gong_bonger->pos.x = lara_item->pos.x;
-    item_gong_bonger->pos.y = lara_item->pos.y;
-    item_gong_bonger->pos.z = lara_item->pos.z;
-    item_gong_bonger->rot.x = 0;
-    item_gong_bonger->rot.y = lara_item->rot.y;
-    lara_item->rot.z = 0;
-    item_gong_bonger->room_num = lara_item->room_num;
-
-    Item_Initialise(item_gong_bonger_num);
-    Item_AddActive(item_gong_bonger_num);
-    item_gong_bonger->status = IS_ACTIVE;
-    item_gong_bonger->shade.value_1 = -1;
-}
-
-static void M_SetupGong(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupDetonator(OBJECT *const obj)
-{
-    obj->collision_func = M_Collision;
-    obj->control_func = M_ControlDetonator;
+    obj->control_func = M_Control;
     obj->bounds_func = Pickup_Bounds;
     obj->save_flags = true;
     obj->save_anim = true;
 }
 
-static void M_ControlDetonator(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Item_Animate(item);
@@ -140,7 +102,6 @@ static void M_ControlDetonator(const int16_t item_num)
     }
 }
 
-// TODO: split gong shenanigans into a separate routine
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -187,5 +148,4 @@ normal_collision:
     Object_Collision(item_num, lara_item, coll);
 }
 
-REGISTER_OBJECT(O_GONG, M_SetupGong)
-REGISTER_OBJECT(O_DETONATOR_BOX, M_SetupDetonator)
+REGISTER_OBJECT(O_DETONATOR_BOX, M_Setup)
