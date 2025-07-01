@@ -65,6 +65,13 @@ void Gun_Rifle_Ready(const LARA_GUN_TYPE weapon_type)
     g_Lara.right_arm.rot.x = 0;
     g_Lara.right_arm.rot.y = 0;
     g_Lara.right_arm.rot.z = 0;
+
+    if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x = 0;
+        g_Lara.torso_rot.y = 0;
+    }
 }
 
 void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
@@ -318,6 +325,12 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
         Gun_Rifle_UndrawMeshes(weapon_type);
     }
 
+    if (!g_Input.look || g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x += g_Lara.torso_rot.x / -2;
+        g_Lara.torso_rot.y += g_Lara.torso_rot.y / -2;
+    }
     g_Lara.left_arm.anim_num = item->anim_num;
     g_Lara.left_arm.frame_base = Item_GetAnim(item)->frame_ptr;
     g_Lara.left_arm.frame_num = Item_GetRelativeFrame(item);

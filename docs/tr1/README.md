@@ -490,6 +490,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed Lara becoming clamped if she picks up an item under a steeply sloped ceiling
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+
 - fixed Lara not catching fire after reloading a save made when she was on fire
+- fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode)
 
 #### Cheats
 - added a fly cheat
