@@ -137,12 +137,11 @@ void Lara_Look_UpDown(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     g_Camera.type = CAM_LOOK;
-#if TR_VERSION == 1
+
     if (g_Config.gameplay.enable_inverted_look) {
         bool temp_forward;
         SWAP(g_Input.forward, g_Input.back, temp_forward);
     }
-#endif
 
     const bool on_surface = lara->water_status == LWS_SURFACE;
     const int16_t min_head_tilt =

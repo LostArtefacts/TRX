@@ -128,6 +128,7 @@ typedef struct {
         WALL_GLITCH_MODE wall_glitch_mode;
         bool fix_water_exit;
         LOOK_MODE look_mode;
+        bool enable_inverted_look;
         bool enable_uw_roll;
         bool enable_tr2_swimming;
         bool enable_jump_twists;
