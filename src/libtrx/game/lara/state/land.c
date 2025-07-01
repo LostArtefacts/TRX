@@ -42,8 +42,6 @@ static void M_Stop(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_FastTurn(ITEM *item, COLL_INFO *coll);
-static void M_Death(ITEM *item, COLL_INFO *coll);
-static void M_Splat(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
@@ -184,7 +182,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     item->goal_anim_state = LS_STOP;
     if (g_Input.look) {
         Lara_Look_UpDown();
-        if (!g_Config.gameplay.enable_enhanced_look) {
+        if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
             Lara_Look_LeftRight();
             return;
         }
@@ -251,7 +249,7 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+    if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
         item->goal_anim_state = LS_STOP;
         return;
     }
@@ -302,7 +300,7 @@ static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+    if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
         item->goal_anim_state = LS_STOP;
         return;
     }
@@ -319,23 +317,6 @@ static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS_STOP;
         }
     }
-}
-
-static void M_Death(ITEM *const item, COLL_INFO *const coll)
-{
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
-    M_Default(item, coll);
-}
-
-static void M_Splat(ITEM *const item, COLL_INFO *const coll)
-{
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
 }
 
 static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
@@ -364,9 +345,6 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION >= 2
-    lara->enable_look = false;
-#endif
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_STOP;
         return;
@@ -409,10 +387,6 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 
 static void M_PushBlock(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
     M_Default(item, coll);
     g_Camera.flags = CF_FOLLOW_CENTRE;
     g_Camera.target_angle = M_CAM_PUSH_BLOCK_ANGLE;
@@ -434,11 +408,11 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_angle = M_CAM_PICKUP_ANGLE;
     g_Camera.target_elevation = M_CAM_PICKUP_ELEVATION;
     g_Camera.target_distance = M_CAM_PICKUP_DISTANCE;
+
 #if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
     if (item->current_anim_state == LS_FLARE_PICKUP
         && Item_TestFrameEqual(item, -1)) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->gun_status = LGS_ARMLESS;
     }
 #endif
@@ -446,10 +420,6 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
 
 static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
     M_Default(item, coll);
     g_Camera.target_angle = M_CAM_SWITCH_ON_ANGLE;
     g_Camera.target_elevation = M_CAM_SWITCH_ON_ELEVATION;
@@ -459,10 +429,6 @@ static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
 
 static void M_UseKey(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
     M_Default(item, coll);
     g_Camera.target_angle = M_CAM_USE_KEY_ANGLE;
     g_Camera.target_elevation = M_CAM_USE_KEY_ELEVATION;
@@ -527,8 +493,7 @@ REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_Turn)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_Turn)
 REGISTER_LARA_STATE(LS_FAST_TURN,    M_FastTurn)
-REGISTER_LARA_STATE(LS_DEATH,        M_Death)
-REGISTER_LARA_STATE(LS_SPLAT,        M_Splat)
+REGISTER_LARA_STATE(LS_DEATH,        M_Default)
 REGISTER_LARA_STATE(LS_WALK_BACK,    M_WalkBack)
 REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_SideStep)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_SideStep)

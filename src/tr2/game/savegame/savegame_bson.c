@@ -1262,7 +1262,6 @@ static JSON_OBJECT *M_DumpLara(void)
 
     JSON_ObjectAppendBool(lara_obj, "flare_control_left", lara->flare.control);
     JSON_ObjectAppendBool(lara_obj, "extra_anim", lara->extra_anim);
-    JSON_ObjectAppendBool(lara_obj, "look", lara->enable_look);
     JSON_ObjectAppendBool(lara_obj, "burn", lara->burn);
 
     JSON_ARRAY *const lara_meshes_arr = JSON_ArrayNew();
@@ -1374,7 +1373,6 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
         JSON_ObjectGetBool(lara_obj, "flare_control_left", lara->flare.control);
     lara->extra_anim =
         JSON_ObjectGetBool(lara_obj, "extra_anim", lara->extra_anim);
-    lara->enable_look = JSON_ObjectGetBool(lara_obj, "look", lara->enable_look);
     lara->burn = JSON_ObjectGetBool(lara_obj, "burn", lara->burn);
 
     const JSON_ARRAY *const lara_meshes_arr =

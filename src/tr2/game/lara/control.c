@@ -646,7 +646,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.flare.frame_num = 0;
     g_Lara.flare.control = false;
     g_Lara.extra_anim = false;
-    g_Lara.enable_look = true;
     g_Lara.burn = false;
     g_Lara.water_surface_dist = 100;
     g_Lara.last_pos = item->pos;

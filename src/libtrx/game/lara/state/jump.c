@@ -124,10 +124,6 @@ static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_SideJump(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->enable_look = false;
-#endif
     if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
