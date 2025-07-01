@@ -612,6 +612,10 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
             return;
         }
+        if (g_Lara.interact_target.item_num != NO_ITEM) {
+            Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+            return;
+        }
         g_Lara.interact_target.item_num = receptacle_item_num;
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
@@ -679,6 +683,9 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.right_arm.flash_gun = 0;
     g_Lara.left_arm.lock = 0;
     g_Lara.right_arm.lock = 0;
+    g_Lara.interact_target.is_moving = false;
+    g_Lara.interact_target.item_num = NO_ITEM;
+    g_Lara.interact_target.move_count = 0;
 
     g_Lara.current_active = 0;
 
