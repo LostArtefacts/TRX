@@ -209,6 +209,7 @@ sources = [
   'game/objects/general/bridge_tilt2.c',
   'game/objects/general/door.c',
   'game/objects/general/drawbridge.c',
+  'game/objects/general/keyhole.c',
   'game/objects/general/trapdoor.c',
   'game/objects/misc.c',
   'game/objects/names.c',
