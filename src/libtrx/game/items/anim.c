@@ -26,6 +26,10 @@ static bool M_ShouldPlaySFXAlways(
 #endif
 
     int16_t room_num = item->room_num;
+    if (room_num == NO_ROOM) {
+        return false;
+    }
+
     const int32_t dist =
         item_underwater ? -M_SFX_SURF_DISTANCE : +M_SFX_SURF_DISTANCE;
     Room_GetSector(item->pos.x, item->pos.y + dist, item->pos.z, &room_num);
