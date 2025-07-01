@@ -1,16 +1,11 @@
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/inventory_ring.h"
 #include "game/lara.h"
-#include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/sound.h"
-#include "global/vars.h"
 
-#include <libtrx/game/lara/const.h>
-
-#define LF_USE_PUZZLE 80
+#define M_LF_USE_PUZZLE 80
 
 static XYZ_32 m_PuzzleHolePosition = {
     .x = 0,
@@ -52,13 +47,14 @@ static bool M_IsUsable(const int16_t item_num)
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     Lara_AlignPosition(receptacle_item, &m_PuzzleHolePosition);
     Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
     lara_item->goal_anim_state = LS_STOP;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
     receptacle_item->status = IS_ACTIVE;
-    g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_OBJECT;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->interact_target.is_moving = false;
+    lara->interact_target.item_num = NO_OBJECT;
 }
 
 static void M_MarkDone(ITEM *const receptacle_item)
@@ -100,23 +96,23 @@ static void M_Collision(
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (lara_item->current_anim_state != LS_STOP) {
         if (lara_item->current_anim_state == LS_USE_PUZZLE
             && Lara_TestPosition(item, obj->bounds_func())
-            && Item_TestFrameEqual(lara_item, LF_USE_PUZZLE)) {
+            && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
             M_MarkDone(item);
         }
-
         return;
     }
 
-    if (g_Lara.interact_target.is_moving
-        && g_Lara.interact_target.item_num == item_num) {
+    if (lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
         M_Use(lara_item, item);
     }
 
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
         || lara_item->gravity) {
         return;
     }
@@ -135,9 +131,10 @@ static void M_CollisionDone(
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity || lara_item->current_anim_state != LS_STOP
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara_item->current_anim_state != LS_STOP
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
