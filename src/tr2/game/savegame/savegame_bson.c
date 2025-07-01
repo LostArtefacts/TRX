@@ -1309,6 +1309,14 @@ static JSON_OBJECT *M_DumpLara(void)
         JSON_ObjectAppendObject(lara_obj, "weapon", weapon_obj);
     }
 
+    JSON_ObjectAppendInt(
+        lara_obj, "interact_target.item_num", lara->interact_target.item_num);
+    JSON_ObjectAppendInt(
+        lara_obj, "interact_target.move_count",
+        lara->interact_target.move_count);
+    JSON_ObjectAppendBool(
+        lara_obj, "interact_target.is_moving", lara->interact_target.is_moving);
+
     return lara_obj;
 }
 
@@ -1464,6 +1472,14 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
         weapon_item->status = IS_ACTIVE;
         weapon_item->room_num = NO_ROOM;
     }
+
+    lara->interact_target.item_num = JSON_ObjectGetInt(
+        lara_obj, "interact_target.item_num", lara->interact_target.item_num);
+    lara->interact_target.move_count = JSON_ObjectGetInt(
+        lara_obj, "interact_target.move_count",
+        lara->interact_target.move_count);
+    lara->interact_target.is_moving = JSON_ObjectGetBool(
+        lara_obj, "interact_target.is_moving", lara->interact_target.is_moving);
 
     return true;
 }
