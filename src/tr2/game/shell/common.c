@@ -414,7 +414,7 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     }
 
     if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_psx_fov)) {
-        if (Viewport_GetFOV(false) == -1) {
+        if (Viewport_GetSystemFOV() == -1) {
             Viewport_AlterFOV(-1);
         }
     }

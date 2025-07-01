@@ -38,7 +38,6 @@ static struct {
 } m_PreviousState;
 static BOUNDS_32 m_WorldBounds = {};
 
-static int32_t M_GetFOV(void);
 static void M_SetFOV(int32_t fov);
 
 static void M_ResetCamera(bool exiting);
@@ -58,23 +57,11 @@ static bool M_HandleFOVInputs();
 static void M_UpdatePhotoMode(void);
 
 // TODO: remove this wrapper when consolidating the viewport API
-static int32_t M_GetFOV(void)
-{
-#if TR_VERSION == 1
-    return Viewport_GetFOV();
-#elif TR_VERSION == 2
-    return Viewport_GetFOV(true);
-#endif
-}
-
-// TODO: remove this wrapper when consolidating the viewport API
 static void M_SetFOV(const int32_t fov)
 {
-#if TR_VERSION == 1
-    Viewport_SetFOV(fov);
-    Output_ApplyFOV();
-#elif TR_VERSION == 2
     Viewport_AlterFOV(fov);
+#if TR_VERSION == 1
+    Output_ApplyFOV();
 #endif
 }
 
@@ -316,7 +303,7 @@ void Camera_EnterPhotoMode(void)
 
     m_StartingCamera = g_Camera;
 
-    m_OriginalFOV = M_GetFOV();
+    m_OriginalFOV = Viewport_GetEffectiveFOV();
     m_CurrentFOV = m_OriginalFOV / DEG_1;
     g_Camera.type = CAM_PHOTO_MODE;
     const int32_t border = WALL_L * 5;
@@ -368,7 +355,7 @@ void Camera_PausePhotoMode(void)
 {
     m_PreviousState.camera = g_Camera;
     m_PreviousState.is_chunky = Camera_IsChunky();
-    m_PreviousState.fov = M_GetFOV();
+    m_PreviousState.fov = Viewport_GetSystemFOV();
     g_Camera = m_OriginalCamera;
 }
 

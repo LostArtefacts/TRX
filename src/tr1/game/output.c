@@ -855,7 +855,7 @@ void Output_DrawPolyList(void)
 
 void Output_ApplyFOV(void)
 {
-    int32_t fov = Viewport_GetFOV();
+    int32_t fov = Viewport_GetEffectiveFOV();
 
     // In places that use GAME_FOV, it can be safely changed to user's choice.
     // But for cinematics, the FOV value chosen by devs needs to stay

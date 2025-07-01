@@ -262,9 +262,9 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     // camera (when picking up the Scion). Move the viewport rather than
     // translating the object in order to avoid perspective distortion in the
     // screen corners.
-    int16_t old_fov = Viewport_GetFOV();
+    const int16_t old_fov = Viewport_GetSystemFOV();
     Viewport_Init(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
-    Viewport_SetFOV(M_PICKUPS_FOV * DEG_1);
+    Viewport_AlterFOV(M_PICKUPS_FOV * DEG_1);
     glViewport(new_vp.x, new_vp.y, new_vp.w, new_vp.h);
     Output_ApplyFOV();
 
@@ -311,7 +311,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
 
     Matrix_Pop();
     Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
-    Viewport_SetFOV(old_fov);
+    Viewport_AlterFOV(old_fov);
     glViewport(old_vp.x, old_vp.y, old_vp.w, old_vp.h);
     Output_ApplyFOV();
 }

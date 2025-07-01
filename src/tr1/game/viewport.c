@@ -76,9 +76,9 @@ int32_t Viewport_GetHeight(void)
     return m_Height;
 }
 
-int16_t Viewport_GetFOV(void)
+int16_t Viewport_GetSystemFOV(void)
 {
-    return m_CurrentFOV == -1 ? Viewport_GetUserFOV() : m_CurrentFOV;
+    return m_CurrentFOV;
 }
 
 int16_t Viewport_GetUserFOV(void)
@@ -86,7 +86,7 @@ int16_t Viewport_GetUserFOV(void)
     return g_Config.visuals.fov_value * DEG_1;
 }
 
-void Viewport_SetFOV(int16_t fov)
+void Viewport_AlterFOV(int16_t fov)
 {
     m_CurrentFOV = fov;
     Output_ObserveFOVChange();

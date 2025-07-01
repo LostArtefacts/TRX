@@ -46,11 +46,7 @@ static void M_UpdateCutscene(const XYZ_32 base_pos, const int16_t angle)
     g_Camera.roll = frame->roll;
     g_Camera.shift = 0;
 
-#if TR_VERSION == 1
-    Viewport_SetFOV(frame->fov);
-#else
     Viewport_AlterFOV(frame->fov);
-#endif
 }
 
 void Camera_InitialiseCineFrames(const int32_t num_frames)

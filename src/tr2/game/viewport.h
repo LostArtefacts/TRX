@@ -54,7 +54,4 @@ void Viewport_Reset(void);
 
 void Viewport_Restore(const VIEWPORT *ref_vp);
 
-int16_t Viewport_GetFOV(bool resolve_user_fov);
-void Viewport_AlterFOV(int16_t view_angle);
-
 const VIEWPORT *Viewport_Get(void);

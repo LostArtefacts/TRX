@@ -422,7 +422,7 @@ bool Level_Initialise(
             level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
     }
 
-    Viewport_SetFOV(-1);
+    Viewport_AlterFOV(-1);
 
     Benchmark_End(&benchmark, nullptr);
     return true;
