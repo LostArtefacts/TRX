@@ -968,10 +968,10 @@
         "gong_bonger": {
             "name": "Gong Stick",
         },
-        "detonator_1": {
+        "gong": {
             "name": "Gong",
         },
-        "detonator_2": {
+        "detonator_box": {
             "name": "Detonator Box",
         },
         "copter": {
