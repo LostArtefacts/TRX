@@ -28,17 +28,6 @@
 #define LARA_PUSH_TIMEOUT 15
 #define LARA_UW_DAMAGE 5
 
-void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
-{
-    const int16_t hit_angle = lara_item->rot.y + DEG_180 - Math_Atan(dz, dx);
-    g_Lara.hit_direction = (hit_angle + DEG_45) / DEG_90;
-    if (g_Lara.hit_frame == 0) {
-        Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
-    }
-    g_Lara.hit_frame++;
-    CLAMPG(g_Lara.hit_frame, 34);
-}
-
 LARA_INFO *Lara_GetLaraInfo(void)
 {
     return &g_Lara;
