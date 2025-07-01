@@ -2,9 +2,6 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/sound.h"
-#include "global/vars.h"
-
-#include <libtrx/game/lara.h>
 
 static XYZ_32 m_KeyholePosition = {
     .x = 0,
@@ -36,13 +33,14 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     Lara_AlignPosition(receptacle_item, &m_KeyholePosition);
     Lara_AnimateUntil(lara_item, LS_USE_KEY);
     lara_item->goal_anim_state = LS_STOP;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
     receptacle_item->status = IS_ACTIVE;
-    g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_OBJECT;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->interact_target.is_moving = false;
+    lara->interact_target.item_num = NO_OBJECT;
 }
 
 static void M_Collision(
@@ -50,14 +48,15 @@ static void M_Collision(
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (g_Lara.interact_target.is_moving
-        && g_Lara.interact_target.item_num == item_num) {
+    if (lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
         M_Use(lara_item, item);
     }
 
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity || lara_item->current_anim_state != LS_STOP) {
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -86,14 +85,15 @@ static void M_Setup(OBJECT *const obj)
     obj->is_usable_func = M_IsUsable;
 }
 
-bool Keyhole_Trigger(int16_t item_num)
+bool Keyhole_Trigger(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_ACTIVE && g_Lara.gun_status != LGS_HANDS_BUSY) {
-        item->status = IS_DEACTIVATED;
-        return true;
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->status != IS_ACTIVE || lara->gun_status == LGS_HANDS_BUSY) {
+        return false;
     }
-    return false;
+    item->status = IS_DEACTIVATED;
+    return true;
 }
 
 REGISTER_OBJECT(O_KEY_HOLE_1, M_Setup)

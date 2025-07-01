@@ -186,7 +186,6 @@ sources = [
   'game/objects/general/camera_target.c',
   'game/objects/general/cog.c',
   'game/objects/general/earthquake.c',
-  'game/objects/general/keyhole.c',
   'game/objects/general/moving_bar.c',
   'game/objects/general/pickup.c',
   'game/objects/general/puzzle_hole.c',
