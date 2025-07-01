@@ -1,6 +1,7 @@
 #include "game/lara/control.h"
 
 #include "game/lara.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
 
 #define M_MAX_BADDIE_COLLISION 20
@@ -61,6 +62,85 @@ void Lara_BaddieCollision(ITEM *const lara_item, COLL_INFO *const coll)
     if (lara_info->hit_direction == -1) {
         lara_info->hit_frame = 0;
     }
+}
+
+// TODO: make private
+void Lara_WaterCurrent(COLL_INFO *const coll)
+{
+    ITEM *const item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    int16_t room_num = item->room_num;
+    const ROOM *const room = Room_Get(item->room_num);
+    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
+
+    XYZ_32 target;
+    if (Box_CalculateTarget(&target, item, &lara_info->lot) == TARGET_NONE) {
+        return;
+    }
+
+#define L_SHIFT(_axis)                                                         \
+    do {                                                                       \
+        target._axis -= item->pos._axis;                                       \
+        if (target._axis > lara_info->current_active) {                        \
+            item->pos._axis += lara_info->current_active;                      \
+        } else if (target._axis < -lara_info->current_active) {                \
+            item->pos._axis -= lara_info->current_active;                      \
+        } else {                                                               \
+            item->pos._axis += target._axis;                                   \
+        }                                                                      \
+    } while (0)
+
+    L_SHIFT(x);
+    L_SHIFT(y);
+    L_SHIFT(z);
+#undef L_SHIFT
+
+    lara_info->current_active = 0;
+    coll->facing =
+        Math_Atan(item->pos.z - coll->old.z, item->pos.x - coll->old.x);
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + LARA_HEIGHT_UW / 2, item->pos.z,
+        room_num, LARA_HEIGHT_UW);
+
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+        if (item->rot.x > 35 * DEG_1) {
+            item->rot.x += LARA_UW_WALL_DEFLECT;
+        } else if (item->rot.x < -35 * DEG_1) {
+            item->rot.x -= LARA_UW_WALL_DEFLECT;
+        } else {
+            item->fall_speed = 0;
+        }
+        break;
+
+    case COLL_TOP:
+        item->rot.x -= LARA_UW_WALL_DEFLECT;
+        break;
+
+    case COLL_TOP_FRONT:
+        item->fall_speed = 0;
+        break;
+
+    case COLL_LEFT:
+        item->rot.y += 5 * DEG_1;
+        break;
+
+    case COLL_RIGHT:
+        item->rot.y -= 5 * DEG_1;
+        break;
+
+    default:
+        break;
+    }
+
+    if (coll->side_mid.floor < 0) {
+        item->pos.y += coll->side_mid.floor;
+        item->rot.x += LARA_UW_WALL_DEFLECT;
+    }
+    Lara_Col_Shift(coll);
+
+    coll->old = item->pos;
 }
 
 void Lara_DismountVehicle(void)

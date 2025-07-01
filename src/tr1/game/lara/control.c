@@ -16,86 +16,7 @@
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
-static void M_WaterCurrent(COLL_INFO *coll);
 static SECTOR *M_GetCurrentSector(const ITEM *lara_item);
-
-static void M_WaterCurrent(COLL_INFO *coll)
-{
-    XYZ_32 target;
-
-    ITEM *const item = g_LaraItem;
-    const ROOM *const room = Room_Get(item->room_num);
-    const SECTOR *const sector =
-        Room_GetWorldSector(room, item->pos.x, item->pos.z);
-    item->box_num = sector->box;
-
-    if (Box_CalculateTarget(&target, item, &g_Lara.lot) == TARGET_NONE) {
-        return;
-    }
-
-    target.x -= item->pos.x;
-    if (target.x > g_Lara.current_active) {
-        item->pos.x += g_Lara.current_active;
-    } else if (target.x < -g_Lara.current_active) {
-        item->pos.x -= g_Lara.current_active;
-    } else {
-        item->pos.x += target.x;
-    }
-
-    target.z -= item->pos.z;
-    if (target.z > g_Lara.current_active) {
-        item->pos.z += g_Lara.current_active;
-    } else if (target.z < -g_Lara.current_active) {
-        item->pos.z -= g_Lara.current_active;
-    } else {
-        item->pos.z += target.z;
-    }
-
-    target.y -= item->pos.y;
-    if (target.y > g_Lara.current_active) {
-        item->pos.y += g_Lara.current_active;
-    } else if (target.y < -g_Lara.current_active) {
-        item->pos.y -= g_Lara.current_active;
-    } else {
-        item->pos.y += target.y;
-    }
-
-    g_Lara.current_active = 0;
-
-    coll->facing = (int16_t)Math_Atan(
-        item->pos.z - coll->old.z, item->pos.x - coll->old.x);
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + LARA_HEIGHT_UW / 2, item->pos.z,
-        item->room_num, LARA_HEIGHT_UW);
-
-    if (coll->coll_type == COLL_FRONT) {
-        if (item->rot.x > 35 * DEG_1) {
-            item->rot.x += LARA_UW_WALL_DEFLECT;
-        } else if (item->rot.x < -35 * DEG_1) {
-            item->rot.x -= LARA_UW_WALL_DEFLECT;
-        } else {
-            item->fall_speed = 0;
-        }
-    } else if (coll->coll_type == COLL_TOP) {
-        item->rot.x -= LARA_UW_WALL_DEFLECT;
-    } else if (coll->coll_type == COLL_TOP_FRONT) {
-        item->fall_speed = 0;
-    } else if (coll->coll_type == COLL_LEFT) {
-        item->rot.y += 5 * DEG_1;
-    } else if (coll->coll_type == COLL_RIGHT) {
-        item->rot.y -= 5 * DEG_1;
-    }
-
-    if (coll->side_mid.floor < 0) {
-        item->pos.y += coll->side_mid.floor;
-        item->rot.x += LARA_UW_WALL_DEFLECT;
-    }
-    Lara_Col_Shift(coll);
-
-    coll->old.x = item->pos.x;
-    coll->old.y = item->pos.y;
-    coll->old.z = item->pos.z;
-}
 
 static SECTOR *M_GetCurrentSector(const ITEM *const lara_item)
 {
@@ -180,7 +101,7 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
-        M_WaterCurrent(coll);
+        Lara_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&g_Lara.lot);
     }
@@ -246,7 +167,7 @@ void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
-        M_WaterCurrent(coll);
+        Lara_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&g_Lara.lot);
     }
