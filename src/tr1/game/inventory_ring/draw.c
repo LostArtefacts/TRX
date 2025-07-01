@@ -140,8 +140,8 @@ void InvRing_Draw(INV_RING *const ring)
         Viewport_Init(0, 0, width, height);
     }
 
-    const int16_t old_fov = Viewport_GetFOV();
-    Viewport_SetFOV(M_PASSPORT_FOV * DEG_1);
+    const int16_t old_fov = Viewport_GetSystemFOV();
+    Viewport_AlterFOV(M_PASSPORT_FOV * DEG_1);
     Output_ApplyFOV();
 
     XYZ_32 view_pos;
@@ -194,7 +194,7 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     Matrix_Pop();
-    Viewport_SetFOV(old_fov);
+    Viewport_AlterFOV(old_fov);
     Output_DrawPolyList();
 
     if (ring->motion.status == RNG_SELECTED) {

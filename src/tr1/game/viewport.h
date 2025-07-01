@@ -10,9 +10,3 @@ int32_t Viewport_GetMinX(void);
 int32_t Viewport_GetMinY(void);
 int32_t Viewport_GetCenterX(void);
 int32_t Viewport_GetCenterY(void);
-int32_t Viewport_GetWidth(void);
-int32_t Viewport_GetHeight(void);
-
-int16_t Viewport_GetFOV(void);
-int16_t Viewport_GetUserFOV(void);
-void Viewport_SetFOV(int16_t fov);

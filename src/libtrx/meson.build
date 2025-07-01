@@ -306,6 +306,7 @@ sources = [
   'game/ui/hud/overlay.c',
   'game/ui/scrollable.c',
   'game/ui/text.c',
+  'game/viewport.c',
   'gfx/2d/2d_renderer.c',
   'gfx/2d/2d_surface.c',
   'gfx/3d/3d_renderer.c',

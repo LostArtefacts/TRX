@@ -235,15 +235,15 @@ bool Lara_Cheat_EnterFlyMode(void)
         return false;
     }
 
+    Viewport_AlterFOV(-1);
+
 #if TR_VERSION == 1
-    Viewport_SetFOV(-1);
     lara_info->request_gun_type = LGT_UNARMED;
     if (lara_item->hit_points <= 0) {
         lara_info->gun_status = LGS_ARMLESS;
         Lara_InitialiseMeshes(GF_GetCurrentLevel());
     }
 #else
-    Viewport_AlterFOV(-1);
     if (lara_info->extra_anim) {
         M_ResetGunStatus();
     }
@@ -400,11 +400,7 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
     lara_info->mesh_effects = 0;
 
     g_Camera.type = CAM_CHASE;
-#if TR_VERSION == 1
-    Viewport_SetFOV(-1);
-#else
     Viewport_AlterFOV(-1);
-#endif
     Camera_ResetPosition();
 
     return true;

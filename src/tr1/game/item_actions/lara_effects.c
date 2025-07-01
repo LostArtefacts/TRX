@@ -15,7 +15,7 @@ void ItemAction_LaraNormal(ITEM *item)
     item->goal_anim_state = LS_STOP;
     Item_SwitchToAnim(item, LA_STAND_STILL, 0);
     g_Camera.type = CAM_CHASE;
-    Viewport_SetFOV(-1);
+    Viewport_AlterFOV(-1);
 }
 
 void ItemAction_LaraHandsFree(ITEM *item)

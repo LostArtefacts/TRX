@@ -42,7 +42,7 @@ static void M_ApplyResolution(void)
     Output_ApplyRenderSettings();
 
     Matrix_ResetStack();
-    Viewport_SetFOV(-1);
+    Viewport_AlterFOV(-1);
 }
 
 static int32_t M_GetRenderScaleBase(

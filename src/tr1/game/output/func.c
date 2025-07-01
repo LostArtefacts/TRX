@@ -65,7 +65,7 @@ void Output_GetProjectionMatrix(GLfloat output[][4])
     const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
     const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
     const float aspect = (float)(right - left) / (float)(bottom - top);
-    const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
+    const float fov = Viewport_GetEffectiveFOV() * M_PI / (float)DEG_180;
 
     float f_x, f_y;
     if (g_Config.visuals.fov_vertical) {
