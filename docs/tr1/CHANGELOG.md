@@ -34,6 +34,7 @@
 - fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode) (#3406)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
+- removed "window size" rendering mode, enforcing the FBO rendering method (#3332)
 - removed config tool (we have ingame setting dialogs now)
 
 ## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24

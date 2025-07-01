@@ -1,4 +1,4 @@
-#include "gfx/renderers/fbo_renderer.h"
+#include "gfx/renderer.h"
 
 #include "debug.h"
 #include "gfx/common.h"
@@ -244,7 +244,7 @@ static void M_Unbind(const GFX_RENDERER *renderer)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-GFX_RENDERER g_GFX_Renderer_FBO = {
+GFX_RENDERER g_GFX_Renderer = {
     .swap_buffers = &M_SwapBuffers,
     .init = &M_Init,
     .shutdown = &M_Shutdown,

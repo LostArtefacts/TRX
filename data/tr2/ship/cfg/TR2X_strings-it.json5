@@ -1100,7 +1100,6 @@
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Risolve il problema nel pacchetto di espansione La Maschera Dorata per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Risolve il problema del fucile a pompa che a volte, quando si spara, non produce un lampo o un suono.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
-        "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Scegli di renderizzare con la CPU (più lento, vecchia scuola) o con la GPU (più veloce, migliore).",
         "KEYMAP_CAMERA_RESET": "Ripristina telecamera",
         "KEYMAP_CYCLE_LIGHTING_CONTRAST": "Livello Contrasto",
         "KEYMAP_EQUIP_GRENADE_LAUNCHER": "Equipaggia Lanciagranate",

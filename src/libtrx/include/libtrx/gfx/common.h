@@ -9,11 +9,6 @@ typedef enum {
 } GFX_TEXTURE_FILTER;
 
 typedef enum {
-    GFX_RM_LEGACY,
-    GFX_RM_FRAMEBUFFER,
-} GFX_RENDER_MODE;
-
-typedef enum {
     GFX_GL_INVALID_BACKEND,
     GFX_GL_33C,
 } GFX_GL_BACKEND;
