@@ -197,7 +197,6 @@ sources = [
   'game/objects/general/mini_copter.c',
   'game/objects/general/movable_block.c',
   'game/objects/general/pickup.c',
-  'game/objects/general/puzzle_hole.c',
   'game/objects/general/sphere_of_doom.c',
   'game/objects/general/switch.c',
   'game/objects/general/waterfall.c',
