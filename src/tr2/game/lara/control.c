@@ -7,7 +7,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
-#include "game/lara/look.h"
 #include "game/lara/misc.h"
 #include "game/savegame.h"
 #include "game/sound.h"
@@ -50,12 +49,7 @@ void Lara_HandleAboveWater(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 1;
     coll->enable_hit = 1;
 
-    if (g_Input.look && !g_Lara.extra_anim && g_Lara.enable_look) {
-        Lara_LookLeftRight();
-    } else {
-        Lara_ResetLook();
-    }
-    g_Lara.enable_look = true;
+    Lara_Look_Update();
 
     if (g_Lara.vehicle_item_num != NO_ITEM) {
         if (Item_Get(g_Lara.vehicle_item_num)->object_id == O_SKIDOO_FAST) {
@@ -122,13 +116,7 @@ void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 0;
     coll->enable_hit = 0;
 
-    if (g_Input.look && g_Lara.enable_look) {
-        Lara_LookLeftRight();
-    } else {
-        Lara_ResetLook();
-    }
-    g_Lara.enable_look = true;
-
+    Lara_Look_Update();
     Lara_State_Update(item, coll);
 
     if (item->rot.z > LARA_LEAN_UNDO_SURF) {
@@ -181,13 +169,7 @@ void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 1;
     coll->enable_hit = 0;
 
-    if (g_Input.look && g_Lara.enable_look) {
-        Lara_LookLeftRight();
-    } else {
-        Lara_ResetLook();
-    }
-    g_Lara.enable_look = true;
-
+    Lara_Look_Update();
     Lara_State_Update(item, coll);
 
     if (item->rot.z > LARA_LEAN_UNDO_UW) {

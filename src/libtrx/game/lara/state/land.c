@@ -172,10 +172,6 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     if (lara->interact_target.is_moving) {
         return;
     }
-
-    const bool enable_enhanced_look = g_Config.gameplay.enable_enhanced_look;
-#else
-    const bool enable_enhanced_look = true;
 #endif
 
     if (g_Input.roll && lara->water_status != LWS_WADE) {
@@ -187,15 +183,11 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
     item->goal_anim_state = LS_STOP;
     if (g_Input.look) {
-        Lara_LookUpDown();
-        if (!enable_enhanced_look) {
-            Lara_LookLeftRight();
+        Lara_Look_UpDown();
+        if (!g_Config.gameplay.enable_enhanced_look) {
+            Lara_Look_LeftRight();
             return;
         }
-    }
-
-    if (!enable_enhanced_look && g_Camera.type == CAM_LOOK) {
-        g_Camera.type = CAM_CHASE;
     }
 
     if (g_Input.step_left) {
@@ -259,12 +251,10 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
         item->goal_anim_state = LS_STOP;
         return;
     }
-#endif
 
     const bool left_turn = item->current_anim_state == LS_TURN_LEFT;
     const bool turn_input = left_turn ? g_Input.left : g_Input.right;
@@ -312,12 +302,10 @@ static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
         item->goal_anim_state = LS_STOP;
         return;
     }
-#endif
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->turn_rate >= 0) {

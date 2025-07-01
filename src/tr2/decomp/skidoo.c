@@ -472,7 +472,7 @@ int32_t Skidoo_UserControl(
         *out_pitch = skidoo->speed + (height - skidoo->pos.y);
 
         if (skidoo->speed == 0 && g_Input.look) {
-            Lara_LookUpDown();
+            Lara_Look_UpDown();
         }
 
         if ((g_Input.left && !g_Input.back)

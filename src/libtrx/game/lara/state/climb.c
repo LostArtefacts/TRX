@@ -25,13 +25,8 @@ static void M_UpDownLadder(ITEM *item, COLL_INFO *coll);
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
-    const bool look = g_Config.gameplay.enable_enhanced_look && g_Input.look;
-#else
-    const bool look = g_Input.look;
-#endif
-    if (look) {
-        Lara_LookUpDown();
+    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+        Lara_Look_UpDown();
     }
 
     coll->enable_hit = 0;
@@ -68,7 +63,7 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = M_CAM_CLIMB_STANCE_ELEVATION;
 
     if (g_Input.look) {
-        Lara_LookUpDown();
+        Lara_Look_UpDown();
     }
 
     if (g_Input.left || g_Input.step_left) {

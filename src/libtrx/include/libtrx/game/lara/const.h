@@ -37,22 +37,6 @@
 #define LARA_DEFLECT_ANGLE (5 * DEG_1) // = 910
 #define LARA_HANG_ANGLE (35 * DEG_1) // = 6370
 
-// TODO: tidy these
-#if TR_VERSION == 1
-    #define HEAD_TURN (4 * DEG_1) // = 728
-    #define MAX_HEAD_ROTATION (50 * DEG_1) // = 9100
-    #define HEAD_TURN_SURF (3 * DEG_1) // = 546
-    #define MAX_HEAD_ROTATION_SURF (50 * DEG_1) // = 9100
-    #define MAX_HEAD_TILT_SURF (40 * DEG_1) // = 7280
-    #define MIN_HEAD_TILT_SURF (-MAX_HEAD_TILT_SURF) // = -7280
-#else
-    #define HEAD_TURN (2 * DEG_1) // = 364
-    #define MAX_HEAD_ROTATION (44 * DEG_1) // = 8008
-#endif
-#define MIN_HEAD_ROTATION (-MAX_HEAD_ROTATION) // = -8008
-#define MAX_HEAD_TILT (22 * DEG_1) // = 4004
-#define MIN_HEAD_TILT (-42 * DEG_1) // = -7644
-
 #define NO_BAD_POS (-NO_HEIGHT) // = 32512
 #define NO_BAD_NEG (NO_HEIGHT) // = -32512
 #define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192

@@ -120,7 +120,6 @@ sources = [
   'game/lara/control.c',
   'game/lara/draw.c',
   'game/lara/flare.c',
-  'game/lara/look.c',
   'game/lara/misc.c',
   'game/level.c',
   'game/los.c',
