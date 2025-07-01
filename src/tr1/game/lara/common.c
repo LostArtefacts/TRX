@@ -433,6 +433,10 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
             return;
         }
+        if (g_Lara.interact_target.item_num != NO_ITEM) {
+            Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+            return;
+        }
         g_Lara.interact_target.item_num = receptacle_item_num;
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
