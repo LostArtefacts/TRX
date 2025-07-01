@@ -40,6 +40,7 @@
 - fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
 - fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode) (#3406)
 - fixed game window getting misplaced in windowed mode between game relaunches on certain systems (#3418)
+- fixed Lara using the wrong hit animation under certain scenarios based on her hit angle (#3424)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window

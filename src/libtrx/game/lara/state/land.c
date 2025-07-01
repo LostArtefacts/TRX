@@ -45,6 +45,7 @@ static void M_FastTurn(ITEM *item, COLL_INFO *coll);
 static void M_WalkBack(ITEM *item, COLL_INFO *coll);
 static void M_SideStep(ITEM *item, COLL_INFO *coll);
 static void M_Slide(ITEM *item, COLL_INFO *coll);
+static void M_Roll(ITEM *item, COLL_INFO *coll);
 static void M_PushBlock(ITEM *item, COLL_INFO *coll);
 static void M_PPReady(ITEM *item, COLL_INFO *coll);
 static void M_Pickup(ITEM *item, COLL_INFO *coll);
@@ -385,6 +386,11 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Roll(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_hit = 0;
+}
+
 static void M_PushBlock(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
@@ -499,6 +505,8 @@ REGISTER_LARA_STATE(LS_STEP_RIGHT,   M_SideStep)
 REGISTER_LARA_STATE(LS_STEP_LEFT,    M_SideStep)
 REGISTER_LARA_STATE(LS_SLIDE,        M_Slide)
 REGISTER_LARA_STATE(LS_SLIDE_BACK,   M_Slide)
+REGISTER_LARA_STATE(LS_ROLL,         M_Roll)
+REGISTER_LARA_STATE(LS_ROLL_CONT,    M_Roll)
 REGISTER_LARA_STATE(LS_PUSH_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PULL_BLOCK,   M_PushBlock)
 REGISTER_LARA_STATE(LS_PP_READY,     M_PPReady)

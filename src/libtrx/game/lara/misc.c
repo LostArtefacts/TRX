@@ -18,6 +18,22 @@ void Lara_RefuseInteraction(void)
     }
 }
 
+void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const int16_t hit_angle = lara_item->rot.y + DEG_180 - Math_Atan(dz, dx);
+    lara_info->hit_direction = Math_GetDirection(hit_angle);
+    if (lara_info->hit_frame == 0) {
+        Sound_Effect(
+            TR_VERSION == 1 ? SFX_LARA_BODYSL : SFX_LARA_INJURY,
+            &lara_item->pos, SPM_NORMAL);
+    }
+    lara_info->hit_frame++;
+    lara_info->interact_target.is_moving = false;
+    lara_info->interact_target.item_num = NO_ITEM;
+    CLAMPG(lara_info->hit_frame, 34);
+}
+
 void Lara_TouchLava(void)
 {
     if (g_Config.debug.enable_invulnerability) {

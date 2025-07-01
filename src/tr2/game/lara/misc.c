@@ -12,21 +12,6 @@
 
 #define MAX_BADDIE_COLLISION 20
 
-static void M_TakeHit(ITEM *lara_item, int32_t dx, int32_t dz);
-
-void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
-{
-    const int16_t hit_angle = lara_item->rot.y + DEG_180 - Math_Atan(dz, dx);
-    g_Lara.hit_direction = Math_GetDirection(hit_angle);
-    if (g_Lara.hit_frame == 0) {
-        Sound_Effect(SFX_LARA_INJURY, &lara_item->pos, SPM_NORMAL);
-    }
-    g_Lara.hit_frame++;
-    g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_ITEM;
-    CLAMPG(g_Lara.hit_frame, 34);
-}
-
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
 {
     ANIM_FRAME *frmptr[2] = { nullptr, nullptr };
@@ -234,7 +219,7 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
     if (g_Lara.hit_effect_count) {
         const int32_t dx = g_Lara.hit_effect->pos.x - lara_item->pos.x;
         const int32_t dz = g_Lara.hit_effect->pos.z - lara_item->pos.z;
-        M_TakeHit(lara_item, dx, dz);
+        Lara_TakeHit(lara_item, dx, dz);
         g_Lara.hit_effect_count--;
     }
 
@@ -296,7 +281,7 @@ void Lara_Push(
     dz -= (c * rz - s * rx) >> W2V_SHIFT;
 
     if (hit_on && bounds->max.y - bounds->min.y > STEP_L) {
-        M_TakeHit(target_item, dx, dz);
+        Lara_TakeHit(target_item, dx, dz);
     }
 
     int16_t old_facing = coll->facing;

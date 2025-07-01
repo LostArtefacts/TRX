@@ -11,7 +11,6 @@
 
 void Lara_Control(void);
 
-void Lara_TakeHit(ITEM *lara_item, int32_t x, int32_t z);
 void Lara_ControlExtra(int16_t item_num);
 
 void Lara_Initialise(const GF_LEVEL *level);

@@ -4,7 +4,7 @@
 #include "./enum.h"
 
 void Lara_RefuseInteraction(void);
-
+void Lara_TakeHit(ITEM *lara_item, int32_t dx, int32_t dz);
 void Lara_Extinguish(void);
 void Lara_TouchLava(void);
 
