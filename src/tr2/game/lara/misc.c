@@ -10,8 +10,6 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
-#define MAX_BADDIE_COLLISION 20
-
 void Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
 {
     ANIM_FRAME *frmptr[2] = { nullptr, nullptr };
@@ -160,72 +158,6 @@ void Lara_GetJointAbsPosition_I(
     vec->y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
     vec->z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
     Matrix_Pop();
-}
-
-void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
-{
-    lara_item->hit_status = 0;
-    g_Lara.hit_direction = -1;
-    if (lara_item->hit_points <= 0) {
-        return;
-    }
-
-    int16_t roomies[MAX_BADDIE_COLLISION] = {};
-    int32_t roomies_count = 0;
-
-    roomies[roomies_count++] = lara_item->room_num;
-
-    const PORTALS *const portals = Room_Get(roomies[0])->portals;
-    if (portals != nullptr) {
-        for (int32_t i = 0; i < portals->count; i++) {
-            if (roomies_count >= MAX_BADDIE_COLLISION) {
-                break;
-            }
-            roomies[roomies_count++] = portals->portal[i].room_num;
-        }
-    }
-
-    for (int32_t i = 0; i < roomies_count; i++) {
-        int16_t item_num = Room_Get(roomies[i])->item_num;
-        while (item_num != NO_ITEM) {
-            const ITEM *const item = Item_Get(item_num);
-
-            // the collision routine can destroy the item - need to store the
-            // next item beforehand
-            const int16_t next_item_num = item->next_item;
-
-            if (item->collidable && item->status != IS_INVISIBLE) {
-                const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision_func != nullptr) {
-                    // clang-format off
-                    const XYZ_32 d = {
-                        .x = lara_item->pos.x - item->pos.x,
-                        .y = lara_item->pos.y - item->pos.y,
-                        .z = lara_item->pos.z - item->pos.z,
-                    };
-                    if (d.x > -CREATURE_TARGET_DIST && d.x < CREATURE_TARGET_DIST &&
-                        d.y > -CREATURE_TARGET_DIST && d.y < CREATURE_TARGET_DIST &&
-                        d.z > -CREATURE_TARGET_DIST && d.z < CREATURE_TARGET_DIST) {
-                        obj->collision_func(item_num, lara_item, coll);
-                    }
-                    // clang-format on
-                }
-            }
-
-            item_num = next_item_num;
-        }
-    }
-
-    if (g_Lara.hit_effect_count) {
-        const int32_t dx = g_Lara.hit_effect->pos.x - lara_item->pos.x;
-        const int32_t dz = g_Lara.hit_effect->pos.z - lara_item->pos.z;
-        Lara_TakeHit(lara_item, dx, dz);
-        g_Lara.hit_effect_count--;
-    }
-
-    if (g_Lara.hit_direction == -1) {
-        g_Lara.hit_frame = 0;
-    }
 }
 
 void Lara_WaterCurrent(COLL_INFO *const coll)

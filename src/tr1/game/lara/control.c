@@ -17,7 +17,6 @@
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 static void M_WaterCurrent(COLL_INFO *coll);
-static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
 static SECTOR *M_GetCurrentSector(const ITEM *lara_item);
 
 static void M_WaterCurrent(COLL_INFO *coll)
@@ -98,52 +97,6 @@ static void M_WaterCurrent(COLL_INFO *coll)
     coll->old.z = item->pos.z;
 }
 
-static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
-{
-    lara_item->hit_status = 0;
-    g_Lara.hit_direction = -1;
-    if (lara_item->hit_points <= 0) {
-        return;
-    }
-
-    int16_t roomies[12];
-    const int32_t roomies_count =
-        Room_GetAdjoiningRooms(lara_item->room_num, roomies, 12);
-
-    for (int32_t i = 0; i < roomies_count; i++) {
-        int16_t item_num = Room_Get(roomies[i])->item_num;
-        while (item_num != NO_ITEM) {
-            const ITEM *const item = Item_Get(item_num);
-            if (item->collidable && item->status != IS_INVISIBLE) {
-                const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision_func != nullptr) {
-                    int32_t x = lara_item->pos.x - item->pos.x;
-                    int32_t y = lara_item->pos.y - item->pos.y;
-                    int32_t z = lara_item->pos.z - item->pos.z;
-                    if (x > -CREATURE_TARGET_DIST && x < CREATURE_TARGET_DIST
-                        && y > -CREATURE_TARGET_DIST && y < CREATURE_TARGET_DIST
-                        && z > -CREATURE_TARGET_DIST
-                        && z < CREATURE_TARGET_DIST) {
-                        obj->collision_func(item_num, lara_item, coll);
-                    }
-                }
-            }
-            item_num = item->next_item;
-        }
-    }
-
-    if (g_Lara.hit_effect_count && g_Lara.hit_effect && coll->enable_hit) {
-        const int32_t x = g_Lara.hit_effect->pos.x - lara_item->pos.x;
-        const int32_t z = g_Lara.hit_effect->pos.z - lara_item->pos.z;
-        Lara_TakeHit(lara_item, x, z);
-        g_Lara.hit_effect_count--;
-    }
-
-    if (g_Lara.hit_direction == -1) {
-        g_Lara.hit_frame = 0;
-    }
-}
-
 static SECTOR *M_GetCurrentSector(const ITEM *const lara_item)
 {
     int16_t room_num = lara_item->room_num;
@@ -191,7 +144,7 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
     Lara_Animate(item);
     const SECTOR *const sector = M_GetCurrentSector(item);
 
-    M_BaddieCollision(item, coll);
+    Lara_BaddieCollision(item, coll);
     Lara_Col_Update(item, coll);
     Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
     Gun_Control();
@@ -241,7 +194,7 @@ void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
 
     const SECTOR *const sector = M_GetCurrentSector(item);
 
-    M_BaddieCollision(item, coll);
+    Lara_BaddieCollision(item, coll);
     Lara_Col_Update(item, coll);
     Lara_UpdateRoomToHeight(100);
     Gun_Control();
@@ -314,7 +267,7 @@ void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
     const SECTOR *const sector = M_GetCurrentSector(item);
 
     if (g_Lara.water_status != LWS_CHEAT) {
-        M_BaddieCollision(item, coll);
+        Lara_BaddieCollision(item, coll);
     }
 
     if (g_Lara.water_status == LWS_CHEAT) {
