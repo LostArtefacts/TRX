@@ -151,6 +151,17 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             g_Config.gameplay.wall_glitch_mode = WALL_GLITCH_FIXED;
         }
     }
+
+    // ..4.13: convert enhanced look to enum type
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_enhanced_look");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.gameplay.look_mode = LOOK_MODE_UNRESTRICTED;
+        } else if (JSON_ValueIsFalse(value)) {
+            g_Config.gameplay.look_mode = LOOK_MODE_RESTRICTED;
+        }
+    }
 }
 
 static void M_DumpKeyboardLayout(

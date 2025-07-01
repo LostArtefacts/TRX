@@ -120,7 +120,7 @@ typedef struct {
         bool disable_shotgun;
         bool enable_deaths_counter;
         bool enable_pickup_aids;
-        bool enable_enhanced_look;
+        LOOK_MODE look_mode;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;

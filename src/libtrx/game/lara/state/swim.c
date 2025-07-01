@@ -72,7 +72,7 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Config.gameplay.enable_enhanced_look && g_Input.look) {
+    if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
         Lara_Look_UpDown();
     }
 

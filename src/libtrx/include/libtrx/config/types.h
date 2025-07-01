@@ -75,6 +75,12 @@ typedef enum {
     JUMP_LOCK_NUMBER_OF,
 } JUMP_LOCK_MODE;
 
+typedef enum {
+    LOOK_MODE_RESTRICTED,
+    LOOK_MODE_ENHANCED,
+    LOOK_MODE_UNRESTRICTED,
+} LOOK_MODE;
+
 #if TR_VERSION == 1
     #include "./types_tr1.h"
 #elif TR_VERSION == 2

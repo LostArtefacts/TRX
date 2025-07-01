@@ -25,6 +25,7 @@
 - changed the dev console to accept compound characters (#2938)
 - changed save crystal collision to be more lenient for custom levels (#3343)
 - changed the walk-run-jump bug fix for responsive jumping to be optional (Gameplay settings → Fixes → Fix walk run jump) (#3389)
+- changed the enhanced look option to allow choosing between original TR1, original TR2 or unrestricted modes (Gameplay settings → Controls → Look mode) (#3403)
 - fixed several more OG texture issues (refer to README for details) (#3352)
 - fixed Lara not saying 'no' near receptacles if she doesn't carry any items (#3337, regression from 4.0)
 - fixed Lara not saying 'no' near complete receptacles (#3337, regression from 4.0)

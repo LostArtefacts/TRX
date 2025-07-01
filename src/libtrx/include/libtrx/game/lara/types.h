@@ -94,7 +94,6 @@ typedef struct {
     int16_t vehicle_item_num;
 
     bool climb_status;
-    bool enable_look;
 
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;

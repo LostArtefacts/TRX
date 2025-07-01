@@ -28,7 +28,30 @@ static const LARA_STATE m_StopStates[] = {
     (LARA_STATE)-1,
 };
 
+static const LARA_STATE m_BlockingStates[] = {
+    // clang-format off
+    LS_JUMP_RIGHT,
+    LS_JUMP_LEFT,
+    LS_SPLAT,
+    LS_STEP_RIGHT,
+    LS_STEP_LEFT,
+    LS_PUSH_BLOCK,
+    LS_PULL_BLOCK,
+    LS_PICKUP,
+#if TR_VERSION >= 2
+    LS_FLARE_PICKUP,
+#endif
+    LS_SWITCH_ON,
+    LS_SWITCH_OFF,
+    LS_USE_KEY,
+    LS_USE_PUZZLE,
+    (LARA_STATE)-1,
+    // clang-format on
+};
+
 static void M_Reset(void);
+static bool M_IsLaraIdle(void);
+static bool M_IsCurrentStateBlocked(void);
 
 static void M_Reset(void)
 {
@@ -51,6 +74,30 @@ static void M_Reset(void)
 
     lara->torso_rot.x = lara->head_rot.x;
     lara->torso_rot.y = lara->head_rot.y;
+}
+
+static bool M_IsLaraIdle(void)
+{
+#if TR_VERSION >= 2
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->vehicle_item_num != NO_ITEM) {
+        const ITEM *const vehicle = Item_Get(lara_info->vehicle_item_num);
+        return vehicle->speed == 0;
+    }
+#endif
+    return Lara_HasState(m_StopStates);
+}
+
+static bool M_IsCurrentStateBlocked(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_item->hit_points <= 0 || lara_info->extra_anim) {
+        return true;
+    }
+
+    return g_Config.gameplay.look_mode != LOOK_MODE_UNRESTRICTED
+        && Lara_HasState(m_BlockingStates);
 }
 
 void Lara_Look_LeftRight(void)
@@ -123,27 +170,18 @@ void Lara_Look_UpDown(void)
 
 void Lara_Look_Update(void)
 {
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    const ITEM *const lara_item = Lara_GetItem();
-    if (g_Input.look && !g_Config.gameplay.enable_enhanced_look
-        && !Lara_HasState(m_StopStates)) {
-        g_Camera.type = CAM_CHASE;
+    if (g_Input.look && g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED
+        && !M_IsLaraIdle()) {
+        if (g_Camera.type == CAM_LOOK) {
+            g_Camera.type = CAM_CHASE;
+        }
         M_Reset();
         return;
     }
 
-#if TR_VERSION == 1
-    const bool can_look = lara_item->hit_points > 0;
-#else
-    const bool can_look = lara_info->enable_look;
-#endif
-    if (g_Input.look && !lara_info->extra_anim && can_look) {
+    if (g_Input.look && !M_IsCurrentStateBlocked()) {
         Lara_Look_LeftRight();
     } else {
         M_Reset();
     }
-
-#if TR_VERSION >= 2
-    lara_info->enable_look = true;
-#endif
 }

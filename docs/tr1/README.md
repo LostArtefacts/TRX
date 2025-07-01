@@ -391,7 +391,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 
 #### Gameplay
 - added ability to select weapons / using items with numeric keys
-- added ability to look around while running
+- added an option to choose between original TR1, original TR2 or unrestricted look modes
 - added ability to forward and backward jump while looking
 - added ability to look up and down while hanging
 - added ability to jump-twist and somersault like in TR2+

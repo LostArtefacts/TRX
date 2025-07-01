@@ -6,7 +6,7 @@ X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       GAMEPLAY_SETTINGS_ENABLE_WALK
 #endif
 
 X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS)
-X_UI_CFG_BOOL(gameplay.enable_enhanced_look,       GAMEPLAY_SETTINGS_ENABLE_ENHANCED_LOOK)
+X_UI_CFG_ENUM(gameplay.look_mode,                  GAMEPLAY_SETTINGS_LOOK_MODE, .misc = UI_Settings_LookModeEnumEntries)
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_tr2_jumping,         GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING)
