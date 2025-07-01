@@ -65,7 +65,13 @@ void Object_SwapMesh(
 ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
 
+// Given a key or puzzle object, find a matching receptacle item number to
+// establish the interaction target. Takes into account current Lara's
+// position.
 int16_t Object_FindReceptacle(GAME_OBJECT_ID obj_id);
+
+// Given a receptacle object ID, find a matching key/puzzle object ID.
+GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id);
 
 extern void Object_DrawUnclippedItem(const ITEM *item);
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);

@@ -293,6 +293,12 @@ ANIM_BONE *Object_GetBone(const OBJECT *const obj, const int32_t bone_idx)
     return Anim_GetBone(obj->bone_idx + bone_idx);
 }
 
+GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id)
+{
+    return Object_GetCognateInverse(
+        receptacle_obj_id, g_KeyItemToReceptacleMap);
+}
+
 int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
 {
     // Iterate through all matching receptacles
@@ -304,7 +310,6 @@ int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
 
         // Iterate through all level items that match this receptacle
         const GAME_OBJECT_ID receptacle_to_check = map[i].value_id;
-        LOG_INFO("looking for receptacle %d", map[i].value_id);
         for (int16_t item_num = 0; item_num < Item_GetLevelCount();
              item_num++) {
             const ITEM *const item = Item_Get(item_num);
@@ -317,17 +322,13 @@ int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
                 && !obj->is_usable_func(item_num)) {
                 continue;
             }
-            LOG_INFO("got something.. testing item %d", item_num);
 
             // If Lara is standing near one, that's our keyhole
             if (Lara_TestPosition(item, obj->bounds_func())) {
-                LOG_INFO("almost there?");
                 return item_num;
-            } else
-                LOG_INFO("bounds didn't allow me");
+            }
         }
     }
 
-    LOG_INFO("not found anything for %d", obj_id);
-    return NO_OBJECT;
+    return NO_ITEM;
 }
