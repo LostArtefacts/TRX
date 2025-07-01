@@ -25,7 +25,6 @@
 #include <libtrx/utils.h>
 
 #define LARA_MOVE_TIMEOUT 90
-#define LARA_PUSH_TIMEOUT 15
 #define LARA_UW_DAMAGE 5
 
 LARA_INFO *Lara_GetLaraInfo(void)
@@ -675,91 +674,5 @@ void Lara_InitialiseMeshes(const GF_LEVEL *const level)
     if (holsters_gun_type != LGT_UNARMED && holsters_gun_type != LGT_UNKNOWN) {
         Gun_SetLaraHolsterLMesh(holsters_gun_type);
         Gun_SetLaraHolsterRMesh(holsters_gun_type);
-    }
-}
-
-void Lara_Push(
-    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
-    const bool big_push)
-{
-    ITEM *const target_item = Lara_GetItem();
-    int32_t x = target_item->pos.x - item->pos.x;
-    int32_t z = target_item->pos.z - item->pos.z;
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
-    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
-
-    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
-    int32_t min_x = bounds->min.x;
-    int32_t max_x = bounds->max.x;
-    int32_t min_z = bounds->min.z;
-    int32_t max_z = bounds->max.z;
-
-    if (big_push) {
-        min_x -= coll->radius;
-        max_x += coll->radius;
-        min_z -= coll->radius;
-        max_z += coll->radius;
-    }
-
-    if (rx >= min_x && rx <= max_x && rz >= min_z && rz <= max_z) {
-        int32_t l = rx - min_x;
-        int32_t r = max_x - rx;
-        int32_t t = max_z - rz;
-        int32_t b = rz - min_z;
-
-        if (l <= r && l <= t && l <= b) {
-            rx -= l;
-        } else if (r <= l && r <= t && r <= b) {
-            rx += r;
-        } else if (t <= l && t <= r && t <= b) {
-            rz += t;
-        } else {
-            rz -= b;
-        }
-
-        int32_t ax = (c * rx + s * rz) >> W2V_SHIFT;
-        int32_t az = (c * rz - s * rx) >> W2V_SHIFT;
-
-        target_item->pos.x = item->pos.x + ax;
-        target_item->pos.z = item->pos.z + az;
-
-        rx = (bounds->min.x + bounds->max.x) / 2;
-        rz = (bounds->min.z + bounds->max.z) / 2;
-        x -= (c * rx + s * rz) >> W2V_SHIFT;
-        z -= (c * rz - s * rx) >> W2V_SHIFT;
-
-        if (hit_on) {
-            Lara_TakeHit(target_item, x, z);
-        }
-
-        coll->bad_pos = NO_BAD_POS;
-        coll->bad_neg = -STEPUP_HEIGHT;
-        coll->bad_ceiling = 0;
-
-        int16_t old_facing = coll->facing;
-        coll->facing = Math_Atan(
-            target_item->pos.z - coll->old.z, target_item->pos.x - coll->old.x);
-        Collide_GetCollisionInfo(
-            coll, target_item->pos.x, target_item->pos.y, target_item->pos.z,
-            target_item->room_num, LARA_HEIGHT);
-        coll->facing = old_facing;
-
-        if (coll->coll_type != COLL_NONE) {
-            target_item->pos.x = coll->old.x;
-            target_item->pos.z = coll->old.z;
-        } else {
-            coll->old.x = target_item->pos.x;
-            coll->old.y = target_item->pos.y;
-            coll->old.z = target_item->pos.z;
-            Lara_UpdateRoomToHeight(-10);
-        }
-
-        if (g_Lara.interact_target.is_moving
-            && g_Lara.interact_target.move_count > LARA_PUSH_TIMEOUT) {
-            g_Lara.interact_target.is_moving = false;
-            g_Lara.gun_status = LGS_ARMLESS;
-        }
     }
 }
