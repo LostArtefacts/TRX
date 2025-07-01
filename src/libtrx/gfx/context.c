@@ -2,8 +2,7 @@
 
 #include "game/shell.h"
 #include "gfx/gl/utils.h"
-#include "gfx/renderers/fbo_renderer.h"
-#include "gfx/renderers/legacy_renderer.h"
+#include "gfx/renderer.h"
 #include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
@@ -17,7 +16,6 @@ typedef struct {
     SDL_Window *window_handle;
 
     GFX_CONFIG config;
-    GFX_RENDER_MODE render_mode;
 
     // Size of the OpenGL framebuffer.
     int32_t display_width;
@@ -125,7 +123,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
     m_Context.config.backend = backend;
     m_Context.config.line_width = 1;
     m_Context.config.enable_wireframe = false;
-    m_Context.render_mode = -1;
     SDL_GetWindowSize(
         window_handle, &m_Context.window_width, &m_Context.window_height);
     m_Context.window_border = 0;
@@ -165,6 +162,12 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
     glDebugMessageCallback(M_GLDebug, nullptr);
     glEnable(GL_DEBUG_OUTPUT);
 #endif
+
+    m_Context.renderer = &g_GFX_Renderer;
+    if (m_Context.renderer->init != nullptr) {
+        m_Context.renderer->init(m_Context.renderer, &m_Context.config);
+    }
+
     return true;
 }
 
@@ -244,32 +247,6 @@ void GFX_Context_SetDisplaySize(int32_t width, int32_t height)
     if (m_Context.renderer != nullptr && m_Context.renderer->reset != nullptr) {
         m_Context.renderer->reset(m_Context.renderer);
     }
-}
-
-void GFX_Context_SetRenderingMode(GFX_RENDER_MODE target_mode)
-{
-    GFX_RENDER_MODE current_mode = m_Context.render_mode;
-    if (current_mode == target_mode) {
-        return;
-    }
-
-    LOG_INFO("Render mode: %d", target_mode);
-    if (m_Context.renderer != nullptr
-        && m_Context.renderer->shutdown != nullptr) {
-        m_Context.renderer->shutdown(m_Context.renderer);
-    }
-    switch (target_mode) {
-    case GFX_RM_FRAMEBUFFER:
-        m_Context.renderer = &g_GFX_Renderer_FBO;
-        break;
-    case GFX_RM_LEGACY:
-        m_Context.renderer = &g_GFX_Renderer_Legacy;
-        break;
-    }
-    if (m_Context.renderer != nullptr && m_Context.renderer->init != nullptr) {
-        m_Context.renderer->init(m_Context.renderer, &m_Context.config);
-    }
-    m_Context.render_mode = target_mode;
 }
 
 void *GFX_Context_GetWindowHandle(void)

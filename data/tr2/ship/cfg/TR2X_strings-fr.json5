@@ -1100,7 +1100,6 @@
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "\\{review}Corrige le tir du fusil à pompe lorsqu'il est dégainé, qui échoue parfois à produire un éclair ou un son.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
-        "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "\\{review}Choisit le rendu avec le CPU (plus lent, plus oldschool) ou le GPU (plus rapide et meilleur).",
         "KEYMAP_CAMERA_RESET": "\\{review}Réinitialisation de la caméra",
         "KEYMAP_CYCLE_LIGHTING_CONTRAST": "\\{review}Contraste de l'éclairage en cycle",
         "KEYMAP_EQUIP_GRENADE_LAUNCHER": "\\{review}Équiper le lance-grenades",

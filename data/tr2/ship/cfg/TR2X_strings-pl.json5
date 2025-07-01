@@ -1073,7 +1073,6 @@
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Naprawia strzelanie z strzelby po wyciągnięciu, które czasami nie powodowało błysku ani dźwięku.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
-        "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Przełącza między rysowaniem na procesorze (wolniejsze, bardziej oldschoolowe) lub na karcie graficznej (szybsze i lepsze).",
         "KEYMAP_CAMERA_RESET": "Reset kamery",
         "KEYMAP_CYCLE_LIGHTING_CONTRAST": "Zmiana kontrastu oświetlenia",
         "KEYMAP_EQUIP_GRENADE_LAUNCHER": "Wyposaż wyrzutnię granatów",

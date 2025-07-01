@@ -9,3 +9,5 @@ typedef struct GFX_Renderer {
     void (*swap_buffers)(struct GFX_Renderer *renderer);
     void *priv;
 } GFX_RENDERER;
+
+extern GFX_RENDERER g_GFX_Renderer;

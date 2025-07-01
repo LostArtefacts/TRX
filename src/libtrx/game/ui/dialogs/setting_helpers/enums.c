@@ -103,12 +103,6 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[] = {
 };
 
 #if TR_VERSION == 1
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_RenderModeEnumEntries[] = {
-    { GFX_RM_LEGACY, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_LEGACY) },
-    { GFX_RM_FRAMEBUFFER, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_FBO) },
-    { -1, nullptr },
-};
-
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[] = {
     { UI_STYLE_PS1, GS_ID(GRAPHIC_SETTINGS_UI_STYLE_PS1) },
     { UI_STYLE_PC, GS_ID(GRAPHIC_SETTINGS_UI_STYLE_PC) },

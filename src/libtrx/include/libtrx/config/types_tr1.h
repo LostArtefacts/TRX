@@ -190,7 +190,6 @@ typedef struct {
     struct {
         int32_t resolution_width;
         int32_t resolution_height;
-        GFX_RENDER_MODE render_mode;
         int32_t fps;
         bool enable_trapezoid_filter;
         bool enable_lighting;

@@ -704,7 +704,6 @@
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Empêche Lara de tirer avec le fusil si la cible verrouillée sort du champ de vision, comme pour les autres armes.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Génère un éclairage dynamique pour les coups de feu et les explosions, comme apparu depuis TR2.",
-        "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Définit si le rendu passe par le tampon d'image ou est envoyé directement à la fenêtre.",
         "KEYMAP_BILINEAR": "Basculer le filtre de texture",
         "KEYMAP_CHANGE_TARGET": "Changer de cible",
         "KEYMAP_EQUIP_MAGNUMS": "S'équiper des magnums",

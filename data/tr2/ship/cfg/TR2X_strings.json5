@@ -1100,7 +1100,6 @@
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions.",
-        "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Chooses rendering with CPU (slower, more oldschool) or GPU (faster and better).",
         "KEYMAP_CAMERA_RESET": "Camera Reset",
         "KEYMAP_CYCLE_LIGHTING_CONTRAST": "Cycle Lighting Contrast",
         "KEYMAP_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",

@@ -742,7 +742,6 @@
         "GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         "GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Sprawia, że Lara już nie strzela ze strzelby, gdy aktywny cel wychodzi z jej pola widzenia, co przybliża zachowanie strzelby do pozostałych broni.",
         "GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach, podobnie jak w TR2+.",
-        "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Przełącza między rysowaniem do bufora lub bezpośrednio do okna.",
         "KEYMAP_BILINEAR": "Przełącz filtr tekstur",
         "KEYMAP_CHANGE_TARGET": "Zmień cel",
         "KEYMAP_EQUIP_MAGNUMS": "Wyposaż magnumy",

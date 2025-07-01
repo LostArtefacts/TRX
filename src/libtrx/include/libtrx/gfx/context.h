@@ -3,7 +3,7 @@
 #include "2d/2d_renderer.h"
 #include "3d/3d_renderer.h"
 #include "common.h"
-#include "renderers/fbo_renderer.h"
+#include "renderer.h"
 
 #include <stdint.h>
 
@@ -18,7 +18,6 @@ void GFX_Context_SetVSync(bool vsync);
 void GFX_Context_SetWindowBorder(int32_t size);
 void GFX_Context_SetWindowSize(int32_t width, int32_t height);
 void GFX_Context_SetDisplaySize(int32_t width, int32_t height);
-void GFX_Context_SetRenderingMode(GFX_RENDER_MODE target_mode);
 
 void *GFX_Context_GetWindowHandle(void);
 int32_t GFX_Context_GetWindowWidth(void);
