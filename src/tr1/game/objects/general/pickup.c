@@ -323,7 +323,7 @@ static void M_CollisionControlled(
                 g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num) {
                 g_Lara.interact_target.is_moving = false;
-                g_Lara.interact_target.item_num = NO_OBJECT;
+                g_Lara.interact_target.item_num = NO_ITEM;
                 g_Lara.gun_status = LGS_ARMLESS;
             }
             if (have_item) {
@@ -364,7 +364,7 @@ static void M_CollisionControlled(
                 g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num) {
                 g_Lara.interact_target.is_moving = false;
-                g_Lara.interact_target.item_num = NO_OBJECT;
+                g_Lara.interact_target.item_num = NO_ITEM;
                 g_Lara.gun_status = LGS_ARMLESS;
             }
         } else if (

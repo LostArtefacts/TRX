@@ -48,7 +48,7 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 
     M_CreateGongBonger(lara_item);
     g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_OBJECT;
+    g_Lara.interact_target.item_num = NO_ITEM;
 }
 
 static void M_ConsumeKeyItem(ITEM *const receptacle_item)

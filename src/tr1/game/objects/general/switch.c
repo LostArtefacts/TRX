@@ -175,7 +175,7 @@ static void M_CollisionControlled(
                 g_Lara.torso_rot.x = 0;
                 g_Lara.torso_rot.y = 0;
                 g_Lara.interact_target.is_moving = false;
-                g_Lara.interact_target.item_num = NO_OBJECT;
+                g_Lara.interact_target.item_num = NO_ITEM;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
                 Item_AddActive(item_num);
                 item->status = IS_ACTIVE;

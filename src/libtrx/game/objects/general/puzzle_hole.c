@@ -64,7 +64,7 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
     if (key_object_id != NO_OBJECT) {
         Inv_RemoveItem(key_object_id);
     }
-    lara->interact_target.item_num = NO_OBJECT;
+    lara->interact_target.item_num = NO_ITEM;
 }
 
 static void M_MarkDone(ITEM *const receptacle_item)

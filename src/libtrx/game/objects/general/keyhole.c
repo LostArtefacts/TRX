@@ -54,7 +54,7 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
         Inv_RemoveItem(key_object_id);
     }
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->interact_target.item_num = NO_OBJECT;
+    lara->interact_target.item_num = NO_ITEM;
 }
 
 static void M_MarkDone(ITEM *const receptacle_item)
