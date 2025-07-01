@@ -26,9 +26,9 @@ X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     GAMEPLAY_SETTINGS_ENABLE_TR2_
 X_UI_CFG_BOOL(gameplay.enable_wading,              GAMEPLAY_SETTINGS_ENABLE_WADING)
 X_UI_CFG_ENUM(gameplay.target_mode,                GAMEPLAY_SETTINGS_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
 X_UI_CFG_BOOL(gameplay.enable_target_change,       GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE)
-X_UI_CFG_BOOL(gameplay.enable_inverted_look,       GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK)
 #endif
 
+X_UI_CFG_BOOL(gameplay.enable_inverted_look,       GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK)
 X_UI_CFG_INT32(gameplay.camera_speed,              GAMEPLAY_SETTINGS_CAMERA_SPEED, .min_value = 1, .max_value = 10)
 
 #if TR_VERSION == 1
