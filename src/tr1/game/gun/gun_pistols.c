@@ -82,10 +82,14 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
         g_Lara.target = nullptr;
     }
 
-    g_Lara.head_rot.x = (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
-    g_Lara.head_rot.y = (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
-    g_Lara.torso_rot.x = (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
-    g_Lara.torso_rot.y = (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
+    if (!g_Input.look || g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
+        g_Lara.head_rot.x =
+            (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
+        g_Lara.head_rot.y =
+            (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
+        g_Lara.torso_rot.x = g_Lara.head_rot.x;
+        g_Lara.torso_rot.y = g_Lara.head_rot.y;
+    }
 }
 
 void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
@@ -99,11 +103,14 @@ void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
     g_Lara.right_arm.rot.y = 0;
     g_Lara.right_arm.rot.z = 0;
     g_Lara.right_arm.lock = 0;
-    g_Lara.head_rot.x = 0;
-    g_Lara.head_rot.y = 0;
-    g_Lara.torso_rot.x = 0;
-    g_Lara.torso_rot.y = 0;
     g_Lara.target = nullptr;
+
+    if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x = 0;
+        g_Lara.torso_rot.y = 0;
+    }
 
     const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
     g_Lara.right_arm.frame_base = obj->frame_base;
