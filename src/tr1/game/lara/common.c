@@ -429,7 +429,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
     case O_SCION_ITEM_4:
     case O_SCION_OPTION: {
         int16_t receptacle_item_num = Object_FindReceptacle(obj_id);
-        if (receptacle_item_num == NO_OBJECT) {
+        if (receptacle_item_num == NO_ITEM) {
             Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
             return;
         }
@@ -498,7 +498,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.right_arm.lock = 0;
     g_Lara.left_arm.lock = 0;
     g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_OBJECT;
+    g_Lara.interact_target.item_num = NO_ITEM;
     g_Lara.interact_target.move_count = 0;
 
     if (Room_Get(g_LaraItem->room_num)->flags & RF_UNDERWATER) {

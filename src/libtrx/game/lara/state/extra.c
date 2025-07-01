@@ -64,7 +64,7 @@ static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
         Overlay_AddDisplayPickup(O_PUZZLE_ITEM_1);
         Inv_AddItem(O_PUZZLE_ITEM_1);
         LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->interact_target.item_num = NO_OBJECT;
+        lara->interact_target.item_num = NO_ITEM;
     }
 #endif
 }

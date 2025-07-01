@@ -23,7 +23,7 @@ void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
     }
     g_Lara.hit_frame++;
     g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_OBJECT;
+    g_Lara.interact_target.item_num = NO_ITEM;
     CLAMPG(g_Lara.hit_frame, 34);
 }
 

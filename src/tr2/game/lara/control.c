@@ -608,7 +608,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
     case O_PUZZLE_ITEM_4:
     case O_PUZZLE_OPTION_4: {
         const int16_t receptacle_item_num = Object_FindReceptacle(obj_id);
-        if (receptacle_item_num == NO_OBJECT) {
+        if (receptacle_item_num == NO_ITEM) {
             Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
             return;
         }
