@@ -21,9 +21,10 @@
 - added an option to choose between original TR1, original TR2 or unrestricted look modes (Gameplay settings → Controls → Look mode) (#3403)
 - added an option to set the upscaling filter (Graqphic settings → Rendering → Upscaling filter)
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)
-- changed statistics details mode to be placed in the UI section
 - added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)
+- changed statistics details mode to be placed in the UI section
 - changed the "sizer" option name to "Upscaling factor" (Graphic settings → Rendering → Upscaling factor)
+- changed the "scaler" option name to "Borders" (Graphic settings → Rendering → Borders)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys

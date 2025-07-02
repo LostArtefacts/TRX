@@ -179,12 +179,10 @@ void Render_Reset(const RENDER_RESET_FLAGS reset_flags)
 }
 
 void Render_SetupDisplay(
-    const int32_t window_border, const int32_t window_width,
-    const int32_t window_height, const int32_t screen_width,
-    const int32_t screen_height)
+    const int32_t window_width, const int32_t window_height,
+    const int32_t screen_width, const int32_t screen_height)
 {
     LOG_DEBUG("%dx%d", screen_width, screen_height);
-    GFX_Context_SetWindowBorder(window_border);
     GFX_Context_SetWindowSize(window_width, window_height);
     GFX_Context_SetDisplaySize(screen_width, screen_height);
     Render_Reset(RENDER_RESET_VIEWPORT);

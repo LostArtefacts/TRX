@@ -35,8 +35,8 @@ void Render_Shutdown(void);
 
 void Render_Reset(RENDER_RESET_FLAGS reset_flags);
 void Render_SetupDisplay(
-    int32_t window_border, int32_t window_width, int32_t window_height,
-    int32_t screen_width, int32_t screen_height);
+    int32_t window_width, int32_t window_height, int32_t screen_width,
+    int32_t screen_height);
 
 void Render_BeginScene(void);
 void Render_EndScene(void);

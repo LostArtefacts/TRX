@@ -200,7 +200,7 @@ typedef struct {
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
         int32_t upscaling_factor;
-        float sizer;
+        float borders;
     } rendering;
 
     struct {

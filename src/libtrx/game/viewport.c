@@ -73,9 +73,9 @@ void Viewport_ResetCommon(void)
     m_Rects[VIEWPORT_WINDOW].height = size.h;
 
     const int32_t max_w =
-        m_Rects[VIEWPORT_WINDOW].width * g_Config.rendering.sizer;
+        m_Rects[VIEWPORT_WINDOW].width * (1.0 - g_Config.rendering.borders);
     const int32_t max_h =
-        m_Rects[VIEWPORT_WINDOW].height * g_Config.rendering.sizer;
+        m_Rects[VIEWPORT_WINDOW].height * (1.0 - g_Config.rendering.borders);
 
     double aspect_ratio = 0.0;
     switch (g_Config.rendering.aspect_mode) {
