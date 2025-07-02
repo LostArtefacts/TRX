@@ -195,7 +195,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
 {
     bool result = false;
 
-    int32_t version;
+    int32_t version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &version);
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     if (root_obj == nullptr) {

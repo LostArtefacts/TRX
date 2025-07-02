@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../event_manager.h"
+
 #include <SDL2/SDL.h>
 #include <stdint.h>
 
@@ -12,7 +14,6 @@ extern void Shell_Shutdown(void);
 extern SDL_Window *Shell_GetWindow(void);
 
 extern bool Shell_ParseArgs(int32_t arg_count, const char **args);
-void Shell_Setup(void);
 extern int32_t Shell_Main(void);
 void Shell_Terminate(int32_t exit_code);
 void Shell_ExitSystem(const char *message);
@@ -26,7 +27,13 @@ SHELL_SIZE Shell_GetWindowSize(void);
 SHELL_SIZE Shell_GetCurrentSize(void);
 SHELL_SIZE Shell_GetCurrentDisplaySize(void);
 
+// TODO: inline these once we get common shell code
+void Shell_LoadConfig(void);
+void Shell_InitCommonModules(void);
+void Shell_ShutdownCommonModules(void);
 bool Shell_ProcessCommonEvent(const SDL_Event *event);
+
+extern void Shell_HandleConfigChange(const EVENT *event, void *data);
 
 extern const char *Shell_GetConfigPath(void);
 extern const char *Shell_GetGameFlowPath(void);

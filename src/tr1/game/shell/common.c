@@ -1,11 +1,6 @@
-#include "game/clock.h"
-#include "game/console/common.h"
 #include "game/fmv.h"
 #include "game/game_flow.h"
-#include "game/game_string.h"
 #include "game/output.h"
-#include "game/overlay.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -14,10 +9,8 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
-#include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
-#include <libtrx/game/option.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -74,8 +67,6 @@ static void M_SetFullscreen(bool is_enabled, bool update);
 static void M_SetGLBackend(GFX_GL_BACKEND backend);
 
 static void M_ShowHelp(void);
-static void M_LoadConfig(void);
-static void M_HandleConfigChange(const EVENT *event, void *data);
 
 static void M_HandleWindowResized(void)
 {
@@ -150,7 +141,7 @@ static void M_ShowHelp(void)
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
 }
 
-static void M_HandleConfigChange(const EVENT *const event, void *const data)
+void Shell_HandleConfigChange(const EVENT *const event, void *const data)
 {
     const CONFIG *const old = &g_Config;
     const CONFIG *const new = &g_SavedConfig;
@@ -184,25 +175,18 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
             g_Config.window.is_fullscreen ? SDL_DISABLE : SDL_ENABLE);
     }
 
+#undef L_CHANGED
+
     Output_ApplyRenderSettings();
 }
 
-static void M_Start(void)
+static void M_ShowWindow(void)
 {
     M_SetFullscreen(g_Config.window.is_fullscreen, true);
     M_SetWindowPos(g_Config.window.x, g_Config.window.y, true);
     M_SetWindowSize(g_Config.window.width, g_Config.window.height, true);
     M_SetWindowMaximized(g_Config.window.is_maximized, true);
     SDL_ShowWindow(m_Window);
-}
-
-static void M_LoadConfig(void)
-{
-    Config_Read();
-    Config_SubscribeChanges(M_HandleConfigChange, nullptr);
-
-    Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    Music_SetVolume(g_Config.audio.music_volume);
 }
 
 static void M_SetWindowPos(int32_t x, int32_t y, bool update)
@@ -352,32 +336,17 @@ bool Shell_ParseArgs(const int32_t arg_count, const char **args)
 
 int32_t Shell_Main(void)
 {
-    GameString_Init();
-    GameStringManager_Init();
-    EnumMap_Init();
-    Config_Init();
-
-    UI_Init();
-    Overlay_Init();
-
-    Input_Init();
-    Sound_Init();
-    Music_Init();
-
-    M_LoadConfig();
-
-    Clock_Init();
+    Shell_InitCommonModules();
+    Shell_LoadConfig();
 
     M_CreateGameWindow();
-
-    Random_Seed();
 
     if (!Output_Init()) {
         Shell_ExitSystem("Could not initialise video system");
         return 1;
     }
-    M_Start();
     Screen_Init();
+    M_ShowWindow();
 
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
@@ -393,8 +362,6 @@ int32_t Shell_Main(void)
     Savegame_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
-    GameBuf_Init();
-    Console_Init();
 
     if (m_Args.level_to_play != nullptr) {
         Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
@@ -496,25 +463,7 @@ int32_t Shell_Main(void)
 
 void Shell_Shutdown(void)
 {
-    Console_Shutdown();
-    Savegame_Shutdown();
-
-    GF_Shutdown();
-    Overlay_Shutdown();
-    Option_Shutdown();
-    Output_Shutdown();
-    Input_Shutdown();
-    Music_Shutdown();
-    Sound_Shutdown();
-    UI_Shutdown();
-
-    GameStringManager_Shutdown();
-    GameString_Shutdown();
-    GameBuf_Shutdown();
-
-    Config_Shutdown();
-    EnumMap_Shutdown();
-    Log_Shutdown();
+    Shell_ShutdownCommonModules();
 }
 
 const char *Shell_GetConfigPath(void)

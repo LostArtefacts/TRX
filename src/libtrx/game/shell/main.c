@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
     Memory_FreePointer(&log_path);
 
     LOG_INFO("Starting %s", g_TRXVersion);
-    Shell_Setup();
     int32_t exit_code = Shell_Main();
     Shell_Terminate(exit_code);
     return exit_code;
