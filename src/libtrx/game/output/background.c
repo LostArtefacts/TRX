@@ -10,29 +10,32 @@
 #include "utils.h"
 #include "vector.h"
 
+#include <float.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #define M_RELATIVE_ERROR(a, b) ABS((a) - (b)) / (b)
 
 typedef struct {
-    char *file_name;
-    float diff;
+    char *path;
+    int32_t width;
+    int32_t height;
 } M_CANDIDATE;
 
 static char *m_LastPath = nullptr;
 static VECTOR *m_CachedCandidates = nullptr;
 static size_t m_CachedDirLen = 0;
 static char *m_CachedScanPath = nullptr;
+static char *m_LastCandidateName = nullptr;
 
 static IMAGE *M_CreateImageFromPath(const char *path);
 static float M_GetScreenAspectRatio(void);
-static int M_CompareCandidates(const void *a, const void *b);
-static VECTOR *M_ScanCandidates(const char *path, size_t *dir_len_out);
-static bool M_TryLoadCandidates(
-    const char *path, VECTOR *candidates, size_t dir_len);
-static void M_FreeCandidates(VECTOR *candidates);
+static void M_ScanCandidates(const char *path);
+static void M_FreeCandidates(void);
+
+static const M_CANDIDATE *M_PickBestCandidate(float screen_ratio);
+static bool M_LoadCandidate(const M_CANDIDATE *candidate);
+static bool M_LoadMainCandidate(const char *path);
 
 static IMAGE *M_CreateImageFromPath(const char *const path)
 {
@@ -51,41 +54,27 @@ static float M_GetScreenAspectRatio(void)
         / (float)Viewport_GetHeight(VIEWPORT_GAME);
 }
 
-static int M_CompareCandidates(const void *const a, const void *const b)
+static void M_ScanCandidates(const char *const base_image_path)
 {
-    const M_CANDIDATE *const c1 = a;
-    const M_CANDIDATE *const c2 = b;
-    if (c1->diff < c2->diff) {
-        return -1;
-    }
-    if (c1->diff > c2->diff) {
-        return 1;
-    }
-    return 0;
-}
-
-static VECTOR *M_ScanCandidates(
-    const char *const path, size_t *const dir_len_out)
-{
+    LOG_INFO("Searching for background images");
     VECTOR *candidates = nullptr;
 
-    const char *last_slash = strrchr(path, '/');
-    const char *last_backslash = strrchr(path, '\\');
+    const char *last_slash = strrchr(base_image_path, '/');
+    const char *last_backslash = strrchr(base_image_path, '\\');
     const char *last_sep =
         last_slash > last_backslash ? last_slash : last_backslash;
     size_t dir_len;
     char *dir_path;
     if (last_sep != nullptr) {
-        dir_len = last_sep - path;
-        dir_path = String_Format("%.*s", (int)dir_len, path);
+        dir_len = last_sep - base_image_path;
+        dir_path = String_Format("%.*s", (int)dir_len, base_image_path);
     } else {
         dir_len = 0;
         dir_path = Memory_DupStr(".");
     }
 
-    const char *file_name = last_sep ? last_sep + 1 : path;
+    const char *file_name = last_sep ? last_sep + 1 : base_image_path;
     const char *ext_ptr = strrchr(file_name, '.');
-    const float screen_ratio = M_GetScreenAspectRatio();
 
     void *const dir_handle = File_OpenDirectory(dir_path);
     if (dir_handle == nullptr) {
@@ -97,109 +86,121 @@ static VECTOR *M_ScanCandidates(
     while ((entry = File_ReadDirectory(dir_handle)) != nullptr) {
         // Match the file itself, and assume it's of 16:9 aspect ratio.
         if (String_Equivalent(entry, file_name)) {
-            const float ratio = 16.0f / 9.0f;
             Vector_Add(
                 candidates,
                 &(M_CANDIDATE) {
-                    .file_name = Memory_DupStr(file_name),
-                    .diff = M_RELATIVE_ERROR(ratio, screen_ratio),
+                    .path = String_Format("%s/%s", dir_path, file_name),
+                    .width = 16,
+                    .height = 9,
                 });
         }
 
         // Match directories with pattern: <width>x<height>
         int32_t w = 0, h = 0;
         if (sscanf(entry, "%dx%d", &w, &h) == 2) {
-            const float ratio = w / (float)h;
-            Vector_Add(
-                candidates,
-                &(M_CANDIDATE) {
-                    .file_name = String_Format("%s/%s", entry, file_name),
-                    .diff = M_RELATIVE_ERROR(ratio, screen_ratio),
-                });
+            const char *const candidate_path =
+                String_FormatStatic("%s/%s/%s", dir_path, entry, file_name);
+            if (File_Exists(candidate_path)) {
+                Vector_Add(
+                    candidates,
+                    &(M_CANDIDATE) {
+                        .path = Memory_DupStr(candidate_path),
+                        .width = w,
+                        .height = h,
+                    });
+            }
         }
     }
     File_CloseDirectory(dir_handle);
 
-finish:
-    *dir_len_out = dir_len;
-    Memory_FreePointer(&dir_path);
-    return candidates;
-}
-
-static bool M_TryLoadCandidates(
-    const char *const path, VECTOR *const candidates, const size_t dir_len)
-{
     for (int32_t i = 0; i < candidates->count; i++) {
-        const M_CANDIDATE *candidate = Vector_Get(candidates, i);
-        char *full_path;
-        if (dir_len > 0) {
-            full_path = String_Format(
-                "%.*s/%s", (int32_t)dir_len, path, candidate->file_name);
-        } else {
-            full_path = String_Format("%s", candidate->file_name);
-        }
-        IMAGE *const image = M_CreateImageFromPath(full_path);
-        Memory_FreePointer(&full_path);
-        if (image != nullptr) {
-            Output_LoadBackgroundFromImage(image);
-            Image_Free(image);
-            return true;
-        }
+        const M_CANDIDATE *const candidate = Vector_Get(candidates, i);
+        LOG_INFO(
+            "%d. %s (%d:%d)", i + 1, candidate->path, candidate->width,
+            candidate->height);
     }
-    return false;
+
+finish:
+    m_CachedScanPath = dir_path;
+    m_CachedCandidates = candidates;
 }
 
-static void M_FreeCandidates(VECTOR *const candidates)
+static void M_FreeCandidates(void)
 {
-    if (candidates == nullptr) {
+    if (m_CachedCandidates == nullptr) {
         return;
     }
-    for (int32_t i = 0; i < candidates->count; i++) {
-        M_CANDIDATE *const candidate = Vector_Get(candidates, i);
-        Memory_Free(candidate->file_name);
+    for (int32_t i = 0; i < m_CachedCandidates->count; i++) {
+        M_CANDIDATE *const candidate = Vector_Get(m_CachedCandidates, i);
+        Memory_Free(candidate->path);
     }
-    Vector_Free(candidates);
+    Vector_Free(m_CachedCandidates);
+    m_CachedCandidates = nullptr;
+    Memory_FreePointer(&m_CachedScanPath);
+}
+
+static const M_CANDIDATE *M_PickBestCandidate(const float screen_ratio)
+{
+    if (m_CachedCandidates == nullptr) {
+        return nullptr;
+    }
+    int32_t best_idx = -1;
+    float best_err = FLT_MAX;
+    const M_CANDIDATE *const raw = Vector_GetData(m_CachedCandidates);
+    for (int32_t i = 0; i < m_CachedCandidates->count; i++) {
+        const float candidate_ratio = raw[i].width / (float)raw[i].height;
+        const float err = M_RELATIVE_ERROR(candidate_ratio, screen_ratio);
+        if (err < best_err) {
+            best_err = err;
+            best_idx = i;
+        }
+    }
+    return best_idx >= 0 ? &raw[best_idx] : nullptr;
+}
+
+static bool M_LoadCandidate(const M_CANDIDATE *const candidate)
+{
+    LOG_INFO("Loading background image from %s", candidate->path);
+    IMAGE *const img = M_CreateImageFromPath(candidate->path);
+    if (img == nullptr) {
+        return false;
+    }
+    Output_LoadBackgroundFromImage(img);
+    Image_Free(img);
+    Memory_FreePointer(&m_LastCandidateName);
+    m_LastCandidateName = Memory_DupStr(candidate->path);
+    return true;
+}
+
+static bool M_LoadMainCandidate(const char *const path)
+{
+    IMAGE *const img = M_CreateImageFromPath(path);
+    if (img == nullptr) {
+        return false;
+    }
+    Output_LoadBackgroundFromImage(img);
+    Image_Free(img);
+    Memory_FreePointer(&m_LastCandidateName);
+    m_LastCandidateName = Memory_DupStr(path);
+    return true;
 }
 
 bool Output_LoadBackgroundFromFile(const char *const path)
 {
-    LOG_INFO("Loading image %s", path);
     bool result = false;
 
-    if (m_CachedScanPath == nullptr
-        || !String_Equivalent(path, m_CachedScanPath)) {
-        M_FreeCandidates(m_CachedCandidates);
-        Memory_FreePointer(&m_CachedScanPath);
-        m_CachedCandidates = M_ScanCandidates(path, &m_CachedDirLen);
-        m_CachedScanPath = Memory_DupStr(path);
+    if (m_LastPath == nullptr || !String_Equivalent(path, m_LastPath)) {
+        M_FreeCandidates();
+        M_ScanCandidates(path);
     }
-    VECTOR *candidates = m_CachedCandidates;
-    if (candidates != nullptr) {
-        M_CANDIDATE *raw_candidates = Vector_GetData(candidates);
-        qsort(
-            raw_candidates, candidates->count, sizeof(M_CANDIDATE),
-            M_CompareCandidates);
-        for (int32_t i = 0; i < candidates->count; i++) {
-            const M_CANDIDATE *const candidate = Vector_Get(candidates, i);
-            LOG_INFO(
-                "Found candidate %s (diff=%.02f)", candidate->file_name,
-                candidate->diff);
-        }
-        if (M_TryLoadCandidates(path, candidates, m_CachedDirLen)) {
-            result = true;
-        }
+    const M_CANDIDATE *const best =
+        M_PickBestCandidate(M_GetScreenAspectRatio());
+    if (best != nullptr && M_LoadCandidate(best)) {
+        result = true;
     }
-
     if (!result) {
-        // Fallback to the main image.
-        IMAGE *const image = M_CreateImageFromPath(path);
-        if (image != nullptr) {
-            result = true;
-            Output_LoadBackgroundFromImage(image);
-            Image_Free(image);
-        }
+        result = M_LoadMainCandidate(path);
     }
-
     if (result) {
         char *prev = m_LastPath;
         m_LastPath = Memory_DupStr(path);
@@ -211,19 +212,27 @@ bool Output_LoadBackgroundFromFile(const char *const path)
 void Output_ReloadBackgroundImage(void)
 {
     if (Output_GetBackgroundType() == BK_OBJECT) {
-        Output_UnloadBackground();
         Output_LoadBackgroundFromObject();
         return;
     }
 
     if (m_LastPath == nullptr) {
+        Output_UnloadBackground();
         return;
     }
 
-    char *prev = Memory_DupStr(m_LastPath);
+    const M_CANDIDATE *best = M_PickBestCandidate(M_GetScreenAspectRatio());
+    if (best != nullptr) {
+        if (m_LastCandidateName != nullptr
+            && String_Equivalent(best->path, m_LastCandidateName)) {
+            return;
+        }
+        if (M_LoadCandidate(best)) {
+            return;
+        }
+    }
+
     Output_UnloadBackground();
-    Output_LoadBackgroundFromFile(prev);
-    Memory_FreePointer(&prev);
 }
 
 char *Output_GetLastBackgroundPath(void)
@@ -233,9 +242,7 @@ char *Output_GetLastBackgroundPath(void)
 
 void Output_ClearLastBackgroundPath(void)
 {
+    M_FreeCandidates();
     Memory_FreePointer(&m_LastPath);
-    M_FreeCandidates(m_CachedCandidates);
-    m_CachedCandidates = nullptr;
-    m_CachedDirLen = 0;
-    Memory_FreePointer(&m_CachedScanPath);
+    Memory_FreePointer(&m_LastCandidateName);
 }

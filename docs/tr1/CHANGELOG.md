@@ -42,6 +42,7 @@
 - fixed game window getting misplaced in windowed mode between game relaunches on certain systems (#3418)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
+- improved performance when resizing the window
 - removed "window size" rendering mode, enforcing the FBO rendering method (#3332)
 - removed config tool (we have ingame setting dialogs now)
 

@@ -62,6 +62,7 @@
 - improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
+- improved performance when resizing the window
 - removed config tool (we have ingame setting dialogs now)
 - removed default bindings for the "sizer" and the "scaler" options (#2853)
 - removed the limit of 10 dynamic lights per frame (#3384)
