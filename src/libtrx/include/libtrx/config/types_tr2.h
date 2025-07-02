@@ -178,7 +178,7 @@ typedef struct {
         int32_t nearest_adjustment;
         int32_t linear_adjustment;
         int32_t upscaling_factor;
-        float sizer;
+        float borders;
     } rendering;
 
     struct {

@@ -25,8 +25,6 @@ typedef struct {
     // Size of the SDL window.
     int32_t window_width;
     int32_t window_height;
-    // How much border (inside the SDL window) to add around the rendered game.
-    int32_t window_border;
 
     char *scheduled_screenshot_path;
     GFX_RENDERER *renderer;
@@ -110,7 +108,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
     m_Context.config.enable_wireframe = false;
     SDL_GetWindowSize(
         window_handle, &m_Context.window_width, &m_Context.window_height);
-    m_Context.window_border = 0;
     m_Context.display_width = m_Context.window_width;
     m_Context.display_height = m_Context.window_height;
 
@@ -199,11 +196,6 @@ void GFX_Context_SetLineWidth(const int32_t line_width)
 void GFX_Context_SetVSync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync);
-}
-
-void GFX_Context_SetWindowBorder(const int32_t border_size)
-{
-    m_Context.window_border = border_size;
 }
 
 void GFX_Context_SetWindowSize(int32_t width, int32_t height)

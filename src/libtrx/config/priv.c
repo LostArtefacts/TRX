@@ -22,7 +22,7 @@ void Config_SanitizeCommon(void)
     CLAMP(g_Config.gameplay.camera_speed, 1, 10);
     CLAMP(g_Config.rendering.wireframe_width, 1.0, 100.0);
     CLAMP(g_Config.rendering.upscaling_factor, 1, 4);
-    CLAMP(g_Config.rendering.sizer, 0.4, 2.0);
+    CLAMP(g_Config.rendering.borders, 0.0, 0.45);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
     CLAMP(g_Config.visuals.fog_start, 1, 100);

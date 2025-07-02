@@ -172,8 +172,7 @@ void Viewport_Reset(void)
     g_Viewport_Rects[VIEWPORT_GAME].height = vp->height;
     g_Viewport_Rects[VIEWPORT_GAME].x = 0;
     g_Viewport_Rects[VIEWPORT_GAME].y = 0;
-    const int32_t win_border = size.h * (1.0 - g_Config.rendering.sizer);
-    Render_SetupDisplay(win_border, size.w, size.h, vp->width, vp->height);
+    Render_SetupDisplay(size.w, size.h, vp->width, vp->height);
     Viewport_Debug();
 }
 

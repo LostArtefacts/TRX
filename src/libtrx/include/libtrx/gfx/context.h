@@ -15,7 +15,6 @@ bool GFX_Context_GetWireframeMode(void);
 void GFX_Context_SetWireframeMode(bool enable);
 void GFX_Context_SetLineWidth(int32_t line_width);
 void GFX_Context_SetVSync(bool vsync);
-void GFX_Context_SetWindowBorder(int32_t size);
 void GFX_Context_SetWindowSize(int32_t width, int32_t height);
 void GFX_Context_SetDisplaySize(int32_t width, int32_t height);
 
