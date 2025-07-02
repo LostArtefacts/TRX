@@ -46,4 +46,5 @@ extern void Viewport_AlterFOV(int16_t view_angle);
 // TODO: decide what to do with this function
 void Viewport_Reset(void);
 void Viewport_ResetCommon(void);
+
 void Viewport_Debug(void);

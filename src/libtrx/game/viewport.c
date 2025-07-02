@@ -113,9 +113,9 @@ void Viewport_Debug(void)
 {
     const VIEWPORT_RECT *r;
     r = &m_Rects[VIEWPORT_WINDOW];
-    LOG_DEBUG("Window viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
+    LOG_TRACE("Window viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
     r = &m_Rects[VIEWPORT_TARGET];
-    LOG_DEBUG("Target viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
+    LOG_TRACE("Target viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
     r = &m_Rects[VIEWPORT_GAME];
-    LOG_DEBUG("Game viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
+    LOG_TRACE("Game viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
 }
