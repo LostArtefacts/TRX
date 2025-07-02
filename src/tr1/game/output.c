@@ -442,11 +442,6 @@ void Output_Shutdown(void)
     Output_ClearLastBackgroundPath();
 }
 
-void Output_SetWindowSize(int32_t width, int32_t height)
-{
-    GFX_Context_SetWindowSize(width, height);
-}
-
 void Output_ApplyLevelSettings(void)
 {
     Output_SetWaterColor(Level_GetWaterColor());

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../config/types.h"
 #include "../event_manager.h"
 
 #include <SDL2/SDL.h>
@@ -33,7 +34,12 @@ void Shell_InitCommonModules(void);
 void Shell_ShutdownCommonModules(void);
 bool Shell_ProcessCommonEvent(const SDL_Event *event);
 
-extern void Shell_HandleConfigChange(const EVENT *event, void *data);
+void Shell_HandleCommonConfigChange(const CONFIG *old, const CONFIG *new);
+extern void Shell_HandleConfigChange(const CONFIG *old, const CONFIG *new);
+
+extern void Shell_RefreshRendererViewport(void);
+extern void Shell_SyncToWindow(void);
+extern void Shell_SyncFromWindow(bool update_viewport);
 
 extern const char *Shell_GetConfigPath(void);
 extern const char *Shell_GetGameFlowPath(void);

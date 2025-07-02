@@ -20,3 +20,6 @@ int16_t Viewport_GetEffectiveFOV(void);
 
 // Sets the system FOV. Set to -1 to fallback to player FOV.
 extern void Viewport_AlterFOV(int16_t view_angle);
+
+// TODO: decide what to do with this function
+void Viewport_Reset(void);
