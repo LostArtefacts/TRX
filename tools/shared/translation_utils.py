@@ -36,7 +36,7 @@ def find_base_file(path: Path) -> Path:
     name = path.stem
     if "-" not in name:
         raise ValueError(f"{path}: not a translation file (no '-' in stem)")
-    prefix, _lang = name.rsplit("-", 1)
+    prefix, _lang = name.split("-", 1)
     return path.parent / f"{prefix}.json5"
 
 

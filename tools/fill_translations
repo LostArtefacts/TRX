@@ -167,6 +167,8 @@ def process_file(path: Path, args: argparse.Namespace) -> None:
 
     base_data = load_json5(base_file)
     trans_data = load_json5(path) if path.exists() else {}
+    if isinstance(trans_data, dict) and "extends" in trans_data:
+        return
 
     if args.ai:
         _, lang = path.stem.rsplit("-", 1)
