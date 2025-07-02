@@ -66,11 +66,7 @@ static SHELL_ARGS m_Args = {
     .save_to_load = -1,
 };
 
-// If true, next SDL_TEXT* event should be zeroed out.
-static bool m_ConsoleJustOpened = false;
-
 static void M_HandleWindowResized(void);
-static void M_HandleQuit(void);
 static void M_SetWindowPos(int32_t x, int32_t y, bool update);
 static void M_SetWindowSize(int32_t width, int32_t height, bool update);
 static void M_SetWindowMaximized(bool is_enabled, bool update);
@@ -103,11 +99,6 @@ static void M_HandleWindowResized(void)
     if (g_Config.loaded) {
         Config_Write();
     }
-}
-
-static void M_HandleQuit(void)
-{
-    Shell_ScheduleExit();
 }
 
 static void M_CreateGameWindow(void)
@@ -293,11 +284,11 @@ void Shell_ProcessEvents(void)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
-        switch (event.type) {
-        case SDL_QUIT:
-            M_HandleQuit();
-            break;
+        if (Shell_ProcessCommonEvent(&event)) {
+            continue;
+        }
 
+        switch (event.type) {
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
@@ -317,57 +308,6 @@ void Shell_ProcessEvents(void)
                 M_HandleWindowResized();
                 break;
             }
-            break;
-
-        case SDL_KEYDOWN: {
-            // NOTE: Opening the console normally would get handled by
-            // Input_Update, but by the time Input_Update gets ran, we may
-            // already have lost some keypresses if the player types really
-            // fast, so we need to react sooner.
-            if (!FMV_IsPlaying() && g_Config.gameplay.enable_console
-                && !Console_IsOpened() && !Input_IsInListenMode()
-                && Input_IsPressed(
-                    INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-                    INPUT_ROLE_ENTER_CONSOLE)) {
-                Console_Open();
-                // Zero out the next text event so the console-open glyph never
-                // shows up.
-                m_ConsoleJustOpened = true;
-            } else {
-                UI_HandleKeyDown(event.key.keysym.sym);
-            }
-            break;
-        }
-
-        case SDL_KEYUP:
-            // NOTE: needs special handling on Windows -
-            // SDL_SCANCODE_PRINTSCREEN is not sufficient to react to this.
-            if (event.key.keysym.sym == SDLK_PRINTSCREEN) {
-                Screenshot_Make(g_Config.rendering.screenshot_format);
-            }
-            break;
-
-        case SDL_TEXTEDITING:
-            if (m_ConsoleJustOpened) {
-                m_ConsoleJustOpened = false;
-            } else {
-                UI_HandleTextEdit(event.text.text);
-            }
-            break;
-
-        case SDL_TEXTINPUT:
-            if (m_ConsoleJustOpened) {
-                m_ConsoleJustOpened = false;
-            } else {
-                UI_HandleTextEdit(event.text.text);
-            }
-            break;
-
-        case SDL_CONTROLLERDEVICEADDED:
-        case SDL_JOYDEVICEADDED:
-        case SDL_CONTROLLERDEVICEREMOVED:
-        case SDL_JOYDEVICEREMOVED:
-            Input_Discover();
             break;
         }
     }
