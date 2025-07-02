@@ -179,7 +179,7 @@ def process_file(path: Path, args: argparse.Namespace) -> None:
         resolver = BlankResolver(base_data, trans_data)
 
     merged = resolver.fill()
-    new_text = json.dumps(merged, ensure_ascii=False, indent=4) + "\n"
+    new_text = format_strings_file(merged)
     if args.dry_run:
         old_text = path.read_text(encoding="utf-8") if path.exists() else ""
         diff = difflib.unified_diff(
@@ -190,7 +190,7 @@ def process_file(path: Path, args: argparse.Namespace) -> None:
         )
         sys.stdout.writelines(diff)
     else:
-        path.write_text(format_strings_file(merged))
+        path.write_text(new_text)
         print(f"Wrote {path}")
 
 
