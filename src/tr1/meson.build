@@ -234,7 +234,8 @@ sources = [
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   'game/screen.c',
-  'game/shell.c',
+  'game/shell/common.c',
+  'game/shell/input.c',
   'game/sound.c',
   'game/spawn.c',
   'game/stats/common.c',
@@ -243,7 +244,6 @@ sources = [
   'game/viewport.c',
   'global/enum_map.c',
   'global/vars.c',
-  'specific/s_shell.c',
   resources,
 ]
 

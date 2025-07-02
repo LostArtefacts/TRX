@@ -6,7 +6,6 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/types.h"
-#include "specific/s_shell.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>

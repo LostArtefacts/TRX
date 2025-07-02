@@ -10,8 +10,6 @@
 
 extern const float g_RhwFactor;
 
-extern SDL_Window *g_SDLWindow;
-
 extern uint32_t g_PerspectiveDistance;
 extern int32_t g_OverlayStatus;
 extern int32_t g_MidSort;

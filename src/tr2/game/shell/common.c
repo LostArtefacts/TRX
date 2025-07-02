@@ -1,5 +1,3 @@
-#include "game/shell/common.h"
-
 #include "decomp/decomp.h"
 #include "game/clock.h"
 #include "game/console/common.h"
@@ -53,6 +51,7 @@ typedef struct {
     int32_t save_to_load;
 } SHELL_ARGS;
 
+static SDL_Window *m_Window = nullptr;
 static const char *const m_CommonStringsPath = "cfg/TRX_common_strings.json5";
 
 static struct {
@@ -107,6 +106,7 @@ static bool M_CreateGameWindow(void);
 static void M_ShowHelp(void);
 static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
+static void M_Start(void);
 
 static struct {
     bool is_fullscreen;
@@ -128,11 +128,11 @@ static void M_SyncToWindow(void)
         g_Config.window.height);
 
     if (g_Config.window.is_fullscreen) {
-        SDL_SetWindowFullscreen(g_SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         SDL_ShowCursor(SDL_DISABLE);
     } else if (g_Config.window.is_maximized) {
-        SDL_SetWindowFullscreen(g_SDLWindow, 0);
-        SDL_MaximizeWindow(g_SDLWindow);
+        SDL_SetWindowFullscreen(m_Window, 0);
+        SDL_MaximizeWindow(m_Window);
         SDL_ShowCursor(SDL_ENABLE);
     } else {
         int32_t x = g_Config.window.x;
@@ -174,9 +174,9 @@ static void M_SyncToWindow(void)
             }
         }
 
-        SDL_SetWindowFullscreen(g_SDLWindow, 0);
-        SDL_SetWindowPosition(g_SDLWindow, x, y);
-        SDL_SetWindowSize(g_SDLWindow, width, height);
+        SDL_SetWindowFullscreen(m_Window, 0);
+        SDL_SetWindowPosition(m_Window, x, y);
+        SDL_SetWindowSize(m_Window, width, height);
         SDL_ShowCursor(SDL_ENABLE);
     }
 }
@@ -189,12 +189,12 @@ static void M_SyncFromWindow(const bool update_viewport)
     const bool skip_config = (now - m_UpdateDebounce) < 500;
 
     // Always pull current window state for logging and viewport reset
-    const Uint32 window_flags = SDL_GetWindowFlags(g_SDLWindow);
+    const Uint32 window_flags = SDL_GetWindowFlags(m_Window);
     const bool is_maximized = window_flags & SDL_WINDOW_MAXIMIZED;
     int32_t x, y;
     int32_t width, height;
-    SDL_GetWindowSize(g_SDLWindow, &width, &height);
-    SDL_GetWindowPosition(g_SDLWindow, &x, &y);
+    SDL_GetWindowSize(m_Window, &width, &height);
+    SDL_GetWindowPosition(m_Window, &x, &y);
     LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
 
     // Update config only when not in debounce window
@@ -339,12 +339,12 @@ static bool M_CreateGameWindow(void)
     LOG_DEBUG(
         "%d,%d -> %dx%d", g_Config.window.x, g_Config.window.y,
         g_Config.window.width, g_Config.window.height);
-    g_SDLWindow = SDL_CreateWindow(
+    m_Window = SDL_CreateWindow(
         "TR2X", g_Config.window.x, g_Config.window.y, g_Config.window.width,
         g_Config.window.height,
         SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
-    if (g_SDLWindow == nullptr) {
+    if (m_Window == nullptr) {
         Shell_ExitSystemFmt("Failed to create SDL window: %s", SDL_GetError());
         return false;
     }
@@ -432,6 +432,17 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 #undef L_CHANGED
 }
 
+static void M_Start(void)
+{
+    M_ConfigureOpenGL();
+    Render_Init();
+    M_SyncToWindow();
+
+    SDL_ShowWindow(m_Window);
+    SDL_RaiseWindow(m_Window);
+    M_RefreshRendererViewport();
+}
+
 bool Shell_ParseArgs(const int32_t arg_count, const char **args)
 {
     SHELL_ARGS *const out_args = &m_Args;
@@ -500,7 +511,7 @@ int32_t Shell_Main(void)
     Random_Seed();
     Output_Init();
 
-    Shell_Start();
+    M_Start();
     Viewport_AlterFOV(-1);
     Viewport_Reset();
     Render_Reset(RENDER_RESET_PARAMS);
@@ -647,17 +658,6 @@ const char *Shell_GetGameFlowPath(void)
     return m_ModPaths[m_Args.mod].game_flow_path;
 }
 
-void Shell_Start(void)
-{
-    M_ConfigureOpenGL();
-    Render_Init();
-    M_SyncToWindow();
-
-    SDL_ShowWindow(g_SDLWindow);
-    SDL_RaiseWindow(g_SDLWindow);
-    M_RefreshRendererViewport();
-}
-
 // TODO: try to call this function in a single place after introducing phases.
 void Shell_ProcessEvents(void)
 {
@@ -741,5 +741,5 @@ void Shell_ProcessEvents(void)
 
 SDL_Window *Shell_GetWindow(void)
 {
-    return g_SDLWindow;
+    return m_Window;
 }

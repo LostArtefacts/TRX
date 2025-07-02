@@ -1,5 +1,3 @@
-#include "game/shell/input.h"
-
 #include "decomp/decomp.h"
 #include "game/clock.h"
 #include "game/console/common.h"
