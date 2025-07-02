@@ -5,7 +5,6 @@
 #include "game/game_flow/sequencer.h"
 #include "game/level.h"
 #include "game/output.h"
-#include "game/phase.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"

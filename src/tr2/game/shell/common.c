@@ -15,7 +15,6 @@
 #include "game/objects/creatures/spider.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/phase.h"
 #include "game/random.h"
 #include "game/render/common.h"
 #include "game/savegame.h"

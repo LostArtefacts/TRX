@@ -10,7 +10,6 @@
 #include "game/level.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/phase.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -22,6 +21,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/phase.h>
 #include <libtrx/log.h>
 
 #define MODIFY_CONFIG()                                                        \

@@ -7,7 +7,6 @@
 #include "game/level.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
-#include "game/phase.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
