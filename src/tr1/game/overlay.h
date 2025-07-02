@@ -1,10 +1,10 @@
 #pragma once
 
-#include "game/screen.h"
 #include "global/types.h"
 
 #include <libtrx/config/types.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/scaler.h>
 
 #include <stdint.h>
 
@@ -23,7 +23,5 @@ typedef struct {
     int16_t custom_width;
     int16_t custom_height;
 } BAR_INFO;
-
-void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_func);
 
 void Overlay_DrawGameInfo(void);

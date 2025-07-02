@@ -7,6 +7,7 @@
 #include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"

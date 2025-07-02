@@ -6,6 +6,7 @@
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
+#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
