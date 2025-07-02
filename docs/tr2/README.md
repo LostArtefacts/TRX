@@ -202,8 +202,9 @@ However, you can easily download them manually from these urls:
 - added an option to toggle random enemy initial angle adjustment
 - added an option to prevent Lara targeting allies, either with weapons or the skidoo
 - added an option to choose between original TR1, original TR2 or unrestricted look modes
+- added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)
 - changed inventory to pause the music rather than muting it
-fixed flare count getting corrupt on save/load if Lara had more than 255 flares
+- fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed assault course best times not being retained between game relaunches
 - fixed secret rewards not displaying shotgun ammo
