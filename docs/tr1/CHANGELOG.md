@@ -2,8 +2,9 @@
 - reworked screen resolutions
     - removed "screen resolution" option
     - added aspect ratio mode (Graphic options → Rendering → Aspect mode)
-    - added scaler option (Graphic options → Rendering → Scaler)
     - added sizer option (Graphic options → Rendering → Sizer)
+    - added integer upscaling option (Graphic options → Rendering → Upscaling factor)
+    - renamed "fbo filter" option to "upscaling filter" (Graphic options → Rendering → Upscaling filter)
 - added French translation
 - added Italian translation to the installer
 - added the ability to advance individual frames to the photo mode

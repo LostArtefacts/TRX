@@ -36,8 +36,8 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 
         x = 0;
         y = 0;
-        width = size.w / g_Config.rendering.scaler;
-        height = size.h / g_Config.rendering.scaler;
+        width = size.w / g_Config.rendering.upscaling_factor;
+        height = size.h / g_Config.rendering.upscaling_factor;
         if (g_Config.rendering.aspect_mode != AM_ANY) {
             width = height * ar.w / ar.h;
         }

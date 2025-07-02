@@ -120,6 +120,7 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     } else if (
         L_CHANGED(rendering.enable_zbuffer)
         || L_CHANGED(rendering.enable_perspective_filter)
+        || L_CHANGED(rendering.upscaling_filter)
         || L_CHANGED(rendering.enable_wireframe)
         || L_CHANGED(rendering.wireframe_width)
         || L_CHANGED(rendering.texture_filter)

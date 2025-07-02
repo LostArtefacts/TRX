@@ -152,7 +152,7 @@ void Shell_HandleCommonConfigChange(
     if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)
         || L_CHANGED(window.width) || L_CHANGED(window.height)
         || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
-        || L_CHANGED(rendering.scaler) || L_CHANGED(rendering.sizer)
+        || L_CHANGED(rendering.upscaling_factor) || L_CHANGED(rendering.sizer)
         || L_CHANGED(rendering.aspect_mode)
 #if TR_VERSION >= 2
         || L_CHANGED(visuals.use_psx_fov)

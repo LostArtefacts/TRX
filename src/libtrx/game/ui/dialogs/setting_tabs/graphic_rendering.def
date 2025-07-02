@@ -4,7 +4,6 @@ X_UI_CFG_BOOL(rendering.enable_trapezoid_filter, GRAPHIC_SETTINGS_TRAPEZOID_FILT
 
 #if TR_VERSION == 1
 X_UI_CFG_FLOAT(rendering.anisotropy_filter,      GRAPHIC_SETTINGS_ANISOTROPY_FILTER, .min_value = 1 * 100, .max_value = 32 * 100, .delta_slow = 10, .delta_fast = 100)
-X_UI_CFG_ENUM(rendering.fbo_filter,              GRAPHIC_SETTINGS_FBO_FILTER, .misc = UI_Settings_TextureFilterEnumEntries)
 
 X_UI_CFG_BOOL(rendering.enable_vsync,            GRAPHIC_SETTINGS_VSYNC)
 
@@ -16,7 +15,8 @@ X_UI_CFG_ENUM(rendering.lighting_contrast,       GRAPHIC_SETTINGS_LIGHTING_CONTR
 X_UI_CFG_ENUM(rendering.render_mode,             GRAPHIC_SETTINGS_RENDER_MODE, .misc = UI_Settings_RenderModeEnumEntries)
 #endif
 X_UI_CFG_ENUM(rendering.aspect_mode,             GRAPHIC_SETTINGS_ASPECT_MODE, .misc = UI_Settings_AspectModeEnumEntries)
-X_UI_CFG_INT32(rendering.scaler,                 GRAPHIC_SETTINGS_SCALER, .min_value = 1, .max_value = 4, .delta_slow = 1, .delta_fast = 1)
+X_UI_CFG_ENUM(rendering.upscaling_filter,        GRAPHIC_SETTINGS_UPSCALING_FILTER, .misc = UI_Settings_TextureFilterEnumEntries)
+X_UI_CFG_INT32(rendering.upscaling_factor,       GRAPHIC_SETTINGS_UPSCALING_FACTOR, .min_value = 1, .max_value = 4, .delta_slow = 1, .delta_fast = 1)
 X_UI_CFG_FLOAT(rendering.sizer,                  GRAPHIC_SETTINGS_SIZER, .min_value = 40, .max_value = 100, .delta_slow = 5, .delta_fast = 5)
 
 X_UI_CFG_ENUM(rendering.screenshot_format,       GRAPHIC_SETTINGS_SCREENSHOT_FORMAT, .misc = UI_Settings_ScreenshotFormatEnumEntries)

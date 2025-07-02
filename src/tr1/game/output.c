@@ -468,7 +468,7 @@ void Output_ApplyRenderSettings(void)
     m_SurfaceHeight = Viewport_GetHeight(VIEWPORT_GAME);
 
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
-    GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
+    GFX_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
     GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
     GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
