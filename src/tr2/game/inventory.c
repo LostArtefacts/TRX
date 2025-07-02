@@ -1,5 +1,6 @@
 #include "game/inventory.h"
 
+#include "game/game_flow.h"
 #include "game/gun.h"
 #include "game/inventory_ring.h"
 #include "game/objects/vars.h"
@@ -234,12 +235,6 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         Inv_InsertItem(&g_InvRing_Item_Puzzle4);
         return true;
 
-    case O_SECRET_1:
-    case O_SECRET_2:
-    case O_SECRET_3:
-        Stats_MarkSecretCollected(obj_id);
-        return true;
-
     case O_KEY_ITEM_1:
     case O_KEY_OPTION_1:
         Inv_InsertItem(&g_InvRing_Item_Key1);
@@ -273,4 +268,22 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     default:
         return false;
     }
+}
+
+bool Inv_AddPickup(const ITEM *const item)
+{
+    switch (item->object_id) {
+    case O_SECRET_1:
+    case O_SECRET_2:
+    case O_SECRET_3:
+        Stats_MarkSecretCollected(item);
+        if (Stats_CheckAllLevelSecretsCollected()) {
+            GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
+        }
+        return true;
+    default:
+        break;
+    }
+
+    return Inv_AddItem(item->object_id);
 }

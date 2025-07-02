@@ -187,3 +187,8 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 
     return false;
 }
+
+bool Inv_AddPickup(const ITEM *const item)
+{
+    return Inv_AddItem(item->object_id);
+}

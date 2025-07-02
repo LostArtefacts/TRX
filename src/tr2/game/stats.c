@@ -5,8 +5,8 @@
 #include "game/game_flow.h"
 #include "game/objects/vars.h"
 #include "game/savegame.h"
-#include "global/vars.h"
 
+#include <libtrx/debug.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 
@@ -14,13 +14,12 @@
 
 typedef struct {
     int32_t secret_count;
-    int32_t secret_flags;
+    uint32_t secret_flags;
+    GAME_OBJECT_ID secret_objects[STATS_MAX_SECRETS];
 } M_MAX_STATS;
 
 static int32_t m_CachedItemCount = 0;
 static M_MAX_STATS m_LevelMax = {};
-
-static bool M_SetSecretFlag(uint16_t *flags, GAME_OBJECT_ID obj_id);
 
 #if M_USE_REAL_CLOCK
 static CLOCK_TIMER m_StartCounter = { .type = CLOCK_TYPE_REAL };
@@ -55,19 +54,6 @@ void Stats_UpdateTimer(void)
 }
 #endif
 
-static bool M_SetSecretFlag(uint16_t *const flags, const GAME_OBJECT_ID obj_id)
-{
-    for (int32_t i = 0; i < 2; i++) {
-        const int32_t flag = 1 << ((obj_id - O_SECRET_1) + i * 3);
-        if ((*flags & flag) == 0) {
-            *flags |= flag;
-            return true;
-        }
-    }
-
-    return false;
-}
-
 FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
 {
     FINAL_STATS result = {};
@@ -101,21 +87,70 @@ void Stats_ObserveItemsLoad(void)
 
 void Stats_CalculateStats(void)
 {
+    LOG_INFO("Recalculating stats");
     m_LevelMax.secret_count = 0;
-    uint16_t secret_flags = 0;
+    m_LevelMax.secret_flags = 0;
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        m_LevelMax.secret_objects[i] = NO_OBJECT;
+    }
 
+    struct L_SECRET_ITEM {
+        GAME_OBJECT_ID object_id;
+        int32_t index;
+    } secrets[STATS_MAX_SECRETS];
+    int32_t secret_count = 0;
     for (int32_t i = 0; i < m_CachedItemCount; i++) {
-        const ITEM *const item = Item_Get(i);
+        ITEM *const item = Item_Get(i);
         if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
             LOG_ERROR("Bad Object number (%d) on Item %d", item->object_id, i);
             continue;
         }
-
-        if (Object_IsType(item->object_id, g_SecretObjects)
-            && M_SetSecretFlag(&secret_flags, item->object_id)) {
-            m_LevelMax.secret_count++;
+        if (Object_IsType(item->object_id, g_SecretObjects)) {
+            if (secret_count >= STATS_MAX_SECRETS) {
+                LOG_ERROR("Too many secrets, max %d", STATS_MAX_SECRETS);
+                break;
+            }
+            secrets[secret_count].object_id = item->object_id;
+            secrets[secret_count].index = i;
+            secret_count++;
         }
     }
+
+    for (int32_t i = 0; i < secret_count; i++) {
+        for (int32_t j = i + 1; j < secret_count; j++) {
+            if (secrets[i].object_id > secrets[j].object_id) {
+                struct L_SECRET_ITEM tmp;
+                SWAP(secrets[i], secrets[j], tmp);
+            }
+        }
+    }
+
+    for (int32_t k = 0; k < secret_count; k++) {
+        ITEM *const item = Item_Get(secrets[k].index);
+        item->data =
+            (void *)(intptr_t)Stats_ReserveSecretBit(secrets[k].object_id);
+    }
+}
+
+uint32_t Stats_ReserveSecretBit(const GAME_OBJECT_ID object_id)
+{
+    uint32_t n = m_LevelMax.secret_flags;
+    int32_t position = 0;
+    while ((n & 1) == 1) {
+        n >>= 1;
+        position++;
+    }
+    LOG_INFO("Reserving bit %d for secret %d", position, object_id);
+    m_LevelMax.secret_flags |= 1 << position;
+    m_LevelMax.secret_count++;
+    m_LevelMax.secret_objects[position] = object_id;
+    return 1 << position;
+}
+
+GAME_OBJECT_ID Stats_GetSecretObject(const int32_t secret_idx)
+{
+    ASSERT(secret_idx >= 0 && secret_idx < STATS_MAX_SECRETS);
+    return m_LevelMax.secret_objects[secret_idx];
 }
 
 int32_t Stats_GetMaxSecrets(void)
@@ -125,13 +160,13 @@ int32_t Stats_GetMaxSecrets(void)
 
 uint32_t Stats_GetMaxSecretFlags(void)
 {
-    return (1 << m_LevelMax.secret_count) - 1;
+    return m_LevelMax.secret_flags;
 }
 
-void Stats_MarkSecretCollected(const GAME_OBJECT_ID obj_id)
+void Stats_MarkSecretCollected(const ITEM *const item)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    M_SetSecretFlag(&resume->stats.secret_flags, obj_id);
+    resume->stats.secret_flags |= (uint32_t)(intptr_t)item->data;
     Stats_UpdateSecrets(&resume->stats);
 }
 

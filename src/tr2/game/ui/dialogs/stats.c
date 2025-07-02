@@ -65,23 +65,29 @@ static void M_FormatSecrets(
     // TODO: implement optional support for TR1-style secrets in TR2, see #2047
     char *ptr = out;
     int32_t num_secrets = 0;
-    for (int32_t i = 1; i >= 0; i--) {
-        for (int32_t j = 0; j < 3; j++) {
-            const int32_t num = j + i * 3;
-            if (num >= level_stats->max_secret_count) {
-                // Do not reserve space for secrets that don't exist
-                continue;
-            }
-            if (Stats_HasSecret(num)) {
-                ptr += sprintf(ptr, "\\{secret %d}", j + 1);
-                num_secrets++;
-            } else {
-                ptr += sprintf(ptr, "\\{i}\\{secret %d}\\{/i}", j + 1);
-            }
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        if (!Stats_IsSecretValid(i)) {
+            continue;
+        }
+
+        const bool has_secret = Stats_HasSecret(i);
+        if (!has_secret && out == ptr) {
+            // Do not reserve space pointlessly.
+            // Good: [secret][ ][ ]
+            // Bad:  [ ][ ][secret] – should be just [secret]
+            continue;
+        }
+        const GAME_OBJECT_ID obj_id = Stats_GetSecretObject(i);
+        ASSERT(obj_id != NO_OBJECT);
+        ptr += sprintf(
+            ptr, has_secret ? "\\{secret %d}" : "\\{i}\\{secret %d}\\{/i}",
+            obj_id + 1 - O_SECRET_1);
+        if (has_secret) {
+            num_secrets++;
         }
     }
-
     *ptr++ = '\0';
+
     if (num_secrets == 0) {
         strcpy(out, GS(MISC_NONE));
     }
