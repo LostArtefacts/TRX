@@ -1,4 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...develop) - ××××-××-××
+- reworked screen resolutions
+    - removed "screen resolution" option
+    - added aspect ratio mode (Graphic options → Rendering → Aspect mode)
+    - added scaler option (Graphic options → Rendering → Scaler)
+    - added sizer option (Graphic options → Rendering → Sizer)
 - added French translation
 - added Italian translation to the installer
 - added the ability to advance individual frames to the photo mode

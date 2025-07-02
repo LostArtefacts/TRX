@@ -338,8 +338,6 @@
         "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Przełącza między rysowaniem na procesorze (wolniejsze, bardziej oldschoolowe) lub na karcie graficznej (szybsze i lepsze).",
         "GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE": "Sprzętowy",
         "GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE": "Programowy",
-        "GRAPHIC_SETTINGS_RESOLUTION": "Rozdzielczość",
-        "GRAPHIC_SETTINGS_RESOLUTION_DESCRIPTION": "Ustawia wewnętrzną rozdzielczość gry.",
         "GRAPHIC_SETTINGS_SCALER": "Skalowanie",
         "GRAPHIC_SETTINGS_SCALER_DESCRIPTION": "Skaluje grę o ustalony współczynnik, zachowując pikselowy wygląd.",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Format zrzutów ekranu",

@@ -338,8 +338,6 @@
         "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Scegli di renderizzare con la CPU (più lento, vecchia scuola) o con la GPU (più veloce, migliore).",
         "GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE": "Hardware",
         "GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE": "Software",
-        "GRAPHIC_SETTINGS_RESOLUTION": "Risoluzione",
-        "GRAPHIC_SETTINGS_RESOLUTION_DESCRIPTION": "Sovrascrive la risoluzione del gioco.",
         "GRAPHIC_SETTINGS_SCALER": "Ridimensionamento",
         "GRAPHIC_SETTINGS_SCALER_DESCRIPTION": "Ridimensiona l'immagine di gioco in base a un fattore di scala definito, mantenendo un aspetto pixelato.",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Formato cattura schermo",

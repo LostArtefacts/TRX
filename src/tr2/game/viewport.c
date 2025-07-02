@@ -119,6 +119,8 @@ static void M_ApplyGameVars(const VIEWPORT *const vp)
 
 void Viewport_Reset(void)
 {
+    Viewport_ResetCommon();
+
     const SHELL_SIZE size = Shell_GetCurrentSize();
 
     VIEWPORT *const vp = &m_Viewport;
@@ -166,8 +168,13 @@ void Viewport_Reset(void)
     M_InitGameVars(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);
 
+    g_Viewport_Rects[VIEWPORT_GAME].width = vp->width;
+    g_Viewport_Rects[VIEWPORT_GAME].height = vp->height;
+    g_Viewport_Rects[VIEWPORT_GAME].x = 0;
+    g_Viewport_Rects[VIEWPORT_GAME].y = 0;
     const int32_t win_border = size.h * (1.0 - g_Config.rendering.sizer);
     Render_SetupDisplay(win_border, size.w, size.h, vp->width, vp->height);
+    Viewport_Debug();
 }
 
 const VIEWPORT *Viewport_Get(void)
@@ -198,24 +205,4 @@ void Viewport_AlterFOV(const int16_t view_angle)
     M_PullGameVars(&m_Viewport);
     M_AlterFov(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);
-}
-
-int32_t Viewport_GetWidth(void)
-{
-    return g_PhdWinWidth;
-}
-
-int32_t Viewport_GetHeight(void)
-{
-    return g_PhdWinHeight;
-}
-
-int32_t Viewport_GetMaxX(void)
-{
-    return g_PhdWinMaxX;
-}
-
-int32_t Viewport_GetMaxY(void)
-{
-    return g_PhdWinMaxY;
 }

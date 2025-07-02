@@ -3,7 +3,6 @@
 #include "game/game.h"
 #include "game/inventory.h"
 #include "game/output.h"
-#include "game/screen.h"
 #include "game/viewport.h"
 
 #include <libtrx/config.h>
@@ -146,7 +145,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     Matrix_Pop();
 
     Matrix_Pop();
-    Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
+    Viewport_Init(-1, -1, -1, -1);
     Viewport_AlterFOV(old_fov);
     glViewport(old_vp.x, old_vp.y, old_vp.w, old_vp.h);
     Output_ApplyFOV();
@@ -199,7 +198,9 @@ static void M_DrawPickupsSprites(void)
     const double elapsed = ClockTimer_TakeElapsed(&m_PickupsTimer);
 
     const int32_t sprite_height =
-        MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
+        MIN(Viewport_GetWidth(VIEWPORT_GAME),
+            Viewport_GetHeight(VIEWPORT_GAME) * 320 / 200)
+        / 10;
     const int32_t sprite_width = sprite_height * 4 / 3;
 
     for (int i = 0; i < M_MAX_PICKUPS; i++) {
@@ -218,11 +219,11 @@ static void M_DrawPickupsSprites(void)
             return;
         }
 
-        const int32_t x =
-            Viewport_GetWidth() - sprite_height - sprite_width * pu->grid_x;
-        const int32_t y =
-            Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
-        const int32_t scale = 12288 * Viewport_GetWidth() / 640;
+        const int32_t x = Viewport_GetWidth(VIEWPORT_GAME) - sprite_height
+            - sprite_width * pu->grid_x;
+        const int32_t y = Viewport_GetHeight(VIEWPORT_GAME) - sprite_height
+            - sprite_height * pu->grid_y;
+        const int32_t scale = 12288 * Viewport_GetWidth(VIEWPORT_GAME) / 640;
         const int16_t sprite_num = Object_Get(pu->object_id)->mesh_idx;
         Output_DrawUISprite(x, y, scale, sprite_num, SHADE_NEUTRAL);
     }

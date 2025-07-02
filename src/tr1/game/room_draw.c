@@ -74,8 +74,8 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
             zv /= g_PhdPersp;
             int32_t xs, ys;
             if (zv) {
-                xs = Viewport_GetCenterX() + xv / zv;
-                ys = Viewport_GetCenterY() + yv / zv;
+                xs = Viewport_GetCenterX(VIEWPORT_GAME) + xv / zv;
+                ys = Viewport_GetCenterY(VIEWPORT_GAME) + yv / zv;
             } else {
                 xs = xv >= 0 ? g_PhdRight : g_PhdLeft;
                 ys = yv >= 0 ? g_PhdBottom : g_PhdTop;
@@ -108,21 +108,21 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
         for (int i = 0; i < 4; i++) {
             if ((dest->zv < 0) ^ (last->zv < 0)) {
                 if (dest->xv < 0 && last->xv < 0) {
-                    left = 0;
+                    left = Viewport_GetMinX(VIEWPORT_GAME);
                 } else if (dest->xv > 0 && last->xv > 0) {
-                    right = Viewport_GetMaxX();
+                    right = Viewport_GetMaxX(VIEWPORT_GAME);
                 } else {
-                    left = 0;
-                    right = Viewport_GetMaxX();
+                    left = Viewport_GetMinX(VIEWPORT_GAME);
+                    right = Viewport_GetMaxX(VIEWPORT_GAME);
                 }
 
                 if (dest->yv < 0 && last->yv < 0) {
-                    top = 0;
+                    top = Viewport_GetMinY(VIEWPORT_GAME);
                 } else if (dest->yv > 0 && last->yv > 0) {
-                    bottom = Viewport_GetMaxY();
+                    bottom = Viewport_GetMaxY(VIEWPORT_GAME);
                 } else {
-                    top = 0;
-                    bottom = Viewport_GetMaxY();
+                    top = Viewport_GetMinY(VIEWPORT_GAME);
+                    bottom = Viewport_GetMaxY(VIEWPORT_GAME);
                 }
             }
 
@@ -192,10 +192,10 @@ static void M_GetBounds(int16_t room_num)
 
 void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
 {
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdRight = Viewport_GetMaxX();
-    g_PhdBottom = Viewport_GetMaxY();
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
     Room_DrawReset();
 
@@ -323,8 +323,8 @@ void Room_DrawSingleRoom(int16_t room_num)
     Output_RestoreState();
     Matrix_Pop();
 
-    room->bound_left = Viewport_GetMaxX();
-    room->bound_bottom = 0;
-    room->bound_right = 0;
-    room->bound_top = Viewport_GetMaxY();
+    room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
+    room->bound_bottom = Viewport_GetMinX(VIEWPORT_GAME);
+    room->bound_right = Viewport_GetMinY(VIEWPORT_GAME);
+    room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
 }

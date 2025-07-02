@@ -155,8 +155,6 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
-    CLAMP(g_Config.rendering.scaler, 1, 4);
-    CLAMP(g_Config.rendering.sizer, 0.4, 2.0);
     if (g_Config.rendering.render_mode != RM_HARDWARE
         && g_Config.rendering.render_mode != RM_SOFTWARE) {
         g_Config.rendering.render_mode = RM_SOFTWARE;

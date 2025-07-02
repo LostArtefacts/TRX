@@ -570,10 +570,10 @@ void Level_ReadRooms(VFILE *const file)
         room->flags = VFile_ReadU16(file);
 
         room->bound_active = 0;
-        room->bound_left = Viewport_GetMaxX();
-        room->bound_top = Viewport_GetMaxY();
-        room->bound_bottom = 0;
-        room->bound_right = 0;
+        room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
+        room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
+        room->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
+        room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
     }

@@ -21,15 +21,6 @@ bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_EnemyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_AllyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 
-#if TR_VERSION == 1
-const char *UI_Settings_ScreenResolution_FormatValue(
-    const UI_SETTINGS_OPTION *option);
-bool UI_Settings_ScreenResolution_CanChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-bool UI_Settings_ScreenResolution_RequestChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-#endif
-
 const char *UI_Settings_Language_FormatValue(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Language_CanChangeValue(
     const UI_SETTINGS_OPTION *option, int32_t dir);

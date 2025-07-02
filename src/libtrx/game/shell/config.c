@@ -23,6 +23,7 @@ void Shell_RefreshRendererViewport(void)
 {
     Viewport_Reset();
     m_ViewportSize = Shell_GetCurrentSize();
+    Output_ReloadBackgroundImage();
 }
 
 void Shell_SyncToWindow(void)
@@ -151,9 +152,10 @@ void Shell_HandleCommonConfigChange(
     if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)
         || L_CHANGED(window.width) || L_CHANGED(window.height)
         || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
-#if TR_VERSION >= 2
         || L_CHANGED(rendering.scaler) || L_CHANGED(rendering.sizer)
-        || L_CHANGED(rendering.aspect_mode) || L_CHANGED(visuals.use_psx_fov)
+        || L_CHANGED(rendering.aspect_mode)
+#if TR_VERSION >= 2
+        || L_CHANGED(visuals.use_psx_fov)
 #endif
     ) {
         LOG_DEBUG("Change in settings detected");
@@ -161,15 +163,6 @@ void Shell_HandleCommonConfigChange(
             Shell_SyncToWindow();
         }
         Shell_RefreshRendererViewport();
-    }
-
-    if (
-#if TR_VERSION >= 2
-        L_CHANGED(rendering.aspect_mode) ||
-#endif
-        L_CHANGED(window.width) || L_CHANGED(window.height)
-        || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)) {
-        Output_ReloadBackgroundImage();
     }
 #undef L_CHANGED
 }

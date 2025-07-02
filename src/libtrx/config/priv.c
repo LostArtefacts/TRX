@@ -21,6 +21,8 @@ void Config_SanitizeCommon(void)
     CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
     CLAMP(g_Config.gameplay.camera_speed, 1, 10);
     CLAMP(g_Config.rendering.wireframe_width, 1.0, 100.0);
+    CLAMP(g_Config.rendering.scaler, 1, 4);
+    CLAMP(g_Config.rendering.sizer, 0.4, 2.0);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
     CLAMP(g_Config.visuals.fog_start, 1, 100);

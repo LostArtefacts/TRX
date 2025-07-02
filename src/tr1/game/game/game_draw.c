@@ -48,10 +48,10 @@ void Game_Draw(bool draw_overlay)
         for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
             const int16_t room_num = Room_DrawGetRoom(i);
             ROOM *const room = Room_Get(room_num);
-            room->bound_top = 0;
-            room->bound_left = 0;
-            room->bound_right = Viewport_GetMaxX();
-            room->bound_bottom = Viewport_GetMaxY();
+            room->bound_top = Viewport_GetMinY(VIEWPORT_GAME);
+            room->bound_left = Viewport_GetMinX(VIEWPORT_GAME);
+            room->bound_right = Viewport_GetMaxX(VIEWPORT_GAME);
+            room->bound_bottom = Viewport_GetMaxY(VIEWPORT_GAME);
             Room_DrawSingleRoom(room_num);
         }
 

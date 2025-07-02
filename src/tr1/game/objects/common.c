@@ -234,10 +234,10 @@ void Object_DrawUnclippedItem(const ITEM *const item)
     int32_t right = g_PhdRight;
     int32_t bottom = g_PhdBottom;
 
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdRight = Viewport_GetMaxX();
-    g_PhdBottom = Viewport_GetMaxY();
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
     Object_DrawAnimatingItem(item);
 

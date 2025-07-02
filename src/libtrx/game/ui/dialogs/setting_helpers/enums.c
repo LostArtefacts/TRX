@@ -122,6 +122,7 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_RenderModeEnumEntries[] = {
     { RM_HARDWARE, GS_ID(GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE) },
     { -1, nullptr },
 };
+#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[] = {
     { AM_4_3, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_4_3) },
@@ -129,7 +130,6 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[] = {
     { AM_ANY, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_ANY) },
     { -1, nullptr },
 };
-#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_ScreenshotFormatEnumEntries[] = {
     { SCREENSHOT_FORMAT_JPEG, GS_ID(GRAPHIC_SETTINGS_SCREENSHOT_FORMAT_JPG) },

@@ -1,6 +1,7 @@
 #include "gfx/context.h"
 
 #include "game/shell.h"
+#include "game/viewport.h"
 #include "gfx/gl/utils.h"
 #include "gfx/renderer.h"
 #include "gfx/screenshot.h"
@@ -69,38 +70,22 @@ static GLvoid GLAPIENTRY M_GLDebug(
 
 void GFX_Context_SwitchToWindowViewport(void)
 {
-    glViewport(0, 0, m_Context.window_width, m_Context.window_height);
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_WINDOW);
+    glViewport(rect.x, rect.y, rect.width, rect.height);
     GFX_GL_CheckError();
 }
 
 void GFX_Context_SwitchToWindowViewportAR(void)
 {
-    // Switch to window viewport at the aspect ratio of the display viewport.
-    const int32_t max_w = m_Context.window_width;
-    const int32_t max_h = m_Context.window_height;
-    int32_t vp_w = m_Context.window_width - m_Context.window_border;
-    int32_t vp_h = m_Context.window_height - m_Context.window_border;
-
-    const int32_t hw = m_Context.display_height * vp_w;
-    const int32_t wh = m_Context.display_width * vp_h;
-
-    // Create viewport offset if the window has a different
-    // aspect ratio than the current display mode.
-    if (hw > wh) {
-        vp_w = wh / m_Context.display_height;
-    } else if (hw < wh) {
-        vp_h = hw / m_Context.display_width;
-    }
-
-    const int32_t vp_x = (max_w - vp_w) / 2;
-    const int32_t vp_y = (max_h - vp_h) / 2;
-    glViewport(vp_x, vp_y, vp_w, vp_h);
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_TARGET);
+    glViewport(rect.x, rect.y, rect.width, rect.height);
     GFX_GL_CheckError();
 }
 
 void GFX_Context_SwitchToDisplayViewport(void)
 {
-    glViewport(0, 0, m_Context.display_width, m_Context.display_height);
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_GAME);
+    glViewport(rect.x, rect.y, rect.width, rect.height);
     GFX_GL_CheckError();
 }
 

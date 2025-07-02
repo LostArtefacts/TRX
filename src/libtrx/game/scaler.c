@@ -8,8 +8,8 @@
 static int32_t M_DoCalc(
     int32_t unit, int32_t base_width, int32_t base_height, double factor)
 {
-    const int32_t win_width = Viewport_GetWidth();
-    const int32_t win_height = Viewport_GetHeight();
+    const int32_t win_width = Viewport_GetWidth(VIEWPORT_GAME);
+    const int32_t win_height = Viewport_GetHeight(VIEWPORT_GAME);
     const int32_t sign = unit < 0 ? -1 : 1;
     const int32_t scale_x = win_width > base_width
         ? ((double)win_width * ABS(unit) * factor) / MAX(1, base_width)

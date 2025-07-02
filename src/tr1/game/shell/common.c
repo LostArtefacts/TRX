@@ -2,7 +2,6 @@
 #include "game/game_flow.h"
 #include "game/output.h"
 #include "game/savegame.h"
-#include "game/screen.h"
 #include "game/shell.h"
 #include "game/sound.h"
 
@@ -226,7 +225,6 @@ int32_t Shell_Main(void)
         Shell_ExitSystem("Could not initialise video system");
         return 1;
     }
-    Screen_Init();
     M_ShowWindow();
 
     GF_Init();
@@ -355,4 +353,14 @@ const char *Shell_GetConfigPath(void)
 const char *Shell_GetGameFlowPath(void)
 {
     return m_ModPaths[m_Args.mod].game_flow_path;
+}
+
+int32_t Shell_GetWindowWidth(void)
+{
+    return Shell_GetWindowSize().w;
+}
+
+int32_t Shell_GetWindowHeight(void)
+{
+    return Shell_GetWindowSize().h;
 }

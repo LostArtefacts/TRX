@@ -198,8 +198,8 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
 
 static int32_t M_GetVisibleRows(void)
 {
-    const int32_t res_h =
-        Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+    const int32_t res_h = Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_GAME), SCALER_TARGET_TEXT);
     if (res_h <= 240) {
         return 5;
     } else if (res_h <= 252) {

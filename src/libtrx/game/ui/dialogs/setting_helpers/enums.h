@@ -26,12 +26,11 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[];
 #if TR_VERSION == 1
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_RenderModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[];
 #elif TR_VERSION == 2
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_RenderModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[];
 #endif
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_ScreenshotFormatEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[];
