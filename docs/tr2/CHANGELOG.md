@@ -32,6 +32,7 @@
 - changed the dev console to accept compound characters (#2938)
 - changed the item duplication glitch fix to be on by default
 - changed the Bartoli's Hideout sunset effect to also apply to skybox lighting (#1617)
+- changed `/secret give` and `/secret take` to give or take all valid secrets when no index is specified
 - fixed inventory screen carpet background texture stretched on non-4:3 aspect ratios (#2022)
 - fixed picked up guns not appearing in holsters / on Lara's back (#1588)
 - fixed room 134 in Opera House having wrong textures (#3142)

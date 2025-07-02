@@ -12,15 +12,23 @@
 #include <stdio.h>
 #include <string.h>
 
+#define M_FMT_NUM "#%d"
+
+static const char *M_FormatAvailable(void);
+static const char *M_FormatPresent(void);
 static void M_LogInvalid(int32_t idx);
 static COMMAND_RESULT M_TakeSecret(int32_t idx);
 static COMMAND_RESULT M_GiveSecret(int32_t idx);
 static COMMAND_RESULT M_ListSecrets(void);
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
+static COMMAND_RESULT M_GiveAllSecrets(void);
+static COMMAND_RESULT M_TakeAllSecrets(void);
 
-static void M_LogInvalid(const int32_t idx)
+static const char *M_FormatAvailable(void)
 {
     RESUME_INFO *const info = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    ASSERT(info != nullptr);
+
     char buf[128] = {};
     char *ptr = buf;
     bool first = true;
@@ -30,16 +38,41 @@ static void M_LogInvalid(const int32_t idx)
                 ptr += sprintf(ptr, ", ");
             }
             first = false;
-            ptr += sprintf(ptr, "#%d", i + 1);
+            ptr += sprintf(ptr, M_FMT_NUM, i + 1);
         }
     }
-    Console_Log(GS(CMD_INVALID_SECRET), idx + 1, buf);
+    return String_FormatStatic("%s", buf);
+}
+
+static const char *M_FormatPresent(void)
+{
+    char buf[128] = {};
+    char *ptr = buf;
+    bool first = true;
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        if (Stats_HasSecret(i)) {
+            if (!first) {
+                ptr += sprintf(ptr, ", ");
+            }
+            first = false;
+            ptr += sprintf(ptr, M_FMT_NUM, i + 1);
+        }
+    }
+    return String_FormatStatic("%s", buf);
+}
+
+static void M_LogInvalid(const int32_t idx)
+{
+    Console_Log(
+        GS(CMD_INVALID_SECRET), String_FormatStatic(M_FMT_NUM, idx + 1),
+        M_FormatAvailable());
 }
 
 static COMMAND_RESULT M_TakeSecret(const int32_t idx)
 {
     if (Stats_TakeSecret(idx)) {
-        Console_Log(GS(CMD_GIVE_SECRET_TAKEN), idx + 1);
+        Console_Log(
+            GS(CMD_GIVE_SECRET_TAKEN), String_FormatStatic(M_FMT_NUM, idx + 1));
         return CR_SUCCESS;
     }
     M_LogInvalid(idx);
@@ -49,7 +82,8 @@ static COMMAND_RESULT M_TakeSecret(const int32_t idx)
 static COMMAND_RESULT M_GiveSecret(const int32_t idx)
 {
     if (Stats_AddSecret(idx)) {
-        Console_Log(GS(CMD_GIVE_SECRET_GIVEN), idx + 1);
+        Console_Log(
+            GS(CMD_GIVE_SECRET_GIVEN), String_FormatStatic(M_FMT_NUM, idx + 1));
         return CR_SUCCESS;
     }
     M_LogInvalid(idx);
@@ -60,24 +94,29 @@ static COMMAND_RESULT M_ListSecrets(void)
 {
     RESUME_INFO *const info = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     ASSERT(info != nullptr);
-    char buf[128] = {};
-    char *ptr = buf;
-    bool first = true;
-    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        if (Stats_HasSecret(i)) {
-            if (!first) {
-                ptr += sprintf(ptr, ", ");
-            }
-            first = false;
-            ptr += sprintf(ptr, "#%d", i + 1);
-        }
-    }
 
+    const char *const buf = M_FormatPresent();
     Console_Log(
         strcmp(buf, "") == 0 ? GS(CMD_GIVE_SECRET_NONE)
                              : GS(CMD_GIVE_SECRET_LIST),
         info->stats.secret_count, info->stats.max_secret_count, buf);
     return CR_SUCCESS;
+}
+
+static COMMAND_RESULT M_GiveAllSecrets(void)
+{
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        Stats_AddSecret(i); // Not all `i` are valid, but it's handled inside
+    }
+    return M_ListSecrets();
+}
+
+static COMMAND_RESULT M_TakeAllSecrets(void)
+{
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        Stats_TakeSecret(i); // Not all `i` are valid, but it's handled inside
+    }
+    return M_ListSecrets();
 }
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
@@ -88,6 +127,14 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     if (String_IsEmpty(ctx->args)) {
         return M_ListSecrets();
+    }
+
+    if (String_Equivalent(ctx->args, "give")) {
+        return M_GiveAllSecrets();
+    }
+
+    if (String_Equivalent(ctx->args, "take")) {
+        return M_TakeAllSecrets();
     }
 
     char *args = Memory_DupStr(ctx->args);

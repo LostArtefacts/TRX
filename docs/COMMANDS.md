@@ -44,9 +44,11 @@ Currently supported commands:
   Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching!
 
 - `/secret`  
+  `/secret take`  
   `/secret take {num}`  
+  `/secret give`  
   `/secret give {num}`  
-  Uncovers Lara's secret stash: list discovered secrets, pilfer one with `take`, or gift one back with `give`.
+  Uncovers Lara's secret stash: list discovered secrets, pilfer one or all with `take`, or gift one or all back with `give`.
 
 - `/kill`  
   `/kill all`  
