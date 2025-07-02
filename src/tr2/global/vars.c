@@ -8,8 +8,6 @@ const char *g_TRXVersion = "TR2X (non-Docker build)";
 
 const float g_RhwFactor = 0x14000000.p0;
 
-SDL_Window *g_SDLWindow = nullptr;
-
 uint32_t g_PerspectiveDistance = 0x3000000;
 
 int32_t g_OverlayStatus = 1;
