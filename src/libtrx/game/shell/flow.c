@@ -32,6 +32,13 @@ static void M_SetupSDL(void)
     }
 }
 
+void M_HandleConfigChange(const EVENT *const event, void *const data)
+{
+    const CONFIG *const old = &g_Config;
+    const CONFIG *const new = &g_SavedConfig;
+    Shell_HandleConfigChange(old, new);
+}
+
 static void M_SetupGL(void)
 {
     // Setup minimum properties of GL context
@@ -46,7 +53,7 @@ static void M_SetupGL(void)
 void Shell_LoadConfig(void)
 {
     Config_Read();
-    Config_SubscribeChanges(Shell_HandleConfigChange, nullptr);
+    Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
     Music_SetVolume(g_Config.audio.music_volume);

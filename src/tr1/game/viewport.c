@@ -2,6 +2,7 @@
 
 #include "game/output.h"
 #include "game/screen.h"
+#include "game/shell.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -90,4 +91,10 @@ void Viewport_AlterFOV(int16_t fov)
 {
     m_CurrentFOV = fov;
     Output_ObserveFOVChange();
+}
+
+void Viewport_Reset(void)
+{
+    const SHELL_SIZE size = Shell_GetCurrentSize();
+    GFX_Context_SetWindowSize(size.w, size.h);
 }

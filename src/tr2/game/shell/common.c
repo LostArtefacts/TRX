@@ -62,26 +62,8 @@ static SHELL_ARGS m_Args = {
     .save_to_load = -1,
 };
 
-static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
-static Uint64 m_UpdateDebounce = 0;
-static bool m_IgnoreConfigChanges = false;
-
-static void M_SyncToWindow(void);
-static void M_SyncFromWindow(bool update_viewport);
-static bool M_MustUpdateRendererViewport(void);
-static void M_RefreshRendererViewport(void);
-static void M_HandleFocusGained(void);
-static void M_HandleFocusLost(void);
-static void M_HandleWindowShown(void);
-static void M_HandleWindowRestored(void);
-static void M_HandleWindowMinimized(void);
-static void M_HandleWindowMaximized(void);
-static void M_HandleWindowMoved(int32_t x, int32_t y);
-static void M_HandleWindowResized(int32_t width, int32_t height);
 static bool M_CreateGameWindow(void);
-
 static void M_ShowHelp(void);
-static void M_HandleConfigChange(const EVENT *event, void *data);
 static void M_ShowWindow(void);
 
 static struct {
@@ -92,161 +74,6 @@ static struct {
     int32_t width;
     int32_t height;
 } m_LastWindowState = {};
-
-static void M_SyncToWindow(void)
-{
-    m_UpdateDebounce = SDL_GetTicks();
-
-    LOG_DEBUG(
-        "is_fullscreen=%d is_maximized=%d x=%d y=%d width=%d height=%d",
-        g_Config.window.is_fullscreen, g_Config.window.is_maximized,
-        g_Config.window.x, g_Config.window.y, g_Config.window.width,
-        g_Config.window.height);
-
-    if (g_Config.window.is_fullscreen) {
-        SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-        SDL_ShowCursor(SDL_DISABLE);
-    } else if (g_Config.window.is_maximized) {
-        SDL_SetWindowFullscreen(m_Window, 0);
-        SDL_MaximizeWindow(m_Window);
-        SDL_ShowCursor(SDL_ENABLE);
-    } else {
-        int32_t x = g_Config.window.x;
-        int32_t y = g_Config.window.y;
-        int32_t width = g_Config.window.width;
-        int32_t height = g_Config.window.height;
-        if (width <= 0 || height <= 0) {
-            width = 1280;
-            height = 720;
-        }
-
-        // Handle default position
-        if (x == -1 && y == -1) {
-            SDL_DisplayMode display_mode;
-            SDL_GetCurrentDisplayMode(0, &display_mode);
-            x = (display_mode.w - width) / 2;
-            y = (display_mode.h - height) / 2;
-        } else {
-            // Adjust window position if completely offscreen
-            bool on_screen = false;
-            const int32_t num_displays = SDL_GetNumVideoDisplays();
-            for (int32_t i = 0; i < num_displays; i++) {
-                SDL_Rect bounds;
-                SDL_GetDisplayBounds(i, &bounds);
-                if (x + width > bounds.x && x < bounds.x + bounds.w
-                    && y + height > bounds.y && y < bounds.y + bounds.h) {
-                    on_screen = true;
-                    break;
-                }
-            }
-            if (!on_screen) {
-                x = 0;
-                y = 0;
-                // Find the first display to reposition the window
-                SDL_Rect bounds;
-                SDL_GetDisplayBounds(0, &bounds);
-                x = bounds.x + (bounds.w - width) / 2;
-                y = bounds.y + (bounds.h - height) / 2;
-            }
-        }
-
-        SDL_SetWindowFullscreen(m_Window, 0);
-        SDL_SetWindowPosition(m_Window, x, y);
-        SDL_SetWindowSize(m_Window, width, height);
-        SDL_ShowCursor(SDL_ENABLE);
-    }
-}
-
-static void M_SyncFromWindow(const bool update_viewport)
-{
-    // Determine if this call should sync config, i.e., skip immediate
-    // programmatic events
-    const Uint32 now = SDL_GetTicks();
-    const bool skip_config = (now - m_UpdateDebounce) < 500;
-
-    // Always pull current window state for logging and viewport reset
-    const Uint32 window_flags = SDL_GetWindowFlags(m_Window);
-    const bool is_maximized = window_flags & SDL_WINDOW_MAXIMIZED;
-    int32_t x, y;
-    int32_t width, height;
-    SDL_GetWindowSize(m_Window, &width, &height);
-    SDL_GetWindowPosition(m_Window, &x, &y);
-    LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
-
-    // Update config only when not in debounce window
-    if (!skip_config) {
-        g_Config.window.is_maximized = is_maximized;
-        if (!is_maximized && !g_Config.window.is_fullscreen) {
-            g_Config.window.x = x;
-            g_Config.window.y = y;
-            g_Config.window.width = width;
-            g_Config.window.height = height;
-        } else {
-            g_Config.window.fs_width = width;
-            g_Config.window.fs_height = height;
-        }
-        if (g_Config.loaded) {
-            m_IgnoreConfigChanges = true;
-            Config_Write();
-            m_IgnoreConfigChanges = false;
-        }
-    }
-
-    if (update_viewport || M_MustUpdateRendererViewport()) {
-        // Refresh viewport to reflect the actual window size
-        M_RefreshRendererViewport();
-    }
-}
-
-static bool M_MustUpdateRendererViewport(void)
-{
-    const SHELL_SIZE size = Shell_GetCurrentSize();
-    return m_ViewportSize.w != size.w || m_ViewportSize.h != size.h;
-}
-
-static void M_RefreshRendererViewport(void)
-{
-    Viewport_Reset();
-    m_ViewportSize = Shell_GetCurrentSize();
-}
-
-static void M_HandleFocusGained(void)
-{
-}
-
-static void M_HandleFocusLost(void)
-{
-}
-
-static void M_HandleWindowShown(void)
-{
-    LOG_DEBUG("");
-}
-
-static void M_HandleWindowRestored(void)
-{
-    M_SyncFromWindow(true);
-}
-
-static void M_HandleWindowMinimized(void)
-{
-    LOG_DEBUG("");
-}
-
-static void M_HandleWindowMaximized(void)
-{
-    M_SyncFromWindow(true);
-}
-
-static void M_HandleWindowMoved(const int32_t x, const int32_t y)
-{
-    M_SyncFromWindow(false);
-}
-
-static void M_HandleWindowResized(int32_t width, int32_t height)
-{
-    M_SyncFromWindow(true);
-}
 
 static bool M_CreateGameWindow(void)
 {
@@ -282,35 +109,11 @@ static void M_ShowHelp(void)
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
 }
 
-void Shell_HandleConfigChange(const EVENT *const event, void *const data)
+void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 {
-    const CONFIG *const old = &g_Config;
-    const CONFIG *const new = &g_SavedConfig;
+    Shell_HandleCommonConfigChange(old, new);
 
 #define L_CHANGED(subject) (old->subject != new->subject)
-
-    if (L_CHANGED(audio.sound_volume)) {
-        Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    }
-    if (L_CHANGED(audio.music_volume)) {
-        Music_SetVolume(g_Config.audio.music_volume);
-    }
-
-    if (L_CHANGED(language)) {
-        GameStringManager_ReloadLanguage(g_Config.language);
-    }
-
-    if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)
-        || L_CHANGED(window.width) || L_CHANGED(window.height)
-        || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
-        || L_CHANGED(rendering.scaler) || L_CHANGED(rendering.sizer)
-        || L_CHANGED(rendering.aspect_mode) || L_CHANGED(visuals.use_psx_fov)) {
-        LOG_DEBUG("Change in settings detected");
-        if (!m_IgnoreConfigChanges) {
-            M_SyncToWindow();
-        }
-        M_RefreshRendererViewport();
-    }
 
     if (L_CHANGED(rendering.render_mode)) {
         Render_Reset(RENDER_RESET_ALL);
@@ -335,23 +138,17 @@ void Shell_HandleConfigChange(const EVENT *const event, void *const data)
         || L_CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();
     }
-
-    if (L_CHANGED(rendering.aspect_mode) || L_CHANGED(window.width)
-        || L_CHANGED(window.height) || L_CHANGED(window.fs_width)
-        || L_CHANGED(window.fs_height)) {
-        Output_ReloadBackgroundImage();
-    }
 #undef L_CHANGED
 }
 
 static void M_ShowWindow(void)
 {
     Render_Init();
-    M_SyncToWindow();
+    Shell_SyncToWindow();
 
     SDL_ShowWindow(m_Window);
     SDL_RaiseWindow(m_Window);
-    M_RefreshRendererViewport();
+    Shell_RefreshRendererViewport();
 
     Viewport_AlterFOV(-1);
     Viewport_Reset();
@@ -544,44 +341,6 @@ void Shell_ProcessEvents(void)
     while (SDL_PollEvent(&event) != 0) {
         if (Shell_ProcessCommonEvent(&event)) {
             continue;
-        }
-
-        switch (event.type) {
-        case SDL_WINDOWEVENT:
-            switch (event.window.event) {
-            case SDL_WINDOWEVENT_SHOWN:
-                M_HandleWindowShown();
-                break;
-
-            case SDL_WINDOWEVENT_FOCUS_GAINED:
-                M_HandleFocusGained();
-                break;
-
-            case SDL_WINDOWEVENT_FOCUS_LOST:
-                M_HandleFocusLost();
-                break;
-
-            case SDL_WINDOWEVENT_RESTORED:
-                M_HandleWindowRestored();
-                break;
-
-            case SDL_WINDOWEVENT_MINIMIZED:
-                M_HandleWindowMinimized();
-                break;
-
-            case SDL_WINDOWEVENT_MAXIMIZED:
-                M_HandleWindowMaximized();
-                break;
-
-            case SDL_WINDOWEVENT_MOVED:
-                M_HandleWindowMoved(event.window.data1, event.window.data2);
-                break;
-
-            case SDL_WINDOWEVENT_RESIZED:
-                M_HandleWindowResized(event.window.data1, event.window.data2);
-                break;
-            }
-            break;
         }
     }
 }

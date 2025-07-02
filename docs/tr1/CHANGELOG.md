@@ -33,6 +33,7 @@
 - fixed key items getting consumed at the start of the interaction with receptacles (#3399)
 - fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
 - fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode) (#3406)
+- fixed game window getting misplaced in windowed mode between game relaunches on certain systems (#3418)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - removed "window size" rendering mode, enforcing the FBO rendering method (#3332)

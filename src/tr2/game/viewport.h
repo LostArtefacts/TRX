@@ -50,8 +50,6 @@ typedef struct {
     } game_vars;
 } VIEWPORT;
 
-void Viewport_Reset(void);
-
 void Viewport_Restore(const VIEWPORT *ref_vp);
 
 const VIEWPORT *Viewport_Get(void);

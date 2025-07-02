@@ -59,38 +59,9 @@ static SHELL_ARGS m_Args = {
     .save_to_load = -1,
 };
 
-static void M_HandleWindowResized(void);
-static void M_SetWindowPos(int32_t x, int32_t y, bool update);
-static void M_SetWindowSize(int32_t width, int32_t height, bool update);
-static void M_SetWindowMaximized(bool is_enabled, bool update);
-static void M_SetFullscreen(bool is_enabled, bool update);
 static void M_SetGLBackend(GFX_GL_BACKEND backend);
 
 static void M_ShowHelp(void);
-
-static void M_HandleWindowResized(void)
-{
-    int x;
-    int y;
-    int width;
-    int height;
-    bool is_maximized;
-
-    Uint32 window_flags = SDL_GetWindowFlags(m_Window);
-    is_maximized = window_flags & SDL_WINDOW_MAXIMIZED;
-    SDL_GetWindowSize(m_Window, &width, &height);
-    SDL_GetWindowPosition(m_Window, &x, &y);
-    LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
-
-    M_SetWindowMaximized(is_maximized, false);
-    M_SetWindowPos(x, y, false);
-    M_SetWindowSize(width, height, false);
-
-    // save the updated config, but ensure it was loaded first
-    if (g_Config.loaded) {
-        Config_Write();
-    }
-}
 
 static void M_CreateGameWindow(void)
 {
@@ -123,7 +94,6 @@ static void M_CreateGameWindow(void)
         LOG_DEBUG("Trying GL backend %d.%d", major, minor);
         if (GFX_Context_Attach(window, backend)) {
             m_Window = window;
-            M_HandleWindowResized();
             return;
         }
     }
@@ -141,19 +111,11 @@ static void M_ShowHelp(void)
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
 }
 
-void Shell_HandleConfigChange(const EVENT *const event, void *const data)
+void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 {
-    const CONFIG *const old = &g_Config;
-    const CONFIG *const new = &g_SavedConfig;
+    Shell_HandleCommonConfigChange(old, new);
 
 #define L_CHANGED(subject) (old->subject != new->subject)
-
-    if (L_CHANGED(audio.sound_volume)) {
-        Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    }
-    if (L_CHANGED(audio.music_volume)) {
-        Music_SetVolume(g_Config.audio.music_volume);
-    }
 
     if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
         Savegame_Shutdown();
@@ -161,91 +123,15 @@ void Shell_HandleConfigChange(const EVENT *const event, void *const data)
         Savegame_ScanSavedGames();
         Savegame_HighlightNewestSlot();
     }
-
-    if (L_CHANGED(language)) {
-        GameStringManager_ReloadLanguage(g_Config.language);
-    }
-
-    if (L_CHANGED(window.is_fullscreen)) {
-        LOG_DEBUG("Change in settings detected");
-        SDL_SetWindowFullscreen(
-            m_Window,
-            g_Config.window.is_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
-        SDL_ShowCursor(
-            g_Config.window.is_fullscreen ? SDL_DISABLE : SDL_ENABLE);
-    }
-
 #undef L_CHANGED
-
-    Output_ApplyRenderSettings();
 }
 
 static void M_ShowWindow(void)
 {
-    M_SetFullscreen(g_Config.window.is_fullscreen, true);
-    M_SetWindowPos(g_Config.window.x, g_Config.window.y, true);
-    M_SetWindowSize(g_Config.window.width, g_Config.window.height, true);
-    M_SetWindowMaximized(g_Config.window.is_maximized, true);
+    Shell_SyncToWindow();
     SDL_ShowWindow(m_Window);
-}
-
-static void M_SetWindowPos(int32_t x, int32_t y, bool update)
-{
-    if (x <= 0 || y <= 0) {
-        return;
-    }
-
-    // only save window position if it's in windowed state.
-    if (!g_Config.window.is_fullscreen && !g_Config.window.is_maximized) {
-        g_Config.window.x = x;
-        g_Config.window.y = y;
-    }
-
-    if (update) {
-        SDL_SetWindowPosition(m_Window, x, y);
-    }
-}
-
-static void M_SetWindowSize(int32_t width, int32_t height, bool update)
-{
-    if (width <= 0 || height <= 0) {
-        return;
-    }
-
-    // only save window size if it's in windowed state.
-    if (!g_Config.window.is_fullscreen && !g_Config.window.is_maximized) {
-        g_Config.window.width = width;
-        g_Config.window.height = height;
-    } else {
-        g_Config.window.fs_width = width;
-        g_Config.window.fs_height = height;
-    }
-
-    Output_SetWindowSize(width, height);
-
-    if (update) {
-        SDL_SetWindowSize(m_Window, width, height);
-    }
-}
-
-static void M_SetWindowMaximized(bool is_enabled, bool update)
-{
-    g_Config.window.is_maximized = is_enabled;
-
-    if (update && is_enabled) {
-        SDL_MaximizeWindow(m_Window);
-    }
-}
-
-static void M_SetFullscreen(bool is_enabled, bool update)
-{
-    g_Config.window.is_fullscreen = is_enabled;
-
-    if (update) {
-        SDL_SetWindowFullscreen(
-            m_Window, is_enabled ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
-        SDL_ShowCursor(is_enabled ? SDL_DISABLE : SDL_ENABLE);
-    }
+    SDL_RaiseWindow(m_Window);
+    Shell_RefreshRendererViewport();
 }
 
 static void M_SetGLBackend(const GFX_GL_BACKEND backend)
@@ -285,11 +171,6 @@ void Shell_ProcessEvents(void)
                 FMV_Mute();
                 Music_Mute();
                 Sound_SetMasterVolume(0);
-                break;
-
-            case SDL_WINDOWEVENT_MOVED:
-            case SDL_WINDOWEVENT_RESIZED:
-                M_HandleWindowResized();
                 break;
             }
             break;
