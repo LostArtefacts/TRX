@@ -439,6 +439,7 @@
                 {"type": "remove_medipacks"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 48},
+                {"type": "level_stats"},
                 {"type": "level_complete"},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit01.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit02.webp", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
