@@ -3,13 +3,8 @@
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/viewport.h"
-#include "global/types.h"
 
 #include <libtrx/config.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/utils.h>
-
-#include <math.h>
 
 static int32_t m_ResolutionIdx = 0;
 static int32_t m_ResolutionsCount = 0;
@@ -30,8 +25,6 @@ static RESOLUTION m_Resolutions[] = {
 };
 
 static void M_ApplyResolution(void);
-static int32_t M_GetRenderScaleBase(
-    int32_t unit, int32_t base_width, int32_t base_height, double factor);
 
 static void M_ApplyResolution(void)
 {
@@ -43,18 +36,6 @@ static void M_ApplyResolution(void)
 
     Matrix_ResetStack();
     Viewport_AlterFOV(-1);
-}
-
-static int32_t M_GetRenderScaleBase(
-    int32_t unit, int32_t base_width, int32_t base_height, double factor)
-{
-    int32_t scale_x = Screen_GetResWidth() > base_width
-        ? ((double)Screen_GetResWidth() * unit * factor) / base_width
-        : unit * factor;
-    int32_t scale_y = Screen_GetResHeight() > base_height
-        ? ((double)Screen_GetResHeight() * unit * factor) / base_height
-        : unit * factor;
-    return MIN(scale_x, scale_y);
 }
 
 void Screen_Init(void)
@@ -111,43 +92,6 @@ int32_t Screen_GetResWidth(void)
 int32_t Screen_GetResHeight(void)
 {
     return m_Resolutions[m_ResolutionIdx].height;
-}
-
-int32_t Screen_GetResWidthDownscaled(RENDER_SCALE_REF ref)
-{
-    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScale(PHD_ONE, ref);
-}
-
-int32_t Screen_GetResHeightDownscaled(RENDER_SCALE_REF ref)
-{
-    return Screen_GetResHeight() * PHD_ONE
-        / Screen_GetRenderScale(PHD_ONE, ref);
-}
-
-int32_t Screen_GetRenderScale(int32_t unit, RENDER_SCALE_REF ref)
-{
-    if (ref == RSR_TEXT) {
-        return M_GetRenderScaleBase(unit, 640, 480, g_Config.ui.text_scale);
-    } else if (ref == RSR_BAR) {
-        return M_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
-    } else {
-        return M_GetRenderScaleBase(unit, 640, 480, 1.0f);
-    }
-}
-
-int32_t Screen_GetRenderScaleGLRage(int32_t unit)
-{
-    // GLRage-style UI scaler
-    double result = Screen_GetResWidth();
-    result *= unit;
-    result /= 800.0;
-
-    // only scale up, not down
-    if (result < unit) {
-        result = unit;
-    }
-
-    return round(result);
 }
 
 bool Screen_CanSetPrevRes(void)

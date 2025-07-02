@@ -1,34 +1,18 @@
 #include "game/overlay.h"
 
-#include "game/clock.h"
-#include "game/creature.h"
 #include "game/game.h"
-#include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/output.h"
-#include "game/output/meshes/common.h"
-#include "game/output/shader.h"
 #include "game/screen.h"
 #include "game/viewport.h"
-#include "global/types.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/game/gun/const.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/utils.h>
 
-#include <stdio.h>
-#include <string.h>
-
-#define M_COLOR_STEPS 5
 #define M_MAX_PICKUP_COLUMNS 4
 #define M_MAX_PICKUP_DURATION_DISPLAY 2.0 // seconds
 #define M_MAX_PICKUP_DURATION_EASE_IN 0.5 // seconds
 #define M_MAX_PICKUP_DURATION_EASE_OUT 1.0 // seconds
 #define M_MAX_PICKUPS 16
-#define M_BLINK_THRESHOLD 20
 #define M_PICKUPS_FOV 65
 
 typedef enum {
@@ -49,160 +33,12 @@ typedef struct {
 
 static DISPLAY_PICKUP m_Pickups[M_MAX_PICKUPS] = {};
 static CLOCK_TIMER m_PickupsTimer = { .type = CLOCK_TIMER_SIM };
-static CLOCK_TIMER m_BlinkTimer = { .type = CLOCK_TIMER_SIM };
 
-static RGBA_8888 m_ColorBarMap[][M_COLOR_STEPS] = {
-    // gold
-    { { 124, 94, 37, 255 },
-      { 161, 131, 60, 255 },
-      { 124, 94, 37, 255 },
-      { 100, 70, 19, 255 },
-      { 76, 46, 2, 255 } },
-    // blue
-    { { 61, 113, 123, 255 },
-      { 101, 146, 154, 255 },
-      { 61, 113, 123, 255 },
-      { 31, 93, 107, 255 },
-      { 0, 74, 91, 255 } },
-    // grey
-    { { 88, 100, 88, 255 },
-      { 116, 132, 116, 255 },
-      { 88, 100, 88, 255 },
-      { 76, 80, 76, 255 },
-      { 48, 48, 48, 255 } },
-    // red
-    { { 160, 40, 28, 255 },
-      { 184, 44, 32, 255 },
-      { 160, 40, 28, 255 },
-      { 124, 32, 32, 255 },
-      { 84, 20, 32, 255 } },
-    // silver
-    { { 150, 150, 150, 255 },
-      { 230, 230, 230, 255 },
-      { 200, 200, 200, 255 },
-      { 140, 140, 140, 255 },
-      { 100, 100, 100, 255 } },
-    // green
-    { { 100, 190, 20, 255 },
-      { 130, 230, 30, 255 },
-      { 100, 190, 20, 255 },
-      { 90, 150, 15, 255 },
-      { 80, 110, 10, 255 } },
-    // gold2
-    { { 220, 170, 0, 255 },
-      { 255, 200, 0, 255 },
-      { 220, 170, 0, 255 },
-      { 185, 140, 0, 255 },
-      { 150, 100, 0, 255 } },
-    // blue2
-    { { 0, 170, 220, 255 },
-      { 0, 200, 255, 255 },
-      { 0, 170, 220, 255 },
-      { 0, 140, 185, 255 },
-      { 0, 100, 150, 255 } },
-    // pink
-    { { 220, 140, 170, 255 },
-      { 255, 150, 200, 255 },
-      { 210, 130, 160, 255 },
-      { 165, 100, 120, 255 },
-      { 120, 60, 70, 255 } },
-    // purple
-    { { 52, 22, 80, 255 },
-      { 70, 30, 107, 255 },
-      { 52, 22, 80, 255 },
-      { 39, 17, 60, 255 },
-      { 26, 11, 40, 255 } },
-};
-
-static void M_BarBlink(BAR_INFO *bar_info);
-static int32_t M_BarGetPercent(BAR_INFO *bar_info);
 static float M_Ease(float cur_frame, float max_frames);
 static void M_DrawPickup3D(DISPLAY_PICKUP *pu);
 static void M_DrawPickups3D(void);
 static void M_DrawPickupsSprites(void);
 static void M_DrawPickups(void);
-
-static int32_t M_BarGetPercent(BAR_INFO *bar_info)
-{
-    return bar_info->value * 100 / bar_info->max_value;
-}
-
-static void M_BarBlink(BAR_INFO *bar_info)
-{
-    if (bar_info->show_mode == BSM_PS1 || bar_info->type == BT_ENEMY_HEALTH
-        || bar_info->type == BT_PROGRESS) {
-        bar_info->blink = false;
-        return;
-    }
-
-    const int32_t percent = M_BarGetPercent(bar_info);
-    if (percent > M_BLINK_THRESHOLD) {
-        bar_info->blink = false;
-        return;
-    }
-
-    if (ClockTimer_CheckElapsedAndTake(
-            &m_BlinkTimer, 10.0 / (double)LOGIC_FPS)) {
-        bar_info->blink = !bar_info->blink;
-    }
-}
-
-void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
-{
-    const RGBA_8888 rgb_bgnd = { 0, 0, 0, 255 };
-    const RGBA_8888 rgb_border = { 53, 53, 53, 255 };
-    ASSERT(bar_info->location == BL_CUSTOM);
-    int32_t width = bar_info->custom_width;
-    int32_t height = bar_info->custom_height;
-    int32_t x = bar_info->custom_x;
-    int32_t y = bar_info->custom_y;
-
-    int32_t padding = Screen_GetRenderScale(2, scale_ref);
-    int32_t border = Screen_GetRenderScale(2, scale_ref);
-
-    int32_t sx = Screen_GetRenderScale(x, scale_ref) - padding;
-    int32_t sy = Screen_GetRenderScale(y, scale_ref) - padding;
-    int32_t sw = Screen_GetRenderScale(width, scale_ref) + padding * 2;
-    int32_t sh = Screen_GetRenderScale(height, scale_ref) + padding * 2;
-
-    // border
-    Output_DrawScreenFlatQuad(
-        sx - border, sy - border, sw + 2 * border, sh + 2 * border, rgb_border);
-
-    // background
-    Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
-
-    int32_t percent = M_BarGetPercent(bar_info);
-
-    // Check if bar should flash or not
-    M_BarBlink(bar_info);
-
-    if (percent && !bar_info->blink) {
-        width = width * percent / 100;
-
-        sx = Screen_GetRenderScale(x, scale_ref);
-        sy = Screen_GetRenderScale(y, scale_ref);
-        sw = Screen_GetRenderScale(width, scale_ref);
-        sh = Screen_GetRenderScale(height, scale_ref);
-
-        if (g_Config.ui.enable_smooth_bars) {
-            for (int i = 0; i < M_COLOR_STEPS - 1; i++) {
-                RGBA_8888 c1 = m_ColorBarMap[bar_info->color][i];
-                RGBA_8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
-                int32_t lsy = sy + i * sh / (M_COLOR_STEPS - 1);
-                int32_t lsh = sy + (i + 1) * sh / (M_COLOR_STEPS - 1) - lsy;
-                Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
-            }
-        } else {
-            for (int i = 0; i < M_COLOR_STEPS; i++) {
-                RGBA_8888 color = m_ColorBarMap[bar_info->color][i];
-                int32_t lsy = sy + i * sh / M_COLOR_STEPS;
-                int32_t lsh = sy + (i + 1) * sh / M_COLOR_STEPS - lsy;
-                Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
-            }
-        }
-    }
-}
 
 static float M_Ease(const float cur_frame, const float max_frames)
 {
@@ -386,7 +222,7 @@ static void M_DrawPickupsSprites(void)
             Viewport_GetWidth() - sprite_height - sprite_width * pu->grid_x;
         const int32_t y =
             Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
-        const int32_t scale = Screen_GetRenderScaleGLRage(12288);
+        const int32_t scale = 12288 * Viewport_GetWidth() / 640;
         const int16_t sprite_num = Object_Get(pu->object_id)->mesh_idx;
         Output_DrawUISprite(x, y, scale, sprite_num, SHADE_NEUTRAL);
     }
