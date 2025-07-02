@@ -134,16 +134,16 @@ static void M_ToggleRenderingMode(void)
 
 static void M_DecreaseResolutionOrBPP(void)
 {
-    g_Config.rendering.scaler--;
+    g_Config.rendering.upscaling_factor--;
     Config_Write();
-    Console_Log(GS(OSD_SCALER_FMT), g_Config.rendering.scaler);
+    Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
 }
 
 static void M_IncreaseResolutionOrBPP(void)
 {
-    g_Config.rendering.scaler++;
+    g_Config.rendering.upscaling_factor++;
     Config_Write();
-    Console_Log(GS(OSD_SCALER_FMT), g_Config.rendering.scaler);
+    Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
 }
 
 static void M_DecreaseInternalScreenSize(void)

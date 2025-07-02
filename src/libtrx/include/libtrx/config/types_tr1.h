@@ -193,13 +193,13 @@ typedef struct {
         bool enable_trapezoid_filter;
         bool enable_lighting;
         GFX_TEXTURE_FILTER texture_filter;
-        GFX_TEXTURE_FILTER fbo_filter;
+        GFX_TEXTURE_FILTER upscaling_filter;
         bool enable_wireframe;
         double wireframe_width;
         bool enable_vsync;
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
-        int32_t scaler;
+        int32_t upscaling_factor;
         float sizer;
     } rendering;
 

@@ -1228,6 +1228,7 @@ static void M_ResetFuncPtrs(RENDERER *const renderer)
 static void M_ResetParams(RENDERER *const renderer)
 {
     M_PRIV *const priv = renderer->priv;
+    GFX_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
     GFX_3D_Renderer_SetBrightnessMultiplier(
         priv->renderer_3d,
         g_Config.rendering.lighting_contrast == LIGHTING_CONTRAST_LOW ? 1.0

@@ -116,6 +116,10 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 
 #define L_CHANGED(subject) (old->subject != new->subject)
 
+    if (L_CHANGED(rendering.upscaling_filter)) {
+        Output_ApplyRenderSettings();
+    }
+
     if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
         Savegame_Shutdown();
         Savegame_Init();

@@ -139,8 +139,8 @@ void Viewport_Reset(void)
         break;
     }
 
-    vp->width = size.w / g_Config.rendering.scaler;
-    vp->height = size.h / g_Config.rendering.scaler;
+    vp->width = size.w / g_Config.rendering.upscaling_factor;
+    vp->height = size.h / g_Config.rendering.upscaling_factor;
     if (g_Config.rendering.aspect_mode != AM_ANY) {
         vp->width = vp->height * vp->render_ar.w / vp->render_ar.h;
     }
