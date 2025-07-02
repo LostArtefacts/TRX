@@ -18,3 +18,4 @@ void Inv_ClearSelection(void);
 void Inv_RemoveAllItems(void);
 
 extern bool Inv_AddItem(GAME_OBJECT_ID obj_id);
+extern bool Inv_AddPickup(const ITEM *item);

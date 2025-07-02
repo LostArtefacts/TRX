@@ -1,7 +1,6 @@
 #include "game/objects/general/pickup.h"
 
 #include "game/game.h"
-#include "game/game_flow.h"
 #include "game/gun/gun.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -64,12 +63,7 @@ static void M_DoPickup(const int16_t item_num)
     }
 
     Overlay_AddDisplayPickup(item->object_id);
-    Inv_AddItem(item->object_id);
-
-    if (Object_IsType(item->object_id, g_SecretObjects)
-        && Stats_CheckAllLevelSecretsCollected()) {
-        GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
-    }
+    Inv_AddPickup(item);
 
     item->status = IS_INVISIBLE;
     item->flags |= IF_KILLED;

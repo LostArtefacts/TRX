@@ -53,6 +53,8 @@
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene (#3370)
 - fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - fixed Lara getting stuck in the fly cheat in rare circumstances (#3392, regression from 0.3)
+- fixed support for >3 secret dragons in custom levels (#3415, regression from 1.2)
+- improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - removed config tool (we have ingame setting dialogs now)

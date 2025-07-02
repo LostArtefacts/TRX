@@ -2,29 +2,42 @@
 
 #include "game/game.h"
 #include "game/savegame.h"
+#include "log.h"
 
-bool Stats_HasSecret(const int16_t secret_num)
+bool Stats_IsSecretValid(const int16_t secret_idx)
 {
     RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (secret_num < 0 || secret_num >= STATS_MAX_SECRETS) {
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
-    const uint32_t secret_mask = 1 << secret_num;
+    const uint32_t secret_mask = 1 << secret_idx;
+    return (secret_mask & current_info->stats.all_secrets_mask) != 0;
+}
+
+bool Stats_HasSecret(const int16_t secret_idx)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
+        return false;
+    }
+    const uint32_t secret_mask = 1 << secret_idx;
     if ((secret_mask & current_info->stats.all_secrets_mask) == 0) {
         return false;
     }
     return (current_info->stats.secret_flags & secret_mask) != 0;
 }
 
-bool Stats_TakeSecret(const int16_t secret_num)
+bool Stats_TakeSecret(const int16_t secret_idx)
 {
+    LOG_INFO("Removing secret %d", secret_idx);
     RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (secret_num < 0 || secret_num >= STATS_MAX_SECRETS) {
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
-    const uint32_t secret_mask = 1 << secret_num;
+    const uint32_t secret_mask = 1 << secret_idx;
     if ((secret_mask & current_info->stats.all_secrets_mask) == 0) {
         return false;
     }
@@ -36,14 +49,15 @@ bool Stats_TakeSecret(const int16_t secret_num)
     return true;
 }
 
-bool Stats_AddSecret(const int16_t secret_num)
+bool Stats_AddSecret(const int16_t secret_idx)
 {
+    LOG_INFO("Adding secret %d", secret_idx);
     RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (secret_num < 0 || secret_num >= STATS_MAX_SECRETS) {
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
-    const uint32_t secret_mask = 1 << secret_num;
+    const uint32_t secret_mask = 1 << secret_idx;
     if ((secret_mask & current_info->stats.all_secrets_mask) == 0) {
         return false;
     }
