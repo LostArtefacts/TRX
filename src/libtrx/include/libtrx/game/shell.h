@@ -26,6 +26,8 @@ SHELL_SIZE Shell_GetWindowSize(void);
 SHELL_SIZE Shell_GetCurrentSize(void);
 SHELL_SIZE Shell_GetCurrentDisplaySize(void);
 
+bool Shell_ProcessCommonEvent(const SDL_Event *event);
+
 extern const char *Shell_GetConfigPath(void);
 extern const char *Shell_GetGameFlowPath(void);
 extern void Shell_ProcessInput(void);

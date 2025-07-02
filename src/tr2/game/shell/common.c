@@ -82,9 +82,6 @@ static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
 static Uint64 m_UpdateDebounce = 0;
 static bool m_IgnoreConfigChanges = false;
 
-// If true, next SDL_TEXT* event should be zeroed out.
-static bool m_ConsoleJustOpened = false;
-
 static void M_SyncToWindow(void);
 static void M_SyncFromWindow(bool update_viewport);
 static bool M_MustUpdateRendererViewport(void);
@@ -97,9 +94,6 @@ static void M_HandleWindowMinimized(void);
 static void M_HandleWindowMaximized(void);
 static void M_HandleWindowMoved(int32_t x, int32_t y);
 static void M_HandleWindowResized(int32_t width, int32_t height);
-static void M_HandleKeyDown(const SDL_Event *event);
-static void M_HandleKeyUp(const SDL_Event *event);
-static void M_HandleQuit(void);
 static void M_ConfigureOpenGL(void);
 static bool M_CreateGameWindow(void);
 
@@ -272,39 +266,6 @@ static void M_HandleWindowResized(int32_t width, int32_t height)
     M_SyncFromWindow(true);
 }
 
-static void M_HandleKeyDown(const SDL_Event *const event)
-{
-    // NOTE: Opening the console normally would get handled by Input_Update,
-    // but by the time Input_Update gets ran, we may already have lost some
-    // keypresses if the player types really fast, so we need to react sooner.
-    if (!FMV_IsPlaying() && g_Config.gameplay.enable_console
-        && !Console_IsOpened() && !Input_IsInListenMode()
-        && Input_IsPressed(
-            INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
-            INPUT_ROLE_ENTER_CONSOLE)) {
-        Console_Open();
-        // Zero out the next text event so the console-open glyph never
-        // shows up.
-        m_ConsoleJustOpened = true;
-    } else {
-        UI_HandleKeyDown(event->key.keysym.sym);
-    }
-}
-
-static void M_HandleKeyUp(const SDL_Event *const event)
-{
-    // NOTE: needs special handling on Windows -
-    // SDL_SCANCODE_PRINTSCREEN is not sufficient to react to this.
-    if (event->key.keysym.sym == SDLK_PRINTSCREEN) {
-        Screenshot_Make(g_Config.rendering.screenshot_format);
-    }
-}
-
-static void M_HandleQuit(void)
-{
-    Shell_ScheduleExit();
-}
-
 static void M_ConfigureOpenGL(void)
 {
     // Setup minimum properties of GL context
@@ -472,7 +433,6 @@ bool Shell_ParseArgs(const int32_t arg_count, const char **args)
     return true;
 }
 
-// TODO: refactor the hell out of me
 int32_t Shell_Main(void)
 {
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
@@ -631,6 +591,7 @@ int32_t Shell_Main(void)
 void Shell_Shutdown(void)
 {
     Console_Shutdown();
+    Savegame_Shutdown();
 
     GF_Shutdown();
     Overlay_Shutdown();
@@ -640,8 +601,8 @@ void Shell_Shutdown(void)
     UI_Shutdown();
 
     GameStringManager_Shutdown();
-    GameBuf_Shutdown();
     GameString_Shutdown();
+    GameBuf_Shutdown();
 
     Config_Shutdown();
     EnumMap_Shutdown();
@@ -658,48 +619,15 @@ const char *Shell_GetGameFlowPath(void)
     return m_ModPaths[m_Args.mod].game_flow_path;
 }
 
-// TODO: try to call this function in a single place after introducing phases.
 void Shell_ProcessEvents(void)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
-        switch (event.type) {
-        case SDL_QUIT:
-            M_HandleQuit();
-            break;
-
-        case SDL_KEYDOWN: {
-            M_HandleKeyDown(&event);
-            break;
+        if (Shell_ProcessCommonEvent(&event)) {
+            continue;
         }
 
-        case SDL_KEYUP:
-            M_HandleKeyUp(&event);
-            break;
-
-        case SDL_TEXTEDITING:
-            if (m_ConsoleJustOpened) {
-                m_ConsoleJustOpened = false;
-            } else {
-                UI_HandleTextEdit(event.text.text);
-            }
-            break;
-
-        case SDL_TEXTINPUT:
-            if (m_ConsoleJustOpened) {
-                m_ConsoleJustOpened = false;
-            } else {
-                UI_HandleTextEdit(event.text.text);
-            }
-            break;
-
-        case SDL_CONTROLLERDEVICEADDED:
-        case SDL_JOYDEVICEADDED:
-        case SDL_CONTROLLERDEVICEREMOVED:
-        case SDL_JOYDEVICEREMOVED:
-            Input_Discover();
-            break;
-
+        switch (event.type) {
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_SHOWN:
