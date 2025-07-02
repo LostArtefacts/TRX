@@ -330,7 +330,7 @@
         "GRAPHIC_SETTINGS_LIGHTING_CONTRAST_MEDIUM": "Moyen",
         "GRAPHIC_SETTINGS_MENU_STYLE": "Style des menus",
         "GRAPHIC_SETTINGS_MENU_STYLE_DESCRIPTION": "Changer la manière dont les menus sont affichés.\n - PC : Interface de la version PC.\n - PS1 : Interface de la version PlayStation.",
-        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "\\{review}Désactivé",
+        "GRAPHIC_SETTINGS_NEAREST_NEIGHBOR": "\\{review}Point",
         "GRAPHIC_SETTINGS_REFLECTIONS": "Reflets",
         "GRAPHIC_SETTINGS_REFLECTIONS_DESCRIPTION": "Active les reflets sur certains objets.",
         "GRAPHIC_SETTINGS_RENDERING_TAB": "Rendu",
