@@ -86,8 +86,8 @@ static const UI_SETTINGS_OPTION *M_GetOptionByRow(
 
 static int32_t M_GetVisibleRows(void)
 {
-    const int32_t res_h =
-        Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_TEXT);
+    const int32_t res_h = Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_GAME), SCALER_TARGET_TEXT);
     static struct {
         int32_t threshold;
         int32_t rows;

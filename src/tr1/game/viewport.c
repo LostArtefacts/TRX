@@ -1,7 +1,6 @@
 #include "game/viewport.h"
 
 #include "game/output.h"
-#include "game/screen.h"
 #include "game/shell.h"
 #include "global/vars.h"
 
@@ -10,71 +9,50 @@
 
 #define M_INITIAL_FOV 65
 
-static int32_t m_MinX = 0;
-static int32_t m_MinY = 0;
-static int32_t m_CenterX = 0;
-static int32_t m_CenterY = 0;
-static int32_t m_MaxX = 0;
-static int32_t m_MaxY = 0;
-static int32_t m_Width = 0;
-static int32_t m_Height = 0;
 static int16_t m_CurrentFOV = M_INITIAL_FOV;
 
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    m_MinX = x;
-    m_MinY = y;
-    m_MaxX = x + width;
-    m_MaxY = y + height;
-    m_CenterX = (m_MinX + m_MaxX) / 2;
-    m_CenterY = (m_MinY + m_MaxY) / 2;
-    m_Width = width;
-    m_Height = height;
+    if (x < 0 || y < 0 || width < 0 || height < 0) {
+        const SHELL_SIZE size = Shell_GetCurrentSize();
 
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdRight = Viewport_GetMaxX();
-    g_PhdBottom = Viewport_GetMaxY();
-}
+        struct {
+            int32_t w, h;
+        } ar;
+        switch (g_Config.rendering.aspect_mode) {
+        case AM_4_3:
+            ar.w = 4;
+            ar.h = 3;
+            break;
+        case AM_16_9:
+            ar.w = 16;
+            ar.h = 9;
+            break;
+        case AM_ANY:
+            ar.w = size.w;
+            ar.h = size.h;
+            break;
+        }
 
-int32_t Viewport_GetMinX(void)
-{
-    return m_MinX;
-}
+        x = 0;
+        y = 0;
+        width = size.w / g_Config.rendering.scaler;
+        height = size.h / g_Config.rendering.scaler;
+        if (g_Config.rendering.aspect_mode != AM_ANY) {
+            width = height * ar.w / ar.h;
+        }
+    }
 
-int32_t Viewport_GetMinY(void)
-{
-    return m_MinY;
-}
+    VIEWPORT_RECT *const rect = &g_Viewport_Rects[VIEWPORT_GAME];
+    rect->x = x;
+    rect->y = y;
+    rect->width = width;
+    rect->height = height;
 
-int32_t Viewport_GetCenterX(void)
-{
-    return m_CenterX;
-}
-
-int32_t Viewport_GetCenterY(void)
-{
-    return m_CenterY;
-}
-
-int32_t Viewport_GetMaxX(void)
-{
-    return m_MaxX;
-}
-
-int32_t Viewport_GetMaxY(void)
-{
-    return m_MaxY;
-}
-
-int32_t Viewport_GetWidth(void)
-{
-    return m_Width;
-}
-
-int32_t Viewport_GetHeight(void)
-{
-    return m_Height;
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 }
 
 int16_t Viewport_GetSystemFOV(void)
@@ -95,6 +73,13 @@ void Viewport_AlterFOV(int16_t fov)
 
 void Viewport_Reset(void)
 {
-    const SHELL_SIZE size = Shell_GetCurrentSize();
-    GFX_Context_SetWindowSize(size.w, size.h);
+    Viewport_ResetCommon();
+    Viewport_Init(-1, -1, -1, -1);
+    GFX_Context_SetWindowSize(
+        g_Viewport_Rects[VIEWPORT_WINDOW].width,
+        g_Viewport_Rects[VIEWPORT_WINDOW].height);
+    GFX_Context_SetDisplaySize(
+        g_Viewport_Rects[VIEWPORT_GAME].width,
+        g_Viewport_Rects[VIEWPORT_GAME].height);
+    Viewport_Debug();
 }

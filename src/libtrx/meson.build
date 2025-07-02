@@ -271,7 +271,6 @@ sources = [
   'game/ui/dialogs/setting_helpers/enums.c',
   'game/ui/dialogs/setting_helpers/handlers.c',
   'game/ui/dialogs/setting_helpers/handlers_language.c',
-  'game/ui/dialogs/setting_helpers/handlers_screen.c',
   'game/ui/dialogs/settings.c',
   'game/ui/dialogs/sound_settings.c',
   'game/ui/dialogs/stats.c',

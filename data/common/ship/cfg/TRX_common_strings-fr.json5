@@ -338,8 +338,6 @@
         "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "\\{review}Choisit le rendu avec le CPU (plus lent, plus oldschool) ou le GPU (plus rapide et meilleur).",
         "GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE": "Matériel",
         "GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE": "Logiciel",
-        "GRAPHIC_SETTINGS_RESOLUTION": "Résolution",
-        "GRAPHIC_SETTINGS_RESOLUTION_DESCRIPTION": "Écrase la résolution du jeu.",
         "GRAPHIC_SETTINGS_SCALER": "Échelle",
         "GRAPHIC_SETTINGS_SCALER_DESCRIPTION": "Augmente la taille du jeu selon un multiplicateur, en maintenant l'aspect pixellisé.",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Format des captures d'écran",

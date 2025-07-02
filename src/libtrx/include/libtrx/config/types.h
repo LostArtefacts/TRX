@@ -5,6 +5,12 @@
 #include <stdint.h>
 
 typedef enum {
+    AM_4_3 = 0,
+    AM_16_9 = 1,
+    AM_ANY = 2,
+} ASPECT_MODE;
+
+typedef enum {
     BL_TOP_LEFT,
     BL_TOP_CENTER,
     BL_TOP_RIGHT,

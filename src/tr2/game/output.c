@@ -722,8 +722,8 @@ void Output_LoadBackgroundFromObject(void)
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(texture_idx);
     ASSERT(texture != nullptr);
     const int32_t repeat_y = 6;
-    const int32_t repeat_x =
-        repeat_y * Viewport_GetWidth() / (float)Viewport_GetHeight();
+    const int32_t repeat_x = repeat_y * Viewport_GetWidth(VIEWPORT_GAME)
+        / (float)Viewport_GetHeight(VIEWPORT_GAME);
     Render_LoadBackgroundFromTexture(texture, repeat_x, repeat_y);
     m_BackgroundType = BK_OBJECT;
     return;

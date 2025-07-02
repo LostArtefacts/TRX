@@ -188,8 +188,7 @@ typedef struct {
     } window;
 
     struct {
-        int32_t resolution_width;
-        int32_t resolution_height;
+        ASPECT_MODE aspect_mode;
         int32_t fps;
         bool enable_trapezoid_filter;
         bool enable_lighting;
@@ -200,6 +199,8 @@ typedef struct {
         bool enable_vsync;
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
+        int32_t scaler;
+        float sizer;
     } rendering;
 
     struct {

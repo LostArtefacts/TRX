@@ -38,7 +38,8 @@ static IMAGE *M_CreateImageFromPath(const char *const path)
 {
     if (TR_VERSION == 1) {
         return Image_CreateFromFileInto(
-            path, Viewport_GetWidth(), Viewport_GetHeight(), IMAGE_FIT_SMART);
+            path, Viewport_GetWidth(VIEWPORT_GAME),
+            Viewport_GetHeight(VIEWPORT_GAME), IMAGE_FIT_SMART);
     } else {
         return Image_CreateFromFile(path);
     }
@@ -46,7 +47,8 @@ static IMAGE *M_CreateImageFromPath(const char *const path)
 
 static float M_GetScreenAspectRatio(void)
 {
-    return Viewport_GetWidth() / (float)Viewport_GetHeight();
+    return Viewport_GetWidth(VIEWPORT_GAME)
+        / (float)Viewport_GetHeight(VIEWPORT_GAME);
 }
 
 static int M_CompareCandidates(const void *const a, const void *const b)

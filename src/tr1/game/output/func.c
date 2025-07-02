@@ -60,8 +60,8 @@ void Output_GetProjectionMatrix(GLfloat output[][4])
 {
     const float left = 0.0f;
     const float top = 0.0f;
-    const float right = Viewport_GetWidth();
-    const float bottom = Viewport_GetHeight();
+    const float right = Viewport_GetWidth(VIEWPORT_GAME);
+    const float bottom = Viewport_GetHeight(VIEWPORT_GAME);
     const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
     const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
     const float aspect = (float)(right - left) / (float)(bottom - top);
@@ -107,13 +107,14 @@ void Output_EnableScissor(
 
     const int32_t border = 2; // to deal with precision issues
 
+    // TODO:!!!!!!!!!!
     struct {
         GLint x, y, w, h;
     } game_viewport = {
-        .x = Viewport_GetMinX(),
-        .y = Viewport_GetMinY(),
-        .w = Viewport_GetWidth(),
-        .h = Viewport_GetHeight(),
+        .x = Viewport_GetMinX(VIEWPORT_GAME),
+        .y = Viewport_GetMinY(VIEWPORT_GAME),
+        .w = Viewport_GetWidth(VIEWPORT_GAME),
+        .h = Viewport_GetHeight(VIEWPORT_GAME),
     }, gl_viewport, scissor;
     glGetIntegerv(GL_VIEWPORT, &gl_viewport.x);
 

@@ -214,12 +214,14 @@ void UI_HandleTextEdit(const char *const text)
 
 int32_t UI_GetCanvasWidth(void)
 {
-    return Scaler_CalcInverse(Viewport_GetWidth(), SCALER_TARGET_GENERIC);
+    return Scaler_CalcInverse(
+        Viewport_GetWidth(VIEWPORT_GAME), SCALER_TARGET_GENERIC);
 }
 
 int32_t UI_GetCanvasHeight(void)
 {
-    return Scaler_CalcInverse(Viewport_GetHeight(), SCALER_TARGET_GENERIC);
+    return Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_GAME), SCALER_TARGET_GENERIC);
 }
 
 float UI_ScaleX(const float x)

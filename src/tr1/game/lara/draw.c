@@ -36,10 +36,10 @@ void Lara_Draw(const ITEM *const item)
         return;
     }
 
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdBottom = Viewport_GetMaxY();
-    g_PhdRight = Viewport_GetMaxX();
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;

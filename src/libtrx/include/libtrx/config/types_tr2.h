@@ -15,12 +15,6 @@ typedef enum {
 } LIGHTING_CONTRAST;
 
 typedef enum {
-    AM_4_3 = 0,
-    AM_16_9 = 1,
-    AM_ANY = 2,
-} ASPECT_MODE;
-
-typedef enum {
     RM_UNKNOWN = 0,
     RM_SOFTWARE = 1,
     RM_HARDWARE = 2,

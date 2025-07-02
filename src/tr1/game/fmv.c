@@ -2,9 +2,9 @@
 
 #include "game/input.h"
 #include "game/output.h"
-#include "game/screen.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 #include "global/types.h"
 
 #include <libtrx/config.h>
@@ -107,9 +107,12 @@ static bool M_Play(const char *const file_path)
     while (video->is_playing) {
         Video_SetVolume(video, m_Muted ? 0.0f : g_Config.audio.sound_volume);
         Video_SetSurfaceSize(
-            video, Screen_GetResWidth(), Screen_GetResHeight());
+            video, Viewport_GetWidth(VIEWPORT_GAME),
+            Viewport_GetHeight(VIEWPORT_GAME));
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
-        GFX_Context_SetDisplaySize(Screen_GetResWidth(), Screen_GetResHeight());
+        GFX_Context_SetDisplaySize(
+            Viewport_GetWidth(VIEWPORT_GAME),
+            Viewport_GetHeight(VIEWPORT_GAME));
         Video_PumpEvents(video);
         Shell_ProcessEvents();
 

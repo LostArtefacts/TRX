@@ -8,7 +8,6 @@
 #include "game/inventory_ring.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
-#include "game/screen.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

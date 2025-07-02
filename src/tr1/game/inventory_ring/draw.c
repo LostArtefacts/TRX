@@ -7,7 +7,6 @@
 #include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -135,10 +134,7 @@ void InvRing_Draw(INV_RING *const ring)
 
         Fader_Draw(&ring->back_fader);
         Output_DrawPolyList();
-
-        int32_t width = Screen_GetResWidth();
-        int32_t height = Screen_GetResHeight();
-        Viewport_Init(0, 0, width, height);
+        Viewport_Init(-1, -1, -1, -1);
     }
 
     const int16_t old_fov = Viewport_GetSystemFOV();

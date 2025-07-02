@@ -338,8 +338,6 @@
         "GRAPHIC_SETTINGS_RENDER_MODE_DESCRIPTION": "Chooses rendering with CPU (slower, more oldschool) or GPU (faster and better).",
         "GRAPHIC_SETTINGS_RENDER_MODE_HARDWARE": "Hardware",
         "GRAPHIC_SETTINGS_RENDER_MODE_SOFTWARE": "Software",
-        "GRAPHIC_SETTINGS_RESOLUTION": "Resolution",
-        "GRAPHIC_SETTINGS_RESOLUTION_DESCRIPTION": "Overrides game resolution.",
         "GRAPHIC_SETTINGS_SCALER": "Scaler",
         "GRAPHIC_SETTINGS_SCALER_DESCRIPTION": "Upscales game by a set factor, maintaining pixellated look.",
         "GRAPHIC_SETTINGS_SCREENSHOT_FORMAT": "Screenshot format",

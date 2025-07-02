@@ -778,10 +778,10 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         return nullptr;
     }
 
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdBottom = Viewport_GetMaxY();
-    g_PhdRight = Viewport_GetMaxX();
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     m_InvChosen = NO_OBJECT;
 
     g_InvRing_OldCamera = g_Camera;

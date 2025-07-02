@@ -6,7 +6,6 @@
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
-#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -304,8 +303,8 @@ static void M_DrawLightningSegment(const LIGHTNING *const lightning)
         return;
     }
 
-    const int32_t vcx = Viewport_GetCenterX();
-    const int32_t vcy = Viewport_GetCenterY();
+    const int32_t vcx = Viewport_GetCenterX(VIEWPORT_GAME);
+    const int32_t vcy = Viewport_GetCenterY(VIEWPORT_GAME);
     const float zp0 = wp0.z / g_PhdPersp;
     const float zp1 = wp1.z / g_PhdPersp;
     const XYZ_32 p0 = { vcx + wp0.x / zp0, vcy + wp0.y / zp0, wp0.z };
@@ -459,14 +458,14 @@ void Output_ApplyRenderSettings(void)
     }
 
     if (m_PictureSurface != nullptr
-        && (Screen_GetResWidth() != m_SurfaceWidth
-            || Screen_GetResHeight() != m_SurfaceHeight)) {
+        && (Viewport_GetWidth(VIEWPORT_GAME) != m_SurfaceWidth
+            || Viewport_GetHeight(VIEWPORT_GAME) != m_SurfaceHeight)) {
         GFX_2D_Surface_Free(m_PictureSurface);
         m_PictureSurface = nullptr;
     }
 
-    m_SurfaceWidth = Screen_GetResWidth();
-    m_SurfaceHeight = Screen_GetResHeight();
+    m_SurfaceWidth = Viewport_GetWidth(VIEWPORT_GAME);
+    m_SurfaceHeight = Viewport_GetHeight(VIEWPORT_GAME);
 
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
     GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
@@ -564,7 +563,7 @@ void Output_DrawScreenFrame(
     const RGBA_8888 col_dark, const RGBA_8888 col_light,
     const int32_t thickness_i)
 {
-    const float scale = Viewport_GetHeight() / 480.0;
+    const float scale = Viewport_GetHeight(VIEWPORT_GAME) / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
     sx -= scale;
     sy -= scale;
@@ -638,7 +637,7 @@ void Output_DrawGradientScreenBox(
     const RGBA_8888 tr, const RGBA_8888 bl, const RGBA_8888 br,
     const int32_t thickness_i)
 {
-    const float scale = Viewport_GetHeight() / 480.0;
+    const float scale = Viewport_GetHeight(VIEWPORT_GAME) / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
     sx -= scale;
     sy -= scale;
@@ -689,7 +688,7 @@ void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 edge,
     const RGBA_8888 center, const int32_t thickness_i)
 {
-    const float scale = Viewport_GetHeight() / 480.0;
+    const float scale = Viewport_GetHeight(VIEWPORT_GAME) / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
     sx -= scale;
     sy -= scale;
@@ -767,8 +766,8 @@ void Output_DrawScreenSprite(
     const int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     const int32_t y0 = sy + (scale_v * sprite->y0 / PHD_ONE);
     const int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
-    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth()
-        && y0 < Viewport_GetHeight()) {
+    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth(VIEWPORT_GAME)
+        && y0 < Viewport_GetHeight(VIEWPORT_GAME)) {
         M_DrawSprite(
             x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
     }
@@ -783,8 +782,10 @@ void Output_DrawUISprite(
     const int32_t x1 = x + (scale * sprite->x1 >> 16);
     const int32_t y0 = y + (scale * sprite->y0 >> 16);
     const int32_t y1 = y + (scale * sprite->y1 >> 16);
-    if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
-        && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
+    if (x1 >= Viewport_GetMinX(VIEWPORT_GAME)
+        && y1 >= Viewport_GetMinY(VIEWPORT_GAME)
+        && x0 <= Viewport_GetMaxX(VIEWPORT_GAME)
+        && y0 <= Viewport_GetMaxY(VIEWPORT_GAME)) {
         M_DrawSprite(
             x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
     }
@@ -825,8 +826,8 @@ void Output_DrawBlackRectangle(const int32_t opacity)
 {
     const int32_t sx = 0;
     const int32_t sy = 0;
-    const int32_t sw = Viewport_GetWidth();
-    const int32_t sh = Viewport_GetHeight();
+    const int32_t sw = Viewport_GetWidth(VIEWPORT_GAME);
+    const int32_t sh = Viewport_GetHeight(VIEWPORT_GAME);
     const RGBA_8888 background = { 0, 0, 0, opacity };
     M_DisableDepthTest();
     Output_ClearDepthBuffer();
@@ -857,8 +858,8 @@ void Output_ApplyFOV(void)
     // unchanged, otherwise the game renders the low camera in the Lost Valley
     // cutscene wrong.
     if (g_Config.visuals.fov_vertical) {
-        double aspect_ratio =
-            Screen_GetResWidth() / (double)Screen_GetResHeight();
+        double aspect_ratio = Viewport_GetWidth(VIEWPORT_GAME)
+            / (double)Viewport_GetHeight(VIEWPORT_GAME);
         double fov_rad_h = fov * M_PI / (180 * DEG_1);
         double fov_rad_v = 2 * atan(aspect_ratio * tan(fov_rad_h / 2));
         fov = round((fov_rad_v / M_PI) * (180 * DEG_1));
@@ -866,7 +867,7 @@ void Output_ApplyFOV(void)
 
     const int16_t c = Math_Cos(fov / 2);
     const int16_t s = Math_Sin(fov / 2);
-    g_PhdPersp = Screen_GetResWidth() / 2;
+    g_PhdPersp = Viewport_GetWidth(VIEWPORT_GAME) / 2;
     if (s != 0) {
         g_PhdPersp *= c;
         g_PhdPersp /= s;
