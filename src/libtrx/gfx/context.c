@@ -200,7 +200,6 @@ void GFX_Context_SetVSync(bool vsync)
 
 void GFX_Context_SetWindowSize(int32_t width, int32_t height)
 {
-    LOG_INFO("Window size: %dx%d", width, height);
     m_Context.window_width = width;
     m_Context.window_height = height;
 }
@@ -212,7 +211,6 @@ void GFX_Context_SetDisplaySize(int32_t width, int32_t height)
         return;
     }
 
-    LOG_INFO("Display size: %dx%d", width, height);
     if (width <= 0 || height <= 0) {
         LOG_INFO("invalid size, ignoring");
         return;

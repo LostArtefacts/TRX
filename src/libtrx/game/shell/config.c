@@ -106,7 +106,7 @@ void Shell_SyncFromWindow(const bool update_viewport)
     int32_t width, height;
     SDL_GetWindowSize(window, &width, &height);
     SDL_GetWindowPosition(window, &x, &y);
-    LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
+    LOG_TRACE("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
 
     // Update config only when not in debounce window
     if (!skip_config) {
@@ -158,7 +158,6 @@ void Shell_HandleCommonConfigChange(
         || L_CHANGED(visuals.use_psx_fov)
 #endif
     ) {
-        LOG_DEBUG("Change in settings detected");
         if (!m_IgnoreConfigChanges) {
             Shell_SyncToWindow();
         }
