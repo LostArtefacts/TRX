@@ -3,7 +3,6 @@
 #include "game/game_string.h"
 #include "game/inventory.h"
 #include "game/lara/control.h"
-#include "game/lara/misc.h"
 #include "game/objects/general/lift.h"
 #include "game/savegame.h"
 #include "game/shell.h"
