@@ -132,7 +132,7 @@ static void M_UpdateSlot(M_SOUND_SLOT *const slot)
         slot->handle, M_ConvertVolumeToDecibel(slot->volume));
 }
 
-void Sound_Init(void)
+bool Sound_Init(void)
 {
     m_DecibelLUT[0] = -10000;
     for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
@@ -142,11 +142,12 @@ void Sound_Init(void)
 
     if (!Audio_Init()) {
         LOG_ERROR("Failed to initialize libtrx sound system");
-        return;
+        return false;
     }
 
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
     M_ClearAllSlots();
+    return true;
 }
 
 void Sound_Shutdown(void)

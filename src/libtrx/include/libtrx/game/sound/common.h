@@ -8,6 +8,9 @@
 
 #include <stddef.h>
 
+extern bool Sound_Init(void);
+extern void Sound_Shutdown(void);
+
 // Stops and unloads all samples
 extern void Sound_Reset(void);
 

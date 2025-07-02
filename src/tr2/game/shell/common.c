@@ -1,42 +1,26 @@
-#include "decomp/decomp.h"
-#include "game/clock.h"
-#include "game/console/common.h"
-#include "game/demo.h"
-#include "game/fmv.h"
-#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/input.h"
 #include "game/level.h"
 #include "game/objects/creatures/big_spider.h"
 #include "game/objects/creatures/monk.h"
 #include "game/objects/creatures/spider.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/random.h"
 #include "game/render/common.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/viewport.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
-#include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/creatures/bear.h>
 #include <libtrx/game/objects/creatures/wolf.h>
-#include <libtrx/game/option.h>
 #include <libtrx/game/shell.h>
-#include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
-
-#include <SDL2/SDL.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 typedef enum {
     M_MOD_UNKNOWN,
@@ -94,13 +78,11 @@ static void M_HandleWindowMinimized(void);
 static void M_HandleWindowMaximized(void);
 static void M_HandleWindowMoved(int32_t x, int32_t y);
 static void M_HandleWindowResized(int32_t width, int32_t height);
-static void M_ConfigureOpenGL(void);
 static bool M_CreateGameWindow(void);
 
 static void M_ShowHelp(void);
-static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
-static void M_Start(void);
+static void M_ShowWindow(void);
 
 static struct {
     bool is_fullscreen;
@@ -266,28 +248,6 @@ static void M_HandleWindowResized(int32_t width, int32_t height)
     M_SyncFromWindow(true);
 }
 
-static void M_ConfigureOpenGL(void)
-{
-    // Setup minimum properties of GL context
-    struct {
-        SDL_GLattr attr;
-        int value;
-    } attrs[] = {
-        { SDL_GL_RED_SIZE, 8 },     { SDL_GL_RED_SIZE, 8 },
-        { SDL_GL_GREEN_SIZE, 8 },   { SDL_GL_BLUE_SIZE, 8 },
-        { SDL_GL_ALPHA_SIZE, 8 },   { SDL_GL_DEPTH_SIZE, 24 },
-        { SDL_GL_DOUBLEBUFFER, 1 }, { (SDL_GLattr)-1, 0 },
-    };
-
-    for (int32_t i = 0; attrs[i].attr != (SDL_GLattr)-1; i++) {
-        if (SDL_GL_SetAttribute(attrs[i].attr, attrs[i].value) != 0) {
-            LOG_ERROR(
-                "Failed to set attribute %x: %s", attrs[i].attr,
-                SDL_GetError());
-        }
-    }
-}
-
 static bool M_CreateGameWindow(void)
 {
     int32_t result = SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO);
@@ -322,16 +282,7 @@ static void M_ShowHelp(void)
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
 }
 
-static void M_LoadConfig(void)
-{
-    Config_Read();
-    Config_SubscribeChanges(M_HandleConfigChange, nullptr);
-
-    Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    Music_SetVolume(g_Config.audio.music_volume);
-}
-
-static void M_HandleConfigChange(const EVENT *const event, void *const data)
+void Shell_HandleConfigChange(const EVENT *const event, void *const data)
 {
     const CONFIG *const old = &g_Config;
     const CONFIG *const new = &g_SavedConfig;
@@ -393,15 +344,18 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 #undef L_CHANGED
 }
 
-static void M_Start(void)
+static void M_ShowWindow(void)
 {
-    M_ConfigureOpenGL();
     Render_Init();
     M_SyncToWindow();
 
     SDL_ShowWindow(m_Window);
     SDL_RaiseWindow(m_Window);
     M_RefreshRendererViewport();
+
+    Viewport_AlterFOV(-1);
+    Viewport_Reset();
+    Render_Reset(RENDER_RESET_PARAMS);
 }
 
 bool Shell_ParseArgs(const int32_t arg_count, const char **args)
@@ -447,34 +401,15 @@ int32_t Shell_Main(void)
         Object_Get(O_BIG_SPIDER)->setup_func = BigSpider_Setup;
     }
 
-    GameString_Init();
-    GameStringManager_Init();
-    EnumMap_Init();
-    Config_Init();
-    UI_Init();
-    Console_Init();
-    Overlay_Init();
-
-    Input_Init();
-    Sound_Init();
-    Music_Init();
-
-    M_LoadConfig();
-
-    Clock_Init();
+    Shell_InitCommonModules();
+    Shell_LoadConfig();
 
     if (!M_CreateGameWindow()) {
         Shell_ExitSystem("Failed to create game window");
         return 1;
     }
-
-    Random_Seed();
     Output_Init();
-
-    M_Start();
-    Viewport_AlterFOV(-1);
-    Viewport_Reset();
-    Render_Reset(RENDER_RESET_PARAMS);
+    M_ShowWindow();
 
     GF_Init();
     GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
@@ -488,7 +423,6 @@ int32_t Shell_Main(void)
     GameStringManager_DiscoverLanguages();
     GameStringManager_ReloadLanguage(g_Config.language);
 
-    GameBuf_Init();
     Level_Init();
 
     Savegame_Init();
@@ -590,23 +524,8 @@ int32_t Shell_Main(void)
 
 void Shell_Shutdown(void)
 {
-    Console_Shutdown();
-    Savegame_Shutdown();
-
-    GF_Shutdown();
-    Overlay_Shutdown();
-    Option_Shutdown();
-    Output_Shutdown();
     Render_Shutdown();
-    UI_Shutdown();
-
-    GameStringManager_Shutdown();
-    GameString_Shutdown();
-    GameBuf_Shutdown();
-
-    Config_Shutdown();
-    EnumMap_Shutdown();
-    Log_Shutdown();
+    Shell_ShutdownCommonModules();
 }
 
 const char *Shell_GetConfigPath(void)

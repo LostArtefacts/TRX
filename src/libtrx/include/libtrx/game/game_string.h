@@ -8,6 +8,9 @@
 
 typedef const char *GAME_STRING_ID;
 
+extern void GameString_Init(void);
+extern void GameString_Shutdown(void);
+
 void GameString_Define(const char *key, const char *value);
 bool GameString_IsKnown(const char *key);
 const char *GameString_Get(const char *key);
