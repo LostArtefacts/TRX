@@ -7,7 +7,6 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
-#include "game/lara/misc.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
