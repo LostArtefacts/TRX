@@ -9,6 +9,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
@@ -432,7 +433,12 @@ static int32_t M_UserControl(ITEM *const boat)
         return no_turn;
     }
 
-    if ((g_Input.left && !g_Input.back) || (g_Input.right && g_Input.back)) {
+    const bool look =
+        g_Input.look && g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED;
+    const bool left_input = g_Input.left && !look;
+    const bool right_input = g_Input.right && !look;
+
+    if ((left_input && !g_Input.back) || (right_input && g_Input.back)) {
         if (boat_data->boat_turn > 0) {
             boat_data->boat_turn -= BOAT_UNDO_TURN;
         } else {
@@ -440,8 +446,7 @@ static int32_t M_UserControl(ITEM *const boat)
             CLAMPL(boat_data->boat_turn, -BOAT_MAX_TURN);
         }
         no_turn = 0;
-    } else if (
-        (g_Input.right && !g_Input.back) || (g_Input.left && g_Input.back)) {
+    } else if ((right_input && !g_Input.back) || (left_input && g_Input.back)) {
         if (boat_data->boat_turn < 0) {
             boat_data->boat_turn += BOAT_UNDO_TURN;
         } else {
@@ -473,7 +478,7 @@ static int32_t M_UserControl(ITEM *const boat)
         }
     } else if (
         boat->speed >= 0 && boat->speed < BOAT_MIN_SPEED
-        && (g_Input.left || g_Input.right)) {
+        && (left_input || right_input)) {
         boat->speed = BOAT_MIN_SPEED;
     } else if (boat->speed > BOAT_SLOWDOWN) {
         boat->speed -= BOAT_SLOWDOWN;
