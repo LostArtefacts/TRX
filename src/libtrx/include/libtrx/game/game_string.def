@@ -180,9 +180,9 @@ GS_DEFINE(ACTION_UNBIND, "Unbind")
 
 GS_DEFINE(CMD_GIVE_SECRET_LIST,   "Secrets collected: %d of %d (%s)")
 GS_DEFINE(CMD_GIVE_SECRET_NONE,   "Secrets collected: %d of %d")
-GS_DEFINE(CMD_GIVE_SECRET_GIVEN,  "Added secret #%d")
-GS_DEFINE(CMD_GIVE_SECRET_TAKEN,  "Removed secret #%d")
-GS_DEFINE(CMD_INVALID_SECRET,     "Invalid secret: #%d (valid secrets: %s)")
+GS_DEFINE(CMD_GIVE_SECRET_GIVEN,  "Added secret %s")
+GS_DEFINE(CMD_GIVE_SECRET_TAKEN,  "Removed secret %s")
+GS_DEFINE(CMD_INVALID_SECRET,     "Invalid secret: %s (valid secrets: %s)")
 
 GS_DEFINE(CMD_IMMUNE_SWITCHED_ON,  "Lara is now impervious to damage")
 GS_DEFINE(CMD_IMMUNE_SWITCHED_OFF, "Lara is now vulnerable")
