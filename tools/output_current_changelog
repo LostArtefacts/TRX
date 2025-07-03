@@ -16,6 +16,14 @@ def output_changelog(
     print(f"[Diff]({changelog.diff_url})", end=" · ")
     print(f"[History]({changelog.commits_url})")
     print()
+    if changelog.video_id:
+        print("### Video preview:")
+        print()
+        print(
+            f"[![Video](https://i.ytimg.com/vi/{changelog.video_id}/maxresdefault.jpg)]"
+            f"(https://www.youtube.com/watch?v={changelog.video_id})"
+        )
+        print()
     print("### Changes:")
     print(changelog.body)
 
