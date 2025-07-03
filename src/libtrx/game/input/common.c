@@ -34,6 +34,7 @@ static M_HOLD_CHECK m_HoldChecks[] = {
     { .role = INPUT_ROLE_MENU_DOWN, .delay_time = 0.4, .hold_time = 0.1 },
     { .role = INPUT_ROLE_MENU_LEFT, .delay_time = 0.4, .hold_time = 0.2 },
     { .role = INPUT_ROLE_MENU_RIGHT, .delay_time = 0.4, .hold_time = 0.2 },
+    { .role = INPUT_ROLE_MENU_SKIP, .delay_time = 0.4, .hold_time = 0.1 },
     { .role = (INPUT_ROLE)-1 }, // sentinel
 };
 

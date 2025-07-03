@@ -19,6 +19,7 @@ INPUT_ROLE_DEFINE(MENU_LEFT,               menu_left)
 INPUT_ROLE_DEFINE(MENU_UP,                 menu_up)
 INPUT_ROLE_DEFINE(MENU_DOWN,               menu_down)
 INPUT_ROLE_DEFINE(MENU_RIGHT,              menu_right)
+INPUT_ROLE_DEFINE(MENU_SKIP,               menu_skip)
 
 INPUT_ROLE_DEFINE(FLY_CHEAT,               fly_cheat)
 INPUT_ROLE_DEFINE(ITEM_CHEAT,              item_cheat)

@@ -413,6 +413,7 @@ static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
         return false;
     }
     result->menu_back |= M_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
+    result->menu_skip = result->menu_confirm || result->menu_back;
     return true;
 }
 
