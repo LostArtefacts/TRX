@@ -32,61 +32,6 @@ static SECTOR *M_GetCurrentSector(const ITEM *const lara_item)
         lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
 }
 
-void Lara_HandleSurface(ITEM *const item, COLL_INFO *const coll)
-{
-    g_Camera.target_elevation = -22 * DEG_1;
-
-    coll->old.x = item->pos.x;
-    coll->old.y = item->pos.y;
-    coll->old.z = item->pos.z;
-    coll->radius = LARA_RADIUS_SURF;
-
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEP_L / 2;
-    coll->bad_ceiling = 100;
-
-    coll->slopes_are_walls = 0;
-    coll->slopes_are_pits = 0;
-    coll->lava_is_pit = 0;
-    coll->enable_baddie_push = 0;
-    coll->enable_hit = 0;
-
-    Lara_Look_Update();
-    Lara_State_Update(item, coll);
-
-    if (item->rot.z > LARA_LEAN_UNDO_SURF) {
-        item->rot.z -= LARA_LEAN_UNDO_SURF;
-    } else if (item->rot.z < -LARA_LEAN_UNDO_SURF) {
-        item->rot.z += LARA_LEAN_UNDO_SURF;
-    } else {
-        item->rot.z = 0;
-    }
-
-    if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
-        Lara_WaterCurrent(coll);
-    } else {
-        LOT_ClearLOT(&g_Lara.lot);
-    }
-
-    Lara_Animate(item);
-    item->pos.x +=
-        (item->fall_speed * Math_Sin(g_Lara.move_angle)) >> (W2V_SHIFT + 2);
-    item->pos.z +=
-        (item->fall_speed * Math_Cos(g_Lara.move_angle)) >> (W2V_SHIFT + 2);
-
-    const SECTOR *const sector = M_GetCurrentSector(item);
-
-    Lara_BaddieCollision(item, coll);
-
-    if (g_Lara.vehicle_item_num == NO_ITEM) {
-        Lara_Col_Update(item, coll);
-    }
-
-    Lara_UpdateRoomToHeight(100);
-    Gun_Control();
-    Room_TestSectorTrigger(item, sector);
-}
-
 void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
 {
     coll->old.x = item->pos.x;

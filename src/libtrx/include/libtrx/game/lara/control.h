@@ -5,7 +5,6 @@
 
 extern void Lara_InitialiseMeshes(const GF_LEVEL *level);
 extern void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll);
-extern void Lara_HandleSurface(ITEM *item, COLL_INFO *coll);
 
 void Lara_Control(void);
 void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
