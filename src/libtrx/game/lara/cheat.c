@@ -281,6 +281,9 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->mesh_effects = 0;
     lara_item->enable_shadow = true;
     lara_item->hit_points = LARA_MAX_HITPOINTS;
+    lara_info->interact_target.item_num = NO_ITEM;
+    lara_info->interact_target.is_moving = false;
+    lara_info->interact_target.move_count = 0;
 
     M_ReinitialiseGunMeshes();
     g_Camera.type = CAM_CHASE;
