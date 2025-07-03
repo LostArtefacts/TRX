@@ -2,7 +2,6 @@
 
 #include "game/inventory.h"
 #include "game/lara/common.h"
-#include "game/lara/control.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/output/meshes/objects.h"

@@ -1,123 +1,15 @@
 #include "game/lara/control.h"
 
-#include "decomp/skidoo.h"
-#include "game/creature.h"
-#include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/input.h"
 #include "game/inventory.h"
-#include "game/item_actions.h"
 #include "game/savegame.h"
 #include "game/sound.h"
-#include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
-#include <libtrx/game/gym.h>
 #include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/music.h>
-#include <libtrx/utils.h>
-
-static int32_t m_OpenDoorsCheatCooldown = 0;
-
-static SECTOR *M_GetCurrentSector(const ITEM *lara_item);
-
-static SECTOR *M_GetCurrentSector(const ITEM *const lara_item)
-{
-    int16_t room_num = lara_item->room_num;
-    return Room_GetSector(
-        lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
-}
-
-void Lara_HandleUnderwater(ITEM *const item, COLL_INFO *const coll)
-{
-    coll->old.x = item->pos.x;
-    coll->old.y = item->pos.y;
-    coll->old.z = item->pos.z;
-    coll->radius = LARA_RADIUS_UW;
-
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -LARA_HEIGHT_UW;
-    coll->bad_ceiling = LARA_HEIGHT_UW;
-
-    coll->slopes_are_walls = 0;
-    coll->slopes_are_pits = 0;
-    coll->lava_is_pit = 0;
-    coll->enable_baddie_push = 1;
-    coll->enable_hit = 0;
-
-    Lara_Look_Update();
-    Lara_State_Update(item, coll);
-
-    if (item->rot.z > LARA_LEAN_UNDO_UW) {
-        item->rot.z -= LARA_LEAN_UNDO_UW;
-    } else if (item->rot.z < -LARA_LEAN_UNDO_UW) {
-        item->rot.z += LARA_LEAN_UNDO_UW;
-    } else {
-        item->rot.z = 0;
-    }
-
-    if (g_Config.gameplay.enable_tr2_swimming) {
-        CLAMP(item->rot.x, -85 * DEG_1, 85 * DEG_1);
-        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
-
-        if (g_Lara.turn_rate < -LARA_TURN_UNDO) {
-            g_Lara.turn_rate += LARA_TURN_UNDO;
-        } else if (g_Lara.turn_rate > LARA_TURN_UNDO) {
-            g_Lara.turn_rate -= LARA_TURN_UNDO;
-        } else {
-            g_Lara.turn_rate = 0;
-        }
-        item->rot.y += g_Lara.turn_rate;
-    } else {
-        CLAMP(item->rot.x, -100 * DEG_1, 100 * DEG_1);
-        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
-    }
-
-    if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
-        Lara_WaterCurrent(coll);
-    } else {
-        LOT_ClearLOT(&g_Lara.lot);
-    }
-
-    Lara_Animate(item);
-    item->pos.y -=
-        (item->fall_speed * Math_Sin(item->rot.x)) >> (W2V_SHIFT + 2);
-    item->pos.x +=
-        (Math_Cos(item->rot.x)
-         * ((item->fall_speed * Math_Sin(item->rot.y)) >> (W2V_SHIFT + 2)))
-        >> W2V_SHIFT;
-    item->pos.z +=
-        (Math_Cos(item->rot.x)
-         * ((item->fall_speed * Math_Cos(item->rot.y)) >> (W2V_SHIFT + 2)))
-        >> W2V_SHIFT;
-
-    const SECTOR *const sector = M_GetCurrentSector(item);
-
-    if (g_Lara.water_status != LWS_CHEAT && !g_Lara.extra_anim) {
-        Lara_BaddieCollision(item, coll);
-    }
-
-    if (g_Lara.water_status == LWS_CHEAT) {
-        if (m_OpenDoorsCheatCooldown) {
-            m_OpenDoorsCheatCooldown--;
-        } else if (g_InputDB.draw) {
-            m_OpenDoorsCheatCooldown = LOGIC_FPS;
-            Lara_Cheat_OpenNearestDoor();
-        }
-    }
-
-    if (!g_Lara.extra_anim) {
-        Lara_Col_Update(item, coll);
-    }
-
-    Lara_UpdateRoomToHeight(0);
-    Gun_Control();
-    Room_TestSectorTrigger(item, sector);
-}
 
 void Lara_ControlExtra(const int16_t item_num)
 {

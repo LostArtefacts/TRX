@@ -18,10 +18,13 @@
 #define M_MOVE_TIMEOUT 90
 #define M_UW_DAMAGE 5
 
+static int32_t m_OpenDoorsCheatCooldown = 0;
+
 static SECTOR *M_GetCurrentSector(void);
 static void M_UpdateEnvironment(void);
 static void M_HandleEnvironment(void);
 static void M_HandleAboveWater(COLL_INFO *coll);
+static void M_HandleUnderwater(COLL_INFO *coll);
 static void M_HandleSurface(COLL_INFO *coll);
 
 #if TR_VERSION >= 2
@@ -261,7 +264,7 @@ static void M_HandleEnvironment(void)
                 Lara_TakeDamage(M_UW_DAMAGE, false);
             }
         }
-        Lara_HandleUnderwater(item, &coll);
+        M_HandleUnderwater(&coll);
         break;
 
     case LWS_SURFACE:
@@ -275,7 +278,7 @@ static void M_HandleEnvironment(void)
     case LWS_CHEAT:
         item->hit_points = LARA_MAX_HITPOINTS;
         lara_info->death_timer = 0;
-        Lara_HandleUnderwater(item, &coll);
+        M_HandleUnderwater(&coll);
         if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
             Lara_Cheat_ExitFlyMode();
         }
@@ -353,6 +356,94 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     }
 
     Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
+    Gun_Control();
+    Room_TestSectorTrigger(item, sector);
+}
+
+static void M_HandleUnderwater(COLL_INFO *const coll)
+{
+    ITEM *const item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    coll->old = item->pos;
+    coll->radius = LARA_RADIUS_UW;
+
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -LARA_HEIGHT_UW;
+    coll->bad_ceiling = LARA_HEIGHT_UW;
+
+    coll->slopes_are_walls = 0;
+    coll->slopes_are_pits = 0;
+    coll->lava_is_pit = 0;
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+
+    Lara_Look_Update();
+    Lara_State_Update(item, coll);
+
+    if (item->rot.z > LARA_LEAN_UNDO_UW) {
+        item->rot.z -= LARA_LEAN_UNDO_UW;
+    } else if (item->rot.z < -LARA_LEAN_UNDO_UW) {
+        item->rot.z += LARA_LEAN_UNDO_UW;
+    } else {
+        item->rot.z = 0;
+    }
+
+    if (g_Config.gameplay.enable_tr2_swimming) {
+        CLAMP(item->rot.x, -85 * DEG_1, 85 * DEG_1);
+        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
+
+        if (lara_info->turn_rate < -LARA_TURN_UNDO) {
+            lara_info->turn_rate += LARA_TURN_UNDO;
+        } else if (lara_info->turn_rate > LARA_TURN_UNDO) {
+            lara_info->turn_rate -= LARA_TURN_UNDO;
+        } else {
+            lara_info->turn_rate = 0;
+        }
+        item->rot.y += lara_info->turn_rate;
+    } else {
+        CLAMP(item->rot.x, -100 * DEG_1, 100 * DEG_1);
+        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
+    }
+
+    if (lara_info->current_active && lara_info->water_status != LWS_CHEAT) {
+        Lara_WaterCurrent(coll);
+    } else {
+        LOT_ClearLOT(&lara_info->lot);
+    }
+
+    Lara_Animate(item);
+    item->pos.y -=
+        (item->fall_speed * Math_Sin(item->rot.x)) >> (W2V_SHIFT + 2);
+    item->pos.x +=
+        (Math_Cos(item->rot.x)
+         * ((item->fall_speed * Math_Sin(item->rot.y)) >> (W2V_SHIFT + 2)))
+        >> W2V_SHIFT;
+    item->pos.z +=
+        (Math_Cos(item->rot.x)
+         * ((item->fall_speed * Math_Cos(item->rot.y)) >> (W2V_SHIFT + 2)))
+        >> W2V_SHIFT;
+
+    const SECTOR *const sector = M_GetCurrentSector();
+    if (lara_info->water_status != LWS_CHEAT
+        && (TR_VERSION == 1 || !lara_info->extra_anim)) {
+        Lara_BaddieCollision(item, coll);
+    }
+
+    if (lara_info->water_status == LWS_CHEAT) {
+        if (m_OpenDoorsCheatCooldown > 0) {
+            m_OpenDoorsCheatCooldown--;
+        } else if (g_Input.draw) {
+            m_OpenDoorsCheatCooldown = LOGIC_FPS;
+            Lara_Cheat_OpenNearestDoor();
+        }
+    }
+
+    if (TR_VERSION == 1 || !lara_info->extra_anim) {
+        Lara_Col_Update(item, coll);
+    }
+
+    Lara_UpdateRoomToHeight(0);
     Gun_Control();
     Room_TestSectorTrigger(item, sector);
 }
