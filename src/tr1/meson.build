@@ -141,7 +141,6 @@ sources = [
   'game/item_actions/stairs2slope.c',
   'game/item_actions/turn_180.c',
   'game/lara/common.c',
-  'game/lara/control.c',
   'game/lara/draw.c',
   'game/level.c',
   'game/los.c',
