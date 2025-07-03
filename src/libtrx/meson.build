@@ -254,6 +254,7 @@ sources = [
   'game/shell/main.c',
   'game/shell/platform.c',
   'game/sound/common.c',
+  'game/spawn.c',
   'game/stats.c',
   'game/ui/common.c',
   'game/ui/dialogs/base_passport.c',

@@ -1,6 +1,8 @@
 #pragma once
 
-#include <stdint.h>
+#include "./items/types.h"
+
+void Spawn_Splash(const ITEM *item);
 
 extern int16_t Spawn_Blood(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,

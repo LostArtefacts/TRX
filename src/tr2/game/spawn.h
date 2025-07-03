@@ -12,8 +12,6 @@ void Spawn_MysticLight(int16_t item_num);
 
 void Spawn_Bubble(const XYZ_32 *pos, int16_t room_num);
 
-void Spawn_Splash(const ITEM *item);
-
 int16_t Spawn_GunShot(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
     int16_t room_num);

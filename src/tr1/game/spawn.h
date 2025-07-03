@@ -4,8 +4,6 @@
 
 #include <libtrx/game/spawn.h>
 
-void Spawn_Splash(ITEM *item);
-
 void Spawn_Bubble(const XYZ_32 *pos, int16_t room_num);
 
 int16_t Spawn_ShardGun(

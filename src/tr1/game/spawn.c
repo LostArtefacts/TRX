@@ -45,30 +45,6 @@ void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
     effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
 }
 
-void Spawn_Splash(ITEM *item)
-{
-    int16_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-
-    Sound_Effect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);
-
-    for (int i = 0; i < 10; i++) {
-        int16_t effect_num = Effect_Create(room_num);
-        if (effect_num != NO_EFFECT) {
-            EFFECT *effect = Effect_Get(effect_num);
-            effect->pos.x = item->pos.x;
-            effect->pos.y = wh;
-            effect->pos.z = item->pos.z;
-            effect->rot.y = DEG_180 + 2 * Random_GetDraw();
-            effect->object_id = O_SPLASH_1;
-            effect->frame_num = 0;
-            effect->speed = Random_GetDraw() / 256;
-        }
-    }
-}
-
 int16_t Spawn_Blood(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t direction,
     int16_t room_num)
