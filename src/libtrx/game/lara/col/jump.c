@@ -5,8 +5,11 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 
-#define M_LF_START_HANG 12
-#define M_LF_FAST_FALL 1
+// clang-format off
+#define M_LF_START_HANG    12
+#define M_LF_FAST_FALL     1
+#define M_BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
+// clang-format on
 
 typedef enum {
     // clang-format off
@@ -336,7 +339,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
     coll->facing = lara->move_angle;
     if (g_Config.gameplay.enable_lean_jumping && item->speed < 0) {
         coll->facing += DEG_180;
@@ -386,7 +389,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     }
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
@@ -438,7 +441,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y + angle;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
@@ -462,7 +465,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y + DEG_180;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
@@ -489,7 +492,7 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = 0;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     if (M_TestHangJump(item, coll)) {
@@ -517,7 +520,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
@@ -537,7 +540,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     M_DeflectEdgeJump(item, coll);
@@ -561,7 +564,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     item->gravity = true;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = BAD_JUMP_CEILING;
+    coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
     M_SlideEdgeJump(item, coll);

@@ -8,38 +8,24 @@
 #define LARA_DIVE_WAIT 10
 
 #define LARA_HEIGHT 762
-#define LARA_HEIGHT_SURF 700
 #define LARA_HEIGHT_UW 400
-
 #define LARA_RADIUS 100
-#define LARA_RADIUS_UW 300
-#define LARA_RADIUS_SURF LARA_RADIUS
-
-#define LARA_WADE_DEPTH 384
-#define LARA_SWIM_DEPTH 730
 
 #define LARA_TURN_UNDO (2 * DEG_1) // = 364
 #define LARA_TURN_RATE ((DEG_1 / 4) + LARA_TURN_UNDO) // = 409
-
 #define LARA_SLOW_TURN ((DEG_1 * 2) + LARA_TURN_UNDO) // = 728
 #define LARA_MED_TURN ((DEG_1 * 4) + LARA_TURN_UNDO) // = 1092
 
 #define LARA_LEAN_UNDO DEG_1 // = 182
-#define LARA_LEAN_UNDO_SURF (LARA_LEAN_UNDO * 2) // = 364
-#define LARA_LEAN_UNDO_UW LARA_LEAN_UNDO_SURF // = 364
-
 #define LARA_LEAN_RATE 273
 #define LARA_LEAN_MAX ((10 * DEG_1) + LARA_LEAN_UNDO) // = 2002
-#define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2) // = 4004
 
 #define LARA_UW_WALL_DEFLECT (2 * DEG_1) // = 364
-
 #define LARA_DEFLECT_ANGLE (5 * DEG_1) // = 910
 #define LARA_HANG_ANGLE (35 * DEG_1) // = 6370
 
 #define NO_BAD_POS (-NO_HEIGHT) // = 32512
 #define NO_BAD_NEG (NO_HEIGHT) // = -32512
-#define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define SLOPE_DIF 60
 
