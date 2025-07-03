@@ -306,15 +306,6 @@ void Stats_AddMedipacksUsed(const double medipack_value)
     current_info->stats.medipacks_used += medipack_value;
 }
 
-void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
-{
-    RESUME_INFO *const current_info =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    current_info->stats.distance_travelled += Math_Sqrt(
-        SQUARE(pos.z - last_pos.z) + SQUARE(pos.y - last_pos.y)
-        + SQUARE(pos.x - last_pos.x));
-}
-
 void Stats_AddDeath(void)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();

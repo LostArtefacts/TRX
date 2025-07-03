@@ -19,5 +19,4 @@ void Stats_AddPickup(void);
 void Stats_AddAmmoHits(void);
 void Stats_AddAmmoUsed(void);
 void Stats_AddMedipacksUsed(double medipack_value);
-void Stats_AddDistanceTravelled(XYZ_32 pos, XYZ_32 last_pos);
 void Stats_AddDeath(void);

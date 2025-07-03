@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../math.h"
 #include "./types.h"
 
 extern void Stats_StartTimer(void);
@@ -12,3 +13,5 @@ bool Stats_AddSecret(int16_t secret_idx);
 extern uint32_t Stats_GetMaxSecretFlags(void);
 
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
+
+void Stats_AddDistanceTravelled(XYZ_32 pos, XYZ_32 last_pos);
