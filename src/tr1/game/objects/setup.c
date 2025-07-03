@@ -7,7 +7,6 @@
 #define M_DEFAULT_RADIUS 10
 
 static void M_SetupLara(void);
-static void M_SetupLaraExtra(void);
 static void M_DisableObject(GAME_OBJECT_ID obj_id);
 
 static void M_SetupLara(void)
@@ -21,12 +20,6 @@ static void M_SetupLara(void)
     obj->save_hitpoints = true;
     obj->save_anim = true;
     obj->save_flags = true;
-}
-
-static void M_SetupLaraExtra(void)
-{
-    OBJECT *const obj = Object_Get(O_LARA_EXTRA);
-    obj->control_func = Lara_ControlExtra;
 }
 
 static void M_SetupSkybox(void)
@@ -80,7 +73,6 @@ void Object_SetupAllObjects(void)
     }
 
     M_SetupLara();
-    M_SetupLaraExtra();
     M_SetupSkybox();
 
     Lara_Hair_Initialise();

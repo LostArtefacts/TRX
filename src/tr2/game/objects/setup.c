@@ -9,7 +9,6 @@
 #define DEFAULT_RADIUS 10
 
 static void M_SetupLara(void);
-static void M_SetupLaraExtra(void);
 
 static void M_SetupLara(void)
 {
@@ -24,12 +23,6 @@ static void M_SetupLara(void)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
-}
-
-static void M_SetupLaraExtra(void)
-{
-    OBJECT *const obj = Object_Get(O_LARA_EXTRA);
-    obj->control_func = Lara_ControlExtra;
 }
 
 void Object_SetupAllObjects(void)
@@ -61,6 +54,5 @@ void Object_SetupAllObjects(void)
     }
 
     M_SetupLara();
-    M_SetupLaraExtra();
     Lara_Hair_Initialise();
 }
