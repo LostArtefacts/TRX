@@ -11,11 +11,6 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/lara.h>
 
-void Lara_ControlExtra(const int16_t item_num)
-{
-    Item_Animate(Item_Get(item_num));
-}
-
 void Lara_UseItem(const GAME_OBJECT_ID obj_id)
 {
     ITEM *const item = g_LaraItem;

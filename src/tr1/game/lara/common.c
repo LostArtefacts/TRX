@@ -149,11 +149,6 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
     }
 }
 
-void Lara_ControlExtra(int16_t item_num)
-{
-    Item_Animate(Item_Get(item_num));
-}
-
 void Lara_InitialiseLoad(int16_t item_num)
 {
     g_Lara.item_num = item_num;
