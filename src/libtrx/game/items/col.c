@@ -40,6 +40,18 @@ bool Item_Test3DRange(
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
 }
 
+bool Item_IsNearby(
+    const ITEM *const item_1, const ITEM *const item_2, const int32_t distance)
+{
+    const XYZ_32 delta = {
+        .x = item_1->pos.x - item_2->pos.x,
+        .y = item_1->pos.y - item_2->pos.y,
+        .z = item_1->pos.z - item_2->pos.z,
+    };
+    return delta.x > -distance && delta.x < distance && delta.y > -distance
+        && delta.y < distance && delta.z > -distance && delta.z < distance;
+}
+
 bool Item_TestBoundsCollide(
     const ITEM *const src_item, const ITEM *const dst_item,
     const int32_t radius)

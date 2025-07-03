@@ -95,19 +95,8 @@ BITE g_Skidoo_RightGun = {
     .mesh_num = 0,
 };
 
-static bool M_IsNearby(const ITEM *item_1, const ITEM *item_2);
 static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data);
 static bool M_CheckBaddieCollision(ITEM *item, ITEM *skidoo);
-
-static bool M_IsNearby(const ITEM *const item_1, const ITEM *const item_2)
-{
-    const int32_t dx = item_1->pos.x - item_2->pos.x;
-    const int32_t dy = item_1->pos.y - item_2->pos.y;
-    const int32_t dz = item_1->pos.z - item_2->pos.z;
-    return dx > -SKIDOO_TARGET_DIST && dx < SKIDOO_TARGET_DIST
-        && dy > -SKIDOO_TARGET_DIST && dy < SKIDOO_TARGET_DIST
-        && dz > -SKIDOO_TARGET_DIST && dz < SKIDOO_TARGET_DIST;
-}
 
 static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
 {
@@ -128,7 +117,7 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
         return false;
     }
 
-    if (!M_IsNearby(item, skidoo)) {
+    if (!Item_IsNearby(item, skidoo, SKIDOO_TARGET_DIST)) {
         return false;
     }
 

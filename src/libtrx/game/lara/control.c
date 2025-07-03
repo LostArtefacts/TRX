@@ -14,7 +14,8 @@
 #include "game/spawn.h"
 #include "game/stats.h"
 
-#define M_MAX_BADDIE_COLLISION 20
+#define M_MAX_COLL_ROOMS 20
+#define M_COLL_DIST CREATURE_TARGET_DIST // = 4096
 #define M_MOVE_TIMEOUT 90
 #define M_UW_DAMAGE 5
 
@@ -26,6 +27,8 @@ static void M_HandleEnvironment(void);
 static void M_HandleAboveWater(COLL_INFO *coll);
 static void M_HandleUnderwater(COLL_INFO *coll);
 static void M_HandleSurface(COLL_INFO *coll);
+static void M_ObjectCollision(COLL_INFO *coll);
+static void M_WaterCurrent(COLL_INFO *coll);
 
 #if TR_VERSION >= 2
 extern bool Skidoo_Control(void);
@@ -349,7 +352,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
 
     if ((TR_VERSION == 1 || !lara_info->extra_anim)
         && lara_info->water_status != LWS_CHEAT) {
-        Lara_BaddieCollision(item, coll);
+        M_ObjectCollision(coll);
         if (!on_vehicle) {
             Lara_Col_Update(item, coll);
         }
@@ -407,7 +410,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     }
 
     if (lara_info->current_active && lara_info->water_status != LWS_CHEAT) {
-        Lara_WaterCurrent(coll);
+        M_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&lara_info->lot);
     }
@@ -427,7 +430,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     const SECTOR *const sector = M_GetCurrentSector();
     if (lara_info->water_status != LWS_CHEAT
         && (TR_VERSION == 1 || !lara_info->extra_anim)) {
-        Lara_BaddieCollision(item, coll);
+        M_ObjectCollision(coll);
     }
 
     if (lara_info->water_status == LWS_CHEAT) {
@@ -479,7 +482,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
     }
 
     if (lara_info->current_active && lara_info->water_status != LWS_CHEAT) {
-        Lara_WaterCurrent(coll);
+        M_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&lara_info->lot);
     }
@@ -492,7 +495,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
 
     const SECTOR *const sector = M_GetCurrentSector();
 
-    Lara_BaddieCollision(item, coll);
+    M_ObjectCollision(coll);
 #if TR_VERSION == 1
     const bool on_vehicle = false;
 #else
@@ -507,9 +510,9 @@ static void M_HandleSurface(COLL_INFO *const coll)
     Room_TestSectorTrigger(item, sector);
 }
 
-// TODO: make private
-void Lara_BaddieCollision(ITEM *const lara_item, COLL_INFO *const coll)
+static void M_ObjectCollision(COLL_INFO *const coll)
 {
+    ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     lara_info->hit_direction = -1;
     lara_item->hit_status = false;
@@ -517,34 +520,23 @@ void Lara_BaddieCollision(ITEM *const lara_item, COLL_INFO *const coll)
         return;
     }
 
-    int16_t roomies[M_MAX_BADDIE_COLLISION];
-    const int32_t roomies_count = Room_GetAdjoiningRooms(
-        lara_item->room_num, roomies, M_MAX_BADDIE_COLLISION);
+    int16_t nearby_rooms[M_MAX_COLL_ROOMS];
+    const int32_t room_count = Room_GetAdjoiningRooms(
+        lara_item->room_num, nearby_rooms, M_MAX_COLL_ROOMS);
 
-    for (int32_t i = 0; i < roomies_count; i++) {
-        int16_t item_num = Room_Get(roomies[i])->item_num;
+    for (int32_t i = 0; i < room_count; i++) {
+        int16_t item_num = Room_Get(nearby_rooms[i])->item_num;
         while (item_num != NO_ITEM) {
             const ITEM *const item = Item_Get(item_num);
-
-            // the collision routine can destroy the item - need to store the
-            // next item beforehand
+            // The collision routine can destroy the item - need to store the
+            // next item beforehand.
             const int16_t next_item_num = item->next_item;
 
             if (item->collidable && item->status != IS_INVISIBLE) {
                 const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision_func != nullptr) {
-                    // clang-format off
-                    const XYZ_32 d = {
-                        .x = lara_item->pos.x - item->pos.x,
-                        .y = lara_item->pos.y - item->pos.y,
-                        .z = lara_item->pos.z - item->pos.z,
-                    };
-                    if (d.x > -CREATURE_TARGET_DIST && d.x < CREATURE_TARGET_DIST &&
-                        d.y > -CREATURE_TARGET_DIST && d.y < CREATURE_TARGET_DIST &&
-                        d.z > -CREATURE_TARGET_DIST && d.z < CREATURE_TARGET_DIST) {
-                        obj->collision_func(item_num, lara_item, coll);
-                    }
-                    // clang-format on
+                if (obj->collision_func != nullptr
+                    && Item_IsNearby(lara_item, item, M_COLL_DIST)) {
+                    obj->collision_func(item_num, lara_item, coll);
                 }
             }
 
@@ -565,8 +557,7 @@ void Lara_BaddieCollision(ITEM *const lara_item, COLL_INFO *const coll)
     }
 }
 
-// TODO: make private
-void Lara_WaterCurrent(COLL_INFO *const coll)
+static void M_WaterCurrent(COLL_INFO *const coll)
 {
     ITEM *const item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
