@@ -3,6 +3,7 @@
 #include "game/game.h"
 #include "game/savegame.h"
 #include "log.h"
+#include "utils.h"
 
 bool Stats_IsSecretValid(const int16_t secret_idx)
 {
@@ -75,4 +76,13 @@ void Stats_UpdateSecrets(LEVEL_STATS *const stats)
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
         stats->secret_count += (stats->secret_flags & (1 << i)) ? 1 : 0;
     }
+}
+
+void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.distance_travelled += Math_Sqrt(
+        SQUARE(pos.z - last_pos.z) + SQUARE(pos.y - last_pos.y)
+        + SQUARE(pos.x - last_pos.x));
 }
