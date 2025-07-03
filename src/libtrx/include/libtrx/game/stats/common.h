@@ -14,4 +14,5 @@ extern uint32_t Stats_GetMaxSecretFlags(void);
 
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
 
+void Stats_AddDeath(void);
 void Stats_AddDistanceTravelled(XYZ_32 pos, XYZ_32 last_pos);
