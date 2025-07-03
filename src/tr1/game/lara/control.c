@@ -25,53 +25,6 @@ static SECTOR *M_GetCurrentSector(const ITEM *const lara_item)
         lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
 }
 
-void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
-{
-    coll->old.x = item->pos.x;
-    coll->old.y = item->pos.y;
-    coll->old.z = item->pos.z;
-    coll->old_anim_state = item->current_anim_state;
-    coll->old_anim_num = item->anim_num;
-    coll->old_frame_num = item->frame_num;
-    coll->radius = LARA_RADIUS;
-
-    coll->lava_is_pit = 0;
-    coll->slopes_are_walls = 0;
-    coll->slopes_are_pits = 0;
-    coll->enable_hit = 1;
-    coll->enable_baddie_push = 1;
-
-    Lara_Look_Update();
-    Lara_State_Update(item, coll);
-
-    if (item->rot.z >= -LARA_LEAN_UNDO && item->rot.z <= LARA_LEAN_UNDO) {
-        item->rot.z = 0;
-    } else if (item->rot.z < -LARA_LEAN_UNDO) {
-        item->rot.z += LARA_LEAN_UNDO;
-    } else {
-        item->rot.z -= LARA_LEAN_UNDO;
-    }
-
-    if (g_Lara.turn_rate >= -LARA_TURN_UNDO
-        && g_Lara.turn_rate <= LARA_TURN_UNDO) {
-        g_Lara.turn_rate = 0;
-    } else if (g_Lara.turn_rate < -LARA_TURN_UNDO) {
-        g_Lara.turn_rate += LARA_TURN_UNDO;
-    } else {
-        g_Lara.turn_rate -= LARA_TURN_UNDO;
-    }
-    item->rot.y += g_Lara.turn_rate;
-
-    Lara_Animate(item);
-    const SECTOR *const sector = M_GetCurrentSector(item);
-
-    Lara_BaddieCollision(item, coll);
-    Lara_Col_Update(item, coll);
-    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
-    Gun_Control();
-    Room_TestSectorTrigger(item, sector);
-}
-
 void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
 {
     g_Camera.target_elevation = CAM_WADE_ELEVATION;

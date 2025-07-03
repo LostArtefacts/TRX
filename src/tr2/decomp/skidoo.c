@@ -701,7 +701,7 @@ void Skidoo_Explode(const ITEM *const skidoo)
     g_Lara.vehicle_item_num = NO_ITEM;
 }
 
-int32_t Skidoo_CheckGetOff(void)
+bool Skidoo_CheckGetOff(void)
 {
     ITEM *const skidoo = Item_Get(g_Lara.vehicle_item_num);
 
@@ -784,7 +784,7 @@ void Skidoo_Guns(void)
     Creature_Effect(skidoo, &g_Skidoo_RightGun, Spawn_GunShot);
 }
 
-int32_t Skidoo_Control(void)
+bool Skidoo_Control(void)
 {
     ITEM *const skidoo = Item_Get(g_Lara.vehicle_item_num);
     SKIDOO_INFO *const skidoo_data = skidoo->data;
@@ -875,7 +875,7 @@ int32_t Skidoo_Control(void)
         if (skidoo->pos.y == skidoo->floor) {
             Skidoo_Explode(skidoo);
         }
-        return 0;
+        return false;
     }
 
     Skidoo_Animation(skidoo, collide, dead);

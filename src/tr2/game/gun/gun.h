@@ -4,7 +4,6 @@
 
 #include <libtrx/game/gun.h>
 
-void Gun_Control(void);
 int32_t Gun_GetWeaponAnim(LARA_GUN_TYPE gun_type);
 
 // TODO: make this a struct

@@ -8,7 +8,6 @@
 
 #include <stdint.h>
 
-void Gun_Control(void);
 void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm);
 int32_t Gun_FireWeapon(
     int32_t weapon_type, ITEM *target, ITEM *src, PHD_ANGLE *angles);

@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/game.h"
+#include "game/gun.h"
 #include "game/gym.h"
 #include "game/input.h"
 #include "game/lara.h"
@@ -17,8 +18,22 @@
 #define M_MOVE_TIMEOUT 90
 #define M_UW_DAMAGE 5
 
+static SECTOR *M_GetCurrentSector(void);
 static void M_UpdateEnvironment(void);
 static void M_HandleEnvironment(void);
+static void M_HandleAboveWater(COLL_INFO *coll);
+
+#if TR_VERSION >= 2
+extern bool Skidoo_Control(void);
+#endif
+
+static SECTOR *M_GetCurrentSector(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    int16_t room_num = lara_item->room_num;
+    return Room_GetSector(
+        lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
+}
 
 static void M_UpdateEnvironment(void)
 {
@@ -234,7 +249,7 @@ static void M_HandleEnvironment(void)
     case LWS_ABOVE_WATER:
     case LWS_WADE:
         lara_info->air = LARA_MAX_AIR;
-        Lara_HandleAboveWater(item, &coll);
+        M_HandleAboveWater(&coll);
         break;
 
     case LWS_UNDERWATER:
@@ -268,6 +283,77 @@ static void M_HandleEnvironment(void)
     default:
         break;
     }
+}
+
+static void M_HandleAboveWater(COLL_INFO *const coll)
+{
+    ITEM *const item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    coll->old = item->pos;
+    coll->old_anim_state = item->current_anim_state;
+    coll->old_anim_num = item->anim_num;
+    coll->old_frame_num = item->frame_num;
+    coll->radius = LARA_RADIUS;
+
+    coll->lava_is_pit = 0;
+    coll->slopes_are_walls = 0;
+    coll->slopes_are_pits = 0;
+    coll->enable_hit = 1;
+    coll->enable_baddie_push = 1;
+
+    Lara_Look_Update();
+
+#if TR_VERSION == 1
+    const bool on_vehicle = false;
+#else
+    const bool on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
+    if (on_vehicle) {
+        if (Item_Get(lara_info->vehicle_item_num)->object_id == O_SKIDOO_FAST) {
+            // TODO: make this Object_Get(O_SKIDOO_FAST)->control
+            if (Skidoo_Control()) {
+                return;
+            }
+        } else {
+            Gun_Control();
+            return;
+        }
+    }
+#endif
+
+    Lara_State_Update(item, coll);
+
+    if (item->rot.z < -LARA_LEAN_UNDO) {
+        item->rot.z += LARA_LEAN_UNDO;
+    } else if (item->rot.z > LARA_LEAN_UNDO) {
+        item->rot.z -= LARA_LEAN_UNDO;
+    } else {
+        item->rot.z = 0;
+    }
+
+    if (lara_info->turn_rate < -LARA_TURN_UNDO) {
+        lara_info->turn_rate += LARA_TURN_UNDO;
+    } else if (lara_info->turn_rate > LARA_TURN_UNDO) {
+        lara_info->turn_rate -= LARA_TURN_UNDO;
+    } else {
+        lara_info->turn_rate = 0;
+    }
+    item->rot.y += lara_info->turn_rate;
+
+    Lara_Animate(item);
+    const SECTOR *const sector = M_GetCurrentSector();
+
+    if ((TR_VERSION == 1 || !lara_info->extra_anim)
+        && lara_info->water_status != LWS_CHEAT) {
+        Lara_BaddieCollision(item, coll);
+        if (!on_vehicle) {
+            Lara_Col_Update(item, coll);
+        }
+    }
+
+    Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
+    Gun_Control();
+    Room_TestSectorTrigger(item, sector);
 }
 
 // TODO: make private

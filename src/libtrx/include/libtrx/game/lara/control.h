@@ -4,7 +4,6 @@
 #include "../game_flow.h"
 
 extern void Lara_InitialiseMeshes(const GF_LEVEL *level);
-extern void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll);
 extern void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll);
 extern void Lara_HandleSurface(ITEM *item, COLL_INFO *coll);
 
