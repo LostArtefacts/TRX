@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import difflib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -72,7 +73,16 @@ class CommitCommand(BaseCommand):
             return
 
         if args.dry_run:
-            print(new_changelog, end="")
+            print(
+                "".join(
+                    difflib.unified_diff(
+                        old_changelog.splitlines(keepends=True),
+                        new_changelog.splitlines(keepends=True),
+                        fromfile=str(changelog_path),
+                        tofile=str(changelog_path),
+                    )
+                )
+            )
             return
 
         changelog_path.write_text(new_changelog)
