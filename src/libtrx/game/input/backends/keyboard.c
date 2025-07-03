@@ -387,6 +387,7 @@ static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
     result->menu_confirm |= result->action;
     result->toggle_fullscreen =
         KEY_DOWN(SDL_SCANCODE_RETURN) && KEY_DOWN(SDL_SCANCODE_LALT);
+    result->menu_skip = result->menu_confirm || result->menu_back;
     return true;
 }
 
