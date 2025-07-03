@@ -11,6 +11,7 @@ BASE_URL = "https://github.com/LostArtefacts/TRX"
 @dataclass
 class Changelog:
     release_name: str
+    video_id: str | None
     body: str
     commit_tag: str
     diff_url: str
@@ -19,6 +20,14 @@ class Changelog:
     @property
     def commits_url(self):
         return f"{BASE_URL}/commits/{self.commit_tag}/"
+
+
+def get_youtube_id(url: str) -> str | None:
+    if match := re.match(
+        r"https://(?:www\.)?youtube\.com/watch\?v=(\w+)", url
+    ):
+        return match.group(1)
+    return None
 
 
 def get_current_version_changelog(changelog_path: Path) -> Changelog:
@@ -32,7 +41,17 @@ def get_current_version_changelog(changelog_path: Path) -> Changelog:
     if sections:
         section_lines = sections[0].splitlines()
         header = section_lines.pop(0)
+
+        video_id: str | None = None
+        for i, line in reversed(list(enumerate(section_lines))):
+            if "youtube.com" in line:
+                video_id = get_youtube_id(
+                    re.search(r"\S+youtube\.com\S+", line).group(0)
+                )
+                section_lines.pop(i)
+
         return Changelog(
+            video_id=video_id,
             release_name=re.search(r"## \[([^\]]+?)\]", header).group(1),
             commit_tag=re.search(r"\.\.\.([^\)]+?)\)", header).group(1),
             diff_url=re.search(r"\(([^\)]+?)\)", header).group(1),
@@ -54,15 +73,18 @@ def update_changelog_to_new_version(
     new_version_name: str,
     stable_branch: str | None = "stable",
     develop_branch: str = "develop",
+    video_url: str | None = None,
 ) -> str:
     if f"[{new_version_name}]" in changelog:
         return changelog
     today = date.today().strftime("%Y-%m-%d")
     repo_url = "https://github.com/LostArtefacts/TRX"
+
+    header = f"## [Unreleased]({repo_url}/compare/{new_tag}...{develop_branch}) - ××××-××-××\n\n"
+    header += f"## [{new_version_name}]({repo_url}/compare/{old_tag}...{new_tag}) - {today}\n"
+    if video_url:
+        header += f"Showcase: {video_url}\n"
+
     changelog = re.sub(r"^## \[Unreleased\].*\n*", "", changelog, flags=re.M)
-    changelog = (
-        f"## [Unreleased]({repo_url}/compare/{new_tag}...{develop_branch}) - ××××-××-××\n\n"
-        f"## [{new_version_name}]({repo_url}/compare/{old_tag}...{new_tag}) - {today}\n"
-        + changelog
-    )
+    changelog = header + changelog
     return changelog

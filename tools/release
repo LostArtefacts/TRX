@@ -37,6 +37,12 @@ class CommitCommand(BaseCommand):
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
         super().decorate_parser(parser)
         parser.add_argument(
+            "--video-url",
+            "--video",
+            "--yt",
+            help="link to the release video URL",
+        )
+        parser.add_argument(
             "-d",
             "--dry-run",
             action="store_true",
@@ -60,6 +66,7 @@ class CommitCommand(BaseCommand):
             new_version_name=args.version,
             stable_branch=options.stable_branch,
             develop_branch=options.develop_branch,
+            video_url=args.video_url,
         )
         if old_changelog == new_changelog:
             return
