@@ -70,6 +70,7 @@
 - fixed certain secrets not registering (#3252, regression from 4.12)
 
 ## [4.12](https://github.com/LostArtefacts/TRX/compare/tr1-4.11.2...tr1-4.12) - 2025-06-17
+Showcase: https://www.youtube.com/watch?v=IqjVuXTVI4A
 - added builtin support for ingame string translations
     - changed duplicate game strings between TR1 and TR2 to be placed in a single file TRX_common_strings.json5
     - added a new setting, `enable_review_markers`, which display which text requires review (only available via `/set`)
@@ -139,6 +140,7 @@
 - fixed crashes in the save dialog on Linux (#3046, regression from 4.11)
 
 ## [4.11](https://github.com/LostArtefacts/TRX/compare/tr1-4.10.2...tr1-4.11) - 2025-05-21
+Showcase: https://www.youtube.com/watch?v=JVtcZoNoeRM
 - added the ability to trigger a flip effect without having to also trigger the flip map, in line with TR2 (#2921)
 - added a /help command (#2917)
 - added an option to toggle between TR1 and TR2 camera modes (#2990)
@@ -180,6 +182,7 @@
 - fixed water caustics appearance (#2896, regression from 4.10)
 
 ## [4.10](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...tr1-4.10) - 2025-04-30
+Showcase: https://www.youtube.com/watch?v=qJPq9obD6Cc
 - added an ability to customize the fog distances (#634)
 - added an ability to customize the water color [see the reference](/docs/GAME_FLOW.md#water-color-table) (#1532)  
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
@@ -234,6 +237,7 @@
 - removed the pretty pixels options (it's now always enabled, #2258)
 
 ## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
+Showcase: https://www.youtube.com/watch?v=AYVpnsYQNno
 - added quadrilateral interpolation (#354)
 - added `/flood` and `/drain` console commands
 - added support for `-l`/`--level` argument to play a single level
@@ -293,6 +297,7 @@
 - fixed loading non-Caves saves triggering a new save prompt when save crystals are enabled (#2498, regression from 4.8)
 
 ## [4.8](https://github.com/LostArtefacts/TRX/compare/tr1-4.7.1...tr1-4.8) - 2025-02-14
+Showcase: https://www.youtube.com/watch?v=td2Qz3nbRVo
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the game flow file.
 >Please refer to the following documents to see how to update your levels:
@@ -370,6 +375,7 @@
 - fixed hiding game UI causing the reset progressbar UI element to not show (regression from 4.7)
 
 ## [4.7](https://github.com/LostArtefacts/TRX/compare/tr1-4.6.1...tr1-4.7) - 2024-12-20
+Showcase: https://www.youtube.com/watch?v=ThXt0I2j_QI
 - added support for Wayland in binary Linux builds (#1927)
 - added support for Unicode in gameflow JSON (#386, #636, #1919 and #1928)
     Expanding on the 4.6's added support for named sequences, we now support
@@ -421,6 +427,7 @@
 - fixed game crashing when changing the save slot with `/set` when in passport (#1954, regression from 4.2)
 
 ## [4.6](https://github.com/LostArtefacts/TRX/compare/tr1-4.5.1...tr1-4.6) - 2024-11-18
+Showcase: https://www.youtube.com/watch?v=raSzSAu7kLI
 - added support for wading, similar to TR2+ (#1537)
 - added the ability to pause during cutscenes (#1673)
 - added an option to enable responsive swim cancellation, similar to TR2+ (#1004)
@@ -495,6 +502,7 @@
 - fixed mac builds missing embedded resources (#1710, regression from 4.5)
 
 ## [4.5](https://github.com/LostArtefacts/TRX/compare/tr1-4.4...tr1-4.5) - 2024-10-08
+Showcase: https://www.youtube.com/watch?v=eMnVYbB4QBc
 - added a photo mode feature (#1669)
 - added `/sfx` command
 - added `/nextlevel` alias to `/endlevel` console command
@@ -526,6 +534,7 @@
 - removed dedicated camera reset button in favor of pressing the look button (#1658)
 
 ## [4.4](https://github.com/LostArtefacts/TRX/compare/tr1-4.3...tr1-4.4) - 2024-09-20
+Showcase: https://www.youtube.com/watch?v=3XOSl9WqH3A
 - added `/exit` command (#1462)
 - added reflections to Midas Hand death animation and savegame crystals (#154)
 - added an option to use PS1 tinted savegame crystals (#1506)
@@ -568,6 +577,7 @@
 - improved skybox appearance (#1520)
 
 ## [4.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.2...tr1-4.3) - 2024-08-15
+Showcase: https://www.youtube.com/watch?v=kc2oo-pSMh0
 - added deadly water feature from TR2+ for custom levels (#1404)
 - added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon (#94)
 - added an option for Lara to use her underwater swimming physics from TR2+ (#1003)
@@ -588,6 +598,7 @@
 - improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
 
 ## [4.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.1.2...tr1-4.2) - 2024-07-14
+Showcase: https://www.youtube.com/watch?v=gV7oz0wEzWk
 - added creating minidump files on crashes
 - added new console commands:
     - `/hp`
@@ -620,6 +631,7 @@
 - fixed reading animated texture data in levels (#1346, regression from 4.1)
 
 ## [4.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.0.3...tr1-4.1) - 2024-04-26
+Showcase: https://www.youtube.com/watch?v=ioo2P0FuFWU
 - added ability to show enemy healthbars only for bosses (#1300)
 - added ability to kill specific enemy types (#1313)
 - added ability to teleport to nearest specific object (#1312)
@@ -665,6 +677,7 @@
 - fixed trying to pick up a lead bar crashing the game (#1293, regression from 4.0)
 
 ## [4.0](https://github.com/LostArtefacts/TRX/compare/tr1-3.1.1...tr1-4.0) - 2024-04-09
+Showcase: https://www.youtube.com/watch?v=-ED8HSHdHHQ&t=63s
 - added experimental support for 60 FPS, available from the in-game graphics menu
 - added ability to slow the game down using the turbo cheat (#1215)
 - added /speed command to control the turbo cheat (#1215)
@@ -745,6 +758,7 @@
 - fixed installer not detecting old Tomb1Main installations (#1071)
 
 ## [3.0](https://github.com/LostArtefacts/TRX/compare/tr1-2.16...tr1-3.0) - 2023-11-09
+Showcase: https://www.youtube.com/watch?v=vqvOkZzHx6M
 - renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
 - added developer console (accessible with `/`, see [COMMANDS.md] for details)
 - added Linux builds and toolchain

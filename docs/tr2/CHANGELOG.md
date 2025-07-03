@@ -85,6 +85,7 @@
 - reverted the partial fix for wrong audio device reinitialization (#3251, regression from 1.2)
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.1...tr2-1.2) - 2025-06-17
+Showcase: https://www.youtube.com/watch?v=yG82_Lt6v9M
 - added builtin support for ingame string translations
     - changed duplicate game strings between TR1 and TR2 to be placed in a single file TRX_common_strings.json5
     - added a new setting, `enable_review_markers`, which display which text requires review (only available via `/set`)
@@ -158,6 +159,7 @@
 - improved the dev console commands documentation
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23
+Showcase: https://www.youtube.com/watch?v=g5lrrDXDYKo
 - added a /help command (#2917)
 - added a flashing Demo Mode caption to demos (#1556)
 - added arrows to the passport text like in TR1X (#2926)
@@ -231,6 +233,7 @@
 - improved graphic settings dialog sizing (#2841)
 
 ## [1.0](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...tr2-1.0) - 2025-04-23
+Showcase: https://www.youtube.com/watch?v=iUNUJda6QCU
 - added support for The Golden Mask (#1621)
 - added ability to turn off legal screen and FMVs (#2740)
 - added ability to turn off ingame cutscenes (#2127)
@@ -297,6 +300,7 @@
 - removed the FPS and aspect mode options from the config tool (now available in-game in the graphics options)
 
 ## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
+Showcase: https://www.youtube.com/watch?v=s41hznpTJkY
 - added support for 60 FPS rendering
 - added support for more accented characters (#2356)
 - added quadrilateral interpolation (#354)
@@ -353,6 +357,7 @@
 - improved memory usage by shedding ca. 100-110 MB on average
 
 ## [0.9](https://github.com/LostArtefacts/TRX/compare/tr2-0.8...tr2-0.9) - 2025-02-14
+Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - added Linux builds and toolchain (#1598)
 - added macOS builds (for both Apple Silicon and Intel) (#2226)
 - added pause dialog (#1638)
