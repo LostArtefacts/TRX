@@ -305,15 +305,3 @@ void Stats_AddMedipacksUsed(const double medipack_value)
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     current_info->stats.medipacks_used += medipack_value;
 }
-
-void Stats_AddDeath(void)
-{
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    RESUME_INFO *const current_info = Savegame_GetCurrentInfo(current_level);
-    current_info->stats.death_count++;
-    const int32_t save_slot = Savegame_GetBoundSlot();
-    if (save_slot != -1) {
-        Savegame_UpdateDeathCounters(
-            save_slot, current_info->stats.death_count);
-    }
-}
