@@ -263,7 +263,7 @@ void Lara_Control(void)
         // is resurrected with DOZY, she should no longer aim at the target.
         g_Lara.target = nullptr;
 
-        if (g_LaraItem->flags & IF_INVISIBLE) {
+        if (g_LaraItem->flags & IF_ONE_SHOT) {
             return;
         }
     } else if (Room_IsAbyssHeight(item->pos.y)) {

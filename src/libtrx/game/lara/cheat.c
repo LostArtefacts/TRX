@@ -230,7 +230,7 @@ bool Lara_Cheat_EnterFlyMode(void)
         return false;
     }
 
-    if ((lara_item->flags & IF_INVISIBLE) != 0) {
+    if ((lara_item->flags & IF_ONE_SHOT) != 0) {
         // The explosion cheat has been used, so Lara's death is permanent.
         return false;
     }
