@@ -4,6 +4,8 @@
 #include "game/lara/util.h"
 #include "game/rooms.h"
 
+#define M_HEIGHT_SURF 700
+
 static bool M_IsWadingEnabled(void);
 static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
@@ -45,7 +47,7 @@ static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA_WADE, 0);
     }
 
-    item->pos.y += coll->side_front.floor + LARA_HEIGHT_SURF - 5;
+    item->pos.y += coll->side_front.floor + M_HEIGHT_SURF - 5;
     Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
     item->gravity = false;
     item->rot.x = 0;
@@ -87,9 +89,8 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
     }
 #endif
 
-    const int32_t lara_hdif = coll->side_front.floor + LARA_HEIGHT_SURF;
-    if (lara_hdif <= -STEP_L * 2
-        || lara_hdif > LARA_HEIGHT_SURF - STEPUP_HEIGHT) {
+    const int32_t lara_hdif = coll->side_front.floor + M_HEIGHT_SURF;
+    if (lara_hdif <= -STEP_L * 2 || lara_hdif > M_HEIGHT_SURF - STEPUP_HEIGHT) {
         return false;
     }
 
@@ -176,12 +177,12 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     coll->facing = lara->move_angle;
 
-    int32_t obj_height = LARA_HEIGHT_SURF;
+    int32_t obj_height = M_HEIGHT_SURF;
     if (enable_wading) {
         obj_height += 100;
     }
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + LARA_HEIGHT_SURF, item->pos.z,
+        coll, item->pos.x, item->pos.y + M_HEIGHT_SURF, item->pos.z,
         item->room_num, obj_height);
 
     Lara_Col_Shift(coll);

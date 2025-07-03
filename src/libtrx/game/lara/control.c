@@ -14,10 +14,22 @@
 #include "game/spawn.h"
 #include "game/stats.h"
 
-#define M_MAX_COLL_ROOMS 20
-#define M_COLL_DIST CREATURE_TARGET_DIST // = 4096
-#define M_MOVE_TIMEOUT 90
-#define M_UW_DAMAGE 5
+// clang-format off
+#define M_MAX_COLL_ROOMS    20
+#define M_COLL_DIST         CREATURE_TARGET_DIST // = 4096
+#define M_MOVE_TIMEOUT      90
+#define M_UW_DAMAGE         5
+#define M_DIVE_TILT_MED     (45 * DEG_1)         // = 8190
+#define M_DIVE_TILT_MAX     (85 * DEG_1)         // = 15470
+#define M_DIVE_TILT_MAX_ALT (100 * DEG_1)        // = 18200
+#define M_RADIUS_SURF       LARA_RADIUS          // = 100
+#define M_RADIUS_UW         300
+#define M_WADE_DEPTH        384
+#define M_SWIM_DEPTH        730
+#define M_LEAN_UNDO_SURF    (LARA_LEAN_UNDO * 2) // = 364
+#define M_LEAN_UNDO_UW      M_LEAN_UNDO_SURF     // = 364
+#define M_LEAN_MAX_UW       (LARA_LEAN_MAX * 2)  // = 4004
+// clang-format off
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
@@ -70,12 +82,12 @@ static void M_UpdateEnvironment(void)
     case LWS_ABOVE_WATER: {
         if (wading_enabled
             && (water_height_diff == NO_HEIGHT
-                || water_height_diff < LARA_WADE_DEPTH)) {
+                || water_height_diff < M_WADE_DEPTH)) {
             break;
         }
 
-        if (wading_enabled && water_depth <= LARA_SWIM_DEPTH - STEP_L) {
-            if (water_height_diff > LARA_WADE_DEPTH) {
+        if (wading_enabled && water_depth <= M_SWIM_DEPTH - STEP_L) {
+            if (water_height_diff > M_WADE_DEPTH) {
                 lara_info->water_status = LWS_WADE;
                 if (!item->gravity) {
                     item->goal_anim_state = LS_STOP;
@@ -89,17 +101,17 @@ static void M_UpdateEnvironment(void)
             Lara_UpdateRoomToHeight(0);
             Sound_StopEffect(SFX_LARA_FALL);
             if (item->current_anim_state == LS_SWAN_DIVE) {
-                item->rot.x = -45 * DEG_1;
+                item->rot.x = -M_DIVE_TILT_MED;
                 item->goal_anim_state = LS_DIVE;
                 Lara_Animate(item);
                 item->fall_speed *= 2;
             } else if (item->current_anim_state == LS_FAST_DIVE) {
-                item->rot.x = -85 * DEG_1;
+                item->rot.x = -M_DIVE_TILT_MAX;
                 item->goal_anim_state = LS_DIVE;
                 Lara_Animate(item);
                 item->fall_speed *= 2;
             } else {
-                item->rot.x = -45 * DEG_1;
+                item->rot.x = -M_DIVE_TILT_MED;
                 Item_SwitchToAnim(item, LA_FREEFALL_TO_UNDERWATER, 0);
                 item->current_anim_state = LS_DIVE;
                 item->goal_anim_state = LS_SWIM;
@@ -162,7 +174,7 @@ static void M_UpdateEnvironment(void)
             break;
         }
 
-        if (wading_enabled && water_height_diff > LARA_WADE_DEPTH) {
+        if (wading_enabled && water_height_diff > M_WADE_DEPTH) {
             lara_info->water_status = LWS_WADE;
             Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
             item->current_anim_state = LS_STOP;
@@ -192,12 +204,12 @@ static void M_UpdateEnvironment(void)
     case LWS_WADE: {
         g_Camera.target_elevation = CAM_WADE_ELEVATION;
 
-        if (water_height_diff < LARA_WADE_DEPTH) {
+        if (water_height_diff < M_WADE_DEPTH) {
             lara_info->water_status = LWS_ABOVE_WATER;
             if (item->current_anim_state == LS_WADE) {
                 item->goal_anim_state = LS_RUN;
             }
-        } else if (water_height_diff > LARA_SWIM_DEPTH) {
+        } else if (water_height_diff > M_SWIM_DEPTH) {
             lara_info->water_status = LWS_SURFACE;
             item->pos.y += 1 - water_height_diff;
 
@@ -369,7 +381,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     coll->old = item->pos;
-    coll->radius = LARA_RADIUS_UW;
+    coll->radius = M_RADIUS_UW;
 
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -LARA_HEIGHT_UW;
@@ -384,17 +396,17 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     Lara_Look_Update();
     Lara_State_Update(item, coll);
 
-    if (item->rot.z > LARA_LEAN_UNDO_UW) {
-        item->rot.z -= LARA_LEAN_UNDO_UW;
-    } else if (item->rot.z < -LARA_LEAN_UNDO_UW) {
-        item->rot.z += LARA_LEAN_UNDO_UW;
+    if (item->rot.z > M_LEAN_UNDO_UW) {
+        item->rot.z -= M_LEAN_UNDO_UW;
+    } else if (item->rot.z < -M_LEAN_UNDO_UW) {
+        item->rot.z += M_LEAN_UNDO_UW;
     } else {
         item->rot.z = 0;
     }
 
     if (g_Config.gameplay.enable_tr2_swimming) {
-        CLAMP(item->rot.x, -85 * DEG_1, 85 * DEG_1);
-        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
+        CLAMP(item->rot.x, -M_DIVE_TILT_MAX, M_DIVE_TILT_MAX);
+        CLAMP(item->rot.z, -M_LEAN_MAX_UW, M_LEAN_MAX_UW);
 
         if (lara_info->turn_rate < -LARA_TURN_UNDO) {
             lara_info->turn_rate += LARA_TURN_UNDO;
@@ -405,8 +417,8 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         }
         item->rot.y += lara_info->turn_rate;
     } else {
-        CLAMP(item->rot.x, -100 * DEG_1, 100 * DEG_1);
-        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
+        CLAMP(item->rot.x, -M_DIVE_TILT_MAX_ALT, M_DIVE_TILT_MAX_ALT);
+        CLAMP(item->rot.z, -M_LEAN_MAX_UW, M_LEAN_MAX_UW);
     }
 
     if (lara_info->current_active && lara_info->water_status != LWS_CHEAT) {
@@ -458,7 +470,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
     g_Camera.target_elevation = CAM_WADE_ELEVATION;
 
     coll->old = item->pos;
-    coll->radius = LARA_RADIUS_SURF;
+    coll->radius = M_RADIUS_SURF;
 
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = TR_VERSION == 1 ? -100 : -STEP_L / 2;
@@ -473,10 +485,10 @@ static void M_HandleSurface(COLL_INFO *const coll)
     Lara_Look_Update();
     Lara_State_Update(item, coll);
 
-    if (item->rot.z > LARA_LEAN_UNDO_SURF) {
-        item->rot.z -= LARA_LEAN_UNDO_SURF;
-    } else if (item->rot.z < -LARA_LEAN_UNDO_SURF) {
-        item->rot.z += LARA_LEAN_UNDO_SURF;
+    if (item->rot.z > M_LEAN_UNDO_SURF) {
+        item->rot.z -= M_LEAN_UNDO_SURF;
+    } else if (item->rot.z < -M_LEAN_UNDO_SURF) {
+        item->rot.z += M_LEAN_UNDO_SURF;
     } else {
         item->rot.z = 0;
     }
