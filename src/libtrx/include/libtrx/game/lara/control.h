@@ -6,6 +6,4 @@
 extern void Lara_InitialiseMeshes(const GF_LEVEL *level);
 
 void Lara_Control(void);
-void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
-void Lara_WaterCurrent(COLL_INFO *coll);
 void Lara_DismountVehicle(void);
