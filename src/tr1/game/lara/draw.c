@@ -32,7 +32,7 @@ void Lara_Draw(const ITEM *const item)
     int32_t bottom = g_PhdBottom;
     int32_t right = g_PhdRight;
 
-    if (g_LaraItem->flags & IF_INVISIBLE) {
+    if ((g_LaraItem->flags & IF_ONE_SHOT) != 0) {
         return;
     }
 

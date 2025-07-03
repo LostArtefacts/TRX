@@ -96,7 +96,7 @@ static void M_ExplodeLara(void)
     Item_Explode(lara_info->item_num, -1, 1);
     Sound_Effect(SFX_EXPLOSION_CHEAT, &lara_item->pos, SPM_NORMAL);
     lara_item->hit_points = 0;
-    lara_item->flags |= TR_VERSION == 1 ? IF_INVISIBLE : IF_ONE_SHOT;
+    lara_item->flags |= IF_ONE_SHOT;
 }
 
 void Lara_Cheat_CheckKeys(void)
