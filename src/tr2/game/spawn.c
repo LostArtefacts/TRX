@@ -89,30 +89,6 @@ void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
     effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
 }
 
-void Spawn_Splash(const ITEM *const item)
-{
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-
-    for (int32_t i = 0; i < 10; i++) {
-        const int16_t effect_num = Effect_Create(room_num);
-        if (effect_num == NO_EFFECT) {
-            continue;
-        }
-
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_SPLASH_1;
-        effect->pos.x = item->pos.x;
-        effect->pos.y = water_height;
-        effect->pos.z = item->pos.z;
-        effect->rot.y = 2 * Random_GetDraw() + DEG_180;
-        effect->speed = Random_GetDraw() / 256;
-        effect->frame_num = 0;
-    }
-}
-
 int16_t Spawn_GunShot(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
