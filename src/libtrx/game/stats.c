@@ -32,7 +32,6 @@ bool Stats_HasSecret(const int16_t secret_idx)
 
 bool Stats_TakeSecret(const int16_t secret_idx)
 {
-    LOG_INFO("Removing secret %d", secret_idx);
     RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
@@ -45,6 +44,7 @@ bool Stats_TakeSecret(const int16_t secret_idx)
     if (!(current_info->stats.secret_flags & secret_mask)) {
         return false;
     }
+    LOG_INFO("Removing secret %d", secret_idx);
     current_info->stats.secret_flags &= ~secret_mask;
     current_info->stats.secret_count--;
     return true;
@@ -52,7 +52,6 @@ bool Stats_TakeSecret(const int16_t secret_idx)
 
 bool Stats_AddSecret(const int16_t secret_idx)
 {
-    LOG_INFO("Adding secret %d", secret_idx);
     RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
@@ -65,6 +64,7 @@ bool Stats_AddSecret(const int16_t secret_idx)
     if (current_info->stats.secret_flags & secret_mask) {
         return false;
     }
+    LOG_INFO("Adding secret %d", secret_idx);
     current_info->stats.secret_flags |= secret_mask;
     current_info->stats.secret_count++;
     return true;
