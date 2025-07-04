@@ -32,7 +32,6 @@ SHELL_SIZE Shell_GetCurrentDisplaySize(void);
 void Shell_LoadConfig(void);
 void Shell_InitCommonModules(void);
 void Shell_ShutdownCommonModules(void);
-bool Shell_ProcessCommonEvent(const SDL_Event *event);
 
 void Shell_HandleCommonConfigChange(const CONFIG *old, const CONFIG *new);
 extern void Shell_HandleConfigChange(const CONFIG *old, const CONFIG *new);
