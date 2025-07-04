@@ -145,7 +145,7 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
 
 static inline bool M_IsFloatRound(const float num)
 {
-    return (fabsf(num) - roundf(num)) < 0.0001f;
+    return fabsf(num - roundf(num)) < 0.0001f;
 }
 
 static void M_AlignLaraToItem(const ITEM *const item)
