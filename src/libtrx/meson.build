@@ -278,6 +278,7 @@ sources = [
   'game/ui/dialogs/sound_settings.c',
   'game/ui/dialogs/stats.c',
   'game/ui/dialogs/text.c',
+  'game/ui/draw.c',
   'game/ui/elements/ammo_label.c',
   'game/ui/elements/anchor.c',
   'game/ui/elements/bar_enemy_hp.c',

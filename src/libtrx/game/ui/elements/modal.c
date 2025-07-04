@@ -1,6 +1,7 @@
 #include "game/ui/elements/modal.h"
 
 #include "game/output.h"
+#include "game/ui/draw.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/helpers.h"
 
@@ -21,7 +22,7 @@ static void M_Measure(UI_NODE *const node)
 
 static void M_Draw(const UI_NODE *const node)
 {
-    Output_DrawPolyList();
+    UI_ScheduleFlush();
     UI_DrawWrapper(node);
 }
 
