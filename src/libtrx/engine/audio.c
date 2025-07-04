@@ -14,6 +14,7 @@ static int32_t m_RefCount = 0;
 static size_t m_MixBufferCapacity = 0;
 static float *m_MixBuffer = nullptr;
 static Uint8 m_Silence = 0;
+static bool m_Muted = false;
 
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len);
 
@@ -22,6 +23,9 @@ static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
     memset(m_MixBuffer, m_Silence, len);
     Audio_Stream_Mix(m_MixBuffer, len);
     Audio_Sample_Mix(m_MixBuffer, len);
+    if (m_Muted) {
+        memset(m_MixBuffer, m_Silence, len);
+    }
     memcpy(stream_data, m_MixBuffer, len);
 }
 
@@ -88,6 +92,21 @@ bool Audio_Shutdown(void)
     Audio_Sample_Shutdown();
     Audio_Stream_Shutdown();
     return true;
+}
+
+void Audio_Mute(void)
+{
+    m_Muted = true;
+}
+
+void Audio_Unmute(void)
+{
+    m_Muted = false;
+}
+
+bool Audio_IsMuted(void)
+{
+    return m_Muted;
 }
 
 int32_t Audio_GetAVChannelLayout(const int32_t channels)

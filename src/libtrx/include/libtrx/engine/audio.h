@@ -12,6 +12,10 @@
 bool Audio_Init(void);
 bool Audio_Shutdown(void);
 
+void Audio_Mute(void);
+void Audio_Unmute(void);
+bool Audio_IsMuted(void);
+
 bool Audio_Stream_Pause(int32_t sound_id);
 bool Audio_Stream_Unpause(int32_t sound_id);
 int32_t Audio_Stream_CreateFromFile(const char *path);

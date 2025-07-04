@@ -17,7 +17,6 @@
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
-static bool m_Muted = false;
 static bool m_IsPlaying = false;
 static const char *m_Extensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
@@ -105,7 +104,8 @@ static bool M_Play(const char *const file_path)
 
     Video_Start(video);
     while (video->is_playing) {
-        Video_SetVolume(video, m_Muted ? 0.0f : g_Config.audio.sound_volume);
+        Video_SetVolume(
+            video, Audio_IsMuted() ? 0.0f : g_Config.audio.sound_volume);
         Video_SetSurfaceSize(
             video, Viewport_GetWidth(VIEWPORT_GAME),
             Viewport_GetHeight(VIEWPORT_GAME));
@@ -130,16 +130,6 @@ static bool M_Play(const char *const file_path)
     Output_ApplyRenderSettings();
 
     return true;
-}
-
-void FMV_Mute(void)
-{
-    m_Muted = true;
-}
-
-void FMV_Unmute(void)
-{
-    m_Muted = false;
 }
 
 bool FMV_IsPlaying(void)
