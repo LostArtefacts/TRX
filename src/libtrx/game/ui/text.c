@@ -7,6 +7,8 @@
 #include "game/objects.h"
 #include "game/output.h"
 #include "game/scaler.h"
+#include "game/ui/common.h"
+#include "game/ui/draw.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -553,7 +555,7 @@ void UI_Text_Draw(
     M_Process(
         text, nullptr, nullptr, settings, base_x,
         base_y - g_Config.ui.text_scale, M_ScaleScreen,
-        Output_DrawScreenSprite);
+        UI_ScheduleDrawScreenSprite);
 }
 
 char *UI_Text_WordWrap(

@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/output.h"
+#include "game/ui/draw.h"
 #include "game/ui/helpers.h"
 
 typedef struct {
@@ -23,13 +24,13 @@ static void M_Draw(const UI_NODE *node)
 {
     const M_DATA *const data = node->data;
     if (data->background_z >= 0) {
-        Output_DrawTextBackground(
+        UI_ScheduleDrawTextBackground(
             data->ui_style, UI_ScaleX(node->x), UI_ScaleY(node->y),
             UI_ScaleX(node->w), UI_ScaleY(node->h), data->background_z,
             data->text_style);
     }
     if (data->outline_z >= 0) {
-        Output_DrawTextOutline(
+        UI_ScheduleDrawTextOutline(
             data->ui_style, UI_ScaleX(node->x), UI_ScaleY(node->y),
             UI_ScaleX(node->w), UI_ScaleY(node->h), data->outline_z,
             data->text_style);

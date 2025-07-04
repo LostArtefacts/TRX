@@ -1,6 +1,7 @@
 #include "game/ui/elements/fade.h"
 
 #include "game/output.h"
+#include "game/ui/draw.h"
 #include "game/ui/helpers.h"
 
 typedef struct {
@@ -21,10 +22,9 @@ static void M_Draw(const UI_NODE *const node)
     const M_DATA *const data = node->data;
     if (data->is_on_top) {
         UI_DrawWrapper(node);
-        Output_DrawPolyList(); // flush geometry
-        Fader_Draw(data->fader);
+        UI_ScheduleFaderDraw(data->fader);
     } else {
-        Fader_Draw(data->fader);
+        UI_ScheduleFaderDraw(data->fader);
         UI_DrawWrapper(node);
     }
 }

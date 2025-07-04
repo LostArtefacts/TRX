@@ -5,6 +5,7 @@
 #include "game/console/common.h"
 #include "game/game_string.h"
 #include "game/scaler.h"
+#include "game/ui/draw.h"
 #include "game/ui/elements/anchor.h"
 #include "game/ui/events.h"
 #include "game/ui/text.h"
@@ -16,11 +17,6 @@
 
 static struct {
     MEMORY_ARENA_ALLOCATOR alloc;
-
-    int32_t node_count;
-    int32_t node_capacity;
-    UI_NODE *nodes;
-
     UI_NODE *root; // The top-level container
     UI_NODE *current; // The current container into which we attach nodes
 } m_Priv = {
@@ -104,7 +100,6 @@ UI_NODE *UI_AllocNode(
     memset(node, 0, size);
     node->ops = ops;
     node->data = (char *)node + sizeof(UI_NODE);
-    m_Priv.node_count++;
     return node;
 }
 
@@ -153,10 +148,7 @@ const UI_NODE *UI_GetCurrent(void)
 void UI_BeginScene(void)
 {
     Memory_ArenaReset(&m_Priv.alloc);
-    m_Priv.node_count = 0;
-
-    // Make a root node.
-    UI_BeginAnchor(0.5f, 0.5f);
+    UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
 }
 
 void UI_EndScene(void)
@@ -172,10 +164,12 @@ void UI_Init(void)
 {
     UI_InitEvents();
     UI_InitText();
+    UI_InitDraw();
 }
 
 void UI_Shutdown(void)
 {
+    UI_ShutdownDraw();
     UI_ShutdownText();
     Memory_ArenaFree(&m_Priv.alloc);
     UI_ShutdownEvents();
