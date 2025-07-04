@@ -531,6 +531,7 @@
         "PAUSE_QUIT": "Quitter",
         "PAUSE_YES": "Oui",
         "PHOTO_MODE_ADVANCE_FRAME": "\\{review}Avancer le cadre",
+        "PHOTO_MODE_CHANGE_POSE": "\\{review}Changer de pose",
         "PHOTO_MODE_FOV_PROMPT": "Ajuster le FOV",
         "PHOTO_MODE_MOVE_PROMPT": "Déplacer la caméra",
         "PHOTO_MODE_RESET_PROMPT": "Réinitialiser la caméra",

@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/game_string.h"
+#include "game/lara/pose.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/label.h"
 #include "game/ui/elements/modal.h"
@@ -56,6 +57,9 @@ void UI_PhotoMode(void)
     UI_Label("\\{input roll}");
     UI_Label("[\\{input slow}+]\\{input draw}");
     UI_Label("\\{input look}");
+    if (Lara_Pose_IsAvailable()) {
+        UI_Label("[\\{input slow}+]\\{input fly_cheat}");
+    }
     UI_Label("[\\{input slow}+]\\{input pause}");
     UI_Label("\\{input toggle_ui}");
     UI_Label("\\{input action}");
@@ -81,6 +85,9 @@ void UI_PhotoMode(void)
     UI_Label(GS(PHOTO_MODE_ROTATE90_PROMPT));
     UI_Label(GS(PHOTO_MODE_FOV_PROMPT));
     UI_Label(GS(PHOTO_MODE_RESET_PROMPT));
+    if (Lara_Pose_IsAvailable()) {
+        UI_Label(GS(PHOTO_MODE_CHANGE_POSE));
+    }
     UI_Label(GS(PHOTO_MODE_ADVANCE_FRAME));
     UI_Label(GS(PHOTO_MODE_TOGGLE_HELP));
     UI_Label(GS(PHOTO_MODE_SNAP_PROMPT));

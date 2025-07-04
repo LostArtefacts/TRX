@@ -5,6 +5,7 @@
 #include "game/camera/enum.h"
 #include "game/camera/vars.h"
 #include "game/input.h"
+#include "game/lara/pose.h"
 #include "game/math.h"
 #include "game/matrix.h"
 #include "game/output.h"
@@ -319,6 +320,7 @@ void Camera_EnterPhotoMode(void)
 
 void Camera_ExitPhotoMode(void)
 {
+    Lara_Pose_Clear();
     M_SetFOV(m_OriginalFOV);
     M_ResetCamera(true);
 }
@@ -344,6 +346,10 @@ void Camera_UpdatePhotoMode(void)
     }
 
     changed |= M_HandleTargetRotationInputs();
+
+    if (g_InputDB.fly_cheat) {
+        Lara_Pose_Cycle(g_Input.slow ? -1 : 1);
+    }
 
     if (changed) {
         M_ClampCameraPos();

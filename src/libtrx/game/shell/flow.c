@@ -7,6 +7,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/game_string_manager.h"
+#include "game/lara/pose.h"
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
@@ -81,10 +82,13 @@ void Shell_InitCommonModules(void)
 
     GameBuf_Init();
     Random_Seed();
+    Lara_Pose_Init();
 }
 
 void Shell_ShutdownCommonModules(void)
 {
+    Lara_Pose_Shutdown();
+
     Console_Shutdown();
     Savegame_Shutdown();
 

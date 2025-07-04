@@ -11,3 +11,6 @@ void Interpolation_SetRate(double rate);
 
 void Interpolation_Interpolate(void);
 void Interpolation_Remember(void);
+
+// Instantly discard interpolation data
+void Interpolation_CommitBraid(void);

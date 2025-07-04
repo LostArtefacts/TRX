@@ -2,12 +2,14 @@
 
 #include "config.h"
 #include "game/lara.h"
+#include "game/lara/pose.h"
 #include "game/matrix.h"
 #include "game/random.h"
 #include "game/rooms.h"
 #include "utils.h"
 
 #define M_HAIR_SEGMENTS 6
+#define M_HAIR_SPHERES 5
 // TODO: allow defining these values externally (#110)
 #define M_HAIR_OFFSET_X 0
 #if TR_VERSION == 1
@@ -20,7 +22,7 @@
 
 static bool m_IsFirstHair;
 static GAME_OBJECT_ID m_LaraType = O_LARA;
-static SPHERE m_HairSpheres[M_HAIR_SEGMENTS - 1];
+static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
 static int32_t m_HairWind;
@@ -47,8 +49,10 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const lara_obj = Object_Get(m_LaraType);
 
-    const XYZ_16 *mesh_rots = frame->mesh_rots;
-    Matrix_TranslateRel16(frame->offset);
+    const LARA_POSE *const pose = Lara_Pose_Get();
+    const XYZ_16 *mesh_rots = pose != nullptr ? pose->rots : frame->mesh_rots;
+
+    Matrix_TranslateRel16(pose != nullptr ? pose->offset : frame->offset);
     Matrix_Rot16(mesh_rots[LM_HIPS]);
 
     Matrix_Push();
@@ -261,7 +265,7 @@ void Lara_Hair_Control(const bool in_cutscene)
     g_MatrixPtr->_23 = lara_item->pos.z << W2V_SHIFT;
     Matrix_Rot16(lara_item->rot);
 
-    if (frac == 0) {
+    if (frac == 0 || Lara_Pose_Get() != nullptr) {
         M_CalculateSpheres(frame_1);
     } else {
         M_CalculateSpheres_I(frame_1, frame_2, frac, rate);
@@ -377,7 +381,7 @@ void Lara_Hair_Control(const bool in_cutscene)
             break;
         }
 
-        for (int32_t j = 0; j < 5; j++) {
+        for (int32_t j = 0; j < M_HAIR_SPHERES; j++) {
             const SPHERE *const sphere = &m_HairSpheres[j];
             const int32_t dx = s->pos.x - sphere->pos.x;
             const int32_t dy = s->pos.y - sphere->pos.y;

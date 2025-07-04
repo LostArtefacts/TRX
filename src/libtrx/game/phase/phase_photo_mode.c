@@ -7,6 +7,7 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/interpolation.h"
+#include "game/lara/pose.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
