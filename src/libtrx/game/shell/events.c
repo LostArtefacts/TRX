@@ -1,10 +1,9 @@
 #include "config.h"
 #include "debug.h"
+#include "engine/audio.h"
 #include "game/console/common.h"
 #include "game/fmv.h"
-#include "game/music.h"
 #include "game/shell.h"
-#include "game/sound.h"
 #include "game/ui.h"
 
 // If true, next SDL_TEXT* event should be zeroed out.
@@ -58,16 +57,12 @@ static void M_HandleKeyUp(const SDL_Event *const event)
 
 static void M_HandleFocusGained(void)
 {
-    FMV_Unmute();
-    Music_Unmute();
-    Sound_SetMasterVolume(g_Config.audio.sound_volume);
+    Audio_Unmute();
 }
 
 static void M_HandleFocusLost(void)
 {
-    FMV_Mute();
-    Music_Mute();
-    Sound_SetMasterVolume(0);
+    Audio_Mute();
 }
 
 static void M_HandleWindowShown(void)

@@ -8,6 +8,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/engine/audio.h>
 #include <libtrx/engine/video.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/music.h>
@@ -16,7 +17,6 @@
 
 #include <string.h>
 
-static bool m_Muted = false;
 static bool m_IsFMVPlaying = false;
 static const char *m_Extensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
@@ -120,7 +120,8 @@ static bool M_Play(const char *const file_name)
 
     Video_Start(video);
     while (video->is_playing) {
-        Video_SetVolume(video, m_Muted ? 0.0f : g_Config.audio.sound_volume);
+        Video_SetVolume(
+            video, Audio_IsMuted() ? 0.0f : g_Config.audio.sound_volume);
 
         const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
         Video_SetSurfaceSize(video, display_size.w, display_size.h);

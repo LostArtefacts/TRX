@@ -52,12 +52,6 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 // Sets the game volume.
 void Music_SetVolume(float volume);
 
-// Mutes the game music. Doesn't change the music volume.
-void Music_Mute(void);
-
-// Unmutes the game music. Doesn't change the music volume.
-void Music_Unmute(void);
-
 // Resets all track trigger mask flags.
 void Music_ResetTrackFlags(void);
 

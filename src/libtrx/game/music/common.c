@@ -18,7 +18,6 @@ static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastLooped = MX_INACTIVE;
 
-static bool m_Muted = false;
 static float m_MusicVolume = 0.0f;
 static int32_t m_AudioStreamID = -1;
 static const MUSIC_BACKEND *m_Backend = nullptr;
@@ -117,7 +116,7 @@ static void M_SyncVolume(const int32_t audio_stream_id)
     if (audio_stream_id < 0) {
         return;
     }
-    Audio_Stream_SetVolume(audio_stream_id, m_Muted ? 0.0f : m_MusicVolume);
+    Audio_Stream_SetVolume(audio_stream_id, m_MusicVolume);
 }
 
 bool Music_Init(void)
@@ -304,18 +303,6 @@ void Music_SetVolume(const float volume)
         m_MusicVolume = volume;
         M_SyncVolume(m_AudioStreamID);
     }
-}
-
-void Music_Mute(void)
-{
-    m_Muted = true;
-    M_SyncVolume(m_AudioStreamID);
-}
-
-void Music_Unmute(void)
-{
-    m_Muted = false;
-    M_SyncVolume(m_AudioStreamID);
 }
 
 void Music_ResetTrackFlags(void)
