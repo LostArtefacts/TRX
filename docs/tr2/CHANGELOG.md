@@ -7,7 +7,6 @@
 - added the ability to cycle UI tabs with sidestep keys (#3272)
 - added the ability to change the health bar color for allies, defaulting to green (#3005)
 - added the ability to skip consecutive credit images by holding the action / escape keys
-- added muting of game audio when the game window is not in focus
 - added dedicated British English translation (#3212)
 - added a new easter egg command
 - added a `/lighting` console command to let the player turn lighting system on/off
@@ -21,6 +20,7 @@
 - added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
 - added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - added an option to choose between original TR1, original TR2 or unrestricted look modes (Gameplay settings → Controls → Look mode) (#3403)
+- added an option to allow the audio to mute when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
 - added an option to set the upscaling filter (Graqphic settings → Rendering → Upscaling filter)
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)
 - added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)

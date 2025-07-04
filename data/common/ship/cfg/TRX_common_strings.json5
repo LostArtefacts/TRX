@@ -563,6 +563,8 @@
         "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NON_AMBIENT": "Non-ambient",
         "SOUND_SETTINGS_MUSIC_VOLUME": "\\{icon sound} Music volume",
         "SOUND_SETTINGS_MUSIC_VOLUME_DESCRIPTION": "Adjusts music and ambient volume.",
+        "SOUND_SETTINGS_MUTE_OUT_OF_FOCUS": "Mute audio when focus lost",
+        "SOUND_SETTINGS_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Mutes all music and sound effects when the game window is not focused.",
         "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY": "Pause music in inventory",
         "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Pauses game sounds, ambient and music in the inventory screen.",
         "SOUND_SETTINGS_PS_UZI_SFX": "PS1 uzi sound",

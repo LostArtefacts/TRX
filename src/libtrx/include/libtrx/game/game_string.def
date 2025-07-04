@@ -234,6 +234,8 @@ GS_DEFINE(SOUND_SETTINGS_MUSIC_LOAD_CONDITION,             "Restore music on loa
 GS_DEFINE(SOUND_SETTINGS_ENABLE_MUSIC_IN_MENU,             "Main menu music")
 GS_DEFINE(SOUND_SETTINGS_ENABLE_PITCHED_SOUNDS,            "Pitched sounds")
 GS_DEFINE(SOUND_SETTINGS_ENABLE_UNDERWATER_ANIM_SFX,       "Underwater animation SFX")
+GS_DEFINE(SOUND_SETTINGS_MUTE_OUT_OF_FOCUS,                "Mute audio when focus lost")
+GS_DEFINE(SOUND_SETTINGS_MUTE_OUT_OF_FOCUS_DESCRIPTION,    "Mutes all music and sound effects when the game window is not focused.")
 GS_DEFINE(SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY,         "Pause music in inventory")
 GS_DEFINE(SOUND_SETTINGS_FIX_SECRETS_KILLING_MUSIC,        "Layered secret music")
 GS_DEFINE(SOUND_SETTINGS_FIX_SPEECHES_KILLING_MUSIC,       "Layered enemy speech")

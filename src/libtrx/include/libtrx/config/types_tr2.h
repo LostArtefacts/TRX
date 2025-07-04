@@ -97,6 +97,7 @@ typedef struct {
         bool enable_lara_mic;
         bool enable_underwater_anim_sfx;
         bool enable_music_in_inventory;
+        bool mute_out_of_focus;
         float inventory_ambient_volume;
         float inventory_music_volume;
         float underwater_ambient_volume;

@@ -563,6 +563,8 @@
         "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NON_AMBIENT": "Pistes musicales",
         "SOUND_SETTINGS_MUSIC_VOLUME": "\\{icon sound} Volume de la musique",
         "SOUND_SETTINGS_MUSIC_VOLUME_DESCRIPTION": "Ajuste le volume de la musique et de l'ambiance.",
+        "SOUND_SETTINGS_MUTE_OUT_OF_FOCUS": "\\{review}Couper le son lorsque la fenêtre perd le focus",
+        "SOUND_SETTINGS_MUTE_OUT_OF_FOCUS_DESCRIPTION": "\\{review}Coupe toute la musique et les effets sonores lorsque la fenêtre du jeu n'est pas au premier plan.",
         "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY": "Suspendre la musique dans l'inventaire",
         "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Suspend les effets sonores du jeu, l'ambiance et la musique dans l'écran d'inventaire.",
         "SOUND_SETTINGS_PS_UZI_SFX": "Sons uzis PS1",
