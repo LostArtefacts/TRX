@@ -105,6 +105,8 @@ class ReviewTracker:
                 trans_data = load_json5_from_string(self.vfs.get(trans_path))
                 trans_ptr = JSONPointers(trans_data)
                 for ptr in ptrs:
+                    if "extends" in trans_data and ptr not in trans_ptr:
+                        continue
                     trans_ptr[ptr] = REVIEW_MARKER
                 self.vfs.put(
                     trans_path, write_json_to_string(trans_data) + "\n"
