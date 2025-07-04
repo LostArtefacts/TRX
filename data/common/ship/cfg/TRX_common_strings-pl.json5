@@ -531,6 +531,7 @@
         "PAUSE_QUIT": "Tak, wyjdź",
         "PAUSE_YES": "Tak",
         "PHOTO_MODE_ADVANCE_FRAME": "Pomiń klatkę",
+        "PHOTO_MODE_CHANGE_POSE": "Zmień pozę",
         "PHOTO_MODE_FOV_PROMPT": "Dostosuj kąt widzenia",
         "PHOTO_MODE_MOVE_PROMPT": "Przesuń kamerę",
         "PHOTO_MODE_RESET_PROMPT": "Zresetuj kamerę",

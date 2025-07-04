@@ -531,6 +531,7 @@
         "PAUSE_QUIT": "Esci",
         "PAUSE_YES": "Sì",
         "PHOTO_MODE_ADVANCE_FRAME": "Avanza fotogramma",
+        "PHOTO_MODE_CHANGE_POSE": "\\{review}Cambia posa",
         "PHOTO_MODE_FOV_PROMPT": "Regola campo visivo",
         "PHOTO_MODE_MOVE_PROMPT": "Sposta telecamera",
         "PHOTO_MODE_RESET_PROMPT": "Ripristina telecamera",

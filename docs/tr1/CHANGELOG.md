@@ -12,6 +12,7 @@
 - added the ability to hide specific game settings (#3242)
 - added the ability to cycle UI tabs with sidestep keys (#3272)
 - added the ability to skip consecutive credit images by holding the action / escape keys
+- added the ability to cycle between a list of predefined Lara poses in the photo mode
 - added dedicated British English translation (#3212)
 - added a `/lighting` console command to let the player turn lighting system on/off
 - added an `/immune` console command to make Lara impervious to damage

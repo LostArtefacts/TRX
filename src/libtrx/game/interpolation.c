@@ -61,8 +61,10 @@ static void M_InterpolateLara(double ratio, LARA_INFO *lara);
 
 static void M_RememberBraidSegment(HAIR_SEGMENT *segment);
 static void M_InterpolateBraidSegment(
-    HAIR_SEGMENT *segment, double ratio, const XYZ_32 max_delta);
+    HAIR_SEGMENT *segment, double ratio, XYZ_32 max_delta);
+static void M_CommitBraidSegment(HAIR_SEGMENT *segment);
 static void M_RememberBraid(void);
+static void M_CommitBraid(void);
 static void M_InterpolateBraid(double ratio, ITEM *lara_item);
 
 static void M_RememberItem(ITEM *item);
@@ -249,10 +251,28 @@ static void M_InterpolateBraidSegment(
     INTERPOLATE_ROT(segment, rot.z, ratio, DEG_45);
 }
 
+static void M_CommitBraidSegment(HAIR_SEGMENT *const segment)
+{
+    ASSERT(segment != nullptr);
+    COMMIT(segment, pos.x);
+    COMMIT(segment, pos.y);
+    COMMIT(segment, pos.z);
+    COMMIT(segment, rot.x);
+    COMMIT(segment, rot.y);
+    COMMIT(segment, rot.z);
+}
+
 static void M_RememberBraid(void)
 {
     for (int32_t i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
         M_RememberBraidSegment(Lara_Hair_GetSegment(i));
+    }
+}
+
+static void M_CommitBraid(void)
+{
+    for (int32_t i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
+        M_CommitBraidSegment(Lara_Hair_GetSegment(i));
     }
 }
 
@@ -478,4 +498,9 @@ void Interpolation_Interpolate(void)
     if (lara_item != nullptr && Lara_Hair_IsActive()) {
         M_InterpolateBraid(m_WorldRate, lara_item);
     }
+}
+
+void Interpolation_CommitBraid(void)
+{
+    M_CommitBraid();
 }
