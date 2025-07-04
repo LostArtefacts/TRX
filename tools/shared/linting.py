@@ -123,10 +123,6 @@ def lint_untranslated_game_strings(
     except Exception as exc:
         yield LintWarning(path, f"unable to parse JSON5: {exc}")
         return
-    # Skip missing translation warnings if using 'extends' inheritance
-    if isinstance(trans_data, dict) and "extends" in trans_data:
-        return
-
     base_ptr = JSONPointers(base_data)
     trans_ptr = JSONPointers(trans_data)
     base_paths = list(base_ptr)
@@ -134,11 +130,16 @@ def lint_untranslated_game_strings(
     for ptr in base_paths:
         if should_skip_object_name(ptr, trans_data):
             continue
+        # Only warn for missing translations in dialects if they're already present
+        if "extends" in trans_data and ptr not in trans_ptr:
+            continue
         if not clean(trans_ptr.get(ptr)):
             yield LintWarning(path, f"untranslated key '{ptr}'")
     # Warn about extra translation keys not present in the base file (unused by the game)
     base_set = set(base_paths)
     for ptr in trans_ptr:
+        if ptr == "/extends":
+            continue
         if should_skip_object_name(ptr, trans_data):
             continue
         if ptr not in base_set:
