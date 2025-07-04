@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "game/game_string.h"
 #include "game/gun.h"
+#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects.h"
@@ -402,9 +403,14 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
     lara_info->death_timer = 0;
     lara_info->mesh_effects = 0;
 
-    g_Camera.type = CAM_CHASE;
-    Viewport_AlterFOV(-1);
-    Camera_ResetPosition();
+    if (g_Camera.type == CAM_PHOTO_MODE) {
+        Lara_Hair_Control(false);
+        Interpolation_CommitLara();
+    } else {
+        g_Camera.type = CAM_CHASE;
+        Viewport_AlterFOV(-1);
+        Camera_ResetPosition();
+    }
 
     return true;
 }
