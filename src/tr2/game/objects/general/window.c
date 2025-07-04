@@ -4,7 +4,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -64,7 +64,7 @@ static void M_Control1(const int16_t item_num)
         return;
     }
 
-    if (g_Lara.vehicle_item_num != NO_ITEM) {
+    if (Lara_Vehicle_IsMounted()) {
         if (Lara_IsNearItem(&item->pos, 512)) {
             Window_Smash(item_num);
         }

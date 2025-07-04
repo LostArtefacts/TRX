@@ -46,8 +46,8 @@ GAME_OBJECT_ID Lara_GetAnimationObject(void)
     const GF_LEVEL *const level = GF_GetCurrentLevel();
     return level->lara_type;
 #else
-    if (lara_info->vehicle_item_num != NO_ITEM) {
-        const ITEM *const vehicle = Item_Get(lara_info->vehicle_item_num);
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+    if (vehicle != nullptr) {
         return vehicle->object_id == O_BOAT ? O_LARA_BOAT : O_LARA_SKIDOO;
     }
     return O_LARA;

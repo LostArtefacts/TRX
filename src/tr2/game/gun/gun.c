@@ -5,14 +5,14 @@
 #include "game/gun/gun_rifle.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/lara/control.h"
-#include "game/lara/flare.h"
+#include "game/lara.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara.h>
 
 void Gun_Control(void)
 {
@@ -47,7 +47,7 @@ void Gun_Control(void)
 
         if (g_Lara.request_gun_type != g_Lara.gun_type || g_Input.draw) {
             if (g_Lara.request_gun_type == LGT_FLARE
-                || (g_Lara.vehicle_item_num == NO_ITEM
+                || (!Lara_Vehicle_IsMounted()
                     && g_Lara.water_status != LWS_CHEAT
                     && (g_Lara.request_gun_type == LGT_HARPOON
                         || g_Lara.water_status == LWS_ABOVE_WATER

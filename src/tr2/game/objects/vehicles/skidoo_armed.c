@@ -3,7 +3,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 
 #define SKIDOO_ARMED_RADIUS (WALL_L / 3) // = 341
@@ -49,7 +49,7 @@ static void M_Collision(
             item, coll, item->speed > 0 ? coll->enable_hit : false, false);
     }
 
-    if (g_Lara.vehicle_item_num == NO_ITEM && item->speed > 0) {
+    if (!Lara_Vehicle_IsMounted() && item->speed > 0) {
         Lara_TakeDamage(100, true);
     }
 }

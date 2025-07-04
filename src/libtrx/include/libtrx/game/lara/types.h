@@ -91,7 +91,6 @@ typedef struct {
     LARA_GUN_TYPE last_gun_type;
     GAME_OBJECT_ID back_gun_obj_id;
     int16_t gun_item_num;
-    int16_t vehicle_item_num;
 
     bool climb_status;
 

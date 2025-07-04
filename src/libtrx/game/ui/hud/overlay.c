@@ -5,7 +5,7 @@
 #include "game/const.h"
 #include "game/game.h"
 #include "game/game_string.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/scaler.h"
 #include "game/ui/elements/ammo_label.h"
 #include "game/ui/elements/bar.h"
@@ -147,14 +147,7 @@ static void M_DebugPosTopLeft(void)
     }
 
     const GAME_OBJECT_ID obj_id = Lara_GetAnimationObject();
-#if TR_VERSION == 1
-    const ITEM *const vehicle = nullptr;
-#else
-    const ITEM *const vehicle =
-        lara_info != nullptr && lara_info->vehicle_item_num != NO_ITEM
-        ? Item_Get(lara_info->vehicle_item_num)
-        : nullptr;
-#endif
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
     UI_BeginStack(UI_STACK_HORIZONTAL);
     UI_BeginStack(UI_STACK_VERTICAL);
     UI_Label(GS(OVERLAY_DEBUG_POSITION));

@@ -257,7 +257,7 @@ bool Lara_Cheat_EnterFlyMode(void)
 #endif
 
     lara_info->extra_anim = false;
-    Lara_DismountVehicle();
+    Lara_Vehicle_Dismount();
     if (lara_info->water_status != LWS_UNDERWATER
         || lara_item->hit_points <= 0) {
         lara_item->pos.y -= STEP_L;
@@ -364,7 +364,7 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
         lara_info->gun_status = LGS_ARMLESS;
     }
 
-    Lara_DismountVehicle();
+    Lara_Vehicle_Dismount();
     if (lara_info->extra_anim) {
         const ROOM *const room = Room_Get(lara_item->room_num);
         const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;

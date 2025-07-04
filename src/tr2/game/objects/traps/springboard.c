@@ -2,7 +2,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 
 typedef enum {
     // clang-format off
@@ -34,16 +34,15 @@ static void M_Control(const int16_t item_num)
             return;
         }
 
-        const LARA_INFO *const lara = Lara_GetLaraInfo();
-        if (lara->vehicle_item_num != NO_ITEM) {
-            ITEM *const skidoo = Item_Get(lara->vehicle_item_num);
-            if (skidoo->object_id != O_SKIDOO_FAST
-                && skidoo->object_id != O_SKIDOO_ARMED) {
+        ITEM *const vehicle = Lara_Vehicle_GetItem();
+        if (vehicle != nullptr) {
+            if (vehicle->object_id != O_SKIDOO_FAST
+                && vehicle->object_id != O_SKIDOO_ARMED) {
                 return;
             }
 
-            skidoo->fall_speed = -200;
-            skidoo->pos.y -= STEP_L;
+            vehicle->fall_speed = -200;
+            vehicle->pos.y -= STEP_L;
         } else {
             if (lara_item->current_anim_state == LS_WALK_BACK
                 || lara_item->current_anim_state == LS_FAST_BACK) {

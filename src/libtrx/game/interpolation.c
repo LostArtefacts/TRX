@@ -4,8 +4,7 @@
 #include "debug.h"
 #include "game/camera.h"
 #include "game/effects.h"
-#include "game/lara/common.h"
-#include "game/lara/hair.h"
+#include "game/lara.h"
 #include "game/rooms.h"
 #include "utils.h"
 
@@ -117,12 +116,11 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
 
     case O_LARA:
     case O_LARA_EXTRA: {
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-        if (lara == nullptr || lara->item_num == NO_ITEM
-            || lara->vehicle_item_num == NO_ITEM) {
+        const ITEM *const vehicle = Lara_Vehicle_GetItem();
+        if (vehicle == nullptr) {
             break;
         }
-        return M_GetItemMaxDelta(Item_Get(lara->vehicle_item_num));
+        return M_GetItemMaxDelta(vehicle);
     }
 #endif
 
@@ -348,17 +346,11 @@ static void M_RememberItems(void)
 
 static void M_InterpolateItems(const double ratio)
 {
+    const int16_t lara_vehicle_num = Lara_Vehicle_GetIndex();
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
-#if TR_VERSION == 2
-        const LARA_INFO *const lara = Lara_GetLaraInfo();
-        const bool is_mounted =
-            lara != nullptr && (i == lara->vehicle_item_num);
-#else
-        const bool is_mounted = false;
-#endif
         if (((item->flags & IF_KILLED) || item->status == IS_INACTIVE)
-            && !is_mounted) {
+            && i != lara_vehicle_num) {
             M_CommitItem(item);
         } else {
             M_InterpolateItem(item, ratio);

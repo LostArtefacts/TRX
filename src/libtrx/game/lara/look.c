@@ -78,13 +78,10 @@ static void M_Reset(void)
 
 static bool M_IsLaraIdle(void)
 {
-#if TR_VERSION >= 2
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info->vehicle_item_num != NO_ITEM) {
-        const ITEM *const vehicle = Item_Get(lara_info->vehicle_item_num);
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+    if (vehicle != nullptr) {
         return vehicle->speed == 0;
     }
-#endif
     return Lara_HasState(m_StopStates);
 }
 
@@ -122,12 +119,7 @@ void Lara_Look_LeftRight(void)
         }
     }
 
-#if TR_VERSION == 1
-    const bool on_vehicle = false;
-#else
-    const bool on_vehicle = lara->vehicle_item_num != NO_ITEM;
-#endif
-    if (lara->gun_status != LGS_HANDS_BUSY && !on_vehicle) {
+    if (lara->gun_status != LGS_HANDS_BUSY && !Lara_Vehicle_IsMounted()) {
         lara->torso_rot.y =
             on_surface ? (lara->head_rot.y / 2) : lara->head_rot.y;
     }

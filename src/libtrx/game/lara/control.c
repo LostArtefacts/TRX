@@ -62,8 +62,7 @@ static void M_UpdateEnvironment(void)
     const bool wading_enabled = g_Config.gameplay.enable_wading;
 #else
     const bool wading_enabled = true;
-
-    if (lara_info->vehicle_item_num != NO_ITEM || lara_info->extra_anim) {
+    if (Lara_Vehicle_IsMounted() || lara_info->extra_anim) {
         return;
     }
 #endif
@@ -323,12 +322,10 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
 
     Lara_Look_Update();
 
-#if TR_VERSION == 1
-    const bool on_vehicle = false;
-#else
-    bool on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
-    if (on_vehicle) {
-        if (Item_Get(lara_info->vehicle_item_num)->object_id == O_SKIDOO_FAST) {
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+#if TR_VERSION >= 2
+    if (vehicle != nullptr) {
+        if (vehicle->object_id == O_SKIDOO_FAST) {
             // TODO: make this Object_Get(O_SKIDOO_FAST)->control
             if (Skidoo_Control()) {
                 return;
@@ -365,10 +362,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     if ((TR_VERSION == 1 || !lara_info->extra_anim)
         && lara_info->water_status != LWS_CHEAT) {
         M_ObjectCollision(coll);
-#if TR_VERSION >= 2
-        on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
-#endif
-        if (!on_vehicle) {
+        if (!Lara_Vehicle_IsMounted()) {
             Lara_Col_Update(item, coll);
         }
     }
@@ -511,12 +505,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
     const SECTOR *const sector = M_GetCurrentSector();
 
     M_ObjectCollision(coll);
-#if TR_VERSION == 1
-    const bool on_vehicle = false;
-#else
-    const bool on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
-#endif
-    if (!on_vehicle) {
+    if (!Lara_Vehicle_IsMounted()) {
         Lara_Col_Update(item, coll);
     }
 
@@ -705,25 +694,4 @@ void Lara_Control(void)
 
     Stats_AddDistanceTravelled(item->pos, lara_info->last_pos);
     lara_info->last_pos = item->pos;
-}
-
-void Lara_DismountVehicle(void)
-{
-#if TR_VERSION >= 2
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
-
-    if (lara_info->vehicle_item_num != NO_ITEM) {
-        ITEM *const vehicle = Item_Get(lara_info->vehicle_item_num);
-        Item_SwitchToAnim(vehicle, 0, 0);
-        lara_info->vehicle_item_num = NO_ITEM;
-
-        lara_item->current_anim_state = LS_STOP;
-        lara_item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
-
-        lara_item->rot.x = 0;
-        lara_item->rot.z = 0;
-    }
-#endif
 }

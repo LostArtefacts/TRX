@@ -11,6 +11,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/stats.h>
 #include <libtrx/memory.h>
@@ -324,7 +325,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->current_active = M_ReadS16();
     lara->hit_effect_count = M_ReadS16();
     lara->flare.age = M_ReadS16();
-    lara->vehicle_item_num = M_ReadS16();
+    Lara_Vehicle_SetIndex(M_ReadS16());
     lara->gun_item_num = M_ReadS16();
     lara->back_gun_obj_id = Object_UnmapGameID(M_ReadS16());
     lara->flare.frame_num = M_ReadS16();
@@ -580,7 +581,7 @@ static void M_WriteLara(const LARA_INFO *const lara)
     M_WriteS16(lara->current_active);
     M_WriteS16(lara->hit_effect_count);
     M_WriteS16(lara->flare.age);
-    M_WriteS16(lara->vehicle_item_num);
+    M_WriteS16(Lara_Vehicle_GetIndex());
     M_WriteS16(lara->gun_item_num);
     M_WriteS16(Object_MakeGameID(lara->back_gun_obj_id));
     M_WriteS16(lara->flare.frame_num);

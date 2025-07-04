@@ -192,6 +192,7 @@ sources = [
   'game/lara/state/jump.c',
   'game/lara/state/land.c',
   'game/lara/state/swim.c',
+  'game/lara/vehicle.c',
   'game/level/common.c',
   'game/level/faces.c',
   'game/level/settings.c',

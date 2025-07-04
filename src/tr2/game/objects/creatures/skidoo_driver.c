@@ -7,6 +7,7 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/utils.h>
 
 #define SKIDOO_DRIVER_MIN_TURN (SKIDOO_MAX_TURN / 3) // = 364
@@ -148,7 +149,7 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
         if (driver_data->flags == 0
             && ABS(info.angle) < SKIDOO_DRIVER_TARGET_ANGLE
             && g_LaraItem->hit_points > 0) {
-            const int32_t damage = g_Lara.vehicle_item_num != NO_ITEM
+            const int32_t damage = Lara_Vehicle_IsMounted()
                 ? SKIDOO_DRIVER_SHOT_DAMAGE
                 : SKIDOO_DRIVER_LARA_DAMAGE;
 
