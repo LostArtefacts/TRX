@@ -63,6 +63,7 @@
 - fixed Lara getting stuck in the fly cheat in rare circumstances (#3392, regression from 0.3)
 - fixed support for >3 secret dragons in custom levels (#3415, regression from 1.2)
 - fixed the `/tp` command breaking the photo mode
+- fixed the `/tp` command misbehaving when giving fractional coordinates
 - improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
