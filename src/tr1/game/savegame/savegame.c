@@ -34,8 +34,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (level == GF_GetGymLevel()) {
-        current->flags.available = 1;
-        current->flags.costume = 1;
+        current->flags.available = true;
+        current->flags.costume = true;
         current->small_medipacks = 0;
         current->large_medipacks = 0;
         current->num_scions = 0;
@@ -43,10 +43,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         current->shotgun_ammo = 0;
         current->magnum_ammo = 0;
         current->uzi_ammo = 0;
-        current->flags.has_pistols = 0;
-        current->flags.has_shotgun = 0;
-        current->flags.has_magnums = 0;
-        current->flags.has_uzis = 0;
+        current->flags.has_pistols = false;
+        current->flags.has_shotgun = false;
+        current->flags.has_magnums = false;
+        current->flags.has_uzis = false;
         current->equipped_gun_type = LGT_UNARMED;
         current->holsters_gun_type = LGT_UNARMED;
         current->back_gun_type = LGT_UNARMED;
@@ -54,8 +54,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (level == GF_GetFirstLevel()) {
-        current->flags.available = 1;
-        current->flags.costume = 0;
+        current->flags.available = true;
+        current->flags.costume = false;
         current->small_medipacks = 0;
         current->large_medipacks = 0;
         current->num_scions = 0;
@@ -63,10 +63,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         current->shotgun_ammo = 0;
         current->magnum_ammo = 0;
         current->uzi_ammo = 0;
-        current->flags.has_pistols = 1;
-        current->flags.has_shotgun = 0;
-        current->flags.has_magnums = 0;
-        current->flags.has_uzis = 0;
+        current->flags.has_pistols = true;
+        current->flags.has_shotgun = false;
+        current->flags.has_magnums = false;
+        current->flags.has_uzis = false;
         current->equipped_gun_type = LGT_PISTOLS;
         current->holsters_gun_type = LGT_PISTOLS;
         current->back_gun_type = LGT_UNARMED;
@@ -74,10 +74,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        current->flags.has_pistols = 1;
-        current->flags.has_shotgun = 1;
-        current->flags.has_magnums = 1;
-        current->flags.has_uzis = 1;
+        current->flags.has_pistols = true;
+        current->flags.has_shotgun = true;
+        current->flags.has_magnums = true;
+        current->flags.has_uzis = true;
         current->shotgun_ammo = 1234;
         current->magnum_ammo = 1234;
         current->uzi_ammo = 1234;

@@ -169,10 +169,10 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
     if (resume != nullptr) {
         if (g_GameInfo.remove_guns) {
-            resume->flags.has_pistols = 0;
-            resume->flags.has_shotgun = 0;
-            resume->flags.has_magnums = 0;
-            resume->flags.has_uzis = 0;
+            resume->flags.has_pistols = false;
+            resume->flags.has_shotgun = false;
+            resume->flags.has_magnums = false;
+            resume->flags.has_uzis = false;
             resume->equipped_gun_type = LGT_UNARMED;
             resume->holsters_gun_type = LGT_UNARMED;
             resume->back_gun_type = LGT_UNARMED;

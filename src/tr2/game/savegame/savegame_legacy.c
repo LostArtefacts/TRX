@@ -162,14 +162,14 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
 
     const uint16_t flags = M_ReadU16();
     // clang-format off
-    resume->flags.available     = (flags & 0x01) ? 1 : 0;
-    resume->flags.has_pistols   = (flags & 0x02) ? 1 : 0;
-    resume->flags.has_magnums   = (flags & 0x04) ? 1 : 0;
-    resume->flags.has_uzis      = (flags & 0x08) ? 1 : 0;
-    resume->flags.has_shotgun   = (flags & 0x10) ? 1 : 0;
-    resume->flags.has_m16       = (flags & 0x20) ? 1 : 0;
-    resume->flags.has_grenade   = (flags & 0x40) ? 1 : 0;
-    resume->flags.has_harpoon   = (flags & 0x80) ? 1 : 0;
+    resume->flags.available     = (flags & 0x01) != 0;
+    resume->flags.has_pistols   = (flags & 0x02) != 0;
+    resume->flags.has_magnums   = (flags & 0x04) != 0;
+    resume->flags.has_uzis      = (flags & 0x08) != 0;
+    resume->flags.has_shotgun   = (flags & 0x10) != 0;
+    resume->flags.has_m16       = (flags & 0x20) != 0;
+    resume->flags.has_grenade   = (flags & 0x40) != 0;
+    resume->flags.has_harpoon   = (flags & 0x80) != 0;
     // clang-format on
 
     M_Skip(sizeof(uint16_t));
