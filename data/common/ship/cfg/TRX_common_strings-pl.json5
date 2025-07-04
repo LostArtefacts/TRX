@@ -563,6 +563,8 @@
         "SOUND_SETTINGS_MUSIC_LOAD_CONDITION_NON_AMBIENT": "Tylko muzyka",
         "SOUND_SETTINGS_MUSIC_VOLUME": "\\{icon sound} Głośność muzyki",
         "SOUND_SETTINGS_MUSIC_VOLUME_DESCRIPTION": "Dostosowuje głośność muzyki i dźwięków otoczenia.",
+        "SOUND_SETTINGS_MUTE_OUT_OF_FOCUS": "Wycisz dźwięk po zminimalizowaniu",
+        "SOUND_SETTINGS_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Wycisza muzykę i efekty dźwiękowe, kiedy okno gry jest nieaktywne.",
         "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY": "Wstrzymaj muzykę w ekwipunku",
         "SOUND_SETTINGS_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Wstrzymuje dźwięki gry, dźwięki otoczenia i muzykę na ekranie ekwipunku.",
         "SOUND_SETTINGS_PS_UZI_SFX": "Dźwięk uzi z PS1",
