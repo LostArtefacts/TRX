@@ -3,6 +3,7 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_flow/sequencer.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/output.h"
 #include "game/savegame.h"
@@ -259,7 +260,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
-        g_GF_LaraStartAnim = (int16_t)(intptr_t)event->data;
+        Lara_SetStartAnimState((LARA_EXTRA_STATE)(intptr_t)event->data);
     }
     return gf_cmd;
 }
@@ -269,7 +270,7 @@ void GF_PreSequenceHook(
 {
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
-    g_GF_LaraStartAnim = 0;
+    Lara_SetStartAnimState(LS_EXTRA_BREATH);
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
     Camera_GetCineData()->position.target_angle = DEG_90;

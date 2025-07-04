@@ -1,12 +1,12 @@
 #include "game/lara/common.h"
 
 #include "config.h"
-#include "game/const.h"
-#include "game/game_flow.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/matrix.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
+#include "game/savegame.h"
 
 #define M_MOVE_ANIM_VELOCITY 12
 #define M_MOVE_SPEED 16
@@ -15,6 +15,90 @@
 
 static bool m_Controllable = false;
 static int16_t m_DeathCameraTarget = NO_ITEM;
+static LARA_EXTRA_STATE m_StartAnimState = LS_EXTRA_BREATH;
+
+void Lara_Initialise(const GF_LEVEL *const level)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_item->data = lara_info;
+    lara_item->collidable = false;
+
+    m_Controllable = true;
+    m_DeathCameraTarget = NO_ITEM;
+    Lara_Vehicle_SetIndex(NO_ITEM);
+
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr && g_Config.gameplay.disable_healing_between_levels) {
+        lara_item->hit_points = resume->lara_hitpoints;
+    } else {
+        lara_item->hit_points = g_Config.gameplay.start_lara_hitpoints;
+    }
+
+#if TR_VERSION >= 2
+    lara_info->back_gun_obj_id = O_LARA;
+    lara_info->gun_item_num = NO_ITEM;
+    lara_info->climb_status = false;
+    lara_info->flare.age = 0;
+    lara_info->flare.control = false;
+    lara_info->flare.frame_num = 0;
+#endif
+    lara_info->calc_fall_speed = 0;
+    lara_info->pose_count = 0;
+    lara_info->hit_direction = -1;
+    lara_info->hit_effect = nullptr;
+    lara_info->hit_effect_count = 0;
+    lara_info->hit_frame = 0;
+    lara_info->air = LARA_MAX_AIR;
+    lara_info->water_surface_dist = 100;
+    lara_info->death_timer = 0;
+    lara_info->dive_timer = 0;
+    lara_info->current_active = 0;
+    lara_info->extra_anim = false;
+    lara_info->burn = false;
+    lara_info->mesh_effects = 0;
+    lara_info->torso_rot.x = 0;
+    lara_info->torso_rot.y = 0;
+    lara_info->torso_rot.z = 0;
+    lara_info->head_rot.x = 0;
+    lara_info->head_rot.y = 0;
+    lara_info->head_rot.z = 0;
+    lara_info->move_angle = 0;
+    lara_info->turn_rate = 0;
+    lara_info->target = nullptr;
+    lara_info->last_pos = lara_item->pos;
+    lara_info->right_arm.flash_gun = 0;
+    lara_info->left_arm.flash_gun = 0;
+    lara_info->right_arm.lock = 0;
+    lara_info->left_arm.lock = 0;
+    lara_info->interact_target.is_moving = false;
+    lara_info->interact_target.item_num = NO_ITEM;
+    lara_info->interact_target.move_count = 0;
+
+    LOT_InitialiseLOT(&lara_info->lot);
+    lara_info->lot.setup.step = WALL_L * 20;
+    lara_info->lot.setup.drop = -WALL_L * 20;
+    lara_info->lot.setup.fly = STEP_L;
+
+    Lara_Control_Initialise(level->type, m_StartAnimState);
+
+    if (TR_VERSION == 2 && level->type == GFL_CUTSCENE) {
+        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+            Lara_SwapSingleMesh(i, O_LARA);
+        }
+
+        Lara_SwapSingleMesh(LM_THIGH_L, O_LARA_PISTOLS);
+        Lara_SwapSingleMesh(LM_THIGH_R, O_LARA_PISTOLS);
+        lara_info->gun_status = LGS_ARMLESS;
+    } else {
+        Lara_InitialiseInventory(level);
+    }
+}
+
+void Lara_SetStartAnimState(const LARA_EXTRA_STATE state)
+{
+    m_StartAnimState = state;
+}
 
 bool Lara_IsControllable(void)
 {
