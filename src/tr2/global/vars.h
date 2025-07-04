@@ -54,6 +54,3 @@ extern WEAPON_INFO g_Weapons[];
 
 extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;
-extern int32_t g_GF_LaraStartAnim;
-
-extern XYZ_32 g_InteractPosition;

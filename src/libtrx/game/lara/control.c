@@ -29,7 +29,7 @@
 #define M_LEAN_UNDO_SURF    (LARA_LEAN_UNDO * 2) // = 364
 #define M_LEAN_UNDO_UW      M_LEAN_UNDO_SURF     // = 364
 #define M_LEAN_MAX_UW       (LARA_LEAN_MAX * 2)  // = 4004
-// clang-format off
+// clang-format on
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
@@ -637,6 +637,36 @@ static void M_WaterCurrent(COLL_INFO *const coll)
     Lara_Col_Shift(coll);
 
     coll->old = item->pos;
+}
+
+void Lara_Control_Initialise(
+    const GF_LEVEL_TYPE level_type, const LARA_EXTRA_STATE start_state)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    if ((level_type == GFL_NORMAL || level_type == GFL_BONUS)
+        && start_state != LS_EXTRA_BREATH) {
+        lara_info->water_status = LWS_ABOVE_WATER;
+        lara_info->gun_status = LGS_HANDS_BUSY;
+        lara_item->goal_anim_state = start_state;
+        lara_item->current_anim_state = LS_EXTRA_BREATH;
+        Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+        Lara_Animate(lara_item);
+        lara_info->extra_anim = true;
+        Camera_InvokeCinematic(lara_item, 0, 0);
+    } else if ((Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) != 0) {
+        lara_info->water_status = LWS_UNDERWATER;
+        lara_item->fall_speed = 0;
+        lara_item->goal_anim_state = LS_TREAD;
+        lara_item->current_anim_state = LS_TREAD;
+        Item_SwitchToAnim(lara_item, LA_UNDERWATER_IDLE, 0);
+    } else {
+        lara_info->water_status = LWS_ABOVE_WATER;
+        lara_item->goal_anim_state = LS_STOP;
+        lara_item->current_anim_state = LS_STOP;
+        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+    }
 }
 
 void Lara_Control(void)

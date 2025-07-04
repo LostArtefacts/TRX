@@ -161,6 +161,3 @@ WEAPON_INFO g_Weapons[] = {
 
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
-int32_t g_GF_LaraStartAnim;
-
-XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
