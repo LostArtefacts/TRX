@@ -2,7 +2,9 @@
 #include "debug.h"
 #include "game/console/common.h"
 #include "game/fmv.h"
+#include "game/music.h"
 #include "game/shell.h"
+#include "game/sound.h"
 #include "game/ui.h"
 
 // If true, next SDL_TEXT* event should be zeroed out.
@@ -19,7 +21,7 @@ static void M_HandleWindowMinimized(void);
 static void M_HandleWindowMaximized(void);
 static void M_HandleWindowMoved(int32_t x, int32_t y);
 static void M_HandleWindowResized(int32_t width, int32_t height);
-static bool M_CreateGameWindow(void);
+static bool M_ProcessEvent(const SDL_Event *event);
 
 static void M_HandleQuit(void)
 {
@@ -56,10 +58,16 @@ static void M_HandleKeyUp(const SDL_Event *const event)
 
 static void M_HandleFocusGained(void)
 {
+    FMV_Unmute();
+    Music_Unmute();
+    Sound_SetMasterVolume(g_Config.audio.sound_volume);
 }
 
 static void M_HandleFocusLost(void)
 {
+    FMV_Mute();
+    Music_Mute();
+    Sound_SetMasterVolume(0);
 }
 
 static void M_HandleWindowShown(void)
@@ -92,7 +100,7 @@ static void M_HandleWindowResized(int32_t width, int32_t height)
     Shell_SyncFromWindow(true);
 }
 
-bool Shell_ProcessCommonEvent(const SDL_Event *const event)
+static bool M_ProcessEvent(const SDL_Event *const event)
 {
     switch (event->type) {
     case SDL_QUIT:
@@ -168,4 +176,14 @@ bool Shell_ProcessCommonEvent(const SDL_Event *const event)
     }
 
     return false;
+}
+
+void Shell_ProcessEvents(void)
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+        if (M_ProcessEvent(&event)) {
+            continue;
+        }
+    }
 }

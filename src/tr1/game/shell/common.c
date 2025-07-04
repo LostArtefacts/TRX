@@ -3,13 +3,11 @@
 #include "game/output.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/sound.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_string_manager.h>
-#include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -150,34 +148,6 @@ static void M_SetGLBackend(const GFX_GL_BACKEND backend)
     case GFX_GL_INVALID_BACKEND:
         ASSERT_FAIL();
         break;
-    }
-}
-
-void Shell_ProcessEvents(void)
-{
-    SDL_Event event;
-    while (SDL_PollEvent(&event) != 0) {
-        if (Shell_ProcessCommonEvent(&event)) {
-            continue;
-        }
-
-        switch (event.type) {
-        case SDL_WINDOWEVENT:
-            switch (event.window.event) {
-            case SDL_WINDOWEVENT_FOCUS_GAINED:
-                FMV_Unmute();
-                Music_Unmute();
-                Sound_SetMasterVolume(g_Config.audio.sound_volume);
-                break;
-
-            case SDL_WINDOWEVENT_FOCUS_LOST:
-                FMV_Mute();
-                Music_Mute();
-                Sound_SetMasterVolume(0);
-                break;
-            }
-            break;
-        }
     }
 }
 

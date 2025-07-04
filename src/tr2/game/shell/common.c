@@ -336,16 +336,6 @@ const char *Shell_GetGameFlowPath(void)
     return m_ModPaths[m_Args.mod].game_flow_path;
 }
 
-void Shell_ProcessEvents(void)
-{
-    SDL_Event event;
-    while (SDL_PollEvent(&event) != 0) {
-        if (Shell_ProcessCommonEvent(&event)) {
-            continue;
-        }
-    }
-}
-
 SDL_Window *Shell_GetWindow(void)
 {
     return m_Window;
