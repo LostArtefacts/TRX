@@ -2,22 +2,20 @@
 
 #include "config.h"
 #include "game/viewport.h"
-#include "log.h"
 #include "utils.h"
 
 static int32_t M_DoCalc(
-    int32_t unit, int32_t base_width, int32_t base_height, double factor)
+    const int32_t unit, const int32_t base_width, const int32_t base_height,
+    const double factor)
 {
-    const int32_t win_width = Viewport_GetWidth(VIEWPORT_GAME);
-    const int32_t win_height = Viewport_GetHeight(VIEWPORT_GAME);
+    const int32_t vp_width = Viewport_GetWidth(VIEWPORT_GAME);
+    const int32_t vp_height = Viewport_GetHeight(VIEWPORT_GAME);
     const int32_t sign = unit < 0 ? -1 : 1;
-    const int32_t scale_x = win_width > base_width
-        ? ((double)win_width * ABS(unit) * factor) / MAX(1, base_width)
-        : ABS(unit) * factor;
-    const int32_t scale_y = win_height > base_height
-        ? ((double)win_height * ABS(unit) * factor) / MAX(1, base_height)
-        : ABS(unit) * factor;
-    return MIN(scale_x, scale_y) * sign;
+    const int32_t sx =
+        ((double)vp_width * ABS(unit) * factor) / MAX(1, base_width);
+    const int32_t sy =
+        ((double)vp_height * ABS(unit) * factor) / MAX(1, base_height);
+    return MIN(sx, sy) * sign;
 }
 
 double Scaler_GetScale(const SCALER_TARGET target)
