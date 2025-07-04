@@ -326,7 +326,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
 #if TR_VERSION == 1
     const bool on_vehicle = false;
 #else
-    const bool on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
+    bool on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
     if (on_vehicle) {
         if (Item_Get(lara_info->vehicle_item_num)->object_id == O_SKIDOO_FAST) {
             // TODO: make this Object_Get(O_SKIDOO_FAST)->control
@@ -365,6 +365,9 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     if ((TR_VERSION == 1 || !lara_info->extra_anim)
         && lara_info->water_status != LWS_CHEAT) {
         M_ObjectCollision(coll);
+#if TR_VERSION >= 2
+        on_vehicle = lara_info->vehicle_item_num != NO_ITEM;
+#endif
         if (!on_vehicle) {
             Lara_Col_Update(item, coll);
         }
