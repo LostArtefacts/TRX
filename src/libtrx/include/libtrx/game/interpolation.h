@@ -13,4 +13,5 @@ void Interpolation_Interpolate(void);
 void Interpolation_Remember(void);
 
 // Instantly discard interpolation data
+void Interpolation_CommitLara(void);
 void Interpolation_CommitBraid(void);

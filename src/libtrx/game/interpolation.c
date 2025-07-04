@@ -58,6 +58,7 @@ static void M_InterpolateCamera(double ratio);
 
 static void M_RememberLara(LARA_INFO *lara);
 static void M_InterpolateLara(double ratio, LARA_INFO *lara);
+static void M_CommitLara(LARA_INFO *lara);
 
 static void M_RememberBraidSegment(HAIR_SEGMENT *segment);
 static void M_InterpolateBraidSegment(
@@ -226,6 +227,23 @@ static void M_InterpolateLara(const double ratio, LARA_INFO *const lara)
     INTERPOLATE_ROT(lara, head_rot.x, ratio, DEG_45);
     INTERPOLATE_ROT(lara, head_rot.y, ratio, DEG_45);
     INTERPOLATE_ROT(lara, head_rot.z, ratio, DEG_45);
+}
+
+static void M_CommitLara(LARA_INFO *const lara)
+{
+    ASSERT(lara != nullptr);
+    COMMIT(&lara->left_arm, rot.x);
+    COMMIT(&lara->left_arm, rot.y);
+    COMMIT(&lara->left_arm, rot.z);
+    COMMIT(&lara->right_arm, rot.x);
+    COMMIT(&lara->right_arm, rot.y);
+    COMMIT(&lara->right_arm, rot.z);
+    COMMIT(lara, torso_rot.x);
+    COMMIT(lara, torso_rot.y);
+    COMMIT(lara, torso_rot.z);
+    COMMIT(lara, head_rot.x);
+    COMMIT(lara, head_rot.y);
+    COMMIT(lara, head_rot.z);
 }
 
 static void M_RememberBraidSegment(HAIR_SEGMENT *const segment)
@@ -498,6 +516,19 @@ void Interpolation_Interpolate(void)
     if (lara_item != nullptr && Lara_Hair_IsActive()) {
         M_InterpolateBraid(m_WorldRate, lara_item);
     }
+}
+
+void Interpolation_CommitLara(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    if (lara_item != nullptr) {
+        M_CommitItem(lara_item);
+    }
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara != nullptr) {
+        M_CommitLara(lara);
+    }
+    M_CommitBraid();
 }
 
 void Interpolation_CommitBraid(void)
