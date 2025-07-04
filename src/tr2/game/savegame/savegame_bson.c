@@ -13,6 +13,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
@@ -1252,7 +1253,7 @@ static JSON_OBJECT *M_DumpLara(void)
     JSON_ObjectAppendInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare.age);
     JSON_ObjectAppendInt(
-        lara_obj, "vehicle_item_number", lara->vehicle_item_num);
+        lara_obj, "vehicle_item_number", Lara_Vehicle_GetIndex());
     JSON_ObjectAppendInt(
         lara_obj, "back_gun_obj_id", Object_MakeGameID(lara->back_gun_obj_id));
     JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare.frame_num);
@@ -1358,8 +1359,6 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     lara->hit_effect_count =
         JSON_ObjectGetInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     lara->flare.age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare.age);
-    lara->vehicle_item_num = JSON_ObjectGetInt(
-        lara_obj, "vehicle_item_number", lara->vehicle_item_num);
     lara->back_gun_obj_id = Object_UnmapGameID(
         JSON_ObjectGetInt(lara_obj, "back_gun_obj_id", lara->back_gun_obj_id));
     lara->flare.frame_num =
@@ -1368,6 +1367,10 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
         JSON_ObjectGetInt(lara_obj, "mesh_effects", lara->mesh_effects);
     lara->water_surface_dist = JSON_ObjectGetInt(
         lara_obj, "water_surface_dist", lara->water_surface_dist);
+
+    const int16_t vehicle_index = JSON_ObjectGetInt(
+        lara_obj, "vehicle_item_number", Lara_Vehicle_GetIndex());
+    Lara_Vehicle_SetIndex(vehicle_index);
 
     lara->flare.control =
         JSON_ObjectGetBool(lara_obj, "flare_control_left", lara->flare.control);

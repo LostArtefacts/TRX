@@ -123,7 +123,7 @@ static void M_ControlArmless(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     const bool is_mounted_or_armed =
-        lara_info->vehicle_item_num != NO_ITEM || Lara_HasState(m_HoldStates);
+        Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
 
     if (is_mounted_or_armed) {
         if (!lara_info->flare.control) {
@@ -148,7 +148,7 @@ static void M_ControlBusyHands(void)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     lara_info->flare.control =
-        lara_info->vehicle_item_num != NO_ITEM || Lara_HasState(m_HoldStates);
+        Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
     M_ControlInHand(lara_info->flare.age);
     M_SetArm(lara_info->left_arm.frame_num);
 }
@@ -238,8 +238,7 @@ void Lara_Flare_Undraw(void)
 
     lara_info->flare.control = true;
 
-    if (lara_item->goal_anim_state == LS_STOP
-        && lara_info->vehicle_item_num == NO_ITEM) {
+    if (lara_item->goal_anim_state == LS_STOP && !Lara_Vehicle_IsMounted()) {
         if (Item_TestAnimEqual(lara_item, LA_STAND_IDLE)) {
             Item_SwitchToAnim(lara_item, LA_FLARE_THROW, frame_num_1);
             lara_info->flare.frame_num = lara_item->frame_num;
@@ -267,8 +266,7 @@ void Lara_Flare_Undraw(void)
             lara_info->flare.frame_num = frame_num_2 + 1;
         }
     } else if (
-        lara_item->current_anim_state == LS_STOP
-        && lara_info->vehicle_item_num == -1) {
+        lara_item->current_anim_state == LS_STOP && !Lara_Vehicle_IsMounted()) {
         Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
     }
 

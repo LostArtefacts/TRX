@@ -13,3 +13,4 @@
 #include "lara/misc.h"
 #include "lara/state.h"
 #include "lara/types.h"
+#include "lara/vehicle.h"

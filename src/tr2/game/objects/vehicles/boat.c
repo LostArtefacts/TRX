@@ -218,7 +218,7 @@ static void M_DoShift(const int32_t boat_num)
         ITEM *const item = Item_Get(item_num);
 
         if (item->object_id == O_BOAT && item_num != boat_num
-            && g_Lara.vehicle_item_num != item_num) {
+            && Lara_Vehicle_GetIndex() != item_num) {
             const int32_t dx = item->pos.x - boat->pos.x;
             const int32_t dz = item->pos.z - boat->pos.z;
             const int32_t dist = SQUARE(dx) + SQUARE(dz);
@@ -387,7 +387,7 @@ static int32_t M_Dynamics(const int16_t boat_num)
         ) >> W2V_SHIFT;
         // clang-format on
 
-        if (g_Lara.vehicle_item_num == boat_num) {
+        if (Lara_Vehicle_GetIndex() == boat_num) {
             if (boat->speed > BOAT_MAX_SPEED + BOAT_ACCELERATION
                 && new_speed < boat->speed - 10) {
                 g_LaraItem->hit_points -= (boat->speed - new_speed) / 2;
@@ -585,7 +585,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Collision(
     const int16_t item_num, ITEM *const lara, COLL_INFO *const coll)
 {
-    if (lara->hit_points < 0 || g_Lara.vehicle_item_num != NO_ITEM) {
+    if (lara->hit_points < 0 || Lara_Vehicle_IsMounted()) {
         return;
     }
 
@@ -596,7 +596,7 @@ static void M_Collision(
         return;
     }
 
-    g_Lara.vehicle_item_num = item_num;
+    Lara_Vehicle_SetIndex(item_num);
 
     int16_t boat_anim_idx;
     switch (get_on) {
@@ -669,7 +669,7 @@ static void M_Control(const int16_t item_num)
         Room_GetWaterHeight(boat->pos.x, boat->pos.y, boat->pos.z, room_num);
     boat_data->water = water_height;
 
-    if (g_Lara.vehicle_item_num == item_num && lara->hit_points > 0) {
+    if (Lara_Vehicle_GetIndex() == item_num && lara->hit_points > 0) {
         switch (lara->current_anim_state) {
         case BOAT_STATE_GET_ON:
         case BOAT_STATE_JUMP_R:
@@ -725,7 +725,7 @@ static void M_Control(const int16_t item_num)
         boat->rot.z = 0;
     }
 
-    if (g_Lara.vehicle_item_num == item_num) {
+    if (Lara_Vehicle_GetIndex() == item_num) {
         M_Animation(boat, collide);
 
         Item_UpdateRoom(item_num, room_num);
@@ -784,7 +784,7 @@ static void M_Control(const int16_t item_num)
         M_DoWakeEffect(boat);
     }
 
-    if (g_Lara.vehicle_item_num != item_num) {
+    if (Lara_Vehicle_GetIndex() != item_num) {
         return;
     }
 
@@ -805,7 +805,7 @@ static void M_Control(const int16_t item_num)
         lara->rot.z = 0;
         lara->speed = 20;
         lara->fall_speed = -40;
-        g_Lara.vehicle_item_num = NO_ITEM;
+        Lara_Vehicle_SetIndex(NO_ITEM);
 
         const XYZ_32 pos = {
             .x = lara->pos.x + ((360 * Math_Sin(lara->rot.y)) >> W2V_SHIFT),

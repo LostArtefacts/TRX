@@ -182,6 +182,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.head_rot.z = 0;
     g_Lara.calc_fall_speed = 0;
     g_Lara.extra_anim = false;
+    Lara_Vehicle_SetIndex(NO_ITEM);
     g_Lara.burn = false;
     g_Lara.mesh_effects = 0;
     g_Lara.hit_frame = 0;
