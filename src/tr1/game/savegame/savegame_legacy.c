@@ -348,12 +348,14 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
     resume->back_gun_type = LGT_UNKNOWN;
 
     const uint16_t flags = M_ReadU16();
-    resume->flags.available = flags & 1 ? 1 : 0;
-    resume->flags.has_pistols = flags & 2 ? 1 : 0;
-    resume->flags.has_magnums = flags & 4 ? 1 : 0;
-    resume->flags.has_uzis = flags & 8 ? 1 : 0;
-    resume->flags.has_shotgun = flags & 16 ? 1 : 0;
-    resume->flags.costume = flags & 32 ? 1 : 0;
+    // clang-format off
+    resume->flags.available     = (flags & 0x01) != 0;
+    resume->flags.has_pistols   = (flags & 0x02) != 0;
+    resume->flags.has_magnums   = (flags & 0x04) != 0;
+    resume->flags.has_uzis      = (flags & 0x08) != 0;
+    resume->flags.has_shotgun   = (flags & 0x10) != 0;
+    resume->flags.costume       = (flags & 0x20) != 0;
+    // clang-format on
 }
 
 static void M_ReadResumeInfos(MYFILE *const fp)

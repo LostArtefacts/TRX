@@ -34,20 +34,20 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->lara_hitpoints = g_Config.gameplay.start_lara_hitpoints;
     }
 
-    resume->flags.has_pistols = 1;
+    resume->flags.has_pistols = true;
     resume->equipped_gun_type = LGT_PISTOLS;
     resume->pistol_ammo = 1000;
 
     if (level == GF_GetGymLevel()) {
-        resume->flags.available = 1;
+        resume->flags.available = true;
 
-        resume->flags.has_pistols = 0;
-        resume->flags.has_shotgun = 0;
-        resume->flags.has_magnums = 0;
-        resume->flags.has_uzis = 0;
-        resume->flags.has_harpoon = 0;
-        resume->flags.has_m16 = 0;
-        resume->flags.has_grenade = 0;
+        resume->flags.has_pistols = false;
+        resume->flags.has_shotgun = false;
+        resume->flags.has_magnums = false;
+        resume->flags.has_uzis = false;
+        resume->flags.has_harpoon = false;
+        resume->flags.has_m16 = false;
+        resume->flags.has_grenade = false;
 
         resume->pistol_ammo = 0;
         resume->shotgun_ammo = 0;
@@ -63,15 +63,15 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     } else if (level == GF_GetFirstLevel()) {
-        resume->flags.available = 1;
+        resume->flags.available = true;
 
-        resume->flags.has_pistols = 1;
-        resume->flags.has_shotgun = 0;
-        resume->flags.has_magnums = 0;
-        resume->flags.has_uzis = 0;
-        resume->flags.has_harpoon = 0;
-        resume->flags.has_m16 = 0;
-        resume->flags.has_grenade = 0;
+        resume->flags.has_pistols = true;
+        resume->flags.has_shotgun = false;
+        resume->flags.has_magnums = false;
+        resume->flags.has_uzis = false;
+        resume->flags.has_harpoon = false;
+        resume->flags.has_m16 = false;
+        resume->flags.has_grenade = false;
 
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
@@ -87,14 +87,14 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        resume->flags.has_pistols = 1;
-        resume->flags.has_shotgun = 1;
-        resume->flags.has_magnums = 1;
-        resume->flags.has_uzis = 1;
-        resume->flags.has_grenade = 1;
-        resume->flags.has_harpoon = 1;
-        resume->flags.has_m16 = 1;
-        resume->flags.has_grenade = 1;
+        resume->flags.has_pistols = true;
+        resume->flags.has_shotgun = true;
+        resume->flags.has_magnums = true;
+        resume->flags.has_uzis = true;
+        resume->flags.has_grenade = true;
+        resume->flags.has_harpoon = true;
+        resume->flags.has_m16 = true;
+        resume->flags.has_grenade = true;
 
         resume->shotgun_ammo = 10000;
         resume->magnum_ammo = 10000;
@@ -108,13 +108,13 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (g_GF_RemoveWeapons) {
-        resume->flags.has_pistols = 0;
-        resume->flags.has_magnums = 0;
-        resume->flags.has_uzis = 0;
-        resume->flags.has_shotgun = 0;
-        resume->flags.has_m16 = 0;
-        resume->flags.has_grenade = 0;
-        resume->flags.has_harpoon = 0;
+        resume->flags.has_pistols = false;
+        resume->flags.has_magnums = false;
+        resume->flags.has_uzis = false;
+        resume->flags.has_shotgun = false;
+        resume->flags.has_m16 = false;
+        resume->flags.has_grenade = false;
+        resume->flags.has_harpoon = false;
         resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
         g_GF_RemoveWeapons = false;

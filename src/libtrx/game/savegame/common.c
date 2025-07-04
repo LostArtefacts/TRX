@@ -252,8 +252,8 @@ void Savegame_Init(void)
         RESUME_INFO *const resume_info =
             Savegame_GetCurrentInfo(&level_table->levels[i]);
         resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
-        resume_info->flags.available = 1;
-        resume_info->flags.has_pistols = 1;
+        resume_info->flags.available = true;
+        resume_info->flags.has_pistols = true;
         resume_info->pistol_ammo = 1000;
         resume_info->gun_status = LGS_ARMLESS;
         resume_info->equipped_gun_type = LGT_PISTOLS;
@@ -309,14 +309,14 @@ void Savegame_InitCurrentInfo(void)
         const GF_LEVEL *const level = &level_table->levels[i];
         Savegame_ResetCurrentInfo(level);
         Savegame_ApplyLogicToCurrentInfo(level);
-        Savegame_GetCurrentInfo(level)->flags.available = 0;
+        Savegame_GetCurrentInfo(level)->flags.available = false;
     }
 
     if (GF_GetGymLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetGymLevel())->flags.available = 1;
+        Savegame_GetCurrentInfo(GF_GetGymLevel())->flags.available = true;
     }
     if (GF_GetFirstLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = 1;
+        Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = true;
     }
 }
 
@@ -344,40 +344,40 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     resume->lara_hitpoints = Lara_GetItem()->hit_points;
-    resume->flags.available = 1;
+    resume->flags.available = true;
     resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
 
     resume->pistol_ammo = 1000;
     if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        resume->flags.has_pistols = 1;
+        resume->flags.has_pistols = true;
     } else {
-        resume->flags.has_pistols = 0;
+        resume->flags.has_pistols = false;
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        resume->flags.has_shotgun = 1;
+        resume->flags.has_shotgun = true;
         resume->shotgun_ammo = lara->shotgun_ammo.ammo;
     } else {
-        resume->flags.has_shotgun = 0;
+        resume->flags.has_shotgun = false;
         resume->shotgun_ammo =
             Inv_RequestItem(O_SHOTGUN_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        resume->flags.has_magnums = 1;
+        resume->flags.has_magnums = true;
         resume->magnum_ammo = lara->magnum_ammo.ammo;
     } else {
-        resume->flags.has_magnums = 0;
+        resume->flags.has_magnums = false;
         resume->magnum_ammo =
             Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
-        resume->flags.has_uzis = 1;
+        resume->flags.has_uzis = true;
         resume->uzi_ammo = lara->uzi_ammo.ammo;
     } else {
-        resume->flags.has_uzis = 0;
+        resume->flags.has_uzis = false;
         resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
     }
 
@@ -394,27 +394,27 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 #elif TR_VERSION == 2
     if (Inv_RequestItem(O_M16_ITEM)) {
-        resume->flags.has_m16 = 1;
+        resume->flags.has_m16 = true;
         resume->m16_ammo = lara->m16_ammo.ammo;
     } else {
-        resume->flags.has_m16 = 0;
+        resume->flags.has_m16 = false;
         resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_HARPOON_ITEM)) {
-        resume->flags.has_harpoon = 1;
+        resume->flags.has_harpoon = true;
         resume->harpoon_ammo = lara->harpoon_ammo.ammo;
     } else {
-        resume->flags.has_harpoon = 0;
+        resume->flags.has_harpoon = false;
         resume->harpoon_ammo =
             Inv_RequestItem(O_HARPOON_AMMO_ITEM) * HARPOON_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_GRENADE_ITEM)) {
-        resume->flags.has_grenade = 1;
+        resume->flags.has_grenade = true;
         resume->grenade_ammo = lara->grenade_ammo.ammo;
     } else {
-        resume->flags.has_grenade = 0;
+        resume->flags.has_grenade = false;
         resume->grenade_ammo =
             Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
     }

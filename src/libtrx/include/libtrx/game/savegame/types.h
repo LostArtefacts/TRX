@@ -26,24 +26,18 @@ typedef struct {
     uint16_t flares;
 #endif
 
-    union {
-        uint16_t all;
-        struct {
-            uint16_t available : 1;
-            uint16_t has_pistols : 1;
-            uint16_t has_magnums : 1;
-            uint16_t has_uzis : 1;
-            uint16_t has_shotgun : 1;
-#if TR_VERSION == 1
-            uint16_t costume : 1;
-            uint16_t pad : 10;
-#elif TR_VERSION == 2
-            uint16_t has_m16 : 1;
-            uint16_t has_grenade : 1;
-            uint16_t has_harpoon : 1;
-            uint16_t pad : 8;
+    struct {
+        bool available;
+        bool costume;
+        bool has_pistols;
+        bool has_magnums;
+        bool has_uzis;
+        bool has_shotgun;
+#if TR_VERSION >= 2
+        bool has_m16;
+        bool has_grenade;
+        bool has_harpoon;
 #endif
-        };
     } flags;
 } RESUME_INFO;
 
