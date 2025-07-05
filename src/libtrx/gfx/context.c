@@ -234,26 +234,6 @@ void *GFX_Context_GetWindowHandle(void)
     return m_Context.window_handle;
 }
 
-int32_t GFX_Context_GetWindowWidth(void)
-{
-    return m_Context.window_width;
-}
-
-int32_t GFX_Context_GetWindowHeight(void)
-{
-    return m_Context.window_height;
-}
-
-int32_t GFX_Context_GetDisplayWidth(void)
-{
-    return m_Context.display_width;
-}
-
-int32_t GFX_Context_GetDisplayHeight(void)
-{
-    return m_Context.display_height;
-}
-
 void GFX_Context_Clear(void)
 {
     if (m_Context.config.enable_wireframe) {

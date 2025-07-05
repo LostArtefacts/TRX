@@ -71,8 +71,8 @@ static void M_Init(GFX_RENDERER *const renderer, const GFX_CONFIG *const config)
 
     priv->config = config;
 
-    int32_t fbo_width = GFX_Context_GetDisplayWidth();
-    int32_t fbo_height = GFX_Context_GetDisplayHeight();
+    int32_t fbo_width = Viewport_GetWidth(VIEWPORT_GAME);
+    int32_t fbo_height = Viewport_GetHeight(VIEWPORT_GAME);
 
     GFX_GL_Buffer_Init(&priv->buffer, GL_ARRAY_BUFFER);
     GFX_GL_Buffer_Bind(&priv->buffer);

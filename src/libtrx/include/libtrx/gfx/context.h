@@ -19,10 +19,6 @@ void GFX_Context_SetWindowSize(int32_t width, int32_t height);
 void GFX_Context_SetDisplaySize(int32_t width, int32_t height);
 
 void *GFX_Context_GetWindowHandle(void);
-int32_t GFX_Context_GetWindowWidth(void);
-int32_t GFX_Context_GetWindowHeight(void);
-int32_t GFX_Context_GetDisplayWidth(void);
-int32_t GFX_Context_GetDisplayHeight(void);
 
 void GFX_Context_Clear(void);
 void GFX_Context_SwapBuffers(void);

@@ -58,8 +58,8 @@ void GFX_2D_Surface_Init(
 
     GFX_2D_SURFACE_DESC display_desc = {
         .bit_count = 32,
-        .width = GFX_Context_GetDisplayWidth(),
-        .height = GFX_Context_GetDisplayHeight(),
+        .width = Viewport_GetWidth(VIEWPORT_GAME),
+        .height = Viewport_GetHeight(VIEWPORT_GAME),
     };
 
     if (!surface->desc.width || !surface->desc.height) {
