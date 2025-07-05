@@ -110,9 +110,6 @@ static bool M_Play(const char *const file_path)
             video, Viewport_GetWidth(VIEWPORT_GAME),
             Viewport_GetHeight(VIEWPORT_GAME));
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
-        GFX_Context_SetDisplaySize(
-            Viewport_GetWidth(VIEWPORT_GAME),
-            Viewport_GetHeight(VIEWPORT_GAME));
         Video_PumpEvents(video);
         Shell_ProcessEvents();
 

@@ -14,6 +14,7 @@
 #include "./ui/dialogs/sound_settings.h"
 #include "./ui/dialogs/stats.h"
 #include "./ui/dialogs/text.h"
+#include "./ui/draw.h"
 #include "./ui/elements/ammo_label.h"
 #include "./ui/elements/anchor.h"
 #include "./ui/elements/bar.h"

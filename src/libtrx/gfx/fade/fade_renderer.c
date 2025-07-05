@@ -82,7 +82,7 @@ void GFX_FadeRenderer_Render(GFX_FADE_RENDERER *const r)
     GFX_GL_VertexArray_Bind(&r->surface_format);
 
     GLboolean blend = glIsEnabled(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     if (!blend) {
         glEnable(GL_BLEND);
     }

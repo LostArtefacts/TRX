@@ -1103,3 +1103,13 @@ void Output_SetDepthBias(const int32_t bias)
 {
     m_DepthBias = bias;
 }
+
+void Output_SwitchViewport(const VIEWPORT_SPACE space)
+{
+    if (space == VIEWPORT_UI) {
+        GFX_Renderer_BindUiFbo();
+        GFX_Context_Clear();
+    }
+    GFX_Context_SwitchToViewport(space);
+    Render_SwitchViewport(space);
+}

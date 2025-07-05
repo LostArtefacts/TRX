@@ -39,7 +39,7 @@ void GFX_GL_Texture_Close(GFX_GL_TEXTURE *texture)
     texture->initialized = false;
 }
 
-void GFX_GL_Texture_Bind(GFX_GL_TEXTURE *texture)
+void GFX_GL_Texture_Bind(const GFX_GL_TEXTURE *texture)
 {
     ASSERT(texture != nullptr);
     ASSERT(texture->initialized);

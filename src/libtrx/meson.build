@@ -328,6 +328,7 @@ sources = [
   'gfx/gl/track.c',
   'gfx/gl/utils.c',
   'gfx/gl/vertex_array.c',
+  'gfx/gl/fbo.c',
   'gfx/renderer.c',
   'gfx/screenshot.c',
   'json/bson_parse.c',

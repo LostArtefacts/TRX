@@ -1,19 +1,22 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...develop) - ××××-××-××
 - reworked screen resolutions
     - removed "screen resolution" option
+    - removed "window size" rendering mode, enforcing the FBO rendering method (#3332)
     - added aspect ratio mode (Graphic options → Rendering → Aspect mode)
     - added window border option (Graphic options → Rendering → Borders)
     - added integer upscaling option (Graphic options → Rendering → Upscaling factor)
-    - renamed "fbo filter" option to "upscaling filter" (Graphic options → Rendering → Upscaling filter)
+    - renamed "FBO filter" option to "Upscaling filter" (Graphic options → Rendering → Upscaling filter)
+    - greatly improved text and other UI rendering with upscaling turned on (#1944)
+    - changed screenshots to always produce images at desktop resolution
 - added French translation
 - added Italian translation to the installer
+- added dedicated British English translation (#3212)
 - added the ability to advance individual frames to the photo mode
 - added the ability to skip end game credits (#3266)
 - added the ability to hide specific game settings (#3242)
 - added the ability to cycle UI tabs with sidestep keys (#3272)
 - added the ability to skip consecutive credit images by holding the action / escape keys
 - added the ability to cycle between a list of predefined Lara poses in the photo mode
-- added dedicated British English translation (#3212)
 - added a `/lighting` console command to let the player turn lighting system on/off
 - added an `/immune` console command to make Lara impervious to damage
 - added support for underwater save crystals in custom levels (#3356)
@@ -50,7 +53,6 @@
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window
-- removed "window size" rendering mode, enforcing the FBO rendering method (#3332)
 - removed config tool (we have ingame setting dialogs now)
 
 ## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24

@@ -183,8 +183,6 @@ void Render_SetupDisplay(
     const int32_t screen_width, const int32_t screen_height)
 {
     LOG_DEBUG("%dx%d", screen_width, screen_height);
-    GFX_Context_SetWindowSize(window_width, window_height);
-    GFX_Context_SetDisplaySize(screen_width, screen_height);
     Render_Reset(RENDER_RESET_VIEWPORT);
 }
 
@@ -406,5 +404,13 @@ void Render_SetWet(const bool is_wet)
     RENDERER *const r = M_GetRenderer();
     if (r->SetWet != nullptr) {
         r->SetWet(r, is_wet);
+    }
+}
+
+void Render_SwitchViewport(const VIEWPORT_SPACE space)
+{
+    RENDERER *const r = M_GetRenderer();
+    if (r->SwitchViewport != nullptr) {
+        r->SwitchViewport(r, space);
     }
 }

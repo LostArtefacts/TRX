@@ -201,7 +201,7 @@ static void M_DrawAssaultTimer(void)
 
         x += Scaler_Calc(
             glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
-        Output_DrawScreenSprite(
+        UI_ScheduleDrawScreenSprite(
             x, y, 0, scale_h, scale_v,
             Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, SHADE_NEUTRAL);
         x += Scaler_Calc(

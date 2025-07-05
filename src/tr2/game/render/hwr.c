@@ -125,6 +125,7 @@ static void M_DrawPolyList(RENDERER *renderer);
 static void M_EnableZBuffer(
     RENDERER *renderer, bool z_write_enable, bool z_test_enable);
 static void M_ClearZBuffer(RENDERER *renderer);
+static void M_SwitchViewport(RENDERER *renderer, VIEWPORT_SPACE space);
 
 static void M_ShadeColor(
     GFX_3D_VERTEX *const target, uint32_t red, uint32_t green,
@@ -1354,6 +1355,10 @@ static void M_ResetPolyList(RENDERER *const renderer)
 
 static void M_DrawPolyList(RENDERER *const renderer)
 {
+    if (g_SurfaceCount == 0) {
+        return;
+    }
+
     M_PRIV *const priv = renderer->priv;
     ASSERT(renderer->initialized && renderer->open);
 
@@ -1404,8 +1409,13 @@ static void M_DrawPolyList(RENDERER *const renderer)
 
         // triangle fan (color + semitransparent)
         case POLY_HWR_TRANS: {
+            // NOTE: we must use pre-multiplied mode for the UI, which uses a
+            // separate framebuffer in the hardware renderer strategy.
+            // Normally it should be nuanced between normal geometry and the UI,
+            // but vanilla TR2 only uses transparent faces for object shadows
+            // which work okay with this mode too because they're all black.
             GFX_3D_Renderer_SetBlendingMode(
-                priv->renderer_3d, GFX_BLEND_MODE_NORMAL);
+                priv->renderer_3d, GFX_BLEND_MODE_PRE_MULTIPLIED);
             M_SelectTexture(renderer, -1);
             M_DrawPrimitive(
                 renderer, GFX_3D_PRIM_TRI, vtx_ptr, vtx_count, true);
@@ -1436,6 +1446,13 @@ static void M_ClearZBuffer(RENDERER *const renderer)
     GFX_3D_Renderer_ClearDepth(priv->renderer_3d);
 }
 
+static void M_SwitchViewport(
+    RENDERER *const renderer, const VIEWPORT_SPACE space)
+{
+    M_PRIV *const priv = renderer->priv;
+    GFX_3D_Renderer_SetProjectionMatrix(priv->renderer_3d, space);
+}
+
 void Renderer_HW_Prepare(RENDERER *const renderer)
 {
     renderer->Init = M_Init;
@@ -1449,5 +1466,6 @@ void Renderer_HW_Prepare(RENDERER *const renderer)
     renderer->DrawPolyList = M_DrawPolyList;
     renderer->EnableZBuffer = M_EnableZBuffer;
     renderer->ClearZBuffer = M_ClearZBuffer;
+    renderer->SwitchViewport = M_SwitchViewport;
     M_ResetFuncPtrs(renderer);
 }

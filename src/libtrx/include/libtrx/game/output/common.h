@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../rooms.h"
+#include "../viewport.h"
 
 extern bool Output_Init(void);
 extern void Output_Shutdown(void);
@@ -45,3 +46,5 @@ int32_t Output_GetFogStart(void);
 void Output_SetFogStart(int32_t dist);
 extern int32_t Output_GetFogEnd(void);
 extern void Output_SetFogEnd(int32_t dist);
+
+extern void Output_SwitchViewport(VIEWPORT_SPACE space);

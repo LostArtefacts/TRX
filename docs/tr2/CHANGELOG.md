@@ -1,6 +1,15 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...develop) - ××××-××-××
+- reworked scaler/sizer options
+    - added an option to set the upscaling filter (Graphic settings → Rendering → Upscaling filter)
+    - changed the "Sizer" option name to "Upscaling factor" (Graphic settings → Rendering → Upscaling factor)
+    - changed the maximum upscaling factor from 4 to 8
+    - changed the "Scaler" option name to "Borders" (Graphic settings → Rendering → Borders)
+    - greatly improved text and other UI rendering with upscaling turned on (#1944)
+    - removed default bindings for the "Sizer" and the "Scaler" options (#2853)
+    - changed screenshots to always produce images at desktop resolution
 - added French translation
 - added Italian translation to the installer
+- added dedicated British English translation (#3212)
 - added the ability to advance individual frames to the photo mode
 - added the ability to skip end game credits (#3266)
 - added the ability to hide specific game settings (#3242)
@@ -8,7 +17,6 @@
 - added the ability to change the health bar color for allies, defaulting to green (#3005)
 - added the ability to skip consecutive credit images by holding the action / escape keys
 - added the ability to cycle between a list of predefined Lara poses in the photo mode
-- added dedicated British English translation (#3212)
 - added a new easter egg command
 - added a `/lighting` console command to let the player turn lighting system on/off
 - added an `/immune` console command to make Lara impervious to damage
@@ -22,12 +30,9 @@
 - added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - added an option to choose between original TR1, original TR2 or unrestricted look modes (Gameplay settings → Controls → Look mode) (#3403)
 - added an option to allow the audio to mute when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
-- added an option to set the upscaling filter (Graqphic settings → Rendering → Upscaling filter)
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)
 - added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)
 - changed statistics details mode to be placed in the UI section
-- changed the "sizer" option name to "Upscaling factor" and its max value to 8× (Graphic settings → Rendering → Upscaling factor)
-- changed the "scaler" option name to "Borders" (Graphic settings → Rendering → Borders)
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
 - changed death timer skip to only trigger with Action and Inventory keys
@@ -69,7 +74,6 @@
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window
 - removed config tool (we have ingame setting dialogs now)
-- removed default bindings for the "sizer" and the "scaler" options (#2853)
 - removed the limit of 10 dynamic lights per frame (#3384)
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24

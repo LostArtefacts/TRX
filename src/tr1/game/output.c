@@ -284,7 +284,8 @@ static void M_Draw2DQuad(
 #undef SET
 
     M_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    GFX_3D_Renderer_SetBlendingMode(
+        m_Renderer3D, GFX_BLEND_MODE_PRE_MULTIPLIED);
     M_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
 }
@@ -469,7 +470,6 @@ void Output_ApplyRenderSettings(void)
 
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
     GFX_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
-    GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
     GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
     GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
     GFX_3D_Renderer_SetAnisotropyFilter(
@@ -948,4 +948,14 @@ void Output_DrawTextOutline(
 BACKGROUND_TYPE Output_GetBackgroundType(void)
 {
     return BK_TRANSPARENT;
+}
+
+void Output_SwitchViewport(const VIEWPORT_SPACE space)
+{
+    if (space == VIEWPORT_UI) {
+        GFX_Renderer_BindUiFbo();
+        GFX_Context_Clear();
+    }
+    GFX_Context_SwitchToViewport(space);
+    GFX_3D_Renderer_SetProjectionMatrix(m_Renderer3D, space);
 }

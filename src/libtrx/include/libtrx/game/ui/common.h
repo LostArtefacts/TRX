@@ -73,6 +73,3 @@ void UI_ToggleState(bool *config_setting);
 void UI_HandleKeyDown(uint32_t key);
 void UI_HandleKeyUp(uint32_t key);
 void UI_HandleTextEdit(const char *text);
-
-// Execute all scheduled UI draw operations in order.
-void UI_Draw(void);
