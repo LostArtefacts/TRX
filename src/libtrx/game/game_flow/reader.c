@@ -235,10 +235,8 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
         GF_ADD_ITEM_DATA *const event_data = extra_data;
         event_data->object_id = obj_id;
         event_data->quantity = JSON_ObjectGetInt(event_obj, "quantity", 1);
-#if TR_VERSION == 2
         event_data->inv_type =
             event->type == GFS_ADD_ITEM ? GF_INV_REGULAR : GF_INV_SECRET;
-#endif
         event->data = event_data;
     }
     return sizeof(GF_ADD_ITEM_DATA);
