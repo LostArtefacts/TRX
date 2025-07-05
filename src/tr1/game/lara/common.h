@@ -8,7 +8,6 @@
 
 void Lara_InitialiseLoad(int16_t item_num);
 
-void Lara_SwapMeshExtra(void);
 void Lara_UseItem(GAME_OBJECT_ID obj_id);
 
 void Lara_RevertToPistolsIfNeeded(void);

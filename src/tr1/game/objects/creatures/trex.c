@@ -1,5 +1,5 @@
 #include "game/creature.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "global/vars.h"
@@ -196,7 +196,7 @@ static void M_KillLara(ITEM *const item)
     g_LaraItem->current_anim_state = LS_SPECIAL;
     g_LaraItem->goal_anim_state = LS_SPECIAL;
     Item_SwitchToObjAnim(g_LaraItem, EXTRA_ANIM_TREX_DEATH, 0, O_LARA_EXTRA);
-    Lara_SwapMeshExtra();
+    Lara_Mesh_SwapAll(O_LARA_EXTRA);
 
     g_LaraItem->hit_points = -1;
     g_Lara.extra_anim = true;

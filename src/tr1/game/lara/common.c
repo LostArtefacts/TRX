@@ -31,16 +31,6 @@ ITEM *Lara_GetItem(void)
     return g_LaraItem;
 }
 
-void Lara_SwapMeshExtra(void)
-{
-    if (!Object_Get(O_LARA_EXTRA)->loaded) {
-        return;
-    }
-    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
-        Lara_SwapSingleMesh(mesh, O_LARA_EXTRA);
-    }
-}
-
 void Lara_UseItem(const GAME_OBJECT_ID obj_id)
 {
     LOG_INFO("%d", obj_id);

@@ -1,7 +1,7 @@
 #include "game/lara/draw.h"
 
 #include "game/gun.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -15,7 +15,7 @@ static void M_DrawMesh(LARA_MESH mesh_idx, int32_t clip, bool interpolated);
 static void M_DrawMesh(
     const LARA_MESH mesh_idx, const int32_t clip, const bool interpolated)
 {
-    const OBJECT_MESH *const mesh = Lara_GetMesh(mesh_idx);
+    const OBJECT_MESH *const mesh = Lara_Mesh_Get(mesh_idx);
     if (interpolated) {
         Output_DrawObjectMesh_I(mesh, clip);
     } else {
