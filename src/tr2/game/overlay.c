@@ -17,6 +17,7 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/scaler.h>
+#include <libtrx/game/ui/draw.h>
 #include <libtrx/utils.h>
 
 #include <stdio.h>
@@ -354,7 +355,8 @@ static void M_DrawPickupSprite(const DISPLAY_PICKUP *const pickup)
     // TODO: use proper scaling
     const int32_t scale = 12288 * g_PhdWinWidth / 640;
     const int16_t sprite_num = pickup->object->mesh_idx;
-    Output_DrawPickup(x, y, scale, sprite_num, SHADE_NEUTRAL);
+    UI_ScheduleDrawScreenSprite(
+        x, y, 0, scale, scale, sprite_num, SHADE_NEUTRAL);
 }
 
 static void M_DrawPickups(void)

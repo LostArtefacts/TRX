@@ -6,6 +6,7 @@
 #include "game/viewport.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/ui/draw.h>
 
 #define M_MAX_PICKUP_COLUMNS 4
 #define M_MAX_PICKUP_DURATION_DISPLAY 2.0 // seconds
@@ -225,7 +226,8 @@ static void M_DrawPickupsSprites(void)
             - sprite_height * pu->grid_y;
         const int32_t scale = 12288 * Viewport_GetWidth(VIEWPORT_GAME) / 640;
         const int16_t sprite_num = Object_Get(pu->object_id)->mesh_idx;
-        Output_DrawUISprite(x, y, scale, sprite_num, SHADE_NEUTRAL);
+        UI_ScheduleDrawScreenSprite(
+            x, y, 0, scale, scale, sprite_num, SHADE_NEUTRAL);
     }
 }
 
