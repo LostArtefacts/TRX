@@ -20,3 +20,114 @@ void Gun_AddDynamicLight(void)
     };
     Output_AddDynamicLight(pos, 12, 11);
 }
+
+GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_UNARMED: return O_LARA;
+    case LGT_PISTOLS: return O_LARA_PISTOLS;
+    case LGT_MAGNUMS: return O_LARA_MAGNUMS;
+    case LGT_UZIS:    return O_LARA_UZIS;
+    case LGT_SHOTGUN: return O_LARA_SHOTGUN;
+#if TR_VERSION >= 2
+    case LGT_M16:     return O_LARA_M16;
+    case LGT_GRENADE: return O_LARA_GRENADE;
+    case LGT_HARPOON: return O_LARA_HARPOON;
+#endif
+    default:          return NO_OBJECT;
+    }
+    // clang-format on
+}
+
+LARA_GUN_TYPE Gun_GetType(const GAME_OBJECT_ID obj_id)
+{
+    // clang-format off
+    switch (obj_id) {
+    case O_PISTOL_ITEM:  return LGT_PISTOLS;
+    case O_MAGNUM_ITEM:  return LGT_MAGNUMS;
+    case O_UZI_ITEM:     return LGT_UZIS;
+    case O_SHOTGUN_ITEM: return LGT_SHOTGUN;
+#if TR_VERSION >= 2
+    case O_HARPOON_ITEM: return LGT_HARPOON;
+    case O_M16_ITEM:     return LGT_M16;
+    case O_GRENADE_ITEM: return LGT_GRENADE;
+#endif
+    default:             return LGT_UNARMED;
+    }
+    // clang-format on
+}
+
+GAME_OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_PISTOLS: return O_PISTOL_ITEM;
+    case LGT_MAGNUMS: return O_MAGNUM_ITEM;
+    case LGT_UZIS:    return O_UZI_ITEM;
+    case LGT_SHOTGUN: return O_SHOTGUN_ITEM;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: return O_HARPOON_ITEM;
+    case LGT_M16:     return O_M16_ITEM;
+    case LGT_GRENADE: return O_GRENADE_ITEM;
+#endif
+    default:          return NO_OBJECT;
+    }
+    // clang-format on
+}
+
+GAME_OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_PISTOLS: return O_PISTOL_AMMO_ITEM;
+    case LGT_MAGNUMS: return O_MAGNUM_AMMO_ITEM;
+    case LGT_UZIS:    return O_UZI_AMMO_ITEM;
+    case LGT_SHOTGUN: return O_SHOTGUN_AMMO_ITEM;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: return O_HARPOON_AMMO_ITEM;
+    case LGT_M16:     return O_M16_AMMO_ITEM;
+    case LGT_GRENADE: return O_GRENADE_AMMO_ITEM;
+#endif
+    default:          return NO_OBJECT;
+    }
+    // clang-format on
+}
+
+int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_PISTOLS: return 1;
+    case LGT_MAGNUMS: return MAGNUM_AMMO_QTY;
+    case LGT_UZIS:    return UZI_AMMO_QTY;
+    case LGT_SHOTGUN: return SHOTGUN_AMMO_QTY;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: return HARPOON_AMMO_QTY;
+    case LGT_M16:     return M16_AMMO_QTY;
+    case LGT_GRENADE: return GRENADE_AMMO_QTY;
+#endif
+    default:          return -1;
+    }
+    // clang-format on
+}
+
+AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    // clang-format off
+    switch (gun_type) {
+    case LGT_PISTOLS: return &lara_info->pistol_ammo;
+    case LGT_MAGNUMS: return &lara_info->magnum_ammo;
+    case LGT_UZIS:    return &lara_info->uzi_ammo;
+    case LGT_SHOTGUN: return &lara_info->shotgun_ammo;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: return &lara_info->harpoon_ammo;
+    case LGT_M16:     return &lara_info->m16_ammo;
+    case LGT_GRENADE: return &lara_info->grenade_ammo;
+    case LGT_SKIDOO:  return &lara_info->pistol_ammo;
+#endif
+    default:          return nullptr;
+    }
+    // clang-format on
+}
