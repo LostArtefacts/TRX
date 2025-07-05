@@ -544,15 +544,15 @@ void Output_ClearDepthBuffer(void)
 }
 
 void Output_DrawScreenFlatQuad(
-    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
-    const RGBA_8888 color)
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const RGBA_8888 color)
 {
     M_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
-    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
-    const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
     const RGBA_8888 br)
 {
     M_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
@@ -831,7 +831,7 @@ void Output_DrawBlackRectangle(const int32_t opacity)
     const RGBA_8888 background = { 0, 0, 0, opacity };
     M_DisableDepthTest();
     Output_ClearDepthBuffer();
-    Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
+    Output_DrawScreenFlatQuad(sx, sy, 0, sw, sh, background);
     M_EnableDepthTest();
 }
 
@@ -875,8 +875,8 @@ void Output_ApplyFOV(void)
 }
 
 void Output_DrawTextBackground(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy, int32_t w,
-    int32_t h, const int32_t z, const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
+    const int32_t z, int32_t w, int32_t h, const TEXT_STYLE text_style)
 {
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenFBox(sx, sy, w, h, text_style);
@@ -898,25 +898,25 @@ void Output_DrawTextBackground(
     if (text_style == TS_HEADING) {
         for (int i = 0; i < 4; i++) {
             Output_DrawScreenGradientQuad(
-                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
-                gradient_quads[i].h, M_GetMenuColor(MC_BROWN_E),
+                gradient_quads[i].x, gradient_quads[i].y, 0,
+                gradient_quads[i].w, gradient_quads[i].h,
                 M_GetMenuColor(MC_BROWN_E), M_GetMenuColor(MC_BROWN_E),
-                M_GetMenuColor(MC_BROWN_C));
+                M_GetMenuColor(MC_BROWN_E), M_GetMenuColor(MC_BROWN_C));
         }
     } else if (text_style == TS_REQUESTED) {
         for (int i = 0; i < 4; i++) {
             Output_DrawScreenGradientQuad(
-                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
-                gradient_quads[i].h, M_GetMenuColor(MC_PURPLE_E),
+                gradient_quads[i].x, gradient_quads[i].y, 0,
+                gradient_quads[i].w, gradient_quads[i].h,
                 M_GetMenuColor(MC_PURPLE_E), M_GetMenuColor(MC_PURPLE_E),
-                M_GetMenuColor(MC_PURPLE_C));
+                M_GetMenuColor(MC_PURPLE_E), M_GetMenuColor(MC_PURPLE_C));
         }
     }
 }
 
 void Output_DrawTextOutline(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy, int32_t w,
-    int32_t h, const int32_t z, const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
+    const int32_t z, int32_t w, int32_t h, const TEXT_STYLE text_style)
 {
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenFrame(

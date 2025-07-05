@@ -11,6 +11,8 @@ typedef enum {
     UI_DRAW_OP_TEXT_BACKGROUND,
     UI_DRAW_OP_TEXT_OUTLINE,
     UI_DRAW_OP_SCREEN_SPRITE,
+    UI_DRAW_OP_FLAT_QUAD,
+    UI_DRAW_OP_GRADIENT_QUAD,
     UI_DRAW_OP_FLUSH,
     UI_DRAW_OP_FADER_DRAW,
 } M_DRAW_OP_TYPE;
@@ -21,16 +23,24 @@ typedef struct {
     union {
         struct {
             UI_STYLE ui_style;
-            int32_t sx, sy, w, h, z;
+            int32_t sx, sy, z, w, h;
             TEXT_STYLE text_style;
         } text;
         struct {
-            int32_t sx, sy, sz, scale_h, scale_v, sprite_idx;
+            int32_t sx, sy, z, scale_h, scale_v, sprite_idx;
             int16_t shade;
         } sprite;
         struct {
             FADER *fader;
         } fader;
+        struct {
+            int32_t sx, sy, z, w, h;
+            RGBA_8888 color;
+        } flat_quad;
+        struct {
+            int32_t sx, sy, z, w, h;
+            RGBA_8888 tl, tr, bl, br;
+        } gradient_quad;
     } data;
 } M_DRAW_OP;
 
@@ -61,7 +71,7 @@ static void M_ScheduleOp(M_DRAW_OP *const op)
 
 void UI_ScheduleDrawTextBackground(
     const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t w, const int32_t h, const int32_t z,
+    const int32_t z, const int32_t w, const int32_t h,
     const TEXT_STYLE text_style)
 {
     M_DRAW_OP *const op = M_AllocDrawOp();
@@ -69,16 +79,16 @@ void UI_ScheduleDrawTextBackground(
     op->data.text.ui_style = ui_style;
     op->data.text.sx = sx;
     op->data.text.sy = sy;
+    op->data.text.z = z;
     op->data.text.w = w;
     op->data.text.h = h;
-    op->data.text.z = z;
     op->data.text.text_style = text_style;
     M_ScheduleOp(op);
 }
 
 void UI_ScheduleDrawTextOutline(
     const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t w, const int32_t h, const int32_t z,
+    const int32_t z, const int32_t w, const int32_t h,
     const TEXT_STYLE text_style)
 {
     M_DRAW_OP *const op = M_AllocDrawOp();
@@ -94,18 +104,52 @@ void UI_ScheduleDrawTextOutline(
 }
 
 void UI_ScheduleDrawScreenSprite(
-    const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
     const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
 {
     M_DRAW_OP *const op = M_AllocDrawOp();
     op->type = UI_DRAW_OP_SCREEN_SPRITE;
     op->data.sprite.sx = sx;
     op->data.sprite.sy = sy;
-    op->data.sprite.sz = sz;
+    op->data.sprite.z = z;
     op->data.sprite.scale_h = scale_h;
     op->data.sprite.scale_v = scale_v;
     op->data.sprite.sprite_idx = sprite_idx;
     op->data.sprite.shade = shade;
+    M_ScheduleOp(op);
+}
+
+void UI_ScheduleDrawScreenFlatQuad(
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const RGBA_8888 color)
+{
+    M_DRAW_OP *const op = M_AllocDrawOp();
+    op->type = UI_DRAW_OP_FLAT_QUAD;
+    op->data.flat_quad.sx = sx;
+    op->data.flat_quad.sy = sy;
+    op->data.flat_quad.z = z;
+    op->data.flat_quad.w = w;
+    op->data.flat_quad.h = h;
+    op->data.flat_quad.color = color;
+    M_ScheduleOp(op);
+}
+
+void UI_ScheduleDrawScreenGradientQuad(
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const RGBA_8888 br)
+{
+    M_DRAW_OP *const op = M_AllocDrawOp();
+    op->type = UI_DRAW_OP_GRADIENT_QUAD;
+    op->data.gradient_quad.sx = sx;
+    op->data.gradient_quad.sy = sy;
+    op->data.gradient_quad.z = z;
+    op->data.gradient_quad.w = w;
+    op->data.gradient_quad.h = h;
+    op->data.gradient_quad.tl = tl;
+    op->data.gradient_quad.tr = tr;
+    op->data.gradient_quad.bl = bl;
+    op->data.gradient_quad.br = br;
     M_ScheduleOp(op);
 }
 
@@ -152,20 +196,34 @@ void UI_Draw(void)
         case UI_DRAW_OP_TEXT_BACKGROUND:
             Output_DrawTextBackground(
                 op->data.text.ui_style, op->data.text.sx, op->data.text.sy,
-                op->data.text.w, op->data.text.h, op->data.text.z,
+                op->data.text.z, op->data.text.w, op->data.text.h,
                 op->data.text.text_style);
             break;
         case UI_DRAW_OP_TEXT_OUTLINE:
             Output_DrawTextOutline(
                 op->data.text.ui_style, op->data.text.sx, op->data.text.sy,
-                op->data.text.w, op->data.text.h, op->data.text.z,
+                op->data.text.z, op->data.text.w, op->data.text.h,
                 op->data.text.text_style);
             break;
         case UI_DRAW_OP_SCREEN_SPRITE:
             Output_DrawScreenSprite(
-                op->data.sprite.sx, op->data.sprite.sy, op->data.sprite.sz,
+                op->data.sprite.sx, op->data.sprite.sy, op->data.sprite.z,
                 op->data.sprite.scale_h, op->data.sprite.scale_v,
                 op->data.sprite.sprite_idx, op->data.sprite.shade);
+            break;
+        case UI_DRAW_OP_FLAT_QUAD:
+            Output_DrawScreenFlatQuad(
+                op->data.flat_quad.sx, op->data.flat_quad.sy,
+                op->data.flat_quad.z, op->data.flat_quad.w,
+                op->data.flat_quad.h, op->data.flat_quad.color);
+            break;
+        case UI_DRAW_OP_GRADIENT_QUAD:
+            Output_DrawScreenGradientQuad(
+                op->data.gradient_quad.sx, op->data.gradient_quad.sy,
+                op->data.gradient_quad.z, op->data.gradient_quad.w,
+                op->data.gradient_quad.h, op->data.gradient_quad.tl,
+                op->data.gradient_quad.tr, op->data.gradient_quad.bl,
+                op->data.gradient_quad.br);
             break;
         case UI_DRAW_OP_FLUSH:
             Output_DrawPolyList();

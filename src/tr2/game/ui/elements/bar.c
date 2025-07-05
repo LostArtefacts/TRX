@@ -5,6 +5,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/scaler.h>
+#include <libtrx/game/ui/draw.h>
 #include <libtrx/game/ui/helpers.h>
 #include <libtrx/utils.h>
 
@@ -43,15 +44,16 @@ static const UI_WIDGET_OPS m_Ops = {
     .draw = M_Draw,
 };
 
-static RGB_888 M_GetColor(BAR_COLOR color, int32_t idx);
+static RGBA_8888 M_GetColor(BAR_COLOR color, int32_t idx);
 
-static RGB_888 M_GetColor(const BAR_COLOR color, const int32_t idx)
+static RGBA_8888 M_GetColor(const BAR_COLOR color, const int32_t idx)
 {
     const int32_t value = m_ColorMap[color][idx];
-    return (RGB_888) {
+    return (RGBA_8888) {
         .r = (value >> 16) & 0xFF,
         .g = (value >> 8) & 0xFF,
         .b = (value) & 0xFF,
+        .a = 0xFF,
     };
 }
 
@@ -68,9 +70,9 @@ static void M_Draw(const UI_NODE *const node)
     M_DATA *const data = node->data;
     const UI_BAR_SETTINGS *const settings = &data->settings;
 
-    const RGB_888 rgb_bgnd = { 0, 0, 0 };
-    const RGB_888 rgb_border_highlight = { 0xFF, 0xFF, 0xFF };
-    const RGB_888 rgb_border_dark = { 0x40, 0x40, 0x40 };
+    const RGBA_8888 rgb_bgnd = { 0, 0, 0, 0xFF };
+    const RGBA_8888 rgb_border_highlight = { 0xFF, 0xFF, 0xFF, 0xFF };
+    const RGBA_8888 rgb_border_dark = { 0x40, 0x40, 0x40, 0xFF };
 
     float percent = settings->value / (float)MAX(1, settings->max_value);
     CLAMP(percent, 0.0f, 1.0f);
@@ -103,17 +105,18 @@ static void M_Draw(const UI_NODE *const node)
     };
 
     // Draw border
-    Output_DrawScreenFlatQuad(
-        outer_rect.x, outer_rect.y, outer_rect.w, outer_rect.h,
-        g_PhdNearZ + M_COLOR_STEPS * 4, rgb_border_highlight);
-    Output_DrawScreenFlatQuad(
-        outer_rect.x + border, outer_rect.y + border, outer_rect.w - border,
-        outer_rect.h - border, g_PhdNearZ + M_COLOR_STEPS * 3, rgb_border_dark);
+    UI_ScheduleDrawScreenFlatQuad(
+        outer_rect.x, outer_rect.y, g_PhdNearZ + M_COLOR_STEPS * 4,
+        outer_rect.w, outer_rect.h, rgb_border_highlight);
+    UI_ScheduleDrawScreenFlatQuad(
+        outer_rect.x + border, outer_rect.y + border,
+        g_PhdNearZ + M_COLOR_STEPS * 3, outer_rect.w - border,
+        outer_rect.h - border, rgb_border_dark);
 
     // Draw background
-    Output_DrawScreenFlatQuad(
-        inner_rect.x, inner_rect.y, inner_rect.w, inner_rect.h,
-        g_PhdNearZ + M_COLOR_STEPS * 2, rgb_bgnd);
+    UI_ScheduleDrawScreenFlatQuad(
+        inner_rect.x, inner_rect.y, g_PhdNearZ + M_COLOR_STEPS * 2,
+        inner_rect.w, inner_rect.h, rgb_bgnd);
 
     if (percent == 0.0f) {
         return;
@@ -121,12 +124,12 @@ static void M_Draw(const UI_NODE *const node)
 
     // Draw fill
     for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
-        const RGB_888 color = M_GetColor(settings->color, i);
+        const RGBA_8888 color = M_GetColor(settings->color, i);
         const int32_t lsy = bar_rect.y + i * bar_rect.h / M_COLOR_STEPS;
         const int32_t lsh =
             bar_rect.y + (i + 1) * bar_rect.h / M_COLOR_STEPS - lsy;
-        Output_DrawScreenFlatQuad(
-            bar_rect.x, lsy, bar_rect.w, lsh, g_PhdNearZ + M_COLOR_STEPS - i,
+        UI_ScheduleDrawScreenFlatQuad(
+            bar_rect.x, lsy, g_PhdNearZ + M_COLOR_STEPS - i, bar_rect.w, lsh,
             color);
     }
 }

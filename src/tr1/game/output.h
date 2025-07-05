@@ -34,12 +34,12 @@ void Output_DrawLightningSegment(XYZ_32 pos_0, XYZ_32 pos_1, int32_t thickness);
 void Output_FlushTranslucentObjects(void);
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color);
+    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 color);
 void Output_DrawScreenTranslucentQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color);
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
-    RGBA_8888 bl, RGBA_8888 br);
+    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 tl,
+    RGBA_8888 tr, RGBA_8888 bl, RGBA_8888 br);
 void Output_DrawScreenFrame(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
     RGBA_8888 colLight, int32_t thickness);
