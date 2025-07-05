@@ -51,6 +51,3 @@ extern SORT_ITEM *g_Sort3DPtr;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern WEAPON_INFO g_Weapons[];
-
-extern bool g_GF_RemoveAmmo;
-extern bool g_GF_RemoveWeapons;
