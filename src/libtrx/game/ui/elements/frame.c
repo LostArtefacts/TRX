@@ -26,13 +26,13 @@ static void M_Draw(const UI_NODE *node)
     if (data->background_z >= 0) {
         UI_ScheduleDrawTextBackground(
             data->ui_style, UI_ScaleX(node->x), UI_ScaleY(node->y),
-            UI_ScaleX(node->w), UI_ScaleY(node->h), data->background_z,
+            data->background_z, UI_ScaleX(node->w), UI_ScaleY(node->h),
             data->text_style);
     }
     if (data->outline_z >= 0) {
         UI_ScheduleDrawTextOutline(
             data->ui_style, UI_ScaleX(node->x), UI_ScaleY(node->y),
-            UI_ScaleX(node->w), UI_ScaleY(node->h), data->outline_z,
+            data->outline_z, UI_ScaleX(node->w), UI_ScaleY(node->h),
             data->text_style);
     }
     UI_DrawWrapper(node);

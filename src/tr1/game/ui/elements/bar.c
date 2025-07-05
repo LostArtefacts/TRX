@@ -4,6 +4,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/scaler.h>
+#include <libtrx/game/ui/draw.h>
 #include <libtrx/game/ui/helpers.h>
 #include <libtrx/utils.h>
 
@@ -101,12 +102,12 @@ static void M_Draw(const UI_NODE *const node)
     };
 
     // Draw border
-    Output_DrawScreenFlatQuad(
-        outer_rect.x, outer_rect.y, outer_rect.w, outer_rect.h, rgb_border);
+    UI_ScheduleDrawScreenFlatQuad(
+        outer_rect.x, outer_rect.y, 0, outer_rect.w, outer_rect.h, rgb_border);
 
     // Draw background
-    Output_DrawScreenFlatQuad(
-        inner_rect.x, inner_rect.y, inner_rect.w, inner_rect.h, rgb_bgnd);
+    UI_ScheduleDrawScreenFlatQuad(
+        inner_rect.x, inner_rect.y, 0, inner_rect.w, inner_rect.h, rgb_bgnd);
 
     if (percent == 0.0f) {
         return;
@@ -121,8 +122,8 @@ static void M_Draw(const UI_NODE *const node)
                 bar_rect.y + i * bar_rect.h / (M_COLOR_STEPS - 1);
             const int32_t lsh =
                 bar_rect.y + (i + 1) * bar_rect.h / (M_COLOR_STEPS - 1) - lsy;
-            Output_DrawScreenGradientQuad(
-                bar_rect.x, lsy, bar_rect.w, lsh, c1, c1, c2, c2);
+            UI_ScheduleDrawScreenGradientQuad(
+                bar_rect.x, lsy, 0, bar_rect.w, lsh, c1, c1, c2, c2);
         }
     } else {
         for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
@@ -130,7 +131,8 @@ static void M_Draw(const UI_NODE *const node)
             const int32_t lsy = bar_rect.y + i * bar_rect.h / M_COLOR_STEPS;
             const int32_t lsh =
                 bar_rect.y + (i + 1) * bar_rect.h / M_COLOR_STEPS - lsy;
-            Output_DrawScreenFlatQuad(bar_rect.x, lsy, bar_rect.w, lsh, color);
+            UI_ScheduleDrawScreenFlatQuad(
+                bar_rect.x, lsy, 0, bar_rect.w, lsh, color);
         }
     }
 }

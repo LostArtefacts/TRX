@@ -791,10 +791,20 @@ void Output_DrawScreenFrame(
 }
 
 void Output_DrawScreenFlatQuad(
-    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
-    int32_t z, const RGB_888 color)
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const RGBA_8888 color)
 {
-    Render_InsertFlatRect(sx, sy, sx + w, sy + h, z, Output_FindColor8(color));
+    Render_InsertFlatRect(
+        sx, sy, sx + w, sy + h, z,
+        Output_FindColor8((RGB_888) { color.r, color.g, color.b }));
+}
+
+void Output_DrawScreenGradientQuad(
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const RGBA_8888 br)
+{
+    // TODO: not implemented
 }
 
 void Output_InsertShadow(
@@ -1058,9 +1068,8 @@ void Output_LightRoomVertices(const ROOM *const room)
 }
 
 void Output_DrawTextOutline(
-    const UI_STYLE ui_style, const int32_t x, const int32_t y,
-    const int32_t width, const int32_t height, const int32_t z,
-    const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const int32_t x, const int32_t y, const int32_t z,
+    const int32_t width, const int32_t height, const TEXT_STYLE text_style)
 {
     const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
 
@@ -1091,8 +1100,8 @@ void Output_DrawTextOutline(
 }
 
 void Output_DrawTextBackground(
-    const UI_STYLE ui_style, const int32_t x, const int32_t y, const int32_t w,
-    const int32_t h, const int32_t z, const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const int32_t x, const int32_t y, const int32_t z,
+    const int32_t w, const int32_t h, const TEXT_STYLE text_style)
 {
     Render_InsertTransQuad(
         x, y, w + 1, h + 1, g_PhdNearZ + 8 * z,
