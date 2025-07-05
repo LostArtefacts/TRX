@@ -85,71 +85,71 @@ static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
     case 5:
         lara->mesh_effects |= (1 << LM_FOOT_L);
         lara->mesh_effects |= (1 << LM_FOOT_R);
-        Lara_SwapSingleMesh(LM_FOOT_L, O_LARA_EXTRA);
-        Lara_SwapSingleMesh(LM_FOOT_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_FOOT_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_FOOT_R, O_LARA_EXTRA);
         break;
 
     case 70:
         lara->mesh_effects |= (1 << LM_CALF_L);
-        Lara_SwapSingleMesh(LM_CALF_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_CALF_L, O_LARA_EXTRA);
         break;
 
     case 90:
         lara->mesh_effects |= (1 << LM_THIGH_L);
-        Lara_SwapSingleMesh(LM_THIGH_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_EXTRA);
         break;
 
     case 100:
         lara->mesh_effects |= (1 << LM_CALF_R);
-        Lara_SwapSingleMesh(LM_CALF_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_CALF_R, O_LARA_EXTRA);
         break;
 
     case 120:
         lara->mesh_effects |= (1 << LM_HIPS);
         lara->mesh_effects |= (1 << LM_THIGH_R);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
-        Lara_SwapSingleMesh(LM_THIGH_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_EXTRA);
         break;
 
     case 135:
         lara->mesh_effects |= (1 << LM_TORSO);
-        Lara_SwapSingleMesh(LM_TORSO, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_TORSO, O_LARA_EXTRA);
         break;
 
     case 150:
         lara->mesh_effects |= (1 << LM_UARM_L);
-        Lara_SwapSingleMesh(LM_UARM_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_UARM_L, O_LARA_EXTRA);
         break;
 
     case 163:
         lara->mesh_effects |= (1 << LM_LARM_L);
-        Lara_SwapSingleMesh(LM_LARM_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_LARM_L, O_LARA_EXTRA);
         break;
 
     case 174:
         lara->mesh_effects |= (1 << LM_HAND_L);
-        Lara_SwapSingleMesh(LM_HAND_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_EXTRA);
         break;
 
     case 186:
         lara->mesh_effects |= (1 << LM_UARM_R);
-        Lara_SwapSingleMesh(LM_UARM_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_UARM_R, O_LARA_EXTRA);
         break;
 
     case 195:
         lara->mesh_effects |= (1 << LM_LARM_R);
-        Lara_SwapSingleMesh(LM_LARM_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_LARM_R, O_LARA_EXTRA);
         break;
 
     case 218:
         lara->mesh_effects |= (1 << LM_HAND_R);
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
         break;
 
     case 225:
         Object_SetReflective(O_LARA_HAIR, true);
         lara->mesh_effects |= (1 << LM_HEAD);
-        Lara_SwapSingleMesh(LM_HEAD, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_EXTRA);
         break;
     }
 
@@ -235,7 +235,7 @@ static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
     if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_PULLED)) {
         Music_Play(MX_DAGGER_PULL, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_STORED)) {
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
         Inv_AddItem(O_PUZZLE_ITEM_2);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_DISPLAY)) {
         Overlay_AddDisplayPickup(O_PUZZLE_ITEM_2);
@@ -260,11 +260,11 @@ static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
 #if TR_VERSION == 2
     if (Item_TestFrameEqual(item, M_LF_START_HOUSE_BEGIN)) {
         Music_Play(MX_REVEAL_2, MPM_ALWAYS);
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_DAGGER_STORED)) {
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA);
         Inv_AddItem(O_PUZZLE_ITEM_1);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_END)) {
         g_Camera.type = CAM_CHASE;
@@ -282,12 +282,12 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
     if (Item_TestFrameEqual(item, M_LF_SHOWER_START)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->back_gun_obj_id = O_LARA;
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA);
-        Lara_SwapSingleMesh(LM_HEAD, O_LARA);
-        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
+        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
         Music_Play(MX_CUTSCENE_BATH, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, M_LF_SHOWER_SHOTGUN_PICKUP)) {
-        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_SHOTGUN);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_SHOTGUN);
     } else if (Item_TestFrameEqual(item, -1)) {
         Game_SetIsLevelComplete(true);
     }

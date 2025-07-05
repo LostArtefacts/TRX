@@ -1,6 +1,7 @@
 #include "game/lara/mesh.h"
 
 #include "game/gun.h"
+#include "game/inventory.h"
 #include "game/lara.h"
 #include "game/savegame.h"
 
@@ -9,6 +10,24 @@ static LARA_GUN_TYPE M_DetermineBackGun(const RESUME_INFO *resume);
 
 static LARA_GUN_TYPE M_DetermineHolsterGun(const RESUME_INFO *const resume)
 {
+    // TODO: merge this with the introduction of similar resume info setup and
+    // manipulation during regular gameplay inventory modification.
+#if TR_VERSION == 1
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->holsters_gun_type == LGT_UNARMED) {
+        if (lara_info->gun_type != LGT_UNARMED
+            && lara_info->gun_type != LGT_SHOTGUN) {
+            return lara_info->gun_type;
+        } else if (Inv_RequestItem(O_PISTOL_ITEM)) {
+            return LGT_PISTOLS;
+        } else if (Inv_RequestItem(O_MAGNUM_ITEM)) {
+            return LGT_MAGNUMS;
+        } else if (Inv_RequestItem(O_UZI_ITEM)) {
+            return LGT_UZIS;
+        }
+    }
+    return lara_info->holsters_gun_type;
+#else
     if (resume == nullptr) {
         return LGT_UNARMED;
     }
@@ -28,19 +47,23 @@ static LARA_GUN_TYPE M_DetermineHolsterGun(const RESUME_INFO *const resume)
         }
         return LGT_UNARMED;
     }
+#endif
 }
 
 static LARA_GUN_TYPE M_DetermineBackGun(const RESUME_INFO *const resume)
 {
+#if TR_VERSION == 1
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->back_gun_type == LGT_UNARMED
+        && Inv_RequestItem(O_SHOTGUN_ITEM)) {
+        return LGT_SHOTGUN;
+    }
+    return lara_info->back_gun_type;
+#else
     if (resume == nullptr) {
         return LGT_UNARMED;
     }
 
-#if TR_VERSION == 1
-    if (resume->flags.has_shotgun) {
-        return LGT_SHOTGUN;
-    }
-#else
     switch (resume->equipped_gun_type) {
     case LGT_M16:
     case LGT_GRENADE:
@@ -59,21 +82,17 @@ static LARA_GUN_TYPE M_DetermineBackGun(const RESUME_INFO *const resume)
     } else if (resume->flags.has_harpoon) {
         return LGT_HARPOON;
     }
-#endif
-
     return LGT_UNARMED;
+#endif
 }
 
 void Lara_Mesh_Initialise(const GF_LEVEL *const level)
 {
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    const bool use_costume = resume != nullptr && resume->flags.costume
-        && Object_Get(O_LARA_EXTRA)->loaded;
-    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
-        Lara_SwapSingleMesh(
-            mesh, mesh == LM_HEAD || !use_costume ? O_LARA : O_LARA_EXTRA);
-    }
+    const bool use_costume = resume != nullptr && resume->flags.costume;
+    Lara_Mesh_SwapAll(use_costume ? O_LARA_EXTRA : O_LARA);
+    Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
 
     const LARA_GUN_TYPE holster_gun = M_DetermineHolsterGun(resume);
     if (holster_gun != LGT_UNARMED) {
@@ -88,7 +107,36 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
 
 #if TR_VERSION >= 2
     if (resume->equipped_gun_type == LGT_FLARE) {
-        Lara_SwapSingleMesh(LM_HAND_L, O_LARA_FLARE);
+        Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_FLARE);
     }
 #endif
+}
+
+void Lara_Mesh_SwapSingle(const LARA_MESH mesh, const GAME_OBJECT_ID obj_id)
+{
+    const OBJECT *const obj = Object_Get(obj_id);
+    Lara_Mesh_Set(mesh, Object_GetMesh(obj->mesh_idx + mesh));
+}
+
+void Lara_Mesh_SwapAll(const GAME_OBJECT_ID obj_id)
+{
+    if (!Object_Get(obj_id)->loaded) {
+        return;
+    }
+
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        Lara_Mesh_SwapSingle(mesh, obj_id);
+    }
+}
+
+void Lara_Mesh_Set(const LARA_MESH mesh, OBJECT_MESH *const mesh_ptr)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->mesh_ptrs[mesh] = mesh_ptr;
+}
+
+OBJECT_MESH *Lara_Mesh_Get(const LARA_MESH mesh)
+{
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    return lara_info->mesh_ptrs[mesh];
 }

@@ -233,16 +233,16 @@ static void M_LaraDrawRightGun(ITEM *const item)
 {
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_R);
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_R);
-    Lara_SwapSingleMesh(LM_THIGH_R, item->object_id);
-    Lara_SwapSingleMesh(LM_HAND_R, item->object_id);
+    Lara_Mesh_SwapSingle(LM_THIGH_R, item->object_id);
+    Lara_Mesh_SwapSingle(LM_HAND_R, item->object_id);
 }
 
 static void M_LaraDrawLeftGun(ITEM *const item)
 {
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_L);
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_L);
-    Lara_SwapSingleMesh(LM_THIGH_L, item->object_id);
-    Lara_SwapSingleMesh(LM_HAND_L, item->object_id);
+    Lara_Mesh_SwapSingle(LM_THIGH_L, item->object_id);
+    Lara_Mesh_SwapSingle(LM_HAND_L, item->object_id);
 }
 
 static void M_SwapMeshesWithMeshSwap1(ITEM *const item)
@@ -267,7 +267,7 @@ static void M_SwapMeshesWithMeshSwap3(ITEM *const item)
     for (int32_t mesh_idx = 0; mesh_idx < obj_1->mesh_count; mesh_idx++) {
         Object_SwapMesh(item->object_id, O_LARA_SWAP, mesh_idx);
         if (item == g_LaraItem) {
-            Lara_SwapSingleMesh(mesh_idx, item->object_id);
+            Lara_Mesh_SwapSingle(mesh_idx, item->object_id);
         }
     }
 }

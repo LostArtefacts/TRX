@@ -177,7 +177,7 @@ static void M_SetArm(const int32_t flare_frame)
 
 static void M_UndrawMeshes(void)
 {
-    Lara_SwapSingleMesh(LM_HAND_L, O_LARA);
+    Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA);
 }
 
 void Lara_Flare_Control(void)

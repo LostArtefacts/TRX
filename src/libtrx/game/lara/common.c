@@ -84,11 +84,11 @@ void Lara_Initialise(const GF_LEVEL *const level)
 
     if (TR_VERSION == 2 && level->type == GFL_CUTSCENE) {
         for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-            Lara_SwapSingleMesh(i, O_LARA);
+            Lara_Mesh_SwapSingle(i, O_LARA);
         }
 
-        Lara_SwapSingleMesh(LM_THIGH_L, O_LARA_PISTOLS);
-        Lara_SwapSingleMesh(LM_THIGH_R, O_LARA_PISTOLS);
+        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_PISTOLS);
+        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_PISTOLS);
         lara_info->gun_status = LGS_ARMLESS;
     } else {
         Lara_InitialiseInventory(level);
@@ -249,22 +249,6 @@ void Lara_AnimateUntil(ITEM *lara_item, int32_t goal)
     do {
         Lara_Animate(lara_item);
     } while (lara_item->current_anim_state != goal);
-}
-
-void Lara_SwapSingleMesh(const LARA_MESH mesh, const GAME_OBJECT_ID obj_id)
-{
-    const OBJECT *const obj = Object_Get(obj_id);
-    Lara_SetMesh(mesh, Object_GetMesh(obj->mesh_idx + mesh));
-}
-
-OBJECT_MESH *Lara_GetMesh(const LARA_MESH mesh)
-{
-    return Lara_GetLaraInfo()->mesh_ptrs[mesh];
-}
-
-void Lara_SetMesh(const LARA_MESH mesh, OBJECT_MESH *const mesh_ptr)
-{
-    Lara_GetLaraInfo()->mesh_ptrs[mesh] = mesh_ptr;
 }
 
 const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)

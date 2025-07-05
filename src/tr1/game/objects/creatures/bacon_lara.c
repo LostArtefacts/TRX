@@ -1,8 +1,7 @@
 #include "game/objects/creatures/bacon_lara.h"
 
 #include "game/creature.h"
-#include "game/lara/common.h"
-#include "game/lara/draw.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 
@@ -128,14 +127,14 @@ static void M_Draw(const ITEM *const item)
     OBJECT_MESH *old_mesh_ptrs[LM_NUMBER_OF];
 
     for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
-        old_mesh_ptrs[mesh] = Lara_GetMesh(mesh);
-        Lara_SwapSingleMesh(mesh, O_BACON_LARA);
+        old_mesh_ptrs[mesh] = Lara_Mesh_Get(mesh);
+        Lara_Mesh_SwapSingle(mesh, O_BACON_LARA);
     }
 
     Lara_Draw(item);
 
     for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
-        Lara_SetMesh(mesh, old_mesh_ptrs[mesh]);
+        Lara_Mesh_Set(mesh, old_mesh_ptrs[mesh]);
     }
 }
 

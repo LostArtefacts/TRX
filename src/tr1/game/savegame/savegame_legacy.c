@@ -2,7 +2,7 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -270,7 +270,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
         OBJECT_MESH *const mesh = Object_FindMesh(M_ReadS32() / 2);
         if (mesh != nullptr) {
-            Lara_SetMesh(i, mesh);
+            Lara_Mesh_Set(i, mesh);
         }
     }
 

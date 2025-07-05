@@ -1,6 +1,6 @@
 #include "game/creature.h"
 #include "game/input.h"
-#include "game/lara/control.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/random.h"
@@ -124,7 +124,7 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     g_Lara.gun_status = LGS_HANDS_BUSY;
     g_Lara.hit_direction = -1;
 
-    Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
+    Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
 
     Camera_InvokeCinematic(lara_item, 0, 0);
 
