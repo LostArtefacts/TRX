@@ -184,6 +184,7 @@ sources = [
   'game/lara/flare.c',
   'game/lara/hair.c',
   'game/lara/look.c',
+  'game/lara/mesh.c',
   'game/lara/misc.c',
   'game/lara/pose.c',
   'game/lara/state.c',
