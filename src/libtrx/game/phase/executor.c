@@ -26,7 +26,6 @@ static PHASE *m_PhaseStack[MAX_PHASES] = {};
 
 static PHASE_CONTROL M_Control(PHASE *phase, int32_t nframes);
 static void M_Draw(PHASE *phase);
-static int32_t M_Wait(PHASE *phase);
 
 static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 {
@@ -98,15 +97,6 @@ static void M_Draw(PHASE *const phase)
 #endif
 }
 
-static int32_t M_Wait(PHASE *const phase)
-{
-    if (phase != nullptr && phase->wait != nullptr) {
-        return phase->wait(phase);
-    } else {
-        return Clock_WaitTick();
-    }
-}
-
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
@@ -150,12 +140,12 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
             if (Interpolation_IsEnabled()) {
                 Interpolation_SetRate(0.5);
                 M_Draw(phase);
-                M_Wait(phase);
+                Clock_WaitTick();
             }
 
             Interpolation_SetRate(1.0);
             M_Draw(phase);
-            nframes += M_Wait(phase);
+            nframes += Clock_WaitTick();
         }
     }
 
