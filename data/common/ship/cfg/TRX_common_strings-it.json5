@@ -203,7 +203,7 @@
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS": "Ricorda musica riprodotta",
         "GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS_DESCRIPTION": "Contrassegna le tracce musicali riprodotte nel file di salvataggio, in modo che le tracce legate ad eventi non vengano rieseguite dopo il caricamento della partita.",
         "GAMEPLAY_SETTINGS_LOOK_MODE": "Modalità osservazione",
-        "GAMEPLAY_SETTINGS_LOOK_MODE_DESCRIPTION": "Permette di gestire in quali situazioni Lara può guardarsi attorno (tasto 'Guarda').\n\n- Limitato: è consentito esaminare l'ambiente solo quando Lara è ferma e mai quando è sott'acqua.\n- Avanzato: è consentito esaminare l'ambiente durante la maggior parte delle situazioni, tranne in alcune come quando si spigono i blocchi.\n- Illimitato: è sempre consentito esaminare l'ambiente durante il normale controllo di Lara.",
+        "GAMEPLAY_SETTINGS_LOOK_MODE_DESCRIPTION": "Permette di gestire in quali situazioni Lara può guardarsi attorno (tasto 'Guarda').\n\n- Limitato: è consentito esaminare l'ambiente solo quando Lara è ferma e mai quando è sott'acqua.\n- Avanzato: è consentito esaminare l'ambiente durante la maggior parte delle situazioni, tranne in alcune come quando si spingono i blocchi.\n- Illimitato: è sempre consentito esaminare l'ambiente durante il normale controllo di Lara.",
         "GAMEPLAY_SETTINGS_LOOK_MODE_ENHANCED": "Avanzato",
         "GAMEPLAY_SETTINGS_LOOK_MODE_RESTRICTED": "Limitato",
         "GAMEPLAY_SETTINGS_LOOK_MODE_UNRESTRICTED": "Illimitato",
