@@ -13,6 +13,7 @@
 #include <libtrx/config.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/shell/input.h>
 #include <libtrx/screenshot.h>
 #include <libtrx/utils.h>
 
@@ -26,8 +27,6 @@ static void M_ToggleFullscreen(void);
 static void M_ToggleRenderingMode(void);
 static void M_DecreaseResolutionOrBPP(void);
 static void M_IncreaseResolutionOrBPP(void);
-static void M_DecreaseInternalScreenSize(void);
-static void M_IncreaseInternalScreenSize(void);
 
 static void M_ToggleFPSCounter(void)
 {
@@ -146,16 +145,6 @@ static void M_IncreaseResolutionOrBPP(void)
     Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
 }
 
-static void M_DecreaseInternalScreenSize(void)
-{
-    DecreaseScreenSize();
-}
-
-static void M_IncreaseInternalScreenSize(void)
-{
-    IncreaseScreenSize();
-}
-
 void Shell_ProcessInput(void)
 {
     if (g_InputDB.screenshot) {
@@ -172,9 +161,9 @@ void Shell_ProcessInput(void)
 
     if (g_InputDB.switch_internal_screen_size) {
         if (g_Input.slow) {
-            M_IncreaseInternalScreenSize();
+            Shell_IncreaseScreenSize();
         } else {
-            M_DecreaseInternalScreenSize();
+            Shell_DecreaseScreenSize();
         }
     }
 

@@ -11,8 +11,6 @@
 
 void Lara_Control_Cutscene(int16_t item_num);
 void CutscenePlayer1_Initialise(int16_t item_num);
-void DecreaseScreenSize(void);
-void IncreaseScreenSize(void);
 void InitialiseGameFlags(void);
 int32_t DoShift(ITEM *vehicle, const XYZ_32 *pos, const XYZ_32 *old);
 int32_t DoDynamics(int32_t height, int32_t fall_speed, int32_t *out_y);

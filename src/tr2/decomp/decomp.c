@@ -75,24 +75,6 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
     g_Lara.hit_direction = -1;
 }
 
-void IncreaseScreenSize(void)
-{
-    if (g_Config.rendering.borders < 0.45) {
-        g_Config.rendering.borders += 0.05;
-        CLAMPG(g_Config.rendering.borders, 0.45);
-        Viewport_Reset();
-    }
-}
-
-void DecreaseScreenSize(void)
-{
-    if (g_Config.rendering.borders > 0.0) {
-        g_Config.rendering.borders -= 0.05;
-        CLAMPL(g_Config.rendering.borders, 0.0);
-        Viewport_Reset();
-    }
-}
-
 void InitialiseGameFlags(void)
 {
     Music_ResetTrackFlags();
