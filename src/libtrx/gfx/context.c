@@ -63,7 +63,12 @@ static GLvoid GLAPIENTRY M_GLDebug(
     if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) {
         return;
     }
-    LOG_INFO("%d %s", source, message);
+    char *const line = (char *)String_FormatStatic("%d %s", source, message);
+    const size_t len = strlen(line);
+    if (len > 0 && line[len - 1] == '\n') {
+        line[len - 1] = '\0';
+    }
+    LOG_INFO("%s", line);
 }
 
 void GFX_Context_SwitchToWindowViewport(void)
