@@ -43,18 +43,14 @@ typedef struct {
     } x, y, z;
 } GF_SET_CAMERA_POS_DATA;
 
-#if TR_VERSION == 2
 typedef enum {
     GF_INV_REGULAR,
     GF_INV_SECRET,
 } GF_INV_TYPE;
-#endif
 
 typedef struct {
     GAME_OBJECT_ID object_id;
-#if TR_VERSION == 2
     GF_INV_TYPE inv_type;
-#endif
     int32_t quantity;
 } GF_ADD_ITEM_DATA;
 

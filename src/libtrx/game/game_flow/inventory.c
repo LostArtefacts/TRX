@@ -1,10 +1,9 @@
 #include "game/game_flow/inventory.h"
 
-#include "game/gun/gun.h"
+#include "game/gun.h"
 #include "game/inventory.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
-#include "global/vars.h"
 
 static int8_t m_SecretInvItems[O_NUMBER_OF] = {};
 static int8_t m_Add2InvItems[O_NUMBER_OF] = {};
@@ -46,9 +45,11 @@ static void M_ModifyInventory_GunOrAmmo(
         case LGT_MAGNUMS: resume->flags.has_magnums = true; break;
         case LGT_UZIS:    resume->flags.has_uzis = true;    break;
         case LGT_SHOTGUN: resume->flags.has_shotgun = true; break;
+#if TR_VERSION >= 2
         case LGT_HARPOON: resume->flags.has_harpoon = true; break;
         case LGT_M16:     resume->flags.has_m16 = true;     break;
         case LGT_GRENADE: resume->flags.has_grenade = true; break;
+#endif
         default: break;
         }
         // clang-format on
@@ -144,9 +145,11 @@ void GF_InventoryModifier_Apply(
         resume->flags.has_magnums = false;
         resume->flags.has_uzis = false;
         resume->flags.has_shotgun = false;
+#if TR_VERSION >= 2
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
         resume->flags.has_harpoon = false;
+#endif
         resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     }
@@ -160,19 +163,23 @@ void GF_InventoryModifier_Apply(
     }
 
     if (m_RemoveAmmo) {
+        resume->pistol_ammo = 0;
+        resume->magnum_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->shotgun_ammo = 0;
+#if TR_VERSION >= 2
         resume->m16_ammo = 0;
         resume->grenade_ammo = 0;
         resume->harpoon_ammo = 0;
-        resume->shotgun_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->pistol_ammo = 0;
+#endif
     }
 
+#if TR_VERSION >= 2
     if (m_RemoveFlares) {
         resume->flares = 0;
         m_RemoveFlares = false;
     }
+#endif
 
     if (m_RemoveMedipacks) {
         resume->large_medipacks = 0;
@@ -183,11 +190,7 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_GunOrAmmo(resume, type, LGT_MAGNUMS);
     M_ModifyInventory_GunOrAmmo(resume, type, LGT_UZIS);
     M_ModifyInventory_GunOrAmmo(resume, type, LGT_SHOTGUN);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_HARPOON);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_M16);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_GRENADE);
 
-    M_ModifyInventory_Item(type, O_FLARE_ITEM);
     M_ModifyInventory_Item(type, O_SMALL_MEDIPACK_ITEM);
     M_ModifyInventory_Item(type, O_LARGE_MEDIPACK_ITEM);
     M_ModifyInventory_Item(type, O_PICKUP_ITEM_1);
@@ -200,4 +203,12 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_KEY_ITEM_2);
     M_ModifyInventory_Item(type, O_KEY_ITEM_3);
     M_ModifyInventory_Item(type, O_KEY_ITEM_4);
+
+#if TR_VERSION >= 2
+    M_ModifyInventory_GunOrAmmo(resume, type, LGT_HARPOON);
+    M_ModifyInventory_GunOrAmmo(resume, type, LGT_M16);
+    M_ModifyInventory_GunOrAmmo(resume, type, LGT_GRENADE);
+
+    M_ModifyInventory_Item(type, O_FLARE_ITEM);
+#endif
 }
