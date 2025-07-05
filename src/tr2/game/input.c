@@ -75,8 +75,8 @@ static void M_UpdateFromBackend(
     s->unbind_key                  |= backend->is_pressed(layout, INPUT_ROLE_UNBIND_KEY);
 
     s->screenshot                  |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
-    s->switch_resolution           |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_RESOLUTION);
-    s->switch_internal_screen_size |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_INTERNAL_SCREEN_SIZE);
+    s->switch_upscaling            |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_UPSCALING);
+    s->switch_borders              |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_BORDERS);
     s->toggle_fps_counter          |= backend->is_pressed(layout, INPUT_ROLE_FPS);
     s->toggle_bilinear_filter      |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_BILINEAR_FILTER);
     s->toggle_perspective_filter   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER);
@@ -188,8 +188,8 @@ const char *Input_GetRoleName(const INPUT_ROLE role)
     case INPUT_ROLE_FPS:                         return GS(KEYMAP_FPS);
     case INPUT_ROLE_TOGGLE_FULLSCREEN:           return GS(KEYMAP_TOGGLE_FULLSCREEN);
     case INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER:     return GS(KEYMAP_TOGGLE_TRAPEZOID_FILTER);
-    case INPUT_ROLE_SWITCH_RESOLUTION:           return GS(KEYMAP_SWITCH_RESOLUTION);
-    case INPUT_ROLE_SWITCH_INTERNAL_SCREEN_SIZE: return GS(KEYMAP_SWITCH_INTERNAL_SCREEN_SIZE);
+    case INPUT_ROLE_SWITCH_UPSCALING:            return GS(KEYMAP_SWITCH_UPSCALING);
+    case INPUT_ROLE_SWITCH_BORDERS:              return GS(KEYMAP_SWITCH_BORDERS);
     case INPUT_ROLE_TOGGLE_BILINEAR_FILTER:      return GS(KEYMAP_TOGGLE_BILINEAR_FILTER);
     case INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER:   return GS(KEYMAP_TOGGLE_PERSPECTIVE_FILTER);
     case INPUT_ROLE_TOGGLE_Z_BUFFER:             return GS(KEYMAP_TOGGLE_Z_BUFFER);

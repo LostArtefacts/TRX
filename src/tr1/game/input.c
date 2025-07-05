@@ -70,6 +70,8 @@ static void M_UpdateFromBackend(
     s->unbind_key                |= backend->is_pressed(layout, INPUT_ROLE_UNBIND_KEY);
 
     s->screenshot                |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
+    s->switch_upscaling          |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_UPSCALING);
+    s->switch_borders            |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_BORDERS);
     s->toggle_fps_counter        |= backend->is_pressed(layout, INPUT_ROLE_FPS);
     s->toggle_bilinear_filter    |= backend->is_pressed(layout, INPUT_ROLE_BILINEAR);
     s->toggle_trapezoid_filter   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);
@@ -176,6 +178,8 @@ const char *Input_GetRoleName(const INPUT_ROLE role)
     case INPUT_ROLE_ITEM_CHEAT:              return GS(KEYMAP_ITEM_CHEAT);
     case INPUT_ROLE_LEVEL_SKIP_CHEAT:        return GS(KEYMAP_LEVEL_SKIP_CHEAT);
     case INPUT_ROLE_TURBO_CHEAT:             return GS(KEYMAP_TURBO_CHEAT);
+    case INPUT_ROLE_SWITCH_UPSCALING:        return GS(KEYMAP_SWITCH_UPSCALING);
+    case INPUT_ROLE_SWITCH_BORDERS:          return GS(KEYMAP_SWITCH_BORDERS);
     default:                                 return "";
     }
     // clang-format on
