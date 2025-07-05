@@ -159,6 +159,8 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
     resume->flares = M_ReadU8();
     resume->gun_status = M_ReadU8();
     resume->equipped_gun_type = M_ReadU8();
+    resume->holsters_gun_type = LGT_UNKNOWN;
+    resume->back_gun_type = LGT_UNKNOWN;
 
     const uint16_t flags = M_ReadU16();
     // clang-format off

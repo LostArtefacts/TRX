@@ -83,39 +83,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         current->uzi_ammo = 1234;
         current->equipped_gun_type = LGT_UZIS;
         current->holsters_gun_type = LGT_UZIS;
+        current->back_gun_type = LGT_SHOTGUN;
     }
 
-    // Fallback logic to figure out holster and back gun items for versions 4.2
-    // and earlier, as well as TombATI saves, where these values are missing.
-    // Make educated guesses based on the type of gun equipped.
-    if (current->holsters_gun_type == LGT_UNKNOWN) {
-        switch (current->equipped_gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_UZIS:
-            current->holsters_gun_type = current->equipped_gun_type;
-            break;
-        case LGT_SHOTGUN:
-            if (current->flags.has_pistols) {
-                current->holsters_gun_type = LGT_PISTOLS;
-            } else if (current->flags.has_magnums) {
-                current->holsters_gun_type = LGT_MAGNUMS;
-            } else if (current->flags.has_uzis) {
-                current->holsters_gun_type = LGT_UZIS;
-            } else {
-                current->holsters_gun_type = LGT_UNARMED;
-            }
-            break;
-        default:
-            current->holsters_gun_type = LGT_UNARMED;
-            break;
-        }
-    }
-    if (current->back_gun_type == LGT_UNKNOWN) {
-        if (current->flags.has_shotgun) {
-            current->back_gun_type = LGT_SHOTGUN;
-        } else {
-            current->back_gun_type = LGT_UNARMED;
-        }
-    }
+    Savegame_DetermineLegacyGunTypes(current);
 }

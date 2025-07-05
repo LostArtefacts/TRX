@@ -190,6 +190,8 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
 
         g_Lara.last_gun_type = resume->equipped_gun_type;
+        g_Lara.holsters_gun_type = resume->holsters_gun_type;
+        g_Lara.back_gun_type = resume->back_gun_type;
     }
 
     g_Lara.gun_status = LGS_ARMLESS;

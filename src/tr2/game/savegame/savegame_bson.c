@@ -442,6 +442,10 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         JSON_ObjectAppendInt(resume_obj, "num_flares", resume->flares);
         JSON_ObjectAppendInt(resume_obj, "gun_status", resume->gun_status);
         JSON_ObjectAppendInt(resume_obj, "gun_type", resume->equipped_gun_type);
+        JSON_ObjectAppendInt(
+            resume_obj, "holsters_gun_type", resume->holsters_gun_type);
+        JSON_ObjectAppendInt(
+            resume_obj, "back_gun_type", resume->back_gun_type);
 
         JSON_ObjectAppendBool(resume_obj, "available", resume->flags.available);
         JSON_ObjectAppendBool(
@@ -516,6 +520,10 @@ static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
             JSON_ObjectGetInt(resume_obj, "gun_status", LGS_ARMLESS);
         resume->equipped_gun_type =
             JSON_ObjectGetInt(resume_obj, "gun_type", LGT_UNARMED);
+        resume->holsters_gun_type =
+            JSON_ObjectGetInt(resume_obj, "holsters_gun_type", LGT_UNKNOWN);
+        resume->back_gun_type =
+            JSON_ObjectGetInt(resume_obj, "back_gun_type", LGT_UNKNOWN);
 
         resume->flags.available =
             JSON_ObjectGetBool(resume_obj, "available", 0);

@@ -331,6 +331,9 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     g_Lara.back_gun_obj_id = obj_id;
+    if (weapon_type != LGT_UNARMED) {
+        g_Lara.back_gun_type = weapon_type;
+    }
 }
 
 void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
@@ -338,6 +341,7 @@ void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_Mesh_SwapSingle(LM_THIGH_L, obj_id);
+    g_Lara.holsters_gun_type = weapon_type;
 }
 
 void Gun_SetLaraHolsterRMesh(const LARA_GUN_TYPE weapon_type)
@@ -345,4 +349,5 @@ void Gun_SetLaraHolsterRMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_Mesh_SwapSingle(LM_THIGH_R, obj_id);
+    g_Lara.holsters_gun_type = weapon_type;
 }

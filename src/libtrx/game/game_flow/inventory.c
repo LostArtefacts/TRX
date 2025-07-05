@@ -148,14 +148,13 @@ void GF_InventoryModifier_Apply(
         resume->flags.has_magnums = false;
         resume->flags.has_uzis = false;
         resume->flags.has_shotgun = false;
-#if TR_VERSION == 1
-        resume->holsters_gun_type = LGT_UNARMED;
-        resume->back_gun_type = LGT_UNARMED;
-#else
+#if TR_VERSION >= 2
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
         resume->flags.has_harpoon = false;
 #endif
+        resume->holsters_gun_type = LGT_UNARMED;
+        resume->back_gun_type = LGT_UNARMED;
         resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     }
