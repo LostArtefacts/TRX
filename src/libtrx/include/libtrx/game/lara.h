@@ -10,6 +10,7 @@
 #include "lara/flare.h"
 #include "lara/hair.h"
 #include "lara/look.h"
+#include "lara/mesh.h"
 #include "lara/misc.h"
 #include "lara/state.h"
 #include "lara/types.h"

@@ -196,65 +196,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     g_Lara.gun_type = g_Lara.last_gun_type;
     g_Lara.request_gun_type = g_Lara.last_gun_type;
 
-    Lara_InitialiseMeshes(level);
+    Lara_Mesh_Initialise(level);
     Gun_InitialiseNewWeapon();
-}
-
-void Lara_InitialiseMeshes(const GF_LEVEL *const level)
-{
-    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-        Lara_SwapSingleMesh(i, O_LARA);
-    }
-
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume == nullptr) {
-        return;
-    }
-
-    GAME_OBJECT_ID holster_obj_id = NO_OBJECT;
-    if (resume->equipped_gun_type != LGT_UNARMED) {
-        if (resume->equipped_gun_type == LGT_MAGNUMS) {
-            holster_obj_id = O_LARA_MAGNUMS;
-        } else if (resume->equipped_gun_type == LGT_UZIS) {
-            holster_obj_id = O_LARA_UZIS;
-        } else {
-            holster_obj_id = O_LARA_PISTOLS;
-        }
-    }
-
-    if (holster_obj_id != NO_OBJECT) {
-        Lara_SwapSingleMesh(LM_THIGH_L, holster_obj_id);
-        Lara_SwapSingleMesh(LM_THIGH_R, holster_obj_id);
-    }
-
-    if (resume->equipped_gun_type == LGT_FLARE) {
-        Lara_SwapSingleMesh(LM_HAND_L, O_LARA_FLARE);
-    }
-
-    switch (resume->equipped_gun_type) {
-    case LGT_M16:
-        g_Lara.back_gun_obj_id = O_LARA_M16;
-        return;
-
-    case LGT_GRENADE:
-        g_Lara.back_gun_obj_id = O_LARA_GRENADE;
-        return;
-
-    case LGT_HARPOON:
-        g_Lara.back_gun_obj_id = O_LARA_HARPOON;
-        return;
-
-    default:
-        break;
-    }
-
-    if (resume->flags.has_shotgun) {
-        g_Lara.back_gun_obj_id = O_LARA_SHOTGUN;
-    } else if (resume->flags.has_m16) {
-        g_Lara.back_gun_obj_id = O_LARA_M16;
-    } else if (resume->flags.has_grenade) {
-        g_Lara.back_gun_obj_id = O_LARA_GRENADE;
-    } else if (resume->flags.has_harpoon) {
-        g_Lara.back_gun_obj_id = O_LARA_HARPOON;
-    }
 }

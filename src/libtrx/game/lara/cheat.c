@@ -71,7 +71,7 @@ static void M_ReinitialiseGunMeshes(void)
 {
 #if TR_VERSION >= 2
     const bool has_flare = Lara_Flare_IsMeshActive();
-    Lara_InitialiseMeshes(Game_GetCurrentLevel());
+    Lara_Mesh_Initialise(Game_GetCurrentLevel());
     Gun_InitialiseNewWeapon();
     if (has_flare) {
         Lara_Flare_DrawMeshes();
@@ -242,7 +242,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->request_gun_type = LGT_UNARMED;
     if (lara_item->hit_points <= 0) {
         lara_info->gun_status = LGS_ARMLESS;
-        Lara_InitialiseMeshes(GF_GetCurrentLevel());
+        Lara_Mesh_Initialise(GF_GetCurrentLevel());
     }
 #else
     if (lara_info->extra_anim) {
@@ -324,7 +324,7 @@ bool Lara_Cheat_ExitFlyMode(void)
 
 #if TR_VERSION == 1
     lara_info->gun_status = LGS_ARMLESS;
-    Lara_InitialiseMeshes(GF_GetCurrentLevel());
+    Lara_Mesh_Initialise(GF_GetCurrentLevel());
 #else
     if (lara_info->gun_item_num != NO_ITEM) {
         lara_info->gun_status = LGS_UNDRAW;
