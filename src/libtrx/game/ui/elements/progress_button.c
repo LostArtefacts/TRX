@@ -69,9 +69,6 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
 
     UI_BeginPad(0.0f, -pad[1]);
     UI_BeginSpan();
-    UI_BeginPad(pad[0], pad[1]);
-    UI_LabelFmt("%s: %s", GameString_Get(s->text), value_label);
-    UI_EndPad();
     if (s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
         UI_Bar((UI_BAR_SETTINGS) {
             .color = TR_VERSION == 2 ? BC_GREEN : BC_GOLD,
@@ -81,6 +78,9 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
             .h = 0.0,
         });
     }
+    UI_BeginPad(pad[0], pad[1]);
+    UI_LabelFmt("%s: %s", GameString_Get(s->text), value_label);
+    UI_EndPad();
     UI_EndSpan();
     UI_EndPad();
 }

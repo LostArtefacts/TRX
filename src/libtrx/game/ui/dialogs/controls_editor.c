@@ -8,7 +8,6 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/ui/elements/anchor.h"
-#include "game/ui/elements/bar.h"
 #include "game/ui/elements/frame.h"
 #include "game/ui/elements/hide.h"
 #include "game/ui/elements/label.h"
