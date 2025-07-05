@@ -65,15 +65,21 @@ VIEWPORT_RECT Viewport_GetRect(const VIEWPORT_SPACE space)
 void Viewport_ResetCommon(void)
 {
     const SHELL_SIZE size = Shell_GetCurrentSize();
-    m_Rects[VIEWPORT_WINDOW].x = 0;
-    m_Rects[VIEWPORT_WINDOW].y = 0;
-    m_Rects[VIEWPORT_WINDOW].width = size.w;
-    m_Rects[VIEWPORT_WINDOW].height = size.h;
+    VIEWPORT_RECT *const window = &m_Rects[VIEWPORT_WINDOW];
+    VIEWPORT_RECT *const target = &m_Rects[VIEWPORT_TARGET];
 
-    const int32_t max_w =
-        m_Rects[VIEWPORT_WINDOW].width * (1.0 - g_Config.rendering.borders);
-    const int32_t max_h =
-        m_Rects[VIEWPORT_WINDOW].height * (1.0 - g_Config.rendering.borders);
+    window->x = 0;
+    window->y = 0;
+    window->width = size.w;
+    window->height = size.h;
+
+    int32_t border_x = window->width * g_Config.rendering.borders;
+    const int32_t border_y = window->height * g_Config.rendering.borders;
+    if (g_Config.rendering.aspect_mode == AM_ANY) {
+        border_x = border_y;
+    }
+    const int32_t max_w = window->width - border_x;
+    const int32_t max_h = window->height - border_y;
 
     double aspect_ratio = 0.0;
     switch (g_Config.rendering.aspect_mode) {
@@ -90,21 +96,15 @@ void Viewport_ResetCommon(void)
     }
 
     // Fit the aspect ratio rectangle within max_w x max_h
-    int32_t target_w = max_w;
-    int32_t target_h = max_w / aspect_ratio;
-
-    if (target_h > max_h) {
+    target->width = max_w;
+    target->height = max_w / aspect_ratio;
+    if (target->height > max_h) {
         // too tall, clamp
-        target_h = max_h;
-        target_w = max_h * aspect_ratio;
+        target->height = max_h;
+        target->width = max_h * aspect_ratio;
     }
-
-    m_Rects[VIEWPORT_TARGET].width = target_w;
-    m_Rects[VIEWPORT_TARGET].height = target_h;
-    m_Rects[VIEWPORT_TARGET].x =
-        (m_Rects[VIEWPORT_WINDOW].width - target_w) / 2;
-    m_Rects[VIEWPORT_TARGET].y =
-        (m_Rects[VIEWPORT_WINDOW].height - target_h) / 2;
+    target->x = (window->width - target->width) / 2;
+    target->y = (window->height - target->height) / 2;
 }
 
 void Viewport_Debug(void)

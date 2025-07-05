@@ -4,6 +4,7 @@
     - changed the "Sizer" option name to "Upscaling factor" (Graphic settings → Rendering → Upscaling factor)
     - changed the maximum upscaling factor from 4 to 8
     - changed the "Scaler" option name to "Borders" (Graphic settings → Rendering → Borders)
+    - changed the border option to use nice square borders if the aspect mode is set to Any
     - greatly improved text and other UI rendering with upscaling turned on (#1944)
     - removed default bindings for the "Sizer" and the "Scaler" options (#2853)
     - changed screenshots to always produce images at desktop resolution
