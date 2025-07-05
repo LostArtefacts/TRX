@@ -734,11 +734,6 @@ static void M_InsertFlatRect_Sorted(
         return;
     }
 
-    CLAMPL(x1, 0);
-    CLAMPL(y1, 0);
-    CLAMPG(x2, g_PhdWinWidth);
-    CLAMPG(y2, g_PhdWinHeight);
-
     g_Sort3DPtr->_0 = g_Info3DPtr;
     g_Sort3DPtr->_1 = MAKE_ZSORT(z);
     g_Sort3DPtr++;
@@ -809,8 +804,7 @@ static void M_InsertSprite(
     RENDERER *const renderer, int32_t z, int32_t x0, int32_t y0, int32_t x1,
     int32_t y1, const int32_t sprite_idx, const int16_t shade)
 {
-    if (M_VertexBufferFull() || x0 >= x1 || y0 >= y1 || x1 <= 0 || y1 <= 0
-        || x0 >= g_PhdWinMaxX || y0 >= g_PhdWinMaxY || z >= g_PhdFarZ) {
+    if (M_VertexBufferFull()) {
         return;
     }
 
@@ -1148,10 +1142,6 @@ static void M_InsertFlatRect_ZBuffered(
         return;
     }
 
-    CLAMPL(x1, 0);
-    CLAMPL(y1, 0);
-    CLAMPG(x2, g_PhdWinWidth);
-    CLAMPG(y2, g_PhdWinHeight);
     CLAMP(z, g_PhdNearZ, g_PhdFarZ);
 
     const double rhw = g_RhwFactor / (double)z;

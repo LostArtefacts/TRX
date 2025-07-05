@@ -8,8 +8,8 @@ static float M_DoCalc(
     const float unit, const float base_width, const float base_height,
     const double factor)
 {
-    const float vp_width = Viewport_GetWidth(VIEWPORT_GAME);
-    const float vp_height = Viewport_GetHeight(VIEWPORT_GAME);
+    const float vp_width = Viewport_GetWidth(VIEWPORT_UI);
+    const float vp_height = Viewport_GetHeight(VIEWPORT_UI);
     const float sign = unit < 0 ? -1 : 1;
     const float sx =
         ((double)vp_width * ABS(unit) * factor) / MAX(1, base_width);

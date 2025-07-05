@@ -563,7 +563,7 @@ void Output_DrawScreenFrame(
     const RGBA_8888 col_dark, const RGBA_8888 col_light,
     const int32_t thickness_i)
 {
-    const float scale = Viewport_GetHeight(VIEWPORT_GAME) / 480.0;
+    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
     sx -= scale;
     sy -= scale;
@@ -637,7 +637,7 @@ void Output_DrawGradientScreenBox(
     const RGBA_8888 tr, const RGBA_8888 bl, const RGBA_8888 br,
     const int32_t thickness_i)
 {
-    const float scale = Viewport_GetHeight(VIEWPORT_GAME) / 480.0;
+    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
     sx -= scale;
     sy -= scale;
@@ -688,7 +688,7 @@ void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 edge,
     const RGBA_8888 center, const int32_t thickness_i)
 {
-    const float scale = Viewport_GetHeight(VIEWPORT_GAME) / 480.0;
+    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0;
     const float thickness = thickness_i * scale / 2.0f;
     sx -= scale;
     sy -= scale;
@@ -766,8 +766,8 @@ void Output_DrawScreenSprite(
     const int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     const int32_t y0 = sy + (scale_v * sprite->y0 / PHD_ONE);
     const int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
-    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth(VIEWPORT_GAME)
-        && y0 < Viewport_GetHeight(VIEWPORT_GAME)) {
+    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth(VIEWPORT_UI)
+        && y0 < Viewport_GetHeight(VIEWPORT_UI)) {
         M_DrawSprite(
             x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
     }
@@ -782,10 +782,10 @@ void Output_DrawUISprite(
     const int32_t x1 = x + (scale * sprite->x1 >> 16);
     const int32_t y0 = y + (scale * sprite->y0 >> 16);
     const int32_t y1 = y + (scale * sprite->y1 >> 16);
-    if (x1 >= Viewport_GetMinX(VIEWPORT_GAME)
-        && y1 >= Viewport_GetMinY(VIEWPORT_GAME)
-        && x0 <= Viewport_GetMaxX(VIEWPORT_GAME)
-        && y0 <= Viewport_GetMaxY(VIEWPORT_GAME)) {
+    if (x1 >= Viewport_GetMinX(VIEWPORT_UI)
+        && y1 >= Viewport_GetMinY(VIEWPORT_UI)
+        && x0 <= Viewport_GetMaxX(VIEWPORT_UI)
+        && y0 <= Viewport_GetMaxY(VIEWPORT_UI)) {
         M_DrawSprite(
             x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
     }
@@ -826,8 +826,8 @@ void Output_DrawBlackRectangle(const int32_t opacity)
 {
     const int32_t sx = 0;
     const int32_t sy = 0;
-    const int32_t sw = Viewport_GetWidth(VIEWPORT_GAME);
-    const int32_t sh = Viewport_GetHeight(VIEWPORT_GAME);
+    const int32_t sw = Viewport_GetWidth(VIEWPORT_UI);
+    const int32_t sh = Viewport_GetHeight(VIEWPORT_UI);
     const RGBA_8888 background = { 0, 0, 0, opacity };
     M_DisableDepthTest();
     Output_ClearDepthBuffer();
