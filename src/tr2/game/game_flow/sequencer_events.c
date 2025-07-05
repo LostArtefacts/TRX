@@ -21,12 +21,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
-static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem);
-static DECLARE_GF_EVENT_HANDLER(M_HandleAddSecretReward);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveFlares);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks);
+static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
@@ -37,12 +32,12 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_ENABLE_SUNSET]     = M_HandleEnableSunset,
     [GFS_SET_CAMERA_ANGLE]  = M_HandleSetCameraAngle,
     [GFS_DISABLE_FLOOR]     = M_HandleDisableFloor,
-    [GFS_ADD_ITEM]          = M_HandleAddItem,
-    [GFS_ADD_SECRET_REWARD] = M_HandleAddSecretReward,
-    [GFS_REMOVE_WEAPONS]    = M_HandleRemoveWeapons,
-    [GFS_REMOVE_AMMO]       = M_HandleRemoveAmmo,
-    [GFS_REMOVE_FLARES]     = M_HandleRemoveFlares,
-    [GFS_REMOVE_MEDIPACKS]  = M_HandleRemoveMedipacks,
+    [GFS_ADD_ITEM]          = M_HandleInventoryModifier,
+    [GFS_ADD_SECRET_REWARD] = M_HandleInventoryModifier,
+    [GFS_REMOVE_WEAPONS]    = M_HandleInventoryModifier,
+    [GFS_REMOVE_AMMO]       = M_HandleInventoryModifier,
+    [GFS_REMOVE_FLARES]     = M_HandleInventoryModifier,
+    [GFS_REMOVE_MEDIPACKS]  = M_HandleInventoryModifier,
     [GFS_SET_START_ANIM]    = M_HandleSetStartAnim,
     // clang-format on
 };
@@ -220,37 +215,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem)
-{
-    // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleAddSecretReward)
-{
-    // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
-{
-    // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo)
-{
-    // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveFlares)
-{
-    // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks)
+static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier)
 {
     // handled in GF_InventoryModifier_Apply
     return (GF_COMMAND) { .action = GF_NOOP };

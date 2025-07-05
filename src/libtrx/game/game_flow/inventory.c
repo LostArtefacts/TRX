@@ -11,6 +11,7 @@ static bool m_RemoveWeapons = false;
 static bool m_RemoveAmmo = false;
 static bool m_RemoveFlares = false;
 static bool m_RemoveMedipacks = false;
+static bool m_RemoveScions = false;
 
 static void M_ModifyInventory_GunOrAmmo(
     RESUME_INFO *resume, GF_INV_TYPE type, LARA_GUN_TYPE gun_type);
@@ -131,6 +132,8 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
             m_RemoveFlares = true;
         } else if (event->type == GFS_REMOVE_MEDIPACKS) {
             m_RemoveMedipacks = true;
+        } else if (event->type == GFS_REMOVE_SCIONS) {
+            m_RemoveScions = true;
         }
     }
 }
@@ -145,7 +148,10 @@ void GF_InventoryModifier_Apply(
         resume->flags.has_magnums = false;
         resume->flags.has_uzis = false;
         resume->flags.has_shotgun = false;
-#if TR_VERSION >= 2
+#if TR_VERSION == 1
+        resume->holsters_gun_type = LGT_UNARMED;
+        resume->back_gun_type = LGT_UNARMED;
+#else
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
         resume->flags.has_harpoon = false;
@@ -174,7 +180,12 @@ void GF_InventoryModifier_Apply(
 #endif
     }
 
-#if TR_VERSION >= 2
+#if TR_VERSION == 1
+    if (m_RemoveScions) {
+        resume->num_scions = 0;
+        m_RemoveScions = false;
+    }
+#else
     if (m_RemoveFlares) {
         resume->flares = 0;
         m_RemoveFlares = false;
@@ -204,7 +215,11 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_KEY_ITEM_3);
     M_ModifyInventory_Item(type, O_KEY_ITEM_4);
 
-#if TR_VERSION >= 2
+#if TR_VERSION == 1
+    M_ModifyInventory_Item(type, O_LEADBAR_ITEM);
+    M_ModifyInventory_Item(type, O_SCION_ITEM_1);
+    M_ModifyInventory_Item(type, O_SCION_ITEM_2);
+#else
     M_ModifyInventory_GunOrAmmo(resume, type, LGT_HARPOON);
     M_ModifyInventory_GunOrAmmo(resume, type, LGT_M16);
     M_ModifyInventory_GunOrAmmo(resume, type, LGT_GRENADE);

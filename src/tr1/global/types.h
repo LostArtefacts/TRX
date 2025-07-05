@@ -118,11 +118,6 @@ typedef struct {
     PASSPORT_MODE passport_selection;
     int32_t select_save_slot;
     int32_t select_level_num;
-    bool remove_guns;
-    bool remove_scions;
-    bool remove_ammo;
-    bool remove_medipacks;
-
     bool ask_for_save;
 } GAME_INFO;
 
