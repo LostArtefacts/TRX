@@ -10,5 +10,5 @@ typedef enum {
 } SCALER_TARGET;
 
 double Scaler_GetScale(const SCALER_TARGET target);
-int32_t Scaler_Calc(int32_t unit, SCALER_TARGET target);
-int32_t Scaler_CalcInverse(int32_t unit, SCALER_TARGET target);
+float Scaler_Calc(float unit, SCALER_TARGET target);
+float Scaler_CalcInverse(float unit, SCALER_TARGET target);
