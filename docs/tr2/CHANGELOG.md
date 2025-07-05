@@ -62,6 +62,7 @@
 - fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - fixed Lara getting stuck in the fly cheat in rare circumstances (#3392, regression from 0.3)
 - fixed support for >3 secret dragons in custom levels (#3415, regression from 1.2)
+- fixed level select picking one level ahead of the one chosen if the gym is disabled (#3446, regression from 1.0)
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - improved support for >3 secret dragons in custom levels up to 16 dragons
