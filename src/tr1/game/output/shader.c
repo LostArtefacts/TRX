@@ -117,7 +117,7 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
         g_Config.visuals.brightness);
     GFX_TRACK_UNIFORM(
         glUniform2f, shader->uniforms[M_UNIFORM_VIEWPORT_SIZE],
-        GFX_Context_GetDisplayWidth(), GFX_Context_GetDisplayHeight());
+        Viewport_GetWidth(VIEWPORT_GAME), Viewport_GetHeight(VIEWPORT_GAME));
     GFX_TRACK_UNIFORM(
         glUniform2f, shader->uniforms[M_UNIFORM_FOG], Output_GetFogStart(),
         Output_GetFogEnd());

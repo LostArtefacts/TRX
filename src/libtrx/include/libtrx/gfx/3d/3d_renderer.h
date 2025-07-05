@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../game/viewport.h"
 #include "../common.h"
 #include "../config.h"
 #include "../gl/program.h"
@@ -72,4 +73,5 @@ void GFX_3D_Renderer_SetAlphaThreshold(GFX_3D_RENDERER *renderer, float value);
 void GFX_3D_Renderer_SetBrightnessMultiplier(
     GFX_3D_RENDERER *renderer, float value);
 
-void GFX_3D_Renderer_SetProjectionMatrix(GFX_3D_RENDERER *renderer);
+void GFX_3D_Renderer_SetProjectionMatrix(
+    GFX_3D_RENDERER *renderer, VIEWPORT_SPACE space);

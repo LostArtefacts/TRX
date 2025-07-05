@@ -183,7 +183,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
 
     M_RestoreTexture(renderer);
     M_ApplyUniforms(renderer);
-    GFX_3D_Renderer_SetProjectionMatrix(renderer);
+    GFX_3D_Renderer_SetProjectionMatrix(renderer, VIEWPORT_GAME);
 
     glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_TRUE);
@@ -192,14 +192,15 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
     GFX_GL_CheckError();
 }
 
-void GFX_3D_Renderer_SetProjectionMatrix(GFX_3D_RENDERER *renderer)
+void GFX_3D_Renderer_SetProjectionMatrix(
+    GFX_3D_RENDERER *const renderer, const VIEWPORT_SPACE space)
 {
     GFX_GL_Program_Bind(&renderer->program);
 
-    const float left = 0.0f;
-    const float top = 0.0f;
-    const float right = GFX_Context_GetDisplayWidth();
-    const float bottom = GFX_Context_GetDisplayHeight();
+    const float left = Viewport_GetMinX(space);
+    const float top = Viewport_GetMinY(space);
+    const float right = Viewport_GetMaxX(space);
+    const float bottom = Viewport_GetMaxY(space);
 
     GLfloat projection[4][4] = {
         { 2.0f / (right - left), 0.0f, 0.0f, 0.0f },
