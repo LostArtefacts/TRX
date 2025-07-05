@@ -38,15 +38,3 @@ typedef enum {
     LF_G_RECOIL_END   = 32,
 } LARA_GUN_ANIMATION_FRAME;
 // clang-format on
-
-// clang-format off
-typedef enum {
-    LGT_UNKNOWN = -1, // for legacy saves
-    LGT_UNARMED = 0,
-    LGT_PISTOLS = 1,
-    LGT_MAGNUMS = 2,
-    LGT_UZIS = 3,
-    LGT_SHOTGUN = 4,
-    NUM_WEAPONS = 5
-} LARA_GUN_TYPE;
-// clang-format on

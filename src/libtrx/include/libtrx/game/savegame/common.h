@@ -66,6 +66,7 @@ STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);
 extern int32_t Savegame_GetSlotCount(void);
 extern void Savegame_HighlightNewestSlot(void);
 extern void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
+void Savegame_DetermineLegacyGunTypes(RESUME_INFO *resume);
 
 #define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
     __attribute__((__constructor__)) static void M_Register(void)              \

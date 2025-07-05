@@ -84,10 +84,9 @@ typedef struct {
         XYZ_32 initial_pos;
     } interact_target;
 
-#if TR_VERSION == 1
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
-#else
+#if TR_VERSION >= 2
     LARA_GUN_TYPE last_gun_type;
     GAME_OBJECT_ID back_gun_obj_id;
     int16_t gun_item_num;

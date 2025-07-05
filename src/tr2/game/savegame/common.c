@@ -62,6 +62,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->small_medipacks = 0;
         resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
+        resume->holsters_gun_type = LGT_UNARMED;
+        resume->back_gun_type = LGT_UNARMED;
     } else if (level == GF_GetFirstLevel()) {
         resume->flags.available = true;
 
@@ -84,6 +86,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->small_medipacks = 0;
         resume->large_medipacks = 0;
         resume->gun_status = LGS_ARMLESS;
+        resume->holsters_gun_type = LGT_PISTOLS;
+        resume->back_gun_type = LGT_UNARMED;
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
@@ -105,9 +109,13 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 
         resume->flares = -1;
         resume->equipped_gun_type = LGT_GRENADE;
+        resume->holsters_gun_type = LGT_PISTOLS;
+        resume->back_gun_type = LGT_GRENADE;
     }
 
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
     resume->stats.max_secret_count = default_stats.max_secret_count;
     resume->stats.all_secrets_mask = default_stats.all_secrets_mask;
+
+    Savegame_DetermineLegacyGunTypes(resume);
 }
