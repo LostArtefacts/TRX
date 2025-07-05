@@ -139,12 +139,22 @@ void Viewport_Reset(void)
         break;
     }
 
-    vp->width = size.w / g_Config.rendering.upscaling_factor;
-    vp->height = size.h / g_Config.rendering.upscaling_factor;
+    int32_t width = size.w;
+    int32_t height = size.h;
     if (g_Config.rendering.aspect_mode != AM_ANY) {
-        vp->width = vp->height * vp->render_ar.w / vp->render_ar.h;
+        width = height * vp->render_ar.w / vp->render_ar.h;
     }
 
+    VIEWPORT_RECT *const rect = &g_Viewport_Rects[VIEWPORT_GAME];
+    rect->x = 0;
+    rect->y = 0;
+    rect->width = width / g_Config.rendering.upscaling_factor;
+    rect->height = height / g_Config.rendering.upscaling_factor;
+
+    g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
+
+    vp->width = rect->width;
+    vp->height = rect->height;
     vp->near_z = Output_GetNearZ() >> W2V_SHIFT;
     vp->far_z = Output_GetFarZ() >> W2V_SHIFT;
 
@@ -168,10 +178,6 @@ void Viewport_Reset(void)
     M_InitGameVars(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);
 
-    g_Viewport_Rects[VIEWPORT_GAME].width = vp->width;
-    g_Viewport_Rects[VIEWPORT_GAME].height = vp->height;
-    g_Viewport_Rects[VIEWPORT_GAME].x = 0;
-    g_Viewport_Rects[VIEWPORT_GAME].y = 0;
     Render_SetupDisplay(size.w, size.h, vp->width, vp->height);
     Viewport_Debug();
 }

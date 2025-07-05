@@ -198,9 +198,9 @@ static void M_DrawPickupsSprites(void)
 {
     const double elapsed = ClockTimer_TakeElapsed(&m_PickupsTimer);
 
+    const VIEWPORT_SPACE space = VIEWPORT_UI;
     const int32_t sprite_height =
-        MIN(Viewport_GetWidth(VIEWPORT_GAME),
-            Viewport_GetHeight(VIEWPORT_GAME) * 320 / 200)
+        MIN(Viewport_GetWidth(space), Viewport_GetHeight(space) * 320 / 200)
         / 10;
     const int32_t sprite_width = sprite_height * 4 / 3;
 
@@ -220,11 +220,11 @@ static void M_DrawPickupsSprites(void)
             return;
         }
 
-        const int32_t x = Viewport_GetWidth(VIEWPORT_GAME) - sprite_height
+        const int32_t x = Viewport_GetWidth(space) - sprite_height
             - sprite_width * pu->grid_x;
-        const int32_t y = Viewport_GetHeight(VIEWPORT_GAME) - sprite_height
+        const int32_t y = Viewport_GetHeight(space) - sprite_height
             - sprite_height * pu->grid_y;
-        const int32_t scale = 12288 * Viewport_GetWidth(VIEWPORT_GAME) / 640;
+        const int32_t scale = 12288 * Viewport_GetWidth(space) / 640;
         const int16_t sprite_num = Object_Get(pu->object_id)->mesh_idx;
         UI_ScheduleDrawScreenSprite(
             x, y, 0, scale, scale, sprite_num, SHADE_NEUTRAL);

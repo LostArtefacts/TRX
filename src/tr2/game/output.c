@@ -655,7 +655,8 @@ void Output_DrawScreenSprite(
     const int32_t x1 = sx + ((sprite->x1 * scale_h) / PHD_ONE);
     const int32_t y1 = sy + ((sprite->y1 * scale_v) / PHD_ONE);
     const int32_t z = g_PhdNearZ + sz * 8;
-    if (x1 >= 0 && y1 >= 0 && x0 < g_PhdWinWidth && y0 < g_PhdWinHeight) {
+    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth(VIEWPORT_UI)
+        && y0 < Viewport_GetHeight(VIEWPORT_UI)) {
         Render_InsertSprite(z, x0, y0, x1, y1, sprite_idx, shade);
     }
 }

@@ -5,10 +5,8 @@
 #include "log.h"
 
 static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
-    [VIEWPORT_GAME] = {
-        .width = 800,
-        .height = 600,
-    },
+    [VIEWPORT_GAME] = { .width = 800, .height = 600, },
+    [VIEWPORT_UI] = { .width = 800, .height = 600 },
 };
 
 VIEWPORT_RECT *g_Viewport_Rects = m_Rects;
@@ -118,4 +116,6 @@ void Viewport_Debug(void)
     LOG_TRACE("Target viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
     r = &m_Rects[VIEWPORT_GAME];
     LOG_TRACE("Game viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
+    r = &m_Rects[VIEWPORT_UI];
+    LOG_TRACE("UI viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
 }

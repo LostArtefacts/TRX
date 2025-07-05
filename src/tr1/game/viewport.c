@@ -49,6 +49,8 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
     rect->width = width;
     rect->height = height;
 
+    g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
+
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
     g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);

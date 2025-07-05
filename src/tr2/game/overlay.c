@@ -182,8 +182,8 @@ static void M_DrawAssaultTimer(void)
     };
 
     const int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
-    int32_t x =
-        g_PhdWinWidth / 2 - Scaler_Calc(50, SCALER_TARGET_ASSAULT_DIGITS);
+    int32_t x = Viewport_GetCenterX(VIEWPORT_UI)
+        - Scaler_Calc(50, SCALER_TARGET_ASSAULT_DIGITS);
 
     for (char *c = buffer; *c != '\0'; c++) {
         ASSAULT_GLYPH_TYPE glyph_type;
@@ -343,17 +343,12 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
 
 static void M_DrawPickupSprite(const DISPLAY_PICKUP *const pickup)
 {
-    const int32_t sprite_height =
-        MIN(g_PhdWinWidth, g_PhdWinHeight * 640 / 480) / 10;
+    const VIEWPORT_RECT vp = Viewport_GetRect(VIEWPORT_UI);
+    const int32_t sprite_height = MIN(vp.width, vp.height * 640 / 480) / 10;
     const int32_t sprite_width = sprite_height * 4 / 3;
-
-    const int32_t x =
-        g_PhdWinWidth - sprite_height - sprite_width * pickup->grid_x;
-    const int32_t y =
-        g_PhdWinHeight - sprite_height - sprite_height * pickup->grid_y;
-
-    // TODO: use proper scaling
-    const int32_t scale = 12288 * g_PhdWinWidth / 640;
+    const int32_t x = vp.width - sprite_width * (pickup->grid_x + 1);
+    const int32_t y = vp.height - sprite_height * (pickup->grid_y + 1);
+    const int32_t scale = 12288 * vp.width / 640;
     const int16_t sprite_num = pickup->object->mesh_idx;
     UI_ScheduleDrawScreenSprite(
         x, y, 0, scale, scale, sprite_num, SHADE_NEUTRAL);
