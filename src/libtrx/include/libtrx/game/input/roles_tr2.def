@@ -3,8 +3,6 @@ INPUT_ROLE_DEFINE(EQUIP_M16,                   equip_m16)
 INPUT_ROLE_DEFINE(EQUIP_GRENADE_LAUNCHER,      equip_grenade_launcher)
 INPUT_ROLE_DEFINE(USE_FLARE,                   use_flare)
 
-INPUT_ROLE_DEFINE(SWITCH_RESOLUTION,           switch_resolution)
-INPUT_ROLE_DEFINE(SWITCH_INTERNAL_SCREEN_SIZE, switch_internal_screen_size)
 INPUT_ROLE_DEFINE(TOGGLE_BILINEAR_FILTER,      toggle_bilinear_filter)
 INPUT_ROLE_DEFINE(TOGGLE_PERSPECTIVE_FILTER,   toggle_perspective_filter)
 INPUT_ROLE_DEFINE(TOGGLE_Z_BUFFER,             toggle_z_buffer)

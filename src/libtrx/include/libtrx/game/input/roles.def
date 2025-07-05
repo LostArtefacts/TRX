@@ -45,6 +45,8 @@ INPUT_ROLE_DEFINE(TOGGLE_PHOTO_MODE,       toggle_photo_mode)
 INPUT_ROLE_DEFINE(TOGGLE_UI,               toggle_ui)
 
 INPUT_ROLE_DEFINE(TOGGLE_TRAPEZOID_FILTER, toggle_trapezoid_filter)
+INPUT_ROLE_DEFINE(SWITCH_UPSCALING,        switch_upscaling)
+INPUT_ROLE_DEFINE(SWITCH_BORDERS,          switch_borders)
 INPUT_ROLE_DEFINE(RESET_BINDINGS,          reset_bindings)
 INPUT_ROLE_DEFINE(UNBIND_KEY,              unbind_key)
 

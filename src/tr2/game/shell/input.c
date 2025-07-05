@@ -1,5 +1,4 @@
 #include "decomp/decomp.h"
-#include "game/clock.h"
 #include "game/console/common.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
@@ -23,10 +22,7 @@ static void M_TogglePerspectiveCorrection(void);
 static void M_ToggleTrapezoidFilter(void);
 static void M_ToggleZBuffer(void);
 static void M_CycleLightingContrast(void);
-static void M_ToggleFullscreen(void);
 static void M_ToggleRenderingMode(void);
-static void M_DecreaseResolutionOrBPP(void);
-static void M_IncreaseResolutionOrBPP(void);
 
 static void M_ToggleFPSCounter(void)
 {
@@ -112,12 +108,6 @@ static void M_CycleLightingContrast(void)
         ENUM_MAP_TO_STRING(LIGHTING_CONTRAST, value));
 }
 
-static void M_ToggleFullscreen(void)
-{
-    g_Config.window.is_fullscreen = !g_Config.window.is_fullscreen;
-    Config_Write();
-}
-
 static void M_ToggleRenderingMode(void)
 {
     g_Config.rendering.render_mode =
@@ -131,41 +121,9 @@ static void M_ToggleRenderingMode(void)
             : GS(OSD_SOFTWARE_RENDERING));
 }
 
-static void M_DecreaseResolutionOrBPP(void)
-{
-    g_Config.rendering.upscaling_factor--;
-    Config_Write();
-    Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
-}
-
-static void M_IncreaseResolutionOrBPP(void)
-{
-    g_Config.rendering.upscaling_factor++;
-    Config_Write();
-    Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
-}
-
 void Shell_ProcessInput(void)
 {
-    if (g_InputDB.screenshot) {
-        Screenshot_Make(g_Config.rendering.screenshot_format);
-    }
-
-    if (g_InputDB.switch_resolution) {
-        if (g_Input.slow) {
-            M_DecreaseResolutionOrBPP();
-        } else {
-            M_IncreaseResolutionOrBPP();
-        }
-    }
-
-    if (g_InputDB.switch_internal_screen_size) {
-        if (g_Input.slow) {
-            Shell_DecreaseScreenSize();
-        } else {
-            Shell_IncreaseScreenSize();
-        }
-    }
+    Shell_ProcessCommonInput();
 
     if (g_InputDB.toggle_fps_counter) {
         M_ToggleFPSCounter();
@@ -193,15 +151,7 @@ void Shell_ProcessInput(void)
         M_CycleLightingContrast();
     }
 
-    if (g_InputDB.toggle_fullscreen) {
-        M_ToggleFullscreen();
-    }
-
     if (g_InputDB.toggle_rendering_mode) {
         M_ToggleRenderingMode();
-    }
-
-    if (g_InputDB.turbo_cheat) {
-        Clock_CycleTurboSpeed(!g_Input.slow);
     }
 }
