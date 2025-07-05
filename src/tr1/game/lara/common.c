@@ -158,32 +158,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     g_Lara.pistol_ammo.ammo = 1000;
 
     if (resume != nullptr) {
-        if (g_GameInfo.remove_guns) {
-            resume->flags.has_pistols = false;
-            resume->flags.has_shotgun = false;
-            resume->flags.has_magnums = false;
-            resume->flags.has_uzis = false;
-            resume->equipped_gun_type = LGT_UNARMED;
-            resume->holsters_gun_type = LGT_UNARMED;
-            resume->back_gun_type = LGT_UNARMED;
-            resume->gun_status = LGS_ARMLESS;
-        }
-
-        if (g_GameInfo.remove_scions) {
-            resume->num_scions = 0;
-        }
-
-        if (g_GameInfo.remove_ammo) {
-            resume->shotgun_ammo = 0;
-            resume->magnum_ammo = 0;
-            resume->uzi_ammo = 0;
-        }
-
-        if (g_GameInfo.remove_medipacks) {
-            resume->small_medipacks = 0;
-            resume->large_medipacks = 0;
-        }
-
         if (resume->flags.has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);
         }

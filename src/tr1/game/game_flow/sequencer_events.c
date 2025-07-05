@@ -24,11 +24,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap);
-static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveScions);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo);
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks);
+static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
 static DECLARE_GF_EVENT_HANDLER(M_HandleMeshSwap);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 
@@ -41,11 +37,11 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_FLIP_MAP]         = M_HandleFlipMap,
-    [GFS_ADD_ITEM]         = M_HandleAddItem,
-    [GFS_REMOVE_WEAPONS]   = M_HandleRemoveWeapons,
-    [GFS_REMOVE_SCIONS]    = M_HandleRemoveScions,
-    [GFS_REMOVE_AMMO]      = M_HandleRemoveAmmo,
-    [GFS_REMOVE_MEDIPACKS] = M_HandleRemoveMedipacks,
+    [GFS_ADD_ITEM]         = M_HandleInventoryModifier,
+    [GFS_REMOVE_WEAPONS]   = M_HandleInventoryModifier,
+    [GFS_REMOVE_SCIONS]    = M_HandleInventoryModifier,
+    [GFS_REMOVE_AMMO]      = M_HandleInventoryModifier,
+    [GFS_REMOVE_MEDIPACKS] = M_HandleInventoryModifier,
     [GFS_MESH_SWAP]        = M_HandleMeshSwap,
     [GFS_SETUP_BACON_LARA] = M_HandleSetupBaconLara,
     // clang-format on
@@ -68,6 +64,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         break;
 
     case GFSC_SAVED:
+        GF_InventoryModifier_Scan(level);
         // reset current info to the defaults so that we do not do
         // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
@@ -80,6 +77,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             Savegame_ResetCurrentInfo(level);
             Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
             Savegame_ApplyLogicToCurrentInfo(level);
+        }
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            GF_InventoryModifier_Scan(level);
+            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
         }
         break;
 
@@ -97,6 +98,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
                 }
                 Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
                 Savegame_ApplyLogicToCurrentInfo(level);
+                GF_InventoryModifier_Scan(level);
+                GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
             }
         } else {
             // console /play level feature
@@ -106,6 +109,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
                 Savegame_CarryCurrentInfoToNextLevel(
                     GF_GetLevelBefore(tmp_level), tmp_level);
                 Savegame_ApplyLogicToCurrentInfo(tmp_level);
+                GF_InventoryModifier_Scan(tmp_level);
+                GF_InventoryModifier_Apply(tmp_level, GF_INV_REGULAR);
                 if (tmp_level == level) {
                     break;
                 }
@@ -122,6 +127,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
         }
         Savegame_ApplyLogicToCurrentInfo(level);
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            GF_InventoryModifier_Scan(level);
+            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+        }
     }
 
     // clear the save slot information so that /play starts with a fresh state
@@ -164,6 +173,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     default:
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            GF_InventoryModifier_Scan(Game_GetCurrentLevel());
+            GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
+        }
         break;
     }
 
@@ -297,47 +310,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem)
+static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier)
 {
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED) {
-        const GF_ADD_ITEM_DATA *add_item_data =
-            (const GF_ADD_ITEM_DATA *)event->data;
-        Inv_AddItemNTimes(add_item_data->object_id, add_item_data->quantity);
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
-{
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED
-        && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        g_GameInfo.remove_guns = true;
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo)
-{
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED
-        && !Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        g_GameInfo.remove_ammo = true;
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveScions)
-{
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED) {
-        g_GameInfo.remove_scions = true;
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks)
-{
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED) {
-        g_GameInfo.remove_medipacks = true;
-    }
+    // handled in GF_InventoryModifier_Apply
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
@@ -367,10 +342,6 @@ void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     Room_SetAbyssHeight(0);
-    g_GameInfo.remove_guns = false;
-    g_GameInfo.remove_scions = false;
-    g_GameInfo.remove_ammo = false;
-    g_GameInfo.remove_medipacks = false;
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }
@@ -399,16 +370,9 @@ GF_EVENT_QUEUE_TYPE GF_ShouldDeferSequenceEvent(
     case GFS_SET_CAMERA_POS:
     case GFS_SET_CAMERA_ANGLE:
     case GFS_FLIP_MAP:
-    case GFS_ADD_ITEM:
     case GFS_MESH_SWAP:
     case GFS_SETUP_BACON_LARA:
         return GF_EVENT_QUEUE_AFTER_LEVEL_INIT;
-
-    case GFS_REMOVE_WEAPONS:
-    case GFS_REMOVE_SCIONS:
-    case GFS_REMOVE_AMMO:
-    case GFS_REMOVE_MEDIPACKS:
-        return GF_EVENT_QUEUE_BEFORE_LEVEL_INIT;
 
     default:
         return GF_EVENT_QUEUE_NONE;
