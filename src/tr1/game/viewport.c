@@ -36,20 +36,25 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 
         x = 0;
         y = 0;
-        width = size.w / g_Config.rendering.upscaling_factor;
-        height = size.h / g_Config.rendering.upscaling_factor;
+        width = size.w;
+        height = size.h;
         if (g_Config.rendering.aspect_mode != AM_ANY) {
             width = height * ar.w / ar.h;
         }
     }
 
-    VIEWPORT_RECT *const rect = &g_Viewport_Rects[VIEWPORT_GAME];
+    VIEWPORT_RECT *rect;
+    rect = &g_Viewport_Rects[VIEWPORT_UI];
     rect->x = x;
     rect->y = y;
     rect->width = width;
     rect->height = height;
 
-    g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
+    rect = &g_Viewport_Rects[VIEWPORT_GAME];
+    rect->x = x;
+    rect->y = y;
+    rect->width = width / g_Config.rendering.upscaling_factor;
+    rect->height = height / g_Config.rendering.upscaling_factor;
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
@@ -77,11 +82,5 @@ void Viewport_Reset(void)
 {
     Viewport_ResetCommon();
     Viewport_Init(-1, -1, -1, -1);
-    GFX_Context_SetWindowSize(
-        g_Viewport_Rects[VIEWPORT_WINDOW].width,
-        g_Viewport_Rects[VIEWPORT_WINDOW].height);
-    GFX_Context_SetDisplaySize(
-        g_Viewport_Rects[VIEWPORT_GAME].width,
-        g_Viewport_Rects[VIEWPORT_GAME].height);
     Viewport_Debug();
 }

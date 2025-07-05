@@ -18,10 +18,6 @@ typedef struct {
 
     GFX_CONFIG config;
 
-    // Size of the OpenGL framebuffer.
-    int32_t display_width;
-    int32_t display_height;
-
     // Size of the SDL window.
     int32_t window_width;
     int32_t window_height;
@@ -71,23 +67,9 @@ static GLvoid GLAPIENTRY M_GLDebug(
     LOG_INFO("%s", line);
 }
 
-void GFX_Context_SwitchToWindowViewport(void)
+void GFX_Context_SwitchToViewport(const VIEWPORT_SPACE space)
 {
-    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_WINDOW);
-    glViewport(rect.x, rect.y, rect.width, rect.height);
-    GFX_GL_CheckError();
-}
-
-void GFX_Context_SwitchToWindowViewportAR(void)
-{
-    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_TARGET);
-    glViewport(rect.x, rect.y, rect.width, rect.height);
-    GFX_GL_CheckError();
-}
-
-void GFX_Context_SwitchToDisplayViewport(void)
-{
-    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_GAME);
+    const VIEWPORT_RECT rect = Viewport_GetRect(space);
     glViewport(rect.x, rect.y, rect.width, rect.height);
     GFX_GL_CheckError();
 }
@@ -113,8 +95,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
     m_Context.config.enable_wireframe = false;
     SDL_GetWindowSize(
         window_handle, &m_Context.window_width, &m_Context.window_height);
-    m_Context.display_width = m_Context.window_width;
-    m_Context.display_height = m_Context.window_height;
 
     m_Context.window_handle = window_handle;
 
@@ -201,32 +181,6 @@ void GFX_Context_SetLineWidth(const int32_t line_width)
 void GFX_Context_SetVSync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync);
-}
-
-void GFX_Context_SetWindowSize(int32_t width, int32_t height)
-{
-    m_Context.window_width = width;
-    m_Context.window_height = height;
-}
-
-void GFX_Context_SetDisplaySize(int32_t width, int32_t height)
-{
-    if (width == m_Context.display_width
-        && height == m_Context.display_height) {
-        return;
-    }
-
-    if (width <= 0 || height <= 0) {
-        LOG_INFO("invalid size, ignoring");
-        return;
-    }
-
-    m_Context.display_width = width;
-    m_Context.display_height = height;
-
-    if (m_Context.renderer != nullptr && m_Context.renderer->reset != nullptr) {
-        m_Context.renderer->reset(m_Context.renderer);
-    }
 }
 
 void *GFX_Context_GetWindowHandle(void)

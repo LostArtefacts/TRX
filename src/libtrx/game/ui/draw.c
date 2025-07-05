@@ -233,6 +233,7 @@ void UI_Draw(void)
             break;
         }
     }
+    Output_DrawPolyList();
 
     Vector_Clear(p->ops);
     Memory_ArenaReset(&p->alloc);

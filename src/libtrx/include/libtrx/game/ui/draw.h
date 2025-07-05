@@ -25,3 +25,6 @@ void UI_ScheduleFaderDraw(FADER *fader);
 
 void UI_InitDraw(void);
 void UI_ShutdownDraw(void);
+
+// Execute all scheduled UI draw operations in order.
+void UI_Draw(void);

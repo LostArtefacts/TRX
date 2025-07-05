@@ -145,13 +145,22 @@ void Viewport_Reset(void)
         width = height * vp->render_ar.w / vp->render_ar.h;
     }
 
-    VIEWPORT_RECT *const rect = &g_Viewport_Rects[VIEWPORT_GAME];
+    VIEWPORT_RECT *rect;
+    rect = &g_Viewport_Rects[VIEWPORT_UI];
+    rect->x = 0;
+    rect->y = 0;
+    rect->width = width;
+    rect->height = height;
+
+    rect = &g_Viewport_Rects[VIEWPORT_GAME];
     rect->x = 0;
     rect->y = 0;
     rect->width = width / g_Config.rendering.upscaling_factor;
     rect->height = height / g_Config.rendering.upscaling_factor;
 
-    g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
+    if (g_Config.rendering.render_mode == RM_SOFTWARE) {
+        g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
+    }
 
     vp->width = rect->width;
     vp->height = rect->height;

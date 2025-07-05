@@ -69,6 +69,10 @@ static void M_Flush(GFX_3D_RENDERER *const renderer)
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             GFX_GL_CheckError();
             break;
+        case GFX_BLEND_MODE_PRE_MULTIPLIED:
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            GFX_GL_CheckError();
+            break;
         case GFX_BLEND_MODE_MULTIPLY:
             glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
             GFX_GL_CheckError();
@@ -183,6 +187,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
 
     M_RestoreTexture(renderer);
     M_ApplyUniforms(renderer);
+    GFX_Context_SwitchToViewport(VIEWPORT_GAME);
     GFX_3D_Renderer_SetProjectionMatrix(renderer, VIEWPORT_GAME);
 
     glDepthFunc(GL_LEQUAL);

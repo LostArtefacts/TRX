@@ -53,6 +53,7 @@ void Render_DrawBlackRectangle(int32_t opacity);
 void Render_ClearZBuffer(void);
 void Render_EnableZBuffer(bool z_write_enable, bool z_test_enable);
 void Render_SetWet(bool is_wet);
+void Render_SwitchViewport(VIEWPORT_SPACE space);
 
 // TODO: there's too much repetition for these
 void Render_InsertFlatFace3s(

@@ -1427,6 +1427,10 @@ static void M_ResetPolyList(RENDERER *const renderer)
 
 static void M_DrawPolyList(RENDERER *const renderer)
 {
+    if (g_SurfaceCount == 0) {
+        return;
+    }
+
     M_PRIV *const priv = renderer->priv;
     ASSERT(renderer->initialized);
     ASSERT(renderer->open);
