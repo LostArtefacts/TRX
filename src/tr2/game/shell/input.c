@@ -161,9 +161,9 @@ void Shell_ProcessInput(void)
 
     if (g_InputDB.switch_internal_screen_size) {
         if (g_Input.slow) {
-            Shell_IncreaseScreenSize();
-        } else {
             Shell_DecreaseScreenSize();
+        } else {
+            Shell_IncreaseScreenSize();
         }
     }
 
