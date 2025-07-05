@@ -1,7 +1,8 @@
 #include "config.h"
+#include "debug.h"
 #include "game/const.h"
 #include "game/gun.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/output.h"
 
 void Gun_AddDynamicLight(void)
@@ -130,4 +131,50 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     default:          return nullptr;
     }
     // clang-format on
+}
+
+void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)
+{
+    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    ASSERT(obj_id != NO_OBJECT);
+    Lara_Mesh_SwapSingle(LM_HAND_L, obj_id);
+}
+
+void Gun_SetLaraHandRMesh(const LARA_GUN_TYPE weapon_type)
+{
+    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    ASSERT(obj_id != NO_OBJECT);
+    Lara_Mesh_SwapSingle(LM_HAND_R, obj_id);
+}
+
+void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
+{
+    const GAME_OBJECT_ID obj_id =
+        weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
+    ASSERT(obj_id != NO_OBJECT);
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+#if TR_VERSION == 1
+    Lara_Mesh_SwapSingle(LM_TORSO, obj_id);
+#else
+    lara_info->back_gun_obj_id = obj_id;
+#endif
+    lara_info->back_gun_type = weapon_type;
+}
+
+void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
+{
+    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    ASSERT(obj_id != NO_OBJECT);
+    Lara_Mesh_SwapSingle(LM_THIGH_L, obj_id);
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->holsters_gun_type = weapon_type;
+}
+
+void Gun_SetLaraHolsterRMesh(const LARA_GUN_TYPE weapon_type)
+{
+    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    ASSERT(obj_id != NO_OBJECT);
+    Lara_Mesh_SwapSingle(LM_THIGH_R, obj_id);
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->holsters_gun_type = weapon_type;
 }
