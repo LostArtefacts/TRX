@@ -199,8 +199,7 @@ int32_t Shell_Main(void)
         Object_Get(O_BIG_SPIDER)->setup_func = BigSpider_Setup;
     }
 
-    Shell_InitCommonModules();
-    Shell_LoadConfig();
+    Shell_CommonInit();
 
     if (!M_CreateGameWindow()) {
         Shell_ExitSystem("Failed to create game window");

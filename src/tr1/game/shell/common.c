@@ -190,8 +190,7 @@ bool Shell_ParseArgs(const int32_t arg_count, const char **args)
 
 int32_t Shell_Main(void)
 {
-    Shell_InitCommonModules();
-    Shell_LoadConfig();
+    Shell_CommonInit();
 
     M_CreateGameWindow();
 

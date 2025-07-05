@@ -60,7 +60,7 @@ void Shell_LoadConfig(void)
     Music_SetVolume(g_Config.audio.music_volume);
 }
 
-void Shell_InitCommonModules(void)
+void Shell_CommonInit(void)
 {
     Shell_SetupHiDPI();
     Shell_SetupLibAV();
@@ -78,11 +78,13 @@ void Shell_InitCommonModules(void)
     Input_Init();
     Sound_Init();
     Music_Init();
-    Clock_Init();
 
     GameBuf_Init();
     Random_Seed();
     Lara_Pose_Init();
+
+    Shell_LoadConfig();
+    Clock_Init();
 }
 
 void Shell_ShutdownCommonModules(void)

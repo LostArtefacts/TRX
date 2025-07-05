@@ -30,7 +30,7 @@ SHELL_SIZE Shell_GetCurrentDisplaySize(void);
 
 // TODO: inline these once we get common shell code
 void Shell_LoadConfig(void);
-void Shell_InitCommonModules(void);
+void Shell_CommonInit(void);
 void Shell_ShutdownCommonModules(void);
 
 void Shell_HandleCommonConfigChange(const CONFIG *old, const CONFIG *new);
