@@ -478,7 +478,7 @@ void Lara_Draw_I(
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_R], mesh_rots_2[LM_UARM_R]);
         Output_DrawObjectMesh_I(g_Lara.mesh_ptrs[LM_UARM_R], clip);
 
-// NOTE: gcc wrongly complains about mesh_rots_1 possibly being NULL.
+// NOTE: gcc wrongly complains about mesh_rots_1 possibly being nullptr.
 // While this is not the case, it's curious how the pistols subtract the
 // frame_base from g_Lara.*_arm.frame_num to access the mesh_rots, and the
 // rifles do not.

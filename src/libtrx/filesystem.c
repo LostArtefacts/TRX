@@ -49,7 +49,7 @@ static wchar_t *M_UTF8ToWide(const char *const utf8_str)
     }
     const size_t len = strlen(utf8_str);
     const size_t wide_len =
-        MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, NULL, 0);
+        MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, nullptr, 0);
     wchar_t *wide_str = Memory_Alloc((wide_len + 1) * sizeof(wchar_t));
     MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, wide_str, wide_len);
     wide_str[wide_len] = L'\0';
