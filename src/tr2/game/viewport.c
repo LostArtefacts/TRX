@@ -121,7 +121,9 @@ void Viewport_Reset(void)
 {
     Viewport_ResetCommon();
 
-    const SHELL_SIZE size = Shell_GetCurrentSize();
+    const VIEWPORT_RECT *const target = &g_Viewport_Rects[VIEWPORT_TARGET];
+    VIEWPORT_RECT *const game = &g_Viewport_Rects[VIEWPORT_GAME];
+    VIEWPORT_RECT *const ui = &g_Viewport_Rects[VIEWPORT_UI];
 
     VIEWPORT *const vp = &m_Viewport;
     switch (g_Config.rendering.aspect_mode) {
@@ -134,36 +136,30 @@ void Viewport_Reset(void)
         vp->render_ar.h = 9;
         break;
     case AM_ANY:
-        vp->render_ar.w = size.w;
-        vp->render_ar.h = size.h;
+        vp->render_ar.w = target->width;
+        vp->render_ar.h = target->height;
         break;
     }
 
-    int32_t width = size.w;
-    int32_t height = size.h;
+    ui->x = 0;
+    ui->y = 0;
+    ui->width = target->width;
+    ui->height = target->height;
     if (g_Config.rendering.aspect_mode != AM_ANY) {
-        width = height * vp->render_ar.w / vp->render_ar.h;
+        ui->width = ui->height * vp->render_ar.w / vp->render_ar.h;
     }
 
-    VIEWPORT_RECT *rect;
-    rect = &g_Viewport_Rects[VIEWPORT_UI];
-    rect->x = 0;
-    rect->y = 0;
-    rect->width = width;
-    rect->height = height;
-
-    rect = &g_Viewport_Rects[VIEWPORT_GAME];
-    rect->x = 0;
-    rect->y = 0;
-    rect->width = width / g_Config.rendering.upscaling_factor;
-    rect->height = height / g_Config.rendering.upscaling_factor;
+    game->x = ui->x;
+    game->y = ui->y;
+    game->width = ui->width / g_Config.rendering.upscaling_factor;
+    game->height = ui->height / g_Config.rendering.upscaling_factor;
 
     if (g_Config.rendering.render_mode == RM_SOFTWARE) {
         g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
     }
 
-    vp->width = rect->width;
-    vp->height = rect->height;
+    vp->width = game->width;
+    vp->height = game->height;
     vp->near_z = Output_GetNearZ() >> W2V_SHIFT;
     vp->far_z = Output_GetFarZ() >> W2V_SHIFT;
 
@@ -187,7 +183,7 @@ void Viewport_Reset(void)
     M_InitGameVars(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);
 
-    Render_SetupDisplay(size.w, size.h, vp->width, vp->height);
+    Render_SetupDisplay(target->width, target->height, vp->width, vp->height);
     Viewport_Debug();
 }
 

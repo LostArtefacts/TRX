@@ -13,9 +13,11 @@ static int16_t m_CurrentFOV = M_INITIAL_FOV;
 
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    if (x < 0 || y < 0 || width < 0 || height < 0) {
-        const SHELL_SIZE size = Shell_GetCurrentSize();
+    const VIEWPORT_RECT *const target = &g_Viewport_Rects[VIEWPORT_TARGET];
+    VIEWPORT_RECT *const game = &g_Viewport_Rects[VIEWPORT_GAME];
+    VIEWPORT_RECT *const ui = &g_Viewport_Rects[VIEWPORT_UI];
 
+    if (x < 0 || y < 0 || width < 0 || height < 0) {
         struct {
             int32_t w, h;
         } ar;
@@ -29,32 +31,29 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
             ar.h = 9;
             break;
         case AM_ANY:
-            ar.w = size.w;
-            ar.h = size.h;
+            ar.w = target->width;
+            ar.h = target->height;
             break;
         }
 
         x = 0;
         y = 0;
-        width = size.w;
-        height = size.h;
+        width = target->width;
+        height = target->height;
         if (g_Config.rendering.aspect_mode != AM_ANY) {
             width = height * ar.w / ar.h;
         }
     }
 
-    VIEWPORT_RECT *rect;
-    rect = &g_Viewport_Rects[VIEWPORT_UI];
-    rect->x = x;
-    rect->y = y;
-    rect->width = width;
-    rect->height = height;
+    ui->x = x;
+    ui->y = y;
+    ui->width = width;
+    ui->height = height;
 
-    rect = &g_Viewport_Rects[VIEWPORT_GAME];
-    rect->x = x;
-    rect->y = y;
-    rect->width = width / g_Config.rendering.upscaling_factor;
-    rect->height = height / g_Config.rendering.upscaling_factor;
+    game->x = x;
+    game->y = y;
+    game->width = width / g_Config.rendering.upscaling_factor;
+    game->height = height / g_Config.rendering.upscaling_factor;
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
