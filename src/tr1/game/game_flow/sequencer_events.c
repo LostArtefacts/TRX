@@ -24,7 +24,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap);
-static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
 static DECLARE_GF_EVENT_HANDLER(M_HandleMeshSwap);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 
@@ -37,11 +36,6 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_FLIP_MAP]         = M_HandleFlipMap,
-    [GFS_ADD_ITEM]         = M_HandleInventoryModifier,
-    [GFS_REMOVE_WEAPONS]   = M_HandleInventoryModifier,
-    [GFS_REMOVE_SCIONS]    = M_HandleInventoryModifier,
-    [GFS_REMOVE_AMMO]      = M_HandleInventoryModifier,
-    [GFS_REMOVE_MEDIPACKS] = M_HandleInventoryModifier,
     [GFS_MESH_SWAP]        = M_HandleMeshSwap,
     [GFS_SETUP_BACON_LARA] = M_HandleSetupBaconLara,
     // clang-format on
@@ -307,12 +301,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap)
     if (seq_ctx != GFSC_STORY) {
         Room_FlipMap();
     }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier)
-{
-    // handled in GF_InventoryModifier_Apply
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 

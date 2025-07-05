@@ -21,24 +21,17 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
-static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_LOOP_GAME]         = M_HandlePlayLevel,
-    [GFS_PLAY_MUSIC]        = M_HandlePlayMusic,
-    [GFS_LEVEL_COMPLETE]    = M_HandleLevelComplete,
-    [GFS_ENABLE_SUNSET]     = M_HandleEnableSunset,
-    [GFS_SET_CAMERA_ANGLE]  = M_HandleSetCameraAngle,
-    [GFS_DISABLE_FLOOR]     = M_HandleDisableFloor,
-    [GFS_ADD_ITEM]          = M_HandleInventoryModifier,
-    [GFS_ADD_SECRET_REWARD] = M_HandleInventoryModifier,
-    [GFS_REMOVE_WEAPONS]    = M_HandleInventoryModifier,
-    [GFS_REMOVE_AMMO]       = M_HandleInventoryModifier,
-    [GFS_REMOVE_FLARES]     = M_HandleInventoryModifier,
-    [GFS_REMOVE_MEDIPACKS]  = M_HandleInventoryModifier,
-    [GFS_SET_START_ANIM]    = M_HandleSetStartAnim,
+    [GFS_LOOP_GAME]        = M_HandlePlayLevel,
+    [GFS_PLAY_MUSIC]       = M_HandlePlayMusic,
+    [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
+    [GFS_ENABLE_SUNSET]    = M_HandleEnableSunset,
+    [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
+    [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
+    [GFS_SET_START_ANIM]   = M_HandleSetStartAnim,
     // clang-format on
 };
 
@@ -213,12 +206,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
         Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier)
-{
-    // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
