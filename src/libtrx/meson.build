@@ -252,6 +252,7 @@ sources = [
   'game/savegame/common.c',
   'game/scaler.c',
   'game/shell/common.c',
+  'game/shell/input.c',
   'game/shell/config.c',
   'game/shell/events.c',
   'game/shell/flow.c',

@@ -1,3 +1,4 @@
+#include "config.h"
 #include "debug.h"
 #include "game/shell.h"
 #include "log.h"
