@@ -107,33 +107,6 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->equipped_gun_type = LGT_GRENADE;
     }
 
-    if (g_GF_RemoveWeapons) {
-        resume->flags.has_pistols = false;
-        resume->flags.has_magnums = false;
-        resume->flags.has_uzis = false;
-        resume->flags.has_shotgun = false;
-        resume->flags.has_m16 = false;
-        resume->flags.has_grenade = false;
-        resume->flags.has_harpoon = false;
-        resume->equipped_gun_type = LGT_UNARMED;
-        resume->gun_status = LGS_ARMLESS;
-        g_GF_RemoveWeapons = false;
-    }
-
-    if (g_GF_RemoveAmmo) {
-        resume->m16_ammo = 0;
-        resume->grenade_ammo = 0;
-        resume->harpoon_ammo = 0;
-        resume->shotgun_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->pistol_ammo = 0;
-        resume->flares = 0;
-        resume->large_medipacks = 0;
-        resume->small_medipacks = 0;
-        g_GF_RemoveAmmo = false;
-    }
-
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
     resume->stats.max_secret_count = default_stats.max_secret_count;
     resume->stats.all_secrets_mask = default_stats.all_secrets_mask;

@@ -271,8 +271,6 @@ void GF_PreSequenceHook(
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
-    g_GF_RemoveAmmo = false;
-    g_GF_RemoveWeapons = false;
     Camera_GetCineData()->position.target_angle = DEG_90;
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);

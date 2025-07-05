@@ -158,6 +158,3 @@ WEAPON_INFO g_Weapons[] = {
         .sample_num = 43,
     },
 };
-
-bool g_GF_RemoveAmmo = false;
-bool g_GF_RemoveWeapons = false;
