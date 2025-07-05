@@ -4,16 +4,16 @@
 #include "game/viewport.h"
 #include "utils.h"
 
-static int32_t M_DoCalc(
-    const int32_t unit, const int32_t base_width, const int32_t base_height,
+static float M_DoCalc(
+    const float unit, const float base_width, const float base_height,
     const double factor)
 {
-    const int32_t vp_width = Viewport_GetWidth(VIEWPORT_GAME);
-    const int32_t vp_height = Viewport_GetHeight(VIEWPORT_GAME);
-    const int32_t sign = unit < 0 ? -1 : 1;
-    const int32_t sx =
+    const float vp_width = Viewport_GetWidth(VIEWPORT_GAME);
+    const float vp_height = Viewport_GetHeight(VIEWPORT_GAME);
+    const float sign = unit < 0 ? -1 : 1;
+    const float sx =
         ((double)vp_width * ABS(unit) * factor) / MAX(1, base_width);
-    const int32_t sy =
+    const float sy =
         ((double)vp_height * ABS(unit) * factor) / MAX(1, base_height);
     return MIN(sx, sy) * sign;
 }
@@ -32,12 +32,12 @@ double Scaler_GetScale(const SCALER_TARGET target)
     }
 }
 
-int32_t Scaler_Calc(const int32_t unit, const SCALER_TARGET target)
+float Scaler_Calc(const float unit, const SCALER_TARGET target)
 {
     return M_DoCalc(unit, 640, 480, Scaler_GetScale(target));
 }
 
-int32_t Scaler_CalcInverse(const int32_t unit, const SCALER_TARGET target)
+float Scaler_CalcInverse(const float unit, const SCALER_TARGET target)
 {
     return unit * 0x10000 / MAX(1, Scaler_Calc(0x10000, target));
 }

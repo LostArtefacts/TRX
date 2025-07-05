@@ -91,8 +91,8 @@ static M_GLYPH_INFO m_Glyphs[] = {
 static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
-static int32_t M_ScaleScreen(const int32_t value);
-static int32_t M_ScaleNeutral(const int32_t value);
+static float M_ScaleScreen(const float value);
+static float M_ScaleNeutral(const float value);
 static const M_GLYPH_INFO **M_Decompose(
     const char *content, size_t *out_glyph_count);
 static const M_GLYPH_INFO **M_DecomposeWithCache(
@@ -104,16 +104,16 @@ static size_t M_WordWrap(
     float max_width, char *dst);
 void M_Process(
     const char *text, float *out_w, float *out_h, UI_TEXT_SETTINGS settings,
-    float base_x, float base_y, int32_t (*scale_func)(int32_t),
+    float base_x, float base_y, float (*scale_func)(float),
     void (*draw_func)(
         int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int16_t));
 
-static int32_t M_ScaleScreen(const int32_t value)
+static float M_ScaleScreen(const float value)
 {
     return Scaler_Calc(value, SCALER_TARGET_TEXT);
 }
 
-static int32_t M_ScaleNeutral(const int32_t value)
+static float M_ScaleNeutral(const float value)
 {
     return value * g_Config.ui.text_scale;
 }
@@ -347,7 +347,7 @@ static size_t M_WordWrap(
 void M_Process(
     const char *const text, float *const out_w, float *const out_h,
     const UI_TEXT_SETTINGS settings, const float base_x, const float base_y,
-    int32_t (*const scale_func)(int32_t),
+    float (*const scale_func)(float),
     void (*const draw_func)(
         int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int16_t))
 {
@@ -359,7 +359,7 @@ void M_Process(
     ASSERT(glyphs != nullptr);
 
     const OBJECT *const obj = Object_Get(O_ALPHABET);
-    const int32_t scale = scale_func(UI_TEXT_BASE_SCALE * settings.scale);
+    const float scale = scale_func(UI_TEXT_BASE_SCALE * settings.scale);
 
     float x = scale_func(base_x / g_Config.ui.text_scale);
     float y = scale_func(
@@ -437,9 +437,9 @@ void M_Process(
             && glyph->combine_with.mesh_idx >= 0
             && glyph->combine_with.mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
-            const int32_t cx =
+            const float cx =
                 x + (glyph->combine_with.offset_x * scale / UI_TEXT_BASE_SCALE);
-            const int32_t cy =
+            const float cy =
                 y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
             draw_func(
                 cx, cy, 0, scale, scale,
