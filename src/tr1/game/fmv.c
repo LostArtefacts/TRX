@@ -12,6 +12,8 @@
 #include <libtrx/engine/audio.h>
 #include <libtrx/engine/video.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/console.h>
+#include <libtrx/game/game_flow.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/gfx/context.h>
@@ -85,6 +87,9 @@ static void M_UploadSurface(void *const surface, void *const user_data)
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_BeginScene();
+    Console_Draw();
+    Console_Control();
+    Console_Control();
     UI_EndScene();
     UI_Draw();
 }
@@ -122,7 +127,7 @@ static bool M_Play(const char *const file_path)
         Input_Update();
         Shell_ProcessInput();
         if (g_InputDB.menu_confirm || g_InputDB.menu_back
-            || Shell_IsExiting()) {
+            || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Video_Stop(video);
         }
     }
