@@ -98,17 +98,19 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         } else {
             // console /play level feature
             Savegame_InitCurrentInfo();
-            const GF_LEVEL *tmp_level = GF_GetLevelAfter(GF_GetFirstLevel());
-            while (tmp_level != nullptr) {
-                Savegame_CarryCurrentInfoToNextLevel(
-                    GF_GetLevelBefore(tmp_level), tmp_level);
+            const GF_LEVEL *tmp_level = GF_GetFirstLevel();
+            while (tmp_level != nullptr && tmp_level <= level) {
                 Savegame_ApplyLogicToCurrentInfo(tmp_level);
                 GF_InventoryModifier_Scan(tmp_level);
                 GF_InventoryModifier_Apply(tmp_level, GF_INV_REGULAR);
                 if (tmp_level == level) {
                     break;
                 }
-                tmp_level = GF_GetLevelAfter(tmp_level);
+                const GF_LEVEL *const next_level = GF_GetLevelAfter(tmp_level);
+                if (next_level != nullptr) {
+                    Savegame_CarryCurrentInfoToNextLevel(tmp_level, next_level);
+                }
+                tmp_level = next_level;
             }
         }
         break;
