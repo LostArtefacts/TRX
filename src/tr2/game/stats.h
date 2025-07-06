@@ -19,4 +19,3 @@ GAME_OBJECT_ID Stats_GetSecretObject(int32_t secret_idx);
 void Stats_AddKill(void);
 void Stats_AddAmmoHits(void);
 void Stats_AddAmmoUsed(void);
-void Stats_AddMedipacksUsed(double medipack_value);

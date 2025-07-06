@@ -78,6 +78,13 @@ void Stats_UpdateSecrets(LEVEL_STATS *const stats)
     }
 }
 
+void Stats_AddMedipacksUsed(const double medipack_value)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.medipacks_used += medipack_value;
+}
+
 void Stats_AddDeath(void)
 {
 #if TR_VERSION == 1

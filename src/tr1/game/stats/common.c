@@ -298,10 +298,3 @@ void Stats_AddAmmoUsed(void)
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     current_info->stats.ammo_used++;
 }
-
-void Stats_AddMedipacksUsed(const double medipack_value)
-{
-    RESUME_INFO *const current_info =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    current_info->stats.medipacks_used += medipack_value;
-}
