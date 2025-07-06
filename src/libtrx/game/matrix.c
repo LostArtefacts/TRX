@@ -6,14 +6,14 @@
 #define MAX_MATRICES 40
 #define MAX_NESTED_MATRICES 32
 
-MATRIX *g_MatrixPtr = nullptr;
-MATRIX g_W2VMatrix = {};
-
 static MATRIX m_MatrixStack[MAX_MATRICES] = {};
 static int32_t m_IMRate = 0;
 static int32_t m_IMFrac = 0;
 static MATRIX *m_IMMatrixPtr = nullptr;
 static MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = {};
+
+MATRIX *g_MatrixPtr = &m_MatrixStack[0];
+MATRIX g_W2VMatrix = {};
 
 static void M_RotYXZ(const int16_t ry, const int16_t rx, const int16_t rz)
 {
