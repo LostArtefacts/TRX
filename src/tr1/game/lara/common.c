@@ -220,26 +220,3 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     Lara_Mesh_Initialise(level);
     Gun_InitialiseNewWeapon();
 }
-
-void Lara_RevertToPistolsIfNeeded(void)
-{
-    if (!g_Config.gameplay.revert_to_pistols
-        || !Inv_RequestItem(O_PISTOL_ITEM)) {
-        return;
-    }
-
-    g_Lara.gun_type = LGT_PISTOLS;
-
-    if (g_Lara.gun_status != LGS_ARMLESS) {
-        g_Lara.holsters_gun_type = LGT_UNARMED;
-    }
-    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        g_Lara.back_gun_type = LGT_SHOTGUN;
-    } else {
-        g_Lara.back_gun_type = LGT_UNARMED;
-    }
-    Gun_InitialiseNewWeapon();
-    Gun_SetLaraHolsterLMesh(g_Lara.holsters_gun_type);
-    Gun_SetLaraHolsterRMesh(g_Lara.holsters_gun_type);
-    Gun_SetLaraBackMesh(g_Lara.back_gun_type);
-}

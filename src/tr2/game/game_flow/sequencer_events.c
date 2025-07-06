@@ -134,6 +134,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     } else if (level->type == GFL_CUTSCENE) {
         gf_cmd = GF_RunCutscene(level->num);
     } else {
+        if (seq_ctx != GFSC_SAVED && level != GF_GetFirstLevel()) {
+            Lara_RevertToPistolsIfNeeded();
+        }
         gf_cmd = GF_RunGame(level, seq_ctx);
     }
     if (gf_cmd.action == GF_LEVEL_COMPLETE) {

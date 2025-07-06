@@ -33,6 +33,7 @@
 - added an option to allow the audio to mute when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)
 - added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)
+- added an option to control whether or not Lara reverts to pistols when going from one level to another (Gameplay settings → General → Remember guns between levels) (#3455)
 - ⚠️ changed game flow logic for a level that follows one that removed Lara's guns e.g. Diving Area: re-adding pistols now needs to be done in the game flow file, similar to Atlantis in TR1
 - changed statistics details mode to be placed in the UI section
 - changed controls dialog to remember the player's preferred input method

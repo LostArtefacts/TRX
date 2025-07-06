@@ -142,6 +142,7 @@ typedef struct {
         bool enable_step_roll_boost;
         bool enable_enemy_rotation;
         bool enable_ally_targeting;
+        bool revert_to_pistols;
         int32_t turbo_speed;
         int32_t camera_speed;
         bool enable_game_modes;

@@ -29,9 +29,9 @@ X_UI_CFG_INT32(gameplay.maximum_save_slots,        GAMEPLAY_SETTINGS_MAXIMUM_SAV
 #endif
 
 X_UI_CFG_BOOL(gameplay.enable_enhanced_saves,      GAMEPLAY_SETTINGS_ENABLE_ENHANCED_SAVES)
+X_UI_CFG_BOOL_INV(gameplay.revert_to_pistols,      GAMEPLAY_SETTINGS_REMEMBER_GUNS_BETWEEN_LEVELS)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL_INV(gameplay.revert_to_pistols,      GAMEPLAY_SETTINGS_REMEMBER_GUNS_BETWEEN_LEVELS)
 X_UI_CFG_BOOL(gameplay.restore_ps1_enemies,        GAMEPLAY_SETTINGS_RESTORE_PS1_ENEMIES)
 X_UI_CFG_BOOL(gameplay.change_pierre_spawn,        GAMEPLAY_SETTINGS_CHANGE_PIERRE_SPAWN)
 X_UI_CFG_BOOL(gameplay.disable_trex_collision,     GAMEPLAY_SETTINGS_DISABLE_TREX_COLLISION)

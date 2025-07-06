@@ -1,6 +1,8 @@
 #include "game/lara/common.h"
 
 #include "config.h"
+#include "game/gun.h"
+#include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/matrix.h"
@@ -93,6 +95,35 @@ void Lara_Initialise(const GF_LEVEL *const level)
     } else {
         Lara_InitialiseInventory(level);
     }
+}
+
+void Lara_RevertToPistolsIfNeeded(void)
+{
+    if (!g_Config.gameplay.revert_to_pistols
+        || !Inv_RequestItem(O_PISTOL_ITEM)) {
+        return;
+    }
+
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+#if TR_VERSION == 1
+    lara_info->gun_type = LGT_PISTOLS;
+#else
+    lara_info->last_gun_type = LGT_PISTOLS;
+#endif
+    lara_info->holsters_gun_type = LGT_PISTOLS;
+
+    if (lara_info->gun_status != LGS_ARMLESS) {
+        lara_info->holsters_gun_type = LGT_UNARMED;
+    }
+    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+        lara_info->back_gun_type = LGT_SHOTGUN;
+    } else {
+        lara_info->back_gun_type = LGT_UNARMED;
+    }
+    Gun_InitialiseNewWeapon();
+    Gun_SetLaraHolsterLMesh(lara_info->holsters_gun_type);
+    Gun_SetLaraHolsterRMesh(lara_info->holsters_gun_type);
+    Gun_SetLaraBackMesh(lara_info->back_gun_type);
 }
 
 void Lara_SetStartAnimState(const LARA_EXTRA_STATE state)
