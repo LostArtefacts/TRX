@@ -392,8 +392,11 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
 
-    resume->lara_hitpoints = Lara_GetItem()->hit_points;
+    if (lara_item != nullptr) {
+        resume->lara_hitpoints = lara_item->hit_points;
+    }
     resume->flags.available = true;
     resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);

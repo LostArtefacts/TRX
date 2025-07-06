@@ -7,11 +7,6 @@ static GF_LEVEL_SETTINGS m_DefaultSettings = {
     .sfx_path = nullptr,
 };
 
-static GF_SEQUENCE_EVENT_TYPE m_LevelArgSequenceEvents[] = {
-    GFS_LOOP_GAME,
-    (GF_SEQUENCE_EVENT_TYPE)-1,
-};
-
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
     // Events without arguments

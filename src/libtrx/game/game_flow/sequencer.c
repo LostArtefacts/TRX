@@ -4,6 +4,7 @@
 #include "enum_map.h"
 #include "game/game.h"
 #include "game/game_flow/sequencer_priv.h"
+#include "game/inventory.h"
 #include "game/lara/common.h"
 #include "game/level.h"
 #include "game/savegame.h"
@@ -112,7 +113,7 @@ GF_COMMAND GF_InterpretSequence(
         }
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
-            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+            GF_InventoryModifier_ApplyToResumeInfo(level);
         }
         break;
 
@@ -131,24 +132,34 @@ GF_COMMAND GF_InterpretSequence(
                 Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
                 Savegame_ApplyLogicToCurrentInfo(level);
                 GF_InventoryModifier_Scan(level);
-                GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+                GF_InventoryModifier_ApplyToResumeInfo(level);
             }
         } else {
             // console /play level feature
-            Savegame_InitCurrentInfo();
-            const GF_LEVEL *tmp_level = GF_GetFirstLevel();
-            while (tmp_level != nullptr && tmp_level <= level) {
-                Savegame_ApplyLogicToCurrentInfo(tmp_level);
-                GF_InventoryModifier_Scan(tmp_level);
-                GF_InventoryModifier_Apply(tmp_level, GF_INV_REGULAR);
-                if (tmp_level == level) {
-                    break;
+            Inv_RemoveAllItems();
+            if (level == GF_GetGymLevel()) {
+                Savegame_InitCurrentInfo();
+                GF_InventoryModifier_Scan(level);
+                GF_InventoryModifier_ApplyToResumeInfo(level);
+            } else {
+                const GF_LEVEL *tmp_level = GF_GetFirstLevel();
+                Savegame_ResetCurrentInfo(tmp_level);
+                while (tmp_level != nullptr && tmp_level <= level) {
+                    Savegame_ApplyLogicToCurrentInfo(tmp_level);
+                    GF_InventoryModifier_Scan(tmp_level);
+                    GF_InventoryModifier_ApplyToResumeInfo(tmp_level);
+                    if (tmp_level == level) {
+                        break;
+                    }
+
+                    const GF_LEVEL *const next_level =
+                        GF_GetLevelAfter(tmp_level);
+                    if (next_level != nullptr) {
+                        Savegame_CarryCurrentInfoToNextLevel(
+                            tmp_level, next_level);
+                    }
+                    tmp_level = next_level;
                 }
-                const GF_LEVEL *const next_level = GF_GetLevelAfter(tmp_level);
-                if (next_level != nullptr) {
-                    Savegame_CarryCurrentInfoToNextLevel(tmp_level, next_level);
-                }
-                tmp_level = next_level;
             }
         }
         break;
@@ -165,7 +176,7 @@ GF_COMMAND GF_InterpretSequence(
         Savegame_ApplyLogicToCurrentInfo(level);
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
-            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+            GF_InventoryModifier_ApplyToResumeInfo(level);
         }
     }
 

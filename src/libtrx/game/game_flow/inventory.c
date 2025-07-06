@@ -13,13 +13,132 @@ static bool m_RemoveFlares = false;
 static bool m_RemoveMedipacks = false;
 static bool m_RemoveScions = false;
 
-static void M_ModifyInventory_GunOrAmmo(
-    RESUME_INFO *resume, GF_INV_TYPE type, LARA_GUN_TYPE gun_type);
-static void M_ModifyInventory_Item(GF_INV_TYPE type, GAME_OBJECT_ID obj_id);
+static bool M_ResumeInfo_HasWeapon(
+    const RESUME_INFO *resume, LARA_GUN_TYPE gun_type);
+static void M_ResumeInfo_SetWeapon(
+    RESUME_INFO *resume, LARA_GUN_TYPE gun_type, bool has_weapon);
+static void M_ResumeInfo_AddAmmo(
+    RESUME_INFO *resume, LARA_GUN_TYPE gun_type, int32_t ammo_qty);
+static void M_ResumeInfo_AddItem(
+    RESUME_INFO *resume, GAME_OBJECT_ID object_id, int32_t qty);
+
+static void M_ModifyResumeInfo_GunOrAmmo(
+    RESUME_INFO *resume, LARA_GUN_TYPE gun_type);
+static void M_ModifyResumeInfo_Item(
+    RESUME_INFO *resume, GAME_OBJECT_ID object_id);
 
 static void M_ModifyInventory_GunOrAmmo(
-    RESUME_INFO *const resume, const GF_INV_TYPE type,
-    const LARA_GUN_TYPE gun_type)
+    GF_INV_TYPE type, LARA_GUN_TYPE gun_type);
+static void M_ModifyInventory_Item(GF_INV_TYPE type, GAME_OBJECT_ID obj_id);
+
+static bool M_ResumeInfo_HasWeapon(
+    const RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
+{
+    switch (gun_type) {
+        // clang-format off
+    case LGT_PISTOLS: return resume->flags.has_pistols;
+    case LGT_MAGNUMS: return resume->flags.has_magnums;
+    case LGT_UZIS:    return resume->flags.has_uzis;
+    case LGT_SHOTGUN: return resume->flags.has_shotgun;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: return resume->flags.has_harpoon;
+    case LGT_M16:     return resume->flags.has_m16;
+    case LGT_GRENADE: return resume->flags.has_grenade;
+#endif
+    default: return false;
+        // clang-format on
+    }
+}
+
+static void M_ResumeInfo_SetWeapon(
+    RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type,
+    const bool has_weapon)
+{
+    switch (gun_type) {
+        // clang-format off
+    case LGT_PISTOLS: resume->flags.has_pistols = has_weapon; break;
+    case LGT_MAGNUMS: resume->flags.has_magnums = has_weapon; break;
+    case LGT_UZIS:    resume->flags.has_uzis = has_weapon; break;
+    case LGT_SHOTGUN: resume->flags.has_shotgun = has_weapon; break;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: resume->flags.has_harpoon = has_weapon; break;
+    case LGT_M16:     resume->flags.has_m16 = has_weapon; break;
+    case LGT_GRENADE: resume->flags.has_grenade = has_weapon; break;
+#endif
+    default: break;
+        // clang-format on
+    }
+}
+
+static void M_ResumeInfo_AddAmmo(
+    RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type,
+    const int32_t ammo_qty)
+{
+    switch (gun_type) {
+        // clang-format off
+    case LGT_MAGNUMS: resume->magnum_ammo += ammo_qty; break;
+    case LGT_UZIS:    resume->uzi_ammo += ammo_qty; break;
+    case LGT_SHOTGUN: resume->shotgun_ammo += ammo_qty; break;
+#if TR_VERSION >= 2
+    case LGT_HARPOON: resume->harpoon_ammo += ammo_qty; break;
+    case LGT_M16:     resume->m16_ammo += ammo_qty; break;
+    case LGT_GRENADE: resume->grenade_ammo += ammo_qty; break;
+#endif
+    default: break;
+        // clang-format on
+    }
+}
+
+static void M_ResumeInfo_AddItem(
+    RESUME_INFO *const resume, const GAME_OBJECT_ID object_id,
+    const int32_t qty)
+{
+    switch (object_id) {
+    case O_SMALL_MEDIPACK_ITEM:
+    case O_SMALL_MEDIPACK_OPTION:
+        resume->small_medipacks += qty;
+        break;
+    case O_LARGE_MEDIPACK_ITEM:
+    case O_LARGE_MEDIPACK_OPTION:
+        resume->large_medipacks += qty;
+        break;
+#if TR_VERSION >= 2
+    case O_FLARES_ITEM:
+    case O_FLARES_OPTION:
+    case O_FLARE_ITEM:
+        resume->flares += qty;
+        break;
+#endif
+    default:
+        break;
+    }
+}
+
+static void M_ModifyResumeInfo_GunOrAmmo(
+    RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
+{
+    const GAME_OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
+    const GAME_OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
+    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
+    AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
+
+    M_ResumeInfo_AddAmmo(
+        resume, gun_type, ammo_qty * m_Add2InvItems[ammo_item]);
+    if (!M_ResumeInfo_HasWeapon(resume, gun_type)
+        && m_Add2InvItems[gun_item] > 0) {
+        M_ResumeInfo_SetWeapon(resume, gun_type, true);
+        M_ResumeInfo_AddAmmo(resume, gun_type, ammo_qty);
+    }
+}
+
+static void M_ModifyResumeInfo_Item(
+    RESUME_INFO *const resume, const GAME_OBJECT_ID object_id)
+{
+    M_ResumeInfo_AddItem(resume, object_id, m_Add2InvItems[object_id]);
+}
+
+static void M_ModifyInventory_GunOrAmmo(
+    const GF_INV_TYPE type, const LARA_GUN_TYPE gun_type)
 {
     const GAME_OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
     const GAME_OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
@@ -36,24 +155,8 @@ static void M_ModifyInventory_GunOrAmmo(
             ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_item];
         }
     } else if (
-        (type == GF_INV_REGULAR && m_Add2InvItems[gun_item])
-        || (type == GF_INV_SECRET && m_SecretInvItems[gun_item])) {
-
-        // clang-format off
-        // TODO: consider moving this to Inv_AddItem
-        switch (gun_type) {
-        case LGT_PISTOLS: resume->flags.has_pistols = true; break;
-        case LGT_MAGNUMS: resume->flags.has_magnums = true; break;
-        case LGT_UZIS:    resume->flags.has_uzis = true;    break;
-        case LGT_SHOTGUN: resume->flags.has_shotgun = true; break;
-#if TR_VERSION >= 2
-        case LGT_HARPOON: resume->flags.has_harpoon = true; break;
-        case LGT_M16:     resume->flags.has_m16 = true;     break;
-        case LGT_GRENADE: resume->flags.has_grenade = true; break;
-#endif
-        default: break;
-        }
-        // clang-format on
+        (type == GF_INV_REGULAR && m_Add2InvItems[gun_item] > 0)
+        || (type == GF_INV_SECRET && m_SecretInvItems[gun_item] > 0)) {
 
         Inv_AddItem(gun_item);
 
@@ -138,8 +241,7 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
     }
 }
 
-void GF_InventoryModifier_Apply(
-    const GF_LEVEL *const level, const GF_INV_TYPE type)
+void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
@@ -161,7 +263,6 @@ void GF_InventoryModifier_Apply(
 
     if (!resume->flags.has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
         resume->flags.has_pistols = true;
-        Inv_AddItem(O_PISTOL_ITEM);
         if (resume->equipped_gun_type == LGT_UNARMED) {
             resume->equipped_gun_type = LGT_PISTOLS;
         }
@@ -197,12 +298,50 @@ void GF_InventoryModifier_Apply(
         m_RemoveMedipacks = false;
     }
 
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_MAGNUMS);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_UZIS);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_SHOTGUN);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_PISTOLS);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MAGNUMS);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_UZIS);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_SHOTGUN);
+#if TR_VERSION == 2
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_HARPOON);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_M16);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_GRENADE);
+#endif
 
-    M_ModifyInventory_Item(type, O_SMALL_MEDIPACK_ITEM);
-    M_ModifyInventory_Item(type, O_LARGE_MEDIPACK_ITEM);
+    M_ModifyResumeInfo_Item(resume, O_SMALL_MEDIPACK_ITEM);
+    M_ModifyResumeInfo_Item(resume, O_LARGE_MEDIPACK_ITEM);
+#if TR_VERSION == 2
+    M_ModifyResumeInfo_Item(resume, O_FLARE_ITEM);
+#endif
+}
+
+void GF_InventoryModifier_Apply(
+    const GF_LEVEL *const level, const GF_INV_TYPE type)
+{
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+
+    // For GF_INV_REGULAR, we must ignore weapons, ammo, medpacks and flares,
+    // as these are handled by RESUME_INFO and
+    // GF_InventoryModifier_ApplyToResumeInfo and Lara_InitialiseInventory.
+
+    if (type == GF_INV_SECRET) {
+        if (m_Add2InvItems[O_PISTOL_ITEM]) {
+            Inv_AddItem(O_PISTOL_ITEM);
+            if (resume->equipped_gun_type == LGT_UNARMED) {
+                resume->equipped_gun_type = LGT_PISTOLS;
+            }
+        }
+
+        M_ModifyInventory_GunOrAmmo(type, LGT_MAGNUMS);
+        M_ModifyInventory_GunOrAmmo(type, LGT_UZIS);
+        M_ModifyInventory_GunOrAmmo(type, LGT_SHOTGUN);
+#if TR_VERSION == 2
+        M_ModifyInventory_GunOrAmmo(type, LGT_HARPOON);
+        M_ModifyInventory_GunOrAmmo(type, LGT_M16);
+        M_ModifyInventory_GunOrAmmo(type, LGT_GRENADE);
+#endif
+    }
+
     M_ModifyInventory_Item(type, O_PICKUP_ITEM_1);
     M_ModifyInventory_Item(type, O_PICKUP_ITEM_2);
     M_ModifyInventory_Item(type, O_PUZZLE_ITEM_1);
@@ -213,16 +352,18 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_KEY_ITEM_2);
     M_ModifyInventory_Item(type, O_KEY_ITEM_3);
     M_ModifyInventory_Item(type, O_KEY_ITEM_4);
-
 #if TR_VERSION == 1
     M_ModifyInventory_Item(type, O_LEADBAR_ITEM);
     M_ModifyInventory_Item(type, O_SCION_ITEM_1);
     M_ModifyInventory_Item(type, O_SCION_ITEM_2);
-#else
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_HARPOON);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_M16);
-    M_ModifyInventory_GunOrAmmo(resume, type, LGT_GRENADE);
-
-    M_ModifyInventory_Item(type, O_FLARE_ITEM);
 #endif
+
+    if (type == GF_INV_SECRET) {
+        M_ModifyInventory_Item(type, O_SMALL_MEDIPACK_ITEM);
+        M_ModifyInventory_Item(type, O_LARGE_MEDIPACK_ITEM);
+
+#if TR_VERSION == 2
+        M_ModifyInventory_Item(type, O_FLARE_ITEM);
+#endif
+    }
 }
