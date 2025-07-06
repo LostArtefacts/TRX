@@ -2,6 +2,7 @@
 #include "game/console/registry.h"
 #include "game/const.h"
 #include "game/creature.h"
+#include "game/game.h"
 #include "game/game_string.h"
 #include "game/items.h"
 #include "game/lara/cheat.h"
@@ -169,6 +170,10 @@ static COMMAND_RESULT M_KillEnemyType(const char *const enemy_name)
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
+    if (!Game_IsLoaded()) {
+        return CR_UNAVAILABLE;
+    }
+
     if (String_Equivalent(ctx->args, "all")) {
         return M_KillAllEnemies();
     }

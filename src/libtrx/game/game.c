@@ -1,5 +1,6 @@
 #include "game/game.h"
 
+#include "game/fmv.h"
 #include "game/game_flow.h"
 #include "game/lara/common.h"
 #include "game/random.h"
@@ -36,8 +37,24 @@ bool Game_IsInGym(void)
     return current_level != nullptr && current_level->type == GFL_GYM;
 }
 
+bool Game_IsLoaded(void)
+{
+    if (FMV_IsPlaying()) {
+        return false;
+    }
+    const GF_LEVEL *const current_level = GF_GetCurrentLevel();
+    if (current_level == nullptr || current_level->type == GFL_TITLE) {
+        return false;
+    }
+    return true;
+}
+
 bool Game_IsPlayable(void)
 {
+    if (FMV_IsPlaying()) {
+        return false;
+    }
+
     const GF_LEVEL *const current_level = GF_GetCurrentLevel();
     if (current_level == nullptr || current_level->type == GFL_TITLE
         || current_level->type == GFL_DEMO
