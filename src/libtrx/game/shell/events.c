@@ -37,10 +37,6 @@ static void M_HandleKeyDown(const SDL_Event *const event)
         && Input_IsPressed(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_ENTER_CONSOLE)) {
-        // TODO: let this through once we rewrite rendering in TR2
-        if (TR_VERSION == 2 && FMV_IsPlaying()) {
-            return;
-        }
         Console_Open();
         // Zero out the next text event so the console-open glyph never
         // shows up.

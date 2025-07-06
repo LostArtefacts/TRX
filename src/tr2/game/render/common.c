@@ -199,7 +199,6 @@ void Render_EndScene(void)
 {
     RENDERER *const r = M_GetRenderer();
     r->EndScene(r);
-    GFX_Context_SwapBuffers();
 }
 
 void Render_LoadBackgroundFromTexture(

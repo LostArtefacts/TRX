@@ -165,6 +165,17 @@ static void M_DrawScaledSpriteC(
     const int16_t *obj_ptr, GFX_2D_SURFACE *target_surface,
     GFX_2D_SURFACE *alpha_surface);
 
+static void M_Init(RENDERER *renderer);
+static void M_Open(RENDERER *renderer);
+static void M_Close(RENDERER *renderer);
+static void M_Shutdown(RENDERER *renderer);
+static void M_Reset(RENDERER *renderer, RENDER_RESET_FLAGS flags);
+static void M_BeginScene(RENDERER *renderer);
+static void M_EndScene(RENDERER *renderer);
+static void M_ResetPolyList(RENDERER *renderer);
+static void M_DrawPolyList(RENDERER *renderer);
+static void M_SetWet(RENDERER *renderer, bool is_wet);
+
 static void M_InsertFlatFace3s(
     RENDERER *const renderer, const FACE3 *faces, int32_t num,
     SORT_TYPE sort_type);
