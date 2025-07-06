@@ -230,57 +230,42 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
 
+    LARA_GUN_TYPE request_gun_type = LGT_UNARMED;
     switch (obj_id) {
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
-        lara_info->request_gun_type = LGT_PISTOLS;
-        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
-            && lara_info->gun_type == LGT_PISTOLS) {
-            lara_info->gun_type = LGT_UNARMED;
-        }
+        request_gun_type = LGT_PISTOLS;
         break;
 
     case O_SHOTGUN_ITEM:
     case O_SHOTGUN_OPTION:
-        lara_info->request_gun_type = LGT_SHOTGUN;
-        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
-            && lara_info->gun_type == LGT_SHOTGUN) {
-            lara_info->gun_type = LGT_UNARMED;
-        }
+        request_gun_type = LGT_SHOTGUN;
         break;
 
     case O_MAGNUM_ITEM:
     case O_MAGNUM_OPTION:
-        lara_info->request_gun_type = LGT_MAGNUMS;
-        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
-            && lara_info->gun_type == LGT_MAGNUMS) {
-            lara_info->gun_type = LGT_UNARMED;
-        }
+        request_gun_type = LGT_MAGNUMS;
         break;
 
     case O_UZI_ITEM:
     case O_UZI_OPTION:
-        lara_info->request_gun_type = LGT_UZIS;
-        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
-            && lara_info->gun_type == LGT_UZIS) {
-            lara_info->gun_type = LGT_UNARMED;
-        }
+        request_gun_type = LGT_UZIS;
         break;
 
 #if TR_VERSION >= 2
     case O_HARPOON_ITEM:
     case O_HARPOON_OPTION:
-        lara_info->request_gun_type = LGT_HARPOON;
+        request_gun_type = LGT_HARPOON;
         break;
 
     case O_M16_ITEM:
     case O_M16_OPTION:
-        lara_info->request_gun_type = LGT_M16;
+        request_gun_type = LGT_M16;
         break;
 
     case O_GRENADE_ITEM:
     case O_GRENADE_OPTION:
-        lara_info->request_gun_type = LGT_GRENADE;
+        request_gun_type = LGT_GRENADE;
         break;
 
     case O_FLARES_ITEM:
@@ -353,6 +338,14 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
 
     default:
         break;
+    }
+
+    if (request_gun_type != LGT_UNARMED) {
+        lara_info->request_gun_type = request_gun_type;
+        if (lara_info->gun_status == LGS_ARMLESS
+            && lara_info->gun_type == request_gun_type) {
+            lara_info->gun_type = LGT_UNARMED;
+        }
     }
 }
 
