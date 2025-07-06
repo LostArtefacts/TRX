@@ -18,4 +18,3 @@ void Stats_AddKill(void);
 void Stats_AddPickup(void);
 void Stats_AddAmmoHits(void);
 void Stats_AddAmmoUsed(void);
-void Stats_AddMedipacksUsed(double medipack_value);

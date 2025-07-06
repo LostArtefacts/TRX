@@ -9,6 +9,8 @@
 #include "game/pathing.h"
 #include "game/rooms.h"
 #include "game/savegame.h"
+#include "game/sound.h"
+#include "game/stats.h"
 
 #define M_MOVE_ANIM_VELOCITY 12
 #define M_MOVE_SPEED 16
@@ -221,6 +223,137 @@ void Lara_RevertToPistolsIfNeeded(void)
     Gun_SetLaraHolsterLMesh(lara_info->holsters_gun_type);
     Gun_SetLaraHolsterRMesh(lara_info->holsters_gun_type);
     Gun_SetLaraBackMesh(lara_info->back_gun_type);
+}
+
+void Lara_UseItem(const GAME_OBJECT_ID obj_id)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    ITEM *const lara_item = Lara_GetItem();
+
+    switch (obj_id) {
+    case O_PISTOL_ITEM:
+    case O_PISTOL_OPTION:
+        lara_info->request_gun_type = LGT_PISTOLS;
+        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
+            && lara_info->gun_type == LGT_PISTOLS) {
+            lara_info->gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_SHOTGUN_ITEM:
+    case O_SHOTGUN_OPTION:
+        lara_info->request_gun_type = LGT_SHOTGUN;
+        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
+            && lara_info->gun_type == LGT_SHOTGUN) {
+            lara_info->gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_MAGNUM_ITEM:
+    case O_MAGNUM_OPTION:
+        lara_info->request_gun_type = LGT_MAGNUMS;
+        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
+            && lara_info->gun_type == LGT_MAGNUMS) {
+            lara_info->gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_UZI_ITEM:
+    case O_UZI_OPTION:
+        lara_info->request_gun_type = LGT_UZIS;
+        if (TR_VERSION == 1 && lara_info->gun_status == LGS_ARMLESS
+            && lara_info->gun_type == LGT_UZIS) {
+            lara_info->gun_type = LGT_UNARMED;
+        }
+        break;
+
+#if TR_VERSION >= 2
+    case O_HARPOON_ITEM:
+    case O_HARPOON_OPTION:
+        lara_info->request_gun_type = LGT_HARPOON;
+        break;
+
+    case O_M16_ITEM:
+    case O_M16_OPTION:
+        lara_info->request_gun_type = LGT_M16;
+        break;
+
+    case O_GRENADE_ITEM:
+    case O_GRENADE_OPTION:
+        lara_info->request_gun_type = LGT_GRENADE;
+        break;
+
+    case O_FLARES_ITEM:
+    case O_FLARES_OPTION:
+        lara_info->request_gun_type = LGT_FLARE;
+        break;
+#endif
+
+    case O_SMALL_MEDIPACK_ITEM:
+    case O_SMALL_MEDIPACK_OPTION:
+        if (lara_item->hit_points > 0
+            && lara_item->hit_points < LARA_MAX_HITPOINTS) {
+            lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
+            CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
+            Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
+            Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
+            Stats_AddMedipacksUsed(0.5);
+        }
+        break;
+
+    case O_LARGE_MEDIPACK_ITEM:
+    case O_LARGE_MEDIPACK_OPTION:
+        if (lara_item->hit_points > 0
+            && lara_item->hit_points < LARA_MAX_HITPOINTS) {
+            lara_item->hit_points = LARA_MAX_HITPOINTS;
+            Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
+            Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
+            Stats_AddMedipacksUsed(1);
+        }
+        break;
+
+    case O_KEY_ITEM_1:
+    case O_KEY_OPTION_1:
+    case O_KEY_ITEM_2:
+    case O_KEY_OPTION_2:
+    case O_KEY_ITEM_3:
+    case O_KEY_OPTION_3:
+    case O_KEY_ITEM_4:
+    case O_KEY_OPTION_4:
+    case O_PUZZLE_ITEM_1:
+    case O_PUZZLE_OPTION_1:
+    case O_PUZZLE_ITEM_2:
+    case O_PUZZLE_OPTION_2:
+    case O_PUZZLE_ITEM_3:
+    case O_PUZZLE_OPTION_3:
+    case O_PUZZLE_ITEM_4:
+    case O_PUZZLE_OPTION_4:
+#if TR_VERSION == 1
+    case O_LEADBAR_ITEM:
+    case O_LEADBAR_OPTION:
+    case O_SCION_ITEM_1:
+    case O_SCION_ITEM_2:
+    case O_SCION_ITEM_3:
+    case O_SCION_ITEM_4:
+    case O_SCION_OPTION:
+#endif
+    {
+        const int16_t receptacle_item_num = Object_FindReceptacle(obj_id);
+        if (receptacle_item_num == NO_ITEM
+            || lara_info->interact_target.item_num != NO_ITEM) {
+            Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+            return;
+        }
+
+        lara_info->interact_target.item_num = receptacle_item_num;
+        lara_info->interact_target.is_moving = true;
+        lara_info->interact_target.move_count = 0;
+        break;
+    }
+
+    default:
+        break;
+    }
 }
 
 void Lara_SetStartAnimState(const LARA_EXTRA_STATE state)
