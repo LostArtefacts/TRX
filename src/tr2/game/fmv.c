@@ -12,6 +12,7 @@
 #include <libtrx/engine/video.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
@@ -87,6 +88,11 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     GFX_2D_SURFACE *surface_ = surface;
     GFX_2D_Renderer_Upload(renderer_2d, &surface_->desc, surface_->buffer);
     GFX_2D_Renderer_Render(renderer_2d);
+
+    Output_SwitchViewport(VIEWPORT_UI);
+    UI_BeginScene();
+    UI_EndScene();
+    UI_Draw();
 }
 
 static bool M_Play(const char *const file_name)
