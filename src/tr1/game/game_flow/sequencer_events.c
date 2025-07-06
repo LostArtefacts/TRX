@@ -1,11 +1,5 @@
-#include "game/fmv.h"
 #include "game/game.h"
-#include "game/game_flow/common.h"
-#include "game/game_flow/sequencer.h"
-#include "game/game_flow/vars.h"
-#include "game/inventory.h"
 #include "game/lara.h"
-#include "game/level.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/savegame.h"
 #include "game/stats.h"
@@ -15,7 +9,6 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
-#include <libtrx/game/phase.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
@@ -46,86 +39,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const GF_LEVEL *const prev_level = GF_GetLevelBefore(level);
 
-    // before load
-    switch (seq_ctx) {
-    case GFSC_STORY:
+    if (seq_ctx == GFSC_STORY) {
         const int32_t savegame_level_num = (int32_t)(intptr_t)seq_ctx_arg;
         if (savegame_level_num == level->num) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         } else {
             return (GF_COMMAND) { .action = GF_NOOP };
-        }
-        break;
-
-    case GFSC_SAVED:
-        GF_InventoryModifier_Scan(level);
-        // reset current info to the defaults so that we do not do
-        // Item_GlobalReplace in the inventory initialization routines too early
-        Savegame_InitCurrentInfo();
-        break;
-
-    case GFSC_RESTART:
-        if (level == GF_GetGymLevel() || level == GF_GetFirstLevel()) {
-            Savegame_InitCurrentInfo();
-        } else {
-            Savegame_ResetCurrentInfo(level);
-            Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
-            Savegame_ApplyLogicToCurrentInfo(level);
-        }
-        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            GF_InventoryModifier_Scan(level);
-            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
-        }
-        break;
-
-    case GFSC_SELECT: {
-        const int16_t slot_num = Savegame_GetBoundSlot();
-        if (slot_num != -1) {
-            // select level feature
-            Savegame_InitCurrentInfo();
-            if (level->num > GF_GetFirstLevel()->num) {
-                Savegame_LoadOnlyResumeInfo(slot_num);
-                const GF_LEVEL *tmp_level = level;
-                while (tmp_level != nullptr) {
-                    Savegame_ResetCurrentInfo(tmp_level);
-                    tmp_level = GF_GetLevelAfter(tmp_level);
-                }
-                Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
-                Savegame_ApplyLogicToCurrentInfo(level);
-                GF_InventoryModifier_Scan(level);
-                GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
-            }
-        } else {
-            // console /play level feature
-            Savegame_InitCurrentInfo();
-            const GF_LEVEL *tmp_level = GF_GetFirstLevel();
-            while (tmp_level != nullptr && tmp_level <= level) {
-                Savegame_ApplyLogicToCurrentInfo(tmp_level);
-                GF_InventoryModifier_Scan(tmp_level);
-                GF_InventoryModifier_Apply(tmp_level, GF_INV_REGULAR);
-                if (tmp_level == level) {
-                    break;
-                }
-                const GF_LEVEL *const next_level = GF_GetLevelAfter(tmp_level);
-                if (next_level != nullptr) {
-                    Savegame_CarryCurrentInfoToNextLevel(tmp_level, next_level);
-                }
-                tmp_level = next_level;
-            }
-        }
-        break;
-    }
-
-    default:
-        if (level->type == GFL_GYM) {
-            Savegame_ResetCurrentInfo(level);
-        } else if (level->type == GFL_BONUS) {
-            Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
-        }
-        Savegame_ApplyLogicToCurrentInfo(level);
-        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            GF_InventoryModifier_Scan(level);
-            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
         }
     }
 
@@ -133,26 +52,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     g_GameInfo.select_save_slot = -1;
 
     gf_cmd = GF_RunSequencerQueue(
-        GF_EVENT_QUEUE_BEFORE_LEVEL_INIT, level, seq_ctx, seq_ctx_arg);
-    if (gf_cmd.action != GF_NOOP) {
-        return gf_cmd;
-    }
-
-    // load the level
-    if (!Level_Initialise(level, seq_ctx)) {
-        Game_SetCurrentLevel(nullptr);
-        GF_SetCurrentLevel(nullptr);
-        if (level->type == GFL_TITLE) {
-            gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
-        } else {
-            gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        }
-    }
-
-    gf_cmd = GF_RunSequencerQueue(
         GF_EVENT_QUEUE_AFTER_LEVEL_INIT, level, seq_ctx, seq_ctx_arg);
     if (gf_cmd.action != GF_NOOP) {
         return gf_cmd;
+    }
+
+    if (Lara_GetItem() != nullptr) {
+        Lara_Initialise(level);
     }
 
     // post load

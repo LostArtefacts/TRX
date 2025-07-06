@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../virtual_file.h"
+#include "../game_flow/types.h"
 #include "./types.h"
 
 #define ANIM_BONE_SIZE 4
@@ -54,3 +55,6 @@ void Level_LoadAnimFrames(void);
 void Level_LoadObjectsAndItems(void);
 
 LEVEL_INFO *Level_GetInfo(void);
+
+extern bool Level_Initialise(
+    const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
