@@ -410,17 +410,8 @@ bool Level_Initialise(
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
 
-    Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
     Sound_ResetEffects();
-
-    const bool disable_music =
-        level->type == GFL_TITLE && !g_Config.audio.enable_music_in_menu;
-    if (level->music_track >= 0 && !disable_music) {
-        Music_Play(
-            level->music_track,
-            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
-    }
 
     Viewport_AlterFOV(-1);
 

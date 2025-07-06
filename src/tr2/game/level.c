@@ -26,7 +26,6 @@
 #include <libtrx/game/gym.h>
 #include <libtrx/game/inject.h>
 #include <libtrx/game/level.h>
-#include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/option.h>
 #include <libtrx/log.h>
@@ -459,12 +458,6 @@ bool Level_Initialise(
     Option_Reset();
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
-
-    if (level->music_track != MX_INACTIVE) {
-        Music_Play(
-            level->music_track,
-            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
-    }
 
     Gym_ResetAssault();
     return true;

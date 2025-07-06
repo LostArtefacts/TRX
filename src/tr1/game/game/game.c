@@ -81,6 +81,14 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     Camera_Initialise();
     Interpolation_Remember();
     Stats_StartTimer();
+
+    Sound_ResetEffects();
+    if (level->music_track != MX_INACTIVE) {
+        Music_Play(
+            level->music_track,
+            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
+    }
+
     return true;
 }
 
