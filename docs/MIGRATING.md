@@ -52,6 +52,11 @@
     - Replace `"detonator_1"` with `"gong"`.
     - Replace `"detonator_2"` with `"detonator_box"`.
 
+2. **Re-add pistols**  
+   Pistols are no longer added automatically to a level that follows one in
+   which Lara previously lost her weapons. A game flow entry to re-add pistols
+   will be required - refer to the Diving Area level in the default game flow.
+
 ### Version 1.0.2 to 1.1
 
 1. **Update first level inventory allocation**  
