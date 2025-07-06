@@ -89,6 +89,13 @@ bool Cutscene_Start(const int32_t level_num)
     }
 
     Camera_GetCineData()->frame_idx = 0;
+
+    if (level->music_track != MX_INACTIVE) {
+        Music_Play(
+            level->music_track,
+            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
+    }
+
     return true;
 }
 

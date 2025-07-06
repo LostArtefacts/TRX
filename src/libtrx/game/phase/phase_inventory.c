@@ -1,7 +1,10 @@
 #include "game/phase/phase_inventory.h"
 
+#include "config.h"
 #include "debug.h"
+#include "game/game_flow.h"
 #include "game/inventory_ring.h"
+#include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "memory.h"
@@ -19,6 +22,17 @@ static void M_Draw(PHASE *phase);
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+
+    const GF_LEVEL *const level = GF_GetTitleLevel();
+#if TR_VERSION == 1
+    const bool enable = g_Config.audio.enable_music_in_menu;
+#else
+    const bool enable = true;
+#endif
+    if (p->mode == INV_TITLE_MODE && enable && level->music_track >= 0) {
+        Music_Play(level->music_track, MPM_LOOPED);
+    }
+
     p->ring = InvRing_Open(p->mode);
     if (p->ring == nullptr) {
         return (PHASE_CONTROL) {
@@ -44,6 +58,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    Music_Stop();
     if (p->ring != nullptr) {
         InvRing_Close(p->ring);
         p->ring = nullptr;
