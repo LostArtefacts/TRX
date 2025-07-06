@@ -11,6 +11,8 @@
 #include <libtrx/engine/audio.h>
 #include <libtrx/engine/video.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/console.h>
+#include <libtrx/game/game_flow.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/log.h>
@@ -84,6 +86,8 @@ static void M_UnlockSurface(void *const surface, void *const user_data)
 
 static void M_UploadSurface(void *const surface, void *const user_data)
 {
+    Render_BeginScene();
+
     GFX_2D_RENDERER *renderer_2d = user_data;
     GFX_2D_SURFACE *surface_ = surface;
     GFX_2D_Renderer_Upload(renderer_2d, &surface_->desc, surface_->buffer);
@@ -91,8 +95,12 @@ static void M_UploadSurface(void *const surface, void *const user_data)
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_BeginScene();
+    Console_Draw();
+    Console_Control();
+    Console_Control();
     UI_EndScene();
     UI_Draw();
+    Render_EndScene();
 }
 
 static bool M_Play(const char *const file_name)
@@ -145,7 +153,7 @@ static bool M_Play(const char *const file_name)
         Input_Update();
         Shell_ProcessInput();
         if (g_InputDB.menu_back || g_InputDB.menu_confirm
-            || Shell_IsExiting()) {
+            || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Video_Stop(video);
             break;
         }

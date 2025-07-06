@@ -1325,6 +1325,8 @@ static void M_BeginScene(RENDERER *const renderer)
 
 static void M_EndScene(RENDERER *const renderer)
 {
+    M_PRIV *const priv = renderer->priv;
+    GFX_3D_Renderer_Flush(priv->renderer_3d);
 }
 
 static void M_Reset(RENDERER *const renderer, const RENDER_RESET_FLAGS flags)

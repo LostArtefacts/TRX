@@ -677,6 +677,7 @@ void Output_BeginScene(void)
 void Output_EndScene(void)
 {
     Render_EndScene();
+    GFX_Context_SwapBuffers();
     Shell_ProcessEvents();
 }
 
