@@ -8,7 +8,7 @@
 LARA_INFO *Lara_GetLaraInfo(void);
 ITEM *Lara_GetItem(void);
 void Lara_Initialise(const GF_LEVEL *level);
-extern void Lara_InitialiseInventory(const GF_LEVEL *level);
+void Lara_InitialiseInventory(const GF_LEVEL *level);
 void Lara_RevertToPistolsIfNeeded(void);
 void Lara_SetStartAnimState(LARA_EXTRA_STATE state);
 bool Lara_IsControllable(void);

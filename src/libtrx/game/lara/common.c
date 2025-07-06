@@ -97,6 +97,103 @@ void Lara_Initialise(const GF_LEVEL *const level)
     }
 }
 
+void Lara_InitialiseInventory(const GF_LEVEL *const level)
+{
+    Inv_RemoveAllItems();
+
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+
+    if (resume != nullptr) {
+        lara_info->pistol_ammo.ammo = 1000;
+        if (resume->flags.has_pistols) {
+            Inv_AddItem(O_PISTOL_ITEM);
+        }
+
+        if (resume->flags.has_magnums) {
+            Inv_AddItem(O_MAGNUM_ITEM);
+            lara_info->magnum_ammo.ammo = resume->magnum_ammo;
+            Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_MAGNUM_AMMO_ITEM, resume->magnum_ammo / MAGNUM_AMMO_QTY);
+            lara_info->magnum_ammo.ammo = 0;
+        }
+
+        if (resume->flags.has_uzis) {
+            Inv_AddItem(O_UZI_ITEM);
+            lara_info->uzi_ammo.ammo = resume->uzi_ammo;
+            Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(O_UZI_AMMO_ITEM, resume->uzi_ammo / UZI_AMMO_QTY);
+            lara_info->uzi_ammo.ammo = 0;
+        }
+
+        if (resume->flags.has_shotgun) {
+            Inv_AddItem(O_SHOTGUN_ITEM);
+            lara_info->shotgun_ammo.ammo = resume->shotgun_ammo;
+            Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_SHOTGUN_AMMO_ITEM, resume->shotgun_ammo / SHOTGUN_AMMO_QTY);
+            lara_info->shotgun_ammo.ammo = 0;
+        }
+
+        Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
+        Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
+#if TR_VERSION == 1
+        Inv_AddItemNTimes(O_SCION_ITEM_1, resume->num_scions);
+
+        lara_info->gun_status = resume->gun_status;
+        lara_info->gun_type = resume->equipped_gun_type;
+        lara_info->request_gun_type = resume->equipped_gun_type;
+#else
+        Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
+
+        if (resume->flags.has_m16) {
+            Inv_AddItem(O_M16_ITEM);
+            lara_info->m16_ammo.ammo = resume->m16_ammo;
+            Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(O_M16_AMMO_ITEM, resume->m16_ammo / M16_AMMO_QTY);
+            lara_info->m16_ammo.ammo = 0;
+        }
+
+        if (resume->flags.has_grenade) {
+            Inv_AddItem(O_GRENADE_ITEM);
+            lara_info->grenade_ammo.ammo = resume->grenade_ammo;
+            Item_GlobalReplace(O_GRENADE_ITEM, O_GRENADE_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_GRENADE_AMMO_ITEM, resume->grenade_ammo / GRENADE_AMMO_QTY);
+            lara_info->grenade_ammo.ammo = 0;
+        }
+
+        if (resume->flags.has_harpoon) {
+            Inv_AddItem(O_HARPOON_ITEM);
+            lara_info->harpoon_ammo.ammo = resume->harpoon_ammo;
+            Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_HARPOON_AMMO_ITEM, resume->harpoon_ammo / HARPOON_AMMO_QTY);
+            lara_info->harpoon_ammo.ammo = 0;
+        }
+
+        lara_info->last_gun_type = resume->equipped_gun_type;
+#endif
+        lara_info->holsters_gun_type = resume->holsters_gun_type;
+        lara_info->back_gun_type = resume->back_gun_type;
+    }
+
+#if TR_VERSION == 2
+    lara_info->gun_status = LGS_ARMLESS;
+    lara_info->gun_type = lara_info->last_gun_type;
+    lara_info->request_gun_type = lara_info->last_gun_type;
+#endif
+    Lara_Mesh_Initialise(level);
+    Gun_InitialiseNewWeapon();
+}
+
 void Lara_RevertToPistolsIfNeeded(void)
 {
     if (!g_Config.gameplay.revert_to_pistols
