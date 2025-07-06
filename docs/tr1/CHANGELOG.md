@@ -25,6 +25,7 @@
 - added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
 - added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - added an option to allow the audio to play when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
+- added the ability to use the dev console during FMVs played after showing the title ring
 - changed statistics details mode to be placed in the UI section
 - changed controls dialog to remember the player's preferred input method
 - changed UI to show icons relevant to the chosen input method
