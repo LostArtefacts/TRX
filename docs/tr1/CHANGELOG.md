@@ -50,6 +50,7 @@
 - fixed already playing samples not getting muted when the game window goes out of focus
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
+- fixed carrying over items from the first level when the player issues `/play` command
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window
