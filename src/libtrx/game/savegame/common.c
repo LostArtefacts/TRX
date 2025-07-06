@@ -36,6 +36,7 @@ static bool M_FillSlot(
 static void M_ScanSavedGamesDir(const char *dir_path);
 static void M_LoadPreprocess(void);
 static void M_LoadPostprocess(void);
+static void M_DetermineLegacyGunTypes(RESUME_INFO *resume);
 
 static void M_ClearSlots(void)
 {
@@ -155,6 +156,57 @@ static void M_LoadPostprocess(void)
     if (lara->burn && !g_Config.gameplay.enable_enhanced_saves) {
         lara->burn = false;
         Lara_CatchFire();
+    }
+}
+
+static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
+{
+    // Fallback logic to figure out holster and back gun items for saves from
+    // TR1X 4.2 and earlier (including TombATI) and TR2X 1.2 and earlier, where
+    // these values are missing. Make educated guesses based on the type of gun
+    // equipped.
+    if (resume->holsters_gun_type == LGT_UNKNOWN) {
+        switch (resume->equipped_gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            resume->holsters_gun_type = resume->equipped_gun_type;
+            break;
+        case LGT_SHOTGUN:
+#if TR_VERSION >= 2
+        case LGT_M16:
+        case LGT_GRENADE:
+        case LGT_HARPOON:
+#endif
+            if (resume->flags.has_pistols) {
+                resume->holsters_gun_type = LGT_PISTOLS;
+            } else if (resume->flags.has_magnums) {
+                resume->holsters_gun_type = LGT_MAGNUMS;
+            } else if (resume->flags.has_uzis) {
+                resume->holsters_gun_type = LGT_UZIS;
+            } else {
+                resume->holsters_gun_type = LGT_UNARMED;
+            }
+            break;
+        default:
+            resume->holsters_gun_type = LGT_UNARMED;
+            break;
+        }
+    }
+    if (resume->back_gun_type == LGT_UNKNOWN) {
+        resume->back_gun_type = LGT_UNARMED;
+        if (resume->flags.has_shotgun) {
+            resume->back_gun_type = LGT_SHOTGUN;
+        }
+#if TR_VERSION >= 2
+        else if (resume->flags.has_m16) {
+            resume->back_gun_type = LGT_M16;
+        } else if (resume->flags.has_grenade) {
+            resume->back_gun_type = LGT_GRENADE;
+        } else if (resume->flags.has_harpoon) {
+            resume->back_gun_type = LGT_HARPOON;
+        }
+#endif
     }
 }
 
@@ -539,7 +591,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     resume->stats.all_secrets_mask = default_stats.all_secrets_mask;
 #endif
 
-    Savegame_DetermineLegacyGunTypes(resume);
+    M_DetermineLegacyGunTypes(resume);
 }
 
 void Savegame_ProcessItemsBeforeSave(void)
@@ -749,55 +801,4 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num)
 
     Savegame_SetInitialVersion(m_SavegameInfo[slot_num].initial_version);
     return ret;
-}
-
-void Savegame_DetermineLegacyGunTypes(RESUME_INFO *const resume)
-{
-    // Fallback logic to figure out holster and back gun items for saves from
-    // TR1X 4.2 and earlier (including TombATI) and TR2X 1.2 and earlier, where
-    // these values are missing. Make educated guesses based on the type of gun
-    // equipped.
-    if (resume->holsters_gun_type == LGT_UNKNOWN) {
-        switch (resume->equipped_gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_UZIS:
-            resume->holsters_gun_type = resume->equipped_gun_type;
-            break;
-        case LGT_SHOTGUN:
-#if TR_VERSION >= 2
-        case LGT_M16:
-        case LGT_GRENADE:
-        case LGT_HARPOON:
-#endif
-            if (resume->flags.has_pistols) {
-                resume->holsters_gun_type = LGT_PISTOLS;
-            } else if (resume->flags.has_magnums) {
-                resume->holsters_gun_type = LGT_MAGNUMS;
-            } else if (resume->flags.has_uzis) {
-                resume->holsters_gun_type = LGT_UZIS;
-            } else {
-                resume->holsters_gun_type = LGT_UNARMED;
-            }
-            break;
-        default:
-            resume->holsters_gun_type = LGT_UNARMED;
-            break;
-        }
-    }
-    if (resume->back_gun_type == LGT_UNKNOWN) {
-        resume->back_gun_type = LGT_UNARMED;
-        if (resume->flags.has_shotgun) {
-            resume->back_gun_type = LGT_SHOTGUN;
-        }
-#if TR_VERSION >= 2
-        else if (resume->flags.has_m16) {
-            resume->back_gun_type = LGT_M16;
-        } else if (resume->flags.has_grenade) {
-            resume->back_gun_type = LGT_GRENADE;
-        } else if (resume->flags.has_harpoon) {
-            resume->back_gun_type = LGT_HARPOON;
-        }
-#endif
-    }
 }
