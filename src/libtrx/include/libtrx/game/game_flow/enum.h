@@ -28,9 +28,7 @@ typedef enum {
 typedef enum {
     GFSC_NORMAL,
     GFSC_SAVED,
-#if TR_VERSION == 1
     GFSC_RESTART,
-#endif
     GFSC_SELECT,
     GFSC_STORY,
 } GF_SEQUENCE_CONTEXT;
@@ -90,7 +88,6 @@ typedef enum {
 
 typedef enum {
     GF_EVENT_QUEUE_NONE = -1,
-    GF_EVENT_QUEUE_BEFORE_LEVEL_INIT,
     GF_EVENT_QUEUE_AFTER_LEVEL_INIT,
     GF_EVENT_QUEUE_NUMBER_OF,
 } GF_EVENT_QUEUE_TYPE;

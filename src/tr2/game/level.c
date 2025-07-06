@@ -443,9 +443,6 @@ bool Level_Initialise(
     }
     GameStringTable_Apply(level);
 
-    if (g_Lara.item_num != NO_ITEM) {
-        Lara_Initialise(level);
-    }
     Carrier_InitialiseLevel(level);
 
     if (seq_ctx != GFSC_SAVED) {

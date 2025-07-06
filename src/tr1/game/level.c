@@ -345,6 +345,7 @@ void Level_Load(const GF_LEVEL *const level)
 
 void Level_Unload(void)
 {
+    Lara_InitialiseLoad(NO_ITEM);
     Output_ObserveLevelUnload();
 }
 
@@ -388,14 +389,9 @@ bool Level_Initialise(
     Camera_Reset();
     Pierre_Reset();
 
-    Lara_InitialiseLoad(NO_ITEM);
     Level_Unload();
     Level_Load(level);
     GameStringTable_Apply(level);
-
-    if (g_Lara.item_num != NO_ITEM) {
-        Lara_Initialise(level);
-    }
 
     if (seq_ctx != GFSC_SAVED) {
         // Avoid initialising the floor before movable block positions have

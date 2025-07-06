@@ -26,6 +26,7 @@ GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
+    case LGT_UNKNOWN: return O_LARA;
     case LGT_UNARMED: return O_LARA;
     case LGT_PISTOLS: return O_LARA_PISTOLS;
     case LGT_MAGNUMS: return O_LARA_MAGNUMS;

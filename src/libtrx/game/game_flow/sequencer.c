@@ -2,7 +2,11 @@
 
 #include "debug.h"
 #include "enum_map.h"
+#include "game/game.h"
 #include "game/game_flow/sequencer_priv.h"
+#include "game/lara/common.h"
+#include "game/level.h"
+#include "game/savegame.h"
 
 #define M_MAX_QUEUE_SIZE 10
 
@@ -74,9 +78,109 @@ GF_COMMAND GF_InterpretSequence(
         "running sequence for level=%d type=%d seq_ctx=%d", level->num,
         level->type, seq_ctx);
 
+#if TR_VERSION == 1
+    if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
+        return (GF_COMMAND) { .action = GF_NOOP };
+    }
+#endif
+
     GF_PreSequenceHook(seq_ctx, seq_ctx_arg);
 
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
+
+    const GF_LEVEL *const prev_level = GF_GetLevelBefore(level);
+
+    // before load
+    switch (seq_ctx) {
+    case GFSC_STORY:
+        break;
+
+    case GFSC_SAVED:
+        GF_InventoryModifier_Scan(level);
+        // reset current info to the defaults so that we do not do
+        // Item_GlobalReplace in the inventory initialization routines too early
+        Savegame_InitCurrentInfo();
+        break;
+
+    case GFSC_RESTART:
+        if (level == GF_GetGymLevel() || level == GF_GetFirstLevel()) {
+            Savegame_InitCurrentInfo();
+        } else {
+            Savegame_ResetCurrentInfo(level);
+            Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
+            Savegame_ApplyLogicToCurrentInfo(level);
+        }
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            GF_InventoryModifier_Scan(level);
+            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+        }
+        break;
+
+    case GFSC_SELECT: {
+        const int16_t slot_num = Savegame_GetBoundSlot();
+        if (slot_num != -1) {
+            // select level feature
+            Savegame_InitCurrentInfo();
+            if (level->num > GF_GetFirstLevel()->num) {
+                Savegame_LoadOnlyResumeInfo(slot_num);
+                const GF_LEVEL *tmp_level = level;
+                while (tmp_level != nullptr) {
+                    Savegame_ResetCurrentInfo(tmp_level);
+                    tmp_level = GF_GetLevelAfter(tmp_level);
+                }
+                Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
+                Savegame_ApplyLogicToCurrentInfo(level);
+                GF_InventoryModifier_Scan(level);
+                GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+            }
+        } else {
+            // console /play level feature
+            Savegame_InitCurrentInfo();
+            const GF_LEVEL *tmp_level = GF_GetFirstLevel();
+            while (tmp_level != nullptr && tmp_level <= level) {
+                Savegame_ApplyLogicToCurrentInfo(tmp_level);
+                GF_InventoryModifier_Scan(tmp_level);
+                GF_InventoryModifier_Apply(tmp_level, GF_INV_REGULAR);
+                if (tmp_level == level) {
+                    break;
+                }
+                const GF_LEVEL *const next_level = GF_GetLevelAfter(tmp_level);
+                if (next_level != nullptr) {
+                    Savegame_CarryCurrentInfoToNextLevel(tmp_level, next_level);
+                }
+                tmp_level = next_level;
+            }
+        }
+        break;
+    }
+
+    default:
+#if TR_VERSION == 1
+        if (level->type == GFL_GYM) {
+            Savegame_ResetCurrentInfo(level);
+        } else if (level->type == GFL_BONUS) {
+            Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
+        }
+#endif
+        Savegame_ApplyLogicToCurrentInfo(level);
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            GF_InventoryModifier_Scan(level);
+            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+        }
+    }
+
+    // load the level
+    if (seq_ctx != GFSC_STORY || level->type == GFL_CUTSCENE) {
+        if (!Level_Initialise(level, seq_ctx)) {
+            Game_SetCurrentLevel(nullptr);
+            GF_SetCurrentLevel(nullptr);
+            if (level->type == GFL_TITLE) {
+                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
+            } else {
+                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            }
+        }
+    }
 
     const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {
