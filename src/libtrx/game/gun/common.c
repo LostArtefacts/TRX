@@ -117,6 +117,9 @@ int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
 AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info == nullptr) {
+        return nullptr;
+    }
     // clang-format off
     switch (gun_type) {
     case LGT_PISTOLS: return &lara_info->pistol_ammo;

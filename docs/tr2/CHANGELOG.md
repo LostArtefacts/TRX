@@ -74,6 +74,7 @@
 - fixed support for >3 secret dragons in custom levels (#3415, regression from 1.2)
 - fixed level select picking one level ahead of the one chosen if the gym is disabled (#3446, regression from 1.0)
 - fixed Lara's holsters resetting at times to incorrect meshes when using the fly cheat (#3451, regression from 0.3)
+- fixed the `/play` command starting the level with wrong items sometimes (#3147, regression from 1.1)
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - improved support for >3 secret dragons in custom levels up to 16 dragons
