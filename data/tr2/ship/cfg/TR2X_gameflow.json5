@@ -180,6 +180,7 @@
             "music_track": 54,
             "sequence": [
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
+                {"type": "give_item", "object_id": "pistols", "quantity": 1},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 2},
                 {"type": "play_music", "music_track": 37},

@@ -59,13 +59,13 @@ void Savegame_ResetCurrentInfo(const GF_LEVEL *level);
 void Savegame_CarryCurrentInfoToNextLevel(
     const GF_LEVEL *src_level, const GF_LEVEL *dst_level);
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
+void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
 
 void Savegame_SetDefaultStats(const GF_LEVEL *level, STATS_COMMON stats);
 STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);
 
 extern int32_t Savegame_GetSlotCount(void);
 extern void Savegame_HighlightNewestSlot(void);
-extern void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
 void Savegame_DetermineLegacyGunTypes(RESUME_INFO *resume);
 
 #define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
