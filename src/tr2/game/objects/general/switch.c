@@ -1,6 +1,5 @@
 #include "game/input.h"
-#include "game/lara/control.h"
-#include "game/lara/misc.h"
+#include "game/lara.h"
 #include "global/vars.h"
 
 typedef enum {

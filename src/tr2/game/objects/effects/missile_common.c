@@ -1,8 +1,7 @@
 #include "game/objects/effects/missile_common.h"
 
 #include "game/effects.h"
-#include "game/lara/control.h"
-#include "game/lara/misc.h"
+#include "game/lara.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/sound.h"

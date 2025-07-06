@@ -1,4 +1,4 @@
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 
 #define FALLING_CEILING_DAMAGE 300

@@ -1,7 +1,7 @@
 #include "game/objects/common.h"
 
 #include "game/inventory.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/output/meshes/objects.h"

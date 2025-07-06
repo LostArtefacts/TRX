@@ -1,7 +1,7 @@
 #include "game/objects/creatures/big_spider.h"
 
 #include "game/creature.h"
-#include "game/lara/control.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
 #include "global/vars.h"

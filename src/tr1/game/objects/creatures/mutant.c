@@ -1,7 +1,7 @@
 #include "game/objects/creatures/mutant.h"
 
 #include "game/creature.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"

@@ -4,7 +4,7 @@
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/vars.h"
 #include "game/inventory.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/savegame.h"

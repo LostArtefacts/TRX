@@ -6,7 +6,7 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/item_actions.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/output.h"
 #include "game/overlay.h"

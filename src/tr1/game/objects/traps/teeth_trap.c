@@ -1,4 +1,4 @@
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
 

@@ -2,8 +2,7 @@
 
 #include "game/cutscene.h"
 #include "game/game_flow.h"
-#include "game/lara/control.h"
-#include "game/lara/draw.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
