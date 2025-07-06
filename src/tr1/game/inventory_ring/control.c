@@ -7,7 +7,7 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"

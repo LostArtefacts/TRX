@@ -1,7 +1,5 @@
 #include "global/vars.h"
 
-#include <libtrx/game/lara/common.h>
-
 LARA_INFO *Lara_GetLaraInfo(void)
 {
     return &g_Lara;
@@ -10,4 +8,10 @@ LARA_INFO *Lara_GetLaraInfo(void)
 ITEM *Lara_GetItem(void)
 {
     return g_LaraItem;
+}
+
+void Lara_InitialiseLoad(const int16_t item_num)
+{
+    g_Lara.item_num = item_num;
+    g_LaraItem = Item_Get(item_num);
 }

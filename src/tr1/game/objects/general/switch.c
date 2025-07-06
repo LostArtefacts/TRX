@@ -1,5 +1,5 @@
 #include "game/input.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 

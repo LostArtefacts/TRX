@@ -1,4 +1,4 @@
-#include "game/lara/control.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 
 #define ICICLE_HIT_DAMAGE 200

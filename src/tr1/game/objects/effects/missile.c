@@ -1,5 +1,5 @@
 #include "game/effects.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"

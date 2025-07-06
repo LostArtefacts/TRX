@@ -3,7 +3,7 @@
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/overlay.h"
 #include "game/random.h"

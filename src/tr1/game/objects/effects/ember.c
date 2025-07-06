@@ -1,5 +1,5 @@
 #include "game/effects.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 
 #include <libtrx/game/math.h>
 

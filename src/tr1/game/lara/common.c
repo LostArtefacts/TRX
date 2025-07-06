@@ -1,25 +1,4 @@
-#include "game/lara/common.h"
-
-#include "game/game.h"
-#include "game/game_flow.h"
-#include "game/gun.h"
-#include "game/input.h"
-#include "game/inventory.h"
-#include "game/item_actions.h"
-#include "game/objects/common.h"
-#include "game/objects/vars.h"
-#include "game/savegame.h"
-#include "game/sound.h"
-#include "game/spawn.h"
-#include "game/stats.h"
 #include "global/vars.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/log.h>
-#include <libtrx/utils.h>
 
 LARA_INFO *Lara_GetLaraInfo(void)
 {

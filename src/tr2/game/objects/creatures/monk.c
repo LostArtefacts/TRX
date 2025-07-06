@@ -1,5 +1,5 @@
 #include "game/creature.h"
-#include "game/lara/control.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"

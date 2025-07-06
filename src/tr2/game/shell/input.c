@@ -4,7 +4,7 @@
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/lara/control.h"
+#include "game/lara.h"
 #include "game/overlay.h"
 #include "game/render/common.h"
 #include "global/vars.h"

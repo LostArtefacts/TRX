@@ -1,7 +1,7 @@
 // Atlantis Scion - triggers O_LARA_EXTRA reach anim.
 
 #include "game/input.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
