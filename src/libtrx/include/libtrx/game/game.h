@@ -10,6 +10,7 @@ const GF_LEVEL *Game_GetCurrentLevel(void);
 void Game_SetCurrentLevel(const GF_LEVEL *level);
 
 bool Game_IsInGym(void);
+bool Game_IsLoaded(void);
 bool Game_IsPlayable(void);
 
 GAME_BONUS_FLAG Game_GetBonusFlag(void);
