@@ -67,6 +67,7 @@
 - fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start (#1579)
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene (#3370)
 - fixed the boat veering if Lara looks left or right when driving (#3409)
+- fixed Lara not equipping a weapon chosen from inventory if it is the last weapon used (#3457)
 - fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - fixed Lara getting stuck in the fly cheat in rare circumstances (#3392, regression from 0.3)
 - fixed support for >3 secret dragons in custom levels (#3415, regression from 1.2)
