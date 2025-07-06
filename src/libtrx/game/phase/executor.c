@@ -27,11 +27,8 @@ static PHASE *m_PhaseStack[MAX_PHASES] = {};
 static PHASE_CONTROL M_Control(PHASE *phase, int32_t nframes);
 static void M_Draw(PHASE *phase);
 
-static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
+static GF_COMMAND M_HandleOverride(void)
 {
-    Console_Control();
-    Overlay_Control();
-
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();
     if (gf_override_cmd.action != GF_NOOP) {
         const GF_COMMAND gf_cmd = gf_override_cmd;
@@ -43,6 +40,18 @@ static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
         // This flag needs to be cleared as well.
         Game_SetIsPlaying(false);
 
+        return gf_cmd;
+    }
+    return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
+{
+    Console_Control();
+    Overlay_Control();
+
+    const GF_COMMAND gf_cmd = M_HandleOverride();
+    if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) { .action = PHASE_ACTION_END, .gf_cmd = gf_cmd };
     }
 
@@ -102,6 +111,11 @@ static void M_Draw(PHASE *const phase)
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+
+    gf_cmd = M_HandleOverride();
+    if (gf_cmd.action != GF_NOOP) {
+        return gf_cmd;
+    }
 
     PHASE *const prev_phase =
         m_PhaseStackSize > 0 ? m_PhaseStack[m_PhaseStackSize - 1] : nullptr;
