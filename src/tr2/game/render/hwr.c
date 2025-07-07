@@ -1457,10 +1457,10 @@ static void M_SwitchViewport(
     M_PRIV *const priv = renderer->priv;
     m_ViewportSpace = space;
     GFX_3D_Renderer_SetProjectionMatrix(priv->renderer_3d, space);
-    if (space == VIEWPORT_UI) {
-        GFX_3D_Renderer_SetTextureFilter(
-            priv->renderer_3d, g_Config.rendering.ui_filter);
-    }
+    GFX_3D_Renderer_SetTextureFilter(
+        priv->renderer_3d,
+        space == VIEWPORT_UI ? g_Config.rendering.ui_filter
+                             : g_Config.rendering.texture_filter);
 }
 
 void Renderer_HW_Prepare(RENDERER *const renderer)
