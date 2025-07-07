@@ -13,6 +13,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun/vars.h>
 #include <libtrx/game/matrix.h>
 
 void Gun_Control(void)

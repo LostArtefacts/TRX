@@ -4,9 +4,10 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
+#include <libtrx/game/gun/types.h>
+#include <libtrx/game/items/types.h>
 
-extern WEAPON_INFO g_Weapons[NUM_WEAPONS];
+#include <stdint.h>
 
 void Gun_TargetInfo(WEAPON_INFO *winfo);
 void Gun_GetNewTarget(WEAPON_INFO *winfo);

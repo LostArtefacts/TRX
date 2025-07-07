@@ -4,6 +4,7 @@
 #include "global/types.h"
 
 #include <libtrx/game/camera/vars.h>
+#include <libtrx/game/gun/vars.h>
 #include <libtrx/gfx/context.h>
 
 #include <SDL2/SDL.h>
@@ -50,4 +51,3 @@ extern int32_t g_SurfaceCount;
 extern SORT_ITEM *g_Sort3DPtr;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
-extern WEAPON_INFO g_Weapons[];
