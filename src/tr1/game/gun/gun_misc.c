@@ -334,20 +334,6 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
     Gun_TargetInfo(winfo);
 }
 
-void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
-{
-    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
-    const int32_t x = (bounds->min.x + bounds->max.x) / 2;
-    const int32_t y = (bounds->max.y - bounds->min.y) / 3 + bounds->min.y;
-    const int32_t z = (bounds->min.z + bounds->max.z) / 2;
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    target->x = item->pos.x + ((c * x + s * z) >> W2V_SHIFT);
-    target->y = item->pos.y + y;
-    target->z = item->pos.z + ((c * z - s * x) >> W2V_SHIFT);
-    target->room_num = item->room_num;
-}
-
 void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
 {
     PHD_ANGLE destx;
