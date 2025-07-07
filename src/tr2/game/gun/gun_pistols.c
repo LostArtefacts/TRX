@@ -7,6 +7,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun/pistols.h>
 #include <libtrx/game/math.h>
 
 typedef enum {
@@ -79,7 +80,6 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
         frame_l = LF_G_DRAW_END;
     } else if (frame_l == LF_G_DRAW_START) {
         Gun_Pistols_UndrawMeshLeft(weapon_type);
-        Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
         frame_l--;
     } else if (frame_l >= LF_G_UNDRAW_BEND && frame_l <= LF_G_DRAW_END) {
         frame_l--;
@@ -100,7 +100,6 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
         frame_r = LF_G_DRAW_END;
     } else if (frame_r == LF_G_DRAW_START) {
         Gun_Pistols_UndrawMeshRight(weapon_type);
-        Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
         frame_r--;
     } else if (frame_r >= LF_G_UNDRAW_BEND && frame_r <= LF_G_DRAW_END) {
         frame_r--;
@@ -151,26 +150,6 @@ void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
         g_Lara.torso_rot.x = 0;
         g_Lara.torso_rot.y = 0;
     }
-}
-
-void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandLMesh(weapon_type);
-    Gun_SetLaraHandRMesh(weapon_type);
-    Gun_SetLaraHolsterLMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterRMesh(LGT_UNARMED);
-}
-
-void Gun_Pistols_UndrawMeshLeft(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandLMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterLMesh(weapon_type);
-}
-
-void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandRMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterRMesh(weapon_type);
 }
 
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
