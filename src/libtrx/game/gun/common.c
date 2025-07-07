@@ -159,10 +159,12 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 #if TR_VERSION == 1
     Lara_Mesh_SwapSingle(LM_TORSO, obj_id);
+    lara_info->back_gun_type = weapon_type;
 #else
     lara_info->back_gun_obj_id = obj_id;
+    lara_info->back_gun_type =
+        weapon_type == LGT_UNARMED ? lara_info->last_gun_type : weapon_type;
 #endif
-    lara_info->back_gun_type = weapon_type;
 }
 
 void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
