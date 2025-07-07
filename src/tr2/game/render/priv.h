@@ -71,7 +71,7 @@ double Render_CalculatePolyZ(
     SORT_TYPE sort_type, double z0, double z1, double z2, double z3);
 
 void Render_SortPolyList(void);
-int32_t Render_GetUVAdjustment(void);
+int32_t Render_GetUVAdjustment(GFX_TEXTURE_FILTER filter);
 void Render_ResetTextureUVs(void);
 void Render_AdjustTextureUVs(bool reset_uv_add);
 

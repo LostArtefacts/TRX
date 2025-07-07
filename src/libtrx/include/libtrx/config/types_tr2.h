@@ -172,6 +172,7 @@ typedef struct {
         bool enable_lighting;
         bool enable_wireframe;
         float wireframe_width;
+        GFX_TEXTURE_FILTER ui_filter;
         GFX_TEXTURE_FILTER texture_filter;
         GFX_TEXTURE_FILTER upscaling_filter;
         SCREENSHOT_FORMAT screenshot_format;

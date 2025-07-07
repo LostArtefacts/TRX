@@ -123,7 +123,7 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         || L_CHANGED(rendering.upscaling_filter)
         || L_CHANGED(rendering.enable_wireframe)
         || L_CHANGED(rendering.wireframe_width)
-        || L_CHANGED(rendering.texture_filter)
+        || L_CHANGED(rendering.texture_filter) || L_CHANGED(rendering.ui_filter)
         || L_CHANGED(rendering.lighting_contrast)) {
         Render_Reset(RENDER_RESET_PARAMS);
     }
