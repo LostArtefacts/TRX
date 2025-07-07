@@ -58,7 +58,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    Music_Stop();
+    if (p->mode == INV_TITLE_MODE) {
+        Music_Stop();
+    }
     if (p->ring != nullptr) {
         InvRing_Close(p->ring);
         p->ring = nullptr;
