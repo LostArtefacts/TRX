@@ -79,6 +79,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 static void M_Draw(PHASE *const phase)
 {
     Output_BeginScene();
+    Output_SwitchViewport(VIEWPORT_GAME);
     UI_BeginScene();
 #if DEBUG_OPTIM
     BENCHMARK benchmark = Benchmark_Start();
