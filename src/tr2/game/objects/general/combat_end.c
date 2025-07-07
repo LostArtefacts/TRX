@@ -4,7 +4,6 @@
 #include "game/lara/flare.h"
 #include "game/los.h"
 #include "game/objects/common.h"
-#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
@@ -17,29 +16,39 @@
 static int16_t m_BossTimer = 0;
 static uint16_t m_BossCount = 0;
 
-static int32_t M_CountAliveEnemies(bool include_boss);
-static int16_t M_FindBestBoss(void);
-static void M_ActivateLastBoss(void);
+static int32_t M_CountAliveEnemies(void);
+static bool M_IsBossDead(void);
+static int16_t M_FindNearestBoss(void);
+static void M_ActivateNearestBoss(void);
 static void M_PrepareCutscene(int16_t item_num);
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
 
-static int32_t M_CountAliveEnemies(const bool include_boss)
+static int32_t M_CountAliveEnemies(void)
 {
     int32_t count = 0;
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (!include_boss && item->object_id == M_BOSS_TYPE) {
-            continue;
-        }
-        if (Creature_IsAlive(item) && Creature_IsHostile(item)) {
+        if (item->object_id != M_BOSS_TYPE && Creature_IsAlive(item)
+            && Creature_IsHostile(item)) {
             count++;
         }
     }
     return count;
 }
 
-static int16_t M_FindBestBoss(void)
+static bool M_IsBossDead(void)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+        if (item->object_id == M_BOSS_TYPE && !Creature_IsAlive(item)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static int16_t M_FindNearestBoss(void)
 {
     // Note that in the original, the first boss item was always selected here.
     // For speedruns, the change here means that is no longer guaranteed, but
@@ -83,13 +92,12 @@ static int16_t M_FindBestBoss(void)
     return best_item;
 }
 
-static void M_ActivateLastBoss(void)
+static void M_ActivateNearestBoss(void)
 {
-    const int16_t item_num = M_FindBestBoss();
+    const int16_t item_num = M_FindNearestBoss();
     if (item_num == NO_ITEM) {
         return;
     }
-
     ITEM *const item = Item_Get(item_num);
     if (item->status != IS_ACTIVE && item->status != IS_DEACTIVATED) {
         item->touch_bits = 0;
@@ -98,7 +106,6 @@ static void M_ActivateLastBoss(void)
         Item_AddActive(item_num);
         LOT_EnableBaddieAI(item_num, true);
     }
-    m_BossTimer = 1;
 }
 
 static void M_PrepareCutscene(const int16_t item_num)
@@ -127,20 +134,16 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
 
     m_BossTimer = 0;
-    m_BossCount = 0;
 }
 
 static void M_Control(const int16_t item_num)
 {
-    const RESUME_INFO *const current_info =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    if (m_BossTimer == 0 && M_CountAliveEnemies(false) == 0) {
-        m_BossCount = M_CountAliveEnemies(true);
-        M_ActivateLastBoss();
-        return;
-    }
-
-    if (M_CountAliveEnemies(true) < m_BossCount) {
+    const int32_t alive_enemies = M_CountAliveEnemies();
+    const int32_t is_boss_dead = M_IsBossDead();
+    if (alive_enemies == 0 && m_BossTimer == 0) {
+        m_BossTimer = 1;
+        M_ActivateNearestBoss();
+    } else if (alive_enemies == 0 && is_boss_dead) {
         m_BossTimer++;
         if (m_BossTimer == M_CUTSCENE_DELAY) {
             M_PrepareCutscene(item_num);
