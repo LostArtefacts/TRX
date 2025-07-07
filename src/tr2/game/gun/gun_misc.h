@@ -19,7 +19,6 @@ typedef enum {
 
 void Gun_TargetInfo(const WEAPON_INFO *winfo);
 void Gun_GetNewTarget(const WEAPON_INFO *winfo);
-void Gun_AimWeapon(const WEAPON_INFO *winfo, LARA_ARM *arm);
 void Gun_HitTarget(ITEM *item, const GAME_VECTOR *hit_pos, int32_t damage);
 void Gun_SmashItem(int16_t item_num, LARA_GUN_TYPE weapon_type);
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip);
