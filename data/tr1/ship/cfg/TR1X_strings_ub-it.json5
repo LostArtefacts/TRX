@@ -6,29 +6,29 @@
             "title": "Ritorno in Egitto",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'oro",
+                    "name": "Chiave d'Oro",
                 }
             }
         },
         {
-            "title": "Tempio del gatto",
+            "title": "Tempio del Gatto",
             "objects": {
                 "key_1": {
-                    "name": "Chiave cesellata",
+                    "name": "Chiave Cesellata",
                 }
             }
         },
         {
-            "title": "Fortezza atlantidea",
+            "title": "Fortezza Atlantidea",
         },
         {
-            "title": "L'alveare",
+            "title": "L'Alveare",
         },
         {
             "title": "Titoli",
         },
         {
-            "title": "Posizione attuale",
+            "title": "Posizione Attuale",
         }
     ]
 }

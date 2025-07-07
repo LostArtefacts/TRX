@@ -12,18 +12,18 @@
             "title": "Città di Vilcabamba",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'argento",
+                    "name": "Chiave d'Argento",
                 },
                 "puzzle_1": {
-                    "name": "Idolo d'oro",
+                    "name": "Idolo d'Oro",
                 }
             }
         },
         {
-            "title": "Valle perduta",
+            "title": "Valle Perduta",
             "objects": {
                 "puzzle_1": {
-                    "name": "Ruota dentata",
+                    "name": "Ruota Dentata",
                 }
             }
         },
@@ -51,7 +51,7 @@
             "title": "Colosseo",
             "objects": {
                 "key_1": {
-                    "name": "Chiave arrugginita",
+                    "name": "Chiave Arrugginita",
                 }
             }
         },
@@ -59,21 +59,21 @@
             "title": "Palazzo di Mida",
             "objects": {
                 "puzzle_1": {
-                    "name": "Lingotto d'oro",
+                    "name": "Lingotto d'Oro",
                 }
             }
         },
         {
-            "title": "La cisterna",
+            "title": "Cisterna",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'oro",
+                    "name": "Chiave d'Oro",
                 },
                 "key_2": {
-                    "name": "Chiave d'argento",
+                    "name": "Chiave d'Argento",
                 },
                 "key_3": {
-                    "name": "Chiave arrugginita",
+                    "name": "Chiave Arrugginita",
                 }
             }
         },
@@ -81,13 +81,13 @@
             "title": "Tomba di Tihocan",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'oro",
+                    "name": "Chiave d'Oro",
                 },
                 "key_2": {
-                    "name": "Chiave arrugginita",
+                    "name": "Chiave Arrugginita",
                 },
                 "key_3": {
-                    "name": "Chiave arrugginita",
+                    "name": "Chiave Arrugginita",
                 }
             }
         },
@@ -95,7 +95,7 @@
             "title": "Città di Khamoon",
             "objects": {
                 "key_1": {
-                    "name": "Chiave di zaffiro",
+                    "name": "Chiave di Zaffiro",
                 }
             }
         },
@@ -103,7 +103,7 @@
             "title": "Obelisco di Khamoon",
             "objects": {
                 "key_1": {
-                    "name": "Chiave di zaffiro",
+                    "name": "Chiave di Zaffiro",
                 },
                 "puzzle_1": {
                     "name": "Occhio di Horus",
@@ -123,7 +123,7 @@
             "title": "Santuario dello Scion",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'oro",
+                    "name": "Chiave d'Oro",
                 },
                 "puzzle_1": {
                     "name": "Ankh",
@@ -166,7 +166,7 @@
             "title": "Titoli",
         },
         {
-            "title": "Posizione attuale",
+            "title": "Posizione Attuale",
         }
     ],
     "cutscenes": [
@@ -188,34 +188,34 @@
             "title": "Città di Vilcabamba",
             "objects": {
                 "key_1": {
-                    "name": "Chiave d'argento",
+                    "name": "Chiave d'Argento",
                 },
                 "puzzle_1": {
-                    "name": "Idolo d'oro",
+                    "name": "Idolo d'Oro",
                 }
             }
         },
         {
-            "title": "Valle perduta",
+            "title": "Valle Perduta",
             "objects": {
                 "puzzle_1": {
-                    "name": "Ruota dentata",
+                    "name": "Ruota Dentata",
                 }
             }
         }
     ],
     "objects": {
         "small_medipack": {
-            "name": "Kit medico piccolo",
+            "name": "Kit Medico Piccolo",
         },
         "large_medipack": {
-            "name": "Kit medico grande",
+            "name": "Kit Medico Grande",
         },
         "pistols": {
             "name": "Pistole",
         },
         "shotgun": {
-            "name": "Fucile a pompa",
+            "name": "Fucile a Pompa",
         },
         "magnums": {
             "name": "Magnum",
@@ -224,16 +224,16 @@
             "name": "Uzi",
         },
         "pistol_ammo": {
-            "name": "Caricatori pistola",
+            "name": "Caricatori per Pistole",
         },
         "shotgun_ammo": {
-            "name": "Cartucce fucile a pompa",
+            "name": "Cartucce per Fucile a Pompa",
         },
         "magnums_ammo": {
-            "name": "Caricatori magnum",
+            "name": "Caricatori per Magnum",
         },
         "uzis_ammo": {
-            "name": "Caricatori uzi",
+            "name": "Caricatori per Uzi",
         },
         "grenade": {
             "name": "Granata",
@@ -269,7 +269,7 @@
             "name": "Oggetto Recuperabile 2",
         },
         "lead_bar": {
-            "name": "Lingotto di piombo",
+            "name": "Barra di Piombo",
         },
         "scion": {
             "name": "Scion",
@@ -302,19 +302,19 @@
             "name": "Lara",
         },
         "lara_pistols": {
-            "name": "Animazione pistole",
+            "name": "Animazione Pistole",
         },
         "lara_shotgun": {
-            "name": "Animazione fucile a pompa",
+            "name": "Animazione Fucile a Pompa",
         },
         "lara_magnums": {
-            "name": "Animazione magnum",
+            "name": "Animazione Magnum",
         },
         "lara_uzis": {
-            "name": "Animazione uzi",
+            "name": "Animazione Uzi",
         },
         "lara_extra": {
-            "name": "Animazione aggiuntiva di Lara",
+            "name": "Animazione Aggiuntiva di Lara",
         },
         "bacon_lara": {
             "name": "Sosia di Lara",
@@ -352,13 +352,13 @@
         "rat": {
             "names": [
                 "Ratto",
-                "Ratto terrestre",
+                "Ratto Terrestre",
             ]
         },
         "vole": {
             "names": [
                 "Arvicola",
-                "Ratto acquatico",
+                "Ratto Acquatico",
             ]
         },
         "trex": {
@@ -383,10 +383,10 @@
             "name": "Mummia",
         },
         "dino_mutant": {
-            "name": "Dinosauro mutante",
+            "name": "Dinosauro Mutante",
         },
         "fish_mutant": {
-            "name": "Pesce mutante",
+            "name": "Pesce Mutante",
         },
         "larson": {
             "name": "Larson",
@@ -413,14 +413,14 @@
             "names": [
                 "Torso",
                 "Adam",
-                "Mutante gigante",
+                "Mutante Gigante",
             ]
         },
         "falling_block_1": {
             "names": [
-                "Blocco cedevole",
-                "Pavimento fragile",
-                "Piastrelle fragili",
+                "Blocco Cedevole",
+                "Pavimento Fragile",
+                "Piastrelle Fragili",
             ]
         },
         "pendulum_1": {
@@ -432,71 +432,71 @@
         "rolling_ball_1": {
             "names": [
                 "Masso",
-                "Masso rotolante",
+                "Masso Rotolante",
             ]
         },
         "dart": {
             "name": "Dardo",
         },
         "dart_emitter": {
-            "name": "Emettitore di dardi",
+            "name": "Emettitore di Dardi",
         },
         "drawbridge": {
-            "name": "Ponte levatoio",
+            "name": "Ponte Levatoio",
         },
         "teeth_trap": {
             "names": [
-                "Trappola con spuntoni",
-                "Porta con spuntoni",
+                "Trappola con Spuntoni",
+                "Porta con Spuntoni",
             ]
         },
         "damocles_sword": {
             "name": "Spada di Damocle",
         },
         "thors_handle": {
-            "name": "Manico del martello di Thor",
+            "name": "Manico del Martello di Thor",
         },
         "thors_head": {
             "name": "Martello di Thor",
         },
         "lightning_emitter": {
-            "name": "Emettitore di fulmini",
+            "name": "Emettitore di Fulmini",
         },
         "moving_bar": {
-            "name": "Barra mobile",
+            "name": "Barra Mobile",
         },
         "movable_block_1": {
             "names": [
-                "Blocco spostabile 1",
-                "Blocco movibile 1",
+                "Blocco Spostabile 1",
+                "Blocco Movibile 1",
             ]
         },
         "movable_block_2": {
             "names": [
-                "Blocco spostabile 2",
-                "Blocco movibile 2",
+                "Blocco Spostabile 2",
+                "Blocco Movibile 2",
             ]
         },
         "movable_block_3": {
             "names": [
-                "Blocco spostabile 3",
-                "Blocco movibile 3",
+                "Blocco Spostabile 3",
+                "Blocco Movibile 3",
             ]
         },
         "movable_block_4": {
             "names": [
-                "Blocco spostabile 4",
-                "Blocco movibile 4",
+                "Blocco Spostabile 4",
+                "Blocco Movibile 4",
             ]
         },
         "sliding_pillar": {
-            "name": "Pilastro scorrevole",
+            "name": "Pilastro Scorrevole",
         },
         "falling_ceiling_1": {
-            "name": "Soffitto cedevole 1",
+            "name": "Soffitto Cedevole 1",
         },
         "falling_ceiling_2": {
-            "name": "Soffitto cedevole 2",
+            "name": "Soffitto Cedevole 2",
         },
         "switch_type_normal": {
             "names": [
@@ -506,8 +506,8 @@
         },
         "switch_type_uw": {
             "names": [
-                "Leva subacquea",
-                "Interruttore subacqueo",
+                "Leva Subacquea",
+                "Interruttore Subacqueo",
             ]
         },
         "door_1": {
@@ -544,13 +544,13 @@
             "name": "Botola 3",
         },
         "bridge_flat": {
-            "name": "Ponte piano",
+            "name": "Ponte Piano",
         },
         "bridge_tilt_1": {
-            "name": "Ponte inclinato 1",
+            "name": "Ponte Inclinato 1",
         },
         "bridge_tilt_2": {
-            "name": "Ponte inclinato 2",
+            "name": "Ponte Inclinato 2",
         },
         "cog_1": {
             "name": "Ingranaggio 1",
@@ -562,43 +562,43 @@
             "name": "Ingranaggio 3",
         },
         "player_1": {
-            "name": "Attore intermezzo 1",
+            "name": "Attore Intermezzo 1",
         },
         "player_2": {
-            "name": "Attore intermezzo 2",
+            "name": "Attore Intermezzo 2",
         },
         "player_3": {
-            "name": "Attore intermezzo 3",
+            "name": "Attore Intermezzo 3",
         },
         "player_4": {
-            "name": "Attore intermezzo 4",
+            "name": "Attore Intermezzo 4",
         },
         "save_crystal": {
-            "name": "Cristallo di salvataggio",
+            "name": "Cristallo di Salvataggio",
         },
         "puzzle_hole_1": {
-            "name": "Serratura enigma 1 (Vuoto)",
+            "name": "Serratura Enigma 1 (Vuoto)",
         },
         "puzzle_hole_2": {
-            "name": "Serratura enigma 2 (Vuoto)",
+            "name": "Serratura Enigma 2 (Vuoto)",
         },
         "puzzle_hole_3": {
-            "name": "Serratura enigma 3 (Vuoto)",
+            "name": "Serratura Enigma 3 (Vuoto)",
         },
         "puzzle_hole_4": {
-            "name": "Serratura enigma 4 (Vuoto)",
+            "name": "Serratura Enigma 4 (Vuoto)",
         },
         "puzzle_done_1": {
-            "name": "Serratura enigma 1 (Usato)",
+            "name": "Serratura Enigma 1 (Usato)",
         },
         "puzzle_done_2": {
-            "name": "Serratura enigma 2 (Usato)",
+            "name": "Serratura Enigma 2 (Usato)",
         },
         "puzzle_done_3": {
-            "name": "Serratura enigma 3 (Usato)",
+            "name": "Serratura Enigma 3 (Usato)",
         },
         "puzzle_done_4": {
-            "name": "Serratura enigma 4 (Usato)",
+            "name": "Serratura Enigma 4 (Usato)",
         },
         "midas_touch": {
             "name": "Mano di Mida",
@@ -625,10 +625,10 @@
             "name": "Esplosione 2",
         },
         "splash_1": {
-            "name": "Increspatura acqua 1",
+            "name": "Increspatura Acqua 1",
         },
         "splash_2": {
-            "name": "Increspatura acqua 2",
+            "name": "Increspatura Acqua 2",
         },
         "bubble_1": {
             "name": "Bolla 1",
@@ -637,7 +637,7 @@
             "name": "Bolla 2",
         },
         "bubble_emitter": {
-            "name": "Emettitore di bolle",
+            "name": "Emettitore di Bolle",
         },
         "blood_1": {
             "name": "Sangue 1",
@@ -646,13 +646,13 @@
             "name": "Sangue 2",
         },
         "dart_effect": {
-            "name": "Effetto dardo",
+            "name": "Effetto Dardo",
         },
         "statue": {
             "name": "Statua",
         },
         "portacabin": {
-            "name": "Cabina portatile",
+            "name": "Cabina Portatile",
         },
         "pods": {
             "name": "Guscio",
@@ -664,19 +664,19 @@
             "name": "Scintille",
         },
         "gun_flash": {
-            "name": "Lampo pistola",
+            "name": "Lampo Pistola",
         },
         "dust": {
             "name": "Polvere",
         },
         "body_part": {
-            "name": "Parte del corpo",
+            "name": "Parte del Corpo",
         },
         "camera_target": {
-            "name": "Obiettivo telecamera",
+            "name": "Obiettivo Telecamera",
         },
         "waterfall": {
-            "name": "Foschia cascata",
+            "name": "Foschia Cascata",
         },
         "missile_1": {
             "name": "Missile 1",
@@ -697,7 +697,7 @@
             "name": "Brace",
         },
         "ember_emitter": {
-            "name": "Emettitore di brace",
+            "name": "Emettitore di Brace",
         },
         "flame": {
             "names": [
@@ -707,15 +707,15 @@
         },
         "flame_emitter": {
             "names": [
-                "Emettitore di fiamme",
-                "Emettitore di fuoco",
+                "Emettitore di Fiamme",
+                "Emettitore di Fuoco",
             ]
         },
         "lava_wedge": {
-            "name": "Cascata di lava",
+            "name": "Cascata di Lava",
         },
         "big_pod": {
-            "name": "Guscio grande",
+            "name": "Guscio Grande",
         },
         "boat": {
             "name": "Barca",
@@ -727,7 +727,7 @@
             "name": "Cielo",
         },
         "pickup_aid": {
-            "name": "Segnalazione oggetti",
+            "name": "Segnalazione Oggetti",
         },
         "temp_7": {
             "name": "Temp 7",
