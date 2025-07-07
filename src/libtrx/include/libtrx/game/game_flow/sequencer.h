@@ -30,7 +30,3 @@ extern GF_COMMAND GF_InterpretSequence(
 
 void GF_SetSequenceEventHandler(
     GF_SEQUENCE_EVENT_TYPE event_type, GF_SEQUENCE_EVENT_HANDLER);
-
-GF_COMMAND GF_RunSequencerQueue(
-    GF_EVENT_QUEUE_TYPE queue_type, const GF_LEVEL *level,
-    GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg);

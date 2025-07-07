@@ -51,12 +51,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     // clear the save slot information so that /play starts with a fresh state
     g_GameInfo.select_save_slot = -1;
 
-    gf_cmd = GF_RunSequencerQueue(
-        GF_EVENT_QUEUE_AFTER_LEVEL_INIT, level, seq_ctx, seq_ctx_arg);
-    if (gf_cmd.action != GF_NOOP) {
-        return gf_cmd;
-    }
-
     if (Lara_GetItem() != nullptr) {
         Lara_Initialise(level);
     }
@@ -257,22 +251,6 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     default:
         return seq_ctx;
     }
-}
-
-GF_EVENT_QUEUE_TYPE GF_ShouldDeferSequenceEvent(
-    const GF_SEQUENCE_EVENT_TYPE event_type)
-{
-    switch (event_type) {
-    case GFS_SET_CAMERA_POS:
-    case GFS_SET_CAMERA_ANGLE:
-    case GFS_FLIP_MAP:
-    case GFS_MESH_SWAP:
-    case GFS_SETUP_BACON_LARA:
-        return GF_EVENT_QUEUE_AFTER_LEVEL_INIT;
-
-    default:
-        return GF_EVENT_QUEUE_NONE;
-    };
 }
 
 void GF_InitSequencer(void)
