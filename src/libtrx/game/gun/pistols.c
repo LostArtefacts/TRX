@@ -5,6 +5,25 @@
 #include "game/lara/common.h"
 #include "game/sound.h"
 
+void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    int16_t frame = lara->left_arm.frame_num + 1;
+
+    if (!Anim_TestAbsFrameRange(frame, LF_G_UNDRAW_START, LF_G_DRAW_END)) {
+        frame = LF_G_UNDRAW_START;
+    } else if (Anim_TestAbsFrameEqual(frame, LF_G_DRAW_START)) {
+        Gun_Pistols_DrawMeshes(weapon_type);
+        Sound_Effect(SFX_LARA_DRAW, &Lara_GetItem()->pos, SPM_NORMAL);
+    } else if (Anim_TestAbsFrameEqual(frame, LF_G_DRAW_END)) {
+        Gun_Pistols_Ready(weapon_type);
+        frame = LF_G_AIM_START;
+    }
+
+    Gun_Pistols_SetArmInfo(&lara->right_arm, frame);
+    Gun_Pistols_SetArmInfo(&lara->left_arm, frame);
+}
+
 void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();

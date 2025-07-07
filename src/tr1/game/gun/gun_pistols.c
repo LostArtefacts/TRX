@@ -8,7 +8,6 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
-#include <libtrx/game/gun/pistols.h>
 #include <libtrx/game/gun/vars.h>
 
 #include <stdint.h>
@@ -16,25 +15,6 @@
 void Gun_Pistols_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
 {
     arm->frame_num = frame;
-}
-
-void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
-{
-    int16_t ani = g_Lara.left_arm.frame_num;
-    ani++;
-
-    if (!Anim_TestAbsFrameRange(ani, LF_G_UNDRAW_START, LF_G_DRAW_END)) {
-        ani = LF_G_UNDRAW_START;
-    } else if (Anim_TestAbsFrameEqual(ani, LF_G_DRAW_START)) {
-        Gun_Pistols_DrawMeshes(weapon_type);
-        Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-    } else if (Anim_TestAbsFrameEqual(ani, LF_G_DRAW_END)) {
-        Gun_Pistols_Ready(weapon_type);
-        ani = LF_G_AIM_START;
-    }
-
-    g_Lara.left_arm.frame_num = ani;
-    g_Lara.right_arm.frame_num = ani;
 }
 
 void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
