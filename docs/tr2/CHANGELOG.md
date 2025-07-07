@@ -78,6 +78,7 @@
 - fixed the `/play` command starting the level with wrong items sometimes (#3147, regression from 1.1)
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
+- fixed the `/play` command not stopping active music when used to play Venice (#3469, regression from 0.8)
 - improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
