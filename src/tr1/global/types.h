@@ -8,6 +8,7 @@
 #include <libtrx/game/effects/types.h>
 #include <libtrx/game/game_flow/enum.h>
 #include <libtrx/game/game_flow/types.h>
+#include <libtrx/game/gun/types.h>
 #include <libtrx/game/items.h>
 #include <libtrx/game/lara/types.h>
 #include <libtrx/game/math.h>
@@ -126,17 +127,3 @@ typedef struct {
     int32_t yv;
     int32_t zv;
 } DOOR_VBUF;
-
-typedef struct {
-    PHD_ANGLE lock_angles[4];
-    PHD_ANGLE left_angles[4];
-    PHD_ANGLE right_angles[4];
-    PHD_ANGLE aim_speed;
-    PHD_ANGLE shot_accuracy;
-    int32_t gun_height;
-    int16_t damage;
-    int32_t target_dist;
-    int16_t recoil_frame;
-    int16_t flash_time;
-    int16_t sample_num;
-} WEAPON_INFO;
