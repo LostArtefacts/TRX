@@ -94,6 +94,7 @@ void Gun_Control(void)
         case LGT_FLARE:
             Lara_Flare_Undraw();
             break;
+
         default:
             return;
         }
