@@ -34,6 +34,7 @@ typedef struct {
     LARA_GUN_STATE gun_status;
     LARA_GUN_TYPE gun_type;
     LARA_GUN_TYPE request_gun_type;
+    LARA_GUN_TYPE last_gun_type;
 
     LARA_WATER_STATE water_status;
     int32_t water_surface_dist;
@@ -87,7 +88,6 @@ typedef struct {
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
 #if TR_VERSION >= 2
-    LARA_GUN_TYPE last_gun_type;
     GAME_OBJECT_ID back_gun_obj_id;
     int16_t gun_item_num;
 
