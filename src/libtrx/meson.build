@@ -145,6 +145,7 @@ sources = [
   'game/game_string_table/reader.c',
   'game/gun/common.c',
   'game/gun/control.c',
+  'game/gun/misc.c',
   'game/gun/pistols.c',
   'game/gun/rifle.c',
   'game/gym.c',
