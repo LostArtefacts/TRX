@@ -34,20 +34,6 @@ static void M_AnimateGun(ITEM *const item)
     Item_Animate(item);
 }
 
-void Gun_Rifle_DrawMeshes(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandRMesh(weapon_type);
-    g_Lara.back_gun_obj_id = O_LARA;
-    g_Lara.back_gun_type = weapon_type;
-}
-
-void Gun_Rifle_UndrawMeshes(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandRMesh(LGT_UNARMED);
-    g_Lara.back_gun_obj_id = Gun_GetWeaponAnim(weapon_type);
-    g_Lara.back_gun_type = weapon_type;
-}
-
 void Gun_Rifle_Ready(const LARA_GUN_TYPE weapon_type)
 {
     g_Lara.gun_status = LGS_READY;
