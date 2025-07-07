@@ -37,6 +37,7 @@ static VERTEX_INFO m_VBuffer[32] = {};
 static GFX_3D_VERTEX m_VBufferGL[32] = {};
 static GFX_3D_VERTEX m_HWR_VertexBuffer[M_MAX_VERTICES] = {};
 static GFX_3D_VERTEX *m_HWR_VertexPtr = nullptr;
+static VIEWPORT_SPACE m_ViewportSpace = VIEWPORT_GAME;
 
 static void M_ShadeColor(
     GFX_3D_VERTEX *target, uint32_t red, uint32_t green, uint32_t blue,
@@ -823,7 +824,9 @@ static void M_InsertSprite(
     const int32_t u_offset = (sprite->offset & 0xFF) * 256;
     const int32_t v_offset = (sprite->offset >> 8) * 256;
 
-    const int32_t offset = Render_GetUVAdjustment();
+    const int32_t offset = Render_GetUVAdjustment(
+        m_ViewportSpace == VIEWPORT_UI ? g_Config.rendering.ui_filter
+                                       : g_Config.rendering.texture_filter);
     const double u0 = (double)(u_offset + offset) * rhw;
     const double v0 = (double)(v_offset + offset) * rhw;
     const double u1 = (double)(u_offset - offset + sprite->width) * rhw;
@@ -1452,7 +1455,12 @@ static void M_SwitchViewport(
     RENDERER *const renderer, const VIEWPORT_SPACE space)
 {
     M_PRIV *const priv = renderer->priv;
+    m_ViewportSpace = space;
     GFX_3D_Renderer_SetProjectionMatrix(priv->renderer_3d, space);
+    if (space == VIEWPORT_UI) {
+        GFX_3D_Renderer_SetTextureFilter(
+            priv->renderer_3d, g_Config.rendering.ui_filter);
+    }
 }
 
 void Renderer_HW_Prepare(RENDERER *const renderer)

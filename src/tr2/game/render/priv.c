@@ -106,12 +106,12 @@ void Render_SortPolyList(void)
     }
 }
 
-int32_t Render_GetUVAdjustment(void)
+int32_t Render_GetUVAdjustment(const GFX_TEXTURE_FILTER filter)
 {
     if (g_Config.rendering.render_mode == RM_HARDWARE
         && (g_Config.rendering.texel_adjust_mode == TAM_ALWAYS
             || (g_Config.rendering.texel_adjust_mode == TAM_BILINEAR_ONLY
-                && g_Config.rendering.texture_filter == GFX_TF_BILINEAR))) {
+                && filter == GFX_TF_BILINEAR))) {
         return g_Config.rendering.linear_adjustment;
     }
 
@@ -154,7 +154,8 @@ void Render_AdjustTextureUVs(const bool reset_uv_add)
         return;
     }
 
-    const int32_t offset = Render_GetUVAdjustment();
+    const int32_t offset =
+        Render_GetUVAdjustment(g_Config.rendering.texture_filter);
     for (int32_t i = 0; i < num_textures; i++) {
         OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
         TEXTURE_UV *const uv = texture->uv;

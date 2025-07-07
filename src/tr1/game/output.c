@@ -954,6 +954,8 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
 {
     if (space == VIEWPORT_UI) {
         GFX_Renderer_BindUiFbo();
+        GFX_3D_Renderer_SetTextureFilter(
+            m_Renderer3D, g_Config.rendering.ui_filter);
         GFX_Context_Clear();
     }
     GFX_Context_SwitchToViewport(space);

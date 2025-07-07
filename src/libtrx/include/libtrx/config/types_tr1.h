@@ -193,6 +193,7 @@ typedef struct {
         int32_t fps;
         bool enable_trapezoid_filter;
         bool enable_lighting;
+        GFX_TEXTURE_FILTER ui_filter;
         GFX_TEXTURE_FILTER texture_filter;
         GFX_TEXTURE_FILTER upscaling_filter;
         bool enable_wireframe;
