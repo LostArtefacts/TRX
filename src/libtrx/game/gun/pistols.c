@@ -88,6 +88,34 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     }
 }
 
+void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->gun_status = LGS_READY;
+    lara->target = nullptr;
+
+    const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
+    lara->left_arm.frame_base = obj->frame_base;
+    lara->left_arm.frame_num = LF_G_AIM_START;
+    lara->left_arm.lock = 0;
+    lara->left_arm.rot.x = 0;
+    lara->left_arm.rot.y = 0;
+    lara->left_arm.rot.z = 0;
+    lara->right_arm.frame_base = obj->frame_base;
+    lara->right_arm.frame_num = LF_G_AIM_START;
+    lara->right_arm.lock = 0;
+    lara->right_arm.rot.x = 0;
+    lara->right_arm.rot.y = 0;
+    lara->right_arm.rot.z = 0;
+
+    if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
+        lara->head_rot.x = 0;
+        lara->head_rot.y = 0;
+        lara->torso_rot.x = 0;
+        lara->torso_rot.y = 0;
+    }
+}
+
 void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
     Gun_SetLaraHandLMesh(weapon_type);

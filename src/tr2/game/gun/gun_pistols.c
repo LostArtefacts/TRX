@@ -45,33 +45,6 @@ void Gun_Pistols_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
     arm->frame_base = anim->frame_ptr;
 }
 
-void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
-{
-    g_Lara.gun_status = LGS_READY;
-    g_Lara.target = nullptr;
-
-    const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
-    g_Lara.left_arm.frame_base = obj->frame_base;
-    g_Lara.left_arm.frame_num = LF_G_AIM_START;
-    g_Lara.left_arm.lock = 0;
-    g_Lara.left_arm.rot.x = 0;
-    g_Lara.left_arm.rot.y = 0;
-    g_Lara.left_arm.rot.z = 0;
-    g_Lara.right_arm.frame_base = obj->frame_base;
-    g_Lara.right_arm.frame_num = LF_G_AIM_START;
-    g_Lara.right_arm.lock = 0;
-    g_Lara.right_arm.rot.x = 0;
-    g_Lara.right_arm.rot.y = 0;
-    g_Lara.right_arm.rot.z = 0;
-
-    if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
-        g_Lara.head_rot.x = 0;
-        g_Lara.head_rot.y = 0;
-        g_Lara.torso_rot.x = 0;
-        g_Lara.torso_rot.y = 0;
-    }
-}
-
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
     const WEAPON_INFO *const winfo = &g_Weapons[weapon_type];
