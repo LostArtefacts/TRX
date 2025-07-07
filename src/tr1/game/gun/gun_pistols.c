@@ -8,6 +8,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun/pistols.h>
 #include <libtrx/game/gun/vars.h>
 
 #include <stdint.h>
@@ -116,28 +117,6 @@ void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
     const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
     g_Lara.right_arm.frame_base = obj->frame_base;
     g_Lara.left_arm.frame_base = obj->frame_base;
-}
-
-void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandLMesh(weapon_type);
-    Gun_SetLaraHandRMesh(weapon_type);
-    Gun_SetLaraHolsterLMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterRMesh(LGT_UNARMED);
-}
-
-void Gun_Pistols_UndrawMeshLeft(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandLMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterLMesh(weapon_type);
-    Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
-}
-
-void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
-{
-    Gun_SetLaraHandRMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterRMesh(weapon_type);
-    Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
 }
 
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
