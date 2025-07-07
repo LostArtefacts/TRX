@@ -53,6 +53,7 @@
 - fixed the `/play` command starting the level with wrong items sometimes (#3147, regression from 4.11)
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
+- fixed Compass label in Gym not appearing when holding arrows during inventory spin-out (#3460)
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window

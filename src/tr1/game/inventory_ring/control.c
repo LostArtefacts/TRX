@@ -726,7 +726,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         || ring->motion.status == RNG_DESELECTING
         || ring->motion.status == RNG_DESELECT
         || ring->motion.status == RNG_CLOSING_ITEM) {
-        if (!ring->rotating && !g_Input.menu_left && !g_Input.menu_right) {
+        if (!ring->rotating
+            && ((!g_Input.menu_left && !g_Input.menu_right)
+                || ring->number_of_objects <= 1)) {
             INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
             M_RingNotActive(inv_item);
         }
