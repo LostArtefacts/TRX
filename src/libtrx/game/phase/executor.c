@@ -9,6 +9,7 @@
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/interpolation.h"
+#include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -39,6 +40,10 @@ static GF_COMMAND M_HandleOverride(void)
         Savegame_UnbindSlot();
         // This flag needs to be cleared as well.
         Game_SetIsPlaying(false);
+        // Usually, sequences permit music to flow through - for instance, the
+        // end of level screen in The Great Wall transitioning to Venice.
+        // We must stop it manually here when derailing the sequence (#3469).
+        Music_Stop();
 
         return gf_cmd;
     }
