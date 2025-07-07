@@ -15,7 +15,3 @@ bool Stats_CheckAllLevelSecretsCollected(void);
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type);
 uint32_t Stats_ReserveSecretBit(GAME_OBJECT_ID object_id);
 GAME_OBJECT_ID Stats_GetSecretObject(int32_t secret_idx);
-
-void Stats_AddKill(void);
-void Stats_AddAmmoHits(void);
-void Stats_AddAmmoUsed(void);

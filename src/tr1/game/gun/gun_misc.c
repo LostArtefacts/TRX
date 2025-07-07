@@ -334,7 +334,7 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
     Gun_TargetInfo(winfo);
 }
 
-void Gun_FindTargetPoint(ITEM *item, GAME_VECTOR *target)
+void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
 {
     const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
     const int32_t x = (bounds->min.x + bounds->max.x) / 2;

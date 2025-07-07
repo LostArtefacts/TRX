@@ -20,7 +20,7 @@
 #define GUN_RIFLE_UNDRAW_FRAME 21
 
 static bool m_M16Firing = false;
-static bool m_ReloadHarpoon = false;
+bool g_Gun_ReloadHarpoon = false; // TODO: make module-level
 
 static void M_AnimateGun(ITEM *item);
 
@@ -91,160 +91,6 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
         && (weapon_type == LGT_SHOTGUN || weapon_type == LGT_M16)) {
         Gun_AddDynamicLight();
     }
-}
-
-void Gun_Rifle_FireShotgun(void)
-{
-    bool fired = false;
-
-    int16_t angles[2];
-    angles[0] = g_Lara.left_arm.rot.y + g_LaraItem->rot.y;
-    angles[1] = g_Lara.left_arm.rot.x;
-
-    for (int32_t i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
-        int16_t dangles[2];
-        dangles[0] = angles[0]
-            + SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000) / 0x10000;
-        dangles[1] = angles[1]
-            + SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000) / 0x10000;
-        if (Gun_FireWeapon(LGT_SHOTGUN, g_Lara.target, g_LaraItem, dangles)) {
-            fired = true;
-        }
-    }
-
-    if (fired) {
-        g_Lara.right_arm.flash_gun = g_Weapons[LGT_SHOTGUN].flash_time;
-        Sound_Effect(
-            g_Weapons[LGT_SHOTGUN].sample_num, &g_LaraItem->pos, SPM_NORMAL);
-    }
-}
-
-void Gun_Rifle_FireM16(const bool running)
-{
-    int16_t angles[2];
-    angles[0] = g_Lara.left_arm.rot.y + g_LaraItem->rot.y;
-    angles[1] = g_Lara.left_arm.rot.x;
-
-    if (g_Config.gameplay.fix_m16_accuracy) {
-        if (running) {
-            g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 12;
-            g_Weapons[LGT_M16].damage = 1;
-        } else {
-            g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 4;
-            g_Weapons[LGT_M16].damage = 3;
-        }
-    }
-
-    if (Gun_FireWeapon(LGT_M16, g_Lara.target, g_LaraItem, angles)) {
-        g_Lara.right_arm.flash_gun = g_Weapons[LGT_M16].flash_time;
-    }
-}
-
-void Gun_Rifle_FireHarpoon(void)
-{
-    if (g_Lara.harpoon_ammo.ammo <= 0) {
-        goto finish;
-    }
-
-    const int16_t item_num = Item_Create();
-    if (item_num == NO_ITEM) {
-        goto finish;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-    item->object_id = O_HARPOON_BOLT;
-    item->room_num = g_LaraItem->room_num;
-
-    XYZ_32 offset = {
-        .x = -2,
-        .y = 373,
-        .z = 77,
-    };
-
-    Lara_GetJointAbsPosition(&offset, LM_HAND_R);
-    item->pos.x = offset.x;
-    item->pos.y = offset.y;
-    item->pos.z = offset.z;
-    Item_Initialise(item_num);
-
-    if (g_Lara.target != nullptr) {
-        GAME_VECTOR lara_vec;
-        Gun_FindTargetPoint(g_Lara.target, &lara_vec);
-        const int32_t dx = lara_vec.pos.x - item->pos.x;
-        const int32_t dz = lara_vec.pos.z - item->pos.z;
-        const int32_t dy = lara_vec.pos.y - item->pos.y;
-        const int32_t dxz = Math_Sqrt(SQUARE(dx) + SQUARE(dz));
-        item->rot.y = Math_Atan(dz, dx);
-        item->rot.x = -Math_Atan(dxz, dy);
-        item->rot.z = 0;
-    } else {
-        item->rot.x = g_Lara.left_arm.rot.x + g_LaraItem->rot.x;
-        item->rot.y = g_Lara.left_arm.rot.y + g_LaraItem->rot.y;
-        item->rot.z = 0;
-    }
-
-    item->fall_speed =
-        (-HARPOON_BOLT_SPEED * Math_Sin(item->rot.x)) >> W2V_SHIFT;
-    item->speed = (HARPOON_BOLT_SPEED * Math_Cos(item->rot.x)) >> W2V_SHIFT;
-    Item_AddActive(item_num);
-    item->status = IS_ACTIVE;
-
-    g_Lara.harpoon_ammo.ammo--;
-    Stats_AddAmmoUsed();
-
-finish:
-    const int32_t recoil = g_Config.gameplay.harpoon_recoil;
-    const bool is_ngplus = Game_IsBonusFlagSet(GBF_NGPLUS);
-    if (recoil <= 0) {
-        if (is_ngplus) {
-            g_Lara.harpoon_ammo.ammo++;
-        }
-    } else if ((g_Lara.harpoon_ammo.ammo % recoil) == 0) {
-        m_ReloadHarpoon = true;
-        if (is_ngplus) {
-            g_Lara.harpoon_ammo.ammo += recoil;
-        }
-    }
-}
-
-void Gun_Rifle_FireGrenade(void)
-{
-    if (g_Lara.grenade_ammo.ammo <= 0) {
-        return;
-    }
-
-    const int16_t item_num = Item_Create();
-    if (item_num == NO_ITEM) {
-        return;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-    item->object_id = O_GRENADE;
-    item->room_num = g_LaraItem->room_num;
-
-    XYZ_32 offset = {
-        .x = -2,
-        .y = 373,
-        .z = 77,
-    };
-    Lara_GetJointAbsPosition(&offset, LM_HAND_R);
-    item->pos.x = offset.x;
-    item->pos.y = offset.y;
-    item->pos.z = offset.z;
-    Item_Initialise(item_num);
-
-    item->rot.x = g_Lara.left_arm.rot.x + g_LaraItem->rot.x;
-    item->rot.y = g_Lara.left_arm.rot.y + g_LaraItem->rot.y;
-    item->rot.z = 0;
-    item->speed = GRENADE_SPEED;
-    item->fall_speed = 0;
-    Item_AddActive(item_num);
-    item->status = IS_ACTIVE;
-
-    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        g_Lara.grenade_ammo.ammo--;
-    }
-    Stats_AddAmmoUsed();
 }
 
 void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
@@ -335,9 +181,9 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
     switch (item->current_anim_state) {
     case LA_G_AIM:
         m_M16Firing = false;
-        if (m_ReloadHarpoon) {
+        if (g_Gun_ReloadHarpoon) {
             item->goal_anim_state = LA_G_RELOAD;
-            m_ReloadHarpoon = false;
+            g_Gun_ReloadHarpoon = false;
         } else if (g_Lara.water_status == LWS_UNDERWATER || running) {
             item->goal_anim_state = LA_G_UAIM;
         } else if (
@@ -351,9 +197,9 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
 
     case LA_G_UAIM:
         m_M16Firing = false;
-        if (m_ReloadHarpoon) {
+        if (g_Gun_ReloadHarpoon) {
             item->goal_anim_state = LA_G_RELOAD;
-            m_ReloadHarpoon = false;
+            g_Gun_ReloadHarpoon = false;
         } else if (g_Lara.water_status != LWS_UNDERWATER && !running) {
             item->goal_anim_state = LA_G_AIM;
         } else if (
@@ -369,30 +215,15 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
         if (Item_TestFrameEqual(item, 0)) {
             item->goal_anim_state = LA_G_UNAIM;
             if (g_Lara.water_status != LWS_UNDERWATER && !running
-                && !m_ReloadHarpoon) {
+                && !g_Gun_ReloadHarpoon) {
                 if (g_Input.action) {
                     if (g_Lara.target == nullptr || g_Lara.left_arm.lock) {
-                        switch (weapon_type) {
-                        case LGT_HARPOON:
-                            Gun_Rifle_FireHarpoon();
-                            break;
-
-                        case LGT_GRENADE:
-                            Gun_Rifle_FireGrenade();
-                            break;
-
-                        case LGT_M16:
-                            Gun_Rifle_FireM16(false);
+                        Gun_Rifle_Fire(weapon_type, false);
+                        if (weapon_type == LGT_M16) {
                             Sound_Effect(
                                 SFX_M16_FIRE, &g_LaraItem->pos, SPM_NORMAL);
                             m_M16Firing = true;
-                            break;
-
-                        default:
-                            Gun_Rifle_FireShotgun();
-                            break;
                         }
-
                         item->goal_anim_state = LA_G_RECOIL;
                     }
                 } else if (g_Lara.left_arm.lock) {
@@ -417,14 +248,10 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
         if (Item_TestFrameEqual(item, 0)) {
             item->goal_anim_state = LA_G_UUNAIM;
             if ((g_Lara.water_status == LWS_UNDERWATER || running)
-                && !m_ReloadHarpoon) {
+                && !g_Gun_ReloadHarpoon) {
                 if (g_Input.action) {
                     if (g_Lara.target == nullptr || g_Lara.left_arm.lock) {
-                        if (weapon_type == LGT_HARPOON) {
-                            Gun_Rifle_FireHarpoon();
-                        } else {
-                            Gun_Rifle_FireM16(true);
-                        }
+                        Gun_Rifle_Fire(weapon_type, true);
                         item->goal_anim_state = LA_G_URECOIL;
                     }
                 } else if (g_Lara.left_arm.lock) {
