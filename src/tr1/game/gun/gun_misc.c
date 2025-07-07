@@ -387,7 +387,8 @@ void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
 }
 
 int32_t Gun_FireWeapon(
-    int32_t weapon_type, ITEM *target, ITEM *src, PHD_ANGLE *angles)
+    const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
+    const int16_t *const angles)
 {
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
 
