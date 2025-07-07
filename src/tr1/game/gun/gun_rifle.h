@@ -14,4 +14,3 @@ void Gun_Rifle_Undraw(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_Ready(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_Animate(LARA_GUN_TYPE weapon_type);
-void Gun_Rifle_Fire(LARA_GUN_TYPE weapon_type);

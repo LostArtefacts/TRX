@@ -147,7 +147,7 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
             }
         } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
             if (g_Input.action) {
-                Gun_Rifle_Fire(weapon_type);
+                Gun_Rifle_Fire(weapon_type, false);
                 ani++;
             }
         } else if (Anim_TestAbsFrameRange(
@@ -199,7 +199,7 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
             }
         } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
             if (g_Input.action) {
-                Gun_Rifle_Fire(weapon_type);
+                Gun_Rifle_Fire(weapon_type, false);
                 ani++;
             } else {
                 ani = LF_SG_UNAIM_START;
@@ -233,34 +233,4 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
     }
     g_Lara.right_arm.frame_num = ani;
     g_Lara.left_arm.frame_num = ani;
-}
-
-void Gun_Rifle_Fire(const LARA_GUN_TYPE weapon_type)
-{
-    bool fired = false;
-    PHD_ANGLE angles[2];
-    PHD_ANGLE dangles[2];
-
-    angles[0] = g_Lara.left_arm.rot.y + g_LaraItem->rot.y;
-    angles[1] = g_Lara.left_arm.rot.x;
-
-    for (int i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
-        dangles[0] = angles[0]
-            + (int32_t)((Random_GetControl() - 16384) * SHOTGUN_PELLET_SCATTER)
-                / 65536;
-        dangles[1] = angles[1]
-            + (int32_t)((Random_GetControl() - 16384) * SHOTGUN_PELLET_SCATTER)
-                / 65536;
-        if (Gun_FireWeapon(weapon_type, g_Lara.target, g_LaraItem, dangles)) {
-            fired = true;
-        }
-    }
-
-    if (!fired) {
-        return;
-    }
-
-    g_Lara.right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
-    Sound_Effect(
-        g_Weapons[weapon_type].sample_num, &g_LaraItem->pos, SPM_NORMAL);
 }
