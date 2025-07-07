@@ -411,4 +411,6 @@ typedef enum {
 
 #if TR_VERSION == 1
     #include "enum_tr1.h"
+#elif TR_VERSION == 2
+    #include "enum_tr2.h"
 #endif

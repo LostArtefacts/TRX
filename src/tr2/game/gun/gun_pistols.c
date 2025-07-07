@@ -64,67 +64,6 @@ void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
     Gun_Pistols_SetArmInfo(&g_Lara.left_arm, frame);
 }
 
-void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
-{
-    int16_t frame_l = g_Lara.left_arm.frame_num;
-    if (frame_l >= LF_G_RECOIL_START && frame_l <= LF_G_RECOIL_END) {
-        frame_l = LF_G_AIM_END;
-    } else if (frame_l >= LF_G_AIM_BEND && frame_l <= LF_G_AIM_END) {
-        g_Lara.left_arm.rot.x -= g_Lara.left_arm.rot.x / frame_l;
-        g_Lara.left_arm.rot.y -= g_Lara.left_arm.rot.y / frame_l;
-        frame_l--;
-    } else if (frame_l == LF_G_AIM_START) {
-        g_Lara.left_arm.rot.x = 0;
-        g_Lara.left_arm.rot.y = 0;
-        g_Lara.left_arm.rot.z = 0;
-        frame_l = LF_G_DRAW_END;
-    } else if (frame_l == LF_G_DRAW_START) {
-        Gun_Pistols_UndrawMeshLeft(weapon_type);
-        frame_l--;
-    } else if (frame_l >= LF_G_UNDRAW_BEND && frame_l <= LF_G_DRAW_END) {
-        frame_l--;
-    }
-    Gun_Pistols_SetArmInfo(&g_Lara.left_arm, frame_l);
-
-    int16_t frame_r = g_Lara.right_arm.frame_num;
-    if (frame_r >= LF_G_RECOIL_START && frame_r <= LF_G_RECOIL_END) {
-        frame_r = LF_G_AIM_END;
-    } else if (frame_r >= LF_G_AIM_BEND && frame_r <= LF_G_AIM_END) {
-        g_Lara.right_arm.rot.x -= g_Lara.right_arm.rot.x / frame_r;
-        g_Lara.right_arm.rot.y -= g_Lara.right_arm.rot.y / frame_r;
-        frame_r--;
-    } else if (frame_r == LF_G_AIM_START) {
-        g_Lara.right_arm.rot.x = 0;
-        g_Lara.right_arm.rot.y = 0;
-        g_Lara.right_arm.rot.z = 0;
-        frame_r = LF_G_DRAW_END;
-    } else if (frame_r == LF_G_DRAW_START) {
-        Gun_Pistols_UndrawMeshRight(weapon_type);
-        frame_r--;
-    } else if (frame_r >= LF_G_UNDRAW_BEND && frame_r <= LF_G_DRAW_END) {
-        frame_r--;
-    }
-    Gun_Pistols_SetArmInfo(&g_Lara.right_arm, frame_r);
-
-    if (frame_l == LF_G_UNDRAW_START && frame_r == LF_G_UNDRAW_START) {
-        g_Lara.gun_status = LGS_ARMLESS;
-        g_Lara.target = nullptr;
-        g_Lara.left_arm.frame_num = LF_G_AIM_START;
-        g_Lara.left_arm.lock = 0;
-        g_Lara.right_arm.frame_num = LF_G_AIM_START;
-        g_Lara.right_arm.lock = 0;
-    }
-
-    if (!g_Input.look || g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
-        g_Lara.head_rot.x =
-            (g_Lara.left_arm.rot.x + g_Lara.right_arm.rot.x) / 4;
-        g_Lara.head_rot.y =
-            (g_Lara.left_arm.rot.y + g_Lara.right_arm.rot.y) / 4;
-        g_Lara.torso_rot.x = g_Lara.head_rot.x;
-        g_Lara.torso_rot.y = g_Lara.head_rot.y;
-    }
-}
-
 void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
 {
     g_Lara.gun_status = LGS_READY;
