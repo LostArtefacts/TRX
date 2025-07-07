@@ -7,7 +7,6 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
-#include <libtrx/game/gun/pistols.h>
 #include <libtrx/game/math.h>
 
 typedef enum {
@@ -44,24 +43,6 @@ void Gun_Pistols_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
     arm->anim_num = obj->anim_idx + anim_idx;
     arm->frame_num = frame;
     arm->frame_base = anim->frame_ptr;
-}
-
-void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
-{
-    int16_t frame = g_Lara.left_arm.frame_num + 1;
-
-    if (!(frame >= LF_G_UNDRAW_START && frame <= LF_G_DRAW_END)) {
-        frame = LF_G_UNDRAW_START;
-    } else if (frame == LF_G_DRAW_START) {
-        Gun_Pistols_DrawMeshes(weapon_type);
-        Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-    } else if (frame == LF_G_DRAW_END) {
-        Gun_Pistols_Ready(weapon_type);
-        frame = LF_G_AIM_START;
-    }
-
-    Gun_Pistols_SetArmInfo(&g_Lara.right_arm, frame);
-    Gun_Pistols_SetArmInfo(&g_Lara.left_arm, frame);
 }
 
 void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
