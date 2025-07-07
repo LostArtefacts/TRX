@@ -85,9 +85,3 @@ typedef enum {
 #endif
     GFS_NUMBER_OF,
 } GF_SEQUENCE_EVENT_TYPE;
-
-typedef enum {
-    GF_EVENT_QUEUE_NONE = -1,
-    GF_EVENT_QUEUE_AFTER_LEVEL_INIT,
-    GF_EVENT_QUEUE_NUMBER_OF,
-} GF_EVENT_QUEUE_TYPE;
