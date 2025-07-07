@@ -334,44 +334,6 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
     Gun_TargetInfo(winfo);
 }
 
-void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
-{
-    PHD_ANGLE destx;
-    PHD_ANGLE desty;
-    PHD_ANGLE curr;
-    PHD_ANGLE speed = winfo->aim_speed;
-
-    if (arm->lock) {
-        desty = g_Lara.target_angles[0];
-        destx = g_Lara.target_angles[1];
-    } else {
-        destx = 0;
-        desty = 0;
-    }
-
-    curr = arm->rot.y;
-    if (curr >= desty - speed && curr <= speed + desty) {
-        curr = desty;
-    } else if (curr < desty) {
-        curr += speed;
-    } else {
-        curr -= speed;
-    }
-    arm->rot.y = curr;
-
-    curr = arm->rot.x;
-    if (curr >= destx - speed && curr <= speed + destx) {
-        curr = destx;
-    } else if (curr < destx) {
-        curr += speed;
-    } else {
-        curr -= speed;
-    }
-    arm->rot.x = curr;
-
-    arm->rot.z = 0;
-}
-
 int32_t Gun_FireWeapon(
     const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
     const int16_t *const angles)
