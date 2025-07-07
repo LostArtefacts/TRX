@@ -21,7 +21,6 @@ X_CFG_ENUM(gameplay.wall_glitch_mode,           WALL_GLITCH_TR2, WALL_GLITCH_MOD
 X_CFG_ENUM(rendering.lighting_contrast,         LIGHTING_CONTRAST_MEDIUM, LIGHTING_CONTRAST)
 X_CFG_ENUM(rendering.render_mode,               RM_HARDWARE, RENDER_MODE)
 X_CFG_ENUM(rendering.texel_adjust_mode,         TAM_BILINEAR_ONLY, TEXEL_ADJUST_MODE)
-X_CFG_ENUM(rendering.texture_filter,            GFX_TF_NN, GFX_TEXTURE_FILTER)
 X_CFG_ENUM(visuals.camera_mode,                 CAMERA_MODE_TR2, CAMERA_MODE)
 X_CFG_FLOAT(rendering.wireframe_width,          2.5)
 X_CFG_FLOAT_PERCENT(audio.music_volume,         1.0f)
