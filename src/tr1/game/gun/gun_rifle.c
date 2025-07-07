@@ -9,6 +9,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun/vars.h>
 
 #include <stdint.h>
 

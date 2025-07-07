@@ -13,6 +13,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/gun/vars.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
