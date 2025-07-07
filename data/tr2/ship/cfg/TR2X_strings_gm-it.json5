@@ -9,35 +9,35 @@
             "title": "La Guerra Fredda",
             "objects": {
                 "tiger": {
-                    "name": "Leopardo delle nevi",
+                    "name": "Leopardo delle Nevi",
                 },
                 "key_1": {
-                    "name": "Chiave guardiola",
+                    "name": "Chiave della Guardiola",
                 },
                 "key_2": {
-                    "name": "Chiave 'B' del pozzo",
+                    "name": "Chiave del Tunnel \"B\"",
                 }
             }
         },
         {
-            "title": "L'oro degli sciocchi",
+            "title": "L'Oro degli Sciocchi",
             "objects": {
                 "key_1": {
-                    "name": "Carta d'accesso 1",
+                    "name": "Chiave Magnetica 1",
                 },
                 "key_4": {
-                    "name": "Carta d'accesso 2",
+                    "name": "Chiave Magnetica 2",
                 },
                 "puzzle_1": {
-                    "name": "Scheda circuito",
+                    "name": "Circuito d'Avvio",
                 }
             }
         },
         {
-            "title": "Crogiolo degli dèi",
+            "title": "Crogiolo degli Dèi",
             "objects": {
                 "big_spider": {
-                    "name": "Orso polare",
+                    "name": "Orso Polare",
                 },
                 "spider": {
                     "name": "Lupo",
@@ -46,7 +46,7 @@
                     "name": "Maschera di Tornarsuk",
                 },
                 "puzzle_2": {
-                    "name": "Pepita d'oro",
+                    "name": "Pepita d'Oro",
                 }
             }
         },
@@ -54,7 +54,7 @@
             "title": "Il Regno",
             "objects": {
                 "tiger": {
-                    "name": "leopardo delle nevi",
+                    "name": "Leopardo delle Nevi",
                 },
                 "puzzle_1": {
                     "name": "Maschera di Tornarsuk",
@@ -65,13 +65,13 @@
             "title": "Incubo a Las Vegas",
             "objects": {
                 "key_1": {
-                    "name": "Chiave dell'hotel",
+                    "name": "Chiave dell'Hotel",
                 },
                 "puzzle_1": {
-                    "name": "Raccordo dell'ascensore",
+                    "name": "Giunto per Ascensore",
                 },
                 "puzzle_2": {
-                    "name": "Circuito della porta",
+                    "name": "Circuito della Porta",
                 }
             }
         }
