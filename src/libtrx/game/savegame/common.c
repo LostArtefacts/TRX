@@ -465,11 +465,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
-    if (lara->gun_type == LGT_FLARE) {
-        resume->equipped_gun_type = lara->last_gun_type;
-    } else {
-        resume->equipped_gun_type = lara->gun_type;
-    }
+    resume->equipped_gun_type = lara->last_gun_type;
 #endif
 
     resume->holsters_gun_type = lara->holsters_gun_type;

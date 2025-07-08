@@ -196,14 +196,20 @@ static void M_DrawRequestedWeapon(void)
         lara->right_arm.frame_num = 0;
         lara->left_arm.frame_num = 0;
     } else {
-        lara->last_gun_type = lara->request_gun_type;
 #if TR_VERSION >= 2
+        if (lara->request_gun_type != LGT_FLARE
+            && lara->request_gun_type != LGT_UNARMED) {
+            lara->last_gun_type = lara->request_gun_type;
+        }
         if (lara->gun_type == LGT_FLARE) {
             lara->request_gun_type = LGT_FLARE;
         } else {
             lara->gun_type = lara->request_gun_type;
         }
 #else
+        if (lara->request_gun_type != LGT_UNARMED) {
+            lara->last_gun_type = lara->request_gun_type;
+        }
         lara->gun_type = lara->request_gun_type;
 #endif
     }
