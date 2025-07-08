@@ -10,7 +10,6 @@
 
 #include <stdint.h>
 
-void Gun_TargetInfo(WEAPON_INFO *winfo);
 void Gun_GetNewTarget(WEAPON_INFO *winfo);
 void Gun_ChangeTarget(WEAPON_INFO *winfo);
 void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage);

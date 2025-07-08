@@ -3,6 +3,7 @@
 #include "game/const.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/los.h"
 #include "game/math.h"
 
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
@@ -48,4 +49,70 @@ void Gun_AimWeapon(const WEAPON_INFO *const weapon, LARA_ARM *const arm)
     }
 
     arm->rot.z = 0;
+}
+
+void Gun_TargetInfo(const WEAPON_INFO *const weapon)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara->target == nullptr) {
+        lara->left_arm.lock = 0;
+        lara->right_arm.lock = 0;
+        lara->target_angles[0] = 0;
+        lara->target_angles[1] = 0;
+        return;
+    }
+
+    GAME_VECTOR target;
+    GAME_VECTOR start = {
+        .pos = {
+            .x = lara_item->pos.x,
+            .y = lara_item->pos.y - 650,
+            .z = lara_item->pos.z,
+        },
+        .room_num = lara_item->room_num,
+    };
+    Gun_FindTargetPoint(lara->target, &target);
+
+    int16_t angles[2];
+    // clang-format off
+    Math_GetVectorAngles(
+        target.pos.x - start.pos.x,
+        target.pos.y - start.pos.y,
+        target.pos.z - start.pos.z,
+        angles);
+    // clang-format on
+
+    angles[0] -= lara_item->rot.y;
+    angles[1] -= lara_item->rot.x;
+
+    if (!LOS_Check(&start, &target)) {
+        lara->left_arm.lock = 0;
+        lara->right_arm.lock = 0;
+    } else if (
+        angles[0] >= weapon->lock_angles[0]
+        && angles[0] <= weapon->lock_angles[1]
+        && angles[1] >= weapon->lock_angles[2]
+        && angles[1] <= weapon->lock_angles[3]) {
+        lara->left_arm.lock = 1;
+        lara->right_arm.lock = 1;
+    } else {
+        if (lara->left_arm.lock
+            && (angles[0] < weapon->left_angles[0]
+                || angles[0] > weapon->left_angles[1]
+                || angles[1] < weapon->left_angles[2]
+                || angles[1] > weapon->left_angles[3])) {
+            lara->left_arm.lock = 0;
+        }
+        if (lara->right_arm.lock
+            && (angles[0] < weapon->right_angles[0]
+                || angles[0] > weapon->right_angles[1]
+                || angles[1] < weapon->right_angles[2]
+                || angles[1] > weapon->right_angles[3])) {
+            lara->right_arm.lock = 0;
+        }
+    }
+
+    lara->target_angles[0] = angles[0];
+    lara->target_angles[1] = angles[1];
 }

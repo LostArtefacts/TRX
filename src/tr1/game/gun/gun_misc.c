@@ -140,61 +140,6 @@ WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     },
 };
 
-void Gun_TargetInfo(WEAPON_INFO *winfo)
-{
-    if (!g_Lara.target) {
-        g_Lara.right_arm.lock = 0;
-        g_Lara.left_arm.lock = 0;
-        g_Lara.target_angles[1] = 0;
-        g_Lara.target_angles[0] = 0;
-        return;
-    }
-
-    GAME_VECTOR src;
-    GAME_VECTOR target;
-    src.x = g_LaraItem->pos.x;
-    src.y = g_LaraItem->pos.y - 650;
-    src.z = g_LaraItem->pos.z;
-    src.room_num = g_LaraItem->room_num;
-    Gun_FindTargetPoint(g_Lara.target, &target);
-
-    int16_t ang[2];
-    Math_GetVectorAngles(
-        target.x - src.x, target.y - src.y, target.z - src.z, ang);
-    ang[0] -= g_LaraItem->rot.y;
-    ang[1] -= g_LaraItem->rot.x;
-
-    if (LOS_Check(&src, &target)) {
-        if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1]
-            && ang[1] >= winfo->lock_angles[2]
-            && ang[1] <= winfo->lock_angles[3]) {
-            g_Lara.left_arm.lock = 1;
-            g_Lara.right_arm.lock = 1;
-        } else {
-            if (g_Lara.left_arm.lock
-                && (ang[0] < winfo->left_angles[0]
-                    || ang[0] > winfo->left_angles[1]
-                    || ang[1] < winfo->left_angles[2]
-                    || ang[1] > winfo->left_angles[3])) {
-                g_Lara.left_arm.lock = 0;
-            }
-            if (g_Lara.right_arm.lock
-                && (ang[0] < winfo->right_angles[0]
-                    || ang[0] > winfo->right_angles[1]
-                    || ang[1] < winfo->right_angles[2]
-                    || ang[1] > winfo->right_angles[3])) {
-                g_Lara.right_arm.lock = 0;
-            }
-        }
-    } else {
-        g_Lara.right_arm.lock = 0;
-        g_Lara.left_arm.lock = 0;
-    }
-
-    g_Lara.target_angles[0] = ang[0];
-    g_Lara.target_angles[1] = ang[1];
-}
-
 void Gun_GetNewTarget(WEAPON_INFO *winfo)
 {
     // Preserve OG targeting behavior.
