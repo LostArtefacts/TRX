@@ -162,7 +162,17 @@ bool Input_IsRoleUnbindable(const INPUT_ROLE role)
     return !m_IsRoleNonUnbindable[role];
 }
 
-bool Input_IsPressed(
+bool Input_IsPressed(const INPUT_ROLE role)
+{
+    return M_IsPressed(g_Input, role);
+}
+
+bool Input_IsPressedDB(const INPUT_ROLE role)
+{
+    return M_IsPressed(g_InputDB, role);
+}
+
+bool Input_IsPressedEx(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)
 {
@@ -186,8 +196,8 @@ bool Input_ReadAndAssignRole(
         if (other_backend == backend) {
             continue;
         }
-        if (Input_IsPressed(other_backend, layout, INPUT_ROLE_MENU_BACK)
-            || Input_IsPressed(other_backend, layout, INPUT_ROLE_OPTION)) {
+        if (Input_IsPressedEx(other_backend, layout, INPUT_ROLE_MENU_BACK)
+            || Input_IsPressedEx(other_backend, layout, INPUT_ROLE_OPTION)) {
             return true;
         }
     }

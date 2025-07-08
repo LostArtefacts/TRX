@@ -34,7 +34,7 @@ static void M_HandleKeyDown(const SDL_Event *const event)
     // keypresses if the player types really fast, so we need to react sooner.
     if (g_Config.gameplay.enable_console && !Console_IsOpened()
         && !Input_IsInListenMode()
-        && Input_IsPressed(
+        && Input_IsPressedEx(
             INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
             INPUT_ROLE_ENTER_CONSOLE)) {
         Console_Open();
