@@ -182,23 +182,6 @@ void Game_ProcessInput(void)
         return;
     }
 
-    if (g_InputDB.equip_pistols && Inv_RequestItem(O_PISTOL_OPTION)) {
-        g_Lara.request_gun_type = LGT_PISTOLS;
-    } else if (g_InputDB.equip_shotgun && Inv_RequestItem(O_SHOTGUN_OPTION)) {
-        g_Lara.request_gun_type = LGT_SHOTGUN;
-    } else if (g_InputDB.equip_magnums && Inv_RequestItem(O_MAGNUM_OPTION)) {
-        g_Lara.request_gun_type = LGT_MAGNUMS;
-    } else if (g_InputDB.equip_uzis && Inv_RequestItem(O_UZI_OPTION)) {
-        g_Lara.request_gun_type = LGT_UZIS;
-    } else if (g_InputDB.equip_harpoon && Inv_RequestItem(O_HARPOON_OPTION)) {
-        g_Lara.request_gun_type = LGT_HARPOON;
-    } else if (g_InputDB.equip_m16 && Inv_RequestItem(O_M16_OPTION)) {
-        g_Lara.request_gun_type = LGT_M16;
-    } else if (
-        g_InputDB.equip_grenade_launcher && Inv_RequestItem(O_GRENADE_OPTION)) {
-        g_Lara.request_gun_type = LGT_GRENADE;
-    }
-
     if (g_InputDB.use_small_medi && Inv_RequestItem(O_SMALL_MEDIPACK_OPTION)) {
         Lara_UseItem(O_SMALL_MEDIPACK_OPTION);
     }
