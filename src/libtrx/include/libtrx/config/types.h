@@ -88,10 +88,9 @@ typedef enum {
 } LOOK_MODE;
 
 typedef enum {
-    QUICK_ITEMS_DISABLED,
-    QUICK_ITEMS_DRAW_ONLY,
-    QUICK_ITEMS_DRAW_AND_HOLSTER,
-} QUICK_ITEMS_MODE;
+    QUICK_GUNS_DRAW_ONLY,
+    QUICK_GUNS_DRAW_AND_HOLSTER,
+} QUICK_GUNS_MODE;
 
 #if TR_VERSION == 1
     #include "./types_tr1.h"

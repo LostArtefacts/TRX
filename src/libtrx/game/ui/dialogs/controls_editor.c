@@ -41,7 +41,7 @@ static bool M_AreQuickItemKeysEnabled(void)
 #if TR_VERSION == 1
     return g_Config.input.enable_numeric_keys;
 #else
-    return g_Config.input.quick_items_mode != QUICK_ITEMS_DISABLED;
+    return true;
 #endif
 }
 

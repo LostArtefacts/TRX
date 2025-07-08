@@ -4,7 +4,7 @@ X_UI_CFG_BOOL(input.enable_responsive_passport,    GAMEPLAY_SETTINGS_ENABLE_RESP
 X_UI_CFG_BOOL(input.enable_numeric_keys,           GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS)
 X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS)
 #else
-X_UI_CFG_ENUM(input.quick_items_mode,              GAMEPLAY_SETTINGS_QUICK_ITEMS_MODE, .misc = UI_Settings_QuickItemsModeEnumEntries)
+X_UI_CFG_ENUM(input.quick_guns_mode,               GAMEPLAY_SETTINGS_QUICK_GUNS_MODE, .misc = UI_Settings_QuickGunsModeEnumEntries)
 #endif
 
 X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS)
