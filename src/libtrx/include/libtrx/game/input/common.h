@@ -56,9 +56,17 @@ bool Input_IsRoleUnbindable(INPUT_ROLE role);
 bool Input_IsKeyConflicted(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
 
+// Checks if the key is currently pressed. Tied to Input_Update(), so updates
+// at most at the game running FPS.
+bool Input_IsPressed(INPUT_ROLE role);
+
+// Checks if the key is currently pressed with a debounce, e.g. only true
+// for the game frame the player starts to hold the key at.
+bool Input_IsPressedDB(INPUT_ROLE role);
+
 // Given the input layout and input key role, check if the assorted key is
 // pressed, bypassing Input_Update.
-bool Input_IsPressed(
+bool Input_IsPressedEx(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
 
 // If there is anything pressed, assigns the pressed key to the given key role

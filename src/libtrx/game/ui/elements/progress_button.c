@@ -37,7 +37,7 @@ UI_PROGRESS_BUTTON_STATE *UI_ProgressButton_Init(
 
 void UI_ProgressButton_Control(UI_PROGRESS_BUTTON_STATE *const s)
 {
-    if (!Input_IsPressed(s->backend, INPUT_LAYOUT_DEFAULT, s->role)) {
+    if (!Input_IsPressedEx(s->backend, INPUT_LAYOUT_DEFAULT, s->role)) {
         s->hold_timer = 0;
         return;
     }
