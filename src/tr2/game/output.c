@@ -631,12 +631,7 @@ void Output_DrawSprite(
 
     if (flags & SPRF_SHADE) {
         const int32_t depth = zv >> W2V_SHIFT;
-        if (depth > Output_GetFogStart()) {
-            shade += depth - Output_GetFogStart();
-            if (shade > SHADE_MAX) {
-                return;
-            }
-        }
+        shade += Output_CalcFogShade(depth);
     } else {
         shade = SHADE_NEUTRAL;
     }
