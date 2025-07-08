@@ -311,6 +311,7 @@ However, you can easily download them manually from these urls:
 - fixed skipping credits working too fast
 - fixed Lara not drawing the last selected gun using quick draw keys
 - fixed Lara not drawing weapons other than pistols and Shotgun with draw key if she didn't have any weapons
+- fixed Lara defaulting to pistols when starting Diving Area, if the player has not collected them in Offshore Rig
 
 #### Statistics
 - fixed the dragon counting as more than one kill if allowed to revive
