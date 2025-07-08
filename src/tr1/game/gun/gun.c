@@ -218,20 +218,6 @@ void Gun_InitialiseNewWeapon(void)
     }
 }
 
-GAME_OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
-{
-    switch (gun_type) {
-    case LGT_PISTOLS:
-    case LGT_MAGNUMS:
-    case LGT_UZIS:
-        return O_LARA_PISTOLS;
-    case LGT_SHOTGUN:
-        return O_LARA_SHOTGUN;
-    default:
-        return O_LARA;
-    }
-}
-
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
 {
     int32_t light;
@@ -279,13 +265,14 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
 
 void Gun_UpdateLaraMeshes(const GAME_OBJECT_ID obj_id)
 {
+    const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM);
     const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
         || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_UZI_ITEM);
 
     LARA_GUN_TYPE back_gun_type = LGT_UNARMED;
     LARA_GUN_TYPE holsters_gun_type = LGT_UNARMED;
 
-    if (!Inv_RequestItem(O_SHOTGUN_ITEM) && obj_id == O_SHOTGUN_ITEM) {
+    if (!lara_has_rifle && obj_id == O_SHOTGUN_ITEM) {
         back_gun_type = LGT_SHOTGUN;
     } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {
         holsters_gun_type = LGT_PISTOLS;
