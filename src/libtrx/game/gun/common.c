@@ -22,6 +22,21 @@ void Gun_AddDynamicLight(void)
     Output_AddDynamicLight(pos, 12, 11);
 }
 
+GAME_OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
+{
+    if (TR_VERSION == 1) {
+        switch (gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            return O_LARA_PISTOLS;
+        default:
+            break;
+        }
+    }
+    return Gun_GetWeaponAnim(gun_type);
+}
+
 GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
@@ -36,6 +51,7 @@ GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
     case LGT_M16:     return O_LARA_M16;
     case LGT_GRENADE: return O_LARA_GRENADE;
     case LGT_HARPOON: return O_LARA_HARPOON;
+    case LGT_FLARE:   return O_LARA_FLARE;
 #endif
     default:          return NO_OBJECT;
     }

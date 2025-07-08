@@ -12,6 +12,7 @@ void Gun_SetLaraHolsterLMesh(LARA_GUN_TYPE weapon_type);
 void Gun_SetLaraHolsterRMesh(LARA_GUN_TYPE weapon_type);
 
 // TODO: make this a struct
+GAME_OBJECT_ID Gun_GetLaraAnim(LARA_GUN_TYPE gun_type);
 GAME_OBJECT_ID Gun_GetWeaponAnim(LARA_GUN_TYPE gun_type);
 LARA_GUN_TYPE Gun_GetType(GAME_OBJECT_ID obj_id);
 GAME_OBJECT_ID Gun_GetGunObject(LARA_GUN_TYPE gun_type);
