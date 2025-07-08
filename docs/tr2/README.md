@@ -300,6 +300,7 @@ However, you can easily download them manually from these urls:
 - added ability to sidestep like in TR3
 - added ability to hold arrows to move through menus more quickly
 - added ability to move the camera around with W,A,S,D
+- added ability to turn off quick draw hotkeys, or make them also holster the active weapon
 - added an inverted look camera option
 - added ability to unbind unessential keys
 - added ability to reset control schemes to default

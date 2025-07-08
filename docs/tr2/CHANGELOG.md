@@ -31,6 +31,7 @@
 - added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
 - added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - added an option to choose between original TR1, original TR2 or unrestricted look modes (Gameplay settings → Controls → Look mode) (#3403)
+- added an option to disable the quick item use hotkeys, or make them also holster the active gun (Gameplay settings → UI → Quick items) (#828)
 - added an option to allow the audio to mute when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
 - added an option to control texture filter for UI alone (Graphic options → Rendering → UI filter)
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)

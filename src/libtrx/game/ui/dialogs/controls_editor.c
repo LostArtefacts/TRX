@@ -33,17 +33,17 @@ typedef enum {
     M_PHASE_EXIT,
 } M_PHASE;
 
-#if TR_VERSION == 1
-static bool M_AreNumericKeysEnabled(void);
-#endif
+static bool M_AreQuickItemKeysEnabled(void);
 static bool M_AreCheatsEnabled(void);
 
-#if TR_VERSION == 1
-static bool M_AreNumericKeysEnabled(void)
+static bool M_AreQuickItemKeysEnabled(void)
 {
+#if TR_VERSION == 1
     return g_Config.input.enable_numeric_keys;
-}
+#else
+    return g_Config.input.quick_items_mode != QUICK_ITEMS_DISABLED;
 #endif
+}
 
 static bool M_AreCheatsEnabled(void)
 {
@@ -75,30 +75,29 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .header_gs = GS_ID(CONTROLS_SECTION_ITEMS),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
-#if TR_VERSION == 1
+#if TR_VERSION >= 2
+                { .role = INPUT_ROLE_USE_FLARE,
+                  .is_available = M_AreQuickItemKeysEnabled },
+#endif
                 { .role = INPUT_ROLE_USE_SMALL_MEDI,
-                  .is_available = M_AreNumericKeysEnabled },
+                  .is_available = M_AreQuickItemKeysEnabled },
                 { .role = INPUT_ROLE_USE_BIG_MEDI,
-                  .is_available = M_AreNumericKeysEnabled },
+                  .is_available = M_AreQuickItemKeysEnabled },
                 { .role = INPUT_ROLE_EQUIP_PISTOLS,
-                  .is_available = M_AreNumericKeysEnabled },
+                  .is_available = M_AreQuickItemKeysEnabled },
                 { .role = INPUT_ROLE_EQUIP_SHOTGUN,
-                  .is_available = M_AreNumericKeysEnabled },
+                  .is_available = M_AreQuickItemKeysEnabled },
                 { .role = INPUT_ROLE_EQUIP_MAGNUMS,
-                  .is_available = M_AreNumericKeysEnabled },
+                  .is_available = M_AreQuickItemKeysEnabled },
                 { .role = INPUT_ROLE_EQUIP_UZIS,
-                  .is_available = M_AreNumericKeysEnabled },
-#else
-                { .role = INPUT_ROLE_USE_FLARE },
-                { .role = INPUT_ROLE_USE_SMALL_MEDI },
-                { .role = INPUT_ROLE_USE_BIG_MEDI },
-                { .role = INPUT_ROLE_EQUIP_PISTOLS },
-                { .role = INPUT_ROLE_EQUIP_SHOTGUN },
-                { .role = INPUT_ROLE_EQUIP_MAGNUMS },
-                { .role = INPUT_ROLE_EQUIP_UZIS },
-                { .role = INPUT_ROLE_EQUIP_HARPOON },
-                { .role = INPUT_ROLE_EQUIP_M16 },
-                { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
+                  .is_available = M_AreQuickItemKeysEnabled },
+#if TR_VERSION >= 2
+                { .role = INPUT_ROLE_EQUIP_HARPOON,
+                  .is_available = M_AreQuickItemKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_M16,
+                  .is_available = M_AreQuickItemKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER,
+                  .is_available = M_AreQuickItemKeysEnabled },
 #endif
                 { .role = (INPUT_ROLE)-1 },
             },

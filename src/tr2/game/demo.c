@@ -21,14 +21,15 @@
 #include <libtrx/game/music.h>
 #include <libtrx/log.h>
 
-#define MODIFY_CONFIG()                                                        \
-    PROCESS_CONFIG(gameplay.harpoon_recoil, 4);                                \
-    PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);         \
-    PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);            \
-    PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR2);                \
-    PROCESS_CONFIG(gameplay.look_mode, LOOK_MODE_ENHANCED);                    \
-    PROCESS_CONFIG(gameplay.enable_tr2_swimming, true);                        \
-    PROCESS_CONFIG(visuals.enable_fire_lighting, false);
+#define L_MODIFY_CONFIG()                                                      \
+    X_PROCESS_CONFIG(gameplay.harpoon_recoil, 4);                              \
+    X_PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);       \
+    X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
+    X_PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR2);              \
+    X_PROCESS_CONFIG(gameplay.look_mode, LOOK_MODE_ENHANCED);                  \
+    X_PROCESS_CONFIG(gameplay.enable_tr2_swimming, true);                      \
+    X_PROCESS_CONFIG(input.quick_items_mode, QUICK_ITEMS_DRAW_ONLY);           \
+    X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);
 
 typedef struct {
     const uint32_t *demo_ptr;
@@ -53,17 +54,17 @@ static void M_PrepareConfig(M_PRIV *const p)
     p->old_config.config = g_Config;
     p->old_config.bonus_flag = Game_GetBonusFlag();
     Game_SetBonusFlag(GBF_NONE);
-#undef PROCESS_CONFIG
-#define PROCESS_CONFIG(var, value) g_Config.var = value;
-    MODIFY_CONFIG();
+#define X_PROCESS_CONFIG(var, value) g_Config.var = value;
+    L_MODIFY_CONFIG();
+#undef X_PROCESS_CONFIG
 }
 
 static void M_RestoreConfig(M_PRIV *const p)
 {
     Game_SetBonusFlag(p->old_config.bonus_flag);
-#undef PROCESS_CONFIG
-#define PROCESS_CONFIG(var, value) g_Config.var = p->old_config.config.var;
-    MODIFY_CONFIG();
+#define X_PROCESS_CONFIG(var, value) g_Config.var = p->old_config.config.var;
+    L_MODIFY_CONFIG();
+#undef X_PROCESS_CONFIG
 }
 
 bool Demo_GetInput(void)
