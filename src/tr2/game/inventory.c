@@ -11,11 +11,80 @@
 #include <libtrx/utils.h>
 
 static int32_t M_GetFlareQuantity(void);
+static INVENTORY_ITEM *M_GetGunInvItem(LARA_GUN_TYPE gun_type);
+static INVENTORY_ITEM *M_GetAmmoInvItem(LARA_GUN_TYPE gun_type);
+static void M_AddGun(LARA_GUN_TYPE gun_type);
 
 static int32_t M_GetFlareQuantity(void)
 {
     return Game_IsBonusFlagSet(GBF_JAPANESE) ? FLARE_AMMO_JAPANESE_QTY
                                              : FLARE_AMMO_QTY;
+}
+
+static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_SHOTGUN: return &g_InvRing_Item_Shotgun;
+    case LGT_MAGNUMS: return &g_InvRing_Item_Magnums;
+    case LGT_UZIS:    return &g_InvRing_Item_Uzis;
+    case LGT_HARPOON: return &g_InvRing_Item_Harpoon;
+    case LGT_M16:     return &g_InvRing_Item_M16;
+    case LGT_GRENADE: return &g_InvRing_Item_Grenade;
+    default:          return nullptr;
+    }
+    // clang-format on
+}
+
+static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_SHOTGUN: return &g_InvRing_Item_ShotgunAmmo;
+    case LGT_MAGNUMS: return &g_InvRing_Item_MagnumAmmo;
+    case LGT_UZIS:    return &g_InvRing_Item_UziAmmo;
+    case LGT_HARPOON: return &g_InvRing_Item_HarpoonAmmo;
+    case LGT_M16:     return &g_InvRing_Item_M16Ammo;
+    case LGT_GRENADE: return &g_InvRing_Item_GrenadeAmmo;
+    default:          return nullptr;
+    }
+    // clang-format on
+}
+
+static void M_AddGun(const LARA_GUN_TYPE gun_type)
+{
+    const GAME_OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const GAME_OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
+    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
+    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
+    for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
+        Inv_RemoveItem(ammo_object);
+        Inv_AddAmmo(ammo, ammo_qty);
+    }
+    Inv_AddAmmo(ammo, ammo_qty);
+    Inv_InsertItem(M_GetGunInvItem(gun_type));
+    if (g_Lara.last_gun_type == LGT_UNARMED) {
+        g_Lara.last_gun_type = gun_type;
+    }
+    if (Gun_IsRifleType(gun_type)) {
+        if (g_Lara.back_gun_obj_id == O_LARA) {
+            g_Lara.back_gun_obj_id = Gun_GetWeaponAnim(gun_type);
+            g_Lara.back_gun_type = gun_type;
+        }
+    }
+    Item_GlobalReplace(gun_object, ammo_object);
+}
+
+static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
+{
+    const GAME_OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
+    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
+    if (Inv_RequestItem(gun_object)) {
+        Inv_AddAmmo(ammo, ammo_qty);
+    } else {
+        Inv_InsertItem(M_GetAmmoInvItem(gun_type));
+    }
 }
 
 bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
@@ -62,137 +131,69 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Pistols);
-        if (g_Lara.last_gun_type) {
-            return true;
+        if (g_Lara.last_gun_type == LGT_UNARMED) {
+            g_Lara.last_gun_type = LGT_PISTOLS;
         }
-        g_Lara.last_gun_type = 1;
         return true;
 
     case O_SHOTGUN_ITEM:
     case O_SHOTGUN_OPTION:
-        for (int32_t i = Inv_RequestItem(O_SHOTGUN_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_SHOTGUN_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
-        }
-        Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Shotgun);
-        if (g_Lara.last_gun_type == LGT_UNARMED) {
-            g_Lara.last_gun_type = LGT_SHOTGUN;
-        }
-        if (g_Lara.back_gun_obj_id == O_LARA) {
-            g_Lara.back_gun_obj_id = O_LARA_SHOTGUN;
-            g_Lara.back_gun_type = LGT_SHOTGUN;
-        }
-        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
+        M_AddGun(LGT_SHOTGUN);
         return false;
 
     case O_MAGNUM_ITEM:
     case O_MAGNUM_OPTION:
-        for (int32_t i = Inv_RequestItem(O_MAGNUM_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_MAGNUM_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
-        }
-        Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Magnums);
-        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
+        M_AddGun(LGT_MAGNUMS);
         return false;
 
     case O_UZI_ITEM:
     case O_UZI_OPTION:
-        for (int32_t i = Inv_RequestItem(O_UZI_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_UZI_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
-        }
-        Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Uzis);
-        Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+        M_AddGun(LGT_UZIS);
         return false;
 
     case O_HARPOON_ITEM:
     case O_HARPOON_OPTION:
-        for (int32_t i = Inv_RequestItem(O_HARPOON_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_HARPOON_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.harpoon_ammo, HARPOON_AMMO_QTY);
-        }
-        Inv_AddAmmo(&g_Lara.harpoon_ammo, HARPOON_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Harpoon);
-        Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
+        M_AddGun(LGT_HARPOON);
         return false;
 
     case O_M16_ITEM:
     case O_M16_OPTION:
-        for (int32_t i = Inv_RequestItem(O_M16_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_M16_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.m16_ammo, M16_AMMO_QTY);
-        }
-        Inv_AddAmmo(&g_Lara.m16_ammo, M16_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_M16);
-        Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
+        M_AddGun(LGT_M16);
         return false;
 
     case O_GRENADE_ITEM:
     case O_GRENADE_OPTION:
-        for (int32_t i = Inv_RequestItem(O_GRENADE_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_GRENADE_AMMO_ITEM);
-            Inv_AddAmmo(&g_Lara.grenade_ammo, GRENADE_AMMO_QTY);
-        }
-        Inv_AddAmmo(&g_Lara.grenade_ammo, GRENADE_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Grenade);
-        Item_GlobalReplace(O_GRENADE_ITEM, O_GRENADE_AMMO_ITEM);
+        M_AddGun(LGT_GRENADE);
         return false;
 
     case O_SHOTGUN_AMMO_ITEM:
     case O_SHOTGUN_AMMO_OPTION:
-        if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
-        } else {
-            Inv_InsertItem(&g_InvRing_Item_ShotgunAmmo);
-        }
+        M_AddAmmo(LGT_SHOTGUN);
         return false;
 
     case O_MAGNUM_AMMO_ITEM:
     case O_MAGNUM_AMMO_OPTION:
-        if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
-        } else {
-            Inv_InsertItem(&g_InvRing_Item_MagnumAmmo);
-        }
+        M_AddAmmo(LGT_MAGNUMS);
         return false;
 
     case O_UZI_AMMO_ITEM:
     case O_UZI_AMMO_OPTION:
-        if (Inv_RequestItem(O_UZI_ITEM)) {
-            Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
-        } else {
-            Inv_InsertItem(&g_InvRing_Item_UziAmmo);
-        }
+        M_AddAmmo(LGT_UZIS);
         return false;
 
     case O_HARPOON_AMMO_ITEM:
     case O_HARPOON_AMMO_OPTION:
-        if (Inv_RequestItem(O_HARPOON_ITEM)) {
-            Inv_AddAmmo(&g_Lara.harpoon_ammo, HARPOON_AMMO_CLIP);
-        } else {
-            Inv_InsertItem(&g_InvRing_Item_HarpoonAmmo);
-        }
+        M_AddAmmo(LGT_HARPOON);
         return false;
 
     case O_M16_AMMO_ITEM:
     case O_M16_AMMO_OPTION:
-        if (Inv_RequestItem(O_M16_ITEM)) {
-            Inv_AddAmmo(&g_Lara.m16_ammo, M16_AMMO_QTY);
-        } else {
-            Inv_InsertItem(&g_InvRing_Item_M16Ammo);
-        }
+        M_AddAmmo(LGT_M16);
         return false;
 
     case O_GRENADE_AMMO_ITEM:
     case O_GRENADE_AMMO_OPTION:
-        if (Inv_RequestItem(O_GRENADE_ITEM)) {
-            Inv_AddAmmo(&g_Lara.grenade_ammo, GRENADE_AMMO_QTY);
-        } else {
-            Inv_InsertItem(&g_InvRing_Item_GrenadeAmmo);
-        }
+        M_AddAmmo(LGT_GRENADE);
         return false;
 
     case O_SMALL_MEDIPACK_ITEM:
