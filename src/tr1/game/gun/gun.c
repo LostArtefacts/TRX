@@ -188,36 +188,6 @@ void Gun_Control(void)
     }
 }
 
-void Gun_InitialiseNewWeapon(void)
-{
-    g_Lara.left_arm.rot.x = 0;
-    g_Lara.left_arm.rot.y = 0;
-    g_Lara.left_arm.rot.z = 0;
-    g_Lara.left_arm.lock = 0;
-    g_Lara.left_arm.flash_gun = 0;
-    g_Lara.left_arm.frame_num = LF_G_AIM_START;
-    g_Lara.right_arm.rot.x = 0;
-    g_Lara.right_arm.rot.y = 0;
-    g_Lara.right_arm.rot.z = 0;
-    g_Lara.right_arm.lock = 0;
-    g_Lara.right_arm.flash_gun = 0;
-    g_Lara.right_arm.frame_num = LF_G_AIM_START;
-    g_Lara.target = nullptr;
-
-    const GAME_OBJECT_ID anim_type = Gun_GetLaraAnim(g_Lara.gun_type);
-    const OBJECT *const obj = Object_Get(anim_type);
-    g_Lara.right_arm.frame_base = obj->frame_base;
-    g_Lara.left_arm.frame_base = obj->frame_base;
-
-    if (g_Lara.gun_status != LGS_ARMLESS) {
-        if (anim_type == O_LARA_SHOTGUN) {
-            Gun_Rifle_DrawMeshes(g_Lara.gun_type);
-        } else {
-            Gun_Pistols_DrawMeshes(g_Lara.gun_type);
-        }
-    }
-}
-
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
 {
     int32_t light;
