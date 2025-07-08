@@ -309,6 +309,7 @@ However, you can easily download them manually from these urls:
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
 - fixed Lara not drawing the last selected gun using quick draw keys
+- fixed Lara not drawing weapons other than pistols and Shotgun with draw key if she didn't have any weapons
 
 #### Statistics
 - fixed the dragon counting as more than one kill if allowed to revive

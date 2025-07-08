@@ -56,6 +56,7 @@
 - fixed room 136 in Opera House not having water (#3214)
 - fixed Lara not saying 'aha' when picking up the secret in Lara's Home (#3103)
 - fixed Lara not drawing weapons with quick draw hotkeys if that was her last equipped weapon (#828)
+- fixed Lara not drawing weapons other than pistols and Shotgun with draw key if she didn't have any weapons (#828)
 - fixed missing zipline sound in Home Sweet Home (#3102)
 - fixed flare count getting corrupt on save/load if Lara had more than 255 flares (#1592)
 - fixed title screen background not updating aspect ratio when moving fullscreen window between monitors (#2842)

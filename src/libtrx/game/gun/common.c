@@ -153,6 +153,21 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
+bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)
+{
+    switch (gun_type) {
+    case LGT_SHOTGUN:
+#if TR_VERSION >= 2
+    case LGT_M16:
+    case LGT_GRENADE:
+    case LGT_HARPOON:
+#endif
+        return true;
+    default:
+        return false;
+    }
+}
+
 void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)
 {
     const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);

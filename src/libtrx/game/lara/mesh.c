@@ -5,31 +5,15 @@
 #include "game/lara.h"
 #include "game/savegame.h"
 
-static bool M_IsRifleType(LARA_GUN_TYPE gun_type);
 static LARA_GUN_TYPE M_DetermineHolsterGun(void);
 static LARA_GUN_TYPE M_DetermineBackGun(void);
-
-static bool M_IsRifleType(const LARA_GUN_TYPE gun_type)
-{
-    switch (gun_type) {
-    case LGT_SHOTGUN:
-#if TR_VERSION >= 2
-    case LGT_M16:
-    case LGT_GRENADE:
-    case LGT_HARPOON:
-#endif
-        return true;
-    default:
-        return false;
-    }
-}
 
 static LARA_GUN_TYPE M_DetermineHolsterGun(void)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->holsters_gun_type == LGT_UNARMED) {
         if (lara_info->gun_type != LGT_UNARMED
-            && !M_IsRifleType(lara_info->gun_type)) {
+            && !Gun_IsRifleType(lara_info->gun_type)) {
             return lara_info->gun_type;
         } else if (Inv_RequestItem(O_PISTOL_ITEM)) {
             return LGT_PISTOLS;

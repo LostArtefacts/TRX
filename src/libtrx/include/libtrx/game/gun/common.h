@@ -19,5 +19,6 @@ GAME_OBJECT_ID Gun_GetGunObject(LARA_GUN_TYPE gun_type);
 GAME_OBJECT_ID Gun_GetAmmoObject(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetAmmoQuantity(LARA_GUN_TYPE gun_type);
 AMMO_INFO *Gun_GetAmmoInfo(LARA_GUN_TYPE gun_type);
+bool Gun_IsRifleType(LARA_GUN_TYPE gun_type);
 
 void Gun_AddDynamicLight(void);
