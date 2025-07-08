@@ -152,67 +152,6 @@ void Gun_Control(void)
     }
 }
 
-void Gun_InitialiseNewWeapon(void)
-{
-    g_Lara.left_arm.flash_gun = 0;
-    g_Lara.left_arm.frame_num = 0;
-    g_Lara.left_arm.lock = 0;
-    g_Lara.left_arm.rot.x = 0;
-    g_Lara.left_arm.rot.y = 0;
-    g_Lara.left_arm.rot.z = 0;
-    g_Lara.right_arm.flash_gun = 0;
-    g_Lara.right_arm.frame_num = 0;
-    g_Lara.right_arm.lock = 0;
-    g_Lara.right_arm.rot.x = 0;
-    g_Lara.right_arm.rot.y = 0;
-    g_Lara.right_arm.rot.z = 0;
-    g_Lara.target = nullptr;
-
-    switch (g_Lara.gun_type) {
-    case LGT_PISTOLS:
-    case LGT_MAGNUMS:
-    case LGT_UZIS: {
-        const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
-        g_Lara.left_arm.frame_base = obj->frame_base;
-        g_Lara.right_arm.frame_base = obj->frame_base;
-        if (g_Lara.gun_status != LGS_ARMLESS) {
-            Gun_Pistols_DrawMeshes(g_Lara.gun_type);
-        }
-        break;
-    }
-
-    case LGT_SHOTGUN:
-    case LGT_M16:
-    case LGT_GRENADE:
-    case LGT_HARPOON: {
-        const OBJECT *const obj =
-            Object_Get(Gun_GetWeaponAnim(g_Lara.gun_type));
-        g_Lara.left_arm.frame_base = obj->frame_base;
-        g_Lara.right_arm.frame_base = obj->frame_base;
-        if (g_Lara.gun_status != LGS_ARMLESS) {
-            Gun_Rifle_DrawMeshes(g_Lara.gun_type);
-        }
-        break;
-    }
-
-    case LGT_FLARE: {
-        const OBJECT *const obj = Object_Get(O_LARA_FLARE);
-        g_Lara.left_arm.frame_base = obj->frame_base;
-        g_Lara.right_arm.frame_base = obj->frame_base;
-        if (g_Lara.gun_status != LGS_ARMLESS) {
-            Lara_Flare_DrawMeshes();
-        }
-        break;
-    }
-
-    default:
-        const ANIM *const anim = Item_GetAnim(g_LaraItem);
-        g_Lara.left_arm.frame_base = anim->frame_ptr;
-        g_Lara.right_arm.frame_base = anim->frame_ptr;
-        break;
-    }
-}
-
 void Gun_UpdateLaraMeshes(const GAME_OBJECT_ID obj_id)
 {
     const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM)

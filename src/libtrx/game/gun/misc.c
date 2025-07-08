@@ -1,6 +1,9 @@
 #include "game/gun/misc.h"
 
 #include "game/const.h"
+#include "game/gun/common.h"
+#include "game/gun/pistols.h"
+#include "game/gun/rifle.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/los.h"
@@ -115,4 +118,57 @@ void Gun_TargetInfo(const WEAPON_INFO *const weapon)
 
     lara->target_angles[0] = angles[0];
     lara->target_angles[1] = angles[1];
+}
+
+void Gun_InitialiseNewWeapon(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->target = nullptr;
+
+    lara->left_arm.flash_gun = 0;
+    lara->left_arm.frame_num = LF_G_AIM_START;
+    lara->left_arm.lock = 0;
+    lara->left_arm.rot.x = 0;
+    lara->left_arm.rot.y = 0;
+    lara->left_arm.rot.z = 0;
+
+    lara->right_arm.flash_gun = 0;
+    lara->right_arm.frame_num = LF_G_AIM_START;
+    lara->right_arm.lock = 0;
+    lara->right_arm.rot.x = 0;
+    lara->right_arm.rot.y = 0;
+    lara->right_arm.rot.z = 0;
+
+    const GAME_OBJECT_ID anim_type = Gun_GetLaraAnim(lara->gun_type);
+    const OBJECT *const obj = Object_Get(anim_type);
+    lara->left_arm.frame_base = obj->frame_base;
+    lara->right_arm.frame_base = obj->frame_base;
+
+    if (lara->gun_status != LGS_ARMLESS) {
+        switch (lara->gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            Gun_Pistols_DrawMeshes(lara->gun_type);
+            break;
+
+        case LGT_SHOTGUN:
+#if TR_VERSION >= 2
+        case LGT_M16:
+        case LGT_GRENADE:
+        case LGT_HARPOON:
+#endif
+            Gun_Rifle_DrawMeshes(lara->gun_type);
+            break;
+
+#if TR_VERSION >= 2
+        case LGT_FLARE:
+            Lara_Flare_DrawMeshes();
+            break;
+#endif
+
+        default:
+            break;
+        }
+    }
 }
