@@ -55,7 +55,12 @@ static bool M_IsTooSubmerged(const LARA_GUN_TYPE gun_type)
 
 static LARA_GUN_TYPE M_NeedToQuickDraw(void)
 {
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION >= 2
+    if (g_Config.input.quick_items_mode == QUICK_ITEMS_DISABLED) {
+        return LGT_UNKNOWN;
+    }
+#endif
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     for (int32_t i = 0; m_QuicDrawKeys[i].gun_type != LGT_UNKNOWN; i++) {
         if (Input_IsPressedDB(m_QuicDrawKeys[i].input_role)
             && Inv_RequestItem(Gun_GetGunObject(m_QuicDrawKeys[i].gun_type))
@@ -127,6 +132,18 @@ static bool M_NeedToUndraw(void)
     if (g_Input.draw || lara->request_gun_type != lara->gun_type) {
         return true;
     }
+    if (M_QuickDrawWeapon()) {
+#if TR_VERSION == 1
+        if (lara->request_gun_type != lara->gun_type) {
+            return true;
+        }
+#else
+        if (g_Config.input.quick_items_mode == QUICK_ITEMS_DRAW_AND_HOLSTER
+            || lara->request_gun_type != lara->gun_type) {
+            return true;
+        }
+#endif
+    }
     switch (lara->water_status) {
     case LWS_CHEAT:
         return true;
@@ -150,7 +167,8 @@ static void M_DecideRequestedWeapon(void)
         return;
     }
 #if TR_VERSION >= 2
-    if (g_InputDB.use_flare) {
+    if (g_Config.input.quick_items_mode != QUICK_ITEMS_DISABLED
+        && g_InputDB.use_flare) {
         if (lara->gun_type == LGT_FLARE) {
             lara->gun_status = LGS_UNDRAW;
         } else if (
@@ -195,12 +213,12 @@ static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
 #if TR_VERSION >= 2
-    if (g_InputDB.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
+    if (g_Config.input.quick_items_mode != QUICK_ITEMS_DISABLED
+        && g_InputDB.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
         lara->request_gun_type = LGT_FLARE;
     }
 #endif
-    if ((M_QuickDrawWeapon() && lara->request_gun_type != lara->gun_type)
-        || M_NeedToUndraw()) {
+    if (M_NeedToUndraw()) {
         lara->gun_status = LGS_UNDRAW;
     }
 }

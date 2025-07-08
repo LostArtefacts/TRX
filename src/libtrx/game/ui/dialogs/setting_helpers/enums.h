@@ -12,6 +12,7 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[];
 #endif
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LookModeEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_QuickItemsModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_JumpLockModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];

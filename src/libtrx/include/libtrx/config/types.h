@@ -87,6 +87,12 @@ typedef enum {
     LOOK_MODE_UNRESTRICTED,
 } LOOK_MODE;
 
+typedef enum {
+    QUICK_ITEMS_DISABLED,
+    QUICK_ITEMS_DRAW_ONLY,
+    QUICK_ITEMS_DRAW_AND_HOLSTER,
+} QUICK_ITEMS_MODE;
+
 #if TR_VERSION == 1
     #include "./types_tr1.h"
 #elif TR_VERSION == 2
