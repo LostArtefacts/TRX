@@ -41,7 +41,7 @@ typedef struct {
         };
         bool enable_tr3_sidesteps;
         bool enable_responsive_passport;
-        QUICK_ITEMS_MODE quick_items_mode;
+        QUICK_GUNS_MODE quick_guns_mode;
     } input;
 
     struct {

@@ -55,11 +55,6 @@ static bool M_IsTooSubmerged(const LARA_GUN_TYPE gun_type)
 
 static LARA_GUN_TYPE M_NeedToQuickDraw(void)
 {
-#if TR_VERSION >= 2
-    if (g_Config.input.quick_items_mode == QUICK_ITEMS_DISABLED) {
-        return LGT_UNKNOWN;
-    }
-#endif
     LARA_INFO *const lara = Lara_GetLaraInfo();
     for (int32_t i = 0; m_QuicDrawKeys[i].gun_type != LGT_UNKNOWN; i++) {
         if (Input_IsPressedDB(m_QuicDrawKeys[i].input_role)
@@ -138,7 +133,7 @@ static bool M_NeedToUndraw(void)
             return true;
         }
 #else
-        if (g_Config.input.quick_items_mode == QUICK_ITEMS_DRAW_AND_HOLSTER
+        if (g_Config.input.quick_guns_mode == QUICK_GUNS_DRAW_AND_HOLSTER
             || lara->request_gun_type != lara->gun_type) {
             return true;
         }
@@ -167,8 +162,7 @@ static void M_DecideRequestedWeapon(void)
         return;
     }
 #if TR_VERSION >= 2
-    if (g_Config.input.quick_items_mode != QUICK_ITEMS_DISABLED
-        && g_InputDB.use_flare) {
+    if (g_InputDB.use_flare) {
         if (lara->gun_type == LGT_FLARE) {
             lara->gun_status = LGS_UNDRAW;
         } else if (
@@ -219,8 +213,7 @@ static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
 #if TR_VERSION >= 2
-    if (g_Config.input.quick_items_mode != QUICK_ITEMS_DISABLED
-        && g_InputDB.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
+    if (g_InputDB.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
         lara->request_gun_type = LGT_FLARE;
     }
 #endif
