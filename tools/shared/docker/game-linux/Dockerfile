@@ -122,6 +122,16 @@ RUN sed -i "s/Cflags: .*/\\0 -DGLEW_STATIC /" /ext/lib/pkgconfig/glew.pc
 
 
 
+# LuaJIT
+FROM base AS luajit
+RUN apt-get install -y git gcc \
+    && git clone https://github.com/LuaJIT/LuaJIT.git \
+    && cd LuaJIT \
+    && make PREFIX=/ext -j4 \
+    && make install PREFIX=/ext
+
+
+
 # TRX
 FROM base
 
@@ -158,6 +168,7 @@ COPY --from=sdl /ext/ /ext/
 COPY --from=backtrace /ext/ /ext/
 COPY --from=pcre2 /ext/ /ext/
 COPY --from=glew /ext/ /ext/
+COPY --from=luajit /ext/ /ext/
 
 ENV PYTHONPATH=/app/tools/
 ENTRYPOINT ["/app/tools/shared/docker/game-linux/entrypoint.sh"]
