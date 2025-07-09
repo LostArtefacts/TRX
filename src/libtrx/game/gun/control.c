@@ -162,7 +162,7 @@ static void M_DecideRequestedWeapon(void)
         return;
     }
 #if TR_VERSION >= 2
-    if (g_InputDB.use_flare) {
+    if (g_Input.use_flare) {
         if (lara->gun_type == LGT_FLARE) {
             lara->gun_status = LGS_UNDRAW;
         } else if (
@@ -213,7 +213,7 @@ static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
 #if TR_VERSION >= 2
-    if (g_InputDB.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
+    if (g_Input.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
         lara->request_gun_type = LGT_FLARE;
     }
 #endif
