@@ -88,10 +88,11 @@
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - fixed the `/play` command not stopping active music when used to play Venice (#3469, regression from 0.8)
+- improved performance when resizing the window
 - improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
-- improved performance when resizing the window
+- improved error messages for game flow and string edit mistakes to include path of the problematic file
 - removed config tool (we have ingame setting dialogs now)
 - removed the limit of 10 dynamic lights per frame (#3384)
 

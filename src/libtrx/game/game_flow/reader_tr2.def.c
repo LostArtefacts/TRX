@@ -1,7 +1,8 @@
 // NOTE: this is an included file, not a compile unit on its own.
 // This is to avoid exposing symbols.
 
-static GF_COMMAND M_LoadCommand(JSON_OBJECT *jcmd, GF_COMMAND fallback);
+static GF_COMMAND M_LoadCommand(
+    const M_CONTEXT *ctx, JSON_OBJECT *jcmd, GF_COMMAND fallback);
 
 static GF_LEVEL_SETTINGS m_DefaultSettings = {
     .sfx_path = nullptr,
@@ -40,9 +41,10 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
 };
 
 static void M_LoadSettings(
-    JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
+    const M_CONTEXT *const ctx, JSON_OBJECT *const obj,
+    GF_LEVEL_SETTINGS *const settings)
 {
-    M_LoadCommonSettings(obj, settings);
+    M_LoadCommonSettings(ctx, obj, settings);
 
     {
         const char *tmp_s =
@@ -54,14 +56,14 @@ static void M_LoadSettings(
 }
 
 static void M_LoadLevelGameSpecifics(
-    JSON_OBJECT *const jlvl_obj, const GAME_FLOW *const gf,
+    const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
     GF_LEVEL *const level)
 {
-    level->settings = gf->settings;
+    level->settings = ctx->gf->settings;
 #if TR_VERSION == 2
     level->settings.sfx_path = nullptr;
 #endif
-    M_LoadSettings(jlvl_obj, &level->settings);
+    M_LoadSettings(ctx, jlvl_obj, &level->settings);
 }
 
 static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
@@ -70,7 +72,8 @@ static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
 }
 
 static GF_COMMAND M_LoadCommand(
-    JSON_OBJECT *const jcmd, const GF_COMMAND fallback)
+    const M_CONTEXT *const ctx, JSON_OBJECT *const jcmd,
+    const GF_COMMAND fallback)
 {
     if (jcmd == nullptr) {
         return fallback;
@@ -80,57 +83,59 @@ static GF_COMMAND M_LoadCommand(
         JSON_ObjectGetString(jcmd, "action", JSON_INVALID_STRING);
     const int32_t param = JSON_ObjectGetInt(jcmd, "param", -1);
     if (action_str == JSON_INVALID_STRING) {
-        Shell_ExitSystemFmt("Unknown game flow action: %s", action_str);
+        Shell_ExitSystemFmt(
+            "%s: Unknown game flow action: %s", ctx->script_path, action_str);
         return fallback;
     }
 
     const GF_ACTION action =
         ENUM_MAP_GET(GF_ACTION, action_str, (GF_ACTION)-1234);
     if (action == (GF_ACTION)-1234) {
-        Shell_ExitSystemFmt("Unknown game flow action: %s", action_str);
+        Shell_ExitSystemFmt(
+            "%s: Unknown game flow action: %s", ctx->script_path, action_str);
         return fallback;
     }
 
     return (GF_COMMAND) { .action = action, .param = param };
 }
 
-static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
+static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 {
-    gf->cmd_init = M_LoadCommand(
-        JSON_ObjectGetObject(obj, "cmd_init"),
+    ctx->gf->cmd_init = M_LoadCommand(
+        ctx, JSON_ObjectGetObject(obj, "cmd_init"),
         (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
-    gf->cmd_title = M_LoadCommand(
-        JSON_ObjectGetObject(obj, "cmd_title"),
+    ctx->gf->cmd_title = M_LoadCommand(
+        ctx, JSON_ObjectGetObject(obj, "cmd_title"),
         (GF_COMMAND) { .action = GF_NOOP });
-    gf->cmd_death_demo_mode = M_LoadCommand(
-        JSON_ObjectGetObject(obj, "cmd_death_demo_mode"),
+    ctx->gf->cmd_death_demo_mode = M_LoadCommand(
+        ctx, JSON_ObjectGetObject(obj, "cmd_death_demo_mode"),
         (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
-    gf->cmd_death_in_game = M_LoadCommand(
-        JSON_ObjectGetObject(obj, "cmd_death_in_game"),
+    ctx->gf->cmd_death_in_game = M_LoadCommand(
+        ctx, JSON_ObjectGetObject(obj, "cmd_death_in_game"),
         (GF_COMMAND) { .action = GF_NOOP });
-    gf->cmd_demo_interrupt = M_LoadCommand(
-        JSON_ObjectGetObject(obj, "cmd_demo_interrupt"),
+    ctx->gf->cmd_demo_interrupt = M_LoadCommand(
+        ctx, JSON_ObjectGetObject(obj, "cmd_demo_interrupt"),
         (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
-    gf->cmd_demo_end = M_LoadCommand(
-        JSON_ObjectGetObject(obj, "cmd_demo_end"),
+    ctx->gf->cmd_demo_end = M_LoadCommand(
+        ctx, JSON_ObjectGetObject(obj, "cmd_demo_end"),
         (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
 
-    gf->is_demo_version = JSON_ObjectGetBool(obj, "demo_version", false);
+    ctx->gf->is_demo_version = JSON_ObjectGetBool(obj, "demo_version", false);
 
-    gf->settings = m_DefaultSettings;
-    M_LoadSettings(obj, &gf->settings);
+    ctx->gf->settings = m_DefaultSettings;
+    M_LoadSettings(ctx, obj, &ctx->gf->settings);
 
     // clang-format off
-    gf->demo_delay = JSON_ObjectGetInt(obj, "demo_delay", 30);
-    gf->load_save_disabled = JSON_ObjectGetBool(obj, "load_save_disabled", false);
-    gf->cheat_keys = JSON_ObjectGetBool(obj, "cheat_keys", true);
-    gf->lockout_option_ring = JSON_ObjectGetBool(obj, "lockout_option_ring", true);
-    gf->play_any_level = JSON_ObjectGetBool(obj, "play_any_level", false);
-    gf->gym_enabled = JSON_ObjectGetBool(obj, "gym_enabled", true);
-    gf->single_level = JSON_ObjectGetInt(obj, "single_level", -1);
+    ctx->gf->demo_delay = JSON_ObjectGetInt(obj, "demo_delay", 30);
+    ctx->gf->load_save_disabled = JSON_ObjectGetBool(obj, "load_save_disabled", false);
+    ctx->gf->cheat_keys = JSON_ObjectGetBool(obj, "cheat_keys", true);
+    ctx->gf->lockout_option_ring = JSON_ObjectGetBool(obj, "lockout_option_ring", true);
+    ctx->gf->play_any_level = JSON_ObjectGetBool(obj, "play_any_level", false);
+    ctx->gf->gym_enabled = JSON_ObjectGetBool(obj, "gym_enabled", true);
+    ctx->gf->single_level = JSON_ObjectGetInt(obj, "single_level", -1);
     // clang-format on
 
-    gf->secret_track = JSON_ObjectGetInt(obj, "secret_track", MX_INACTIVE);
+    ctx->gf->secret_track = JSON_ObjectGetInt(obj, "secret_track", MX_INACTIVE);
 
-    M_LoadGlobalInjections(obj, gf);
+    M_LoadGlobalInjections(ctx, obj);
 }
