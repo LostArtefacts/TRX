@@ -48,3 +48,4 @@ extern int32_t Output_GetFogEnd(void);
 extern void Output_SetFogEnd(int32_t dist);
 
 extern void Output_SwitchViewport(VIEWPORT_SPACE space);
+extern void Output_ApplyLevelSettings(void);

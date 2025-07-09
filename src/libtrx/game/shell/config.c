@@ -163,5 +163,11 @@ void Shell_HandleCommonConfigChange(
         }
         Shell_RefreshRendererViewport();
     }
+
+    if (L_CHANGED(visuals.fog_start) || L_CHANGED(visuals.fog_end)
+        || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
+        || L_CHANGED(visuals.water_color.r)) {
+        Output_ApplyLevelSettings();
+    }
 #undef L_CHANGED
 }
