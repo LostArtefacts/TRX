@@ -13,8 +13,12 @@ typedef enum {
 typedef struct {
     int32_t x;
     int32_t y;
-    int32_t width;
-    int32_t height;
+    union {
+        int32_t width, w;
+    };
+    union {
+        int32_t height, h;
+    };
 } VIEWPORT_RECT;
 
 // TODO: hide this variable eventually

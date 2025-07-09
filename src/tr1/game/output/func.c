@@ -105,25 +105,19 @@ void Output_EnableScissor(
     // coordinates; to make it work properly, we need to translate it to the
     // SDL window coordinates first.
 
-    const int32_t border = 2; // to deal with precision issues
+    // To deal with precision issues coming from using integer matrix ops
+    const int32_t border = 4;
 
-    // TODO:!!!!!!!!!!
-    struct {
-        GLint x, y, w, h;
-    } game_viewport = {
-        .x = Viewport_GetMinX(VIEWPORT_GAME),
-        .y = Viewport_GetMinY(VIEWPORT_GAME),
-        .w = Viewport_GetWidth(VIEWPORT_GAME),
-        .h = Viewport_GetHeight(VIEWPORT_GAME),
-    }, gl_viewport, scissor;
-    glGetIntegerv(GL_VIEWPORT, &gl_viewport.x);
-
-    const float scale_x = gl_viewport.w / (float)game_viewport.w;
-    const float scale_y = gl_viewport.h / (float)game_viewport.h;
-    scissor.x = gl_viewport.x + (x * scale_x) - border;
-    scissor.y = gl_viewport.y + (game_viewport.h - y) * scale_y - border;
-    scissor.w = w * scale_x + border * 2;
-    scissor.h = h * scale_y + border * 2;
+    const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
+    const VIEWPORT_RECT window = Viewport_GetRect(VIEWPORT_GAME);
+    const float scale_x = window.w / (float)game.w;
+    const float scale_y = window.h / (float)game.h;
+    VIEWPORT_RECT scissor = {
+        .x = window.x + (x * scale_x) - border,
+        .y = window.y + (game.h - y) * scale_y - border,
+        .w = w * scale_x + border * 2,
+        .h = h * scale_y + border * 2,
+    };
 
     glEnable(GL_SCISSOR_TEST);
     glScissor(scissor.x, scissor.y, scissor.w, scissor.h);
