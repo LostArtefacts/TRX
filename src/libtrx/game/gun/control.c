@@ -239,5 +239,7 @@ void Gun_UpdateGunState(void)
         }
     } else if (lara->gun_status == LGS_READY) {
         M_TryUndrawWeapon();
+    } else {
+        M_QuickDrawWeapon();
     }
 }
