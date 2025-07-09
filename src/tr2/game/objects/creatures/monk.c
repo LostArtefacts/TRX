@@ -51,7 +51,9 @@ static const BITE m_MonkHit = {
 };
 
 static void M_SetupBase(OBJECT *obj);
+static void M_Setup1(OBJECT *obj);
 static void M_Setup2(OBJECT *obj);
+static void M_Setup3(OBJECT *obj);
 static void M_Control(int16_t item_num);
 
 static void M_SetupBase(OBJECT *const obj)
@@ -72,12 +74,31 @@ static void M_SetupBase(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.y = true;
 }
 
+static void M_Setup1(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->pivot_length = 0;
+}
+
 static void M_Setup2(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     M_SetupBase(obj);
+}
+
+static void M_Setup3(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->pivot_length = 0;
+    obj->shadow_size = 0;
 }
 
 static void M_Control(const int16_t item_num)
@@ -250,25 +271,6 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void Monk1_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->pivot_length = 0;
-}
-
-void Monk3_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->pivot_length = 0;
-    obj->shadow_size = 0;
-}
-
-REGISTER_OBJECT(O_MONK_1, Monk1_Setup)
+REGISTER_OBJECT(O_MONK_1, M_Setup1)
 REGISTER_OBJECT(O_MONK_2, M_Setup2)
-REGISTER_OBJECT(O_MONK_3, Monk3_Setup)
+REGISTER_OBJECT(O_MONK_3, M_Setup3)

@@ -69,6 +69,7 @@
                 "data/injections/coldwar_fd.bin",
                 "data/injections/coldwar_itemrots.bin",
                 "data/injections/coldwar_music_tracks.bin",
+                "data/injections/coldwar_objects.bin",
                 "data/injections/coldwar_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/shark_sfx.bin",
@@ -107,6 +108,7 @@
             "injections": [
                 "data/injections/furnace_itemrots.bin",
                 "data/injections/furnace_music_tracks.bin",
+                "data/injections/furnace_objects.bin",
                 "data/injections/furnace_pickup_meshes.bin",
                 "data/injections/furnace_textures.bin",
                 "data/injections/winston_model_gm.bin",

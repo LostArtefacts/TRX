@@ -1,9 +1,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/level.h"
-#include "game/objects/creatures/big_spider.h"
-#include "game/objects/creatures/monk.h"
-#include "game/objects/creatures/spider.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/render/common.h"
@@ -16,8 +13,6 @@
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
-#include <libtrx/game/objects/creatures/bear.h>
-#include <libtrx/game/objects/creatures/wolf.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
@@ -182,16 +177,6 @@ bool Shell_ParseArgs(const int32_t arg_count, const char **args)
 int32_t Shell_Main(void)
 {
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
-
-    if (m_Args.mod == M_MOD_GM) {
-        Object_Get(O_MONK_3)->setup_func = Monk3_Setup;
-        Object_Get(O_BEAR)->setup_func = Bear_Setup;
-        Object_Get(O_WOLF)->setup_func = Wolf_Setup;
-    } else {
-        Object_Get(O_MONK_1)->setup_func = Monk1_Setup;
-        Object_Get(O_SPIDER)->setup_func = Spider_Setup;
-        Object_Get(O_BIG_SPIDER)->setup_func = BigSpider_Setup;
-    }
 
     Shell_CommonInit();
 
