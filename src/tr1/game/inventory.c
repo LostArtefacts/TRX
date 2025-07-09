@@ -68,7 +68,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
             Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         }
         Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Magnum);
+        Inv_InsertItem(&g_InvRing_Item_Magnums);
         Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         return false;
 
@@ -79,7 +79,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
             Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         }
         Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
-        Inv_InsertItem(&g_InvRing_Item_Uzi);
+        Inv_InsertItem(&g_InvRing_Item_Uzis);
         Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return false;
 
@@ -112,12 +112,12 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 
     case O_SMALL_MEDIPACK_ITEM:
     case O_SMALL_MEDIPACK_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_Medi);
+        Inv_InsertItem(&g_InvRing_Item_SmallMedi);
         return true;
 
     case O_LARGE_MEDIPACK_ITEM:
     case O_LARGE_MEDIPACK_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_BigMedi);
+        Inv_InsertItem(&g_InvRing_Item_LargeMedi);
         return true;
 
     case O_PUZZLE_ITEM_1:

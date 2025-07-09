@@ -28,16 +28,15 @@ INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
     [RT_MAIN] = {
         .current = 0,
         .count = 1,
-        .qtys = { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        .qtys = { 1, 1, 1, 1, 1, 1, 1, 1 },
         .items = {
             &g_InvRing_Item_Compass,
             &g_InvRing_Item_Pistols,
             &g_InvRing_Item_Shotgun,
-            &g_InvRing_Item_Magnum,
-            &g_InvRing_Item_Uzi,
-            &g_InvRing_Item_Grenade,
-            &g_InvRing_Item_BigMedi,
-            &g_InvRing_Item_Medi,
+            &g_InvRing_Item_Magnums,
+            &g_InvRing_Item_Uzis,
+            &g_InvRing_Item_LargeMedi,
+            &g_InvRing_Item_SmallMedi,
         },
     },
     [RT_OPTION] = {
@@ -45,12 +44,12 @@ INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
         .count = 6,
         .qtys = { 1, 1, 1, 1, 1, 1 },
         .items = {
-            &g_InvRing_Item_Game,
+            &g_InvRing_Item_Passport,
             &g_InvRing_Item_Controls,
             &g_InvRing_Item_Sound,
-            &g_InvRing_Item_Details,
+            &g_InvRing_Item_Graphics,
             &g_InvRing_Item_NatlasPDA,
-            &g_InvRing_Item_LarasHome,
+            &g_InvRing_Item_Photo,
         },
     },
 };
@@ -80,7 +79,7 @@ INVENTORY_ITEM g_InvRing_Item_Compass = {
     .inv_pos = 0,
 };
 
-INVENTORY_ITEM g_InvRing_Item_Medi = {
+INVENTORY_ITEM g_InvRing_Item_SmallMedi = {
     .object_id = O_SMALL_MEDIPACK_OPTION,
     .frames_total = 26,
     .current_frame = 0,
@@ -105,7 +104,7 @@ INVENTORY_ITEM g_InvRing_Item_Medi = {
     .inv_pos = 7,
 };
 
-INVENTORY_ITEM g_InvRing_Item_BigMedi = {
+INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
     .object_id = O_LARGE_MEDIPACK_OPTION,
     .frames_total = 20,
     .current_frame = 0,
@@ -480,7 +479,7 @@ INVENTORY_ITEM g_InvRing_Item_Shotgun = {
     .inv_pos = 2,
 };
 
-INVENTORY_ITEM g_InvRing_Item_Magnum = {
+INVENTORY_ITEM g_InvRing_Item_Magnums = {
     .object_id = O_MAGNUM_OPTION,
     .frames_total = 12,
     .current_frame = 0,
@@ -505,7 +504,7 @@ INVENTORY_ITEM g_InvRing_Item_Magnum = {
     .inv_pos = 3,
 };
 
-INVENTORY_ITEM g_InvRing_Item_Uzi = {
+INVENTORY_ITEM g_InvRing_Item_Uzis = {
     .object_id = O_UZI_OPTION,
     .frames_total = 13,
     .current_frame = 0,
@@ -528,31 +527,6 @@ INVENTORY_ITEM g_InvRing_Item_Uzi = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 4,
-};
-
-INVENTORY_ITEM g_InvRing_Item_Grenade = {
-    .object_id = O_EXPLOSIVE_OPTION,
-    .frames_total = 15,
-    .current_frame = 0,
-    .goal_frame = 0,
-    .open_frame = 14,
-    .anim_direction = 1,
-    .anim_speed = 1,
-    .anim_count = 0,
-    .x_rot_pt_sel = 5024,
-    .x_rot_pt = 0,
-    .x_rot_sel = 0,
-    .x_rot_nosel = 0,
-    .x_rot = 0,
-    .y_rot_sel = 0,
-    .y_rot = 0,
-    .y_trans_sel = 0,
-    .y_trans = 0,
-    .z_trans_sel = 368,
-    .z_trans = 0,
-    .meshes_sel = -1,
-    .meshes_drawn = -1,
-    .inv_pos = 5,
 };
 
 INVENTORY_ITEM g_InvRing_Item_PistolAmmo = {
@@ -655,7 +629,7 @@ INVENTORY_ITEM g_InvRing_Item_UziAmmo = {
     .inv_pos = 4,
 };
 
-INVENTORY_ITEM g_InvRing_Item_Game = {
+INVENTORY_ITEM g_InvRing_Item_Passport = {
     .object_id = O_PASSPORT_CLOSED,
     .frames_total = 30,
     .current_frame = 0,
@@ -680,7 +654,7 @@ INVENTORY_ITEM g_InvRing_Item_Game = {
     .inv_pos = 0,
 };
 
-INVENTORY_ITEM g_InvRing_Item_Details = {
+INVENTORY_ITEM g_InvRing_Item_Graphics = {
     .object_id = O_DETAIL_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -755,7 +729,7 @@ INVENTORY_ITEM g_InvRing_Item_Controls = {
     .inv_pos = 3,
 };
 
-INVENTORY_ITEM g_InvRing_Item_LarasHome = {
+INVENTORY_ITEM g_InvRing_Item_Photo = {
     .object_id = O_PHOTO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
