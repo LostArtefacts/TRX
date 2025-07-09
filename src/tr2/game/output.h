@@ -26,8 +26,6 @@ typedef struct {
     float g;
 } VERTEX_INFO;
 
-void Output_ApplyLevelSettings(void);
-
 void Output_DrawObjectMesh(const OBJECT_MESH *mesh, int32_t clip);
 void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, int32_t clip);
 void Output_DrawRoom(const ROOM_MESH *mesh, bool is_outside);

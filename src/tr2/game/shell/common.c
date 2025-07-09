@@ -133,12 +133,6 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
             Viewport_AlterFOV(-1);
         }
     }
-
-    if (L_CHANGED(visuals.fog_start) || L_CHANGED(visuals.fog_end)
-        || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
-        || L_CHANGED(visuals.water_color.r)) {
-        Output_ApplyLevelSettings();
-    }
 #undef L_CHANGED
 }
 
