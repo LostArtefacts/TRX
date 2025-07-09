@@ -1,11 +1,93 @@
 #include "game/inventory.h"
 
 #include "config.h"
+#include "game/gun.h"
 #include "game/inventory_ring/vars.h"
-#include "game/objects/vars.h"
-#include "utils.h"
+#include "game/lara.h"
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
+
+static INVENTORY_ITEM *M_GetGunInvItem(LARA_GUN_TYPE gun_type);
+static INVENTORY_ITEM *M_GetAmmoInvItem(LARA_GUN_TYPE gun_type);
+static void M_AddAmmo(LARA_GUN_TYPE gun_type, int32_t qty);
+
+static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_SHOTGUN: return &g_InvRing_Item_Shotgun;
+    case LGT_MAGNUMS: return &g_InvRing_Item_Magnums;
+    case LGT_UZIS:    return &g_InvRing_Item_Uzis;
+    #if TR_VERSION >= 2
+    case LGT_HARPOON: return &g_InvRing_Item_Harpoon;
+    case LGT_M16:     return &g_InvRing_Item_M16;
+    case LGT_GRENADE: return &g_InvRing_Item_Grenade;
+    #endif
+    default:          return nullptr;
+    }
+    // clang-format on
+}
+
+static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
+{
+    // clang-format off
+    switch (gun_type) {
+    case LGT_SHOTGUN: return &g_InvRing_Item_ShotgunAmmo;
+    case LGT_MAGNUMS: return &g_InvRing_Item_MagnumAmmo;
+    case LGT_UZIS:    return &g_InvRing_Item_UziAmmo;
+    #if TR_VERSION >= 2
+    case LGT_HARPOON: return &g_InvRing_Item_HarpoonAmmo;
+    case LGT_M16:     return &g_InvRing_Item_M16Ammo;
+    case LGT_GRENADE: return &g_InvRing_Item_GrenadeAmmo;
+    #endif
+    default:          return nullptr;
+    }
+    // clang-format on
+}
+
+static void M_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
+{
+    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
+    ammo->ammo += qty;
+    CLAMPG(ammo->ammo, MAX_QTY);
+}
+
+void Inv_AddGun(const LARA_GUN_TYPE gun_type)
+{
+    const GAME_OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const GAME_OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
+    for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
+        Inv_RemoveItem(ammo_object);
+        M_AddAmmo(gun_type, ammo_qty);
+    }
+    M_AddAmmo(gun_type, ammo_qty);
+    Inv_InsertItem(M_GetGunInvItem(gun_type));
+    if (lara->last_gun_type == LGT_UNARMED) {
+        lara->last_gun_type = gun_type;
+    }
+    if (Gun_IsRifleType(gun_type)) {
+#if TR_VERSION == 2
+        if (lara->back_gun_obj_id == O_LARA) {
+            lara->back_gun_obj_id = Gun_GetWeaponAnim(gun_type);
+            lara->back_gun_type = gun_type;
+        }
+#endif
+    }
+    Item_GlobalReplace(gun_object, ammo_object);
+}
+
+void Inv_AddAmmo(const LARA_GUN_TYPE gun_type)
+{
+    const GAME_OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
+    if (Inv_RequestItem(gun_object)) {
+        M_AddAmmo(gun_type, ammo_qty);
+    } else {
+        Inv_InsertItem(M_GetAmmoInvItem(gun_type));
+    }
+}
 
 bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
 {
@@ -14,12 +96,6 @@ bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
         result |= Inv_AddItem(obj_id);
     }
     return result;
-}
-
-void Inv_AddAmmo(AMMO_INFO *const weapon_ammo, int32_t qty)
-{
-    weapon_ammo->ammo += qty;
-    CLAMPG(weapon_ammo->ammo, MAX_QTY);
 }
 
 GAME_OBJECT_ID Inv_GetItemOption(const GAME_OBJECT_ID obj_id)
