@@ -35,18 +35,6 @@
 
 void Game_ProcessInput(void)
 {
-    if (g_Config.input.enable_numeric_keys) {
-        if (g_InputDB.equip_pistols && Inv_RequestItem(O_PISTOL_ITEM)) {
-            g_Lara.request_gun_type = LGT_PISTOLS;
-        } else if (g_InputDB.equip_shotgun && Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            g_Lara.request_gun_type = LGT_SHOTGUN;
-        } else if (g_InputDB.equip_magnums && Inv_RequestItem(O_MAGNUM_ITEM)) {
-            g_Lara.request_gun_type = LGT_MAGNUMS;
-        } else if (g_InputDB.equip_uzis && Inv_RequestItem(O_UZI_ITEM)) {
-            g_Lara.request_gun_type = LGT_UZIS;
-        }
-    }
-
     if (g_InputDB.use_small_medi && Inv_RequestItem(O_SMALL_MEDIPACK_OPTION)) {
         Lara_UseItem(O_SMALL_MEDIPACK_OPTION);
     } else if (
@@ -73,10 +61,6 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
 
-    // LaraGun() expects request_gun_type to be set only when it
-    // really is needed, not at all times.
-    // https://github.com/LostArtefacts/TRX/issues/36
-    g_Lara.request_gun_type = LGT_UNARMED;
     g_OverlayFlag = 1;
     Camera_Initialise();
     Interpolation_Remember();

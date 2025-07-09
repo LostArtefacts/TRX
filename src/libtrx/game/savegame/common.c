@@ -436,7 +436,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
 #if TR_VERSION == 1
     resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
-    resume->equipped_gun_type = lara->gun_type;
 #elif TR_VERSION == 2
     if (Inv_RequestItem(O_M16_ITEM)) {
         resume->flags.has_m16 = true;
@@ -465,9 +464,9 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
-    resume->equipped_gun_type = lara->last_gun_type;
 #endif
 
+    resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
     resume->back_gun_type = lara->back_gun_type;
     if (TR_VERSION == 1 && lara->gun_status == LGS_READY) { // TODO: TR2

@@ -119,8 +119,6 @@
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION": "Enables legal screen and Core Design FMV at the game start.",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS": "Loading screens",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION": "Enables PS1 style loading screens before each level.",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS": "Hotkey item use",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION": "Enables quick weapon draws and medipack usage.\n\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw uzis\n- 8: Use small medipack\n- 9: Use large medipack",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT": "Responsive passport",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
         "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS": "Save crystals",

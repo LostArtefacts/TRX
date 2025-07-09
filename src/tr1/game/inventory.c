@@ -42,6 +42,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Pistols);
+        if (g_Lara.last_gun_type == LGT_UNARMED) {
+            g_Lara.last_gun_type = LGT_PISTOLS;
+        }
         return true;
 
     case O_SHOTGUN_ITEM:

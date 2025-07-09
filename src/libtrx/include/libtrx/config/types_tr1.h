@@ -35,10 +35,10 @@ typedef struct {
             };
             int32_t layout[INPUT_BACKEND_NUMBER_OF];
         };
-        bool enable_numeric_keys;
         bool enable_tr3_sidesteps;
         bool enable_responsive_passport;
         bool enable_buffering;
+        QUICK_GUNS_MODE quick_guns_mode;
     } input;
 
     struct {
