@@ -5,7 +5,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetCameraPosEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent);
 
 static void M_LoadLevelItemDrops(
-    JSON_OBJECT *obj, const GAME_FLOW *gf, GF_LEVEL *level);
+    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL *level);
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
@@ -70,19 +70,19 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent)
     const GAME_OBJECT_ID object1_id =
         M_GetObjectFromJSONValue(JSON_ObjectGetValue(event_obj, "object1_id"));
     if (object1_id == NO_OBJECT) {
-        Shell_ExitSystem("'object1_id' is invalid");
+        Shell_ExitSystemFmt("%s: 'object1_id' is invalid", ctx->script_path);
     }
 
     const GAME_OBJECT_ID object2_id =
         M_GetObjectFromJSONValue(JSON_ObjectGetValue(event_obj, "object2_id"));
     if (object2_id == NO_OBJECT) {
-        Shell_ExitSystem("'object2_id' is invalid");
+        Shell_ExitSystemFmt("%s: 'object2_id' is invalid", ctx->script_path);
     }
 
     const int32_t mesh_num =
         JSON_ObjectGetInt(event_obj, "mesh_id", JSON_INVALID_NUMBER);
     if (mesh_num == JSON_INVALID_NUMBER) {
-        Shell_ExitSystem("'mesh_id' must be a number");
+        Shell_ExitSystemFmt("%s: 'mesh_id' must be a number", ctx->script_path);
     }
 
     if (event != nullptr) {
@@ -96,17 +96,18 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent)
 }
 
 static void M_LoadSettings(
-    JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
+    const M_CONTEXT *const ctx, JSON_OBJECT *const obj,
+    GF_LEVEL_SETTINGS *const settings)
 {
-    M_LoadCommonSettings(obj, settings);
+    M_LoadCommonSettings(ctx, obj, settings);
 }
 
 static void M_LoadLevelGameSpecifics(
-    JSON_OBJECT *const jlvl_obj, const GAME_FLOW *const gf,
+    const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
     GF_LEVEL *const level)
 {
-    level->settings = gf->settings;
-    M_LoadSettings(jlvl_obj, &level->settings);
+    level->settings = ctx->gf->settings;
+    M_LoadSettings(ctx, jlvl_obj, &level->settings);
 
     level->unobtainable.pickups =
         JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
@@ -124,12 +125,12 @@ static void M_LoadLevelGameSpecifics(
         }
         if (level->lara_type == NO_OBJECT) {
             Shell_ExitSystemFmt(
-                "level %d: 'lara_type' must be a valid game object id",
-                level->num);
+                "%s, level %d: 'lara_type' must be a valid game object id",
+                ctx->script_path, level->num);
         }
     }
 
-    M_LoadLevelItemDrops(jlvl_obj, gf, level);
+    M_LoadLevelItemDrops(ctx, jlvl_obj, level);
 }
 
 static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
@@ -138,13 +139,13 @@ static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
 }
 
 static void M_LoadLevelItemDrops(
-    JSON_OBJECT *const jlvl_obj, const GAME_FLOW *const gf,
+    const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
     GF_LEVEL *const level)
 {
     JSON_ARRAY *const drops = JSON_ObjectGetArray(jlvl_obj, "item_drops");
     level->item_drops.count = 0;
 
-    if (drops != nullptr && gf->enable_tr2_item_drops) {
+    if (drops != nullptr && ctx->gf->enable_tr2_item_drops) {
         LOG_WARNING(
             "TR2 item drops are enabled: gameflow-defined drops for level "
             "%d will be ignored",
@@ -167,15 +168,15 @@ static void M_LoadLevelItemDrops(
             JSON_ObjectGetInt(jlvl_data, "enemy_num", JSON_INVALID_NUMBER);
         if (data->enemy_num == JSON_INVALID_NUMBER) {
             Shell_ExitSystemFmt(
-                "level %d, item drop %d: 'enemy_num' must be a number",
-                level->num, i);
+                "%s, level %d, item drop %d: 'enemy_num' must be a number",
+                ctx->script_path, level->num, i);
         }
 
         JSON_ARRAY *object_arr = JSON_ObjectGetArray(jlvl_data, "object_ids");
         if (!object_arr) {
             Shell_ExitSystemFmt(
-                "level %d, item drop %d: 'object_ids' must be an array",
-                level->num, i);
+                "%s, level %d, item drop %d: 'object_ids' must be an array",
+                ctx->script_path, level->num, i);
         }
 
         data->count = (signed)object_arr->length;
@@ -185,34 +186,35 @@ static void M_LoadLevelItemDrops(
                 M_GetObjectFromJSONValue(JSON_ArrayGetValue(object_arr, j));
             if (id == NO_OBJECT) {
                 Shell_ExitSystemFmt(
-                    "level %d, item drop %d, index %d: 'object_id' "
+                    "%s, level %d, item drop %d, index %d: 'object_id' "
                     "must be a valid object id",
-                    level->num, i, j);
+                    ctx->script_path, level->num, i, j);
             }
             data->object_ids[j] = (int16_t)id;
         }
     }
 }
 
-static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
+static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 {
     double tmp_d;
     JSON_ARRAY *tmp_arr;
 
     tmp_d = JSON_ObjectGetDouble(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
-        Shell_ExitSystem("'demo_delay' must be a positive number");
+        Shell_ExitSystemFmt(
+            "%s: 'demo_delay' must be a positive number", ctx->script_path);
     }
-    gf->demo_delay = tmp_d;
+    ctx->gf->demo_delay = tmp_d;
 
-    M_LoadSettings(obj, &gf->settings);
+    M_LoadSettings(ctx, obj, &ctx->gf->settings);
 
-    gf->enable_tr2_item_drops =
+    ctx->gf->enable_tr2_item_drops =
         JSON_ObjectGetBool(obj, "enable_tr2_item_drops", false);
-    gf->convert_dropped_guns =
+    ctx->gf->convert_dropped_guns =
         JSON_ObjectGetBool(obj, "convert_dropped_guns", false);
-    gf->enable_killer_pushblocks =
+    ctx->gf->enable_killer_pushblocks =
         JSON_ObjectGetBool(obj, "enable_killer_pushblocks", true);
 
-    M_LoadGlobalInjections(obj, gf);
+    M_LoadGlobalInjections(ctx, obj);
 }

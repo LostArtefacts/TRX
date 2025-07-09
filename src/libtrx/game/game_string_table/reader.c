@@ -127,9 +127,9 @@ static void M_LoadLevelsFromJSON(
 
     if (jlvl_arr->length != (size_t)level_table->count) {
         Shell_ExitSystemFmt(
-            "'%s' length must match with the game flow level count (got: "
+            "%s: '%s' length must match with the game flow level count (got: "
             "%d, expected: %d)",
-            key, jlvl_arr->length, level_table->count);
+            gs_file->path, key, jlvl_arr->length, level_table->count);
     }
 
     gs_level_table->count = jlvl_arr->length;
@@ -141,7 +141,8 @@ static void M_LoadLevelsFromJSON(
 
         JSON_OBJECT *const jlvl_obj = JSON_ValueAsObject(jlvl_elem->value);
         if (jlvl_obj == nullptr) {
-            Shell_ExitSystem("'levels' elements must be dictionaries");
+            Shell_ExitSystemFmt(
+                "%s: 'levels' elements must be dictionaries", gs_file->path);
             return;
         }
 
@@ -165,9 +166,9 @@ void GS_File_LoadFromString(
         &parse_result);
     if (root == nullptr) {
         Shell_ExitSystemFmt(
-            "Failed to parse strings table: %s in line %d, char %d",
-            JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no, data);
+            "%s: Failed to parse strings table: %s in line %d, char %d",
+            gs_file->path, JSON_GetErrorDescription(parse_result.error),
+            parse_result.error_line_no, parse_result.error_row_no);
     }
 
     JSON_OBJECT *root_obj = JSON_ValueAsObject(root);

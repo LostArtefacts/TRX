@@ -58,6 +58,7 @@
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window
+- improved error messages for game flow and string edit mistakes to include path of the problematic file
 - removed config tool (we have ingame setting dialogs now)
 - removed the "Enable numeric keys" option (it was added when these keys were not changeable)
 
