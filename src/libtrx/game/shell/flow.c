@@ -8,6 +8,7 @@
 #include "game/game_string.h"
 #include "game/game_string_manager.h"
 #include "game/lara/pose.h"
+#include "game/lua.h"
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
@@ -85,6 +86,7 @@ void Shell_CommonInit(void)
 
     Shell_LoadConfig();
     Clock_Init();
+    LUA_Init();
 }
 
 void Shell_ShutdownCommonModules(void)
@@ -95,6 +97,7 @@ void Shell_ShutdownCommonModules(void)
     Savegame_Shutdown();
 
     GF_Shutdown();
+    LUA_Shutdown();
     Overlay_Shutdown();
     Option_Shutdown();
     Output_Shutdown();

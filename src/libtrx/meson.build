@@ -54,6 +54,7 @@ dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
 dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
+dep_luajit = dependency('luajit', static: staticdeps)
 c_compiler.check_header('uthash.h', required: true)
 
 dep_zlib = null_dep
@@ -202,6 +203,7 @@ sources = [
   'game/level/common.c',
   'game/level/faces.c',
   'game/level/settings.c',
+  'game/lua/common.c',
   'game/math/trig.c',
   'game/math/util.c',
   'game/matrix.c',
@@ -256,10 +258,10 @@ sources = [
   'game/savegame/common.c',
   'game/scaler.c',
   'game/shell/common.c',
-  'game/shell/input.c',
   'game/shell/config.c',
   'game/shell/events.c',
   'game/shell/flow.c',
+  'game/shell/input.c',
   'game/shell/main.c',
   'game/shell/platform.c',
   'game/sound/common.c',
@@ -362,6 +364,7 @@ dependencies = [
   dep_backtrace,
   dep_swresample,
   dep_swscale,
+  dep_luajit,
   dep_zlib,
   dep_opengl,
 ]
