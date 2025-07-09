@@ -1,6 +1,5 @@
 #include "game/output.h"
 
-#include "game/clock.h"
 #include "game/inventory_ring.h"
 #include "game/level.h"
 #include "game/random.h"
