@@ -25,6 +25,7 @@
 - added an option to display level counter in the statistics dialog (Graphic options → UI → Level counter) (#1087)
 - added an option to control playing of certain animation sound effects such as doors when underwater (Sound options → Underwater animation SFX) (#3385)
 - added an option to allow the audio to play when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
+- added an option to make the quick gun equip keys also holster the active gun (Gameplay settings → UI → Quick gun keys) (#828)
 - added an option to control texture filter for UI alone (Graphic options → Rendering → UI filter)
 - added the ability to use the dev console during FMVs
 - changed statistics details mode to be placed in the UI section
@@ -58,6 +59,7 @@
 - improved handling of animation sound effects when in shallow water (#3385)
 - improved performance when resizing the window
 - removed config tool (we have ingame setting dialogs now)
+- removed the "Enable numeric keys" option (it was added when these keys were not changeable)
 
 ## [4.12.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.2...tr1-4.12.3) - 2025-06-24
 - fixed game crashing when the expected resources are missing (#3310, regression from 4.12.2)

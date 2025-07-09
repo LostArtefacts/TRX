@@ -4,6 +4,8 @@
 #include "debug.h"
 #include "game/camera.h"
 #include "game/gun/common.h"
+#include "game/gun/pistols.h"
+#include "game/gun/rifle.h"
 #include "game/gun/vars.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -41,7 +43,7 @@ static void M_TryUndrawWeapon(void);
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
 #if TR_VERSION == 1
-    return true;
+    return false;
 #else
     return gun_type == LGT_HARPOON;
 #endif
@@ -88,6 +90,9 @@ static bool M_CanEquip(void)
     if (Lara_Vehicle_IsMounted()) {
         return false;
     }
+    if (!Inv_RequestItem(Gun_GetGunObject(lara->request_gun_type))) {
+        return false;
+    }
     switch (lara->water_status) {
     case LWS_CHEAT:
         return false;
@@ -128,16 +133,10 @@ static bool M_NeedToUndraw(void)
         return true;
     }
     if (M_QuickDrawWeapon()) {
-#if TR_VERSION == 1
-        if (lara->request_gun_type != lara->gun_type) {
-            return true;
-        }
-#else
         if (g_Config.input.quick_guns_mode == QUICK_GUNS_DRAW_AND_HOLSTER
             || lara->request_gun_type != lara->gun_type) {
             return true;
         }
-#endif
     }
     switch (lara->water_status) {
     case LWS_CHEAT:
@@ -241,5 +240,167 @@ void Gun_UpdateGunState(void)
         M_TryUndrawWeapon();
     } else {
         M_QuickDrawWeapon();
+    }
+}
+
+void Gun_Control(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+
+    if (lara->extra_anim && lara->gun_status != LGS_HANDS_BUSY) {
+        lara->request_gun_type = LGT_UNARMED;
+        return;
+    }
+
+    if (lara->left_arm.flash_gun > 0) {
+        lara->left_arm.flash_gun--;
+    }
+    if (lara->right_arm.flash_gun > 0) {
+        lara->right_arm.flash_gun--;
+    }
+
+    Gun_UpdateGunState();
+
+    switch (lara->gun_status) {
+    case LGS_ARMLESS:
+    case LGS_HANDS_BUSY:
+#if TR_VERSION >= 2
+        if (lara->gun_type == LGT_FLARE) {
+            Lara_Flare_Control();
+        }
+#endif
+        break;
+
+    case LGS_DRAW:
+#if TR_VERSION >= 2
+        if (lara->gun_type != LGT_FLARE && lara->gun_type != LGT_UNARMED) {
+            lara->last_gun_type = lara->gun_type;
+        }
+#else
+        if (lara->gun_type != LGT_UNARMED) {
+            lara->last_gun_type = lara->gun_type;
+        }
+#endif
+
+        switch (lara->gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
+                g_Camera.type = CAM_COMBAT;
+            }
+            Gun_Pistols_Draw(lara->gun_type);
+            break;
+
+        case LGT_SHOTGUN:
+#if TR_VERSION >= 2
+        case LGT_M16:
+        case LGT_GRENADE:
+        case LGT_HARPOON:
+#endif
+            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
+                g_Camera.type = CAM_COMBAT;
+            }
+            Gun_Rifle_Draw(lara->gun_type);
+            break;
+
+#if TR_VERSION >= 2
+        case LGT_FLARE:
+            Lara_Flare_Draw();
+            break;
+#endif
+
+        default:
+            lara->gun_status = LGS_ARMLESS;
+            break;
+        }
+        break;
+
+    case LGS_UNDRAW:
+        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
+
+        switch (lara->gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            Gun_Pistols_Undraw(lara->gun_type);
+            break;
+
+        case LGT_SHOTGUN:
+#if TR_VERSION >= 2
+        case LGT_M16:
+        case LGT_GRENADE:
+        case LGT_HARPOON:
+#endif
+            Gun_Rifle_Undraw(lara->gun_type);
+            break;
+
+#if TR_VERSION >= 2
+        case LGT_FLARE:
+            Lara_Flare_Undraw();
+            break;
+#endif
+
+        default:
+            return;
+        }
+        break;
+
+    case LGS_READY:
+        if (lara->pistol_ammo.ammo && g_Input.action) {
+            Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_UZIS);
+        } else {
+            Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
+        }
+
+        if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
+            g_Camera.type = CAM_COMBAT;
+        }
+
+        if (g_Input.action) {
+            AMMO_INFO *const ammo = Gun_GetAmmoInfo(lara->gun_type);
+            ASSERT(ammo != nullptr);
+
+            if (ammo->ammo <= 0) {
+                ammo->ammo = 0;
+#if TR_VERSION >= 2
+                Sound_Effect(SFX_CLICK, &lara_item->pos, SPM_NORMAL);
+#endif
+                lara->request_gun_type =
+                    Inv_RequestItem(O_PISTOL_ITEM) ? LGT_PISTOLS : LGT_UNARMED;
+                break;
+            }
+        }
+
+        switch (lara->gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            Gun_Pistols_Control(lara->gun_type);
+            break;
+
+        case LGT_SHOTGUN:
+#if TR_VERSION >= 2
+        case LGT_M16:
+        case LGT_GRENADE:
+        case LGT_HARPOON:
+#endif
+            Gun_Rifle_Control(lara->gun_type);
+            break;
+
+        default:
+            return;
+        }
+        break;
+
+#if TR_VERSION >= 2
+    case LGS_SPECIAL:
+        Lara_Flare_Draw();
+        break;
+#endif
+
+    default:
+        return;
     }
 }

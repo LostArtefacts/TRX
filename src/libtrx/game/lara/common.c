@@ -106,6 +106,8 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
+    const bool hold_onto_guns = TR_VERSION == 1;
+
     if (resume != nullptr) {
         lara_info->pistol_ammo.ammo = 1000;
         if (resume->flags.has_pistols) {
@@ -146,9 +148,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 #if TR_VERSION == 1
         Inv_AddItemNTimes(O_SCION_ITEM_1, resume->num_scions);
 
-        lara_info->gun_status = resume->gun_status;
-        lara_info->gun_type = resume->equipped_gun_type;
-        lara_info->request_gun_type = resume->equipped_gun_type;
 #else
         Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
 
@@ -181,17 +180,22 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             lara_info->harpoon_ammo.ammo = 0;
         }
 
-        lara_info->last_gun_type = resume->equipped_gun_type;
 #endif
+
+        if (hold_onto_guns) {
+            lara_info->gun_status = resume->gun_status;
+            lara_info->gun_type = resume->equipped_gun_type;
+        }
+        lara_info->last_gun_type = resume->equipped_gun_type;
         lara_info->holsters_gun_type = resume->holsters_gun_type;
         lara_info->back_gun_type = resume->back_gun_type;
     }
 
-#if TR_VERSION == 2
-    lara_info->gun_status = LGS_ARMLESS;
-    lara_info->gun_type = lara_info->last_gun_type;
+    if (!hold_onto_guns) {
+        lara_info->gun_status = LGS_ARMLESS;
+        lara_info->gun_type = lara_info->last_gun_type;
+    }
     lara_info->request_gun_type = lara_info->last_gun_type;
-#endif
     Lara_Mesh_Initialise(level);
     Gun_InitialiseNewWeapon();
 }
@@ -204,15 +208,13 @@ void Lara_RevertToPistolsIfNeeded(void)
     }
 
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-#if TR_VERSION == 1
-    lara_info->gun_type = LGT_PISTOLS;
-#else
     lara_info->last_gun_type = LGT_PISTOLS;
-#endif
     lara_info->holsters_gun_type = LGT_PISTOLS;
 
     if (lara_info->gun_status != LGS_ARMLESS) {
         lara_info->holsters_gun_type = LGT_UNARMED;
+        lara_info->request_gun_type = LGT_PISTOLS;
+        lara_info->gun_type = LGT_PISTOLS;
     }
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
         lara_info->back_gun_type = LGT_SHOTGUN;

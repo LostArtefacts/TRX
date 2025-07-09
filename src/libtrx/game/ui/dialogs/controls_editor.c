@@ -33,17 +33,7 @@ typedef enum {
     M_PHASE_EXIT,
 } M_PHASE;
 
-static bool M_AreQuickItemKeysEnabled(void);
 static bool M_AreCheatsEnabled(void);
-
-static bool M_AreQuickItemKeysEnabled(void)
-{
-#if TR_VERSION == 1
-    return g_Config.input.enable_numeric_keys;
-#else
-    return true;
-#endif
-}
 
 static bool M_AreCheatsEnabled(void)
 {
@@ -76,28 +66,18 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
 #if TR_VERSION >= 2
-                { .role = INPUT_ROLE_USE_FLARE,
-                  .is_available = M_AreQuickItemKeysEnabled },
+                { .role = INPUT_ROLE_USE_FLARE },
 #endif
-                { .role = INPUT_ROLE_USE_SMALL_MEDI,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_USE_BIG_MEDI,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_EQUIP_PISTOLS,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_EQUIP_SHOTGUN,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_EQUIP_MAGNUMS,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_EQUIP_UZIS,
-                  .is_available = M_AreQuickItemKeysEnabled },
+                { .role = INPUT_ROLE_USE_SMALL_MEDI },
+                { .role = INPUT_ROLE_USE_BIG_MEDI },
+                { .role = INPUT_ROLE_EQUIP_PISTOLS },
+                { .role = INPUT_ROLE_EQUIP_SHOTGUN },
+                { .role = INPUT_ROLE_EQUIP_MAGNUMS },
+                { .role = INPUT_ROLE_EQUIP_UZIS },
 #if TR_VERSION >= 2
-                { .role = INPUT_ROLE_EQUIP_HARPOON,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_EQUIP_M16,
-                  .is_available = M_AreQuickItemKeysEnabled },
-                { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER,
-                  .is_available = M_AreQuickItemKeysEnabled },
+                { .role = INPUT_ROLE_EQUIP_HARPOON },
+                { .role = INPUT_ROLE_EQUIP_M16 },
+                { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
 #endif
                 { .role = (INPUT_ROLE)-1 },
             },

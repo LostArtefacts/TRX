@@ -119,8 +119,6 @@
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION": "Abilita la schermata di introduzione e il video Core Design all'avvio del gioco.",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS": "Schermate di caricamento",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION": "Abilita le schermate di caricamento in stile PS1 prima di ogni livello.",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS": "Scorciatoie oggetti",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION": "Permette di equipaggiare armi e usare kit medici in modo rapido.\n\n- 1: Equipaggia pistole\n- 2: Equipaggia fucile a pompa\n- 3: Equipaggia magnum\n- 4: Equipaggia uzi\n- 8: Usa kit medico piccolo\n- 9: Usa kit medico grande",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT": "Passaporto reattivo",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disabilita il blocco dell'input dell'utente quando scorrono le pagine del passaporto, programmando invece le pagine da sfogliare.",
         "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS": "Cristalli di salvataggio",

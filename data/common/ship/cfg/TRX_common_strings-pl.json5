@@ -119,8 +119,6 @@
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION": "Włącza ekran z informacjami prawnymi oraz filmik z logiem Core Design na początku gry.",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS": "Ekrany ładowania",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION": "Włącza ekrany ładowania pokazywane przed każdym poziomem.",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS": "Klawisze przedmiotów",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION": "Włącza szybkie wyciąganie broni i używanie apteczek.\n\n- 1: Wyciągnij pistolety\n- 2: Wyciągnij strzelbę\n- 3: Wyciągnij magnumy\n- 4: Wyciągnij uzi\n- 8: Użyj małej apteczki\n- 9: Użyj dużej apteczki",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT": "Responsywny paszport",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Wyłącza blokowanie klawiszy podczas przewracania stron paszportu, zamiast tego kolejkując pożądaną nawigację.",
         "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS": "Kryształy zapisu",

@@ -119,8 +119,6 @@
         "GAMEPLAY_SETTINGS_ENABLE_LEGAL_DESCRIPTION": "Affiche l'écran juridique et la FMV Core Design au début du jeu.",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS": "Activer les écrans de chargement",
         "GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS_DESCRIPTION": "Active les écrans de chargements avant chaque début des niveaux, comme sur PlayStation 1.",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS": "Touches rapides numériques",
-        "GAMEPLAY_SETTINGS_ENABLE_NUMERIC_KEYS_DESCRIPTION": "Active les raccourcis pour armes et trousses de soins.\n- 1 : Pistolets\n- 2 : Fusil à pompe\n- 3 : Magnums\n- 4 : Uzis\n- 8 : Petite trousse de soin\n- 9 : Grande trousse de soin",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT": "Passeport plus réactif",
         "GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Evite de bloquer complètement les contrôles pendant que les pages tournent : à la place, repousse simplement leur effet.",
         "GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS": "Cristaux de sauvegarde",

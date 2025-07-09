@@ -802,6 +802,8 @@ static bool M_LoadLara(
     lara->gun_type = JSON_ObjectGetInt(lara_obj, "gun_type", lara->gun_type);
     lara->request_gun_type =
         JSON_ObjectGetInt(lara_obj, "request_gun_type", lara->request_gun_type);
+    lara->last_gun_type =
+        JSON_ObjectGetInt(lara_obj, "last_gun_type", lara->request_gun_type);
     lara->calc_fall_speed =
         JSON_ObjectGetInt(lara_obj, "calc_fall_speed", lara->calc_fall_speed);
     lara->water_status =
@@ -1292,6 +1294,7 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "gun_status", lara->gun_status);
     JSON_ObjectAppendInt(lara_obj, "gun_type", lara->gun_type);
     JSON_ObjectAppendInt(lara_obj, "request_gun_type", lara->request_gun_type);
+    JSON_ObjectAppendInt(lara_obj, "last_gun_type", lara->last_gun_type);
     JSON_ObjectAppendInt(lara_obj, "calc_fall_speed", lara->calc_fall_speed);
     JSON_ObjectAppendInt(lara_obj, "water_status", lara->water_status);
     JSON_ObjectAppendInt(lara_obj, "pose_count", lara->pose_count);

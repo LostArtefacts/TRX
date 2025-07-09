@@ -24,17 +24,18 @@
 #include <libtrx/game/phase.h>
 #include <libtrx/log.h>
 
-#define MODIFY_CONFIG()                                                        \
-    PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);         \
-    PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);            \
-    PROCESS_CONFIG(gameplay.look_mode, LOOK_MODE_RESTRICTED);                  \
-    PROCESS_CONFIG(gameplay.enable_tr2_jumping, false);                        \
-    PROCESS_CONFIG(gameplay.enable_tr2_swimming, false);                       \
-    PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, false);                    \
-    PROCESS_CONFIG(gameplay.enable_wading, false);                             \
-    PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                            \
-    PROCESS_CONFIG(gameplay.fix_bear_ai, false);                               \
-    PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR1);
+#define L_MODIFY_CONFIG()                                                      \
+    X_PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);       \
+    X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
+    X_PROCESS_CONFIG(gameplay.look_mode, LOOK_MODE_RESTRICTED);                \
+    X_PROCESS_CONFIG(gameplay.enable_tr2_jumping, false);                      \
+    X_PROCESS_CONFIG(gameplay.enable_tr2_swimming, false);                     \
+    X_PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, false);                  \
+    X_PROCESS_CONFIG(gameplay.enable_wading, false);                           \
+    X_PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                          \
+    X_PROCESS_CONFIG(gameplay.fix_bear_ai, false);                             \
+    X_PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR1);              \
+    X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_DRAW_ONLY);
 
 typedef struct {
     const uint32_t *demo_ptr;
@@ -54,16 +55,16 @@ static void M_PrepareConfig(M_PRIV *const p)
     // Changing certains settings affects negatively the original game demo
     // data, so temporarily turn off all relevant enhancements.
     p->old_config = g_Config;
-#undef PROCESS_CONFIG
-#define PROCESS_CONFIG(var, value) g_Config.var = value;
-    MODIFY_CONFIG();
+#define X_PROCESS_CONFIG(var, value) g_Config.var = value;
+    L_MODIFY_CONFIG();
+#undef X_PROCESS_CONFIG
 }
 
 static void M_RestoreConfig(M_PRIV *const p)
 {
-#undef PROCESS_CONFIG
-#define PROCESS_CONFIG(var, value) g_Config.var = p->old_config.var;
-    MODIFY_CONFIG();
+#define X_PROCESS_CONFIG(var, value) g_Config.var = p->old_config.var;
+    L_MODIFY_CONFIG();
+#undef X_PROCESS_CONFIG
 }
 
 static bool M_ProcessInput(M_PRIV *const p)
@@ -170,10 +171,7 @@ bool Demo_Start(const int32_t level_num)
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
 
-    // LaraGun() expects request_gun_type to be set only when it
-    // really is needed, not at all times.
-    // https://github.com/LostArtefacts/TRX/issues/36
-    g_Lara.request_gun_type = LGT_UNARMED;
+    g_Lara.last_gun_type = LGT_PISTOLS;
 
     Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
     return true;

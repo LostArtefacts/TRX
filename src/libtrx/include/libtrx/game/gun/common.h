@@ -3,7 +3,6 @@
 #include "../lara/types.h"
 
 extern void Gun_InitialiseNewWeapon(void);
-extern void Gun_Control(void);
 
 void Gun_SetLaraBackMesh(LARA_GUN_TYPE weapon_type);
 void Gun_SetLaraHandLMesh(LARA_GUN_TYPE weapon_type);

@@ -252,6 +252,7 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->gun_status = M_ReadS16();
     lara->gun_type = M_ReadS16();
     lara->request_gun_type = M_ReadS16();
+    lara->last_gun_type = lara->request_gun_type;
     lara->calc_fall_speed = M_ReadS16();
     lara->water_status = M_ReadS16();
     lara->pose_count = M_ReadS16();
