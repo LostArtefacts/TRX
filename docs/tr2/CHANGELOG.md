@@ -75,9 +75,11 @@
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene (#3370)
 - fixed the boat veering if Lara looks left or right when driving (#3409)
 - fixed Lara not equipping a weapon chosen from inventory if it is the last weapon used (#3457)
+- fixed Stopwatch label in Gym not appearing when holding arrows during inventory spin-out (#3460)
 - fixed incorrectly shaded sprites (#3476, regression from 1.0)
 - fixed being able to deselect the passport in the game over screen (#3381, regression from 1.0)
 - fixed Lara getting stuck in the fly cheat in rare circumstances (#3392, regression from 0.3)
+- fixed hostile snowmobiles only shooting one gun (#3478, regression from 0.8)
 - fixed support for >3 secret dragons in custom levels (#3415, regression from 1.2)
 - fixed level select picking one level ahead of the one chosen if the gym is disabled (#3446, regression from 1.0)
 - fixed Lara's holsters resetting at times to incorrect meshes when using the fly cheat (#3451, regression from 0.3)
@@ -86,7 +88,6 @@
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - fixed the `/play` command not stopping active music when used to play Venice (#3469, regression from 0.8)
-- fixed Stopwatch label in Gym not appearing when holding arrows during inventory spin-out (#3460)
 - improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
 - improved handling of animation sound effects when in shallow water (#3385)
