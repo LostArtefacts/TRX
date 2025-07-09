@@ -57,6 +57,14 @@
    which Lara previously lost her weapons. A game flow entry to re-add pistols
    will be required - refer to the Diving Area level in the default game flow.
 
+3. **Bears, wolves and ice warriors**  
+   If you wish to use the bear, wolf or ice warrior (monk with no shadow) from
+   The Golden Mask while still being able to use big spiders, small spiders and
+   other monks, use the following object slots.
+    - Bear: slot 265
+    - Wolf: slot 266
+    - Ice warrior: slot 267
+
 ### Version 1.0.2 to 1.1
 
 1. **Update first level inventory allocation**  

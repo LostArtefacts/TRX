@@ -1,5 +1,3 @@
-#include "game/objects/creatures/spider.h"
-
 #include "game/creature.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
@@ -151,7 +149,7 @@ static void M_Control(const int16_t item_num)
     M_Leap(item_num, angle);
 }
 
-void Spider_Setup(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
@@ -172,4 +170,4 @@ void Spider_Setup(OBJECT *const obj)
     obj->save_anim = true;
 }
 
-REGISTER_OBJECT(O_SPIDER, Spider_Setup)
+REGISTER_OBJECT(O_SPIDER, M_Setup)

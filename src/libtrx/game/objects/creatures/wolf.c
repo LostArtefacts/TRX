@@ -1,5 +1,3 @@
-#include "game/objects/creatures/wolf.h"
-
 #include "game/const.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
@@ -57,6 +55,7 @@ static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
 
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
+static void M_Setup(OBJECT *obj);
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -213,7 +212,7 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, tilt);
 }
 
-void Wolf_Setup(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
@@ -236,4 +235,4 @@ void Wolf_Setup(OBJECT *const obj)
     Object_GetBone(obj, 2)->rot.y = true;
 }
 
-REGISTER_OBJECT(O_WOLF, Wolf_Setup)
+REGISTER_OBJECT(O_WOLF, M_Setup)

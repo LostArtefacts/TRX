@@ -264,16 +264,6 @@ OBJ_ID_DEFINE(262, "604407b7-fce9-4042-9268-9269a191f615", O_COMBAT_END)
 OBJ_ID_DEFINE(263, "c3c56053-16cd-4bff-9892-dc2f816d8897", O_CUT_SHOTGUN)
 OBJ_ID_DEFINE(264, "78bde34c-13f0-4fb0-8407-c7dfc3c2e3fb", O_EARTHQUAKE)
 
-// Conflicting objects definitions for TR2: The Golden Mask. In a situation
-// when two different objects share the same IDs, the objects register
-// themselves as usual through the C constructor mechanism, and fight for the
-// slot. The conflict is currently resolved by an external party – in terms of
-// the Golden Mask, this currently happens in Shell_Main(), that manually calls
-// the setup routine overriding whatever information was in the slot.
-//
-// TODO: this aliasing mechanism needs to go away in favor of injections-only
-// approach that patches the problematic items to use specific objects of
-// specific UUID.
-OBJ_ID_ALIAS_DEFINE(O_MONK_3, O_MONK_1)
-OBJ_ID_ALIAS_DEFINE(O_BEAR,   O_BIG_SPIDER)
-OBJ_ID_ALIAS_DEFINE(O_WOLF,   O_SPIDER)
+OBJ_ID_DEFINE(265, "fbf6c19f-80aa-4790-baba-9dadb09d4f82", O_BEAR)
+OBJ_ID_DEFINE(266, "6b3b8413-7ac3-4728-9e4b-e15e64e1e40c", O_WOLF)
+OBJ_ID_DEFINE(267, "28271d92-b65b-44a2-9156-24ab1a7c41b2", O_MONK_3)
