@@ -1,7 +1,6 @@
 #include "game/overlay.h"
 
 #include "decomp/decomp.h"
-#include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"

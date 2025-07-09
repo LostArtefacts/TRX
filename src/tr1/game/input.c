@@ -1,6 +1,5 @@
 #include "game/input.h"
 
-#include "game/clock.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

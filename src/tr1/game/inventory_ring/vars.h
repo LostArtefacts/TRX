@@ -2,7 +2,6 @@
 
 #include "global/types.h"
 
-#include <libtrx/game/clock.h>
 #include <libtrx/game/inventory_ring/vars.h>
 
 extern INVENTORY_ITEM g_InvRing_Item_Compass;

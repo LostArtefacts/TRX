@@ -1,6 +1,5 @@
 #include "game/inventory_ring/control.h"
 
-#include "game/clock.h"
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -20,6 +19,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/clock.h>
 #include <libtrx/game/gun/const.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/interpolation.h>

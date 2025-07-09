@@ -1,5 +1,6 @@
 #include "game/clock/common.h"
 
+#include "config.h"
 #include "game/clock/const.h"
 #include "game/clock/timer.h"
 #include "game/clock/turbo.h"
@@ -43,6 +44,11 @@ size_t Clock_GetDateTime(char *const buffer, const size_t size)
         buffer, size, "%04d%02d%02d_%02d%02d%02d", tptr->tm_year + 1900,
         tptr->tm_mon + 1, tptr->tm_mday, tptr->tm_hour, tptr->tm_min,
         tptr->tm_sec);
+}
+
+int32_t Clock_GetCurrentFPS(void)
+{
+    return g_Config.rendering.fps;
 }
 
 int32_t Clock_GetFrameAdvance(void)
