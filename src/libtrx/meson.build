@@ -161,6 +161,7 @@ sources = [
   'game/inject/editors/anims.c',
   'game/inject/editors/floor_data.c',
   'game/inject/editors/meshes.c',
+  'game/inject/editors/objects.c',
   'game/inject/editors/positions.c',
   'game/inject/editors/rooms.c',
   'game/inject/editors/textures.c',
