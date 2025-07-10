@@ -53,9 +53,9 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
         ITEM *const target = Item_Get(target_item_num);
         const GAME_OBJECT_ID obj_id = target->object_id;
 #if TR_VERSION == 2
-        if (goody && obj_id != O_BANDIT_1 && obj_id != O_BANDIT_2) {
+        if (goody && !Creature_IsAllyTargetingEnemy(target)) {
             continue;
-        } else if (!goody && obj_id != O_MONK_1 && obj_id != O_MONK_2) {
+        } else if (!goody && !Creature_IsAlly(target)) {
             continue;
         }
 #endif
@@ -107,22 +107,12 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
 static ITEM *M_ChooseEnemy(const ITEM *const item)
 {
     CREATURE *const creature = item->data;
-    switch (item->object_id) {
-#if TR_VERSION == 2
-    case O_BANDIT_1:
-    case O_BANDIT_2:
-        M_GetBaddieTarget(creature->item_num, false);
-        break;
-
-    case O_MONK_1:
-    case O_MONK_2:
+    if (Creature_IsAlly(item)) {
         M_GetBaddieTarget(creature->item_num, true);
-        break;
-#endif
-
-    default:
+    } else if (Creature_IsAllyTargetingEnemy(item)) {
+        M_GetBaddieTarget(creature->item_num, false);
+    } else {
         creature->enemy = Lara_GetItem();
-        break;
     }
 
     if (creature->enemy != nullptr) {
@@ -1100,6 +1090,11 @@ bool Creature_IsHostile(const ITEM *const item)
 bool Creature_IsAlly(const ITEM *const item)
 {
     return Object_IsType(item->object_id, g_AllyObjects);
+}
+
+bool Creature_IsAllyTargetingEnemy(const ITEM *const item)
+{
+    return Object_IsType(item->object_id, g_AllyTargetingEnemies);
 }
 
 bool Creature_IsTargetable(const ITEM *const item)

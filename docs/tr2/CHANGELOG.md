@@ -88,6 +88,7 @@
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - fixed the `/play` command not stopping active music when used to play Venice (#3469, regression from 0.8)
+- fixed Lara being affected by the `/kill` command if monks have been angered (#3492, regression from 1.0)
 - improved performance when resizing the window
 - improved support for >3 secret dragons in custom levels up to 16 dragons
 - improved the `/tp` command to orient Lara towards keyholes and doors
