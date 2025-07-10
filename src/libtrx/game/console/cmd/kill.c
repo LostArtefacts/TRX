@@ -31,7 +31,8 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 static bool M_CanTargetObjectCreature(const GAME_OBJECT_ID obj_id)
 {
     return (Object_IsType(obj_id, g_EnemyObjects)
-            || Object_IsType(obj_id, g_AllyObjects))
+            || Object_IsType(obj_id, g_AllyObjects)
+            || Object_IsType(obj_id, g_LoyalObjects))
         && Object_Get(obj_id)->loaded;
 }
 

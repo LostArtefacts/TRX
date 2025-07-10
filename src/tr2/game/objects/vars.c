@@ -61,14 +61,27 @@ const GAME_OBJECT_ID g_WaterObjects[] = {
 
 const GAME_OBJECT_ID g_AllyObjects[] = {
     // clang-format off
-    O_LARA,
-    O_WINSTON,
     O_MONK_1,
     O_MONK_2,
     O_MONK_3,
-    O_DYING_MONK,
     NO_OBJECT,
     // Lara's social skills: still loading...
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_LoyalObjects[] = {
+    // clang-format off
+    O_LARA,
+    O_WINSTON,
+    NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_AllyTargetingEnemies[] = {
+    // clang-format off
+    O_BANDIT_1,
+    O_BANDIT_2,
+    NO_OBJECT,
     // clang-format on
 };
 

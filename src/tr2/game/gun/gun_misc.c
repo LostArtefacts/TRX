@@ -205,8 +205,7 @@ void Gun_HitTarget(
             item->rot.y, item->room_num);
     }
 
-    if (!Creature_AreAlliesHostile()
-        && (item->object_id == O_MONK_1 || item->object_id == O_MONK_2)) {
+    if (!Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
         CREATURE *const creature = item->data;
         creature->flags += damage;
         if ((creature->flags & 0xFFF) > M_ALLY_FRIENDLY_FIRE_THRESHOLD
