@@ -549,7 +549,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (item->fall_speed > 133) {
+    if (item->fall_speed > 133 && !g_Config.debug.enable_invulnerability) {
         item->goal_anim_state = LS_DEATH;
     } else {
         item->goal_anim_state = LS_STOP;
