@@ -386,6 +386,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added an option to use PS1 loading screens
 - added a wireframe mode
 - added an option to toggle in-game UI, such as healthbars and ammo text
+- improved scaling of background images
 - improved support for windowed mode
 - improved passport animations
 

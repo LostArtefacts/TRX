@@ -40,13 +40,9 @@ static bool M_LoadMainCandidate(const char *path);
 
 static IMAGE *M_CreateImageFromPath(const char *const path)
 {
-    if (TR_VERSION == 1) {
-        return Image_CreateFromFileInto(
-            path, Viewport_GetWidth(VIEWPORT_GAME),
-            Viewport_GetHeight(VIEWPORT_GAME), IMAGE_FIT_SMART);
-    } else {
-        return Image_CreateFromFile(path);
-    }
+    return Image_CreateFromFileInto(
+        path, Viewport_GetWidth(VIEWPORT_GAME),
+        Viewport_GetHeight(VIEWPORT_GAME), IMAGE_FIT_SMART);
 }
 
 static float M_GetScreenAspectRatio(void)

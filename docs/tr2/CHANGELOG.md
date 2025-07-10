@@ -64,6 +64,7 @@
 - fixed missing zipline sound in Home Sweet Home (#3102)
 - fixed flare count getting corrupt on save/load if Lara had more than 255 flares (#1592)
 - fixed title screen background not updating aspect ratio when moving fullscreen window between monitors (#2842)
+- fixed title screen background and credit images stretching when using very wide resolutions (#2001)
 - fixed certain commands (such as `/load` or `/play`) not working as expected while in the key use inventory screen (#3338)
 - fixed Lara able to schedule an interaction with a detonator when it's in use (#3349)
 - fixed Lara not saying 'no' near gong or detonator when applicable (#3337)
