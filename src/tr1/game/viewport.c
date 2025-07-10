@@ -30,6 +30,10 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
             ar.w = 16;
             ar.h = 9;
             break;
+        case AM_16_10:
+            ar.w = 16;
+            ar.h = 10;
+            break;
         case AM_ANY:
             ar.w = target->width;
             ar.h = target->height;

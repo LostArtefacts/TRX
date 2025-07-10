@@ -240,6 +240,7 @@
         "GRAPHIC_SETTINGS_ANISOTROPY_FILTER": "Filtro anisotropico",
         "GRAPHIC_SETTINGS_ANISOTROPY_FILTER_DESCRIPTION": "Migliora il filtraggio delle texture a distanza.",
         "GRAPHIC_SETTINGS_ASPECT_MODE": "Rapporto d'aspetto",
+        "GRAPHIC_SETTINGS_ASPECT_MODE_16_10": "16:10",
         "GRAPHIC_SETTINGS_ASPECT_MODE_16_9": "16:9",
         "GRAPHIC_SETTINGS_ASPECT_MODE_4_3": "4:3",
         "GRAPHIC_SETTINGS_ASPECT_MODE_ANY": "Qualsiasi",

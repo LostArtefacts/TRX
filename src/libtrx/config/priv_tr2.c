@@ -160,7 +160,8 @@ void Config_Sanitize(void)
         g_Config.rendering.render_mode = RM_SOFTWARE;
     }
     if (g_Config.rendering.aspect_mode != AM_ANY
-        && g_Config.rendering.aspect_mode != AM_16_9) {
+        && g_Config.rendering.aspect_mode != AM_16_9
+        && g_Config.rendering.aspect_mode != AM_16_10) {
         g_Config.rendering.aspect_mode = AM_4_3;
     }
     if (g_Config.rendering.texel_adjust_mode != TAM_DISABLED

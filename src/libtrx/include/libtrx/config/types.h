@@ -5,9 +5,10 @@
 #include <stdint.h>
 
 typedef enum {
-    AM_4_3 = 0,
-    AM_16_9 = 1,
-    AM_ANY = 2,
+    AM_4_3,
+    AM_16_9,
+    AM_16_10,
+    AM_ANY,
 } ASPECT_MODE;
 
 typedef enum {
