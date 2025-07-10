@@ -4,6 +4,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
@@ -128,11 +129,13 @@ static void M_Collision(
     }
 
     int32_t x, y, z, d;
-    if (lara_item->gravity) {
+    if (lara_item->gravity || g_Config.debug.enable_invulnerability) {
         if (coll->enable_baddie_push) {
             Lara_Push(item, coll, coll->enable_hit, true);
         }
-        lara_item->hit_points -= ROLLINGBALL_DAMAGE_AIR;
+        if (!g_Config.debug.enable_invulnerability) {
+            lara_item->hit_points -= ROLLINGBALL_DAMAGE_AIR;
+        }
         x = lara_item->pos.x - item->pos.x;
         z = lara_item->pos.z - item->pos.z;
         y = (lara_item->pos.y - 350) - (item->pos.y - WALL_L / 2);
