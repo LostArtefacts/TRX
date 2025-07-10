@@ -486,11 +486,9 @@ static void M_LoadLevel(
         }
     }
 
-#if TR_VERSION == 1
     if (level->type == GFL_DUMMY) {
         return;
     }
-#endif
 
     {
         const char *const tmp =

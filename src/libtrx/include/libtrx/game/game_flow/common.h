@@ -26,6 +26,11 @@ const GF_LEVEL *GF_GetLevelBefore(const GF_LEVEL *level);
 int32_t GF_GetLevelOrdinalNumber(
     GF_LEVEL_TABLE_TYPE level_table_type, const GF_LEVEL *level);
 
+// Get the level based on the human-readable number - opposite of
+// GF_GetLevelOrdinalNumber().
+GF_LEVEL *GF_GetLevelByOrdinalNumber(
+    GF_LEVEL_TABLE_TYPE level_table_type, int32_t level_num);
+
 void GF_SetCurrentLevel(const GF_LEVEL *level);
 void GF_SetLevelTitle(GF_LEVEL *level, const char *title);
 

@@ -88,6 +88,7 @@
 - fixed Lara's holsters resetting at times to incorrect meshes when using the fly cheat (#3451, regression from 0.3)
 - fixed a possible soft lock when saving the game after killing the last boss in Home Sweet Home (#3470, regression from 1.2)
 - fixed the `/play` command starting the level with wrong items sometimes (#3147, regression from 1.1)
+- fixed the `/play` command starting Gym in The Golden Mask (this level is not working correctly with TR2G's main.sfx)
 - fixed the `/tp` command breaking the photo mode
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - fixed the `/play` command not stopping active music when used to play Venice (#3469, regression from 0.8)
