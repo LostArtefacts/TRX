@@ -2,6 +2,7 @@
 #include "game/random.h"
 #include "game/spawn.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/collision.h>
 
 #define SPIKE_DAMAGE 15
@@ -31,7 +32,8 @@ static void M_Collision(
 
     int32_t num = Random_GetControl() / 24576;
     if (lara_item->gravity) {
-        if (lara_item->fall_speed > 0) {
+        if (lara_item->fall_speed > 0
+            && !g_Config.debug.enable_invulnerability) {
             lara_item->hit_points = -1;
             num = 20;
         }

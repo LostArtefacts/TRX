@@ -2,6 +2,7 @@
 #include "game/objects/common.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 
 typedef enum {
@@ -88,9 +89,10 @@ static void M_ControlHandle(const int16_t item_num)
                 break;
             }
 
-            if (g_LaraItem->hit_points >= 0 && g_LaraItem->pos.x > x - 520
-                && g_LaraItem->pos.x < x + 520 && g_LaraItem->pos.z > z - 520
-                && g_LaraItem->pos.z < z + 520) {
+            if (g_LaraItem->hit_points >= 0
+                && !g_Config.debug.enable_invulnerability
+                && g_LaraItem->pos.x > x - 520 && g_LaraItem->pos.x < x + 520
+                && g_LaraItem->pos.z > z - 520 && g_LaraItem->pos.z < z + 520) {
                 g_LaraItem->hit_points = -1;
                 g_LaraItem->pos.y = item->pos.y;
                 g_LaraItem->gravity = 0;

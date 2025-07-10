@@ -9,6 +9,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
@@ -223,7 +224,8 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
 
 static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
 {
-    return g_GameFlow.enable_killer_pushblocks && item->gravity
+    return g_GameFlow.enable_killer_pushblocks
+        && !g_Config.debug.enable_invulnerability && item->gravity
         && Lara_TestBoundsCollide(item, 0);
 }
 
