@@ -325,7 +325,6 @@ def create_trx_game_flow(game_script: GameScript):
         "load_save_disabled": True if game_script.flags & 16 else False,
         "play_any_level": True if game_script.flags & 1024 else False,
         "lockout_option_ring": True if game_script.flags & 64 else False,
-        "gym_enabled": True,
         "demo_version": True if game_script.flags & 1 else False,
         "single_level": game_script.single_level,
         "demo_delay": game_script.demo_time / 30,

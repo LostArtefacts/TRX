@@ -293,11 +293,6 @@ remains distinct for each game.
     <td>Whether to disallow the players to use control ring while ingame.</td>
   </tr>
   <tr valign="top">
-    <td><code>gym_enabled</code></td>
-    <td>Boolean</td>
-    <td>Whether to enable Lara's Home.</td>
-  </tr>
-  <tr valign="top">
     <td><code>demo_version</code></td>
     <td>Boolean</td>
     <td>Legacy setting scheduled for removal at a later time.</td>
