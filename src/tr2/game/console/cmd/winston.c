@@ -38,7 +38,11 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     for (int16_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
         if (item->object_id == O_WINSTON) {
-            if (!Creature_IsAlive(item)) {
+            if (item->status == IS_INVISIBLE || item->status == IS_INACTIVE) {
+                item->status = IS_ACTIVE;
+                Item_AddActive(item_num);
+                LOT_EnableBaddieAI(item_num, true);
+            } else if (!Creature_IsAlive(item)) {
                 Music_Stop();
                 Console_Log(GS(CMD_WINSTON_DEAD));
                 return CR_FAILURE;
