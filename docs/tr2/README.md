@@ -168,6 +168,7 @@ However, you can easily download them manually from these urls:
 - added enemy health bars
 - added an FPS counter
 - added an option to toggle in-game UI, such as healthbars and ammo text
+- improved scaling of background images
 - improved support for windowed mode
 - improved passport animations
 
