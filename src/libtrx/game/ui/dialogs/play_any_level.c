@@ -32,11 +32,10 @@ UI_PLAY_ANY_LEVEL_DIALOG_STATE *UI_PlayAnyLevelDialog_Init(void)
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
-        if (level_table->levels[i].type != GFL_GYM) {
-            const M_ROW row = {
-                .level_num = i,
-                .text = level_table->levels[i].title,
-            };
+        const GF_LEVEL *const level = &level_table->levels[i];
+        if (level->type != GFL_GYM && level->type != GFL_DUMMY
+            && level->type != GFL_CURRENT) {
+            const M_ROW row = { .level_num = i, .text = level->title };
             Vector_Add(s->rows, &row);
         }
     }

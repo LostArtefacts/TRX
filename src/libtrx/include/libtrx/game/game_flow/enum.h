@@ -17,12 +17,10 @@ typedef enum {
     GFL_GYM,
     GFL_BONUS,
 
-#if TR_VERSION == 1
     // Legacy level types to maintain savegame backwards compatibility.
     // TODO: get rid of these.
     GFL_DUMMY,
     GFL_CURRENT,
-#endif
 } GF_LEVEL_TYPE;
 
 typedef enum {

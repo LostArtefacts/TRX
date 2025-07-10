@@ -48,11 +48,9 @@ GF_COMMAND GF_InterpretSequence(
         "running sequence for level=%d type=%d seq_ctx=%d", level->num,
         level->type, seq_ctx);
 
-#if TR_VERSION == 1
     if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-#endif
 
     GF_PreSequenceHook(seq_ctx, seq_ctx_arg);
 

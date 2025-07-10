@@ -671,7 +671,6 @@ bool Savegame_Save(const int32_t slot_idx)
 
     Savegame_PersistGameToCurrentInfo(current_level);
 
-#if TR_VERSION == 1
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
@@ -679,7 +678,6 @@ bool Savegame_Save(const int32_t slot_idx)
             Savegame_SetCurrentInfo(i, current_level->num);
         }
     }
-#endif
 
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_idx];
     const bool was_slot_empty = savegame_info->full_path == nullptr;

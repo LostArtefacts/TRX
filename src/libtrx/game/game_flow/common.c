@@ -16,10 +16,7 @@ static void M_FreeFMVs(GAME_FLOW *gf);
 
 static bool M_SkipLevel(const GF_LEVEL *const level)
 {
-#if TR_VERSION == 1
     return level->type == GFL_DUMMY || level->type == GFL_CURRENT;
-#endif
-    return false;
 }
 
 static void M_FreeSequence(GF_SEQUENCE *const sequence)
@@ -115,10 +112,8 @@ GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type)
     case GFL_GYM:
     case GFL_NORMAL:
     case GFL_BONUS:
-#if TR_VERSION == 1
     case GFL_DUMMY:
     case GFL_CURRENT:
-#endif
         return GFLT_MAIN;
 
     case GFL_CUTSCENE:
@@ -162,15 +157,31 @@ int32_t GF_GetLevelOrdinalNumber(
     const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(level_table_type);
     for (int32_t i = 0; i < tbl->count; i++) {
         const GF_LEVEL *level = &tbl->levels[i];
+        if (M_SkipLevel(level)) {
+            continue;
+        }
         if (level == ref_level) {
             // Special case: gym levels have no ordinal
             return (level->type == GFL_GYM) ? 0 : ordinal;
         }
-        if (level->type != GFL_GYM && !M_SkipLevel(level)) {
+        if (level->type != GFL_GYM) {
             ordinal++;
         }
     }
     return -1;
+}
+
+GF_LEVEL *GF_GetLevelByOrdinalNumber(
+    GF_LEVEL_TABLE_TYPE level_table_type, const int32_t level_num)
+{
+    const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(level_table_type);
+    for (int32_t i = 0; i < tbl->count; i++) {
+        GF_LEVEL *const level = &tbl->levels[i];
+        if (GF_GetLevelOrdinalNumber(level_table_type, level) == level_num) {
+            return level;
+        }
+    }
+    return nullptr;
 }
 
 const GF_LEVEL *GF_GetCurrentLevel(void)
