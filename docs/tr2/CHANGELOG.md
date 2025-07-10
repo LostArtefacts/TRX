@@ -100,6 +100,7 @@
 - improved error messages for game flow and string edit mistakes to include path of the problematic file
 - removed config tool (we have ingame setting dialogs now)
 - removed the limit of 10 dynamic lights per frame (#3384)
+- removed the `gym_enabled` game flow property
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24
 - fixed underwater hum not playing properly (#3305, regression from 0.10)

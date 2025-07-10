@@ -185,7 +185,6 @@ typedef struct {
         char *main_menu_background_path;
         bool is_demo_version;
         bool play_any_level;
-        bool gym_enabled;
         bool lockout_option_ring;
         bool cheat_keys;
         bool load_save_disabled;

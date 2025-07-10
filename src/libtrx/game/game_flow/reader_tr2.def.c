@@ -131,7 +131,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     ctx->gf->cheat_keys = JSON_ObjectGetBool(obj, "cheat_keys", true);
     ctx->gf->lockout_option_ring = JSON_ObjectGetBool(obj, "lockout_option_ring", true);
     ctx->gf->play_any_level = JSON_ObjectGetBool(obj, "play_any_level", false);
-    ctx->gf->gym_enabled = JSON_ObjectGetBool(obj, "gym_enabled", true);
     ctx->gf->single_level = JSON_ObjectGetInt(obj, "single_level", -1);
     // clang-format on
 

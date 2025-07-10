@@ -65,6 +65,12 @@
     - Wolf: slot 266
     - Ice warrior: slot 267
 
+4. **Disabling gym**
+    The option `gym_enabled` is no longer available. If you need to remove the
+    access to Lara's Home, please either remove the relevant level from the
+    game flow (this may break existing saves), or change its type to `"dummy"`
+    to get it ignored (this will work with existing saves).
+
 ### Version 1.0.2 to 1.1
 
 1. **Update first level inventory allocation**  

@@ -807,7 +807,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     g_InvRing_Source[RT_OPTION].current = 0;
     if (mode == INV_TITLE_MODE) {
-        if (!Gym_IsAccessible()) {
+        if (GF_GetGymLevel() == nullptr) {
             Inv_RemoveItem(O_PHOTO_OPTION);
         } else if (Gym_IsInventoryOpenEnabled()) {
             for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
