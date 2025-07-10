@@ -36,11 +36,6 @@ void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
 
 void Lara_TouchLava(void)
 {
-    if (g_Config.debug.enable_invulnerability) {
-        Lara_CatchFire();
-        return;
-    }
-
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_item->hit_points < 0 || lara_info->water_status == LWS_CHEAT) {
@@ -53,6 +48,11 @@ void Lara_TouchLava(void)
     const int32_t height =
         Room_GetHeight(sector, lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z);
     if (lara_item->floor != height) {
+        return;
+    }
+
+    if (g_Config.debug.enable_invulnerability) {
+        Lara_CatchFire();
         return;
     }
 
