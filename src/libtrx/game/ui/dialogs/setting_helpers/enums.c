@@ -135,6 +135,7 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_RenderModeEnumEntries[] = {
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[] = {
     { AM_4_3, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_4_3) },
     { AM_16_9, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_16_9) },
+    { AM_16_10, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_16_10) },
     { AM_ANY, GS_ID(GRAPHIC_SETTINGS_ASPECT_MODE_ANY) },
     { -1, nullptr },
 };

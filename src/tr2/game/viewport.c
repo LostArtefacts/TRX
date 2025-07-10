@@ -135,6 +135,10 @@ void Viewport_Reset(void)
         vp->render_ar.w = 16;
         vp->render_ar.h = 9;
         break;
+    case AM_16_10:
+        vp->render_ar.w = 16;
+        vp->render_ar.h = 10;
+        break;
     case AM_ANY:
         vp->render_ar.w = target->width;
         vp->render_ar.h = target->height;

@@ -89,6 +89,9 @@ void Viewport_ResetCommon(void)
     case AM_16_9:
         aspect_ratio = 16.0 / 9.0;
         break;
+    case AM_16_10:
+        aspect_ratio = 16.0 / 10.0;
+        break;
     case AM_ANY:
     default:
         aspect_ratio = (double)max_w / (double)max_h; // just match window

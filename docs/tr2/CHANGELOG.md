@@ -34,6 +34,7 @@
 - added an option to make the quick gun equip keys also holster the active gun (Gameplay settings → UI → Quick gun keys) (#828)
 - added an option to allow the audio to mute when the game is out of focus (Sound options → Mute audio when focus lost, #3333)
 - added an option to control texture filter for UI alone (Graphic options → Rendering → UI filter)
+- added a 16:10 aspect ratio to the Aspect mode option (Graphic options → Rendering → Aspect mode)
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)
 - added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)
 - added an option to control whether or not Lara reverts to pistols when going from one level to another (Gameplay settings → General → Remember guns between levels) (#3455)
