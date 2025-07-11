@@ -346,10 +346,10 @@ static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
 {
     // TODO Falling blocks are not always killing Lara because
     // !Lara_TestBoundsCollide.
-    LOG_DEBUG(
-        "killer: %d; gravity: %d; collide: %d",
-        g_GameFlow.enable_killer_pushblocks, item->gravity,
-        Lara_TestBoundsCollide(item, 0));
+    // LOG_DEBUG(
+    //     "killer: %d; gravity: %d; collide: %d",
+    //     g_GameFlow.enable_killer_pushblocks, item->gravity,
+    //     Lara_TestBoundsCollide(item, 0));
     return g_GameFlow.enable_killer_pushblocks
         && !g_Config.debug.enable_invulnerability && item->gravity
         && Lara_TestBoundsCollide(item, 0);
