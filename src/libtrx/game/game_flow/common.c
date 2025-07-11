@@ -199,7 +199,7 @@ const GF_LEVEL *GF_GetGymLevel(void)
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_GYM) {
+        if (level->type == GFL_GYM && !M_SkipLevel(level)) {
             return level;
         }
     }
@@ -211,7 +211,7 @@ const GF_LEVEL *GF_GetFirstLevel(void)
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_GYM) {
+        if (level->type == GFL_GYM || M_SkipLevel(level)) {
             continue;
         }
         return level;
@@ -225,10 +225,7 @@ const GF_LEVEL *GF_GetLastLevel(void)
     const GF_LEVEL *result = nullptr;
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_GYM) {
-            continue;
-        }
-        if (M_SkipLevel(level)) {
+        if (level->type == GFL_GYM || M_SkipLevel(level)) {
             continue;
         }
         result = level;
