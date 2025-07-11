@@ -207,9 +207,10 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             // second passport page:
             if (ring->mode == INV_TITLE_MODE) {
                 // title mode - new game or select level.
+                Savegame_BindSlot(-1);
                 if (g_GameFlow.play_any_level) {
                     return (GF_COMMAND) {
-                        .action = GF_START_GAME,
+                        .action = GF_SELECT_GAME,
                         .param = g_Inv_ExtraData[1],
                     };
                 } else {
@@ -229,8 +230,9 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                         Savegame_InitCurrentInfo();
                     }
                     if (g_GameFlow.play_any_level) {
+                        Savegame_BindSlot(-1);
                         return (GF_COMMAND) {
-                            .action = GF_START_GAME,
+                            .action = GF_SELECT_GAME,
                             .param = g_Inv_ExtraData[1],
                         };
                     } else {
