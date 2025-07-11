@@ -106,12 +106,8 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
             .gf_cmd = { .action = GF_NOOP },
         };
     } else if (g_InputDB.action) {
-        Output_BeginScene();
         p->taking_screenshot = true;
-        M_Draw(phase);
-        p->taking_screenshot = false;
         Screenshot_Make(g_Config.rendering.screenshot_format);
-        Output_EndScene();
         Sound_Effect(SFX_MENU_LARA_HOME, nullptr, SPM_ALWAYS);
     } else {
         Camera_Update();
@@ -126,7 +122,9 @@ static void M_Draw(PHASE *const phase)
     Game_Draw(false);
     Output_DrawPolyList();
 
-    if (!p->taking_screenshot) {
+    if (p->taking_screenshot) {
+        p->taking_screenshot = false;
+    } else {
         UI_PhotoMode();
     }
     Output_DrawPolyList();
