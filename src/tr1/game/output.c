@@ -16,9 +16,9 @@
 #include <libtrx/game/output.h>
 #include <libtrx/memory.h>
 
-#define MAX_LIGHTNINGS 64
-#define MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
-#define TEXT_OUTLINE_THICKNESS 2
+#define M_MAX_LIGHTNINGS 64
+#define M_MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
+#define M_TEXT_OUTLINE_THICKNESS 2
 
 typedef enum {
     MC_PURPLE_C,
@@ -52,7 +52,7 @@ typedef struct {
 
 static bool m_Initialized = false;
 static int32_t m_LightningCount = 0;
-static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
+static LIGHTNING m_LightningTable[M_MAX_LIGHTNINGS];
 static int32_t m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 
 static GFX_2D_RENDERER *m_Renderer2D = nullptr;
@@ -269,7 +269,7 @@ static void M_Draw2DQuad(
     int32_t vertex_count = 4;
     GFX_3D_VERTEX vertices[vertex_count];
 
-#define SET(vtx_idx, x_, y_, color)                                            \
+#define L_SET(vtx_idx, x_, y_, color)                                          \
     vertices[vtx_idx].x = x_;                                                  \
     vertices[vtx_idx].y = y_;                                                  \
     vertices[vtx_idx].z = 1.0f;                                                \
@@ -277,11 +277,11 @@ static void M_Draw2DQuad(
     vertices[vtx_idx].g = color.g * color.a / 255;                             \
     vertices[vtx_idx].b = color.b * color.a / 255;                             \
     vertices[vtx_idx].a = color.a;
-    SET(0, x1, y1, tl);
-    SET(1, x2, y1, tr);
-    SET(2, x2, y2, br);
-    SET(3, x1, y2, bl);
-#undef SET
+    L_SET(0, x1, y1, tl);
+    L_SET(1, x2, y1, tr);
+    L_SET(2, x2, y2, br);
+    L_SET(3, x1, y2, bl);
+#undef L_SET
 
     M_DisableTextureMode();
     GFX_3D_Renderer_SetBlendingMode(
@@ -313,25 +313,25 @@ static void M_DrawLightningSegment(const LIGHTNING *const lightning)
     const int32_t t1 = (lightning->thickness << W2V_SHIFT) / zp0;
     const int32_t t2 = (lightning->thickness << W2V_SHIFT) / zp1;
 
-#define SET(vtx_idx, x_, y_, z_, color)                                        \
+#define L_SET(vtx_idx, x_, y_, z_, color)                                      \
     vertices[vtx_idx].x = x_;                                                  \
     vertices[vtx_idx].y = y_;                                                  \
-    vertices[vtx_idx].z = MAP_DEPTH(z_);                                       \
+    vertices[vtx_idx].z = M_MAP_DEPTH(z_);                                     \
     vertices[vtx_idx].r = color.r;                                             \
     vertices[vtx_idx].g = color.g;                                             \
     vertices[vtx_idx].b = color.b;                                             \
     vertices[vtx_idx].a = 128.0f;
     // clang-format off
-    SET(0, p0.x,          p0.y, p0.z, blue);
-    SET(1, p0.x + t1 / 2, p0.y, p0.z, white);
-    SET(2, p1.x + t2 / 2, p1.y, p1.z, white);
-    SET(3, p1.x,          p1.y, p1.z, blue);
-    SET(4, p0.x + t1 / 2, p0.y, p0.z, white);
-    SET(5, p0.x + t1,     p0.y, p0.z, blue);
-    SET(6, p1.x + t2,     p1.y, p1.z, blue);
-    SET(7, p1.x + t2 / 2, p1.y, p1.z, white);
+    L_SET(0, p0.x,          p0.y, p0.z, blue);
+    L_SET(1, p0.x + t1 / 2, p0.y, p0.z, white);
+    L_SET(2, p1.x + t2 / 2, p1.y, p1.z, white);
+    L_SET(3, p1.x,          p1.y, p1.z, blue);
+    L_SET(4, p0.x + t1 / 2, p0.y, p0.z, white);
+    L_SET(5, p0.x + t1,     p0.y, p0.z, blue);
+    L_SET(6, p1.x + t2,     p1.y, p1.z, blue);
+    L_SET(7, p1.x + t2 / 2, p1.y, p1.z, white);
     // clang-format on
-#undef SET
+#undef L_SET
 
     M_DisableTextureMode();
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
@@ -356,10 +356,10 @@ static void M_DrawSprite(
     const float v0 = (sprite->offset >> 8) / 256.0f;
     const float u1 = u0 + sprite->width / 65536.0f;
     const float v1 = v0 + sprite->height / 65536.0f;
-    const float vz = MAP_DEPTH(z);
+    const float vz = M_MAP_DEPTH(z);
     const float rhw = 1.0f / z;
 
-#define SET(vtx_idx, x_, y_, z_, u_, v_)                                       \
+#define L_SET(vtx_idx, x_, y_, z_, u_, v_)                                     \
     vertices[vtx_idx].x = x_;                                                  \
     vertices[vtx_idx].y = y_;                                                  \
     vertices[vtx_idx].z = z_;                                                  \
@@ -372,11 +372,11 @@ static void M_DrawSprite(
     vertices[vtx_idx].g = vshade;                                              \
     vertices[vtx_idx].b = vshade;
 
-    SET(0, x1, y1, vz, u0, v0);
-    SET(1, x2, y1, vz, u1, v0);
-    SET(2, x2, y2, vz, u1, v1);
-    SET(3, x1, y2, vz, u0, v1);
-#undef SET
+    L_SET(0, x1, y1, vz, u0, v0);
+    L_SET(1, x2, y1, vz, u1, v0);
+    L_SET(2, x2, y2, vz, u1, v1);
+    L_SET(3, x1, y2, vz, u0, v1);
+#undef L_SET
 
     if (m_TextureMap[sprite->tex_page] != GFX_NO_TEXTURE) {
         M_EnableTextureMode();
@@ -568,68 +568,70 @@ void Output_DrawScreenFrame(
     sx -= scale;
     sy -= scale;
 
-#define SB_NUM_VERTS_DARK 12
-#define SB_NUM_VERTS_LIGHT 10
-    GFX_3D_VERTEX vertices[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+#define L_NUM_VERTS_DARK 12
+#define L_NUM_VERTS_LIGHT 10
+    GFX_3D_VERTEX vertices[L_NUM_VERTS_DARK + L_NUM_VERTS_LIGHT];
     GFX_3D_VERTEX *const dark_vertices = vertices;
-    GFX_3D_VERTEX *const light_vertices = vertices + SB_NUM_VERTS_DARK;
+    GFX_3D_VERTEX *const light_vertices = vertices + L_NUM_VERTS_DARK;
     const float sxf = sx + thickness;
     const float syf = sy + thickness;
     const float hf = h;
     const float wf = w;
 
-#define SET(i, x_, y_)                                                         \
+#define L_SET(i, x_, y_)                                                       \
     vertices[i].x = x_;                                                        \
     vertices[i].y = y_;
     // clang-format off
     // Top Left Dark edge
-    SET(0,  sxf,                         syf + hf - thickness);
-    SET(1,  sxf + thickness,             syf + hf - thickness);
-    SET(2,  sxf,                         syf);
-    SET(3,  sxf + thickness,             syf + thickness);
-    SET(4,  sxf + wf - thickness,        syf);
-    SET(5,  sxf + wf - thickness,        syf + thickness);
+    L_SET(0,  sxf,                         syf + hf - thickness);
+    L_SET(1,  sxf + thickness,             syf + hf - thickness);
+    L_SET(2,  sxf,                         syf);
+    L_SET(3,  sxf + thickness,             syf + thickness);
+    L_SET(4,  sxf + wf - thickness,        syf);
+    L_SET(5,  sxf + wf - thickness,        syf + thickness);
     // Bottom Right Dark set
-    SET(6,  sxf + wf + thickness,        syf - thickness);
-    SET(7,  sxf + wf,                    syf - thickness);
-    SET(8,  sxf + wf + thickness,        syf + hf + thickness);
-    SET(9,  sxf + wf,                    syf + hf);
-    SET(10, sxf - thickness,             syf + hf + thickness);
-    SET(11, sxf - thickness,             syf + hf);
+    L_SET(6,  sxf + wf + thickness,        syf - thickness);
+    L_SET(7,  sxf + wf,                    syf - thickness);
+    L_SET(8,  sxf + wf + thickness,        syf + hf + thickness);
+    L_SET(9,  sxf + wf,                    syf + hf);
+    L_SET(10, sxf - thickness,             syf + hf + thickness);
+    L_SET(11, sxf - thickness,             syf + hf);
     // Light box
-    SET(12, sxf - thickness,             syf + hf);
-    SET(13, sxf - thickness + thickness, syf + hf - thickness);
-    SET(14, sxf - thickness,             syf - thickness);
-    SET(15, sxf,                         syf);
-    SET(16, sxf + wf,                    syf - thickness);
-    SET(17, sxf + wf - thickness,        syf);
-    SET(18, sxf + wf,                    syf + hf);
-    SET(19, sxf + wf - thickness,        syf + hf - thickness);
-    SET(20, sxf - thickness,             syf + hf);
-    SET(21, sxf - thickness + thickness, syf + hf - thickness);
+    L_SET(12, sxf - thickness,             syf + hf);
+    L_SET(13, sxf - thickness + thickness, syf + hf - thickness);
+    L_SET(14, sxf - thickness,             syf - thickness);
+    L_SET(15, sxf,                         syf);
+    L_SET(16, sxf + wf,                    syf - thickness);
+    L_SET(17, sxf + wf - thickness,        syf);
+    L_SET(18, sxf + wf,                    syf + hf);
+    L_SET(19, sxf + wf - thickness,        syf + hf - thickness);
+    L_SET(20, sxf - thickness,             syf + hf);
+    L_SET(21, sxf - thickness + thickness, syf + hf - thickness);
     // clang-format on
-#undef SET
+#undef L_SET
 
-    for (int32_t i = 0; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; i++) {
+    for (int32_t i = 0; i < L_NUM_VERTS_DARK + L_NUM_VERTS_LIGHT; i++) {
         vertices[i].z = 1.0f;
         vertices[i].s = 0.0f;
         vertices[i].t = 0.0f;
         vertices[i].w = 0.0f;
     }
-    for (int32_t i = 0; i < SB_NUM_VERTS_DARK; i++) {
+    for (int32_t i = 0; i < L_NUM_VERTS_DARK; i++) {
         dark_vertices[i].r = col_dark.r;
         dark_vertices[i].g = col_dark.g;
         dark_vertices[i].b = col_dark.b;
         dark_vertices[i].a = col_dark.a;
     }
-    for (int32_t i = 0; i < SB_NUM_VERTS_LIGHT; i++) {
+    for (int32_t i = 0; i < L_NUM_VERTS_LIGHT; i++) {
         light_vertices[i].r = col_light.r;
         light_vertices[i].g = col_light.g;
         light_vertices[i].b = col_light.b;
         light_vertices[i].a = col_light.a;
     }
     M_DisableTextureMode();
-    M_DrawTriangleStrip(vertices, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
+    M_DrawTriangleStrip(vertices, L_NUM_VERTS_DARK + L_NUM_VERTS_LIGHT);
+#undef L_NUM_VERTS_DARK
+#undef L_NUM_VERTS_LIGHT
 }
 
 void Output_DrawGradientScreenBox(
@@ -653,7 +655,7 @@ void Output_DrawGradientScreenBox(
     //  6                 4
     GFX_3D_VERTEX vertices[10];
 
-#define SET(i, x_, y_, color)                                                  \
+#define L_SET(i, x_, y_, color)                                                \
     vertices[i].x = x_;                                                        \
     vertices[i].y = y_;                                                        \
     vertices[i].r = color.r;                                                   \
@@ -661,18 +663,18 @@ void Output_DrawGradientScreenBox(
     vertices[i].b = color.b;                                                   \
     vertices[i].a = color.a;
     // clang-format off
-    SET(0, sx - thickness,     sy - thickness,     tl);
-    SET(1, sx + thickness,     sy + thickness,     tl);
-    SET(2, sx + w + thickness, sy - thickness,     tr);
-    SET(3, sx + w - thickness, sy + thickness,     tr);
-    SET(4, sx + w + thickness, sy + h + thickness, br);
-    SET(5, sx + w - thickness, sy + h - thickness, br);
-    SET(6, sx - thickness,     sy + h + thickness, bl);
-    SET(7, sx + thickness,     sy + h - thickness, bl);
-    SET(8, sx - thickness,     sy - thickness,     tl);
-    SET(9, sx + thickness,     sy + thickness,     tl);
+    L_SET(0, sx - thickness,     sy - thickness,     tl);
+    L_SET(1, sx + thickness,     sy + thickness,     tl);
+    L_SET(2, sx + w + thickness, sy - thickness,     tr);
+    L_SET(3, sx + w - thickness, sy + thickness,     tr);
+    L_SET(4, sx + w + thickness, sy + h + thickness, br);
+    L_SET(5, sx + w - thickness, sy + h - thickness, br);
+    L_SET(6, sx - thickness,     sy + h + thickness, bl);
+    L_SET(7, sx + thickness,     sy + h - thickness, bl);
+    L_SET(8, sx - thickness,     sy - thickness,     tl);
+    L_SET(9, sx + thickness,     sy + thickness,     tl);
     // clang-format on
-#undef SET
+#undef L_SET
 
     for (int32_t i = 0; i < 10; i++) {
         vertices[i].z = 1.0f;
@@ -709,7 +711,7 @@ void Output_DrawCentreGradientScreenBox(
     const int32_t half_h = h / 2;
     GFX_3D_VERTEX vertices[18];
 
-#define SET(i, x_, y_, color)                                                  \
+#define L_SET(i, x_, y_, color)                                                \
     vertices[i].x = x_;                                                        \
     vertices[i].y = y_;                                                        \
     vertices[i].r = color.r;                                                   \
@@ -717,26 +719,26 @@ void Output_DrawCentreGradientScreenBox(
     vertices[i].b = color.b;                                                   \
     vertices[i].a = color.a;
     // clang-format off
-    SET(0, sx - thickness,     sy - thickness,     edge);
-    SET(1, sx + thickness,     sy + thickness,     edge);
-    SET(2, sx + half_w,        sy - thickness,     center);
-    SET(3, sx + half_w,        sy + thickness,     center);
-    SET(4, sx + w + thickness, sy - thickness,     edge);
-    SET(5, sx + w - thickness, sy + thickness,     edge);
-    SET(6, sx + w + thickness, sy + half_h,        center);
-    SET(7, sx + w - thickness, sy + half_h,        center);
-    SET(8, sx + w + thickness, sy + h + thickness, edge);
-    SET(9, sx + w - thickness, sy + h - thickness, edge);
-    SET(10, sx + half_w,       sy + h + thickness, center);
-    SET(11, sx + half_w,       sy + h - thickness, center);
-    SET(12, sx - thickness,    sy + h + thickness, edge);
-    SET(13, sx + thickness,    sy + h - thickness, edge);
-    SET(14, sx - thickness,    sy + half_h,        center);
-    SET(15, sx + thickness,    sy + half_h,        center);
-    SET(16, sx - thickness,    sy - thickness,     edge);
-    SET(17, sx + thickness,    sy + thickness,     edge);
+    L_SET(0, sx - thickness,     sy - thickness,     edge);
+    L_SET(1, sx + thickness,     sy + thickness,     edge);
+    L_SET(2, sx + half_w,        sy - thickness,     center);
+    L_SET(3, sx + half_w,        sy + thickness,     center);
+    L_SET(4, sx + w + thickness, sy - thickness,     edge);
+    L_SET(5, sx + w - thickness, sy + thickness,     edge);
+    L_SET(6, sx + w + thickness, sy + half_h,        center);
+    L_SET(7, sx + w - thickness, sy + half_h,        center);
+    L_SET(8, sx + w + thickness, sy + h + thickness, edge);
+    L_SET(9, sx + w - thickness, sy + h - thickness, edge);
+    L_SET(10, sx + half_w,       sy + h + thickness, center);
+    L_SET(11, sx + half_w,       sy + h - thickness, center);
+    L_SET(12, sx - thickness,    sy + h + thickness, edge);
+    L_SET(13, sx + thickness,    sy + h - thickness, edge);
+    L_SET(14, sx - thickness,    sy + half_h,        center);
+    L_SET(15, sx + thickness,    sy + half_h,        center);
+    L_SET(16, sx - thickness,    sy - thickness,     edge);
+    L_SET(17, sx + thickness,    sy + thickness,     edge);
     // clang-format on
-#undef SET
+#undef L_SET
 
     for (int32_t i = 0; i < 18; i++) {
         vertices[i].z = 1.0f;
@@ -812,7 +814,7 @@ void Output_UnloadBackground(void)
 void Output_DrawLightningSegment(
     const XYZ_32 pos_0, const XYZ_32 pos_1, const int32_t thickness)
 {
-    if (m_LightningCount >= MAX_LIGHTNINGS) {
+    if (m_LightningCount >= M_MAX_LIGHTNINGS) {
         return;
     }
     LIGHTNING *const lightning = &m_LightningTable[m_LightningCount];
@@ -921,7 +923,7 @@ void Output_DrawTextOutline(
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenFrame(
             sx, sy, w, h, M_GetMenuColor(MC_GOLD_DARK),
-            M_GetMenuColor(MC_GOLD_LIGHT), TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(MC_GOLD_LIGHT), M_TEXT_OUTLINE_THICKNESS);
         return;
     }
 
@@ -929,19 +931,19 @@ void Output_DrawTextOutline(
         Output_DrawGradientScreenBox(
             sx, sy, w, h, M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
             M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
-            TEXT_OUTLINE_THICKNESS);
+            M_TEXT_OUTLINE_THICKNESS);
     } else if (text_style == TS_BACKGROUND) {
         Output_DrawGradientScreenBox(
             sx, sy, w, h, M_GetMenuColor(MC_GREY_TL),
             M_GetMenuColor(MC_GREY_TR), M_GetMenuColor(MC_GREY_BL),
-            M_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(MC_GREY_BR), M_TEXT_OUTLINE_THICKNESS);
     } else if (text_style == TS_REQUESTED) {
         // Make sure height and width divisible by 2.
         w = 2 * ((w + 1) / 2);
         h = 2 * ((h + 1) / 2);
         Output_DrawCentreGradientScreenBox(
             sx, sy, w, h, M_GetMenuColor(MC_GREY_E), M_GetMenuColor(MC_GREY_C),
-            TEXT_OUTLINE_THICKNESS);
+            M_TEXT_OUTLINE_THICKNESS);
     }
 }
 
