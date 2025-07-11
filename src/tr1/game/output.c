@@ -273,9 +273,9 @@ static void M_Draw2DQuad(
     vertices[vtx_idx].x = x_;                                                  \
     vertices[vtx_idx].y = y_;                                                  \
     vertices[vtx_idx].z = 1.0f;                                                \
-    vertices[vtx_idx].r = color.r;                                             \
-    vertices[vtx_idx].g = color.g;                                             \
-    vertices[vtx_idx].b = color.b;                                             \
+    vertices[vtx_idx].r = color.r * color.a / 255;                             \
+    vertices[vtx_idx].g = color.g * color.a / 255;                             \
+    vertices[vtx_idx].b = color.b * color.a / 255;                             \
     vertices[vtx_idx].a = color.a;
     SET(0, x1, y1, tl);
     SET(1, x2, y1, tr);
