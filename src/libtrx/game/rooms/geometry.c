@@ -284,15 +284,15 @@ int16_t Room_GetHeightEx(
             if (!M_IsWalkableClose(x, z, item)) {
                 continue;
             }
-            const int32_t walkable_height =
+            const int32_t test_height =
                 obj->floor_height_func(item, x, test_y, z, height);
-            if (walkable_height != height) {
-                height = walkable_height;
-                // Only update the y value if it's lower to fix up+jump working
-                // on the lowest block in a stack.
-                // TODO Should this be test_y?
-                if (y > walkable_height) {
-                    test_y = walkable_height;
+            // If the floor height changed, climb the walkable stack.
+            if (test_height != height) {
+                height = test_height;
+                // Only raise the test y value if the test floor height is above
+                // the original y.
+                if (y > test_height) {
+                    test_y = test_height;
                 }
                 // LOG_DEBUG(
                 //     "Change floor height: %d; y: %d; test_y: %d; item_num: "
