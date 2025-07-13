@@ -128,42 +128,12 @@ static int16_t M_GetCeilingHeight(
 static bool M_IsItemOnTop(
     const ITEM *const item, const int32_t x, const int32_t z)
 {
-    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
-    if (bounds == nullptr) {
-        return false;
-    }
-
     int32_t dx = x - item->pos.x;
     int32_t dz = z - item->pos.z;
 
-    const ITEM *const lara_item = Lara_GetItem();
-    // Creature setups run before Lara is initialized.
-    if (lara_item != nullptr && !Camera_IsChunky()) {
-        DIRECTION quadrant = ((uint16_t)lara_item->rot.y + DEG_45) / DEG_90;
-        switch (quadrant) {
-        case DIR_NORTH:
-            dx = -dx;
-            dz = -dz;
-            break;
-        case DIR_EAST:
-            int32_t t1 = dx;
-            dx = dz;
-            dz = -t1;
-            break;
-        case DIR_SOUTH:
-            break;
-        case DIR_WEST:
-            int32_t t2 = dx;
-            dx = -dz;
-            dz = t2;
-            break;
-        default:
-            break;
-        }
-    }
-
-    return dx >= bounds->min.x && dx <= bounds->max.x && dz >= bounds->min.z
-        && dz <= bounds->max.z;
+    // Movable block bounds are offset from the sector center so estimate.
+    return (dx >= -WALL_L / 2 && dx < WALL_L / 2)
+        && (dz >= -WALL_L / 2 && dz < WALL_L / 2);
 }
 
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
