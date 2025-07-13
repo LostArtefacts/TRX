@@ -287,6 +287,17 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
     return false;
 }
 
+// This routine transforms the world-space LOS segment [start,target] into the
+// object's local coordinates (undoing its translation and Y-rotation), then
+// performs a slab intersection test against that local AABB. The first
+// smashable item hit is returned, or NO_ITEM if none.
+//
+// (AABB = Axis-Aligned Bounding Box. It's the rectangular box defined by
+// bounds->min/max along X,Y,Z in the object's local space (no rotation).)
+//
+// @param start  World-space ray origin
+// @param target World-space ray end
+// @return       First smashable item's index, or NO_ITEM if none hit
 int32_t LOS_CheckSmashable(
     const GAME_VECTOR *const start, const GAME_VECTOR *const target)
 {
@@ -301,91 +312,85 @@ int32_t LOS_CheckSmashable(
             if (item->status == IS_DEACTIVATED) {
                 continue;
             }
-
             if (!Object_IsType(item->object_id, g_SmashableObjects)) {
                 continue;
             }
 
-            const DIRECTION direction = Math_GetDirection(item->rot.y);
+            // Translate into object-local space
+            const int32_t ox = start->x - item->pos.x;
+            const int32_t oy = start->y - item->pos.y;
+            const int32_t oz = start->z - item->pos.z;
+            // Unrotate by -rot.y around Y axis
+            const int32_t c = Math_Cos(item->rot.y);
+            const int32_t s = Math_Sin(item->rot.y);
+            const int32_t lx = ((ox * c) + (oz * s)) >> W2V_SHIFT;
+            const int32_t ly = oy;
+            const int32_t lz = ((-ox * s) + (oz * c)) >> W2V_SHIFT;
+            const int32_t ldx = ((dx * c) + (dz * s)) >> W2V_SHIFT;
+            const int32_t ldy = dy;
+            const int32_t ldz = (((-dx * s) + (dz * c))) >> W2V_SHIFT;
+
+            // Local AABB extents from item's bounds
             const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-            int16_t x_extent[2];
-            int16_t z_extent[2];
-            switch (direction) {
-            case DIR_EAST:
-            case DIR_WEST:
-                x_extent[0] = bounds->min.z;
-                x_extent[1] = bounds->max.z;
-                z_extent[0] = bounds->min.x;
-                z_extent[1] = bounds->max.x;
-                break;
-            case DIR_NORTH:
-            case DIR_SOUTH:
-                x_extent[0] = bounds->min.x;
-                x_extent[1] = bounds->max.x;
-                z_extent[0] = bounds->min.z;
-                z_extent[1] = bounds->max.z;
-                break;
-            default:
-                ASSERT_FAIL();
-                break;
+
+            // Parametric interval [t0..t1] in Q14 fixed-point
+            int32_t t0 = 0;
+            int32_t t1 = 1 << W2V_SHIFT;
+
+            // X slab
+            if (ldx != 0) {
+                int32_t tmp;
+                int32_t t_near = ((bounds->min.x - lx) << W2V_SHIFT) / ldx;
+                int32_t t_far = ((bounds->max.x - lx) << W2V_SHIFT) / ldx;
+                if (t_near > t_far) {
+                    SWAP(t_near, t_far, tmp);
+                }
+                if (t_near > t1 || t_far < t0) {
+                    continue;
+                }
+                CLAMPL(t0, t_near);
+                CLAMPG(t1, t_far);
+            } else if (lx < bounds->min.x || lx > bounds->max.x) {
+                continue;
             }
 
-            int32_t failure = 0;
-            if (ABS(dz) > ABS(dx)) {
-                int32_t distance = item->pos.z + z_extent[0] - start->z;
-                for (int32_t j = 0; j < 2; j++) {
-                    if ((distance >= 0) == (dz >= 0)) {
-                        const int32_t y = dy * distance / dz;
-                        if (y <= item->pos.y + bounds->min.y - start->y
-                            || y >= item->pos.y + bounds->max.y - start->y) {
-                            continue;
-                        }
-
-                        const int32_t x = dx * distance / dz;
-                        if (x < item->pos.x + x_extent[0] - start->x) {
-                            failure |= 1;
-                        } else if (x > item->pos.x + x_extent[1] - start->x) {
-                            failure |= 2;
-                        } else {
-                            return item_num;
-                        }
-                    }
-
-                    distance = item->pos.z + z_extent[1] - start->z;
+            // Y slab
+            if (ldy != 0) {
+                int32_t tmp;
+                int32_t t_near = ((bounds->min.y - ly) << W2V_SHIFT) / ldy;
+                int32_t t_far = ((bounds->max.y - ly) << W2V_SHIFT) / ldy;
+                if (t_near > t_far) {
+                    SWAP(t_near, t_far, tmp);
                 }
-
-                if (failure == 3) {
-                    return item_num;
+                if (t_near > t1 || t_far < t0) {
+                    continue;
                 }
-            } else {
-                int32_t distance = item->pos.x + x_extent[0] - start->x;
-                for (int32_t j = 0; j < 2; j++) {
-                    if ((distance >= 0) == (dx >= 0)) {
-                        const int32_t y = dy * distance / dx;
-                        if (y <= item->pos.y + bounds->min.y - start->y
-                            || y >= item->pos.y + bounds->max.y - start->y) {
-                            continue;
-                        }
-
-                        const int32_t z = dz * distance / dx;
-                        if (z < item->pos.z + z_extent[0] - start->z) {
-                            failure |= 1;
-                        } else if (z > item->pos.z + z_extent[1] - start->z) {
-                            failure |= 2;
-                        } else {
-                            return item_num;
-                        }
-                    }
-
-                    distance = item->pos.x + x_extent[1] - start->x;
-                }
-
-                if (failure == 3) {
-                    return item_num;
-                }
+                CLAMPL(t0, t_near);
+                CLAMPG(t1, t_far);
+            } else if (ly < bounds->min.y || ly > bounds->max.y) {
+                continue;
             }
+
+            // Z slab
+            if (ldz != 0) {
+                int32_t tmp;
+                int32_t t_near = ((bounds->min.z - lz) << W2V_SHIFT) / ldz;
+                int32_t t_far = ((bounds->max.z - lz) << W2V_SHIFT) / ldz;
+                if (t_near > t_far) {
+                    SWAP(t_near, t_far, tmp);
+                }
+                if (t_near > t1 || t_far < t0) {
+                    continue;
+                }
+                CLAMPL(t0, t_near);
+                CLAMPG(t1, t_far);
+            } else if (lz < bounds->min.z || lz > bounds->max.z) {
+                continue;
+            }
+
+            // Ray segment intersects the object's local AABB
+            return item_num;
         }
     }
-
     return NO_ITEM;
 }
