@@ -15,7 +15,7 @@ static const GF_LEVEL *M_FindLevel(const char *const user_input)
     }
 
     VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
-    for (int32_t i = 0; i < GF_GetLevelCount(GFLT_MAIN); i++) {
+    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         STRING_FUZZY_SOURCE source_item = {
             .key = level->title,
