@@ -81,10 +81,6 @@ bool Creature_ShootAtLara(
         .room_num = target_item->room_num,
     };
 
-    const int16_t item_to_smash = LOS_CheckSmashable(&start, &target);
-    if (item_to_smash != NO_ITEM) {
-        Gun_SmashItem(item_to_smash, LGT_UNARMED);
-    }
-
+    Gun_SmashItems(start, target);
     return is_targetable;
 }
