@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...develop) - ××××-××-××
+
+## [1.3](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...tr2-1.3) - 2025-07-14
+Showcase: https://youtu.be/C9Nf4j05u_w
 - reworked scaler/sizer options
     - added an option to set the upscaling filter (Graphic settings → Rendering → Upscaling filter)
     - changed the "Sizer" option name to "Upscaling factor" (Graphic settings → Rendering → Upscaling factor)
