@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.13...develop) - ××××-××-××
+
+## [4.13](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...tr1-4.13) - 2025-07-14
+Showcase: https://youtu.be/YKI7u2QOolU
 - reworked screen resolutions
     - removed "screen resolution" option
     - removed "window size" rendering mode, enforcing the FBO rendering method (#3332)
