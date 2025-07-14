@@ -23,9 +23,11 @@ class Changelog:
 
 
 def get_youtube_id(url: str) -> str | None:
-    if match := re.match(
+    if match := re.search(
         r"https://(?:www\.)?youtube\.com/watch\?v=(\w+)", url
     ):
+        return match.group(1)
+    if match := re.search(r"https://(?:www\.)?youtu\.be/(\w+)", url):
         return match.group(1)
     return None
 
@@ -44,10 +46,7 @@ def get_current_version_changelog(changelog_path: Path) -> Changelog:
 
         video_id: str | None = None
         for i, line in reversed(list(enumerate(section_lines))):
-            if "youtube.com" in line:
-                video_id = get_youtube_id(
-                    re.search(r"\S+youtube\.com\S+", line).group(0)
-                )
+            if video_id := get_youtube_id(line):
                 section_lines.pop(i)
 
         return Changelog(
