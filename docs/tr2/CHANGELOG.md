@@ -3,6 +3,7 @@
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - changed the texture page limit from 128 to unlimited (#3517)
+- changed projectiles to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378)
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378)
