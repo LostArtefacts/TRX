@@ -368,6 +368,7 @@ However, you can easily download them manually from these urls:
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
+- fixed flat/opaque window shards in Lara's Home and Home Sweet Home
 - fixed transparent eyes on the wolf model in Furnace of the Gods
 - fixed Lara's health bar showing in the Home Sweet Home shower cutscene
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save

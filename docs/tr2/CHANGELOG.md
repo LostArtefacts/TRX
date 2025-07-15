@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...develop) - ××××-××-××
 - added German translation
+- fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 
 ## [1.3](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...tr2-1.3) - 2025-07-14
 Showcase: https://youtu.be/C9Nf4j05u_w
