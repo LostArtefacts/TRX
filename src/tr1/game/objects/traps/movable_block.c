@@ -62,6 +62,7 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 static int16_t M_GetFloorHeight(
     const ITEM *const item, int32_t x, int32_t y, int32_t z, int16_t height)
 {
+    // LOG_DEBUG("y: %d; item->pos.y: %d; height: %d", y, item->pos.y, height);
     if (item->status == IS_INVISIBLE) {
         return height;
     }
@@ -107,11 +108,6 @@ static int16_t M_GetCeilingHeight(
         return height;
     }
 
-    // If inside the block.
-    if (y <= item->pos.y && y > item->pos.y - WALL_L) {
-        return height;
-    }
-
     // If above the top of the block.
     if (y <= item->pos.y - WALL_L) {
         return height;
@@ -122,7 +118,7 @@ static int16_t M_GetCeilingHeight(
         return height;
     }
 
-    return item->pos.y;
+    return item->pos.y + STEP_L;
 }
 
 static bool M_IsItemOnTop(
