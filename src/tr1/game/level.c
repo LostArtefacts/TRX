@@ -337,8 +337,7 @@ void Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Output_SetSkyboxEnabled(
-        g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
 
     Benchmark_End(&benchmark, nullptr);
 }

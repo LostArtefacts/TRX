@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.13...develop) - ××××-××-××
 - added German translation
+- changed the skybox option to allow toggling in-game without the need to reload the level
 
 ## [4.13](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...tr1-4.13) - 2025-07-14
 Showcase: https://youtu.be/YKI7u2QOolU
