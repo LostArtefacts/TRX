@@ -199,6 +199,7 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
         return g_Config.visuals.fix_texture_issues;
 #if TR_VERSION == 1
     case IFT_LARA_ANIMS:
+    case IFT_SKYBOX:
         return true;
     case IFT_BRAID:
         return g_Config.visuals.enable_braid;
@@ -208,8 +209,6 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
         return g_Config.gameplay.restore_ps1_enemies;
     case IFT_DISABLE_ANIM_SPRITE:
         return !g_Config.visuals.fix_animated_sprites;
-    case IFT_SKYBOX:
-        return g_Config.visuals.enable_skybox;
     case IFT_PS1_CRYSTAL:
         return g_Config.gameplay.enable_save_crystals
             && g_Config.visuals.enable_ps1_crystals;

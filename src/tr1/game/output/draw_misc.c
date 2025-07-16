@@ -91,7 +91,7 @@ void Output_SetSkyboxEnabled(const bool enabled)
 
 bool Output_IsSkyboxEnabled(void)
 {
-    return m_IsSkyboxEnabled;
+    return m_IsSkyboxEnabled && g_Config.visuals.enable_skybox;
 }
 
 void Output_DrawSkybox(const OBJECT_MESH *const mesh)
