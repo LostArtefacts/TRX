@@ -1,6 +1,11 @@
-# TRX Game Strings Configuration
+---
+title: Game strings
+---
+
+# Game Strings
 
 ## Overview
+
 This document describes how to use and translate the TRX game strings. Game
 strings let level builders customize built-in object and level names in custom
 levels, and translators translate the entire game (including UI) into other
@@ -51,7 +56,7 @@ For example, if the same key exists in both `TRX_common_strings.json5` and
 `TR1X_strings.json5`, the value `TR1X_strings.json5` will take precedence.
 
 Each layer can also have a variant translated to other languages - see
-[this section](#translating-each-layer).
+[this section](./4-GAME_STRINGS.md#translating-each-layer).
 
 ## General structure
 
@@ -244,7 +249,7 @@ The document is organized as follows:
 
 ## Translation Workflow
 
-### Translating each layer
+### Translating each layer <a name="translating-each-layer"></a>
 
 To provide localized translations, place language-specific overrides alongside
 each base file using the naming pattern `<basename>-<lang>.json5`. Translation

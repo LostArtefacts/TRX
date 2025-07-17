@@ -206,7 +206,7 @@ Showcase: https://www.youtube.com/watch?v=JVtcZoNoeRM
 ## [4.10](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...tr1-4.10) - 2025-04-30
 Showcase: https://www.youtube.com/watch?v=qJPq9obD6Cc
 - added an ability to customize the fog distances (#634)
-- added an ability to customize the water color [see the reference](/docs/GAME_FLOW.md#water-color-table) (#1532)  
+- added an ability to customize the water color [see the reference](/docs/WATER_COLORS.md) (#1532)  
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
 - added support for antitriggers, like TR2+ (#2580)
 - added support for aspect ratio-specific images (#1840)
@@ -324,7 +324,7 @@ Showcase: https://www.youtube.com/watch?v=td2Qz3nbRVo
 >Attention level builders: this version introduces backwards incompatible changes to the game flow file.
 >Please refer to the following documents to see how to update your levels:
 >- [Migration guide](../MIGRATING.md)
->- [Game flow documentation](../GAME_FLOW.md)
+>- [Game flow documentation](../GAME_FLOW/)
 >- [Game strings documentation](../GAME_STRINGS.md)
 
 - added the ability to hold left/right to move through menus more quickly (#2298)

@@ -1,4 +1,8 @@
-## Migration guide for level builders
+---
+title: Migrating levels
+---
+
+# Migration guide for level builders
 
 ## TR1X
 
@@ -42,7 +46,7 @@
    preparation to eventually support internationalization. Elements such as
    item titles or item names need to be configured entirely in the new file, so
    all `"strings"` keys can be safely removed from the game flow. Refer to
-   [GAME_STRINGS.md](GAME_STRINGS.md) for more details.
+   [game strings documentation](4-GAME_STRINGS.md) for more details.
 
 ## TR2X
 
