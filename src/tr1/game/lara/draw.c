@@ -133,8 +133,9 @@ void Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
     int32_t fire_arms = 0;
-    if (g_Lara.gun_status == LGS_READY || g_Lara.gun_status == LGS_DRAW
-        || g_Lara.gun_status == LGS_UNDRAW) {
+    if (pose == nullptr
+        && (g_Lara.gun_status == LGS_READY || g_Lara.gun_status == LGS_DRAW
+            || g_Lara.gun_status == LGS_UNDRAW)) {
         fire_arms = g_Lara.gun_type;
     }
 
