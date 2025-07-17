@@ -3,6 +3,7 @@
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 4.13)
+- fixed Lara's arms being drawn inaccurately when posing in photo mode with dual weapons equipped (#3520, regression from 4.13)
 
 ## [4.13](https://github.com/LostArtefacts/TRX/compare/tr1-4.12.3...tr1-4.13) - 2025-07-14
 Showcase: https://youtu.be/YKI7u2QOolU
