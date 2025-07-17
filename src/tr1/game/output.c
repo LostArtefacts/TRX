@@ -15,6 +15,7 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/output.h>
 #include <libtrx/memory.h>
+#include <libtrx/vector.h>
 
 #define M_MAX_LIGHTNINGS 64
 #define M_MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
@@ -50,10 +51,15 @@ typedef struct {
     int32_t thickness;
 } LIGHTNING;
 
+typedef struct {
+    int32_t id;
+    GFX_2D_SURFACE *surface;
+} M_TEXTURE;
+
 static bool m_Initialized = false;
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[M_MAX_LIGHTNINGS];
-static int32_t m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
+static VECTOR *m_Textures;
 
 static GFX_2D_RENDERER *m_Renderer2D = nullptr;
 static GFX_3D_RENDERER *m_Renderer3D = nullptr;
@@ -63,7 +69,6 @@ static int32_t m_SelectedTexture = -1;
 static int32_t m_SurfaceWidth = 0;
 static int32_t m_SurfaceHeight = 0;
 static GFX_2D_SURFACE *m_PictureSurface = nullptr;
-static GFX_2D_SURFACE *m_TextureSurfaces[GFX_MAX_TEXTURES] = { nullptr };
 
 static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
@@ -122,11 +127,12 @@ static void M_SelectTexture(const int32_t texture_num)
     if (texture_num == m_SelectedTexture) {
         return;
     }
-    if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
+    M_TEXTURE *const texture = Vector_Get(m_Textures, texture_num);
+    if (texture->id == GFX_NO_TEXTURE) {
         LOG_ERROR("ERROR: Attempt to select unloaded texture");
         return;
     }
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, texture->id);
     m_SelectedTexture = texture_num;
 }
 
@@ -180,28 +186,32 @@ static void M_DownloadBackdropSurface(const IMAGE *const image)
 
 static void M_DownloadTextures(const int32_t pages)
 {
-    if (pages > GFX_MAX_TEXTURES) {
-        Shell_ExitSystem("Attempt to download more than texture page limit");
-    }
     M_ReleaseTextures();
 
+    ASSERT(m_Textures != nullptr);
     for (int32_t i = 0; i < pages; i++) {
-        if (m_TextureSurfaces[i] == nullptr) {
+        if (m_Textures->count <= i) {
+            Vector_Add(
+                m_Textures,
+                &(M_TEXTURE) { .surface = nullptr, .id = GFX_NO_TEXTURE });
+        }
+        M_TEXTURE *const texture = Vector_Get(m_Textures, i);
+        if (texture->surface == nullptr) {
             const GFX_2D_SURFACE_DESC surface_desc = {
                 .width = TEXTURE_PAGE_WIDTH,
                 .height = TEXTURE_PAGE_HEIGHT,
             };
-            m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
+            texture->surface = GFX_2D_Surface_Create(&surface_desc);
         }
-        GFX_2D_SURFACE *const surface = m_TextureSurfaces[i];
-        RGBA_8888 *const output_ptr = (RGBA_8888 *)surface->buffer;
+        RGBA_8888 *const output_ptr = (RGBA_8888 *)texture->surface->buffer;
         const RGBA_8888 *const input_ptr = Output_GetTexturePage32(i);
         memcpy(
             output_ptr, input_ptr,
-            surface->desc.width * surface->desc.height * sizeof(RGBA_8888));
-        m_TextureMap[i] = GFX_3D_Renderer_RegisterTexturePage(
-            m_Renderer3D, output_ptr, surface->desc.width,
-            surface->desc.height);
+            texture->surface->desc.width * texture->surface->desc.height
+                * sizeof(RGBA_8888));
+        texture->id = GFX_3D_Renderer_RegisterTexturePage(
+            m_Renderer3D, output_ptr, texture->surface->desc.width,
+            texture->surface->desc.height);
     }
 }
 
@@ -210,11 +220,11 @@ static void M_ReleaseTextures(void)
     if (m_Renderer3D == nullptr) {
         return;
     }
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (m_TextureMap[i] != GFX_NO_TEXTURE) {
-            GFX_3D_Renderer_UnregisterTexturePage(
-                m_Renderer3D, m_TextureMap[i]);
-            m_TextureMap[i] = GFX_NO_TEXTURE;
+    for (int32_t i = 0; i < m_Textures->count; i++) {
+        M_TEXTURE *const texture = Vector_Get(m_Textures, i);
+        if (texture->id != GFX_NO_TEXTURE) {
+            GFX_3D_Renderer_UnregisterTexturePage(m_Renderer3D, texture->id);
+            texture->id = GFX_NO_TEXTURE;
         }
     }
     m_SelectedTexture = -1;
@@ -222,10 +232,11 @@ static void M_ReleaseTextures(void)
 
 static void M_ReleaseSurfaces(void)
 {
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (m_TextureSurfaces[i] != nullptr) {
-            GFX_2D_Surface_Free(m_TextureSurfaces[i]);
-            m_TextureSurfaces[i] = nullptr;
+    for (int32_t i = 0; i < m_Textures->count; i++) {
+        M_TEXTURE *const texture = Vector_Get(m_Textures, i);
+        if (texture->surface != nullptr) {
+            GFX_2D_Surface_Free(texture->surface);
+            texture->surface = nullptr;
         }
     }
     if (m_PictureSurface != nullptr) {
@@ -378,7 +389,8 @@ static void M_DrawSprite(
     L_SET(3, x1, y2, vz, u0, v1);
 #undef L_SET
 
-    if (m_TextureMap[sprite->tex_page] != GFX_NO_TEXTURE) {
+    M_TEXTURE *const texture = Vector_Get(m_Textures, sprite->tex_page);
+    if (texture->id != GFX_NO_TEXTURE) {
         M_EnableTextureMode();
         M_SelectTexture(sprite->tex_page);
         M_DrawTriangleFan(vertices, vertex_count);
@@ -395,11 +407,7 @@ bool Output_Init(void)
     }
     m_Initialized = true;
 
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        m_TextureMap[i] = GFX_NO_TEXTURE;
-        m_TextureSurfaces[i] = nullptr;
-    }
-
+    m_Textures = Vector_Create(sizeof(M_TEXTURE));
     m_Renderer2D = GFX_2D_Renderer_Create();
     m_Renderer3D = GFX_3D_Renderer_Create();
 
@@ -437,6 +445,10 @@ void Output_Shutdown(void)
     if (m_Renderer3D != nullptr) {
         GFX_3D_Renderer_Destroy(m_Renderer3D);
         m_Renderer3D = nullptr;
+    }
+    if (m_Textures != nullptr) {
+        Vector_Free(m_Textures);
+        m_Textures = nullptr;
     }
     GFX_Context_Detach();
     Output_ClearLastBackgroundPath();

@@ -5,6 +5,7 @@
 #include "gfx/gl/utils.h"
 #include "log.h"
 #include "memory.h"
+#include "vector.h"
 
 struct GFX_3D_RENDERER {
     const GFX_CONFIG *config;
@@ -13,7 +14,7 @@ struct GFX_3D_RENDERER {
     GFX_GL_SAMPLER sampler;
     GFX_3D_VERTEX_STREAM vertex_stream;
 
-    GFX_GL_TEXTURE *textures[GFX_MAX_TEXTURES];
+    VECTOR *textures;
     GFX_GL_TEXTURE *env_map_texture;
     int selected_texture_num;
     GFX_BLEND_MODE selected_blend_mode;
@@ -29,10 +30,32 @@ struct GFX_3D_RENDERER {
     GLint loc_brightness_multiplier;
 };
 
+static GFX_GL_TEXTURE *M_GetTexture(GFX_3D_RENDERER *renderer, int32_t i);
+static void M_SetTexture(
+    GFX_3D_RENDERER *renderer, int32_t i, GFX_GL_TEXTURE *texture);
 static void M_ApplyUniforms(GFX_3D_RENDERER *renderer);
 static void M_Flush(GFX_3D_RENDERER *renderer);
 static void M_SelectTextureImpl(GFX_3D_RENDERER *renderer, int texture_num);
 static void M_RestoreTexture(GFX_3D_RENDERER *const renderer);
+
+static GFX_GL_TEXTURE *M_GetTexture(
+    GFX_3D_RENDERER *const renderer, const int32_t i)
+{
+    ASSERT(i >= 0);
+    ASSERT(i < renderer->textures->count);
+    GFX_GL_TEXTURE **textures = Vector_GetData(renderer->textures);
+    return textures[i];
+}
+
+static void M_SetTexture(
+    GFX_3D_RENDERER *const renderer, const int32_t i,
+    GFX_GL_TEXTURE *const texture)
+{
+    ASSERT(i >= 0);
+    ASSERT(i < renderer->textures->count);
+    GFX_GL_TEXTURE **textures = Vector_GetData(renderer->textures);
+    textures[i] = texture;
+}
 
 static void M_ApplyUniforms(GFX_3D_RENDERER *const renderer)
 {
@@ -91,9 +114,7 @@ static void M_SelectTextureImpl(
     if (texture_num == GFX_ENV_MAP_TEXTURE) {
         texture = renderer->env_map_texture;
     } else if (texture_num != GFX_NO_TEXTURE) {
-        ASSERT(texture_num >= 0);
-        ASSERT(texture_num < GFX_MAX_TEXTURES);
-        texture = renderer->textures[texture_num];
+        texture = M_GetTexture(renderer, texture_num);
     }
 
     if (texture == nullptr) {
@@ -118,11 +139,9 @@ GFX_3D_RENDERER *GFX_3D_Renderer_Create(void)
     renderer->config = GFX_Context_GetConfig();
 
     renderer->selected_texture_num = GFX_NO_TEXTURE;
-    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
-        renderer->textures[i] = nullptr;
-    }
     renderer->alpha_point_discard = false;
     renderer->alpha_threshold = -1.0;
+    renderer->textures = Vector_Create(sizeof(GFX_GL_TEXTURE *));
 
     GFX_GL_Sampler_Init(&renderer->sampler);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
@@ -174,6 +193,8 @@ void GFX_3D_Renderer_Destroy(GFX_3D_RENDERER *const renderer)
     GFX_3D_VertexStream_Close(&renderer->vertex_stream);
     GFX_GL_Program_Close(&renderer->program);
     GFX_GL_Sampler_Close(&renderer->sampler);
+    Vector_Free(renderer->textures);
+    renderer->textures = nullptr;
     Memory_Free(renderer);
 }
 
@@ -300,13 +321,17 @@ int GFX_3D_Renderer_RegisterTexturePage(
     GFX_GL_TEXTURE *const texture = GFX_GL_Texture_Create(GL_TEXTURE_2D);
     GFX_GL_Texture_Load(texture, data, width, height, GL_RGBA, GL_RGBA);
 
-    int texture_num = GFX_NO_TEXTURE;
-    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (!renderer->textures[i]) {
-            renderer->textures[i] = texture;
+    int32_t texture_num = GFX_NO_TEXTURE;
+    for (int32_t i = 0; i < renderer->textures->count; i++) {
+        if (M_GetTexture(renderer, i) == nullptr) {
+            M_SetTexture(renderer, i, texture);
             texture_num = i;
             break;
         }
+    }
+    if (texture_num == GFX_NO_TEXTURE) {
+        Vector_Add(renderer->textures, &texture);
+        texture_num = renderer->textures->count - 1;
     }
 
     M_RestoreTexture(renderer);
@@ -318,10 +343,8 @@ bool GFX_3D_Renderer_UnregisterTexturePage(
     GFX_3D_RENDERER *const renderer, const int texture_num)
 {
     ASSERT(renderer != nullptr);
-    ASSERT(texture_num >= 0);
-    ASSERT(texture_num < GFX_MAX_TEXTURES);
 
-    GFX_GL_TEXTURE *const texture = renderer->textures[texture_num];
+    GFX_GL_TEXTURE *const texture = M_GetTexture(renderer, texture_num);
     if (!texture) {
         LOG_ERROR("Invalid texture handle");
         return false;
@@ -334,7 +357,7 @@ bool GFX_3D_Renderer_UnregisterTexturePage(
     }
 
     GFX_GL_Texture_Free(texture);
-    renderer->textures[texture_num] = nullptr;
+    M_SetTexture(renderer, texture_num, nullptr);
     return true;
 }
 
