@@ -66,7 +66,7 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 
     const ANIM_BONE *bone = Object_GetBone(lara_obj, 0);
     Matrix_TranslateRel32(bone[LM_TORSO - 1].pos);
-    if (Lara_IsM16Active()) {
+    if (Lara_IsM16Active() && pose == nullptr) {
         mesh_rots =
             lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
     }
