@@ -1,10 +1,15 @@
+---
+title: Commands
+---
+
 # Commands
+
 TRX introduces a developer console, by default accessible with the <kbd>/</kbd> key.
 This key can be rebound in the controls dialog to anything of your choice. Note that
 where <kbd>/</kbd> is used in command documentation, you should interpret that as
 whichever key you have bound, and not include it as part of the command itself.
 
-Currently supported commands:
+## Gameplay commands
 
 - `/help`  
   `/help {command}`  
@@ -24,17 +29,6 @@ Currently supported commands:
 
 - `/heal`  
   Tough day, Lara? Heals our girl back to full health.
-
-- `/flip`  
-  `/flip off`  
-  `/flip on`  
-  Switches the global flipmap on or off. Turn the reality around you on its head.
-
-- `/flood`  
-  `/drain`  
-  `/flood {room_num}`  
-  `/drain {room_num}`  
-  Floods or drains rooms at will. Act like you're Poseidon with a plumbing license, for when drowning is preferable to puzzles!
 
 - `/give {item_name}`  
   `/give {num} {item_name}`  
@@ -56,14 +50,24 @@ Currently supported commands:
   Tired of all of those pesky creatures and goons trying to spoil your adventure? Instantly dispose of the nearest one, or kill them all at once.
 
 - `/fly`  
-- `/fly on`  
-- `/fly off`  
+  `/fly on`  
+  `/fly off`  
   Turns on the fly cheat. Why even walk? Levitate like a legend.
 
 - `/immune`  
-- `/immune on`  
-- `/immune off`  
+  `/immune on`  
+  `/immune off`  
   Turns on immunity, making Lara impervious to harm. Perfect for when you'd rather explore every nook than tiptoe past traps.
+
+## Configuration commands
+
+- `/set {option}`  
+  `/set {option} {value}`  
+  `/set {option} -`  
+  Retrieve or change specific configuration options, like a tech-savvy wizard.
+  - use `-` as `{value}` to restore the option to default.
+  - some options need a game or level re-launch to apply.
+  - option names use `-`, not `_`, because reasons.
 
 - `/cheats on`  
   `/cheats off`  
@@ -88,6 +92,40 @@ Currently supported commands:
   - (TR1) room portals - wait, there are _how_ many rooms?!
   - (TR1) object mesh spheres - see hitboxes in their natural habitat.
   - Lara's position and animation details - nerdy stats, you've gotta love them.
+
+- `/speed`  
+  `/speed {num}`  
+  Displays or sets the speed of the game. Because sometimes you want to moonwalk through mayhem.
+
+- `/vsync on`  
+  `/vsync off`  
+  Turns vertical sync on or off (TR1 only). For the smooth freaks among us.
+
+- `/fps`  
+  `/fps {num}`  
+  Displays or sets the game's frames per second. Higher FPS = smoother Lara.
+
+## Environmental commands
+
+- `/flip`  
+  `/flip off`  
+  `/flip on`  
+  Switches the global flipmap on or off. Turn the reality around you on its head.
+
+- `/flood`  
+  `/drain`  
+  `/flood {room_num}`  
+  `/drain {room_num}`  
+  Floods or drains rooms at will. Act like you're Poseidon with a plumbing license, for when drowning is preferable to puzzles!
+
+- `/music {track_id}`  
+  Plays a music track by its ID. Perfect for setting the mood at will.
+
+- `/sfx`  
+  `/sfx {sound}`  
+  Plays a sound effect on demand. Because sometimes you just need Lara to grunt on cue.
+
+## Game flow commands
 
 - `/endlevel`  
   `/nextlevel`  
@@ -123,32 +161,7 @@ Currently supported commands:
 - `/exit`  
   Closes the game. Ends the adventure. We're done here.
 
-- `/speed`  
-  `/speed {num}`  
-  Displays or sets the speed of the game. Because sometimes you want to moonwalk through mayhem.
-
-- `/vsync on`  
-  `/vsync off`  
-  Turns vertical sync on or off (TR1 only). For the smooth freaks among us.
-
-- `/fps`  
-  `/fps {num}`  
-  Displays or sets the game's frames per second. Higher FPS = smoother Lara.
-
-- `/set {option}`  
-  `/set {option} {value}`  
-  `/set {option} -`  
-  Retrieve or change specific configuration options, like a tech-savvy wizard.
-  - use `-` as `{value}` to restore the option to default.
-  - some options need a game or level re-launch to apply.
-  - option names use `-`, not `_`, because reasons.
-
-- `/music {track_id}`  
-  Plays a music track by its ID. Perfect for setting the mood at will.
-
-- `/sfx`  
-  `/sfx {sound}`  
-  Plays a sound effect on demand. Because sometimes you just need Lara to grunt on cue.
+## Miscellaneous commands
 
 - `/strings`  
   Reloads the current language files on the fly. Très utile for translators.
