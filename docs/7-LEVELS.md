@@ -1,3 +1,9 @@
+---
+title: Level reference
+---
+
+# Level reference
+
 ## Tomb Raider I
 
 | #  | Title                  | File           | Pickups               | Kills                 | Secrets         | Save Crystals |
