@@ -11,6 +11,7 @@
 #include <libtrx/gfx/3d/3d_renderer.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
+#include <libtrx/vector.h>
 
 #define M_MAKE_DEPTH_FROM_RHW(rhw) (g_FltResZBuf - g_FltResZORhw * (rhw))
 #define M_MAKE_DEPTH(v) M_MAKE_DEPTH_FROM_RHW((v)->rhw)
@@ -25,11 +26,15 @@ typedef enum {
 } POLY_HWR_TYPE;
 
 typedef struct {
+    int32_t id;
+    GFX_2D_SURFACE *surface;
+} M_TEXTURE;
+
+typedef struct {
     GFX_2D_RENDERER *renderer_2d;
     GFX_3D_RENDERER *renderer_3d;
     GFX_2D_SURFACE *surface_pic;
-    GFX_2D_SURFACE *surface_tex[GFX_MAX_TEXTURES];
-    int32_t texture_map[GFX_MAX_TEXTURES];
+    VECTOR *textures;
     int32_t current_texture;
 } M_PRIV;
 
@@ -185,11 +190,12 @@ static void M_ShadeLightColor(
 static void M_ReleaseTextures(RENDERER *const renderer)
 {
     M_PRIV *const priv = renderer->priv;
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (priv->texture_map[i] != GFX_NO_TEXTURE) {
+    for (int32_t i = 0; i < priv->textures->count; i++) {
+        M_TEXTURE *const texture = Vector_Get(priv->textures, i);
+        if (texture->id != GFX_NO_TEXTURE) {
             GFX_3D_Renderer_UnregisterTexturePage(
-                priv->renderer_3d, priv->texture_map[i]);
-            priv->texture_map[i] = GFX_NO_TEXTURE;
+                priv->renderer_3d, texture->id);
+            texture->id = GFX_NO_TEXTURE;
         }
     }
 }
@@ -203,14 +209,26 @@ static void M_LoadTexturePages(RENDERER *renderer)
 
     const int32_t pages_count = Output_GetTexturePageCount();
     for (int32_t i = 0; i < pages_count; i++) {
-        GFX_2D_SURFACE *const surface = priv->surface_tex[i];
+        if (priv->textures->count <= i) {
+            Vector_Add(
+                priv->textures,
+                &(M_TEXTURE) { .surface = nullptr, .id = GFX_NO_TEXTURE });
+        }
+        M_TEXTURE *const texture = Vector_Get(priv->textures, i);
+        if (texture->surface == nullptr) {
+            GFX_2D_SURFACE_DESC surface_desc = {
+                .width = TEXTURE_PAGE_WIDTH,
+                .height = TEXTURE_PAGE_HEIGHT,
+            };
+            texture->surface = GFX_2D_Surface_Create(&surface_desc);
+        }
         const RGBA_8888 *input_ptr = Output_GetTexturePage32(i);
-        RGBA_8888 *output_ptr = (RGBA_8888 *)surface->buffer;
+        RGBA_8888 *output_ptr = (RGBA_8888 *)texture->surface->buffer;
         memcpy(output_ptr, input_ptr, TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
 
-        priv->texture_map[i] = GFX_3D_Renderer_RegisterTexturePage(
-            priv->renderer_3d, surface->buffer, surface->desc.width,
-            surface->desc.height);
+        texture->id = GFX_3D_Renderer_RegisterTexturePage(
+            priv->renderer_3d, texture->surface->buffer,
+            texture->surface->desc.width, texture->surface->desc.height);
     }
 }
 
@@ -225,9 +243,9 @@ static void M_SelectTexture(RENDERER *const renderer, const int32_t tex_source)
         GFX_3D_Renderer_SetTexturingEnabled(priv->renderer_3d, false);
     } else if (tex_source != priv->current_texture) {
         priv->current_texture = tex_source;
+        const M_TEXTURE *const texture = Vector_Get(priv->textures, tex_source);
         GFX_3D_Renderer_SetTexturingEnabled(priv->renderer_3d, true);
-        GFX_3D_Renderer_SelectTexture(
-            priv->renderer_3d, priv->texture_map[tex_source]);
+        GFX_3D_Renderer_SelectTexture(priv->renderer_3d, texture->id);
     }
 }
 
@@ -1235,10 +1253,7 @@ static void M_Init(RENDERER *const renderer)
     priv->renderer_2d = GFX_2D_Renderer_Create();
     priv->renderer_3d = GFX_3D_Renderer_Create();
     priv->current_texture = -1;
-
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        priv->texture_map[i] = GFX_NO_TEXTURE;
-    }
+    priv->textures = Vector_Create(sizeof(M_TEXTURE));
 
     renderer->initialized = true;
     renderer->priv = priv;
@@ -1262,6 +1277,11 @@ static void M_Shutdown(RENDERER *const renderer)
         priv->renderer_3d = nullptr;
     }
 
+    if (priv->textures == nullptr) {
+        Vector_Free(priv->textures);
+        priv->textures = nullptr;
+    }
+
     renderer->initialized = false;
 }
 
@@ -1278,16 +1298,6 @@ static void M_Open(RENDERER *const renderer)
 
     memset(m_HWR_VertexBuffer, 0, sizeof(m_HWR_VertexBuffer));
 
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (priv->surface_tex[i] == nullptr) {
-            GFX_2D_SURFACE_DESC surface_desc = {
-                .width = TEXTURE_PAGE_WIDTH,
-                .height = TEXTURE_PAGE_HEIGHT,
-            };
-            priv->surface_tex[i] = GFX_2D_Surface_Create(&surface_desc);
-        }
-    }
-
     M_LoadTexturePages(renderer);
     renderer->open = true;
 }
@@ -1303,10 +1313,11 @@ static void M_Close(RENDERER *const renderer)
         GFX_2D_Surface_Free(priv->surface_pic);
         priv->surface_pic = nullptr;
     }
-    for (int32_t i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (priv->surface_tex[i] != nullptr) {
-            GFX_2D_Surface_Free(priv->surface_tex[i]);
-            priv->surface_tex[i] = nullptr;
+    for (int32_t i = 0; i < priv->textures->count; i++) {
+        M_TEXTURE *const texture = Vector_Get(priv->textures, i);
+        if (texture->surface != nullptr) {
+            GFX_2D_Surface_Free(texture->surface);
+            texture->surface = nullptr;
         }
     }
 

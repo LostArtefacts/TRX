@@ -10,7 +10,6 @@
 
 #include <GL/glew.h>
 
-#define GFX_MAX_TEXTURES 128
 #define GFX_NO_TEXTURE (-1)
 #define GFX_ENV_MAP_TEXTURE (-2)
 
