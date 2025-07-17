@@ -339,6 +339,7 @@ static void M_CollisionControlled(
             && lara_item->current_anim_state == LS_PICKUP) {
             if (Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
                 M_GetAllAtLaraPos(item, lara_item);
+                g_Lara.interact_target.item_num = NO_ITEM;
             }
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
@@ -373,6 +374,7 @@ static void M_CollisionControlled(
             && Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
             M_GetAllAtLaraPos(item, lara_item);
             g_Lara.gun_status = LGS_ARMLESS;
+            g_Lara.interact_target.item_num = NO_ITEM;
         }
     }
     item->rot.x = rotx;
