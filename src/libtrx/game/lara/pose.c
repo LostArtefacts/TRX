@@ -11,9 +11,11 @@
 #include "memory.h"
 #include "vector.h"
 
+#define M_NO_POSE (-1)
+
 static const char *const m_Path = "cfg/poses.json5";
 static VECTOR *m_Poses = nullptr;
-static int32_t m_ActivePose = -1;
+static int32_t m_ActivePose = M_NO_POSE;
 
 static bool M_ReadXYZ16(JSON_VALUE *value, XYZ_16 *target);
 static void M_LoadPoses(void);
@@ -132,10 +134,10 @@ bool Lara_Pose_IsAvailable(void)
 
 void Lara_Pose_Clear(void)
 {
-    if (m_ActivePose != -1) {
+    if (m_ActivePose != M_NO_POSE) {
         LOG_DEBUG("Clearing Lara's pose");
     }
-    m_ActivePose = -1;
+    m_ActivePose = M_NO_POSE;
 }
 
 void Lara_Pose_Cycle(const int32_t dir)
@@ -143,12 +145,13 @@ void Lara_Pose_Cycle(const int32_t dir)
     if (!Lara_Pose_IsAvailable()) {
         return;
     }
-    if (m_ActivePose < 0) {
-        m_ActivePose = 0;
+    if (m_ActivePose == M_NO_POSE) {
+        m_ActivePose = (dir > 0) ? 0 : m_Poses->count - 1;
+    } else {
+        m_ActivePose += dir;
+        m_ActivePose += m_Poses->count;
+        m_ActivePose %= m_Poses->count;
     }
-    m_ActivePose += dir;
-    m_ActivePose += m_Poses->count;
-    m_ActivePose %= m_Poses->count;
 
     LOG_DEBUG("Active Lara pose: %d", m_ActivePose);
     Lara_Hair_Control(true);
@@ -157,7 +160,7 @@ void Lara_Pose_Cycle(const int32_t dir)
 
 const LARA_POSE *Lara_Pose_Get(void)
 {
-    if (m_ActivePose < 0) {
+    if (m_ActivePose == M_NO_POSE) {
         return nullptr;
     }
     return Vector_Get(m_Poses, m_ActivePose);
