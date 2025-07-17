@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...develop) - ××××-××-××
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 1.3)
+- fixed Lara's arms being drawn inaccurately when posing in photo mode with dual weapons equipped (#3520, regression from 1.3)
 
 ## [1.3](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.2...tr2-1.3) - 2025-07-14
 Showcase: https://youtu.be/C9Nf4j05u_w

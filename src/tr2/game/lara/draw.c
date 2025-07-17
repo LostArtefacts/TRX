@@ -132,8 +132,10 @@ void Lara_Draw(const ITEM *const item)
     }
 
     LARA_GUN_TYPE gun_type = LGT_UNARMED;
-    if (g_Lara.gun_status == LGS_READY || g_Lara.gun_status == LGS_SPECIAL
-        || g_Lara.gun_status == LGS_DRAW || g_Lara.gun_status == LGS_UNDRAW) {
+    if (pose == nullptr
+        && (g_Lara.gun_status == LGS_READY || g_Lara.gun_status == LGS_SPECIAL
+            || g_Lara.gun_status == LGS_DRAW
+            || g_Lara.gun_status == LGS_UNDRAW)) {
         gun_type = g_Lara.gun_type;
     }
 
