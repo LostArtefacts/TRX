@@ -175,11 +175,12 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
         break;
     }
 
+    // Test block destination sector.
     int32_t x = item->pos.x + x_add;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z + z_add;
-
     int16_t room_num = item->room_num;
+
     const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
@@ -197,6 +198,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
         return false;
     }
 
+    // Test Lara destination sector.
     x += x_add;
     z += z_add;
     room_num = item->room_num;
