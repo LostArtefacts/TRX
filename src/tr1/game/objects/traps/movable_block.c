@@ -40,7 +40,7 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height);
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
-static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
+static bool M_TestDeathCollision(const ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
@@ -225,7 +225,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
     return true;
 }
 
-static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
+static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
 {
     return g_GameFlow.enable_killer_pushblocks
         && !g_Config.debug.enable_invulnerability && item->gravity
