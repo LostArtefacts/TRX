@@ -37,6 +37,8 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static bool M_IsAgainstFloor(const ITEM *item);
+static bool M_IsAgainstCeiling(const ITEM *item);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
@@ -46,7 +48,8 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
 static bool M_TestDestination(ITEM *item, int32_t block_height);
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
-static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
+static bool M_TestDeathCollision(const ITEM *item, const ITEM *lara);
+static bool M_TestEmbedCollision(const ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
@@ -57,6 +60,23 @@ static void M_Draw(const ITEM *item);
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MovableBlock_Bounds;
+}
+
+static bool M_IsAgainstFloor(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    return sector->floor.tilt == 0 && sector->floor.height == item->pos.y;
+}
+
+static bool M_IsAgainstCeiling(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    return sector->ceiling.tilt == 0
+        && sector->ceiling.height == item->pos.y - WALL_L;
 }
 
 static int16_t M_GetFloorHeight(
@@ -76,6 +96,22 @@ static int16_t M_GetFloorHeight(
     // Only care if we are inside the block footprint.
     if (!M_IsItemOnTop(item, x, z)) {
         return height;
+    }
+
+    // If partially embedded from below e.g. jumping up into an overhead block.
+    if (y <= item->pos.y && y > item->pos.y - WALL_L
+        && M_IsAgainstCeiling(item)) {
+        const SECTOR *const sector = Room_GetWorldSector(
+            Room_Get(item->room_num), item->pos.x, item->pos.z);
+        if (item->pos.y < sector->floor.height) {
+            // If partially embedded from below e.g. jumping up into an overhead
+            // block.
+            return height;
+        } else if (M_IsAgainstFloor(item)) {
+            // Clamped between floor and ceiling. Match up with similar case in
+            // M_GetCeilingHeight to return same sentinel value;
+            return item->pos.y - WALL_L;
+        }
     }
 
     // If under the bottom of the block.
@@ -108,6 +144,15 @@ static int16_t M_GetCeilingHeight(
         return height;
     }
 
+    if (y <= item->pos.y && y > item->pos.y - WALL_L && !item->gravity) {
+        if (M_IsAgainstCeiling(item)) {
+            // If clamped betwee floor and ceiling return same sentinel value as
+            // M_GetFloorHeight.
+            return M_IsAgainstFloor(item) ? item->pos.y - WALL_L : item->pos.y;
+        }
+        return height;
+    }
+
     // If above the top of the block.
     if (y <= item->pos.y - WALL_L) {
         return height;
@@ -118,7 +163,7 @@ static int16_t M_GetCeilingHeight(
         return height;
     }
 
-    return item->pos.y + STEP_L;
+    return item->pos.y;
 }
 
 static bool M_IsItemOnTop(
@@ -308,7 +353,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
     return true;
 }
 
-static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
+static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
 {
     // TODO Falling blocks are not always killing Lara because
     // !Lara_TestBoundsCollide.
@@ -319,6 +364,16 @@ static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
     return g_GameFlow.enable_killer_pushblocks
         && !g_Config.debug.enable_invulnerability && item->gravity
         && Lara_TestBoundsCollide(item, 0);
+}
+
+static bool M_TestEmbedCollision(const ITEM *const item, const ITEM *const lara)
+{
+    return M_IsItemOnTop(item, lara->pos.x, lara->pos.z)
+        && lara->pos.y <= item->pos.y && lara->pos.y > item->pos.y - WALL_L
+        && !item->gravity && !lara->gravity
+        && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL
+        && lara->current_anim_state != LS_PULL_BLOCK
+        && lara->current_anim_state != LS_PUSH_BLOCK;
 }
 
 static void M_KillLara(const ITEM *const item, ITEM *const lara)
@@ -515,6 +570,10 @@ static void M_Collision(
     if (M_TestDeathCollision(item, lara_item)) {
         M_KillLara(item, lara_item);
         return;
+    }
+
+    if (M_TestEmbedCollision(item, lara_item)) {
+        lara_item->pos.y = item->pos.y - WALL_L;
     }
 
     if (item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
