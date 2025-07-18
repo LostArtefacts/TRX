@@ -59,4 +59,8 @@ void Game_Draw(bool draw_overlay)
         Lara_Hair_Draw();
         Output_FlushTranslucentObjects();
     }
+
+    Output_DrawPolyList();
+    Game_DrawFade();
+    Output_DrawPolyList();
 }

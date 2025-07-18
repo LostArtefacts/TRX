@@ -1,5 +1,7 @@
 #include "game/game.h"
 
+#include "game/const.h"
+#include "game/fader.h"
 #include "game/fmv.h"
 #include "game/game_flow.h"
 #include "game/lara/common.h"
@@ -9,6 +11,7 @@ static bool m_IsPlaying = false;
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GAME_BONUS_FLAG m_BonusFlag = GBF_NONE;
 static bool m_IsLevelComplete = false;
+static FADER m_Fader;
 
 void Game_SetIsPlaying(const bool is_playing)
 {
@@ -92,4 +95,15 @@ void Game_SetIsLevelComplete(const bool is_complete)
 bool Game_IsLevelComplete(void)
 {
     return m_IsLevelComplete;
+}
+
+void Game_FadeToBlack(const int32_t duration)
+{
+    Fader_Init(
+        &m_Fader, FADER_TRANSPARENT, FADER_BLACK, duration / (float)LOGIC_FPS);
+}
+
+void Game_DrawFade(void)
+{
+    Fader_Draw(&m_Fader);
 }

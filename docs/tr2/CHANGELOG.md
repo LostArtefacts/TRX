@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
 - added German translation
+- added PS1 fade-out to final cutscene (#3521)
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 
