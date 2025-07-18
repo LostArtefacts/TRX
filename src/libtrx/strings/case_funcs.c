@@ -1,6 +1,7 @@
 #include "memory.h"
 #include "strings.h"
 
+#include <ctype.h>
 #include <string.h>
 
 // Mapping of lowercase to uppercase characters beyond ASCII.
@@ -75,4 +76,25 @@ char *String_ToUpper(const char *const text)
 
     *dest = '\0';
     return upper_text;
+}
+
+char *String_ToUpperPattern(const char *const pattern)
+{
+    char *const upper_pattern = Memory_DupStr(pattern);
+    char *q = upper_pattern;
+    while (*q != '\0') {
+        if (*q == '%') {
+            q++;
+            while (*q != '\0' && !strchr("diouxXfFeEgGaAcspn%", *q)) {
+                q++;
+            }
+            if (*q != '\0') {
+                q++;
+            }
+        } else {
+            *q = (char)toupper((unsigned char)*q);
+            q++;
+        }
+    }
+    return upper_pattern;
 }

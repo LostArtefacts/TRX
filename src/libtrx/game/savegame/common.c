@@ -12,6 +12,7 @@
 #include "game/pathing/lot.h"
 #include "game/savegame.h"
 #include "memory.h"
+#include "strings.h"
 
 #define MAX_STRATEGIES 2
 #define SAVES_DIR "saves"
@@ -93,21 +94,27 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
             continue;
         }
 
+        char *file_name_ci = String_ToUpper(file_name);
         for (int32_t i = 0; i < m_StrategyCount; i++) {
             const SAVEGAME_STRATEGY strategy = m_Strategies[i];
             if (!strategy.allow_load) {
                 continue;
             }
 
+            const char *const pattern = strategy.get_save_file_pattern_func();
+            char *pattern_ci = String_ToUpperPattern(pattern);
+
             int32_t slot = -1;
-            const int32_t parsed =
-                sscanf(file_name, strategy.get_save_file_pattern_func(), &slot);
+            const int32_t parsed = sscanf(file_name_ci, pattern_ci, &slot);
+            Memory_FreePointer(&pattern_ci);
+
             if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
                 char *file_path = String_Format("%s/%s", dir_path, file_name);
                 M_FillSlot(strategy, slot, file_path);
                 Memory_FreePointer(&file_path);
             }
         }
+        Memory_FreePointer(&file_name_ci);
     }
 
     File_CloseDirectory(dir_handle);
