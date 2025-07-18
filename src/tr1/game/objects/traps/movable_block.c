@@ -37,7 +37,7 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
-static bool M_TestDestination(ITEM *item, int32_t block_height);
+static bool M_TestCurrentSector(ITEM *item, int32_t block_height);
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
@@ -81,16 +81,19 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
     return false;
 }
 
-static bool M_TestDestination(ITEM *item, int32_t block_height)
+static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+
+    // Check if there is a hard wall above.
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
         == NO_HEIGHT) {
         return true;
     }
 
+    // Make sure there is nothing on top of the block.
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
         != item->pos.y - block_height) {
         return false;
@@ -101,7 +104,7 @@ static bool M_TestDestination(ITEM *item, int32_t block_height)
 
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
-    if (!M_TestDestination(item, block_height)) {
+    if (!M_TestCurrentSector(item, block_height)) {
         return false;
     }
 
@@ -149,7 +152,7 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
 
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
-    if (!M_TestDestination(item, block_height)) {
+    if (!M_TestCurrentSector(item, block_height)) {
         return false;
     }
 
