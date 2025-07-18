@@ -2,6 +2,7 @@
 - added German translation
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
+- fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 4.9)
 
 ## [4.13.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.13...tr1-4.13.1) - 2025-07-18
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 4.13)
