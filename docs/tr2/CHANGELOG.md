@@ -1,7 +1,9 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
 - added German translation
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
+
+## [1.3.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...tr2-1.3.1) - 2025-07-18
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 1.3)
 - fixed Lara's arms being drawn inaccurately when posing in photo mode with dual weapons equipped (#3520, regression from 1.3)
 - fixed Lara's hair at times becoming detached when posing in photo mode with the M16 equipped (#3525, regression from 1.3)
