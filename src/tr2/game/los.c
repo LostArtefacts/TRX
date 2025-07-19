@@ -312,7 +312,8 @@ int32_t LOS_CheckSmashable(
         if (item->status == IS_DEACTIVATED) {
             continue;
         }
-        if (!Object_IsType(item->object_id, g_SmashableObjects)) {
+        if (!Object_IsType(item->object_id, g_SmashableObjects)
+            && !Object_IsType(item->object_id, g_ShatterableObjects)) {
             continue;
         }
 
