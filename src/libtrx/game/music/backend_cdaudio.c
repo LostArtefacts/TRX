@@ -126,6 +126,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
         LOG_ERROR("Failed to parse CDAudio data");
         return false;
     }
+    File_Close(fp);
 
     return true;
 }
