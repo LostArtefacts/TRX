@@ -7,6 +7,7 @@
 #define AUDIO_MAX_SAMPLES 1000
 #define AUDIO_MAX_ACTIVE_SAMPLES 50
 #define AUDIO_MAX_ACTIVE_STREAMS 10
+#define AUDIO_DRIFT_THRESHOLD 0.2
 #define AUDIO_NO_SOUND (-1)
 
 bool Audio_Init(void);
