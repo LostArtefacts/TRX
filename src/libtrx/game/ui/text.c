@@ -492,7 +492,7 @@ void UI_InitText(void)
 
     // Create dynamic glyphs for "{key <role>}" tokens; resolution happens when
     // drawing/wrapping
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; ++role) {
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         const char *role_str =
             EnumMap_ToString(ENUM_MAP_NAME(INPUT_ROLE), role);
         if (role_str == nullptr || *role_str == '\0') {
@@ -522,6 +522,7 @@ void UI_ShutdownText(void)
         {
             if (current->glyph->role == GLYPH_INPUT) {
                 Memory_FreePointer(&current->glyph->text);
+                Memory_FreePointer(&current->glyph);
             }
             HASH_DEL(m_GlyphMap, current);
             Memory_Free(current);
