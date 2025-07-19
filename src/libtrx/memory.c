@@ -22,6 +22,11 @@ static MEMORY_ARENA_CHUNK *M_ArenaAllocChunk(
     return new_chunk;
 }
 
+size_t Memory_Align(const size_t size)
+{
+    return (size + 7) & ~7;
+}
+
 void *Memory_Alloc(const size_t size)
 {
     void *result = malloc(size);

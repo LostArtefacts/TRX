@@ -20,6 +20,9 @@ typedef struct {
     size_t default_chunk_size;
 } MEMORY_ARENA_ALLOCATOR;
 
+// Align byte count to the platform-specific pointer size.
+size_t Memory_Align(size_t size);
+
 // Allocate n bytes. In case the memory allocation fails, shows an error to the
 // user and exits the application. The allocated memory is filled with zeros.
 void *Memory_Alloc(size_t size);

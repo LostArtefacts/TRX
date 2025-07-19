@@ -95,11 +95,12 @@ static void M_DrawNode(const UI_NODE *const node)
 UI_NODE *UI_AllocNode(
     const UI_WIDGET_OPS *const ops, const size_t additional_size)
 {
-    const size_t size = sizeof(UI_NODE) + additional_size;
+    const size_t size =
+        Memory_Align(sizeof(UI_NODE)) + Memory_Align(additional_size);
     UI_NODE *const node = Memory_ArenaAlloc(&m_Priv.alloc, size);
     memset(node, 0, size);
     node->ops = ops;
-    node->data = (char *)node + sizeof(UI_NODE);
+    node->data = (char *)node + Memory_Align(sizeof(UI_NODE));
     return node;
 }
 
