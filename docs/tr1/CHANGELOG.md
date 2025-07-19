@@ -7,6 +7,7 @@
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 4.9)
 - fixed drawing UI text with bilinear filter and PS1 UI (#3548, regression from 4.13)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 4.13)
+- fixed the first camera frame when starting or loading a level being inaccurate (#3537, regression from 4.12.3)
 - improved object loading error messages when an invalid object ID is detected
 
 ## [4.13.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.13...tr1-4.13.1) - 2025-07-18
