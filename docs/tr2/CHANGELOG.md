@@ -4,6 +4,7 @@
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
+- fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 1.3)
 
 ## [1.3.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...tr2-1.3.1) - 2025-07-18
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 1.3)
