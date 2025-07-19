@@ -782,8 +782,11 @@ void Output_DrawScreenSprite(
     const int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth(VIEWPORT_UI)
         && y0 < Viewport_GetHeight(VIEWPORT_UI)) {
+        GFX_3D_Renderer_SetBlendingMode(
+            m_Renderer3D, GFX_BLEND_MODE_PRE_MULTIPLIED);
         M_DrawSprite(
             x0, y0, x1, y1, Output_GetNearZ() + 200, sprite_idx, shade);
+        GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
     }
 }
 
