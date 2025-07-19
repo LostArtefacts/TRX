@@ -4,6 +4,7 @@
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 1.3)
 - fixed harpoons disappearing if used near inactive/invisible enemies (#3546, regression from 1.3)
+- fixed the first camera frame when starting or loading a level being inaccurate (#3537, regression from 1.2.2)
 
 ## [1.3.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...tr2-1.3.1) - 2025-07-18
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 1.3)
