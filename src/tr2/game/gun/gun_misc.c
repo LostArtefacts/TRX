@@ -207,15 +207,20 @@ int32_t Gun_FireWeapon(
 bool Gun_SmashItems(const GAME_VECTOR start, const GAME_VECTOR target)
 {
     bool broken = false;
-    int16_t last_item = NO_ITEM;
+    int16_t last_item_num = NO_ITEM;
     while (true) {
-        const int16_t item_to_smash = LOS_CheckSmashable(&start, &target);
-        if (item_to_smash == NO_ITEM || item_to_smash == last_item) {
+        const int16_t item_num = LOS_CheckSmashable(&start, &target);
+        if (item_num == NO_ITEM || item_num == last_item_num) {
             break;
         }
-        last_item = item_to_smash;
-        M_SmashItem(item_to_smash);
+        last_item_num = item_num;
+        M_SmashItem(item_num);
         broken = true;
+
+        const ITEM *const item = Item_Get(item_num);
+        if (item->object_id == O_BELL) {
+            break;
+        }
     }
     return broken;
 }

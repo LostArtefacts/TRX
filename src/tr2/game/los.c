@@ -301,6 +301,8 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
 int32_t LOS_CheckSmashable(
     const GAME_VECTOR *const start, const GAME_VECTOR *const target)
 {
+    int32_t best_dist;
+    int16_t best_item_num = NO_ITEM;
     const int32_t dx = target->x - start->x;
     const int32_t dy = target->y - start->y;
     const int32_t dz = target->z - start->z;
@@ -387,7 +389,12 @@ int32_t LOS_CheckSmashable(
         }
 
         // Ray segment intersects the object's local AABB
-        return item_num;
+        const int32_t dist = Item_GetDistance(item, &start->pos);
+        if (best_item_num == NO_ITEM || dist < best_dist) {
+            best_dist = dist;
+            best_item_num = item_num;
+        }
     }
-    return NO_ITEM;
+
+    return best_item_num;
 }
