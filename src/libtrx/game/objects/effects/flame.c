@@ -26,6 +26,10 @@ static void M_Control(int16_t effect_num);
 
 static void M_DoEffects(const EFFECT *const effect)
 {
+    if (!Object_Get(O_FLAME)->loaded) {
+        return;
+    }
+
     Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_ALWAYS);
     if (!g_Config.visuals.enable_fire_lighting) {
         return;
