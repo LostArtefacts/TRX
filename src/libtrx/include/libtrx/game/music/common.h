@@ -40,6 +40,9 @@ double Music_GetTimestamp(void);
 // Seek to timestamp of current stream.
 bool Music_SeekTimestamp(double timestamp);
 
+// Seeks to the given timestamp if the drift is too big.
+bool Music_SyncTimestamp(double timestamp);
+
 // Returns the delayed track. Ignores looped tracks.
 MUSIC_TRACK_ID Music_GetDelayedTrack(void);
 

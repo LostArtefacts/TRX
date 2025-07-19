@@ -7,6 +7,7 @@
 #define AUDIO_MAX_SAMPLES 1000
 #define AUDIO_MAX_ACTIVE_SAMPLES 50
 #define AUDIO_MAX_ACTIVE_STREAMS 10
+#define AUDIO_DRIFT_THRESHOLD 0.2
 #define AUDIO_NO_SOUND (-1)
 
 bool Audio_Init(void);
@@ -23,6 +24,10 @@ bool Audio_Stream_Close(int32_t sound_id);
 bool Audio_Stream_IsLooped(int32_t sound_id);
 bool Audio_Stream_SetVolume(int32_t sound_id, float volume);
 bool Audio_Stream_SetIsLooped(int32_t sound_id, bool is_looped);
+
+// Sync the audio against specific timestamp (seek if the drift is too large).
+bool Audio_Stream_SyncTimestamp(int32_t sound_id, double timestamp);
+
 bool Audio_Stream_SetFinishCallback(
     int32_t sound_id, void (*callback)(int32_t sound_id, void *user_data),
     void *user_data);

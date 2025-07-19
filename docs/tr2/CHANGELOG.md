@@ -3,6 +3,7 @@
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - changed the texture page limit from 128 to unlimited (#3517)
+- fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 1.3)
