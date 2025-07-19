@@ -169,9 +169,9 @@ static void M_Render(GFX_RENDERER *renderer)
     // Composite geometry FBO (opaque)
     M_Blit(p, &p->geometry_fbo);
 
-    // Composite UI FBO (with alpha blending)
+    // Composite UI FBO (with premultiplied alpha blending)
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     M_Blit(p, &p->ui_fbo);
     glDisable(GL_BLEND);
 
