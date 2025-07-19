@@ -154,9 +154,15 @@ const GAME_OBJECT_ID g_SecretObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SmashableObjects[] = {
+const GAME_OBJECT_ID g_ShatterableObjects[] = {
     // clang-format off
     O_WINDOW_1,
+    NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_SmashableObjects[] = {
+    // clang-format off
     O_BELL,
     NO_OBJECT,
     // clang-format on

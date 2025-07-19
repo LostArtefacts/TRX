@@ -3,6 +3,7 @@
 #include "game/gun/gun.h"
 #include "game/los.h"
 #include "game/objects/general/window.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/spawn.h"
@@ -181,7 +182,8 @@ int32_t Gun_FireWeapon(
         hit_pos.room_num =
             Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
         const bool object_on_los = LOS_Check(&start, &hit_pos);
-        if (!Gun_SmashItems(start, hit_pos) && !object_on_los) {
+        if (Gun_SmashItems(start, hit_pos) == PROJECTILE_HIT_NONE
+            && !object_on_los) {
             Spawn_Ricochet(&hit_pos);
         }
         return -1;
@@ -204,9 +206,9 @@ int32_t Gun_FireWeapon(
     }
 }
 
-bool Gun_SmashItems(const GAME_VECTOR start, const GAME_VECTOR target)
+PROJECTILE_HIT Gun_SmashItems(const GAME_VECTOR start, const GAME_VECTOR target)
 {
-    bool broken = false;
+    int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;
     while (true) {
         const int16_t item_num = LOS_CheckSmashable(&start, &target);
@@ -215,14 +217,14 @@ bool Gun_SmashItems(const GAME_VECTOR start, const GAME_VECTOR target)
         }
         last_item_num = item_num;
         M_SmashItem(item_num);
-        broken = true;
+        hits++;
 
         const ITEM *const item = Item_Get(item_num);
-        if (item->object_id == O_BELL) {
-            break;
+        if (Object_IsType(item->object_id, g_SmashableObjects)) {
+            return PROJECTILE_HIT_STOP;
         }
     }
-    return broken;
+    return hits > 0 ? PROJECTILE_HIT_SHATTER : PROJECTILE_HIT_NONE;
 }
 
 void Gun_HitTarget(

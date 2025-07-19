@@ -3,10 +3,11 @@
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - changed the texture page limit from 128 to unlimited (#3517)
-- changed projectiles to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378)
+- changed projectiles to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
-- fixed projectiles sometimes not shattering breakable windows (#3378)
+- fixed harpoons/grenades having no effect on bells (#3379)
+- fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 - fixed sprites having thick borders depending on viewing angle (#3549, regression from 1.3)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
