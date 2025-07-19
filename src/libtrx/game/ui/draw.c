@@ -173,7 +173,7 @@ void UI_InitDraw(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->ops == nullptr) {
-        p->ops = Vector_Create(sizeof(M_DRAW_OP));
+        p->ops = Vector_Create(sizeof(M_DRAW_OP *));
     }
 }
 
