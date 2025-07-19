@@ -282,6 +282,14 @@ bool Music_SeekTimestamp(const double timestamp)
     return Audio_Stream_SeekTimestamp(m_AudioStreamID, timestamp);
 }
 
+bool Music_SyncTimestamp(const double timestamp)
+{
+    if (m_AudioStreamID < 0) {
+        return false;
+    }
+    return Audio_Stream_SyncTimestamp(m_AudioStreamID, timestamp);
+}
+
 MUSIC_TRACK_ID Music_GetDelayedTrack(void)
 {
     return m_TrackDelayed;

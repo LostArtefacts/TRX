@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
 - added German translation
 - changed the texture page limit from 128 to unlimited (#3517)
+- fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 
 ## [1.3.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...tr2-1.3.1) - 2025-07-18

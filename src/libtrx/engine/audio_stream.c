@@ -424,6 +424,26 @@ void Audio_Stream_Shutdown(void)
     }
 }
 
+bool Audio_Stream_SyncTimestamp(const int32_t sound_id, const double timestamp)
+{
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+        return false;
+    }
+
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    double drift = stream->timestamp - timestamp;
+    if (drift < 0) {
+        drift = -drift;
+    }
+    if (drift >= AUDIO_DRIFT_THRESHOLD) {
+        LOG_DEBUG("Detected audio drift: %f s", drift);
+        Audio_Stream_SeekTimestamp(sound_id, timestamp);
+        return true;
+    }
+    return false;
+}
+
 bool Audio_Stream_Pause(int32_t sound_id)
 {
     if (!g_AudioDeviceID || sound_id < 0
@@ -431,9 +451,10 @@ bool Audio_Stream_Pause(int32_t sound_id)
         return false;
     }
 
-    if (m_Streams[sound_id].is_playing) {
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    if (stream->is_playing) {
         SDL_LockAudioDevice(g_AudioDeviceID);
-        m_Streams[sound_id].is_playing = false;
+        stream->is_playing = false;
         SDL_UnlockAudioDevice(g_AudioDeviceID);
     }
 
@@ -447,9 +468,10 @@ bool Audio_Stream_Unpause(int32_t sound_id)
         return false;
     }
 
-    if (!m_Streams[sound_id].is_playing) {
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    if (!stream->is_playing) {
         SDL_LockAudioDevice(g_AudioDeviceID);
-        m_Streams[sound_id].is_playing = true;
+        stream->is_playing = true;
         SDL_UnlockAudioDevice(g_AudioDeviceID);
     }
 
@@ -596,7 +618,7 @@ void Audio_Stream_Mix(float *dst_buffer, size_t len)
 {
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
-        AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
+        AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
         if (!stream->is_playing) {
             continue;
         }

@@ -20,19 +20,6 @@
 
 static CAMERA_INFO m_LocalCamera = {};
 
-static void M_FixAudioDrift(void);
-
-static void M_FixAudioDrift(void)
-{
-    const int32_t audio_frame_idx = Music_GetTimestamp() * LOGIC_FPS;
-    const int32_t game_frame_idx = Camera_GetCineData()->frame_idx;
-    const int32_t audio_drift = ABS(audio_frame_idx - game_frame_idx);
-    if (audio_drift >= LOGIC_FPS * 0.2) {
-        LOG_DEBUG("Detected audio drift: %d frames", audio_drift);
-        Music_SeekTimestamp(game_frame_idx / (double)LOGIC_FPS);
-    }
-}
-
 bool Cutscene_Start(const int32_t level_num)
 {
     const GF_LEVEL *const level = GF_GetLevel(GFLT_CUTSCENES, level_num);
@@ -46,9 +33,7 @@ bool Cutscene_Start(const int32_t level_num)
     cine_data->frame_idx = 0;
 
     if (level->music_track != MX_INACTIVE) {
-        Music_Play(
-            level->music_track,
-            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
+        Music_Play(level->music_track, MPM_ALWAYS);
     }
 
     return true;
@@ -64,7 +49,7 @@ void Cutscene_End(void)
 GF_COMMAND Cutscene_Control(void)
 {
     Interpolation_Remember();
-    M_FixAudioDrift();
+    Music_SyncTimestamp(Camera_GetCineData()->frame_idx / (double)LOGIC_FPS);
 
     Input_Update();
     Shell_ProcessInput();
