@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
+- fixed sprites having thick borders depending on viewing angle (#3549, regression from 1.3)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 1.3)
 

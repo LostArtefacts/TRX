@@ -69,7 +69,7 @@ static void M_SwapBuffers(GFX_RENDERER *const renderer)
     GFX_Context_Clear();
 
     // Rebind geometry FBO for the next frame
-    GFX_GL_FBO_Bind(&p->geometry_fbo);
+    GFX_Renderer_BindGeometryFbo();
     GFX_Context_SwitchToViewport(VIEWPORT_GAME);
     GFX_Context_Clear();
 }
@@ -167,6 +167,7 @@ static void M_Render(GFX_RENDERER *renderer)
     GFX_GL_CheckError();
 
     // Composite geometry FBO (opaque)
+    glDisable(GL_BLEND);
     M_Blit(p, &p->geometry_fbo);
 
     // Composite UI FBO (with premultiplied alpha blending)
@@ -190,12 +191,12 @@ GFX_RENDERER g_GFX_Renderer = {
 
 void GFX_Renderer_BindGeometryFbo(void)
 {
-    M_CONTEXT *const priv = (M_CONTEXT *)g_GFX_Renderer.priv;
-    GFX_GL_FBO_Bind(&priv->geometry_fbo);
+    M_CONTEXT *const p = (M_CONTEXT *)g_GFX_Renderer.priv;
+    GFX_GL_FBO_Bind(&p->geometry_fbo);
 }
 
 void GFX_Renderer_BindUiFbo(void)
 {
-    M_CONTEXT *const priv = (M_CONTEXT *)g_GFX_Renderer.priv;
-    GFX_GL_FBO_Bind(&priv->ui_fbo);
+    M_CONTEXT *const p = (M_CONTEXT *)g_GFX_Renderer.priv;
+    GFX_GL_FBO_Bind(&p->ui_fbo);
 }
