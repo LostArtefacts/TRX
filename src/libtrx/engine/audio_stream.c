@@ -4,6 +4,7 @@
 #include "filesystem.h"
 #include "log.h"
 #include "memory.h"
+#include "utils.h"
 
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_error.h>
@@ -239,6 +240,9 @@ static bool M_EnqueueFrame(AUDIO_STREAM_SOUND *stream)
             break;
         }
 
+        ASSERT(stream->av.format_ctx != nullptr);
+        ASSERT(stream->av.codec_ctx != nullptr);
+        ASSERT(stream->av.stream != nullptr);
         double time_base_sec = av_q2d(stream->av.stream->time_base);
         stream->timestamp =
             stream->av.frame->best_effort_timestamp * time_base_sec;
@@ -432,7 +436,7 @@ bool Audio_Stream_SyncTimestamp(const int32_t sound_id, const double timestamp)
     }
 
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-    double drift = stream->timestamp - timestamp;
+    double drift = Audio_Stream_GetTimestamp(sound_id) - timestamp;
     if (drift < 0) {
         drift = -drift;
     }
@@ -678,7 +682,7 @@ double Audio_Stream_GetTimestamp(int32_t sound_id)
 
     if (stream->duration > 0.0) {
         SDL_LockAudioDevice(g_AudioDeviceID);
-        timestamp = stream->timestamp;
+        timestamp = stream->timestamp - MAX(stream->start_at, 0.0f);
         SDL_UnlockAudioDevice(g_AudioDeviceID);
     }
 
@@ -710,12 +714,8 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
     if (!stream->is_used) {
         return false;
     }
-    ASSERT(stream->av.format_ctx != nullptr);
-    ASSERT(stream->av.codec_ctx != nullptr);
-    ASSERT(stream->av.stream != nullptr);
 
     SDL_LockAudioDevice(g_AudioDeviceID);
-
     const double time_base_sec = av_q2d(stream->av.stream->time_base);
     if (time_base_sec <= 0.0) {
         LOG_ERROR(
@@ -725,13 +725,16 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
     }
 
     const int32_t stream_index = stream->av.stream->index;
-    const int64_t seek_target = (int64_t)(timestamp / time_base_sec);
+    const int64_t seek_target =
+        (int64_t)((MAX(0.0f, stream->start_at) + timestamp) / time_base_sec);
     const int32_t error_code = av_seek_frame(
         stream->av.format_ctx, stream_index, seek_target, AVSEEK_FLAG_ANY);
     if (error_code < 0) {
         LOG_ERROR(
             "seek failed for timestamp %f: %s", timestamp,
             av_err2str(error_code));
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        return false;
     }
 
     avcodec_flush_buffers(stream->av.codec_ctx);
@@ -739,7 +742,7 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
         SDL_AudioStreamFlush(stream->sdl.stream);
     }
 
-    stream->timestamp = timestamp;
+    stream->timestamp = timestamp + MAX(stream->start_at, 0.0f);
 
     SDL_UnlockAudioDevice(g_AudioDeviceID);
     return true;
