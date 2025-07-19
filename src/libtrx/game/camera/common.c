@@ -71,6 +71,7 @@ static const double m_ManualCameraMultiplier[11] = {
 
 static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
+static bool m_IsInitialised = false;
 #if TR_VERSION == 2
 // TODO: consolidate with Viewport API
 extern int32_t g_PhdPersp;
@@ -763,6 +764,7 @@ void Camera_SetChunky(const bool is_chunky)
 
 void Camera_Initialise(void)
 {
+    m_IsInitialised = false;
     Matrix_ResetStack();
     g_Camera.last = NO_CAMERA;
     g_Camera.underwater = false;
@@ -770,6 +772,8 @@ void Camera_Initialise(void)
 #if TR_VERSION == 2
     Viewport_AlterFOV(-1);
 #endif
+    Camera_Update();
+    m_IsInitialised = true;
 }
 
 void Camera_ResetPosition(void)
@@ -1091,7 +1095,9 @@ void Camera_Update(void)
 #endif
     }
     Camera_SetChunky(false);
-    Camera_EnsureEnvironment();
+    if (m_IsInitialised) {
+        Camera_EnsureEnvironment();
+    }
 }
 
 void Camera_UpdateMicPosition(void)
