@@ -3,6 +3,7 @@
 - added German translation
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
+- fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 4.9)
 - fixed drawing UI text with bilinear filter and PS1 UI (#3548, regression from 4.13)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 4.13)
