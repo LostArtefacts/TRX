@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
+- added ability to move Lara around in photo mode
 - added German translation
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
