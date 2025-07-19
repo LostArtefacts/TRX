@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
+- added ability to move Lara around in photo mode
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - changed the texture page limit from 128 to unlimited (#3517)

@@ -13,6 +13,9 @@
 #include <stdio.h>
 
 static bool M_HasIcon(INPUT_ROLE role);
+static void M_Title(PHOTO_MODE current_mode);
+static void M_Inputs(PHOTO_MODE current_mode);
+static void M_Actions(PHOTO_MODE current_mode);
 
 static bool M_HasIcon(const INPUT_ROLE role)
 {
@@ -22,30 +25,27 @@ static bool M_HasIcon(const INPUT_ROLE role)
         != nullptr;
 }
 
-void UI_PhotoMode(void)
+static void M_Title(const PHOTO_MODE current_mode)
 {
-    if (!g_Config.ui.enable_photo_mode_ui) {
-        return;
-    }
-
-    UI_BeginModal(0.0f, 0.0f);
-    UI_BeginPad(8.0f, 8.0f);
-    UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
-    UI_BeginPad(8.0, 6.0);
-
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .spacing = { .v = 8.0f },
-    });
-    UI_Label(GS(PHOTO_MODE_TITLE));
-
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
-        .spacing = { .h = 8.0f },
+        .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
+        .spacing = { .v = 8.0f },
     });
+    switch (current_mode) {
+    case PHOTO_MODE_CAMERA:
+        UI_Label(GS(PHOTO_MODE_TITLE_CAMERA_POS));
+        break;
+    case PHOTO_MODE_LARA_POS:
+        UI_Label(GS(PHOTO_MODE_TITLE_LARA_POS));
+        break;
+    }
+    UI_Label("\\{input step_left}\\{input step_right}");
+    UI_EndStack();
+}
 
-    // Inputs column
-    UI_BeginStack(UI_STACK_VERTICAL);
+static void M_Inputs(const PHOTO_MODE current_mode)
+{
     UI_Label(
         "\\{input camera_up}\\{input camera_down}"
         "\\{input camera_forward}\\{input camera_back}"
@@ -53,10 +53,11 @@ void UI_PhotoMode(void)
     UI_Label(
         "\\{input left}\\{input forward}"
         "\\{input back}\\{input right}");
-    UI_Label("\\{input step_left}\\{input step_right}");
+    UI_Label("\\{input slow}+\\{input camera_up}/\\{input camera_down}");
     UI_Label("\\{input roll}");
-    UI_Label("[\\{input slow}+]\\{input draw}");
     UI_Label("\\{input look}");
+
+    UI_Label("[\\{input slow}+]\\{input draw}");
     if (Lara_Pose_IsAvailable()) {
         UI_Label("[\\{input slow}+]\\{input fly_cheat}");
     }
@@ -72,26 +73,66 @@ void UI_PhotoMode(void)
     } else if (M_HasIcon(INPUT_ROLE_OPTION)) {
         UI_Label("\\{input option}");
     }
+}
 
-    UI_EndStack();
-
-    UI_Spacer(4.0f, 0.0f);
-
-    // Behaviors column
-    UI_BeginStack(UI_STACK_VERTICAL);
-    UI_Label(GS(PHOTO_MODE_MOVE_PROMPT));
-    UI_Label(GS(PHOTO_MODE_ROTATE_PROMPT));
-    UI_Label(GS(PHOTO_MODE_ROLL_PROMPT));
-    UI_Label(GS(PHOTO_MODE_ROTATE90_PROMPT));
+static void M_Actions(const PHOTO_MODE current_mode)
+{
+    switch (current_mode) {
+    case PHOTO_MODE_CAMERA:
+        UI_Label(GS(PHOTO_MODE_CAMERA_MOVE_PROMPT));
+        UI_Label(GS(PHOTO_MODE_CAMERA_ROTATE_PROMPT));
+        UI_Label(GS(PHOTO_MODE_CAMERA_ROLL_PROMPT));
+        UI_Label(GS(PHOTO_MODE_CAMERA_ROTATE_90_PROMPT));
+        UI_Label(GS(PHOTO_MODE_CAMERA_RESET_PROMPT));
+        break;
+    case PHOTO_MODE_LARA_POS:
+        UI_Label(GS(PHOTO_MODE_LARA_MOVE_PROMPT));
+        UI_Label(GS(PHOTO_MODE_LARA_ROTATE_PROMPT));
+        UI_Label(GS(PHOTO_MODE_LARA_ROLL_PROMPT));
+        UI_Label(GS(PHOTO_MODE_LARA_ROTATE_90_PROMPT));
+        UI_Label(GS(PHOTO_MODE_LARA_RESET_PROMPT));
+        break;
+    }
     UI_Label(GS(PHOTO_MODE_FOV_PROMPT));
-    UI_Label(GS(PHOTO_MODE_RESET_PROMPT));
     if (Lara_Pose_IsAvailable()) {
-        UI_Label(GS(PHOTO_MODE_CHANGE_POSE));
+        UI_Label(GS(PHOTO_MODE_CHANGE_LARA_POSE));
     }
     UI_Label(GS(PHOTO_MODE_ADVANCE_FRAME));
     UI_Label(GS(PHOTO_MODE_TOGGLE_HELP));
     UI_Label(GS(PHOTO_MODE_SNAP_PROMPT));
     UI_Label(GS(MISC_EXIT));
+}
+
+void UI_PhotoMode(const PHOTO_MODE current_mode)
+{
+    if (!g_Config.ui.enable_photo_mode_ui) {
+        return;
+    }
+
+    UI_BeginModal(0.0f, 0.0f);
+    UI_BeginPad(8.0f, 8.0f);
+    UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
+    UI_BeginPad(8.0, 6.0);
+
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+        .spacing = { .v = 8.0f },
+    });
+
+    M_Title(current_mode);
+
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_HORIZONTAL,
+        .spacing = { .h = 8.0f },
+    });
+
+    // Inputs column
+    UI_BeginStack(UI_STACK_VERTICAL);
+    M_Inputs(current_mode);
+    UI_EndStack();
+    UI_BeginStack(UI_STACK_VERTICAL);
+    M_Actions(current_mode);
     UI_EndStack();
 
     UI_EndStack();

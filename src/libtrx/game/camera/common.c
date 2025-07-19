@@ -928,7 +928,7 @@ void Camera_EnsureEnvironment(void)
 void Camera_Update(void)
 {
     if (g_Camera.type == CAM_PHOTO_MODE) {
-        Camera_UpdatePhotoMode();
+        Camera_PhotoMode_Update();
         Camera_EnsureEnvironment();
         return;
     }
