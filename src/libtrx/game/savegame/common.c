@@ -31,6 +31,7 @@ static int32_t m_BoundSlot = -1;
 static int32_t m_StrategyCount = 0;
 static SAVEGAME_STRATEGY m_Strategies[MAX_STRATEGIES];
 
+static void M_ClearSlot(SAVEGAME_INFO *savegame_info);
 static void M_ClearSlots(void);
 static bool M_FillSlot(
     SAVEGAME_STRATEGY strategy, int32_t slot_num, const char *path);
@@ -39,6 +40,15 @@ static void M_LoadPreprocess(void);
 static void M_LoadPostprocess(void);
 static void M_DetermineLegacyGunTypes(RESUME_INFO *resume);
 
+static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)
+{
+    savegame_info->format = SAVEGAME_FORMAT_INVALID;
+    savegame_info->counter = -1;
+    savegame_info->level_num = -1;
+    Memory_FreePointer(&savegame_info->full_path);
+    Memory_FreePointer(&savegame_info->level_title);
+}
+
 static void M_ClearSlots(void)
 {
     if (m_SavegameInfo == nullptr) {
@@ -46,12 +56,7 @@ static void M_ClearSlots(void)
     }
 
     for (int32_t i = 0; i < m_SaveSlots; i++) {
-        SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
-        savegame_info->format = SAVEGAME_FORMAT_INVALID;
-        savegame_info->counter = -1;
-        savegame_info->level_num = -1;
-        Memory_FreePointer(&savegame_info->full_path);
-        Memory_FreePointer(&savegame_info->level_title);
+        M_ClearSlot(&m_SavegameInfo[i]);
     }
 }
 
@@ -67,9 +72,11 @@ static bool M_FillSlot(
     bool result = false;
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
     if (fp != nullptr) {
-        if (strategy.fill_info_func(fp, savegame_info)) {
+        SAVEGAME_INFO tmp_savegame_info;
+        if (strategy.fill_info_func(fp, &tmp_savegame_info)) {
+            M_ClearSlot(savegame_info);
+            *savegame_info = tmp_savegame_info;
             savegame_info->format = strategy.format;
-            Memory_FreePointer(&savegame_info->full_path);
             savegame_info->full_path = Memory_DupStr(path);
             result = true;
         }
