@@ -19,11 +19,9 @@ static bool m_UUIDsParsed = false;
 
 static const char *m_ObjectUUIDStrings[O_NUMBER_OF] = {
 #undef OBJ_ID_DEFINE
-#define OBJ_ID_ALIAS_DEFINE(source_id, target_id)
 #define OBJ_ID_DEFINE(game_id, uuid_str, enum_value) [game_id] = uuid_str,
 #include "game/objects/ids.def"
 #undef OBJ_ID_DEFINE
-#undef OBJ_ID_ALIAS_DEFINE
 };
 
 static bool M_HexCharValue(char c, uint8_t *val);
