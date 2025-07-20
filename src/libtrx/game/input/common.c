@@ -53,17 +53,17 @@ static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
 
 static bool m_IsRoleNonUnbindable[INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
-    [INPUT_ROLE_UP]     = true,
-    [INPUT_ROLE_DOWN]   = true,
-    [INPUT_ROLE_LEFT]   = true,
-    [INPUT_ROLE_RIGHT]  = true,
-    [INPUT_ROLE_DRAW]   = true,
-    [INPUT_ROLE_ACTION] = true,
-    [INPUT_ROLE_JUMP]   = true,
-    [INPUT_ROLE_ROLL]   = true,
-    [INPUT_ROLE_LOOK]   = true,
-    [INPUT_ROLE_SLOW]   = true,
-    [INPUT_ROLE_OPTION] = true,
+    [INPUT_ROLE_UP]          = true,
+    [INPUT_ROLE_DOWN]        = true,
+    [INPUT_ROLE_LEFT]        = true,
+    [INPUT_ROLE_RIGHT]       = true,
+    [INPUT_ROLE_DRAW_WEAPON] = true,
+    [INPUT_ROLE_ACTION]      = true,
+    [INPUT_ROLE_JUMP]        = true,
+    [INPUT_ROLE_ROLL]        = true,
+    [INPUT_ROLE_LOOK]        = true,
+    [INPUT_ROLE_SLOW]        = true,
+    [INPUT_ROLE_INVENTORY]   = true,
     // clang-format on
 };
 
@@ -197,7 +197,7 @@ bool Input_ReadAndAssignRole(
             continue;
         }
         if (Input_IsPressedEx(other_backend, layout, INPUT_ROLE_MENU_BACK)
-            || Input_IsPressedEx(other_backend, layout, INPUT_ROLE_OPTION)) {
+            || Input_IsPressedEx(other_backend, layout, INPUT_ROLE_INVENTORY)) {
             return true;
         }
     }
@@ -257,15 +257,15 @@ bool Input_AssignFromJSONObject(
     case 1: role = INPUT_ROLE_DOWN; break;
     case 2: role = INPUT_ROLE_LEFT; break;
     case 3: role = INPUT_ROLE_RIGHT; break;
-    case 4: role = INPUT_ROLE_STEP_L; break;
-    case 5: role = INPUT_ROLE_STEP_R; break;
+    case 4: role = INPUT_ROLE_STEP_LEFT; break;
+    case 5: role = INPUT_ROLE_STEP_RIGHT; break;
     case 6: role = INPUT_ROLE_SLOW; break;
     case 7: role = INPUT_ROLE_JUMP; break;
     case 8: role = INPUT_ROLE_ACTION; break;
-    case 9: role = INPUT_ROLE_DRAW; break;
+    case 9: role = INPUT_ROLE_DRAW_WEAPON; break;
     case 10: role = INPUT_ROLE_LOOK; break;
     case 11: role = INPUT_ROLE_ROLL; break;
-    case 12: role = INPUT_ROLE_OPTION; break;
+    case 12: role = INPUT_ROLE_INVENTORY; break;
     case 13: role = INPUT_ROLE_FLY_CHEAT; break;
     case 14: role = INPUT_ROLE_ITEM_CHEAT; break;
     case 15: role = INPUT_ROLE_LEVEL_SKIP_CHEAT; break;

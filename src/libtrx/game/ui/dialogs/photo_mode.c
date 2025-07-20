@@ -66,11 +66,11 @@ static void M_Inputs(const PHOTO_MODE current_mode)
     UI_Label("\\{input action}");
 
     if (M_HasIcon(INPUT_ROLE_TOGGLE_PHOTO_MODE)
-        && M_HasIcon(INPUT_ROLE_OPTION)) {
+        && M_HasIcon(INPUT_ROLE_INVENTORY)) {
         UI_Label("\\{input toggle_photo_mode}/\\{input option}");
     } else if (M_HasIcon(INPUT_ROLE_TOGGLE_PHOTO_MODE)) {
         UI_Label("\\{input toggle_photo_mode}");
-    } else if (M_HasIcon(INPUT_ROLE_OPTION)) {
+    } else if (M_HasIcon(INPUT_ROLE_INVENTORY)) {
         UI_Label("\\{input option}");
     }
 }
