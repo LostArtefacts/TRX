@@ -63,24 +63,17 @@ bool Creature_ShootAtLara(
         Effect_Get(effect_num)->rot.y += extra_rotation;
     }
 
-    GAME_VECTOR start = {
-        .pos = {
-            .x = item->pos.x,
-            .y = item->pos.y - STEP_L * 3,
-            .z = item->pos.z,
-        },
-        .room_num = item->room_num,
+    const XYZ_32 start = {
+        .x = item->pos.x,
+        .y = item->pos.y - STEP_L * 3,
+        .z = item->pos.z,
     };
-
-    GAME_VECTOR target = {
-        .pos = {
-            .x = target_item->pos.x,
-            .y = target_item->pos.y - STEP_L * 3,
-            .z = target_item->pos.z,
-        },
-        .room_num = target_item->room_num,
+    const XYZ_32 target = {
+        .x = target_item->pos.x,
+        .y = target_item->pos.y - STEP_L * 3,
+        .z = target_item->pos.z,
     };
-
     Gun_SmashItems(start, target);
+
     return is_targetable;
 }

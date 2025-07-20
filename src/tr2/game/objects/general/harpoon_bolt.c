@@ -19,10 +19,7 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const GAME_VECTOR old_pos = {
-        .pos = item->pos,
-        .room_num = item->room_num,
-    };
+    const XYZ_32 old_pos = item->pos;
 
     if (!(Room_Get(item->room_num)->flags & RF_UNDERWATER)) {
         item->fall_speed += GRAVITY / 2;
@@ -38,12 +35,8 @@ static void M_Control(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     Item_UpdateRoom(item_num, room_num);
 
-    const GAME_VECTOR new_pos = {
-        .pos = item->pos,
-        .room_num = item->room_num,
-    };
     bool hit = false;
-    if (Gun_SmashItems(old_pos, new_pos) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos) == PROJECTILE_HIT_STOP) {
         hit = true;
     }
 

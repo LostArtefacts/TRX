@@ -95,11 +95,10 @@ static void M_FireHarpoon(void)
     }
 
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_HARPOON];
-    const GAME_VECTOR origin = {
+    const XYZ_32 origin = {
         .x = lara_item->pos.x,
         .y = lara_item->pos.y - weapon->gun_height,
         .z = lara_item->pos.z,
-        .room_num = lara_item->room_num,
     };
 
     ITEM *const projectile_item = Item_Get(item_num);
@@ -141,13 +140,7 @@ static void M_FireHarpoon(void)
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 
-    const GAME_VECTOR target = {
-        .x = projectile_item->pos.x,
-        .y = projectile_item->pos.y,
-        .z = projectile_item->pos.z,
-        .room_num = projectile_item->room_num,
-    };
-    Gun_SmashItems(origin, target);
+    Gun_SmashItems(origin, projectile_item->pos);
 
     lara->harpoon_ammo.ammo--;
     Stats_AddAmmoUsed();
@@ -175,11 +168,10 @@ static void M_FireGrenade(void)
         return;
     }
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_GRENADE];
-    const GAME_VECTOR origin = {
+    const XYZ_32 origin = {
         .x = lara_item->pos.x,
         .y = lara_item->pos.y - weapon->gun_height,
         .z = lara_item->pos.z,
-        .room_num = lara_item->room_num,
     };
 
     const int16_t item_num = Item_Create();
@@ -210,13 +202,7 @@ static void M_FireGrenade(void)
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 
-    const GAME_VECTOR target = {
-        .x = projectile_item->pos.x,
-        .y = projectile_item->pos.y,
-        .z = projectile_item->pos.z,
-        .room_num = projectile_item->room_num,
-    };
-    Gun_SmashItems(origin, target);
+    Gun_SmashItems(origin, projectile_item->pos);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         lara->grenade_ammo.ammo--;
