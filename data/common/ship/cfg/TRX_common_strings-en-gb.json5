@@ -5,6 +5,8 @@
     "extends": "en",
     "game_strings": {
         "CONTROLS_CUSTOMIZE": "Customise Controls",
+        "ENUM_BAR_LOCATION_BOTTOM_CENTER": "Bottom centre",
+        "ENUM_BAR_LOCATION_TOP_CENTER": "Top centre",
         "GAMEPLAY_SETTINGS_ENABLE_ENEMY_ROTATION": "Randomise enemy start angle",
         "GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
         "GAMEPLAY_SETTINGS_QUICK_GUNS_MODE_DESCRIPTION": "Controls the behaviour of the quick gun equip keys.\n\n- Draw only: pressing a key will cause Lara to equip the assigned gun.\n- Draw or holster: same as above, plus Lara will undraw the assigned gun if she's currently carrying it.",
@@ -14,8 +16,6 @@
         "GRAPHIC_SETTINGS_AIRBAR_COLOR_DESCRIPTION": "Colour of the airbar.",
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR": "Ally bar colour",
         "GRAPHIC_SETTINGS_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Colour of the allies healthbar. Shown in the location of the enemy healthbars.",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_BOTTOM_CENTER": "Bottom centre",
-        "GRAPHIC_SETTINGS_BAR_LOCATION_TOP_CENTER": "Top centre",
         "GRAPHIC_SETTINGS_ENABLE_SMOOTH_BARS_DESCRIPTION": "Makes the health, air and enemy bars use smooth colour transitions.",
         "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR": "Enemy bar colour",
         "GRAPHIC_SETTINGS_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Colour of the enemy healthbar.",
