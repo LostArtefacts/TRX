@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...develop) - ××××-××-××
+
+## [1.3.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...tr2-1.3.2) - 2025-07-20
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
 - fixed sprites having thick borders depending on viewing angle (#3549, regression from 1.3)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
