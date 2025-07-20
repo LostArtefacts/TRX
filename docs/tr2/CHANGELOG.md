@@ -1,20 +1,22 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...develop) - ××××-××-××
 - added ability to move Lara around in photo mode
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - changed the texture page limit from 128 to unlimited (#3517)
 - changed projectiles to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
-- fixed audio playback with CDAudio backend in cutscenes (#2593)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed harpoons/grenades having no effect on bells (#3379)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
+- improved object loading error messages when an invalid object ID is detected
+
+## [1.3.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...tr2-1.3.2) - 2025-07-20
+- fixed audio playback with CDAudio backend in cutscenes (#2593)
 - fixed sprites having thick borders depending on viewing angle (#3549, regression from 1.3)
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 1.0)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 1.3)
 - fixed harpoons disappearing if used near inactive/invisible enemies (#3546, regression from 1.3)
 - fixed the first camera frame when starting or loading a level being inaccurate (#3537, regression from 1.2.2)
-- improved object loading error messages when an invalid object ID is detected
 
 ## [1.3.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.3...tr2-1.3.1) - 2025-07-18
 - fixed Lara's first pose in photo mode at times being skipped (#3522, regression from 1.3)
