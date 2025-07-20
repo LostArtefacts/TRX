@@ -91,11 +91,11 @@ static INPUT_BACKEND_IMPL *M_GetBackend(const INPUT_BACKEND backend)
 static bool M_IsPressed(const INPUT_STATE input, const INPUT_ROLE role)
 {
     switch (role) {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name)                               \
-    case INPUT_ROLE_##role_name:                                               \
+#define X_INPUT_ROLE(role_name, state_name)                                    \
+    case role_name:                                                            \
         return input.state_name;
 #include "game/input/roles.def"
+#undef X_INPUT_ROLE
     case INPUT_ROLE_NUMBER_OF:
         break;
     }
@@ -106,12 +106,12 @@ static INPUT_STATE M_SetPressed(
     INPUT_STATE input, const INPUT_ROLE role, const bool is_pressed)
 {
     switch (role) {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name)                               \
-    case INPUT_ROLE_##role_name:                                               \
+#define X_INPUT_ROLE(role_name, state_name)                                    \
+    case role_name:                                                            \
         input.state_name = is_pressed;                                         \
         break;
 #include "game/input/roles.def"
+#undef X_INPUT_ROLE
     case INPUT_ROLE_NUMBER_OF:
         break;
     }

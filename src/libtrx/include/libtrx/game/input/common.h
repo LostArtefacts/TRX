@@ -5,18 +5,18 @@
 #include <stdint.h>
 
 typedef enum {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name) INPUT_ROLE_##role_name,
+#define X_INPUT_ROLE(role_name, state_name) role_name,
 #include "roles.def"
     INPUT_ROLE_NUMBER_OF,
+#undef X_INPUT_ROLE
 } INPUT_ROLE;
 
 typedef union {
     uint64_t any;
     struct {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name) uint64_t state_name : 1;
+#define X_INPUT_ROLE(role_name, state_name) uint64_t state_name : 1;
 #include "roles.def"
+#undef X_INPUT_ROLE
     };
 } INPUT_STATE;
 

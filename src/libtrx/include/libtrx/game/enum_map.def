@@ -6,10 +6,10 @@
 #undef OBJ_ID_DEFINE
 #undef OBJ_ID_ALIAS_DEFINE
 
-#define INPUT_ROLE_DEFINE(role_name, state_name)                               \
-    EnumMap_Define("INPUT_ROLE", INPUT_ROLE_##role_name, #state_name);
+#define X_INPUT_ROLE(role_name, state_name)                               \
+    EnumMap_Define("INPUT_ROLE", role_name, #state_name);
 #include <libtrx/game/input/roles.def>
-#undef INPUT_ROLE_DEFINE
+#undef X_INPUT_ROLE
 
 ENUM_MAP_DEFINE(SCREENSHOT_FORMAT, SCREENSHOT_FORMAT_JPEG, "jpg")
 ENUM_MAP_DEFINE(SCREENSHOT_FORMAT, SCREENSHOT_FORMAT_JPEG, "jpeg")
