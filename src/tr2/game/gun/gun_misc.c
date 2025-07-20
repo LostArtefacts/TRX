@@ -176,14 +176,16 @@ int32_t Gun_FireWeapon(
     if (best_sphere < 0) {
         const int32_t dist = winfo->target_dist;
         GAME_VECTOR hit_pos;
-        hit_pos.pos.x = view_pos.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT);
-        hit_pos.pos.y = view_pos.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT);
-        hit_pos.pos.z = view_pos.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT);
+        hit_pos.x = view_pos.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT);
+        hit_pos.y = view_pos.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT);
+        hit_pos.z = view_pos.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT);
         hit_pos.room_num =
             Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
         const bool object_on_los = LOS_Check(&start, &hit_pos);
-        if (Gun_SmashItems(start.pos, hit_pos.pos) == PROJECTILE_HIT_NONE
-            && !object_on_los) {
+        Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos);
+        hit_pos.room_num =
+            Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
+        if (!object_on_los) {
             Spawn_Ricochet(&hit_pos);
         }
         return -1;
@@ -198,7 +200,7 @@ int32_t Gun_FireWeapon(
             view_pos.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT);
         hit_pos.room_num =
             Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
-        Gun_SmashItems(start.pos, hit_pos.pos);
+        Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
         Gun_HitTarget(
             target, &hit_pos,
             winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
@@ -206,12 +208,13 @@ int32_t Gun_FireWeapon(
     }
 }
 
-PROJECTILE_HIT Gun_SmashItems(const XYZ_32 start, const XYZ_32 target)
+PROJECTILE_HIT Gun_SmashItems(
+    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos)
 {
     int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;
     while (true) {
-        const int16_t item_num = LOS_CheckSmashable(start, target);
+        const int16_t item_num = LOS_CheckSmashable(start, target, out_hit_pos);
         if (item_num == NO_ITEM || item_num == last_item_num) {
             break;
         }

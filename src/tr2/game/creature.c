@@ -73,7 +73,7 @@ bool Creature_ShootAtLara(
         .y = target_item->pos.y - STEP_L * 3,
         .z = target_item->pos.z,
     };
-    Gun_SmashItems(start, target);
+    Gun_SmashItems(start, target, nullptr);
 
     return is_targetable;
 }
