@@ -206,7 +206,7 @@ int32_t Gun_FireWeapon(
     }
 }
 
-PROJECTILE_HIT Gun_SmashItems(const XYZ_32 target, const XYZ_32 start)
+PROJECTILE_HIT Gun_SmashItems(const XYZ_32 start, const XYZ_32 target)
 {
     int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;
