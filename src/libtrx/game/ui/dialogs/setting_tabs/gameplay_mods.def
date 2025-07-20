@@ -1,20 +1,20 @@
-X_UI_CFG_BOOL(gameplay.enable_cheats,                  GAMEPLAY_SETTINGS_ENABLE_CHEATS)
-X_UI_CFG_BOOL(gameplay.enable_console,                 GAMEPLAY_SETTINGS_ENABLE_CONSOLE)
+X_UI_CFG_BOOL(gameplay.enable_cheats,                  SETTING_ENABLE_CHEATS)
+X_UI_CFG_BOOL(gameplay.enable_console,                 SETTING_ENABLE_CONSOLE)
 
 #if TR_VERSION == 2
-X_UI_CFG_INT32(gameplay.harpoon_recoil,                GAMEPLAY_SETTINGS_HARPOON_RECOIL, .min_value = 0, .max_value = 1000, .delta_slow = 1, .delta_fast = 1)
+X_UI_CFG_INT32(gameplay.harpoon_recoil,                SETTING_HARPOON_RECOIL, .min_value = 0, .max_value = 1000, .delta_slow = 1, .delta_fast = 1)
 #endif
 
-X_UI_CFG_INT32(gameplay.start_lara_hitpoints,          GAMEPLAY_SETTINGS_START_LARA_HITPOINTS, .min_value = 1, .max_value = LARA_MAX_HITPOINTS, .delta_slow = 10, .delta_fast = 100)
+X_UI_CFG_INT32(gameplay.start_lara_hitpoints,          SETTING_START_LARA_HITPOINTS, .min_value = 1, .max_value = LARA_MAX_HITPOINTS, .delta_slow = 10, .delta_fast = 100)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.disable_medpacks,               GAMEPLAY_SETTINGS_DISABLE_MEDPACKS)
+X_UI_CFG_BOOL(gameplay.disable_medpacks,               SETTING_DISABLE_MEDPACKS)
 #endif
 
-X_UI_CFG_BOOL(gameplay.disable_healing_between_levels, GAMEPLAY_SETTINGS_DISABLE_HEALING_BETWEEN_LEVELS)
+X_UI_CFG_BOOL(gameplay.disable_healing_between_levels, SETTING_DISABLE_HEALING_BETWEEN_LEVELS)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.disable_shotgun,                GAMEPLAY_SETTINGS_DISABLE_SHOTGUN)
-X_UI_CFG_BOOL(gameplay.disable_magnums,                GAMEPLAY_SETTINGS_DISABLE_MAGNUMS)
-X_UI_CFG_BOOL(gameplay.disable_uzis,                   GAMEPLAY_SETTINGS_DISABLE_UZIS)
+X_UI_CFG_BOOL(gameplay.disable_shotgun,                SETTING_DISABLE_SHOTGUN)
+X_UI_CFG_BOOL(gameplay.disable_magnums,                SETTING_DISABLE_MAGNUMS)
+X_UI_CFG_BOOL(gameplay.disable_uzis,                   SETTING_DISABLE_UZIS)
 #endif

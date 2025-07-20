@@ -1,46 +1,46 @@
-X_UI_CFG_BOOL(gameplay.fix_floor_data_issues,       GAMEPLAY_SETTINGS_FIX_FLOOR_DATA_ISSUES)
-X_UI_CFG_BOOL(visuals.fix_texture_issues,           GAMEPLAY_SETTINGS_FIX_TEXTURE_ISSUES)
-X_UI_CFG_BOOL(visuals.fix_item_rots,                GAMEPLAY_SETTINGS_FIX_ITEM_ROTS, .custom_handler = { .is_available = UI_Settings_FixItemRots_IsAvailable })
+X_UI_CFG_BOOL(gameplay.fix_floor_data_issues,       SETTING_FIX_FLOOR_DATA_ISSUES)
+X_UI_CFG_BOOL(visuals.fix_texture_issues,           SETTING_FIX_TEXTURE_ISSUES)
+X_UI_CFG_BOOL(visuals.fix_item_rots,                SETTING_FIX_ITEM_ROTS, .custom_handler = { .is_available = UI_Settings_FixItemRots_IsAvailable })
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(audio.load_music_triggers,            GAMEPLAY_SETTINGS_LOAD_MUSIC_TRIGGERS)
-X_UI_CFG_BOOL(visuals.fix_animated_sprites,         GAMEPLAY_SETTINGS_FIX_ANIMATED_SPRITES)
+X_UI_CFG_BOOL(audio.load_music_triggers,            SETTING_LOAD_MUSIC_TRIGGERS)
+X_UI_CFG_BOOL(visuals.fix_animated_sprites,         SETTING_FIX_ANIMATED_SPRITES)
 #endif
 
-X_UI_CFG_BOOL(gameplay.fix_bridge_collision,        GAMEPLAY_SETTINGS_FIX_BRIDGE_COLLISION)
+X_UI_CFG_BOOL(gameplay.fix_bridge_collision,        SETTING_FIX_BRIDGE_COLLISION)
 
 #if TR_VERSION == 2
-X_UI_CFG_BOOL(visuals.fix_glide_cameras,            GAMEPLAY_SETTINGS_FIX_GLIDE_CAMERAS)
+X_UI_CFG_BOOL(visuals.fix_glide_cameras,            SETTING_FIX_GLIDE_CAMERAS)
 #endif
 
-X_UI_CFG_BOOL(gameplay.fix_walk_run_jump,           GAMEPLAY_SETTINGS_FIX_WALK_RUN_JUMP)
+X_UI_CFG_BOOL(gameplay.fix_walk_run_jump,           SETTING_FIX_WALK_RUN_JUMP)
 
 #if TR_VERSION == 2
-X_UI_CFG_BOOL(gameplay.fix_flare_throw_priority,    GAMEPLAY_SETTINGS_FIX_FLARE_THROW_PRIORITY)
-X_UI_CFG_BOOL(gameplay.fix_m16_accuracy,            GAMEPLAY_SETTINGS_FIX_M16_ACCURACY)
+X_UI_CFG_BOOL(gameplay.fix_flare_throw_priority,    SETTING_FIX_FLARE_THROW_PRIORITY)
+X_UI_CFG_BOOL(gameplay.fix_m16_accuracy,            SETTING_FIX_M16_ACCURACY)
 #endif
 
-X_UI_CFG_BOOL(gameplay.fix_descending_glitch,       GAMEPLAY_SETTINGS_FIX_DESCENDING_GLITCH)
+X_UI_CFG_BOOL(gameplay.fix_descending_glitch,       SETTING_FIX_DESCENDING_GLITCH)
 
-X_UI_CFG_ENUM(gameplay.wall_glitch_mode,            GAMEPLAY_SETTINGS_WALL_GLITCH_MODE, .misc = UI_Settings_WallGlitchEnumEntries)
+X_UI_CFG_ENUM(gameplay.wall_glitch_mode,            SETTING_WALL_GLITCH_MODE, .misc = UI_Settings_WallGlitchEnumEntries)
 
-X_UI_CFG_BOOL(gameplay.fix_wade_wall_hit,           GAMEPLAY_SETTINGS_FIX_WADE_WALL_HIT, .custom_handler = { .is_available = UI_Settings_FixWadeWallHit_IsAvailable })
-X_UI_CFG_BOOL(gameplay.fix_water_exit,              GAMEPLAY_SETTINGS_FIX_WATER_EXIT)
-X_UI_CFG_BOOL(gameplay.fix_qwop_glitch,             GAMEPLAY_SETTINGS_FIX_QWOP_GLITCH)
-X_UI_CFG_BOOL(gameplay.fix_step_glitch,             GAMEPLAY_SETTINGS_FIX_STEP_GLITCH, .custom_handler = { .is_available = UI_Settings_FixStepGlitch_IsAvailable })
-X_UI_CFG_BOOL(gameplay.fix_item_duplication_glitch, GAMEPLAY_SETTINGS_FIX_ITEM_DUPLICATION_GLITCH)
+X_UI_CFG_BOOL(gameplay.fix_wade_wall_hit,           SETTING_FIX_WADE_WALL_HIT, .custom_handler = { .is_available = UI_Settings_FixWadeWallHit_IsAvailable })
+X_UI_CFG_BOOL(gameplay.fix_water_exit,              SETTING_FIX_WATER_EXIT)
+X_UI_CFG_BOOL(gameplay.fix_qwop_glitch,             SETTING_FIX_QWOP_GLITCH)
+X_UI_CFG_BOOL(gameplay.fix_step_glitch,             SETTING_FIX_STEP_GLITCH, .custom_handler = { .is_available = UI_Settings_FixStepGlitch_IsAvailable })
+X_UI_CFG_BOOL(gameplay.fix_item_duplication_glitch, SETTING_FIX_ITEM_DUPLICATION_GLITCH)
 
 #if TR_VERSION == 2
-X_UI_CFG_BOOL(gameplay.fix_free_flare_glitch,       GAMEPLAY_SETTINGS_FIX_FREE_FLARE_GLITCH)
-X_UI_CFG_BOOL(gameplay.fix_pickup_drift_glitch,     GAMEPLAY_SETTINGS_FIX_PICKUP_DRIFT_GLITCH)
+X_UI_CFG_BOOL(gameplay.fix_free_flare_glitch,       SETTING_FIX_FREE_FLARE_GLITCH)
+X_UI_CFG_BOOL(gameplay.fix_pickup_drift_glitch,     SETTING_FIX_PICKUP_DRIFT_GLITCH)
 #endif
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.fix_alligator_ai,            GAMEPLAY_SETTINGS_FIX_ALLIGATOR_AI)
+X_UI_CFG_BOOL(gameplay.fix_alligator_ai,            SETTING_FIX_ALLIGATOR_AI)
 #endif
 
-X_UI_CFG_BOOL(gameplay.fix_bear_ai,                 GAMEPLAY_SETTINGS_FIX_BEAR_AI)
+X_UI_CFG_BOOL(gameplay.fix_bear_ai,                 SETTING_FIX_BEAR_AI)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(audio.fix_tihocan_secret_sound,       GAMEPLAY_SETTINGS_FIX_TIHOCAN_SECRET_SOUND)
+X_UI_CFG_BOOL(audio.fix_tihocan_secret_sound,       SETTING_FIX_TIHOCAN_SECRET_SOUND)
 #endif
