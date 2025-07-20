@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.2...develop) - ××××-××-××
+
+## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 4.9)
 - fixed drawing UI text with bilinear filter and PS1 UI (#3548, regression from 4.13)
 - fixed dynamic fire light being generated despite the flame object not being present in the level (#3539, regression from 4.13)
