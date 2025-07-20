@@ -1,3 +1,4 @@
+// Enum values
 GS_DEFINE(ENUM_INPUT_ROLE_CAMERA_RESET, "Camera Reset")
 GS_DEFINE(ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST, "Cycle Lighting Contrast")
 GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER, "Equip Grenade Launcher")
@@ -11,6 +12,11 @@ GS_DEFINE(ENUM_INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER, "Toggle Perspective Filter"
 GS_DEFINE(ENUM_INPUT_ROLE_TOGGLE_RENDERING_MODE, "Cycle Rendering Mode")
 GS_DEFINE(ENUM_INPUT_ROLE_TOGGLE_Z_BUFFER, "Toggle Z Buffer")
 GS_DEFINE(ENUM_INPUT_ROLE_USE_FLARE, "Flare")
+
+// Setting descriptions
+GS_DEFINE(SETTING_FIX_BEAR_AI_DESCRIPTION,           "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.")
+GS_DEFINE(SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION, "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.")
+GS_DEFINE(SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION,   "Enables dynamic lighting to be generated for gunshots and explosions.")
 
 GS_DEFINE(STATS_LEVEL, "Level")
 GS_DEFINE(STATS_TIME_TAKEN, "Time Taken")
@@ -41,7 +47,3 @@ GS_DEFINE(CMD_WINSTON_SPAWNED,      "Summoned Winston near Lara")
 GS_DEFINE(CMD_WINSTON_SPAWN_FAILED, "Failed to summon Winston")
 GS_DEFINE(CMD_WINSTON_TELEPORTED,   "Summoned Winston near Lara")
 GS_DEFINE(CMD_WINSTON_DEAD,         "Your butler is dead. You monster!")
-
-GS_DEFINE(GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION,                    "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.")
-GS_DEFINE(GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION,          "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.")
-GS_DEFINE(GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION,             "Enables dynamic lighting to be generated for gunshots and explosions.")

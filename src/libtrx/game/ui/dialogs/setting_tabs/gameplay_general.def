@@ -1,44 +1,44 @@
-X_UI_CFG_BOOL(gameplay.enable_legal,               GAMEPLAY_SETTINGS_ENABLE_LEGAL)
-X_UI_CFG_BOOL(gameplay.enable_credits,             GAMEPLAY_SETTINGS_ENABLE_CREDITS)
-X_UI_CFG_BOOL(gameplay.enable_fmv,                 GAMEPLAY_SETTINGS_ENABLE_FMV)
+X_UI_CFG_BOOL(gameplay.enable_legal,               SETTING_ENABLE_LEGAL)
+X_UI_CFG_BOOL(gameplay.enable_credits,             SETTING_ENABLE_CREDITS)
+X_UI_CFG_BOOL(gameplay.enable_fmv,                 SETTING_ENABLE_FMV)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_demo,                GAMEPLAY_SETTINGS_ENABLE_DEMO)
+X_UI_CFG_BOOL(gameplay.enable_demo,                SETTING_ENABLE_DEMO)
 #endif
-X_UI_CFG_BOOL(gameplay.enable_cutscenes,           GAMEPLAY_SETTINGS_ENABLE_CUTSCENES)
+X_UI_CFG_BOOL(gameplay.enable_cutscenes,           SETTING_ENABLE_CUTSCENES)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_loading_screens,     GAMEPLAY_SETTINGS_ENABLE_LOADING_SCREENS)
+X_UI_CFG_BOOL(gameplay.enable_loading_screens,     SETTING_ENABLE_LOADING_SCREENS)
 #endif
 
-X_UI_CFG_BOOL(gameplay.enable_game_modes,          GAMEPLAY_SETTINGS_ENABLE_GAME_MODES)
+X_UI_CFG_BOOL(gameplay.enable_game_modes,          SETTING_ENABLE_GAME_MODES)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_save_crystals,       GAMEPLAY_SETTINGS_ENABLE_SAVE_CRYSTALS)
+X_UI_CFG_BOOL(gameplay.enable_save_crystals,       SETTING_ENABLE_SAVE_CRYSTALS)
 #endif
 
-X_UI_CFG_BOOL(gameplay.enable_auto_item_selection, GAMEPLAY_SETTINGS_ENABLE_AUTO_ITEM_SELECTION)
-X_UI_CFG_BOOL(gameplay.enable_item_examining,      GAMEPLAY_SETTINGS_ENABLE_ITEM_EXAMINING)
+X_UI_CFG_BOOL(gameplay.enable_auto_item_selection, SETTING_ENABLE_AUTO_ITEM_SELECTION)
+X_UI_CFG_BOOL(gameplay.enable_item_examining,      SETTING_ENABLE_ITEM_EXAMINING)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_compass_stats,       GAMEPLAY_SETTINGS_ENABLE_COMPASS_STATS)
-X_UI_CFG_BOOL(gameplay.enable_total_stats,         GAMEPLAY_SETTINGS_ENABLE_TOTAL_STATS)
-X_UI_CFG_BOOL(gameplay.enable_timer_in_inventory,  GAMEPLAY_SETTINGS_ENABLE_TIMER_IN_INVENTORY)
-X_UI_CFG_BOOL(gameplay.enable_deaths_counter,      GAMEPLAY_SETTINGS_ENABLE_DEATHS_COUNTER)
-X_UI_CFG_INT32(gameplay.maximum_save_slots,        GAMEPLAY_SETTINGS_MAXIMUM_SAVE_SLOTS, .min_value = 1, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)
+X_UI_CFG_BOOL(gameplay.enable_compass_stats,       SETTING_ENABLE_COMPASS_STATS)
+X_UI_CFG_BOOL(gameplay.enable_total_stats,         SETTING_ENABLE_TOTAL_STATS)
+X_UI_CFG_BOOL(gameplay.enable_timer_in_inventory,  SETTING_ENABLE_TIMER_IN_INVENTORY)
+X_UI_CFG_BOOL(gameplay.enable_deaths_counter,      SETTING_ENABLE_DEATHS_COUNTER)
+X_UI_CFG_INT32(gameplay.maximum_save_slots,        SETTING_MAXIMUM_SAVE_SLOTS, .min_value = 1, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)
 #endif
 
-X_UI_CFG_BOOL(gameplay.enable_enhanced_saves,      GAMEPLAY_SETTINGS_ENABLE_ENHANCED_SAVES)
-X_UI_CFG_BOOL_INV(gameplay.revert_to_pistols,      GAMEPLAY_SETTINGS_REMEMBER_GUNS_BETWEEN_LEVELS)
+X_UI_CFG_BOOL(gameplay.enable_enhanced_saves,      SETTING_ENABLE_ENHANCED_SAVES)
+X_UI_CFG_BOOL_INV(gameplay.revert_to_pistols,      SETTING_REMEMBER_GUNS_BETWEEN_LEVELS)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.restore_ps1_enemies,        GAMEPLAY_SETTINGS_RESTORE_PS1_ENEMIES)
-X_UI_CFG_BOOL(gameplay.change_pierre_spawn,        GAMEPLAY_SETTINGS_CHANGE_PIERRE_SPAWN)
-X_UI_CFG_BOOL(gameplay.disable_trex_collision,     GAMEPLAY_SETTINGS_DISABLE_TREX_COLLISION)
+X_UI_CFG_BOOL(gameplay.restore_ps1_enemies,        SETTING_RESTORE_PS1_ENEMIES)
+X_UI_CFG_BOOL(gameplay.change_pierre_spawn,        SETTING_CHANGE_PIERRE_SPAWN)
+X_UI_CFG_BOOL(gameplay.disable_trex_collision,     SETTING_DISABLE_TREX_COLLISION)
 #endif
 
-X_UI_CFG_BOOL(gameplay.enable_enemy_rotation,      GAMEPLAY_SETTINGS_ENABLE_ENEMY_ROTATION)
+X_UI_CFG_BOOL(gameplay.enable_enemy_rotation,      SETTING_ENABLE_ENEMY_ROTATION)
 
 #if TR_VERSION == 2
-X_UI_CFG_BOOL(gameplay.enable_ally_targeting,      GAMEPLAY_SETTINGS_ENABLE_ALLY_TARGETING)
+X_UI_CFG_BOOL(gameplay.enable_ally_targeting,      SETTING_ENABLE_ALLY_TARGETING)
 #endif

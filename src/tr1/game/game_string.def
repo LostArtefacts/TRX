@@ -1,6 +1,13 @@
+// Enum values
 GS_DEFINE(ENUM_INPUT_ROLE_BILINEAR, "Toggle Texture Filter")
 GS_DEFINE(ENUM_INPUT_ROLE_CHANGE_TARGET, "Change Target")
 GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_MAGNUMS, "Equip Magnums")
+
+// Setting descriptions
+GS_DEFINE(SETTING_ENABLE_GAME_MODES_DESCRIPTION,     "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage.\n- Japanese NG+: combination of New Game+ and Japanese NG.")
+GS_DEFINE(SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION,   "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.")
+GS_DEFINE(SETTING_FIX_BEAR_AI_DESCRIPTION,           "Fixes the bear pat attack so it does not miss Lara.")
+GS_DEFINE(SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION, "Makes the shotgun no longer fire when a locked target moves out of Lara's sight, similar to other guns.")
 
 GS_DEFINE(PASSPORT_RESTART_LEVEL, "Restart Level")
 GS_DEFINE(STATS_LEVEL, "LEVEL")
@@ -18,8 +25,3 @@ GS_DEFINE(OSD_TEXTURE_FILTER_BILINEAR, "bilinear")
 GS_DEFINE(MISC_EMPTY_SLOT_FMT, "- EMPTY SLOT %d -")
 
 GS_DEFINE(CONSOLE_HELP_VSYNC, "Toggles vertical sync.")
-
-GS_DEFINE(GAMEPLAY_SETTINGS_FIX_BEAR_AI_DESCRIPTION,                    "Fixes the bear pat attack so it does not miss Lara.")
-GS_DEFINE(GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING_DESCRIPTION,          "Makes the shotgun no longer fire when a locked target moves out of Lara's sight, similar to other guns.")
-GS_DEFINE(GAMEPLAY_SETTINGS_ENABLE_GAME_MODES_DESCRIPTION,              "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage.\n- Japanese NG+: combination of New Game+ and Japanese NG.")
-GS_DEFINE(GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING_DESCRIPTION,             "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.")

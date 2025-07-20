@@ -1,39 +1,39 @@
-X_UI_CFG_INT32(visuals.fog_start,           GRAPHIC_SETTINGS_FOG_START, .min_value = 1, .max_value = 100)
-X_UI_CFG_INT32(visuals.fog_end,             GRAPHIC_SETTINGS_FOG_END, .min_value = 1, .max_value = 100)
+X_UI_CFG_INT32(visuals.fog_start,           SETTING_FOG_START, .min_value = 1, .max_value = 100)
+X_UI_CFG_INT32(visuals.fog_end,             SETTING_FOG_END, .min_value = 1, .max_value = 100)
 
-X_UI_CFG_RGB888(visuals.water_color,        GRAPHIC_SETTINGS_WATER_COLOR_R, 0)
-X_UI_CFG_RGB888(visuals.water_color,        GRAPHIC_SETTINGS_WATER_COLOR_G, 1)
-X_UI_CFG_RGB888(visuals.water_color,        GRAPHIC_SETTINGS_WATER_COLOR_B, 2)
+X_UI_CFG_RGB888(visuals.water_color,        SETTING_WATER_COLOR_R, 0)
+X_UI_CFG_RGB888(visuals.water_color,        SETTING_WATER_COLOR_G, 1)
+X_UI_CFG_RGB888(visuals.water_color,        SETTING_WATER_COLOR_B, 2)
 
-X_UI_CFG_ENUM(visuals.camera_mode,          GRAPHIC_SETTINGS_CAMERA_MODE, .misc = UI_Settings_CameraModeEnumEntries)
+X_UI_CFG_ENUM(visuals.camera_mode,          SETTING_CAMERA_MODE, .misc = UI_Settings_CameraModeEnumEntries)
 
 #if TR_VERSION == 1
-X_UI_CFG_INT32(visuals.fov_value,           GRAPHIC_SETTINGS_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 10)
-X_UI_CFG_BOOL(visuals.fov_vertical,         GRAPHIC_SETTINGS_FOV_VERTICAL)
+X_UI_CFG_INT32(visuals.fov_value,           SETTING_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 10)
+X_UI_CFG_BOOL(visuals.fov_vertical,         SETTING_FOV_VERTICAL)
 
 #elif TR_VERSION == 2
-X_UI_CFG_INT32(visuals.fov,                 GRAPHIC_SETTINGS_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 10)
-X_UI_CFG_BOOL(visuals.use_psx_fov,          GRAPHIC_SETTINGS_USE_PSX_FOV)
+X_UI_CFG_INT32(visuals.fov,                 SETTING_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 10)
+X_UI_CFG_BOOL(visuals.use_psx_fov,          SETTING_USE_PSX_FOV)
 #endif
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(visuals.enable_reflections,   GRAPHIC_SETTINGS_REFLECTIONS)
-X_UI_CFG_BOOL(visuals.enable_skybox,        GRAPHIC_SETTINGS_ENABLE_SKYBOX)
+X_UI_CFG_BOOL(visuals.enable_reflections,   SETTING_REFLECTIONS)
+X_UI_CFG_BOOL(visuals.enable_skybox,        SETTING_ENABLE_SKYBOX)
 #endif
 
-X_UI_CFG_BOOL(visuals.enable_braid,         GRAPHIC_SETTINGS_ENABLE_BRAID)
-X_UI_CFG_BOOL(visuals.enable_breeze,        GRAPHIC_SETTINGS_ENABLE_BREEZE, .custom_handler = { .is_available = UI_Settings_EnableBreeze_IsAvailable })
-X_UI_CFG_BOOL(visuals.enable_3d_pickups,    GRAPHIC_SETTINGS_ENABLE_3D_PICKUPS)
+X_UI_CFG_BOOL(visuals.enable_braid,         SETTING_ENABLE_BRAID)
+X_UI_CFG_BOOL(visuals.enable_breeze,        SETTING_ENABLE_BREEZE, .custom_handler = { .is_available = UI_Settings_EnableBreeze_IsAvailable })
+X_UI_CFG_BOOL(visuals.enable_3d_pickups,    SETTING_ENABLE_3D_PICKUPS)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_pickup_aids,  GRAPHIC_SETTINGS_ENABLE_PICKUP_AIDS)
-X_UI_CFG_BOOL(visuals.enable_ps1_crystals,  GRAPHIC_SETTINGS_ENABLE_PS1_CRYSTALS, .custom_handler = { .is_available = UI_Settings_EnablePS1Crystals_IsAvailable })
-X_UI_CFG_BOOL(visuals.enable_round_shadow,  GRAPHIC_SETTINGS_ENABLE_ROUND_SHADOW)
+X_UI_CFG_BOOL(gameplay.enable_pickup_aids,  SETTING_ENABLE_PICKUP_AIDS)
+X_UI_CFG_BOOL(visuals.enable_ps1_crystals,  SETTING_ENABLE_PS1_CRYSTALS, .custom_handler = { .is_available = UI_Settings_EnablePS1Crystals_IsAvailable })
+X_UI_CFG_BOOL(visuals.enable_round_shadow,  SETTING_ENABLE_ROUND_SHADOW)
 #endif
 
-X_UI_CFG_BOOL(visuals.enable_gun_lighting,  GRAPHIC_SETTINGS_ENABLE_GUN_LIGHTING)
-X_UI_CFG_BOOL(visuals.enable_fire_lighting, GRAPHIC_SETTINGS_ENABLE_FIRE_LIGHTING)
+X_UI_CFG_BOOL(visuals.enable_gun_lighting,  SETTING_ENABLE_GUN_LIGHTING)
+X_UI_CFG_BOOL(visuals.enable_fire_lighting, SETTING_ENABLE_FIRE_LIGHTING)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(visuals.enable_shotgun_flash, GRAPHIC_SETTINGS_ENABLE_SHOTGUN_FLASH)
+X_UI_CFG_BOOL(visuals.enable_shotgun_flash, SETTING_ENABLE_SHOTGUN_FLASH)
 #endif
