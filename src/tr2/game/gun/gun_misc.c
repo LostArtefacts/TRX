@@ -182,7 +182,7 @@ int32_t Gun_FireWeapon(
         hit_pos.room_num =
             Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
         const bool object_on_los = LOS_Check(&start, &hit_pos);
-        if (Gun_SmashItems(start, hit_pos) == PROJECTILE_HIT_NONE
+        if (Gun_SmashItems(start.pos, hit_pos.pos) == PROJECTILE_HIT_NONE
             && !object_on_los) {
             Spawn_Ricochet(&hit_pos);
         }
@@ -198,7 +198,7 @@ int32_t Gun_FireWeapon(
             view_pos.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT);
         hit_pos.room_num =
             Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
-        Gun_SmashItems(start, hit_pos);
+        Gun_SmashItems(start.pos, hit_pos.pos);
         Gun_HitTarget(
             target, &hit_pos,
             winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
@@ -206,12 +206,12 @@ int32_t Gun_FireWeapon(
     }
 }
 
-PROJECTILE_HIT Gun_SmashItems(const GAME_VECTOR start, const GAME_VECTOR target)
+PROJECTILE_HIT Gun_SmashItems(const XYZ_32 target, const XYZ_32 start)
 {
     int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;
     while (true) {
-        const int16_t item_num = LOS_CheckSmashable(&start, &target);
+        const int16_t item_num = LOS_CheckSmashable(start, target);
         if (item_num == NO_ITEM || item_num == last_item_num) {
             break;
         }

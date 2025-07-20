@@ -16,5 +16,5 @@ void Gun_AimWeapon(const WEAPON_INFO *weapon, LARA_ARM *arm);
 void Gun_TargetInfo(const WEAPON_INFO *weapon);
 
 #if TR_VERSION >= 2
-extern PROJECTILE_HIT Gun_SmashItems(GAME_VECTOR start, GAME_VECTOR target);
+extern PROJECTILE_HIT Gun_SmashItems(XYZ_32 start, XYZ_32 target);
 #endif

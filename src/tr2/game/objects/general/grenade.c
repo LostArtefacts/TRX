@@ -41,11 +41,7 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-
-    const GAME_VECTOR old_pos = {
-        .pos = item->pos,
-        .room_num = item->room_num,
-    };
+    const XYZ_32 old_pos = item->pos;
 
     item->speed--;
     if (item->speed < M_FALL_SPEED) {
@@ -73,11 +69,7 @@ static void M_Control(const int16_t item_num)
         explode = true;
     }
 
-    const GAME_VECTOR new_pos = {
-        .pos = item->pos,
-        .room_num = item->room_num,
-    };
-    if (Gun_SmashItems(old_pos, new_pos) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos) == PROJECTILE_HIT_STOP) {
         explode = true;
     }
 
@@ -149,7 +141,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (explode) {
-        M_Explode(item_num, old_pos.pos);
+        M_Explode(item_num, old_pos);
     }
 }
 
