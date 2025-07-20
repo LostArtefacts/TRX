@@ -140,7 +140,7 @@ static void M_FireHarpoon(void)
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 
-    Gun_SmashItems(origin, projectile_item->pos);
+    Gun_SmashItems(origin, projectile_item->pos, nullptr);
 
     lara->harpoon_ammo.ammo--;
     Stats_AddAmmoUsed();
@@ -202,7 +202,7 @@ static void M_FireGrenade(void)
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 
-    Gun_SmashItems(origin, projectile_item->pos);
+    Gun_SmashItems(origin, projectile_item->pos, nullptr);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         lara->grenade_ammo.ammo--;

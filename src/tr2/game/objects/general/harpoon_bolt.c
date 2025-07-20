@@ -36,7 +36,7 @@ static void M_Control(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 
     bool hit = false;
-    if (Gun_SmashItems(old_pos, item->pos) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
         hit = true;
     }
 

@@ -69,7 +69,7 @@ static void M_Control(const int16_t item_num)
         explode = true;
     }
 
-    if (Gun_SmashItems(old_pos, item->pos) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
         explode = true;
     }
 
