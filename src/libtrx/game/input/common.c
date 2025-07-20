@@ -365,3 +365,8 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
     g_OldInputDB = input;
     return result;
 }
+
+const char *Input_GetRoleName(const INPUT_ROLE role)
+{
+    return GS_ENUM(INPUT_ROLE, role);
+}

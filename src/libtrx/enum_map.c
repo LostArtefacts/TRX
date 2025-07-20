@@ -1,142 +1,164 @@
 #include "enum_map.h"
 
 #include "memory.h"
+#include "strings.h"
 
-#include <stdio.h>
 #include <uthash.h>
 
 typedef struct {
     char *key;
     int32_t value;
     UT_hash_handle hh;
-} M_ENTRY;
+} M_STR_TO_ID_ENTRY;
 
 typedef struct {
     char *key;
     char *str_value;
     UT_hash_handle hh;
-} M_INVERSE_ENTRY;
+} M_ID_TO_STR_ENTRY;
 
-static M_ENTRY *m_Map = nullptr;
-static M_INVERSE_ENTRY *m_InverseMap = nullptr;
+static M_STR_TO_ID_ENTRY *m_Str2IdMap = nullptr;
+static M_ID_TO_STR_ENTRY *m_Id2StrMap = nullptr;
+static M_ID_TO_STR_ENTRY *m_Id2NameMap = nullptr;
 
-static void M_Define(
-    const char *enum_name, int32_t enum_value, const char *str_value);
-static void M_DefineInverse(
-    const char *enum_name, int32_t enum_value, const char *str_value);
+static void M_ClearId2StrMap(M_ID_TO_STR_ENTRY **map);
+static void M_ClearStr2IdMap(M_STR_TO_ID_ENTRY **map);
+static void M_DefineStr2Id(
+    M_STR_TO_ID_ENTRY **map, const char *enum_type_name, int32_t enum_value,
+    const char *str_value);
+static void M_DefineId2Str(
+    M_ID_TO_STR_ENTRY **map, const char *enum_type_name, int32_t enum_value,
+    const char *str_value);
 
-static void M_Define(
-    const char *const enum_name, const int32_t enum_value,
-    const char *const str_value)
+static void M_ClearStr2IdMap(M_STR_TO_ID_ENTRY **map)
 {
-    const size_t key_len = strlen(enum_name) + strlen(str_value) + 2;
-    char *const key = Memory_Alloc(key_len);
-    snprintf(key, key_len, "%s|%s", enum_name, str_value);
-
-    M_ENTRY *const entry = Memory_Alloc(sizeof(M_ENTRY));
-    entry->key = key;
-    entry->value = enum_value;
-    HASH_ADD_KEYPTR(hh, m_Map, entry->key, strlen(entry->key), entry);
+    M_STR_TO_ID_ENTRY *current, *tmp;
+    HASH_ITER(hh, *map, current, tmp)
+    {
+        HASH_DEL(*map, current);
+        Memory_Free(current->key);
+        Memory_Free(current);
+    }
 }
 
-static void M_DefineInverse(
-    const char *const enum_name, const int32_t enum_value,
-    const char *const str_value)
+static void M_ClearId2StrMap(M_ID_TO_STR_ENTRY **map)
 {
-    const size_t key_len =
-        snprintf(nullptr, 0, "%s|%d", enum_name, enum_value) + 1;
-    char *const key = Memory_Alloc(key_len);
-    snprintf(key, key_len, "%s|%d", enum_name, enum_value);
+    M_ID_TO_STR_ENTRY *current, *tmp;
+    HASH_ITER(hh, *map, current, tmp)
+    {
+        HASH_DEL(*map, current);
+        Memory_Free(current->str_value);
+        Memory_Free(current->key);
+        Memory_Free(current);
+    }
+}
 
-    M_INVERSE_ENTRY *entry;
-    HASH_FIND_STR(m_InverseMap, key, entry);
+static void M_DefineStr2Id(
+    M_STR_TO_ID_ENTRY **map, const char *const enum_type_name,
+    const int32_t enum_value, const char *const str_value)
+{
+    const char *const key =
+        String_FormatStatic("%s|%s", enum_type_name, str_value);
+    M_STR_TO_ID_ENTRY *const entry = Memory_Alloc(sizeof(M_STR_TO_ID_ENTRY));
+    entry->key = Memory_DupStr(key);
+    entry->value = enum_value;
+    HASH_ADD_KEYPTR(hh, *map, entry->key, strlen(entry->key), entry);
+}
+
+static void M_DefineId2Str(
+    M_ID_TO_STR_ENTRY **map, const char *const enum_type_name,
+    const int32_t enum_value, const char *const str_value)
+{
+    const char *const key =
+        String_FormatStatic("%s|%d", enum_type_name, enum_value);
+    M_ID_TO_STR_ENTRY *entry;
+    HASH_FIND_STR(*map, key, entry);
     if (entry != nullptr) {
         // The inverse lookup is already defined - do not override it.
         // (This means that the first call to ENUM_MAP_DEFINE for a given enum
         // value also determines what serializing it back to string will pick
         // in the event there are multiple aliases).
-        Memory_Free(key);
         return;
     }
 
-    entry = Memory_Alloc(sizeof(M_INVERSE_ENTRY));
-    entry->key = key;
+    entry = Memory_Alloc(sizeof(M_ID_TO_STR_ENTRY));
+    entry->key = Memory_DupStr(key);
     entry->str_value = Memory_DupStr(str_value);
-    HASH_ADD_KEYPTR(hh, m_InverseMap, entry->key, strlen(entry->key), entry);
+    HASH_ADD_KEYPTR(hh, *map, entry->key, strlen(entry->key), entry);
 }
 
-void EnumMap_Define(
-    const char *const enum_name, const int32_t enum_value,
-    const char *const str_value)
+static int32_t M_Str2Id(
+    M_STR_TO_ID_ENTRY *const *map, const char *const enum_type_name,
+    const char *const str_value, int32_t default_value)
 {
-    M_Define(enum_name, enum_value, str_value);
-    M_DefineInverse(enum_name, enum_value, str_value);
-}
-
-int32_t EnumMap_Get(
-    const char *const enum_name, const char *const str_value,
-    int32_t default_value)
-{
-    size_t key_len = strlen(enum_name) + strlen(str_value) + 2;
-    char key[key_len];
-    snprintf(key, key_len, "%s|%s", enum_name, str_value);
-
-    M_ENTRY *entry;
-    HASH_FIND_STR(m_Map, key, entry);
+    const char *const key =
+        String_FormatStatic("%s|%s", enum_type_name, str_value);
+    M_STR_TO_ID_ENTRY *entry;
+    HASH_FIND_STR(*map, key, entry);
     return entry != nullptr ? entry->value : default_value;
 }
 
-const char *EnumMap_ToString(
-    const char *const enum_name, const int32_t enum_value)
+static const char *M_Id2Str(
+    M_ID_TO_STR_ENTRY *const *map, const char *const enum_type_name,
+    const int32_t enum_value)
 {
-    size_t key_len = snprintf(nullptr, 0, "%s|%d", enum_name, enum_value) + 1;
-    char key[key_len];
-    snprintf(key, key_len, "%s|%d", enum_name, enum_value);
-
-    M_INVERSE_ENTRY *entry;
-    HASH_FIND_STR(m_InverseMap, key, entry);
+    const char *const key =
+        String_FormatStatic("%s|%d", enum_type_name, enum_value);
+    M_ID_TO_STR_ENTRY *entry;
+    HASH_FIND_STR(*map, key, entry);
     return entry != nullptr ? entry->str_value : nullptr;
+}
+
+void EnumMap_Define(
+    const char *const enum_type_name, const char *const enum_name,
+    const int32_t enum_value, const char *const str_value)
+{
+    M_DefineStr2Id(&m_Str2IdMap, enum_type_name, enum_value, str_value);
+    M_DefineId2Str(&m_Id2StrMap, enum_type_name, enum_value, str_value);
+    M_DefineId2Str(&m_Id2NameMap, enum_type_name, enum_value, enum_name);
+}
+
+int32_t EnumMap_Get(
+    const char *const enum_type_name, const char *const str_value,
+    int32_t default_value)
+{
+    return M_Str2Id(&m_Str2IdMap, enum_type_name, str_value, default_value);
+}
+
+const char *EnumMap_ToString(
+    const char *const enum_type_name, const int32_t enum_value)
+{
+    return M_Id2Str(&m_Id2StrMap, enum_type_name, enum_value);
+}
+
+const char *EnumMap_GetName(
+    const char *const enum_type_name, const int32_t enum_value)
+{
+    return M_Id2Str(&m_Id2NameMap, enum_type_name, enum_value);
 }
 
 void EnumMap_Shutdown(void)
 {
-    {
-        M_ENTRY *current, *tmp;
-        HASH_ITER(hh, m_Map, current, tmp)
-        {
-            HASH_DEL(m_Map, current);
-            Memory_Free(current->key);
-            Memory_Free(current);
-        }
-    }
-
-    {
-        M_INVERSE_ENTRY *current, *tmp;
-        HASH_ITER(hh, m_InverseMap, current, tmp)
-        {
-            HASH_DEL(m_InverseMap, current);
-            Memory_Free(current->str_value);
-            Memory_Free(current->key);
-            Memory_Free(current);
-        }
-    }
+    M_ClearStr2IdMap(&m_Str2IdMap);
+    M_ClearId2StrMap(&m_Id2StrMap);
+    M_ClearId2StrMap(&m_Id2NameMap);
 }
 
-VECTOR *EnumMap_ListValues(const char *const enum_name)
+VECTOR *EnumMap_ListValues(const char *const enum_type_name)
 {
-    if (enum_name == nullptr) {
+    if (enum_type_name == nullptr) {
         return nullptr;
     }
 
     // Compare the prefix to find the matching enum values.
-    const size_t prefix_len = strlen(enum_name) + 1;
+    const size_t prefix_len = strlen(enum_type_name) + 1;
 
     VECTOR *const results = Vector_Create(sizeof(char *));
-    M_INVERSE_ENTRY *entry;
-    M_INVERSE_ENTRY *tmp;
-    HASH_ITER(hh, m_InverseMap, entry, tmp)
+    M_ID_TO_STR_ENTRY *entry;
+    M_ID_TO_STR_ENTRY *tmp;
+    HASH_ITER(hh, m_Id2StrMap, entry, tmp)
     {
-        if (strncmp(entry->key, enum_name, prefix_len - 1) == 0
+        if (strncmp(entry->key, enum_type_name, prefix_len - 1) == 0
             && entry->key[prefix_len - 1] == '|') {
             Vector_Add(results, &entry->str_value);
         }
