@@ -1,3 +1,4 @@
+import difflib
 from pathlib import Path
 
 
@@ -16,6 +17,21 @@ class VirtualFilesystem:
 
     def put(self, path: Path, content: str) -> None:
         self.files[path] = content
+
+    def show_diff(self) -> None:
+        for path, new_content in self.files.items():
+            old_content = path.read_text()
+            if old_content != new_content:
+                print(
+                    "".join(
+                        difflib.unified_diff(
+                            old_content.splitlines(keepends=True),
+                            new_content.splitlines(keepends=True),
+                            fromfile=str(path),
+                            tofile=str(path),
+                        )
+                    )
+                )
 
     def commit(self) -> None:
         for path, content in self.files.items():
