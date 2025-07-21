@@ -231,6 +231,7 @@
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home
+- fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving
 - fixed transparent eyes on the wolf model in Furnace of the Gods
 - fixed Lara's health bar showing in the Home Sweet Home shower cutscene
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save
