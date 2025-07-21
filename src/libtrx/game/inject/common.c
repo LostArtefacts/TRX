@@ -7,6 +7,7 @@
 #include "game/level.h"
 #include "game/rooms.h"
 #include "memory.h"
+#include "vector.h"
 
 #include <string.h>
 #include <zlib.h>
@@ -21,8 +22,7 @@ static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = nullptr;
 
 static int32_t m_DataCounts[IDT_NUMBER_OF] = {};
-static int32_t m_RoomMetaCount = 0;
-static INJECTION_MESH_META *m_RoomMeta = nullptr;
+static VECTOR *m_RoomMeta = nullptr;
 static LEVEL_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
 
@@ -141,19 +141,21 @@ static void M_InitialiseBlock(
 
     switch (data_type) {
     case IDT_ROOM_EDIT_META: {
-        m_RoomMetaCount = data_count;
-        m_RoomMeta =
-            Memory_Alloc(sizeof(INJECTION_MESH_META) * m_RoomMetaCount);
-        for (int32_t i = 0; i < m_RoomMetaCount; i++) {
-            INJECTION_MESH_META *const meta = &m_RoomMeta[i];
-            meta->room_index = VFile_ReadS16(file);
-            meta->num_vertices = VFile_ReadS16(file);
-            meta->num_quads = VFile_ReadS16(file);
-            meta->num_triangles = VFile_ReadS16(file);
-            meta->num_static_2ds = VFile_ReadS16(file);
+        if (m_RoomMeta == nullptr) {
+            m_RoomMeta = Vector_Create(sizeof(INJECTION_MESH_META));
+        }
+        for (int32_t i = 0; i < data_count; i++) {
+            INJECTION_MESH_META meta = {
+                .room_index = VFile_ReadS16(file),
+                .num_vertices = VFile_ReadS16(file),
+                .num_quads = VFile_ReadS16(file),
+                .num_triangles = VFile_ReadS16(file),
+                .num_static_2ds = VFile_ReadS16(file),
+            };
             if (version >= INJ_VERSION_3) {
-                meta->num_static_3ds = VFile_ReadS16(file);
+                meta.num_static_3ds = VFile_ReadS16(file);
             }
+            Vector_Add(m_RoomMeta, &meta);
         }
 
         return;
@@ -354,11 +356,14 @@ void Inject_Cleanup(void)
     }
 
     Memory_FreePointer(&m_Injections);
-    Memory_FreePointer(&m_RoomMeta);
     Memory_FreePointer(&m_PaletteMap);
     m_NumInjections = 0;
-    m_RoomMetaCount = 0;
     m_CachedInfo = (LEVEL_INFO) {};
+
+    if (m_RoomMeta != nullptr) {
+        Vector_Free(m_RoomMeta);
+        m_RoomMeta = nullptr;
+    }
 
     Benchmark_End(&benchmark, nullptr);
 }
@@ -366,28 +371,21 @@ void Inject_Cleanup(void)
 INJECTION_MESH_META Inject_GetRoomMeshMeta(const int32_t room_index)
 {
     INJECTION_MESH_META summed_meta = {};
-    if (m_Injections == nullptr || m_RoomMetaCount == 0) {
+    if (m_RoomMeta == nullptr) {
         return summed_meta;
     }
 
-    for (int32_t i = 0; i < m_NumInjections; i++) {
-        const INJECTION *const injection = &m_Injections[i];
-        if (!injection->relevant) {
+    for (int32_t i = 0; i < m_RoomMeta->count; i++) {
+        const INJECTION_MESH_META *const meta = Vector_Get(m_RoomMeta, i);
+        if (meta->room_index != room_index) {
             continue;
         }
 
-        for (int32_t j = 0; j < m_RoomMetaCount; j++) {
-            const INJECTION_MESH_META *const meta = &m_RoomMeta[j];
-            if (meta->room_index != room_index) {
-                continue;
-            }
-
-            summed_meta.num_vertices += meta->num_vertices;
-            summed_meta.num_quads += meta->num_quads;
-            summed_meta.num_triangles += meta->num_triangles;
-            summed_meta.num_static_2ds += meta->num_static_2ds;
-            summed_meta.num_static_3ds += meta->num_static_3ds;
-        }
+        summed_meta.num_vertices += meta->num_vertices;
+        summed_meta.num_quads += meta->num_quads;
+        summed_meta.num_triangles += meta->num_triangles;
+        summed_meta.num_static_2ds += meta->num_static_2ds;
+        summed_meta.num_static_3ds += meta->num_static_3ds;
     }
 
     return summed_meta;
