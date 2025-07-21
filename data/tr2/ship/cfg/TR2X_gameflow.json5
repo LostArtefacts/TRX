@@ -104,6 +104,7 @@
             "injections": [
                 "data/injections/boat_bits.bin",
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/venice_fd.bin",
                 "data/injections/venice_music_tracks.bin",
                 "data/injections/venice_textures.bin",
             ],
@@ -487,6 +488,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/venice_fd.bin",
                 "data/injections/venice_music_tracks.bin",
                 "data/injections/venice_textures.bin",
             ],
