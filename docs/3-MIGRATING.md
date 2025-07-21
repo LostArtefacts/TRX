@@ -6,6 +6,29 @@ title: Migrating levels
 
 ## TR1X
 
+### Version 4.13 to 4.14
+
+1. **Update file paths**  
+   - Move and rename the `cfg/TR1X_gameflow.json5` file to `cfg/tr1/gameflow.json5`.
+   - Move and rename the `cfg/TR1X_strings*.json5` files to `cfg/tr1/strings*.json5`.
+   - Move and rename the `cfg/TRX_common_strings*.json5` files to `cfg/base_strings*.json5`.
+   - Remove leftover `TR1X_strings_ub.json5`.
+
+    This is how the directory should look:
+    ```
+    .
+    └── cfg
+        ├── base_strings.json5
+        ├── base_strings-pl.json5 (in case you want to provide translation files)
+        ├── base_strings-….json5 (in case you want to provide translation files)
+        ├── tr1
+        │   ├── gameflow.json5
+        │   ├── strings.json5
+        │   ├── strings-pl.json5 (in case you want to provide translation files)
+        │   └── strings-….json5 (in case you want to provide translation files)
+        └── poses.json5
+    ```
+
 ### Version 4.9 to 4.10
 
 1. **Update fog configuration**  
@@ -49,6 +72,29 @@ title: Migrating levels
    [game strings documentation](4-GAME_STRINGS.md) for more details.
 
 ## TR2X
+
+### Version 1.3 to 1.4
+
+1. **Update file paths**  
+   - Move and rename the `cfg/TR2X_gameflow.json5` file to `cfg/tr2/gameflow.json5`.
+   - Move and rename the `cfg/TR2X_strings*.json5` files to `cfg/tr2/strings*.json5`.
+   - Move and rename the `cfg/TRX_common_strings*.json5` files to `cfg/base_strings*.json5`.
+   - Remove leftover `TR2X_strings_ub.json5`.
+
+    This is how the directory should look:
+    ```
+    .
+    └── cfg
+        ├── base_strings.json5
+        ├── base_strings-pl.json5 (in case you want to provide translation files)
+        ├── base_strings-….json5 (in case you want to provide translation files)
+        ├── tr2
+        │   ├── gameflow.json5
+        │   ├── strings.json5
+        │   ├── strings-pl.json5 (in case you want to provide translation files)
+        │   └── strings-….json5 (in case you want to provide translation files)
+        └── poses.json5
+    ```
 
 ### Version 1.2 to 1.3
 

@@ -1,6 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.2...develop) - ××××-××-××
+>[!WARNING]
+>Attention level builders: this version introduces backwards incompatible changes to the file structure.
+>Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
+
 - added ability to move Lara around in photo mode
 - added German translation
+- changed the game flow and game strings file placement
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
@@ -338,9 +343,9 @@ Showcase: https://www.youtube.com/watch?v=td2Qz3nbRVo
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the game flow file.
 >Please refer to the following documents to see how to update your levels:
->- [Migration guide](../MIGRATING.md)
->- [Game flow documentation](../GAME_FLOW/)
->- [Game strings documentation](../GAME_STRINGS.md)
+>- [Migration guide](../3-MIGRATING.md)
+>- [Game flow documentation](../5-game_flow/)
+>- [Game strings documentation](../4-GAME_STRINGS.md)
 
 - added the ability to hold left/right to move through menus more quickly (#2298)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (#2076)

@@ -26,27 +26,27 @@ typedef struct {
 } SHELL_ARGS;
 
 static SDL_Window *m_Window = nullptr;
-static const char *const m_CommonStringsPath = "cfg/TRX_common_strings.json5";
+static const char *const m_CommonStringsPath = "cfg/base_strings.json5";
 
 static struct {
     char *game_flow_path;
     char *game_strings_path;
 } m_ModPaths[] = {
     [M_MOD_OG] = {
-        .game_flow_path = "cfg/TR1X_gameflow.json5",
-        .game_strings_path = "cfg/TR1X_strings.json5",
+        .game_flow_path = "cfg/tr1/gameflow.json5",
+        .game_strings_path = "cfg/tr1/strings.json5",
     },
     [M_MOD_UB] = {
-        .game_flow_path = "cfg/TR1X_gameflow_ub.json5",
-        .game_strings_path = "cfg/TR1X_strings_ub.json5",
+        .game_flow_path = "cfg/tr1-ub/gameflow.json5",
+        .game_strings_path = "cfg/tr1-ub/strings.json5",
     },
     [M_MOD_DEMO_PC] = {
-        .game_flow_path = "cfg/TR1X_gameflow_demo_pc.json5",
-        .game_strings_path = "cfg/TR1X_strings_demo_pc.json5",
+        .game_flow_path = "cfg/tr1-demo-pc/gameflow.json5",
+        .game_strings_path = "cfg/tr1-demo-pc/strings.json5",
     },
     [M_MOD_CUSTOM_LEVEL] = {
-        .game_flow_path = "cfg/TR1X_gameflow_level.json5",
-        .game_strings_path = "cfg/TR1X_strings_level.json5",
+        .game_flow_path = "cfg/tr1-level/gameflow.json5",
+        .game_strings_path = "cfg/tr1-level/strings.json5",
     },
 };
 

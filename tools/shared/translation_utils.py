@@ -29,6 +29,11 @@ def is_translation_file(path: Path) -> bool:
     return path.suffix == ".json5" and "-" in path.stem
 
 
+def is_mod_file(path: Path) -> bool:
+    """Return True if `path.parent` belongs to an extension/mod rather than the base game."""
+    return "-" in path.parent.name
+
+
 def find_base_file(path: Path) -> Path:
     """
     Given a translation file path ending in '-<lang>.json5', return the corresponding base file path '<prefix>.json5'.

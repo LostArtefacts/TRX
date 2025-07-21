@@ -1,7 +1,12 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...develop) - ××××-××-××
+>[!WARNING]
+>Attention level builders: this version introduces backwards incompatible changes to the file structure.
+>Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
+
 - added ability to move Lara around in photo mode (use sidestep keys to switch modes)
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
+- changed the game flow and game strings file placement
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
