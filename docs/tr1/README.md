@@ -45,14 +45,48 @@ less like this (click to expand):
 .
 ├── cfg
 │   ├── TR1X.json5 *
-│   ├── TR1X_gameflow.json5
-│   ├── TR1X_gameflow_demo_pc.json5
-│   ├── TR1X_gameflow_level.json5
-│   ├── TR1X_gameflow_ub.json5
-│   ├── TR1X_strings.json5
-│   ├── TR1X_strings_demo_pc.json5
-│   ├── TR1X_strings_level.json5
-│   └── TR1X_strings_ub.json5
+│   ├── TR1X_console_history.json5 *
+│   ├── base_strings.json5
+│   ├── base_strings-de.json5
+│   ├── base_strings-en-gb.json5
+│   ├── base_strings-fr.json5
+│   ├── base_strings-gd.json5
+│   ├── base_strings-it.json5
+│   ├── base_strings-pl.json5
+│   ├── tr1
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-en-gb.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings.json5
+│   │   └── strings-pl.json5
+│   ├── tr1-demo-pc
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings.json5
+│   │   └── strings-pl.json5
+│   ├── tr1-level
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings.json5
+│   │   └── strings-pl.json5
+│   ├── tr1-ub
+│   │   ├── gameflow_ub.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings.json5
+│   │   └── strings-pl.json5
+│   └── poses.json5
 ├── data
 │   ├── cat.phd
 │   ├── cut1.phd
@@ -190,7 +224,7 @@ less like this (click to expand):
 │   ├── common.glsl
 │   ├── fbo.glsl
 │   └── sprites.glsl
-├── TR1X.exe
+└── TR1X.exe
 </pre>
 </details>
 
@@ -247,8 +281,8 @@ less like this (click to expand):
         │   ├── level8a.phd
         │   ├── level8b.phd
         │   ├── level8c.phd
-        │   │── title.phd
-        │   │── images
+        │   ├── title.phd
+        │   ├── images
         │   │   ├── atlantis.webp
         │   │   ├── credits_1.webp
         │   │   ├── credits_2.webp

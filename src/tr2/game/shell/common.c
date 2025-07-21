@@ -31,23 +31,23 @@ typedef struct {
 } SHELL_ARGS;
 
 static SDL_Window *m_Window = nullptr;
-static const char *const m_CommonStringsPath = "cfg/TRX_common_strings.json5";
+static const char *const m_CommonStringsPath = "cfg/base_strings.json5";
 
 static struct {
     char *game_flow_path;
     char *game_strings_path;
 } m_ModPaths[] = {
     [M_MOD_OG] = {
-        .game_flow_path = "cfg/TR2X_gameflow.json5",
-        .game_strings_path = "cfg/TR2X_strings.json5",
+        .game_flow_path = "cfg/tr2/gameflow.json5",
+        .game_strings_path = "cfg/tr2/strings.json5",
     },
     [M_MOD_GM] = {
-        .game_flow_path = "cfg/TR2X_gameflow_gm.json5",
-        .game_strings_path = "cfg/TR2X_strings_gm.json5",
+        .game_flow_path = "cfg/tr2-gm/gameflow.json5",
+        .game_strings_path = "cfg/tr2-gm/strings.json5",
     },
     [M_MOD_CUSTOM_LEVEL] = {
-        .game_flow_path = "cfg/TR2X_gameflow_level.json5",
-        .game_strings_path = "cfg/TR2X_strings_level.json5",
+        .game_flow_path = "cfg/tr2-level/gameflow.json5",
+        .game_strings_path = "cfg/tr2-level/strings.json5",
     },
 };
 

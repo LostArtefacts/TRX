@@ -37,12 +37,40 @@ less like this (click to expand):
 .
 ├── cfg
 │   ├── TR2X.json5 *
-│   ├── TR2X_gameflow.json5
-│   ├── TR2X_gameflow_gm.json5
-│   ├── TR2X_gameflow_level.json5
-│   ├── TR2X_strings.json5
-│   ├── TR2X_strings_gm.json5
-│   └── TR2X_strings_level.json5
+│   ├── TR2X_console_history.json5 *
+│   ├── base_strings.json5
+│   ├── base_strings-en-gb.json5
+│   ├── base_strings-de.json5
+│   ├── base_strings-fr.json5
+│   ├── base_strings-gd.json5
+│   ├── base_strings-it.json5
+│   ├── base_strings-pl.json5
+│   ├── tr2
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-en-gb.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   └── strings.json5
+│   ├── tr2-gm
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   └── strings.json5
+│   ├── tr2-level
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   └── strings.json5
+│   └── poses.json5
 ├── data
 │   ├── assault.tr2
 │   ├── boat.tr2

@@ -13,6 +13,7 @@ from shared.paths import DATA_DIR, PROJECT_PATHS, CommonPaths
 from shared.translation_utils import (
     REVIEW_MARKER,
     format_strings_file,
+    is_mod_file,
     is_translation_file,
     should_skip_object_name,
 )
@@ -126,6 +127,8 @@ def process_game_strings(
         # Skip translation files; handle only base (English) files here
         if is_translation_file(path):
             continue
+        if is_mod_file(path):
+            continue
 
         old_content = path.read_text()
         new_content = old_content
@@ -150,6 +153,8 @@ def process_object_names(
     for path in target_dir.rglob("*strings.json*"):
         # Skip translation files; handle only base (English) files here
         if is_translation_file(path):
+            continue
+        if is_mod_file(path):
             continue
         old_content = vfs.get(path)
         new_content = old_content

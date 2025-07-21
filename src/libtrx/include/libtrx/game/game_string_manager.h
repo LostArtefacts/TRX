@@ -18,7 +18,7 @@ void GameStringManager_Shutdown(void);
 void GameStringManager_ClearSourceFiles(void);
 
 // Add a source strings file for language discovery and loading.
-// base_path: path to a base strings JSON5 file (e.g. cfg/TR1X_strings.json5).
+// base_path: path to a base strings JSON5 file (e.g. cfg/common_strings.json5).
 // load_levels: true to load level names from this source; false otherwise.
 void GameStringManager_AddSourceFile(const char *base_path, bool load_levels);
 
