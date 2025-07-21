@@ -23,23 +23,26 @@ static void M_ReadBounds16(BOUNDS_16 *const bounds, VFILE *const file)
 
 static void M_HandleObjectData(const INJECTION_CHUNK chunk)
 {
-    ASSERT(chunk.num_blocks == 1);
-    const INJECTION_DATA_TYPE data_type = VFile_ReadS32(chunk.injection->fp);
-    const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-    VFile_Skip(chunk.injection->fp, sizeof(int32_t));
-
     m_ProcessedMeshes = Vector_Create(sizeof(OBJECT_MESH *));
-    for (int32_t i = 0; i < data_count; i++) {
-        switch (data_type) {
-        case IDT_OBJECTS:
-            M_ReadObject(chunk);
-            break;
-        case IDT_STATIC_OBJECTS:
-            M_ReadStaticObject3D(chunk);
-            break;
-        default:
-            LOG_WARNING("Unrecognised object data type %d", data_type);
-            break;
+    for (int32_t i = 0; i < chunk.num_blocks; i++) {
+        const INJECTION_DATA_TYPE data_type =
+            VFile_ReadS32(chunk.injection->fp);
+        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
+        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        for (int32_t j = 0; j < data_count; j++) {
+            switch (data_type) {
+            case IDT_OBJECTS:
+                M_ReadObject(chunk);
+                break;
+            case IDT_STATIC_OBJECTS:
+                M_ReadStaticObject3D(chunk);
+                break;
+            default:
+                LOG_WARNING("Unrecognised object data type %d", data_type);
+                VFile_Skip(chunk.injection->fp, data_size);
+                break;
+            }
         }
     }
 
