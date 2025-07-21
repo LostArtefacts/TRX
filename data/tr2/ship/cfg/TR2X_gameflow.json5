@@ -86,6 +86,7 @@
                 "data/injections/wall_cameras.bin",
                 "data/injections/wall_itemrots.bin",
                 "data/injections/wall_music_tracks.bin",
+                "data/injections/wall_textures.bin",
             ],
         },
 
@@ -170,6 +171,7 @@
                 "data/injections/rig_itemrots.bin",
                 "data/injections/rig_music_tracks.bin",
                 "data/injections/rig_pickup_meshes.bin",
+                "data/injections/rig_textures.bin",
             ],
         },
 
@@ -191,6 +193,7 @@
                 "data/injections/diving_itemrots.bin",
                 "data/injections/diving_music_tracks.bin",
                 "data/injections/diving_pickup_meshes.bin",
+                "data/injections/diving_textures.bin",
             ],
         },
 
@@ -211,6 +214,7 @@
                 "data/injections/fathoms_goon_sfx.bin",
                 "data/injections/fathoms_music_tracks.bin",
                 "data/injections/fathoms_secret_fd.bin",
+                "data/injections/fathoms_textures.bin",
             ],
         },
 
@@ -234,6 +238,7 @@
                 "data/injections/wreck_music_tracks.bin",
                 "data/injections/wreck_pickup_meshes.bin",
                 "data/injections/wreck_secret_fd.bin",
+                "data/injections/wreck_textures.bin",
             ],
         },
 
@@ -254,6 +259,7 @@
                 "data/injections/living_music_tracks.bin",
                 "data/injections/living_pickup_meshes.bin",
                 "data/injections/living_secret_fd.bin",
+                "data/injections/living_textures.bin",
                 "data/injections/seaweed_collision.bin",
             ],
         },
@@ -277,6 +283,7 @@
                 "data/injections/deck_music_tracks.bin",
                 "data/injections/deck_pickup_meshes.bin",
                 "data/injections/deck_secret_fd.bin",
+                "data/injections/deck_textures.bin",
                 "data/injections/living_deck_goon_sfx.bin",
             ],
         },
@@ -299,6 +306,7 @@
                 "data/injections/tibet_fd.bin",
                 "data/injections/tibet_itemrots.bin",
                 "data/injections/tibet_music_tracks.bin",
+                "data/injections/tibet_textures.bin",
             ],
         },
 
@@ -341,6 +349,7 @@
                 "data/injections/catacombs_fd.bin",
                 "data/injections/catacombs_itemrots.bin",
                 "data/injections/catacombs_music_tracks.bin",
+                "data/injections/catacombs_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
             ],
         },
@@ -363,6 +372,7 @@
                 "data/injections/palace_itemrots.bin",
                 "data/injections/palace_music_tracks.bin",
                 "data/injections/palace_secret_fd.bin",
+                "data/injections/palace_textures.bin",
             ],
         },
 
@@ -384,6 +394,7 @@
                 "data/injections/xian_itemrots.bin",
                 "data/injections/xian_music_tracks.bin",
                 "data/injections/xian_pickup_meshes.bin",
+                "data/injections/xian_textures.bin",
             ],
         },
 
@@ -404,6 +415,7 @@
                 "data/injections/floating_itemrots.bin",
                 "data/injections/floating_music_tracks.bin",
                 "data/injections/floating_pickup_meshes.bin",
+                "data/injections/floating_textures.bin",
             ],
         },
 
@@ -476,6 +488,7 @@
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/venice_music_tracks.bin",
+                "data/injections/venice_textures.bin",
             ],
         },
 
@@ -495,6 +508,7 @@
                 "data/injections/wreck_itemrots.bin",
                 "data/injections/wreck_music_tracks.bin",
                 "data/injections/wreck_pickup_meshes.bin",
+                "data/injections/wreck_textures.bin",
             ],
         },
 
@@ -513,6 +527,7 @@
                 "data/injections/tibet_fd.bin",
                 "data/injections/tibet_itemrots.bin",
                 "data/injections/tibet_music_tracks.bin",
+                "data/injections/tibet_textures.bin",
             ],
         },
     ],
@@ -534,6 +549,7 @@
             "music_track": 3,
             "sequence": [{"type": "loop_game"}],
             "injections": [
+                "data/injections/cut2_textures.bin",
                 "data/injections/photo.bin",
             ],
         },
@@ -542,6 +558,7 @@
             "music_track": 4,
             "sequence": [{"type": "loop_game"}],
             "injections": [
+                "data/injections/cut3_textures.bin",
                 "data/injections/photo.bin",
             ],
         },

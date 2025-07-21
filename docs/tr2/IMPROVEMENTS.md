@@ -206,6 +206,27 @@
     - **The Deck**: room 42
     - **Barkhang Monastery**: room 26
     - **Kingdom**: room 80
+- fixed the following room texture issues:
+    - **Gym**: stretched textures in room 65; misaligned textures in rooms 9, 36, 57; incorrect textures on mesh 58 in room 13
+    - **The Great Wall**: incorrect and stretched textures in rooms 30, 36, 59
+    - **Venice**: misaligned and stretched textures in room 36; missing textures in room 42; an incorrect texture in room 77
+    - **Bartoli's Hideout**: stretched textures in rooms 17, 29, 51, 73, 143, 145, 146; incorrect textures in rooms 46, 127, 131; misaligned textures in room 108; missing textures on mesh 30 in room 20
+    - **Opera House**: an incorrect texture in room 176; a stretched texture in room 122
+    - **Offshore Rig**: stretched textures in room 11, 35, 81; traversable opaque texture between rooms 11 and 8
+    - **Diving Area**: incorrect textures in rooms 28, 30; a stretched texture in room 77; misaligned textures in room 23; missing diving suit rack in room 77 (per cutscene)
+    - **40 Fathoms**: stretched textures in rooms 2, 11, 12
+    - **Wreck of the Maria Doria**: stretched textures in rooms 80, 104; transparent pixels in light bulb texture e.g. room 31
+    - **Living Quarters**: incorrect textures in room 43
+    - **The Deck**: stretched textures in rooms 1, 47, 60, 80, 84, 85; incorrect textures in rooms 60, 68, 113
+    - **Tibetan Foothills**: a missing texture in room 143; stretched textures in rooms 12, 15, 28, 40
+    - **Barkhang Monastery**: a misaligned texture in room 23; stretched textures in rooms 25, 70, 87, 94; an incorrect texture in room 45
+    - **Catcombs of the Talion**: missing textures in room 40; stretched textures in rooms 11, 40; incorrect textures in rooms 11, 56
+    - **Ice Palace**: missing textures in room 31; stretched textures in rooms 31, 52
+    - **Temple of Xian**: a misaligned texture in room 190; stretched textures in rooms 17, 18, 79; missing textures in rooms 8, 10, 90, 91, 92; an incorrect texture in room 23; z-fighting in room 92
+    - **Floating Islands**: incorrect textures in rooms 27, 32, 41, 58, 73, 157; misaligned textures in room 60; stretched textures in rooms 41, 73, 98, 101, 133
+    - **Home Sweet Home**: stretched textures in rooms 2, 61; misaligned textures in rooms 9, 34, 54; incorrect textures in rooms 61, 63; incorrect textures on mesh 58 in room 12, and meshes 124 and 126 in room 58
+    - **Furnace of the Gods**: stretched textures in room 10; incorrect textures in rooms 99, 101, 108, 120
+    - **Nightmare in Vegas**: transparent pixels on mesh 3 in room 8 and 10; incorrect textures on mesh 17 in rooms 21 and 28; a misaligned texture in room 4
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
