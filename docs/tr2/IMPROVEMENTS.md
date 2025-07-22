@@ -208,7 +208,7 @@
     - **Barkhang Monastery**: room 26
     - **Kingdom**: room 80
 - fixed the following room texture issues:
-    - **Gym**: stretched textures in room 65; misaligned textures in rooms 9, 36, 57; incorrect textures on mesh 58 in room 13
+    - **Gym**: stretched textures in room 65; misaligned textures in rooms 9, 36, 57; incorrect textures on mesh 58 in room 13; gold idol sprite in room 53 replaced with 3D mesh
     - **The Great Wall**: incorrect and stretched textures in rooms 30, 36, 59
     - **Venice**: misaligned and stretched textures in room 36; missing textures in room 42; an incorrect texture in room 77
     - **Bartoli's Hideout**: stretched textures in rooms 17, 29, 51, 73, 143, 145, 146; incorrect textures in rooms 46, 127, 131; misaligned textures in room 108; missing textures on mesh 30 in room 20
