@@ -717,8 +717,8 @@
         "pickup_aid": {
             "name": "Pomoc do znajdziek",
         },
-        "temp_7": {
-            "name": "Nieużywane 7",
+        "glow": {
+            "name": "\\{review}Poświata",
         },
         "temp_8": {
             "name": "Nieużywane 8",

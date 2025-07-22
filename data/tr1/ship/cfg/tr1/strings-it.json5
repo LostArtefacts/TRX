@@ -729,8 +729,8 @@
         "pickup_aid": {
             "name": "Segnalazione Oggetti",
         },
-        "temp_7": {
-            "name": "Temp 7",
+        "glow": {
+            "name": "\\{review}Bagliore",
         },
         "temp_8": {
             "name": "Temp 8",
