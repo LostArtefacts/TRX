@@ -1,7 +1,3 @@
-<p align="center">
-<img alt="TR1X logo" src="/data/tr1/logo.png" width="400"/>
-</p>
-
 ## Windows / Linux
 
 ### Installing (simplified)
@@ -39,7 +35,7 @@ We hope that eventually these alerts will go away as the popularity of the proje
 If you install everything correctly, your game directory should look more or
 less like this (click to expand):
 
-<details>
+<details data-id="file-tree-win">
 <p><em>* Will not be present until the game has been launched.</em></p>
 <pre>
 .
@@ -207,7 +203,7 @@ less like this (click to expand):
 If you install everything correctly, your game directory should look more or
 less like this (click to expand):
 
-<details>
+<details data-id="file-tree-mac">
 <p><em>* Will not be present until the game has been launched.</em></p>
 <pre>
 .
