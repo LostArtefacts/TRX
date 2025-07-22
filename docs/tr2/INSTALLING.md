@@ -176,6 +176,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── deck_plants.bin
 │   │   ├── deck_secret_fd.bin
 │   │   ├── deck_textures.bin
+│   │   ├── door107_sfx.bin
+│   │   ├── door108_sfx.bin
+│   │   ├── door111_sfx.bin
 │   │   ├── diving_cameras.bin
 │   │   ├── diving_itemrots.bin
 │   │   ├── diving_music_tracks.bin
@@ -224,6 +227,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── living_music_tracks.bin
 │   │   ├── living_pickup_meshes.bin
 │   │   ├── living_secret_fd.bin
+│   │   ├── living_sfx.bin
 │   │   ├── living_textures.bin
 │   │   ├── loose_boards_sfx.bin
 │   │   ├── opera_fd.bin

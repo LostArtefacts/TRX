@@ -257,6 +257,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed being unable to load a level that contains no sound effect data
 - fixed the panther at times not making a sound when it dies
 - fixed being unable to re-purpose some gym music tracks in custom levels
+- fixed missing door/trapdoor sound effects in Vilcabamba, Natla's Mines, Atlantis and Great Pyramid
 - restored Skate Kid's death SFX
 
 ## Mods

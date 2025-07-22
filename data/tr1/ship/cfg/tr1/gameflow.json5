@@ -100,6 +100,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/vilcabamba_door_sfx.bin",
                 "data/injections/vilcabamba_itemrots.bin",
                 "data/injections/vilcabamba_textures.bin",
             ],
@@ -309,6 +310,7 @@
             ],
             "injections": [
                 "data/injections/mines_cameras.bin",
+                "data/injections/mines_door_sfx.bin",
                 "data/injections/mines_fd.bin",
                 "data/injections/mines_itemrots.bin",
                 "data/injections/mines_meshfixes.bin",
@@ -339,6 +341,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/atlantis_door_sfx.bin",
                 "data/injections/atlantis_fd.bin",
                 "data/injections/atlantis_textures.bin",
             ],
@@ -363,6 +366,7 @@
                 {"type": "total_stats", "background_path": "data/images/install.webp"},
             ],
             "injections": [
+                "data/injections/atlantis_door_sfx.bin",
                 "data/injections/pyramid_fd.bin",
                 "data/injections/pyramid_textures.bin",
                 "data/injections/scion_collision.bin",
@@ -399,6 +403,7 @@
             "path": "data/level2.phd",
             "music_track": 57,
             "injections": [
+                "data/injections/vilcabamba_door_sfx.bin",
                 "data/injections/vilcabamba_itemrots.bin",
                 "data/injections/vilcabamba_textures.bin",
             ],

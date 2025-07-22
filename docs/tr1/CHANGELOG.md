@@ -11,6 +11,7 @@
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
+- fixed missing door/trapdoor sound effects in Vilcabamba, Natla's Mines, Atlantis and Great Pyramid (#3408, #3374)
 - improved object loading error messages when an invalid object ID is detected
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 
