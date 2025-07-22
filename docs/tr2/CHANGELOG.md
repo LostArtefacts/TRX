@@ -8,6 +8,7 @@
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 - fixed several OG texture issues; refer to `IMPROVEMENTS.md` for details (#2082, #3187, #3372, #3516)
 - fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving (#3559)
+- fixed French translations containing Italian text in some cases (#3567)
 - improved object loading error messages when an invalid object ID is detected
 - improved projectiles
     - changed conventional weapons to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
