@@ -20,12 +20,19 @@ class VirtualFilesystem:
 
     def show_diff(self) -> None:
         for path, new_content in self.files.items():
-            old_content = path.read_text()
+            if path.exists():
+                old_content = path.read_text()
+            else:
+                old_content = None
             if old_content != new_content:
                 print(
                     "".join(
                         difflib.unified_diff(
-                            old_content.splitlines(keepends=True),
+                            (
+                                old_content.splitlines(keepends=True)
+                                if old_content
+                                else []
+                            ),
                             new_content.splitlines(keepends=True),
                             fromfile=str(path),
                             tofile=str(path),
@@ -35,5 +42,6 @@ class VirtualFilesystem:
 
     def commit(self) -> None:
         for path, content in self.files.items():
-            if path.read_text() != content:
+            if not path.exists() or path.read_text() != content:
+                path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content)
