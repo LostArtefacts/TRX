@@ -99,6 +99,10 @@ static SDL_GameControllerType m_ControllerType = SDL_CONTROLLER_TYPE_UNKNOWN;
 
 static bool m_Conflicts[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {};
 
+// Internal controller state tables updated via SDL events
+static bool m_ButtonState[SDL_CONTROLLER_BUTTON_MAX] = {};
+static int16_t m_AxisState[SDL_CONTROLLER_AXIS_MAX] = {};
+
 static const char *M_GetButtonName(SDL_GameControllerButton button);
 static const char *M_GetAxisName(SDL_GameControllerAxis axis, int16_t axis_dir);
 
@@ -122,6 +126,7 @@ static void M_CheckConflicts(INPUT_LAYOUT layout);
 static SDL_GameController *M_FindController(void);
 
 static void M_Init(void);
+static void M_ProcessEvent(const SDL_Event *event);
 static void M_Shutdown(void);
 static void M_Discover(void);
 static bool M_CustomUpdate(INPUT_STATE *result, INPUT_LAYOUT layout);
@@ -226,27 +231,47 @@ static const char *M_GetButtonName(const SDL_GameControllerButton button)
     }
 }
 
+// Update internal controller button/axis state from SDL events.
+// @param event     Event to process.
+static void M_ProcessEvent(const SDL_Event *const event)
+{
+    switch (event->type) {
+    case SDL_CONTROLLERBUTTONDOWN:
+        m_ButtonState[event->cbutton.button] = true;
+        break;
+    case SDL_CONTROLLERBUTTONUP:
+        m_ButtonState[event->cbutton.button] = false;
+        break;
+    case SDL_CONTROLLERAXISMOTION: {
+        const Sint16 value = event->caxis.value;
+        if (value < -SDL_JOYSTICK_AXIS_MAX / 2) {
+            m_AxisState[event->caxis.axis] = -1;
+        } else if (value > SDL_JOYSTICK_AXIS_MAX / 2) {
+            m_AxisState[event->caxis.axis] = 1;
+        } else {
+            m_AxisState[event->caxis.axis] = 0;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 static bool M_JoyBtn(const SDL_GameControllerButton button)
 {
-    if (m_Controller == nullptr) {
+    if (m_Controller == nullptr || button == SDL_CONTROLLER_BUTTON_INVALID) {
         return false;
     }
-    return SDL_GameControllerGetButton(m_Controller, button);
+    return m_ButtonState[button];
 }
 
 static int16_t M_JoyAxis(const SDL_GameControllerAxis axis)
 {
-    if (m_Controller == nullptr) {
+    if (m_Controller == nullptr || axis == SDL_CONTROLLER_AXIS_INVALID) {
         return false;
     }
-    const Sint16 value = SDL_GameControllerGetAxis(m_Controller, axis);
-    if (value < -SDL_JOYSTICK_AXIS_MAX / 2) {
-        return -1;
-    }
-    if (value > SDL_JOYSTICK_AXIS_MAX / 2) {
-        return 1;
-    }
-    return 0;
+    return m_AxisState[axis];
 }
 
 static bool M_GetBindState(const INPUT_LAYOUT layout, const INPUT_ROLE role)
@@ -575,6 +600,7 @@ INPUT_BACKEND_IMPL g_Input_Controller = {
     .init = M_Init,
     .shutdown = M_Shutdown,
     .discover = M_Discover,
+    .process_event = M_ProcessEvent,
     .custom_update = M_CustomUpdate,
     .is_pressed = M_IsPressed,
     .is_role_conflicted = M_IsRoleConflicted,

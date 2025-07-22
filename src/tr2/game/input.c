@@ -134,7 +134,7 @@ void Input_Update(void)
     g_InputDB = Input_GetDebounced(g_Input);
 
     if (Input_IsInListenMode()) {
-        g_Input = (INPUT_STATE) {};
-        g_InputDB = (INPUT_STATE) {};
+        g_Input.any = 0;
+        g_InputDB.any = 0;
     }
 }

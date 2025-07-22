@@ -3,6 +3,7 @@
 #include "engine/audio.h"
 #include "game/console/common.h"
 #include "game/fmv.h"
+#include "game/input/common.h"
 #include "game/shell.h"
 #include "game/ui.h"
 
@@ -181,6 +182,7 @@ void Shell_ProcessEvents(void)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
+        Input_ProcessEvent(&event);
         if (M_ProcessEvent(&event)) {
             continue;
         }

@@ -2,6 +2,7 @@
 
 #include "../../json.h"
 
+#include <SDL2/SDL.h>
 #include <stdint.h>
 
 typedef enum {
@@ -42,6 +43,10 @@ void Input_Init(void);
 void Input_Shutdown(void);
 void Input_Discover(void);
 void Input_Update(void);
+
+// Processes a SDL event to update global input state before polling.
+// @param event     Event to process.
+void Input_ProcessEvent(const SDL_Event *event);
 
 // Checks whether the given role can be assigned to by the player.
 // Hard-coded roles are exempt from conflict checks (eg will never flash in the

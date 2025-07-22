@@ -242,6 +242,16 @@ bool Input_IsInListenMode(void)
     return m_ListenMode;
 }
 
+void Input_ProcessEvent(const SDL_Event *event)
+{
+    if (g_Input_Keyboard.process_event) {
+        g_Input_Keyboard.process_event(event);
+    }
+    if (g_Input_Controller.process_event) {
+        g_Input_Controller.process_event(event);
+    }
+}
+
 bool Input_AssignFromJSONObject(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     JSON_OBJECT *const bind_obj)
