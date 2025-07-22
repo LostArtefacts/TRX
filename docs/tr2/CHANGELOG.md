@@ -6,6 +6,7 @@
 - added ability to move Lara around in photo mode (use sidestep keys to switch modes)
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
+- added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
 - changed the game flow and game strings file placement
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)

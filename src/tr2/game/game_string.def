@@ -14,6 +14,7 @@ GS_DEFINE(ENUM_INPUT_ROLE_TOGGLE_Z_BUFFER, "Toggle Z Buffer")
 GS_DEFINE(ENUM_INPUT_ROLE_USE_FLARE, "Flare")
 
 // Setting descriptions
+GS_DEFINE(SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION,  "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.")
 GS_DEFINE(SETTING_FIX_BEAR_AI_DESCRIPTION,           "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.")
 GS_DEFINE(SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION, "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.")
 GS_DEFINE(SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION,   "Enables dynamic lighting to be generated for gunshots and explosions.")

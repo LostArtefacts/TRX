@@ -176,6 +176,7 @@
 - added an option to disable Lara's braid
 - added optional dynamic lighting for flames
 - added the ability to use `.avi`, `.mkv`, `.mp4`, `.mpeg`, and `.webm` files for FMVs
+- added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode

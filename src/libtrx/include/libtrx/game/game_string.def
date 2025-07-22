@@ -320,7 +320,6 @@ GS_DEFINE(SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION,          "Color of the enem
 GS_DEFINE(SETTING_ENEMY_HEALTHBAR_LOCATION_DESCRIPTION,       "Location where the enemy healthbar is displayed.")
 GS_DEFINE(SETTING_ENEMY_HEALTHBAR_SHOW_MODE_DESCRIPTION,      "Enables showing a healthbar for the active enemy.")
 GS_DEFINE(SETTING_FIX_ALLIGATOR_AI_DESCRIPTION,               "Fixes alligators dealing no damage if Lara remains still in the water.")
-GS_DEFINE(SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION,           "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.")
 GS_DEFINE(SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION,           "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.")
 GS_DEFINE(SETTING_FIX_DESCENDING_GLITCH_DESCRIPTION,          "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath.")
 GS_DEFINE(SETTING_FIX_FLARE_THROW_PRIORITY_DESCRIPTION,       "Fixes Lara prioritising throwing a spent flare while in mid-air, which can lead to being unable to grab ledges.")

@@ -449,7 +449,6 @@
         "SETTING_FIX_ALLIGATOR_AI": "Càraich AI ailigeutair",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Càradh far nach dèan ailigeutairean milleadh ma dh'fhanas Lara fhathast anns an uisge.",
         "SETTING_FIX_ANIMATED_SPRITES": "Càraich beòthachaidhean spraidean",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Càradh bugan san t-Siasarn is Uaigh Tihocan far nach gluais planntrais anns an uisge.",
         "SETTING_FIX_BEAR_AI": "Càraich AI mathain",
         "SETTING_FIX_BRIDGE_COLLISION": "Càraich buaidh dhrochaidean",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Càradh far nach urrainn do Lara grèim fhaighinn air cuid de dhrochaidean, agus bugan le ballachan neo-fhaicsinneach. Càraidh seo cuideachd duilgheadasan le drochaidean, dorsan-trapa is làr-lùbte nuair a tha iad air an cur thairis air chèile neo ri talamh claon.",

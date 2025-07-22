@@ -177,5 +177,6 @@
 
     "hidden_config": [
         "enable_item_examining", // TR2G has no special item descriptions
+        "fix_animated_sprites",
     ],
 }

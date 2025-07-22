@@ -710,6 +710,7 @@
         "PASSPORT_RESTART_LEVEL": "Recommencer le niveau",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Génère un éclairage dynamique pour les coups de feu et les explosions, comme apparu depuis TR2.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques de La Citerne et de la Tombe de Tihocan.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",
         "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Empêche Lara de tirer avec le fusil si la cible verrouillée sort du champ de vision, comme pour les autres armes.",
         "STATS_AMMO": "TIRS RÉUSSIS/EFFECTUÉS",

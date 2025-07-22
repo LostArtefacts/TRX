@@ -6,6 +6,7 @@ GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_MAGNUMS, "Equip Magnums")
 // Setting descriptions
 GS_DEFINE(SETTING_ENABLE_GAME_MODES_DESCRIPTION,     "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage.\n- Japanese NG+: combination of New Game+ and Japanese NG.")
 GS_DEFINE(SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION,   "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.")
+GS_DEFINE(SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION,  "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.")
 GS_DEFINE(SETTING_FIX_BEAR_AI_DESCRIPTION,           "Fixes the bear pat attack so it does not miss Lara.")
 GS_DEFINE(SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION, "Makes the shotgun no longer fire when a locked target moves out of Lara's sight, similar to other guns.")
 

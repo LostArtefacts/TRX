@@ -4,9 +4,9 @@ X_UI_CFG_BOOL(visuals.fix_item_rots,                SETTING_FIX_ITEM_ROTS, .cust
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.load_music_triggers,            SETTING_LOAD_MUSIC_TRIGGERS)
-X_UI_CFG_BOOL(visuals.fix_animated_sprites,         SETTING_FIX_ANIMATED_SPRITES)
 #endif
 
+X_UI_CFG_BOOL(visuals.fix_animated_sprites,         SETTING_FIX_ANIMATED_SPRITES)
 X_UI_CFG_BOOL(gameplay.fix_bridge_collision,        SETTING_FIX_BRIDGE_COLLISION)
 
 #if TR_VERSION == 2
