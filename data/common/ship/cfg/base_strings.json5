@@ -449,7 +449,6 @@
         "SETTING_FIX_ALLIGATOR_AI": "Fix alligator AI",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Fixes alligators dealing no damage if Lara remains still in the water.",
         "SETTING_FIX_ANIMATED_SPRITES": "Fix sprite animations",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.",
         "SETTING_FIX_BEAR_AI": "Fix bear AI",
         "SETTING_FIX_BRIDGE_COLLISION": "Fix bridge collision",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.",

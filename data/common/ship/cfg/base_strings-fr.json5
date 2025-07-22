@@ -449,7 +449,6 @@
         "SETTING_FIX_ALLIGATOR_AI": "Corriger l'IA des aligators",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Corrige le fait que les alligators n'infligent aucun dégât si Lara reste immobile dans l'eau.",
         "SETTING_FIX_ANIMATED_SPRITES": "Corriger les sprites animées",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques de La Citerne et de la Tombe de Tihocan.",
         "SETTING_FIX_BEAR_AI": "Corriger l'IA des ours",
         "SETTING_FIX_BRIDGE_COLLISION": "Corriger la colision des ponts",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Corrige l'impossibilité pour Lara de s'accrocher à des certaines parties de ponts et les murs invisibles à leurs bordures. Corrige également les problèmes de colision pour les ponts-levis, les trappes et les ponts lorsqu'ils sont les uns au-dessus des autres, au-dessus de pentes, ou près du sol.",

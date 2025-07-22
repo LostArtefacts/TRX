@@ -11,6 +11,7 @@
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed French translations containing Italian text in some cases (#3567)
 - improved object loading error messages when an invalid object ID is detected
+- removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 
 ## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 4.9)

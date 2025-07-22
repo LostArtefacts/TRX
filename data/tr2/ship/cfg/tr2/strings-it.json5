@@ -1124,6 +1124,7 @@
         "OSD_WIREFRAME_MODE_ON": "Modalità reticolo: attivato",
         "PASSPORT_EXIT_DEMO": "Esci dalla Demo",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Risolve i problemi preesistenti nella In Profondità, Relitto della Maria Doria e Sul Ponte per cui gli sprite delle piante nelle aree acquatiche non si animano.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Risolve il problema nel pacchetto di espansione La Maschera Dorata per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Risolve il problema del fucile a pompa che a volte, quando si spara, non produce un lampo o un suono.",
         "STATS_AMMO_HITS": "Colpi a Segno",

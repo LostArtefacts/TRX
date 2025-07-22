@@ -1097,6 +1097,7 @@
         "OSD_WIREFRAME_MODE_ON": "Tryb siatki: włączony",
         "PASSPORT_EXIT_DEMO": "Wyjdź z dema",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Naprawia błędy oryginalnej gry w 40 sążni, Wrak statku Maria Doria i Pokład, gdzie glony w wodnych obszarach nie są animowane.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
         "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Naprawia strzelanie z strzelby po wyciągnięciu, które czasami nie powodowało błysku ani dźwięku.",
         "STATS_AMMO_HITS": "Trafienia",

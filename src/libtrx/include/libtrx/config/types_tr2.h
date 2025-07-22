@@ -54,6 +54,7 @@ typedef struct {
         bool enable_exit_fade_effects;
         bool fix_item_rots;
         bool fix_texture_issues;
+        bool fix_animated_sprites;
         bool fix_glide_cameras;
         int32_t fov;
         bool use_psx_fov;
