@@ -262,6 +262,7 @@
 - fixed missing 'aha' sound effect in Lara's Home
 - fixed missing zipline sound effect in Home Sweet Home
 - fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start
+- fixed missing door sound effects in Lara's Home, Bartoli's Hideout, Opera House, Living Quarters, Catacombs of the Talion, Ice Palace, Home Sweet Home, Fool's Gold, Kingdom and Nightmare in Vegas
 
 ## Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)

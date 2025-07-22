@@ -124,6 +124,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── title_og_alt.webp
 │   │   └── title_ub.webp
 │   ├── injections
+│   │   ├── atlantis_door_sfx.bin
 │   │   ├── atlantis_fd.bin
 │   │   ├── atlantis_textures.bin
 │   │   ├── backpack.bin
@@ -174,6 +175,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── midas_itemrots.bin
 │   │   ├── midas_textures.bin
 │   │   ├── mines_cameras.bin
+│   │   ├── mines_door_sfx.bin
 │   │   ├── mines_fd.bin
 │   │   ├── mines_itemrots.bin
 │   │   ├── mines_meshfixes.bin
@@ -211,6 +213,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── valley_itemrots.bin
 │   │   ├── valley_skybox.bin
 │   │   ├── valley_textures.bin
+│   │   ├── vilcabamba_door_sfx.bin
 │   │   ├── vilcabamba_itemrots.bin
 │   │   └── vilcabamba_textures.bin
 │   ├── level1.phd

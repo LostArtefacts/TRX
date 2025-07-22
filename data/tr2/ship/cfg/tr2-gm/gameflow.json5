@@ -79,6 +79,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door107_sfx.bin",
                 "data/injections/fools_itemrots.bin",
                 "data/injections/fools_music_tracks.bin",
                 "data/injections/fools_pickup_meshes.bin",
@@ -129,6 +130,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door108_sfx.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/kingdom_cameras.bin",
                 "data/injections/kingdom_itemrots.bin",
@@ -156,6 +158,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door108_sfx.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/lara_vegas_guns.bin",
                 "data/injections/vegas_fd.bin",

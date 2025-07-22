@@ -127,6 +127,7 @@
                 "data/injections/bartoli_secret_fd.bin",
                 "data/injections/bartoli_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door108_sfx.bin",
             ],
         },
 
@@ -145,6 +146,8 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door108_sfx.bin",
+                "data/injections/door111_sfx.bin",
                 "data/injections/loose_boards_sfx.bin",
                 "data/injections/opera_fd.bin",
                 "data/injections/opera_textures.bin",
@@ -262,6 +265,7 @@
                 "data/injections/living_music_tracks.bin",
                 "data/injections/living_pickup_meshes.bin",
                 "data/injections/living_secret_fd.bin",
+                "data/injections/living_sfx.bin",
                 "data/injections/living_textures.bin",
                 "data/injections/seaweed_collision.bin",
             ],
@@ -355,6 +359,7 @@
                 "data/injections/catacombs_music_tracks.bin",
                 "data/injections/catacombs_textures.bin",
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door108_sfx.bin",
             ],
         },
 
@@ -371,6 +376,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door108_sfx.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/palace_fd.bin",
                 "data/injections/palace_itemrots.bin",
