@@ -4,6 +4,7 @@
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
+- fixed French translations containing Italian text in some cases (#3567)
 - improved object loading error messages when an invalid object ID is detected
 
 ## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20
