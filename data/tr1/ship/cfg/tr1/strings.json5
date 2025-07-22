@@ -729,8 +729,8 @@
         "pickup_aid": {
             "name": "Pickup Aid",
         },
-        "temp_7": {
-            "name": "Temp 7",
+        "glow": {
+            "name": "Glow",
         },
         "temp_8": {
             "name": "Temp 8",

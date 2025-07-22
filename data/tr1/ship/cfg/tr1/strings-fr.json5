@@ -682,8 +682,8 @@
         "pickup_aid": {
             "name": "Indice au ramassage",
         },
-        "temp_7": {
-            "name": "Temp 7",
+        "glow": {
+            "name": "\\{review}Lueur",
         },
         "temp_8": {
             "name": "Temp 8",

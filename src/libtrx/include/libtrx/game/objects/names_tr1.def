@@ -190,7 +190,7 @@ X_OBJ_NAME_DEFINE(O_MOTOR_BOAT,         "boat",               X_OBJ_NAMES("Boat"
 X_OBJ_NAME_DEFINE(O_EARTHQUAKE,         "earthquake",         X_OBJ_NAMES("Earthquake"))
 X_OBJ_NAME_DEFINE(O_SKYBOX,             "skybox",             X_OBJ_NAMES("Skybox"))
 X_OBJ_NAME_DEFINE(O_PICKUP_AID,         "pickup_aid",         X_OBJ_NAMES("Pickup Aid"))
-X_OBJ_NAME_DEFINE(O_TEMP_7,             "temp_7",             X_OBJ_NAMES("Temp 7"))
+X_OBJ_NAME_DEFINE(O_GLOW,               "glow",               X_OBJ_NAMES("Glow"))
 X_OBJ_NAME_DEFINE(O_TEMP_8,             "temp_8",             X_OBJ_NAMES("Temp 8"))
 X_OBJ_NAME_DEFINE(O_TEMP_9,             "temp_9",             X_OBJ_NAMES("Temp 9"))
 X_OBJ_NAME_DEFINE(O_LARA_HAIR,          "lara_hair",          X_OBJ_NAMES("Lara's Braid"))
