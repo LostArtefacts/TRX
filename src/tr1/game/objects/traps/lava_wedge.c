@@ -1,6 +1,7 @@
 #include "game/objects/common.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/lara.h>
 
@@ -65,6 +66,9 @@ static void M_Control(const int16_t item_num)
             Lara_TouchLava();
         }
 
+        if (g_Config.debug.enable_invulnerability) {
+            return;
+        }
         g_Camera.item = item;
         g_Camera.flags = CF_CHASE_OBJECT;
         g_Camera.type = CAM_FIXED;
