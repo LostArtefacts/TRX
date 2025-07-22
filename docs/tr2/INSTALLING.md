@@ -1,11 +1,3 @@
-<p align="center">
-<img alt="TR2X logo" src="/data/tr2/logo.png" width="400"/>
-</p>
-
-TR2X is finished with the decompilation and is now able to run without the
-original game .exe. The focus is now to clean up the code base and enrich the
-game with new enhancements and features.
-
 ## Windows / Linux
 
 ### Installing (simplified)
@@ -31,7 +23,7 @@ game with new enhancements and features.
 If you install everything correctly, your game directory should look more or
 less like this (click to expand):
 
-<details>
+<details data-id="file-tree-win">
 <p><em>* Will not be present until the game has been launched.</em></p>
 <pre>
 .
