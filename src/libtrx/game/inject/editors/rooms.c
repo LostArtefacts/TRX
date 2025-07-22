@@ -1,4 +1,5 @@
 #include "game/inject.h"
+#include "game/objects.h"
 #include "game/rooms.h"
 #include "log.h"
 
@@ -220,13 +221,30 @@ static void M_AddRoomStatic2D(const INJECTION *const injection)
 {
     const int16_t target_room = VFile_ReadS16(injection->fp);
     VFile_Skip(injection->fp, sizeof(int32_t));
+    const int32_t id = VFile_ReadS32(injection->fp);
     const uint16_t vertex = VFile_ReadU16(injection->fp);
-    const uint16_t texture = VFile_ReadU16(injection->fp);
+    const uint16_t frame_idx = VFile_ReadU16(injection->fp);
+
+    if (id < 0 || id >= MAX_STATIC_OBJECTS_2D) {
+        LOG_WARNING("Invalid static 2D id: %d", id);
+        return;
+    }
+
+    const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(id);
+    if (!obj->loaded) {
+        LOG_WARNING("Static 2D %d is not loaded");
+        return;
+    }
+
+    if (frame_idx >= obj->frame_count) {
+        LOG_WARNING("Invalid frame (%d) on static 2D %d", frame_idx, id);
+        return;
+    }
 
     ROOM *const room = Room_Get(target_room);
     ROOM_SPRITE *const sprite = &room->mesh.sprites[room->mesh.num_sprites];
     sprite->vertex = vertex;
-    sprite->texture = texture;
+    sprite->texture = obj->texture_idx + frame_idx;
 
     room->mesh.num_sprites++;
 }
