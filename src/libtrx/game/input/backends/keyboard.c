@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL_keyboard.h>
 
+// Key state table updated via SDL events.
 #define KEY_DOWN(a) (m_KeyboardState[(a)])
 
 typedef struct {
@@ -11,7 +12,7 @@ typedef struct {
     SDL_Scancode scancode;
 } BUILTIN_KEYBOARD_LAYOUT;
 
-const Uint8 *m_KeyboardState = nullptr;
+static bool m_KeyboardState[SDL_NUM_SCANCODES] = {};
 static bool m_Conflicts[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {};
 
 static BUILTIN_KEYBOARD_LAYOUT m_BuiltinLayout[] = {
@@ -37,6 +38,7 @@ static void M_AssignConflict(
 static void M_CheckConflicts(INPUT_LAYOUT layout);
 
 static void M_Init(void);
+static void M_ProcessEvent(const SDL_Event *event);
 static bool M_CustomUpdate(INPUT_STATE *result, INPUT_LAYOUT layout);
 static bool M_IsPressed(INPUT_LAYOUT layout, INPUT_ROLE role);
 static bool M_IsRoleConflicted(INPUT_LAYOUT layout, INPUT_ROLE role);
@@ -48,6 +50,24 @@ static bool M_AssignToJSONObject(
     INPUT_LAYOUT layout, INPUT_ROLE role, JSON_OBJECT *bind_obj);
 static void M_ResetLayout(INPUT_LAYOUT layout);
 static bool M_ReadAndAssign(INPUT_LAYOUT layout, INPUT_ROLE role);
+
+// Update internal controller button/axis state from SDL events.
+// @param event     Event to process.
+static void M_ProcessEvent(const SDL_Event *const event)
+{
+    switch (event->type) {
+    case SDL_KEYDOWN:
+        if (!event->key.repeat) {
+            m_KeyboardState[event->key.keysym.scancode] = true;
+        }
+        break;
+    case SDL_KEYUP:
+        m_KeyboardState[event->key.keysym.scancode] = false;
+        break;
+    default:
+        break;
+    }
+}
 
 static const char *M_GetScancodeName(SDL_Scancode scancode)
 {
@@ -362,8 +382,6 @@ static void M_CheckConflicts(const INPUT_LAYOUT layout)
 
 static void M_Init(void)
 {
-    m_KeyboardState = SDL_GetKeyboardState(nullptr);
-
     // first, reset the roles to null
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         m_Layout[INPUT_LAYOUT_DEFAULT][role] = SDL_SCANCODE_UNKNOWN;
@@ -463,6 +481,7 @@ INPUT_BACKEND_IMPL g_Input_Keyboard = {
     .init = M_Init,
     .shutdown = nullptr,
     .discover = nullptr,
+    .process_event = M_ProcessEvent,
     .custom_update = M_CustomUpdate,
     .is_pressed = M_IsPressed,
     .is_role_conflicted = M_IsRoleConflicted,
