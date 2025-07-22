@@ -49,7 +49,6 @@ static void M_End(PHASE *const phase)
 static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t num_frames)
 {
     M_PRIV *const p = phase->priv;
-
     Input_Update();
     Shell_ProcessInput();
 

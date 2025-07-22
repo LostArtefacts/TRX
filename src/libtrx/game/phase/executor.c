@@ -52,6 +52,7 @@ static GF_COMMAND M_HandleOverride(void)
 
 static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 {
+    Shell_ProcessEvents();
     Console_Control();
     Overlay_Control();
 

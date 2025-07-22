@@ -672,7 +672,6 @@ void Output_EndScene(void)
 {
     Render_EndScene();
     GFX_Context_SwapBuffers();
-    Shell_ProcessEvents();
 }
 
 BACKGROUND_TYPE Output_GetBackgroundType(void)

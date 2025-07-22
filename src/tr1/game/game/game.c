@@ -26,6 +26,7 @@
 
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
+        Shell_ProcessEvents();                                                 \
         Output_BeginScene();                                                   \
         Game_Draw(true);                                                       \
         Input_Update();                                                        \

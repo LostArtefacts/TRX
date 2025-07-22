@@ -547,7 +547,6 @@ void Output_EndScene(void)
     M_EnableDepthTest();
     GFX_3D_Renderer_RenderEnd(m_Renderer3D);
     M_FlipScreen();
-    Shell_ProcessEvents();
 }
 
 void Output_ClearDepthBuffer(void)
