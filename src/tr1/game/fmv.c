@@ -115,6 +115,7 @@ static bool M_Play(const char *const file_path)
 
     Video_Start(video);
     while (video->is_playing) {
+        Shell_ProcessEvents();
         Video_SetVolume(
             video, Audio_IsMuted() ? 0.0f : g_Config.audio.sound_volume);
         Video_SetSurfaceSize(
@@ -122,7 +123,6 @@ static bool M_Play(const char *const file_path)
             Viewport_GetHeight(VIEWPORT_GAME));
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
         Video_PumpEvents(video);
-        Shell_ProcessEvents();
 
         Input_Update();
         Shell_ProcessInput();

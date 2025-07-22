@@ -354,7 +354,6 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
 static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(
     UI_CONTROLS_EDITOR_STATE *const s)
 {
-    Shell_ProcessEvents();
     Input_Update();
     if (g_Input.any) {
         return UI_CONTROLS_CHOICE_NOOP;

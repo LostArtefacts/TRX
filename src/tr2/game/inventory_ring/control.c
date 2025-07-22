@@ -347,7 +347,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
-    Shell_ProcessEvents();
     Input_Update();
     Shell_ProcessInput();
     Game_ProcessInput();
