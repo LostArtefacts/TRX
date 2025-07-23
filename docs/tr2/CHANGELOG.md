@@ -9,6 +9,7 @@
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
 - changed the game flow and game strings file placement
 - changed the texture page limit from 128 to unlimited (#3517)
+- changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)

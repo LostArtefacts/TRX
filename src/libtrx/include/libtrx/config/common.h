@@ -33,6 +33,10 @@ bool Config_IsOptionAtDefault(const void *target);
 // Restores the given setting's default value.
 bool Config_RestoreOptionDefault(const void *target);
 
+// Formats the current value of a config option as a static string.
+// The string must not be freed and is short lived.
+const char *Config_GetOptionValueAsString(const CONFIG_OPTION *option);
+
 // Updates the given setting's value from string.
 bool Config_SetOptionValueFromString(
     const CONFIG_OPTION *option, const char *new_value);

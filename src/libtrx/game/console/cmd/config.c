@@ -187,58 +187,6 @@ char *Console_Cmd_Config_NormalizeKey(const char *key)
     return result;
 }
 
-bool Console_Cmd_Config_GetCurrentValue(
-    const CONFIG_OPTION *const option, char *target, const size_t target_size)
-{
-    if (option == nullptr) {
-        return false;
-    }
-
-    ASSERT(option->target != nullptr);
-    switch (option->type) {
-    case COT_BOOL:
-        snprintf(
-            target, target_size, "%s",
-            *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
-        break;
-    case COT_INVERTED_BOOL:
-        snprintf(
-            target, target_size, "%s",
-            *(bool *)option->target ? GS(MISC_OFF) : GS(MISC_ON));
-        break;
-    case COT_INT32:
-        snprintf(target, target_size, "%d", *(int32_t *)option->target);
-        break;
-    case COT_FLOAT:
-        snprintf(target, target_size, "%.2f", *(float *)option->target);
-        break;
-    case COT_FLOAT_PERCENT:
-        snprintf(
-            target, target_size, "%.00f%%",
-            (*(float *)option->target) * 100.0f);
-        break;
-    case COT_DOUBLE:
-        snprintf(target, target_size, "%.2f", *(double *)option->target);
-        break;
-    case COT_ENUM:
-        snprintf(
-            target, target_size, "%s",
-            EnumMap_ToString(option->param, *(int32_t *)option->target));
-        break;
-    case COT_RGB888: {
-        const RGB_888 *color = option->target;
-        snprintf(
-            target, target_size, "%02hhx%02hhx%02hhx", color->r, color->g,
-            color->b);
-        break;
-    }
-    case COT_STRING:
-        snprintf(target, target_size, "%s", *(char **)option->target);
-        break;
-    }
-    return true;
-}
-
 const CONFIG_OPTION *Console_Cmd_Config_GetOptionFromTarget(
     const void *const target)
 {
@@ -260,27 +208,22 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
     char *normalized_name = Console_Cmd_Config_NormalizeKey(option->name);
 
     if (new_value == nullptr || String_IsEmpty(new_value)) {
-        char cur_value[128];
-        if (Console_Cmd_Config_GetCurrentValue(option, cur_value, 128)) {
-            Console_Log(GS(OSD_CONFIG_OPTION_GET), normalized_name, cur_value);
-            return CR_SUCCESS;
+        const char *const value_str = Config_GetOptionValueAsString(option);
+        if (value_str == nullptr) {
+            return CR_FAILURE;
         }
-        return CR_FAILURE;
+        Console_Log(GS(OSD_CONFIG_OPTION_GET), normalized_name, value_str);
+        return CR_SUCCESS;
     }
 
     COMMAND_RESULT result;
-    if (strcmp(new_value, "-") == 0
-        && Config_RestoreOptionDefault(option->target)) {
+    if ((strcmp(new_value, "-") == 0
+         && Config_RestoreOptionDefault(option->target))
+        || Config_SetOptionValueFromString(option, new_value)) {
         Config_Write();
-        char final_value[128];
-        ASSERT(Console_Cmd_Config_GetCurrentValue(option, final_value, 128));
-        Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, final_value);
-        result = CR_SUCCESS;
-    } else if (Config_SetOptionValueFromString(option, new_value)) {
-        Config_Write();
-        char final_value[128];
-        ASSERT(Console_Cmd_Config_GetCurrentValue(option, final_value, 128));
-        Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, final_value);
+        const char *const value_str = Config_GetOptionValueAsString(option);
+        ASSERT(value_str != nullptr);
+        Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, value_str);
         result = CR_SUCCESS;
     } else {
         // Report bad invocation on the provided new value
