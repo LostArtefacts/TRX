@@ -14,6 +14,7 @@
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
 - fixed several OG texture issues; refer to `IMPROVEMENTS.md` for details (#2082, #3140, #3187, #3372, #3516)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
+- fixed z-fighting on the front of the passport (#3584)
 - fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving (#3559)
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed missing door sound effects in Lara's Home, Bartoli's Hideout, Opera House, Living Quarters, Catacombs of the Talion, Ice Palace, Home Sweet Home, Fool's Gold, Kingdom and Nightmare in Vegas (#3363)

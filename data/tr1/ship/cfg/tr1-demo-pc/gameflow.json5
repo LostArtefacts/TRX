@@ -36,6 +36,7 @@
         "injections": [
             "data/injections/pda_model.bin",
             "data/injections/font.bin",
+            "data/injections/title_textures.bin",
         ],
     },
 
