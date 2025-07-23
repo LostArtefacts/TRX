@@ -27,7 +27,7 @@ static void M_ToggleRenderingMode(void);
 static void M_ToggleFPSCounter(void)
 {
     g_Config.ui.enable_fps_counter = !g_Config.ui.enable_fps_counter;
-    Config_Write();
+    Config_Update();
     Console_Log(
         "%s",
         g_Config.ui.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
@@ -39,7 +39,7 @@ static void M_ToggleBilinearFiltering(void)
     g_Config.rendering.texture_filter =
         g_Config.rendering.texture_filter == GFX_TF_BILINEAR ? GFX_TF_NN
                                                              : GFX_TF_BILINEAR;
-    Config_Write();
+    Config_Update();
     Console_Log(
         "%s",
         g_Config.rendering.texture_filter == GFX_TF_BILINEAR
@@ -54,7 +54,7 @@ static void M_TogglePerspectiveCorrection(void)
     g_PerspectiveDistance = g_Config.rendering.enable_perspective_filter
         ? SW_DETAIL_HIGH
         : SW_DETAIL_MEDIUM;
-    Config_Write();
+    Config_Update();
     Console_Log(
         "%s",
         g_Config.rendering.enable_perspective_filter
@@ -66,7 +66,7 @@ static void M_ToggleTrapezoidFilter(void)
 {
     g_Config.rendering.enable_trapezoid_filter =
         !g_Config.rendering.enable_trapezoid_filter;
-    Config_Write();
+    Config_Update();
     Console_Log(
         "%s",
         g_Config.rendering.enable_trapezoid_filter
@@ -79,14 +79,14 @@ static void M_ToggleZBuffer(void)
     if (g_Input.slow) {
         g_Config.rendering.enable_wireframe =
             !g_Config.rendering.enable_wireframe;
-        Config_Write();
+        Config_Update();
         Console_Log(
             "%s",
             g_Config.rendering.enable_wireframe ? GS(OSD_WIREFRAME_MODE_ON)
                                                 : GS(OSD_WIREFRAME_MODE_OFF));
     } else {
         g_Config.rendering.enable_zbuffer = !g_Config.rendering.enable_zbuffer;
-        Config_Write();
+        Config_Update();
         Console_Log(
             "%s",
             g_Config.rendering.enable_zbuffer ? GS(OSD_DEPTH_BUFFER_ON)
@@ -102,7 +102,7 @@ static void M_CycleLightingContrast(void)
     value += LIGHTING_CONTRAST_NUMBER_OF;
     value %= LIGHTING_CONTRAST_NUMBER_OF;
     g_Config.rendering.lighting_contrast = value;
-    Config_Write();
+    Config_Update();
     Console_Log(
         GS(OSD_LIGHTNING_CONTRAST_FMT),
         ENUM_MAP_TO_STRING(LIGHTING_CONTRAST, value));
@@ -113,7 +113,7 @@ static void M_ToggleRenderingMode(void)
     g_Config.rendering.render_mode =
         g_Config.rendering.render_mode == RM_HARDWARE ? RM_SOFTWARE
                                                       : RM_HARDWARE;
-    Config_Write();
+    Config_Update();
     Console_Log(
         "%s",
         g_Config.rendering.render_mode == RM_HARDWARE

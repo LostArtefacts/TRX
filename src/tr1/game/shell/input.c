@@ -24,7 +24,7 @@ void Shell_ProcessInput(void)
             break;
         }
 
-        Config_Write();
+        Config_Update();
     }
 
     if (g_InputDB.toggle_trapezoid_filter) {
@@ -33,7 +33,7 @@ void Shell_ProcessInput(void)
             g_Config.rendering.enable_trapezoid_filter
                 ? GS(OSD_TRAPEZOID_FILTER_ON)
                 : GS(OSD_TRAPEZOID_FILTER_OFF));
-        Config_Write();
+        Config_Update();
     }
 
     if (g_InputDB.toggle_fps_counter) {
@@ -41,6 +41,6 @@ void Shell_ProcessInput(void)
         Console_Log(
             g_Config.ui.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
                                            : GS(OSD_FPS_COUNTER_OFF));
-        Config_Write();
+        Config_Update();
     }
 }

@@ -100,7 +100,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 
     if (current_level == GF_GetLastLevel()) {
         g_Config.profile.new_game_plus_unlock = true;
-        Config_Write();
+        Config_Update();
     }
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);

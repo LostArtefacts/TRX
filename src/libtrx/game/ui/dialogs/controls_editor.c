@@ -227,7 +227,7 @@ static void M_ResetLayout(void *const arg)
     Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
 #endif
     Input_ResetLayout(s->backend, s->active_layout);
-    Config_Write();
+    Config_Update();
 }
 
 static void M_UnbindKey(void *const arg)
@@ -239,7 +239,7 @@ static void M_UnbindKey(void *const arg)
     Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
 #endif
     Input_UnassignRole(s->backend, s->active_layout, s->active_role);
-    Config_Write();
+    Config_Update();
 }
 
 static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)

@@ -83,27 +83,33 @@ bool Config_Read(void)
     return result;
 }
 
-bool Config_Write(void)
+bool Config_Update(void)
 {
     Config_Sanitize();
+    if (!Config_Write()) {
+        return false;
+    }
+
+    if (m_EventManager != nullptr) {
+        const EVENT event = {
+            .name = "change",
+            .sender = nullptr,
+            .data = nullptr,
+        };
+        EventManager_Fire(m_EventManager, &event);
+    }
+    g_SavedConfig = g_Config;
+    return true;
+}
+
+bool Config_Write(void)
+{
     const CONFIG_IO_ARGS args = {
         .default_path = M_GetPath(CFT_DEFAULT),
         .enforced_path = M_GetPath(CFT_ENFORCED),
         .action = &Config_DumpToJSON,
     };
-    const bool updated = ConfigFile_Write(&args);
-    if (updated) {
-        if (m_EventManager != nullptr) {
-            const EVENT event = {
-                .name = "change",
-                .sender = nullptr,
-                .data = nullptr,
-            };
-            EventManager_Fire(m_EventManager, &event);
-        }
-        g_SavedConfig = g_Config;
-    }
-    return updated;
+    return ConfigFile_Write(&args);
 }
 
 int32_t Config_SubscribeChanges(

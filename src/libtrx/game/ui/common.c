@@ -179,7 +179,7 @@ void UI_Shutdown(void)
 void UI_ToggleState(bool *const config_setting)
 {
     *config_setting ^= true;
-    Config_Write();
+    Config_Update();
     Console_Log(*config_setting ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
 }
 
