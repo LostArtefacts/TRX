@@ -16,6 +16,7 @@
 - fixed missing door/trapdoor sound effects in Vilcabamba, Natla's Mines, Atlantis and Great Pyramid (#3408, #3374)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
 - fixed z-fighting on the front of the passport (#3584)
+- fixed being unable to activate waterfall objects with code bits (#3589)
 - improved object loading error messages when an invalid object ID is detected
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 

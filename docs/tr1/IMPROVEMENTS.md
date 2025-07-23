@@ -279,6 +279,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added the ability to trigger a flip effect without having to also trigger the flip map, like TR2+
 - added support for showing key/puzzle/pickup item descriptions (examining) in the inventory
 - fixed falling ceiling and Damocles Sword traps not falling through stacked rooms
+- fixed being unable to activate waterfall objects with code bits
 
 ## Miscellaneous
 - added Linux builds
