@@ -188,7 +188,7 @@ bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
         File_Load(args->enforced_path, &enforced_data, nullptr);
     }
 
-    bool result = M_ReadFromJSON(
+    const bool result = M_ReadFromJSON(
         default_data, enforced_data, args->action, args->enforced_targets,
         args->hidden_targets);
 
@@ -199,8 +199,6 @@ bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
 
 bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
 {
-    LOG_INFO("Saving user settings");
-
     char *old_data = nullptr;
     char *enforced_data = nullptr;
 
@@ -219,6 +217,7 @@ bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
         if (fp == nullptr) {
             LOG_ERROR("Failed to write settings!");
         } else {
+            LOG_INFO("Saving user settings to %s", args->default_path);
             File_WriteData(fp, data, strlen(data));
             File_Close(fp);
             updated = true;

@@ -19,26 +19,26 @@
 #include "game/shell/platform.h"
 #include "game/sound.h"
 #include "log.h"
+#include "utils.h"
 
 #include <stdio.h>
 
+static void M_HandleConfigChange(const EVENT *const event, void *const data);
 static void M_SetupSDL(void);
 static void M_SetupGL(void);
-static void M_ShowFatalError(const char *message);
-static void M_LoadConfig(void);
+
+static void M_HandleConfigChange(const EVENT *const event, void *const data)
+{
+    const CONFIG *const old = &g_Config;
+    const CONFIG *const new = &g_SavedConfig;
+    Shell_HandleConfigChange(old, new);
+}
 
 static void M_SetupSDL(void)
 {
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) < 0) {
         Shell_ExitSystemFmt("Cannot initialize SDL: %s", SDL_GetError());
     }
-}
-
-void M_HandleConfigChange(const EVENT *const event, void *const data)
-{
-    const CONFIG *const old = &g_Config;
-    const CONFIG *const new = &g_SavedConfig;
-    Shell_HandleConfigChange(old, new);
 }
 
 static void M_SetupGL(void)
@@ -52,6 +52,11 @@ static void M_SetupGL(void)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 }
 
+const char *Shell_GetConfigDir(void)
+{
+    return "cfg";
+}
+
 void Shell_InstallConfig(void)
 {
     Config_SubscribeChanges(M_HandleConfigChange, nullptr);
@@ -60,7 +65,7 @@ void Shell_InstallConfig(void)
     Music_SetVolume(g_Config.audio.music_volume);
 }
 
-void Shell_CommonInit(void)
+void Shell_CommonInit(const SHELL_ARGS *const args)
 {
     Shell_SetupHiDPI();
     Shell_SetupLibAV();
@@ -86,7 +91,9 @@ void Shell_CommonInit(void)
     Clock_Init();
     LUA_Init();
 
-    Config_Read();
+    Config_Read(
+        String_FormatStatic("%s/%s.json5", Shell_GetConfigDir(), PROJECT_NAME),
+        Shell_GetGameFlowPath(args->mod));
     Shell_InstallConfig();
 }
 
