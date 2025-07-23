@@ -48,6 +48,7 @@ static void M_HandleLayoutChange(const EVENT *event, void *user_data)
 
 static void M_HandleKeyChange(const EVENT *event, void *user_data)
 {
+    g_Config.dirty = true;
     Config_Update();
 }
 

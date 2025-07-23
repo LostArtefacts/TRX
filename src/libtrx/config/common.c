@@ -90,6 +90,7 @@ bool Config_Update(void)
         return false;
     }
 
+    g_Config.dirty = false;
     if (m_EventManager != nullptr) {
         const EVENT event = {
             .name = "change",
