@@ -220,6 +220,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed transparent eyes on the wolf and bat models in Peru
 - fixed incorrect transparent pixels on some Egypt textures
 - fixed doors at times disappearing if Lara is close to portals and the door's room is no longer visible
+- fixed the passport having an invisible back page, noticeable when opening/closing it
 - fixed being able to see the flipmap in Natla's Mines when moving the boat
 - fixed blood spawning on Lara from gunshots using incorrect positioning data
 - fixed Lara using the wrong hit animation under certain scenarios based on her hit angle
