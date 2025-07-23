@@ -33,6 +33,12 @@ static const char *M_GetPath(const CONFIG_FILE_TYPE file_type)
 void Config_Init(void)
 {
     m_EventManager = EventManager_Create();
+
+    const CONFIG_OPTION *option = Config_GetOptionMap();
+    while (option->target != nullptr) {
+        Config_RestoreOptionDefault(option->target);
+        option++;
+    }
 }
 
 void Config_Shutdown(void)
