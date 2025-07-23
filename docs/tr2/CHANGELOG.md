@@ -3,6 +3,7 @@
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
+- added support for automated playthroughs with `--test-record` and `--test-replay` (internal tool – the recording file format may be subject to changes)
 - added ability to move Lara around in photo mode (use sidestep keys to switch modes)
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added German translation

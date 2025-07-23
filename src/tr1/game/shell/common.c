@@ -107,13 +107,13 @@ SDL_Window *Shell_GetWindow(void)
     return m_Window;
 }
 
-int32_t Shell_Main(const SHELL_ARGS *const args)
+int32_t Shell_Main(const SHELL_ARGS *args)
 {
     ASSERT(args != nullptr);
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
 
-    Shell_CommonInit(args);
-
+    Shell_InitCommonModules();
+    args = Shell_CommonInit(args);
     M_CreateGameWindow();
 
     if (!Output_Init()) {

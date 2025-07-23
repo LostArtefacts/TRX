@@ -88,13 +88,13 @@ static void M_ShowWindow(void)
     Render_Reset(RENDER_RESET_PARAMS);
 }
 
-int32_t Shell_Main(const SHELL_ARGS *const args)
+int32_t Shell_Main(const SHELL_ARGS *args)
 {
     ASSERT(args != nullptr);
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
 
-    Shell_CommonInit(args);
-
+    Shell_InitCommonModules();
+    args = Shell_CommonInit(args);
     if (!M_CreateGameWindow()) {
         Shell_ExitSystem("Failed to create game window");
         return 1;

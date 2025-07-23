@@ -5,6 +5,8 @@
 #include "game/fmv.h"
 #include "game/input/common.h"
 #include "game/shell.h"
+#include "game/test_recorder.h"
+#include "game/test_replay.h"
 #include "game/ui.h"
 
 // If true, next SDL_TEXT* event should be zeroed out.
@@ -21,7 +23,7 @@ static void M_HandleWindowMinimized(void);
 static void M_HandleWindowMaximized(void);
 static void M_HandleWindowMoved(int32_t x, int32_t y);
 static void M_HandleWindowResized(int32_t width, int32_t height);
-static bool M_ProcessEvent(const SDL_Event *event);
+static bool M_ProcessReplayEvent(const SDL_Event *event);
 
 static void M_HandleQuit(void)
 {
@@ -100,8 +102,20 @@ static void M_HandleWindowResized(int32_t width, int32_t height)
     Shell_SyncFromWindow(true);
 }
 
-static bool M_ProcessEvent(const SDL_Event *const event)
+static bool M_ProcessReplayEvent(const SDL_Event *const event)
 {
+    switch (event->type) {
+    case SDL_QUIT:
+        M_HandleQuit();
+        return true;
+    }
+    return false;
+}
+
+bool Shell_ProcessEvent(const SDL_Event *const event)
+{
+    Input_ProcessEvent(event);
+
     switch (event->type) {
     case SDL_QUIT:
         M_HandleQuit();
@@ -113,14 +127,6 @@ static bool M_ProcessEvent(const SDL_Event *const event)
 
     case SDL_KEYUP:
         M_HandleKeyUp(event);
-        return true;
-
-    case SDL_TEXTEDITING:
-        if (m_ConsoleJustOpened) {
-            m_ConsoleJustOpened = false;
-        } else {
-            UI_HandleTextEdit(event->text.text);
-        }
         return true;
 
     case SDL_TEXTINPUT:
@@ -181,10 +187,22 @@ static bool M_ProcessEvent(const SDL_Event *const event)
 void Shell_ProcessEvents(void)
 {
     SDL_Event event;
-    while (SDL_PollEvent(&event) != 0) {
-        Input_ProcessEvent(&event);
-        if (M_ProcessEvent(&event)) {
-            continue;
+    if (TestReplay_IsOpened()) {
+        TestReplay_RunFrame();
+        while (SDL_PollEvent(&event) != 0) {
+            M_ProcessReplayEvent(&event);
         }
+        return;
+    }
+
+    if (TestRecorder_IsOpened()) {
+        TestRecorder_BeginFrame();
+    }
+    while (SDL_PollEvent(&event) != 0) {
+        TestRecorder_RecordEvent(&event);
+        Shell_ProcessEvent(&event);
+    }
+    if (TestRecorder_IsOpened()) {
+        TestRecorder_EndFrame();
     }
 }

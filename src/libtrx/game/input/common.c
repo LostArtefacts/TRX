@@ -244,10 +244,10 @@ bool Input_IsInListenMode(void)
 
 void Input_ProcessEvent(const SDL_Event *event)
 {
-    if (g_Input_Keyboard.process_event) {
+    if (g_Input_Keyboard.process_event != nullptr) {
         g_Input_Keyboard.process_event(event);
     }
-    if (g_Input_Controller.process_event) {
+    if (g_Input_Controller.process_event != nullptr) {
         g_Input_Controller.process_event(event);
     }
 }

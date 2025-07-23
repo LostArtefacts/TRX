@@ -18,6 +18,8 @@ typedef struct {
     SHELL_MOD mod;
     const char *level_to_play;
     int32_t save_to_load;
+    const char *test_record_path;
+    const char *test_replay_path;
 } SHELL_ARGS;
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *raw_args);
