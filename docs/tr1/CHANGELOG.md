@@ -12,6 +12,7 @@
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
 - fixed missing door/trapdoor sound effects in Vilcabamba, Natla's Mines, Atlantis and Great Pyramid (#3408, #3374)
+- fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
 - improved object loading error messages when an invalid object ID is detected
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 
