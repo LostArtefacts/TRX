@@ -460,6 +460,18 @@ void File_WriteU32(MYFILE *const file, const uint32_t value)
     fwrite(&value, sizeof(value), 1, file->fp);
 }
 
+void File_WriteString(MYFILE *file, const char *fmt, ...)
+{
+    if (file == nullptr || file->fp == nullptr) {
+        return;
+    }
+    va_list args;
+    va_start(args, fmt);
+    const char *s = String_FormatStaticV(fmt, args);
+    va_end(args);
+    fputs(s, file->fp);
+}
+
 void File_Skip(MYFILE *file, size_t bytes)
 {
     File_Seek(file, bytes, FILE_SEEK_CUR);
