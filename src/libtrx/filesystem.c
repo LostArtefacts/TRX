@@ -22,6 +22,9 @@
 struct MYFILE {
     FILE *fp;
     const char *path;
+    // line-reading buffer and its capacity
+    char *read_line_buf;
+    size_t read_line_buf_cap;
 };
 
 const char *m_GameDir = nullptr;
@@ -305,6 +308,8 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     file->path = Memory_DupStr(path);
+    file->read_line_buf = nullptr;
+    file->read_line_buf_cap = 0;
     switch (mode) {
     case FILE_OPEN_WRITE:
         file->fp = M_ResolveAndOpen(path, "wb", nullptr);
@@ -377,6 +382,39 @@ uint32_t File_ReadU32(MYFILE *const file)
     uint32_t result;
     File_ReadData(file, &result, sizeof(result));
     return result;
+}
+
+const char *File_ReadLine(MYFILE *const file)
+{
+    ASSERT(file != nullptr && file->fp != nullptr);
+    char tmp[512];
+    char *line = file->read_line_buf;
+    size_t cap = file->read_line_buf_cap;
+    size_t len = 0;
+
+    while (fgets(tmp, sizeof(tmp), file->fp)) {
+        size_t chunk = strlen(tmp);
+        size_t need = len + chunk + 1;
+        if (need > cap) {
+            cap = need * 2;
+            line = line ? Memory_Realloc(line, cap) : Memory_Alloc(cap);
+        }
+        memcpy(line + len, tmp, chunk);
+        len += chunk;
+        if (tmp[chunk - 1] == '\n') {
+            break;
+        }
+    }
+    if (len == 0) {
+        // no data read (EOF or error)
+        file->read_line_buf = line;
+        file->read_line_buf_cap = cap;
+        return nullptr;
+    }
+    line[len] = '\0';
+    file->read_line_buf = line;
+    file->read_line_buf_cap = cap;
+    return line;
 }
 
 void File_WriteData(
@@ -465,6 +503,8 @@ void File_Close(MYFILE *file)
 {
     fclose(file->fp);
     Memory_FreePointer(&file->path);
+    // free per-file line buffer
+    Memory_FreePointer(&file->read_line_buf);
     Memory_FreePointer(&file);
 }
 
