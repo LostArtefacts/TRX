@@ -51,10 +51,6 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
-            "injections": [
-                "data/injections/vilcabamba_itemrots.bin",
-                "data/injections/vilcabamba_textures.bin",
-            ],
             "demo": true,
         },
     ],
