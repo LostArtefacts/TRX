@@ -36,6 +36,7 @@
         "injections": [
             "data/injections/pda_model.bin",
             "data/injections/font.bin",
+            "data/injections/title_textures.bin",
         ],
         "sequence": [
             {"type": "display_picture", "path": "data/images/eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},

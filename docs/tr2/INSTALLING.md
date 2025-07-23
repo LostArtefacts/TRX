@@ -199,6 +199,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── fools_itemrots.bin
 │   │   ├── fools_music_tracks.bin
 │   │   ├── fools_pickup_meshes.bin
+│   │   ├── fools_textures.bin
 │   │   ├── furnace_itemrots.bin
 │   │   ├── furnace_music_tracks.bin
 │   │   ├── furnace_objects.bin
@@ -219,6 +220,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── kingdom_textures.bin
 │   │   ├── lair_bartolipos.bin
 │   │   ├── lair_music_tracks.bin
+│   │   ├── lair_textures.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_house_guns.bin
 │   │   ├── lara_vegas_guns.bin
@@ -251,6 +253,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── tibet_itemrots.bin
 │   │   ├── tibet_music_tracks.bin
 │   │   ├── tibet_textures.bin
+│   │   ├── title_textures.bin
 │   │   ├── vegas_fd.bin
 │   │   ├── vegas_itemrots.bin
 │   │   ├── vegas_music_tracks.bin

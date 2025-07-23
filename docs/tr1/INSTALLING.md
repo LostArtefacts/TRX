@@ -163,6 +163,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── folly_pickup_meshes.bin
 │   │   ├── folly_textures.bin
 │   │   ├── font.bin
+│   │   ├── gun_glow.bin
 │   │   ├── gym_textures.bin
 │   │   ├── hive_fd.bin
 │   │   ├── hive_itemrots.bin
@@ -208,6 +209,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── tihocan_fd.bin
 │   │   ├── tihocan_itemrots.bin
 │   │   ├── tihocan_textures.bin
+│   │   ├── title_textures.bin
 │   │   ├── uzi_sfx.bin
 │   │   ├── valley_fd.bin
 │   │   ├── valley_itemrots.bin

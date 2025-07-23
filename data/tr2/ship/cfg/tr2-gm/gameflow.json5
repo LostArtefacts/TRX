@@ -30,6 +30,9 @@
             {"type": "display_picture", "path": "data/images/legal_eu_gm.webp", "legal": true},
             {"type": "exit_to_title"},
         ],
+        "injections": [
+            "data/injections/title_textures.bin",
+        ]
     },
 
     "sfx_path": "data/main_gm.sfx",
@@ -83,6 +86,7 @@
                 "data/injections/fools_itemrots.bin",
                 "data/injections/fools_music_tracks.bin",
                 "data/injections/fools_pickup_meshes.bin",
+                "data/injections/fools_textures.bin",
                 "data/injections/winston_model_gm.bin",
             ],
         },

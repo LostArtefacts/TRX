@@ -32,6 +32,9 @@
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
+        "injections": [
+            "data/injections/title_textures.bin",
+        ]
     },
 
     "sfx_path": "data/main.sfx",
@@ -445,6 +448,7 @@
                 "data/injections/dagger_sprite.bin",
                 "data/injections/lair_bartolipos.bin",
                 "data/injections/lair_music_tracks.bin",
+                "data/injections/lair_textures.bin",
             ],
         },
 
