@@ -30,6 +30,10 @@ typedef struct {
     bool loaded;
     char *language;
 
+    // This field is used to force trigger a change event for fields that are
+    // not stored in the CONFIG struct.
+    bool dirty;
+
     struct {
         INPUT_BACKEND backend; // Not decisive - mostly for UI visuals
         union {

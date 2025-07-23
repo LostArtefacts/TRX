@@ -164,6 +164,7 @@ static void M_LoadPostprocess(void)
 #if TR_VERSION == 1
     if (Game_GetBonusFlag() != GBF_NONE) {
         g_Config.profile.new_game_plus_unlock = true;
+        Config_Update();
     }
     LOT_ClearLOT(&lara->lot);
 #endif
