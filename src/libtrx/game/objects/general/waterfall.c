@@ -19,7 +19,7 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (TR_VERSION == 1 && (item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+    if (!Item_IsTriggerActive(item)) {
         return;
     }
 

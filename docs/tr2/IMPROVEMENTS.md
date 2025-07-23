@@ -279,6 +279,7 @@
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - fixed the lift to work in any cardinal direction in custom levels, not just South
 - fixed the springboard not responding correctly when Lara drives across one on a skidoo
+- fixed being unable to antitrigger waterfall objects
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow
 - removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise
