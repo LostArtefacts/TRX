@@ -8,5 +8,7 @@ void Random_SeedDraw(int32_t seed);
 
 int32_t Random_GetControl(void);
 int32_t Random_GetDraw(void);
+int32_t Random_GetControlSeed(void);
+int32_t Random_GetDrawSeed(void);
 
 void Random_FreezeDraw(bool is_frozen);

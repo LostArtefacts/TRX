@@ -18,6 +18,8 @@
 #include "game/shell.h"
 #include "game/shell/platform.h"
 #include "game/sound.h"
+#include "game/test_recorder.h"
+#include "game/test_replay.h"
 #include "log.h"
 #include "utils.h"
 
@@ -57,15 +59,7 @@ const char *Shell_GetConfigDir(void)
     return "cfg";
 }
 
-void Shell_InstallConfig(void)
-{
-    Config_SubscribeChanges(M_HandleConfigChange, nullptr);
-    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
-    Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    Music_SetVolume(g_Config.audio.music_volume);
-}
-
-void Shell_CommonInit(const SHELL_ARGS *const args)
+void Shell_InitCommonModules(void)
 {
     Shell_SetupHiDPI();
     Shell_SetupLibAV();
@@ -90,15 +84,17 @@ void Shell_CommonInit(const SHELL_ARGS *const args)
 
     Clock_Init();
     LUA_Init();
-
-    Config_Read(
-        String_FormatStatic("%s/%s.json5", Shell_GetConfigDir(), PROJECT_NAME),
-        Shell_GetGameFlowPath(args->mod));
-    Shell_InstallConfig();
 }
 
 void Shell_ShutdownCommonModules(void)
 {
+    if (TestReplay_IsOpened()) {
+        TestReplay_Close();
+    }
+    if (TestRecorder_IsOpened()) {
+        TestRecorder_Close();
+    }
+
     Lara_Pose_Shutdown();
 
     Console_Shutdown();
@@ -122,4 +118,40 @@ void Shell_ShutdownCommonModules(void)
     Config_Shutdown();
     EnumMap_Shutdown();
     Log_Shutdown();
+}
+
+const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
+{
+    const SHELL_ARGS *new_args = args;
+
+    if (args->test_record_path != nullptr
+        && args->test_replay_path != nullptr) {
+        Shell_ExitSystem("Cannot use both --test-record and --test-replay");
+        return new_args;
+    }
+
+    if (args->test_replay_path != nullptr) {
+        SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);
+        // original args not needed, free immediately.
+        if (tmp_args->original_args != nullptr) {
+            Vector_Free(tmp_args->original_args);
+            tmp_args->original_args = nullptr;
+        }
+        new_args = tmp_args;
+    } else {
+        Config_Read(
+            String_FormatStatic(
+                "%s/%s.json5", Shell_GetConfigDir(), PROJECT_NAME),
+            Shell_GetGameFlowPath(args->mod));
+
+        if (args->test_record_path != nullptr) {
+            TestRecorder_Open(args->test_record_path, args->original_args);
+        }
+    }
+    Config_SubscribeChanges(M_HandleConfigChange, nullptr);
+
+    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
+    Sound_SetMasterVolume(g_Config.audio.sound_volume);
+    Music_SetVolume(g_Config.audio.music_volume);
+    return new_args;
 }

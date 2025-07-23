@@ -39,6 +39,8 @@ static void M_ShowHelp(void)
 #endif
     puts("-l/--level <PATH>: launch a specific level file.");
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
+    puts("--test-record <PATH>: record gameplay events to file.");
+    puts("--test-replay <PATH>: replay gameplay events from file.");
 }
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
@@ -80,6 +82,15 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             if (String_ParseInteger(next_arg, &out_args->save_to_load)) {
                 out_args->save_to_load--;
             }
+            i++;
+        }
+        if (!strcmp(arg, "--test-record") && next_arg != nullptr) {
+            out_args->test_record_path = next_arg;
+            i++;
+        }
+        if ((!strcmp(arg, "--test-play") || !strcmp(arg, "--test-replay"))
+            && next_arg != nullptr) {
+            out_args->test_replay_path = next_arg;
             i++;
         }
     }

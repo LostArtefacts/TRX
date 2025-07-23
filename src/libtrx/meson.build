@@ -271,6 +271,8 @@ sources = [
   'game/sound/common.c',
   'game/spawn.c',
   'game/stats.c',
+  'game/test_recorder.c',
+  'game/test_replay.c',
   'game/ui/common.c',
   'game/ui/dialogs/base_passport.c',
   'game/ui/dialogs/controls.c',

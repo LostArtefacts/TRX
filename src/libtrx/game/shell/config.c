@@ -4,6 +4,7 @@
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/test_replay.h"
 #include "game/viewport.h"
 #include "log.h"
 
@@ -136,7 +137,9 @@ void Shell_SyncFromWindow(const bool update_viewport)
 void Shell_HandleCommonConfigChange(
     const CONFIG *const old, const CONFIG *const new)
 {
-    Config_Write();
+    if (!TestReplay_IsOpened()) {
+        Config_Write();
+    }
 
 #define L_CHANGED(subject) (old->subject != new->subject)
 

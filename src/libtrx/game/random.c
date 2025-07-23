@@ -45,6 +45,16 @@ int32_t Random_GetDraw(void)
     return (m_RandDraw >> 10) & 0x7FFF;
 }
 
+int32_t Random_GetControlSeed(void)
+{
+    return m_RandControl;
+}
+
+int32_t Random_GetDrawSeed(void)
+{
+    return m_RandDraw;
+}
+
 void Random_FreezeDraw(bool is_frozen)
 {
     m_IsDrawFrozen = is_frozen;

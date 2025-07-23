@@ -18,6 +18,16 @@ Currently the following command line interface options are available:
   should be absolute. Internally, this option uses `TR*X_gameflow_level.json5`
   as a template instructing it how to run the game.
 
-- `-s <num>`, `--save <num>`:
+- `-s <num>`, `--save <num>`:  
   Runs the game immediately loading a specific save slot. The first save starts
   at `num=1`. This option can be combined with `-l`/`--level`.
+
+- `--test-record <PATH>`:  
+  Records gameplay events to an external text file.
+
+  `--test-replay <PATH>`, `--test-play <PATH>`:  
+  Replays gameplay events from an external text file.
+
+> [!NOTE]
+> Gameplay capture is considered an internal testing tool, and may be
+> subject to breaking changes without warnings.
