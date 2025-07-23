@@ -83,3 +83,27 @@ const CONFIG_OPTION *Config_GetOptionMap(void)
 {
     return m_ConfigOptionMap;
 }
+
+const char *Config_ResolveOptionName(const char *option_name)
+{
+    const char *dot = strrchr(option_name, '.');
+    if (dot) {
+        return dot + 1;
+    }
+    return option_name;
+}
+
+const CONFIG_OPTION *Config_GetOptionByPath(const char *const path)
+{
+    if (path == nullptr) {
+        return nullptr;
+    }
+    for (const CONFIG_OPTION *opt = Config_GetOptionMap(); opt->name != nullptr;
+         opt++) {
+        if (strcmp(opt->name, path) == 0
+            || strcmp(Config_ResolveOptionName(opt->name), path) == 0) {
+            return opt;
+        }
+    }
+    return nullptr;
+}
