@@ -309,8 +309,6 @@ int32_t Shell_Main(void)
         }
     }
 
-    Config_Write();
-
     if (m_Args.level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }

@@ -32,7 +32,6 @@ void Clock_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
     m_InitCounter = SDL_GetPerformanceCounter();
-    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
 }
 
 size_t Clock_GetDateTime(char *const buffer, const size_t size)

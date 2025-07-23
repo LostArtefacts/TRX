@@ -52,11 +52,10 @@ static void M_SetupGL(void)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 }
 
-void Shell_LoadConfig(void)
+void Shell_InstallConfig(void)
 {
-    Config_Read();
     Config_SubscribeChanges(M_HandleConfigChange, nullptr);
-
+    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
     Music_SetVolume(g_Config.audio.music_volume);
 }
@@ -84,9 +83,11 @@ void Shell_CommonInit(void)
     Random_Seed();
     Lara_Pose_Init();
 
-    Shell_LoadConfig();
     Clock_Init();
     LUA_Init();
+
+    Config_Read();
+    Shell_InstallConfig();
 }
 
 void Shell_ShutdownCommonModules(void)
