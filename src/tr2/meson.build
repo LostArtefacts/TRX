@@ -195,7 +195,6 @@ sources = [
   'game/objects/general/pickup.c',
   'game/objects/general/sphere_of_doom.c',
   'game/objects/general/switch.c',
-  'game/objects/general/waterfall.c',
   'game/objects/general/window.c',
   'game/objects/general/zipline.c',
   'game/objects/setup.c',
