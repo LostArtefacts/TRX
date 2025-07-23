@@ -26,9 +26,9 @@ static void M_Toggle(const bool enable)
             Console_Cmd_Config_GetOptionFromTarget(target);
         char *const name = Console_Cmd_Config_NormalizeKey(option->name);
         *(bool *)target = enable;
-        char value_repr[128];
-        ASSERT(Console_Cmd_Config_GetCurrentValue(option, value_repr, 128));
-        Console_Log(GS(OSD_CONFIG_OPTION_SET), name, value_repr);
+        const char *const value_str = Config_GetOptionValueAsString(option);
+        ASSERT(value_str != nullptr);
+        Console_Log(GS(OSD_CONFIG_OPTION_SET), name, value_str);
         Memory_Free(name);
     }
 }
@@ -40,9 +40,9 @@ static void M_ShowStatus(void)
         const CONFIG_OPTION *const option =
             Console_Cmd_Config_GetOptionFromTarget(target);
         char *const name = Console_Cmd_Config_NormalizeKey(option->name);
-        char value_repr[128];
-        ASSERT(Console_Cmd_Config_GetCurrentValue(option, value_repr, 128));
-        Console_Log(GS(OSD_CONFIG_OPTION_GET), name, value_repr);
+        const char *const value_str = Config_GetOptionValueAsString(option);
+        ASSERT(value_str != nullptr);
+        Console_Log(GS(OSD_CONFIG_OPTION_GET), name, value_str);
         Memory_Free(name);
     }
 }

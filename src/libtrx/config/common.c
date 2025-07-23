@@ -4,11 +4,11 @@
 #include "config/priv.h"
 #include "config/vars.h"
 #include "debug.h"
+#include "enum_map.h"
 #include "game/shell.h"
 #include "memory.h"
+#include "strings.h"
 #include "vector.h"
-
-#include <string.h>
 
 typedef enum {
     CFT_DEFAULT,
@@ -217,6 +217,40 @@ bool Config_RestoreOptionDefault(const void *const target)
     }
     }
     return false;
+}
+
+const char *Config_GetOptionValueAsString(const CONFIG_OPTION *const option)
+{
+    if (option == nullptr) {
+        return nullptr;
+    }
+    switch (option->type) {
+    case COT_BOOL:
+        return String_FormatStatic("%d", *(bool *)option->target);
+    case COT_INVERTED_BOOL:
+        return String_FormatStatic("%d", !*(bool *)option->target);
+    case COT_INT32:
+        return String_FormatStatic("%d", *(int32_t *)option->target);
+    case COT_FLOAT:
+        return String_FormatStatic("%.2f", *(float *)option->target);
+    case COT_FLOAT_PERCENT:
+        return String_FormatStatic(
+            "%.0f%%", (*(float *)option->target) * 100.0f);
+    case COT_DOUBLE:
+        return String_FormatStatic("%.2f", *(double *)option->target);
+    case COT_ENUM:
+        return String_FormatStatic(
+            "%s", EnumMap_ToString(option->param, *(int32_t *)option->target));
+    case COT_RGB888: {
+        const RGB_888 *color = option->target;
+        return String_FormatStatic(
+            "%02hhx%02hhx%02hhx", color->r, color->g, color->b);
+    }
+    case COT_STRING:
+        return String_FormatStatic("%s", *(char **)option->target);
+    default:
+        return nullptr;
+    }
 }
 
 bool Config_SetOptionValueFromString(
