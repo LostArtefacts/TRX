@@ -351,7 +351,7 @@ static bool M_RequestChangeValue(
 
     UI_Settings_RequestChange(option, dir);
 changed:
-    Config_Write();
+    Config_Update();
     return true;
 }
 
@@ -447,7 +447,7 @@ static void M_RestoreDefault(
     const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
     if (option != nullptr) {
         Config_RestoreOptionDefault(option->target);
-        Config_Write();
+        Config_Update();
     }
 }
 

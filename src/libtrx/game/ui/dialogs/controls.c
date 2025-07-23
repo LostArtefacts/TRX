@@ -53,7 +53,7 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
             s->backend = choice;
             s->phase = M_PHASE_EDITOR;
             g_Config.input.backend = s->backend;
-            Config_Write();
+            Config_Update();
             break;
         }
         break;

@@ -54,7 +54,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         return CR_SUCCESS;
     } else if (String_Match(ctx->args, "^(off|false|0)$")) {
         M_Toggle(false);
-        Config_Write();
+        Config_Update();
         return CR_SUCCESS;
     } else if (String_IsEmpty(ctx->args)) {
         M_ShowStatus();

@@ -15,7 +15,7 @@ static void M_IncreaseUpscaling(void);
 static void M_ToggleFullscreen(void)
 {
     g_Config.window.is_fullscreen = !g_Config.window.is_fullscreen;
-    Config_Write();
+    Config_Update();
 }
 
 static void M_IncreaseBorders(void)
@@ -39,14 +39,14 @@ static void M_DecreaseBorders(void)
 static void M_DecreaseUpscaling(void)
 {
     g_Config.rendering.upscaling_factor--;
-    Config_Write();
+    Config_Update();
     Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
 }
 
 static void M_IncreaseUpscaling(void)
 {
     g_Config.rendering.upscaling_factor++;
-    Config_Write();
+    Config_Update();
     Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
 }
 

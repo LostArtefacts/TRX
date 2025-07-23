@@ -11,6 +11,7 @@ void Config_Shutdown(void);
 
 bool Config_Read(void);
 bool Config_Write(void);
+bool Config_Update(void);
 
 const CONFIG_OPTION *Config_GetOptionMap(void);
 

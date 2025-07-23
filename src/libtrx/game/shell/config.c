@@ -122,7 +122,7 @@ void Shell_SyncFromWindow(const bool update_viewport)
         }
         if (g_Config.loaded) {
             m_IgnoreConfigChanges = true;
-            Config_Write();
+            Config_Update();
             m_IgnoreConfigChanges = false;
         }
     }

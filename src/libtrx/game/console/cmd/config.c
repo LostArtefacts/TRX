@@ -220,7 +220,7 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
     if ((strcmp(new_value, "-") == 0
          && Config_RestoreOptionDefault(option->target))
         || Config_SetOptionValueFromString(option, new_value)) {
-        Config_Write();
+        Config_Update();
         const char *const value_str = Config_GetOptionValueAsString(option);
         ASSERT(value_str != nullptr);
         Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, value_str);
