@@ -30,15 +30,19 @@
             {"type": "display_picture", "path": "data/images/legal_eu_gm.webp", "legal": true},
             {"type": "exit_to_title"},
         ],
+        "inherit_injections": false,
         "injections": [
+            "data/injections/font.bin",
+            "data/injections/pda_model.bin",
             "data/injections/title_textures.bin",
         ]
     },
 
     "sfx_path": "data/main_gm.sfx",
     "injections": [
-        "data/injections/pda_model.bin",
         "data/injections/font.bin",
+        "data/injections/lara_animations.bin",
+        "data/injections/pda_model.bin",
     ],
 
     "levels": [

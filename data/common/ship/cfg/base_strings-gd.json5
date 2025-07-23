@@ -410,6 +410,8 @@
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Cuiridh seo lasair an sàs nuair a losgais an gunna-sgaoil, coltach ri armachd eile.",
         "SETTING_ENABLE_SKYBOX": "Bogsa-nan-Speuran",
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Cuiridh seo bogsa-nan-speuran an comas ann an ìrean far a bheil e freagarrach.",
+        "SETTING_ENABLE_SLIDE_TO_RUN": "Sleamhnaich-gus-ruith",
+        "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Leigidh seo le Lara ruith sa bhad nuair a ruigeas i air uachdar còmhnard às dèidh a bhith a' sleamhnachadh air leac leathann. Cum am putan air adhart sios gus a ghnìomhachadh.",
         "SETTING_ENABLE_SMOOTH_BARS": "Bàraichean rèidh",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Cuiridh seo dath le gluasad rèidh air na bàraichean slàinte, èadhair is nàmhaid.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Ath-bheòthachadh bhalla rèidh",

@@ -410,6 +410,8 @@
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Génère un flash lorsque Lara tire avec le fusil à pompe, comme pour les autres armes.",
         "SETTING_ENABLE_SKYBOX": "Ciel",
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Active le ciel dans les niveaux pris en charge.",
+        "SETTING_ENABLE_SLIDE_TO_RUN": "\\{review}Glissade-courir",
+        "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "\\{review}Permet à Lara de commencer à courir immédiatement lorsqu'elle touche le sol après avoir glissé en avant sur une pente. Maintenez l'entrée avant pour activer.",
         "SETTING_ENABLE_SMOOTH_BARS": "Barres fluides",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Permet à la barre de santé et à la barre d'air d'utiliser des transitions de couleurs fluides.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "\\{review}Déviation murale fluide",

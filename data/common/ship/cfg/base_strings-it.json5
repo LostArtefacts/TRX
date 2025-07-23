@@ -410,6 +410,8 @@
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Mostra il lampo dello sparo quando Lara fa fuoco con il fucile a pompa, come per le altre armi.",
         "SETTING_ENABLE_SKYBOX": "Cieli",
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Abilita il cielo nei livelli supportati.",
+        "SETTING_ENABLE_SLIDE_TO_RUN": "\\{review}Scivola-per-correre",
+        "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "\\{review}Permette a Lara di iniziare a correre immediatamente quando tocca terra dopo aver scivolato in avanti su una pendenza. Tieni premuto l'input in avanti per attivare.",
         "SETTING_ENABLE_SMOOTH_BARS": "Barre sfumate",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Fa in modo che la barra della salute e la barra dell'ossigeno utilizzino transizioni di colore uniformi.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Deflessione rapida da muro",

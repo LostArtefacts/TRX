@@ -212,7 +212,7 @@ provided with the game achieves.
     <td>
       <code>lara_animations.bin</code>
     </td>
-    <td>TR1</td>
+    <td>TR1, TR2</td>
     <td>
       Injects several animations, state changes and commands for Lara, such as
       responsive jumping, jump-twist, somersault, underwater roll, and wading.

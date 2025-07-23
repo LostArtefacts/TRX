@@ -14,6 +14,7 @@ X_UI_CFG_BOOL(gameplay.enable_tr2_jumping,         SETTING_ENABLE_TR2_JUMPING)
 
 X_UI_CFG_ENUM(gameplay.jump_lock_mode,             SETTING_JUMP_LOCK_MODE, .misc = UI_Settings_JumpLockModeEnumEntries)
 X_UI_CFG_BOOL(gameplay.enable_jump_twists,         SETTING_ENABLE_JUMP_TWISTS)
+X_UI_CFG_BOOL(gameplay.enable_slide_to_run,        SETTING_ENABLE_SLIDE_TO_RUN)
 X_UI_CFG_BOOL(gameplay.enable_lean_jumping,        SETTING_ENABLE_LEAN_JUMPING)
 X_UI_CFG_BOOL(gameplay.enable_swing_cancel,        SETTING_ENABLE_SWING_CANCEL)
 X_UI_CFG_BOOL(gameplay.enable_smooth_wall_deflect, SETTING_ENABLE_SMOOTH_WALL_DEFLECT)

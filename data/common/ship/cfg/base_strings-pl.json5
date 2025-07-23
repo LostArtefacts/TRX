@@ -410,6 +410,8 @@
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Rysuje płomienie podczas strzelania ze strzelby, jak w przypadku innych broni.",
         "SETTING_ENABLE_SKYBOX": "Niebo",
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Włącza niebo w poziomach, które je obsługują.",
+        "SETTING_ENABLE_SLIDE_TO_RUN": "\\{review}Ślizg-bieg",
+        "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "\\{review}Umożliwia Larze natychmiastowe rozpoczęcie biegu po dotknięciu ziemi po zjechaniu w dół stoku. Przytrzymaj przycisk ruchu do przodu, aby aktywować.",
         "SETTING_ENABLE_SMOOTH_BARS": "Wygładzanie pasków",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Sprawia, że paski życia i tlenu używają gładkich przejść kolorów.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Gładkie odbicia od ściany",
