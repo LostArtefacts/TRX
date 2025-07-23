@@ -192,6 +192,7 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
 {
     switch (type) {
     case IFT_GENERAL:
+    case IFT_LARA_ANIMS:
         return true;
     case IFT_FLOOR_DATA:
         return g_Config.gameplay.fix_floor_data_issues;
@@ -202,7 +203,6 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
     case IFT_ALTER_ANIM_SPRITE:
         return g_Config.visuals.fix_animated_sprites == (TR_VERSION == 2);
 #if TR_VERSION == 1
-    case IFT_LARA_ANIMS:
     case IFT_SKYBOX:
         return true;
     case IFT_BRAID:

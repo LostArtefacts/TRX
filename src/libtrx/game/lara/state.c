@@ -3,6 +3,13 @@
 #include "debug.h"
 #include "game/lara.h"
 
+static const LARA_ANIMATION m_TestResponsiveAnims[] = {
+    LA_RUN,
+    LA_UNDERWATER_SWIM_FORWARD,
+    LA_SLIDE_FORWARD,
+    (LARA_ANIMATION)-1,
+};
+
 static bool m_ResponsiveAnims[LA_NUMBER_OF] = {};
 static void (*m_StateRoutines[LS_NUMBER_OF])(ITEM *item, COLL_INFO *coll) = {};
 static void (*m_ExtraRoutines[LS_EXTRA_NUMBER_OF])(
@@ -14,7 +21,6 @@ static inline void (*M_GetRoutine(const ITEM *item))(
 
 static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
 {
-#if TR_VERSION == 1
     const OBJECT *const obj = Object_Get(O_LARA);
     if (!obj->loaded) {
         return false;
@@ -29,9 +35,6 @@ static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
     }
 
     return false;
-#else
-    return true;
-#endif
 }
 
 static inline void (*M_GetRoutine(const ITEM *const item))(
@@ -63,9 +66,10 @@ void Lara_State_RegisterExtra(
 
 void Lara_State_Initialise(void)
 {
-    m_ResponsiveAnims[LA_RUN] = M_HasResponsiveState(LA_RUN);
-    m_ResponsiveAnims[LA_UNDERWATER_SWIM_FORWARD] =
-        M_HasResponsiveState(LA_UNDERWATER_SWIM_FORWARD);
+    for (int32_t i = 0; m_TestResponsiveAnims[i] != (LARA_ANIMATION)-1; i++) {
+        const LARA_ANIMATION anim = m_TestResponsiveAnims[i];
+        m_ResponsiveAnims[anim] = M_HasResponsiveState(anim);
+    }
 }
 
 bool Lara_State_IsResponsive(const LARA_ANIMATION anim_idx)

@@ -221,6 +221,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lair_bartolipos.bin
 │   │   ├── lair_music_tracks.bin
 │   │   ├── lair_textures.bin
+│   │   ├── lara_animations.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_house_guns.bin
 │   │   ├── lara_vegas_guns.bin

@@ -369,8 +369,9 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 {
+    const bool sliding_forward = item->current_anim_state == LS_SLIDE;
     bool opposite_input;
-    if (item->current_anim_state == LS_SLIDE) {
+    if (sliding_forward) {
         g_Camera.flags = CF_NO_CHUNKY;
         g_Camera.target_elevation = M_CAM_SLIDE_ELEVATION;
         opposite_input = g_Input.back;
@@ -378,11 +379,15 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         opposite_input = g_Input.forward;
     }
 
-    if (g_Input.jump
+    if (sliding_forward && g_Config.gameplay.enable_slide_to_run
+        && item->goal_anim_state == LS_STOP && g_Input.forward
+        && Lara_State_IsResponsive(LA_SLIDE_FORWARD)) {
+        item->goal_anim_state = LS_RESPONSIVE;
+    } else if (
+        g_Input.jump
         && (!g_Config.gameplay.enable_jump_twists || !opposite_input)) {
-        item->goal_anim_state = item->current_anim_state == LS_SLIDE
-            ? LS_JUMP_FORWARD
-            : LS_JUMP_BACK;
+        item->goal_anim_state =
+            sliding_forward ? LS_JUMP_FORWARD : LS_JUMP_BACK;
     }
 }
 

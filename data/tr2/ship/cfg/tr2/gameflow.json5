@@ -32,16 +32,20 @@
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
+        "inherit_injections": false,
         "injections": [
+            "data/injections/font.bin",
+            "data/injections/pda_model.bin",
             "data/injections/title_textures.bin",
         ]
     },
 
     "sfx_path": "data/main.sfx",
     "injections": [
+        "data/injections/font.bin",
+        "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
         "data/injections/winston_model.bin",
-        "data/injections/font.bin",
     ],
 
     "levels": [
@@ -56,12 +60,13 @@
             ],
             "inherit_injections": false,
             "injections": [
-                "data/injections/pda_model.bin",
                 "data/injections/font.bin",
                 "data/injections/gym_sfx.bin",
                 "data/injections/gym_music_tracks.bin",
                 "data/injections/gym_textures.bin",
                 "data/injections/lara_gym_guns.bin",
+                "data/injections/lara_animations.bin",
+                "data/injections/pda_model.bin",
             ],
         },
 
@@ -556,7 +561,9 @@
                 {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
             "injections": [
+                "data/injections/font.bin",
                 "data/injections/photo.bin",
             ],
         },
@@ -564,8 +571,10 @@
             "path": "data/cut2.tr2",
             "music_track": 3,
             "sequence": [{"type": "loop_game"}],
+            "inherit_injections": false,
             "injections": [
                 "data/injections/cut2_textures.bin",
+                "data/injections/font.bin",
                 "data/injections/photo.bin",
             ],
         },
@@ -573,8 +582,10 @@
             "path": "data/cut3.tr2",
             "music_track": 4,
             "sequence": [{"type": "loop_game"}],
+            "inherit_injections": false,
             "injections": [
                 "data/injections/cut3_textures.bin",
+                "data/injections/font.bin",
                 "data/injections/photo.bin",
             ],
         },
@@ -585,8 +596,10 @@
                 {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
             "injections": [
                 "data/injections/cut4_textures.bin",
+                "data/injections/font.bin",
                 "data/injections/photo.bin",
             ],
         },

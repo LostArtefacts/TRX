@@ -410,6 +410,8 @@
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Zeigt Mündungsfeuer an, wenn man mit der Schrotflinte schießt, wie bei anderen Waffen.",
         "SETTING_ENABLE_SKYBOX": "Skyboxes",
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Aktiviert die Skybox in unterstützten Leveln.",
+        "SETTING_ENABLE_SLIDE_TO_RUN": "\\{review}Rutschen-zum-Laufen",
+        "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "\\{review}Ermöglicht es Lara, sofort loszulaufen, sobald sie nach dem Vorwärtsrutschen auf einer Schräge den Boden erreicht. Halte die Vorwärts-Taste gedrückt, um dies zu aktivieren.",
         "SETTING_ENABLE_SMOOTH_BARS": "Leisten-Farbverläufe",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Sorgt bei Gesundheitsleisten, Sauerstoffleisten und Gesundheitsleisten von Feinden für einen fließenden Farbübergang.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Sanftes Wand-Abprallen",

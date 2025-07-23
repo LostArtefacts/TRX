@@ -111,6 +111,7 @@ typedef enum {
     LS_TWIST         = 68,
     LS_KICK          = 69,
     LS_ZIPLINE       = 70,
+    LS_RESPONSIVE    = 71,
 #elif TR_VERSION    == 1
     LS_CONTROLLED    = 56,
     LS_TWIST         = 57,
@@ -307,6 +308,7 @@ typedef enum {
     LA_UNDERWATER_SWIM_TO_STILL_HUDDLE       = 181,
     LA_UNDERWATER_SWIM_TO_STILL_SPRAWL       = 182,
     LA_UNDERWATER_SWIM_TO_STILL_MEDIUM       = 183,
+    LA_SLIDE_FORWARD_TO_RUN                  = 184,
 #else
     LA_STAND_TO_LADDER                       = 160,
     LA_LADDER_UP                             = 161,
@@ -366,6 +368,7 @@ typedef enum {
     LA_ZIPLINE_GRAB                          = 215,
     LA_ZIPLINE_RIDE                          = 216,
     LA_ZIPLINE_FALL                          = 217,
+    LA_SLIDE_FORWARD_TO_RUN                  = 218,
 #endif
     LA_NUMBER_OF,
 } LARA_ANIMATION;

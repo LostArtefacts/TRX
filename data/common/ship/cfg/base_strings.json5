@@ -410,6 +410,8 @@
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Draws flames when firing the shotgun, like for other guns.",
         "SETTING_ENABLE_SKYBOX": "Skyboxes",
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Enables the skybox in supported levels.",
+        "SETTING_ENABLE_SLIDE_TO_RUN": "Slide-to-run",
+        "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Allows Lara to start running immediately when she reaches ground after sliding forwards on a slope. Hold the forward input to activate.",
         "SETTING_ENABLE_SMOOTH_BARS": "Smooth bars",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Makes the health, air and enemy bars use smooth color transitions.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Smooth wall deflection",
