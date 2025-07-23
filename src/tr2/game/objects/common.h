@@ -4,7 +4,6 @@
 
 #include <libtrx/game/objects/common.h>
 
-void Object_DrawDummyItem(const ITEM *item);
 void Object_DrawAnimatingItem(const ITEM *item);
 void Object_DrawSpriteItem(const ITEM *item);
 

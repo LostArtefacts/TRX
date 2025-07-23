@@ -73,6 +73,7 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID obj_id);
 // Given a receptacle object ID, find a matching key/puzzle object ID.
 GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id);
 
+extern void Object_DrawDummyItem(const ITEM *item);
 extern void Object_DrawUnclippedItem(const ITEM *item);
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
 extern void Object_SetReflective(GAME_OBJECT_ID obj_id, bool enabled);
