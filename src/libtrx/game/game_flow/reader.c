@@ -621,10 +621,10 @@ void GF_LoadFromString(
 {
     GF_Shutdown();
 
-    M_CONTEXT ctx = {
-        .script_path = script_path,
-        .gf = &g_GameFlow,
-    };
+    M_CONTEXT ctx = { .gf = &g_GameFlow };
+    ctx.gf->path = Memory_DupStr(script_path);
+    ctx.script_path = g_GameFlow.path;
+
     JSON_PARSE_RESULT parse_result;
     JSON_VALUE *const root = JSON_ParseEx(
         script_data, strlen(script_data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr,

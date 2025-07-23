@@ -230,7 +230,6 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
     }
 
     M_LoadLegacyOptions(root_obj);
-    g_Config.loaded = true;
 }
 
 void Config_DumpToJSON(JSON_OBJECT *root_obj)

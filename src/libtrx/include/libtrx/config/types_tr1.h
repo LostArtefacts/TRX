@@ -23,12 +23,20 @@ typedef enum {
 } STAT_DETAIL_MODE;
 
 typedef struct {
+    // This signifies whether the config was already read from disk.
     bool loaded;
-    char *language;
+
+    // This holds paths passed to Config_Read(), so that Config_Write() knows
+    // where to save the updates.
+    char *default_path;
+    char *enforced_path;
 
     // This field is used to force trigger a change event for fields that are
     // not stored in the CONFIG struct.
     bool dirty;
+
+    // Start of user fields
+    char *language;
 
     struct {
         INPUT_BACKEND backend; // Not decisive - mostly for UI visuals

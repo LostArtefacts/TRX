@@ -4,16 +4,9 @@
 #include "config/priv.h"
 #include "config/vars.h"
 #include "debug.h"
-#include "enum_map.h"
+#include "game/game_flow/vars.h"
 #include "game/shell.h"
 #include "memory.h"
-#include "strings.h"
-#include "vector.h"
-
-typedef enum {
-    CFT_DEFAULT,
-    CFT_ENFORCED,
-} CONFIG_FILE_TYPE;
 
 // In-memory list of pointers to config options enforced by the game flow.
 static VECTOR *m_EnforcedOptions = nullptr;
@@ -21,14 +14,6 @@ static VECTOR *m_EnforcedOptions = nullptr;
 static VECTOR *m_HiddenOptions = nullptr;
 
 static EVENT_MANAGER *m_EventManager = nullptr;
-
-static const char *M_GetPath(CONFIG_FILE_TYPE file_type);
-
-static const char *M_GetPath(const CONFIG_FILE_TYPE file_type)
-{
-    return file_type == CFT_DEFAULT ? Shell_GetConfigPath()
-                                    : Shell_GetGameFlowPath();
-}
 
 void Config_Init(void)
 {
@@ -46,6 +31,9 @@ void Config_Shutdown(void)
     EventManager_Free(m_EventManager);
     m_EventManager = nullptr;
 
+    Memory_FreePointer(&g_Config.default_path);
+    Memory_FreePointer(&g_Config.enforced_path);
+
     if (m_EnforcedOptions != nullptr) {
         Vector_Free(m_EnforcedOptions);
         m_EnforcedOptions = nullptr;
@@ -56,8 +44,14 @@ void Config_Shutdown(void)
     }
 }
 
-bool Config_Read(void)
+bool Config_Read(
+    const char *const default_path, const char *const enforced_path)
 {
+    char *default_path_copy = Memory_DupStr(default_path);
+    char *enforced_path_copy = Memory_DupStr(enforced_path);
+    LOG_DEBUG("Reading config");
+    LOG_DEBUG("  default_path=%s", default_path_copy);
+    LOG_DEBUG("  enforced_path=%s", enforced_path_copy);
     if (m_EnforcedOptions == nullptr) {
         m_EnforcedOptions = Vector_Create(sizeof(void *));
     } else {
@@ -69,16 +63,24 @@ bool Config_Read(void)
         Vector_Clear(m_HiddenOptions);
     }
     const CONFIG_IO_ARGS args = {
-        .default_path = M_GetPath(CFT_DEFAULT),
-        .enforced_path = M_GetPath(CFT_ENFORCED),
+        .default_path = default_path_copy,
+        .enforced_path = enforced_path_copy,
         .action = &Config_LoadFromJSON,
         .enforced_targets = m_EnforcedOptions,
         .hidden_targets = m_HiddenOptions,
     };
     const bool result = ConfigFile_Read(&args);
     if (result) {
+        g_Config.default_path = default_path_copy;
+        g_Config.enforced_path = enforced_path_copy;
+        g_Config.loaded = true;
         Config_Sanitize();
         g_SavedConfig = g_Config;
+        LOG_DEBUG("Config loaded");
+    } else {
+        Memory_FreePointer(default_path_copy);
+        Memory_FreePointer(enforced_path_copy);
+        LOG_WARNING("Errors while loading loaded");
     }
     return result;
 }
@@ -106,8 +108,8 @@ bool Config_Update(void)
 bool Config_Write(void)
 {
     const CONFIG_IO_ARGS args = {
-        .default_path = M_GetPath(CFT_DEFAULT),
-        .enforced_path = M_GetPath(CFT_ENFORCED),
+        .default_path = g_Config.default_path,
+        .enforced_path = g_Config.enforced_path,
         .action = &Config_DumpToJSON,
     };
     return ConfigFile_Write(&args);

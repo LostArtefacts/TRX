@@ -144,6 +144,8 @@ typedef struct {
 // ----------------------------------------------------------------------------
 
 typedef struct {
+    char *path;
+
     GF_LEVEL *title_level;
     GF_LEVEL_TABLE level_tables[GFLT_NUMBER_OF];
 
