@@ -86,9 +86,11 @@ bool Config_Read(void)
 bool Config_Update(void)
 {
     Config_Sanitize();
-    if (!Config_Write()) {
+    if (memcmp(&g_Config, &g_SavedConfig, sizeof(CONFIG)) == 0) {
         return false;
     }
+
+    Config_Write();
 
     if (m_EventManager != nullptr) {
         const EVENT event = {
