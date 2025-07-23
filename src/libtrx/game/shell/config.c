@@ -136,6 +136,8 @@ void Shell_SyncFromWindow(const bool update_viewport)
 void Shell_HandleCommonConfigChange(
     const CONFIG *const old, const CONFIG *const new)
 {
+    Config_Write();
+
 #define L_CHANGED(subject) (old->subject != new->subject)
 
     if (L_CHANGED(audio.sound_volume)) {

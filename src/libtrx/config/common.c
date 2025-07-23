@@ -90,8 +90,6 @@ bool Config_Update(void)
         return false;
     }
 
-    Config_Write();
-
     if (m_EventManager != nullptr) {
         const EVENT event = {
             .name = "change",
