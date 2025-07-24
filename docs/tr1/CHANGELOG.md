@@ -21,6 +21,7 @@
 - fixed being unable to activate waterfall objects with code bits (#3589)
 - fixed skippable triggers for waterfall objects in Lost Valley (#3593)
 - improved object loading error messages when an invalid object ID is detected
+- improved frames in Lara's jump-twist animations
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 
 ## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20

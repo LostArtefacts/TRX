@@ -309,6 +309,7 @@ typedef enum {
     LA_UNDERWATER_SWIM_TO_STILL_SPRAWL       = 182,
     LA_UNDERWATER_SWIM_TO_STILL_MEDIUM       = 183,
     LA_SLIDE_FORWARD_TO_RUN                  = 184,
+    LA_JUMP_FORWARD_ROLL_CONTINUE            = 185,
 #else
     LA_STAND_TO_LADDER                       = 160,
     LA_LADDER_UP                             = 161,
@@ -369,6 +370,7 @@ typedef enum {
     LA_ZIPLINE_RIDE                          = 216,
     LA_ZIPLINE_FALL                          = 217,
     LA_SLIDE_FORWARD_TO_RUN                  = 218,
+    LA_JUMP_FORWARD_ROLL_CONTINUE            = 219,
 #endif
     LA_NUMBER_OF,
 } LARA_ANIMATION;
