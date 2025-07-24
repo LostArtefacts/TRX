@@ -347,6 +347,7 @@ sources = [
   'json/json_base.c',
   'json/json_parse.c',
   'json/json_write.c',
+  'json_file.c',
   'log.c',
   'memory.c',
   'screenshot.c',
