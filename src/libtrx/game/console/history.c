@@ -1,6 +1,6 @@
 #include "game/console/history.h"
 
-#include "config/file.h"
+#include "json_file.h"
 #include "memory.h"
 #include "utils.h"
 #include "vector.h"
@@ -12,8 +12,12 @@
 VECTOR *m_History = nullptr;
 static const char *m_Path = "cfg/" PROJECT_NAME "_console_history.json5";
 
-static void M_LoadFromJSON(JSON_OBJECT *const root_obj)
+static void M_LoadFromJSON(JSON_VALUE *doc);
+static JSON_VALUE *M_DumpToJSON(void);
+
+static void M_LoadFromJSON(JSON_VALUE *const doc)
 {
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(doc);
     JSON_ARRAY *const arr = JSON_ObjectGetArray(root_obj, "entries");
     if (arr == nullptr) {
         return;
@@ -28,48 +32,50 @@ static void M_LoadFromJSON(JSON_OBJECT *const root_obj)
     }
 }
 
-static void M_DumpToJSON(JSON_OBJECT *const root_obj)
+static JSON_VALUE *M_DumpToJSON(void)
 {
     JSON_ARRAY *const arr = JSON_ArrayNew();
-
-    bool has_elements = false;
     for (int32_t i = 0; i < Console_History_GetLength(); i++) {
         JSON_ArrayAppendString(arr, Console_History_Get(i));
-        has_elements = true;
     }
 
-    if (has_elements) {
-        JSON_ObjectAppendArray(root_obj, "entries", arr);
-    } else {
+    if (arr->length == 0) {
         JSON_ArrayFree(arr);
+        return nullptr;
     }
+    JSON_OBJECT *root_obj = JSON_ObjectNew();
+    JSON_ObjectAppendArray(root_obj, "entries", arr);
+    return JSON_ValueFromObject(root_obj);
 }
 
 void Console_History_Init(void)
 {
     m_History = Vector_Create(sizeof(char *));
-    ConfigFile_Read(&(CONFIG_IO_ARGS) {
-        .default_path = m_Path,
-        .enforced_path = nullptr,
-        .action = &M_LoadFromJSON,
-    });
+    JSON_VALUE *const doc = JSONFile_Read(m_Path);
+    if (doc != nullptr) {
+        M_LoadFromJSON(doc);
+        JSON_ValueFree(doc);
+    }
 }
 
 void Console_History_Shutdown(void)
 {
-    if (m_History != nullptr) {
-        ConfigFile_Write(&(CONFIG_IO_ARGS) {
-            .default_path = m_Path,
-            .enforced_path = nullptr,
-            .action = &M_DumpToJSON,
-        });
-        for (int32_t i = m_History->count - 1; i >= 0; i--) {
-            char *const prompt = *(char **)Vector_Get(m_History, i);
-            Memory_Free(prompt);
-        }
-        Vector_Free(m_History);
-        m_History = nullptr;
+    if (m_History == nullptr) {
+        return;
     }
+
+    JSON_VALUE *const doc = M_DumpToJSON();
+    if (doc != nullptr) {
+        JSONFile_Write(m_Path, doc);
+        JSON_ValueFree(doc);
+    }
+
+    for (int32_t i = m_History->count - 1; i >= 0; i--) {
+        char *const prompt = *(char **)Vector_Get(m_History, i);
+        Memory_Free(prompt);
+    }
+    Vector_Free(m_History);
+    m_History = nullptr;
 }
 
 int32_t Console_History_GetLength(void)
