@@ -9,7 +9,7 @@
 #include "game/objects/common.h"
 #include "game/objects/names.h"
 #include "game/shell.h"
-#include "json.h"
+#include "json_file.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -625,17 +625,9 @@ void GF_LoadFromString(
     ctx.gf->path = Memory_DupStr(script_path);
     ctx.script_path = g_GameFlow.path;
 
-    JSON_PARSE_RESULT parse_result;
-    JSON_VALUE *const root = JSON_ParseEx(
-        script_data, strlen(script_data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr,
-        nullptr, &parse_result);
-    if (root == nullptr) {
-        Shell_ExitSystemFmt(
-            "Failed to parse script file %s: %s in line %d, char %d",
-            script_path, JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no);
-    }
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    JSON_VALUE *const doc = JSONFile_ReadEx(
+        script_path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(doc);
 
     M_LoadCommonRoot(&ctx, root_obj);
     M_LoadRoot(&ctx, root_obj);
@@ -645,7 +637,5 @@ void GF_LoadFromString(
     M_LoadFMVs(&ctx, root_obj);
     M_LoadTitleLevel(&ctx, root_obj);
 
-    if (root != nullptr) {
-        JSON_ValueFree(root);
-    }
+    JSON_ValueFree(doc);
 }
