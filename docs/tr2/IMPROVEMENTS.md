@@ -246,6 +246,7 @@
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
+- improved frames in Lara's jump-twist animations
 - removed the limit of 10 dynamic lights per frame
 
 ## Audio
