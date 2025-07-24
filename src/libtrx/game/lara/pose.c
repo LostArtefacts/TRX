@@ -7,7 +7,7 @@
 #include "game/items.h"
 #include "game/lara/hair.h"
 #include "game/objects.h"
-#include "json.h"
+#include "json_file.h"
 #include "memory.h"
 #include "vector.h"
 
@@ -44,26 +44,8 @@ static void M_LoadPoses(void)
     m_Poses = Vector_Create(sizeof(LARA_POSE));
     ASSERT(m_Poses != nullptr);
 
-    char *json_data = nullptr;
-    size_t json_size = 0;
-    if (!File_Load(m_Path, &json_data, &json_size)) {
-        LOG_ERROR("Failed to load poses from %s", m_Path);
-        return;
-    }
-
-    JSON_PARSE_RESULT parse_result;
-    JSON_VALUE *const root = JSON_ParseEx(
-        json_data, json_size, JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr, nullptr,
-        &parse_result);
-    if (root == nullptr) {
-        LOG_ERROR(
-            "Failed to parse %s: %s at line %zu char %zu", m_Path,
-            JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no);
-        goto cleanup;
-    }
-
-    JSON_ARRAY *const poses = JSON_ValueAsArray(root);
+    JSON_VALUE *const doc = JSONFile_Read(m_Path);
+    JSON_ARRAY *const poses = JSON_ValueAsArray(doc);
     if (poses == nullptr) {
         LOG_WARNING("Error while reading poses: root object must be an array");
         goto cleanup;
@@ -105,10 +87,7 @@ static void M_LoadPoses(void)
     }
 
 cleanup:
-    if (root != nullptr) {
-        JSON_ValueFree(root);
-    }
-    Memory_FreePointer(&json_data);
+    JSON_ValueFree(doc);
 }
 
 void Lara_Pose_Init(void)
