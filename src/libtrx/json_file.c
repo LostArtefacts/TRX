@@ -1,15 +1,22 @@
 #include "json_file.h"
 
 #include "filesystem.h"
+#include "game/shell.h"
 #include "json.h"
 #include "log.h"
 #include "memory.h"
+#include "strings.h"
 
 #include <string.h>
 
 #define M_PARSE_FLAGS JSON_PARSE_FLAGS_ALLOW_JSON5
 
 JSON_VALUE *JSONFile_Read(const char *path)
+{
+    return JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) {});
+}
+
+JSON_VALUE *JSONFile_ReadEx(const char *path, const JSON_FILE_OPTIONS options)
 {
     char *file_data = nullptr;
     if (!File_Load(path, &file_data, nullptr)) {
@@ -20,10 +27,14 @@ JSON_VALUE *JSONFile_Read(const char *path)
     JSON_VALUE *const value = JSON_ParseEx(
         file_data, strlen(file_data), M_PARSE_FLAGS, nullptr, nullptr, &pr);
     if (value == nullptr) {
-        LOG_ERROR(
+        const char *const error_msg = String_FormatStatic(
             "parse error in '%s': %s (line %d, char %d)", path,
             JSON_GetErrorDescription(pr.error), pr.error_line_no,
             pr.error_row_no);
+        LOG_ERROR("%s", error_msg);
+        if (options.exit_on_error) {
+            Shell_ExitSystemFmt("%s", error_msg);
+        }
     }
     Memory_FreePointer(&file_data);
     return value;
