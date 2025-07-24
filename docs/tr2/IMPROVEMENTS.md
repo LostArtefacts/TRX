@@ -183,6 +183,7 @@
 - changed fullscreen behavior to use windowed desktop mode
 - changed dynamic lighting for gun flashes and explosions to be optional
 - changed the Bartoli's Hideout sunset effect to also apply to skybox lighting
+- changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range
 - fixed fullscreen issues
 - fixed black borders in windowed mode
 - fixed "Failed to create device" when toggling fullscreen
