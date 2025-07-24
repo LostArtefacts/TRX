@@ -202,6 +202,7 @@
 - fixed the bird monster not having a shadow
 - fixed flames showing briefly when Lara enters water and a death tile is present
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings
+- fixed incorrect frames in Lara's underwater roll animation
 - fixed glide cameras using a default speed rather than maintaining the values set in the level file - the following OG areas have glide cameras restored
     - **The Great Wall**: room 0
     - **Diving Area**: rooms 54 and 57
