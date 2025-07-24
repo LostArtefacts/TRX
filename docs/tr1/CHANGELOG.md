@@ -4,7 +4,7 @@
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
 - added ability to move Lara around in photo mode
-- added an option to use Lara's slide-to-run animation from TR3+ (#1089)
+- added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added German translation
 - changed the game flow and game strings file placement
 - changed the skybox option to allow toggling in-game without the need to reload the level
