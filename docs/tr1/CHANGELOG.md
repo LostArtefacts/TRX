@@ -10,6 +10,7 @@
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
 - changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic
+- changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range (#3598)
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
