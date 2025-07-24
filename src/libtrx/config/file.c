@@ -5,6 +5,7 @@
 #include "debug.h"
 #include "filesystem.h"
 #include "game/console/history.h"
+#include "json_file.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -23,44 +24,22 @@ static bool M_ReadFromJSON(
     VECTOR *const hidden_targets);
 static void M_PreserveEnforcedState(
     JSON_OBJECT *root_obj, JSON_VALUE *old_root, JSON_VALUE *enf_root);
-static char *M_WriteToJSON(
-    void (*dump)(JSON_OBJECT *root_obj), const char *old_data,
-    const char *enf_data);
-
-static JSON_VALUE *M_ReadRoot(const char *const cfg_data)
-{
-    if (cfg_data == nullptr) {
-        return nullptr;
-    }
-
-    JSON_PARSE_RESULT parse_result;
-    JSON_VALUE *root = JSON_ParseEx(
-        cfg_data, strlen(cfg_data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr,
-        nullptr, &parse_result);
-    if (root == nullptr) {
-        LOG_ERROR(
-            "failed to parse config file: %s in line %d, char %d",
-            JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no);
-    }
-
-    return root;
-}
 
 static bool M_ReadFromJSON(
-    const char *const cfg_data, const char *const enf_data,
+    const char *const default_path, const char *const enforced_path,
     void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets,
     VECTOR *const hidden_targets)
 {
     bool result = false;
 
-    JSON_VALUE *cfg_root =
-        M_ReadRoot(cfg_data == nullptr ? M_EMPTY_ROOT : cfg_data);
-    JSON_VALUE *enf_root =
-        M_ReadRoot(enf_data == nullptr ? M_EMPTY_ROOT : enf_data);
+    JSON_VALUE *cfg_root = JSONFile_Read(default_path);
     if (cfg_root != nullptr) {
         result = true;
+    } else {
+        cfg_root = JSON_ValueFromObject(JSON_ObjectNew());
     }
+    JSON_VALUE *const enf_root =
+        enforced_path != nullptr ? JSONFile_Read(enforced_path) : nullptr;
 
     JSON_OBJECT *cfg_root_obj = JSON_ValueAsObject(cfg_root);
     JSON_OBJECT *enf_root_obj = JSON_ValueAsObject(enf_root);
@@ -150,84 +129,32 @@ static void M_PreserveEnforcedState(
     }
 }
 
-static char *M_WriteToJSON(
-    void (*dump)(JSON_OBJECT *root_obj), const char *const old_data,
-    const char *const enf_data)
-{
-    JSON_OBJECT *root_obj = JSON_ObjectNew();
-
-    dump(root_obj);
-
-    JSON_VALUE *old_root = M_ReadRoot(old_data);
-    JSON_VALUE *enf_root = M_ReadRoot(enf_data);
-    M_PreserveEnforcedState(root_obj, old_root, enf_root);
-
-    JSON_VALUE *root = JSON_ValueFromObject(root_obj);
-    size_t size;
-    char *data = JSON_WritePretty(root, "  ", "\n", &size);
-    JSON_ValueFree(root);
-    JSON_ValueFree(old_root);
-    JSON_ValueFree(enf_root);
-
-    return data;
-}
-
 bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
 {
-    char *default_data = nullptr;
-    char *enforced_data = nullptr;
-
     ASSERT(args->default_path != nullptr);
-    if (!File_Load(args->default_path, &default_data, nullptr)) {
-        LOG_WARNING(
-            "'%s' not loaded - default settings will apply",
-            args->default_path);
-    }
-
-    if (args->enforced_path != nullptr) {
-        File_Load(args->enforced_path, &enforced_data, nullptr);
-    }
-
-    const bool result = M_ReadFromJSON(
-        default_data, enforced_data, args->action, args->enforced_targets,
-        args->hidden_targets);
-
-    Memory_FreePointer(&default_data);
-    Memory_FreePointer(&enforced_data);
-    return result;
+    return M_ReadFromJSON(
+        args->default_path, args->enforced_path, args->action,
+        args->enforced_targets, args->hidden_targets);
 }
 
 bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
 {
-    char *old_data = nullptr;
-    char *enforced_data = nullptr;
-
     ASSERT(args->default_path != nullptr);
-    File_Load(args->default_path, &old_data, nullptr);
+    JSON_VALUE *const old_root = JSONFile_Read(args->default_path);
+    JSON_VALUE *const enf_root = args->enforced_path != nullptr
+        ? JSONFile_Read(args->enforced_path)
+        : nullptr;
 
-    if (args->enforced_path != nullptr) {
-        File_Load(args->enforced_path, &enforced_data, nullptr);
-    }
+    JSON_OBJECT *const root_obj = JSON_ObjectNew();
+    args->action(root_obj);
+    M_PreserveEnforcedState(root_obj, old_root, enf_root);
 
-    bool updated = false;
-    char *data = M_WriteToJSON(args->action, old_data, enforced_data);
+    JSON_VALUE *const new_root = JSON_ValueFromObject(root_obj);
+    const bool updated = JSONFile_Write(args->default_path, new_root);
 
-    if (old_data == nullptr || strcmp(data, old_data) != 0) {
-        MYFILE *const fp = File_Open(args->default_path, FILE_OPEN_WRITE);
-        if (fp == nullptr) {
-            LOG_ERROR("Failed to write settings!");
-        } else {
-            LOG_INFO("Saving user settings to %s", args->default_path);
-            File_WriteData(fp, data, strlen(data));
-            File_Close(fp);
-            updated = true;
-        }
-    }
-
-    Memory_FreePointer(&data);
-    Memory_FreePointer(&old_data);
-    Memory_FreePointer(&enforced_data);
-
+    JSON_ValueFree(new_root);
+    JSON_ValueFree(old_root);
+    JSON_ValueFree(enf_root);
     return updated;
 }
 

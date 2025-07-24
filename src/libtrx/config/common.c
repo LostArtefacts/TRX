@@ -47,11 +47,17 @@ void Config_Shutdown(void)
 bool Config_Read(
     const char *const default_path, const char *const enforced_path)
 {
-    char *default_path_copy = Memory_DupStr(default_path);
-    char *enforced_path_copy = Memory_DupStr(enforced_path);
+    // Always initialize the config, even if the file is missing, so that
+    // the game can interact with these properties.
+    Memory_FreePointer(&g_Config.default_path);
+    Memory_FreePointer(&g_Config.enforced_path);
+    g_Config.default_path = Memory_DupStr(default_path);
+    g_Config.enforced_path = Memory_DupStr(enforced_path);
+    g_Config.loaded = true;
+
     LOG_DEBUG("Reading config");
-    LOG_DEBUG("  default_path=%s", default_path_copy);
-    LOG_DEBUG("  enforced_path=%s", enforced_path_copy);
+    LOG_DEBUG("  default_path=%s", g_Config.default_path);
+    LOG_DEBUG("  enforced_path=%s", g_Config.enforced_path);
     if (m_EnforcedOptions == nullptr) {
         m_EnforcedOptions = Vector_Create(sizeof(void *));
     } else {
@@ -63,25 +69,20 @@ bool Config_Read(
         Vector_Clear(m_HiddenOptions);
     }
     const CONFIG_IO_ARGS args = {
-        .default_path = default_path_copy,
-        .enforced_path = enforced_path_copy,
+        .default_path = g_Config.default_path,
+        .enforced_path = g_Config.enforced_path,
         .action = &Config_LoadFromJSON,
         .enforced_targets = m_EnforcedOptions,
         .hidden_targets = m_HiddenOptions,
     };
     const bool result = ConfigFile_Read(&args);
     if (result) {
-        g_Config.default_path = default_path_copy;
-        g_Config.enforced_path = enforced_path_copy;
-        g_Config.loaded = true;
-        Config_Sanitize();
-        g_SavedConfig = g_Config;
         LOG_DEBUG("Config loaded");
     } else {
-        Memory_FreePointer(default_path_copy);
-        Memory_FreePointer(enforced_path_copy);
-        LOG_WARNING("Errors while loading loaded");
+        LOG_WARNING("Errors while loading config");
     }
+    Config_Sanitize();
+    g_SavedConfig = g_Config;
     return result;
 }
 
@@ -107,6 +108,7 @@ bool Config_Update(void)
 
 bool Config_Write(void)
 {
+    ASSERT(g_Config.default_path != nullptr);
     const CONFIG_IO_ARGS args = {
         .default_path = g_Config.default_path,
         .enforced_path = g_Config.enforced_path,
