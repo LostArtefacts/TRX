@@ -218,7 +218,7 @@ provided with the game achieves.
       responsive jumping, jump-twist, somersault, underwater roll, and wading.
       For custom levels, this injection file will work as-is, but if you are
       building a level and wish to customise any of Lara's animations, please
-      refer to https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/LARA.md
+      refer to https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
       for guidance.
     </td>
   </tr>
