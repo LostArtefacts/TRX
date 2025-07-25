@@ -24,6 +24,7 @@
 - fixed missing door sound effects in Lara's Home, Bartoli's Hideout, Opera House, Living Quarters, Catacombs of the Talion, Ice Palace, Home Sweet Home, Fool's Gold, Kingdom and Nightmare in Vegas (#3363)
 - fixed being unable to antitrigger waterfall objects (#3589)
 - fixed incorrect frames in Lara's underwater roll animation (#1589)
+- fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
 - improved frames in Lara's jump-twist animations
 - improved object loading error messages when an invalid object ID is detected
 - improved projectiles

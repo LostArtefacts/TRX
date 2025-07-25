@@ -45,6 +45,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 
 void Game_End(void)
 {
+    Savegame_PersistGameToCurrentInfo(Game_GetCurrentLevel());
     Overlay_HideGameInfo();
     Sound_StopAll();
     Music_Stop();
