@@ -76,7 +76,6 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 
 static void M_ShowWindow(void)
 {
-    Render_Init();
     Shell_SyncToWindow();
 
     SDL_ShowWindow(m_Window);
@@ -100,7 +99,10 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         return 1;
     }
     Output_Init();
-    M_ShowWindow();
+    Render_Init();
+    if (!args->headless) {
+        M_ShowWindow();
+    }
 
     GF_Init();
     GF_LoadFromFile(Shell_GetGameFlowPath(args->mod));

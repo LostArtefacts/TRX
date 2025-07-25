@@ -13,46 +13,39 @@
 
 static SDL_Window *m_Window = nullptr;
 
-static void M_SetGLBackend(GFX_GL_BACKEND backend);
 static void M_CreateGameWindow(void);
+static void M_CreateGLContext(void);
 static void M_ShowWindow(void);
 
 static void M_CreateGameWindow(void)
 {
-    SDL_Window *const window = SDL_CreateWindow(
+    m_Window = SDL_CreateWindow(
         "TR1X", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720,
         SDL_WINDOW_HIDDEN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE
             | SDL_WINDOW_OPENGL);
 
-    if (window == nullptr) {
+    if (m_Window == nullptr) {
         Shell_ExitSystem("System Error: cannot create window");
-        return;
     }
+}
 
-    const GFX_GL_BACKEND backends_to_try[] = {
-        // clang-format off
-        GFX_GL_33C,
-        GFX_GL_INVALID_BACKEND, // guard
-        // clang-format on
-    };
-
-    for (int32_t i = 0; backends_to_try[i] != GFX_GL_INVALID_BACKEND; i++) {
-        const GFX_GL_BACKEND backend = backends_to_try[i];
-
-        M_SetGLBackend(backend);
-
-        int32_t major;
-        int32_t minor;
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-        LOG_DEBUG("Trying GL backend %d.%d", major, minor);
-        if (GFX_Context_Attach(window, backend)) {
-            m_Window = window;
-            return;
-        }
+static void M_CreateGLContext(void)
+{
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(
+        SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    if (!GFX_Context_Attach(m_Window, GFX_GL_33C)) {
+        Shell_ExitSystem("System Error: cannot attach opengl context");
     }
+}
 
-    Shell_ExitSystem("System Error: cannot attach opengl context");
+static void M_ShowWindow(void)
+{
+    Shell_SyncToWindow();
+    SDL_ShowWindow(m_Window);
+    SDL_RaiseWindow(m_Window);
+    Shell_RefreshRendererViewport();
 }
 
 void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
@@ -78,30 +71,6 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 #undef L_CHANGED
 }
 
-static void M_ShowWindow(void)
-{
-    Shell_SyncToWindow();
-    SDL_ShowWindow(m_Window);
-    SDL_RaiseWindow(m_Window);
-    Shell_RefreshRendererViewport();
-}
-
-static void M_SetGLBackend(const GFX_GL_BACKEND backend)
-{
-    switch (backend) {
-    case GFX_GL_33C:
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-        SDL_GL_SetAttribute(
-            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-        break;
-
-    case GFX_GL_INVALID_BACKEND:
-        ASSERT_FAIL();
-        break;
-    }
-}
-
 SDL_Window *Shell_GetWindow(void)
 {
     return m_Window;
@@ -115,12 +84,14 @@ int32_t Shell_Main(const SHELL_ARGS *args)
     Shell_InitCommonModules();
     args = Shell_CommonInit(args);
     M_CreateGameWindow();
-
+    M_CreateGLContext();
     if (!Output_Init()) {
         Shell_ExitSystem("Could not initialise video system");
         return 1;
     }
-    M_ShowWindow();
+    if (!args->headless) {
+        M_ShowWindow();
+    }
 
     GF_Init();
     GF_LoadFromFile(Shell_GetGameFlowPath(args->mod));

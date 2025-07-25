@@ -24,8 +24,6 @@
 #define M_MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
 #define M_SUNSET_TIMEOUT (40 * 60 * (LOGIC_FPS)) // = 72000
 
-static bool m_Initialized = false;
-
 static int32_t m_VBufCapacity = 0;
 static int32_t m_TickComp = 0;
 static int32_t m_LsAdder = 0;
@@ -401,11 +399,6 @@ static void M_ReserveVertexBuffer(void)
 
 bool Output_Init(void)
 {
-    if (m_Initialized) {
-        return true;
-    }
-    m_Initialized = true;
-
     M_CalculateWibbleTable();
     Output_InitLight();
     return true;
@@ -413,11 +406,6 @@ bool Output_Init(void)
 
 void Output_Shutdown(void)
 {
-    if (!m_Initialized) {
-        return;
-    }
-    m_Initialized = false;
-
     Output_ShutdownLight();
 }
 
@@ -671,6 +659,9 @@ void Output_BeginScene(void)
 void Output_EndScene(void)
 {
     Render_EndScene();
+    if (Shell_GetArgs()->headless) {
+        return;
+    }
     GFX_Context_SwapBuffers();
 }
 

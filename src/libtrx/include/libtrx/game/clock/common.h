@@ -5,6 +5,9 @@
 
 void Clock_Init(void);
 
+// Disables any kind of waiting in Clock_WaitTick
+void Clock_DisableWait(void);
+
 void Clock_SyncTick(void);
 int32_t Clock_WaitTick(void);
 

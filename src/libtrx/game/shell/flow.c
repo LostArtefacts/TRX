@@ -83,8 +83,6 @@ void Shell_InitCommonModules(void)
     Overlay_Init();
 
     Input_Init();
-    Sound_Init();
-    Music_Init();
 
     GameBuf_Init();
     Random_Seed();
@@ -135,7 +133,9 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     if (args->test_record_path != nullptr
         && args->test_replay_path != nullptr) {
         Shell_ExitSystem("Cannot use both --test-record and --test-replay");
-        return new_args;
+    }
+    if (args->headless && args->test_replay_path == nullptr) {
+        Shell_ExitSystem("--headless can only be used with --test-replay");
     }
 
     if (args->test_replay_path != nullptr) {
@@ -146,6 +146,7 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
             Vector_Free(tmp_args->original_args);
             tmp_args->original_args = nullptr;
         }
+        tmp_args->headless = args->headless;
         new_args = tmp_args;
     } else {
         Config_Read(
@@ -162,6 +163,13 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
     Music_SetVolume(g_Config.audio.music_volume);
+
+    if (!new_args->headless) {
+        Sound_Init();
+        Music_Init();
+    } else {
+        Clock_DisableWait();
+    }
 
     m_ShellArgs = new_args;
     return new_args;

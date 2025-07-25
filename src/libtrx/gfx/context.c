@@ -103,8 +103,14 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
             "Can't activate OpenGL context: %s", SDL_GetError());
     }
 
-    if (glewInit() != GLEW_OK) {
-        Shell_ExitSystem("Can't initialize GLEW for OpenGL extension loading");
+    const GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        if (err != 4) {
+            Shell_ExitSystemFmt(
+                "Can't initialize GLEW for OpenGL extension loading: %d", err);
+        }
+        // https://github.com/nigels-com/glew/issues/417
+        LOG_WARNING("GLEW failed to init: %d", err);
     }
 
     LOG_INFO("OpenGL vendor string:   %s", glGetString(GL_VENDOR));
