@@ -264,7 +264,7 @@ static void M_RunQueue(M_PRIV *const p)
 static bool M_ParseSeedControl(const char *const line, M_PARSE_CTX *const ctx)
 {
     int32_t val;
-    if (sscanf(line, "# seed_control %d", &val) == 1) {
+    if (sscanf(line, "seed_control %d", &val) == 1) {
         Random_SeedControl(val);
         return true;
     }
@@ -274,7 +274,7 @@ static bool M_ParseSeedControl(const char *const line, M_PARSE_CTX *const ctx)
 static bool M_ParseSeedDraw(const char *const line, M_PARSE_CTX *const ctx)
 {
     int32_t val;
-    if (sscanf(line, "# seed_draw %d", &val) == 1) {
+    if (sscanf(line, "seed_draw %d", &val) == 1) {
         Random_SeedDraw(val);
         return true;
     }
@@ -285,7 +285,7 @@ static bool M_ParseBindKeyboard(const char *const line, M_PARSE_CTX *const ctx)
 {
     int32_t role;
     int32_t scancode;
-    if (sscanf(line, "# bind keyboard %d %d", &role, &scancode) == 2) {
+    if (sscanf(line, "bind keyboard %d %d", &role, &scancode) == 2) {
         JSON_OBJECT *bind = JSON_ObjectNew();
         JSON_ObjectAppendInt(bind, "scancode", scancode);
         g_Input_Keyboard.assign_from_json_object(
@@ -303,8 +303,7 @@ static bool M_ParseBindController(
     int32_t bt;
     int32_t b;
     int32_t ad;
-    if (sscanf(line, "# bind controller %d %d %d %d", &role, &bt, &b, &ad)
-        == 4) {
+    if (sscanf(line, "bind controller %d %d %d %d", &role, &bt, &b, &ad) == 4) {
         JSON_OBJECT *bind = JSON_ObjectNew();
         JSON_ObjectAppendInt(bind, "button_type", bt);
         JSON_ObjectAppendInt(bind, "bind", b);
@@ -319,12 +318,12 @@ static bool M_ParseBindController(
 
 static bool M_ParseArgs(const char *const line, M_PARSE_CTX *const ctx)
 {
-    if (strncmp(line, "# args", 6) != 0) {
+    if (strncmp(line, "args", 4) != 0) {
         return false;
     }
 
     ctx->raw_args = Vector_Create(sizeof(const char *));
-    const char *p = line + 6;
+    const char *p = line + 4;
     while (*p != '\0') {
         while (isspace((unsigned char)*p)) {
             p++;
@@ -355,7 +354,7 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
 {
     char keybuf[64];
     char valbuf[128];
-    if (sscanf(line, "# config %63s %127s", keybuf, valbuf) == 2) {
+    if (sscanf(line, "config %63s %127s", keybuf, valbuf) == 2) {
         const CONFIG_OPTION *opt = Config_GetOptionByPath(keybuf);
         if (opt) {
             Config_SetOptionValueFromString(opt, valbuf);
@@ -375,8 +374,14 @@ static void M_ReadHeaders(M_PRIV *const p, M_PARSE_CTX *const ctx)
             break;
         }
 
+        // Skip comments and blank lines
+        if (line[0] == '\n' || line[0] == '#') {
+            continue;
+        }
+
         // Stop when a non-comment is encountered
-        if (line[0] != '#') {
+        int32_t frame = 0;
+        if (sscanf(line, "frame %d:", &frame) == 1) {
             File_Skip(p->file, -strlen(line));
             break;
         }
@@ -409,8 +414,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
     // Read header for initialization stuff
     M_PARSE_CTX ctx;
     M_ReadHeaders(p, &ctx);
-    SHELL_ARGS *new_args =
-        ctx.raw_args != nullptr ? Shell_ParseArgs(ctx.raw_args) : nullptr;
+    SHELL_ARGS *const new_args = Shell_ParseArgs(ctx.raw_args);
 
     p->next_frame_idx = -1;
     p->queue = Vector_Create(sizeof(char *));
