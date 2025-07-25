@@ -28,7 +28,7 @@ typedef struct {
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t num_frames);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static PHASE_CONTROL M_Start(PHASE *phase)
@@ -42,7 +42,7 @@ static void M_End(PHASE *const phase)
     PhotoMode_End();
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Input_Update();

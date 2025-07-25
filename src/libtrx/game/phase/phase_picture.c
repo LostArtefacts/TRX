@@ -23,7 +23,7 @@ static void M_FadeOut(M_PRIV *p);
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t num_frames);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static void M_FadeOut(M_PRIV *const p)
@@ -46,7 +46,7 @@ static void M_End(PHASE *const phase)
     Output_UnloadBackground();
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Input_Update();

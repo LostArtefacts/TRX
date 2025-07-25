@@ -100,7 +100,7 @@ static PHASE_CONTROL M_AdvanceFrame(M_PRIV *const p)
     if (p->rate >= 1.0) {
         g_Input.any = 0;
         g_InputDB.any = 0;
-        result = phase->control(phase, 1);
+        result = phase->control(phase);
         g_Input.any = 0;
         g_InputDB.any = 0;
         p->rate = 0.0;

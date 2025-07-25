@@ -44,7 +44,7 @@ static void M_RemoveText(M_PRIV *p);
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t nframes);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static void M_FadeIn(M_PRIV *const p)
@@ -114,7 +114,7 @@ static void M_End(PHASE *const phase)
     UI_Pause_Free(&p->ui.state);
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Input_Update();

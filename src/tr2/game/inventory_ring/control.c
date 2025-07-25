@@ -908,19 +908,12 @@ void InvRing_Close(INV_RING *const ring)
     Memory_Free(ring);
 }
 
-GF_COMMAND InvRing_Control(INV_RING *const ring, const int32_t num_frames)
+GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    for (int32_t i = 0; i < num_frames; i++) {
-        gf_cmd = M_Control(ring);
-        if (gf_cmd.action != GF_NOOP) {
-            break;
-        }
-    }
-
-    Overlay_Animate(num_frames);
-    Output_AnimateTextures(num_frames * TICKS_PER_FRAME);
+    GF_COMMAND gf_cmd = M_Control(ring);
+    Overlay_Animate(1);
+    Output_AnimateTextures(TICKS_PER_FRAME);
     return gf_cmd;
 }
 

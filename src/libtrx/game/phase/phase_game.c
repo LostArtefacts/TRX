@@ -12,7 +12,7 @@ typedef struct {
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
 static void M_Resume(PHASE *const phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t n_frames);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
@@ -48,16 +48,14 @@ static void M_Resume(PHASE *const phase)
     Game_SetIsPlaying(true);
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
-    for (int32_t i = 0; i < num_frames; i++) {
-        const GF_COMMAND gf_cmd = Game_Control(false);
-        if (gf_cmd.action != GF_NOOP) {
-            return (PHASE_CONTROL) {
-                .action = PHASE_ACTION_END,
-                .gf_cmd = gf_cmd,
-            };
-        }
+    const GF_COMMAND gf_cmd = Game_Control(false);
+    if (gf_cmd.action != GF_NOOP) {
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = gf_cmd,
+        };
     }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
