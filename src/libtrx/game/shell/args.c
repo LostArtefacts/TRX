@@ -96,6 +96,9 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             out_args->test_replay_path = next_arg;
             i++;
         }
+        if (!strcmp(arg, "--headless")) {
+            out_args->headless = true;
+        }
     }
     return out_args;
 }

@@ -20,6 +20,7 @@ typedef struct {
     int32_t save_to_load;
     const char *test_record_path;
     const char *test_replay_path;
+    bool headless;
 } SHELL_ARGS;
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *raw_args);

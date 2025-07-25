@@ -56,7 +56,6 @@ typedef struct {
     GFX_2D_SURFACE *surface;
 } M_TEXTURE;
 
-static bool m_Initialized = false;
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[M_MAX_LIGHTNINGS];
 static VECTOR *m_Textures;
@@ -252,6 +251,9 @@ static void M_Flush(void)
 
 static void M_FlipScreen(void)
 {
+    if (Shell_GetArgs()->headless) {
+        return;
+    }
     GFX_Context_SwapBuffers();
     m_SelectedTexture = -1;
 }
@@ -402,11 +404,6 @@ static void M_DrawSprite(
 
 bool Output_Init(void)
 {
-    if (m_Initialized) {
-        return true;
-    }
-    m_Initialized = true;
-
     m_Textures = Vector_Create(sizeof(M_TEXTURE));
     m_Renderer2D = GFX_2D_Renderer_Create();
     m_Renderer3D = GFX_3D_Renderer_Create();
@@ -425,11 +422,6 @@ bool Output_Init(void)
 
 void Output_Shutdown(void)
 {
-    if (!m_Initialized) {
-        return;
-    }
-    m_Initialized = false;
-
     Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();
@@ -499,7 +491,6 @@ void Output_ObserveLevelLoad(void)
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
     Output_Meshes_ObserveLevelLoad();
-
     Output_ApplyLevelSettings();
 }
 

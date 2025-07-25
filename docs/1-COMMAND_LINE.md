@@ -28,6 +28,9 @@ Currently the following command line interface options are available:
   `--test-replay <PATH>`, `--test-play <PATH>`:  
   Replays gameplay events from an external text file.
 
+  `--headless`:  
+  Run the game in command line only. Only available with `--test-replay`.
+
 > [!NOTE]
 > Gameplay capture is considered an internal testing tool, and may be
 > subject to breaking changes without warnings.

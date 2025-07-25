@@ -53,6 +53,7 @@ typedef enum {
 
 #define M_DECIBEL_LUT_SIZE 512
 
+static bool m_Initialised = false;
 static float m_MasterVolume = 0.0f;
 static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
 static M_SOUND_SLOT m_SoundSlots[M_SOUND_MAX_SLOTS] = {};
@@ -134,6 +135,7 @@ static void M_UpdateSlot(M_SOUND_SLOT *const slot)
 
 bool Sound_Init(void)
 {
+    m_Initialised = true;
     m_DecibelLUT[0] = -10000;
     for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
         m_DecibelLUT[i] =
@@ -152,8 +154,14 @@ bool Sound_Init(void)
 
 void Sound_Shutdown(void)
 {
-    Audio_Shutdown();
+    m_Initialised = false;
     M_ClearAllSlots();
+    Audio_Shutdown();
+}
+
+bool Sound_IsInitialised(void)
+{
+    return m_Initialised;
 }
 
 void Sound_SetMasterVolume(const float volume)
@@ -170,6 +178,9 @@ bool Sound_Effect(
     const SOUND_EFFECT_ID sample_id, const XYZ_32 *const pos,
     const uint32_t flags)
 {
+    if (!m_Initialised) {
+        return false;
+    }
     if (flags != SPM_ALWAYS
         && ((flags & SPM_UNDERWATER)
             != (Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER))) {
@@ -328,6 +339,9 @@ void Sound_StopEffect(const SOUND_EFFECT_ID sample_id)
 
 void Sound_Reset(void)
 {
+    if (!m_Initialised) {
+        return;
+    }
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
     M_ClearAllSlots();
@@ -335,6 +349,9 @@ void Sound_Reset(void)
 
 void Sound_StopAll(void)
 {
+    if (!m_Initialised) {
+        return;
+    }
     Audio_Sample_CloseAll();
     M_ClearAllSlots();
 }

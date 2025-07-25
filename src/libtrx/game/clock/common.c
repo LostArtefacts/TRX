@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <time.h>
 
+static bool m_Disabled = false;
 static Uint64 m_LastCounter = 0;
 static Uint64 m_InitCounter = 0;
 static Uint64 m_Frequency = 0;
@@ -32,6 +33,11 @@ void Clock_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
     m_InitCounter = SDL_GetPerformanceCounter();
+}
+
+void Clock_DisableWait(void)
+{
+    m_Disabled = true;
 }
 
 size_t Clock_GetDateTime(char *const buffer, const size_t size)
@@ -63,6 +69,9 @@ void Clock_SyncTick(void)
 
 int32_t Clock_WaitTick(void)
 {
+    if (m_Disabled) {
+        return 1;
+    }
     const Uint64 current_counter = SDL_GetPerformanceCounter();
 
     // If this is the first call, just initialize and return a frame.
