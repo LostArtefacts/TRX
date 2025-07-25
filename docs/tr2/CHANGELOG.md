@@ -5,6 +5,7 @@
 
 - added support for automated playthroughs with `--test-record` and `--test-replay` (internal tool – the recording file format may be subject to changes)
 - added ability to move Lara around in photo mode (use sidestep keys to switch modes)
+- added a new `/lua` console command (for now it cannot do much; documentation in the works)
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
