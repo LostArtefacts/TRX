@@ -22,11 +22,11 @@ static int M_StackTrace(
     const char *func_name)
 {
     if (filename) {
-        LOG_INFO(
+        LOG_ERROR(
             "0x%08X: %s (%s:%d)", pc, func_name ? func_name : "???",
             filename ? filename : "???", lineno);
     } else {
-        LOG_INFO("0x%08X: %s", pc, func_name ? func_name : "???");
+        LOG_ERROR("0x%08X: %s", pc, func_name ? func_name : "???");
     }
     return 0;
 }
@@ -34,8 +34,8 @@ static int M_StackTrace(
 static void M_SignalHandler(int sig)
 {
     LOG_ERROR("== CRASH REPORT ==");
-    LOG_INFO("SIGNAL: %d", sig);
-    LOG_INFO("STACK TRACE:");
+    LOG_ERROR("SIGNAL: %d", sig);
+    LOG_ERROR("STACK TRACE:");
     struct backtrace_state *state = backtrace_create_state(
         nullptr, BACKTRACE_SUPPORTS_THREADS, M_ErrorCallback, nullptr);
     backtrace_full(state, 0, M_StackTrace, M_ErrorCallback, nullptr);

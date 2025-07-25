@@ -99,6 +99,9 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         if (!strcmp(arg, "--headless")) {
             out_args->headless = true;
         }
+        if (!strcmp(arg, "-q") || !strcmp(arg, "--quiet")) {
+            out_args->quiet = true;
+        }
     }
     return out_args;
 }

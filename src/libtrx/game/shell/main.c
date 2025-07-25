@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     }
 
     char *log_path = File_GetFullPath(PROJECT_NAME ".log");
-    Log_Init(log_path);
+    Log_Init(log_path, args->quiet ? LOG_LEVEL_ERROR : LOG_LEVEL_MAX);
     Memory_FreePointer(&log_path);
 
     LOG_INFO("Starting %s", g_TRXVersion);

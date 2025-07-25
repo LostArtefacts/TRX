@@ -21,6 +21,7 @@ typedef struct {
     const char *test_record_path;
     const char *test_replay_path;
     bool headless;
+    bool quiet;
 } SHELL_ARGS;
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *raw_args);
