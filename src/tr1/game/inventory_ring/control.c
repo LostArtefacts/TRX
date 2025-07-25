@@ -901,18 +901,10 @@ void InvRing_Close(INV_RING *const ring)
     Memory_Free(ring);
 }
 
-GF_COMMAND InvRing_Control(INV_RING *const ring, const int32_t num_frames)
+GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    for (int32_t i = 0; i < num_frames; i++) {
-        gf_cmd = M_Control(ring);
-        if (gf_cmd.action != GF_NOOP) {
-            break;
-        }
-    }
-
-    return gf_cmd;
+    return M_Control(ring);
 }
 
 bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
