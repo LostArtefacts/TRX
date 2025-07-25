@@ -7,7 +7,9 @@
 #include "game/input/backends/controller.h"
 #include "game/input/backends/keyboard.h"
 #include "game/lara.h"
+#include "game/lua.h"
 #include "game/random.h"
+#include "game/shell.h"
 #include "game/shell/events.h"
 #include "memory.h"
 #include "vector.h"
@@ -36,6 +38,7 @@ static bool M_ParseKeyDownEvent(const char *event_str);
 static bool M_ParseKeyUpEvent(const char *event_str);
 static bool M_ParseTextInputEvent(const char *event_str);
 static bool M_ParseCommandEvent(const char *event_str);
+static bool M_ParseLuaEvent(const char *event_str);
 static bool M_ParseAssertEvent(const char *event_str);
 
 // Header parsers
@@ -69,6 +72,7 @@ static const M_EVENT_HANDLER m_EventHandlers[] = {
     M_ParseKeyUpEvent,
     M_ParseTextInputEvent,
     M_ParseCommandEvent,
+    M_ParseLuaEvent,
 #if M_DEBUG
     M_ParseAssertEvent,
 #endif
@@ -143,6 +147,28 @@ static bool M_ParseCommandEvent(const char *const event_str)
         cmd_str[len] = '\0';
     }
     Console_Eval(cmd_str);
+    return true;
+}
+
+static bool M_ParseLuaEvent(const char *const event_str)
+{
+    M_PRIV *const p = &m_Priv;
+    if (strncmp(event_str, "lua ", 4) != 0) {
+        return false;
+    }
+
+    LUA_RESULT eval_result = Lua_Eval(event_str + 4);
+    if (eval_result.code == LUA_ERRSYNTAX) {
+        LOG_ERROR(
+            "LUA syntax error on frame %d: %s", p->frame_idx,
+            eval_result.message);
+        Shell_Terminate(1);
+    } else if (eval_result.code != LUA_OK) {
+        LOG_ERROR(
+            "LUA error on frame %d: %s", p->frame_idx, eval_result.message);
+        Shell_Terminate(1);
+    }
+    Lua_FreeResult(&eval_result);
     return true;
 }
 
