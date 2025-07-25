@@ -69,7 +69,7 @@
                 "data/injections/coldwar_music_tracks.bin",
                 "data/injections/coldwar_objects.bin",
                 "data/injections/coldwar_textures.bin",
-                "data/injections/common_pickup_meshes.bin",
+                "data/injections/common_pickup_meshes_gm.bin",
                 "data/injections/shark_sfx.bin",
                 "data/injections/winston_model_gm.bin",
             ],
@@ -137,7 +137,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/common_pickup_meshes.bin",
+                "data/injections/common_pickup_meshes_gm.bin",
                 "data/injections/door108_sfx.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/kingdom_cameras.bin",
@@ -165,7 +165,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/common_pickup_meshes.bin",
+                "data/injections/common_pickup_meshes_gm.bin",
                 "data/injections/door108_sfx.bin",
                 "data/injections/guardian_death_commands.bin",
                 "data/injections/lara_vegas_guns.bin",
