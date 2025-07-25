@@ -26,6 +26,8 @@
 
 #include <stdio.h>
 
+static const SHELL_ARGS *m_ShellArgs = nullptr;
+
 static void M_HandleConfigChange(const EVENT *const event, void *const data);
 static void M_SetupSDL(void);
 static void M_SetupGL(void);
@@ -58,6 +60,11 @@ static void M_SetupGL(void)
 const char *Shell_GetConfigDir(void)
 {
     return "cfg";
+}
+
+const SHELL_ARGS *Shell_GetArgs(void)
+{
+    return m_ShellArgs;
 }
 
 void Shell_InitCommonModules(void)
@@ -155,5 +162,7 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
     Music_SetVolume(g_Config.audio.music_volume);
+
+    m_ShellArgs = new_args;
     return new_args;
 }

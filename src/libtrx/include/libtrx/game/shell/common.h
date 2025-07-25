@@ -24,6 +24,7 @@ void Shell_ExitSystemFmt(const char *fmt, ...);
 
 void Shell_ScheduleExit(void);
 bool Shell_IsExiting(void);
+const SHELL_ARGS *Shell_GetArgs(void);
 
 bool Shell_IsFullscreen(void);
 SHELL_SIZE Shell_GetWindowSize(void);
