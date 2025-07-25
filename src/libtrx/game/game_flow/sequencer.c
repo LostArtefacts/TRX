@@ -133,13 +133,11 @@ GF_COMMAND GF_InterpretSequence(
     }
 
     default:
-#if TR_VERSION == 1
         if (level->type == GFL_GYM) {
             Savegame_ResetCurrentInfo(level);
-        } else if (level->type == GFL_BONUS) {
+        } else if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
         }
-#endif
         Savegame_ApplyLogicToCurrentInfo(level);
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
