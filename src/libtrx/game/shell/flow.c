@@ -1,4 +1,5 @@
 #include "config.h"
+#include "debug.h"
 #include "enum_map.h"
 #include "game/clock.h"
 #include "game/console.h"
@@ -133,6 +134,7 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);
         // original args not needed, free immediately.
+        ASSERT(tmp_args != nullptr);
         if (tmp_args->original_args != nullptr) {
             Vector_Free(tmp_args->original_args);
             tmp_args->original_args = nullptr;

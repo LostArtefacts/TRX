@@ -49,6 +49,9 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     out_args->mod = M_BASE_MOD;
     out_args->save_to_load = -1;
     out_args->original_args = args;
+    if (args == nullptr) {
+        return out_args;
+    }
 
     for (int32_t i = 0; i < args->count; i++) {
         const char *const arg = *(char **)Vector_Get(args, i);

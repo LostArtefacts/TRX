@@ -94,12 +94,12 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
         LOG_ERROR("Cannot open record file '%s'", path);
         return;
     }
-    File_WriteString(p->file, "# seed_control %d\n", Random_GetControlSeed());
-    File_WriteString(p->file, "# seed_draw %d\n", Random_GetDrawSeed());
+    File_WriteString(p->file, "seed_control %d\n", Random_GetControlSeed());
+    File_WriteString(p->file, "seed_draw %d\n", Random_GetDrawSeed());
 
     // Record original arguments passed to the game
     if (original_args->count > 0) {
-        File_WriteString(p->file, "# args");
+        File_WriteString(p->file, "args");
         for (int32_t i = 0; i < original_args->count; i++) {
             const char *const arg = *(char **)Vector_Get(original_args, i);
             if (!strcmp(arg, "--test-record") || !strcmp(arg, "--test-replay")
@@ -117,7 +117,7 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
          opt++) {
         if (!Config_IsOptionAtDefault(opt->target)) {
             File_WriteString(
-                p->file, "# config %s %s\n", opt->name,
+                p->file, "config %s %s\n", opt->name,
                 Config_GetOptionValueAsString(opt));
         }
     }
@@ -129,7 +129,7 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
         if (g_Input_Keyboard.assign_to_json_object(
                 g_Config.input.keyboard_layout, role, bind)) {
             const int32_t sc = JSON_ObjectGetInt(bind, "scancode", -1);
-            File_WriteString(p->file, "# bind keyboard %d %d\n", role, sc);
+            File_WriteString(p->file, "bind keyboard %d %d\n", role, sc);
         }
         JSON_ObjectFree(bind);
     }
@@ -142,7 +142,7 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
             const int32_t b = JSON_ObjectGetInt(bind, "bind", 0);
             const int32_t ad = JSON_ObjectGetInt(bind, "axis_dir", 0);
             File_WriteString(
-                p->file, "# bind controller %d %d %d %d\n", role, bt, b, ad);
+                p->file, "bind controller %d %d %d %d\n", role, bt, b, ad);
         }
         JSON_ObjectFree(bind);
     }
