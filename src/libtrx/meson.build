@@ -206,6 +206,8 @@ sources = [
   'game/level/faces.c',
   'game/level/settings.c',
   'game/lua/common.c',
+  'game/lua/funcs.c',
+  'game/lua/structs.c',
   'game/math/trig.c',
   'game/math/util.c',
   'game/matrix.c',

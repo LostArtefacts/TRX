@@ -1,6 +1,8 @@
 #include "game/lua/common.h"
 
 #include "debug.h"
+#include "game/lua/funcs.h"
+#include "game/lua/structs.h"
 #include "memory.h"
 
 #include <lauxlib.h>
@@ -19,12 +21,16 @@ void LUA_Init(void)
     p->state = luaL_newstate();
     ASSERT(p->state != nullptr);
     luaL_openlibs(p->state);
+
+    LUA_CreateStructs(p->state);
+    LUA_CreateFunctions(p->state);
 }
 
 void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     lua_close(p->state);
+    p->state = nullptr;
 }
 
 LUA_RESULT Lua_Eval(const char *const code)
