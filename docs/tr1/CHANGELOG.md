@@ -6,7 +6,7 @@
 - added support for automated playthroughs with `--test-record` and `--test-replay` (internal tool – the recording file format may be subject to changes)
 - added ability to move Lara around in photo mode
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
-- added a new `/lua` console command (for now it cannot do much; documentation in the works)
+- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added German translation
 - changed the game flow and game strings file placement
 - changed the skybox option to allow toggling in-game without the need to reload the level
