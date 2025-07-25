@@ -29,7 +29,11 @@ Currently the following command line interface options are available:
   Replays gameplay events from an external text file.
 
   `--headless`:  
-  Run the game in command line only. Only available with `--test-replay`.
+  Runs the game in command line only. Only available with `--test-replay`.
+
+- `-q`, `--quiet`  
+  Suppresses most of output to the standard output, keeping only errors.
+  The log file is written to normally.
 
 > [!NOTE]
 > Gameplay capture is considered an internal testing tool, and may be

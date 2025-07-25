@@ -1,10 +1,12 @@
 #pragma once
 
 typedef enum {
+    // from least important to most important
+    LOG_LEVEL_DEBUG,
     LOG_LEVEL_INFO,
     LOG_LEVEL_WARNING,
     LOG_LEVEL_ERROR,
-    LOG_LEVEL_DEBUG,
+    LOG_LEVEL_MAX = -1,
 } LOG_LEVEL;
 
 #define LOG_INFO(...)                                                          \
@@ -34,7 +36,7 @@ typedef enum {
         const char *: LOG_DEBUG(#var ": %s", var),                             \
         default: LOG_DEBUG(#var ": %p", var))
 
-void Log_Init(const char *path);
+void Log_Init(const char *path, LOG_LEVEL min_level);
 void Log_Shutdown(void);
 void Log_Message(
     LOG_LEVEL level, const char *file, int line, const char *func,

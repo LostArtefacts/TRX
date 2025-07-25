@@ -3,7 +3,10 @@
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
-- added support for automated playthroughs with `--test-record` and `--test-replay` (internal tool – the recording file format may be subject to changes)
+- added new command switches:
+    - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
+    - `--headless`: runs the game offscreen with no audio and at unlocked simulation speed
+    - -q`, `--quiet`: outputs only error messages to the terminal, with log files being written to normally
 - added ability to move Lara around in photo mode
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))

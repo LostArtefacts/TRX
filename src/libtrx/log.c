@@ -13,6 +13,7 @@
 #define M_ANSI_COLOR_CYAN "\x1b[36m"
 #define M_ANSI_COLOR_RESET "\x1b[0m"
 
+static LOG_LEVEL m_LogLevel = LOG_LEVEL_MAX;
 static FILE *m_LogHandle = nullptr;
 static const char *const m_LogLevelColors[] = {
     [LOG_LEVEL_INFO] = M_ANSI_COLOR_RESET,
@@ -27,8 +28,9 @@ static const char *const m_LogLevelStrings[] = {
     [LOG_LEVEL_DEBUG] = "DBG",
 };
 
-void Log_Init(const char *path)
+void Log_Init(const char *path, const LOG_LEVEL min_level)
 {
+    m_LogLevel = min_level;
     if (path != nullptr) {
         m_LogHandle = fopen(path, "w");
     }
@@ -70,11 +72,13 @@ void Log_Message(
     }
 
     // print to stdout
-    printf("%s", log_color);
-    printf(M_FORMAT, log_str, timestamp_str, file, line, func);
-    vprintf(fmt, va);
-    printf("%s", M_ANSI_COLOR_RESET "\n");
-    fflush(stdout);
+    if (level >= m_LogLevel) {
+        printf("%s", log_color);
+        printf(M_FORMAT, log_str, timestamp_str, file, line, func);
+        vprintf(fmt, va);
+        printf("%s", M_ANSI_COLOR_RESET "\n");
+        fflush(stdout);
+    }
 
     va_end(va);
 }
