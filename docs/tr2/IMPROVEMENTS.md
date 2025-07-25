@@ -231,6 +231,7 @@
     - **Home Sweet Home**: stretched textures in rooms 2, 61; misaligned textures in rooms 9, 34, 54; incorrect textures in rooms 61, 63; incorrect textures on mesh 58 in room 12, and meshes 124 and 126 in room 58
     - **Furnace of the Gods**: stretched textures in room 10; incorrect textures in rooms 99, 101, 108, 120
     - **Nightmare in Vegas**: transparent pixels on mesh 3 in room 8 and 10; incorrect textures on mesh 17 in rooms 21 and 28; a misaligned texture in room 4
+- fixed various incorrect textures on small and large medipacks in every level
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
