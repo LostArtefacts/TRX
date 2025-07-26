@@ -59,6 +59,7 @@
             "injections": [
                 "data/injections/egypt_cameras.bin",
                 "data/injections/egypt_fd.bin",
+                "data/injections/egypt_itemrots.bin",
                 "data/injections/egypt_meshfixes.bin",
                 "data/injections/egypt_textures.bin",
                 "data/injections/panther_sfx.bin",

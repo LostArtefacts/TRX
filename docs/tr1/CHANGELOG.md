@@ -27,6 +27,7 @@
 - fixed z-fighting on the front of the passport (#3584)
 - fixed being unable to activate waterfall objects with code bits (#3589)
 - fixed skippable triggers for waterfall objects in Lost Valley (#3593)
+- fixed incorrectly rotated 3D pickup items in several levels (#2147)
 - fixed incorrect wet footstep sounds in some of Lara's climb-up animations (#3607, regression from 4.6)
 - improved object loading error messages when an invalid object ID is detected
 - improved frames in Lara's jump-twist animations
