@@ -39,12 +39,8 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     OUTPUT_SHADER *const shader = Memory_Alloc(sizeof(OUTPUT_SHADER));
 
     GFX_GL_Program_Init(&shader->program);
-    GFX_GL_Program_AttachShader(
-        &shader->program, GL_VERTEX_SHADER, path,
-        GFX_Context_GetConfig()->backend);
-    GFX_GL_Program_AttachShader(
-        &shader->program, GL_FRAGMENT_SHADER, path,
-        GFX_Context_GetConfig()->backend);
+    GFX_GL_Program_AttachShader(&shader->program, GL_VERTEX_SHADER, path);
+    GFX_GL_Program_AttachShader(&shader->program, GL_FRAGMENT_SHADER, path);
     GFX_GL_Program_FragmentData(&shader->program, "outColor");
     GFX_GL_Program_Link(&shader->program);
 

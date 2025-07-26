@@ -35,7 +35,6 @@ static struct {
 static RENDERER *M_GetRenderer(void);
 static void M_ReuploadBackground(void);
 static void M_ResetPolyList(void);
-static void M_SetGLBackend(GFX_GL_BACKEND backend);
 
 static RENDERER *M_GetRenderer(void)
 {
@@ -72,52 +71,21 @@ static void M_ResetPolyList(void)
     }
 }
 
-static void M_SetGLBackend(const GFX_GL_BACKEND backend)
-{
-    switch (backend) {
-    case GFX_GL_33C:
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-        SDL_GL_SetAttribute(
-            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-        break;
-
-    case GFX_GL_INVALID_BACKEND:
-        ASSERT_FAIL();
-        break;
-    }
-}
-
 void Render_Init(void)
 {
-    // TODO Move to libtrx later and combine with S_Shell_CreateWindow.
-    const GFX_GL_BACKEND backends_to_try[] = {
-        // clang-format off
-        GFX_GL_33C,
-        GFX_GL_INVALID_BACKEND, // guard
-        // clang-format on
-    };
-
-    for (int32_t i = 0; backends_to_try[i] != GFX_GL_INVALID_BACKEND; i++) {
-        const GFX_GL_BACKEND backend = backends_to_try[i];
-
-        M_SetGLBackend(backend);
-
-        int32_t major;
-        int32_t minor;
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-        LOG_DEBUG("Trying GL backend %d.%d", major, minor);
-        if (GFX_Context_Attach(Shell_GetWindow(), backend)) {
-            m_FadeRenderer = GFX_FadeRenderer_Create();
-            m_BackgroundRenderer = GFX_2D_Renderer_Create();
-            Renderer_SW_Prepare(&m_Renderer_SW);
-            Renderer_HW_Prepare(&m_Renderer_HW);
-            return;
-        }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(
+        SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    if (!GFX_Context_Attach(Shell_GetWindow())) {
+        Shell_ExitSystem("System Error: cannot attach opengl context");
     }
 
-    Shell_ExitSystem("System Error: cannot attach opengl context");
+    m_FadeRenderer = GFX_FadeRenderer_Create();
+    m_BackgroundRenderer = GFX_2D_Renderer_Create();
+    Renderer_SW_Prepare(&m_Renderer_SW);
+    Renderer_HW_Prepare(&m_Renderer_HW);
+    return;
 }
 
 void Render_Shutdown(void)

@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend);
+bool GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);
 
 void GFX_Context_SetDisplayFilter(GFX_TEXTURE_FILTER filter);
