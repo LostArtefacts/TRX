@@ -29,6 +29,7 @@
 - fixed skippable triggers for waterfall objects in Lost Valley (#3593)
 - fixed incorrectly rotated 3D pickup items in several levels (#2147)
 - fixed incorrect wet footstep sounds in some of Lara's climb-up animations (#3607, regression from 4.6)
+- fixed the `/kill` command potentially causing a crash if used in a level with pods that don't hatch creatures (#3628, regression from 4.12)
 - improved object loading error messages when an invalid object ID is detected
 - improved frames in Lara's jump-twist animations
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
