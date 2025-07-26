@@ -118,9 +118,17 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
         || lara->water_status == LWS_WADE) {
         return false;
     }
-    item->current_anim_state = LS_JUMP_FORWARD;
-    item->goal_anim_state = LS_JUMP_FORWARD;
-    Item_SwitchToAnim(item, LA_FALL_START, 0);
+    if (g_Input.action && lara->gun_status == LGS_ARMLESS
+        && g_Config.gameplay.enable_controlled_drops) {
+        item->current_anim_state = LS_REACH;
+        item->goal_anim_state = LS_REACH;
+        Item_SwitchToAnim(item, LA_CONTROLLED_DROP, 0);
+        item->speed = 2;
+    } else {
+        item->current_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS_JUMP_FORWARD;
+        Item_SwitchToAnim(item, LA_FALL_START, 0);
+    }
     item->gravity = true;
     item->fall_speed = 0;
     return true;

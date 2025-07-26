@@ -358,6 +358,8 @@
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Affiche les statistiques du niveau lorsque la boussole est sélectionnée.",
         "SETTING_ENABLE_CONSOLE": "Console",
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Active la console de développement.",
+        "SETTING_ENABLE_CONTROLLED_DROPS": "\\{review}Chutes contrôlées",
+        "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Permet à Lara de se retourner en l'air et d’attraper la corniche qu'elle vient de quitter, si la touche d'action est maintenue pendant la chute.",
         "SETTING_ENABLE_CREDITS": "\\{review}Écrans de crédits",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "\\{review}Active les écrans de crédits affichés après avoir terminé le jeu. N'influence pas l'écran des statistiques finales.",
         "SETTING_ENABLE_CUTSCENES": "Activer les cutscenes",

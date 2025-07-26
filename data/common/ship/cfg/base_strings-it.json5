@@ -358,6 +358,8 @@
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Abilita la visualizzazione delle statistiche del livello quando è selezionata la bussola.",
         "SETTING_ENABLE_CONSOLE": "Console",
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Abilita la console per sviluppatori.",
+        "SETTING_ENABLE_CONTROLLED_DROPS": "\\{review}Cadute controllate",
+        "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Permette a Lara di girarsi in aria e afferrare la sporgenza appena lasciata, se il tasto azione viene tenuto premuto durante la caduta.",
         "SETTING_ENABLE_CREDITS": "Titoli di coda",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Abilita i titoli di coda mostrati dopo aver completato il gioco. Non influisce sulla schermata finale delle statistiche.",
         "SETTING_ENABLE_CUTSCENES": "Scene di intermezzo",

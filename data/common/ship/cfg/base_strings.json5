@@ -358,6 +358,8 @@
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Enables showing level statistics when the compass is selected.",
         "SETTING_ENABLE_CONSOLE": "Console",
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Enables the developer console.",
+        "SETTING_ENABLE_CONTROLLED_DROPS": "Controlled drops",
+        "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Allows Lara to turn mid-air and grab the ledge she just stepped off, if the action input is held while falling.",
         "SETTING_ENABLE_CREDITS": "Credit screens",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Enables credits screens shown after completing the game. Does not influence the final statistics screen.",
         "SETTING_ENABLE_CUTSCENES": "Cutscenes",
