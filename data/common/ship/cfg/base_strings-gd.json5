@@ -397,6 +397,8 @@
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Cuiridh seo scrionaichean luchdachaidh stoidhle PS1 an comas aig toiseach gach ìre.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Ceòl sa phrìomh chlàr",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Cluichidh ceòl anns a' phrìomh chlàr.",
+        "SETTING_ENABLE_NEUTRAL_TWISTS": "Snìomh neodrach",
+        "SETTING_ENABLE_NEUTRAL_TWISTS_DESCRIPTION": "Leigidh seo le Lara tionndadh san adhar fhad 's a tha i a' leum gu neodrach. Brùth air na putanan leum is rola còmhla ri chèile nuair a tha i na seasamh.",
         "SETTING_ENABLE_PICKUP_AIDS": "Taic togail",
         "SETTING_ENABLE_PICKUP_AIDS_DESCRIPTION": "Cuiridh seo buaidh dealrach goirid faisg air nithean togail gus an dèanamh nas fhasa a dh'fhaicinn.",
         "SETTING_ENABLE_PITCHED_SOUNDS": "Fuaimean atharraichte",

@@ -112,12 +112,14 @@ typedef enum {
     LS_KICK          = 69,
     LS_ZIPLINE       = 70,
     LS_RESPONSIVE    = 71,
+    LS_NEUTRAL_ROLL  = 72,
 #elif TR_VERSION    == 1
     LS_CONTROLLED    = 56,
     LS_TWIST         = 57,
     LS_WATER_ROLL    = 58,
     LS_WADE          = 59,
     LS_RESPONSIVE    = 60,
+    LS_NEUTRAL_ROLL  = 61,
 #endif
     LS_NUMBER_OF,
 } LARA_STATE;
@@ -310,6 +312,7 @@ typedef enum {
     LA_UNDERWATER_SWIM_TO_STILL_MEDIUM       = 183,
     LA_SLIDE_FORWARD_TO_RUN                  = 184,
     LA_JUMP_FORWARD_ROLL_CONTINUE            = 185,
+    LA_JUMP_NEUTRAL_ROLL                     = 186,
 #else
     LA_STAND_TO_LADDER                       = 160,
     LA_LADDER_UP                             = 161,
@@ -371,6 +374,7 @@ typedef enum {
     LA_ZIPLINE_FALL                          = 217,
     LA_SLIDE_FORWARD_TO_RUN                  = 218,
     LA_JUMP_FORWARD_ROLL_CONTINUE            = 219,
+    LA_JUMP_NEUTRAL_ROLL                     = 220,
 #endif
     LA_NUMBER_OF,
 } LARA_ANIMATION;

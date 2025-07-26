@@ -397,6 +397,8 @@
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Abilita le schermate di caricamento in stile PS1 prima di ogni livello.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Musica menu principale",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Riproduce la musica nel menu principale.",
+        "SETTING_ENABLE_NEUTRAL_TWISTS": "\\{review}Rotazioni da ferma",
+        "SETTING_ENABLE_NEUTRAL_TWISTS_DESCRIPTION": "\\{review}Permette a Lara di ruotare in aria durante un salto da ferma. Premi contemporaneamente i tasti di salto e capriola restando ferma.",
         "SETTING_ENABLE_PICKUP_AIDS": "Segnalazione oggetti",
         "SETTING_ENABLE_PICKUP_AIDS_DESCRIPTION": "Abilita un effetto scintillante intermittente vicino agli oggetti da raccogliere per evidenziarne la presenza.",
         "SETTING_ENABLE_PITCHED_SOUNDS": "Tonalità suoni",

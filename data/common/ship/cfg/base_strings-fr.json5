@@ -397,6 +397,8 @@
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Active les écrans de chargements avant chaque début des niveaux, comme sur PlayStation 1.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Musique du menu principal",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Active ou non la musique dans le menu principal.",
+        "SETTING_ENABLE_NEUTRAL_TWISTS": "\\{review}Pirouettes sur place",
+        "SETTING_ENABLE_NEUTRAL_TWISTS_DESCRIPTION": "\\{review}Permet à Lara d'effectuer une rotation en l'air lors d'un saut sur place. Appuyez simultanément sur les touches de saut et de roulade en étant immobile.",
         "SETTING_ENABLE_PICKUP_AIDS": "Aides objets à ramasser",
         "SETTING_ENABLE_PICKUP_AIDS_DESCRIPTION": "Active un scintillement intermittent à proximité des objets à ramasser pour les mettre en valeur.",
         "SETTING_ENABLE_PITCHED_SOUNDS": "Hauteurs aléatoires des sons",

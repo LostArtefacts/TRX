@@ -45,6 +45,7 @@ static const LARA_STATE m_BlockingStates[] = {
     LS_SWITCH_OFF,
     LS_USE_KEY,
     LS_USE_PUZZLE,
+    LS_NEUTRAL_ROLL,
     (LARA_STATE)-1,
     // clang-format on
 };

@@ -397,6 +397,8 @@
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Włącza ekrany ładowania pokazywane przed każdym poziomem.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Muzyka w menu głównym",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Odtwarza muzykę w menu głównym.",
+        "SETTING_ENABLE_NEUTRAL_TWISTS": "\\{review}Obroty w miejscu",
+        "SETTING_ENABLE_NEUTRAL_TWISTS_DESCRIPTION": "\\{review}Pozwala Larze obracać się w powietrzu podczas neutralnego skoku. Naciśnij jednocześnie przyciski skoku i przewrotu, stojąc w miejscu.",
         "SETTING_ENABLE_PICKUP_AIDS": "Pomoce do znajdziek",
         "SETTING_ENABLE_PICKUP_AIDS_DESCRIPTION": "Włącza okazjonalne migotanie w pobliżu przedmiotów do podniesienia w celu zwiększenia ich widoczności.",
         "SETTING_ENABLE_PITCHED_SOUNDS": "Modulacja wysokości dźwięków",

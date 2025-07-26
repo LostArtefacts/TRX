@@ -397,6 +397,8 @@
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Enables PS1 style loading screens before each level.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Main menu music",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Plays music in the main menu.",
+        "SETTING_ENABLE_NEUTRAL_TWISTS": "Neutral twists",
+        "SETTING_ENABLE_NEUTRAL_TWISTS_DESCRIPTION": "Allows Lara to twist in the air while performing a neutral jump. Press jump and roll inputs together while stationary.",
         "SETTING_ENABLE_PICKUP_AIDS": "Pickup aids",
         "SETTING_ENABLE_PICKUP_AIDS_DESCRIPTION": "Enables an intermittent twinkling effect near pickup items to highlight their presence.",
         "SETTING_ENABLE_PITCHED_SOUNDS": "Pitched sounds",

@@ -397,6 +397,8 @@
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Aktiviert PS1-artige Ladebildschirme vor jedem Level.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Hauptmenü-Musik",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Spielt Musik im Hauptmenü ab.",
+        "SETTING_ENABLE_NEUTRAL_TWISTS": "\\{review}Neutraldrehung",
+        "SETTING_ENABLE_NEUTRAL_TWISTS_DESCRIPTION": "\\{review}Ermöglicht Lara eine Drehung in der Luft bei einem Sprung aus dem Stand. Drücke gleichzeitig die Sprung- und Rollentaste, während du stillstehst.",
         "SETTING_ENABLE_PICKUP_AIDS": "Gegenstände hervorheben",
         "SETTING_ENABLE_PICKUP_AIDS_DESCRIPTION": "Aktiviert einen periodischen Funkel-Effekt in der Nähe von Items, um ihre Gegenwart sichtbarer zu machen.",
         "SETTING_ENABLE_PITCHED_SOUNDS": "Gepitchte Sounds",
