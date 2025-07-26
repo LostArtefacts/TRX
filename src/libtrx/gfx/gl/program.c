@@ -39,18 +39,13 @@ void GFX_GL_Program_Bind(const GFX_GL_PROGRAM *const program)
     GFX_GL_CheckError();
 }
 
-char *GFX_GL_Program_PreprocessShader(
-    const char *content, GLenum type, GFX_GL_BACKEND backend)
+char *GFX_GL_Program_PreprocessShader(const char *content, GLenum type)
 {
     ASSERT(content != nullptr);
 
     char *common = nullptr;
     File_Load("shaders/common.glsl", &common, nullptr);
 
-    const char *version_ogl21 =
-        "#version 120\n"
-        "#extension GL_ARB_explicit_attrib_location: enable\n"
-        "#extension GL_EXT_gpu_shader4: enable\n";
     const char *version_ogl33c = "#version 330 core\n";
     const char *define_vertex = "#define VERTEX\n";
     const char *define_fragment = "#define FRAGMENT\n";
@@ -61,10 +56,8 @@ char *GFX_GL_Program_PreprocessShader(
         bufsize += strlen(common);
     }
 
-    if (backend == GFX_GL_33C) {
-        bufsize += strlen(version_ogl33c);
-        bufsize += strlen(define_ogl33c);
-    }
+    bufsize += strlen(version_ogl33c);
+    bufsize += strlen(define_ogl33c);
 
     if (type == GL_VERTEX_SHADER) {
         bufsize += strlen(define_vertex);
@@ -73,10 +66,8 @@ char *GFX_GL_Program_PreprocessShader(
     }
 
     char *processed_content = Memory_Alloc(bufsize);
-    if (backend == GFX_GL_33C) {
-        strcpy(processed_content, version_ogl33c);
-        strcat(processed_content, define_ogl33c);
-    }
+    strcpy(processed_content, version_ogl33c);
+    strcat(processed_content, define_ogl33c);
 
     if (common != nullptr) {
         strcat(processed_content, common);
@@ -95,8 +86,7 @@ char *GFX_GL_Program_PreprocessShader(
 }
 
 void GFX_GL_Program_AttachShader(
-    GFX_GL_PROGRAM *program, GLenum type, const char *path,
-    const GFX_GL_BACKEND backend)
+    GFX_GL_PROGRAM *program, GLenum type, const char *path)
 {
     ASSERT(program != nullptr);
     ASSERT(path != nullptr);
@@ -112,8 +102,7 @@ void GFX_GL_Program_AttachShader(
         Shell_ExitSystemFmt("Unable to find shader file: %s", path);
     }
 
-    char *processed_content =
-        GFX_GL_Program_PreprocessShader(content, type, backend);
+    char *processed_content = GFX_GL_Program_PreprocessShader(content, type);
     Memory_FreePointer(&content);
     if (!processed_content) {
         Shell_ExitSystemFmt("Failed to pre-process shader source:  %s", path);

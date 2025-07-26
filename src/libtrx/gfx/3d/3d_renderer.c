@@ -154,11 +154,9 @@ GFX_3D_RENDERER *GFX_3D_Renderer_Create(void)
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_VERTEX_SHADER, "shaders/3d.glsl",
-        renderer->config->backend);
+        &renderer->program, GL_VERTEX_SHADER, "shaders/3d.glsl");
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_FRAGMENT_SHADER, "shaders/3d.glsl",
-        renderer->config->backend);
+        &renderer->program, GL_FRAGMENT_SHADER, "shaders/3d.glsl");
     GFX_GL_Program_FragmentData(&renderer->program, "outColor");
     GFX_GL_Program_Link(&renderer->program);
 

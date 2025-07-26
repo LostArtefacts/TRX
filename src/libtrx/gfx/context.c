@@ -74,7 +74,7 @@ void GFX_Context_SwitchToViewport(const VIEWPORT_SPACE space)
     GFX_GL_CheckError();
 }
 
-bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
+bool GFX_Context_Attach(void *window_handle)
 {
     const char *shading_ver;
 
@@ -90,7 +90,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
         return false;
     }
 
-    m_Context.config.backend = backend;
     m_Context.config.line_width = 1;
     m_Context.config.enable_wireframe = false;
     SDL_GetWindowSize(

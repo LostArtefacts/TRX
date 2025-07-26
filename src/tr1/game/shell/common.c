@@ -35,7 +35,7 @@ static void M_CreateGLContext(void)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(
         SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    if (!GFX_Context_Attach(m_Window, GFX_GL_33C)) {
+    if (!GFX_Context_Attach(m_Window)) {
         Shell_ExitSystem("System Error: cannot attach opengl context");
     }
 }
