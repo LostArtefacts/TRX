@@ -165,6 +165,7 @@ typedef struct {
         bool enable_step_roll_boost;
         bool enable_slide_to_run;
         bool enable_neutral_twists;
+        bool enable_controlled_drops;
         bool fix_floor_data_issues;
         bool fix_descending_glitch;
         JUMP_LOCK_MODE jump_lock_mode;

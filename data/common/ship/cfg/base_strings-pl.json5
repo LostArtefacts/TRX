@@ -358,6 +358,8 @@
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Włącza wyświetlanie statystyk aktualnego poziomu przy wybraniu kompasu.",
         "SETTING_ENABLE_CONSOLE": "Konsola",
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Włącza konsolę umożliwiającą wpisywanie różnych komend.",
+        "SETTING_ENABLE_CONTROLLED_DROPS": "\\{review}Kontrolowany upadek",
+        "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Pozwala Larze obrócić się w powietrzu i złapać krawędź, z której właśnie zeszła, jeśli przycisk akcji jest przytrzymany podczas upadku.",
         "SETTING_ENABLE_CREDITS": "Napisy końcowe",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Włącza ekrany z napisami końcowymi wyświetlane po ukończeniu gry. Ustawienie nie ma wpływu na ekran końcowych statystyk.",
         "SETTING_ENABLE_CUTSCENES": "Przerywniki",

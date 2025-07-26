@@ -358,6 +358,8 @@
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Seallaidh seo staitistig na h-ìre nuair a thaghas tu a' chombaist.",
         "SETTING_ENABLE_CONSOLE": "Co-chomhairle leasachaidh",
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Cuiridh seo an consol leasachaidh an comas.",
+        "SETTING_ENABLE_CONTROLLED_DROPS": "Tuit fo smachd",
+        "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Leigidh seo le Lara tionndadh san adhar agus grèim a ghabhail air an oir a dh'fhàg i, fhad 's a tha am putan gnìomh air a chumail sios tron tuiteam.",
         "SETTING_ENABLE_CREDITS": "Sgrìoban creideis",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Cuiridh seo sgrìoban creideis an comas às dèidh crìochnachadh a' gheama. Cha bheireas seo buaidh air an sgrion staitistig mu dheireadh.",
         "SETTING_ENABLE_CUTSCENES": "Seallaidhean-film",
