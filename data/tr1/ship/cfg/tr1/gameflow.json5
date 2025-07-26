@@ -252,6 +252,7 @@
             ],
             "injections": [
                 "data/injections/khamoon_fd.bin",
+                "data/injections/khamoon_itemrots.bin",
                 "data/injections/khamoon_mummy.bin",
                 "data/injections/khamoon_textures.bin",
                 "data/injections/panther_sfx.bin",
@@ -344,6 +345,7 @@
             "injections": [
                 "data/injections/atlantis_door_sfx.bin",
                 "data/injections/atlantis_fd.bin",
+                "data/injections/atlantis_itemrots.bin",
                 "data/injections/atlantis_textures.bin",
             ],
             "unobtainable_pickups": 3,
@@ -369,6 +371,7 @@
             "injections": [
                 "data/injections/atlantis_door_sfx.bin",
                 "data/injections/pyramid_fd.bin",
+                "data/injections/pyramid_itemrots.bin",
                 "data/injections/pyramid_textures.bin",
                 "data/injections/scion_collision.bin",
             ],
