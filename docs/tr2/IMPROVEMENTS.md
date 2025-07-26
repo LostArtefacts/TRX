@@ -31,6 +31,7 @@
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport
 - added graphics effects, waterfalls to the savegame so that they now persist on load
 - added a pickup overlay display when Lara pulls the dagger from the dragon
+- added an option to use Lara's neutral jump-twist from early TR1 betas
 - added an option to use Lara's slide-to-run animation from TR3+
 - added an option to fix the breakable floor descending glitch
 - added an option to fix wall glitches, or to use TR1 wall glitch behaviour

@@ -174,9 +174,16 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 #endif
 
     if (g_Input.roll && lara->water_status != LWS_WADE) {
-        item->current_anim_state = LS_ROLL;
-        item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
+        if (g_Input.jump && g_Config.gameplay.enable_neutral_twists
+            && Lara_State_IsResponsive(LA_STAND_TO_JUMP)) {
+            item->current_anim_state = LS_NEUTRAL_ROLL;
+            item->goal_anim_state = LS_STOP;
+            Item_SwitchToAnim(item, LA_JUMP_NEUTRAL_ROLL, 0);
+        } else {
+            item->current_anim_state = LS_ROLL;
+            item->goal_anim_state = LS_STOP;
+            Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
+        }
         return;
     }
 

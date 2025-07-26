@@ -155,6 +155,7 @@ typedef struct {
         bool enable_smooth_wall_deflect;
         bool enable_step_roll_boost;
         bool enable_slide_to_run;
+        bool enable_neutral_twists;
         bool enable_enemy_rotation;
         bool enable_ally_targeting;
         bool revert_to_pistols;

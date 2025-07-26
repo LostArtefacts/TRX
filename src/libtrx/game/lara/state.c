@@ -4,10 +4,13 @@
 #include "game/lara.h"
 
 static const LARA_ANIMATION m_TestResponsiveAnims[] = {
+    // clang-format off
     LA_RUN,
     LA_UNDERWATER_SWIM_FORWARD,
     LA_SLIDE_FORWARD,
+    LA_STAND_TO_JUMP,
     (LARA_ANIMATION)-1,
+    // clang-format on
 };
 
 static bool m_ResponsiveAnims[LA_NUMBER_OF] = {};
