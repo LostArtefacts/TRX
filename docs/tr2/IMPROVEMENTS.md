@@ -248,6 +248,7 @@
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene
 - fixed the Home Sweet Home shower cutscene being cut short
+- fixed incorrect push button object positions in all levels where it appears
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
