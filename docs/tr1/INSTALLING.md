@@ -437,6 +437,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── cistern_fd.bin
         │   │   ├── cistern_itemrots.bin
         │   │   ├── cistern_plants.bin
+        │   │   ├── cistern_skybox.bin
         │   │   ├── cistern_textures.bin
         │   │   ├── colosseum_door.bin
         │   │   ├── colosseum_fd.bin
