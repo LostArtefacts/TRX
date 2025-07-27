@@ -253,6 +253,7 @@
             "injections": [
                 "data/injections/khamoon_fd.bin",
                 "data/injections/khamoon_itemrots.bin",
+                "data/injections/khamoon_meshfixes.bin",
                 "data/injections/khamoon_mummy.bin",
                 "data/injections/khamoon_textures.bin",
                 "data/injections/panther_sfx.bin",
