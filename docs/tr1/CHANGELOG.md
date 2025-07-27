@@ -32,6 +32,7 @@
 - fixed missing textures on the statues in Vilcabamba and Tomb of Qualopec (#3629)
 - fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20 (#3629)
 - fixed the mesh structure on the cat statue in Egyptian levels to standardize its position (#3634)
+- fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them (#762)
 - fixed incorrect wet footstep sounds in some of Lara's climb-up animations (#3607, regression from 4.6)
 - fixed the `/kill` command potentially causing a crash if used in a level with pods that don't hatch creatures (#3628, regression from 4.12)
 - improved object loading error messages when an invalid object ID is detected

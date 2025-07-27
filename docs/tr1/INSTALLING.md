@@ -169,6 +169,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── hive_itemrots.bin
 │   │   ├── hive_textures.bin
 │   │   ├── khamoon_fd.bin
+│   │   ├── khamoon_itemrots.bin
+│   │   ├── khamoon_meshfixes.bin
 │   │   ├── khamoon_mummy.bin
 │   │   ├── khamoon_textures.bin
 │   │   ├── lara_animations.bin
@@ -458,6 +460,8 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── hive_itemrots.bin
         │   │   ├── hive_textures.bin
         │   │   ├── khamoon_fd.bin
+        │   │   ├── khamoon_itemrots.bin
+        │   │   ├── khamoon_meshfixes.bin
         │   │   ├── khamoon_mummy.bin
         │   │   ├── khamoon_textures.bin
         │   │   ├── lara_animations.bin
