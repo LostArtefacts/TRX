@@ -50,9 +50,19 @@ static const LARA_STATE m_BlockingStates[] = {
     // clang-format on
 };
 
+static const LARA_EXTRA_STATE m_PermittedExtraStates[] = {
+    // clang-format off
+    LS_EXTRA_BREATH,
+#if TR_VERSION == 2
+    LS_EXTRA_AIRLOCK,
+#endif
+    (LARA_EXTRA_STATE)-1,
+    // clang-format on
+};
+
 static void M_Reset(void);
 static bool M_IsLaraIdle(void);
-static bool M_IsCurrentStateBlocked(void);
+static bool M_IsStatePermitted(void);
 
 static void M_Reset(void)
 {
@@ -86,16 +96,19 @@ static bool M_IsLaraIdle(void)
     return Lara_HasState(m_StopStates);
 }
 
-static bool M_IsCurrentStateBlocked(void)
+static bool M_IsStatePermitted(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_item->hit_points <= 0 || lara_info->extra_anim) {
-        return true;
+    if (lara_item->hit_points <= 0) {
+        return false;
     }
 
-    return g_Config.gameplay.look_mode != LOOK_MODE_UNRESTRICTED
-        && Lara_HasState(m_BlockingStates);
+    if (Lara_HasExtraState(m_PermittedExtraStates)) {
+        return g_Config.gameplay.look_mode == LOOK_MODE_UNRESTRICTED;
+    }
+
+    return g_Config.gameplay.look_mode == LOOK_MODE_UNRESTRICTED
+        || !Lara_HasState(m_BlockingStates);
 }
 
 void Lara_Look_LeftRight(void)
@@ -171,7 +184,7 @@ void Lara_Look_Update(void)
         return;
     }
 
-    if (g_Input.look && !M_IsCurrentStateBlocked()) {
+    if (g_Input.look && M_IsStatePermitted()) {
         Lara_Look_LeftRight();
     } else {
         M_Reset();
