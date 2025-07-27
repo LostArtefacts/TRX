@@ -177,14 +177,14 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── deck_plants.bin
 │   │   ├── deck_secret_fd.bin
 │   │   ├── deck_textures.bin
-│   │   ├── door107_sfx.bin
-│   │   ├── door108_sfx.bin
-│   │   ├── door111_sfx.bin
 │   │   ├── diving_cameras.bin
 │   │   ├── diving_itemrots.bin
 │   │   ├── diving_music_tracks.bin
 │   │   ├── diving_pickup_meshes.bin
 │   │   ├── diving_textures.bin
+│   │   ├── door107_sfx.bin
+│   │   ├── door108_sfx.bin
+│   │   ├── door111_sfx.bin
 │   │   ├── explosion.bin
 │   │   ├── fathoms_goon_sfx.bin
 │   │   ├── fathoms_music_tracks.bin
@@ -557,6 +557,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── diving_music_tracks.bin
         │   │   ├── diving_pickup_meshes.bin
         │   │   ├── diving_textures.bin
+        │   │   ├── door107_sfx.bin
+        │   │   ├── door108_sfx.bin
+        │   │   ├── door111_sfx.bin
         │   │   ├── explosion.bin
         │   │   ├── fathoms_goon_sfx.bin
         │   │   ├── fathoms_music_tracks.bin
@@ -572,6 +575,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── fools_itemrots.bin
         │   │   ├── fools_music_tracks.bin
         │   │   ├── fools_pickup_meshes.bin
+        │   │   ├── fools_textures.bin
         │   │   ├── furnace_itemrots.bin
         │   │   ├── furnace_music_tracks.bin
         │   │   ├── furnace_objects.bin
@@ -592,6 +596,8 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── kingdom_textures.bin
         │   │   ├── lair_bartolipos.bin
         │   │   ├── lair_music_tracks.bin
+        │   │   ├── lair_textures.bin
+        │   │   ├── lara_animations.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_house_guns.bin
         │   │   ├── lara_vegas_guns.bin
@@ -600,6 +606,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── living_music_tracks.bin
         │   │   ├── living_pickup_meshes.bin
         │   │   ├── living_secret_fd.bin
+        │   │   ├── living_sfx.bin
         │   │   ├── living_textures.bin
         │   │   ├── loose_boards_sfx.bin
         │   │   ├── opera_fd.bin
@@ -623,6 +630,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── tibet_itemrots.bin
         │   │   ├── tibet_music_tracks.bin
         │   │   ├── tibet_textures.bin
+        │   │   ├── title_textures.bin
         │   │   ├── vegas_fd.bin
         │   │   ├── vegas_itemrots.bin
         │   │   ├── vegas_music_tracks.bin
