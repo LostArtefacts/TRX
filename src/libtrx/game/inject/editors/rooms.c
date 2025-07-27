@@ -14,6 +14,7 @@ static void M_AddRoomFace(const INJECTION *injection);
 static void M_AddRoomVertex(const INJECTION *injection);
 static void M_AddRoomStatic2D(const INJECTION *injection);
 static void M_AddRoomStatic3D(const INJECTION *injection);
+static void M_EditRoomStatic3D(const INJECTION *injection);
 static uint16_t *M_GetRoomTexture(
     int16_t room_num, FACE_TYPE face_type, int16_t face_index);
 static uint16_t *M_GetRoomFaceVertices(
@@ -48,6 +49,9 @@ static void M_RoomMeshEdits(
             break;
         case RMET_ADD_STATIC_3D:
             M_AddRoomStatic3D(injection);
+            break;
+        case RMET_EDIT_STATIC_3D:
+            M_EditRoomStatic3D(injection);
             break;
         default:
             LOG_WARNING("Unrecognised room mesh edit type: %d", type);
@@ -267,6 +271,31 @@ static void M_AddRoomStatic3D(const INJECTION *const injection)
     mesh->static_num = VFile_ReadS16(injection->fp);
 
     room->num_static_meshes++;
+}
+
+static void M_EditRoomStatic3D(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+    const ROOM *const room = Room_Get(target_room);
+    const int32_t mesh_idx = VFile_ReadS32(injection->fp);
+    if (mesh_idx < 0 || mesh_idx >= room->num_static_meshes) {
+        LOG_WARNING(
+            "Invalid static mesh index (%d) for room %d", mesh_idx,
+            target_room);
+        VFile_Skip(injection->fp, 4 * sizeof(int32_t));
+        return;
+    }
+
+    STATIC_MESH *const mesh = &room->static_meshes[mesh_idx];
+    mesh->pos.x = VFile_ReadS32(injection->fp);
+    mesh->pos.y = VFile_ReadS32(injection->fp);
+    mesh->pos.z = VFile_ReadS32(injection->fp);
+    mesh->rot.y = VFile_ReadS16(injection->fp);
+    mesh->shade.value_1 = VFile_ReadS16(injection->fp);
+#if TR_VERSION == 2
+    mesh->shade.value_2 = mesh->shade.value_1;
+#endif
 }
 
 static uint16_t *M_GetRoomTexture(

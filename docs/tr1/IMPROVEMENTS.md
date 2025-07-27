@@ -120,6 +120,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+
 - fixed Lara not catching fire after reloading a save made when she was on fire
 - fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode)
+- fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20
 
 ## Cheats
 - added a fly cheat
@@ -200,9 +201,9 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed the following room texture issues:
     - **Gym**: incorrect textures in room 9
     - **Caves**: incorrect textures in rooms 6, 14 and 22, and missing textures in rooms 1, 10, 14 and 30
-    - **City of Vilcabamba**: incorrect texture in rooms 26 and 73, missing textures in rooms 15 and 21, and stretched textures in rooms 15 and 26
+    - **City of Vilcabamba**: invalid mesh structure in room 41, incorrect texture in rooms 26 and 73, missing textures in rooms 15 and 21, and stretched textures in rooms 15 and 26
     - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in rooms 5, 27, 63, 66 and 88
-    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, a misaligned texture in room 5, and a stretched texture in room 14
+    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, misaligned textures in rooms 5, 20 and 46, and a stretched texture in room 14
     - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35, and a misaligned texture in room 3
     - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 0, 37, 67, 75, 82 and 83, and missing textures in rooms 2 and 7
     - **Palace Midas**: incorrect textures in rooms 28, 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
@@ -223,6 +224,8 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
 - fixed incorrect transparent pixels on some Egypt textures
+- fixed missing textures on the statues in Vilcabamba and Tomb of Qualopec
+- fixed the mesh structure on the cat statue in Egyptian levels to standardize its position
 - fixed doors at times disappearing if Lara is close to portals and the door's room is no longer visible
 - fixed the passport having an invisible back page, noticeable when opening/closing it
 - fixed z-fighting on the front of the passport

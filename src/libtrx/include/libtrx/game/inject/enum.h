@@ -98,14 +98,15 @@ typedef enum {
 } FLOOR_EDIT_TYPE;
 
 typedef enum {
-    RMET_TEXTURE_FACE  = 0,
-    RMET_MOVE_FACE     = 1,
-    RMET_ALTER_VERTEX  = 2,
-    RMET_ROTATE_FACE   = 3,
-    RMET_ADD_FACE      = 4,
-    RMET_ADD_VERTEX    = 5,
-    RMET_ADD_STATIC_2D = 6,
-    RMET_ADD_STATIC_3D = 7,
+    RMET_TEXTURE_FACE   = 0,
+    RMET_MOVE_FACE      = 1,
+    RMET_ALTER_VERTEX   = 2,
+    RMET_ROTATE_FACE    = 3,
+    RMET_ADD_FACE       = 4,
+    RMET_ADD_VERTEX     = 5,
+    RMET_ADD_STATIC_2D  = 6,
+    RMET_ADD_STATIC_3D  = 7,
+    RMET_EDIT_STATIC_3D = 8,
 } ROOM_MESH_EDIT_TYPE;
 // clang-format on
 
