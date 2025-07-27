@@ -126,6 +126,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── injections
 │   │   ├── atlantis_door_sfx.bin
 │   │   ├── atlantis_fd.bin
+│   │   ├── atlantis_itemrots.bin
 │   │   ├── atlantis_textures.bin
 │   │   ├── backpack.bin
 │   │   ├── backpack_cut.bin
@@ -145,6 +146,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── cistern_fd.bin
 │   │   ├── cistern_itemrots.bin
 │   │   ├── cistern_plants.bin
+│   │   ├── cistern_skybox.bin
 │   │   ├── cistern_textures.bin
 │   │   ├── colosseum_door.bin
 │   │   ├── colosseum_fd.bin
@@ -155,6 +157,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── cut4_textures.bin
 │   │   ├── egypt_cameras.bin
 │   │   ├── egypt_fd.bin
+│   │   ├── egypt_itemrots.bin
 │   │   ├── egypt_meshfixes.bin
 │   │   ├── egypt_textures.bin
 │   │   ├── explosion.bin
@@ -195,6 +198,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── pickup_aid.bin
 │   │   ├── purple_crystal.bin
 │   │   ├── pyramid_fd.bin
+│   │   ├── pyramid_itemrots.bin
 │   │   ├── pyramid_textures.bin
 │   │   ├── qualopec_fd.bin
 │   │   ├── qualopec_itemrots.bin
@@ -417,7 +421,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── title_og_alt.webp
         │   │   └── title_ub.webp
         │   ├── injections
+        │   │   ├── atlantis_door_sfx.bin
         │   │   ├── atlantis_fd.bin
+        │   │   ├── atlantis_itemrots.bin
         │   │   ├── atlantis_textures.bin
         │   │   ├── backpack.bin
         │   │   ├── backpack_cut.bin
@@ -448,6 +454,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── cut4_textures.bin
         │   │   ├── egypt_cameras.bin
         │   │   ├── egypt_fd.bin
+        │   │   ├── egypt_itemrots.bin
         │   │   ├── egypt_meshfixes.bin
         │   │   ├── egypt_textures.bin
         │   │   ├── explosion.bin
@@ -456,6 +463,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── folly_pickup_meshes.bin
         │   │   ├── folly_textures.bin
         │   │   ├── font.bin
+        │   │   ├── gun_glow.bin
         │   │   ├── gym_textures.bin
         │   │   ├── hive_fd.bin
         │   │   ├── hive_itemrots.bin
@@ -470,6 +478,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── midas_itemrots.bin
         │   │   ├── midas_textures.bin
         │   │   ├── mines_cameras.bin
+        │   │   ├── mines_door_sfx.bin
         │   │   ├── mines_fd.bin
         │   │   ├── mines_itemrots.bin
         │   │   ├── mines_meshfixes.bin
@@ -486,6 +495,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── pickup_aid.bin
         │   │   ├── purple_crystal.bin
         │   │   ├── pyramid_fd.bin
+        │   │   ├── pyramid_itemrots.bin
         │   │   ├── pyramid_textures.bin
         │   │   ├── qualopec_fd.bin
         │   │   ├── qualopec_itemrots.bin
@@ -502,11 +512,13 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── tihocan_fd.bin
         │   │   ├── tihocan_itemrots.bin
         │   │   ├── tihocan_textures.bin
+        │   │   ├── title_textures.bin
         │   │   ├── uzi_sfx.bin
         │   │   ├── valley_fd.bin
         │   │   ├── valley_itemrots.bin
         │   │   ├── valley_skybox.bin
         │   │   ├── valley_textures.bin
+        │   │   ├── vilcabamba_door_sfx.bin
         │   │   ├── vilcabamba_itemrots.bin
         │   │   └── vilcabamba_textures.bin
         │   ├── level1.phd
