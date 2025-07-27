@@ -67,7 +67,10 @@ static void M_SetFOV(const int32_t fov)
 
 static void M_ResetCamera(const bool exiting)
 {
+    CAMERA_INFO camera = g_Camera;
     g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
+    // ensure Camera_EnsureEnvironment() picks up the flag change
+    g_Camera.underwater = camera.underwater;
     M_SetFOV(m_OriginalFOV);
     m_CurrentFOV = m_OriginalFOV / DEG_1;
 }
@@ -197,6 +200,7 @@ static void M_UpdateCameraRooms(void)
             g_Camera.pos.room_num = tar_room_num;
         }
     }
+    Camera_EnsureEnvironment();
 }
 
 static bool M_HandleShiftInputs(void)
