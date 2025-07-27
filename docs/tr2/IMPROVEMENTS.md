@@ -236,6 +236,8 @@
 - fixed various incorrect textures on small and large medipacks in every level
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
+- fixed missing textures on the Peruvian statues in Lara's Home and Home Sweet Home
+- fixed the mesh structure on the cat statue in Lara's Home to standardize its position
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home
 - fixed the passport having an invisible back page, noticeable when opening/closing it
