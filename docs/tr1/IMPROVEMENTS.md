@@ -185,7 +185,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added a vsync option
 - added contextual arrows to menu options
 - added support for animated room sprites, which also restores intended behavior in, for example, The Cistern room 0
-- added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon; custom level builders can use object slot `184`
+- added skybox support, with a default option provided for Lost Valley, Colosseum, The Cistern, Tomb of Tihocan and Obelisk of Khamoon; custom level builders can use object slot `184`
 - added reflections of Midas Hand death animation and savegame crystals
 - added optional dynamic lighting for gun flashes and explosions, similar to TR2+
 - added optional dynamic lighting for flames

@@ -213,6 +213,7 @@
                 "data/injections/cistern_fd.bin",
                 "data/injections/cistern_itemrots.bin",
                 "data/injections/cistern_plants.bin",
+                "data/injections/cistern_skybox.bin",
                 "data/injections/cistern_textures.bin",
             ],
         },
@@ -230,6 +231,7 @@
             ],
             "injections": [
                 "data/injections/cistern_plants.bin",
+                "data/injections/colosseum_skybox.bin",
                 "data/injections/tihocan_fd.bin",
                 "data/injections/tihocan_itemrots.bin",
                 "data/injections/tihocan_textures.bin",
