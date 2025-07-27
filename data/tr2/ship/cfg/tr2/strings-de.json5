@@ -945,22 +945,22 @@
             "name": "Platzhalter",
         },
         "dragon_bones_2": {
-            "name": "Dragon Bones Front",
+            "name": "Drachen-Knochen Vorn",
         },
         "dragon_bones_3": {
-            "name": "Dragon Bones Back",
+            "name": "Drachen-Knochen Hinten",
         },
         "hot_liquid": {
-            "name": "Extra Fire",
+            "name": "Extra Feuer",
         },
         "boat_bits": {
-            "name": "Boat Bits",
+            "name": "Boots-Einzelteile",
         },
         "mine": {
-            "name": "Aquatic Mine",
+            "name": "Wasser-Mine",
         },
         "inv_background": {
-            "name": "Menu Background",
+            "name": "Menü-Hintergrund",
         },
         "fx_reserved": {
             "name": "Gray disk",
@@ -1130,9 +1130,8 @@
         "OSD_WIREFRAME_MODE_ON": "Gitterrahmen-Modus: ein",
         "PASSPORT_EXIT_DEMO": "Demo beenden",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt the bear pat attack in The Golden Mask so it does not miss Lara.",
-        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixt the shotgun firing when drawn that occasionally fails to produce a flash or sound.",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",
+        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixt, dass beim abfeuern der Schrotflinte gelegentlich kein Mündungsfeuer oder Geräusch entsteht.",
         "STATS_AMMO_HITS": "Treffer",
         "STATS_AMMO_USED": "Benötigte Munition",
         "STATS_ASSAULT_FINISH": "Zeit",
