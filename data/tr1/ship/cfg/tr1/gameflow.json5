@@ -138,6 +138,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/qualopec_door_sfx.bin",
                 "data/injections/qualopec_fd.bin",
                 "data/injections/qualopec_itemrots.bin",
                 "data/injections/qualopec_textures.bin",
@@ -293,6 +294,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door59_sfx.bin",
                 "data/injections/sanctuary_fd.bin",
                 "data/injections/sanctuary_itemrots.bin",
                 "data/injections/sanctuary_textures.bin",

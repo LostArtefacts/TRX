@@ -23,7 +23,7 @@
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
-- fixed missing door/trapdoor sound effects in Vilcabamba, Natla's Mines, Atlantis and Great Pyramid (#3408, #3374)
+- fixed several missing door/trapdoor sound effects; refer to `IMPROVEMENTS.md` for details (#3408, #3374, #3617, #3619)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
 - fixed z-fighting on the front of the passport (#3584)
 - fixed being unable to activate waterfall objects with code bits (#3589)

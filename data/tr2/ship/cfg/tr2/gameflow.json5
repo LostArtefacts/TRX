@@ -91,6 +91,7 @@
             ],
             "injections": [
                 "data/injections/common_pickup_meshes.bin",
+                "data/injections/door106_sfx.bin",
                 "data/injections/wall_cameras.bin",
                 "data/injections/wall_itemrots.bin",
                 "data/injections/wall_music_tracks.bin",
@@ -161,6 +162,7 @@
                 "data/injections/opera_textures.bin",
                 "data/injections/opera_itemrots.bin",
                 "data/injections/opera_music_tracks.bin",
+                "data/injections/opera_sfx.bin",
             ],
         },
 
@@ -205,6 +207,7 @@
                 "data/injections/diving_itemrots.bin",
                 "data/injections/diving_music_tracks.bin",
                 "data/injections/diving_pickup_meshes.bin",
+                "data/injections/diving_sfx.bin",
                 "data/injections/diving_textures.bin",
             ],
         },
@@ -391,6 +394,7 @@
                 "data/injections/palace_music_tracks.bin",
                 "data/injections/palace_secret_fd.bin",
                 "data/injections/palace_textures.bin",
+                "data/injections/portcullis_sfx.bin",
             ],
         },
 
@@ -408,6 +412,8 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door108_sfx.bin",
+                "data/injections/portcullis_sfx.bin",
                 "data/injections/xian_fd.bin",
                 "data/injections/xian_itemrots.bin",
                 "data/injections/xian_music_tracks.bin",
@@ -454,6 +460,7 @@
                 "data/injections/lair_bartolipos.bin",
                 "data/injections/lair_music_tracks.bin",
                 "data/injections/lair_textures.bin",
+                "data/injections/portcullis_sfx.bin",
             ],
         },
 
