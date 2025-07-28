@@ -97,6 +97,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door61_sfx.bin",
                 "data/injections/stronghold_fd.bin",
                 "data/injections/stronghold_itemrots.bin",
                 "data/injections/stronghold_textures.bin",

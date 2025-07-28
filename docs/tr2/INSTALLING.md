@@ -181,7 +181,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── diving_itemrots.bin
 │   │   ├── diving_music_tracks.bin
 │   │   ├── diving_pickup_meshes.bin
+│   │   ├── diving_sfx.bin
 │   │   ├── diving_textures.bin
+│   │   ├── door106_sfx.bin
 │   │   ├── door107_sfx.bin
 │   │   ├── door108_sfx.bin
 │   │   ├── door111_sfx.bin
@@ -237,6 +239,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── opera_fd.bin
 │   │   ├── opera_itemrots.bin
 │   │   ├── opera_music_tracks.bin
+│   │   ├── opera_sfx.bin
 │   │   ├── opera_textures.bin
 │   │   ├── palace_fd.bin
 │   │   ├── palace_itemrots.bin
@@ -245,6 +248,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── palace_textures.bin
 │   │   ├── pda_model.bin
 │   │   ├── photo.bin
+│   │   ├── portcullis_sfx.bin
 │   │   ├── rig_itemrots.bin
 │   │   ├── rig_music_tracks.bin
 │   │   ├── rig_pickup_meshes.bin
@@ -556,7 +560,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── diving_itemrots.bin
         │   │   ├── diving_music_tracks.bin
         │   │   ├── diving_pickup_meshes.bin
+        │   │   ├── diving_sfx.bin
         │   │   ├── diving_textures.bin
+        │   │   ├── door106_sfx.bin
         │   │   ├── door107_sfx.bin
         │   │   ├── door108_sfx.bin
         │   │   ├── door111_sfx.bin
@@ -612,6 +618,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── opera_fd.bin
         │   │   ├── opera_itemrots.bin
         │   │   ├── opera_music_tracks.bin
+        │   │   ├── opera_sfx.bin
         │   │   ├── opera_textures.bin
         │   │   ├── palace_fd.bin
         │   │   ├── palace_itemrots.bin
@@ -620,6 +627,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── palace_textures.bin
         │   │   ├── pda_model.bin
         │   │   ├── photo.bin
+        │   │   ├── portcullis_sfx.bin
         │   │   ├── rig_itemrots.bin
         │   │   ├── rig_music_tracks.bin
         │   │   ├── rig_pickup_meshes.bin

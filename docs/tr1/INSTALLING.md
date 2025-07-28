@@ -155,6 +155,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── colosseum_textures.bin
 │   │   ├── cut3_textures.bin
 │   │   ├── cut4_textures.bin
+│   │   ├── door59_sfx.bin
+│   │   ├── door61_sfx.bin
 │   │   ├── egypt_cameras.bin
 │   │   ├── egypt_fd.bin
 │   │   ├── egypt_itemrots.bin
@@ -200,6 +202,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── pyramid_fd.bin
 │   │   ├── pyramid_itemrots.bin
 │   │   ├── pyramid_textures.bin
+│   │   ├── qualopec_door_sfx.bin
 │   │   ├── qualopec_fd.bin
 │   │   ├── qualopec_itemrots.bin
 │   │   ├── qualopec_textures.bin
@@ -452,6 +455,8 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── colosseum_textures.bin
         │   │   ├── cut3_textures.bin
         │   │   ├── cut4_textures.bin
+        │   │   ├── door59_sfx.bin
+        │   │   ├── door61_sfx.bin
         │   │   ├── egypt_cameras.bin
         │   │   ├── egypt_fd.bin
         │   │   ├── egypt_itemrots.bin
@@ -497,6 +502,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── pyramid_fd.bin
         │   │   ├── pyramid_itemrots.bin
         │   │   ├── pyramid_textures.bin
+        │   │   ├── qualopec_door_sfx.bin
         │   │   ├── qualopec_fd.bin
         │   │   ├── qualopec_itemrots.bin
         │   │   ├── qualopec_textures.bin
