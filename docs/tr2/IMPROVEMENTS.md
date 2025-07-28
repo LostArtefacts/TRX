@@ -249,6 +249,8 @@
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene
 - fixed the Home Sweet Home shower cutscene being cut short
 - fixed incorrect push button object positions in all levels where it appears
+- fixed mismatched animation frames between the airlock wheel and its corresponding door in offshore levels
+- fixed incorrect airlock and sliding door object positions in offshore levels
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios

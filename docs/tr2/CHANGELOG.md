@@ -31,6 +31,8 @@
 - fixed missing door sound effects in Lara's Home, Bartoli's Hideout, Opera House, Living Quarters, Catacombs of the Talion, Ice Palace, Home Sweet Home, Fool's Gold, Kingdom and Nightmare in Vegas (#3363)
 - fixed being unable to antitrigger waterfall objects (#3589)
 - fixed incorrect frames in Lara's underwater roll animation (#1589)
+- fixed mismatched animation frames between the airlock wheel and its corresponding door in offshore levels (#3644)
+- fixed incorrect airlock and sliding door object positions in offshore levels (#3644)
 - fixed incorrect push button object positions in all levels where it appears (#3596)
 - fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
 - fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
