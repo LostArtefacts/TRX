@@ -93,7 +93,6 @@ bool Config_Update(void)
         return false;
     }
 
-    g_Config.dirty = false;
     if (m_EventManager != nullptr) {
         const EVENT event = {
             .name = "change",
@@ -102,6 +101,7 @@ bool Config_Update(void)
         };
         EventManager_Fire(m_EventManager, &event);
     }
+    g_Config.dirty = false;
     g_SavedConfig = g_Config;
     return true;
 }

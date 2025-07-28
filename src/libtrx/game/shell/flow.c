@@ -161,12 +161,11 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
-    Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    Music_SetVolume(g_Config.audio.music_volume);
-
     if (!new_args->headless) {
         Sound_Init();
         Music_Init();
+        Sound_SetMasterVolume(g_Config.audio.sound_volume);
+        Music_SetVolume(g_Config.audio.music_volume);
     } else {
         Clock_DisableWait();
     }
