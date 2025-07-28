@@ -560,7 +560,8 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
 
             // Prevent issues with pre-injection saves and Lara's enhanced
             // animation set.
-            if (item->object_id == O_LARA && item->anim_num < obj->anim_idx) {
+            if (item->object_id == O_LARA
+                && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
                 item->anim_num += obj->anim_idx;
             }
         }

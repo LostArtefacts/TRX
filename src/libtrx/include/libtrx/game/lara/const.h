@@ -3,6 +3,12 @@
 #include "../const.h"
 #include "../rooms/const.h"
 
+#if TR_VERSION == 1
+    #define LARA_ORIGINAL_ANIM_COUNT 160
+#elif TR_VERSION == 2
+    #define LARA_ORIGINAL_ANIM_COUNT 218
+#endif
+
 #define LARA_MAX_HITPOINTS 1000
 #define LARA_MAX_AIR 1800
 #define LARA_DIVE_WAIT 10
