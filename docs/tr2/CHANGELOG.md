@@ -34,6 +34,7 @@
 - fixed incorrect push button object positions in all levels where it appears (#3596)
 - fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
 - fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
+- fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
 - improved frames in Lara's jump-twist animations
 - improved object loading error messages when an invalid object ID is detected
 - improved projectiles
