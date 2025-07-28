@@ -15,6 +15,7 @@
 typedef struct {
     SDL_GLContext context;
     SDL_Window *window_handle;
+    VIEWPORT_SPACE space;
 
     GFX_CONFIG config;
 
@@ -70,6 +71,7 @@ static GLvoid GLAPIENTRY M_GLDebug(
 void GFX_Context_SwitchToViewport(const VIEWPORT_SPACE space)
 {
     const VIEWPORT_RECT rect = Viewport_GetRect(space);
+    m_Context.space = space;
     glViewport(rect.x, rect.y, rect.width, rect.height);
     GFX_GL_CheckError();
 }
@@ -195,12 +197,13 @@ void *GFX_Context_GetWindowHandle(void)
 
 void GFX_Context_Clear(void)
 {
-    if (m_Context.config.enable_wireframe) {
-        glClearColor(1.0, 1.0, 1.0, 0.0);
-    } else {
-        glClearColor(0.0, 0.0, 0.0, 0.0);
-    }
-    glClear(GL_COLOR_BUFFER_BIT);
+    const RGBA_F white = { 1.0f, 1.0f, 1.0f, 0.0f };
+    const RGBA_F black = { 0.0f, 0.0f, 0.0f, 0.0f };
+    const RGBA_F color =
+        m_Context.space == VIEWPORT_GAME && m_Context.config.enable_wireframe
+        ? white
+        : black;
+    glClearBufferfv(GL_COLOR, 0, &color.r);
 }
 
 void GFX_Context_SwapBuffers(void)

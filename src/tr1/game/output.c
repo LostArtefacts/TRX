@@ -528,6 +528,7 @@ void Output_BeginScene(void)
     GFX_3D_Renderer_SetTextureFilter(
         m_Renderer3D, g_Config.rendering.texture_filter);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
     m_LightningCount = 0;
 }
 
@@ -963,8 +964,8 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
         GFX_Renderer_BindUiFbo();
         GFX_3D_Renderer_SetTextureFilter(
             m_Renderer3D, g_Config.rendering.ui_filter);
-        GFX_Context_Clear();
     }
     GFX_Context_SwitchToViewport(space);
     GFX_3D_Renderer_SetProjectionMatrix(m_Renderer3D, space);
+    GFX_Context_Clear();
 }
