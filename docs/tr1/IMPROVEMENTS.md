@@ -214,13 +214,13 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54; stretched texture in room 11
     - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 13, 23, 24, 29, 30, 31, 47, 84, 87 and 98 
     - **Pre-Atlantis Cutscene**: stretched textures in rooms 6 and 21
-    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 62, 78, 85, 87, 88 and 90, a missing texture in room 27, and stretched textures in rooms 13, 49 and 50
+    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 62, 78, 85, 87, 88, 90; missing textures in rooms 7, 9, 13, 14, 27, 95, 96; stretched textures in rooms 13, 49 and 50
     - **Atlantis Cutscene**: incorrect and stretched textures in rooms 2, 4 and 16
     - **Atlantis and both cutscenes**: fixed inconsistencies regarding the absent lightning mesh above the scion and wrong or missing doors in Torso's platform area
     - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
     - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, a stretched texture in room 47, and a  misplaced vase room sprite in room 9
     - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98; a missing texture in room 75; misplaced vase room sprites in room 60; transparent pixels in room 95
-    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
+    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7, 27 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
 - fixed incorrect transparent pixels on some Egypt textures

@@ -9,6 +9,7 @@ static void M_RoomPortalEdits(const INJECTION *injection, int32_t data_count);
 static void M_TextureRoomFace(const INJECTION *injection);
 static void M_MoveRoomFace(const INJECTION *injection);
 static void M_AlterRoomVertex(const INJECTION *injection);
+static void M_SetVertexFlags(const INJECTION *injection);
 static void M_RotateRoomFace(const INJECTION *injection);
 static void M_AddRoomFace(const INJECTION *injection);
 static void M_AddRoomVertex(const INJECTION *injection);
@@ -34,6 +35,9 @@ static void M_RoomMeshEdits(
             break;
         case RMET_ALTER_VERTEX:
             M_AlterRoomVertex(injection);
+            break;
+        case RMET_VERTEX_FLAGS:
+            M_SetVertexFlags(injection);
             break;
         case RMET_ROTATE_FACE:
             M_RotateRoomFace(injection);
@@ -125,6 +129,34 @@ static void M_AlterRoomVertex(const INJECTION *const injection)
     vertex->pos.z += z_change;
     vertex->light_base += shade_change;
     vertex->light_adder = vertex->light_base;
+}
+
+static void M_SetVertexFlags(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_vertex = VFile_ReadS16(injection->fp);
+    const uint16_t flags = VFile_ReadU16(injection->fp);
+
+    if (target_room < 0 || target_room >= Room_GetCount()) {
+        LOG_WARNING("Room index %d is invalid", target_room);
+        return;
+    }
+
+    const ROOM *const room = Room_Get(target_room);
+    if (target_vertex < 0 || target_vertex >= room->mesh.num_vertices) {
+        LOG_WARNING(
+            "Vertex index %d, room %d is invalid", target_vertex, target_room);
+        return;
+    }
+
+    ROOM_VERTEX *const vertex = &room->mesh.vertices[target_vertex];
+#if TR_VERSION == 1
+    vertex->flags = flags;
+#else
+    vertex->flags = (flags >> 8);
+    vertex->light_table_value = flags & 0xFF;
+#endif
 }
 
 static void M_RotateRoomFace(const INJECTION *const injection)
