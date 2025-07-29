@@ -642,9 +642,16 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 
     if (coll->side_mid.floor > 200) {
         if (item->current_anim_state == LS_SLIDE) {
-            item->goal_anim_state = LS_JUMP_FORWARD;
-            item->current_anim_state = LS_JUMP_FORWARD;
-            Item_SwitchToAnim(item, LA_FALL_START, 0);
+            if (M_CanControlDrop(item, coll)) {
+                item->current_anim_state = LS_REACH;
+                item->goal_anim_state = LS_REACH;
+                Item_SwitchToAnim(item, LA_CONTROLLED_DROP, 2);
+                item->speed = 2;
+            } else {
+                item->goal_anim_state = LS_JUMP_FORWARD;
+                item->current_anim_state = LS_JUMP_FORWARD;
+                Item_SwitchToAnim(item, LA_FALL_START, 0);
+            }
         } else {
             item->goal_anim_state = LS_FALL_BACK;
             item->current_anim_state = LS_FALL_BACK;
