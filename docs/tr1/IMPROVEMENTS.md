@@ -204,7 +204,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **City of Vilcabamba**: invalid mesh structure in room 41, incorrect texture in rooms 26 and 73, missing textures in rooms 15 and 21, and stretched textures in rooms 15 and 26
     - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in rooms 5, 27, 63, 66 and 88
     - **Tomb of Qualopec**: an incorrect and missing textures in room 8, misaligned textures in rooms 5, 20 and 46, and a stretched texture in room 14
-    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35, and a misaligned texture in room 3
+    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35; a misaligned texture in room 3; transparent pixels in room 25
     - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 0, 37, 67, 75, 82 and 83, and missing textures in rooms 2 and 7
     - **Palace Midas**: incorrect textures in rooms 28, 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
     - **The Cistern**: missing textures in rooms 3 and 9 and stretched textures in rooms 22 and 102
@@ -219,7 +219,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **Atlantis and both cutscenes**: fixed inconsistencies regarding the absent lightning mesh above the scion and wrong or missing doors in Torso's platform area
     - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
     - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, a stretched texture in room 47, and a  misplaced vase room sprite in room 9
-    - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98, a missing texture in 75, and misplaced vase room sprites in room 60
+    - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98; a missing texture in room 75; misplaced vase room sprites in room 60; transparent pixels in room 95
     - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
