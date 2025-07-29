@@ -31,10 +31,13 @@
 #define M_LF_WADE_STEP_L_START 3
 #define M_LF_WADE_STEP_L_END 14
 
+#define M_CONTROLLED_DROP_MIN_HEIGHT (LARA_HEIGHT + (STEP_L * 3) / 4) // 954
+
 static int16_t m_OldSlideAngle = 1;
 
 static bool M_TestWall(
     const ITEM *item, int32_t front, int32_t right, int32_t down);
+static bool M_CanControlDrop(const ITEM *item, const COLL_INFO *coll);
 static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
 static bool M_TestSlide(ITEM *item, COLL_INFO *coll);
 static bool M_DeflectEdge(ITEM *item, COLL_INFO *coll);
@@ -111,6 +114,49 @@ static bool M_TestWall(
     return true;
 }
 
+static bool M_CanControlDrop(
+    const ITEM *const item, const COLL_INFO *const coll)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
+        || !g_Config.gameplay.enable_controlled_drops
+        || coll->side_mid.floor < M_CONTROLLED_DROP_MIN_HEIGHT) {
+        return false;
+    }
+
+    COLL_INFO old_coll = {
+        .facing = lara->move_angle,
+        .bad_pos = STEPUP_HEIGHT,
+        .bad_neg = -STEPUP_HEIGHT,
+        .slopes_are_pits = 1,
+        .slopes_are_walls = 1,
+    };
+    Collide_GetCollisionInfo(
+        &old_coll, coll->old.x, coll->old.y, coll->old.z, item->room_num,
+        LARA_HEIGHT);
+
+    if (old_coll.side_mid.floor != 0) {
+        return false;
+    }
+
+    const DIRECTION dir =
+        Math_GetDirectionCone(item->rot.y + DEG_180, LARA_HANG_ANGLE);
+    if (dir == DIR_UNKNOWN) {
+        return false;
+    }
+
+    switch (old_coll.quadrant) {
+    case DIR_NORTH:
+    case DIR_SOUTH:
+        return ABS(old_coll.tilt_x) < 2;
+    case DIR_EAST:
+    case DIR_WEST:
+        return ABS(old_coll.tilt_z) < 2;
+    default:
+        return false;
+    }
+}
+
 static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -118,8 +164,7 @@ static bool M_Fallen(ITEM *const item, const COLL_INFO *const coll)
         || lara->water_status == LWS_WADE) {
         return false;
     }
-    if (g_Input.action && lara->gun_status == LGS_ARMLESS
-        && g_Config.gameplay.enable_controlled_drops) {
+    if (M_CanControlDrop(item, coll)) {
         item->current_anim_state = LS_REACH;
         item->goal_anim_state = LS_REACH;
         Item_SwitchToAnim(item, LA_CONTROLLED_DROP, 0);
