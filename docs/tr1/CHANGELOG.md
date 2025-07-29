@@ -34,6 +34,7 @@
 - fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20 (#3629)
 - fixed the mesh structure on the cat statue in Egyptian levels to standardize its position (#3634)
 - fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them (#762)
+- fixed incorrect transparent pixels on room textures in St. Francis' Folly and Temple of the Cat (#3659)
 - fixed incorrect wet footstep sounds in some of Lara's climb-up animations (#3607, regression from 4.6)
 - fixed the `/kill` command potentially causing a crash if used in a level with pods that don't hatch creatures (#3628, regression from 4.12)
 - fixed Lara's animation not being restored correctly on load if a save was made during a special animation, such as using the Midas Hand (#3625, regression from 4.9)
