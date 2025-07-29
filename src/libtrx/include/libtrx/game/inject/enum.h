@@ -108,6 +108,7 @@ typedef enum {
     RMET_ADD_STATIC_2D  = 6,
     RMET_ADD_STATIC_3D  = 7,
     RMET_EDIT_STATIC_3D = 8,
+    RMET_VERTEX_FLAGS   = 9,
 } ROOM_MESH_EDIT_TYPE;
 // clang-format on
 

@@ -31,6 +31,7 @@
 - fixed incorrectly rotated 3D pickup items in several levels (#2147)
 - fixed incorrect room mesh structure in Vilcabamba room 41, causing disappearing polygons (#3613)
 - fixed missing textures on the statues in Vilcabamba and Tomb of Qualopec (#3629)
+- fixed missing textures in Atlantis rooms 7, 9, 13, 14, 95, 96 (#3657)
 - fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20 (#3629)
 - fixed the mesh structure on the cat statue in Egyptian levels to standardize its position (#3634)
 - fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them (#762)
