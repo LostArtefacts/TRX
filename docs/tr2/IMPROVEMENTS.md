@@ -88,7 +88,7 @@
     - **The Deck**: fixed invalid portals between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
     - **Barkhang Monastery**: fixed the illegal slope in room 96
-    - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
+    - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap); removed invalid portals from room 41
     - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, added an extra pickup trigger beside the Gong Hammer in room 29, fixed faulty zoning data in rooms 48/110, and fixed a misplaced springboard trigger in room 104
     - **Temple of Xian**: fixed missing death tiles in room 91; adding trigger workarounds to avoid a softlock after (missing) the final key
     - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it; added extra zipline reset triggers to avoid softlock
