@@ -106,6 +106,7 @@ void main(void) {
         if (uAlphaThreshold >= 0.0 && texColor.a <= uAlphaThreshold) {
             discard;
         }
+        texColor.a *= gColor.a;
     }
     if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled) {
         texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
@@ -125,8 +126,8 @@ void main(void) {
     }
 
     texColor.rgb *= uGlobalTint;
-
     texColor.rgb *= uBrightnessMultiplier;
-    outColor = vec4(texColor.rgb, gColor.a);
+
+    outColor = texColor;
 }
 #endif
