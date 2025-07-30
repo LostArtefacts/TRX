@@ -113,6 +113,8 @@ static void M_Draw(PHASE *const phase)
         metrics.buffer_transfer_count, metrics.uniform_changes);
     Benchmark_End(&benchmark, buffer);
 #endif
+
+    Output_FlipScreen();
 }
 
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)

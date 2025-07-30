@@ -102,7 +102,6 @@ static void M_DownloadTextures(int32_t pages);
 static void M_ReleaseTextures(void);
 static void M_ReleaseSurfaces(void);
 static void M_Flush(void);
-static void M_FlipScreen(void);
 
 static void M_DrawTriangleFan(
     const GFX_3D_VERTEX *vertices, int32_t vertex_count);
@@ -247,15 +246,6 @@ static void M_ReleaseSurfaces(void)
 static void M_Flush(void)
 {
     GFX_3D_Renderer_Flush(m_Renderer3D);
-}
-
-static void M_FlipScreen(void)
-{
-    if (Shell_GetArgs()->headless) {
-        return;
-    }
-    GFX_Context_SwapBuffers();
-    m_SelectedTexture = -1;
 }
 
 static void M_DrawBackdropSurface(void)
@@ -538,7 +528,15 @@ void Output_EndScene(void)
     Output_ClearDepthBuffer();
     M_EnableDepthTest();
     GFX_3D_Renderer_RenderEnd(m_Renderer3D);
-    M_FlipScreen();
+}
+
+void Output_FlipScreen(void)
+{
+    if (Shell_GetArgs()->headless) {
+        return;
+    }
+    GFX_Context_SwapBuffers();
+    m_SelectedTexture = -1;
 }
 
 void Output_ClearDepthBuffer(void)
