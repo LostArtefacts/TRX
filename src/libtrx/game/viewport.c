@@ -5,6 +5,8 @@
 #include "log.h"
 
 static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
+    [VIEWPORT_WINDOW] = { .width = 800, .height = 600, },
+    [VIEWPORT_TARGET] = { .width = 800, .height = 600, },
     [VIEWPORT_GAME] = { .width = 800, .height = 600, },
     [VIEWPORT_UI] = { .width = 800, .height = 600 },
 };
