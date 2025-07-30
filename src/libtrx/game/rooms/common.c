@@ -152,7 +152,7 @@ void Room_FlipMap(void)
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         if (room->flip_status != RFS_NONE) {
-            Output_ObserveRoomFlip(room);
+            Output_DispatchRoomFlip(room);
         }
     }
 }

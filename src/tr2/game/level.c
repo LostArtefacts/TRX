@@ -383,7 +383,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_ObserveLevelLoad();
+    Output_DispatchLevelLoad();
 
     Render_Reset(
         RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
@@ -462,7 +462,7 @@ bool Level_Initialise(
 
 void Level_Unload(void)
 {
-    Output_ObserveLevelUnload();
+    Output_DispatchLevelUnload();
     Camera_Reset();
 }
 

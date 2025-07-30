@@ -4,7 +4,6 @@
 #include "game/lara.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
-#include "game/output/meshes/objects.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -268,7 +267,7 @@ void Object_SetMeshReflective(
     for (int32_t i = 0; i < mesh->num_flat_face3s; i++) {
         mesh->flat_face3s[i].enable_reflections = enabled;
     }
-    Output_Meshes_ObserveObjectMeshUpdate(mesh);
+    Output_DispatchObjectMeshUpdate(mesh);
 }
 
 void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)

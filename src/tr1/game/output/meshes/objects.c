@@ -8,7 +8,6 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/game/output/objects.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
 #include <libtrx/vector.h>

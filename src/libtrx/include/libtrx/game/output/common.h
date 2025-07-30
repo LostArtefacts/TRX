@@ -1,14 +1,18 @@
 #pragma once
 
+#include "../objects/types.h"
 #include "../rooms.h"
 #include "../viewport.h"
 
 extern bool Output_Init(void);
 extern void Output_Shutdown(void);
 
-extern void Output_ObserveLevelLoad(void);
-extern void Output_ObserveLevelUnload(void);
-extern void Output_ObserveRoomFlip(const ROOM *room);
+extern void Output_DispatchLevelLoad(void);
+extern void Output_DispatchLevelUnload(void);
+extern void Output_DispatchRoomFlip(const ROOM *room);
+extern void Output_DispatchObjectMeshUpdate(const OBJECT_MESH *mesh);
+extern void Output_DispatchObjectMeshSwap(
+    const OBJECT_MESH *mesh_1, const OBJECT_MESH *mesh_2);
 
 extern bool Output_MakeScreenshot(const char *path);
 extern void Output_BeginScene(void);

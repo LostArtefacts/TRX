@@ -6,7 +6,7 @@
 #include "game/game_buf.h"
 #include "game/lara/common.h"
 #include "game/objects/vars.h"
-#include "game/output/objects.h"
+#include "game/output/common.h"
 
 #include <string.h>
 
@@ -274,11 +274,9 @@ void Object_SwapMesh(
         m_MeshPointers[obj2->mesh_idx + mesh_num];
     m_MeshPointers[obj2->mesh_idx + mesh_num] = temp;
 
-#if TR_VERSION == 1
-    Output_Meshes_ObserveObjectMeshSwap(
+    Output_DispatchObjectMeshSwap(
         m_MeshPointers[obj1->mesh_idx + mesh_num],
         m_MeshPointers[obj2->mesh_idx + mesh_num]);
-#endif
 }
 
 ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)
