@@ -80,10 +80,10 @@ static void M_GenerateShadow(
         Vector_Add(p->vertices, &center);
         Vector_Add(
             p->vertices,
-            &(M_VERTEX) { .pos = { x_1, y, z_1 }, .color = color });
+            &(M_VERTEX) { .pos = { x_2, y, z_2 }, .color = color });
         Vector_Add(
             p->vertices,
-            &(M_VERTEX) { .pos = { x_2, y, z_2 }, .color = color });
+            &(M_VERTEX) { .pos = { x_1, y, z_1 }, .color = color });
     }
     M_SealPrimitive(p, target_range);
 }
@@ -130,6 +130,13 @@ static void M_GenerateSphere(
             };
             for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
                 const int32_t l = OUTPUT_QUAD_TO_FAN(k);
+                Vector_Add(
+                    p->vertices,
+                    &(M_VERTEX) { .pos = positions[indices[l]],
+                                  .color = color });
+            }
+            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
+                const int32_t l = OUTPUT_QUAD_TO_FAN_CW(k);
                 Vector_Add(
                     p->vertices,
                     &(M_VERTEX) { .pos = positions[indices[l]],
