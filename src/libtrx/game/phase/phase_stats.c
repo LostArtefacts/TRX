@@ -163,7 +163,8 @@ static void M_Draw(PHASE *const phase)
     } else {
         Output_DrawBackground();
     }
-    Fader_Draw(&p->back_fader);
+    UI_BeginFade(&p->back_fader, false);
+    UI_EndFade();
 
     UI_BeginFade(&p->top_fader, true);
     if (p->ui_active) {

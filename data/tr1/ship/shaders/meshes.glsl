@@ -29,7 +29,7 @@ out vec4 gColor;
 void main(void) {
     // billboard sprites if flagged, else standard vertex transform
     vec4 eyePos = uMatModelView * vec4(inPosition.xyz, 1.0);
-    if ((inFlags & VERT_SPRITE) != 0u) {
+    if ((inFlags & VERT_BILLBOARD) != 0u) {
         // inNormal.xy carries sprite displacement for billboarding
         eyePos.xy += inNormal.xy;
     }
@@ -38,7 +38,7 @@ void main(void) {
     gl_Position = uMatProjection * eyePos;
 
     // apply water wibble effect only to non-sprite vertices
-    if (uWibbleEffect && (inFlags & VERT_NO_CAUSTICS) == 0u && (inFlags & VERT_SPRITE) == 0u) {
+    if (uWibbleEffect && (inFlags & VERT_NO_CAUSTICS) == 0u && (inFlags & VERT_BILLBOARD) == 0u) {
         gl_Position.xyz =
             waterWibble(gl_Position, uViewportSize, uTime);
     }
@@ -63,7 +63,7 @@ uniform sampler2D uTexEnvMap;
 uniform bool uSmoothingEnabled;
 uniform bool uAlphaDiscardEnabled;
 uniform bool uTrapezoidFilterEnabled;
-uniform bool uLightingEnabled;
+uniform int uLightingMode;
 uniform bool uReflectionsEnabled;
 uniform float uAlphaThreshold;
 uniform float uBrightnessMultiplier;
@@ -90,13 +90,14 @@ vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 
 void main(void) {
     vec4 texColor = gColor;
-    vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
-    if (uTrapezoidFilterEnabled) {
-        texCoords.xy /= gTrapezoidRatios;
-    }
-    texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
 
-    if ((gFlags & VERT_FLAT_SHADED) == 0u && texCoords.z >= 0) {
+    if ((gFlags & VERT_FLAT_SHADED) == 0u && gTexLayer >= 0) {
+        vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
+        if (uTrapezoidFilterEnabled) {
+            texCoords.xy /= gTrapezoidRatios;
+        }
+        texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
+
         if (uAlphaDiscardEnabled && uSmoothingEnabled && discardTranslucent(uTexAtlas, texCoords)) {
             discard;
         }
@@ -111,13 +112,19 @@ void main(void) {
     }
 
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        if (uLightingEnabled) {
-            float shade = gShade;
+        float shade;
+        if (uLightingMode == LIGHTING_MODE_ONLY_SHADES) {
+            shade = gShade;
+        } else if (uLightingMode == LIGHTING_MODE_FULL) {
+            shade = gShade;
             shade = shadeFog(shade, gWorldPos.z, uFog);
-            texColor.rgb = applyShade(texColor.rgb, shade);
+        } else {
+            shade = SHADE_NEUTRAL;
         }
-        texColor.rgb *= uGlobalTint;
+        texColor.rgb = applyShade(texColor.rgb, shade);
     }
+
+    texColor.rgb *= uGlobalTint;
 
     texColor.rgb *= uBrightnessMultiplier;
     outColor = vec4(texColor.rgb, gColor.a);

@@ -1,0 +1,282 @@
+#include "game/output/sources/misc.h"
+
+#include "game/output.h"
+#include "game/output/scene_compositor.h"
+#include "game/output/utils.h"
+#include "game/output/vertex_range.h"
+
+#include <libtrx/config.h>
+#include <libtrx/gfx/gl/utils.h>
+#include <libtrx/memory.h>
+
+typedef struct {
+    XYZ_F pos;
+    RGBA_8888 color;
+} M_VERTEX;
+
+typedef enum {
+    M_PRIMITIVE_SHADOW_LOW,
+    M_PRIMITIVE_SHADOW_HIGH,
+    M_PRIMITIVE_SPHERE,
+    M_PRIMITIVE_NUMBER_OF,
+} M_PRIMITIVE_TYPE;
+
+typedef struct {
+    MATRIX matrix;
+    M_PRIMITIVE_TYPE prim_type;
+} M_INSTANCE;
+
+typedef struct {
+    SCENE_SOURCE source;
+    OUTPUT_SHADER *shader;
+    OUTPUT_VERTEX_RANGE primitive_ranges[M_PRIMITIVE_NUMBER_OF];
+    VECTOR *vertices;
+    VECTOR *scheduled;
+    VECTOR *scheduled_spheres;
+    GLuint vao;
+    GLuint vbo;
+    int32_t vertex_count;
+} M_PRIV;
+
+static M_PRIV m_Priv;
+
+static void M_SealPrimitive(M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range);
+static void M_GenerateShadow(
+    M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range, int32_t fidelity);
+static void M_GenerateSphere(
+    M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range, int32_t subdivisions);
+static void M_SealPrimitive(M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range);
+static void M_DrawScheduled(M_PRIV *p, VECTOR *scheduled);
+
+static void M_RenderBegin(const SCENE_SOURCE *source);
+static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
+static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
+
+static void M_SealPrimitive(
+    M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range)
+{
+
+    target_range->vertex_start = p->vertex_count;
+    target_range->vertex_count =
+        p->vertices->count - target_range->vertex_start;
+    p->vertex_count += target_range->vertex_count;
+}
+
+static void M_GenerateShadow(
+    M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range,
+    const int32_t fidelity)
+{
+    const RGBA_8888 color = { 0, 0, 0, 128 };
+    const int32_t y = -5;
+    const M_VERTEX center = (M_VERTEX) { .pos = { 0, y, 0 }, .color = color };
+    for (int32_t i = 0; i < fidelity; i++) {
+        const int16_t angle_1 = ((i + 0) * DEG_360 + DEG_1 / 2) / fidelity;
+        const int16_t angle_2 = ((i + 1) * DEG_360 + DEG_1 / 2) / fidelity;
+        const int16_t size = WALL_L / 2;
+        const int32_t x_1 = (Math_Sin(angle_1) * size) >> W2V_SHIFT;
+        const int32_t z_1 = (Math_Cos(angle_1) * size) >> W2V_SHIFT;
+        const int32_t x_2 = (Math_Sin(angle_2) * size) >> W2V_SHIFT;
+        const int32_t z_2 = (Math_Cos(angle_2) * size) >> W2V_SHIFT;
+        Vector_Add(p->vertices, &center);
+        Vector_Add(
+            p->vertices,
+            &(M_VERTEX) { .pos = { x_1, y, z_1 }, .color = color });
+        Vector_Add(
+            p->vertices,
+            &(M_VERTEX) { .pos = { x_2, y, z_2 }, .color = color });
+    }
+    M_SealPrimitive(p, target_range);
+}
+
+static void M_GenerateSphere(
+    M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range,
+    const int32_t subdivisions)
+{
+    // More subdivisions means smoother spheres.
+    const RGBA_8888 color = { 255, 0, 0, 255 };
+    const int32_t position_count = SQUARE(subdivisions + 1);
+    XYZ_F positions[position_count];
+    int32_t index = 0;
+
+    for (int32_t i = 0; i <= subdivisions; i++) {
+        const float theta = (M_PI * i) / subdivisions; // Latitude angle
+        const float sin_theta = sinf(theta);
+        const float cos_theta = cosf(theta);
+
+        for (int32_t j = 0; j <= subdivisions; j++) {
+            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
+            const float sin_phi = sinf(phi);
+            const float cos_phi = cosf(phi);
+
+            // Convert spherical coordinates to 3D points.
+            positions[index] = (XYZ_F) {
+                .x = 1 * cos_phi * sin_theta,
+                .y = 1 * cos_theta,
+                .z = 1 * sin_phi * sin_theta,
+            };
+            index++;
+        }
+    }
+
+    const int32_t vertex_count =
+        subdivisions * subdivisions * OUTPUT_QUAD_VERTICES;
+    for (int32_t i = 0; i < subdivisions; i++) {
+        for (int32_t j = 0; j < subdivisions; j++) {
+            const int32_t indices[4] = {
+                i * (subdivisions + 1) + j,
+                (i + 1) * (subdivisions + 1) + j,
+                (i + 1) * (subdivisions + 1) + (j + 1),
+                i * (subdivisions + 1) + (j + 1),
+            };
+            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
+                const int32_t l = OUTPUT_QUAD_TO_FAN(k);
+                Vector_Add(
+                    p->vertices,
+                    &(M_VERTEX) { .pos = positions[indices[l]],
+                                  .color = color });
+            }
+        }
+    }
+    M_SealPrimitive(p, target_range);
+}
+
+static void M_DrawScheduled(M_PRIV *const p, VECTOR *const scheduled)
+{
+    for (int32_t i = 0; i < scheduled->count; i++) {
+        const M_INSTANCE *const instance = Vector_Get(scheduled, i);
+        Output_Shader_UploadViewModelMatrix(p->shader, &instance->matrix);
+        const OUTPUT_VERTEX_RANGE *const range =
+            &p->primitive_ranges[instance->prim_type];
+        glDrawArrays(GL_TRIANGLES, range->vertex_start, range->vertex_count);
+    }
+}
+
+static void M_RenderBegin(const SCENE_SOURCE *const source)
+{
+    M_PRIV *const p = &m_Priv;
+    Vector_Clear(p->scheduled);
+    Vector_Clear(p->scheduled_spheres);
+}
+
+static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
+{
+    const M_PRIV *const p = &m_Priv;
+    return pass == SCENE_PASS_TRANSPARENT
+        && (p->scheduled->count > 0 || p->scheduled_spheres->count > 0);
+}
+
+static void M_RenderPass(
+    const SCENE_SOURCE *const source, const SCENE_PASS pass)
+{
+    M_PRIV *const p = &m_Priv;
+    if (pass != SCENE_PASS_TRANSPARENT) {
+        return;
+    }
+    glBindVertexArray(p->vao);
+    glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
+    glVertexAttrib3f(OUTPUT_MESH_ATTR_NORMAL, 0.0f, 0.0f, 0.0f);
+    glVertexAttrib3f(OUTPUT_MESH_ATTR_UVW, 0.0f, 0.0f, 0.0f);
+    glVertexAttrib4f(OUTPUT_MESH_ATTR_TEXTURE_SIZE, 0.0f, 0.0f, 1.0f, 1.0f);
+    glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
+    glVertexAttribI1ui(
+        OUTPUT_MESH_ATTR_FLAGS,
+        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
+    M_DrawScheduled(p, p->scheduled);
+
+    if (p->scheduled_spheres->count > 0) {
+        const bool wireframe_state = g_Config.rendering.enable_wireframe;
+        const RGBA_F color_black = { 0.0f, 0.0f, 0.0f, 0.5f };
+        const RGBA_F color_white = { 1.0f, 1.0f, 1.0f, 0.5f };
+        const RGBA_F color = wireframe_state ? color_black : color_white;
+        glDisableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+        glVertexAttrib4f(
+            OUTPUT_MESH_ATTR_COLOR, color.r, color.g, color.b, color.a);
+        GLint bound_polygon_mode[2];
+        glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        M_DrawScheduled(p, p->scheduled_spheres);
+        glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+        glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
+    }
+}
+
+void OutputSource_Misc_Init(void)
+{
+    M_PRIV *const p = &m_Priv;
+    p->shader = Output_GetMeshShader();
+    p->vertices = Vector_Create(sizeof(M_VERTEX));
+    p->scheduled = Vector_Create(sizeof(M_INSTANCE));
+    p->scheduled_spheres = Vector_Create(sizeof(M_INSTANCE));
+    p->source.render_begin = M_RenderBegin;
+    p->source.render_pass = M_RenderPass;
+    p->source.is_dirty = M_IsDirty;
+    SceneCompositor_AddSource(&p->source);
+
+    glGenVertexArrays(1, &p->vao);
+    glBindVertexArray(p->vao);
+
+    glGenBuffers(1, &p->vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
+
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_POS);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_NORMAL);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        (void *)(intptr_t)offsetof(M_VERTEX, pos));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
+        (void *)(intptr_t)offsetof(M_VERTEX, color));
+
+    M_GenerateShadow(p, &p->primitive_ranges[M_PRIMITIVE_SHADOW_LOW], 8);
+    M_GenerateShadow(p, &p->primitive_ranges[M_PRIMITIVE_SHADOW_HIGH], 32);
+    M_GenerateSphere(p, &p->primitive_ranges[M_PRIMITIVE_SPHERE], 12);
+
+    GFX_TRACK_DATA(
+        glBufferData, GL_ARRAY_BUFFER, p->vertex_count * sizeof(M_VERTEX),
+        Vector_GetData(p->vertices), GL_STATIC_DRAW);
+}
+
+void OutputSource_Misc_Shutdown(void)
+{
+    M_PRIV *const p = &m_Priv;
+    Vector_Free(p->vertices);
+    Vector_Free(p->scheduled);
+    Vector_Free(p->scheduled_spheres);
+    if (p->vao != 0) {
+        glDeleteVertexArrays(1, &p->vao);
+        p->vao = 0;
+    }
+    if (p->vbo != 0) {
+        glDeleteBuffers(1, &p->vbo);
+        p->vbo = 0;
+    }
+}
+
+void OutputSource_Misc_StageShadow(void)
+{
+    M_PRIV *const p = &m_Priv;
+    M_INSTANCE inst = {
+        .matrix = *g_MatrixPtr,
+        .prim_type = g_Config.visuals.enable_round_shadow
+            ? M_PRIMITIVE_SHADOW_HIGH
+            : M_PRIMITIVE_SHADOW_LOW,
+    };
+    Vector_Add(p->scheduled, &inst);
+}
+
+void OutputSource_Misc_StageSphere(void)
+{
+    M_PRIV *const p = &m_Priv;
+    M_INSTANCE inst = {
+        .matrix = *g_MatrixPtr,
+        .prim_type = M_PRIMITIVE_SPHERE,
+    };
+    Vector_Add(p->scheduled_spheres, &inst);
+}

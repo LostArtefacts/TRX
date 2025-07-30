@@ -1,10 +1,11 @@
 #include "game/output.h"
-#include "game/output/meshes/common.h"
-#include "game/output/meshes/objects.h"
-#include "game/output/meshes/rooms.h"
-#include "game/output/sprites.h"
+#include "game/output/scene_compositor.h"
+#include "game/output/sources/objects.h"
+#include "game/output/sources/rooms.h"
 #include "game/output/textures.h"
 #include "global/vars.h"
+
+#include <libtrx/config.h>
 
 static int32_t m_Time = 0;
 static int32_t m_AnimatedTexturesOffset = 0;
@@ -19,6 +20,22 @@ static XYZ_32 m_LsVectorView = {};
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
+static bool m_IsSkyboxEnabled = false;
+
+int32_t Output_GetTime(void)
+{
+    return m_Time;
+}
+
+void Output_SetSkyboxEnabled(const bool enabled)
+{
+    m_IsSkyboxEnabled = enabled;
+}
+
+bool Output_IsSkyboxEnabled(void)
+{
+    return m_IsSkyboxEnabled && g_Config.visuals.enable_skybox;
+}
 
 int32_t Output_GetFogEnd(void)
 {
@@ -46,14 +63,21 @@ int32_t Output_GetFarZ(void)
     return Output_GetFogEnd() << W2V_SHIFT;
 }
 
+int32_t Output_GetNearZ_UI(void)
+{
+    return 20;
+}
+
+int32_t Output_GetFarZ_UI(void)
+{
+    return 10000;
+}
+
 void Output_SetupBelowWater(const bool underwater)
 {
     m_IsWaterEffect = true;
     m_IsWibbleEffect = !underwater;
     m_IsShadeEffect = true;
-    Output_RememberState();
-    Output_Shader_UploadWaterEffect(Output_Meshes_GetShader(), m_IsWaterEffect);
-    Output_RestoreState();
 }
 
 void Output_SetupAboveWater(const bool underwater)
@@ -61,9 +85,6 @@ void Output_SetupAboveWater(const bool underwater)
     m_IsWaterEffect = false;
     m_IsWibbleEffect = underwater;
     m_IsShadeEffect = underwater;
-    Output_RememberState();
-    Output_Shader_UploadWaterEffect(Output_Meshes_GetShader(), m_IsWaterEffect);
-    Output_RestoreState();
 }
 
 bool Output_GetWaterEffect(void)
@@ -91,24 +112,24 @@ RGB_F Output_GetTint(void)
     return (RGB_F) { 1.0f, 1.0f, 1.0f };
 }
 
-void Output_SetLightAdder(const int32_t adder)
-{
-    m_LsAdder = adder;
-}
-
 int32_t Output_GetLightAdder(void)
 {
     return m_LsAdder;
 }
 
-void Output_SetLightDivider(const int32_t divider)
+void Output_SetLightAdder(const int32_t adder)
 {
-    m_LsDivider = divider;
+    m_LsAdder = adder;
 }
 
 int32_t Output_GetLightDivider(void)
 {
     return m_LsDivider;
+}
+
+void Output_SetLightDivider(const int32_t divider)
+{
+    m_LsDivider = divider;
 }
 
 XYZ_32 Output_GetLightVectorView(void)
@@ -131,11 +152,6 @@ void Output_RotateLight(const int16_t pitch, const int16_t yaw)
     m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
 }
 
-int32_t Output_GetTime(void)
-{
-    return m_Time;
-}
-
 void Output_AnimateTextures(const int32_t num_frames)
 {
     m_Time += num_frames;
@@ -148,8 +164,108 @@ void Output_AnimateTextures(const int32_t num_frames)
     }
     if (update) {
         Output_Textures_CycleAnimations();
-        Output_Sprites_ObserveTextureAnimation();
-        Output_Meshes_ObserveTextureAnimationRooms();
-        Output_Meshes_ObserveTextureAnimationObjects();
+        SceneCompositor_AnimateTextures();
     }
+}
+
+void Output_GetPerspProjectionMatrix(GLfloat output[][4])
+{
+    const float left = 0.0f;
+    const float top = 0.0f;
+    const float right = Viewport_GetWidth(VIEWPORT_GAME);
+    const float bottom = Viewport_GetHeight(VIEWPORT_GAME);
+    const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
+    const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
+    const float aspect = (float)(right - left) / (float)(bottom - top);
+    const float fov = Viewport_GetEffectiveFOV() * M_PI / (float)DEG_180;
+
+    float f_x, f_y;
+    if (g_Config.visuals.fov_vertical) {
+        f_y = 1.0f / tanf(fov * 0.5f);
+        f_x = f_y / aspect;
+    } else {
+        f_x = 1.0f / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+    }
+
+    output[0][0] = f_x;
+    output[0][1] = 0.0f;
+    output[0][2] = 0.0f;
+    output[0][3] = 0.0f;
+
+    output[1][0] = 0.0f;
+    output[1][1] = -f_y;
+    output[1][2] = 0.0f;
+    output[1][3] = 0.0f;
+
+    output[2][0] = 0.0f;
+    output[2][1] = 0.0f;
+    output[2][2] = g_FltResZBuf;
+    output[2][3] = -g_FltResZ / (float)(1 << W2V_SHIFT);
+
+    output[3][0] = 0.0f;
+    output[3][1] = 0.0f;
+    output[3][2] = 1.0f;
+    output[3][3] = 0.0f;
+}
+
+void Output_GetOrthoProjectionMatrix(GLfloat output[][4])
+{
+    const float left = 0.0f;
+    const float top = 0.0f;
+    const float right = Viewport_GetWidth(VIEWPORT_UI);
+    const float bottom = Viewport_GetHeight(VIEWPORT_UI);
+    const float near = Output_GetNearZ_UI();
+    const float far = Output_GetFarZ_UI();
+
+    output[0][0] = 2.0f / (right - left);
+    output[0][1] = 0.0f;
+    output[0][2] = 0.0f;
+    output[0][3] = -(right + left) / (right - left);
+
+    output[1][0] = 0.0f;
+    output[1][1] = 2.0f / (top - bottom);
+    output[1][2] = 0.0f;
+    output[1][3] = -(top + bottom) / (top - bottom);
+
+    output[2][0] = 0.0f;
+    output[2][1] = 0.0f;
+    output[2][2] = 2.0f / (far - near);
+    output[2][3] = -(far + near) / (far - near);
+
+    output[3][0] = 0.0f;
+    output[3][1] = 0.0f;
+    output[3][2] = 0.0f;
+    output[3][3] = 1.0f;
+}
+
+void Output_EnableScissor(
+    const float x, const float y, const float w, const float h)
+{
+    // Causes the rendering pipeline to discard every pixel outside of the
+    // specified window. The window is in game framebuffer viewport's
+    // coordinates; to make it work properly, we need to translate it to the
+    // SDL window coordinates first.
+
+    // To deal with precision issues coming from using integer matrix ops
+    const int32_t border = 4;
+
+    const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
+    const VIEWPORT_RECT window = Viewport_GetRect(VIEWPORT_GAME);
+    const float scale_x = window.w / (float)game.w;
+    const float scale_y = window.h / (float)game.h;
+    VIEWPORT_RECT scissor = {
+        .x = window.x + (x * scale_x) - border,
+        .y = window.y + (game.h - y) * scale_y - border,
+        .w = w * scale_x + border * 2,
+        .h = h * scale_y + border * 2,
+    };
+
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(scissor.x, scissor.y, scissor.w, scissor.h);
+}
+
+void Output_DisableScissor(void)
+{
+    glDisable(GL_SCISSOR_TEST);
 }

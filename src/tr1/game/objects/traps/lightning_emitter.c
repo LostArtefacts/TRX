@@ -12,7 +12,7 @@
 
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8
-#define LIGHTNING_RND ((64 << W2V_SHIFT) / 0x8000) // = 32
+#define LIGHTNING_RND 64
 #define LIGHTNING_SHOOTS 2
 
 typedef struct {
@@ -21,18 +21,19 @@ typedef struct {
     bool zapped;
     bool no_target;
     XYZ_32 target;
-    XYZ_32 main[LIGHTNING_STEPS];
-    XYZ_32 wibble[LIGHTNING_STEPS];
     int32_t start[LIGHTNING_SHOOTS];
     XYZ_32 end[LIGHTNING_SHOOTS];
+    XYZ_32 main[LIGHTNING_STEPS];
+    XYZ_32 wibble[LIGHTNING_STEPS];
     XYZ_32 shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
-} LIGHTNING;
+} M_LIGHTNING;
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Draw(const ITEM *item);
+static void M_DrawBolts(const ITEM *item);
 
 static void M_Setup(OBJECT *const obj)
 {
@@ -45,7 +46,7 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_Initialise(const int16_t item_num)
 {
-    LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_ITEM_DATA);
+    M_LIGHTNING *l = GameBuf_Alloc(sizeof(M_LIGHTNING), GBUF_ITEM_DATA);
     ITEM *const item = Item_Get(item_num);
     item->data = l;
 
@@ -64,7 +65,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    LIGHTNING *l = item->data;
+    M_LIGHTNING *l = item->data;
 
     if (!Item_IsTriggerActive(item)) {
         l->count = 1;
@@ -96,13 +97,13 @@ static void M_Control(const int16_t item_num)
         l->active = true;
         l->count = 20;
 
-        for (int i = 0; i < LIGHTNING_STEPS; i++) {
+        for (int32_t i = 0; i < LIGHTNING_STEPS; i++) {
             l->wibble[i].x = 0;
             l->wibble[i].y = 0;
             l->wibble[i].z = 0;
         }
 
-        int32_t radius = l->no_target ? WALL_L : WALL_L * 5 / 2;
+        const int32_t radius = l->no_target ? WALL_L : WALL_L * 5 / 2;
         if (Lara_IsNearItem(&item->pos, radius)) {
             l->target.x = g_LaraItem->pos.x;
             l->target.y = g_LaraItem->pos.y;
@@ -129,13 +130,13 @@ static void M_Control(const int16_t item_num)
             l->zapped = false;
         }
 
-        for (int i = 0; i < LIGHTNING_SHOOTS; i++) {
+        for (int32_t i = 0; i < LIGHTNING_SHOOTS; i++) {
             l->start[i] = Random_GetControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
             l->end[i].x = l->target.x + (Random_GetControl() * WALL_L) / 0x7FFF;
             l->end[i].y = l->target.y;
             l->end[i].z = l->target.z + (Random_GetControl() * WALL_L) / 0x7FFF;
 
-            for (int j = 0; j < LIGHTNING_STEPS; j++) {
+            for (int32_t j = 0; j < LIGHTNING_STEPS; j++) {
                 l->shoot[i][j].x = 0;
                 l->shoot[i][j].y = 0;
                 l->shoot[i][j].z = 0;
@@ -153,7 +154,7 @@ static void M_Control(const int16_t item_num)
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    const LIGHTNING *const l = Item_Get(item_num)->data;
+    const M_LIGHTNING *const l = Item_Get(item_num)->data;
     if (!l->zapped) {
         return;
     }
@@ -165,6 +166,7 @@ static void M_Collision(
 
 static void M_Draw(const ITEM *const item)
 {
+    const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
     ANIM_FRAME *frmptr[2];
     int32_t rate;
     Item_GetFrames(item, frmptr, &rate);
@@ -172,7 +174,6 @@ static void M_Draw(const ITEM *const item)
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
-
     int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
     if (!clip) {
         Matrix_Pop();
@@ -182,39 +183,43 @@ static void M_Draw(const ITEM *const item)
     Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
 
     Matrix_TranslateRel16(frmptr[0]->offset);
-
-    int32_t x1 = g_MatrixPtr->_03;
-    int32_t y1 = g_MatrixPtr->_13;
-    int32_t z1 = g_MatrixPtr->_23;
-
-    const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
     Object_DrawMesh(obj->mesh_idx, clip, false);
-
     Matrix_Pop();
 
-    LIGHTNING *l = item->data;
+    M_DrawBolts(item);
+}
+
+static void M_DrawBolts(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
+
+    ANIM_FRAME *frmptr[2];
+    int32_t rate;
+    Item_GetFrames(item, frmptr, &rate);
+
+    M_LIGHTNING *l = item->data;
     if (!l->active) {
         return;
     }
 
-    Matrix_Push();
-    Matrix_TranslateAbs32(l->target);
-    Matrix_Rot16(item->rot);
+    int32_t x1 = item->interp.result.pos.x + frmptr[0]->offset.x;
+    int32_t y1 = item->interp.result.pos.y + frmptr[0]->offset.y;
+    int32_t z1 = item->interp.result.pos.z + frmptr[0]->offset.z;
 
-    int32_t x2 = g_MatrixPtr->_03;
-    int32_t y2 = g_MatrixPtr->_13;
-    int32_t z2 = g_MatrixPtr->_23;
+    int32_t x2 = l->target.x;
+    int32_t y2 = l->target.y;
+    int32_t z2 = l->target.z;
 
     int32_t dx = (x2 - x1) / LIGHTNING_STEPS;
     int32_t dy = (y2 - y1) / LIGHTNING_STEPS;
     int32_t dz = (z2 - z1) / LIGHTNING_STEPS;
 
-    for (int i = 0; i < LIGHTNING_STEPS; i++) {
+    for (int32_t i = 0; i < LIGHTNING_STEPS; i++) {
         XYZ_32 *pos = &l->wibble[i];
         if (Game_IsPlaying()) {
-            pos->x += (Random_GetDraw() - DEG_90) * LIGHTNING_RND;
-            pos->y += (Random_GetDraw() - DEG_90) * LIGHTNING_RND;
-            pos->z += (Random_GetDraw() - DEG_90) * LIGHTNING_RND;
+            pos->x += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
+            pos->y += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
+            pos->z += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
         }
         if (i == LIGHTNING_STEPS - 1) {
             pos->y = 0;
@@ -225,13 +230,15 @@ static void M_Draw(const ITEM *const item)
         z2 = z1 + dz + pos->z;
 
         if (i > 0) {
-            Output_DrawLightningSegment(
-                (XYZ_32) { x1, y1 + l->wibble[i - 1].y, z1 },
-                (XYZ_32) { x2, y2, z2 }, Viewport_GetWidth(VIEWPORT_GAME) / 6);
+            Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
+                .from = { x1, y1 + l->wibble[i - 1].y, z1 },
+                .to = { x2, y2, z2 },
+                .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 6 });
         } else {
-            Output_DrawLightningSegment(
-                (XYZ_32) { x1, y1, z1 }, (XYZ_32) { x2, y2, z2 },
-                Viewport_GetWidth(VIEWPORT_GAME) / 6);
+            Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
+                .from = { x1, y1, z1 },
+                .to = { x2, y2, z2 },
+                .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 6 });
         }
 
         x1 = x2;
@@ -243,33 +250,27 @@ static void M_Draw(const ITEM *const item)
         l->main[i].z = z2;
     }
 
-    for (int i = 0; i < LIGHTNING_SHOOTS; i++) {
-        int j = l->start[i];
+    for (int32_t i = 0; i < LIGHTNING_SHOOTS; i++) {
+        int32_t j = l->start[i];
         x1 = l->main[j].x;
         y1 = l->main[j].y;
         z1 = l->main[j].z;
 
-        Matrix_Pop();
-        Matrix_Push();
-
-        Matrix_TranslateAbs32(l->end[i]);
-        Matrix_Rot16(item->rot);
-
-        x2 = g_MatrixPtr->_03;
-        y2 = g_MatrixPtr->_13;
-        z2 = g_MatrixPtr->_23;
+        x2 = l->end[i].x;
+        y2 = l->end[i].y;
+        z2 = l->end[i].z;
 
         int32_t steps = LIGHTNING_STEPS - j;
         dx = (x2 - x1) / steps;
         dy = (y2 - y1) / steps;
         dz = (z2 - z1) / steps;
 
-        for (int k = 0; k < steps; k++) {
+        for (int32_t k = 0; k < steps; k++) {
             XYZ_32 *pos = &l->shoot[i][k];
             if (Game_IsPlaying()) {
-                pos->x += (Random_GetDraw() - DEG_90) * LIGHTNING_RND;
-                pos->y += (Random_GetDraw() - DEG_90) * LIGHTNING_RND;
-                pos->z += (Random_GetDraw() - DEG_90) * LIGHTNING_RND;
+                pos->x += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
+                pos->y += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
+                pos->z += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
             }
             if (k == steps - 1) {
                 pos->y = 0;
@@ -280,14 +281,15 @@ static void M_Draw(const ITEM *const item)
             z2 = z1 + dz + pos->z;
 
             if (k > 0) {
-                Output_DrawLightningSegment(
-                    (XYZ_32) { x1, y1 + l->shoot[i][k - 1].y, z1 },
-                    (XYZ_32) { x2, y2, z2 },
-                    Viewport_GetWidth(VIEWPORT_GAME) / 16);
+                Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
+                    .from = { x1, y1 + l->shoot[i][k - 1].y, z1 },
+                    .to = { x2, y2, z2 },
+                    .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 16 });
             } else {
-                Output_DrawLightningSegment(
-                    (XYZ_32) { x1, y1, z1 }, (XYZ_32) { x2, y2, z2 },
-                    Viewport_GetWidth(VIEWPORT_GAME) / 16);
+                Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
+                    .from = { x1, y1, z1 },
+                    .to = { x2, y2, z2 },
+                    .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 16 });
             }
 
             x1 = x2;
@@ -295,8 +297,6 @@ static void M_Draw(const ITEM *const item)
             z1 = z2;
         }
     }
-
-    Matrix_Pop();
 }
 
 REGISTER_OBJECT(O_LIGHTNING_EMITTER, M_Setup)

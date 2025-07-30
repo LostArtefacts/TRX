@@ -1,20 +1,15 @@
 #include "game/game.h"
 
-#include "game/lara/draw.h"
-#include "game/output.h"
+#include "game/lara.h"
+#include "game/output/scene_compositor.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
 #include "game/room_draw.h"
-#include "game/viewport.h"
-#include "global/types.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/hair.h>
-
-#include <stdint.h>
 
 void Game_Draw(bool draw_overlay)
 {
@@ -24,17 +19,14 @@ void Game_Draw(bool draw_overlay)
     if (Object_Get(O_LARA)->loaded) {
         Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
 
-        if (g_Config.visuals.enable_reflections) {
-            Output_Textures_UpdateEnvironmentMap();
-        }
-
-        if (Room_Get(g_LaraItem->room_num)->flags & RF_UNDERWATER) {
+        ITEM *const lara_item = Lara_GetItem();
+        if (Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) {
             Output_SetupBelowWater(g_Camera.underwater);
         } else {
             Output_SetupAboveWater(g_Camera.underwater);
         }
-        Lara_Draw(g_LaraItem);
-        Output_FlushTranslucentObjects();
+        Lara_Draw(lara_item);
+
         Output_SetupAboveWater(false);
 
         if (draw_overlay) {
@@ -42,7 +34,6 @@ void Game_Draw(bool draw_overlay)
         } else {
             Overlay_HideGameInfo();
         }
-
     } else {
         // cinematic scene
         for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
@@ -57,10 +48,12 @@ void Game_Draw(bool draw_overlay)
 
         Output_SetupAboveWater(false);
         Lara_Hair_Draw();
-        Output_FlushTranslucentObjects();
     }
 
-    Output_DrawPolyList();
+    SceneCompositor_Flush();
+    if (g_Config.visuals.enable_reflections) {
+        Output_Textures_UpdateEnvironmentMap();
+    }
+
     Game_DrawFade();
-    Output_DrawPolyList();
 }

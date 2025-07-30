@@ -3,7 +3,6 @@
 #include "game/effects.h"
 #include "game/lara/draw.h"
 #include "game/output.h"
-#include "game/output/sprites.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/types.h"
@@ -310,17 +309,6 @@ void Room_DrawSingleRoom(int16_t room_num)
         Effect_Draw(i);
     }
 
-    if (g_Config.debug.enable_debug_triggers) {
-        Output_DrawRoomTriggers(room);
-    }
-    if (g_Config.debug.enable_debug_portals) {
-        Output_DrawRoomPortals(room);
-    }
-
-    Output_RememberState();
-    Output_Sprites_RenderRoomSprites(g_MatrixPtr, Output_GetTint(), room);
-    Output_Sprites_Flush();
-    Output_RestoreState();
     Matrix_Pop();
 
     room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);

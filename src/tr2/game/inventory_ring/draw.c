@@ -205,5 +205,6 @@ void InvRing_Draw(INV_RING *const ring)
         }
     }
 
-    Fader_Draw(&ring->top_fader);
+    UI_BeginFade(&ring->top_fader, false);
+    UI_EndFade();
 }

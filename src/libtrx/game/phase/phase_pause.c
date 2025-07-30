@@ -183,12 +183,12 @@ static void M_Draw(PHASE *const phase)
     Interpolation_Disable();
     Game_Draw(false);
     Interpolation_Enable();
-    Fader_Draw(&p->back_fader);
+    UI_BeginFade(&p->back_fader, false);
+    UI_EndFade();
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);
     }
-    Output_DrawPolyList();
 }
 
 PHASE *Phase_Pause_Create(void)

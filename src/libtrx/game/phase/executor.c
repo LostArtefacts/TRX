@@ -87,6 +87,8 @@ static void M_Draw(PHASE *const phase)
     Output_BeginScene();
     Output_SwitchViewport(VIEWPORT_GAME);
     UI_BeginScene();
+    UI_BeginFade(&m_ExitFader, true);
+
 #if DEBUG_OPTIM
     BENCHMARK benchmark = Benchmark_Start();
 #endif
@@ -96,12 +98,12 @@ static void M_Draw(PHASE *const phase)
 
     Overlay_Draw();
     Console_Draw();
+    UI_EndFade();
     UI_EndScene();
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_Draw();
     Output_DrawPolyList();
-    Fader_Draw(&m_ExitFader);
 
     Output_EndScene();
 
