@@ -22,9 +22,14 @@ typedef struct {
 
 extern MATRIX *g_MatrixPtr;
 extern MATRIX g_W2VMatrix;
+extern MATRIX g_IDMatrix;
 
 void Matrix_ResetStack(void);
+
 void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot);
+void Matrix_LookAt(
+    int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
+    int32_t ztar, int16_t roll);
 
 bool Matrix_Push(void);
 bool Matrix_PushUnit(void);
@@ -63,7 +68,3 @@ void Matrix_TranslateRel32_ID(XYZ_32 offset_1, XYZ_32 offset_2);
 void Matrix_InitInterpolate(int32_t frac, int32_t rate);
 void Matrix_Interpolate(void);
 void Matrix_InterpolateArm(void);
-
-void Matrix_LookAt(
-    int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
-    int32_t ztar, int16_t roll);
