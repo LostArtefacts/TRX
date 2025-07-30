@@ -48,7 +48,7 @@ static bool M_ReadFromJSON(
     JSON_OBJECT *const enforced_config =
         JSON_ObjectGetObject(enf_root_obj, M_ENFORCED_KEY);
     if (enforced_config != nullptr && enforced_targets != nullptr) {
-        Vector_Clear(enforced_targets);
+        Vector_ClearRealloc(enforced_targets);
         const JSON_OBJECT_ELEMENT *elem = enforced_config->start;
         while (elem != nullptr) {
             const char *const name = elem->name->string;
@@ -67,7 +67,7 @@ static bool M_ReadFromJSON(
     JSON_ARRAY *const hidden_config_arr =
         JSON_ObjectGetArray(enf_root_obj, M_HIDDEN_KEY);
     if (hidden_config_arr != nullptr && hidden_targets != nullptr) {
-        Vector_Clear(hidden_targets);
+        Vector_ClearRealloc(hidden_targets);
         for (size_t i = 0; i < hidden_config_arr->length; i++) {
             const char *const name =
                 JSON_ArrayGetString(hidden_config_arr, i, nullptr);

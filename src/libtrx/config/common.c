@@ -61,12 +61,12 @@ bool Config_Read(
     if (m_EnforcedOptions == nullptr) {
         m_EnforcedOptions = Vector_Create(sizeof(void *));
     } else {
-        Vector_Clear(m_EnforcedOptions);
+        Vector_ClearRealloc(m_EnforcedOptions);
     }
     if (m_HiddenOptions == nullptr) {
         m_HiddenOptions = Vector_Create(sizeof(void *));
     } else {
-        Vector_Clear(m_HiddenOptions);
+        Vector_ClearRealloc(m_HiddenOptions);
     }
     const CONFIG_IO_ARGS args = {
         .default_path = g_Config.default_path,
