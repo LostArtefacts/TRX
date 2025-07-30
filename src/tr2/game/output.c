@@ -659,6 +659,10 @@ void Output_BeginScene(void)
 void Output_EndScene(void)
 {
     Render_EndScene();
+}
+
+void Output_FlipScreen(void)
+{
     if (Shell_GetArgs()->headless) {
         return;
     }

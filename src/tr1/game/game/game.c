@@ -31,6 +31,7 @@
         Game_Draw(true);                                                       \
         Input_Update();                                                        \
         Output_EndScene();                                                     \
+        Output_FlipScreen();                                                   \
         Clock_WaitTick();                                                      \
     } while (g_Input.key);
 

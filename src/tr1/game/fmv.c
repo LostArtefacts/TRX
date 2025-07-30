@@ -65,6 +65,7 @@ static void M_RenderBegin(void *surface, void *const user_data)
 static void M_RenderEnd(void *surface, void *const user_data)
 {
     Output_EndScene();
+    Output_FlipScreen();
 }
 
 static void *M_LockSurface(void *const surface, void *const user_data)

@@ -16,9 +16,6 @@ int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
 void Output_SetWaterColor(const RGB_888 color);
 
-void Output_BeginScene(void);
-void Output_EndScene(void);
-
 void Output_ClearDepthBuffer(void);
 void Output_SetSkyboxEnabled(bool enabled);
 bool Output_IsSkyboxEnabled(void);
