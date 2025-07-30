@@ -64,7 +64,6 @@ static void M_SetupShaderForUI(
     Output_Shader_UploadSmoothingEnabled(shader, filter == GFX_TF_BILINEAR);
     Output_Shader_UploadOrthoProjectionMatrix(shader);
     Output_Shader_UploadLightingMode(shader, LIGHTING_MODE_ONLY_SHADES);
-    Output_Shader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
 }
 
 static void M_BindTextures(const M_PRIV *p)
@@ -95,7 +94,7 @@ static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
-        Output_Shader_UploadTint(shader, (RGB_F) { 1, 1, 1 });
+        Output_Shader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
         Output_Shader_UploadWaterEffect(shader, false);
         Output_Shader_UploadWibbleEffect(shader, false);
         if (source->is_dirty(source, pass)) {
