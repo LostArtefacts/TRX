@@ -11,6 +11,13 @@ typedef enum {
     BK_IMAGE,
 } BACKGROUND_TYPE;
 
+typedef enum {
+    TS_HEADING,
+    TS_BACKGROUND,
+    TS_BACKGROUND_HEAVY,
+    TS_REQUESTED,
+} TEXT_STYLE;
+
 typedef struct {
     int16_t value_1;
     int16_t value_2;

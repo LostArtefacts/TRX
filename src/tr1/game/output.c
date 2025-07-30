@@ -647,7 +647,7 @@ void Output_DrawScreenFrame(
 #undef L_NUM_VERTS_LIGHT
 }
 
-void Output_DrawGradientScreenBox(
+void Output_DrawScreenGradientBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 tl,
     const RGBA_8888 tr, const RGBA_8888 bl, const RGBA_8888 br,
     const int32_t thickness_i)
@@ -699,7 +699,7 @@ void Output_DrawGradientScreenBox(
     M_DrawTriangleStrip(vertices, 10);
 }
 
-void Output_DrawCentreGradientScreenBox(
+void Output_DrawScreenCentreGradientBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, const RGBA_8888 edge,
     const RGBA_8888 center, const int32_t thickness_i)
 {
@@ -944,12 +944,12 @@ void Output_DrawTextOutline(
     }
 
     if (text_style == TS_HEADING) {
-        Output_DrawGradientScreenBox(
+        Output_DrawScreenGradientBox(
             sx, sy, w, h, M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
             M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
             M_TEXT_OUTLINE_THICKNESS);
     } else if (text_style == TS_BACKGROUND) {
-        Output_DrawGradientScreenBox(
+        Output_DrawScreenGradientBox(
             sx, sy, w, h, M_GetMenuColor(MC_GREY_TL),
             M_GetMenuColor(MC_GREY_TR), M_GetMenuColor(MC_GREY_BL),
             M_GetMenuColor(MC_GREY_BR), M_TEXT_OUTLINE_THICKNESS);
@@ -957,7 +957,7 @@ void Output_DrawTextOutline(
         // Make sure height and width divisible by 2.
         w = 2 * ((w + 1) / 2);
         h = 2 * ((h + 1) / 2);
-        Output_DrawCentreGradientScreenBox(
+        Output_DrawScreenCentreGradientBox(
             sx, sy, w, h, M_GetMenuColor(MC_GREY_E), M_GetMenuColor(MC_GREY_C),
             M_TEXT_OUTLINE_THICKNESS);
     }

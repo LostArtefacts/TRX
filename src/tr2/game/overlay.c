@@ -312,29 +312,12 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
     Matrix_Push();
     Matrix_TranslateRel16(frame->offset);
     Matrix_TranslateRel32((XYZ_32) {
-        .x = -(bounds.min.x + bounds.max.x) / 2,
-        .y = -(bounds.min.y + bounds.max.y) / 2,
-        .z = -(bounds.min.z + bounds.max.z) / 2,
+        .x = -(frame->bounds.min.x + frame->bounds.max.x) / 2,
+        .y = -(frame->bounds.min.y + frame->bounds.max.y) / 2,
+        .z = -(frame->bounds.min.z + frame->bounds.max.z) / 2,
     });
-
     Matrix_Rot16(frame->mesh_rots[0]);
-
-    Object_DrawMesh(obj->mesh_idx, 0, false);
-    for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-        if (bone->matrix_pop) {
-            Matrix_Pop();
-        }
-
-        if (bone->matrix_push) {
-            Matrix_Push();
-        }
-
-        Matrix_TranslateRel32(bone->pos);
-        Matrix_Rot16(frame->mesh_rots[mesh_idx]);
-
-        Object_DrawMesh(obj->mesh_idx + mesh_idx, 0, false);
-    }
+    Object_DrawStaticObject(obj, obj->frame_base);
     Matrix_Pop();
 
     Viewport_Restore(&old_vp);

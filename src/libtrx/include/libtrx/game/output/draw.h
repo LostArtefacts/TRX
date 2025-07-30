@@ -1,16 +1,12 @@
 #pragma once
 
 #include "../../config/types.h"
+#include "./types.h"
 
-#include <stdint.h>
+// Fades
+extern void Output_DrawBlackRectangle(int32_t opacity);
 
-typedef enum {
-    TS_HEADING,
-    TS_BACKGROUND,
-    TS_BACKGROUND_HEAVY,
-    TS_REQUESTED,
-} TEXT_STYLE;
-
+// UI
 extern void Output_DrawTextBackground(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t z,
     TEXT_STYLE text_style);
