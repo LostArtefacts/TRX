@@ -17,6 +17,7 @@
 #include "game/ui.h"
 #include "gfx/gl/track.h"
 
+#define DEBUG_CONTROL 0
 #define DEBUG_OPTIM 0
 #define MAX_PHASES 10
 
@@ -149,7 +150,13 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
 
     while (true) {
+#if DEBUG_CONTROL
+        BENCHMARK benchmark = Benchmark_Start();
+#endif
         int32_t nframes = Clock_WaitTick();
+#if DEBUG_CONTROL
+        Benchmark_End(&benchmark, "");
+#endif
         int32_t frame = 0;
         while (true) {
             const PHASE_CONTROL control = M_Control(phase);
