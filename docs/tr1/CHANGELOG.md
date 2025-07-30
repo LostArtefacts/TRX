@@ -36,10 +36,15 @@
 - fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them (#762)
 - fixed incorrect wet footstep sounds in some of Lara's climb-up animations (#3607, regression from 4.6)
 - fixed the `/kill` command potentially causing a crash if used in a level with pods that don't hatch creatures (#3628, regression from 4.12)
-- fixed wireframe mode rendering as mostly white (#3649, regression from 4.13.2)
 - fixed Lara's animation not being restored correctly on load if a save was made during a special animation, such as using the Midas Hand (#3625, regression from 4.9)
+- fixed wireframe mode rendering as mostly white (#3649, regression from 4.13.2)
+- fixed wireframe mode not working in the inventory ring (#3651, regression from 4.10)
+- fixed shadows sometimes rendered opaque (#879)
+- fixed shadows sometimes broken (#3666)
 - improved object loading error messages when an invalid object ID is detected
 - improved frames in Lara's jump-twist animations
+- improved lighting and projection of 3D pickups in the UI
+- improved PS1 menu style border offsets and frames to match PC style
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 
 ## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20

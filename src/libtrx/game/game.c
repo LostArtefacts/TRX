@@ -1,11 +1,11 @@
 #include "game/game.h"
 
 #include "game/const.h"
-#include "game/fader.h"
 #include "game/fmv.h"
 #include "game/game_flow.h"
 #include "game/lara/common.h"
 #include "game/random.h"
+#include "game/ui.h"
 
 static bool m_IsPlaying = false;
 static const GF_LEVEL *m_CurrentLevel = nullptr;
@@ -105,5 +105,6 @@ void Game_FadeToBlack(const int32_t duration)
 
 void Game_DrawFade(void)
 {
-    Fader_Draw(&m_Fader);
+    UI_BeginFade(&m_Fader, true);
+    UI_EndFade();
 }

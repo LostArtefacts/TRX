@@ -35,6 +35,12 @@
         (a) = (b);                                                             \
         (b) = (c);                                                             \
     } while (0)
+#define SWAP2(a, b)                                                            \
+    do {                                                                       \
+        auto c = (a);                                                          \
+        (a) = (b);                                                             \
+        (b) = c;                                                               \
+    } while (0)
 
 #define ALIGN(a, bytes) ((a + (bytes) - 1) & (~(bytes - 1)))
 #define TOGGLE_BIT(target_var, target_bit, condition)                          \

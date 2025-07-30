@@ -5,6 +5,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/debug.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
 
@@ -16,7 +17,7 @@ typedef enum {
     M_UNIFORM_ALPHA_DISCARD_ENABLED,
     M_UNIFORM_ALPHA_THRESHOLD,
     M_UNIFORM_TRAPEZOID_FILTER_ENABLED,
-    M_UNIFORM_LIGHTING_ENABLED,
+    M_UNIFORM_LIGHTING_MODE,
     M_UNIFORM_REFLECTIONS_ENABLED,
     M_UNIFORM_BRIGHTNESS_MULTIPLIER,
     M_UNIFORM_GLOBAL_TINT,
@@ -32,6 +33,10 @@ typedef enum {
 struct OUTPUT_SHADER {
     GFX_GL_PROGRAM program;
     GLint uniforms[M_UNIFORM_NUMBER_OF];
+
+    bool is_wibble_effect;
+    bool is_water_effect;
+    RGB_F tint;
 };
 
 OUTPUT_SHADER *Output_Shader_Create(const char *const path)
@@ -52,7 +57,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_ALPHA_DISCARD_ENABLED] = "uAlphaDiscardEnabled",
         [M_UNIFORM_ALPHA_THRESHOLD] = "uAlphaThreshold",
         [M_UNIFORM_TRAPEZOID_FILTER_ENABLED] = "uTrapezoidFilterEnabled",
-        [M_UNIFORM_LIGHTING_ENABLED] = "uLightingEnabled",
+        [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
         [M_UNIFORM_REFLECTIONS_ENABLED] = "uReflectionsEnabled",
         [M_UNIFORM_BRIGHTNESS_MULTIPLIER] = "uBrightnessMultiplier",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
@@ -83,16 +88,12 @@ void Output_Shader_Free(OUTPUT_SHADER *const shader)
 
 void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
 {
+    ASSERT(shader != nullptr);
     GFX_GL_Program_Bind(&shader->program);
 }
 
 void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
 {
-    GFX_GL_Program_Bind(&shader->program);
-
-    GFX_TRACK_UNIFORM(
-        glUniform1f, shader->uniforms[M_UNIFORM_SMOOTHING_ENABLED],
-        g_Config.rendering.texture_filter);
     GFX_TRACK_UNIFORM(
         glUniform1f, shader->uniforms[M_UNIFORM_ALPHA_THRESHOLD],
         g_Config.rendering.enable_wireframe ? -1.0f : 0.0f);
@@ -103,7 +104,7 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
         glUniform1i, shader->uniforms[M_UNIFORM_TRAPEZOID_FILTER_ENABLED],
         g_Config.rendering.enable_trapezoid_filter);
     GFX_TRACK_UNIFORM(
-        glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_ENABLED],
+        glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_MODE],
         g_Config.rendering.enable_lighting);
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_REFLECTIONS_ENABLED],
@@ -121,7 +122,7 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
         glUniform1i, shader->uniforms[M_UNIFORM_TIME], Output_GetTime());
 }
 
-void Output_Shader_UploadMatrix(
+void Output_Shader_UploadViewModelMatrix(
     const OUTPUT_SHADER *const shader, const MATRIX *const source)
 {
     GLfloat target[4][4];
@@ -145,44 +146,75 @@ void Output_Shader_UploadMatrix(
     target[3][2] = 0.0;
     target[3][3] = 1.0;
 
-    GFX_GL_Program_Bind(&shader->program);
     GFX_TRACK_UNIFORM(
         glUniformMatrix4fv, shader->uniforms[M_UNIFORM_MODEL_MATRIX], 1,
         GL_TRUE, &target[0][0]);
 }
 
-void Output_Shader_UploadProjectionMatrix(const OUTPUT_SHADER *const shader)
+void Output_Shader_UploadPerspProjectionMatrix(
+    const OUTPUT_SHADER *const shader)
 {
-    GFX_GL_Program_Bind(&shader->program);
-
     GLfloat projection[4][4];
-    Output_GetProjectionMatrix(projection);
+    Output_GetPerspProjectionMatrix(projection);
+    GFX_TRACK_UNIFORM(
+        glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
+        GL_TRUE, &projection[0][0]);
+}
+
+void Output_Shader_UploadOrthoProjectionMatrix(
+    const OUTPUT_SHADER *const shader)
+{
+    GLfloat projection[4][4];
+    Output_GetOrthoProjectionMatrix(projection);
     GFX_TRACK_UNIFORM(
         glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
         GL_TRUE, &projection[0][0]);
 }
 
 void Output_Shader_UploadWibbleEffect(
-    const OUTPUT_SHADER *const shader, const bool is_enabled)
+    OUTPUT_SHADER *const shader, const bool is_enabled)
 {
-    GFX_GL_Program_Bind(&shader->program);
+    if (is_enabled == shader->is_wibble_effect) {
+        return;
+    }
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_WIBBLE_EFFECT], is_enabled);
+    shader->is_wibble_effect = is_enabled;
 }
 
 void Output_Shader_UploadWaterEffect(
-    const OUTPUT_SHADER *const shader, const bool is_enabled)
+    OUTPUT_SHADER *const shader, const bool is_enabled)
 {
-    GFX_GL_Program_Bind(&shader->program);
+    if (is_enabled == shader->is_water_effect) {
+        return;
+    }
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_WATER_EFFECT], is_enabled);
+    shader->is_water_effect = is_enabled;
 }
 
-void Output_Shader_UploadTint(
-    const OUTPUT_SHADER *const shader, const RGB_F tint)
+void Output_Shader_UploadTint(OUTPUT_SHADER *const shader, const RGB_F tint)
 {
-    GFX_GL_Program_Bind(&shader->program);
+    if (tint.r == shader->tint.r && tint.g == shader->tint.g
+        && tint.b == shader->tint.b) {
+        return;
+    }
     GFX_TRACK_UNIFORM(
         glUniform3f, shader->uniforms[M_UNIFORM_GLOBAL_TINT], tint.r, tint.g,
         tint.b);
+    shader->tint = tint;
+}
+
+void Output_Shader_UploadLightingMode(
+    const OUTPUT_SHADER *const shader, const LIGHTING_MODE mode)
+{
+    GFX_TRACK_UNIFORM(
+        glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_MODE], mode);
+}
+
+void Output_Shader_UploadSmoothingEnabled(
+    const OUTPUT_SHADER *const shader, const bool is_enabled)
+{
+    GFX_TRACK_UNIFORM(
+        glUniform1f, shader->uniforms[M_UNIFORM_SMOOTHING_ENABLED], is_enabled);
 }

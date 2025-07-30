@@ -78,7 +78,6 @@ int16_t Viewport_GetUserFOV(void)
 void Viewport_AlterFOV(int16_t fov)
 {
     m_CurrentFOV = fov;
-    Output_ObserveFOVChange();
 }
 
 void Viewport_Reset(void)

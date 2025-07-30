@@ -6,7 +6,11 @@
 #define VERT_FLAT_SHADED 0x02u
 #define VERT_REFLECTIVE  0x04u
 #define VERT_NO_LIGHTING 0x08u
-#define VERT_SPRITE      0x10u  // flag for billboarded sprites in mesh shader
+#define VERT_BILLBOARD   0x10u
+
+#define LIGHTING_MODE_OFF         0
+#define LIGHTING_MODE_ONLY_SHADES 1
+#define LIGHTING_MODE_FULL        2
 
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE 2

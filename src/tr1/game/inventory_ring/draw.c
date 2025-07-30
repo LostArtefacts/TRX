@@ -128,12 +128,14 @@ void InvRing_Draw(INV_RING *const ring)
             g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
             g_InvRing_OldCamera.pos.z, g_InvRing_OldCamera.target.x,
             g_InvRing_OldCamera.target.y, g_InvRing_OldCamera.target.z, 0);
+
         Interpolation_Disable();
         Game_Draw(false);
         Interpolation_Enable();
 
         Fader_Draw(&ring->back_fader);
-        Output_DrawPolyList();
+        SceneCompositor_Flush();
+
         Viewport_Init(-1, -1, -1, -1);
     }
 
@@ -191,8 +193,8 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     Matrix_Pop();
+    SceneCompositor_Flush();
     Viewport_AlterFOV(old_fov);
-    Output_DrawPolyList();
 
     if (ring->motion.status == RNG_SELECTED) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
@@ -212,5 +214,6 @@ void InvRing_Draw(INV_RING *const ring)
         }
     }
 
-    Fader_Draw(&ring->top_fader);
+    UI_BeginFade(&ring->top_fader, true);
+    UI_EndFade();
 }

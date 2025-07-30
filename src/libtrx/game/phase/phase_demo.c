@@ -1,12 +1,12 @@
 #include "game/phase/phase_demo.h"
 
 #include "game/demo.h"
-#include "game/fader.h"
 #include "game/game.h"
 #include "game/interpolation.h"
 #include "game/inventory_ring.h"
 #include "game/output.h"
 #include "game/shell.h"
+#include "game/ui.h"
 #include "memory.h"
 
 typedef enum {
@@ -115,8 +115,8 @@ static void M_Draw(PHASE *const phase)
     if (p->state == STATE_FADE_OUT) {
         Interpolation_Enable();
     }
-    Fader_Draw(&p->top_fader);
-    Output_DrawPolyList();
+    UI_BeginFade(&p->top_fader, false);
+    UI_EndFade();
 }
 
 PHASE *Phase_Demo_Create(const int32_t level_num)
