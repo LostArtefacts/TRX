@@ -184,6 +184,11 @@ void Vector_Reverse(VECTOR *const vector)
 void Vector_Clear(VECTOR *const vector)
 {
     vector->count = 0;
+}
+
+void Vector_ClearRealloc(VECTOR *const vector)
+{
+    vector->count = 0;
     vector->capacity = VECTOR_DEFAULT_CAPACITY;
     P(vector).items =
         Memory_Realloc(P(vector).items, vector->item_size * vector->capacity);

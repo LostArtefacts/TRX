@@ -33,3 +33,4 @@ void Vector_RemoveAt(VECTOR *vector, int32_t index);
 
 void Vector_Reverse(VECTOR *vector);
 void Vector_Clear(VECTOR *vector);
+void Vector_ClearRealloc(VECTOR *vector);
