@@ -1,7 +1,30 @@
+#include "game/objects/draw.h"
+
 #include "debug.h"
 #include "game/matrix.h"
 #include "game/objects/common.h"
 #include "game/output.h"
+
+void Object_DrawStaticObject(
+    const OBJECT *const obj, const ANIM_FRAME *const frame)
+{
+    Matrix_Push();
+    Object_DrawMesh(obj->mesh_idx, 0, false);
+    for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
+        const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+        if (bone->matrix_pop) {
+            Matrix_Pop();
+        }
+        if (bone->matrix_push) {
+            Matrix_Push();
+        }
+
+        Matrix_TranslateRel32(bone->pos);
+        Matrix_Rot16(frame->mesh_rots[mesh_idx]);
+        Object_DrawMesh(obj->mesh_idx + mesh_idx, 0, false);
+    }
+    Matrix_Pop();
+}
 
 void Object_DrawInterpolatedObject(
     const OBJECT *const obj, const uint32_t meshes,

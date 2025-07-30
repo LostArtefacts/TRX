@@ -19,7 +19,6 @@ extern void Output_BeginScene(void);
 extern void Output_EndScene(void);
 extern void Output_FlipScreen(void);
 
-extern void Output_DrawBlackRectangle(int32_t opacity);
 extern void Output_DrawPolyList(void);
 
 extern void Output_SetupBelowWater(bool is_underwater);

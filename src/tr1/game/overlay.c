@@ -125,24 +125,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
         .z = -(frame->bounds.min.z + frame->bounds.max.z) / 2,
     });
     Matrix_Rot16(frame->mesh_rots[0]);
-
-    Object_DrawMesh(obj->mesh_idx, 0, false);
-
-    for (int i = 1; i < obj->mesh_count; i++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
-        if (bone->matrix_pop) {
-            Matrix_Pop();
-        }
-
-        if (bone->matrix_push) {
-            Matrix_Push();
-        }
-
-        Matrix_TranslateRel32(bone->pos);
-        Matrix_Rot16(frame->mesh_rots[i]);
-
-        Object_DrawMesh(obj->mesh_idx + i, 0, false);
-    }
+    Object_DrawStaticObject(obj, obj->frame_base);
     Matrix_Pop();
 
     Matrix_Pop();
