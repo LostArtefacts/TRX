@@ -169,8 +169,8 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         M_RenderSourcePass(p, SCENE_PASS_MESHES);
-        glDisable(GL_CULL_FACE);
         M_RenderSourcePass(p, SCENE_PASS_TRANSPARENT);
+        glDisable(GL_CULL_FACE);
     }
 
     if (M_IsSourceDirty(p, SCENE_PASS_UI)) {
