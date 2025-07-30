@@ -417,13 +417,13 @@ void Output_ApplyLevelSettings(void)
     Viewport_Reset();
 }
 
-void Output_ObserveLevelLoad(void)
+void Output_DispatchLevelLoad(void)
 {
     M_ReserveVertexBuffer();
     Output_ApplyLevelSettings();
 }
 
-void Output_ObserveLevelUnload(void)
+void Output_DispatchLevelUnload(void)
 {
     Output_InitialiseTexturePages(0, true);
     Output_InitialiseObjectTextures(0);
@@ -432,7 +432,16 @@ void Output_ObserveLevelUnload(void)
     }
 }
 
-void Output_ObserveRoomFlip(const ROOM *room)
+void Output_DispatchRoomFlip(const ROOM *room)
+{
+}
+
+void Output_DispatchObjectMeshUpdate(const OBJECT_MESH *const mesh)
+{
+}
+
+void Output_DispatchObjectMeshSwap(
+    const OBJECT_MESH *const mesh_1, const OBJECT_MESH *const mesh_2)
 {
 }
 

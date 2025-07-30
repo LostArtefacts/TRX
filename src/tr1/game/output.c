@@ -2,6 +2,7 @@
 
 #include "game/level.h"
 #include "game/output/meshes/common.h"
+#include "game/output/meshes/objects.h"
 #include "game/output/meshes/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
@@ -475,7 +476,7 @@ void Output_ApplyRenderSettings(void)
     }
 }
 
-void Output_ObserveLevelLoad(void)
+void Output_DispatchLevelLoad(void)
 {
     M_DownloadTextures(Output_GetTexturePageCount());
     Output_Textures_ObserveLevelLoad();
@@ -484,14 +485,25 @@ void Output_ObserveLevelLoad(void)
     Output_ApplyLevelSettings();
 }
 
-void Output_ObserveLevelUnload(void)
+void Output_DispatchLevelUnload(void)
 {
     Output_Meshes_ObserveLevelUnload();
 }
 
-void Output_ObserveRoomFlip(const ROOM *room)
+void Output_DispatchRoomFlip(const ROOM *room)
 {
     Output_Meshes_ObserveRoomFlip(room);
+}
+
+void Output_DispatchObjectMeshUpdate(const OBJECT_MESH *const mesh)
+{
+    Output_Meshes_ObserveObjectMeshUpdate(mesh);
+}
+
+void Output_DispatchObjectMeshSwap(
+    const OBJECT_MESH *const mesh_1, const OBJECT_MESH *const mesh_2)
+{
+    Output_Meshes_ObserveObjectMeshSwap(mesh_1, mesh_2);
 }
 
 void Output_FlushTranslucentObjects(void)

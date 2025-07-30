@@ -297,7 +297,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_ObserveLevelLoad();
+    Output_DispatchLevelLoad();
     M_InitialiseSoundEffects();
 
     Benchmark_End(&benchmark, nullptr);
@@ -345,7 +345,7 @@ void Level_Load(const GF_LEVEL *const level)
 void Level_Unload(void)
 {
     Lara_InitialiseLoad(NO_ITEM);
-    Output_ObserveLevelUnload();
+    Output_DispatchLevelUnload();
 }
 
 bool Level_Initialise(
