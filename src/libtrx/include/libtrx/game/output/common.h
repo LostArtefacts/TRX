@@ -14,23 +14,15 @@ extern void Output_DispatchObjectMeshUpdate(const OBJECT_MESH *mesh);
 extern void Output_DispatchObjectMeshSwap(
     const OBJECT_MESH *mesh_1, const OBJECT_MESH *mesh_2);
 
-extern bool Output_MakeScreenshot(const char *path);
 extern void Output_BeginScene(void);
 extern void Output_EndScene(void);
 extern void Output_FlipScreen(void);
-
-extern void Output_DrawPolyList(void);
-
-extern void Output_SetupBelowWater(bool is_underwater);
-extern void Output_SetupAboveWater(bool is_underwater);
-extern void Output_RotateLight(int16_t pitch, int16_t yaw);
-extern void Output_SetLightAdder(int32_t adder);
-extern int32_t Output_GetLightAdder(void);
-extern void Output_SetLightDivider(int32_t divider);
+extern bool Output_MakeScreenshot(const char *path);
 
 extern int32_t Output_GetObjectBounds(const BOUNDS_16 *bounds);
 
 // Temporary
+extern void Output_DrawPolyList(void);
 extern int32_t Output_CalcFogShade(int32_t depth);
 extern int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);
 extern void Output_LightRoomVertices(const ROOM *room);
@@ -45,11 +37,6 @@ void Output_LightRoom(ROOM *room);
 
 void Output_ResetDynamicLights(void);
 void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);
-
-int32_t Output_GetFogStart(void);
-void Output_SetFogStart(int32_t dist);
-extern int32_t Output_GetFogEnd(void);
-extern void Output_SetFogEnd(int32_t dist);
 
 extern void Output_SwitchViewport(VIEWPORT_SPACE space);
 extern void Output_ApplyLevelSettings(void);
