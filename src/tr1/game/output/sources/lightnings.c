@@ -56,7 +56,9 @@ static void M_GenerateLightningSegment(
     };
     Matrix_Pop();
 
-    const M_VERTEX vertices[2][4] = {
+    // 2 quads side-to-side (blue-white) (white-blue);
+    // double-sided so that visible from both sides
+    const M_VERTEX vertices[4][4] = {
         // clang-format off
         {
             { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
@@ -70,10 +72,22 @@ static void M_GenerateLightningSegment(
             { .pos = pos_1, .normal = { -w, 0, 0 }, .color = blue },
             { .pos = pos_0, .normal = { -w, 0, 0 }, .color = blue },
         },
+        {
+            { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
+            { .pos = pos_0, .normal = { w, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { w, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { 0, 0, 0 }, .color = white },
+        },
+        {
+            { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
+            { .pos = pos_0, .normal = { -w, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { -w, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { 0, 0, 0 }, .color = white },
+        },
         // clang-format on
     };
 
-    for (int32_t quad = 0; quad < 2; quad++) {
+    for (int32_t quad = 0; quad < 4; quad++) {
         for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
             const int32_t j = OUTPUT_QUAD_TO_FAN(i);
             Vector_Add(p->vertices, &vertices[quad][j]);
