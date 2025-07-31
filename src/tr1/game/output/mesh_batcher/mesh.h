@@ -27,24 +27,33 @@ typedef struct {
     RGBA_8888 color;
 } OUTPUT_MESH_VERTEX;
 
+// Describes a contiguous block of vertices belonging to one face,
+// with sort keys.
+typedef struct {
+    int32_t vertex_start;
+    int32_t vertex_count;
+    XYZ_F mesh_centroid;
+} OUTPUT_MESH_FACE;
+
 typedef struct {
     VECTOR *vertices;
 
     bool sealed;
     VECTOR *animated_vertices; // OUTPUT_VERTEX_RANGE
-    VECTOR *transparent_vertices; // OUTPUT_VERTEX_RANGE
+    VECTOR *transparent_faces; // OUTPUT_MESH_FACE
+
+    VECTOR *opaque_vertex_indices; // int32_t
 } OUTPUT_MESH;
 
 OUTPUT_MESH *Output_Mesh_Create(void);
 void Output_Mesh_Destroy(OUTPUT_MESH *mesh);
 
 void Output_Mesh_AddRoomFace4(
-    OUTPUT_MESH *mesh, const FACE4 *face, const ROOM_VERTEX *verts);
+    OUTPUT_MESH *mesh, const FACE4 *face, const ROOM *room);
 void Output_Mesh_AddRoomFace3(
-    OUTPUT_MESH *mesh, const FACE3 *face, const ROOM_VERTEX *verts);
+    OUTPUT_MESH *mesh, const FACE3 *face, const ROOM *room);
 void Output_Mesh_AddRoomSprite(
-    OUTPUT_MESH *mesh, const ROOM_SPRITE *room_sprite,
-    const ROOM_VERTEX *verts);
+    OUTPUT_MESH *mesh, const ROOM_SPRITE *room_sprite, const ROOM *room);
 
 void Output_Mesh_AddObjectFace4(
     OUTPUT_MESH *mesh, const OBJECT_MESH *obj_mesh, const FACE4 *face,

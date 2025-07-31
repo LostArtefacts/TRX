@@ -99,17 +99,14 @@ static void M_PrepareMeshes(M_PRIV *const p)
         const ROOM *const room = Room_Get(i);
         OUTPUT_MESH *const mesh = Output_Mesh_Create();
 
-        for (int32_t i = 0; i < room->mesh.num_face4s; i++) {
-            Output_Mesh_AddRoomFace4(
-                mesh, &room->mesh.face4s[i], room->mesh.vertices);
+        for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
+            Output_Mesh_AddRoomFace4(mesh, &room->mesh.face4s[j], room);
         }
-        for (int32_t i = 0; i < room->mesh.num_face3s; i++) {
-            Output_Mesh_AddRoomFace3(
-                mesh, &room->mesh.face3s[i], room->mesh.vertices);
+        for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
+            Output_Mesh_AddRoomFace3(mesh, &room->mesh.face3s[j], room);
         }
-        for (int32_t i = 0; i < room->mesh.num_sprites; i++) {
-            Output_Mesh_AddRoomSprite(
-                mesh, &room->mesh.sprites[i], room->mesh.vertices);
+        for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
+            Output_Mesh_AddRoomSprite(mesh, &room->mesh.sprites[j], room);
         }
         Output_Mesh_Seal(mesh);
         MeshBatcher_AddMesh(p->batcher, mesh);
@@ -189,4 +186,5 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .update_light_func_data = (void *)room,
     };
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
 }

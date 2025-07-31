@@ -14,8 +14,6 @@ typedef enum {
     M_UNIFORM_TEX_ATLAS,
     M_UNIFORM_TEX_ENV_MAP,
     M_UNIFORM_SMOOTHING_ENABLED,
-    M_UNIFORM_ALPHA_DISCARD_ENABLED,
-    M_UNIFORM_ALPHA_THRESHOLD,
     M_UNIFORM_TRAPEZOID_FILTER_ENABLED,
     M_UNIFORM_LIGHTING_MODE,
     M_UNIFORM_REFLECTIONS_ENABLED,
@@ -52,8 +50,6 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
-        [M_UNIFORM_ALPHA_DISCARD_ENABLED] = "uAlphaDiscardEnabled",
-        [M_UNIFORM_ALPHA_THRESHOLD] = "uAlphaThreshold",
         [M_UNIFORM_TRAPEZOID_FILTER_ENABLED] = "uTrapezoidFilterEnabled",
         [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
         [M_UNIFORM_REFLECTIONS_ENABLED] = "uReflectionsEnabled",
@@ -91,12 +87,6 @@ void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
 
 void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
 {
-    GFX_TRACK_UNIFORM(
-        glUniform1f, shader->uniforms[M_UNIFORM_ALPHA_THRESHOLD],
-        g_Config.rendering.enable_wireframe ? -1.0f : 0.0f);
-    GFX_TRACK_UNIFORM(
-        glUniform1i, shader->uniforms[M_UNIFORM_ALPHA_DISCARD_ENABLED],
-        !g_Config.rendering.enable_wireframe);
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_TRAPEZOID_FILTER_ENABLED],
         g_Config.rendering.enable_trapezoid_filter);

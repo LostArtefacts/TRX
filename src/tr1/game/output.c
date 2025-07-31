@@ -59,6 +59,7 @@ bool Output_Init(void)
 
     m_Shader = Output_Shader_Create("shaders/meshes.glsl");
     m_Batcher = MeshBatcher_Create();
+    SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
     OutputSource_Rooms_Init(m_Batcher);
     OutputSource_RoomsDebug_Init();
     OutputSource_Objects_Init(m_Batcher);
@@ -66,7 +67,6 @@ bool Output_Init(void)
     OutputSource_Lightnings_Init();
     OutputSource_Misc_Init();
     OutputSource_UI_Init();
-    SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
 
     Output_InitLight();
     return true;

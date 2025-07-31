@@ -38,9 +38,12 @@ void main(void) {
     gl_Position = uMatProjection * eyePos;
 
     // apply water wibble effect only to non-sprite vertices
-    if (uWibbleEffect && (inFlags & VERT_NO_CAUSTICS) == 0u && (inFlags & VERT_BILLBOARD) == 0u) {
-        gl_Position.xyz =
-            waterWibble(gl_Position, uViewportSize, uTime);
+    if (((inFlags & VERT_CAUSTICS) != 0u)
+        || (uWibbleEffect
+            && (inFlags & VERT_NO_CAUSTICS) == 0u
+            && (inFlags & VERT_BILLBOARD) == 0u)
+    ) {
+        gl_Position.xyz = waterWibble(gl_Position, uViewportSize, uTime);
     }
 
     gFlags = inFlags;
@@ -61,11 +64,9 @@ uniform int uTime;
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
 uniform bool uSmoothingEnabled;
-uniform bool uAlphaDiscardEnabled;
 uniform bool uTrapezoidFilterEnabled;
 uniform int uLightingMode;
 uniform bool uReflectionsEnabled;
-uniform float uAlphaThreshold;
 uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;
 uniform vec2 uFog; // x = fog start, y = fog end
@@ -97,15 +98,10 @@ void main(void) {
         }
         texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
 
-        if (uAlphaDiscardEnabled && uSmoothingEnabled && discardTranslucent(uTexAtlas, texCoords)) {
+        texColor *= texture(uTexAtlas, texCoords);
+        if (texColor.a <= 0.0) {
             discard;
         }
-
-        texColor = texture(uTexAtlas, texCoords);
-        if (uAlphaThreshold >= 0.0 && texColor.a <= uAlphaThreshold) {
-            discard;
-        }
-        texColor.a *= gColor.a;
     }
     if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled) {
         texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
