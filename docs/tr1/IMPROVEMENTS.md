@@ -220,12 +220,13 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
     - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, a stretched texture in room 47, and a  misplaced vase room sprite in room 9
     - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98; a missing texture in room 75; misplaced vase room sprites in room 60; transparent pixels in room 95
-    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7, 27 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
+    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7, 27 and 75, and missing textures in rooms 5, 6, 13, 18, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
 - fixed incorrect transparent pixels on some Egypt textures
 - fixed missing textures on the statues in Vilcabamba and Tomb of Qualopec
 - fixed the mesh structure on the cat statue in Egyptian levels to standardize its position
+- fixed texture clipping in Atlantean Stronghold when looking into room 18
 - fixed doors at times disappearing if Lara is close to portals and the door's room is no longer visible
 - fixed the passport having an invisible back page, noticeable when opening/closing it
 - fixed z-fighting on the front of the passport
