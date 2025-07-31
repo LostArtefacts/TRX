@@ -1,7 +1,6 @@
 #include "game/output/sources/rooms.h"
 
 #include "game/output.h"
-#include "game/output/mesh_batcher/batcher.h"
 #include "game/output/scene_compositor.h"
 #include "game/output/utils.h"
 #include "game/random.h"
@@ -117,7 +116,6 @@ static void M_PrepareMeshes(M_PRIV *const p)
 
         p->meshes[i] = mesh;
     }
-    MeshBatcher_Seal(p->batcher);
 }
 
 static void M_FreeMeshes(M_PRIV *const p)
@@ -131,23 +129,21 @@ static void M_FreeMeshes(M_PRIV *const p)
     }
 }
 
-void OutputSource_Rooms_Init(void)
+void OutputSource_Rooms_Init(MESH_BATCHER *const batcher)
 {
     M_PRIV *const p = &m_Priv;
-    p->batcher = MeshBatcher_Create();
+    p->batcher = batcher;
     for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
         const int16_t angle = (i * DEG_360) / WIBBLE_SIZE;
         p->shade_table[i] = Math_Sin(angle) * SHADE_CAUSTICS >> W2V_SHIFT;
         p->caustics_table[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
-    SceneCompositor_AddSource(MeshBatcher_AsSource(p->batcher));
 }
 
 void OutputSource_Rooms_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     M_FreeMeshes(p);
-    MeshBatcher_Destroy(p->batcher);
 }
 
 void OutputSource_Rooms_ObserveLevelLoad(void)

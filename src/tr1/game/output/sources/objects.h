@@ -1,10 +1,11 @@
 #pragma once
 
+#include "game/output/mesh_batcher/batcher.h"
 #include "game/output/scene_source.h"
 
 #include <libtrx/game/objects/types.h>
 
-void OutputSource_Objects_Init(void);
+void OutputSource_Objects_Init(MESH_BATCHER *batcher);
 void OutputSource_Objects_Shutdown(void);
 void OutputSource_Objects_ObserveLevelLoad(void);
 void OutputSource_Objects_ObserveLevelUnload(void);

@@ -1,7 +1,6 @@
 #include "game/output/sources/objects.h"
 
 #include "game/output.h"
-#include "game/output/mesh_batcher/batcher.h"
 #include "game/output/scene_compositor.h"
 #include "game/output/utils.h"
 
@@ -108,7 +107,6 @@ static void M_PrepareMeshes(M_PRIV *const p)
         new_batch->light_idx_map =
             M_PrepareLightIndexMap(obj_mesh, batch->vertices->count);
     }
-    MeshBatcher_Seal(p->batcher);
 }
 
 static void M_FreeMeshes(M_PRIV *const p)
@@ -230,18 +228,16 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool background)
         background ? SCENE_PASS_BACKGROUND : SCENE_PASS_MESHES);
 }
 
-void OutputSource_Objects_Init(void)
+void OutputSource_Objects_Init(MESH_BATCHER *const batcher)
 {
     M_PRIV *const p = &m_Priv;
-    p->batcher = MeshBatcher_Create();
-    SceneCompositor_AddSource(MeshBatcher_AsSource(p->batcher));
+    p->batcher = batcher;
 }
 
 void OutputSource_Objects_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     M_FreeMeshes(p);
-    MeshBatcher_Destroy(p->batcher);
 }
 
 void OutputSource_Objects_ObserveLevelLoad(void)
