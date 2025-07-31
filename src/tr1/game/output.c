@@ -1,6 +1,7 @@
 #include "game/output.h"
 
 #include "game/level.h"
+#include "game/output/mesh_batcher/batcher.h"
 #include "game/output/scene_compositor.h"
 #include "game/output/sources/lightnings.h"
 #include "game/output/sources/misc.h"
@@ -16,6 +17,7 @@
 
 #include <libtrx/config.h>
 
+static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_SHADER *m_Shader = nullptr;
 static GFX_2D_RENDERER *m_Renderer2D = nullptr;
 
@@ -56,13 +58,15 @@ bool Output_Init(void)
     Output_Textures_Init();
 
     m_Shader = Output_Shader_Create("shaders/meshes.glsl");
-    OutputSource_Rooms_Init();
+    m_Batcher = MeshBatcher_Create();
+    OutputSource_Rooms_Init(m_Batcher);
     OutputSource_RoomsDebug_Init();
-    OutputSource_Objects_Init();
+    OutputSource_Objects_Init(m_Batcher);
     OutputSource_Sprites_Init();
     OutputSource_Lightnings_Init();
     OutputSource_Misc_Init();
     OutputSource_UI_Init();
+    SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
 
     Output_InitLight();
     return true;
@@ -77,8 +81,11 @@ void Output_Shutdown(void)
     OutputSource_Sprites_Shutdown();
     OutputSource_Lightnings_Shutdown();
     OutputSource_Misc_Shutdown();
+
     Output_Shader_Free(m_Shader);
     m_Shader = nullptr;
+    MeshBatcher_Destroy(m_Batcher);
+    m_Batcher = nullptr;
 
     Output_Textures_Shutdown();
     Output_ShutdownLight();
@@ -138,6 +145,8 @@ void Output_DispatchLevelLoad(void)
     OutputSource_Rooms_ObserveLevelLoad();
     OutputSource_RoomsDebug_ObserveLevelLoad();
     OutputSource_Sprites_ObserveLevelLoad();
+
+    MeshBatcher_Seal(m_Batcher);
 
     Output_ApplyLevelSettings();
 }
