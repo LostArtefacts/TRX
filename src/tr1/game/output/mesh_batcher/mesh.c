@@ -9,11 +9,14 @@
 #include <libtrx/game/level/const.h>
 #include <libtrx/memory.h>
 
+static int32_t m_Vertices3[] = { 0, 2, 1 };
+static int32_t m_Vertices4[] = { 0, 2, 1, 0, 3, 2 };
+
 static XYZ_F M_GetWorldCentroid(
     const OUTPUT_MESH *mesh, int32_t vertex_start, int32_t vertex_count);
 static void M_AddFaceCommon(
     OUTPUT_MESH *mesh, int32_t vertex_start, int32_t vertex_count,
-    bool is_transparent);
+    const int32_t *prim_vert_indices, bool is_transparent);
 static void M_AddRoomVert(
     OUTPUT_MESH *mesh, const ROOM_VERTEX *room_vert, int32_t uvw_idx,
     const TEXTURE_ZW_F *texture_ratio);
@@ -41,20 +44,26 @@ static XYZ_F M_GetMeshCentroid(
 
 static void M_AddFaceCommon(
     OUTPUT_MESH *const mesh, const int32_t vertex_start,
-    const int32_t vertex_count, const bool is_transparent)
+    const int32_t vertex_count, const int32_t *const prim_vert_indices,
+    const bool is_transparent)
 {
-    XYZ_F mesh_centroid = M_GetMeshCentroid(mesh, vertex_start, vertex_count);
-    const OUTPUT_MESH_FACE face = {
-        .vertex_start = vertex_start,
-        .vertex_count = vertex_count,
-        .mesh_centroid = mesh_centroid,
-    };
+    const XYZ_F mesh_centroid =
+        M_GetMeshCentroid(mesh, vertex_start, vertex_count);
+    const int32_t real_vertex_count = vertex_count == 3 ? 3 : 6;
     if (is_transparent) {
+        OUTPUT_MESH_FACE face = {
+            .vertex_count = real_vertex_count,
+            .mesh_centroid = mesh_centroid,
+        };
+        for (int32_t i = 0; i < real_vertex_count; i++) {
+            face.vertex_indices[i] = vertex_start + prim_vert_indices[i];
+        }
         Vector_Add(mesh->transparent_faces, &face);
     } else {
-        for (int32_t i = 0; i < vertex_count; i++) {
+        for (int32_t i = 0; i < real_vertex_count; i++) {
             Vector_Add(
-                mesh->opaque_vertex_indices, &(int32_t) { vertex_start + i });
+                mesh->opaque_vertex_indices,
+                &(int32_t) { vertex_start + prim_vert_indices[i] });
         }
     }
 }
@@ -144,16 +153,15 @@ void Output_Mesh_AddRoomFace4(
 {
     ASSERT(!mesh->sealed);
     const int32_t vertex_start = mesh->vertices->count;
-    for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
-        const int32_t j = OUTPUT_QUAD_TO_FAN(i);
-        const int32_t uvw_idx = face->texture_idx * 4 + j;
+    for (int32_t i = 0; i < 4; i++) {
+        const int32_t uvw_idx = face->texture_idx * 4 + i;
         const ROOM_VERTEX *const room_vert =
-            &room->mesh.vertices[face->vertices[j]];
-        M_AddRoomVert(mesh, room_vert, uvw_idx, &face->texture_zw[j]);
+            &room->mesh.vertices[face->vertices[i]];
+        M_AddRoomVert(mesh, room_vert, uvw_idx, &face->texture_zw[i]);
     }
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
     M_AddFaceCommon(
-        mesh, vertex_start, vertex_count,
+        mesh, vertex_start, vertex_count, m_Vertices4,
         Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
@@ -162,16 +170,15 @@ void Output_Mesh_AddRoomFace3(
 {
     ASSERT(!mesh->sealed);
     const int32_t vertex_start = mesh->vertices->count;
-    for (int32_t i = 0; i < OUTPUT_TRI_VERTICES; i++) {
-        const int32_t j = OUTPUT_TRI_TO_FAN(i);
-        const int32_t uvw_idx = face->texture_idx * 4 + j;
+    for (int32_t i = 0; i < 3; i++) {
+        const int32_t uvw_idx = face->texture_idx * 4 + i;
         const ROOM_VERTEX *const room_vert =
-            &room->mesh.vertices[face->vertices[j]];
+            &room->mesh.vertices[face->vertices[i]];
         M_AddRoomVert(mesh, room_vert, uvw_idx, nullptr);
     }
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
     M_AddFaceCommon(
-        mesh, vertex_start, vertex_count,
+        mesh, vertex_start, vertex_count, m_Vertices3,
         Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
@@ -196,8 +203,7 @@ void Output_Mesh_AddRoomSprite(
     quad[2].displacement.y = sprite->y1;
     quad[3].displacement.x = sprite->x0;
     quad[3].displacement.y = sprite->y1;
-    for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
-        const int32_t j = OUTPUT_QUAD_TO_FAN(i);
+    for (int32_t i = 0; i < 4; i++) {
         const ROOM_VERTEX *const room_vert =
             &room->mesh.vertices[room_sprite->vertex];
         if (Output_Textures_IsSpriteTextureAnimated(room_sprite->texture)) {
@@ -215,21 +221,21 @@ void Output_Mesh_AddRoomSprite(
                 .z = room_vert->pos.z,
             },
             .normal = {
-                .x = quad[j].displacement.x,
-                .y = quad[j].displacement.y,
+                .x = quad[i].displacement.x,
+                .y = quad[i].displacement.y,
                 .z = 0.0f,
             },
             .flags = VERT_BILLBOARD,
             .color = { 255, 255, 255, 255 },
             .uvw_idx = Output_Textures_GetSpritesUVWsBase()
-                + room_sprite->texture * 4 + j,
+                + room_sprite->texture * 4 + i,
             .shade = room_vert->light_adder,
             .trapezoid_ratio = { 1.0f, 1.0f },
         };
         Vector_Add(mesh->vertices, &vertex);
     }
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
-    M_AddFaceCommon(mesh, vertex_start, vertex_count, true);
+    M_AddFaceCommon(mesh, vertex_start, vertex_count, m_Vertices4, true);
 }
 
 void Output_Mesh_AddObjectFace4(
@@ -238,18 +244,17 @@ void Output_Mesh_AddObjectFace4(
 {
     ASSERT(!mesh->sealed);
     const int32_t vertex_start = mesh->vertices->count;
-    for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
-        const int32_t j = OUTPUT_QUAD_TO_FAN(i);
-        const int32_t uvw_idx = face->texture_idx * 4 + j;
-        const XYZ_16 normal = obj_mesh->lighting.normals[face->vertices[j]];
-        const XYZ_16 *const pos = &obj_mesh->vertices[face->vertices[j]];
+    for (int32_t i = 0; i < 4; i++) {
+        const int32_t uvw_idx = face->texture_idx * 4 + i;
+        const XYZ_16 normal = obj_mesh->lighting.normals[face->vertices[i]];
+        const XYZ_16 *const pos = &obj_mesh->vertices[face->vertices[i]];
         M_AddObjectVert(
-            mesh, pos, uvw_idx, &face->texture_zw[j], flags, normal,
+            mesh, pos, uvw_idx, &face->texture_zw[i], flags, normal,
             face->palette_idx);
     }
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
     M_AddFaceCommon(
-        mesh, vertex_start, vertex_count,
+        mesh, vertex_start, vertex_count, m_Vertices4,
         Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
@@ -259,17 +264,16 @@ void Output_Mesh_AddObjectFace3(
 {
     ASSERT(!mesh->sealed);
     const int32_t vertex_start = mesh->vertices->count;
-    for (int32_t i = 0; i < OUTPUT_TRI_VERTICES; i++) {
-        const int32_t j = OUTPUT_TRI_TO_FAN(i);
-        const int32_t uvw_idx = face->texture_idx * 4 + j;
-        const XYZ_16 normal = obj_mesh->lighting.normals[face->vertices[j]];
-        const XYZ_16 *const pos = &obj_mesh->vertices[face->vertices[j]];
+    for (int32_t i = 0; i < 3; i++) {
+        const int32_t uvw_idx = face->texture_idx * 4 + i;
+        const XYZ_16 normal = obj_mesh->lighting.normals[face->vertices[i]];
+        const XYZ_16 *const pos = &obj_mesh->vertices[face->vertices[i]];
         M_AddObjectVert(
             mesh, pos, uvw_idx, nullptr, flags, normal, face->palette_idx);
     }
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
     M_AddFaceCommon(
-        mesh, vertex_start, vertex_count,
+        mesh, vertex_start, vertex_count, m_Vertices3,
         Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 

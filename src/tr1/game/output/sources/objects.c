@@ -35,29 +35,29 @@ static int32_t *M_PrepareLightIndexMap(
 #define L_SET(v, j) light_idx_map[v] = face->vertices[j];
     for (int32_t i = 0; i < obj_mesh->num_tex_face4s; i++) {
         const FACE4 *const face = &obj_mesh->tex_face4s[i];
-        for (int32_t j = 0; j < OUTPUT_QUAD_VERTICES; j++) {
-            L_SET(v, OUTPUT_QUAD_TO_FAN(j));
+        for (int32_t j = 0; j < 4; j++) {
+            L_SET(v, j);
             v++;
         }
     }
     for (int32_t i = 0; i < obj_mesh->num_tex_face3s; i++) {
         const FACE3 *const face = &obj_mesh->tex_face3s[i];
-        for (int32_t j = 0; j < OUTPUT_TRI_VERTICES; j++) {
-            L_SET(v, OUTPUT_TRI_TO_FAN(j));
+        for (int32_t j = 0; j < 3; j++) {
+            L_SET(v, j);
             v++;
         }
     }
     for (int32_t i = 0; i < obj_mesh->num_flat_face4s; i++) {
         const FACE4 *const face = &obj_mesh->flat_face4s[i];
-        for (int32_t j = 0; j < OUTPUT_QUAD_VERTICES; j++) {
-            L_SET(v, OUTPUT_QUAD_TO_FAN(j));
+        for (int32_t j = 0; j < 4; j++) {
+            L_SET(v, j);
             v++;
         }
     }
     for (int32_t i = 0; i < obj_mesh->num_flat_face3s; i++) {
         const FACE3 *const face = &obj_mesh->flat_face3s[i];
-        for (int32_t j = 0; j < OUTPUT_TRI_VERTICES; j++) {
-            L_SET(v, OUTPUT_TRI_TO_FAN(j));
+        for (int32_t j = 0; j < 3; j++) {
+            L_SET(v, j);
             v++;
         }
     }
