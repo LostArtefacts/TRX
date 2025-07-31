@@ -147,12 +147,15 @@ static void M_DrawInstance(
         Output_Shader_UploadWibbleEffect(batcher->shader, false);
         glDepthMask(GL_FALSE);
         glDrawArrays(GL_TRIANGLES, bind->vertex_start, bind->vertex_count);
+        g_GFX_Metrics.opaque_vert_count += bind->vertex_count;
         glDepthMask(GL_TRUE);
         Output_Shader_UploadWibbleEffect(batcher->shader, true);
         glDrawArrays(GL_TRIANGLES, bind->vertex_start, bind->vertex_count);
+        g_GFX_Metrics.opaque_vert_count += bind->vertex_count;
     } else {
         Output_Shader_UploadWibbleEffect(batcher->shader, false);
         glDrawArrays(GL_TRIANGLES, bind->vertex_start, bind->vertex_count);
+        g_GFX_Metrics.opaque_vert_count += bind->vertex_count;
     }
 
     if (inst->enable_scissor) {
