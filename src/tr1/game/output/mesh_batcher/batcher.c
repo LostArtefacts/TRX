@@ -18,7 +18,7 @@ typedef struct {
     XYZ_F normal;
     OUTPUT_USHORT flags;
     RGBA_8888 color;
-} M_MESH_VERTEX;
+} M_MESH_GEOM;
 
 typedef struct {
     OUTPUT_UVW uvw;
@@ -28,7 +28,7 @@ typedef struct {
 
 typedef struct M_MESH_BUF_BINDING {
     OUTPUT_MESH *mesh;
-    M_MESH_VERTEX *geom_data;
+    M_MESH_GEOM *geom_data;
     M_MESH_TEXTURE *tex_data;
     M_MESH_SHADE *shade_data;
     int32_t vertex_start;
@@ -52,13 +52,14 @@ typedef struct MESH_BATCHER {
     GLuint shade_vbo;
 } MESH_BATCHER;
 
-static void M_FillGeometry(
-    M_MESH_VERTEX *tex, const OUTPUT_MESH_VERTEX *vertex);
+static M_MESH_BUF_BINDING *M_GetBinding(
+    const MESH_BATCHER *batcher, const OUTPUT_MESH *mesh);
+
+static void M_FillGeometry(M_MESH_GEOM *tex, const OUTPUT_MESH_VERTEX *vertex);
 static void M_FillTexture(
     M_MESH_TEXTURE *tex, const OUTPUT_MESH_VERTEX *vertex);
 static void M_FillShade(M_MESH_SHADE *shade, const OUTPUT_MESH_VERTEX *vertex);
-static M_MESH_BUF_BINDING *M_GetBinding(
-    const MESH_BATCHER *batcher, const OUTPUT_MESH *mesh);
+
 static void M_DrawInstance(const MESH_BATCHER *batcher, MESH_INSTANCE *inst);
 static void M_AnimateBinding(
     const MESH_BATCHER *batcher, const M_MESH_BUF_BINDING *bind);
@@ -68,8 +69,16 @@ static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
 static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
 static void M_AnimateTextures(const SCENE_SOURCE *source);
 
+static M_MESH_BUF_BINDING *M_GetBinding(
+    const MESH_BATCHER *const batcher, const OUTPUT_MESH *const mesh)
+{
+    M_MESH_BUF_BINDING *bind = nullptr;
+    HASH_FIND_PTR(batcher->binding_map, &mesh, bind);
+    return bind;
+}
+
 static void M_FillGeometry(
-    M_MESH_VERTEX *const geom, const OUTPUT_MESH_VERTEX *const vertex)
+    M_MESH_GEOM *const geom, const OUTPUT_MESH_VERTEX *const vertex)
 {
     geom->pos = vertex->pos;
     geom->normal = vertex->normal;
@@ -90,14 +99,6 @@ static void M_FillShade(
     M_MESH_SHADE *const shade, const OUTPUT_MESH_VERTEX *const vertex)
 {
     *shade = vertex->shade;
-}
-
-static M_MESH_BUF_BINDING *M_GetBinding(
-    const MESH_BATCHER *const batcher, const OUTPUT_MESH *const mesh)
-{
-    M_MESH_BUF_BINDING *bind = nullptr;
-    HASH_FIND_PTR(batcher->binding_map, &mesh, bind);
-    return bind;
 }
 
 static void M_AnimateBinding(
@@ -227,18 +228,17 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(M_MESH_VERTEX, pos));
+        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
+        (void *)(intptr_t)offsetof(M_MESH_GEOM, pos));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(M_MESH_VERTEX, normal));
+        OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
+        (void *)(intptr_t)offsetof(M_MESH_GEOM, normal));
     glVertexAttribIPointer(
-        OUTPUT_MESH_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(M_MESH_VERTEX, flags));
+        OUTPUT_MESH_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_MESH_GEOM),
+        (void *)(intptr_t)offsetof(M_MESH_GEOM, flags));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE,
-        sizeof(M_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(M_MESH_VERTEX, color));
+        sizeof(M_MESH_GEOM), (void *)(intptr_t)offsetof(M_MESH_GEOM, color));
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->tex_vbo);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
@@ -326,7 +326,7 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
     bind->vertex_count = mesh->vertices->count;
     const OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(mesh->vertices);
 
-    bind->geom_data = Memory_Alloc(sizeof(M_MESH_VERTEX) * bind->vertex_count);
+    bind->geom_data = Memory_Alloc(sizeof(M_MESH_GEOM) * bind->vertex_count);
     bind->tex_data = Memory_Alloc(sizeof(M_MESH_TEXTURE) * bind->vertex_count);
     bind->shade_data = Memory_Alloc(sizeof(M_MESH_SHADE) * bind->vertex_count);
     for (int32_t i = 0; i < bind->vertex_count; i++) {
@@ -347,7 +347,7 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
     glBindBuffer(GL_ARRAY_BUFFER, batcher->geom_vbo);
     GFX_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
-        batcher->vertex_count * sizeof(M_MESH_VERTEX), nullptr,
+        batcher->vertex_count * sizeof(M_MESH_GEOM), nullptr,
         GL_DYNAMIC_DRAW); // allow updating mesh flags
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->tex_vbo);
@@ -368,8 +368,8 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
         glBindBuffer(GL_ARRAY_BUFFER, batcher->geom_vbo);
         GFX_TRACK_SUBDATA(
             glBufferSubData, GL_ARRAY_BUFFER,
-            bind->vertex_start * sizeof(M_MESH_VERTEX),
-            bind->vertex_count * sizeof(M_MESH_VERTEX), bind->geom_data);
+            bind->vertex_start * sizeof(M_MESH_GEOM),
+            bind->vertex_count * sizeof(M_MESH_GEOM), bind->geom_data);
         glBindBuffer(GL_ARRAY_BUFFER, batcher->tex_vbo);
         GFX_TRACK_SUBDATA(
             glBufferSubData, GL_ARRAY_BUFFER,
@@ -409,8 +409,8 @@ void MeshBatcher_UpdateMeshGeometry(
     glBindBuffer(GL_ARRAY_BUFFER, batcher->geom_vbo);
     GFX_TRACK_SUBDATA(
         glBufferSubData, GL_ARRAY_BUFFER,
-        bind->vertex_start * sizeof(M_MESH_VERTEX),
-        bind->vertex_count * sizeof(M_MESH_VERTEX), bind->geom_data);
+        bind->vertex_start * sizeof(M_MESH_GEOM),
+        bind->vertex_count * sizeof(M_MESH_GEOM), bind->geom_data);
 }
 
 void MeshBatcher_Stage(
