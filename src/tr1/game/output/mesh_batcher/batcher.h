@@ -37,7 +37,5 @@ const SCENE_SOURCE *MeshBatcher_AsSource(const struct MESH_BATCHER *batcher);
 
 void MeshBatcher_Stage(
     struct MESH_BATCHER *batcher, const MESH_INSTANCE *inst, SCENE_PASS pass);
-void MeshBatcher_UpdateMeshShades(
-    const struct MESH_BATCHER *batcher, const OUTPUT_MESH *mesh);
 void MeshBatcher_UpdateMeshGeometry(
     const struct MESH_BATCHER *batcher, const OUTPUT_MESH *mesh);

@@ -50,6 +50,7 @@
 - improved PS1 menu style border offsets and frames to match PC style
 - improved drawing shadows in no-clip camera mode (they're no longer double-sided)
 - improved wireframe mode to show text and UI normally
+- improved bilinear filter edge blending (#587)
 - removed the option in Unfinished Business to fix animated sprites as it is irrelevant there
 
 ## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20

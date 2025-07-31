@@ -226,6 +226,7 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool background)
     MeshBatcher_Stage(
         p->batcher, &inst,
         background ? SCENE_PASS_BACKGROUND : SCENE_PASS_MESHES);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
 }
 
 void OutputSource_Objects_Init(MESH_BATCHER *const batcher)
