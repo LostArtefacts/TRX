@@ -768,6 +768,6 @@
         "STATS_MEDIPACKS_USED": "Использовано аптечек",
         "STATS_PICKUPS": "Предметы",
         "STATS_SECRETS": "Секреты",
-        "STATS_TIME_TAKEN": "Время"
+        "STATS_TIME_TAKEN": "Время",
     }
 }
