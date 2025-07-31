@@ -62,7 +62,7 @@ bool Output_Init(void)
     OutputSource_Rooms_Init(m_Batcher);
     OutputSource_RoomsDebug_Init();
     OutputSource_Objects_Init(m_Batcher);
-    OutputSource_Sprites_Init();
+    OutputSource_Sprites_Init(m_Batcher);
     OutputSource_Lightnings_Init();
     OutputSource_Misc_Init();
     OutputSource_UI_Init();
