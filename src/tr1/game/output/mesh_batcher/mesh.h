@@ -36,23 +36,24 @@ typedef struct {
 } OUTPUT_MESH;
 
 OUTPUT_MESH *Output_Mesh_Create(void);
-void Output_Mesh_Destroy(OUTPUT_MESH *b);
+void Output_Mesh_Destroy(OUTPUT_MESH *mesh);
 
 void Output_Mesh_AddRoomFace4(
-    OUTPUT_MESH *b, const FACE4 *face, const ROOM_VERTEX *verts);
+    OUTPUT_MESH *mesh, const FACE4 *face, const ROOM_VERTEX *verts);
 void Output_Mesh_AddRoomFace3(
-    OUTPUT_MESH *b, const FACE3 *face, const ROOM_VERTEX *verts);
+    OUTPUT_MESH *mesh, const FACE3 *face, const ROOM_VERTEX *verts);
 void Output_Mesh_AddRoomSprite(
-    OUTPUT_MESH *b, const ROOM_SPRITE *room_sprite, const ROOM_VERTEX *verts);
+    OUTPUT_MESH *mesh, const ROOM_SPRITE *room_sprite,
+    const ROOM_VERTEX *verts);
 
 void Output_Mesh_AddObjectFace4(
-    OUTPUT_MESH *b, const OBJECT_MESH *obj_mesh, const FACE4 *face,
+    OUTPUT_MESH *mesh, const OBJECT_MESH *obj_mesh, const FACE4 *face,
     uint16_t flags);
 void Output_Mesh_AddObjectFace3(
-    OUTPUT_MESH *b, const OBJECT_MESH *obj_mesh, const FACE3 *face,
+    OUTPUT_MESH *mesh, const OBJECT_MESH *obj_mesh, const FACE3 *face,
     uint16_t flags);
 
 // Done streaming faces. This seals the batch (vertex_count is final), and
 // immediately uploads the CPU‐side vertex & UV data to the GPU.
 // (Later calls to UpdateTextures/UpdateShades will do incremental sub‑data.)
-void Output_Mesh_Seal(OUTPUT_MESH *b);
+void Output_Mesh_Seal(OUTPUT_MESH *mesh);
