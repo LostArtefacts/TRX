@@ -30,4 +30,5 @@ int32_t Output_Textures_GetSpritesUVWsBase(void);
 OUTPUT_UVW Output_Textures_GetUVW(int32_t uvw_idx);
 OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);
 bool Output_Textures_IsObjectTextureAnimated(int32_t texture_idx);
+bool Output_Textures_IsObjectTextureTransparent(int32_t texture_idx);
 bool Output_Textures_IsSpriteTextureAnimated(int32_t sprite_idx);

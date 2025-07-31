@@ -72,11 +72,6 @@ typedef struct {
 } SORT_ITEM;
 
 typedef enum {
-    DRAW_OPAQUE    = 0,
-    DRAW_COLOR_KEY = 1,
-} DRAW_TYPE;
-
-typedef enum {
     GFE_PICTURE          = 0,
     GFE_LIST_START       = 1,
     GFE_LIST_END         = 2,

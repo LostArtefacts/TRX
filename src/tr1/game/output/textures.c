@@ -418,6 +418,11 @@ bool Output_Textures_IsSpriteTextureAnimated(const int32_t uvw_idx)
     return m_Priv.uvws.animated_sprites[uvw_idx];
 }
 
+bool Output_Textures_IsObjectTextureTransparent(const int32_t texture_idx)
+{
+    return Output_GetObjectTexture(texture_idx)->draw_type == DRAW_COLOR_KEY;
+}
+
 void Output_Textures_ApplyRenderSettings(void)
 {
     // re-adjust UVs when the bilinear filter is toggled.
