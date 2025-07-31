@@ -94,9 +94,9 @@ static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
-        Output_Shader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
-        Output_Shader_UploadWibbleEffect(shader, false);
         if (source->is_dirty(source, pass)) {
+            Output_Shader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
+            Output_Shader_UploadWibbleEffect(shader, false);
             source->render_pass(source, pass);
         }
     }
