@@ -44,5 +44,4 @@ void Output_Shader_UploadSmoothingEnabled(
 void Output_Shader_UploadViewModelMatrix(
     const OUTPUT_SHADER *shader, const MATRIX *source);
 void Output_Shader_UploadWibbleEffect(OUTPUT_SHADER *shader, bool is_enabled);
-void Output_Shader_UploadWaterEffect(OUTPUT_SHADER *shader, bool is_enabled);
 void Output_Shader_UploadTint(OUTPUT_SHADER *shader, RGB_F tint);
