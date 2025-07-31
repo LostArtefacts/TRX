@@ -11,7 +11,6 @@ typedef struct MESH_INSTANCE {
     MATRIX matrix;
     RGB_F tint;
     bool wibble;
-    bool water_effect;
 
     // TODO: remove these
     int32_t ls_adder;
@@ -23,6 +22,7 @@ typedef struct MESH_INSTANCE {
 
     void (*update_light_func)(struct MESH_INSTANCE *inst, void *user_data);
     void *update_light_func_data;
+    bool water_effect; // helper for the update_light_func
 } MESH_INSTANCE;
 
 typedef struct MESH_BATCHER MESH_BATCHER;

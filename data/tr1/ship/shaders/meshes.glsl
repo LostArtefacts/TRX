@@ -69,7 +69,6 @@ uniform float uAlphaThreshold;
 uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;
 uniform vec2 uFog; // x = fog start, y = fog end
-uniform bool uWaterEffect;
 
 in vec4 gWorldPos;
 in vec3 gNormal;

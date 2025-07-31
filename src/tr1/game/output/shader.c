@@ -26,7 +26,6 @@ typedef enum {
     M_UNIFORM_PROJECTION_MATRIX,
     M_UNIFORM_MODEL_MATRIX,
     M_UNIFORM_WIBBLE_EFFECT,
-    M_UNIFORM_WATER_EFFECT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -35,7 +34,6 @@ struct OUTPUT_SHADER {
     GLint uniforms[M_UNIFORM_NUMBER_OF];
 
     bool is_wibble_effect;
-    bool is_water_effect;
     RGB_F tint;
 };
 
@@ -66,7 +64,6 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_PROJECTION_MATRIX] = "uMatProjection",
         [M_UNIFORM_MODEL_MATRIX] = "uMatModelView",
         [M_UNIFORM_WIBBLE_EFFECT] = "uWibbleEffect",
-        [M_UNIFORM_WATER_EFFECT] = "uWaterEffect",
     };
     for (int32_t i = 0; i < M_UNIFORM_NUMBER_OF; i++) {
         shader->uniforms[i] =
@@ -180,17 +177,6 @@ void Output_Shader_UploadWibbleEffect(
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_WIBBLE_EFFECT], is_enabled);
     shader->is_wibble_effect = is_enabled;
-}
-
-void Output_Shader_UploadWaterEffect(
-    OUTPUT_SHADER *const shader, const bool is_enabled)
-{
-    if (is_enabled == shader->is_water_effect) {
-        return;
-    }
-    GFX_TRACK_UNIFORM(
-        glUniform1i, shader->uniforms[M_UNIFORM_WATER_EFFECT], is_enabled);
-    shader->is_water_effect = is_enabled;
 }
 
 void Output_Shader_UploadTint(OUTPUT_SHADER *const shader, const RGB_F tint)

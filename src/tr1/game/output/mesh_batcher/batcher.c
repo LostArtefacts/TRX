@@ -130,7 +130,6 @@ static void M_DrawInstance(
 
     Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
     Output_Shader_UploadTint(batcher->shader, inst->tint);
-    Output_Shader_UploadWaterEffect(batcher->shader, inst->water_effect);
 
     if (inst->enable_scissor) {
         Output_EnableScissor(
