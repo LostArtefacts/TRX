@@ -59,8 +59,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     // Quads
     for (int32_t i = 0; i < room->mesh.num_face4s; i++) {
         const FACE4 *const face = &room->mesh.face4s[i];
-        for (int32_t j = 0; j < OUTPUT_QUAD_VERTICES; j++) {
-            const int32_t k = OUTPUT_QUAD_TO_FAN(j);
+        for (int32_t j = 0; j < 4; j++) {
+            const int32_t k = j;
             vertex->shade = room->mesh.vertices[face->vertices[k]].light_adder;
             vertex->shade = M_ShadeCaustics(
                 p, room, inst->water_effect, vertex->shade, face->vertices[k]);
@@ -71,8 +71,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     // Triangles
     for (int32_t i = 0; i < room->mesh.num_face3s; i++) {
         const FACE3 *const face = &room->mesh.face3s[i];
-        for (int32_t j = 0; j < OUTPUT_TRI_VERTICES; j++) {
-            const int32_t k = OUTPUT_TRI_TO_FAN(j);
+        for (int32_t j = 0; j < 3; j++) {
+            const int32_t k = j;
             vertex->shade = room->mesh.vertices[face->vertices[k]].light_adder;
             vertex->shade = M_ShadeCaustics(
                 p, room, inst->water_effect, vertex->shade, face->vertices[k]);
@@ -83,7 +83,7 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     // Sprites
     for (int32_t i = 0; i < room->mesh.num_sprites; i++) {
         const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[i];
-        for (int32_t j = 0; j < OUTPUT_QUAD_VERTICES; j++) {
+        for (int32_t j = 0; j < 4; j++) {
             vertex->shade =
                 room->mesh.vertices[room_sprite->vertex].light_adder;
             vertex++;

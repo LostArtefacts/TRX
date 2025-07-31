@@ -49,6 +49,7 @@ typedef struct {
     const MESH_INSTANCE *inst;
     const OUTPUT_MESH_FACE *face;
     int32_t vertex_start;
+    int32_t vertex_count;
 } M_FACE_SORT;
 
 typedef struct MESH_BATCHER {
@@ -239,7 +240,7 @@ static void M_OpaquePass(
 
             const int32_t vertex_start = batcher->transparent_vertices->count;
             for (int32_t k = 0; k < face->vertex_count; k++) {
-                const int32_t l = face->vertex_start + k;
+                const int32_t l = face->vertex_indices[k];
                 M_MESH_FULL v = {
                     .geom = bind->geom_data[l],
                     .tex = bind->tex_data[l],
@@ -281,6 +282,8 @@ static void M_OpaquePass(
 
                 Vector_Add(batcher->transparent_vertices, &v);
             }
+            const int32_t vertex_count =
+                batcher->transparent_vertices->count - vertex_start;
 
             Vector_Add(
                 batcher->transparent_sort,
@@ -288,6 +291,7 @@ static void M_OpaquePass(
                     .inst = inst,
                     .face = face,
                     .vertex_start = vertex_start,
+                    .vertex_count = vertex_count,
                 });
         }
     }
@@ -314,7 +318,7 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
         const M_FACE_SORT *const sort_ptr =
             Vector_Get(batcher->transparent_sort, i);
         glDrawArrays(
-            GL_TRIANGLES, sort_ptr->vertex_start, sort_ptr->face->vertex_count);
+            GL_TRIANGLES, sort_ptr->vertex_start, sort_ptr->vertex_count);
         g_GFX_Metrics.trans_vert_count += sort_ptr->face->vertex_count;
     }
 }

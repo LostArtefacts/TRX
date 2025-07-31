@@ -30,8 +30,8 @@ typedef struct {
 // Describes a contiguous block of vertices belonging to one face,
 // with sort keys.
 typedef struct {
-    int32_t vertex_start;
     int32_t vertex_count;
+    int32_t vertex_indices[6]; // Maximum 6 indices per face
     XYZ_F mesh_centroid;
 } OUTPUT_MESH_FACE;
 
