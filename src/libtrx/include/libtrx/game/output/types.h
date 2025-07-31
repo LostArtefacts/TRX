@@ -18,6 +18,11 @@ typedef enum {
     TS_REQUESTED,
 } TEXT_STYLE;
 
+typedef enum {
+    DRAW_OPAQUE = 0,
+    DRAW_COLOR_KEY = 1,
+} DRAW_TYPE;
+
 typedef struct {
     int16_t value_1;
     int16_t value_2;
