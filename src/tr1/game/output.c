@@ -199,10 +199,10 @@ void Output_EndScene(void)
 
 void Output_FlipScreen(void)
 {
-    if (Shell_GetArgs()->headless) {
-        return;
+    if (!Shell_GetArgs()->headless
+        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
+        GFX_Context_SwapBuffers();
     }
-    GFX_Context_SwapBuffers();
 }
 
 bool Output_LoadBackgroundFromImage(const IMAGE *const image)
@@ -243,9 +243,12 @@ BACKGROUND_TYPE Output_GetBackgroundType(void)
 
 void Output_SwitchViewport(const VIEWPORT_SPACE space)
 {
-    if (space == VIEWPORT_UI) {
+    if (space == VIEWPORT_GAME) {
+        GFX_Renderer_BindGeometryFbo();
+    } else if (space == VIEWPORT_UI) {
         GFX_Renderer_BindUiFbo();
     }
     GFX_Context_SwitchToViewport(space);
     GFX_Context_Clear();
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
