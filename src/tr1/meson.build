@@ -218,6 +218,7 @@ sources = [
   'game/output/func.c',
   'game/output/mesh_batcher/batcher.c',
   'game/output/mesh_batcher/mesh.c',
+  'game/output/mesh_batcher/mesh_builder.c',
   'game/output/sources/lightnings.c',
   'game/output/sources/misc.c',
   'game/output/sources/objects.c',
