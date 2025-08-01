@@ -4,12 +4,14 @@
 #include "game/shell.h"
 #include "log.h"
 
+#define L_DEFAULT_VIEWPORT { .width = 1280, .height = 720 }
 static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
-    [VIEWPORT_WINDOW] = { .width = 800, .height = 600, },
-    [VIEWPORT_TARGET] = { .width = 800, .height = 600, },
-    [VIEWPORT_GAME] = { .width = 800, .height = 600, },
-    [VIEWPORT_UI] = { .width = 800, .height = 600 },
+    [VIEWPORT_WINDOW] = L_DEFAULT_VIEWPORT,
+    [VIEWPORT_TARGET] = L_DEFAULT_VIEWPORT,
+    [VIEWPORT_GAME] = L_DEFAULT_VIEWPORT,
+    [VIEWPORT_UI] = L_DEFAULT_VIEWPORT,
 };
+#undef L_DEFAULT_VIEWPORT
 
 VIEWPORT_RECT *g_Viewport_Rects = m_Rects;
 
