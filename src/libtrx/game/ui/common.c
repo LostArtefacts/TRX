@@ -25,6 +25,8 @@ static struct {
     },
 };
 
+extern void UI_ClearDraw(void);
+
 static UI_INPUT M_TranslateInput(uint32_t system_keycode);
 static void M_MeasureNode(UI_NODE *node);
 static void M_LayoutNode(UI_NODE *node, float x, float y, float w, float h);
@@ -148,6 +150,7 @@ const UI_NODE *UI_GetCurrent(void)
 // Scene management
 void UI_BeginScene(void)
 {
+    UI_ClearDraw();
     Memory_ArenaReset(&m_Priv.alloc);
     UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
 }

@@ -16,6 +16,7 @@ extern void Output_DispatchObjectMeshSwap(
 
 extern void Output_BeginScene(void);
 extern void Output_EndScene(void);
+extern void Output_Flush(void);
 extern void Output_FlipScreen(void);
 extern bool Output_MakeScreenshot(const char *path);
 

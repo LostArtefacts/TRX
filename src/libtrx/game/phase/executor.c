@@ -15,16 +15,17 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/ui.h"
+#include "gfx/context.h"
 #include "gfx/gl/track.h"
 
-#define DEBUG_CONTROL 0
-#define DEBUG_OPTIM 0
-#define MAX_PHASES 10
+#define M_DEBUG_CONTROL_WAIT 0
+#define M_DEBUG_DRAW_PERF 0
+#define M_MAX_PHASES 10
 
 static bool m_Exiting;
 static FADER m_ExitFader;
 static int32_t m_PhaseStackSize = 0;
-static PHASE *m_PhaseStack[MAX_PHASES] = {};
+static PHASE *m_PhaseStack[M_MAX_PHASES] = {};
 
 static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
@@ -85,30 +86,40 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
 static void M_Draw(PHASE *const phase)
 {
-    Output_BeginScene();
-    Output_SwitchViewport(VIEWPORT_GAME);
-    UI_BeginScene();
-    UI_BeginFade(&m_ExitFader, true);
-
-#if DEBUG_OPTIM
+#if M_DEBUG_DRAW_PERF > 0
     BENCHMARK benchmark = Benchmark_Start();
 #endif
-    if (phase != nullptr && phase->draw != nullptr) {
-        phase->draw(phase);
+
+    const bool skip = Shell_GetArgs()->headless && M_DEBUG_DRAW_PERF < 2
+        && GFX_Context_GetScheduledScreenshotPath() == nullptr;
+
+    Output_BeginScene();
+    if (skip) {
+        UI_BeginScene();
+        m_ExitFader.target_drawn = true;
+        UI_EndScene();
+    } else {
+        Output_SwitchViewport(VIEWPORT_GAME);
+        UI_BeginScene();
+        UI_BeginFade(&m_ExitFader, true);
+        if (phase != nullptr && phase->draw != nullptr) {
+            phase->draw(phase);
+        }
+
+        Overlay_Draw();
+        Console_Draw();
+        UI_EndFade();
+        UI_EndScene();
+
+        Output_SwitchViewport(VIEWPORT_UI);
+        UI_Draw();
+        Output_DrawPolyList();
+
+        Output_Flush();
     }
-
-    Overlay_Draw();
-    Console_Draw();
-    UI_EndFade();
-    UI_EndScene();
-
-    Output_SwitchViewport(VIEWPORT_UI);
-    UI_Draw();
-    Output_DrawPolyList();
-
     Output_EndScene();
 
-#if DEBUG_OPTIM
+#if M_DEBUG_DRAW_PERF > 0
     char buffer[80];
     const GFX_METRICS metrics = GFX_Track_GetMetrics();
     sprintf(
@@ -119,7 +130,11 @@ static void M_Draw(PHASE *const phase)
     Benchmark_End(&benchmark, buffer);
 #endif
 
-    Output_FlipScreen();
+    if (skip || M_DEBUG_DRAW_PERF > 0) {
+        GFX_Track_Reset();
+    } else {
+        Output_FlipScreen();
+    }
 }
 
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
@@ -152,11 +167,11 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
 
     while (true) {
-#if DEBUG_CONTROL
+#if M_DEBUG_CONTROL_WAIT
         BENCHMARK benchmark = Benchmark_Start();
 #endif
         int32_t nframes = Clock_WaitTick();
-#if DEBUG_CONTROL
+#if M_DEBUG_CONTROL_WAIT
         Benchmark_End(&benchmark, "");
 #endif
         int32_t frame = 0;

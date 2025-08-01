@@ -665,6 +665,11 @@ void Output_BeginScene(void)
     Render_BeginScene();
 }
 
+void Output_Flush(void)
+{
+    Output_DrawPolyList();
+}
+
 void Output_EndScene(void)
 {
     Render_EndScene();
@@ -672,10 +677,7 @@ void Output_EndScene(void)
 
 void Output_FlipScreen(void)
 {
-    if (!Shell_GetArgs()->headless
-        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
-        GFX_Context_SwapBuffers();
-    }
+    GFX_Context_SwapBuffers();
 }
 
 BACKGROUND_TYPE Output_GetBackgroundType(void)

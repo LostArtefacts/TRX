@@ -192,6 +192,11 @@ void Output_BeginScene(void)
     SceneCompositor_BeginScene();
 }
 
+void Output_Flush(void)
+{
+    SceneCompositor_Flush();
+}
+
 void Output_EndScene(void)
 {
     SceneCompositor_EndScene();
@@ -199,10 +204,7 @@ void Output_EndScene(void)
 
 void Output_FlipScreen(void)
 {
-    if (!Shell_GetArgs()->headless
-        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
-        GFX_Context_SwapBuffers();
-    }
+    GFX_Context_SwapBuffers();
 }
 
 bool Output_LoadBackgroundFromImage(const IMAGE *const image)
