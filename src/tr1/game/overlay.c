@@ -85,12 +85,13 @@ static void M_DrawPickups(void)
         switch (pu->phase) {
         case DPP_EASE_IN:
             pu->elapsed += elapsed;
+            pu->display.ease =
+                M_Ease(pu->elapsed, M_MAX_PICKUP_DURATION_EASE_IN);
             if (!g_Config.visuals.enable_3d_pickups
                 || pu->elapsed >= M_MAX_PICKUP_DURATION_EASE_IN) {
                 pu->phase = DPP_DISPLAY;
+                pu->elapsed = 0.0;
             }
-            pu->display.ease =
-                M_Ease(pu->elapsed, M_MAX_PICKUP_DURATION_EASE_IN);
             break;
 
         case DPP_DISPLAY:
@@ -104,15 +105,15 @@ static void M_DrawPickups(void)
 
         case DPP_EASE_OUT:
             pu->elapsed += elapsed;
+            pu->display.ease = M_Ease(
+                M_MAX_PICKUP_DURATION_EASE_OUT - pu->elapsed,
+                M_MAX_PICKUP_DURATION_EASE_OUT);
             if (!g_Config.visuals.enable_3d_pickups
                 || pu->elapsed >= M_MAX_PICKUP_DURATION_EASE_OUT) {
                 pu->phase = DPP_DEAD;
                 pu->elapsed = 0.0;
                 continue;
             }
-            pu->display.ease = M_Ease(
-                M_MAX_PICKUP_DURATION_EASE_OUT - pu->elapsed,
-                M_MAX_PICKUP_DURATION_EASE_OUT);
             break;
 
         case DPP_DEAD:
