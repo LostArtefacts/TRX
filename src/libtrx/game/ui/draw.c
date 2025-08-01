@@ -187,6 +187,13 @@ void UI_ShutdownDraw(void)
     }
 }
 
+void UI_ClearDraw(void)
+{
+    M_PRIV *const p = &m_Priv;
+    Vector_Clear(p->ops);
+    Memory_ArenaReset(&p->alloc);
+}
+
 void UI_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -234,7 +241,4 @@ void UI_Draw(void)
         }
     }
     Output_DrawPolyList();
-
-    Vector_Clear(p->ops);
-    Memory_ArenaReset(&p->alloc);
 }
