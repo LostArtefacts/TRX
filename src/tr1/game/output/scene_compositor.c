@@ -141,8 +141,9 @@ static void M_PrepareScene(const M_PRIV *const p)
 
 static void M_RenderScenePasses(const M_PRIV *const p)
 {
-    if (!M_IsAnySourceDirty(p))
+    if (!M_IsAnySourceDirty(p)) {
         return;
+    }
 
     OUTPUT_SHADER *const shader = Output_GetMeshShader();
     const bool wireframe = g_Config.rendering.enable_wireframe;
@@ -188,6 +189,8 @@ void SceneCompositor_Init(void)
     glGenSamplers(1, &p->sampler_id);
     glSamplerParameteri(p->sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glSamplerParameteri(p->sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(p->sampler_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glSamplerParameteri(p->sampler_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GFX_GL_CheckError();
 }
 
