@@ -1,16 +1,12 @@
 #include "game/output/mesh_batcher/batcher.h"
 
 #include "game/output.h"
-#include "game/output/textures.h"
 #include "game/output/utils.h"
 #include "game/output/vertex_range.h"
 
 #include <libtrx/debug.h>
-#include <libtrx/game/level/const.h>
-#include <libtrx/gfx/gl/track.h>
 #include <libtrx/memory.h>
 
-#include <stdlib.h>
 #include <uthash.h>
 
 typedef OUTPUT_SHORT M_MESH_SHADE;

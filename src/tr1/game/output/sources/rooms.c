@@ -1,11 +1,11 @@
 #include "game/output/sources/rooms.h"
 
 #include "game/output.h"
-#include "game/output/scene_compositor.h"
-#include "game/output/utils.h"
+#include "game/output/mesh_batcher/mesh_builder.h"
 #include "game/random.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/level/const.h>
 #include <libtrx/memory.h>
 
 typedef struct {
@@ -18,12 +18,68 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static void M_AddRoomVerts(
+    MESH_BUILDER *builder, size_t vtx_count, int32_t texture_idx,
+    const uint16_t *face_vertices, const TEXTURE_ZW_F *trapezoid_ratio,
+    const ROOM_VERTEX *room_verts);
+static void M_AddRoomFace3(
+    MESH_BUILDER *builder, const FACE3 *face, const ROOM *room);
+static void M_AddRoomFace4(
+    MESH_BUILDER *builder, const FACE4 *face, const ROOM *room);
+
 static int16_t M_ShadeCaustics(
     const M_PRIV *p, const ROOM *room, const bool is_water_effect,
     int16_t source, int32_t vtx_idx);
 static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data);
 static void M_PrepareMeshes(M_PRIV *p);
 static void M_FreeMeshes(M_PRIV *p);
+
+static void M_AddRoomVerts(
+    MESH_BUILDER *const builder, const size_t vtx_count,
+    const int32_t texture_idx, const uint16_t *const face_vertices,
+    const TEXTURE_ZW_F *const trapezoid_ratio,
+    const ROOM_VERTEX *const room_verts)
+{
+    for (size_t i = 0; i < vtx_count; i++) {
+        const int32_t uvw_idx = texture_idx * 4 + i;
+        const ROOM_VERTEX *const room_vert = &room_verts[face_vertices[i]];
+        const XYZ_16 *const pos = &room_vert->pos;
+        const OUTPUT_MESH_VERTEX vertex = {
+            .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
+            .flags = room_vert->flags & NO_VERT_MOVE ? VERT_NO_CAUSTICS : 0,
+            .uvw_idx = uvw_idx,
+            .shade = room_vert->light_adder,
+            .color = { 255, 255, 255, 255 },
+            .trapezoid_ratio = {
+                [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
+                [1] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].w : 1.0f,
+            },
+        };
+        MeshBuilder_AddVertex(builder, &vertex);
+    }
+}
+
+static void M_AddRoomFace3(
+    MESH_BUILDER *const builder, const FACE3 *const face,
+    const ROOM *const room)
+{
+    M_AddRoomVerts(
+        builder, 3, face->texture_idx, face->vertices, nullptr,
+        room->mesh.vertices);
+    MeshBuilder_AddFace3(
+        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+}
+
+static void M_AddRoomFace4(
+    MESH_BUILDER *const builder, const FACE4 *const face,
+    const ROOM *const room)
+{
+    M_AddRoomVerts(
+        builder, 4, face->texture_idx, face->vertices, face->texture_zw,
+        room->mesh.vertices);
+    MeshBuilder_AddFace4(
+        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+}
 
 static int16_t M_ShadeCaustics(
     const M_PRIV *const p, const ROOM *const room, const bool is_water_effect,
@@ -95,24 +151,28 @@ static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Room_GetCount();
     p->meshes = Memory_Alloc(sizeof(OUTPUT_MESH *) * p->mesh_count);
+
+    MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
-        OUTPUT_MESH *const mesh = Output_Mesh_Create();
-
         for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
-            Output_Mesh_AddRoomFace4(mesh, &room->mesh.face4s[j], room);
+            M_AddRoomFace4(builder, &room->mesh.face4s[j], room);
         }
         for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
-            Output_Mesh_AddRoomFace3(mesh, &room->mesh.face3s[j], room);
+            M_AddRoomFace3(builder, &room->mesh.face3s[j], room);
         }
         for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
-            Output_Mesh_AddRoomSprite(mesh, &room->mesh.sprites[j], room);
+            MeshBuilder_AddRoomSprite(builder, &room->mesh.sprites[j], room);
         }
-        Output_Mesh_Seal(mesh);
-        MeshBatcher_AddMesh(p->batcher, mesh);
+
+        OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
+        if (mesh != nullptr) {
+            MeshBatcher_AddMesh(p->batcher, mesh);
+        }
 
         p->meshes[i] = mesh;
     }
+    MeshBuilder_Destroy(builder);
 }
 
 static void M_FreeMeshes(M_PRIV *const p)
@@ -120,7 +180,9 @@ static void M_FreeMeshes(M_PRIV *const p)
     if (p->meshes != nullptr) {
         for (int32_t i = 0; i < (int32_t)p->mesh_count; i++) {
             MeshBatcher_RemoveMesh(p->batcher, p->meshes[i]);
-            Output_Mesh_Destroy(p->meshes[i]);
+            if (p->meshes[i] != nullptr) {
+                Output_Mesh_Destroy(p->meshes[i]);
+            }
         }
         Memory_FreePointer(&p->meshes);
     }

@@ -1,5 +1,7 @@
 #include "game/output/sources/sprites.h"
 
+#include "game/output/mesh_batcher/mesh_builder.h"
+
 #include <libtrx/game/output/textures.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -57,16 +59,17 @@ static void M_PrepareMeshes(M_PRIV *p)
 {
     p->mesh_count = Output_GetSpriteTextureCount();
     p->meshes = Memory_Alloc(sizeof(*p->meshes) * p->mesh_count);
+    MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < (int32_t)p->mesh_count; i++) {
-        OUTPUT_MESH *mesh = Output_Mesh_Create();
         ROOM_VERTEX fake_vert = {};
         const ROOM fake_room = { .mesh = { .vertices = &fake_vert } };
         ROOM_SPRITE fake_sprite = { .texture = (uint16_t)i, .vertex = 0 };
-        Output_Mesh_AddRoomSprite(mesh, &fake_sprite, &fake_room);
-        Output_Mesh_Seal(mesh);
+        MeshBuilder_AddRoomSprite(builder, &fake_sprite, &fake_room);
+        OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh);
         p->meshes[i] = mesh;
     }
+    MeshBuilder_Destroy(builder);
 }
 
 static void M_FreeMeshes(M_PRIV *const p)

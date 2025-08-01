@@ -1,8 +1,7 @@
 #include "game/output/sources/objects.h"
 
 #include "game/output.h"
-#include "game/output/scene_compositor.h"
-#include "game/output/utils.h"
+#include "game/output/mesh_batcher/mesh_builder.h"
 
 #include <libtrx/config.h>
 #include <libtrx/memory.h>
@@ -20,12 +19,77 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static void M_AddObjectVerts(
+    MESH_BUILDER *builder, size_t vtx_count, const OBJECT_MESH *obj_mesh,
+    const uint16_t *vertices, uint16_t texture_idx, uint16_t palette_idx,
+    uint16_t flags, const TEXTURE_ZW_F *trapezoid_ratio);
+static void M_AddObjectFace3(
+    MESH_BUILDER *builder, const OBJECT_MESH *obj_mesh, const FACE3 *face,
+    uint16_t flags);
+static void M_AddObjectFace4(
+    MESH_BUILDER *builder, const OBJECT_MESH *obj_mesh, const FACE4 *face,
+    uint16_t flags);
+
 static int32_t *M_PrepareLightIndexMap(
     const OBJECT_MESH *obj_mesh, int32_t vertex_count);
 static void M_PrepareMeshes(M_PRIV *p);
 static void M_FreeMeshes(M_PRIV *p);
 static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data);
 static void M_Stage(const OBJECT_MESH *mesh, bool background);
+
+static void M_AddObjectVerts(
+    MESH_BUILDER *const builder, const size_t vtx_count,
+    const OBJECT_MESH *const obj_mesh, const uint16_t *vertices,
+    const uint16_t texture_idx, const uint16_t palette_idx,
+    const uint16_t flags, const TEXTURE_ZW_F *const trapezoid_ratio)
+{
+    for (size_t i = 0; i < vtx_count; i++) {
+        const int32_t uvw_idx = texture_idx * 4 + i;
+        const XYZ_16 normal = obj_mesh->lighting.normals[vertices[i]];
+        const XYZ_16 *const pos = &obj_mesh->vertices[vertices[i]];
+        const OUTPUT_MESH_VERTEX vertex = {
+            .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
+            .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
+            .flags = flags,
+            .uvw_idx = uvw_idx,
+            .shade = SHADE_NEUTRAL,
+            .color = (flags & VERT_FLAT_SHADED) ?
+                Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx))
+                : (RGBA_8888) { 255, 255, 255, 255 },
+            .trapezoid_ratio = {
+                [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
+                [1] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].w : 1.0f,
+            },
+        };
+        MeshBuilder_AddVertex(builder, &vertex);
+    }
+}
+
+static void M_AddObjectFace3(
+    MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
+    const FACE3 *const face, const uint16_t flags)
+{
+    M_AddObjectVerts(
+        builder, 3, obj_mesh, face->vertices, face->texture_idx,
+        face->palette_idx, flags, nullptr);
+    MeshBuilder_AddFace3(
+        builder,
+        !obj_mesh->disable_transparency_sort
+            && Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+}
+
+static void M_AddObjectFace4(
+    MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
+    const FACE4 *const face, const uint16_t flags)
+{
+    M_AddObjectVerts(
+        builder, 4, obj_mesh, face->vertices, face->texture_idx,
+        face->palette_idx, flags, face->texture_zw);
+    MeshBuilder_AddFace4(
+        builder,
+        !obj_mesh->disable_transparency_sort
+            && Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+}
 
 static int32_t *M_PrepareLightIndexMap(
     const OBJECT_MESH *const obj_mesh, const int32_t vertex_count)
@@ -69,10 +133,11 @@ static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Object_GetMeshCount();
     p->meshes = Memory_Alloc(sizeof(M_MESH) * p->mesh_count);
+
+    MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
         const OBJECT_MESH *const obj_mesh = Object_GetMesh(i);
         M_MESH *const new_batch = &p->meshes[i];
-        OUTPUT_MESH *const batch = Output_Mesh_Create();
 
         uint16_t flags = 0;
         if (obj_mesh->enable_reflections) {
@@ -83,30 +148,33 @@ static void M_PrepareMeshes(M_PRIV *const p)
         }
 
         for (int32_t j = 0; j < obj_mesh->num_tex_face4s; j++) {
-            Output_Mesh_AddObjectFace4(
-                batch, obj_mesh, &obj_mesh->tex_face4s[j], flags);
+            M_AddObjectFace4(
+                builder, obj_mesh, &obj_mesh->tex_face4s[j], flags);
         }
         for (int32_t j = 0; j < obj_mesh->num_tex_face3s; j++) {
-            Output_Mesh_AddObjectFace3(
-                batch, obj_mesh, &obj_mesh->tex_face3s[j], flags);
+            M_AddObjectFace3(
+                builder, obj_mesh, &obj_mesh->tex_face3s[j], flags);
         }
         for (int32_t j = 0; j < obj_mesh->num_flat_face4s; j++) {
-            Output_Mesh_AddObjectFace4(
-                batch, obj_mesh, &obj_mesh->flat_face4s[j],
+            M_AddObjectFace4(
+                builder, obj_mesh, &obj_mesh->flat_face4s[j],
                 flags | VERT_FLAT_SHADED);
         }
         for (int32_t j = 0; j < obj_mesh->num_flat_face3s; j++) {
-            Output_Mesh_AddObjectFace3(
-                batch, obj_mesh, &obj_mesh->flat_face3s[j],
+            M_AddObjectFace3(
+                builder, obj_mesh, &obj_mesh->flat_face3s[j],
                 flags | VERT_FLAT_SHADED);
         }
-        Output_Mesh_Seal(batch);
-        MeshBatcher_AddMesh(p->batcher, batch);
+        OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
+        if (mesh != nullptr) {
+            MeshBatcher_AddMesh(p->batcher, mesh);
+        }
 
-        new_batch->mesh_batch = batch;
+        new_batch->mesh_batch = mesh;
         new_batch->light_idx_map =
-            M_PrepareLightIndexMap(obj_mesh, batch->vertices->count);
+            M_PrepareLightIndexMap(obj_mesh, mesh->vertices->count);
     }
+    MeshBuilder_Destroy(builder);
 }
 
 static void M_FreeMeshes(M_PRIV *const p)
