@@ -333,6 +333,25 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = NO_BAD_NEG;
+    coll->bad_ceiling = 0;
+
+    Lara_Col_GetInfo(item, coll);
+
+    if (coll->side_mid.ceiling > -100) {
+        Item_SwitchToAnim(item, LA_STAND_STILL, 0);
+        item->goal_anim_state = LS_STOP;
+        item->current_anim_state = LS_STOP;
+        item->speed = 0;
+        item->pos = coll->old;
+    }
+}
+
 static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -588,6 +607,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
 
 // clang-format off
 REGISTER_LARA_COL(LS_COMPRESS,     M_Compress)
+REGISTER_LARA_COL(LS_NEUTRAL_ROLL, M_NeutralJumpRoll)
 REGISTER_LARA_COL(LS_JUMP_UP,      M_UpJump)
 REGISTER_LARA_COL(LS_JUMP_FORWARD, M_ForwardJump)
 REGISTER_LARA_COL(LS_JUMP_BACK,    M_SideBackJump)
