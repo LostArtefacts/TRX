@@ -114,6 +114,7 @@ static void M_Draw3DPickups(const M_PRIV *const p)
         Matrix_PushUnit();
         Matrix_TranslateSet(origin.x, origin.y, origin.z);
         Matrix_RotX(DEG_1 * 15);
+        Matrix_RotY(-DEG_180);
         Matrix_RotY(pickup->rot_y);
         Matrix_Scale((1 << W2V_SHIFT) * scale);
 

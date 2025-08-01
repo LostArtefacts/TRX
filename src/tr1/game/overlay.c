@@ -7,6 +7,7 @@
 #include "game/viewport.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/inventory_ring.h>
 #include <libtrx/game/ui/draw.h>
 
 #define M_MAX_PICKUP_DURATION_DISPLAY 2.0 // seconds
@@ -180,12 +181,14 @@ void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
         if (pu->phase != DPP_DEAD) {
             continue;
         }
+        const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(obj_id);
+        const INVENTORY_ITEM *const inv_item = InvRing_GetInvItem(obj_id);
         pu->object_id = obj_id;
         pu->elapsed = 0.0;
-        pu->display.object = Object_Get(Inv_GetItemOption(pu->object_id));
+        pu->display.object = Object_Get(inv_object_id);
         pu->display.grid_x = grid_x;
         pu->display.grid_y = grid_y;
-        pu->display.rot_y = 0;
+        pu->display.rot_y = inv_item != nullptr ? inv_item->y_rot_sel : 0;
         pu->display.ease = 0.0f;
         pu->phase = DPP_EASE_IN;
         return;
