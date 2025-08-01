@@ -10,8 +10,8 @@ void Object_DrawStaticObject(
 {
     Matrix_Push();
     Object_DrawMesh(obj->mesh_idx, 0, false);
-    for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+    for (int32_t i = 1; i < obj->mesh_count; i++) {
+        const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
         if (bone->matrix_pop) {
             Matrix_Pop();
         }
@@ -20,8 +20,8 @@ void Object_DrawStaticObject(
         }
 
         Matrix_TranslateRel32(bone->pos);
-        Matrix_Rot16(frame->mesh_rots[mesh_idx]);
-        Object_DrawMesh(obj->mesh_idx + mesh_idx, 0, false);
+        Matrix_Rot16(frame->mesh_rots[i]);
+        Object_DrawMesh(obj->mesh_idx + i, 0, false);
     }
     Matrix_Pop();
 }
