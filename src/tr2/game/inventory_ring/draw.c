@@ -31,7 +31,8 @@ static int32_t M_GetFrames(
 {
     const OBJECT *const obj = Object_Get(inv_item->object_id);
     const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
-    if (inv_item != cur_inv_item
+
+    if (inv_item != cur_inv_item || inv_item->current_frame == 0
         || (ring->motion.status != RNG_SELECTED
             && ring->motion.status != RNG_CLOSING_ITEM)) {
         // only apply to animations, eg. the states where Inv_AnimateItem is
@@ -79,13 +80,9 @@ static void M_DrawItem(
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
     Matrix_RotY(inv_item->y_rot);
     Matrix_RotX(inv_item->x_rot);
-    const OBJECT *const obj = Object_Get(inv_item->object_id);
-    if (!obj->loaded) {
-        return;
-    }
 
-    if (obj->mesh_count < 0) {
-        Output_DrawSprite(0, 0, 0, 0, obj->mesh_idx, 0, 0);
+    const OBJECT *const obj = Object_Get(inv_item->object_id);
+    if (!obj->loaded || obj->mesh_count < 0) {
         return;
     }
 
@@ -126,6 +123,16 @@ void InvRing_Draw(INV_RING *const ring)
         && ring->motion.status != RNG_FADING_OUT) {
         for (int32_t i = 0; i < ring->number_of_objects; i++) {
             InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
+        }
+    }
+
+    if (ring->motion.status != RNG_DONE
+        && (ring->motion.status != RNG_OPENING
+            || (ring->mode != INV_TITLE_MODE
+                || (!Fader_IsActive(&ring->top_fader)
+                    && !Fader_IsActive(&ring->back_fader))))) {
+        for (int32_t i = 0; i < num_frames; i++) {
+            InvRing_DoMotions(ring);
         }
     }
 
@@ -195,16 +202,6 @@ void InvRing_Draw(INV_RING *const ring)
         Option_Draw(inv_item);
     }
 
-    if (ring->motion.status != RNG_DONE
-        && (ring->motion.status != RNG_OPENING
-            || (ring->mode != INV_TITLE_MODE
-                || (!Fader_IsActive(&ring->top_fader)
-                    && !Fader_IsActive(&ring->back_fader))))) {
-        for (int32_t i = 0; i < num_frames; i++) {
-            InvRing_DoMotions(ring);
-        }
-    }
-
-    UI_BeginFade(&ring->top_fader, false);
+    UI_BeginFade(&ring->top_fader, true);
     UI_EndFade();
 }
