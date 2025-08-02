@@ -187,6 +187,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── door106_sfx.bin
 │   │   ├── door107_sfx.bin
 │   │   ├── door108_sfx.bin
+│   │   ├── door110_sfx.bin
 │   │   ├── door111_sfx.bin
 │   │   ├── explosion.bin
 │   │   ├── fathoms_goon_sfx.bin
@@ -287,6 +288,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── xian_itemrots.bin
 │   │   ├── xian_music_tracks.bin
 │   │   ├── xian_pickup_meshes.bin
+│   │   ├── xian_sfx.bin
 │   │   └── xian_textures.bin
 │   ├── keel.tr2
 │   ├── level1.tr2
@@ -567,6 +569,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── door106_sfx.bin
         │   │   ├── door107_sfx.bin
         │   │   ├── door108_sfx.bin
+        │   │   ├── door110_sfx.bin
         │   │   ├── door111_sfx.bin
         │   │   ├── explosion.bin
         │   │   ├── fathoms_goon_sfx.bin
@@ -667,6 +670,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── xian_itemrots.bin
         │   │   ├── xian_music_tracks.bin
         │   │   ├── xian_pickup_meshes.bin
+        │   │   ├── xian_sfx.bin
         │   │   └── xian_textures.bin
         │   ├── keel.tr2
         │   ├── level1.tr2

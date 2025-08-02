@@ -87,6 +87,7 @@
             ],
             "injections": [
                 "data/injections/door107_sfx.bin",
+                "data/injections/door108_sfx.bin",
                 "data/injections/fools_itemrots.bin",
                 "data/injections/fools_music_tracks.bin",
                 "data/injections/fools_pickup_meshes.bin",

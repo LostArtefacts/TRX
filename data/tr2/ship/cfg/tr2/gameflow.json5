@@ -182,6 +182,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door108_sfx.bin",
                 "data/injections/rig_itemrots.bin",
                 "data/injections/rig_music_tracks.bin",
                 "data/injections/rig_pickup_meshes.bin",
@@ -209,6 +210,7 @@
                 "data/injections/diving_pickup_meshes.bin",
                 "data/injections/diving_sfx.bin",
                 "data/injections/diving_textures.bin",
+                "data/injections/door108_sfx.bin",
             ],
         },
 
@@ -303,6 +305,7 @@
                 "data/injections/deck_plants.bin",
                 "data/injections/deck_secret_fd.bin",
                 "data/injections/deck_textures.bin",
+                "data/injections/door110_sfx.bin",
                 "data/injections/living_deck_goon_sfx.bin",
             ],
         },
@@ -418,6 +421,7 @@
                 "data/injections/xian_itemrots.bin",
                 "data/injections/xian_music_tracks.bin",
                 "data/injections/xian_pickup_meshes.bin",
+                "data/injections/xian_sfx.bin",
                 "data/injections/xian_textures.bin",
             ],
         },
