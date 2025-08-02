@@ -217,6 +217,7 @@ void SceneCompositor_Flush(void)
     M_RenderScenePasses(p);
     M_PROCESS_SOURCES(p, render_end);
     M_PROCESS_SOURCES(p, render_begin);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void SceneCompositor_EndScene(void)
