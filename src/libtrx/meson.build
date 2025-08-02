@@ -120,6 +120,7 @@ sources = [
   'game/console/cmd/play_level.c',
   'game/console/cmd/pos.c',
   'game/console/cmd/save_game.c',
+  'game/console/cmd/screenshot.c',
   'game/console/cmd/set_health.c',
   'game/console/cmd/sfx.c',
   'game/console/cmd/speed.c',

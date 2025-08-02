@@ -265,9 +265,20 @@ char *File_GetFullPath(const char *path)
 
 char *File_GetParentDirectory(const char *path)
 {
+    if (path == nullptr) {
+        return nullptr;
+    }
+
+    char *last_delim = MAX(strrchr(path, '/'), strrchr(path, '\\'));
+    if (last_delim != nullptr) {
+        return String_Format("%.*s", last_delim - path, path);
+    }
+
     char *full_path = File_GetFullPath(path);
-    char *const last_delim =
-        MAX(strrchr(full_path, '/'), strrchr(full_path, '\\'));
+    if (full_path == nullptr) {
+        return nullptr;
+    }
+    last_delim = MAX(strrchr(full_path, '/'), strrchr(full_path, '\\'));
     if (last_delim != nullptr) {
         *last_delim = '\0';
     }
@@ -561,6 +572,24 @@ void File_CreateDirectory(const char *path)
     mkdir(full_path, 0775);
 #endif
     Memory_FreePointer(&full_path);
+}
+
+void File_EnsureParentDirectories(const char *path)
+{
+    ASSERT(path != nullptr);
+    LOG_INFO("%s", path);
+    char *parent = File_GetParentDirectory(path);
+    LOG_INFO("parent: %s", parent);
+    if (parent != nullptr) {
+        /* Only recurse/create if there is a distinct, non-empty parent */
+        if (parent[0] != '\0' && strcmp(parent, path) != 0) {
+            if (!File_DirExists(parent)) {
+                File_EnsureParentDirectories(parent);
+                File_CreateDirectory(parent);
+            }
+        }
+        Memory_FreePointer(&parent);
+    }
 }
 
 void *File_OpenDirectory(const char *const path)

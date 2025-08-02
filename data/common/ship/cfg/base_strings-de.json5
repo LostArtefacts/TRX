@@ -47,6 +47,7 @@
         "CONSOLE_HELP_PLAY_LEVEL": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",
         "CONSOLE_HELP_POS": "Zeigt Laras Position an.",
         "CONSOLE_HELP_SAVE": "Speichert Spielstand auf dem angegebenen Speicher-Slot.",
+        "CONSOLE_HELP_SCREENSHOT": "\\{review}Speichert einen Screenshot auf der Festplatte, mit optionalem Pfad.",
         "CONSOLE_HELP_SET": "Aktualisiert oder zeigt die angegebene Konfigurations-Einstellung an.",
         "CONSOLE_HELP_SFX": "Spielt einen Sound-Effekt mit der angegebenen ID ab.",
         "CONSOLE_HELP_SPEED": "Ändert die Geschwindigkeit des Spiels.",

@@ -47,6 +47,7 @@
         "CONSOLE_HELP_PLAY_LEVEL": "Lance un niveau correspondant au nom ou au numéro donné.",
         "CONSOLE_HELP_POS": "Montre la position de Lara.",
         "CONSOLE_HELP_SAVE": "Sauvegarde le jeu à l'emplacement de sauvegarde donné.",
+        "CONSOLE_HELP_SCREENSHOT": "\\{review}Enregistre une capture d'écran sur le disque, avec un chemin optionnel.",
         "CONSOLE_HELP_SET": "Affiche ou met à jour le paramètre de configuration donné.",
         "CONSOLE_HELP_SFX": "Joue un effet sonore avec l'identifiant donné.",
         "CONSOLE_HELP_SPEED": "Change la vitesse du jeu.",

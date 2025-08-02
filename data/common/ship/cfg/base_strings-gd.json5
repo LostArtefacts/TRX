@@ -47,6 +47,7 @@
         "CONSOLE_HELP_PLAY_LEVEL": "Cluich ìre leis an ainm neo àireamh ainmichte.",
         "CONSOLE_HELP_POS": "Seall suidheachadh Lara.",
         "CONSOLE_HELP_SAVE": "Sàbhail geama dhan t-slot ainmichte.",
+        "CONSOLE_HELP_SCREENSHOT": "\\{review}Sàbhailidh e dealbh-sgrìn gu diosc, le rathad roghainneil.",
         "CONSOLE_HELP_SET": "Seall neo ùraich roghainn rèiteachaidh ainmichte.",
         "CONSOLE_HELP_SFX": "Cluich buaidh-fuaime leis an ID ainmichte.",
         "CONSOLE_HELP_SPEED": "Atharraich astar a' gheama.",

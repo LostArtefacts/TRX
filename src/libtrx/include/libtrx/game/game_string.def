@@ -562,6 +562,7 @@ GS_DEFINE(CMD_IMMUNE_SWITCHED_ON,  "Lara is now impervious to damage")
 GS_DEFINE(CMD_IMMUNE_SWITCHED_OFF, "Lara is now vulnerable")
 
 GS_DEFINE(CONSOLE_CMD_HELP_LIST,      "Available commands:")
+GS_DEFINE(CONSOLE_HELP_SCREENSHOT,    "Saves a screenshot to disk at optional location.")
 GS_DEFINE(CONSOLE_HELP_HELP,          "Shows help for all commands or detailed help for one.")
 GS_DEFINE(CONSOLE_HELP_FLOOD,         "Submerges the current room with water.")
 GS_DEFINE(CONSOLE_HELP_DRAIN,         "Dries the current room, removing the water.")
