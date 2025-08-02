@@ -32,6 +32,8 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static VIEWPORT_RECT M_GetPickupRect(const OUTPUT_UI_PICKUP *const pickup);
+static float M_Get3DPickupScale(
+    VIEWPORT_RECT pickup_rect, const ANIM_FRAME *frame);
 static void M_Draw3DPickups(const M_PRIV *p);
 static void M_DrawVertices(const M_PRIV *p);
 
@@ -69,6 +71,36 @@ VIEWPORT_RECT OutputSource_UI_GetPickupRect(
     };
 }
 
+static float M_Get3DPickupScale(
+    const VIEWPORT_RECT pickup_rect, const ANIM_FRAME *const frame)
+{
+    const XYZ_F obj_size = {
+        .x = MAX(1, frame->bounds.max.x - frame->bounds.min.x),
+        .y = MAX(1, frame->bounds.max.y - frame->bounds.min.y),
+        .z = MAX(1, frame->bounds.max.z - frame->bounds.min.z),
+    };
+
+    // Reference scale that seems to works OK based on the following data:
+    // pickup_rect: 480×360 (changes with window resizes)
+    // key:         81  182 11
+    // scion:       184 190 54
+    // pistols:     215 57  146
+    // shotgun:     365 123 147
+    const float ref_scale = pickup_rect.w / 200.0f;
+
+    // A scale factor to fit the mesh within pickup_rect,
+    // ensuring it touches either side and is entirely contained.
+    // clang-format off
+    const float perfect_fit_scale = MIN3(
+        pickup_rect.w / obj_size.x,
+        pickup_rect.h / obj_size.y,
+        pickup_rect.w / obj_size.z);
+    // clang-format on
+
+    // Some items are too big or too small – try to find a middle ground.
+    return (ref_scale + perfect_fit_scale) / 2.0f;
+}
+
 static void M_Draw3DPickups(const M_PRIV *const p)
 {
     for (int32_t i = 0; i < p->scheduled_pickups->count; i++) {
@@ -88,16 +120,7 @@ static void M_Draw3DPickups(const M_PRIV *const p)
             .z = (Output_GetNearZ_UI() + Output_GetFarZ_UI()) / 2,
         };
 
-        const float obj_width =
-            MAX(1, frame->bounds.max.x - frame->bounds.min.x);
-        const float obj_height =
-            MAX(1, frame->bounds.max.y - frame->bounds.min.y);
-        const float obj_depth =
-            MAX(1, frame->bounds.max.z - frame->bounds.min.z);
-
-        const float scale =
-            MIN(MIN(pickup_rect.w / obj_width, pickup_rect.h / obj_height),
-                pickup_rect.w / obj_depth);
+        const float scale = M_Get3DPickupScale(pickup_rect, frame);
 
         // Output_GetLightVectorView() used by the 3D object lighting needs a
         // W2V matrix to work. Set up something for it – probably wrong since

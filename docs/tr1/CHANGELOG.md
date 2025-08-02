@@ -48,7 +48,7 @@
 - fixed shadows sometimes broken (#3666)
 - improved object loading error messages when an invalid object ID is detected
 - improved frames in Lara's jump-twist animations
-- improved lighting and projection of 3D pickups in the UI
+- improved lighting, projection and sizing of 3D pickups in the UI
 - improved PS1 menu style border offsets and frames to match PC style
 - improved drawing shadows in no-clip camera mode (they're no longer double-sided)
 - improved wireframe mode to show text and UI normally

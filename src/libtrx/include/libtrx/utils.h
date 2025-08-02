@@ -12,6 +12,9 @@
     #define MAX(x, y) ((x) >= (y) ? (x) : (y))
 #endif
 
+#define MIN3(x, y, z) MIN(MIN((x), (y)), (z))
+#define MAX3(x, y, z) MAX(MAX((x), (y)), (z))
+
 #define CLAMPL(a, b)                                                           \
     do {                                                                       \
         if ((a) < (b))                                                         \
