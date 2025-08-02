@@ -41,6 +41,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── base_strings-gd.json5
 │   ├── base_strings-it.json5
 │   ├── base_strings-pl.json5
+│   ├── base_strings-ru.json5
 │   ├── base_strings.json5
 │   ├── poses.json5
 │   ├── tr2
@@ -421,6 +422,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── base_strings-gd.json5
         │   ├── base_strings-it.json5
         │   ├── base_strings-pl.json5
+        │   ├── base_strings-ru.json5
         │   ├── base_strings.json5
         │   ├── poses.json5
         │   ├── tr2

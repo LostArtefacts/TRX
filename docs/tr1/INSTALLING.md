@@ -58,6 +58,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── base_strings-gd.json5
 │   ├── base_strings-it.json5
 │   ├── base_strings-pl.json5
+│   ├── base_strings-ru.json5
 │   ├── base_strings.json5
 │   ├── poses.json5
 │   ├── tr1
@@ -68,6 +69,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   └── strings.json5
 │   ├── tr1-demo-pc
 │   │   ├── gameflow.json5
@@ -76,6 +78,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   └── strings.json5
 │   ├── tr1-level
 │   │   ├── gameflow.json5
@@ -84,6 +87,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   └── strings.json5
 │   ├── tr1-ub
 │   │   ├── gameflow.json5
@@ -92,6 +96,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   └── strings.json5
 │   └── TR1X.json5*
 ├── data
@@ -148,14 +153,16 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── cistern_plants.bin
 │   │   ├── cistern_skybox.bin
 │   │   ├── cistern_textures.bin
-│   │   ├── colosseum_door.bin
 │   │   ├── colosseum_fd.bin
 │   │   ├── colosseum_itemrots.bin
 │   │   ├── colosseum_skybox.bin
 │   │   ├── colosseum_textures.bin
 │   │   ├── cut3_textures.bin
 │   │   ├── cut4_textures.bin
+│   │   ├── door58_frames.bin
+│   │   ├── door59_frames.bin
 │   │   ├── door59_sfx.bin
+│   │   ├── door60_frames.bin
 │   │   ├── door61_sfx.bin
 │   │   ├── egypt_cameras.bin
 │   │   ├── egypt_fd.bin
@@ -317,7 +324,6 @@ If you install everything correctly, your game directory should look more or les
 │   └── track60.flac
 ├── shaders
 │   ├── 2d.glsl
-│   ├── 3d.glsl
 │   ├── common.glsl
 │   ├── fbo.glsl
 │   └── meshes.glsl
@@ -359,6 +365,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── base_strings-gd.json5
         │   ├── base_strings-it.json5
         │   ├── base_strings-pl.json5
+        │   ├── base_strings-ru.json5
         │   ├── base_strings.json5
         │   ├── poses.json5
         │   ├── tr1
@@ -369,6 +376,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-gd.json5
         │   │   ├── strings-it.json5
         │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
         │   │   └── strings.json5
         │   ├── tr1-demo-pc
         │   │   ├── gameflow.json5
@@ -377,6 +385,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-gd.json5
         │   │   ├── strings-it.json5
         │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
         │   │   └── strings.json5
         │   ├── tr1-level
         │   │   ├── gameflow.json5
@@ -385,6 +394,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-gd.json5
         │   │   ├── strings-it.json5
         │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
         │   │   └── strings.json5
         │   └── tr1-ub
         │       ├── gameflow.json5
@@ -393,6 +403,7 @@ If you install everything correctly, your game directory should look more or les
         │       ├── strings-gd.json5
         │       ├── strings-it.json5
         │       ├── strings-pl.json5
+        │       ├── strings-ru.json5
         │       └── strings.json5
         ├── data
         │   ├── cat.phd
@@ -448,14 +459,16 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── cistern_plants.bin
         │   │   ├── cistern_skybox.bin
         │   │   ├── cistern_textures.bin
-        │   │   ├── colosseum_door.bin
         │   │   ├── colosseum_fd.bin
         │   │   ├── colosseum_itemrots.bin
         │   │   ├── colosseum_skybox.bin
         │   │   ├── colosseum_textures.bin
         │   │   ├── cut3_textures.bin
         │   │   ├── cut4_textures.bin
+        │   │   ├── door58_frames.bin
+        │   │   ├── door59_frames.bin
         │   │   ├── door59_sfx.bin
+        │   │   ├── door60_frames.bin
         │   │   ├── door61_sfx.bin
         │   │   ├── egypt_cameras.bin
         │   │   ├── egypt_fd.bin
@@ -618,7 +631,6 @@ If you install everything correctly, your game directory should look more or les
         │   └── track60.flac
         └── shaders
             ├── 2d.glsl
-            ├── 3d.glsl
             ├── common.glsl
             ├── fbo.glsl
             └── meshes.glsl</code></pre>

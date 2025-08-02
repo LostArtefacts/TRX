@@ -157,6 +157,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door59_frames.bin",
                 "data/injections/folly_fd.bin",
                 "data/injections/folly_itemrots.bin",
                 "data/injections/folly_pickup_meshes.bin",
@@ -175,11 +176,11 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/colosseum_door.bin",
                 "data/injections/colosseum_fd.bin",
                 "data/injections/colosseum_itemrots.bin",
                 "data/injections/colosseum_skybox.bin",
                 "data/injections/colosseum_textures.bin",
+                "data/injections/door58_frames.bin",
             ],
         },
 
@@ -233,6 +234,7 @@
             "injections": [
                 "data/injections/cistern_plants.bin",
                 "data/injections/colosseum_skybox.bin",
+                "data/injections/door60_frames.bin",
                 "data/injections/tihocan_fd.bin",
                 "data/injections/tihocan_itemrots.bin",
                 "data/injections/tihocan_textures.bin",
@@ -294,6 +296,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/door59_frames.bin",
                 "data/injections/door59_sfx.bin",
                 "data/injections/sanctuary_fd.bin",
                 "data/injections/sanctuary_itemrots.bin",
