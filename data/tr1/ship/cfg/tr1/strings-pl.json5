@@ -718,7 +718,7 @@
             "name": "Pomoc do znajdziek",
         },
         "glow": {
-            "name": "\\{review}Poświata",
+            "name": "Poświata",
         },
         "temp_8": {
             "name": "Nieużywane 8",
@@ -755,7 +755,7 @@
         "STATS_DEATHS": "ŚMIERCI",
         "STATS_DISTANCE_TRAVELLED": "PRZEBYTA ODLEGŁOŚĆ",
         "STATS_KILLS": "ZABÓJSTWA",
-        "STATS_LEVEL": "\\{review}POZIOM",
+        "STATS_LEVEL": "POZIOM",
         "STATS_MEDIPACKS_USED": "UŻYTE APTECZKI",
         "STATS_PICKUPS": "PRZEDMIOTY",
         "STATS_SECRETS": "SEKRETY",
