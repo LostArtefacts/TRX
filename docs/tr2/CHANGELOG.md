@@ -29,7 +29,7 @@
 - fixed z-fighting on the front of the passport (#3584)
 - fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving (#3559)
 - fixed French translations containing Italian text in some cases (#3567)
-- fixed several missing or delayed door sound effects; refer to `IMPROVEMENTS.md` for details (#3363, #3614. #3615, #3616)
+- fixed several missing, delayed and duplicated door sound effects; refer to `IMPROVEMENTS.md` for details (#3363, #3614. #3615, #3616, #3663)
 - fixed being unable to antitrigger waterfall objects (#3589)
 - fixed incorrect frames in Lara's underwater roll animation (#1589)
 - fixed mismatched animation frames between the airlock wheel and its corresponding door in offshore levels (#3644)

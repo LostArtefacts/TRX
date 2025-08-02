@@ -278,6 +278,7 @@
 - fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start
 - fixed missing door sound effects in Lara's Home, Bartoli's Hideout, Opera House, Diving Area, Living Quarters, Catacombs of the Talion, Ice Palace, Temple of Xian, Dragon's Lair, Home Sweet Home, Fool's Gold, Kingdom and Nightmare in Vegas
 - fixed delayed door sound effects in The Great Wall and Temple of Xian
+- fixed duplicated door sound effects in Offshore Rig, Diving Area, The Deck, Temple of Xian and Fool's Gold
 
 ## Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
