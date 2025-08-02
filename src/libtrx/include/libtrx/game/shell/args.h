@@ -21,6 +21,7 @@ typedef struct {
     const char *test_record_path;
     const char *test_replay_path;
     bool headless;
+    int32_t headless_fps; // in headless mode, force fixed fps (0 = unlocked)
     bool quiet;
 } SHELL_ARGS;
 
