@@ -166,5 +166,8 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/strings`  
   Reloads the current language files on the fly. Très utile for translators.
 
+- `/screenshot [path]`  
+  Commemorates Lara's antics by taking a picture and saving it to the optional path (relative to the game root directory).
+
 - `/lua {string}`
   Type any LUA code to run it on the spot. Proceed with caution, or at least a sense of adventure!

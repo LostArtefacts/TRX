@@ -5,4 +5,5 @@ typedef enum {
     SCREENSHOT_FORMAT_PNG,
 } SCREENSHOT_FORMAT;
 
-bool Screenshot_Make(SCREENSHOT_FORMAT format);
+void Screenshot_Make(SCREENSHOT_FORMAT format);
+void Screenshot_MakeToPath(const char *path);

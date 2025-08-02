@@ -132,13 +132,14 @@ static char *M_GetScreenshotPath(const SCREENSHOT_FORMAT format)
     return full_path;
 }
 
-bool Screenshot_Make(const SCREENSHOT_FORMAT format)
+void Screenshot_Make(const SCREENSHOT_FORMAT format)
 {
-    File_CreateDirectory(SCREENSHOTS_DIR);
-
     char *full_path = M_GetScreenshotPath(format);
-    const bool result = Output_MakeScreenshot(full_path);
+    Output_MakeScreenshot(full_path);
     Memory_FreePointer(&full_path);
+}
 
-    return result;
+void Screenshot_MakeToPath(const char *const path)
+{
+    Output_MakeScreenshot(path);
 }

@@ -47,6 +47,7 @@
         "CONSOLE_HELP_PLAY_LEVEL": "Wczytuje poziom o podanej nazwie lub numerze.",
         "CONSOLE_HELP_POS": "Pokazuje pozycję Lary.",
         "CONSOLE_HELP_SAVE": "Zapisuje grę do podanego slotu zapisu.",
+        "CONSOLE_HELP_SCREENSHOT": "\\{review}Zapisuje zrzut ekranu na dysku, z opcjonalną ścieżką.",
         "CONSOLE_HELP_SET": "Wyświetla lub aktualizuje dane ustawienie.",
         "CONSOLE_HELP_SFX": "Odtwarza efekt dźwiękowy o podanym numerze.",
         "CONSOLE_HELP_SPEED": "Zmienia prędkość gry.",

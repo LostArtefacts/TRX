@@ -81,6 +81,7 @@ void File_Close(MYFILE *file);
 bool File_Load(const char *path, char **output_data, size_t *output_size);
 
 void File_CreateDirectory(const char *path);
+void File_EnsureParentDirectories(const char *path);
 
 void *File_OpenDirectory(const char *path);
 const char *File_ReadDirectory(void *dir);
