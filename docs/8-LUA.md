@@ -16,6 +16,10 @@ it's not quite there yet.
 - `console.log("string1", "string2")`  
     Logs a line to the developer console.
 
+- `console.eval("string")`  
+    Evaluates a given string as a developer console command.
+    For example, `console.eval("play 1")` will play the first level.
+
 - `assert(condition)`  
     Shows an error if something is not true.
 
