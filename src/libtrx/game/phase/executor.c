@@ -94,11 +94,7 @@ static void M_Draw(PHASE *const phase)
         && GFX_Context_GetScheduledScreenshotPath() == nullptr;
 
     Output_BeginScene();
-    if (skip) {
-        UI_BeginScene();
-        m_ExitFader.target_drawn = true;
-        UI_EndScene();
-    } else {
+    if (!skip) {
         Output_SwitchViewport(VIEWPORT_GAME);
         UI_BeginScene();
         UI_BeginFade(&m_ExitFader, true);

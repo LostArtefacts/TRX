@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/output.h"
+#include "game/shell.h"
 #include "utils.h"
 
 void Fader_InitEx(FADER *const fader, FADER_ARGS args)
@@ -61,7 +62,13 @@ bool Fader_IsActive(const FADER *const fader)
     if (!g_Config.visuals.enable_fade_effects) {
         return false;
     }
-    return fader->args.duration > 0.0 && !fader->target_drawn;
+    if (fader->args.duration <= 0.0) {
+        return false;
+    }
+    if (Shell_GetArgs()->headless) {
+        return Fader_GetCurrentValue(fader) != fader->args.target;
+    }
+    return !fader->target_drawn;
 }
 
 void Fader_Draw(FADER *const fader)
