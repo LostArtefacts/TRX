@@ -130,7 +130,7 @@ static void M_Draw(PHASE *const phase)
     Benchmark_End(&benchmark, buffer);
 #endif
 
-    if (skip || M_DEBUG_DRAW_PERF > 0) {
+    if (skip && M_DEBUG_DRAW_PERF < 2) {
         GFX_Track_Reset();
     } else {
         Output_FlipScreen();
