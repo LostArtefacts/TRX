@@ -24,7 +24,10 @@
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
-- fixed several missing door/trapdoor sound effects; refer to `IMPROVEMENTS.md` for details (#3408, #3374, #3617, #3619)
+- fixed several issues with door data
+    - fixed missing door/trapdoor sound effects; refer to `IMPROVEMENTS.md` for details (#3408, #3374, #3617, #3619)
+    - fixed animation frames in doors in St. Francis' Folly, Tomb of Tihocan and Sanctuary of the Scion (#3661)
+    - fixed the cameras for doors 81 in Tomb of Tihocan and 1 in Sanctuary of the Scion only showing once (#3661)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
 - fixed z-fighting on the front of the passport (#3584)
 - fixed being unable to activate waterfall objects with code bits (#3589)
