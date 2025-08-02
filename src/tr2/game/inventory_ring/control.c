@@ -33,11 +33,11 @@
 
 #include <stdio.h>
 
-#define TITLE_RING_OBJECTS 5
-#define OPTION_RING_OBJECTS 5
-#define INV_RING_FADE_TIME_FAST                                                \
+#define M_TITLE_RING_OBJECTS 5
+#define M_OPTION_RING_OBJECTS 5
+#define M_INV_RING_FADE_TIME_FAST                                              \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
-#define INV_RING_FADE_TIME_TITLE_FINISH 0.25
+#define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
 
 static int32_t m_NoInputCounter = 0;
 static GAME_OBJECT_ID m_InvChosen = NO_OBJECT;
@@ -323,7 +323,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 (FADER_ARGS) {
                     .initial = FADER_ANY,
                     .target = FADER_BLACK,
-                    .duration = INV_RING_FADE_TIME_TITLE_FINISH,
+                    .duration = M_INV_RING_FADE_TIME_TITLE_FINISH,
                     .debuff = 1. / (double)LOGIC_FPS,
                 });
         }
@@ -347,6 +347,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
+
     Input_Update();
     Shell_ProcessInput();
     Game_ProcessInput();
@@ -415,7 +416,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
                 Fader_Init(
                     &ring->back_fader, FADER_ANY, FADER_TRANSPARENT,
-                    INV_RING_FADE_TIME_FAST);
+                    M_INV_RING_FADE_TIME_FAST);
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -718,7 +719,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
                 Fader_Init(
                     &ring->back_fader, FADER_ANY, FADER_TRANSPARENT,
-                    INV_RING_FADE_TIME_FAST);
+                    M_INV_RING_FADE_TIME_FAST);
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -783,13 +784,13 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     m_InvChosen = NO_OBJECT;
 
     if (mode == INV_TITLE_MODE) {
-        g_InvRing_Source[RT_OPTION].count = TITLE_RING_OBJECTS;
+        g_InvRing_Source[RT_OPTION].count = M_TITLE_RING_OBJECTS;
         if (GF_GetGymLevel() != nullptr) {
             g_InvRing_Source[RT_OPTION].count++;
         }
         InvRing_ShowVersionText();
     } else {
-        g_InvRing_Source[RT_OPTION].count = OPTION_RING_OBJECTS;
+        g_InvRing_Source[RT_OPTION].count = M_OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();
     }
 
@@ -867,7 +868,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Output_LoadBackgroundFromFile(g_GameFlow.main_menu_background_path);
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
-            INV_RING_FADE_TIME_FAST);
+            M_INV_RING_FADE_TIME_FAST);
     } else {
         Output_LoadBackgroundFromObject();
     }
