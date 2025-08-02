@@ -49,6 +49,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     out_args->mod = M_BASE_MOD;
     out_args->save_to_load = -1;
     out_args->original_args = args;
+    out_args->headless_fps = 0;
     if (args == nullptr) {
         return out_args;
     }
@@ -98,6 +99,13 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
         if (!strcmp(arg, "--headless")) {
             out_args->headless = true;
+        }
+        if (!strcmp(arg, "--headless-fps") && next_arg != nullptr) {
+            int32_t fps = 0;
+            if (String_ParseInteger(next_arg, &fps) && fps > 0) {
+                out_args->headless_fps = fps;
+            }
+            i++;
         }
         if (!strcmp(arg, "-q") || !strcmp(arg, "--quiet")) {
             out_args->quiet = true;

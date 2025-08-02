@@ -168,6 +168,9 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
         Music_SetVolume(g_Config.audio.music_volume);
     } else {
         Clock_DisableWait();
+        const int32_t fps = new_args->headless_fps > 0 ? new_args->headless_fps
+                                                       : Clock_GetCurrentFPS();
+        Clock_EnableHeadlessFixedFPS(fps);
     }
 
     m_ShellArgs = new_args;

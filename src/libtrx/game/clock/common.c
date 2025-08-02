@@ -22,10 +22,20 @@ static struct {
     double sim_speed;
 } m_Priv;
 
+// Fixed‐FPS simulation in headless mode
+static bool m_HeadlessFixedFPS = false;
+static double m_HeadlessFPS_DT = 0.0;
+static double m_HeadlessOffset = 0.0;
+static double m_HeadlessAnchor = 0.0;
+
 static double M_GetHighPrecisionCounter(void);
 
 static double M_GetHighPrecisionCounter(void)
 {
+    if (m_HeadlessFixedFPS) {
+        // Return virtual time = anchor + offset
+        return m_HeadlessAnchor + m_HeadlessOffset;
+    }
     return (SDL_GetPerformanceCounter() - m_InitCounter) / (double)m_Frequency;
 }
 
@@ -38,6 +48,20 @@ void Clock_Init(void)
 void Clock_DisableWait(void)
 {
     m_Disabled = true;
+}
+
+void Clock_EnableHeadlessFixedFPS(int32_t fps)
+{
+    if (fps <= 0) {
+        m_HeadlessFixedFPS = false;
+        return;
+    }
+
+    // Anchor to current real time, reset offset
+    m_HeadlessAnchor = M_GetHighPrecisionCounter();
+    m_HeadlessOffset = 0.0;
+    m_HeadlessFPS_DT = 1.0 / (double)fps;
+    m_HeadlessFixedFPS = true;
 }
 
 size_t Clock_GetDateTime(char *const buffer, const size_t size)
@@ -69,6 +93,11 @@ void Clock_SyncTick(void)
 
 int32_t Clock_WaitTick(void)
 {
+    if (m_Disabled && m_HeadlessFixedFPS) {
+        // Advance virtual time by one fixed frame
+        m_HeadlessOffset += m_HeadlessFPS_DT;
+        return 1;
+    }
     if (m_Disabled) {
         return 1;
     }
