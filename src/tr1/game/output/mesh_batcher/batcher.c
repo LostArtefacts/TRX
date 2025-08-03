@@ -668,6 +668,9 @@ void MeshBatcher_Stage(
     MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst,
     const SCENE_PASS pass)
 {
+    if (inst->mesh == nullptr) {
+        return;
+    }
     Vector_Add(batcher->staged[pass], inst);
 }
 
