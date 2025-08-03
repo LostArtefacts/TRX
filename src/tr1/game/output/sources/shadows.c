@@ -28,26 +28,18 @@ static OUTPUT_MESH *M_GenerateShadow(MESH_BUILDER *builder, int32_t fidelity)
         .color = color,
     };
 
-    for (int32_t i = 0; i < fidelity; i++) {
-        const int16_t angle1 = ((i + 0) * DEG_360 + DEG_180) / fidelity;
-        const int16_t angle2 = ((i + 1) * DEG_360 + DEG_180) / fidelity;
+    MeshBuilder_AddVertex(builder, &center);
+    for (int32_t i = 0; i <= fidelity; i++) {
+        const int16_t angle = ((i * DEG_360) + DEG_180) / fidelity;
         const int32_t size = WALL_L / 2;
-        const int32_t x1 = (Math_Sin(angle1) * size) >> W2V_SHIFT;
-        const int32_t z1 = (Math_Cos(angle1) * size) >> W2V_SHIFT;
-        const int32_t x2 = (Math_Sin(angle2) * size) >> W2V_SHIFT;
-        const int32_t z2 = (Math_Cos(angle2) * size) >> W2V_SHIFT;
-
-        OUTPUT_MESH_VERTEX v1 = center;
-        v1.pos.x = x1;
-        v1.pos.z = z1;
-        OUTPUT_MESH_VERTEX v2 = center;
-        v2.pos.x = x2;
-        v2.pos.z = z2;
-        MeshBuilder_AddVertex(builder, &center);
-        MeshBuilder_AddVertex(builder, &v1);
-        MeshBuilder_AddVertex(builder, &v2);
-        MeshBuilder_AddFace3(builder, true);
+        const int32_t x = (Math_Sin(angle) * size) >> W2V_SHIFT;
+        const int32_t z = (Math_Cos(angle) * size) >> W2V_SHIFT;
+        OUTPUT_MESH_VERTEX edge = center;
+        edge.pos.x = x;
+        edge.pos.z = z;
+        MeshBuilder_AddVertex(builder, &edge);
     }
+    MeshBuilder_AddFan(builder, true);
     return MeshBuilder_Seal(builder);
 }
 

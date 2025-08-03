@@ -31,6 +31,10 @@ void MeshBuilder_AddFace3(MESH_BUILDER *builder, bool transparent);
 // Add a quad face (split internally) using the last four vertices added.
 void MeshBuilder_AddFace4(MESH_BUILDER *builder, bool transparent);
 
+// Add a triangle fan face using the last vertices added: a center followed by
+// ring vertices.
+void MeshBuilder_AddFan(MESH_BUILDER *builder, bool transparent);
+
 // Finalize all pending vertices and faces into the OUTPUT_MESH and seal it.
 // Returns the sealed mesh; builder must still be destroyed via
 // MeshBuilder_Destroy().

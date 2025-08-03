@@ -4,6 +4,7 @@
 
 #include <libtrx/colors.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/memory.h>
 #include <libtrx/vector.h>
 
 typedef struct {
@@ -29,13 +30,14 @@ typedef struct {
 // with sort keys.
 typedef struct {
     int32_t vertex_count;
-    int32_t vertex_indices[6]; // Maximum 6 indices per face
+    int32_t *vertex_indices;
     XYZ_F mesh_centroid;
 } OUTPUT_MESH_FACE;
 
 typedef struct {
     VECTOR *vertices;
 
+    MEMORY_ARENA_ALLOCATOR allocator;
     bool sealed;
     VECTOR *animated_vertices; // OUTPUT_VERTEX_RANGE
     VECTOR *transparent_faces; // OUTPUT_MESH_FACE
