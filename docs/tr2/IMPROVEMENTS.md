@@ -129,6 +129,7 @@
 - fixed Lara behaving erratically if she is killed while hanging from a ledge
 - fixed the boat veering if Lara looks left or right when driving
 - fixed Lara not equipping a weapon chosen from inventory if it is the last weapon used
+- fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels
@@ -225,10 +226,10 @@
     - **Living Quarters**: incorrect textures in room 43
     - **The Deck**: stretched textures in rooms 1, 47, 60, 80, 84, 85; incorrect textures in rooms 60, 68, 113
     - **Tibetan Foothills**: a missing texture in room 143; stretched textures in rooms 12, 15, 28, 40; misaligned textures in room 72
-    - **Barkhang Monastery**: a misaligned texture in room 23; stretched textures in rooms 25, 70, 87, 94; an incorrect texture in room 45
+    - **Barkhang Monastery**: a misaligned texture in room 23; stretched textures in rooms 25, 70, 87, 94; an incorrect texture in room 45; missing textures in room 40
     - **Catcombs of the Talion**: missing textures in room 40, 43; stretched textures in rooms 11, 40; incorrect textures in rooms 11, 56
     - **Ice Palace**: missing textures in room 31; stretched textures in rooms 31, 52; misaligned textures in rooms 49, 52, 92, 120, 121, 124; an incorrect texture in room 66
-    - **Temple of Xian**: a misaligned texture in room 190; stretched textures in rooms 17, 18, 79; missing textures in rooms 8, 10, 90, 91, 92; an incorrect texture in room 23; z-fighting in room 92
+    - **Temple of Xian**: a misaligned texture in room 190; stretched textures in rooms 17, 18, 79; missing textures in rooms 8, 10, 38, 90, 91, 92; an incorrect texture in room 23; z-fighting in room 92
     - **Floating Islands**: incorrect textures in rooms 27, 32, 41, 58, 73, 157; misaligned textures in room 60; stretched textures in rooms 41, 73, 98, 101, 133
     - **Home Sweet Home**: stretched textures in rooms 2, 61; misaligned textures in rooms 9, 34, 54; incorrect textures in rooms 61, 63; incorrect textures on mesh 58 in room 12, and meshes 124 and 126 in room 58; a transparent pixel in room 52
     - **Furnace of the Gods**: stretched textures in room 10; incorrect textures in rooms 97, 99, 101, 105, 108, 120, 124; missing textures in room 117
