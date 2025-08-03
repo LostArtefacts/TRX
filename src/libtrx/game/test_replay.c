@@ -438,7 +438,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
     }
 
     // Read header for initialization stuff
-    M_PARSE_CTX ctx;
+    M_PARSE_CTX ctx = {};
     M_ReadHeaders(p, &ctx);
     SHELL_ARGS *const new_args = Shell_ParseArgs(ctx.raw_args);
 
