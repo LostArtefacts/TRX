@@ -29,6 +29,7 @@ static void M_SetupSkybox(void)
         for (int32_t i = 0; i < obj->mesh_count; i++) {
             OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
             obj_mesh->disable_lighting = true;
+            obj_mesh->disable_transparency_sort = true;
         }
     }
 }
