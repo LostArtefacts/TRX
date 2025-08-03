@@ -90,29 +90,24 @@ static void M_Draw(PHASE *const phase)
     BENCHMARK benchmark = Benchmark_Start();
 #endif
 
-    const bool skip = Shell_GetArgs()->headless && M_DEBUG_DRAW_PERF < 2
-        && GFX_Context_GetScheduledScreenshotPath() == nullptr;
-
     Output_BeginScene();
-    if (!skip) {
-        Output_SwitchViewport(VIEWPORT_GAME);
-        UI_BeginScene();
-        UI_BeginFade(&m_ExitFader, true);
-        if (phase != nullptr && phase->draw != nullptr) {
-            phase->draw(phase);
-        }
-
-        Overlay_Draw();
-        Console_Draw();
-        UI_EndFade();
-        UI_EndScene();
-
-        Output_SwitchViewport(VIEWPORT_UI);
-        UI_Draw();
-        Output_DrawPolyList();
-
-        Output_Flush();
+    Output_SwitchViewport(VIEWPORT_GAME);
+    UI_BeginScene();
+    UI_BeginFade(&m_ExitFader, true);
+    if (phase != nullptr && phase->draw != nullptr) {
+        phase->draw(phase);
     }
+
+    Overlay_Draw();
+    Console_Draw();
+    UI_EndFade();
+    UI_EndScene();
+
+    Output_SwitchViewport(VIEWPORT_UI);
+    UI_Draw();
+    Output_DrawPolyList();
+
+    Output_Flush();
     Output_EndScene();
 
 #if M_DEBUG_DRAW_PERF > 0
@@ -126,10 +121,12 @@ static void M_Draw(PHASE *const phase)
     Benchmark_End(&benchmark, buffer);
 #endif
 
-    if (skip && M_DEBUG_DRAW_PERF < 2) {
-        GFX_Track_Reset();
-    } else {
+    if (!Output_IsHeadless()
+        || GFX_Context_GetScheduledScreenshotPath() != nullptr
+        || M_DEBUG_DRAW_PERF == 2) {
         Output_FlipScreen();
+    } else {
+        GFX_Track_Reset();
     }
 }
 

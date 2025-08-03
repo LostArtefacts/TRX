@@ -176,7 +176,7 @@ static void M_Render(GFX_RENDERER *renderer)
     M_Blit(p, &p->ui_fbo);
     glDisable(GL_BLEND);
 
-    if (GFX_Context_GetScheduledScreenshotPath()) {
+    if (GFX_Context_GetScheduledScreenshotPath() != nullptr) {
         GFX_Context_SwitchToViewport(VIEWPORT_TARGET);
         GFX_Screenshot_CaptureToFile(GFX_Context_GetScheduledScreenshotPath());
         GFX_Context_ClearScheduledScreenshotPath();

@@ -6,6 +6,7 @@
 
 extern bool Output_Init(void);
 extern void Output_Shutdown(void);
+extern bool Output_IsHeadless(void);
 
 extern void Output_DispatchLevelLoad(void);
 extern void Output_DispatchLevelUnload(void);
