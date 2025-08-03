@@ -255,7 +255,8 @@ void Output_Mesh_AddObjectFace4(
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
     M_AddFaceCommon(
         mesh, vertex_start, vertex_count, m_Vertices4,
-        Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+        !obj_mesh->disable_transparency_sort
+            && Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
 void Output_Mesh_AddObjectFace3(
@@ -274,7 +275,8 @@ void Output_Mesh_AddObjectFace3(
     const int32_t vertex_count = mesh->vertices->count - vertex_start;
     M_AddFaceCommon(
         mesh, vertex_start, vertex_count, m_Vertices3,
-        Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+        !obj_mesh->disable_transparency_sort
+            && Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
 void Output_Mesh_Seal(OUTPUT_MESH *const mesh)

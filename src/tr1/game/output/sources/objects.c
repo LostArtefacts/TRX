@@ -223,10 +223,12 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool background)
         .update_light_func = M_UpdateShades,
         .update_light_func_data = (void *)mesh,
     };
-    MeshBatcher_Stage(
-        p->batcher, &inst,
-        background ? SCENE_PASS_BACKGROUND : SCENE_PASS_MESHES);
-    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
+    if (background) {
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BACKGROUND);
+    } else {
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
+    }
 }
 
 void OutputSource_Objects_Init(MESH_BATCHER *const batcher)
