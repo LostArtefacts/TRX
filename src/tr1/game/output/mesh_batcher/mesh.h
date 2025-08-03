@@ -38,7 +38,7 @@ typedef struct {
     VECTOR *vertices;
 
     MEMORY_ARENA_ALLOCATOR allocator;
-    bool sealed;
+    int32_t sealed;
     VECTOR *animated_vertices; // OUTPUT_VERTEX_RANGE
     VECTOR *transparent_faces; // OUTPUT_MESH_FACE
     VECTOR *opaque_vertex_indices; // int32_t

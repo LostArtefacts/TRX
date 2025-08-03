@@ -581,7 +581,7 @@ void MeshBatcher_RemoveMesh(
 
 void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
 {
-    ASSERT(mesh->sealed);
+    ASSERT(mesh->sealed == 1);
 
     M_MESH_BUF_BINDING *const bind = Memory_Alloc(sizeof(M_MESH_BUF_BINDING));
     bind->mesh = mesh;
@@ -600,13 +600,17 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
     bind->vertex_start = batcher->vertex_count;
     batcher->vertex_count += bind->vertex_count;
 
-    // TODO: improve sealing api
+    // Offset opaque indices. (Transparent indices are uploaded as a whole, and
+    // thus offsets would be detrimental to them.)
     {
         int32_t *const vert_idx = Vector_GetData(mesh->opaque_vertex_indices);
         for (int32_t i = 0; i < mesh->opaque_vertex_indices->count; i++) {
             vert_idx[i] += bind->vertex_start;
         }
     }
+
+    // Prevent the same mesh from being added twice to a mesh batcher
+    mesh->sealed = 2;
 
     Vector_Add(batcher->bindings, &bind);
     HASH_ADD_PTR(batcher->binding_map, mesh, bind);

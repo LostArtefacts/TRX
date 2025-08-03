@@ -183,7 +183,7 @@ OUTPUT_MESH *MeshBuilder_Seal(MESH_BUILDER *const builder)
     }
     OUTPUT_MESH *const mesh = builder->mesh;
     Output_GlueVertexRanges(mesh->animated_vertices);
-    mesh->sealed = true;
+    mesh->sealed = 1;
     builder->mesh = nullptr;
     return mesh;
 }
