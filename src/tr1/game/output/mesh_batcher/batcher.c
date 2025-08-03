@@ -117,6 +117,9 @@ static void M_FillGeometry(
 static void M_FillTexture(
     M_MESH_TEXTURE *const tex, const OUTPUT_MESH_VERTEX *const vertex)
 {
+    if (vertex->uvw_idx < 0) {
+        return;
+    }
     tex->uvw = Output_Textures_GetUVW(vertex->uvw_idx);
     tex->texture_size = Output_Textures_GetAtlasSize(vertex->uvw_idx / 4);
     tex->trapezoid_ratio[0] = vertex->trapezoid_ratio[0];
