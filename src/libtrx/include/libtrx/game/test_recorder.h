@@ -3,7 +3,7 @@
 #include "../vector.h"
 #include "./shell/args.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 
 // Test replay: a module to record game playthroughs.
 // ============================================================================

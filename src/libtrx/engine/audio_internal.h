@@ -2,7 +2,7 @@
 
 #include "engine/audio.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
 #include <libavformat/avformat.h>
 
 #define AUDIO_WORKING_RATE 44100

@@ -24,6 +24,7 @@
 #include "log.h"
 #include "utils.h"
 
+#include <SDL2/SDL.h>
 #include <stdio.h>
 
 static const SHELL_ARGS *m_ShellArgs = nullptr;

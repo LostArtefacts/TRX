@@ -2,8 +2,6 @@
 
 #include "./shell/args.h"
 
-#include <SDL2/SDL.h>
-
 // Test replay: a module to simulate game playthroughs.
 // ============================================================================
 
