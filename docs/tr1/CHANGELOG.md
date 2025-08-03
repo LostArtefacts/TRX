@@ -47,8 +47,10 @@
 - fixed emitted darts moving in the wrong direction when reloading a save (#3677, regression from 2.11)
 - fixed wireframe mode rendering as mostly white (#3649, regression from 4.13.2)
 - fixed wireframe mode not working in the inventory ring (#3651, regression from 4.10)
-- fixed shadows sometimes rendered opaque (#879)
-- fixed shadows sometimes broken (#3666)
+- fixed shadow rendering
+    - fixed Y component not interpolated in 60 FPS (#1314)
+    - fixed shadows being rendered partially opaque near room portals (#879)
+    - fixed Bacon Lara shadow rendered transparent when she's standing on a trapdoor (#3666)
 - improved object loading error messages when an invalid object ID is detected
 - improved frames in Lara's jump-twist animations
 - improved lighting, projection and sizing of 3D pickups in the UI

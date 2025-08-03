@@ -303,6 +303,7 @@ static void M_InterpolateBraid(const double ratio, ITEM *const lara_item)
 
 static void M_RememberItem(ITEM *const item)
 {
+    REMEMBER(item, floor);
     REMEMBER(item, pos.x);
     REMEMBER(item, pos.y);
     REMEMBER(item, pos.z);
@@ -313,6 +314,7 @@ static void M_RememberItem(ITEM *const item)
 
 static void M_CommitItem(ITEM *const item)
 {
+    COMMIT(item, floor);
     COMMIT(item, pos.x);
     COMMIT(item, pos.y);
     COMMIT(item, pos.z);
@@ -324,6 +326,7 @@ static void M_CommitItem(ITEM *const item)
 static void M_InterpolateItem(ITEM *const item, const double ratio)
 {
     const XYZ_32 max_delta = M_GetItemMaxDelta(item);
+    INTERPOLATE(item, floor, ratio, max_delta.y);
     INTERPOLATE(item, pos.x, ratio, max_delta.x);
     INTERPOLATE(item, pos.y, ratio, max_delta.y);
     INTERPOLATE(item, pos.z, ratio, max_delta.z);
