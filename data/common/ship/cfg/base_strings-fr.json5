@@ -394,6 +394,8 @@
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Place le micro au niveau de Lara. Si cette option est désactivée, le micro sera placé au niveau de la caméra.",
         "SETTING_ENABLE_LEAN_JUMPING": "Contrôle du saut sur place",
         "SETTING_ENABLE_LEAN_JUMPING_DESCRIPTION": "Permet à Lara d'avancer ou de reculer pendant les sauts sur place lorsque la touche correspondante est enfoncée, comme possible depuis TR2.",
+        "SETTING_ENABLE_LEDGE_JUMPS": "\\{review}Sauts depuis une corniche",
+        "SETTING_ENABLE_LEDGE_JUMPS_DESCRIPTION": "\\{review}Permet à Lara de sauter vers le haut ou en arrière lorsqu'elle est suspendue à une corniche, à condition qu'il y ait une surface solide devant elle pour prendre appui.",
         "SETTING_ENABLE_LEGAL": "Afficher le contenu juridique",
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Affiche l'écran juridique et la FMV Core Design au début du jeu.",
         "SETTING_ENABLE_LOADING_SCREENS": "Activer les écrans de chargement",

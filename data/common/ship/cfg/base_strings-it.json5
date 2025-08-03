@@ -394,6 +394,8 @@
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Imposta il microfono in modo che sia collocato nella posizione di Lara. Se disabilitato, il microfono sarà collocato nella posizione della telecamera.",
         "SETTING_ENABLE_LEAN_JUMPING": "Salti inclinati",
         "SETTING_ENABLE_LEAN_JUMPING_DESCRIPTION": "Permette a Lara di spostarsi leggermente in avanti o indietro, tenendo premuto il relativo tasto, quando esegue salti sul posto.",
+        "SETTING_ENABLE_LEDGE_JUMPS": "\\{review}Salti da sporgenza",
+        "SETTING_ENABLE_LEDGE_JUMPS_DESCRIPTION": "\\{review}Permette a Lara di saltare verso l'alto o all'indietro mentre è appesa a una sporgenza, se c'è una superficie solida davanti a lei da cui spingersi.",
         "SETTING_ENABLE_LEGAL": "Contenuto legale",
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Abilita la schermata di introduzione e il video Core Design all'avvio del gioco.",
         "SETTING_ENABLE_LOADING_SCREENS": "Schermate di caricamento",

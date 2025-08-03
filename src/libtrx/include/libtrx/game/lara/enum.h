@@ -315,6 +315,10 @@ typedef enum {
     LA_JUMP_NEUTRAL_ROLL                     = 186,
     LA_CONTROLLED_DROP                       = 187,
     LA_CONTROLLED_DROP_CONTINUE              = 188,
+    LA_HANG_TO_JUMP_UP                       = 189,
+    LA_HANG_TO_JUMP_UP_CONTINUE              = 190,
+    LA_HANG_TO_JUMP_BACK                     = 191,
+    LA_HANG_TO_JUMP_BACK_CONTINUE            = 192,
 #else
     LA_STAND_TO_LADDER                       = 160,
     LA_LADDER_UP                             = 161,
@@ -379,6 +383,10 @@ typedef enum {
     LA_JUMP_NEUTRAL_ROLL                     = 220,
     LA_CONTROLLED_DROP                       = 221,
     LA_CONTROLLED_DROP_CONTINUE              = 222,
+    LA_HANG_TO_JUMP_UP                       = 223,
+    LA_HANG_TO_JUMP_UP_CONTINUE              = 224,
+    LA_HANG_TO_JUMP_BACK                     = 225,
+    LA_HANG_TO_JUMP_BACK_CONTINUE            = 226,
 #endif
     LA_NUMBER_OF,
 } LARA_ANIMATION;
