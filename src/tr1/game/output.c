@@ -8,6 +8,7 @@
 #include "game/output/sources/objects.h"
 #include "game/output/sources/rooms.h"
 #include "game/output/sources/rooms_debug.h"
+#include "game/output/sources/shadows.h"
 #include "game/output/sources/sprites.h"
 #include "game/output/sources/ui.h"
 #include "game/output/textures.h"
@@ -65,6 +66,7 @@ bool Output_Init(void)
     OutputSource_Objects_Init(m_Batcher);
     OutputSource_Sprites_Init(m_Batcher);
     OutputSource_Lightnings_Init();
+    OutputSource_Shadows_Init(m_Batcher);
     OutputSource_Misc_Init();
     OutputSource_UI_Init();
 
@@ -80,6 +82,7 @@ void Output_Shutdown(void)
     OutputSource_Objects_Shutdown();
     OutputSource_Sprites_Shutdown();
     OutputSource_Lightnings_Shutdown();
+    OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
 
     Output_Shader_Free(m_Shader);

@@ -15,8 +15,6 @@ typedef struct {
 } M_VERTEX;
 
 typedef enum {
-    M_PRIMITIVE_SHADOW_LOW,
-    M_PRIMITIVE_SHADOW_HIGH,
     M_PRIMITIVE_SPHERE,
     M_PRIMITIVE_NUMBER_OF,
 } M_PRIMITIVE_TYPE;
@@ -41,11 +39,8 @@ typedef struct {
 static M_PRIV m_Priv;
 
 static void M_SealPrimitive(M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range);
-static void M_GenerateShadow(
-    M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range, int32_t fidelity);
 static void M_GenerateSphere(
     M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range, int32_t subdivisions);
-static void M_SealPrimitive(M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range);
 static void M_DrawScheduled(M_PRIV *p, VECTOR *scheduled);
 
 static void M_RenderBegin(const SCENE_SOURCE *source);
@@ -55,37 +50,10 @@ static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
 static void M_SealPrimitive(
     M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range)
 {
-
     target_range->vertex_start = p->vertex_count;
     target_range->vertex_count =
         p->vertices->count - target_range->vertex_start;
     p->vertex_count += target_range->vertex_count;
-}
-
-static void M_GenerateShadow(
-    M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range,
-    const int32_t fidelity)
-{
-    const RGBA_8888 color = { 0, 0, 0, 128 };
-    const int32_t y = -5;
-    const M_VERTEX center = (M_VERTEX) { .pos = { 0, y, 0 }, .color = color };
-    for (int32_t i = 0; i < fidelity; i++) {
-        const int16_t angle_1 = ((i + 0) * DEG_360 + DEG_1 / 2) / fidelity;
-        const int16_t angle_2 = ((i + 1) * DEG_360 + DEG_1 / 2) / fidelity;
-        const int16_t size = WALL_L / 2;
-        const int32_t x_1 = (Math_Sin(angle_1) * size) >> W2V_SHIFT;
-        const int32_t z_1 = (Math_Cos(angle_1) * size) >> W2V_SHIFT;
-        const int32_t x_2 = (Math_Sin(angle_2) * size) >> W2V_SHIFT;
-        const int32_t z_2 = (Math_Cos(angle_2) * size) >> W2V_SHIFT;
-        Vector_Add(p->vertices, &center);
-        Vector_Add(
-            p->vertices,
-            &(M_VERTEX) { .pos = { x_2, y, z_2 }, .color = color });
-        Vector_Add(
-            p->vertices,
-            &(M_VERTEX) { .pos = { x_1, y, z_1 }, .color = color });
-    }
-    M_SealPrimitive(p, target_range);
 }
 
 static void M_GenerateSphere(
@@ -241,8 +209,6 @@ void OutputSource_Misc_Init(void)
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, color));
 
-    M_GenerateShadow(p, &p->primitive_ranges[M_PRIMITIVE_SHADOW_LOW], 8);
-    M_GenerateShadow(p, &p->primitive_ranges[M_PRIMITIVE_SHADOW_HIGH], 32);
     M_GenerateSphere(p, &p->primitive_ranges[M_PRIMITIVE_SPHERE], 12);
 
     GFX_TRACK_DATA(
@@ -264,18 +230,6 @@ void OutputSource_Misc_Shutdown(void)
         glDeleteBuffers(1, &p->vbo);
         p->vbo = 0;
     }
-}
-
-void OutputSource_Misc_StageShadow(void)
-{
-    M_PRIV *const p = &m_Priv;
-    M_INSTANCE inst = {
-        .matrix = *g_MatrixPtr,
-        .prim_type = g_Config.visuals.enable_round_shadow
-            ? M_PRIMITIVE_SHADOW_HIGH
-            : M_PRIMITIVE_SHADOW_LOW,
-    };
-    Vector_Add(p->scheduled, &inst);
 }
 
 void OutputSource_Misc_StageSphere(void)

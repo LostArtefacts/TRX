@@ -4,6 +4,7 @@
 #include "game/output/sources/objects.h"
 #include "game/output/sources/rooms.h"
 #include "game/output/sources/rooms_debug.h"
+#include "game/output/sources/shadows.h"
 #include "game/output/sources/sprites.h"
 #include "game/output/sources/ui.h"
 #include "game/output/utils.h"
@@ -136,7 +137,7 @@ void Output_DrawShadow(
     Matrix_TranslateRel(x_mid, 0, z_mid);
     Matrix_ScaleX((1 << W2V_SHIFT) * x_size / UNIT_SHADOW);
     Matrix_ScaleZ((1 << W2V_SHIFT) * z_size / UNIT_SHADOW);
-    OutputSource_Misc_StageShadow();
+    OutputSource_Shadows_StageShadow();
     Matrix_Pop();
 }
 
