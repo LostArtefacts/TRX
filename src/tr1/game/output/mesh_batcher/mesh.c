@@ -7,6 +7,7 @@
 OUTPUT_MESH *Output_Mesh_Create(void)
 {
     OUTPUT_MESH *const mesh = Memory_Alloc(sizeof(OUTPUT_MESH));
+    Memory_ArenaReset(&mesh->allocator);
     mesh->vertices = Vector_Create(sizeof(OUTPUT_MESH_VERTEX));
     mesh->animated_vertices = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
     mesh->transparent_faces = Vector_Create(sizeof(OUTPUT_MESH_FACE));
@@ -27,5 +28,6 @@ void Output_Mesh_Destroy(OUTPUT_MESH *const mesh)
     if (mesh->opaque_vertex_indices != nullptr) {
         Vector_Free(mesh->opaque_vertex_indices);
     }
+    Memory_ArenaFree(&mesh->allocator);
     Memory_Free(mesh);
 }

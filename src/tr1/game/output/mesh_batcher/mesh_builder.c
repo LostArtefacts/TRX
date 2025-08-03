@@ -11,6 +11,7 @@
 struct MESH_BUILDER {
     size_t pending_vertex_count;
     OUTPUT_MESH *mesh;
+    VECTOR *indices;
 };
 
 static const size_t m_Size3 = 3;
@@ -31,6 +32,7 @@ static void M_EnsureMesh(MESH_BUILDER *const builder)
 MESH_BUILDER *MeshBuilder_Create(void)
 {
     MESH_BUILDER *const builder = Memory_Alloc(sizeof(*builder));
+    builder->indices = Vector_Create(sizeof(int32_t));
     return builder;
 }
 
@@ -41,6 +43,11 @@ void MeshBuilder_Destroy(MESH_BUILDER *const builder)
         Output_Mesh_Destroy(builder->mesh);
         builder->mesh = nullptr;
     }
+    if (builder->indices != nullptr) {
+        Vector_Free(builder->indices);
+        builder->indices = nullptr;
+    }
+
     Memory_Free(builder);
 }
 
@@ -65,8 +72,8 @@ void MeshBuilder_AddVertex(
 }
 
 void MeshBuilder_AddFace(
-    MESH_BUILDER *const builder, const bool transparent,
-    const int32_t indices[], const size_t idx_count)
+    MESH_BUILDER *const builder, const bool transparent, const int32_t *indices,
+    const size_t idx_count)
 {
     ASSERT(builder != nullptr);
     M_EnsureMesh(builder);
@@ -91,6 +98,8 @@ void MeshBuilder_AddFace(
             .vertex_count = idx_count,
             .mesh_centroid = centroid,
         };
+        face.vertex_indices = Memory_ArenaAlloc(
+            &builder->mesh->allocator, sizeof(int32_t) * idx_count);
         for (size_t i = 0; i < idx_count; i++) {
             face.vertex_indices[i] = start + indices[i];
         }
@@ -113,6 +122,24 @@ void MeshBuilder_AddFace3(MESH_BUILDER *const builder, const bool transparent)
 void MeshBuilder_AddFace4(MESH_BUILDER *const builder, const bool transparent)
 {
     MeshBuilder_AddFace(builder, transparent, m_Indices4, m_Size4);
+}
+
+void MeshBuilder_AddFan(MESH_BUILDER *const builder, const bool transparent)
+{
+    ASSERT(builder != nullptr);
+    M_EnsureMesh(builder);
+    const size_t vtx_count = builder->pending_vertex_count;
+    ASSERT(vtx_count >= 3);
+    const size_t segment_count = vtx_count - 2;
+    const size_t idx_count = segment_count * 3;
+    for (size_t i = 0; i < segment_count; i++) {
+        Vector_Add(builder->indices, &(int32_t) { 0 });
+        Vector_Add(builder->indices, &(int32_t) { i + 2 });
+        Vector_Add(builder->indices, &(int32_t) { i + 1 });
+    }
+    MeshBuilder_AddFace(
+        builder, transparent, Vector_GetData(builder->indices), idx_count);
+    Vector_Clear(builder->indices);
 }
 
 void MeshBuilder_AddRoomSprite(
