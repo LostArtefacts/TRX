@@ -4,7 +4,8 @@
 #include "game/shell.h"
 #include "log.h"
 
-#define L_DEFAULT_VIEWPORT { .width = 1280, .height = 720 }
+#define L_DEFAULT_VIEWPORT                                                     \
+    { .width = SHELL_HEADLESS_WIDTH, .height = SHELL_HEADLESS_HEIGHT }
 static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
     [VIEWPORT_WINDOW] = L_DEFAULT_VIEWPORT,
     [VIEWPORT_TARGET] = L_DEFAULT_VIEWPORT,
