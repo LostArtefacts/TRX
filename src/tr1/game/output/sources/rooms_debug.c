@@ -251,7 +251,9 @@ void OutputSource_RoomsDebug_Init(void)
 void OutputSource_RoomsDebug_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Free(p->scheduled);
+    if (p->scheduled != nullptr) {
+        Vector_Free(p->scheduled);
+    }
     M_FreeBuffers(p);
 }
 

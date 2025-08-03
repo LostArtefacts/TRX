@@ -85,10 +85,14 @@ void Output_Shutdown(void)
     OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
 
-    Output_Shader_Free(m_Shader);
-    m_Shader = nullptr;
-    MeshBatcher_Destroy(m_Batcher);
-    m_Batcher = nullptr;
+    if (m_Shader != nullptr) {
+        Output_Shader_Free(m_Shader);
+        m_Shader = nullptr;
+    }
+    if (m_Batcher != nullptr) {
+        MeshBatcher_Destroy(m_Batcher);
+        m_Batcher = nullptr;
+    }
 
     Output_Textures_Shutdown();
     Output_ShutdownLight();

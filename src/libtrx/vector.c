@@ -54,6 +54,9 @@ void Vector_EnsureCapacity(VECTOR *const vector, const int32_t capacity)
 
 void Vector_Free(VECTOR *vector)
 {
+    if (vector == nullptr) {
+        return;
+    }
     Memory_FreePointer(&P(vector).items);
     Memory_FreePointer(&vector->priv);
     Memory_FreePointer(&vector);

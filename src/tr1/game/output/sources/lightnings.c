@@ -181,8 +181,14 @@ void OutputSource_Lightnings_Init(void)
 void OutputSource_Lightnings_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Free(p->vertices);
-    Vector_Free(p->scheduled);
+    if (p->vertices != nullptr) {
+        Vector_Free(p->vertices);
+        p->vertices = nullptr;
+    }
+    if (p->scheduled != nullptr) {
+        Vector_Free(p->scheduled);
+        p->scheduled = nullptr;
+    }
     if (p->vao != 0) {
         glDeleteVertexArrays(1, &p->vao);
         p->vao = 0;

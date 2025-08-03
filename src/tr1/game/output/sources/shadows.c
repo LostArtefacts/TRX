@@ -61,12 +61,12 @@ void OutputSource_Shadows_Init(MESH_BATCHER *const batcher)
 void OutputSource_Shadows_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    MeshBatcher_RemoveMesh(p->batcher, p->mesh_low);
     if (p->mesh_low != nullptr) {
+        MeshBatcher_RemoveMesh(p->batcher, p->mesh_low);
         Output_Mesh_Destroy(p->mesh_low);
     }
-    MeshBatcher_RemoveMesh(p->batcher, p->mesh_high);
     if (p->mesh_high != nullptr) {
+        MeshBatcher_RemoveMesh(p->batcher, p->mesh_high);
         Output_Mesh_Destroy(p->mesh_high);
     }
 }

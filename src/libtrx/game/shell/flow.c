@@ -141,14 +141,15 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);
-        // original args not needed, free immediately.
-        ASSERT(tmp_args != nullptr);
-        if (tmp_args->original_args != nullptr) {
-            Vector_Free(tmp_args->original_args);
-            tmp_args->original_args = nullptr;
+        if (tmp_args != nullptr) {
+            // original args not needed, free immediately.
+            if (tmp_args->original_args != nullptr) {
+                Vector_Free(tmp_args->original_args);
+                tmp_args->original_args = nullptr;
+            }
+            tmp_args->headless = args->headless;
+            new_args = tmp_args;
         }
-        tmp_args->headless = args->headless;
-        new_args = tmp_args;
     } else {
         Config_Read(
             String_FormatStatic(
