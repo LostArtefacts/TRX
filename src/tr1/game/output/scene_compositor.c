@@ -6,6 +6,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/gfx/context.h>
 #include <libtrx/vector.h>
 
 #define M_PROCESS_SOURCES(p, func, ...)                                        \
@@ -206,9 +207,18 @@ void SceneCompositor_Shutdown(void)
     }
 }
 
+bool M_IsActive(void)
+{
+    return !Output_IsHeadless()
+        || GFX_Context_GetScheduledScreenshotPath() != nullptr;
+}
+
 void SceneCompositor_BeginScene(void)
 {
     M_PRIV *const p = &m_Priv;
+    if (!M_IsActive()) {
+        return;
+    }
     M_PrepareScene(p);
     M_PROCESS_SOURCES(p, render_begin);
 }
@@ -216,6 +226,9 @@ void SceneCompositor_BeginScene(void)
 void SceneCompositor_Flush(void)
 {
     M_PRIV *const p = &m_Priv;
+    if (!M_IsActive()) {
+        return;
+    }
     M_RenderScenePasses(p);
     M_PROCESS_SOURCES(p, render_end);
     M_PROCESS_SOURCES(p, render_begin);
@@ -225,6 +238,9 @@ void SceneCompositor_Flush(void)
 void SceneCompositor_EndScene(void)
 {
     M_PRIV *const p = &m_Priv;
+    if (!M_IsActive()) {
+        return;
+    }
     M_RenderScenePasses(p);
     M_PROCESS_SOURCES(p, render_end);
 }

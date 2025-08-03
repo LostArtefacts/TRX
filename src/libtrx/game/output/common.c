@@ -1,6 +1,7 @@
 #include "game/const.h"
 #include "game/matrix.h"
 #include "game/output.h"
+#include "game/shell.h"
 #include "utils.h"
 #include "vector.h"
 
@@ -317,4 +318,9 @@ int32_t Output_GetFogStart(void)
 void Output_SetFogStart(const int32_t dist)
 {
     m_FogStart = dist;
+}
+
+bool Output_IsHeadless(void)
+{
+    return Shell_GetArgs()->headless;
 }

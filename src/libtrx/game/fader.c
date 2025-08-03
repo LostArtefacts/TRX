@@ -65,9 +65,6 @@ bool Fader_IsActive(const FADER *const fader)
     if (fader->args.duration <= 0.0) {
         return false;
     }
-    if (Shell_GetArgs()->headless) {
-        return Fader_GetCurrentValue(fader) != fader->args.target;
-    }
     return !fader->target_drawn;
 }
 
