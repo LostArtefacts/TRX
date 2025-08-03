@@ -49,7 +49,6 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     out_args->mod = M_BASE_MOD;
     out_args->save_to_load = -1;
     out_args->original_args = args;
-    out_args->headless_fps = 0;
     if (args == nullptr) {
         return out_args;
     }
@@ -106,6 +105,9 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 out_args->headless_fps = fps;
             }
             i++;
+        }
+        if (!strcmp(arg, "--debug-render-performance")) {
+            out_args->debug_render_performance = true;
         }
         if (!strcmp(arg, "-q") || !strcmp(arg, "--quiet")) {
             out_args->quiet = true;

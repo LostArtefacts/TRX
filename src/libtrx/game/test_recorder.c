@@ -99,13 +99,17 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
 
     // Record original arguments passed to the game
     if (original_args->count > 0) {
-        // Skip record test recording-related arguments.
+        // Skip tracking irrelevant arguments.
         VECTOR *const filtered_args = Vector_Create(sizeof(char *));
         for (int32_t i = 0; i < original_args->count; i++) {
             const char *const arg = *(char **)Vector_Get(original_args, i);
             if (!strcmp(arg, "--test-record") || !strcmp(arg, "--test-replay")
-                || !strcmp(arg, "--test-play")) {
+                || !strcmp(arg, "--test-play")
+                || !strcmp(arg, "--headless-fps")) {
                 i++; // Also skip the path argument.
+                continue;
+            }
+            if (!strcmp(arg, "--debug-render-performance")) {
                 continue;
             }
             Vector_Add(filtered_args, &arg);

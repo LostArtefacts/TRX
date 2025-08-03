@@ -32,7 +32,11 @@ Currently the following command line interface options are available:
   Runs the game in command line only. Only available with `--test-replay`.
 
 - `--headless-fps <num>`:  
-  In headless mode, force the simulation to run at a constant FPS (frames per second). If omitted or zero, uses the FPS from the configuration.
+  In headless mode, forces the simulation to run at a constant FPS. If omitted
+  or zero, uses the FPS from the configuration.
+
+- `--debug-render-performance`:  
+  Outputs diagnostic information related to GPU usage and throughput.
 
 - `-q`, `--quiet`  
   Suppresses most of output to the standard output, keeping only errors.

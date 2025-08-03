@@ -18,8 +18,6 @@
 #include "gfx/context.h"
 #include "gfx/gl/track.h"
 
-#define M_DEBUG_CONTROL_WAIT 0
-#define M_DEBUG_DRAW_PERF 0
 #define M_MAX_PHASES 10
 
 static bool m_Exiting;
@@ -86,9 +84,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
 static void M_Draw(PHASE *const phase)
 {
-#if M_DEBUG_DRAW_PERF > 0
     BENCHMARK benchmark = Benchmark_Start();
-#endif
 
     Output_BeginScene();
     Output_SwitchViewport(VIEWPORT_GAME);
@@ -110,20 +106,19 @@ static void M_Draw(PHASE *const phase)
     Output_Flush();
     Output_EndScene();
 
-#if M_DEBUG_DRAW_PERF > 0
-    char buffer[80];
-    const GFX_METRICS metrics = GFX_Track_GetMetrics();
-    sprintf(
-        buffer, "%.03f KB T:%d U:%d Vo:%d Vt:%d",
-        metrics.buffer_total_bytes / 1024.0f, metrics.buffer_transfer_count,
-        metrics.uniform_changes, metrics.opaque_vert_count,
-        metrics.trans_vert_count);
-    Benchmark_End(&benchmark, buffer);
-#endif
+    if (Shell_GetArgs()->debug_render_performance) {
+        char buffer[80];
+        const GFX_METRICS metrics = GFX_Track_GetMetrics();
+        sprintf(
+            buffer, "%.03f KB T:%d U:%d Vo:%d Vt:%d",
+            metrics.buffer_total_bytes / 1024.0f, metrics.buffer_transfer_count,
+            metrics.uniform_changes, metrics.opaque_vert_count,
+            metrics.trans_vert_count);
+        Benchmark_End(&benchmark, buffer);
+    }
 
     if (!Output_IsHeadless()
-        || GFX_Context_GetScheduledScreenshotPath() != nullptr
-        || M_DEBUG_DRAW_PERF == 2) {
+        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
         Output_FlipScreen();
     } else {
         GFX_Track_Reset();
@@ -160,13 +155,7 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
 
     while (true) {
-#if M_DEBUG_CONTROL_WAIT
-        BENCHMARK benchmark = Benchmark_Start();
-#endif
         int32_t nframes = Clock_WaitTick();
-#if M_DEBUG_CONTROL_WAIT
-        Benchmark_End(&benchmark, "");
-#endif
         int32_t frame = 0;
         while (true) {
             const PHASE_CONTROL control = M_Control(phase);
