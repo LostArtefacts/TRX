@@ -51,7 +51,6 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
-            "demo": true,
         },
     ],
 }

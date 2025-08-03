@@ -1,0 +1,733 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TR1 gameflow schema",
+  "type": "object",
+  "properties": {
+    "main_menu_picture": {
+      "type": "string",
+      "description": "Path to the main menu background image."
+    },
+    "savegame_fmt_legacy": {
+      "type": "string",
+      "description": "Path pattern to look for the old TombATI savegame files."
+    },
+    "savegame_fmt_bson": {
+      "type": "string",
+      "description": "Path pattern to look for the savegame files."
+    },
+    "demo_delay": {
+      "type": "number",
+      "description": "Number of seconds to pass in the main menu before playing the demo."
+    },
+    "water_color": {
+      "description": "Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0 or `00` means completely black color.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "fog_start": {
+      "type": "number",
+      "description": "The distance (in tiles) at which objects and the world start to fade into blackness."
+    },
+    "fog_end": {
+      "type": "number",
+      "description": "The distance (in tiles) at which objects and the world are clipped away."
+    },
+    "injections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "convert_dropped_guns": {
+      "type": "boolean",
+      "description": "Forces guns dropped by enemies to be converted to the equivalent ammo if Lara already has the gun."
+    },
+    "enable_tr2_item_drops": {
+      "type": "boolean",
+      "description": "Forces enemies who are placed in the same position as pickup items to carry those items and drop them when killed, similar to TR2+."
+    },
+    "enable_killer_pushblocks": {
+      "type": "boolean",
+      "description": "If enabled, when a pushblock falls from the air and lands on Lara, it will kill her outright."
+    },
+    "enforced_config": {
+      "type": "object",
+      "description": "Overrides for any regular game config settings.",
+      "additionalProperties": true
+    },
+    "hidden_config": {
+      "type": "array",
+      "description": "List of config settings to hide from the in-game settings dialogs.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "title": {
+      "$ref": "#/definitions/title",
+      "description": "Configuration for the title screen (path, music track, sequence, injections)."
+    },
+    "levels": {
+      "description": "Array of regular level definitions.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/level"
+      }
+    },
+    "demos": {
+      "description": "Array of demo level definitions (the sequences that play in the title ring if the player leaves it idle for some time).",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/level"
+      }
+    },
+    "cutscenes": {
+      "description": "Array of cutscene level definitions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/level"
+      }
+    },
+    "fmvs": {
+      "description": "Array of FMV definitions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/fmv"
+      }
+    }
+  },
+  "required": [
+    "main_menu_picture",
+    "savegame_fmt_legacy",
+    "savegame_fmt_bson",
+    "demo_delay",
+    "levels"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "title": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "music_track": {
+          "type": "integer"
+        },
+        "inherit_injections": {
+          "type": "boolean"
+        },
+        "injections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sequence"
+          }
+        }
+      },
+      "required": [
+        "path",
+        "music_track",
+        "sequence"
+      ],
+      "additionalProperties": false
+    },
+    "dummy_level": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "current",
+            "dummy"
+          ]
+        }
+      }
+    },
+    "level": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "normal",
+            "gym",
+            "bonus",
+            "current",
+            "dummy"
+          ]
+        },
+        "path": {
+          "type": "string"
+        },
+        "music_track": {
+          "type": "integer"
+        },
+        "lara_type": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "water_color": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "fog_start": {
+          "type": "number"
+        },
+        "fog_end": {
+          "type": "number"
+        },
+        "inherit_injections": {
+          "type": "boolean"
+        },
+        "injections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ambient_tracks": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "item_drops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/item_drop"
+          }
+        },
+        "unobtainable_pickups": {
+          "type": "integer"
+        },
+        "unobtainable_kills": {
+          "type": "integer"
+        },
+        "unobtainable_secrets": {
+          "type": "integer"
+        },
+        "sfx_path": {
+          "type": "string"
+        },
+        "sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sequence"
+          }
+        }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "current",
+                "dummy"
+              ]
+            }
+          }
+        },
+        {
+          "required": [
+            "path",
+            "sequence"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "item_drop": {
+      "type": "object",
+      "properties": {
+        "enemy_num": {
+          "type": "integer"
+        },
+        "object_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "enemy_num",
+        "object_ids"
+      ],
+      "additionalProperties": false
+    },
+    "fmv": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "legal": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "sequence": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/seq_loop_game"
+        },
+        {
+          "$ref": "#/definitions/seq_level_complete"
+        },
+        {
+          "$ref": "#/definitions/seq_exit_to_title"
+        },
+        {
+          "$ref": "#/definitions/seq_level_stats"
+        },
+        {
+          "$ref": "#/definitions/seq_total_stats"
+        },
+        {
+          "$ref": "#/definitions/seq_display_picture"
+        },
+        {
+          "$ref": "#/definitions/seq_loading_screen"
+        },
+        {
+          "$ref": "#/definitions/seq_play_cutscene"
+        },
+        {
+          "$ref": "#/definitions/seq_set_cutscene_pos"
+        },
+        {
+          "$ref": "#/definitions/seq_play_fmv"
+        },
+        {
+          "$ref": "#/definitions/seq_flip_map"
+        },
+        {
+          "$ref": "#/definitions/seq_give_item"
+        },
+        {
+          "$ref": "#/definitions/seq_mesh_swap"
+        },
+        {
+          "$ref": "#/definitions/seq_play_music"
+        },
+        {
+          "$ref": "#/definitions/seq_remove_ammo"
+        },
+        {
+          "$ref": "#/definitions/seq_remove_weapons"
+        },
+        {
+          "$ref": "#/definitions/seq_remove_medipacks"
+        },
+        {
+          "$ref": "#/definitions/seq_remove_scions"
+        },
+        {
+          "$ref": "#/definitions/seq_set_cutscene_angle"
+        },
+        {
+          "$ref": "#/definitions/seq_setup_bacon_lara"
+        },
+        {
+          "$ref": "#/definitions/seq_disable_floor"
+        }
+      ]
+    },
+    "seq_loop_game": {
+      "type": "object",
+      "description": "Plays the main game loop.",
+      "properties": {
+        "type": {
+          "const": "loop_game"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_level_complete": {
+      "type": "object",
+      "description": "Ends the current level and plays the next one, if available.",
+      "properties": {
+        "type": {
+          "const": "level_complete"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_exit_to_title": {
+      "type": "object",
+      "description": "Returns to the title level.",
+      "properties": {
+        "type": {
+          "const": "exit_to_title"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_level_stats": {
+      "type": "object",
+      "description": "Displays the end of level statistics for the current level. In a Gym level, this fades the screen to black.",
+      "properties": {
+        "type": {
+          "const": "level_stats"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_total_stats": {
+      "type": "object",
+      "description": "Displays the end of game statistics with the given picture file shown as a background.",
+      "properties": {
+        "type": {
+          "const": "total_stats"
+        },
+        "background_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "background_path"
+      ],
+      "additionalProperties": false
+    },
+    "seq_display_picture": {
+      "type": "object",
+      "description": "Displays the specified picture for a fixed time. Files that are needed to function only with a specific aspect ratio can be placed in a directory adjacent to the main image, named according to the aspect ratio – for example, 4x3/title.png or 16x10/title.png. The game won't attempt to match these precisely; instead, it will select the file with the aspect ratio closest to the game's viewport. The main image designated by path is presumed to have a 16:9 aspect ratio for this purpose, and as such there's no need for 16x9-specific directory. This logic applies to all images.",
+      "properties": {
+        "type": {
+          "const": "display_picture"
+        },
+        "path": {
+          "type": "string"
+        },
+        "display_time": {
+          "type": "number"
+        },
+        "fade_in_time": {
+          "type": "number"
+        },
+        "fade_out_time": {
+          "type": "number"
+        },
+        "credit": {
+          "type": "boolean"
+        },
+        "legal": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "seq_loading_screen": {
+      "type": "object",
+      "description": "Shows a picture prior to loading a level. Functions identically to display_picture, except these pictures can be enabled/disabled by the user with the loading screen option in the config tool.",
+      "properties": {
+        "type": {
+          "const": "loading_screen"
+        },
+        "path": {
+          "type": "string"
+        },
+        "display_time": {
+          "type": "number"
+        },
+        "fade_in_time": {
+          "type": "number"
+        },
+        "fade_out_time": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "seq_play_cutscene": {
+      "type": "object",
+      "description": "Plays the specified cinematic level (from the cutscenes).",
+      "properties": {
+        "type": {
+          "const": "play_cutscene"
+        },
+        "cutscene_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "cutscene_id"
+      ],
+      "additionalProperties": false
+    },
+    "seq_play_fmv": {
+      "type": "object",
+      "description": "Plays the specified FMV. fmv_id must be a valid index into the fmvs root key.",
+      "properties": {
+        "type": {
+          "const": "play_fmv"
+        },
+        "fmv_id": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "fmv_id"
+      ],
+      "additionalProperties": false
+    },
+    "seq_flip_map": {
+      "type": "object",
+      "description": "Triggers the flip map.",
+      "properties": {
+        "type": {
+          "const": "flip_map"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_give_item": {
+      "type": "object",
+      "description": "Adds the specified item and quantity to Lara's inventory.",
+      "properties": {
+        "type": {
+          "const": "give_item"
+        },
+        "object_id": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "quantity": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "object_id"
+      ],
+      "additionalProperties": false
+    },
+    "seq_mesh_swap": {
+      "type": "object",
+      "description": "Swaps the given mesh ID between the given objects.",
+      "properties": {
+        "type": {
+          "const": "mesh_swap"
+        },
+        "object1_id": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "object2_id": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "mesh_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "object1_id",
+        "object2_id",
+        "mesh_id"
+      ],
+      "additionalProperties": false
+    },
+    "seq_play_music": {
+      "type": "object",
+      "description": "Plays the given audio track.",
+      "properties": {
+        "type": {
+          "const": "play_music"
+        },
+        "music_track": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "music_track"
+      ],
+      "additionalProperties": false
+    },
+    "seq_remove_ammo": {
+      "type": "object",
+      "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
+      "properties": {
+        "type": {
+          "const": "remove_ammo"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_remove_weapons": {
+      "type": "object",
+      "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
+      "properties": {
+        "type": {
+          "const": "remove_weapons"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_remove_medipacks": {
+      "type": "object",
+      "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
+      "properties": {
+        "type": {
+          "const": "remove_medipacks"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_remove_scions": {
+      "type": "object",
+      "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
+      "properties": {
+        "type": {
+          "const": "remove_scions"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_set_cutscene_pos": {
+      "type": "object",
+      "description": "Sets the camera's position.",
+      "properties": {
+        "type": {
+          "const": "set_cutscene_pos"
+        },
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        },
+        "z": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "x",
+        "z"
+      ],
+      "additionalProperties": false
+    },
+    "seq_set_cutscene_angle": {
+      "type": "object",
+      "description": "Sets the camera's angle.",
+      "properties": {
+        "type": {
+          "const": "set_cutscene_angle"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "seq_setup_bacon_lara": {
+      "type": "object",
+      "description": "Sets the room number in which Bacon Lara will be anchored to enable correct mirroring behaviour with Lara.",
+      "properties": {
+        "type": {
+          "const": "setup_bacon_lara"
+        },
+        "anchor_room": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "anchor_room"
+      ],
+      "additionalProperties": false
+    },
+    "seq_disable_floor": {
+      "type": "object",
+      "description": "Configures a specific height (with 256 representing 1 click and 1024 representing 1 sector) to define an abyss that will invariably lead to Lara's death if she falls into it. Additionally, it employs special rendering to ensure it isn't treated as solid ground.",
+      "properties": {
+        "type": {
+          "const": "disable_floor"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
