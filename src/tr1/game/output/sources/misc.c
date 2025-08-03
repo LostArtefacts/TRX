@@ -219,9 +219,18 @@ void OutputSource_Misc_Init(void)
 void OutputSource_Misc_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Free(p->vertices);
-    Vector_Free(p->scheduled);
-    Vector_Free(p->scheduled_spheres);
+    if (p->vertices != nullptr) {
+        Vector_Free(p->vertices);
+        p->vertices = nullptr;
+    }
+    if (p->scheduled != nullptr) {
+        Vector_Free(p->scheduled);
+        p->scheduled = nullptr;
+    }
+    if (p->scheduled_spheres != nullptr) {
+        Vector_Free(p->scheduled_spheres);
+        p->scheduled_spheres = nullptr;
+    }
     if (p->vao != 0) {
         glDeleteVertexArrays(1, &p->vao);
         p->vao = 0;

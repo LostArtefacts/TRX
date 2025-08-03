@@ -201,7 +201,9 @@ void SceneCompositor_Shutdown(void)
         Vector_Free(p->sources);
         p->sources = nullptr;
     }
-    glDeleteSamplers(1, &p->sampler_id);
+    if (p->sampler_id != 0) {
+        glDeleteSamplers(1, &p->sampler_id);
+    }
 }
 
 void SceneCompositor_BeginScene(void)

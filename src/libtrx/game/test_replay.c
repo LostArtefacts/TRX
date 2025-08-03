@@ -433,7 +433,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
     M_PRIV *const p = &m_Priv;
     p->file = File_Open(path, FILE_OPEN_READ);
     if (p->file == nullptr) {
-        LOG_ERROR("Cannot open replay file '%s'", path);
+        Shell_ExitSystemFmt("Cannot open replay file '%s'", path);
         return nullptr;
     }
 

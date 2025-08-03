@@ -313,8 +313,6 @@ static void M_UploadAtlas(void)
 
 static void M_FreeLevelData(void)
 {
-    glBindTexture(GL_TEXTURE_BUFFER, 0);
-    glBindBuffer(GL_TEXTURE_BUFFER, 0);
     if (m_Priv.tex_atlas != 0) {
         glDeleteTextures(1, &m_Priv.tex_atlas);
         m_Priv.tex_atlas = 0;
@@ -334,8 +332,14 @@ void Output_Textures_Init(void)
 
 void Output_Textures_Shutdown(void)
 {
-    Vector_Free(m_AnimationRanges.objects);
-    Vector_Free(m_AnimationRanges.sprites);
+    if (m_AnimationRanges.objects != nullptr) {
+        Vector_Free(m_AnimationRanges.objects);
+        m_AnimationRanges.objects = nullptr;
+    }
+    if (m_AnimationRanges.sprites != nullptr) {
+        Vector_Free(m_AnimationRanges.sprites);
+        m_AnimationRanges.sprites = nullptr;
+    }
     M_FreeLevelData();
     if (m_Priv.tex_env_map != 0) {
         glDeleteTextures(1, &m_Priv.tex_env_map);
