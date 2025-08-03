@@ -837,7 +837,8 @@ void Output_InsertShadow(
 
     Matrix_Push();
     Matrix_TranslateAbs(
-        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
+        item->interp.result.pos.x, item->interp.result.floor,
+        item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
     if (M_CalcObjectVertices(shadow_info.vertex, shadow_info.vertex_count)) {
         Render_InsertTransOctagon(g_PhdVBuf, 24);

@@ -130,7 +130,8 @@ void Output_DrawShadow(
     Matrix_Push();
     *g_MatrixPtr = g_W2VMatrix;
     Matrix_TranslateAbs(
-        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
+        item->interp.result.pos.x, item->interp.result.floor,
+        item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
     Matrix_TranslateRel(x_mid, 0, z_mid);
     Matrix_ScaleX((1 << W2V_SHIFT) * x_size / UNIT_SHADOW);
