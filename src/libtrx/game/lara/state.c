@@ -9,6 +9,7 @@ static const LARA_ANIMATION m_TestResponsiveAnims[] = {
     LA_UNDERWATER_SWIM_FORWARD,
     LA_SLIDE_FORWARD,
     LA_STAND_TO_JUMP,
+    LA_REACH_TO_HANG,
     (LARA_ANIMATION)-1,
     // clang-format on
 };

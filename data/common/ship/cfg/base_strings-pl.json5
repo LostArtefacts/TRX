@@ -394,6 +394,8 @@
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Ustawia mikrofon na pozycji Lary. Domyślnie mikrofon jest na pozycji kamery. Wpływa to głównie na głośność efektów – czy przy kamerach daleko od Lary będą one cicho, czy głośno.",
         "SETTING_ENABLE_LEAN_JUMPING": "Dalekie skoki w miejscu",
         "SETTING_ENABLE_LEAN_JUMPING_DESCRIPTION": "Pozwala Larze na przesuwanie się do przodu lub do tyłu dalej podczas wykonywania skoków w miejscu z wciśniętym odpowiednim klawiszem (tak jak w TR2+).",
+        "SETTING_ENABLE_LEDGE_JUMPS": "\\{review}Skoki z krawędzi",
+        "SETTING_ENABLE_LEDGE_JUMPS_DESCRIPTION": "\\{review}Pozwala Larze skoczyć w górę lub do tyłu, gdy zwisa z krawędzi, o ile przed nią znajduje się solidna powierzchnia, od której może się odepchnąć.",
         "SETTING_ENABLE_LEGAL": "Informacje prawne",
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Włącza ekran z informacjami prawnymi oraz filmik z logiem Core Design na początku gry.",
         "SETTING_ENABLE_LOADING_SCREENS": "Ekrany ładowania",

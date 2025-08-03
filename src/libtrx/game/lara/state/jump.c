@@ -125,7 +125,9 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
 {
-    g_Camera.target_angle = M_CAM_BACK_JUMP_ANGLE;
+    if (!Item_TestAnimEqual(item, LA_HANG_TO_JUMP_BACK)) {
+        g_Camera.target_angle = M_CAM_BACK_JUMP_ANGLE;
+    }
     if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;

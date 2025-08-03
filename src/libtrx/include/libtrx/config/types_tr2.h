@@ -157,6 +157,7 @@ typedef struct {
         bool enable_slide_to_run;
         bool enable_neutral_twists;
         bool enable_controlled_drops;
+        bool enable_ledge_jumps;
         bool enable_enemy_rotation;
         bool enable_ally_targeting;
         bool revert_to_pistols;

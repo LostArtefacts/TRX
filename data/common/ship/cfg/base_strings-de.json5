@@ -394,6 +394,8 @@
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Setzt das Mikrofon auf Laras Position. Wenn deaktiviert, wird das Mikrofon auf der Position der Kamera gesetzt.",
         "SETTING_ENABLE_LEAN_JUMPING": "Schmales Springen",
         "SETTING_ENABLE_LEAN_JUMPING_DESCRIPTION": "Erlaubt Lara, sich weiter voran oder rückwärts zu tasten, wenn man eine der Richtungstasten gedrückt hält, während sie einen neutralen Sprung ausführt.",
+        "SETTING_ENABLE_LEDGE_JUMPS": "\\{review}Vorsprung-Sprünge",
+        "SETTING_ENABLE_LEDGE_JUMPS_DESCRIPTION": "\\{review}Ermöglicht Lara, nach oben oder rückwärts zu springen, während sie an einem Vorsprung hängt, sofern sich eine feste Fläche vor ihr befindet, um sich abzustoßen.",
         "SETTING_ENABLE_LEGAL": "Rechtshinweise",
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Aktiviert die Rechtshinweise und die Core Design FMV beim Starten des Spiels.",
         "SETTING_ENABLE_LOADING_SCREENS": "Ladebildschirme",

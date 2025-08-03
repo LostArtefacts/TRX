@@ -394,6 +394,8 @@
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position.",
         "SETTING_ENABLE_LEAN_JUMPING": "Lean jumping",
         "SETTING_ENABLE_LEAN_JUMPING_DESCRIPTION": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed.",
+        "SETTING_ENABLE_LEDGE_JUMPS": "Ledge jumps",
+        "SETTING_ENABLE_LEDGE_JUMPS_DESCRIPTION": "Allows Lara to jump upwards or backwards when hanging from a ledge, provided she has a solid surface in front of her to push against.",
         "SETTING_ENABLE_LEGAL": "Legal screens",
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Enables legal screen and Core Design FMV at the game start.",
         "SETTING_ENABLE_LOADING_SCREENS": "Loading screens",

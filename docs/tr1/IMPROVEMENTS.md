@@ -24,6 +24,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added an option to use Lara's neutral jump-twist from early TR1 betas
 - added an option to use Lara's slide-to-run animation from TR3+
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off
+- added an option to allow Lara to jump up or back when hanging from a ledge
 - added ability to cancel ledge-swinging animation like in TR2+
 - added ability to jump at any point while running like in TR2+, together with the ability to control jump lock behaviour
 - added ability to automatically walk to items when nearby
