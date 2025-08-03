@@ -61,6 +61,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/gym_fd.bin",
                 "data/injections/gym_sfx.bin",
                 "data/injections/gym_music_tracks.bin",
                 "data/injections/gym_textures.bin",

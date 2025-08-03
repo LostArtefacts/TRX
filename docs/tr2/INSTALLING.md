@@ -211,6 +211,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── furnace_pickup_meshes.bin
 │   │   ├── furnace_textures.bin
 │   │   ├── guardian_death_commands.bin
+│   │   ├── gym_fd.bin
 │   │   ├── gym_music_tracks.bin
 │   │   ├── gym_sfx.bin
 │   │   ├── gym_textures.bin
@@ -593,6 +594,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── furnace_pickup_meshes.bin
         │   │   ├── furnace_textures.bin
         │   │   ├── guardian_death_commands.bin
+        │   │   ├── gym_fd.bin
         │   │   ├── gym_music_tracks.bin
         │   │   ├── gym_sfx.bin
         │   │   ├── gym_textures.bin
