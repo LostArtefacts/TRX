@@ -2,7 +2,7 @@
 
 #include "../common.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 
 typedef struct {
     void (*init)(void);

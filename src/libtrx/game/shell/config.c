@@ -8,6 +8,8 @@
 #include "game/viewport.h"
 #include "log.h"
 
+#include <SDL2/SDL_timer.h>
+
 static Uint64 m_UpdateDebounce = 0;
 static bool m_IgnoreConfigChanges = false;
 static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };

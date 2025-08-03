@@ -17,6 +17,8 @@
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
+#include <SDL2/SDL.h>
+
 static SDL_Window *m_Window = nullptr;
 
 static bool M_CreateGameWindow(void);

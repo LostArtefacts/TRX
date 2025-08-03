@@ -4,7 +4,7 @@
 #include "../../event_manager.h"
 #include "./args.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 #include <stdint.h>
 
 typedef struct {

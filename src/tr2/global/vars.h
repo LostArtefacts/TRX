@@ -7,8 +7,6 @@
 #include <libtrx/game/gun/vars.h>
 #include <libtrx/gfx/context.h>
 
-#include <SDL2/SDL.h>
-
 extern const float g_RhwFactor;
 
 extern uint32_t g_PerspectiveDistance;

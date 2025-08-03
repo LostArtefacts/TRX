@@ -9,6 +9,8 @@
     #include <windows.h>
 #endif
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_messagebox.h>
 #include <libavcodec/version.h>
 #include <libavutil/log.h>
 #include <stdio.h>
