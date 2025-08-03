@@ -255,6 +255,28 @@ static void M_PrepareEnvMap(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GFX_GL_CheckError();
+
+    if (Output_IsHeadless()) {
+        const int32_t pattern_size = 256;
+        RGB_888 *test_pattern =
+            Memory_Alloc(pattern_size * pattern_size * sizeof(RGB_888));
+        RGB_888 *pixel = test_pattern;
+        for (int32_t i = 0; i < pattern_size; i++) {
+            for (int32_t j = 0; j < pattern_size; j++) {
+                pixel->r = i % 256;
+                pixel->g = j % 256;
+                pixel->b = ((i / 32) % 2 == (j / 32) % 2) ? 255 : 0;
+                pixel++;
+            }
+        }
+
+        glBindTexture(GL_TEXTURE_2D, m_Priv.tex_env_map);
+        glTexImage2D(
+            GL_TEXTURE_2D, 0, GL_RGB, pattern_size, pattern_size, 0, GL_RGB,
+            GL_UNSIGNED_BYTE, test_pattern);
+        GFX_GL_CheckError();
+        Memory_FreePointer(&test_pattern);
+    }
 }
 
 static void M_PrepareAtlasSizes(void)
@@ -357,6 +379,10 @@ void Output_Textures_ObserveLevelLoad(void)
 
 void Output_Textures_UpdateEnvironmentMap(void)
 {
+    if (Output_IsHeadless()) {
+        return;
+    }
+
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     GFX_GL_CheckError();
