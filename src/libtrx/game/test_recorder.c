@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "debug.h"
+#include "enum_map.h"
 #include "filesystem.h"
 #include "game/console/common.h"
 #include "game/input/backends/controller.h"
@@ -210,7 +211,8 @@ static void M_DumpBindings(MYFILE *const fp)
             const SDL_Scancode sc =
                 JSON_ObjectGetInt(bind, "scancode", SDL_SCANCODE_UNKNOWN);
             File_WriteString(
-                fp, "bind keyboard %d \"%s\"\n", role,
+                fp, "bind keyboard %s \"%s\"\n",
+                ENUM_MAP_TO_STRING(INPUT_ROLE, role),
                 Input_KeyDescFromSDL(sc, 0));
         }
         JSON_ObjectFree(bind);
@@ -224,7 +226,8 @@ static void M_DumpBindings(MYFILE *const fp)
             const int32_t b = JSON_ObjectGetInt(bind, "bind", 0);
             const int32_t ad = JSON_ObjectGetInt(bind, "axis_dir", 0);
             File_WriteString(
-                fp, "bind controller %d %d %d %d\n", role, bt, b, ad);
+                fp, "bind controller %s %d %d %d\n",
+                ENUM_MAP_TO_STRING(INPUT_ROLE, role), bt, b, ad);
         }
         JSON_ObjectFree(bind);
     }

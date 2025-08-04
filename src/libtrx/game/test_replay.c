@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "debug.h"
+#include "enum_map.h"
 #include "filesystem.h"
 #include "game/console/common.h"
 #include "game/input/backends/controller.h"
@@ -109,11 +110,8 @@ static bool M_ParseKeyEvent(
         LOG_WARNING("Malformed %s instruction: %s", prefix, event_str);
         return false;
     }
-    char desc[64];
-    int slen = (int)(end - (start + 1));
-    const char *substr = String_FormatStatic("%.*s", slen, start + 1);
-    strncpy(desc, substr, sizeof(desc));
-    desc[sizeof(desc) - 1] = '\0';
+    const size_t slen = end - (start + 1);
+    const char *desc = String_FormatStatic("%.*s", slen, start + 1);
     SDL_Keymod mod;
     if (!Input_ParseKeyDesc(desc, &event.key.keysym.scancode, &mod)) {
         return false;
@@ -381,8 +379,13 @@ static bool M_ParseBindKeyboard(const char *const line, M_PARSE_CTX *const ctx)
         return false;
     }
     const char *p = line + strlen(prefix);
-    int32_t role;
-    if (sscanf(p, "%d", &role) != 1) {
+    const char *q = strchr(p, ' ');
+    if (q == nullptr) {
+        return false;
+    }
+    const char *role_str = String_FormatStatic("%.*s", (int)(q - p), p);
+    const INPUT_ROLE role = ENUM_MAP_GET(INPUT_ROLE, role_str, -1);
+    if (role == (INPUT_ROLE)-1) {
         return false;
     }
     const char *const start = strchr(p, '"');
@@ -410,11 +413,23 @@ static bool M_ParseBindKeyboard(const char *const line, M_PARSE_CTX *const ctx)
 static bool M_ParseBindController(
     const char *const line, M_PARSE_CTX *const ctx)
 {
-    int32_t role;
-    int32_t bt;
-    int32_t b;
-    int32_t ad;
-    if (sscanf(line, "bind controller %d %d %d %d", &role, &bt, &b, &ad) == 4) {
+    const char *prefix = "bind controller ";
+    if (strncmp(line, prefix, strlen(prefix)) != 0) {
+        return false;
+    }
+    const char *p = line + strlen(prefix);
+    const char *q = strchr(p, ' ');
+    if (q == nullptr) {
+        return false;
+    }
+    const char *role_str = String_FormatStatic("%.*s", (int)(q - p), p);
+    const INPUT_ROLE role =
+        (INPUT_ROLE)ENUM_MAP_GET(INPUT_ROLE, role_str, (int32_t)(INPUT_ROLE)-1);
+    if (role == (INPUT_ROLE)-1) {
+        return false;
+    }
+    int32_t bt, b, ad;
+    if (sscanf(q + 1, "%d %d %d", &bt, &b, &ad) == 3) {
         JSON_OBJECT *bind = JSON_ObjectNew();
         JSON_ObjectAppendInt(bind, "button_type", bt);
         JSON_ObjectAppendInt(bind, "bind", b);
