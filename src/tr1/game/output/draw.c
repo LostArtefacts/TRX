@@ -193,7 +193,8 @@ void Output_DrawTextOutline(
             sx, sy, w, h, M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
             M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
             M_TEXT_OUTLINE_THICKNESS);
-    } else if (text_style == TS_BACKGROUND) {
+    } else if (
+        text_style == TS_BACKGROUND || text_style == TS_BACKGROUND_HEAVY) {
         Output_DrawScreenGradientBox(
             sx, sy, w, h, M_GetMenuColor(MC_GREY_TL),
             M_GetMenuColor(MC_GREY_TR), M_GetMenuColor(MC_GREY_BL),

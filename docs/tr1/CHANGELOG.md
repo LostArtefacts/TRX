@@ -33,6 +33,7 @@
     - fixed the cameras for doors 81 in Tomb of Tihocan and 1 in Sanctuary of the Scion only showing once (#3661)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
 - fixed z-fighting on the front of the passport (#3584)
+- fixed setting description dialog missing borders with PS1 UI style (#3714, regression from 4.12)
 - fixed being unable to activate waterfall objects with code bits (#3589)
 - fixed skippable triggers for waterfall objects in Lost Valley (#3593)
 - fixed incorrectly rotated 3D pickup items in several levels (#2147)
