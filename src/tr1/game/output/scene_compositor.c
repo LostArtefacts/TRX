@@ -78,9 +78,7 @@ static void M_BindTextures(const M_PRIV *p)
 static void M_SetBlendModeForScene(bool wireframe)
 {
     glEnable(GL_BLEND);
-    glBlendFunc(
-        wireframe ? GL_ONE : GL_SRC_ALPHA,
-        wireframe ? GL_ZERO : GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, wireframe ? GL_ZERO : GL_ONE_MINUS_SRC_ALPHA);
 }
 
 static void M_SetBlendModeForUI(void)
