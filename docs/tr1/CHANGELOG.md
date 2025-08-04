@@ -49,6 +49,7 @@
 - fixed the `/kill` command potentially causing a crash if used in a level with pods that don't hatch creatures (#3628, regression from 4.12)
 - fixed Lara's animation not being restored correctly on load if a save was made during a special animation, such as using the Midas Hand (#3625, regression from 4.9)
 - fixed emitted darts moving in the wrong direction when reloading a save (#3677, regression from 2.11)
+- fixed backslash/grave key/less-than character on some keyboards shown as ???? – now it's shown as backlash (#3713)
 - fixed wireframe mode rendering as mostly white (#3649, regression from 4.13.2)
 - fixed wireframe mode not working in the inventory ring (#3651, regression from 4.10)
 - fixed shadow rendering

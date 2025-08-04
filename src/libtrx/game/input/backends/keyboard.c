@@ -153,6 +153,7 @@ static const char *M_GetScancodeName(SDL_Scancode scancode)
         case SDL_SCANCODE_COMMA:              return "\\{keyboard comma}";
         case SDL_SCANCODE_PERIOD:             return "\\{keyboard period}";
         case SDL_SCANCODE_SLASH:              return "\\{keyboard slash}";
+        case SDL_SCANCODE_NONUSBACKSLASH:     return "\\{keyboard backslash}";
 
         case SDL_SCANCODE_F1:                 return "\\{keyboard f1}";
         case SDL_SCANCODE_F2:                 return "\\{keyboard f2}";
