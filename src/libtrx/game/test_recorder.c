@@ -14,6 +14,7 @@
 
 typedef struct {
     MYFILE *file;
+    int32_t prev_frame_idx;
     int32_t frame_idx;
     SDL_Event queue[M_MAX_EVENTS];
     int32_t queue_size;
@@ -49,41 +50,51 @@ static void M_DumpQueue(M_PRIV *const p)
         return;
     }
 #endif
-    File_WriteString(p->file, "frame %d:", p->frame_idx);
+    const size_t indent = 8;
+    File_WriteString(
+        p->file, "%-*s", indent,
+        String_FormatStatic("@+%d:", p->frame_idx - p->prev_frame_idx));
     for (int32_t i = 0; i < p->queue_size; i++) {
         const SDL_Event *const event = &p->queue[i];
         const char *const event_str = M_DumpEvent(event);
         if (event_str == nullptr) {
             continue;
         }
-        File_WriteString(p->file, " ");
         File_WriteString(p->file, event_str);
         if (i < p->queue_size - 1) {
-            File_WriteString(p->file, ";");
+            File_WriteString(p->file, "\n%*s", indent, "");
         }
     }
 #if M_DEBUG
+    if (p->queue_size == 0) {
+        File_WriteString(p->file, "noop");
+    }
     const ITEM *const lara_item = Lara_GetItem();
     const GAME_OBJECT_ID obj_id = Lara_GetAnimationObject();
     const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
     if (lara_item != nullptr) {
+        File_WriteString(p->file, "\n%*s", indent, "");
         File_WriteString(
-            p->file, "; assert lara.pos=%d,%d,%d", lara_item->pos.x,
+            p->file, "assert lara.pos=%d,%d,%d", lara_item->pos.x,
             lara_item->pos.y, lara_item->pos.z);
+        File_WriteString(p->file, "\n%*s", indent, "");
         File_WriteString(
-            p->file, "; assert lara.rot=%d,%d,%d", lara_item->rot.x,
+            p->file, "assert lara.rot=%d,%d,%d", lara_item->rot.x,
             lara_item->rot.y, lara_item->rot.z);
+        File_WriteString(p->file, "\n%*s", indent, "");
         File_WriteString(
-            p->file, "; assert lara.anim=%d,%d,%d", obj_id,
+            p->file, "assert lara.anim=%d,%d,%d", obj_id,
             Item_GetRelativeObjAnim(lara_item, obj_id),
             Item_GetRelativeFrame(lara_item));
+        File_WriteString(p->file, "\n%*s", indent, "");
         File_WriteString(
-            p->file, "; assert lara.speed=%d,%d",
+            p->file, "assert lara.speed=%d,%d",
             (vehicle_item != nullptr ? vehicle_item : lara_item)->speed,
             (vehicle_item != nullptr ? vehicle_item : lara_item)->fall_speed);
     }
 #endif
     File_WriteString(p->file, "\n");
+    p->prev_frame_idx = p->frame_idx;
 }
 
 void TestRecorder_Open(const char *path, VECTOR *const original_args)

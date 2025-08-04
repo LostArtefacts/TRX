@@ -230,6 +230,7 @@ static void M_ClearQueue(M_PRIV *const p)
 static void M_ReadQueue(M_PRIV *const p)
 {
     M_ClearQueue(p);
+
     while (true) {
         char *const line = (char *)File_ReadLine(p->file);
         if (line == nullptr) {
@@ -242,32 +243,60 @@ static void M_ReadQueue(M_PRIV *const p)
             line[strlen(line) - 1] = '\0';
         }
 
+        // Expect a frame marker: @+<delta>:
         char *const colon = strchr(line, ':');
         if (colon == nullptr) {
             LOG_ERROR("Malformed input line: %s", line);
-            continue; // Malformed line
-        }
-        *colon = '\0';
-
-        int32_t frame = -1;
-        if (sscanf(line, "frame %d", &frame) != 1) {
-            LOG_ERROR("Malformed input line: %s", line);
             continue;
         }
-
-        p->next_frame_idx = frame;
-
-        char *const events_str = colon + 1;
-        const char *token = strtok(events_str, ";");
-        while (token != nullptr) {
-            while (*token == ' ' || *token == '\t') {
-                token++; // trim leading space
+        int32_t delta = 0;
+        {
+            char *marker = line;
+            if (*marker == '@') {
+                marker++;
             }
+            if (*marker != '+' || sscanf(marker + 1, "%d", &delta) != 1) {
+                LOG_ERROR("Malformed input line: %s", line);
+                continue;
+            }
+        }
+        p->next_frame_idx = p->frame_idx + delta;
 
-            char *const event_str = Memory_DupStr(token);
+        // First event on this line (after colon)
+        char *p_event = colon + 1;
+        while (*p_event == ' ' || *p_event == '\t') {
+            p_event++;
+        }
+        if (*p_event != '\0') {
+            char *const event_str = Memory_DupStr(p_event);
             Vector_Add(p->queue, &event_str);
+        }
 
-            token = strtok(nullptr, ";");
+        // Continuation lines for this frame
+        while (true) {
+            char *const cont = (char *)File_ReadLine(p->file);
+            if (cont == nullptr) {
+                break;
+            }
+            if (cont[0] == '#' || cont[0] == '\n') {
+                continue;
+            }
+            size_t len = strlen(cont);
+            if (len > 0 && cont[len - 1] == '\n') {
+                cont[len - 1] = '\0';
+            }
+            if (cont[0] != ' ' && cont[0] != '\t') {
+                File_Skip(p->file, -strlen(cont));
+                break;
+            }
+            char *p_cont = cont;
+            while (*p_cont == ' ' || *p_cont == '\t') {
+                p_cont++;
+            }
+            if (*p_cont != '\0') {
+                char *const event_str = Memory_DupStr(p_cont);
+                Vector_Add(p->queue, &event_str);
+            }
         }
         return;
     }
@@ -278,9 +307,6 @@ static void M_ReadQueue(M_PRIV *const p)
 
 static void M_RunQueue(M_PRIV *const p)
 {
-#if M_DEBUG
-    LOG_INFO("%d", p->frame_idx);
-#endif
     for (int32_t i = 0; i < p->queue->count; i++) {
         const char *const event_str = *(char **)Vector_Get(p->queue, i);
         M_ParseEvent(event_str);
@@ -405,11 +431,14 @@ static void M_ReadHeaders(M_PRIV *const p, M_PARSE_CTX *const ctx)
             continue;
         }
 
-        // Stop when a non-comment is encountered
-        int32_t frame = 0;
-        if (sscanf(line, "frame %d:", &frame) == 1) {
-            File_Skip(p->file, -strlen(line));
-            break;
+        // Stop at first replay frame marker (@+<delta>:), rewind to allow its
+        // parsing
+        {
+            int32_t rel = 0;
+            if (sscanf(line, "@+%d:", &rel) == 1) {
+                File_Skip(p->file, -strlen(line));
+                break;
+            }
         }
 
         // Dispatch based on matching prefix
