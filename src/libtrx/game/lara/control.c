@@ -263,6 +263,11 @@ static void M_HandleEnvironment(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     COLL_INFO coll = {};
 
+    if (item->current_anim_state != LS_SPRINT) {
+        lara_info->sprint_timer++;
+        CLAMPG(lara_info->sprint_timer, LARA_MAX_SPRINT);
+    }
+
     switch (lara_info->water_status) {
     case LWS_ABOVE_WATER:
     case LWS_WADE:

@@ -31,6 +31,7 @@ static void M_UpdateFromBackend(
     s->draw                        |= backend->is_pressed(layout, INPUT_ROLE_DRAW_WEAPON);
     s->look                        |= backend->is_pressed(layout, INPUT_ROLE_LOOK);
     s->roll                        |= backend->is_pressed(layout, INPUT_ROLE_ROLL);
+    s->sprint                      |= backend->is_pressed(layout, INPUT_ROLE_SPRINT);
 
     s->enter_console               |= backend->is_pressed(layout, INPUT_ROLE_ENTER_CONSOLE);
     s->save                        |= backend->is_pressed(layout, INPUT_ROLE_SAVE);

@@ -96,7 +96,7 @@ typedef struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
             BAR_COLOR color;
-        } lara_health_bar, lara_air_bar;
+        } lara_health_bar, lara_air_bar, lara_sprint_bar;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
@@ -167,6 +167,7 @@ typedef struct {
         bool enable_neutral_twists;
         bool enable_controlled_drops;
         bool enable_ledge_jumps;
+        bool enable_sprint;
         bool fix_floor_data_issues;
         bool fix_descending_glitch;
         JUMP_LOCK_MODE jump_lock_mode;

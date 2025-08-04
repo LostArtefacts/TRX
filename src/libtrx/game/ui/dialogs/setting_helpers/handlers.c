@@ -34,6 +34,17 @@ bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
     return g_Config.ui.lara_air_bar.show_mode != BSM_NEVER;
 }
 
+bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.gameplay.enable_sprint;
+}
+
+bool UI_Settings_Sprintbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_Sprint_IsAvailable(option)
+        && g_Config.ui.lara_sprint_bar.show_mode != BSM_NEVER;
+}
+
 bool UI_Settings_EnemyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {

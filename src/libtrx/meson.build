@@ -306,6 +306,7 @@ sources = [
   'game/ui/elements/bar_enemy_hp.c',
   'game/ui/elements/bar_lara_air.c',
   'game/ui/elements/bar_lara_hp.c',
+  'game/ui/elements/bar_lara_sprint.c',
   'game/ui/elements/button_label.c',
   'game/ui/elements/fade.c',
   'game/ui/elements/fixed.c',

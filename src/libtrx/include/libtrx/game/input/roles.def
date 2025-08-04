@@ -10,6 +10,7 @@ X_INPUT_ROLE(INPUT_ROLE_ACTION,                  action)
 X_INPUT_ROLE(INPUT_ROLE_DRAW_WEAPON,             draw)
 X_INPUT_ROLE(INPUT_ROLE_LOOK,                    look)
 X_INPUT_ROLE(INPUT_ROLE_ROLL,                    roll)
+X_INPUT_ROLE(INPUT_ROLE_SPRINT,                  sprint)
 X_INPUT_ROLE(INPUT_ROLE_INVENTORY,               option)
 
 X_INPUT_ROLE(INPUT_ROLE_ENTER_CONSOLE,           enter_console)

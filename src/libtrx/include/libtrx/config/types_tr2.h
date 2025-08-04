@@ -96,7 +96,7 @@ typedef struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
             BAR_COLOR color;
-        } lara_health_bar, lara_air_bar;
+        } lara_health_bar, lara_air_bar, lara_sprint_bar;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
@@ -158,6 +158,7 @@ typedef struct {
         bool enable_neutral_twists;
         bool enable_controlled_drops;
         bool enable_ledge_jumps;
+        bool enable_sprint;
         bool enable_enemy_rotation;
         bool enable_ally_targeting;
         bool revert_to_pistols;

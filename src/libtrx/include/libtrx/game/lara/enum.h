@@ -113,6 +113,8 @@ typedef enum {
     LS_ZIPLINE       = 70,
     LS_RESPONSIVE    = 71,
     LS_NEUTRAL_ROLL  = 72,
+    LS_SPRINT        = 73,
+    LS_SPRINT_ROLL   = 74,
 #elif TR_VERSION    == 1
     LS_CONTROLLED    = 56,
     LS_TWIST         = 57,
@@ -120,6 +122,8 @@ typedef enum {
     LS_WADE          = 59,
     LS_RESPONSIVE    = 60,
     LS_NEUTRAL_ROLL  = 61,
+    LS_SPRINT        = 62,
+    LS_SPRINT_ROLL   = 63,
 #endif
     LS_NUMBER_OF,
 } LARA_STATE;
@@ -319,6 +323,17 @@ typedef enum {
     LA_HANG_TO_JUMP_UP_CONTINUE              = 190,
     LA_HANG_TO_JUMP_BACK                     = 191,
     LA_HANG_TO_JUMP_BACK_CONTINUE            = 192,
+    LA_SPRINT                                = 193,
+    LA_RUN_TO_SPRINT_LEFT                    = 194,
+    LA_RUN_TO_SPRINT_RIGHT                   = 195,
+    LA_SPRINT_SLIDE_STAND_LEFT               = 196,
+    LA_SPRINT_SLIDE_STAND_RIGHT              = 197,
+    LA_SPRINT_TO_ROLL_LEFT                   = 198,
+    LA_SPRINT_ROLL_LEFT_TO_RUN               = 199,
+    LA_SPRINT_TO_ROLL_RIGHT                  = 200,
+    LA_SPRINT_ROLL_RIGHT_TO_RUN              = 201,
+    LA_SPRINT_TO_RUN_LEFT                    = 202,
+    LA_SPRINT_TO_RUN_RIGHT                   = 203,
 #else
     LA_STAND_TO_LADDER                       = 160,
     LA_LADDER_UP                             = 161,
@@ -387,6 +402,17 @@ typedef enum {
     LA_HANG_TO_JUMP_UP_CONTINUE              = 224,
     LA_HANG_TO_JUMP_BACK                     = 225,
     LA_HANG_TO_JUMP_BACK_CONTINUE            = 226,
+    LA_SPRINT                                = 227,
+    LA_RUN_TO_SPRINT_LEFT                    = 228,
+    LA_RUN_TO_SPRINT_RIGHT                   = 229,
+    LA_SPRINT_SLIDE_STAND_LEFT               = 230,
+    LA_SPRINT_SLIDE_STAND_RIGHT              = 231,
+    LA_SPRINT_TO_ROLL_LEFT                   = 232,
+    LA_SPRINT_ROLL_LEFT_TO_RUN               = 233,
+    LA_SPRINT_TO_ROLL_RIGHT                  = 234,
+    LA_SPRINT_ROLL_RIGHT_TO_RUN              = 235,
+    LA_SPRINT_TO_RUN_LEFT                    = 236,
+    LA_SPRINT_TO_RUN_RIGHT                   = 237,
 #endif
     LA_NUMBER_OF,
 } LARA_ANIMATION;
