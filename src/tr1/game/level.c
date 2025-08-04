@@ -43,16 +43,16 @@ typedef enum {
     LEVEL_LAYOUT_TR1,
     LEVEL_LAYOUT_TR1_DEMO_PC,
     LEVEL_LAYOUT_NUMBER_OF,
-} LEVEL_LAYOUT;
+} M_LAYOUT;
 
-static bool M_TryLayout(VFILE *file, LEVEL_LAYOUT layout);
-static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
+static bool M_TryLayout(VFILE *file, M_LAYOUT layout);
+static M_LAYOUT M_GuessLayout(VFILE *file);
 static void M_InitialiseSoundEffects(void);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
 
-static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
+static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 {
     // TODO: clang-format <20 formats this wrongly
     // clang-format off
@@ -163,11 +163,11 @@ static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
     return true;
 }
 
-static LEVEL_LAYOUT M_GuessLayout(VFILE *const file)
+static M_LAYOUT M_GuessLayout(VFILE *const file)
 {
-    LEVEL_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
+    M_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
     BENCHMARK benchmark = Benchmark_Start();
-    for (LEVEL_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
+    for (M_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
         if (M_TryLayout(file, layout)) {
             result = layout;
             break;
@@ -204,12 +204,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 {
     GameBuf_Reset();
 
-    VFILE *file = VFile_CreateFromPath(level->path);
-    if (!file) {
+    VFILE *const file = VFile_CreateFromPath(level->path);
+    if (file == nullptr) {
         Shell_ExitSystemFmt("Could not open %s", level->path);
     }
 
-    const LEVEL_LAYOUT layout = M_GuessLayout(file);
+    const M_LAYOUT layout = M_GuessLayout(file);
     if (layout == LEVEL_LAYOUT_UNKNOWN) {
         Shell_ExitSystemFmt("Failed to load %s", level->path);
     }
