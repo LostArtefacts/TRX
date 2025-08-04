@@ -110,6 +110,7 @@ sources = [
   'game/console/cmd/heal.c',
   'game/console/cmd/help.c',
   'game/console/cmd/immune.c',
+  'game/console/cmd/inf_sprint.c',
   'game/console/cmd/kill.c',
   'game/console/cmd/load_game.c',
   'game/console/cmd/lua.c',
