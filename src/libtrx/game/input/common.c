@@ -5,8 +5,13 @@
 #include "game/game_string.h"
 #include "game/input/backends/controller.h"
 #include "game/input/backends/keyboard.h"
+#include "strings.h"
 
+#include <SDL2/SDL_keyboard.h>
+#include <ctype.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef enum {
     HOLD_INACTIVE,
@@ -379,4 +384,59 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
 const char *Input_GetRoleName(const INPUT_ROLE role)
 {
     return GS_ENUM(INPUT_ROLE, role);
+}
+
+const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod)
+{
+    // clang-format off
+    const char *mods = "";
+    if (mod & KMOD_CTRL)  { mods = String_FormatStatic("%sctrl+",  mods); }
+    if (mod & KMOD_SHIFT) { mods = String_FormatStatic("%sshift+", mods); }
+    if (mod & KMOD_ALT)   { mods = String_FormatStatic("%salt+",   mods); }
+    if (mod & KMOD_GUI)   { mods = String_FormatStatic("%sgui+",   mods); }
+    // clang-format on
+
+    const char *const name = SDL_GetScancodeName(scancode);
+    if (name == nullptr || name[0] == '\0') {
+        return nullptr;
+    }
+
+    char *const full = (char *)String_FormatStatic("%s%s", mods, name);
+    for (size_t i = 0; i < strlen(full); i++) {
+        full[i] = (char)tolower((unsigned char)full[i]);
+    }
+    return full;
+}
+
+bool Input_ParseKeyDesc(
+    const char *const desc, SDL_Scancode *const scancode, SDL_Keymod *const mod)
+{
+    if (desc == nullptr || scancode == nullptr || mod == nullptr) {
+        return false;
+    }
+
+    SDL_Keymod m = KMOD_NONE;
+    const char *keystr = desc;
+    const char *last = strrchr(desc, '+');
+
+    if (last != nullptr) {
+        for (const char *tok = desc; tok < last; tok = strchr(tok, '+') + 1) {
+            const size_t len =
+                strchr(tok, '+') ? strchr(tok, '+') - tok : last - tok;
+            if (strncmp(tok, "ctrl", len) == 0) {
+                m |= KMOD_CTRL;
+            } else if (strncmp(tok, "shift", len) == 0) {
+                m |= KMOD_SHIFT;
+            } else if (strncmp(tok, "alt", len) == 0) {
+                m |= KMOD_ALT;
+            } else if (strncmp(tok, "gui", len) == 0) {
+                m |= KMOD_GUI;
+            }
+        }
+        keystr = last + 1;
+    }
+
+    *scancode = SDL_GetScancodeFromName(keystr);
+    *mod = m;
+    return *scancode != SDL_SCANCODE_UNKNOWN;
 }
