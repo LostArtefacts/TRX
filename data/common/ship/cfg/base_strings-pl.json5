@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Kryształy zapisu będą rysowane z fioletowym odcieniem, bardziej podobnym do odcienia z PS1.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Responsywny paszport",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Wyłącza blokowanie klawiszy podczas przewracania stron paszportu, zamiast tego kolejkując pożądaną nawigację.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Responsywny sprint",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Włącza bardziej responsywny tryb sprintu dla Lary.\n\n- pozwala sprintować, gdy Lara ma energię, a nie tylko przy pełnej wytrzymałości.\n- umożliwia sprint po schodach bez przerywania zwykłą animacją biegu.",
         "SETTING_ENABLE_ROUND_SHADOW": "Okrągłe cienie",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Zamienia domyślne ośmiokątne cienie na okrągłe.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Kryształy zapisu",

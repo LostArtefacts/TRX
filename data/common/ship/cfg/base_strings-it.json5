@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "I cristalli di salvataggio saranno di color viola, più simili a quelli PS1.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Passaporto reattivo",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disabilita il blocco dell'input dell'utente quando scorrono le pagine del passaporto, programmando invece le pagine da sfogliare.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Scatto reattivo",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Attiva uno stato di scatto più reattivo per Lara.\n\n- consente di scattare non appena Lara ha energia, invece di aspettare che la resistenza sia piena.\n- consente di scattare sulle scale senza essere interrotta dall’animazione di corsa normale.",
         "SETTING_ENABLE_ROUND_SHADOW": "Ombre arrotondate",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Abilita le ombre arrotondate invece di quelle ottagonali predefinite.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Cristalli di salvataggio",

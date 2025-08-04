@@ -113,9 +113,10 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    // TODO: allow sprinting even when "bar" is not full
     if (g_Input.sprint && g_Config.gameplay.enable_sprint
-        && lara->sprint_timer == LARA_MAX_SPRINT) {
+        && item->current_anim_state == LS_RUN && lara->sprint_timer > 0
+        && (g_Config.gameplay.enable_responsive_sprint
+            || lara->sprint_timer == LARA_MAX_SPRINT)) {
         item->goal_anim_state = LS_SPRINT;
         return;
     }
