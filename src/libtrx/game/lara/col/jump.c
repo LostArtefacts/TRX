@@ -25,7 +25,6 @@ static bool M_TestHangJump(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
 static bool M_TestHangSwingIn(const ITEM *item, int16_t angle);
 static void M_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
-static bool M_LandedBad(ITEM *item);
 
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
@@ -223,39 +222,6 @@ static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static bool M_LandedBad(ITEM *const item)
-{
-    const int32_t x = item->pos.x;
-    const int32_t y = item->pos.y;
-    const int32_t z = item->pos.z;
-
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t height = Room_GetHeight(sector, x, y - LARA_HEIGHT, z);
-    item->pos.y = height;
-    item->floor = height;
-
-    Room_TestTriggers(item);
-    item->pos.y = y;
-    const int32_t land_speed = item->fall_speed - DAMAGE_START;
-    if (land_speed <= 0) {
-        return false;
-    }
-
-    if (g_Config.debug.enable_invulnerability) {
-        return false;
-    } else if (land_speed <= DAMAGE_LENGTH) {
-        Lara_TakeDamage(
-            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
-            false);
-    } else {
-        item->hit_points = -1;
-    }
-
-    // #675: Original bug to keep. Correct operator would be <=
-    return item->hit_points < 0;
-}
-
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
@@ -336,7 +302,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_LandedBad(item)) {
+    if (Lara_Col_LandedBad(item)) {
         item->goal_anim_state = LS_DEATH;
     } else {
         item->goal_anim_state = LS_STOP;
@@ -370,7 +336,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_LandedBad(item)) {
+    if (Lara_Col_LandedBad(item)) {
         item->goal_anim_state = LS_DEATH;
     } else if (
         lara->water_status != LWS_WADE && g_Input.forward && !g_Input.slow) {
@@ -417,7 +383,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_LandedBad(item)) {
+    if (Lara_Col_LandedBad(item)) {
         item->goal_anim_state = LS_DEATH;
     } else {
         item->goal_anim_state = LS_STOP;
@@ -442,7 +408,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_LandedBad(item)) {
+    if (Lara_Col_LandedBad(item)) {
         item->goal_anim_state = LS_DEATH;
     } else {
         item->goal_anim_state = LS_STOP;
@@ -472,7 +438,7 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_LandedBad(item)) {
+    if (Lara_Col_LandedBad(item)) {
         item->goal_anim_state = LS_DEATH;
     } else {
         item->goal_anim_state = LS_STOP;
@@ -540,7 +506,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_LandedBad(item)) {
+    if (Lara_Col_LandedBad(item)) {
         item->goal_anim_state = LS_DEATH;
     } else {
         item->goal_anim_state = LS_STOP;
@@ -603,6 +569,37 @@ void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
         }
         break;
     }
+}
+
+bool Lara_Col_LandedBad(ITEM *const item)
+{
+    const XYZ_32 pos = item->pos;
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, pos.x, pos.y - LARA_HEIGHT, pos.z);
+    item->pos.y = height;
+    item->floor = height;
+
+    Room_TestTriggers(item);
+    item->pos.y = pos.y;
+    const int32_t land_speed = item->fall_speed - DAMAGE_START;
+    if (land_speed <= 0) {
+        return false;
+    }
+
+    if (g_Config.debug.enable_invulnerability) {
+        return false;
+    } else if (land_speed <= DAMAGE_LENGTH) {
+        Lara_TakeDamage(
+            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
+            false);
+    } else {
+        item->hit_points = -1;
+    }
+
+    // #675: Original bug to keep. Correct operator would be <=
+    return item->hit_points < 0;
 }
 
 // clang-format off
