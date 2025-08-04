@@ -23,6 +23,18 @@ typedef struct {
     int32_t queue_size;
 } M_PRIV;
 
+static const struct {
+    const char *arg;
+    bool takes_value;
+} m_SkipArgs[] = {
+    { "--debug-render-performance", false },
+    { "--test-record", true },
+    { "--test-replay", true },
+    { "--test-play", true },
+    { "--headless-fps", true },
+    { nullptr, false },
+};
+
 static M_PRIV m_Priv = {};
 
 static int M_CompareConfigOption(const void *a, const void *b);
@@ -129,15 +141,18 @@ static void M_DumpArguments(MYFILE *const fp, VECTOR *const original_args)
     VECTOR *const filtered_args = Vector_Create(sizeof(char *));
     for (int32_t i = 0; i < original_args->count; i++) {
         const char *const arg = *(char **)Vector_Get(original_args, i);
-        if (!strcmp(arg, "--test-record") || !strcmp(arg, "--test-replay")
-            || !strcmp(arg, "--test-play") || !strcmp(arg, "--headless-fps")) {
-            i++; // Also skip the path argument.
-            continue;
+        int32_t skip = 0;
+        for (size_t j = 0; m_SkipArgs[j].arg != nullptr; j++) {
+            if (strcmp(arg, m_SkipArgs[j].arg) == 0) {
+                skip = 1 + m_SkipArgs[j].takes_value;
+                break;
+            }
         }
-        if (!strcmp(arg, "--debug-render-performance")) {
-            continue;
+        if (skip) {
+            i += skip - 1;
+        } else {
+            Vector_Add(filtered_args, &arg);
         }
-        Vector_Add(filtered_args, &arg);
     }
 
     if (filtered_args->count > 0) {
