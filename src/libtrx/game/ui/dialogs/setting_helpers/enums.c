@@ -65,6 +65,12 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_AirBarShowModeEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_SprintBarShowModeEnumEntries[] = {
+    { BSM_DEFAULT, GS_ID(ENUM_BAR_MODE_DEFAULT) },
+    { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_EnemyHealthBarShowModeEnumEntries[] = {
     { BSM_ALWAYS, GS_ID(ENUM_BAR_MODE_ALWAYS) },
     { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
@@ -93,6 +99,7 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[] = {
     { BC_BLUE2, GS_ID(ENUM_BAR_COLOR_BLUE2) },
     { BC_PINK, GS_ID(ENUM_BAR_COLOR_PINK) },
     { BC_PURPLE, GS_ID(ENUM_BAR_COLOR_PURPLE) },
+    { BC_GREEN2, GS_ID(ENUM_BAR_COLOR_GREEN2) },
     { -1, nullptr },
 };
 

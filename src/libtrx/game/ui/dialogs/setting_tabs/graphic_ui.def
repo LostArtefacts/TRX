@@ -18,6 +18,10 @@ X_UI_CFG_ENUM(ui.lara_air_bar.show_mode,        SETTING_AIRBAR_SHOW_MODE, .misc 
 X_UI_CFG_ENUM(ui.lara_air_bar.location,         SETTING_AIRBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Airbar_IsAvailable })
 X_UI_CFG_ENUM(ui.lara_air_bar.color,            SETTING_AIRBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_Airbar_IsAvailable })
 
+X_UI_CFG_ENUM(ui.lara_sprint_bar.show_mode,     SETTING_SPRINTBAR_SHOW_MODE, .misc = UI_Settings_SprintBarShowModeEnumEntries, .custom_handler = { .is_available = UI_Settings_Sprint_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_sprint_bar.location,      SETTING_SPRINTBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Sprintbar_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_sprint_bar.color,         SETTING_SPRINTBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_Sprintbar_IsAvailable })
+
 X_UI_CFG_ENUM(ui.enemy_health_bar.show_mode,    SETTING_ENEMY_HEALTHBAR_SHOW_MODE, .misc = UI_Settings_EnemyHealthBarShowModeEnumEntries)
 X_UI_CFG_ENUM(ui.enemy_health_bar.location,     SETTING_ENEMY_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_EnemyHealthbar_IsAvailable })
 X_UI_CFG_ENUM(ui.enemy_health_bar.color,        SETTING_ENEMY_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_EnemyHealthbar_IsAvailable })

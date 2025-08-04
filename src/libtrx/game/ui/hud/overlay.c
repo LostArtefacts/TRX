@@ -12,6 +12,7 @@
 #include "game/ui/elements/bar_enemy_hp.h"
 #include "game/ui/elements/bar_lara_air.h"
 #include "game/ui/elements/bar_lara_hp.h"
+#include "game/ui/elements/bar_lara_sprint.h"
 #include "game/ui/elements/fixed.h"
 #include "game/ui/elements/flash.h"
 #include "game/ui/elements/fps_counter.h"
@@ -57,6 +58,7 @@ static struct {
 
 static bool M_LaraHealthBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
 static bool M_LaraAirBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
+static bool M_LaraSprintBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
 static bool M_EnemyHealthBar(const BAR_LOCATION location);
 static void M_Arrow(const UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow);
 static void M_DebugPosTopLeft(void);
@@ -100,6 +102,21 @@ static bool M_LaraAirBar(
         return false;
     }
     return UI_LaraAirBar(s->blink.state);
+}
+
+static bool M_LaraSprintBar(
+    const UI_OVERLAY_STATE *const s, const BAR_LOCATION location)
+{
+    if (location != g_Config.ui.lara_sprint_bar.location) {
+        return false;
+    }
+    if (!Lara_IsControllable() || !Game_IsPlaying()) {
+        return false;
+    }
+    if (!g_Config.ui.enable_game_ui) {
+        return false;
+    }
+    return UI_LaraSprintBar();
 }
 
 static bool M_EnemyHealthBar(const BAR_LOCATION location)
@@ -201,6 +218,7 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
     bool bar_shown = false;
     bar_shown |= M_LaraHealthBar(s, BL_TOP_LEFT);
     bar_shown |= M_LaraAirBar(s, BL_TOP_LEFT);
+    bar_shown |= M_LaraSprintBar(s, BL_TOP_LEFT);
     bar_shown |= M_EnemyHealthBar(BL_TOP_LEFT);
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_TL);
@@ -221,6 +239,7 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
     UI_BeginOverlayRegion(0.5f, 0.0f);
     M_LaraHealthBar(s, BL_TOP_CENTER);
     M_LaraAirBar(s, BL_TOP_CENTER);
+    M_LaraSprintBar(s, BL_TOP_CENTER);
     M_EnemyHealthBar(BL_TOP_CENTER);
     {
         const char *const txt =
@@ -244,6 +263,7 @@ static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
     bool bar_shown = false;
     bar_shown |= M_LaraHealthBar(s, BL_TOP_RIGHT);
     bar_shown |= M_LaraAirBar(s, BL_TOP_RIGHT);
+    bar_shown |= M_LaraSprintBar(s, BL_TOP_RIGHT);
     bar_shown |= M_EnemyHealthBar(BL_TOP_RIGHT);
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_TR);
@@ -263,6 +283,7 @@ static void M_BottomLeftRegion(const UI_OVERLAY_STATE *const s)
     bool bar_shown = false;
     bar_shown |= M_LaraHealthBar(s, BL_BOTTOM_LEFT);
     bar_shown |= M_LaraAirBar(s, BL_BOTTOM_LEFT);
+    bar_shown |= M_LaraSprintBar(s, BL_BOTTOM_LEFT);
     bar_shown |= M_EnemyHealthBar(BL_BOTTOM_LEFT);
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_BL);
@@ -293,6 +314,7 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
     }
     M_LaraHealthBar(s, BL_BOTTOM_CENTER);
     M_LaraAirBar(s, BL_BOTTOM_CENTER);
+    M_LaraSprintBar(s, BL_BOTTOM_CENTER);
     M_EnemyHealthBar(BL_BOTTOM_CENTER);
     UI_EndOverlayRegion();
 }
@@ -303,6 +325,7 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
     bool bar_shown = false;
     bar_shown |= M_LaraHealthBar(s, BL_BOTTOM_RIGHT);
     bar_shown |= M_LaraAirBar(s, BL_BOTTOM_RIGHT);
+    bar_shown |= M_LaraSprintBar(s, BL_BOTTOM_RIGHT);
     bar_shown |= M_EnemyHealthBar(BL_BOTTOM_RIGHT);
     if (!bar_shown) {
         M_Arrow(s, UI_OVERLAY_ARROW_BR);

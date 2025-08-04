@@ -11,6 +11,7 @@
 - added ability to move Lara around in photo mode
 - added additional poses for photo mode
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
+- added an option to allow Lara to sprint (Gameplay → Controls → Sprinting) (#3711)
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added an option to use Lara's neutral jump-twist from early TR1 betas (Gameplay → Controls → Neutral twists) (#1392)
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)

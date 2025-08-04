@@ -54,6 +54,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_STEP_RIGHT },
                 { .role = INPUT_ROLE_ROLL },
                 { .role = INPUT_ROLE_SLOW },
+                { .role = INPUT_ROLE_SPRINT },
                 { .role = INPUT_ROLE_ACTION },
                 { .role = INPUT_ROLE_DRAW_WEAPON },
                 { .role = INPUT_ROLE_LOOK },

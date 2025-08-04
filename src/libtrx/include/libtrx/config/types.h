@@ -42,6 +42,7 @@ typedef enum {
     BC_BLUE2,
     BC_PINK,
     BC_PURPLE,
+    BC_GREEN2,
 } BAR_COLOR;
 
 typedef enum {

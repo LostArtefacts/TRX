@@ -31,6 +31,9 @@
 #define M_LF_WADE_STEP_L_START 3
 #define M_LF_WADE_STEP_L_END 14
 
+#define M_LF_SPRINT_STEP_L_START 4
+#define M_LF_SPRINT_STEP_L_END 13
+
 #define M_CONTROLLED_DROP_MIN_HEIGHT (LARA_HEIGHT + (STEP_L * 3) / 4) // 954
 
 static int16_t m_OldSlideAngle = 1;
@@ -58,6 +61,8 @@ static void M_Slide(ITEM *item, COLL_INFO *coll);
 static void M_Roll(ITEM *item, COLL_INFO *coll);
 static void M_RollContinue(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
+static void M_Sprint(ITEM *item, COLL_INFO *coll);
+static void M_SprintRoll(ITEM *item, COLL_INFO *coll);
 
 static bool M_TestWall(
     const ITEM *const item, const int32_t front, const int32_t right,
@@ -785,6 +790,96 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     item->pos.y += MIN(coll->side_mid.floor, 50);
 }
 
+static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+
+    Lara_Col_GetInfo(item, coll);
+    if (M_TestCeiling(item, coll) || Lara_Col_TestVault(item, coll)) {
+        return;
+    }
+
+    if (M_DeflectEdge(item, coll)) {
+        item->rot.z = 0;
+        if (M_TestWall(item, STEP_L, 0, -STEP_L * 5 / 2)) {
+            Item_SwitchToAnim(item, LA_WALL_SMASH_LEFT, 0);
+            return;
+        }
+
+        M_CollideStop(item, coll);
+    }
+
+    if (M_Fallen(item, coll)) {
+        return;
+    }
+
+    // TODO: make optional to allow running up stairs
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
+        if (Item_TestFrameRange(
+                item, M_LF_SPRINT_STEP_L_START, M_LF_SPRINT_STEP_L_END)) {
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_LEFT, 0);
+        } else {
+            Item_SwitchToAnim(item, LA_RUN_UP_STEP_RIGHT, 0);
+        }
+    }
+
+    if (M_TestSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += MIN(coll->side_mid.floor, 50);
+}
+
+static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    if (item->speed < 0) {
+        lara->move_angle += DEG_180;
+    }
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEP_L;
+    coll->bad_ceiling = STEPUP_HEIGHT / 2;
+    coll->slopes_are_walls = 1;
+
+    Lara_Col_GetInfo(item, coll);
+    Lara_Col_DeflectEdgeJump(item, coll);
+    if (M_Fallen(item, coll)) {
+        return;
+    }
+
+    if (item->speed < 0) {
+        lara->move_angle = item->rot.y;
+    }
+
+    if (coll->side_mid.floor <= 0 && item->fall_speed > 0) {
+        if (Lara_Col_LandedBad(item)) {
+            item->goal_anim_state = LS_DEATH;
+        } else if (
+            lara->water_status == LWS_WADE || !g_Input.forward
+            || g_Input.slow) {
+            item->goal_anim_state = LS_STOP;
+        } else {
+            item->goal_anim_state = LS_RUN;
+        }
+
+        item->fall_speed = 0;
+        item->gravity = false;
+        item->speed = 0;
+        item->pos.y += coll->side_mid.floor;
+        Lara_Animate(item);
+    }
+
+    Lara_Col_Shift(coll);
+    item->pos.y += coll->side_mid.floor;
+}
+
 // clang-format off
 REGISTER_LARA_COL(LS_PUSH_BLOCK,   M_Default)
 REGISTER_LARA_COL(LS_PULL_BLOCK,   M_Default)
@@ -823,4 +918,6 @@ REGISTER_LARA_COL(LS_SLIDE_BACK,   M_Slide)
 REGISTER_LARA_COL(LS_ROLL,         M_Roll)
 REGISTER_LARA_COL(LS_ROLL_CONT,    M_RollContinue)
 REGISTER_LARA_COL(LS_WADE,         M_Wade)
+REGISTER_LARA_COL(LS_SPRINT,       M_Sprint)
+REGISTER_LARA_COL(LS_SPRINT_ROLL,  M_SprintRoll)
 // clang-format on

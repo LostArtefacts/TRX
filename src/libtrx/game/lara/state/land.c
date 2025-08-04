@@ -7,6 +7,10 @@
 // clang-format off
 #define M_LF_ROLL                  2
 #define M_FAST_TURN                ((DEG_1 * 6) + LARA_TURN_UNDO) // = 1456
+#define M_FAST_FALL_SPEED          (FAST_FALL_SPEED + 3)          // = 131
+#define M_SPRINT_TURN_RATE         ((DEG_1 * 2) + 45)             // = 409
+#define M_SPRINT_TURN_MAX          (DEG_1 * 4)                    // = 728
+#define M_SPRINT_LEAN_MAX          (DEG_1 * 16)                   // = 2192
 #define M_CAM_SLIDE_ELEVATION      (-45 * DEG_1)                  // = -8190
 #define M_CAM_PUSH_BLOCK_ANGLE     (35 * DEG_1)                   // = 6370
 #define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1)                  // = -4550
@@ -53,6 +57,8 @@ static void M_SwitchOn(ITEM *item, COLL_INFO *coll);
 static void M_UseKey(ITEM *item, COLL_INFO *coll);
 static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
+static void M_Sprint(ITEM *item, COLL_INFO *coll);
+static void M_SprintRoll(ITEM *item, COLL_INFO *coll);
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
 {
@@ -107,6 +113,13 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    // TODO: allow sprinting even when "bar" is not full
+    if (g_Input.sprint && g_Config.gameplay.enable_sprint
+        && lara->sprint_timer == LARA_MAX_SPRINT) {
+        item->goal_anim_state = LS_SPRINT;
+        return;
+    }
+
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
         CLAMPL(lara->turn_rate, -M_FAST_TURN);
@@ -502,6 +515,47 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->hit_points <= 0 || lara->sprint_timer <= 0 || !g_Input.sprint
+        || lara->water_status == LWS_WADE) {
+        item->goal_anim_state = LS_RUN;
+        return;
+    }
+
+    lara->sprint_timer--;
+
+    if (g_Input.left) {
+        lara->turn_rate -= M_SPRINT_TURN_RATE;
+        CLAMPL(lara->turn_rate, -M_SPRINT_TURN_MAX);
+        item->rot.z -= LARA_LEAN_RATE;
+        CLAMPL(item->rot.z, -M_SPRINT_LEAN_MAX);
+    } else if (g_Input.right) {
+        lara->turn_rate += M_SPRINT_TURN_RATE;
+        CLAMPG(lara->turn_rate, M_SPRINT_TURN_MAX);
+        item->rot.z += LARA_LEAN_RATE;
+        CLAMPG(item->rot.z, M_SPRINT_LEAN_MAX);
+    }
+
+    if (g_Input.jump && !item->gravity) {
+        item->goal_anim_state = LS_SPRINT_ROLL;
+    } else if (g_Input.forward) {
+        item->goal_anim_state = g_Input.slow ? LS_WALK : LS_SPRINT;
+    } else if (!g_Input.left && !g_Input.right) {
+        item->goal_anim_state = LS_STOP;
+    }
+}
+
+static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->goal_anim_state != LS_DEATH && item->goal_anim_state != LS_STOP
+        && item->goal_anim_state != LS_RUN
+        && item->fall_speed > M_FAST_FALL_SPEED) {
+        item->goal_anim_state = LS_FAST_FALL;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_PULL_UP,      M_Default)
 REGISTER_LARA_STATE(LS_GYMNAST,      M_Default)
@@ -530,6 +584,8 @@ REGISTER_LARA_STATE(LS_USE_KEY,      M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,   M_UseKey)
 REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
+REGISTER_LARA_STATE(LS_SPRINT,       M_Sprint)
+REGISTER_LARA_STATE(LS_SPRINT_ROLL,  M_SprintRoll)
 #if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
 #else

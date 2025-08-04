@@ -54,6 +54,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->hit_effect_count = 0;
     lara_info->hit_frame = 0;
     lara_info->air = LARA_MAX_AIR;
+    lara_info->sprint_timer = LARA_MAX_SPRINT;
     lara_info->water_surface_dist = 100;
     lara_info->death_timer = 0;
     lara_info->dive_timer = 0;

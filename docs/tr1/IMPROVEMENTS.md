@@ -22,6 +22,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added ability to look up and down while hanging
 - added ability to jump-twist and somersault like in TR2+
 - added an option to use Lara's neutral jump-twist from early TR1 betas
+- added an option to allow Lara to sprint
 - added an option to use Lara's slide-to-run animation from TR3+
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off
 - added an option to allow Lara to jump up or back when hanging from a ledge
