@@ -9,6 +9,9 @@
 #include "game/lara.h"
 #include "game/random.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #define M_DEBUG 0
 #define M_MAX_EVENTS 64 // Maximum SDL or custom events per frame
 
@@ -22,8 +25,20 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static int M_CompareConfigOption(const void *a, const void *b);
 static const char *M_DumpEvent(const SDL_Event *event);
 static void M_DumpQueue(M_PRIV *p);
+static void M_DumpHeader(MYFILE *fp);
+static void M_DumpArguments(MYFILE *fp, VECTOR *original_args);
+static void M_DumpConfig(MYFILE *fp);
+static void M_DumpBindings(MYFILE *fp);
+
+static int M_CompareConfigOption(const void *a, const void *b)
+{
+    const CONFIG_OPTION *const *opt_a = a;
+    const CONFIG_OPTION *const *opt_b = b;
+    return strcmp((*opt_a)->name, (*opt_b)->name);
+}
 
 static const char *M_DumpEvent(const SDL_Event *const event)
 {
@@ -97,59 +112,74 @@ static void M_DumpQueue(M_PRIV *const p)
     p->prev_frame_idx = p->frame_idx;
 }
 
-void TestRecorder_Open(const char *path, VECTOR *const original_args)
+static void M_DumpHeader(MYFILE *const fp)
 {
-    M_PRIV *const p = &m_Priv;
-    p->file = File_Open(path, FILE_OPEN_WRITE);
-    if (p->file == nullptr) {
-        LOG_ERROR("Cannot open record file '%s'", path);
+    File_WriteString(fp, "seed_control %d\n", Random_GetControlSeed());
+    File_WriteString(fp, "seed_draw %d\n", Random_GetDrawSeed());
+}
+
+static void M_DumpArguments(MYFILE *const fp, VECTOR *const original_args)
+{
+    // Record original arguments passed to the game
+    if (original_args->count <= 0) {
         return;
     }
-    File_WriteString(p->file, "seed_control %d\n", Random_GetControlSeed());
-    File_WriteString(p->file, "seed_draw %d\n", Random_GetDrawSeed());
 
-    // Record original arguments passed to the game
-    if (original_args->count > 0) {
-        // Skip tracking irrelevant arguments.
-        VECTOR *const filtered_args = Vector_Create(sizeof(char *));
-        for (int32_t i = 0; i < original_args->count; i++) {
-            const char *const arg = *(char **)Vector_Get(original_args, i);
-            if (!strcmp(arg, "--test-record") || !strcmp(arg, "--test-replay")
-                || !strcmp(arg, "--test-play")
-                || !strcmp(arg, "--headless-fps")) {
-                i++; // Also skip the path argument.
-                continue;
-            }
-            if (!strcmp(arg, "--debug-render-performance")) {
-                continue;
-            }
-            Vector_Add(filtered_args, &arg);
+    // Skip tracking irrelevant arguments.
+    VECTOR *const filtered_args = Vector_Create(sizeof(char *));
+    for (int32_t i = 0; i < original_args->count; i++) {
+        const char *const arg = *(char **)Vector_Get(original_args, i);
+        if (!strcmp(arg, "--test-record") || !strcmp(arg, "--test-replay")
+            || !strcmp(arg, "--test-play") || !strcmp(arg, "--headless-fps")) {
+            i++; // Also skip the path argument.
+            continue;
         }
-
-        if (filtered_args->count > 0) {
-            File_WriteString(p->file, "args");
-            for (int32_t i = 0; i < filtered_args->count; i++) {
-                const char *const arg = *(char **)Vector_Get(filtered_args, i);
-                File_WriteString(p->file, " \"%s\"", arg);
-            }
-            File_WriteString(p->file, "\n");
+        if (!strcmp(arg, "--debug-render-performance")) {
+            continue;
         }
-        Vector_Free(filtered_args);
+        Vector_Add(filtered_args, &arg);
     }
 
+    if (filtered_args->count > 0) {
+        File_WriteString(fp, "args");
+        for (int32_t i = 0; i < filtered_args->count; i++) {
+            const char *const arg = *(char **)Vector_Get(filtered_args, i);
+            File_WriteString(fp, " \"%s\"", arg);
+        }
+        File_WriteString(fp, "\n");
+    }
+    Vector_Free(filtered_args);
+}
+
+static void M_DumpConfig(MYFILE *const fp)
+{
     // Record any non-default config options for later replay
-    for (const CONFIG_OPTION *opt = Config_GetOptionMap(); opt->name != nullptr;
-         opt++) {
+    const CONFIG_OPTION *const map = Config_GetOptionMap();
+    VECTOR *opts = Vector_Create(sizeof(CONFIG_OPTION *));
+
+    for (const CONFIG_OPTION *opt = map; opt->name != nullptr; opt++) {
         if (Config_IsOptionAtDefault(opt->target)) {
             continue;
         }
+        Vector_Add(opts, &opt);
+    }
+
+    CONFIG_OPTION **raw_opts = Vector_GetData(opts);
+    qsort(
+        raw_opts, opts->count, sizeof(CONFIG_OPTION *), M_CompareConfigOption);
+    for (int32_t i = 0; i < opts->count; i++) {
+        const CONFIG_OPTION *opt = raw_opts[i];
         const char *const fmt = opt->type == COT_ENUM || opt->type == COT_STRING
             ? "config %s \"%s\"\n"
             : "config %s %s\n";
         File_WriteString(
-            p->file, fmt, opt->name, Config_GetOptionValueAsString(opt));
+            fp, fmt, opt->name, Config_GetOptionValueAsString(opt));
     }
+    Vector_Free(opts);
+}
 
+static void M_DumpBindings(MYFILE *const fp)
+{
     // Record any non-default key/controller bindings for later replay.
     // Keyboard binds
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -157,7 +187,7 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
         if (g_Input_Keyboard.assign_to_json_object(
                 g_Config.input.keyboard_layout, role, bind)) {
             const int32_t sc = JSON_ObjectGetInt(bind, "scancode", -1);
-            File_WriteString(p->file, "bind keyboard %d %d\n", role, sc);
+            File_WriteString(fp, "bind keyboard %d %d\n", role, sc);
         }
         JSON_ObjectFree(bind);
     }
@@ -170,12 +200,26 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
             const int32_t b = JSON_ObjectGetInt(bind, "bind", 0);
             const int32_t ad = JSON_ObjectGetInt(bind, "axis_dir", 0);
             File_WriteString(
-                p->file, "bind controller %d %d %d %d\n", role, bt, b, ad);
+                fp, "bind controller %d %d %d %d\n", role, bt, b, ad);
         }
         JSON_ObjectFree(bind);
     }
-    File_WriteString(p->file, "\n");
+    File_WriteString(fp, "\n");
+}
 
+void TestRecorder_Open(const char *path, VECTOR *const original_args)
+{
+    M_PRIV *const p = &m_Priv;
+    p->file = File_Open(path, FILE_OPEN_WRITE);
+    if (p->file == nullptr) {
+        LOG_ERROR("Cannot open record file '%s'", path);
+        return;
+    }
+
+    M_DumpHeader(p->file);
+    M_DumpArguments(p->file, original_args);
+    M_DumpConfig(p->file);
+    M_DumpBindings(p->file);
     LOG_INFO("Starting recording");
 }
 
