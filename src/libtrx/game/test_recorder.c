@@ -140,11 +140,14 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
     // Record any non-default config options for later replay
     for (const CONFIG_OPTION *opt = Config_GetOptionMap(); opt->name != nullptr;
          opt++) {
-        if (!Config_IsOptionAtDefault(opt->target)) {
-            File_WriteString(
-                p->file, "config %s %s\n", opt->name,
-                Config_GetOptionValueAsString(opt));
+        if (Config_IsOptionAtDefault(opt->target)) {
+            continue;
         }
+        const char *const fmt = opt->type == COT_ENUM || opt->type == COT_STRING
+            ? "config %s \"%s\"\n"
+            : "config %s %s\n";
+        File_WriteString(
+            p->file, fmt, opt->name, Config_GetOptionValueAsString(opt));
     }
 
     // Record any non-default key/controller bindings for later replay.

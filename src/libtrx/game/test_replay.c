@@ -435,6 +435,12 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
     char keybuf[64];
     char valbuf[128];
     if (sscanf(line, "config %63s %127s", keybuf, valbuf) == 2) {
+        // Strip surrounding quotes from the value, if present
+        size_t vlen = strlen(valbuf);
+        if (vlen >= 2 && valbuf[0] == '"' && valbuf[vlen - 1] == '"') {
+            valbuf[vlen - 1] = '\0';
+            memmove(valbuf, valbuf + 1, vlen - 1);
+        }
         const CONFIG_OPTION *opt = Config_GetOptionByPath(keybuf);
         if (opt) {
             Config_SetOptionValueFromString(opt, valbuf);
