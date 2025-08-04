@@ -113,12 +113,23 @@ int32_t Shell_Main(const SHELL_ARGS *args)
             Memory_DupStr(args->level_to_play);
     }
 
-    GF_COMMAND gf_cmd = args->save_to_load != -1
-        ? (GF_COMMAND) { .action = GF_START_SAVED_GAME,
-                         .param = args->save_to_load }
-        : args->level_to_play != nullptr
-        ? (GF_COMMAND) { .action = GF_START_GAME, .param = 0 }
-        : GF_DoFrontendSequence();
+    GF_COMMAND gf_cmd;
+    if (args->save_to_load != -1) {
+        gf_cmd = (GF_COMMAND) { .action = GF_START_SAVED_GAME,
+                                .param = args->save_to_load };
+    } else if (args->level_to_select >= 0) {
+        const GF_LEVEL *level =
+            GF_GetLevelByOrdinalNumber(GFLT_MAIN, args->level_to_select);
+        if (level == nullptr) {
+            Shell_ExitSystemFmt(
+                "Invalid level number: %d", args->level_to_select);
+        }
+        gf_cmd = (GF_COMMAND) { .action = GF_SELECT_GAME, .param = level->num };
+    } else if (args->level_to_play != nullptr) {
+        gf_cmd = (GF_COMMAND) { .action = GF_START_GAME, .param = 0 };
+    } else {
+        gf_cmd = GF_DoFrontendSequence();
+    }
 
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {
