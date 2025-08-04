@@ -63,12 +63,10 @@ static const char *M_DumpEvent(const SDL_Event *const event)
         // for compound keybindings, it may become necessary to either
         // serialize them, or simulate them in the replay module.
         return String_FormatStatic(
-            "keydown \"%s\"",
-            Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
+            "● \"%s\"", Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
     case SDL_KEYUP:
         return String_FormatStatic(
-            "keyup \"%s\"",
-            Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
+            "○ \"%s\"", Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
     case SDL_TEXTINPUT:
         return String_FormatStatic("text-input \"%s\"", event->text.text);
     case SDL_QUIT:
