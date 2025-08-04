@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Кристаллы сохранения будут отображаться с фиолетовым оттенком, больше похожим на кристаллы PS1.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Отзывчивый паспорт",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Отключает блокировку ввода данных пользователем при перелистывании страниц паспорта, вместо этого планирует перелистывание страниц.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Реактивный бег",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Включает более отзывчивый режим бега для Лары.\n\n- позволяет начинать бег, когда у Лары есть энергия, а не только при полном запасе выносливости.\n- позволяет бежать по лестнице без прерывания обычной анимацией бега.",
         "SETTING_ENABLE_ROUND_SHADOW": "Круглые тени",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Отображать круглые тени вместо стандартных восьмиугольных.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Кристаллы сохранения",

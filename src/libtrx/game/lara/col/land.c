@@ -818,8 +818,8 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    // TODO: make optional to allow running up stairs
-    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+    if (!g_Config.gameplay.enable_responsive_sprint
+        && coll->side_mid.floor >= -STEPUP_HEIGHT
         && coll->side_mid.floor < -STEP_L / 2) {
         if (Item_TestFrameRange(
                 item, M_LF_SPRINT_STEP_L_START, M_LF_SPRINT_STEP_L_END)) {

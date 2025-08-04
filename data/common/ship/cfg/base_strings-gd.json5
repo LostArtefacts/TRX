@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Bidh na criostalan sàbhalaidh purpaidh mar a tha iad anns a' PhS1.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Pasport freagairteach",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Cuiridh seo às do bhacadh cuir a-steach le brath ro-luath air tionndadh duilleagan a' phasport; leigidh e leutha bhith air an clàradh an àite a bhith air an stad.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "Ruith luath freagairteach",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "Cuiridh seo staid ruith luath nas freagairtiche an gnìomh do Lara.\n\n- leigidh le Lara ruith gu luath cho luath 's a tha neart aice, seach a bhith a' feitheamh gus am bi stamina làn aice.\n- leigidh le Lara ruith gu luath suas staidhre gun a bhith a stad le beòthalachd ruith àbhaisteach.",
         "SETTING_ENABLE_ROUND_SHADOW": "Sgàilean cruinn",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Cuiridh seo sgàilean cruinn an àite nan sgàilean ochd-cheàrnach bunaiteach.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Criostalan sàbhalaidh",

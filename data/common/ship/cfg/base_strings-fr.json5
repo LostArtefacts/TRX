@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Les cristaux de sauvegarde seront colorés avec une teinte violette, plus similaires à ceux de la PS1.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Passeport plus réactif",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Evite de bloquer complètement les contrôles pendant que les pages tournent : à la place, repousse simplement leur effet.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Sprint réactif",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Active un sprint plus réactif pour Lara.\n\n- permet de sprinter dès que Lara a de l'énergie, plutôt que d'attendre que son endurance soit pleine.\n- permet de sprinter dans les escaliers sans être interrompue par l'animation de course normale.",
         "SETTING_ENABLE_ROUND_SHADOW": "Ombres arrondies",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Active les ombres arrondies au lieu des ombres octagonales.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Cristaux de sauvegarde",

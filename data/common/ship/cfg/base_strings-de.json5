@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Der Speicherkristall bekommt einen lila Farbton, ähnlich wie bei der PS1-Variante.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Reaktionsfähiger Ausweis",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Deaktiviert, dass man die Umblättern-Animation des Ausweises abwarten muss, sie können nun so schnell umblättern, wie sie wollen.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Reaktives Sprinten",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Aktiviert einen reaktiveren Sprintzustand für Lara.\n\n- ermöglicht Sprinten, sobald Lara Energie hat, statt nur bei voller Ausdauer.\n- erlaubt Sprinten auf Treppen, ohne von Laras normaler Laufanimation unterbrochen zu werden.",
         "SETTING_ENABLE_ROUND_SHADOW": "Runde Schatten",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Aktiviert runde Schatten anstelle der standardmäßig achteckigen Schatten.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Speicherkristalle",

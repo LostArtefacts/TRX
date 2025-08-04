@@ -414,6 +414,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Save crystals will be drawn with a purple tint, more similar to the PS1 type.",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Responsive passport",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT": "Responsive sprinting",
+        "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "Enables a more responsive sprinting state for Lara.\n\n- allows sprinting whenever Lara has energy, rather than only when her stamina is full.\n- allows sprinting up stairs rather than being interrupted by Lara's regular run animation.",
         "SETTING_ENABLE_ROUND_SHADOW": "Round shadows",
         "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Enables round shadows instead of the default octagonal ones.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Save crystals",
