@@ -223,57 +223,6 @@ static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static void M_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
-{
-    Lara_Col_Shift(coll);
-    switch (coll->coll_type) {
-    case COLL_FRONT:
-    case COLL_TOP_FRONT:
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION >= 2
-        if (lara->climb_status && item->speed == 2) {
-            break;
-        }
-#endif
-        if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_TR1
-            || coll->side_mid.floor > (STEP_L * 2)) {
-            item->goal_anim_state = LS_FAST_FALL;
-            item->current_anim_state = LS_FAST_FALL;
-            Item_SwitchToAnim(item, LA_SMASH_JUMP, M_LF_FAST_FALL);
-        } else if (coll->side_mid.floor <= (STEP_L / 2)) {
-            item->goal_anim_state = LS_LAND;
-            item->current_anim_state = LS_LAND;
-            Item_SwitchToAnim(item, LA_JUMP_UP_LAND, 0);
-        }
-        item->speed /= 4;
-        lara->move_angle += DEG_180;
-        CLAMPL(item->fall_speed, 1);
-        break;
-
-    case COLL_LEFT:
-        item->rot.y += LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_RIGHT:
-        item->rot.y -= LARA_DEFLECT_ANGLE;
-        break;
-
-    case COLL_TOP:
-        CLAMPL(item->fall_speed, 1);
-        break;
-
-    case COLL_CLAMP:
-        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
-        item->speed = 0;
-        coll->side_mid.floor = 0;
-        if (item->fall_speed <= 0) {
-            item->fall_speed = 16;
-        }
-        break;
-    }
-}
-
 static bool M_LandedBad(ITEM *const item)
 {
     const int32_t x = item->pos.x;
@@ -411,7 +360,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
-    M_DeflectEdgeJump(item, coll);
+    Lara_Col_DeflectEdgeJump(item, coll);
     if (item->speed < 0
         && g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_TR1) {
         lara->move_angle = item->rot.y;
@@ -463,7 +412,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
-    M_DeflectEdgeJump(item, coll);
+    Lara_Col_DeflectEdgeJump(item, coll);
     if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
         return;
     }
@@ -487,7 +436,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
-    M_DeflectEdgeJump(item, coll);
+    Lara_Col_DeflectEdgeJump(item, coll);
 
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
@@ -542,7 +491,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
-    M_DeflectEdgeJump(item, coll);
+    Lara_Col_DeflectEdgeJump(item, coll);
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
     }
@@ -562,7 +511,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
-    M_DeflectEdgeJump(item, coll);
+    Lara_Col_DeflectEdgeJump(item, coll);
 
     if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
         return;
@@ -603,6 +552,57 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
+{
+    Lara_Col_Shift(coll);
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+    case COLL_TOP_FRONT:
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION >= 2
+        if (lara->climb_status && item->speed == 2) {
+            break;
+        }
+#endif
+        if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_TR1
+            || coll->side_mid.floor > (STEP_L * 2)) {
+            item->goal_anim_state = LS_FAST_FALL;
+            item->current_anim_state = LS_FAST_FALL;
+            Item_SwitchToAnim(item, LA_SMASH_JUMP, M_LF_FAST_FALL);
+        } else if (coll->side_mid.floor <= (STEP_L / 2)) {
+            item->goal_anim_state = LS_LAND;
+            item->current_anim_state = LS_LAND;
+            Item_SwitchToAnim(item, LA_JUMP_UP_LAND, 0);
+        }
+        item->speed /= 4;
+        lara->move_angle += DEG_180;
+        CLAMPL(item->fall_speed, 1);
+        break;
+
+    case COLL_LEFT:
+        item->rot.y += LARA_DEFLECT_ANGLE;
+        break;
+
+    case COLL_RIGHT:
+        item->rot.y -= LARA_DEFLECT_ANGLE;
+        break;
+
+    case COLL_TOP:
+        CLAMPL(item->fall_speed, 1);
+        break;
+
+    case COLL_CLAMP:
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->speed = 0;
+        coll->side_mid.floor = 0;
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 16;
+        }
+        break;
+    }
 }
 
 // clang-format off
