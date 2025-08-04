@@ -13,10 +13,12 @@ Currently the following command line interface options are available:
 - `--demo-pc` (legacy: `-demo_pc`) (TR1X only)  
   Runs the PC demo level.
 
-- `-l <path>`, `--level <path>`  
-  Runs the game immediately launching it into the specified level. The path
+- `-l <path|num>`, `--level <path|num>`  
+  Runs the game immediately launching it into the specified level. If `<path>`
+  is provided, runs the custom level located in the specified location, which
   should be absolute. Internally, this option uses `TR*X_gameflow_level.json5`
-  as a template instructing it how to run the game.
+  as a template instructing it how to run the game. If `<num>` is an integer,
+  plays the level with the given number within the main game flow (1-based).
 
 - `-s <num>`, `--save <num>`:  
   Runs the game immediately loading a specific save slot. The first save starts

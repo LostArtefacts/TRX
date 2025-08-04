@@ -48,6 +48,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     SHELL_ARGS *out_args = Memory_Alloc(sizeof(SHELL_ARGS));
     out_args->mod = M_BASE_MOD;
     out_args->save_to_load = -1;
+    out_args->level_to_select = -1;
     out_args->original_args = args;
     if (args == nullptr) {
         return out_args;
@@ -75,9 +76,14 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 #endif
         if ((!strcmp(arg, "-l") || !strcmp(arg, "--level"))
             && next_arg != nullptr) {
-            out_args->level_to_play = next_arg;
-            out_args->mod = TR_VERSION == 1 ? SHELL_MOD_TR1_CUSTOM_LEVEL
-                                            : SHELL_MOD_TR2_CUSTOM_LEVEL;
+            int32_t lvnum = -1;
+            if (String_ParseInteger(next_arg, &lvnum)) {
+                out_args->level_to_select = lvnum;
+            } else {
+                out_args->level_to_play = next_arg;
+                out_args->mod = TR_VERSION == 1 ? SHELL_MOD_TR1_CUSTOM_LEVEL
+                                                : SHELL_MOD_TR2_CUSTOM_LEVEL;
+            }
             i++;
         }
         if ((!strcmp(arg, "-s") || !strcmp(arg, "--save"))

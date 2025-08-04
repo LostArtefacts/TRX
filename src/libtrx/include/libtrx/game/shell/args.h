@@ -16,6 +16,7 @@ typedef struct {
     VECTOR *original_args;
 
     SHELL_MOD mod;
+    int32_t level_to_select;
     const char *level_to_play;
     int32_t save_to_load;
     const char *test_record_path;
