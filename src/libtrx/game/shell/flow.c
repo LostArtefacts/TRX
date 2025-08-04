@@ -3,6 +3,7 @@
 #include "enum_map.h"
 #include "game/clock.h"
 #include "game/console.h"
+#include "game/events.h"
 #include "game/fmv.h"
 #include "game/game_buf.h"
 #include "game/game_flow.h"
@@ -82,6 +83,7 @@ void Shell_InitCommonModules(void)
     UI_Init();
     Console_Init();
     Overlay_Init();
+    GameEvent_Init();
 
     Input_Init();
 
@@ -117,6 +119,7 @@ void Shell_ShutdownCommonModules(void)
     Music_Shutdown();
     Sound_Shutdown();
     UI_Shutdown();
+    GameEvent_Shutdown();
 
     GameStringManager_Shutdown();
     GameString_Shutdown();

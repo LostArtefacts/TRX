@@ -5,11 +5,13 @@
 #include "enum_map.h"
 #include "filesystem.h"
 #include "game/console/common.h"
+#include "game/events.h"
 #include "game/input/backends/controller.h"
 #include "game/input/backends/keyboard.h"
 #include "game/input/common.h"
 #include "game/lara.h"
 #include "game/random.h"
+#include "memory.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -17,12 +19,21 @@
 #define M_DEBUG 0
 #define M_MAX_EVENTS 64 // Maximum SDL or custom events per frame
 
+static void M_HandleGameEvent(const EVENT *event, void *user_data);
+
+// Internal event codes for recorder swimlane
+typedef enum {
+    M_CUSTOM_EVENT_SCREENSHOT,
+    M_CUSTOM_EVENT_COMMAND,
+} M_CUSTOM_EVENT;
+
 typedef struct {
     MYFILE *file;
     int32_t prev_frame_idx;
     int32_t frame_idx;
     SDL_Event queue[M_MAX_EVENTS];
     int32_t queue_size;
+    int32_t listeners[2];
 } M_PRIV;
 
 static const struct {
@@ -57,6 +68,19 @@ static int M_CompareConfigOption(const void *a, const void *b)
 static const char *M_DumpEvent(const SDL_Event *const event)
 {
     switch (event->type) {
+    case SDL_USEREVENT:
+        const char *result = nullptr;
+        if (event->user.code == M_CUSTOM_EVENT_SCREENSHOT) {
+            char *path = event->user.data1;
+            result = String_FormatStatic("noop  # cmd \"screenshot %s\"", path);
+            Memory_FreePointer(&path);
+        } else if (event->user.code == M_CUSTOM_EVENT_COMMAND) {
+            char *cmd = event->user.data1;
+            result = String_FormatStatic("noop  # cmd \"%s\"", cmd);
+            Memory_FreePointer(&cmd);
+        }
+        return result;
+
     case SDL_KEYDOWN:
         // NOTE: we do not serialize the modifiers to avoid noise, as currently
         // they are unused by the engine. In the future, once we add support
@@ -64,14 +88,18 @@ static const char *M_DumpEvent(const SDL_Event *const event)
         // serialize them, or simulate them in the replay module.
         return String_FormatStatic(
             "● \"%s\"", Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
+
     case SDL_KEYUP:
         return String_FormatStatic(
             "○ \"%s\"", Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
+
     case SDL_TEXTINPUT:
         return String_FormatStatic("text-input \"%s\"", event->text.text);
+
     case SDL_QUIT:
         return String_FormatStatic("quit");
     }
+
     return nullptr;
 }
 
@@ -245,6 +273,12 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
     M_DumpArguments(p->file, original_args);
     M_DumpConfig(p->file);
     M_DumpBindings(p->file);
+
+    p->listeners[0] = GameEvent_Subscribe(
+        GAME_EVENT_SCREENSHOT, nullptr, M_HandleGameEvent, nullptr);
+    p->listeners[1] = GameEvent_Subscribe(
+        GAME_EVENT_COMMAND, nullptr, M_HandleGameEvent, nullptr);
+
     LOG_INFO("Starting recording");
 }
 
@@ -261,6 +295,9 @@ void TestRecorder_Close(void)
         File_Close(p->file);
         p->file = nullptr;
     }
+
+    GameEvent_Unsubscribe(p->listeners[0]);
+    GameEvent_Unsubscribe(p->listeners[1]);
 }
 
 void TestRecorder_BeginFrame(void)
@@ -280,6 +317,22 @@ void TestRecorder_EndFrame(void)
     p->frame_idx++;
 }
 
+// Callback for game events: inject synthetic SDL_USEREVENT into queue
+static void M_HandleGameEvent(const EVENT *const event, void *const user_data)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->file == nullptr || p->queue_size >= M_MAX_EVENTS) {
+        return;
+    }
+    SDL_Event ev = { .type = SDL_USEREVENT };
+    ev.user.code = (strcmp(event->name, GAME_EVENT_SCREENSHOT) == 0)
+        ? M_CUSTOM_EVENT_SCREENSHOT
+        : M_CUSTOM_EVENT_COMMAND;
+    ev.user.data1 = Memory_DupStr(event->data);
+    ev.user.data2 = nullptr;
+    p->queue[p->queue_size++] = ev;
+}
+
 void TestRecorder_RecordEvent(const SDL_Event *const event)
 {
     M_PRIV *const p = &m_Priv;
@@ -289,7 +342,8 @@ void TestRecorder_RecordEvent(const SDL_Event *const event)
 
     // Only record eligible events
     if (event->type != SDL_KEYDOWN && event->type != SDL_KEYUP
-        && event->type != SDL_QUIT && event->type != SDL_TEXTINPUT) {
+        && event->type != SDL_QUIT && event->type != SDL_TEXTINPUT
+        && event->type != SDL_USEREVENT) {
         return;
     }
     if (event->type == SDL_KEYDOWN && event->key.repeat) {

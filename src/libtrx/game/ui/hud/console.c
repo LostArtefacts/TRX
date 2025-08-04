@@ -1,6 +1,7 @@
 #include "game/ui/hud/console.h"
 
 #include "game/console.h"
+#include "game/events.h"
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/prompt.h"
@@ -10,6 +11,7 @@
 #include "game/ui/helpers.h"
 #include "game/ui/hud/console_logs.h"
 #include "game/ui/text.h"
+#include "memory.h"
 #include "utils.h"
 
 static void M_Draw(const UI_NODE *node);
@@ -86,6 +88,10 @@ static void M_HandleConfirm(const EVENT *event, void *user_data)
     const char *text = event->data;
     Console_History_Append(text);
     Console_Eval(text);
+    GameEvent_Fire((EVENT) {
+        .name = GAME_EVENT_COMMAND,
+        .data = text,
+    });
     Console_Close();
     s->history_idx = Console_History_GetLength();
 }

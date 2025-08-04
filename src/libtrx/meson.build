@@ -131,6 +131,7 @@ sources = [
   'game/console/registry.c',
   'game/creature/common.c',
   'game/demo/common.c',
+  'game/events.c',
   'game/fader.c',
   'game/game.c',
   'game/game_buf.c',
