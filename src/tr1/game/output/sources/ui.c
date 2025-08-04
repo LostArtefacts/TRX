@@ -289,9 +289,9 @@ void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)
     M_VERTEX vertices[4];
     for (int32_t i = 0; i < 4; i++) {
         vertices[i].pos.z = sprite.z;
-        vertices[i].color.r = sprite.color.r * sprite.color.a / 255;
-        vertices[i].color.g = sprite.color.g * sprite.color.a / 255;
-        vertices[i].color.b = sprite.color.b * sprite.color.a / 255;
+        vertices[i].color.r = sprite.color.r;
+        vertices[i].color.g = sprite.color.g;
+        vertices[i].color.b = sprite.color.b;
         vertices[i].color.a = sprite.color.a;
         vertices[i].shade = sprite.shade;
         vertices[i].uvw.w = sprite_tex->tex_page;
@@ -334,9 +334,9 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
 #define L_SET(vtx_idx, x_, y_, color_)                                         \
     vertices[vtx_idx].pos.x = x_;                                              \
     vertices[vtx_idx].pos.y = y_;                                              \
-    vertices[vtx_idx].color.r = color_.r * color_.a / 255;                     \
-    vertices[vtx_idx].color.g = color_.g * color_.a / 255;                     \
-    vertices[vtx_idx].color.b = color_.b * color_.a / 255;                     \
+    vertices[vtx_idx].color.r = color_.r;                                      \
+    vertices[vtx_idx].color.g = color_.g;                                      \
+    vertices[vtx_idx].color.b = color_.b;                                      \
     vertices[vtx_idx].color.a = color_.a;
     L_SET(0, quad.x0, quad.y0, quad.tl);
     L_SET(1, quad.x1, quad.y0, quad.tr);

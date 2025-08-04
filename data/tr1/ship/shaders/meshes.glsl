@@ -102,7 +102,10 @@ void main(void) {
         if (texColor.a <= 0.0) {
             discard;
         }
+    } else {
+        texColor.rgb *= texColor.a;
     }
+
     if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled) {
         texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
     }
