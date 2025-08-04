@@ -7,7 +7,9 @@
 #include "game/inventory_ring/control.h"
 #include "game/objects/vars.h"
 #include "game/phase.h"
+#include "game/shell/common.h"
 #include "log.h"
+#include "memory.h"
 
 GF_COMMAND GF_EnterPhotoMode(void)
 {
@@ -79,6 +81,39 @@ GF_COMMAND GF_RunGame(
 
 GF_COMMAND GF_DoFrontendSequence(void)
 {
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args != nullptr) {
+        if (args->save_to_load >= 0) {
+            return (GF_COMMAND) {
+                .action = GF_START_SAVED_GAME,
+                .param = args->save_to_load,
+            };
+        }
+
+        if (args->level_to_select >= 0) {
+            const GF_LEVEL *const level =
+                GF_GetLevelByOrdinalNumber(GFLT_MAIN, args->level_to_select);
+            if (level == nullptr) {
+                Shell_ExitSystemFmt(
+                    "Invalid level number: %d", args->level_to_select);
+            }
+            return (GF_COMMAND) {
+                .action = GF_SELECT_GAME,
+                .param = level->num,
+            };
+        }
+
+        if (args->level_to_play != nullptr) {
+            Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+            g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
+                Memory_DupStr(args->level_to_play);
+            return (GF_COMMAND) {
+                .action = GF_START_GAME,
+                .param = 0,
+            };
+        }
+    }
+
     if (g_GameFlow.title_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
