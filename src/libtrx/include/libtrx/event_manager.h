@@ -5,7 +5,7 @@
 typedef struct {
     const char *name;
     const void *sender;
-    void *data;
+    const void *data;
 } EVENT;
 
 typedef void (*EVENT_LISTENER)(const EVENT *, void *user_data);

@@ -43,6 +43,7 @@ static bool M_ParseKeyDownEvent(const char *event_str);
 static bool M_ParseKeyUpEvent(const char *event_str);
 static bool M_ParseTextInputEvent(const char *event_str);
 static bool M_ParseCommandEvent(const char *event_str);
+static bool M_ParseNoopEvent(const char *event_str);
 static bool M_ParseLuaEvent(const char *event_str);
 static bool M_ParseAssertEvent(const char *event_str);
 
@@ -77,6 +78,7 @@ static const M_EVENT_HANDLER m_EventHandlers[] = {
     M_ParseKeyDownEvent,
     M_ParseKeyUpEvent,
     M_ParseTextInputEvent,
+    M_ParseNoopEvent,
     M_ParseCommandEvent,
     M_ParseLuaEvent,
 #if M_DEBUG
@@ -141,6 +143,15 @@ static bool M_ParseTextInputEvent(const char *const event_str)
         return false;
     }
     Shell_ProcessEvent(&event);
+    return true;
+}
+
+static bool M_ParseNoopEvent(const char *const event_str)
+{
+    // No-op event for inline comments and empty frame markers
+    if (strncmp(event_str, "noop", 4) != 0) {
+        return false;
+    }
     return true;
 }
 
