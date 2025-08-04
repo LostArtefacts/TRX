@@ -44,6 +44,7 @@
 - fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
 - fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
 - fixed shadows Y component not interpolated in 60 FPS (#1314)
+- fixed a crash when the level file was missing
 - improved frames in Lara's jump-twist animations
 - improved object loading error messages when an invalid object ID is detected
 - improved projectiles

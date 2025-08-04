@@ -312,20 +312,19 @@ finish:
 
 static void M_LoadFromFile(const GF_LEVEL *const level)
 {
-    LOG_DEBUG("%s (num=%d)", level->title, level->num);
     GameBuf_Reset();
 
     BENCHMARK benchmark = Benchmark_Start();
 
-    const char *full_path = File_GetFullPath(level->path);
-    VFILE *const file = VFile_CreateFromPath(full_path);
-    Memory_FreePointer(&full_path);
+    VFILE *const file = VFile_CreateFromPath(level->path);
+    if (file == nullptr) {
+        Shell_ExitSystemFmt("Could not open %s", level->path);
+    }
 
     const M_LAYOUT layout = M_GuessLayout(file);
     if (layout == LEVEL_LAYOUT_UNKNOWN) {
         Shell_ExitSystemFmt("Failed to load %s", level->path);
     }
-
     VFile_SetPos(file, 4);
 
     Level_ReadPalettes(file);
