@@ -41,6 +41,12 @@ static void M_ShowHelp(void)
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
     puts("--test-record <PATH>: record gameplay events to file.");
     puts("--test-replay <PATH>: replay gameplay events from file.");
+    puts("--headless: replay gameplay without showing a game window.");
+    puts("--headless-fps: control the frame rate at which to run a gameplay.");
+    puts("-q: silence logs and only show errors.");
+    puts(
+        "--debug-render-performance: output diagnostic information after each "
+        "frame.");
 }
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
