@@ -14,6 +14,9 @@
 #include "memory.h"
 #include "vector.h"
 
+#include <ctype.h>
+#include <string.h>
+
 #define M_DEBUG 0
 
 typedef struct {
@@ -53,6 +56,7 @@ static bool M_ParseConfig(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseEvent(const char *event_str);
 static void M_ReadHeaders(M_PRIV *p, M_PARSE_CTX *ctx);
 static void M_ClearEventQueue(M_PRIV *p);
+static void M_StripInlineComment(char *const line);
 static void M_ReadQueue(M_PRIV *p);
 static void M_RunQueue(M_PRIV *p);
 
@@ -227,6 +231,28 @@ static void M_ClearQueue(M_PRIV *const p)
     }
 }
 
+static void M_StripInlineComment(char *const line)
+{
+    bool in_quote = false;
+    char *p;
+    for (p = line; *p != '\0'; ++p) {
+        if (*p == '"') {
+            in_quote = !in_quote;
+        } else if (*p == '#' && !in_quote) {
+            *p = '\0';
+            break;
+        }
+    }
+    // Trim trailing whitespace
+    {
+        char *end = line + strlen(line);
+        while (end > line && (end[-1] == ' ' || end[-1] == '\t')) {
+            end[-1] = '\0';
+            end--;
+        }
+    }
+}
+
 static void M_ReadQueue(M_PRIV *const p)
 {
     M_ClearQueue(p);
@@ -242,6 +268,7 @@ static void M_ReadQueue(M_PRIV *const p)
         if (line[strlen(line) - 1] == '\n') {
             line[strlen(line) - 1] = '\0';
         }
+        M_StripInlineComment(line);
 
         // Expect a frame marker: @+<delta>:
         char *const colon = strchr(line, ':');
@@ -285,6 +312,7 @@ static void M_ReadQueue(M_PRIV *const p)
             if (len > 0 && cont[len - 1] == '\n') {
                 cont[len - 1] = '\0';
             }
+            M_StripInlineComment(cont);
             if (cont[0] != ' ' && cont[0] != '\t') {
                 File_Skip(p->file, -strlen(cont));
                 break;
@@ -421,13 +449,14 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
 static void M_ReadHeaders(M_PRIV *const p, M_PARSE_CTX *const ctx)
 {
     while (true) {
-        const char *const line = File_ReadLine(p->file);
+        char *const line = (char *)File_ReadLine(p->file);
         if (line == nullptr) {
             break;
         }
+        M_StripInlineComment(line);
 
         // Skip comments and blank lines
-        if (line[0] == '\n' || line[0] == '#') {
+        if (line[0] == '\n') {
             continue;
         }
 
