@@ -124,12 +124,12 @@ static bool M_ParseKeyEvent(
 
 static bool M_ParseKeyDownEvent(const char *event_str)
 {
-    return M_ParseKeyEvent(event_str, SDL_KEYDOWN, "keydown");
+    return M_ParseKeyEvent(event_str, SDL_KEYDOWN, "●");
 }
 
 static bool M_ParseKeyUpEvent(const char *event_str)
 {
-    return M_ParseKeyEvent(event_str, SDL_KEYUP, "keyup");
+    return M_ParseKeyEvent(event_str, SDL_KEYUP, "○");
 }
 
 static bool M_ParseTextInputEvent(const char *const event_str)
