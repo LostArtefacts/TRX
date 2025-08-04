@@ -10,7 +10,6 @@
     - -q`, `--quiet`: outputs only error messages to the terminal, with log files being written to normally
 - added ability to move Lara around in photo mode
 - added additional poses for photo mode
-- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added an option to allow Lara to sprint (Gameplay → Controls → Sprinting) (#3711)
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added an option to use Lara's neutral jump-twist from early TR1 betas (Gameplay → Controls → Neutral twists) (#1392)
@@ -18,6 +17,8 @@
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)
+- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
+- added a new `/restless` console command, which enables or disables infinite sprint
 - changed the game flow and game strings file placement
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)

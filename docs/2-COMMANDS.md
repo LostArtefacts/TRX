@@ -59,6 +59,11 @@ whichever key you have bound, and not include it as part of the command itself.
   `/immune off`  
   Turns on immunity, making Lara impervious to harm. Perfect for when you'd rather explore every nook than tiptoe past traps.
 
+- `/restless`  
+  `/restless on`  
+  `/restless off`  
+  Turns on infinite sprint. Lara's always been a speedster, but with this, even cheetahs are asking her for running tips!
+
 ## Configuration commands
 
 - `/set {option}`  

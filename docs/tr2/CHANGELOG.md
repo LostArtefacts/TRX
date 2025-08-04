@@ -10,7 +10,6 @@
     - -q`, `--quiet`: outputs only error messages to the terminal, with log files being written to normally
 - added ability to move Lara around in photo mode (use sidestep keys to switch modes)
 - added additional poses for photo mode
-- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added an option to allow Lara to sprint (Gameplay → Controls → Sprinting) (#3711)
 - added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
 - added an option to use Lara's neutral jump-twist from early TR1 betas (Gameplay → Controls → Neutral twists) (#1392)
@@ -19,6 +18,8 @@
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
+- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
+- added a new `/restless` console command, which enables or disables infinite sprint
 - changed the game flow and game strings file placement
 - changed the texture page limit from 128 to unlimited (#3517)
 - changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic

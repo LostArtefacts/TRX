@@ -525,7 +525,9 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    lara->sprint_timer--;
+    if (!g_Config.debug.enable_endless_sprint) {
+        lara->sprint_timer--;
+    }
 
     if (g_Input.left) {
         lara->turn_rate -= M_SPRINT_TURN_RATE;
