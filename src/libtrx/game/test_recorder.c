@@ -6,6 +6,7 @@
 #include "game/console/common.h"
 #include "game/input/backends/controller.h"
 #include "game/input/backends/keyboard.h"
+#include "game/input/common.h"
 #include "game/lara.h"
 #include "game/random.h"
 
@@ -56,14 +57,19 @@ static const char *M_DumpEvent(const SDL_Event *const event)
 {
     switch (event->type) {
     case SDL_KEYDOWN:
+        // NOTE: we do not serialize the modifiers to avoid noise, as currently
+        // they are unused by the engine. In the future, once we add support
+        // for compound keybindings, it may become necessary to either
+        // serialize them, or simulate them in the replay module.
         return String_FormatStatic(
-            "keydown %d %hu", event->key.keysym.scancode,
-            event->key.keysym.mod);
-    case SDL_TEXTINPUT:
-        return String_FormatStatic("text-input \"%s\"", event->text.text);
+            "keydown \"%s\"",
+            Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
     case SDL_KEYUP:
         return String_FormatStatic(
-            "keyup %d %hu", event->key.keysym.scancode, event->key.keysym.mod);
+            "keyup \"%s\"",
+            Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
+    case SDL_TEXTINPUT:
+        return String_FormatStatic("text-input \"%s\"", event->text.text);
     case SDL_QUIT:
         return String_FormatStatic("quit");
     }
@@ -203,7 +209,9 @@ static void M_DumpBindings(MYFILE *const fp)
                 g_Config.input.keyboard_layout, role, bind)) {
             const SDL_Scancode sc =
                 JSON_ObjectGetInt(bind, "scancode", SDL_SCANCODE_UNKNOWN);
-            File_WriteString(fp, "bind keyboard %d %d\n", role, sc);
+            File_WriteString(
+                fp, "bind keyboard %d \"%s\"\n", role,
+                Input_KeyDescFromSDL(sc, 0));
         }
         JSON_ObjectFree(bind);
     }

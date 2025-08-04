@@ -6,6 +6,7 @@
 #include "game/console/common.h"
 #include "game/input/backends/controller.h"
 #include "game/input/backends/keyboard.h"
+#include "game/input/common.h"
 #include "game/lara.h"
 #include "game/lua.h"
 #include "game/random.h"
@@ -93,32 +94,44 @@ static bool M_ParseQuitEvent(const char *const event_str)
     return true;
 }
 
-static bool M_ParseKeyDownEvent(const char *const event_str)
+// Consolidate keydown/keyup parsing into a single helper
+static bool M_ParseKeyEvent(
+    const char *event_str, SDL_EventType type, const char *prefix)
 {
-    SDL_Event event = { .type = SDL_KEYDOWN };
-    if (sscanf(
-            event_str, "keydown %hu %hu",
-            (uint16_t *)&event.key.keysym.scancode, &event.key.keysym.mod)
-        != 2) {
+    if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
         return false;
     }
+    SDL_Event event = { .type = type };
+    const char *p = event_str + strlen(prefix);
+    const char *start = strchr(p, '"');
+    const char *end = start ? strrchr(start + 1, '"') : nullptr;
+    if (!start || !end || end <= start + 1) {
+        LOG_WARNING("Malformed %s instruction: %s", prefix, event_str);
+        return false;
+    }
+    char desc[64];
+    int slen = (int)(end - (start + 1));
+    const char *substr = String_FormatStatic("%.*s", slen, start + 1);
+    strncpy(desc, substr, sizeof(desc));
+    desc[sizeof(desc) - 1] = '\0';
+    SDL_Keymod mod;
+    if (!Input_ParseKeyDesc(desc, &event.key.keysym.scancode, &mod)) {
+        return false;
+    }
+    event.key.keysym.mod = mod;
     event.key.keysym.sym = SDL_GetKeyFromScancode(event.key.keysym.scancode);
     Shell_ProcessEvent(&event);
     return true;
 }
 
-static bool M_ParseKeyUpEvent(const char *const event_str)
+static bool M_ParseKeyDownEvent(const char *event_str)
 {
-    SDL_Event event = { .type = SDL_KEYUP };
-    if (sscanf(
-            event_str, "keyup %hu %hu", (uint16_t *)&event.key.keysym.scancode,
-            &event.key.keysym.mod)
-        != 2) {
-        return false;
-    }
-    event.key.keysym.sym = SDL_GetKeyFromScancode(event.key.keysym.scancode);
-    Shell_ProcessEvent(&event);
-    return true;
+    return M_ParseKeyEvent(event_str, SDL_KEYDOWN, "keydown");
+}
+
+static bool M_ParseKeyUpEvent(const char *event_str)
+{
+    return M_ParseKeyEvent(event_str, SDL_KEYUP, "keyup");
 }
 
 static bool M_ParseTextInputEvent(const char *const event_str)
@@ -363,17 +376,35 @@ static bool M_ParseSeedDraw(const char *const line, M_PARSE_CTX *const ctx)
 
 static bool M_ParseBindKeyboard(const char *const line, M_PARSE_CTX *const ctx)
 {
-    int32_t role;
-    int32_t scancode;
-    if (sscanf(line, "bind keyboard %d %d", &role, &scancode) == 2) {
-        JSON_OBJECT *bind = JSON_ObjectNew();
-        JSON_ObjectAppendInt(bind, "scancode", scancode);
-        g_Input_Keyboard.assign_from_json_object(
-            g_Config.input.keyboard_layout, role, bind);
-        JSON_ObjectFree(bind);
-        return true;
+    const char *prefix = "bind keyboard ";
+    if (strncmp(line, prefix, strlen(prefix)) != 0) {
+        return false;
     }
-    return false;
+    const char *p = line + strlen(prefix);
+    int32_t role;
+    if (sscanf(p, "%d", &role) != 1) {
+        return false;
+    }
+    const char *const start = strchr(p, '"');
+    const char *const end = start ? strrchr(start + 1, '"') : nullptr;
+    if (start == nullptr || end == nullptr || end <= start + 1) {
+        LOG_WARNING("Malformed bind keyboard instruction: %s", line);
+        return false;
+    }
+    const size_t slen = end - (start + 1);
+    const char *desc = String_FormatStatic("%.*s", slen, start + 1);
+    SDL_Scancode sc;
+    SDL_Keymod mod;
+    if (!Input_ParseKeyDesc(desc, &sc, &mod)) {
+        return false;
+    }
+    JSON_OBJECT *const bind = JSON_ObjectNew();
+    JSON_ObjectAppendInt(bind, "scancode", sc);
+    JSON_ObjectAppendInt(bind, "mod", mod);
+    g_Input_Keyboard.assign_from_json_object(
+        g_Config.input.keyboard_layout, role, bind);
+    JSON_ObjectFree(bind);
+    return true;
 }
 
 static bool M_ParseBindController(
