@@ -201,7 +201,8 @@ static void M_DumpBindings(MYFILE *const fp)
         JSON_OBJECT *bind = JSON_ObjectNew();
         if (g_Input_Keyboard.assign_to_json_object(
                 g_Config.input.keyboard_layout, role, bind)) {
-            const int32_t sc = JSON_ObjectGetInt(bind, "scancode", -1);
+            const SDL_Scancode sc =
+                JSON_ObjectGetInt(bind, "scancode", SDL_SCANCODE_UNKNOWN);
             File_WriteString(fp, "bind keyboard %d %d\n", role, sc);
         }
         JSON_ObjectFree(bind);
