@@ -1,6 +1,8 @@
+uniform int uTime;
+uniform int uLightingContrast;
+
 #ifdef VERTEX
 
-uniform int uTime;
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
 uniform mat4 uMatModelView;
@@ -60,7 +62,6 @@ void main(void) {
 
 #elif defined(FRAGMENT)
 
-uniform int uTime;
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
 uniform bool uSmoothingEnabled;
@@ -114,7 +115,7 @@ void main(void) {
         } else {
             shade = SHADE_NEUTRAL;
         }
-        texColor.rgb = applyShade(texColor.rgb, shade);
+        texColor.rgb = applyShade(texColor.rgb, shade, uLightingContrast);
     }
 
     texColor.rgb *= uGlobalTint;

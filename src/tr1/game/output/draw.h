@@ -1,7 +1,5 @@
 #pragma once
 
-#include "game/output/types.h"
-
 #include <libtrx/game/objects/types.h>
 #include <libtrx/game/output/draw.h>
 #include <libtrx/game/rooms/types.h>

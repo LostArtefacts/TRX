@@ -12,41 +12,16 @@ uint32_t g_PerspectiveDistance = 0x3000000;
 
 int32_t g_OverlayStatus = 1;
 int32_t g_MidSort = 0;
-int32_t g_PhdWinTop;
-float g_FltWinBottom;
+
 float g_FltResZBuf;
 float g_FltResZ;
-int32_t g_PhdWinHeight;
-int32_t g_PhdWinCenterX;
-int32_t g_PhdWinCenterY;
-float g_FltWinTop;
-SORT_ITEM g_SortBuffer[4000];
-float g_FltWinLeft;
-int32_t g_PhdFarZ;
-float g_FltRhwOPersp;
-int32_t g_PhdWinBottom;
 int32_t g_PhdPersp;
-int32_t g_PhdWinLeft;
-int16_t g_Info3DBuffer[120000];
-int32_t g_PhdWinMaxX;
-int32_t g_PhdNearZ;
-float g_FltResZORhw;
-float g_FltFarZ;
-float g_FltWinCenterX;
-float g_FltWinCenterY;
-float g_FltPerspONearZ;
-float g_FltRhwONearZ;
-int32_t g_PhdWinMaxY;
-float g_FltNearZ;
-float g_FltPersp;
-int16_t *g_Info3DPtr = nullptr;
-int32_t g_PhdWinWidth;
-int32_t g_PhdViewDistance;
-PHD_VBUF *g_PhdVBuf = nullptr;
-float g_FltWinRight;
-int32_t g_PhdWinRight;
-int32_t g_SurfaceCount;
-SORT_ITEM *g_Sort3DPtr = nullptr;
+
+int32_t g_PhdTop;
+int32_t g_PhdLeft;
+int32_t g_PhdRight;
+int32_t g_PhdBottom;
+
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 

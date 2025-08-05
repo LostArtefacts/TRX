@@ -17,6 +17,12 @@
 #define MAX_WIBBLE 2
 #define PI 3.1415926538
 
+vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
+{
+    float epsilon = 0.5 / 256.0;
+    return clamp(uv, atlasSize.xy + epsilon, atlasSize.zw - epsilon);
+}
+
 vec3 waterWibble(vec4 position, vec2 viewportSize, int time)
 {
     // get screen coordinates

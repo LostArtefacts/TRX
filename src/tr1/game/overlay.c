@@ -125,7 +125,8 @@ static void M_DrawPickups(void)
             continue;
         }
 
-        if (g_Config.visuals.enable_3d_pickups) {
+        if (g_Config.visuals.enable_3d_pickups
+            && pu->display.object != nullptr) {
             M_DrawPickup3D(pu);
         } else {
             M_DrawPickup2D(pu);
@@ -186,7 +187,8 @@ void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
         const INVENTORY_ITEM *const inv_item = InvRing_GetInvItem(obj_id);
         pu->object_id = obj_id;
         pu->elapsed = 0.0;
-        pu->display.object = Object_Get(inv_object_id);
+        pu->display.object =
+            inv_object_id != NO_OBJECT ? Object_Get(inv_object_id) : nullptr;
         pu->display.grid_x = grid_x;
         pu->display.grid_y = grid_y;
         pu->display.rot_y = inv_item != nullptr ? inv_item->y_rot_sel : 0;

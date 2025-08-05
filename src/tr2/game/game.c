@@ -155,7 +155,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Sound_EndScene();
     ItemAction_RunActive();
     Overlay_Animate(1);
-    Output_AnimateTextures(1 * TICKS_PER_FRAME);
+    Output_AnimateTextures(1);
 
     if (!Game_IsInGym() || Gym_IsAssaultTimerActive()) {
         Stats_UpdateTimer();
@@ -169,16 +169,13 @@ void Game_Draw(bool draw_overlay)
     Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num);
-    Output_DrawPolyList();
     if (draw_overlay) {
         Overlay_DrawGameInfo();
-        Output_DrawPolyList();
     } else {
         Overlay_HideGameInfo();
     }
-    Output_DrawPolyList();
+    SceneCompositor_Flush();
     Game_DrawFade();
-    Output_DrawPolyList();
 }
 
 void Game_ProcessInput(void)

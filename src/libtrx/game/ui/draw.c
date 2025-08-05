@@ -13,7 +13,6 @@ typedef enum {
     UI_DRAW_OP_SCREEN_SPRITE,
     UI_DRAW_OP_FLAT_QUAD,
     UI_DRAW_OP_GRADIENT_QUAD,
-    UI_DRAW_OP_FLUSH,
     UI_DRAW_OP_FADER_DRAW,
 } M_DRAW_OP_TYPE;
 
@@ -153,16 +152,8 @@ void UI_ScheduleDrawScreenGradientQuad(
     M_ScheduleOp(op);
 }
 
-void UI_ScheduleFlush(void)
-{
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_FLUSH;
-    M_ScheduleOp(op);
-}
-
 void UI_ScheduleFaderDraw(FADER *const fader)
 {
-    UI_ScheduleFlush();
     M_DRAW_OP *const op = M_AllocDrawOp();
     op->type = UI_DRAW_OP_FADER_DRAW;
     op->data.fader.fader = fader;
@@ -232,13 +223,9 @@ void UI_Draw(void)
                 op->data.gradient_quad.tr, op->data.gradient_quad.bl,
                 op->data.gradient_quad.br);
             break;
-        case UI_DRAW_OP_FLUSH:
-            Output_DrawPolyList();
-            break;
         case UI_DRAW_OP_FADER_DRAW:
             Fader_Draw(op->data.fader.fader);
             break;
         }
     }
-    Output_DrawPolyList();
 }

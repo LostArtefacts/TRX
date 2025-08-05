@@ -330,8 +330,6 @@
         "SETTING_CAMERA_SPEED_DESCRIPTION": "Changes how fast the manual camera moves.",
         "SETTING_CHANGE_PIERRE_SPAWN": "Change Pierre spawn mode",
         "SETTING_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Makes a freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre.",
-        "SETTING_DEPTH_BUFFER": "Z-Buffer",
-        "SETTING_DEPTH_BUFFER_DESCRIPTION": "Turns the depth buffer on or off. Best kept on.",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS": "Persistent damage",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Stops Lara from healing when starting a new level (for no Heal challenge runs).",
         "SETTING_DISABLE_MAGNUMS": "Remove magnums",

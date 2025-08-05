@@ -383,10 +383,9 @@ If you install everything correctly, your game directory should look more or les
 │   └── 61.mp3
 ├── shaders
 │   ├── 2d.glsl
-│   ├── 3d.glsl
 │   ├── common.glsl
-│   ├── fade.glsl
-│   └── fbo.glsl
+│   ├── fbo.glsl
+│   └── meshes.glsl
 └── TR2X.exe</code></pre>
 </details>
 
@@ -767,10 +766,9 @@ If you install everything correctly, your game directory should look more or les
         │   └── 61.mp3
         └── shaders
             ├── 2d.glsl
-            ├── 3d.glsl
             ├── common.glsl
-            ├── fade.glsl
-            └── fbo.glsl</code></pre>
+            ├── fbo.glsl
+            └── meshes.glsl</code></pre>
 </details>
 
 *\* Will not be present until the game has been launched.*

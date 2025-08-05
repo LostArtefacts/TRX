@@ -2,13 +2,11 @@ X_UI_CFG_INT32(rendering.fps,                    SETTING_FPS, .min_value = 30, .
 X_UI_CFG_BOOL(rendering.enable_trapezoid_filter, SETTING_TRAPEZOID_FILTER)
 X_UI_CFG_ENUM(rendering.texture_filter,          SETTING_TEXTURE_FILTER, .misc = UI_Settings_TextureFilterEnumEntries)
 X_UI_CFG_ENUM(rendering.ui_filter,               SETTING_UI_FILTER, .misc = UI_Settings_TextureFilterEnumEntries)
-
-#if TR_VERSION == 1
 X_UI_CFG_FLOAT(rendering.anisotropy_filter,      SETTING_ANISOTROPY_FILTER, .min_value = 1 * 100, .max_value = 32 * 100, .delta_slow = 10, .delta_fast = 100)
 X_UI_CFG_BOOL(rendering.enable_vsync,            SETTING_VSYNC)
 X_UI_CFG_FLOAT(visuals.brightness,               SETTING_BRIGHTNESS, .min_value = CONFIG_MIN_BRIGHTNESS * 100, .max_value = CONFIG_MAX_BRIGHTNESS * 100, .delta_slow = 10, .delta_fast = 10)
-#elif TR_VERSION == 2
-X_UI_CFG_BOOL(rendering.enable_zbuffer,          SETTING_DEPTH_BUFFER)
+
+#if TR_VERSION == 2
 X_UI_CFG_ENUM(rendering.lighting_contrast,       SETTING_LIGHTING_CONTRAST, .misc = UI_Settings_LightingContrastEnumEntries)
 #endif
 

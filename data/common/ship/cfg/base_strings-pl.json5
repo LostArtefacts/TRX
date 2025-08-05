@@ -330,8 +330,6 @@
         "SETTING_CAMERA_SPEED_DESCRIPTION": "Zmienia prędkość, z jaką porusza się manualna kamera.",
         "SETTING_CHANGE_PIERRE_SPAWN": "Zmień tryb pojawiania się Pierre'a",
         "SETTING_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Włączenie tej opcji sprawi, że podczas przechodzenia przez określone miejsca Pierre pojawi się bliżej. Jeśli opcja jest wyłączona, nic się nie zmieni. Dotyczy tylko sytuacji, gdzie nie Lara nie przegoniła Pierre'a.",
-        "SETTING_DEPTH_BUFFER": "Bufor głębi",
-        "SETTING_DEPTH_BUFFER_DESCRIPTION": "Włącza lub wyłącza bufor głębi. Wyłączenie może powodować problemy z rysowaniem obiektów we właściwej kolejności, stąd zaleca się go włączyć.",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS": "Trwałe obrażenia",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Wyłącza leczenie Lary, gdy gracz zaczyna nowy poziom.",
         "SETTING_DISABLE_MAGNUMS": "Usuń magnumy",

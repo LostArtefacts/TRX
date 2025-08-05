@@ -5,7 +5,6 @@
 #include "game/input.h"
 #include "game/inventory_ring/control.h"
 #include "game/option/option.h"
-#include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
 #include "global/vars.h"
@@ -15,9 +14,11 @@
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/common.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/ui.h>
 
 #define M_CAMERA_2_RING 598
+#define M_PASSPORT_FOV 80
 
 static int32_t M_GetFrames(
     const INV_RING *ring, const INVENTORY_ITEM *inv_item,
@@ -142,6 +143,10 @@ void InvRing_Draw(INV_RING *const ring)
         Interpolation_Interpolate();
     }
 
+    const int16_t old_fov = Viewport_GetSystemFOV();
+    Viewport_AlterFOV(M_PASSPORT_FOV * DEG_1);
+    Output_ApplyFOV();
+
     XYZ_32 view_pos;
     XYZ_16 view_rot;
     InvRing_GetView(ring, &view_pos, &view_rot);
@@ -192,7 +197,8 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     Matrix_Pop();
-    Output_DrawPolyList();
+    SceneCompositor_Flush();
+    Viewport_AlterFOV(old_fov);
 
     if (ring->motion.status == RNG_SELECTED) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];

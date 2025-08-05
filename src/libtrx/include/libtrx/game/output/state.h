@@ -5,35 +5,45 @@
 
 #include <GL/glew.h>
 
+void Output_SetSkyboxEnabled(bool enabled);
+bool Output_IsSkyboxEnabled(void);
+
 void Output_GetPerspProjectionMatrix(GLfloat output[][4]);
 void Output_GetOrthoProjectionMatrix(GLfloat output[][4]);
 
-extern int32_t Output_GetTime(void);
+int32_t Output_GetTime(void);
 
-extern void Output_SetupBelowWater(bool is_underwater);
-extern void Output_SetupAboveWater(bool is_underwater);
+void Output_SetupBelowWater(bool is_underwater);
+void Output_SetupAboveWater(bool is_underwater);
+void Output_SetWaterColor(RGB_888 color);
 
-extern RGB_F Output_GetTint(void);
-extern bool Output_GetWaterEffect(void);
-extern bool Output_GetWibbleEffect(void);
+RGB_F Output_GetTint(void);
+bool Output_GetWaterEffect(void);
+bool Output_GetWibbleEffect(void);
 
 int32_t Output_GetFogStart(void);
-extern int32_t Output_GetFogEnd(void);
+int32_t Output_GetFogEnd(void);
 
 void Output_SetFogStart(int32_t dist);
-extern void Output_SetFogEnd(int32_t dist);
+void Output_SetFogEnd(int32_t dist);
 
-extern int32_t Output_GetNearZ(void);
-extern int32_t Output_GetFarZ(void);
+int32_t Output_GetNearZ(void);
+int32_t Output_GetFarZ(void);
 int32_t Output_GetNearZ_UI(void);
 int32_t Output_GetFarZ_UI(void);
 
-extern int32_t Output_GetLightAdder(void);
-extern int32_t Output_GetLightDivider(void);
-extern XYZ_32 Output_GetLightVectorView(void);
-extern void Output_SetLightAdder(int32_t adder);
-extern void Output_SetLightDivider(int32_t divider);
-extern void Output_RotateLight(int16_t pitch, int16_t yaw);
+int32_t Output_GetLightAdder(void);
+int32_t Output_GetLightDivider(void);
+XYZ_32 Output_GetLightVectorView(void);
+void Output_SetLightAdder(int32_t adder);
+void Output_SetLightDivider(int32_t divider);
+void Output_RotateLight(int16_t pitch, int16_t yaw);
 
-extern void Output_EnableScissor(float x, float y, float w, float h);
-extern void Output_DisableScissor(void);
+void Output_EnableScissor(float x, float y, float w, float h);
+void Output_DisableScissor(void);
+
+void Output_SetupBelowWater(bool underwater);
+void Output_SetupAboveWater(bool underwater);
+
+void Output_AnimateTextures(int32_t num_frames);
+void Output_AnimateShades(int32_t num_frames);

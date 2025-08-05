@@ -107,17 +107,16 @@ static void M_Draw(const UI_NODE *const node)
 
     // Draw border
     UI_ScheduleDrawScreenFlatQuad(
-        outer_rect.x, outer_rect.y, g_PhdNearZ + M_COLOR_STEPS * 4,
-        outer_rect.w, outer_rect.h, rgb_border_highlight);
+        outer_rect.x, outer_rect.y, M_COLOR_STEPS * 4, outer_rect.w,
+        outer_rect.h, rgb_border_highlight);
     UI_ScheduleDrawScreenFlatQuad(
-        outer_rect.x + border, outer_rect.y + border,
-        g_PhdNearZ + M_COLOR_STEPS * 3, outer_rect.w - border,
-        outer_rect.h - border, rgb_border_dark);
+        outer_rect.x + border, outer_rect.y + border, M_COLOR_STEPS * 3,
+        outer_rect.w - border, outer_rect.h - border, rgb_border_dark);
 
     // Draw background
     UI_ScheduleDrawScreenFlatQuad(
-        inner_rect.x, inner_rect.y, g_PhdNearZ + M_COLOR_STEPS * 2,
-        inner_rect.w, inner_rect.h, rgb_bgnd);
+        inner_rect.x, inner_rect.y, M_COLOR_STEPS * 2, inner_rect.w,
+        inner_rect.h, rgb_bgnd);
 
     if (percent == 0.0f) {
         return;
@@ -130,8 +129,7 @@ static void M_Draw(const UI_NODE *const node)
         const int32_t lsh =
             bar_rect.y + (i + 1) * bar_rect.h / M_COLOR_STEPS - lsy;
         UI_ScheduleDrawScreenFlatQuad(
-            bar_rect.x, lsy, g_PhdNearZ + M_COLOR_STEPS - i, bar_rect.w, lsh,
-            color);
+            bar_rect.x, lsy, M_COLOR_STEPS - i, bar_rect.w, lsh, color);
     }
 }
 

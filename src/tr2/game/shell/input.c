@@ -6,7 +6,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/overlay.h"
-#include "game/render/common.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -19,7 +18,7 @@
 static void M_ToggleFPSCounter(void);
 static void M_ToggleBilinearFiltering(void);
 static void M_ToggleTrapezoidFilter(void);
-static void M_ToggleZBuffer(void);
+static void M_ToggleWireframe(void);
 static void M_CycleLightingContrast(void);
 
 static void M_ToggleFPSCounter(void)
@@ -57,24 +56,14 @@ static void M_ToggleTrapezoidFilter(void)
             : GS(OSD_TRAPEZOID_FILTER_OFF));
 }
 
-static void M_ToggleZBuffer(void)
+static void M_ToggleWireframe(void)
 {
-    if (g_Input.slow) {
-        g_Config.rendering.enable_wireframe =
-            !g_Config.rendering.enable_wireframe;
-        Config_Update();
-        Console_Log(
-            "%s",
-            g_Config.rendering.enable_wireframe ? GS(OSD_WIREFRAME_MODE_ON)
-                                                : GS(OSD_WIREFRAME_MODE_OFF));
-    } else {
-        g_Config.rendering.enable_zbuffer = !g_Config.rendering.enable_zbuffer;
-        Config_Update();
-        Console_Log(
-            "%s",
-            g_Config.rendering.enable_zbuffer ? GS(OSD_DEPTH_BUFFER_ON)
-                                              : GS(OSD_DEPTH_BUFFER_OFF));
-    }
+    g_Config.rendering.enable_wireframe = !g_Config.rendering.enable_wireframe;
+    Config_Update();
+    Console_Log(
+        "%s",
+        g_Config.rendering.enable_wireframe ? GS(OSD_WIREFRAME_MODE_ON)
+                                            : GS(OSD_WIREFRAME_MODE_OFF));
 }
 
 static void M_CycleLightingContrast(void)
@@ -103,14 +92,12 @@ void Shell_ProcessInput(void)
         M_ToggleBilinearFiltering();
     }
 
-    // TODO: this is a poor hack
-    if (g_InputDB.toggle_perspective_filter
-        || g_InputDB.toggle_trapezoid_filter) {
+    if (g_InputDB.toggle_trapezoid_filter) {
         M_ToggleTrapezoidFilter();
     }
 
-    if (g_InputDB.toggle_z_buffer) {
-        M_ToggleZBuffer();
+    if (g_InputDB.toggle_wireframe) {
+        M_ToggleWireframe();
     }
 
     if (g_InputDB.cycle_lighting_contrast) {

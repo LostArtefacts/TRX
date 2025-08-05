@@ -777,10 +777,10 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     Clock_SyncTick();
 
-    g_PhdWinRight = g_PhdWinMaxX;
-    g_PhdWinLeft = 0;
-    g_PhdWinTop = 0;
-    g_PhdWinBottom = g_PhdWinMaxY;
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     m_InvChosen = NO_OBJECT;
 
     if (mode == INV_TITLE_MODE) {
@@ -914,7 +914,7 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
     InvRing_AdjustMusicVolume(ring);
     GF_COMMAND gf_cmd = M_Control(ring);
     Overlay_Animate(1);
-    Output_AnimateTextures(TICKS_PER_FRAME);
+    Output_AnimateTextures(1);
     return gf_cmd;
 }
 

@@ -65,14 +65,12 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Game_Draw(false);
-    Output_DrawPolyList();
 
     if (p->taking_screenshot) {
         p->taking_screenshot = false;
     } else {
         UI_PhotoMode(PhotoMode_GetCurrentMode());
     }
-    Output_DrawPolyList();
 }
 
 PHASE *Phase_PhotoMode_Create(void)

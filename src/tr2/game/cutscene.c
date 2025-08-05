@@ -93,7 +93,7 @@ void Cutscene_Draw(void)
     Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num);
-    Output_DrawPolyList();
+    SceneCompositor_Flush();
 }
 
 CAMERA_INFO *Cutscene_GetCamera(void)

@@ -8,7 +8,6 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/random.h"
-#include "game/render/common.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -384,15 +383,12 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadFaces();
     Output_DispatchLevelLoad();
 
-    Render_Reset(
-        RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
-
     M_InitialiseSoundEffects(level->settings.sfx_path);
 
     Benchmark_End(&benchmark, nullptr);
 }
 
-bool Level_Load(const GF_LEVEL *const level)
+void Level_Load(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -406,9 +402,9 @@ bool Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Benchmark_End(&benchmark, nullptr);
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
 
-    return true;
+    Benchmark_End(&benchmark, nullptr);
 }
 
 bool Level_Initialise(
@@ -437,9 +433,7 @@ bool Level_Initialise(
     }
 
     Level_Unload();
-    if (!Level_Load(level)) {
-        return false;
-    }
+    Level_Load(level);
     GameStringTable_Apply(level);
 
     Carrier_InitialiseLevel(level);

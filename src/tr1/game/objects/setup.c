@@ -7,6 +7,7 @@
 #define M_DEFAULT_RADIUS 10
 
 static void M_SetupLara(void);
+static void M_SetupSkybox(void);
 static void M_DisableObject(GAME_OBJECT_ID obj_id);
 
 static void M_SetupLara(void)
@@ -28,7 +29,6 @@ static void M_SetupSkybox(void)
     if (obj->loaded) {
         for (int32_t i = 0; i < obj->mesh_count; i++) {
             OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
-            obj_mesh->disable_lighting = true;
             obj_mesh->disable_transparency_sort = true;
         }
     }

@@ -15,6 +15,7 @@ typedef enum {
     M_UNIFORM_SMOOTHING_ENABLED,
     M_UNIFORM_TRAPEZOID_FILTER_ENABLED,
     M_UNIFORM_LIGHTING_MODE,
+    M_UNIFORM_LIGHTING_CONTRAST,
     M_UNIFORM_REFLECTIONS_ENABLED,
     M_UNIFORM_BRIGHTNESS_MULTIPLIER,
     M_UNIFORM_GLOBAL_TINT,
@@ -51,6 +52,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
         [M_UNIFORM_TRAPEZOID_FILTER_ENABLED] = "uTrapezoidFilterEnabled",
         [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
+        [M_UNIFORM_LIGHTING_CONTRAST] = "uLightingContrast",
         [M_UNIFORM_REFLECTIONS_ENABLED] = "uReflectionsEnabled",
         [M_UNIFORM_BRIGHTNESS_MULTIPLIER] = "uBrightnessMultiplier",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
@@ -92,6 +94,11 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_MODE],
         g_Config.rendering.enable_lighting);
+#if TR_VERSION == 2
+    GFX_TRACK_UNIFORM(
+        glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_CONTRAST],
+        g_Config.rendering.lighting_contrast);
+#endif
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_REFLECTIONS_ENABLED],
         g_Config.visuals.enable_reflections);

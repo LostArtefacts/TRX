@@ -37,7 +37,6 @@ typedef struct {
     FACE3 *flat_face3s;
 
     bool enable_reflections;
-    bool disable_lighting;
     bool disable_transparency_sort;
 } OBJECT_MESH;
 

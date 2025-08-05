@@ -330,8 +330,6 @@
         "SETTING_CAMERA_SPEED_DESCRIPTION": "Изменяет скорость камеры в ручном режиме.",
         "SETTING_CHANGE_PIERRE_SPAWN": "Изменить режим возрождения Пьера",
         "SETTING_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Заставляет только что возродившегося (убегающего) Пьера заменить уже существующего (убегающего) Пьера.",
-        "SETTING_DEPTH_BUFFER": "Z-буфер",
-        "SETTING_DEPTH_BUFFER_DESCRIPTION": "Включает или выключает буфер глубины. Лучше оставить его включенным.",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS": "Постоянный урон",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Не исцелять Лару в начале нового уровня (для прохождений No Heal).",
         "SETTING_DISABLE_MAGNUMS": "Убрать магнумы",

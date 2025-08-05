@@ -129,7 +129,6 @@ static void M_Draw(const ITEM *const item)
 
     if (clip != 0) {
         Output_CalculateObjectLighting(item, &frames[0]->bounds);
-        Output_SetDepthBias(-20);
         Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
         if (((int32_t)(intptr_t)item->data) & 0x8000) {
             Matrix_TranslateRel(-6, 6, 80);
@@ -138,7 +137,6 @@ static void M_Draw(const ITEM *const item)
             Output_CalculateStaticLight(8 * 256);
             Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
         }
-        Output_SetDepthBias(0);
     }
     Matrix_Pop();
 }

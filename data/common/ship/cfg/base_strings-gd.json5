@@ -330,8 +330,6 @@
         "SETTING_CAMERA_SPEED_DESCRIPTION": "Atharraicheas dè cho luath 'sa ghluaiseas an camera.",
         "SETTING_CHANGE_PIERRE_SPAWN": "Atharraich modh nochdaidh Pierre",
         "SETTING_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Leigidh seo le Pierre ùr a thigeas am bàrr a chuir an àite Pierre eile a tha fhathast beò.",
-        "SETTING_DEPTH_BUFFER": "Z-Bufair",
-        "SETTING_DEPTH_BUFFER_DESCRIPTION": "Cuiridh seo an bufair-doimhneachd air neo dheth. Thathar a' moladh a chumail air.",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS": "Droch staid leantainneach",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Cuir stad air Lara bho bhith ag ath-shlànachadh nuair a thòisicheas i ìre ùr (airson ruith gun slànachadh).",
         "SETTING_DISABLE_MAGNUMS": "Thoir air falbh magnums",

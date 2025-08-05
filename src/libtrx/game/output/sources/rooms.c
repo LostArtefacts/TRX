@@ -45,7 +45,11 @@ static void M_AddRoomVerts(
         const XYZ_16 *const pos = &room_vert->pos;
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
+#if TR_VERSION == 1
             .flags = room_vert->flags & NO_VERT_MOVE ? VERT_NO_CAUSTICS : 0,
+#else
+            .flags = room_vert->flags != 0 ? VERT_NO_CAUSTICS : 0,
+#endif
             .uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i),
             .shade = room_vert->light_adder,
             .color = { 255, 255, 255, 255 },

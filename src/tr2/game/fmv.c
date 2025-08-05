@@ -1,7 +1,7 @@
 #include "game/fmv.h"
 
 #include "game/input.h"
-#include "game/render/common.h"
+#include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -62,12 +62,13 @@ static void M_ClearSurface(void *const surface, void *const user_data)
 
 static void M_RenderBegin(void *const surface, void *const user_data)
 {
-    GFX_Context_Clear();
+    Output_BeginScene();
 }
 
 static void M_RenderEnd(void *const surface, void *const user_data)
 {
-    GFX_Context_SwapBuffers();
+    Output_EndScene();
+    Output_FlipScreen();
 }
 
 static void *M_LockSurface(void *const surface, void *const user_data)
@@ -83,10 +84,8 @@ static void M_UnlockSurface(void *const surface, void *const user_data)
 
 static void M_UploadSurface(void *const surface, void *const user_data)
 {
-    Render_BeginScene();
-
-    GFX_2D_RENDERER *renderer_2d = user_data;
-    GFX_2D_SURFACE *surface_ = surface;
+    GFX_2D_RENDERER *const renderer_2d = user_data;
+    GFX_2D_SURFACE *const surface_ = surface;
     GFX_2D_Renderer_Upload(renderer_2d, &surface_->desc, surface_->buffer);
     GFX_2D_Renderer_Render(renderer_2d);
 
@@ -97,7 +96,6 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     Console_Control();
     UI_EndScene();
     UI_Draw();
-    Render_EndScene();
 }
 
 static bool M_Play(const char *const file_name)
@@ -109,16 +107,6 @@ static bool M_Play(const char *const file_name)
 
     m_IsFMVPlaying = true;
     GFX_2D_RENDERER *const renderer_2d = GFX_2D_Renderer_Create();
-
-    // Populate the palette with a palette corresponding to
-    // AV_PIX_FMT_RGB8
-    GFX_COLOR palette[256];
-    for (int32_t i = 0; i < 256; i++) {
-        GFX_COLOR *const col = &palette[i];
-        col->r = 0x24 * (i >> 5);
-        col->g = 0x24 * ((i >> 2) & 7);
-        col->b = 0x55 * (i & 3);
-    }
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);
@@ -134,11 +122,10 @@ static bool M_Play(const char *const file_name)
         Shell_ProcessEvents();
         Video_SetVolume(
             video, Audio_IsMuted() ? 0.0f : g_Config.audio.sound_volume);
-
-        const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
-        Video_SetSurfaceSize(video, display_size.w, display_size.h);
+        Video_SetSurfaceSize(
+            video, Viewport_GetWidth(VIEWPORT_GAME),
+            Viewport_GetHeight(VIEWPORT_GAME));
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
-        GFX_2D_Renderer_SetPalette(renderer_2d, nullptr);
 
         Video_PumpEvents(video);
 
@@ -153,6 +140,7 @@ static bool M_Play(const char *const file_name)
     Video_Close(video);
 
     GFX_2D_Renderer_Destroy(renderer_2d);
+    Output_ApplyRenderSettings();
     m_IsFMVPlaying = false;
     return true;
 }
@@ -167,9 +155,6 @@ bool FMV_Play(const char *const file_name)
     char *final_path = File_GuessExtension(file_name, m_Extensions);
     const bool result = M_Play(final_path);
     Memory_FreePointer(&final_path);
-    if (!Shell_IsExiting()) {
-        Render_Reset(RENDER_RESET_ALL);
-    }
     return result;
 }
 

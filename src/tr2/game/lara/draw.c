@@ -32,15 +32,15 @@ void Lara_Draw(const ITEM *const item)
 {
     MATRIX saved_matrix;
 
-    const int32_t top = g_PhdWinTop;
-    const int32_t left = g_PhdWinLeft;
-    const int32_t right = g_PhdWinRight;
-    const int32_t bottom = g_PhdWinBottom;
+    const int32_t top = g_PhdTop;
+    const int32_t left = g_PhdLeft;
+    const int32_t right = g_PhdRight;
+    const int32_t bottom = g_PhdBottom;
 
-    g_PhdWinTop = 0;
-    g_PhdWinLeft = 0;
-    g_PhdWinBottom = g_PhdWinMaxY;
-    g_PhdWinRight = g_PhdWinMaxX;
+    g_PhdTop = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdLeft = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxY(VIEWPORT_GAME);
 
     ANIM_FRAME *frames[2];
     if (g_Lara.hit_direction < 0) {
@@ -58,7 +58,7 @@ void Lara_Draw(const ITEM *const item)
 
     const OBJECT *const obj = Object_Get(item->object_id);
     if (!Lara_Vehicle_IsMounted()) {
-        Output_InsertShadow(obj->shadow_size, &frame->bounds, item);
+        Output_DrawShadow(obj->shadow_size, &frame->bounds, item);
     }
 
     saved_matrix = *g_MatrixPtr;
@@ -284,10 +284,10 @@ void Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
 finish:
-    g_PhdWinLeft = left;
-    g_PhdWinRight = right;
-    g_PhdWinTop = top;
-    g_PhdWinBottom = bottom;
+    g_PhdLeft = left;
+    g_PhdRight = right;
+    g_PhdTop = top;
+    g_PhdBottom = bottom;
 }
 
 void Lara_Draw_I(
@@ -298,7 +298,7 @@ void Lara_Draw_I(
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
     if (!Lara_Vehicle_IsMounted()) {
-        Output_InsertShadow(obj->shadow_size, bounds, item);
+        Output_DrawShadow(obj->shadow_size, bounds, item);
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;

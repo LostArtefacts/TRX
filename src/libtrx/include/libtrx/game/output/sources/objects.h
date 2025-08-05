@@ -12,7 +12,8 @@ void OutputSource_Objects_ObserveObjectMeshSwap(
     const OBJECT_MESH *mesh_1, const OBJECT_MESH *mesh_2);
 void OutputSource_Objects_ObserveObjectMeshUpdate(const OBJECT_MESH *mesh);
 
-void OutputSource_Objects_StageSkyboxMesh(const OBJECT_MESH *mesh);
+void OutputSource_Objects_StageSkyboxMesh(
+    const OBJECT_MESH *mesh, int16_t shade);
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *mesh);
 
 const SCENE_SOURCE *OutputSource_Objects_GetSource(void);

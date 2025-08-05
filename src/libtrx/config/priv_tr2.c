@@ -162,7 +162,5 @@ void Config_Sanitize(void)
         && g_Config.rendering.texel_adjust_mode != TAM_BILINEAR_ONLY) {
         g_Config.rendering.texel_adjust_mode = TAM_ALWAYS;
     }
-    CLAMP(g_Config.rendering.nearest_adjustment, 0, 256);
-    CLAMP(g_Config.rendering.linear_adjustment, 0, 256);
     CLAMP(g_Config.visuals.fov, 30, 150);
 }

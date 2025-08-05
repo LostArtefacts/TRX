@@ -5,9 +5,9 @@
 #include "../viewport.h"
 #include "./shader.h"
 
-extern bool Output_Init(void);
+extern void Output_Init(void);
 extern void Output_Shutdown(void);
-extern bool Output_IsHeadless(void);
+bool Output_IsHeadless(void);
 
 extern void Output_DispatchLevelLoad(void);
 extern void Output_DispatchLevelUnload(void);
@@ -20,12 +20,10 @@ extern void Output_BeginScene(void);
 extern void Output_EndScene(void);
 extern void Output_Flush(void);
 extern void Output_FlipScreen(void);
-extern bool Output_MakeScreenshot(const char *path);
 
 extern int32_t Output_GetObjectBounds(const BOUNDS_16 *bounds);
 
 // Temporary
-extern void Output_DrawPolyList(void);
 extern int32_t Output_CalcFogShade(int32_t depth);
 extern int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);
 extern void Output_LightRoomVertices(const ROOM *room);

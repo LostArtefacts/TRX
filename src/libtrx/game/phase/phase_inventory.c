@@ -73,7 +73,6 @@ static void M_Draw(PHASE *const phase)
     ASSERT(p->ring != nullptr);
     Output_DrawBackground();
     InvRing_Draw(p->ring);
-    Output_DrawPolyList();
 }
 
 PHASE *Phase_Inventory_Create(const INVENTORY_MODE mode)

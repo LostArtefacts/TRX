@@ -1,6 +1,8 @@
-#include "game/output.h"
+#include "game/output/draw.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/const.h>
+#include <libtrx/game/creature/const.h>
 #include <libtrx/game/output/sources/lightnings.h>
 #include <libtrx/game/output/sources/misc.h>
 #include <libtrx/game/output/sources/objects.h>
@@ -9,7 +11,9 @@
 #include <libtrx/game/output/sources/shadows.h>
 #include <libtrx/game/output/sources/sprites.h>
 #include <libtrx/game/output/sources/ui.h>
+#include <libtrx/game/output/state.h>
 #include <libtrx/game/output/utils.h>
+#include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>
 
 #define M_TEXT_OUTLINE_THICKNESS 2
@@ -79,7 +83,7 @@ static void M_DrawScreenQuad(
 
 void Output_DrawSkybox(const OBJECT_MESH *const mesh)
 {
-    OutputSource_Objects_StageSkyboxMesh(mesh);
+    OutputSource_Objects_StageSkyboxMesh(mesh, SHADE_NEUTRAL);
 }
 
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)

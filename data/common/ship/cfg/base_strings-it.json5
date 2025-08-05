@@ -330,8 +330,6 @@
         "SETTING_CAMERA_SPEED_DESCRIPTION": "Modifica la velocità di movimento della telecamera manuale.",
         "SETTING_CHANGE_PIERRE_SPAWN": "Modifica generazione Pierre",
         "SETTING_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Fa in modo che, alla sua generazione, un Pierre (in fuga) sostituisca un altro Pierre (in fuga) già esistente.",
-        "SETTING_DEPTH_BUFFER": "Z-Buffer",
-        "SETTING_DEPTH_BUFFER_DESCRIPTION": "Attiva o disattiva il buffer di profondità. È meglio tenerlo attivo.",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS": "Danni persistenti",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Lara non guarisce quando inizia un nuovo livello (per le sfide).",
         "SETTING_DISABLE_MAGNUMS": "Rimuovi le magnum",

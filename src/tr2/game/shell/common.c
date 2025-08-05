@@ -3,7 +3,6 @@
 #include "game/level.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/render/common.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/viewport.h"
@@ -14,6 +13,7 @@
 #include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/shell.h>
+#include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -21,21 +21,12 @@
 
 static SDL_Window *m_Window = nullptr;
 
-static bool M_CreateGameWindow(void);
+static void M_CreateGameWindow(void);
+static void M_CreateGLContext(void);
 static void M_ShowWindow(void);
 
-static bool M_CreateGameWindow(void)
+static void M_CreateGameWindow(void)
 {
-    int32_t result = SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO);
-    if (result < 0) {
-        Shell_ExitSystemFmt(
-            "Error while calling SDL_Init: 0x%lx, %s", result, SDL_GetError());
-        return false;
-    }
-
-    LOG_DEBUG(
-        "%d,%d -> %dx%d", g_Config.window.x, g_Config.window.y,
-        g_Config.window.width, g_Config.window.height);
     m_Window = SDL_CreateWindow(
         "TR2X", g_Config.window.x, g_Config.window.y, g_Config.window.width,
         g_Config.window.height,
@@ -43,10 +34,18 @@ static bool M_CreateGameWindow(void)
 
     if (m_Window == nullptr) {
         Shell_ExitSystemFmt("Failed to create SDL window: %s", SDL_GetError());
-        return false;
     }
+}
 
-    return true;
+static void M_CreateGLContext(void)
+{
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(
+        SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    if (!GFX_Context_Attach(m_Window)) {
+        Shell_ExitSystem("System Error: cannot attach opengl context");
+    }
 }
 
 void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
@@ -54,16 +53,6 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     Shell_HandleCommonConfigChange(old, new);
 
 #define L_CHANGED(subject) (old->subject != new->subject)
-
-    if (L_CHANGED(rendering.enable_zbuffer)
-        || L_CHANGED(rendering.enable_perspective_filter)
-        || L_CHANGED(rendering.upscaling_filter)
-        || L_CHANGED(rendering.enable_wireframe)
-        || L_CHANGED(rendering.wireframe_width)
-        || L_CHANGED(rendering.texture_filter) || L_CHANGED(rendering.ui_filter)
-        || L_CHANGED(rendering.lighting_contrast)) {
-        Render_Reset(RENDER_RESET_PARAMS);
-    }
 
     if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_psx_fov)) {
         if (Viewport_GetSystemFOV() == -1) {
@@ -83,7 +72,6 @@ static void M_ShowWindow(void)
 
     Viewport_AlterFOV(-1);
     Viewport_Reset();
-    Render_Reset(RENDER_RESET_PARAMS);
 }
 
 int32_t Shell_Main(const SHELL_ARGS *args)
@@ -93,12 +81,9 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 
     Shell_InitCommonModules();
     args = Shell_CommonInit(args);
-    if (!M_CreateGameWindow()) {
-        Shell_ExitSystem("Failed to create game window");
-        return 1;
-    }
+    M_CreateGameWindow();
+    M_CreateGLContext();
     Output_Init();
-    Render_Init();
     if (!args->headless) {
         M_ShowWindow();
     }
@@ -202,7 +187,6 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 
 void Shell_Shutdown(void)
 {
-    Render_Shutdown();
     Shell_ShutdownCommonModules();
 }
 
