@@ -1,6 +1,6 @@
 #include "game/output/vertex_range.h"
 
-#include <libtrx/debug.h>
+#include "debug.h"
 
 #include <stdlib.h>
 

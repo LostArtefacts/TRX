@@ -1,9 +1,9 @@
 #include "game/output/textures.h"
 
 #include "game/output.h"
-#include "game/output/vertex_range.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/output/vertex_range.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
 

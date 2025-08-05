@@ -231,7 +231,6 @@ sources = [
   'game/output/sources/ui.c',
   'game/output/state.c',
   'game/output/textures.c',
-  'game/output/vertex_range.c',
   'game/overlay.c',
   'game/room_draw.c',
   'game/savegame/savegame.c',

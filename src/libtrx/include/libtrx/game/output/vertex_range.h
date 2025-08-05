@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/vector.h>
+#include "../../vector.h"
 
 typedef struct {
     int32_t vertex_start;
