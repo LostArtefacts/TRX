@@ -1,8 +1,8 @@
 #pragma once
 
 #include "game/output/mesh_batcher/mesh.h"
-#include "game/output/scene_source.h"
 
+#include <libtrx/game/output/scene_source.h>
 #include <libtrx/game/viewport.h>
 
 typedef struct MESH_INSTANCE {

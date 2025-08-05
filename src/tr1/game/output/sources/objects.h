@@ -1,9 +1,9 @@
 #pragma once
 
 #include "game/output/mesh_batcher/batcher.h"
-#include "game/output/scene_source.h"
 
 #include <libtrx/game/objects/types.h>
+#include <libtrx/game/output/scene_source.h>
 
 void OutputSource_Objects_Init(MESH_BATCHER *batcher);
 void OutputSource_Objects_Shutdown(void);
