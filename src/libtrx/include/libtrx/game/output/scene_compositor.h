@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/game/output/scene_source.h>
+#include "./scene_source.h"
 
 void SceneCompositor_Init(void);
 void SceneCompositor_Shutdown(void);

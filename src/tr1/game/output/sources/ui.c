@@ -1,10 +1,10 @@
 #include "game/output/sources/ui.h"
 
 #include "game/output.h"
-#include "game/output/scene_compositor.h"
 #include "game/output/sources/objects.h"
 #include "game/viewport.h"
 
+#include <libtrx/game/output/scene_compositor.h>
 #include <libtrx/gfx/gl/utils.h>
 #include <libtrx/memory.h>
 #include <libtrx/vector.h>

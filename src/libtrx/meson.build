@@ -249,6 +249,7 @@ sources = [
   'game/output/mesh_batcher/batcher.c',
   'game/output/mesh_batcher/mesh.c',
   'game/output/mesh_batcher/mesh_builder.c',
+  'game/output/scene_compositor.c',
   'game/output/shader.c',
   'game/output/state.c',
   'game/output/textures.c',

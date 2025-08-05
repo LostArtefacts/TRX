@@ -1,8 +1,8 @@
 #include "game/output/sources/lightnings.h"
 
 #include "game/output.h"
-#include "game/output/scene_compositor.h"
 
+#include <libtrx/game/output/scene_compositor.h>
 #include <libtrx/game/output/utils.h>
 #include <libtrx/game/output/vertex_range.h>
 #include <libtrx/gfx/gl/utils.h>
