@@ -51,6 +51,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (String_Match(ctx->args, "^(on|true|1)$")) {
         M_Toggle(true);
+        Config_Update();
         return CR_SUCCESS;
     } else if (String_Match(ctx->args, "^(off|false|0)$")) {
         M_Toggle(false);
