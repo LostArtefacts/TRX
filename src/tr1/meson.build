@@ -216,7 +216,6 @@ sources = [
   'game/output.c',
   'game/output/draw.c',
   'game/output/func.c',
-  'game/output/scene_compositor.c',
   'game/output/sources/lightnings.c',
   'game/output/sources/misc.c',
   'game/output/sources/objects.c',

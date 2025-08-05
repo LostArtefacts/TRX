@@ -1,13 +1,12 @@
 #include "game/output/scene_compositor.h"
 
+#include "config.h"
+#include "debug.h"
 #include "game/output.h"
-
-#include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/game/output/shader.h>
-#include <libtrx/game/output/textures.h>
-#include <libtrx/gfx/context.h>
-#include <libtrx/vector.h>
+#include "game/output/shader.h"
+#include "game/output/textures.h"
+#include "gfx/context.h"
+#include "vector.h"
 
 #define M_PROCESS_SOURCES(p, func, ...)                                        \
     do {                                                                       \

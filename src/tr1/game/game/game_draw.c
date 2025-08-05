@@ -1,7 +1,6 @@
 #include "game/game.h"
 
 #include "game/lara.h"
-#include "game/output/scene_compositor.h"
 #include "game/overlay.h"
 #include "game/room_draw.h"
 
@@ -9,6 +8,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/hair.h>
+#include <libtrx/game/output/scene_compositor.h>
 #include <libtrx/game/output/textures.h>
 
 void Game_Draw(bool draw_overlay)

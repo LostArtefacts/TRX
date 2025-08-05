@@ -201,6 +201,7 @@ typedef struct {
         int32_t linear_adjustment;
         int32_t upscaling_factor;
         float borders;
+        float anisotropy_filter;
     } rendering;
 
     struct {
