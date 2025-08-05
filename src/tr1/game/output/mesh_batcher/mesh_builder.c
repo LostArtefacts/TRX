@@ -2,10 +2,10 @@
 
 #include "game/output/mesh_batcher/mesh.h"
 #include "game/output/shader.h"
-#include "game/output/vertex_range.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/output/textures.h>
+#include <libtrx/game/output/vertex_range.h>
 #include <libtrx/memory.h>
 
 struct MESH_BUILDER {
