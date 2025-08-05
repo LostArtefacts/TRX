@@ -62,6 +62,11 @@ bool UI_Settings_AllyHealthbar_IsAvailable(
 #endif
 }
 
+bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.gameplay.idle_pose_timeout > 0;
+}
+
 bool UI_Settings_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.visuals.enable_3d_pickups;

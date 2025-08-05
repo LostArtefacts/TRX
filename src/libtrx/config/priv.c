@@ -20,6 +20,7 @@ void Config_SanitizeCommon(void)
         CLOCK_TURBO_SPEED_MAX);
     CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
     CLAMP(g_Config.gameplay.camera_speed, 1, 10);
+    CLAMP(g_Config.gameplay.idle_pose_timeout, 0, 1200);
     CLAMP(g_Config.rendering.wireframe_width, 1.0, 100.0);
     CLAMP(g_Config.rendering.upscaling_factor, 1, 8);
     CLAMP(g_Config.rendering.borders, 0.0, 0.45);

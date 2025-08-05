@@ -25,6 +25,7 @@
 static const LARA_STATE m_StopStates[] = {
     LS_STOP,
     LS_SURF_TREAD,
+    LS_POSE,
     (LARA_STATE)-1,
 };
 

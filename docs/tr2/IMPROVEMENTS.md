@@ -36,6 +36,7 @@
 - added an option to use Lara's slide-to-run animation from TR3+
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off
 - added an option to allow Lara to jump up or back when hanging from a ledge
+- added an option to have Lara pose after standing idle for a certain time
 - added an option to fix the breakable floor descending glitch
 - added an option to fix wall glitches, or to use TR1 wall glitch behaviour
 - added an option to disable swing cancelling

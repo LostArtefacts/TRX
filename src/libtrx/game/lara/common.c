@@ -58,6 +58,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->water_surface_dist = 100;
     lara_info->death_timer = 0;
     lara_info->dive_timer = 0;
+    lara_info->idle_timer = 0;
     lara_info->current_active = 0;
     lara_info->extra_anim = false;
     lara_info->burn = false;

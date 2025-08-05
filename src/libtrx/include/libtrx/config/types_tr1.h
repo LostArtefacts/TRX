@@ -169,6 +169,8 @@ typedef struct {
         bool enable_ledge_jumps;
         bool enable_sprint;
         bool enable_responsive_sprint;
+        int32_t idle_pose_timeout;
+        bool enable_idle_pose_camera;
         bool fix_floor_data_issues;
         bool fix_descending_glitch;
         JUMP_LOCK_MODE jump_lock_mode;

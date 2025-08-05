@@ -3,9 +3,12 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/lara/util.h"
+#include "game/random.h"
 
 // clang-format off
 #define M_LF_ROLL                  2
+#define M_CANCEL_POSE_TIME         (10 * LOGIC_FPS)               // = 300
+#define M_CANCEL_POSE_CHANCE       0x40                           // = 64
 #define M_FAST_TURN                ((DEG_1 * 6) + LARA_TURN_UNDO) // = 1456
 #define M_FAST_FALL_SPEED          (FAST_FALL_SPEED + 3)          // = 131
 #define M_SPRINT_TURN_RATE         ((DEG_1 * 2) + 45)             // = 409
@@ -28,6 +31,8 @@
 #define M_CAM_SPECIAL_ANGLE        (170 * DEG_1)                  // = 30940
 #define M_CAM_SPECIAL_ELEVATION    (-25 * DEG_1)                  // = -4550
 #define M_CAM_SPECIAL_DISTANCE     (2 * WALL_L)                   // = 2048
+#define M_CAM_POSE_RIGHT_ANGLE     M_CAM_SPECIAL_ANGLE            // = 30940
+#define M_CAM_POSE_LEFT_ANGLE     -M_CAM_SPECIAL_ANGLE            // = -30940
 // clang-format on
 
 static bool m_JumpPermitted = true;
@@ -39,10 +44,14 @@ static const int16_t m_JumpLockFrames[JUMP_LOCK_NUMBER_OF] = {
     // clang-format on
 };
 
+static bool M_CanPose(void);
+static bool M_ShouldStopPosing(void);
+
 static void M_Default(ITEM *item, COLL_INFO *coll);
 static void M_Walk(ITEM *item, COLL_INFO *coll);
 static void M_Run(ITEM *item, COLL_INFO *coll);
 static void M_Stop(ITEM *item, COLL_INFO *coll);
+static void M_Pose(ITEM *item, COLL_INFO *coll);
 static void M_FastBack(ITEM *item, COLL_INFO *coll);
 static void M_Turn(ITEM *item, COLL_INFO *coll);
 static void M_FastTurn(ITEM *item, COLL_INFO *coll);
@@ -59,6 +68,30 @@ static void M_Special(ITEM *item, COLL_INFO *coll);
 static void M_Wade(ITEM *item, COLL_INFO *coll);
 static void M_Sprint(ITEM *item, COLL_INFO *coll);
 static void M_SprintRoll(ITEM *item, COLL_INFO *coll);
+
+static bool M_CanPose(void)
+{
+    if (g_Config.gameplay.idle_pose_timeout == 0) {
+        return false;
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    bool result = !g_Input.draw && !g_Input.look
+        && lara->hit_direction == DIR_UNKNOWN && lara->gun_status == LGS_ARMLESS
+        && lara->water_status == LWS_ABOVE_WATER;
+#if TR_VERSION >= 2
+    result &=
+        !g_Input.use_flare && !lara->flare.control && !Lara_Vehicle_IsMounted();
+#endif
+    return result;
+}
+
+static bool M_ShouldStopPosing(void)
+{
+    return !M_CanPose() || g_Input.forward || g_Input.back || g_Input.left
+        || g_Input.right || g_Input.step_left || g_Input.step_right
+        || g_Input.jump || g_Input.action;
+}
 
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
 {
@@ -248,6 +281,62 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             M_WalkBack(item, coll);
         } else {
             item->goal_anim_state = LS_FAST_BACK;
+        }
+    }
+
+    if (item->goal_anim_state == LS_STOP && M_CanPose()) {
+        lara->idle_timer++;
+        const int32_t timeout = g_Config.gameplay.idle_pose_timeout * LOGIC_FPS;
+        CLAMPG(lara->idle_timer, timeout);
+        if (lara->idle_timer == timeout) {
+            lara->idle_timer = 0;
+            item->goal_anim_state =
+                (Random_GetControl() < 0x4000) ? LS_POSE_LEFT : LS_POSE_RIGHT;
+        }
+    } else {
+        lara->idle_timer = 0;
+    }
+}
+
+static void M_Pose(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_DEATH;
+        return;
+    }
+
+    if (g_Input.look) {
+        Lara_Look_UpDown();
+        if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
+            Lara_Look_LeftRight();
+            return;
+        }
+    }
+
+    bool cancel_camera = false;
+    if (g_Input.roll && !g_Input.jump) {
+        item->goal_anim_state = LS_ROLL;
+        cancel_camera = true;
+    } else if (item->current_anim_state == LS_POSE) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->idle_timer++;
+        if (M_ShouldStopPosing()
+            || (lara->idle_timer >= M_CANCEL_POSE_TIME
+                && Random_GetControl() < M_CANCEL_POSE_CHANCE)) {
+            item->goal_anim_state = LS_STOP;
+            cancel_camera = true;
+        }
+    }
+
+    if (g_Config.gameplay.enable_idle_pose_camera) {
+        if (item->current_anim_state == LS_POSE_START
+            && Item_TestFrameEqual(item, -1) && g_Camera.type == CAM_CHASE) {
+            g_Camera.additional_angle =
+                Item_TestAnimEqual(item, LA_POSE_RIGHT_START)
+                ? M_CAM_POSE_RIGHT_ANGLE
+                : M_CAM_POSE_LEFT_ANGLE;
+        } else if (cancel_camera) {
+            g_Camera.additional_angle = 0;
         }
     }
 }
@@ -565,6 +654,9 @@ REGISTER_LARA_STATE(LS_GYMNAST,      M_Default)
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
+REGISTER_LARA_STATE(LS_POSE,         M_Pose)
+REGISTER_LARA_STATE(LS_POSE_START,   M_Pose)
+REGISTER_LARA_STATE(LS_POSE_END,     M_Pose)
 REGISTER_LARA_STATE(LS_FAST_BACK,    M_FastBack)
 REGISTER_LARA_STATE(LS_TURN_RIGHT,   M_Turn)
 REGISTER_LARA_STATE(LS_TURN_LEFT,    M_Turn)

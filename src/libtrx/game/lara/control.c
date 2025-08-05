@@ -267,6 +267,10 @@ static void M_HandleEnvironment(void)
         lara_info->sprint_timer++;
         CLAMPG(lara_info->sprint_timer, LARA_MAX_SPRINT);
     }
+    if (item->current_anim_state != LS_STOP
+        && item->current_anim_state != LS_POSE) {
+        lara_info->idle_timer = 0;
+    }
 
     switch (lara_info->water_status) {
     case LWS_ABOVE_WATER:
