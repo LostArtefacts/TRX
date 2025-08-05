@@ -18,11 +18,9 @@
 
 static void M_ToggleFPSCounter(void);
 static void M_ToggleBilinearFiltering(void);
-static void M_TogglePerspectiveCorrection(void);
 static void M_ToggleTrapezoidFilter(void);
 static void M_ToggleZBuffer(void);
 static void M_CycleLightingContrast(void);
-static void M_ToggleRenderingMode(void);
 
 static void M_ToggleFPSCounter(void)
 {
@@ -45,21 +43,6 @@ static void M_ToggleBilinearFiltering(void)
         g_Config.rendering.texture_filter == GFX_TF_BILINEAR
             ? GS(OSD_BILINEAR_FILTER_ON)
             : GS(OSD_BILINEAR_FILTER_OFF));
-}
-
-static void M_TogglePerspectiveCorrection(void)
-{
-    g_Config.rendering.enable_perspective_filter =
-        !g_Config.rendering.enable_perspective_filter;
-    g_PerspectiveDistance = g_Config.rendering.enable_perspective_filter
-        ? SW_DETAIL_HIGH
-        : SW_DETAIL_MEDIUM;
-    Config_Update();
-    Console_Log(
-        "%s",
-        g_Config.rendering.enable_perspective_filter
-            ? GS(OSD_PERSPECTIVE_FILTER_ON)
-            : GS(OSD_PERSPECTIVE_FILTER_OFF));
 }
 
 static void M_ToggleTrapezoidFilter(void)
@@ -108,19 +91,6 @@ static void M_CycleLightingContrast(void)
         ENUM_MAP_TO_STRING(LIGHTING_CONTRAST, value));
 }
 
-static void M_ToggleRenderingMode(void)
-{
-    g_Config.rendering.render_mode =
-        g_Config.rendering.render_mode == RM_HARDWARE ? RM_SOFTWARE
-                                                      : RM_HARDWARE;
-    Config_Update();
-    Console_Log(
-        "%s",
-        g_Config.rendering.render_mode == RM_HARDWARE
-            ? GS(OSD_HARDWARE_RENDERING)
-            : GS(OSD_SOFTWARE_RENDERING));
-}
-
 void Shell_ProcessInput(void)
 {
     Shell_ProcessCommonInput();
@@ -136,11 +106,7 @@ void Shell_ProcessInput(void)
     // TODO: this is a poor hack
     if (g_InputDB.toggle_perspective_filter
         || g_InputDB.toggle_trapezoid_filter) {
-        if (g_Config.rendering.render_mode == RM_HARDWARE) {
-            M_ToggleTrapezoidFilter();
-        } else {
-            M_TogglePerspectiveCorrection();
-        }
+        M_ToggleTrapezoidFilter();
     }
 
     if (g_InputDB.toggle_z_buffer) {
@@ -149,9 +115,5 @@ void Shell_ProcessInput(void)
 
     if (g_InputDB.cycle_lighting_contrast) {
         M_CycleLightingContrast();
-    }
-
-    if (g_InputDB.toggle_rendering_mode) {
-        M_ToggleRenderingMode();
     }
 }

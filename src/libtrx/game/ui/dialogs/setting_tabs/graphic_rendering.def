@@ -10,7 +10,6 @@ X_UI_CFG_FLOAT(visuals.brightness,               SETTING_BRIGHTNESS, .min_value 
 #elif TR_VERSION == 2
 X_UI_CFG_BOOL(rendering.enable_zbuffer,          SETTING_DEPTH_BUFFER)
 X_UI_CFG_ENUM(rendering.lighting_contrast,       SETTING_LIGHTING_CONTRAST, .misc = UI_Settings_LightingContrastEnumEntries)
-X_UI_CFG_ENUM(rendering.render_mode,             SETTING_RENDER_MODE, .misc = UI_Settings_RenderModeEnumEntries)
 #endif
 
 X_UI_CFG_ENUM(rendering.aspect_mode,             SETTING_ASPECT_MODE, .misc = UI_Settings_AspectModeEnumEntries)

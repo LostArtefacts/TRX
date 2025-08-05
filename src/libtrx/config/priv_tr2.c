@@ -153,10 +153,6 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
-    if (g_Config.rendering.render_mode != RM_HARDWARE
-        && g_Config.rendering.render_mode != RM_SOFTWARE) {
-        g_Config.rendering.render_mode = RM_SOFTWARE;
-    }
     if (g_Config.rendering.aspect_mode != AM_ANY
         && g_Config.rendering.aspect_mode != AM_16_9
         && g_Config.rendering.aspect_mode != AM_16_10) {
