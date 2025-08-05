@@ -30,6 +30,7 @@ static struct {
         M_UVW_PACK *data_objects;
         M_UVW_PACK *data_sprites;
 
+        bool *animated;
         bool *animated_objects;
         bool *animated_sprites;
     } uvws;
@@ -238,10 +239,10 @@ static void M_PrepareUVWs(void)
     m_Priv.uvws.data = Memory_Alloc(m_Priv.uvws.count * sizeof(M_UVW_PACK));
     m_Priv.uvws.data_objects = m_Priv.uvws.data;
     m_Priv.uvws.data_sprites = m_Priv.uvws.data + m_Priv.uvws.count_objects;
-    m_Priv.uvws.animated_objects =
-        Memory_Alloc(m_Priv.uvws.count_objects * sizeof(bool));
+    m_Priv.uvws.animated = Memory_Alloc(m_Priv.uvws.count * sizeof(bool));
+    m_Priv.uvws.animated_objects = m_Priv.uvws.animated;
     m_Priv.uvws.animated_sprites =
-        Memory_Alloc(m_Priv.uvws.count_sprites * sizeof(bool));
+        m_Priv.uvws.animated + m_Priv.uvws.count_objects;
     M_FillObjectUVWs();
     M_FillSpriteUVWs();
 }
@@ -340,8 +341,7 @@ static void M_FreeLevelData(void)
         m_Priv.tex_atlas = 0;
     }
     Memory_FreePointer(&m_Priv.uvws.data);
-    Memory_FreePointer(&m_Priv.uvws.animated_objects);
-    Memory_FreePointer(&m_Priv.uvws.animated_sprites);
+    Memory_FreePointer(&m_Priv.uvws.animated);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
 }
 
@@ -421,11 +421,14 @@ GLuint Output_Textures_GetEnvMapTexture(void)
     return m_Priv.tex_env_map;
 }
 
-int32_t Output_Textures_GetSpritesUVWsBase(void)
+int32_t Output_Textures_GetObjectUVWIndex(int32_t texture_idx, int32_t corner)
 {
-    const size_t num = sizeof(M_UVW_PACK) / sizeof(OUTPUT_UVW);
-    ASSERT(num == 4);
-    return m_Priv.uvws.count_objects * num;
+    return texture_idx * 4 + corner;
+}
+
+int32_t Output_Textures_GetSpriteUVWIndex(int32_t texture_idx, int32_t corner)
+{
+    return (m_Priv.uvws.count_objects + texture_idx) * 4 + corner;
 }
 
 OUTPUT_UVW Output_Textures_GetUVW(const int32_t uvw_idx)

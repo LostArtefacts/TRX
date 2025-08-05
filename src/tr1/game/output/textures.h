@@ -25,7 +25,11 @@ void Output_Textures_CycleAnimations(void);
 void Output_Textures_ApplyRenderSettings(void);
 GLuint Output_Textures_GetAtlasTexture(void);
 GLuint Output_Textures_GetEnvMapTexture(void);
-int32_t Output_Textures_GetSpritesUVWsBase(void);
+
+int32_t Output_Textures_GetObjectUVWIndex(
+    int32_t texture_idx, int32_t face_idx);
+int32_t Output_Textures_GetSpriteUVWIndex(
+    int32_t texture_idx, int32_t face_idx);
 
 OUTPUT_UVW Output_Textures_GetUVW(int32_t uvw_idx);
 OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);

@@ -44,14 +44,13 @@ static void M_AddObjectVerts(
     const uint16_t flags, const TEXTURE_ZW_F *const trapezoid_ratio)
 {
     for (size_t i = 0; i < vtx_count; i++) {
-        const int32_t uvw_idx = texture_idx * 4 + i;
         const XYZ_16 normal = obj_mesh->lighting.normals[vertices[i]];
         const XYZ_16 *const pos = &obj_mesh->vertices[vertices[i]];
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
             .flags = flags,
-            .uvw_idx = uvw_idx,
+            .uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i),
             .shade = SHADE_NEUTRAL,
             .color = (flags & VERT_FLAT_SHADED) ?
                 Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx))

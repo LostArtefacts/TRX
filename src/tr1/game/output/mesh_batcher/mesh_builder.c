@@ -146,8 +146,8 @@ void MeshBuilder_AddRoomSprite(
     MESH_BUILDER *const builder, const ROOM_SPRITE *const room_sprite,
     const ROOM *const room)
 {
-    const SPRITE_TEXTURE *const sprite =
-        Output_GetSpriteTexture(room_sprite->texture);
+    const int16_t texture_idx = room_sprite->texture;
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(texture_idx);
     const ROOM_VERTEX *const room_vert =
         &room->mesh.vertices[room_sprite->vertex];
     const XYZ_16 *pos = &room_vert->pos;
@@ -165,8 +165,7 @@ void MeshBuilder_AddRoomSprite(
             .normal = { .x = normal[j].x, .y = normal[j].y, .z = 0.0f },
             .flags = VERT_BILLBOARD,
             .color = { 255, 255, 255, 255 },
-            .uvw_idx = Output_Textures_GetSpritesUVWsBase()
-                + room_sprite->texture * 4 + j,
+            .uvw_idx = Output_Textures_GetSpriteUVWIndex(texture_idx, j),
             .shade = room_vert->light_adder,
             .trapezoid_ratio = { 1.0f, 1.0f },
         };
