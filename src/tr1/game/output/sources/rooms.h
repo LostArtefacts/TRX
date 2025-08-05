@@ -1,7 +1,6 @@
 #pragma once
 
-#include "game/output/mesh_batcher/batcher.h"
-
+#include <libtrx/game/output/mesh_batcher/batcher.h>
 #include <libtrx/game/rooms/types.h>
 
 void OutputSource_Rooms_Init(MESH_BATCHER *batcher);

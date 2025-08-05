@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/output/mesh_batcher/batcher.h"
+#include <libtrx/game/output/mesh_batcher/batcher.h>
 
 void OutputSource_Shadows_Init(MESH_BATCHER *batcher);
 void OutputSource_Shadows_Shutdown(void);

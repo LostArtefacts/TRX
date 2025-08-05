@@ -26,3 +26,6 @@ extern int32_t Output_GetLightAdder(void);
 extern void Output_SetLightAdder(int32_t adder);
 extern void Output_SetLightDivider(int32_t divider);
 extern void Output_RotateLight(int16_t pitch, int16_t yaw);
+
+extern void Output_EnableScissor(float x, float y, float w, float h);
+extern void Output_DisableScissor(void);

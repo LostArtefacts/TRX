@@ -1,8 +1,7 @@
 #pragma once
 
-#include "game/output/mesh_batcher/mesh.h"
-
-#include <libtrx/game/rooms/types.h>
+#include "../../rooms/types.h"
+#include "./mesh.h"
 
 // Opaque builder for incrementally constructing an OUTPUT_MESH.
 typedef struct MESH_BUILDER MESH_BUILDER;

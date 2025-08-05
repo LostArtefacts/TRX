@@ -1,7 +1,6 @@
 #include "game/output.h"
 
 #include "game/level.h"
-#include "game/output/mesh_batcher/batcher.h"
 #include "game/output/scene_compositor.h"
 #include "game/output/sources/lightnings.h"
 #include "game/output/sources/misc.h"
@@ -16,6 +15,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output/mesh_batcher/batcher.h>
 #include <libtrx/game/output/textures.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
