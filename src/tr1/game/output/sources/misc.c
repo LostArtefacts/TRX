@@ -136,7 +136,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
-    return pass == SCENE_PASS_TRANSPARENT
+    return pass == SCENE_PASS_LEVEL_TRANSPARENT
         && (p->scheduled->count > 0 || p->scheduled_spheres->count > 0);
 }
 
@@ -144,7 +144,7 @@ static void M_RenderPass(
     const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
-    if (pass != SCENE_PASS_TRANSPARENT) {
+    if (pass != SCENE_PASS_LEVEL_TRANSPARENT) {
         return;
     }
     glBindVertexArray(p->vao);

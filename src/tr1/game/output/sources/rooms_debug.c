@@ -168,7 +168,7 @@ static void M_RenderPass(
     const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
-    if (pass != SCENE_PASS_TRANSPARENT) {
+    if (pass != SCENE_PASS_LEVEL_TRANSPARENT) {
         return;
     }
 
@@ -213,7 +213,7 @@ static void M_RenderPass(
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
-    return pass == SCENE_PASS_TRANSPARENT && p->scheduled->count > 0;
+    return pass == SCENE_PASS_LEVEL_TRANSPARENT && p->scheduled->count > 0;
 }
 
 void OutputSource_RoomsDebug_Init(void)

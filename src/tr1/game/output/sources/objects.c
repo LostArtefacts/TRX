@@ -291,10 +291,10 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool background)
         .update_light_func_data = (void *)mesh,
     };
     if (background) {
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BACKGROUND);
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_LEVEL_SKYBOX);
     } else {
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_LEVEL_OPAQUE);
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_LEVEL_TRANSPARENT);
     }
 }
 

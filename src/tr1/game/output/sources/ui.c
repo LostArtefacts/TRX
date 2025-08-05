@@ -158,9 +158,10 @@ static void M_Draw3DPickups(const M_PRIV *const p)
 
         // Immediately flush scheduled object, so that it gets rendered
         // in the target viewport
-        p->objects_source->render_pass(p->objects_source, SCENE_PASS_MESHES);
         p->objects_source->render_pass(
-            p->objects_source, SCENE_PASS_TRANSPARENT);
+            p->objects_source, SCENE_PASS_LEVEL_OPAQUE);
+        p->objects_source->render_pass(
+            p->objects_source, SCENE_PASS_LEVEL_TRANSPARENT);
         if (p->objects_source->render_end != nullptr) {
             p->objects_source->render_end(p->objects_source);
         }

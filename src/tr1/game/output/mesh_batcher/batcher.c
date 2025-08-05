@@ -378,9 +378,9 @@ static void M_RenderPass(
 {
     MESH_BATCHER *const batcher = source->priv;
 
-    if (pass == SCENE_PASS_MESHES || pass == SCENE_PASS_BACKGROUND) {
+    if (pass == SCENE_PASS_LEVEL_OPAQUE || pass == SCENE_PASS_LEVEL_SKYBOX) {
         M_OpaquePass(batcher, pass);
-    } else if (pass == SCENE_PASS_TRANSPARENT) {
+    } else if (pass == SCENE_PASS_LEVEL_TRANSPARENT) {
         M_SortTransparentFaces(batcher);
         M_TransparentPass(batcher);
     }

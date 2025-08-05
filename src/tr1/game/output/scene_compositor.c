@@ -151,23 +151,24 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     Output_Shader_UploadCommonUniforms(shader);
     M_BindTextures(p);
     M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
+
     M_SetupShaderForScene(
         shader, g_Config.rendering.texture_filter,
         g_Config.rendering.enable_lighting);
     M_SetBlendModeForScene(wireframe);
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
-    if (M_IsSourceDirty(p, SCENE_PASS_BACKGROUND)) {
+    if (M_IsSourceDirty(p, SCENE_PASS_LEVEL_SKYBOX)) {
         glDisable(GL_DEPTH_TEST);
-        M_RenderSourcePass(p, SCENE_PASS_BACKGROUND);
+        M_RenderSourcePass(p, SCENE_PASS_LEVEL_SKYBOX);
     }
 
-    if (M_IsSourceDirty(p, SCENE_PASS_MESHES)
-        || M_IsSourceDirty(p, SCENE_PASS_TRANSPARENT)) {
+    if (M_IsSourceDirty(p, SCENE_PASS_LEVEL_OPAQUE)
+        || M_IsSourceDirty(p, SCENE_PASS_LEVEL_TRANSPARENT)) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        M_RenderSourcePass(p, SCENE_PASS_MESHES);
-        M_RenderSourcePass(p, SCENE_PASS_TRANSPARENT);
+        M_RenderSourcePass(p, SCENE_PASS_LEVEL_OPAQUE);
+        M_RenderSourcePass(p, SCENE_PASS_LEVEL_TRANSPARENT);
         glDisable(GL_CULL_FACE);
     }
 
