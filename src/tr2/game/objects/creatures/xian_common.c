@@ -15,7 +15,7 @@ void XianWarrior_Draw(const ITEM *item)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (obj->shadow_size != 0) {
-        Output_InsertShadow(obj->shadow_size, &frames[0]->bounds, item);
+        Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
     }
 
     Matrix_Push();

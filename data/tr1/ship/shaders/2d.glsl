@@ -18,9 +18,7 @@ void main(void) {
 #define EFFECT_VIGNETTE 1
 
 uniform sampler2D texMain;
-uniform sampler1D texPalette;
-uniform sampler2D texAlpha;
-uniform bool paletteEnabled;
+uniform vec4 uTexSize;
 uniform bool alphaEnabled;
 uniform bool tintEnabled;
 uniform vec3 tintColor;
@@ -32,20 +30,9 @@ out vec4 outColor;
 
 void main(void) {
     vec2 uv = vertTexCoords;
+    uv = clampTexAtlas(uv, uTexSize);
 
-    if (alphaEnabled) {
-        float alpha = texture(texAlpha, uv).r;
-        if (alpha < 0.5) {
-            discard;
-        }
-    }
-
-    if (paletteEnabled) {
-        float paletteIndex = texture(texMain, uv).r;
-        outColor = texture(texPalette, paletteIndex);
-    } else {
-        outColor = texture(texMain, uv);
-    }
+    outColor = texture(texMain, uv);
 
     if (tintEnabled) {
         outColor.rgb *= tintColor.rgb;

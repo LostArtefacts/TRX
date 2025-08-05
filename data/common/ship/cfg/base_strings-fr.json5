@@ -330,8 +330,6 @@
         "SETTING_CAMERA_SPEED_DESCRIPTION": "Modifie la vitesse à laquelle se déplace la caméra manuelle.",
         "SETTING_CHANGE_PIERRE_SPAWN": "Modifier le comportement d'apparition de Pierre",
         "SETTING_CHANGE_PIERRE_SPAWN_DESCRIPTION": "Fait en sorte que l'apparition d'un nouveau Pierre (qui s'échappe) remplace l'éventuel Pierre (qui s'échappe) déjà existant.",
-        "SETTING_DEPTH_BUFFER": "Z-Buffer",
-        "SETTING_DEPTH_BUFFER_DESCRIPTION": "Active ou désactive le tampon de profondeur. Il est conseillé de le laisser activé.",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS": "Garder les dégâts",
         "SETTING_DISABLE_HEALING_BETWEEN_LEVELS_DESCRIPTION": "Empêche que Lara ne guérisse automatiquement entre chaque niveau (pour les No Heal challenges).",
         "SETTING_DISABLE_MAGNUMS": "Supprimer les magnums",

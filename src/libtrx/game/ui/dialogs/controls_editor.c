@@ -128,13 +128,12 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_BILINEAR },
 #elif TR_VERSION == 2
                 { .role = INPUT_ROLE_TOGGLE_BILINEAR_FILTER },
-// { .role = INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER }, // handled specially
 #endif
                 { .role = INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER },
                 { .role = INPUT_ROLE_SWITCH_UPSCALING },
                 { .role = INPUT_ROLE_SWITCH_BORDERS },
 #if TR_VERSION == 2
-                { .role = INPUT_ROLE_TOGGLE_Z_BUFFER },
+                { .role = INPUT_ROLE_TOGGLE_WIREFRAME },
                 { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
 #endif
                 { .role = (INPUT_ROLE)-1 },

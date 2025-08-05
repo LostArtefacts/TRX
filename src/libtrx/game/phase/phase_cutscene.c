@@ -65,7 +65,6 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Cutscene_Draw();
-    Output_DrawPolyList();
 }
 
 PHASE *Phase_Cutscene_Create(const int32_t level_num)

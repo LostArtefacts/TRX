@@ -1,4 +1,4 @@
-#include "game/output.h"
+#include "game/output/common.h"
 
 #include "game/level.h"
 #include "game/shell.h"
@@ -6,6 +6,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output/func.h>
 #include <libtrx/game/output/mesh_batcher/batcher.h>
 #include <libtrx/game/output/scene_compositor.h>
 #include <libtrx/game/output/sources/lightnings.h>
@@ -17,6 +18,7 @@
 #include <libtrx/game/output/sources/sprites.h>
 #include <libtrx/game/output/sources/ui.h>
 #include <libtrx/game/output/textures.h>
+#include <libtrx/gfx/context.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_SHADER *m_Shader = nullptr;
@@ -49,7 +51,7 @@ static void M_ReleaseSurfaces(void)
     }
 }
 
-bool Output_Init(void)
+void Output_Init(void)
 {
     m_Renderer2D = GFX_2D_Renderer_Create();
 
@@ -71,7 +73,6 @@ bool Output_Init(void)
     OutputSource_UI_Init();
 
     Output_InitLight();
-    return true;
 }
 
 void Output_Shutdown(void)
@@ -240,11 +241,6 @@ void Output_DrawBackground(void)
     GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
-void Output_DrawPolyList(void)
-{
-    // TODO: remove
-}
-
 BACKGROUND_TYPE Output_GetBackgroundType(void)
 {
     return BK_TRANSPARENT;
@@ -260,4 +256,8 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
     GFX_Context_SwitchToViewport(space);
     GFX_Context_Clear();
     glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void Output_AnimateShades(const int32_t num_frames)
+{
 }

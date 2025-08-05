@@ -60,12 +60,12 @@ typedef struct {
         bool enable_exit_fade_effects;
         bool enable_round_shadow;
         bool enable_reflections;
+        bool enable_skybox;
         bool fix_item_rots;
         bool fix_texture_issues;
         bool fix_animated_sprites;
         bool fix_glide_cameras;
         int32_t fov;
-        bool fov_vertical;
         bool use_psx_fov;
         CAMERA_MODE camera_mode;
         float brightness;
@@ -77,6 +77,7 @@ typedef struct {
 
     struct {
         bool enable_debug_triggers;
+        bool enable_debug_spheres;
         bool enable_debug_portals;
         bool enable_debug_pos;
         bool enable_review_markers;
@@ -188,8 +189,6 @@ typedef struct {
     struct {
         int32_t fps;
         ASPECT_MODE aspect_mode;
-        bool enable_zbuffer;
-        bool enable_perspective_filter;
         bool enable_trapezoid_filter;
         bool enable_lighting;
         bool enable_wireframe;
@@ -200,11 +199,10 @@ typedef struct {
         SCREENSHOT_FORMAT screenshot_format;
         LIGHTING_CONTRAST lighting_contrast;
         TEXEL_ADJUST_MODE texel_adjust_mode;
-        int32_t nearest_adjustment;
-        int32_t linear_adjustment;
         int32_t upscaling_factor;
         float borders;
         float anisotropy_filter;
+        bool enable_vsync;
     } rendering;
 
     struct {

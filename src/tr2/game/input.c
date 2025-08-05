@@ -79,9 +79,8 @@ static void M_UpdateFromBackend(
     s->switch_borders              |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_BORDERS);
     s->toggle_fps_counter          |= backend->is_pressed(layout, INPUT_ROLE_FPS);
     s->toggle_bilinear_filter      |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_BILINEAR_FILTER);
-    s->toggle_perspective_filter   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER);
     s->toggle_trapezoid_filter     |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);
-    s->toggle_z_buffer             |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_Z_BUFFER);
+    s->toggle_wireframe            |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_WIREFRAME);
     s->cycle_lighting_contrast     |= backend->is_pressed(layout, INPUT_ROLE_CYCLE_LIGHTING_CONTRAST);
     s->toggle_fullscreen           |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_FULLSCREEN);
     // clang-format on

@@ -455,11 +455,13 @@ int32_t Output_Textures_GetSpriteUVWIndex(int32_t texture_idx, int32_t corner)
 
 OUTPUT_UVW Output_Textures_GetUVW(const int32_t uvw_idx)
 {
+    ASSERT(uvw_idx >= 0 && uvw_idx / 4 < m_Priv.uvws.count);
     return m_Priv.uvws.data[uvw_idx / 4].corners[uvw_idx % 4];
 }
 
 OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(const int32_t uvw_idx)
 {
+    ASSERT(uvw_idx >= 0 && uvw_idx < m_Priv.uvws.count);
     return m_Priv.atlas_sizes.data[uvw_idx];
 }
 

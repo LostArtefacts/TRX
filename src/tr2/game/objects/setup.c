@@ -9,6 +9,7 @@
 #define DEFAULT_RADIUS 10
 
 static void M_SetupLara(void);
+static void M_SetupSkybox(void);
 
 static void M_SetupLara(void)
 {
@@ -23,6 +24,17 @@ static void M_SetupLara(void)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+}
+
+static void M_SetupSkybox(void)
+{
+    const OBJECT *const obj = Object_Get(O_SKYBOX);
+    if (obj->loaded) {
+        for (int32_t i = 0; i < obj->mesh_count; i++) {
+            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
+            obj_mesh->disable_transparency_sort = true;
+        }
+    }
 }
 
 void Object_SetupAllObjects(void)
@@ -54,5 +66,6 @@ void Object_SetupAllObjects(void)
     }
 
     M_SetupLara();
+    M_SetupSkybox();
     Lara_Hair_Initialise();
 }

@@ -32,4 +32,9 @@ void Config_SanitizeCommon(void)
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;
     }
+
+    CLAMP(
+        g_Config.visuals.brightness, CONFIG_MIN_BRIGHTNESS,
+        CONFIG_MAX_BRIGHTNESS);
+    CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
 }

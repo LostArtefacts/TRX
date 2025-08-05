@@ -41,6 +41,8 @@ static void *M_AllocateSurface(
     GFX_2D_SURFACE_DESC surface_desc = {
         .width = width,
         .height = height,
+        .tex_format = GL_BGRA,
+        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
     };
     return GFX_2D_Surface_Create(&surface_desc);
 }
@@ -123,13 +125,15 @@ static bool M_Play(const char *const file_path)
             video, Viewport_GetWidth(VIEWPORT_GAME),
             Viewport_GetHeight(VIEWPORT_GAME));
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
+
         Video_PumpEvents(video);
 
         Input_Update();
         Shell_ProcessInput();
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back
+        if (g_InputDB.menu_back || g_InputDB.menu_confirm
             || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Video_Stop(video);
+            break;
         }
     }
     Video_Close(video);

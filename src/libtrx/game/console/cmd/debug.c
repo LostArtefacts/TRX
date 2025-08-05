@@ -7,11 +7,11 @@
 #include "strings.h"
 
 static bool *const m_AllOptions[] = {
-#if TR_VERSION == 1
-    &g_Config.debug.enable_debug_portals, &g_Config.debug.enable_debug_triggers,
+    &g_Config.debug.enable_debug_portals,
+    &g_Config.debug.enable_debug_triggers,
     &g_Config.debug.enable_debug_spheres,
-#endif
-    &g_Config.debug.enable_debug_pos,     nullptr,
+    &g_Config.debug.enable_debug_pos,
+    nullptr,
 };
 
 static void M_Toggle(const bool enable);

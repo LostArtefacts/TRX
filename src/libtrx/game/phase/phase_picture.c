@@ -92,7 +92,6 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Output_DrawBackground();
-    Output_DrawPolyList();
     UI_BeginFade(&p->fader, false);
     UI_EndFade();
 }

@@ -178,15 +178,13 @@ void Effect_Draw(const int16_t effect_num)
 
     Matrix_Push();
     Matrix_TranslateAbs32(effect->interp.result.pos);
-    if (g_MatrixPtr->_23 > g_PhdNearZ && g_MatrixPtr->_23 < g_PhdFarZ) {
-        Matrix_Rot16(effect->interp.result.rot);
-        if (obj->mesh_count) {
-            Output_CalculateStaticLight(effect->shade);
-            Object_DrawMesh(obj->mesh_idx, -1, false);
-        } else {
-            Output_CalculateStaticLight(effect->shade);
-            Object_DrawMesh(effect->frame_num, -1, false);
-        }
+    Matrix_Rot16(effect->interp.result.rot);
+    if (obj->mesh_count) {
+        Output_CalculateStaticLight(effect->shade);
+        Object_DrawMesh(obj->mesh_idx, -1, false);
+    } else {
+        Output_CalculateStaticLight(effect->shade);
+        Object_DrawMesh(effect->frame_num, -1, false);
     }
     Matrix_Pop();
 }

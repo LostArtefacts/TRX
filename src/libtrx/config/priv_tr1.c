@@ -254,9 +254,5 @@ void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
     CLAMP(g_Config.visuals.fov_value, 30, 150);
-    CLAMP(
-        g_Config.visuals.brightness, CONFIG_MIN_BRIGHTNESS,
-        CONFIG_MAX_BRIGHTNESS);
     CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
-    CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
 }

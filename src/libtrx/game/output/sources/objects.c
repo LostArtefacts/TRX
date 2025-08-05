@@ -15,6 +15,7 @@ typedef struct {
 
 typedef struct {
     MESH_BATCHER *batcher;
+    int16_t skybox_shade;
     size_t mesh_count;
     M_MESH *meshes;
 } M_PRIV;
@@ -36,8 +37,9 @@ static int32_t *M_PrepareLightIndexMap(
     const OBJECT_MESH *obj_mesh, int32_t vertex_count);
 static void M_PrepareMeshes(M_PRIV *p);
 static void M_FreeMeshes(M_PRIV *p);
+static void M_UpdateShadesSkybox(MESH_INSTANCE *inst, void *user_data);
 static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data);
-static void M_Stage(const OBJECT_MESH *mesh, bool background);
+static void M_Stage(const OBJECT_MESH *mesh, bool skybox);
 
 static void M_AddObjectVerts(
     MESH_BUILDER *const builder, const size_t vtx_count,
@@ -45,18 +47,29 @@ static void M_AddObjectVerts(
     const uint16_t texture_idx, const uint16_t palette_idx,
     const uint16_t flags, const TEXTURE_ZW_F *const trapezoid_ratio)
 {
+    RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
+    int16_t uvw_idx = -1;
+    if (flags & VERT_FLAT_SHADED) {
+#if TR_VERSION == 1
+        color = Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx));
+#else
+        color = Output_RGB2RGBA(Output_GetPaletteColor16(palette_idx >> 8));
+#endif
+    }
+
     for (size_t i = 0; i < vtx_count; i++) {
         const XYZ_16 normal = obj_mesh->lighting.normals[vertices[i]];
         const XYZ_16 *const pos = &obj_mesh->vertices[vertices[i]];
+        if ((flags & VERT_FLAT_SHADED) == 0) {
+            uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i);
+        }
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
             .flags = flags,
-            .uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i),
+            .uvw_idx = uvw_idx,
             .shade = SHADE_NEUTRAL,
-            .color = (flags & VERT_FLAT_SHADED) ?
-                Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx))
-                : (RGBA_8888) { 255, 255, 255, 255 },
+            .color = color,
             .trapezoid_ratio = {
                 [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
                 [1] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].w : 1.0f,
@@ -144,9 +157,6 @@ static void M_PrepareMeshes(M_PRIV *const p)
         if (obj_mesh->enable_reflections) {
             flags |= VERT_REFLECTIVE;
         }
-        if (obj_mesh->disable_lighting) {
-            flags |= VERT_NO_LIGHTING;
-        }
 
         for (int32_t j = 0; j < obj_mesh->num_tex_face4s; j++) {
             M_AddObjectFace4(
@@ -192,10 +202,26 @@ static void M_FreeMeshes(M_PRIV *const p)
     }
 }
 
+static void M_UpdateShadesSkybox(
+    MESH_INSTANCE *const inst, void *const user_data)
+{
+    const OBJECT_MESH *const mesh = user_data;
+    const M_PRIV *const p = &m_Priv;
+    M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
+    OUTPUT_MESH_VERTEX *const vertices =
+        Vector_GetData(batch->mesh_batch->vertices);
+
+    const int16_t shade =
+        g_Config.rendering.enable_lighting ? p->skybox_shade : SHADE_NEUTRAL;
+    for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
+        vertices[i].shade = shade;
+    }
+}
+
 static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
 {
     const OBJECT_MESH *const mesh = user_data;
-    M_PRIV *const p = &m_Priv;
+    const M_PRIV *const p = &m_Priv;
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
     OUTPUT_MESH_VERTEX *const vertices =
         Vector_GetData(batch->mesh_batch->vertices);
@@ -266,9 +292,6 @@ static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
     if (mesh->enable_reflections) {
         flags |= VERT_REFLECTIVE;
     }
-    if (mesh->disable_lighting) {
-        flags |= VERT_NO_LIGHTING;
-    }
     OUTPUT_MESH_VERTEX *const vertices =
         Vector_GetData(batch->mesh_batch->vertices);
     for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
@@ -277,7 +300,7 @@ static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
     }
 }
 
-static void M_Stage(const OBJECT_MESH *const mesh, const bool background)
+static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
 {
     M_PRIV *const p = &m_Priv;
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
@@ -291,10 +314,10 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool background)
         .ls_adder = Output_GetLightAdder(),
         .ls_divider = Output_GetLightDivider(),
         .ls_vector_view = Output_GetLightVectorView(),
-        .update_light_func = M_UpdateShades,
+        .update_light_func = skybox ? M_UpdateShadesSkybox : M_UpdateShades,
         .update_light_func_data = (void *)mesh,
     };
-    if (background) {
+    if (skybox) {
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BACKGROUND);
     } else {
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
@@ -353,8 +376,11 @@ void OutputSource_Objects_ObserveObjectMeshUpdate(const OBJECT_MESH *const mesh)
     MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
 }
 
-void OutputSource_Objects_StageSkyboxMesh(const OBJECT_MESH *const mesh)
+void OutputSource_Objects_StageSkyboxMesh(
+    const OBJECT_MESH *const mesh, const int16_t shade)
 {
+    M_PRIV *const p = &m_Priv;
+    p->skybox_shade = shade;
     M_Stage(mesh, true);
 }
 

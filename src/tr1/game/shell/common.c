@@ -8,6 +8,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_string_manager.h>
+#include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -85,10 +86,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
     args = Shell_CommonInit(args);
     M_CreateGameWindow();
     M_CreateGLContext();
-    if (!Output_Init()) {
-        Shell_ExitSystem("Could not initialise video system");
-        return 1;
-    }
+    Output_Init();
     if (!args->headless) {
         M_ShowWindow();
     }

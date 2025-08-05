@@ -299,7 +299,7 @@ remains distinct for each game.
     ],
 
     "enforced_config": {
-        "enable_zbuffer": false,
+        enable_3d_pickups": false,
     },
     "hidden_config": [
         "enable_save_crystals",

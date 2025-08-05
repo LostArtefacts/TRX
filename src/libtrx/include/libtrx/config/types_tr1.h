@@ -7,9 +7,6 @@
 #include "../gfx/common.h"
 #include "../screenshot.h"
 
-#define CONFIG_MIN_BRIGHTNESS 0.1f
-#define CONFIG_MAX_BRIGHTNESS 2.0f
-
 typedef enum {
     TLM_FULL,
     TLM_SEMI,
@@ -217,7 +214,7 @@ typedef struct {
         GFX_TEXTURE_FILTER texture_filter;
         GFX_TEXTURE_FILTER upscaling_filter;
         bool enable_wireframe;
-        double wireframe_width;
+        float wireframe_width;
         bool enable_vsync;
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;

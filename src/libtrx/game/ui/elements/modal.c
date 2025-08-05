@@ -22,7 +22,6 @@ static void M_Measure(UI_NODE *const node)
 
 static void M_Draw(const UI_NODE *const node)
 {
-    UI_ScheduleFlush();
     UI_DrawWrapper(node);
 }
 

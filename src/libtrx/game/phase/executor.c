@@ -101,7 +101,6 @@ static void M_Draw(PHASE *const phase)
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_Draw();
-    Output_DrawPolyList();
 
     Output_Flush();
     Output_EndScene();

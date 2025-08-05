@@ -3,7 +3,22 @@
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
-- added Russian translation
+- reworked TR2 rendering
+    - improved bilinear filter appearance - no more dark edges around objects
+    - improved bilinear filter texture adjustment - no more texture "expansion" (#2258)
+    - added round shadows option (Graphic options → Visuals → Round shadows)
+    - added option to disable skyboxes (Graphic options → Visuals → Skyboxes)
+    - added brightness option (Graphic settings → Rendering → Brightness)
+    - added anisotropy option (Graphic settings → Rendering → Anisotropy filter)
+    - added vertical sync option (Graphic settings → Rendering → VSync)
+    - added debug portals feature (`/debug 1`)
+    - added debug spheres feature (`/debug 1`)
+    - added debug triggers feature (`/debug 1`)
+    - fixed trapezoid textures warping at the edge of the screen (#2629)
+    - fixed certain polygons disappearing in some objects (#3699)
+    - removed software rendering mode
+    - removed the z-buffer option, which is now always enabled
+    - removed undocumented linear and nearest texel adjustment options
 - added new command switches:
     - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
     - `--headless`: runs the game offscreen with no audio and at unlocked simulation speed
@@ -16,6 +31,7 @@
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
+- added Russian translation
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
@@ -26,7 +42,6 @@
 - changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic
 - changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range (#3598)
 - changed `-l`/`--level` switch to accept the level number on top of the level path
-- removed software rendering mode
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)

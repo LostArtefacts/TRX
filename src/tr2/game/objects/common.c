@@ -22,7 +22,7 @@ void Object_DrawAnimatingItem(const ITEM *item)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (obj->shadow_size != 0) {
-        Output_InsertShadow(obj->shadow_size, &frames[0]->bounds, item);
+        Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
     }
 
     Matrix_Push();
@@ -46,17 +46,22 @@ void Object_DrawAnimatingItem(const ITEM *item)
 
 void Object_DrawUnclippedItem(const ITEM *const item)
 {
-    const VIEWPORT old_vp = *Viewport_Get();
+    int32_t left = g_PhdLeft;
+    int32_t top = g_PhdTop;
+    int32_t right = g_PhdRight;
+    int32_t bottom = g_PhdBottom;
 
-    VIEWPORT new_vp = old_vp;
-    new_vp.game_vars.win_top = 0;
-    new_vp.game_vars.win_left = 0;
-    new_vp.game_vars.win_bottom = new_vp.game_vars.win_max_y;
-    new_vp.game_vars.win_right = new_vp.game_vars.win_max_x;
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
-    Viewport_Restore(&new_vp);
     Object_DrawAnimatingItem(item);
-    Viewport_Restore(&old_vp);
+
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
 }
 
 void Object_DrawSpriteItem(const ITEM *const item)
