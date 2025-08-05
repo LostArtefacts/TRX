@@ -1,14 +1,14 @@
+#include "config.h"
 #include "game/output.h"
+#include "game/output/scene_compositor.h"
 #include "game/output/sources/rooms.h"
+#include "game/output/utils.h"
+#include "game/output/vertex_range.h"
 #include "game/random.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/output/scene_compositor.h>
-#include <libtrx/game/output/utils.h>
-#include <libtrx/game/output/vertex_range.h>
-#include <libtrx/gfx/gl/utils.h>
-#include <libtrx/memory.h>
-#include <libtrx/vector.h>
+#include "gfx/gl/utils.h"
+#include "memory.h"
+#include "utils.h"
+#include "vector.h"
 
 typedef struct {
     XYZ_F pos;

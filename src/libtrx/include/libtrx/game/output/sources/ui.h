@@ -1,10 +1,9 @@
 #pragma once
 
-#include "game/viewport.h"
-
-#include <libtrx/game/objects/types.h>
-#include <libtrx/game/output/textures.h>
-#include <libtrx/game/output/utils.h>
+#include "../../objects/types.h"
+#include "../../viewport.h"
+#include "../textures.h"
+#include "../utils.h"
 
 #define OUTPUT_UI_MAX_PICKUP_ROWS 3
 #define OUTPUT_UI_MAX_PICKUP_COLUMNS 4

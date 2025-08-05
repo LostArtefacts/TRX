@@ -1,14 +1,6 @@
 #include "game/output.h"
 
 #include "game/level.h"
-#include "game/output/sources/lightnings.h"
-#include "game/output/sources/misc.h"
-#include "game/output/sources/objects.h"
-#include "game/output/sources/rooms.h"
-#include "game/output/sources/rooms_debug.h"
-#include "game/output/sources/shadows.h"
-#include "game/output/sources/sprites.h"
-#include "game/output/sources/ui.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -16,6 +8,14 @@
 #include <libtrx/config.h>
 #include <libtrx/game/output/mesh_batcher/batcher.h>
 #include <libtrx/game/output/scene_compositor.h>
+#include <libtrx/game/output/sources/lightnings.h>
+#include <libtrx/game/output/sources/misc.h>
+#include <libtrx/game/output/sources/objects.h>
+#include <libtrx/game/output/sources/rooms.h>
+#include <libtrx/game/output/sources/rooms_debug.h>
+#include <libtrx/game/output/sources/shadows.h>
+#include <libtrx/game/output/sources/sprites.h>
+#include <libtrx/game/output/sources/ui.h>
 #include <libtrx/game/output/textures.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;

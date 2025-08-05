@@ -1,8 +1,8 @@
 #pragma once
 
-#include <libtrx/game/output/mesh_batcher/batcher.h>
-#include <libtrx/game/output/scene_source.h>
-#include <libtrx/game/rooms/types.h>
+#include "../../rooms/types.h"
+#include "../mesh_batcher/batcher.h"
+#include "../scene_source.h"
 
 void OutputSource_Sprites_Init(MESH_BATCHER *batcher);
 void OutputSource_Sprites_Shutdown(void);

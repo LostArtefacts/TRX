@@ -1,12 +1,12 @@
 #include "game/output/sources/rooms.h"
 
+#include "config.h"
+#include "game/level/const.h"
 #include "game/output.h"
+#include "game/output/mesh_batcher/mesh_builder.h"
 #include "game/random.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/level/const.h>
-#include <libtrx/game/output/mesh_batcher/mesh_builder.h>
-#include <libtrx/memory.h>
+#include "memory.h"
+#include "utils.h"
 
 typedef struct {
     MESH_BATCHER *batcher;

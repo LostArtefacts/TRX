@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../colors.h"
+#include "../math/types.h"
 #include "./const.h"
 
 #include <stdint.h>
@@ -82,6 +83,12 @@ typedef struct {
 typedef struct {
     uint8_t index[LIGHT_MAP_SIZE];
 } SHADE_MAP;
+
+typedef struct {
+    XYZ_32 from;
+    XYZ_32 to;
+    int32_t thickness;
+} LIGHTNING_SEGMENT;
 
 typedef enum {
     LIGHTING_MODE_OFF,

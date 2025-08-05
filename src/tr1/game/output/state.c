@@ -1,10 +1,10 @@
 #include "game/output.h"
-#include "game/output/sources/objects.h"
-#include "game/output/sources/rooms.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/output/scene_compositor.h>
+#include <libtrx/game/output/sources/objects.h>
+#include <libtrx/game/output/sources/rooms.h>
 #include <libtrx/game/output/textures.h>
 
 static int32_t m_Time = 0;

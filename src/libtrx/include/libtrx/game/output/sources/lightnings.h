@@ -1,8 +1,7 @@
 #pragma once
 
-#include "game/output/types.h"
-
-#include <libtrx/game/math/types.h>
+#include "../../types.h"
+#include "../types.h"
 
 void OutputSource_Lightnings_Init(void);
 void OutputSource_Lightnings_Shutdown(void);

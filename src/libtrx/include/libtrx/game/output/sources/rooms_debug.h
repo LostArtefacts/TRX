@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/game/rooms/types.h>
+#include "../../rooms/types.h"
 
 void OutputSource_RoomsDebug_Init(void);
 void OutputSource_RoomsDebug_Shutdown(void);

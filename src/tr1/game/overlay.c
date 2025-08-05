@@ -3,11 +3,11 @@
 #include "game/game.h"
 #include "game/inventory.h"
 #include "game/output.h"
-#include "game/output/sources/ui.h"
 #include "game/viewport.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/inventory_ring.h>
+#include <libtrx/game/output/sources/ui.h>
 #include <libtrx/game/ui/draw.h>
 
 #define M_MAX_PICKUP_DURATION_DISPLAY 2.0 // seconds

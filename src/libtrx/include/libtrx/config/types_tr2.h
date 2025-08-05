@@ -58,6 +58,7 @@ typedef struct {
         bool enable_breeze;
         bool enable_fade_effects;
         bool enable_exit_fade_effects;
+        bool enable_round_shadow;
         bool enable_reflections;
         bool fix_item_rots;
         bool fix_texture_issues;
@@ -75,6 +76,8 @@ typedef struct {
     } visuals;
 
     struct {
+        bool enable_debug_triggers;
+        bool enable_debug_portals;
         bool enable_debug_pos;
         bool enable_review_markers;
         bool enable_invulnerability;
