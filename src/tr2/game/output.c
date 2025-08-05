@@ -1020,9 +1020,29 @@ int32_t Output_GetLightAdder(void)
     return m_LsAdder;
 }
 
+int32_t Output_GetLightDivider(void)
+{
+    return m_LsDivider;
+}
+
+XYZ_32 Output_GetLightVectorView(void)
+{
+    return m_LsVectorView;
+}
+
 void Output_SetLightDivider(const int32_t divider)
 {
     m_LsDivider = divider;
+}
+
+bool Output_GetWaterEffect(void)
+{
+    return m_IsWaterEffect;
+}
+
+bool Output_GetWibbleEffect(void)
+{
+    return m_IsWibbleEffect;
 }
 
 int32_t Output_CalcFogShade(const int32_t depth)

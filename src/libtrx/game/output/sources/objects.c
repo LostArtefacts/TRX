@@ -1,10 +1,12 @@
 #include "game/output/sources/objects.h"
 
+#include "config.h"
+#include "game/objects/common.h"
 #include "game/output.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/output/mesh_batcher/mesh_builder.h>
-#include <libtrx/memory.h>
+#include "game/output/mesh_batcher/mesh_builder.h"
+#include "game/output/state.h"
+#include "memory.h"
+#include "utils.h"
 
 typedef struct {
     OUTPUT_MESH *mesh_batch;

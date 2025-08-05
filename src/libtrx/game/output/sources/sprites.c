@@ -1,9 +1,9 @@
 #include "game/output/sources/sprites.h"
 
-#include <libtrx/game/output/mesh_batcher/mesh_builder.h>
-#include <libtrx/game/output/textures.h>
-#include <libtrx/memory.h>
-#include <libtrx/utils.h>
+#include "game/output/mesh_batcher/mesh_builder.h"
+#include "game/output/textures.h"
+#include "memory.h"
+#include "utils.h"
 
 typedef struct {
     MESH_BATCHER *batcher;

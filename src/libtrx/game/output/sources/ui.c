@@ -1,13 +1,14 @@
 #include "game/output/sources/ui.h"
 
+#include "game/objects/common.h"
 #include "game/output.h"
+#include "game/output/scene_compositor.h"
 #include "game/output/sources/objects.h"
 #include "game/viewport.h"
-
-#include <libtrx/game/output/scene_compositor.h>
-#include <libtrx/gfx/gl/utils.h>
-#include <libtrx/memory.h>
-#include <libtrx/vector.h>
+#include "gfx/gl/utils.h"
+#include "memory.h"
+#include "utils.h"
+#include "vector.h"
 
 #define M_PICKUPS_FOV 65
 

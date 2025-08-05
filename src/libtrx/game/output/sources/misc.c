@@ -1,13 +1,13 @@
 #include "game/output/sources/misc.h"
 
+#include "config.h"
 #include "game/output.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/output/scene_compositor.h>
-#include <libtrx/game/output/utils.h>
-#include <libtrx/game/output/vertex_range.h>
-#include <libtrx/gfx/gl/utils.h>
-#include <libtrx/memory.h>
+#include "game/output/scene_compositor.h"
+#include "game/output/utils.h"
+#include "game/output/vertex_range.h"
+#include "gfx/gl/utils.h"
+#include "memory.h"
+#include "utils.h"
 
 typedef struct {
     XYZ_F pos;
