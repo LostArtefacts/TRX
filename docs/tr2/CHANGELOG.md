@@ -15,6 +15,7 @@
 - added an option to use Lara's neutral jump-twist from early TR1 betas (Gameplay → Controls → Neutral twists) (#1392)
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
+- added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)

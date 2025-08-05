@@ -115,6 +115,10 @@ typedef enum {
     LS_NEUTRAL_ROLL  = 72,
     LS_SPRINT        = 73,
     LS_SPRINT_ROLL   = 74,
+    LS_POSE_START    = 75,
+    LS_POSE_END      = 76,
+    LS_POSE_LEFT     = 77,
+    LS_POSE_RIGHT    = 78,
 #elif TR_VERSION    == 1
     LS_CONTROLLED    = 56,
     LS_TWIST         = 57,
@@ -124,6 +128,10 @@ typedef enum {
     LS_NEUTRAL_ROLL  = 61,
     LS_SPRINT        = 62,
     LS_SPRINT_ROLL   = 63,
+    LS_POSE_START    = 64,
+    LS_POSE_END      = 65,
+    LS_POSE_LEFT     = 66,
+    LS_POSE_RIGHT    = 67,
 #endif
     LS_NUMBER_OF,
 } LARA_STATE;
@@ -334,6 +342,12 @@ typedef enum {
     LA_SPRINT_ROLL_RIGHT_TO_RUN              = 201,
     LA_SPRINT_TO_RUN_LEFT                    = 202,
     LA_SPRINT_TO_RUN_RIGHT                   = 203,
+    LA_POSE_RIGHT_START                      = 204,
+    LA_POSE_RIGHT_CONTINUE                   = 205,
+    LA_POSE_RIGHT_END                        = 206,
+    LA_POSE_LEFT_START                       = 207,
+    LA_POSE_LEFT_CONTINUE                    = 208,
+    LA_POSE_LEFT_END                         = 209,
 #else
     LA_STAND_TO_LADDER                       = 160,
     LA_LADDER_UP                             = 161,
@@ -413,6 +427,9 @@ typedef enum {
     LA_SPRINT_ROLL_RIGHT_TO_RUN              = 235,
     LA_SPRINT_TO_RUN_LEFT                    = 236,
     LA_SPRINT_TO_RUN_RIGHT                   = 237,
+    LA_POSE_RIGHT_START                      = 238,
+    LA_POSE_RIGHT_CONTINUE                   = 239,
+    LA_POSE_RIGHT_END                        = 240,
 #endif
     LA_NUMBER_OF,
 } LARA_ANIMATION;

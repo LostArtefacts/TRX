@@ -50,6 +50,7 @@ typedef struct {
     int16_t dive_timer;
     int16_t death_timer;
     int16_t sprint_timer;
+    int32_t idle_timer;
     int16_t current_active;
     LOT_INFO lot;
     XYZ_32 last_pos;
