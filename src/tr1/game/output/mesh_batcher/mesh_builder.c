@@ -1,9 +1,9 @@
 #include "game/output/mesh_batcher/mesh_builder.h"
 
 #include "game/output/mesh_batcher/mesh.h"
-#include "game/output/shader.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/output/shader.h>
 #include <libtrx/game/output/textures.h>
 #include <libtrx/game/output/vertex_range.h>
 #include <libtrx/memory.h>

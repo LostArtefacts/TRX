@@ -58,13 +58,16 @@ typedef struct {
         bool enable_breeze;
         bool enable_fade_effects;
         bool enable_exit_fade_effects;
+        bool enable_reflections;
         bool fix_item_rots;
         bool fix_texture_issues;
         bool fix_animated_sprites;
         bool fix_glide_cameras;
         int32_t fov;
+        bool fov_vertical;
         bool use_psx_fov;
         CAMERA_MODE camera_mode;
+        float brightness;
 
         RGB_888 water_color;
         int32_t fog_start;

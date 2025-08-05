@@ -1,8 +1,7 @@
 #pragma once
 
-#include "game/output/types.h"
-
-#include <libtrx/game/matrix.h>
+#include "../matrix.h"
+#include "./types.h"
 
 // clang-format off
 #define VERT_NO_CAUSTICS 0b0000'0001 // = 0x01

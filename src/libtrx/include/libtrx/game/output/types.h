@@ -82,3 +82,9 @@ typedef struct {
 typedef struct {
     uint8_t index[LIGHT_MAP_SIZE];
 } SHADE_MAP;
+
+typedef enum {
+    LIGHTING_MODE_OFF,
+    LIGHTING_MODE_ONLY_SHADES,
+    LIGHTING_MODE_FULL,
+} LIGHTING_MODE;

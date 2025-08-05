@@ -1116,3 +1116,9 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
     Render_SwitchViewport(space);
     GFX_Context_Clear();
 }
+
+int32_t Output_GetTime(void)
+{
+    // TODO: not implemented
+    return 0;
+}
