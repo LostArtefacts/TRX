@@ -73,6 +73,8 @@ static void M_BindTextures(const M_PRIV *p)
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, Output_Textures_GetBackgroundTexture());
 }
 
 static void M_SetBlendModeForScene(bool wireframe)
@@ -149,8 +151,18 @@ static void M_RenderScenePasses(const M_PRIV *const p)
 
     Output_Shader_Bind(shader);
     Output_Shader_UploadCommonUniforms(shader);
-    M_BindTextures(p);
     M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
+    M_BindTextures(p);
+
+    if (M_IsSourceDirty(p, SCENE_PASS_BACKGROUND)) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        M_SetupShaderForUI(shader, g_Config.rendering.ui_filter);
+        glDisable(GL_DEPTH_TEST);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glDepthMask(GL_FALSE);
+        M_RenderSourcePass(p, SCENE_PASS_BACKGROUND);
+        glDepthMask(GL_TRUE);
+    }
 
     M_SetupShaderForScene(
         shader, g_Config.rendering.texture_filter,

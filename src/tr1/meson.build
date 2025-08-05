@@ -221,6 +221,7 @@ sources = [
   'game/output/mesh_batcher/mesh_builder.c',
   'game/output/scene_compositor.c',
   'game/output/shader.c',
+  'game/output/sources/background.c',
   'game/output/sources/lightnings.c',
   'game/output/sources/misc.c',
   'game/output/sources/objects.c',

@@ -21,6 +21,7 @@ static struct {
 static struct {
     GLuint tex_atlas;
     GLuint tex_env_map;
+    GLuint tex_background;
 
     struct {
         int32_t count;
@@ -280,6 +281,17 @@ static void M_PrepareEnvMap(void)
     }
 }
 
+static void M_PrepareBackground(void)
+{
+    glGenTextures(1, &m_Priv.tex_background);
+    glBindTexture(GL_TEXTURE_2D, m_Priv.tex_background);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    GFX_GL_CheckError();
+}
+
 static void M_PrepareAtlasSizes(void)
 {
     const int32_t count_objects = Output_GetObjectTextureCount();
@@ -348,6 +360,7 @@ static void M_FreeLevelData(void)
 void Output_Textures_Init(void)
 {
     M_PrepareEnvMap();
+    M_PrepareBackground();
     m_AnimationRanges.objects = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
     m_AnimationRanges.sprites = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
 }
@@ -366,6 +379,10 @@ void Output_Textures_Shutdown(void)
     if (m_Priv.tex_env_map != 0) {
         glDeleteTextures(1, &m_Priv.tex_env_map);
         m_Priv.tex_env_map = 0;
+    }
+    if (m_Priv.tex_background != 0) {
+        glDeleteTextures(1, &m_Priv.tex_background);
+        m_Priv.tex_background = 0;
     }
 }
 
@@ -421,6 +438,11 @@ GLuint Output_Textures_GetEnvMapTexture(void)
     return m_Priv.tex_env_map;
 }
 
+GLuint Output_Textures_GetBackgroundTexture(void)
+{
+    return m_Priv.tex_background;
+}
+
 int32_t Output_Textures_GetObjectUVWIndex(int32_t texture_idx, int32_t corner)
 {
     return texture_idx * 4 + corner;
@@ -462,4 +484,18 @@ void Output_Textures_ApplyRenderSettings(void)
     if (m_Priv.uvws.count != 0) {
         M_FillObjectUVWs();
     }
+}
+
+void Output_Textures_LoadBackgroundFromImage(const IMAGE *const image)
+{
+    glBindTexture(GL_TEXTURE_2D, m_Priv.tex_background);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB,
+        GL_UNSIGNED_BYTE, image->data);
+    GFX_GL_CheckError();
+}
+
+void Output_Textures_LoadBackgroundFromObject(void)
+{
+    // TODO: implement me for TR2
 }

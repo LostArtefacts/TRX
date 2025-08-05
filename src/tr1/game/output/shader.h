@@ -11,6 +11,7 @@
 #define VERT_NO_LIGHTING 0b0000'1000 // = 0x08
 #define VERT_BILLBOARD   0b0001'0000 // = 0x10
 #define VERT_CAUSTICS    0b0010'0000 // = 0x20
+#define VERT_BACKGROUND  0b0100'0000 // = 0x40
 // clang-format on
 
 // GL attribute mapping in the shader

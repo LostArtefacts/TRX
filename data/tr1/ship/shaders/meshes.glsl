@@ -63,6 +63,7 @@ void main(void) {
 uniform int uTime;
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
+uniform sampler2D uTexBackground;
 uniform bool uSmoothingEnabled;
 uniform bool uTrapezoidFilterEnabled;
 uniform int uLightingMode;
@@ -91,23 +92,22 @@ vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 void main(void) {
     vec4 texColor = gColor;
 
-    if ((gFlags & VERT_FLAT_SHADED) == 0u && gTexLayer >= 0) {
+    if ((gFlags & VERT_BACKGROUND) != 0u) {
+        texColor = texture(uTexBackground, gTexUV.xy);
+    } else if ((gFlags & VERT_FLAT_SHADED) == 0u && gTexLayer >= 0) {
         vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
         if (uTrapezoidFilterEnabled) {
             texCoords.xy /= gTrapezoidRatios;
         }
         texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
-
         texColor *= texture(uTexAtlas, texCoords);
         if (texColor.a <= 0.0) {
             discard;
         }
+    } else if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled) {
+        texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
     } else {
         texColor.rgb *= texColor.a;
-    }
-
-    if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled) {
-        texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
     }
 
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {

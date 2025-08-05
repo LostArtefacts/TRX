@@ -1,5 +1,6 @@
 #pragma once
 
+#include <libtrx/engine/image.h>
 #include <libtrx/gfx/gl/utils.h>
 
 #pragma pack(push, 1)
@@ -23,8 +24,10 @@ void Output_Textures_ObserveLevelLoad(void);
 void Output_Textures_UpdateEnvironmentMap(void);
 void Output_Textures_CycleAnimations(void);
 void Output_Textures_ApplyRenderSettings(void);
+
 GLuint Output_Textures_GetAtlasTexture(void);
 GLuint Output_Textures_GetEnvMapTexture(void);
+GLuint Output_Textures_GetBackgroundTexture(void);
 
 int32_t Output_Textures_GetObjectUVWIndex(
     int32_t texture_idx, int32_t face_idx);
@@ -36,3 +39,6 @@ OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);
 bool Output_Textures_IsObjectTextureAnimated(int32_t texture_idx);
 bool Output_Textures_IsObjectTextureTransparent(int32_t texture_idx);
 bool Output_Textures_IsSpriteTextureAnimated(int32_t sprite_idx);
+
+void Output_Textures_LoadBackgroundFromImage(const IMAGE *image);
+void Output_Textures_LoadBackgroundFromObject(void);

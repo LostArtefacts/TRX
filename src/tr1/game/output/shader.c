@@ -13,6 +13,7 @@ typedef enum {
     M_UNIFORM_TIME,
     M_UNIFORM_TEX_ATLAS,
     M_UNIFORM_TEX_ENV_MAP,
+    M_UNIFORM_TEX_BACKGROUND,
     M_UNIFORM_SMOOTHING_ENABLED,
     M_UNIFORM_TRAPEZOID_FILTER_ENABLED,
     M_UNIFORM_LIGHTING_MODE,
@@ -49,6 +50,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_TIME] = "uTime",
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
+        [M_UNIFORM_TEX_BACKGROUND] = "uTexBackground",
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
         [M_UNIFORM_TRAPEZOID_FILTER_ENABLED] = "uTrapezoidFilterEnabled",
         [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
@@ -70,6 +72,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     GFX_GL_Program_Bind(&shader->program);
     glUniform1i(shader->uniforms[M_UNIFORM_TEX_ATLAS], 0);
     glUniform1i(shader->uniforms[M_UNIFORM_TEX_ENV_MAP], 1);
+    glUniform1i(shader->uniforms[M_UNIFORM_TEX_BACKGROUND], 2);
     return shader;
 }
 

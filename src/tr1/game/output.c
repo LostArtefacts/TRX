@@ -3,6 +3,7 @@
 #include "game/level.h"
 #include "game/output/mesh_batcher/batcher.h"
 #include "game/output/scene_compositor.h"
+#include "game/output/sources/background.h"
 #include "game/output/sources/lightnings.h"
 #include "game/output/sources/misc.h"
 #include "game/output/sources/objects.h"
@@ -20,39 +21,12 @@
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_SHADER *m_Shader = nullptr;
-static GFX_2D_RENDERER *m_Renderer2D = nullptr;
 
 static int32_t m_ViewportWidth = 0;
 static int32_t m_ViewportHeight = 0;
-static GFX_2D_SURFACE *m_PictureSurface = nullptr;
-
-static void M_DownloadBackdropSurface(const IMAGE *image);
-static void M_ReleaseSurfaces(void);
-
-static void M_DownloadBackdropSurface(const IMAGE *const image)
-{
-    GFX_2D_Surface_Free(m_PictureSurface);
-    m_PictureSurface = nullptr;
-    if (image == nullptr) {
-        return;
-    }
-    m_PictureSurface = GFX_2D_Surface_CreateFromImage(image);
-    GFX_2D_Renderer_Upload(
-        m_Renderer2D, &m_PictureSurface->desc, m_PictureSurface->buffer);
-}
-
-static void M_ReleaseSurfaces(void)
-{
-    if (m_PictureSurface != nullptr) {
-        GFX_2D_Surface_Free(m_PictureSurface);
-        m_PictureSurface = nullptr;
-    }
-}
 
 bool Output_Init(void)
 {
-    m_Renderer2D = GFX_2D_Renderer_Create();
-
     Output_ApplyRenderSettings();
 
     SceneCompositor_Init();
@@ -61,13 +35,14 @@ bool Output_Init(void)
     m_Shader = Output_Shader_Create("shaders/meshes.glsl");
     m_Batcher = MeshBatcher_Create();
     SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
-    OutputSource_Rooms_Init(m_Batcher);
-    OutputSource_RoomsDebug_Init();
-    OutputSource_Objects_Init(m_Batcher);
-    OutputSource_Sprites_Init(m_Batcher);
+    OutputSource_Background_Init();
     OutputSource_Lightnings_Init();
-    OutputSource_Shadows_Init(m_Batcher);
     OutputSource_Misc_Init();
+    OutputSource_Objects_Init(m_Batcher);
+    OutputSource_RoomsDebug_Init();
+    OutputSource_Rooms_Init(m_Batcher);
+    OutputSource_Shadows_Init(m_Batcher);
+    OutputSource_Sprites_Init(m_Batcher);
     OutputSource_UI_Init();
 
     Output_InitLight();
@@ -77,13 +52,15 @@ bool Output_Init(void)
 void Output_Shutdown(void)
 {
     SceneCompositor_Shutdown();
-    OutputSource_Rooms_Shutdown();
-    OutputSource_RoomsDebug_Shutdown();
-    OutputSource_Objects_Shutdown();
-    OutputSource_Sprites_Shutdown();
+    OutputSource_Background_Shutdown();
     OutputSource_Lightnings_Shutdown();
-    OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
+    OutputSource_Objects_Shutdown();
+    OutputSource_RoomsDebug_Shutdown();
+    OutputSource_Rooms_Shutdown();
+    OutputSource_Shadows_Shutdown();
+    OutputSource_Sprites_Shutdown();
+    OutputSource_UI_Shutdown();
 
     if (m_Shader != nullptr) {
         Output_Shader_Free(m_Shader);
@@ -96,13 +73,6 @@ void Output_Shutdown(void)
 
     Output_Textures_Shutdown();
     Output_ShutdownLight();
-
-    M_ReleaseSurfaces();
-
-    if (m_Renderer2D != nullptr) {
-        GFX_2D_Renderer_Destroy(m_Renderer2D);
-        m_Renderer2D = nullptr;
-    }
     GFX_Context_Detach();
     Output_ClearLastBackgroundPath();
 }
@@ -121,13 +91,6 @@ void Output_ApplyRenderSettings(void)
 
     if (m_Shader == nullptr) {
         return;
-    }
-
-    if (m_PictureSurface != nullptr
-        && (Viewport_GetWidth(VIEWPORT_GAME) != m_ViewportWidth
-            || Viewport_GetHeight(VIEWPORT_GAME) != m_ViewportHeight)) {
-        GFX_2D_Surface_Free(m_PictureSurface);
-        m_PictureSurface = nullptr;
     }
 
     m_ViewportWidth = Viewport_GetWidth(VIEWPORT_GAME);
@@ -216,28 +179,26 @@ void Output_FlipScreen(void)
 
 bool Output_LoadBackgroundFromImage(const IMAGE *const image)
 {
-    M_DownloadBackdropSurface(image);
+    Output_Textures_LoadBackgroundFromImage(image);
+    OutputSource_Background_PrepareImage();
     return true;
 }
 
 void Output_LoadBackgroundFromObject(void)
 {
-    // TR1 doesn't have inventory background object.
-    Output_UnloadBackground();
+    Output_Textures_LoadBackgroundFromObject();
+    OutputSource_Background_PrepareObject();
 }
 
 void Output_UnloadBackground(void)
 {
-    M_DownloadBackdropSurface(nullptr);
     Output_ClearLastBackgroundPath();
 }
 
 void Output_DrawBackground(void)
 {
-    if (m_PictureSurface == nullptr) {
-        return;
-    }
-    GFX_2D_Renderer_Render(m_Renderer2D);
+    OutputSource_Background_Stage();
+    // TODO: remove
 }
 
 void Output_DrawPolyList(void)
