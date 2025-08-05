@@ -7,9 +7,9 @@
 #include "game/output/sources/shadows.h"
 #include "game/output/sources/sprites.h"
 #include "game/output/sources/ui.h"
-#include "game/output/utils.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output/utils.h>
 #include <libtrx/memory.h>
 
 #define M_TEXT_OUTLINE_THICKNESS 2
