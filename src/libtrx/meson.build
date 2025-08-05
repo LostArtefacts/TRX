@@ -246,6 +246,7 @@ sources = [
   'game/output/background.c',
   'game/output/common.c',
   'game/output/lights.c',
+  'game/output/shader.c',
   'game/output/state.c',
   'game/output/textures.c',
   'game/output/vertex_range.c',

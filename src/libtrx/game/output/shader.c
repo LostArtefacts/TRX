@@ -1,13 +1,12 @@
 #include "game/output/shader.h"
 
+#include "config.h"
+#include "debug.h"
 #include "game/output.h"
 #include "game/viewport.h"
-#include "global/vars.h"
-
-#include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/gfx/gl/utils.h>
-#include <libtrx/memory.h>
+#include "gfx/gl/program.h"
+#include "gfx/gl/utils.h"
+#include "memory.h"
 
 typedef enum {
     M_UNIFORM_TIME,

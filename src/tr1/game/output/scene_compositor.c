@@ -1,10 +1,10 @@
 #include "game/output/scene_compositor.h"
 
 #include "game/output.h"
-#include "game/output/shader.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/output/shader.h>
 #include <libtrx/game/output/textures.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/vector.h>
