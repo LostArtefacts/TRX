@@ -2,10 +2,10 @@
 #include "game/output/scene_compositor.h"
 #include "game/output/sources/objects.h"
 #include "game/output/sources/rooms.h"
-#include "game/output/textures.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output/textures.h>
 
 static int32_t m_Time = 0;
 static int32_t m_AnimatedTexturesOffset = 0;

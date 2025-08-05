@@ -11,12 +11,12 @@
 #include "game/output/sources/shadows.h"
 #include "game/output/sources/sprites.h"
 #include "game/output/sources/ui.h"
-#include "game/output/textures.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output/textures.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_SHADER *m_Shader = nullptr;
