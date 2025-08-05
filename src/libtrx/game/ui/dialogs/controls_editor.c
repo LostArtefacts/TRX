@@ -136,7 +136,6 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
 #if TR_VERSION == 2
                 { .role = INPUT_ROLE_TOGGLE_Z_BUFFER },
                 { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
-                { .role = INPUT_ROLE_TOGGLE_RENDERING_MODE },
 #endif
                 { .role = (INPUT_ROLE)-1 },
             },

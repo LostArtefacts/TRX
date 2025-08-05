@@ -55,10 +55,7 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 
 #define L_CHANGED(subject) (old->subject != new->subject)
 
-    if (L_CHANGED(rendering.render_mode)) {
-        Render_Reset(RENDER_RESET_ALL);
-    } else if (
-        L_CHANGED(rendering.enable_zbuffer)
+    if (L_CHANGED(rendering.enable_zbuffer)
         || L_CHANGED(rendering.enable_perspective_filter)
         || L_CHANGED(rendering.upscaling_filter)
         || L_CHANGED(rendering.enable_wireframe)

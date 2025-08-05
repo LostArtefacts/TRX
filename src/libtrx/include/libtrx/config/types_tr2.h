@@ -15,12 +15,6 @@ typedef enum {
 } LIGHTING_CONTRAST;
 
 typedef enum {
-    RM_UNKNOWN = 0,
-    RM_SOFTWARE = 1,
-    RM_HARDWARE = 2,
-} RENDER_MODE;
-
-typedef enum {
     TAM_DISABLED = 0,
     TAM_BILINEAR_ONLY = 1,
     TAM_ALWAYS = 2,
@@ -185,7 +179,6 @@ typedef struct {
 
     struct {
         int32_t fps;
-        RENDER_MODE render_mode;
         ASPECT_MODE aspect_mode;
         bool enable_zbuffer;
         bool enable_perspective_filter;

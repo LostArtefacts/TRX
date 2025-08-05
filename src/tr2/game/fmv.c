@@ -42,11 +42,8 @@ static void *M_AllocateSurface(
     GFX_2D_SURFACE_DESC surface_desc = {
         .width = width,
         .height = height,
-        .tex_format =
-            g_Config.rendering.render_mode == RM_SOFTWARE ? GL_RED : GL_BGRA,
-        .tex_type = g_Config.rendering.render_mode == RM_SOFTWARE
-            ? GL_UNSIGNED_BYTE
-            : GL_UNSIGNED_INT_8_8_8_8_REV,
+        .tex_format = GL_BGRA,
+        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
     };
     return GFX_2D_Surface_Create(&surface_desc);
 }
@@ -140,13 +137,8 @@ static bool M_Play(const char *const file_name)
 
         const SHELL_SIZE display_size = Shell_GetCurrentDisplaySize();
         Video_SetSurfaceSize(video, display_size.w, display_size.h);
-        if (g_Config.rendering.render_mode == RM_SOFTWARE) {
-            Video_SetSurfacePixelFormat(video, AV_PIX_FMT_RGB8);
-            GFX_2D_Renderer_SetPalette(renderer_2d, palette);
-        } else {
-            Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
-            GFX_2D_Renderer_SetPalette(renderer_2d, nullptr);
-        }
+        Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
+        GFX_2D_Renderer_SetPalette(renderer_2d, nullptr);
 
         Video_PumpEvents(video);
 

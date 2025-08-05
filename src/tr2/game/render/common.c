@@ -3,7 +3,6 @@
 #include "decomp/decomp.h"
 #include "game/render/hwr.h"
 #include "game/render/priv.h"
-#include "game/render/swr.h"
 #include "game/shell.h"
 #include "global/vars.h"
 
@@ -18,7 +17,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 
-static RENDERER m_Renderer_SW = {};
 static RENDERER m_Renderer_HW = {};
 static RENDERER *m_PreviousRenderer = nullptr;
 static GFX_FADE_RENDERER *m_FadeRenderer = nullptr;
@@ -38,13 +36,7 @@ static void M_ResetPolyList(void);
 
 static RENDERER *M_GetRenderer(void)
 {
-    RENDERER *r = nullptr;
-    if (g_Config.rendering.render_mode == RM_SOFTWARE) {
-        r = &m_Renderer_SW;
-    } else if (g_Config.rendering.render_mode == RM_HARDWARE) {
-        r = &m_Renderer_HW;
-    }
-    return r;
+    return &m_Renderer_HW;
 }
 
 static void M_ReuploadBackground(void)
@@ -83,7 +75,6 @@ void Render_Init(void)
 
     m_FadeRenderer = GFX_FadeRenderer_Create();
     m_BackgroundRenderer = GFX_2D_Renderer_Create();
-    Renderer_SW_Prepare(&m_Renderer_SW);
     Renderer_HW_Prepare(&m_Renderer_HW);
     return;
 }

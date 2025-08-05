@@ -158,10 +158,6 @@ void Viewport_Reset(void)
     game->width = ui->width / g_Config.rendering.upscaling_factor;
     game->height = ui->height / g_Config.rendering.upscaling_factor;
 
-    if (g_Config.rendering.render_mode == RM_SOFTWARE) {
-        g_Viewport_Rects[VIEWPORT_UI] = g_Viewport_Rects[VIEWPORT_GAME];
-    }
-
     vp->width = game->width;
     vp->height = game->height;
     vp->near_z = Output_GetNearZ() >> W2V_SHIFT;
@@ -169,20 +165,6 @@ void Viewport_Reset(void)
 
     // We do not update vp->view_angle on purpose, as it's managed by the game
     // rather than the window manager. (Think cutscenes, special cameras, etc.)
-
-    switch (g_Config.rendering.render_mode) {
-    case RM_SOFTWARE:
-        g_PerspectiveDistance = g_Config.rendering.enable_perspective_filter
-            ? SW_DETAIL_HIGH
-            : SW_DETAIL_MEDIUM;
-        break;
-
-    case RM_HARDWARE:
-        break;
-
-    default:
-        Shell_ExitSystem("unknown render mode");
-    }
 
     M_InitGameVars(&m_Viewport);
     M_ApplyGameVars(&m_Viewport);

@@ -128,12 +128,6 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[] = {
     { LIGHTING_CONTRAST_HIGH, GS_ID(ENUM_LIGHTING_CONTRAST_HIGH) },
     { -1, nullptr },
 };
-
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_RenderModeEnumEntries[] = {
-    { RM_SOFTWARE, GS_ID(ENUM_RENDER_MODE_SOFTWARE) },
-    { RM_HARDWARE, GS_ID(ENUM_RENDER_MODE_HARDWARE) },
-    { -1, nullptr },
-};
 #endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[] = {
