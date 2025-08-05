@@ -15,6 +15,4 @@
 void Output_ApplyLevelSettings(void);
 void Output_ApplyRenderSettings(void);
 
-void Output_ClearDepthBuffer(void);
-
 OUTPUT_SHADER *Output_GetMeshShader(void);

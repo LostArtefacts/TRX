@@ -1,7 +1,16 @@
 #pragma once
 
 #include "../../config/types.h"
+#include "../objects/types.h"
+#include "../rooms/types.h"
 #include "./types.h"
+
+extern void Output_DrawSkybox(const OBJECT_MESH *mesh);
+extern void Output_DrawObjectMesh(const OBJECT_MESH *mesh, int32_t clip);
+extern void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, int32_t clip);
+extern void Output_DrawRoom(const ROOM *room, bool is_outside);
+extern void Output_DrawShadow(
+    int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 
 // Fades
 extern void Output_DrawBlackRectangle(int32_t opacity);

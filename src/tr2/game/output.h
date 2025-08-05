@@ -26,11 +26,6 @@ typedef struct {
     float g;
 } VERTEX_INFO;
 
-void Output_DrawObjectMesh(const OBJECT_MESH *mesh, int32_t clip);
-void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, int32_t clip);
-void Output_DrawRoom(const ROOM_MESH *mesh, bool is_outside);
-void Output_DrawSkybox(const OBJECT_MESH *mesh);
-
 void Output_InsertClippedPoly_Textured(
     int32_t vtx_count, float z, int16_t poly_type, int16_t tex_page);
 
@@ -50,8 +45,6 @@ void Output_DrawSprite(
 void Output_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
     int32_t sprite_idx, int16_t shade);
-
-void Output_ClearDepthBuffer(void);
 
 bool Output_MakeScreenshot(const char *path);
 
