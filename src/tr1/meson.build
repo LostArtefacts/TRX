@@ -230,7 +230,6 @@ sources = [
   'game/output/sources/sprites.c',
   'game/output/sources/ui.c',
   'game/output/state.c',
-  'game/output/textures.c',
   'game/overlay.c',
   'game/room_draw.c',
   'game/savegame/savegame.c',

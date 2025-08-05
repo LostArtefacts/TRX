@@ -2,10 +2,10 @@
 
 #include "game/output.h"
 #include "game/output/shader.h"
-#include "game/output/textures.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/output/textures.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/vector.h>
 

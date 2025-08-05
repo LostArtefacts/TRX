@@ -1,9 +1,8 @@
 #pragma once
 
-#include "game/output/textures.h"
-
 #include <libtrx/colors.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output/textures.h>
 #include <libtrx/memory.h>
 #include <libtrx/vector.h>
 
