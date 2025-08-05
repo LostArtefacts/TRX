@@ -41,13 +41,12 @@ static void M_AddRoomVerts(
     const ROOM_VERTEX *const room_verts)
 {
     for (size_t i = 0; i < vtx_count; i++) {
-        const int32_t uvw_idx = texture_idx * 4 + i;
         const ROOM_VERTEX *const room_vert = &room_verts[face_vertices[i]];
         const XYZ_16 *const pos = &room_vert->pos;
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .flags = room_vert->flags & NO_VERT_MOVE ? VERT_NO_CAUSTICS : 0,
-            .uvw_idx = uvw_idx,
+            .uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i),
             .shade = room_vert->light_adder,
             .color = { 255, 255, 255, 255 },
             .trapezoid_ratio = {
