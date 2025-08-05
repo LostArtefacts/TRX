@@ -274,7 +274,8 @@ void Room_DrawSingleRoom(int16_t room_num)
     g_PhdTop = room->bound_top;
     g_PhdBottom = room->bound_bottom;
 
-    Output_DrawRoomMesh(room);
+    Output_LightRoom(room);
+    Output_DrawRoom(room, false);
 
     int16_t item_num = room->item_num;
     while (item_num != NO_ITEM) {

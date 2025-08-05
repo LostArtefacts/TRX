@@ -475,8 +475,9 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
     Matrix_Pop();
 }
 
-void Output_DrawRoom(const ROOM_MESH *const mesh, const bool is_outside)
+void Output_DrawRoom(const ROOM *const room, const bool is_outside)
 {
+    const ROOM_MESH *const mesh = &room->mesh;
     g_FltWinLeft = g_PhdWinLeft;
     g_FltWinTop = g_PhdWinTop;
     g_FltWinRight = g_PhdWinRight + 1;

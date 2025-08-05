@@ -102,9 +102,8 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
     Matrix_Pop();
 }
 
-void Output_DrawRoomMesh(ROOM *const room)
+void Output_DrawRoom(const ROOM *const room, const bool is_outside)
 {
-    Output_LightRoom(room);
     OutputSource_Rooms_StageRoom(room);
     if (g_Config.debug.enable_debug_triggers
         || g_Config.debug.enable_debug_portals) {
