@@ -1,11 +1,11 @@
 #include "game/output/mesh_batcher/batcher.h"
 
+#include "debug.h"
 #include "game/output.h"
-
-#include <libtrx/debug.h>
-#include <libtrx/game/output/utils.h>
-#include <libtrx/game/output/vertex_range.h>
-#include <libtrx/memory.h>
+#include "game/output/shader.h"
+#include "game/output/utils.h"
+#include "game/output/vertex_range.h"
+#include "memory.h"
 
 #include <uthash.h>
 

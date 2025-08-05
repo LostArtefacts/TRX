@@ -1123,3 +1123,20 @@ int32_t Output_GetTime(void)
     // TODO: not implemented
     return 0;
 }
+
+void Output_EnableScissor(
+    const float x, const float y, const float w, const float h)
+{
+    // TODO: not implemented
+}
+
+void Output_DisableScissor(void)
+{
+    // TODO: not implemented
+}
+
+OUTPUT_SHADER *Output_GetMeshShader(void)
+{
+    // TODO: not implemented
+    return nullptr;
+}

@@ -3,6 +3,7 @@
 #include "../objects/types.h"
 #include "../rooms.h"
 #include "../viewport.h"
+#include "./shader.h"
 
 extern bool Output_Init(void);
 extern void Output_Shutdown(void);
@@ -31,3 +32,5 @@ extern void Output_LightRoomVertices(const ROOM *room);
 
 extern void Output_SwitchViewport(VIEWPORT_SPACE space);
 extern void Output_ApplyLevelSettings(void);
+
+extern OUTPUT_SHADER *Output_GetMeshShader(void);

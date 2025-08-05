@@ -1,7 +1,6 @@
 #include "game/output/sources/sprites.h"
 
-#include "game/output/mesh_batcher/mesh_builder.h"
-
+#include <libtrx/game/output/mesh_batcher/mesh_builder.h>
 #include <libtrx/game/output/textures.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

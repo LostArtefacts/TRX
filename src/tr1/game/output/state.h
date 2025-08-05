@@ -18,6 +18,3 @@ int32_t Output_GetLightDivider(void);
 XYZ_32 Output_GetLightVectorView(void);
 
 void Output_AnimateTextures(int32_t num_frames);
-
-void Output_EnableScissor(float x, float y, float w, float h);
-void Output_DisableScissor(void);

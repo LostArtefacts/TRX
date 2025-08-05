@@ -1,10 +1,10 @@
 #pragma once
 
-#include <libtrx/colors.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/game/output/textures.h>
-#include <libtrx/memory.h>
-#include <libtrx/vector.h>
+#include "../../../colors.h"
+#include "../../../memory.h"
+#include "../../../vector.h"
+#include "../../matrix.h"
+#include "../textures.h"
 
 typedef struct {
     // attribute 2
