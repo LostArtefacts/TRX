@@ -245,6 +245,8 @@ sources = [
   'game/option/sound.c',
   'game/output/background.c',
   'game/output/common.c',
+  'game/output/lights.c',
+  'game/output/state.c',
   'game/output/textures.c',
   'game/overlay.c',
   'game/packer.c',
