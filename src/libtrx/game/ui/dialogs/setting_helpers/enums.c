@@ -121,14 +121,14 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[] = {
     { UI_STYLE_PC, GS_ID(ENUM_UI_STYLE_PC) },
     { -1, nullptr },
 };
-#elif TR_VERSION == 2
+#endif
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[] = {
     { LIGHTING_CONTRAST_LOW, GS_ID(ENUM_LIGHTING_CONTRAST_LOW) },
     { LIGHTING_CONTRAST_MEDIUM, GS_ID(ENUM_LIGHTING_CONTRAST_MEDIUM) },
     { LIGHTING_CONTRAST_HIGH, GS_ID(ENUM_LIGHTING_CONTRAST_HIGH) },
     { -1, nullptr },
 };
-#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[] = {
     { AM_4_3, GS_ID(ENUM_ASPECT_MODE_4_3) },

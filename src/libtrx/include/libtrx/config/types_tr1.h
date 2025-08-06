@@ -218,6 +218,7 @@ typedef struct {
         bool enable_vsync;
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
+        LIGHTING_CONTRAST lighting_contrast;
         int32_t upscaling_factor;
         float borders;
     } rendering;

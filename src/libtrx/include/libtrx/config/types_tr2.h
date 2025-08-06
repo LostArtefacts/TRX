@@ -8,13 +8,6 @@
 #include "../screenshot.h"
 
 typedef enum {
-    LIGHTING_CONTRAST_LOW,
-    LIGHTING_CONTRAST_MEDIUM,
-    LIGHTING_CONTRAST_HIGH,
-    LIGHTING_CONTRAST_NUMBER_OF,
-} LIGHTING_CONTRAST;
-
-typedef enum {
     TAM_DISABLED = 0,
     TAM_BILINEAR_ONLY = 1,
     TAM_ALWAYS = 2,
