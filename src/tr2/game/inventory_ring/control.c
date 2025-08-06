@@ -872,7 +872,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     } else {
         Output_LoadBackgroundFromObject();
     }
-    Overlay_HideGameInfo();
 
     if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {
         Music_Pause();

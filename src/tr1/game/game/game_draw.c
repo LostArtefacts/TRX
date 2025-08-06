@@ -31,8 +31,6 @@ void Game_Draw(bool draw_overlay)
 
         if (draw_overlay) {
             Overlay_DrawGameInfo();
-        } else {
-            Overlay_HideGameInfo();
         }
     } else {
         // cinematic scene
