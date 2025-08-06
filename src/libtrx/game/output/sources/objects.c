@@ -166,14 +166,14 @@ static void M_PrepareMeshes(M_PRIV *const p)
                 builder, obj_mesh, &obj_mesh->flat_face3s[j],
                 flags | VERT_FLAT_SHADED);
         }
+
         OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
         if (mesh != nullptr) {
             MeshBatcher_AddMesh(p->batcher, mesh);
+            new_batch->mesh_batch = mesh;
+            new_batch->light_idx_map =
+                M_PrepareLightIndexMap(obj_mesh, mesh->vertices->count);
         }
-
-        new_batch->mesh_batch = mesh;
-        new_batch->light_idx_map =
-            M_PrepareLightIndexMap(obj_mesh, mesh->vertices->count);
     }
     MeshBuilder_Destroy(builder);
 }
@@ -183,7 +183,9 @@ static void M_FreeMeshes(M_PRIV *const p)
     if (p->meshes != nullptr) {
         for (int32_t i = 0; i < (int32_t)p->mesh_count; i++) {
             MeshBatcher_RemoveMesh(p->batcher, p->meshes[i].mesh_batch);
-            Output_Mesh_Destroy(p->meshes[i].mesh_batch);
+            if (p->meshes[i].mesh_batch != nullptr) {
+                Output_Mesh_Destroy(p->meshes[i].mesh_batch);
+            }
             Memory_FreePointer(&p->meshes[i].light_idx_map);
         }
         Memory_FreePointer(&p->meshes);
