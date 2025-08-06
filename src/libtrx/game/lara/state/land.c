@@ -227,7 +227,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             item->current_anim_state = LS_NEUTRAL_ROLL;
             item->goal_anim_state = LS_STOP;
             Item_SwitchToAnim(item, LA_JUMP_NEUTRAL_ROLL, 0);
-        } else {
+        } else if (!g_Input.jump || !g_Config.gameplay.enable_neutral_twists) {
             item->current_anim_state = LS_ROLL;
             item->goal_anim_state = LS_STOP;
             Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
