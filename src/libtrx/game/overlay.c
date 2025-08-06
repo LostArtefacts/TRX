@@ -47,6 +47,12 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *pickup);
 static void M_DrawPickups(void);
 static void M_AnimatePickups(int32_t frames);
 
+static bool M_IsSprite(const DISPLAY_PICKUP *const pickup)
+{
+    return !g_Config.visuals.enable_3d_pickups
+        || pickup->display.object == nullptr;
+}
+
 static float M_Ease(float current, const float start, const float goal)
 {
     if (start == goal) {
@@ -185,22 +191,21 @@ static void M_DrawPickups(void)
             break;
         }
 
-        if (g_Config.visuals.enable_3d_pickups) {
-            pickup->display.rot_y = pickup->start_rot
-                + (4 * DEG_1
-                   * (pickup->total_elapsed + Interpolation_GetRate()));
-            pickup->display.ease = M_Ease(
-                (pickup->elapsed + Interpolation_GetRate()) / (float)duration,
-                slide_start, slide_goal);
-        } else {
+        if (M_IsSprite(pickup)) {
             pickup->display.ease = 1.0f;
+        } else {
+            const float rate = Interpolation_GetRate();
+            pickup->display.rot_y = pickup->start_rot
+                + (4 * DEG_1 * (pickup->total_elapsed + rate));
+            pickup->display.ease = M_Ease(
+                (pickup->elapsed + rate) / (float)duration, slide_start,
+                slide_goal);
         }
 
-        if (g_Config.visuals.enable_3d_pickups
-            && pickup->display.object != nullptr) {
-            M_DrawPickup3D(pickup);
-        } else {
+        if (M_IsSprite(pickup)) {
             M_DrawPickup2D(pickup);
+        } else {
+            M_DrawPickup3D(pickup);
         }
     }
 }
@@ -361,8 +366,8 @@ void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
         bool is_occupied = false;
         for (int32_t j = 0; j < OUTPUT_UI_MAX_PICKUPS; j++) {
             DISPLAY_PICKUP *const pickup = &m_Pickups[j];
-            const bool is_dead_or_dying =
-                pickup->phase == DPP_DEAD || pickup->phase == DPP_EASE_OUT;
+            const bool is_dead_or_dying = pickup->phase == DPP_DEAD
+                || (!M_IsSprite(pickup) && pickup->phase == DPP_EASE_OUT);
             if (pickup->display.grid_x == x && pickup->display.grid_y == y
                 && !is_dead_or_dying) {
                 is_occupied = true;
