@@ -199,13 +199,14 @@ static void M_RenderPass(
         return;
     }
 
-    Output_Shader_UploadViewModelMatrix(Output_GetMeshShader(), &g_IDMatrix);
     if (p->scheduled_pickups->count > 0) {
         M_Draw3DPickups(p);
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     if (p->vertices->count > 0) {
+        Output_Shader_UploadViewModelMatrix(
+            Output_GetMeshShader(), &g_IDMatrix);
         M_DrawVertices(p);
     }
 }
