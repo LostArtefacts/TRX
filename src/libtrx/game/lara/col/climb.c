@@ -515,6 +515,7 @@ static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
 static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
 {
     if (!g_Input.jump || !(g_Input.forward ^ g_Input.back)
+        || (g_Input.forward && g_Input.slow)
         || !g_Config.gameplay.enable_ledge_jumps
         || !Lara_State_IsResponsive(LA_REACH_TO_HANG)) {
         return false;
