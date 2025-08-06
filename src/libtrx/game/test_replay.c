@@ -25,11 +25,20 @@ typedef struct {
     VECTOR *raw_args;
 } M_PARSE_CTX;
 
+// Parsed frame events
 typedef struct {
-    MYFILE *file;
     int32_t frame_idx;
-    int32_t next_frame_idx;
-    VECTOR *queue;
+    VECTOR *events; // vector of char*
+} M_FRAME;
+
+// Replay private state
+typedef struct {
+    char *data; // Replay file data buffer
+    size_t size; // Size of data buffer
+    VECTOR *headers; // Vector of char* header lines
+    VECTOR *frames; // Vector of M_FRAME frames to play
+    int32_t frame_idx; // Current playback frame index
+    int32_t next_frame_idx; // Next frame to process
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
@@ -52,16 +61,12 @@ static bool M_ParseSeedControl(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseSeedDraw(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseBindKeyboard(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseBindController(const char *line, M_PARSE_CTX *ctx);
-static bool M_ParseBindController(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseArgs(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseConfig(const char *line, M_PARSE_CTX *ctx);
 
 static bool M_ParseEvent(const char *event_str);
-static void M_ReadHeaders(M_PRIV *p, M_PARSE_CTX *ctx);
-static void M_ClearEventQueue(M_PRIV *p);
-static void M_StripInlineComment(char *const line);
-static void M_ReadQueue(M_PRIV *p);
-static void M_RunQueue(M_PRIV *p);
+static void M_StripInlineComment(char *line);
+static char *M_SkipWhitespace(char *line);
 
 static const M_HEADER_HANDLER m_HeaderHandlers[] = {
     M_ParseSeedControl,
@@ -173,6 +178,7 @@ static bool M_ParseCommandEvent(const char *const event_str)
         cmd_str[len] = '\0';
     }
     Console_Eval(cmd_str);
+    Memory_Free(cmd_str);
     return true;
 }
 
@@ -240,127 +246,6 @@ static bool M_ParseEvent(const char *const event_str)
         }
     }
     return false;
-}
-
-static void M_ClearQueue(M_PRIV *const p)
-{
-    if (p->queue != nullptr) {
-        for (int32_t i = 0; i < p->queue->count; i++) {
-            char *event_str = *(char **)Vector_Get(p->queue, i);
-            Memory_Free(event_str);
-        }
-        Vector_Clear(p->queue);
-    }
-}
-
-static void M_StripInlineComment(char *const line)
-{
-    bool in_quote = false;
-    char *p;
-    for (p = line; *p != '\0'; ++p) {
-        if (*p == '"') {
-            in_quote = !in_quote;
-        } else if (*p == '#' && !in_quote) {
-            *p = '\0';
-            break;
-        }
-    }
-    // Trim trailing whitespace
-    {
-        char *end = line + strlen(line);
-        while (end > line && (end[-1] == ' ' || end[-1] == '\t')) {
-            end[-1] = '\0';
-            end--;
-        }
-    }
-}
-
-static void M_ReadQueue(M_PRIV *const p)
-{
-    M_ClearQueue(p);
-
-    while (true) {
-        char *const line = (char *)File_ReadLine(p->file);
-        if (line == nullptr) {
-            break;
-        }
-        if (line[0] == '#' || line[0] == '\n') {
-            continue;
-        }
-        if (line[strlen(line) - 1] == '\n') {
-            line[strlen(line) - 1] = '\0';
-        }
-        M_StripInlineComment(line);
-
-        // Expect a frame marker: @+<delta>:
-        char *const colon = strchr(line, ':');
-        if (colon == nullptr) {
-            LOG_ERROR("Malformed input line: %s", line);
-            continue;
-        }
-        int32_t delta = 0;
-        {
-            char *marker = line;
-            if (*marker == '@') {
-                marker++;
-            }
-            if (*marker != '+' || sscanf(marker + 1, "%d", &delta) != 1) {
-                LOG_ERROR("Malformed input line: %s", line);
-                continue;
-            }
-        }
-        p->next_frame_idx = p->frame_idx + delta;
-
-        // First event on this line (after colon)
-        char *p_event = colon + 1;
-        while (*p_event == ' ' || *p_event == '\t') {
-            p_event++;
-        }
-        if (*p_event != '\0') {
-            char *const event_str = Memory_DupStr(p_event);
-            Vector_Add(p->queue, &event_str);
-        }
-
-        // Continuation lines for this frame
-        while (true) {
-            char *const cont = (char *)File_ReadLine(p->file);
-            if (cont == nullptr) {
-                break;
-            }
-            if (cont[0] == '#' || cont[0] == '\n') {
-                continue;
-            }
-            size_t len = strlen(cont);
-            if (len > 0 && cont[len - 1] == '\n') {
-                cont[len - 1] = '\0';
-            }
-            M_StripInlineComment(cont);
-            if (cont[0] != ' ' && cont[0] != '\t') {
-                File_Skip(p->file, -strlen(cont));
-                break;
-            }
-            char *p_cont = cont;
-            while (*p_cont == ' ' || *p_cont == '\t') {
-                p_cont++;
-            }
-            if (*p_cont != '\0') {
-                char *const event_str = Memory_DupStr(p_cont);
-                Vector_Add(p->queue, &event_str);
-            }
-        }
-        return;
-    }
-
-    // no more frames
-    p->next_frame_idx = -1;
-}
-
-static void M_RunQueue(M_PRIV *const p)
-{
-    for (int32_t i = 0; i < p->queue->count; i++) {
-        const char *const event_str = *(char **)Vector_Get(p->queue, i);
-        M_ParseEvent(event_str);
-    }
 }
 
 static bool M_ParseSeedControl(const char *const line, M_PARSE_CTX *const ctx)
@@ -509,93 +394,189 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
     return false;
 }
 
-static void M_ReadHeaders(M_PRIV *const p, M_PARSE_CTX *const ctx)
+static void M_StripInlineComment(char *const line)
 {
-    while (true) {
-        char *const line = (char *)File_ReadLine(p->file);
-        if (line == nullptr) {
+    bool in_quote = false;
+    char *p;
+    for (p = line; *p != '\0'; p++) {
+        if (*p == '"') {
+            in_quote = !in_quote;
+        } else if (*p == '#' && !in_quote) {
+            *p = '\0';
             break;
         }
-        M_StripInlineComment(line);
-
-        // Skip comments and blank lines
-        if (line[0] == '\n') {
-            continue;
-        }
-
-        // Stop at first replay frame marker (@+<delta>:), rewind to allow its
-        // parsing
-        {
-            int32_t rel = 0;
-            if (sscanf(line, "@+%d:", &rel) == 1) {
-                File_Skip(p->file, -strlen(line));
-                break;
-            }
-        }
-
-        // Dispatch based on matching prefix
-        bool handled = false;
-        for (int32_t i = 0; m_HeaderHandlers[i] != nullptr; i++) {
-            if (m_HeaderHandlers[i](line, ctx)) {
-                handled = true;
-                break;
-            }
-        }
-
-        // Unknown #comment? Just ignore
-        if (!handled) {
-            LOG_WARNING("Unknown line: %s", line);
+    }
+    // Trim trailing whitespace
+    {
+        char *end = line + strlen(line);
+        while (end > line && (end[-1] == ' ' || end[-1] == '\t')) {
+            end[-1] = '\0';
+            end--;
         }
     }
+}
+
+static char *M_SkipWhitespace(char *const line)
+{
+    char *start = line;
+    while (*start == ' ' || *start == '\t') {
+        start++;
+    }
+    return start;
 }
 
 SHELL_ARGS *TestReplay_Open(const char *path)
 {
     M_PRIV *const p = &m_Priv;
-    p->file = File_Open(path, FILE_OPEN_READ);
-    if (p->file == nullptr) {
+    char *data = nullptr;
+    size_t size = 0;
+    if (!File_Load(path, &data, &size)) {
         Shell_ExitSystemFmt("Cannot open replay file '%s'", path);
         return nullptr;
     }
+    p->data = data;
+    p->size = size;
 
-    // Read header for initialization stuff
+    // Split file into lines by replacing '\n' with '\0'
+    char *end = data + size;
+    for (char *ch = data; ch < end; ch++) {
+        if (*ch == '\n') {
+            *ch = '\0';
+        }
+    }
+
+    // Collect non-empty, comment-stripped lines
+    VECTOR *lines = Vector_Create(sizeof(char *));
+    for (char *line = data; line < end; line += strlen(line) + 1) {
+        M_StripInlineComment(line);
+        char *start = M_SkipWhitespace(line);
+        if (*start != '\0') {
+            Vector_Add(lines, &start);
+        }
+    }
+
+    // Parse and execute headers
+    p->headers = Vector_Create(sizeof(char *));
+    int32_t idx = 0;
+    while (idx < lines->count) {
+        char *const ln = *(char **)Vector_Get(lines, idx);
+        int32_t delta = 0;
+        if (sscanf(ln, "@+%d:", &delta) == 1) {
+            break;
+        }
+        Vector_Add(p->headers, &ln);
+        idx++;
+    }
+
+    // Parse frames and their events
+    p->frames = Vector_Create(sizeof(M_FRAME));
+    p->next_frame_idx = 0;
+    p->frame_idx = 0;
+    int32_t last_frame = 0;
+    while (idx < lines->count) {
+        char *ln = *(char **)Vector_Get(lines, idx);
+        int32_t delta = 0;
+        if (sscanf(ln, "@+%d:", &delta) == 1) {
+            M_FRAME frame = {
+                .frame_idx = last_frame + delta,
+                .events = Vector_Create(sizeof(char *)),
+            };
+
+            // Primary event on same line
+            char *const colon = strchr(ln, ':');
+            if (colon != nullptr) {
+                char *const evt = M_SkipWhitespace(colon + 1);
+                if (*evt != '\0') {
+                    Vector_Add(frame.events, &evt);
+                }
+            }
+
+            // Continued events
+            idx++;
+            while (idx < lines->count) {
+                char *const cont = *(char **)Vector_Get(lines, idx);
+                if (sscanf(cont, "@+%d:", &delta) == 1) {
+                    // Reached next frame - stop
+                    break;
+                }
+                // Continued event
+                char *const evt = M_SkipWhitespace(cont);
+                if (*evt != '\0') {
+                    Vector_Add(frame.events, &evt);
+                }
+                idx++;
+            }
+            Vector_Add(p->frames, &frame);
+            last_frame = frame.frame_idx;
+            continue;
+        }
+        idx++;
+    }
+
+    // Execute headers
     M_PARSE_CTX ctx = {};
-    M_ReadHeaders(p, &ctx);
-    SHELL_ARGS *const new_args = Shell_ParseArgs(ctx.raw_args);
+    for (int32_t i = 0; i < p->headers->count; i++) {
+        const char *const ln = *(const char **)Vector_Get(p->headers, i);
+        bool handled = false;
+        for (int32_t j = 0; m_HeaderHandlers[j]; j++) {
+            if (m_HeaderHandlers[j](ln, &ctx)) {
+                handled = true;
+                break;
+            }
+        }
+        if (!handled) {
+            LOG_WARNING("Unknown line: %s", ln);
+        }
+    }
+    Vector_Free(lines);
 
-    p->next_frame_idx = -1;
-    p->queue = Vector_Create(sizeof(char *));
-    M_ReadQueue(p);
-    LOG_INFO("Starting playback");
-    return new_args;
+    LOG_INFO("Loaded %zu frames for playback", p->frames->count);
+    return Shell_ParseArgs(ctx.raw_args);
 }
 
 void TestReplay_Close(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->file != nullptr) {
-        File_Close(p->file);
-        p->file = nullptr;
+    if (p->headers) {
+        Vector_Free(p->headers);
+        p->headers = nullptr;
     }
-    if (p->queue != nullptr) {
-        M_ClearQueue(p);
-        Vector_Free(p->queue);
-        p->queue = nullptr;
+    if (p->frames) {
+        for (int32_t i = 0; i < p->frames->count; i++) {
+            M_FRAME *const f = Vector_Get(p->frames, i);
+            Vector_Free(f->events);
+        }
+        Vector_Free(p->frames);
+        p->frames = nullptr;
+    }
+    if (p->data) {
+        Memory_Free(p->data);
+        p->data = nullptr;
     }
 }
 
 bool TestReplay_IsOpened(void)
 {
     M_PRIV *const p = &m_Priv;
-    return p->file != nullptr;
+    return p->frames != nullptr;
 }
 
 void TestReplay_RunFrame(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->next_frame_idx == p->frame_idx) {
-        M_RunQueue(p);
-        M_ReadQueue(p);
+    if (!TestReplay_IsOpened()) {
+        return;
+    }
+    while (p->next_frame_idx < p->frames->count) {
+        M_FRAME *const f = Vector_Get(p->frames, p->next_frame_idx);
+        if (f->frame_idx != p->frame_idx) {
+            break;
+        }
+        for (int32_t j = 0; j < f->events->count; j++) {
+            const char *const evt = *(char **)Vector_Get(f->events, j);
+            M_ParseEvent(evt);
+        }
+        p->next_frame_idx++;
     }
     p->frame_idx++;
 }

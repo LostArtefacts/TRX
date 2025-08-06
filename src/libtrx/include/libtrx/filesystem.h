@@ -48,10 +48,6 @@ uint8_t File_ReadU8(MYFILE *file);
 uint16_t File_ReadU16(MYFILE *file);
 uint32_t File_ReadU32(MYFILE *file);
 
-// Read next line from text file. Returns pointer to per-file buffer
-// (persistent) or nullptr at EOF.
-const char *File_ReadLine(MYFILE *file);
-
 void File_WriteData(MYFILE *file, const void *data, size_t size);
 void File_WriteItems(
     MYFILE *file, const void *data, size_t count, size_t item_size);
