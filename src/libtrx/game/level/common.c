@@ -1245,6 +1245,7 @@ void Level_LoadTextures(void)
 
 void Level_LoadTexturePages(void)
 {
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_pages = m_Info.textures.page_count;
     Output_InitialiseTexturePages(num_pages, TR_VERSION == 2);
     for (int32_t i = 0; i < num_pages; i++) {
@@ -1255,14 +1256,29 @@ void Level_LoadTexturePages(void)
         memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
 #endif
 
-        RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
         const RGBA_8888 *const source_32 =
             &m_Info.textures.pages_32[i * TEXTURE_PAGE_SIZE];
+        RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
         memcpy(target_32, source_32, TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
     }
+    Benchmark_End(&benchmark, "copied texture data");
+
+    for (int32_t i = 0; i < num_pages; i++) {
+        const float inv255 = 1.0f / 255.0f;
+        RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
+        RGBA_8888 *ptr = target_32;
+        for (int32_t j = 0; j < TEXTURE_PAGE_SIZE; j++) {
+            ptr->r *= ptr->a * inv255;
+            ptr->g *= ptr->a * inv255;
+            ptr->b *= ptr->a * inv255;
+            ptr++;
+        }
+    }
+    Benchmark_End(&benchmark, "premultiplied alpha");
 
     Memory_FreePointer(&m_Info.textures.pages_24);
     Memory_FreePointer(&m_Info.textures.pages_32);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_LoadPalettes(void)
