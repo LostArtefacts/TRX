@@ -54,6 +54,14 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 
 #define L_CHANGED(subject) (old->subject != new->subject)
 
+    if (L_CHANGED(rendering.upscaling_filter)
+        || L_CHANGED(rendering.enable_wireframe)
+        || L_CHANGED(rendering.wireframe_width)
+        || L_CHANGED(rendering.enable_vsync)
+        || L_CHANGED(rendering.anisotropy_filter)) {
+        Output_ApplyRenderSettings();
+    }
+
     if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_psx_fov)) {
         if (Viewport_GetSystemFOV() == -1) {
             Viewport_AlterFOV(-1);

@@ -55,8 +55,6 @@ void Output_Init(void)
 {
     m_Renderer2D = GFX_2D_Renderer_Create();
 
-    Output_ApplyRenderSettings();
-
     SceneCompositor_Init();
     Output_Textures_Init();
 
@@ -73,6 +71,7 @@ void Output_Init(void)
     OutputSource_UI_Init();
 
     Output_InitLight();
+    Output_ApplyRenderSettings();
 }
 
 void Output_Shutdown(void)
