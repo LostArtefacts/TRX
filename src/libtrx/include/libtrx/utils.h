@@ -40,7 +40,7 @@
     } while (0)
 #define SWAP2(a, b)                                                            \
     do {                                                                       \
-        auto c = (a);                                                          \
+        typeof(a) c = (a);                                                     \
         (a) = (b);                                                             \
         (b) = c;                                                               \
     } while (0)
