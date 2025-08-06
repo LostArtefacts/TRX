@@ -8,13 +8,13 @@
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/overlay.h>
 
 #define LF_PICKUP_ERASE 42
 #define LF_PICKUP_FLARE 58

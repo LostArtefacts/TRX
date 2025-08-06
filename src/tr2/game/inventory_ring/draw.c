@@ -5,7 +5,6 @@
 #include "game/input.h"
 #include "game/inventory_ring/control.h"
 #include "game/option/option.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
@@ -15,6 +14,7 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/common.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
 
 #define M_CAMERA_2_RING 598

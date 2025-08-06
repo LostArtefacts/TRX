@@ -6,7 +6,6 @@
 #include "game/game_flow.h"
 #include "game/lara.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -27,6 +26,7 @@
 #include <libtrx/game/level.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/option.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

@@ -6,7 +6,6 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/overlay.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/sound.h"
@@ -19,6 +18,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/log.h>
 
 #define L_MODIFY_CONFIG()                                                      \

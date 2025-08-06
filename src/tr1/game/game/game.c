@@ -8,7 +8,6 @@
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -22,6 +21,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
 
 #define FRAME_BUFFER(key)                                                      \
@@ -173,8 +173,9 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
         Camera_Update();
         Sound_ResetAmbient();
-        ItemAction_RunActive();
         Sound_UpdateEffects();
+        ItemAction_RunActive();
+        Overlay_Animate(1);
         Output_AnimateTextures(1);
     }
     return (GF_COMMAND) { .action = GF_NOOP };

@@ -10,7 +10,6 @@
 #include "game/lara.h"
 #include "game/option/option.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -29,6 +28,7 @@
 #include <libtrx/game/objects/names.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/memory.h>
 
 #include <stdio.h>
@@ -912,7 +912,7 @@ void InvRing_Close(INV_RING *const ring)
 GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
-    GF_COMMAND gf_cmd = M_Control(ring);
+    const GF_COMMAND gf_cmd = M_Control(ring);
     Overlay_Animate(1);
     Output_AnimateTextures(1);
     return gf_cmd;
