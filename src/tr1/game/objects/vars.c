@@ -86,6 +86,12 @@ const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_SecretObjects[] = {
+    // clang-format off
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,

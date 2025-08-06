@@ -7,12 +7,12 @@
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/objects/common.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/overlay.h>
 
 #define EXTRA_ANIM_PEDESTAL_SCION 0
 #define LF_PICKUPSCION 44

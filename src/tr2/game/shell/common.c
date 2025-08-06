@@ -2,7 +2,6 @@
 #include "game/game_string.h"
 #include "game/level.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/viewport.h"
@@ -12,6 +11,7 @@
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>

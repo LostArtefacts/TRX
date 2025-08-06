@@ -9,7 +9,6 @@
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/room_draw.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -23,6 +22,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/overlay.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {

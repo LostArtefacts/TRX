@@ -5,7 +5,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/overlay.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/stats.h"
@@ -14,6 +13,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/overlay.h>
 
 #define LF_PICKUP_ERASE 42
 #define LF_PICKUP_UW 18

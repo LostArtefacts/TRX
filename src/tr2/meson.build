@@ -230,7 +230,6 @@ sources = [
   'game/option/option_passport.c',
   'game/output/common.c',
   'game/output/draw.c',
-  'game/overlay.c',
   'game/room_draw.c',
   'game/savegame/common.c',
   'game/savegame/savegame_bson.c',

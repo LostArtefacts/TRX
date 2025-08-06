@@ -5,12 +5,12 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
-#include "game/overlay.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/shell/input.h>
 #include <libtrx/screenshot.h>
 #include <libtrx/utils.h>

@@ -6,13 +6,13 @@
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/option/option.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
 
 #define M_PAGE_COUNT 3

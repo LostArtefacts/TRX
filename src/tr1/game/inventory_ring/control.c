@@ -10,7 +10,6 @@
 #include "game/lara.h"
 #include "game/option/option_compass.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -26,6 +25,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/option.h>
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/memory.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \
@@ -904,7 +904,10 @@ void InvRing_Close(INV_RING *const ring)
 GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
-    return M_Control(ring);
+    const GF_COMMAND gf_cmd = M_Control(ring);
+    Overlay_Animate(1);
+    Output_AnimateTextures(1);
+    return gf_cmd;
 }
 
 bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
