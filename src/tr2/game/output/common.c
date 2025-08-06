@@ -86,6 +86,7 @@ void Output_Init(void)
     OutputSource_UI_Init();
 
     Output_InitLight();
+    Output_ApplyRenderSettings();
 }
 
 void Output_Shutdown(void)
