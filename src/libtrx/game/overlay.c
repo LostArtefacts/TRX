@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/music.h"
@@ -29,13 +30,15 @@ typedef struct {
     DISPLAY_PICKUP_PHASE phase;
     GAME_OBJECT_ID object_id;
     OUTPUT_UI_PICKUP display;
+    int16_t start_rot;
     int32_t elapsed;
+    int32_t total_elapsed;
 } DISPLAY_PICKUP;
 
 static UI_OVERLAY_STATE *m_UI = nullptr;
 static DISPLAY_PICKUP m_Pickups[OUTPUT_UI_MAX_PICKUPS] = {};
 
-static float M_Ease(float cur_frame, float max_frames);
+static float M_Ease(float current, float start, float goal);
 #if TR_VERSION == 2
 static void M_DrawAssaultTimer(void);
 #endif
@@ -44,14 +47,21 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *pickup);
 static void M_DrawPickups(void);
 static void M_AnimatePickups(int32_t frames);
 
-static float M_Ease(const float cur_frame, const float max_frames)
+static float M_Ease(float current, const float start, const float goal)
 {
-    const float ratio = cur_frame / max_frames;
-    if (ratio < 0.5f) {
-        return 2.0f * ratio * ratio;
+    if (start == goal) {
+        return start;
+    } else if (start > goal) {
+        return 1.0f - M_Ease(current, goal, start);
+    } else {
+        CLAMP(current, start, goal);
+        const float ratio = (current - start) / (goal - start);
+        if (ratio < 0.5f) {
+            return 2.0f * SQUARE(ratio);
+        }
+        const float new_ratio = ratio - 1.0f;
+        return 1.0f - 2.0f * SQUARE(new_ratio);
     }
-    const float new_ratio = ratio - 1.0f;
-    return 1.0f - 2.0f * new_ratio * new_ratio;
 }
 
 #if TR_VERSION == 2
@@ -150,9 +160,40 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
 static void M_DrawPickups(void)
 {
     for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
-        const DISPLAY_PICKUP *const pickup = &m_Pickups[i];
-        if (pickup->phase == DPP_DEAD) {
+        DISPLAY_PICKUP *const pickup = &m_Pickups[i];
+
+        int32_t duration = 0;
+        float slide_start = 0.0f;
+        float slide_goal = 0.0f;
+        switch (pickup->phase) {
+        case DPP_DEAD:
             continue;
+        case DPP_EASE_IN:
+            duration = M_MAX_PICKUP_DURATION_EASE_IN;
+            slide_start = 0.0f;
+            slide_goal = 1.0f;
+            break;
+        case DPP_DISPLAY:
+            duration = M_MAX_PICKUP_DURATION_DISPLAY;
+            slide_start = 1.0f;
+            slide_goal = 1.0f;
+            break;
+        case DPP_EASE_OUT:
+            duration = M_MAX_PICKUP_DURATION_EASE_OUT;
+            slide_start = 1.0f;
+            slide_goal = 0.0f;
+            break;
+        }
+
+        if (g_Config.visuals.enable_3d_pickups) {
+            pickup->display.rot_y = pickup->start_rot
+                + (4 * DEG_1
+                   * (pickup->total_elapsed + Interpolation_GetRate()));
+            pickup->display.ease = M_Ease(
+                (pickup->elapsed + Interpolation_GetRate()) / (float)duration,
+                slide_start, slide_goal);
+        } else {
+            pickup->display.ease = 1.0f;
         }
 
         if (g_Config.visuals.enable_3d_pickups
@@ -168,61 +209,29 @@ static void M_AnimatePickups(const int32_t frames)
 {
     for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pickup = &m_Pickups[i];
-
-        if (g_Config.visuals.enable_3d_pickups) {
-            pickup->display.rot_y += 4 * DEG_1 * frames;
-        } else {
-            // Stop existing animations
-            switch (pickup->phase) {
-            case DPP_EASE_IN:
-                pickup->phase = DPP_DISPLAY;
-                pickup->elapsed = 0;
-                break;
-
-            case DPP_EASE_OUT:
-                pickup->phase = DPP_DEAD;
-                break;
-
-            default:
-                break;
-            }
-        }
-
+        pickup->elapsed += frames;
+        pickup->total_elapsed += frames;
         switch (pickup->phase) {
+        case DPP_EASE_IN:
+            if (pickup->elapsed >= M_MAX_PICKUP_DURATION_EASE_IN) {
+                pickup->elapsed = 0;
+                pickup->phase = DPP_DISPLAY;
+            }
+            break;
+        case DPP_DISPLAY:
+            if (pickup->elapsed >= M_MAX_PICKUP_DURATION_DISPLAY) {
+                pickup->elapsed = 0;
+                pickup->phase = DPP_EASE_OUT;
+            }
+            break;
+        case DPP_EASE_OUT:
+            if (pickup->elapsed >= M_MAX_PICKUP_DURATION_EASE_OUT) {
+                pickup->elapsed = 0;
+                pickup->phase = DPP_DEAD;
+            }
+            break;
         case DPP_DEAD:
             continue;
-
-        case DPP_EASE_IN:
-            pickup->elapsed += frames;
-            pickup->display.ease =
-                M_Ease(pickup->elapsed, M_MAX_PICKUP_DURATION_EASE_IN);
-            if (pickup->elapsed >= M_MAX_PICKUP_DURATION_EASE_IN) {
-                pickup->phase = DPP_DISPLAY;
-                pickup->elapsed = 0;
-            }
-            break;
-
-        case DPP_DISPLAY:
-            pickup->elapsed += frames;
-            if (pickup->elapsed >= M_MAX_PICKUP_DURATION_DISPLAY) {
-                pickup->phase = g_Config.visuals.enable_3d_pickups
-                    ? DPP_EASE_OUT
-                    : DPP_DEAD;
-                pickup->elapsed = 0;
-            }
-            pickup->display.ease = 1.0f;
-            break;
-
-        case DPP_EASE_OUT:
-            pickup->elapsed += frames;
-            pickup->display.ease = M_Ease(
-                M_MAX_PICKUP_DURATION_EASE_OUT - pickup->elapsed,
-                M_MAX_PICKUP_DURATION_EASE_OUT);
-            if (pickup->elapsed >= M_MAX_PICKUP_DURATION_EASE_OUT) {
-                pickup->phase = DPP_DEAD;
-                pickup->elapsed = 0;
-            }
-            break;
         }
     }
 }
@@ -374,15 +383,15 @@ void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
         }
         const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(obj_id);
         const INVENTORY_ITEM *const inv_item = InvRing_GetInvItem(obj_id);
+        pickup->phase = DPP_EASE_IN;
         pickup->object_id = obj_id;
-        pickup->elapsed = 0.0;
         pickup->display.object =
             inv_object_id != NO_OBJECT ? Object_Get(inv_object_id) : nullptr;
         pickup->display.grid_x = grid_x;
         pickup->display.grid_y = grid_y;
-        pickup->display.rot_y = inv_item != nullptr ? inv_item->y_rot_sel : 0;
-        pickup->display.ease = 0.0f;
-        pickup->phase = DPP_EASE_IN;
+        pickup->start_rot = inv_item != nullptr ? inv_item->y_rot_sel : 0;
+        pickup->elapsed = 0;
+        pickup->total_elapsed = 0;
         return;
     }
 }
