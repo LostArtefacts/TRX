@@ -134,8 +134,8 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_SWITCH_BORDERS },
 #if TR_VERSION == 2
                 { .role = INPUT_ROLE_TOGGLE_WIREFRAME },
-                { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
 #endif
+                { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
                 { .role = (INPUT_ROLE)-1 },
             },
     },

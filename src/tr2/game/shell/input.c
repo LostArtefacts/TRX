@@ -76,7 +76,7 @@ static void M_CycleLightingContrast(void)
     g_Config.rendering.lighting_contrast = value;
     Config_Update();
     Console_Log(
-        GS(OSD_LIGHTNING_CONTRAST_FMT),
+        GS(OSD_LIGHTING_CONTRAST_FMT),
         ENUM_MAP_TO_STRING(LIGHTING_CONTRAST, value));
 }
 

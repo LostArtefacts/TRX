@@ -19,8 +19,6 @@ void main(void) {
 
 uniform sampler2D texMain;
 uniform vec4 uTexSize;
-uniform sampler2D texAlpha;
-uniform bool alphaEnabled;
 uniform bool tintEnabled;
 uniform vec3 tintColor;
 uniform int effect;
@@ -32,13 +30,6 @@ out vec4 outColor;
 void main(void) {
     vec2 uv = vertTexCoords;
     uv = clampTexAtlas(uv, uTexSize);
-
-    if (alphaEnabled) {
-        float alpha = texture(texAlpha, uv).r;
-        if (alpha < 0.5) {
-            discard;
-        }
-    }
 
     outColor = texture(texMain, uv);
 

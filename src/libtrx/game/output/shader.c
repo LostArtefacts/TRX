@@ -94,11 +94,9 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_MODE],
         g_Config.rendering.enable_lighting);
-#if TR_VERSION == 2
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_CONTRAST],
         g_Config.rendering.lighting_contrast);
-#endif
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_REFLECTIONS_ENABLED],
         g_Config.visuals.enable_reflections);

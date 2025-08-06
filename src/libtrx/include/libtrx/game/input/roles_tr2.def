@@ -5,4 +5,3 @@ X_INPUT_ROLE(INPUT_ROLE_USE_FLARE,                   use_flare)
 
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_BILINEAR_FILTER,      toggle_bilinear_filter)
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_WIREFRAME,            toggle_wireframe)
-X_INPUT_ROLE(INPUT_ROLE_CYCLE_LIGHTING_CONTRAST,     cycle_lighting_contrast)

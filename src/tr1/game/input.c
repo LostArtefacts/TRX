@@ -75,6 +75,7 @@ static void M_UpdateFromBackend(
     s->toggle_fps_counter        |= backend->is_pressed(layout, INPUT_ROLE_FPS);
     s->toggle_bilinear_filter    |= backend->is_pressed(layout, INPUT_ROLE_BILINEAR);
     s->toggle_trapezoid_filter   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);
+    s->cycle_lighting_contrast   |= backend->is_pressed(layout, INPUT_ROLE_CYCLE_LIGHTING_CONTRAST);
     // clang-format on
 
     backend->custom_update(s, layout);

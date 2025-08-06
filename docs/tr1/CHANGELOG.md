@@ -3,6 +3,7 @@
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
+- added lighting contrast option (Graphic options → Rendering → Lighting contrast)
 - added Russian translation
 - added new command switches:
     - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
