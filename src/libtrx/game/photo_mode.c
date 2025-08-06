@@ -248,7 +248,6 @@ void PhotoMode_Start(void)
 
     M_RememberLaraPos(p);
     Camera_PhotoMode_Enter();
-    Overlay_HideGameInfo();
     Music_Pause();
     Sound_PauseAll();
 

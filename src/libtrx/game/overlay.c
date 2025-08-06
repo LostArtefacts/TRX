@@ -294,10 +294,6 @@ void Overlay_DrawGameInfo(void)
     }
 }
 
-void Overlay_HideGameInfo(void)
-{
-}
-
 void Overlay_ForceHealthBar(const bool show)
 {
     UI_Overlay_ForceHealthBar(m_UI, show);

@@ -379,8 +379,6 @@ bool Level_Initialise(
     }
     GF_SetCurrentLevel((GF_LEVEL *)level);
 
-    Overlay_HideGameInfo();
-
     Music_ResetTrackFlags();
 
     Sound_Reset();

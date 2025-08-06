@@ -46,7 +46,6 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 void Game_End(void)
 {
     Savegame_PersistGameToCurrentInfo(Game_GetCurrentLevel());
-    Overlay_HideGameInfo();
     Sound_StopAll();
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
@@ -171,8 +170,6 @@ void Game_Draw(bool draw_overlay)
     Room_DrawAllRooms(g_Camera.interp.room_num);
     if (draw_overlay) {
         Overlay_DrawGameInfo();
-    } else {
-        Overlay_HideGameInfo();
     }
     SceneCompositor_Flush();
     Game_DrawFade();

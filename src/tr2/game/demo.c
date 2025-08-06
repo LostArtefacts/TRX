@@ -184,7 +184,6 @@ void Demo_End(void)
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
     Overlay_SetBottomText(nullptr, false);
-    Overlay_HideGameInfo();
     Sound_StopAll();
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
