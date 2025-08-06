@@ -200,7 +200,9 @@ static void M_RenderPass(
     }
 
     if (p->scheduled_pickups->count > 0) {
+        glEnable(GL_CULL_FACE);
         M_Draw3DPickups(p);
+        glDisable(GL_CULL_FACE);
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
