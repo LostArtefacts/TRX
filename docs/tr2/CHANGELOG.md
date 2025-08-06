@@ -14,6 +14,7 @@
     - added debug portals feature (`/debug 1`)
     - added debug spheres feature (`/debug 1`)
     - added debug triggers feature (`/debug 1`)
+    - added support for 60 fps in 3D UI pickups
     - fixed trapezoid textures warping at the edge of the screen (#2629)
     - fixed certain polygons disappearing in some objects (#3699)
     - removed software rendering mode
