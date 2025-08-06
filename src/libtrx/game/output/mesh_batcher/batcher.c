@@ -660,6 +660,9 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
 void MeshBatcher_UpdateMeshGeometry(
     const MESH_BATCHER *const batcher, const OUTPUT_MESH *const mesh)
 {
+    if (mesh == nullptr) {
+        return;
+    }
     glBindBuffer(GL_ARRAY_BUFFER, batcher->geom_vbo);
     M_UpdateMeshGeometry(batcher, mesh);
 }
