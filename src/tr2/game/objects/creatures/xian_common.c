@@ -22,8 +22,8 @@ void XianWarrior_Draw(const ITEM *item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
-    if (clip == 0) {
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

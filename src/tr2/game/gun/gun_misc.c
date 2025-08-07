@@ -255,7 +255,7 @@ void Gun_HitTarget(
     }
 }
 
-void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const int32_t clip)
+void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const CLIP clip)
 {
     int16_t shade;
     int32_t y;

@@ -327,11 +327,6 @@ void Output_DrawBackground(void)
     GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
-int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
-{
-    return 1;
-}
-
 void Output_SetSunsetEnabled(const bool enabled)
 {
     m_IsSunsetEnabled = enabled;

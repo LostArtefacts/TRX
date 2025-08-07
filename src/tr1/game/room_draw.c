@@ -255,7 +255,7 @@ static void M_DrawSkybox(void)
     Matrix_Pop();
 }
 
-void Room_DrawSingleRoom(int16_t room_num)
+void Room_DrawSingleRoom(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
     if (room->flags & RF_UNDERWATER) {
@@ -273,6 +273,12 @@ void Room_DrawSingleRoom(int16_t room_num)
     g_PhdRight = room->bound_right;
     g_PhdTop = room->bound_top;
     g_PhdBottom = room->bound_bottom;
+
+    if (g_Config.debug.enable_debug_room_clip) {
+        Output_DrawScreenFrame(
+            g_PhdLeft, g_PhdTop, g_PhdRight - g_PhdLeft, g_PhdBottom - g_PhdTop,
+            (RGBA_8888) { 0, 255, 0, 128 }, (RGBA_8888) { 0, 255, 0, 128 }, 1);
+    }
 
     Output_LightRoom(room);
     Output_DrawRoom(room, false);
@@ -297,8 +303,8 @@ void Room_DrawSingleRoom(int16_t room_num)
         Matrix_Push();
         Matrix_TranslateAbs32(mesh->pos);
         Matrix_RotY(mesh->rot.y);
-        int32_t clip = Output_GetObjectBounds(&obj->draw_bounds);
-        if (clip != 0) {
+        const CLIP clip = Output_CheckBoundsClip(&obj->draw_bounds);
+        if (clip != CLIP_NOT_VISIBLE) {
             Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, room);
             Object_DrawMesh(obj->mesh_idx, clip, false);
         }

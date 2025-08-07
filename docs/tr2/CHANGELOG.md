@@ -12,6 +12,7 @@
     - added anisotropy option (Graphic settings → Rendering → Anisotropy filter)
     - added vertical sync option (Graphic settings → Rendering → VSync)
     - added debug portals feature (`/debug 1`)
+    - added debug room clip feature (`/debug 1`)
     - added debug spheres feature (`/debug 1`)
     - added debug triggers feature (`/debug 1`)
     - added support for 60 fps in 3D UI pickups

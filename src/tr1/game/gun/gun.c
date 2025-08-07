@@ -5,7 +5,7 @@
 
 #include <libtrx/config.h>
 
-void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
+void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
 {
     int32_t light;
     int32_t len;

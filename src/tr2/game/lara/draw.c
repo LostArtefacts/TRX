@@ -11,11 +11,11 @@
 
 static void M_DrawBodyPart(
     LARA_MESH mesh, const ANIM_BONE *bone, const XYZ_16 *mesh_rots_1,
-    const XYZ_16 *mesh_rots_2, int32_t clip);
+    const XYZ_16 *mesh_rots_2, CLIP clip);
 
 static void M_DrawBodyPart(
     const LARA_MESH mesh, const ANIM_BONE *const bone,
-    const XYZ_16 *mesh_rots_1, const XYZ_16 *mesh_rots_2, const int32_t clip)
+    const XYZ_16 *mesh_rots_1, const XYZ_16 *mesh_rots_2, const CLIP clip)
 {
     if (mesh_rots_2 != nullptr) {
         Matrix_TranslateRel32_I(bone[mesh - 1].pos);
@@ -37,10 +37,10 @@ void Lara_Draw(const ITEM *const item)
     const int32_t right = g_PhdRight;
     const int32_t bottom = g_PhdBottom;
 
-    g_PhdTop = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdLeft = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxX(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxY(VIEWPORT_GAME);
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
     ANIM_FRAME *frames[2];
     if (g_Lara.hit_direction < 0) {
@@ -67,8 +67,8 @@ void Lara_Draw(const ITEM *const item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
     const MATRIX item_matrix = *g_MatrixPtr;
-    const int32_t clip = Output_GetObjectBounds(&frame->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }
@@ -307,9 +307,8 @@ void Lara_Draw_I(
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
-
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

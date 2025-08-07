@@ -86,7 +86,7 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     OutputSource_Objects_StageSkyboxMesh(mesh, SHADE_NEUTRAL);
 }
 
-void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
+void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const CLIP clip)
 {
     OutputSource_Objects_StageObjectMesh(mesh);
     if (g_Config.debug.enable_debug_spheres) {
@@ -98,7 +98,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
     }
 }
 
-void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
+void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
 {
     Matrix_Push();
     Matrix_Interpolate();

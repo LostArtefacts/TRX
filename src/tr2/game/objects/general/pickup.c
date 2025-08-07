@@ -289,8 +289,8 @@ static void M_Draw(const ITEM *const item)
 
     Output_CalculateLight(item->pos, item->room_num);
 
-    const int32_t clip = Output_GetObjectBounds(&bounds);
-    if (clip) {
+    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
         int32_t bit = 1;
 
         const XYZ_16 *const mesh_rots =
