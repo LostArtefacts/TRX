@@ -906,7 +906,6 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
     InvRing_AdjustMusicVolume(ring);
     const GF_COMMAND gf_cmd = M_Control(ring);
     Overlay_Animate(1);
-    Output_AnimateTextures(1);
     return gf_cmd;
 }
 
