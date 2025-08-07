@@ -22,6 +22,7 @@
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added a new `/restless` console command, which enables or disables infinite sprint
 - changed the brightness filter to also work on title inventory ring background
+- changed the brightness filter option to work in smaller increments (10% reduced to 5%); added support for slow increments by 1% (hold Walk key)
 - changed the game flow and game strings file placement
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)
