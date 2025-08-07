@@ -58,7 +58,9 @@ static void M_AddObjectVerts(
     }
 
     for (size_t i = 0; i < vtx_count; i++) {
-        const XYZ_16 normal = obj_mesh->lighting.normals[vertices[i]];
+        const XYZ_16 normal = vertices[i] < obj_mesh->num_lights
+            ? obj_mesh->lighting.normals[vertices[i]]
+            : (XYZ_16) {};
         const XYZ_16 *const pos = &obj_mesh->vertices[vertices[i]];
         if ((flags & VERT_FLAT_SHADED) == 0) {
             uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i);
@@ -88,7 +90,7 @@ static void M_AddObjectFace3(
         face->palette_idx, flags, nullptr);
     MeshBuilder_AddFace3(
         builder,
-        !obj_mesh->disable_transparency_sort
+        !obj_mesh->disable_transparency_sort && (flags & VERT_FLAT_SHADED) == 0
             && Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
@@ -101,7 +103,7 @@ static void M_AddObjectFace4(
         face->palette_idx, flags, face->texture_zw);
     MeshBuilder_AddFace4(
         builder,
-        !obj_mesh->disable_transparency_sort
+        !obj_mesh->disable_transparency_sort && (flags & VERT_FLAT_SHADED) == 0
             && Output_Textures_IsObjectTextureTransparent(face->texture_idx));
 }
 
