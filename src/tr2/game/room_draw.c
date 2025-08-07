@@ -1,11 +1,11 @@
 #include "game/room_draw.h"
 
-#include "decomp/decomp.h"
 #include "game/effects.h"
 #include "game/lara/draw.h"
 #include "game/output.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
@@ -249,6 +249,12 @@ void Room_DrawSingleRoomGeometry(const int16_t room_num)
     g_PhdTop = room->bound_top;
     g_PhdBottom = room->bound_bottom;
 
+    if (g_Config.debug.enable_debug_room_clip) {
+        Output_DrawScreenFrame(
+            g_PhdLeft, g_PhdTop, g_PhdRight - g_PhdLeft, g_PhdBottom - g_PhdTop,
+            (RGBA_8888) { 0, 255, 0, 128 }, (RGBA_8888) { 0, 255, 0, 128 }, 1);
+    }
+
     Matrix_TranslateAbs32(room->pos);
     Output_LightRoom(room);
     Output_DrawRoom(room, false);
@@ -285,8 +291,8 @@ void Room_DrawSingleRoomObjects(const int16_t room_num)
         Matrix_Push();
         Matrix_TranslateAbs32(mesh->pos);
         Matrix_RotY(mesh->rot.y);
-        const int16_t clip = Output_GetObjectBounds(&obj->draw_bounds);
-        if (clip != 0) {
+        const CLIP clip = Output_CheckBoundsClip(&obj->draw_bounds);
+        if (clip != CLIP_NOT_VISIBLE) {
             Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, room);
             Object_DrawMesh(obj->mesh_idx, clip, false);
         }

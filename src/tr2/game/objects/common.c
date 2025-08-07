@@ -29,8 +29,8 @@ void Object_DrawAnimatingItem(const ITEM *item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }
@@ -204,7 +204,7 @@ BOUNDS_16 Object_GetBoundingBox(
 }
 
 void Object_DrawMesh(
-    const int32_t mesh_idx, const int32_t clip, const bool interpolated)
+    const int32_t mesh_idx, const CLIP clip, const bool interpolated)
 {
     const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
     if (interpolated) {

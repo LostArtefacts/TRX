@@ -163,8 +163,8 @@ void Object_DrawPickupItem(const ITEM *const item)
     Output_CalculateLight(item->pos, room_num);
 
     frame = obj->frame_base;
-    int32_t clip = Output_GetObjectBounds(&frame->bounds);
-    if (clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
         // From this point on the function is a slightly customised version
         // of the code in DrawAnimatingItem starting with the line that
         // matches the following line.
@@ -279,7 +279,7 @@ void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
 }
 
 void Object_DrawMesh(
-    const int32_t mesh_idx, const int32_t clip, const bool interpolated)
+    const int32_t mesh_idx, const CLIP clip, const bool interpolated)
 {
     const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
     if (interpolated) {

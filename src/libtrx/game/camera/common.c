@@ -397,7 +397,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 
 #undef SHIFT
 
-    if (!clip) {
+    if (clip == CLIP_NOT_VISIBLE) {
         return;
     }
 

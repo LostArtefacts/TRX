@@ -113,7 +113,7 @@ static void M_Draw(const ITEM *const item)
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
 
     const XYZ_32 flare_size = {
         .x = frames[0]->bounds.max.x - frames[0]->bounds.min.x,
@@ -127,7 +127,7 @@ static void M_Draw(const ITEM *const item)
     };
     Matrix_TranslateRel32(flare_offset);
 
-    if (clip != 0) {
+    if (clip != CLIP_NOT_VISIBLE) {
         Output_CalculateObjectLighting(item, &frames[0]->bounds);
         Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
         if (((int32_t)(intptr_t)item->data) & 0x8000) {

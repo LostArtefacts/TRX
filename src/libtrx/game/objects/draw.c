@@ -35,8 +35,8 @@ void Object_DrawInterpolatedObject(
         return;
     }
     ASSERT(frame1 != nullptr);
-    const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
-    if (clip == 0) {
+    const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         return;
     }
 

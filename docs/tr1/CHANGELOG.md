@@ -4,7 +4,6 @@
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
 - added lighting contrast option (Graphic options → Rendering → Lighting contrast)
-- added Russian translation
 - added new command switches:
     - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
     - `--headless`: runs the game offscreen with no audio and at unlocked simulation speed
@@ -17,10 +16,12 @@
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
+- added Russian translation
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added a new `/restless` console command, which enables or disables infinite sprint
+- added debug room clip feature (`/debug 1`)
 - changed the brightness filter to also work on title inventory ring background
 - changed the brightness filter option to work in smaller increments (10% reduced to 5%); added support for slow increments by 1% (hold Walk key)
 - changed the game flow and game strings file placement
@@ -59,6 +60,7 @@
 - fixed backslash/grave key/less-than character on some keyboards shown as ???? – now it's shown as backlash (#3713)
 - fixed wireframe mode rendering as mostly white (#3649, regression from 4.13.2)
 - fixed wireframe mode not working in the inventory ring (#3651, regression from 4.10)
+- fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (#3761, regression from 4.10)
 - fixed shadow rendering
     - fixed Y component not interpolated in 60 FPS (#1314)
     - fixed shadows being rendered partially opaque near room portals (#879)

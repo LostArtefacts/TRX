@@ -1,6 +1,8 @@
 #pragma once
 
-#include <stdint.h>
+#include "./types.h"
+
+CLIP Output_CheckBoundsClip(const BOUNDS_16 *bounds);
 
 void Output_MakeScreenshot(const char *path);
 

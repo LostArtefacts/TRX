@@ -174,8 +174,8 @@ static void M_Draw(const ITEM *const item)
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
-    int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frmptr[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

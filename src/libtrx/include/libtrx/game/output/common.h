@@ -21,8 +21,6 @@ extern void Output_EndScene(void);
 extern void Output_Flush(void);
 extern void Output_FlipScreen(void);
 
-extern int32_t Output_GetObjectBounds(const BOUNDS_16 *bounds);
-
 // Temporary
 extern int32_t Output_CalcFogShade(int32_t depth);
 extern int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);

@@ -7,6 +7,12 @@
 #include <stdint.h>
 
 typedef enum {
+    CLIP_NOT_VISIBLE = 0,
+    CLIP_PARTIALLY_VISIBLE = -1,
+    CLIP_FULLY_VISIBLE = 1,
+} CLIP;
+
+typedef enum {
     BK_TRANSPARENT,
     BK_OBJECT,
     BK_IMAGE,

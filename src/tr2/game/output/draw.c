@@ -127,7 +127,7 @@ void Output_DrawTextBackground(
     M_DrawScreenQuad(sx, sy, sx + w, sy + h, z, cb, cb, cb, cb);
 }
 
-void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
+void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const CLIP clip)
 {
     OutputSource_Objects_StageObjectMesh(mesh);
     if (g_Config.debug.enable_debug_spheres) {
@@ -139,7 +139,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
     }
 }
 
-void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
+void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
 {
     Matrix_Push();
     Matrix_Interpolate();
@@ -221,4 +221,30 @@ void Output_DrawShadow(
     Matrix_ScaleZ((1 << W2V_SHIFT) * z_size / UNIT_SHADOW);
     OutputSource_Shadows_StageShadow();
     Matrix_Pop();
+}
+
+void Output_DrawScreenFrame(
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 col_dark, const RGBA_8888 col_light,
+    const int32_t thickness)
+{
+    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0f;
+    const float e = thickness * scale / 2.0f;
+    const float x0 = sx - scale;
+    const float y0 = sy - scale;
+    const float x1 = sx + w + scale;
+    const float y1 = sy + h + scale;
+    const RGBA_8888 cd = col_dark;
+    const RGBA_8888 cl = col_light;
+
+    // clang-format off
+    M_DrawScreenQuad(x0,     y0,     x1 - e, y0 + e, 0, cd, cd, cd, cd);
+    M_DrawScreenQuad(x0 - e, y0 - e, x1,     y0,     0, cl, cl, cl, cl);
+    M_DrawScreenQuad(x1,     y0 - e, x1 + e, y1 + e, 0, cd, cd, cd, cd);
+    M_DrawScreenQuad(x1 - e, y0,     x1,     y1,     0, cl, cl, cl, cl);
+    M_DrawScreenQuad(x0,     y0,     x0 + e, y1 - e, 0, cd, cd, cd, cd);
+    M_DrawScreenQuad(x0 - e, y0 - e, x0,     y1,     0, cl, cl, cl, cl);
+    M_DrawScreenQuad(x0 - e, y1,     x1 + e, y1 + e, 0, cd, cd, cd, cd);
+    M_DrawScreenQuad(x0 - e, y1 - e, x1,     y1,     0, cl, cl, cl, cl);
+    // clang-format on
 }
