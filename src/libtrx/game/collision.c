@@ -7,6 +7,8 @@
 #include "game/rooms.h"
 #include "utils.h"
 
+#define M_HEADROOM 160 // Additional collision space above Lara's head.
+
 static bool M_IsOnWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
 
@@ -166,7 +168,7 @@ void Collide_GetCollisionInfo(
     int32_t x = x_pos;
     int32_t z = z_pos;
     const int32_t y = y_pos - obj_height;
-    const int32_t y_top = y - 160;
+    const int32_t y_top = y - M_HEADROOM;
 
     const SECTOR *sector = Room_GetSector(x, y_top, z, &room_num);
     int32_t height = Room_GetHeight(sector, x, y_top, z);
