@@ -53,6 +53,7 @@ typedef enum {
 
 void GameBuf_Init(void);
 void GameBuf_Shutdown(void);
+void GameBuf_ResetSingle(GAME_BUFFER buffer);
 void GameBuf_Reset(void);
 
 void *GameBuf_Alloc(size_t alloc_size, GAME_BUFFER buffer);
