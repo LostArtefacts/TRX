@@ -3,14 +3,21 @@
 #include "./game/enum.h"
 #include "./game_flow/types.h"
 
+// Sets the game's playing state, which in turn toggles random draw lock, and
+// certain overlay displays/animations, such as bars and pickups.
 void Game_SetIsPlaying(bool is_playing);
+// Returns true if the game is in a playing state - i.e. not suspended, such as
+// during pause, photo mode, or while the inventory is open.
 bool Game_IsPlaying(void);
 
 const GF_LEVEL *Game_GetCurrentLevel(void);
 void Game_SetCurrentLevel(const GF_LEVEL *level);
 
 bool Game_IsInGym(void);
+// Returns true if an FMV is not playing and the current level is not the title.
 bool Game_IsLoaded(void);
+// Returns true if an FMV is not playing, if the level type is neither the
+// title, a demo or a cutscene, and if Lara is loaded and controllable.
 bool Game_IsPlayable(void);
 
 GAME_BONUS_FLAG Game_GetBonusFlag(void);

@@ -164,6 +164,7 @@ void GF_PreSequenceHook(
 {
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
+    Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
     Camera_GetCineData()->position.target_angle = DEG_90;
     if (seq_ctx == GFSC_SAVED) {

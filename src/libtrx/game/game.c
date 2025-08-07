@@ -65,7 +65,8 @@ bool Game_IsPlayable(void)
         return false;
     }
 
-    if (!Object_Get(O_LARA)->loaded || Lara_GetItem() == nullptr) {
+    if (!Object_Get(O_LARA)->loaded || Lara_GetItem() == nullptr
+        || !Lara_IsControllable()) {
         return false;
     }
 
