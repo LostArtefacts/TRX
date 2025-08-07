@@ -34,6 +34,9 @@ void MeshBuilder_AddFace4(MESH_BUILDER *builder, bool transparent);
 // ring vertices.
 void MeshBuilder_AddFan(MESH_BUILDER *builder, bool transparent);
 
+// Applies invisible z offset to all vertices that helps with the z-fighting.
+void MeshBuilder_AdjustDepth(MESH_BUILDER *builder, float depth);
+
 // Finalize all pending vertices and faces into the OUTPUT_MESH and seal it.
 // Returns the sealed mesh; builder must still be destroyed via
 // MeshBuilder_Destroy().

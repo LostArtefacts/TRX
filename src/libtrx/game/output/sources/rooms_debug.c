@@ -11,7 +11,7 @@
 #include "vector.h"
 
 typedef struct {
-    XYZ_F pos;
+    XYZW_F pos;
     RGBA_8888 color;
 } M_VERTEX;
 
@@ -82,7 +82,12 @@ static void M_PrepareRoomTriggers(
                     + (Output_GetWaterEffect() ? -16 : -2);
 
                 M_VERTEX vertex = {
-                    .pos = { vertex_pos.x, vertex_pos.y, vertex_pos.z },
+                    .pos = {
+                        .x = vertex_pos.x,
+                        .y = vertex_pos.y,
+                        .z = vertex_pos.z,
+                        .w = 0.0f,
+                    },
                     .color = color,
                 };
                 Vector_Add(p->vertices, &vertex);
@@ -103,12 +108,12 @@ static void M_PrepareRoomPortals(
         return;
     }
     for (int32_t i = 0; i < room->portals->count; i++) {
-        const PORTAL *const portal = &room->portals->portal[i];
-        const XYZ_F positions[4] = {
-            { portal->vertex[0].x, portal->vertex[0].y, portal->vertex[0].z },
-            { portal->vertex[1].x, portal->vertex[1].y, portal->vertex[1].z },
-            { portal->vertex[2].x, portal->vertex[2].y, portal->vertex[2].z },
-            { portal->vertex[3].x, portal->vertex[3].y, portal->vertex[3].z },
+        const XYZ_16 *const portal = room->portals->portal[i].vertex;
+        const XYZW_F positions[4] = {
+            { portal[0].x, portal[0].y, portal[0].z, 0.0f },
+            { portal[1].x, portal[1].y, portal[1].z, 0.0f },
+            { portal[2].x, portal[2].y, portal[2].z, 0.0f },
+            { portal[3].x, portal[3].y, portal[3].z, 0.0f },
         };
         const int32_t indices[8] = { 0, 1, 1, 2, 2, 3, 3, 0 };
         for (int32_t j = 0; j < 8; j++) {
@@ -241,7 +246,7 @@ void OutputSource_RoomsDebug_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),

@@ -8,7 +8,7 @@ uniform mat4 uMatModelView;
 uniform bool uTrapezoidFilterEnabled;
 uniform bool uWibbleEffect;
 
-layout(location = 0) in vec3 inPosition;
+layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec3 inUVW;
 layout(location = 3) in vec4 inTextureSize;
@@ -37,6 +37,7 @@ void main(void) {
     gWorldPos = eyePos;
     gNormal = inNormal;
     gl_Position = uMatProjection * eyePos;
+    gl_Position.z += inPosition.w;
 
     // apply water wibble effect only to non-sprite vertices
     if (((inFlags & VERT_CAUSTICS) != 0u)

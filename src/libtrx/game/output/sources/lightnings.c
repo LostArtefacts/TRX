@@ -7,7 +7,7 @@
 #include "gfx/gl/utils.h"
 
 typedef struct {
-    XYZ_F pos;
+    XYZW_F pos;
     XYZ_F normal;
     RGBA_8888 color;
 } M_VERTEX;
@@ -39,19 +39,21 @@ static void M_GenerateLightningSegment(
 
     Matrix_Push();
     Matrix_TranslateAbs32(segment->from);
-    const XYZ_F pos_0 = {
+    const XYZW_F pos_0 = {
         .x = g_MatrixPtr->_03 >> W2V_SHIFT,
         .y = g_MatrixPtr->_13 >> W2V_SHIFT,
         .z = g_MatrixPtr->_23 >> W2V_SHIFT,
+        .w = 0.0f,
     };
     Matrix_Pop();
 
     Matrix_Push();
     Matrix_TranslateAbs32(segment->to);
-    const XYZ_F pos_1 = {
+    const XYZW_F pos_1 = {
         .x = g_MatrixPtr->_03 >> W2V_SHIFT,
         .y = g_MatrixPtr->_13 >> W2V_SHIFT,
         .z = g_MatrixPtr->_23 >> W2V_SHIFT,
+        .w = 0.0f,
     };
     Matrix_Pop();
 
@@ -166,7 +168,7 @@ void OutputSource_Lightnings_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),

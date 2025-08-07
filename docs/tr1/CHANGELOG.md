@@ -65,6 +65,7 @@
 - fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 4.13)
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 4.13)
 - fixed being able to issue certain console commands that target Lara during loading screens (#3662, regression from 4.13)
+- fixed z-fighting of doors near walls
 - improved object loading error messages when an invalid object ID is detected
 - improved frames in Lara's jump-twist animations
 - improved lighting, projection and sizing of 3D pickups in the UI

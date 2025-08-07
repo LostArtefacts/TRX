@@ -17,6 +17,8 @@ typedef struct MESH_INSTANCE {
     XYZ_32 ls_vector_view;
 
     bool enable_scissor;
+    bool disable_z_writes;
+    float z_offset;
     VIEWPORT_RECT scissor;
 
     int32_t (*transparent_sort_func)(

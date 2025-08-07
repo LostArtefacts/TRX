@@ -10,7 +10,7 @@
 #include "utils.h"
 
 typedef struct {
-    XYZ_F pos;
+    XYZW_F pos;
     RGBA_8888 color;
 } M_VERTEX;
 
@@ -63,7 +63,7 @@ static void M_GenerateSphere(
     // More subdivisions means smoother spheres.
     const RGBA_8888 color = { 255, 0, 0, 255 };
     const int32_t position_count = SQUARE(subdivisions + 1);
-    XYZ_F positions[position_count];
+    XYZW_F positions[position_count];
     int32_t index = 0;
 
     for (int32_t i = 0; i <= subdivisions; i++) {
@@ -77,10 +77,11 @@ static void M_GenerateSphere(
             const float cos_phi = cosf(phi);
 
             // Convert spherical coordinates to 3D points.
-            positions[index] = (XYZ_F) {
-                .x = 1 * cos_phi * sin_theta,
-                .y = 1 * cos_theta,
-                .z = 1 * sin_phi * sin_theta,
+            positions[index] = (XYZW_F) {
+                .x = cos_phi * sin_theta,
+                .y = cos_theta,
+                .z = sin_phi * sin_theta,
+                .w = 0.0f,
             };
             index++;
         }
@@ -100,15 +101,19 @@ static void M_GenerateSphere(
                 const int32_t l = OUTPUT_QUAD_TO_FAN(k);
                 Vector_Add(
                     p->vertices,
-                    &(M_VERTEX) { .pos = positions[indices[l]],
-                                  .color = color });
+                    &(M_VERTEX) {
+                        .pos = positions[indices[l]],
+                        .color = color,
+                    });
             }
             for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
                 const int32_t l = OUTPUT_QUAD_TO_FAN_CW(k);
                 Vector_Add(
                     p->vertices,
-                    &(M_VERTEX) { .pos = positions[indices[l]],
-                                  .color = color });
+                    &(M_VERTEX) {
+                        .pos = positions[indices[l]],
+                        .color = color,
+                    });
             }
         }
     }
@@ -203,7 +208,7 @@ void OutputSource_Misc_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),

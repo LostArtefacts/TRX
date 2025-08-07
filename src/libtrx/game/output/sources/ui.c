@@ -13,7 +13,7 @@
 #define M_PICKUPS_FOV 65
 
 typedef struct {
-    XYZ_F pos;
+    XYZW_F pos;
     OUTPUT_UVW uvw;
     OUTPUT_TEXTURE_SIZE texture_size;
     OUTPUT_USHORT flags;
@@ -246,7 +246,7 @@ void OutputSource_UI_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
@@ -293,6 +293,7 @@ void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)
     M_VERTEX vertices[4];
     for (int32_t i = 0; i < 4; i++) {
         vertices[i].pos.z = sprite.z;
+        vertices[i].pos.w = 0.0f;
         vertices[i].color.r = sprite.color.r;
         vertices[i].color.g = sprite.color.g;
         vertices[i].color.b = sprite.color.b;
@@ -330,6 +331,7 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
     M_VERTEX vertices[4];
     for (int32_t i = 0; i < 4; i++) {
         vertices[i].pos.z = quad.z;
+        vertices[i].pos.w = 0.0f;
         vertices[i].shade = SHADE_NEUTRAL;
         vertices[i].flags =
             VERT_NO_LIGHTING | VERT_FLAT_SHADED | VERT_NO_CAUSTICS;
