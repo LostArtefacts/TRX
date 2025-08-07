@@ -18,6 +18,7 @@
         "CMD_INVALID_SECRET": "Невалидный секрет: %s (валидные секреты: %s)",
         "CMD_LUA_RUNTIME_ERROR": "Ошибка выполнения Lua: %s",
         "CMD_LUA_SYNTAX_ERROR": "Ошибка синтаксиса Lua: %s",
+        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "\\{review}Настройки отключены для этого набора уровней.",
         "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "Этот параметр принудительно установлен редактором уровней и не может быть изменён.",
         "COMMON_SETTINGS_RESTORE_DEFAULT": "По умолчанию",
         "COMMON_SETTINGS_TOGGLE_HELP": "Показать помощь",

@@ -42,6 +42,7 @@
 - changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic
 - changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range (#3598)
 - changed `-l`/`--level` switch to accept the level number on top of the level path
+- changed settings dialogs to show a suitable message if a level builder has hidden all options within that dialog (#3637)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)

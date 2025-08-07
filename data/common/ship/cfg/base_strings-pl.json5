@@ -18,6 +18,7 @@
         "CMD_INVALID_SECRET": "Nieprawidłowy sekret: %s (prawidłowe sekrety: %s)",
         "CMD_LUA_RUNTIME_ERROR": "Błąd wykonania: %s",
         "CMD_LUA_SYNTAX_ERROR": "Błąd składni: %s",
+        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "\\{review}Ustawienia są wyłączone dla tego zestawu poziomów.",
         "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "To ustawienie jest wymuszane przez twórcę poziomu i nie może być zmienione.",
         "COMMON_SETTINGS_RESTORE_DEFAULT": "Przywróć domyślne",
         "COMMON_SETTINGS_TOGGLE_HELP": "Pokaż pomoc",
