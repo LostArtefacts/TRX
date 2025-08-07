@@ -175,6 +175,9 @@ void MeshBuilder_AddRoomSprite(
 
 void MeshBuilder_AdjustDepth(MESH_BUILDER *const builder, const float depth)
 {
+    if (builder->mesh == nullptr || builder->mesh->vertices == nullptr) {
+        return;
+    }
     OUTPUT_MESH_VERTEX *const vbuf = Vector_GetData(builder->mesh->vertices);
     for (int32_t i = 0; i < builder->mesh->vertices->count; i++) {
         vbuf[i].pos.w = depth;
