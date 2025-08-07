@@ -12,7 +12,7 @@
 typedef OUTPUT_SHORT M_MESH_SHADE;
 
 typedef struct {
-    XYZ_F pos;
+    XYZW_F pos;
     XYZ_F normal;
     OUTPUT_USHORT flags;
     RGBA_8888 color;
@@ -108,7 +108,10 @@ static M_MESH_BUF_BINDING *M_GetBinding(
 static void M_FillGeometry(
     M_MESH_GEOM *const geom, const OUTPUT_MESH_VERTEX *const vertex)
 {
-    geom->pos = vertex->pos;
+    geom->pos.x = vertex->pos.x;
+    geom->pos.y = vertex->pos.y;
+    geom->pos.z = vertex->pos.z;
+    geom->pos.w = vertex->pos.w;
     geom->normal = vertex->normal;
     geom->color = vertex->color;
     geom->flags = vertex->flags;
@@ -258,7 +261,7 @@ static void M_OpaquePass(
                 // UBOs.
 
                 // clang-format off
-                v.geom.pos = (XYZ_F) {
+                v.geom.pos = (XYZW_F) {
                     .x = (
                         m->_00 * v.geom.pos.x +
                         m->_01 * v.geom.pos.y +
@@ -277,6 +280,7 @@ static void M_OpaquePass(
                         m->_22 * v.geom.pos.z +
                         m->_23
                      ),
+                     .w = v.geom.pos.w,
                 };
                 // clang-format on
                 v.geom.color.r *= inst->tint.r;
@@ -441,7 +445,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
         (void *)(intptr_t)offsetof(M_MESH_GEOM, pos));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
@@ -487,7 +491,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, geom.pos));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),

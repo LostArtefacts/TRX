@@ -36,6 +36,10 @@ typedef struct {
     float x, y, z;
 } XYZ_F;
 
+typedef struct {
+    float x, y, z, w;
+} XYZW_F;
+
 typedef enum {
     DIR_UNKNOWN = -1,
     DIR_NORTH = 0,

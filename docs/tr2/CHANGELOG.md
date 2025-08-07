@@ -17,6 +17,7 @@
     - added support for 60 fps in 3D UI pickups
     - fixed trapezoid textures warping at the edge of the screen (#2629)
     - fixed certain polygons disappearing in some objects (#3699)
+    - fixed z-fighting of doors near walls
     - removed software rendering mode
     - removed the z-buffer option, which is now always enabled
     - removed undocumented linear and nearest texel adjustment options

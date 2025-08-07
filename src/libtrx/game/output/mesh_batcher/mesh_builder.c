@@ -160,7 +160,7 @@ void MeshBuilder_AddRoomSprite(
     };
     for (int32_t j = 0; j < 4; j++) {
         const OUTPUT_MESH_VERTEX vertex = {
-            .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
+            .pos = { .x = pos->x, .y = pos->y, .z = pos->z, .w = 0.0f, },
             .normal = { .x = normal[j].x, .y = normal[j].y, .z = 0.0f },
             .flags = VERT_BILLBOARD,
             .color = { 255, 255, 255, 255 },
@@ -171,6 +171,14 @@ void MeshBuilder_AddRoomSprite(
         MeshBuilder_AddVertex(builder, &vertex);
     }
     MeshBuilder_AddFace4(builder, true);
+}
+
+void MeshBuilder_AdjustDepth(MESH_BUILDER *const builder, const float depth)
+{
+    OUTPUT_MESH_VERTEX *const vbuf = Vector_GetData(builder->mesh->vertices);
+    for (int32_t i = 0; i < builder->mesh->vertices->count; i++) {
+        vbuf[i].pos.w = depth;
+    }
 }
 
 OUTPUT_MESH *MeshBuilder_Seal(MESH_BUILDER *const builder)

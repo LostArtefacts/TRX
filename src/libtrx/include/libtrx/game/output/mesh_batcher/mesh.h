@@ -16,7 +16,7 @@ typedef struct {
 } OUTPUT_MESH_TEXTURE;
 
 typedef struct {
-    XYZ_F pos;
+    XYZW_F pos;
     XYZ_F normal;
     uint16_t flags;
     int16_t uvw_idx;
