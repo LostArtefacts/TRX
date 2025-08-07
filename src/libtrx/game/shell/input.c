@@ -76,7 +76,7 @@ void Shell_ProcessCommonInput(void)
         M_ToggleFullscreen();
     }
 
-    if (g_InputDB.turbo_cheat) {
+    if (g_InputDB.turbo_cheat && g_Config.gameplay.enable_cheats) {
         Clock_CycleTurboSpeed(!g_Input.slow);
     }
 }

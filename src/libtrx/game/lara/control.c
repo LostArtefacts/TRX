@@ -34,6 +34,7 @@
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 static SECTOR *M_GetCurrentSector(void);
+static void M_Cheat(void);
 static void M_UpdateEnvironment(void);
 static void M_HandleEnvironment(void);
 static void M_HandleAboveWater(COLL_INFO *coll);
@@ -52,6 +53,26 @@ static SECTOR *M_GetCurrentSector(void)
     int16_t room_num = lara_item->room_num;
     return Room_GetSector(
         lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
+}
+
+static void M_Cheat(void)
+{
+    if (!g_Config.gameplay.enable_cheats) {
+        return;
+    }
+
+    if (g_InputDB.level_skip_cheat) {
+        Lara_Cheat_EndLevel();
+    }
+
+    if (g_InputDB.item_cheat) {
+        Lara_Cheat_GiveAllItems();
+    }
+
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->water_status != LWS_CHEAT && g_InputDB.fly_cheat) {
+        Lara_Cheat_EnterFlyMode();
+    }
 }
 
 static void M_UpdateEnvironment(void)
@@ -687,17 +708,7 @@ void Lara_Control(void)
         item->hit_points = LARA_MAX_HITPOINTS;
     }
 
-    if (g_InputDB.level_skip_cheat) {
-        Lara_Cheat_EndLevel();
-    }
-
-    if (g_InputDB.item_cheat) {
-        Lara_Cheat_GiveAllItems();
-    }
-
-    if (lara_info->water_status != LWS_CHEAT && g_InputDB.fly_cheat) {
-        Lara_Cheat_EnterFlyMode();
-    }
+    M_Cheat();
 
     if (TR_VERSION == 1 && lara_info->interact_target.is_moving
         && lara_info->interact_target.move_count++ > M_MOVE_TIMEOUT) {

@@ -65,6 +65,7 @@
 - fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
 - fixed shadows Y component not interpolated in 60 FPS (#1314)
 - fixed a crash when the level file was missing
+- fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 1.3)
 - improved frames in Lara's jump-twist animations
 - improved object loading error messages when an invalid object ID is detected
 - improved projectiles
