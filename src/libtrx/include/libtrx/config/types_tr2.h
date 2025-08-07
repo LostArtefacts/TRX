@@ -7,12 +7,6 @@
 #include "../gfx/common.h"
 #include "../screenshot.h"
 
-typedef enum {
-    TAM_DISABLED = 0,
-    TAM_BILINEAR_ONLY = 1,
-    TAM_ALWAYS = 2,
-} TEXEL_ADJUST_MODE;
-
 typedef struct {
     // This signifies whether the config was already read from disk.
     bool loaded;
@@ -191,7 +185,6 @@ typedef struct {
         GFX_TEXTURE_FILTER upscaling_filter;
         SCREENSHOT_FORMAT screenshot_format;
         LIGHTING_CONTRAST lighting_contrast;
-        TEXEL_ADJUST_MODE texel_adjust_mode;
         int32_t upscaling_factor;
         float borders;
         float anisotropy_filter;

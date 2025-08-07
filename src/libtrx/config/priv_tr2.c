@@ -158,9 +158,5 @@ void Config_Sanitize(void)
         && g_Config.rendering.aspect_mode != AM_16_10) {
         g_Config.rendering.aspect_mode = AM_4_3;
     }
-    if (g_Config.rendering.texel_adjust_mode != TAM_DISABLED
-        && g_Config.rendering.texel_adjust_mode != TAM_BILINEAR_ONLY) {
-        g_Config.rendering.texel_adjust_mode = TAM_ALWAYS;
-    }
     CLAMP(g_Config.visuals.fov, 30, 150);
 }
