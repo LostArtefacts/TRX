@@ -323,7 +323,7 @@ static void M_HandleEnvironment(void)
         item->hit_points = LARA_MAX_HITPOINTS;
         lara_info->death_timer = 0;
         M_HandleUnderwater(&coll);
-        if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
+        if (g_InputDB.slow && !g_Input.look && !g_Input.fly_cheat) {
             Lara_Cheat_ExitFlyMode();
         }
         break;
