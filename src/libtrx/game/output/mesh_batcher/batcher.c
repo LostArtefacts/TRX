@@ -394,7 +394,9 @@ static void M_RenderPass(
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const MESH_BATCHER *const batcher = source->priv;
-    return batcher->staged[pass]->count > 0;
+    return batcher->staged[pass]->count > 0
+        || (batcher->transparent_vertices->count > 0
+            && pass == SCENE_PASS_TRANSPARENT);
 }
 
 static void M_AnimateTextures(const SCENE_SOURCE *const source)
