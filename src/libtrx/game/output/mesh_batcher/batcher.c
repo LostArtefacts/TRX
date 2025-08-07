@@ -187,13 +187,18 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
     M_FACE_SORT *const buf = Vector_GetData(batcher->transparent_sort);
     M_FACE_SORT *bptr = buf;
     for (int32_t i = 0; i < n; i++) {
-        // clang-format off
-        bptr->sort_key = (
-            bptr->inst->matrix._20 * (int32_t)bptr->face->mesh_centroid.x +
-            bptr->inst->matrix._21 * (int32_t)bptr->face->mesh_centroid.y +
-            bptr->inst->matrix._22 * (int32_t)bptr->face->mesh_centroid.z +
-            bptr->inst->matrix._23);
-        // clang-format on
+        if (bptr->inst->transparent_sort_func != nullptr) {
+            bptr->sort_key =
+                bptr->inst->transparent_sort_func(bptr->inst, bptr->face);
+        } else {
+            // clang-format off
+            bptr->sort_key = (
+                bptr->inst->matrix._20 * (int32_t)bptr->face->mesh_centroid.x +
+                bptr->inst->matrix._21 * (int32_t)bptr->face->mesh_centroid.y +
+                bptr->inst->matrix._22 * (int32_t)bptr->face->mesh_centroid.z +
+                bptr->inst->matrix._23);
+            // clang-format on
+        }
         bptr++;
     }
     qsort(buf, n, sizeof(*buf), M_CompareFaceDepth);

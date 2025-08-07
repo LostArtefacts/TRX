@@ -13,7 +13,12 @@ typedef struct {
 
 static M_PRIV m_Priv;
 
-static OUTPUT_MESH *M_GenerateShadow(MESH_BUILDER *builder, int32_t fidelity)
+static OUTPUT_MESH *M_GenerateShadow(MESH_BUILDER *builder, int32_t fidelity);
+static int32_t M_TransparentSort(
+    const MESH_INSTANCE *inst, const OUTPUT_MESH_FACE *face);
+
+static OUTPUT_MESH *M_GenerateShadow(
+    MESH_BUILDER *const builder, const int32_t fidelity)
 {
     const int32_t y = -5;
     const RGBA_8888 color = { 0, 0, 0, 128 };
@@ -40,6 +45,12 @@ static OUTPUT_MESH *M_GenerateShadow(MESH_BUILDER *builder, int32_t fidelity)
     }
     MeshBuilder_AddFan(builder, true);
     return MeshBuilder_Seal(builder);
+}
+
+static int32_t M_TransparentSort(
+    const MESH_INSTANCE *const inst, const OUTPUT_MESH_FACE *const face)
+{
+    return 0; // Always draw shadows last.
 }
 
 void OutputSource_Shadows_Init(MESH_BATCHER *const batcher)
@@ -79,6 +90,7 @@ void OutputSource_Shadows_StageShadow(void)
         .mesh = mesh,
         .matrix = *g_MatrixPtr,
         .tint = { 1.0f, 1.0f, 1.0f },
+        .transparent_sort_func = M_TransparentSort,
     };
     // XXX: Mesh batcher currently collects the transparent faces for the
     // transparent pass in the opaque pass, so the shadow, even though
