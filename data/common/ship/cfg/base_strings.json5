@@ -18,6 +18,7 @@
         "CMD_INVALID_SECRET": "Invalid secret: %s (valid secrets: %s)",
         "CMD_LUA_RUNTIME_ERROR": "Lua runtime error: %s",
         "CMD_LUA_SYNTAX_ERROR": "Lua syntax error: %s",
+        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "Settings are disabled for this level set.",
         "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "This setting is enforced by the level builder and cannot be changed.",
         "COMMON_SETTINGS_RESTORE_DEFAULT": "Restore default",
         "COMMON_SETTINGS_TOGGLE_HELP": "Toggle help",
