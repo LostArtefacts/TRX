@@ -1,4 +1,5 @@
 #include "game/console/registry.h"
+#include "game/game.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
@@ -14,7 +15,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         return CR_BAD_INVOCATION;
     }
 
-    if (!Object_Get(O_LARA)->loaded) {
+    if (!Game_IsPlayable()) {
         return CR_UNAVAILABLE;
     }
 

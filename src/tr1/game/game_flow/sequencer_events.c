@@ -225,6 +225,7 @@ void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     Room_SetAbyssHeight(0);
+    Lara_SetControllable(false);
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }
