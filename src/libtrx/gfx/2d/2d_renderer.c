@@ -1,5 +1,6 @@
 #include "gfx/2d/2d_renderer.h"
 
+#include "config.h"
 #include "debug.h"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
@@ -11,9 +12,9 @@
 #include <string.h>
 
 typedef enum {
+    M_UNIFORM_BRIGHTNESS_MULTIPLIER,
     M_UNIFORM_TEXTURE_MAIN,
     M_UNIFORM_TEXTURE_SIZE,
-    M_UNIFORM_ALPHA_ENABLED,
     M_UNIFORM_TINT_ENABLED,
     M_UNIFORM_TINT_COLOR,
     M_UNIFORM_EFFECT,
@@ -144,9 +145,9 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         M_UNIFORM loc;
         const char *name;
     } uniforms[] = {
+        { M_UNIFORM_BRIGHTNESS_MULTIPLIER, "uBrightnessMultiplier" },
         { M_UNIFORM_TEXTURE_MAIN, "texMain" },
         { M_UNIFORM_TEXTURE_SIZE, "uTexSize" },
-        { M_UNIFORM_ALPHA_ENABLED, "alphaEnabled" },
         { M_UNIFORM_TINT_ENABLED, "tintEnabled" },
         { M_UNIFORM_TINT_COLOR, "tintColor" },
         { M_UNIFORM_EFFECT, "effect" },
@@ -160,8 +161,6 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
 
     GFX_GL_Program_Bind(&r->program);
     GFX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_TEXTURE_MAIN], 0);
-    GFX_GL_Program_Uniform1i(
-        &r->program, r->loc[M_UNIFORM_ALPHA_ENABLED], r->use_alpha);
     GFX_GL_Program_Uniform1i(
         &r->program, r->loc[M_UNIFORM_TINT_ENABLED],
         r->tint_color.r != 255 || r->tint_color.g != 255
@@ -191,65 +190,6 @@ void GFX_2D_Renderer_UploadSurface(
     GFX_2D_RENDERER *const r, GFX_2D_SURFACE *const surface)
 {
     GFX_2D_Renderer_Upload(r, &surface->desc, surface->buffer);
-}
-
-void GFX_2D_Renderer_UploadAlphaSurface(
-    GFX_2D_RENDERER *const r, GFX_2D_SURFACE *const surface)
-{
-    ASSERT(r != nullptr);
-
-    if (surface == nullptr) {
-        if (r->use_alpha) {
-            GFX_GL_Program_Bind(&r->program);
-            GFX_GL_Program_Uniform1i(
-                &r->program, r->loc[M_UNIFORM_ALPHA_ENABLED], false);
-        }
-        r->use_alpha = false;
-        return;
-    }
-
-    if (!r->use_alpha) {
-        GFX_GL_Program_Bind(&r->program);
-        GFX_GL_Program_Uniform1i(
-            &r->program, r->loc[M_UNIFORM_ALPHA_ENABLED], true);
-        GFX_GL_CheckError();
-        r->use_alpha = true;
-    }
-
-    glActiveTexture(GL_TEXTURE2);
-    GFX_GL_Texture_Bind(&r->alpha_texture);
-
-    // update buffer if the size is unchanged, otherwise create a new one
-    if (r->alpha_desc.width != surface->desc.width
-        || r->alpha_desc.height != surface->desc.height
-        || r->alpha_desc.tex_format != surface->desc.tex_format
-        || r->alpha_desc.tex_type != surface->desc.tex_type) {
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        GFX_GL_CheckError();
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        GFX_GL_CheckError();
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA, surface->desc.width,
-            surface->desc.height, 0, surface->desc.tex_format,
-            surface->desc.tex_type, surface->buffer);
-        GFX_GL_CheckError();
-    } else {
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        GFX_GL_CheckError();
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        GFX_GL_CheckError();
-        glTexSubImage2D(
-            GL_TEXTURE_2D, 0, 0, 0, surface->desc.width, surface->desc.height,
-            surface->desc.tex_format, surface->desc.tex_type, surface->buffer);
-        GFX_GL_CheckError();
-    }
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    GFX_GL_CheckError();
-
-    r->alpha_desc = surface->desc;
 }
 
 void GFX_2D_Renderer_Upload(
@@ -309,7 +249,6 @@ void GFX_2D_Renderer_SetTextureSize(
             &r->program, r->loc[M_UNIFORM_TEXTURE_SIZE], size->x0, size->y0,
             size->x1, size->y1);
     }
-    M_UploadVertices(r);
 }
 
 void GFX_2D_Renderer_SetRepeat(
@@ -362,6 +301,9 @@ void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
 
     glActiveTexture(GL_TEXTURE0);
     GFX_GL_Texture_Bind(&r->surface_texture);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_BRIGHTNESS_MULTIPLIER],
+        g_Config.visuals.brightness);
 
     if (r->use_alpha) {
         glActiveTexture(GL_TEXTURE2);

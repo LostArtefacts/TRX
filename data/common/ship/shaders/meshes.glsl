@@ -1,4 +1,3 @@
-uniform int uTime;
 uniform int uLightingContrast;
 
 #ifdef VERTEX
@@ -68,7 +67,6 @@ uniform bool uSmoothingEnabled;
 uniform bool uTrapezoidFilterEnabled;
 uniform int uLightingMode;
 uniform bool uReflectionsEnabled;
-uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;
 uniform vec2 uFog; // x = fog start, y = fog end
 

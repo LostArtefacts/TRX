@@ -22,6 +22,9 @@
 #define MAX_WIBBLE 2
 #define PI 3.1415926538
 
+uniform int uTime;
+uniform float uBrightnessMultiplier;
+
 vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 {
     float epsilon = 0.5 / 256.0;

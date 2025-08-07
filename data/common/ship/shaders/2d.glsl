@@ -44,5 +44,7 @@ void main(void) {
         light = clamp(light, 0, 255) / 255;
         outColor *= vec4(light, light, light, 1);
     }
+
+    outColor.rgb *= uBrightnessMultiplier;
 }
 #endif
