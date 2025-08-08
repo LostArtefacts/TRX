@@ -26,7 +26,6 @@ static GFX_2D_RENDERER *m_Renderer2D = nullptr;
 static GFX_2D_SURFACE *m_BackgroundSurface = nullptr;
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
 
-static VIEWPORT_RECT m_LastViewport = { .width = -1, .height = -1 };
 static char *m_LastPath = nullptr;
 static VECTOR *m_CachedCandidates = nullptr;
 static size_t m_CachedDirLen = 0;
@@ -179,7 +178,6 @@ static bool M_LoadCandidate(const M_CANDIDATE *const candidate)
     Image_Free(img);
     Memory_FreePointer(&m_LastCandidateName);
     m_LastCandidateName = Memory_DupStr(candidate->path);
-    m_LastViewport = Viewport_GetRect(VIEWPORT_GAME);
     return true;
 }
 
@@ -250,8 +248,6 @@ void Output_ReloadBackgroundImage(void)
     const M_CANDIDATE *best = M_PickBestCandidate(M_GetScreenAspectRatio());
     if (best != nullptr) {
         if (m_LastCandidateName != nullptr
-            && m_LastViewport.width == Viewport_GetWidth(VIEWPORT_GAME)
-            && m_LastViewport.height == Viewport_GetHeight(VIEWPORT_GAME)
             && String_Equivalent(best->path, m_LastCandidateName)) {
             return;
         }
