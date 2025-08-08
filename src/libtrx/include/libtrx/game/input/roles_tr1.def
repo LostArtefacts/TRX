@@ -1,2 +1,1 @@
-X_INPUT_ROLE(INPUT_ROLE_BILINEAR,       toggle_bilinear_filter)
 X_INPUT_ROLE(INPUT_ROLE_CHANGE_TARGET,  change_target)

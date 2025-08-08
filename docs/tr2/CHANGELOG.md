@@ -19,6 +19,7 @@
     - fixed trapezoid textures warping at the edge of the screen (#2629)
     - fixed certain polygons disappearing in some objects (#3699)
     - fixed z-fighting of doors near walls
+    - changed the F7 hotkey to be used as a wireframe toggle (previously available as Shift+F7)
     - removed software rendering mode
     - removed the z-buffer option, which is now always enabled
     - removed undocumented linear and nearest texel adjustment options

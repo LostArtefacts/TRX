@@ -700,13 +700,9 @@
     },
     "game_strings": {
         "CONSOLE_HELP_VSYNC": "Active/désactive la synchronisation verticale.",
-        "ENUM_INPUT_ROLE_BILINEAR": "Basculer le filtre de texture",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Changer de cible",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "S'équiper des magnums",
         "MISC_EMPTY_SLOT_FMT": "- EMPLACEMENT VIDE -",
-        "OSD_TEXTURE_FILTER_BILINEAR": "bilinéaire",
-        "OSD_TEXTURE_FILTER_NN": "voisin le plus proche",
-        "OSD_TEXTURE_FILTER_SET": "Filtre de texture réglé sur %s",
         "PASSPORT_RESTART_LEVEL": "Recommencer le niveau",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Génère un éclairage dynamique pour les coups de feu et les explosions, comme apparu depuis TR2.",

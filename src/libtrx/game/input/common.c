@@ -300,7 +300,7 @@ bool Input_AssignFromJSONObject(
     case 29: role = INPUT_ROLE_SAVE; break;
     case 30: role = INPUT_ROLE_LOAD; break;
     case 31: role = INPUT_ROLE_FPS; break;
-    case 32: role = INPUT_ROLE_BILINEAR; break;
+    case 32: role = INPUT_ROLE_TOGGLE_BILINEAR_FILTER; break;
     case 33: role = INPUT_ROLE_ENTER_CONSOLE; break;
     case 34: role = INPUT_ROLE_CHANGE_TARGET; break;
     case 35: role = INPUT_ROLE_TOGGLE_UI; break;

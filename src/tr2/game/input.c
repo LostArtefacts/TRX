@@ -19,70 +19,70 @@ static void M_UpdateFromBackend(
     const INPUT_LAYOUT layout)
 {
     // clang-format off
-    s->forward                     |= backend->is_pressed(layout, INPUT_ROLE_UP);
-    s->back                        |= backend->is_pressed(layout, INPUT_ROLE_DOWN);
-    s->left                        |= backend->is_pressed(layout, INPUT_ROLE_LEFT);
-    s->right                       |= backend->is_pressed(layout, INPUT_ROLE_RIGHT);
-    s->step_left                   |= backend->is_pressed(layout, INPUT_ROLE_STEP_LEFT);
-    s->step_right                  |= backend->is_pressed(layout, INPUT_ROLE_STEP_RIGHT);
-    s->slow                        |= backend->is_pressed(layout, INPUT_ROLE_SLOW);
-    s->jump                        |= backend->is_pressed(layout, INPUT_ROLE_JUMP);
-    s->action                      |= backend->is_pressed(layout, INPUT_ROLE_ACTION);
-    s->draw                        |= backend->is_pressed(layout, INPUT_ROLE_DRAW_WEAPON);
-    s->look                        |= backend->is_pressed(layout, INPUT_ROLE_LOOK);
-    s->roll                        |= backend->is_pressed(layout, INPUT_ROLE_ROLL);
-    s->sprint                      |= backend->is_pressed(layout, INPUT_ROLE_SPRINT);
+    s->forward                 |= backend->is_pressed(layout, INPUT_ROLE_UP);
+    s->back                    |= backend->is_pressed(layout, INPUT_ROLE_DOWN);
+    s->left                    |= backend->is_pressed(layout, INPUT_ROLE_LEFT);
+    s->right                   |= backend->is_pressed(layout, INPUT_ROLE_RIGHT);
+    s->step_left               |= backend->is_pressed(layout, INPUT_ROLE_STEP_LEFT);
+    s->step_right              |= backend->is_pressed(layout, INPUT_ROLE_STEP_RIGHT);
+    s->slow                    |= backend->is_pressed(layout, INPUT_ROLE_SLOW);
+    s->jump                    |= backend->is_pressed(layout, INPUT_ROLE_JUMP);
+    s->action                  |= backend->is_pressed(layout, INPUT_ROLE_ACTION);
+    s->draw                    |= backend->is_pressed(layout, INPUT_ROLE_DRAW_WEAPON);
+    s->look                    |= backend->is_pressed(layout, INPUT_ROLE_LOOK);
+    s->roll                    |= backend->is_pressed(layout, INPUT_ROLE_ROLL);
+    s->sprint                  |= backend->is_pressed(layout, INPUT_ROLE_SPRINT);
 
-    s->enter_console               |= backend->is_pressed(layout, INPUT_ROLE_ENTER_CONSOLE);
-    s->save                        |= backend->is_pressed(layout, INPUT_ROLE_SAVE);
-    s->load                        |= backend->is_pressed(layout, INPUT_ROLE_LOAD);
+    s->enter_console           |= backend->is_pressed(layout, INPUT_ROLE_ENTER_CONSOLE);
+    s->save                    |= backend->is_pressed(layout, INPUT_ROLE_SAVE);
+    s->load                    |= backend->is_pressed(layout, INPUT_ROLE_LOAD);
 
-    s->pause                       |= backend->is_pressed(layout, INPUT_ROLE_PAUSE);
-    s->toggle_ui                   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_UI);
-    s->toggle_photo_mode           |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_PHOTO_MODE);
+    s->pause                   |= backend->is_pressed(layout, INPUT_ROLE_PAUSE);
+    s->toggle_ui               |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_UI);
+    s->toggle_photo_mode       |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_PHOTO_MODE);
 
-    s->camera_up                   |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_UP);
-    s->camera_down                 |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_DOWN);
-    s->camera_forward              |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_FORWARD);
-    s->camera_back                 |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_BACK);
-    s->camera_left                 |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_LEFT);
-    s->camera_right                |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_RIGHT);
+    s->camera_up               |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_UP);
+    s->camera_down             |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_DOWN);
+    s->camera_forward          |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_FORWARD);
+    s->camera_back             |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_BACK);
+    s->camera_left             |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_LEFT);
+    s->camera_right            |= backend->is_pressed(layout, INPUT_ROLE_CAMERA_RIGHT);
 
-    s->item_cheat                  |= backend->is_pressed(layout, INPUT_ROLE_ITEM_CHEAT);
-    s->fly_cheat                   |= backend->is_pressed(layout, INPUT_ROLE_FLY_CHEAT);
-    s->level_skip_cheat            |= backend->is_pressed(layout, INPUT_ROLE_LEVEL_SKIP_CHEAT);
-    s->turbo_cheat                 |= backend->is_pressed(layout, INPUT_ROLE_TURBO_CHEAT);
+    s->item_cheat              |= backend->is_pressed(layout, INPUT_ROLE_ITEM_CHEAT);
+    s->fly_cheat               |= backend->is_pressed(layout, INPUT_ROLE_FLY_CHEAT);
+    s->level_skip_cheat        |= backend->is_pressed(layout, INPUT_ROLE_LEVEL_SKIP_CHEAT);
+    s->turbo_cheat             |= backend->is_pressed(layout, INPUT_ROLE_TURBO_CHEAT);
 
-    s->equip_pistols               |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_PISTOLS);
-    s->equip_shotgun               |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_SHOTGUN);
-    s->equip_magnums               |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_MAGNUMS);
-    s->equip_uzis                  |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_UZIS);
-    s->equip_harpoon               |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_HARPOON);
-    s->equip_m16                   |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_M16);
-    s->equip_grenade_launcher      |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_GRENADE_LAUNCHER);
-    s->use_flare                   |= backend->is_pressed(layout, INPUT_ROLE_USE_FLARE);
-    s->use_small_medi              |= backend->is_pressed(layout, INPUT_ROLE_USE_SMALL_MEDI);
-    s->use_big_medi                |= backend->is_pressed(layout, INPUT_ROLE_USE_BIG_MEDI);
+    s->equip_pistols           |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_PISTOLS);
+    s->equip_shotgun           |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_SHOTGUN);
+    s->equip_magnums           |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_MAGNUMS);
+    s->equip_uzis              |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_UZIS);
+    s->equip_harpoon           |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_HARPOON);
+    s->equip_m16               |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_M16);
+    s->equip_grenade_launcher  |= backend->is_pressed(layout, INPUT_ROLE_EQUIP_GRENADE_LAUNCHER);
+    s->use_flare               |= backend->is_pressed(layout, INPUT_ROLE_USE_FLARE);
+    s->use_small_medi          |= backend->is_pressed(layout, INPUT_ROLE_USE_SMALL_MEDI);
+    s->use_big_medi            |= backend->is_pressed(layout, INPUT_ROLE_USE_BIG_MEDI);
 
-    s->option                      |= backend->is_pressed(layout, INPUT_ROLE_INVENTORY);
-    s->menu_up                     |= backend->is_pressed(layout, INPUT_ROLE_MENU_UP);
-    s->menu_down                   |= backend->is_pressed(layout, INPUT_ROLE_MENU_DOWN);
-    s->menu_left                   |= backend->is_pressed(layout, INPUT_ROLE_MENU_LEFT);
-    s->menu_right                  |= backend->is_pressed(layout, INPUT_ROLE_MENU_RIGHT);
-    s->menu_confirm                |= backend->is_pressed(layout, INPUT_ROLE_MENU_CONFIRM);
-    s->menu_back                   |= backend->is_pressed(layout, INPUT_ROLE_MENU_BACK);
-    s->reset_bindings              |= backend->is_pressed(layout, INPUT_ROLE_RESET_BINDINGS);
-    s->unbind_key                  |= backend->is_pressed(layout, INPUT_ROLE_UNBIND_KEY);
+    s->option                  |= backend->is_pressed(layout, INPUT_ROLE_INVENTORY);
+    s->menu_up                 |= backend->is_pressed(layout, INPUT_ROLE_MENU_UP);
+    s->menu_down               |= backend->is_pressed(layout, INPUT_ROLE_MENU_DOWN);
+    s->menu_left               |= backend->is_pressed(layout, INPUT_ROLE_MENU_LEFT);
+    s->menu_right              |= backend->is_pressed(layout, INPUT_ROLE_MENU_RIGHT);
+    s->menu_confirm            |= backend->is_pressed(layout, INPUT_ROLE_MENU_CONFIRM);
+    s->menu_back               |= backend->is_pressed(layout, INPUT_ROLE_MENU_BACK);
+    s->reset_bindings          |= backend->is_pressed(layout, INPUT_ROLE_RESET_BINDINGS);
+    s->unbind_key              |= backend->is_pressed(layout, INPUT_ROLE_UNBIND_KEY);
 
-    s->screenshot                  |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
-    s->switch_upscaling            |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_UPSCALING);
-    s->switch_borders              |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_BORDERS);
-    s->toggle_fps_counter          |= backend->is_pressed(layout, INPUT_ROLE_FPS);
-    s->toggle_bilinear_filter      |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_BILINEAR_FILTER);
-    s->toggle_trapezoid_filter     |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);
-    s->toggle_wireframe            |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_WIREFRAME);
-    s->cycle_lighting_contrast     |= backend->is_pressed(layout, INPUT_ROLE_CYCLE_LIGHTING_CONTRAST);
-    s->toggle_fullscreen           |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_FULLSCREEN);
+    s->screenshot              |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
+    s->switch_upscaling        |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_UPSCALING);
+    s->switch_borders          |= backend->is_pressed(layout, INPUT_ROLE_SWITCH_BORDERS);
+    s->toggle_fps_counter      |= backend->is_pressed(layout, INPUT_ROLE_FPS);
+    s->toggle_bilinear_filter  |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_BILINEAR_FILTER);
+    s->toggle_trapezoid_filter |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);
+    s->toggle_wireframe        |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_WIREFRAME);
+    s->cycle_lighting_contrast |= backend->is_pressed(layout, INPUT_ROLE_CYCLE_LIGHTING_CONTRAST);
+    s->toggle_fullscreen       |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_FULLSCREEN);
     // clang-format on
 
     backend->custom_update(s, layout);
