@@ -134,6 +134,7 @@ sources = [
   'game/demo/common.c',
   'game/events.c',
   'game/fader.c',
+  'game/fmv.c',
   'game/game.c',
   'game/game_buf.c',
   'game/game_flow/common.c',

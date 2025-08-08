@@ -97,7 +97,6 @@ sources = [
   'game/cutscene.c',
   'game/demo.c',
   'game/effects.c',
-  'game/fmv.c',
   'game/game.c',
   'game/game_flow/common.c',
   'game/game_flow/sequencer_events.c',
