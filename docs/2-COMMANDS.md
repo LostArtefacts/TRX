@@ -93,9 +93,10 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/debug on`  
   `/debug off`  
   Toggles debug mode, turning your screen into a glorious display of dev scribbles.
-  - (TR1) floor triggers - enemy skips incoming!
-  - (TR1) room portals - wait, there are _how_ many rooms?!
-  - (TR1) object mesh spheres - see hitboxes in their natural habitat.
+  - floor triggers - enemy skips incoming!
+  - room portals - wait, there are _how_ many rooms?!
+  - room clip rectangles – the source of developers nightmares.
+  - object mesh spheres - see hitboxes in their natural habitat.
   - Lara's position and animation details - nerdy stats, you've gotta love them.
 
 - `/speed`  
