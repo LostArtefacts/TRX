@@ -12,6 +12,11 @@
 - fixed loading a save made in the gym with the item cheat resulting in Lara's meshes appearing broken (#3917, regression from 4.7)
 - fixed resumed music tracks playing briefly track start upon savegame load (#3916)
 - fixed loading TombATI saves with shotgun equipped causing weird Lara's animation (#3920, regression from 4.12)
+- fixed numerous interactions with movable blocks, trapdoors, drawbridges, bridges, sliding pillars, and falling blocks for custom levels (#2758):
+    - added the ability for movable blocks to move on trapdoors, drawbridges, bridges, sliding pillars, and falling blocks
+    - added the ability for stacks of movable blocks to fall and land on trapdoors, drawbridges, bridges, sliding pillars, and falling blocks
+    - added the ability for stacks of movable blocks to fall when on opened trapdoors and drawbridges
+    - fixed various bugs with falling movable blocks
 
 ## [4.14.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.1...tr1-4.14.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 4.14)

@@ -238,12 +238,12 @@ int16_t Room_GetHeight(
     const SECTOR *const sector, const int32_t x, const int32_t y,
     const int32_t z)
 {
-    return Room_GetHeightEx(sector, x, y, z, false);
+    return Room_GetHeightEx(sector, x, y, z, false, NO_ITEM);
 }
 
 int16_t Room_GetHeightEx(
     const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
-    const bool fix_tilts)
+    const bool fix_tilts, const int16_t ignore_item_num)
 {
     m_HeightType = HT_WALL;
 
@@ -256,20 +256,27 @@ int16_t Room_GetHeightEx(
         height = M_GetFloorTiltHeight(pit_sector, x, z, fix_tilts);
     }
 
-    if (pit_sector->trigger == nullptr) {
-        return height;
-    }
-
-    const TRIGGER_CMD *cmd = pit_sector->trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type != TO_OBJECT) {
+    // Climb the stack of walkables.
+    int32_t test_y = y;
+    for (WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
+        // Optionally ignore a walkable.
+        if (w->item_num == ignore_item_num) {
             continue;
         }
-
-        const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
+        const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
-            height = obj->floor_height_func(item, x, y, z, height);
+            const int32_t test_height =
+                obj->floor_height_func(item, x, test_y, z, height);
+            // If the floor height changed, try to climb the walkable stack.
+            if (test_height != height) {
+                height = test_height;
+                // Only raise the test y value if the test floor height is above
+                // the original y value.
+                if (y > test_height) {
+                    test_y = test_height;
+                }
+            }
         }
     }
 
@@ -291,17 +298,9 @@ int16_t Room_GetCeilingEx(
     int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z, fix_tilts);
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
-    if (pit_sector->trigger == nullptr) {
-        return height;
-    }
 
-    const TRIGGER_CMD *cmd = pit_sector->trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type != TO_OBJECT) {
-            continue;
-        }
-
-        const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
+    for (WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
+        const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
             height = obj->ceiling_height_func(item, x, y, z, height);
@@ -440,27 +439,28 @@ int32_t Room_FindGridShift(int32_t src, const int32_t dst)
 
 bool Room_IsOnWalkable(
     const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
-    const int32_t room_height)
+    const int32_t room_height, const int16_t ignore_item_num)
 {
     sector = Room_GetPitSector(sector, x, z);
-    if (sector->trigger == nullptr) {
-        return false;
-    }
 
     int16_t height = sector->floor.height;
     bool object_found = false;
-    const TRIGGER_CMD *cmd = sector->trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type != TO_OBJECT) {
+    for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
+        // Don't take into account current walkable's floor or ceiling.
+        if (w->item_num == ignore_item_num) {
             continue;
         }
-
-        const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
-        const ITEM *const item = Item_Get(item_num);
+        const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
-            height = obj->floor_height_func(item, x, y, z, height);
-            object_found = true;
+            const int32_t test_height =
+                obj->floor_height_func(item, x, y, z, height);
+            // If the floor height changed, try to climb the walkable stack.
+            if (test_height != height) {
+                // Check if height changed aka actually on a walkable.
+                height = test_height;
+                object_found = true;
+            }
         }
     }
 

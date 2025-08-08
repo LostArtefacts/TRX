@@ -846,7 +846,7 @@ void Camera_ClampInterpResult(void)
 
 finish:
     const int32_t floor =
-        Room_GetHeightEx(sector, pos->x, pos->y, pos->z, true);
+        Room_GetHeightEx(sector, pos->x, pos->y, pos->z, true, NO_ITEM);
     const int32_t ceiling =
         Room_GetCeilingEx(sector, pos->x, pos->y, pos->z, true);
     if (floor != NO_HEIGHT && ceiling != NO_HEIGHT) {

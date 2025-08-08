@@ -158,8 +158,6 @@ static void M_LoadPostprocess(void)
 #endif
     }
 
-    MovableBlock_SetupFloor();
-
     LARA_INFO *const lara = Lara_GetLaraInfo();
 #if TR_VERSION == 1
     if (Game_GetBonusFlag() != GBF_NONE) {

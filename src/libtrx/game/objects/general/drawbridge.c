@@ -1,13 +1,20 @@
 #include "config.h"
+#include "debug.h"
 #include "game/items.h"
 #include "game/objects.h"
 #include "game/objects/general/door.h"
+#include "game/objects/traps/movable_block.h"
 #include "game/rooms.h"
+#include "vector.h"
 
 typedef enum {
     DRAWBRIDGE_STATE_CLOSED = DOOR_STATE_CLOSED,
     DRAWBRIDGE_STATE_OPEN = DOOR_STATE_OPEN,
 } DRAWBRIDGE_STATE;
+
+typedef enum {
+    DRAWBRIDGE_ANIM_CLOSED = 3,
+} DRAWBRIDGE_ANIM;
 
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 static int16_t M_GetFloorHeight(
@@ -16,6 +23,11 @@ static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Control(int16_t item_num);
+static void M_AddWalkable(int16_t item_num);
+static void M_Setup(OBJECT *const obj);
+static BOUNDS_16 M_RotateBounds(BOUNDS_16 bounds, int16_t rot_y);
+static void M_DropStack(const ITEM *item);
+static void M_GetSectorPositions(const ITEM *item, VECTOR *sector_pos);
 
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 {
@@ -89,6 +101,9 @@ static void M_Control(int16_t item_num)
         item->goal_anim_state = DRAWBRIDGE_STATE_OPEN;
     } else {
         item->goal_anim_state = DRAWBRIDGE_STATE_CLOSED;
+        if (item->current_anim_state == DRAWBRIDGE_STATE_OPEN) {
+            M_DropStack(item);
+        }
     }
 
     Item_Animate(item);
@@ -98,17 +113,106 @@ static void M_Control(int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 }
 
+static void M_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    for (int32_t i = 0; i < positions->count; i++) {
+        Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
+    }
+    Vector_Free(positions);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
-    if (!obj->loaded) {
-        return;
-    }
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
     obj->save_anim = true;
     obj->save_flags = true;
     obj->floor_height_func = M_GetFloorHeight;
+    obj->add_walkable_func = M_AddWalkable;
+}
+
+void M_DropStack(const ITEM *const item)
+{
+    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    for (int32_t i = 0; i < positions->count; i++) {
+        MovableBlock_DropStack(
+            item->pos.y, *(const XYZ_32 *)Vector_Get(positions, i),
+            item->room_num);
+    }
+    Vector_Free(positions);
+}
+
+BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
+{
+    BOUNDS_16 rot_bounds = {};
+
+    switch (rot_y) {
+    case 0:
+    default:
+        rot_bounds = bounds;
+        break;
+    case DEG_90:
+        rot_bounds.min.x = bounds.min.z;
+        rot_bounds.max.x = bounds.max.z;
+        rot_bounds.min.z = -bounds.max.x;
+        rot_bounds.max.z = -bounds.min.x;
+        break;
+    case -DEG_180:
+        rot_bounds.min.x = -bounds.max.x;
+        rot_bounds.max.x = -bounds.min.x;
+        rot_bounds.min.z = -bounds.max.z;
+        rot_bounds.max.z = -bounds.min.z;
+        break;
+    case -DEG_90:
+        rot_bounds.min.x = -bounds.max.z;
+        rot_bounds.max.x = -bounds.min.z;
+        rot_bounds.min.z = bounds.min.x;
+        rot_bounds.max.z = bounds.max.x;
+        break;
+    }
+    return rot_bounds;
+}
+
+static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const ANIM_FRAME *const frame =
+        Object_GetAnim(obj, DRAWBRIDGE_ANIM_CLOSED)->frame_ptr;
+    const BOUNDS_16 rot_bounds = M_RotateBounds(frame->bounds, item->rot.y);
+
+    const int32_t x0 = item->pos.x + rot_bounds.min.x;
+    const int32_t x1 = item->pos.x + rot_bounds.max.x - 1; // inclusive
+    const int32_t z0 = item->pos.z + rot_bounds.min.z;
+    const int32_t z1 = item->pos.z + rot_bounds.max.z - 1;
+
+    const int32_t sx0 = Math_FloorDiv(x0, WALL_L);
+    const int32_t sx1 = Math_FloorDiv(x1, WALL_L);
+    const int32_t sz0 = Math_FloorDiv(z0, WALL_L);
+    const int32_t sz1 = Math_FloorDiv(z1, WALL_L);
+
+    // Sector of the drawbridge original position.
+    const int32_t sx_orig = Math_FloorDiv(item->pos.x, WALL_L);
+    const int32_t sz_orig = Math_FloorDiv(item->pos.z, WALL_L);
+
+    for (int32_t sx = sx0; sx <= sx1; ++sx) {
+        for (int32_t sz = sz0; sz <= sz1; ++sz) {
+            if (sx == sx_orig && sz == sz_orig) {
+                // Skip the original sector since it's WALL_L away.
+                continue;
+            }
+            const XYZ_32 pos = {
+                .x = sx * WALL_L + WALL_L / 2,
+                .y = item->pos.y,
+                .z = sz * WALL_L + WALL_L / 2,
+            };
+            Vector_Add(sector_pos, &pos);
+        }
+    }
 }
 
 REGISTER_OBJECT(O_DRAWBRIDGE, M_Setup)

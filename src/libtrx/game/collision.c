@@ -20,7 +20,7 @@ static bool M_IsOnWalkable(
     const int32_t z, const int32_t room_height)
 {
     return g_Config.gameplay.fix_bridge_collision
-        && Room_IsOnWalkable(sector, x, y, z, room_height);
+        && Room_IsOnWalkable(sector, x, y, z, room_height, NO_ITEM);
 }
 
 // Probes the front, left, and right of Lara and fills in the collision info for
@@ -40,6 +40,8 @@ static void M_FillSide(
     int32_t ceiling = Room_GetCeiling(sector, x_pos, y_top, z_pos);
     const int32_t room_height = height;
     const int32_t room_ceiling = ceiling;
+    const bool sim_wall = room_height == ceiling && room_height != NO_HEIGHT
+        && sector->ceiling.tilt == 0 && sector->floor.tilt == 0;
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
@@ -66,6 +68,9 @@ static void M_FillSide(
             && Room_GetPitSector(sector, x_pos, z_pos)->is_death_sector) {
             side->floor = STEP_L * 2;
         }
+    } else if (sim_wall) {
+        side->floor = NO_HEIGHT;
+        side->ceiling = NO_HEIGHT;
     }
 }
 

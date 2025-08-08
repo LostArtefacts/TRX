@@ -3,6 +3,8 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/lara.h"
+#include "game/objects/traps/sliding_pillar.h"
+#include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
@@ -14,6 +16,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
@@ -642,6 +645,61 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
                     JSON_ObjectGetInt(item_obj, "bl_status", 0);
                 item->data = (void *)(intptr_t)status;
             }
+
+            if (header_version >= VERSION_12
+                && Object_IsType(item->object_id, g_MovableBlockObjects)) {
+                JSON_OBJECT *const data_obj =
+                    JSON_ObjectGetObject(item_obj, "data");
+                if (data_obj == nullptr) {
+                    LOG_ERROR(
+                        "Malformed save: missing movable block data for item "
+                        "%d",
+                        i);
+                    return false;
+                }
+                MOVABLE_BLOCK_INFO *const data = item->data;
+                data->counter_rot[0] = JSON_ObjectGetInt(
+                    data_obj, "counter_rot_0", data->counter_rot[0]);
+                data->counter_rot[1] = JSON_ObjectGetInt(
+                    data_obj, "counter_rot_1", data->counter_rot[1]);
+                data->counter_rot[2] = JSON_ObjectGetInt(
+                    data_obj, "counter_rot_2", data->counter_rot[2]);
+                data->original_rot = JSON_ObjectGetInt(
+                    data_obj, "original_rot", data->original_rot);
+                data->gravity_frames = JSON_ObjectGetInt(
+                    data_obj, "gravity_frames", data->gravity_frames);
+                data->is_push_pull = JSON_ObjectGetBool(
+                    data_obj, "is_push_pull", data->is_push_pull);
+                data->is_forced_moving = JSON_ObjectGetBool(
+                    data_obj, "is_forced_moving", data->is_forced_moving);
+                LOAD_XYZ(data_obj, "linked", data->linked);
+            } else if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
+                // For old saves, guess linked sector is at item position.
+                MOVABLE_BLOCK_INFO *const data = item->data;
+                data->linked.pos = item->pos;
+                data->linked.room_num = item->room_num;
+            }
+
+            if (header_version >= VERSION_12
+                && item->object_id == O_SLIDING_PILLAR
+                && item->data != nullptr) {
+                JSON_OBJECT *const data_obj =
+                    JSON_ObjectGetObject(item_obj, "data");
+                if (data_obj == nullptr) {
+                    LOG_ERROR(
+                        "Malformed save: missing sliding pillar data for item "
+                        "%d",
+                        i);
+                    return false;
+                }
+                SLIDING_PILLAR_INFO *const data = item->data;
+                LOAD_XYZ(data_obj, "linked", data->linked);
+            } else if (item->object_id == O_SLIDING_PILLAR) {
+                // For old saves, guess linked sector is at item position.
+                SLIDING_PILLAR_INFO *const data = item->data;
+                data->linked.pos = item->pos;
+                data->linked.room_num = item->room_num;
+            }
         }
 
         JSON_ARRAY *carried_items =
@@ -1202,6 +1260,35 @@ static JSON_ARRAY *M_DumpItems(void)
             if (item->object_id == O_BACON_LARA && item->data) {
                 const int32_t status = (int32_t)(intptr_t)item->data;
                 JSON_ObjectAppendInt(item_obj, "bl_status", status);
+            }
+
+            if (Object_IsType(item->object_id, g_MovableBlockObjects)
+                && item->data != nullptr) {
+                MOVABLE_BLOCK_INFO *const data = item->data;
+                JSON_OBJECT *const data_obj = JSON_ObjectNew();
+                JSON_ObjectAppendInt(
+                    data_obj, "counter_rot_0", data->counter_rot[0]);
+                JSON_ObjectAppendInt(
+                    data_obj, "counter_rot_1", data->counter_rot[1]);
+                JSON_ObjectAppendInt(
+                    data_obj, "counter_rot_2", data->counter_rot[2]);
+                JSON_ObjectAppendInt(
+                    data_obj, "original_rot", data->original_rot);
+                JSON_ObjectAppendInt(
+                    data_obj, "gravity_frames", data->gravity_frames);
+                JSON_ObjectAppendBool(
+                    data_obj, "is_push_pull", data->is_push_pull);
+                JSON_ObjectAppendBool(
+                    data_obj, "is_forced_moving", data->is_forced_moving);
+                DUMP_XYZ(data_obj, "linked", data->linked);
+                JSON_ObjectAppendObject(item_obj, "data", data_obj);
+            }
+
+            if (item->object_id == O_SLIDING_PILLAR && item->data != nullptr) {
+                SLIDING_PILLAR_INFO *const data = item->data;
+                JSON_OBJECT *const data_obj = JSON_ObjectNew();
+                DUMP_XYZ(data_obj, "linked", data->linked);
+                JSON_ObjectAppendObject(item_obj, "data", data_obj);
             }
         }
 

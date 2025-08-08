@@ -42,4 +42,7 @@ typedef enum {
     // Changed TR2 music tracks to no longer shift IDs, legacy saves require to
     // do the shifting on load.
     VERSION_11 = 11,
+
+    // Save and load MOVABLE_BLOCK_INFO in item->data.
+    VERSION_12 = 12,
 } SAVEGAME_VERSION;

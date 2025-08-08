@@ -3,8 +3,9 @@
 #include "debug.h"
 #include "game/const.h"
 #include "game/game_buf.h"
+#include "game/level.h"
 #include "game/objects/common.h"
-#include "game/objects/traps/movable_block.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/rooms.h"
 #include "game/sound/common.h"
@@ -119,7 +120,7 @@ void Room_InitialiseFlipStatus(void)
 
 void Room_FlipMap(void)
 {
-    MovableBlock_HandleFlipMap(RFS_UNFLIPPED);
+    Walkable_Reset();
 
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         ROOM *const room = Room_Get(i);
@@ -145,7 +146,6 @@ void Room_FlipMap(void)
         M_AddFlipItems(room);
     }
 
-    MovableBlock_HandleFlipMap(RFS_FLIPPED);
     m_FlipStatus = !m_FlipStatus;
 
     for (int32_t i = 0; i < Room_GetCount(); i++) {
@@ -154,6 +154,8 @@ void Room_FlipMap(void)
             Output_DispatchRoomFlip(room);
         }
     }
+
+    Level_LoadWalkables();
 }
 
 bool Room_GetFlipStatus(void)
@@ -352,8 +354,8 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
                     .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
                 };
                 sector = Room_GetSector(point.x, point.y, point.z, &room_num);
-                height =
-                    Room_GetHeightEx(sector, point.x, point.y, point.z, true);
+                height = Room_GetHeightEx(
+                    sector, point.x, point.y, point.z, true, NO_ITEM);
                 if (height == NO_HEIGHT) {
                     continue;
                 }

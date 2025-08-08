@@ -1,12 +1,14 @@
 #include "game/lara.h"
 #include "game/objects.h"
 #include "game/rooms.h"
+#include "vector.h"
 
 static int32_t M_GetOrigin(GAME_OBJECT_ID obj_id);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static void M_AddWalkable(int16_t item_num);
 static void M_Control(int16_t item_num);
 static void M_Setup(OBJECT *obj);
 
@@ -43,6 +45,12 @@ static int16_t M_GetCeilingHeight(
         return item->pos.y + origin + STEP_L;
     }
     return height;
+}
+
+void M_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    Walkable_Add(item_num, item->pos);
 }
 
 static void M_Control(const int16_t item_num)
@@ -102,6 +110,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->add_walkable_func = M_AddWalkable;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;

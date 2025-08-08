@@ -77,6 +77,16 @@ const GAME_OBJECT_ID g_BossObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_MovableBlockObjects[] = {
+    // clang-format off
+    O_MOVABLE_BLOCK_1,
+    O_MOVABLE_BLOCK_2,
+    O_MOVABLE_BLOCK_3,
+    O_MOVABLE_BLOCK_4,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
     O_STATUE,

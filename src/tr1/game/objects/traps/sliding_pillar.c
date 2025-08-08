@@ -1,61 +1,174 @@
+#include "game/objects/traps/sliding_pillar.h"
+
+#include <libtrx/game/const.h>
+#include <libtrx/game/game_buf.h>
+#include <libtrx/game/items/walkable.h>
 #include <libtrx/game/objects.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/rooms.h>
+#include <libtrx/utils.h>
+#include <libtrx/vector.h>
 
 typedef enum {
     // clang-format off
-    STATE_START  = 0,
-    STATE_END    = 1,
-    STATE_MOVING = 2,
+    PILLAR_STATE_READY_FORWARD = 0,
+    PILLAR_STATE_READY_BACK    = 1,
+    PILLAR_STATE_MOVING        = 2,
     // clang-format on
-} M_ANIM_STATE;
+} PILLAR_STATE;
 
+typedef enum {
+    // clang-format off
+    PILLAR_ANIM_READY_FORWARD = 0,
+    PILLAR_ANIM_READY_BACK    = 1,
+    PILLAR_ANIM_FORWARD       = 2,
+    PILLAR_ANIM_BACK          = 3,
+    // clang-format on
+} PILLAR_ANIM;
+
+static void M_SetInitial(ITEM *item);
+static GAME_VECTOR M_GetInitial(const ITEM *item);
+static void M_SetLinked(ITEM *item);
+static GAME_VECTOR M_GetLinked(const ITEM *item);
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static void M_AddWalkable(int16_t item_num);
 static void M_Setup(OBJECT *obj);
 static void M_HandleFlip(ITEM *item, ROOM_FLIP_STATUS flip_status);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
 
+static void M_SetInitial(ITEM *const item)
+{
+    SLIDING_PILLAR_INFO *const data = item->data;
+    data->initial.pos = item->pos;
+    data->initial.room_num = item->room_num;
+}
+
+static GAME_VECTOR M_GetInitial(const ITEM *const item)
+{
+    const SLIDING_PILLAR_INFO *const data = item->data;
+    return data->initial;
+}
+
+static void M_SetLinked(ITEM *const item)
+{
+    SLIDING_PILLAR_INFO *const data = item->data;
+    data->linked.pos = item->pos;
+    data->linked.room_num = item->room_num;
+}
+
+static GAME_VECTOR M_GetLinked(const ITEM *const item)
+{
+    const SLIDING_PILLAR_INFO *const data = item->data;
+    return data->linked;
+}
+
+static bool M_IsItemOnTop(
+    const ITEM *const item, const int32_t x, const int32_t z)
+{
+    int32_t dx = x - item->pos.x;
+    int32_t dz = z - item->pos.z;
+
+    // Movable blocks' bounds don't match sector so estimate.
+    return (dx >= -WALL_L / 2 && dx < WALL_L / 2)
+        && (dz >= -WALL_L / 2 && dz < WALL_L / 2);
+}
+
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, int32_t x, int32_t y, int32_t z, int16_t height)
+{
+    if (item->status == IS_INVISIBLE) {
+        return height;
+    }
+
+    if (item->current_anim_state == PILLAR_STATE_MOVING) {
+        return height;
+    }
+
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    }
+
+    // If under the bottom of the block.
+    if (y > item->pos.y) {
+        return height;
+    }
+
+    // If the the top of the block is under the floor height.
+    if (item->pos.y - WALL_L * 2 >= height) {
+        return height;
+    }
+
+    return item->pos.y - WALL_L * 2;
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height)
+{
+    if (item->status == IS_INVISIBLE) {
+        return height;
+    }
+
+    if (item->current_anim_state == PILLAR_STATE_MOVING) {
+        return height;
+    }
+
+    // Only care if we are inside the block footprint.
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    }
+
+    // If above the top of the block.
+    if (y <= item->pos.y - WALL_L * 2) {
+        return height;
+    }
+
+    // If the the bottom of the block is above the ceiling height.
+    if (item->pos.y <= height) {
+        return height;
+    }
+
+    return item->pos.y;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
-    obj->handle_flip_func = M_HandleFlip;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_position = true;
     obj->save_anim = true;
     obj->save_flags = true;
+    obj->add_walkable_func = M_AddWalkable;
 }
 
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    Room_AlterFloorHeight(item, -WALL_L * 2);
-}
-
-static void M_HandleFlip(ITEM *const item, const ROOM_FLIP_STATUS flip_status)
-{
-    if (flip_status == RFS_FLIPPED) {
-        Room_AlterFloorHeight(item, -WALL_L * 2);
-    } else {
-        Room_AlterFloorHeight(item, WALL_L * 2);
-    }
+    MovableBlock_UpdateBox(item, false);
+    SLIDING_PILLAR_INFO *const pillar_data =
+        GameBuf_Alloc(sizeof(SLIDING_PILLAR_INFO), GBUF_ITEM_DATA);
+    item->data = pillar_data;
+    M_SetInitial(item);
+    M_SetLinked(item);
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
-    switch (stage) {
-    case SAVEGAME_STAGE_BEFORE_LOAD:
-        Room_AlterFloorHeight(item, WALL_L * 2);
-        break;
-
-    case SAVEGAME_STAGE_AFTER_LOAD:
-        if (item->current_anim_state != STATE_MOVING) {
-            Room_AlterFloorHeight(item, -WALL_L * 2);
-        }
-        break;
-
-    default:
-        break;
+    if (stage == SAVEGAME_STAGE_BEFORE_LOAD) {
+        MovableBlock_UpdateBox(item, false);
+    } else if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        const int16_t item_num = Item_GetIndex(item);
+        // Reposition walkable to its linked sector.
+        Walkable_Reposition(item_num, M_GetInitial(item), M_GetLinked(item));
+        MovableBlock_UpdateBox(item, true);
     }
 }
 
@@ -63,29 +176,52 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == STATE_START) {
-            item->goal_anim_state = STATE_END;
-            Room_AlterFloorHeight(item, WALL_L * 2);
+        if (item->current_anim_state == PILLAR_STATE_READY_FORWARD) {
+            item->goal_anim_state = PILLAR_STATE_READY_BACK;
         }
-    } else if (item->current_anim_state == STATE_END) {
-        item->goal_anim_state = STATE_START;
-        Room_AlterFloorHeight(item, WALL_L * 2);
+    } else if (item->current_anim_state == PILLAR_STATE_READY_BACK) {
+        item->goal_anim_state = PILLAR_STATE_READY_FORWARD;
     }
 
     Item_Animate(item);
-
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
-    if (item->status == IS_DEACTIVATED) {
-        item->status = IS_ACTIVE;
-        Room_AlterFloorHeight(item, -WALL_L * 2);
+    const GAME_VECTOR linked = M_GetLinked(item);
+
+    if (item->status == IS_ACTIVE
+        && (item->pos.x != linked.pos.x || item->pos.z != linked.pos.z)) {
+        MovableBlock_SlideStack(
+            item->pos.y - WALL_L * 2, linked.pos, item, false);
+        MovableBlock_UpdateBox(item, false);
+    } else if (
+        item->status == IS_DEACTIVATED
+        && (item->pos.x != linked.pos.x || item->pos.z != linked.pos.z)) {
         item->pos.x &= -WALL_L;
         item->pos.x += WALL_L / 2;
         item->pos.z &= -WALL_L;
         item->pos.z += WALL_L / 2;
+        const GAME_VECTOR target = {
+            .pos = item->pos,
+            .room_num = item->room_num,
+        };
+        Walkable_Reposition(item_num, linked, target);
+        M_SetLinked(item);
+
+        // Reposition possible movable blocks on top.
+        MovableBlock_SlideStack(
+            item->pos.y - WALL_L * 2, linked.pos, item, true);
+
+        MovableBlock_UpdateBox(item, true);
+        item->status = IS_ACTIVE;
     }
+}
+
+static void M_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    Walkable_Add(item_num, item->pos);
 }
 
 REGISTER_OBJECT(O_SLIDING_PILLAR, M_Setup)
