@@ -130,6 +130,14 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_SpriteLockModeEnumEntries[] = {
+    { BILLBOARD_LOCK_NONE, GS_ID(ENUM_BILLBOARD_LOCK_NONE) },
+    { BILLBOARD_LOCK_ROLL, GS_ID(ENUM_BILLBOARD_LOCK_ROLL) },
+    { BILLBOARD_LOCK_ROLL_PITCH, GS_ID(ENUM_BILLBOARD_LOCK_ROLL_PITCH) },
+    { BILLBOARD_LOCK_PERSPECTIVE, GS_ID(ENUM_BILLBOARD_LOCK_PERSPECTIVE) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[] = {
     { AM_4_3, GS_ID(ENUM_ASPECT_MODE_4_3) },
     { AM_16_9, GS_ID(ENUM_ASPECT_MODE_16_9) },

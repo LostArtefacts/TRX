@@ -17,6 +17,7 @@
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
+- added an option to keep sprites upright (Graphic options → Rendering → Sprites lock mode)
 - added Russian translation
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)

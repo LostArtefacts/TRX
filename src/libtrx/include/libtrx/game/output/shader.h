@@ -34,6 +34,7 @@ void Output_Shader_Bind(const OUTPUT_SHADER *shader);
 void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *shader);
 void Output_Shader_UploadPerspProjectionMatrix(const OUTPUT_SHADER *shader);
 void Output_Shader_UploadOrthoProjectionMatrix(const OUTPUT_SHADER *shader);
+void Output_Shader_UploadViewMatrix(const OUTPUT_SHADER *shader);
 
 void Output_Shader_UploadLightingMode(
     const OUTPUT_SHADER *shader, LIGHTING_MODE mode);

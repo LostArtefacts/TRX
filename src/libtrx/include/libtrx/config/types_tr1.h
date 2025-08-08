@@ -219,6 +219,7 @@ typedef struct {
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
         LIGHTING_CONTRAST lighting_contrast;
+        BILLBOARD_LOCK_MODE sprite_lock_mode;
         int32_t upscaling_factor;
         float borders;
     } rendering;
