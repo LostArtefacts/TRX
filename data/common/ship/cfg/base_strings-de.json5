@@ -607,6 +607,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Schaltet zwischen weichgezeichneten und pixeligen UI-Texturen hin und her.",
         "SETTING_UI_LANGUAGE": "Sprache",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Ändert die Sprache des UI-Textes.",
+        "SETTING_UI_PICKUP_SCALE": "\\{review}Aufnahmeskala",
+        "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "\\{review}Ändert die Größe der im UI animierten Gegenstände, wenn Lara etwas aufnimmt.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Scroll-Schleife",
         "SETTING_UI_SCROLL_WRAPAROUND_DESCRIPTION": "Ermöglicht die Richtungsnavigation in Menüs in einer Schleife.",
         "SETTING_UI_TEXT_SCALE": "Textgröße",

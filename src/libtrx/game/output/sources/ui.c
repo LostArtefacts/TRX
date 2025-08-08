@@ -1,5 +1,6 @@
 #include "game/output/sources/ui.h"
 
+#include "config.h"
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/output/scene_compositor.h"
@@ -47,23 +48,23 @@ VIEWPORT_RECT OutputSource_UI_GetPickupRect(
 {
     const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
 
-    const int32_t pickup_h = viewport.h / 6;
-    const int32_t pickup_w = pickup_h * 4 / 3;
-    const int32_t window_padding_y = viewport.h / 16;
-    const int32_t window_padding_x = window_padding_y * 4 / 3;
-    const int32_t grid_padding_x = pickup_w / 8;
-    const int32_t grid_padding_y = pickup_h / 8;
+    const float pickup_h = viewport.h * g_Config.ui.pickup_scale / 6;
+    const float pickup_w = pickup_h * 5 / 4;
+    const float window_padding_y = viewport.h / 16;
+    const float window_padding_x = window_padding_y * 4 / 3;
+    const float grid_padding_x = pickup_w / 8;
+    const float grid_padding_y = pickup_h / 8;
 
-    const int32_t src_x = viewport.w + window_padding_x + pickup_w;
-    const int32_t src_y = viewport.h - window_padding_y - pickup_h / 2;
+    const float src_x = viewport.w + window_padding_x + pickup_w;
+    const float src_y = viewport.h - window_padding_y - pickup_h / 2;
 
-    const int32_t dst_x = viewport.w - window_padding_x - pickup_w / 2
+    const float dst_x = viewport.w - window_padding_x - pickup_w / 2
         - (pickup_w + grid_padding_x) * pickup->grid_x;
-    const int32_t dst_y = viewport.h - window_padding_y - pickup_h / 2
+    const float dst_y = viewport.h - window_padding_y - pickup_h / 2
         - (pickup_h + grid_padding_y) * pickup->grid_y;
 
-    const int32_t x = src_x + (dst_x - src_x) * pickup->ease;
-    const int32_t y = src_y + (dst_y - src_y) * pickup->ease;
+    const float x = src_x + (dst_x - src_x) * pickup->ease;
+    const float y = src_y + (dst_y - src_y) * pickup->ease;
     return (VIEWPORT_RECT) {
         .x = x - pickup_w / 2,
         .y = y - pickup_h / 2,

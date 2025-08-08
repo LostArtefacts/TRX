@@ -1,7 +1,8 @@
 X_UI_CFG_STRING(language,                       SETTING_UI_LANGUAGE, .custom_handler = { .format_value = UI_Settings_Language_FormatValue, .can_change_value = UI_Settings_Language_CanChangeValue, .request_change_value = UI_Settings_Language_RequestChangeValue })
 
-X_UI_CFG_DOUBLE(ui.text_scale,                  SETTING_UI_TEXT_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 10, .delta_fast = 10)
-X_UI_CFG_DOUBLE(ui.bar_scale,                   SETTING_UI_BAR_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 10, .delta_fast = 10)
+X_UI_CFG_FLOAT_PERCENT(ui.text_scale,           SETTING_UI_TEXT_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG_FLOAT_PERCENT(ui.bar_scale,            SETTING_UI_BAR_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG_FLOAT_PERCENT(ui.pickup_scale,         SETTING_UI_PICKUP_SCALE, .min_value = 50, .max_value = 150, .delta_slow = 1, .delta_fast = 5, .custom_handler = { .is_available = UI_Settings_UIPickupsScale_IsAvailable })
 X_UI_CFG_BOOL(ui.enable_wraparound,             SETTING_UI_SCROLL_WRAPAROUND)
 
 #if TR_VERSION == 1

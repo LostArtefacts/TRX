@@ -36,9 +36,10 @@
 - added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
-- added German translation
-- added PS1 fade-out to final cutscene (#3521)
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
+- added an option to scale the 3D pickups in the UI (Graphic options → UI → Pickup scale)
+- added German translation
+- added a PS1 fade-out to final cutscene (#3521)
 - added a new `/vsync` console command to toggle the vsync option, like in TR1
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added a new `/restless` console command, which enables or disables infinite sprint
@@ -48,6 +49,7 @@
 - changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range (#3598)
 - changed `-l`/`--level` switch to accept the level number on top of the level path
 - changed settings dialogs to show a suitable message if a level builder has hidden all options within that dialog (#3637)
+- changed the text and bar scale option to work in smaller increments (10% reduced to 5%); added support for slow increments by 1% (hold Walk key)
 - changed the fly cheat to allow Lara to interact with switches and pickups (#3665)
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
