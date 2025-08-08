@@ -2,13 +2,13 @@
 
 #include "debug.h"
 #include "filesystem.h"
-#include "game/output/common.h"
-#include "game/viewport.h"
+#include "game/objects.h"
+#include "game/output/textures.h"
+#include "gfx/context.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
 #include "utils.h"
-#include "vector.h"
 
 #include <float.h>
 #include <stdio.h>
@@ -22,6 +22,10 @@ typedef struct {
     int32_t height;
 } M_CANDIDATE;
 
+static GFX_2D_RENDERER *m_Renderer2D = nullptr;
+static GFX_2D_SURFACE *m_BackgroundSurface = nullptr;
+static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
+
 static VIEWPORT_RECT m_LastViewport = { .width = -1, .height = -1 };
 static char *m_LastPath = nullptr;
 static VECTOR *m_CachedCandidates = nullptr;
@@ -29,6 +33,7 @@ static size_t m_CachedDirLen = 0;
 static char *m_CachedScanPath = nullptr;
 static char *m_LastCandidateName = nullptr;
 
+static void M_ReleaseBackground(void);
 static IMAGE *M_CreateImageFromPath(const char *path);
 static float M_GetScreenAspectRatio(void);
 static void M_ScanCandidates(const char *path);
@@ -37,6 +42,14 @@ static void M_FreeCandidates(void);
 static const M_CANDIDATE *M_PickBestCandidate(float screen_ratio);
 static bool M_LoadCandidate(const M_CANDIDATE *candidate);
 static bool M_LoadMainCandidate(const char *path);
+
+static void M_ReleaseBackground(void)
+{
+    if (m_BackgroundSurface != nullptr) {
+        GFX_2D_Surface_Free(m_BackgroundSurface);
+        m_BackgroundSurface = nullptr;
+    }
+}
 
 static IMAGE *M_CreateImageFromPath(const char *const path)
 {
@@ -183,6 +196,21 @@ static bool M_LoadMainCandidate(const char *const path)
     return true;
 }
 
+void Output_InitBackground(void)
+{
+    m_Renderer2D = GFX_2D_Renderer_Create();
+}
+
+void Output_ShutdownBackground(void)
+{
+    M_ReleaseBackground();
+    if (m_Renderer2D != nullptr) {
+        GFX_2D_Renderer_Destroy(m_Renderer2D);
+        m_Renderer2D = nullptr;
+    }
+    Output_ClearLastBackgroundPath();
+}
+
 bool Output_LoadBackgroundFromFile(const char *const path)
 {
     bool result = false;
@@ -233,6 +261,106 @@ void Output_ReloadBackgroundImage(void)
     }
 
     Output_UnloadBackground();
+}
+
+BACKGROUND_TYPE Output_GetBackgroundType(void)
+{
+    return m_BackgroundType;
+}
+
+bool Output_LoadBackgroundFromImage(const IMAGE *const image)
+{
+    M_ReleaseBackground();
+    m_BackgroundType = BK_IMAGE;
+    m_BackgroundSurface = GFX_2D_Surface_CreateFromImage(image);
+    GFX_2D_Renderer_SetRepeat(m_Renderer2D, 1, 1);
+    GFX_2D_Renderer_SetTextureSize(m_Renderer2D, nullptr);
+    GFX_2D_Renderer_Upload(
+        m_Renderer2D, &m_BackgroundSurface->desc, m_BackgroundSurface->buffer);
+    GFX_2D_Renderer_SetEffect(m_Renderer2D, GFX_2D_EFFECT_NONE);
+    return true;
+}
+
+void Output_LoadBackgroundFromObject(void)
+{
+    M_ReleaseBackground();
+
+#if TR_VERSION == 1
+    m_BackgroundType = BK_TRANSPARENT;
+#else
+    const OBJECT *const obj = Object_Get(O_INV_BACKGROUND);
+    if (!obj->loaded) {
+        return;
+    }
+
+    const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
+    if (mesh->num_tex_face4s < 1) {
+        return;
+    }
+
+    const int32_t texture_idx = mesh->tex_face4s[0].texture_idx;
+    const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(texture_idx);
+    ASSERT(texture != nullptr);
+    const int32_t repeat_y = 6;
+    const int32_t repeat_x = repeat_y * Viewport_GetWidth(VIEWPORT_GAME)
+        / (float)Viewport_GetHeight(VIEWPORT_GAME);
+    m_BackgroundType = BK_OBJECT;
+
+    const RGBA_8888 *const page = Output_GetTexturePage32(texture->tex_page);
+    if (page == nullptr) {
+        return;
+    }
+
+    GFX_2D_SURFACE_DESC desc = {
+        .width = TEXTURE_PAGE_WIDTH,
+        .height = TEXTURE_PAGE_HEIGHT,
+        .bit_count = 32,
+        .tex_format = GL_RGBA,
+        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+        .uv = {
+            {
+                texture->uv[0].u / 256.0f / TEXTURE_PAGE_WIDTH,
+                texture->uv[0].v / 256.0f / TEXTURE_PAGE_HEIGHT},
+            {
+                texture->uv[1].u / 256.0f / TEXTURE_PAGE_WIDTH,
+                texture->uv[1].v / 256.0f / TEXTURE_PAGE_HEIGHT},
+            {
+                texture->uv[2].u / 256.0f / TEXTURE_PAGE_WIDTH,
+                texture->uv[2].v / 256.0f / TEXTURE_PAGE_HEIGHT},
+            {
+                texture->uv[3].u / 256.0f / TEXTURE_PAGE_WIDTH,
+                texture->uv[3].v / 256.0f / TEXTURE_PAGE_HEIGHT},
+        },
+        .pitch = TEXTURE_PAGE_WIDTH * 2,
+    };
+    const OUTPUT_TEXTURE_SIZE size = Output_Textures_GetAtlasSize(texture_idx);
+    GFX_2D_Renderer_Upload(m_Renderer2D, &desc, (uint8_t *)page);
+    GFX_2D_Renderer_SetRepeat(m_Renderer2D, repeat_x, repeat_y);
+    GFX_2D_Renderer_SetTextureSize(
+        m_Renderer2D,
+        &(GFX_TEXTURE_SIZE) {
+            .x0 = size.x0,
+            .y0 = size.y0,
+            .x1 = size.x1,
+            .y1 = size.y1,
+        });
+    GFX_2D_Renderer_SetEffect(m_Renderer2D, GFX_2D_EFFECT_VIGNETTE);
+#endif
+}
+
+void Output_UnloadBackground(void)
+{
+    M_ReleaseBackground();
+    m_BackgroundType = BK_TRANSPARENT;
+    Output_ClearLastBackgroundPath();
+}
+
+void Output_DrawBackground(void)
+{
+    if (m_BackgroundType == BK_TRANSPARENT) {
+        return;
+    }
+    GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
 char *Output_GetLastBackgroundPath(void)
