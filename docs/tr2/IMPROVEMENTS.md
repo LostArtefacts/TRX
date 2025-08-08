@@ -134,6 +134,7 @@
 - fixed the boat veering if Lara looks left or right when driving
 - fixed Lara not equipping a weapon chosen from inventory if it is the last weapon used
 - fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian
+- fixed Lara walking backwards off ledges into lava
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels

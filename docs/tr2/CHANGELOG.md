@@ -72,6 +72,7 @@
 - fixed a crash when the level file was missing
 - fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 1.3)
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 1.3)
+- fixed Lara walking backwards off ledges into lava (#3745)
 - improved frames in Lara's jump-twist animations
 - improved object loading error messages when an invalid object ID is detected
 - improved window resize performance in the title inventory ring
