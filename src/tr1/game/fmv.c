@@ -3,7 +3,6 @@
 #include "game/input.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "game/viewport.h"
 #include "global/types.h"
 
 #include <libtrx/config.h>
@@ -16,6 +15,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/ui.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>

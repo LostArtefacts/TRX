@@ -13,7 +13,6 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -29,6 +28,7 @@
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/memory.h>
 
 #include <stdio.h>

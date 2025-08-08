@@ -3,7 +3,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/vars.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -11,6 +10,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 void Object_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
