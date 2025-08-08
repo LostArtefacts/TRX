@@ -173,8 +173,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
         Camera_Update();
         Sound_ResetAmbient();
-        Sound_UpdateEffects();
         ItemAction_RunActive();
+        Sound_UpdateEffects();
         Overlay_Animate(1);
         Output_AnimateTextures(1);
     }
