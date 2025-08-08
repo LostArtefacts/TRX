@@ -53,6 +53,7 @@ void Level_LoadFaces(void);
 void Level_LoadAnimCommands(void);
 void Level_LoadAnimFrames(void);
 void Level_LoadObjectsAndItems(void);
+void Level_LoadWalkables(void);
 
 LEVEL_INFO *Level_GetInfo(void);
 

@@ -7,3 +7,4 @@
 #include "items/enum.h"
 #include "items/types.h"
 #include "items/utils.h"
+#include "items/walkable.h"

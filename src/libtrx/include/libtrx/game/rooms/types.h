@@ -37,6 +37,12 @@ typedef struct {
     PORTAL portal[];
 } PORTALS;
 
+typedef struct WALKABLE {
+    int16_t item_num;
+    XYZ_32 pos;
+    struct WALKABLE *next;
+} WALKABLE;
+
 typedef struct {
     uint16_t idx;
     int16_t box;
@@ -45,6 +51,7 @@ typedef struct {
     LADDER_DIRECTION ladder;
 #endif
     TRIGGER *trigger;
+    WALKABLE *walkable;
     struct {
         int16_t pit;
         int16_t sky;

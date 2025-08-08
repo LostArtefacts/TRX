@@ -55,6 +55,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->add_walkable_func = Bridge_AddWalkable;
 }
 
 static void M_Initialise(const int16_t item_num)

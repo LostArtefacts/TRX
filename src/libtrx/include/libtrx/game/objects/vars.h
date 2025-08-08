@@ -21,6 +21,7 @@ extern const GAME_OBJECT_ID g_WaterSpriteObjects[];
 extern const GAME_OBJECT_ID g_BossObjects[];
 extern const GAME_OBJECT_ID g_PlaceholderObjects[];
 extern const GAME_OBJECT_ID g_SecretObjects[];
+extern const GAME_OBJECT_ID g_MovableBlockObjects[];
 
 extern const GAME_OBJECT_PAIR g_GunAmmoObjectMap[];
 extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];

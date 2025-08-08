@@ -43,6 +43,7 @@ static void M_DisableObject(const GAME_OBJECT_ID obj_id)
     obj->draw_func = Object_DrawDummyItem;
     obj->floor_height_func = nullptr;
     obj->ceiling_height_func = nullptr;
+    obj->add_walkable_func = nullptr;
 }
 
 void Object_SetupAllObjects(void)
@@ -61,6 +62,7 @@ void Object_SetupAllObjects(void)
         obj->ceiling_height_func = nullptr;
         obj->floor_height_func = nullptr;
         obj->is_usable_func = nullptr;
+        obj->add_walkable_func = nullptr;
         obj->pivot_length = 0;
         obj->radius = M_DEFAULT_RADIUS;
         obj->shadow_size = 0;

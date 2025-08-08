@@ -20,6 +20,7 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/inject.h>
+#include <libtrx/game/items/walkable.h>
 #include <libtrx/game/level.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
@@ -347,6 +348,7 @@ void Level_Unload(void)
 {
     Lara_InitialiseLoad(NO_ITEM);
     Output_DispatchLevelUnload();
+    Walkable_Reset();
 }
 
 bool Level_Initialise(
@@ -391,12 +393,6 @@ bool Level_Initialise(
     Level_Unload();
     Level_Load(level);
     GameStringTable_Apply(level);
-
-    if (seq_ctx != GFSC_SAVED) {
-        // Avoid initialising the floor before movable block positions have
-        // been loaded; this is otherwise handled after savegame loading.
-        MovableBlock_SetupFloor();
-    }
 
     Effect_InitialiseArray();
     LOT_InitialiseArray();

@@ -92,3 +92,9 @@ void Bridge_FixEmbeddedPosition(int16_t item_num)
 
     item->pos.y = floor_height - bridge_height;
 }
+
+void Bridge_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    Walkable_Add(item_num, item->pos);
+}

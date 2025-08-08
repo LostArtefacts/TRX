@@ -70,6 +70,7 @@ typedef struct OBJECT {
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);
+    void (*add_walkable_func)(int16_t item_num);
 
     int16_t anim_idx;
     int16_t hit_points;

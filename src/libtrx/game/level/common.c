@@ -12,6 +12,7 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/setup.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
@@ -1392,12 +1393,26 @@ void Level_LoadObjectsAndItems(void)
     // initialisations may increment the total item count.
     Object_SetupAllObjects();
 
+    // Must take place after object setup but before item initialization.
+    Level_LoadWalkables();
+
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }
 
     Lara_State_Initialise();
+}
+
+void Level_LoadWalkables(void)
+{
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        ITEM *const item = Item_Get(item_num);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->add_walkable_func != nullptr) {
+            obj->add_walkable_func(item_num);
+        }
+    }
 }
 
 LEVEL_INFO *Level_GetInfo(void)

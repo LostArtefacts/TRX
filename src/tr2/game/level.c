@@ -452,10 +452,6 @@ bool Level_Initialise(
 
     Carrier_InitialiseLevel(level);
 
-    if (seq_ctx != GFSC_SAVED) {
-        MovableBlock_SetupFloor();
-    }
-
     Effect_InitialiseArray();
     LOT_InitialiseArray();
 
@@ -471,6 +467,7 @@ void Level_Unload(void)
 {
     Output_DispatchLevelUnload();
     Camera_Reset();
+    Walkable_Reset();
 }
 
 void Level_Init(void)

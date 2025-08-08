@@ -10,6 +10,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/items/walkable.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/random.h>
@@ -36,21 +37,144 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static bool M_IsAgainstFloor(const ITEM *item);
+static bool M_IsAgainstCeiling(const ITEM *item);
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height);
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestDeathCollision(const ITEM *item, const ITEM *lara);
+static bool M_TestEmbedCollision(const ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Draw(const ITEM *item);
+static void M_AddWalkable(int16_t item_num);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MovableBlock_Bounds;
+}
+
+static bool M_IsAgainstFloor(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    return sector->floor.tilt == 0 && sector->floor.height == item->pos.y;
+}
+
+static bool M_IsAgainstCeiling(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sky_sector =
+        Room_GetSkySector(sector, item->pos.x, item->pos.z);
+    return sky_sector->ceiling.tilt == 0
+        && sky_sector->ceiling.height == item->pos.y - WALL_L;
+}
+
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, int32_t x, int32_t y, int32_t z, int16_t height)
+{
+    if (item->status == IS_INVISIBLE) {
+        return height;
+    }
+
+    // TODO OG bug: camera and shadow behave like OG during push/pull.
+    if (MovableBlock_IsPushPull(item)) {
+        return height;
+    }
+
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    }
+
+    // If partially embedded from below e.g. jumping up into an overhead block.
+    if (y <= item->pos.y && y > item->pos.y - WALL_L
+        && M_IsAgainstCeiling(item)) {
+        const SECTOR *const sector = Room_GetWorldSector(
+            Room_Get(item->room_num), item->pos.x, item->pos.z);
+        if (item->pos.y < sector->floor.height) {
+            // If partially embedded from below e.g. jumping up into an overhead
+            // block.
+            return height;
+        } else if (M_IsAgainstFloor(item)) {
+            // Clamped between floor and ceiling. Match up with similar case in
+            // M_GetCeilingHeight to return same sentinel value;
+            return item->pos.y - WALL_L;
+        }
+    }
+
+    // If under the bottom of the block.
+    if (y > item->pos.y) {
+        return height;
+    }
+
+    // If the the top of the block is under the floor height.
+    if (item->pos.y - WALL_L >= height) {
+        return height;
+    }
+
+    return item->pos.y - WALL_L;
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height)
+{
+    if (item->status == IS_INVISIBLE) {
+        return height;
+    }
+
+    // TODO OG bug: camera and shadow behave like OG during push/pull.
+    if (MovableBlock_IsPushPull(item)) {
+        return height;
+    }
+
+    // Only care if we are inside the block footprint.
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    }
+
+    if (y <= item->pos.y && y > item->pos.y - WALL_L && !item->gravity) {
+        if (M_IsAgainstCeiling(item)) {
+            // If clamped betwee floor and ceiling return same sentinel value as
+            // M_GetFloorHeight.
+            return M_IsAgainstFloor(item) ? item->pos.y - WALL_L : item->pos.y;
+        }
+        return height;
+    }
+
+    // If above the top of the block.
+    if (y <= item->pos.y - WALL_L) {
+        return height;
+    }
+
+    // If the the bottom of the block is above the ceiling height.
+    if (item->pos.y <= height) {
+        return height;
+    }
+
+    return item->pos.y;
+}
+
+static bool M_IsItemOnTop(
+    const ITEM *const item, const int32_t x, const int32_t z)
+{
+    int32_t dx = x - item->pos.x;
+    int32_t dz = z - item->pos.z;
+
+    // Movable blocks' bounds don't match sector so estimate.
+    return (dx >= -WALL_L / 2 && dx < WALL_L / 2)
+        && (dz >= -WALL_L / 2 && dz < WALL_L / 2);
 }
 
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
@@ -94,7 +218,8 @@ static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
     }
 
     // Make sure there is nothing on top of the block.
-    if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
+    if (Room_GetHeight(
+            sector, item->pos.x, item->pos.y - block_height, item->pos.z)
         != item->pos.y - block_height) {
         return false;
     }
@@ -234,6 +359,16 @@ static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
         && Lara_TestBoundsCollide(item, 0);
 }
 
+static bool M_TestEmbedCollision(const ITEM *const item, const ITEM *const lara)
+{
+    return M_IsItemOnTop(item, lara->pos.x, lara->pos.z)
+        && lara->pos.y <= item->pos.y && lara->pos.y > item->pos.y - WALL_L
+        && !item->gravity && !lara->gravity
+        && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL
+        && lara->current_anim_state != LS_PULL_BLOCK
+        && lara->current_anim_state != LS_PUSH_BLOCK;
+}
+
 static void M_KillLara(const ITEM *const item, ITEM *const lara)
 {
     if (lara->hit_points <= 0) {
@@ -278,6 +413,8 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = MovableBlock_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->draw_func = M_Draw;
     obj->collision_func = M_Collision;
     obj->save_position = true;
@@ -285,18 +422,34 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->base_rot.y = true;
     obj->bounds_func = M_Bounds;
+    obj->add_walkable_func = M_AddWalkable;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
-    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+    if (stage == SAVEGAME_STAGE_BEFORE_LOAD) {
+        MovableBlock_UpdateBox(item, false);
+        // Remember where walkable is in level file.
+        MovableBlock_SetLinked(item);
+    } else if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        const int16_t item_num = Item_GetIndex(item);
+        if (item->flags & IF_KILLED) {
+            Walkable_Remove(item_num);
+            return;
+        }
         if (item->status == IS_ACTIVE && !item->gravity
             && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
             Item_RemoveActive(Item_GetIndex(item));
             item->status = IS_INACTIVE;
         }
-        item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
-        MovableBlock_UpdateRotation(item, item->rot.y);
+        // Reposition walkable to loaded position.
+        const GAME_VECTOR target = {
+            .pos = item->pos,
+            .room_num = item->room_num,
+        };
+        Walkable_Reposition(item_num, MovableBlock_GetLinked(item), target);
+        MovableBlock_SetLinked(item);
+        MovableBlock_UpdateBox(item, true);
     }
 }
 
@@ -304,41 +457,91 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
+    if (item->status == IS_INVISIBLE) {
+        return;
+    }
+
+    if (MovableBlock_GetGravityFrames(item) > 0) {
+        MovableBlock_SetGravityFrames(
+            item, MovableBlock_GetGravityFrames(item) - 1);
+        return;
+    }
+
     if (item->flags & IF_ONE_SHOT) {
-        Room_AlterFloorHeight(item, WALL_L);
         Item_Kill(item_num);
+        Walkable_Remove(item_num);
+        MovableBlock_UpdateBox(item, false);
         return;
     }
 
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(
-        item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
-    const int32_t height = Room_GetHeight(
-        sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
-    if (item->pos.y < height) {
+    // Check if the block is floating, on a walkable, or on the pit floor.
+    // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
+    // sector.
+    const ROOM *const room = Room_Get(Room_GetIndexFromPos(
+        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z));
+    const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    int32_t under_block_height = Room_GetHeightEx(
+        sector, item->pos.x, item->pos.y, item->pos.z, false, item_num);
+    const int32_t top_of_block_height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *room_num_sector = Room_GetSector(
+        item->pos.x, top_of_block_height, item->pos.z, &room_num);
+
+    // Checks if a block is on or fell through a walkable item.
+    // Gravity and fall speed greatly affect the block's y position and whether
+    // it landed on another walkable. If this check is too early, gravity is
+    // stopped one frame early. If this check happens after the block falls
+    // through another walkable, under_block_height is set to the floor height
+    // under the walkable that fell through. So the block's y position is
+    // rounded to a half click to check if it landed on another walkable.
+    const bool on_walkable = Room_IsOnWalkable(
+        sector, item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z,
+        ROUND_TO_HALF_CLICK(item->pos.y), item_num);
+    if (on_walkable) {
+        under_block_height = ROUND_TO_HALF_CLICK(item->pos.y);
+    }
+
+    if (item->pos.y < under_block_height && !MovableBlock_IsPushPull(item)) {
+        // Block is activated and floating in the air.
         item->gravity = true;
     } else if (item->gravity) {
+        // Block hits the ground or another walkable.
         item->gravity = false;
-        item->pos.y = height;
+        item->fall_speed = 0;
+        item->pos.y = under_block_height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
         Sound_Effect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
     } else if (
-        item->pos.y >= height && !item->gravity
-        && !(bool)(intptr_t)item->priv) {
+        // If block is at/under floor height, no gravity, and isn't being
+        // pushed/pulled anymore. Prevents blocks from getting stuck in
+        // IS_INACTIVE if retriggered.
+        item->pos.y >= under_block_height && !item->gravity
+        && !MovableBlock_IsPushPull(item)) {
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
     }
 
-    Item_UpdateRoom(item_num, room_num);
+    // Don't update room number if on a walkable because room number can fall
+    // through to a pit room (e.g. trapdoors).
+    if (!on_walkable) {
+        Item_UpdateRoom(item_num, room_num);
+    }
 
     if (item->status == IS_DEACTIVATED) {
+        const GAME_VECTOR target = {
+            .pos = item->pos,
+            .room_num = item->room_num,
+        };
+        Walkable_Reposition(item_num, MovableBlock_GetLinked(item), target);
+        MovableBlock_SetLinked(item);
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
-        Room_AlterFloorHeight(item, -WALL_L);
+        MovableBlock_UpdateBox(item, true);
         Room_TestTriggers(item);
     }
 }
@@ -349,13 +552,21 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
+    if (item->status == IS_INVISIBLE) {
+        return;
+    }
+
     if (M_TestDeathCollision(item, lara_item)) {
         M_KillLara(item, lara_item);
         return;
     }
 
+    if (M_TestEmbedCollision(item, lara_item)) {
+        lara_item->pos.y = item->pos.y - WALL_L;
+    }
+
     if (item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
-        item->priv = (void *)false;
+        MovableBlock_SetPushPull(item, false);
     }
 
     if (!g_Input.action || item->status == IS_ACTIVE || lara_item->gravity
@@ -450,12 +661,13 @@ static void M_Collision(
             return;
         }
 
-        Item_AddActive(item_num);
-        Room_AlterFloorHeight(item, WALL_L);
+        MovableBlock_SetLinked(item);
         item->status = IS_ACTIVE;
+        Item_AddActive(item_num);
+        MovableBlock_UpdateBox(item, false);
         Item_Animate(item);
         Lara_Animate(lara_item);
-        item->priv = (void *)true;
+        MovableBlock_SetPushPull(item, true);
     }
 }
 
@@ -466,6 +678,12 @@ static void M_Draw(const ITEM *const item)
     } else {
         Object_DrawAnimatingItem(item);
     }
+}
+
+static void M_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    Walkable_Add(item_num, item->pos);
 }
 
 REGISTER_OBJECT(O_MOVABLE_BLOCK_1, M_Setup)

@@ -108,3 +108,38 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
 
     return result;
 }
+
+BOUNDS_16 Item_RotateBounds(const ITEM *const item, const int16_t rot_y)
+{
+    const BOUNDS_16 *bounds = &Item_GetBestFrame(item)->bounds;
+    BOUNDS_16 rot_bounds = {};
+    if (bounds == nullptr) {
+        return rot_bounds;
+    }
+
+    switch (rot_y) {
+    case 0:
+    default:
+        rot_bounds = *bounds;
+        break;
+    case DEG_90:
+        rot_bounds.min.x = bounds->min.z;
+        rot_bounds.max.x = bounds->max.z;
+        rot_bounds.min.z = -bounds->max.x;
+        rot_bounds.max.z = -bounds->min.x;
+        break;
+    case -DEG_180:
+        rot_bounds.min.x = -bounds->max.x;
+        rot_bounds.max.x = -bounds->min.x;
+        rot_bounds.min.z = -bounds->max.z;
+        rot_bounds.max.z = -bounds->min.z;
+        break;
+    case -DEG_90:
+        rot_bounds.min.x = -bounds->max.z;
+        rot_bounds.max.x = -bounds->min.z;
+        rot_bounds.min.z = bounds->min.x;
+        rot_bounds.max.z = bounds->max.x;
+        break;
+    }
+    return rot_bounds;
+}

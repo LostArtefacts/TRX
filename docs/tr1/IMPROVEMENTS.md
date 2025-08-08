@@ -109,8 +109,11 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **Obelisk of Khamoon**: missing switch trigger type in room 66
     - **Natla's Mines**: incorrect flipmap indices in room 85
     - **Atlantean Stronghold**: fixed poorly configured portals between rooms 74 and 12
-- fixed various bugs with falling movable blocks
-- fixed bugs when trying to stack multiple movable blocks
+- fixed numerous interactions with movable blocks, trapdoors, drawbridges, bridges, sliding pillars, and falling blocks for custom levels:
+    - added the ability for movable blocks to move on trapdoors, drawbridges, bridges, sliding pillars, and falling blocks
+    - added the ability for stacks of movable blocks to fall and land on trapdoors, drawbridges, bridges, sliding pillars, and falling blocks
+    - added the ability for stacks of movable blocks to fall when on opened trapdoors and drawbridges
+    - fixed various bugs with falling movable blocks
 - fixed Midas's touch having unrestricted vertical range
 - fixed Lara saying "no" when taking valid actions in front of a key item receptacle
 - fixed Lara not saying "no" when using the Scion incorrectly
