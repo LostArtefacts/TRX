@@ -21,9 +21,11 @@
 #include "game/viewport.h"
 #include "log.h"
 #include "memory.h"
+#include "thread_pool.h"
 #include "utils.h"
 #include "vector.h"
 
+#include <SDL2/SDL_cpuinfo.h>
 #include <string.h>
 
 #define M_NO_ROOM_LEGACY 255
@@ -32,6 +34,8 @@ static LEVEL_INFO m_Info = {};
 
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
 static void M_FixTrapezoidRatios(FACE4 *face, const XYZ_16 vertices[4]);
+static void M_PremultiplyTexturePage(void *userdata);
+
 static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
 static void M_ReadShade(SHADE *shade, VFILE *file);
 static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
@@ -180,6 +184,20 @@ static void M_FixTrapezoidRatios(FACE4 *const face, const XYZ_16 vertices[4])
             zws[3]->zw[k] = fix;
         }
     }
+}
+
+static void M_PremultiplyTexturePage(void *userdata)
+{
+    const int32_t page = *(int32_t *)userdata;
+    Output_LockTexturePage32(page);
+    RGBA_8888 *ptr = Output_GetTexturePage32(page);
+    const float inv255 = 1.0f / 255.0f;
+    for (int32_t i = 0; i < TEXTURE_PAGE_SIZE; i++, ptr++) {
+        ptr->r *= ptr->a * inv255;
+        ptr->g *= ptr->a * inv255;
+        ptr->b *= ptr->a * inv255;
+    }
+    Output_UnlockTexturePage32(page);
 }
 
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
@@ -1248,6 +1266,7 @@ void Level_LoadTexturePages(void)
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_pages = m_Info.textures.page_count;
     Output_InitialiseTexturePages(num_pages, TR_VERSION == 2);
+
     for (int32_t i = 0; i < num_pages; i++) {
 #if TR_VERSION == 2
         uint8_t *const target_8 = Output_GetTexturePage8(i);
@@ -1263,16 +1282,20 @@ void Level_LoadTexturePages(void)
     }
     Benchmark_End(&benchmark, "copied texture data");
 
-    for (int32_t i = 0; i < num_pages; i++) {
-        const float inv255 = 1.0f / 255.0f;
-        RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
-        RGBA_8888 *ptr = target_32;
-        for (int32_t j = 0; j < TEXTURE_PAGE_SIZE; j++) {
-            ptr->r *= ptr->a * inv255;
-            ptr->g *= ptr->a * inv255;
-            ptr->b *= ptr->a * inv255;
-            ptr++;
+    {
+        int32_t *pages = Memory_Alloc(num_pages * sizeof(int32_t));
+        const int num_threads = SDL_GetCPUCount();
+        THREAD_POOL *const pool =
+            ThreadPool_Create(num_threads > 0 ? num_threads : 1);
+        for (int32_t i = 0; i < num_pages; i++) {
+            pages[i] = i;
         }
+        for (int32_t i = 0; i < num_pages; i++) {
+            ThreadPool_AddJob(pool, M_PremultiplyTexturePage, &pages[i]);
+        }
+        ThreadPool_Wait(pool);
+        ThreadPool_Destroy(pool);
+        Memory_Free(pages);
     }
     Benchmark_End(&benchmark, "premultiplied alpha");
 

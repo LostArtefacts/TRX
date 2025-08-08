@@ -50,6 +50,10 @@ void Output_InitialiseAnimatedTextures(int32_t num_ranges);
 int32_t Output_GetTexturePageCount(void);
 uint8_t *Output_GetTexturePage8(int32_t page_idx);
 RGBA_8888 *Output_GetTexturePage32(int32_t page_idx);
+
+void Output_LockTexturePage32(int32_t page_idx);
+void Output_UnlockTexturePage32(int32_t page_idx);
+
 int32_t Output_GetPaletteSize(void);
 RGB_888 Output_GetPaletteColor8(uint16_t idx);
 RGB_888 Output_GetPaletteColor16(uint16_t idx);

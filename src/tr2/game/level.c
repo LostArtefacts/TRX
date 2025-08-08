@@ -381,6 +381,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
+
     Output_DispatchLevelLoad();
 
     M_InitialiseSoundEffects(level->settings.sfx_path);
