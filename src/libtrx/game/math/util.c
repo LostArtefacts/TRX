@@ -94,6 +94,11 @@ int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio)
     return result;
 }
 
+int32_t Math_FloorDiv(const int32_t x, const int32_t divisor)
+{
+    return (x >= 0) ? x / divisor : -((-x + divisor - 1) / divisor);
+}
+
 int16_t XYZ_32_GetYaw(const XYZ_32 pos)
 {
     return Math_Atan(pos.z, pos.x);
