@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/const.h"
+#include "game/output/lights.h"
 #include "game/output/scene_compositor.h"
 #include "game/output/sources/objects.h"
 #include "game/output/sources/rooms.h"
@@ -262,7 +263,7 @@ void Output_AnimateTextures(const int32_t num_frames)
         SceneCompositor_AnimateTextures();
     }
 
-    Output_AnimateShades(num_frames);
+    Output_AnimateLights(num_frames);
 }
 
 void Output_EnableScissor(

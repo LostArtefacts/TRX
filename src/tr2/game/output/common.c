@@ -31,23 +31,15 @@
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
-#define M_MAX_ROOM_LIGHT_UNIT (0x2000 / (WIBBLE_SIZE / 2))
-
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_SHADER *m_Shader = nullptr;
 static GFX_2D_RENDERER *m_Renderer2D = nullptr;
 
-static int32_t m_WibbleOffset = 0;
 static int32_t m_ViewportWidth = 0;
 static int32_t m_ViewportHeight = 0;
 static GFX_2D_SURFACE *m_BackgroundSurface = nullptr;
 
-static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
-static ROOM_LIGHT_TABLE m_RoomLightTables[WIBBLE_SIZE] = {};
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
-
-static bool m_IsSunsetEnabled = false;
-static int32_t m_SunsetTimer = 0;
 
 static void M_ReleaseBackground(void);
 
@@ -62,13 +54,6 @@ static void M_ReleaseBackground(void)
 void Output_Init(void)
 {
     m_Renderer2D = GFX_2D_Renderer_Create();
-
-    for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
-        for (int32_t j = 0; j < WIBBLE_SIZE; j++) {
-            m_RoomLightTables[i].table[j] = (j - (WIBBLE_SIZE / 2)) * i
-                * M_MAX_ROOM_LIGHT_UNIT / (WIBBLE_SIZE - 1);
-        }
-    }
 
     SceneCompositor_Init();
     Output_Textures_Init();
@@ -325,60 +310,6 @@ void Output_DrawBackground(void)
         return;
     }
     GFX_2D_Renderer_Render(m_Renderer2D);
-}
-
-void Output_SetSunsetEnabled(const bool enabled)
-{
-    m_IsSunsetEnabled = enabled;
-}
-
-void Output_SetSunsetTimer(const int32_t timer)
-{
-    m_SunsetTimer = timer;
-}
-
-int32_t Output_GetSunsetDuration(void)
-{
-    return 20 * 60 * LOGIC_FPS; // = 20 minutes / 36000 frames
-}
-
-int32_t Output_GetSunsetTimer(void)
-{
-    return m_SunsetTimer;
-}
-
-int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
-{
-    return m_RoomLightShades[mode];
-}
-
-void Output_LightRoomVertices(const ROOM *const room)
-{
-    const ROOM_LIGHT_TABLE *const light_table =
-        &m_RoomLightTables[m_RoomLightShades[room->light_mode]];
-    for (int32_t i = 0; i < room->mesh.num_vertices; i++) {
-        ROOM_VERTEX *const vtx = &room->mesh.vertices[i];
-        const int32_t wibble =
-            light_table->table[vtx->light_table_value % WIBBLE_SIZE];
-        vtx->light_adder = vtx->light_base + wibble;
-    }
-}
-
-void Output_AnimateShades(const int32_t num_frames)
-{
-    m_WibbleOffset += num_frames;
-    m_WibbleOffset %= WIBBLE_SIZE;
-    m_RoomLightShades[RLM_FLICKER] = Random_GetDraw() % WIBBLE_SIZE;
-    m_RoomLightShades[RLM_GLOW] = (WIBBLE_SIZE - 1)
-            * (Math_Sin((m_WibbleOffset * DEG_360) / WIBBLE_SIZE) + 0x4000)
-        >> 15;
-
-    if (m_IsSunsetEnabled) {
-        m_SunsetTimer += num_frames;
-        CLAMPG(m_SunsetTimer, Output_GetSunsetDuration());
-        m_RoomLightShades[RLM_SUNSET] =
-            m_SunsetTimer * (WIBBLE_SIZE - 1) / Output_GetSunsetDuration();
-    }
 }
 
 void Output_SwitchViewport(const VIEWPORT_SPACE space)
