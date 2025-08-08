@@ -104,7 +104,7 @@ whichever key you have bound, and not include it as part of the command itself.
 
 - `/vsync on`  
   `/vsync off`  
-  Turns vertical sync on or off (TR1 only). For the smooth freaks among us.
+  Turns vertical sync on or off. For the smooth freaks among us.
 
 - `/fps`  
   `/fps {num}`  

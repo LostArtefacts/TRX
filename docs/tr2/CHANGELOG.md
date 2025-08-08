@@ -38,6 +38,7 @@
 - added German translation
 - added PS1 fade-out to final cutscene (#3521)
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
+- added a new `/vsync` console command to toggle the vsync option, like in TR1
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added a new `/restless` console command, which enables or disables infinite sprint
 - changed the game flow and game strings file placement
