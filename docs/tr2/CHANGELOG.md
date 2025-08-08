@@ -72,6 +72,7 @@
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 1.3)
 - improved frames in Lara's jump-twist animations
 - improved object loading error messages when an invalid object ID is detected
+- improved window resize performance in the title inventory ring
 - improved projectiles
     - changed conventional weapons to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
     - fixed collision detection on windows
