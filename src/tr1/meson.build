@@ -215,7 +215,6 @@ sources = [
   'game/option/option_passport.c',
   'game/output/common.c',
   'game/output/draw.c',
-  'game/output/func.c',
   'game/room_draw.c',
   'game/savegame/savegame.c',
   'game/savegame/savegame_bson.c',

@@ -256,7 +256,3 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
     GFX_Context_Clear();
     glClear(GL_DEPTH_BUFFER_BIT);
 }
-
-void Output_AnimateShades(const int32_t num_frames)
-{
-}

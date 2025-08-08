@@ -27,10 +27,4 @@ typedef struct {
 } VERTEX_INFO;
 
 void Output_LoadBackgroundFromObject(void);
-
-void Output_SetSunsetEnabled(bool enabled);
-void Output_SetSunsetTimer(int32_t timer);
-int32_t Output_GetSunsetTimer(void);
-int32_t Output_GetSunsetDuration(void);
-
 void Output_ApplyRenderSettings(void);

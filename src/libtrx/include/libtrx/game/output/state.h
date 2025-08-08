@@ -46,4 +46,3 @@ void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 
 void Output_AnimateTextures(int32_t num_frames);
-void Output_AnimateShades(int32_t num_frames);
