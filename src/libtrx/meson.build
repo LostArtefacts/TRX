@@ -188,6 +188,7 @@ sources = [
   'game/items/col.c',
   'game/items/common.c',
   'game/items/utils.c',
+  'game/items/walkable.c',
   'game/lara/cheat.c',
   'game/lara/cheat_keys.c',
   'game/lara/col.c',
