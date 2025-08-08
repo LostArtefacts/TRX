@@ -387,6 +387,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
+    coll->lava_is_pit = 1;
 
     Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll)) {
@@ -436,6 +437,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
     coll->bad_neg = -STEP_L / 2;
     coll->bad_ceiling = 0;
+    coll->lava_is_pit = 1;
 
     Lara_Col_GetInfo(item, coll);
     if (M_TestCeiling(item, coll)) {
