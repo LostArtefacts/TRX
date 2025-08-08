@@ -213,8 +213,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
         JSON_ObjectGetBool(obj, "enable_tr2_item_drops", false);
     ctx->gf->convert_dropped_guns =
         JSON_ObjectGetBool(obj, "convert_dropped_guns", false);
-    ctx->gf->enable_killer_pushblocks =
-        JSON_ObjectGetBool(obj, "enable_killer_pushblocks", true);
 
     M_LoadGlobalInjections(ctx, obj);
 }

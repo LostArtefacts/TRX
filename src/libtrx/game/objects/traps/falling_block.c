@@ -1,9 +1,11 @@
 #include "game/lara.h"
 #include "game/objects.h"
+#include "game/objects/traps/movable_block.h"
 #include "game/rooms.h"
 #include "vector.h"
 
 static int32_t M_GetOrigin(GAME_OBJECT_ID obj_id);
+static void M_DropStack(const ITEM *item);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
@@ -19,6 +21,17 @@ static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
 #else
     return obj_id == O_FALLING_BLOCK_3 ? -WALL_L : -STEP_L * 2;
 #endif
+}
+
+void M_DropStack(const ITEM *const item)
+{
+    const int32_t origin = M_GetOrigin(item->object_id);
+    XYZ_32 drop_pos = {
+        .x = item->pos.x,
+        .y = item->pos.y + origin,
+        .z = item->pos.z,
+    };
+    MovableBlock_DropStack(drop_pos, item->room_num);
 }
 
 static int16_t M_GetFloorHeight(
@@ -75,6 +88,9 @@ static void M_Control(const int16_t item_num)
 
     case TRAP_WORKING:
         if (item->goal_anim_state != TRAP_FINISHED) {
+            if (!item->gravity) {
+                M_DropStack(item);
+            }
             item->gravity = true;
         }
         break;

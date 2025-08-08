@@ -4,6 +4,7 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/general/lift.h"
+#include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
@@ -14,12 +15,14 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/stats.h>
 #include <libtrx/json.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 #include <libtrx/utils.h>
 #include <libtrx/version.h>
 
@@ -73,7 +76,7 @@ static bool M_LoadResumeInfo(JSON_ARRAY *resume_arr);
 static bool M_LoadInventory(JSON_OBJECT *inv_obj);
 static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj);
 static bool M_LoadCameras(JSON_ARRAY *cameras_arr);
-static bool M_LoadItems(JSON_ARRAY *items_arr);
+static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version);
 static bool M_LoadEffects(JSON_ARRAY *fx_arr);
 static bool M_LoadFlares(JSON_ARRAY *flares_arr);
 static bool M_LoadLara(JSON_OBJECT *lara_obj);
@@ -228,7 +231,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"))) {
+    if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"), version)) {
         goto cleanup;
     }
 
@@ -751,6 +754,28 @@ static JSON_ARRAY *M_DumpItems(void)
                 effect_num = fx_order.id_map[effect_num];
                 JSON_ObjectAppendInt(item_obj, "fx_num", effect_num);
             }
+
+            if (Object_IsType(item->object_id, g_MovableBlockObjects)
+                && item->data != nullptr) {
+                MOVABLE_BLOCK_INFO *const data = item->data;
+                JSON_OBJECT *const data_obj = JSON_ObjectNew();
+                JSON_ObjectAppendInt(
+                    data_obj, "counter_rot_0", data->counter_rot[0]);
+                JSON_ObjectAppendInt(
+                    data_obj, "counter_rot_1", data->counter_rot[1]);
+                JSON_ObjectAppendInt(
+                    data_obj, "counter_rot_2", data->counter_rot[2]);
+                JSON_ObjectAppendInt(
+                    data_obj, "original_rot", data->original_rot);
+                JSON_ObjectAppendInt(
+                    data_obj, "gravity_frames", data->gravity_frames);
+                JSON_ObjectAppendBool(
+                    data_obj, "is_push_pull", data->is_push_pull);
+                JSON_ObjectAppendBool(
+                    data_obj, "is_forced_moving", data->is_forced_moving);
+                DUMP_XYZ(data_obj, "linked", data->linked);
+                JSON_ObjectAppendObject(item_obj, "data", data_obj);
+            }
         }
 
         JSON_ARRAY *const carried_items_arr = JSON_ArrayNew();
@@ -811,10 +836,15 @@ static JSON_ARRAY *M_DumpItems(void)
         }
 
         case O_LIFT: {
-            const LIFT_INFO *const data = (LIFT_INFO *)item->data;
+            LIFT_INFO *const data = (LIFT_INFO *)item->data;
             JSON_OBJECT *const data_obj = JSON_ObjectNew();
             JSON_ObjectAppendInt(data_obj, "start_height", data->start_height);
             JSON_ObjectAppendInt(data_obj, "wait_time", data->wait_time);
+            JSON_ObjectAppendBool(data_obj, "is_moving", data->is_moving);
+            for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
+                const char *const pos_key = String_FormatStatic("linked_%d", j);
+                DUMP_XYZ(data_obj, pos_key, data->linked[j]);
+            }
             JSON_ObjectAppendObject(item_obj, "data", data_obj);
             break;
         }
@@ -855,7 +885,7 @@ static JSON_ARRAY *M_DumpEffects(void)
     return fx_arr;
 }
 
-static bool M_LoadItems(JSON_ARRAY *const items_arr)
+static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
 {
     if (items_arr == nullptr) {
         LOG_ERROR("Malformed save: invalid or missing items array");
@@ -978,6 +1008,40 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
                 }
             }
 
+            if (header_version >= VERSION_12
+                && Object_IsType(item->object_id, g_MovableBlockObjects)) {
+                JSON_OBJECT *const data_obj =
+                    JSON_ObjectGetObject(item_obj, "data");
+                if (data_obj == nullptr) {
+                    LOG_ERROR(
+                        "Malformed save: missing movable block data for item "
+                        "%d",
+                        i);
+                    return false;
+                }
+                MOVABLE_BLOCK_INFO *const data = item->data;
+                data->counter_rot[0] = JSON_ObjectGetInt(
+                    data_obj, "counter_rot_0", data->counter_rot[0]);
+                data->counter_rot[1] = JSON_ObjectGetInt(
+                    data_obj, "counter_rot_1", data->counter_rot[1]);
+                data->counter_rot[2] = JSON_ObjectGetInt(
+                    data_obj, "counter_rot_2", data->counter_rot[2]);
+                data->original_rot = JSON_ObjectGetInt(
+                    data_obj, "original_rot", data->original_rot);
+                data->gravity_frames = JSON_ObjectGetInt(
+                    data_obj, "gravity_frames", data->gravity_frames);
+                data->is_push_pull = JSON_ObjectGetBool(
+                    data_obj, "is_push_pull", data->is_push_pull);
+                data->is_forced_moving = JSON_ObjectGetBool(
+                    data_obj, "is_forced_moving", data->is_forced_moving);
+                LOAD_XYZ(data_obj, "linked", data->linked);
+            } else if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
+                // For old saves, guess linked sector is at item position.
+                MOVABLE_BLOCK_INFO *const data = item->data;
+                data->linked.pos = item->pos;
+                data->linked.room_num = item->room_num;
+            }
+
             JSON_ARRAY *const carried_items =
                 JSON_ObjectGetArray(item_obj, "carried_items");
             if (carried_items != nullptr) {
@@ -1062,7 +1126,7 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
             }
 
             case O_LIFT: {
-                const JSON_OBJECT *const data_obj =
+                JSON_OBJECT *const data_obj =
                     JSON_ObjectGetObject(item_obj, "data");
                 if (data_obj == nullptr) {
                     LOG_ERROR(
@@ -1074,6 +1138,15 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
                     data_obj, "start_height", data->start_height);
                 data->wait_time =
                     JSON_ObjectGetInt(data_obj, "wait_time", data->wait_time);
+                if (header_version >= VERSION_12) {
+                    data->is_moving = JSON_ObjectGetBool(
+                        data_obj, "is_moving", data->is_moving);
+                    for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
+                        const char *const pos_key =
+                            String_FormatStatic("linked_%d", j);
+                        LOAD_XYZ(data_obj, pos_key, data->linked[j]);
+                    }
+                }
                 break;
             }
 

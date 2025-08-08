@@ -144,8 +144,7 @@ void M_DropStack(const ITEM *const item)
     M_GetSectorPositions(item, positions);
     for (int32_t i = 0; i < positions->count; i++) {
         MovableBlock_DropStack(
-            item->pos.y, *(const XYZ_32 *)Vector_Get(positions, i),
-            item->room_num);
+            *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
     }
     Vector_Free(positions);
     positions = nullptr;

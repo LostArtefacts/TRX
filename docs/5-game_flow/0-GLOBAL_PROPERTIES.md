@@ -480,6 +480,18 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td>
+      <a name="enable-killer-pushblocks"></a>
+      <code>enable_killer_pushblocks</code>
+    </td>
+    <td>Boolean</td>
+    <td>
+      If enabled, when a pushblock falls from the air and lands on Lara, it will
+      kill her outright. Otherwise, Lara will clip on top of the block and
+      survive.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>water_color</code>
     </td>
     <td>Float array or hex string</td>

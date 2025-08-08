@@ -18,6 +18,14 @@
 - fixed highlight size in health and air bars
 - fixed a potential crash when loading a save where Lara is holding a flare (#3924, regression from 1.0)
 - fixed unrestricted look mode allowing cinematic cameras to be broken out of (#3926, regression from 1.4)
+- added the ability for falling movable blocks to kill Lara outright if one lands directly on her (#3784)
+- fixed numerous interactions with movable blocks, trapdoors, drawbridges, bridges, lifts, and falling blocks for custom levels (#2758):
+    - added the ability for movable blocks to move on trapdoors, drawbridges, bridges, lifts, and falling blocks
+    - added the ability for stacks of movable blocks to fall and land on trapdoors, drawbridges, bridges, lifts, and falling blocks
+    - added the ability for stacks of movable blocks to fall when on opened trapdoors and drawbridges
+    - added the ability for movable blocks to travel up and down lifts
+    - fixed various bugs with falling movable blocks
+- fixed Lara hang climbing up a movable block used as a ladder piece (#3828)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)
@@ -29,7 +37,7 @@
 - fixed missing shader and configuration files from MacOS releases (#3870, regression from 1.4)
 - fixed zero byte at the end of config files (#3875, regression from 1.4)
 - fixed stacked sprites flickering (#3872, regression from 1.4)
-
+ 
 ## [1.4](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...tr2-1.4) - 2025-08-23
 Showcase: https://www.youtube.com/watch?v=AAOP1VFX9Lw
 

@@ -211,6 +211,9 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
             "%s: 'savegame_fmt_bson' must be a string", ctx->script_path);
     }
     ctx->gf->savegame_fmt_bson = Memory_DupStr(tmp_s);
+
+    ctx->gf->enable_killer_pushblocks =
+        JSON_ObjectGetBool(obj, "enable_killer_pushblocks", true);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)

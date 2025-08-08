@@ -75,6 +75,7 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID obj_id);
 GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id);
 
 extern void Object_SetReflective(GAME_OBJECT_ID obj_id, bool enabled);
+extern void Object_DrawAnimatingItem(const ITEM *item);
 
 #define REGISTER_OBJECT(object_id, setup_func_)                                \
     __attribute__((constructor)) static void M_RegisterObject##object_id(void) \

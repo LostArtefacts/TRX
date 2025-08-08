@@ -193,6 +193,7 @@ typedef struct {
     struct {
         float demo_delay;
         char *main_menu_background_path;
+        bool enable_killer_pushblocks;
         bool is_demo_version;
         bool play_any_level;
         bool lockout_option_ring;
