@@ -177,6 +177,7 @@ sources = [
   'game/input/backends/internal.c',
   'game/input/backends/keyboard.c',
   'game/input/common.c',
+  'game/input/update.c',
   'game/interpolation.c',
   'game/inventory.c',
   'game/inventory_ring/draw.c',

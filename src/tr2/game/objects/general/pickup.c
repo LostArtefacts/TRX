@@ -2,7 +2,6 @@
 
 #include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
@@ -11,6 +10,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>

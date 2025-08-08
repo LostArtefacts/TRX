@@ -2,7 +2,6 @@
 
 #include "game/effects.h"
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
@@ -17,6 +16,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/clock.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>

@@ -2,7 +2,6 @@
 
 #include "game/gun/gun.h"
 #include "game/gun/gun_misc.h"
-#include "game/input.h"
 #include "game/lara/misc.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -11,6 +10,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>

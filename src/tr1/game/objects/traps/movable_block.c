@@ -1,5 +1,4 @@
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
@@ -12,6 +11,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/utils.h>

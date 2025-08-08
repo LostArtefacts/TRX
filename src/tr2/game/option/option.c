@@ -1,8 +1,8 @@
 #include "game/option/option.h"
 
-#include "game/input.h"
 #include "global/vars.h"
 
+#include <libtrx/game/input.h>
 #include <libtrx/game/option/controls.h>
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/option/gameplay.h>

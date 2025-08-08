@@ -1,6 +1,7 @@
-#include "game/input.h"
 #include "game/lara.h"
 #include "global/vars.h"
+
+#include <libtrx/game/input.h>
 
 typedef enum {
     SWITCH_STATE_OFF = 0,
