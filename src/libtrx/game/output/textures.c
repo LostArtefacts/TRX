@@ -11,9 +11,6 @@
 #include "memory.h"
 #include "utils.h"
 
-#include <stdlib.h>
-#include <string.h>
-
 typedef struct {
     OUTPUT_UVW corners[4];
 } M_UVW_PACK;
@@ -54,6 +51,7 @@ static struct {
 static int32_t m_TexturePageCount = 0;
 static uint8_t *m_TexturePages8 = nullptr;
 static RGBA_8888 *m_TexturePages32 = nullptr;
+static SDL_mutex **m_TexturePageLocks = nullptr;
 
 static int32_t m_PaletteSize = 0;
 static RGB_888 *m_Palette8 = nullptr;
@@ -394,6 +392,16 @@ void Output_Textures_Shutdown(void)
         m_AnimationRanges.sprites = nullptr;
     }
     M_FreeLevelData();
+
+    // destroy per-page locks
+    if (m_TexturePageLocks != nullptr) {
+        for (int32_t i = 0; i < m_TexturePageCount; i++) {
+            SDL_DestroyMutex(m_TexturePageLocks[i]);
+        }
+        Memory_Free(m_TexturePageLocks);
+        m_TexturePageLocks = nullptr;
+    }
+
     if (m_Priv.tex_env_map != 0) {
         glDeleteTextures(1, &m_Priv.tex_env_map);
         m_Priv.tex_env_map = 0;
@@ -522,6 +530,12 @@ void Output_InitialiseTexturePages(const int32_t num_pages, const bool use_8bit)
     m_TexturePages8 = use_8bit
         ? GameBuf_Alloc(sizeof(uint8_t) * page_size, GBUF_TEXTURE_PAGES)
         : nullptr;
+
+    m_TexturePageLocks = Memory_Alloc(sizeof(SDL_mutex *) * num_pages);
+    for (int32_t i = 0; i < num_pages; i++) {
+        m_TexturePageLocks[i] = SDL_CreateMutex();
+        ASSERT(m_TexturePageLocks[i] != nullptr);
+    }
 }
 
 void Output_InitialisePalettes(
@@ -590,6 +604,18 @@ RGBA_8888 *Output_GetTexturePage32(const int32_t page_idx)
         return nullptr;
     }
     return &m_TexturePages32[page_idx * TEXTURE_PAGE_SIZE];
+}
+
+void Output_LockTexturePage32(const int32_t page_idx)
+{
+    ASSERT(page_idx >= 0 && page_idx < m_TexturePageCount);
+    SDL_LockMutex(m_TexturePageLocks[page_idx]);
+}
+
+void Output_UnlockTexturePage32(const int32_t page_idx)
+{
+    ASSERT(page_idx >= 0 && page_idx < m_TexturePageCount);
+    SDL_UnlockMutex(m_TexturePageLocks[page_idx]);
 }
 
 int32_t Output_GetPaletteSize(void)

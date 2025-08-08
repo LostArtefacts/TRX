@@ -383,6 +383,7 @@ sources = [
   'strings/case_funcs.c',
   'strings/common.c',
   'strings/fuzzy_match.c',
+  'thread_pool.c',
   'vector.c',
   'virtual_file.c',
 ]
