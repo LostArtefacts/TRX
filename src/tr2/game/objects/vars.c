@@ -129,6 +129,7 @@ const GAME_OBJECT_ID g_SwitchObjects[] = {
     O_SWITCH_TYPE_NORMAL,
     O_SWITCH_TYPE_SMALL,
     O_SWITCH_TYPE_UW,
+    NO_OBJECT,
     // clang-format on
 };
 
@@ -206,6 +207,7 @@ const GAME_OBJECT_ID g_AnimObjects[] = {
     O_LARA_SKIDOO,
     O_LARA_BOAT,
     O_LARA_EXTRA,
+    NO_OBJECT,
     // clang-format on
 };
 
@@ -248,6 +250,7 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     O_COMBAT_END,
     O_CUT_SHOTGUN,
     O_EARTHQUAKE,
+    NO_OBJECT,
     // clang-format on
 };
 
@@ -296,6 +299,7 @@ const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
     O_WATERFALL,
     O_SPLASH_1,
     O_BUBBLE_1,
+    NO_OBJECT,
     // clang-format on
 };
 
