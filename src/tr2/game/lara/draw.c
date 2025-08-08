@@ -1,13 +1,13 @@
 #include "game/lara/draw.h"
 
 #include "game/gun/gun_misc.h"
-#include "game/output.h"
 #include "game/random.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara.h>
 #include <libtrx/game/lara/pose.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 
 static void M_DrawBodyPart(
     LARA_MESH mesh, const ANIM_BONE *bone, const XYZ_16 *mesh_rots_1,

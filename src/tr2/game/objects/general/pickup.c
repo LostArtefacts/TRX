@@ -7,13 +7,13 @@
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
-#include "game/output.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 
 #define LF_PICKUP_ERASE 42

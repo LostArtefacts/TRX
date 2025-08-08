@@ -1,20 +1,19 @@
 #include "game/output/draw.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/const.h>
-#include <libtrx/game/creature/const.h>
-#include <libtrx/game/output/sources/lightnings.h>
-#include <libtrx/game/output/sources/misc.h>
-#include <libtrx/game/output/sources/objects.h>
-#include <libtrx/game/output/sources/rooms.h>
-#include <libtrx/game/output/sources/rooms_debug.h>
-#include <libtrx/game/output/sources/shadows.h>
-#include <libtrx/game/output/sources/sprites.h>
-#include <libtrx/game/output/sources/ui.h>
-#include <libtrx/game/output/state.h>
-#include <libtrx/game/output/utils.h>
-#include <libtrx/gfx/context.h>
-#include <libtrx/memory.h>
+#include "config.h"
+#include "game/creature/const.h"
+#include "game/objects.h"
+#include "game/output.h"
+#include "game/output/sources/lightnings.h"
+#include "game/output/sources/misc.h"
+#include "game/output/sources/objects.h"
+#include "game/output/sources/rooms.h"
+#include "game/output/sources/rooms_debug.h"
+#include "game/output/sources/shadows.h"
+#include "game/output/sources/sprites.h"
+#include "game/output/sources/ui.h"
+#include "game/output/state.h"
+#include "game/shell.h"
 
 #define M_TEXT_OUTLINE_THICKNESS 2
 
@@ -81,9 +80,33 @@ static void M_DrawScreenQuad(
     });
 }
 
-void Output_DrawSkybox(const OBJECT_MESH *const mesh)
+void Output_DrawBlackRectangle(const int32_t opacity)
 {
-    OutputSource_Objects_StageSkyboxMesh(mesh, SHADE_NEUTRAL);
+    const int32_t sx = 0;
+    const int32_t sy = 0;
+    const int32_t sw = Viewport_GetWidth(VIEWPORT_UI);
+    const int32_t sh = Viewport_GetHeight(VIEWPORT_UI);
+    const RGBA_8888 background = { 0, 0, 0, opacity };
+    Output_DrawScreenFlatQuad(sx, sy, 0, sw, sh, background);
+}
+
+void Output_DrawRoom(const ROOM *const room, const bool is_outside)
+{
+    OutputSource_Rooms_StageRoom(room);
+    if (g_Config.debug.enable_debug_triggers
+        || g_Config.debug.enable_debug_portals) {
+        OutputSource_RoomsDebug_StageRoom(room);
+    }
+}
+
+void Output_DrawSprite(
+    const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
+    const int16_t shade, const RGB_F tint)
+{
+    Matrix_Push();
+    Matrix_TranslateAbs(x, y, z);
+    OutputSource_Sprites_Stage(sprite_idx, shade, tint);
+    Matrix_Pop();
 }
 
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const CLIP clip)
@@ -106,13 +129,11 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
     Matrix_Pop();
 }
 
-void Output_DrawRoom(const ROOM *const room, const bool is_outside)
+void Output_DrawSkybox(const OBJECT_MESH *const mesh)
 {
-    OutputSource_Rooms_StageRoom(room);
-    if (g_Config.debug.enable_debug_triggers
-        || g_Config.debug.enable_debug_portals) {
-        OutputSource_RoomsDebug_StageRoom(room);
-    }
+    OutputSource_Objects_StageSkyboxMesh(
+        mesh,
+        0x1000 + 0x400 * Output_GetSunsetTimer() / Output_GetSunsetDuration());
 }
 
 void Output_DrawShadow(
@@ -144,16 +165,6 @@ void Output_DrawShadow(
     Matrix_Pop();
 }
 
-void Output_DrawSprite(
-    const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
-    const int16_t shade, const RGB_F tint)
-{
-    Matrix_Push();
-    Matrix_TranslateAbs(x, y, z);
-    OutputSource_Sprites_Stage(sprite_idx, shade, tint);
-    Matrix_Pop();
-}
-
 void Output_DrawLightningSegment(const LIGHTNING_SEGMENT segment)
 {
     OutputSource_Lightnings_StageSegment(&segment);
@@ -180,38 +191,6 @@ void Output_DrawScreenSprite(
     });
 }
 
-void Output_DrawTextOutline(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t z, int32_t w, int32_t h, const TEXT_STYLE text_style)
-{
-    if (ui_style == UI_STYLE_PC) {
-        Output_DrawScreenFrame(
-            sx, sy, w, h, M_GetMenuColor(MC_GOLD_DARK),
-            M_GetMenuColor(MC_GOLD_LIGHT), M_TEXT_OUTLINE_THICKNESS);
-        return;
-    }
-
-    if (text_style == TS_HEADING) {
-        Output_DrawScreenGradientBox(
-            sx, sy, w, h, M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
-            M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
-            M_TEXT_OUTLINE_THICKNESS);
-    } else if (
-        text_style == TS_BACKGROUND || text_style == TS_BACKGROUND_HEAVY) {
-        Output_DrawScreenGradientBox(
-            sx, sy, w, h, M_GetMenuColor(MC_GREY_TL),
-            M_GetMenuColor(MC_GREY_TR), M_GetMenuColor(MC_GREY_BL),
-            M_GetMenuColor(MC_GREY_BR), M_TEXT_OUTLINE_THICKNESS);
-    } else if (text_style == TS_REQUESTED) {
-        // Make sure height and width divisible by 2.
-        w = 2 * ((w + 1) / 2);
-        h = 2 * ((h + 1) / 2);
-        Output_DrawScreenCentreGradientBox(
-            sx, sy, w, h, M_GetMenuColor(MC_GREY_E), M_GetMenuColor(MC_GREY_C),
-            M_TEXT_OUTLINE_THICKNESS);
-    }
-}
-
 void Output_DrawTextBackground(
     const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
     const int32_t z, int32_t w, int32_t h, const TEXT_STYLE text_style)
@@ -224,6 +203,7 @@ void Output_DrawTextBackground(
     h = 2 * ((h + 1) / 2);
     M_DrawScreenQuad(sx, sy, sx + w, sy + h, z, cb, cb, cb, cb);
 
+#if TR_VERSION < 2
     if (ui_style == UI_STYLE_PC) {
         return;
     }
@@ -252,6 +232,68 @@ void Output_DrawTextBackground(
     M_DrawScreenQuad(x1, y0, xm, ym, z, ce, ce, ce, cc);
     M_DrawScreenQuad(x0, y1, xm, ym, z, ce, ce, ce, cc);
     M_DrawScreenQuad(x1, y1, xm, ym, z, ce, ce, ce, cc);
+#endif
+}
+
+void Output_DrawTextOutline(
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
+    const int32_t z, int32_t w, int32_t h, const TEXT_STYLE text_style)
+{
+#if TR_VERSION == 2
+    const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
+
+    const int32_t offset = 4;
+    const int32_t x0 = sx + offset;
+    const int32_t y0 = sy + offset;
+    const int32_t x1 = x0 + w - offset * 2;
+    const int32_t y1 = y0 + h - offset * 2;
+    const int32_t scale_h = PHD_ONE;
+    const int32_t scale_v = PHD_ONE;
+
+    Output_DrawScreenSprite(
+        x0, y0, z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(
+        x1, y0, z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(
+        x1, y1, z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(
+        x0, y1, z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL);
+
+    w = (w - offset * 2) * PHD_ONE / 8;
+    h = (h - offset * 2) * PHD_ONE / 8;
+
+    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL);
+    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL);
+#else
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenFrame(
+            sx, sy, w, h, M_GetMenuColor(MC_GOLD_DARK),
+            M_GetMenuColor(MC_GOLD_LIGHT), M_TEXT_OUTLINE_THICKNESS);
+        return;
+    }
+
+    if (text_style == TS_HEADING) {
+        Output_DrawScreenGradientBox(
+            sx, sy, w, h, M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
+            M_GetMenuColor(MC_BLACK), M_GetMenuColor(MC_BLACK),
+            M_TEXT_OUTLINE_THICKNESS);
+    } else if (
+        text_style == TS_BACKGROUND || text_style == TS_BACKGROUND_HEAVY) {
+        Output_DrawScreenGradientBox(
+            sx, sy, w, h, M_GetMenuColor(MC_GREY_TL),
+            M_GetMenuColor(MC_GREY_TR), M_GetMenuColor(MC_GREY_BL),
+            M_GetMenuColor(MC_GREY_BR), M_TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_REQUESTED) {
+        // Make sure height and width divisible by 2.
+        w = 2 * ((w + 1) / 2);
+        h = 2 * ((h + 1) / 2);
+        Output_DrawScreenCentreGradientBox(
+            sx, sy, w, h, M_GetMenuColor(MC_GREY_E), M_GetMenuColor(MC_GREY_C),
+            M_TEXT_OUTLINE_THICKNESS);
+    }
+#endif
 }
 
 void Output_DrawScreenFlatQuad(
@@ -337,14 +379,4 @@ void Output_DrawScreenFrame(
     M_DrawScreenQuad(x0 - e, y1,     x1 + e, y1 + e, 0, cd, cd, cd, cd);
     M_DrawScreenQuad(x0 - e, y1 - e, x1,     y1,     0, cl, cl, cl, cl);
     // clang-format on
-}
-
-void Output_DrawBlackRectangle(const int32_t opacity)
-{
-    const int32_t sx = 0;
-    const int32_t sy = 0;
-    const int32_t sw = Viewport_GetWidth(VIEWPORT_UI);
-    const int32_t sh = Viewport_GetHeight(VIEWPORT_UI);
-    const RGBA_8888 background = { 0, 0, 0, opacity };
-    Output_DrawScreenFlatQuad(sx, sy, 0, sw, sh, background);
 }

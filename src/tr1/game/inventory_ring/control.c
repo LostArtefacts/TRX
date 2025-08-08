@@ -9,7 +9,6 @@
 #include "game/inventory_ring/vars.h"
 #include "game/lara.h"
 #include "game/option/option_compass.h"
-#include "game/output.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -25,6 +24,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/option.h>
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/memory.h>
 

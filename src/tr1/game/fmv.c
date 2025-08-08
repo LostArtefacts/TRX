@@ -1,7 +1,6 @@
 #include "game/fmv.h"
 
 #include "game/input.h"
-#include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/viewport.h"
@@ -15,6 +14,7 @@
 #include <libtrx/game/console.h>
 #include <libtrx/game/game_flow.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>

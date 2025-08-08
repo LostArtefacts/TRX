@@ -1,12 +1,12 @@
 #include "game/effects.h"
 
 #include "game/objects/vars.h"
-#include "game/output.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 
 static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectActive = NO_EFFECT;

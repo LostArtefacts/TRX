@@ -1,6 +1,5 @@
 #include "game/game.h"
 #include "game/lara.h"
-#include "game/output.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 
@@ -8,6 +7,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);

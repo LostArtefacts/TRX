@@ -1,6 +1,5 @@
 #include "game/objects/common.h"
 
-#include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
@@ -8,6 +7,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/utils.h>
 
 void Object_DrawDummyItem(const ITEM *const item)
@@ -76,11 +76,9 @@ void Object_DrawSpriteItem(const ITEM *const item)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Output_DrawSprite(
-        SPRITE_ABS | (obj->semi_transparent ? SPRITE_SEMI_TRANS : 0)
-            | SPRITE_SHADE,
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
-        Output_GetLightAdder() + SHADE_NEUTRAL, 0);
+        Output_GetLightAdder() + SHADE_NEUTRAL, (RGB_F) { 1.0f, 1.0f, 1.0f });
 }
 
 void Object_Collision(

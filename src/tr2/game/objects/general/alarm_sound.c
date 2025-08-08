@@ -1,5 +1,6 @@
-#include "game/output.h"
 #include "game/sound.h"
+
+#include <libtrx/game/output.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);

@@ -1,11 +1,11 @@
 #include "game/viewport.h"
 
-#include "game/output.h"
 #include "game/shell.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/output.h>
 
 #define M_INITIAL_FOV 65
 

@@ -1,8 +1,7 @@
 #include "game/ui/elements/bar.h"
 
-#include "game/output.h"
-
 #include <libtrx/config.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/scaler.h>
 #include <libtrx/game/ui/draw.h>
 #include <libtrx/game/ui/helpers.h>

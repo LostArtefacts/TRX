@@ -2,11 +2,11 @@
 
 #include "game/effects.h"
 #include "game/lara/draw.h"
-#include "game/output.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/utils.h>
 
 #define M_MAX_BOUND_ROOMS 128
