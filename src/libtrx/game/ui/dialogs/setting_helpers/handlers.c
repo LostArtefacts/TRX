@@ -24,6 +24,12 @@ bool UI_Settings_EnableBreeze_IsAvailable(
     return g_Config.visuals.enable_braid;
 }
 
+bool UI_Settings_UIPickupsScale_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.visuals.enable_3d_pickups;
+}
+
 bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.ui.lara_health_bar.show_mode != BSM_NEVER;

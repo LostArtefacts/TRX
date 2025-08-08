@@ -82,8 +82,9 @@ typedef struct {
         bool enable_photo_mode_ui;
         bool enable_wraparound;
         bool enable_fps_counter;
-        double text_scale;
-        double bar_scale;
+        float text_scale;
+        float bar_scale;
+        float pickup_scale;
         UI_STYLE menu_style;
         STAT_DETAIL_MODE stat_detail_mode;
         bool enable_stats_level_header;

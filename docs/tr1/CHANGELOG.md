@@ -18,6 +18,7 @@
 - added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
 - added an option to keep sprites upright (Graphic options → Rendering → Sprites lock mode)
+- added an option to scale the 3D pickups in the UI (Graphic options → UI → Pickup scale)
 - added Russian translation
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)
@@ -26,6 +27,7 @@
 - added debug room clip feature (`/debug 1`)
 - changed the brightness filter to also work on title inventory ring background
 - changed the brightness filter option to work in smaller increments (10% reduced to 5%); added support for slow increments by 1% (hold Walk key)
+- changed the text and bar scale option to work in smaller increments (10% reduced to 5%); added support for slow increments by 1% (hold Walk key)
 - changed the game flow and game strings file placement
 - changed the skybox option to allow toggling in-game without the need to reload the level
 - changed the texture page limit from 128 to unlimited (#3517)

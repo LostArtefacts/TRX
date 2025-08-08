@@ -26,6 +26,7 @@ void Config_SanitizeCommon(void)
     CLAMP(g_Config.rendering.borders, 0.0, 0.45);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
+    CLAMP(g_Config.ui.pickup_scale, 0.5, 1.5);
     CLAMP(g_Config.visuals.fog_start, 1, 100);
     CLAMP(g_Config.visuals.fog_end, 1, 100);
 

@@ -16,6 +16,7 @@ bool UI_Settings_PauseMusicInInventory_IsAvailable(
     const UI_SETTINGS_OPTION *option);
 
 bool UI_Settings_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_UIPickupsScale_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *option);
