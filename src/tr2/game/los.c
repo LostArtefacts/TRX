@@ -60,11 +60,10 @@ static bool M_ItemIntersectSegment(
 
     // X slab
     if (ldx != 0) {
-        double tmp;
         double t_near = (double)(bounds->min.x - lx) / ldx;
         double t_far = (double)(bounds->max.x - lx) / ldx;
         if (t_near > t_far) {
-            SWAP(t_near, t_far, tmp);
+            SWAP(t_near, t_far);
         }
         if (t_near > t1 || t_far < t0) {
             return false;
@@ -77,11 +76,10 @@ static bool M_ItemIntersectSegment(
 
     // Y slab
     if (ldy != 0) {
-        double tmp;
         double t_near = (double)(bounds->min.y - ly) / ldy;
         double t_far = (double)(bounds->max.y - ly) / ldy;
         if (t_near > t_far) {
-            SWAP(t_near, t_far, tmp);
+            SWAP(t_near, t_far);
         }
         if (t_near > t1 || t_far < t0) {
             return false;
@@ -94,11 +92,10 @@ static bool M_ItemIntersectSegment(
 
     // Z slab
     if (ldz != 0) {
-        double tmp;
         double t_near = (double)(bounds->min.z - lz) / ldz;
         double t_far = (double)(bounds->max.z - lz) / ldz;
         if (t_near > t_far) {
-            SWAP(t_near, t_far, tmp);
+            SWAP(t_near, t_far);
         }
         if (t_near > t1 || t_far < t0) {
             return false;

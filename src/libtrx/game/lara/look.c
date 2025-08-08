@@ -147,7 +147,7 @@ void Lara_Look_UpDown(void)
 
     if (g_Config.gameplay.enable_inverted_look) {
         bool temp_forward;
-        SWAP(g_Input.forward, g_Input.back, temp_forward);
+        SWAP2(g_Input.forward, g_Input.back, temp_forward);
     }
 
     const bool on_surface = lara->water_status == LWS_SURFACE;

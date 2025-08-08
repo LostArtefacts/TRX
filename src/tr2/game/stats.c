@@ -118,8 +118,7 @@ void Stats_CalculateStats(void)
     for (int32_t i = 0; i < secret_count; i++) {
         for (int32_t j = i + 1; j < secret_count; j++) {
             if (secrets[i].object_id > secrets[j].object_id) {
-                struct L_SECRET_ITEM tmp;
-                SWAP(secrets[i], secrets[j], tmp);
+                SWAP(secrets[i], secrets[j]);
             }
         }
     }
