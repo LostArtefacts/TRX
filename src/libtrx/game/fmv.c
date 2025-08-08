@@ -1,26 +1,24 @@
 #include "game/fmv.h"
 
+#include "config.h"
+#include "debug.h"
+#include "engine/audio.h"
+#include "engine/video.h"
+#include "filesystem.h"
+#include "game/console.h"
+#include "game/game_flow.h"
 #include "game/input.h"
+#include "game/music.h"
+#include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "global/vars.h"
+#include "game/ui.h"
+#include "game/viewport.h"
+#include "gfx/context.h"
+#include "log.h"
+#include "memory.h"
 
-#include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/engine/audio.h>
-#include <libtrx/engine/video.h>
-#include <libtrx/filesystem.h>
-#include <libtrx/game/console.h>
-#include <libtrx/game/game_flow.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/ui.h>
-#include <libtrx/log.h>
-#include <libtrx/memory.h>
-
-#include <string.h>
-
-static bool m_IsFMVPlaying = false;
+static bool m_IsPlaying = false;
 static const char *m_Extensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
 };
@@ -102,11 +100,10 @@ static bool M_Play(const char *const file_name)
 {
     VIDEO *const video = Video_Open(file_name);
     if (video == nullptr) {
-        return true;
+        return false;
     }
 
-    m_IsFMVPlaying = true;
-    GFX_2D_RENDERER *const renderer_2d = GFX_2D_Renderer_Create();
+    GFX_2D_RENDERER *renderer_2d = GFX_2D_Renderer_Create();
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);
@@ -141,24 +138,27 @@ static bool M_Play(const char *const file_name)
 
     GFX_2D_Renderer_Destroy(renderer_2d);
     Output_ApplyRenderSettings();
-    m_IsFMVPlaying = false;
     return true;
 }
 
 bool FMV_Play(const char *const file_name)
 {
     Music_Stop();
+    Sound_StopAll();
+
     if (!g_Config.gameplay.enable_fmv) {
         return false;
     }
 
+    m_IsPlaying = true;
     char *final_path = File_GuessExtension(file_name, m_Extensions);
     const bool result = M_Play(final_path);
     Memory_FreePointer(&final_path);
+    m_IsPlaying = false;
     return result;
 }
 
 bool FMV_IsPlaying(void)
 {
-    return m_IsFMVPlaying;
+    return m_IsPlaying;
 }
