@@ -747,13 +747,9 @@
     },
     "game_strings": {
         "CONSOLE_HELP_VSYNC": "Переключает вертикальную синхронизацию.",
-        "ENUM_INPUT_ROLE_BILINEAR": "Фильтр текстур",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Изменить цель",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
         "MISC_EMPTY_SLOT_FMT": "- ПУСТОЙ СЛОТ %d -",
-        "OSD_TEXTURE_FILTER_BILINEAR": "билинейная",
-        "OSD_TEXTURE_FILTER_NN": "ближайший сосед",
-        "OSD_TEXTURE_FILTER_SET": "Фильтрация текстур: %s",
         "PASSPORT_RESTART_LEVEL": "Перезапустить уровень",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Позволяет выбирать дополнительные режимы игры в меню паспорта новой игры.\n\n- Новая игра+: разблокирует всё оружие с бесконечным боезапасом; у врагов вдвое больше здоровья.\n- Японская новая игра: оружие наносит двойной урон и сигнальных ракет 8, а не 6.\n- Японская новая игра+: комбинация Новой игры+ и Японской новой игры.",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Позволяет генерировать динамическое освещение для выстрелов и взрывов, аналогично TR2+.",

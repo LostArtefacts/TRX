@@ -747,13 +747,9 @@
     },
     "game_strings": {
         "CONSOLE_HELP_VSYNC": "Attiva/disattiva la sincronizzazione verticale.",
-        "ENUM_INPUT_ROLE_BILINEAR": "Attiva/Disattiva Filtro Texture",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Cambia Bersaglio",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Magnum",
         "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO %d -",
-        "OSD_TEXTURE_FILTER_BILINEAR": "bilineare",
-        "OSD_TEXTURE_FILTER_NN": "vicino più prossimo",
-        "OSD_TEXTURE_FILTER_SET": "Filtro texture impostato su %s",
         "PASSPORT_RESTART_LEVEL": "Ricomincia Livello",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Consente di selezionare delle modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+.",

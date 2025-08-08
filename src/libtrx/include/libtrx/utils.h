@@ -38,12 +38,22 @@
         (a) = (b);                                                             \
         (b) = c;                                                               \
     } while (0)
-#define SWAP2(a, b, c)                                                         \
+#define SWAP2(a, b, tmp)                                                       \
     do {                                                                       \
-        (c) = (a);                                                             \
+        (tmp) = (a);                                                           \
         (a) = (b);                                                             \
-        (b) = (c);                                                             \
+        (b) = (tmp);                                                           \
     } while (0)
+#define TOGGLE(target)                                                         \
+    do {                                                                       \
+        (target) = !(target);                                                  \
+    } while (0);
+#define CYCLE(target, rate, number_of)                                         \
+    do {                                                                       \
+        (target) += (rate);                                                    \
+        (target) += (number_of);                                               \
+        (target) %= (number_of);                                               \
+    } while (0);
 
 #define ALIGN(a, bytes) ((a + (bytes) - 1) & (~(bytes - 1)))
 #define TOGGLE_BIT(target_var, target_bit, condition)                          \

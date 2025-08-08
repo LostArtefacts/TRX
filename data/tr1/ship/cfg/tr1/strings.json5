@@ -747,13 +747,9 @@
     },
     "game_strings": {
         "CONSOLE_HELP_VSYNC": "Toggles vertical sync.",
-        "ENUM_INPUT_ROLE_BILINEAR": "Toggle Texture Filter",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Change Target",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
         "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
-        "OSD_TEXTURE_FILTER_BILINEAR": "bilinear",
-        "OSD_TEXTURE_FILTER_NN": "nearest-neighbor",
-        "OSD_TEXTURE_FILTER_SET": "Texture filter set to %s",
         "PASSPORT_RESTART_LEVEL": "Restart Level",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage.\n- Japanese NG+: combination of New Game+ and Japanese NG.",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.",

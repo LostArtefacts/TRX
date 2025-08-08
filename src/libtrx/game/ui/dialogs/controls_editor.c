@@ -124,17 +124,11 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_ENTER_CONSOLE },
                 { .role = INPUT_ROLE_TOGGLE_PHOTO_MODE },
                 { .role = INPUT_ROLE_TOGGLE_UI },
-#if TR_VERSION == 1
-                { .role = INPUT_ROLE_BILINEAR },
-#elif TR_VERSION == 2
                 { .role = INPUT_ROLE_TOGGLE_BILINEAR_FILTER },
-#endif
                 { .role = INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER },
                 { .role = INPUT_ROLE_SWITCH_UPSCALING },
                 { .role = INPUT_ROLE_SWITCH_BORDERS },
-#if TR_VERSION == 2
                 { .role = INPUT_ROLE_TOGGLE_WIREFRAME },
-#endif
                 { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
                 { .role = (INPUT_ROLE)-1 },
             },

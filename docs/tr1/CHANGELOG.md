@@ -8,6 +8,7 @@
     - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
     - `--headless`: runs the game offscreen with no audio and at unlocked simulation speed
     - -q`, `--quiet`: outputs only error messages to the terminal, with log files being written to normally
+- added new hotkeys: F7 for toggling the wireframe mode, F8 for cycling the lighting contrast
 - added ability to move Lara around in photo mode
 - added additional poses for photo mode
 - added an option to allow Lara to sprint (Gameplay → Controls → Sprinting) (#3711)
