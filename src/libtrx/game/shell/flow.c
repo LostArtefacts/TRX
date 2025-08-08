@@ -151,6 +151,7 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
                 tmp_args->original_args = nullptr;
             }
             tmp_args->headless = args->headless;
+            tmp_args->debug_render_performance = args->debug_render_performance;
             new_args = tmp_args;
         }
     } else {
