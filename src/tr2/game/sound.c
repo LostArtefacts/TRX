@@ -1,12 +1,12 @@
 #include "game/sound.h"
 
-#include "game/random.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/engine/audio.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/random.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 

@@ -2,12 +2,12 @@
 
 #include "game/gun/gun_misc.h"
 #include "game/los.h"
-#include "game/random.h"
 #include "game/spawn.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define M_SHOOT_TARGETING_SPEED 300

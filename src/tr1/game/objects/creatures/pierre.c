@@ -2,12 +2,12 @@
 
 #include "game/creature.h"
 #include "game/los.h"
-#include "game/random.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define PIERRE_POSE_CHANCE 0x60 // = 96

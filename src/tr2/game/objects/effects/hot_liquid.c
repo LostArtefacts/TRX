@@ -1,7 +1,8 @@
 #include "game/effects.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
+
+#include <libtrx/game/random.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t effect_num);

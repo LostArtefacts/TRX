@@ -1,11 +1,11 @@
 #include "game/creature.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define EXTRA_ANIM_TREX_DEATH 1

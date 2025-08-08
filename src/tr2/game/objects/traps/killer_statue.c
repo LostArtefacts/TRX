@@ -1,10 +1,10 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/random.h>
 
 #define KILLER_STATUE_CUT_DAMAGE 20
 #define KILLER_STATUE_TOUCH_BITS 0b10000000 // = 128

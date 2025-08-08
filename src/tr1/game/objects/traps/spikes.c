@@ -1,9 +1,9 @@
 #include "game/lara.h"
-#include "game/random.h"
 #include "game/spawn.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/random.h>
 
 #define SPIKE_DAMAGE 15
 

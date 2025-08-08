@@ -1,7 +1,8 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "global/vars.h"
+
+#include <libtrx/game/random.h>
 
 typedef enum {
     // clang-format off

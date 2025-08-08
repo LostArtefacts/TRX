@@ -1,9 +1,9 @@
 #include "game/creature.h"
 #include "game/objects/creatures/cultist_common.h"
-#include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 // clang-format off
