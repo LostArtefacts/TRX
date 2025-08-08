@@ -248,46 +248,11 @@ static void M_OpaquePass(
             const int32_t vertex_start = batcher->transparent_vertices->count;
             for (int32_t k = 0; k < face->vertex_count; k++) {
                 const int32_t l = face->vertex_indices[k];
-                M_MESH_FULL v = {
+                const M_MESH_FULL v = {
                     .geom = bind->geom_data[l],
                     .tex = bind->tex_data[l],
                     .shade = bind->shade_data[l],
                 };
-
-                // Since we're ripping faces apart from individual model
-                // instances, we no longer are able to use per-instance uniforms
-                // – we need to bake the uniforms into vertex attributes.
-                // XXX: this technique might've been possible to avoid by using
-                // UBOs.
-
-                // clang-format off
-                v.geom.pos = (XYZW_F) {
-                    .x = (
-                        m->_00 * v.geom.pos.x +
-                        m->_01 * v.geom.pos.y +
-                        m->_02 * v.geom.pos.z +
-                        m->_03
-                     ),
-                    .y = (
-                        m->_10 * v.geom.pos.x +
-                        m->_11 * v.geom.pos.y +
-                        m->_12 * v.geom.pos.z +
-                        m->_13
-                     ),
-                    .z = (
-                        m->_20 * v.geom.pos.x +
-                        m->_21 * v.geom.pos.y +
-                        m->_22 * v.geom.pos.z +
-                        m->_23
-                     ),
-                     .w = v.geom.pos.w,
-                };
-                // clang-format on
-                v.geom.color.r *= inst->tint.r;
-                v.geom.color.g *= inst->tint.g;
-                v.geom.color.b *= inst->tint.b;
-                v.geom.flags |= inst->wibble ? VERT_CAUSTICS : 0;
-
                 Vector_Add(batcher->transparent_vertices, &v);
             }
             const int32_t vertex_count =
@@ -307,24 +272,26 @@ static void M_OpaquePass(
 
 static void M_TransparentPass(const MESH_BATCHER *const batcher)
 {
-    const MATRIX id_matrix = {
-        // clang-format off
-        ._00 = 1, ._01 = 0, ._02 = 0, ._03 = 0,
-        ._10 = 0, ._11 = 1, ._12 = 0, ._13 = 0,
-        ._20 = 0, ._21 = 0, ._22 = 1, ._23 = 0,
-        // clang-format on
-    };
-    Output_Shader_UploadViewModelMatrix(batcher->shader, &id_matrix);
-    Output_Shader_UploadTint(batcher->shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
     glBindVertexArray(batcher->full_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->full_vbo);
     GFX_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
         batcher->transparent_vertices->count * sizeof(M_MESH_FULL),
         Vector_GetData(batcher->transparent_vertices), GL_STATIC_DRAW);
+
+    const MESH_INSTANCE *inst = nullptr;
     for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
         const M_FACE_SORT *const sort_ptr =
             Vector_Get(batcher->transparent_sort, i);
+        if (sort_ptr->face->vertex_count == 0) {
+            continue;
+        }
+        if (sort_ptr->inst != inst) {
+            inst = sort_ptr->inst;
+            Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
+            Output_Shader_UploadTint(batcher->shader, inst->tint);
+            Output_Shader_UploadWibbleEffect(batcher->shader, inst->wibble);
+        }
         glDrawArrays(
             GL_TRIANGLES, sort_ptr->vertex_start, sort_ptr->vertex_count);
         g_GFX_Metrics.trans_vert_count += sort_ptr->face->vertex_count;
