@@ -47,6 +47,7 @@ void Object_SetupAllObjects(void)
         obj->ceiling_height_func = nullptr;
         obj->draw_func = Object_DrawAnimatingItem;
         obj->collision_func = nullptr;
+        obj->add_walkable_func = nullptr;
         obj->hit_points = DONT_TARGET;
         obj->pivot_length = 0;
         obj->radius = DEFAULT_RADIUS;

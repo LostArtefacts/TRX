@@ -197,7 +197,6 @@ sources = [
   'game/objects/traps/lava_wedge.c',
   'game/objects/traps/lightning_emitter.c',
   'game/objects/traps/midas_touch.c',
-  'game/objects/traps/movable_block.c',
   'game/objects/traps/pendulum.c',
   'game/objects/traps/rolling_ball.c',
   'game/objects/traps/sliding_pillar.c',

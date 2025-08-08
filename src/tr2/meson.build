@@ -187,7 +187,6 @@ sources = [
   'game/objects/general/lara_alarm.c',
   'game/objects/general/lift.c',
   'game/objects/general/mini_copter.c',
-  'game/objects/general/movable_block.c',
   'game/objects/general/pickup.c',
   'game/objects/general/sphere_of_doom.c',
   'game/objects/general/switch.c',

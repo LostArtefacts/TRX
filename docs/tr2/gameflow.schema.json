@@ -114,6 +114,10 @@
         "$ref": "#/definitions/fmv"
       }
     },
+    "enable_killer_pushblocks": {
+      "type": "boolean",
+      "description": "If enabled, when a pushblock falls from the air and lands on Lara, it will kill her outright."
+    },
     "enforced_config": {
       "type": "object",
       "description": "Overrides for any regular game config settings.",

@@ -53,6 +53,7 @@
 - added an option to choose between original TR1, original TR2 or unrestricted look modes
 - added missing end of level statistic screens to Home Sweet Home and Kingdom
 - added an option to control whether or not Lara reverts to pistols when going from one level to another
+- added ability for falling movable blocks to kill Lara outright if one lands directly on her
 - changed inventory to pause the music rather than muting it
 - fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed killing the T-Rex with a grenade launcher crashing the game
@@ -139,6 +140,13 @@
 - fixed Lara being able to get on a skidoo while underwater and consequently dying
 - fixed a missing transition animation between Lara jumping forward and entering freefall
 - fixed the combat end logic not completing properly if Lara is on a vehicle
+- fixed numerous interactions with movable blocks, trapdoors, drawbridges, bridges, lifts, and falling blocks for custom levels:
+    - added the ability for movable blocks to move on trapdoors, drawbridges, bridges, lifts, and falling blocks
+    - added the ability for stacks of movable blocks to fall and land on trapdoors, drawbridges, bridges, lifts, and falling blocks
+    - added the ability for stacks of movable blocks to fall when on opened trapdoors and drawbridges
+    - added the ability for movable blocks to travel up and down lifts
+    - fixed various bugs with falling movable blocks
+- fixed Lara hang climbing up a movable block used as a ladder piece
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels

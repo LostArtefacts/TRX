@@ -21,6 +21,7 @@
 
     "demo_delay": 30,
     "secret_track": 43,
+    "enable_killer_pushblocks": true,
 
     "sfx_path": "data/main.sfx",
     "injections": [

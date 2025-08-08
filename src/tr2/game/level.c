@@ -375,6 +375,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
 
     Level_LoadAnimFrames();
     Level_LoadAnimCommands();
+    Level_LoadWalkables();
     Level_LoadObjectsAndItems();
 
     Level_LoadTextures();
