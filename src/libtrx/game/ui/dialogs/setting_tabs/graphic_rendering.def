@@ -7,6 +7,7 @@ X_UI_CFG_BOOL(rendering.enable_vsync,            SETTING_VSYNC)
 X_UI_CFG_FLOAT(visuals.brightness,               SETTING_BRIGHTNESS, .min_value = CONFIG_MIN_BRIGHTNESS * 100, .max_value = CONFIG_MAX_BRIGHTNESS * 100, .delta_slow = 1, .delta_fast = 5)
 
 X_UI_CFG_ENUM(rendering.lighting_contrast,       SETTING_LIGHTING_CONTRAST, .misc = UI_Settings_LightingContrastEnumEntries)
+X_UI_CFG_ENUM(rendering.sprite_lock_mode,        SETTING_SPRITE_LOCK_MODE, .misc = UI_Settings_SpriteLockModeEnumEntries)
 
 X_UI_CFG_ENUM(rendering.aspect_mode,             SETTING_ASPECT_MODE, .misc = UI_Settings_AspectModeEnumEntries)
 X_UI_CFG_ENUM(rendering.upscaling_filter,        SETTING_UPSCALING_FILTER, .misc = UI_Settings_TextureFilterEnumEntries)

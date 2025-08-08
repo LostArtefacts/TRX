@@ -1,9 +1,11 @@
+uniform int uBillboardLockMode;
 uniform int uLightingContrast;
 
 #ifdef VERTEX
 
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
+uniform mat4 uMatView;
 uniform mat4 uMatModelView;
 uniform bool uTrapezoidFilterEnabled;
 uniform bool uWibbleEffect;
@@ -17,7 +19,7 @@ layout(location = 5) in uint inFlags;
 layout(location = 6) in vec4 inColor;
 layout(location = 7) in float inShade;
 
-out vec4 gWorldPos;
+out vec4 gEyePos;
 out vec3 gNormal;
 flat out uint gFlags;
 flat out int gTexLayer;
@@ -28,13 +30,15 @@ out float gShade;
 out vec4 gColor;
 
 void main(void) {
-    // billboard sprites if flagged, else standard vertex transform
-    vec4 eyePos = uMatModelView * vec4(inPosition.xyz, 1.0);
+    vec4 eyePos;
+
     if ((inFlags & VERT_BILLBOARD) != 0u) {
-        // inNormal.xy carries sprite displacement for billboarding
-        eyePos.xy += inNormal.xy;
+        eyePos = offsetBillboard(inPosition.xyz, inNormal.xy, uMatView, uMatModelView, uMatProjection, uBillboardLockMode);
+    } else {
+        eyePos = uMatModelView * vec4(inPosition.xyz, 1.0);
     }
-    gWorldPos = eyePos;
+
+    gEyePos = eyePos;
     gNormal = inNormal;
     gl_Position = uMatProjection * eyePos;
     gl_Position.z += inPosition.w;
@@ -71,7 +75,7 @@ uniform bool uReflectionsEnabled;
 uniform vec3 uGlobalTint;
 uniform vec2 uFog; // x = fog start, y = fog end
 
-in vec4 gWorldPos;
+in vec4 gEyePos;
 in vec3 gNormal;
 flat in uint gFlags;
 flat in int gTexLayer;
@@ -110,7 +114,7 @@ void main(void) {
             shade = gShade;
         } else if (uLightingMode == LIGHTING_MODE_FULL) {
             shade = gShade;
-            shade = shadeFog(shade, gWorldPos.z, uFog);
+            shade = shadeFog(shade, gEyePos.z, uFog);
         } else {
             shade = SHADE_NEUTRAL;
         }

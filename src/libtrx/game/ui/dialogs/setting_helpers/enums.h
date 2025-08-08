@@ -31,6 +31,7 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[];
 #endif
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_SpriteLockModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_ScreenshotFormatEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[];

@@ -11,6 +11,7 @@
     - added brightness option (Graphic settings → Rendering → Brightness)
     - added anisotropy option (Graphic settings → Rendering → Anisotropy filter)
     - added vertical sync option (Graphic settings → Rendering → VSync)
+    - added an option to keep sprites upright (Graphic options → Rendering → Sprites lock mode)
     - added debug portals feature (`/debug 1`)
     - added debug room clip feature (`/debug 1`)
     - added debug spheres feature (`/debug 1`)
