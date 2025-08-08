@@ -15,7 +15,7 @@ void ItemAction_Earthquake(ITEM *item)
     } else if (flip_timer == 35) {
         Sound_Effect(SFX_EXPLOSION, nullptr, SPM_NORMAL);
     } else if (flip_timer == 20 || flip_timer == 50 || flip_timer == 70) {
-        Sound_Effect(SFX_T_REX_FOOTSTOMP, nullptr, SPM_NORMAL);
+        Sound_Effect(SFX_T_REX_STOMP, nullptr, SPM_NORMAL);
     }
 
     if (flip_timer == 104) {

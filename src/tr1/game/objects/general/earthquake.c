@@ -23,7 +23,7 @@ static void M_Control(const int16_t item_num)
             Sound_Effect(SFX_ROLLING_BALL, nullptr, SPM_NORMAL);
         } else if (Random_GetControl() < 0x400) {
             g_Camera.bounce = 50;
-            Sound_Effect(SFX_T_REX_FOOTSTOMP, nullptr, SPM_NORMAL);
+            Sound_Effect(SFX_T_REX_STOMP, nullptr, SPM_NORMAL);
         }
     }
 }
