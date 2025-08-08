@@ -3,15 +3,17 @@
 #include "../../engine/image.h"
 #include "./types.h"
 
+void Output_InitBackground(void);
+void Output_ShutdownBackground(void);
 bool Output_LoadBackgroundFromFile(const char *path);
 void Output_ReloadBackgroundImage(void);
 
-extern BACKGROUND_TYPE Output_GetBackgroundType(void);
-extern bool Output_LoadBackgroundFromImage(const IMAGE *image);
-extern void Output_LoadBackgroundFromObject(void);
-extern void Output_UnloadBackground(void);
+BACKGROUND_TYPE Output_GetBackgroundType(void);
+bool Output_LoadBackgroundFromImage(const IMAGE *image);
+void Output_LoadBackgroundFromObject(void);
+void Output_UnloadBackground(void);
 
-extern void Output_DrawBackground(void);
+void Output_DrawBackground(void);
 
 // TODO: make these functions private once output module is consolidated
 char *Output_GetLastBackgroundPath(void);

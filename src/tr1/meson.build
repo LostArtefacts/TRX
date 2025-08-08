@@ -213,7 +213,6 @@ sources = [
   'game/option/option.c',
   'game/option/option_compass.c',
   'game/option/option_passport.c',
-  'game/output/common.c',
   'game/output/draw.c',
   'game/room_draw.c',
   'game/savegame/savegame.c',
