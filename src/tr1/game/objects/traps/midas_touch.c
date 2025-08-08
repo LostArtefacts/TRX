@@ -1,5 +1,4 @@
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
@@ -7,6 +6,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/overlay.h>
 
 #define M_RANGE_H (STEP_L * 2)

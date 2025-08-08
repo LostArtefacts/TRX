@@ -1,7 +1,6 @@
 #include "game/inventory_ring/draw.h"
 
 #include "game/game.h"
-#include "game/input.h"
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
 #include "game/option/option_compass.h"
@@ -9,6 +8,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>

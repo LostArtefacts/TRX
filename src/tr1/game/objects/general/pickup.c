@@ -1,7 +1,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/gun.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
@@ -11,6 +10,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/overlay.h>

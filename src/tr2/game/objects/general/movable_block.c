@@ -1,4 +1,3 @@
-#include "game/input.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
@@ -6,6 +5,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects/traps/movable_block.h>

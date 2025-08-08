@@ -3,7 +3,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/shell.h"
@@ -13,6 +12,7 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/music.h>

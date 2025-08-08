@@ -1,8 +1,8 @@
 
-#include "game/input.h"
 #include "game/option/option_compass.h"
 #include "game/option/option_passport.h"
 
+#include <libtrx/game/input.h>
 #include <libtrx/game/option.h>
 #include <libtrx/game/option/controls.h>
 #include <libtrx/game/option/examine.h>

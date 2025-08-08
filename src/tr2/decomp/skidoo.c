@@ -4,7 +4,6 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
-#include "game/input.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/vehicles/skidoo_armed.h"
@@ -16,6 +15,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/gun.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>

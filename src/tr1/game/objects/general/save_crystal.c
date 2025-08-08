@@ -1,9 +1,9 @@
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {

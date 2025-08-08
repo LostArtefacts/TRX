@@ -2,13 +2,13 @@
 
 #include "game/console/common.h"
 #include "game/game.h"
-#include "game/input.h"
 #include "game/inventory_ring/control.h"
 #include "game/option/option.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
