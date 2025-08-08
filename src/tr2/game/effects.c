@@ -1,11 +1,11 @@
 #include "game/effects.h"
 
 #include "game/objects/common.h"
-#include "game/output.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 
 static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectFree = NO_EFFECT;
@@ -159,20 +159,17 @@ void Effect_Draw(const int16_t effect_num)
 
     if (effect->object_id == O_GLOW) {
         Output_DrawSprite(
-            (effect->rot.y << 16) | (uint16_t)effect->rot.x,
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
-            effect->shade, effect->frame_num);
+            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f });
         return;
     }
 
     if (obj->mesh_count < 0) {
         Output_DrawSprite(
-            SPRITE_ABS | (obj->semi_transparent ? SPRITE_SEMI_TRANS : 0)
-                | SPRITE_SHADE,
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            effect->shade, 0);
+            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f });
         return;
     }
 

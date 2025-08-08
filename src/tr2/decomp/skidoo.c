@@ -8,7 +8,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/vehicles/skidoo_armed.h"
-#include "game/output.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
@@ -21,6 +20,7 @@
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 #include <libtrx/utils.h>
 
 #define SKIDOO_RADIUS 500

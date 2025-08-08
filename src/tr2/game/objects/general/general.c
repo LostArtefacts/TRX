@@ -1,9 +1,9 @@
 #include "game/objects/general/general.h"
 
 #include "game/objects/common.h"
-#include "game/output.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/output.h>
 
 typedef enum {
     // clang-format off

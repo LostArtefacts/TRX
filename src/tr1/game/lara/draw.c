@@ -2,13 +2,13 @@
 
 #include "game/gun.h"
 #include "game/lara.h"
-#include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/lara/pose.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 
 static void M_DrawMesh(LARA_MESH mesh_idx, CLIP clip, bool interpolated);
 

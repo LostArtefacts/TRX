@@ -1,10 +1,10 @@
 #include "game/objects/general/flare_item.h"
 
 #include "game/objects/general/pickup.h"
-#include "game/output.h"
 #include "game/spawn.h"
 
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 

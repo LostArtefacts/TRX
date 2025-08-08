@@ -2,7 +2,6 @@
 
 #include "game/effects.h"
 #include "game/lara/draw.h"
-#include "game/output.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/types.h"
@@ -11,6 +10,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/log.h>
 
 static int32_t m_RoomNumStack[MAX_ROOMS_TO_DRAW] = {};

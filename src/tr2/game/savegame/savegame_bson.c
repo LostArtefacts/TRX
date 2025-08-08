@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/general/lift.h"
-#include "game/output.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
@@ -15,6 +14,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/stats.h>

@@ -245,6 +245,7 @@ sources = [
   'game/option/sound.c',
   'game/output/background.c',
   'game/output/common.c',
+  'game/output/draw.c',
   'game/output/func.c',
   'game/output/lights.c',
   'game/output/mesh_batcher/batcher.c',

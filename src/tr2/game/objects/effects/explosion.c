@@ -1,9 +1,9 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
-#include "game/output.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t effect_num);

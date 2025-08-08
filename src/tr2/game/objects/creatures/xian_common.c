@@ -1,10 +1,10 @@
 #include "game/objects/creatures/xian_common.h"
 
 #include "game/objects/common.h"
-#include "game/output.h"
 #include "global/vars.h"
 
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 
 // TODO: this duplicates Object_DrawAnimatingItem almost entirely
 void XianWarrior_Draw(const ITEM *item)

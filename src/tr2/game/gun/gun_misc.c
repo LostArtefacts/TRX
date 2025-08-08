@@ -4,7 +4,6 @@
 #include "game/los.h"
 #include "game/objects/general/window.h"
 #include "game/objects/vars.h"
-#include "game/output.h"
 #include "game/random.h"
 #include "game/spawn.h"
 #include "game/stats.h"
@@ -15,6 +14,7 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/utils.h>
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730

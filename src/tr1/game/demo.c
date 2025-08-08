@@ -8,7 +8,6 @@
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/output.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -20,6 +19,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/phase.h>
 #include <libtrx/log.h>

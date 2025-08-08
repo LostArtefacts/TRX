@@ -1,6 +1,5 @@
 #include "game/fmv.h"
 #include "game/game_flow.h"
-#include "game/output.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 
@@ -8,6 +7,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_string_manager.h>
+#include <libtrx/game/output.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
