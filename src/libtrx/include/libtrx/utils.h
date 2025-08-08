@@ -32,17 +32,17 @@
         else if ((a) > (c))                                                    \
             (a) = (c);                                                         \
     } while (0)
-#define SWAP(a, b, c)                                                          \
-    do {                                                                       \
-        (c) = (a);                                                             \
-        (a) = (b);                                                             \
-        (b) = (c);                                                             \
-    } while (0)
-#define SWAP2(a, b)                                                            \
+#define SWAP(a, b)                                                             \
     do {                                                                       \
         typeof(a) c = (a);                                                     \
         (a) = (b);                                                             \
         (b) = c;                                                               \
+    } while (0)
+#define SWAP2(a, b, c)                                                         \
+    do {                                                                       \
+        (c) = (a);                                                             \
+        (a) = (b);                                                             \
+        (b) = (c);                                                             \
     } while (0)
 
 #define ALIGN(a, bytes) ((a + (bytes) - 1) & (~(bytes - 1)))

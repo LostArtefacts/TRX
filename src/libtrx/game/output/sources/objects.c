@@ -363,7 +363,7 @@ void OutputSource_Objects_ObserveObjectMeshSwap(
 
     const int16_t mesh_num_1 = Object_GetMeshIndex(mesh_1);
     const int16_t mesh_num_2 = Object_GetMeshIndex(mesh_2);
-    SWAP2(p->meshes[mesh_num_1], p->meshes[mesh_num_2]);
+    SWAP(p->meshes[mesh_num_1], p->meshes[mesh_num_2]);
     OutputSource_Objects_ObserveObjectMeshUpdate(mesh_1);
     OutputSource_Objects_ObserveObjectMeshUpdate(mesh_2);
 }

@@ -280,7 +280,7 @@ void OutputSource_RoomsDebug_ObserveRoomFlip(const ROOM *const room)
     if (room->flip_status == RFS_UNFLIPPED && room->flipped_room != NO_ROOM) {
         const int16_t room_1 = Room_GetNumber(room);
         const int16_t room_2 = room->flipped_room;
-        SWAP2(p->meshes[room_1], p->meshes[room_2]);
+        SWAP(p->meshes[room_1], p->meshes[room_2]);
     }
 }
 
