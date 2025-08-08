@@ -5,6 +5,7 @@
 #include "game/output.h"
 #include "game/output/shader.h"
 #include "game/output/textures.h"
+#include "game/shell.h"
 #include "gfx/context.h"
 #include "vector.h"
 
@@ -206,7 +207,7 @@ void SceneCompositor_Shutdown(void)
 
 bool M_IsActive(void)
 {
-    return !Output_IsHeadless()
+    return !Output_IsHeadless() || Shell_GetArgs()->debug_render_performance
         || GFX_Context_GetScheduledScreenshotPath() != nullptr;
 }
 
