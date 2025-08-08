@@ -1,9 +1,9 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "game/spawn.h"
 
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/random.h>
 
 #define PENDULUM_DAMAGE 50
 

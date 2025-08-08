@@ -1,5 +1,4 @@
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
@@ -10,6 +9,7 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define ROLLING_BALL_DAMAGE_AIR 100

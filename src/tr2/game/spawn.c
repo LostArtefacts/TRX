@@ -2,13 +2,13 @@
 
 #include "game/effects.h"
 #include "game/objects/effects/missile_common.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 
 #define BARTOLI_LIGHT_RANGE (5 * WALL_L) // = 5120
 

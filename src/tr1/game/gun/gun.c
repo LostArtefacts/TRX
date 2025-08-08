@@ -1,9 +1,9 @@
 #include "game/gun.h"
 
 #include "game/inventory.h"
-#include "game/random.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/random.h>
 
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
 {
