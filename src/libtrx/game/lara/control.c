@@ -467,8 +467,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         >> W2V_SHIFT;
 
     const SECTOR *const sector = M_GetCurrentSector();
-    if (lara_info->water_status != LWS_CHEAT
-        && (TR_VERSION == 1 || !lara_info->extra_anim)) {
+    if (TR_VERSION == 1 || !lara_info->extra_anim) {
         M_ObjectCollision(coll);
     }
 

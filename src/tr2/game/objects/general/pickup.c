@@ -332,7 +332,8 @@ static void M_Draw(const ITEM *const item)
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
 {
-    if (g_Lara.water_status == LWS_UNDERWATER) {
+    if (g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         return &m_PickUpBoundsUW;
     } else {
         return &m_PickUpBounds;
@@ -350,7 +351,9 @@ void Pickup_Collision(
     if (g_Lara.water_status == LWS_ABOVE_WATER
         || g_Lara.water_status == LWS_WADE) {
         M_DoAboveWater(item_num, lara_item);
-    } else if (g_Lara.water_status == LWS_UNDERWATER) {
+    } else if (
+        g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         M_DoUnderwater(item_num, lara_item);
     }
 }

@@ -203,7 +203,8 @@ static void M_CollisionUW(
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
-        || g_Lara.water_status != LWS_UNDERWATER) {
+        || (g_Lara.water_status != LWS_UNDERWATER
+            && g_Lara.water_status != LWS_CHEAT)) {
         return;
     }
 

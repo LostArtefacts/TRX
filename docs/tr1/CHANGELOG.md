@@ -32,6 +32,7 @@
 - changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range (#3598)
 - changed `-l`/`--level` switch to accept the level number on top of the level path
 - changed settings dialogs to show a suitable message if a level builder has hidden all options within that dialog (#3637)
+- changed the fly cheat to allow Lara to interact with switches and pickups (#3665)
 - fixed glide camera behaviour and position in room 101 in Temple of the Cat (#3533)
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
