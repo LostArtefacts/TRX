@@ -2,13 +2,13 @@
 #include "game/lara.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/viewport.h>
 
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8

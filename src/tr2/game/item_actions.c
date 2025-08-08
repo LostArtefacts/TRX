@@ -4,7 +4,6 @@
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
@@ -12,6 +11,7 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 typedef void (*M_FUNC)(ITEM *item);

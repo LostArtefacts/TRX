@@ -6,7 +6,6 @@
 #include "game/objects/common.h"
 #include "game/option/option_compass.h"
 #include "game/shell.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -17,6 +16,7 @@
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
+#include <libtrx/game/viewport.h>
 
 #define M_CAMERA_2_RING 598
 #define M_PASSPORT_FOV 65

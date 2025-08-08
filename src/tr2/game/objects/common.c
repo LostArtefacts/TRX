@@ -1,6 +1,5 @@
 #include "game/objects/common.h"
 
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
@@ -8,6 +7,7 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 void Object_DrawDummyItem(const ITEM *const item)
