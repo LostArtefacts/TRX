@@ -74,6 +74,7 @@ typedef struct {
     int16_t y0;
     int16_t x1;
     int16_t y1;
+    uint16_t flags;
 } SPRITE_TEXTURE;
 
 typedef struct ANIMATED_TEXTURE_RANGE {

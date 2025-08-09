@@ -38,6 +38,10 @@ static struct {
         bool *animated;
         bool *animated_objects;
         bool *animated_sprites;
+
+        uint16_t *flags;
+        uint16_t *flags_objects;
+        uint16_t *flags_sprites;
     } uvws;
 
     struct {
@@ -214,6 +218,7 @@ static void M_FillSpriteUVW(const int32_t i)
     corners[1].u = u1; corners[1].v = v0; corners[1].w = sprite->tex_page;
     corners[2].u = u1; corners[2].v = v1; corners[2].w = sprite->tex_page;
     corners[3].u = u0; corners[3].v = v1; corners[3].w = sprite->tex_page;
+    m_Priv.uvws.flags_sprites[i] = sprite->flags;
     // clang-format on
 }
 
@@ -265,6 +270,9 @@ static void M_PrepareUVWs(void)
     m_Priv.uvws.animated_objects = m_Priv.uvws.animated;
     m_Priv.uvws.animated_sprites =
         m_Priv.uvws.animated + m_Priv.uvws.count_objects;
+    m_Priv.uvws.flags = Memory_Alloc(m_Priv.uvws.count * sizeof(uint16_t));
+    m_Priv.uvws.flags_objects = m_Priv.uvws.flags;
+    m_Priv.uvws.flags_sprites = m_Priv.uvws.flags + m_Priv.uvws.count_objects;
     M_FillObjectUVWs();
     M_FillSpriteUVWs();
 }
@@ -364,6 +372,7 @@ static void M_FreeLevelData(void)
     }
     Memory_FreePointer(&m_Priv.uvws.data);
     Memory_FreePointer(&m_Priv.uvws.animated);
+    Memory_FreePointer(&m_Priv.uvws.flags);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
 }
 
@@ -470,9 +479,20 @@ bool Output_Textures_IsObjectTextureAnimated(const int32_t texture_idx)
     return m_Priv.uvws.animated_objects[texture_idx];
 }
 
-bool Output_Textures_IsSpriteTextureAnimated(const int32_t uvw_idx)
+bool Output_Textures_IsSpriteTextureAnimated(const int32_t texture_idx)
 {
-    return m_Priv.uvws.animated_sprites[uvw_idx];
+    return m_Priv.uvws.animated_sprites[texture_idx];
+}
+
+void Output_Textures_SetSpriteTextureFlags(
+    const int32_t texture_idx, const uint16_t flags)
+{
+    m_Priv.uvws.flags_sprites[texture_idx] = flags;
+}
+
+uint16_t Output_Textures_GetSpriteTextureFlags(const int32_t texture_idx)
+{
+    return VERT_BILLBOARD | m_Priv.uvws.flags_sprites[texture_idx];
 }
 
 bool Output_Textures_IsObjectTextureTransparent(const int32_t texture_idx)

@@ -8,7 +8,7 @@
 #define VERT_REFLECTIVE  0x04u
 #define VERT_NO_LIGHTING 0x08u
 #define VERT_BILLBOARD   0x10u
-#define VERT_CAUSTICS    0x20u
+#define VERT_ABS_SPRITE  0x20u
 
 #define LIGHTING_MODE_OFF         0
 #define LIGHTING_MODE_ONLY_SHADES 1

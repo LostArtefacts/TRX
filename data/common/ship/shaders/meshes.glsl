@@ -32,8 +32,12 @@ out vec4 gColor;
 void main(void) {
     vec4 eyePos;
 
-    if ((inFlags & VERT_BILLBOARD) != 0u) {
-        eyePos = offsetBillboard(inPosition.xyz, inNormal.xy, uMatView, uMatModelView, uMatProjection, uBillboardLockMode);
+    if ((inFlags & VERT_ABS_SPRITE) != 0u) {
+        eyePos = offsetBillboard(
+            inPosition.xyz, inNormal.xy, uMatView, uMatModelView, uMatProjection, BILLBOARD_LOCK_NONE);
+    } else if ((inFlags & VERT_BILLBOARD) != 0u) {
+        eyePos = offsetBillboard(
+            inPosition.xyz, inNormal.xy, uMatView, uMatModelView, uMatProjection, uBillboardLockMode);
     } else {
         eyePos = uMatModelView * vec4(inPosition.xyz, 1.0);
     }
@@ -44,10 +48,9 @@ void main(void) {
     gl_Position.z += inPosition.w;
 
     // apply water wibble effect only to non-sprite vertices
-    if (((inFlags & VERT_CAUSTICS) != 0u)
-        || (uWibbleEffect
-            && (inFlags & VERT_NO_CAUSTICS) == 0u
-            && (inFlags & VERT_BILLBOARD) == 0u)
+    if ((uWibbleEffect
+        && (inFlags & VERT_NO_CAUSTICS) == 0u
+        && (inFlags & VERT_BILLBOARD) == 0u)
     ) {
         gl_Position.xyz = waterWibble(gl_Position, uViewportSize, uTime);
     }
