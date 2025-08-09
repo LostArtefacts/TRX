@@ -37,6 +37,8 @@ OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);
 bool Output_Textures_IsObjectTextureAnimated(int32_t texture_idx);
 bool Output_Textures_IsObjectTextureTransparent(int32_t texture_idx);
 bool Output_Textures_IsSpriteTextureAnimated(int32_t sprite_idx);
+uint16_t Output_Textures_GetSpriteTextureFlags(int32_t sprite_idx);
+void Output_Textures_SetSpriteTextureFlags(int32_t sprite_idx, uint16_t flags);
 
 // Public utility methods =====================================================
 

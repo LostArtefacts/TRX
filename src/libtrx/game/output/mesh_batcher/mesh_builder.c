@@ -162,7 +162,7 @@ void MeshBuilder_AddRoomSprite(
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z, .w = 0.0f, },
             .normal = { .x = normal[j].x, .y = normal[j].y, .z = 0.0f },
-            .flags = VERT_BILLBOARD,
+            .flags = Output_Textures_GetSpriteTextureFlags(texture_idx),
             .color = { 255, 255, 255, 255 },
             .uvw_idx = Output_Textures_GetSpriteUVWIndex(texture_idx, j),
             .shade = room_vert->light_adder,
