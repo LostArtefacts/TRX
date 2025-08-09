@@ -15,6 +15,5 @@ void Output_UnloadBackground(void);
 
 void Output_DrawBackground(void);
 
-// TODO: make these functions private once output module is consolidated
-char *Output_GetLastBackgroundPath(void);
+void Output_RefreshBackgroundScaling(void);
 void Output_ClearLastBackgroundPath(void);
