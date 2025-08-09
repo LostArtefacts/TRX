@@ -224,7 +224,7 @@
     - **Venice**: misaligned and stretched textures in room 36; missing textures in room 42; an incorrect texture in room 77; transparent pixels in room 0
     - **Bartoli's Hideout**: stretched textures in rooms 17, 29, 51, 73, 121, 143, 145, 146; incorrect textures in rooms 46, 121, 127, 131; misaligned textures in room 108; missing textures on mesh 30 in room 20; transparent pixels in room 107
     - **Opera House**: an incorrect texture in room 176; a stretched texture in room 122
-    - **Offshore Rig**: stretched textures in room 11, 35, 81; traversable opaque texture between rooms 11 and 8; transparent pixels in room 96; several missing textures on catwalks
+    - **Offshore Rig**: stretched textures in room 11, 35, 81; traversable opaque texture between rooms 11 and 8; transparent pixels in room 96; several missing textures on catwalks; z-fighting at the back of the plane in room 92
     - **Diving Area**: incorrect textures in rooms 28, 30; a stretched texture in room 77; misaligned textures in room 23; missing diving suit rack in room 77 (per cutscene); several missing textures on catwalks
     - **40 Fathoms**: stretched textures in rooms 2, 11, 12
     - **Wreck of the Maria Doria**: stretched textures in rooms 80, 104; transparent pixels in light bulb texture e.g. room 31
