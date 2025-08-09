@@ -19,8 +19,6 @@ void main(void) {
 
 uniform sampler2D texMain;
 uniform vec4 uTexSize;
-uniform bool tintEnabled;
-uniform vec3 tintColor;
 uniform int effect;
 
 in vec2 vertTexCoords;
@@ -32,10 +30,6 @@ void main(void) {
     uv = clampTexAtlas(uv, uTexSize);
 
     outColor = texture(texMain, uv);
-
-    if (tintEnabled) {
-        outColor.rgb *= tintColor.rgb;
-    }
 
     if (effect == EFFECT_VIGNETTE) {
         float x_dist = vertCoords.x - 0.5;

@@ -31,6 +31,7 @@ GFX_2D_SURFACE *GFX_2D_Surface_CreateFromImage(const IMAGE *const image)
     GFX_2D_SURFACE *surface = Memory_Alloc(sizeof(GFX_2D_SURFACE));
     surface->desc.width = image->width;
     surface->desc.height = image->height;
+    LOG_ERROR("%d×%d", image->width, image->height);
     surface->desc.bit_count = 24;
     surface->desc.tex_format = GL_RGB;
     surface->desc.tex_type = GL_UNSIGNED_BYTE;
