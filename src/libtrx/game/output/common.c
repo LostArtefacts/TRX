@@ -17,6 +17,7 @@
 #include "game/output/sources/ui.h"
 #include "game/output/state.h"
 #include "game/output/textures.h"
+#include "game/output/warmup.h"
 #include "game/shell.h"
 #include "gfx/context.h"
 
@@ -42,6 +43,7 @@ void Output_Init(void)
 
     Output_InitLight();
     Output_InitBackground();
+    Output_WarmUp();
 
     Output_ApplyRenderSettings();
 }

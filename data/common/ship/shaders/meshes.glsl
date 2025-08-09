@@ -1,6 +1,51 @@
 uniform int uBillboardLockMode;
 uniform int uLightingContrast;
 
+vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat4 projection, int lockMode)
+{
+    if (lockMode == BILLBOARD_LOCK_ROLL) {
+        vec3 camForward = vec3(modelView[0][2], modelView[1][2], modelView[2][2]);
+        vec3 up = vec3(0.0, 1.0, 0.0);
+        vec3 right = normalize(cross(up, camForward));
+        up = normalize(cross(camForward, right));
+        pos.xyz += displacement.x * right + displacement.y * up;
+        return modelView * vec4(pos, 1.0);
+
+    } else if (lockMode == BILLBOARD_LOCK_ROLL_PITCH) {
+        vec3 up = vec3(0.0, 1.0, 0.0);
+        vec3 camForward = normalize(vec3(modelView[0][2], modelView[1][2], modelView[2][2]));
+        vec3 fHoriz = camForward - up * dot(camForward, up);
+        vec3 right = (length(fHoriz) < 1e-5)
+            ? normalize(vec3(modelView[0][0], modelView[1][0], modelView[2][0]))
+            : normalize(cross(up, fHoriz));
+        pos.xyz += displacement.x * right + displacement.y * up;
+        return modelView * vec4(pos, 1.0);
+
+    } else if (lockMode == BILLBOARD_LOCK_PERSPECTIVE) {
+        vec3 up = vec3(0.0, 1.0, 0.0);
+        // compute camera yaw-forward (lock pitch and roll)
+        vec3 camForward = normalize(vec3(view[0][2], view[1][2], view[2][2]));
+        vec3 fHoriz = camForward - up * dot(camForward, up);
+        vec3 forwardYaw = (length(fHoriz) < 1e-5)
+            ? normalize(vec3(view[0][0], view[1][0], view[2][0]))
+            : normalize(fHoriz);
+        vec3 camRight = normalize(cross(forwardYaw, up));
+        // gentle yaw based on screen X towards center
+        vec4 clipPos = projection * modelView * vec4(pos, 1.0);
+        float ndcX = clipPos.x / clipPos.w;
+        float invLen = inversesqrt(1.0 + ndcX * ndcX);
+        float cosAng = invLen;
+        float sinAng = ndcX * invLen;
+        vec3 forwardDir = cosAng * forwardYaw - sinAng * camRight;
+        vec3 rightDir = normalize(cross(up, forwardDir));
+        pos.xyz += displacement.x * rightDir + displacement.y * up;
+        return modelView * vec4(pos, 1.0);
+
+    } else {
+        return (modelView * vec4(pos, 1.0)) + vec4(displacement.xy, 0, 0);
+    }
+}
+
 #ifdef VERTEX
 
 uniform vec2 uViewportSize;
