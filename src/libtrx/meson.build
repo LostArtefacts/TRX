@@ -266,6 +266,7 @@ sources = [
   'game/output/state.c',
   'game/output/textures.c',
   'game/output/vertex_range.c',
+  'game/output/warmup.c',
   'game/overlay.c',
   'game/packer.c',
   'game/pathing/box.c',
