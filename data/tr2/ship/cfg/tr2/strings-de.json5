@@ -957,16 +957,16 @@
             "name": "Boots-Einzelteile",
         },
         "mine": {
-            "name": "Aquatic Mine",
+            "name": "Wassermine",
         },
         "inv_background": {
-            "name": "Menu Background",
+            "name": "Menü Hintergrund",
         },
         "fx_reserved": {
             "name": "Gray disk",
         },
         "gong_bonger": {
-            "name": "Gong Stick",
+            "name": "Gong Schlegel",
         },
         "gong": {
             "name": "Gong",
@@ -987,7 +987,7 @@
             "name": "Explosion 1",
         },
         "splash_1": {
-            "name": "Water Ripples 1",
+            "name": "Wasserkräuselungen 1",
         },
         "bubble_1": {
             "name": "Blase 1",
