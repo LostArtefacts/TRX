@@ -152,7 +152,7 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
     }
 #else
     const float adjust = g_Config.visuals.use_psx_fov ? 200.0f : 240.0f;
-    const float persp = (240.0f / 320.0f) * (240.0f / adjust);
+    const float persp = ((4.0f / 3.0f) / aspect) * (240.0f / adjust);
     f_x = persp / tanf(fov * 0.5f);
     f_y = f_x * aspect;
 #endif
