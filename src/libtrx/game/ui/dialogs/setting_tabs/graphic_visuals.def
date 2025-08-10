@@ -5,6 +5,11 @@ X_UI_CFG_RGB888(visuals.water_color,        SETTING_WATER_COLOR_R, 0)
 X_UI_CFG_RGB888(visuals.water_color,        SETTING_WATER_COLOR_G, 1)
 X_UI_CFG_RGB888(visuals.water_color,        SETTING_WATER_COLOR_B, 2)
 
+X_UI_CFG_BOOL(visuals.fog_transparency,     SETTING_FOG_TRANSPARENCY)
+X_UI_CFG_RGB888(visuals.fog_color,          SETTING_FOG_COLOR_R, 0, .custom_handler = { .is_available = UI_Settings_FogColor_IsAvailable })
+X_UI_CFG_RGB888(visuals.fog_color,          SETTING_FOG_COLOR_G, 1, .custom_handler = { .is_available = UI_Settings_FogColor_IsAvailable })
+X_UI_CFG_RGB888(visuals.fog_color,          SETTING_FOG_COLOR_B, 2, .custom_handler = { .is_available = UI_Settings_FogColor_IsAvailable })
+
 X_UI_CFG_ENUM(visuals.camera_mode,          SETTING_CAMERA_MODE, .misc = UI_Settings_CameraModeEnumEntries)
 
 #if TR_VERSION == 1

@@ -172,6 +172,8 @@ void Shell_HandleCommonConfigChange(
     }
 
     if (L_CHANGED(visuals.fog_start) || L_CHANGED(visuals.fog_end)
+        || L_CHANGED(visuals.fog_color.g) || L_CHANGED(visuals.fog_color.b)
+        || L_CHANGED(visuals.fog_color.r) || L_CHANGED(visuals.fog_transparency)
         || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
         || L_CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();

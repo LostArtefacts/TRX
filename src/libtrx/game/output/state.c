@@ -18,6 +18,7 @@ static int32_t m_AnimatedTexturesOffset = 0;
 
 static int32_t m_FogStart = 0;
 static int32_t m_FogEnd = 0;
+static RGBA_F m_FogColor = {};
 static RGB_F m_WaterColor = {};
 
 static int32_t m_LsAdder = 0;
@@ -62,6 +63,11 @@ void Output_SetSkyboxEnabled(const bool enabled)
 bool Output_IsSkyboxEnabled(void)
 {
     return m_IsSkyboxEnabled && g_Config.visuals.enable_skybox;
+}
+
+RGBA_F Output_GetFogColor(void)
+{
+    return m_FogColor;
 }
 
 int32_t Output_GetFogStart(void)
@@ -112,6 +118,14 @@ bool Output_GetWaterEffect(void)
 bool Output_GetWibbleEffect(void)
 {
     return m_IsWibbleEffect;
+}
+
+void Output_SetFogColor(const RGBA_8888 color)
+{
+    m_FogColor.r = color.r / 255.0f;
+    m_FogColor.g = color.g / 255.0f;
+    m_FogColor.b = color.b / 255.0f;
+    m_FogColor.a = color.a / 255.0f;
 }
 
 void Output_SetWaterColor(const RGB_888 color)

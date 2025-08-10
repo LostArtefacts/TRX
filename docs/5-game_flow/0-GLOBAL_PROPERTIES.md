@@ -21,6 +21,8 @@ remains distinct for each game.
     "savegame_fmt_bson": "save_tr1_%02d.dat",
     "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
+    "fog_transparency": false,
+    "fog_color": [0.0, 0.0, 0.0],
     "fog_start": 22.0,
     "fog_end": 30.0,
     "injections": [
@@ -87,6 +89,27 @@ remains distinct for each game.
     <td>Double<strong>*</strong></td>
     <td>
       The number of seconds to pass in the main menu before playing the demo.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="fog-transparency"></a>
+      <code>fog_transparency</code>
+    </td>
+    <td>Boolean</td>
+    <td>
+      Enables blending distant geometry into skybox rather than a solid color.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="fog-color"></a>
+      <code>fog_color</code>
+    </td>
+    <td>Float array or hex string</td>
+    <td>
+      Fog color (R, G, B) or `#RRGGBB`. OG uses `#000000`. Will have no effect
+      if `fog_transparency` is set to true.
     </td>
   </tr>
   <tr valign="top">
@@ -198,7 +221,7 @@ remains distinct for each game.
       <a name="water-color"></a>
       <code>water_color</code>
     </td>
-    <td>Float array</td>
+    <td>Float array or hex string</td>
     <td>
       Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
       or `00` means completely black color.
@@ -410,6 +433,27 @@ remains distinct for each game.
     <td>String</td>
     <td>
       The path to the sound effects (.sfx) file to use in the game.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="fog-transparency"></a>
+      <code>fog_transparency</code>
+    </td>
+    <td>Boolean</td>
+    <td>
+      Enables blending distant geometry into skybox rather than a solid color.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="fog-color"></a>
+      <code>fog_color</code>
+    </td>
+    <td>Float array or hex string</td>
+    <td>
+      Fog color (R, G, B) or `#RRGGBB`. OG uses `#000000`. Will have no effect
+      if `fog_transparency` is set to true.
     </td>
   </tr>
   <tr valign="top">

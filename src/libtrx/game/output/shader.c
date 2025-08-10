@@ -19,7 +19,8 @@ typedef enum {
     M_UNIFORM_REFLECTIONS_ENABLED,
     M_UNIFORM_BRIGHTNESS_MULTIPLIER,
     M_UNIFORM_GLOBAL_TINT,
-    M_UNIFORM_FOG,
+    M_UNIFORM_FOG_COLOR,
+    M_UNIFORM_FOG_DISTANCE,
     M_UNIFORM_VIEWPORT_SIZE,
     M_UNIFORM_PROJECTION_MATRIX,
     M_UNIFORM_VIEW_MATRIX,
@@ -90,7 +91,8 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_REFLECTIONS_ENABLED] = "uReflectionsEnabled",
         [M_UNIFORM_BRIGHTNESS_MULTIPLIER] = "uBrightnessMultiplier",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
-        [M_UNIFORM_FOG] = "uFog",
+        [M_UNIFORM_FOG_COLOR] = "uFogColor",
+        [M_UNIFORM_FOG_DISTANCE] = "uFogDistance",
         [M_UNIFORM_VIEWPORT_SIZE] = "uViewportSize",
         [M_UNIFORM_PROJECTION_MATRIX] = "uMatProjection",
         [M_UNIFORM_VIEW_MATRIX] = "uMatView",
@@ -143,8 +145,12 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
         glUniform2f, shader->uniforms[M_UNIFORM_VIEWPORT_SIZE],
         Viewport_GetWidth(VIEWPORT_GAME), Viewport_GetHeight(VIEWPORT_GAME));
     GFX_TRACK_UNIFORM(
-        glUniform2f, shader->uniforms[M_UNIFORM_FOG], Output_GetFogStart(),
-        Output_GetFogEnd());
+        glUniform4f, shader->uniforms[M_UNIFORM_FOG_COLOR],
+        Output_GetFogColor().r, Output_GetFogColor().g, Output_GetFogColor().b,
+        Output_GetFogColor().a);
+    GFX_TRACK_UNIFORM(
+        glUniform2f, shader->uniforms[M_UNIFORM_FOG_DISTANCE],
+        Output_GetFogStart(), Output_GetFogEnd());
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_TIME], Output_GetTime());
     GFX_TRACK_UNIFORM(

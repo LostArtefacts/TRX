@@ -38,6 +38,7 @@
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
 - added an option to scale the 3D pickups in the UI (Graphic options → UI → Pickup scale)
+- added an option to control fog color (Graphic options → Visuals → Fog transparency and Fog color) (#712, #3618)
 - added German translation
 - added a PS1 fade-out to final cutscene (#3521)
 - added a new `/vsync` console command to toggle the vsync option, like in TR1

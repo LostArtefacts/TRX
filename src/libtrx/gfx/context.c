@@ -27,6 +27,8 @@ typedef struct {
     GFX_RENDERER *renderer;
 } GFX_CONTEXT;
 
+extern RGBA_F Output_GetFogColor(void);
+
 static GFX_CONTEXT m_Context = {};
 
 static bool M_IsExtensionSupported(const char *name);
@@ -198,11 +200,13 @@ void *GFX_Context_GetWindowHandle(void)
 void GFX_Context_Clear(void)
 {
     const RGBA_F white = { 1.0f, 1.0f, 1.0f, 0.0f };
+    const RGBA_F fog = Output_GetFogColor();
     const RGBA_F black = { 0.0f, 0.0f, 0.0f, 0.0f };
     const RGBA_F color =
         m_Context.space == VIEWPORT_GAME && m_Context.config.enable_wireframe
         ? white
-        : black;
+        : m_Context.space == VIEWPORT_GAME ? fog
+                                           : black;
     glClearBufferfv(GL_COLOR, 0, &color.r);
 }
 

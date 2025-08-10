@@ -253,7 +253,7 @@ const char *Config_GetOptionValueAsString(const CONFIG_OPTION *const option)
         return String_FormatStatic(
             "%s", EnumMap_ToString(option->param, *(int32_t *)option->target));
     case COT_RGB888: {
-        const RGB_888 *color = option->target;
+        const RGB_888 *const color = option->target;
         return String_FormatStatic(
             "%02hhx%02hhx%02hhx", color->r, color->g, color->b);
     }

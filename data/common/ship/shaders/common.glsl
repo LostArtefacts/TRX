@@ -52,16 +52,16 @@ vec3 waterWibble(vec4 position, vec2 viewportSize, int time)
     return ndc * position.w;
 }
 
-float shadeFog(float shade, float depth, vec2 fog)
+vec4 applyFog(vec4 color, float depth, vec2 fogDistance, vec4 fogColor)
 {
-    float fogBegin = fog.x;
-    float fogEnd = fog.y;
+    float fogBegin = fogDistance.x;
+    float fogEnd = fogDistance.y;
     if (depth < fogBegin) {
-        return shade + 0.0;
+        return color;
     } else if (depth >= fogEnd) {
-        return shade + float(SHADE_MAX);
+        return fogColor;
     } else {
-        return shade + (depth - fogBegin) * SHADE_MAX / (fogEnd - fogBegin);
+        return mix(color, fogColor, (depth - fogBegin) / (fogEnd - fogBegin));
     }
 }
 
