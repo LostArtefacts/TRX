@@ -161,7 +161,9 @@ void Skidoo_Initialise(const int16_t item_num)
 int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
 {
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || g_LaraItem->gravity) {
+        || g_LaraItem->gravity
+        || (g_Lara.water_status != LWS_ABOVE_WATER
+            && g_Lara.water_status != LWS_WADE)) {
         return SKIDOO_GET_ON_NONE;
     }
 
