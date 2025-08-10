@@ -19,6 +19,7 @@
 - added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
 - added an option to keep sprites upright (Graphic options → Rendering → Sprites lock mode)
 - added an option to scale the 3D pickups in the UI (Graphic options → UI → Pickup scale)
+- added an option to control fog color (Graphic options → Visuals → Fog transparency and Fog color) (#712, #3618)
 - added Russian translation
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)

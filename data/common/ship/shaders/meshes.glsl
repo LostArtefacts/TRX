@@ -121,7 +121,8 @@ uniform bool uTrapezoidFilterEnabled;
 uniform int uLightingMode;
 uniform bool uReflectionsEnabled;
 uniform vec3 uGlobalTint;
-uniform vec2 uFog; // x = fog start, y = fog end
+uniform vec2 uFogDistance; // x = fog start, y = fog end
+uniform vec4 uFogColor;
 
 in vec4 gEyePos;
 in vec3 gNormal;
@@ -157,16 +158,12 @@ void main(void) {
     }
 
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        float shade;
-        if (uLightingMode == LIGHTING_MODE_ONLY_SHADES) {
-            shade = gShade;
-        } else if (uLightingMode == LIGHTING_MODE_FULL) {
-            shade = gShade;
-            shade = shadeFog(shade, gEyePos.z, uFog);
-        } else {
-            shade = SHADE_NEUTRAL;
+        if (uLightingMode != LIGHTING_MODE_OFF) {
+            texColor.rgb = applyShade(texColor.rgb, gShade, uLightingContrast);
         }
-        texColor.rgb = applyShade(texColor.rgb, shade, uLightingContrast);
+        if (uLightingMode == LIGHTING_MODE_FULL) {
+            texColor = applyFog(texColor, gEyePos.z, uFogDistance, uFogColor);
+        }
     }
 
     texColor.rgb *= uGlobalTint;

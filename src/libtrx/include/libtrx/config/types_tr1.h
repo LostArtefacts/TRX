@@ -73,6 +73,8 @@ typedef struct {
         bool enable_ps1_crystals;
 
         RGB_888 water_color;
+        bool fog_transparency;
+        RGB_888 fog_color;
         int32_t fog_start;
         int32_t fog_end;
     } visuals;

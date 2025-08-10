@@ -18,6 +18,11 @@ bool UI_Settings_EnableExitFadeEffects_IsAvailable(
     return g_Config.visuals.enable_fade_effects;
 }
 
+bool UI_Settings_FogColor_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return !g_Config.visuals.fog_transparency;
+}
+
 bool UI_Settings_EnableBreeze_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {

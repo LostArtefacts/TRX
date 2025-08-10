@@ -19,6 +19,8 @@ Following are each of the properties available within a level.
     "music_track": 57,
     "lara_type": 0,
     "water_color": [0.7, 0.5, 0.85],
+    "fog_transparency": false,
+    "fog_color": [0, 0, 0],
     "fog_start": 34.0,
     "fog_end": 50.0,
     "unobtainable_pickups": 1,
@@ -113,6 +115,22 @@ Following are each of the properties available within a level.
     <td colspan="2">The ambient music track ID.</td>
   </tr>
   <tr valign="top">
+    <td><code>fog_transparency</code></td>
+    <td>Boolean</td>
+    <td colspan="2">
+      Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#fog-transparency">the global property</a>
+      for details.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>fog_color</code></td>
+    <td>Float array or hex string</td>
+    <td colspan="2">
+      Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#fog-color">the global property</a>
+      for details.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>fog_start</code></td>
     <td>Double</td>
     <td colspan="2">
@@ -192,7 +210,7 @@ Following are each of the properties available within a level.
   </tr>
   <tr valign="top">
     <td><code>water_color</code><strong>¹</strong></td>
-    <td>Float array</td>
+    <td>Float array or hex string</td>
     <td colspan="2">
       Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#water-color">the global property</a> for
       details.

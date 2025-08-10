@@ -21,9 +21,11 @@ RGB_F Output_GetTint(void);
 bool Output_GetWaterEffect(void);
 bool Output_GetWibbleEffect(void);
 
+RGBA_F Output_GetFogColor(void);
 int32_t Output_GetFogStart(void);
 int32_t Output_GetFogEnd(void);
 
+void Output_SetFogColor(RGBA_8888 color);
 void Output_SetFogStart(int32_t dist);
 void Output_SetFogEnd(int32_t dist);
 

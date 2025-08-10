@@ -90,6 +90,14 @@ typedef struct {
     } fog_start, fog_end;
     struct {
         bool is_present;
+        bool value;
+    } fog_transparency;
+    struct {
+        bool is_present;
+        RGB_888 value;
+    } fog_color;
+    struct {
+        bool is_present;
         RGB_888 value;
     } water_color;
 #if TR_VERSION == 2

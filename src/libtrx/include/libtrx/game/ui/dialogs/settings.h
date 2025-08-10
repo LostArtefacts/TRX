@@ -75,10 +75,11 @@ typedef struct UI_SETTINGS_OPTION {
         COT_ENUM, target_, label_id_, .delta_slow = 1, .delta_fast = 1,        \
         ##__VA_ARGS__)
 
-#define X_UI_CFG_RGB888(target_, label_id_, component)                         \
+#define X_UI_CFG_RGB888(target_, label_id_, component, ...)                    \
     X_UI_CFG(                                                                  \
         COT_RGB888, target_, label_id_, .delta_slow = 1, .delta_fast = 10,     \
-        .min_value = 0, .max_value = 255, .misc = (void *)(intptr_t)component)
+        .min_value = 0, .max_value = 255, .misc = (void *)(intptr_t)component, \
+        ##__VA_ARGS__)
 
 typedef enum {
     UI_SETTINGS_PHASE_NAVIGATE_TABS,

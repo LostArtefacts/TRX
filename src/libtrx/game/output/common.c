@@ -139,6 +139,7 @@ void Output_ApplyRenderSettings(void)
 void Output_ApplyLevelSettings(void)
 {
     Output_SetWaterColor(Level_GetWaterColor());
+    Output_SetFogColor(Level_GetFogColor());
     Output_SetFogStart(Level_GetFogStart() * WALL_L);
     Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
 }
