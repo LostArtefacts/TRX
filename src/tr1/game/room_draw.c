@@ -199,7 +199,9 @@ void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
     Room_DrawReset();
 
     M_PrepareToDraw(base_room);
-    M_PrepareToDraw(target_room);
+    if (!Room_CheckOverlap(base_room, target_room)) {
+        M_PrepareToDraw(target_room);
+    }
     M_DrawSkybox();
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {

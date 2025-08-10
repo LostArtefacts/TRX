@@ -85,6 +85,23 @@ static int16_t M_GetCeilingTiltHeight(
     return height;
 }
 
+BOUNDS_32 Room_GetRoomBounds(const int16_t room_num)
+{
+    const ROOM *const room = Room_Get(room_num);
+    return (BOUNDS_32) {
+        .min = {
+            .x = room->pos.x,
+            .y = room->max_ceiling,
+            .z = room->pos.z,
+        },
+        .max = {
+            .x = room->pos.x + room->size.x * WALL_L,
+            .y = room->min_floor,
+            .z = room->pos.z + room->size.z * WALL_L,
+        },
+    };
+}
+
 SECTOR *Room_GetSector(
     const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
 {
