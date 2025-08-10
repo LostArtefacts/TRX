@@ -157,16 +157,16 @@ void main(void) {
         texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
     }
 
-    if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        if (uLightingMode != LIGHTING_MODE_OFF) {
-            texColor.rgb = applyShade(texColor.rgb, gShade, uLightingContrast);
-        }
-        if (uLightingMode == LIGHTING_MODE_FULL) {
-            texColor = applyFog(texColor, gEyePos.z, uFogDistance, uFogColor);
-        }
+    if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingMode != LIGHTING_MODE_OFF) {
+        texColor.rgb = applyShade(texColor.rgb, gShade, uLightingContrast);
     }
 
     texColor.rgb *= uGlobalTint;
+
+    if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingMode == LIGHTING_MODE_FULL) {
+        texColor = applyFog(texColor, gEyePos.z, uFogDistance, uFogColor);
+    }
+
     texColor.rgb *= uBrightnessMultiplier;
 
     outColor = texColor;
