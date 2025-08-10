@@ -26,6 +26,13 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = M_Draw;
     obj->save_position = true;
     obj->save_flags = true;
+
+    if (obj->loaded) {
+        for (int32_t i = 0; i < obj->mesh_count; i++) {
+            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
+            obj_mesh->depth_adjustment = -0.5;
+        }
+    }
 }
 
 static void M_Control(const int16_t item_num)
