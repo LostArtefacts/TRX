@@ -319,6 +319,7 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
     VFile_Skip(file, sizeof(int16_t));
 
     mesh->enable_reflections = false;
+    mesh->depth_adjustment = 0.005;
 
     {
         mesh->num_vertices = VFile_ReadS16(file);

@@ -179,7 +179,7 @@ static void M_PrepareMeshes(M_PRIV *const p)
                 flags | VERT_FLAT_SHADED);
         }
 
-        MeshBuilder_AdjustDepth(builder, 0.005);
+        MeshBuilder_AdjustDepth(builder, obj_mesh->depth_adjustment);
         OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
         if (mesh != nullptr) {
             MeshBatcher_AddMesh(p->batcher, mesh);

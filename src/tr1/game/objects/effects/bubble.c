@@ -11,8 +11,10 @@ static void M_Control(int16_t effect_num);
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    for (int32_t i = 0; i < -obj->mesh_count; i++) {
-        Output_GetSpriteTexture(obj->mesh_idx + i)->flags = VERT_ABS_SPRITE;
+    if (obj->loaded) {
+        for (int32_t i = 0; i < -obj->mesh_count; i++) {
+            Output_GetSpriteTexture(obj->mesh_idx + i)->flags = VERT_ABS_SPRITE;
+        }
     }
 }
 
