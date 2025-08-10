@@ -102,22 +102,6 @@ void Output_MakeScreenshot(const char *const path)
     GFX_Context_ScheduleScreenshot(path);
 }
 
-int32_t Output_CalcFogShade(const int32_t depth)
-{
-#if TR_VERSION == 1
-    return 0;
-#endif
-    const int32_t fog_start = Output_GetFogStart();
-    const int32_t fog_end = Output_GetFogEnd();
-    if (depth < fog_start) {
-        return 0;
-    }
-    if (depth >= fog_end) {
-        return SHADE_MAX;
-    }
-    return (depth - fog_start) * SHADE_MAX / (fog_end - fog_start);
-}
-
 void Output_ApplyFOV(void)
 {
     int32_t fov = Viewport_GetEffectiveFOV();
