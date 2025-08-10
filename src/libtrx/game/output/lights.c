@@ -147,8 +147,6 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
         Output_RotateLight(angles[1], angles[0]);
     }
 
-    const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-    global_adder += Output_CalcFogShade(depth);
     CLAMPG(global_adder, SHADE_MAX);
 
     Output_SetLightAdder(global_adder);
@@ -159,8 +157,6 @@ void Output_CalculateStaticLight(const int16_t adder)
 {
     // TODO: use m_LsAdder
     int32_t global_adder = adder - SHADE_NEUTRAL;
-    const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-    global_adder += Output_CalcFogShade(depth);
     CLAMPG(global_adder, SHADE_MAX);
     Output_SetLightAdder(global_adder);
 }
