@@ -125,6 +125,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode)
 - fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20
 - fixed Lara walking backwards off ledges into lava
+- fixed a missing transition animation between Lara jumping forward and entering freefall
 
 ## Cheats
 - added a fly cheat
