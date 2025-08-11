@@ -62,6 +62,7 @@
 - fixed incorrect room mesh structure in Vilcabamba room 41, causing disappearing polygons (#3613)
 - fixed missing textures on the statues in Vilcabamba and Tomb of Qualopec (#3629)
 - fixed missing textures in Atlantis rooms 7, 9, 13, 14, 95, 96 (#3657)
+- fixed missing double-sided textures in The Cistern rooms 9 and 12
 - fixed texture clipping in Atlantean Stronghold when looking into room 18, and missing textures in rooms 5, 6, 18 and 74 (#3668)
 - fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20 (#3629)
 - fixed the mesh structure on the cat statue in Egyptian levels to standardize its position (#3634)

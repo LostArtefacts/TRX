@@ -212,7 +212,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
     - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35; a misaligned texture in room 3; transparent pixels in room 25
     - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 0, 37, 67, 75, 82 and 83, and missing textures in rooms 2 and 7
     - **Palace Midas**: incorrect textures in rooms 28, 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
-    - **The Cistern**: missing textures in rooms 3 and 9 and stretched textures in rooms 22 and 102
+    - **The Cistern**: missing textures in rooms 3, 9, 12; stretched textures in rooms 22 and 102
     - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89 and a misaligned texture in room 104
     - **City of Khamoon**: incorrect textures in rooms 47, 48, 51, 60 and 64, and a missing texture in room 58
     - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42, 65, 66; added shading to the gaps into City of Khamoon in rooms 8 and 20/21
