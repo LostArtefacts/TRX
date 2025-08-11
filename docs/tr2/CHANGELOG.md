@@ -4,8 +4,6 @@
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
 
 - reworked TR2 rendering
-    - improved bilinear filter appearance - no more dark edges around objects
-    - improved bilinear filter texture adjustment - no more texture "expansion" (#2258)
     - added round shadows option (Graphic options → Visuals → Round shadows)
     - added option to disable skyboxes (Graphic options → Visuals → Skyboxes)
     - added brightness option (Graphic settings → Rendering → Brightness)
@@ -17,13 +15,15 @@
     - added debug spheres feature (`/debug 1`)
     - added debug triggers feature (`/debug 1`)
     - added support for 60 fps in 3D UI pickups
-    - fixed trapezoid textures warping at the edge of the screen (#2629)
-    - fixed certain polygons disappearing in some objects (#3699)
-    - fixed z-fighting of doors near walls
-    - changed the F7 hotkey to be used as a wireframe toggle (previously available as Shift+F7)
+    - improved bilinear filter appearance - no more dark edges around objects
+    - improved bilinear filter texture adjustment - no more texture "expansion" (#2258)
+    - changed the F7 hotkey to be used as a wireframe toggle (previously available as Shift+F7)    
     - removed software rendering mode
     - removed the z-buffer option, which is now always enabled
     - removed undocumented linear and nearest texel adjustment options
+    - fixed trapezoid textures warping at the edge of the screen (#2629)
+    - fixed certain polygons disappearing in some objects (#3699)
+    - fixed z-fighting of doors near walls
 - added new command switches:
     - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
     - `--headless`: runs the game offscreen with no audio and at unlocked simulation speed
@@ -44,6 +44,14 @@
 - added a new `/vsync` console command to toggle the vsync option, like in TR1
 - added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
 - added a new `/restless` console command, which enables or disables infinite sprint
+- improved frames in Lara's jump-twist animations
+- improved object loading error messages when an invalid object ID is detected
+- improved window resize performance in the title inventory ring
+- improved projectiles
+    - changed conventional weapons to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
+    - fixed collision detection on windows
+    - fixed harpoons/grenades having no effect on bells (#3379)
+    - fixed conventional weapons not spawning ricochets on bells (#3379)
 - changed the game flow and game strings file placement
 - changed the texture page limit from 128 to unlimited (#3517)
 - changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic
@@ -69,25 +77,18 @@
 - fixed incorrect portals in Catacombs of the Talion room 41 (#3664)
 - fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian (#3691)
 - fixed missing zipline reset triggers in Lara's Home (#3698)
-- fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
-- fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
-- fixed backslash/grave key/less-than character on some keyboards shown as ???? – now it's shown as backlash (#3713)
-- fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
 - fixed shadows Y component not interpolated in 60 FPS (#1314)
 - fixed a crash when the level file was missing
+- fixed Lara walking backwards off ledges into lava (#3745)
+- fixed backslash/grave key/less-than character on some keyboards shown as ???? – now it's shown as backslash (#3713)
 - fixed Lara being able to get on a skidoo while underwater and consequently dying (#3810)
+- fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
+- fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
+- fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
 - fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 1.3)
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 1.3)
-- fixed Lara walking backwards off ledges into lava (#3745)
 - fixed triggered pickup items flickering in custom levels (#3623, regression from 0.10)
-- improved frames in Lara's jump-twist animations
-- improved object loading error messages when an invalid object ID is detected
-- improved window resize performance in the title inventory ring
-- improved projectiles
-    - changed conventional weapons to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
-    - fixed collision detection on windows
-    - fixed harpoons/grenades having no effect on bells (#3379)
-    - fixed conventional weapons not spawning ricochets on bells (#3379)
+- fixed Lara not throwing away a spent flare when swimming of flying (#3816, regression from 0.8)
 
 ## [1.3.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...tr2-1.3.2) - 2025-07-20
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
