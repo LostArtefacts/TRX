@@ -136,6 +136,7 @@
 - fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian
 - fixed Lara walking backwards off ledges into lava
 - fixed Lara being able to get on a skidoo while underwater and consequently dying
+- fixed a missing transition animation between Lara jumping forward and entering freefall
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels
