@@ -238,6 +238,7 @@ sources = [
   'game/objects/general/trapdoor.c',
   'game/objects/general/waterfall.c',
   'game/objects/names.c',
+  'game/objects/traps/falling_block.c',
   'game/objects/traps/movable_block.c',
   'game/objects/vars.c',
   'game/option/common.c',

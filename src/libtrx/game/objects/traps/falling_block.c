@@ -1,16 +1,22 @@
-#include "global/vars.h"
+#include "game/lara.h"
+#include "game/objects.h"
+#include "game/rooms.h"
 
 static int32_t M_GetOrigin(GAME_OBJECT_ID obj_id);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
+static void M_Setup(OBJECT *obj);
 
 static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
 {
-    return obj_id == O_FALLING_BLOCK_3 ? WALL_L : STEP_L * 2;
+#if TR_VERSION == 1
+    return -STEP_L * 2;
+#else
+    return obj_id == O_FALLING_BLOCK_3 ? -WALL_L : -STEP_L * 2;
+#endif
 }
 
 static int16_t M_GetFloorHeight(
@@ -18,10 +24,10 @@ static int16_t M_GetFloorHeight(
     const int16_t height)
 {
     const int32_t origin = M_GetOrigin(item->object_id);
-    if (y <= item->pos.y - origin
+    if (y <= item->pos.y + origin
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
-        return item->pos.y - origin;
+        return item->pos.y + origin;
     }
     return height;
 }
@@ -31,22 +37,12 @@ static int16_t M_GetCeilingHeight(
     const int16_t height)
 {
     const int32_t origin = M_GetOrigin(item->object_id);
-    if (y > item->pos.y - origin
+    if (y > item->pos.y + origin
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
-        return item->pos.y - origin + STEP_L;
+        return item->pos.y + origin + STEP_L;
     }
     return height;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -56,7 +52,8 @@ static void M_Control(const int16_t item_num)
 
     switch (item->current_anim_state) {
     case TRAP_SET:
-        if (g_LaraItem->pos.y != item->pos.y - origin) {
+        const ITEM *const lara_item = Lara_GetItem();
+        if (lara_item->pos.y != item->pos.y + origin) {
             item->status = IS_INACTIVE;
             Item_RemoveActive(item_num);
             return;
@@ -100,6 +97,18 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+}
+
 REGISTER_OBJECT(O_FALLING_BLOCK_1, M_Setup)
+#if TR_VERSION == 2
 REGISTER_OBJECT(O_FALLING_BLOCK_2, M_Setup)
 REGISTER_OBJECT(O_FALLING_BLOCK_3, M_Setup)
+#endif
