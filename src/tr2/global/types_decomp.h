@@ -97,13 +97,6 @@ typedef enum {
     GFE_REMOVE_AMMO      = 22,
 } GF_EVENTS;
 
-typedef enum {
-    TRAP_SET      = 0,
-    TRAP_ACTIVATE = 1,
-    TRAP_WORKING  = 2,
-    TRAP_FINISHED = 3,
-} TRAP_ANIM;
-
 typedef struct {
     uint16_t key[14]; // INPUT_ROLE_NUMBER_OF
 } CONTROL_LAYOUT;

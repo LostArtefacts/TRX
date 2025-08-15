@@ -105,3 +105,10 @@ typedef struct {
     int16_t frame_count;
     int16_t texture_idx;
 } STATIC_OBJECT_2D;
+
+typedef enum {
+    TRAP_SET = 0,
+    TRAP_ACTIVATE = 1,
+    TRAP_WORKING = 2,
+    TRAP_FINISHED = 3,
+} TRAP_ANIM;

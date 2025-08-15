@@ -62,13 +62,6 @@ typedef enum {
 } SHAPE;
 
 typedef enum {
-    TRAP_SET = 0,
-    TRAP_ACTIVATE = 1,
-    TRAP_WORKING = 2,
-    TRAP_FINISHED = 3,
-} TRAP_ANIM;
-
-typedef enum {
     PASSPORT_MODE_BROWSE = 0,
     PASSPORT_MODE_LOAD_GAME = 1,
     PASSPORT_MODE_SELECT_LEVEL = 2,

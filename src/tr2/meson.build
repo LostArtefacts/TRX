@@ -199,7 +199,6 @@ sources = [
   'game/objects/traps/dart_emitter.c',
   'game/objects/traps/dying_monk.c',
   'game/objects/traps/ember_emitter.c',
-  'game/objects/traps/falling_block.c',
   'game/objects/traps/falling_ceiling.c',
   'game/objects/traps/flame_emitter.c',
   'game/objects/traps/gondola.c',
