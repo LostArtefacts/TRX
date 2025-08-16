@@ -229,7 +229,7 @@
     - **Offshore Rig**: stretched textures in room 11, 35, 81; traversable opaque texture between rooms 11 and 8; transparent pixels in room 96; several missing textures on catwalks; z-fighting at the back of the plane in room 92
     - **Diving Area**: incorrect textures in rooms 28, 30; a stretched texture in room 77; misaligned textures in room 23; missing diving suit rack in room 77 (per cutscene); several missing textures on catwalks
     - **40 Fathoms**: stretched textures in rooms 2, 11, 12
-    - **Wreck of the Maria Doria**: stretched textures in rooms 80, 104; transparent pixels in light bulb texture e.g. room 31
+    - **Wreck of the Maria Doria**: stretched textures in rooms 80, 104; transparent pixels in light bulb texture e.g. room 31; missing textures in rooms 1, 71, 72
     - **Living Quarters**: incorrect textures in room 43
     - **The Deck**: stretched textures in rooms 1, 47, 60, 80, 84, 85; incorrect textures in rooms 60, 68, 113
     - **Tibetan Foothills**: a missing texture in room 143; stretched textures in rooms 12, 15, 28, 40; misaligned textures in room 72
