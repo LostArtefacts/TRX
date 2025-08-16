@@ -490,7 +490,12 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         opposite_input = g_Input.forward;
     }
 
-    if (sliding_forward && g_Config.gameplay.enable_slide_to_run
+    if (Item_TestAnimEqual(item, LA_SLIDE_FORWARD_TO_RUN)) {
+        item->goal_anim_state =
+            g_Input.sprint && g_Config.gameplay.enable_sprint ? LS_SPRINT
+                                                              : LS_RUN;
+    } else if (
+        sliding_forward && g_Config.gameplay.enable_slide_to_run
         && item->goal_anim_state == LS_STOP && g_Input.forward
         && Lara_State_IsResponsive(LA_SLIDE_FORWARD)) {
         item->goal_anim_state = LS_RESPONSIVE;
