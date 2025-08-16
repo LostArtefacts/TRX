@@ -85,6 +85,7 @@
 - fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 4.13)
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 4.13)
 - fixed being able to issue certain console commands that target Lara during loading screens (#3662, regression from 4.13)
+- fixed flame SFX being audible underwater (#3830, regression from 4.13)
 - fixed z-fighting of doors near walls
 - fixed Lara walking backwards off ledges into lava (#3745)
 - fixed room scheduling algorithm sometimes drawing overlapping rooms (#3774, regression from 4.1)
