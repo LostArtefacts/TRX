@@ -30,7 +30,7 @@ static void M_DoEffects(const EFFECT *const effect)
         return;
     }
 
-    Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_ALWAYS);
+    Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_NORMAL);
     if (!g_Config.visuals.enable_fire_lighting) {
         return;
     }

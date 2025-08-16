@@ -90,6 +90,7 @@
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 1.3)
 - fixed triggered pickup items flickering in custom levels (#3623, regression from 0.10)
 - fixed Lara not throwing away a spent flare when swimming of flying (#3816, regression from 0.8)
+- fixed flame SFX being audible underwater (#3830, regression from 0.3)
 
 ## [1.3.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...tr2-1.3.2) - 2025-07-20
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
