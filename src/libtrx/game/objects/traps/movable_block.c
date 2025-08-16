@@ -656,8 +656,6 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    int16_t room_num = item->room_num;
-
     // Check if the block is floating, on a walkable, or on the pit floor.
     // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
     // sector.
@@ -666,23 +664,35 @@ static void M_Control(const int16_t item_num)
     const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
     int32_t under_block_height = Room_GetHeightEx(
         sector, item->pos.x, item->pos.y, item->pos.z, false, item_num);
-    const int32_t top_of_block_height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    const SECTOR *room_num_sector = Room_GetSector(
-        item->pos.x, top_of_block_height, item->pos.z, &room_num);
 
-    // Checks if a block is on or fell through a walkable item.
-    // Gravity and fall speed greatly affect the block's y position and whether
-    // it landed on another walkable. If this check is too early, gravity is
-    // stopped one frame early. If this check happens after the block falls
-    // through another walkable, under_block_height is set to the floor height
-    // under the walkable that fell through. So the block's y position is
-    // rounded to a half click to check if it landed on another walkable.
-    const bool on_walkable = Room_IsOnWalkable(
-        sector, item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z,
-        ROUND_TO_HALF_CLICK(item->pos.y), item_num);
-    if (on_walkable) {
-        under_block_height = ROUND_TO_HALF_CLICK(item->pos.y);
+    bool update_room_num = true;
+
+    // Check if tunneled into floor below.
+    if (item->gravity && item->fall_speed > 0) {
+        const int32_t y_prev = item->pos.y - item->fall_speed;
+
+        // Query floor at previous y position.
+        const ROOM *const prev_room = Room_Get(Room_GetIndexFromPos(
+            item->pos.x, ROUND_TO_HALF_CLICK(y_prev), item->pos.z));
+        const SECTOR *prev_sector =
+            Room_GetWorldSector(prev_room, item->pos.x, item->pos.z);
+        int32_t prev_height = Room_GetHeightEx(
+            prev_sector, item->pos.x, y_prev, item->pos.z, false, item_num);
+
+        // If on a walkable at the previous y position, use the rounded previous
+        // y position as the floor.
+        if (Room_IsOnWalkable(
+                prev_sector, item->pos.x, ROUND_TO_HALF_CLICK(y_prev),
+                item->pos.z, ROUND_TO_HALF_CLICK(y_prev), item_num)) {
+            prev_height = ROUND_TO_HALF_CLICK(y_prev);
+        }
+
+        // If tunneled into the floor, clamp to previous floor height.
+        if (prev_height != NO_HEIGHT && y_prev < prev_height
+            && item->pos.y >= prev_height) {
+            under_block_height = prev_height;
+            update_room_num = false;
+        }
     }
 
     if (item->pos.y < under_block_height && !M_IsPushPull(item)
@@ -709,7 +719,10 @@ static void M_Control(const int16_t item_num)
 
     // Don't update room number if on a walkable because room number can fall
     // through to a pit room (e.g. trapdoors).
-    if (!on_walkable) {
+    if (update_room_num) {
+        int16_t room_num = item->room_num;
+        const SECTOR *const room_num_sector = Room_GetSectorOnWalkable(
+            item->pos.x, item->pos.y - WALL_L, item->pos.z, &room_num);
         Item_UpdateRoom(item_num, room_num);
     }
 

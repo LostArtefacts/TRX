@@ -164,6 +164,47 @@ SECTOR *Room_GetSector(
     return sector;
 }
 
+SECTOR *Room_GetSectorOnWalkable(
+    const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
+{
+    // Resolve wall portals.
+    const ROOM *room = Room_Get(*room_num);
+    SECTOR *sector = Room_GetWorldSector(room, x, z);
+    while (sector->portal_room.wall != NO_ROOM) {
+        *room_num = sector->portal_room.wall;
+        room = Room_Get(*room_num);
+        sector = Room_GetWorldSector(room, x, z);
+    }
+
+    // Check if on a walkable.
+    const int32_t room_height = Room_GetHeight(sector, x, y, z);
+    const bool skip_pit = Room_IsOnWalkable(
+        sector, x, ROUND_TO_HALF_CLICK(y), z, ROUND_TO_HALF_CLICK(y), NO_ITEM);
+
+    // Traverse pit sector unless on a walkable.
+    if (!skip_pit && y >= sector->floor.height) {
+        while (sector->portal_room.pit != NO_ROOM) {
+            *room_num = sector->portal_room.pit;
+            room = Room_Get(*room_num);
+            sector = Room_GetWorldSector(room, x, z);
+            if (y < sector->floor.height) {
+                break;
+            }
+        }
+    } else if (y < sector->ceiling.height) {
+        while (sector->portal_room.sky != NO_ROOM) {
+            *room_num = sector->portal_room.sky;
+            room = Room_Get(*room_num);
+            sector = Room_GetWorldSector(room, x, z);
+            if (y >= sector->ceiling.height) {
+                break;
+            }
+        }
+    }
+
+    return sector;
+}
+
 SECTOR *Room_GetWorldSector(
     const ROOM *const room, const int32_t x_pos, const int32_t z_pos)
 {
@@ -446,7 +487,7 @@ bool Room_IsOnWalkable(
     int16_t height = sector->floor.height;
     bool object_found = false;
     for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
-        // Don't take into account current walkable's floor or ceiling.
+        // Optionally ignore a walkable.
         if (w->item_num == ignore_item_num) {
             continue;
         }
