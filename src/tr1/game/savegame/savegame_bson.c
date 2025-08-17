@@ -933,8 +933,8 @@ static bool M_LoadCurrentMusic(
     JSON_OBJECT *music_obj, const uint16_t header_version)
 {
     if (music_obj == nullptr) {
-        LOG_WARNING("Malformed save: invalid or missing current music");
-        return true;
+        LOG_ERROR("Malformed save: invalid or missing music info");
+        return false;
     }
 
     const MUSIC_TRACK_ID current_track =
@@ -951,6 +951,7 @@ static bool M_LoadCurrentMusic(
         }
     }
 
+    Music_Stop();
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.

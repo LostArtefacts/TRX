@@ -393,6 +393,7 @@ static bool M_LoadMusic(
     current_track = M_ConvertMusicTrack(current_track, header_version);
     ambient_track = M_ConvertMusicTrack(ambient_track, header_version);
 
+    Music_Stop();
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.
