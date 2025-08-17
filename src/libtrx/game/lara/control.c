@@ -565,14 +565,24 @@ static void M_ObjectCollision(COLL_INFO *const coll)
             // next item beforehand.
             const int16_t next_item_num = item->next_item;
 
-            if (item->collidable && item->status != IS_INVISIBLE) {
-                const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision_func != nullptr
-                    && Item_IsNearby(lara_item, item, M_COLL_DIST)) {
-                    obj->collision_func(item_num, lara_item, coll);
-                }
+            if (lara_info->water_status == LWS_CHEAT
+                && !Object_IsType(item->object_id, g_PickupObjects)
+                && !Object_IsType(item->object_id, g_SwitchObjects)) {
+                goto loop_end;
+            }
+            if (!item->collidable || item->status == IS_INVISIBLE) {
+                goto loop_end;
             }
 
+            const OBJECT *const obj = Object_Get(item->object_id);
+            if (obj->collision_func == nullptr
+                || !Item_IsNearby(lara_item, item, M_COLL_DIST)) {
+                goto loop_end;
+            }
+
+            obj->collision_func(item_num, lara_item, coll);
+
+        loop_end:
             item_num = next_item_num;
         }
     }
