@@ -73,6 +73,7 @@
 - fixed incorrect frames in Lara's underwater roll animation (#1589)
 - fixed mismatched animation frames between the airlock wheel and its corresponding door in offshore levels (#3644)
 - fixed incorrect airlock and sliding door object positions in offshore levels (#3644)
+- fixed incorrect door positions in Nightmare in Vegas, causing some to be visible through walls (#3836)
 - fixed incorrect push button object positions in all levels where it appears (#3596)
 - fixed incorrect portals in Catacombs of the Talion room 41 (#3664)
 - fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian (#3691)
