@@ -1,20 +1,7 @@
 #include "game/phase/phase_photo_mode.h"
 
 #include "config.h"
-#include "game/camera.h"
-#include "game/const.h"
 #include "game/game.h"
-#include "game/game_string.h"
-#include "game/input.h"
-#include "game/interpolation.h"
-#include "game/lara/common.h"
-#include "game/lara/hair.h"
-#include "game/lara/pose.h"
-#include "game/math.h"
-#include "game/matrix.h"
-#include "game/music.h"
-#include "game/output.h"
-#include "game/overlay.h"
 #include "game/phase/executor.h"
 #include "game/photo_mode.h"
 #include "game/shell.h"
@@ -48,7 +35,15 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     Input_Update();
     Shell_ProcessInput();
 
-    if (g_InputDB.toggle_photo_mode || g_InputDB.menu_back) {
+    // XXX: normally we'd be using menu_back alone to let the player go back
+    // and exit the photo mode UI, BUT for controller players, the default
+    // menu_back button conflicts with the roll input, as both are bound to the
+    // B button. This causes neither to work as expected, when the player
+    // presses B. This is a hacky solution since technically the player might
+    // remap the roll input to some other button, making the roll check below
+    // redundant, but this is the most straightforward approach.
+    if (g_InputDB.toggle_photo_mode
+        || (g_InputDB.menu_back && !g_InputDB.roll)) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
             .gf_cmd = { .action = GF_NOOP },

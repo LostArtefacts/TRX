@@ -89,6 +89,7 @@
 - fixed z-fighting of doors near walls
 - fixed Lara walking backwards off ledges into lava (#3745)
 - fixed room scheduling algorithm sometimes drawing overlapping rooms (#3774, regression from 4.1)
+- fixed exiting photo mode on a controller conflicting with the roll input (#3842, regression from 4.8)
 
 ## [4.13.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.1...tr1-4.13.2) - 2025-07-20
 - fixed savegame scanner only seeing all-lowercase file names (#3518, regression from 4.9)
