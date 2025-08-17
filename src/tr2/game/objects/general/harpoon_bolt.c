@@ -45,7 +45,7 @@ static void M_Control(const int16_t item_num)
         ITEM *const target_item = Item_Get(target_num);
         const OBJECT *const target_obj = Object_Get(target_item->object_id);
 
-        if (target_item == g_LaraItem) {
+        if (target_item == g_LaraItem || item_num == target_num) {
             continue;
         }
 
