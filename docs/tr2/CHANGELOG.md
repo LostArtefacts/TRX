@@ -84,6 +84,7 @@
 - fixed backslash/grave key/less-than character on some keyboards shown as ???? – now it's shown as backslash (#3713)
 - fixed Lara being able to get on a skidoo while underwater and consequently dying (#3810)
 - fixed a missing transition animation between Lara jumping forward and entering freefall (#3815)
+- fixed potentially being able to reactivate an already used puzzle slot's trigger (#3849, regression from 1.3)
 - fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
 - fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
 - fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
