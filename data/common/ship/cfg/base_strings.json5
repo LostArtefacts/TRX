@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "Reloads the current language files from disk.",
         "CONSOLE_HELP_TITLE": "Returns to the title screen.",
         "CONSOLE_HELP_TP": "Teleports Lara to a given position or room number.",
+        "CONSOLE_HELP_VSYNC": "Toggles vertical sync.",
         "CONSOLE_HELP_WIREFRAME": "Toggles wireframe rendering.",
         "CONTROLS_BACKEND_CONTROLLER": "Controller",
         "CONTROLS_BACKEND_KEYBOARD": "Keyboard",

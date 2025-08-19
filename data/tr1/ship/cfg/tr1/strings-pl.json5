@@ -737,7 +737,6 @@
         }
     },
     "game_strings": {
-        "CONSOLE_HELP_VSYNC": "Włącza lub wyłącza synchronizację pionową.",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Zmień cel",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż magnumy",
         "MISC_EMPTY_SLOT_FMT": "- PUSTY SLOT %d -",

@@ -755,7 +755,6 @@
         }
     },
     "game_strings": {
-        "CONSOLE_HELP_VSYNC": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Atharraich an Targaid",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnums",
         "MISC_EMPTY_SLOT_FMT": "- SLOT FALAMH %d -",

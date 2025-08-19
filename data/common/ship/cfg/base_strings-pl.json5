@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "Przeładowuje bieżące pliki językowe z dysku.",
         "CONSOLE_HELP_TITLE": "Wraca do menu głównego.",
         "CONSOLE_HELP_TP": "Teleportuje Larę do podanej pozycji lub numeru pomieszczenia.",
+        "CONSOLE_HELP_VSYNC": "Włącza lub wyłącza synchronizację pionową.",
         "CONSOLE_HELP_WIREFRAME": "Włącza lub wyłącza rysowanie w trybie siatki.",
         "CONTROLS_BACKEND_CONTROLLER": "Kontroler",
         "CONTROLS_BACKEND_KEYBOARD": "Klawiatura",

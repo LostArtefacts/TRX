@@ -746,7 +746,6 @@
         }
     },
     "game_strings": {
-        "CONSOLE_HELP_VSYNC": "Attiva/disattiva la sincronizzazione verticale.",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Cambia Bersaglio",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Magnum",
         "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO %d -",

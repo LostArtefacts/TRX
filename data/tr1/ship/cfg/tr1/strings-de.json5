@@ -746,7 +746,6 @@
         }
     },
     "game_strings": {
-        "CONSOLE_HELP_VSYNC": "Vertical Sync. Ein/Aus",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
         "MISC_EMPTY_SLOT_FMT": "- Leerer SLOT %d -",
