@@ -99,6 +99,7 @@ sources = [
   'game/console/cmd/config.c',
   'game/console/cmd/debug.c',
   'game/console/cmd/die.c',
+  'game/console/cmd/easy_config.c',
   'game/console/cmd/end_level.c',
   'game/console/cmd/exit_game.c',
   'game/console/cmd/exit_to_title.c',

@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "Перезагружает текущие языковые файлы с диска.",
         "CONSOLE_HELP_TITLE": "Возвращает на титульный экран",
         "CONSOLE_HELP_TP": "Телепортирует Лару в указанную позицию или номер комнаты.",
+        "CONSOLE_HELP_VSYNC": "Переключает вертикальную синхронизацию.",
         "CONSOLE_HELP_WIREFRAME": "Переключает рендеринг каркаса.",
         "CONTROLS_BACKEND_CONTROLLER": "Контроллер",
         "CONTROLS_BACKEND_KEYBOARD": "Клавиатура",

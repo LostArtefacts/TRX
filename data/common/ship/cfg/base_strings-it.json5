@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "Ricarica i file di lingua correnti dal disco.",
         "CONSOLE_HELP_TITLE": "Ritorna al menu principale.",
         "CONSOLE_HELP_TP": "Teletrasporta Lara in una posizione o in un numero di stanza specifici.",
+        "CONSOLE_HELP_VSYNC": "Attiva/disattiva la sincronizzazione verticale.",
         "CONSOLE_HELP_WIREFRAME": "Attiva/disattiva la renderizzazione in modalità reticolo.",
         "CONTROLS_BACKEND_CONTROLLER": "Controller",
         "CONTROLS_BACKEND_KEYBOARD": "Tastiera",

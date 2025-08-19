@@ -101,7 +101,6 @@ endif
 
 sources = [
   init,
-  'game/console/cmd/easy_config.c',
   'game/console/common.c',
   'game/creature.c',
   'game/cutscene.c',

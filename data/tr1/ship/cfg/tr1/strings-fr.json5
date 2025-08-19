@@ -699,7 +699,6 @@
         }
     },
     "game_strings": {
-        "CONSOLE_HELP_VSYNC": "Active/désactive la synchronisation verticale.",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Changer de cible",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "S'équiper des magnums",
         "MISC_EMPTY_SLOT_FMT": "- EMPLACEMENT VIDE -",

@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "Lädt erneut die aktuellen Sprachdateien von der Festplatte.",
         "CONSOLE_HELP_TITLE": "Bringt sie zurück zum Titel-Bildschirm.",
         "CONSOLE_HELP_TP": "Teleportiert Lara zu der angegebenen Position oder Raum-Nummer.",
+        "CONSOLE_HELP_VSYNC": "Vertical Sync. Ein/Aus",
         "CONSOLE_HELP_WIREFRAME": "Aktiviert und deaktiviert den Gitterrahmen-Render.",
         "CONTROLS_BACKEND_CONTROLLER": "Kontroller",
         "CONTROLS_BACKEND_KEYBOARD": "Tastatur",

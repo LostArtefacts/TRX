@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "Ath-luchdaich faidhlichean cànain làithreach on diosg.",
         "CONSOLE_HELP_TITLE": "Till gu scrion a' thiotail.",
         "CONSOLE_HELP_TP": "Gluais Lara gu suidheachadh neo àireamh rùm ainmichte.",
+        "CONSOLE_HELP_VSYNC": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
         "CONSOLE_HELP_WIREFRAME": "Tionndaidh reandaradh frèam-uèir air neo dheth.",
         "CONTROLS_BACKEND_CONTROLLER": "Rianadair",
         "CONTROLS_BACKEND_KEYBOARD": "Meur-chlàr",

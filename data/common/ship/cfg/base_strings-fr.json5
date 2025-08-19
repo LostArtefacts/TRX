@@ -58,6 +58,7 @@
         "CONSOLE_HELP_STRINGS": "\\{review}Recharge les fichiers de langue actuels depuis le disque.",
         "CONSOLE_HELP_TITLE": "Retourne à l'écran titre.",
         "CONSOLE_HELP_TP": "Téléporte Lara à une position ou un numéro de salle donné.",
+        "CONSOLE_HELP_VSYNC": "Active/désactive la synchronisation verticale.",
         "CONSOLE_HELP_WIREFRAME": "Active/désactive le rendu en fil de fer.",
         "CONTROLS_BACKEND_CONTROLLER": "Manette",
         "CONTROLS_BACKEND_KEYBOARD": "Clavier",
