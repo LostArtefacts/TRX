@@ -82,6 +82,7 @@
     - fixed Y component not interpolated in 60 FPS (#1314)
     - fixed shadows being rendered partially opaque near room portals (#879)
     - fixed Bacon Lara shadow rendered transparent when she's standing on a trapdoor (#3666)
+- fixed potentially being able to reactivate an already used puzzle slot's trigger (#3849, regression from 4.13)
 - fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 4.13)
 - fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 4.13)
 - fixed being able to issue certain console commands that target Lara during loading screens (#3662, regression from 4.13)

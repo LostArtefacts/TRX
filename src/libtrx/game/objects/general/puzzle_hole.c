@@ -74,7 +74,9 @@ static void M_MarkDone(ITEM *const receptacle_item)
     if (done_obj_id != NO_OBJECT) {
         receptacle_item->object_id = done_obj_id;
     }
-    receptacle_item->status = IS_ACTIVE;
+    if (receptacle_item->status == IS_INACTIVE) {
+        receptacle_item->status = IS_ACTIVE;
+    }
 }
 
 static void M_SetupEmpty(OBJECT *const obj)
