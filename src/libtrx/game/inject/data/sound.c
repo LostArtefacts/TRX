@@ -16,6 +16,12 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
     int16_t *const sample_lut = Sound_GetSampleLUT();
     for (int32_t i = 0; i < data_count; i++) {
         const int16_t sfx_id = VFile_ReadS16(chunk.injection->fp);
+        if (TR_VERSION == 2 && sample_lut[sfx_id] != -1) {
+            // TODO: resolve properly: currently replacing existing sounds in
+            // TR2 alone badly affects others, e.g. making them silent.
+            VFile_Skip(chunk.injection->fp, 10);
+            continue;
+        }
         sample_lut[sfx_id] = level_info->samples.info_count;
 
         SAMPLE_INFO *const sample_info = Sound_GetSampleInfo(sfx_id);
