@@ -24,6 +24,11 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
         return CR_UNAVAILABLE;
     }
 
+    const OBJECT *const obj = Object_Get(O_WINSTON);
+    if (!obj->loaded) {
+        return CR_UNAVAILABLE;
+    }
+
     int16_t target_room_num = lara_item->room_num;
     XYZ_32 target_pos = {
         .x = lara_item->pos.x + STEP_L,
