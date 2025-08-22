@@ -69,13 +69,19 @@ static void M_ReadObject(const INJECTION_CHUNK chunk)
         obj->bone_idx = bone_idx + cached_info.anims.bone_count;
     }
 
-    obj->frame_ofs = VFile_ReadU32(chunk.injection->fp);
-    obj->frame_base = nullptr;
-    obj->anim_idx = VFile_ReadS16(chunk.injection->fp);
-    if (obj->anim_idx != -1) {
-        obj->anim_idx += cached_info.anims.anim_count;
+    // Ommitted animation data marks that existing related object data should be
+    // retained i.e. mesh replacement only.
+    const uint32_t frame_ofs = VFile_ReadU32(chunk.injection->fp);
+    const int16_t anim_idx = VFile_ReadS16(chunk.injection->fp);
+    if ((int32_t)frame_ofs != -1) {
+        obj->frame_ofs = frame_ofs;
+        obj->frame_base = nullptr;
+        obj->anim_idx = anim_idx;
+        if (obj->anim_idx != -1) {
+            obj->anim_idx += cached_info.anims.anim_count;
+        }
+        obj->loaded = true;
     }
-    obj->loaded = true;
 
     for (int32_t i = 0; i < num_meshes; i++) {
         OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + i);

@@ -63,7 +63,7 @@
 - fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
 - fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
 - fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
-- fixed several OG texture issues; refer to `IMPROVEMENTS.md` for details (#1834, #2082, #3140, #3187, #3372, #3516, #3629, #3634, #3657, #3659, #3791, #3829)
+- fixed several OG texture issues; refer to `IMPROVEMENTS.md` for details (#1834, #2082, #3140, #3187, #3372, #3516, #3629, #3634, #3657, #3659, #3791, #3829, #3860)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
 - fixed z-fighting on the front of the passport (#3584)
 - fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving (#3559)
