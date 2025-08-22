@@ -267,7 +267,7 @@ void Object_SetMeshReflective(
     for (int32_t i = 0; i < mesh->num_flat_face3s; i++) {
         mesh->flat_face3s[i].enable_reflections = enabled;
     }
-    Output_DispatchObjectMeshUpdate(mesh);
+    Output_DispatchObjectMeshUpdate(obj->mesh_idx + mesh_idx);
 }
 
 void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)

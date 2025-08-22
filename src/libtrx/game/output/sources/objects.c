@@ -354,28 +354,26 @@ void OutputSource_Objects_ObserveLevelUnload(void)
 }
 
 void OutputSource_Objects_ObserveObjectMeshSwap(
-    const OBJECT_MESH *const mesh_1, const OBJECT_MESH *const mesh_2)
+    const int32_t mesh_idx_1, const int32_t mesh_idx_2)
 {
     M_PRIV *const p = &m_Priv;
     if (p->meshes == nullptr) {
         return;
     }
 
-    const int16_t mesh_num_1 = Object_GetMeshIndex(mesh_1);
-    const int16_t mesh_num_2 = Object_GetMeshIndex(mesh_2);
-    SWAP(p->meshes[mesh_num_1], p->meshes[mesh_num_2]);
-    OutputSource_Objects_ObserveObjectMeshUpdate(mesh_1);
-    OutputSource_Objects_ObserveObjectMeshUpdate(mesh_2);
+    SWAP(p->meshes[mesh_idx_1], p->meshes[mesh_idx_2]);
+    OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx_1);
+    OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx_2);
 }
 
-void OutputSource_Objects_ObserveObjectMeshUpdate(const OBJECT_MESH *const mesh)
+void OutputSource_Objects_ObserveObjectMeshUpdate(const int32_t mesh_idx)
 {
     M_PRIV *const p = &m_Priv;
     if (p->meshes == nullptr) {
         return;
     }
-    M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
-    M_UpdateFlags(mesh, batch);
+    M_MESH *const batch = &p->meshes[mesh_idx];
+    M_UpdateFlags(Object_GetMesh(mesh_idx), batch);
     MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
 }
 

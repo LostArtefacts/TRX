@@ -9,8 +9,8 @@ void OutputSource_Objects_Shutdown(void);
 void OutputSource_Objects_ObserveLevelLoad(void);
 void OutputSource_Objects_ObserveLevelUnload(void);
 void OutputSource_Objects_ObserveObjectMeshSwap(
-    const OBJECT_MESH *mesh_1, const OBJECT_MESH *mesh_2);
-void OutputSource_Objects_ObserveObjectMeshUpdate(const OBJECT_MESH *mesh);
+    int32_t mesh_idx_1, int32_t mesh_idx_2);
+void OutputSource_Objects_ObserveObjectMeshUpdate(int32_t mesh_idx);
 
 void OutputSource_Objects_StageSkyboxMesh(
     const OBJECT_MESH *mesh, int16_t shade);

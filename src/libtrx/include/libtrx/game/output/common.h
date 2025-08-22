@@ -23,6 +23,5 @@ void Output_ApplyLevelSettings(void);
 void Output_DispatchLevelLoad(void);
 void Output_DispatchLevelUnload(void);
 void Output_DispatchRoomFlip(const ROOM *room);
-void Output_DispatchObjectMeshUpdate(const OBJECT_MESH *mesh);
-void Output_DispatchObjectMeshSwap(
-    const OBJECT_MESH *mesh_1, const OBJECT_MESH *mesh_2);
+void Output_DispatchObjectMeshUpdate(int32_t mesh_idx);
+void Output_DispatchObjectMeshSwap(int32_t mesh_idx_0, int32_t mesh_idx_1);
