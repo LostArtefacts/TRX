@@ -69,6 +69,7 @@
 - fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them (#762)
 - fixed incorrect transparent pixels on room textures in St. Francis' Folly and Temple of the Cat (#3659)
 - fixed the positions of big pods in Atlantean levels and cutscenes (#3670)
+- fixed several texture issues in Lara's Home, Vilcabamba, Lost Valley, St. Francis' Folly and Natla's Mines (#3860)
 - fixed a missing transition animation between Lara jumping forward and entering freefall (#3815)
 - fixed incorrect wet footstep sounds in some of Lara's climb-up animations (#3607, regression from 4.6)
 - fixed the `/kill` command potentially causing a crash if used in a level with pods that don't hatch creatures (#3628, regression from 4.12)
