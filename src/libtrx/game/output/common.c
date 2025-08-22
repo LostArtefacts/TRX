@@ -176,12 +176,12 @@ void Output_DispatchRoomFlip(const ROOM *room)
 }
 
 void Output_DispatchObjectMeshSwap(
-    const OBJECT_MESH *const mesh_1, const OBJECT_MESH *const mesh_2)
+    const int32_t mesh_idx_1, const int32_t mesh_idx_2)
 {
-    OutputSource_Objects_ObserveObjectMeshSwap(mesh_1, mesh_2);
+    OutputSource_Objects_ObserveObjectMeshSwap(mesh_idx_1, mesh_idx_2);
 }
 
-void Output_DispatchObjectMeshUpdate(const OBJECT_MESH *const mesh)
+void Output_DispatchObjectMeshUpdate(const int32_t mesh_idx)
 {
-    OutputSource_Objects_ObserveObjectMeshUpdate(mesh);
+    OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx);
 }
