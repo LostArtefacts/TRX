@@ -417,14 +417,26 @@ bool Level_Initialise(
         Random_SeedControl(0xD371F947);
     }
 
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr) {
+        resume->stats.timer = 0;
+        resume->stats.secret_flags = 0;
+        resume->stats.secret_count = 0;
+        resume->stats.kill_count = 0;
+        resume->stats.ammo_hits = 0;
+        resume->stats.ammo_used = 0;
+        resume->stats.medipacks_used = 0;
+        resume->stats.distance_travelled = 0;
+    }
+
     if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
         Gym_SetInventoryOpenEnabled(false);
     }
-
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
         Game_SetCurrentLevel(level);
     }
     GF_SetCurrentLevel(level);
+
     InitialiseGameFlags();
     g_Lara.item_num = NO_ITEM;
     g_LaraItem = nullptr;
