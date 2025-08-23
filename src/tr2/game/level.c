@@ -429,6 +429,7 @@ bool Level_Initialise(
         resume->stats.distance_travelled = 0;
     }
 
+    Game_FadeToBlack(-1);
     if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
         Gym_SetInventoryOpenEnabled(false);
     }
