@@ -214,11 +214,9 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION == 1
     if (lara->interact_target.is_moving) {
         return;
     }
-#endif
 
     if (g_Input.roll && lara->water_status != LWS_WADE) {
         if (g_Input.jump && g_Config.gameplay.enable_neutral_twists
