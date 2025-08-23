@@ -1,9 +1,9 @@
-#include "game/output.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/utils.h>
 
 #define SPHERE_OF_DOOM_RADIUS (STEP_L * 5 / 2) // = 640
@@ -113,8 +113,8 @@ static void M_Draw(const ITEM *const item)
     mptr->_22 = (mptr->_22 * item->timer) >> 8;
 
     const ANIM_FRAME *const frame_ptr = Item_GetAnim(item)->frame_ptr;
-    const int32_t clip = Output_GetObjectBounds(&frame_ptr->bounds);
-    if (clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame_ptr->bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
         Output_CalculateObjectLighting(item, &frame_ptr->bounds);
         Object_DrawMesh(Object_Get(item->object_id)->mesh_idx, clip, false);
     }

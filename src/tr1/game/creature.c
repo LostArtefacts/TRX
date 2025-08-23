@@ -3,8 +3,9 @@
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/objects/vars.h"
-#include "game/random.h"
 #include "game/spawn.h"
+
+#include <libtrx/game/random.h>
 
 bool Creature_ShootAtLara(
     ITEM *item, int32_t distance, BITE *gun, int16_t extra_rotation,

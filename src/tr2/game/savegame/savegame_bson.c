@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/general/lift.h"
-#include "game/output.h"
 #include "game/savegame.h"
 #include "global/vars.h"
 
@@ -15,6 +14,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/stats.h>
@@ -393,6 +393,7 @@ static bool M_LoadMusic(
     current_track = M_ConvertMusicTrack(current_track, header_version);
     ambient_track = M_ConvertMusicTrack(ambient_track, header_version);
 
+    Music_Stop();
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.
@@ -912,6 +913,11 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr)
                 JSON_ObjectGetInt(item_obj, "anim_num", item->anim_num);
             item->frame_num =
                 JSON_ObjectGetInt(item_obj, "frame_num", item->frame_num);
+
+            if (item->object_id == O_LARA
+                && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
+                item->anim_num += obj->anim_idx;
+            }
         }
 
         if (obj->save_hitpoints) {
@@ -1255,6 +1261,7 @@ static JSON_OBJECT *M_DumpLara(void)
     JSON_ObjectAppendInt(lara_obj, "hit_frame", lara->hit_frame);
     JSON_ObjectAppendInt(lara_obj, "hit_direction", lara->hit_direction);
     JSON_ObjectAppendInt(lara_obj, "air", lara->air);
+    JSON_ObjectAppendInt(lara_obj, "sprint_timer", lara->sprint_timer);
     JSON_ObjectAppendInt(lara_obj, "dive_count", lara->dive_timer);
     JSON_ObjectAppendInt(lara_obj, "death_count", lara->death_timer);
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);
@@ -1358,6 +1365,8 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     lara->hit_direction =
         JSON_ObjectGetInt(lara_obj, "hit_direction", lara->hit_direction);
     lara->air = JSON_ObjectGetInt(lara_obj, "air", lara->air);
+    lara->sprint_timer =
+        JSON_ObjectGetInt(lara_obj, "sprint_timer", lara->sprint_timer);
     lara->dive_timer =
         JSON_ObjectGetInt(lara_obj, "dive_count", lara->dive_timer);
     lara->death_timer =

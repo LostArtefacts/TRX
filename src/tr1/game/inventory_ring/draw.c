@@ -1,22 +1,22 @@
 #include "game/inventory_ring/draw.h"
 
 #include "game/game.h"
-#include "game/input.h"
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
 #include "game/option/option_compass.h"
-#include "game/output.h"
-#include "game/overlay.h"
 #include "game/shell.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/option.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
+#include <libtrx/game/viewport.h>
 
 #define M_CAMERA_2_RING 598
 #define M_PASSPORT_FOV 65
@@ -33,7 +33,8 @@ static int32_t M_GetFrames(
 {
     const OBJECT *const obj = Object_Get(inv_item->object_id);
     const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
-    if (inv_item != cur_inv_item
+
+    if (inv_item != cur_inv_item || inv_item->current_frame == 0
         || (ring->motion.status != RNG_SELECTED
             && ring->motion.status != RNG_CLOSING_ITEM)) {
         // only apply to animations, eg. the states where Inv_AnimateItem is
@@ -83,7 +84,7 @@ static void M_DrawItem(
     Matrix_RotX(inv_item->x_rot);
 
     OBJECT *const obj = Object_Get(inv_item->object_id);
-    if (obj->mesh_count < 0) {
+    if (!obj->loaded || obj->mesh_count < 0) {
         return;
     }
 
@@ -118,6 +119,16 @@ void InvRing_Draw(INV_RING *const ring)
         }
     }
 
+    if (ring->motion.status != RNG_DONE
+        && (ring->motion.status != RNG_OPENING
+            || (ring->mode != INV_TITLE_MODE
+                || (!Fader_IsActive(&ring->top_fader)
+                    && !Fader_IsActive(&ring->back_fader))))) {
+        for (int32_t i = 0; i < num_frames; i++) {
+            InvRing_DoMotions(ring);
+        }
+    }
+
     ring->camera.pos.z = ring->radius + M_CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
@@ -128,12 +139,14 @@ void InvRing_Draw(INV_RING *const ring)
             g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
             g_InvRing_OldCamera.pos.z, g_InvRing_OldCamera.target.x,
             g_InvRing_OldCamera.target.y, g_InvRing_OldCamera.target.z, 0);
+
         Interpolation_Disable();
         Game_Draw(false);
         Interpolation_Enable();
 
         Fader_Draw(&ring->back_fader);
-        Output_DrawPolyList();
+        SceneCompositor_Flush();
+
         Viewport_Init(-1, -1, -1, -1);
     }
 
@@ -191,8 +204,8 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     Matrix_Pop();
+    SceneCompositor_Flush();
     Viewport_AlterFOV(old_fov);
-    Output_DrawPolyList();
 
     if (ring->motion.status == RNG_SELECTED) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
@@ -202,15 +215,6 @@ void InvRing_Draw(INV_RING *const ring)
         Option_Draw(inv_item);
     }
 
-    if (ring->motion.status != RNG_DONE
-        && (ring->motion.status != RNG_OPENING
-            || (ring->mode != INV_TITLE_MODE
-                || (!Fader_IsActive(&ring->top_fader)
-                    && !Fader_IsActive(&ring->back_fader))))) {
-        for (int32_t i = 0; i < num_frames; i++) {
-            InvRing_DoMotions(ring);
-        }
-    }
-
-    Fader_Draw(&ring->top_fader);
+    UI_BeginFade(&ring->top_fader, true);
+    UI_EndFade();
 }

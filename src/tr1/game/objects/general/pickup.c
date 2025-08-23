@@ -1,19 +1,19 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/gun.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/overlay.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/overlay.h>
+#include <libtrx/game/random.h>
 
 #define LF_PICKUP_ERASE 42
 #define LF_PICKUP_UW 18
@@ -205,7 +205,8 @@ static void M_Control(int16_t item_num)
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    if (g_Lara.water_status == LWS_UNDERWATER) {
+    if (g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         return &m_PickUpBoundsUW;
     } else if (g_Config.gameplay.enable_walk_to_items) {
         return &m_PickUpBoundsControlled;
@@ -254,7 +255,9 @@ static void M_Collision(
             g_Lara.gun_status = LGS_HANDS_BUSY;
             goto cleanup;
         }
-    } else if (g_Lara.water_status == LWS_UNDERWATER) {
+    } else if (
+        g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         item->rot.x = -25 * DEG_1;
         if (!Lara_TestPosition(item, obj->bounds_func())) {
             goto cleanup;
@@ -342,7 +345,9 @@ static void M_CollisionControlled(
                 g_Lara.interact_target.item_num = NO_ITEM;
             }
         }
-    } else if (g_Lara.water_status == LWS_UNDERWATER) {
+    } else if (
+        g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         item->rot.x = -25 * DEG_1;
 
         if ((g_Input.action && lara_item->current_anim_state == LS_TREAD

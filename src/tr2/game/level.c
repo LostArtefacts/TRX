@@ -5,10 +5,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/lara.h"
-#include "game/output.h"
-#include "game/overlay.h"
-#include "game/random.h"
-#include "game/render/common.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -28,6 +24,9 @@
 #include <libtrx/game/level.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/option.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
+#include <libtrx/game/random.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -312,20 +311,19 @@ finish:
 
 static void M_LoadFromFile(const GF_LEVEL *const level)
 {
-    LOG_DEBUG("%s (num=%d)", level->title, level->num);
     GameBuf_Reset();
 
     BENCHMARK benchmark = Benchmark_Start();
 
-    const char *full_path = File_GetFullPath(level->path);
-    VFILE *const file = VFile_CreateFromPath(full_path);
-    Memory_FreePointer(&full_path);
+    VFILE *const file = VFile_CreateFromPath(level->path);
+    if (file == nullptr) {
+        Shell_ExitSystemFmt("Could not open %s", level->path);
+    }
 
     const M_LAYOUT layout = M_GuessLayout(file);
     if (layout == LEVEL_LAYOUT_UNKNOWN) {
         Shell_ExitSystemFmt("Failed to load %s", level->path);
     }
-
     VFile_SetPos(file, 4);
 
     Level_ReadPalettes(file);
@@ -383,17 +381,15 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_ObserveLevelLoad();
 
-    Render_Reset(
-        RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
+    Output_DispatchLevelLoad();
 
     M_InitialiseSoundEffects(level->settings.sfx_path);
 
     Benchmark_End(&benchmark, nullptr);
 }
 
-bool Level_Load(const GF_LEVEL *const level)
+void Level_Load(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -407,9 +403,9 @@ bool Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Benchmark_End(&benchmark, nullptr);
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
 
-    return true;
+    Benchmark_End(&benchmark, nullptr);
 }
 
 bool Level_Initialise(
@@ -421,14 +417,27 @@ bool Level_Initialise(
         Random_SeedControl(0xD371F947);
     }
 
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr) {
+        resume->stats.timer = 0;
+        resume->stats.secret_flags = 0;
+        resume->stats.secret_count = 0;
+        resume->stats.kill_count = 0;
+        resume->stats.ammo_hits = 0;
+        resume->stats.ammo_used = 0;
+        resume->stats.medipacks_used = 0;
+        resume->stats.distance_travelled = 0;
+    }
+
+    Game_FadeToBlack(-1);
     if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
         Gym_SetInventoryOpenEnabled(false);
     }
-
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
         Game_SetCurrentLevel(level);
     }
     GF_SetCurrentLevel(level);
+
     InitialiseGameFlags();
     g_Lara.item_num = NO_ITEM;
     g_LaraItem = nullptr;
@@ -438,9 +447,7 @@ bool Level_Initialise(
     }
 
     Level_Unload();
-    if (!Level_Load(level)) {
-        return false;
-    }
+    Level_Load(level);
     GameStringTable_Apply(level);
 
     Carrier_InitialiseLevel(level);
@@ -462,7 +469,7 @@ bool Level_Initialise(
 
 void Level_Unload(void)
 {
-    Output_ObserveLevelUnload();
+    Output_DispatchLevelUnload();
     Camera_Reset();
 }
 

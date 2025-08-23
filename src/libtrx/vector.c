@@ -54,6 +54,9 @@ void Vector_EnsureCapacity(VECTOR *const vector, const int32_t capacity)
 
 void Vector_Free(VECTOR *vector)
 {
+    if (vector == nullptr) {
+        return;
+    }
     Memory_FreePointer(&P(vector).items);
     Memory_FreePointer(&vector->priv);
     Memory_FreePointer(&vector);
@@ -182,6 +185,11 @@ void Vector_Reverse(VECTOR *const vector)
 }
 
 void Vector_Clear(VECTOR *const vector)
+{
+    vector->count = 0;
+}
+
+void Vector_ClearRealloc(VECTOR *const vector)
 {
     vector->count = 0;
     vector->capacity = VECTOR_DEFAULT_CAPACITY;

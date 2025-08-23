@@ -9,7 +9,7 @@
 #include "game/objects/common.h"
 #include "game/objects/names.h"
 #include "game/shell.h"
-#include "json.h"
+#include "json_file.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
@@ -35,6 +35,8 @@ typedef struct {
     M_SEQUENCE_EVENT_HANDLER_FUNC handler_func;
     void *handler_func_arg;
 } M_SEQUENCE_EVENT_HANDLER;
+
+static bool M_ParseRGB888(JSON_VALUE *value, RGB_888 *target);
 
 static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void);
 
@@ -95,6 +97,35 @@ static void M_LoadRoot(const M_CONTEXT *ctx, JSON_OBJECT *obj);
     #include "./reader_tr2.def.c"
 #endif
 
+static bool M_ParseRGB888(JSON_VALUE *const value, RGB_888 *const target)
+{
+    if (value != nullptr && value->type == JSON_TYPE_ARRAY) {
+        const JSON_ARRAY *const tmp_arr = JSON_ValueAsArray(value);
+        const RGB_F color = {
+            JSON_ArrayGetDouble(tmp_arr, 0, -1.0),
+            JSON_ArrayGetDouble(tmp_arr, 1, -1.0),
+            JSON_ArrayGetDouble(tmp_arr, 2, -1.0),
+        };
+        if (color.r >= 0.0 && color.g >= 0.0 && color.b >= 0.0) {
+            *target = (RGB_888) {
+                color.r * 255.0f,
+                color.g * 255.0f,
+                color.b * 255.0f,
+            };
+            return true;
+        }
+    } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
+        const char *tmp_str = JSON_ValueGetString(value, JSON_INVALID_STRING);
+        ASSERT(tmp_str != JSON_INVALID_STRING);
+        RGB_888 tmp_color;
+        if (String_ParseRGB888(tmp_str, &tmp_color)) {
+            *target = tmp_color;
+            return true;
+        }
+    }
+    return false;
+}
+
 static void M_LoadCommonSettings(
     const M_CONTEXT *const ctx, JSON_OBJECT *const obj,
     GF_LEVEL_SETTINGS *const settings)
@@ -118,32 +149,25 @@ static void M_LoadCommonSettings(
     }
 
     {
+        const int value =
+            JSON_ObjectGetBool(obj, "fog_transparency", JSON_INVALID_BOOL);
+        if (value != JSON_INVALID_BOOL) {
+            settings->fog_transparency.is_present = true;
+            settings->fog_transparency.value = value;
+        }
+    }
+
+    {
+        JSON_VALUE *const tmp_value = JSON_ObjectGetValue(obj, "fog_color");
+        if (M_ParseRGB888(tmp_value, &settings->fog_color.value)) {
+            settings->fog_color.is_present = true;
+        }
+    }
+
+    {
         JSON_VALUE *const tmp_value = JSON_ObjectGetValue(obj, "water_color");
-        if (tmp_value != nullptr && tmp_value->type == JSON_TYPE_ARRAY) {
-            const JSON_ARRAY *const tmp_arr = JSON_ValueAsArray(tmp_value);
-            const RGB_F color = {
-                JSON_ArrayGetDouble(tmp_arr, 0, -1.0),
-                JSON_ArrayGetDouble(tmp_arr, 1, -1.0),
-                JSON_ArrayGetDouble(tmp_arr, 2, -1.0),
-            };
-            if (color.r >= 0.0 && color.g >= 0.0 && color.b >= 0.0) {
-                settings->water_color.is_present = true;
-                settings->water_color.value = (RGB_888) {
-                    color.r * 255.0f,
-                    color.g * 255.0f,
-                    color.b * 255.0f,
-                };
-            }
-        } else if (
-            tmp_value != nullptr && tmp_value->type == JSON_TYPE_STRING) {
-            const char *tmp_str =
-                JSON_ValueGetString(tmp_value, JSON_INVALID_STRING);
-            ASSERT(tmp_str != JSON_INVALID_STRING);
-            RGB_888 tmp_color;
-            if (String_ParseRGB888(tmp_str, &tmp_color)) {
-                settings->water_color.is_present = true;
-                settings->water_color.value = tmp_color;
-            }
+        if (M_ParseRGB888(tmp_value, &settings->water_color.value)) {
+            settings->water_color.is_present = true;
         }
     }
 
@@ -621,21 +645,13 @@ void GF_LoadFromString(
 {
     GF_Shutdown();
 
-    M_CONTEXT ctx = {
-        .script_path = script_path,
-        .gf = &g_GameFlow,
-    };
-    JSON_PARSE_RESULT parse_result;
-    JSON_VALUE *const root = JSON_ParseEx(
-        script_data, strlen(script_data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr,
-        nullptr, &parse_result);
-    if (root == nullptr) {
-        Shell_ExitSystemFmt(
-            "Failed to parse script file %s: %s in line %d, char %d",
-            script_path, JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no);
-    }
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    M_CONTEXT ctx = { .gf = &g_GameFlow };
+    ctx.gf->path = Memory_DupStr(script_path);
+    ctx.script_path = g_GameFlow.path;
+
+    JSON_VALUE *const doc = JSONFile_ReadEx(
+        script_path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(doc);
 
     M_LoadCommonRoot(&ctx, root_obj);
     M_LoadRoot(&ctx, root_obj);
@@ -645,7 +661,5 @@ void GF_LoadFromString(
     M_LoadFMVs(&ctx, root_obj);
     M_LoadTitleLevel(&ctx, root_obj);
 
-    if (root != nullptr) {
-        JSON_ValueFree(root);
-    }
+    JSON_ValueFree(doc);
 }

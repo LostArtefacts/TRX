@@ -1,0 +1,1130 @@
+{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    "levels": [
+        {
+            "title": "Laras Haus",
+        },
+        {
+            "title": "Die Große Mauer",
+            "objects": {
+                "key_1": {
+                    "name": "Wachstuben-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Rostiger Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Venedig",
+            "objects": {
+                "key_1": {
+                    "name": "Bootshaus-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Stählernder Schlüssel",
+                },
+                "key_3": {
+                    "name": "Eiserner Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Bartolis Versteck",
+            "objects": {
+                "key_1": {
+                    "name": "Bibliothek-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Sprengschlüssel",
+                }
+            }
+        },
+        {
+            "title": "Das Opernhaus",
+            "objects": {
+                "key_1": {
+                    "name": "Ornament-Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Relais",
+                },
+                "puzzle_2": {
+                    "name": "Schaltkteis",
+                }
+            }
+        },
+        {
+            "title": "Der Bohrturm",
+            "objects": {
+                "key_1": {
+                    "name": "Rote Karte",
+                },
+                "key_2": {
+                    "name": "Gelbe Karte",
+                },
+                "key_3": {
+                    "name": "Grüne Karte",
+                }
+            }
+        },
+        {
+            "title": "Die Tiefe",
+            "objects": {
+                "key_1": {
+                    "name": "Rote Karte",
+                },
+                "key_4": {
+                    "name": "Blaue Karte",
+                },
+                "puzzle_1": {
+                    "name": "Chip",
+                }
+            }
+        },
+        {
+            "title": "40 Faden",
+        },
+        {
+            "title": "Das Wrack der Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "Waschraumschlüssel",
+                },
+                "key_2": {
+                    "name": "Rostiger Schlüssel",
+                },
+                "key_3": {
+                    "name": "Kabinen-Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Unterbrecher",
+                }
+            }
+        },
+        {
+            "title": "Die Quatiere",
+            "objects": {
+                "key_1": {
+                    "name": "Theater-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Rostiger Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "An Deck",
+            "objects": {
+                "key_2": {
+                    "name": "Stern-Schlüssel",
+                },
+                "key_3": {
+                    "name": "Lager-Schlüssel",
+                },
+                "key_4": {
+                    "name": "Kabinen-Schlüssel",
+                },
+                "puzzle_4": {
+                    "name": "Seraph",
+                }
+            }
+        },
+        {
+            "title": "Das tibetanische Hochland",
+            "objects": {
+                "tiger": {
+                    "name": "Schneeleopard",
+                },
+                "key_1": {
+                    "name": "Zugbrücken-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Hüttenschlüssel",
+                },
+                "puzzle_4": {
+                    "name": "Seraph",
+                }
+            }
+        },
+        {
+            "title": "Das Kloster von Barkhang",
+            "objects": {
+                "key_1": {
+                    "name": "Kammer-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Falltür-Schlüssel",
+                },
+                "key_3": {
+                    "name": "Dachboden-Schlüssel",
+                },
+                "key_4": {
+                    "name": "Hallen-Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Gebets-Rolle",
+                },
+                "puzzle_2": {
+                    "name": "Edelstein",
+                },
+                "puzzle_4": {
+                    "name": "Seraph",
+                }
+            }
+        },
+        {
+            "title": "Die Katakomben des Talion",
+            "objects": {
+                "tiger": {
+                    "name": "Schneeleopard",
+                },
+                "pickup_1": {
+                    "name": "Gong-Hammer",
+                },
+                "puzzle_1": {
+                    "name": "Tibetanische Maske",
+                }
+            }
+        },
+        {
+            "title": "Eispalast",
+            "objects": {
+                "tiger": {
+                    "name": "Weißer Tiger",
+                },
+                "key_2": {
+                    "name": "Gong-Hammer",
+                },
+                "pickup_2": {
+                    "name": "Talion",
+                },
+                "puzzle_1": {
+                    "name": "Tibetanische Maske",
+                }
+            }
+        },
+        {
+            "title": "Der Tempel von Xian",
+            "objects": {
+                "key_2": {
+                    "name": "Goldener Schlüssel",
+                },
+                "key_3": {
+                    "name": "Silberner Schlüssel",
+                },
+                "key_4": {
+                    "name": "Kammer-Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Siegel des Drachen",
+                }
+            }
+        },
+        {
+            "title": "Die schwimmenden Inseln",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mystische Plakette",
+                },
+                "puzzle_2": {
+                    "name": "Mystische Plakette",
+                }
+            }
+        },
+        {
+            "title": "Der Hort des Drachen",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mystische Plakette",
+                },
+                "puzzle_2": {
+                    "name": "Dolch von Xian",
+                }
+            }
+        },
+        {
+            "title": "Zuhause",
+            "objects": {
+                "key_1": {
+                    "name": "Waffenschrank-Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Dolch von Xian",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "Venedig",
+            "objects": {
+                "key_1": {
+                    "name": "Bootshaus-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Stählerner Schlüssel",
+                },
+                "key_3": {
+                    "name": "Eiserner Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Das Wrack der Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "Waschraum-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Rostiger Schlüssel",
+                },
+                "key_3": {
+                    "name": "Kabinen-Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Unterbrecher",
+                }
+            }
+        },
+        {
+            "title": "Das tibetanische Hochland",
+            "objects": {
+                "tiger": {
+                    "name": "Schneeleopard",
+                },
+                "key_1": {
+                    "name": "Zugbrücken-Schlüssel",
+                },
+                "key_2": {
+                    "name": "Hüttenschlüssel",
+                },
+                "puzzle_4": {
+                    "name": "Seraph",
+                }
+            }
+        }
+    ],
+    "cutscenes": [
+        {
+            "title": "Cutscene 1",
+        },
+        {
+            "title": "Cutscene 2",
+        },
+        {
+            "title": "Cutscene 3",
+        },
+        {
+            "title": "Cutscene 4",
+        }
+    ],
+    "objects": {
+        "small_medipack": {
+            "name": "Kleines Medi-Pack",
+        },
+        "large_medipack": {
+            "name": "Großes Medi-Pack",
+        },
+        "flare": {
+            "name": "Fackel",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
+        "secret_1": {
+            "name": "Geheimnis 1",
+        },
+        "secret_2": {
+            "name": "Geheimnis 2",
+        },
+        "secret_3": {
+            "name": "Geheimnis 3",
+        },
+        "pistols": {
+            "name": "Pistolen",
+        },
+        "shotgun": {
+            "name": "Schrotflinte",
+        },
+        "magnums": {
+            "name": "Automatik",
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "harpoon_gun": {
+            "name": "Harpune",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "grenade_launcher": {
+            "name": "Granatenwerfer",
+        },
+        "pistols_ammo": {
+            "name": "Pistolen Munition",
+        },
+        "shotgun_ammo": {
+            "name": "Schrot-Munition",
+        },
+        "magnums_ammo": {
+            "name": "Automatik-Munition",
+        },
+        "uzis_ammo": {
+            "name": "Uzi-Munition",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Pfeile",
+        },
+        "m16_ammo": {
+            "name": "M16-Munition",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Granaten",
+        },
+        "key_1": {
+            "name": "Key 1",
+        },
+        "key_2": {
+            "name": "Key 2",
+        },
+        "key_3": {
+            "name": "Key 3",
+        },
+        "key_4": {
+            "name": "Key 4",
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4",
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2",
+        },
+        "pda": {
+            "name": "Gameplay",
+        },
+        "compass": {
+            "name": "Statistiken",
+        },
+        "passport": {
+            "name": "Spiel",
+        },
+        "photo": {
+            "name": "Laras Haus",
+        },
+        "graphics": {
+            "name": "Grafikeinstellungen",
+        },
+        "controls": {
+            "name": "Steuerung",
+        },
+        "sound": {
+            "name": "Sound",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_pistols": {
+            "name": "Pistolen-Animation",
+        },
+        "lara_hair": {
+            "name": "Laras Zopf",
+        },
+        "lara_shotgun": {
+            "name": "Schrotflinten-Animation",
+        },
+        "lara_magnums": {
+            "name": "Magnum-Animation",
+        },
+        "lara_uzis": {
+            "name": "Uzi-Animation",
+        },
+        "lara_m16": {
+            "name": "M16-Animation",
+        },
+        "lara_grenade": {
+            "name": "Grantenwerfer-Animation",
+        },
+        "lara_harpoon": {
+            "name": "Harpunen-Animation",
+        },
+        "lara_flare": {
+            "name": "Fackel-Animation",
+        },
+        "lara_skidoo": {
+            "name": "Schneeemobil-Animation",
+        },
+        "lara_boat": {
+            "name": "Boots-Animation",
+        },
+        "lara_extra": {
+            "name": "Laras Extra Animation",
+        },
+        "skidoo_fast": {
+            "name": "Rotes Schneemobil",
+        },
+        "boat": {
+            "name": "Boot",
+        },
+        "dog": {
+            "names": [
+                "Hund",
+                "Dobermann",
+            ]
+        },
+        "cult_1": {
+            "name": "Maskierter Schläger 1",
+        },
+        "cult_1a": {
+            "name": "Maskierter Schläger 2",
+        },
+        "cult_1b": {
+            "name": "Maskierter Schläger 3",
+        },
+        "cult_2": {
+            "name": "Messerwerfer",
+        },
+        "cult_3": {
+            "name": "Schrotflinten Schläger",
+        },
+        "mouse": {
+            "name": "Ratte",
+        },
+        "dragon_front": {
+            "name": "Drache Vorderseite",
+        },
+        "dragon_back": {
+            "name": "Drachen Hinterseite",
+        },
+        "gondola": {
+            "name": "Gondel",
+        },
+        "shark": {
+            "name": "Hai",
+        },
+        "eel": {
+            "name": "Aal",
+        },
+        "big_eel": {
+            "name": "Großer Aal",
+        },
+        "barracuda": {
+            "name": "Barrakuda",
+        },
+        "diver": {
+            "name": "Taucher",
+        },
+        "worker_1": {
+            "name": "Schläger Schütze 1",
+        },
+        "worker_2": {
+            "name": "Schläger Schütze 2",
+        },
+        "worker_3": {
+            "name": "Schlagstock schwingender Schläger 1",
+        },
+        "worker_4": {
+            "name": "Schlagstock schwingender Schläger 2",
+        },
+        "worker_5": {
+            "name": "Typ mit Flammenwerfer",
+        },
+        "jelly": {
+            "name": "Qualle",
+        },
+        "spider": {
+            "name": "Spinne",
+        },
+        "big_spider": {
+            "name": "Riesen-Spider",
+        },
+        "crow": {
+            "name": "Krähe",
+        },
+        "tiger": {
+            "name": "Tiger",
+        },
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "xian_spearman": {
+            "name": "Xian Speerträger",
+        },
+        "xian_spearman_statue": {
+            "name": "Xian Speerträger Statue",
+        },
+        "xian_knight": {
+            "name": "Xian Ritter",
+        },
+        "xian_knight_statue": {
+            "name": "Xian Ritter Statue",
+        },
+        "yeti": {
+            "name": "Yeti",
+        },
+        "bird_guardian": {
+            "name": "Vogel-Monster",
+        },
+        "eagle": {
+            "name": "Adler",
+        },
+        "bandit_1": {
+            "names": [
+                "Söldner 1",
+                "Masked Goon 1",
+            ]
+        },
+        "bandit_2": {
+            "names": [
+                "Söldner 2",
+                "Maskierter Schläger 2",
+            ]
+        },
+        "bandit_2b": {
+            "names": [
+                "Söldner 3",
+                "Maskierter Schläger 3",
+            ]
+        },
+        "skidoo_armed": {
+            "name": "Schwarzes Schneemobil",
+        },
+        "skidoo_driver": {
+            "name": "Fahrer schwarzes Schneemobil",
+        },
+        "monk_1": {
+            "name": "Mönch 1",
+        },
+        "monk_2": {
+            "name": "Mönch 2",
+        },
+        "falling_block_1": {
+            "names": [
+                "Fallender Block 1",
+                "Zerbrechbarer Boden 1",
+                "Zerbrechbare Kacheln 1",
+            ]
+        },
+        "falling_block_2": {
+            "names": [
+                "Fallender Block 2",
+                "Zerbrechbarer Boden 2",
+                "Zerbrechbare Kacheln 2",
+            ]
+        },
+        "falling_block_3": {
+            "names": [
+                "Fallender Block 3",
+                "Zerbrechbarer Boden 3",
+                "Zerbrechbare Kacheln 3",
+                "Lose Bretter",
+            ]
+        },
+        "pendulum_1": {
+            "name": "Sandsack",
+        },
+        "spikes": {
+            "name": "Stacheln",
+        },
+        "rolling_ball_1": {
+            "names": [
+                "Fels 1",
+                "Rollender Ball",
+            ]
+        },
+        "dart": {
+            "name": "Scheibe",
+        },
+        "dart_emitter": {
+            "name": "Scheiben-Erzeuger",
+        },
+        "drawbridge": {
+            "name": "Zugbrücke",
+        },
+        "teeth_trap": {
+            "name": "Zahn-Falle",
+        },
+        "lift": {
+            "name": "Aufzug",
+        },
+        "general": {
+            "name": "Mini U-Boot",
+        },
+        "movable_block_1": {
+            "names": [
+                "Drückbarer Block 1",
+                "Bewegbarer Block 1",
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "Drückbarer Block 2",
+                "Bewegbarer Block 2",
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "Drückbarer Block 3",
+                "Bewegbarer Block 3",
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "Drückbarer Block 4",
+                "Bewegbarer Block 4",
+            ]
+        },
+        "big_bowl": {
+            "name": "Lava-Schüssel",
+        },
+        "window_1": {
+            "name": "Breakable Window 1",
+        },
+        "window_2": {
+            "name": "Breakable Window 2",
+        },
+        "window_3": {
+            "name": "Breakable Window 3",
+        },
+        "window_4": {
+            "name": "Breakable Window 4",
+        },
+        "propeller_1": {
+            "name": "Airplane Propeller",
+        },
+        "power_saw": {
+            "name": "Power Saw",
+        },
+        "hook": {
+            "name": "Hook",
+        },
+        "falling_ceiling_1": {
+            "name": "Falling Ceiling 1",
+        },
+        "spinning_blade": {
+            "name": "Spinning Blade",
+        },
+        "blade": {
+            "name": "Wall-mounted Blade",
+        },
+        "killer_statue": {
+            "name": "Statue with Sword",
+        },
+        "rolling_ball_2": {
+            "names": [
+                "Boulder 2",
+                "Rolling Ball 2",
+            ]
+        },
+        "icicle": {
+            "name": "Icicles",
+        },
+        "spike_wall": {
+            "name": "Spike Wall",
+        },
+        "springboard": {
+            "name": "Springboard",
+        },
+        "ceiling_spikes": {
+            "name": "Spiky Ceiling",
+        },
+        "bell": {
+            "name": "Bell",
+        },
+        "water_sprite": {
+            "name": "Boat Wake",
+        },
+        "snow_sprite": {
+            "name": "Snowmobile Wake",
+        },
+        "skidoo_track": {
+            "name": "Snowmobile Track",
+        },
+        "switch_type_airlock": {
+            "name": "Airlock Switch",
+        },
+        "switch_type_small": {
+            "name": "Small Switch",
+        },
+        "propeller_2": {
+            "name": "Underwater Propeller",
+        },
+        "propeller_3": {
+            "name": "Air Fan",
+        },
+        "pendulum_2": {
+            "name": "Swinging Box",
+        },
+        "mesh_swap_1": {
+            "name": "Mesh Swap 1",
+        },
+        "mesh_swap_2": {
+            "name": "Mesh Swap 2",
+        },
+        "lara_swap": {
+            "name": "Lara Mesh Swap",
+        },
+        "text_box": {
+            "name": "UI Frame",
+        },
+        "rolling_ball_3": {
+            "names": [
+                "Boulder 3",
+                "Rolling Ball 3",
+            ]
+        },
+        "zipline_handle": {
+            "name": "Zipline Handle",
+        },
+        "switch_type_button": {
+            "names": [
+                "Button",
+                "Push Button",
+                "Switch",
+            ]
+        },
+        "switch_type_normal": {
+            "names": [
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Underwater Lever",
+                "Underwater Switch",
+            ]
+        },
+        "door_type_1": {
+            "name": "Tür 1",
+        },
+        "door_type_2": {
+            "name": "Tür 2",
+        },
+        "door_type_3": {
+            "name": "Tür 3",
+        },
+        "door_type_4": {
+            "name": "Tür 4",
+        },
+        "door_type_5": {
+            "name": "Tür 5",
+        },
+        "door_type_6": {
+            "name": "Tür 6",
+        },
+        "door_type_7": {
+            "name": "Tür 7",
+        },
+        "door_type_8": {
+            "name": "Tür 8",
+        },
+        "trapdoor_type_1": {
+            "name": "Falltür 1",
+        },
+        "trapdoor_type_2": {
+            "name": "Falltür 2",
+        },
+        "trapdoor_type_3": {
+            "name": "Falltür 3",
+        },
+        "bridge_flat": {
+            "name": "Brücke Flach",
+        },
+        "bridge_tilt_1": {
+            "name": "Brücke Tilt 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Brücke Tilt 2",
+        },
+        "player_1": {
+            "name": "Zwischensequenz-Schauspieler 1",
+        },
+        "player_2": {
+            "name": "Zwischensequenz-Schauspieler 2",
+        },
+        "player_3": {
+            "name": "Zwischensequenz-Schauspieler 3",
+        },
+        "player_4": {
+            "name": "Zwischensequenz-Schauspieler 4",
+        },
+        "player_5": {
+            "name": "Zwischensequenz-Schauspieler 5",
+        },
+        "player_6": {
+            "name": "Zwischensequenz-Schauspieler 6",
+        },
+        "player_7": {
+            "name": "Zwischensequenz-Schauspieler 7",
+        },
+        "player_8": {
+            "name": "Zwischensequenz-Schauspieler 8",
+        },
+        "player_9": {
+            "name": "Zwischensequenz-Schauspieler 9",
+        },
+        "player_10": {
+            "name": "Zwischensequenz-Schauspieler 10",
+        },
+        "key_hole_1": {
+            "name": "Keyhole 1",
+        },
+        "key_hole_2": {
+            "name": "Keyhole 2",
+        },
+        "key_hole_3": {
+            "name": "Keyhole 3",
+        },
+        "key_hole_4": {
+            "name": "Keyhole 4",
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Hole 2 (Empty)",
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Hole 3 (Empty)",
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Hole 4 (Empty)",
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Hole 2 (Done)",
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Hole 3 (Done)",
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Hole 4 (Done)",
+        },
+        "sphere_of_doom_1": {
+            "name": "Dragon Explosion 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Dragon Explosion 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Dragon Explosion 3",
+        },
+        "alarm_sound": {
+            "name": "Alarm",
+        },
+        "bird_tweeter_1": {
+            "name": "Dripping Water",
+        },
+        "trex": {
+            "name": "T-Rex",
+        },
+        "bird_tweeter_2": {
+            "name": "Singing Birds",
+        },
+        "clock_chimes": {
+            "name": "Bartoli Hideout clock",
+        },
+        "dragon_bones_1": {
+            "name": "Platzhalter",
+        },
+        "dragon_bones_2": {
+            "name": "Drachen-Knochen Vorn",
+        },
+        "dragon_bones_3": {
+            "name": "Drachen-Knochen Hinten",
+        },
+        "hot_liquid": {
+            "name": "Extra Feuer",
+        },
+        "boat_bits": {
+            "name": "Boots-Einzelteile",
+        },
+        "mine": {
+            "name": "Wassermine",
+        },
+        "inv_background": {
+            "name": "Menü Hintergrund",
+        },
+        "fx_reserved": {
+            "name": "Gray disk",
+        },
+        "gong_bonger": {
+            "name": "Gong Schlegel",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "detonator_1": {
+            "name": "Gong",
+        },
+        "detonator_box": {
+            "name": "Zünder",
+        },
+        "detonator_2": {
+            "name": "Zünder Box",
+        },
+        "copter": {
+            "name": "Helikopter",
+        },
+        "explosion_1": {
+            "name": "Explosion 1",
+        },
+        "splash_1": {
+            "name": "Wasserkräuselungen 1",
+        },
+        "bubble_1": {
+            "name": "Blase 1",
+        },
+        "bubble_emitter": {
+            "name": "Blasenerzeuger",
+        },
+        "blood_1": {
+            "name": "Blut 1",
+        },
+        "dart_effect": {
+            "name": "Pfeil-Effekt",
+        },
+        "flare_fire": {
+            "name": "Fackel-Funken",
+        },
+        "glow": {
+            "name": "Glühen",
+        },
+        "glow_reserved": {
+            "name": "Karten-Glühen",
+        },
+        "ricochet": {
+            "name": "Querschläger",
+        },
+        "twinkle": {
+            "name": "Funken",
+        },
+        "gun_flash": {
+            "name": "Waffen Blitz",
+        },
+        "m16_flash": {
+            "name": "M16 Blitz",
+        },
+        "body_part": {
+            "name": "Körperteil",
+        },
+        "camera_target": {
+            "name": "Kamera-Ziel",
+        },
+        "waterfall": {
+            "name": "Wasserfall Nebel",
+        },
+        "missile_harpoon": {
+            "name": "Raketen Harpune",
+        },
+        "missile_flame": {
+            "name": "Raketen Flamme",
+        },
+        "missile_knife": {
+            "name": "Raketen-Messer",
+        },
+        "grenade": {
+            "name": "Granate",
+        },
+        "harpoon_bolt": {
+            "name": "Harpunen Pfeil",
+        },
+        "ember": {
+            "name": "Glut",
+        },
+        "ember_emitter": {
+            "name": "Gluterzeuger",
+        },
+        "flame": {
+            "names": [
+                "Flamme",
+                "Feuer",
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Flamenerzeuger",
+                "Feuererzeuger",
+            ]
+        },
+        "skybox": {
+            "name": "Skybox",
+        },
+        "alphabet": {
+            "name": "Alphabet",
+        },
+        "dying_monk": {
+            "name": "sterbender Mönch",
+        },
+        "ding_dong": {
+            "name": "Türklingel",
+        },
+        "lara_alarm": {
+            "name": "Alarmglocke",
+        },
+        "mini_copter": {
+            "name": "Helikopter 2",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "assault_digits": {
+            "name": "Assault Digits",
+        },
+        "combat_end": {
+            "name": "Kampf Ende",
+        },
+        "cut_shotgun": {
+            "name": "Schrotflinten Dusch Animation",
+        },
+        "earthquake": {
+            "name": "Erdbeben",
+        }
+    },
+    "game_strings": {
+        "CMD_WINSTON_DEAD": "Der Butler ist tot. Du Monster!",
+        "CMD_WINSTON_SPAWNED": "Winston herbeigerufen, nahe Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "Herbeirufen von Winston fehlgeschlagen",
+        "CMD_WINSTON_TELEPORTED": "Winston herbeigerufen, nahe Lara",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Kamera zurücksetzen",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Automatik-Pistolen ausrüsten",
+        "ENUM_INPUT_ROLE_USE_FLARE": "Fackel",
+        "MISC_NONE": "None",
+        "PASSPORT_EXIT_DEMO": "Demo beenden",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",
+        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixt, dass beim abfeuern der Schrotflinte gelegentlich kein Mündungsfeuer oder Geräusch entsteht.",
+        "STATS_AMMO_HITS": "Treffer",
+        "STATS_AMMO_USED": "Benötigte Munition",
+        "STATS_ASSAULT_FINISH": "Zeit",
+        "STATS_ASSAULT_NO_TIMES_SET": "Keine Zeiten gesetzt",
+        "STATS_ASSAULT_TITLE": "Bestzeiten",
+        "STATS_DISTANCE_TRAVELLED": "Zurückgelegte Distanz",
+        "STATS_KILLS": "Besiegte Gegner",
+        "STATS_LEVEL": "Level",
+        "STATS_MEDIPACKS_USED": "Benötigte Medi-Packs",
+        "STATS_SECRETS": "Gefundene Geheimnisse",
+        "STATS_TIME_TAKEN": "Benötigte Zeit",
+    }
+}

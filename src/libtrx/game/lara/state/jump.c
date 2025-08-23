@@ -16,6 +16,7 @@
 
 static void M_Compress(ITEM *item, COLL_INFO *coll);
 static void M_UpJump(ITEM *item, COLL_INFO *coll);
+static void M_NeutralJumpRoll(ITEM *item, COLL_INFO *coll);
 static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
 static void M_BackJump(ITEM *item, COLL_INFO *coll);
 static void M_SideJump(ITEM *item, COLL_INFO *coll);
@@ -52,6 +53,10 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_BACK;
             lara->move_angle = item->rot.y + DEG_180;
+        } else if (
+            g_Input.roll && g_Config.gameplay.enable_neutral_twists
+            && Lara_State_IsResponsive(LA_STAND_TO_JUMP)) {
+            item->goal_anim_state = LS_RESPONSIVE;
         }
     }
 
@@ -60,13 +65,27 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static void M_UpJump(ITEM *item, COLL_INFO *coll)
+static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 {
     const int16_t fast_speed = g_Config.gameplay.enable_swing_cancel
         ? M_SWING_FAST_FALL_SPEED
         : M_FAST_FALL_SPEED;
     if (item->fall_speed > fast_speed) {
         item->goal_anim_state = LS_FAST_FALL;
+    }
+}
+
+static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_hit = 0;
+    if (g_Input.jump && g_Input.roll) {
+        item->goal_anim_state = LS_RESPONSIVE;
+    } else if (g_Input.jump) {
+        item->goal_anim_state = LS_COMPRESS;
+    } else if (g_Input.roll) {
+        item->goal_anim_state = LS_ROLL;
+    } else {
+        item->goal_anim_state = LS_STOP;
     }
 }
 
@@ -106,7 +125,9 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_BackJump(ITEM *const item, COLL_INFO *const coll)
 {
-    g_Camera.target_angle = M_CAM_BACK_JUMP_ANGLE;
+    if (!Item_TestAnimEqual(item, LA_HANG_TO_JUMP_BACK)) {
+        g_Camera.target_angle = M_CAM_BACK_JUMP_ANGLE;
+    }
     if (item->fall_speed > M_FAST_FALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
         return;
@@ -211,6 +232,7 @@ static void M_Zipline(ITEM *const item, COLL_INFO *const coll)
 // clang-format off
 REGISTER_LARA_STATE(LS_COMPRESS,     M_Compress)
 REGISTER_LARA_STATE(LS_JUMP_UP,      M_UpJump)
+REGISTER_LARA_STATE(LS_NEUTRAL_ROLL, M_NeutralJumpRoll)
 REGISTER_LARA_STATE(LS_JUMP_FORWARD, M_ForwardJump)
 REGISTER_LARA_STATE(LS_JUMP_BACK,    M_BackJump)
 REGISTER_LARA_STATE(LS_JUMP_RIGHT,   M_SideJump)

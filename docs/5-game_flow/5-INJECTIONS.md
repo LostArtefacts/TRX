@@ -212,13 +212,13 @@ provided with the game achieves.
     <td>
       <code>lara_animations.bin</code>
     </td>
-    <td>TR1</td>
+    <td>TR1, TR2</td>
     <td>
       Injects several animations, state changes and commands for Lara, such as
       responsive jumping, jump-twist, somersault, underwater roll, and wading.
       For custom levels, this injection file will work as-is, but if you are
       building a level and wish to customise any of Lara's animations, please
-      refer to https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/LARA.md
+      refer to https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
       for guidance.
     </td>
   </tr>

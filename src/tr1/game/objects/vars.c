@@ -86,6 +86,12 @@ const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_SecretObjects[] = {
+    // clang-format off
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
@@ -120,6 +126,7 @@ const GAME_OBJECT_ID g_SwitchObjects[] = {
     // clang-format off
     O_SWITCH_TYPE_NORMAL,
     O_SWITCH_TYPE_UW,
+    NO_OBJECT,
     // clang-format on
 };
 
@@ -165,6 +172,7 @@ const GAME_OBJECT_ID g_AnimObjects[] = {
     O_LARA_UZIS,
     O_LARA_HAIR,
     O_LARA_EXTRA,
+    NO_OBJECT,
     // clang-format on
 };
 
@@ -195,6 +203,7 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     O_SKYBOX,
     O_PICKUP_AID,
     O_ALPHABET,
+    NO_OBJECT,
     // clang-format on
 };
 

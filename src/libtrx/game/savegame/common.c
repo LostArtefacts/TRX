@@ -164,6 +164,7 @@ static void M_LoadPostprocess(void)
 #if TR_VERSION == 1
     if (Game_GetBonusFlag() != GBF_NONE) {
         g_Config.profile.new_game_plus_unlock = true;
+        Config_Update();
     }
     LOT_ClearLOT(&lara->lot);
 #endif
@@ -601,6 +602,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
     resume->stats.max_secret_count = default_stats.max_secret_count;
     resume->stats.all_secrets_mask = default_stats.all_secrets_mask;
+    resume->stats.secret_flags = 0;
 #endif
 
     M_DetermineLegacyGunTypes(resume);

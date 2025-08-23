@@ -1,21 +1,21 @@
 #include "game/lara/draw.h"
 
 #include "game/gun/gun_misc.h"
-#include "game/output.h"
-#include "game/random.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara.h>
 #include <libtrx/game/lara/pose.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 
 static void M_DrawBodyPart(
     LARA_MESH mesh, const ANIM_BONE *bone, const XYZ_16 *mesh_rots_1,
-    const XYZ_16 *mesh_rots_2, int32_t clip);
+    const XYZ_16 *mesh_rots_2, CLIP clip);
 
 static void M_DrawBodyPart(
     const LARA_MESH mesh, const ANIM_BONE *const bone,
-    const XYZ_16 *mesh_rots_1, const XYZ_16 *mesh_rots_2, const int32_t clip)
+    const XYZ_16 *mesh_rots_1, const XYZ_16 *mesh_rots_2, const CLIP clip)
 {
     if (mesh_rots_2 != nullptr) {
         Matrix_TranslateRel32_I(bone[mesh - 1].pos);
@@ -32,15 +32,15 @@ void Lara_Draw(const ITEM *const item)
 {
     MATRIX saved_matrix;
 
-    const int32_t top = g_PhdWinTop;
-    const int32_t left = g_PhdWinLeft;
-    const int32_t right = g_PhdWinRight;
-    const int32_t bottom = g_PhdWinBottom;
+    const int32_t top = g_PhdTop;
+    const int32_t left = g_PhdLeft;
+    const int32_t right = g_PhdRight;
+    const int32_t bottom = g_PhdBottom;
 
-    g_PhdWinTop = 0;
-    g_PhdWinLeft = 0;
-    g_PhdWinBottom = g_PhdWinMaxY;
-    g_PhdWinRight = g_PhdWinMaxX;
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
     ANIM_FRAME *frames[2];
     if (g_Lara.hit_direction < 0) {
@@ -58,7 +58,7 @@ void Lara_Draw(const ITEM *const item)
 
     const OBJECT *const obj = Object_Get(item->object_id);
     if (!Lara_Vehicle_IsMounted()) {
-        Output_InsertShadow(obj->shadow_size, &frame->bounds, item);
+        Output_DrawShadow(obj->shadow_size, &frame->bounds, item);
     }
 
     saved_matrix = *g_MatrixPtr;
@@ -67,8 +67,8 @@ void Lara_Draw(const ITEM *const item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
     const MATRIX item_matrix = *g_MatrixPtr;
-    const int32_t clip = Output_GetObjectBounds(&frame->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }
@@ -284,10 +284,10 @@ void Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
 finish:
-    g_PhdWinLeft = left;
-    g_PhdWinRight = right;
-    g_PhdWinTop = top;
-    g_PhdWinBottom = bottom;
+    g_PhdLeft = left;
+    g_PhdRight = right;
+    g_PhdTop = top;
+    g_PhdBottom = bottom;
 }
 
 void Lara_Draw_I(
@@ -298,7 +298,7 @@ void Lara_Draw_I(
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
     if (!Lara_Vehicle_IsMounted()) {
-        Output_InsertShadow(obj->shadow_size, bounds, item);
+        Output_DrawShadow(obj->shadow_size, bounds, item);
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
@@ -307,9 +307,8 @@ void Lara_Draw_I(
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
-
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

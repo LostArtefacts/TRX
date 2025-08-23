@@ -1,9 +1,9 @@
 #include "game/phase/phase_picture.h"
 
-#include "game/fader.h"
 #include "game/input.h"
 #include "game/output.h"
 #include "game/shell.h"
+#include "game/ui.h"
 #include "memory.h"
 
 typedef enum {
@@ -23,7 +23,7 @@ static void M_FadeOut(M_PRIV *p);
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t num_frames);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static void M_FadeOut(M_PRIV *const p)
@@ -46,10 +46,9 @@ static void M_End(PHASE *const phase)
     Output_UnloadBackground();
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-
     Input_Update();
     Shell_ProcessInput();
 
@@ -93,8 +92,8 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Output_DrawBackground();
-    Output_DrawPolyList();
-    Fader_Draw(&p->fader);
+    UI_BeginFade(&p->fader, false);
+    UI_EndFade();
 }
 
 PHASE *Phase_Picture_Create(const PHASE_PICTURE_ARGS args)

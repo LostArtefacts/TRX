@@ -1,6 +1,5 @@
 #include "game/sound.h"
 
-#include "game/random.h"
 #include "game/shell.h"
 #include "global/vars.h"
 
@@ -8,6 +7,7 @@
 #include <libtrx/engine/audio.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #include <math.h>
@@ -46,6 +46,7 @@ typedef enum {
     SOUND_FLAG_RESTARTED = 1 << 2,
 } SOUND_FLAG;
 
+static bool m_Initialised = false;
 static SOUND_SLOT m_SFXPlaying[M_MAX_PLAYING_FX] = {};
 static int32_t m_MasterVolume = 0;
 static int32_t m_MasterVolumeDefault = 0;
@@ -197,6 +198,7 @@ static void M_ResetAmbientLoudness(void)
 
 bool Sound_Init(void)
 {
+    m_Initialised = true;
     m_DecibelLUT[0] = -10000;
     for (int i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
         m_DecibelLUT[i] =
@@ -211,7 +213,13 @@ bool Sound_Init(void)
 
 void Sound_Shutdown(void)
 {
+    m_Initialised = false;
     Audio_Shutdown();
+}
+
+bool Sound_IsInitialised(void)
+{
+    return m_Initialised;
 }
 
 void Sound_UpdateEffects(void)
@@ -268,6 +276,9 @@ bool Sound_Effect(
     const SOUND_EFFECT_ID sfx_num, const XYZ_32 *const pos,
     const uint32_t flags)
 {
+    if (!m_Initialised) {
+        return false;
+    }
     if (!m_SoundIsActive) {
         return false;
     }
@@ -512,12 +523,18 @@ void Sound_StopAmbientSounds(void)
 
 void Sound_Reset(void)
 {
+    if (!m_Initialised) {
+        return;
+    }
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
 }
 
 void Sound_StopAll(void)
 {
+    if (!m_Initialised) {
+        return;
+    }
     Audio_Sample_CloseAll();
 }
 

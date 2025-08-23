@@ -104,9 +104,9 @@ static void M_Init(GFX_RENDERER *const renderer, const GFX_CONFIG *const config)
 
     GFX_GL_Program_Init(&p->program);
     GFX_GL_Program_AttachShader(
-        &p->program, GL_VERTEX_SHADER, "shaders/fbo.glsl", config->backend);
+        &p->program, GL_VERTEX_SHADER, "shaders/fbo.glsl");
     GFX_GL_Program_AttachShader(
-        &p->program, GL_FRAGMENT_SHADER, "shaders/fbo.glsl", config->backend);
+        &p->program, GL_FRAGMENT_SHADER, "shaders/fbo.glsl");
     GFX_GL_Program_FragmentData(&p->program, "outColor");
     GFX_GL_Program_Link(&p->program);
     GFX_GL_Program_Bind(&p->program);
@@ -176,7 +176,7 @@ static void M_Render(GFX_RENDERER *renderer)
     M_Blit(p, &p->ui_fbo);
     glDisable(GL_BLEND);
 
-    if (GFX_Context_GetScheduledScreenshotPath()) {
+    if (GFX_Context_GetScheduledScreenshotPath() != nullptr) {
         GFX_Context_SwitchToViewport(VIEWPORT_TARGET);
         GFX_Screenshot_CaptureToFile(GFX_Context_GetScheduledScreenshotPath());
         GFX_Context_ClearScheduledScreenshotPath();

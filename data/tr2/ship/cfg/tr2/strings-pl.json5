@@ -1,0 +1,1097 @@
+{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    "levels": [
+        {
+            "title": "Dom Lary",
+        },
+        {
+            "title": "Wielki Mur",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do strażnicy",
+                },
+                "key_2": {
+                    "name": "Zardzewiały klucz",
+                }
+            }
+        },
+        {
+            "title": "Wenecja",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do hangaru łodzi",
+                },
+                "key_2": {
+                    "name": "Stalowy klucz",
+                },
+                "key_3": {
+                    "name": "Żelazny klucz",
+                }
+            }
+        },
+        {
+            "title": "Kryjówka Bartoliego",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do biblioteki",
+                },
+                "key_2": {
+                    "name": "Klucz do detonatora",
+                }
+            }
+        },
+        {
+            "title": "Opera",
+            "objects": {
+                "key_1": {
+                    "name": "Ozdobny klucz",
+                },
+                "puzzle_1": {
+                    "name": "Skrzynka przekaźnikowa",
+                },
+                "puzzle_2": {
+                    "name": "Układ elektroniczny",
+                }
+            }
+        },
+        {
+            "title": "Platforma wiertnicza",
+            "objects": {
+                "key_1": {
+                    "name": "Czerwona karta dostępu",
+                },
+                "key_2": {
+                    "name": "Żółta karta dostępu",
+                },
+                "key_3": {
+                    "name": "Zielona karta dostępu",
+                }
+            }
+        },
+        {
+            "title": "Strefa nurkowania",
+            "objects": {
+                "key_1": {
+                    "name": "Czerwona karta dostępu",
+                },
+                "key_4": {
+                    "name": "Niebieska karta dostępu",
+                },
+                "puzzle_1": {
+                    "name": "Chip maszynowy",
+                }
+            }
+        },
+        {
+            "title": "40 sążni",
+        },
+        {
+            "title": "Wrak statku Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do łazienki",
+                },
+                "key_2": {
+                    "name": "Zardzewiały klucz",
+                },
+                "key_3": {
+                    "name": "Klucz do kajuty",
+                },
+                "puzzle_1": {
+                    "name": "Wyłącznik obwodu",
+                }
+            }
+        },
+        {
+            "title": "Strefa pasażerska",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do teatru",
+                },
+                "key_2": {
+                    "name": "Zardzewiały klucz",
+                }
+            }
+        },
+        {
+            "title": "Pokład",
+            "objects": {
+                "key_2": {
+                    "name": "Klucz do zamka rufowego",
+                },
+                "key_3": {
+                    "name": "Klucz do magazynu",
+                },
+                "key_4": {
+                    "name": "Klucz do kajuty",
+                },
+                "puzzle_4": {
+                    "name": "Seraf",
+                }
+            }
+        },
+        {
+            "title": "Pogórze Tybetu",
+            "objects": {
+                "tiger": {
+                    "name": "Lampart śnieżny",
+                },
+                "key_1": {
+                    "name": "Klucz do zwodzonego mostu",
+                },
+                "key_2": {
+                    "name": "Klucz do chaty",
+                },
+                "puzzle_4": {
+                    "name": "Seraf",
+                }
+            }
+        },
+        {
+            "title": "Klasztor Barkhang",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do skarbca",
+                },
+                "key_2": {
+                    "name": "Klucz do zapadni",
+                },
+                "key_3": {
+                    "name": "Klucz do wyjścia na dach",
+                },
+                "key_4": {
+                    "name": "Klucz do głównej sali",
+                },
+                "puzzle_1": {
+                    "name": "Młynek modlitewny",
+                },
+                "puzzle_2": {
+                    "name": "Kamień szlachetny",
+                },
+                "puzzle_4": {
+                    "name": "Seraf",
+                }
+            }
+        },
+        {
+            "title": "Katakumby Talionu",
+            "objects": {
+                "tiger": {
+                    "name": "Śnieżny lampart",
+                },
+                "pickup_1": {
+                    "name": "Pałka do gongu",
+                },
+                "puzzle_1": {
+                    "name": "Tybetańska maska",
+                }
+            }
+        },
+        {
+            "title": "Pałac lodowy",
+            "objects": {
+                "tiger": {
+                    "name": "Biały tygrys",
+                },
+                "key_2": {
+                    "name": "Pałka do gongu",
+                },
+                "pickup_2": {
+                    "name": "Talion",
+                },
+                "puzzle_1": {
+                    "name": "Tybetańska maska",
+                }
+            }
+        },
+        {
+            "title": "Świątynia Xian",
+            "objects": {
+                "key_2": {
+                    "name": "Złoty klucz",
+                },
+                "key_3": {
+                    "name": "Srebrny klucz",
+                },
+                "key_4": {
+                    "name": "Klucz do głównej komnaty",
+                },
+                "puzzle_1": {
+                    "name": "Smocza pieczęć",
+                }
+            }
+        },
+        {
+            "title": "Podniebne wyspy",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mistyczna tabliczka",
+                },
+                "puzzle_2": {
+                    "name": "Mistyczna tabliczka",
+                }
+            }
+        },
+        {
+            "title": "Legowisko smoka",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mistyczna tabliczka",
+                },
+                "puzzle_2": {
+                    "name": "Sztylet Xian",
+                }
+            }
+        },
+        {
+            "title": "Dom, słodki dom",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do szafki na broń",
+                },
+                "puzzle_1": {
+                    "name": "Sztylet Xian",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "Wenecja",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do hangaru łodzi",
+                },
+                "key_2": {
+                    "name": "Stalowy klucz",
+                },
+                "key_3": {
+                    "name": "Żelazny klucz",
+                }
+            }
+        },
+        {
+            "title": "Wrak statku Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "Klucz do łazienki",
+                },
+                "key_2": {
+                    "name": "Zardzewiały klucz",
+                },
+                "key_3": {
+                    "name": "Klucz do kajuty",
+                },
+                "puzzle_1": {
+                    "name": "Wyłącznik obwodu",
+                }
+            }
+        },
+        {
+            "title": "Pogórze Tybetu",
+            "objects": {
+                "tiger": {
+                    "name": "Lampart śnieżny",
+                },
+                "key_1": {
+                    "name": "Klucz do zwodzonego mostu",
+                },
+                "key_2": {
+                    "name": "Klucz do chaty",
+                },
+                "puzzle_4": {
+                    "name": "Seraf",
+                }
+            }
+        }
+    ],
+    "cutscenes": [
+        {
+            "title": "Przerywnik 1",
+        },
+        {
+            "title": "Przerywnik 2",
+        },
+        {
+            "title": "Przerywnik 3",
+        },
+        {
+            "title": "Przerywnik 4",
+        }
+    ],
+    "objects": {
+        "small_medipack": {
+            "name": "Mała apteczka",
+        },
+        "large_medipack": {
+            "name": "Duża apteczka",
+        },
+        "flare": {
+            "name": "Flara",
+        },
+        "flares_box": {
+            "name": "Pudełko z flarami",
+        },
+        "secret_1": {
+            "name": "Sekret 1",
+        },
+        "secret_2": {
+            "name": "Sekret 2",
+        },
+        "secret_3": {
+            "name": "Sekret 3",
+        },
+        "pistols": {
+            "name": "Pistolety",
+        },
+        "shotgun": {
+            "name": "Strzelba",
+        },
+        "magnums": {
+            "name": "Pistolety automatyczne",
+        },
+        "uzis": {
+            "name": "Uzi",
+        },
+        "harpoon_gun": {
+            "name": "Wyrzutnia harpunów",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "grenade_launcher": {
+            "name": "Wyrzutnia granatów",
+        },
+        "pistols_ammo": {
+            "name": "Magazynki do pistoletu",
+        },
+        "shotgun_ammo": {
+            "name": "Naboje do strzelby",
+        },
+        "magnums_ammo": {
+            "name": "Magazynki do pistoletów automatycznych",
+        },
+        "uzis_ammo": {
+            "name": "Magazynki do uzi",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Harpuny",
+        },
+        "m16_ammo": {
+            "name": "Magazynki do M16",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Granaty",
+        },
+        "key_1": {
+            "name": "Klucz 1",
+        },
+        "key_2": {
+            "name": "Klucz 2",
+        },
+        "key_3": {
+            "name": "Klucz 3",
+        },
+        "key_4": {
+            "name": "Klucz 4",
+        },
+        "puzzle_1": {
+            "name": "Przedmiot 1",
+        },
+        "puzzle_2": {
+            "name": "Przedmiot 2",
+        },
+        "puzzle_3": {
+            "name": "Przedmiot 3",
+        },
+        "puzzle_4": {
+            "name": "Przedmiot 4",
+        },
+        "pickup_1": {
+            "name": "Znajdźka 1",
+        },
+        "pickup_2": {
+            "name": "Znajdźka 2",
+        },
+        "compass": {
+            "name": "Rozgrywka",
+        },
+        "passport": {
+            "name": "Gra",
+        },
+        "photo": {
+            "name": "Dom Lary",
+        },
+        "graphics": {
+            "name": "Grafika",
+        },
+        "controls": {
+            "name": "Sterowanie",
+        },
+        "sound": {
+            "name": "Dźwięk",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_pistols": {
+            "name": "Animacja pistoletów",
+        },
+        "lara_hair": {
+            "name": "Warkocz Lary",
+        },
+        "lara_shotgun": {
+            "name": "Animacja strzelby",
+        },
+        "lara_magnums": {
+            "name": "Animacja magnumów",
+        },
+        "lara_uzis": {
+            "name": "Animacja uzi",
+        },
+        "lara_m16": {
+            "name": "Animacja M16",
+        },
+        "lara_grenade": {
+            "name": "Animacja wyrzutni granatów",
+        },
+        "lara_harpoon": {
+            "name": "Animacja wyrzutni harpunów",
+        },
+        "lara_flare": {
+            "name": "Animacja flary",
+        },
+        "lara_skidoo": {
+            "name": "Animacja skutera śnieżnego",
+        },
+        "lara_boat": {
+            "name": "Animacja łodzi",
+        },
+        "lara_extra": {
+            "name": "Dodatkowa animacja Lary",
+        },
+        "skidoo_fast": {
+            "name": "Czerwony skuter śnieżny",
+        },
+        "boat": {
+            "name": "Łódź",
+        },
+        "dog": {
+            "names": [
+                "Pies",
+                "Doberman",
+            ]
+        },
+        "cult_1": {
+            "name": "Zamaskowany zbir 1",
+        },
+        "cult_1a": {
+            "name": "Zamaskowany zbir 2",
+        },
+        "cult_1b": {
+            "name": "Zamaskowany zbir 3",
+        },
+        "cult_2": {
+            "name": "Nożownik",
+        },
+        "cult_3": {
+            "name": "Zbir z strzelbą",
+        },
+        "mouse": {
+            "name": "Szczur",
+        },
+        "dragon_front": {
+            "name": "Przód smoka",
+        },
+        "dragon_back": {
+            "name": "Tył smoka",
+        },
+        "gondola": {
+            "name": "Gondola",
+        },
+        "shark": {
+            "name": "Rekin",
+        },
+        "eel": {
+            "name": "Węgorz",
+        },
+        "big_eel": {
+            "name": "Duży węgorz",
+        },
+        "barracuda": {
+            "name": "Barakuda",
+        },
+        "diver": {
+            "name": "Nurek",
+        },
+        "worker_1": {
+            "name": "Oprych z bronią 1",
+        },
+        "worker_2": {
+            "name": "Oprych z bronią 2",
+        },
+        "worker_3": {
+            "name": "Oprych z kijem 1",
+        },
+        "worker_4": {
+            "name": "Oprych z kijem 2",
+        },
+        "worker_5": {
+            "name": "Oprych z miotaczem ognia",
+        },
+        "jelly": {
+            "name": "Meduza",
+        },
+        "spider": {
+            "name": "Pająk",
+        },
+        "big_spider": {
+            "name": "Gigantyczny pająk",
+        },
+        "crow": {
+            "name": "Kruk",
+        },
+        "tiger": {
+            "name": "Tygrys",
+        },
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "xian_spearman": {
+            "name": "Włócznik Xian",
+        },
+        "xian_spearman_statue": {
+            "name": "Posąg włócznika Xian",
+        },
+        "xian_knight": {
+            "name": "Rycerz Xian",
+        },
+        "xian_knight_statue": {
+            "name": "Posąg rycerza Xian",
+        },
+        "yeti": {
+            "name": "Yeti",
+        },
+        "bird_guardian": {
+            "name": "Ptak-potwór",
+        },
+        "eagle": {
+            "name": "Orzeł",
+        },
+        "bandit_1": {
+            "names": [
+                "Najemnik 1",
+                "Zamaskowany oprych 1",
+            ]
+        },
+        "bandit_2": {
+            "names": [
+                "Najemnik 2",
+                "Zamaskowany oprych 2",
+            ]
+        },
+        "bandit_2b": {
+            "names": [
+                "Najemnik 3",
+                "Zamaskowany oprych 3",
+            ]
+        },
+        "skidoo_armed": {
+            "name": "Czarny skuter śnieżny",
+        },
+        "skidoo_driver": {
+            "name": "Kierowca czarnego skutera śnieżnego",
+        },
+        "monk_1": {
+            "name": "Mnich 1",
+        },
+        "monk_2": {
+            "name": "Mnich 2",
+        },
+        "falling_block_1": {
+            "name": "Spadający blok 1",
+        },
+        "falling_block_2": {
+            "name": "Spadający blok 2",
+        },
+        "falling_block_3": {
+            "name": "Spadający blok 3",
+        },
+        "pendulum_1": {
+            "name": "Worek z piaskiem",
+        },
+        "spikes": {
+            "name": "Kolce",
+        },
+        "rolling_ball_1": {
+            "name": "Głaz 1",
+        },
+        "dart": {
+            "name": "Dysk",
+        },
+        "dart_emitter": {
+            "name": "Emiter dysków",
+        },
+        "drawbridge": {
+            "name": "Most zwodzony",
+        },
+        "teeth_trap": {
+            "name": "Zatrzaskujące się drzwi",
+        },
+        "lift": {
+            "name": "Winda",
+        },
+        "general": {
+            "name": "Miniłódź podwodna",
+        },
+        "movable_block_1": {
+            "name": "Blok do pchania 1",
+        },
+        "movable_block_2": {
+            "name": "Blok do pchania 2",
+        },
+        "movable_block_3": {
+            "name": "Blok do pchania 3",
+        },
+        "movable_block_4": {
+            "name": "Blok do pchania 4",
+        },
+        "big_bowl": {
+            "name": "Miska z lawą",
+        },
+        "window_1": {
+            "name": "Okno 1",
+        },
+        "window_2": {
+            "name": "Okno 2",
+        },
+        "window_3": {
+            "name": "Okno 3",
+        },
+        "window_4": {
+            "name": "Okno 4",
+        },
+        "propeller_1": {
+            "name": "Śmigło samolotu",
+        },
+        "power_saw": {
+            "name": "Piła tarczowa",
+        },
+        "hook": {
+            "name": "Hak",
+        },
+        "falling_ceiling_1": {
+            "name": "Spadający sufit 1",
+        },
+        "spinning_blade": {
+            "name": "Toczące się ostrze",
+        },
+        "blade": {
+            "name": "Ostrze na ścianie",
+        },
+        "killer_statue": {
+            "name": "Posąg z mieczem",
+        },
+        "rolling_ball_2": {
+            "name": "Głaz 2",
+        },
+        "icicle": {
+            "name": "Sopel lodu",
+        },
+        "spike_wall": {
+            "name": "Ściana z kolcami",
+        },
+        "springboard": {
+            "name": "Trampolina",
+        },
+        "ceiling_spikes": {
+            "name": "Sufit z kolcami",
+        },
+        "bell": {
+            "name": "Dzwon",
+        },
+        "water_sprite": {
+            "name": "Ślad łodzi",
+        },
+        "snow_sprite": {
+            "name": "Ślad skutera śnieżnego",
+        },
+        "skidoo_track": {
+            "name": "Tor skutera śnieżnego",
+        },
+        "switch_type_airlock": {
+            "name": "Pokretło",
+        },
+        "switch_type_small": {
+            "name": "Mały przełącznik",
+        },
+        "propeller_2": {
+            "name": "Podwodne śmigło",
+        },
+        "propeller_3": {
+            "name": "Wentylator powietrza",
+        },
+        "pendulum_2": {
+            "name": "Huśtająca się skrzynia",
+        },
+        "mesh_swap_1": {
+            "name": "Zamiana obiektu 1",
+        },
+        "mesh_swap_2": {
+            "name": "Zamiana obiektu 2",
+        },
+        "lara_swap": {
+            "name": "Zamiana obiektu Lary",
+        },
+        "text_box": {
+            "name": "Ramka interfejsu",
+        },
+        "rolling_ball_3": {
+            "name": "Głaz 3",
+        },
+        "zipline_handle": {
+            "name": "Uchwyt do zjazdu na linie",
+        },
+        "switch_type_button": {
+            "names": [
+                "Przycisk",
+                "Przełącznik",
+            ]
+        },
+        "switch_type_normal": {
+            "names": [
+                "Dźwignia",
+                "Wajcha",
+                "Przełącznik",
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Podwodna dźwignia",
+                "Podwodna wajcha",
+                "Podwodny przełącznik",
+            ]
+        },
+        "door_type_1": {
+            "name": "Drzwi 1",
+        },
+        "door_type_2": {
+            "name": "Drzwi 2",
+        },
+        "door_type_3": {
+            "name": "Drzwi 3",
+        },
+        "door_type_4": {
+            "name": "Drzwi 4",
+        },
+        "door_type_5": {
+            "name": "Drzwi 5",
+        },
+        "door_type_6": {
+            "name": "Drzwi 6",
+        },
+        "door_type_7": {
+            "name": "Drzwi 7",
+        },
+        "door_type_8": {
+            "name": "Drzwi 8",
+        },
+        "trapdoor_type_1": {
+            "name": "Zapadnia 1",
+        },
+        "trapdoor_type_2": {
+            "name": "Zapadnia 2",
+        },
+        "trapdoor_type_3": {
+            "name": "Zapadnia 3",
+        },
+        "bridge_flat": {
+            "name": "Most płaski",
+        },
+        "bridge_tilt_1": {
+            "name": "Most pochylony 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Most pochylony 2",
+        },
+        "player_1": {
+            "name": "Aktor 1",
+        },
+        "player_2": {
+            "name": "Aktor 2",
+        },
+        "player_3": {
+            "name": "Aktor 3",
+        },
+        "player_4": {
+            "name": "Aktor 4",
+        },
+        "player_5": {
+            "name": "Aktor 5",
+        },
+        "player_6": {
+            "name": "Aktor 6",
+        },
+        "player_7": {
+            "name": "Aktor 7",
+        },
+        "player_8": {
+            "name": "Aktor 8",
+        },
+        "player_9": {
+            "name": "Aktor 9",
+        },
+        "player_10": {
+            "name": "Aktor 10",
+        },
+        "key_hole_1": {
+            "name": "Zamek 1",
+        },
+        "key_hole_2": {
+            "name": "Zamek 2",
+        },
+        "key_hole_3": {
+            "name": "Zamek 3",
+        },
+        "key_hole_4": {
+            "name": "Zamek 4",
+        },
+        "puzzle_hole_1": {
+            "name": "Miejsce na przedmiot 1 (puste)",
+        },
+        "puzzle_hole_2": {
+            "name": "Miejsce na przedmiot 2 (puste)",
+        },
+        "puzzle_hole_3": {
+            "name": "Miejsce na przedmiot 3 (puste)",
+        },
+        "puzzle_hole_4": {
+            "name": "Miejsce na przedmiot 4 (puste)",
+        },
+        "puzzle_done_1": {
+            "name": "Miejsce na przedmiot 1 (ukończone)",
+        },
+        "puzzle_done_2": {
+            "name": "Miejsce na przedmiot 2 (ukończone)",
+        },
+        "puzzle_done_3": {
+            "name": "Miejsce na przedmiot 3 (ukończone)",
+        },
+        "puzzle_done_4": {
+            "name": "Miejsce na przedmiot 4 (ukończone)",
+        },
+        "sphere_of_doom_1": {
+            "name": "Eksplozja smoka 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Eksplozja smoka 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Eksplozja smoka 3",
+        },
+        "alarm_sound": {
+            "name": "Alarm",
+        },
+        "bird_tweeter_1": {
+            "name": "Kapiąca woda",
+        },
+        "trex": {
+            "names": [
+                "T-Rex",
+                "Tyranozaur",
+            ]
+        },
+        "bird_tweeter_2": {
+            "name": "Śpiewające ptaki",
+        },
+        "clock_chimes": {
+            "name": "Zegar kryjówki Bartoliego",
+        },
+        "dragon_bones_1": {
+            "name": "Brak opisu",
+        },
+        "dragon_bones_2": {
+            "name": "Przednie kości smoka",
+        },
+        "dragon_bones_3": {
+            "name": "Tylne kości smoka",
+        },
+        "hot_liquid": {
+            "name": "Gorąca ciecz",
+        },
+        "boat_bits": {
+            "name": "Elementy łodzi",
+        },
+        "mine": {
+            "name": "Mina wodna",
+        },
+        "inv_background": {
+            "name": "Tło menu",
+        },
+        "fx_reserved": {
+            "name": "Szary dysk",
+        },
+        "gong_bonger": {
+            "name": "Pałka do gongu",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "detonator_box": {
+            "name": "Skrzynka detonatora",
+        },
+        "copter": {
+            "name": "Helikopter",
+        },
+        "explosion_1": {
+            "name": "Eksplozja 1",
+        },
+        "splash_1": {
+            "name": "Fale wodne 1",
+        },
+        "bubble_1": {
+            "name": "Bańka 1",
+        },
+        "bubble_emitter": {
+            "name": "Emiter baniek",
+        },
+        "blood_1": {
+            "name": "Krew 1",
+        },
+        "dart_effect": {
+            "name": "Efekt strzały",
+        },
+        "flare_fire": {
+            "name": "Iskry flary",
+        },
+        "glow": {
+            "name": "Poświata",
+        },
+        "glow_reserved": {
+            "name": "Poświata mapy",
+        },
+        "ricochet": {
+            "name": "Odbicie",
+        },
+        "twinkle": {
+            "name": "Iskierki",
+        },
+        "gun_flash": {
+            "name": "Rozbłysk broni",
+        },
+        "m16_flash": {
+            "name": "Rozbłysk M16",
+        },
+        "body_part": {
+            "name": "Część ciała",
+        },
+        "camera_target": {
+            "name": "Obiekt kamery",
+        },
+        "waterfall": {
+            "name": "Mgiełka wodospadu",
+        },
+        "missile_harpoon": {
+            "name": "Harpun",
+        },
+        "missile_flame": {
+            "name": "Płomień",
+        },
+        "missile_knife": {
+            "name": "Nóż",
+        },
+        "grenade": {
+            "name": "Granat",
+        },
+        "harpoon_bolt": {
+            "name": "Harpun",
+        },
+        "ember": {
+            "name": "Żar",
+        },
+        "ember_emitter": {
+            "name": "Emiter żaru",
+        },
+        "flame": {
+            "names": [
+                "Płomień",
+                "Ogień",
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Emiter płomieni",
+                "Emiter ognia",
+            ]
+        },
+        "skybox": {
+            "name": "Niebo",
+        },
+        "alphabet": {
+            "names": [
+                "Literki",
+                "Alfabet",
+            ]
+        },
+        "dying_monk": {
+            "name": "Umierający mnich",
+        },
+        "ding_dong": {
+            "name": "Dzwonek do drzwi",
+        },
+        "lara_alarm": {
+            "name": "Dzwon alarmowy",
+        },
+        "mini_copter": {
+            "name": "Helikopter 2",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "assault_digits": {
+            "name": "Cyferki",
+        },
+        "combat_end": {
+            "name": "Koniec walki",
+        },
+        "cut_shotgun": {
+            "name": "Animacja końcowa",
+        },
+        "earthquake": {
+            "name": "Trzęsienie ziemi",
+        },
+        "pda": {
+            "name": "Rozgrywka",
+        }
+    },
+    "game_strings": {
+        "CMD_WINSTON_DEAD": "Twój lokaj jest martwy. Ty potworze!",
+        "CMD_WINSTON_SPAWNED": "Przywołano Winstona w pobliżu Lary",
+        "CMD_WINSTON_SPAWN_FAILED": "Nie udało się przywołać Winstona",
+        "CMD_WINSTON_TELEPORTED": "Przywołano Winstona w pobliżu Lary",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Reset kamery",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Wyposaż wyrzutnię granatów",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Wyposaż wyrzutnię harpunów",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "Wyposaż M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż pistolety automatyczne",
+        "ENUM_INPUT_ROLE_USE_FLARE": "Flara",
+        "MISC_NONE": "Brak",
+        "PASSPORT_EXIT_DEMO": "Wyjdź z dema",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Przywraca brakującą animację glonów w podwodnych poziomach.",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
+        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Naprawia strzelanie z strzelby po wyciągnięciu, które czasami nie powodowało błysku ani dźwięku.",
+        "STATS_AMMO_HITS": "Trafienia",
+        "STATS_AMMO_USED": "Zużyta amunicja",
+        "STATS_ASSAULT_FINISH": "Finisz",
+        "STATS_ASSAULT_NO_TIMES_SET": "Brak czasów",
+        "STATS_ASSAULT_TITLE": "NAJLEPSZE CZASY",
+        "STATS_DISTANCE_TRAVELLED": "Przebyta odległość",
+        "STATS_KILLS": "Zabójstwa",
+        "STATS_LEVEL": "Poziom",
+        "STATS_MEDIPACKS_USED": "Zużyte apteczki",
+        "STATS_SECRETS": "Odnalezione sekrety",
+        "STATS_TIME_TAKEN": "Spędzony czas",
+    }
+}

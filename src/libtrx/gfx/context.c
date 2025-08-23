@@ -15,6 +15,7 @@
 typedef struct {
     SDL_GLContext context;
     SDL_Window *window_handle;
+    VIEWPORT_SPACE space;
 
     GFX_CONFIG config;
 
@@ -25,6 +26,8 @@ typedef struct {
     char *scheduled_screenshot_path;
     GFX_RENDERER *renderer;
 } GFX_CONTEXT;
+
+extern RGBA_F Output_GetFogColor(void);
 
 static GFX_CONTEXT m_Context = {};
 
@@ -70,11 +73,12 @@ static GLvoid GLAPIENTRY M_GLDebug(
 void GFX_Context_SwitchToViewport(const VIEWPORT_SPACE space)
 {
     const VIEWPORT_RECT rect = Viewport_GetRect(space);
+    m_Context.space = space;
     glViewport(rect.x, rect.y, rect.width, rect.height);
     GFX_GL_CheckError();
 }
 
-bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
+bool GFX_Context_Attach(void *window_handle)
 {
     const char *shading_ver;
 
@@ -90,7 +94,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
         return false;
     }
 
-    m_Context.config.backend = backend;
     m_Context.config.line_width = 1;
     m_Context.config.enable_wireframe = false;
     SDL_GetWindowSize(
@@ -103,8 +106,14 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
             "Can't activate OpenGL context: %s", SDL_GetError());
     }
 
-    if (glewInit() != GLEW_OK) {
-        Shell_ExitSystem("Can't initialize GLEW for OpenGL extension loading");
+    const GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        if (err != 4) {
+            Shell_ExitSystemFmt(
+                "Can't initialize GLEW for OpenGL extension loading: %d", err);
+        }
+        // https://github.com/nigels-com/glew/issues/417
+        LOG_WARNING("GLEW failed to init: %d", err);
     }
 
     LOG_INFO("OpenGL vendor string:   %s", glGetString(GL_VENDOR));
@@ -190,12 +199,15 @@ void *GFX_Context_GetWindowHandle(void)
 
 void GFX_Context_Clear(void)
 {
-    if (m_Context.config.enable_wireframe) {
-        glClearColor(1.0, 1.0, 1.0, 0.0);
-    } else {
-        glClearColor(0.0, 0.0, 0.0, 0.0);
-    }
-    glClear(GL_COLOR_BUFFER_BIT);
+    const RGBA_F white = { 1.0f, 1.0f, 1.0f, 0.0f };
+    const RGBA_F fog = Output_GetFogColor();
+    const RGBA_F black = { 0.0f, 0.0f, 0.0f, 0.0f };
+    const RGBA_F color =
+        m_Context.space == VIEWPORT_GAME && m_Context.config.enable_wireframe
+        ? white
+        : m_Context.space == VIEWPORT_GAME ? fog
+                                           : black;
+    glClearBufferfv(GL_COLOR, 0, &color.r);
 }
 
 void GFX_Context_SwapBuffers(void)

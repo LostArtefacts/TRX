@@ -4,13 +4,9 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/input.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/output.h"
-#include "game/overlay.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -19,9 +15,13 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/phase.h>
+#include <libtrx/game/random.h>
 #include <libtrx/log.h>
 
 #define L_MODIFY_CONFIG()                                                      \

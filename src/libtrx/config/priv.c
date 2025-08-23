@@ -20,15 +20,22 @@ void Config_SanitizeCommon(void)
         CLOCK_TURBO_SPEED_MAX);
     CLAMP(g_Config.gameplay.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
     CLAMP(g_Config.gameplay.camera_speed, 1, 10);
+    CLAMP(g_Config.gameplay.idle_pose_timeout, 0, 1200);
     CLAMP(g_Config.rendering.wireframe_width, 1.0, 100.0);
     CLAMP(g_Config.rendering.upscaling_factor, 1, 8);
     CLAMP(g_Config.rendering.borders, 0.0, 0.45);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);
     CLAMP(g_Config.ui.text_scale, 0.5, 2.0);
+    CLAMP(g_Config.ui.pickup_scale, 0.5, 1.5);
     CLAMP(g_Config.visuals.fog_start, 1, 100);
     CLAMP(g_Config.visuals.fog_end, 1, 100);
 
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;
     }
+
+    CLAMP(
+        g_Config.visuals.brightness, CONFIG_MIN_BRIGHTNESS,
+        CONFIG_MAX_BRIGHTNESS);
+    CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
 }

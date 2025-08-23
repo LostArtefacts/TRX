@@ -3,20 +3,17 @@
 #include <stdint.h>
 
 typedef struct {
-    float r;
-    float g;
-    float b;
+    float r, g, b;
 } RGB_F;
 
 typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
+    float r, g, b, a;
+} RGBA_F;
+
+typedef struct {
+    uint8_t r, g, b;
 } RGB_888;
 
 typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
+    uint8_t r, g, b, a;
 } RGBA_8888;

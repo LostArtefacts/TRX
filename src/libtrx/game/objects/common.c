@@ -6,7 +6,7 @@
 #include "game/game_buf.h"
 #include "game/lara/common.h"
 #include "game/objects/vars.h"
-#include "game/output/objects.h"
+#include "game/output/common.h"
 
 #include <string.h>
 
@@ -19,11 +19,9 @@ static bool m_UUIDsParsed = false;
 
 static const char *m_ObjectUUIDStrings[O_NUMBER_OF] = {
 #undef OBJ_ID_DEFINE
-#define OBJ_ID_ALIAS_DEFINE(source_id, target_id)
 #define OBJ_ID_DEFINE(game_id, uuid_str, enum_value) [game_id] = uuid_str,
 #include "game/objects/ids.def"
 #undef OBJ_ID_DEFINE
-#undef OBJ_ID_ALIAS_DEFINE
 };
 
 static bool M_HexCharValue(char c, uint8_t *val);
@@ -271,16 +269,12 @@ void Object_SwapMesh(
     const OBJECT *const obj1 = Object_Get(object1_id);
     const OBJECT *const obj2 = Object_Get(object2_id);
 
-    OBJECT_MESH *const temp = m_MeshPointers[obj1->mesh_idx + mesh_num];
-    m_MeshPointers[obj1->mesh_idx + mesh_num] =
-        m_MeshPointers[obj2->mesh_idx + mesh_num];
-    m_MeshPointers[obj2->mesh_idx + mesh_num] = temp;
-
-#if TR_VERSION == 1
-    Output_Meshes_ObserveObjectMeshSwap(
+    SWAP(
         m_MeshPointers[obj1->mesh_idx + mesh_num],
         m_MeshPointers[obj2->mesh_idx + mesh_num]);
-#endif
+
+    Output_DispatchObjectMeshSwap(
+        obj1->mesh_idx + mesh_num, obj2->mesh_idx + mesh_num);
 }
 
 ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)

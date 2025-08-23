@@ -9,6 +9,7 @@
 #include "game/sound.h"
 #include "log.h"
 
+static bool m_Initialised = false;
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
 static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackDelayed = MX_INACTIVE;
@@ -121,8 +122,7 @@ static void M_SyncVolume(const int32_t audio_stream_id)
 
 bool Music_Init(void)
 {
-    bool result = false;
-
+    m_Initialised = true;
     m_Backend = M_FindBackend();
     if (m_Backend == nullptr) {
         LOG_ERROR("No music backend is available");
@@ -130,7 +130,6 @@ bool Music_Init(void)
     }
 
     LOG_INFO("Chosen music backend: %s", m_Backend->describe(m_Backend));
-    result = true;
     Music_SetVolume(g_Config.audio.music_volume);
 
 finish:
@@ -139,17 +138,22 @@ finish:
     m_TrackDelayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
     m_TrackLastLooped = MX_INACTIVE;
-    return result && Audio_Init();
+    return Audio_Init();
 }
 
 void Music_Shutdown(void)
 {
+    m_Initialised = false;
     M_StopActiveStream();
     Audio_Shutdown();
 }
 
 bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
 {
+    if (!m_Initialised) {
+        return false;
+    }
+
     if (M_IsBrokenTrack(track_id)) {
         return false;
     }
@@ -280,6 +284,14 @@ bool Music_SeekTimestamp(const double timestamp)
         return false;
     }
     return Audio_Stream_SeekTimestamp(m_AudioStreamID, timestamp);
+}
+
+bool Music_SyncTimestamp(const double timestamp)
+{
+    if (m_AudioStreamID < 0) {
+        return false;
+    }
+    return Audio_Stream_SyncTimestamp(m_AudioStreamID, timestamp);
 }
 
 MUSIC_TRACK_ID Music_GetDelayedTrack(void)

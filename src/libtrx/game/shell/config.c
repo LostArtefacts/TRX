@@ -4,8 +4,11 @@
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/test_replay.h"
 #include "game/viewport.h"
 #include "log.h"
+
+#include <SDL2/SDL_timer.h>
 
 static Uint64 m_UpdateDebounce = 0;
 static bool m_IgnoreConfigChanges = false;
@@ -122,7 +125,7 @@ void Shell_SyncFromWindow(const bool update_viewport)
         }
         if (g_Config.loaded) {
             m_IgnoreConfigChanges = true;
-            Config_Write();
+            Config_Update();
             m_IgnoreConfigChanges = false;
         }
     }
@@ -136,6 +139,10 @@ void Shell_SyncFromWindow(const bool update_viewport)
 void Shell_HandleCommonConfigChange(
     const CONFIG *const old, const CONFIG *const new)
 {
+    if (!TestReplay_IsOpened()) {
+        Config_Write();
+    }
+
 #define L_CHANGED(subject) (old->subject != new->subject)
 
     if (L_CHANGED(audio.sound_volume)) {
@@ -155,7 +162,7 @@ void Shell_HandleCommonConfigChange(
         || L_CHANGED(rendering.upscaling_factor) || L_CHANGED(rendering.borders)
         || L_CHANGED(rendering.aspect_mode)
 #if TR_VERSION >= 2
-        || L_CHANGED(visuals.use_psx_fov) || L_CHANGED(rendering.render_mode)
+        || L_CHANGED(visuals.use_psx_fov)
 #endif
     ) {
         if (!m_IgnoreConfigChanges) {
@@ -165,6 +172,8 @@ void Shell_HandleCommonConfigChange(
     }
 
     if (L_CHANGED(visuals.fog_start) || L_CHANGED(visuals.fog_end)
+        || L_CHANGED(visuals.fog_color.g) || L_CHANGED(visuals.fog_color.b)
+        || L_CHANGED(visuals.fog_color.r) || L_CHANGED(visuals.fog_transparency)
         || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
         || L_CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();

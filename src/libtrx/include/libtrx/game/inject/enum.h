@@ -8,18 +8,18 @@ typedef enum {
 } INJECTION_VERSION;
 
 typedef enum {
-    IFT_GENERAL             = 0,
-    IFT_BRAID               = 1,
-    IFT_TEXTURE_FIX         = 2,
-    IFT_UZI_SFX             = 3,
-    IFT_FLOOR_DATA          = 4,
-    IFT_LARA_ANIMS          = 5,
-    IFT_ITEM_POSITION       = 6,
-    IFT_PS1_ENEMY           = 7,
-    IFT_DISABLE_ANIM_SPRITE = 8,
-    IFT_SKYBOX              = 9,
-    IFT_PS1_CRYSTAL         = 10,
-    IFT_NUMBER_OF           = 11,
+    IFT_GENERAL           = 0,
+    IFT_BRAID             = 1,
+    IFT_TEXTURE_FIX       = 2,
+    IFT_UZI_SFX           = 3,
+    IFT_FLOOR_DATA        = 4,
+    IFT_LARA_ANIMS        = 5,
+    IFT_ITEM_POSITION     = 6,
+    IFT_PS1_ENEMY         = 7,
+    IFT_ALTER_ANIM_SPRITE = 8,
+    IFT_SKYBOX            = 9,
+    IFT_PS1_CRYSTAL       = 10,
+    IFT_NUMBER_OF         = 11,
 } INJECTION_FILE_TYPE;
 
 typedef enum {
@@ -74,7 +74,8 @@ typedef enum {
     IDT_STATIC_OBJECTS   = 29,
     IDT_CINEMATIC_FRAMES = 30,
     IDT_OBJ_TYPE_EDITS   = 31,
-    IDT_NUMBER_OF        = 32,
+    IDT_FRAME_REPLACE    = 32,
+    IDT_NUMBER_OF        = 33,
 } INJECTION_DATA_TYPE;
 
 typedef enum {
@@ -95,17 +96,20 @@ typedef enum {
     FET_SECTOR_OVERWRITE  = 7,
     FET_GLIDE_CAMERA      = 8,
     FET_ZONE_FIX          = 9,
+    FET_PORTALS           = 10,
 } FLOOR_EDIT_TYPE;
 
 typedef enum {
-    RMET_TEXTURE_FACE  = 0,
-    RMET_MOVE_FACE     = 1,
-    RMET_ALTER_VERTEX  = 2,
-    RMET_ROTATE_FACE   = 3,
-    RMET_ADD_FACE      = 4,
-    RMET_ADD_VERTEX    = 5,
-    RMET_ADD_STATIC_2D = 6,
-    RMET_ADD_STATIC_3D = 7,
+    RMET_TEXTURE_FACE   = 0,
+    RMET_MOVE_FACE      = 1,
+    RMET_ALTER_VERTEX   = 2,
+    RMET_ROTATE_FACE    = 3,
+    RMET_ADD_FACE       = 4,
+    RMET_ADD_VERTEX     = 5,
+    RMET_ADD_STATIC_2D  = 6,
+    RMET_ADD_STATIC_3D  = 7,
+    RMET_EDIT_STATIC_3D = 8,
+    RMET_VERTEX_FLAGS   = 9,
 } ROOM_MESH_EDIT_TYPE;
 // clang-format on
 

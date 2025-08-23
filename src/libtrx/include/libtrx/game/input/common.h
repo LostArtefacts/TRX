@@ -2,21 +2,22 @@
 
 #include "../../json.h"
 
+#include <SDL2/SDL_events.h>
 #include <stdint.h>
 
 typedef enum {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name) INPUT_ROLE_##role_name,
+#define X_INPUT_ROLE(role_name, state_name) role_name,
 #include "roles.def"
     INPUT_ROLE_NUMBER_OF,
+#undef X_INPUT_ROLE
 } INPUT_ROLE;
 
 typedef union {
     uint64_t any;
     struct {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name) uint64_t state_name : 1;
+#define X_INPUT_ROLE(role_name, state_name) uint64_t state_name : 1;
 #include "roles.def"
+#undef X_INPUT_ROLE
     };
 } INPUT_STATE;
 
@@ -42,6 +43,10 @@ void Input_Init(void);
 void Input_Shutdown(void);
 void Input_Discover(void);
 void Input_Update(void);
+
+// Processes a SDL event to update global input state before polling.
+// @param event     Event to process.
+void Input_ProcessEvent(const SDL_Event *event);
 
 // Checks whether the given role can be assigned to by the player.
 // Hard-coded roles are exempt from conflict checks (eg will never flash in the
@@ -111,3 +116,13 @@ bool Input_AssignToJSONObject(
 INPUT_STATE Input_GetDebounced(const INPUT_STATE input);
 
 extern const char *Input_GetRoleName(INPUT_ROLE role);
+
+// Serialize a scancode and modifier mask into a human-readable key
+// description, e.g. "ctrl+shift+up". The returned string must not be held onto.
+const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod);
+
+// Parse a human-readable key description into scancode and modifier mask.
+// e.g. "ctrl+shift+up" → scancode SDL_SCANCODE_UP, mod KMOD_CTRL|KMOD_SHIFT.
+// Returns true if parsing succeeded, false otherwise.
+bool Input_ParseKeyDesc(
+    const char *desc, SDL_Scancode *scancode, SDL_Keymod *mod);

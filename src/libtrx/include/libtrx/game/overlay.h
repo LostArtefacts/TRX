@@ -6,12 +6,13 @@
 void Overlay_Init(void);
 void Overlay_Shutdown(void);
 
-extern void Overlay_Reset(void);
+void Overlay_Reset(void);
 void Overlay_Control(void);
+void Overlay_Animate(int32_t num_frames);
 void Overlay_Draw(void);
 
-extern void Overlay_HideGameInfo(void);
-extern void Overlay_AddDisplayPickup(GAME_OBJECT_ID obj_id);
+void Overlay_DrawGameInfo(void);
+void Overlay_AddDisplayPickup(GAME_OBJECT_ID obj_id);
 
 void Overlay_ForceHealthBar(bool show);
 void Overlay_SetHealthBarTimer(int16_t health_bar_timer);

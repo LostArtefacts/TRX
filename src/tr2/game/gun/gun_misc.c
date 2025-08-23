@@ -3,8 +3,7 @@
 #include "game/gun/gun.h"
 #include "game/los.h"
 #include "game/objects/general/window.h"
-#include "game/output.h"
-#include "game/random.h"
+#include "game/objects/vars.h"
 #include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -14,10 +13,35 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 #define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
+
+static void M_SmashItem(int16_t item_num);
+
+static void M_SmashItem(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    switch (item->object_id) {
+    case O_WINDOW_1:
+        Window_Smash(item_num);
+        break;
+
+    case O_BELL:
+        if (item->status != IS_ACTIVE) {
+            item->status = IS_ACTIVE;
+            Item_AddActive(item_num);
+        }
+        break;
+
+    default:
+        break;
+    }
+}
 
 void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
 {
@@ -152,22 +176,20 @@ int32_t Gun_FireWeapon(
     if (best_sphere < 0) {
         const int32_t dist = winfo->target_dist;
         GAME_VECTOR hit_pos;
-        hit_pos.pos.x = view_pos.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT);
-        hit_pos.pos.y = view_pos.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT);
-        hit_pos.pos.z = view_pos.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT);
-        hit_pos.room_num =
-            Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
+        hit_pos.x = view_pos.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT);
+        hit_pos.y = view_pos.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT);
+        hit_pos.z = view_pos.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT);
+        hit_pos.room_num = src->room_num;
+        Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         const bool object_on_los = LOS_Check(&start, &hit_pos);
-        const int16_t item_to_smash = LOS_CheckSmashable(&start, &hit_pos);
-        if (item_to_smash == NO_ITEM) {
-            if (!object_on_los) {
-                Spawn_Ricochet(&hit_pos);
-            }
-            return -1;
-        } else {
-            Gun_SmashItem(item_to_smash, weapon_type);
-            return -1;
+        if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
+            == PROJECTILE_HIT_STOP) {
+            Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         }
+        if (!object_on_los) {
+            Spawn_Ricochet(&hit_pos);
+        }
+        return -1;
     } else {
         Stats_AddAmmoHits();
         GAME_VECTOR hit_pos;
@@ -179,15 +201,34 @@ int32_t Gun_FireWeapon(
             view_pos.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT);
         hit_pos.room_num =
             Room_GetIndexFromPos(hit_pos.pos.x, hit_pos.pos.y, hit_pos.pos.z);
-        const int16_t item_to_smash = LOS_CheckSmashable(&start, &hit_pos);
-        if (item_to_smash != NO_ITEM) {
-            Gun_SmashItem(item_to_smash, weapon_type);
-        }
+        Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
         Gun_HitTarget(
             target, &hit_pos,
             winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
+}
+
+PROJECTILE_HIT Gun_SmashItems(
+    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos)
+{
+    int32_t hits = 0;
+    int16_t last_item_num = NO_ITEM;
+    while (true) {
+        const int16_t item_num = LOS_CheckSmashable(start, target, out_hit_pos);
+        if (item_num == NO_ITEM || item_num == last_item_num) {
+            break;
+        }
+        last_item_num = item_num;
+        M_SmashItem(item_num);
+        hits++;
+
+        const ITEM *const item = Item_Get(item_num);
+        if (Object_IsType(item->object_id, g_SmashableObjects)) {
+            return PROJECTILE_HIT_STOP;
+        }
+    }
+    return hits > 0 ? PROJECTILE_HIT_SHATTER : PROJECTILE_HIT_NONE;
 }
 
 void Gun_HitTarget(
@@ -215,28 +256,7 @@ void Gun_HitTarget(
     }
 }
 
-void Gun_SmashItem(const int16_t item_num, const LARA_GUN_TYPE weapon_type)
-{
-    ITEM *const item = Item_Get(item_num);
-
-    switch (item->object_id) {
-    case O_WINDOW_1:
-        Window_Smash(item_num);
-        break;
-
-    case O_BELL:
-        if (item->status != IS_ACTIVE) {
-            item->status = IS_ACTIVE;
-            Item_AddActive(item_num);
-        }
-        break;
-
-    default:
-        break;
-    }
-}
-
-void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const int32_t clip)
+void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const CLIP clip)
 {
     int16_t shade;
     int32_t y;

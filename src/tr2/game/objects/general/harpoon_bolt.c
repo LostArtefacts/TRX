@@ -1,5 +1,6 @@
 #include "game/gun/gun_misc.h"
 #include "game/objects/general/window.h"
+#include "game/objects/vars.h"
 #include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -18,15 +19,11 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const XYZ_32 old_pos = item->pos;
 
     if (!(Room_Get(item->room_num)->flags & RF_UNDERWATER)) {
         item->fall_speed += GRAVITY / 2;
     }
-
-    const XZ_32 old_pos = {
-        .x = item->pos.x,
-        .z = item->pos.z,
-    };
 
     item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
     item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
@@ -38,12 +35,17 @@ static void M_Control(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     Item_UpdateRoom(item_num, room_num);
 
+    bool hit = false;
+    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
+        hit = true;
+    }
+
     for (int16_t target_num = Room_Get(item->room_num)->item_num;
          target_num != NO_ITEM; target_num = Item_Get(target_num)->next_item) {
         ITEM *const target_item = Item_Get(target_num);
         const OBJECT *const target_obj = Object_Get(target_item->object_id);
 
-        if (target_item == g_LaraItem) {
+        if (target_item == g_LaraItem || item_num == target_num) {
             continue;
         }
 
@@ -51,14 +53,7 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        const bool is_window = target_item->object_id == O_WINDOW_1;
-        if (is_window
-            && (target_item->status == IS_INVISIBLE
-                || target_obj->collision_func == nullptr)) {
-            continue;
-        }
-
-        if (!is_window && !Creature_IsTargetable(target_item)) {
+        if (!Creature_IsTargetable(target_item)) {
             continue;
         }
 
@@ -94,25 +89,25 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        if (is_window) {
-            Window_Smash(target_num);
-        } else {
-            if (target_obj->intelligent && target_item->status == IS_ACTIVE) {
-                Spawn_BloodBath(
-                    item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num,
-                    5);
-                Gun_HitTarget(
-                    target_item, nullptr, g_Weapons[LGT_HARPOON].damage);
-                Stats_AddAmmoHits();
-            }
-            Item_Kill(item_num);
-            return;
+        if (target_obj->intelligent && target_item->status == IS_ACTIVE) {
+            Spawn_BloodBath(
+                item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num, 5);
+            Gun_HitTarget(target_item, nullptr, g_Weapons[LGT_HARPOON].damage);
+            Stats_AddAmmoHits();
+        }
+        hit = true;
+        break;
+    }
+
+    if (!hit) {
+        const int32_t ceiling =
+            Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+        if (item->pos.y >= item->floor || item->pos.y <= ceiling) {
+            hit = true;
         }
     }
 
-    const int32_t ceiling =
-        Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
-    if (item->pos.y >= item->floor || item->pos.y <= ceiling) {
+    if (hit) {
         Item_Kill(item_num);
     } else if (Room_Get(item->room_num)->flags & RF_UNDERWATER) {
         Spawn_Bubble(&item->pos, item->room_num);

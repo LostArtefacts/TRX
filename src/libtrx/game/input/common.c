@@ -5,8 +5,13 @@
 #include "game/game_string.h"
 #include "game/input/backends/controller.h"
 #include "game/input/backends/keyboard.h"
+#include "strings.h"
 
+#include <SDL2/SDL_keyboard.h>
+#include <ctype.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef enum {
     HOLD_INACTIVE,
@@ -53,17 +58,17 @@ static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
 
 static bool m_IsRoleNonUnbindable[INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
-    [INPUT_ROLE_UP]     = true,
-    [INPUT_ROLE_DOWN]   = true,
-    [INPUT_ROLE_LEFT]   = true,
-    [INPUT_ROLE_RIGHT]  = true,
-    [INPUT_ROLE_DRAW]   = true,
-    [INPUT_ROLE_ACTION] = true,
-    [INPUT_ROLE_JUMP]   = true,
-    [INPUT_ROLE_ROLL]   = true,
-    [INPUT_ROLE_LOOK]   = true,
-    [INPUT_ROLE_SLOW]   = true,
-    [INPUT_ROLE_OPTION] = true,
+    [INPUT_ROLE_UP]          = true,
+    [INPUT_ROLE_DOWN]        = true,
+    [INPUT_ROLE_LEFT]        = true,
+    [INPUT_ROLE_RIGHT]       = true,
+    [INPUT_ROLE_DRAW_WEAPON] = true,
+    [INPUT_ROLE_ACTION]      = true,
+    [INPUT_ROLE_JUMP]        = true,
+    [INPUT_ROLE_ROLL]        = true,
+    [INPUT_ROLE_LOOK]        = true,
+    [INPUT_ROLE_SLOW]        = true,
+    [INPUT_ROLE_INVENTORY]   = true,
     // clang-format on
 };
 
@@ -75,6 +80,9 @@ static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
 };
 
 static INPUT_BACKEND_IMPL *M_GetBackend(INPUT_BACKEND backend);
+static bool M_IsPressed(INPUT_STATE input, INPUT_ROLE role);
+static INPUT_STATE M_SetPressed(
+    INPUT_STATE input, INPUT_ROLE role, bool is_pressed);
 
 static INPUT_BACKEND_IMPL *M_GetBackend(const INPUT_BACKEND backend)
 {
@@ -91,11 +99,11 @@ static INPUT_BACKEND_IMPL *M_GetBackend(const INPUT_BACKEND backend)
 static bool M_IsPressed(const INPUT_STATE input, const INPUT_ROLE role)
 {
     switch (role) {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name)                               \
-    case INPUT_ROLE_##role_name:                                               \
+#define X_INPUT_ROLE(role_name, state_name)                                    \
+    case role_name:                                                            \
         return input.state_name;
 #include "game/input/roles.def"
+#undef X_INPUT_ROLE
     case INPUT_ROLE_NUMBER_OF:
         break;
     }
@@ -106,12 +114,12 @@ static INPUT_STATE M_SetPressed(
     INPUT_STATE input, const INPUT_ROLE role, const bool is_pressed)
 {
     switch (role) {
-#undef INPUT_ROLE_DEFINE
-#define INPUT_ROLE_DEFINE(role_name, state_name)                               \
-    case INPUT_ROLE_##role_name:                                               \
+#define X_INPUT_ROLE(role_name, state_name)                                    \
+    case role_name:                                                            \
         input.state_name = is_pressed;                                         \
         break;
 #include "game/input/roles.def"
+#undef X_INPUT_ROLE
     case INPUT_ROLE_NUMBER_OF:
         break;
     }
@@ -197,7 +205,7 @@ bool Input_ReadAndAssignRole(
             continue;
         }
         if (Input_IsPressedEx(other_backend, layout, INPUT_ROLE_MENU_BACK)
-            || Input_IsPressedEx(other_backend, layout, INPUT_ROLE_OPTION)) {
+            || Input_IsPressedEx(other_backend, layout, INPUT_ROLE_INVENTORY)) {
             return true;
         }
     }
@@ -242,6 +250,16 @@ bool Input_IsInListenMode(void)
     return m_ListenMode;
 }
 
+void Input_ProcessEvent(const SDL_Event *event)
+{
+    if (g_Input_Keyboard.process_event != nullptr) {
+        g_Input_Keyboard.process_event(event);
+    }
+    if (g_Input_Controller.process_event != nullptr) {
+        g_Input_Controller.process_event(event);
+    }
+}
+
 bool Input_AssignFromJSONObject(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     JSON_OBJECT *const bind_obj)
@@ -257,15 +275,15 @@ bool Input_AssignFromJSONObject(
     case 1: role = INPUT_ROLE_DOWN; break;
     case 2: role = INPUT_ROLE_LEFT; break;
     case 3: role = INPUT_ROLE_RIGHT; break;
-    case 4: role = INPUT_ROLE_STEP_L; break;
-    case 5: role = INPUT_ROLE_STEP_R; break;
+    case 4: role = INPUT_ROLE_STEP_LEFT; break;
+    case 5: role = INPUT_ROLE_STEP_RIGHT; break;
     case 6: role = INPUT_ROLE_SLOW; break;
     case 7: role = INPUT_ROLE_JUMP; break;
     case 8: role = INPUT_ROLE_ACTION; break;
-    case 9: role = INPUT_ROLE_DRAW; break;
+    case 9: role = INPUT_ROLE_DRAW_WEAPON; break;
     case 10: role = INPUT_ROLE_LOOK; break;
     case 11: role = INPUT_ROLE_ROLL; break;
-    case 12: role = INPUT_ROLE_OPTION; break;
+    case 12: role = INPUT_ROLE_INVENTORY; break;
     case 13: role = INPUT_ROLE_FLY_CHEAT; break;
     case 14: role = INPUT_ROLE_ITEM_CHEAT; break;
     case 15: role = INPUT_ROLE_LEVEL_SKIP_CHEAT; break;
@@ -285,7 +303,7 @@ bool Input_AssignFromJSONObject(
     case 29: role = INPUT_ROLE_SAVE; break;
     case 30: role = INPUT_ROLE_LOAD; break;
     case 31: role = INPUT_ROLE_FPS; break;
-    case 32: role = INPUT_ROLE_BILINEAR; break;
+    case 32: role = INPUT_ROLE_TOGGLE_BILINEAR_FILTER; break;
     case 33: role = INPUT_ROLE_ENTER_CONSOLE; break;
     case 34: role = INPUT_ROLE_CHANGE_TARGET; break;
     case 35: role = INPUT_ROLE_TOGGLE_UI; break;
@@ -364,4 +382,64 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
 
     g_OldInputDB = input;
     return result;
+}
+
+const char *Input_GetRoleName(const INPUT_ROLE role)
+{
+    return GS_ENUM(INPUT_ROLE, role);
+}
+
+const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod)
+{
+    // clang-format off
+    const char *mods = "";
+    if (mod & KMOD_CTRL)  { mods = String_FormatStatic("%sctrl+",  mods); }
+    if (mod & KMOD_SHIFT) { mods = String_FormatStatic("%sshift+", mods); }
+    if (mod & KMOD_ALT)   { mods = String_FormatStatic("%salt+",   mods); }
+    if (mod & KMOD_GUI)   { mods = String_FormatStatic("%sgui+",   mods); }
+    // clang-format on
+
+    const char *const name = SDL_GetScancodeName(scancode);
+    if (name == nullptr || name[0] == '\0') {
+        return nullptr;
+    }
+
+    char *const full = (char *)String_FormatStatic("%s%s", mods, name);
+    for (size_t i = 0; i < strlen(full); i++) {
+        full[i] = (char)tolower((unsigned char)full[i]);
+    }
+    return full;
+}
+
+bool Input_ParseKeyDesc(
+    const char *const desc, SDL_Scancode *const scancode, SDL_Keymod *const mod)
+{
+    if (desc == nullptr || scancode == nullptr || mod == nullptr) {
+        return false;
+    }
+
+    SDL_Keymod m = KMOD_NONE;
+    const char *keystr = desc;
+    const char *last = strrchr(desc, '+');
+
+    if (last != nullptr) {
+        for (const char *tok = desc; tok < last; tok = strchr(tok, '+') + 1) {
+            const size_t len =
+                strchr(tok, '+') ? strchr(tok, '+') - tok : last - tok;
+            if (strncmp(tok, "ctrl", len) == 0) {
+                m |= KMOD_CTRL;
+            } else if (strncmp(tok, "shift", len) == 0) {
+                m |= KMOD_SHIFT;
+            } else if (strncmp(tok, "alt", len) == 0) {
+                m |= KMOD_ALT;
+            } else if (strncmp(tok, "gui", len) == 0) {
+                m |= KMOD_GUI;
+            }
+        }
+        keystr = last + 1;
+    }
+
+    *scancode = SDL_GetScancodeFromName(keystr);
+    *mod = m;
+    return *scancode != SDL_SCANCODE_UNKNOWN;
 }

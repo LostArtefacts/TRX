@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <time.h>
 
+static bool m_Disabled = false;
 static Uint64 m_LastCounter = 0;
 static Uint64 m_InitCounter = 0;
 static Uint64 m_Frequency = 0;
@@ -21,10 +22,20 @@ static struct {
     double sim_speed;
 } m_Priv;
 
+// Fixed‐FPS simulation in headless mode
+static bool m_HeadlessFixedFPS = false;
+static double m_HeadlessFPS_DT = 0.0;
+static double m_HeadlessOffset = 0.0;
+static double m_HeadlessAnchor = 0.0;
+
 static double M_GetHighPrecisionCounter(void);
 
 static double M_GetHighPrecisionCounter(void)
 {
+    if (m_HeadlessFixedFPS) {
+        // Return virtual time = anchor + offset
+        return m_HeadlessAnchor + m_HeadlessOffset;
+    }
     return (SDL_GetPerformanceCounter() - m_InitCounter) / (double)m_Frequency;
 }
 
@@ -32,7 +43,25 @@ void Clock_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
     m_InitCounter = SDL_GetPerformanceCounter();
-    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
+}
+
+void Clock_DisableWait(void)
+{
+    m_Disabled = true;
+}
+
+void Clock_EnableHeadlessFixedFPS(int32_t fps)
+{
+    if (fps <= 0) {
+        m_HeadlessFixedFPS = false;
+        return;
+    }
+
+    // Anchor to current real time, reset offset
+    m_HeadlessAnchor = M_GetHighPrecisionCounter();
+    m_HeadlessOffset = 0.0;
+    m_HeadlessFPS_DT = 1.0 / (double)fps;
+    m_HeadlessFixedFPS = true;
 }
 
 size_t Clock_GetDateTime(char *const buffer, const size_t size)
@@ -64,6 +93,14 @@ void Clock_SyncTick(void)
 
 int32_t Clock_WaitTick(void)
 {
+    if (m_Disabled && m_HeadlessFixedFPS) {
+        // Advance virtual time by one fixed frame
+        m_HeadlessOffset += m_HeadlessFPS_DT;
+        return 1;
+    }
+    if (m_Disabled) {
+        return 1;
+    }
     const Uint64 current_counter = SDL_GetPerformanceCounter();
 
     // If this is the first call, just initialize and return a frame.

@@ -1,10 +1,10 @@
 #include "game/creature.h"
 #include "game/lara.h"
-#include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define RAT_BITE_DAMAGE 20

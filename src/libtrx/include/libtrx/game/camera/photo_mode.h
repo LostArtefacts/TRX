@@ -1,8 +1,9 @@
 #pragma once
 
-void Camera_EnterPhotoMode(void);
-void Camera_ExitPhotoMode(void);
-void Camera_UpdatePhotoMode(void);
+void Camera_PhotoMode_Enter(void);
+void Camera_PhotoMode_Exit(void);
+void Camera_PhotoMode_Update(void);
+void Camera_PhotoMode_UpdateFOV(void);
 
-void Camera_PausePhotoMode(void);
-void Camera_ResumePhotoMode(void);
+void Camera_PhotoMode_Pause(void);
+void Camera_PhotoMode_Resume(void);

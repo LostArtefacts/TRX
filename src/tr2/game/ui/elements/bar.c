@@ -1,9 +1,9 @@
 #include "game/ui/elements/bar.h"
 
-#include "game/output.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/scaler.h>
 #include <libtrx/game/ui/draw.h>
 #include <libtrx/game/ui/helpers.h>
@@ -31,6 +31,7 @@ static int32_t m_ColorMap[][M_COLOR_STEPS] = {
     [BC_BLUE2]  = { 0x00AADC, 0x00C8FF, 0x008CB9, 0x008CB9, 0x008CB9, 0x008CB9 },
     [BC_PINK]   = { 0xFF40DF, 0xFF96C8, 0xFF40DF, 0xFF40DF, 0xFF40DF, 0xFF40DF },
     [BC_PURPLE] = { 0x461E6B, 0xFF40DF, 0x461E6B, 0x461E6B, 0x461E6B, 0x461E6B },
+    [BC_GREEN2] = { 0x0BAA6B, 0x2EE708, 0x0BAA6B, 0x0BAA6B, 0x0BAA6B, 0x0BAA6B },
     // clang-format on
 };
 #undef C
@@ -106,17 +107,16 @@ static void M_Draw(const UI_NODE *const node)
 
     // Draw border
     UI_ScheduleDrawScreenFlatQuad(
-        outer_rect.x, outer_rect.y, g_PhdNearZ + M_COLOR_STEPS * 4,
-        outer_rect.w, outer_rect.h, rgb_border_highlight);
+        outer_rect.x, outer_rect.y, M_COLOR_STEPS * 4, outer_rect.w,
+        outer_rect.h, rgb_border_highlight);
     UI_ScheduleDrawScreenFlatQuad(
-        outer_rect.x + border, outer_rect.y + border,
-        g_PhdNearZ + M_COLOR_STEPS * 3, outer_rect.w - border,
-        outer_rect.h - border, rgb_border_dark);
+        outer_rect.x + border, outer_rect.y + border, M_COLOR_STEPS * 3,
+        outer_rect.w - border, outer_rect.h - border, rgb_border_dark);
 
     // Draw background
     UI_ScheduleDrawScreenFlatQuad(
-        inner_rect.x, inner_rect.y, g_PhdNearZ + M_COLOR_STEPS * 2,
-        inner_rect.w, inner_rect.h, rgb_bgnd);
+        inner_rect.x, inner_rect.y, M_COLOR_STEPS * 2, inner_rect.w,
+        inner_rect.h, rgb_bgnd);
 
     if (percent == 0.0f) {
         return;
@@ -129,8 +129,7 @@ static void M_Draw(const UI_NODE *const node)
         const int32_t lsh =
             bar_rect.y + (i + 1) * bar_rect.h / M_COLOR_STEPS - lsy;
         UI_ScheduleDrawScreenFlatQuad(
-            bar_rect.x, lsy, g_PhdNearZ + M_COLOR_STEPS - i, bar_rect.w, lsh,
-            color);
+            bar_rect.x, lsy, M_COLOR_STEPS - i, bar_rect.w, lsh, color);
     }
 }
 

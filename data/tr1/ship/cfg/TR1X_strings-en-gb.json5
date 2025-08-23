@@ -1,9 +1,0 @@
-{
-    // For usage, refer to the documentation here:
-    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
-    "extends": "en",
-    "game_strings": {
-        "OSD_TEXTURE_FILTER_NN": "nearest-neighbour",
-        "STATS_DISTANCE_TRAVELLED": "DISTANCE TRAVELLED",
-    }
-}

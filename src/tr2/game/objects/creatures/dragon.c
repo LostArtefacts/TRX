@@ -1,9 +1,6 @@
 #include "game/creature.h"
-#include "game/input.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/output.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"
@@ -13,8 +10,11 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 
 // clang-format off
 #define DRAGON_CLOSE        900

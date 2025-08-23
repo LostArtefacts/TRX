@@ -291,6 +291,12 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
     } else if (Item_TestFrameEqual(item, -1)) {
         Game_SetIsLevelComplete(true);
     }
+
+    if (Music_GetCurrentPlayingTrack() == MX_CUTSCENE_BATH) {
+        const int32_t frame_num = Item_GetRelativeFrame(item);
+        const double ts = (frame_num - M_LF_SHOWER_START) / (double)LOGIC_FPS;
+        Music_SyncTimestamp(ts);
+    }
 #endif
 }
 

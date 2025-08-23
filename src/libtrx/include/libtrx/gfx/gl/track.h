@@ -6,6 +6,8 @@ typedef struct {
     int32_t buffer_transfer_count;
     int32_t buffer_total_bytes;
     int32_t uniform_changes;
+    int32_t opaque_vert_count;
+    int32_t trans_vert_count;
 } GFX_METRICS;
 
 extern GFX_METRICS g_GFX_Metrics;

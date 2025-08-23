@@ -1,14 +1,17 @@
 #include "game/game.h"
 
+#include "game/const.h"
 #include "game/fmv.h"
 #include "game/game_flow.h"
 #include "game/lara/common.h"
 #include "game/random.h"
+#include "game/ui.h"
 
 static bool m_IsPlaying = false;
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GAME_BONUS_FLAG m_BonusFlag = GBF_NONE;
 static bool m_IsLevelComplete = false;
+static FADER m_Fader;
 
 void Game_SetIsPlaying(const bool is_playing)
 {
@@ -62,7 +65,8 @@ bool Game_IsPlayable(void)
         return false;
     }
 
-    if (!Object_Get(O_LARA)->loaded || Lara_GetItem() == nullptr) {
+    if (!Object_Get(O_LARA)->loaded || Lara_GetItem() == nullptr
+        || !Lara_IsControllable()) {
         return false;
     }
 
@@ -92,4 +96,16 @@ void Game_SetIsLevelComplete(const bool is_complete)
 bool Game_IsLevelComplete(void)
 {
     return m_IsLevelComplete;
+}
+
+void Game_FadeToBlack(const int32_t duration)
+{
+    Fader_Init(
+        &m_Fader, FADER_TRANSPARENT, FADER_BLACK, duration / (float)LOGIC_FPS);
+}
+
+void Game_DrawFade(void)
+{
+    UI_BeginFade(&m_Fader, true);
+    UI_EndFade();
 }

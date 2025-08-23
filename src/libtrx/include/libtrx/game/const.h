@@ -3,7 +3,6 @@
 #include "./math/const.h"
 
 #define LOGIC_FPS 30
-#define TICKS_PER_FRAME 2
 
 #define DONT_TARGET (-16384)
 

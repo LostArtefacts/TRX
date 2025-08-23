@@ -1,0 +1,1124 @@
+{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    "levels": [
+        {
+            "title": "Lara's Home",
+        },
+        {
+            "title": "The Great Wall",
+            "objects": {
+                "key_1": {
+                    "name": "Guardhouse Key",
+                },
+                "key_2": {
+                    "name": "Rusty Key",
+                }
+            }
+        },
+        {
+            "title": "Venice",
+            "objects": {
+                "key_1": {
+                    "name": "Boathouse Key",
+                },
+                "key_2": {
+                    "name": "Steel Key",
+                },
+                "key_3": {
+                    "name": "Iron Key",
+                }
+            }
+        },
+        {
+            "title": "Bartoli's Hideout",
+            "objects": {
+                "key_1": {
+                    "name": "Library Key",
+                },
+                "key_2": {
+                    "name": "Detonator Key",
+                }
+            }
+        },
+        {
+            "title": "Opera House",
+            "objects": {
+                "key_1": {
+                    "name": "Ornate Key",
+                },
+                "puzzle_1": {
+                    "name": "Relay Box",
+                },
+                "puzzle_2": {
+                    "name": "Circuit Board",
+                }
+            }
+        },
+        {
+            "title": "Offshore Rig",
+            "objects": {
+                "key_1": {
+                    "name": "Red Pass Card",
+                },
+                "key_2": {
+                    "name": "Yellow Pass Card",
+                },
+                "key_3": {
+                    "name": "Green Pass Card",
+                }
+            }
+        },
+        {
+            "title": "Diving Area",
+            "objects": {
+                "key_1": {
+                    "name": "Red Pass Card",
+                },
+                "key_4": {
+                    "name": "Blue Pass Card",
+                },
+                "puzzle_1": {
+                    "name": "Machine Chip",
+                }
+            }
+        },
+        {
+            "title": "40 Fathoms",
+        },
+        {
+            "title": "Wreck of the Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "Rest Room Key",
+                },
+                "key_2": {
+                    "name": "Rusty Key",
+                },
+                "key_3": {
+                    "name": "Cabin Key",
+                },
+                "puzzle_1": {
+                    "name": "Circuit Breaker",
+                }
+            }
+        },
+        {
+            "title": "Living Quarters",
+            "objects": {
+                "key_1": {
+                    "name": "Theater Key",
+                },
+                "key_2": {
+                    "name": "Rusty Key",
+                }
+            }
+        },
+        {
+            "title": "The Deck",
+            "objects": {
+                "key_2": {
+                    "name": "Stern Key",
+                },
+                "key_3": {
+                    "name": "Storage Key",
+                },
+                "key_4": {
+                    "name": "Cabin Key",
+                },
+                "puzzle_4": {
+                    "name": "The Seraph",
+                }
+            }
+        },
+        {
+            "title": "Tibetan Foothills",
+            "objects": {
+                "tiger": {
+                    "name": "Snow Leopard",
+                },
+                "key_1": {
+                    "name": "Drawbridge Key",
+                },
+                "key_2": {
+                    "name": "Hut Key",
+                },
+                "puzzle_4": {
+                    "name": "The Seraph",
+                }
+            }
+        },
+        {
+            "title": "Barkhang Monastery",
+            "objects": {
+                "key_1": {
+                    "name": "Strongroom Key",
+                },
+                "key_2": {
+                    "name": "Trapdoor Key",
+                },
+                "key_3": {
+                    "name": "Rooftops Key",
+                },
+                "key_4": {
+                    "name": "Main Hall Key",
+                },
+                "puzzle_1": {
+                    "name": "Prayer Wheels",
+                },
+                "puzzle_2": {
+                    "name": "Gemstones",
+                },
+                "puzzle_4": {
+                    "name": "The Seraph",
+                }
+            }
+        },
+        {
+            "title": "Catacombs of the Talion",
+            "objects": {
+                "tiger": {
+                    "name": "Snow Leopard",
+                },
+                "pickup_1": {
+                    "name": "Gong Hammer",
+                },
+                "puzzle_1": {
+                    "name": "Tibetan Mask",
+                }
+            }
+        },
+        {
+            "title": "Ice Palace",
+            "objects": {
+                "tiger": {
+                    "name": "White Tiger",
+                },
+                "key_2": {
+                    "name": "Gong Hammer",
+                },
+                "pickup_2": {
+                    "name": "Talion",
+                },
+                "puzzle_1": {
+                    "name": "Tibetan Mask",
+                }
+            }
+        },
+        {
+            "title": "Temple of Xian",
+            "objects": {
+                "key_2": {
+                    "name": "Gold Key",
+                },
+                "key_3": {
+                    "name": "Silver Key",
+                },
+                "key_4": {
+                    "name": "Main Chamber Key",
+                },
+                "puzzle_1": {
+                    "name": "The Dragon Seal",
+                }
+            }
+        },
+        {
+            "title": "Floating Islands",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mystic Plaque",
+                },
+                "puzzle_2": {
+                    "name": "Mystic Plaque",
+                }
+            }
+        },
+        {
+            "title": "The Dragon's Lair",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mystic Plaque",
+                },
+                "puzzle_2": {
+                    "name": "Dagger of Xian",
+                }
+            }
+        },
+        {
+            "title": "Home Sweet Home",
+            "objects": {
+                "key_1": {
+                    "name": "Gun Cupboard Key",
+                },
+                "puzzle_1": {
+                    "name": "Dagger of Xian",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "Venice",
+            "objects": {
+                "key_1": {
+                    "name": "Boathouse Key",
+                },
+                "key_2": {
+                    "name": "Steel Key",
+                },
+                "key_3": {
+                    "name": "Iron Key",
+                }
+            }
+        },
+        {
+            "title": "Wreck of the Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "Rest Room Key",
+                },
+                "key_2": {
+                    "name": "Rusty Key",
+                },
+                "key_3": {
+                    "name": "Cabin Key",
+                },
+                "puzzle_1": {
+                    "name": "Circuit Breaker",
+                }
+            }
+        },
+        {
+            "title": "Tibetan Foothills",
+            "objects": {
+                "tiger": {
+                    "name": "Snow Leopard",
+                },
+                "key_1": {
+                    "name": "Drawbridge Key",
+                },
+                "key_2": {
+                    "name": "Hut Key",
+                },
+                "puzzle_4": {
+                    "name": "The Seraph",
+                }
+            }
+        }
+    ],
+    "cutscenes": [
+        {
+            "title": "Cutscene 1",
+        },
+        {
+            "title": "Cutscene 2",
+        },
+        {
+            "title": "Cutscene 3",
+        },
+        {
+            "title": "Cutscene 4",
+        }
+    ],
+    "objects": {
+        "small_medipack": {
+            "name": "Small Medipack",
+        },
+        "large_medipack": {
+            "name": "Large Medipack",
+        },
+        "flare": {
+            "name": "Flare",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
+        "secret_1": {
+            "name": "Secret 1",
+        },
+        "secret_2": {
+            "name": "Secret 2",
+        },
+        "secret_3": {
+            "name": "Secret 3",
+        },
+        "pistols": {
+            "name": "Pistols",
+        },
+        "shotgun": {
+            "name": "Shotgun",
+        },
+        "magnums": {
+            "name": "Automatic Pistols",
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "harpoon_gun": {
+            "name": "Harpoon Gun",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "grenade_launcher": {
+            "name": "Grenade Launcher",
+        },
+        "pistols_ammo": {
+            "name": "Pistol Clips",
+        },
+        "shotgun_ammo": {
+            "name": "Shotgun Shells",
+        },
+        "magnums_ammo": {
+            "name": "Automatic Pistol Clips",
+        },
+        "uzis_ammo": {
+            "name": "Uzi Clips",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Harpoons",
+        },
+        "m16_ammo": {
+            "name": "M16 Clips",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Grenades",
+        },
+        "key_1": {
+            "name": "Key 1",
+        },
+        "key_2": {
+            "name": "Key 2",
+        },
+        "key_3": {
+            "name": "Key 3",
+        },
+        "key_4": {
+            "name": "Key 4",
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4",
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2",
+        },
+        "pda": {
+            "name": "Gameplay",
+        },
+        "compass": {
+            "name": "Statistics",
+        },
+        "passport": {
+            "name": "Game",
+        },
+        "photo": {
+            "name": "Lara's Home",
+        },
+        "graphics": {
+            "name": "Graphics",
+        },
+        "controls": {
+            "name": "Controls",
+        },
+        "sound": {
+            "name": "Sound",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_pistols": {
+            "name": "Pistols Animation",
+        },
+        "lara_hair": {
+            "name": "Lara's Braid",
+        },
+        "lara_shotgun": {
+            "name": "Shotgun Animation",
+        },
+        "lara_magnums": {
+            "name": "Magnums Animation",
+        },
+        "lara_uzis": {
+            "name": "Uzis Animation",
+        },
+        "lara_m16": {
+            "name": "M16 Animation",
+        },
+        "lara_grenade": {
+            "name": "Grenade Launcher Animation",
+        },
+        "lara_harpoon": {
+            "name": "Harpoon Animation",
+        },
+        "lara_flare": {
+            "name": "Flare Animation",
+        },
+        "lara_skidoo": {
+            "name": "Snowmobile Animation",
+        },
+        "lara_boat": {
+            "name": "Boat Animation",
+        },
+        "lara_extra": {
+            "name": "Lara's Extra Animation",
+        },
+        "skidoo_fast": {
+            "name": "Red Snowmobile",
+        },
+        "boat": {
+            "name": "Boat",
+        },
+        "dog": {
+            "names": [
+                "Dog",
+                "Doberman",
+            ]
+        },
+        "cult_1": {
+            "name": "Masked Goon 1",
+        },
+        "cult_1a": {
+            "name": "Masked Goon 2",
+        },
+        "cult_1b": {
+            "name": "Masked Goon 3",
+        },
+        "cult_2": {
+            "name": "Knife Thrower",
+        },
+        "cult_3": {
+            "name": "Shotgun Goon",
+        },
+        "mouse": {
+            "name": "Rat",
+        },
+        "dragon_front": {
+            "name": "Dragon Front",
+        },
+        "dragon_back": {
+            "name": "Dragon Back",
+        },
+        "gondola": {
+            "name": "Gondola",
+        },
+        "shark": {
+            "name": "Shark",
+        },
+        "eel": {
+            "name": "Eel",
+        },
+        "big_eel": {
+            "name": "Big Eel",
+        },
+        "barracuda": {
+            "name": "Barracuda",
+        },
+        "diver": {
+            "name": "Scuba Diver",
+        },
+        "worker_1": {
+            "name": "Gunman Goon 1",
+        },
+        "worker_2": {
+            "name": "Gunman Goon 2",
+        },
+        "worker_3": {
+            "name": "Stick Wielding Goon 1",
+        },
+        "worker_4": {
+            "name": "Stick Wielding Goon 2",
+        },
+        "worker_5": {
+            "name": "Flamethrower Goon",
+        },
+        "jelly": {
+            "name": "Jellyfish",
+        },
+        "spider": {
+            "name": "Spider",
+        },
+        "big_spider": {
+            "name": "Giant Spider",
+        },
+        "crow": {
+            "name": "Crow",
+        },
+        "tiger": {
+            "name": "Tiger",
+        },
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "xian_spearman": {
+            "name": "Xian Spearman",
+        },
+        "xian_spearman_statue": {
+            "name": "Xian Spearman Statue",
+        },
+        "xian_knight": {
+            "name": "Xian Knight",
+        },
+        "xian_knight_statue": {
+            "name": "Xian Knight Statue",
+        },
+        "yeti": {
+            "name": "Yeti",
+        },
+        "bird_guardian": {
+            "name": "Bird Monster",
+        },
+        "eagle": {
+            "name": "Eagle",
+        },
+        "bandit_1": {
+            "names": [
+                "Mercenary 1",
+                "Masked Goon 1",
+            ]
+        },
+        "bandit_2": {
+            "names": [
+                "Mercenary 2",
+                "Masked Goon 2",
+            ]
+        },
+        "bandit_2b": {
+            "names": [
+                "Mercenary 3",
+                "Masked Goon 3",
+            ]
+        },
+        "skidoo_armed": {
+            "name": "Black Snowmobile",
+        },
+        "skidoo_driver": {
+            "name": "Black Snowmobile Driver",
+        },
+        "monk_1": {
+            "name": "Monk 1",
+        },
+        "monk_2": {
+            "name": "Monk 2",
+        },
+        "falling_block_1": {
+            "names": [
+                "Falling Block 1",
+                "Collapsible Floor 1",
+                "Collapsible Tiles 1",
+            ]
+        },
+        "falling_block_2": {
+            "names": [
+                "Falling Block 2",
+                "Collapsible Floor 2",
+                "Collapsible Tiles 2",
+            ]
+        },
+        "falling_block_3": {
+            "names": [
+                "Falling Block 3",
+                "Collapsible Floor 3",
+                "Collapsible Tiles 3",
+                "Loose Boards",
+            ]
+        },
+        "pendulum_1": {
+            "name": "Sandbag",
+        },
+        "spikes": {
+            "name": "Spikes",
+        },
+        "rolling_ball_1": {
+            "names": [
+                "Boulder 1",
+                "Rolling Ball",
+            ]
+        },
+        "dart": {
+            "name": "Disc",
+        },
+        "dart_emitter": {
+            "name": "Disc Emitter",
+        },
+        "drawbridge": {
+            "name": "Drawbridge",
+        },
+        "teeth_trap": {
+            "name": "Teeth Trap",
+        },
+        "lift": {
+            "name": "Lift",
+        },
+        "general": {
+            "name": "Minisub",
+        },
+        "movable_block_1": {
+            "names": [
+                "Push Block 1",
+                "Movable Block 1",
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "Push Block 2",
+                "Movable Block 2",
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "Push Block 3",
+                "Movable Block 3",
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "Push Block 4",
+                "Movable Block 4",
+            ]
+        },
+        "big_bowl": {
+            "name": "Lava Bowl",
+        },
+        "window_1": {
+            "name": "Breakable Window 1",
+        },
+        "window_2": {
+            "name": "Breakable Window 2",
+        },
+        "window_3": {
+            "name": "Breakable Window 3",
+        },
+        "window_4": {
+            "name": "Breakable Window 4",
+        },
+        "propeller_1": {
+            "name": "Airplane Propeller",
+        },
+        "power_saw": {
+            "name": "Power Saw",
+        },
+        "hook": {
+            "name": "Hook",
+        },
+        "falling_ceiling_1": {
+            "name": "Falling Ceiling 1",
+        },
+        "spinning_blade": {
+            "name": "Spinning Blade",
+        },
+        "blade": {
+            "name": "Wall-mounted Blade",
+        },
+        "killer_statue": {
+            "name": "Statue with Sword",
+        },
+        "rolling_ball_2": {
+            "names": [
+                "Boulder 2",
+                "Rolling Ball 2",
+            ]
+        },
+        "icicle": {
+            "name": "Icicles",
+        },
+        "spike_wall": {
+            "name": "Spike Wall",
+        },
+        "springboard": {
+            "name": "Springboard",
+        },
+        "ceiling_spikes": {
+            "name": "Spiky Ceiling",
+        },
+        "bell": {
+            "name": "Bell",
+        },
+        "water_sprite": {
+            "name": "Boat Wake",
+        },
+        "snow_sprite": {
+            "name": "Snowmobile Wake",
+        },
+        "skidoo_track": {
+            "name": "Snowmobile Track",
+        },
+        "switch_type_airlock": {
+            "name": "Airlock Switch",
+        },
+        "switch_type_small": {
+            "name": "Small Switch",
+        },
+        "propeller_2": {
+            "name": "Underwater Propeller",
+        },
+        "propeller_3": {
+            "name": "Air Fan",
+        },
+        "pendulum_2": {
+            "name": "Swinging Box",
+        },
+        "mesh_swap_1": {
+            "name": "Mesh Swap 1",
+        },
+        "mesh_swap_2": {
+            "name": "Mesh Swap 2",
+        },
+        "lara_swap": {
+            "name": "Lara Mesh Swap",
+        },
+        "text_box": {
+            "name": "UI Frame",
+        },
+        "rolling_ball_3": {
+            "names": [
+                "Boulder 3",
+                "Rolling Ball 3",
+            ]
+        },
+        "zipline_handle": {
+            "name": "Zipline Handle",
+        },
+        "switch_type_button": {
+            "names": [
+                "Button",
+                "Push Button",
+                "Switch",
+            ]
+        },
+        "switch_type_normal": {
+            "names": [
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Underwater Lever",
+                "Underwater Switch",
+            ]
+        },
+        "door_type_1": {
+            "name": "Door 1",
+        },
+        "door_type_2": {
+            "name": "Door 2",
+        },
+        "door_type_3": {
+            "name": "Door 3",
+        },
+        "door_type_4": {
+            "name": "Door 4",
+        },
+        "door_type_5": {
+            "name": "Door 5",
+        },
+        "door_type_6": {
+            "name": "Door 6",
+        },
+        "door_type_7": {
+            "name": "Door 7",
+        },
+        "door_type_8": {
+            "name": "Door 8",
+        },
+        "trapdoor_type_1": {
+            "name": "Trapdoor 1",
+        },
+        "trapdoor_type_2": {
+            "name": "Trapdoor 2",
+        },
+        "trapdoor_type_3": {
+            "name": "Trapdoor 3",
+        },
+        "bridge_flat": {
+            "name": "Bridge Flat",
+        },
+        "bridge_tilt_1": {
+            "name": "Bridge Tilt 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Bridge Tilt 2",
+        },
+        "player_1": {
+            "name": "Cutscene Actor 1",
+        },
+        "player_2": {
+            "name": "Cutscene Actor 2",
+        },
+        "player_3": {
+            "name": "Cutscene Actor 3",
+        },
+        "player_4": {
+            "name": "Cutscene Actor 4",
+        },
+        "player_5": {
+            "name": "Cutscene Actor 5",
+        },
+        "player_6": {
+            "name": "Cutscene Actor 6",
+        },
+        "player_7": {
+            "name": "Cutscene Actor 7",
+        },
+        "player_8": {
+            "name": "Cutscene Actor 8",
+        },
+        "player_9": {
+            "name": "Cutscene Actor 9",
+        },
+        "player_10": {
+            "name": "Cutscene Actor 10",
+        },
+        "key_hole_1": {
+            "name": "Keyhole 1",
+        },
+        "key_hole_2": {
+            "name": "Keyhole 2",
+        },
+        "key_hole_3": {
+            "name": "Keyhole 3",
+        },
+        "key_hole_4": {
+            "name": "Keyhole 4",
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Hole 2 (Empty)",
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Hole 3 (Empty)",
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Hole 4 (Empty)",
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Hole 2 (Done)",
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Hole 3 (Done)",
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Hole 4 (Done)",
+        },
+        "sphere_of_doom_1": {
+            "name": "Dragon Explosion 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Dragon Explosion 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Dragon Explosion 3",
+        },
+        "alarm_sound": {
+            "name": "Alarm",
+        },
+        "bird_tweeter_1": {
+            "name": "Dripping Water",
+        },
+        "trex": {
+            "name": "T-Rex",
+        },
+        "bird_tweeter_2": {
+            "name": "Singing Birds",
+        },
+        "clock_chimes": {
+            "name": "Bartoli Hideout clock",
+        },
+        "dragon_bones_1": {
+            "name": "Placeholder",
+        },
+        "dragon_bones_2": {
+            "name": "Dragon Bones Front",
+        },
+        "dragon_bones_3": {
+            "name": "Dragon Bones Back",
+        },
+        "hot_liquid": {
+            "name": "Extra Fire",
+        },
+        "boat_bits": {
+            "name": "Boat Bits",
+        },
+        "mine": {
+            "name": "Aquatic Mine",
+        },
+        "inv_background": {
+            "name": "Menu Background",
+        },
+        "fx_reserved": {
+            "name": "Gray disk",
+        },
+        "gong_bonger": {
+            "name": "Gong Stick",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "detonator_box": {
+            "name": "Detonator Box",
+        },
+        "copter": {
+            "name": "Helicopter",
+        },
+        "explosion_1": {
+            "name": "Explosion 1",
+        },
+        "splash_1": {
+            "name": "Water Ripples 1",
+        },
+        "bubble_1": {
+            "name": "Bubble 1",
+        },
+        "bubble_emitter": {
+            "name": "Bubble Emitter",
+        },
+        "blood_1": {
+            "name": "Blood 1",
+        },
+        "dart_effect": {
+            "name": "Dart Effect",
+        },
+        "flare_fire": {
+            "name": "Flare sparks",
+        },
+        "glow": {
+            "name": "Glow",
+        },
+        "glow_reserved": {
+            "name": "Map Glow",
+        },
+        "ricochet": {
+            "name": "Ricochet",
+        },
+        "twinkle": {
+            "name": "Sparkles",
+        },
+        "gun_flash": {
+            "name": "Gun Flash",
+        },
+        "m16_flash": {
+            "name": "M16 Flash",
+        },
+        "body_part": {
+            "name": "Body Part",
+        },
+        "camera_target": {
+            "name": "Camera Target",
+        },
+        "waterfall": {
+            "name": "Waterfall Mist",
+        },
+        "missile_harpoon": {
+            "name": "Missile Harpoon",
+        },
+        "missile_flame": {
+            "name": "Missile Flame",
+        },
+        "missile_knife": {
+            "name": "Missile Knife",
+        },
+        "grenade": {
+            "name": "Grenade",
+        },
+        "harpoon_bolt": {
+            "name": "Harpoon Bolt",
+        },
+        "ember": {
+            "name": "Ember",
+        },
+        "ember_emitter": {
+            "name": "Ember Emitter",
+        },
+        "flame": {
+            "names": [
+                "Flame",
+                "Fire",
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Flame Emitter",
+                "Fire Emitter",
+            ]
+        },
+        "skybox": {
+            "name": "Skybox",
+        },
+        "alphabet": {
+            "name": "Alphabet",
+        },
+        "dying_monk": {
+            "name": "Dying monk",
+        },
+        "ding_dong": {
+            "name": "Doorbell",
+        },
+        "lara_alarm": {
+            "name": "Alarm Bell",
+        },
+        "mini_copter": {
+            "name": "Helicopter 2",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "assault_digits": {
+            "name": "Assault Digits",
+        },
+        "combat_end": {
+            "name": "Combat End",
+        },
+        "cut_shotgun": {
+            "name": "Shotgun Shower Animation",
+        },
+        "earthquake": {
+            "name": "Earthquake",
+        }
+    },
+    "game_strings": {
+        "CMD_WINSTON_DEAD": "Your butler is dead. You monster!",
+        "CMD_WINSTON_SPAWNED": "Summoned Winston near Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "Failed to summon Winston",
+        "CMD_WINSTON_TELEPORTED": "Summoned Winston near Lara",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Camera Reset",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "Equip M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Automatic Pistols",
+        "ENUM_INPUT_ROLE_USE_FLARE": "Flare",
+        "MISC_NONE": "None",
+        "PASSPORT_EXIT_DEMO": "Exit Demo",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
+        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixes the shotgun firing when drawn that occasionally fails to produce a flash or sound.",
+        "STATS_AMMO_HITS": "Hits",
+        "STATS_AMMO_USED": "Ammo Used",
+        "STATS_ASSAULT_FINISH": "Finish",
+        "STATS_ASSAULT_NO_TIMES_SET": "No Times Set",
+        "STATS_ASSAULT_TITLE": "BEST TIMES",
+        "STATS_DISTANCE_TRAVELLED": "Distance Traveled",
+        "STATS_KILLS": "Kills",
+        "STATS_LEVEL": "Level",
+        "STATS_MEDIPACKS_USED": "Health Packs Used",
+        "STATS_SECRETS": "Secrets Found",
+        "STATS_TIME_TAKEN": "Time Taken",
+    }
+}

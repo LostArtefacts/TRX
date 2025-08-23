@@ -3,15 +3,14 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/vars.h"
-#include "game/output.h"
-#include "game/output/meshes/objects.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 void Object_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
@@ -164,8 +163,8 @@ void Object_DrawPickupItem(const ITEM *const item)
     Output_CalculateLight(item->pos, room_num);
 
     frame = obj->frame_base;
-    int32_t clip = Output_GetObjectBounds(&frame->bounds);
-    if (clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
         // From this point on the function is a slightly customised version
         // of the code in DrawAnimatingItem starting with the line that
         // matches the following line.
@@ -268,7 +267,7 @@ void Object_SetMeshReflective(
     for (int32_t i = 0; i < mesh->num_flat_face3s; i++) {
         mesh->flat_face3s[i].enable_reflections = enabled;
     }
-    Output_Meshes_ObserveObjectMeshUpdate(mesh);
+    Output_DispatchObjectMeshUpdate(obj->mesh_idx + mesh_idx);
 }
 
 void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
@@ -280,7 +279,7 @@ void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
 }
 
 void Object_DrawMesh(
-    const int32_t mesh_idx, const int32_t clip, const bool interpolated)
+    const int32_t mesh_idx, const CLIP clip, const bool interpolated)
 {
     const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
     if (interpolated) {

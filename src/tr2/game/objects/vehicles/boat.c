@@ -1,10 +1,7 @@
 #include "decomp/decomp.h"
 #include "game/effects.h"
-#include "game/input.h"
 #include "game/objects/common.h"
 #include "game/objects/traps/gondola.h"
-#include "game/output.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
@@ -13,9 +10,12 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define BOAT_FALL_ANIM 15

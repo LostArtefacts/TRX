@@ -2,12 +2,12 @@
 
 #include "game/gun/gun_misc.h"
 #include "game/los.h"
-#include "game/random.h"
 #include "game/spawn.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define M_SHOOT_TARGETING_SPEED 300
@@ -63,28 +63,17 @@ bool Creature_ShootAtLara(
         Effect_Get(effect_num)->rot.y += extra_rotation;
     }
 
-    GAME_VECTOR start = {
-        .pos = {
-            .x = item->pos.x,
-            .y = item->pos.y - STEP_L * 3,
-            .z = item->pos.z,
-        },
-        .room_num = item->room_num,
+    const XYZ_32 start = {
+        .x = item->pos.x,
+        .y = item->pos.y - STEP_L * 3,
+        .z = item->pos.z,
     };
-
-    GAME_VECTOR target = {
-        .pos = {
-            .x = target_item->pos.x,
-            .y = target_item->pos.y - STEP_L * 3,
-            .z = target_item->pos.z,
-        },
-        .room_num = target_item->room_num,
+    const XYZ_32 target = {
+        .x = target_item->pos.x,
+        .y = target_item->pos.y - STEP_L * 3,
+        .z = target_item->pos.z,
     };
-
-    const int16_t item_to_smash = LOS_CheckSmashable(&start, &target);
-    if (item_to_smash != NO_ITEM) {
-        Gun_SmashItem(item_to_smash, LGT_UNARMED);
-    }
+    Gun_SmashItems(start, target, nullptr);
 
     return is_targetable;
 }

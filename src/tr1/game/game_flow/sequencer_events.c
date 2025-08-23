@@ -129,7 +129,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 
     if (current_level == GF_GetLastLevel()) {
         g_Config.profile.new_game_plus_unlock = true;
-        Config_Write();
+        Config_Update();
     }
     const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
@@ -137,9 +137,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     if (g_GameInfo.select_level_num != -1) {
         const GF_LEVEL *const select_level =
             GF_GetLevel(GFLT_MAIN, g_GameInfo.select_level_num);
-        if (current_level != nullptr && select_level != nullptr) {
-            Savegame_CarryCurrentInfoToNextLevel(current_level, select_level);
-        }
         return (GF_COMMAND) {
             .action = GF_SELECT_GAME,
             .param = g_GameInfo.select_level_num,
@@ -149,10 +146,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-
-    // carry info to the next level
-    Savegame_CarryCurrentInfoToNextLevel(current_level, next_level);
-    Savegame_ApplyLogicToCurrentInfo(next_level);
 
     if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
@@ -232,6 +225,7 @@ void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     Room_SetAbyssHeight(0);
+    Lara_SetControllable(false);
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }

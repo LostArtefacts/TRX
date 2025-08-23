@@ -8,8 +8,6 @@
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/output.h"
-#include "game/overlay.h"
 #include "game/room_draw.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -23,6 +21,8 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
@@ -44,7 +44,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 
 void Game_End(void)
 {
-    Overlay_HideGameInfo();
+    Savegame_PersistGameToCurrentInfo(Game_GetCurrentLevel());
     Sound_StopAll();
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
@@ -153,7 +153,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Sound_EndScene();
     ItemAction_RunActive();
     Overlay_Animate(1);
-    Output_AnimateTextures(1 * TICKS_PER_FRAME);
+    Output_AnimateTextures(1);
 
     if (!Game_IsInGym() || Gym_IsAssaultTimerActive()) {
         Stats_UpdateTimer();
@@ -167,13 +167,11 @@ void Game_Draw(bool draw_overlay)
     Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num);
-    Output_DrawPolyList();
     if (draw_overlay) {
         Overlay_DrawGameInfo();
-        Output_DrawPolyList();
-    } else {
-        Overlay_HideGameInfo();
     }
+    SceneCompositor_Flush();
+    Game_DrawFade();
 }
 
 void Game_ProcessInput(void)

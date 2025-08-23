@@ -1,212 +1,357 @@
-## Windows / Linux
+# Windows / Linux
 
-### Installing (simplified)
+## Installing (simplified – Windows only)
 
-1. Head over to GitHub releases: https://github.com/LostArtefacts/TRX/releases
-2. Download the TR1X installer. Your browser may complain that the .exe is unsafe, but it's OK to ignore this alert.
-3. Mark the installer EXE as safe to run by right-clicking on the .exe, going to properties and clicking "Unblock".
-4. Run the installer and proceed with the steps.
+1. Download the TR1X installer.
+2. Mark the installer EXE as safe to run:
+    - Right-click on the `.exe`.
+    - Go to properties.
+    - Click "Unblock".
+3. Run the installer and proceed with the steps.
 
-We hope that eventually these alerts will go away as the popularity of the project rises.
+> [!NOTE]
+> When downloading TR1X, you might see a warning from Windows Defender, your browser, or another security tool. Modern antivirus systems use AI‑based heuristics – they flag anything uncommon or unsigned as suspicious, even if it's perfectly safe. TR1X can trigger these alerts because:
+>
+> - It isn't signed with a costly commercial certificate.
+> - It's a niche, community‑built project, so not widely recognized.
+> - It's a custom build, not from the Microsoft Store.
+>
+> Don't worry: TR1X is open‑source, and you can inspect the code yourself on [GitHub](https://github.com/LostArtefacts/TRX/).
 
-### Installing (advanced / manual)
+## Installing (manual)
 
-1. Head over to GitHub releases: https://github.com/LostArtefacts/TRX/releases
-2. Download the TR1X zip file.
-3. Extract the zip file into a directory of your choice.  
-   Make sure you choose to overwrite existing directories and files.
-4. (First time installation) Put your original game files into the target directory.
-    1. For Steam and GOG users, extract the original `GAME.BIN` file using a tool such as UltraISO to your target directory.
-       Note that neither the GOG nor the Steam releases ship the music files. You have a few options here:
-       - You can download the music files from the link below.  
-         https://lostartefacts.dev/aux/tr1x/music.zip
-         The legality of this approach is disputable.
-       - Rip the assets yourself from a physical PlayStation/SegaSaturn disk.
+1. Download the TR1X zip file.
+2. Extract the zip file into a directory of your choice.  
+     Make sure you choose to overwrite existing directories and files.
+3. If installing for the first time – put your original game files into the target directory.
 
-       Optionally you can also install the Unfinished Business expansion pack files.
-       - Either one of these these variants:
-         - https://lostartefacts.dev/aux/tr1x/trub-music.zip (fan-made patch to include music triggers)
-         - https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (original level files, which do not include music triggers)
-       - Or the more manual link: https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
-   2. For TombATI users this means copying the `data`, `fmv` and `music` directories.
-5. To play the game, run `TR1X.exe`.
-6. To play the Unfinished Business expansion pack, run `TR1X.exe -gold`.
+    **Steam / GOG users**
 
-If you install everything correctly, your game directory should look more or
-less like this (click to expand):
+    1. Extract the original `GAME.BIN` file using a tool such as UltraISO to your target directory.
+    2. Get the music files – unfortunately, neither GOG nor Steam ship these assets.
+        - You can download the music files from the link below.  
+            https://lostartefacts.dev/aux/tr1x/music.zip  
+            (The legality of this approach is disputable.)
+        - Rip the assets yourself from a physical PlayStation/SegaSaturn disk.
+    3. Optionally, install the Unfinished Business expansion pack.
+        - Pre-packaged level files containing fan-made patch to include music triggers:  
+            https://lostartefacts.dev/aux/tr1x/trub-music.zip
+        - Pre-packaged original level files, which do not include music triggers:  
+            https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip
+        - Original ISO - requires more involved manual extraction:  
+            https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
+
+    **TombATI users**
+
+    1. Copy the `data`, `fmv` and `music` directories.
+
+## Verifying the installation
+
+If you install everything correctly, your game directory should look more or less like this (click to expand):
 
 <details data-id="file-tree-win">
-<p><em>* Will not be present until the game has been launched.</em></p>
-<pre>
-.
+<pre><code>.
 ├── cfg
-│   ├── TR1X.json5 *
-│   ├── TR1X_gameflow.json5
-│   ├── TR1X_gameflow_demo_pc.json5
-│   ├── TR1X_gameflow_level.json5
-│   ├── TR1X_gameflow_ub.json5
-│   ├── TR1X_strings.json5
-│   ├── TR1X_strings_demo_pc.json5
-│   ├── TR1X_strings_level.json5
-│   └── TR1X_strings_ub.json5
+│   ├── base_strings-de.json5
+│   ├── base_strings-en-gb.json5
+│   ├── base_strings-fr.json5
+│   ├── base_strings-gd.json5
+│   ├── base_strings-it.json5
+│   ├── base_strings-pl.json5
+│   ├── base_strings-ru.json5
+│   ├── base_strings.json5
+│   ├── poses.json5
+│   ├── tr1
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-en-gb.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
+│   │   └── strings.json5
+│   ├── tr1-demo-pc
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
+│   │   └── strings.json5
+│   ├── tr1-level
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
+│   │   └── strings.json5
+│   ├── tr1-ub
+│   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
+│   │   └── strings.json5
+│   └── TR1X.json5*
 ├── data
-│   ├── cat.phd
-│   ├── cut1.phd
-│   ├── cut2.phd
-│   ├── cut3.phd
-│   ├── cut4.phd
-│   ├── egypt.phd
-│   ├── end2.phd
-│   ├── end.phd
-│   ├── gym.phd
-│   ├── level10a.phd
-│   ├── level10b.phd
-│   ├── level10c.phd
-│   ├── level1.phd
-│   ├── level2.phd
-│   ├── level3a.phd
-│   ├── level3b.phd
-│   ├── level4.phd
-│   ├── level5.phd
-│   ├── level6.phd
-│   ├── level7a.phd
-│   ├── level7b.phd
-│   ├── level8a.phd
-│   ├── level8b.phd
-│   ├── level8c.phd
-│   ├── title.phd
-│   ├── images
-│   │   ├── atlantis.webp
-│   │   ├── credits_1.webp
-│   │   ├── credits_2.webp
-│   │   ├── credits_3.webp
-│   │   ├── credits_3_alt.webp
-│   │   ├── credits_ps1.webp
-│   │   ├── egypt.webp
-│   │   ├── eidos.webp
-│   │   ├── end.webp
-│   │   ├── greece.webp
-│   │   ├── greece_saturn.webp
-│   │   ├── gym.webp
-│   │   ├── install.webp
-│   │   ├── peru.webp
-│   │   ├── title.webp
-│   │   ├── title_og_alt.webp
-│   │   ├── title_ub.webp
-│   │   └── og
-│   │       ├── cred0.pcx
-│   │       ├── cred1.pcx
-│   │       ├── cred2.pcx
-│   │       ├── cred3.pcx
-│   │       ├── eidospc.pcx
-│   │       ├── end.pcx
-│   │       ├── install.pcx
-│   │       ├── titleh.pcx
-│   │       └── titleh_ub.pcx
-│   └── injections
-│       ├── atlantis_fd.bin
-│       ├── atlantis_textures.bin
-│       ├── backpac.bin
-│       └── etc...
+│   ├── cat.phd
+│   ├── cut1.phd
+│   ├── cut2.phd
+│   ├── cut3.phd
+│   ├── cut4.phd
+│   ├── egypt.phd
+│   ├── end2.phd
+│   ├── end.phd
+│   ├── gym.phd
+│   ├── images
+│   │   ├── atlantis.webp
+│   │   ├── credits_1.webp
+│   │   ├── credits_2.webp
+│   │   ├── credits_3.webp
+│   │   ├── credits_3_alt.webp
+│   │   ├── credits_ps1.webp
+│   │   ├── credits_ub.webp
+│   │   ├── egypt.webp
+│   │   ├── eidos.webp
+│   │   ├── end.webp
+│   │   ├── greece.webp
+│   │   ├── greece_saturn.webp
+│   │   ├── gym.webp
+│   │   ├── install.webp
+│   │   ├── peru.webp
+│   │   ├── title.webp
+│   │   ├── title_og_alt.webp
+│   │   └── title_ub.webp
+│   ├── injections
+│   │   ├── atlantis_door_sfx.bin
+│   │   ├── atlantis_fd.bin
+│   │   ├── atlantis_itemrots.bin
+│   │   ├── atlantis_textures.bin
+│   │   ├── backpack.bin
+│   │   ├── backpack_cut.bin
+│   │   ├── braid.bin
+│   │   ├── braid_cut1.bin
+│   │   ├── braid_cut2_cut4.bin
+│   │   ├── braid_valley.bin
+│   │   ├── bubbles.bin
+│   │   ├── cat_cameras.bin
+│   │   ├── cat_fd.bin
+│   │   ├── cat_itemrots.bin
+│   │   ├── cat_meshfixes.bin
+│   │   ├── cat_textures.bin
+│   │   ├── caves_fd.bin
+│   │   ├── caves_itemrots.bin
+│   │   ├── caves_textures.bin
+│   │   ├── cistern_fd.bin
+│   │   ├── cistern_itemrots.bin
+│   │   ├── cistern_plants.bin
+│   │   ├── cistern_skybox.bin
+│   │   ├── cistern_textures.bin
+│   │   ├── colosseum_fd.bin
+│   │   ├── colosseum_itemrots.bin
+│   │   ├── colosseum_skybox.bin
+│   │   ├── colosseum_textures.bin
+│   │   ├── cut3_textures.bin
+│   │   ├── cut4_textures.bin
+│   │   ├── door58_frames.bin
+│   │   ├── door59_frames.bin
+│   │   ├── door59_sfx.bin
+│   │   ├── door60_frames.bin
+│   │   ├── door61_sfx.bin
+│   │   ├── egypt_cameras.bin
+│   │   ├── egypt_fd.bin
+│   │   ├── egypt_itemrots.bin
+│   │   ├── egypt_meshfixes.bin
+│   │   ├── egypt_textures.bin
+│   │   ├── explosion.bin
+│   │   ├── folly_fd.bin
+│   │   ├── folly_itemrots.bin
+│   │   ├── folly_pickup_meshes.bin
+│   │   ├── folly_textures.bin
+│   │   ├── font.bin
+│   │   ├── gun_glow.bin
+│   │   ├── gym_textures.bin
+│   │   ├── hive_fd.bin
+│   │   ├── hive_itemrots.bin
+│   │   ├── hive_textures.bin
+│   │   ├── khamoon_fd.bin
+│   │   ├── khamoon_itemrots.bin
+│   │   ├── khamoon_meshfixes.bin
+│   │   ├── khamoon_mummy.bin
+│   │   ├── khamoon_textures.bin
+│   │   ├── lara_animations.bin
+│   │   ├── lara_gym_guns.bin
+│   │   ├── midas_itemrots.bin
+│   │   ├── midas_textures.bin
+│   │   ├── mines_cameras.bin
+│   │   ├── mines_door_sfx.bin
+│   │   ├── mines_fd.bin
+│   │   ├── mines_itemrots.bin
+│   │   ├── mines_meshfixes.bin
+│   │   ├── mines_pushblocks.bin
+│   │   ├── mines_textures.bin
+│   │   ├── obelisk_fd.bin
+│   │   ├── obelisk_itemrots.bin
+│   │   ├── obelisk_meshfixes.bin
+│   │   ├── obelisk_skybox.bin
+│   │   ├── obelisk_textures.bin
+│   │   ├── panther_sfx.bin
+│   │   ├── pda_model.bin
+│   │   ├── photo.bin
+│   │   ├── pickup_aid.bin
+│   │   ├── purple_crystal.bin
+│   │   ├── pyramid_fd.bin
+│   │   ├── pyramid_itemrots.bin
+│   │   ├── pyramid_textures.bin
+│   │   ├── qualopec_door_sfx.bin
+│   │   ├── qualopec_fd.bin
+│   │   ├── qualopec_itemrots.bin
+│   │   ├── qualopec_textures.bin
+│   │   ├── sanctuary_fd.bin
+│   │   ├── sanctuary_itemrots.bin
+│   │   ├── sanctuary_textures.bin
+│   │   ├── scion_collision.bin
+│   │   ├── skate_kid_sfx.bin
+│   │   ├── sprite_alignment.bin
+│   │   ├── stronghold_fd.bin
+│   │   ├── stronghold_itemrots.bin
+│   │   ├── stronghold_textures.bin
+│   │   ├── tihocan_fd.bin
+│   │   ├── tihocan_itemrots.bin
+│   │   ├── tihocan_textures.bin
+│   │   ├── title_textures.bin
+│   │   ├── uzi_sfx.bin
+│   │   ├── valley_fd.bin
+│   │   ├── valley_itemrots.bin
+│   │   ├── valley_skybox.bin
+│   │   ├── valley_textures.bin
+│   │   ├── vilcabamba_door_sfx.bin
+│   │   ├── vilcabamba_itemrots.bin
+│   │   └── vilcabamba_textures.bin
+│   ├── level1.phd
+│   ├── level2.phd
+│   ├── level3a.phd
+│   ├── level3b.phd
+│   ├── level4.phd
+│   ├── level5.phd
+│   ├── level6.phd
+│   ├── level7a.phd
+│   ├── level7b.phd
+│   ├── level8a.phd
+│   ├── level8b.phd
+│   ├── level8c.phd
+│   ├── level10a.phd
+│   ├── level10b.phd
+│   ├── level10c.phd
+│   └── title.phd
 ├── fmv
-│   ├── cafe.rpl
-│   ├── canyon.rpl
-│   ├── core.avi
-│   ├── end.rpl
-│   ├── escape.rpl
-│   ├── lift.rpl
-│   ├── mansion.rpl
-│   ├── prison.rpl
-│   ├── pyramid.rpl
-│   ├── snow.rpl
-│   └── vision.rpl
+│   ├── cafe.rpl
+│   ├── canyon.rpl
+│   ├── core.avi
+│   ├── end.rpl
+│   ├── escape.rpl
+│   ├── lift.rpl
+│   ├── mansion.rpl
+│   ├── prison.rpl
+│   ├── pyramid.rpl
+│   ├── snow.rpl
+│   └── vision.rpl
 ├── music
-│   ├── track02.flac
-│   ├── track03.flac
-│   ├── track04.flac
-│   ├── track05.flac
-│   ├── track06.flac
-│   ├── track07.flac
-│   ├── track08.flac
-│   ├── track09.flac
-│   ├── track10.flac
-│   ├── track11.flac
-│   ├── track12.flac
-│   ├── track13.flac
-│   ├── track14.flac
-│   ├── track15.flac
-│   ├── track16.flac
-│   ├── track17.flac
-│   ├── track18.flac
-│   ├── track19.flac
-│   ├── track20.flac
-│   ├── track21.flac
-│   ├── track22.flac
-│   ├── track23.flac
-│   ├── track24.flac
-│   ├── track25.flac
-│   ├── track26.flac
-│   ├── track27.flac
-│   ├── track28.flac
-│   ├── track29.flac
-│   ├── track30.flac
-│   ├── track31.flac
-│   ├── track32.flac
-│   ├── track33.flac
-│   ├── track34.flac
-│   ├── track35.flac
-│   ├── track36.flac
-│   ├── track37.flac
-│   ├── track38.flac
-│   ├── track39.flac
-│   ├── track40.flac
-│   ├── track41.flac
-│   ├── track42.flac
-│   ├── track43.flac
-│   ├── track44.flac
-│   ├── track45.flac
-│   ├── track46.flac
-│   ├── track47.flac
-│   ├── track48.flac
-│   ├── track49.flac
-│   ├── track50.flac
-│   ├── track51.flac
-│   ├── track52.flac
-│   ├── track53.flac
-│   ├── track54.flac
-│   ├── track55.flac
-│   ├── track56.flac
-│   ├── track57.flac
-│   ├── track58.flac
-│   ├── track59.flac
-│   └── track60.flac
+│   ├── track02.flac
+│   ├── track03.flac
+│   ├── track04.flac
+│   ├── track05.flac
+│   ├── track06.flac
+│   ├── track07.flac
+│   ├── track08.flac
+│   ├── track09.flac
+│   ├── track10.flac
+│   ├── track11.flac
+│   ├── track12.flac
+│   ├── track13.flac
+│   ├── track14.flac
+│   ├── track15.flac
+│   ├── track16.flac
+│   ├── track17.flac
+│   ├── track18.flac
+│   ├── track19.flac
+│   ├── track20.flac
+│   ├── track21.flac
+│   ├── track22.flac
+│   ├── track23.flac
+│   ├── track24.flac
+│   ├── track25.flac
+│   ├── track26.flac
+│   ├── track27.flac
+│   ├── track28.flac
+│   ├── track29.flac
+│   ├── track30.flac
+│   ├── track31.flac
+│   ├── track32.flac
+│   ├── track33.flac
+│   ├── track34.flac
+│   ├── track35.flac
+│   ├── track36.flac
+│   ├── track37.flac
+│   ├── track38.flac
+│   ├── track39.flac
+│   ├── track40.flac
+│   ├── track41.flac
+│   ├── track42.flac
+│   ├── track43.flac
+│   ├── track44.flac
+│   ├── track45.flac
+│   ├── track46.flac
+│   ├── track47.flac
+│   ├── track48.flac
+│   ├── track49.flac
+│   ├── track50.flac
+│   ├── track51.flac
+│   ├── track52.flac
+│   ├── track53.flac
+│   ├── track54.flac
+│   ├── track55.flac
+│   ├── track56.flac
+│   ├── track57.flac
+│   ├── track58.flac
+│   ├── track59.flac
+│   └── track60.flac
 ├── shaders
-│   ├── 2d.glsl
-│   ├── 3d.glsl
-│   ├── common.glsl
-│   ├── fbo.glsl
-│   └── sprites.glsl
-├── TR1X.exe
-</pre>
+│   ├── 2d.glsl
+│   ├── common.glsl
+│   ├── fbo.glsl
+│   └── meshes.glsl
+└── TR1X.exe</code></pre>
 </details>
 
-## macOS
+*\* Will not be present until the game has been launched.*
 
-### Installing
+## Playing the game
 
-1. Head over to GitHub releases: https://github.com/LostArtefacts/TRX/releases
-2. Download the `TR1X-Installer.dmg` installer image. Mount the image and drag TR1X to the Applications folder.
-3. Run TR1X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
-4. Find TR1X in your Applications folder. Right-click it and click "Show Package Contents".
-5. Copy your Tomb Raider 1 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
+- To play the game, run `TR1X.exe`.
+- To play the Unfinished Business expansion pack, run `TR1X.exe --gold`.
 
-If you install everything correctly, your game directory should look more or
-less like this (click to expand):
+# macOS
+
+## Installing
+
+1. Download the `TR1X-Installer.dmg` installer image. Mount the image and drag TR1X to the Applications folder.
+2. Run TR1X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
+3. Find TR1X in your Applications folder. Right-click it and click "Show Package Contents".
+4. Copy your Tomb Raider 1 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
+
+## Verifying the installation
+
+If you install everything correctly, your game directory should look more or less like this (click to expand):
 
 <details data-id="file-tree-mac">
-<p><em>* Will not be present until the game has been launched.</em></p>
-<pre>
-.
+<pre><code>.
 └── Contents
     ├── _CodeSignature
     ├── Framworks
@@ -214,157 +359,281 @@ less like this (click to expand):
     ├── MacOS
     └── Resources
         ├── cfg
-        │   ├── TR1X.json5 *
-        │   ├── TR1X_gameflow.json5
-        │   ├── TR1X_gameflow_demo_pc.json5
-        │   └── TR1X_gameflow_ub.json5
+        │   ├── base_strings-de.json5
+        │   ├── base_strings-en-gb.json5
+        │   ├── base_strings-fr.json5
+        │   ├── base_strings-gd.json5
+        │   ├── base_strings-it.json5
+        │   ├── base_strings-pl.json5
+        │   ├── base_strings-ru.json5
+        │   ├── base_strings.json5
+        │   ├── poses.json5
+        │   ├── tr1
+        │   │   ├── gameflow.json5
+        │   │   ├── strings-de.json5
+        │   │   ├── strings-en-gb.json5
+        │   │   ├── strings-fr.json5
+        │   │   ├── strings-gd.json5
+        │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
+        │   │   └── strings.json5
+        │   ├── tr1-demo-pc
+        │   │   ├── gameflow.json5
+        │   │   ├── strings-de.json5
+        │   │   ├── strings-fr.json5
+        │   │   ├── strings-gd.json5
+        │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
+        │   │   └── strings.json5
+        │   ├── tr1-level
+        │   │   ├── gameflow.json5
+        │   │   ├── strings-de.json5
+        │   │   ├── strings-fr.json5
+        │   │   ├── strings-gd.json5
+        │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
+        │   │   └── strings.json5
+        │   └── tr1-ub
+        │       ├── gameflow.json5
+        │       ├── strings-de.json5
+        │       ├── strings-fr.json5
+        │       ├── strings-gd.json5
+        │       ├── strings-it.json5
+        │       ├── strings-pl.json5
+        │       ├── strings-ru.json5
+        │       └── strings.json5
         ├── data
-        │   ├── cat.phd
-        │   ├── cut1.phd
-        │   ├── cut2.phd
-        │   ├── cut3.phd
-        │   ├── cut4.phd
-        │   ├── egypt.phd
-        │   ├── end2.phd
-        │   ├── end.phd
-        │   ├── gym.phd
-        │   ├── level10a.phd
-        │   ├── level10b.phd
-        │   ├── level10c.phd
-        │   ├── level1.phd
-        │   ├── level2.phd
-        │   ├── level3a.phd
-        │   ├── level3b.phd
-        │   ├── level4.phd
-        │   ├── level5.phd
-        │   ├── level6.phd
-        │   ├── level7a.phd
-        │   ├── level7b.phd
-        │   ├── level8a.phd
-        │   ├── level8b.phd
-        │   ├── level8c.phd
-        │   │── title.phd
-        │   │── images
-        │   │   ├── atlantis.webp
-        │   │   ├── credits_1.webp
-        │   │   ├── credits_2.webp
-        │   │   ├── credits_3.webp
-        │   │   ├── credits_3_alt.webp
-        │   │   ├── credits_ps1.webp
-        │   │   ├── egypt.webp
-        │   │   ├── eidos.webp
-        │   │   ├── end.webp
-        │   │   ├── greece.webp
-        │   │   ├── greece_saturn.webp
-        │   │   ├── gym.webp
-        │   │   ├── install.webp
-        │   │   ├── peru.webp
-        │   │   ├── title.webp
-        │   │   ├── title_og_alt.webp
-        │   │   ├── title_ub.webp
-        │   │   └── og
-        │   │       ├── cred0.pcx
-        │   │       ├── cred1.pcx
-        │   │       ├── cred2.pcx
-        │   │       ├── cred3.pcx
-        │   │       ├── eidospc.pcx
-        │   │       ├── end.pcx
-        │   │       ├── install.pcx
-        │   │       ├── titleh.pcx
-        │   │       └── titleh_ub.pcx
-        │   └── injections
-        │       ├── atlantis_fd.bin
-        │       ├── atlantis_textures.bin
-        │       ├── backpac.bin
-        │       └── etc...
+        │   ├── cat.phd
+        │   ├── cut1.phd
+        │   ├── cut2.phd
+        │   ├── cut3.phd
+        │   ├── cut4.phd
+        │   ├── egypt.phd
+        │   ├── end2.phd
+        │   ├── end.phd
+        │   ├── gym.phd
+        │   ├── images
+        │   │   ├── atlantis.webp
+        │   │   ├── credits_1.webp
+        │   │   ├── credits_2.webp
+        │   │   ├── credits_3.webp
+        │   │   ├── credits_3_alt.webp
+        │   │   ├── credits_ps1.webp
+        │   │   ├── credits_ub.webp
+        │   │   ├── egypt.webp
+        │   │   ├── eidos.webp
+        │   │   ├── end.webp
+        │   │   ├── greece.webp
+        │   │   ├── greece_saturn.webp
+        │   │   ├── gym.webp
+        │   │   ├── install.webp
+        │   │   ├── peru.webp
+        │   │   ├── title.webp
+        │   │   ├── title_og_alt.webp
+        │   │   └── title_ub.webp
+        │   ├── injections
+        │   │   ├── atlantis_door_sfx.bin
+        │   │   ├── atlantis_fd.bin
+        │   │   ├── atlantis_itemrots.bin
+        │   │   ├── atlantis_textures.bin
+        │   │   ├── backpack.bin
+        │   │   ├── backpack_cut.bin
+        │   │   ├── braid.bin
+        │   │   ├── braid_cut1.bin
+        │   │   ├── braid_cut2_cut4.bin
+        │   │   ├── braid_valley.bin
+        │   │   ├── bubbles.bin
+        │   │   ├── cat_cameras.bin
+        │   │   ├── cat_fd.bin
+        │   │   ├── cat_itemrots.bin
+        │   │   ├── cat_meshfixes.bin
+        │   │   ├── cat_textures.bin
+        │   │   ├── caves_fd.bin
+        │   │   ├── caves_itemrots.bin
+        │   │   ├── caves_textures.bin
+        │   │   ├── cistern_fd.bin
+        │   │   ├── cistern_itemrots.bin
+        │   │   ├── cistern_plants.bin
+        │   │   ├── cistern_skybox.bin
+        │   │   ├── cistern_textures.bin
+        │   │   ├── colosseum_fd.bin
+        │   │   ├── colosseum_itemrots.bin
+        │   │   ├── colosseum_skybox.bin
+        │   │   ├── colosseum_textures.bin
+        │   │   ├── cut3_textures.bin
+        │   │   ├── cut4_textures.bin
+        │   │   ├── door58_frames.bin
+        │   │   ├── door59_frames.bin
+        │   │   ├── door59_sfx.bin
+        │   │   ├── door60_frames.bin
+        │   │   ├── door61_sfx.bin
+        │   │   ├── egypt_cameras.bin
+        │   │   ├── egypt_fd.bin
+        │   │   ├── egypt_itemrots.bin
+        │   │   ├── egypt_meshfixes.bin
+        │   │   ├── egypt_textures.bin
+        │   │   ├── explosion.bin
+        │   │   ├── folly_fd.bin
+        │   │   ├── folly_itemrots.bin
+        │   │   ├── folly_pickup_meshes.bin
+        │   │   ├── folly_textures.bin
+        │   │   ├── font.bin
+        │   │   ├── gun_glow.bin
+        │   │   ├── gym_textures.bin
+        │   │   ├── hive_fd.bin
+        │   │   ├── hive_itemrots.bin
+        │   │   ├── hive_textures.bin
+        │   │   ├── khamoon_fd.bin
+        │   │   ├── khamoon_itemrots.bin
+        │   │   ├── khamoon_meshfixes.bin
+        │   │   ├── khamoon_mummy.bin
+        │   │   ├── khamoon_textures.bin
+        │   │   ├── lara_animations.bin
+        │   │   ├── lara_gym_guns.bin
+        │   │   ├── midas_itemrots.bin
+        │   │   ├── midas_textures.bin
+        │   │   ├── mines_cameras.bin
+        │   │   ├── mines_door_sfx.bin
+        │   │   ├── mines_fd.bin
+        │   │   ├── mines_itemrots.bin
+        │   │   ├── mines_meshfixes.bin
+        │   │   ├── mines_pushblocks.bin
+        │   │   ├── mines_textures.bin
+        │   │   ├── obelisk_fd.bin
+        │   │   ├── obelisk_itemrots.bin
+        │   │   ├── obelisk_meshfixes.bin
+        │   │   ├── obelisk_skybox.bin
+        │   │   ├── obelisk_textures.bin
+        │   │   ├── panther_sfx.bin
+        │   │   ├── pda_model.bin
+        │   │   ├── photo.bin
+        │   │   ├── pickup_aid.bin
+        │   │   ├── purple_crystal.bin
+        │   │   ├── pyramid_fd.bin
+        │   │   ├── pyramid_itemrots.bin
+        │   │   ├── pyramid_textures.bin
+        │   │   ├── qualopec_door_sfx.bin
+        │   │   ├── qualopec_fd.bin
+        │   │   ├── qualopec_itemrots.bin
+        │   │   ├── qualopec_textures.bin
+        │   │   ├── sanctuary_fd.bin
+        │   │   ├── sanctuary_itemrots.bin
+        │   │   ├── sanctuary_textures.bin
+        │   │   ├── scion_collision.bin
+        │   │   ├── skate_kid_sfx.bin
+        │   │   ├── sprite_alignment.bin
+        │   │   ├── stronghold_fd.bin
+        │   │   ├── stronghold_itemrots.bin
+        │   │   ├── stronghold_textures.bin
+        │   │   ├── tihocan_fd.bin
+        │   │   ├── tihocan_itemrots.bin
+        │   │   ├── tihocan_textures.bin
+        │   │   ├── title_textures.bin
+        │   │   ├── uzi_sfx.bin
+        │   │   ├── valley_fd.bin
+        │   │   ├── valley_itemrots.bin
+        │   │   ├── valley_skybox.bin
+        │   │   ├── valley_textures.bin
+        │   │   ├── vilcabamba_door_sfx.bin
+        │   │   ├── vilcabamba_itemrots.bin
+        │   │   └── vilcabamba_textures.bin
+        │   ├── level1.phd
+        │   ├── level2.phd
+        │   ├── level3a.phd
+        │   ├── level3b.phd
+        │   ├── level4.phd
+        │   ├── level5.phd
+        │   ├── level6.phd
+        │   ├── level7a.phd
+        │   ├── level7b.phd
+        │   ├── level8a.phd
+        │   ├── level8b.phd
+        │   ├── level8c.phd
+        │   ├── level10a.phd
+        │   ├── level10b.phd
+        │   ├── level10c.phd
+        │   └── title.phd
         ├── fmv
-        │   ├── cafe.rpl
-        │   ├── canyon.rpl
-        │   ├── core.avi
-        │   ├── end.rpl
-        │   ├── escape.rpl
-        │   ├── lift.rpl
-        │   ├── mansion.rpl
-        │   ├── prison.rpl
-        │   ├── pyramid.rpl
-        │   ├── snow.rpl
-        │   └── vision.rpl
+        │   ├── cafe.rpl
+        │   ├── canyon.rpl
+        │   ├── core.avi
+        │   ├── end.rpl
+        │   ├── escape.rpl
+        │   ├── lift.rpl
+        │   ├── mansion.rpl
+        │   ├── prison.rpl
+        │   ├── pyramid.rpl
+        │   ├── snow.rpl
+        │   └── vision.rpl
         ├── icon.icns
         ├── music
-        │   ├── track02.flac
-        │   ├── track03.flac
-        │   ├── track04.flac
-        │   ├── track05.flac
-        │   ├── track06.flac
-        │   ├── track07.flac
-        │   ├── track08.flac
-        │   ├── track09.flac
-        │   ├── track10.flac
-        │   ├── track11.flac
-        │   ├── track12.flac
-        │   ├── track13.flac
-        │   ├── track14.flac
-        │   ├── track15.flac
-        │   ├── track16.flac
-        │   ├── track17.flac
-        │   ├── track18.flac
-        │   ├── track19.flac
-        │   ├── track20.flac
-        │   ├── track21.flac
-        │   ├── track22.flac
-        │   ├── track23.flac
-        │   ├── track24.flac
-        │   ├── track25.flac
-        │   ├── track26.flac
-        │   ├── track27.flac
-        │   ├── track28.flac
-        │   ├── track29.flac
-        │   ├── track30.flac
-        │   ├── track31.flac
-        │   ├── track32.flac
-        │   ├── track33.flac
-        │   ├── track34.flac
-        │   ├── track35.flac
-        │   ├── track36.flac
-        │   ├── track37.flac
-        │   ├── track38.flac
-        │   ├── track39.flac
-        │   ├── track40.flac
-        │   ├── track41.flac
-        │   ├── track42.flac
-        │   ├── track43.flac
-        │   ├── track44.flac
-        │   ├── track45.flac
-        │   ├── track46.flac
-        │   ├── track47.flac
-        │   ├── track48.flac
-        │   ├── track49.flac
-        │   ├── track50.flac
-        │   ├── track51.flac
-        │   ├── track52.flac
-        │   ├── track53.flac
-        │   ├── track54.flac
-        │   ├── track55.flac
-        │   ├── track56.flac
-        │   ├── track57.flac
-        │   ├── track58.flac
-        │   ├── track59.flac
-        │   └── track60.flac
+        │   ├── track02.flac
+        │   ├── track03.flac
+        │   ├── track04.flac
+        │   ├── track05.flac
+        │   ├── track06.flac
+        │   ├── track07.flac
+        │   ├── track08.flac
+        │   ├── track09.flac
+        │   ├── track10.flac
+        │   ├── track11.flac
+        │   ├── track12.flac
+        │   ├── track13.flac
+        │   ├── track14.flac
+        │   ├── track15.flac
+        │   ├── track16.flac
+        │   ├── track17.flac
+        │   ├── track18.flac
+        │   ├── track19.flac
+        │   ├── track20.flac
+        │   ├── track21.flac
+        │   ├── track22.flac
+        │   ├── track23.flac
+        │   ├── track24.flac
+        │   ├── track25.flac
+        │   ├── track26.flac
+        │   ├── track27.flac
+        │   ├── track28.flac
+        │   ├── track29.flac
+        │   ├── track30.flac
+        │   ├── track31.flac
+        │   ├── track32.flac
+        │   ├── track33.flac
+        │   ├── track34.flac
+        │   ├── track35.flac
+        │   ├── track36.flac
+        │   ├── track37.flac
+        │   ├── track38.flac
+        │   ├── track39.flac
+        │   ├── track40.flac
+        │   ├── track41.flac
+        │   ├── track42.flac
+        │   ├── track43.flac
+        │   ├── track44.flac
+        │   ├── track45.flac
+        │   ├── track46.flac
+        │   ├── track47.flac
+        │   ├── track48.flac
+        │   ├── track49.flac
+        │   ├── track50.flac
+        │   ├── track51.flac
+        │   ├── track52.flac
+        │   ├── track53.flac
+        │   ├── track54.flac
+        │   ├── track55.flac
+        │   ├── track56.flac
+        │   ├── track57.flac
+        │   ├── track58.flac
+        │   ├── track59.flac
+        │   └── track60.flac
         └── shaders
-            ├── 2d.glsl
-            ├── 3d.glsl
-            ├── common.glsl
-            ├── fbo.glsl
-            └── sprites.glsl
-</pre>
+            ├── 2d.glsl
+            ├── common.glsl
+            ├── fbo.glsl
+            └── meshes.glsl</code></pre>
 </details>
 
-## Dev snapshots
-
-To ease the load on our infrastructure, the binary assets such as images and music files are not included in pre-releases and pull request preview builds - they only ship with the full release builds.
-However, you can easily download them manually from these urls:
-
-- https://lostartefacts.dev/aux/tr1x/main.zip (main assets)
-- https://lostartefacts.dev/aux/tr1x/music.zip (music files)
-- https://lostartefacts.dev/aux/tr1x/trub-music.zip (TR: Unfinished Business expansion pack with fan-patched music)
-- https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (TR: Unfinished Business expansion pack in its original form)
+*\* Will not be present until the game has been launched.*

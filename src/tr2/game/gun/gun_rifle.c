@@ -2,17 +2,17 @@
 
 #include "game/gun/gun.h"
 #include "game/gun/gun_misc.h"
-#include "game/input.h"
 #include "game/lara/misc.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define GUN_RIFLE_EQUIP_ANIM 1

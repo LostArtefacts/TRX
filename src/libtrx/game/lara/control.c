@@ -34,6 +34,7 @@
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 static SECTOR *M_GetCurrentSector(void);
+static void M_Cheat(void);
 static void M_UpdateEnvironment(void);
 static void M_HandleEnvironment(void);
 static void M_HandleAboveWater(COLL_INFO *coll);
@@ -52,6 +53,26 @@ static SECTOR *M_GetCurrentSector(void)
     int16_t room_num = lara_item->room_num;
     return Room_GetSector(
         lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
+}
+
+static void M_Cheat(void)
+{
+    if (!g_Config.gameplay.enable_cheats) {
+        return;
+    }
+
+    if (g_InputDB.level_skip_cheat) {
+        Lara_Cheat_EndLevel();
+    }
+
+    if (g_InputDB.item_cheat) {
+        Lara_Cheat_GiveAllItems();
+    }
+
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->water_status != LWS_CHEAT && g_InputDB.fly_cheat) {
+        Lara_Cheat_EnterFlyMode();
+    }
 }
 
 static void M_UpdateEnvironment(void)
@@ -263,6 +284,15 @@ static void M_HandleEnvironment(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     COLL_INFO coll = {};
 
+    if (item->current_anim_state != LS_SPRINT) {
+        lara_info->sprint_timer++;
+        CLAMPG(lara_info->sprint_timer, LARA_MAX_SPRINT);
+    }
+    if (item->current_anim_state != LS_STOP
+        && item->current_anim_state != LS_POSE) {
+        lara_info->idle_timer = 0;
+    }
+
     switch (lara_info->water_status) {
     case LWS_ABOVE_WATER:
     case LWS_WADE:
@@ -293,7 +323,7 @@ static void M_HandleEnvironment(void)
         item->hit_points = LARA_MAX_HITPOINTS;
         lara_info->death_timer = 0;
         M_HandleUnderwater(&coll);
-        if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
+        if (g_InputDB.slow && !g_Input.look && !g_Input.fly_cheat) {
             Lara_Cheat_ExitFlyMode();
         }
         break;
@@ -437,8 +467,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         >> W2V_SHIFT;
 
     const SECTOR *const sector = M_GetCurrentSector();
-    if (lara_info->water_status != LWS_CHEAT
-        && (TR_VERSION == 1 || !lara_info->extra_anim)) {
+    if (TR_VERSION == 1 || !lara_info->extra_anim) {
         M_ObjectCollision(coll);
     }
 
@@ -536,14 +565,24 @@ static void M_ObjectCollision(COLL_INFO *const coll)
             // next item beforehand.
             const int16_t next_item_num = item->next_item;
 
-            if (item->collidable && item->status != IS_INVISIBLE) {
-                const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision_func != nullptr
-                    && Item_IsNearby(lara_item, item, M_COLL_DIST)) {
-                    obj->collision_func(item_num, lara_item, coll);
-                }
+            if (lara_info->water_status == LWS_CHEAT
+                && !Object_IsType(item->object_id, g_PickupObjects)
+                && !Object_IsType(item->object_id, g_SwitchObjects)) {
+                goto loop_end;
+            }
+            if (!item->collidable || item->status == IS_INVISIBLE) {
+                goto loop_end;
             }
 
+            const OBJECT *const obj = Object_Get(item->object_id);
+            if (obj->collision_func == nullptr
+                || !Item_IsNearby(lara_item, item, M_COLL_DIST)) {
+                goto loop_end;
+            }
+
+            obj->collision_func(item_num, lara_item, coll);
+
+        loop_end:
             item_num = next_item_num;
         }
     }
@@ -678,17 +717,7 @@ void Lara_Control(void)
         item->hit_points = LARA_MAX_HITPOINTS;
     }
 
-    if (g_InputDB.level_skip_cheat) {
-        Lara_Cheat_EndLevel();
-    }
-
-    if (g_InputDB.item_cheat) {
-        Lara_Cheat_GiveAllItems();
-    }
-
-    if (lara_info->water_status != LWS_CHEAT && g_InputDB.fly_cheat) {
-        Lara_Cheat_EnterFlyMode();
-    }
+    M_Cheat();
 
     if (TR_VERSION == 1 && lara_info->interact_target.is_moving
         && lara_info->interact_target.move_count++ > M_MOVE_TIMEOUT) {

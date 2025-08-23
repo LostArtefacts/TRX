@@ -26,7 +26,7 @@ void Clock_SetTurboSpeed(int32_t value)
         return;
     }
     g_Config.gameplay.turbo_speed = value;
-    Config_Write();
+    Config_Update();
     Console_Log(GS(OSD_SPEED_SET), value);
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
 }

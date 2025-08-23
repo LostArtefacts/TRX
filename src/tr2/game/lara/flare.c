@@ -44,6 +44,13 @@ static const LARA_STATE m_HoldStates[] = {
     LS_PICKUP,    LS_SWITCH_ON, LS_SWITCH_OFF, (LARA_STATE)-1,
 };
 
+static const LARA_STATE m_ThrowStates[] = {
+    LS_FAST_FALL,
+    LS_SWAN_DIVE,
+    LS_FAST_DIVE,
+    (LARA_STATE)-1,
+};
+
 static void M_InitialiseState(void);
 static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
 static bool M_CanThrowFlare(void);
@@ -85,11 +92,22 @@ static bool M_CanThrowFlare(void)
         return false;
     }
 
-    return !g_Config.gameplay.fix_flare_throw_priority
-        || (!lara_item->gravity && !g_Input.jump)
-        || lara_item->current_anim_state == LS_FAST_FALL
-        || lara_item->current_anim_state == LS_SWAN_DIVE
-        || lara_item->current_anim_state == LS_FAST_DIVE;
+    if (!g_Config.gameplay.fix_flare_throw_priority) {
+        return true;
+    }
+
+    if (lara_info->water_status != LWS_ABOVE_WATER
+        && lara_info->water_status != LWS_WADE) {
+        return true;
+    }
+
+    // Airborne states that would not allow ledge grabbing anyway.
+    if (Lara_HasState(m_ThrowStates)) {
+        return true;
+    }
+
+    // Neither airborne nor about to be.
+    return !lara_item->gravity && !g_Input.jump;
 }
 
 static void M_ControlInHand(const int32_t flare_age)

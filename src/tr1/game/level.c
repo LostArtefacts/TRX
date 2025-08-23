@@ -6,14 +6,10 @@
 #include "game/lara.h"
 #include "game/objects/creatures/mutant.h"
 #include "game/objects/creatures/pierre.h"
-#include "game/output.h"
-#include "game/overlay.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "game/viewport.h"
 #include "global/types.h"
 #include "global/vars.h"
 
@@ -29,6 +25,10 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/option.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
+#include <libtrx/game/random.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -43,16 +43,16 @@ typedef enum {
     LEVEL_LAYOUT_TR1,
     LEVEL_LAYOUT_TR1_DEMO_PC,
     LEVEL_LAYOUT_NUMBER_OF,
-} LEVEL_LAYOUT;
+} M_LAYOUT;
 
-static bool M_TryLayout(VFILE *file, LEVEL_LAYOUT layout);
-static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
+static bool M_TryLayout(VFILE *file, M_LAYOUT layout);
+static M_LAYOUT M_GuessLayout(VFILE *file);
 static void M_InitialiseSoundEffects(void);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
 
-static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
+static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 {
     // TODO: clang-format <20 formats this wrongly
     // clang-format off
@@ -163,11 +163,11 @@ static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
     return true;
 }
 
-static LEVEL_LAYOUT M_GuessLayout(VFILE *const file)
+static M_LAYOUT M_GuessLayout(VFILE *const file)
 {
-    LEVEL_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
+    M_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
     BENCHMARK benchmark = Benchmark_Start();
-    for (LEVEL_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
+    for (M_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
         if (M_TryLayout(file, layout)) {
             result = layout;
             break;
@@ -204,12 +204,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 {
     GameBuf_Reset();
 
-    VFILE *file = VFile_CreateFromPath(level->path);
-    if (!file) {
+    VFILE *const file = VFile_CreateFromPath(level->path);
+    if (file == nullptr) {
         Shell_ExitSystemFmt("Could not open %s", level->path);
     }
 
-    const LEVEL_LAYOUT layout = M_GuessLayout(file);
+    const M_LAYOUT layout = M_GuessLayout(file);
     if (layout == LEVEL_LAYOUT_UNKNOWN) {
         Shell_ExitSystemFmt("Failed to load %s", level->path);
     }
@@ -297,7 +297,8 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_ObserveLevelLoad();
+
+    Output_DispatchLevelLoad();
     M_InitialiseSoundEffects();
 
     Benchmark_End(&benchmark, nullptr);
@@ -337,8 +338,7 @@ void Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Output_SetSkyboxEnabled(
-        g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
 
     Benchmark_End(&benchmark, nullptr);
 }
@@ -346,7 +346,7 @@ void Level_Load(const GF_LEVEL *const level)
 void Level_Unload(void)
 {
     Lara_InitialiseLoad(NO_ITEM);
-    Output_ObserveLevelUnload();
+    Output_DispatchLevelUnload();
 }
 
 bool Level_Initialise(
@@ -375,12 +375,11 @@ bool Level_Initialise(
     }
 
     Game_SetIsLevelComplete(false);
+    Game_FadeToBlack(-1);
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
         Game_SetCurrentLevel((GF_LEVEL *)level);
     }
     GF_SetCurrentLevel((GF_LEVEL *)level);
-
-    Overlay_HideGameInfo();
 
     Music_ResetTrackFlags();
 

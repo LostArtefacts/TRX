@@ -139,8 +139,6 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
     }
     M_LoadInputConfig(root_obj);
     M_LoadLegacyOptions(root_obj);
-    g_Config.loaded = true;
-    g_SavedConfig = g_Config;
 }
 
 void Config_DumpToJSON(JSON_OBJECT *root_obj)
@@ -155,20 +153,10 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
-    if (g_Config.rendering.render_mode != RM_HARDWARE
-        && g_Config.rendering.render_mode != RM_SOFTWARE) {
-        g_Config.rendering.render_mode = RM_SOFTWARE;
-    }
     if (g_Config.rendering.aspect_mode != AM_ANY
         && g_Config.rendering.aspect_mode != AM_16_9
         && g_Config.rendering.aspect_mode != AM_16_10) {
         g_Config.rendering.aspect_mode = AM_4_3;
     }
-    if (g_Config.rendering.texel_adjust_mode != TAM_DISABLED
-        && g_Config.rendering.texel_adjust_mode != TAM_BILINEAR_ONLY) {
-        g_Config.rendering.texel_adjust_mode = TAM_ALWAYS;
-    }
-    CLAMP(g_Config.rendering.nearest_adjustment, 0, 256);
-    CLAMP(g_Config.rendering.linear_adjustment, 0, 256);
     CLAMP(g_Config.visuals.fov, 30, 150);
 }

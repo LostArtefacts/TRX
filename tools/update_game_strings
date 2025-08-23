@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import re
 from pathlib import Path
@@ -13,6 +14,7 @@ from shared.paths import DATA_DIR, PROJECT_PATHS, CommonPaths
 from shared.translation_utils import (
     REVIEW_MARKER,
     format_strings_file,
+    is_mod_file,
     is_translation_file,
     should_skip_object_name,
 )
@@ -126,6 +128,8 @@ def process_game_strings(
         # Skip translation files; handle only base (English) files here
         if is_translation_file(path):
             continue
+        if is_mod_file(path):
+            continue
 
         old_content = path.read_text()
         new_content = old_content
@@ -151,6 +155,8 @@ def process_object_names(
         # Skip translation files; handle only base (English) files here
         if is_translation_file(path):
             continue
+        if is_mod_file(path):
+            continue
         old_content = vfs.get(path)
         new_content = old_content
         new_content = postprocess_object_strings(new_content, object_names_map)
@@ -164,7 +170,21 @@ def update_formatting(vfs: VirtualFilesystem, path: Path) -> None:
     vfs.put(path, format_strings_file(load_json5_from_string(vfs.get(path))))
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Update game strings JSON files to reflect GS_DEFINE() macros."
+    )
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="Perform a dry run: show unified diffs instead of writing files.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
     vfs = VirtualFilesystem()
     review_tracker = ReviewTracker(vfs)
 
@@ -193,7 +213,10 @@ def main() -> None:
     for path in DATA_DIR.rglob("**/*strings*.json5"):
         update_formatting(vfs, path)
 
-    vfs.commit()
+    if args.dry_run:
+        vfs.show_diff()
+    else:
+        vfs.commit()
 
 
 if __name__ == "__main__":

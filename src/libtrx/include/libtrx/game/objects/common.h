@@ -4,6 +4,7 @@
 #include "../collision.h"
 #include "../items.h"
 #include "../math.h"
+#include "draw.h"
 #include "ids.h"
 #include "types.h"
 
@@ -73,17 +74,7 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID obj_id);
 // Given a receptacle object ID, find a matching key/puzzle object ID.
 GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id);
 
-extern void Object_DrawUnclippedItem(const ITEM *item);
-extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
 extern void Object_SetReflective(GAME_OBJECT_ID obj_id, bool enabled);
-
-void Object_DrawInterpolatedObject(
-    const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,
-    const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
-    int32_t rate);
-void Object_ApplyExtraRotation(
-    const int16_t **extra_rotation, const XYZ_BOOL rot_flags,
-    bool interpolated);
 
 #define REGISTER_OBJECT(object_id, setup_func_)                                \
     __attribute__((constructor)) static void M_RegisterObject##object_id(void) \

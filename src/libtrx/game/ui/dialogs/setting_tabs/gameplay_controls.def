@@ -1,37 +1,45 @@
-X_UI_CFG_BOOL(input.enable_responsive_passport,    GAMEPLAY_SETTINGS_ENABLE_RESPONSIVE_PASSPORT)
+X_UI_CFG_BOOL(input.enable_responsive_passport,    SETTING_ENABLE_RESPONSIVE_PASSPORT)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       GAMEPLAY_SETTINGS_ENABLE_WALK_TO_ITEMS)
+X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       SETTING_ENABLE_WALK_TO_ITEMS)
 #endif
 
-X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          GAMEPLAY_SETTINGS_ENABLE_TR3_SIDESTEPS)
-X_UI_CFG_ENUM(input.quick_guns_mode,               GAMEPLAY_SETTINGS_QUICK_GUNS_MODE, .misc = UI_Settings_QuickGunsModeEnumEntries)
-X_UI_CFG_ENUM(gameplay.look_mode,                  GAMEPLAY_SETTINGS_LOOK_MODE, .misc = UI_Settings_LookModeEnumEntries)
+X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          SETTING_ENABLE_TR3_SIDESTEPS)
+X_UI_CFG_ENUM(input.quick_guns_mode,               SETTING_QUICK_GUNS_MODE, .misc = UI_Settings_QuickGunsModeEnumEntries)
+X_UI_CFG_ENUM(gameplay.look_mode,                  SETTING_LOOK_MODE, .misc = UI_Settings_LookModeEnumEntries)
+X_UI_CFG_INT32(gameplay.idle_pose_timeout,         SETTING_IDLE_POSE_TIMEOUT, .min_value = 0, .max_value = 1200)
+X_UI_CFG_BOOL(gameplay.enable_idle_pose_camera,    SETTING_ENABLE_IDLE_POSE_CAMERA, .custom_handler = { .is_available = UI_Settings_IdlePose_IsAvailable })
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_tr2_jumping,         GAMEPLAY_SETTINGS_ENABLE_TR2_JUMPING)
+X_UI_CFG_BOOL(gameplay.enable_tr2_jumping,         SETTING_ENABLE_TR2_JUMPING)
 #endif
 
-X_UI_CFG_ENUM(gameplay.jump_lock_mode,             GAMEPLAY_SETTINGS_JUMP_LOCK_MODE, .misc = UI_Settings_JumpLockModeEnumEntries)
-X_UI_CFG_BOOL(gameplay.enable_jump_twists,         GAMEPLAY_SETTINGS_ENABLE_JUMP_TWISTS)
-X_UI_CFG_BOOL(gameplay.enable_lean_jumping,        GAMEPLAY_SETTINGS_ENABLE_LEAN_JUMPING)
-X_UI_CFG_BOOL(gameplay.enable_swing_cancel,        GAMEPLAY_SETTINGS_ENABLE_SWING_CANCEL)
-X_UI_CFG_BOOL(gameplay.enable_smooth_wall_deflect, GAMEPLAY_SETTINGS_ENABLE_SMOOTH_WALL_DEFLECT)
-X_UI_CFG_BOOL(gameplay.enable_step_roll_boost,     GAMEPLAY_SETTINGS_ENABLE_STEP_ROLL_BOOST)
-X_UI_CFG_BOOL(gameplay.enable_uw_roll,             GAMEPLAY_SETTINGS_ENABLE_UW_ROLL)
-X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        GAMEPLAY_SETTINGS_ENABLE_TR2_SWIMMING)
+X_UI_CFG_ENUM(gameplay.jump_lock_mode,             SETTING_JUMP_LOCK_MODE, .misc = UI_Settings_JumpLockModeEnumEntries)
+X_UI_CFG_BOOL(gameplay.enable_jump_twists,         SETTING_ENABLE_JUMP_TWISTS)
+X_UI_CFG_BOOL(gameplay.enable_sprint,              SETTING_ENABLE_SPRINT)
+X_UI_CFG_BOOL(gameplay.enable_responsive_sprint,   SETTING_ENABLE_RESPONSIVE_SPRINT, .custom_handler = { .is_available = UI_Settings_Sprint_IsAvailable })
+X_UI_CFG_BOOL(gameplay.enable_neutral_twists,      SETTING_ENABLE_NEUTRAL_TWISTS)
+X_UI_CFG_BOOL(gameplay.enable_slide_to_run,        SETTING_ENABLE_SLIDE_TO_RUN)
+X_UI_CFG_BOOL(gameplay.enable_lean_jumping,        SETTING_ENABLE_LEAN_JUMPING)
+X_UI_CFG_BOOL(gameplay.enable_swing_cancel,        SETTING_ENABLE_SWING_CANCEL)
+X_UI_CFG_BOOL(gameplay.enable_controlled_drops,    SETTING_ENABLE_CONTROLLED_DROPS)
+X_UI_CFG_BOOL(gameplay.enable_ledge_jumps,         SETTING_ENABLE_LEDGE_JUMPS)
+X_UI_CFG_BOOL(gameplay.enable_smooth_wall_deflect, SETTING_ENABLE_SMOOTH_WALL_DEFLECT)
+X_UI_CFG_BOOL(gameplay.enable_step_roll_boost,     SETTING_ENABLE_STEP_ROLL_BOOST)
+X_UI_CFG_BOOL(gameplay.enable_uw_roll,             SETTING_ENABLE_UW_ROLL)
+X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        SETTING_ENABLE_TR2_SWIMMING)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     GAMEPLAY_SETTINGS_ENABLE_TR2_SWIM_CANCEL)
-X_UI_CFG_BOOL(gameplay.enable_wading,              GAMEPLAY_SETTINGS_ENABLE_WADING)
-X_UI_CFG_ENUM(gameplay.target_mode,                GAMEPLAY_SETTINGS_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
-X_UI_CFG_BOOL(gameplay.enable_target_change,       GAMEPLAY_SETTINGS_ENABLE_TARGET_CHANGE)
+X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     SETTING_ENABLE_TR2_SWIM_CANCEL)
+X_UI_CFG_BOOL(gameplay.enable_wading,              SETTING_ENABLE_WADING)
+X_UI_CFG_ENUM(gameplay.target_mode,                SETTING_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
+X_UI_CFG_BOOL(gameplay.enable_target_change,       SETTING_ENABLE_TARGET_CHANGE)
 #endif
 
-X_UI_CFG_BOOL(gameplay.enable_inverted_look,       GAMEPLAY_SETTINGS_ENABLE_INVERTED_LOOK)
-X_UI_CFG_INT32(gameplay.camera_speed,              GAMEPLAY_SETTINGS_CAMERA_SPEED, .min_value = 1, .max_value = 10)
+X_UI_CFG_BOOL(gameplay.enable_inverted_look,       SETTING_ENABLE_INVERTED_LOOK)
+X_UI_CFG_INT32(gameplay.camera_speed,              SETTING_CAMERA_SPEED, .min_value = 1, .max_value = 10)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(input.enable_buffering,              GAMEPLAY_SETTINGS_ENABLE_BUFFERING)
-X_UI_CFG_BOOL(gameplay.fix_shotgun_targeting,      GAMEPLAY_SETTINGS_FIX_SHOTGUN_TARGETING)
+X_UI_CFG_BOOL(input.enable_buffering,              SETTING_ENABLE_BUFFERING)
+X_UI_CFG_BOOL(gameplay.fix_shotgun_targeting,      SETTING_FIX_SHOTGUN_TARGETING)
 #endif

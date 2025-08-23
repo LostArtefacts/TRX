@@ -43,12 +43,13 @@ static void M_HandleLayoutChange(const EVENT *event, void *user_data)
     const M_PRIV *const p = user_data;
     g_Config.input.layout[p->ui.state.backend] =
         p->ui.state.editor_state[p->ui.state.backend].active_layout;
-    Config_Write();
+    Config_Update();
 }
 
 static void M_HandleKeyChange(const EVENT *event, void *user_data)
 {
-    Config_Write();
+    g_Config.dirty = true;
+    Config_Update();
 }
 
 void Option_Controls_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)

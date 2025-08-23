@@ -1,9 +1,9 @@
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
@@ -45,10 +45,10 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    return lara->water_status == LWS_SURFACE
-            || lara->water_status == LWS_UNDERWATER
-        ? &m_UW_Bounds
-        : &m_SaveCrystal_Bounds;
+    return lara->water_status == LWS_ABOVE_WATER
+            || lara->water_status == LWS_WADE
+        ? &m_SaveCrystal_Bounds
+        : &m_UW_Bounds;
 }
 
 static void M_Setup(OBJECT *const obj)

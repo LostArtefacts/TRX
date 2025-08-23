@@ -90,6 +90,14 @@ typedef struct {
     } fog_start, fog_end;
     struct {
         bool is_present;
+        bool value;
+    } fog_transparency;
+    struct {
+        bool is_present;
+        RGB_888 value;
+    } fog_color;
+    struct {
+        bool is_present;
         RGB_888 value;
     } water_color;
 #if TR_VERSION == 2
@@ -144,6 +152,8 @@ typedef struct {
 // ----------------------------------------------------------------------------
 
 typedef struct {
+    char *path;
+
     GF_LEVEL *title_level;
     GF_LEVEL_TABLE level_tables[GFLT_NUMBER_OF];
 

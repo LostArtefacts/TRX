@@ -1,10 +1,10 @@
 #include "game/objects/creatures/xian_common.h"
 
 #include "game/objects/common.h"
-#include "game/output.h"
 #include "global/vars.h"
 
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 
 // TODO: this duplicates Object_DrawAnimatingItem almost entirely
 void XianWarrior_Draw(const ITEM *item)
@@ -15,15 +15,15 @@ void XianWarrior_Draw(const ITEM *item)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (obj->shadow_size != 0) {
-        Output_InsertShadow(obj->shadow_size, &frames[0]->bounds, item);
+        Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
     }
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
-    if (clip == 0) {
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

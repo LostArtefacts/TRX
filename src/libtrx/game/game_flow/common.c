@@ -94,6 +94,7 @@ void GF_Shutdown(void)
 #if TR_VERSION == 2
     Memory_FreePointer(&gf->settings.sfx_path);
 #endif
+    Memory_FreePointer(&gf->path);
 }
 
 void GF_OverrideCommand(const GF_COMMAND command)

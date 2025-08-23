@@ -455,9 +455,10 @@ bool Audio_Stream_Pause(int32_t sound_id)
         return false;
     }
 
-    if (m_Streams[sound_id].is_playing) {
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    if (stream->is_playing) {
         SDL_LockAudioDevice(g_AudioDeviceID);
-        m_Streams[sound_id].is_playing = false;
+        stream->is_playing = false;
         SDL_UnlockAudioDevice(g_AudioDeviceID);
     }
 
@@ -471,9 +472,10 @@ bool Audio_Stream_Unpause(int32_t sound_id)
         return false;
     }
 
-    if (!m_Streams[sound_id].is_playing) {
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    if (!stream->is_playing) {
         SDL_LockAudioDevice(g_AudioDeviceID);
-        m_Streams[sound_id].is_playing = true;
+        stream->is_playing = true;
         SDL_UnlockAudioDevice(g_AudioDeviceID);
     }
 
@@ -620,7 +622,7 @@ void Audio_Stream_Mix(float *dst_buffer, size_t len)
 {
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
-        AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
+        AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
         if (!stream->is_playing) {
             continue;
         }

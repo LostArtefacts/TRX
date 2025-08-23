@@ -2,17 +2,17 @@
 // Triggers O_LARA_EXTRA pedestal pickup animation.
 
 #include "game/game.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/objects/common.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/input.h>
+#include <libtrx/game/overlay.h>
 
 #define EXTRA_ANIM_PEDESTAL_SCION 0
 #define LF_PICKUPSCION 44

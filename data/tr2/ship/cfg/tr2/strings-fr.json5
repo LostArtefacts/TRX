@@ -1,0 +1,1124 @@
+{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    "levels": [
+        {
+            "title": "\\{review}Demeure de Lara",
+        },
+        {
+            "title": "\\{review}La Grande Muraille",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé de la Garde",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé Rouillée",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Venise",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé du Hangar à Bateaux",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé en Acier",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé en Fer",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La cache de Bartoli",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé de la Bibliothèque",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé de Détonateur",
+                }
+            }
+        },
+        {
+            "title": "\\{review}L’Opéra",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé Ornate",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Boîte de Relais",
+                },
+                "puzzle_2": {
+                    "name": "\\{review}Carte de Circuit",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La plate-forme offshore",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Carte d'Accès Rouge",
+                },
+                "key_2": {
+                    "name": "\\{review}Carte d'Accès Jaune",
+                },
+                "key_3": {
+                    "name": "\\{review}Carte d'Accès Verte",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Zone de plongée",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Carte d'Accès Rouge",
+                },
+                "key_4": {
+                    "name": "\\{review}Carte d'Accès Bleue",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Puce de Machine",
+                }
+            }
+        },
+        {
+            "title": "\\{review}40 brasses",
+        },
+        {
+            "title": "\\{review}Épave du Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé de la Salle de Repos",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé Rouillée",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé de Cabine",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Disjoncteur",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Quartiers d'habitation",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé de Théâtre",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé Rouillée",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le Pont",
+            "objects": {
+                "key_2": {
+                    "name": "\\{review}Clé de Poupe",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé de Stockage",
+                },
+                "key_4": {
+                    "name": "\\{review}Clé de Cabine",
+                },
+                "puzzle_4": {
+                    "name": "\\{review}Le Séraphin",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les Contreforts tibétains",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Léopard des Neiges",
+                },
+                "key_1": {
+                    "name": "\\{review}Clé du Pont-Levis",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé de la Hutte",
+                },
+                "puzzle_4": {
+                    "name": "\\{review}Le Séraphin",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le Monastère de Barkhang",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé de Chambre Forte",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé de Trappe",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé des Toits",
+                },
+                "key_4": {
+                    "name": "\\{review}Clé du Hall Principal",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Moulins à Prière",
+                },
+                "puzzle_2": {
+                    "name": "\\{review}Gemmes",
+                },
+                "puzzle_4": {
+                    "name": "\\{review}Le Séraphin",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les Catacombes du Talion",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Léopard des neiges",
+                },
+                "pickup_1": {
+                    "name": "\\{review}Marteau de gong",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Masque tibétain",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le Palais de glace",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Tigre blanc",
+                },
+                "key_2": {
+                    "name": "\\{review}Marteau de gong",
+                },
+                "pickup_2": {
+                    "name": "\\{review}Talion",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Masque tibétain",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le Temple de Xian",
+            "objects": {
+                "key_2": {
+                    "name": "\\{review}Clé en or",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé en argent",
+                },
+                "key_4": {
+                    "name": "\\{review}Clé de la chambre principale",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Le sceau du dragon",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les Îles flottantes",
+            "objects": {
+                "puzzle_1": {
+                    "name": "\\{review}Plaque mystique",
+                },
+                "puzzle_2": {
+                    "name": "\\{review}Plaque mystique",
+                }
+            }
+        },
+        {
+            "title": "\\{review}L’Antre du dragon",
+            "objects": {
+                "puzzle_1": {
+                    "name": "\\{review}Plaque mystique",
+                },
+                "puzzle_2": {
+                    "name": "\\{review}Dague de Xian",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Home Sweet Home",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé du placard à armes",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Dague de Xian",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "\\{review}Venise",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé du bateau",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé en acier",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé en fer",
+                }
+            }
+        },
+        {
+            "title": "\\{review}É épave de la Maria Doria",
+            "objects": {
+                "key_1": {
+                    "name": "\\{review}Clé de la salle de repos",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé rouillée",
+                },
+                "key_3": {
+                    "name": "\\{review}Clé de la cabane",
+                },
+                "puzzle_1": {
+                    "name": "\\{review}Disjoncteur",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Contreforts tibétains",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Léopard des neiges",
+                },
+                "key_1": {
+                    "name": "\\{review}Clé du pont-levis",
+                },
+                "key_2": {
+                    "name": "\\{review}Clé de la hutte",
+                },
+                "puzzle_4": {
+                    "name": "\\{review}Le séraphin",
+                }
+            }
+        }
+    ],
+    "cutscenes": [
+        {
+            "title": "\\{review}Scène cinématique 1",
+        },
+        {
+            "title": "\\{review}Scène cinématique 2",
+        },
+        {
+            "title": "\\{review}Scène cinématique 3",
+        },
+        {
+            "title": "\\{review}Scène cinématique 4",
+        }
+    ],
+    "objects": {
+        "small_medipack": {
+            "name": "\\{review}Petit medipack",
+        },
+        "large_medipack": {
+            "name": "\\{review}Grand medipack",
+        },
+        "flare": {
+            "name": "\\{review}Fusée éclairante",
+        },
+        "flares_box": {
+            "name": "\\{review}Boîte de fusées éclairantes",
+        },
+        "secret_1": {
+            "name": "\\{review}Secret 1",
+        },
+        "secret_2": {
+            "name": "\\{review}Secret 2",
+        },
+        "secret_3": {
+            "name": "\\{review}Secret 3",
+        },
+        "pistols": {
+            "name": "\\{review}Pistolets",
+        },
+        "shotgun": {
+            "name": "\\{review}Fusil à pompe",
+        },
+        "magnums": {
+            "name": "\\{review}Pistolets automatiques",
+        },
+        "uzis": {
+            "name": "\\{review}Uzis",
+        },
+        "harpoon_gun": {
+            "name": "\\{review}Fusil harpon",
+        },
+        "m16": {
+            "name": "\\{review}M16",
+        },
+        "grenade_launcher": {
+            "name": "\\{review}Lance-grenades",
+        },
+        "pistols_ammo": {
+            "name": "\\{review}Chargeurs de pistolet",
+        },
+        "shotgun_ammo": {
+            "name": "\\{review}Cartouches de fusil à pompe",
+        },
+        "magnums_ammo": {
+            "name": "\\{review}Chargeurs de pistolet automatique",
+        },
+        "uzis_ammo": {
+            "name": "\\{review}Chargeurs d'Uzi",
+        },
+        "harpoon_gun_ammo": {
+            "name": "\\{review}Harpons",
+        },
+        "m16_ammo": {
+            "name": "\\{review}Chargeurs de M16",
+        },
+        "grenade_launcher_ammo": {
+            "name": "\\{review}Grenades",
+        },
+        "key_1": {
+            "name": "\\{review}Clé 1",
+        },
+        "key_2": {
+            "name": "\\{review}Clé 2",
+        },
+        "key_3": {
+            "name": "\\{review}Clé 3",
+        },
+        "key_4": {
+            "name": "\\{review}Clé 4",
+        },
+        "puzzle_1": {
+            "name": "\\{review}Objet de puzzle 1",
+        },
+        "puzzle_2": {
+            "name": "\\{review}Objet de puzzle 2",
+        },
+        "puzzle_3": {
+            "name": "\\{review}Objet de puzzle 3",
+        },
+        "puzzle_4": {
+            "name": "\\{review}Objet de puzzle 4",
+        },
+        "pickup_1": {
+            "name": "\\{review}Objet à ramasser 1",
+        },
+        "pickup_2": {
+            "name": "\\{review}Objet à ramasser 2",
+        },
+        "pda": {
+            "name": "\\{review}Gameplay",
+        },
+        "compass": {
+            "name": "\\{review}Statistiques",
+        },
+        "passport": {
+            "name": "\\{review}Jeu",
+        },
+        "photo": {
+            "name": "\\{review}Maison de Lara",
+        },
+        "graphics": {
+            "name": "\\{review}Graphismes",
+        },
+        "controls": {
+            "name": "\\{review}Contrôles",
+        },
+        "sound": {
+            "name": "\\{review}Son",
+        },
+        "lara": {
+            "name": "\\{review}Lara",
+        },
+        "lara_pistols": {
+            "name": "\\{review}Animation des pistolets",
+        },
+        "lara_hair": {
+            "name": "\\{review}Tresse de Lara",
+        },
+        "lara_shotgun": {
+            "name": "\\{review}Animation du fusil à pompe",
+        },
+        "lara_magnums": {
+            "name": "\\{review}Animation des magnums",
+        },
+        "lara_uzis": {
+            "name": "\\{review}Animation des uzis",
+        },
+        "lara_m16": {
+            "name": "\\{review}Animation du M16",
+        },
+        "lara_grenade": {
+            "name": "\\{review}Animation du lance-grenades",
+        },
+        "lara_harpoon": {
+            "name": "\\{review}Animation du harpon",
+        },
+        "lara_flare": {
+            "name": "\\{review}Animation de la torche",
+        },
+        "lara_skidoo": {
+            "name": "\\{review}Animation de la motoneige",
+        },
+        "lara_boat": {
+            "name": "\\{review}Animation du bateau",
+        },
+        "lara_extra": {
+            "name": "\\{review}Animation supplémentaire de Lara",
+        },
+        "skidoo_fast": {
+            "name": "\\{review}Motoneige rouge",
+        },
+        "boat": {
+            "name": "\\{review}Bateau",
+        },
+        "dog": {
+            "names": [
+                "\\{review}Chien",
+                "\\{review}Doberman",
+            ]
+        },
+        "cult_1": {
+            "name": "\\{review}Goon masqué 1",
+        },
+        "cult_1a": {
+            "name": "\\{review}Goon masqué 2",
+        },
+        "cult_1b": {
+            "name": "\\{review}Goon masqué 3",
+        },
+        "cult_2": {
+            "name": "\\{review}Lanceur de couteaux",
+        },
+        "cult_3": {
+            "name": "\\{review}Goon au fusil",
+        },
+        "mouse": {
+            "name": "\\{review}Rat",
+        },
+        "dragon_front": {
+            "name": "\\{review}Dragon avant",
+        },
+        "dragon_back": {
+            "name": "\\{review}Dragon arrière",
+        },
+        "gondola": {
+            "name": "\\{review}Gondole",
+        },
+        "shark": {
+            "name": "\\{review}Requin",
+        },
+        "eel": {
+            "name": "\\{review}Anguille",
+        },
+        "big_eel": {
+            "name": "\\{review}Grande anguille",
+        },
+        "barracuda": {
+            "name": "\\{review}Barracuda",
+        },
+        "diver": {
+            "name": "\\{review}Plongeur",
+        },
+        "worker_1": {
+            "name": "\\{review}Goon tireur 1",
+        },
+        "worker_2": {
+            "name": "\\{review}Goon tireur 2",
+        },
+        "worker_3": {
+            "name": "\\{review}Goon avec bâton 1",
+        },
+        "worker_4": {
+            "name": "\\{review}Goon avec bâton 2",
+        },
+        "worker_5": {
+            "name": "\\{review}Goon lance-flammes",
+        },
+        "jelly": {
+            "name": "\\{review}Méduse",
+        },
+        "spider": {
+            "name": "\\{review}Araignée",
+        },
+        "big_spider": {
+            "name": "\\{review}Géante araignée",
+        },
+        "crow": {
+            "name": "\\{review}Corbeau",
+        },
+        "tiger": {
+            "name": "\\{review}Tigre",
+        },
+        "bartoli": {
+            "name": "\\{review}Marco Bartoli",
+        },
+        "xian_spearman": {
+            "name": "\\{review}Lancier Xian",
+        },
+        "xian_spearman_statue": {
+            "name": "\\{review}Statue de lancier Xian",
+        },
+        "xian_knight": {
+            "name": "\\{review}Chevalier Xian",
+        },
+        "xian_knight_statue": {
+            "name": "\\{review}Statue de chevalier Xian",
+        },
+        "yeti": {
+            "name": "\\{review}Yéti",
+        },
+        "bird_guardian": {
+            "name": "\\{review}Monstre oiseau",
+        },
+        "eagle": {
+            "name": "\\{review}Aigle",
+        },
+        "bandit_1": {
+            "names": [
+                "\\{review}Mercenaire 1",
+                "\\{review}Goon masqué 1",
+            ]
+        },
+        "bandit_2": {
+            "names": [
+                "\\{review}Mercenaire 2",
+                "\\{review}Goon masqué 2",
+            ]
+        },
+        "bandit_2b": {
+            "names": [
+                "\\{review}Mercenaire 3",
+                "\\{review}Goon masqué 3",
+            ]
+        },
+        "skidoo_armed": {
+            "name": "\\{review}Motoneige noire",
+        },
+        "skidoo_driver": {
+            "name": "\\{review}Conducteur de motoneige noire",
+        },
+        "monk_1": {
+            "name": "\\{review}Moine 1",
+        },
+        "monk_2": {
+            "name": "\\{review}Moine 2",
+        },
+        "falling_block_1": {
+            "names": [
+                "\\{review}Bloc tombant 1",
+                "\\{review}Sol rétractable 1",
+                "\\{review}Tuiles rétractables 1",
+            ]
+        },
+        "falling_block_2": {
+            "names": [
+                "\\{review}Bloc tombant 2",
+                "\\{review}Sol rétractable 2",
+                "\\{review}Tuiles rétractables 2",
+            ]
+        },
+        "falling_block_3": {
+            "names": [
+                "\\{review}Bloc tombant 3",
+                "\\{review}Sol rétractable 3",
+                "\\{review}Tuiles rétractables 3",
+                "\\{review}Planches lâches",
+            ]
+        },
+        "pendulum_1": {
+            "name": "\\{review}Sac de sable",
+        },
+        "spikes": {
+            "name": "\\{review}Pics",
+        },
+        "rolling_ball_1": {
+            "names": [
+                "\\{review}Rocher 1",
+                "\\{review}Boule Roulante",
+            ]
+        },
+        "dart": {
+            "name": "\\{review}Disque",
+        },
+        "dart_emitter": {
+            "name": "\\{review}Émetteur de Disque",
+        },
+        "drawbridge": {
+            "name": "\\{review}Pont-levis",
+        },
+        "teeth_trap": {
+            "name": "\\{review}Piège à Dents",
+        },
+        "lift": {
+            "name": "\\{review}Ascenseur",
+        },
+        "general": {
+            "name": "\\{review}Minisous-marin",
+        },
+        "movable_block_1": {
+            "names": [
+                "\\{review}Bloc Poussé 1",
+                "\\{review}Bloc Mobile 1",
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "\\{review}Bloc Poussé 2",
+                "\\{review}Bloc Mobile 2",
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "\\{review}Bloc Poussé 3",
+                "\\{review}Bloc Mobile 3",
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "\\{review}Bloc Poussé 4",
+                "\\{review}Bloc Mobile 4",
+            ]
+        },
+        "big_bowl": {
+            "name": "\\{review}Bol de Lave",
+        },
+        "window_1": {
+            "name": "\\{review}Fenêtre Brisable 1",
+        },
+        "window_2": {
+            "name": "\\{review}Fenêtre Brisable 2",
+        },
+        "window_3": {
+            "name": "\\{review}Fenêtre Brisable 3",
+        },
+        "window_4": {
+            "name": "\\{review}Fenêtre Brisable 4",
+        },
+        "propeller_1": {
+            "name": "\\{review}Hélice d'Avion",
+        },
+        "power_saw": {
+            "name": "\\{review}Scie Électrique",
+        },
+        "hook": {
+            "name": "\\{review}Crochet",
+        },
+        "falling_ceiling_1": {
+            "name": "\\{review}Plafond Tombant 1",
+        },
+        "spinning_blade": {
+            "name": "\\{review}Lame Tournante",
+        },
+        "blade": {
+            "name": "\\{review}Lame Murale",
+        },
+        "killer_statue": {
+            "name": "\\{review}Statue avec Épée",
+        },
+        "rolling_ball_2": {
+            "names": [
+                "\\{review}Rocher 2",
+                "\\{review}Boule Roulante 2",
+            ]
+        },
+        "icicle": {
+            "name": "\\{review}Glaçons",
+        },
+        "spike_wall": {
+            "name": "\\{review}Mur de Pics",
+        },
+        "springboard": {
+            "name": "\\{review}Tremplin",
+        },
+        "ceiling_spikes": {
+            "name": "\\{review}Plafond Épineux",
+        },
+        "bell": {
+            "name": "\\{review}Cloche",
+        },
+        "water_sprite": {
+            "name": "\\{review}Sillage de Bateau",
+        },
+        "snow_sprite": {
+            "name": "\\{review}Sillage de Motoneige",
+        },
+        "skidoo_track": {
+            "name": "\\{review}Trace de Motoneige",
+        },
+        "switch_type_airlock": {
+            "name": "\\{review}Interrupteur de Sas",
+        },
+        "switch_type_small": {
+            "name": "\\{review}Petit Interrupteur",
+        },
+        "propeller_2": {
+            "name": "\\{review}Hélice Sous-marine",
+        },
+        "propeller_3": {
+            "name": "\\{review}Ventilateur",
+        },
+        "pendulum_2": {
+            "name": "\\{review}Boîte Oscillante",
+        },
+        "mesh_swap_1": {
+            "name": "\\{review}Échange de Maille 1",
+        },
+        "mesh_swap_2": {
+            "name": "\\{review}Échange de Maille 2",
+        },
+        "lara_swap": {
+            "name": "\\{review}Échange de Maille de Lara",
+        },
+        "text_box": {
+            "name": "\\{review}Cadre UI",
+        },
+        "rolling_ball_3": {
+            "names": [
+                "\\{review}Rocher 3",
+                "\\{review}Boule Roulante 3",
+            ]
+        },
+        "zipline_handle": {
+            "name": "\\{review}Poignée de Tyrolienne",
+        },
+        "switch_type_button": {
+            "names": [
+                "\\{review}Bouton",
+                "\\{review}Bouton poussoir",
+                "\\{review}Interrupteur",
+            ]
+        },
+        "switch_type_normal": {
+            "names": [
+                "\\{review}Levier",
+                "\\{review}Interrupteur",
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "\\{review}Levier sous-marin",
+                "\\{review}Interrupteur sous-marin",
+            ]
+        },
+        "door_type_1": {
+            "name": "\\{review}Porte 1",
+        },
+        "door_type_2": {
+            "name": "\\{review}Porte 2",
+        },
+        "door_type_3": {
+            "name": "\\{review}Porte 3",
+        },
+        "door_type_4": {
+            "name": "\\{review}Porte 4",
+        },
+        "door_type_5": {
+            "name": "\\{review}Porte 5",
+        },
+        "door_type_6": {
+            "name": "\\{review}Porte 6",
+        },
+        "door_type_7": {
+            "name": "\\{review}Porte 7",
+        },
+        "door_type_8": {
+            "name": "\\{review}Porte 8",
+        },
+        "trapdoor_type_1": {
+            "name": "\\{review}Trappe 1",
+        },
+        "trapdoor_type_2": {
+            "name": "\\{review}Trappe 2",
+        },
+        "trapdoor_type_3": {
+            "name": "\\{review}Trappe 3",
+        },
+        "bridge_flat": {
+            "name": "\\{review}Pont plat",
+        },
+        "bridge_tilt_1": {
+            "name": "\\{review}Pont incliné 1",
+        },
+        "bridge_tilt_2": {
+            "name": "\\{review}Pont incliné 2",
+        },
+        "player_1": {
+            "name": "\\{review}Acteur de cinématique 1",
+        },
+        "player_2": {
+            "name": "\\{review}Acteur de cinématique 2",
+        },
+        "player_3": {
+            "name": "\\{review}Acteur de cinématique 3",
+        },
+        "player_4": {
+            "name": "\\{review}Acteur de cinématique 4",
+        },
+        "player_5": {
+            "name": "\\{review}Acteur de cinématique 5",
+        },
+        "player_6": {
+            "name": "\\{review}Acteur de cinématique 6",
+        },
+        "player_7": {
+            "name": "\\{review}Acteur de cinématique 7",
+        },
+        "player_8": {
+            "name": "\\{review}Acteur de cinématique 8",
+        },
+        "player_9": {
+            "name": "\\{review}Acteur de cinématique 9",
+        },
+        "player_10": {
+            "name": "\\{review}Acteur de cinématique 10",
+        },
+        "key_hole_1": {
+            "name": "\\{review}Trou de clé 1",
+        },
+        "key_hole_2": {
+            "name": "\\{review}Trou de clé 2",
+        },
+        "key_hole_3": {
+            "name": "\\{review}Trou de clé 3",
+        },
+        "key_hole_4": {
+            "name": "\\{review}Trou de clé 4",
+        },
+        "puzzle_hole_1": {
+            "name": "\\{review}Trou de puzzle 1 (Vide)",
+        },
+        "puzzle_hole_2": {
+            "name": "\\{review}Trou de puzzle 2 (Vide)",
+        },
+        "puzzle_hole_3": {
+            "name": "\\{review}Trou de puzzle 3 (Vide)",
+        },
+        "puzzle_hole_4": {
+            "name": "\\{review}Trou de puzzle 4 (Vide)",
+        },
+        "puzzle_done_1": {
+            "name": "\\{review}Trou de puzzle 1 (Fait)",
+        },
+        "puzzle_done_2": {
+            "name": "\\{review}Trou de puzzle 2 (Fait)",
+        },
+        "puzzle_done_3": {
+            "name": "\\{review}Trou de puzzle 3 (Fait)",
+        },
+        "puzzle_done_4": {
+            "name": "\\{review}Trou de puzzle 4 (Fait)",
+        },
+        "sphere_of_doom_1": {
+            "name": "\\{review}Explosion de dragon 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "\\{review}Explosion de dragon 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "\\{review}Explosion de dragon 3",
+        },
+        "alarm_sound": {
+            "name": "\\{review}Alarme",
+        },
+        "bird_tweeter_1": {
+            "name": "\\{review}Eau qui goutte",
+        },
+        "trex": {
+            "name": "\\{review}T-Rex",
+        },
+        "bird_tweeter_2": {
+            "name": "\\{review}Oiseaux chantants",
+        },
+        "clock_chimes": {
+            "name": "\\{review}Horloge de la cachette de Bartoli",
+        },
+        "dragon_bones_1": {
+            "name": "\\{review}Espace réservé",
+        },
+        "dragon_bones_2": {
+            "name": "\\{review}Os de dragon avant",
+        },
+        "dragon_bones_3": {
+            "name": "\\{review}Os de dragon arrière",
+        },
+        "hot_liquid": {
+            "name": "\\{review}Feu supplémentaire",
+        },
+        "boat_bits": {
+            "name": "\\{review}Morceaux de bateau",
+        },
+        "mine": {
+            "name": "\\{review}Mine aquatique",
+        },
+        "inv_background": {
+            "name": "\\{review}Fond de menu",
+        },
+        "fx_reserved": {
+            "name": "\\{review}Disque gris",
+        },
+        "gong_bonger": {
+            "name": "\\{review}Bâton de gong",
+        },
+        "gong": {
+            "name": "\\{review}Gong",
+        },
+        "detonator_box": {
+            "name": "\\{review}Boîte de détonateur",
+        },
+        "copter": {
+            "name": "\\{review}Hélicoptère",
+        },
+        "explosion_1": {
+            "name": "\\{review}Explosion 1",
+        },
+        "splash_1": {
+            "name": "\\{review}Ondulations de l'eau 1",
+        },
+        "bubble_1": {
+            "name": "\\{review}Bulle 1",
+        },
+        "bubble_emitter": {
+            "name": "\\{review}Émetteur de bulles",
+        },
+        "blood_1": {
+            "name": "\\{review}Sang 1",
+        },
+        "dart_effect": {
+            "name": "\\{review}Effet de fléchette",
+        },
+        "flare_fire": {
+            "name": "\\{review}Étincelles de fusée éclairante",
+        },
+        "glow": {
+            "name": "\\{review}Lueur",
+        },
+        "glow_reserved": {
+            "name": "\\{review}Lueur de la carte",
+        },
+        "ricochet": {
+            "name": "\\{review}Ricochet",
+        },
+        "twinkle": {
+            "name": "\\{review}Paillettes",
+        },
+        "gun_flash": {
+            "name": "\\{review}Éclair de pistolet",
+        },
+        "m16_flash": {
+            "name": "\\{review}Éclair de M16",
+        },
+        "body_part": {
+            "name": "\\{review}Membre",
+        },
+        "camera_target": {
+            "name": "\\{review}Cible de caméra",
+        },
+        "waterfall": {
+            "name": "\\{review}Brume de cascade",
+        },
+        "missile_harpoon": {
+            "name": "\\{review}Harpon de missile",
+        },
+        "missile_flame": {
+            "name": "\\{review}Flamme de missile",
+        },
+        "missile_knife": {
+            "name": "\\{review}Couteau de missile",
+        },
+        "grenade": {
+            "name": "\\{review}Grenade",
+        },
+        "harpoon_bolt": {
+            "name": "\\{review}Bolt de harpon",
+        },
+        "ember": {
+            "name": "\\{review}Braise",
+        },
+        "ember_emitter": {
+            "name": "\\{review}Émetteur de braise",
+        },
+        "flame": {
+            "names": [
+                "\\{review}Flamme",
+                "\\{review}Feu",
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "\\{review}Émetteur de flamme",
+                "\\{review}Émetteur de feu",
+            ]
+        },
+        "skybox": {
+            "name": "\\{review}Ciel",
+        },
+        "alphabet": {
+            "name": "\\{review}Alphabet",
+        },
+        "dying_monk": {
+            "name": "\\{review}Moine mourant",
+        },
+        "ding_dong": {
+            "name": "\\{review}Sonnette",
+        },
+        "lara_alarm": {
+            "name": "\\{review}Cloche d'alarme",
+        },
+        "mini_copter": {
+            "name": "\\{review}Hélicoptère 2",
+        },
+        "winston": {
+            "name": "\\{review}Winston",
+        },
+        "assault_digits": {
+            "name": "\\{review}Chiffres d'assaut",
+        },
+        "combat_end": {
+            "name": "\\{review}Fin de combat",
+        },
+        "cut_shotgun": {
+            "name": "\\{review}Animation de douche de fusil à pompe",
+        },
+        "earthquake": {
+            "name": "\\{review}Tremblement de terre",
+        }
+    },
+    "game_strings": {
+        "CMD_WINSTON_DEAD": "\\{review}Votre majordome est mort. Monstre !",
+        "CMD_WINSTON_SPAWNED": "\\{review}Fait apparaître Winston près de Lara",
+        "CMD_WINSTON_SPAWN_FAILED": "\\{review}Échec d'invoquer Winston",
+        "CMD_WINSTON_TELEPORTED": "\\{review}Téléporté Winston près de Lara",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "\\{review}Réinitialisation de la caméra",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Équiper le lance-grenades",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Équiper le harpon",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Équiper le M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "\\{review}Équiper les pistolets automatiques",
+        "ENUM_INPUT_ROLE_USE_FLARE": "\\{review}Flare",
+        "MISC_NONE": "\\{review}Aucun",
+        "PASSPORT_EXIT_DEMO": "\\{review}Quitter la démo",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
+        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "\\{review}Corrige le tir du fusil à pompe lorsqu'il est dégainé, qui échoue parfois à produire un éclair ou un son.",
+        "STATS_AMMO_HITS": "\\{review}Coups",
+        "STATS_AMMO_USED": "\\{review}Munitions utilisées",
+        "STATS_ASSAULT_FINISH": "\\{review}Fin",
+        "STATS_ASSAULT_NO_TIMES_SET": "\\{review}Aucun temps défini",
+        "STATS_ASSAULT_TITLE": "\\{review}MEILLEURS TEMPS",
+        "STATS_DISTANCE_TRAVELLED": "\\{review}Distance parcourue",
+        "STATS_KILLS": "\\{review}Tués",
+        "STATS_LEVEL": "\\{review}Niveau",
+        "STATS_MEDIPACKS_USED": "\\{review}Trousse de santé utilisée",
+        "STATS_SECRETS": "\\{review}Secrets trouvés",
+        "STATS_TIME_TAKEN": "\\{review}Temps écoulé",
+    }
+}

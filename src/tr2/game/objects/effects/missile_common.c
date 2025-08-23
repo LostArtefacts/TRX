@@ -2,13 +2,13 @@
 
 #include "game/effects.h"
 #include "game/lara.h"
-#include "game/output.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 void Missile_Control(const int16_t effect_num)

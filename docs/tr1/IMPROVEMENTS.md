@@ -21,6 +21,12 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added ability to forward and backward jump while looking
 - added ability to look up and down while hanging
 - added ability to jump-twist and somersault like in TR2+
+- added an option to use Lara's neutral jump-twist from early TR1 betas
+- added an option to allow Lara to sprint
+- added an option to use Lara's slide-to-run animation from TR3+
+- added an option to allow Lara to turn around and grab a ledge she has just stepped off
+- added an option to allow Lara to jump up or back when hanging from a ledge
+- added an option to have Lara pose after standing idle for a certain time
 - added ability to cancel ledge-swinging animation like in TR2+
 - added ability to jump at any point while running like in TR2+, together with the ability to control jump lock behaviour
 - added ability to automatically walk to items when nearby
@@ -92,7 +98,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed the bear pat attack so it does not miss Lara
 - fixed dead centaurs exploding again after saving and reloading
 - fixed the following floor data issues:
-    - **Lost Valley**: fixed the illegal slope in room 58
+    - **Lost Valley**: fixed the illegal slope in room 58; fixed skippable triggers for waterfall objects 15, 16, 17 and 26
     - **St. Francis' Folly**: moved the music trigger for track 3 in room 4 behind the Neptune door, and restored track 15 to play after using the 4 keys
     - **The Cistern**: missing trigger in room 56 which could result in a softlock
     - **Tomb of Tihocan**: missing trigger in room 62 for enemy 34
@@ -117,6 +123,9 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed enemy hitpoints being doubled in demo mode as a result of NG+
 - fixed Lara not catching fire after reloading a save made when she was on fire
 - fixed the camera resetting if Lara is looking and then draws her guns (OG behaviour retained when using restricted look mode)
+- fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20
+- fixed Lara walking backwards off ledges into lava
+- fixed a missing transition animation between Lara jumping forward and entering freefall
 
 ## Cheats
 - added a fly cheat
@@ -181,12 +190,13 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added a vsync option
 - added contextual arrows to menu options
 - added support for animated room sprites, which also restores intended behavior in, for example, The Cistern room 0
-- added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon; custom level builders can use object slot `184`
+- added skybox support, with a default option provided for Lost Valley, Colosseum, The Cistern, Tomb of Tihocan and Obelisk of Khamoon; custom level builders can use object slot `184`
 - added reflections of Midas Hand death animation and savegame crystals
 - added optional dynamic lighting for gun flashes and explosions, similar to TR2+
 - added optional dynamic lighting for flames
 - added an option to toggle between TR1 and TR2 camera modes
 - changed the Scion in The Great Pyramid from spawning blood when hit to a ricochet effect
+- changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range
 - fixed thin black lines between polygons
 - fixed black screen flashing when navigating the inventory
 - fixed detail levels text flashing with any option change
@@ -194,35 +204,42 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed inconsistencies in some enemy textures
 - fixed the animation of Lara's left arm when the shotgun is equipped
 - fixed the following room texture issues:
-    - **Gym**: incorrect textures in room 9
+    - **Gym**: incorrect textures in rooms 9, 11
     - **Caves**: incorrect textures in rooms 6, 14 and 22, and missing textures in rooms 1, 10, 14 and 30
-    - **City of Vilcabamba**: incorrect texture in rooms 26 and 73, missing textures in rooms 15 and 21, and stretched textures in rooms 15 and 26
-    - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in rooms 5, 27, 63, 66 and 88
-    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, a misaligned texture in room 5, and a stretched texture in room 14
-    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35, and a misaligned texture in room 3
+    - **City of Vilcabamba**: invalid mesh structure in room 41, incorrect texture in rooms 26 and 73, missing textures in rooms 15 and 21, and stretched textures in rooms 15, 26, 88; incorrect vertex shading in room 72
+    - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in rooms 5, 27, 41, 61, 62, 63, 66 and 88
+    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, misaligned textures in rooms 5, 20 and 46, and a stretched texture in room 14
+    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18, 23 and 35; a misaligned texture in room 3; transparent pixels in room 25; incorrect vertex shading in room 14
     - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 0, 37, 67, 75, 82 and 83, and missing textures in rooms 2 and 7
     - **Palace Midas**: incorrect textures in rooms 28, 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
-    - **The Cistern**: missing textures in rooms 3 and 9 and stretched textures in rooms 22 and 102
+    - **The Cistern**: missing textures in rooms 3, 9, 12; stretched textures in rooms 22 and 102
     - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89 and a misaligned texture in room 104
     - **City of Khamoon**: incorrect textures in rooms 47, 48, 51, 60 and 64, and a missing texture in room 58
     - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42, 65, 66; added shading to the gaps into City of Khamoon in rooms 8 and 20/21
     - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54; stretched texture in room 11
-    - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 13, 23, 24, 29, 30, 31, 47, 84, 87 and 98 
+    - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 13, 23, 24, 29, 30, 31, 47, 84, 87 and 98; incorrect geometry in room 95 
     - **Pre-Atlantis Cutscene**: stretched textures in rooms 6 and 21
-    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 62, 78, 85, 87, 88 and 90, a missing texture in room 27, and stretched textures in rooms 13, 49 and 50
+    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 62, 78, 85, 87, 88, 90; missing textures in rooms 7, 9, 13, 14, 27, 95, 96; stretched textures in rooms 13, 49 and 50
     - **Atlantis Cutscene**: incorrect and stretched textures in rooms 2, 4 and 16
     - **Atlantis and both cutscenes**: fixed inconsistencies regarding the absent lightning mesh above the scion and wrong or missing doors in Torso's platform area
     - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
     - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, a stretched texture in room 47, and a  misplaced vase room sprite in room 9
-    - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98, a missing texture in 75, and misplaced vase room sprites in room 60
-    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
+    - **Temple of the Cat**: incorrect textures in rooms 32, 50, 70, 71, 76, 78, 87, 96 and 98; a missing texture in room 75; misplaced vase room sprites in room 60; transparent pixels in room 95
+    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7, 27 and 75, and missing textures in rooms 5, 6, 13, 18, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 - fixed transparent eyes on the wolf and bat models in Peru
 - fixed incorrect transparent pixels on some Egypt textures
+- fixed missing textures on the statues in Vilcabamba and Tomb of Qualopec
+- fixed the mesh structure on the cat statue in Egyptian levels to standardize its position
+- fixed texture clipping in Atlantean Stronghold when looking into room 18
 - fixed doors at times disappearing if Lara is close to portals and the door's room is no longer visible
+- fixed the passport having an invisible back page, noticeable when opening/closing it
+- fixed z-fighting on the front of the passport
 - fixed being able to see the flipmap in Natla's Mines when moving the boat
 - fixed blood spawning on Lara from gunshots using incorrect positioning data
 - fixed Lara using the wrong hit animation under certain scenarios based on her hit angle
+- fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them
+- fixed the positions of big pods in Atlantean levels and cutscenes
 - improved vertex movement when looking through water portals
 
 ## Audio
@@ -257,6 +274,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed being unable to load a level that contains no sound effect data
 - fixed the panther at times not making a sound when it dies
 - fixed being unable to re-purpose some gym music tracks in custom levels
+- fixed missing door/trapdoor sound effects in Vilcabamba, Tomb of Qualopec, Sanctuary of the Scion, Natla's Mines, Atlantis, Great Pyramid and Atlantean Stronghold
 - restored Skate Kid's death SFX
 
 ## Mods
@@ -275,6 +293,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added the ability to trigger a flip effect without having to also trigger the flip map, like TR2+
 - added support for showing key/puzzle/pickup item descriptions (examining) in the inventory
 - fixed falling ceiling and Damocles Sword traps not falling through stacked rooms
+- fixed being unable to activate waterfall objects with code bits
 
 ## Miscellaneous
 - added Linux builds

@@ -4,12 +4,9 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
-#include "game/input.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/vehicles/skidoo_armed.h"
-#include "game/output.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
@@ -17,10 +14,13 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/gun.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define SKIDOO_RADIUS 500
@@ -161,7 +161,9 @@ void Skidoo_Initialise(const int16_t item_num)
 int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
 {
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || g_LaraItem->gravity) {
+        || g_LaraItem->gravity
+        || (g_Lara.water_status != LWS_ABOVE_WATER
+            && g_Lara.water_status != LWS_WADE)) {
         return SKIDOO_GET_ON_NONE;
     }
 
@@ -944,8 +946,8 @@ void Skidoo_Draw(const ITEM *const item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

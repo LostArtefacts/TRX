@@ -157,9 +157,23 @@ static void M_DecideRequestedWeapon(void)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
     if (g_Input.draw) {
-        lara->request_gun_type = lara->last_gun_type;
+        LARA_GUN_TYPE requested_gun = lara->last_gun_type != LGT_UNARMED
+            ? lara->last_gun_type
+            : LGT_PISTOLS;
+        if (Inv_RequestItem(Gun_GetGunObject(requested_gun)) == 0) {
+            for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
+                if (Inv_RequestItem(Gun_GetGunObject(gun)) > 0) {
+                    requested_gun = gun;
+                    break;
+                }
+            }
+        }
+        if (Inv_RequestItem(Gun_GetGunObject(requested_gun)) != 0) {
+            lara->request_gun_type = requested_gun;
+        }
         return;
     }
+
 #if TR_VERSION >= 2
     if (g_Input.use_flare) {
         if (lara->gun_type == LGT_FLARE) {

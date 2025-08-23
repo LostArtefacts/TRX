@@ -4,16 +4,9 @@
 #include "config/priv.h"
 #include "config/vars.h"
 #include "debug.h"
+#include "game/game_flow/vars.h"
 #include "game/shell.h"
 #include "memory.h"
-#include "vector.h"
-
-#include <string.h>
-
-typedef enum {
-    CFT_DEFAULT,
-    CFT_ENFORCED,
-} CONFIG_FILE_TYPE;
 
 // In-memory list of pointers to config options enforced by the game flow.
 static VECTOR *m_EnforcedOptions = nullptr;
@@ -22,23 +15,24 @@ static VECTOR *m_HiddenOptions = nullptr;
 
 static EVENT_MANAGER *m_EventManager = nullptr;
 
-static const char *M_GetPath(CONFIG_FILE_TYPE file_type);
-
-static const char *M_GetPath(const CONFIG_FILE_TYPE file_type)
-{
-    return file_type == CFT_DEFAULT ? Shell_GetConfigPath()
-                                    : Shell_GetGameFlowPath();
-}
-
 void Config_Init(void)
 {
     m_EventManager = EventManager_Create();
+
+    const CONFIG_OPTION *option = Config_GetOptionMap();
+    while (option->target != nullptr) {
+        Config_RestoreOptionDefault(option->target);
+        option++;
+    }
 }
 
 void Config_Shutdown(void)
 {
     EventManager_Free(m_EventManager);
     m_EventManager = nullptr;
+
+    Memory_FreePointer(&g_Config.default_path);
+    Memory_FreePointer(&g_Config.enforced_path);
 
     if (m_EnforcedOptions != nullptr) {
         Vector_Free(m_EnforcedOptions);
@@ -50,54 +44,77 @@ void Config_Shutdown(void)
     }
 }
 
-bool Config_Read(void)
+bool Config_Read(
+    const char *const default_path, const char *const enforced_path)
 {
+    // Always initialize the config, even if the file is missing, so that
+    // the game can interact with these properties.
+    Memory_FreePointer(&g_Config.default_path);
+    Memory_FreePointer(&g_Config.enforced_path);
+    g_Config.default_path = Memory_DupStr(default_path);
+    g_Config.enforced_path = Memory_DupStr(enforced_path);
+    g_Config.loaded = true;
+
+    LOG_DEBUG("Reading config");
+    LOG_DEBUG("  default_path=%s", g_Config.default_path);
+    LOG_DEBUG("  enforced_path=%s", g_Config.enforced_path);
     if (m_EnforcedOptions == nullptr) {
         m_EnforcedOptions = Vector_Create(sizeof(void *));
     } else {
-        Vector_Clear(m_EnforcedOptions);
+        Vector_ClearRealloc(m_EnforcedOptions);
     }
     if (m_HiddenOptions == nullptr) {
         m_HiddenOptions = Vector_Create(sizeof(void *));
     } else {
-        Vector_Clear(m_HiddenOptions);
+        Vector_ClearRealloc(m_HiddenOptions);
     }
     const CONFIG_IO_ARGS args = {
-        .default_path = M_GetPath(CFT_DEFAULT),
-        .enforced_path = M_GetPath(CFT_ENFORCED),
+        .default_path = g_Config.default_path,
+        .enforced_path = g_Config.enforced_path,
         .action = &Config_LoadFromJSON,
         .enforced_targets = m_EnforcedOptions,
         .hidden_targets = m_HiddenOptions,
     };
     const bool result = ConfigFile_Read(&args);
     if (result) {
-        Config_Sanitize();
-        g_SavedConfig = g_Config;
+        LOG_DEBUG("Config loaded");
+    } else {
+        LOG_WARNING("Errors while loading config");
     }
+    Config_Sanitize();
+    g_SavedConfig = g_Config;
     return result;
+}
+
+bool Config_Update(void)
+{
+    Config_Sanitize();
+    if (memcmp(&g_Config, &g_SavedConfig, sizeof(CONFIG)) == 0) {
+        return false;
+    }
+
+    if (m_EventManager != nullptr) {
+        const EVENT event = {
+            .name = "change",
+            .sender = nullptr,
+            .data = nullptr,
+        };
+        EventManager_Fire(m_EventManager, &event);
+    }
+    g_Config.dirty = false;
+    g_SavedConfig = g_Config;
+    return true;
 }
 
 bool Config_Write(void)
 {
-    Config_Sanitize();
+    ASSERT(g_Config.default_path != nullptr);
     const CONFIG_IO_ARGS args = {
-        .default_path = M_GetPath(CFT_DEFAULT),
-        .enforced_path = M_GetPath(CFT_ENFORCED),
+        .default_path = g_Config.default_path,
+        .enforced_path = g_Config.enforced_path,
         .action = &Config_DumpToJSON,
     };
-    const bool updated = ConfigFile_Write(&args);
-    if (updated) {
-        if (m_EventManager != nullptr) {
-            const EVENT event = {
-                .name = "change",
-                .sender = nullptr,
-                .data = nullptr,
-            };
-            EventManager_Fire(m_EventManager, &event);
-        }
-        g_SavedConfig = g_Config;
-    }
-    return updated;
+    return ConfigFile_Write(&args);
 }
 
 int32_t Config_SubscribeChanges(
@@ -211,6 +228,40 @@ bool Config_RestoreOptionDefault(const void *const target)
     }
     }
     return false;
+}
+
+const char *Config_GetOptionValueAsString(const CONFIG_OPTION *const option)
+{
+    if (option == nullptr) {
+        return nullptr;
+    }
+    switch (option->type) {
+    case COT_BOOL:
+        return String_FormatStatic("%d", *(bool *)option->target);
+    case COT_INVERTED_BOOL:
+        return String_FormatStatic("%d", !*(bool *)option->target);
+    case COT_INT32:
+        return String_FormatStatic("%d", *(int32_t *)option->target);
+    case COT_FLOAT:
+        return String_FormatStatic("%.2f", *(float *)option->target);
+    case COT_FLOAT_PERCENT:
+        return String_FormatStatic(
+            "%.0f%%", (*(float *)option->target) * 100.0f);
+    case COT_DOUBLE:
+        return String_FormatStatic("%.2f", *(double *)option->target);
+    case COT_ENUM:
+        return String_FormatStatic(
+            "%s", EnumMap_ToString(option->param, *(int32_t *)option->target));
+    case COT_RGB888: {
+        const RGB_888 *const color = option->target;
+        return String_FormatStatic(
+            "%02hhx%02hhx%02hhx", color->r, color->g, color->b);
+    }
+    case COT_STRING:
+        return String_FormatStatic("%s", *(char **)option->target);
+    default:
+        return nullptr;
+    }
 }
 
 bool Config_SetOptionValueFromString(

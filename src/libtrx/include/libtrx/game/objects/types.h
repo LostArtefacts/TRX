@@ -36,8 +36,9 @@ typedef struct {
     FACE4 *flat_face4s;
     FACE3 *flat_face3s;
 
+    float depth_adjustment;
     bool enable_reflections;
-    bool disable_lighting;
+    bool disable_transparency_sort;
 } OBJECT_MESH;
 
 typedef struct {

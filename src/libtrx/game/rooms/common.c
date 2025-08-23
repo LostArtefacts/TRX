@@ -152,7 +152,7 @@ void Room_FlipMap(void)
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         if (room->flip_status != RFS_NONE) {
-            Output_ObserveRoomFlip(room);
+            Output_DispatchRoomFlip(room);
         }
     }
 }
@@ -254,26 +254,24 @@ int32_t Room_GetFlippedBaseRoom(const int32_t room_num)
 
 BOUNDS_32 Room_GetWorldBounds(void)
 {
-    BOUNDS_32 bounds = {
-        .min.x = 0x7FFFFFFF,
-        .min.z = 0x7FFFFFFF,
+    BOUNDS_32 world_bounds = {
+        .min.x = INT32_MAX,
+        .min.z = INT32_MAX,
         .max.x = 0,
         .max.z = 0,
         .min.y = MAX_HEIGHT,
         .max.y = -MAX_HEIGHT,
     };
-
     for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        bounds.min.x = MIN(bounds.min.x, room->pos.x);
-        bounds.max.x = MAX(bounds.max.x, room->pos.x + room->size.x * WALL_L);
-        bounds.min.z = MIN(bounds.min.z, room->pos.z);
-        bounds.max.z = MAX(bounds.max.z, room->pos.z + room->size.z * WALL_L);
-        bounds.min.y = MIN(bounds.min.y, room->max_ceiling);
-        bounds.max.y = MAX(bounds.max.y, room->min_floor);
+        const BOUNDS_32 room_bounds = Room_GetRoomBounds(i);
+        world_bounds.min.x = MIN(world_bounds.min.x, room_bounds.min.x);
+        world_bounds.max.x = MAX(world_bounds.max.x, room_bounds.max.x);
+        world_bounds.min.z = MIN(world_bounds.min.z, room_bounds.min.z);
+        world_bounds.max.z = MAX(world_bounds.max.z, room_bounds.max.z);
+        world_bounds.min.y = MIN(world_bounds.min.y, room_bounds.min.y);
+        world_bounds.max.y = MAX(world_bounds.max.y, room_bounds.max.y);
     }
-
-    return bounds;
+    return world_bounds;
 }
 
 void Room_GetNearbyRooms(
@@ -291,6 +289,22 @@ void Room_GetNearbyRooms(
     M_GetNewRoom(x - r, y - h, r + z, room_num);
     M_GetNewRoom(r + x, y - h, z - r, room_num);
     M_GetNewRoom(x - r, y - h, z - r, room_num);
+}
+
+bool Room_CheckOverlap(const int16_t room_num_0, const int16_t room_num_1)
+{
+    const BOUNDS_32 room_0_bounds = Room_GetRoomBounds(room_num_0);
+    const BOUNDS_32 room_1_bounds = Room_GetRoomBounds(room_num_1);
+
+    // clang-format off
+    return (
+        room_0_bounds.min.x <= room_1_bounds.max.x &&
+        room_0_bounds.max.x >= room_1_bounds.min.x &&
+        room_0_bounds.min.y <= room_1_bounds.max.y &&
+        room_0_bounds.max.y >= room_1_bounds.min.y &&
+        room_0_bounds.min.z <= room_1_bounds.max.z &&
+        room_0_bounds.max.z >= room_1_bounds.min.z);
+    // clang-format on
 }
 
 bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)

@@ -1,10 +1,8 @@
 #include "game/item_actions.h"
 
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
@@ -12,6 +10,8 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/random.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 typedef void (*M_FUNC)(ITEM *item);
@@ -62,7 +62,7 @@ static M_FUNC m_Actions[] = {
     [ITEM_ACTION_SET_CHANGE]                   = M_SetChange,
     [ITEM_ACTION_EXPLOSION]                    = M_Explosion,
     [ITEM_ACTION_LARA_HANDS_FREE]              = M_LaraHandsFree,
-    [ITEM_ACTION_FLIPMAP]                      = M_FlipMap,
+    [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
     [ITEM_ACTION_LARA_DRAW_RIGHT_GUN]          = M_LaraDrawRightGun,
     [ITEM_ACTION_LARA_DRAW_LEFT_GUN]           = M_LaraDrawLeftGun,
     [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_1] = M_SwapMeshesWithMeshSwap1,

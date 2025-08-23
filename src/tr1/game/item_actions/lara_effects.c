@@ -1,9 +1,9 @@
 #include "game/item_actions/lara_effects.h"
 
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 #include <stdint.h>

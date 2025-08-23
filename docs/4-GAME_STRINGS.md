@@ -41,19 +41,19 @@ TRX supports multiple layers of strings files that are loaded in a specific
 order. Later layers override earlier ones, allowing expansion packs and custom
 mods to selectively override base text. The default load order is:
 
-1. `TRX_common_strings.json5` — Common defaults for all engines and languages.
-2. `TR1X_strings.json5` — Base strings for the main game.
-3. `TR1X_strings_ub.json5` — Overrides for the Unfinished Business expansion pack
+1. `base_strings.json5` — Common defaults for all engines and languages.
+2. `tr1/strings.json5` — Base strings for the main game.
+3. `tr1-ub/strings.json5` — Overrides for the Unfinished Business expansion pack
    (or other expansion packs/mods).
 
    Depending on which mod or pack you run, the third layer may vary:
-   - `TR1X_strings_ub.json5` for the Unfinished Business expansion pack
-   - `TR2X_strings_gm.json5` for the Golden Mask TR2 expansion pack
-   - `TR1X_strings_demo_pc.json5` for the PC TR1 demo
-   - `TR*X_strings_level.json5` for the -l/--level command line switch
+   - `tr1-ub/strings.json5` for the Unfinished Business expansion pack
+   - `tr2-gm/strings.json5` for the Golden Mask TR2 expansion pack
+   - `tr1-demo-pc/strings.json5` for the PC TR1 demo
+   - `tr*-level/strings.json5` for the -l/--level command line switch
 
-For example, if the same key exists in both `TRX_common_strings.json5` and
-`TR1X_strings.json5`, the value `TR1X_strings.json5` will take precedence.
+For example, if the same key exists in both `base_strings.json5` and
+`tr1/strings.json5`, the value `tr1/strings.json5` will take precedence.
 
 Each layer can also have a variant translated to other languages - see
 [this section](./4-GAME_STRINGS.md#translating-each-layer).
@@ -201,7 +201,7 @@ The document is organized as follows:
     <td colspan="2">
       The display name of the language (e.g., "English", "Français") shown in
       the language selection UI. Should only be defined in the
-      <code>TRX_common_strings.json5</code> file.
+      <code>base_strings.json5</code> file.
     </td>
   </tr>
   <tr valign="top">
@@ -257,12 +257,14 @@ files must live in the same directory as their base (e.g. `cfg/`). For example,
 to add French translations:
 
 ```text
-cfg/TRX_common_strings-fr.json5    # common strings
-cfg/TR1X_strings-fr.json5          # base game strings
-cfg/TR1X_strings_ub-fr.json5       # Unfinished Business overrides
-cfg/TR2X_strings_gm-fr.json5       # Golden Mask TR2 overrides
-cfg/TR1X_strings_demo_pc-fr.json5  # TR1 demo overrides
-cfg/TR1X_strings_level-fr.json5    # custom-level pack overrides
+cfg/base_strings-fr.json5          # common strings
+cfg/tr1/strings-fr.json5           # base game strings
+cfg/tr1-demo-pc/strings-fr.json5   # TR1 demo overrides
+cfg/tr1-level/strings-fr.json5     # custom-level pack overrides
+cfg/tr1-ub/strings-fr.json5        # Unfinished Business overrides
+cfg/tr2/strings-fr.json5           # base game strings
+cfg/tr2-gm/strings-fr.json5        # Golden Mask TR2 overrides
+cfg/tr2-level/strings-fr.json5     # custom-level pack overrides
 ```
 
 When the game starts, TRX will detect these files and load them in place of the
@@ -299,7 +301,7 @@ reviewed and finalized.
 
 ### `language_name`
 
-Only supported in the common strings file (`TRX_common_strings.json5`), the
+Only supported in the common strings file (`base_strings.json5`), the
 `language_name` property sets the display name of the language in the options
 menu. For example:
 

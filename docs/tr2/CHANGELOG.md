@@ -1,4 +1,101 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...develop) - ××××-××-××
+>[!WARNING]
+>Attention level builders: this version introduces backwards incompatible changes to the file structure.
+>Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
+
+- reworked TR2 rendering
+    - added round shadows option (Graphic options → Visuals → Round shadows)
+    - added option to disable skyboxes (Graphic options → Visuals → Skyboxes)
+    - added brightness option (Graphic settings → Rendering → Brightness)
+    - added anisotropy option (Graphic settings → Rendering → Anisotropy filter)
+    - added vertical sync option (Graphic settings → Rendering → VSync)
+    - added an option to keep sprites upright (Graphic options → Rendering → Sprites lock mode)
+    - added debug portals feature (`/debug 1`)
+    - added debug room clip feature (`/debug 1`)
+    - added debug spheres feature (`/debug 1`)
+    - added debug triggers feature (`/debug 1`)
+    - added support for 60 fps in 3D UI pickups
+    - improved bilinear filter appearance - no more dark edges around objects
+    - improved bilinear filter texture adjustment - no more texture "expansion" (#2258)
+    - changed the F7 hotkey to be used as a wireframe toggle (previously available as Shift+F7)    
+    - removed software rendering mode
+    - removed the z-buffer option, which is now always enabled
+    - removed undocumented linear and nearest texel adjustment options
+    - fixed trapezoid textures warping at the edge of the screen (#2629)
+    - fixed certain polygons disappearing in some objects (#3699)
+    - fixed z-fighting of doors near walls
+- added new command switches:
+    - `--test-record` and `--test-replay` for automated playthroughs with (internal tool – the recording file format may be subject to changes)
+    - `--headless`: runs the game offscreen with no audio and at unlocked simulation speed
+    - -q`, `--quiet`: outputs only error messages to the terminal, with log files being written to normally
+- added ability to move Lara around in photo mode (use sidestep keys to switch modes)
+- added additional poses for photo mode
+- added an option to allow Lara to sprint (Gameplay → Controls → Sprinting) (#3711)
+- added an option to use Lara's slide-to-run animation from TR3+ (Gameplay → Controls → Slide-to-run) (#1089)
+- added an option to use Lara's neutral jump-twist from early TR1 betas (Gameplay → Controls → Neutral twists) (#1392)
+- added an option to allow Lara to turn around and grab a ledge she has just stepped off (Gameplay → Controls → Controlled drops) (#3621)
+- added an option to allow Lara to jump up or back when hanging from a ledge (Gameplay → Controls → Ledge jumps) (#3683)
+- added an option to have Lara pose after standing idle for a certain time (Gameplay → Controls → Idle pose timeout) (#3727)
+- added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck (Gameplay settings → Fixes → Fix sprite animations) (#3141)
+- added an option to scale the 3D pickups in the UI (Graphic options → UI → Pickup scale)
+- added an option to control fog color (Graphic options → Visuals → Fog transparency and Fog color) (#712, #3618)
+- added German translation
+- added a PS1 fade-out to final cutscene (#3521)
+- added a new `/vsync` console command to toggle the vsync option, like in TR1
+- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
+- added a new `/restless` console command, which enables or disables infinite sprint
+- improved frames in Lara's jump-twist animations
+- improved object loading error messages when an invalid object ID is detected
+- improved window resize performance in the title inventory ring
+- improved projectiles
+    - changed conventional weapons to smash all shatterable objects simultaneously instead of 1 for rifles and 2 for pistols (#3378, #3551)
+    - fixed collision detection on windows
+    - fixed harpoons/grenades having no effect on bells (#3379)
+    - fixed conventional weapons not spawning ricochets on bells (#3379)
+- changed the game flow and game strings file placement
+- changed the texture page limit from 128 to unlimited (#3517)
+- changed the `/set` console command to report boolean values as `0` or `1`, language-agnostic
+- changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range (#3598)
+- changed `-l`/`--level` switch to accept the level number on top of the level path
+- changed settings dialogs to show a suitable message if a level builder has hidden all options within that dialog (#3637)
+- changed the text and bar scale option to work in smaller increments (10% reduced to 5%); added support for slow increments by 1% (hold Walk key)
+- changed the fly cheat to allow Lara to interact with switches and pickups (#3665)
+- fixed audio in the shower cutscene in Home Sweet Home not being sync with the turbo cheat (#3541)
+- fixed projectiles sometimes not shattering breakable windows (#3378, #3551)
+- fixed flat/opaque window shards in Lara's Home and Home Sweet Home (#3512)
+- fixed several OG texture issues; refer to `IMPROVEMENTS.md` for details (#1834, #2082, #3140, #3187, #3372, #3516, #3629, #3634, #3657, #3659, #3791, #3829, #3860)
+- fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)
+- fixed z-fighting on the front of the passport (#3584)
+- fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving (#3559)
+- fixed French translations containing Italian text in some cases (#3567)
+- fixed several missing, delayed and duplicated door sound effects; refer to `IMPROVEMENTS.md` for details (#3363, #3614. #3615, #3616, #3663)
+- fixed being unable to antitrigger waterfall objects (#3589)
+- fixed incorrect frames in Lara's underwater roll animation (#1589)
+- fixed mismatched animation frames between the airlock wheel and its corresponding door in offshore levels (#3644)
+- fixed incorrect airlock and sliding door object positions in offshore levels (#3644)
+- fixed incorrect door positions in Nightmare in Vegas, causing some to be visible through walls (#3836)
+- fixed incorrect push button object positions in all levels where it appears (#3596)
+- fixed incorrect portals in Catacombs of the Talion room 41 (#3664)
+- fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian (#3691)
+- fixed missing zipline reset triggers in Lara's Home (#3698)
+- fixed shadows Y component not interpolated in 60 FPS (#1314)
+- fixed a crash when the level file was missing
+- fixed Lara walking backwards off ledges into lava (#3745)
+- fixed backslash/grave key/less-than character on some keyboards shown as ???? – now it's shown as backslash (#3713)
+- fixed Lara being able to get on a skidoo while underwater and consequently dying (#3810)
+- fixed a missing transition animation between Lara jumping forward and entering freefall (#3815)
+- fixed potentially being able to reactivate an already used puzzle slot's trigger (#3849, regression from 1.3)
+- fixed persistent damage resetting Lara's HP after cutscenes (#3595, regression from 1.2)
+- fixed Lara not being able to look when look mode is set to unrestricted and she is using an airlock door (#3645, regression from 1.3)
+- fixed wireframe mode rendering as mostly white (#3649, regression from 1.3.2)
+- fixed being unable to cycle poses in photo mode if cheats were disabled (#3726, regression from 1.3)
+- fixed Lara exiting the fly cheat if the walk key is used during photo mode (#3753, regression from 1.3)
+- fixed triggered pickup items flickering in custom levels (#3623, regression from 0.10)
+- fixed Lara not throwing away a spent flare when swimming of flying (#3816, regression from 0.8)
+- fixed flame SFX being audible underwater (#3830, regression from 0.3)
+- fixed harpoon gun not working correctly in NG+ (#3837, regression from 1.3)
+- fixed exiting photo mode on a controller conflicting with the roll input (#3842, regression from 0.9)
+- fixed Lara being able to move away from a keyhole/puzzle slot after selecting the key item from the inventory (#3866, regression from 1.3)
 
 ## [1.3.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...tr2-1.3.2) - 2025-07-20
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
@@ -56,6 +153,11 @@ Showcase: https://youtu.be/C9Nf4j05u_w
 - added an inverted look camera option (Gameplay settings → Controls → Inverted look) (#3403)
 - added missing end of level statistic screens to Home Sweet Home and Kingdom (#2682)
 - added an option to control whether or not Lara reverts to pistols when going from one level to another (Gameplay settings → General → Remember guns between levels) (#3455)
+- improved performance when resizing the window
+- improved support for >3 secret dragons in custom levels up to 16 dragons
+- improved the `/tp` command to orient Lara towards keyholes and doors
+- improved handling of animation sound effects when in shallow water (#3385)
+- improved error messages for game flow and string edit mistakes to include path of the problematic file
 - ⚠️ changed game flow logic for a level that follows one that removed Lara's guns e.g. Diving Area: re-adding pistols now needs to be done in the game flow file, similar to Atlantis in TR1
 - changed statistics details mode to be placed in the UI section
 - changed controls dialog to remember the player's preferred input method
@@ -70,6 +172,9 @@ Showcase: https://youtu.be/C9Nf4j05u_w
 - changed the item duplication glitch fix to be on by default
 - changed the Bartoli's Hideout sunset effect to also apply to skybox lighting (#1617)
 - changed `/secret give` and `/secret take` to give or take all valid secrets when no index is specified
+- removed config tool (we have ingame setting dialogs now)
+- removed the limit of 10 dynamic lights per frame (#3384)
+- removed the `gym_enabled` game flow property
 - fixed inventory screen carpet background texture stretched on non-4:3 aspect ratios (#2022)
 - fixed picked up guns not appearing in holsters / on Lara's back (#1588)
 - fixed room 134 in Opera House having wrong textures (#3142)
@@ -110,14 +215,6 @@ Showcase: https://youtu.be/C9Nf4j05u_w
 - fixed the `/tp` command misbehaving when giving fractional coordinates
 - fixed the `/play` command not stopping active music when used to play Venice (#3469, regression from 0.8)
 - fixed Lara being affected by the `/kill` command if monks have been angered (#3492, regression from 1.0)
-- improved performance when resizing the window
-- improved support for >3 secret dragons in custom levels up to 16 dragons
-- improved the `/tp` command to orient Lara towards keyholes and doors
-- improved handling of animation sound effects when in shallow water (#3385)
-- improved error messages for game flow and string edit mistakes to include path of the problematic file
-- removed config tool (we have ingame setting dialogs now)
-- removed the limit of 10 dynamic lights per frame (#3384)
-- removed the `gym_enabled` game flow property
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.2.1...tr2-1.2.2) - 2025-06-24
 - fixed underwater hum not playing properly (#3305, regression from 0.10)
@@ -173,6 +270,8 @@ Showcase: https://www.youtube.com/watch?v=yG82_Lt6v9M
 - added an option to alter Lara's HP for the beginning of each level (#3179)
 - added an option to not restore Lara's HP at the beginning of each level (#3179)
 - added an option to configure how many shots Lara can take with the harpoon gun before reloading, including disabling reloading altogether (#3057)
+- improved word wrapping algorithm in the dev console
+- improved the dev console commands documentation
 - changed logs format to include timestamps
 - changed the music track slot limit from 64 to 1024 (#3101)
 - ⚠️ changed the music track behaviour to no longer shift track numbers (#3100)
@@ -207,8 +306,6 @@ Showcase: https://www.youtube.com/watch?v=yG82_Lt6v9M
 - fixed stats dialog reserving too much space for extra secrets (#3237, regression from 1.0)
 - fixed logging not outputting anything on Windows terminals
 - fixed `/kill all` command softlocking the game in Home Sweet Home
-- improved word wrapping algorithm in the dev console
-- improved the dev console commands documentation
 
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.2...tr2-1.1) - 2025-05-23
 Showcase: https://www.youtube.com/watch?v=g5lrrDXDYKo
@@ -227,6 +324,11 @@ Showcase: https://www.youtube.com/watch?v=g5lrrDXDYKo
 - added the ability to unbind non-essential keys
 - added the ability to rebind more keys
 - added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
+- improved word wrapping algorithm in the dev console
+- improved the `/set` console command to display available options if given an unknown argument
+- improved handling of items that are dropped by enemies (#2952)
+    - added the ability for any enemy type to drop items, excluding eels
+    - fixed items dropped by flying creatures not falling to the ground
 - changed the design of the controls dialog to use pages, making it better suited for small screens, larger text sizes, and more key bindings
 - changed on-screen messages (such as `Z-Buffer on` to use the dev console, like in TR1X)
 - changed the sound dialog appearance (repositioned, added text labels and arrows)
@@ -234,6 +336,8 @@ Showcase: https://www.youtube.com/watch?v=g5lrrDXDYKo
 - changed the dev console to no longer add duplicate entries to the history
 - changed the health bar and the air bar sizes to be slightly bigger
 - changed the pause screen to have a darker black overlay transparency (#2252)
+- removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
+- removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise (#2950)
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings (#1600)
 - fixed glide cameras using a default speed rather than maintaining the values set in the level file (#2962)
 - fixed Lara being killed if she enters the void in a level that uses the `disable_floor` sequence in the game flow (#2874, regression from 0.10)
@@ -259,13 +363,6 @@ Showcase: https://www.youtube.com/watch?v=g5lrrDXDYKo
 - fixed the camera jumping if going from a look at trigger to a fixed camera, such as in The Cold War room 36 (#3033, regression from 0.9)
 - fixed a crash in The Golden Mask if the bear is killed with the grenade launcher (#3037, regression from 1.0)
 - fixed passport faces partially invisible
-- improved word wrapping algorithm in the dev console
-- improved the `/set` console command to display available options if given an unknown argument
-- improved handling of items that are dropped by enemies (#2952)
-    - added the ability for any enemy type to drop items, excluding eels
-    - fixed items dropped by flying creatures not falling to the ground
-- removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow (#1867)
-- removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise (#2950)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.0.1...tr2-1.0.2) - 2025-04-26
 - changed The Golden Mask strings to default to the OG strings file for the main tables (#2847)
@@ -278,11 +375,11 @@ Showcase: https://www.youtube.com/watch?v=g5lrrDXDYKo
 
 ## [1.0.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.0...tr2-1.0.1) - 2025-04-24
 - added an option to wraparound when scrolling UI dialogs, such as save/load (#2834)
+- improved graphic settings dialog sizing (#2841)
 - changed save to take priority over load when both inputs are held on the same frame, in line with OG (#2833)
 - fixed the selected keyboard/controller layout not being saved (#2830, regression from 1.0)
 - fixed toggling the PSX FOV option not having an immediate effect (#2831, regression from 1.0)
 - fixed changing the aspect ratio not updating the current background image (#2832, regression from 1.0)
-- improved graphic settings dialog sizing (#2841)
 
 ## [1.0](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...tr2-1.0) - 2025-04-23
 Showcase: https://www.youtube.com/watch?v=iUNUJda6QCU
@@ -303,6 +400,8 @@ Showcase: https://www.youtube.com/watch?v=iUNUJda6QCU
 - added waterfalls to the savegame so that they now persist on load (#2686)
 - added support for aspect ratio-specific images (#1840)
 - added a guard to ensure the game always starts on a visible screen even after unplugging displays (#2819)
+- improved performance when moving the window around
+- improved pause exit dialog - it can now be canceled with escape
 - changed savegame files to be stored in the `saves` directory (#2087)
 - changed the default fog distance to 22 tiles cutting off at 30 tiles to match TR1X (#1622)
 - changed the number of static mesh slots from 50 to 256 (#2734)
@@ -310,6 +409,9 @@ Showcase: https://www.youtube.com/watch?v=iUNUJda6QCU
 - changed the maximum number of visible enemies from 5 to 32 (#1624)
 - changed the maximum number of effects (flames, embers, exploding parts etc) from 100 to 1000 (#1581)
 - changed default pitch of the save/load dialog ingame - it's now higher.
+- removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
+- removed the hard-coded end-level behaviour of the bird guardian for custom levels (#1583)
+- removed the FPS and aspect mode options from the config tool (now available in-game in the graphics options)
 - fixed the inability to completely mute the sounds, even at sound volume 0 (#2722)
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 - fixed assault course best times not being retained between game relaunches (#1578)
@@ -345,11 +447,6 @@ Showcase: https://www.youtube.com/watch?v=iUNUJda6QCU
 - fixed a crash if an image was missing
 - fixed a crash on level load if an animation has no frames (#2746, regression from 0.8)
 - fixed flares missing the flicker effect in 60 FPS (#2806, regression from 0.10)
-- improved performance when moving the window around
-- improved pause exit dialog - it can now be canceled with escape
-- removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
-- removed the hard-coded end-level behaviour of the bird guardian for custom levels (#1583)
-- removed the FPS and aspect mode options from the config tool (now available in-game in the graphics options)
 
 ## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
 Showcase: https://www.youtube.com/watch?v=s41hznpTJkY
@@ -365,10 +462,16 @@ Showcase: https://www.youtube.com/watch?v=s41hznpTJkY
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels (#2615)
 - added the camera shutter sound to cutscenes for photo mode (#2280)
 - added Italian localization to the config tool
+- improved camera mode navigation:
+    - improved support for pivoting
+    - improved roll support
+    - expanded world bounding box by 5 tiles in each direction
+    - added support for 60 FPS
 - changed injections to a new file format with a smaller footprint, improved applicability tests and similar feature support as TR1 (#1967)
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
 - changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
 - changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
+- removed the hardcoded title screen image path, replacing it with a game flow file property instead
 - fixed smashed windows blocking enemy pathing after loading a save (#2535)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed (#2575)
@@ -391,22 +494,16 @@ Showcase: https://www.youtube.com/watch?v=s41hznpTJkY
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 0.9)
 - fixed the `/pos` command not showing demo and cutscene titles
 - fixed the distance travelled stat displaying the wrong value when over 1000m (#2659)
-- improved camera mode navigation:
-    - improved support for pivoting
-    - improved roll support
-    - expanded world bounding box by 5 tiles in each direction
-    - added support for 60 FPS
-- removed the hardcoded title screen image path, replacing it with a game flow file property instead
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)
 - fixed music not working on certain Linux setups (#2504, regression from 0.2)
 
 ## [0.9.1](https://github.com/LostArtefacts/TRX/compare/tr2-0.9...tr2-0.9.1) - 2025-02-15
+- improved memory usage by shedding ca. 100-110 MB on average
 - changed passport to be more responsive to player inputs (#1328)
 - fixed resolving paths (especially to music files) on case-sensitive filesystems (#1934, #2504)
 - fixed loading a game crashing on Linux (#2508, regression from 0.9)
-- improved memory usage by shedding ca. 100-110 MB on average
 
 ## [0.9](https://github.com/LostArtefacts/TRX/compare/tr2-0.8...tr2-0.9) - 2025-02-14
 Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
@@ -423,6 +520,8 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - added a `/gym` (alias: `/home`) console command for playing Lara's Home
 - added a `/music` console command that plays a specific music track
 - added a console log when using the `/demo` command
+- improved rendering to achieve a slight performance boost in big rooms (#2325)
+- improved wireframe mode appearance around screen edges
 - changed the object texture limit from 2048 to unlimited (within game's overall memory cap) (#1795)
 - changed the sprite texture limit from 512 to unlimited (within game's overall memory cap) (#1795)
 - changed the texture page limit from 32 to 128 (#1796)
@@ -467,8 +566,6 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - fixed guns sometimes appearing in Lara's hands when entering the fly cheat while undrawing weapons (#2376, regression from 0.3)
 - fixed the `/play` console command not resetting Lara's inventory (#2267, regression from 0.3)
 - fixed flashing text when trying to exit passport while Lara is dead and an action is required (#2263)
-- improved rendering to achieve a slight performance boost in big rooms (#2325)
-- improved wireframe mode appearance around screen edges
 
 ## [0.8](https://github.com/LostArtefacts/TRX/compare/tr2-0.8...tr2-0.8) - 2025-01-01
 - completed decompilation efforts – TR2X.dll is gone, Tomb2.exe no longer needed (#1694)
@@ -485,6 +582,7 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - added an optional demo number argument to the `/demo` command
 - added an option to set the bar scaling (no UI for it yet) (#1636)
 - added an option to set the text scaling (no UI for it yet) (#1636)
+- improved the animation of Lara's braid (#2094)
 - changed demo to be interrupted only by esc or action keys
 - changed the turbo cheat to also affect ingame timer (#2167)
 - fixed health bar and air bar scaling (#2149)
@@ -506,7 +604,6 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - fixed Lara sometimes being unable to use switches (#2184, regression from 0.6)
 - fixed Lara interacting with airlock switches in unexpected ways (#2186, regression from 0.6)
 - fixed input controller remaps not being saved across game relaunches (#2422, regression from 0.6)
-- improved the animation of Lara's braid (#2094)
 
 ## [0.7.1](https://github.com/LostArtefacts/TRX/compare/tr2-0.7...tr2-0.7.1) - 2024-12-17
 - fixed a crash when selecting the sound option (#2057, regression from 0.6)
@@ -540,6 +637,7 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - added an option to fix rotation on some pickup items to better suit 3D pickup mode (#1613)
 - added background for the final game stats (#1584)
 - added the ability to turn fade effects on/off (#1623)
+- removed unused detail level option
 - fixed a crash when trying to draw too many rooms at once (#1998)
 - fixed Lara getting stuck in her hit animation if she is hit while mounting the boat or skidoo (#1606)
 - fixed pistols appearing in Lara's hands when entering the fly cheat during certain animations (#1874)
@@ -573,7 +671,6 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - fixed screenshots sometimes crashing in the windowed mode (regression from 0.6)
 - fixed creatures being able to swim/fly above the ceiling up to one tile (#1936, regression from 0.1)
 - fixed the `/kill all` command reporting an incorrect count in some levels (#1995, regression from 0.3)
-- removed unused detail level option
 
 ## [0.6](https://github.com/LostArtefacts/TRX/compare/tr2-0.5...tr2-0.6) - 2024-11-06
 - added a fly cheat key (#1642)
@@ -654,14 +751,14 @@ Showcase: https://www.youtube.com/watch?v=FrBSW35ZPKY
 - added `/nextlevel` alias to `/endlevel` console command
 - added `/quit` alias to `/exit` console command
 - added the ability to cycle through console prompt history (#1571)
+- improved vertex movement when looking through water portals (#1493)
+- improved console commands targeting creatures and pickups (#1667)
 - changed `/set` console command to do fuzzy matching (LostArtefacts/libtrx#38)
 - fixed crash in the `/set` console command (regression from 0.3)
 - fixed using console in cutscenes immediately exiting the game (regression from 0.3)
 - fixed Lara remaining tilted when teleporting off a vehicle while on a slope (LostArtefacts/TR2X#275, regression from 0.3)
 - fixed `/endlevel` displaying a success message in the title screen
 - fixed very loud music volume set by default (#1614)
-- improved vertex movement when looking through water portals (#1493)
-- improved console commands targeting creatures and pickups (#1667)
 
 ## [0.4]
 Version 0.4 was skipped because of a major repository merge with TR1X into TRX.
@@ -685,6 +782,9 @@ Version 0.4 was skipped because of a major repository merge with TR1X into TRX.
 - added `/fly` console command's ability to open nearest doors
 - added an option to fix M16 accuracy while running (LostArtefacts/TR2X#45)
 - added a .NET-based configuration tool (LostArtefacts/TR2X#197)
+- improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
+- improved crash debug information (LostArtefacts/TR2X#137)
+- improved the console caret sprite (LostArtefacts/TR2X#91)
 - changed the default flare key from `/` to `.` to avoid conflicts with the console (LostArtefacts/TR2X#163)
 - fixed numeric keys interfering with the demos (LostArtefacts/TR2X#172)
 - fixed explosions sometimes being drawn too dark (LostArtefacts/TR2X#187)
@@ -709,9 +809,6 @@ Version 0.4 was skipped because of a major repository merge with TR1X into TRX.
 - fixed the music at the beginning of Offshore Rig not playing (LostArtefacts/TR2X#150, regression from 0.1)
 - fixed wade animation when moving from deep to shallow water (LostArtefacts/TR2X#231, regression from 0.1)
 - fixed the distorted skybox in room 5 of Barkhang Monastery (LostArtefacts/TR2X#196)
-- improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
-- improved crash debug information (LostArtefacts/TR2X#137)
-- improved the console caret sprite (LostArtefacts/TR2X#91)
 
 ## [0.2](https://github.com/LostArtefacts/TR2X/compare/0.1.1...0.2) - 2024-05-07
 - added dev console with the following commands:

@@ -2,19 +2,19 @@
 
 #include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
-#include "game/output.h"
-#include "game/overlay.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
 
 #define LF_PICKUP_ERASE 42
 #define LF_PICKUP_FLARE 58
@@ -53,6 +53,7 @@ static void M_DoUnderwater(int16_t item, ITEM *lara_item);
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Activate(ITEM *item);
+static void M_Control(int16_t item_num);
 static void M_Draw(const ITEM *item);
 
 static void M_DoPickup(const int16_t item_num)
@@ -203,6 +204,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->handle_save_func = M_HandleSave;
     obj->activate_func = M_Activate;
+    obj->control_func = M_Control;
     obj->collision_func = Pickup_Collision;
     obj->bounds_func = Pickup_Bounds;
     obj->draw_func = M_Draw;
@@ -230,6 +232,14 @@ static void M_Activate(ITEM *const item)
     } else {
         item->status = IS_INVISIBLE;
         item->flags |= IF_KILLED;
+    }
+}
+
+static void M_Control(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
+        Item_RemoveActive(item_num);
     }
 }
 
@@ -289,8 +299,8 @@ static void M_Draw(const ITEM *const item)
 
     Output_CalculateLight(item->pos, item->room_num);
 
-    const int32_t clip = Output_GetObjectBounds(&bounds);
-    if (clip) {
+    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
         int32_t bit = 1;
 
         const XYZ_16 *const mesh_rots =
@@ -332,7 +342,8 @@ static void M_Draw(const ITEM *const item)
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
 {
-    if (g_Lara.water_status == LWS_UNDERWATER) {
+    if (g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         return &m_PickUpBoundsUW;
     } else {
         return &m_PickUpBounds;
@@ -350,7 +361,9 @@ void Pickup_Collision(
     if (g_Lara.water_status == LWS_ABOVE_WATER
         || g_Lara.water_status == LWS_WADE) {
         M_DoAboveWater(item_num, lara_item);
-    } else if (g_Lara.water_status == LWS_UNDERWATER) {
+    } else if (
+        g_Lara.water_status == LWS_UNDERWATER
+        || g_Lara.water_status == LWS_CHEAT) {
         M_DoUnderwater(item_num, lara_item);
     }
 }

@@ -29,6 +29,9 @@ int32_t Item_Explode(
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
+    if (!obj->loaded) {
+        return 0;
+    }
 
     Output_CalculateLight(item->pos, item->room_num);
 

@@ -2,13 +2,10 @@
 
 #include "game/effects.h"
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -19,17 +16,22 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/clock.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
 
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
+        Shell_ProcessEvents();                                                 \
         Output_BeginScene();                                                   \
         Game_Draw(true);                                                       \
         Input_Update();                                                        \
         Output_EndScene();                                                     \
+        Output_FlipScreen();                                                   \
         Clock_WaitTick();                                                      \
     } while (g_Input.key);
 
@@ -60,6 +62,7 @@ void Game_ProcessInput(void)
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
+    Game_FadeToBlack(-1);
 
     g_OverlayFlag = 1;
     Camera_Initialise();
@@ -172,6 +175,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         Sound_ResetAmbient();
         ItemAction_RunActive();
         Sound_UpdateEffects();
+        Overlay_Animate(1);
         Output_AnimateTextures(1);
     }
     return (GF_COMMAND) { .action = GF_NOOP };

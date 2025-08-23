@@ -7,27 +7,20 @@
 #include "../gfx/common.h"
 #include "../screenshot.h"
 
-typedef enum {
-    LIGHTING_CONTRAST_LOW,
-    LIGHTING_CONTRAST_MEDIUM,
-    LIGHTING_CONTRAST_HIGH,
-    LIGHTING_CONTRAST_NUMBER_OF,
-} LIGHTING_CONTRAST;
-
-typedef enum {
-    RM_UNKNOWN = 0,
-    RM_SOFTWARE = 1,
-    RM_HARDWARE = 2,
-} RENDER_MODE;
-
-typedef enum {
-    TAM_DISABLED = 0,
-    TAM_BILINEAR_ONLY = 1,
-    TAM_ALWAYS = 2,
-} TEXEL_ADJUST_MODE;
-
 typedef struct {
+    // This signifies whether the config was already read from disk.
     bool loaded;
+
+    // This holds paths passed to Config_Read(), so that Config_Write() knows
+    // where to save the updates.
+    char *default_path;
+    char *enforced_path;
+
+    // This field is used to force trigger a change event for fields that are
+    // not stored in the CONFIG struct.
+    bool dirty;
+
+    // Start of user fields
     char *language;
 
     struct {
@@ -52,22 +45,34 @@ typedef struct {
         bool enable_breeze;
         bool enable_fade_effects;
         bool enable_exit_fade_effects;
+        bool enable_round_shadow;
+        bool enable_reflections;
+        bool enable_skybox;
         bool fix_item_rots;
         bool fix_texture_issues;
+        bool fix_animated_sprites;
         bool fix_glide_cameras;
         int32_t fov;
         bool use_psx_fov;
         CAMERA_MODE camera_mode;
+        float brightness;
 
         RGB_888 water_color;
+        bool fog_transparency;
+        RGB_888 fog_color;
         int32_t fog_start;
         int32_t fog_end;
     } visuals;
 
     struct {
+        bool enable_debug_triggers;
+        bool enable_debug_spheres;
+        bool enable_debug_portals;
+        bool enable_debug_room_clip;
         bool enable_debug_pos;
         bool enable_review_markers;
         bool enable_invulnerability;
+        bool enable_endless_sprint;
     } debug;
 
     struct {
@@ -75,15 +80,16 @@ typedef struct {
         bool enable_photo_mode_ui;
         bool enable_wraparound;
         bool enable_fps_counter;
-        double text_scale;
-        double bar_scale;
+        float text_scale;
+        float bar_scale;
+        float pickup_scale;
         bool enable_stats_level_header;
 
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
             BAR_COLOR color;
-        } lara_health_bar, lara_air_bar;
+        } lara_health_bar, lara_air_bar, lara_sprint_bar;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
@@ -141,6 +147,14 @@ typedef struct {
         bool enable_lean_jumping;
         bool enable_smooth_wall_deflect;
         bool enable_step_roll_boost;
+        bool enable_slide_to_run;
+        bool enable_neutral_twists;
+        bool enable_controlled_drops;
+        bool enable_ledge_jumps;
+        bool enable_sprint;
+        bool enable_responsive_sprint;
+        int32_t idle_pose_timeout;
+        bool enable_idle_pose_camera;
         bool enable_enemy_rotation;
         bool enable_ally_targeting;
         bool revert_to_pistols;
@@ -165,10 +179,7 @@ typedef struct {
 
     struct {
         int32_t fps;
-        RENDER_MODE render_mode;
         ASPECT_MODE aspect_mode;
-        bool enable_zbuffer;
-        bool enable_perspective_filter;
         bool enable_trapezoid_filter;
         bool enable_lighting;
         bool enable_wireframe;
@@ -178,11 +189,11 @@ typedef struct {
         GFX_TEXTURE_FILTER upscaling_filter;
         SCREENSHOT_FORMAT screenshot_format;
         LIGHTING_CONTRAST lighting_contrast;
-        TEXEL_ADJUST_MODE texel_adjust_mode;
-        int32_t nearest_adjustment;
-        int32_t linear_adjustment;
+        BILLBOARD_LOCK_MODE sprite_lock_mode;
         int32_t upscaling_factor;
         float borders;
+        float anisotropy_filter;
+        bool enable_vsync;
     } rendering;
 
     struct {

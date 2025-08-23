@@ -50,12 +50,13 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_LEFT },
                 { .role = INPUT_ROLE_RIGHT },
                 { .role = INPUT_ROLE_JUMP },
-                { .role = INPUT_ROLE_STEP_L },
-                { .role = INPUT_ROLE_STEP_R },
+                { .role = INPUT_ROLE_STEP_LEFT },
+                { .role = INPUT_ROLE_STEP_RIGHT },
                 { .role = INPUT_ROLE_ROLL },
                 { .role = INPUT_ROLE_SLOW },
+                { .role = INPUT_ROLE_SPRINT },
                 { .role = INPUT_ROLE_ACTION },
-                { .role = INPUT_ROLE_DRAW },
+                { .role = INPUT_ROLE_DRAW_WEAPON },
                 { .role = INPUT_ROLE_LOOK },
                 { .role = (INPUT_ROLE)-1 },
             },
@@ -112,7 +113,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .header_gs = GS_ID(CONTROLS_SECTION_SYSTEM),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
-                { .role = INPUT_ROLE_OPTION },
+                { .role = INPUT_ROLE_INVENTORY },
                 { .role = INPUT_ROLE_SAVE },
                 { .role = INPUT_ROLE_LOAD },
                 { .role = INPUT_ROLE_PAUSE },
@@ -123,20 +124,12 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_ENTER_CONSOLE },
                 { .role = INPUT_ROLE_TOGGLE_PHOTO_MODE },
                 { .role = INPUT_ROLE_TOGGLE_UI },
-#if TR_VERSION == 1
-                { .role = INPUT_ROLE_BILINEAR },
-#elif TR_VERSION == 2
                 { .role = INPUT_ROLE_TOGGLE_BILINEAR_FILTER },
-// { .role = INPUT_ROLE_TOGGLE_PERSPECTIVE_FILTER }, // handled specially
-#endif
                 { .role = INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER },
                 { .role = INPUT_ROLE_SWITCH_UPSCALING },
                 { .role = INPUT_ROLE_SWITCH_BORDERS },
-#if TR_VERSION == 2
-                { .role = INPUT_ROLE_TOGGLE_Z_BUFFER },
+                { .role = INPUT_ROLE_TOGGLE_WIREFRAME },
                 { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
-                { .role = INPUT_ROLE_TOGGLE_RENDERING_MODE },
-#endif
                 { .role = (INPUT_ROLE)-1 },
             },
     },
@@ -227,7 +220,7 @@ static void M_ResetLayout(void *const arg)
     Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
 #endif
     Input_ResetLayout(s->backend, s->active_layout);
-    Config_Write();
+    Config_Update();
 }
 
 static void M_UnbindKey(void *const arg)
@@ -239,7 +232,7 @@ static void M_UnbindKey(void *const arg)
     Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
 #endif
     Input_UnassignRole(s->backend, s->active_layout, s->active_role);
-    Config_Write();
+    Config_Update();
 }
 
 static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *const s)
@@ -354,7 +347,6 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
 static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(
     UI_CONTROLS_EDITOR_STATE *const s)
 {
-    Shell_ProcessEvents();
     Input_Update();
     if (g_Input.any) {
         return UI_CONTROLS_CHOICE_NOOP;

@@ -1,15 +1,34 @@
 #pragma once
 
 #include "../../colors.h"
+#include "../math/types.h"
 #include "./const.h"
 
 #include <stdint.h>
+
+typedef enum {
+    CLIP_NOT_VISIBLE = 0,
+    CLIP_PARTIALLY_VISIBLE = -1,
+    CLIP_FULLY_VISIBLE = 1,
+} CLIP;
 
 typedef enum {
     BK_TRANSPARENT,
     BK_OBJECT,
     BK_IMAGE,
 } BACKGROUND_TYPE;
+
+typedef enum {
+    TS_HEADING,
+    TS_BACKGROUND,
+    TS_BACKGROUND_HEAVY,
+    TS_REQUESTED,
+} TEXT_STYLE;
+
+typedef enum {
+    DRAW_OPAQUE = 0,
+    DRAW_COLOR_KEY = 1,
+} DRAW_TYPE;
 
 typedef struct {
     int16_t value_1;
@@ -55,6 +74,7 @@ typedef struct {
     int16_t y0;
     int16_t x1;
     int16_t y1;
+    uint16_t flags;
 } SPRITE_TEXTURE;
 
 typedef struct ANIMATED_TEXTURE_RANGE {
@@ -70,3 +90,15 @@ typedef struct {
 typedef struct {
     uint8_t index[LIGHT_MAP_SIZE];
 } SHADE_MAP;
+
+typedef struct {
+    XYZ_32 from;
+    XYZ_32 to;
+    int32_t thickness;
+} LIGHTNING_SEGMENT;
+
+typedef enum {
+    LIGHTING_MODE_OFF,
+    LIGHTING_MODE_ONLY_SHADES,
+    LIGHTING_MODE_FULL,
+} LIGHTING_MODE;

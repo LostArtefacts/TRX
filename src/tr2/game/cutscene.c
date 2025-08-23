@@ -4,7 +4,6 @@
 #include "game/effects.h"
 #include "game/game_flow.h"
 #include "game/level.h"
-#include "game/output.h"
 #include "game/room_draw.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -16,22 +15,10 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 #include <libtrx/utils.h>
 
 static CAMERA_INFO m_LocalCamera = {};
-
-static void M_FixAudioDrift(void);
-
-static void M_FixAudioDrift(void)
-{
-    const int32_t audio_frame_idx = Music_GetTimestamp() * LOGIC_FPS;
-    const int32_t game_frame_idx = Camera_GetCineData()->frame_idx;
-    const int32_t audio_drift = ABS(audio_frame_idx - game_frame_idx);
-    if (audio_drift >= LOGIC_FPS * 0.2) {
-        LOG_DEBUG("Detected audio drift: %d frames", audio_drift);
-        Music_SeekTimestamp(game_frame_idx / (double)LOGIC_FPS);
-    }
-}
 
 bool Cutscene_Start(const int32_t level_num)
 {
@@ -46,9 +33,7 @@ bool Cutscene_Start(const int32_t level_num)
     cine_data->frame_idx = 0;
 
     if (level->music_track != MX_INACTIVE) {
-        Music_Play(
-            level->music_track,
-            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
+        Music_Play(level->music_track, MPM_ALWAYS);
     }
 
     return true;
@@ -64,7 +49,7 @@ void Cutscene_End(void)
 GF_COMMAND Cutscene_Control(void)
 {
     Interpolation_Remember();
-    M_FixAudioDrift();
+    Music_SyncTimestamp(Camera_GetCineData()->frame_idx / (double)LOGIC_FPS);
 
     Input_Update();
     Shell_ProcessInput();
@@ -108,7 +93,7 @@ void Cutscene_Draw(void)
     Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num);
-    Output_DrawPolyList();
+    SceneCompositor_Flush();
 }
 
 CAMERA_INFO *Cutscene_GetCamera(void)

@@ -1,10 +1,8 @@
 #include "game/game_flow.h"
-#include "game/input.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
@@ -12,8 +10,10 @@
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19
@@ -37,10 +37,10 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
-static bool M_TestDestination(ITEM *item, int32_t block_height);
+static bool M_TestCurrentSector(ITEM *item, int32_t block_height);
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
-static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
+static bool M_TestDeathCollision(const ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
@@ -81,16 +81,19 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
     return false;
 }
 
-static bool M_TestDestination(ITEM *item, int32_t block_height)
+static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+
+    // Check if there is a hard wall above.
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
         == NO_HEIGHT) {
         return true;
     }
 
+    // Make sure there is nothing on top of the block.
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
         != item->pos.y - block_height) {
         return false;
@@ -101,7 +104,7 @@ static bool M_TestDestination(ITEM *item, int32_t block_height)
 
 static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
-    if (!M_TestDestination(item, block_height)) {
+    if (!M_TestCurrentSector(item, block_height)) {
         return false;
     }
 
@@ -149,7 +152,7 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
 
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
-    if (!M_TestDestination(item, block_height)) {
+    if (!M_TestCurrentSector(item, block_height)) {
         return false;
     }
 
@@ -172,11 +175,12 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
         break;
     }
 
+    // Test block destination sector.
     int32_t x = item->pos.x + x_add;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z + z_add;
-
     int16_t room_num = item->room_num;
+
     const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
@@ -194,6 +198,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
         return false;
     }
 
+    // Test Lara destination sector.
     x += x_add;
     z += z_add;
     room_num = item->room_num;
@@ -222,7 +227,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
     return true;
 }
 
-static bool M_TestDeathCollision(ITEM *const item, const ITEM *const lara)
+static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
 {
     return g_GameFlow.enable_killer_pushblocks
         && !g_Config.debug.enable_invulnerability && item->gravity

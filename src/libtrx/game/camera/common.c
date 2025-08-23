@@ -397,7 +397,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 
 #undef SHIFT
 
-    if (!clip) {
+    if (clip == CLIP_NOT_VISIBLE) {
         return;
     }
 
@@ -932,7 +932,7 @@ void Camera_EnsureEnvironment(void)
 void Camera_Update(void)
 {
     if (g_Camera.type == CAM_PHOTO_MODE) {
-        Camera_UpdatePhotoMode();
+        Camera_PhotoMode_Update();
         Camera_EnsureEnvironment();
         return;
     }

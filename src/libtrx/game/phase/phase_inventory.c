@@ -16,7 +16,7 @@ typedef struct {
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t num_frames);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
@@ -43,11 +43,11 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     ASSERT(p->ring != nullptr);
-    const GF_COMMAND gf_cmd = InvRing_Control(p->ring, num_frames);
+    const GF_COMMAND gf_cmd = InvRing_Control(p->ring);
     return (PHASE_CONTROL) {
         .action = p->ring->motion.status == RNG_DONE ? PHASE_ACTION_END
                                                      : PHASE_ACTION_CONTINUE,
@@ -73,7 +73,6 @@ static void M_Draw(PHASE *const phase)
     ASSERT(p->ring != nullptr);
     Output_DrawBackground();
     InvRing_Draw(p->ring);
-    Output_DrawPolyList();
 }
 
 PHASE *Phase_Inventory_Create(const INVENTORY_MODE mode)

@@ -2,13 +2,13 @@
 
 #include "debug.h"
 #include "filesystem.h"
-#include "game/output/common.h"
-#include "game/viewport.h"
+#include "game/objects.h"
+#include "game/output/textures.h"
+#include "gfx/context.h"
 #include "log.h"
 #include "memory.h"
 #include "strings.h"
 #include "utils.h"
-#include "vector.h"
 
 #include <float.h>
 #include <stdio.h>
@@ -22,7 +22,6 @@ typedef struct {
     int32_t height;
 } M_CANDIDATE;
 
-static VIEWPORT_RECT m_LastViewport = { .width = -1, .height = -1 };
 static char *m_LastPath = nullptr;
 static VECTOR *m_CachedCandidates = nullptr;
 static size_t m_CachedDirLen = 0;
@@ -40,9 +39,7 @@ static bool M_LoadMainCandidate(const char *path);
 
 static IMAGE *M_CreateImageFromPath(const char *const path)
 {
-    return Image_CreateFromFileInto(
-        path, Viewport_GetWidth(VIEWPORT_GAME),
-        Viewport_GetHeight(VIEWPORT_GAME), IMAGE_FIT_SMART);
+    return Image_CreateFromFile(path);
 }
 
 static float M_GetScreenAspectRatio(void)
@@ -166,7 +163,6 @@ static bool M_LoadCandidate(const M_CANDIDATE *const candidate)
     Image_Free(img);
     Memory_FreePointer(&m_LastCandidateName);
     m_LastCandidateName = Memory_DupStr(candidate->path);
-    m_LastViewport = Viewport_GetRect(VIEWPORT_GAME);
     return true;
 }
 
@@ -209,6 +205,8 @@ bool Output_LoadBackgroundFromFile(const char *const path)
 
 void Output_ReloadBackgroundImage(void)
 {
+    Output_RefreshBackgroundScaling();
+
     if (Output_GetBackgroundType() == BK_OBJECT) {
         Output_LoadBackgroundFromObject();
         return;
@@ -222,8 +220,6 @@ void Output_ReloadBackgroundImage(void)
     const M_CANDIDATE *best = M_PickBestCandidate(M_GetScreenAspectRatio());
     if (best != nullptr) {
         if (m_LastCandidateName != nullptr
-            && m_LastViewport.width == Viewport_GetWidth(VIEWPORT_GAME)
-            && m_LastViewport.height == Viewport_GetHeight(VIEWPORT_GAME)
             && String_Equivalent(best->path, m_LastCandidateName)) {
             return;
         }
@@ -233,11 +229,6 @@ void Output_ReloadBackgroundImage(void)
     }
 
     Output_UnloadBackground();
-}
-
-char *Output_GetLastBackgroundPath(void)
-{
-    return m_LastPath;
 }
 
 void Output_ClearLastBackgroundPath(void)

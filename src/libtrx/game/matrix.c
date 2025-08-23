@@ -14,6 +14,13 @@ static MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = {};
 
 MATRIX *g_MatrixPtr = &m_MatrixStack[0];
 MATRIX g_W2VMatrix = {};
+MATRIX g_IDMatrix = {
+    // clang-format off
+    ._00 = 1 << W2V_SHIFT, ._01 = 0, ._02 = 0, ._03 = 0,
+    ._10 = 0, ._11 = 1 << W2V_SHIFT, ._12 = 0, ._13 = 0,
+    ._20 = 0, ._21 = 0, ._22 = 1 << W2V_SHIFT, ._23 = 0,
+    // clang-format on
+};
 
 static void M_RotYXZ(const int16_t ry, const int16_t rx, const int16_t rz)
 {
@@ -76,25 +83,45 @@ bool Matrix_PushUnit(void)
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         return false;
     }
-    MATRIX *const mptr = ++g_MatrixPtr;
-    mptr->_00 = 1 << W2V_SHIFT;
-    mptr->_01 = 0;
-    mptr->_02 = 0;
-    mptr->_10 = 0;
-    mptr->_11 = 1 << W2V_SHIFT;
-    mptr->_12 = 0;
-    mptr->_20 = 0;
-    mptr->_21 = 0;
-    mptr->_22 = 1 << W2V_SHIFT;
-    mptr->_03 = 0;
-    mptr->_13 = 0;
-    mptr->_23 = 0;
+    g_MatrixPtr++;
+    *g_MatrixPtr = g_IDMatrix;
     return true;
 }
 
 void Matrix_Pop(void)
 {
     g_MatrixPtr--;
+}
+
+void Matrix_Scale(const int32_t scale)
+{
+    Matrix_ScaleX(scale);
+    Matrix_ScaleY(scale);
+    Matrix_ScaleZ(scale);
+}
+
+void Matrix_ScaleX(const int32_t sx)
+{
+    MATRIX *const mptr = g_MatrixPtr;
+    mptr->_00 = ((int64_t)mptr->_00 * sx) >> W2V_SHIFT;
+    mptr->_10 = ((int64_t)mptr->_10 * sx) >> W2V_SHIFT;
+    mptr->_20 = ((int64_t)mptr->_20 * sx) >> W2V_SHIFT;
+}
+
+void Matrix_ScaleY(const int32_t sy)
+{
+    MATRIX *const mptr = g_MatrixPtr;
+    mptr->_01 = ((int64_t)mptr->_01 * sy) >> W2V_SHIFT;
+    mptr->_11 = ((int64_t)mptr->_11 * sy) >> W2V_SHIFT;
+    mptr->_21 = ((int64_t)mptr->_21 * sy) >> W2V_SHIFT;
+}
+
+void Matrix_ScaleZ(const int32_t sz)
+{
+    MATRIX *const mptr = g_MatrixPtr;
+    mptr->_02 = ((int64_t)mptr->_02 * sz) >> W2V_SHIFT;
+    mptr->_12 = ((int64_t)mptr->_12 * sz) >> W2V_SHIFT;
+    mptr->_22 = ((int64_t)mptr->_22 * sz) >> W2V_SHIFT;
 }
 
 void Matrix_RotX(const int16_t rx)
@@ -183,12 +210,12 @@ void Matrix_Rot16(const XYZ_16 rotation)
     M_RotYXZ(rotation.y, rotation.x, rotation.z);
 }
 
-void Matrix_TranslateRel(const int32_t x, const int32_t y, const int32_t z)
+void Matrix_TranslateRel(const int32_t dx, const int32_t dy, const int32_t dz)
 {
     MATRIX *const mptr = g_MatrixPtr;
-    mptr->_03 += x * mptr->_00 + y * mptr->_01 + z * mptr->_02;
-    mptr->_13 += x * mptr->_10 + y * mptr->_11 + z * mptr->_12;
-    mptr->_23 += x * mptr->_20 + y * mptr->_21 + z * mptr->_22;
+    mptr->_03 += dx * mptr->_00 + dy * mptr->_01 + dz * mptr->_02;
+    mptr->_13 += dx * mptr->_10 + dy * mptr->_11 + dz * mptr->_12;
+    mptr->_23 += dx * mptr->_20 + dy * mptr->_21 + dz * mptr->_22;
 }
 
 void Matrix_TranslateRel16(const XYZ_16 offset)

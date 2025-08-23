@@ -560,7 +560,8 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
 
             // Prevent issues with pre-injection saves and Lara's enhanced
             // animation set.
-            if (item->object_id == O_LARA && item->anim_num < obj->anim_idx) {
+            if (item->object_id == O_LARA
+                && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
                 item->anim_num += obj->anim_idx;
             }
         }
@@ -702,31 +703,25 @@ static bool M_LoadEffects(JSON_ARRAY *fx_arr)
             return false;
         }
 
-        int32_t x = JSON_ObjectGetInt(fx_obj, "x", 0);
-        int32_t y = JSON_ObjectGetInt(fx_obj, "y", 0);
-        int32_t z = JSON_ObjectGetInt(fx_obj, "z", 0);
-        int16_t room_num = JSON_ObjectGetInt(fx_obj, "room_number", 0);
-        GAME_OBJECT_ID obj_id =
-            Object_UnmapGameID(JSON_ObjectGetInt(fx_obj, "object_number", -1));
-        int16_t speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
-        int16_t fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
-        int16_t frame_num = JSON_ObjectGetInt(fx_obj, "frame_number", 0);
-        int16_t counter = JSON_ObjectGetInt(fx_obj, "counter", 0);
-        int16_t shade = JSON_ObjectGetInt(fx_obj, "shade", 0);
-
-        int16_t effect_num = Effect_Create(room_num);
-        if (effect_num != NO_EFFECT) {
-            EFFECT *effect = Effect_Get(effect_num);
-            effect->pos.x = x;
-            effect->pos.y = y;
-            effect->pos.z = z;
-            effect->object_id = obj_id;
-            effect->speed = speed;
-            effect->fall_speed = fall_speed;
-            effect->frame_num = frame_num;
-            effect->counter = counter;
-            effect->shade = shade;
+        const int16_t room_num = JSON_ObjectGetInt(fx_obj, "room_number", 0);
+        const int16_t effect_num = Effect_Create(room_num);
+        if (effect_num == NO_EFFECT) {
+            continue;
         }
+        EFFECT *effect = Effect_Get(effect_num);
+        effect->pos.x = JSON_ObjectGetInt(fx_obj, "x", 0);
+        effect->pos.y = JSON_ObjectGetInt(fx_obj, "y", 0);
+        effect->pos.z = JSON_ObjectGetInt(fx_obj, "z", 0);
+        effect->rot.x = JSON_ObjectGetInt(fx_obj, "x_rot", 0);
+        effect->rot.y = JSON_ObjectGetInt(fx_obj, "y_rot", 0);
+        effect->rot.z = JSON_ObjectGetInt(fx_obj, "z_rot", 0);
+        effect->object_id =
+            Object_UnmapGameID(JSON_ObjectGetInt(fx_obj, "object_number", -1));
+        effect->speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
+        effect->fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
+        effect->frame_num = JSON_ObjectGetInt(fx_obj, "frame_number", 0);
+        effect->counter = JSON_ObjectGetInt(fx_obj, "counter", 0);
+        effect->shade = JSON_ObjectGetInt(fx_obj, "shade", 0);
     }
 
     return true;
@@ -814,6 +809,8 @@ static bool M_LoadLara(
     lara->hit_direction =
         JSON_ObjectGetInt(lara_obj, "hit_direction", lara->hit_direction);
     lara->air = JSON_ObjectGetInt(lara_obj, "air", lara->air);
+    lara->sprint_timer =
+        JSON_ObjectGetInt(lara_obj, "sprint_timer", lara->sprint_timer);
     lara->dive_timer =
         JSON_ObjectGetInt(lara_obj, "dive_count", lara->dive_timer);
     lara->death_timer =
@@ -936,8 +933,8 @@ static bool M_LoadCurrentMusic(
     JSON_OBJECT *music_obj, const uint16_t header_version)
 {
     if (music_obj == nullptr) {
-        LOG_WARNING("Malformed save: invalid or missing current music");
-        return true;
+        LOG_ERROR("Malformed save: invalid or missing music info");
+        return false;
     }
 
     const MUSIC_TRACK_ID current_track =
@@ -954,6 +951,7 @@ static bool M_LoadCurrentMusic(
         }
     }
 
+    Music_Stop();
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.
@@ -1230,6 +1228,9 @@ static JSON_ARRAY *M_DumpEffects(void)
         JSON_ObjectAppendInt(fx_obj, "x", effect->pos.x);
         JSON_ObjectAppendInt(fx_obj, "y", effect->pos.y);
         JSON_ObjectAppendInt(fx_obj, "z", effect->pos.z);
+        JSON_ObjectAppendInt(fx_obj, "x_rot", effect->rot.x);
+        JSON_ObjectAppendInt(fx_obj, "y_rot", effect->rot.y);
+        JSON_ObjectAppendInt(fx_obj, "z_rot", effect->rot.z);
         JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
         JSON_ObjectAppendInt(
             fx_obj, "object_number", Object_MakeGameID(effect->object_id));
@@ -1301,6 +1302,7 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "hit_frame", lara->hit_frame);
     JSON_ObjectAppendInt(lara_obj, "hit_direction", lara->hit_direction);
     JSON_ObjectAppendInt(lara_obj, "air", lara->air);
+    JSON_ObjectAppendInt(lara_obj, "sprint_timer", lara->sprint_timer);
     JSON_ObjectAppendInt(lara_obj, "dive_count", lara->dive_timer);
     JSON_ObjectAppendInt(lara_obj, "death_count", lara->death_timer);
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);

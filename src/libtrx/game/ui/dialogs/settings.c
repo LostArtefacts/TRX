@@ -351,7 +351,7 @@ static bool M_RequestChangeValue(
 
     UI_Settings_RequestChange(option, dir);
 changed:
-    Config_Write();
+    Config_Update();
     return true;
 }
 
@@ -447,7 +447,7 @@ static void M_RestoreDefault(
     const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
     if (option != nullptr) {
         Config_RestoreOptionDefault(option->target);
-        Config_Write();
+        Config_Update();
     }
 }
 
@@ -769,13 +769,27 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
     });
-    if (s->tab_switch != nullptr) {
+    if (s->tab_switch != nullptr && s->tab_count > 0) {
         UI_TabSwitch(
             s->tab_switch, s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS);
         UI_Spacer(0.0f, 8.0f);
     }
 
     UI_BeginScrollableArea(&s->scroll, s->tab_count > 0);
+
+    if (s->scroll.vis_items == 0) {
+        UI_BeginResize(-1.0f, -1.0f);
+        UI_BeginPad(
+            TR_VERSION == 1 ? -1.0f : 0.0f, TR_VERSION == 1 ? -1.0f : 0.0f);
+        UI_BeginStackEx((UI_STACK_SETTINGS) {
+            .orientation = UI_STACK_VERTICAL,
+            .align = { .h = UI_STACK_H_ALIGN_CENTER },
+        });
+        UI_Label(GS(COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER));
+        UI_EndStack();
+        UI_EndPad();
+        UI_EndResize();
+    }
 
     for (int32_t i = 0; i < s->scroll.vis_items; i++) {
         const int32_t row = s->scroll.first_item + i;

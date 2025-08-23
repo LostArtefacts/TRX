@@ -44,7 +44,7 @@ static void M_RemoveText(M_PRIV *p);
 
 static PHASE_CONTROL M_Start(PHASE *phase);
 static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase, int32_t nframes);
+static PHASE_CONTROL M_Control(PHASE *phase);
 static void M_Draw(PHASE *phase);
 
 static void M_FadeIn(M_PRIV *const p)
@@ -114,10 +114,9 @@ static void M_End(PHASE *const phase)
     UI_Pause_Free(&p->ui.state);
 }
 
-static PHASE_CONTROL M_Control(PHASE *const phase, int32_t const num_frames)
+static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-
     Input_Update();
     Shell_ProcessInput();
 
@@ -184,12 +183,12 @@ static void M_Draw(PHASE *const phase)
     Interpolation_Disable();
     Game_Draw(false);
     Interpolation_Enable();
-    Fader_Draw(&p->back_fader);
+    UI_BeginFade(&p->back_fader, false);
+    UI_EndFade();
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);
     }
-    Output_DrawPolyList();
 }
 
 PHASE *Phase_Pause_Create(void)

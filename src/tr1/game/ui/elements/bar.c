@@ -1,8 +1,7 @@
 #include "game/ui/elements/bar.h"
 
-#include "game/output.h"
-
 #include <libtrx/config.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/scaler.h>
 #include <libtrx/game/ui/draw.h>
 #include <libtrx/game/ui/helpers.h>
@@ -29,6 +28,7 @@ static int32_t m_ColorMap[][M_COLOR_STEPS] = {
     [BC_BLUE2]  = { 0x00AADC, 0x00C8FF, 0x00AADC, 0x008CB9, 0x006496 },
     [BC_PINK]   = { 0xDC8CAA, 0xFF96C8, 0xD282A0, 0xA56478, 0x783C46 },
     [BC_PURPLE] = { 0x341650, 0x461E6B, 0x341650, 0x27113C, 0x1A0B28 },
+    [BC_GREEN2] = { 0x10984D, 0x18B85B, 0x10984D, 0x0B7733, 0x075819 },
     // clang-format on
 };
 #undef C

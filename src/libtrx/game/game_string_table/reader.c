@@ -2,7 +2,7 @@
 #include "game/game_string_table.h"
 #include "game/game_string_table/priv.h"
 #include "game/shell.h"
-#include "json.h"
+#include "json_file.h"
 #include "log.h"
 #include "memory.h"
 
@@ -156,30 +156,21 @@ static void M_LoadLevelsFromJSON(
     }
 }
 
-void GS_File_LoadFromString(
-    GS_FILE *const gs_file, const char *const data, const bool load_levels)
+GS_FILE *GS_File_CreateFromPath(const char *const path, const bool load_levels)
 {
-    JSON_PARSE_RESULT parse_result;
+    GS_FILE *const gs_file = Memory_Alloc(sizeof(*gs_file));
+    gs_file->path = Memory_DupStr(path);
 
-    JSON_VALUE *root = JSON_ParseEx(
-        data, strlen(data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr, nullptr,
-        &parse_result);
-    if (root == nullptr) {
-        Shell_ExitSystemFmt(
-            "%s: Failed to parse strings table: %s in line %d, char %d",
-            gs_file->path, JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no);
-    }
-
-    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
+    JSON_VALUE *const doc =
+        JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_OBJECT *root_obj = JSON_ValueAsObject(doc);
     M_LoadTableFromJSON(root_obj, &gs_file->global);
     if (load_levels) {
         M_LoadLevelsFromJSON(root_obj, gs_file, "levels", GFLT_MAIN);
         M_LoadLevelsFromJSON(root_obj, gs_file, "demos", GFLT_DEMOS);
         M_LoadLevelsFromJSON(root_obj, gs_file, "cutscenes", GFLT_CUTSCENES);
     }
-    if (root != nullptr) {
-        JSON_ValueFree(root);
-        root = nullptr;
-    }
+
+    JSON_ValueFree(doc);
+    return gs_file;
 }

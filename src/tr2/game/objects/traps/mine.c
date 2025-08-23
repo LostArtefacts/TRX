@@ -1,11 +1,11 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 static bool m_DetonateAllMines = false;

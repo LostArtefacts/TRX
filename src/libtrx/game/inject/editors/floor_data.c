@@ -22,6 +22,7 @@ static void M_TriggeredItem(const INJECTION *injection);
 static void M_RoomProperties(const INJECTION *injection, int16_t room_num);
 static void M_SectorOverwrite(const INJECTION *injection, SECTOR *sector);
 static void M_FixZones(const INJECTION *injection, const SECTOR *sector);
+static void M_SetSectorPortals(const INJECTION *injection, SECTOR *sector);
 
 static void M_FloorDataEdits(
     const INJECTION *const injection, const int32_t data_count)
@@ -80,6 +81,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_ZONE_FIX:
                 M_FixZones(injection, sector);
+                break;
+            case FET_PORTALS:
+                M_SetSectorPortals(injection, sector);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
@@ -328,6 +332,19 @@ static void M_FixZones(
         int16_t *const fly_zone = Box_GetFlyZone(flip_status);
         fly_zone[box_idx] = VFile_ReadS16(injection->fp);
     }
+}
+
+static void M_SetSectorPortals(
+    const INJECTION *const injection, SECTOR *const sector)
+{
+    if (sector == nullptr) {
+        VFile_Skip(injection->fp, 3 * sizeof(int16_t));
+        return;
+    }
+
+    sector->portal_room.wall = VFile_ReadS16(injection->fp);
+    sector->portal_room.sky = VFile_ReadS16(injection->fp);
+    sector->portal_room.pit = VFile_ReadS16(injection->fp);
 }
 
 REGISTER_INJECT_EDITOR(IDT_FLOOR_EDITS, M_FloorDataEdits)

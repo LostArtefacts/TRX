@@ -15,11 +15,17 @@ bool UI_Settings_EnableExitFadeEffects_IsAvailable(
 bool UI_Settings_PauseMusicInInventory_IsAvailable(
     const UI_SETTINGS_OPTION *option);
 
+bool UI_Settings_FogColor_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_UIPickupsScale_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_Sprintbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_EnemyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_AllyHealthbar_IsAvailable(const UI_SETTINGS_OPTION *option);
+
+bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *option);
 
 const char *UI_Settings_Language_FormatValue(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Language_CanChangeValue(

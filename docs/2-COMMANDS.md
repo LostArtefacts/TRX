@@ -59,6 +59,11 @@ whichever key you have bound, and not include it as part of the command itself.
   `/immune off`  
   Turns on immunity, making Lara impervious to harm. Perfect for when you'd rather explore every nook than tiptoe past traps.
 
+- `/restless`  
+  `/restless on`  
+  `/restless off`  
+  Turns on infinite sprint. Lara's always been a speedster, but with this, even cheetahs are asking her for running tips!
+
 ## Configuration commands
 
 - `/set {option}`  
@@ -88,9 +93,10 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/debug on`  
   `/debug off`  
   Toggles debug mode, turning your screen into a glorious display of dev scribbles.
-  - (TR1) floor triggers - enemy skips incoming!
-  - (TR1) room portals - wait, there are _how_ many rooms?!
-  - (TR1) object mesh spheres - see hitboxes in their natural habitat.
+  - floor triggers - enemy skips incoming!
+  - room portals - wait, there are _how_ many rooms?!
+  - room clip rectangles – the source of developers nightmares.
+  - object mesh spheres - see hitboxes in their natural habitat.
   - Lara's position and animation details - nerdy stats, you've gotta love them.
 
 - `/speed`  
@@ -99,7 +105,7 @@ whichever key you have bound, and not include it as part of the command itself.
 
 - `/vsync on`  
   `/vsync off`  
-  Turns vertical sync on or off (TR1 only). For the smooth freaks among us.
+  Turns vertical sync on or off. For the smooth freaks among us.
 
 - `/fps`  
   `/fps {num}`  
@@ -165,3 +171,9 @@ whichever key you have bound, and not include it as part of the command itself.
 
 - `/strings`  
   Reloads the current language files on the fly. Très utile for translators.
+
+- `/screenshot [path]`  
+  Commemorates Lara's antics by taking a picture and saving it to the optional path (relative to the game root directory).
+
+- `/lua {string}`
+  Type any LUA code to run it on the spot. Proceed with caution, or at least a sense of adventure!

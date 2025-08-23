@@ -3,11 +3,8 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/input.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/overlay.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -16,9 +13,12 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/overlay.h>
+#include <libtrx/game/random.h>
 #include <libtrx/log.h>
 
 #define L_MODIFY_CONFIG()                                                      \
@@ -184,7 +184,6 @@ void Demo_End(void)
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
     Overlay_SetBottomText(nullptr, false);
-    Overlay_HideGameInfo();
     Sound_StopAll();
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);

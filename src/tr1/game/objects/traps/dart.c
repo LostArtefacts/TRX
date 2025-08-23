@@ -1,9 +1,10 @@
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"
+
+#include <libtrx/game/random.h>
 
 #define DART_DAMAGE 50
 

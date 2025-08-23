@@ -1,14 +1,14 @@
 #pragma once
 
-#include "2d/2d_renderer.h"
-#include "3d/3d_renderer.h"
-#include "common.h"
-#include "game/viewport.h"
-#include "renderer.h"
+#include "../game/viewport.h"
+#include "./2d/2d_renderer.h"
+#include "./3d/3d_renderer.h"
+#include "./common.h"
+#include "./renderer.h"
 
 #include <stdint.h>
 
-bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend);
+bool GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);
 
 void GFX_Context_SetDisplayFilter(GFX_TEXTURE_FILTER filter);

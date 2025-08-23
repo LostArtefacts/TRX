@@ -1,0 +1,768 @@
+{
+    // For usage, refer to the documentation here:
+    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    "levels": [
+        {
+            "title": "Laras Haus",
+        },
+        {
+            "title": "Die Kavernen",
+        },
+        {
+            "title": " Die Stadt Vilcabamba",
+            "objects": {
+                "key_1": {
+                    "name": "Silberner Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Goldener Götze",
+                }
+            }
+        },
+        {
+            "title": "Das verlorene Tal",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Zahnrad",
+                }
+            }
+        },
+        {
+            "title": "Das Grab des Qualopec",
+        },
+        {
+            "title": "St. Francis' Folly",
+            "objects": {
+                "key_1": {
+                    "name": "Schlüssel des Neptun",
+                },
+                "key_2": {
+                    "name": "Schlüssel des Atlas",
+                },
+                "key_3": {
+                    "name": "Schlüssel des Damokles",
+                },
+                "key_4": {
+                    "name": "Schlüssel des Thor",
+                }
+            }
+        },
+        {
+            "title": "Kolosseum",
+            "objects": {
+                "key_1": {
+                    "name": "Rostiger Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Der Palast des Midas",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Goldbarren",
+                }
+            }
+        },
+        {
+            "title": "Die Zisterne",
+            "objects": {
+                "key_1": {
+                    "name": "Goldener Schlüssel",
+                },
+                "key_2": {
+                    "name": "Silberner Schlüssel",
+                },
+                "key_3": {
+                    "name": "Rostiger Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Das Grab des Tihocan",
+            "objects": {
+                "key_1": {
+                    "name": "Goldener Schlüssel",
+                },
+                "key_2": {
+                    "name": "Rostiger Schlüssel",
+                },
+                "key_3": {
+                    "name": "Rostiger Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Die Stadt Khamoon",
+            "objects": {
+                "key_1": {
+                    "name": "Saphir Schlüssel",
+                }
+            }
+        },
+        {
+            "title": "Der Obelisk von Khamoon",
+            "objects": {
+                "key_1": {
+                    "name": "Saphir Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Auge des Horus",
+                },
+                "puzzle_2": {
+                    "name": "Skarabäus",
+                },
+                "puzzle_3": {
+                    "name": "Siegel des Anubis",
+                },
+                "puzzle_4": {
+                    "name": "Ankh",
+                }
+            }
+        },
+        {
+            "title": "Das Heiligtum des Scion",
+            "objects": {
+                "key_1": {
+                    "name": "Goldener Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Ankh",
+                },
+                "puzzle_2": {
+                    "name": "Skarabäus",
+                }
+            }
+        },
+        {
+            "title": "Natlas Katakomben",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Sicherung",
+                },
+                "puzzle_2": {
+                    "name": "Schlüssel der Pyramide",
+                }
+            }
+        },
+        {
+            "title": "Atlantis",
+        },
+        {
+            "title": "Die Große Pyramide",
+        },
+        {
+            "title": "Dummy",
+        },
+        {
+            "title": "Dummy",
+        },
+        {
+            "title": "Dummy",
+        },
+        {
+            "title": "Dummy",
+        },
+        {
+            "title": "Titel",
+        },
+        {
+            "title": "Aktuelle Position",
+        }
+    ],
+    "cutscenes": [
+        {
+            "title": "Zwischensequenz 1",
+        },
+        {
+            "title": "Zwischensequenz 2",
+        },
+        {
+            "title": "Zwischensequenz 3",
+        },
+        {
+            "title": "Zwischensequenz 4",
+        }
+    ],
+    "demos": [
+        {
+            "title": "Die Stadt Vilcabamba",
+            "objects": {
+                "key_1": {
+                    "name": "Silberner Schlüssel",
+                },
+                "puzzle_1": {
+                    "name": "Goldener Götze",
+                }
+            }
+        },
+        {
+            "title": "Das verlorene Tal",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Zahnrad",
+                }
+            }
+        }
+    ],
+    "objects": {
+        "small_medipack": {
+            "name": "Kleines Medi-Pack",
+        },
+        "large_medipack": {
+            "name": "Großes Medi-Pack",
+        },
+        "pistols": {
+            "name": "Pistolen",
+        },
+        "shotgun": {
+            "name": "Schrotflinte",
+        },
+        "magnums": {
+            "name": "Magnums",
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "pistol_ammo": {
+            "name": "Pistolen Munition",
+        },
+        "shotgun_ammo": {
+            "name": "Sschrotflinten Munition",
+        },
+        "magnums_ammo": {
+            "name": "Magnum Munition",
+        },
+        "uzis_ammo": {
+            "name": "Uzi Munition",
+        },
+        "grenade": {
+            "name": "Granate",
+        },
+        "key_1": {
+            "name": "Schlüssel 1",
+        },
+        "key_2": {
+            "name": "Schlüssel 2",
+        },
+        "key_3": {
+            "name": "Schlüssel 3",
+        },
+        "key_4": {
+            "name": "Schlüssel 4",
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4",
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2",
+        },
+        "lead_bar": {
+            "name": "Bleibarren",
+        },
+        "scion": {
+            "name": "Scion",
+        },
+        "compass": {
+            "name": "Kompass",
+        },
+        "passport": {
+            "name": "Spiel",
+        },
+        "photo": {
+            "name": "Laras Haus",
+        },
+        "graphics": {
+            "name": "Grafikeinstellungen",
+        },
+        "controls": {
+            "name": "Steuerung",
+        },
+        "sound": {
+            "name": "Sound",
+        },
+        "gamma": {
+            "name": "Gamma",
+        },
+        "gameplay": {
+            "name": "Gameplay",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_pistols": {
+            "name": "Pistolen-Animation",
+        },
+        "lara_shotgun": {
+            "name": "Schrotflinten-Animation",
+        },
+        "lara_magnums": {
+            "name": "Magnum-Animation",
+        },
+        "lara_uzis": {
+            "name": "Uzi-Animation",
+        },
+        "lara_extra": {
+            "name": "Laras Extra-Animation",
+        },
+        "bacon_lara": {
+            "name": "Schinken Lara",
+        },
+        "wolf": {
+            "name": "Wolf",
+        },
+        "bear": {
+            "name": "Bär",
+        },
+        "bat": {
+            "name": "Fledermaus",
+        },
+        "crocodile": {
+            "name": "Krokodil",
+        },
+        "alligator": {
+            "name": "Alligator",
+        },
+        "lion": {
+            "name": "Löwe",
+        },
+        "lioness": {
+            "names": [
+                "Löwin",
+                "Löwe",
+            ]
+        },
+        "puma": {
+            "name": "Puma",
+        },
+        "ape": {
+            "name": "Affe",
+        },
+        "rat": {
+            "names": [
+                "Ratte",
+                "Landratte",
+            ]
+        },
+        "vole": {
+            "names": [
+                "Wühlmaus",
+                "Wasserratte",
+            ]
+        },
+        "trex": {
+            "name": "T-Rex",
+        },
+        "raptor": {
+            "name": "Raptor",
+        },
+        "mutant_1": {
+            "name": "Mutant 1",
+        },
+        "mutant_2": {
+            "name": "Mutant 2",
+        },
+        "mutant_3": {
+            "name": "Mutant 3",
+        },
+        "centaur": {
+            "name": "Zentaur",
+        },
+        "mummy": {
+            "name": "Mumie",
+        },
+        "dino_mutant": {
+            "name": "Dino Mutant",
+        },
+        "fish_mutant": {
+            "name": "Fisch Mutant",
+        },
+        "larson": {
+            "name": "Larson",
+        },
+        "pierre": {
+            "name": "Pierre",
+        },
+        "skateboard": {
+            "name": "Skateboard",
+        },
+        "skate_kid": {
+            "name": "Skate Kid",
+        },
+        "cowboy": {
+            "name": "Cowboy",
+        },
+        "baldy": {
+            "name": "Glatzkopf",
+        },
+        "natla": {
+            "name": "Natla",
+        },
+        "torso": {
+            "names": [
+                "Torso",
+                "Adam",
+                "Riesenmutant",
+            ]
+        },
+        "falling_block_1": {
+            "names": [
+                "Fallender Block",
+                "Zerstörbarer Boden",
+                "Zerstörbare Platten",
+            ]
+        },
+        "pendulum_1": {
+            "name": "Pendel",
+        },
+        "spikes": {
+            "name": "Stacheln",
+        },
+        "rolling_ball_1": {
+            "names": [
+                "Fels",
+                "Rollender Ball",
+            ]
+        },
+        "dart": {
+            "name": "Pfeil",
+        },
+        "dart_emitter": {
+            "name": "Pfeilerzeuger",
+        },
+        "drawbridge": {
+            "name": "Zugbrücke",
+        },
+        "teeth_trap": {
+            "names": [
+                "Zahn-Falle",
+                "Clang-clang Tür",
+            ]
+        },
+        "damocles_sword": {
+            "name": "Schwert des Damokles",
+        },
+        "thors_handle": {
+            "name": "Thors Hammer Griff",
+        },
+        "thors_head": {
+            "name": "Thors Hammer",
+        },
+        "lightning_emitter": {
+            "name": "Blitzerzeuger",
+        },
+        "moving_bar": {
+            "name": "Moving Bar",
+        },
+        "movable_block_1": {
+            "names": [
+                "Drückbarer Block 1",
+                "Bewegbarer Block 1",
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "Drückbarer Block 2",
+                "Bewegbarer Block 2",
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "Drückbarer Block 3",
+                "Bewegbarer Block 3",
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "Drückbarer Block 4",
+                "Bewegbarer Block 4",
+            ]
+        },
+        "sliding_pillar": {
+            "name": "Sliding Pillar",
+        },
+        "falling_ceiling_1": {
+            "name": "Fallende Decke 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Fallende Decke 2",
+        },
+        "switch_type_normal": {
+            "names": [
+                "Hebel",
+                "Schalter",
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Unterwasserhebel",
+                "Unterwasserschalter",
+            ]
+        },
+        "door_1": {
+            "name": "Tür 1",
+        },
+        "door_2": {
+            "name": "Tür 2",
+        },
+        "door_3": {
+            "name": "Tür 3",
+        },
+        "door_4": {
+            "name": "Tür 4",
+        },
+        "door_5": {
+            "name": "Tür 5",
+        },
+        "door_6": {
+            "name": "Tür 6",
+        },
+        "door_7": {
+            "name": "Tür 7",
+        },
+        "door_8": {
+            "name": "Tür 8",
+        },
+        "trapdoor_1": {
+            "name": "Falltür 1",
+        },
+        "trapdoor_2": {
+            "name": "Falltür 2",
+        },
+        "trapdoor_3": {
+            "name": "Falltür 3",
+        },
+        "bridge_flat": {
+            "name": "Brücke Flach",
+        },
+        "bridge_tilt_1": {
+            "name": "Brücke Winkel 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Brücke Winkel 2",
+        },
+        "cog_1": {
+            "name": "Zahnrad 1",
+        },
+        "cog_2": {
+            "name": "Zahnrad 2",
+        },
+        "cog_3": {
+            "name": "Zahnrad 3",
+        },
+        "player_1": {
+            "name": "Zwischensequenz-Schauspieler 1",
+        },
+        "player_2": {
+            "name": "Zwischensequenz-Schauspieler 2",
+        },
+        "player_3": {
+            "name": "Zwischensequenz-Schauspieler 3",
+        },
+        "player_4": {
+            "name": "Zwischensequenz-Schauspieler 4",
+        },
+        "save_crystal": {
+            "name": "Speicherkristall",
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Loch 1 (Leer)",
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Loch 2 (Leer)",
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Loch 3 (Leer)",
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Loch 4 (Leer)",
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Loch 1 (erledigt)",
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Loch 2 (erledigt)",
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Loch 3 (erledigt)",
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Loch 4 (erledigt)",
+        },
+        "midas_touch": {
+            "name": "Hand des Midas",
+        },
+        "key_hole_1": {
+            "name": "Schlüsselloch 1",
+        },
+        "key_hole_2": {
+            "name": "Schlüsselloch 2",
+        },
+        "key_hole_3": {
+            "name": "Schlüsselloch 3",
+        },
+        "key_hole_4": {
+            "name": "Schlüsselloch 4",
+        },
+        "scion_holder": {
+            "name": "Scion-Halter",
+        },
+        "explosion_1": {
+            "name": "Explosion 1",
+        },
+        "explosion_2": {
+            "name": "Explosion 2",
+        },
+        "splash_1": {
+            "name": "Wasser-Kräuseln 1",
+        },
+        "splash_2": {
+            "name": "Water-Kräuseln 2",
+        },
+        "bubble_1": {
+            "name": "Blase 1",
+        },
+        "bubble_2": {
+            "name": "Blase 2",
+        },
+        "bubble_emitter": {
+            "name": "Blasenerzeuger",
+        },
+        "blood_1": {
+            "name": "Blut 1",
+        },
+        "blood_2": {
+            "name": "Blut 2",
+        },
+        "dart_effect": {
+            "name": "Pfeil Effekt",
+        },
+        "statue": {
+            "name": "Statue",
+        },
+        "portacabin": {
+            "name": "Portable Cabin",
+        },
+        "pods": {
+            "name": "Pod",
+        },
+        "ricochet": {
+            "name": "Querschläger",
+        },
+        "twinkle": {
+            "name": "Funken",
+        },
+        "gun_flash": {
+            "name": "Waffen-Blitz",
+        },
+        "dust": {
+            "name": "Staub",
+        },
+        "body_part": {
+            "name": "Körperteil",
+        },
+        "camera_target": {
+            "name": "Kamera-Ziel",
+        },
+        "waterfall": {
+            "name": "Wasserfall Nebel",
+        },
+        "missile_1": {
+            "name": "Rakete 1",
+        },
+        "missile_2": {
+            "name": "Rakete 2",
+        },
+        "missile_3": {
+            "name": "Rakete 3",
+        },
+        "missile_4": {
+            "name": "Rakete 4",
+        },
+        "missile_5": {
+            "name": "Rakete 5",
+        },
+        "ember": {
+            "name": "Glut",
+        },
+        "ember_emitter": {
+            "name": "Gluterzeuger",
+        },
+        "flame": {
+            "names": [
+                "Flamme",
+                "Feuer",
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Flammenerzeuger",
+                "Feuererzeuger",
+            ]
+        },
+        "lava_wedge": {
+            "name": "Lava-Keil",
+        },
+        "big_pod": {
+            "name": "Big Pod",
+        },
+        "boat": {
+            "name": "Boot",
+        },
+        "earthquake": {
+            "name": "Erdbeben",
+        },
+        "skybox": {
+            "name": "Skybox",
+        },
+        "pickup_aid": {
+            "name": "Pickup-Hilfe",
+        },
+        "glow": {
+            "name": "\\{review}Glühen",
+        },
+        "temp_8": {
+            "name": "Temp 8",
+        },
+        "temp_9": {
+            "name": "Temp 9",
+        },
+        "lara_hair": {
+            "name": "Laras Zopf",
+        },
+        "alphabet": {
+            "name": "Alphabet",
+        }
+    },
+    "game_strings": {
+        "ENUM_INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
+        "MISC_EMPTY_SLOT_FMT": "- Leerer SLOT %d -",
+        "PASSPORT_RESTART_LEVEL": "Level Neu starten",
+        "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Erlaubt  die Auswahl der 'Neues Spiel Plus'-Optionen 'im Neues Spiel'-Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebensenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die Verwendung von dynamischer Beleuchtung für Schüsse und Explosionen., ähnlich wie in TR2+.",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixt originale Fehler in Die Zisterne und Grab des Tihocan, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara nicht mehr verfehlen.",
+        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Sorgt dafür, dass die Schrotflinte nicht mehr schiesst, wenn anvisierte Ziele sich aus dem Sichtfeld von Lara bewegen, ähnlich wie bei anderen Waffen.",
+        "STATS_AMMO": "Munition Treffer/Verbraucht",
+        "STATS_DEATHS": "Tode",
+        "STATS_DISTANCE_TRAVELLED": "Zurückgelegte Distanz",
+        "STATS_KILLS": "Besiegte Gegner",
+        "STATS_LEVEL": "Level",
+        "STATS_MEDIPACKS_USED": "Benötigte Medi-Packs",
+        "STATS_PICKUPS": "Pickups",
+        "STATS_SECRETS": "Geheimnisse",
+        "STATS_TIME_TAKEN": "Benötigte Zeit",
+    }
+}

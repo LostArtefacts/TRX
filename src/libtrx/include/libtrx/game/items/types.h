@@ -59,6 +59,7 @@ typedef struct {
 
     struct {
         struct {
+            int32_t floor;
             XYZ_32 pos;
             XYZ_16 rot;
         } result, prev;

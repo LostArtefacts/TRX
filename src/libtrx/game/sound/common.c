@@ -34,6 +34,9 @@ void Sound_InitialiseSampleInfos(const int32_t num_sample_infos)
 bool Sound_LoadSample(
     const int32_t sample_num, const char *const sample_data, const size_t size)
 {
+    if (!Sound_IsInitialised()) {
+        return false;
+    }
     return Audio_Sample_Load(sample_num, sample_data, size);
 }
 

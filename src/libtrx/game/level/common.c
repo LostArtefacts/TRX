@@ -21,9 +21,11 @@
 #include "game/viewport.h"
 #include "log.h"
 #include "memory.h"
+#include "thread_pool.h"
 #include "utils.h"
 #include "vector.h"
 
+#include <SDL2/SDL_cpuinfo.h>
 #include <string.h>
 
 #define M_NO_ROOM_LEGACY 255
@@ -32,6 +34,8 @@ static LEVEL_INFO m_Info = {};
 
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
 static void M_FixTrapezoidRatios(FACE4 *face, const XYZ_16 vertices[4]);
+static void M_PremultiplyTexturePage(void *userdata);
+
 static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
 static void M_ReadShade(SHADE *shade, VFILE *file);
 static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
@@ -182,6 +186,20 @@ static void M_FixTrapezoidRatios(FACE4 *const face, const XYZ_16 vertices[4])
     }
 }
 
+static void M_PremultiplyTexturePage(void *userdata)
+{
+    const int32_t page = *(int32_t *)userdata;
+    Output_LockTexturePage32(page);
+    RGBA_8888 *ptr = Output_GetTexturePage32(page);
+    const float inv255 = 1.0f / 255.0f;
+    for (int32_t i = 0; i < TEXTURE_PAGE_SIZE; i++, ptr++) {
+        ptr->r *= ptr->a * inv255;
+        ptr->g *= ptr->a * inv255;
+        ptr->b *= ptr->a * inv255;
+    }
+    Output_UnlockTexturePage32(page);
+}
+
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
 {
     pos->x = VFile_ReadS32(file);
@@ -301,7 +319,7 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
     VFile_Skip(file, sizeof(int16_t));
 
     mesh->enable_reflections = false;
-    mesh->disable_lighting = false;
+    mesh->depth_adjustment = 0.005;
 
     {
         mesh->num_vertices = VFile_ReadS16(file);
@@ -828,13 +846,14 @@ void Level_ReadObjects(VFILE *const file)
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
-        const GAME_OBJECT_ID obj_id = Object_UnmapGameID(VFile_ReadS32(file));
-        if (obj_id < O_FIRST || obj_id >= O_NUMBER_OF) {
+        const int32_t obj_id = VFile_ReadS32(file);
+        const GAME_OBJECT_ID game_obj_id = Object_UnmapGameID(obj_id);
+        if (game_obj_id < O_FIRST || game_obj_id >= O_NUMBER_OF) {
             Shell_ExitSystemFmt(
                 "Invalid object ID: %d (max=%d)", obj_id, O_NUMBER_OF);
         }
 
-        OBJECT *const obj = Object_Get(obj_id);
+        OBJECT *const obj = Object_Get(game_obj_id);
         obj->mesh_count = VFile_ReadS16(file);
         obj->mesh_idx = VFile_ReadS16(file);
         obj->bone_idx = VFile_ReadS32(file) / ANIM_BONE_SIZE;
@@ -1104,17 +1123,18 @@ void Level_ReadItems(VFILE *const file)
     Item_InitialiseItems(num_items);
     for (int32_t i = 0; i < num_items; i++) {
         ITEM *const item = Item_Get(i);
-        item->object_id = Object_UnmapGameID(VFile_ReadS16(file));
+        const int16_t obj_id = VFile_ReadS16(file);
+        item->object_id = Object_UnmapGameID(obj_id);
+        if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
+            Shell_ExitSystemFmt("Bad object number (%d) on item %d", obj_id, i);
+            goto finish;
+        }
+
         item->room_num = VFile_ReadS16(file);
         M_ReadPosition(&item->pos, file);
         item->rot.y = VFile_ReadS16(file);
         M_ReadShade(&item->shade, file);
         item->flags = VFile_ReadS16(file);
-        if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
-            Shell_ExitSystemFmt(
-                "Bad object number (%d) on item %d", item->object_id, i);
-            goto finish;
-        }
     }
 
 finish:
@@ -1244,8 +1264,10 @@ void Level_LoadTextures(void)
 
 void Level_LoadTexturePages(void)
 {
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_pages = m_Info.textures.page_count;
     Output_InitialiseTexturePages(num_pages, TR_VERSION == 2);
+
     for (int32_t i = 0; i < num_pages; i++) {
 #if TR_VERSION == 2
         uint8_t *const target_8 = Output_GetTexturePage8(i);
@@ -1254,14 +1276,33 @@ void Level_LoadTexturePages(void)
         memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
 #endif
 
-        RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
         const RGBA_8888 *const source_32 =
             &m_Info.textures.pages_32[i * TEXTURE_PAGE_SIZE];
+        RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
         memcpy(target_32, source_32, TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
     }
+    Benchmark_End(&benchmark, "copied texture data");
+
+    {
+        int32_t *pages = Memory_Alloc(num_pages * sizeof(int32_t));
+        const int num_threads = SDL_GetCPUCount();
+        THREAD_POOL *const pool =
+            ThreadPool_Create(num_threads > 0 ? num_threads : 1);
+        for (int32_t i = 0; i < num_pages; i++) {
+            pages[i] = i;
+        }
+        for (int32_t i = 0; i < num_pages; i++) {
+            ThreadPool_AddJob(pool, M_PremultiplyTexturePage, &pages[i]);
+        }
+        ThreadPool_Wait(pool);
+        ThreadPool_Destroy(pool);
+        Memory_Free(pages);
+    }
+    Benchmark_End(&benchmark, "premultiplied alpha");
 
     Memory_FreePointer(&m_Info.textures.pages_24);
     Memory_FreePointer(&m_Info.textures.pages_32);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_LoadPalettes(void)

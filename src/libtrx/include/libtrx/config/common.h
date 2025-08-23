@@ -9,8 +9,9 @@
 void Config_Init(void);
 void Config_Shutdown(void);
 
-bool Config_Read(void);
+bool Config_Read(const char *default_path, const char *enforced_path);
 bool Config_Write(void);
+bool Config_Update(void);
 
 const CONFIG_OPTION *Config_GetOptionMap(void);
 
@@ -32,6 +33,16 @@ bool Config_IsOptionAtDefault(const void *target);
 
 // Restores the given setting's default value.
 bool Config_RestoreOptionDefault(const void *target);
+
+// Get a flat string name of an option.
+const char *Config_ResolveOptionName(const char *option_name);
+
+// Retrieve an option given a string path.
+const CONFIG_OPTION *Config_GetOptionByPath(const char *path);
+
+// Formats the current value of a config option as a static string.
+// The string must not be freed and is short lived.
+const char *Config_GetOptionValueAsString(const CONFIG_OPTION *option);
 
 // Updates the given setting's value from string.
 bool Config_SetOptionValueFromString(

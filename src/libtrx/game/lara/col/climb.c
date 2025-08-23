@@ -16,6 +16,9 @@
 #define M_LF_CLIMB_L_SHIFT_START 28
 #define M_LF_CLIMB_L_SHIFT_END   29
 #define M_LF_CLIMB_R_SHIFT       57
+#define M_LEDGE_JUMP_PUSH_HEIGHT (STEP_L - 16)                    // = 240
+#define M_LEDGE_JUMP_HEIGHT_UP   (LARA_HEIGHT + (STEP_L * 3) / 8) // = 858
+#define M_LEDGE_JUMP_HEIGHT_BACK (LARA_HEIGHT - (STEP_L * 5) / 4) // = 442
 // clang-format on
 
 typedef enum {
@@ -36,6 +39,7 @@ static M_CLIMB_RESULT M_TestClimbPos(
     const ITEM *item, int32_t front, int32_t right, int32_t origin,
     int32_t height, int32_t *shift);
 static bool M_TestClimbStance(ITEM *item, COLL_INFO *coll);
+static bool M_TestLedgeJump(const ITEM *item, const COLL_INFO *coll);
 
 static void M_Hang(ITEM *item, COLL_INFO *coll);
 static void M_Shimmy(ITEM *item, COLL_INFO *coll);
@@ -508,6 +512,37 @@ static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
     return true;
 }
 
+static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
+{
+    if (!g_Input.jump || !(g_Input.forward ^ g_Input.back)
+        || (g_Input.forward && g_Input.slow)
+        || !g_Config.gameplay.enable_ledge_jumps
+        || !Lara_State_IsResponsive(LA_REACH_TO_HANG)) {
+        return false;
+    }
+
+    // Lara needs sufficient space above to avoid the animation pushing her into
+    // the ceiling.
+    const int32_t jump_height =
+        g_Input.forward ? M_LEDGE_JUMP_HEIGHT_UP : M_LEDGE_JUMP_HEIGHT_BACK;
+    if (coll->side_mid.ceiling >= -jump_height) {
+        return false;
+    }
+
+    // Test for a solid surface in front of Lara to push against.
+    const XYZ_32 pos = {
+        .x = item->pos.x + ((Math_Sin(item->rot.y) * STEP_L) >> W2V_SHIFT),
+        .z = item->pos.z + ((Math_Cos(item->rot.y) * STEP_L) >> W2V_SHIFT),
+        .y = item->pos.y,
+    };
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    const int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
+    return height == NO_HEIGHT || height < pos.y
+        || (ceiling - pos.y) >= -M_LEDGE_JUMP_PUSH_HEIGHT;
+}
+
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
     M_HangTest(item, coll);
@@ -516,6 +551,11 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     }
 
     const bool climb_status = M_GetClimbStatus();
+    if (!climb_status && M_TestLedgeJump(item, coll)) {
+        item->goal_anim_state = g_Input.forward ? LS_JUMP_UP : LS_JUMP_BACK;
+        return;
+    }
+
     if (g_Input.forward) {
         if (coll->side_front.floor <= -850 || coll->side_front.floor >= -650
             || coll->side_front.floor - coll->side_front.ceiling < 0

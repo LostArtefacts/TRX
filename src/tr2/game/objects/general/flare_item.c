@@ -1,10 +1,10 @@
 #include "game/objects/general/flare_item.h"
 
 #include "game/objects/general/pickup.h"
-#include "game/output.h"
 #include "game/spawn.h"
 
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 
@@ -26,6 +26,13 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = M_Draw;
     obj->save_position = true;
     obj->save_flags = true;
+
+    if (obj->loaded) {
+        for (int32_t i = 0; i < obj->mesh_count; i++) {
+            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
+            obj_mesh->depth_adjustment = -0.5;
+        }
+    }
 }
 
 static void M_Control(const int16_t item_num)
@@ -113,7 +120,7 @@ static void M_Draw(const ITEM *const item)
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
 
     const XYZ_32 flare_size = {
         .x = frames[0]->bounds.max.x - frames[0]->bounds.min.x,
@@ -127,9 +134,8 @@ static void M_Draw(const ITEM *const item)
     };
     Matrix_TranslateRel32(flare_offset);
 
-    if (clip != 0) {
+    if (clip != CLIP_NOT_VISIBLE) {
         Output_CalculateObjectLighting(item, &frames[0]->bounds);
-        Output_SetDepthBias(-20);
         Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
         if (((int32_t)(intptr_t)item->data) & 0x8000) {
             Matrix_TranslateRel(-6, 6, 80);
@@ -138,7 +144,6 @@ static void M_Draw(const ITEM *const item)
             Output_CalculateStaticLight(8 * 256);
             Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
         }
-        Output_SetDepthBias(0);
     }
     Matrix_Pop();
 }

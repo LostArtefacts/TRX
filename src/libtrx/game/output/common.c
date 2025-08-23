@@ -1,320 +1,187 @@
-#include "game/const.h"
-#include "game/matrix.h"
-#include "game/output.h"
-#include "utils.h"
-#include "vector.h"
+#include "game/output/common.h"
 
-typedef struct {
-    XYZ_32 pos;
-    int32_t shade;
-} COMMON_LIGHT;
+#include "config.h"
+#include "game/level.h"
+#include "game/output/background.h"
+#include "game/output/func.h"
+#include "game/output/lights.h"
+#include "game/output/mesh_batcher/batcher.h"
+#include "game/output/scene_compositor.h"
+#include "game/output/sources/lightnings.h"
+#include "game/output/sources/misc.h"
+#include "game/output/sources/objects.h"
+#include "game/output/sources/rooms.h"
+#include "game/output/sources/rooms_debug.h"
+#include "game/output/sources/shadows.h"
+#include "game/output/sources/sprites.h"
+#include "game/output/sources/ui.h"
+#include "game/output/state.h"
+#include "game/output/textures.h"
+#include "game/output/warmup.h"
+#include "game/shell.h"
+#include "gfx/context.h"
 
-static int32_t m_FogStart = 0;
-static VECTOR *m_DynamicLights = nullptr;
+static MESH_BATCHER *m_Batcher = nullptr;
+static OUTPUT_SHADER *m_Shader = nullptr;
 
-static void M_CalculateBrightestLight(
-    XYZ_32 pos, const ROOM *room, COMMON_LIGHT *brightest_light);
-static int32_t M_CalculateDynamicLight(
-    XYZ_32 pos, COMMON_LIGHT *brightest_light);
-
-static void M_CalculateBrightestLight(
-    const XYZ_32 pos, const ROOM *const room,
-    COMMON_LIGHT *const brightest_light)
+void Output_Init(void)
 {
-#if TR_VERSION == 2
-    if (room->light_mode != RLM_NORMAL) {
-        const int32_t light_shade = Output_GetRoomLightShade(room->light_mode);
-        for (int32_t i = 0; i < room->num_lights; i++) {
-            const LIGHT *const light = &room->lights[i];
-            const int32_t dx = pos.x - light->pos.x;
-            const int32_t dy = pos.y - light->pos.y;
-            const int32_t dz = pos.z - light->pos.z;
+    SceneCompositor_Init();
+    Output_Textures_Init();
 
-            const int32_t falloff_1 = SQUARE(light->falloff.value_1) >> 12;
-            const int32_t falloff_2 = SQUARE(light->falloff.value_2) >> 12;
-            const int32_t dist = (SQUARE(dx) + SQUARE(dy) + SQUARE(dz)) >> 12;
+    m_Shader = Output_Shader_Create("shaders/meshes.glsl");
+    m_Batcher = MeshBatcher_Create();
+    SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
+    OutputSource_Rooms_Init(m_Batcher);
+    OutputSource_RoomsDebug_Init();
+    OutputSource_Objects_Init(m_Batcher);
+    OutputSource_Sprites_Init(m_Batcher);
+    OutputSource_Lightnings_Init();
+    OutputSource_Shadows_Init(m_Batcher);
+    OutputSource_Misc_Init();
+    OutputSource_UI_Init();
 
-            const int32_t shade_1 =
-                falloff_1 * light->shade.value_1 / (falloff_1 + dist);
-            const int32_t shade_2 =
-                falloff_2 * light->shade.value_2 / (falloff_2 + dist);
-            const int32_t shade =
-                shade_1 + (shade_2 - shade_1) * light_shade / (WIBBLE_SIZE - 1);
+    Output_InitLight();
+    Output_InitBackground();
+    Output_WarmUp();
 
-            if (shade > brightest_light->shade) {
-                brightest_light->shade = shade;
-                brightest_light->pos = light->pos;
-            }
-        }
-        return;
-    }
-#endif
-
-    const int32_t ambient = TR_VERSION == 1 ? (SHADE_MAX - room->ambient) : 0;
-    for (int32_t i = 0; i < room->num_lights; i++) {
-        const LIGHT *const light = &room->lights[i];
-        const int32_t dx = pos.x - light->pos.x;
-        const int32_t dy = pos.y - light->pos.y;
-        const int32_t dz = pos.z - light->pos.z;
-        const int32_t falloff = SQUARE(light->falloff.value_1) >> 12;
-        const int32_t dist = (SQUARE(dx) + SQUARE(dy) + SQUARE(dz)) >> 12;
-        const int32_t shade =
-            ambient + (falloff * light->shade.value_1 / (falloff + dist));
-        if (shade > brightest_light->shade) {
-            brightest_light->shade = shade;
-            brightest_light->pos = light->pos;
-        }
-    }
+    Output_ApplyRenderSettings();
 }
 
-static int32_t M_CalculateDynamicLight(
-    const XYZ_32 pos, COMMON_LIGHT *const brightest_light)
+void Output_Shutdown(void)
 {
-    int32_t adder = 0;
-    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
-        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
-        const int32_t dx = pos.x - light->pos.x;
-        const int32_t dy = pos.y - light->pos.y;
-        const int32_t dz = pos.z - light->pos.z;
-        const int32_t radius = 1 << light->falloff.value_1;
-        if (dx < -radius || dx > radius || dy < -radius || dy > radius
-            || dz < -radius || dz > radius) {
-            continue;
-        }
+    SceneCompositor_Shutdown();
+    OutputSource_Rooms_Shutdown();
+    OutputSource_RoomsDebug_Shutdown();
+    OutputSource_Objects_Shutdown();
+    OutputSource_Sprites_Shutdown();
+    OutputSource_Lightnings_Shutdown();
+    OutputSource_Shadows_Shutdown();
+    OutputSource_Misc_Shutdown();
 
-        const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-        if (dist > SQUARE(radius)) {
-            continue;
-        }
-
-        const int32_t shade = (1 << light->shade.value_1)
-            - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
-        if (shade > brightest_light->shade) {
-            brightest_light->shade = shade;
-            brightest_light->pos = light->pos;
-        }
-        adder += shade;
+    if (m_Shader != nullptr) {
+        Output_Shader_Free(m_Shader);
+        m_Shader = nullptr;
+    }
+    if (m_Batcher != nullptr) {
+        MeshBatcher_Destroy(m_Batcher);
+        m_Batcher = nullptr;
     }
 
-    return adder;
+    Output_Textures_Shutdown();
+    Output_ShutdownLight();
+    Output_ShutdownBackground();
+
+    GFX_Context_Detach();
 }
 
-void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
+bool Output_IsHeadless(void)
 {
-    const ROOM *const room = Room_Get(room_num);
-    COMMON_LIGHT brightest_light = {};
-
-    M_CalculateBrightestLight(pos, room, &brightest_light);
-    int32_t adder = brightest_light.shade;
-    int32_t dynamic_adder = M_CalculateDynamicLight(pos, &brightest_light);
-
-    adder = (adder + dynamic_adder) / 2;
-    if (TR_VERSION == 1 && (room->num_lights > 0 || dynamic_adder > 0)) {
-        adder += (SHADE_MAX - room->ambient) / 2;
-    }
-
-    // TODO: use m_LsAdder and m_LsDivider once ported
-    int32_t global_adder;
-    int32_t global_divider;
-    if (adder == 0) {
-        global_adder = room->ambient;
-        global_divider = 0;
-    } else {
-#if TR_VERSION == 1
-        global_adder = SHADE_MAX - adder;
-        const int32_t divider = brightest_light.shade == adder
-            ? adder
-            : brightest_light.shade - adder;
-        global_divider = (1 << (W2V_SHIFT + 12)) / divider;
-#else
-        global_adder = room->ambient - adder;
-        global_divider = (1 << (W2V_SHIFT + 12)) / adder;
-#endif
-        int16_t angles[2];
-        Math_GetVectorAngles(
-            pos.x - brightest_light.pos.x, pos.y - brightest_light.pos.y,
-            pos.z - brightest_light.pos.z, angles);
-        Output_RotateLight(angles[1], angles[0]);
-    }
-
-    const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-    global_adder += Output_CalcFogShade(depth);
-    CLAMPG(global_adder, SHADE_MAX);
-
-    Output_SetLightAdder(global_adder);
-    Output_SetLightDivider(global_divider);
+    return Shell_GetArgs()->headless;
 }
 
-void Output_CalculateStaticLight(const int16_t adder)
+OUTPUT_SHADER *Output_GetMeshShader(void)
 {
-    // TODO: use m_LsAdder
-    int32_t global_adder = adder - SHADE_NEUTRAL;
-    const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-    global_adder += Output_CalcFogShade(depth);
-    CLAMPG(global_adder, SHADE_MAX);
-    Output_SetLightAdder(global_adder);
+    return m_Shader;
 }
 
-void Output_CalculateStaticMeshLight(
-    const XYZ_32 pos, const SHADE shade, const ROOM *const room)
+void Output_BeginScene(void)
 {
-    int32_t adder = shade.value_1;
-    if (TR_VERSION == 2 && room->light_mode != RLM_NORMAL) {
-        const int32_t room_shade = Output_GetRoomLightShade(room->light_mode);
-        adder +=
-            (shade.value_2 - shade.value_1) * room_shade / (WIBBLE_SIZE - 1);
-    }
-
-    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
-        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
-        const int32_t dx = pos.x - light->pos.x;
-        const int32_t dy = pos.y - light->pos.y;
-        const int32_t dz = pos.z - light->pos.z;
-        const int32_t radius = 1 << light->falloff.value_1;
-        if (dx < -radius || dx > radius || dy < -radius || dy > radius
-            || dz < -radius || dz > radius) {
-            continue;
-        }
-
-        const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-        if (dist > SQUARE(radius)) {
-            continue;
-        }
-
-        const int32_t shade = (1 << light->shade.value_1)
-            - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
-        adder -= shade;
-        if (adder < 0) {
-            break;
-        }
-    }
-
-    Output_CalculateStaticLight(adder);
+    Output_ApplyFOV();
+    GFX_Context_Clear();
+    GFX_Track_Reset();
+    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    SceneCompositor_BeginScene();
 }
 
-void Output_CalculateObjectLighting(
-    const ITEM *const item, const BOUNDS_16 *const bounds)
+void Output_EndScene(void)
 {
-    if (item->shade.value_1 >= 0) {
-        Output_CalculateStaticMeshLight(
-            item->pos, item->shade, Room_Get(item->room_num));
+    SceneCompositor_EndScene();
+}
+
+void Output_Flush(void)
+{
+    SceneCompositor_Flush();
+}
+
+void Output_FlipScreen(void)
+{
+    GFX_Context_SwapBuffers();
+}
+
+void Output_SwitchViewport(const VIEWPORT_SPACE space)
+{
+    if (space == VIEWPORT_GAME) {
+        GFX_Renderer_BindGeometryFbo();
+    } else if (space == VIEWPORT_UI) {
+        GFX_Renderer_BindUiFbo();
+    }
+    GFX_Context_SwitchToViewport(space);
+    GFX_Context_Clear();
+    glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void Output_ApplyRenderSettings(void)
+{
+    Output_Textures_ApplyRenderSettings();
+    Output_ApplyLevelSettings();
+
+    if (m_Shader == nullptr) {
         return;
     }
 
-    Matrix_PushUnit();
-
-    Matrix_TranslateSet(0, 0, 0);
-    Matrix_Rot16(item->rot);
-    Matrix_TranslateRel32((XYZ_32) {
-        .x = (bounds->min.x + bounds->max.x) / 2,
-        .y = (bounds->max.y + bounds->min.y) / 2,
-        .z = (bounds->max.z + bounds->min.z) / 2,
-    });
-    const XYZ_32 pos = {
-        .x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
-        .y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
-        .z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
-    };
-    Matrix_Pop();
-
-    Output_CalculateLight(pos, item->room_num);
+    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+    GFX_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
+    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
 }
 
-void Output_LightRoom(ROOM *const room)
+void Output_ApplyLevelSettings(void)
 {
-    if (TR_VERSION == 2 && room->light_mode != RLM_NORMAL) {
-        Output_LightRoomVertices(room);
-    } else if (room->flags & RF_DYNAMIC_LIT) {
-        for (int32_t i = 0; i < room->mesh.num_vertices; i++) {
-            ROOM_VERTEX *const vtx = &room->mesh.vertices[i];
-            vtx->light_adder = vtx->light_base;
-        }
-        room->flags &= ~RF_DYNAMIC_LIT;
-    }
+    Output_SetWaterColor(Level_GetWaterColor());
+    Output_SetFogColor(Level_GetFogColor());
+    Output_SetFogStart(Level_GetFogStart() * WALL_L);
+    Output_SetFogEnd(Level_GetFogEnd() * WALL_L);
+}
 
-    const int32_t x_min = WALL_L;
-    const int32_t z_min = WALL_L;
-    const int32_t x_max = (room->size.x - 1) * WALL_L;
-    const int32_t z_max = (room->size.z - 1) * WALL_L;
+void Output_DispatchLevelLoad(void)
+{
+    Output_Textures_ObserveLevelLoad();
 
-    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
-        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
-        const int32_t x = light->pos.x - room->pos.x;
-        const int32_t y = light->pos.y;
-        const int32_t z = light->pos.z - room->pos.z;
-        const int32_t radius = 1 << light->falloff.value_1;
-        if (x - radius > x_max || z - radius > z_max || x + radius < x_min
-            || z + radius < z_min) {
-            continue;
-        }
+    OutputSource_Objects_ObserveLevelLoad();
+    OutputSource_Rooms_ObserveLevelLoad();
+    OutputSource_RoomsDebug_ObserveLevelLoad();
+    OutputSource_Sprites_ObserveLevelLoad();
 
-        room->flags |= RF_DYNAMIC_LIT;
+    MeshBatcher_Seal(m_Batcher);
 
-        for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
-            ROOM_VERTEX *const v = &room->mesh.vertices[j];
-            if (v->light_adder == 0) {
-                continue;
-            }
+    Output_ApplyLevelSettings();
+}
 
-            const int32_t dx = v->pos.x - x;
-            const int32_t dy = v->pos.y - y;
-            const int32_t dz = v->pos.z - z;
-            if (dx < -radius || dx > radius || dy < -radius || dy > radius
-                || dz < -radius || dz > radius) {
-                continue;
-            }
-
-            const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-            if (dist > SQUARE(radius)) {
-                continue;
-            }
-
-            const int32_t shade = (1 << light->shade.value_1)
-                - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
-            v->light_adder -= shade;
-            CLAMPL(v->light_adder, 0);
-        }
+void Output_DispatchLevelUnload(void)
+{
+    OutputSource_Objects_ObserveLevelUnload();
+    OutputSource_Rooms_ObserveLevelUnload();
+    OutputSource_RoomsDebug_ObserveLevelUnload();
+    OutputSource_Sprites_ObserveLevelUnload();
+    if (Output_GetBackgroundType() == BK_OBJECT) {
+        Output_UnloadBackground();
     }
 }
 
-void Output_InitLight(void)
+void Output_DispatchRoomFlip(const ROOM *room)
 {
-    // TODO: consolidate into Output_Init once common.
-    if (m_DynamicLights == nullptr) {
-        m_DynamicLights = Vector_Create(sizeof(LIGHT));
-    }
+    OutputSource_Rooms_ObserveRoomFlip(room);
+    OutputSource_RoomsDebug_ObserveRoomFlip(room);
 }
 
-void Output_ShutdownLight(void)
+void Output_DispatchObjectMeshSwap(
+    const int32_t mesh_idx_1, const int32_t mesh_idx_2)
 {
-    if (m_DynamicLights != nullptr) {
-        Vector_Free(m_DynamicLights);
-        m_DynamicLights = nullptr;
-    }
+    OutputSource_Objects_ObserveObjectMeshSwap(mesh_idx_1, mesh_idx_2);
 }
 
-void Output_ResetDynamicLights(void)
+void Output_DispatchObjectMeshUpdate(const int32_t mesh_idx)
 {
-    Vector_Clear(m_DynamicLights);
-}
-
-void Output_AddDynamicLight(
-    const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
-{
-    const LIGHT light = {
-        .pos = pos,
-        .shade.value_1 = intensity,
-        .falloff.value_1 = falloff,
-    };
-    Vector_Add(m_DynamicLights, &light);
-}
-
-int32_t Output_GetFogStart(void)
-{
-    return MIN(m_FogStart, Output_GetFogEnd());
-}
-
-void Output_SetFogStart(const int32_t dist)
-{
-    m_FogStart = dist;
+    OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx);
 }

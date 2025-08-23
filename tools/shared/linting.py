@@ -7,9 +7,12 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
+from shared.paths import PROJECT_PATHS
+
 # enable importing translation_utils from this directory
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import jsonschema
 from json_utils import JSONPointers, load_json5
 from translation_utils import (
     REVIEW_MARKER,
@@ -27,7 +30,11 @@ RE_GAME_STRING_DEFINE_VAL = re.compile(
     r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"([^"]*)"\)'
 )
 RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID|_PTR)?\(([A-Z0-9_]+)\)")
-RE_UI_SETTING_USAGE = re.compile(r"(?:X_UI_CFG_MANUAL\(\s*|X_UI_CFG[A-Z0-9_]*\([^(),]*,\s*)([A-Z0-9_]+)[,)]", flags=re.M | re.DOTALL)
+RE_UI_SETTING_USAGE = re.compile(
+    r"(?:X_UI_CFG_MANUAL\(\s*|X_UI_CFG[A-Z0-9_]*\([^(),]*,\s*)([A-Z0-9_]+)[,)]",
+    flags=re.M | re.DOTALL,
+)
+RE_ENUM_USAGE = re.compile(r"\b([A-Z0-9_]+)\b")
 
 
 @dataclass
@@ -225,13 +232,22 @@ def lint_duplicate_game_strings(context: LintContext) -> Iterable[LintWarning]:
                 )
 
 
-def get_used_strings(source: str) -> Iterable[tuple[int, str]]:
-    source = re.sub('//.*', '', source, flags=re.M)
+def get_used_strings(
+    path: Path, include_enums: bool = False
+) -> Iterable[tuple[int, str]]:
+    source = re.sub("//.*", "", path.read_text(), flags=re.M)
     for match in re.finditer(RE_GAME_STRING_USAGE, source):
-        yield source.count('\n', 0, match.start()) + 1, match.group(1)
+        yield source.count("\n", 0, match.start()) + 1, match.group(1)
     for match in re.finditer(RE_UI_SETTING_USAGE, source):
-        yield source.count('\n', 0, match.start()) + 1, match.group(1)
-        yield source.count('\n', 0, match.start()) + 1, match.group(1) + "_DESCRIPTION"
+        yield source.count("\n", 0, match.start()) + 1, match.group(1)
+        yield source.count("\n", 0, match.start()) + 1, match.group(
+            1
+        ) + "_DESCRIPTION"
+    if include_enums and path.suffix == ".def":
+        for match in re.finditer(RE_ENUM_USAGE, source):
+            yield source.count(
+                "\n", 0, match.start()
+            ) + 1, "ENUM_" + match.group(1)
 
 
 def lint_undefined_game_strings(
@@ -261,7 +277,7 @@ def lint_undefined_game_strings(
             for relevant_path in relevant_paths
         )
 
-        for line_num, def_ in get_used_strings(path.read_text()):
+        for line_num, def_ in get_used_strings(path):
             # For child project: it needs to be defined in libtrx or the child project
             # For libtrx: it needs to be defined in libtrx…
             if any(
@@ -272,8 +288,7 @@ def lint_undefined_game_strings(
 
             # …or every child project
             if all(
-                def_ in def_string_map[project]
-                for project in CHILD_PROJECTS
+                def_ in def_string_map[project] for project in CHILD_PROJECTS
             ):
                 continue
 
@@ -296,7 +311,9 @@ def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
             continue
 
         relevant_project = get_relevant_project(context, path)
-        for line_num, used_string in get_used_strings(path.read_text()):
+        for line_num, used_string in get_used_strings(
+            path, include_enums=True
+        ):
             used_strings[relevant_project].add(used_string)
 
     for game_string in game_strings:
@@ -327,6 +344,18 @@ def lint_unused_game_strings(context: LintContext) -> Iterable[LintWarning]:
             )
 
 
+def lint_game_flow_schema(context: LintContext):
+    for project, paths in PROJECT_PATHS.items():
+        schema = load_json5(paths.docs_dir / "gameflow.schema.json")
+        validator_cls = jsonschema.validators.validator_for(schema)
+        validator = validator_cls(schema=schema)
+        game_flow_paths = paths.shipped_data_dir.rglob("**/gameflow.json5")
+        for game_flow_path in game_flow_paths:
+            data = load_json5(game_flow_path)
+            for error in validator.iter_errors(instance=data):
+                yield LintWarning(game_flow_path, error)
+
+
 ALL_FILE_LINTERS: list[
     Callable[[LintContext, Path], Iterable[LintWarning]]
 ] = [
@@ -348,6 +377,7 @@ ALL_REPO_LINTERS: list[
 ] = [
     lint_duplicate_game_strings,
     lint_unused_game_strings,
+    lint_game_flow_schema,
 ]
 
 

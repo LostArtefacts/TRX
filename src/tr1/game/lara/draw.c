@@ -2,18 +2,18 @@
 
 #include "game/gun.h"
 #include "game/lara.h"
-#include "game/output.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/lara/pose.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/viewport.h>
 
-static void M_DrawMesh(LARA_MESH mesh_idx, int32_t clip, bool interpolated);
+static void M_DrawMesh(LARA_MESH mesh_idx, CLIP clip, bool interpolated);
 
 static void M_DrawMesh(
-    const LARA_MESH mesh_idx, const int32_t clip, const bool interpolated)
+    const LARA_MESH mesh_idx, const CLIP clip, const bool interpolated)
 {
     const OBJECT_MESH *const mesh = Lara_Mesh_Get(mesh_idx);
     if (interpolated) {
@@ -38,9 +38,9 @@ void Lara_Draw(const ITEM *const item)
     }
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;
@@ -65,8 +65,8 @@ void Lara_Draw(const ITEM *const item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    int32_t clip = Output_GetObjectBounds(&frame->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }
@@ -333,8 +333,8 @@ void Lara_Draw_I(
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    int32_t clip = Output_GetObjectBounds(&frame1->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }

@@ -41,7 +41,6 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-
     const XYZ_32 old_pos = item->pos;
 
     item->speed--;
@@ -70,6 +69,10 @@ static void M_Control(const int16_t item_num)
         explode = true;
     }
 
+    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
+        explode = true;
+    }
+
     for (int16_t target_item_num = Room_Get(item->room_num)->item_num;
          target_item_num != NO_ITEM;
          target_item_num = Item_Get(target_item_num)->next_item) {
@@ -82,14 +85,12 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        const bool is_window = target_item->object_id == O_WINDOW_1;
-        if (!is_window
-            && (!target_obj->intelligent || target_item->status == IS_INVISIBLE
-                || target_obj->collision_func == nullptr)) {
+        if ((!target_obj->intelligent || target_item->status == IS_INVISIBLE
+             || target_obj->collision_func == nullptr)) {
             continue;
         }
 
-        if (!is_window && !Creature_IsTargetable(target_item)) {
+        if (!Creature_IsTargetable(target_item)) {
             continue;
         }
 
@@ -122,23 +123,19 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        if (is_window) {
-            Window_Smash(target_item_num);
-        } else {
-            explode = true;
+        explode = true;
 
-            if (!target_obj->intelligent || target_item->status != IS_ACTIVE) {
-                continue;
-            }
+        if (!target_obj->intelligent || target_item->status != IS_ACTIVE) {
+            continue;
+        }
 
-            Gun_HitTarget(target_item, nullptr, 30);
-            Stats_AddAmmoHits();
+        Gun_HitTarget(target_item, nullptr, 30);
+        Stats_AddAmmoHits();
 
-            if (target_item->hit_points <= 0) {
-                if (target_item->object_id != O_DRAGON_FRONT
-                    && target_item->object_id != O_BIRD_GUARDIAN) {
-                    Creature_Die(target_item_num, true);
-                }
+        if (target_item->hit_points <= 0) {
+            if (target_item->object_id != O_DRAGON_FRONT
+                && target_item->object_id != O_BIRD_GUARDIAN) {
+                Creature_Die(target_item_num, true);
             }
         }
     }

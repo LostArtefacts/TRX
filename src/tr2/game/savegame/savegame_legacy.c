@@ -232,6 +232,11 @@ static void M_ReadItems(void)
             item->required_anim_state = M_ReadS16();
             item->anim_num = M_ReadS16();
             item->frame_num = M_ReadS16();
+
+            if (item->object_id == O_LARA
+                && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
+                item->anim_num += obj->anim_idx;
+            }
         }
 
         if (obj->save_hitpoints) {

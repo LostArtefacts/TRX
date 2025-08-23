@@ -55,7 +55,6 @@ static bool M_HandleShiftInputs(void);
 static bool M_HandleRotationInputs(void);
 static bool M_HandleTargetRotationInputs(void);
 static bool M_HandleFOVInputs();
-static void M_UpdatePhotoMode(void);
 
 // TODO: remove this wrapper when consolidating the viewport API
 static void M_SetFOV(const int32_t fov)
@@ -68,7 +67,10 @@ static void M_SetFOV(const int32_t fov)
 
 static void M_ResetCamera(const bool exiting)
 {
+    CAMERA_INFO camera = g_Camera;
     g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
+    // ensure Camera_EnsureEnvironment() picks up the flag change
+    g_Camera.underwater = camera.underwater;
     M_SetFOV(m_OriginalFOV);
     m_CurrentFOV = m_OriginalFOV / DEG_1;
 }
@@ -198,6 +200,7 @@ static void M_UpdateCameraRooms(void)
             g_Camera.pos.room_num = tar_room_num;
         }
     }
+    Camera_EnsureEnvironment();
 }
 
 static bool M_HandleShiftInputs(void)
@@ -221,10 +224,10 @@ static bool M_HandleShiftInputs(void)
         result = true;
     }
 
-    if (g_Input.camera_up) {
+    if (!g_Input.slow && g_Input.camera_up) {
         M_ShiftCamera(0, -distance, 0);
         result = true;
-    } else if (g_Input.camera_down) {
+    } else if (!g_Input.slow && g_Input.camera_down) {
         M_ShiftCamera(0, distance, 0);
         result = true;
     }
@@ -252,10 +255,10 @@ static bool M_HandleRotationInputs(void)
         result = true;
     }
 
-    if (g_Input.step_left) {
+    if (g_Input.slow && g_Input.camera_up) {
         M_RotateCamera(0, 0, -M_GetRotSpeed());
         result = true;
-    } else if (g_Input.step_right) {
+    } else if (g_Input.slow && g_Input.camera_down) {
         M_RotateCamera(0, 0, M_GetRotSpeed());
         result = true;
     }
@@ -289,7 +292,7 @@ static bool M_HandleFOVInputs(void)
     return true;
 }
 
-void Camera_EnterPhotoMode(void)
+void Camera_PhotoMode_Enter(void)
 {
     m_OriginalCamera = g_Camera;
 
@@ -318,21 +321,21 @@ void Camera_EnterPhotoMode(void)
     M_UpdateCameraRooms();
 }
 
-void Camera_ExitPhotoMode(void)
+void Camera_PhotoMode_Exit(void)
 {
     Lara_Pose_Clear();
     M_SetFOV(m_OriginalFOV);
     M_ResetCamera(true);
 }
 
-void Camera_UpdatePhotoMode(void)
+void Camera_PhotoMode_Update(void)
 {
+    M_HandleFOVInputs();
+
     if (g_InputDB.camera_reset) {
         M_ResetCamera(false);
         g_Camera.type = CAM_PHOTO_MODE;
     }
-
-    M_HandleFOVInputs();
 
     bool changed = false;
     changed |= M_HandleShiftInputs();
@@ -347,17 +350,18 @@ void Camera_UpdatePhotoMode(void)
 
     changed |= M_HandleTargetRotationInputs();
 
-    if (g_InputDB.fly_cheat) {
-        Lara_Pose_Cycle(g_Input.slow ? -1 : 1);
-    }
-
     if (changed) {
         M_ClampCameraPos();
         M_UpdateCameraRooms();
     }
 }
 
-void Camera_PausePhotoMode(void)
+void Camera_PhotoMode_UpdateFOV(void)
+{
+    M_HandleFOVInputs();
+}
+
+void Camera_PhotoMode_Pause(void)
 {
     m_PreviousState.camera = g_Camera;
     m_PreviousState.is_chunky = Camera_IsChunky();
@@ -365,7 +369,7 @@ void Camera_PausePhotoMode(void)
     g_Camera = m_OriginalCamera;
 }
 
-void Camera_ResumePhotoMode(void)
+void Camera_PhotoMode_Resume(void)
 {
     g_Camera = m_PreviousState.camera;
     Camera_SetChunky(m_PreviousState.is_chunky);

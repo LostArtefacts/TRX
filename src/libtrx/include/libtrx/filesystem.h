@@ -58,6 +58,10 @@ void File_WriteU8(MYFILE *file, uint8_t value);
 void File_WriteU16(MYFILE *file, uint16_t value);
 void File_WriteU32(MYFILE *file, uint32_t value);
 
+// Write formatted string to file using a static-format buffer.
+// The formatted text is written via fputs; no trailing newline is added.
+void File_WriteString(MYFILE *file, const char *fmt, ...);
+
 size_t File_Pos(MYFILE *file);
 
 size_t File_Size(MYFILE *file);
@@ -73,6 +77,7 @@ void File_Close(MYFILE *file);
 bool File_Load(const char *path, char **output_data, size_t *output_size);
 
 void File_CreateDirectory(const char *path);
+void File_EnsureParentDirectories(const char *path);
 
 void *File_OpenDirectory(const char *path);
 const char *File_ReadDirectory(void *dir);

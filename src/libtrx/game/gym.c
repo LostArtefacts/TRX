@@ -47,7 +47,7 @@ static bool M_StoreAssaultTime(const uint32_t time)
     assault->total_attempts++;
     assault->entries[insert_idx].time = time;
     assault->entries[insert_idx].attempt_num = assault->total_attempts;
-    Config_Write();
+    Config_Update();
     return true;
 }
 

@@ -1,10 +1,8 @@
 #include "game/gun/gun_misc.h"
 
 #include "game/game.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/los.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
@@ -14,8 +12,10 @@
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/gun/vars.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
 #define PISTOL_LOCK_YMIN (-60 * DEG_1)

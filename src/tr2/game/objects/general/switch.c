@@ -1,6 +1,7 @@
-#include "game/input.h"
 #include "game/lara.h"
 #include "global/vars.h"
+
+#include <libtrx/game/input.h>
 
 typedef enum {
     SWITCH_STATE_OFF = 0,
@@ -199,7 +200,8 @@ static void M_CollisionUW(
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
-        || g_Lara.water_status != LWS_UNDERWATER
+        || (g_Lara.water_status != LWS_UNDERWATER
+            && g_Lara.water_status != LWS_CHEAT)
         || g_Lara.gun_status != LGS_ARMLESS
         || lara_item->current_anim_state != LS_TREAD) {
         return;

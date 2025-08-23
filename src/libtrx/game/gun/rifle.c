@@ -94,9 +94,16 @@ static void M_FireHarpoon(void)
         goto finish;
     }
 
-    ITEM *const item = Item_Get(item_num);
-    item->object_id = O_HARPOON_BOLT;
-    item->room_num = lara_item->room_num;
+    const WEAPON_INFO *const weapon = &g_Weapons[LGT_HARPOON];
+    const XYZ_32 origin = {
+        .x = lara_item->pos.x,
+        .y = lara_item->pos.y - weapon->gun_height,
+        .z = lara_item->pos.z,
+    };
+
+    ITEM *const projectile_item = Item_Get(item_num);
+    projectile_item->object_id = O_HARPOON_BOLT;
+    projectile_item->room_num = lara_item->room_num;
 
     XYZ_32 offset = {
         .x = -2,
@@ -105,32 +112,35 @@ static void M_FireHarpoon(void)
     };
 
     Lara_GetJointAbsPosition(&offset, LM_HAND_R);
-    item->pos.x = offset.x;
-    item->pos.y = offset.y;
-    item->pos.z = offset.z;
+    projectile_item->pos.x = offset.x;
+    projectile_item->pos.y = offset.y;
+    projectile_item->pos.z = offset.z;
     Item_Initialise(item_num);
 
     if (lara->target != nullptr) {
         GAME_VECTOR lara_vec;
         Gun_FindTargetPoint(lara->target, &lara_vec);
-        const int32_t dx = lara_vec.pos.x - item->pos.x;
-        const int32_t dz = lara_vec.pos.z - item->pos.z;
-        const int32_t dy = lara_vec.pos.y - item->pos.y;
+        const int32_t dx = lara_vec.pos.x - projectile_item->pos.x;
+        const int32_t dz = lara_vec.pos.z - projectile_item->pos.z;
+        const int32_t dy = lara_vec.pos.y - projectile_item->pos.y;
         const int32_t dxz = Math_Sqrt(SQUARE(dx) + SQUARE(dz));
-        item->rot.y = Math_Atan(dz, dx);
-        item->rot.x = -Math_Atan(dxz, dy);
-        item->rot.z = 0;
+        projectile_item->rot.y = Math_Atan(dz, dx);
+        projectile_item->rot.x = -Math_Atan(dxz, dy);
+        projectile_item->rot.z = 0;
     } else {
-        item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
-        item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
-        item->rot.z = 0;
+        projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
+        projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
+        projectile_item->rot.z = 0;
     }
 
-    item->fall_speed =
-        (-HARPOON_BOLT_SPEED * Math_Sin(item->rot.x)) >> W2V_SHIFT;
-    item->speed = (HARPOON_BOLT_SPEED * Math_Cos(item->rot.x)) >> W2V_SHIFT;
+    projectile_item->fall_speed =
+        (-HARPOON_BOLT_SPEED * Math_Sin(projectile_item->rot.x)) >> W2V_SHIFT;
+    projectile_item->speed =
+        (HARPOON_BOLT_SPEED * Math_Cos(projectile_item->rot.x)) >> W2V_SHIFT;
     Item_AddActive(item_num);
-    item->status = IS_ACTIVE;
+    projectile_item->status = IS_ACTIVE;
+
+    Gun_SmashItems(origin, projectile_item->pos, nullptr);
 
     lara->harpoon_ammo.ammo--;
     Stats_AddAmmoUsed();
@@ -157,15 +167,21 @@ static void M_FireGrenade(void)
     if (lara->grenade_ammo.ammo <= 0) {
         return;
     }
+    const WEAPON_INFO *const weapon = &g_Weapons[LGT_GRENADE];
+    const XYZ_32 origin = {
+        .x = lara_item->pos.x,
+        .y = lara_item->pos.y - weapon->gun_height,
+        .z = lara_item->pos.z,
+    };
 
     const int16_t item_num = Item_Create();
     if (item_num == NO_ITEM) {
         return;
     }
 
-    ITEM *const item = Item_Get(item_num);
-    item->object_id = O_GRENADE;
-    item->room_num = lara_item->room_num;
+    ITEM *const projectile_item = Item_Get(item_num);
+    projectile_item->object_id = O_GRENADE;
+    projectile_item->room_num = lara_item->room_num;
 
     XYZ_32 offset = {
         .x = -2,
@@ -173,18 +189,20 @@ static void M_FireGrenade(void)
         .z = 77,
     };
     Lara_GetJointAbsPosition(&offset, LM_HAND_R);
-    item->pos.x = offset.x;
-    item->pos.y = offset.y;
-    item->pos.z = offset.z;
+    projectile_item->pos.x = offset.x;
+    projectile_item->pos.y = offset.y;
+    projectile_item->pos.z = offset.z;
     Item_Initialise(item_num);
 
-    item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
-    item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
-    item->rot.z = 0;
-    item->speed = GRENADE_SPEED;
-    item->fall_speed = 0;
+    projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
+    projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
+    projectile_item->rot.z = 0;
+    projectile_item->speed = GRENADE_SPEED;
+    projectile_item->fall_speed = 0;
     Item_AddActive(item_num);
-    item->status = IS_ACTIVE;
+    projectile_item->status = IS_ACTIVE;
+
+    Gun_SmashItems(origin, projectile_item->pos, nullptr);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         lara->grenade_ammo.ammo--;

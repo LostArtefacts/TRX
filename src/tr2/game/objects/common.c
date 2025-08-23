@@ -1,13 +1,13 @@
 #include "game/objects/common.h"
 
-#include "game/output.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
 void Object_DrawDummyItem(const ITEM *const item)
@@ -22,15 +22,15 @@ void Object_DrawAnimatingItem(const ITEM *item)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (obj->shadow_size != 0) {
-        Output_InsertShadow(obj->shadow_size, &frames[0]->bounds, item);
+        Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
     }
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
-    if (!clip) {
+    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
     }
@@ -46,17 +46,22 @@ void Object_DrawAnimatingItem(const ITEM *item)
 
 void Object_DrawUnclippedItem(const ITEM *const item)
 {
-    const VIEWPORT old_vp = *Viewport_Get();
+    int32_t left = g_PhdLeft;
+    int32_t top = g_PhdTop;
+    int32_t right = g_PhdRight;
+    int32_t bottom = g_PhdBottom;
 
-    VIEWPORT new_vp = old_vp;
-    new_vp.game_vars.win_top = 0;
-    new_vp.game_vars.win_left = 0;
-    new_vp.game_vars.win_bottom = new_vp.game_vars.win_max_y;
-    new_vp.game_vars.win_right = new_vp.game_vars.win_max_x;
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
-    Viewport_Restore(&new_vp);
     Object_DrawAnimatingItem(item);
-    Viewport_Restore(&old_vp);
+
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
 }
 
 void Object_DrawSpriteItem(const ITEM *const item)
@@ -71,11 +76,9 @@ void Object_DrawSpriteItem(const ITEM *const item)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Output_DrawSprite(
-        SPRITE_ABS | (obj->semi_transparent ? SPRITE_SEMI_TRANS : 0)
-            | SPRITE_SHADE,
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
-        Output_GetLightAdder() + SHADE_NEUTRAL, 0);
+        Output_GetLightAdder() + SHADE_NEUTRAL, (RGB_F) { 1.0f, 1.0f, 1.0f });
 }
 
 void Object_Collision(
@@ -199,7 +202,7 @@ BOUNDS_16 Object_GetBoundingBox(
 }
 
 void Object_DrawMesh(
-    const int32_t mesh_idx, const int32_t clip, const bool interpolated)
+    const int32_t mesh_idx, const CLIP clip, const bool interpolated)
 {
     const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
     if (interpolated) {

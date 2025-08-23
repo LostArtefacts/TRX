@@ -31,6 +31,12 @@
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport
 - added graphics effects, waterfalls to the savegame so that they now persist on load
 - added a pickup overlay display when Lara pulls the dagger from the dragon
+- added an option to use Lara's neutral jump-twist from early TR1 betas
+- added an option to allow Lara to sprint
+- added an option to use Lara's slide-to-run animation from TR3+
+- added an option to allow Lara to turn around and grab a ledge she has just stepped off
+- added an option to allow Lara to jump up or back when hanging from a ledge
+- added an option to have Lara pose after standing idle for a certain time
 - added an option to fix the breakable floor descending glitch
 - added an option to fix wall glitches, or to use TR1 wall glitch behaviour
 - added an option to disable swing cancelling
@@ -79,13 +85,14 @@
 - fixed Lara never stepping backwards off a step using her right foot
 - fixed flawed frame number checks which prevented Lara's wall hit animation while wading
 - fixed the following floor data issues:
+    - **Lara's Home**: fixed missing zipline reset triggers in room 42
     - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204, fixed incorrect textures in room 134, and fixed room 136 not having water
     - **Wreck of the Maria Doria**: fixed room 98 not having water
     - **Living Quarters** - fixed flame emitter 23 in room 6 not being deactivated when the lever in room 1 is used
     - **The Deck**: fixed invalid portals between rooms 17 and 104, which could result in Lara seeing enemies in disconnected rooms
     - **Tibetan Foothills**: added missing triggers for the drawbridge in room 96 (after the flipmap)
     - **Barkhang Monastery**: fixed the illegal slope in room 96
-    - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap)
+    - **Catacombs of the Talion**: changed some music triggers to pads near the first yeti, and added missing triggers and ladder in room 116 (after the flipmap); removed invalid portals from room 41
     - **Ice Palace**: fixed door 143's position to resolve the invisible wall in front of it, added an extra pickup trigger beside the Gong Hammer in room 29, fixed faulty zoning data in rooms 48/110, and fixed a misplaced springboard trigger in room 104
     - **Temple of Xian**: fixed missing death tiles in room 91; adding trigger workarounds to avoid a softlock after (missing) the final key
     - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it; added extra zipline reset triggers to avoid softlock
@@ -126,6 +133,10 @@
 - fixed Lara behaving erratically if she is killed while hanging from a ledge
 - fixed the boat veering if Lara looks left or right when driving
 - fixed Lara not equipping a weapon chosen from inventory if it is the last weapon used
+- fixed being unable to hang off bridges in Barkhang Monastery and Temple of Xian
+- fixed Lara walking backwards off ledges into lava
+- fixed Lara being able to get on a skidoo while underwater and consequently dying
+- fixed a missing transition animation between Lara jumping forward and entering freefall
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels
@@ -176,11 +187,13 @@
 - added an option to disable Lara's braid
 - added optional dynamic lighting for flames
 - added the ability to use `.avi`, `.mkv`, `.mp4`, `.mpeg`, and `.webm` files for FMVs
+- added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode
 - changed dynamic lighting for gun flashes and explosions to be optional
 - changed the Bartoli's Hideout sunset effect to also apply to skybox lighting
+- changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range
 - fixed fullscreen issues
 - fixed black borders in windowed mode
 - fixed "Failed to create device" when toggling fullscreen
@@ -199,6 +212,7 @@
 - fixed the bird monster not having a shadow
 - fixed flames showing briefly when Lara enters water and a death tile is present
 - fixed Lara's braid pointing straight down when swimming below sloped ceilings
+- fixed incorrect frames in Lara's underwater roll animation
 - fixed glide cameras using a default speed rather than maintaining the values set in the level file - the following OG areas have glide cameras restored
     - **The Great Wall**: room 0
     - **Diving Area**: rooms 54 and 57
@@ -206,16 +220,50 @@
     - **The Deck**: room 42
     - **Barkhang Monastery**: room 26
     - **Kingdom**: room 80
+- fixed the following room texture issues:
+    - **Gym**: stretched textures in room 65; misaligned textures in rooms 9, 36, 57; incorrect textures on mesh 58 in room 13; gold idol sprite in room 53 replaced with 3D mesh; a transparent pixel in room 55
+    - **The Great Wall**: incorrect and stretched textures in rooms 30, 36, 59
+    - **Venice**: misaligned and stretched textures in room 36; missing textures in room 42; an incorrect texture in room 77; transparent pixels in room 0
+    - **Bartoli's Hideout**: stretched textures in rooms 17, 29, 51, 73, 121, 143, 145, 146; incorrect textures in rooms 46, 121, 127, 131; misaligned textures in room 108; missing textures on mesh 30 in room 20; transparent pixels in room 107
+    - **Opera House**: an incorrect texture in room 176; a stretched texture in room 122
+    - **Offshore Rig**: stretched textures in room 11, 35, 81; traversable opaque texture between rooms 11 and 8; transparent pixels in room 96; several missing textures on catwalks; z-fighting at the back of the plane in room 92
+    - **Diving Area**: incorrect textures in rooms 28, 30; a stretched texture in room 77; misaligned textures in room 23; missing diving suit rack in room 77 (per cutscene); several missing textures on catwalks
+    - **40 Fathoms**: stretched textures in rooms 2, 11, 12
+    - **Wreck of the Maria Doria**: stretched textures in rooms 80, 104; transparent pixels in light bulb texture e.g. room 31; missing textures in rooms 1, 71, 72
+    - **Living Quarters**: incorrect textures in room 43
+    - **The Deck**: stretched textures in rooms 1, 47, 60, 80, 84, 85; incorrect textures in rooms 60, 68, 113; missing textures in room 36
+    - **Tibetan Foothills**: a missing texture in room 143; stretched textures in rooms 12, 15, 28, 40; misaligned textures in room 72
+    - **Barkhang Monastery**: a misaligned texture in room 23; stretched textures in rooms 25, 70, 87, 94; an incorrect texture in room 45; missing textures in room 40
+    - **Catcombs of the Talion**: missing textures in room 40, 43; stretched textures in rooms 11, 40; incorrect textures in rooms 11, 56
+    - **Ice Palace**: missing textures in room 31; stretched textures in rooms 31, 52; misaligned textures in rooms 49, 52, 92, 120, 121, 124; an incorrect texture in room 66
+    - **Temple of Xian**: a misaligned texture in room 190; stretched textures in rooms 17, 18, 79; missing textures in rooms 8, 10, 38, 90, 91, 92; an incorrect texture in room 23; z-fighting in room 92
+    - **Floating Islands**: incorrect textures in rooms 27, 29, 32, 41, 58, 73, 157; misaligned textures in room 60; stretched textures in rooms 41, 73, 98, 101, 133
+    - **Home Sweet Home**: stretched textures in rooms 2, 61; misaligned textures in rooms 9, 34, 54; incorrect textures in rooms 61, 63; incorrect textures on mesh 58 in room 12, and meshes 124 and 126 in room 58; a transparent pixel in room 52
+    - **Furnace of the Gods**: stretched textures in room 10; incorrect textures in rooms 97, 99, 101, 105, 108, 120, 124; missing textures in room 117
+    - **Nightmare in Vegas**: transparent pixels on mesh 3 in room 8 and 10; incorrect textures on mesh 17 in rooms 21 and 28; a misaligned texture in room 4
+- fixed various incorrect textures on small and large medipacks in every level
 - fixed wall light mesh positions in Venice, Bartoli's Hideout and Barkhang Monastery
 - fixed texture and visibility issues with the skyboxes in The Cold War and Kingdom
+- fixed missing textures on the Peruvian statues in Lara's Home and Home Sweet Home
+- fixed the mesh structure on the cat statue in Lara's Home to standardize its position
 - fixed transparent eyes on Lara's model in the gym and Home Sweet Home levels
+- fixed flat/opaque window shards in Lara's Home and Home Sweet Home
+- fixed the passport having an invisible back page, noticeable when opening/closing it
+- fixed z-fighting on the front of the passport
+- fixed window 23 in Venice potentially appearing broken after loading a savegame, despite being intact before saving
 - fixed transparent eyes on the wolf model in Furnace of the Gods
 - fixed Lara's health bar showing in the Home Sweet Home shower cutscene
 - fixed the Bartoli's Hideout sunset effect being reset after reloading a save
 - fixed the camera being partially inside the wall at the end of the Home Sweet Home shower cutscene
+- fixed the Home Sweet Home shower cutscene being cut short
+- fixed incorrect push button object positions in all levels where it appears
+- fixed mismatched animation frames between the airlock wheel and its corresponding door in offshore levels
+- fixed incorrect airlock and sliding door object positions in offshore levels
+- fixed incorrect door positions in Nightmare in Vegas, causing some to be visible through walls
 - improved FMV mode behavior - stopped switching screen resolutions
 - improved vertex movement when looking through water portals
 - improved support for non-4:3 aspect ratios
+- improved frames in Lara's jump-twist animations
 - removed the limit of 10 dynamic lights per frame
 
 ## Audio
@@ -237,6 +285,9 @@
 - fixed missing 'aha' sound effect in Lara's Home
 - fixed missing zipline sound effect in Home Sweet Home
 - fixed the shotgun sound at the end of the shower cutscene in Home Sweet Home being cut off when the credits start
+- fixed missing door sound effects in Lara's Home, Bartoli's Hideout, Opera House, Diving Area, Living Quarters, Catacombs of the Talion, Ice Palace, Temple of Xian, Dragon's Lair, Home Sweet Home, Fool's Gold, Kingdom and Nightmare in Vegas
+- fixed delayed door sound effects in The Great Wall and Temple of Xian
+- fixed duplicated door sound effects in Offshore Rig, Diving Area, The Deck, Temple of Xian and Fool's Gold
 
 ## Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
@@ -250,6 +301,7 @@
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - fixed the lift to work in any cardinal direction in custom levels, not just South
 - fixed the springboard not responding correctly when Lara drives across one on a skidoo
+- fixed being unable to antitrigger waterfall objects
 - removed the hard-coded end-level behaviour of the bird guardian for custom levels
 - removed the hard-coded inventory allocation on the first level by default, moving it instead to the game flow
 - removed the hard-coded repositioning of Bartoli (pre-dragon) on initialise

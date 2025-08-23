@@ -4,28 +4,28 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara.h"
 #include "game/option/option_compass.h"
-#include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "game/viewport.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/gun/const.h>
+#include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/option.h>
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/output.h>
+#include <libtrx/game/overlay.h>
+#include <libtrx/game/viewport.h>
 #include <libtrx/memory.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \
@@ -901,17 +901,11 @@ void InvRing_Close(INV_RING *const ring)
     Memory_Free(ring);
 }
 
-GF_COMMAND InvRing_Control(INV_RING *const ring, const int32_t num_frames)
+GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    for (int32_t i = 0; i < num_frames; i++) {
-        gf_cmd = M_Control(ring);
-        if (gf_cmd.action != GF_NOOP) {
-            break;
-        }
-    }
-
+    const GF_COMMAND gf_cmd = M_Control(ring);
+    Overlay_Animate(1);
     return gf_cmd;
 }
 

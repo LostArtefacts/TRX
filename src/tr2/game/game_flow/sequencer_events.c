@@ -1,6 +1,5 @@
 #include "game/game.h"
 #include "game/lara.h"
-#include "game/output.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 
@@ -8,6 +7,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/output.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
@@ -100,7 +100,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 
     if (current_level == GF_GetLastLevel()) {
         g_Config.profile.new_game_plus_unlock = true;
-        Config_Write();
+        Config_Update();
     }
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
@@ -164,6 +164,7 @@ void GF_PreSequenceHook(
 {
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
+    Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
     Camera_GetCineData()->position.target_angle = DEG_90;
     if (seq_ctx == GFSC_SAVED) {
