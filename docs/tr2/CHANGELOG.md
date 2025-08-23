@@ -94,7 +94,8 @@
 - fixed Lara not throwing away a spent flare when swimming of flying (#3816, regression from 0.8)
 - fixed flame SFX being audible underwater (#3830, regression from 0.3)
 - fixed harpoon gun not working correctly in NG+ (#3837, regression from 1.3)
-- fixed exiting photo mode on a controller conflicting with the roll input (#3842, regression from 4.8)
+- fixed exiting photo mode on a controller conflicting with the roll input (#3842, regression from 0.9)
+- fixed Lara being able to move away from a keyhole/puzzle slot after selecting the key item from the inventory (#3866, regression from 1.3)
 
 ## [1.3.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.1...tr2-1.3.2) - 2025-07-20
 - fixed audio playback with CDAudio backend in cutscenes (#2593)
