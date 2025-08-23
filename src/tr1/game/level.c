@@ -375,6 +375,7 @@ bool Level_Initialise(
     }
 
     Game_SetIsLevelComplete(false);
+    Game_FadeToBlack(-1);
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
         Game_SetCurrentLevel((GF_LEVEL *)level);
     }

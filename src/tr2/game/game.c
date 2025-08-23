@@ -27,7 +27,6 @@
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
-    Game_FadeToBlack(-1);
 
     g_OverlayStatus = 1;
     Camera_Initialise();
