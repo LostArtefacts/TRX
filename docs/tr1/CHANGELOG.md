@@ -1,4 +1,8 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14...develop) - ××××-××-××
+
+## [4.14](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.2...tr1-4.14) - 2025-08-23
+Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
+
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
 >Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
