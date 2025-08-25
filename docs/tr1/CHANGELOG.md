@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14...develop) - ××××-××-××
+- fixed missing shader and configuration files from MacOS releases (#3870)
 
 ## [4.14](https://github.com/LostArtefacts/TRX/compare/tr1-4.13.2...tr1-4.14) - 2025-08-23
 Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
