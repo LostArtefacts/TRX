@@ -21,6 +21,9 @@ static int32_t m_FogEnd = 0;
 static RGBA_F m_FogColor = {};
 static RGB_F m_WaterColor = {};
 
+static float m_DepthFactor = 0.0f;
+static float m_DepthUnits = 0.0f;
+
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
 static XYZ_32 m_LsVectorView = {};
@@ -309,4 +312,13 @@ void Output_EnableScissor(
 void Output_DisableScissor(void)
 {
     glDisable(GL_SCISSOR_TEST);
+}
+
+void Output_AdjustDepth(const float factor, const float units)
+{
+    if (factor != m_DepthUnits || units != m_DepthUnits) {
+        glPolygonOffset(factor, units);
+        m_DepthFactor = factor;
+        m_DepthUnits = units;
+    }
 }

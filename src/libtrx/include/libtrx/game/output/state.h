@@ -44,6 +44,8 @@ void Output_RotateLight(int16_t pitch, int16_t yaw);
 void Output_EnableScissor(float x, float y, float w, float h);
 void Output_DisableScissor(void);
 
+void Output_AdjustDepth(float factor, float units);
+
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 
