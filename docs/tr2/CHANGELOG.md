@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4...develop) - ××××-××-××
-- fixed missing shader and configuration files from MacOS releases (#3870)
+- fixed missing shader and configuration files from MacOS releases (#3870, regression from 1.4)
+- fixed zero byte at the end of config files (#3875, regression from 1.4)
 
 ## [1.4](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...tr2-1.4) - 2025-08-23
 Showcase: https://www.youtube.com/watch?v=AAOP1VFX9Lw
