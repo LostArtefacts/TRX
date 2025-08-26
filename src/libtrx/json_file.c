@@ -55,7 +55,7 @@ bool JSONFile_Write(const char *path, JSON_VALUE *const value)
             LOG_ERROR("unable to open '%s' for writing", path);
         } else {
             LOG_DEBUG("saving JSON to %s", path);
-            File_WriteData(fp, out_data, out_len);
+            File_WriteData(fp, out_data, out_len - 1); // w/o \0
             File_Close(fp);
             updated = true;
         }
