@@ -43,7 +43,6 @@ void Output_InitBackground(void)
 
     m_Priv.source.render_pass = M_RenderPass;
     m_Priv.source.is_dirty = M_IsDirty;
-    m_Priv.source.animate_textures = nullptr;
     SceneCompositor_AddSource(&m_Priv.source);
 }
 

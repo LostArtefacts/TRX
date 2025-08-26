@@ -1,25 +1,42 @@
 #include "game/output/sources/sprites.h"
 
 #include "game/output/mesh_batcher/mesh_builder.h"
+#include "game/output/scene_compositor.h"
 #include "game/output/textures.h"
 #include "memory.h"
 #include "utils.h"
 
+#include <string.h>
+
 typedef struct {
+    SCENE_SOURCE source;
     MESH_BATCHER *batcher;
     OUTPUT_MESH **meshes;
     size_t mesh_count;
+
+    MATRIX last_matrix;
+    int32_t stack;
 } M_PRIV;
 
 static M_PRIV m_Priv;
 
+static void M_RenderBegin(const SCENE_SOURCE *src);
 static void M_PrepareMeshes(M_PRIV *p);
 static void M_FreeMeshes(M_PRIV *p);
 static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data);
 
+static void M_RenderBegin(const SCENE_SOURCE *const src)
+{
+    M_PRIV *const p = &m_Priv;
+    memset(&p->last_matrix, 0, sizeof(MATRIX));
+    p->stack = 0;
+}
+
 void OutputSource_Sprites_Init(MESH_BATCHER *batcher)
 {
     m_Priv.batcher = batcher;
+    m_Priv.source.render_begin = M_RenderBegin;
+    SceneCompositor_AddSource(&m_Priv.source);
 }
 
 void OutputSource_Sprites_Shutdown(void)
@@ -40,21 +57,32 @@ void OutputSource_Sprites_ObserveLevelUnload(void)
 
 void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
 {
-    OUTPUT_MESH *mesh = m_Priv.meshes[sprite_idx];
+    M_PRIV *const p = &m_Priv;
+    OUTPUT_MESH *mesh = p->meshes[sprite_idx];
+
+    if (memcmp(&p->last_matrix, g_MatrixPtr, sizeof(MATRIX)) == 0) {
+        p->stack++;
+    } else {
+        p->stack = 0;
+    }
+    p->last_matrix = *g_MatrixPtr;
+
     const MESH_INSTANCE inst = {
         .mesh = mesh,
         .matrix = *g_MatrixPtr,
+        .depth_adjust = p->stack * -0.005f,
         .tint = tint,
         .wibble = false,
         .water_effect = false,
         .update_light_func = M_UpdateShades,
         .update_light_func_data = (void *)(intptr_t)shade,
     };
-    MeshBatcher_Stage(m_Priv.batcher, &inst, SCENE_PASS_MESHES);
-    MeshBatcher_Stage(m_Priv.batcher, &inst, SCENE_PASS_TRANSPARENT);
+
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
 }
 
-static void M_PrepareMeshes(M_PRIV *p)
+static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Output_GetSpriteTextureCount();
     p->meshes = Memory_Alloc(sizeof(*p->meshes) * p->mesh_count);

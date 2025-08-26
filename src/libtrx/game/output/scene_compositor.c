@@ -93,7 +93,8 @@ static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
-        if (source->is_dirty(source, pass)) {
+        if (source->is_dirty != nullptr && source->is_dirty(source, pass)) {
+            ASSERT(source->render_pass != nullptr);
             Output_Shader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
             Output_Shader_UploadWibbleEffect(shader, false);
             source->render_pass(source, pass);
@@ -106,7 +107,7 @@ static bool M_IsSourceDirty(const M_PRIV *const p, const SCENE_PASS pass)
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
-        if (source->is_dirty(source, pass)) {
+        if (source->is_dirty != nullptr && source->is_dirty(source, pass)) {
             return true;
         }
     }
@@ -169,6 +170,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         M_RenderSourcePass(p, SCENE_PASS_SKYBOX);
     }
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_OFFSET_FILL);
 
     if (M_IsSourceDirty(p, SCENE_PASS_MESHES)
         || M_IsSourceDirty(p, SCENE_PASS_TRANSPARENT)) {
@@ -259,6 +261,5 @@ void SceneCompositor_AnimateTextures(void)
 void SceneCompositor_AddSource(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
-    ASSERT(source->is_dirty != nullptr);
     Vector_Add(p->sources, &source);
 }

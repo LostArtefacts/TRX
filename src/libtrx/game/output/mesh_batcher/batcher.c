@@ -213,6 +213,7 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
 static void M_OpaquePass(
     const MESH_BATCHER *const batcher, const SCENE_PASS pass)
 {
+    float depth_adjust = 0.0f;
     VECTOR *const staged = batcher->staged[pass];
 
     glBindVertexArray(batcher->partial_vao);
@@ -240,6 +241,7 @@ static void M_OpaquePass(
         }
 
         if (inst->mesh->opaque_vertex_indices->count != 0) {
+            Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
             M_DrawOpaqueInstance(batcher, inst);
         }
 
@@ -271,6 +273,7 @@ static void M_OpaquePass(
                 });
         }
     }
+    Output_AdjustDepth(0.0f, 0.0f);
 }
 
 static void M_TransparentPass(const MESH_BATCHER *const batcher)
@@ -294,11 +297,13 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
             Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
             Output_Shader_UploadTint(batcher->shader, inst->tint);
             Output_Shader_UploadWibbleEffect(batcher->shader, inst->wibble);
+            Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
         }
         glDrawArrays(
             GL_TRIANGLES, sort_ptr->vertex_start, sort_ptr->vertex_count);
         g_GFX_Metrics.trans_vert_count += sort_ptr->face->vertex_count;
     }
+    Output_AdjustDepth(0.0f, 0.0f);
 }
 
 static void M_DrawOpaqueVertices(
