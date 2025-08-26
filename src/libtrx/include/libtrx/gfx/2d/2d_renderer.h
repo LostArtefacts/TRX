@@ -30,8 +30,6 @@ typedef struct GFX_2D_RENDERER GFX_2D_RENDERER;
 GFX_2D_RENDERER *GFX_2D_Renderer_Create(void);
 void GFX_2D_Renderer_Destroy(GFX_2D_RENDERER *renderer);
 
-void GFX_2D_Renderer_UploadSurface(
-    GFX_2D_RENDERER *renderer, GFX_2D_SURFACE *surface);
 void GFX_2D_Renderer_Upload(
     GFX_2D_RENDERER *renderer, GFX_2D_SURFACE_DESC *desc, const uint8_t *data);
 

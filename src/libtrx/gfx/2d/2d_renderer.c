@@ -39,6 +39,7 @@ struct GFX_2D_RENDERER {
     M_VERTEX *vertices;
     int32_t vertex_count;
 
+    bool ready;
     GFX_2D_SURFACE_DESC desc;
     struct {
         int32_t x;
@@ -67,6 +68,10 @@ static const M_VERTEX m_Vertices[] = {
 
 static void M_UploadVertices(GFX_2D_RENDERER *const r)
 {
+    if (!r->ready) {
+        return;
+    }
+
     const int32_t mapping[] = { 0, 1, 3, 3, 1, 2 };
     r->vertex_count = r->repeat.x * r->repeat.y * 6;
     r->vertices = Memory_Realloc(
@@ -181,12 +186,6 @@ void GFX_2D_Renderer_Destroy(GFX_2D_RENDERER *const r)
     Memory_Free(r);
 }
 
-void GFX_2D_Renderer_UploadSurface(
-    GFX_2D_RENDERER *const r, GFX_2D_SURFACE *const surface)
-{
-    GFX_2D_Renderer_Upload(r, &surface->desc, surface->buffer);
-}
-
 void GFX_2D_Renderer_Upload(
     GFX_2D_RENDERER *const r, GFX_2D_SURFACE_DESC *const desc,
     const uint8_t *const data)
@@ -195,6 +194,9 @@ void GFX_2D_Renderer_Upload(
 
     bool reupload_vert = false;
     if (memcmp(r->desc.uv, desc->uv, sizeof(desc->uv)) != 0) {
+        reupload_vert = true;
+    }
+    if (!r->ready) {
         reupload_vert = true;
     }
 
@@ -224,6 +226,7 @@ void GFX_2D_Renderer_Upload(
         GFX_GL_CheckError();
     }
 
+    r->ready = true;
     r->desc = *desc;
     if (reupload_vert) {
         M_UploadVertices(r);
