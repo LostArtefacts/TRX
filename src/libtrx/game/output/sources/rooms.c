@@ -162,8 +162,20 @@ static void M_PrepareMeshes(M_PRIV *const p)
         for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
             M_AddRoomFace3(builder, &room->mesh.face3s[j], room);
         }
+
+        int32_t stack = 0;
+        XYZ_16 prev_pos = { -1, -1, -1 };
         for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
-            MeshBuilder_AddRoomSprite(builder, &room->mesh.sprites[j], room);
+            const ROOM_SPRITE *const sprite = &room->mesh.sprites[j];
+            const ROOM_VERTEX *const vert =
+                &room->mesh.vertices[sprite->vertex];
+            if (vert->pos.x == prev_pos.x && vert->pos.z == prev_pos.z) {
+                stack++;
+            } else {
+                stack = 0;
+            }
+            MeshBuilder_AddRoomSprite(builder, sprite, room, stack * -0.005f);
+            prev_pos = vert->pos;
         }
 
         OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);

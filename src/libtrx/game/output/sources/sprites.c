@@ -63,7 +63,7 @@ static void M_PrepareMeshes(M_PRIV *p)
         ROOM_VERTEX fake_vert = {};
         const ROOM fake_room = { .mesh = { .vertices = &fake_vert } };
         ROOM_SPRITE fake_sprite = { .texture = (uint16_t)i, .vertex = 0 };
-        MeshBuilder_AddRoomSprite(builder, &fake_sprite, &fake_room);
+        MeshBuilder_AddRoomSprite(builder, &fake_sprite, &fake_room, 0.0f);
         OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh);
         p->meshes[i] = mesh;
