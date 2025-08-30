@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...develop) - ××××-××-××
+
+## [1.4.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.4...tr2-1.4.1) - 2025-08-30
 - fixed missing shader and configuration files from MacOS releases (#3870, regression from 1.4)
 - fixed zero byte at the end of config files (#3875, regression from 1.4)
 - fixed stacked sprites flickering (#3872, regression from 1.4)
