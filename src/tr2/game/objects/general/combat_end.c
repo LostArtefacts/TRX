@@ -7,6 +7,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara/vehicle.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/utils.h>
 
@@ -116,6 +117,7 @@ static void M_PrepareCutscene(const int16_t item_num)
         g_Lara.left_arm.lock = false;
     }
 
+    Lara_Vehicle_Dismount();
     Gun_SetLaraHandLMesh(LGT_UNARMED);
     Gun_SetLaraHandRMesh(LGT_UNARMED);
     g_Lara.water_status = LWS_ABOVE_WATER;
