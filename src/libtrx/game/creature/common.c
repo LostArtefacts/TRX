@@ -1077,6 +1077,11 @@ void Creature_SetAlliesHostile(bool enable)
 
 bool Creature_IsAlive(const ITEM *const item)
 {
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
+        return item->hit_points > 0;
+    }
+
     return (item->hit_points > 0)
         || (item->hit_points == DONT_TARGET && item->active);
 }
