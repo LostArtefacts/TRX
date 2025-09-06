@@ -95,18 +95,19 @@ bool Sound_Effect(
     if (!Sound_IsInitialised()) {
         return false;
     }
+
     if (flags != SPM_ALWAYS
         && ((flags & SPM_UNDERWATER)
             != (Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER))) {
         return false;
     }
 
-    SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
+    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
     if (info == nullptr || info->number < 0) {
         return false;
     }
 
-    if (info->randomness && (Random_GetDraw() > info->randomness)) {
+    if (info->randomness && Random_GetDraw() > info->randomness) {
         return false;
     }
 
@@ -155,7 +156,7 @@ bool Sound_Effect(
     const int32_t num_samples = info->flags.num_samples;
     const int32_t track_id = num_samples == 1
         ? info->number
-        : info->number + (int32_t)((num_samples * Random_GetDraw()) / 0x8000);
+        : info->number + ((num_samples * Random_GetDraw()) / 0x8000);
 
     switch (info->mode) {
     case SAMPLE_MODE_NORMAL:
