@@ -58,12 +58,12 @@ int16_t *Sound_GetSampleLUT(void)
     return m_SampleLUT;
 }
 
-SAMPLE_INFO *Sound_GetSampleInfo(const SOUND_EFFECT_ID sfx_num)
+SAMPLE_INFO *Sound_GetSampleInfo(const SAMPLE_ID sample_id)
 {
-    if (sfx_num == SFX_INVALID) {
+    if (sample_id == SFX_INVALID) {
         return nullptr;
     }
-    const int16_t info_idx = m_SampleLUT[sfx_num];
+    const int16_t info_idx = m_SampleLUT[sample_id];
     return info_idx < 0 ? nullptr : &m_SampleInfos[info_idx];
 }
 
@@ -94,7 +94,7 @@ void Sound_UnpauseAll(void)
     Audio_Sample_UnpauseAll();
 }
 
-bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
+bool Sound_IsAvailable(const SAMPLE_ID sample_id)
 {
     return sample_id >= 0 && sample_id < SFX_NUMBER_OF
         && m_SampleLUT[sample_id] != -1;
