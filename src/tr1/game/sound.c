@@ -47,16 +47,10 @@ typedef enum {
     SOUND_FLAG_RESTARTED = 1 << 2,
 } M_SOUND_FLAG;
 
-static bool m_Initialised = false;
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
-static float m_MasterVolume = 0.0f;
 static int16_t m_AmbientLookup[M_MAX_AMBIENT_FX] = {};
 static int32_t m_AmbientLookupIdx = 0;
-static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
-static bool m_SoundIsActive = false;
 
-static int32_t M_ConvertVolumeToDecibel(int32_t volume);
-static int32_t M_ConvertPanToDecibel(uint16_t pan);
 static float M_CalcPitch(int32_t pitch);
 
 static M_ACTIVE_SOUND *M_GetActiveSound(
@@ -65,27 +59,6 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 static void M_ResetAmbientLoudness(void);
-
-static int32_t M_ConvertVolumeToDecibel(int32_t volume)
-{
-    int32_t idx = volume * (m_MasterVolume / 64.0f) * M_DECIBEL_LUT_SIZE
-        / M_SOUND_MAX_VOLUME;
-    CLAMP(idx, 0, M_DECIBEL_LUT_SIZE - 1);
-    return m_DecibelLUT[idx];
-}
-
-static int32_t M_ConvertPanToDecibel(const uint16_t pan)
-{
-    const int32_t result =
-        sin((pan / 32767.0) * M_PI) * (M_DECIBEL_LUT_SIZE / 2);
-    if (result > 0) {
-        return -m_DecibelLUT[M_DECIBEL_LUT_SIZE - result];
-    } else if (result < 0) {
-        return m_DecibelLUT[M_DECIBEL_LUT_SIZE + result];
-    } else {
-        return 0;
-    }
-}
 
 static float M_CalcPitch(int32_t pitch)
 {
@@ -189,7 +162,7 @@ static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
 
 static void M_ResetAmbientLoudness(void)
 {
-    if (!m_SoundIsActive) {
+    if (!Sound_IsInitialised()) {
         return;
     }
 
@@ -201,32 +174,12 @@ static void M_ResetAmbientLoudness(void)
 
 bool Sound_Init(void)
 {
-    m_Initialised = true;
-    m_DecibelLUT[0] = -10000;
-    for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
-        m_DecibelLUT[i] =
-            (log2(1.0 / M_DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
-    }
-
-    m_MasterVolume = 32.0f;
-    m_SoundIsActive = Audio_Init();
-    return m_SoundIsActive;
-}
-
-void Sound_Shutdown(void)
-{
-    m_Initialised = false;
-    Audio_Shutdown();
-}
-
-bool Sound_IsInitialised(void)
-{
-    return m_Initialised;
+    return Sound_InitialiseCommon();
 }
 
 void Sound_UpdateEffects(void)
 {
-    if (!m_SoundIsActive) {
+    if (!Sound_IsInitialised()) {
         return;
     }
 
@@ -240,9 +193,9 @@ void Sound_UpdateEffects(void)
             if (sound->loudness != (uint32_t)M_SOUND_NOT_AUDIBLE
                 && sound->handle != AUDIO_NO_SOUND) {
                 Audio_Sample_SetPan(
-                    sound->handle, M_ConvertPanToDecibel(sound->pan));
+                    sound->handle, Sound_ConvertPanToDecibel(sound->pan));
                 Audio_Sample_SetVolume(
-                    sound->handle, M_ConvertVolumeToDecibel(sound->volume));
+                    sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
             } else {
                 if (sound->handle != AUDIO_NO_SOUND) {
                     Audio_Sample_Close(sound->handle);
@@ -254,9 +207,10 @@ void Sound_UpdateEffects(void)
                 M_UpdateActiveSoundParams(sound);
                 if (sound->volume > 0 && sound->handle != AUDIO_NO_SOUND) {
                     Audio_Sample_SetPan(
-                        sound->handle, M_ConvertPanToDecibel(sound->pan));
+                        sound->handle, Sound_ConvertPanToDecibel(sound->pan));
                     Audio_Sample_SetVolume(
-                        sound->handle, M_ConvertVolumeToDecibel(sound->volume));
+                        sound->handle,
+                        Sound_ConvertVolumeToDecibel(sound->volume));
                 } else {
                     if (sound->handle != AUDIO_NO_SOUND) {
                         Audio_Sample_Close(sound->handle);
@@ -273,7 +227,7 @@ void Sound_UpdateEffects(void)
 bool Sound_Effect(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
-    if (!m_Initialised || !m_SoundIsActive) {
+    if (!Sound_IsInitialised()) {
         return false;
     }
 
@@ -362,8 +316,8 @@ bool Sound_Effect(
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-            M_ConvertPanToDecibel(pan), false);
+            sfx_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            Sound_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
@@ -382,15 +336,15 @@ bool Sound_Effect(
         if (sound->flags & SOUND_FLAG_RESTARTED) {
             Audio_Sample_Close(sound->handle);
             sound->handle = Audio_Sample_Play(
-                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-                M_ConvertPanToDecibel(pan), false);
+                sfx_id, Sound_ConvertVolumeToDecibel(volume),
+                M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
 
             M_ClearActiveSoundHandles(sound);
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-            M_ConvertPanToDecibel(pan), false);
+            sfx_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            Sound_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
@@ -423,8 +377,8 @@ bool Sound_Effect(
 
         if (volume > 0) {
             sound->handle = Audio_Sample_Play(
-                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-                M_ConvertPanToDecibel(pan), true);
+                sfx_id, Sound_ConvertVolumeToDecibel(volume),
+                M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
             if (sound->handle == AUDIO_NO_SOUND) {
                 M_ClearActiveSound(sound);
                 return false;
@@ -449,7 +403,7 @@ bool Sound_Effect(
 
 void Sound_StopEffect(const SAMPLE_ID sample_id)
 {
-    if (!m_SoundIsActive) {
+    if (!Sound_IsInitialised()) {
         return;
     }
 
@@ -467,7 +421,7 @@ void Sound_StopEffect(const SAMPLE_ID sample_id)
 
 void Sound_ResetEffects(void)
 {
-    if (!m_SoundIsActive) {
+    if (!Sound_IsInitialised()) {
         return;
     }
 
@@ -504,7 +458,7 @@ void Sound_ResetEffects(void)
 
 void Sound_StopAmbientSounds(void)
 {
-    if (!m_SoundIsActive) {
+    if (!Sound_IsInitialised()) {
         return;
     }
 
@@ -519,7 +473,7 @@ void Sound_StopAmbientSounds(void)
 
 void Sound_Reset(void)
 {
-    if (!m_Initialised) {
+    if (!Sound_IsInitialised()) {
         return;
     }
     Audio_Sample_CloseAll();
@@ -528,20 +482,10 @@ void Sound_Reset(void)
 
 void Sound_StopAll(void)
 {
-    if (!m_Initialised) {
+    if (!Sound_IsInitialised()) {
         return;
     }
     Audio_Sample_CloseAll();
-}
-
-void Sound_SetMasterVolume(const float volume)
-{
-    m_MasterVolume = volume * 64.0f;
-}
-
-int32_t Sound_GetMasterVolume(void)
-{
-    return (m_MasterVolume - 3) / 6;
 }
 
 void Sound_ResetAmbient(void)

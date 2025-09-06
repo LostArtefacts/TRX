@@ -41,9 +41,7 @@ typedef enum {
 #define M_SOUND_RADIUS_SQRD SQUARE(M_SOUND_RADIUS) // = 0x6400000
 
 #define M_MAX_ACTIVE_SOUNDS 32
-#define M_SOUND_RANGE_MULT_CONSTANT 4
 // sample volume ranges from 0..32767
-#define M_SOUND_MAX_VOLUME ((M_SOUND_RADIUS * M_SOUND_RANGE_MULT_CONSTANT) - 1)
 #define M_SOUND_MAX_VOLUME_CHANGE 0x2000
 #define M_SOUND_MAX_PITCH_CHANGE 6000
 
@@ -51,15 +49,8 @@ typedef enum {
 #define M_SOUND_MAXVOL_RADIUS (M_SOUND_MAXVOL_RANGE * WALL_L) // = 0x400 = 1024
 #define M_SOUND_MAXVOL_RADIUS_SQRD SQUARE(M_SOUND_MAXVOL_RADIUS) // = 0x100000
 
-#define M_DECIBEL_LUT_SIZE 512
-
-static bool m_Initialised = false;
-static float m_MasterVolume = 0.0f;
-static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
-static int32_t M_ConvertVolumeToDecibel(int32_t volume);
-static int32_t M_ConvertPanToDecibel(uint16_t pan);
 static float M_ConvertPitch(float pitch);
 static int32_t M_Play(
     int32_t track_id, int32_t volume, float pitch, int32_t pan, bool is_looped);
@@ -68,27 +59,6 @@ static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearAllActiveSounds(void);
 static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_UpdateActiveSound(M_ACTIVE_SOUND *sound);
-
-static int32_t M_ConvertVolumeToDecibel(int32_t volume)
-{
-    int32_t idx = volume * (m_MasterVolume / 64.0f) * M_DECIBEL_LUT_SIZE
-        / M_SOUND_MAX_VOLUME;
-    CLAMP(idx, 0, M_DECIBEL_LUT_SIZE - 1);
-    return m_DecibelLUT[idx];
-}
-
-static int32_t M_ConvertPanToDecibel(const uint16_t pan)
-{
-    const int32_t result =
-        sin((pan / 32767.0) * M_PI) * (M_DECIBEL_LUT_SIZE / 2);
-    if (result > 0) {
-        return -m_DecibelLUT[M_DECIBEL_LUT_SIZE - result];
-    } else if (result < 0) {
-        return m_DecibelLUT[M_DECIBEL_LUT_SIZE + result];
-    } else {
-        return 0;
-    }
-}
 
 static float M_ConvertPitch(const float pitch)
 {
@@ -100,8 +70,8 @@ static int32_t M_Play(
     const int32_t pan, const bool is_looped)
 {
     const int32_t handle = Audio_Sample_Play(
-        sample_num, M_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
-        M_ConvertPanToDecibel(pan), is_looped);
+        sample_num, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
+        Sound_ConvertPanToDecibel(pan), is_looped);
     return handle;
 }
 
@@ -127,46 +97,19 @@ static void M_CloseActiveSound(M_ACTIVE_SOUND *const sound)
 
 static void M_UpdateActiveSound(M_ACTIVE_SOUND *const sound)
 {
-    Audio_Sample_SetPan(sound->handle, M_ConvertPanToDecibel(sound->pan));
+    Audio_Sample_SetPan(sound->handle, Sound_ConvertPanToDecibel(sound->pan));
     Audio_Sample_SetPitch(sound->handle, M_ConvertPitch(sound->pitch));
     Audio_Sample_SetVolume(
-        sound->handle, M_ConvertVolumeToDecibel(sound->volume));
+        sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
 }
 
 bool Sound_Init(void)
 {
-    m_Initialised = true;
-    m_DecibelLUT[0] = -10000;
-    for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
-        m_DecibelLUT[i] =
-            (log2(1.0 / M_DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
+    const bool result = Sound_InitialiseCommon();
+    if (result) {
+        M_ClearAllActiveSounds();
     }
-
-    if (!Audio_Init()) {
-        LOG_ERROR("Failed to initialize libtrx sound system");
-        return false;
-    }
-
-    Sound_SetMasterVolume(g_Config.audio.sound_volume);
-    M_ClearAllActiveSounds();
-    return true;
-}
-
-void Sound_Shutdown(void)
-{
-    m_Initialised = false;
-    M_ClearAllActiveSounds();
-    Audio_Shutdown();
-}
-
-bool Sound_IsInitialised(void)
-{
-    return m_Initialised;
-}
-
-void Sound_SetMasterVolume(const float volume)
-{
-    m_MasterVolume = volume * 64.0f;
+    return result;
 }
 
 void Sound_UpdateEffects(void)
@@ -177,7 +120,7 @@ void Sound_UpdateEffects(void)
 bool Sound_Effect(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
-    if (!m_Initialised) {
+    if (!Sound_IsInitialised()) {
         return false;
     }
     if (flags != SPM_ALWAYS
@@ -338,7 +281,7 @@ void Sound_StopEffect(const SAMPLE_ID sample_id)
 
 void Sound_Reset(void)
 {
-    if (!m_Initialised) {
+    if (!Sound_IsInitialised()) {
         return;
     }
     Audio_Sample_CloseAll();
@@ -348,7 +291,7 @@ void Sound_Reset(void)
 
 void Sound_StopAll(void)
 {
-    if (!m_Initialised) {
+    if (!Sound_IsInitialised()) {
         return;
     }
     Audio_Sample_CloseAll();
