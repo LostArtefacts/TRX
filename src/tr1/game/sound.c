@@ -49,7 +49,7 @@ typedef enum {
 
 static bool m_Initialised = false;
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
-static int32_t m_MasterVolume = 0;
+static float m_MasterVolume = 0.0f;
 static int16_t m_AmbientLookup[M_MAX_AMBIENT_FX] = {};
 static int32_t m_AmbientLookupIdx = 0;
 static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
@@ -68,9 +68,10 @@ static void M_ResetAmbientLoudness(void);
 
 static int32_t M_ConvertVolumeToDecibel(int32_t volume)
 {
-    return m_DecibelLUT
-        [(volume & M_SOUND_MAX_VOLUME) * M_DECIBEL_LUT_SIZE
-         / (M_SOUND_MAX_VOLUME + 1)];
+    int32_t idx = volume * (m_MasterVolume / 64.0f) * M_DECIBEL_LUT_SIZE
+        / M_SOUND_MAX_VOLUME;
+    CLAMP(idx, 0, M_DECIBEL_LUT_SIZE - 1);
+    return m_DecibelLUT[idx];
 }
 
 static int32_t M_ConvertPanToDecibel(const uint16_t pan)
@@ -207,7 +208,7 @@ bool Sound_Init(void)
             (log2(1.0 / M_DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
     }
 
-    m_MasterVolume = 32;
+    m_MasterVolume = 32.0f;
     m_SoundIsActive = Audio_Init();
     return m_SoundIsActive;
 }
@@ -241,9 +242,7 @@ void Sound_UpdateEffects(void)
                 Audio_Sample_SetPan(
                     sound->handle, M_ConvertPanToDecibel(sound->pan));
                 Audio_Sample_SetVolume(
-                    sound->handle,
-                    M_ConvertVolumeToDecibel(
-                        (m_MasterVolume * sound->volume) >> 6));
+                    sound->handle, M_ConvertVolumeToDecibel(sound->volume));
             } else {
                 if (sound->handle != AUDIO_NO_SOUND) {
                     Audio_Sample_Close(sound->handle);
@@ -257,9 +256,7 @@ void Sound_UpdateEffects(void)
                     Audio_Sample_SetPan(
                         sound->handle, M_ConvertPanToDecibel(sound->pan));
                     Audio_Sample_SetVolume(
-                        sound->handle,
-                        M_ConvertVolumeToDecibel(
-                            (m_MasterVolume * sound->volume) >> 6));
+                        sound->handle, M_ConvertVolumeToDecibel(sound->volume));
                 } else {
                     if (sound->handle != AUDIO_NO_SOUND) {
                         Audio_Sample_Close(sound->handle);
@@ -365,8 +362,8 @@ bool Sound_Effect(
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
-            M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), false);
+            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            M_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
@@ -385,16 +382,15 @@ bool Sound_Effect(
         if (sound->flags & SOUND_FLAG_RESTARTED) {
             Audio_Sample_Close(sound->handle);
             sound->handle = Audio_Sample_Play(
-                sfx_id,
-                M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
-                M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), false);
+                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+                M_ConvertPanToDecibel(pan), false);
 
             M_ClearActiveSoundHandles(sound);
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
-            M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), false);
+            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            M_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
@@ -427,9 +423,8 @@ bool Sound_Effect(
 
         if (volume > 0) {
             sound->handle = Audio_Sample_Play(
-                sfx_id,
-                M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
-                M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), true);
+                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+                M_ConvertPanToDecibel(pan), true);
             if (sound->handle == AUDIO_NO_SOUND) {
                 M_ClearActiveSound(sound);
                 return false;
