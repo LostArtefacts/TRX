@@ -8,9 +8,13 @@
 
 #include <stddef.h>
 
+int32_t Sound_ConvertVolumeToDecibel(int32_t volume);
+int32_t Sound_ConvertPanToDecibel(uint16_t pan);
+
 extern bool Sound_Init(void);
-extern void Sound_Shutdown(void);
-extern bool Sound_IsInitialised(void);
+bool Sound_InitialiseCommon(void);
+void Sound_Shutdown(void);
+bool Sound_IsInitialised(void);
 
 // Stops and unloads all samples
 extern void Sound_Reset(void);
@@ -24,8 +28,7 @@ int16_t *Sound_GetSampleLUT(void);
 SAMPLE_INFO *Sound_GetSampleInfo(SAMPLE_ID sfx_num);
 SAMPLE_INFO *Sound_GetSampleInfoByIdx(int32_t info_idx);
 
-extern int32_t Sound_GetMasterVolume(void);
-extern void Sound_SetMasterVolume(float volume);
+void Sound_SetMasterVolume(float volume);
 
 void Sound_ResetSources(void);
 void Sound_PauseAll(void);

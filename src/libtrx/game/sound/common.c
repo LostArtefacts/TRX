@@ -1,18 +1,94 @@
 #include "game/sound/common.h"
 
+#include "config.h"
 #include "engine/audio.h"
 #include "game/game_buf.h"
 #include "game/rooms.h"
+#include "log.h"
+#include "utils.h"
 
 typedef enum {
     SF_FLIP = 0x40,
     SF_UNFLIP = 0x80,
 } SOUND_SOURCE_FLAG;
 
+#define M_DECIBEL_LUT_SIZE 512
+#if TR_VERSION == 1
+    #define M_SOUND_RANGE 8
+#elif TR_VERSION == 2
+    #define M_SOUND_RANGE 10
+#endif
+#define M_SOUND_RANGE_MULT_CONSTANT 4
+#define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L)
+#define M_SOUND_MAX_VOLUME ((M_SOUND_RADIUS * M_SOUND_RANGE_MULT_CONSTANT) - 1)
+
+static bool m_Initialised = false;
+static float m_MasterVolume = 0.0f;
+static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
+
 static int32_t m_SourceCount = 0;
 static OBJECT_VECTOR *m_Sources = nullptr;
+
 static int16_t m_SampleLUT[SFX_NUMBER_OF];
 static SAMPLE_INFO *m_SampleInfos = nullptr;
+
+// TODO: make static
+int32_t Sound_ConvertVolumeToDecibel(int32_t volume)
+{
+    int32_t idx = volume * (m_MasterVolume / 64.0f) * M_DECIBEL_LUT_SIZE
+        / M_SOUND_MAX_VOLUME;
+    CLAMP(idx, 0, M_DECIBEL_LUT_SIZE - 1);
+    return m_DecibelLUT[idx];
+}
+
+// TODO: make static
+int32_t Sound_ConvertPanToDecibel(const uint16_t pan)
+{
+    const int32_t result =
+        sin((pan / 32767.0) * M_PI) * (M_DECIBEL_LUT_SIZE / 2);
+    if (result > 0) {
+        return -m_DecibelLUT[M_DECIBEL_LUT_SIZE - result];
+    } else if (result < 0) {
+        return m_DecibelLUT[M_DECIBEL_LUT_SIZE + result];
+    } else {
+        return 0;
+    }
+}
+
+// TODO: inline
+bool Sound_InitialiseCommon(void)
+{
+    m_MasterVolume = g_Config.audio.sound_volume / 64.0f;
+    m_DecibelLUT[0] = -10000;
+    for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
+        m_DecibelLUT[i] =
+            (log2(1.0 / M_DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
+    }
+
+    if (!Audio_Init()) {
+        LOG_ERROR("Failed to initialize libtrx sound system");
+        return false;
+    }
+
+    m_Initialised = true;
+    return true;
+}
+
+void Sound_Shutdown(void)
+{
+    m_Initialised = false;
+    Audio_Shutdown();
+}
+
+bool Sound_IsInitialised(void)
+{
+    return m_Initialised;
+}
+
+void Sound_SetMasterVolume(const float volume)
+{
+    m_MasterVolume = volume * 64.0f;
+}
 
 void Sound_InitialiseSources(const int32_t num_sources)
 {
