@@ -21,7 +21,7 @@ bool Sound_LoadSample(int32_t sample_num, const char *sample_data, size_t size);
 int32_t Sound_GetSourceCount(void);
 OBJECT_VECTOR *Sound_GetSource(int32_t source_idx);
 int16_t *Sound_GetSampleLUT(void);
-SAMPLE_INFO *Sound_GetSampleInfo(SOUND_EFFECT_ID sfx_num);
+SAMPLE_INFO *Sound_GetSampleInfo(SAMPLE_ID sfx_num);
 SAMPLE_INFO *Sound_GetSampleInfoByIdx(int32_t info_idx);
 
 extern int32_t Sound_GetMasterVolume(void);
@@ -33,7 +33,6 @@ void Sound_UnpauseAll(void);
 
 extern void Sound_StopAmbientSounds(void);
 extern void Sound_StopAll(void);
-extern bool Sound_Effect(
-    SOUND_EFFECT_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
-extern void Sound_StopEffect(SOUND_EFFECT_ID sfx_num);
-bool Sound_IsAvailable(SOUND_EFFECT_ID sfx_num);
+extern bool Sound_Effect(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+extern void Sound_StopEffect(SAMPLE_ID sfx_num);
+bool Sound_IsAvailable(SAMPLE_ID sfx_num);
