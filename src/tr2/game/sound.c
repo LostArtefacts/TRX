@@ -20,14 +20,6 @@ typedef struct {
     int32_t pitch;
 } M_ACTIVE_SOUND;
 
-typedef enum {
-    // clang-format off
-    SF_NO_PAN        = 1 << 12, // = 0x1000 = 4096
-    SF_PITCH_WIBBLE  = 1 << 13, // = 0x2000 = 8192
-    SF_VOLUME_WIBBLE = 1 << 14, // = 0x4000 = 16384
-    // clang-format on
-} M_SAMPLE_FLAG;
-
 #define M_SOUND_RANGE 10
 #define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L) // = 0x2800 = 10240
 #define M_SOUND_RADIUS_SQRD SQUARE(M_SOUND_RADIUS) // = 0x6400000
@@ -136,13 +128,13 @@ bool Sound_Effect(
         } else {
             distance = Math_Sqrt(distance) - M_SOUND_MAXVOL_RADIUS;
         }
-        if (!(info->flags & SF_NO_PAN)) {
+        if (!info->flags.no_pan) {
             pan = (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
         }
     }
 
     int32_t volume = info->volume;
-    if (info->flags & SF_VOLUME_WIBBLE) {
+    if (info->flags.randomize_volume) {
         volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
     }
     const int32_t attenuation =
@@ -155,12 +147,12 @@ bool Sound_Effect(
 
     int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
                                              : SOUND_DEFAULT_PITCH;
-    if (info->flags & SF_PITCH_WIBBLE) {
+    if (info->flags.randomize_pitch) {
         pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - M_SOUND_MAX_PITCH_CHANGE;
     }
 
-    const int32_t num_samples = (info->flags >> 2) & 0xF;
+    const int32_t num_samples = info->flags.num_samples;
     const int32_t track_id = num_samples == 1
         ? info->number
         : info->number + (int32_t)((num_samples * Random_GetDraw()) / 0x8000);

@@ -1185,7 +1185,7 @@ void Level_ReadSamples(VFILE *const file)
         sample_info->number = VFile_ReadS16(file);
         sample_info->volume = VFile_ReadS16(file);
         sample_info->randomness = VFile_ReadS16(file);
-        sample_info->flags = VFile_ReadS16(file);
+        sample_info->flags.all = VFile_ReadU16(file);
     }
 
 #if TR_VERSION == 1
@@ -1216,7 +1216,7 @@ void Level_LoadSamples(void)
     for (int32_t i = 0; i < Sound_GetSampleCount(); i++) {
         SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
         if (TR_VERSION == 1) {
-            switch (sample_info->flags & 3) {
+            switch (sample_info->flags.mode_bits) {
             case 0:
                 sample_info->mode = SAMPLE_MODE_WAIT;
                 break;
@@ -1233,7 +1233,7 @@ void Level_LoadSamples(void)
                 break;
             }
         } else {
-            switch (sample_info->flags & 3) {
+            switch (sample_info->flags.mode_bits) {
             case 0:
                 sample_info->mode = SAMPLE_MODE_NORMAL;
                 break;
