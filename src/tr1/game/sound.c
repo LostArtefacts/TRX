@@ -128,7 +128,7 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 
     sound->volume = volume;
 
-    if (!distance || (info->flags & SAMPLE_FLAG_NO_PAN)) {
+    if (!distance || info->flags.no_pan) {
         sound->pan = 0;
         return;
     }
@@ -278,11 +278,11 @@ bool Sound_Effect(
     distance = Math_Sqrt(distance);
 
     int32_t volume = info->volume - distance * M_SOUND_RANGE_MULT_CONSTANT;
-    if (info->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
+    if (info->flags.randomize_volume) {
         volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
     }
 
-    if (info->flags & SAMPLE_FLAG_NO_PAN) {
+    if (info->flags.no_pan) {
         pan = 0;
     }
 
@@ -298,16 +298,15 @@ bool Sound_Effect(
     }
 
     int32_t pitch = 100;
-    if (g_Config.audio.enable_pitched_sounds
-        && (info->flags & SAMPLE_FLAG_PITCH_WIBBLE)) {
+    if (g_Config.audio.enable_pitched_sounds && info->flags.randomize_pitch) {
         pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - M_SOUND_MAX_PITCH_CHANGE;
     }
 
-    int32_t vars = (info->flags >> 2) & 15;
-    int32_t sfx_id = info->number;
-    if (vars != 1) {
-        sfx_id += (Random_GetDraw() * vars) / 0x8000;
+    int32_t num_samples = info->flags.num_samples;
+    int32_t track_id = info->number;
+    if (num_samples != 1) {
+        track_id += (Random_GetDraw() * num_samples) / 0x8000;
     }
 
     CLAMPG(volume, M_SOUND_MAX_VOLUME);
@@ -327,7 +326,7 @@ bool Sound_Effect(
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            track_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
             Sound_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
@@ -354,7 +353,7 @@ bool Sound_Effect(
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            track_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
             Sound_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
@@ -388,7 +387,7 @@ bool Sound_Effect(
 
         if (volume > 0) {
             sound->handle = Audio_Sample_Play(
-                sfx_id, Sound_ConvertVolumeToDecibel(volume),
+                track_id, Sound_ConvertVolumeToDecibel(volume),
                 M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
             if (sound->handle == AUDIO_NO_SOUND) {
                 M_ClearActiveSound(sound);

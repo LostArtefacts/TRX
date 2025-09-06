@@ -27,10 +27,10 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
         SAMPLE_INFO *const sample_info = Sound_GetSampleInfo(sfx_id);
         sample_info->volume = VFile_ReadS16(chunk.injection->fp);
         sample_info->randomness = VFile_ReadS16(chunk.injection->fp);
-        sample_info->flags = VFile_ReadS16(chunk.injection->fp);
+        sample_info->flags.all = VFile_ReadU16(chunk.injection->fp);
         sample_info->number = level_info->samples.offset_count;
 
-        const int16_t num_samples = (sample_info->flags >> 2) & 15;
+        const int16_t num_samples = sample_info->flags.num_samples;
 #if TR_VERSION == 1
         for (int32_t j = 0; j < num_samples; j++) {
             const int32_t sample_length = VFile_ReadS32(chunk.injection->fp);

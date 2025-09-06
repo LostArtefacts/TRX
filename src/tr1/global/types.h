@@ -26,12 +26,6 @@
 typedef int16_t PHD_ANGLE;
 
 typedef enum {
-    SAMPLE_FLAG_NO_PAN = 1 << 12,
-    SAMPLE_FLAG_PITCH_WIBBLE = 1 << 13,
-    SAMPLE_FLAG_VOLUME_WIBBLE = 1 << 14,
-} SAMPLE_FLAG;
-
-typedef enum {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
     D_TRANS3 = 3,
