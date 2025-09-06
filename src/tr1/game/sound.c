@@ -243,37 +243,37 @@ bool Sound_Effect(
     }
 
     if (flags != SPM_ALWAYS
-        && (flags & SPM_UNDERWATER)
-            != (Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER)) {
+        && ((flags & SPM_UNDERWATER)
+            != (Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER))) {
         return false;
     }
 
     const SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
-    if (info == nullptr) {
+    if (info == nullptr || info->number < 0) {
         return false;
     }
 
-    if (info->randomness && Random_GetDraw() > (int32_t)info->randomness) {
+    if (info->randomness && Random_GetDraw() > info->randomness) {
         return false;
     }
 
-    int32_t pan = 0x7FFF;
-    uint32_t distance;
+    uint32_t distance = 0;
+    int32_t pan = 0;
     if (pos != nullptr) {
-        int32_t x = pos->x - g_Camera.target.x;
-        int32_t y = pos->y - g_Camera.target.y;
-        int32_t z = pos->z - g_Camera.target.z;
-        if (ABS(x) > M_SOUND_RADIUS || ABS(y) > M_SOUND_RADIUS
-            || ABS(z) > M_SOUND_RADIUS) {
+        const int32_t dx = pos->x - g_Camera.target.x;
+        const int32_t dy = pos->y - g_Camera.target.y;
+        const int32_t dz = pos->z - g_Camera.target.z;
+        if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
+            || ABS(dz) > M_SOUND_RADIUS) {
             return false;
         }
-        distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
-        if (!distance) {
-            pan = 0;
+        distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+        if (distance != 0 && !info->flags.no_pan) {
+            int16_t angle = Math_Atan(
+                pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
+            angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
+            pan = angle;
         }
-    } else {
-        distance = 0;
-        pan = 0;
     }
     distance = Math_Sqrt(distance);
 
@@ -282,20 +282,10 @@ bool Sound_Effect(
         volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
     }
 
-    if (info->flags.no_pan) {
-        pan = 0;
-    }
-
-    if (volume <= 0 && info->mode != SAMPLE_MODE_LOOPED) {
+    if (volume <= 0) {
         return false;
     }
-
-    if (pan) {
-        int16_t angle =
-            Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
-        angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-        pan = angle;
-    }
+    CLAMPG(volume, M_SOUND_MAX_VOLUME);
 
     int32_t pitch = 100;
     if (g_Config.audio.enable_pitched_sounds && info->flags.randomize_pitch) {
@@ -303,13 +293,10 @@ bool Sound_Effect(
             - M_SOUND_MAX_PITCH_CHANGE;
     }
 
-    int32_t num_samples = info->flags.num_samples;
-    int32_t track_id = info->number;
-    if (num_samples != 1) {
-        track_id += (Random_GetDraw() * num_samples) / 0x8000;
-    }
-
-    CLAMPG(volume, M_SOUND_MAX_VOLUME);
+    const int32_t num_samples = info->flags.num_samples;
+    const int32_t track_id = num_samples == 1
+        ? info->number
+        : info->number + ((num_samples * Random_GetDraw()) / 0x8000);
 
     switch (info->mode) {
     case SAMPLE_MODE_NORMAL:
