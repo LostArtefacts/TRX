@@ -351,8 +351,6 @@ bool Sound_Effect(
 
     CLAMPG(volume, M_SOUND_MAX_VOLUME);
 
-    volume = (m_MasterVolume * volume) >> 6;
-
     switch (mode) {
     default:
         break;
@@ -367,8 +365,8 @@ bool Sound_Effect(
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-            M_ConvertPanToDecibel(pan), false);
+            sfx_id, M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
+            M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
@@ -387,15 +385,16 @@ bool Sound_Effect(
         if (sound->flags & SOUND_FLAG_RESTARTED) {
             Audio_Sample_Close(sound->handle);
             sound->handle = Audio_Sample_Play(
-                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-                M_ConvertPanToDecibel(pan), false);
+                sfx_id,
+                M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
+                M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), false);
 
             M_ClearActiveSoundHandles(sound);
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-            M_ConvertPanToDecibel(pan), false);
+            sfx_id, M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
+            M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
@@ -428,8 +427,9 @@ bool Sound_Effect(
 
         if (volume > 0) {
             sound->handle = Audio_Sample_Play(
-                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-                M_ConvertPanToDecibel(pan), true);
+                sfx_id,
+                M_ConvertVolumeToDecibel((m_MasterVolume * volume) >> 6),
+                M_CalcPitch(pitch), M_ConvertPanToDecibel(pan), true);
             if (sound->handle == AUDIO_NO_SOUND) {
                 M_ClearActiveSound(sound);
                 return false;
