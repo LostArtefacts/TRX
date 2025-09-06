@@ -1,6 +1,7 @@
 #include "game/item_actions/raising_block.h"
 
-#include "game/sound.h"
+#include <libtrx/game/rooms.h>
+#include <libtrx/game/sound.h>
 
 void ItemAction_RaisingBlock(ITEM *item)
 {

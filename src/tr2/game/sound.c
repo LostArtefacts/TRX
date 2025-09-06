@@ -87,6 +87,25 @@ bool Sound_Init(void)
 void Sound_UpdateEffects(void)
 {
     Sound_ResetSources();
+
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+        if (info == nullptr) {
+            continue;
+        }
+
+        if (info->mode == SAMPLE_MODE_LOOPED) {
+            if (sound->volume == 0) {
+                M_CloseActiveSound(sound);
+            } else {
+                M_UpdateActiveSound(sound);
+                sound->volume = 0;
+            }
+        } else if (!Audio_Sample_IsPlaying(sound->handle)) {
+            M_ClearActiveSound(sound);
+        }
+    }
 }
 
 bool Sound_Effect(
@@ -273,26 +292,4 @@ void Sound_StopAll(void)
 
 void Sound_StopAmbientSounds(void)
 {
-}
-
-void Sound_EndScene(void)
-{
-    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
-        if (info == nullptr) {
-            continue;
-        }
-
-        if (info->mode == SAMPLE_MODE_LOOPED) {
-            if (sound->volume == 0) {
-                M_CloseActiveSound(sound);
-            } else {
-                M_UpdateActiveSound(sound);
-                sound->volume = 0;
-            }
-        } else if (!Audio_Sample_IsPlaying(sound->handle)) {
-            M_ClearActiveSound(sound);
-        }
-    }
 }

@@ -1,17 +1,20 @@
 #include "game/item_actions/bubbles.h"
 
-#include "game/sound.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 
-void ItemAction_Bubbles(ITEM *item)
+void ItemAction_Bubbles(ITEM *const item)
 {
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+
     // XXX: until we get RoboLara, it makes sense for her to breathe underwater
-    if (g_Lara.water_status == LWS_CHEAT
-        && !(Room_Get(g_LaraItem->room_num)->flags & RF_UNDERWATER)) {
+    if (lara->water_status == LWS_CHEAT
+        && !(Room_Get(lara_item->room_num)->flags & RF_UNDERWATER)) {
         return;
     }
 

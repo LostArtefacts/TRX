@@ -1,11 +1,9 @@
 #include "game/item_actions/flood.h"
 
-#include "game/sound.h"
-#include "global/vars.h"
-
 #include <libtrx/game/camera.h>
-
-#include <stdint.h>
+#include <libtrx/game/lara.h>
+#include <libtrx/game/rooms.h>
+#include <libtrx/game/sound.h>
 
 void ItemAction_Flood(ITEM *item)
 {
@@ -13,12 +11,13 @@ void ItemAction_Flood(ITEM *item)
     if (flip_timer > LOGIC_FPS * 4) {
         Room_SetFlipEffect(-1);
     } else {
+        const ITEM *const lara_item = Lara_GetItem();
         const int32_t timer = flip_timer < LOGIC_FPS ? LOGIC_FPS - flip_timer
                                                      : flip_timer - LOGIC_FPS;
         const XYZ_32 pos = {
-            .x = g_LaraItem->pos.x,
+            .x = lara_item->pos.x,
             .y = g_Camera.target.y + timer * 100,
-            .z = g_LaraItem->pos.z,
+            .z = lara_item->pos.z,
         };
         Sound_Effect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
     }
