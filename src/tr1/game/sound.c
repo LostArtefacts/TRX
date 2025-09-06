@@ -206,31 +206,30 @@ void Sound_UpdateEffects(void)
             continue;
         }
 
-        if (sound->flags & SOUND_FLAG_AMBIENT) {
-            if (sound->loudness != (uint32_t)M_SOUND_NOT_AUDIBLE
-                && sound->handle != AUDIO_NO_SOUND) {
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+        if (info->mode == SAMPLE_MODE_LOOPED) {
+            if (sound->volume <= 0) {
+                M_ClearActiveSound(sound);
+            } else if (sound->handle == AUDIO_NO_SOUND) {
+                M_CloseActiveSound(sound);
+            } else {
                 Audio_Sample_SetPan(
                     sound->handle, Sound_ConvertPanToDecibel(sound->pan));
                 Audio_Sample_SetVolume(
                     sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
-            } else {
-                M_CloseActiveSound(sound);
             }
-        } else if (Audio_Sample_IsPlaying(sound->handle)) {
-            if (sound->pos != nullptr) {
-                M_UpdateActiveSoundParams(sound);
-                if (sound->volume > 0 && sound->handle != AUDIO_NO_SOUND) {
-                    Audio_Sample_SetPan(
-                        sound->handle, Sound_ConvertPanToDecibel(sound->pan));
-                    Audio_Sample_SetVolume(
-                        sound->handle,
-                        Sound_ConvertVolumeToDecibel(sound->volume));
-                } else {
-                    M_CloseActiveSound(sound);
-                }
-            }
-        } else {
+        } else if (!Audio_Sample_IsPlaying(sound->handle)) {
             M_ClearActiveSound(sound);
+        } else if (sound->pos != nullptr) {
+            M_UpdateActiveSoundParams(sound);
+            if (sound->volume <= 0) {
+                M_CloseActiveSound(sound);
+            } else {
+                Audio_Sample_SetPan(
+                    sound->handle, Sound_ConvertPanToDecibel(sound->pan));
+                Audio_Sample_SetVolume(
+                    sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
+            }
         }
     }
 }
@@ -334,7 +333,7 @@ bool Sound_Effect(
         if (sound->flags & SOUND_FLAG_RESTARTED) {
             Audio_Sample_Close(sound->handle);
             sound->handle = Audio_Sample_Play(
-                sfx_id, Sound_ConvertVolumeToDecibel(volume),
+                track_id, Sound_ConvertVolumeToDecibel(volume),
                 M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
             M_ClearActiveSoundHandles(sound);
             return true;

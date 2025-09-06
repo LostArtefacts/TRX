@@ -8,6 +8,8 @@
 
 #include <stddef.h>
 
+#define SOUND_DEFAULT_PITCH 0x10000
+
 int32_t Sound_ConvertVolumeToDecibel(int32_t volume);
 int32_t Sound_ConvertPanToDecibel(uint16_t pan);
 
@@ -39,4 +41,6 @@ extern void Sound_StopAll(void);
 extern void Sound_StopAmbientSounds(void);
 extern bool Sound_Effect(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
 extern void Sound_StopEffect(SAMPLE_ID sfx_num);
+extern void Sound_UpdateEffects(void);
+
 bool Sound_IsAvailable(SAMPLE_ID sfx_num);

@@ -1,6 +1,9 @@
 #include "game/effects.h"
 #include "game/sound.h"
 
+#include <libtrx/game/const.h>
+#include <libtrx/game/objects.h>
+
 typedef enum {
     DART_EMITTER_STATE_IDLE = 0,
     DART_EMITTER_STATE_FIRE = 1,

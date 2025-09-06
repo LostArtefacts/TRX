@@ -1,8 +1,8 @@
 #include "game/item_actions/chain_block.h"
 
-#include "game/sound.h"
-
 #include <libtrx/config.h>
+#include <libtrx/game/rooms.h>
+#include <libtrx/game/sound.h>
 
 void ItemAction_ChainBlock(ITEM *item)
 {
