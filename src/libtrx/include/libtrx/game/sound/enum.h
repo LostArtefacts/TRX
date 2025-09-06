@@ -1,5 +1,12 @@
 #pragma once
 
+typedef enum {
+    SAMPLE_MODE_NORMAL = 0,
+    SAMPLE_MODE_WAIT = 1,
+    SAMPLE_MODE_RESTART = 2,
+    SAMPLE_MODE_LOOPED = 3,
+} SAMPLE_MODE;
+
 // clang-format off
 typedef enum {
     SPM_NORMAL     = 0,

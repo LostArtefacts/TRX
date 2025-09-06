@@ -12,14 +12,6 @@
 
 #include <math.h>
 
-typedef enum {
-    SOUND_MODE_NORMAL = 0,
-    SOUND_MODE_WAIT = 1,
-    SOUND_MODE_RESTART = 2,
-    SOUND_MODE_LOOPED = 3,
-    SOUND_MODE_MASK = 3,
-} M_SOUND_MODE;
-
 typedef struct {
     int32_t volume;
     int32_t pan;
@@ -53,7 +45,8 @@ static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
 static float M_ConvertPitch(float pitch);
 static int32_t M_Play(
-    int32_t track_id, int32_t volume, float pitch, int32_t pan, bool is_looped);
+    int32_t track_id, int32_t volume, float pitch, int32_t pan,
+    SAMPLE_MODE mode);
 
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearAllActiveSounds(void);
@@ -67,11 +60,11 @@ static float M_ConvertPitch(const float pitch)
 
 static int32_t M_Play(
     const int32_t sample_num, const int32_t volume, const float pitch,
-    const int32_t pan, const bool is_looped)
+    const int32_t pan, const SAMPLE_MODE mode)
 {
     const int32_t handle = Audio_Sample_Play(
         sample_num, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
-        Sound_ConvertPanToDecibel(pan), is_looped);
+        Sound_ConvertPanToDecibel(pan), mode == SAMPLE_MODE_LOOPED);
     return handle;
 }
 
@@ -180,17 +173,16 @@ bool Sound_Effect(
             - M_SOUND_MAX_PITCH_CHANGE;
     }
 
-    const M_SOUND_MODE mode = info->flags & SOUND_MODE_MASK;
     const int32_t num_samples = (info->flags >> 2) & 0xF;
     const int32_t track_id = num_samples == 1
         ? info->number
         : info->number + (int32_t)((num_samples * Random_GetDraw()) / 0x8000);
 
-    switch (mode) {
-    case SOUND_MODE_NORMAL:
+    switch (info->mode) {
+    case SAMPLE_MODE_NORMAL:
         break;
 
-    case SOUND_MODE_WAIT:
+    case SAMPLE_MODE_WAIT:
         for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
             if (sound->sample_id == sample_id) {
@@ -202,7 +194,7 @@ bool Sound_Effect(
         }
         break;
 
-    case SOUND_MODE_RESTART:
+    case SAMPLE_MODE_RESTART:
         for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
             if (sound->sample_id == sample_id) {
@@ -212,7 +204,7 @@ bool Sound_Effect(
         }
         break;
 
-    case SOUND_MODE_LOOPED:
+    case SAMPLE_MODE_LOOPED:
         for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
             if (sound->sample_id == sample_id) {
@@ -256,8 +248,7 @@ bool Sound_Effect(
     M_ACTIVE_SOUND *const sound = &m_ActiveSounds[free_sound_idx];
     M_CloseActiveSound(sound);
 
-    const bool is_looped = mode == SOUND_MODE_LOOPED;
-    const int32_t handle = M_Play(track_id, volume, pitch, pan, is_looped);
+    const int32_t handle = M_Play(track_id, volume, pitch, pan, info->mode);
     if (handle != AUDIO_NO_SOUND) {
         sound->volume = volume;
         sound->pan = pan;
@@ -312,7 +303,7 @@ void Sound_EndScene(void)
             continue;
         }
 
-        if ((info->flags & SOUND_MODE_MASK) == SOUND_MODE_LOOPED) {
+        if (info->mode == SAMPLE_MODE_LOOPED) {
             if (sound->volume == 0) {
                 M_CloseActiveSound(sound);
             } else {

@@ -46,6 +46,7 @@ void Level_AppendObjectTextures(
 void Level_AppendSpriteTextures(
     int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
 
+void Level_LoadSamples(void);
 void Level_LoadTextures(void);
 void Level_LoadTexturePages(void);
 void Level_LoadPalettes(void);

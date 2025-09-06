@@ -34,13 +34,6 @@ typedef struct {
 } M_ACTIVE_SOUND;
 
 typedef enum {
-    SOUND_MODE_WAIT = 0,
-    SOUND_MODE_RESTART = 1,
-    SOUND_MODE_AMBIENT = 2,
-    SOUND_MODE_MASK = 3,
-} M_SOUND_MODE;
-
-typedef enum {
     SOUND_FLAG_UNUSED = 0,
     SOUND_FLAG_USED = 1 << 0,
     SOUND_FLAG_AMBIENT = 1 << 1,
@@ -54,7 +47,8 @@ static int32_t m_AmbientLookupIdx = 0;
 static float M_CalcPitch(int32_t pitch);
 
 static M_ACTIVE_SOUND *M_GetActiveSound(
-    SAMPLE_ID sample_id, uint32_t loudness, const XYZ_32 *pos, int16_t mode);
+    SAMPLE_ID sample_id, uint32_t loudness, const XYZ_32 *pos,
+    SAMPLE_MODE mode);
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
@@ -67,11 +61,12 @@ static float M_CalcPitch(int32_t pitch)
 
 static M_ACTIVE_SOUND *M_GetActiveSound(
     const SAMPLE_ID sample_id, const uint32_t loudness, const XYZ_32 *const pos,
-    const int16_t mode)
+    const SAMPLE_MODE mode)
 {
     switch (mode) {
-    case SOUND_MODE_WAIT:
-    case SOUND_MODE_RESTART: {
+    case SAMPLE_MODE_NORMAL:
+    case SAMPLE_MODE_WAIT:
+    case SAMPLE_MODE_RESTART: {
         M_ACTIVE_SOUND *last_free_sound = nullptr;
         for (int32_t i = m_AmbientLookupIdx; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *result = &m_ActiveSounds[i];
@@ -86,7 +81,7 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
         return last_free_sound;
     }
 
-    case SOUND_MODE_AMBIENT:
+    case SAMPLE_MODE_LOOPED:
         for (int32_t i = 0; i < M_MAX_AMBIENT_FX; i++) {
             if (m_AmbientLookup[i] == sample_id) {
                 M_ACTIVE_SOUND *result = &m_ActiveSounds[i];
@@ -246,7 +241,6 @@ bool Sound_Effect(
         return false;
     }
 
-    const M_SOUND_MODE mode = info->flags & SOUND_MODE_MASK;
     int32_t pan = 0x7FFF;
     uint32_t distance;
     if (pos != nullptr) {
@@ -276,7 +270,7 @@ bool Sound_Effect(
         pan = 0;
     }
 
-    if (volume <= 0 && mode != SOUND_MODE_AMBIENT) {
+    if (volume <= 0 && info->mode != SAMPLE_MODE_LOOPED) {
         return false;
     }
 
@@ -302,12 +296,13 @@ bool Sound_Effect(
 
     CLAMPG(volume, M_SOUND_MAX_VOLUME);
 
-    switch (mode) {
-    default:
+    switch (info->mode) {
+    case SAMPLE_MODE_NORMAL:
         break;
 
-    case SOUND_MODE_WAIT: {
-        M_ACTIVE_SOUND *const sound = M_GetActiveSound(sample_id, 0, pos, mode);
+    case SAMPLE_MODE_WAIT: {
+        M_ACTIVE_SOUND *const sound =
+            M_GetActiveSound(sample_id, 0, pos, info->mode);
         if (sound == nullptr) {
             return false;
         }
@@ -328,8 +323,9 @@ bool Sound_Effect(
         return true;
     }
 
-    case SOUND_MODE_RESTART: {
-        M_ACTIVE_SOUND *const sound = M_GetActiveSound(sample_id, 0, pos, mode);
+    case SAMPLE_MODE_RESTART: {
+        M_ACTIVE_SOUND *const sound =
+            M_GetActiveSound(sample_id, 0, pos, info->mode);
         if (sound == nullptr) {
             return false;
         }
@@ -355,10 +351,10 @@ bool Sound_Effect(
         return true;
     }
 
-    case SOUND_MODE_AMBIENT: {
+    case SAMPLE_MODE_LOOPED: {
         uint32_t loudness = distance;
         M_ACTIVE_SOUND *const sound =
-            M_GetActiveSound(sample_id, loudness, pos, mode);
+            M_GetActiveSound(sample_id, loudness, pos, info->mode);
         if (sound == nullptr) {
             return false;
         }
@@ -444,8 +440,7 @@ void Sound_ResetEffects(void)
                 info->volume);
         }
 
-        const M_SOUND_MODE mode = info->flags & SOUND_MODE_MASK;
-        if (mode == SOUND_MODE_AMBIENT) {
+        if (info->mode == SAMPLE_MODE_LOOPED) {
             if (m_AmbientLookupIdx >= M_MAX_AMBIENT_FX) {
                 LOG_ERROR("Ran out of ambient effect slots");
                 return;

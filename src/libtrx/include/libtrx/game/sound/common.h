@@ -25,6 +25,7 @@ bool Sound_LoadSample(int32_t sample_num, const char *sample_data, size_t size);
 int32_t Sound_GetSourceCount(void);
 OBJECT_VECTOR *Sound_GetSource(int32_t source_idx);
 int16_t *Sound_GetSampleLUT(void);
+int32_t Sound_GetSampleCount(void);
 SAMPLE_INFO *Sound_GetSampleInfo(SAMPLE_ID sfx_num);
 SAMPLE_INFO *Sound_GetSampleInfoByIdx(int32_t info_idx);
 
