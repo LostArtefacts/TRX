@@ -293,6 +293,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level);
 
+    Level_LoadSamples();
     Level_LoadTextures();
     Level_LoadTexturePages();
     Level_LoadPalettes();

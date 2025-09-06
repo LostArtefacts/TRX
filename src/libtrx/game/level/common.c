@@ -1211,6 +1211,46 @@ finish:
     Benchmark_End(&benchmark, nullptr);
 }
 
+void Level_LoadSamples(void)
+{
+    for (int32_t i = 0; i < Sound_GetSampleCount(); i++) {
+        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
+        if (TR_VERSION == 1) {
+            switch (sample_info->flags & 3) {
+            case 0:
+                sample_info->mode = SAMPLE_MODE_WAIT;
+                break;
+            case 1:
+                sample_info->mode = SAMPLE_MODE_RESTART;
+                break;
+            case 2:
+                sample_info->mode = SAMPLE_MODE_LOOPED;
+                break;
+            case 3:
+                LOG_WARNING(
+                    "Unexpected sample mode for sample %d. flags=%0X", i,
+                    sample_info->flags);
+                break;
+            }
+        } else {
+            switch (sample_info->flags & 3) {
+            case 0:
+                sample_info->mode = SAMPLE_MODE_NORMAL;
+                break;
+            case 1:
+                sample_info->mode = SAMPLE_MODE_WAIT;
+                break;
+            case 2:
+                sample_info->mode = SAMPLE_MODE_RESTART;
+                break;
+            case 3:
+                sample_info->mode = SAMPLE_MODE_LOOPED;
+                break;
+            }
+        }
+    }
+}
+
 void Level_LoadTextures(void)
 {
     for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
