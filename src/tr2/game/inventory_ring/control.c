@@ -877,7 +877,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Music_Pause();
         Sound_PauseAll();
     } else {
-        Sound_ResetSources();
+        Sound_ResetAmbient();
         Sound_UpdateEffects();
     }
     Viewport_AlterFOV(80 * DEG_1);
