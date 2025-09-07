@@ -96,7 +96,7 @@ void Output_WarmUp(void)
             .uvw = { fy * 0.01f, fz * 0.01f, fx * 0.01f, },
             .trapezoid_ratio = { fx * 0.001f, fy * 0.001f },
             .shade = SHADE_NEUTRAL,
-            .color = {i, i, i},
+            .color = {i, i, i, 0},
             .flags = flags
         };
     }
