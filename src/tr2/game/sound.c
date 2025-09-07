@@ -13,11 +13,11 @@
 #include <math.h>
 
 typedef struct {
+    SAMPLE_ID sample_id;
+    int32_t handle;
     int32_t volume;
     int32_t pan;
-    SAMPLE_ID sample_id;
     int32_t pitch;
-    int32_t handle;
 } M_ACTIVE_SOUND;
 
 typedef enum {
@@ -44,28 +44,15 @@ typedef enum {
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
 static float M_ConvertPitch(float pitch);
-static int32_t M_Play(
-    int32_t track_id, int32_t volume, float pitch, int32_t pan,
-    SAMPLE_MODE mode);
 
-static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearAllActiveSounds(void);
+static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_UpdateActiveSound(M_ACTIVE_SOUND *sound);
 
 static float M_ConvertPitch(const float pitch)
 {
     return pitch / 0x10000.p0;
-}
-
-static int32_t M_Play(
-    const int32_t sample_num, const int32_t volume, const float pitch,
-    const int32_t pan, const SAMPLE_MODE mode)
-{
-    const int32_t handle = Audio_Sample_Play(
-        sample_num, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
-        Sound_ConvertPanToDecibel(pan), mode == SAMPLE_MODE_LOOPED);
-    return handle;
 }
 
 static void M_ClearAllActiveSounds(void)
@@ -248,7 +235,9 @@ bool Sound_Effect(
     M_ACTIVE_SOUND *const sound = &m_ActiveSounds[free_sound_idx];
     M_CloseActiveSound(sound);
 
-    const int32_t handle = M_Play(track_id, volume, pitch, pan, info->mode);
+    const int32_t handle = Audio_Sample_Play(
+        track_id, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
+        Sound_ConvertPanToDecibel(pan), info->mode == SAMPLE_MODE_LOOPED);
     if (handle != AUDIO_NO_SOUND) {
         sound->volume = volume;
         sound->pan = pan;
@@ -291,7 +280,6 @@ void Sound_StopAll(void)
 
 void Sound_StopAmbientSounds(void)
 {
-    // TODO: merge into TRX with TR1, may not be required
 }
 
 void Sound_EndScene(void)
