@@ -253,6 +253,7 @@ GF_COMMAND Demo_Control(void)
 
     Output_ResetDynamicLights();
 
+    Sound_ResetAmbient();
     Item_Control();
     Effect_Control();
 
@@ -260,7 +261,6 @@ GF_COMMAND Demo_Control(void)
     Lara_Hair_Control(false);
 
     Camera_Update();
-    Sound_ResetAmbient();
     ItemAction_RunActive();
     Sound_UpdateEffects();
     Output_AnimateTextures(1);
