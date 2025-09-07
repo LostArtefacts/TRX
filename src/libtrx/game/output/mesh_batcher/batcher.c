@@ -38,6 +38,7 @@ typedef struct M_MESH_BUF_BINDING {
     int32_t vertex_start;
     int32_t vertex_count;
     UT_hash_handle hh;
+    GLuint opaque_ebo;
 } M_MESH_BUF_BINDING;
 
 typedef struct {
@@ -218,6 +219,7 @@ static void M_OpaquePass(
 
     glBindVertexArray(batcher->partial_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
+
     for (int32_t i = 0; i < staged->count; i++) {
         MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const MATRIX *const m = &inst->matrix;
@@ -309,9 +311,12 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
 static void M_DrawOpaqueVertices(
     const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
 {
-    glDrawElements(
+    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
+    glDrawElementsBaseVertex(
         GL_TRIANGLES, inst->mesh->opaque_vertex_indices->count, GL_UNSIGNED_INT,
-        Vector_GetData(inst->mesh->opaque_vertex_indices));
+        nullptr, bind->vertex_start);
+    GFX_GL_CheckError();
     g_GFX_Metrics.opaque_vert_count += inst->mesh->opaque_vertex_indices->count;
 }
 
@@ -554,6 +559,10 @@ void MeshBatcher_RemoveMesh(
     if (bind == nullptr) {
         return;
     }
+    if (bind->opaque_ebo != 0) {
+        glDeleteBuffers(1, &bind->opaque_ebo);
+        bind->opaque_ebo = 0;
+    }
     Memory_Free(bind->geom_data);
     Memory_Free(bind->tex_data);
     Memory_Free(bind->shade_data);
@@ -585,15 +594,6 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
 
     bind->vertex_start = batcher->vertex_count;
     batcher->vertex_count += bind->vertex_count;
-
-    // Offset opaque indices. (Transparent indices are uploaded as a whole, and
-    // thus offsets would be detrimental to them.)
-    {
-        int32_t *const vert_idx = Vector_GetData(mesh->opaque_vertex_indices);
-        for (int32_t i = 0; i < mesh->opaque_vertex_indices->count; i++) {
-            vert_idx[i] += bind->vertex_start;
-        }
-    }
 
     // Prevent the same mesh from being added twice to a mesh batcher
     mesh->sealed = 2;
@@ -640,6 +640,13 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
             glBufferSubData, GL_ARRAY_BUFFER,
             bind->vertex_start * sizeof(M_MESH_SHADE),
             bind->vertex_count * sizeof(M_MESH_SHADE), bind->shade_data);
+
+        glGenBuffers(1, &bind->opaque_ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
+        GFX_TRACK_DATA(
+            glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+            bind->mesh->opaque_vertex_indices->count * sizeof(uint32_t),
+            Vector_GetData(bind->mesh->opaque_vertex_indices), GL_STATIC_DRAW);
     }
 }
 

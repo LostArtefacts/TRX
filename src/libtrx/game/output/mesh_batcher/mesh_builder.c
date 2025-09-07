@@ -107,7 +107,7 @@ void MeshBuilder_AddFace(
         for (size_t i = 0; i < idx_count; i++) {
             Vector_Add(
                 builder->mesh->opaque_vertex_indices,
-                &(int32_t) { start + indices[i] });
+                &(uint32_t) { start + indices[i] });
         }
     }
     builder->pending_vertex_count = 0;

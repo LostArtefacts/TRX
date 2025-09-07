@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...develop) - ××××-××-××
+- fixed broken rendering in MacOS releases (#3880, regression from 1.4)
 - fixed the combat end logic not completing properly if Lara is on a vehicle (#3885)
 - fixed dead water creatures not registering with combat end (#3887, regression from 1.3)
 
