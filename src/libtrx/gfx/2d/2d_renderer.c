@@ -317,12 +317,4 @@ void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
     glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     GFX_GL_CheckError();
-
-    if (blend) {
-        glEnable(GL_BLEND);
-    }
-    if (depth_test) {
-        glEnable(GL_DEPTH_TEST);
-    }
-    glActiveTexture(GL_TEXTURE0);
 }
