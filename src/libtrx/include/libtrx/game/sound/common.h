@@ -12,6 +12,7 @@
 
 int32_t Sound_ConvertVolumeToDecibel(int32_t volume);
 int32_t Sound_ConvertPanToDecibel(uint16_t pan);
+int32_t Sound_GetPitch(const SAMPLE_INFO *info);
 
 extern bool Sound_Init(void);
 bool Sound_InitialiseCommon(void);

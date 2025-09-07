@@ -18,7 +18,6 @@
 #define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L)
 #define M_SOUND_MAX_VOLUME ((M_SOUND_RADIUS * M_SOUND_RANGE_MULT_CONSTANT) - 1)
 #define M_SOUND_MAX_VOLUME_CHANGE 0x2000
-#define M_SOUND_MAX_PITCH_CHANGE 10
 #define M_SOUND_NOT_AUDIBLE -1
 
 typedef struct {
@@ -56,7 +55,7 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 
 static float M_ConvertPitch(int32_t pitch)
 {
-    return pitch / 100.0f;
+    return pitch / 0x10000.p0;
 }
 
 static M_ACTIVE_SOUND *M_GetActiveSound(
@@ -287,11 +286,7 @@ bool Sound_Effect(
     }
     CLAMPG(volume, M_SOUND_MAX_VOLUME);
 
-    int32_t pitch = 100;
-    if (g_Config.audio.enable_pitched_sounds && info->flags.randomize_pitch) {
-        pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
-            - M_SOUND_MAX_PITCH_CHANGE;
-    }
+    const int32_t pitch = Sound_GetPitch(info);
 
     const int32_t num_samples = info->flags.num_samples;
     const int32_t track_id = num_samples == 1
