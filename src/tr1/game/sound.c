@@ -46,7 +46,10 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
     SAMPLE_ID sample_id, uint32_t loudness, const XYZ_32 *pos,
     SAMPLE_MODE mode);
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
+
+static void M_ClearAllActiveSounds(void);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
+static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 static void M_ResetAmbientLoudness(void);
 
@@ -136,6 +139,14 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
     sound->pan = angle;
 }
 
+static void M_ClearAllActiveSounds(void)
+{
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
+        M_ClearActiveSound(sound);
+    }
+}
+
 static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
 {
     sound->handle = AUDIO_NO_SOUND;
@@ -145,6 +156,12 @@ static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
     sound->pan = 0;
     sound->loudness = M_SOUND_NOT_AUDIBLE;
     sound->sample_id = SFX_INVALID;
+}
+
+static void M_CloseActiveSound(M_ACTIVE_SOUND *const sound)
+{
+    Audio_Sample_Close(sound->handle);
+    M_ClearActiveSound(sound);
 }
 
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
@@ -197,10 +214,7 @@ void Sound_UpdateEffects(void)
                 Audio_Sample_SetVolume(
                     sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
             } else {
-                if (sound->handle != AUDIO_NO_SOUND) {
-                    Audio_Sample_Close(sound->handle);
-                }
-                M_ClearActiveSound(sound);
+                M_CloseActiveSound(sound);
             }
         } else if (Audio_Sample_IsPlaying(sound->handle)) {
             if (sound->pos != nullptr) {
@@ -212,10 +226,7 @@ void Sound_UpdateEffects(void)
                         sound->handle,
                         Sound_ConvertVolumeToDecibel(sound->volume));
                 } else {
-                    if (sound->handle != AUDIO_NO_SOUND) {
-                        Audio_Sample_Close(sound->handle);
-                    }
-                    M_ClearActiveSound(sound);
+                    M_CloseActiveSound(sound);
                 }
             }
         } else {
@@ -339,7 +350,6 @@ bool Sound_Effect(
             sound->handle = Audio_Sample_Play(
                 sfx_id, Sound_ConvertVolumeToDecibel(volume),
                 M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
-
             M_ClearActiveSoundHandles(sound);
             return true;
         }
@@ -445,23 +455,6 @@ void Sound_ResetEffects(void)
     }
 }
 
-void Sound_StopAmbientSounds(void)
-{
-    if (!Sound_IsInitialised()) {
-        return;
-    }
-
-    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
-        if (info != nullptr && info->mode == SAMPLE_MODE_LOOPED
-            && Audio_Sample_IsPlaying(sound->handle)) {
-            Audio_Sample_Close(sound->handle);
-            M_ClearActiveSound(sound);
-        }
-    }
-}
-
 void Sound_Reset(void)
 {
     if (!Sound_IsInitialised()) {
@@ -477,6 +470,23 @@ void Sound_StopAll(void)
         return;
     }
     Audio_Sample_CloseAll();
+    M_ClearAllActiveSounds();
+}
+
+void Sound_StopAmbientSounds(void)
+{
+    if (!Sound_IsInitialised()) {
+        return;
+    }
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+        if (info != nullptr && info->mode == SAMPLE_MODE_LOOPED
+            && Audio_Sample_IsPlaying(sound->handle)) {
+            Audio_Sample_Close(sound->handle);
+            M_ClearActiveSound(sound);
+        }
+    }
 }
 
 void Sound_ResetAmbient(void)

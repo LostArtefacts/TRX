@@ -8,6 +8,5 @@
 
 void Sound_UpdateEffects(void);
 void Sound_ResetEffects(void);
-void Sound_StopAmbientSounds(void);
 int32_t Sound_GetMaxSamples(void);
 void Sound_ResetAmbient(void);
