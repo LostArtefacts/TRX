@@ -439,31 +439,6 @@ void Sound_StopEffect(const SAMPLE_ID sample_id)
     }
 }
 
-void Sound_ResetEffects(void)
-{
-    if (!Sound_IsInitialised()) {
-        return;
-    }
-
-    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-        M_ClearActiveSound(&m_ActiveSounds[i]);
-    }
-
-    Sound_StopAll();
-
-    for (int32_t i = 0; i < SFX_NUMBER_OF; i++) {
-        const SAMPLE_INFO *const info = Sound_GetSampleInfo(i);
-        if (info == nullptr) {
-            continue;
-        }
-        if (info->volume < 0) {
-            Shell_ExitSystemFmt(
-                "sample info for effect %d has incorrect volume(%d)", i,
-                info->volume);
-        }
-    }
-}
-
 void Sound_Reset(void)
 {
     if (!Sound_IsInitialised()) {
