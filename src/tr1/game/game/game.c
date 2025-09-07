@@ -165,6 +165,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     } else {
         Output_ResetDynamicLights();
 
+        Sound_ResetAmbient();
         Item_Control();
         Effect_Control();
 
@@ -172,7 +173,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
         Lara_Hair_Control(false);
 
         Camera_Update();
-        Sound_ResetAmbient();
         ItemAction_RunActive();
         Sound_UpdateEffects();
         Overlay_Animate(1);
