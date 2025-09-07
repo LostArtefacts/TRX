@@ -40,6 +40,7 @@ static float M_ConvertPitch(float pitch);
 static void M_ClearAllActiveSounds(void);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
+
 static void M_UpdateActiveSound(M_ACTIVE_SOUND *sound);
 
 static float M_ConvertPitch(const float pitch)

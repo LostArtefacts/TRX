@@ -23,12 +23,13 @@
 
 typedef struct {
     int32_t handle;
-    const XYZ_32 *pos;
+    SAMPLE_ID sample_id;
+    int16_t flags;
     uint32_t loudness;
     int16_t volume;
     int16_t pan;
-    SAMPLE_ID sample_id;
-    int16_t flags;
+    int32_t pitch;
+    const XYZ_32 *pos;
 } M_ACTIVE_SOUND;
 
 typedef enum {
@@ -38,12 +39,11 @@ typedef enum {
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
-static float M_CalcPitch(int32_t pitch);
+static float M_ConvertPitch(int32_t pitch);
 
 static M_ACTIVE_SOUND *M_GetActiveSound(
     SAMPLE_ID sample_id, uint32_t loudness, const XYZ_32 *pos,
     SAMPLE_MODE mode);
-static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 
 static void M_ClearAllActiveSounds(void);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
@@ -51,7 +51,10 @@ static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 static void M_ResetAmbientLoudness(void);
 
-static float M_CalcPitch(int32_t pitch)
+static void M_UpdateActiveSound(M_ACTIVE_SOUND *sound);
+static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
+
+static float M_ConvertPitch(int32_t pitch)
 {
     return pitch / 100.0f;
 }
@@ -97,42 +100,6 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
     }
 
     return nullptr;
-}
-
-static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
-{
-    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
-
-    const int32_t x = sound->pos->x - g_Camera.target.x;
-    const int32_t y = sound->pos->y - g_Camera.target.y;
-    const int32_t z = sound->pos->z - g_Camera.target.z;
-    if (ABS(x) > M_SOUND_RADIUS || ABS(y) > M_SOUND_RADIUS
-        || ABS(z) > M_SOUND_RADIUS) {
-        sound->volume = 0;
-        return;
-    }
-
-    const uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
-    int32_t volume =
-        info->volume - Math_Sqrt(distance) * M_SOUND_RANGE_MULT_CONSTANT;
-    if (volume < 0) {
-        sound->volume = 0;
-        return;
-    }
-
-    CLAMPG(volume, M_SOUND_MAX_VOLUME);
-
-    sound->volume = volume;
-
-    if (!distance || info->flags.no_pan) {
-        sound->pan = 0;
-        return;
-    }
-
-    int16_t angle = Math_Atan(
-        sound->pos->z - g_LaraItem->pos.z, sound->pos->x - g_LaraItem->pos.x);
-    angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-    sound->pan = angle;
 }
 
 static void M_ClearAllActiveSounds(void)
@@ -185,6 +152,50 @@ static void M_ResetAmbientLoudness(void)
     }
 }
 
+static void M_UpdateActiveSound(M_ACTIVE_SOUND *const sound)
+{
+    Audio_Sample_SetPan(sound->handle, Sound_ConvertPanToDecibel(sound->pan));
+    Audio_Sample_SetPitch(sound->handle, M_ConvertPitch(sound->pitch));
+    Audio_Sample_SetVolume(
+        sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
+}
+
+static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
+{
+    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+
+    const int32_t x = sound->pos->x - g_Camera.target.x;
+    const int32_t y = sound->pos->y - g_Camera.target.y;
+    const int32_t z = sound->pos->z - g_Camera.target.z;
+    if (ABS(x) > M_SOUND_RADIUS || ABS(y) > M_SOUND_RADIUS
+        || ABS(z) > M_SOUND_RADIUS) {
+        sound->volume = 0;
+        return;
+    }
+
+    const uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
+    int32_t volume =
+        info->volume - Math_Sqrt(distance) * M_SOUND_RANGE_MULT_CONSTANT;
+    if (volume < 0) {
+        sound->volume = 0;
+        return;
+    }
+
+    CLAMPG(volume, M_SOUND_MAX_VOLUME);
+
+    sound->volume = volume;
+
+    if (!distance || info->flags.no_pan) {
+        sound->pan = 0;
+        return;
+    }
+
+    int16_t angle = Math_Atan(
+        sound->pos->z - g_LaraItem->pos.z, sound->pos->x - g_LaraItem->pos.x);
+    angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
+    sound->pan = angle;
+}
+
 bool Sound_Init(void)
 {
     return Sound_InitialiseCommon();
@@ -209,10 +220,7 @@ void Sound_UpdateEffects(void)
             } else if (sound->handle == AUDIO_NO_SOUND) {
                 M_CloseActiveSound(sound);
             } else {
-                Audio_Sample_SetPan(
-                    sound->handle, Sound_ConvertPanToDecibel(sound->pan));
-                Audio_Sample_SetVolume(
-                    sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
+                M_UpdateActiveSound(sound);
             }
         } else if (!Audio_Sample_IsPlaying(sound->handle)) {
             M_ClearActiveSound(sound);
@@ -221,10 +229,7 @@ void Sound_UpdateEffects(void)
             if (sound->volume <= 0) {
                 M_CloseActiveSound(sound);
             } else {
-                Audio_Sample_SetPan(
-                    sound->handle, Sound_ConvertPanToDecibel(sound->pan));
-                Audio_Sample_SetVolume(
-                    sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
+                M_UpdateActiveSound(sound);
             }
         }
     }
@@ -308,14 +313,17 @@ bool Sound_Effect(
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            track_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-            Sound_ConvertPanToDecibel(pan), false);
+            track_id, Sound_ConvertVolumeToDecibel(volume),
+            M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
         M_ClearActiveSoundHandles(sound);
         sound->flags = 0;
         sound->sample_id = sample_id;
+        sound->volume = volume;
+        sound->pan = pan;
+        sound->pitch = pitch;
         sound->pos = pos;
         return true;
     }
@@ -330,19 +338,22 @@ bool Sound_Effect(
             Audio_Sample_Close(sound->handle);
             sound->handle = Audio_Sample_Play(
                 track_id, Sound_ConvertVolumeToDecibel(volume),
-                M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
+                M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
             M_ClearActiveSoundHandles(sound);
             return true;
         }
         sound->handle = Audio_Sample_Play(
-            track_id, Sound_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
-            Sound_ConvertPanToDecibel(pan), false);
+            track_id, Sound_ConvertVolumeToDecibel(volume),
+            M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
         if (sound->handle == AUDIO_NO_SOUND) {
             return false;
         }
         M_ClearActiveSoundHandles(sound);
         sound->flags = 0;
         sound->sample_id = sample_id;
+        sound->volume = volume;
+        sound->pan = pan;
+        sound->pitch = pitch;
         sound->pos = pos;
         return true;
     }
@@ -359,6 +370,7 @@ bool Sound_Effect(
             if (volume > 0) {
                 sound->loudness = loudness;
                 sound->pan = pan;
+                sound->pitch = pitch;
                 sound->volume = volume;
             } else {
                 sound->loudness = M_SOUND_NOT_AUDIBLE;
@@ -370,7 +382,7 @@ bool Sound_Effect(
         if (volume > 0) {
             sound->handle = Audio_Sample_Play(
                 track_id, Sound_ConvertVolumeToDecibel(volume),
-                M_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
+                M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
             if (sound->handle == AUDIO_NO_SOUND) {
                 M_ClearActiveSound(sound);
                 return false;
@@ -379,6 +391,7 @@ bool Sound_Effect(
             sound->loudness = loudness;
             sound->sample_id = sample_id;
             sound->pan = pan;
+            sound->pitch = pitch;
             sound->volume = volume;
             sound->flags |= SOUND_FLAG_AMBIENT;
             sound->pos = pos;
