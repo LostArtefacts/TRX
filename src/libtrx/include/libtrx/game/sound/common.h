@@ -38,7 +38,6 @@ void Sound_PauseAll(void);
 void Sound_UnpauseAll(void);
 
 extern void Sound_StopAll(void);
-extern void Sound_StopAmbientSounds(void);
 extern bool Sound_Effect(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
 extern void Sound_StopEffect(SAMPLE_ID sfx_num);
 extern void Sound_UpdateEffects(void);

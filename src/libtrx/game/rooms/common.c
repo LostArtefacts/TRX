@@ -119,7 +119,6 @@ void Room_InitialiseFlipStatus(void)
 
 void Room_FlipMap(void)
 {
-    Sound_StopAmbientSounds();
     MovableBlock_HandleFlipMap(RFS_UNFLIPPED);
 
     for (int32_t i = 0; i < Room_GetCount(); i++) {

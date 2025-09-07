@@ -458,22 +458,6 @@ void Sound_StopAll(void)
     M_ClearAllActiveSounds();
 }
 
-void Sound_StopAmbientSounds(void)
-{
-    if (!Sound_IsInitialised()) {
-        return;
-    }
-    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
-        if (info != nullptr && info->mode == SAMPLE_MODE_LOOPED
-            && Audio_Sample_IsPlaying(sound->handle)) {
-            Audio_Sample_Close(sound->handle);
-            M_ClearActiveSound(sound);
-        }
-    }
-}
-
 void Sound_ResetAmbient(void)
 {
     M_ResetAmbientLoudness();
