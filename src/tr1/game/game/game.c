@@ -69,7 +69,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     Interpolation_Remember();
     Stats_StartTimer();
 
-    Sound_ResetEffects();
+    Sound_StopAll();
     if (level->music_track != MX_INACTIVE) {
         Music_Play(
             level->music_track,

@@ -407,7 +407,7 @@ bool Level_Initialise(
     Overlay_SetHealthBarTimer(100);
 
     Music_SetVolume(g_Config.audio.music_volume);
-    Sound_ResetEffects();
+    Sound_StopAll();
 
     Viewport_AlterFOV(-1);
 
