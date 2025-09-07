@@ -81,6 +81,10 @@ jobs:
         run: |
           sudo port -N install apple-pki-bundle curl-ca-bundle
 
+      - name: Download large assets
+        #if: ${{ inputs.target == 'release' }}
+        run: tools/download_assets 1
+
       - name: Build arm64 and create app bundle
         env:
           CC: clang
