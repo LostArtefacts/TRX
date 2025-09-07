@@ -108,6 +108,43 @@ void Sound_UpdateEffects(void)
     }
 }
 
+uint32_t Sound_GetDistance(const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const int32_t dx = pos->x - g_Camera.mic_pos.x;
+    const int32_t dy = pos->y - g_Camera.mic_pos.y;
+    const int32_t dz = pos->z - g_Camera.mic_pos.z;
+    if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
+        || ABS(dz) > M_SOUND_RADIUS) {
+        return INT32_MAX;
+    }
+    uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    if (distance > M_SOUND_RADIUS_SQRD) {
+        return INT32_MAX;
+    } else if (distance < M_SOUND_MAXVOL_RADIUS_SQRD) {
+        distance = 0;
+    } else {
+        distance = Math_Sqrt(distance) - M_SOUND_MAXVOL_RADIUS;
+    }
+    return distance;
+}
+
+int32_t Sound_GetPan(const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const uint32_t distance = Sound_GetDistance(pos);
+    if (distance > 0 && !sample->flags.no_pan) {
+        const int32_t dx = pos->x - g_Camera.mic_pos.x;
+        const int32_t dz = pos->z - g_Camera.mic_pos.z;
+        return (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
+    }
+    return 0;
+}
+
 bool Sound_Effect(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
@@ -130,28 +167,11 @@ bool Sound_Effect(
         return false;
     }
 
-    uint32_t distance = 0;
-    int32_t pan = 0;
-    if (pos != nullptr) {
-        const int32_t dx = pos->x - g_Camera.mic_pos.x;
-        const int32_t dy = pos->y - g_Camera.mic_pos.y;
-        const int32_t dz = pos->z - g_Camera.mic_pos.z;
-        if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
-            || ABS(dz) > M_SOUND_RADIUS) {
-            return false;
-        }
-        distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-        if (distance > M_SOUND_RADIUS_SQRD) {
-            return false;
-        } else if (distance < M_SOUND_MAXVOL_RADIUS_SQRD) {
-            distance = 0;
-        } else {
-            distance = Math_Sqrt(distance) - M_SOUND_MAXVOL_RADIUS;
-        }
-        if (!info->flags.no_pan) {
-            pan = (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
-        }
+    uint32_t distance = Sound_GetDistance(pos);
+    if (distance == INT32_MAX) {
+        return false;
     }
+    int32_t pan = Sound_GetPan(info, pos);
 
     int32_t volume = info->volume;
     if (info->flags.randomize_volume) {
