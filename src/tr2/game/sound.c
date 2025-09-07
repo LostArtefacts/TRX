@@ -289,7 +289,3 @@ void Sound_StopAll(void)
     Audio_Sample_CloseAll();
     M_ClearAllActiveSounds();
 }
-
-void Sound_StopAmbientSounds(void)
-{
-}
