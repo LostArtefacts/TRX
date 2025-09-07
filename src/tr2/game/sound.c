@@ -145,6 +145,18 @@ int32_t Sound_GetPan(const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
     return 0;
 }
 
+int32_t Sound_GetVolume(
+    const SAMPLE_INFO *const sample, const uint32_t distance)
+{
+    int32_t volume = sample->volume;
+    if (sample->flags.randomize_volume) {
+        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
+    }
+    const int32_t attenuation =
+        SQUARE(distance) / (M_SOUND_RADIUS_SQRD / 0x10000);
+    return (volume * (0x10000 - attenuation)) / 0x10000;
+}
+
 bool Sound_Effect(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
@@ -167,26 +179,18 @@ bool Sound_Effect(
         return false;
     }
 
-    uint32_t distance = Sound_GetDistance(pos);
+    const uint32_t distance = Sound_GetDistance(pos);
     if (distance == INT32_MAX) {
         return false;
     }
-    int32_t pan = Sound_GetPan(info, pos);
 
-    int32_t volume = info->volume;
-    if (info->flags.randomize_volume) {
-        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
-    }
-    const int32_t attenuation =
-        SQUARE(distance) / (M_SOUND_RADIUS_SQRD / 0x10000);
-    volume = (volume * (0x10000 - attenuation)) / 0x10000;
-
+    const int32_t pan = Sound_GetPan(info, pos);
+    const int32_t volume = Sound_GetVolume(info, distance);
     if (volume <= 0) {
         return false;
     }
 
     const int32_t pitch = Sound_GetPitch(info);
-
     const int32_t num_samples = info->flags.num_samples;
     const int32_t track_id = num_samples == 1
         ? info->number
