@@ -133,8 +133,10 @@ bool GFX_Context_Attach(void *window_handle)
     // VSync defaults to on unless user disabled it in runtime json
     SDL_GL_SetSwapInterval(1);
 
-#if DEBUG && !defined(__APPLE__)
-    glDebugMessageCallback(M_GLDebug, nullptr);
+#if DEBUG
+    if (glDebugMessageCallback != nullptr) {
+        glDebugMessageCallback(M_GLDebug, nullptr);
+    }
     glEnable(GL_DEBUG_OUTPUT);
 #endif
 
