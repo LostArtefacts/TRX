@@ -40,7 +40,7 @@ typedef struct {
     int32_t sealed;
     VECTOR *animated_vertices; // OUTPUT_VERTEX_RANGE
     VECTOR *transparent_faces; // OUTPUT_MESH_FACE
-    VECTOR *opaque_vertex_indices; // int32_t
+    VECTOR *opaque_vertex_indices; // uint32_t
 } OUTPUT_MESH;
 
 OUTPUT_MESH *Output_Mesh_Create(void);
