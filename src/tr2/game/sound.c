@@ -84,10 +84,13 @@ bool Sound_Init(void)
     return result;
 }
 
-void Sound_UpdateEffects(void)
+void Sound_ResetAmbient(void)
 {
     Sound_ResetSources();
+}
 
+void Sound_UpdateEffects(void)
+{
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
         const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);

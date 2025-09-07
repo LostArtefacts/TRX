@@ -144,12 +144,12 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     Output_ResetDynamicLights();
 
+    Sound_ResetAmbient();
     Item_Control();
     Effect_Control();
     Lara_Control();
     Lara_Hair_Control(false);
     Camera_Update();
-    Sound_ResetSources();
     ItemAction_RunActive();
     Sound_UpdateEffects();
     Overlay_Animate(1);
