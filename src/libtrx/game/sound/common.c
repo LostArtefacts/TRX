@@ -3,6 +3,7 @@
 #include "config.h"
 #include "engine/audio.h"
 #include "game/game_buf.h"
+#include "game/random.h"
 #include "game/rooms.h"
 #include "log.h"
 #include "utils.h"
@@ -21,6 +22,7 @@ typedef enum {
 #define M_SOUND_RANGE_MULT_CONSTANT 4
 #define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L)
 #define M_SOUND_MAX_VOLUME ((M_SOUND_RADIUS * M_SOUND_RANGE_MULT_CONSTANT) - 1)
+#define M_SOUND_MAX_PITCH_CHANGE 6000
 
 static bool m_Initialised = false;
 static float m_MasterVolume = 0.0f;
@@ -54,6 +56,22 @@ int32_t Sound_ConvertPanToDecibel(const uint16_t pan)
     } else {
         return 0;
     }
+}
+
+// TODO: make static
+int32_t Sound_GetPitch(const SAMPLE_INFO *const info)
+{
+    int32_t pitch = SOUND_DEFAULT_PITCH;
+#if TR_VERSION == 1
+    if (!g_Config.audio.enable_pitched_sounds) {
+        return pitch;
+    }
+#endif
+    if (info->flags.randomize_pitch) {
+        pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
+            - M_SOUND_MAX_PITCH_CHANGE;
+    }
+    return pitch;
 }
 
 // TODO: inline

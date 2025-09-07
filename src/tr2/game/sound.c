@@ -27,7 +27,6 @@ typedef struct {
 #define M_MAX_ACTIVE_SOUNDS 32
 // sample volume ranges from 0..32767
 #define M_SOUND_MAX_VOLUME_CHANGE 0x2000
-#define M_SOUND_MAX_PITCH_CHANGE 6000
 
 #define M_SOUND_MAXVOL_RANGE 1
 #define M_SOUND_MAXVOL_RADIUS (M_SOUND_MAXVOL_RANGE * WALL_L) // = 0x400 = 1024
@@ -166,12 +165,7 @@ bool Sound_Effect(
         return false;
     }
 
-    int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
-                                             : SOUND_DEFAULT_PITCH;
-    if (info->flags.randomize_pitch) {
-        pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
-            - M_SOUND_MAX_PITCH_CHANGE;
-    }
+    const int32_t pitch = Sound_GetPitch(info);
 
     const int32_t num_samples = info->flags.num_samples;
     const int32_t track_id = num_samples == 1
