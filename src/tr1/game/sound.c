@@ -32,10 +32,8 @@ typedef struct {
 } M_ACTIVE_SOUND;
 
 typedef enum {
-    SOUND_FLAG_UNUSED = 0,
-    SOUND_FLAG_USED = 1 << 0,
-    SOUND_FLAG_AMBIENT = 1 << 1,
-    SOUND_FLAG_RESTARTED = 1 << 2,
+    SOUND_FLAG_AMBIENT = 1 << 0,
+    SOUND_FLAG_RESTARTED = 1 << 1,
 } M_SOUND_FLAG;
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
@@ -69,11 +67,10 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
         M_ACTIVE_SOUND *last_free_sound = nullptr;
         for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
-            if ((result->flags & SOUND_FLAG_USED)
-                && result->sample_id == sample_id && result->pos == pos) {
+            if (result->sample_id == sample_id && result->pos == pos) {
                 result->flags |= SOUND_FLAG_RESTARTED;
                 return result;
-            } else if (result->flags == SOUND_FLAG_UNUSED) {
+            } else if (result->sample_id < 0) {
                 last_free_sound = result;
             }
         }
@@ -84,8 +81,7 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
         for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
             if (result->sample_id == sample_id) {
-                if (result->flags != SOUND_FLAG_UNUSED
-                    && result->loudness <= loudness) {
+                if (result->loudness <= loudness) {
                     return nullptr;
                 }
                 return result;
@@ -93,7 +89,7 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
         }
         for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
             M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
-            if (result->flags == SOUND_FLAG_UNUSED) {
+            if (result->sample_id < 0) {
                 return result;
             }
         }
@@ -151,7 +147,7 @@ static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
 {
     sound->handle = AUDIO_NO_SOUND;
     sound->pos = nullptr;
-    sound->flags = SOUND_FLAG_UNUSED;
+    sound->flags = 0;
     sound->volume = 0;
     sound->pan = 0;
     sound->loudness = M_SOUND_NOT_AUDIBLE;
@@ -202,7 +198,7 @@ void Sound_UpdateEffects(void)
 
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        if (!(sound->flags & SOUND_FLAG_USED)) {
+        if (sound->sample_id < 0) {
             continue;
         }
 
@@ -318,7 +314,7 @@ bool Sound_Effect(
             return false;
         }
         M_ClearActiveSoundHandles(sound);
-        sound->flags = SOUND_FLAG_USED;
+        sound->flags = 0;
         sound->sample_id = sample_id;
         sound->pos = pos;
         return true;
@@ -345,7 +341,7 @@ bool Sound_Effect(
             return false;
         }
         M_ClearActiveSoundHandles(sound);
-        sound->flags = SOUND_FLAG_USED;
+        sound->flags = 0;
         sound->sample_id = sample_id;
         sound->pos = pos;
         return true;
@@ -384,7 +380,7 @@ bool Sound_Effect(
             sound->sample_id = sample_id;
             sound->pan = pan;
             sound->volume = volume;
-            sound->flags |= SOUND_FLAG_AMBIENT | SOUND_FLAG_USED;
+            sound->flags |= SOUND_FLAG_AMBIENT;
             sound->pos = pos;
             return true;
         }
@@ -405,8 +401,7 @@ void Sound_StopEffect(const SAMPLE_ID sample_id)
 
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        if ((sound->flags & SOUND_FLAG_USED) != 0
-            && sound->sample_id == sample_id
+        if (sound->sample_id == sample_id
             && Audio_Sample_IsPlaying(sound->handle)) {
             Audio_Sample_Close(sound->handle);
             M_ClearActiveSound(sound);
