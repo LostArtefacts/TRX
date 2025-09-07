@@ -13,7 +13,6 @@
 #include <math.h>
 
 #define M_MAX_ACTIVE_SOUNDS AUDIO_MAX_ACTIVE_SAMPLES
-#define M_MAX_AMBIENT_FX 8
 #define M_SOUND_RANGE 8
 #define M_SOUND_RANGE_MULT_CONSTANT 4
 #define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L)
@@ -40,8 +39,6 @@ typedef enum {
 } M_SOUND_FLAG;
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
-static int16_t m_AmbientLookup[M_MAX_AMBIENT_FX] = {};
-static int32_t m_AmbientLookupIdx = 0;
 
 static float M_CalcPitch(int32_t pitch);
 
@@ -67,8 +64,8 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
     case SAMPLE_MODE_WAIT:
     case SAMPLE_MODE_RESTART: {
         M_ACTIVE_SOUND *last_free_sound = nullptr;
-        for (int32_t i = m_AmbientLookupIdx; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *result = &m_ActiveSounds[i];
+        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+            M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
             if ((result->flags & SOUND_FLAG_USED)
                 && result->sample_id == sample_id && result->pos == pos) {
                 result->flags |= SOUND_FLAG_RESTARTED;
@@ -81,13 +78,19 @@ static M_ACTIVE_SOUND *M_GetActiveSound(
     }
 
     case SAMPLE_MODE_LOOPED:
-        for (int32_t i = 0; i < M_MAX_AMBIENT_FX; i++) {
-            if (m_AmbientLookup[i] == sample_id) {
-                M_ACTIVE_SOUND *result = &m_ActiveSounds[i];
+        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+            M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
+            if (result->sample_id == sample_id) {
                 if (result->flags != SOUND_FLAG_UNUSED
                     && result->loudness <= loudness) {
                     return nullptr;
                 }
+                return result;
+            }
+        }
+        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+            M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
+            if (result->flags == SOUND_FLAG_UNUSED) {
                 return result;
             }
         }
@@ -160,9 +163,12 @@ static void M_ResetAmbientLoudness(void)
         return;
     }
 
-    for (int32_t i = 0; i < m_AmbientLookupIdx; i++) {
-        M_ACTIVE_SOUND *sound = &m_ActiveSounds[i];
-        sound->loudness = M_SOUND_NOT_AUDIBLE;
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+        if (info != nullptr && info->mode == SAMPLE_MODE_LOOPED) {
+            sound->loudness = M_SOUND_NOT_AUDIBLE;
+        }
     }
 }
 
@@ -426,8 +432,6 @@ void Sound_ResetEffects(void)
 
     Sound_StopAll();
 
-    m_AmbientLookupIdx = 0;
-
     for (int32_t i = 0; i < SFX_NUMBER_OF; i++) {
         const SAMPLE_INFO *const info = Sound_GetSampleInfo(i);
         if (info == nullptr) {
@@ -438,15 +442,6 @@ void Sound_ResetEffects(void)
                 "sample info for effect %d has incorrect volume(%d)", i,
                 info->volume);
         }
-
-        if (info->mode == SAMPLE_MODE_LOOPED) {
-            if (m_AmbientLookupIdx >= M_MAX_AMBIENT_FX) {
-                LOG_ERROR("Ran out of ambient effect slots");
-                return;
-            }
-            m_AmbientLookup[m_AmbientLookupIdx] = i;
-            m_AmbientLookupIdx++;
-        }
     }
 }
 
@@ -456,9 +451,11 @@ void Sound_StopAmbientSounds(void)
         return;
     }
 
-    for (int32_t i = 0; i < m_AmbientLookupIdx; i++) {
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        if (Audio_Sample_IsPlaying(sound->handle)) {
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+        if (info != nullptr && info->mode == SAMPLE_MODE_LOOPED
+            && Audio_Sample_IsPlaying(sound->handle)) {
             Audio_Sample_Close(sound->handle);
             M_ClearActiveSound(sound);
         }
