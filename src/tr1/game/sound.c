@@ -234,6 +234,37 @@ void Sound_UpdateEffects(void)
     }
 }
 
+uint32_t Sound_GetDistance(const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const int32_t dx = pos->x - g_Camera.target.x;
+    const int32_t dy = pos->y - g_Camera.target.y;
+    const int32_t dz = pos->z - g_Camera.target.z;
+    if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
+        || ABS(dz) > M_SOUND_RADIUS) {
+        return INT32_MAX;
+    }
+    const uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    return Math_Sqrt(distance);
+}
+
+int32_t Sound_GetPan(const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const uint32_t distance = Sound_GetDistance(pos);
+    if (distance > 0 && !sample->flags.no_pan) {
+        int16_t angle =
+            Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
+        angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
+        return angle;
+    }
+    return 0;
+}
+
 bool Sound_Effect(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
@@ -256,25 +287,11 @@ bool Sound_Effect(
         return false;
     }
 
-    uint32_t distance = 0;
-    int32_t pan = 0;
-    if (pos != nullptr) {
-        const int32_t dx = pos->x - g_Camera.target.x;
-        const int32_t dy = pos->y - g_Camera.target.y;
-        const int32_t dz = pos->z - g_Camera.target.z;
-        if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
-            || ABS(dz) > M_SOUND_RADIUS) {
-            return false;
-        }
-        distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-        if (distance != 0 && !info->flags.no_pan) {
-            int16_t angle = Math_Atan(
-                pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
-            angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-            pan = angle;
-        }
+    uint32_t distance = Sound_GetDistance(pos);
+    if (distance == INT32_MAX) {
+        return false;
     }
-    distance = Math_Sqrt(distance);
+    int32_t pan = Sound_GetPan(info, pos);
 
     int32_t volume = info->volume - distance * M_SOUND_RANGE_MULT_CONSTANT;
     if (info->flags.randomize_volume) {
