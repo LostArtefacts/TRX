@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import shutil
+import ssl
 import sys
 import tempfile
 from pathlib import Path
@@ -26,7 +27,8 @@ def parse_args() -> argparse.Namespace:
 def download_to_file(url: str, path: Path) -> None:
     print(f"Downloading {url}...")
     req = Request(url, headers={"User-Agent": "download_assets"})
-    with urlopen(req) as response:
+    context = ssl._create_unverified_context()
+    with urlopen(req, context=context) as response:
         if getattr(response, "status", None) not in (None, 200):
             sys.exit(
                 f"Error: failed to download {url}. Status: {response.status}"
