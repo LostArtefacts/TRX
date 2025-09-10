@@ -26,15 +26,10 @@ typedef struct {
     int16_t volume;
     int16_t pan;
     int32_t pitch;
-    int16_t flags;
 
     int32_t distance;
     const XYZ_32 *pos;
 } M_ACTIVE_SOUND;
-
-typedef enum {
-    SOUND_FLAG_RESTARTED = 1 << 1,
-} M_SOUND_FLAG;
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
@@ -42,7 +37,7 @@ static float M_ConvertPitch(int32_t pitch);
 
 static M_ACTIVE_SOUND *M_SelectUnusedSound(void);
 static M_ACTIVE_SOUND *M_SelectUsedSound(const SAMPLE_ID sample_id);
-static M_ACTIVE_SOUND *M_SelectBoundSound(
+static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
     SAMPLE_ID sample_id, const XYZ_32 *pos);
 
 static void M_ClearAllActiveSounds(void);
@@ -93,13 +88,12 @@ static M_ACTIVE_SOUND *M_SelectUsedSound(const SAMPLE_ID sample_id)
     return nullptr;
 }
 
-static M_ACTIVE_SOUND *M_SelectBoundSound(
+static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos)
 {
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
         if (result->sample_id == sample_id && result->pos == pos) {
-            result->flags |= SOUND_FLAG_RESTARTED;
             return result;
         }
     }
@@ -146,7 +140,6 @@ static bool M_Play(
     sound->pitch = pitch;
     sound->sample_id = sample_id;
     sound->handle = handle;
-    sound->flags = 0;
     sound->distance = distance;
     sound->pos = pos;
     return true;
@@ -344,15 +337,14 @@ bool Sound_Effect(
         break;
 
     case SAMPLE_MODE_WAIT: {
-        M_ACTIVE_SOUND *sound = M_SelectBoundSound(sample_id, pos);
+        M_ACTIVE_SOUND *sound = M_SelectUsedSoundWithPos(sample_id, pos);
         if (sound == nullptr) {
             sound = M_SelectUnusedSound();
         }
         if (sound == nullptr) {
             return false;
         }
-        if (sound->flags & SOUND_FLAG_RESTARTED) {
-            sound->flags &= ~SOUND_FLAG_RESTARTED;
+        if (Audio_Sample_IsPlaying(sound->handle)) {
             return true;
         }
         if (!M_Play(
