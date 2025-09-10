@@ -142,6 +142,7 @@ static bool M_Play(
     sound->handle = handle;
     sound->distance = distance;
     sound->pos = pos;
+    M_ClearActiveSoundHandles(sound);
     return true;
 }
 
@@ -334,7 +335,13 @@ bool Sound_Effect(
 
     switch (info->mode) {
     case SAMPLE_MODE_NORMAL:
-        break;
+        M_ACTIVE_SOUND *const sound = M_SelectUnusedSound();
+        if (sound == nullptr) {
+            return false;
+        }
+        return M_Play(
+            sound, info, sample_id, track_id, volume, pitch, pan, distance,
+            pos);
 
     case SAMPLE_MODE_WAIT: {
         M_ACTIVE_SOUND *sound = M_SelectUsedSoundWithPos(sample_id, pos);
@@ -347,13 +354,9 @@ bool Sound_Effect(
         if (Audio_Sample_IsPlaying(sound->handle)) {
             return true;
         }
-        if (!M_Play(
-                sound, info, sample_id, track_id, volume, pitch, pan, distance,
-                pos)) {
-            return false;
-        }
-        M_ClearActiveSoundHandles(sound);
-        return true;
+        return M_Play(
+            sound, info, sample_id, track_id, volume, pitch, pan, distance,
+            pos);
     }
 
     case SAMPLE_MODE_RESTART: {
@@ -364,11 +367,9 @@ bool Sound_Effect(
         if (sound == nullptr) {
             return false;
         }
-        M_Play(
+        return M_Play(
             sound, info, sample_id, track_id, volume, pitch, pan, distance,
             pos);
-        M_ClearActiveSoundHandles(sound);
-        return true;
     }
 
     case SAMPLE_MODE_LOOPED: {
