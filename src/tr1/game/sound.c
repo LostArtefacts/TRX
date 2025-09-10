@@ -361,20 +361,15 @@ bool Sound_Effect(
         break;
 
     case SAMPLE_MODE_LOOPED:
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-            if (sound->sample != nullptr
-                && sound->sample->mode == SAMPLE_MODE_LOOPED
-                && sound->sample_id == sample_id) {
-                if (sound->distance == -1 || distance < sound->distance) {
-                    sound->distance = distance;
-                    sound->volume = volume;
-                    sound->pan = pan;
-                    sound->pitch = pitch;
-                    return true;
-                }
-                return false;
+        sound = M_SelectUsedSound(sample_id);
+        if (sound != nullptr) {
+            if (sound->distance == -1 || distance < sound->distance) {
+                sound->distance = distance;
+                sound->volume = volume;
+                sound->pan = pan;
+                sound->pitch = pitch;
             }
+            return true;
         }
 
         sound = M_SelectUnusedSound();
