@@ -85,40 +85,17 @@ static M_ACTIVE_SOUND *M_SelectUnusedSound(void)
 static M_ACTIVE_SOUND *M_GetActiveSound(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const SAMPLE_MODE mode)
 {
-    switch (mode) {
-    case SAMPLE_MODE_NORMAL:
-    case SAMPLE_MODE_WAIT:
-    case SAMPLE_MODE_RESTART: {
-        M_ACTIVE_SOUND *last_free_sound = nullptr;
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
-            if (result->sample_id == sample_id && result->pos == pos) {
-                result->flags |= SOUND_FLAG_RESTARTED;
-                return result;
-            } else if (result->sample == nullptr) {
-                last_free_sound = result;
-            }
+    M_ACTIVE_SOUND *last_free_sound = nullptr;
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
+        if (result->sample_id == sample_id && result->pos == pos) {
+            result->flags |= SOUND_FLAG_RESTARTED;
+            return result;
+        } else if (result->sample == nullptr) {
+            last_free_sound = result;
         }
-        return last_free_sound;
     }
-
-    case SAMPLE_MODE_LOOPED:
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
-            if (result->sample_id == sample_id) {
-                return result;
-            }
-        }
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
-            if (result->sample == nullptr) {
-                return result;
-            }
-        }
-        break;
-    }
-
-    return nullptr;
+    return last_free_sound;
 }
 
 static void M_ClearAllActiveSounds(void)
@@ -134,18 +111,37 @@ static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
     sound->sample = nullptr;
     sound->sample_id = SFX_INVALID;
     sound->handle = AUDIO_NO_SOUND;
-    sound->flags = 0;
-    sound->volume = 0;
-    sound->pan = 0;
-    sound->pitch = 0;
-    sound->pos = nullptr;
-    sound->distance = -1;
 }
 
 static void M_CloseActiveSound(M_ACTIVE_SOUND *const sound)
 {
     Audio_Sample_Close(sound->handle);
     M_ClearActiveSound(sound);
+}
+
+static bool M_Play(
+    M_ACTIVE_SOUND *const sound, const SAMPLE_INFO *const info,
+    const int32_t sample_id, const int32_t track_id, const int32_t volume,
+    const int32_t pitch, const int32_t pan, const int32_t distance,
+    const XYZ_32 *const pos)
+{
+    M_CloseActiveSound(sound);
+    const int32_t handle = Audio_Sample_Play(
+        track_id, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
+        Sound_ConvertPanToDecibel(pan), info->mode == SAMPLE_MODE_LOOPED);
+    if (handle == AUDIO_NO_SOUND) {
+        return false;
+    }
+    sound->sample = info;
+    sound->volume = volume;
+    sound->pan = pan;
+    sound->pitch = pitch;
+    sound->sample_id = sample_id;
+    sound->handle = handle;
+    sound->flags = 0;
+    sound->distance = distance;
+    sound->pos = pos;
+    return true;
 }
 
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
@@ -345,24 +341,16 @@ bool Sound_Effect(
         if (sound == nullptr) {
             return false;
         }
-        if (sound->flags & SOUND_FLAG_RESTARTED) {
-            sound->flags &= ~SOUND_FLAG_RESTARTED;
-            return true;
-        }
-        sound->handle = Audio_Sample_Play(
-            track_id, Sound_ConvertVolumeToDecibel(volume),
-            M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
-        if (sound->handle == AUDIO_NO_SOUND) {
+        // if (sound->flags & SOUND_FLAG_RESTARTED) {
+        // sound->flags &= ~SOUND_FLAG_RESTARTED;
+        // return true;
+        //}
+        if (!M_Play(
+                sound, info, sample_id, track_id, volume, pitch, pan, distance,
+                pos)) {
             return false;
         }
         M_ClearActiveSoundHandles(sound);
-        sound->flags = 0;
-        sound->sample = info;
-        sound->sample_id = sample_id;
-        sound->volume = volume;
-        sound->pan = pan;
-        sound->pitch = pitch;
-        sound->pos = pos;
         return true;
     }
 
@@ -372,28 +360,11 @@ bool Sound_Effect(
         if (sound == nullptr) {
             return false;
         }
-        if (sound->flags & SOUND_FLAG_RESTARTED) {
-            Audio_Sample_Close(sound->handle);
-            sound->handle = Audio_Sample_Play(
-                track_id, Sound_ConvertVolumeToDecibel(volume),
-                M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
-            M_ClearActiveSoundHandles(sound);
-            return true;
-        }
-        sound->handle = Audio_Sample_Play(
-            track_id, Sound_ConvertVolumeToDecibel(volume),
-            M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
-        if (sound->handle == AUDIO_NO_SOUND) {
-            return false;
-        }
+        Audio_Sample_Close(sound->handle);
+        M_Play(
+            sound, info, sample_id, track_id, volume, pitch, pan, distance,
+            pos);
         M_ClearActiveSoundHandles(sound);
-        sound->flags = 0;
-        sound->sample = info;
-        sound->sample_id = sample_id;
-        sound->volume = volume;
-        sound->pan = pan;
-        sound->pitch = pitch;
-        sound->pos = pos;
         return true;
     }
 
@@ -418,23 +389,9 @@ bool Sound_Effect(
         if (sound == nullptr) {
             return false;
         }
-
-        sound->handle = Audio_Sample_Play(
-            track_id, Sound_ConvertVolumeToDecibel(volume),
-            M_ConvertPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
-        if (sound->handle == AUDIO_NO_SOUND) {
-            M_ClearActiveSound(sound);
-            return false;
-        }
-        M_ClearActiveSoundHandles(sound);
-        sound->sample = info;
-        sound->sample_id = sample_id;
-        sound->pan = pan;
-        sound->pitch = pitch;
-        sound->volume = volume;
-        sound->distance = distance;
-        sound->pos = pos;
-        return true;
+        return M_Play(
+            sound, info, sample_id, track_id, volume, pitch, pan, distance,
+            pos);
     }
     }
 
