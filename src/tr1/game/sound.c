@@ -267,6 +267,7 @@ void Sound_UpdateEffects(void)
                 M_ClearActiveSound(sound);
             } else {
                 M_SyncActiveSoundHandle(sound);
+                sound->volume = 0;
             }
         } else if (!Audio_Sample_IsPlaying(sound->handle)) {
             M_ClearActiveSound(sound);
@@ -347,7 +348,7 @@ bool Sound_Effect(
     case SAMPLE_MODE_LOOPED:
         sound = M_SelectUsedSound(sample_id);
         if (sound != nullptr) {
-            if (sound->distance == -1 || distance < sound->distance) {
+            if (volume > sound->volume) {
                 sound->distance = distance;
                 sound->volume = volume;
                 sound->pan = pan;
