@@ -25,7 +25,6 @@ typedef struct {
     int32_t pitch;
     int16_t pan;
 
-    int32_t distance;
     const XYZ_32 *pos;
 } M_ACTIVE_SOUND;
 
@@ -50,7 +49,7 @@ static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 static bool M_Play(
     M_ACTIVE_SOUND *sound, const SAMPLE_INFO *sample, int32_t sample_id,
     int32_t track_id, int32_t volume, int32_t pitch, int32_t pan,
-    int32_t distance, const XYZ_32 *pos);
+    const XYZ_32 *pos);
 
 static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *sound);
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
@@ -183,8 +182,7 @@ static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
 static bool M_Play(
     M_ACTIVE_SOUND *const sound, const SAMPLE_INFO *const sample,
     const int32_t sample_id, const int32_t track_id, const int32_t volume,
-    const int32_t pitch, const int32_t pan, const int32_t distance,
-    const XYZ_32 *const pos)
+    const int32_t pitch, const int32_t pan, const XYZ_32 *const pos)
 {
     M_CloseActiveSound(sound);
     const int32_t handle = Audio_Sample_Play(
@@ -199,7 +197,6 @@ static bool M_Play(
     sound->volume = volume;
     sound->pitch = pitch;
     sound->pan = pan;
-    sound->distance = distance;
     sound->pos = pos;
     M_ClearActiveSoundHandles(sound);
     return true;
@@ -232,7 +229,11 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 
 bool Sound_Init(void)
 {
-    return Sound_InitialiseCommon();
+    const bool result = Sound_InitialiseCommon();
+    if (result) {
+        M_ClearAllActiveSounds();
+    }
+    return result;
 }
 
 void Sound_ResetAmbient(void)
@@ -241,14 +242,6 @@ void Sound_ResetAmbient(void)
         return;
     }
     Sound_ResetSources();
-
-    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        if (sound->sample != nullptr
-            && sound->sample->mode == SAMPLE_MODE_LOOPED) {
-            sound->distance = -1;
-        }
-    }
 }
 
 void Sound_UpdateEffects(void)
@@ -264,7 +257,7 @@ void Sound_UpdateEffects(void)
 
         if (sound->sample->mode == SAMPLE_MODE_LOOPED) {
             if (sound->volume <= 0) {
-                M_ClearActiveSound(sound);
+                M_CloseActiveSound(sound);
             } else {
                 M_SyncActiveSoundHandle(sound);
                 sound->volume = 0;
@@ -349,7 +342,6 @@ bool Sound_Effect(
         sound = M_SelectUsedSound(sample_id);
         if (sound != nullptr) {
             if (volume > sound->volume) {
-                sound->distance = distance;
                 sound->volume = volume;
                 sound->pan = pan;
                 sound->pitch = pitch;
@@ -363,8 +355,7 @@ bool Sound_Effect(
     if (sound == nullptr) {
         return false;
     }
-    return M_Play(
-        sound, sample, sample_id, track_id, volume, pitch, pan, distance, pos);
+    return M_Play(sound, sample, sample_id, track_id, volume, pitch, pan, pos);
 }
 
 void Sound_StopEffect(const SAMPLE_ID sample_id)
