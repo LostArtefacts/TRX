@@ -15,8 +15,6 @@
 #define M_MAX_ACTIVE_SOUNDS AUDIO_MAX_ACTIVE_SAMPLES
 #define M_SOUND_RANGE_MULT_CONSTANT 4
 #define M_SOUND_FAR_RANGE (8 * WALL_L)
-#define M_SOUND_MAX_VOLUME                                                     \
-    ((M_SOUND_FAR_RANGE * M_SOUND_RANGE_MULT_CONSTANT) - 1)
 #define M_SOUND_MAX_VOLUME_CHANGE 0x2000
 
 typedef struct {
@@ -34,6 +32,10 @@ typedef struct {
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
 static float M_ConvertPitch(int32_t pitch);
+static int32_t M_GetDistance(const XYZ_32 *pos);
+static int32_t M_GetVolume(
+    const SAMPLE_INFO *sample, int32_t distance, bool random);
+static int32_t M_GetPan(const SAMPLE_INFO *sample, const XYZ_32 *pos);
 
 static M_ACTIVE_SOUND *M_SelectUnusedSound(void);
 static M_ACTIVE_SOUND *M_SelectUsedSound(SAMPLE_ID sample_id);
@@ -56,6 +58,48 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 static float M_ConvertPitch(const int32_t pitch)
 {
     return pitch / 0x10000.p0;
+}
+
+static int32_t M_GetDistance(const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const int32_t dx = pos->x - g_Camera.target.x;
+    const int32_t dy = pos->y - g_Camera.target.y;
+    const int32_t dz = pos->z - g_Camera.target.z;
+    if (ABS(dx) > M_SOUND_FAR_RANGE || ABS(dy) > M_SOUND_FAR_RANGE
+        || ABS(dz) > M_SOUND_FAR_RANGE) {
+        return INT32_MAX;
+    }
+    const uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    return Math_Sqrt(distance);
+}
+
+static int32_t M_GetVolume(
+    const SAMPLE_INFO *const sample, const int32_t distance, const bool random)
+{
+    int32_t volume = sample->volume - distance * M_SOUND_RANGE_MULT_CONSTANT;
+    if (random && sample->flags.randomize_volume) {
+        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
+    }
+    return volume;
+}
+
+static int32_t M_GetPan(
+    const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const int32_t distance = M_GetDistance(pos);
+    if (distance > 0 && !sample->flags.no_pan) {
+        int16_t angle =
+            Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
+        angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
+        return angle;
+    }
+    return 0;
 }
 
 static M_ACTIVE_SOUND *M_SelectUnusedSound(void)
@@ -171,38 +215,19 @@ static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *const sound)
 
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 {
-    const SAMPLE_INFO *const sample = Sound_GetSampleInfo(sound->sample_id);
-
-    const int32_t x = sound->pos->x - g_Camera.target.x;
-    const int32_t y = sound->pos->y - g_Camera.target.y;
-    const int32_t z = sound->pos->z - g_Camera.target.z;
-    if (ABS(x) > M_SOUND_FAR_RANGE || ABS(y) > M_SOUND_FAR_RANGE
-        || ABS(z) > M_SOUND_FAR_RANGE) {
+    const int32_t distance = M_GetDistance(sound->pos);
+    if (distance == INT32_MAX) {
         sound->volume = 0;
         return;
     }
-
-    const int32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
-    int32_t volume =
-        sample->volume - Math_Sqrt(distance) * M_SOUND_RANGE_MULT_CONSTANT;
+    int32_t volume = M_GetVolume(sound->sample, distance, false);
     if (volume < 0) {
         sound->volume = 0;
         return;
     }
 
-    CLAMPG(volume, M_SOUND_MAX_VOLUME);
-
     sound->volume = volume;
-
-    if (distance == 0 || sample->flags.no_pan) {
-        sound->pan = 0;
-        return;
-    }
-
-    int16_t angle = Math_Atan(
-        sound->pos->z - g_LaraItem->pos.z, sound->pos->x - g_LaraItem->pos.x);
-    angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-    sound->pan = angle;
+    sound->pan = M_GetPan(sound->sample, sound->pos);
 }
 
 bool Sound_Init(void)
@@ -245,7 +270,7 @@ void Sound_UpdateEffects(void)
             }
         } else if (!Audio_Sample_IsPlaying(sound->handle)) {
             M_ClearActiveSound(sound);
-        } else if (sound->pos != nullptr) {
+        } else if (TR_VERSION == 1 && sound->pos != nullptr) {
             M_UpdateActiveSoundParams(sound);
             if (sound->volume <= 0) {
                 M_CloseActiveSound(sound);
@@ -254,46 +279,6 @@ void Sound_UpdateEffects(void)
             }
         }
     }
-}
-
-int32_t Sound_GetDistance(const XYZ_32 *const pos)
-{
-    if (pos == nullptr) {
-        return 0;
-    }
-    const int32_t dx = pos->x - g_Camera.target.x;
-    const int32_t dy = pos->y - g_Camera.target.y;
-    const int32_t dz = pos->z - g_Camera.target.z;
-    if (ABS(dx) > M_SOUND_FAR_RANGE || ABS(dy) > M_SOUND_FAR_RANGE
-        || ABS(dz) > M_SOUND_FAR_RANGE) {
-        return INT32_MAX;
-    }
-    const uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-    return Math_Sqrt(distance);
-}
-
-int32_t Sound_GetPan(const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
-{
-    if (pos == nullptr) {
-        return 0;
-    }
-    const int32_t distance = Sound_GetDistance(pos);
-    if (distance > 0 && !sample->flags.no_pan) {
-        int16_t angle =
-            Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
-        angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
-        return angle;
-    }
-    return 0;
-}
-
-int32_t Sound_GetVolume(const SAMPLE_INFO *const sample, const int32_t distance)
-{
-    int32_t volume = sample->volume - distance * M_SOUND_RANGE_MULT_CONSTANT;
-    if (sample->flags.randomize_volume) {
-        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
-    }
-    return volume;
 }
 
 bool Sound_Effect(
@@ -318,13 +303,13 @@ bool Sound_Effect(
         return false;
     }
 
-    const int32_t distance = Sound_GetDistance(pos);
+    const int32_t distance = M_GetDistance(pos);
     if (distance == INT32_MAX) {
         return false;
     }
 
-    const int32_t pan = Sound_GetPan(sample, pos);
-    const int32_t volume = Sound_GetVolume(sample, distance);
+    const int32_t pan = M_GetPan(sample, pos);
+    const int32_t volume = M_GetVolume(sample, distance, true);
     if (volume <= 0) {
         return false;
     }
@@ -342,7 +327,8 @@ bool Sound_Effect(
         break;
 
     case SAMPLE_MODE_WAIT:
-        sound = M_SelectUsedSoundWithPos(sample_id, pos);
+        sound = TR_VERSION == 1 ? M_SelectUsedSoundWithPos(sample_id, pos)
+                                : M_SelectUsedSound(sample_id);
         if (sound != nullptr && Audio_Sample_IsPlaying(sound->handle)) {
             return true;
         }
