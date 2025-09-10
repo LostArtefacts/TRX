@@ -46,7 +46,7 @@ static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 
 static bool M_Play(
-    M_ACTIVE_SOUND *sound, const SAMPLE_INFO *info, int32_t sample_id,
+    M_ACTIVE_SOUND *sound, const SAMPLE_INFO *sample, int32_t sample_id,
     int32_t track_id, int32_t volume, int32_t pitch, int32_t pan,
     int32_t distance, const XYZ_32 *pos);
 
@@ -137,7 +137,7 @@ static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
 }
 
 static bool M_Play(
-    M_ACTIVE_SOUND *const sound, const SAMPLE_INFO *const info,
+    M_ACTIVE_SOUND *const sound, const SAMPLE_INFO *const sample,
     const int32_t sample_id, const int32_t track_id, const int32_t volume,
     const int32_t pitch, const int32_t pan, const int32_t distance,
     const XYZ_32 *const pos)
@@ -145,11 +145,11 @@ static bool M_Play(
     M_CloseActiveSound(sound);
     const int32_t handle = Audio_Sample_Play(
         track_id, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
-        Sound_ConvertPanToDecibel(pan), info->mode == SAMPLE_MODE_LOOPED);
+        Sound_ConvertPanToDecibel(pan), sample->mode == SAMPLE_MODE_LOOPED);
     if (handle == AUDIO_NO_SOUND) {
         return false;
     }
-    sound->sample = info;
+    sound->sample = sample;
     sound->sample_id = sample_id;
     sound->handle = handle;
     sound->volume = volume;
@@ -171,7 +171,7 @@ static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *const sound)
 
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 {
-    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
+    const SAMPLE_INFO *const sample = Sound_GetSampleInfo(sound->sample_id);
 
     const int32_t x = sound->pos->x - g_Camera.target.x;
     const int32_t y = sound->pos->y - g_Camera.target.y;
@@ -184,7 +184,7 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 
     const int32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
     int32_t volume =
-        info->volume - Math_Sqrt(distance) * M_SOUND_RANGE_MULT_CONSTANT;
+        sample->volume - Math_Sqrt(distance) * M_SOUND_RANGE_MULT_CONSTANT;
     if (volume < 0) {
         sound->volume = 0;
         return;
@@ -194,7 +194,7 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 
     sound->volume = volume;
 
-    if (distance == 0 || info->flags.no_pan) {
+    if (distance == 0 || sample->flags.no_pan) {
         sound->pan = 0;
         return;
     }
@@ -231,15 +231,13 @@ void Sound_UpdateEffects(void)
     if (!Sound_IsInitialised()) {
         return;
     }
-
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
         if (sound->sample == nullptr) {
             continue;
         }
 
-        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
-        if (info->mode == SAMPLE_MODE_LOOPED) {
+        if (sound->sample->mode == SAMPLE_MODE_LOOPED) {
             if (sound->volume <= 0) {
                 M_ClearActiveSound(sound);
             } else {
@@ -311,12 +309,12 @@ bool Sound_Effect(
         return false;
     }
 
-    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
-    if (info == nullptr || info->number < 0) {
+    const SAMPLE_INFO *const sample = Sound_GetSampleInfo(sample_id);
+    if (sample == nullptr || sample->number < 0) {
         return false;
     }
 
-    if (info->randomness && Random_GetDraw() > info->randomness) {
+    if (sample->randomness && Random_GetDraw() > sample->randomness) {
         return false;
     }
 
@@ -325,20 +323,20 @@ bool Sound_Effect(
         return false;
     }
 
-    const int32_t pan = Sound_GetPan(info, pos);
-    const int32_t volume = Sound_GetVolume(info, distance);
+    const int32_t pan = Sound_GetPan(sample, pos);
+    const int32_t volume = Sound_GetVolume(sample, distance);
     if (volume <= 0) {
         return false;
     }
 
-    const int32_t pitch = Sound_GetPitch(info);
-    const int32_t num_samples = info->flags.num_samples;
+    const int32_t pitch = Sound_GetPitch(sample);
+    const int32_t num_samples = sample->flags.num_samples;
     const int32_t track_id = num_samples == 1
-        ? info->number
-        : info->number + ((num_samples * Random_GetDraw()) / 0x8000);
+        ? sample->number
+        : sample->number + ((num_samples * Random_GetDraw()) / 0x8000);
 
     M_ACTIVE_SOUND *sound = nullptr;
-    switch (info->mode) {
+    switch (sample->mode) {
     case SAMPLE_MODE_NORMAL:
         sound = M_SelectUnusedSound();
         break;
@@ -371,7 +369,6 @@ bool Sound_Effect(
             }
             return true;
         }
-
         sound = M_SelectUnusedSound();
         break;
     }
@@ -380,7 +377,7 @@ bool Sound_Effect(
         return false;
     }
     return M_Play(
-        sound, info, sample_id, track_id, volume, pitch, pan, distance, pos);
+        sound, sample, sample_id, track_id, volume, pitch, pan, distance, pos);
 }
 
 void Sound_StopEffect(const SAMPLE_ID sample_id)
