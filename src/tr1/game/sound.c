@@ -13,10 +13,10 @@
 #include <math.h>
 
 #define M_MAX_ACTIVE_SOUNDS AUDIO_MAX_ACTIVE_SAMPLES
-#define M_SOUND_RANGE 8
 #define M_SOUND_RANGE_MULT_CONSTANT 4
-#define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L)
-#define M_SOUND_MAX_VOLUME ((M_SOUND_RADIUS * M_SOUND_RANGE_MULT_CONSTANT) - 1)
+#define M_SOUND_FAR_RANGE (8 * WALL_L)
+#define M_SOUND_MAX_VOLUME                                                     \
+    ((M_SOUND_FAR_RANGE * M_SOUND_RANGE_MULT_CONSTANT) - 1)
 #define M_SOUND_MAX_VOLUME_CHANGE 0x2000
 
 typedef struct {
@@ -50,10 +50,10 @@ static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 
-static void M_UpdateActiveSound(M_ACTIVE_SOUND *sound);
+static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *sound);
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 
-static float M_ConvertPitch(int32_t pitch)
+static float M_ConvertPitch(const int32_t pitch)
 {
     return pitch / 0x10000.p0;
 }
@@ -158,7 +158,7 @@ static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
     }
 }
 
-static void M_UpdateActiveSound(M_ACTIVE_SOUND *const sound)
+static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *const sound)
 {
     Audio_Sample_SetPan(sound->handle, Sound_ConvertPanToDecibel(sound->pan));
     Audio_Sample_SetPitch(sound->handle, M_ConvertPitch(sound->pitch));
@@ -173,8 +173,8 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
     const int32_t x = sound->pos->x - g_Camera.target.x;
     const int32_t y = sound->pos->y - g_Camera.target.y;
     const int32_t z = sound->pos->z - g_Camera.target.z;
-    if (ABS(x) > M_SOUND_RADIUS || ABS(y) > M_SOUND_RADIUS
-        || ABS(z) > M_SOUND_RADIUS) {
+    if (ABS(x) > M_SOUND_FAR_RANGE || ABS(y) > M_SOUND_FAR_RANGE
+        || ABS(z) > M_SOUND_FAR_RANGE) {
         sound->volume = 0;
         return;
     }
@@ -240,7 +240,7 @@ void Sound_UpdateEffects(void)
             if (sound->volume <= 0) {
                 M_ClearActiveSound(sound);
             } else {
-                M_UpdateActiveSound(sound);
+                M_SyncActiveSoundHandle(sound);
             }
         } else if (!Audio_Sample_IsPlaying(sound->handle)) {
             M_ClearActiveSound(sound);
@@ -249,7 +249,7 @@ void Sound_UpdateEffects(void)
             if (sound->volume <= 0) {
                 M_CloseActiveSound(sound);
             } else {
-                M_UpdateActiveSound(sound);
+                M_SyncActiveSoundHandle(sound);
             }
         }
     }
@@ -263,8 +263,8 @@ int32_t Sound_GetDistance(const XYZ_32 *const pos)
     const int32_t dx = pos->x - g_Camera.target.x;
     const int32_t dy = pos->y - g_Camera.target.y;
     const int32_t dz = pos->z - g_Camera.target.z;
-    if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
-        || ABS(dz) > M_SOUND_RADIUS) {
+    if (ABS(dx) > M_SOUND_FAR_RANGE || ABS(dy) > M_SOUND_FAR_RANGE
+        || ABS(dz) > M_SOUND_FAR_RANGE) {
         return INT32_MAX;
     }
     const uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
