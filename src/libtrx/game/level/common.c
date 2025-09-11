@@ -1172,20 +1172,61 @@ void Level_ReadSamples(VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-    int16_t *const sample_lut = Sound_GetSampleLUT();
+    int16_t *const sample_lut = Memory_Alloc(sizeof(int16_t) * SFX_NUMBER_OF);
+    int16_t *const sample_lut_inv =
+        Memory_Alloc(sizeof(int16_t) * SFX_NUMBER_OF);
     VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
+    for (int32_t i = 0; i < SFX_NUMBER_OF; i++) {
+        if (sample_lut[i] != -1) {
+            sample_lut_inv[sample_lut[i]] = i;
+        }
+    }
 
     const int32_t num_sample_infos = VFile_ReadS32(file);
-    m_Info.samples.info_count = num_sample_infos;
     LOG_INFO("sample infos: %d", num_sample_infos);
-    Sound_InitialiseSampleInfos(
-        num_sample_infos + Inject_GetDataCount(IDT_SAMPLE_INFOS));
     for (int32_t i = 0; i < num_sample_infos; i++) {
-        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
+        SAMPLE_INFO *const sample_info =
+            Sound_GetOrCreateSample(sample_lut_inv[i]);
+        ASSERT(sample_info != nullptr);
         sample_info->number = VFile_ReadS16(file);
         sample_info->volume = VFile_ReadS16(file);
         sample_info->randomness = VFile_ReadS16(file);
         sample_info->flags.all = VFile_ReadU16(file);
+        Sound_ReserveSampleData(
+            sample_info->number, sample_info->flags.num_samples);
+#if TR_VERSION == 1
+        switch (sample_info->flags.mode_bits) {
+        case 0:
+            sample_info->mode = SAMPLE_MODE_WAIT;
+            break;
+        case 1:
+            sample_info->mode = SAMPLE_MODE_RESTART;
+            break;
+        case 2:
+            sample_info->mode = SAMPLE_MODE_LOOPED;
+            break;
+        case 3:
+            LOG_WARNING(
+                "Unexpected sample mode for sample %d. flags=%0X", i,
+                sample_info->flags);
+            break;
+        }
+#else
+        switch (sample_info->flags.mode_bits) {
+        case 0:
+            sample_info->mode = SAMPLE_MODE_NORMAL;
+            break;
+        case 1:
+            sample_info->mode = SAMPLE_MODE_WAIT;
+            break;
+        case 2:
+            sample_info->mode = SAMPLE_MODE_RESTART;
+            break;
+        case 3:
+            sample_info->mode = SAMPLE_MODE_LOOPED;
+            break;
+        }
+#endif
     }
 
 #if TR_VERSION == 1
@@ -1207,48 +1248,9 @@ void Level_ReadSamples(VFILE *const file)
         * (num_offsets + Inject_GetDataCount(IDT_SAMPLE_INDICES)));
     VFile_Read(file, m_Info.samples.offsets, sizeof(int32_t) * num_offsets);
 
-finish:
+    Memory_Free(sample_lut);
+    Memory_Free(sample_lut_inv);
     Benchmark_End(&benchmark, nullptr);
-}
-
-void Level_LoadSamples(void)
-{
-    for (int32_t i = 0; i < Sound_GetSampleCount(); i++) {
-        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
-        if (TR_VERSION == 1) {
-            switch (sample_info->flags.mode_bits) {
-            case 0:
-                sample_info->mode = SAMPLE_MODE_WAIT;
-                break;
-            case 1:
-                sample_info->mode = SAMPLE_MODE_RESTART;
-                break;
-            case 2:
-                sample_info->mode = SAMPLE_MODE_LOOPED;
-                break;
-            case 3:
-                LOG_WARNING(
-                    "Unexpected sample mode for sample %d. flags=%0X", i,
-                    sample_info->flags);
-                break;
-            }
-        } else {
-            switch (sample_info->flags.mode_bits) {
-            case 0:
-                sample_info->mode = SAMPLE_MODE_NORMAL;
-                break;
-            case 1:
-                sample_info->mode = SAMPLE_MODE_WAIT;
-                break;
-            case 2:
-                sample_info->mode = SAMPLE_MODE_RESTART;
-                break;
-            case 3:
-                sample_info->mode = SAMPLE_MODE_LOOPED;
-                break;
-            }
-        }
-    }
 }
 
 void Level_LoadTextures(void)

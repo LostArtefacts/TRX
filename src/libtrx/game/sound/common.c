@@ -10,8 +10,10 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "log.h"
+#include "memory.h"
 
 #include <math.h>
+#include <uthash.h>
 
 typedef enum {
     SF_FLIP = 0x40,
@@ -44,18 +46,34 @@ typedef struct {
     const XYZ_32 *pos;
 } M_ACTIVE_SOUND;
 
+typedef struct {
+    int number;
+    int size;
+    UT_hash_handle hh;
+} M_SAMPLE_DATA_ENTRY;
+
+typedef struct M_SAMPLE_ENTRY {
+    SAMPLE_ID sample_id;
+    SAMPLE_INFO sample;
+    UT_hash_handle hh;
+} M_SAMPLE_ENTRY;
+
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
 static bool m_Initialised = false;
 static float m_MasterVolume = 0.0f;
+
+static M_SAMPLE_DATA_ENTRY *m_SampleDataMap = nullptr;
+static int M_SampleDataEntry_Cmp(
+    const M_SAMPLE_DATA_ENTRY *a, const M_SAMPLE_DATA_ENTRY *b)
+{
+    return a->number - b->number;
+}
+static M_SAMPLE_ENTRY *m_SampleMap = nullptr;
 static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
 
 static int32_t m_SourceCount = 0;
 static OBJECT_VECTOR *m_Sources = nullptr;
-
-static int32_t m_SampleInfoCount = 0;
-static int16_t m_SampleLUT[SFX_NUMBER_OF];
-static SAMPLE_INFO *m_SampleInfos = nullptr;
 
 static int32_t M_ConvertVolumeToDecibel(int32_t volume);
 static int32_t M_ConvertPanToDecibel(uint16_t pan);
@@ -76,6 +94,7 @@ static void M_ClearAllActiveSounds(void);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
 static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
+static void M_ClearSampleMaps(void);
 
 static bool M_Play(
     M_ACTIVE_SOUND *sound, const SAMPLE_INFO *sample, int32_t sample_id,
@@ -283,6 +302,22 @@ static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
     }
 }
 
+static void M_ClearSampleMaps(void)
+{
+    M_SAMPLE_DATA_ENTRY *sentry, *stmp;
+    HASH_ITER(hh, m_SampleDataMap, sentry, stmp)
+    {
+        HASH_DEL(m_SampleDataMap, sentry);
+        Memory_Free(sentry);
+    }
+    M_SAMPLE_ENTRY *entry, *tmp;
+    HASH_ITER(hh, m_SampleMap, entry, tmp)
+    {
+        HASH_DEL(m_SampleMap, entry);
+        Memory_Free(entry);
+    }
+}
+
 static bool M_Play(
     M_ACTIVE_SOUND *const sound, const SAMPLE_INFO *const sample,
     const int32_t sample_id, const int32_t track_id, const int32_t volume,
@@ -354,6 +389,7 @@ void Sound_Shutdown(void)
 {
     m_Initialised = false;
     Audio_Shutdown();
+    M_ClearSampleMaps();
 }
 
 bool Sound_IsInitialised(void)
@@ -374,20 +410,7 @@ void Sound_ResetSamples(void)
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
     M_ClearAllActiveSounds();
-}
-
-void Sound_InitialiseSampleInfos(const int32_t num_sample_infos)
-{
-    m_SampleInfoCount = num_sample_infos;
-    m_SampleInfos = num_sample_infos == 0
-        ? nullptr
-        : GameBuf_Alloc(
-              sizeof(SAMPLE_INFO) * num_sample_infos, GBUF_SAMPLE_INFOS);
-}
-
-int32_t Sound_GetSampleCount(void)
-{
-    return m_SampleInfoCount;
+    M_ClearSampleMaps();
 }
 
 bool Sound_LoadSampleData(
@@ -398,6 +421,73 @@ bool Sound_LoadSampleData(
         return false;
     }
     return Audio_Sample_Load(sample_data_id, sample_data, size);
+}
+
+int32_t Sound_ReserveSampleData(int32_t index, const int32_t how_many)
+{
+    M_SAMPLE_DATA_ENTRY *entry;
+
+    if (index != -1) {
+        HASH_FIND_INT(m_SampleDataMap, &index, entry);
+        if (entry != nullptr) {
+            return index;
+        }
+    } else {
+        index = 0;
+
+        // Ensure entries are ordered by starting slot
+        HASH_SORT(m_SampleDataMap, M_SampleDataEntry_Cmp);
+        // Find first gap large enough for how_many slots
+        M_SAMPLE_DATA_ENTRY *e;
+        M_SAMPLE_DATA_ENTRY *prev = nullptr;
+        for (e = m_SampleDataMap; e != nullptr; prev = e, e = e->hh.next) {
+            if (prev == nullptr && e->number >= how_many) {
+                index = 0;
+                break;
+            }
+            if (prev != nullptr
+                && e->number - (prev->number + prev->size) >= how_many) {
+                index = prev->number + prev->size;
+                break;
+            }
+        }
+        if (e == nullptr && prev != nullptr) {
+            index = prev->number + prev->size;
+        }
+    }
+
+    entry = Memory_Alloc(sizeof(*entry));
+    entry->number = index;
+    entry->size = how_many;
+    HASH_ADD_INT(m_SampleDataMap, number, entry);
+    return index;
+}
+
+SAMPLE_INFO *Sound_GetSample(const SAMPLE_ID sample_id)
+{
+    M_SAMPLE_ENTRY *entry = nullptr;
+    if (sample_id == SFX_INVALID) {
+        return nullptr;
+    }
+    HASH_FIND_INT(m_SampleMap, &sample_id, entry);
+    return entry != nullptr ? &entry->sample : nullptr;
+}
+
+SAMPLE_INFO *Sound_GetOrCreateSample(const SAMPLE_ID sample_id)
+{
+    SAMPLE_INFO *const sample = Sound_GetSample(sample_id);
+    if (sample != nullptr) {
+        return sample;
+    }
+    M_SAMPLE_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
+    entry->sample_id = sample_id;
+    HASH_ADD_INT(m_SampleMap, sample_id, entry);
+    return &entry->sample;
+}
+
+bool Sound_IsAvailable(SAMPLE_ID sample_id)
+{
+    return Sound_GetSample(sample_id) != nullptr;
 }
 
 void Sound_InitialiseSources(const int32_t num_sources)
@@ -434,31 +524,6 @@ void Sound_ResetSources(void)
     }
 }
 
-int16_t *Sound_GetSampleLUT(void)
-{
-    return m_SampleLUT;
-}
-
-SAMPLE_INFO *Sound_GetSampleInfo(const SAMPLE_ID sample_id)
-{
-    if (sample_id == SFX_INVALID) {
-        return nullptr;
-    }
-    const int16_t info_idx = m_SampleLUT[sample_id];
-    return info_idx < 0 ? nullptr : &m_SampleInfos[info_idx];
-}
-
-SAMPLE_INFO *Sound_GetSampleInfoByIdx(const int32_t info_idx)
-{
-    return &m_SampleInfos[info_idx];
-}
-
-bool Sound_IsAvailable(const SAMPLE_ID sample_id)
-{
-    return sample_id >= 0 && sample_id < SFX_NUMBER_OF
-        && m_SampleLUT[sample_id] != -1;
-}
-
 bool Sound_Effect(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
@@ -472,7 +537,7 @@ bool Sound_Effect(
         return false;
     }
 
-    const SAMPLE_INFO *const sample = Sound_GetSampleInfo(sample_id);
+    const SAMPLE_INFO *const sample = Sound_GetSample(sample_id);
     if (sample == nullptr || sample->number < 0) {
         return false;
     }
