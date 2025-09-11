@@ -3,8 +3,9 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/general/pickup.h"
-#include "game/sound.h"
 #include "global/vars.h"
+
+#include <libtrx/game/sound.h>
 
 #define M_EXPLOSION_START_FRAME 76
 #define M_EXPLOSION_END_FRAME 99

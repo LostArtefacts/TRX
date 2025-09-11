@@ -6,12 +6,12 @@
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/savegame.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/memory.h>
 

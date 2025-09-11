@@ -1,10 +1,10 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/const.h>
+#include <libtrx/game/sound.h>
 
 #define SPIKE_CEILING_DAMAGE 20
 #define SPIKE_CEILING_SPEED 1

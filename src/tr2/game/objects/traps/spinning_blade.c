@@ -1,11 +1,11 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/sound.h>
 
 #define SPINNING_BLADE_DAMAGE 100
 

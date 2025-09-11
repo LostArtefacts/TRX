@@ -11,7 +11,6 @@
 #include "game/room_draw.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
@@ -23,6 +22,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/sound.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {

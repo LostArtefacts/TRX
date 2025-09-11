@@ -1,7 +1,6 @@
 #include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
@@ -9,6 +8,7 @@
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/game/sound.h>
 
 #define LF_PPREADY 19
 

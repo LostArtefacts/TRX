@@ -10,7 +10,6 @@
 #include "game/option/option_compass.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
@@ -25,6 +24,7 @@
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/game/viewport.h>
 #include <libtrx/memory.h>
 

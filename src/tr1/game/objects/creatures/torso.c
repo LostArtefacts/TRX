@@ -1,11 +1,11 @@
 #include "game/creature.h"
 #include "game/lara.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define EXTRA_ANIM_TORSO_SLAM 0

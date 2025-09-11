@@ -1,9 +1,9 @@
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define SPHERE_OF_DOOM_RADIUS (STEP_L * 5 / 2) // = 640
