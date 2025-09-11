@@ -14,37 +14,148 @@
 
 typedef struct {
     SAMPLE_ID sample_id;
+    const SAMPLE_INFO *sample;
     int32_t handle;
     int32_t volume;
-    int32_t pan;
     int32_t pitch;
-} M_ACTIVE_SOUND;
+    int32_t pan;
 
-#define M_SOUND_RANGE 10
-#define M_SOUND_RADIUS (M_SOUND_RANGE * WALL_L) // = 0x2800 = 10240
-#define M_SOUND_RADIUS_SQRD SQUARE(M_SOUND_RADIUS) // = 0x6400000
+    const XYZ_32 *pos;
+} M_ACTIVE_SOUND;
 
 #define M_MAX_ACTIVE_SOUNDS 32
 // sample volume ranges from 0..32767
 #define M_SOUND_MAX_VOLUME_CHANGE 0x2000
 
-#define M_SOUND_MAXVOL_RANGE 1
-#define M_SOUND_MAXVOL_RADIUS (M_SOUND_MAXVOL_RANGE * WALL_L) // = 0x400 = 1024
-#define M_SOUND_MAXVOL_RADIUS_SQRD SQUARE(M_SOUND_MAXVOL_RADIUS) // = 0x100000
+#define M_SOUND_CLOSE_RANGE WALL_L // = 0x400 = 1024
+#define M_SOUND_FAR_RANGE (10 * WALL_L) // = 0x2800 = 10240
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 
 static float M_ConvertPitch(float pitch);
+static int32_t M_GetDistance(const XYZ_32 *pos);
+static int32_t M_GetVolume(
+    const SAMPLE_INFO *sample, int32_t distance, bool random);
+static int32_t M_GetPan(const SAMPLE_INFO *sample, const XYZ_32 *pos);
+
+static M_ACTIVE_SOUND *M_SelectUnusedSound(void);
+static M_ACTIVE_SOUND *M_SelectUsedSound(SAMPLE_ID sample_id);
+static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
+    SAMPLE_ID sample_id, const XYZ_32 *pos);
 
 static void M_ClearAllActiveSounds(void);
 static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
 static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
+static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
 
-static void M_UpdateActiveSound(M_ACTIVE_SOUND *sound);
+static bool M_Play(
+    M_ACTIVE_SOUND *sound, const SAMPLE_INFO *sample, int32_t sample_id,
+    int32_t track_id, int32_t volume, int32_t pitch, int32_t pan,
+    const XYZ_32 *pos);
+
+static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *sound);
+static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 
 static float M_ConvertPitch(const float pitch)
 {
     return pitch / 0x10000.p0;
+}
+
+static int32_t M_GetDistance(const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const int32_t dx = pos->x - g_Camera.mic_pos.x;
+    const int32_t dy = pos->y - g_Camera.mic_pos.y;
+    const int32_t dz = pos->z - g_Camera.mic_pos.z;
+    if (ABS(dx) > M_SOUND_FAR_RANGE || ABS(dy) > M_SOUND_FAR_RANGE
+        || ABS(dz) > M_SOUND_FAR_RANGE) {
+        return INT32_MAX;
+    }
+    uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    if (distance > SQUARE(M_SOUND_FAR_RANGE)) {
+        return INT32_MAX;
+    } else if (distance < SQUARE(M_SOUND_CLOSE_RANGE)) {
+        distance = 0;
+    } else {
+        distance = Math_Sqrt(distance) - M_SOUND_CLOSE_RANGE;
+    }
+    return distance;
+}
+
+static int32_t M_GetVolume(
+    const SAMPLE_INFO *const sample, const int32_t distance, const bool random)
+{
+    int32_t volume = sample->volume;
+    if (random && sample->flags.randomize_volume) {
+        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
+    }
+    const int32_t attenuation =
+        SQUARE(distance) / (SQUARE(M_SOUND_FAR_RANGE) / 0x10000);
+    return (volume * (0x10000 - attenuation)) / 0x10000;
+}
+
+static int32_t M_GetPan(
+    const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
+{
+    if (pos == nullptr) {
+        return 0;
+    }
+    const int32_t distance = M_GetDistance(pos);
+    if (distance > 0 && !sample->flags.no_pan) {
+        const int32_t dx = pos->x - g_Camera.mic_pos.x;
+        const int32_t dz = pos->z - g_Camera.mic_pos.z;
+        return (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
+    }
+    return 0;
+}
+
+static M_ACTIVE_SOUND *M_SelectUnusedSound(void)
+{
+    // Try to get an unused slot
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
+        if (sound->sample == nullptr) {
+            return sound;
+        }
+    }
+
+    // No sound found - try to find the most quiet track, and use this one
+    M_ACTIVE_SOUND *best_sound = nullptr;
+    int32_t min_volume = INT32_MAX;
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
+        if (sound->sample != nullptr && sound->volume < min_volume) {
+            min_volume = sound->volume;
+            best_sound = sound;
+        }
+    }
+
+    return best_sound;
+}
+
+static M_ACTIVE_SOUND *M_SelectUsedSound(const SAMPLE_ID sample_id)
+{
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
+        if (result->sample_id == sample_id) {
+            return result;
+        }
+    }
+    return nullptr;
+}
+
+static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
+    const SAMPLE_ID sample_id, const XYZ_32 *const pos)
+{
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
+        if (result->sample_id == sample_id && result->pos == pos) {
+            return result;
+        }
+    }
+    return nullptr;
 }
 
 static void M_ClearAllActiveSounds(void)
@@ -57,6 +168,7 @@ static void M_ClearAllActiveSounds(void)
 
 static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
 {
+    sound->sample = nullptr;
     sound->sample_id = SFX_INVALID;
     sound->handle = AUDIO_NO_SOUND;
 }
@@ -67,12 +179,62 @@ static void M_CloseActiveSound(M_ACTIVE_SOUND *const sound)
     M_ClearActiveSound(sound);
 }
 
-static void M_UpdateActiveSound(M_ACTIVE_SOUND *const sound)
+static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *const sound)
+{
+    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
+        M_ACTIVE_SOUND *const rsound = &m_ActiveSounds[i];
+        if (rsound != sound && rsound->handle == sound->handle) {
+            rsound->handle = AUDIO_NO_SOUND;
+        }
+    }
+}
+
+static bool M_Play(
+    M_ACTIVE_SOUND *const sound, const SAMPLE_INFO *const sample,
+    const int32_t sample_id, const int32_t track_id, const int32_t volume,
+    const int32_t pitch, const int32_t pan, const XYZ_32 *const pos)
+{
+    M_CloseActiveSound(sound);
+    const int32_t handle = Audio_Sample_Play(
+        track_id, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
+        Sound_ConvertPanToDecibel(pan), sample->mode == SAMPLE_MODE_LOOPED);
+    if (handle == AUDIO_NO_SOUND) {
+        return false;
+    }
+    sound->sample = sample;
+    sound->sample_id = sample_id;
+    sound->handle = handle;
+    sound->volume = volume;
+    sound->pitch = pitch;
+    sound->pan = pan;
+    sound->pos = pos;
+    M_ClearActiveSoundHandles(sound);
+    return true;
+}
+
+static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *const sound)
 {
     Audio_Sample_SetPan(sound->handle, Sound_ConvertPanToDecibel(sound->pan));
     Audio_Sample_SetPitch(sound->handle, M_ConvertPitch(sound->pitch));
     Audio_Sample_SetVolume(
         sound->handle, Sound_ConvertVolumeToDecibel(sound->volume));
+}
+
+static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
+{
+    const int32_t distance = M_GetDistance(sound->pos);
+    if (distance == INT32_MAX) {
+        sound->volume = 0;
+        return;
+    }
+    int32_t volume = M_GetVolume(sound->sample, distance, false);
+    if (volume < 0) {
+        sound->volume = 0;
+        return;
+    }
+
+    sound->volume = volume;
+    sound->pan = M_GetPan(sound->sample, sound->pos);
 }
 
 bool Sound_Init(void)
@@ -86,78 +248,41 @@ bool Sound_Init(void)
 
 void Sound_ResetAmbient(void)
 {
+    if (!Sound_IsInitialised()) {
+        return;
+    }
     Sound_ResetSources();
 }
 
 void Sound_UpdateEffects(void)
 {
+    if (!Sound_IsInitialised()) {
+        return;
+    }
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        const SAMPLE_INFO *const info = Sound_GetSampleInfo(sound->sample_id);
-        if (info == nullptr) {
+        if (sound->sample == nullptr) {
             continue;
         }
 
-        if (info->mode == SAMPLE_MODE_LOOPED) {
-            if (sound->volume == 0) {
+        if (sound->sample->mode == SAMPLE_MODE_LOOPED) {
+            if (sound->volume <= 0) {
                 M_CloseActiveSound(sound);
             } else {
-                M_UpdateActiveSound(sound);
+                M_SyncActiveSoundHandle(sound);
                 sound->volume = 0;
             }
         } else if (!Audio_Sample_IsPlaying(sound->handle)) {
             M_ClearActiveSound(sound);
+        } else if (TR_VERSION == 1 && sound->pos != nullptr) {
+            M_UpdateActiveSoundParams(sound);
+            if (sound->volume <= 0) {
+                M_CloseActiveSound(sound);
+            } else {
+                M_SyncActiveSoundHandle(sound);
+            }
         }
     }
-}
-
-uint32_t Sound_GetDistance(const XYZ_32 *const pos)
-{
-    if (pos == nullptr) {
-        return 0;
-    }
-    const int32_t dx = pos->x - g_Camera.mic_pos.x;
-    const int32_t dy = pos->y - g_Camera.mic_pos.y;
-    const int32_t dz = pos->z - g_Camera.mic_pos.z;
-    if (ABS(dx) > M_SOUND_RADIUS || ABS(dy) > M_SOUND_RADIUS
-        || ABS(dz) > M_SOUND_RADIUS) {
-        return INT32_MAX;
-    }
-    uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-    if (distance > M_SOUND_RADIUS_SQRD) {
-        return INT32_MAX;
-    } else if (distance < M_SOUND_MAXVOL_RADIUS_SQRD) {
-        distance = 0;
-    } else {
-        distance = Math_Sqrt(distance) - M_SOUND_MAXVOL_RADIUS;
-    }
-    return distance;
-}
-
-int32_t Sound_GetPan(const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
-{
-    if (pos == nullptr) {
-        return 0;
-    }
-    const uint32_t distance = Sound_GetDistance(pos);
-    if (distance > 0 && !sample->flags.no_pan) {
-        const int32_t dx = pos->x - g_Camera.mic_pos.x;
-        const int32_t dz = pos->z - g_Camera.mic_pos.z;
-        return (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
-    }
-    return 0;
-}
-
-int32_t Sound_GetVolume(
-    const SAMPLE_INFO *const sample, const uint32_t distance)
-{
-    int32_t volume = sample->volume;
-    if (sample->flags.randomize_volume) {
-        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
-    }
-    const int32_t attenuation =
-        SQUARE(distance) / (M_SOUND_RADIUS_SQRD / 0x10000);
-    return (volume * (0x10000 - attenuation)) / 0x10000;
 }
 
 bool Sound_Effect(
@@ -173,118 +298,81 @@ bool Sound_Effect(
         return false;
     }
 
-    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
-    if (info == nullptr || info->number < 0) {
+    const SAMPLE_INFO *const sample = Sound_GetSampleInfo(sample_id);
+    if (sample == nullptr || sample->number < 0) {
         return false;
     }
 
-    if (info->randomness && Random_GetDraw() > info->randomness) {
+    if (sample->randomness && Random_GetDraw() > sample->randomness) {
         return false;
     }
 
-    const uint32_t distance = Sound_GetDistance(pos);
+    const int32_t distance = M_GetDistance(pos);
     if (distance == INT32_MAX) {
         return false;
     }
 
-    const int32_t pan = Sound_GetPan(info, pos);
-    const int32_t volume = Sound_GetVolume(info, distance);
+    const int32_t pan = M_GetPan(sample, pos);
+    const int32_t volume = M_GetVolume(sample, distance, true);
     if (volume <= 0) {
         return false;
     }
 
-    const int32_t pitch = Sound_GetPitch(info);
-    const int32_t num_samples = info->flags.num_samples;
+    const int32_t pitch = Sound_GetPitch(sample);
+    const int32_t num_samples = sample->flags.num_samples;
     const int32_t track_id = num_samples == 1
-        ? info->number
-        : info->number + ((num_samples * Random_GetDraw()) / 0x8000);
+        ? sample->number
+        : sample->number + ((num_samples * Random_GetDraw()) / 0x8000);
 
-    switch (info->mode) {
+    M_ACTIVE_SOUND *sound = nullptr;
+    switch (sample->mode) {
     case SAMPLE_MODE_NORMAL:
+        sound = M_SelectUnusedSound();
         break;
 
     case SAMPLE_MODE_WAIT:
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-            if (sound->sample_id == sample_id) {
-                if (Audio_Sample_IsPlaying(sound->handle)) {
-                    return true;
-                }
-                M_ClearActiveSound(sound);
-            }
+        sound = TR_VERSION == 1 ? M_SelectUsedSoundWithPos(sample_id, pos)
+                                : M_SelectUsedSound(sample_id);
+        if (sound != nullptr && Audio_Sample_IsPlaying(sound->handle)) {
+            return true;
+        }
+        if (sound == nullptr) {
+            sound = M_SelectUnusedSound();
         }
         break;
 
     case SAMPLE_MODE_RESTART:
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-            if (sound->sample_id == sample_id) {
-                M_CloseActiveSound(sound);
-                break;
-            }
+        sound = M_SelectUsedSound(sample_id);
+        if (sound == nullptr) {
+            sound = M_SelectUnusedSound();
         }
         break;
 
     case SAMPLE_MODE_LOOPED:
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-            if (sound->sample_id == sample_id) {
-                if (volume > sound->volume) {
-                    sound->volume = volume;
-                    sound->pan = pan;
-                    sound->pitch = pitch;
-                }
-                return true;
+        sound = M_SelectUsedSound(sample_id);
+        if (sound != nullptr) {
+            if (volume > sound->volume) {
+                sound->volume = volume;
+                sound->pan = pan;
+                sound->pitch = pitch;
             }
+            return true;
         }
+        sound = M_SelectUnusedSound();
         break;
     }
 
-    int32_t free_sound_idx = -1;
-    for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-        M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-        if (sound->sample_id < 0) {
-            free_sound_idx = i;
-            break;
-        }
+    if (sound == nullptr) {
+        return false;
     }
-
-    if (free_sound_idx == -1) {
-        // No sound found - try to find the most quiet track, and use this one
-        int32_t min_volume = INT32_MAX;
-        for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
-            M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
-            if (sound->sample_id >= 0 && sound->volume < min_volume) {
-                min_volume = sound->volume;
-                free_sound_idx = i;
-            }
-        }
-
-        if (free_sound_idx == -1) {
-            // No sound found - give up
-            return false;
-        }
-    }
-
-    M_ACTIVE_SOUND *const sound = &m_ActiveSounds[free_sound_idx];
-    M_CloseActiveSound(sound);
-
-    const int32_t handle = Audio_Sample_Play(
-        track_id, Sound_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
-        Sound_ConvertPanToDecibel(pan), info->mode == SAMPLE_MODE_LOOPED);
-    if (handle != AUDIO_NO_SOUND) {
-        sound->volume = volume;
-        sound->pan = pan;
-        sound->pitch = pitch;
-        sound->sample_id = sample_id;
-        sound->handle = handle;
-    }
-
-    return true;
+    return M_Play(sound, sample, sample_id, track_id, volume, pitch, pan, pos);
 }
 
 void Sound_StopEffect(const SAMPLE_ID sample_id)
 {
+    if (!Sound_IsInitialised()) {
+        return;
+    }
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
         if (sound->sample_id == sample_id) {
