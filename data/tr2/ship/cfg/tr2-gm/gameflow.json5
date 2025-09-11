@@ -71,7 +71,7 @@
                 "data/injections/coldwar_textures.bin",
                 "data/injections/common_pickup_meshes_gm.bin",
                 "data/injections/shark_sfx.bin",
-                "data/injections/winston_model_gm.bin",
+                "data/injections/winston_model.bin",
             ],
         },
 
@@ -92,7 +92,7 @@
                 "data/injections/fools_music_tracks.bin",
                 "data/injections/fools_pickup_meshes.bin",
                 "data/injections/fools_textures.bin",
-                "data/injections/winston_model_gm.bin",
+                "data/injections/winston_model.bin",
             ],
         },
 
@@ -112,7 +112,7 @@
                 "data/injections/furnace_objects.bin",
                 "data/injections/furnace_pickup_meshes.bin",
                 "data/injections/furnace_textures.bin",
-                "data/injections/winston_model_gm.bin",
+                "data/injections/winston_model.bin",
             ],
         },
 
@@ -145,7 +145,7 @@
                 "data/injections/kingdom_itemrots.bin",
                 "data/injections/kingdom_music_tracks.bin",
                 "data/injections/kingdom_textures.bin",
-                "data/injections/winston_model_gm.bin",
+                "data/injections/winston_model.bin",
             ],
         },
 

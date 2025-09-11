@@ -16,20 +16,6 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
     for (int32_t i = 0; i < data_count; i++) {
         const SAMPLE_ID sfx_id = VFile_ReadS16(chunk.injection->fp);
 
-#if TR_VERSION == 2
-        {
-            VFile_Skip(chunk.injection->fp, 10);
-            continue;
-        }
-#endif
-
-#if TR_VERSION == 2
-        if (Sound_GetSample(sfx_id) != nullptr) {
-            VFile_Skip(chunk.injection->fp, 10);
-            continue;
-        }
-#endif
-
         SAMPLE_INFO *const sample_info = Sound_GetOrCreateSample(sfx_id);
         sample_info->volume = VFile_ReadS16(chunk.injection->fp);
         sample_info->randomness = VFile_ReadS16(chunk.injection->fp);
@@ -69,19 +55,20 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
 #endif
 
         const int16_t num_samples = sample_info->flags.num_samples;
-#if TR_VERSION == 1
-        sample_info->number = Sound_ReserveSampleData(-1, num_samples);
-        for (int32_t j = 0; j < num_samples; j++) {
-            const int32_t sample_length = VFile_ReadS32(chunk.injection->fp);
-            char *const data = Memory_Alloc(sample_length);
-            VFile_Read(chunk.injection->fp, data, sample_length);
-            Sound_LoadSampleData(sample_info->number + j, data, sample_length);
-            Memory_Free(data);
+        if (TR_VERSION == 1 || chunk.injection->version >= INJ_VERSION_4) {
+            sample_info->number = Sound_ReserveSampleData(-1, num_samples);
+            for (int32_t j = 0; j < num_samples; j++) {
+                const int32_t sample_length =
+                    VFile_ReadS32(chunk.injection->fp);
+                char *const data = Memory_Alloc(sample_length);
+                VFile_Read(chunk.injection->fp, data, sample_length);
+                Sound_LoadSampleData(
+                    sample_info->number + j, data, sample_length);
+                Memory_Free(data);
+            }
+        } else if (TR_VERSION == 2) {
+            VFile_Skip(chunk.injection->fp, sizeof(int32_t));
         }
-#else
-        const int32_t base_id = VFile_ReadS32(chunk.injection->fp);
-        sample_info->number = base_id;
-#endif
     }
 }
 

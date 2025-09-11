@@ -275,7 +275,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── wall_music_tracks.bin
 │   │   ├── wall_textures.bin
 │   │   ├── winston_model.bin
-│   │   ├── winston_model_gm.bin
 │   │   ├── wreck_cameras.bin
 │   │   ├── wreck_fd.bin
 │   │   ├── wreck_goon_sfx.bin
@@ -657,7 +656,6 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── wall_music_tracks.bin
         │   │   ├── wall_textures.bin
         │   │   ├── winston_model.bin
-        │   │   ├── winston_model_gm.bin
         │   │   ├── wreck_cameras.bin
         │   │   ├── wreck_fd.bin
         │   │   ├── wreck_goon_sfx.bin
