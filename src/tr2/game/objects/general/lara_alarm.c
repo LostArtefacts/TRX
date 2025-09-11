@@ -1,5 +1,6 @@
 #include "game/objects/common.h"
-#include "game/sound.h"
+
+#include <libtrx/game/sound.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);

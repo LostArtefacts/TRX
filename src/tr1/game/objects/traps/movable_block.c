@@ -3,7 +3,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
-#include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
@@ -14,6 +13,7 @@
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19

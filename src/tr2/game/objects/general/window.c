@@ -1,11 +1,11 @@
 #include "game/objects/general/window.h"
 
 #include "game/objects/common.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 static void M_SetupBase(OBJECT *obj);

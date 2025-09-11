@@ -1,7 +1,7 @@
 #include "game/objects/common.h"
-#include "game/sound.h"
 
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/sound.h>
 
 static void M_DoChimeSound(const ITEM *item);
 static void M_Control(int16_t item_num);

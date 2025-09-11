@@ -8,7 +8,6 @@
 #include "game/objects/creatures/pierre.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/sound.h"
 #include "game/stats.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -28,6 +27,7 @@
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/game/viewport.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>

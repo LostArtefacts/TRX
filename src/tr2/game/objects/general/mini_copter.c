@@ -1,7 +1,7 @@
 #include "game/objects/common.h"
-#include "game/sound.h"
 
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 static void M_Setup(OBJECT *obj);

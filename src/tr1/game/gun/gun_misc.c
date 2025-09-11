@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/los.h"
 #include "game/savegame.h"
-#include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -16,6 +15,7 @@
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define PISTOL_LOCK_YMIN (-60 * DEG_1)

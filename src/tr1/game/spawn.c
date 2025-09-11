@@ -1,13 +1,13 @@
 #include "game/spawn.h"
 
 #include "game/effects.h"
-#include "game/sound.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define SHARD_SPEED 250

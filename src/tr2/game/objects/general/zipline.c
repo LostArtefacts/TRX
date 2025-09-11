@@ -1,10 +1,10 @@
 #include "game/lara.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/sound.h>
 
 #define ZIPLINE_MAX_SPEED 100
 #define ZIPLINE_ACCELERATION 5

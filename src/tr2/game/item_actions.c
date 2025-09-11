@@ -1,6 +1,5 @@
 #include "game/item_actions.h"
 
-#include "game/sound.h"
 #include "game/spawn.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -11,6 +10,7 @@
 #include <libtrx/game/gym.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 

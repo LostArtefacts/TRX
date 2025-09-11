@@ -1,10 +1,10 @@
 #include "game/effects.h"
 #include "game/lara.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define SHARD_DAMAGE 30

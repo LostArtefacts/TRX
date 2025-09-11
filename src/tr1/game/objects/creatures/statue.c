@@ -1,8 +1,8 @@
 #include "game/objects/common.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584

@@ -1,6 +1,7 @@
 #include "game/objects/common.h"
-#include "game/sound.h"
 #include "global/vars.h"
+
+#include <libtrx/game/sound.h>
 
 typedef enum {
     // clang-format off

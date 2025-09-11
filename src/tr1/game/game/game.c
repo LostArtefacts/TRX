@@ -8,7 +8,6 @@
 #include "game/level.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
@@ -22,6 +21,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/game/ui.h>
 
 #define FRAME_BUFFER(key)                                                      \

@@ -9,7 +9,6 @@
 #include "game/level.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -22,6 +21,7 @@
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/phase.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/log.h>
 
 #define L_MODIFY_CONFIG()                                                      \

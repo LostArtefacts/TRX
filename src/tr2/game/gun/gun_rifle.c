@@ -3,7 +3,6 @@
 #include "game/gun/gun.h"
 #include "game/gun/gun_misc.h"
 #include "game/lara/misc.h"
-#include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"
 
@@ -13,6 +12,7 @@
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define GUN_RIFLE_EQUIP_ANIM 1

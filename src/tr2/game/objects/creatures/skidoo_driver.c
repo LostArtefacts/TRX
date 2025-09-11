@@ -2,12 +2,12 @@
 
 #include "decomp/skidoo.h"
 #include "game/creature.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
 #define SKIDOO_DRIVER_MIN_TURN (SKIDOO_MAX_TURN / 3) // = 364
