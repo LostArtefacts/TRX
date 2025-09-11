@@ -12,7 +12,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define M_INJECTION_CURRENT_VERSION 3
+#define M_INJECTION_CURRENT_VERSION 4
 #define M_VIRTUAL_NAME "virtual_injection"
 
 static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};
@@ -167,15 +167,15 @@ static void M_InitialiseBlock(
             const int16_t flags = VFile_ReadS16(file);
             const int16_t num_samples = (flags >> 2) & 0xF;
             m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
-#if TR_VERSION == 1
-            for (int32_t j = 0; j < num_samples; j++) {
-                const int32_t sample_length = VFile_ReadS32(file);
-                m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
-                VFile_Skip(file, sizeof(char) * sample_length);
+            if (TR_VERSION == 1 || version >= INJ_VERSION_4) {
+                for (int32_t j = 0; j < num_samples; j++) {
+                    const int32_t sample_length = VFile_ReadS32(file);
+                    m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
+                    VFile_Skip(file, sizeof(char) * sample_length);
+                }
+            } else if (TR_VERSION == 2) {
+                VFile_Skip(file, sizeof(uint32_t));
             }
-#else
-            VFile_Skip(file, sizeof(uint32_t));
-#endif
         }
 
         return;
