@@ -29,7 +29,6 @@ typedef struct {
     } palette;
 
     struct {
-        int32_t info_count;
         int32_t offset_count;
         int32_t *offsets;
 #if TR_VERSION == 1

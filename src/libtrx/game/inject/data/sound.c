@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "game/inject.h"
 #include "game/sound.h"
+#include "memory.h"
 
 static void M_HandleSFXData(INJECTION_CHUNK chunk);
 
@@ -12,47 +13,75 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
     const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
     VFile_Skip(chunk.injection->fp, sizeof(int32_t));
 
-    LEVEL_INFO *const level_info = Level_GetInfo();
-    int16_t *const sample_lut = Sound_GetSampleLUT();
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t sfx_id = VFile_ReadS16(chunk.injection->fp);
-        if (TR_VERSION == 2 && sample_lut[sfx_id] != -1) {
-            // TODO: resolve properly: currently replacing existing sounds in
-            // TR2 alone badly affects others, e.g. making them silent.
+        const SAMPLE_ID sfx_id = VFile_ReadS16(chunk.injection->fp);
+
+#if TR_VERSION == 2
+        {
             VFile_Skip(chunk.injection->fp, 10);
             continue;
         }
-        sample_lut[sfx_id] = level_info->samples.info_count;
+#endif
 
-        SAMPLE_INFO *const sample_info = Sound_GetSampleInfo(sfx_id);
+#if TR_VERSION == 2
+        if (Sound_GetSample(sfx_id) != nullptr) {
+            VFile_Skip(chunk.injection->fp, 10);
+            continue;
+        }
+#endif
+
+        SAMPLE_INFO *const sample_info = Sound_GetOrCreateSample(sfx_id);
         sample_info->volume = VFile_ReadS16(chunk.injection->fp);
         sample_info->randomness = VFile_ReadS16(chunk.injection->fp);
         sample_info->flags.all = VFile_ReadU16(chunk.injection->fp);
-        sample_info->number = level_info->samples.offset_count;
+#if TR_VERSION == 1
+        switch (sample_info->flags.mode_bits) {
+        case 0:
+            sample_info->mode = SAMPLE_MODE_WAIT;
+            break;
+        case 1:
+            sample_info->mode = SAMPLE_MODE_RESTART;
+            break;
+        case 2:
+            sample_info->mode = SAMPLE_MODE_LOOPED;
+            break;
+        case 3:
+            LOG_WARNING(
+                "Unexpected sample mode for sample %d. flags=%0X", sfx_id,
+                sample_info->flags);
+            break;
+        }
+#else
+        switch (sample_info->flags.mode_bits) {
+        case 0:
+            sample_info->mode = SAMPLE_MODE_NORMAL;
+            break;
+        case 1:
+            sample_info->mode = SAMPLE_MODE_WAIT;
+            break;
+        case 2:
+            sample_info->mode = SAMPLE_MODE_RESTART;
+            break;
+        case 3:
+            sample_info->mode = SAMPLE_MODE_LOOPED;
+            break;
+        }
+#endif
 
         const int16_t num_samples = sample_info->flags.num_samples;
 #if TR_VERSION == 1
+        sample_info->number = Sound_ReserveSampleData(-1, num_samples);
         for (int32_t j = 0; j < num_samples; j++) {
             const int32_t sample_length = VFile_ReadS32(chunk.injection->fp);
-            VFile_Read(
-                chunk.injection->fp,
-                level_info->samples.data + level_info->samples.data_size,
-                sizeof(char) * sample_length);
-
-            level_info->samples.offsets[level_info->samples.offset_count] =
-                level_info->samples.data_size;
-            level_info->samples.data_size += sample_length;
-            level_info->samples.offset_count++;
+            char *const data = Memory_Alloc(sample_length);
+            VFile_Read(chunk.injection->fp, data, sample_length);
+            Sound_LoadSampleData(sample_info->number + j, data, sample_length);
+            Memory_Free(data);
         }
 #else
-        const int32_t sample_id = VFile_ReadS32(chunk.injection->fp);
-        for (int32_t j = 0; j < num_samples; j++) {
-            level_info->samples.offsets[level_info->samples.offset_count] =
-                sample_id + j;
-            level_info->samples.offset_count++;
-        }
+        const int32_t base_id = VFile_ReadS32(chunk.injection->fp);
+        sample_info->number = base_id;
 #endif
-        level_info->samples.info_count++;
     }
 }
 

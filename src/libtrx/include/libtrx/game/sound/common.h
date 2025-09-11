@@ -18,8 +18,6 @@ void Sound_SetMasterVolume(float volume);
 
 void Sound_ResetSamples(void);
 
-void Sound_InitialiseSampleInfos(int32_t num_sample_infos);
-int32_t Sound_GetSampleCount(void);
 bool Sound_LoadSampleData(
     int32_t sample_data_id, const char *sample_data, size_t size);
 
@@ -28,11 +26,20 @@ int32_t Sound_GetSourceCount(void);
 OBJECT_VECTOR *Sound_GetSource(int32_t source_idx);
 void Sound_ResetSources(void);
 
-int16_t *Sound_GetSampleLUT(void);
-SAMPLE_INFO *Sound_GetSampleInfo(SAMPLE_ID sfx_num);
-SAMPLE_INFO *Sound_GetSampleInfoByIdx(int32_t info_idx);
+// Reserve a contiguous block of sample data IDs for loading audio samples.
+// Returns the starting sample_data_id for the reserved block of size how_many.
+int32_t Sound_ReserveSampleData(int32_t index, int32_t how_many);
 
-bool Sound_IsAvailable(SAMPLE_ID sfx_num);
+// Look up an existing SAMPLE_INFO by SAMPLE_ID. Returns nullptr if not found.
+SAMPLE_INFO *Sound_GetSample(SAMPLE_ID sample_id);
+
+// Get or create a SAMPLE_INFO for the given SAMPLE_ID.
+// If no sample is found, a new sample slot is created.
+SAMPLE_INFO *Sound_GetOrCreateSample(SAMPLE_ID sample_id);
+
+// Returns true if a SAMPLE_INFO exists for the given SAMPLE_ID.
+bool Sound_IsAvailable(SAMPLE_ID sample_id);
+
 bool Sound_Effect(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
 void Sound_StopEffect(SAMPLE_ID sfx_num);
 
