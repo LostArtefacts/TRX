@@ -364,6 +364,14 @@ static void M_UploadAtlas(void)
 
 static void M_FreeLevelData(void)
 {
+    // destroy per-page locks
+    if (m_TexturePageLocks != nullptr) {
+        for (int32_t i = 0; i < m_TexturePageCount; i++) {
+            SDL_DestroyMutex(m_TexturePageLocks[i]);
+        }
+        m_TexturePageLocks = nullptr;
+    }
+
     if (m_Priv.tex_atlas != 0) {
         glDeleteTextures(1, &m_Priv.tex_atlas);
         m_Priv.tex_atlas = 0;
@@ -392,15 +400,6 @@ void Output_Textures_Shutdown(void)
         m_AnimationRanges.sprites = nullptr;
     }
     M_FreeLevelData();
-
-    // destroy per-page locks
-    if (m_TexturePageLocks != nullptr) {
-        for (int32_t i = 0; i < m_TexturePageCount; i++) {
-            SDL_DestroyMutex(m_TexturePageLocks[i]);
-        }
-        Memory_Free(m_TexturePageLocks);
-        m_TexturePageLocks = nullptr;
-    }
 
     if (m_Priv.tex_env_map != 0) {
         glDeleteTextures(1, &m_Priv.tex_env_map);
@@ -531,7 +530,8 @@ void Output_InitialiseTexturePages(const int32_t num_pages, const bool use_8bit)
         ? GameBuf_Alloc(sizeof(uint8_t) * page_size, GBUF_TEXTURE_PAGES)
         : nullptr;
 
-    m_TexturePageLocks = Memory_Alloc(sizeof(SDL_mutex *) * num_pages);
+    m_TexturePageLocks =
+        GameBuf_Alloc(sizeof(SDL_mutex *) * num_pages, GBUF_TEXTURE_PAGES);
     for (int32_t i = 0; i < num_pages; i++) {
         m_TexturePageLocks[i] = SDL_CreateMutex();
         ASSERT(m_TexturePageLocks[i] != nullptr);
