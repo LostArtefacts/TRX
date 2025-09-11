@@ -193,7 +193,7 @@ static void M_InitialiseSoundEffects(void)
 
         const char *const sample_data = &info->samples.data[current_offset];
         const size_t sample_size = next_offset - current_offset;
-        Sound_LoadSample(i, sample_data, sample_size);
+        Sound_LoadSampleData(i, sample_data, sample_size);
     }
 
     Memory_FreePointer(&info->samples.offsets);
@@ -384,7 +384,7 @@ bool Level_Initialise(
 
     Music_ResetTrackFlags();
 
-    Sound_Reset();
+    Sound_ResetSamples();
     Object_Reset();
     Camera_Reset();
     Pierre_Reset();

@@ -366,7 +366,7 @@ void Sound_SetMasterVolume(const float volume)
     m_MasterVolume = volume * 64.0f;
 }
 
-void Sound_Reset(void)
+void Sound_ResetSamples(void)
 {
     if (!Sound_IsInitialised()) {
         return;
@@ -390,13 +390,14 @@ int32_t Sound_GetSampleCount(void)
     return m_SampleInfoCount;
 }
 
-bool Sound_LoadSample(
-    const int32_t sample_num, const char *const sample_data, const size_t size)
+bool Sound_LoadSampleData(
+    const int32_t sample_data_id, const char *const sample_data,
+    const size_t size)
 {
     if (!Sound_IsInitialised()) {
         return false;
     }
-    return Audio_Sample_Load(sample_num, sample_data, size);
+    return Audio_Sample_Load(sample_data_id, sample_data, size);
 }
 
 void Sound_InitialiseSources(const int32_t num_sources)

@@ -294,7 +294,7 @@ static void M_InitialiseSoundEffects(const char *file_name)
         char *sample_data = Memory_Alloc(size);
         memcpy(sample_data, header, header_size);
         File_ReadData(fp, sample_data + header_size, aligned_size);
-        Sound_LoadSample(entry->game_index, sample_data, size);
+        Sound_LoadSampleData(entry->game_index, sample_data, size);
         Memory_FreePointer(&sample_data);
 
         current_sample++;
@@ -394,7 +394,7 @@ void Level_Load(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-    Sound_Reset();
+    Sound_ResetSamples();
     Object_Reset();
 
     Inject_InitLevel(level);

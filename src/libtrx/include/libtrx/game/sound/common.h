@@ -16,11 +16,12 @@ bool Sound_IsInitialised(void);
 
 void Sound_SetMasterVolume(float volume);
 
-void Sound_Reset(void);
+void Sound_ResetSamples(void);
 
 void Sound_InitialiseSampleInfos(int32_t num_sample_infos);
 int32_t Sound_GetSampleCount(void);
-bool Sound_LoadSample(int32_t sample_num, const char *sample_data, size_t size);
+bool Sound_LoadSampleData(
+    int32_t sample_data_id, const char *sample_data, size_t size);
 
 void Sound_InitialiseSources(int32_t num_sources);
 int32_t Sound_GetSourceCount(void);
