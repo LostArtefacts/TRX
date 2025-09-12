@@ -180,6 +180,7 @@ typedef struct {
     bool queue_attachments_req;
     int read_pause_return;
     AVFormatContext *ic;
+    double remaining_time;
 
     M_CLOCK audclk;
     M_CLOCK vidclk;
@@ -1937,13 +1938,12 @@ void Video_PumpEvents(VIDEO *video)
 {
     M_STATE *const is = video->priv;
 
-    double remaining_time = 0.0;
-    if (remaining_time > 0.0) {
-        av_usleep((int64_t)(remaining_time * 1000000.0));
+    if (is->remaining_time > 0.0) {
+        av_usleep((int64_t)(is->remaining_time * 1000000.0));
     }
-    remaining_time = REFRESH_RATE;
+    is->remaining_time = REFRESH_RATE;
     if (!is->paused || is->force_refresh) {
-        M_VideoRefresh(is, &remaining_time);
+        M_VideoRefresh(is, &is->remaining_time);
     }
 
     video->is_playing = !is->abort_request && !is->playback_finished;
@@ -1958,6 +1958,7 @@ void Video_SetVolume(VIDEO *const video, const double volume)
 void Video_Start(VIDEO *const video)
 {
     M_STATE *const is = video->priv;
+    is->remaining_time = 0.0;
     is->read_tid = SDL_CreateThread(M_ReadThread, "read_thread", is);
     if (is->read_tid == nullptr) {
         LOG_ERROR("Error starting read thread: %s", SDL_GetError());
