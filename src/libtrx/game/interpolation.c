@@ -409,9 +409,9 @@ static void M_InterpolateEffects(const double ratio)
     }
 }
 
-bool Interpolation_IsEnabled(void)
+void Interpolation_Enable(void)
 {
-    return m_IsEnabled && M_GetFPS() == 60;
+    m_IsEnabled = true;
 }
 
 void Interpolation_Disable(void)
@@ -419,14 +419,19 @@ void Interpolation_Disable(void)
     m_IsEnabled = false;
 }
 
-void Interpolation_Enable(void)
+bool Interpolation_IsEnabled(void)
 {
-    m_IsEnabled = true;
+    return m_IsEnabled;
+}
+
+bool Interpolation_IsActive(void)
+{
+    return m_IsEnabled && M_GetFPS() == 60;
 }
 
 double Interpolation_GetWorldRate(void)
 {
-    if (!Interpolation_IsEnabled()) {
+    if (!Interpolation_IsActive()) {
         return 1.0;
     }
     return m_WorldRate;
@@ -434,7 +439,7 @@ double Interpolation_GetWorldRate(void)
 
 double Interpolation_GetCameraRate(void)
 {
-    if (!Interpolation_IsEnabled()) {
+    if (!Interpolation_IsActive()) {
         return 1.0;
     }
     return m_CameraRate;
