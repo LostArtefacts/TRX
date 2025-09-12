@@ -20,7 +20,8 @@ typedef enum {
     IFT_ALTER_ANIM_SPRITE = 8,
     IFT_SKYBOX            = 9,
     IFT_PS1_CRYSTAL       = 10,
-    IFT_NUMBER_OF         = 11,
+    IFT_BAREFOOT_SFX      = 11,
+    IFT_NUMBER_OF         = 12,
 } INJECTION_FILE_TYPE;
 
 typedef enum {

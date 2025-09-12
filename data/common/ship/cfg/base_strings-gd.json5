@@ -364,6 +364,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Leigidh seo le Lara a targaidich air càirdean - manaich, 's a leithid. Mura tèid seo a chur an comas, bidh iad dìonach air peilearan Lara.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Roghainn ro-làimh air iuchraichean",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Ma bhriogas Lara air gnìomh aig toll iuchrach neo àite tòimhseachain, taghaidh i an nì ceart gu fèin-obrachail.",
+        "SETTING_ENABLE_BAREFOOT_SFX": "Fuaimean casrùisgte",
+        "SETTING_ENABLE_BAREFOOT_SFX_DESCRIPTION": "Cleachd fuaimean iomchaidh airson ceumannan Lara anns na h-ìrean far a bheil i casrùisgte.",
         "SETTING_ENABLE_BRAID": "Feaman-fuilt Lara",
         "SETTING_ENABLE_BRAID_DESCRIPTION": "Cuiridh seo feaman-fuilt Lara an comas.",
         "SETTING_ENABLE_BREEZE": "Gaoth",

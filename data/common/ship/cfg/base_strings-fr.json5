@@ -364,6 +364,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "\\{review}Permet à Lara de cibler des alliés, tels que des moines. Si désactivé, les alliés seront immunisés contre les munitions de Lara.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Présélection des bonnes clés",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Lorsque Lara appuie sur Action en face d'une serreure ou un emplacement de puzzle et qu'elle a l'objet correspondant dans son inventaire, cet objet sera présélectionné.",
+        "SETTING_ENABLE_BAREFOOT_SFX": "\\{review}Effets sonores pieds nus",
+        "SETTING_ENABLE_BAREFOOT_SFX_DESCRIPTION": "\\{review}Active des sons de pas appropriés dans les niveaux où Lara est pieds nus.",
         "SETTING_ENABLE_BRAID": "Tresse de Lara",
         "SETTING_ENABLE_BRAID_DESCRIPTION": "Active la tresse de Lara.",
         "SETTING_ENABLE_BREEZE": "Vent",

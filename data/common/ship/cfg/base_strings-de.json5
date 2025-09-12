@@ -364,6 +364,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Erlaubt Lara, auf freundliche Einheiten zu ziehlen, wie zum Beispiel Mönche. Wenn diese Option deaktiviert ist, sind freundliche Einheiten immun gegen Laras Munition.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Vorausgewählte Schlüssel-Items",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Wenn Lara ein Schlüsselloch oder einen Rätsel-Slot verwendet und sie das dazu passende Item in ihrem Inventar hat, wird dieses automatisch ausgewählt.",
+        "SETTING_ENABLE_BAREFOOT_SFX": "\\{review}Barfuß-SFX",
+        "SETTING_ENABLE_BAREFOOT_SFX_DESCRIPTION": "\\{review}Aktiviert passende Schrittgeräusche in Levels, in denen Lara barfuß ist.",
         "SETTING_ENABLE_BRAID": "Laras Zopf",
         "SETTING_ENABLE_BRAID_DESCRIPTION": "Aktiviert Laras Zopf.",
         "SETTING_ENABLE_BREEZE": "Brise",

@@ -228,6 +228,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barefoot_sfx.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/fathoms_goon_sfx.bin",
                 "data/injections/fathoms_music_tracks.bin",
@@ -250,6 +251,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barefoot_sfx.bin",
                 "data/injections/wreck_cameras.bin",
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
@@ -274,6 +276,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barefoot_sfx.bin",
                 "data/injections/living_deck_goon_sfx.bin",
                 "data/injections/living_fd.bin",
                 "data/injections/living_music_tracks.bin",
@@ -297,6 +300,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barefoot_sfx.bin",
                 "data/injections/breakable_tile_sfx.bin",
                 "data/injections/deck_cameras.bin",
                 "data/injections/deck_fd.bin",
@@ -495,6 +499,7 @@
                 {"type": "total_stats", "background_path": "data/images/end.webp"},
             ],
             "injections": [
+                "data/injections/barefoot_sfx.bin",
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/explosion.bin",
                 "data/injections/house_sfx.bin",
@@ -536,6 +541,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/barefoot_sfx.bin",
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",

@@ -1,4 +1,5 @@
 X_CFG_BOOL(audio.enable_lara_mic,               false)
+X_CFG_BOOL(audio.enable_barefoot_sfx,           true)
 X_CFG_BOOL(gameplay.enable_ally_targeting,      true)
 X_CFG_BOOL(gameplay.enable_lean_jumping,        true)
 X_CFG_BOOL(gameplay.enable_step_roll_boost,     false)

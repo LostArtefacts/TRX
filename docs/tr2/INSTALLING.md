@@ -144,6 +144,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── title_us.webp
 │   │   └── title_us_gm.webp
 │   ├── injections
+│   │   ├── barefoot_sfx.bin
 │   │   ├── barkhang_cameras.bin
 │   │   ├── barkhang_fd.bin
 │   │   ├── barkhang_itemrots.bin
@@ -525,6 +526,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── title_us.webp
         │   │   └── title_us_gm.webp
         │   ├── injections
+        │   │   ├── barefoot_sfx.bin
         │   │   ├── barkhang_cameras.bin
         │   │   ├── barkhang_fd.bin
         │   │   ├── barkhang_itemrots.bin

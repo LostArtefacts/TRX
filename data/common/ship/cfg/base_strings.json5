@@ -364,6 +364,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Allows Lara to target allies, such as monks. If disabled, allies will be immune to Lara's ammunition.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Key item pre-selection",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected.",
+        "SETTING_ENABLE_BAREFOOT_SFX": "Barefoot SFX",
+        "SETTING_ENABLE_BAREFOOT_SFX_DESCRIPTION": "Enables appropriate footstep sound effects in levels where Lara is barefoot.",
         "SETTING_ENABLE_BRAID": "Lara's braid",
         "SETTING_ENABLE_BRAID_DESCRIPTION": "Enables Lara's braid.",
         "SETTING_ENABLE_BREEZE": "Breeze",
