@@ -1,8 +1,9 @@
 #pragma once
 
-bool Interpolation_IsEnabled(void);
-void Interpolation_Disable(void);
 void Interpolation_Enable(void);
+void Interpolation_Disable(void);
+bool Interpolation_IsEnabled(void);
+bool Interpolation_IsActive(void);
 
 double Interpolation_GetWorldRate(void);
 double Interpolation_GetCameraRate(void);

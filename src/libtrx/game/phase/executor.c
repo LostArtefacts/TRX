@@ -175,7 +175,7 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
             }
         }
 
-        if (Interpolation_IsEnabled()) {
+        if (Interpolation_IsActive()) {
             Interpolation_SetRate(0.5);
             M_Draw(phase);
             Clock_WaitTick();
