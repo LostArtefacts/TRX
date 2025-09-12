@@ -114,6 +114,7 @@ static bool M_Play(const char *const file_name)
     Video_SetSurfaceUnlockFunc(video, M_UnlockSurface, nullptr);
     Video_SetSurfaceUploadFunc(video, M_UploadSurface, renderer_2d);
 
+    g_OldInputDB = g_Input;
     Video_Start(video);
     while (video->is_playing) {
         Shell_ProcessEvents();

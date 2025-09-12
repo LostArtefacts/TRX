@@ -6,6 +6,7 @@
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 1.3)
 - fixed changing FPS after advancing frames in photo mode causing the game to speed up (#3605, regression from 1.3)
 - fixed CPU spike during playing FMVs (regression from 0.6)
+- fixed `/play` command likely to skip opening FMVs (#3910, regression from 0.8)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)
@@ -39,7 +40,7 @@ Showcase: https://www.youtube.com/watch?v=AAOP1VFX9Lw
     - added support for 60 fps in 3D UI pickups
     - improved bilinear filter appearance - no more dark edges around objects
     - improved bilinear filter texture adjustment - no more texture "expansion" (#2258)
-    - changed the F7 hotkey to be used as a wireframe toggle (previously available as Shift+F7)    
+    - changed the F7 hotkey to be used as a wireframe toggle (previously available as Shift+F7)
     - removed software rendering mode
     - removed the z-buffer option, which is now always enabled
     - removed undocumented linear and nearest texel adjustment options
