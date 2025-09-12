@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.2...develop) - ××××-××-××
 - added an option to use Lara's barefoot sound effects in appropriate levels (Sound options → Barefoot SFX) (#2643)
+- added dev console gradient backdrop, similar to TR1X (#2150)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 1.3)
 - fixed changing FPS after advancing frames in photo mode causing the game to speed up (#3605, regression from 1.3)
