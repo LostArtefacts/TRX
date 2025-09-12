@@ -1,6 +1,5 @@
 #include "game/inventory_ring/control.h"
 
-#include "game/console/common.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
@@ -15,6 +14,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/console.h>
 #include <libtrx/game/gun/const.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>

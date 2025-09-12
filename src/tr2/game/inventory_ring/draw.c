@@ -1,6 +1,5 @@
 #include "game/inventory_ring/draw.h"
 
-#include "game/console/common.h"
 #include "game/game.h"
 #include "game/inventory_ring/control.h"
 #include "game/option/option.h"
@@ -8,6 +7,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/console.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>

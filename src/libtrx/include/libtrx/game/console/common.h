@@ -16,4 +16,3 @@ COMMAND_RESULT Console_Eval(const char *cmdline);
 
 void Console_Control(void);
 void Console_Draw(void);
-extern void Console_DrawBackdrop(void);

@@ -91,7 +91,6 @@ sources = [
   'decomp/decomp.c',
   'decomp/skidoo.c',
   'game/console/cmd/winston.c',
-  'game/console/common.c',
   'game/creature.c',
   'game/cutscene.c',
   'game/demo.c',
