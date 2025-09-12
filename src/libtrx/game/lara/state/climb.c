@@ -87,12 +87,15 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
     if (item->current_anim_state == LS_CLIMB_LEFT) {
         g_Camera.target_angle = M_CAM_CLIMB_LEFT_ANGLE;
         g_Camera.target_elevation = M_CAM_CLIMB_LEFT_ELEVATION;
+        if (!g_Input.left && !g_Input.step_left) {
+            item->goal_anim_state = LS_CLIMB_STANCE;
+        }
     } else {
         g_Camera.target_angle = M_CAM_CLIMB_RIGHT_ANGLE;
         g_Camera.target_elevation = M_CAM_CLIMB_RIGHT_ELEVATION;
-    }
-    if (!g_Input.right && !g_Input.step_right) {
-        item->goal_anim_state = LS_CLIMB_STANCE;
+        if (!g_Input.right && !g_Input.step_right) {
+            item->goal_anim_state = LS_CLIMB_STANCE;
+        }
     }
 #endif
 }
