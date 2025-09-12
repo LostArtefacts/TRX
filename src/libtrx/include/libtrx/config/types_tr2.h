@@ -105,6 +105,7 @@ typedef struct {
         bool enable_underwater_anim_sfx;
         bool enable_music_in_inventory;
         bool mute_out_of_focus;
+        bool enable_barefoot_sfx;
         float inventory_ambient_volume;
         float inventory_music_volume;
         float underwater_ambient_volume;

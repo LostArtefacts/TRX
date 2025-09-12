@@ -273,6 +273,7 @@
 - added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
 - added an option to continue playing music while in the inventory
 - added an option to control playing of certain animation sound effects such as doors when underwater
+- added an option to use Lara's barefoot sound effects in appropriate levels
 - fixed game audio not muting when game is minimized
 - fixed music not playing with certain game versions
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace

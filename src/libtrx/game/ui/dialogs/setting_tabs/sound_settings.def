@@ -21,4 +21,5 @@ X_UI_CFG_BOOL(audio.enable_pitched_sounds,              SETTING_ENABLE_PITCHED_S
 X_UI_CFG_BOOL(audio.enable_ps_uzi_sfx,                  SETTING_PS_UZI_SFX)
 #elif TR_VERSION >= 2
 X_UI_CFG_BOOL(audio.enable_lara_mic,                    SETTING_ENABLE_LARA_MIC)
+X_UI_CFG_BOOL(audio.enable_barefoot_sfx,                SETTING_ENABLE_BAREFOOT_SFX)
 #endif

@@ -364,6 +364,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Pozwala Larze celować w sojuszników, np. mnichów. Jeśli opcja jest wyłączona, sojusznicy będą całkowicie odporni na amunicję Lary.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Preselekcja przedmiotów",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Kiedy Lara spróbuje wejść w interakcję z zamkiem lub slotem na przedmiot i ma odpowiednią rzecz w plecaku, zostanie ona automatycznie wybrana.",
+        "SETTING_ENABLE_BAREFOOT_SFX": "\\{review}Efekty dźwiękowe boso",
+        "SETTING_ENABLE_BAREFOOT_SFX_DESCRIPTION": "\\{review}Umożliwia odpowiednie odgłosy kroków w poziomach, w których Lara jest boso.",
         "SETTING_ENABLE_BRAID": "Warkocz Lary",
         "SETTING_ENABLE_BRAID_DESCRIPTION": "Włącza warkocz Lary.",
         "SETTING_ENABLE_BREEZE": "Wiatr",

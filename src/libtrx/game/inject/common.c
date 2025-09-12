@@ -214,6 +214,9 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
     case IFT_PS1_CRYSTAL:
         return g_Config.gameplay.enable_save_crystals
             && g_Config.visuals.enable_ps1_crystals;
+#elif TR_VERSION == 2
+    case IFT_BAREFOOT_SFX:
+        return g_Config.audio.enable_barefoot_sfx;
 #endif
     default:
         return false;

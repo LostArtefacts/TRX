@@ -364,6 +364,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Permette a Lara di colpire gli alleati, come i monaci. Se disabilitato, gli alleati saranno immuni alle munizioni di Lara.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Preselezione oggetti chiave",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Quando Lara preme azione contro un buco della serratura o un altro ricettacolo e ha l'oggetto corrispondente nell'inventario, quell'oggetto verrà preselezionato.",
+        "SETTING_ENABLE_BAREFOOT_SFX": "\\{review}SFX a piedi nudi",
+        "SETTING_ENABLE_BAREFOOT_SFX_DESCRIPTION": "\\{review}Abilita gli effetti sonori dei passi nelle aree in cui Lara è a piedi nudi.",
         "SETTING_ENABLE_BRAID": "Treccia di Lara",
         "SETTING_ENABLE_BRAID_DESCRIPTION": "Abilita la treccia di Lara.",
         "SETTING_ENABLE_BREEZE": "Brezza",
