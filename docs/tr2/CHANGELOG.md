@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.2...develop) - ××××-××-××
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
+- fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 1.3)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)
