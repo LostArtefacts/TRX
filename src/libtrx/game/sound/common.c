@@ -82,7 +82,7 @@ static float M_ConvertPitch(int32_t pitch);
 static int32_t M_GetDistance(const XYZ_32 *pos);
 static int32_t M_GetVolume(
     const SAMPLE_INFO *sample, int32_t distance, bool random);
-static int32_t M_GetPitch(const SAMPLE_INFO *sample);
+static int32_t M_GetPitch(const SAMPLE_INFO *sample, uint32_t flags);
 static int32_t M_GetPan(const SAMPLE_INFO *sample, const XYZ_32 *pos);
 
 static M_ACTIVE_SOUND *M_SelectUnusedSound(void);
@@ -183,9 +183,10 @@ static int32_t M_GetVolume(
 #endif
 }
 
-static int32_t M_GetPitch(const SAMPLE_INFO *const sample)
+static int32_t M_GetPitch(const SAMPLE_INFO *const sample, const uint32_t flags)
 {
-    int32_t pitch = SOUND_DEFAULT_PITCH;
+    int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
+                                             : SOUND_DEFAULT_PITCH;
     if (!g_Config.audio.enable_pitched_sounds) {
         return pitch;
     }
@@ -555,7 +556,7 @@ bool Sound_Effect(
         return false;
     }
 
-    const int32_t pitch = M_GetPitch(sample);
+    const int32_t pitch = M_GetPitch(sample, flags);
     const int32_t num_samples = sample->flags.num_samples;
     const int32_t track_id = num_samples == 1
         ? sample->number
