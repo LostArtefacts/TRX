@@ -640,13 +640,42 @@ void Level_ReadObjectMeshes(VFILE *const file)
 void Level_AppendObjectMeshes(
     const int32_t num_offsets, const int32_t *const offsets, VFILE *const file)
 {
+#define L_ALIGN 2
+
+    // Savegames identify meshes by their file pointer values divided by 2.
+    // (Historically, meshes were stored in int16_t[] arrays, so the so-called
+    // "pointers" are really just array indices into that layout.)
+    //
+    // Original level meshes work fine under this scheme, but injected meshes
+    // are different, as they come from separate VFiles and bring their own
+    // pointer values. To prevent conflicts, calling Level_AppendObjectMeshes()
+    // for injected content must assign unique pseudo-pointers.
+    //
+    // Rules for injected meshes:
+    // - Pointers do not need to match real file offsets.
+    // - They only need to be unique and preserve ordering.
+    //
+    // Only the original level data requires true offset congruence so that old
+    // savegames remain compatible. For everything else, simple linear indexing
+    // is sufficient.
+    int32_t base_index = 0;
+    if (Object_GetMeshCount() > 0) {
+        // NOTE(Dash): Not assuming offsets are strictly increasing, so we scan
+        // all meshes and pick the max.
+        for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+            base_index =
+                MAX(base_index, Object_GetMeshOffset(Object_GetMesh(i)));
+        }
+        base_index += L_ALIGN;
+    }
+
     // Construct and store distinct meshes only e.g. Lara's hips are referenced
     // by several pointers as a dummy mesh.
     VECTOR *const unique_offsets =
         Vector_CreateAtCapacity(sizeof(int32_t), num_offsets);
     int32_t pointer_map[num_offsets];
     for (int32_t i = 0; i < num_offsets; i++) {
-        const int32_t pointer = offsets[i];
+        const int32_t pointer = offsets[i] + base_index;
         const int32_t index = Vector_IndexOf(unique_offsets, (void *)&pointer);
         if (index == -1) {
             pointer_map[i] = unique_offsets->count;
@@ -661,17 +690,18 @@ void Level_AppendObjectMeshes(
     size_t start_pos = VFile_GetPos(file);
     for (int i = 0; i < unique_offsets->count; i++) {
         const int32_t pointer = *(const int32_t *)Vector_Get(unique_offsets, i);
-        VFile_SetPos(file, start_pos + pointer);
+        VFile_SetPos(file, start_pos + pointer - base_index);
         M_ReadObjectMesh(&meshes[i], file);
 
         // The original data position is required for backward compatibility
         // with savegame files, specifically for Lara's mesh pointers.
-        Object_SetMeshOffset(&meshes[i], pointer / 2);
+        Object_SetMeshOffset(&meshes[i], pointer / L_ALIGN);
     }
 
     for (int32_t i = 0; i < num_offsets; i++) {
         Object_StoreMesh(&meshes[pointer_map[i]]);
     }
+#undef L_ALIGN
 
     LOG_INFO("%d unique meshes constructed", unique_offsets->count);
 
