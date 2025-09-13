@@ -4,8 +4,11 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 
 ## UI
 - added proper UI and bar scaling
-- added support for more accented characters
+- added support for displaying more than 3 pickup sprites
+- added more control over when to show health bar and air bar
+- added customizability to health bar and air bars
 - added enemy health bars
+- added support for more accented characters
 - added PS1 style UI
 - added fade effects to displayed images
 - added an option to use PS1 loading screens
@@ -179,9 +182,6 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added optional rendering of pickups in the UI as 3D meshes
 - added optional pickup aids; custom level builders can use sprite slot `185` for the effect
 - added Lara's braid to each level
-- added support for displaying more than 3 pickup sprites
-- added more control over when to show health bar and air bar
-- added customizable health bar and air bar
 - added rounded shadows (instead of the default octagon)
 - added adjustable in-game brightness
 - added support for HD FMVs

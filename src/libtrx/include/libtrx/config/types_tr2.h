@@ -85,6 +85,7 @@ typedef struct {
         float pickup_scale;
         bool enable_stats_level_header;
 
+        bool enable_smooth_bars;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
