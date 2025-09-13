@@ -327,6 +327,7 @@ sources = [
   'game/ui/draw.c',
   'game/ui/elements/ammo_label.c',
   'game/ui/elements/anchor.c',
+  'game/ui/elements/bar.c',
   'game/ui/elements/bar_enemy_hp.c',
   'game/ui/elements/bar_lara_air.c',
   'game/ui/elements/bar_lara_hp.c',
