@@ -2,6 +2,7 @@
 - added an option to use Lara's barefoot sound effects in appropriate levels (Sound options → Barefoot SFX) (#2643)
 - added dev console gradient backdrop, similar to TR1X (#2150)
 - added smooth bars (needs to be explicitly enabled in the settings)
+- added an option to turn off sound effect pitching (#625)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
 - fixed camera stutter when shimmying on ladders to the left (#3904, regression from 1.3)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 1.3)

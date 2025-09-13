@@ -103,6 +103,7 @@ typedef struct {
         float sound_volume;
         float music_volume;
         bool enable_lara_mic;
+        bool enable_pitched_sounds;
         bool enable_underwater_anim_sfx;
         bool enable_music_in_inventory;
         bool mute_out_of_focus;

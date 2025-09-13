@@ -186,11 +186,9 @@ static int32_t M_GetVolume(
 static int32_t M_GetPitch(const SAMPLE_INFO *const sample)
 {
     int32_t pitch = SOUND_DEFAULT_PITCH;
-#if TR_VERSION == 1
     if (!g_Config.audio.enable_pitched_sounds) {
         return pitch;
     }
-#endif
     if (sample->flags.randomize_pitch) {
         pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - M_SOUND_MAX_PITCH_CHANGE;
