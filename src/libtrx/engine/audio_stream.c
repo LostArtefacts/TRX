@@ -370,7 +370,6 @@ static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
     }
 
     ret = true;
-    M_EnqueueFrame(stream);
 
 cleanup:
     if (error_code) {

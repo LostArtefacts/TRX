@@ -9,6 +9,7 @@
 - fixed changing FPS after advancing frames in photo mode causing the game to speed up (#3605, regression from 1.3)
 - fixed CPU spike during playing FMVs (regression from 0.6)
 - fixed `/play` command likely to skip opening FMVs (#3910, regression from 0.8)
+- fixed resumed music tracks playing briefly track start upon savegame load (#3916)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)

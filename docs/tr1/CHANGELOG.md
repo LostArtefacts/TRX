@@ -6,6 +6,7 @@
 - fixed CPU spike during playing FMVs (#3908, regression from 4.6)
 - fixed `/play` command likely to skip opening FMVs when inventory buffering is enabled (#3910, regression from 3.0)
 - fixed loading a save made in the gym with the item cheat resulting in Lara's meshes appearing broken (#3917, regression from 4.7)
+- fixed resumed music tracks playing briefly track start upon savegame load (#3916)
 
 ## [4.14.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.1...tr1-4.14.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 4.14)
