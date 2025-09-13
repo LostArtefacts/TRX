@@ -270,6 +270,7 @@
 
 ## Audio
 - added an option to control how music is played while underwater rather than simply muting it
+- added an option to turn off sound effect pitching
 - added the current music track and timestamp to the savegame so they now persist on load
 - added the ability to trigger different ambient tracks in custom levels, which will loop and be remembered between saves
 - added an option to continue playing music while in the inventory
