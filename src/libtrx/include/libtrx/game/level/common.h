@@ -32,7 +32,7 @@ void Level_ReadSoundSources(VFILE *file);
 void Level_ReadSamples(VFILE *file);
 
 void Level_AppendObjectMeshes(
-    int32_t num_indices, const int32_t *indices, VFILE *file);
+    int32_t num_offsets, const int32_t *offsets, VFILE *file);
 void Level_AppendAnims(int32_t base_idx, int32_t num_anims, VFILE *file);
 void Level_AppendAnimChanges(
     int32_t base_idx, int32_t num_changes, VFILE *file);
