@@ -123,13 +123,26 @@ static void M_Draw(const UI_NODE *const node)
     }
 
     // Draw fill
-    for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
-        const RGBA_8888 color = M_GetColor(settings->color, i);
-        const int32_t lsy = bar_rect.y + i * bar_rect.h / M_COLOR_STEPS;
-        const int32_t lsh =
-            bar_rect.y + (i + 1) * bar_rect.h / M_COLOR_STEPS - lsy;
-        UI_ScheduleDrawScreenFlatQuad(
-            bar_rect.x, lsy, M_COLOR_STEPS - i, bar_rect.w, lsh, color);
+    if (g_Config.ui.enable_smooth_bars) {
+        for (int32_t i = 0; i < M_COLOR_STEPS - 1; i++) {
+            const RGBA_8888 c1 = M_GetColor(settings->color, i);
+            const RGBA_8888 c2 = M_GetColor(settings->color, i + 1);
+            const int32_t lsy =
+                bar_rect.y + i * bar_rect.h / (M_COLOR_STEPS - 1);
+            const int32_t lsh =
+                bar_rect.y + (i + 1) * bar_rect.h / (M_COLOR_STEPS - 1) - lsy;
+            UI_ScheduleDrawScreenGradientQuad(
+                bar_rect.x, lsy, 0, bar_rect.w, lsh, c1, c1, c2, c2);
+        }
+    } else {
+        for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
+            const RGBA_8888 color = M_GetColor(settings->color, i);
+            const int32_t lsy = bar_rect.y + i * bar_rect.h / M_COLOR_STEPS;
+            const int32_t lsh =
+                bar_rect.y + (i + 1) * bar_rect.h / M_COLOR_STEPS - lsy;
+            UI_ScheduleDrawScreenFlatQuad(
+                bar_rect.x, lsy, 0, bar_rect.w, lsh, color);
+        }
     }
 }
 

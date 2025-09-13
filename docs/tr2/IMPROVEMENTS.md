@@ -4,6 +4,7 @@
 - added proper UI and bar scaling
 - added support for more accented characters
 - added fade effects to displayed images
+- added customizability to health bar and air bars
 - added a wireframe mode
 - added sunglasses for graphic options
 - added enemy health bars
