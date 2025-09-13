@@ -847,6 +847,8 @@ static bool M_LoadLara(
         OBJECT_MESH *const mesh = Object_FindMesh(idx);
         if (mesh != nullptr) {
             lara->mesh_ptrs[i] = mesh;
+        } else {
+            LOG_WARNING("can't find mesh %d", idx);
         }
     }
 
