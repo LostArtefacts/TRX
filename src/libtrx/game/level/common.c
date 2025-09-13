@@ -619,48 +619,48 @@ void Level_ReadObjectMeshes(VFILE *const file)
     VFile_Skip(file, num_meshes * sizeof(int16_t));
 
     m_Info.mesh_ptr_count = VFile_ReadS32(file);
-    LOG_INFO("object mesh indices: %d", m_Info.mesh_ptr_count);
+    LOG_INFO("object mesh offsets: %d", m_Info.mesh_ptr_count);
     const int32_t alloc_size = m_Info.mesh_ptr_count * sizeof(int32_t);
-    int32_t *mesh_indices = Memory_Alloc(alloc_size);
-    VFile_Read(file, mesh_indices, alloc_size);
+    int32_t *mesh_offsets = Memory_Alloc(alloc_size);
+    VFile_Read(file, mesh_offsets, alloc_size);
 
     const size_t end_pos = VFile_GetPos(file);
     VFile_SetPos(file, data_start_pos);
 
     Object_InitialiseMeshes(
         m_Info.mesh_ptr_count + Inject_GetDataCount(IDT_MESH_POINTERS));
-    Level_AppendObjectMeshes(m_Info.mesh_ptr_count, mesh_indices, file);
+    Level_AppendObjectMeshes(m_Info.mesh_ptr_count, mesh_offsets, file);
 
     VFile_SetPos(file, end_pos);
-    Memory_FreePointer(&mesh_indices);
+    Memory_FreePointer(&mesh_offsets);
 
     Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendObjectMeshes(
-    const int32_t num_indices, const int32_t *const indices, VFILE *const file)
+    const int32_t num_offsets, const int32_t *const offsets, VFILE *const file)
 {
     // Construct and store distinct meshes only e.g. Lara's hips are referenced
     // by several pointers as a dummy mesh.
-    VECTOR *const unique_indices =
-        Vector_CreateAtCapacity(sizeof(int32_t), num_indices);
-    int32_t pointer_map[num_indices];
-    for (int32_t i = 0; i < num_indices; i++) {
-        const int32_t pointer = indices[i];
-        const int32_t index = Vector_IndexOf(unique_indices, (void *)&pointer);
+    VECTOR *const unique_offsets =
+        Vector_CreateAtCapacity(sizeof(int32_t), num_offsets);
+    int32_t pointer_map[num_offsets];
+    for (int32_t i = 0; i < num_offsets; i++) {
+        const int32_t pointer = offsets[i];
+        const int32_t index = Vector_IndexOf(unique_offsets, (void *)&pointer);
         if (index == -1) {
-            pointer_map[i] = unique_indices->count;
-            Vector_Add(unique_indices, (void *)&pointer);
+            pointer_map[i] = unique_offsets->count;
+            Vector_Add(unique_offsets, (void *)&pointer);
         } else {
             pointer_map[i] = index;
         }
     }
 
     OBJECT_MESH *const meshes =
-        GameBuf_Alloc(sizeof(OBJECT_MESH) * unique_indices->count, GBUF_MESHES);
+        GameBuf_Alloc(sizeof(OBJECT_MESH) * unique_offsets->count, GBUF_MESHES);
     size_t start_pos = VFile_GetPos(file);
-    for (int i = 0; i < unique_indices->count; i++) {
-        const int32_t pointer = *(const int32_t *)Vector_Get(unique_indices, i);
+    for (int i = 0; i < unique_offsets->count; i++) {
+        const int32_t pointer = *(const int32_t *)Vector_Get(unique_offsets, i);
         VFile_SetPos(file, start_pos + pointer);
         M_ReadObjectMesh(&meshes[i], file);
 
@@ -669,13 +669,13 @@ void Level_AppendObjectMeshes(
         Object_SetMeshOffset(&meshes[i], pointer / 2);
     }
 
-    for (int32_t i = 0; i < num_indices; i++) {
+    for (int32_t i = 0; i < num_offsets; i++) {
         Object_StoreMesh(&meshes[pointer_map[i]]);
     }
 
-    LOG_INFO("%d unique meshes constructed", unique_indices->count);
+    LOG_INFO("%d unique meshes constructed", unique_offsets->count);
 
-    Vector_Free(unique_indices);
+    Vector_Free(unique_offsets);
 }
 
 void Level_ReadAnims(VFILE *const file)
