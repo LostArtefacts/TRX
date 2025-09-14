@@ -1,7 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.2...develop) - ××××-××-××
 - added an option to use Lara's barefoot sound effects in appropriate levels (Sound options → Barefoot SFX) (#2643)
 - added dev console gradient backdrop, similar to TR1X (#2150)
-- added smooth bars (needs to be explicitly enabled in the settings)
+- added smooth bars (Graphics → UI → Smooth bars, default off)
 - added an option to turn off sound effect pitching (#625)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
 - fixed camera stutter when shimmying on ladders to the left (#3904, regression from 1.3)
@@ -10,6 +10,7 @@
 - fixed CPU spike during playing FMVs (regression from 0.6)
 - fixed `/play` command likely to skip opening FMVs (#3910, regression from 0.8)
 - fixed resumed music tracks playing briefly track start upon savegame load (#3916)
+- fixed highlight size in health and air bars
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)
