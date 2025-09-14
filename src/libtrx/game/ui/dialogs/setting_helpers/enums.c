@@ -122,13 +122,11 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[] = {
     { -1, nullptr },
 };
 
-#if TR_VERSION == 1
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[] = {
     { UI_STYLE_PS1, GS_ID(ENUM_UI_STYLE_PS1) },
     { UI_STYLE_PC, GS_ID(ENUM_UI_STYLE_PC) },
     { -1, nullptr },
 };
-#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[] = {
     { LIGHTING_CONTRAST_LOW, GS_ID(ENUM_LIGHTING_CONTRAST_LOW) },
