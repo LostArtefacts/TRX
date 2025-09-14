@@ -463,6 +463,23 @@ static bool M_LoadFromFile(MYFILE *const fp)
     g_Lara.holsters_gun_type = LGT_UNKNOWN;
     g_Lara.back_gun_type = LGT_UNKNOWN;
 
+    // Copy RESUME_INFO of "current position" level to the target level
+    {
+        const GF_LEVEL *const level = Game_GetCurrentLevel();
+        const GF_LEVEL *current_position = nullptr;
+        const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+        for (int32_t i = 0; i < level_table->count; i++) {
+            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+            if (level->type == GFL_CURRENT) {
+                current_position = level;
+            }
+        }
+        if (current_position != nullptr) {
+            *Savegame_GetCurrentInfo(level) =
+                *Savegame_GetCurrentInfo(current_position);
+        }
+    }
+
     Lara_InitialiseInventory(Game_GetCurrentLevel());
     SAVEGAME_LEGACY_ITEM_STATS item_stats = {};
     M_Read(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
