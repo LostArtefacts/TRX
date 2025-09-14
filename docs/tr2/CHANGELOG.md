@@ -3,6 +3,7 @@
 - added dev console gradient backdrop, similar to TR1X (#2150)
 - added an option to use smooth bars (Graphics → UI → Smooth bars, default off)
 - added an option to use TR1-style UI bars (Graphics → UI → Bars look)
+- added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
 - added an option to turn off sound effect pitching (#625)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
 - fixed camera stutter when shimmying on ladders to the left (#3904, regression from 1.3)

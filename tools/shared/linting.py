@@ -25,7 +25,7 @@ from translation_utils import (
 SHARED_PROJECT = "libtrx"
 CHILD_PROJECTS = ["tr1", "tr2"]
 PROJECTS = [SHARED_PROJECT] + CHILD_PROJECTS
-RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),\s*\"(.*)\"\)")
+RE_GAME_STRING_DEFINE = re.compile(r"GS_DEFINE\(([A-Z0-9_]+),\s*\"(.+)\"\)")
 RE_GAME_STRING_DEFINE_VAL = re.compile(
     r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"([^"]*)"\)'
 )
