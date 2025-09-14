@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "debug.h"
+#include "game/output.h"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
@@ -16,6 +17,9 @@ typedef enum {
     M_UNIFORM_TEXTURE_MAIN,
     M_UNIFORM_TEXTURE_SIZE,
     M_UNIFORM_EFFECT,
+    M_UNIFORM_TIME,
+    M_UNIFORM_TIME_INGAME,
+    M_UNIFORM_VIEWPORT_SIZE,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -155,7 +159,10 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         { M_UNIFORM_BRIGHTNESS_MULTIPLIER, "uBrightnessMultiplier" },
         { M_UNIFORM_TEXTURE_MAIN, "texMain" },
         { M_UNIFORM_TEXTURE_SIZE, "uTexSize" },
-        { M_UNIFORM_EFFECT, "effect" },
+        { M_UNIFORM_EFFECT, "uEffect" },
+        { M_UNIFORM_TIME, "uTime" },
+        { M_UNIFORM_TIME_INGAME, "uTimeInGame" },
+        { M_UNIFORM_VIEWPORT_SIZE, "uViewportSize" },
         { -1, nullptr },
     };
     for (int32_t i = 0; uniforms[i].name != nullptr; i++) {
@@ -277,8 +284,7 @@ void GFX_2D_Renderer_SetQuad(
     M_UploadVertices(r);
 }
 
-void GFX_2D_Renderer_SetEffect(
-    GFX_2D_RENDERER *const r, const GFX_2D_EFFECT effect)
+void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *const r, const uint32_t effect)
 {
     ASSERT(r != nullptr);
 
@@ -294,6 +300,15 @@ void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
     ASSERT(r != nullptr);
 
     GFX_GL_Program_Bind(&r->program);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_TIME], Output_GetTime());
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_TIME_INGAME], Output_GetTimeInGame());
+    GFX_GL_Program_Uniform2f(
+        &r->program, r->loc[M_UNIFORM_VIEWPORT_SIZE],
+        Viewport_GetWidth(VIEWPORT_GAME), Viewport_GetHeight(VIEWPORT_GAME));
+
+    GFX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
     GFX_GL_Buffer_Bind(&r->surface_buffer);
     GFX_GL_VertexArray_Bind(&r->vertex_format);
 

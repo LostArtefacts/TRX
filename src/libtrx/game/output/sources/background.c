@@ -153,7 +153,7 @@ bool Output_LoadBackgroundFromImage(const IMAGE *const image)
     return true;
 }
 
-void Output_LoadBackgroundFromObject(void)
+void Output_LoadBackgroundFromObject(const bool wave)
 {
 #if TR_VERSION == 1
     m_Priv.type = BK_TRANSPARENT;
@@ -179,7 +179,7 @@ void Output_LoadBackgroundFromObject(void)
     const int32_t repeat_y = 6;
     const int32_t repeat_x = repeat_y * Viewport_GetWidth(VIEWPORT_GAME)
         / (float)Viewport_GetHeight(VIEWPORT_GAME);
-    m_Priv.type = BK_OBJECT;
+    m_Priv.type = wave ? BK_PATTERN_WAVE : BK_PATTERN_STATIC;
 
     const RGBA_8888 *const page = Output_GetTexturePage32(texture->tex_page);
     if (page == nullptr) {
@@ -223,7 +223,8 @@ void Output_LoadBackgroundFromObject(void)
             .x1 = size.x1,
             .y1 = size.y1,
         });
-    GFX_2D_Renderer_SetEffect(m_Priv.renderer, GFX_2D_EFFECT_VIGNETTE);
+    GFX_2D_Renderer_SetEffect(
+        m_Priv.renderer, wave ? GFX_2D_EFFECT_WAVE : GFX_2D_EFFECT_VIGNETTE);
     Output_RefreshBackgroundScaling();
 #endif
 }

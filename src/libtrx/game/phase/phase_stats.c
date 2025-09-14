@@ -52,7 +52,9 @@ static void M_FadeIn(M_PRIV *const p)
 
 static void M_FadeOut(M_PRIV *const p, const bool force)
 {
-    if (p->args.background_type != BK_OBJECT || force) {
+    if ((p->args.background_type != BK_PATTERN_STATIC
+         && p->args.background_type != BK_PATTERN_WAVE)
+        || force) {
         Fader_Init(&p->top_fader, FADER_ANY, FADER_BLACK, 0.5);
         p->state = STATE_FADE_OUT;
     } else {
@@ -70,8 +72,11 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         } else {
             Output_LoadBackgroundFromFile(p->args.background_path);
         }
-    } else if (p->args.background_type == BK_OBJECT) {
-        Output_LoadBackgroundFromObject();
+    } else if (
+        p->args.background_type == BK_PATTERN_STATIC
+        || p->args.background_type == BK_PATTERN_WAVE) {
+        Output_LoadBackgroundFromObject(
+            p->args.background_type == BK_PATTERN_WAVE);
     } else {
         Output_UnloadBackground();
     }
@@ -79,7 +84,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     if (Game_IsInGym()) {
         M_FadeOut(p, false);
     } else {
-        if (p->args.background_type == BK_OBJECT) {
+        if (p->args.background_type == BK_PATTERN_STATIC
+            || p->args.background_type == BK_PATTERN_WAVE) {
             p->state = STATE_DISPLAY;
         } else {
             p->state = STATE_FADE_IN;

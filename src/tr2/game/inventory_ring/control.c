@@ -870,7 +870,8 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             M_INV_RING_FADE_TIME_FAST);
     } else {
-        Output_LoadBackgroundFromObject();
+        Output_LoadBackgroundFromObject(
+            g_Config.ui.inventory_background_style == BK_PATTERN_WAVE);
     }
 
     if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {

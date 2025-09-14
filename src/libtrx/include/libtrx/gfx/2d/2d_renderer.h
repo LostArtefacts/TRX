@@ -22,7 +22,8 @@ typedef struct {
 
 typedef enum {
     GFX_2D_EFFECT_NONE = 0,
-    GFX_2D_EFFECT_VIGNETTE = 1,
+    GFX_2D_EFFECT_VIGNETTE = 1 << 0,
+    GFX_2D_EFFECT_WAVE = 1 << 1,
 } GFX_2D_EFFECT;
 
 typedef struct GFX_2D_RENDERER GFX_2D_RENDERER;
@@ -41,6 +42,6 @@ void GFX_2D_Renderer_SetQuad(
 void GFX_2D_Renderer_SetRepeat(GFX_2D_RENDERER *renderer, int32_t x, int32_t y);
 void GFX_2D_Renderer_SetTextureSize(
     GFX_2D_RENDERER *renderer, const GFX_TEXTURE_SIZE *size);
-void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *renderer, GFX_2D_EFFECT filter);
+void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *renderer, uint32_t effect);
 
 void GFX_2D_Renderer_Render(GFX_2D_RENDERER *renderer);

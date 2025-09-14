@@ -91,6 +91,9 @@ typedef struct {
         STAT_DETAIL_MODE stat_detail_mode;
         bool enable_stats_level_header;
 
+        BACKGROUND_TYPE inventory_background_style;
+        BACKGROUND_TYPE stats_background_style;
+
         bool enable_smooth_bars;
         BAR_LOOK bar_look;
         struct {

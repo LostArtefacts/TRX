@@ -130,8 +130,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
 #endif
 
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
-        .background_type =
-            (TR_VERSION == 1 || Game_IsInGym()) ? BK_TRANSPARENT : BK_OBJECT,
+        .background_type = (TR_VERSION == 1 || Game_IsInGym())
+            ? BK_TRANSPARENT
+            : g_Config.ui.stats_background_style,
         .level_num = -1,
         .show_final_stats = false,
         .use_bare_style = use_bare_style,

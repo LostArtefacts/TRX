@@ -27,8 +27,10 @@
 #define MAX_WIBBLE 2
 #define PI 3.1415926538
 
-uniform int uTime;
+uniform float uTime;
+uniform float uTimeInGame;
 uniform float uBrightnessMultiplier;
+uniform vec2 uViewportSize;
 
 vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 {
@@ -36,15 +38,15 @@ vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
     return clamp(uv, atlasSize.xy + epsilon, atlasSize.zw - epsilon);
 }
 
-vec3 waterWibble(vec4 position, vec2 viewportSize, int time)
+vec3 waterWibble(vec4 position, vec2 viewportSize, float time)
 {
     // get screen coordinates
     vec3 ndc = position.xyz / position.w; //perspective divide/normalize
     vec2 viewportCoord = ndc.xy * 0.5 + 0.5; //ndc is -1 to 1 in GL. scale for 0 to 1
     vec2 viewportPixelCoord = viewportCoord * viewportSize;
 
-    viewportPixelCoord.x += sin((float(time) + viewportPixelCoord.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
-    viewportPixelCoord.y += sin((float(time) + viewportPixelCoord.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    viewportPixelCoord.x += sin((time + viewportPixelCoord.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    viewportPixelCoord.y += sin((time + viewportPixelCoord.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
 
     // reverse transform
     viewportCoord = viewportPixelCoord / viewportSize;

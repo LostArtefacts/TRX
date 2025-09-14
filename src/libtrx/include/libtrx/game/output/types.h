@@ -13,12 +13,6 @@ typedef enum {
 } CLIP;
 
 typedef enum {
-    BK_TRANSPARENT,
-    BK_OBJECT,
-    BK_IMAGE,
-} BACKGROUND_TYPE;
-
-typedef enum {
     TS_HEADING,
     TS_BACKGROUND,
     TS_BACKGROUND_HEAVY,

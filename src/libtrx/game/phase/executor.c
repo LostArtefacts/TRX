@@ -20,6 +20,7 @@
 
 #define M_MAX_PHASES 10
 
+static int32_t m_CurrentFrame = 0;
 static bool m_Exiting;
 static FADER m_ExitFader;
 static int32_t m_PhaseStackSize = 0;
@@ -52,6 +53,7 @@ static GF_COMMAND M_HandleOverride(void)
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
+    m_CurrentFrame++;
     Shell_ProcessEvents();
     Console_Control();
     Overlay_Control();
@@ -177,11 +179,13 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 
         if (Interpolation_IsActive()) {
             Interpolation_SetRate(0.5);
+            Output_SetTime(m_CurrentFrame - 0.5f);
             M_Draw(phase);
             Clock_WaitTick();
         }
 
         Interpolation_SetRate(1.0);
+        Output_SetTime(m_CurrentFrame);
         M_Draw(phase);
     }
 

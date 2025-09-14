@@ -13,7 +13,8 @@
 extern float g_FltResZ;
 extern float g_FltResZBuf;
 
-static int32_t m_Time = 0;
+static float m_Time = 0.0f;
+static float m_TimeInGame = 0.0f;
 static int32_t m_AnimatedTexturesOffset = 0;
 
 static int32_t m_FogStart = 0;
@@ -33,9 +34,14 @@ static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
 static bool m_IsSkyboxEnabled = false;
 
-int32_t Output_GetTime(void)
+float Output_GetTime(void)
 {
     return m_Time;
+}
+
+float Output_GetTimeInGame(void)
+{
+    return m_TimeInGame;
 }
 
 int32_t Output_GetNearZ(void)
@@ -265,9 +271,14 @@ void Output_RotateLight(const int16_t pitch, const int16_t yaw)
     m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
 }
 
+void Output_SetTime(const float time)
+{
+    m_Time = time;
+}
+
 void Output_AnimateTextures(const int32_t num_frames)
 {
-    m_Time += num_frames;
+    m_TimeInGame += num_frames;
     m_AnimatedTexturesOffset += num_frames;
     bool update = false;
     while (m_AnimatedTexturesOffset > 5) {
