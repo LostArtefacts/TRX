@@ -14,8 +14,17 @@
     #define UI_BAR_BLINK_THRESHOLD 0.25f
 #endif
 
+typedef enum {
+    UI_BAR_LARA_HP,
+    UI_BAR_LARA_AIR,
+    UI_BAR_LARA_STAMINA,
+    UI_BAR_ENEMY_HP,
+    UI_BAR_ALLY_HP,
+    UI_BAR_PROGRESS,
+} UI_BAR_TYPE;
+
 typedef struct {
-    BAR_COLOR color;
+    UI_BAR_TYPE type;
     int32_t w;
     int32_t h;
     int32_t value;

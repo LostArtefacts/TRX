@@ -71,7 +71,7 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
     UI_BeginSpan();
     if (s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
         UI_Bar((UI_BAR_SETTINGS) {
-            .color = TR_VERSION == 2 ? BC_GREEN : BC_GOLD,
+            .type = UI_BAR_PROGRESS,
             .value = s->hold_timer - M_HOLD_TIMER_DEBUFF,
             .max_value = M_HOLD_TIMER_MAX,
             .w = 0.0, // Span will make it expand anyway!

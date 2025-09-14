@@ -88,6 +88,12 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[] = {
+    { BAR_LOOK_TR1, GS_ID(ENUM_BAR_LOOK_TR1) },
+    { BAR_LOOK_TR2, GS_ID(ENUM_BAR_LOOK_TR2) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[] = {
     { BC_GOLD, GS_ID(ENUM_BAR_COLOR_GOLD) },
     { BC_BLUE, GS_ID(ENUM_BAR_COLOR_BLUE) },

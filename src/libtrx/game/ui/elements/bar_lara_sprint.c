@@ -27,7 +27,7 @@ bool UI_LaraSprintBar(void)
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
-        .color = g_Config.ui.lara_sprint_bar.color,
+        .type = UI_BAR_LARA_STAMINA,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = lara->sprint_timer,

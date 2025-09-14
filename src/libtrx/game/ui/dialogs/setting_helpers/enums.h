@@ -25,6 +25,7 @@ extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_EnemyHealthBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[];
 #if TR_VERSION == 1

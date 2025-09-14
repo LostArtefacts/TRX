@@ -92,6 +92,7 @@ typedef struct {
         bool enable_stats_level_header;
 
         bool enable_smooth_bars;
+        BAR_LOOK bar_look;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;

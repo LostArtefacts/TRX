@@ -33,7 +33,7 @@ bool UI_LaraAirBar(const bool blink_state)
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
-        .color = g_Config.ui.lara_air_bar.color,
+        .type = UI_BAR_LARA_AIR,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = is_blinking && blink_state ? 0 : lara->air,
