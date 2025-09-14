@@ -609,6 +609,7 @@ void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
+        .spacing = { .v = 4.0f },
     });
     M_CurrentLayout(s);
     M_GroupsHeader(s);

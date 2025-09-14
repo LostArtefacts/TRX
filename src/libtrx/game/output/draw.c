@@ -13,9 +13,10 @@
 #include "game/output/sources/sprites.h"
 #include "game/output/sources/ui.h"
 #include "game/output/state.h"
+#include "game/scaler.h"
 #include "game/shell.h"
 
-#define M_TEXT_OUTLINE_THICKNESS 2
+#define M_OUTLINE_THICKNESS 0.75f
 
 typedef enum {
     C_BACKGROUND_E,
@@ -310,7 +311,7 @@ void Output_DrawTextOutline(
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenFrame(
             sx, sy, w, h, M_GetMenuColor(C_GENERIC_OUTLINE_DARK),
-            M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT), M_TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT), M_OUTLINE_THICKNESS);
         return;
     }
 #endif
@@ -320,14 +321,14 @@ void Output_DrawTextOutline(
             sx, sy, w, h, M_GetMenuColor(C_HEADING_OUTLINE),
             M_GetMenuColor(C_HEADING_OUTLINE),
             M_GetMenuColor(C_HEADING_OUTLINE),
-            M_GetMenuColor(C_HEADING_OUTLINE), M_TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(C_HEADING_OUTLINE), M_OUTLINE_THICKNESS);
     } else if (
         text_style == TS_BACKGROUND || text_style == TS_BACKGROUND_HEAVY) {
         Output_DrawScreenGradientBox(
             sx, sy, w, h, M_GetMenuColor(C_BACKGROUND_OUTLINE_TL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_TR),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
-            M_GetMenuColor(C_BACKGROUND_OUTLINE_BR), M_TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(C_BACKGROUND_OUTLINE_BR), M_OUTLINE_THICKNESS);
     } else if (text_style == TS_REQUESTED) {
         // Make sure height and width divisible by 2.
         w = 2 * ((w + 1) / 2);
@@ -335,7 +336,7 @@ void Output_DrawTextOutline(
         Output_DrawScreenCentreGradientBox(
             sx, sy, w, h, M_GetMenuColor(C_REQUESTED_OUTLINE_E),
             M_GetMenuColor(C_REQUESTED_OUTLINE_CH),
-            M_GetMenuColor(C_REQUESTED_OUTLINE_CV), M_TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(C_REQUESTED_OUTLINE_CV), M_OUTLINE_THICKNESS);
     }
 }
 
@@ -357,14 +358,13 @@ void Output_DrawScreenGradientQuad(
 void Output_DrawScreenGradientBox(
     const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
     const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
-    const RGBA_8888 br, const int32_t thickness)
+    const RGBA_8888 br, const float thickness)
 {
-    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0;
-    const float x0 = sx - scale;
-    const float y0 = sy - scale;
-    const float x1 = sx + w + scale;
-    const float y1 = sy + h + scale;
-    const float e = thickness * scale / 2.0f;
+    const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
+    const float x0 = sx;
+    const float y0 = sy;
+    const float x1 = sx + w;
+    const float y1 = sy + h;
     M_DrawScreenQuad(x0 - e, y0 - e, x1 + e, y0 + e, 0, tl, tr, tl, tr);
     M_DrawScreenQuad(x0 - e, y1 - e, x1 + e, y1 + e, 0, bl, br, bl, br);
     M_DrawScreenQuad(x0 - e, y0 - e, x0 + e, y1 + e, 0, tl, tl, bl, bl);
@@ -374,14 +374,13 @@ void Output_DrawScreenGradientBox(
 void Output_DrawScreenCentreGradientBox(
     const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
     const RGBA_8888 edge, const RGBA_8888 center_h, const RGBA_8888 center_v,
-    const int32_t thickness)
+    const float thickness)
 {
-    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0f;
-    const float x0 = sx - scale;
-    const float y0 = sy - scale;
-    const float x1 = sx + w + scale;
-    const float y1 = sy + h + scale;
-    const float e = thickness * scale / 2.0f;
+    const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
+    const float x0 = sx;
+    const float y0 = sy;
+    const float x1 = sx + w;
+    const float y1 = sy + h;
     const float xm = (x0 + x1) / 2.0f;
     const float ym = (y0 + y1) / 2.0f;
     const RGBA_8888 ch = center_h;
@@ -403,15 +402,13 @@ void Output_DrawScreenCentreGradientBox(
 
 void Output_DrawScreenFrame(
     const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
-    const RGBA_8888 col_dark, const RGBA_8888 col_light,
-    const int32_t thickness)
+    const RGBA_8888 col_dark, const RGBA_8888 col_light, const float thickness)
 {
-    const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0f;
-    const float e = thickness * scale / 2.0f;
-    const float x0 = sx - scale;
-    const float y0 = sy - scale;
-    const float x1 = sx + w + scale;
-    const float y1 = sy + h + scale;
+    const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
+    const float x0 = sx;
+    const float y0 = sy;
+    const float x1 = sx + w;
+    const float y1 = sy + h;
     const RGBA_8888 cd = col_dark;
     const RGBA_8888 cl = col_light;
 

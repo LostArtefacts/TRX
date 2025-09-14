@@ -9,7 +9,7 @@
 
 void UI_BeginWindow(void)
 {
-    const float outer_pad = 2.0f;
+    const float outer_pad = TR_VERSION == 2 ? 3.0f : 2.0f;
     const float title_spacing = 3.0f;
     UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
     UI_BeginPad(outer_pad, outer_pad);
