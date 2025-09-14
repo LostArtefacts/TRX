@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...develop) - ××××-××-××
+- added an option to use TR2-style UI bars (Graphics → UI → Bars look)
 - fixed certain ambient sounds volume scaling wrong on non-100% volumes
 - fixed trapdoor type 3 (object #67) not functioning (#3895)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 4.13)

@@ -61,7 +61,7 @@ bool UI_LaraHealthBar(const bool blink_state, const BAR_SHOW_MODE show_mode)
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
-        .color = g_Config.ui.lara_health_bar.color,
+        .type = UI_BAR_LARA_HP,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = is_blinking && blink_state ? 0 : health,

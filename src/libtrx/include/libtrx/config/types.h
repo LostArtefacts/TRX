@@ -46,6 +46,11 @@ typedef enum {
 } BAR_COLOR;
 
 typedef enum {
+    BAR_LOOK_TR1,
+    BAR_LOOK_TR2,
+} BAR_LOOK;
+
+typedef enum {
     MUSIC_LOAD_NEVER,
     MUSIC_LOAD_NON_AMBIENT,
     MUSIC_LOAD_ALWAYS,
