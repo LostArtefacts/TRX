@@ -48,7 +48,6 @@ vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat
 
 #ifdef VERTEX
 
-uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
 uniform mat4 uMatView;
 uniform mat4 uMatModelView;
@@ -97,7 +96,7 @@ void main(void) {
         && (inFlags & VERT_NO_CAUSTICS) == 0u
         && (inFlags & VERT_BILLBOARD) == 0u)
     ) {
-        gl_Position.xyz = waterWibble(gl_Position, uViewportSize, uTime);
+        gl_Position.xyz = waterWibble(gl_Position, uViewportSize, uTimeInGame);
     }
 
     gFlags = inFlags;

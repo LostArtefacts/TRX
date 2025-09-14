@@ -95,6 +95,12 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_BackgroundStyleEnumEntries[] = {
+    { BK_PATTERN_STATIC, GS_ID(ENUM_BK_PATTERN_STATIC) },
+    { BK_PATTERN_WAVE, GS_ID(ENUM_BK_PATTERN_WAVE) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[] = {
     { BC_GOLD, GS_ID(ENUM_BAR_COLOR_GOLD) },
     { BC_BLUE, GS_ID(ENUM_BAR_COLOR_BLUE) },

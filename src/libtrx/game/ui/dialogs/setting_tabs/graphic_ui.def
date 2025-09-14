@@ -31,5 +31,8 @@ X_UI_CFG_ENUM(ui.enemy_health_bar.location,     SETTING_ENEMY_HEALTHBAR_LOCATION
 X_UI_CFG_ENUM(ui.enemy_health_bar.color,        SETTING_ENEMY_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_EnemyHealthbarColor_IsAvailable })
 X_UI_CFG_ENUM(ui.enemy_health_bar.color_allies, SETTING_ALLY_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_AllyHealthbarColor_IsAvailable })
 
+X_UI_CFG_ENUM(ui.inventory_background_style,    SETTING_INVENTORY_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries)
+X_UI_CFG_ENUM(ui.stats_background_style,        SETTING_STATS_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries)
+
 X_UI_CFG_BOOL(visuals.enable_fade_effects,      SETTING_ENABLE_FADE_EFFECTS)
 X_UI_CFG_BOOL(visuals.enable_exit_fade_effects, SETTING_ENABLE_EXIT_FADE_EFFECTS, .custom_handler = { .is_available = UI_Settings_EnableExitFadeEffects_IsAvailable })

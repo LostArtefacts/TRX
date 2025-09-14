@@ -93,7 +93,8 @@ static int16_t M_ShadeCaustics(
             p->caustics_table
                 [(room->mesh.num_vertices - vtx_idx) % WIBBLE_SIZE];
         source +=
-            p->shade_table[((uint8_t)Output_GetTime() + caustic) % WIBBLE_SIZE];
+            p->shade_table
+                [((uint8_t)Output_GetTimeInGame() + caustic) % WIBBLE_SIZE];
         CLAMP(source, 0, SHADE_MAX);
     } else {
         CLAMPG(source, SHADE_MAX);

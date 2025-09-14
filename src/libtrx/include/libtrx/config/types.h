@@ -12,6 +12,13 @@ typedef enum {
 } ASPECT_MODE;
 
 typedef enum {
+    BK_TRANSPARENT,
+    BK_PATTERN_STATIC,
+    BK_PATTERN_WAVE,
+    BK_IMAGE,
+} BACKGROUND_TYPE;
+
+typedef enum {
     BL_TOP_LEFT,
     BL_TOP_CENTER,
     BL_TOP_RIGHT,

@@ -10,6 +10,7 @@
 
 typedef enum {
     M_UNIFORM_TIME,
+    M_UNIFORM_TIME_IN_GAME,
     M_UNIFORM_TEX_ATLAS,
     M_UNIFORM_TEX_ENV_MAP,
     M_UNIFORM_SMOOTHING_ENABLED,
@@ -82,6 +83,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
 
     const char *const uniform_names[] = {
         [M_UNIFORM_TIME] = "uTime",
+        [M_UNIFORM_TIME_IN_GAME] = "uTimeInGame",
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
@@ -152,7 +154,10 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
         glUniform2f, shader->uniforms[M_UNIFORM_FOG_DISTANCE],
         Output_GetFogStart(), Output_GetFogEnd());
     GFX_TRACK_UNIFORM(
-        glUniform1i, shader->uniforms[M_UNIFORM_TIME], Output_GetTime());
+        glUniform1f, shader->uniforms[M_UNIFORM_TIME], Output_GetTime());
+    GFX_TRACK_UNIFORM(
+        glUniform1f, shader->uniforms[M_UNIFORM_TIME_IN_GAME],
+        Output_GetTimeInGame());
     GFX_TRACK_UNIFORM(
         glUniform1i, shader->uniforms[M_UNIFORM_BILLBOARD_LOCK_MODE],
         g_Config.rendering.sprite_lock_mode);

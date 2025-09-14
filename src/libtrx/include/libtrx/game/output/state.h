@@ -11,7 +11,9 @@ bool Output_IsSkyboxEnabled(void);
 void Output_GetPerspProjectionMatrix(GLfloat output[][4]);
 void Output_GetOrthoProjectionMatrix(GLfloat output[][4]);
 
-int32_t Output_GetTime(void);
+void Output_SetTime(float time);
+float Output_GetTime(void);
+float Output_GetTimeInGame(void);
 
 void Output_SetupBelowWater(bool is_underwater);
 void Output_SetupAboveWater(bool is_underwater);

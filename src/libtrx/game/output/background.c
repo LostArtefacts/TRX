@@ -207,8 +207,10 @@ void Output_ReloadBackgroundImage(void)
 {
     Output_RefreshBackgroundScaling();
 
-    if (Output_GetBackgroundType() == BK_OBJECT) {
-        Output_LoadBackgroundFromObject();
+    if (Output_GetBackgroundType() == BK_PATTERN_STATIC
+        || Output_GetBackgroundType() == BK_PATTERN_WAVE) {
+        Output_LoadBackgroundFromObject(
+            Output_GetBackgroundType() == BK_PATTERN_WAVE);
         return;
     }
 

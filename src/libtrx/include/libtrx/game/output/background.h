@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../config/types.h"
 #include "../../engine/image.h"
 #include "./types.h"
 
@@ -10,7 +11,7 @@ void Output_ReloadBackgroundImage(void);
 
 BACKGROUND_TYPE Output_GetBackgroundType(void);
 bool Output_LoadBackgroundFromImage(const IMAGE *image);
-void Output_LoadBackgroundFromObject(void);
+void Output_LoadBackgroundFromObject(bool wave);
 void Output_UnloadBackground(void);
 
 void Output_DrawBackground(void);
