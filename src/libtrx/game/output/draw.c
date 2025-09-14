@@ -26,7 +26,8 @@ typedef enum {
     C_HEADING_C,
     C_REQUESTED_E,
     C_REQUESTED_C,
-    C_REQUESTED_OUTLINE_C,
+    C_REQUESTED_OUTLINE_CH,
+    C_REQUESTED_OUTLINE_CV,
     C_REQUESTED_OUTLINE_E,
     C_BACKGROUND_OUTLINE_TL,
     C_BACKGROUND_OUTLINE_TR,
@@ -56,7 +57,8 @@ static M_GRADIENT_FILL m_GradientFills[] = {
 };
 
 static RGBA_8888 m_MenuColorMap[C_NUMBER_OF] = {
-    // clang-format off
+// clang-format off
+#if TR_VERSION == 1
     [C_BACKGROUND_C]           = { 0x00, 0x00, 0x40, 0x80 },
     [C_BACKGROUND_E]           = { 0x00, 0x00, 0x00, 0x80 },
     [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x00, 0x00, 0xE0 },
@@ -66,8 +68,22 @@ static RGBA_8888 m_MenuColorMap[C_NUMBER_OF] = {
     [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
     [C_REQUESTED_C]            = { 0x80, 0x38, 0xDC, 0x80 },
     //[C_REQUESTED_C]            = { 0x40, 0x1C, 0x78, 0x80 },
-    [C_REQUESTED_OUTLINE_C]    = { 0xC8, 0xC8, 0xC8, 0xFF },
+    [C_REQUESTED_OUTLINE_CH]   = { 0xC8, 0xC8, 0xC8, 0xFF },
+    [C_REQUESTED_OUTLINE_CV]   = { 0xC8, 0xC8, 0xC8, 0xFF },
     [C_REQUESTED_OUTLINE_E]    = { 0x28, 0x28, 0x28, 0xFF },
+#elif TR_VERSION == 2
+    [C_BACKGROUND_E]           = { 0x00, 0x20, 0x00, 0x80 },
+    [C_BACKGROUND_C]           = { 0x00, 0x60, 0x00, 0x80 },
+    [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
+    [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x20, 0x00, 0xE0 },
+    [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
+    [C_HEADING_C]              = { 0x10, 0x80, 0x38, 0x80 },
+    [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
+    [C_REQUESTED_C]            = { 0x38, 0xF0, 0x80, 0x80 },
+    [C_REQUESTED_OUTLINE_CH]   = { 0xFF, 0xFF, 0xFF, 0xFF },
+    [C_REQUESTED_OUTLINE_CV]   = { 0x38, 0xF0, 0x80, 0xFF },
+    [C_REQUESTED_OUTLINE_E]    = { 0x00, 0x00, 0x00, 0xFF },
+#endif
     [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
     [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
     [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
@@ -318,7 +334,8 @@ void Output_DrawTextOutline(
         h = 2 * ((h + 1) / 2);
         Output_DrawScreenCentreGradientBox(
             sx, sy, w, h, M_GetMenuColor(C_REQUESTED_OUTLINE_E),
-            M_GetMenuColor(C_REQUESTED_OUTLINE_C), M_TEXT_OUTLINE_THICKNESS);
+            M_GetMenuColor(C_REQUESTED_OUTLINE_CH),
+            M_GetMenuColor(C_REQUESTED_OUTLINE_CV), M_TEXT_OUTLINE_THICKNESS);
     }
 }
 
@@ -356,7 +373,8 @@ void Output_DrawScreenGradientBox(
 
 void Output_DrawScreenCentreGradientBox(
     const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
-    const RGBA_8888 edge, const RGBA_8888 center, const int32_t thickness)
+    const RGBA_8888 edge, const RGBA_8888 center_h, const RGBA_8888 center_v,
+    const int32_t thickness)
 {
     const float scale = Viewport_GetHeight(VIEWPORT_UI) / 480.0f;
     const float x0 = sx - scale;
@@ -366,18 +384,20 @@ void Output_DrawScreenCentreGradientBox(
     const float e = thickness * scale / 2.0f;
     const float xm = (x0 + x1) / 2.0f;
     const float ym = (y0 + y1) / 2.0f;
-    const RGBA_8888 cc = center;
+    const RGBA_8888 ch = center_h;
+    const RGBA_8888 cv = center_v;
     const RGBA_8888 ce = edge;
+    const RGBA_8888 cc = (RGBA_8888) { 255, 0, 0, 255 };
 
     // clang-format off
-    M_DrawScreenQuad(x0 - e, y0 - e, xm,     y0 + e, 0, ce, cc, ce, cc);
-    M_DrawScreenQuad(xm,     y0 - e, x1 + e, y0 + e, 0, cc, ce, cc, ce);
-    M_DrawScreenQuad(x0 - e, y1 - e, xm,     y1 + e, 0, ce, cc, ce, cc);
-    M_DrawScreenQuad(xm,     y1 - e, x1 + e, y1 + e, 0, cc, ce, cc, ce);
-    M_DrawScreenQuad(x0 - e, y0,     x0 + e, ym,     0, ce, ce, cc, cc);
-    M_DrawScreenQuad(x0 - e, ym,     x0 + e, y1,     0, cc, cc, ce, ce);
-    M_DrawScreenQuad(x1 - e, y0,     x1 + e, ym,     0, ce, ce, cc, cc);
-    M_DrawScreenQuad(x1 - e, ym,     x1 + e, y1,     0, cc, cc, ce, ce);
+    M_DrawScreenQuad(x0 - e, y0 - e, xm,     y0 + e, 0, ce, ch, ce, ch);
+    M_DrawScreenQuad(xm,     y0 - e, x1 + e, y0 + e, 0, ch, ce, ch, ce);
+    M_DrawScreenQuad(x0 - e, y1 - e, xm,     y1 + e, 0, ce, ch, ce, ch);
+    M_DrawScreenQuad(xm,     y1 - e, x1 + e, y1 + e, 0, ch, ce, ch, ce);
+    M_DrawScreenQuad(x0 - e, y0,     x0 + e, ym,     0, ce, ce, cv, cv);
+    M_DrawScreenQuad(x0 - e, ym,     x0 + e, y1,     0, cv, cv, ce, ce);
+    M_DrawScreenQuad(x1 - e, y0,     x1 + e, ym,     0, ce, ce, cv, cv);
+    M_DrawScreenQuad(x1 - e, ym,     x1 + e, y1,     0, cv, cv, ce, ce);
     // clang-format on
 }
 

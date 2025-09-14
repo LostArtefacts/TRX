@@ -42,4 +42,4 @@ void Output_DrawScreenGradientBox(
     RGBA_8888 bl, RGBA_8888 br, int32_t thickness);
 void Output_DrawScreenCentreGradientBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
-    RGBA_8888 center, int32_t thickness);
+    RGBA_8888 center_h, RGBA_8888 center_v, int32_t thickness);

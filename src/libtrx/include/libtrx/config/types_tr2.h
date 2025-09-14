@@ -83,6 +83,7 @@ typedef struct {
         float text_scale;
         float bar_scale;
         float pickup_scale;
+        UI_STYLE menu_style;
         bool enable_stats_level_header;
 
         bool enable_smooth_bars;

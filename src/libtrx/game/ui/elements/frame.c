@@ -44,9 +44,7 @@ void UI_BeginFrame(UI_FRAME_STYLE style)
     M_DATA *const data = node->data;
 
     data->ui_style = UI_STYLE_PC;
-#if TR_VERSION == 1
     data->ui_style = g_Config.ui.menu_style;
-#endif
 
     switch (style) {
     case UI_FRAME_DIALOG_BACKGROUND:

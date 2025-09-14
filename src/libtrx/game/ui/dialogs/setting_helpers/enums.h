@@ -28,9 +28,7 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[];
-#if TR_VERSION == 1
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[];
-#endif
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_SpriteLockModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[];
