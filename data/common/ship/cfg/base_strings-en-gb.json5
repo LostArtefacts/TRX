@@ -11,6 +11,7 @@
         "SETTING_AIRBAR_COLOR_DESCRIPTION": "Colour of the airbar.",
         "SETTING_ALLY_HEALTHBAR_COLOR": "Ally bar colour",
         "SETTING_ALLY_HEALTHBAR_COLOR_DESCRIPTION": "Colour of the allies healthbar. Shown in the location of the enemy healthbars.",
+        "SETTING_BAR_LOOK_DESCRIPTION": "Controls the visual appearance of the UI bars.\n- TR1: use the TR1 style.\n- TR2: use the TR2 (PC version) style.\n- PS1: use the TR2/TR3 (PlayStation 1 version) style.\nThis setting disables bar colour selection.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Randomise enemy start angle",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Makes the health, air and enemy bars use smooth colour transitions.",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
