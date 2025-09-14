@@ -21,6 +21,7 @@ typedef enum {
     UI_BAR_ENEMY_HP,
     UI_BAR_ALLY_HP,
     UI_BAR_PROGRESS,
+    UI_BAR_NUMBER_OF,
 } UI_BAR_TYPE;
 
 typedef struct {

@@ -91,6 +91,7 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[] = {
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[] = {
     { BAR_LOOK_TR1, GS_ID(ENUM_BAR_LOOK_TR1) },
     { BAR_LOOK_TR2, GS_ID(ENUM_BAR_LOOK_TR2) },
+    { BAR_LOOK_PS1, GS_ID(ENUM_BAR_LOOK_PS1) },
     { -1, nullptr },
 };
 

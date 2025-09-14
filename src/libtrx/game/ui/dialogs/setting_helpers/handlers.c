@@ -35,6 +35,11 @@ bool UI_Settings_UIPickupsScale_IsAvailable(
     return g_Config.visuals.enable_3d_pickups;
 }
 
+bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.gameplay.enable_sprint;
+}
+
 bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.ui.lara_health_bar.show_mode != BSM_NEVER;
@@ -43,11 +48,6 @@ bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.ui.lara_air_bar.show_mode != BSM_NEVER;
-}
-
-bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *const option)
-{
-    return g_Config.gameplay.enable_sprint;
 }
 
 bool UI_Settings_Sprintbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
@@ -71,6 +71,40 @@ bool UI_Settings_AllyHealthbar_IsAvailable(
     return g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS
         && g_Config.gameplay.enable_ally_targeting;
 #endif
+}
+
+bool UI_Settings_HealthbarColor_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_Healthbar_IsAvailable(option)
+        && g_Config.ui.bar_look != BAR_LOOK_PS1;
+}
+
+bool UI_Settings_AirbarColor_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_Airbar_IsAvailable(option)
+        && g_Config.ui.bar_look != BAR_LOOK_PS1;
+}
+
+bool UI_Settings_SprintbarColor_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_Sprintbar_IsAvailable(option)
+        && g_Config.ui.bar_look != BAR_LOOK_PS1;
+}
+
+bool UI_Settings_EnemyHealthbarColor_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_EnemyHealthbar_IsAvailable(option)
+        && g_Config.ui.bar_look != BAR_LOOK_PS1;
+}
+
+bool UI_Settings_AllyHealthbarColor_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_AllyHealthbar_IsAvailable(option)
+        && g_Config.ui.bar_look != BAR_LOOK_PS1;
 }
 
 bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *const option)

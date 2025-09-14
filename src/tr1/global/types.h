@@ -69,13 +69,6 @@ typedef enum {
 } TRAP_ANIM;
 
 typedef enum {
-    BT_LARA_HEALTH = 0,
-    BT_LARA_MAX_AIR = 1,
-    BT_ENEMY_HEALTH = 2,
-    BT_PROGRESS = 3,
-} BAR_TYPE;
-
-typedef enum {
     PASSPORT_MODE_BROWSE = 0,
     PASSPORT_MODE_LOAD_GAME = 1,
     PASSPORT_MODE_SELECT_LEVEL = 2,

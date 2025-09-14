@@ -43,11 +43,13 @@ typedef enum {
     BC_PINK,
     BC_PURPLE,
     BC_GREEN2,
+    BC_NUMBER_OF,
 } BAR_COLOR;
 
 typedef enum {
     BAR_LOOK_TR1,
     BAR_LOOK_TR2,
+    BAR_LOOK_PS1,
 } BAR_LOOK;
 
 typedef enum {
