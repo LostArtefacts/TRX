@@ -1522,6 +1522,7 @@ static bool M_LoadArm(JSON_OBJECT *const arm_obj, LARA_ARM *const arm)
         return false;
     }
 
+    arm->anim_num = JSON_ObjectGetInt(arm_obj, "anim_num", arm->anim_num);
     arm->frame_num = JSON_ObjectGetInt(arm_obj, "frame_num", arm->frame_num);
     arm->lock = JSON_ObjectGetInt(arm_obj, "lock", arm->lock);
     arm->flash_gun = JSON_ObjectGetInt(arm_obj, "flash_gun", arm->flash_gun);
