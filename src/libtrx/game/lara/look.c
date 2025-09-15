@@ -104,8 +104,10 @@ static bool M_IsStatePermitted(void)
         return false;
     }
 
-    if (Lara_HasExtraState(m_PermittedExtraStates)) {
-        return g_Config.gameplay.look_mode == LOOK_MODE_UNRESTRICTED;
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->extra_anim) {
+        return g_Config.gameplay.look_mode == LOOK_MODE_UNRESTRICTED
+            && Lara_HasExtraState(m_PermittedExtraStates);
     }
 
     return g_Config.gameplay.look_mode == LOOK_MODE_UNRESTRICTED
