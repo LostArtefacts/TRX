@@ -9,6 +9,7 @@
 #define WAVE_LIGHT_DELTA 0.125
 #define WAVE_Y_TILES 6
 #define WAVE_ORBIT_RADIUS 0.2
+#define WAVE_FPS_DRIFT 25 / 30
 
 #ifdef VERTEX
 
@@ -23,15 +24,15 @@ out float vertLight;
 
 void main() {
     if ((uEffect & EFFECT_WAVE) != 0) {
-        float edgeOffset = (1.0 / WAVE_Y_TILES) * 3.0;
+        float edgeOffset = (1.0 / WAVE_Y_TILES) * 2.0;
         vec2 baseNDC = ((inPosition.xy * (2.0 + 2.0 * edgeOffset)) - (1.0 + edgeOffset)) * vec2(1.0, -1.0);
 
         vec2 aspectCorrection = vec2(uViewportSize.y / uViewportSize.x, 1);
         vec2 repeat = float(WAVE_Y_TILES) / aspectCorrection;
         float shortPhase = dot(inPosition, repeat * WAVE_TILE_PHASE_SHORT);
         float longPhase = dot(inPosition, repeat * WAVE_TILE_PHASE_LONG);
-        float shortAng = radians((uTime * 24 / 30)  * WAVE_SPEED_SHORT + shortPhase);
-        float longAng = radians((uTime * 24 / 30) * WAVE_SPEED_LONG + longPhase);
+        float shortAng = radians((uTime * WAVE_FPS_DRIFT)  * WAVE_SPEED_SHORT + shortPhase);
+        float longAng = radians((uTime * WAVE_FPS_DRIFT) * WAVE_SPEED_LONG + longPhase);
 
         float viewportSizeNDC = (1 + edgeOffset * 2);
         vec2 tileSize = viewportSizeNDC / repeat;
