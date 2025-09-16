@@ -34,6 +34,23 @@ typedef struct {
     int16_t id_map[MAX_EFFECTS];
 } SAVEGAME_BSON_FX_ORDER;
 
+#define DUMP_XYZ(obj, key, value)                                              \
+    do {                                                                       \
+        JSON_OBJECT *const sub_obj = JSON_ObjectNew();                         \
+        JSON_ObjectAppendInt(sub_obj, "x", value.x);                           \
+        JSON_ObjectAppendInt(sub_obj, "y", value.y);                           \
+        JSON_ObjectAppendInt(sub_obj, "z", value.z);                           \
+        JSON_ObjectAppendObject(obj, key, sub_obj);                            \
+    } while (0)
+
+#define LOAD_XYZ(obj, key, value)                                              \
+    do {                                                                       \
+        const JSON_OBJECT *const sub_obj = JSON_ObjectGetObject(obj, key);     \
+        value.x = JSON_ObjectGetInt(sub_obj, "x", value.x);                    \
+        value.y = JSON_ObjectGetInt(sub_obj, "y", value.y);                    \
+        value.z = JSON_ObjectGetInt(sub_obj, "z", value.z);                    \
+    } while (0)
+
 static void M_SaveRaw(
     MYFILE *fp, JSON_VALUE *root, int32_t version, int32_t level_num);
 static JSON_VALUE *M_ParseFromBuffer(
