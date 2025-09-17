@@ -7,6 +7,7 @@
 - added an option to use PS1-style UI backgrounds and frames (Graphics → UI → Menu style) (#1635)
 - added an option to use PS1-style carpet texture animation (Graphics → UI → Background style, default on) (#1630)
 - added an option to turn off sound effect pitching (#625)
+- changed OG glitch-related config options to be on/fixed by default (#3929)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
 - fixed camera stutter when shimmying on ladders to the left (#3904, regression from 1.3)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 1.3)
