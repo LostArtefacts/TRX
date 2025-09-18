@@ -2,6 +2,7 @@
 - added an option to use TR2-style UI bars (Graphics → UI → Bars look)
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
+- added support for ladders (#3124)
 - improved PS1-style UI faithfulness
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)

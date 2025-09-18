@@ -73,17 +73,11 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 
     int32_t edge;
     const M_EDGE_CATCH edge_catch = M_TestEdgeCatch(item, coll, &edge);
-#if TR_VERSION == 1
-    if (edge_catch != EDGE_CATCH_POS) {
-        return false;
-    }
-#else
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
             && !Lara_Col_TestLadderHang(item, coll))) {
         return false;
     }
-#endif
 
     const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
     if (dir == DIR_UNKNOWN) {
@@ -127,17 +121,11 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
 
     int32_t edge;
     const M_EDGE_CATCH edge_catch = M_TestEdgeCatch(item, coll, &edge);
-#if TR_VERSION == 1
-    if (edge_catch != EDGE_CATCH_POS) {
-        return false;
-    }
-#else
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
             && !Lara_Col_TestLadderHang(item, coll))) {
         return false;
     }
-#endif
 
     const DIRECTION dir = Math_GetDirectionCone(item->rot.y, LARA_HANG_ANGLE);
     if (dir == DIR_UNKNOWN) {
@@ -527,11 +515,10 @@ void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
     case COLL_FRONT:
     case COLL_TOP_FRONT:
         LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION >= 2
         if (lara->climb_status && item->speed == 2) {
             break;
         }
-#endif
+
         if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_TR1
             || coll->side_mid.floor > (STEP_L * 2)) {
             item->goal_anim_state = LS_FAST_FALL;

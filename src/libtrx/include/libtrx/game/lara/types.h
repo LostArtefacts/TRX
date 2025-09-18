@@ -79,6 +79,7 @@ typedef struct {
 
     bool extra_anim;
     bool burn;
+    bool climb_status;
 
     struct {
         int32_t item_num;
@@ -92,8 +93,6 @@ typedef struct {
 #if TR_VERSION >= 2
     GAME_OBJECT_ID back_gun_obj_id;
     int16_t gun_item_num;
-
-    bool climb_status;
 
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;

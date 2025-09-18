@@ -29,7 +29,6 @@ typedef enum {
     // clang-format on
 } M_CLIMB_RESULT;
 
-static bool M_GetClimbStatus(void);
 static void M_HangTest(ITEM *item, COLL_INFO *coll);
 static bool M_TestLadderRelease(ITEM *item);
 static M_CLIMB_RESULT M_TestClimbUpPos(
@@ -47,15 +46,6 @@ static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
 static void M_SideLadder(ITEM *item, COLL_INFO *coll);
 static void M_UpLadder(ITEM *item, COLL_INFO *coll);
 static void M_DownLadder(ITEM *item, COLL_INFO *coll);
-
-static bool M_GetClimbStatus(void)
-{
-#if TR_VERSION == 1
-    return false;
-#else
-    return Lara_GetLaraInfo()->climb_status;
-#endif
-}
 
 static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
 {
@@ -93,8 +83,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_Col_GetInfo(item, coll);
 
-#if TR_VERSION >= 2
-    if (M_GetClimbStatus()) {
+    if (lara->climb_status) {
         if (!g_Input.action || item->hit_points <= 0) {
             XYZ_32 pos = {
                 .x = 0,
@@ -136,7 +125,6 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
         }
         return;
     }
-#endif
 
     if (!g_Input.action || item->hit_points <= 0
         || coll->side_front.floor > 0) {
@@ -319,9 +307,6 @@ static M_CLIMB_RESULT M_TestClimbPos(
     const ITEM *const item, const int32_t front, const int32_t right,
     const int32_t origin, const int32_t item_height, int32_t *const shift)
 {
-#if TR_VERSION == 1
-    return CLIMB_RESULT_NONE;
-#else
     const int32_t y = item->pos.y + origin;
     int32_t x;
     int32_t z;
@@ -467,7 +452,6 @@ static M_CLIMB_RESULT M_TestClimbPos(
     }
 
     return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
-#endif
 }
 
 static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
@@ -550,8 +534,8 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    const bool climb_status = M_GetClimbStatus();
-    if (!climb_status && M_TestLedgeJump(item, coll)) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!lara->climb_status && M_TestLedgeJump(item, coll)) {
         item->goal_anim_state = g_Input.forward ? LS_JUMP_UP : LS_JUMP_BACK;
         return;
     }
@@ -562,27 +546,23 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
             || coll->side_left.floor - coll->side_left.ceiling < 0
             || coll->side_right.floor - coll->side_right.ceiling < 0
             || coll->hit_static) {
-#if TR_VERSION >= 2
-            if (climb_status && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
+            if (lara->climb_status && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
                 && Item_TestFrameEqual(item, M_LF_HANG)
                 && coll->side_mid.ceiling <= -256) {
                 item->goal_anim_state = LS_HANG;
                 item->current_anim_state = LS_HANG;
                 Item_SwitchToAnim(item, LA_LADDER_UP_HANGING, 0);
             }
-#endif
         } else {
             item->goal_anim_state = g_Input.slow ? LS_GYMNAST : LS_PULL_UP;
         }
     } else if (
-        g_Input.back && climb_status
+        g_Input.back && lara->climb_status
         && Item_TestAnimEqual(item, LA_REACH_TO_HANG)
         && Item_TestFrameEqual(item, M_LF_HANG)) {
-#if TR_VERSION >= 2
         item->goal_anim_state = LS_HANG;
         item->current_anim_state = LS_HANG;
         Item_SwitchToAnim(item, LA_LADDER_DOWN_HANGING, 0);
-#endif
     }
 }
 
@@ -598,7 +578,6 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
 
 static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     if (M_TestLadderRelease(item)
         || !Item_TestAnimEqual(item, LA_LADDER_IDLE)) {
         return;
@@ -696,12 +675,10 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS_HANG;
         }
     }
-#endif
 }
 
 static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     if (M_TestLadderRelease(item)) {
         return;
     }
@@ -753,12 +730,10 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
     } else {
         Item_SwitchToAnim(item, LA_LADDER_IDLE, 0);
     }
-#endif
 }
 
 static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     if (M_TestLadderRelease(item) || !Item_TestAnimEqual(item, LA_LADDER_UP)) {
         return;
     }
@@ -812,12 +787,10 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
 
     item->goal_anim_state = LS_CLIMBING;
     item->pos.y -= yshift;
-#endif
 }
 
 static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     if (M_TestLadderRelease(item)
         || !Item_TestAnimEqual(item, LA_LADDER_DOWN)) {
         return;
@@ -858,22 +831,22 @@ static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    #if 0
+#if 0
     int32_t shift = shift_l;
-    #endif
+#endif
     if (shift_r && shift_l) {
         if ((shift_r < 0) != (shift_l < 0)) {
             item->goal_anim_state = LS_CLIMB_STANCE;
             Lara_Animate(item);
             return;
         }
-    #if 0
+#if 0
         if (shift_r < 0 && shift_r < shift_l) {
             shift = shift_r;
         } else if (shift_r > 0 && shift_r > shift_l) {
             shift = shift_r;
         }
-    #endif
+#endif
     }
 
     if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
@@ -886,7 +859,6 @@ static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
 
     item->goal_anim_state = LS_CLIMB_DOWN;
     item->pos.y -= yshift;
-#endif
 }
 
 bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
@@ -910,7 +882,6 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     const int32_t front_floor = coll->side_front.floor;
     const int32_t front_ceiling = coll->side_front.ceiling;
     const bool slope = ABS(left_floor - right_floor) >= SLOPE_DIF;
-    const bool climb_status = M_GetClimbStatus();
     const int32_t mid = STEP_L / 2;
 
     if (front_floor >= -STEP_L * 2 - mid && front_floor <= -STEP_L * 2 + mid) {
@@ -946,8 +917,9 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
             -(Math_Sqrt(-2 * GRAVITY * (front_floor + 800)) + 3);
         Lara_Animate(item);
     } else if (
-        climb_status && front_floor <= -1920 && lara->water_status != LWS_WADE
-        && left_floor <= -STEP_L * 8 + mid && right_floor <= -STEP_L * 8
+        lara->climb_status && front_floor <= -1920
+        && lara->water_status != LWS_WADE && left_floor <= -STEP_L * 8 + mid
+        && right_floor <= -STEP_L * 8
         && coll->side_mid.ceiling <= -STEP_L * 8 + mid + LARA_HEIGHT) {
         item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
@@ -955,10 +927,9 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
         lara->calc_fall_speed = -116;
         Lara_Animate(item);
     } else if (
-        climb_status
+        lara->climb_status
         && (front_floor < -STEP_L * 4 || front_ceiling >= LARA_HEIGHT - STEP_L)
         && coll->side_mid.ceiling <= -STEP_L * 5 + LARA_HEIGHT) {
-#if TR_VERSION >= 2
         Lara_Col_Shift(coll);
         if (M_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS_CLIMB_STANCE;
@@ -970,7 +941,6 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
             return true;
         }
         return false;
-#endif
     } else {
         return false;
     }
@@ -982,7 +952,8 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
 
 bool Lara_Col_TestLadderHang(ITEM *const item, const COLL_INFO *const coll)
 {
-    if (!M_GetClimbStatus() || item->fall_speed < 0) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!lara->climb_status || item->fall_speed < 0) {
         return false;
     }
 
@@ -1029,11 +1000,9 @@ bool Lara_Col_TestLadderHang(ITEM *const item, const COLL_INFO *const coll)
 REGISTER_LARA_COL(LS_HANG,         M_Hang)
 REGISTER_LARA_COL(LS_SHIMMY_LEFT,  M_Shimmy)
 REGISTER_LARA_COL(LS_SHIMMY_RIGHT, M_Shimmy)
-#if TR_VERSION >= 2
 REGISTER_LARA_COL(LS_CLIMB_STANCE, M_StanceLadder)
 REGISTER_LARA_COL(LS_CLIMB_LEFT,   M_SideLadder)
 REGISTER_LARA_COL(LS_CLIMB_RIGHT,  M_SideLadder)
 REGISTER_LARA_COL(LS_CLIMBING,     M_UpLadder)
 REGISTER_LARA_COL(LS_CLIMB_DOWN,   M_DownLadder)
-#endif
 // clang-format on

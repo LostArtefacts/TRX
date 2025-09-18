@@ -25,10 +25,7 @@
 #define M_TRIG_CMD_TYPE(t) ((t & 0x7C00) >> 10)
 #define M_TRIG_CMD_ARG(t) (t & 0x3FF)
 #define M_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)
-
-#if TR_VERSION == 2
-    #define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
-#endif
+#define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
@@ -215,9 +212,7 @@ void Room_PopulateSectorData(
     sector->portal_room.wall = NO_ROOM;
     sector->is_death_sector = false;
     sector->trigger = nullptr;
-#if TR_VERSION == 2
     sector->ladder = LADDER_NONE;
-#endif
 
     if (start_index == null_index) {
         return;
@@ -249,11 +244,9 @@ void Room_PopulateSectorData(
             data = M_ReadTrigger(data, fd_entry, sector);
             break;
 
-#if TR_VERSION >= 2
         case FT_CLIMB:
             sector->ladder = (LADDER_DIRECTION)M_LADDER_TYPE(fd_entry);
             break;
-#endif
 
         default:
             break;
@@ -297,10 +290,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         if (sector->is_death_sector && M_TestLava(item)) {
             Lara_TouchLava();
         }
-#if TR_VERSION >= 2
+
         const LADDER_DIRECTION direction = 1 << Math_GetDirection(item->rot.y);
         lara_info->climb_status = (sector->ladder & direction) == direction;
-#endif
     }
 
     const TRIGGER *const trigger = sector->trigger;

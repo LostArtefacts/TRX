@@ -99,6 +99,7 @@ typedef enum {
     FET_GLIDE_CAMERA      = 8,
     FET_ZONE_FIX          = 9,
     FET_PORTALS           = 10,
+    FET_CLIMB             = 11,
 } FLOOR_EDIT_TYPE;
 
 typedef enum {

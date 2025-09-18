@@ -35,9 +35,7 @@ typedef enum {
     FT_ROOF = 3,
     FT_TRIGGER = 4,
     FT_LAVA = 5,
-#if TR_VERSION == 2
     FT_CLIMB = 6,
-#endif
 } FLOOR_TYPE;
 
 typedef enum {
@@ -70,7 +68,6 @@ typedef enum {
     TT_ANTITRIGGER = 9,
 } TRIGGER_TYPE;
 
-#if TR_VERSION == 2
 typedef enum {
     LADDER_NONE = 0,
     LADDER_NORTH = 1 << 0,
@@ -78,4 +75,3 @@ typedef enum {
     LADDER_SOUTH = 1 << 2,
     LADDER_WEST = 1 << 3,
 } LADDER_DIRECTION;
-#endif
