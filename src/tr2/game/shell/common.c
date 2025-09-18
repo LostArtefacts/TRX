@@ -62,7 +62,7 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Output_ApplyRenderSettings();
     }
 
-    if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_psx_fov)) {
+    if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_ps1_fov)) {
         if (Viewport_GetSystemFOV() == -1) {
             Viewport_AlterFOV(-1);
         }

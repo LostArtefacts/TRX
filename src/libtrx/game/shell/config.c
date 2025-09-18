@@ -162,7 +162,7 @@ void Shell_HandleCommonConfigChange(
         || L_CHANGED(rendering.upscaling_factor) || L_CHANGED(rendering.borders)
         || L_CHANGED(rendering.aspect_mode)
 #if TR_VERSION >= 2
-        || L_CHANGED(visuals.use_psx_fov)
+        || L_CHANGED(visuals.use_ps1_fov)
 #endif
     ) {
         if (!m_IgnoreConfigChanges) {
