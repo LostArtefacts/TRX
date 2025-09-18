@@ -3,6 +3,7 @@
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
 - improved PS1-style UI faithfulness
 - changed OG glitch-related config options to be on/fixed by default (#3929)
+- changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
 - fixed certain ambient sounds volume scaling wrong on non-100% volumes
 - fixed trapdoor type 3 (object #67) not functioning (#3895)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 4.13)
