@@ -47,9 +47,7 @@ typedef struct {
     uint16_t idx;
     int16_t box;
     bool is_death_sector;
-#if TR_VERSION == 2
     LADDER_DIRECTION ladder;
-#endif
     TRIGGER *trigger;
     WALKABLE *walkable;
     struct {

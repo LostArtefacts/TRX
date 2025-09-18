@@ -42,7 +42,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
 #if TR_VERSION >= 2
     lara_info->back_gun_obj_id = O_LARA;
     lara_info->gun_item_num = NO_ITEM;
-    lara_info->climb_status = false;
     lara_info->flare.age = 0;
     lara_info->flare.control = false;
     lara_info->flare.frame_num = 0;
@@ -62,6 +61,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->current_active = 0;
     lara_info->extra_anim = false;
     lara_info->burn = false;
+    lara_info->climb_status = false;
     lara_info->mesh_effects = 0;
     lara_info->torso_rot.x = 0;
     lara_info->torso_rot.y = 0;

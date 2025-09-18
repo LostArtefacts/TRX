@@ -57,7 +57,6 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
 
 static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_elevation = M_CAM_CLIMB_STANCE_ELEVATION;
@@ -76,12 +75,10 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
         lara->gun_status = LGS_ARMLESS;
         lara->move_angle = item->rot.y + DEG_180;
     }
-#endif
 }
 
 static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     if (item->current_anim_state == LS_CLIMB_LEFT) {
@@ -97,12 +94,10 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS_CLIMB_STANCE;
         }
     }
-#endif
 }
 
 static void M_UpDownLadder(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     switch (item->current_anim_state) {
@@ -119,19 +114,16 @@ static void M_UpDownLadder(ITEM *const item, COLL_INFO *const coll)
     default:
         break;
     }
-#endif
 }
 
 // clang-format off
 REGISTER_LARA_STATE(LS_HANG,         M_Hang)
 REGISTER_LARA_STATE(LS_SHIMMY_LEFT,  M_Shimmy)
 REGISTER_LARA_STATE(LS_SHIMMY_RIGHT, M_Shimmy)
-#if TR_VERSION >= 2
 REGISTER_LARA_STATE(LS_CLIMB_STANCE, M_StanceLadder)
 REGISTER_LARA_STATE(LS_CLIMB_LEFT,   M_SideLadder)
 REGISTER_LARA_STATE(LS_CLIMB_RIGHT,  M_SideLadder)
 REGISTER_LARA_STATE(LS_CLIMBING,     M_UpDownLadder)
 REGISTER_LARA_STATE(LS_CLIMB_DOWN,   M_UpDownLadder)
 REGISTER_LARA_STATE(LS_CLIMB_END,    M_UpDownLadder)
-#endif
 // clang-format on

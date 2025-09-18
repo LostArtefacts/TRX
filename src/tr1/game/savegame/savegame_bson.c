@@ -892,6 +892,8 @@ static bool M_LoadLara(
     lara->current_active =
         JSON_ObjectGetInt(lara_obj, "current_active", lara->current_active);
     lara->burn = JSON_ObjectGetBool(lara_obj, "burn", lara->burn);
+    lara->climb_status =
+        JSON_ObjectGetInt(lara_obj, "climb_status", lara->climb_status);
 
     lara->hit_effect_count =
         JSON_ObjectGetInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
@@ -1412,6 +1414,7 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "death_count", lara->death_timer);
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);
     JSON_ObjectAppendBool(lara_obj, "burn", lara->burn);
+    JSON_ObjectAppendInt(lara_obj, "climb_status", lara->climb_status);
 
     JSON_ObjectAppendInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     JSON_ObjectAppendInt(

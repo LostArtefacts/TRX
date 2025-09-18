@@ -220,15 +220,10 @@ void Item_Animate(ITEM *const item)
         item->frame_num = anim->jump_frame_num;
         anim = Item_GetAnim(item);
 
-#if TR_VERSION == 1
-        item->current_anim_state = anim->current_anim_state;
-        item->goal_anim_state = item->current_anim_state;
-#else
         if (item->current_anim_state != anim->current_anim_state) {
             item->current_anim_state = anim->current_anim_state;
             item->goal_anim_state = anim->current_anim_state;
         }
-#endif
 
         if (item->required_anim_state == item->current_anim_state) {
             item->required_anim_state = 0;
