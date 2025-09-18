@@ -164,7 +164,9 @@ static void M_Control(const int16_t item_num)
     }
 
     Creature_Head(item, head / 2);
-    creature->neck_rotation = creature->head_rotation;
+    if (creature != nullptr) {
+        creature->neck_rotation = creature->head_rotation;
+    }
 
     Creature_Animate(item_num, angle, tilt);
 }
