@@ -27,6 +27,7 @@
     - added the ability for movable blocks to travel up and down lifts
     - fixed various bugs with falling movable blocks
 - fixed Lara hang climbing up a movable block used as a ladder piece (#3828)
+- fixed a rare crash if the t-rex is killed with a grenade and many other enemies are active (#3938)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)
