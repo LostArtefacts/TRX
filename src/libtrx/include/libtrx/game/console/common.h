@@ -12,6 +12,7 @@ void Console_Close(void);
 bool Console_IsOpened(void);
 
 void Console_Log(const char *fmt, ...);
+void Console_Clear(void);
 COMMAND_RESULT Console_Eval(const char *cmdline);
 
 void Console_Control(void);

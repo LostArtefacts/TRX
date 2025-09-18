@@ -83,6 +83,13 @@ void Console_Log(const char *fmt, ...)
     Memory_FreePointer(&text);
 }
 
+void Console_Clear(void)
+{
+    UI_FireEvent((EVENT) {
+        .name = "console_clear",
+    });
+}
+
 COMMAND_RESULT Console_Eval(const char *const cmdline)
 {
     LOG_INFO("executing command: %s", cmdline);

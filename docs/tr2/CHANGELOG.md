@@ -7,6 +7,7 @@
 - added an option to use PS1-style UI backgrounds and frames (Graphics → UI → Menu style) (#1635)
 - added an option to use PS1-style carpet texture animation (Graphics → UI → Background style, default on) (#1630)
 - added an option to turn off sound effect pitching (#625)
+- added a new `/cls` / `/clear` console command to quickly clear console logs
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the Use PSX FOV option name to Use PS1 FOV (Graphics → Visuals → Use PS1 FOV)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)

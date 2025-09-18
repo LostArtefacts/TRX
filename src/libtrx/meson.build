@@ -96,6 +96,7 @@ sources = [
   'game/clock/timer.c',
   'game/clock/turbo.c',
   'game/collision.c',
+  'game/console/cmd/clear.c',
   'game/console/cmd/config.c',
   'game/console/cmd/debug.c',
   'game/console/cmd/die.c',

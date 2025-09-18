@@ -25,6 +25,7 @@
         "CONSOLE_CMD_HELP_LIST": "Verfügbare Kommandos:",
         "CONSOLE_HELP_BRAID": "Aktiviert und deaktiviert Laras Zopf.",
         "CONSOLE_HELP_CHEATS": "Schaltet In-Game Cheats ein oder aus.",
+        "CONSOLE_HELP_CLEAR": "\\{review}Löscht sichtbare Konsolenprotokolle.",
         "CONSOLE_HELP_DEBUG": "Aktiviert und deaktiviert visuele Debuginformationen.",
         "CONSOLE_HELP_DRAIN": "Entfernt das gesamte Wasser aus dem Raum, in dem sie sich im Moment befinden.",
         "CONSOLE_HELP_END_LEVEL": "Beendet das aktuelle Level.",

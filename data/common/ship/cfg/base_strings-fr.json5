@@ -25,6 +25,7 @@
         "CONSOLE_CMD_HELP_LIST": "Commandes disponibles :",
         "CONSOLE_HELP_BRAID": "Active la tresse de Lara.",
         "CONSOLE_HELP_CHEATS": "Active ou désactive les codes de triche.",
+        "CONSOLE_HELP_CLEAR": "\\{review}Efface les journaux de la console visibles.",
         "CONSOLE_HELP_DEBUG": "Affiche les informations de débogage visuel.",
         "CONSOLE_HELP_DRAIN": "Retire toute l'eau de la salle actuelle.",
         "CONSOLE_HELP_END_LEVEL": "Met fin au niveau actuel.",
