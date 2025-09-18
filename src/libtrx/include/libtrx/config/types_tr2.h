@@ -53,7 +53,7 @@ typedef struct {
         bool fix_animated_sprites;
         bool fix_glide_cameras;
         int32_t fov;
-        bool use_psx_fov;
+        bool use_ps1_fov;
         CAMERA_MODE camera_mode;
         float brightness;
 

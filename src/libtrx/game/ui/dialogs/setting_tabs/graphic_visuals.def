@@ -18,7 +18,7 @@ X_UI_CFG_BOOL(visuals.fov_vertical,         SETTING_FOV_VERTICAL)
 
 #elif TR_VERSION == 2
 X_UI_CFG_INT32(visuals.fov,                 SETTING_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 10)
-X_UI_CFG_BOOL(visuals.use_psx_fov,          SETTING_USE_PSX_FOV)
+X_UI_CFG_BOOL(visuals.use_ps1_fov,          SETTING_USE_PS1_FOV)
 #endif
 
 #if TR_VERSION == 1

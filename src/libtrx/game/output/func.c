@@ -122,7 +122,7 @@ void Output_ApplyFOV(void)
 
     const int32_t fov_width = sw;
 #else
-    const int32_t adjust = g_Config.visuals.use_psx_fov ? 200 : 240;
+    const int32_t adjust = g_Config.visuals.use_ps1_fov ? 200 : 240;
     const int32_t fov_width = sw * ((4.0f / 3.0f) / aspect) * 240 / adjust;
 #endif
 
