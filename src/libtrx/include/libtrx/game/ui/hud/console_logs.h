@@ -14,7 +14,7 @@ typedef struct {
     size_t max_lines;
     size_t vis_lines;
     UI_CONSOLE_LOG_LINE *logs;
-    int32_t listener_id;
+    int32_t listeners[2];
 } UI_CONSOLE_LOGS;
 
 // state functions

@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...develop) - ××××-××-××
 - added an option to use TR2-style UI bars (Graphics → UI → Bars look)
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
+- added a new `/cls` / `/clear` console command to quickly clear console logs
 - improved PS1-style UI faithfulness
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)

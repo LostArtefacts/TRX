@@ -17,16 +17,17 @@
 static void M_ScrollLogs(UI_CONSOLE_LOGS *s);
 static void M_UpdateLogCount(UI_CONSOLE_LOGS *s);
 static void M_HandleLog(const EVENT *event, void *user_data);
+static void M_HandleClear(const EVENT *event, void *user_data);
 
 static void M_ScrollLogs(UI_CONSOLE_LOGS *const s)
 {
     int32_t i = s->max_lines - 1;
-    while (i >= 0 && !s->logs[i].expire_at) {
+    while (i >= 0 && s->logs[i].text == nullptr) {
         i--;
     }
 
     bool need_layout = false;
-    while (i >= 0 && s->logs[i].expire_at
+    while (i >= 0 && s->logs[i].text != nullptr
            && Clock_GetRealTime() >= s->logs[i].expire_at) {
         s->logs[i].expire_at = 0.0;
         Memory_FreePointer(&s->logs[i].text);
@@ -38,6 +39,7 @@ static void M_ScrollLogs(UI_CONSOLE_LOGS *const s)
         M_UpdateLogCount(s);
     }
 }
+
 static void M_UpdateLogCount(UI_CONSOLE_LOGS *const s)
 {
     s->vis_lines = 0;
@@ -64,6 +66,15 @@ static void M_HandleLog(const EVENT *const event, void *const user_data)
     M_UpdateLogCount(s);
 }
 
+static void M_HandleClear(const EVENT *const event, void *const user_data)
+{
+    UI_CONSOLE_LOGS *const s = user_data;
+    for (size_t i = 0; i < s->max_lines; i++) {
+        s->logs[i].expire_at = 0.0;
+    }
+    M_ScrollLogs(s);
+}
+
 void UI_ConsoleLogs_Init(UI_CONSOLE_LOGS *const s)
 {
     if (s->max_lines <= 0) {
@@ -71,7 +82,8 @@ void UI_ConsoleLogs_Init(UI_CONSOLE_LOGS *const s)
     }
     s->logs = Memory_Alloc(s->max_lines * sizeof(UI_CONSOLE_LOG_LINE));
     s->vis_lines = 0;
-    s->listener_id = UI_Subscribe("console_log", nullptr, M_HandleLog, s);
+    s->listeners[0] = UI_Subscribe("console_log", nullptr, M_HandleLog, s);
+    s->listeners[1] = UI_Subscribe("console_clear", nullptr, M_HandleClear, s);
 }
 
 void UI_ConsoleLogs_Free(UI_CONSOLE_LOGS *const s)
@@ -80,7 +92,8 @@ void UI_ConsoleLogs_Free(UI_CONSOLE_LOGS *const s)
         Memory_FreePointer(&s->logs[i].text);
     }
     Memory_FreePointer(&s->logs);
-    UI_Unsubscribe(s->listener_id);
+    UI_Unsubscribe(s->listeners[0]);
+    UI_Unsubscribe(s->listeners[1]);
 }
 
 void UI_ConsoleLogs(UI_CONSOLE_LOGS *const s)

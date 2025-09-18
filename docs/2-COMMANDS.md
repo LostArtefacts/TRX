@@ -169,6 +169,10 @@ whichever key you have bound, and not include it as part of the command itself.
 
 ## Miscellaneous commands
 
+- `/cls`  
+  `/clear`
+  Wipes the console logs, quickly erasing all traces of your cheat spree (or that ugly pile of debug misery).
+
 - `/strings`  
   Reloads the current language files on the fly. Très utile for translators.
 
