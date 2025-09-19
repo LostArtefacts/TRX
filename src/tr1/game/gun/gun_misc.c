@@ -8,7 +8,9 @@
 #include "game/stats.h"
 
 #include <libtrx/config.h>
+#include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/gun/vars.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
@@ -164,113 +166,6 @@ void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
     }
 
     Gun_TargetInfo(weapon);
-}
-
-int32_t Gun_FireWeapon(
-    const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
-    const int16_t *const angles)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
-
-    AMMO_INFO *ammo;
-    switch (weapon_type) {
-    case LGT_MAGNUMS:
-        ammo = &lara->magnum_ammo;
-        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
-            ammo->ammo = 1000;
-        }
-        break;
-
-    case LGT_UZIS:
-        ammo = &lara->uzi_ammo;
-        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
-            ammo->ammo = 1000;
-        }
-        break;
-
-    case LGT_SHOTGUN:
-        ammo = &lara->shotgun_ammo;
-        if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
-            ammo->ammo = 1000;
-        }
-        break;
-
-    default:
-        ammo = &lara->pistol_ammo;
-        ammo->ammo = 1000;
-        break;
-    }
-
-    if (ammo->ammo <= 0) {
-        ammo->ammo = 0;
-        Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
-        if (Inv_RequestItem(O_PISTOL_ITEM)) {
-            lara->request_gun_type = LGT_PISTOLS;
-        } else {
-            lara->gun_status = LGS_UNDRAW;
-        }
-        return 0;
-    }
-
-    ammo->ammo--;
-    Stats_AddAmmoUsed();
-
-    const XYZ_32 view_pos = {
-        .x = src->pos.x,
-        .y = src->pos.y - weapon->gun_height,
-        .z = src->pos.z,
-    };
-    const XYZ_16 view_rot = {
-        .x = angles[1]
-            + (weapon->shot_accuracy * (Random_GetControl() - DEG_90))
-                / DEG_360,
-        .y = angles[0]
-            + (weapon->shot_accuracy * (Random_GetControl() - DEG_90))
-                / DEG_360,
-        .z = 0,
-    };
-    Matrix_GenerateW2V(&view_pos, &view_rot);
-
-    SPHERE slist[33];
-    int32_t nums = Collide_GetSpheres(target, slist, 0);
-
-    int32_t best = -1;
-    int32_t bestdist = 0x7FFFFFFF;
-    for (int32_t i = 0; i < nums; i++) {
-        SPHERE *sptr = &slist[i];
-        int32_t r = sptr->r;
-        if (ABS(sptr->pos.x) < r && ABS(sptr->pos.y) < r && sptr->pos.z > r
-            && (sptr->pos.x * sptr->pos.x) + (sptr->pos.y * sptr->pos.y)
-                <= (r * r)
-            && (sptr->pos.z - r < bestdist)) {
-            bestdist = sptr->pos.z - r;
-            best = i;
-        }
-    }
-
-    GAME_VECTOR vsrc;
-    vsrc.room_num = src->room_num;
-    vsrc.pos = view_pos;
-
-    GAME_VECTOR vdest;
-    if (best >= 0) {
-        Stats_AddAmmoHits();
-        vdest.x = vsrc.x + ((bestdist * g_MatrixPtr->_20) >> W2V_SHIFT);
-        vdest.y = vsrc.y + ((bestdist * g_MatrixPtr->_21) >> W2V_SHIFT);
-        vdest.z = vsrc.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
-        Gun_HitTarget(
-            target, &vdest,
-            weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
-        return 1;
-    }
-
-    vdest.x = vsrc.x + g_MatrixPtr->_20;
-    vdest.y = vsrc.y + g_MatrixPtr->_21;
-    vdest.z = vsrc.z + g_MatrixPtr->_22;
-    LOS_Check(&vsrc, &vdest);
-    Spawn_Ricochet(&vdest);
-    return -1;
 }
 
 void Gun_HitTarget(
