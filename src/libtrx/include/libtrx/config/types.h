@@ -250,9 +250,7 @@ typedef struct {
 #endif
 
         JUMP_LOCK_MODE jump_lock_mode;
-#if TR_VERSION == 1
         TARGET_LOCK_MODE target_mode;
-#endif
         bool fix_qwop_glitch;
         bool fix_step_glitch;
         bool fix_item_duplication_glitch;

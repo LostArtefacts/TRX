@@ -10,6 +10,7 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[] = {
     { SDM_FULL, GS_ID(ENUM_STAT_DETAIL_MODE_FULL) },
     { -1, nullptr },
 };
+#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[] = {
     { TLM_FULL, GS_ID(ENUM_TARGET_LOCK_MODE_FULL) },
@@ -17,7 +18,6 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[] = {
     { TLM_NONE, GS_ID(ENUM_TARGET_LOCK_MODE_NONE) },
     { -1, nullptr },
 };
-#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_LookModeEnumEntries[] = {
     { LOOK_MODE_RESTRICTED, GS_ID(ENUM_LOOK_MODE_RESTRICTED) },

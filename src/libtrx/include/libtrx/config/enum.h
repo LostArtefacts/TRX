@@ -111,13 +111,13 @@ typedef enum {
     BILLBOARD_LOCK_NUMBER_OF,
 } BILLBOARD_LOCK_MODE;
 
-#if TR_VERSION == 1
 typedef enum {
     TLM_FULL,
     TLM_SEMI,
     TLM_NONE,
 } TARGET_LOCK_MODE;
 
+#if TR_VERSION == 1
 typedef enum {
     SDM_MINIMAL,
     SDM_DETAILED,

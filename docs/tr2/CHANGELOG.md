@@ -7,6 +7,7 @@
 - added an option to use PS1-style UI backgrounds and frames (Graphics → UI → Menu style) (#1635)
 - added an option to use PS1-style carpet texture animation (Graphics → UI → Background style) (#1630)
 - added an option to turn off sound effect pitching (#625)
+- added an option to change target lock modes (Gameplay → Controls → Weapon lock mode) (#3950)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added an option to turn off ingame timer in the inventory ring (Gameplay → General → Timer counts in inventory) (#3931)
 - changed OG glitch-related config options to be on/fixed by default (#3929)

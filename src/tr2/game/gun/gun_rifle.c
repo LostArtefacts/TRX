@@ -69,16 +69,7 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
     const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (g_Input.action) {
-        Gun_TargetInfo(weapon);
-    } else {
-        lara->target = nullptr;
-    }
-
-    if (lara->target == nullptr) {
-        Gun_GetNewTarget(weapon);
-    }
-
+    Gun_GetNewTarget(weapon);
     Gun_AimWeapon(weapon, &lara->left_arm);
 
     if (lara->left_arm.lock) {
