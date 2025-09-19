@@ -363,7 +363,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         }
     }
 
-    if (!Game_IsInGym()) {
+    if (g_Config.gameplay.enable_timer_in_inventory
+        && !(TR_VERSION >= 2 && Game_IsInGym())) {
         Stats_UpdateTimer();
     }
 
@@ -860,7 +861,8 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     g_Inv_Mode = mode;
     Interpolation_Remember();
-    if (!Game_IsInGym()) {
+    if (g_Config.gameplay.enable_timer_in_inventory
+        && !(TR_VERSION >= 2 && Game_IsInGym())) {
         Stats_StartTimer();
     }
 
