@@ -1,10 +1,10 @@
 #include "game/gun/gun_rifle.h"
 
-#include "game/gun.h"
 #include "game/gun/gun_misc.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/gun/vars.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>

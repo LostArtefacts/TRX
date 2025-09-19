@@ -1,7 +1,6 @@
 #include "game/objects/general/pickup.h"
 
 #include "game/game.h"
-#include "game/gun/gun.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
@@ -9,6 +8,7 @@
 #include "game/stats.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>

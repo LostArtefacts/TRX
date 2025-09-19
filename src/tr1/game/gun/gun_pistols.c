@@ -1,10 +1,10 @@
 #include "game/gun/gun_pistols.h"
 
-#include "game/gun.h"
 #include "game/gun/gun_misc.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 
 void Gun_Pistols_SetArmInfo(LARA_ARM *const arm, const int32_t frame)

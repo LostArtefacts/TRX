@@ -1,14 +1,15 @@
 #include "game/lara/flare.h"
 
-#include "game/gun/gun.h"
 #include "game/gun/gun_misc.h"
 #include "game/lara/misc.h"
 #include "game/objects/general/flare_item.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 
 typedef enum {

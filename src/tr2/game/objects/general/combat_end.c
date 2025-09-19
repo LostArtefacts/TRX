@@ -1,10 +1,10 @@
 #include "game/creature.h"
 #include "game/game.h"
-#include "game/gun/gun.h"
 #include "game/los.h"
 #include "game/objects/common.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/lara/vehicle.h>
 #include <libtrx/game/objects/vars.h>

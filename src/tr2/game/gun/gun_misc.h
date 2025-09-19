@@ -1,9 +1,5 @@
 #pragma once
 
-#include "global/types.h"
-
-#include <libtrx/game/gun/misc.h>
-
 typedef enum {
     LA_G_AIM = 0,
     LA_G_DRAW = 1,
@@ -17,7 +13,4 @@ typedef enum {
     LA_G_SURF_UNDRAW = 9,
 } LARA_GUN_ANIMATION;
 
-void Gun_GetNewTarget(const WEAPON_INFO *weapon);
-void Gun_ChangeTarget(const WEAPON_INFO *weapon);
-void Gun_HitTarget(ITEM *item, const GAME_VECTOR *hit_pos, int32_t damage);
-void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip);
+#include <libtrx/game/gun/misc.h>

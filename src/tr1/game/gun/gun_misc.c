@@ -273,7 +273,8 @@ int32_t Gun_FireWeapon(
     return -1;
 }
 
-void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage)
+void Gun_HitTarget(
+    ITEM *const item, const GAME_VECTOR *const hit_pos, const int32_t damage)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points > 0 && item->hit_points <= damage) {
@@ -287,14 +288,14 @@ void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage)
     if (g_Config.visuals.fix_texture_issues
         && item->object_id == O_SCION_ITEM_3) {
         GAME_VECTOR pos;
-        pos.x = hitpos->x;
-        pos.y = hitpos->y;
-        pos.z = hitpos->z;
+        pos.x = hit_pos->x;
+        pos.y = hit_pos->y;
+        pos.z = hit_pos->z;
         pos.room_num = item->room_num;
         Spawn_Ricochet(&pos);
     } else {
         Spawn_Blood(
-            hitpos->x, hitpos->y, hitpos->z, item->speed, item->rot.y,
+            hit_pos->x, hit_pos->y, hit_pos->z, item->speed, item->rot.y,
             item->room_num);
     }
 
