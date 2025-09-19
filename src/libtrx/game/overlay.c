@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/gym.h"
 #include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/inventory_ring.h"
