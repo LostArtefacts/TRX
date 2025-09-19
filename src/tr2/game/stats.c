@@ -9,8 +9,6 @@
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 
-#define M_USE_REAL_CLOCK 0
-
 typedef struct {
     int32_t secret_count;
     uint32_t secret_flags;
@@ -20,29 +18,6 @@ typedef struct {
 static int32_t m_CachedItemCount = 0;
 static M_MAX_STATS m_LevelMax = {};
 
-#if M_USE_REAL_CLOCK
-static CLOCK_TIMER m_StartCounter = { .type = CLOCK_TYPE_REAL };
-static int32_t m_StartTimer = 0;
-
-void Stats_StartTimer(void)
-{
-    ClockTimer_Sync(&m_StartCounter);
-    const RESUME_INFO *const resume =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    m_StartTimer = resume->stats.timer;
-}
-
-void Stats_UpdateTimer(void)
-{
-    const double elapsed = ClockTimer_PeekElapsed(&m_StartCounter) * LOGIC_FPS;
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    resume->stats.timer = m_StartTimer + elapsed;
-}
-#else
-void Stats_StartTimer(void)
-{
-}
-
 void Stats_UpdateTimer(void)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
@@ -51,7 +26,6 @@ void Stats_UpdateTimer(void)
         resume->stats.timer++;
     }
 }
-#endif
 
 FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
 {

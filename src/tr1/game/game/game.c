@@ -67,7 +67,6 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     g_OverlayFlag = 1;
     Camera_Initialise();
     Interpolation_Remember();
-    Stats_StartTimer();
 
     Sound_StopAll();
     if (level->music_track != MX_INACTIVE) {
@@ -82,14 +81,6 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 void Game_End(void)
 {
     Savegame_PersistGameToCurrentInfo(Game_GetCurrentLevel());
-}
-
-void Game_Suspend(void)
-{
-}
-
-void Game_Resume(void)
-{
 }
 
 GF_COMMAND Game_Control(const bool demo_mode)

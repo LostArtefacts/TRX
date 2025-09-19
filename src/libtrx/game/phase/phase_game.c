@@ -38,13 +38,11 @@ static void M_End(PHASE *const phase)
 
 static void M_Suspend(PHASE *const phase)
 {
-    Game_Suspend();
     Game_SetIsPlaying(false);
 }
 
 static void M_Resume(PHASE *const phase)
 {
-    Game_Resume();
     Game_SetIsPlaying(true);
 }
 

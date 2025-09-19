@@ -15,8 +15,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define M_USE_REAL_CLOCK 0
-
 typedef struct {
     int32_t pickup_count;
     int32_t killable_count;
@@ -28,13 +26,6 @@ static int32_t m_CachedItemCount = 0;
 static SECTOR **m_CachedSectorArray = nullptr;
 static M_MAX_STATS m_LevelMax;
 static bool m_KillableItems[MAX_ITEMS] = {};
-
-#if M_USE_REAL_CLOCK
-static struct {
-    CLOCK_TIMER timer;
-    int32_t start_timer;
-} m_StatsTimer = { .timer = { .type = CLOCK_TYPE_REAL } };
-#endif
 
 static void M_TraverseFloor(void);
 static void M_CheckTriggers(
@@ -238,29 +229,6 @@ bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
     return final_stats.secret_count >= final_stats.max_secret_count;
 }
 
-#if M_USE_REAL_CLOCK
-void Stats_StartTimer(void)
-{
-    ClockTimer_Sync(&m_StatsTimer.timer);
-    m_StatsTimer.start_timer =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.timer;
-}
-
-void Stats_UpdateTimer(void)
-{
-    if (Game_GetCurrentLevel() == nullptr) {
-        return;
-    }
-    const double elapsed =
-        ClockTimer_PeekElapsed(&m_StatsTimer.timer) * LOGIC_FPS;
-    Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.timer =
-        m_StatsTimer.start_timer + elapsed;
-}
-#else
-void Stats_StartTimer(void)
-{
-}
-
 void Stats_UpdateTimer(void)
 {
     if (Game_GetCurrentLevel() == nullptr) {
@@ -268,7 +236,6 @@ void Stats_UpdateTimer(void)
     }
     Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.timer++;
 }
-#endif
 
 void Stats_AddKill(void)
 {

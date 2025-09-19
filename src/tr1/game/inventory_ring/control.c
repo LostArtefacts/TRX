@@ -858,10 +858,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     g_Inv_Mode = mode;
     Interpolation_Remember();
-    if (g_Config.gameplay.enable_timer_in_inventory
-        && !(TR_VERSION >= 2 && Game_IsInGym())) {
-        Stats_StartTimer();
-    }
 
     if (mode == INV_TITLE_MODE) {
         Output_LoadBackgroundFromFile(g_GameFlow.main_menu_background_path);

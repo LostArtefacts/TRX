@@ -3,7 +3,6 @@
 #include "../math.h"
 #include "./types.h"
 
-extern void Stats_StartTimer(void);
 extern void Stats_ObserveItemsLoad(void);
 
 bool Stats_HasSecret(int16_t secret_idx);

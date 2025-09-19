@@ -31,7 +31,6 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     g_OverlayStatus = 1;
     Camera_Initialise();
     Interpolation_Remember();
-    Stats_StartTimer();
 
     if (level->music_track != MX_INACTIVE) {
         Music_Play(
@@ -48,15 +47,6 @@ void Game_End(void)
     Sound_StopAll();
     Music_Stop();
     Music_SetVolume(g_Config.audio.music_volume);
-}
-
-void Game_Suspend(void)
-{
-}
-
-void Game_Resume(void)
-{
-    Stats_StartTimer();
 }
 
 GF_COMMAND Game_Control(const bool demo_mode)

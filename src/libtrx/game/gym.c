@@ -88,7 +88,6 @@ void Gym_StartAssault(void)
     resume->stats.timer = 0;
     m_IsAssaultTimerActive = true;
     m_IsAssaultTimerDisplay = true;
-    Stats_StartTimer();
 }
 
 void Gym_StopAssault(void)

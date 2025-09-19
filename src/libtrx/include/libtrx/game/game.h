@@ -31,7 +31,5 @@ void Game_DrawFade(void);
 
 extern bool Game_Start(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
 extern void Game_End(void);
-extern void Game_Suspend(void);
-extern void Game_Resume(void);
 extern GF_COMMAND Game_Control(bool demo_mode);
 extern void Game_Draw(bool draw_overlay);
