@@ -70,6 +70,10 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     Gun_GetNewTarget(weapon);
+    if (g_InputDB.change_target && g_Config.gameplay.enable_target_change) {
+        Gun_ChangeTarget(weapon);
+    }
+
     Gun_AimWeapon(weapon, &lara->left_arm);
 
     if (lara->left_arm.lock) {

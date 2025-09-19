@@ -56,12 +56,10 @@ void Input_Update(void)
         }
     }
 
-#if TR_VERSION == 1
     if (!g_Config.gameplay.enable_target_change
         || Lara_GetLaraInfo()->gun_status != LGS_READY) {
         g_Input.change_target = 0;
     }
-#endif
 
     g_InputDB = Input_GetDebounced(g_Input);
 

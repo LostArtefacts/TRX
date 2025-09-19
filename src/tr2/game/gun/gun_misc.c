@@ -53,7 +53,8 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     // Preserve OG targeting behavior.
-    if (g_Config.gameplay.target_mode == TLM_FULL && !g_Input.action) {
+    if (g_Config.gameplay.target_mode == TLM_FULL
+        && !g_Config.gameplay.enable_target_change && !g_Input.action) {
         lara->target = nullptr;
     }
 
@@ -65,9 +66,9 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     };
 
     ITEM *best_target = nullptr;
-    int16_t best_y_rot = 0x7FFF;
-    int32_t best_dist = 0x7FFFFFFF;
+    int16_t best_y_rot = INT16_MAX;
     int16_t num_targets = 0;
+    int32_t best_dist = INT32_MAX;
 
     const int32_t max_dist = weapon->target_dist;
     for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
@@ -136,7 +137,8 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
             if (m_TargetList[slot] == nullptr) {
                 lara->target = nullptr;
-            } else if (m_TargetList[slot] == lara->target) {
+            }
+            if (m_TargetList[slot] == lara->target) {
                 break;
             }
         }
@@ -157,7 +159,45 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     }
 
     Gun_TargetInfo(weapon);
-    lara->target = best_target;
+}
+
+void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->target = nullptr;
+    bool found_new_target = false;
+
+    for (int32_t new_target = 0; new_target < LOT_SLOT_COUNT; new_target++) {
+        if (!m_TargetList[new_target]) {
+            break;
+        }
+
+        for (int32_t last_target = 0; last_target < LOT_SLOT_COUNT;
+             last_target++) {
+            if (!m_LastTargetList[last_target]) {
+                found_new_target = true;
+                break;
+            }
+
+            if (m_LastTargetList[last_target] == m_TargetList[new_target]) {
+                break;
+            }
+        }
+
+        if (found_new_target) {
+            lara->target = m_TargetList[new_target];
+            break;
+        }
+    }
+
+    if (lara->target != m_LastTargetList[0]) {
+        for (int32_t last_target = LOT_SLOT_COUNT - 1; last_target > 0;
+             last_target--) {
+            m_LastTargetList[last_target] = m_LastTargetList[last_target - 1];
+        }
+        m_LastTargetList[0] = lara->target;
+    }
+
     Gun_TargetInfo(weapon);
 }
 

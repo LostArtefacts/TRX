@@ -118,6 +118,7 @@
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Camara gu Chlì",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Camara gu Dheas",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Camara Suas",
+        "ENUM_INPUT_ROLE_CHANGE_TARGET": "Atharraich an Targaid",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cuairt Coimeas Solais",
         "ENUM_INPUT_ROLE_DOWN": "Air Ais",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",

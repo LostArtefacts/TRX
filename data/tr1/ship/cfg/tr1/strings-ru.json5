@@ -746,7 +746,6 @@
         }
     },
     "game_strings": {
-        "ENUM_INPUT_ROLE_CHANGE_TARGET": "Изменить цель",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
         "MISC_EMPTY_SLOT_FMT": "- ПУСТОЙ СЛОТ %d -",
         "PASSPORT_RESTART_LEVEL": "Перезапустить уровень",

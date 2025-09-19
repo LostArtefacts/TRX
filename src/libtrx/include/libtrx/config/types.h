@@ -226,8 +226,8 @@ typedef struct {
 
         bool enable_auto_item_selection;
         bool enable_item_examining;
-#if TR_VERSION == 1
         bool enable_target_change;
+#if TR_VERSION == 1
         bool enable_walk_to_items;
         bool restore_ps1_enemies;
 #else
