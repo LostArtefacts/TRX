@@ -3,14 +3,22 @@
 #include "config.h"
 #include "debug.h"
 #include "game/camera.h"
+#include "game/game.h"
 #include "game/gun/common.h"
+#include "game/gun/misc.h"
 #include "game/gun/pistols.h"
 #include "game/gun/rifle.h"
 #include "game/gun/vars.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
+#include "game/los.h"
+#include "game/matrix.h"
+#include "game/random.h"
+#include "game/rooms.h"
 #include "game/sound.h"
+#include "game/spawn.h"
+#include "game/stats.h"
 
 static struct {
     LARA_GUN_TYPE gun_type;
@@ -416,5 +424,116 @@ void Gun_Control(void)
 
     default:
         return;
+    }
+}
+
+int32_t Gun_FireWeapon(
+    const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
+    const int16_t *const angles)
+{
+    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    AMMO_INFO *const ammo = Gun_GetAmmoInfo(weapon_type);
+    ASSERT(ammo != nullptr);
+
+    if (ammo == &lara->pistol_ammo || Game_IsBonusFlagSet(GBF_NGPLUS)) {
+        ammo->ammo = 1000;
+    }
+    if (ammo->ammo <= 0) {
+        ammo->ammo = 0;
+#if TR_VERSION == 1
+        Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
+        if (Inv_RequestItem(O_PISTOL_ITEM)) {
+            lara->request_gun_type = LGT_PISTOLS;
+        } else {
+            lara->gun_status = LGS_UNDRAW;
+        }
+#endif
+        return 0;
+    }
+    ammo->ammo--;
+    Stats_AddAmmoUsed();
+
+    const XYZ_32 view_pos = {
+        .x = src->pos.x,
+        .y = src->pos.y - weapon->gun_height,
+        .z = src->pos.z,
+    };
+    const XYZ_16 view_rot = {
+        .x = angles[1]
+            + weapon->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
+        .y = angles[0]
+            + weapon->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
+        .z = 0,
+    };
+    Matrix_GenerateW2V(&view_pos, &view_rot);
+
+    SPHERE spheres[33];
+    int32_t sphere_count = Collide_GetSpheres(target, spheres, false);
+    int32_t best_sphere = -1;
+    int32_t best_dist = INT32_MAX;
+
+    for (int32_t i = 0; i < sphere_count; i++) {
+        const SPHERE *const sphere = &spheres[i];
+        const int32_t r = sphere->r;
+        if (ABS(sphere->pos.x) < r && ABS(sphere->pos.y) < r
+            && sphere->pos.z > r
+            && SQUARE(sphere->pos.x) + SQUARE(sphere->pos.y) <= SQUARE(r)) {
+            const int32_t dist = sphere->pos.z - r;
+            if (dist < best_dist) {
+                best_dist = dist;
+                best_sphere = i;
+            }
+        }
+    }
+
+    GAME_VECTOR start = {
+        .pos = view_pos,
+        .room_num = src->room_num,
+    };
+
+    if (best_sphere < 0) {
+        const int32_t dist = weapon->target_dist;
+        GAME_VECTOR hit_pos = {
+#if TR_VERSION == 1
+            .x = start.x + g_MatrixPtr->_20,
+            .y = start.y + g_MatrixPtr->_21,
+            .z = start.z + g_MatrixPtr->_22,
+#else
+            .x = start.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT),
+            .y = start.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT),
+            .z = start.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT),
+#endif
+            .room_num = start.room_num,
+        };
+        Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+        const bool object_on_los = LOS_Check(&start, &hit_pos);
+#if TR_VERSION >= 2
+        if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
+            == PROJECTILE_HIT_STOP) {
+            Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+        }
+#endif
+        if (!object_on_los) {
+            Spawn_Ricochet(&hit_pos);
+        }
+        return -1;
+    } else {
+        Stats_AddAmmoHits();
+        GAME_VECTOR hit_pos = {
+            .x = start.x + ((best_dist * g_MatrixPtr->_20) >> W2V_SHIFT),
+            .y = start.y + ((best_dist * g_MatrixPtr->_21) >> W2V_SHIFT),
+            .z = start.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT),
+            .room_num = src->room_num,
+        };
+        Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+#if TR_VERSION >= 2
+        Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
+#endif
+        Gun_HitTarget(
+            target, &hit_pos,
+            weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
+        return 1;
     }
 }
