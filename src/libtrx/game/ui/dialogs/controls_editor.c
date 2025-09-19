@@ -88,9 +88,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .header_gs = GS_ID(CONTROLS_SECTION_MISC),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
-#if TR_VERSION == 1
                 { .role = INPUT_ROLE_CHANGE_TARGET },
-#endif
                 { .role = INPUT_ROLE_CAMERA_UP },
                 { .role = INPUT_ROLE_CAMERA_DOWN },
                 { .role = INPUT_ROLE_CAMERA_LEFT },

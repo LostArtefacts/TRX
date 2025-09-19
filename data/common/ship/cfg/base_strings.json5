@@ -118,6 +118,7 @@
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Camera Left",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Camera Right",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Camera Up",
+        "ENUM_INPUT_ROLE_CHANGE_TARGET": "Change Target",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cycle Lighting Contrast",
         "ENUM_INPUT_ROLE_DOWN": "Back",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",

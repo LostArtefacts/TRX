@@ -8,6 +8,7 @@
 - added an option to use PS1-style carpet texture animation (Graphics → UI → Background style) (#1630)
 - added an option to turn off sound effect pitching (#625)
 - added an option to change target lock modes (Gameplay → Controls → Weapon lock mode) (#3950)
+- added an option to cycle targets (Gameplay → Controls → Target change; Controls → Misc → Change Target) (#3951)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added an option to turn off ingame timer in the inventory ring (Gameplay → General → Timer counts in inventory) (#3931)
 - changed OG glitch-related config options to be on/fixed by default (#3929)
@@ -45,7 +46,7 @@
 - fixed missing shader and configuration files from MacOS releases (#3870, regression from 1.4)
 - fixed zero byte at the end of config files (#3875, regression from 1.4)
 - fixed stacked sprites flickering (#3872, regression from 1.4)
- 
+
 ## [1.4](https://github.com/LostArtefacts/TRX/compare/tr2-1.3.2...tr2-1.4) - 2025-08-23
 Showcase: https://www.youtube.com/watch?v=AAOP1VFX9Lw
 

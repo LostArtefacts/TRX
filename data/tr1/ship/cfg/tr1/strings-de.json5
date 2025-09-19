@@ -746,7 +746,6 @@
         }
     },
     "game_strings": {
-        "ENUM_INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
         "MISC_EMPTY_SLOT_FMT": "- Leerer SLOT %d -",
         "PASSPORT_RESTART_LEVEL": "Level Neu starten",

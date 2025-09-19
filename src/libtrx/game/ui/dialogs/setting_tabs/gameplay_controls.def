@@ -35,10 +35,7 @@ X_UI_CFG_BOOL(gameplay.enable_wading,              SETTING_ENABLE_WADING)
 #endif
 
 X_UI_CFG_ENUM(gameplay.target_mode,                SETTING_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
-
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_target_change,       SETTING_ENABLE_TARGET_CHANGE)
-#endif
 
 X_UI_CFG_BOOL(gameplay.enable_inverted_look,       SETTING_ENABLE_INVERTED_LOOK)
 X_UI_CFG_INT32(gameplay.camera_speed,              SETTING_CAMERA_SPEED, .min_value = 1, .max_value = 10)

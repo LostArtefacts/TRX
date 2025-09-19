@@ -12,6 +12,7 @@ X_INPUT_ROLE(INPUT_ROLE_LOOK,                    look)
 X_INPUT_ROLE(INPUT_ROLE_ROLL,                    roll)
 X_INPUT_ROLE(INPUT_ROLE_SPRINT,                  sprint)
 X_INPUT_ROLE(INPUT_ROLE_INVENTORY,               option)
+X_INPUT_ROLE(INPUT_ROLE_CHANGE_TARGET,           change_target)
 
 X_INPUT_ROLE(INPUT_ROLE_ENTER_CONSOLE,           enter_console)
 X_INPUT_ROLE(INPUT_ROLE_MENU_CONFIRM,            menu_confirm)

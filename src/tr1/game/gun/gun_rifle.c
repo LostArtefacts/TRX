@@ -119,7 +119,6 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
     WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
 
     Gun_GetNewTarget(weapon);
-
     if (g_InputDB.change_target && g_Config.gameplay.enable_target_change) {
         Gun_ChangeTarget(weapon);
     }

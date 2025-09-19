@@ -21,10 +21,10 @@
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 
-void Gun_GetNewTarget(WEAPON_INFO *const weapon)
+void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     // Preserve OG targeting behavior.
     if (g_Config.gameplay.target_mode == TLM_FULL
@@ -32,16 +32,16 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
         lara->target = nullptr;
     }
 
-    ITEM *best_target = nullptr;
-    int16_t best_y_rot = 0x7FFF;
-    int16_t num_targets = 0;
-
     const GAME_VECTOR start = {
         .x = lara_item->pos.x,
         .y = lara_item->pos.y - 650,
         .z = lara_item->pos.z,
         .room_num = lara_item->room_num,
     };
+
+    ITEM *best_target = nullptr;
+    int16_t best_y_rot = INT16_MAX;
+    int16_t num_targets = 0;
 
     const int32_t max_dist = weapon->target_dist;
     int16_t item_num = Item_GetNextActive();
@@ -126,7 +126,7 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
     Gun_TargetInfo(weapon);
 }
 
-void Gun_ChangeTarget(WEAPON_INFO *const weapon)
+void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->target = nullptr;
