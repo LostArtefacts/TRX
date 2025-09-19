@@ -13,8 +13,13 @@
 #include "game/matrix.h"
 #include "game/output.h"
 #include "game/random.h"
+#include "game/sound.h"
+#include "game/spawn.h"
+#include "game/stats.h"
 
 #if TR_VERSION >= 2
+    #define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
+
 // TODO: meh
 extern void Window_Smash(int16_t item_num);
 #endif
@@ -345,4 +350,89 @@ PROJECTILE_HIT Gun_SmashItems(
         }
     }
     return hits > 0 ? PROJECTILE_HIT_SHATTER : PROJECTILE_HIT_NONE;
+}
+
+void Gun_HitTarget(
+    ITEM *const item, const GAME_VECTOR *const hit_pos, const int32_t damage)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->hit_points > 0 && item->hit_points <= damage) {
+#if TR_VERSION == 1
+        const bool skip_stats = false;
+#else
+        const bool skip_stats = item->object_id == O_DRAGON_FRONT;
+#endif
+
+        if (!skip_stats) {
+            Stats_AddKill();
+        }
+        if (g_Config.gameplay.target_mode == TLM_SEMI) {
+            lara->target = nullptr;
+        }
+    }
+    Item_TakeDamage(item, damage, true);
+
+    if (hit_pos != nullptr) {
+#if TR_VERSION == 1
+        const bool make_ricochet = g_Config.visuals.fix_texture_issues
+            && item->object_id == O_SCION_ITEM_3;
+#else
+        const bool make_ricochet = false;
+#endif
+
+        if (make_ricochet) {
+            const GAME_VECTOR pos = {
+                .pos = hit_pos->pos,
+                .room_num = item->room_num,
+            };
+            Spawn_Ricochet(&pos);
+        } else {
+            Spawn_Blood(
+                hit_pos->x, hit_pos->y, hit_pos->z, item->speed, item->rot.y,
+                item->room_num);
+        }
+    }
+
+#if TR_VERSION == 1
+    if (item->hit_points > 0) {
+        switch (item->object_id) {
+        case O_WOLF:
+            Sound_Effect(SFX_WOLF_HURT, &item->pos, SPM_NORMAL);
+            break;
+
+        case O_BEAR:
+            Sound_Effect(SFX_BEAR_HURT, &item->pos, SPM_NORMAL);
+            break;
+
+        case O_LION:
+        case O_LIONESS:
+            Sound_Effect(SFX_LION_HURT, &item->pos, SPM_NORMAL);
+            break;
+
+        case O_RAT:
+            Sound_Effect(SFX_RAT_CHIRP, &item->pos, SPM_NORMAL);
+            break;
+
+        case O_SKATEKID:
+            Sound_Effect(SFX_SKATEBOARD_HIT, &item->pos, SPM_NORMAL);
+            break;
+
+        case O_TORSO:
+            Sound_Effect(SFX_TORSO_HIT, &item->pos, SPM_NORMAL);
+            break;
+
+        default:
+            break;
+        }
+    }
+#else
+    if (!Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
+        CREATURE *const creature = item->data;
+        creature->flags += damage;
+        if ((creature->flags & 0xFFF) > M_ALLY_FRIENDLY_FIRE_THRESHOLD
+            || creature->mood == MOOD_BORED) {
+            Creature_SetAlliesHostile(true);
+        }
+    }
+#endif
 }
