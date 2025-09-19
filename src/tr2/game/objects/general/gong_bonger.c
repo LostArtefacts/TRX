@@ -2,6 +2,7 @@
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/rooms.h>
 
 #define GONG_BONGER_STRIKE_FRAME 41
 #define GONG_BONGER_END_FRAME 79

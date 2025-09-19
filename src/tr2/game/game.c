@@ -28,7 +28,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
 
-    g_OverlayStatus = 1;
+    g_OverlayFlag = 1;
     Camera_Initialise();
     Interpolation_Remember();
     Stats_StartTimer();
@@ -94,7 +94,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     if (g_Lara.death_timer > DEATH_WAIT
         || (g_Lara.death_timer > DEATH_WAIT_INPUT
             && (g_InputDB.menu_confirm || g_InputDB.menu_back))
-        || g_OverlayStatus == 2) {
+        || g_OverlayFlag == 2) {
         if (demo_mode) {
             return g_GameFlow.cmd_death_demo_mode;
         }
@@ -104,38 +104,38 @@ GF_COMMAND Game_Control(const bool demo_mode)
         if (g_GameFlow.cmd_death_in_game.action != GF_NOOP) {
             return g_GameFlow.cmd_death_in_game;
         }
-        if (g_OverlayStatus == 2) {
-            g_OverlayStatus = 1;
+        if (g_OverlayFlag == 2) {
+            g_OverlayFlag = 1;
             const GF_COMMAND gf_cmd = GF_ShowInventory(INV_DEATH_MODE);
             if (gf_cmd.action != GF_NOOP) {
                 return gf_cmd;
             }
         } else {
-            g_OverlayStatus = 2;
+            g_OverlayFlag = 2;
         }
     }
 
     if (((g_InputDB.load || g_InputDB.save || g_InputDB.option)
-         || g_OverlayStatus <= 0)
+         || g_OverlayFlag <= 0)
         && g_Lara.death_timer == 0 && !g_Lara.extra_anim) {
-        if (g_OverlayStatus > 0) {
+        if (g_OverlayFlag > 0) {
             if (g_GameFlow.load_save_disabled) {
-                g_OverlayStatus = 0;
+                g_OverlayFlag = 0;
             } else if (g_Input.save) {
-                g_OverlayStatus = -2;
+                g_OverlayFlag = -2;
             } else {
-                g_OverlayStatus = g_Input.load ? -1 : 0;
+                g_OverlayFlag = g_Input.load ? -1 : 0;
             }
         } else {
             GF_COMMAND gf_cmd;
-            if (g_OverlayStatus == -1) {
+            if (g_OverlayFlag == -1) {
                 gf_cmd = GF_ShowInventory(INV_LOAD_MODE);
-            } else if (g_OverlayStatus == -2) {
+            } else if (g_OverlayFlag == -2) {
                 gf_cmd = GF_ShowInventory(INV_SAVE_MODE);
             } else {
                 gf_cmd = GF_ShowInventory(INV_GAME_MODE);
             }
-            g_OverlayStatus = 1;
+            g_OverlayFlag = 1;
             if (gf_cmd.action != GF_NOOP) {
                 return gf_cmd;
             }

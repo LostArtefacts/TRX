@@ -156,6 +156,7 @@ sources = [
   'game/gun/misc.c',
   'game/gun/pistols.c',
   'game/gun/rifle.c',
+  'game/gun/vars.c',
   'game/gym.c',
   'game/inject/common.c',
   'game/inject/data/anims.c',

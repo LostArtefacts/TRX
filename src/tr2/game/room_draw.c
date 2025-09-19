@@ -17,6 +17,7 @@ static int32_t m_OutsideLeft;
 static int32_t m_OutsideTop;
 static int32_t m_OutsideBottom;
 
+static int32_t m_MidSort = 0;
 static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
 static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
@@ -28,7 +29,7 @@ void Room_GetBounds(void)
             m_BoundRooms[m_BoundStart++ % M_MAX_BOUND_ROOMS];
         ROOM *const room = Room_Get(room_num);
         room->bound_active &= ~2;
-        g_MidSort = (room->bound_active >> 8) + 1;
+        m_MidSort = (room->bound_active >> 8) + 1;
 
         if (room->test_left < room->bound_left) {
             room->bound_left = room->test_left;
@@ -227,7 +228,7 @@ void Room_SetBounds(
     } else {
         m_BoundRooms[m_BoundEnd++ % M_MAX_BOUND_ROOMS] = room_num;
         room->bound_active |= 2;
-        room->bound_active += (int16_t)(g_MidSort << 8);
+        room->bound_active += (int16_t)(m_MidSort << 8);
         room->test_left = left;
         room->test_right = right;
         room->test_top = top;
@@ -400,7 +401,7 @@ void Room_DrawAllRooms(const int16_t current_room)
         Room_DrawSingleRoomObjects(room_num);
     }
 
-    g_MidSort = 0;
+    m_MidSort = 0;
     if (Object_Get(O_LARA)->loaded && !(g_LaraItem->flags & IF_ONE_SHOT)) {
         const ROOM *const lara_room = Room_Get(g_LaraItem->room_num);
         if ((lara_room->flags & RF_UNDERWATER) != 0) {
@@ -408,9 +409,9 @@ void Room_DrawAllRooms(const int16_t current_room)
         } else {
             Output_SetupAboveWater(g_Camera.underwater);
         }
-        g_MidSort = lara_room->bound_active >> 8;
-        if (g_MidSort) {
-            g_MidSort--;
+        m_MidSort = lara_room->bound_active >> 8;
+        if (m_MidSort) {
+            m_MidSort--;
         }
         Lara_Draw(g_LaraItem);
     }

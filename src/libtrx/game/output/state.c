@@ -10,9 +10,6 @@
 #include "game/viewport.h"
 #include "utils.h"
 
-extern float g_FltResZ;
-extern float g_FltResZBuf;
-
 static float m_Time = 0.0f;
 static float m_TimeInGame = 0.0f;
 static int32_t m_AnimatedTexturesOffset = 0;
@@ -97,12 +94,6 @@ void Output_SetFogStart(const int32_t dist)
 void Output_SetFogEnd(const int32_t dist)
 {
     m_FogEnd = dist;
-
-    const double near_z = Output_GetNearZ();
-    const double far_z = Output_GetFarZ();
-    const double res_z = 0.99 * near_z * far_z / (far_z - near_z);
-    g_FltResZ = res_z;
-    g_FltResZBuf = 0.005 + res_z / near_z;
 }
 
 void Output_SetupBelowWater(const bool underwater)
@@ -180,6 +171,10 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
     f_y = f_x * aspect;
 #endif
 
+    const float near_z = Output_GetNearZ();
+    const float far_z = Output_GetFarZ();
+    const float res_z = 0.99 * near_z * far_z / (far_z - near_z);
+
     output[0][0] = f_x;
     output[0][1] = 0.0f;
     output[0][2] = 0.0f;
@@ -192,8 +187,8 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
 
     output[2][0] = 0.0f;
     output[2][1] = 0.0f;
-    output[2][2] = g_FltResZBuf;
-    output[2][3] = -g_FltResZ / (float)(1 << W2V_SHIFT);
+    output[2][2] = 0.005 + res_z / near_z;
+    output[2][3] = -res_z / (float)(1 << W2V_SHIFT);
 
     output[3][0] = 0.0f;
     output[3][1] = 0.0f;

@@ -168,7 +168,7 @@ bool Demo_Start(const int32_t level_num)
 
     g_Lara.last_gun_type = *p->demo_ptr++;
 
-    g_OverlayStatus = 1;
+    g_OverlayFlag = 1;
     Lara_Cheat_GetStuff();
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
