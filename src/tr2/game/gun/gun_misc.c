@@ -7,6 +7,7 @@
 #include "game/spawn.h"
 #include "game/stats.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
@@ -19,6 +20,9 @@
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 #define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
+
+static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
+static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 
 static void M_SmashItem(int16_t item_num);
 
@@ -48,6 +52,11 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
+    // Preserve OG targeting behavior.
+    if (g_Config.gameplay.target_mode == TLM_FULL && !g_Input.action) {
+        lara->target = nullptr;
+    }
+
     const GAME_VECTOR start = {
         .x = lara_item->pos.x,
         .y = lara_item->pos.y - 650,
@@ -55,11 +64,12 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         .room_num = lara_item->room_num,
     };
 
+    ITEM *best_target = nullptr;
     int16_t best_y_rot = 0x7FFF;
     int32_t best_dist = 0x7FFFFFFF;
-    ITEM *best_target = nullptr;
+    int16_t num_targets = 0;
 
-    const int16_t max_dist = weapon->target_dist;
+    const int32_t max_dist = weapon->target_dist;
     for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
         const CREATURE *const creature = LOT_GetBaddieSlot(i);
         if (creature->item_num == NO_ITEM) {
@@ -75,14 +85,14 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
             continue;
         }
 
-        const int32_t dx = item->pos.x - start.pos.x;
-        const int32_t dy = item->pos.y - start.pos.y;
-        const int32_t dz = item->pos.z - start.pos.z;
+        const int32_t dx = item->pos.x - start.x;
+        const int32_t dy = item->pos.y - start.y;
+        const int32_t dz = item->pos.z - start.z;
         if (ABS(dx) > max_dist || ABS(dy) > max_dist || ABS(dz) > max_dist) {
             continue;
         }
 
-        const int32_t dist = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
+        const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
         if (dist >= SQUARE(max_dist)) {
             continue;
         }
@@ -95,8 +105,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
         int16_t angles[2];
         Math_GetVectorAngles(
-            target.pos.x - start.pos.x, target.pos.y - start.pos.y,
-            target.pos.z - start.pos.z, angles);
+            target.x - start.x, target.y - start.y, target.z - start.z, angles);
         angles[0] -= lara->torso_rot.y + lara_item->rot.y;
         angles[1] -= lara->torso_rot.x + lara_item->rot.x;
 
@@ -104,6 +113,8 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
             && angles[0] <= weapon->lock_angles[1]
             && angles[1] >= weapon->lock_angles[2]
             && angles[1] <= weapon->lock_angles[3]) {
+            m_TargetList[num_targets] = item;
+            num_targets++;
             const int16_t y_rot = ABS(angles[0]);
             if (y_rot < best_y_rot + M_NEAR_ANGLE && dist < best_dist) {
                 best_dist = dist;
@@ -112,7 +123,40 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
             }
         }
     }
+    m_TargetList[num_targets] = nullptr;
 
+    if ((g_Config.gameplay.target_mode == TLM_FULL
+         || g_Config.gameplay.target_mode == TLM_SEMI)
+        && g_Input.action && lara->target != nullptr) {
+        Gun_TargetInfo(weapon);
+        return;
+    }
+
+    if (num_targets > 0) {
+        for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
+            if (m_TargetList[slot] == nullptr) {
+                lara->target = nullptr;
+            } else if (m_TargetList[slot] == lara->target) {
+                break;
+            }
+        }
+
+        if (lara->target == nullptr) {
+            lara->target = best_target;
+            m_LastTargetList[0] = nullptr;
+        }
+    } else {
+        lara->target = nullptr;
+    }
+
+    if (lara->target != m_LastTargetList[0]) {
+        for (int32_t slot = LOT_SLOT_COUNT - 1; slot > 0; slot--) {
+            m_LastTargetList[slot] = m_LastTargetList[slot - 1];
+        }
+        m_LastTargetList[0] = lara->target;
+    }
+
+    Gun_TargetInfo(weapon);
     lara->target = best_target;
     Gun_TargetInfo(weapon);
 }
@@ -239,9 +283,13 @@ PROJECTILE_HIT Gun_SmashItems(
 void Gun_HitTarget(
     ITEM *const item, const GAME_VECTOR *const hit_pos, const int32_t damage)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points > 0 && item->hit_points <= damage
         && item->object_id != O_DRAGON_FRONT) {
         Stats_AddKill();
+        if (g_Config.gameplay.target_mode == TLM_SEMI) {
+            lara->target = nullptr;
+        }
     }
     Item_TakeDamage(item, damage, true);
 

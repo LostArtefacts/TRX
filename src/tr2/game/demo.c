@@ -28,6 +28,7 @@
     X_PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR2);              \
     X_PROCESS_CONFIG(gameplay.look_mode, LOOK_MODE_ENHANCED);                  \
     X_PROCESS_CONFIG(gameplay.enable_tr2_swimming, true);                      \
+    X_PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                          \
     X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_DRAW_ONLY);             \
     X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);
 

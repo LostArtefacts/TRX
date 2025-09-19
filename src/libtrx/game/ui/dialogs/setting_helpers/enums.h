@@ -9,8 +9,8 @@ typedef struct {
 
 #if TR_VERSION == 1
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[];
 #endif
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LookModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_QuickGunsModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_JumpLockModeEnumEntries[];
