@@ -447,12 +447,14 @@ SHELL_ARGS *TestReplay_Open(const char *path)
 
     // Collect non-empty, comment-stripped lines
     VECTOR *lines = Vector_Create(sizeof(char *));
-    for (char *line = data; line < end; line += strlen(line) + 1) {
+    for (char *line = data; line < end;) {
+        char *const next_line = line + strlen(line) + 1;
         M_StripInlineComment(line);
         char *start = M_SkipWhitespace(line);
         if (*start != '\0') {
             Vector_Add(lines, &start);
         }
+        line = next_line;
     }
 
     // Parse and execute headers
