@@ -19,7 +19,6 @@
 #include <libtrx/utils.h>
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
-#define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
 
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
@@ -176,33 +175,4 @@ void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
     }
 
     Gun_TargetInfo(weapon);
-}
-
-void Gun_HitTarget(
-    ITEM *const item, const GAME_VECTOR *const hit_pos, const int32_t damage)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (item->hit_points > 0 && item->hit_points <= damage
-        && item->object_id != O_DRAGON_FRONT) {
-        Stats_AddKill();
-        if (g_Config.gameplay.target_mode == TLM_SEMI) {
-            lara->target = nullptr;
-        }
-    }
-    Item_TakeDamage(item, damage, true);
-
-    if (hit_pos != nullptr) {
-        Spawn_Blood(
-            hit_pos->pos.x, hit_pos->pos.y, hit_pos->pos.z, item->speed,
-            item->rot.y, item->room_num);
-    }
-
-    if (!Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
-        CREATURE *const creature = item->data;
-        creature->flags += damage;
-        if ((creature->flags & 0xFFF) > M_ALLY_FRIENDLY_FIRE_THRESHOLD
-            || creature->mood == MOOD_BORED) {
-            Creature_SetAlliesHostile(true);
-        }
-    }
 }
