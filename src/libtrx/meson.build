@@ -216,6 +216,7 @@ sources = [
   'game/level/common.c',
   'game/level/faces.c',
   'game/level/settings.c',
+  'game/los.c',
   'game/lua/common.c',
   'game/lua/funcs.c',
   'game/lua/structs.c',
