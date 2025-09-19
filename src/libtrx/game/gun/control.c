@@ -509,12 +509,10 @@ int32_t Gun_FireWeapon(
         };
         Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         const bool object_on_los = LOS_Check(&start, &hit_pos);
-#if TR_VERSION >= 2
         if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
             == PROJECTILE_HIT_STOP) {
             Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         }
-#endif
         if (!object_on_los) {
             Spawn_Ricochet(&hit_pos);
         }
@@ -528,9 +526,7 @@ int32_t Gun_FireWeapon(
             .room_num = src->room_num,
         };
         Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
-#if TR_VERSION >= 2
         Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
-#endif
         Gun_HitTarget(
             target, &hit_pos,
             weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));

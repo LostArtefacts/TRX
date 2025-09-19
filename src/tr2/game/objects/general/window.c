@@ -119,7 +119,7 @@ void Window_Smash(const int16_t item_num)
 
     item->collidable = false;
     item->mesh_bits = ~1;
-    Item_Explode(item_num, 65278, 0);
+    Item_Explode(item_num, 0b11111110'11111110, 0);
     Sound_Effect(SFX_GLASS_BREAK, &item->pos, SPM_NORMAL);
 
     item->flags |= IF_ONE_SHOT;
