@@ -2,7 +2,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
@@ -130,11 +129,12 @@ static void M_Control(const int16_t item_num)
             head = info.angle;
         }
 
+        const LARA_INFO *const lara = Lara_GetLaraInfo();
         switch (item->current_anim_state) {
         case MONK_STATE_WAIT_1:
             creature->flags &= 0xFFF;
             if (!Creature_AreAlliesHostile() && info.ahead != 0
-                && g_Lara.target == item) {
+                && lara->target == item) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else if (creature->mood == MOOD_ESCAPE) {
@@ -159,7 +159,7 @@ static void M_Control(const int16_t item_num)
         case MONK_STATE_WAIT_2:
             creature->flags &= 0xFFF;
             if (!Creature_AreAlliesHostile() && info.ahead != 0
-                && g_Lara.target == item) {
+                && lara->target == item) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else if (creature->mood == MOOD_ESCAPE) {
@@ -184,7 +184,7 @@ static void M_Control(const int16_t item_num)
             creature->maximum_turn = MONK_WALK_TURN;
             if (creature->mood == MOOD_BORED) {
                 if (!Creature_AreAlliesHostile() && info.ahead != 0
-                    && g_Lara.target == item) {
+                    && lara->target == item) {
                     if (Random_GetControl() < 0x4000) {
                         item->goal_anim_state = MONK_STATE_WAIT_1;
                     } else {
@@ -238,7 +238,7 @@ static void M_Control(const int16_t item_num)
         case MONK_STATE_ATTACK_3:
         case MONK_STATE_ATTACK_4:
         case MONK_STATE_ATTACK_5:
-            if (creature->enemy == g_LaraItem) {
+            if (creature->enemy == Lara_GetItem()) {
                 if ((creature->flags & 0xF000) == 0
                     && (item->touch_bits & MONK_TOUCH_BITS) != 0) {
                     Lara_TakeDamage(MONK_BIFF_DAMAGE, true);

@@ -1,9 +1,8 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
-#include <libtrx/game/lara/const.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/sound.h>
 
 #define SPIKE_CEILING_DAMAGE 20
@@ -34,9 +33,10 @@ static void M_HitLara(ITEM *const item)
 {
     Lara_TakeDamage(SPIKE_CEILING_DAMAGE, true);
 
+    const ITEM *const lara_item = Lara_GetItem();
     Spawn_BloodBath(
-        g_LaraItem->pos.x, item->pos.y + LARA_HEIGHT, g_LaraItem->pos.z,
-        SPIKE_CEILING_SPEED, item->rot.y, g_LaraItem->room_num, 3);
+        lara_item->pos.x, item->pos.y + LARA_HEIGHT, lara_item->pos.z,
+        SPIKE_CEILING_SPEED, item->rot.y, lara_item->room_num, 3);
     item->touch_bits = 0;
 
     Sound_Effect(SFX_LARA_FLESH_WOUND, &item->pos, SPM_NORMAL);

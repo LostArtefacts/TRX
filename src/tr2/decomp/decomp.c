@@ -71,7 +71,8 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
     item->frame_num = 0;
     item->anim_num = 0;
 
-    g_Lara.hit_direction = -1;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->hit_direction = -1;
 }
 
 void InitialiseGameFlags(void)

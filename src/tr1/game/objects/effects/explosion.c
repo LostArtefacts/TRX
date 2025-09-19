@@ -1,7 +1,7 @@
 #include "game/effects.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/output.h>
 
 static void M_Setup(OBJECT *obj);

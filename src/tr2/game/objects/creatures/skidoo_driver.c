@@ -2,7 +2,6 @@
 
 #include "decomp/skidoo.h"
 #include "game/creature.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
@@ -77,8 +76,9 @@ static void M_ControlDead(ITEM *const driver_item, ITEM *const skidoo_item)
         driver_item->current_anim_state = SKIDOO_DRIVER_STATE_DEATH;
         Carrier_TestItemDrops(Item_GetIndex(skidoo_item));
 
-        if (g_Lara.target == skidoo_item) {
-            g_Lara.target = nullptr;
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        if (lara->target == skidoo_item) {
+            lara->target = nullptr;
         }
     }
 
@@ -146,9 +146,10 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
     }
 
     if (driver_item->current_anim_state != SKIDOO_DRIVER_STATE_DEATH) {
+        const ITEM *const lara_item = Lara_GetItem();
         if (driver_data->flags == 0
             && ABS(info.angle) < SKIDOO_DRIVER_TARGET_ANGLE
-            && g_LaraItem->hit_points > 0) {
+            && lara_item->hit_points > 0) {
             const int32_t damage = Lara_Vehicle_IsMounted()
                 ? SKIDOO_DRIVER_SHOT_DAMAGE
                 : SKIDOO_DRIVER_LARA_DAMAGE;

@@ -8,7 +8,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
@@ -1588,7 +1587,9 @@ static bool M_LoadFromFile(MYFILE *const fp)
         }
     }
 
-    if (!M_LoadLara(JSON_ObjectGetObject(root_obj, "lara"), &g_Lara, version)) {
+    if (!M_LoadLara(
+            JSON_ObjectGetObject(root_obj, "lara"), Lara_GetLaraInfo(),
+            version)) {
         goto cleanup;
     }
 
@@ -1662,7 +1663,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
-    JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(&g_Lara));
+    JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
     JSON_ObjectAppendObject(root_obj, "music", M_DumpCurrentMusic());
     JSON_ObjectAppendArray(
         root_obj, "music_track_flags", M_DumpMusicTrackFlags());

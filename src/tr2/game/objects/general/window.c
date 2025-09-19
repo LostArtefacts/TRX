@@ -1,7 +1,6 @@
 #include "game/objects/general/window.h"
 
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
@@ -70,8 +69,9 @@ static void M_Control1(const int16_t item_num)
         }
     } else if (item->touch_bits) {
         item->touch_bits = 0;
+        const ITEM *const lara_item = Lara_GetItem();
         const int32_t speed =
-            ABS((g_LaraItem->speed * Math_Cos(g_LaraItem->rot.y - item->rot.y))
+            ABS((lara_item->speed * Math_Cos(lara_item->rot.y - item->rot.y))
                 >> W2V_SHIFT);
         if (speed >= 50) {
             Window_Smash(item_num);

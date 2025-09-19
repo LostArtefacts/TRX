@@ -6,7 +6,6 @@
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
@@ -111,7 +110,9 @@ static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item)
     Item_RemoveActive(item_num);
 
     Stats_AddPickup();
-    g_Lara.interact_target.is_moving = false;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->interact_target.is_moving = false;
 }
 
 static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item)
@@ -205,8 +206,9 @@ static void M_Control(int16_t item_num)
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    if (g_Lara.water_status == LWS_UNDERWATER
-        || g_Lara.water_status == LWS_CHEAT) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
         return &m_PickUpBoundsUW;
     } else if (g_Config.gameplay.enable_walk_to_items) {
         return &m_PickUpBoundsControlled;
@@ -231,8 +233,9 @@ static void M_Collision(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (g_Lara.water_status == LWS_ABOVE_WATER
-        || g_Lara.water_status == LWS_WADE) {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_ABOVE_WATER
+        || lara->water_status == LWS_WADE) {
         item->rot.x = 0;
         if (!Lara_TestPosition(item, obj->bounds_func())) {
             goto cleanup;
@@ -246,18 +249,18 @@ static void M_Collision(
             goto cleanup;
         }
 
-        if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
+        if (g_Input.action && lara->gun_status == LGS_ARMLESS
             && !lara_item->gravity
             && lara_item->current_anim_state == LS_STOP) {
             Lara_AlignPosition(item, &m_PickUpPosition);
             Lara_AnimateUntil(lara_item, LS_PICKUP);
             lara_item->goal_anim_state = LS_STOP;
-            g_Lara.gun_status = LGS_HANDS_BUSY;
+            lara->gun_status = LGS_HANDS_BUSY;
             goto cleanup;
         }
     } else if (
-        g_Lara.water_status == LWS_UNDERWATER
-        || g_Lara.water_status == LWS_CHEAT) {
+        lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
         item->rot.x = -25 * DEG_1;
         if (!Lara_TestPosition(item, obj->bounds_func())) {
             goto cleanup;
@@ -303,13 +306,14 @@ static void M_CollisionControlled(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (g_Lara.water_status == LWS_ABOVE_WATER
-        || g_Lara.water_status == LWS_WADE) {
-        if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_ABOVE_WATER
+        || lara->water_status == LWS_WADE) {
+        if ((g_Input.action && lara->gun_status == LGS_ARMLESS
              && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
-             && !g_Lara.interact_target.is_moving)
-            || (g_Lara.interact_target.is_moving
-                && g_Lara.interact_target.item_num == item_num)) {
+             && !lara->interact_target.is_moving)
+            || (lara->interact_target.is_moving
+                && lara->interact_target.item_num == item_num)) {
 
             have_item = false;
             item->rot.x = 0;
@@ -321,40 +325,40 @@ static void M_CollisionControlled(
                     lara_item->current_anim_state = LS_PICKUP;
                     have_item = true;
                 }
-                g_Lara.interact_target.item_num = item_num;
+                lara->interact_target.item_num = item_num;
             } else if (
-                g_Lara.interact_target.is_moving
-                && g_Lara.interact_target.item_num == item_num) {
-                g_Lara.interact_target.is_moving = false;
-                g_Lara.interact_target.item_num = NO_ITEM;
-                g_Lara.gun_status = LGS_ARMLESS;
+                lara->interact_target.is_moving
+                && lara->interact_target.item_num == item_num) {
+                lara->interact_target.is_moving = false;
+                lara->interact_target.item_num = NO_ITEM;
+                lara->gun_status = LGS_ARMLESS;
             }
             if (have_item) {
-                g_Lara.head_rot.y = 0;
-                g_Lara.head_rot.x = 0;
-                g_Lara.torso_rot.y = 0;
-                g_Lara.torso_rot.x = 0;
-                g_Lara.interact_target.is_moving = false;
-                g_Lara.gun_status = LGS_HANDS_BUSY;
+                lara->head_rot.y = 0;
+                lara->head_rot.x = 0;
+                lara->torso_rot.y = 0;
+                lara->torso_rot.x = 0;
+                lara->interact_target.is_moving = false;
+                lara->gun_status = LGS_HANDS_BUSY;
             }
         } else if (
-            g_Lara.interact_target.item_num == item_num
+            lara->interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP) {
             if (Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
                 M_GetAllAtLaraPos(item, lara_item);
-                g_Lara.interact_target.item_num = NO_ITEM;
+                lara->interact_target.item_num = NO_ITEM;
             }
         }
     } else if (
-        g_Lara.water_status == LWS_UNDERWATER
-        || g_Lara.water_status == LWS_CHEAT) {
+        lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
         item->rot.x = -25 * DEG_1;
 
         if ((g_Input.action && lara_item->current_anim_state == LS_TREAD
-             && g_Lara.gun_status == LGS_ARMLESS
-             && !g_Lara.interact_target.is_moving)
-            || (g_Lara.interact_target.is_moving
-                && g_Lara.interact_target.item_num == item_num)) {
+             && lara->gun_status == LGS_ARMLESS
+             && !lara->interact_target.is_moving)
+            || (lara->interact_target.is_moving
+                && lara->interact_target.item_num == item_num)) {
 
             if (Lara_TestPosition(item, obj->bounds_func())) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
@@ -362,26 +366,27 @@ static void M_CollisionControlled(
                     lara_item->current_anim_state = LS_PICKUP;
 
                     lara_item->goal_anim_state = LS_TREAD;
-                    g_Lara.interact_target.is_moving = false;
-                    g_Lara.gun_status = LGS_HANDS_BUSY;
+                    lara->interact_target.is_moving = false;
+                    lara->gun_status = LGS_HANDS_BUSY;
                 }
-                g_Lara.interact_target.item_num = item_num;
+                lara->interact_target.item_num = item_num;
             } else if (
-                g_Lara.interact_target.is_moving
-                && g_Lara.interact_target.item_num == item_num) {
-                g_Lara.interact_target.is_moving = false;
-                g_Lara.interact_target.item_num = NO_ITEM;
-                g_Lara.gun_status = LGS_ARMLESS;
+                lara->interact_target.is_moving
+                && lara->interact_target.item_num == item_num) {
+                lara->interact_target.is_moving = false;
+                lara->interact_target.item_num = NO_ITEM;
+                lara->gun_status = LGS_ARMLESS;
             }
         } else if (
-            g_Lara.interact_target.item_num == item_num
+            lara->interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP
             && Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
             M_GetAllAtLaraPos(item, lara_item);
-            g_Lara.gun_status = LGS_ARMLESS;
-            g_Lara.interact_target.item_num = NO_ITEM;
+            lara->gun_status = LGS_ARMLESS;
+            lara->interact_target.item_num = NO_ITEM;
         }
     }
+
     item->rot.x = rotx;
     item->rot.y = roty;
     item->rot.z = rotz;

@@ -1,14 +1,13 @@
 #include "game/creature.h"
 #include "game/effects.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/creatures/xian_common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
@@ -154,6 +153,7 @@ static void M_Control(const int16_t item_num)
         item->mesh_bits = -1;
     }
 
+    const ITEM *const lara_item = Lara_GetItem();
     switch (item->current_anim_state) {
     case XIAN_KNIGHT_STATE_START:
         if (creature->flags == 0) {
@@ -169,7 +169,7 @@ static void M_Control(const int16_t item_num)
         if (info.ahead != 0) {
             neck = info.angle;
         }
-        if (g_LaraItem->hit_points <= 0) {
+        if (lara_item->hit_points <= 0) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_WAIT;
         } else if (
             info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
@@ -190,7 +190,7 @@ static void M_Control(const int16_t item_num)
         if (info.ahead != 0) {
             neck = info.angle;
         }
-        if (g_LaraItem->hit_points <= 0) {
+        if (lara_item->hit_points <= 0) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
         } else if (
             info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {

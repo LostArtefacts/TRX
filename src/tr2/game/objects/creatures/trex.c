@@ -1,9 +1,8 @@
 #include "game/creature.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
@@ -91,9 +90,10 @@ static void M_Control(const int16_t item_num)
         angle = Creature_Turn(item, creature->maximum_turn);
 
         if (item->touch_bits != 0) {
-            g_LaraItem->hit_points -= item->current_anim_state == TREX_STATE_RUN
-                ? TREX_TRAMPLE_DAMAGE
-                : TREX_TOUCH_DAMAGE;
+            Lara_TakeDamage(
+                item->current_anim_state == TREX_STATE_RUN ? TREX_TRAMPLE_DAMAGE
+                                                           : TREX_TOUCH_DAMAGE,
+                false);
         }
 
         creature->flags = creature->mood != MOOD_ESCAPE && !info.ahead

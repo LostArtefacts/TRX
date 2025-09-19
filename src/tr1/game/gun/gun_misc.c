@@ -6,12 +6,12 @@
 #include "game/savegame.h"
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/gun/vars.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/random.h>
@@ -23,10 +23,13 @@ static ITEM *m_LastTargetList[LOT_SLOT_COUNT];
 
 void Gun_GetNewTarget(WEAPON_INFO *const weapon)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+
     // Preserve OG targeting behavior.
     if (g_Config.gameplay.target_mode == TLM_FULL
         && !g_Config.gameplay.enable_target_change && !g_Input.action) {
-        g_Lara.target = nullptr;
+        lara->target = nullptr;
     }
 
     ITEM *best_target = nullptr;
@@ -36,10 +39,10 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
     int32_t maxdist = weapon->target_dist;
     int32_t maxdist2 = maxdist * maxdist;
     GAME_VECTOR src;
-    src.x = g_LaraItem->pos.x;
-    src.y = g_LaraItem->pos.y - 650;
-    src.z = g_LaraItem->pos.z;
-    src.room_num = g_LaraItem->room_num;
+    src.x = lara_item->pos.x;
+    src.y = lara_item->pos.y - 650;
+    src.z = lara_item->pos.z;
+    src.room_num = lara_item->room_num;
 
     int16_t item_num = Item_GetNextActive();
     while (item_num != NO_ITEM) {
@@ -70,8 +73,8 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
         PHD_ANGLE ang[2];
         Math_GetVectorAngles(
             target.x - src.x, target.y - src.y, target.z - src.z, ang);
-        ang[0] -= g_Lara.torso_rot.y + g_LaraItem->rot.y;
-        ang[1] -= g_Lara.torso_rot.x + g_LaraItem->rot.x;
+        ang[0] -= lara->torso_rot.y + lara_item->rot.y;
+        ang[1] -= lara->torso_rot.x + lara_item->rot.x;
         if (ang[0] >= weapon->lock_angles[0] && ang[0] <= weapon->lock_angles[1]
             && ang[1] >= weapon->lock_angles[2]
             && ang[1] <= weapon->lock_angles[3]) {
@@ -88,7 +91,7 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
 
     if ((g_Config.gameplay.target_mode == TLM_FULL
          || g_Config.gameplay.target_mode == TLM_SEMI)
-        && g_Input.action && g_Lara.target) {
+        && g_Input.action && lara->target != nullptr) {
         Gun_TargetInfo(weapon);
         return;
     }
@@ -96,27 +99,27 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
     if (num_targets > 0) {
         for (int slot = 0; slot < LOT_SLOT_COUNT; slot++) {
             if (!m_TargetList[slot]) {
-                g_Lara.target = nullptr;
+                lara->target = nullptr;
             }
 
-            if (m_TargetList[slot] == g_Lara.target) {
+            if (m_TargetList[slot] == lara->target) {
                 break;
             }
         }
 
-        if (!g_Lara.target) {
-            g_Lara.target = best_target;
+        if (lara->target == nullptr) {
+            lara->target = best_target;
             m_LastTargetList[0] = nullptr;
         }
     } else {
-        g_Lara.target = nullptr;
+        lara->target = nullptr;
     }
 
-    if (g_Lara.target != m_LastTargetList[0]) {
+    if (lara->target != m_LastTargetList[0]) {
         for (int slot = LOT_SLOT_COUNT - 1; slot > 0; slot--) {
             m_LastTargetList[slot] = m_LastTargetList[slot - 1];
         }
-        m_LastTargetList[0] = g_Lara.target;
+        m_LastTargetList[0] = lara->target;
     }
 
     Gun_TargetInfo(weapon);
@@ -124,7 +127,8 @@ void Gun_GetNewTarget(WEAPON_INFO *const weapon)
 
 void Gun_ChangeTarget(WEAPON_INFO *const weapon)
 {
-    g_Lara.target = nullptr;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->target = nullptr;
     bool found_new_target = false;
 
     for (int new_target = 0; new_target < LOT_SLOT_COUNT; new_target++) {
@@ -144,17 +148,17 @@ void Gun_ChangeTarget(WEAPON_INFO *const weapon)
         }
 
         if (found_new_target) {
-            g_Lara.target = m_TargetList[new_target];
+            lara->target = m_TargetList[new_target];
             break;
         }
     }
 
-    if (g_Lara.target != m_LastTargetList[0]) {
+    if (lara->target != m_LastTargetList[0]) {
         for (int last_target = LOT_SLOT_COUNT - 1; last_target > 0;
              last_target--) {
             m_LastTargetList[last_target] = m_LastTargetList[last_target - 1];
         }
-        m_LastTargetList[0] = g_Lara.target;
+        m_LastTargetList[0] = lara->target;
     }
 
     Gun_TargetInfo(weapon);
@@ -164,33 +168,34 @@ int32_t Gun_FireWeapon(
     const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
     const int16_t *const angles)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
 
     AMMO_INFO *ammo;
     switch (weapon_type) {
     case LGT_MAGNUMS:
-        ammo = &g_Lara.magnum_ammo;
+        ammo = &lara->magnum_ammo;
         if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
-        ammo = &g_Lara.uzi_ammo;
+        ammo = &lara->uzi_ammo;
         if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
-        ammo = &g_Lara.shotgun_ammo;
+        ammo = &lara->shotgun_ammo;
         if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
             ammo->ammo = 1000;
         }
         break;
 
     default:
-        ammo = &g_Lara.pistol_ammo;
+        ammo = &lara->pistol_ammo;
         ammo->ammo = 1000;
         break;
     }
@@ -199,9 +204,9 @@ int32_t Gun_FireWeapon(
         ammo->ammo = 0;
         Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
         if (Inv_RequestItem(O_PISTOL_ITEM)) {
-            g_Lara.request_gun_type = LGT_PISTOLS;
+            lara->request_gun_type = LGT_PISTOLS;
         } else {
-            g_Lara.gun_status = LGS_UNDRAW;
+            lara->gun_status = LGS_UNDRAW;
         }
         return 0;
     }
@@ -268,10 +273,11 @@ int32_t Gun_FireWeapon(
 
 void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points > 0 && item->hit_points <= damage) {
         Stats_AddKill();
         if (g_Config.gameplay.target_mode == TLM_SEMI) {
-            g_Lara.target = nullptr;
+            lara->target = nullptr;
         }
     }
     Item_TakeDamage(item, damage, true);

@@ -1,8 +1,9 @@
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/pathing.h>
 #include <libtrx/utils.h>
 
@@ -58,8 +59,9 @@ static void M_ConvertBartoliToDragon(const int16_t item_num)
 
 static bool M_CheckLaraProximity(const ITEM *const origin_item)
 {
-    const int32_t dx = ABS(g_LaraItem->pos.x - origin_item->pos.x);
-    const int32_t dz = ABS(g_LaraItem->pos.z - origin_item->pos.z);
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = ABS(lara_item->pos.x - origin_item->pos.x);
+    const int32_t dz = ABS(lara_item->pos.z - origin_item->pos.z);
     return dx < BARTOLI_RANGE && dz < BARTOLI_RANGE;
 }
 

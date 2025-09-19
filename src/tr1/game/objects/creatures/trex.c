@@ -1,7 +1,6 @@
 #include "game/creature.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
@@ -38,7 +37,7 @@ typedef enum {
 static void M_Setup(OBJECT *obj);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Control(int16_t item_num);
-static void M_KillLara(ITEM *item);
+static void M_KillLara(const ITEM *item);
 
 static void M_Setup(OBJECT *const obj)
 {
@@ -181,28 +180,31 @@ static void M_Control(const int16_t item_num)
     item->collidable = true;
 }
 
-static void M_KillLara(ITEM *const item)
+static void M_KillLara(const ITEM *const item)
 {
-    item->goal_anim_state = TREX_STATE_KILL;
-    Item_UpdateRoom(g_Lara.item_num, item->room_num);
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    g_LaraItem->pos.x = item->pos.x;
-    g_LaraItem->pos.y = item->pos.y;
-    g_LaraItem->pos.z = item->pos.z;
-    g_LaraItem->rot.x = 0;
-    g_LaraItem->rot.y = item->rot.y;
-    g_LaraItem->rot.z = 0;
-    g_LaraItem->gravity = 0;
-    g_LaraItem->current_anim_state = LS_SPECIAL;
-    g_LaraItem->goal_anim_state = LS_SPECIAL;
-    Item_SwitchToObjAnim(g_LaraItem, EXTRA_ANIM_TREX_DEATH, 0, O_LARA_EXTRA);
+    Item_UpdateRoom(lara->item_num, item->room_num);
+    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TREX_DEATH, 0, O_LARA_EXTRA);
+
+    lara_item->pos.x = item->pos.x;
+    lara_item->pos.y = item->pos.y;
+    lara_item->pos.z = item->pos.z;
+    lara_item->rot.x = 0;
+    lara_item->rot.y = item->rot.y;
+    lara_item->rot.z = 0;
+    lara_item->gravity = 0;
+    lara_item->current_anim_state = LS_SPECIAL;
+    lara_item->goal_anim_state = LS_SPECIAL;
     Lara_Mesh_SwapAll(O_LARA_EXTRA);
 
-    g_LaraItem->hit_points = -1;
-    g_Lara.extra_anim = true;
-    g_Lara.air = -1;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    g_Lara.gun_type = LGT_UNARMED;
+    lara_item->hit_points = -1;
+
+    lara->extra_anim = true;
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
 
     g_Camera.flags = CF_FOLLOW_CENTRE;
     g_Camera.target_angle = 170 * DEG_1;

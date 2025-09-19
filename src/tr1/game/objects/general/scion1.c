@@ -8,7 +8,6 @@
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/input.h>
@@ -63,10 +62,10 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
-    int16_t rotx = item->rot.x;
-    int16_t roty = item->rot.y;
-    int16_t rotz = item->rot.z;
+
+    const XYZ_16 old_rot = item->rot;
     item->rot.y = lara_item->rot.y;
     item->rot.x = 0;
     item->rot.z = 0;
@@ -84,21 +83,19 @@ static void M_Collision(
             Stats_AddPickup();
         }
     } else if (
-        g_Input.action && g_Lara.gun_status == LGS_ARMLESS
-        && !lara_item->gravity && lara_item->current_anim_state == LS_STOP) {
+        g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
+        && lara_item->current_anim_state == LS_STOP) {
         Lara_AlignPosition(item, &m_Scion1_Position);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;
         Item_SwitchToObjAnim(
             lara_item, EXTRA_ANIM_PEDESTAL_SCION, 0, O_LARA_EXTRA);
-        g_Lara.gun_status = LGS_HANDS_BUSY;
-        g_Lara.extra_anim = true;
+        lara->gun_status = LGS_HANDS_BUSY;
+        lara->extra_anim = true;
         Camera_InvokeCinematic(lara_item, 0, 0);
     }
 cleanup:
-    item->rot.x = rotx;
-    item->rot.y = roty;
-    item->rot.z = rotz;
+    item->rot = old_rot;
 }
 
 REGISTER_OBJECT(O_SCION_ITEM_1, M_Setup)

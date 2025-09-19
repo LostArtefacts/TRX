@@ -1,8 +1,8 @@
 #include "game/creature.h"
 #include "game/objects/creatures/cultist_common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -111,13 +111,14 @@ static void M_Control(const int16_t item_num)
 
         angle = Creature_Turn(item, creature->maximum_turn);
 
+        const ITEM *const lara_item = Lara_GetItem();
         switch (item->current_anim_state) {
         case CULTIST_3_STATE_STOP:
         case CULTIST_3_STATE_WAIT:
             if (info.ahead != 0) {
                 head = info.angle;
             }
-            if (creature->mood == MOOD_BORED && g_LaraItem->hit_points <= 0) {
+            if (creature->mood == MOOD_BORED && lara_item->hit_points <= 0) {
                 item->goal_anim_state = CULTIST_3_STATE_WAIT;
             } else if (Creature_CanTargetEnemy(item, &info)) {
                 if (info.distance > CULTIST_3_STOP_RANGE) {
@@ -159,7 +160,7 @@ static void M_Control(const int16_t item_num)
                 if (info.distance > CULTIST_3_RUN_RANGE || info.ahead == 0) {
                     item->goal_anim_state = CULTIST_3_STATE_RUN;
                 }
-            } else if (g_LaraItem->hit_points <= 0) {
+            } else if (lara_item->hit_points <= 0) {
                 item->goal_anim_state = CULTIST_3_STATE_WAIT;
             } else if (info.ahead != 0) {
                 item->goal_anim_state = CULTIST_3_STATE_STOP;
@@ -181,7 +182,7 @@ static void M_Control(const int16_t item_num)
                     item->goal_anim_state = CULTIST_3_STATE_AIM_R;
                 }
             } else if (creature->mood == MOOD_BORED) {
-                if (g_LaraItem->hit_points <= 0) {
+                if (lara_item->hit_points <= 0) {
                     item->goal_anim_state = CULTIST_3_STATE_WAIT;
                 } else {
                     item->goal_anim_state = CULTIST_3_STATE_STOP;

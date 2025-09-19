@@ -110,8 +110,9 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    if (g_Lara.death_timer > DEATH_WAIT
-        || (g_Lara.death_timer > DEATH_WAIT_INPUT
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->death_timer > DEATH_WAIT
+        || (lara->death_timer > DEATH_WAIT_INPUT
             && (g_InputDB.menu_confirm || g_InputDB.menu_back)
             && !g_Input.fly_cheat)
         || g_OverlayFlag == 2) {
@@ -124,7 +125,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     }
 
     if ((g_InputDB.option || g_Input.save || g_Input.load || g_OverlayFlag <= 0)
-        && !g_Lara.death_timer) {
+        && !lara->death_timer) {
         if (g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {
@@ -149,7 +150,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
-    if (!g_Lara.death_timer && g_InputDB.pause) {
+    if (!lara->death_timer && g_InputDB.pause) {
         return GF_PauseGame();
     } else if (g_InputDB.toggle_photo_mode) {
         return GF_EnterPhotoMode();

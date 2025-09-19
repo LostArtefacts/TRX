@@ -2,7 +2,8 @@
 
 #include "game/gun/gun.h"
 #include "game/gun/gun_misc.h"
-#include "global/vars.h"
+
+#include <libtrx/game/lara.h>
 
 typedef enum {
     // clang-format off
@@ -39,43 +40,42 @@ void Gun_Pistols_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
 
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
-    const WEAPON_INFO *const winfo = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (g_Input.action) {
-        Gun_TargetInfo(winfo);
+        Gun_TargetInfo(weapon);
     } else {
-        g_Lara.target = nullptr;
+        lara->target = nullptr;
     }
 
-    if (g_Lara.target == nullptr) {
-        Gun_GetNewTarget(winfo);
+    if (lara->target == nullptr) {
+        Gun_GetNewTarget(weapon);
     }
 
-    Gun_AimWeapon(winfo, &g_Lara.left_arm);
-    Gun_AimWeapon(winfo, &g_Lara.right_arm);
+    Gun_AimWeapon(weapon, &lara->left_arm);
+    Gun_AimWeapon(weapon, &lara->right_arm);
 
-    if (g_Lara.left_arm.lock && !g_Lara.right_arm.lock) {
-        g_Lara.head_rot.x = g_Lara.left_arm.rot.x / 2;
-        g_Lara.head_rot.y = g_Lara.left_arm.rot.y / 2;
-        g_Lara.torso_rot.x = g_Lara.head_rot.x;
-        g_Lara.torso_rot.y = g_Lara.head_rot.y;
-    } else if (!g_Lara.left_arm.lock && g_Lara.right_arm.lock) {
-        g_Lara.head_rot.x = g_Lara.right_arm.rot.x / 2;
-        g_Lara.head_rot.y = g_Lara.right_arm.rot.y / 2;
-        g_Lara.torso_rot.x = g_Lara.head_rot.x;
-        g_Lara.torso_rot.y = g_Lara.head_rot.y;
-    } else if (g_Lara.right_arm.lock) {
-        g_Lara.head_rot.x =
-            (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
-        g_Lara.head_rot.y =
-            (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
-        g_Lara.torso_rot.x = g_Lara.head_rot.x;
-        g_Lara.torso_rot.y = g_Lara.head_rot.y;
+    if (lara->left_arm.lock && !lara->right_arm.lock) {
+        lara->head_rot.x = lara->left_arm.rot.x / 2;
+        lara->head_rot.y = lara->left_arm.rot.y / 2;
+        lara->torso_rot.x = lara->head_rot.x;
+        lara->torso_rot.y = lara->head_rot.y;
+    } else if (!lara->left_arm.lock && lara->right_arm.lock) {
+        lara->head_rot.x = lara->right_arm.rot.x / 2;
+        lara->head_rot.y = lara->right_arm.rot.y / 2;
+        lara->torso_rot.x = lara->head_rot.x;
+        lara->torso_rot.y = lara->head_rot.y;
+    } else if (lara->right_arm.lock) {
+        lara->head_rot.x = (lara->right_arm.rot.x + lara->left_arm.rot.x) / 4;
+        lara->head_rot.y = (lara->right_arm.rot.y + lara->left_arm.rot.y) / 4;
+        lara->torso_rot.x = lara->head_rot.x;
+        lara->torso_rot.y = lara->head_rot.y;
     }
 
     Gun_Pistols_Animate(weapon_type);
 
-    if (g_Lara.left_arm.flash_gun || g_Lara.right_arm.flash_gun) {
+    if (lara->left_arm.flash_gun || lara->right_arm.flash_gun) {
         Gun_AddDynamicLight();
     }
 }

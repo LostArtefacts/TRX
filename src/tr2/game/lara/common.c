@@ -1,17 +1,24 @@
-#include "global/vars.h"
+#include <libtrx/game/lara/common.h>
+
+static LARA_INFO m_Lara = {};
+static ITEM *m_LaraItem = nullptr;
 
 LARA_INFO *Lara_GetLaraInfo(void)
 {
-    return &g_Lara;
+    return &m_Lara;
 }
 
 ITEM *Lara_GetItem(void)
 {
-    return g_LaraItem;
+    return m_LaraItem;
 }
 
-void Lara_InitialiseLoad(const int16_t item_num)
+void Lara_InitialiseLoad(int16_t item_num)
 {
-    g_Lara.item_num = item_num;
-    g_LaraItem = Item_Get(item_num);
+    m_Lara.item_num = item_num;
+    if (item_num == NO_ITEM) {
+        m_LaraItem = nullptr;
+    } else {
+        m_LaraItem = Item_Get(item_num);
+    }
 }

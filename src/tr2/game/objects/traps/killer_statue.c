@@ -1,9 +1,8 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
-#include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 
 #define KILLER_STATUE_CUT_DAMAGE 20
@@ -65,12 +64,12 @@ static void M_Control(const int16_t item_num)
 
         const ITEM *const lara_item = Lara_GetItem();
         Spawn_Blood(
-            g_LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256,
-            g_LaraItem->pos.y - Random_GetControl() / 44,
-            g_LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256,
-            g_LaraItem->speed,
-            g_LaraItem->rot.y + (Random_GetControl() - 0x4000) / 8,
-            g_LaraItem->room_num);
+            lara_item->pos.x + (Random_GetControl() - 0x4000) / 256,
+            lara_item->pos.y - Random_GetControl() / 44,
+            lara_item->pos.z + (Random_GetControl() - 0x4000) / 256,
+            lara_item->speed,
+            lara_item->rot.y + (Random_GetControl() - 0x4000) / 8,
+            lara_item->room_num);
     }
 
     Item_Animate(item);

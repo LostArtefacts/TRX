@@ -1,9 +1,9 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/random.h>
@@ -167,7 +167,8 @@ static void M_Control(const int16_t item_num)
             } else {
                 if (g_Config.gameplay.target_mode == TLM_SEMI
                     || g_Config.gameplay.target_mode == TLM_NONE) {
-                    g_Lara.target = nullptr;
+                    LARA_INFO *const lara = Lara_GetLaraInfo();
+                    lara->target = nullptr;
                 }
                 item->hit_points = DONT_TARGET;
             }

@@ -1,7 +1,8 @@
 #include "game/effects.h"
-#include "global/vars.h"
 
 #include <libtrx/game/math.h>
+#include <libtrx/game/objects.h>
+#include <libtrx/game/rooms.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t effect_num);

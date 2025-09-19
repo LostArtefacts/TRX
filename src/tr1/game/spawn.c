@@ -2,9 +2,9 @@
 
 #include "game/effects.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
@@ -17,14 +17,14 @@ static void M_ShootAtLara(EFFECT *effect);
 
 static void M_ShootAtLara(EFFECT *const effect)
 {
-    int32_t x = g_LaraItem->pos.x - effect->pos.x;
-    int32_t y = g_LaraItem->pos.y - effect->pos.y;
-    int32_t z = g_LaraItem->pos.z - effect->pos.z;
+    const ITEM *const lara_item = Lara_GetItem();
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
+    const int32_t x = lara_item->pos.x - effect->pos.x;
+    const int32_t z = lara_item->pos.z - effect->pos.z;
+    const int32_t y = lara_item->pos.y - effect->pos.y
+        + (bounds->max.y + (bounds->min.y - bounds->max.y) * 3 / 4);
 
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(g_LaraItem);
-    y += bounds->max.y + (bounds->min.y - bounds->max.y) * 3 / 4;
-
-    int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));
+    const int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));
     effect->rot.x = -(PHD_ANGLE)Math_Atan(dist, y);
     effect->rot.y = Math_Atan(z, x);
     effect->rot.x += (Random_GetControl() - 0x4000) / 0x40;
@@ -136,17 +136,18 @@ int16_t Spawn_GunShotHit(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num)
 {
+    const ITEM *const lara_item = Lara_GetItem();
     XYZ_32 pos = {
         .x = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
         .y = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
         .z = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
     };
     Collide_GetJointAbsPosition(
-        g_LaraItem, &pos, (Random_GetControl() * LM_NUMBER_OF) / 0x7FFF);
+        lara_item, &pos, (Random_GetControl() * LM_NUMBER_OF) / 0x7FFF);
     Spawn_Blood(
-        pos.x, pos.y, pos.z, g_LaraItem->speed, g_LaraItem->rot.y,
-        g_LaraItem->room_num);
-    Sound_Effect(SFX_LARA_BULLETHIT, &g_LaraItem->pos, SPM_NORMAL);
+        pos.x, pos.y, pos.z, lara_item->speed, lara_item->rot.y,
+        lara_item->room_num);
+    Sound_Effect(SFX_LARA_BULLETHIT, &lara_item->pos, SPM_NORMAL);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
 
@@ -154,22 +155,24 @@ int16_t Spawn_GunShotMiss(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num)
 {
-    GAME_VECTOR pos;
-    pos.x = g_LaraItem->pos.x
-        + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
-    pos.y = g_LaraItem->floor;
-    pos.z = g_LaraItem->pos.z
-        + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
-    pos.room_num = g_LaraItem->room_num;
+    const ITEM *const lara_item = Lara_GetItem();
+    const GAME_VECTOR pos = {
+        .x = lara_item->pos.x
+            + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF,
+        .y = lara_item->floor,
+        .z = lara_item->pos.z
+            + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF,
+        .room_num = lara_item->room_num,
+    };
     Spawn_Ricochet(&pos);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
 
-void Spawn_Ricochet(GAME_VECTOR *pos)
+void Spawn_Ricochet(const GAME_VECTOR *const pos)
 {
-    int16_t effect_num = Effect_Create(pos->room_num);
+    const int16_t effect_num = Effect_Create(pos->room_num);
     if (effect_num != NO_EFFECT) {
-        EFFECT *effect = Effect_Get(effect_num);
+        EFFECT *const effect = Effect_Get(effect_num);
         effect->pos.x = pos->x;
         effect->pos.y = pos->y;
         effect->pos.z = pos->z;
@@ -180,11 +183,11 @@ void Spawn_Ricochet(GAME_VECTOR *pos)
     }
 }
 
-void Spawn_Twinkle(GAME_VECTOR *pos)
+void Spawn_Twinkle(const GAME_VECTOR *const pos)
 {
-    int16_t effect_num = Effect_Create(pos->room_num);
+    const int16_t effect_num = Effect_Create(pos->room_num);
     if (effect_num != NO_EFFECT) {
-        EFFECT *effect = Effect_Get(effect_num);
+        EFFECT *const effect = Effect_Get(effect_num);
         effect->pos.x = pos->x;
         effect->pos.y = pos->y;
         effect->pos.z = pos->z;

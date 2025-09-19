@@ -1,12 +1,11 @@
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
-#include "game/lara/flare.h"
 #include "game/los.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/lara/vehicle.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/utils.h>
@@ -67,22 +66,25 @@ static int16_t M_FindNearestBoss(void)
             break;
         }
 
-        GAME_VECTOR start;
-        start.pos.x = g_LaraItem->pos.x;
-        start.pos.y = g_LaraItem->pos.y - STEP_L * 2;
-        start.pos.z = g_LaraItem->pos.z;
-        start.room_num = g_LaraItem->room_num;
+        const ITEM *const lara_item = Lara_GetItem();
+        const GAME_VECTOR start = {
+            .x = lara_item->pos.x,
+            .y = lara_item->pos.y - STEP_L * 2,
+            .z = lara_item->pos.z,
+            .room_num = lara_item->room_num,
+        };
 
-        GAME_VECTOR target;
-        target.pos.x = item->pos.x;
-        target.pos.y = item->pos.y - STEP_L * 2;
-        target.pos.z = item->pos.z;
-        target.room_num = item->room_num;
+        GAME_VECTOR target = {
+            .x = item->pos.x,
+            .y = item->pos.y - STEP_L * 2,
+            .z = item->pos.z,
+            .room_num = item->room_num,
+        };
 
         if (!LOS_Check(&start, &target)) {
-            const int32_t dx = (g_LaraItem->pos.x - item->pos.x) >> 6;
-            const int32_t dy = (g_LaraItem->pos.y - item->pos.y) >> 6;
-            const int32_t dz = (g_LaraItem->pos.z - item->pos.z) >> 6;
+            const int32_t dx = (lara_item->pos.x - item->pos.x) >> 6;
+            const int32_t dy = (lara_item->pos.y - item->pos.y) >> 6;
+            const int32_t dz = (lara_item->pos.z - item->pos.z) >> 6;
             const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
             if (dist < best_dist) {
                 best_dist = dist;
@@ -111,17 +113,18 @@ static void M_ActivateNearestBoss(void)
 
 static void M_PrepareCutscene(const int16_t item_num)
 {
-    if (g_Lara.gun_type == LGT_FLARE) {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->gun_type == LGT_FLARE) {
         Lara_Flare_Undraw();
-        g_Lara.flare.control = false;
-        g_Lara.left_arm.lock = false;
+        lara->flare.control = false;
+        lara->left_arm.lock = false;
     }
 
     Lara_Vehicle_Dismount();
     Gun_SetLaraHandLMesh(LGT_UNARMED);
     Gun_SetLaraHandRMesh(LGT_UNARMED);
-    g_Lara.water_status = LWS_ABOVE_WATER;
-    g_Lara.target = nullptr;
+    lara->water_status = LWS_ABOVE_WATER;
+    lara->target = nullptr;
 
     ITEM *const item = Item_Get(item_num);
     Creature_SpecialKill(item, 0, 0, LS_EXTRA_FINAL_ANIM);

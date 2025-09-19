@@ -1,8 +1,8 @@
 #include "game/creature.h"
 #include "game/spawn.h"
 #include "global/types.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/utils.h>
 
 #define BIRD_DAMAGE 20
@@ -178,8 +178,9 @@ static void M_Control(const int16_t item_num)
 
     case BIRD_STATE_ATTACK:
         if (!bird->flags && item->touch_bits) {
-            g_LaraItem->hit_points -= BIRD_DAMAGE;
-            g_LaraItem->hit_status = 1;
+            ITEM *const lara_item = Lara_GetItem();
+            lara_item->hit_points -= BIRD_DAMAGE;
+            lara_item->hit_status = 1;
             if (item->object_id == O_CROW) {
                 Creature_Effect(item, &m_CrowBite, Spawn_Blood);
             } else {

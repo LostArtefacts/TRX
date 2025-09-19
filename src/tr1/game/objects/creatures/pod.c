@@ -1,6 +1,6 @@
 #include "game/objects/common.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/utils.h>
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
@@ -92,9 +92,10 @@ static void M_Control(const int16_t item_num)
         } else if (item->object_id == O_BIG_POD) {
             explode = 1;
         } else {
-            int32_t x = g_LaraItem->pos.x - item->pos.x;
-            int32_t y = g_LaraItem->pos.y - item->pos.y;
-            int32_t z = g_LaraItem->pos.z - item->pos.z;
+            const ITEM *const lara_item = Lara_GetItem();
+            int32_t x = lara_item->pos.x - item->pos.x;
+            int32_t y = lara_item->pos.y - item->pos.y;
+            int32_t z = lara_item->pos.z - item->pos.z;
             if (ABS(x) < POD_EXPLODE_DIST && ABS(y) < POD_EXPLODE_DIST
                 && ABS(z) < POD_EXPLODE_DIST) {
                 explode = 1;

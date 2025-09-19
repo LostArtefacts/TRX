@@ -3,7 +3,6 @@
 #include "game/creature.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/game/lara/const.h>
 
@@ -47,6 +46,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const ITEM *const lara_item = Lara_GetItem();
 
     if (item->hit_points < LARA_MAX_HITPOINTS) {
         Lara_TakeDamage((LARA_MAX_HITPOINTS - item->hit_points) * 10, false);
@@ -54,33 +54,33 @@ static void M_Control(const int16_t item_num)
     }
 
     if (!item->data) {
-        int32_t x = 2 * m_AnchorX - g_LaraItem->pos.x;
-        int32_t y = g_LaraItem->pos.y;
-        int32_t z = 2 * m_AnchorZ - g_LaraItem->pos.z;
+        int32_t x = 2 * m_AnchorX - lara_item->pos.x;
+        int32_t y = lara_item->pos.y;
+        int32_t z = 2 * m_AnchorZ - lara_item->pos.z;
 
         int16_t room_num = item->room_num;
         const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
         const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
-        room_num = g_LaraItem->room_num;
+        room_num = lara_item->room_num;
         sector = Room_GetSector(
-            g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
+            lara_item->pos.x, lara_item->pos.y, lara_item->pos.z, &room_num);
         int32_t lh = Room_GetHeight(
-            sector, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
+            sector, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
 
-        const int16_t relative_anim = Item_GetRelativeAnim(g_LaraItem);
-        const int16_t relative_frame = Item_GetRelativeFrame(g_LaraItem);
+        const int16_t relative_anim = Item_GetRelativeAnim(lara_item);
+        const int16_t relative_frame = Item_GetRelativeFrame(lara_item);
         Item_SwitchToObjAnim(item, relative_anim, relative_frame, O_LARA);
         item->pos.x = x;
         item->pos.y = y;
         item->pos.z = z;
-        item->rot.x = g_LaraItem->rot.x;
-        item->rot.y = g_LaraItem->rot.y - DEG_180;
-        item->rot.z = g_LaraItem->rot.z;
-        Item_UpdateRoom(item_num, g_LaraItem->room_num);
+        item->rot.x = lara_item->rot.x;
+        item->rot.y = lara_item->rot.y - DEG_180;
+        item->rot.z = lara_item->rot.z;
+        Item_UpdateRoom(item_num, lara_item->room_num);
 
-        if (h >= lh + WALL_L && !g_LaraItem->gravity) {
+        if (h >= lh + WALL_L && !lara_item->gravity) {
             item->current_anim_state = LS_FAST_FALL;
             item->goal_anim_state = LS_FAST_FALL;
             Item_SwitchToAnim(item, LA_SMASH_JUMP, M_SMASH_JUMP_FRAME);

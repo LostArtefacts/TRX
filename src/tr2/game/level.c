@@ -8,7 +8,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/benchmark.h>
 #include <libtrx/config.h>
@@ -440,8 +439,7 @@ bool Level_Initialise(
     GF_SetCurrentLevel(level);
 
     InitialiseGameFlags();
-    g_Lara.item_num = NO_ITEM;
-    g_LaraItem = nullptr;
+    Lara_InitialiseLoad(NO_ITEM);
 
     if (level == nullptr) {
         return false;

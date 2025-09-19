@@ -2,7 +2,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/random.h>
 
@@ -23,10 +22,11 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->touch_bits) {
+        const ITEM *const lara_item = Lara_GetItem();
         Lara_TakeDamage(DART_DAMAGE, true);
         Spawn_Blood(
-            item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
-            g_LaraItem->rot.y, g_LaraItem->room_num);
+            item->pos.x, item->pos.y, item->pos.z, lara_item->speed,
+            lara_item->rot.y, lara_item->room_num);
     }
 
     int32_t old_x = item->pos.x;

@@ -1,6 +1,5 @@
 #include "game/lara.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
@@ -66,9 +65,10 @@ static void M_Control(const int16_t item_num)
         }
     } else if (item->pos.y != item->floor) {
         item->rot.y += item->required_anim_state;
-        int32_t x = g_LaraItem->pos.x - item->pos.x;
-        int32_t y = g_LaraItem->pos.y - item->pos.y;
-        int32_t z = g_LaraItem->pos.z - item->pos.z;
+        const ITEM *const lara_item = Lara_GetItem();
+        const int32_t x = lara_item->pos.x - item->pos.x;
+        const int32_t y = lara_item->pos.y - item->pos.y;
+        const int32_t z = lara_item->pos.z - item->pos.z;
         if (ABS(x) <= DAMOCLES_SWORD_ACTIVATE_DIST
             && ABS(z) <= DAMOCLES_SWORD_ACTIVATE_DIST && y > 0
             && y < WALL_L * 3) {

@@ -77,25 +77,26 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
     InvRing_ShowItemName(inv_item);
     bool enable_examine = false;
 
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
-        M_ShowAmmoQuantity("%5d", g_Lara.shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+        M_ShowAmmoQuantity("%5d", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
     case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity("%5d", g_Lara.magnum_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->magnum_ammo.ammo);
         break;
     case O_UZI_OPTION:
-        M_ShowAmmoQuantity("%5d", g_Lara.uzi_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->uzi_ammo.ammo);
         break;
     case O_HARPOON_OPTION:
-        M_ShowAmmoQuantity("%5d", g_Lara.harpoon_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->harpoon_ammo.ammo);
         break;
     case O_M16_OPTION:
-        M_ShowAmmoQuantity("%5d", g_Lara.m16_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->m16_ammo.ammo);
         break;
     case O_GRENADE_OPTION:
-        M_ShowAmmoQuantity("%5d", g_Lara.grenade_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->grenade_ammo.ammo);
         break;
     case O_SHOTGUN_AMMO_OPTION:
         M_ShowAmmoQuantity("%d", SHOTGUN_SHELL_COUNT * qty);

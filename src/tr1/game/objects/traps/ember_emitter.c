@@ -1,6 +1,5 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>

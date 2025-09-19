@@ -1,9 +1,8 @@
 #include "game/creature.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
@@ -141,7 +140,8 @@ static void M_Control(const int16_t item_num)
                 }
             } else if (
                 info.ahead != 0 && info.distance < TIGER_ATTACK_2_RANGE) {
-                if (g_LaraItem->speed == 0) {
+                const ITEM *const lara_item = Lara_GetItem();
+                if (lara_item->speed == 0) {
                     item->goal_anim_state = TIGER_STATE_STOP;
                 } else {
                     item->goal_anim_state = TIGER_STATE_ATTACK_2;

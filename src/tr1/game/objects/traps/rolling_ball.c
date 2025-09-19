@@ -1,7 +1,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
@@ -113,6 +112,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
@@ -151,7 +151,7 @@ static void M_Collision(
         lara_item->hit_status = 1;
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
-            Item_UpdateRoom(g_Lara.item_num, item->room_num);
+            Item_UpdateRoom(lara->item_num, item->room_num);
 
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;

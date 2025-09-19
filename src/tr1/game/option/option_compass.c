@@ -3,10 +3,10 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/ui.h>
 
 #include <stdint.h>
@@ -82,10 +82,11 @@ void Option_Compass_Close(void)
 
 void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)
 {
-    if (g_LaraItem == nullptr) {
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item == nullptr) {
         return;
     }
-    int16_t delta = -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
+    int16_t delta = -inv_item->y_rot - lara_item->rot.y - m_CompassNeedle;
     m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
     m_CompassNeedle += m_CompassSpeed;
 }

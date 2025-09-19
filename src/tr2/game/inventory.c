@@ -2,11 +2,10 @@
 
 #include "game/gun.h"
 #include "game/inventory_ring.h"
-#include "game/objects/vars.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/game/game.h>
+#include <libtrx/game/lara.h>
 
 static int32_t M_GetFlareQuantity(void);
 
@@ -25,15 +24,16 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         return false;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Object_IsType(obj_id, g_GunObjects)) {
         Gun_UpdateLaraMeshes(obj_id);
-        if (g_Lara.gun_type == LGT_UNARMED) {
-            g_Lara.gun_type = Gun_GetType(obj_id);
-            const bool hands_busy = g_Lara.gun_status == LGS_HANDS_BUSY;
-            g_Lara.gun_status = LGS_ARMLESS;
+        if (lara->gun_type == LGT_UNARMED) {
+            lara->gun_type = Gun_GetType(obj_id);
+            const bool hands_busy = lara->gun_status == LGS_HANDS_BUSY;
+            lara->gun_status = LGS_ARMLESS;
             Gun_InitialiseNewWeapon();
             if (hands_busy) {
-                g_Lara.gun_status = LGS_HANDS_BUSY;
+                lara->gun_status = LGS_HANDS_BUSY;
             }
         }
     }
@@ -60,8 +60,8 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Pistols);
-        if (g_Lara.last_gun_type == LGT_UNARMED) {
-            g_Lara.last_gun_type = LGT_PISTOLS;
+        if (lara->last_gun_type == LGT_UNARMED) {
+            lara->last_gun_type = LGT_PISTOLS;
         }
         return true;
 

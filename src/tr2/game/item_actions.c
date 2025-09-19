@@ -2,7 +2,6 @@
 
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
@@ -85,8 +84,10 @@ static M_FUNC m_Actions[] = {
 static void M_Bubbles(ITEM *const item)
 {
     // XXX: until we get RoboLara, it makes sense for her to breathe underwater
-    if (g_Lara.water_status == LWS_CHEAT
-        && !(Room_Get(g_LaraItem->room_num)->flags & RF_UNDERWATER)) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara->water_status == LWS_CHEAT
+        && !(Room_Get(lara_item->room_num)->flags & RF_UNDERWATER)) {
         return;
     }
 
@@ -106,7 +107,8 @@ static void M_Bubbles(ITEM *const item)
 
 static void M_LaraHandsFree(ITEM *const item)
 {
-    g_Lara.gun_status = LGS_ARMLESS;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->gun_status = LGS_ARMLESS;
 }
 
 static void M_FinishLevel(ITEM *const item)
@@ -160,12 +162,12 @@ static void M_Flood(ITEM *const item)
         return;
     }
 
+    const ITEM *const lara_item = Lara_GetItem();
     XYZ_32 pos = {
-        .x = g_LaraItem->pos.x,
+        .x = lara_item->pos.x,
         .y = g_Camera.target.pos.y,
-        .z = g_LaraItem->pos.z,
+        .z = lara_item->pos.z,
     };
-
     if (flip_timer >= LOGIC_FPS) {
         pos.y += 100 * (flip_timer - LOGIC_FPS);
     } else {
@@ -266,7 +268,7 @@ static void M_SwapMeshesWithMeshSwap3(ITEM *const item)
     const OBJECT *const obj_1 = Object_Get(item->object_id);
     for (int32_t mesh_idx = 0; mesh_idx < obj_1->mesh_count; mesh_idx++) {
         Object_SwapMesh(item->object_id, O_LARA_SWAP, mesh_idx);
-        if (item == g_LaraItem) {
+        if (item == Lara_GetItem()) {
             Lara_Mesh_SwapSingle(mesh_idx, item->object_id);
         }
     }

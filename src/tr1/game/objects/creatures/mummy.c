@@ -3,10 +3,10 @@
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -53,9 +53,10 @@ static void M_Control(const int16_t item_num)
     int16_t head = 0;
 
     if (item->current_anim_state == MUMMY_STATE_STOP) {
-        head = Math_Atan(
-                   g_LaraItem->pos.z - item->pos.z,
-                   g_LaraItem->pos.x - item->pos.x)
+        const ITEM *const lara_item = Lara_GetItem();
+        head =
+            Math_Atan(
+                lara_item->pos.z - item->pos.z, lara_item->pos.x - item->pos.x)
             - item->rot.y;
         CLAMP(head, -FRONT_ARC, FRONT_ARC);
 

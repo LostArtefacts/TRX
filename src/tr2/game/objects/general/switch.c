@@ -1,7 +1,7 @@
 #include "game/lara.h"
-#include "global/vars.h"
 
 #include <libtrx/game/input.h>
+#include <libtrx/game/lara.h>
 
 typedef enum {
     SWITCH_STATE_OFF = 0,
@@ -104,14 +104,15 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
 {
     lara_item->current_anim_state = LS_SWITCH_OFF;
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
         Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
         lara_item->current_anim_state = LS_EXTRA_BREATH;
         lara_item->goal_anim_state = LS_EXTRA_AIRLOCK;
         Item_Animate(lara_item);
-        g_Lara.extra_anim = true;
-        g_Lara.hit_direction = -1;
+        lara->extra_anim = true;
+        lara->hit_direction = -1;
         break;
 
     case O_SWITCH_TYPE_SMALL:
@@ -162,9 +163,11 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
+
     if (!g_Input.action || item->status != IS_INACTIVE
-        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || lara_item->current_anim_state != LS_STOP
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
@@ -183,10 +186,10 @@ static void M_Collision(
         M_SwitchOff(item, lara_item);
     }
 
-    if (!g_Lara.extra_anim) {
+    if (!lara->extra_anim) {
         lara_item->goal_anim_state = LS_STOP;
     }
-    g_Lara.gun_status = LGS_HANDS_BUSY;
+    lara->gun_status = LGS_HANDS_BUSY;
 
     item->status = IS_ACTIVE;
     Item_AddActive(item_num);
@@ -197,12 +200,13 @@ static void M_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
-        || (g_Lara.water_status != LWS_UNDERWATER
-            && g_Lara.water_status != LWS_CHEAT)
-        || g_Lara.gun_status != LGS_ARMLESS
+        || (lara->water_status != LWS_UNDERWATER
+            && lara->water_status != LWS_CHEAT)
+        || lara->gun_status != LGS_ARMLESS
         || lara_item->current_anim_state != LS_TREAD) {
         return;
     }
@@ -226,7 +230,7 @@ static void M_CollisionUW(
         Lara_Animate(lara_item);
     } while (lara_item->current_anim_state != LS_SWITCH_ON);
     lara_item->goal_anim_state = LS_TREAD;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
+    lara->gun_status = LGS_HANDS_BUSY;
 
     if (item->current_anim_state == SWITCH_STATE_ON) {
         item->goal_anim_state = SWITCH_STATE_OFF;

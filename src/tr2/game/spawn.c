@@ -2,9 +2,9 @@
 
 #include "game/effects.h"
 #include "game/objects/effects/missile_common.h"
-#include "global/vars.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/random.h>
@@ -117,17 +117,18 @@ int16_t Spawn_GunHit(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
+    const ITEM *const lara_item = Lara_GetItem();
     XYZ_32 vec = {
         .x = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
         .y = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
         .z = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
     };
     Collide_GetJointAbsPosition(
-        g_LaraItem, &vec, Random_GetControl() * LM_NUMBER_OF / 0x7FFF);
+        lara_item, &vec, Random_GetControl() * LM_NUMBER_OF / 0x7FFF);
     Spawn_Blood(
-        vec.x, vec.y, vec.z, g_LaraItem->speed, g_LaraItem->rot.y,
-        g_LaraItem->room_num);
-    Sound_Effect(SFX_LARA_BULLETHIT, &g_LaraItem->pos, SPM_NORMAL);
+        vec.x, vec.y, vec.z, lara_item->speed, lara_item->rot.y,
+        lara_item->room_num);
+    Sound_Effect(SFX_LARA_BULLETHIT, &lara_item->pos, SPM_NORMAL);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
 
@@ -135,13 +136,12 @@ int16_t Spawn_GunMiss(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
-    GAME_VECTOR pos = {
-        .pos = {
-            .x = g_LaraItem->pos.x + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
-            .y = g_LaraItem->floor,
-            .z = g_LaraItem->pos.z + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
-        },
-        .room_num = g_LaraItem->room_num,
+    const ITEM *const lara_item = Lara_GetItem();
+    const GAME_VECTOR pos = {
+        .x = lara_item->pos.x + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
+        .y = lara_item->floor,
+        .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
+        .room_num = lara_item->room_num,
     };
     Spawn_Ricochet(&pos);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);

@@ -1,6 +1,6 @@
-#include "global/vars.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/objects.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
