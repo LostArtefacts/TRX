@@ -148,6 +148,7 @@ typedef struct {
         bool enable_legal;
         bool enable_credits;
         bool enable_cutscenes;
+        bool enable_timer_in_inventory;
         bool enable_enhanced_saves;
         bool enable_item_examining;
         bool enable_auto_item_selection;

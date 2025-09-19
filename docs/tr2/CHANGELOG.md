@@ -8,6 +8,7 @@
 - added an option to use PS1-style carpet texture animation (Graphics → UI → Background style) (#1630)
 - added an option to turn off sound effect pitching (#625)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
+- added an option to turn off ingame timer in the inventory ring (Gameplay → General → Timer counts in inventory) (#3931)
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the Use PSX FOV option name to Use PS1 FOV (Graphics → Visuals → Use PS1 FOV)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
