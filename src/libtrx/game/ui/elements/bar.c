@@ -19,7 +19,7 @@ typedef struct M_LOOK {
     void (*draw_background)(const struct M_LOOK *look, M_RECT_F rect);
     void (*draw_fill)(
         const struct M_LOOK *look, const UI_BAR_SETTINGS *settings,
-        M_RECT_F rect);
+        M_RECT_F rect, float percent);
 } M_LOOK;
 
 typedef struct {
@@ -40,13 +40,16 @@ typedef struct {
 } M_DATA;
 
 static RGBA_8888 M_GetColor(uint32_t value);
+static RGBA_8888 M_MixColors(RGBA_8888 c0, RGBA_8888 c1, float percent);
 static void M_DrawBackground(const M_LOOK *look, M_RECT_F rect);
 static void M_DrawBorderPC(const M_LOOK *look, M_RECT_F rect, float border);
 static void M_DrawBorderPS1(const M_LOOK *look, M_RECT_F rect, float border);
 static void M_DrawFillPC(
-    const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect);
+    const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
+    float percent);
 static void M_DrawFillPS1(
-    const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect);
+    const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
+    float percent);
 
 static void M_Measure(UI_NODE *node);
 static void M_Draw(const UI_NODE *node);
@@ -162,6 +165,17 @@ static RGBA_8888 M_GetColor(const uint32_t value)
     };
 }
 
+static RGBA_8888 M_MixColors(
+    const RGBA_8888 c0, const RGBA_8888 c1, const float percent)
+{
+    return (RGBA_8888) {
+        .r = (uint8_t)(c0.r * (1.0f - percent) + c1.r * percent),
+        .g = (uint8_t)(c0.g * (1.0f - percent) + c1.g * percent),
+        .b = (uint8_t)(c0.b * (1.0f - percent) + c1.b * percent),
+        .a = (uint8_t)(c0.a * (1.0f - percent) + c1.a * percent),
+    };
+}
+
 static void M_Measure(UI_NODE *const node)
 {
     M_DATA *const data = node->data;
@@ -205,7 +219,7 @@ static void M_DrawBorderPS1(
 
 static void M_DrawFillPC(
     const M_LOOK *const look, const UI_BAR_SETTINGS *const settings,
-    const M_RECT_F rect)
+    const M_RECT_F rect, const float percent)
 {
     const M_LOOK_PC *const pc_look = (const M_LOOK_PC *)look;
     BAR_COLOR color;
@@ -255,32 +269,35 @@ static void M_DrawFillPC(
 
 static void M_DrawFillPS1(
     const M_LOOK *const look, const UI_BAR_SETTINGS *const settings,
-    const M_RECT_F rect)
+    const M_RECT_F rect, const float percent)
 {
     const M_LOOK_PS1 *const ps1_look = (const M_LOOK_PS1 *)look;
     const UI_BAR_TYPE type = settings->type;
     if (g_Config.ui.enable_smooth_bars) {
         for (int32_t i = 0; i < M_COLOR_STEPS - 1; i++) {
-            const RGBA_8888 c1 = M_GetColor(ps1_look->color_map[type][0][i]);
-            const RGBA_8888 c2 = M_GetColor(ps1_look->color_map[type][1][i]);
-            const RGBA_8888 c3 =
+            const RGBA_8888 ctl = M_GetColor(ps1_look->color_map[type][0][i]);
+            const RGBA_8888 ctr = M_GetColor(ps1_look->color_map[type][1][i]);
+            const RGBA_8888 cbl =
                 M_GetColor(ps1_look->color_map[type][0][i + 1]);
-            const RGBA_8888 c4 =
+            const RGBA_8888 cbr =
                 M_GetColor(ps1_look->color_map[type][1][i + 1]);
+            const RGBA_8888 ctrm = M_MixColors(ctl, ctr, percent);
+            const RGBA_8888 cbrm = M_MixColors(cbl, cbr, percent);
             const int32_t lsy = rect.y + i * rect.h / (M_COLOR_STEPS - 1);
             const int32_t lsh =
                 rect.y + (i + 1) * rect.h / (M_COLOR_STEPS - 1) - lsy;
             UI_ScheduleDrawScreenGradientQuad(
-                rect.x, lsy, 0, rect.w, lsh, c1, c2, c3, c4);
+                rect.x, lsy, 0, rect.w, lsh, ctl, ctrm, cbl, cbrm);
         }
     } else {
         for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
-            const RGBA_8888 c1 = M_GetColor(ps1_look->color_map[type][0][i]);
-            const RGBA_8888 c2 = M_GetColor(ps1_look->color_map[type][1][i]);
+            const RGBA_8888 cl = M_GetColor(ps1_look->color_map[type][0][i]);
+            const RGBA_8888 cr = M_GetColor(ps1_look->color_map[type][1][i]);
+            const RGBA_8888 crm = M_MixColors(cl, cr, percent);
             const int32_t lsy = rect.y + i * rect.h / M_COLOR_STEPS;
             const int32_t lsh = rect.y + (i + 1) * rect.h / M_COLOR_STEPS - lsy;
             UI_ScheduleDrawScreenGradientQuad(
-                rect.x, lsy, 0, rect.w, lsh, c1, c2, c1, c2);
+                rect.x, lsy, 0, rect.w, lsh, cl, crm, cl, crm);
         }
     }
 }
@@ -292,6 +309,7 @@ static void M_Draw(const UI_NODE *const node)
 
     float percent = settings->value / (float)MAX(1, settings->max_value);
     CLAMP(percent, 0.0f, 1.0f);
+    percent = (int32_t)(percent * 100) / 100.0f;
 
     // Convert everything to screen coordinates
     const float x = UI_ScaleX(node->x);
@@ -315,14 +333,14 @@ static void M_Draw(const UI_NODE *const node)
     }, bar_rect = {
         .x = inner_rect.x + padding,
         .y = inner_rect.y + padding,
-        .w = (inner_rect.w - padding * 2) * (int32_t)(percent * 100) / 100,
+        .w = (inner_rect.w - padding * 2) * percent,
         .h = inner_rect.h - padding * 2,
     };
 
     data->look->draw_border(data->look, outer_rect, border);
     data->look->draw_background(data->look, inner_rect);
     if (percent > 0.0f) {
-        data->look->draw_fill(data->look, settings, bar_rect);
+        data->look->draw_fill(data->look, settings, bar_rect, percent);
     }
 }
 
