@@ -1,9 +1,9 @@
 #include "game/gun/gun_pistols.h"
 
-#include "game/gun/gun.h"
 #include "game/gun/gun_misc.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 
 typedef enum {

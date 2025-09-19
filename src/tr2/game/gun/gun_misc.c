@@ -1,6 +1,5 @@
 #include "game/gun/gun_misc.h"
 
-#include "game/gun/gun.h"
 #include "game/los.h"
 #include "game/objects/general/window.h"
 #include "game/objects/vars.h"
@@ -11,6 +10,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>

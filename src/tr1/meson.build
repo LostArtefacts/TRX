@@ -111,7 +111,6 @@ sources = [
   'game/game_flow/common.c',
   'game/game_flow/sequencer_events.c',
   'game/game_flow/sequencer_misc.c',
-  'game/gun/gun.c',
   'game/gun/gun_misc.c',
   'game/gun/gun_pistols.c',
   'game/gun/gun_rifle.c',

@@ -1,10 +1,10 @@
 #include "game/inventory.h"
 
-#include "game/gun.h"
 #include "game/inventory_ring.h"
 #include "game/stats.h"
 
 #include <libtrx/game/game.h>
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 
 static int32_t M_GetFlareQuantity(void);

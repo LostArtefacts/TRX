@@ -1,9 +1,9 @@
 #include "game/lara/draw.h"
 
-#include "game/gun.h"
 #include "game/lara.h"
 #include "global/vars.h"
 
+#include <libtrx/game/gun.h>
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/lara/pose.h>
 #include <libtrx/game/matrix.h>
