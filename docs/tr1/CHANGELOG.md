@@ -10,6 +10,7 @@
 - fixed changing FPS after advancing frames in photo mode causing the game to speed up (#3605, regression from 4.13)
 - fixed CPU spike during playing FMVs (#3908, regression from 4.6)
 - fixed `/play` command likely to skip opening FMVs when inventory buffering is enabled (#3910, regression from 3.0)
+- fixed `/pos` command crashing in cutscenes (#3944, regression from 4.10)
 - fixed loading a save made in the gym with the item cheat resulting in Lara's meshes appearing broken (#3917, regression from 4.7)
 - fixed resumed music tracks playing briefly track start upon savegame load (#3916)
 - fixed loading TombATI saves with shotgun equipped causing weird Lara's animation (#3920, regression from 4.12)
