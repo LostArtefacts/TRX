@@ -27,3 +27,6 @@ extern const GAME_OBJECT_PAIR g_GunAmmoObjectMap[];
 extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];
 extern const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[];
 extern const GAME_OBJECT_PAIR g_ReceptacleToReceptacleDoneMap[];
+
+extern const GAME_OBJECT_ID g_ShatterableObjects[];
+extern const GAME_OBJECT_ID g_SmashableObjects[];
