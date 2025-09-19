@@ -3,8 +3,9 @@
 #include "game/objects/vars.h"
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
+#include <libtrx/game/gun/vars.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 
 static void M_Setup(OBJECT *obj);
@@ -45,7 +46,7 @@ static void M_Control(const int16_t item_num)
         ITEM *const target_item = Item_Get(target_num);
         const OBJECT *const target_obj = Object_Get(target_item->object_id);
 
-        if (target_item == g_LaraItem || item_num == target_num) {
+        if (target_item == Lara_GetItem() || item_num == target_num) {
             continue;
         }
 

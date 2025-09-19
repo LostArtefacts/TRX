@@ -3,6 +3,7 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/utils.h>
 
 #define BOOM_TIME 130

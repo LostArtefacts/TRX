@@ -17,6 +17,6 @@ typedef enum {
     LA_G_SURF_UNDRAW = 9,
 } LARA_GUN_ANIMATION;
 
-void Gun_GetNewTarget(const WEAPON_INFO *winfo);
+void Gun_GetNewTarget(const WEAPON_INFO *weapon);
 void Gun_HitTarget(ITEM *item, const GAME_VECTOR *hit_pos, int32_t damage);
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip);

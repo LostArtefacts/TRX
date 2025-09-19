@@ -3,6 +3,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/const.h>
 #include <libtrx/game/random.h>
 
 #define SPIKE_DAMAGE 15

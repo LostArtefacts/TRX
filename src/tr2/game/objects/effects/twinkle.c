@@ -1,10 +1,11 @@
 #include "game/effects.h"
 #include "global/vars.h"
 
+#include <libtrx/game/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-#define DISAPPEAR_RANGE STEP_L
+#define M_DISAPPEAR_RANGE STEP_L
 
 static XYZ_32 M_GetTargetPos(const ITEM *item);
 static void M_NudgeTowardsItem(EFFECT *effect, const XYZ_32 *target_pos);
@@ -41,7 +42,8 @@ static bool M_ShouldDisappear(
     const int32_t dx = ABS(effect->pos.x - target_pos->x);
     const int32_t dy = ABS(effect->pos.y - target_pos->y);
     const int32_t dz = ABS(effect->pos.z - target_pos->z);
-    return dx < DISAPPEAR_RANGE && dy < DISAPPEAR_RANGE && dz < DISAPPEAR_RANGE;
+    return dx < M_DISAPPEAR_RANGE && dy < M_DISAPPEAR_RANGE
+        && dz < M_DISAPPEAR_RANGE;
 }
 
 static void M_Setup(OBJECT *const obj)

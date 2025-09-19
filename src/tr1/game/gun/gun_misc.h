@@ -10,8 +10,8 @@
 
 #include <stdint.h>
 
-void Gun_GetNewTarget(WEAPON_INFO *winfo);
-void Gun_ChangeTarget(WEAPON_INFO *winfo);
+void Gun_GetNewTarget(WEAPON_INFO *weapon);
+void Gun_ChangeTarget(WEAPON_INFO *weapon);
 void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage);
 
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip);

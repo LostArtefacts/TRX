@@ -1,11 +1,14 @@
 #include "game/los.h"
 
 #include "game/objects/vars.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/const.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/utils.h>
+
+#include <math.h>
 
 static int32_t m_LOSRooms[200] = {};
 static int32_t m_LOSNumRooms = 0;

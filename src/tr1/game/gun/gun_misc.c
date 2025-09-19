@@ -18,129 +18,10 @@
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
-#define PISTOL_LOCK_YMIN (-60 * DEG_1)
-#define PISTOL_LOCK_YMAX (+60 * DEG_1)
-#define PISTOL_LOCK_XMIN (-60 * DEG_1)
-#define PISTOL_LOCK_XMAX (+60 * DEG_1)
-
-#define PISTOL_LARM_YMIN (-170 * DEG_1)
-#define PISTOL_LARM_YMAX (+60 * DEG_1)
-#define PISTOL_LARM_XMIN (-80 * DEG_1)
-#define PISTOL_LARM_XMAX (+80 * DEG_1)
-
-#define PISTOL_RARM_YMIN (-60 * DEG_1)
-#define PISTOL_RARM_YMAX (+170 * DEG_1)
-#define PISTOL_RARM_XMIN (-80 * DEG_1)
-#define PISTOL_RARM_XMAX (+80 * DEG_1)
-
-#define SHOTGUN_LOCK_YMIN (-60 * DEG_1)
-#define SHOTGUN_LOCK_YMAX (+60 * DEG_1)
-#define SHOTGUN_LOCK_XMIN (-55 * DEG_1)
-#define SHOTGUN_LOCK_XMAX (+55 * DEG_1)
-
-#define SHOTGUN_LARM_YMIN (-80 * DEG_1)
-#define SHOTGUN_LARM_YMAX (+80 * DEG_1)
-#define SHOTGUN_LARM_XMIN (-65 * DEG_1)
-#define SHOTGUN_LARM_XMAX (+65 * DEG_1)
-
-#define SHOTGUN_RARM_YMIN (-80 * DEG_1)
-#define SHOTGUN_RARM_YMAX (+80 * DEG_1)
-#define SHOTGUN_RARM_XMIN (-65 * DEG_1)
-#define SHOTGUN_RARM_XMAX (+65 * DEG_1)
-
 static ITEM *m_TargetList[LOT_SLOT_COUNT];
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT];
 
-WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
-    // null
-    {
-        { 0, 0, 0, 0 }, // lock_angles
-        { 0, 0, 0, 0 }, // left_angles
-        { 0, 0, 0, 0 }, // right_angles
-        0, // aim_speed
-        0, // shot_accuracy
-        0, // gun_height
-        0, // damage
-        0, // target_dist
-        0, // recoil_frame
-        0, // flash_time
-        SFX_LARA_NO, // sample_num
-    },
-
-    // pistols
-    {
-        { PISTOL_LOCK_YMIN, PISTOL_LOCK_YMAX, PISTOL_LOCK_XMIN,
-          PISTOL_LOCK_XMAX }, // lock_angles
-        { PISTOL_LARM_YMIN, PISTOL_LARM_YMAX, PISTOL_LARM_XMIN,
-          PISTOL_LARM_XMAX }, // left_angles
-        { PISTOL_RARM_YMIN, PISTOL_RARM_YMAX, PISTOL_RARM_XMIN,
-          PISTOL_RARM_XMAX }, // right_angles
-        10 * DEG_1, // aim_speed
-        8 * DEG_1, // shot_accuracy
-        650, // gun_height
-        1, // damage
-        8 * WALL_L, // target_dist
-        9, // recoil_frame
-        3, // flash_time
-        SFX_LARA_FIRE, // sample_num
-    },
-
-    // magnums
-    {
-        { PISTOL_LOCK_YMIN, PISTOL_LOCK_YMAX, PISTOL_LOCK_XMIN,
-          PISTOL_LOCK_XMAX }, // lock_angles
-        { PISTOL_LARM_YMIN, PISTOL_LARM_YMAX, PISTOL_LARM_XMIN,
-          PISTOL_LARM_XMAX }, // left_angles
-        { PISTOL_RARM_YMIN, PISTOL_RARM_YMAX, PISTOL_RARM_XMIN,
-          PISTOL_RARM_XMAX }, // right_angles
-        10 * DEG_1, // aim_speed
-        8 * DEG_1, // shot_accuracy
-        650, // gun_height
-        2, // damage
-        8 * WALL_L, // target_dist
-        9, // recoil_frame
-        3, // flash_time
-        SFX_LARA_MAGNUMS, // sample_num
-    },
-
-    // uzis
-    {
-        { PISTOL_LOCK_YMIN, PISTOL_LOCK_YMAX, PISTOL_LOCK_XMIN,
-          PISTOL_LOCK_XMAX }, // lock_angles
-        { PISTOL_LARM_YMIN, PISTOL_LARM_YMAX, PISTOL_LARM_XMIN,
-          PISTOL_LARM_XMAX }, // left_angles
-        { PISTOL_RARM_YMIN, PISTOL_RARM_YMAX, PISTOL_RARM_XMIN,
-          PISTOL_RARM_XMAX }, // right_angles
-        10 * DEG_1, // aim_speed
-        8 * DEG_1, // shot_accuracy
-        650, // gun_height
-        1, // damage
-        8 * WALL_L, // target_dist
-        3, // recoil_frame
-        2, // flash_time
-        SFX_LARA_UZI_FIRE, // sample_num
-    },
-
-    // shotgun
-    {
-        { SHOTGUN_LOCK_YMIN, SHOTGUN_LOCK_YMAX, SHOTGUN_LOCK_XMIN,
-          SHOTGUN_LOCK_XMAX }, // lock_angles
-        { SHOTGUN_LARM_YMIN, SHOTGUN_LARM_YMAX, SHOTGUN_LARM_XMIN,
-          SHOTGUN_LARM_XMAX }, // left_angles
-        { SHOTGUN_RARM_YMIN, SHOTGUN_RARM_YMAX, SHOTGUN_RARM_XMIN,
-          SHOTGUN_RARM_XMAX }, // right_angles
-        10 * DEG_1, // aim_speed
-        0, // shot_accuracy
-        0x1F4, // gun_height
-        4, // damage
-        8 * WALL_L, // target_dist
-        9, // recoil_frame
-        3, // flash_time
-        SFX_LARA_SHOTGUN, // sample_num
-    },
-};
-
-void Gun_GetNewTarget(WEAPON_INFO *winfo)
+void Gun_GetNewTarget(WEAPON_INFO *const weapon)
 {
     // Preserve OG targeting behavior.
     if (g_Config.gameplay.target_mode == TLM_FULL
@@ -152,7 +33,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     int16_t best_yrot = 0x7FFF;
     int16_t num_targets = 0;
 
-    int32_t maxdist = winfo->target_dist;
+    int32_t maxdist = weapon->target_dist;
     int32_t maxdist2 = maxdist * maxdist;
     GAME_VECTOR src;
     src.x = g_LaraItem->pos.x;
@@ -191,9 +72,9 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
             target.x - src.x, target.y - src.y, target.z - src.z, ang);
         ang[0] -= g_Lara.torso_rot.y + g_LaraItem->rot.y;
         ang[1] -= g_Lara.torso_rot.x + g_LaraItem->rot.x;
-        if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1]
-            && ang[1] >= winfo->lock_angles[2]
-            && ang[1] <= winfo->lock_angles[3]) {
+        if (ang[0] >= weapon->lock_angles[0] && ang[0] <= weapon->lock_angles[1]
+            && ang[1] >= weapon->lock_angles[2]
+            && ang[1] <= weapon->lock_angles[3]) {
             int16_t yrot = ABS(ang[0]);
             m_TargetList[num_targets] = item;
             num_targets++;
@@ -208,7 +89,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     if ((g_Config.gameplay.target_mode == TLM_FULL
          || g_Config.gameplay.target_mode == TLM_SEMI)
         && g_Input.action && g_Lara.target) {
-        Gun_TargetInfo(winfo);
+        Gun_TargetInfo(weapon);
         return;
     }
 
@@ -238,10 +119,10 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
         m_LastTargetList[0] = g_Lara.target;
     }
 
-    Gun_TargetInfo(winfo);
+    Gun_TargetInfo(weapon);
 }
 
-void Gun_ChangeTarget(WEAPON_INFO *winfo)
+void Gun_ChangeTarget(WEAPON_INFO *const weapon)
 {
     g_Lara.target = nullptr;
     bool found_new_target = false;
@@ -276,14 +157,14 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
         m_LastTargetList[0] = g_Lara.target;
     }
 
-    Gun_TargetInfo(winfo);
+    Gun_TargetInfo(weapon);
 }
 
 int32_t Gun_FireWeapon(
     const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
     const int16_t *const angles)
 {
-    WEAPON_INFO *winfo = &g_Weapons[weapon_type];
+    WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
 
     AMMO_INFO *ammo;
     switch (weapon_type) {
@@ -330,14 +211,16 @@ int32_t Gun_FireWeapon(
 
     const XYZ_32 view_pos = {
         .x = src->pos.x,
-        .y = src->pos.y - winfo->gun_height,
+        .y = src->pos.y - weapon->gun_height,
         .z = src->pos.z,
     };
     const XYZ_16 view_rot = {
         .x = angles[1]
-            + (winfo->shot_accuracy * (Random_GetControl() - DEG_90)) / DEG_360,
+            + (weapon->shot_accuracy * (Random_GetControl() - DEG_90))
+                / DEG_360,
         .y = angles[0]
-            + (winfo->shot_accuracy * (Random_GetControl() - DEG_90)) / DEG_360,
+            + (weapon->shot_accuracy * (Random_GetControl() - DEG_90))
+                / DEG_360,
         .z = 0,
     };
     Matrix_GenerateW2V(&view_pos, &view_rot);
@@ -371,7 +254,7 @@ int32_t Gun_FireWeapon(
         vdest.z = vsrc.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
         Gun_HitTarget(
             target, &vdest,
-            winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
+            weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
 
