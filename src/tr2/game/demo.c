@@ -173,7 +173,6 @@ bool Demo_Start(const int32_t level_num)
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
     Camera_Initialise();
-    Stats_StartTimer();
 
     Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
     return true;
@@ -200,7 +199,6 @@ void Demo_Unpause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_PrepareConfig(p);
-    Stats_StartTimer();
     Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
 }
 
