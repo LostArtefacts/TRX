@@ -14,6 +14,36 @@
 #include "game/output.h"
 #include "game/random.h"
 
+#if TR_VERSION >= 2
+// TODO: meh
+extern void Window_Smash(int16_t item_num);
+#endif
+
+static void M_SmashItem(int16_t item_num);
+
+static void M_SmashItem(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    switch (item->object_id) {
+#if TR_VERSION >= 2
+    case O_WINDOW_1:
+        Window_Smash(item_num);
+        break;
+
+    case O_BELL:
+        if (item->status != IS_ACTIVE) {
+            item->status = IS_ACTIVE;
+            Item_AddActive(item_num);
+        }
+        break;
+#endif
+
+    default:
+        break;
+    }
+}
+
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
 {
     const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
@@ -293,4 +323,26 @@ void Gun_UpdateLaraMeshes(const GAME_OBJECT_ID obj_id)
         Gun_SetLaraHolsterLMesh(holsters_gun_type);
         Gun_SetLaraHolsterRMesh(holsters_gun_type);
     }
+}
+
+PROJECTILE_HIT Gun_SmashItems(
+    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos)
+{
+    int32_t hits = 0;
+    int16_t last_item_num = NO_ITEM;
+    while (true) {
+        const int16_t item_num = LOS_CheckSmashable(start, target, out_hit_pos);
+        if (item_num == NO_ITEM || item_num == last_item_num) {
+            break;
+        }
+        last_item_num = item_num;
+        M_SmashItem(item_num);
+        hits++;
+
+        const ITEM *const item = Item_Get(item_num);
+        if (Object_IsType(item->object_id, g_SmashableObjects)) {
+            return PROJECTILE_HIT_STOP;
+        }
+    }
+    return hits > 0 ? PROJECTILE_HIT_SHATTER : PROJECTILE_HIT_NONE;
 }
