@@ -1,13 +1,18 @@
 #include "game/gun/misc.h"
 
+#include "config.h"
 #include "game/const.h"
 #include "game/gun/common.h"
 #include "game/gun/pistols.h"
 #include "game/gun/rifle.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/los.h"
 #include "game/math.h"
+#include "game/matrix.h"
+#include "game/output.h"
+#include "game/random.h"
 
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
 {
@@ -170,5 +175,79 @@ void Gun_InitialiseNewWeapon(void)
         default:
             break;
         }
+    }
+}
+
+void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
+{
+    int16_t shade;
+    int32_t len;
+    int32_t off;
+
+    switch (weapon_type) {
+    case LGT_MAGNUMS:
+        shade = SHADE_NEUTRAL;
+        len = TR_VERSION == 1 ? 155 : 215;
+        off = TR_VERSION == 1 ? 55 : 65;
+        break;
+
+    case LGT_UZIS:
+        shade = 10 * 256;
+        len = TR_VERSION == 1 ? 180 : 200;
+        off = TR_VERSION == 1 ? 55 : 50;
+        break;
+
+    case LGT_SHOTGUN:
+#if TR_VERSION == 1
+        if (!g_Config.visuals.enable_shotgun_flash) {
+            return;
+        }
+        shade = 10 * 256;
+        len = 285;
+        off = 0;
+        break;
+#else
+        return;
+#endif
+
+#if TR_VERSION >= 2
+    case LGT_M16:
+        shade = 10 * 256;
+        len = 400;
+        off = 99;
+        Matrix_TranslateRel(0, len, off);
+        Matrix_RotX(-85 * DEG_1);
+        Matrix_RotZ(((2 * Random_GetDraw()) & 0x4000) + 0x2000);
+        Output_CalculateStaticLight(shade);
+        const OBJECT *const obj = Object_Get(O_M16_FLASH);
+        if (obj->loaded) {
+            Object_DrawMesh(obj->mesh_idx, clip, false);
+        }
+        return;
+
+    case LGT_FLARE:
+        Matrix_TranslateRel(11, 32, 80);
+        Matrix_RotX(-DEG_90);
+        Matrix_RotY(2 * Random_GetDraw());
+        Output_CalculateStaticLight(2048);
+        Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
+        return;
+
+#endif
+
+    default:
+        shade = SHADE_LOW;
+        len = TR_VERSION == 1 ? 155 : 185;
+        off = TR_VERSION == 1 ? 55 : 40;
+        break;
+    }
+
+    Matrix_TranslateRel(0, len, off);
+    Matrix_RotX(-DEG_90);
+    Matrix_RotZ(2 * Random_GetDraw());
+    Output_CalculateStaticLight(shade);
+    const OBJECT *const obj = Object_Get(O_GUN_FLASH);
+    if (obj->loaded) {
+        Object_DrawMesh(obj->mesh_idx, clip, false);
     }
 }
