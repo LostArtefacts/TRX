@@ -5,6 +5,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
 #include <libtrx/utils.h>
@@ -402,8 +403,9 @@ void Room_DrawAllRooms(const int16_t current_room)
     }
 
     m_MidSort = 0;
-    if (Object_Get(O_LARA)->loaded && !(g_LaraItem->flags & IF_ONE_SHOT)) {
-        const ROOM *const lara_room = Room_Get(g_LaraItem->room_num);
+    const ITEM *const lara_item = Lara_GetItem();
+    if (Object_Get(O_LARA)->loaded && !(lara_item->flags & IF_ONE_SHOT)) {
+        const ROOM *const lara_room = Room_Get(lara_item->room_num);
         if ((lara_room->flags & RF_UNDERWATER) != 0) {
             Output_SetupBelowWater(g_Camera.underwater);
         } else {
@@ -413,7 +415,7 @@ void Room_DrawAllRooms(const int16_t current_room)
         if (m_MidSort) {
             m_MidSort--;
         }
-        Lara_Draw(g_LaraItem);
+        Lara_Draw(lara_item);
     }
 
     Output_SetupAboveWater(false);

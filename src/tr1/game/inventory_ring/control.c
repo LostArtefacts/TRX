@@ -78,19 +78,20 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
     bool enable_examine = false;
 
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity(
             "%5d \\{ammo shotgun}",
-            g_Lara.shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+            lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
 
     case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity("%5d \\{ammo magnums}", g_Lara.magnum_ammo.ammo);
+        M_ShowAmmoQuantity("%5d \\{ammo magnums}", lara->magnum_ammo.ammo);
         break;
 
     case O_UZI_OPTION:
-        M_ShowAmmoQuantity("%5d \\{ammo uzis}", g_Lara.uzi_ammo.ammo);
+        M_ShowAmmoQuantity("%5d \\{ammo uzis}", lara->uzi_ammo.ammo);
         break;
 
     case O_SHOTGUN_AMMO_OPTION:

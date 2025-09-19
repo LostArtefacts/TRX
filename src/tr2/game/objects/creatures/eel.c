@@ -1,9 +1,8 @@
 #include "game/creature.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -73,8 +72,9 @@ static void M_Control(const int16_t item_num)
             item->current_anim_state = EEL_STATE_DEATH;
         }
     } else {
-        const int32_t dx = g_LaraItem->pos.x - item->pos.x;
-        const int32_t dz = g_LaraItem->pos.z - item->pos.z;
+        const ITEM *const lara_item = Lara_GetItem();
+        const int32_t dx = lara_item->pos.x - item->pos.x;
+        const int32_t dz = lara_item->pos.z - item->pos.z;
         const int16_t quadrant = (item->rot.y + DEG_45) & 0xC000;
         const int16_t angle = Math_Atan(dz, dx);
         const int32_t distance = Math_Sqrt(SQUARE(dx) + SQUARE(dz));

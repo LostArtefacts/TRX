@@ -1,9 +1,9 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/sound.h>
 
@@ -72,9 +72,10 @@ static void M_HitLara(ITEM *const item)
 {
     Lara_TakeDamage(SPIKE_WALL_DAMAGE, true);
 
+    const ITEM *const lara_item = Lara_GetItem();
     Spawn_BloodBath(
-        g_LaraItem->pos.x, g_LaraItem->pos.y - WALL_L / 2, g_LaraItem->pos.z,
-        SPIKE_WALL_SPEED, item->rot.y, g_LaraItem->room_num, 3);
+        lara_item->pos.x, lara_item->pos.y - WALL_L / 2, lara_item->pos.z,
+        SPIKE_WALL_SPEED, item->rot.y, lara_item->room_num, 3);
     item->touch_bits = 0;
 
     Sound_Effect(SFX_LARA_FLESH_WOUND, &item->pos, SPM_NORMAL);

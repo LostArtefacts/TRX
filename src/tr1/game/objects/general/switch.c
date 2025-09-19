@@ -1,6 +1,5 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
@@ -105,10 +104,11 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
-        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity) {
+        || lara->gun_status != LGS_ARMLESS || lara_item->gravity) {
         return;
     }
 
@@ -124,7 +124,7 @@ static void M_Collision(
     if (item->current_anim_state == SWITCH_STATE_ON) {
         Lara_AnimateUntil(lara_item, LS_SWITCH_ON);
         lara_item->goal_anim_state = LS_STOP;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
+        lara->gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_OFF;
         Item_AddActive(item_num);
@@ -132,7 +132,7 @@ static void M_Collision(
     } else if (item->current_anim_state == SWITCH_STATE_OFF) {
         Lara_AnimateUntil(lara_item, LS_SWITCH_OFF);
         lara_item->goal_anim_state = LS_STOP;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
+        lara->gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_ON;
         Item_AddActive(item_num);
@@ -144,12 +144,13 @@ static void M_CollisionControlled(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
+    if ((g_Input.action && lara->gun_status == LGS_ARMLESS
          && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
          && item->status == IS_INACTIVE)
-        || (g_Lara.interact_target.is_moving
-            && g_Lara.interact_target.item_num == item_num)) {
+        || (lara->interact_target.is_moving
+            && lara->interact_target.item_num == item_num)) {
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
         m_Switch_BoundsControlled.shift.min.x = bounds->min.x - 256;
@@ -170,24 +171,24 @@ static void M_CollisionControlled(
                     lara_item->current_anim_state = LS_SWITCH_ON;
                     item->goal_anim_state = SWITCH_STATE_ON;
                 }
-                g_Lara.head_rot.x = 0;
-                g_Lara.head_rot.y = 0;
-                g_Lara.torso_rot.x = 0;
-                g_Lara.torso_rot.y = 0;
-                g_Lara.interact_target.is_moving = false;
-                g_Lara.interact_target.item_num = NO_ITEM;
-                g_Lara.gun_status = LGS_HANDS_BUSY;
+                lara->head_rot.x = 0;
+                lara->head_rot.y = 0;
+                lara->torso_rot.x = 0;
+                lara->torso_rot.y = 0;
+                lara->interact_target.is_moving = false;
+                lara->interact_target.item_num = NO_ITEM;
+                lara->gun_status = LGS_HANDS_BUSY;
                 Item_AddActive(item_num);
                 item->status = IS_ACTIVE;
                 Item_Animate(item);
             } else {
-                g_Lara.interact_target.item_num = item_num;
+                lara->interact_target.item_num = item_num;
             }
         } else if (
-            g_Lara.interact_target.is_moving
-            && g_Lara.interact_target.item_num == item_num) {
-            g_Lara.interact_target.is_moving = false;
-            g_Lara.gun_status = LGS_ARMLESS;
+            lara->interact_target.is_moving
+            && lara->interact_target.item_num == item_num) {
+            lara->interact_target.is_moving = false;
+            lara->gun_status = LGS_ARMLESS;
         }
     } else if (
         lara_item->current_anim_state != LS_SWITCH_ON
@@ -200,11 +201,12 @@ static void M_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
-        || (g_Lara.water_status != LWS_UNDERWATER
-            && g_Lara.water_status != LWS_CHEAT)) {
+        || (lara->water_status != LWS_UNDERWATER
+            && lara->water_status != LWS_CHEAT)) {
         return;
     }
 
@@ -225,7 +227,7 @@ static void M_CollisionUW(
         lara_item->fall_speed = 0;
         Lara_AnimateUntil(lara_item, LS_SWITCH_ON);
         lara_item->goal_anim_state = LS_TREAD;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
+        lara->gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         if (item->current_anim_state == SWITCH_STATE_ON) {
             item->goal_anim_state = SWITCH_STATE_OFF;

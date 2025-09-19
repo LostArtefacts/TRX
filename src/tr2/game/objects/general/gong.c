@@ -1,9 +1,9 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/objects/general/pickup.h"
-#include "global/vars.h"
+
+#include <libtrx/game/lara.h>
 
 static XYZ_32 m_Position = { .x = 0, .y = 0, .z = 0 };
 
@@ -38,17 +38,19 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
         lara_item->rot.y += DEG_180;
     }
     Item_Animate(lara_item);
-    g_Lara.extra_anim = true;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    g_Lara.hit_direction = -1;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->extra_anim = true;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->hit_direction = -1;
 
     if (Item_TestFrameEqual(lara_item, 0)) {
         M_ConsumeKeyItem(receptacle_item);
     }
 
     M_CreateGongBonger(lara_item);
-    g_Lara.interact_target.is_moving = false;
-    g_Lara.interact_target.item_num = NO_ITEM;
+    lara->interact_target.is_moving = false;
+    lara->interact_target.item_num = NO_ITEM;
 }
 
 static void M_ConsumeKeyItem(ITEM *const receptacle_item)
@@ -97,21 +99,22 @@ static void M_Setup(OBJECT *const obj)
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    if (g_Lara.extra_anim) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->extra_anim) {
         return;
     }
 
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (g_Lara.interact_target.is_moving
-        && g_Lara.interact_target.item_num == item_num) {
+    if (lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
         M_Use(lara_item, item);
         return;
     }
 
     if (item->status != IS_INACTIVE || !g_Input.action
-        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || lara_item->current_anim_state != LS_STOP) {
         goto normal_collision;
     }

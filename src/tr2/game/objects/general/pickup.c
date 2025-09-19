@@ -7,7 +7,6 @@
 #include "game/objects/common.h"
 #include "game/objects/vars.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
@@ -75,11 +74,12 @@ static void M_DoPickup(const int16_t item_num)
 static void M_DoFlarePickup(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    g_Lara.request_gun_type = LGT_FLARE;
-    g_Lara.gun_type = LGT_FLARE;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->request_gun_type = LGT_FLARE;
+    lara->gun_type = LGT_FLARE;
     Gun_InitialiseNewWeapon();
-    g_Lara.gun_status = LGS_SPECIAL;
-    g_Lara.flare.age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
+    lara->gun_status = LGS_SPECIAL;
+    lara->flare.age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
     Item_Kill(item_num);
 }
 
@@ -104,10 +104,10 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara_item->current_anim_state == LS_FLARE_PICKUP) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_FLARE)
-            && item->object_id == O_FLARE_ITEM
-            && g_Lara.gun_type != LGT_FLARE) {
+            && item->object_id == O_FLARE_ITEM && lara->gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
         }
         goto cleanup;
@@ -115,15 +115,15 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 
     if (g_Input.action && !lara_item->gravity
         && lara_item->current_anim_state == LS_STOP
-        && g_Lara.gun_status == LGS_ARMLESS
-        && (g_Lara.gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
+        && lara->gun_status == LGS_ARMLESS
+        && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
         if (item->object_id == O_FLARE_ITEM) {
             lara_item->goal_anim_state = LS_FLARE_PICKUP;
             do {
                 Lara_Animate(lara_item);
             } while (lara_item->current_anim_state != LS_FLARE_PICKUP);
             lara_item->goal_anim_state = LS_STOP;
-            g_Lara.gun_status = LGS_HANDS_BUSY;
+            lara->gun_status = LGS_HANDS_BUSY;
         } else {
             Lara_AlignPosition(item, &m_PickupPosition);
             lara_item->goal_anim_state = LS_PICKUP;
@@ -131,7 +131,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
                 Lara_Animate(lara_item);
             } while (lara_item->current_anim_state != LS_PICKUP);
             lara_item->goal_anim_state = LS_STOP;
-            g_Lara.gun_status = LGS_HANDS_BUSY;
+            lara->gun_status = LGS_HANDS_BUSY;
         }
         goto cleanup;
     }
@@ -161,10 +161,10 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara_item->current_anim_state == LS_FLARE_PICKUP) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_FLARE_UW)
-            && item->object_id == O_FLARE_ITEM
-            && g_Lara.gun_type != LGT_FLARE) {
+            && item->object_id == O_FLARE_ITEM && lara->gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
             Lara_Flare_DrawMeshes();
         }
@@ -172,8 +172,8 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
     }
 
     if (g_Input.action && lara_item->current_anim_state == LS_TREAD
-        && g_Lara.gun_status == LGS_ARMLESS
-        && (g_Lara.gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
+        && lara->gun_status == LGS_ARMLESS
+        && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
         if (!Lara_MovePosition(item, &m_PickupPositionUW)) {
             goto cleanup;
         }
@@ -342,8 +342,9 @@ static void M_Draw(const ITEM *const item)
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
 {
-    if (g_Lara.water_status == LWS_UNDERWATER
-        || g_Lara.water_status == LWS_CHEAT) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
         return &m_PickUpBoundsUW;
     } else {
         return &m_PickUpBounds;
@@ -358,12 +359,13 @@ void Pickup_Collision(
         return;
     }
 
-    if (g_Lara.water_status == LWS_ABOVE_WATER
-        || g_Lara.water_status == LWS_WADE) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_ABOVE_WATER
+        || lara->water_status == LWS_WADE) {
         M_DoAboveWater(item_num, lara_item);
     } else if (
-        g_Lara.water_status == LWS_UNDERWATER
-        || g_Lara.water_status == LWS_CHEAT) {
+        lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
         M_DoUnderwater(item_num, lara_item);
     }
 }

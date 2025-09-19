@@ -3,9 +3,9 @@
 #include "game/los.h"
 #include "game/objects/effects/missile_common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/lara/const.h>
 
 // clang-format off
@@ -144,42 +144,46 @@ static void M_Control(const int16_t item_num)
     Creature_Mood(item, &info, MOOD_BORED);
 
     bool shoot;
-    if (g_Lara.water_status == LWS_ABOVE_WATER) {
-        GAME_VECTOR start;
-        start.pos.x = item->pos.x;
-        start.pos.y = item->pos.y - STEP_L;
-        start.pos.z = item->pos.z;
-        start.room_num = item->room_num;
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-        GAME_VECTOR target;
-        target.pos.x = g_LaraItem->pos.x;
-        target.pos.y = g_LaraItem->pos.y - (LARA_HEIGHT - 150);
-        target.pos.z = g_LaraItem->pos.z;
-        target.room_num = g_LaraItem->room_num;
+    if (lara->water_status == LWS_ABOVE_WATER) {
+        const GAME_VECTOR start = {
+            .x = item->pos.x,
+            .y = item->pos.y - STEP_L,
+            .z = item->pos.z,
+            .room_num = item->room_num,
+        };
+        GAME_VECTOR target = {
+            .x = lara_item->pos.x,
+            .y = lara_item->pos.y - (LARA_HEIGHT - 150),
+            .z = lara_item->pos.z,
+            .room_num = lara_item->room_num,
+        };
         shoot = LOS_Check(&start, &target);
 
         if (shoot) {
-            creature->target.x = g_LaraItem->pos.x;
-            creature->target.y = g_LaraItem->pos.y;
-            creature->target.z = g_LaraItem->pos.z;
+            creature->target.x = lara_item->pos.x;
+            creature->target.y = lara_item->pos.y;
+            creature->target.z = lara_item->pos.z;
         }
 
         if (info.angle < -DIVER_FRONT_ARC || info.angle > DIVER_FRONT_ARC) {
             shoot = false;
         }
     } else if (info.angle > -DIVER_FRONT_ARC && info.angle < DIVER_FRONT_ARC) {
-        GAME_VECTOR start;
-        start.pos.x = item->pos.x;
-        start.pos.y = item->pos.y;
-        start.pos.z = item->pos.z;
-        start.room_num = item->room_num;
-
-        GAME_VECTOR target;
-        target.pos.x = g_LaraItem->pos.x;
-        target.pos.y = g_LaraItem->pos.y;
-        target.pos.z = g_LaraItem->pos.z;
-        target.room_num = g_LaraItem->room_num;
-
+        const GAME_VECTOR start = {
+            .x = item->pos.x,
+            .y = item->pos.y,
+            .z = item->pos.z,
+            .room_num = item->room_num,
+        };
+        GAME_VECTOR target = {
+            .x = lara_item->pos.x,
+            .y = lara_item->pos.y,
+            .z = lara_item->pos.z,
+            .room_num = lara_item->room_num,
+        };
         shoot = LOS_Check(&start, &target);
     } else {
         shoot = false;

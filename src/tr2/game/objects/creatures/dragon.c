@@ -1,15 +1,14 @@
 #include "game/creature.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/output.h>
@@ -103,6 +102,8 @@ static void M_PushLaraAway(
 
 static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
     Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
     lara_item->current_anim_state = LS_EXTRA_BREATH;
     lara_item->goal_anim_state = LS_EXTRA_PULL_DAGGER;
@@ -116,13 +117,13 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     lara_item->gravity = 0;
     lara_item->speed = 0;
 
-    Item_UpdateRoom(g_Lara.item_num, dragon_back_item->room_num);
+    Item_UpdateRoom(lara->item_num, dragon_back_item->room_num);
 
-    Item_Animate(g_LaraItem);
+    Item_Animate(lara_item);
 
-    g_Lara.extra_anim = true;
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-    g_Lara.hit_direction = -1;
+    lara->extra_anim = true;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->hit_direction = -1;
 
     Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
 
@@ -332,8 +333,7 @@ static void M_Control(const int16_t item_num)
         const bool is_ahead = info.ahead && info.distance > DRAGON_CLOSE_RANGE
             && info.distance < DRAGON_STOP_RANGE;
         if (dragon_front_item->touch_bits) {
-            g_LaraItem->hit_status = 1;
-            g_LaraItem->hit_points -= DRAGON_TOUCH_DAMAGE;
+            Lara_TakeDamage(DRAGON_TOUCH_DAMAGE, true);
         }
 
         switch (dragon_front_item->current_anim_state) {
@@ -440,16 +440,14 @@ static void M_Control(const int16_t item_num)
 
         case DRAGON_STATE_SWIPE_LEFT:
             if ((dragon_front_item->touch_bits & DRAGON_TOUCH_L) != 0) {
-                g_LaraItem->hit_status = 1;
-                g_LaraItem->hit_points -= DRAGON_SWIPE_DAMAGE;
+                Lara_TakeDamage(DRAGON_SWIPE_DAMAGE, true);
                 creature->flags = 0;
             }
             break;
 
         case DRAGON_STATE_SWIPE_RIGHT:
             if ((dragon_front_item->touch_bits & DRAGON_TOUCH_R) != 0) {
-                g_LaraItem->hit_status = 1;
-                g_LaraItem->hit_points -= DRAGON_SWIPE_DAMAGE;
+                Lara_TakeDamage(DRAGON_SWIPE_DAMAGE, true);
                 creature->flags = 0;
             }
             break;

@@ -25,6 +25,8 @@ static void M_DrawMesh(
 
 void Lara_Draw(const ITEM *const item)
 {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+
     ANIM_FRAME *frmptr[2];
     MATRIX saved_matrix;
 
@@ -33,7 +35,7 @@ void Lara_Draw(const ITEM *const item)
     int32_t bottom = g_PhdBottom;
     int32_t right = g_PhdRight;
 
-    if ((g_LaraItem->flags & IF_ONE_SHOT) != 0) {
+    if ((item->flags & IF_ONE_SHOT) != 0) {
         return;
     }
 
@@ -42,7 +44,7 @@ void Lara_Draw(const ITEM *const item)
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
-    if (g_Lara.hit_direction < 0) {
+    if (lara->hit_direction < 0) {
         int32_t rate;
         int32_t frac = Item_GetFrames(item, frmptr, &rate);
         if (frac && Lara_Pose_Get() == nullptr) {
@@ -117,14 +119,14 @@ void Lara_Draw(const ITEM *const item)
 
     Matrix_TranslateRel32(bone[6].pos);
     Matrix_Rot16(mesh_rots[LM_TORSO]);
-    Matrix_Rot16(g_Lara.interp.result.torso_rot);
+    Matrix_Rot16(lara->interp.result.torso_rot);
     M_DrawMesh(LM_TORSO, clip, false);
 
     Matrix_Push();
 
     Matrix_TranslateRel32(bone[13].pos);
     Matrix_Rot16(mesh_rots[LM_HEAD]);
-    Matrix_Rot16(g_Lara.interp.result.head_rot);
+    Matrix_Rot16(lara->interp.result.head_rot);
     M_DrawMesh(LM_HEAD, clip, false);
 
     *g_MatrixPtr = saved_matrix;
@@ -134,9 +136,9 @@ void Lara_Draw(const ITEM *const item)
 
     int32_t fire_arms = 0;
     if (pose == nullptr
-        && (g_Lara.gun_status == LGS_READY || g_Lara.gun_status == LGS_DRAW
-            || g_Lara.gun_status == LGS_UNDRAW)) {
-        fire_arms = g_Lara.gun_type;
+        && (lara->gun_status == LGS_READY || lara->gun_status == LGS_DRAW
+            || lara->gun_status == LGS_UNDRAW)) {
+        fire_arms = lara->gun_type;
     }
 
     switch (fire_arms) {
@@ -192,10 +194,10 @@ void Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
         if (pose == nullptr) {
-            mesh_rots = g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num]
-                            .mesh_rots;
+            mesh_rots =
+                lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         }
-        Matrix_Rot16(g_Lara.right_arm.interp.result.rot);
+        Matrix_Rot16(lara->right_arm.interp.result.rot);
         Matrix_Rot16(mesh_rots[LM_UARM_R]);
         M_DrawMesh(LM_UARM_R, clip, false);
 
@@ -207,7 +209,7 @@ void Lara_Draw(const ITEM *const item)
         Matrix_Rot16(mesh_rots[LM_HAND_R]);
         M_DrawMesh(LM_HAND_R, clip, false);
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
         }
 
@@ -229,9 +231,9 @@ void Lara_Draw(const ITEM *const item)
 
         if (pose == nullptr) {
             mesh_rots =
-                g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_num].mesh_rots;
+                lara->left_arm.frame_base[lara->left_arm.frame_num].mesh_rots;
         }
-        Matrix_Rot16(g_Lara.left_arm.interp.result.rot);
+        Matrix_Rot16(lara->left_arm.interp.result.rot);
         Matrix_Rot16(mesh_rots[LM_UARM_L]);
         M_DrawMesh(LM_UARM_L, clip, false);
 
@@ -243,10 +245,10 @@ void Lara_Draw(const ITEM *const item)
         Matrix_Rot16(mesh_rots[LM_HAND_L]);
         M_DrawMesh(LM_HAND_L, clip, false);
 
-        if (g_Lara.left_arm.flash_gun) {
+        if (lara->left_arm.flash_gun) {
             Gun_DrawFlash(fire_arms, clip);
         }
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             Gun_DrawFlash(fire_arms, clip);
         }
@@ -258,8 +260,8 @@ void Lara_Draw(const ITEM *const item)
         Matrix_Push();
 
         if (pose == nullptr) {
-            mesh_rots = g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num]
-                            .mesh_rots;
+            mesh_rots =
+                lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         }
         Matrix_TranslateRel32(bone[7].pos);
         Matrix_Rot16(mesh_rots[LM_UARM_R]);
@@ -273,7 +275,7 @@ void Lara_Draw(const ITEM *const item)
         Matrix_Rot16(mesh_rots[LM_HAND_R]);
         M_DrawMesh(LM_HAND_R, clip, false);
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
         }
 
@@ -283,7 +285,7 @@ void Lara_Draw(const ITEM *const item)
 
         if (pose == nullptr) {
             mesh_rots =
-                g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_num].mesh_rots;
+                lara->left_arm.frame_base[lara->left_arm.frame_num].mesh_rots;
         }
         Matrix_TranslateRel32(bone[10].pos);
         Matrix_Rot16(mesh_rots[LM_UARM_L]);
@@ -297,7 +299,7 @@ void Lara_Draw(const ITEM *const item)
         Matrix_Rot16(mesh_rots[LM_HAND_L]);
         M_DrawMesh(LM_HAND_L, clip, false);
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             Gun_DrawFlash(fire_arms, clip);
         }
@@ -324,6 +326,7 @@ void Lara_Draw_I(
 
     const OBJECT *const obj = Object_Get(item->object_id);
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     saved_matrix = *g_MatrixPtr;
 
@@ -387,14 +390,14 @@ void Lara_Draw_I(
 
     Matrix_TranslateRel32_I(bone[6].pos);
     Matrix_Rot16_ID(mesh_rots_1[LM_TORSO], mesh_rots_2[LM_TORSO]);
-    Matrix_Rot16_I(g_Lara.interp.result.torso_rot);
+    Matrix_Rot16_I(lara->interp.result.torso_rot);
     M_DrawMesh(LM_TORSO, clip, true);
 
     Matrix_Push_I();
 
     Matrix_TranslateRel32_I(bone[13].pos);
     Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
-    Matrix_Rot16_I(g_Lara.interp.result.head_rot);
+    Matrix_Rot16_I(lara->interp.result.head_rot);
     M_DrawMesh(LM_HEAD, clip, true);
 
     *g_MatrixPtr = saved_matrix;
@@ -403,9 +406,9 @@ void Lara_Draw_I(
     Matrix_Pop_I();
 
     int32_t fire_arms = 0;
-    if (g_Lara.gun_status == LGS_READY || g_Lara.gun_status == LGS_DRAW
-        || g_Lara.gun_status == LGS_UNDRAW) {
-        fire_arms = g_Lara.gun_type;
+    if (lara->gun_status == LGS_READY || lara->gun_status == LGS_DRAW
+        || lara->gun_status == LGS_UNDRAW) {
+        fire_arms = lara->gun_type;
     }
 
     switch (fire_arms) {
@@ -452,8 +455,8 @@ void Lara_Draw_I(
         Matrix_InterpolateArm();
 
         mesh_rots_1 =
-            g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num].mesh_rots;
-        Matrix_Rot16(g_Lara.right_arm.interp.result.rot);
+            lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
+        Matrix_Rot16(lara->right_arm.interp.result.rot);
         Matrix_Rot16(mesh_rots_1[LM_UARM_R]);
         M_DrawMesh(LM_UARM_R, clip, false);
 
@@ -465,7 +468,7 @@ void Lara_Draw_I(
         Matrix_Rot16(mesh_rots_1[LM_HAND_R]);
         M_DrawMesh(LM_HAND_R, clip, false);
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
         }
 
@@ -477,8 +480,8 @@ void Lara_Draw_I(
         Matrix_InterpolateArm();
 
         mesh_rots_1 =
-            g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_num].mesh_rots;
-        Matrix_Rot16(g_Lara.left_arm.interp.result.rot);
+            lara->left_arm.frame_base[lara->left_arm.frame_num].mesh_rots;
+        Matrix_Rot16(lara->left_arm.interp.result.rot);
         Matrix_Rot16(mesh_rots_1[LM_UARM_L]);
         M_DrawMesh(LM_UARM_L, clip, false);
 
@@ -490,11 +493,11 @@ void Lara_Draw_I(
         Matrix_Rot16(mesh_rots_1[LM_HAND_L]);
         M_DrawMesh(LM_HAND_L, clip, false);
 
-        if (g_Lara.left_arm.flash_gun) {
+        if (lara->left_arm.flash_gun) {
             Gun_DrawFlash(fire_arms, clip);
         }
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             Gun_DrawFlash(fire_arms, clip);
         }
@@ -506,7 +509,7 @@ void Lara_Draw_I(
         Matrix_Push_I();
 
         mesh_rots_1 =
-            g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num].mesh_rots;
+            lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         mesh_rots_2 = mesh_rots_1;
         Matrix_TranslateRel32_I(bone[7].pos);
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_R], mesh_rots_2[LM_UARM_R]);
@@ -520,7 +523,7 @@ void Lara_Draw_I(
         Matrix_Rot16_ID(mesh_rots_1[LM_HAND_R], mesh_rots_2[LM_HAND_R]);
         M_DrawMesh(LM_HAND_R, clip, true);
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
         }
 
@@ -529,7 +532,7 @@ void Lara_Draw_I(
         Matrix_Push_I();
 
         mesh_rots_1 =
-            g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_num].mesh_rots;
+            lara->left_arm.frame_base[lara->left_arm.frame_num].mesh_rots;
         mesh_rots_2 = mesh_rots_1;
         Matrix_TranslateRel32_I(bone[10].pos);
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_L], mesh_rots_2[LM_UARM_L]);
@@ -543,7 +546,7 @@ void Lara_Draw_I(
         Matrix_Rot16_ID(mesh_rots_1[LM_HAND_L], mesh_rots_2[LM_HAND_L]);
         M_DrawMesh(LM_HAND_L, clip, true);
 
-        if (g_Lara.right_arm.flash_gun) {
+        if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             Gun_DrawFlash(fire_arms, clip);
         }

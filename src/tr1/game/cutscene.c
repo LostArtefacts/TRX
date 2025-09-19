@@ -7,7 +7,6 @@
 #include "game/level.h"
 #include "game/shell.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -48,10 +47,11 @@ static void M_InitialiseLara(const GF_LEVEL *const level)
     Lara_InitialiseLoad(lara_item_num);
     Lara_Initialise(level);
 
-    Item_SwitchToObjAnim(g_LaraItem, 0, 0, lara_type);
-    const ANIM *const cut_anim = Item_GetAnim(g_LaraItem);
-    g_LaraItem->current_anim_state = g_LaraItem->goal_anim_state =
-        g_LaraItem->required_anim_state = cut_anim->current_anim_state;
+    ITEM *const lara_item = Lara_GetItem();
+    Item_SwitchToObjAnim(lara_item, 0, 0, lara_type);
+    const ANIM *const cut_anim = Item_GetAnim(lara_item);
+    lara_item->current_anim_state = lara_item->goal_anim_state =
+        lara_item->required_anim_state = cut_anim->current_anim_state;
 }
 
 bool Cutscene_Start(const int32_t level_num)

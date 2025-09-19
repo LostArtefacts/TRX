@@ -3,8 +3,8 @@
 #include "game/gun/gun_misc.h"
 #include "game/objects/general/window.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/sound.h>
 
@@ -78,7 +78,7 @@ static void M_Control(const int16_t item_num)
          target_item_num = Item_Get(target_item_num)->next_item) {
         ITEM *const target_item = Item_Get(target_item_num);
         const OBJECT *const target_obj = Object_Get(target_item->object_id);
-        if (target_item == g_LaraItem) {
+        if (target_item == Lara_GetItem()) {
             continue;
         }
         if (!target_item->collidable) {

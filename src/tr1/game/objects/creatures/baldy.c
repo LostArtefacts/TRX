@@ -1,7 +1,9 @@
 #include "game/creature.h"
-#include "global/vars.h"
 
+#include <libtrx/game/const.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/utils.h>
 
 #define BALDY_SHOT_DAMAGE 150

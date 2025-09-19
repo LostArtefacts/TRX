@@ -1,5 +1,4 @@
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
@@ -57,12 +56,14 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (g_Lara.water_status == LWS_CHEAT) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_CHEAT) {
         item->touch_bits = 0;
     }
 
     if (item->touch_bits) {
-        if (g_LaraItem->hit_points > 0) {
+        const ITEM *const lara_item = Lara_GetItem();
+        if (lara_item->hit_points > 0) {
             Lara_TouchLava();
         }
 

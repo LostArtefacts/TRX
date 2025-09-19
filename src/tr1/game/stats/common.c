@@ -5,7 +5,6 @@
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>

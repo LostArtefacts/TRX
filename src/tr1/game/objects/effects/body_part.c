@@ -1,8 +1,7 @@
 #include "game/effects.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/sound.h>
 
@@ -18,7 +17,7 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_Control(const int16_t effect_num)
 {
-    EFFECT *effect = Effect_Get(effect_num);
+    EFFECT *const effect = Effect_Get(effect_num);
     effect->rot.x += 5 * DEG_1;
     effect->rot.z += 10 * DEG_1;
     effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
@@ -62,8 +61,9 @@ static void M_Control(const int16_t effect_num)
             effect->object_id = O_EXPLOSION_1;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &effect->pos, SPM_NORMAL);
 
-            g_Lara.hit_effect_count = 5;
-            g_Lara.hit_effect = effect;
+            LARA_INFO *const lara = Lara_GetLaraInfo();
+            lara->hit_effect_count = 5;
+            lara->hit_effect = effect;
         } else {
             Effect_Kill(effect_num);
         }

@@ -1,8 +1,8 @@
 #include "game/lara.h"
-#include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/sound.h>
 
@@ -103,9 +103,10 @@ static void M_Control(const int16_t item_num)
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
-    const bool lara_on_zipline = g_LaraItem->current_anim_state == LS_ZIPLINE;
+    ITEM *const lara_item = Lara_GetItem();
+    const bool lara_on_zipline = lara_item->current_anim_state == LS_ZIPLINE;
     if (lara_on_zipline) {
-        g_LaraItem->pos = item->pos;
+        lara_item->pos = item->pos;
     }
 
     const int32_t x = item->pos.x + ((s * WALL_L) >> W2V_SHIFT);
@@ -120,11 +121,11 @@ static void M_Control(const int16_t item_num)
     }
 
     if (lara_on_zipline) {
-        g_LaraItem->goal_anim_state = LS_JUMP_FORWARD;
-        Lara_Animate(g_LaraItem);
-        g_LaraItem->gravity = 1;
-        g_LaraItem->speed = item->fall_speed;
-        g_LaraItem->fall_speed = item->fall_speed >> 2;
+        lara_item->goal_anim_state = LS_JUMP_FORWARD;
+        Lara_Animate(lara_item);
+        lara_item->gravity = 1;
+        lara_item->speed = item->fall_speed;
+        lara_item->fall_speed = item->fall_speed >> 2;
     }
     Sound_Effect(SFX_ZIPLINE_STOP, &item->pos, SPM_ALWAYS);
     Item_RemoveActive(item_num);
@@ -135,8 +136,9 @@ static void M_Control(const int16_t item_num)
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity || lara_item->current_anim_state != LS_STOP) {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -151,7 +153,7 @@ static void M_Collision(
     }
 
     Lara_AlignPosition(item, &m_ZiplineHandlePosition);
-    g_Lara.gun_status = LGS_HANDS_BUSY;
+    lara->gun_status = LGS_HANDS_BUSY;
 
     lara_item->goal_anim_state = LS_ZIPLINE;
     do {

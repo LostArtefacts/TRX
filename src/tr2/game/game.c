@@ -91,8 +91,9 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
-    if (g_Lara.death_timer > DEATH_WAIT
-        || (g_Lara.death_timer > DEATH_WAIT_INPUT
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->death_timer > DEATH_WAIT
+        || (lara->death_timer > DEATH_WAIT_INPUT
             && (g_InputDB.menu_confirm || g_InputDB.menu_back))
         || g_OverlayFlag == 2) {
         if (demo_mode) {
@@ -117,7 +118,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     if (((g_InputDB.load || g_InputDB.save || g_InputDB.option)
          || g_OverlayFlag <= 0)
-        && g_Lara.death_timer == 0 && !g_Lara.extra_anim) {
+        && lara->death_timer == 0 && !lara->extra_anim) {
         if (g_OverlayFlag > 0) {
             if (g_GameFlow.load_save_disabled) {
                 g_OverlayFlag = 0;

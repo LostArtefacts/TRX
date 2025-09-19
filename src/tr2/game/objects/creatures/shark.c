@@ -1,10 +1,9 @@
 #include "game/creature.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
@@ -83,7 +82,8 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->data;
 
-    const bool lara_alive = g_LaraItem->hit_points > 0;
+    const ITEM *const lara_item = Lara_GetItem();
+    const bool lara_was_alive = lara_item->hit_points > 0;
 
     if (item->hit_points <= 0) {
         if (item->current_anim_state != SHARK_STATE_DEATH) {
@@ -160,7 +160,7 @@ static void M_Control(const int16_t item_num)
             break;
         }
 
-        if (lara_alive && g_LaraItem->hit_points <= 0) {
+        if (lara_was_alive && lara_item->hit_points <= 0) {
             Creature_SpecialKill(
                 item, SHARK_ANIM_KILL, SHARK_STATE_KILL, LS_EXTRA_SHARK_KILL);
         } else if (item->current_anim_state == SHARK_STATE_KILL) {

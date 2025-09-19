@@ -1,7 +1,6 @@
-#include "global/vars.h"
-
 #include <libtrx/game/camera.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/rooms.h>
 
 #define GONG_BONGER_STRIKE_FRAME 41

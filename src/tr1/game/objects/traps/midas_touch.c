@@ -2,7 +2,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/input.h>
@@ -32,6 +31,7 @@ static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_IsUsable(int16_t item_num);
 static void M_Setup(OBJECT *obj);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_KillLara(const ITEM *item);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
@@ -40,7 +40,8 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 static bool M_IsUsable(const int16_t item_num)
 {
-    return g_LaraItem->current_anim_state != LS_USE_MIDAS;
+    const ITEM *const lara_item = Lara_GetItem();
+    return lara_item->current_anim_state != LS_USE_MIDAS;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -82,31 +83,23 @@ static void M_Collision(
         && lara_item->pos.y < item->pos.y + M_RANGE_V
         && lara_item->pos.z > item->pos.z - M_RANGE_H
         && lara_item->pos.z < item->pos.z + M_RANGE_H) {
-        lara_item->current_anim_state = LS_DIE_MIDAS;
-        lara_item->goal_anim_state = LS_DIE_MIDAS;
-        Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
-        lara_item->hit_points = -1;
-        lara_item->gravity = 0;
-        g_Lara.extra_anim = true;
-        g_Lara.air = -1;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
-        g_Lara.gun_type = LGT_UNARMED;
-        Camera_InvokeCinematic(lara_item, 0, 0);
+        M_KillLara(item);
         return;
     }
 
-    if (g_Lara.interact_target.is_moving
-        && g_Lara.interact_target.item_num == item_num) {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
         lara_item->current_anim_state = LS_USE_MIDAS;
         lara_item->goal_anim_state = LS_USE_MIDAS;
         Item_SwitchToObjAnim(lara_item, M_ANIM_USE, 0, O_LARA_EXTRA);
-        g_Lara.extra_anim = true;
-        g_Lara.gun_status = LGS_HANDS_BUSY;
-        g_Lara.interact_target.is_moving = false;
+        lara->extra_anim = true;
+        lara->gun_status = LGS_HANDS_BUSY;
+        lara->interact_target.is_moving = false;
     }
 
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity || lara_item->current_anim_state != LS_STOP) {
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -117,6 +110,26 @@ static void M_Collision(
     if (!GF_ShowInventoryKeys(item->object_id)) {
         Lara_RefuseInteraction();
     }
+}
+
+static void M_KillLara(const ITEM *const item)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
+
+    lara_item->current_anim_state = LS_DIE_MIDAS;
+    lara_item->goal_anim_state = LS_DIE_MIDAS;
+    lara_item->hit_points = -1;
+    lara_item->gravity = 0;
+    lara->extra_anim = true;
+
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+
+    Camera_InvokeCinematic(lara_item, 0, 0);
 }
 
 REGISTER_OBJECT(O_MIDAS_TOUCH, M_Setup)

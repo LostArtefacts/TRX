@@ -153,6 +153,7 @@ bool Demo_Start(const int32_t level_num)
     p->demo_ptr = data;
 
     ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     lara_item->pos.x = *p->demo_ptr++;
     lara_item->pos.y = *p->demo_ptr++;
     lara_item->pos.z = *p->demo_ptr++;
@@ -161,7 +162,7 @@ bool Demo_Start(const int32_t level_num)
     lara_item->rot.z = *p->demo_ptr++;
     int16_t room_num = *p->demo_ptr++;
 
-    Item_UpdateRoom(g_Lara.item_num, room_num);
+    Item_UpdateRoom(lara->item_num, room_num);
 
     const SECTOR *const sector = Room_GetSector(
         lara_item->pos.x, lara_item->pos.y, lara_item->pos.z, &room_num);
@@ -171,7 +172,7 @@ bool Demo_Start(const int32_t level_num)
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
 
-    g_Lara.last_gun_type = LGT_PISTOLS;
+    lara->last_gun_type = LGT_PISTOLS;
 
     Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
     return true;

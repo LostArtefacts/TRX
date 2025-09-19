@@ -1,6 +1,5 @@
 #include "game/game_flow.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
@@ -111,7 +110,8 @@ static void M_Collision(
 
     Object_Collision(item_num, lara_item, coll);
 
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
         || lara_item->gravity) {
         return;
     }

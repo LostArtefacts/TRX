@@ -5,7 +5,6 @@
 #include "game/objects/common.h"
 #include "game/option/option_compass.h"
 #include "game/shell.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>

@@ -1,7 +1,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/random.h>
 
@@ -35,11 +34,14 @@ static void M_Control(const int16_t item_num)
 
     if (item->current_anim_state == TRAP_WORKING && item->touch_bits) {
         Lara_TakeDamage(PENDULUM_DAMAGE, true);
-        int32_t x = g_LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256;
-        int32_t z = g_LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
-        int32_t y = g_LaraItem->pos.y - Random_GetControl() / 44;
-        int32_t d = g_LaraItem->rot.y + (Random_GetControl() - 0x4000) / 8;
-        Spawn_Blood(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_num);
+        const ITEM *const lara_item = Lara_GetItem();
+        const int32_t x =
+            lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
+        const int32_t z =
+            lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
+        const int32_t y = lara_item->pos.y - Random_GetControl() / 44;
+        const int32_t d = lara_item->rot.y + (Random_GetControl() - 0x4000) / 8;
+        Spawn_Blood(x, y, z, lara_item->speed, d, lara_item->room_num);
     }
 
     const SECTOR *const sector =

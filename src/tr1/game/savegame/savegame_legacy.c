@@ -7,7 +7,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -460,8 +459,10 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_Skip(sizeof(int32_t)); // save counter
 
     M_ReadResumeInfos(fp);
-    g_Lara.holsters_gun_type = LGT_UNKNOWN;
-    g_Lara.back_gun_type = LGT_UNKNOWN;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->holsters_gun_type = LGT_UNKNOWN;
+    lara->back_gun_type = LGT_UNKNOWN;
 
     // Copy RESUME_INFO of "current position" level to the target level
     {
@@ -586,7 +587,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         Carrier_TestLegacyDrops(i);
     }
 
-    M_ReadLara(&g_Lara);
+    M_ReadLara(lara);
     Room_SetFlipEffect(M_ReadS32());
     Room_SetFlipTimer(M_ReadS32());
     Memory_FreePointer(&buffer);

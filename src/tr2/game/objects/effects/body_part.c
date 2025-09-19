@@ -1,9 +1,8 @@
 #include "game/effects.h"
-#include "game/lara.h"
-#include "global/types.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 
 static void M_Setup(OBJECT *obj);
@@ -78,8 +77,10 @@ static void M_Control(const int16_t effect_num)
             effect->object_id = O_EXPLOSION_1;
             effect->shade = SHADE_NEUTRAL;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
-            g_Lara.hit_effect_count = 5;
-            g_Lara.hit_effect = effect;
+
+            LARA_INFO *const lara = Lara_GetLaraInfo();
+            lara->hit_effect_count = 5;
+            lara->hit_effect = effect;
         } else {
             Effect_Kill(effect_num);
         }

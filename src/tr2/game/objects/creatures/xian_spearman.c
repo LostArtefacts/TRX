@@ -8,6 +8,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
@@ -151,7 +152,9 @@ static void M_Control(const int16_t item_num)
     int16_t head = 0;
     int16_t neck = 0;
     int16_t angle = 0;
-    const bool lara_alive = g_LaraItem->hit_points > 0;
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const bool lara_was_alive = lara_item->hit_points > 0;
 
     if (item->hit_points <= 0) {
         item->current_anim_state = XIAN_SPEARMAN_STATE_DEATH;
@@ -407,7 +410,7 @@ static void M_Control(const int16_t item_num)
         break;
     }
 
-    if (lara_alive && g_LaraItem->hit_points <= 0) {
+    if (lara_was_alive && lara_item->hit_points <= 0) {
         Creature_SpecialKill(
             item, XIAN_SPEARMAN_ANIM_KILL, XIAN_SPEARMAN_STATE_KILL,
             LS_EXTRA_YETI_KILL);

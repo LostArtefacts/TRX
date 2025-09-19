@@ -6,7 +6,6 @@
 #include "game/objects/general/lift.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -787,10 +786,12 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     }
 
     M_WriteItems();
-    M_WriteLara(&g_Lara);
 
-    if (g_Lara.gun_item_num != NO_ITEM) {
-        const ITEM *const weapon_item = Item_Get(g_Lara.gun_item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    M_WriteLara(lara);
+
+    if (lara->gun_item_num != NO_ITEM) {
+        const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         M_WriteS16(weapon_item->object_id);
         M_WriteS16(weapon_item->anim_num);
         M_WriteS16(weapon_item->frame_num);
@@ -868,12 +869,14 @@ static bool M_LoadFromFile(MYFILE *const fp)
     }
 
     M_ReadItems();
-    M_ReadLara(&g_Lara);
 
-    if (g_Lara.gun_item_num != NO_ITEM) {
-        g_Lara.gun_item_num = Item_Create();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    M_ReadLara(lara);
 
-        ITEM *const weapon_item = Item_Get(g_Lara.gun_item_num);
+    if (lara->gun_item_num != NO_ITEM) {
+        lara->gun_item_num = Item_Create();
+
+        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         weapon_item->object_id = Object_UnmapGameID(M_ReadS16());
         weapon_item->anim_num = M_ReadS16();
         weapon_item->frame_num = M_ReadS16();

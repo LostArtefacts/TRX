@@ -1,6 +1,5 @@
 #include "game/effects.h"
 #include "game/lara.h"
-#include "global/vars.h"
 
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
@@ -22,9 +21,11 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_Control(const int16_t effect_num)
 {
-    EFFECT *effect = Effect_Get(effect_num);
+    EFFECT *const effect = Effect_Get(effect_num);
+    const ITEM *const lara_item = Lara_GetItem();
 
-    int32_t speed = (effect->speed * Math_Cos(effect->rot.x)) >> W2V_SHIFT;
+    const int32_t speed =
+        (effect->speed * Math_Cos(effect->rot.x)) >> W2V_SHIFT;
     effect->pos.y += (effect->speed * Math_Sin(-effect->rot.x)) >> W2V_SHIFT;
     effect->pos.z += (speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
     effect->pos.x += (speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
@@ -51,11 +52,11 @@ static void M_Control(const int16_t effect_num)
             effect->counter = 0;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &effect->pos, SPM_NORMAL);
 
-            int32_t x = effect->pos.x - g_LaraItem->pos.x;
-            int32_t y = effect->pos.y - g_LaraItem->pos.y;
-            int32_t z = effect->pos.z - g_LaraItem->pos.z;
+            const int32_t x = effect->pos.x - lara_item->pos.x;
+            const int32_t y = effect->pos.y - lara_item->pos.y;
+            const int32_t z = effect->pos.z - lara_item->pos.z;
             if (Item_Test3DRange(x, y, z, ROCKET_RANGE_BASE)) {
-                int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
+                const int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
                 Lara_TakeDamage(
                     ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE,
                     true);
@@ -79,17 +80,18 @@ static void M_Control(const int16_t effect_num)
     } else {
         Lara_TakeDamage(ROCKET_DAMAGE, true);
         effect->object_id = O_EXPLOSION_1;
-        if (g_LaraItem->hit_points > 0) {
-            Sound_Effect(SFX_LARA_INJURY, &g_LaraItem->pos, SPM_NORMAL);
-            g_Lara.hit_effect = effect;
-            g_Lara.hit_effect_count = 5;
+        if (lara_item->hit_points > 0) {
+            Sound_Effect(SFX_LARA_INJURY, &lara_item->pos, SPM_NORMAL);
+            LARA_INFO *const lara = Lara_GetLaraInfo();
+            lara->hit_effect = effect;
+            lara->hit_effect_count = 5;
         }
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &effect->pos, SPM_NORMAL);
     }
 
     effect->frame_num = 0;
-    effect->rot.y = g_LaraItem->rot.y;
-    effect->speed = g_LaraItem->speed;
+    effect->rot.y = lara_item->rot.y;
+    effect->speed = lara_item->speed;
     effect->counter = 0;
 }
 

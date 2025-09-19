@@ -1,6 +1,5 @@
 #include "game/creature.h"
 #include "game/lara.h"
-#include "global/vars.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
@@ -47,6 +46,7 @@ typedef enum {
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
+static void M_KillLara(const ITEM *item);
 
 static void M_Setup(OBJECT *const obj)
 {
@@ -80,9 +80,9 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *torso = item->data;
+    CREATURE *const torso = item->data;
     int16_t head = 0;
-    int16_t angle = 0;
+    ITEM *const lara_item = Lara_GetItem();
 
     if (item->hit_points <= 0) {
         if (item->current_anim_state != TORSO_STATE_DEATH) {
@@ -99,7 +99,7 @@ static void M_Control(const int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle =
+        int16_t angle =
             Math_Atan(
                 torso->target.z - item->pos.z, torso->target.x - item->pos.x)
             - item->rot.y;
@@ -115,7 +115,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case TORSO_STATE_STOP:
-            if (g_LaraItem->hit_points <= 0) {
+            if (lara_item->hit_points <= 0) {
                 break;
             }
 
@@ -126,7 +126,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = TORSO_STATE_TURN_L;
             } else if (info.distance >= TORSO_ATTACK_RANGE) {
                 item->goal_anim_state = TORSO_STATE_FORWARD;
-            } else if (g_LaraItem->hit_points > TORSO_ATTACK_DAMAGE) {
+            } else if (lara_item->hit_points > TORSO_ATTACK_DAMAGE) {
                 if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = TORSO_STATE_ATTACK_1;
                 } else {
@@ -201,29 +201,9 @@ static void M_Control(const int16_t item_num)
 
         case TORSO_STATE_ATTACK_3:
             if ((item->touch_bits & TORSO_TRIGHT)
-                || g_LaraItem->hit_points <= 0) {
+                || lara_item->hit_points <= 0) {
                 item->goal_anim_state = TORSO_STATE_KILL;
-
-                Item_SwitchToObjAnim(
-                    g_LaraItem, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
-                g_LaraItem->current_anim_state = LS_SPECIAL;
-                g_LaraItem->goal_anim_state = LS_SPECIAL;
-                g_LaraItem->room_num = item->room_num;
-                g_LaraItem->pos.x = item->pos.x;
-                g_LaraItem->pos.y = item->pos.y;
-                g_LaraItem->pos.z = item->pos.z;
-                g_LaraItem->rot.x = 0;
-                g_LaraItem->rot.y = item->rot.y;
-                g_LaraItem->rot.z = 0;
-                g_LaraItem->gravity = 0;
-                g_LaraItem->hit_points = -1;
-                g_Lara.extra_anim = true;
-                g_Lara.air = -1;
-                g_Lara.gun_status = LGS_HANDS_BUSY;
-                g_Lara.gun_type = LGT_UNARMED;
-
-                g_Camera.target_distance = WALL_L * 2;
-                g_Camera.flags = CF_FOLLOW_CENTRE;
+                M_KillLara(item);
             }
             break;
 
@@ -257,6 +237,33 @@ static void M_Control(const int16_t item_num)
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
     }
+}
+
+static void M_KillLara(const ITEM *const item)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
+
+    lara_item->current_anim_state = LS_SPECIAL;
+    lara_item->goal_anim_state = LS_SPECIAL;
+    lara_item->room_num = item->room_num;
+    lara_item->pos.x = item->pos.x;
+    lara_item->pos.y = item->pos.y;
+    lara_item->pos.z = item->pos.z;
+    lara_item->rot.x = 0;
+    lara_item->rot.y = item->rot.y;
+    lara_item->rot.z = 0;
+    lara_item->gravity = 0;
+    lara_item->hit_points = -1;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->extra_anim = true;
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+
+    g_Camera.target_distance = WALL_L * 2;
+    g_Camera.flags = CF_FOLLOW_CENTRE;
 }
 
 REGISTER_OBJECT(O_TORSO, M_Setup)

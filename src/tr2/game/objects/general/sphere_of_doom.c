@@ -1,5 +1,4 @@
-#include "global/vars.h"
-
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
@@ -80,12 +79,13 @@ static void M_Control(const int16_t item_num)
     item->timer += 64;
     item->rot.y +=
         item->object_id == O_SPHERE_OF_DOOM_2 ? DEG_1 * 10 : -DEG_1 * 10;
-    const int32_t dx = item->pos.x - g_LaraItem->pos.x;
-    const int32_t dy = item->pos.y - g_LaraItem->pos.y;
-    const int32_t dz = item->pos.z - g_LaraItem->pos.z;
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = item->pos.x - lara_item->pos.x;
+    const int32_t dy = item->pos.y - lara_item->pos.y;
+    const int32_t dz = item->pos.z - lara_item->pos.z;
     const int32_t radius = (SPHERE_OF_DOOM_RADIUS * item->timer) >> 8;
     const int32_t dist = Math_Sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-    XYZ_32 pos = g_LaraItem->pos;
+    XYZ_32 pos = lara_item->pos;
     pos.x += ((dist - radius) * dx) / radius;
     pos.y += ((dist - radius) * dy) / radius;
     pos.z += ((dist - radius) * dz) / radius;

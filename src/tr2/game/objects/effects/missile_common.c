@@ -1,10 +1,9 @@
 #include "game/objects/effects/missile_common.h"
 
 #include "game/effects.h"
-#include "game/lara.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/random.h>
@@ -62,17 +61,18 @@ void Missile_Control(const int16_t effect_num)
             return;
         }
     } else if (Lara_IsNearItem(&effect->pos, 200)) {
+        ITEM *const lara_item = Lara_GetItem();
         if (effect->object_id == O_MISSILE_KNIFE
             || effect->object_id == O_MISSILE_HARPOON) {
-            g_LaraItem->hit_points -= 50;
+            lara_item->hit_points -= 50;
             effect->object_id = O_BLOOD_1;
             Sound_Effect(SFX_CRUNCH_1, &effect->pos, SPM_NORMAL);
         }
-        g_LaraItem->hit_status = 1;
+        lara_item->hit_status = 1;
 
-        effect->rot.y = g_LaraItem->rot.y;
+        effect->rot.y = lara_item->rot.y;
         effect->frame_num = 0;
-        effect->speed = g_LaraItem->speed;
+        effect->speed = lara_item->speed;
         effect->counter = 0;
     }
 
@@ -92,11 +92,12 @@ void Missile_Control(const int16_t effect_num)
 
 void Missile_ShootAtLara(EFFECT *const effect)
 {
-    const int32_t dx = g_LaraItem->pos.x - effect->pos.x;
-    const int32_t dy = g_LaraItem->pos.y - effect->pos.y;
-    const int32_t dz = g_LaraItem->pos.z - effect->pos.z;
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - effect->pos.x;
+    const int32_t dy = lara_item->pos.y - effect->pos.y;
+    const int32_t dz = lara_item->pos.z - effect->pos.z;
 
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(g_LaraItem);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
     const int32_t dist_vert =
         dy + bounds->max.y + 3 * (bounds->min.y - bounds->max.y) / 4;
     const int32_t dist_horz = Math_Sqrt(SQUARE(dz) + SQUARE(dx));

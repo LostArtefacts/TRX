@@ -3,7 +3,6 @@
 #include "game/effects.h"
 #include "game/lara/draw.h"
 #include "game/shell.h"
-#include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>

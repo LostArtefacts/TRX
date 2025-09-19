@@ -1,7 +1,8 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
+
+#include <libtrx/game/lara.h>
 
 // clang-format off
 #define BLADE_CUT_DAMAGE 100
@@ -60,9 +61,11 @@ static void M_Control(const int16_t item_num)
     if ((item->touch_bits & BLADE_TOUCH_BITS) != 0
         && item->current_anim_state == BLADE_STATE_CUT) {
         Lara_TakeDamage(BLADE_CUT_DAMAGE, true);
+
+        const ITEM *const lara_item = Lara_GetItem();
         Spawn_BloodBath(
-            g_LaraItem->pos.x, item->pos.y - STEP_L, g_LaraItem->pos.z,
-            g_LaraItem->speed, g_LaraItem->rot.y, g_LaraItem->room_num, 2);
+            lara_item->pos.x, item->pos.y - STEP_L, lara_item->pos.z,
+            lara_item->speed, lara_item->rot.y, lara_item->room_num, 2);
     }
 
     Item_Animate(item);

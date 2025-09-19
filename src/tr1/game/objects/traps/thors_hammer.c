@@ -1,6 +1,5 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
@@ -49,6 +48,7 @@ static void M_InitialiseHandle(const int16_t item_num)
 static void M_ControlHandle(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    ITEM *const lara_item = Lara_GetItem();
 
     switch (item->current_anim_state) {
     case THOR_HAMMER_STATE_SET:
@@ -89,16 +89,16 @@ static void M_ControlHandle(const int16_t item_num)
                 break;
             }
 
-            if (g_LaraItem->hit_points >= 0
+            if (lara_item->hit_points >= 0
                 && !g_Config.debug.enable_invulnerability
-                && g_LaraItem->pos.x > x - 520 && g_LaraItem->pos.x < x + 520
-                && g_LaraItem->pos.z > z - 520 && g_LaraItem->pos.z < z + 520) {
-                g_LaraItem->hit_points = -1;
-                g_LaraItem->pos.y = item->pos.y;
-                g_LaraItem->gravity = 0;
-                g_LaraItem->current_anim_state = LS_SPECIAL;
-                g_LaraItem->goal_anim_state = LS_SPECIAL;
-                Item_SwitchToAnim(g_LaraItem, LA_BOULDER_DEATH, 0);
+                && lara_item->pos.x > x - 520 && lara_item->pos.x < x + 520
+                && lara_item->pos.z > z - 520 && lara_item->pos.z < z + 520) {
+                lara_item->hit_points = -1;
+                lara_item->pos.y = item->pos.y;
+                lara_item->gravity = 0;
+                lara_item->current_anim_state = LS_SPECIAL;
+                lara_item->goal_anim_state = LS_SPECIAL;
+                Item_SwitchToAnim(lara_item, LA_BOULDER_DEATH, 0);
             }
         }
         break;
@@ -129,7 +129,7 @@ static void M_ControlHandle(const int16_t item_num)
 
         item->pos.x = x;
         item->pos.z = z;
-        if (g_LaraItem->hit_points >= 0) {
+        if (lara_item->hit_points >= 0) {
             Room_AlterFloorHeight(item, -WALL_L * 2);
         }
         item->pos.x = old_x;

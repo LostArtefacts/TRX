@@ -1,7 +1,6 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
 #include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
@@ -44,9 +43,10 @@ static void M_DetonateAll(
 {
     ITEM *const boat_item = Item_Get(boat_item_num);
     if (Lara_Vehicle_GetIndex() == boat_item_num) {
-        Item_Explode(g_Lara.item_num, -1, 0);
-        g_LaraItem->hit_points = 0;
-        g_LaraItem->flags |= IF_ONE_SHOT;
+        ITEM *const lara_item = Lara_GetItem();
+        Item_Explode(Item_GetIndex(lara_item), -1, 0);
+        lara_item->hit_points = 0;
+        lara_item->flags |= IF_ONE_SHOT;
     }
 
     const OBJECT *const obj = Object_Get(O_BOAT_BITS);

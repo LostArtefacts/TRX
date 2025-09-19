@@ -1,8 +1,8 @@
 #include "game/effects.h"
-#include "global/vars.h"
 
 #include <libtrx/game/const.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/utils.h>
 
 #define M_DISAPPEAR_RANGE STEP_L

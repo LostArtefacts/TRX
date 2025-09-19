@@ -1,6 +1,5 @@
 #include "game/game.h"
 #include "game/lara.h"
-#include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
@@ -105,9 +104,10 @@ static void M_Control(const int16_t item_num)
 
         const int32_t radius = l->no_target ? WALL_L : WALL_L * 5 / 2;
         if (Lara_IsNearItem(&item->pos, radius)) {
-            l->target.x = g_LaraItem->pos.x;
-            l->target.y = g_LaraItem->pos.y;
-            l->target.z = g_LaraItem->pos.z;
+            const ITEM *const lara_item = Lara_GetItem();
+            l->target.x = lara_item->pos.x;
+            l->target.y = lara_item->pos.y;
+            l->target.z = lara_item->pos.z;
 
             Lara_TakeDamage(LIGHTNING_DAMAGE, true);
 
@@ -159,9 +159,10 @@ static void M_Collision(
         return;
     }
 
-    g_Lara.hit_direction = 1 + (Random_GetControl() * 4) / (DEG_180 - 1);
-    g_Lara.hit_frame++;
-    CLAMPG(g_Lara.hit_frame, 34);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->hit_direction = 1 + (Random_GetControl() * 4) / (DEG_180 - 1);
+    lara->hit_frame++;
+    CLAMPG(lara->hit_frame, 34);
 }
 
 static void M_Draw(const ITEM *const item)

@@ -1,9 +1,8 @@
 #include "game/creature.h"
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
+#include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/utils.h>
 
@@ -107,7 +106,9 @@ static void M_Control(const int16_t item_num)
     int16_t head = 0;
     int16_t body = 0;
     int16_t angle = 0;
-    const bool lara_alive = g_LaraItem->hit_points > 0;
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const bool lara_was_alive = lara_item->hit_points > 0;
 
     if (item->hit_points > 0) {
         AI_INFO info;
@@ -129,7 +130,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = item->required_anim_state;
             } else if (creature->mood == MOOD_BORED) {
                 const int32_t random = Random_GetControl();
-                if (random < YETI_WAIT_1_CHANCE || !lara_alive) {
+                if (random < YETI_WAIT_1_CHANCE || !lara_was_alive) {
                     item->goal_anim_state = YETI_STATE_WAIT_1;
                 } else if (random < YETI_WAIT_2_CHANCE) {
                     item->goal_anim_state = YETI_STATE_WAIT_2;
@@ -154,7 +155,7 @@ static void M_Control(const int16_t item_num)
             if (creature->mood == MOOD_ESCAPE || item->hit_status) {
                 item->goal_anim_state = YETI_STATE_STOP;
             } else if (creature->mood == MOOD_BORED) {
-                if (lara_alive) {
+                if (lara_was_alive) {
                     const int32_t random = Random_GetControl();
                     if (random < YETI_WAIT_1_CHANCE) {
                         item->goal_anim_state = YETI_STATE_STOP;
@@ -175,7 +176,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = YETI_STATE_STOP;
             } else if (creature->mood == MOOD_BORED) {
                 const int32_t random = Random_GetControl();
-                if (random < YETI_WAIT_1_CHANCE || !lara_alive) {
+                if (random < YETI_WAIT_1_CHANCE || !lara_was_alive) {
                     item->goal_anim_state = YETI_STATE_WAIT_1;
                 } else if (random < YETI_WAIT_2_CHANCE) {
                     item->goal_anim_state = YETI_STATE_STOP;
@@ -194,7 +195,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = YETI_STATE_RUN;
             } else if (creature->mood == MOOD_BORED) {
                 const int32_t random = Random_GetControl();
-                if (random < YETI_WAIT_1_CHANCE || !lara_alive) {
+                if (random < YETI_WAIT_1_CHANCE || !lara_was_alive) {
                     item->goal_anim_state = YETI_STATE_STOP;
                     item->required_anim_state = YETI_STATE_WAIT_1;
                 } else if (random < YETI_WAIT_2_CHANCE) {
@@ -283,7 +284,7 @@ static void M_Control(const int16_t item_num)
         item->current_anim_state = YETI_STATE_DEATH;
     }
 
-    if (lara_alive && g_LaraItem->hit_points <= 0) {
+    if (lara_was_alive && lara_item->hit_points <= 0) {
         Creature_SpecialKill(
             item, YETI_ANIM_KILL, YETI_STATE_KILL, LS_EXTRA_YETI_KILL);
         return;

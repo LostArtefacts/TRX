@@ -9,7 +9,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
-#include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>

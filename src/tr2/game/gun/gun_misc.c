@@ -6,11 +6,11 @@
 #include "game/objects/vars.h"
 #include "game/spawn.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
@@ -43,19 +43,23 @@ static void M_SmashItem(const int16_t item_num)
     }
 }
 
-void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
+void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 {
-    GAME_VECTOR start;
-    start.pos.x = g_LaraItem->pos.x;
-    start.pos.y = g_LaraItem->pos.y - 650;
-    start.pos.z = g_LaraItem->pos.z;
-    start.room_num = g_LaraItem->room_num;
+    const ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    const GAME_VECTOR start = {
+        .x = lara_item->pos.x,
+        .y = lara_item->pos.y - 650,
+        .z = lara_item->pos.z,
+        .room_num = lara_item->room_num,
+    };
 
     int16_t best_y_rot = 0x7FFF;
     int32_t best_dist = 0x7FFFFFFF;
     ITEM *best_target = nullptr;
 
-    const int16_t max_dist = winfo->target_dist;
+    const int16_t max_dist = weapon->target_dist;
     for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
         const CREATURE *const creature = LOT_GetBaddieSlot(i);
         if (creature->item_num == NO_ITEM) {
@@ -93,13 +97,13 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
         Math_GetVectorAngles(
             target.pos.x - start.pos.x, target.pos.y - start.pos.y,
             target.pos.z - start.pos.z, angles);
-        angles[0] -= g_Lara.torso_rot.y + g_LaraItem->rot.y;
-        angles[1] -= g_Lara.torso_rot.x + g_LaraItem->rot.x;
+        angles[0] -= lara->torso_rot.y + lara_item->rot.y;
+        angles[1] -= lara->torso_rot.x + lara_item->rot.x;
 
-        if (angles[0] >= winfo->lock_angles[0]
-            && angles[0] <= winfo->lock_angles[1]
-            && angles[1] >= winfo->lock_angles[2]
-            && angles[1] <= winfo->lock_angles[3]) {
+        if (angles[0] >= weapon->lock_angles[0]
+            && angles[0] <= weapon->lock_angles[1]
+            && angles[1] >= weapon->lock_angles[2]
+            && angles[1] <= weapon->lock_angles[3]) {
             const int16_t y_rot = ABS(angles[0]);
             if (y_rot < best_y_rot + M_NEAR_ANGLE && dist < best_dist) {
                 best_dist = dist;
@@ -109,19 +113,20 @@ void Gun_GetNewTarget(const WEAPON_INFO *const winfo)
         }
     }
 
-    g_Lara.target = best_target;
-    Gun_TargetInfo(winfo);
+    lara->target = best_target;
+    Gun_TargetInfo(weapon);
 }
 
 int32_t Gun_FireWeapon(
     const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
     const int16_t *const angles)
 {
-    const WEAPON_INFO *const winfo = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     AMMO_INFO *const ammo = Gun_GetAmmoInfo(weapon_type);
     ASSERT(ammo != nullptr);
 
-    if (ammo == &g_Lara.pistol_ammo || Game_IsBonusFlagSet(GBF_NGPLUS)) {
+    if (ammo == &lara->pistol_ammo || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         ammo->ammo = 1000;
     }
 
@@ -134,14 +139,14 @@ int32_t Gun_FireWeapon(
 
     const XYZ_32 view_pos = {
         .x = src->pos.x,
-        .y = src->pos.y - winfo->gun_height,
+        .y = src->pos.y - weapon->gun_height,
         .z = src->pos.z,
     };
     const XYZ_16 view_rot = {
         .x = angles[1]
-            + winfo->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
+            + weapon->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
         .y = angles[0]
-            + winfo->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
+            + weapon->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
         .z = 0,
     };
     Matrix_GenerateW2V(&view_pos, &view_rot);
@@ -174,7 +179,7 @@ int32_t Gun_FireWeapon(
     start.room_num = src->room_num;
 
     if (best_sphere < 0) {
-        const int32_t dist = winfo->target_dist;
+        const int32_t dist = weapon->target_dist;
         GAME_VECTOR hit_pos;
         hit_pos.x = view_pos.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT);
         hit_pos.y = view_pos.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT);
@@ -204,7 +209,7 @@ int32_t Gun_FireWeapon(
         Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
         Gun_HitTarget(
             target, &hit_pos,
-            winfo->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
+            weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
 }
