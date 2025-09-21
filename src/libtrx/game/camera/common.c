@@ -113,9 +113,11 @@ static void M_AdjustMusicVolume(const bool is_underwater)
     }
     const bool is_ambient =
         Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
-    const double base_volume = is_ambient ? g_Config.audio.ambient_volume
-                                          : g_Config.audio.music_volume;
-    const double multiplier = !is_underwater ? 1.0
+    const bool is_cutscene = GF_GetCurrentLevel()->type == GFL_CUTSCENE;
+    const double base_volume = is_cutscene ? g_Config.audio.cutscene_volume
+        : is_ambient                       ? g_Config.audio.ambient_volume
+                                           : g_Config.audio.music_volume;
+    const double multiplier = !is_underwater || is_cutscene ? 1.0
         : is_ambient ? g_Config.audio.underwater_ambient_volume
                      : g_Config.audio.underwater_music_volume;
     Music_SetVolume(base_volume * multiplier);

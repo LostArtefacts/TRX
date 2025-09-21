@@ -151,6 +151,7 @@ typedef struct {
         float ambient_volume;
         float inventory_ambient_volume;
         float underwater_ambient_volume;
+        float cutscene_volume;
         float fmv_volume;
 
 #if TR_VERSION == 1
