@@ -13,6 +13,8 @@
     - improved volume settings to accept slow input for finer adjustments
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
+- changed max pickup scale to 200% (#3952)
+- fixed pickup scale being greyed out if the 3D pickups option is enabled (#3952)
 - fixed certain ambient sounds volume scaling wrong on non-100% volumes
 - fixed trapdoor type 3 (object #67) not functioning (#3895)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 4.13)
