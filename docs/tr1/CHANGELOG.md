@@ -21,6 +21,7 @@
     - added the ability for stacks of movable blocks to fall when on opened trapdoors and drawbridges
     - fixed various bugs with falling movable blocks
 - fixed recordings replaying commands twice (regression from 4.14)
+- fixed the fix for the sticky corner glitch not being optional - now linked to Gameplay → Fixes → Wall glitch mode (#3957, regression from 4.14)
 
 ## [4.14.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.1...tr1-4.14.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 4.14)
