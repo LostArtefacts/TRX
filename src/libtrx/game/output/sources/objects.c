@@ -210,7 +210,11 @@ static void M_UpdateShadesSkybox(
 {
     const OBJECT_MESH *const mesh = user_data;
     const M_PRIV *const p = &m_Priv;
+
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
+    if (batch->mesh_batch == nullptr) {
+        return;
+    }
     OUTPUT_MESH_VERTEX *const vertices =
         Vector_GetData(batch->mesh_batch->vertices);
 
@@ -225,7 +229,11 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
 {
     const OBJECT_MESH *const mesh = user_data;
     const M_PRIV *const p = &m_Priv;
+
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
+    if (batch->mesh_batch == nullptr) {
+        return;
+    }
     OUTPUT_MESH_VERTEX *const vertices =
         Vector_GetData(batch->mesh_batch->vertices);
 
@@ -307,6 +315,9 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
 {
     M_PRIV *const p = &m_Priv;
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
+    if (batch->mesh_batch == nullptr) {
+        return;
+    }
 
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,
@@ -373,6 +384,9 @@ void OutputSource_Objects_ObserveObjectMeshUpdate(const int32_t mesh_idx)
         return;
     }
     M_MESH *const batch = &p->meshes[mesh_idx];
+    if (batch->mesh_batch == nullptr) {
+        return;
+    }
     M_UpdateFlags(Object_GetMesh(mesh_idx), batch);
     MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
 }
