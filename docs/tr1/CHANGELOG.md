@@ -1,14 +1,16 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...develop) - ××××-××-××
 - added an option to use TR2-style UI bars (Graphics → UI → Bars look)
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
-- added a dedicated option to control cutscenes volume (Sound options → Cutscenes volume) (#3490)
-- added a dedicated option to control FMV volume (Sound options → FMV volume) (#3490)
-- added a dedicated option to control general ambient volume (Sound options → Ambient volume) (#3707)
-- added a dedicated option to control master volume (Sound options → Master volume)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added support for ladders (#3124)
 - improved PS1-style UI faithfulness
-- improve volume settings to accept slow input for finer adjustments
+- improved sound settings:
+    - added tabs (Volume and Misc)
+    - added a dedicated option to control master volume (Sound options → Volume → Master volume)
+    - added a dedicated option to control cutscenes volume (Sound options → Volume → Cutscenes volume) (#3490)
+    - added a dedicated option to control FMV volume (Sound options → Volume → FMV volume) (#3490)
+    - added a dedicated option to control general ambient volume (Sound options → Volume → Ambient volume) (#3707)
+    - improved volume settings to accept slow input for finer adjustments
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
 - fixed certain ambient sounds volume scaling wrong on non-100% volumes

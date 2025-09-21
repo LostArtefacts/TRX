@@ -6,16 +6,18 @@
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
 - added an option to use PS1-style UI backgrounds and frames (Graphics → UI → Menu style) (#1635)
 - added an option to use PS1-style carpet texture animation (Graphics → UI → Background style) (#1630)
-- added an option to turn off sound effect pitching (#625)
 - added an option to change target lock modes (Gameplay → Controls → Weapon lock mode) (#3950)
 - added an option to cycle targets (Gameplay → Controls → Target change; Controls → Misc → Change Target) (#3951)
-- added a dedicated option to control cutscenes volume (Sound options → Cutscenes volume) (#3490)
-- added a dedicated option to control FMV volume (Sound options → FMV volume) (#3490)
-- added a dedicated option to control general ambient volume (Sound options → Ambient volume) (#3707)
-- added a dedicated option to control master volume (Sound options → Master volume)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added an option to turn off ingame timer in the inventory ring (Gameplay → General → Timer counts in inventory) (#3931)
-- improve volume settings to accept slow input for finer adjustments
+- improved sound settings:
+    - added tabs (Volume and Misc)
+    - added a dedicated option to control master volume (Sound options → Volume → Master volume)
+    - added a dedicated option to control cutscenes volume (Sound options → Volume → Cutscenes volume) (#3490)
+    - added a dedicated option to control FMV volume (Sound options → Volume → FMV volume) (#3490)
+    - added a dedicated option to control general ambient volume (Sound options → Volume → Ambient volume) (#3707)
+    - added an option to turn off sound effect pitching (#625)
+    - improved volume settings to accept slow input for finer adjustments
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the Use PSX FOV option name to Use PS1 FOV (Graphics → Visuals → Use PS1 FOV)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
