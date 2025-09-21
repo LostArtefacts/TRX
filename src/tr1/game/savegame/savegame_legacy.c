@@ -4,6 +4,8 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/level.h"
+#include "game/objects/traps/sliding_pillar.h"
+#include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
@@ -11,6 +13,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -582,6 +585,16 @@ static bool M_LoadFromFile(MYFILE *const fp)
             } else if (obj->intelligent) {
                 item->data = nullptr;
             }
+        }
+
+        if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
+            MOVABLE_BLOCK_INFO *const data = item->data;
+            data->linked.pos = item->pos;
+            data->linked.room_num = item->room_num;
+        } else if (item->object_id == O_SLIDING_PILLAR) {
+            SLIDING_PILLAR_INFO *const data = item->data;
+            data->linked.pos = item->pos;
+            data->linked.room_num = item->room_num;
         }
 
         Carrier_TestLegacyDrops(i);
