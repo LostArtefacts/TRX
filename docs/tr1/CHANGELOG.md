@@ -8,6 +8,7 @@
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added support for ladders (#3124)
 - improved PS1-style UI faithfulness
+- improve volume settings to accept slow input for finer adjustments
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
 - fixed certain ambient sounds volume scaling wrong on non-100% volumes
