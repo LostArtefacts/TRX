@@ -23,6 +23,8 @@
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
 - changed the bar appearance to use the PS1 look by default (Graphics → UI → Bars look)
 - changed the inventory and stats screen to use the PS1 wave animation  by default (Graphics → UI → Background style)
+- changed max pickup scale to 200% (#3952)
+- fixed pickup scale being greyed out if the 3D pickups option is enabled (#3952)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)
 - fixed camera stutter when shimmying on ladders to the left (#3904, regression from 1.3)
 - fixed gameplay settings UI displaying eagerly after the first use (#3583, regression from 1.3)
