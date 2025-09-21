@@ -17,6 +17,7 @@ X_CFG_ENUM(gameplay.jump_lock_mode,             JUMP_LOCK_LEGACY, JUMP_LOCK_MODE
 X_CFG_ENUM(visuals.camera_mode,                 CAMERA_MODE_TR2, CAMERA_MODE)
 X_CFG_FLOAT_PERCENT(audio.music_volume,         1.0f)
 X_CFG_FLOAT_PERCENT(audio.sound_volume,         1.0f)
+X_CFG_FLOAT_PERCENT(audio.fmv_volume,           1.0f)
 X_CFG_INT32(gameplay.harpoon_recoil,            4)
 X_CFG_INT32(visuals.fov,                        80)
 X_CFG_INT32(window.height,                      720)

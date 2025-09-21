@@ -1,5 +1,6 @@
 X_UI_CFG_FLOAT_PERCENT(audio.sound_volume,              SETTING_SOUND_VOLUME, .custom_handler = { .request_change_value = UI_Settings_Volume_RequestChange }, .min_value = 0, .max_value = 100, .delta_slow = 10, .delta_fast = 10)
 X_UI_CFG_FLOAT_PERCENT(audio.music_volume,              SETTING_MUSIC_VOLUME, .custom_handler = { .request_change_value = UI_Settings_Volume_RequestChange }, .min_value = 0, .max_value = 100, .delta_slow = 10, .delta_fast = 10)
+X_UI_CFG_FLOAT_PERCENT(audio.fmv_volume,                SETTING_FMV_VOLUME, .custom_handler = { .request_change_value = UI_Settings_Volume_RequestChange }, .min_value = 0, .max_value = 100, .delta_slow = 10, .delta_fast = 10)
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.enable_music_in_menu,               SETTING_ENABLE_MUSIC_IN_MENU)

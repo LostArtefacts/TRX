@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...develop) - ××××-××-××
 - added an option to use TR2-style UI bars (Graphics → UI → Bars look)
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
+- added a dedicated option to control FMV volume (Sound options → FMV volume) (#3490)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added support for ladders (#3124)
 - improved PS1-style UI faithfulness

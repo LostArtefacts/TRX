@@ -119,7 +119,7 @@ static bool M_Play(const char *const file_name)
     while (video->is_playing) {
         Shell_ProcessEvents();
         Video_SetVolume(
-            video, Audio_IsMuted() ? 0.0f : g_Config.audio.sound_volume);
+            video, Audio_IsMuted() ? 0.0f : g_Config.audio.fmv_volume);
         Video_SetSurfaceSize(
             video, Viewport_GetWidth(VIEWPORT_GAME),
             Viewport_GetHeight(VIEWPORT_GAME));

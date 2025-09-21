@@ -162,6 +162,13 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             g_Config.gameplay.look_mode = LOOK_MODE_RESTRICTED;
         }
     }
+
+    // ..4.15
+    {
+        if (JSON_ObjectGetValue(parent_obj, "fmv_volume") == nullptr) {
+            g_Config.audio.fmv_volume = g_Config.audio.music_volume;
+        }
+    }
 }
 
 static void M_DumpKeyboardLayout(
