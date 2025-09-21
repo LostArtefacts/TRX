@@ -11,7 +11,7 @@
 
 static void M_FillSide(
     const COLL_INFO *coll, COLL_SIDE *side, int32_t x_pos, int32_t z_pos,
-    int32_t y_pos, int32_t obj_height, int16_t room_num);
+    int32_t y_pos, int32_t obj_height, int16_t *room_num);
 static bool M_IsOnWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
 
@@ -30,12 +30,19 @@ static bool M_IsOnWalkable(
 static void M_FillSide(
     const COLL_INFO *const coll, COLL_SIDE *const side, const int32_t x_pos,
     const int32_t z_pos, const int32_t y_pos, const int32_t obj_height,
-    int16_t room_num)
+    int16_t *const room_num)
 {
     const int32_t y = y_pos - obj_height;
     const int32_t y_top = y - M_HEADROOM;
 
-    const SECTOR *const sector = Room_GetSector(x_pos, y_top, z_pos, &room_num);
+    int16_t local_room_num = *room_num;
+    int16_t *const test_room_num =
+        g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_FIXED
+        ? &local_room_num
+        : room_num;
+
+    const SECTOR *const sector =
+        Room_GetSector(x_pos, y_top, z_pos, test_room_num);
     int32_t height = Room_GetHeight(sector, x_pos, y_top, z_pos);
     int32_t ceiling = Room_GetCeiling(sector, x_pos, y_top, z_pos);
     const int32_t room_height = height;
@@ -305,13 +312,13 @@ void Collide_GetCollisionInfo(
 
     M_FillSide(
         coll, &coll->side_front, x_pos + x_front, z_pos + z_front, y_pos,
-        obj_height, room_num);
+        obj_height, &room_num);
     M_FillSide(
         coll, &coll->side_left, x_pos + x_left, z_pos + z_left, y_pos,
-        obj_height, room_num);
+        obj_height, &room_num);
     M_FillSide(
         coll, &coll->side_right, x_pos + x_right, z_pos + z_right, y_pos,
-        obj_height, room_num);
+        obj_height, &room_num);
 
     if (Collide_CollideStaticObjects(
             coll, x_pos, y_pos, z_pos, room_num, obj_height)) {
