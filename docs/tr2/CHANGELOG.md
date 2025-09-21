@@ -15,6 +15,7 @@
 - added a dedicated option to control master volume (Sound options → Master volume)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added an option to turn off ingame timer in the inventory ring (Gameplay → General → Timer counts in inventory) (#3931)
+- improve volume settings to accept slow input for finer adjustments
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the Use PSX FOV option name to Use PS1 FOV (Graphics → Visuals → Use PS1 FOV)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
