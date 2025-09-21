@@ -535,6 +535,8 @@
         "SETTING_FIX_WALK_RUN_JUMP_DESCRIPTION": "Fixes Lara at times not being able to jump immediately after going from her walking to running animation.",
         "SETTING_FIX_WATER_EXIT": "Fix water exit",
         "SETTING_FIX_WATER_EXIT_DESCRIPTION": "Fixes Lara being able to go directly from a water room to an adjacent dry room, or to a dry room below. Additionally, this will prevent Lara from being able to climb out of water onto non-standable slopes.",
+        "SETTING_FMV_VOLUME": "FMV volume",
+        "SETTING_FMV_VOLUME_DESCRIPTION": "Adjusts the ingame movies volume.",
         "SETTING_FOG_COLOR_B": "Fog color (B)",
         "SETTING_FOG_COLOR_B_DESCRIPTION": "Blue component of the fog color.",
         "SETTING_FOG_COLOR_G": "Fog color (G)",

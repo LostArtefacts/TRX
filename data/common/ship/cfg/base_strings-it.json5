@@ -535,6 +535,8 @@
         "SETTING_FIX_WALK_RUN_JUMP_DESCRIPTION": "Risolve il problema per cui a volte Lara non riesce a saltare immediatamente dopo essere passata dall'animazione di camminata a quella di corsa.",
         "SETTING_FIX_WATER_EXIT": "Correggi uscita dall'acqua",
         "SETTING_FIX_WATER_EXIT_DESCRIPTION": "Risolve il problema che permette a Lara di passare direttamente da una stanza con acqua ad una senza acqua adiacente o sottostante. Inoltre, questo impedirà a Lara di uscire dall'acqua su pendii non calpestabili.",
+        "SETTING_FMV_VOLUME": "\\{review}Volume FMV",
+        "SETTING_FMV_VOLUME_DESCRIPTION": "\\{review}Regola il volume dei filmati di gioco.",
         "SETTING_FOG_COLOR_B": "Colore nebbia (B)",
         "SETTING_FOG_COLOR_B_DESCRIPTION": "Componente blu del colore della nebbia.",
         "SETTING_FOG_COLOR_G": "Colore nebbia (G)",

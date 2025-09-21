@@ -131,6 +131,13 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             g_Config.audio.music_volume = JSON_ValueGetInt(value, 0) / 10.0f;
         }
     }
+
+    // 1.5
+    {
+        if (JSON_ObjectGetValue(parent_obj, "fmv_volume") == nullptr) {
+            g_Config.audio.fmv_volume = g_Config.audio.music_volume;
+        }
+    }
 }
 
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)

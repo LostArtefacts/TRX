@@ -146,6 +146,8 @@ typedef struct {
     struct {
         float sound_volume;
         float music_volume;
+        float fmv_volume;
+
 #if TR_VERSION == 1
         bool fix_tihocan_secret_sound;
         bool fix_secrets_killing_music;

@@ -535,6 +535,8 @@
         "SETTING_FIX_WALK_RUN_JUMP_DESCRIPTION": "Fixt, dass Lara manchmal nicht sofort springen kann, direkt nachdem sie von ihrer Gehen-Animation zur Laufen-Animation wechselt.",
         "SETTING_FIX_WATER_EXIT": "Wasser Ausstieg",
         "SETTING_FIX_WATER_EXIT_DESCRIPTION": "Fixt dass Lara direkt in einen angrenzenden, trockenen Raum oder in einen trockenen Raum unterhalb gelangen kann. Zusätzlich verhindert es, dass Lara aus dem Wasser heraus auf nicht begehbare Schrägen klettern kann.",
+        "SETTING_FMV_VOLUME": "\\{review}FMV-Lautstärke",
+        "SETTING_FMV_VOLUME_DESCRIPTION": "\\{review}Stellt die Lautstärke der Ingame-Filme ein.",
         "SETTING_FOG_COLOR_B": "\\{review}Nebel Farbe (B)",
         "SETTING_FOG_COLOR_B_DESCRIPTION": "\\{review}Blauanteil der Nebelfarbe.",
         "SETTING_FOG_COLOR_G": "\\{review}Nebel Farbe (G)",

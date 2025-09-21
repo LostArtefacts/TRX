@@ -13,6 +13,7 @@ void Config_SanitizeCommon(void)
     CLAMP(g_Config.audio.inventory_ambient_volume, 0.0f, 1.0f);
     CLAMP(g_Config.audio.underwater_music_volume, 0.0f, 1.0f);
     CLAMP(g_Config.audio.underwater_ambient_volume, 0.0f, 1.0f);
+    CLAMP(g_Config.audio.fmv_volume, 0.0f, 1.0f);
     CLAMP(g_Config.input.keyboard_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
     CLAMP(g_Config.input.controller_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
     CLAMP(

@@ -535,6 +535,8 @@
         "SETTING_FIX_WALK_RUN_JUMP_DESCRIPTION": "Corrige le fait que Lara ne peut parfois pas sauter tout de suite après être passée de son animation de marche à celle de course.",
         "SETTING_FIX_WATER_EXIT": "\\{review}Corriger la sortie de l'eau",
         "SETTING_FIX_WATER_EXIT_DESCRIPTION": "\\{review}Corrige le fait que Lara puisse passer directement d'une pièce d'eau à une pièce sèche adjacente, ou à une pièce sèche en dessous. De plus, cela empêchera Lara de pouvoir sortir de l'eau sur des pentes non praticables.",
+        "SETTING_FMV_VOLUME": "\\{review}Volume des FMV",
+        "SETTING_FMV_VOLUME_DESCRIPTION": "\\{review}Ajuste le volume des films dans le jeu.",
         "SETTING_FOG_COLOR_B": "\\{review}Couleur du brouillard (B)",
         "SETTING_FOG_COLOR_B_DESCRIPTION": "\\{review}Composante bleue de la couleur du brouillard.",
         "SETTING_FOG_COLOR_G": "\\{review}Couleur du brouillard (V)",
