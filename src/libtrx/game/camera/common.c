@@ -78,7 +78,7 @@ extern int32_t g_PhdPersp;
 #endif
 
 static M_SETTINGS M_GetSettings(void);
-static void M_AdjustMusicVolume(bool underwater);
+static void M_AdjustMusicVolume(bool is_underwater);
 
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
@@ -106,17 +106,19 @@ static M_SETTINGS M_GetSettings(void)
     return m_CameraSettings[g_Config.visuals.camera_mode];
 }
 
-static void M_AdjustMusicVolume(const bool underwater)
+static void M_AdjustMusicVolume(const bool is_underwater)
 {
-    const bool is_ambient =
-        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
     if (!Game_IsPlaying()) {
         return;
     }
-    const double multiplier = !underwater ? 1.0
+    const bool is_ambient =
+        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+    const double base_volume = is_ambient ? g_Config.audio.ambient_volume
+                                          : g_Config.audio.music_volume;
+    const double multiplier = !is_underwater ? 1.0
         : is_ambient ? g_Config.audio.underwater_ambient_volume
                      : g_Config.audio.underwater_music_volume;
-    Music_SetVolume(g_Config.audio.music_volume * multiplier);
+    Music_SetVolume(base_volume * multiplier);
 }
 
 static void M_OffsetAdditionalAngle(const int16_t delta)

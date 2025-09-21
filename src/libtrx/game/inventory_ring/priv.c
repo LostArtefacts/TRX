@@ -63,10 +63,12 @@ void InvRing_AdjustMusicVolume(const INV_RING *const ring)
     }
     const bool is_ambient =
         Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+    const double base_volume = is_ambient ? g_Config.audio.ambient_volume
+                                          : g_Config.audio.music_volume;
     const double multiplier = is_ambient
         ? g_Config.audio.inventory_ambient_volume
         : g_Config.audio.inventory_music_volume;
-    Music_SetVolume(g_Config.audio.music_volume * multiplier);
+    Music_SetVolume(base_volume * multiplier);
 }
 
 void InvRing_SetRequestedObjectID(const GAME_OBJECT_ID obj_id)

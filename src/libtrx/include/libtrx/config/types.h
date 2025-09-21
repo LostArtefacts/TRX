@@ -146,6 +146,11 @@ typedef struct {
     struct {
         float sound_volume;
         float music_volume;
+        float inventory_music_volume;
+        float underwater_music_volume;
+        float ambient_volume;
+        float inventory_ambient_volume;
+        float underwater_ambient_volume;
         float fmv_volume;
 
 #if TR_VERSION == 1
@@ -171,10 +176,6 @@ typedef struct {
         bool enable_underwater_anim_sfx;
         bool mute_out_of_focus;
 
-        float inventory_ambient_volume;
-        float inventory_music_volume;
-        float underwater_ambient_volume;
-        float underwater_music_volume;
         MUSIC_LOAD_CONDITION music_load_condition;
     } audio;
 
