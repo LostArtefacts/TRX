@@ -9,6 +9,7 @@
 - added an option to turn off sound effect pitching (#625)
 - added an option to change target lock modes (Gameplay → Controls → Weapon lock mode) (#3950)
 - added an option to cycle targets (Gameplay → Controls → Target change; Controls → Misc → Change Target) (#3951)
+- added a dedicated option to control cutscenes volume (Sound options → Cutscenes volume) (#3490)
 - added a dedicated option to control FMV volume (Sound options → FMV volume) (#3490)
 - added a dedicated option to control general ambient volume (Sound options → Ambient volume) (#3707)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
