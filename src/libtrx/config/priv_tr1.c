@@ -165,6 +165,9 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 
     // ..4.15
     {
+        if (JSON_ObjectGetValue(parent_obj, "ambient_volume") == nullptr) {
+            g_Config.audio.ambient_volume = g_Config.audio.music_volume;
+        }
         if (JSON_ObjectGetValue(parent_obj, "fmv_volume") == nullptr) {
             g_Config.audio.fmv_volume = g_Config.audio.music_volume;
         }
