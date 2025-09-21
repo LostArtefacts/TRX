@@ -144,6 +144,7 @@ typedef struct {
     } ui;
 
     struct {
+        float master_volume;
         float sound_volume;
         float music_volume;
         float inventory_music_volume;

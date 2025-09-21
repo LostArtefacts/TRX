@@ -106,8 +106,8 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
 
 static int32_t M_ConvertVolumeToDecibel(int32_t volume)
 {
-    int32_t idx = volume * (m_MasterVolume / 64.0f) * M_DECIBEL_LUT_SIZE
-        / M_SOUND_MAX_VOLUME;
+    int32_t idx = volume * g_Config.audio.master_volume * m_MasterVolume
+        * M_DECIBEL_LUT_SIZE / M_SOUND_MAX_VOLUME;
     CLAMP(idx, 0, M_DECIBEL_LUT_SIZE - 1);
     return m_DecibelLUT[idx];
 }
@@ -367,7 +367,7 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 
 bool Sound_Init(void)
 {
-    m_MasterVolume = g_Config.audio.sound_volume / 64.0f;
+    m_MasterVolume = g_Config.audio.sound_volume;
     m_DecibelLUT[0] = -10000;
     for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
         m_DecibelLUT[i] =
@@ -398,7 +398,7 @@ bool Sound_IsInitialised(void)
 
 void Sound_SetMasterVolume(const float volume)
 {
-    m_MasterVolume = volume * 64.0f;
+    m_MasterVolume = volume;
 }
 
 void Sound_ResetSamples(void)
