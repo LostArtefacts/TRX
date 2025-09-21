@@ -4,6 +4,7 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/general/lift.h"
+#include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 
@@ -12,6 +13,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/stats.h>
 #include <libtrx/memory.h>
 
@@ -304,6 +306,12 @@ static void M_ReadItems(void)
 
         default:
             break;
+        }
+
+        if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
+            MOVABLE_BLOCK_INFO *const data = item->data;
+            data->linked.pos = item->pos;
+            data->linked.room_num = item->room_num;
         }
 
         if (obj->handle_save_func != nullptr) {
