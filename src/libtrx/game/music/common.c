@@ -309,8 +309,9 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
     return m_TrackLooped;
 }
 
-void Music_SetVolume(const float volume)
+void Music_SetVolume(float volume)
 {
+    volume *= g_Config.audio.master_volume;
     if (volume != m_MusicVolume) {
         m_MusicVolume = volume;
         M_SyncVolume(m_AudioStreamID);

@@ -148,7 +148,8 @@ void Shell_HandleCommonConfigChange(
     if (L_CHANGED(audio.sound_volume)) {
         Sound_SetMasterVolume(g_Config.audio.sound_volume);
     }
-    if (L_CHANGED(audio.music_volume)) {
+    if (L_CHANGED(audio.master_volume) || L_CHANGED(audio.music_volume)
+        || L_CHANGED(audio.ambient_volume)) {
         Music_SetVolume(g_Config.audio.music_volume);
     }
 

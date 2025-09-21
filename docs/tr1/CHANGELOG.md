@@ -4,6 +4,7 @@
 - added a dedicated option to control cutscenes volume (Sound options → Cutscenes volume) (#3490)
 - added a dedicated option to control FMV volume (Sound options → FMV volume) (#3490)
 - added a dedicated option to control general ambient volume (Sound options → Ambient volume) (#3707)
+- added a dedicated option to control master volume (Sound options → Master volume)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added support for ladders (#3124)
 - improved PS1-style UI faithfulness

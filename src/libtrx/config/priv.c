@@ -7,6 +7,7 @@
 
 void Config_SanitizeCommon(void)
 {
+    CLAMP(g_Config.audio.master_volume, 0.0f, 1.0f);
     CLAMP(g_Config.audio.sound_volume, 0.0f, 1.0f);
     CLAMP(g_Config.audio.music_volume, 0.0f, 1.0f);
     CLAMP(g_Config.audio.inventory_music_volume, 0.0f, 1.0f);
