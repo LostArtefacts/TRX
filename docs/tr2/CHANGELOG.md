@@ -44,6 +44,7 @@
     - fixed various bugs with falling movable blocks
 - fixed Lara hang climbing up a movable block used as a ladder piece (#3828)
 - fixed a rare crash if the t-rex is killed with a grenade and many other enemies are active (#3938)
+- fixed dead skidoo drivers not registering with combat end after loading a save (#3966)
 - fixed recordings replaying commands twice (regression from 1.4)
 - fixed the fix for the sticky corner glitch not being optional - now linked to Gameplay → Fixes → Wall glitch mode (#3957, regression from 1.4)
 
