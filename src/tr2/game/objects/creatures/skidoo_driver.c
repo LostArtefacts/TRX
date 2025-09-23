@@ -214,6 +214,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
+            item->hit_points = DONT_TARGET;
             const int16_t skidoo_num = (int16_t)(intptr_t)item->data;
             ITEM *const skidoo = Item_Get(skidoo_num);
             skidoo->object_id = O_SKIDOO_FAST;
