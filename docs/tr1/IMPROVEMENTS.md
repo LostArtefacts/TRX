@@ -132,6 +132,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed the collision box on the tall statues in Tomb of Qualopec e.g. room 20
 - fixed Lara walking backwards off ledges into lava
 - fixed a missing transition animation between Lara jumping forward and entering freefall
+- fixed pushblocks becoming unusable when on the same sector as a door that does not sit on a room portal
 
 ## Cheats
 - added a fly cheat
