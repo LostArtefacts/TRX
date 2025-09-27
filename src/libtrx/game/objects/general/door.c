@@ -19,6 +19,18 @@ typedef struct {
     DOORPOS_DATA d2flip;
 } DOOR_DATA;
 
+static const SECTOR m_BlockedSector = {
+    .idx = 0,
+    .box = NO_BOX,
+    .ceiling.height = NO_HEIGHT,
+    .floor.height = NO_HEIGHT,
+    .ceiling.tilt = 0,
+    .floor.tilt = 0,
+    .portal_room.sky = NO_ROOM,
+    .portal_room.pit = NO_ROOM,
+    .portal_room.wall = NO_ROOM,
+};
+
 static SECTOR *M_GetRoomRelSector(
     const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz);
 static void M_InitialisePortal(
@@ -26,6 +38,8 @@ static void M_InitialisePortal(
     DOORPOS_DATA *door_pos);
 static bool M_LaraDoorCollision(const SECTOR *sector);
 static void M_Check(DOORPOS_DATA *d);
+static void M_CopySectorProperties(
+    const SECTOR *source_sector, SECTOR *target_sector);
 static void M_Shut(DOORPOS_DATA *d);
 static void M_Open(DOORPOS_DATA *d);
 static void M_Setup(OBJECT *obj);
@@ -68,22 +82,27 @@ static void M_Check(DOORPOS_DATA *const d)
     }
 }
 
+static void M_CopySectorProperties(
+    const SECTOR *const source_sector, SECTOR *const target_sector)
+{
+    target_sector->idx = source_sector->idx;
+    target_sector->box = source_sector->box;
+    target_sector->ceiling.height = source_sector->ceiling.height;
+    target_sector->floor.height = source_sector->floor.height;
+    target_sector->floor.tilt = source_sector->floor.tilt;
+    target_sector->ceiling.tilt = source_sector->ceiling.tilt;
+    target_sector->portal_room.sky = source_sector->portal_room.sky;
+    target_sector->portal_room.pit = source_sector->portal_room.pit;
+    target_sector->portal_room.wall = source_sector->portal_room.wall;
+}
+
 static void M_Shut(DOORPOS_DATA *const d)
 {
-    SECTOR *const sector = d->sector;
     if (d->sector == nullptr) {
         return;
     }
 
-    sector->idx = 0;
-    sector->box = NO_BOX;
-    sector->ceiling.height = NO_HEIGHT;
-    sector->floor.height = NO_HEIGHT;
-    sector->floor.tilt = 0;
-    sector->ceiling.tilt = 0;
-    sector->portal_room.sky = NO_ROOM;
-    sector->portal_room.pit = NO_ROOM;
-    sector->portal_room.wall = NO_ROOM;
+    M_CopySectorProperties(&m_BlockedSector, d->sector);
 
     const int16_t box_num = d->box_num;
     if (box_num != NO_BOX) {
@@ -97,7 +116,7 @@ static void M_Open(DOORPOS_DATA *const d)
         return;
     }
 
-    *d->sector = d->old_sector;
+    M_CopySectorProperties(&d->old_sector, d->sector);
 
     const int16_t box_num = d->box_num;
     if (box_num != NO_BOX) {

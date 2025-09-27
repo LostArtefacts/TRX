@@ -43,6 +43,7 @@
     - added the ability for movable blocks to travel up and down lifts
     - fixed various bugs with falling movable blocks
 - fixed Lara hang climbing up a movable block used as a ladder piece (#3828)
+- fixed pushblocks becoming unusable when on the same sector as a door that does not sit on a room portal (#3814)
 - fixed a rare crash if the t-rex is killed with a grenade and many other enemies are active (#3938)
 - fixed dead skidoo drivers not registering with combat end after loading a save (#3966)
 - fixed recordings replaying commands twice (regression from 1.4)
