@@ -18,6 +18,7 @@
     - added a dedicated option to control general ambient volume (Sound options → Volume → Ambient volume) (#3707)
     - added an option to turn off sound effect pitching (#625)
     - improved volume settings to accept slow input for finer adjustments
+    - fixed changing sound volume not updating certain ambient sound sources while in the inventory ring (#3970)
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the Use PSX FOV option name to Use PS1 FOV (Graphics → Visuals → Use PS1 FOV)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)

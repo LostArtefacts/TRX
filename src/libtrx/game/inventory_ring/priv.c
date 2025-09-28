@@ -11,6 +11,7 @@
 #include "game/objects/names.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/sound.h"
 #include "game/ui.h"
 #include "strings.h"
 
@@ -69,6 +70,9 @@ void InvRing_AdjustMusicVolume(const INV_RING *const ring)
         ? g_Config.audio.inventory_ambient_volume
         : g_Config.audio.inventory_music_volume;
     Music_SetVolume(base_volume * multiplier);
+
+    Sound_ResetAmbient();
+    Sound_UpdateEffects();
 }
 
 void InvRing_SetRequestedObjectID(const GAME_OBJECT_ID obj_id)

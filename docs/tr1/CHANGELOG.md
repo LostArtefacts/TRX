@@ -11,6 +11,7 @@
     - added a dedicated option to control FMV volume (Sound options → Volume → FMV volume) (#3490)
     - added a dedicated option to control general ambient volume (Sound options → Volume → Ambient volume) (#3707)
     - improved volume settings to accept slow input for finer adjustments
+    - fixed changing sound volume not updating certain ambient sound sources while in the inventory ring (#3970)
 - changed OG glitch-related config options to be on/fixed by default (#3929)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
 - changed max pickup scale to 200% (#3952)
