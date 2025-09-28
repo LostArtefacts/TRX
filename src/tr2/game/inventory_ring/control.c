@@ -356,7 +356,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     if (ring->mode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
         m_NoInputCounter = 0;
     } else if (
-        GF_GetLevelTable(GFLT_DEMOS)->count > 0
+        g_Config.gameplay.enable_demo && GF_GetLevelTable(GFLT_DEMOS)->count > 0
         && ring->motion.status == RNG_OPEN) {
         m_NoInputCounter++;
         if (m_NoInputCounter > g_GameFlow.demo_delay * LOGIC_FPS) {

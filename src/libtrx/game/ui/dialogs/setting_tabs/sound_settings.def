@@ -9,8 +9,8 @@ X_UI_CFG_FLOAT_PERCENT(audio.underwater_ambient_volume, SETTING_UNDERWATER_AMBIE
 X_UI_CFG_FLOAT_PERCENT(audio.cutscene_volume,           SETTING_CUTSCENE_VOLUME,           .min_value = 0, .max_value = 100, .delta_slow = 1, .delta_fast = 10, .custom_handler = { .request_change_value = UI_Settings_Volume_RequestChange })
 X_UI_CFG_FLOAT_PERCENT(audio.fmv_volume,                SETTING_FMV_VOLUME,                .min_value = 0, .max_value = 100, .delta_slow = 1, .delta_fast = 10, .custom_handler = { .request_change_value = UI_Settings_Volume_RequestChange })
 
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.enable_music_in_menu,               SETTING_ENABLE_MUSIC_IN_MENU)
+#if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.fix_secrets_killing_music,          SETTING_FIX_SECRETS_KILLING_MUSIC)
 X_UI_CFG_BOOL(audio.fix_speeches_killing_music,         SETTING_FIX_SPEECHES_KILLING_MUSIC)
 #endif

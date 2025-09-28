@@ -286,6 +286,7 @@
 - added an option to continue playing music while in the inventory
 - added an option to control playing of certain animation sound effects such as doors when underwater
 - added an option to use Lara's barefoot sound effects in appropriate levels
+- added an option to disable music in the title screen
 - fixed game audio not muting when game is minimized
 - fixed music not playing with certain game versions
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace
@@ -306,6 +307,8 @@
 ## Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
 - added ability to disable FMVs
+- added ability to disable demos
+- added ability to disable cutscenes
 - added per-level customizable fog distance
 - added the ability for spike walls to be reset (antitriggered)
 - added an option to alter Lara's HP for the beginning of each level

@@ -162,9 +162,7 @@ typedef struct {
 #else
         bool enable_lara_mic;
 #endif
-#if TR_VERSION == 1
         bool enable_music_in_menu;
-#endif
         bool enable_music_in_inventory;
 #if TR_VERSION == 1
         bool enable_ps_uzi_sfx;
@@ -201,8 +199,8 @@ typedef struct {
         bool enable_legal;
         bool enable_credits;
         bool enable_cutscenes;
-#if TR_VERSION == 1
         bool enable_demo;
+#if TR_VERSION == 1
         bool enable_loading_screens;
         bool enable_compass_stats;
         bool enable_total_stats;

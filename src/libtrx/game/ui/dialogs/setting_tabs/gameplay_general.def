@@ -1,10 +1,7 @@
 X_UI_CFG_BOOL(gameplay.enable_legal,               SETTING_ENABLE_LEGAL)
 X_UI_CFG_BOOL(gameplay.enable_credits,             SETTING_ENABLE_CREDITS)
 X_UI_CFG_BOOL(gameplay.enable_fmv,                 SETTING_ENABLE_FMV)
-
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_demo,                SETTING_ENABLE_DEMO)
-#endif
 X_UI_CFG_BOOL(gameplay.enable_cutscenes,           SETTING_ENABLE_CUTSCENES)
 
 #if TR_VERSION == 1

@@ -10,6 +10,8 @@
 - added an option to cycle targets (Gameplay → Controls → Target change; Controls → Misc → Change Target) (#3951)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
 - added an option to turn off ingame timer in the inventory ring (Gameplay → General → Timer counts in inventory) (#3931)
+- added an option to disable demos (Gameplay → General → Demo mode)
+- added an option to disable music in the title screen (Sound → Misc → Main menu music)
 - improved sound settings:
     - added tabs (Volume and Misc)
     - added a dedicated option to control master volume (Sound options → Volume → Master volume)
@@ -23,7 +25,10 @@
 - changed the Use PSX FOV option name to Use PS1 FOV (Graphics → Visuals → Use PS1 FOV)
 - changed the UI style to use the PS1 look by default (Graphics → UI → Menu style)
 - changed the bar appearance to use the PS1 look by default (Graphics → UI → Bars look)
-- changed the inventory and stats screen to use the PS1 wave animation  by default (Graphics → UI → Background style)
+- changed the inventory and stats screen to use the PS1 wave animation by default (Graphics → UI → Background style)
+- changed idle pose timeout from 15 to 60 seconds by default (Gameplay → Controls → Idle pose timeout)
+- changed idle pose camera to be disabled by default (Gameplay → Controls → Idle pose camera)
+- changed the game to launch in fullscreen mode by default (Alt-Enter to toggle)
 - changed max pickup scale to 200% (#3952)
 - fixed pickup scale being greyed out if the 3D pickups option is enabled (#3952)
 - fixed trapdoor type 3 (object #116) not functioning (#3895)

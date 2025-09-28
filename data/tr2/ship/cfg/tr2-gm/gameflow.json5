@@ -189,6 +189,9 @@
     ],
 
     "hidden_config": [
+        "enable_cutscenes",      // TR2G has no cutscenes
+        "enable_demo",           // TR2G has no demos
+        "enable_fmv",            // TR2G has no FMVs
         "enable_item_examining", // TR2G has no special item descriptions
         "fix_animated_sprites",
     ],

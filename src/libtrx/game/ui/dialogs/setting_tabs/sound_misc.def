@@ -1,5 +1,5 @@
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.enable_music_in_menu,               SETTING_ENABLE_MUSIC_IN_MENU)
+#if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.fix_secrets_killing_music,          SETTING_FIX_SECRETS_KILLING_MUSIC)
 X_UI_CFG_BOOL(audio.fix_speeches_killing_music,         SETTING_FIX_SPEECHES_KILLING_MUSIC)
 #endif
