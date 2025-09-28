@@ -876,10 +876,8 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {
         Music_Pause();
         Sound_PauseAll();
-    } else {
-        Sound_ResetAmbient();
-        Sound_UpdateEffects();
     }
+
     Viewport_AlterFOV(80 * DEG_1);
 
     return ring;
