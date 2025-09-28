@@ -7,8 +7,10 @@
 #include <libtrx/enum_map.h>
 #include <libtrx/game/fmv.h>
 #include <libtrx/game/game_string_manager.h>
+#include <libtrx/game/lua/common.h>
 #include <libtrx/game/output.h>
 #include <libtrx/gfx/context.h>
+#include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
@@ -100,6 +102,15 @@ int32_t Shell_Main(const SHELL_ARGS *args)
     Savegame_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
+
+    // Execute global Lua script if provided
+    if (g_GameFlow.main_script_path != nullptr) {
+        LUA_RESULT res = Lua_EvalFile(g_GameFlow.main_script_path);
+        if (res.code != LUA_OK) {
+            LOG_ERROR("Lua main script error: %s", res.message);
+        }
+        Lua_FreeResult(&res);
+    }
 
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
 

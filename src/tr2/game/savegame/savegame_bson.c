@@ -633,6 +633,8 @@ static JSON_ARRAY *M_DumpItems(void)
 
         if (obj->save_hitpoints) {
             JSON_ObjectAppendInt(item_obj, "hitpoints", item->hit_points);
+            JSON_ObjectAppendInt(
+                item_obj, "max_hitpoints", item->max_hit_points);
         }
 
         if (obj->save_flags) {
@@ -891,6 +893,8 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
         if (obj->save_hitpoints) {
             item->hit_points =
                 JSON_ObjectGetInt(item_obj, "hitpoints", item->hit_points);
+            item->max_hit_points = JSON_ObjectGetInt(
+                item_obj, "max_hitpoints", item->max_hit_points);
         }
 
         if (obj->save_flags) {

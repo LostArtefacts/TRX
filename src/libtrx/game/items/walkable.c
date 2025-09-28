@@ -54,8 +54,8 @@ void Walkable_Remove(const int16_t item_num)
 
     // Unlink the walkable.
     WALKABLE *walkable = sector->walkable;
-    WALKABLE *prev = NULL;
-    while (walkable != NULL) {
+    WALKABLE *prev = nullptr;
+    while (walkable != nullptr) {
         if (walkable->item_num == item_num) {
             if (prev) {
                 prev->next = walkable->next;

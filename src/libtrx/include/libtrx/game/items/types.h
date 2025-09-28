@@ -32,6 +32,7 @@ typedef struct {
     int16_t speed;
     int16_t fall_speed;
     int16_t hit_points;
+    int16_t max_hit_points;
     int16_t box_num;
     int16_t timer;
     uint16_t flags;

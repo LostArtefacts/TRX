@@ -7,6 +7,7 @@
 #include "game/inventory.h"
 #include "game/lara/common.h"
 #include "game/level.h"
+#include "game/lua.h"
 #include "game/savegame.h"
 
 static GF_COMMAND M_RunEvent(
@@ -155,6 +156,18 @@ GF_COMMAND GF_InterpretSequence(
             }
         }
     }
+
+    // Run any level Lua script
+    Lua_ClearLevelListeners();
+    Lua_SetScriptContext(LUA_CONTEXT_LEVEL);
+    if (level->script_path != nullptr) {
+        LUA_RESULT res = Lua_EvalFile(level->script_path);
+        if (res.code != LUA_OK) {
+            LOG_ERROR("Lua level script error: %s", res.message);
+        }
+        Lua_FreeResult(&res);
+    }
+    Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
 
     const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {

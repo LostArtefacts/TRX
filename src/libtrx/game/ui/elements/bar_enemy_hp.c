@@ -43,7 +43,7 @@ bool UI_EnemyHealthBar(void)
         .h = UI_BAR_HEIGHT,
         .value = target->hit_points,
         .max_value =
-            obj->hit_points * (Game_IsBonusFlagSet(GBF_NGPLUS) ? 2 : 1),
+            target->max_hit_points * (Game_IsBonusFlagSet(GBF_NGPLUS) ? 2 : 1),
     });
     return true;
 }

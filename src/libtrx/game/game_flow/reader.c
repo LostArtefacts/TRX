@@ -174,6 +174,13 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 
     ctx->gf->enable_killer_pushblocks =
         JSON_ObjectGetBool(obj, "enable_killer_pushblocks", true);
+    {
+        const char *tmp_s =
+            JSON_ObjectGetString(obj, "main_script", JSON_INVALID_STRING);
+        if (tmp_s != JSON_INVALID_STRING) {
+            ctx->gf->main_script_path = Memory_DupStr(tmp_s);
+        }
+    }
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
@@ -487,6 +494,15 @@ static void M_LoadLevel(
         }
         level->path = Memory_DupStr(tmp);
     }
+    {
+        const char *tmp_script =
+            JSON_ObjectGetString(jlvl_obj, "script", JSON_INVALID_STRING);
+        if (tmp_script != JSON_INVALID_STRING) {
+            level->script_path = Memory_DupStr(tmp_script);
+        } else {
+            level->script_path = nullptr;
+        }
+    }
 
     {
         const JSON_VALUE *const tmp_v =
@@ -609,6 +625,7 @@ void GF_LoadFromString(
     GF_Shutdown();
 
     M_CONTEXT ctx = { .gf = &g_GameFlow };
+    ctx.gf->main_script_path = nullptr;
     ctx.gf->path = Memory_DupStr(script_path);
     ctx.script_path = g_GameFlow.path;
 
