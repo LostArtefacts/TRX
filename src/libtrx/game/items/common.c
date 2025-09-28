@@ -134,6 +134,7 @@ void Item_Initialise(const int16_t item_num)
     item->speed = 0;
     item->fall_speed = 0;
     item->hit_points = obj->hit_points;
+    item->max_hit_points = obj->hit_points;
     item->timer = 0;
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;

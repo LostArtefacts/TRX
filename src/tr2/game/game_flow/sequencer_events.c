@@ -6,6 +6,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lua.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
 
@@ -36,6 +37,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     if (Lara_GetItem() != nullptr) {
         Lara_Initialise(level);
     }
+
+    Lua_FireEvent(LUA_EVENT_LEVEL_LOAD, level->num);
 
     switch (seq_ctx) {
     case GFSC_SAVED: {

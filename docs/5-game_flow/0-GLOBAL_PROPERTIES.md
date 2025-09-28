@@ -37,6 +37,8 @@ remains distinct for each game.
     "hidden_config": [
         "enable_legal",
     ],
+    // Optional global Lua script file
+    "main_script": "data/scripts/global.lua",
     "levels": [
         {
             "path": "data/gym.phd",
@@ -202,6 +204,14 @@ remains distinct for each game.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>main_script</code></td>
+    <td>String</td>
+    <td>
+      Path to a global Lua script to execute after game initialization, before
+      the first level loads.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>main_menu_picture</code></td>
     <td>String<strong>*</strong></td>
     <td>Path to the main menu background image.</td>
@@ -225,7 +235,7 @@ remains distinct for each game.
     <td>
       Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
       or `00` means completely black color.
-      See <a href="../6-WATER_COLORS.md">this table</a> for reference values.</a>
+      See <a href="../7-WATER_COLORS.md">this table</a> for reference values.</a>
     </td>
   </tr>
   <tr valign="top">
@@ -498,7 +508,7 @@ remains distinct for each game.
     <td>
       Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
       or `00` means completely black color.
-      See <a href="../6-WATER_COLORS.md">this table</a> for reference values.</a>
+      See <a href="../7-WATER_COLORS.md">this table</a> for reference values.</a>
     </td>
   </tr>
   <tr valign="top">

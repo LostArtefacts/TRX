@@ -16,6 +16,8 @@ Following are each of the properties available within a level.
 ```json5
 {
     "path": "data/example.phd",
+    // Optional level Lua script file
+    "script": "data/scripts/level1.lua",
     "music_track": 57,
     "lara_type": 0,
     "water_color": [0.7, 0.5, 0.85],
@@ -54,6 +56,11 @@ Following are each of the properties available within a level.
     <td><code>path</code></td>
     <td>String<strong>*</strong></td>
     <td colspan="2">The path to the level's data file.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>script</code></td>
+    <td>String</td>
+    <td colspan="2">Path to a Lua script executed after loading this level.</td>
   </tr>
   <tr valign="top">
     <td rowspan="7">

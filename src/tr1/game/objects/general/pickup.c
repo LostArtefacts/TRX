@@ -10,6 +10,8 @@
 #include <libtrx/game/gun.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/lua/common.h>
+#include <libtrx/game/lua/events.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/random.h>
@@ -99,6 +101,8 @@ static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item)
     Item_RemoveActive(item_num);
 
     Stats_AddPickup();
+    // Notify Lua pickup listeners
+    Lua_FireEvent(LUA_EVENT_PICKUP, item_num);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;

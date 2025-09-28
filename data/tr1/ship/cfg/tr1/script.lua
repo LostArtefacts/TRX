@@ -1,0 +1,5 @@
+TRX.Log.Info("hello")
+TRX.Log.Warn("hello")
+TRX.Log.Warning("hello")
+TRX.Log.Error("hello")
+TRX.Log.Debug("hello")

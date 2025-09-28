@@ -5,8 +5,6 @@
 #include "../event_manager.h"
 #include "../vector.h"
 
-#include <stdbool.h>
-
 // Initialize the string bundle manager.
 void GameStringManager_Init(void);
 

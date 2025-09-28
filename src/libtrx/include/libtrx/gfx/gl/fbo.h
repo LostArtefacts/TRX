@@ -7,8 +7,6 @@
 #include "gfx/gl/texture.h"
 
 #include <GL/glew.h>
-#include <stdbool.h>
-#include <stdint.h>
 
 // Off-screen framebuffer with a single color attachment and optional
 // depth+stencil.

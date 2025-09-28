@@ -11,6 +11,8 @@
 #include <libtrx/game/gun.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/lua/common.h>
+#include <libtrx/game/lua/events.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
@@ -54,6 +56,8 @@ static void M_DoPickup(const int16_t item_num)
 
     Overlay_AddDisplayPickup(item->object_id);
     Inv_AddPickup(item);
+    // Notify Lua pickup listeners
+    Lua_FireEvent(LUA_EVENT_PICKUP, item_num);
 
     item->status = IS_INVISIBLE;
     item->flags |= IF_KILLED;

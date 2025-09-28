@@ -1,0 +1,121 @@
+#include "game/lua/events.h"
+
+#include "game/lua/common.h"
+#include "log.h"
+#include "vector.h"
+
+#include <lauxlib.h>
+#include <lua.h>
+
+typedef struct {
+    int32_t ref;
+    LUA_EVENT_TYPE type;
+    bool level_scoped;
+} M_LISTENER;
+
+static lua_State *m_L = nullptr;
+static VECTOR *m_Listeners = nullptr;
+
+// id = TRX.Events.Listen(eventType, callback)
+static int32_t M_L_EventsListen(lua_State *const L)
+{
+    const LUA_EVENT_TYPE ev = luaL_checkinteger(L, 1);
+    luaL_checktype(L, 2, LUA_TFUNCTION);
+    lua_pushvalue(L, 2);
+    const int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    if (m_Listeners == nullptr) {
+        m_Listeners = Vector_Create(sizeof(M_LISTENER));
+    }
+    const M_LISTENER listener = {
+        .ref = ref,
+        .type = ev,
+        .level_scoped = Lua_GetScriptContext() == LUA_CONTEXT_LEVEL,
+    };
+    Vector_Add(m_Listeners, &listener);
+    lua_pushinteger(L, ref);
+    return 1;
+}
+
+// TRX.Events.Unlisten(id)
+static int32_t M_L_EventsUnlisten(lua_State *const L)
+{
+    int32_t id = luaL_checkinteger(L, 1);
+    if (m_Listeners == nullptr) {
+        return 0;
+    }
+    for (int32_t i = 0; i < m_Listeners->count; i++) {
+        const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (lst->ref == id) {
+            luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
+            Vector_RemoveAt(m_Listeners, i);
+            break;
+        }
+    }
+    return 0;
+}
+
+// Initialize EventType and Events in Lua
+void LUA_CreateEvents(lua_State *const L)
+{
+    m_L = L;
+
+    lua_getglobal(L, "TRX");
+
+    // EventType enum
+    lua_newtable(L);
+    lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
+    lua_setfield(L, -2, "LEVEL_LOAD");
+    lua_pushinteger(L, LUA_EVENT_PICKUP);
+    lua_setfield(L, -2, "PICKUP");
+    lua_setfield(L, -2, "EventType");
+
+    // Events table
+    lua_newtable(L);
+    lua_pushcfunction(L, M_L_EventsListen);
+    lua_setfield(L, -2, "Listen");
+    lua_pushcfunction(L, M_L_EventsUnlisten);
+    lua_setfield(L, -2, "Unlisten");
+    lua_setfield(L, -2, "Events");
+
+    lua_pop(L, 1);
+}
+
+void Lua_ClearLevelListeners(void)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr) {
+        return;
+    }
+    if (m_Listeners == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_Listeners->count;) {
+        M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (lst->level_scoped) {
+            luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
+            Vector_RemoveAt(m_Listeners, i);
+        } else {
+            i++;
+        }
+    }
+}
+
+void Lua_FireEvent(LUA_EVENT_TYPE ev, int32_t arg)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr || m_Listeners == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_Listeners->count; i++) {
+        M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (lst->type != ev) {
+            continue;
+        }
+        lua_rawgeti(L, LUA_REGISTRYINDEX, lst->ref);
+        lua_pushinteger(L, arg);
+        if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
+            LOG_ERROR("Lua event handler error: %s", lua_tostring(L, -1));
+            lua_pop(L, 1);
+        }
+    }
+}

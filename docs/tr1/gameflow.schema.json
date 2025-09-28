@@ -7,6 +7,10 @@
       "type": "string",
       "description": "Path to the main menu background image."
     },
+    "main_script": {
+      "type": "string",
+      "description": "Path to a global Lua script to execute after game initialization, before the first level loads."
+    },
     "savegame_fmt_legacy": {
       "type": "string",
       "description": "Path pattern to look for the old TombATI savegame files."
@@ -165,6 +169,10 @@
             "current",
             "dummy"
           ]
+        },
+        "script": {
+            "type": "string",
+            "description": "Path to a Lua script executed after loading this level."
         },
         "path": {
           "type": "string"

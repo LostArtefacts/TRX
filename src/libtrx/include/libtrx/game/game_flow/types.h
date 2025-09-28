@@ -119,6 +119,8 @@ typedef struct {
     GF_LEVEL_TYPE type;
     char *path;
     char *title;
+    // Path to a Lua script executed when this level loads
+    char *script_path;
 
     MUSIC_TRACK_ID music_track;
     GF_SEQUENCE sequence;
@@ -211,6 +213,9 @@ typedef struct {
     // other data
     GF_LEVEL_SETTINGS settings;
     INJECTION_DATA injections;
+
+    // Path to a global Lua script executed after game initialization
+    char *main_script_path;
 } GAME_FLOW;
 
 typedef GF_COMMAND (*GF_SEQUENCE_EVENT_HANDLER)(
