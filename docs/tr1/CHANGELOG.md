@@ -31,6 +31,7 @@
     - added the ability for stacks of movable blocks to fall when on opened trapdoors and drawbridges
     - fixed various bugs with falling movable blocks
 - fixed pushblocks becoming unusable when on the same sector as a door that does not sit on a room portal (#3814)
+- fixed pushblocks that fall from a great height potentially causing a crash (#3969)
 - fixed recordings replaying commands twice (regression from 4.14)
 - fixed the fix for the sticky corner glitch not being optional - now linked to Gameplay → Fixes → Wall glitch mode (#3957, regression from 4.14)
 

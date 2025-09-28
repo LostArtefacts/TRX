@@ -2,24 +2,17 @@
 
 #include "config.h"
 #include "game/camera.h"
-#include "game/const.h"
 #include "game/game_buf.h"
 #include "game/input.h"
 #include "game/item_actions.h"
 #include "game/items.h"
-#include "game/items/walkable.h"
 #include "game/lara.h"
-#include "game/lara/const.h"
-#include "game/objects/common.h"
-#include "game/objects/vars.h"
+#include "game/objects.h"
 #include "game/pathing.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
-#include "log.h"
 #include "vector.h"
-
-#include <stdlib.h>
 
 #define LF_PPREADY 19
 
@@ -659,8 +652,12 @@ static void M_Control(const int16_t item_num)
     // Check if the block is floating, on a walkable, or on the pit floor.
     // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
     // sector.
-    const ROOM *const room = Room_Get(Room_GetIndexFromPos(
-        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z));
+    int16_t room_num = Room_GetIndexFromPos(
+        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z);
+    if (room_num == NO_ROOM) {
+        room_num = item->room_num;
+    }
+    const ROOM *const room = Room_Get(room_num);
     const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
     int32_t under_block_height = Room_GetHeightEx(
         sector, item->pos.x, item->pos.y, item->pos.z, false, item_num);
@@ -672,8 +669,12 @@ static void M_Control(const int16_t item_num)
         const int32_t y_prev = item->pos.y - item->fall_speed;
 
         // Query floor at previous y position.
-        const ROOM *const prev_room = Room_Get(Room_GetIndexFromPos(
-            item->pos.x, ROUND_TO_HALF_CLICK(y_prev), item->pos.z));
+        room_num = Room_GetIndexFromPos(
+            item->pos.x, ROUND_TO_HALF_CLICK(y_prev), item->pos.z);
+        if (room_num == NO_ROOM) {
+            room_num = item->room_num;
+        }
+        const ROOM *const prev_room = Room_Get(room_num);
         const SECTOR *prev_sector =
             Room_GetWorldSector(prev_room, item->pos.x, item->pos.z);
         int32_t prev_height = Room_GetHeightEx(
@@ -720,8 +721,8 @@ static void M_Control(const int16_t item_num)
     // Don't update room number if on a walkable because room number can fall
     // through to a pit room (e.g. trapdoors).
     if (update_room_num) {
-        int16_t room_num = item->room_num;
-        const SECTOR *const room_num_sector = Room_GetSectorOnWalkable(
+        room_num = item->room_num;
+        Room_GetSectorOnWalkable(
             item->pos.x, item->pos.y - WALL_L, item->pos.z, &room_num);
         Item_UpdateRoom(item_num, room_num);
     }
