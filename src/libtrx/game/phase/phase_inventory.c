@@ -24,12 +24,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
 
     const GF_LEVEL *const level = GF_GetTitleLevel();
-#if TR_VERSION == 1
-    const bool enable = g_Config.audio.enable_music_in_menu;
-#else
-    const bool enable = true;
-#endif
-    if (p->mode == INV_TITLE_MODE && enable && level->music_track >= 0) {
+    if (p->mode == INV_TITLE_MODE && g_Config.audio.enable_music_in_menu
+        && level->music_track >= 0) {
         Music_Play(level->music_track, MPM_LOOPED);
     }
 
