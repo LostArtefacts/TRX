@@ -150,6 +150,7 @@ static bool M_NeedToUndraw(void)
     case LWS_CHEAT:
         return true;
     case LWS_UNDERWATER:
+    case LWS_SURFACE:
         return !M_IsUsableUnderwater(lara->request_gun_type);
     case LWS_ABOVE_WATER:
         return false;
@@ -243,7 +244,7 @@ static void M_TryUndrawWeapon(void)
     }
 }
 
-void Gun_UpdateGunState(void)
+static void M_UpdateGunState(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
@@ -282,7 +283,7 @@ void Gun_Control(void)
         lara->right_arm.flash_gun--;
     }
 
-    Gun_UpdateGunState();
+    M_UpdateGunState();
 
     switch (lara->gun_status) {
     case LGS_ARMLESS:
