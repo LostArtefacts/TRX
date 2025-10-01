@@ -153,6 +153,7 @@
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels
     - fixed items dropped by flying creatures not falling to the ground
+- fixed Lara shooting rifle-type weapons drawn during wade to float transition
 
 ## Cheats
 - added a fly cheat
