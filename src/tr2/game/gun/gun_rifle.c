@@ -140,7 +140,9 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     ITEM *const item = Item_Get(lara->gun_item_num);
-    if (lara->water_status == LWS_SURFACE) {
+    const ANIM *const anim = Item_GetAnim(item);
+    if (lara->water_status == LWS_SURFACE
+        && Anim_HasChange(anim, LA_G_SURF_UNDRAW)) {
         item->goal_anim_state = LA_G_SURF_UNDRAW;
     } else {
         item->goal_anim_state = LA_G_UNDRAW;

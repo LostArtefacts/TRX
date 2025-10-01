@@ -66,3 +66,14 @@ bool Anim_TestAbsFrameRange(
 {
     return abs_frame >= start && abs_frame <= end;
 }
+
+bool Anim_HasChange(const ANIM *const anim, const int16_t goal_state_id)
+{
+    for (int32_t i = 0; i < anim->num_changes; i++) {
+        const ANIM_CHANGE *const change = Anim_GetChange(anim->change_idx + i);
+        if (change->goal_anim_state == goal_state_id) {
+            return true;
+        }
+    }
+    return false;
+}
