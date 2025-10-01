@@ -34,36 +34,6 @@ typedef enum {
     TREX_STATE_KILL = 8,
 } TREX_STATE;
 
-static void M_Setup(OBJECT *obj);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Control(int16_t item_num);
-static void M_KillLara(const ITEM *item);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = M_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = TREX_HITPOINTS;
-    obj->pivot_length = 2000;
-    obj->radius = TREX_RADIUS;
-    obj->smartness = TREX_SMARTNESS;
-    obj->lot_setup = g_LOT_Beast;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 10)->rot.y = true;
-    Object_GetBone(obj, 11)->rot.y = true;
-}
-
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -73,6 +43,37 @@ static void M_Collision(
     }
 
     Creature_Collision(item_num, lara_item, coll);
+}
+
+static void M_KillLara(const ITEM *const item)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    Item_UpdateRoom(lara->item_num, item->room_num);
+    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TREX_DEATH, 0, O_LARA_EXTRA);
+
+    lara_item->pos.x = item->pos.x;
+    lara_item->pos.y = item->pos.y;
+    lara_item->pos.z = item->pos.z;
+    lara_item->rot.x = 0;
+    lara_item->rot.y = item->rot.y;
+    lara_item->rot.z = 0;
+    lara_item->gravity = 0;
+    lara_item->current_anim_state = LS_SPECIAL;
+    lara_item->goal_anim_state = LS_SPECIAL;
+    Lara_Mesh_SwapAll(O_LARA_EXTRA);
+
+    lara_item->hit_points = -1;
+
+    lara->extra_anim = true;
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+
+    g_Camera.flags = CF_FOLLOW_CENTRE;
+    g_Camera.target_angle = 170 * DEG_1;
+    g_Camera.target_elevation = -25 * DEG_1;
 }
 
 static void M_Control(const int16_t item_num)
@@ -180,35 +181,29 @@ static void M_Control(const int16_t item_num)
     item->collidable = true;
 }
 
-static void M_KillLara(const ITEM *const item)
+static void M_Setup(OBJECT *const obj)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = M_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = TREX_HITPOINTS;
+    obj->pivot_length = 2000;
+    obj->radius = TREX_RADIUS;
+    obj->smartness = TREX_SMARTNESS;
+    obj->lot_setup = g_LOT_Beast;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
 
-    Item_UpdateRoom(lara->item_num, item->room_num);
-    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TREX_DEATH, 0, O_LARA_EXTRA);
-
-    lara_item->pos.x = item->pos.x;
-    lara_item->pos.y = item->pos.y;
-    lara_item->pos.z = item->pos.z;
-    lara_item->rot.x = 0;
-    lara_item->rot.y = item->rot.y;
-    lara_item->rot.z = 0;
-    lara_item->gravity = 0;
-    lara_item->current_anim_state = LS_SPECIAL;
-    lara_item->goal_anim_state = LS_SPECIAL;
-    Lara_Mesh_SwapAll(O_LARA_EXTRA);
-
-    lara_item->hit_points = -1;
-
-    lara->extra_anim = true;
-    lara->air = -1;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->gun_type = LGT_UNARMED;
-
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = 170 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
+    Object_GetBone(obj, 10)->rot.y = true;
+    Object_GetBone(obj, 11)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_TREX, M_Setup)

@@ -8,18 +8,6 @@ typedef enum {
     CABIN_STATE_FINISH = 4,
 } CABIN_STATE;
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = Object_Collision;
-    obj->save_anim = true;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -46,6 +34,15 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = Object_Collision;
+    obj->save_anim = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_PORTACABIN, M_Setup)

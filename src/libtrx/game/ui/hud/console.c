@@ -16,22 +16,6 @@
 #include "memory.h"
 #include "utils.h"
 
-static void M_Draw(const UI_NODE *node);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = UI_MeasureWrapper,
-    .layout = UI_LayoutWrapper,
-    .draw = M_Draw,
-};
-
-static void M_MoveHistoryUp(UI_CONSOLE_STATE *s);
-static void M_MoveHistoryDown(UI_CONSOLE_STATE *s);
-static void M_HandleOpen(const EVENT *event, void *user_data);
-static void M_HandleClose(const EVENT *event, void *user_data);
-static void M_HandleCancel(const EVENT *event, void *user_data);
-static void M_HandleConfirm(const EVENT *event, void *user_data);
-static void M_DrawBackdrop(void);
-
 static void M_MoveHistoryUp(UI_CONSOLE_STATE *const s)
 {
     s->history_idx--;
@@ -165,7 +149,13 @@ void UI_Console(UI_CONSOLE_STATE *const s)
 {
     UI_Prompt_SetFocus(&s->prompt, Console_IsOpened());
 
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(UI_CONSOLE_STATE *));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = UI_MeasureWrapper,
+            .layout = UI_LayoutWrapper,
+            .draw = M_Draw,
+        },
+        sizeof(UI_CONSOLE_STATE *));
     *(UI_CONSOLE_STATE **)node->data = s;
     UI_AddChild(node);
     UI_PushCurrent(node);

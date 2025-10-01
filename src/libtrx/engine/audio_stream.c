@@ -70,15 +70,8 @@ extern SDL_AudioDeviceID g_AudioDeviceID;
 
 static AUDIO_STREAM_SOUND m_Streams[AUDIO_MAX_ACTIVE_STREAMS] = {};
 static float m_MixBuffer[AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS] = {};
-
 static size_t m_DecodeBufferCapacity = 0;
 static float *m_DecodeBuffer = nullptr;
-
-static void M_SeekToStart(AUDIO_STREAM_SOUND *stream);
-static bool M_DecodeFrame(AUDIO_STREAM_SOUND *stream);
-static bool M_EnqueueFrame(AUDIO_STREAM_SOUND *stream);
-static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path);
-static void M_Clear(AUDIO_STREAM_SOUND *stream);
 
 static void M_SeekToStart(AUDIO_STREAM_SOUND *stream)
 {

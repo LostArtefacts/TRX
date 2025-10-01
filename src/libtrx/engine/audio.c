@@ -16,8 +16,6 @@ static float *m_MixBuffer = nullptr;
 static Uint8 m_Silence = 0;
 static bool m_Muted = false;
 
-static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len);
-
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
 {
     memset(m_MixBuffer, m_Silence, len);

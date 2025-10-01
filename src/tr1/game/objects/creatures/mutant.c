@@ -55,58 +55,6 @@ static BITE m_WarriorBite = { .pos = { -27, 98, 0 }, .mesh_num = 10 };
 static BITE m_WarriorRocket = { .pos = { 51, 213, 0 }, .mesh_num = 14 };
 static BITE m_WarriorShard = { .pos = { -35, 269, 0 }, .mesh_num = 9 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Setup2(OBJECT *obj);
-static void M_Setup3(OBJECT *obj);
-static void M_Initialise2(int16_t item_num);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = FLYER_HITPOINTS;
-    obj->pivot_length = 150;
-    obj->radius = FLYER_RADIUS;
-    obj->smartness = FLYER_SMARTNESS;
-    obj->lot_setup = g_LOT_Beast;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    Object_GetBone(obj, 0)->rot.y = true;
-    Object_GetBone(obj, 2)->rot.y = true;
-}
-
-static void M_Setup2(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    *obj = *Object_Get(O_WARRIOR_1);
-    obj->setup_func = M_Setup2;
-    obj->initialise_func = M_Initialise2;
-    obj->smartness = WARRIOR2_SMARTNESS;
-    obj->lot_setup = g_LOT_Default;
-}
-
-static void M_Setup3(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    *obj = *Object_Get(O_WARRIOR_1);
-    obj->setup_func = M_Setup3;
-    obj->initialise_func = M_Initialise2;
-    obj->lot_setup = g_LOT_Default;
-}
-
 static void M_Initialise2(const int16_t item_num)
 {
     Creature_Initialise(item_num);
@@ -364,6 +312,52 @@ static void M_Control(const int16_t item_num)
     }
 
     Creature_Animate(item_num, angle, 0);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 3;
+    obj->hit_points = FLYER_HITPOINTS;
+    obj->pivot_length = 150;
+    obj->radius = FLYER_RADIUS;
+    obj->smartness = FLYER_SMARTNESS;
+    obj->lot_setup = g_LOT_Beast;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    Object_GetBone(obj, 0)->rot.y = true;
+    Object_GetBone(obj, 2)->rot.y = true;
+}
+
+static void M_Setup2(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    *obj = *Object_Get(O_WARRIOR_1);
+    obj->setup_func = M_Setup2;
+    obj->initialise_func = M_Initialise2;
+    obj->smartness = WARRIOR2_SMARTNESS;
+    obj->lot_setup = g_LOT_Default;
+}
+
+static void M_Setup3(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    *obj = *Object_Get(O_WARRIOR_1);
+    obj->setup_func = M_Setup3;
+    obj->initialise_func = M_Initialise2;
+    obj->lot_setup = g_LOT_Default;
 }
 
 void Mutant_ToggleExplosions(bool enable)

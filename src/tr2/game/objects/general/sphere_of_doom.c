@@ -7,33 +7,6 @@
 
 #define SPHERE_OF_DOOM_RADIUS (STEP_L * 5 / 2) // = 640
 
-static void M_SetupBase(OBJECT *obj, const bool transparent);
-static void M_SetupTransparent(OBJECT *obj);
-static void M_SetupOpaque(OBJECT *obj);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Control(int16_t item_num);
-static void M_Draw(const ITEM *item);
-
-static void M_SetupBase(OBJECT *const obj, const bool transparent)
-{
-    obj->collision_func = M_Collision;
-    obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->semi_transparent = transparent;
-}
-
-static void M_SetupTransparent(OBJECT *const obj)
-{
-    M_SetupBase(obj, true);
-}
-
-static void M_SetupOpaque(OBJECT *const obj)
-{
-    M_SetupBase(obj, false);
-}
-
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -120,6 +93,26 @@ static void M_Draw(const ITEM *const item)
     }
 
     Matrix_Pop();
+}
+
+static void M_SetupBase(OBJECT *const obj, const bool transparent)
+{
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->semi_transparent = transparent;
+}
+
+static void M_SetupTransparent(OBJECT *const obj)
+{
+    M_SetupBase(obj, true);
+}
+
+static void M_SetupOpaque(OBJECT *const obj)
+{
+    M_SetupBase(obj, false);
 }
 
 REGISTER_OBJECT(O_SPHERE_OF_DOOM_1, M_SetupTransparent)

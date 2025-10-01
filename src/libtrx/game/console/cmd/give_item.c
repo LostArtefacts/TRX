@@ -14,9 +14,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static bool M_CanTargetObjectPickup(GAME_OBJECT_ID obj_id);
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static bool M_CanTargetObjectPickup(const GAME_OBJECT_ID obj_id)
 {
     return Object_IsType(obj_id, g_InvObjects) && Object_Get(obj_id)->loaded

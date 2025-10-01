@@ -10,13 +10,6 @@
 #define BOOM_TIME 130
 #define BARTOLI_RANGE (WALL_L * 5) // = 5120
 
-static void M_CreateBoom(GAME_OBJECT_ID obj_id, const ITEM *origin_item);
-static void M_ConvertBartoliToDragon(const int16_t item_num);
-static bool M_CheckLaraProximity(const ITEM *origin_item);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
 static void M_CreateBoom(
     const GAME_OBJECT_ID obj_id, const ITEM *const origin_item)
 {
@@ -63,19 +56,6 @@ static bool M_CheckLaraProximity(const ITEM *const origin_item)
     const int32_t dx = ABS(lara_item->pos.x - origin_item->pos.x);
     const int32_t dz = ABS(lara_item->pos.z - origin_item->pos.z);
     return dx < BARTOLI_RANGE && dz < BARTOLI_RANGE;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -142,6 +122,19 @@ static void M_Control(const int16_t item_num)
     } else if (item->timer >= BOOM_TIME + 20) {
         M_ConvertBartoliToDragon(item_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_BARTOLI, M_Setup)

@@ -4,18 +4,6 @@
 
 #define GONDOLA_SINK_SPEED 50
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = true;
-    obj->save_anim = true;
-    obj->save_position = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const gondola = Item_Get(item_num);
@@ -50,6 +38,15 @@ static void M_Control(const int16_t item_num)
     if (gondola->status == IS_DEACTIVATED) {
         Item_RemoveActive(item_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = true;
+    obj->save_anim = true;
+    obj->save_position = true;
 }
 
 REGISTER_OBJECT(O_GONDOLA, M_Setup)

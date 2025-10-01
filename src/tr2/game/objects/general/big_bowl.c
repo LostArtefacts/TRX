@@ -11,10 +11,6 @@ typedef enum {
     // clang-format on
 } BIG_BOWL_STATE;
 
-static void M_CreateHotLiquid(const ITEM *bowl_item);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_CreateHotLiquid(const ITEM *const bowl_item)
 {
     const int16_t effect_num = Effect_Create(bowl_item->room_num);
@@ -30,13 +26,6 @@ static void M_CreateHotLiquid(const ITEM *const bowl_item)
         effect->fall_speed = 0;
         effect->shade = 2048;
     }
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -58,6 +47,13 @@ static void M_Control(const int16_t item_num)
     if (item->status == IS_DEACTIVATED && item->timer >= LOGIC_FPS * 7) {
         Item_RemoveActive(item_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_BIG_BOWL, M_Setup)

@@ -32,26 +32,9 @@ static const OBJECT_BOUNDS m_ZiplineHandleBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_ZiplineHandleBounds;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-    obj->bounds_func = M_Bounds;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -166,6 +149,17 @@ static void M_Collision(
 
     item->status = IS_ACTIVE;
     item->flags |= IF_ONE_SHOT;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_ZIPLINE_HANDLE, M_Setup)

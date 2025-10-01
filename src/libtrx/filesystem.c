@@ -26,21 +26,11 @@ struct MYFILE {
 
 const char *m_GameDir = nullptr;
 
-static void M_PathAppendSeparator(char *path);
-static void M_PathAppendPart(char *path, const char *part);
-static char *M_CasePath(const char *path);
-static FILE *M_UTF8Fopen(const char *path, const char *mode);
-static FILE *M_ResolveAndOpen(
-    const char *path, const char *mode, char **out_full_path);
-static bool M_ExistsRaw(const char *path);
-
 #if defined(_WIN32)
     #include <wchar.h>
     #include <stdlib.h>
     #include <string.h>
     #include <windows.h>
-
-static wchar_t *M_UTF8ToWide(const char *utf8_str);
 
 static wchar_t *M_UTF8ToWide(const char *const utf8_str)
 {
@@ -87,6 +77,16 @@ static void M_PathAppendPart(char *const path, const char *const part)
 {
     M_PathAppendSeparator(path);
     strcat(path, part);
+}
+
+static bool M_ExistsRaw(const char *path)
+{
+    FILE *fp = M_UTF8Fopen(path, "rb");
+    if (fp) {
+        fclose(fp);
+        return true;
+    }
+    return false;
 }
 
 static char *M_CasePath(const char *const path)
@@ -196,16 +196,6 @@ finish:
     }
     Memory_FreePointer(&abs_path);
     return fp;
-}
-
-static bool M_ExistsRaw(const char *path)
-{
-    FILE *fp = M_UTF8Fopen(path, "rb");
-    if (fp) {
-        fclose(fp);
-        return true;
-    }
-    return false;
 }
 
 bool File_IsAbsolute(const char *path)

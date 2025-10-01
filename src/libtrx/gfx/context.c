@@ -31,11 +31,6 @@ extern RGBA_F Output_GetFogColor(void);
 
 static GFX_CONTEXT m_Context = {};
 
-static bool M_IsExtensionSupported(const char *name);
-static GLvoid GLAPIENTRY M_GLDebug(
-    GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-    const GLchar *message, const void *user_param);
-
 static bool M_IsExtensionSupported(const char *name)
 {
     int number_of_extensions;

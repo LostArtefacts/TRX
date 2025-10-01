@@ -3,8 +3,6 @@
 #include "config.h"
 #include "utils.h"
 
-static void M_Clamp(UI_SCROLLABLE *s, bool include_selected_item);
-
 static void M_Clamp(UI_SCROLLABLE *const s, const bool include_selected_item)
 {
     if (include_selected_item && s->sel_item != -1) {

@@ -34,13 +34,6 @@ static const LARA_STATE m_StopStates[] = {
     (LARA_STATE)-1,
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Control(int16_t item_num);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -48,19 +41,6 @@ static const OBJECT_BOUNDS *M_Bounds(void)
             || lara->water_status == LWS_WADE
         ? &m_SaveCrystal_Bounds
         : &m_UW_Bounds;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    if (g_Config.gameplay.enable_save_crystals) {
-        obj->handle_save_func = M_HandleSave;
-        obj->control_func = M_Control;
-        obj->collision_func = M_Collision;
-        obj->save_flags = true;
-    }
-    obj->bounds_func = M_Bounds;
-    Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -138,6 +118,19 @@ static void M_Collision(
 
     item->data = (void *)1;
     GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    if (g_Config.gameplay.enable_save_crystals) {
+        obj->handle_save_func = M_HandleSave;
+        obj->control_func = M_Control;
+        obj->collision_func = M_Collision;
+        obj->save_flags = true;
+    }
+    obj->bounds_func = M_Bounds;
+    Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 
 REGISTER_OBJECT(O_SAVEGAME_ITEM, M_Setup)

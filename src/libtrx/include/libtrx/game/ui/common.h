@@ -26,7 +26,7 @@ typedef struct {
 // Node structure that forms the UI tree
 typedef struct UI_NODE {
     // Common operations on a widget
-    const UI_WIDGET_OPS *ops;
+    UI_WIDGET_OPS ops;
 
     // Final layout rectangle
     float x;

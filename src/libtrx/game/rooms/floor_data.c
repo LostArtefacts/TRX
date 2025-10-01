@@ -28,11 +28,6 @@
 #define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
 
 static const int16_t *M_ReadTrigger(
-    const int16_t *data, int16_t fd_entry, SECTOR *sector);
-static bool M_TestLava(const ITEM *item);
-static void M_TriggerMusicTrack(int16_t track, const TRIGGER *trigger);
-
-static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
 {
     TRIGGER *const trigger = GameBuf_Alloc(sizeof(TRIGGER), GBUF_FLOOR_DATA);

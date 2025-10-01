@@ -2,17 +2,6 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/objects.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->hit_points = 1;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     Item_AddActive(item_num);
@@ -37,6 +26,13 @@ static void M_Control(const int16_t item_num)
         item->pos = cine_data->position.pos;
     }
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->hit_points = 1;
 }
 
 REGISTER_OBJECT(O_PLAYER_1, M_Setup)

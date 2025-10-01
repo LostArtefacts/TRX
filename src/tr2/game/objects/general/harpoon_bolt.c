@@ -8,15 +8,6 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_position = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -113,6 +104,12 @@ static void M_Control(const int16_t item_num)
     } else if (Room_Get(item->room_num)->flags & RF_UNDERWATER) {
         Spawn_Bubble(&item->pos, item->room_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_position = true;
 }
 
 REGISTER_OBJECT(O_HARPOON_BOLT, M_Setup)

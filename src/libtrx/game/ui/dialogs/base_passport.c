@@ -7,8 +7,6 @@
 #include "game/ui/elements/resize.h"
 #include "game/viewport.h"
 
-static int32_t M_GetVisibleRows(void);
-
 static int32_t M_GetVisibleRows(void)
 {
     if (TR_VERSION == 2) {

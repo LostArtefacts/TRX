@@ -25,17 +25,17 @@ static const OBJECT_BOUNDS m_Bounds = {
     .ignore_rot = true,
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
-static void M_ConsumeKeyItem(ITEM *receptacle_item);
-static void M_SetupGong(OBJECT *obj);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_ConsumeKeyItem(ITEM *const receptacle_item)
+{
+    const GAME_OBJECT_ID key_object_id =
+        Object_FindReceptacleKey(receptacle_item->object_id);
+    if (key_object_id != NO_OBJECT) {
+        Inv_RemoveItem(key_object_id);
+    }
+}
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
-
     Lara_AlignPosition(receptacle_item, &m_Position);
     Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
     lara_item->current_anim_state = LS_EXTRA_BREATH;
@@ -63,27 +63,9 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     lara->interact_target.item_num = NO_ITEM;
 }
 
-static void M_ConsumeKeyItem(ITEM *const receptacle_item)
-{
-    const GAME_OBJECT_ID key_object_id =
-        Object_FindReceptacleKey(receptacle_item->object_id);
-    if (key_object_id != NO_OBJECT) {
-        Inv_RemoveItem(key_object_id);
-    }
-}
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Bounds;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = M_Collision;
-    obj->control_func = M_Control;
-    obj->bounds_func = Pickup_Bounds;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -151,6 +133,15 @@ static void M_Collision(
 
 normal_collision:
     Object_Collision(item_num, lara_item, coll);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
+    obj->bounds_func = Pickup_Bounds;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_DETONATOR_BOX, M_Setup)

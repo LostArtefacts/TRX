@@ -7,34 +7,18 @@
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
-static void M_SetupBase(OBJECT *obj);
-static void M_Setup1(OBJECT *obj);
-static void M_Setup2(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Control1(int16_t item_num);
-static void M_Control2(int16_t item_num);
-static void M_SetBoxBlocked(const ITEM *item, bool blocked);
-
-static void M_SetupBase(OBJECT *const obj)
+static void M_SetBoxBlocked(const ITEM *const item, const bool blocked)
 {
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
+    const ROOM *const room = Room_Get(item->room_num);
+    const SECTOR *const sector =
+        Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    BOX_INFO *const box = Box_GetBox(sector->box);
 
-static void M_Setup1(OBJECT *const obj)
-{
-    M_SetupBase(obj);
-    obj->control_func = M_Control1;
-}
-
-static void M_Setup2(OBJECT *const obj)
-{
-    M_SetupBase(obj);
-    obj->control_func = M_Control2;
+    if (blocked && (box->overlap_index & BOX_BLOCKABLE) != 0) {
+        box->overlap_index |= BOX_BLOCKED;
+    } else if (!blocked && (box->overlap_index & BOX_BLOCKED) != 0) {
+        box->overlap_index &= ~BOX_BLOCKED;
+    }
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -98,18 +82,25 @@ static void M_Control2(const int16_t item_num)
     Item_RemoveActive(item_num);
 }
 
-static void M_SetBoxBlocked(const ITEM *const item, const bool blocked)
+static void M_SetupBase(OBJECT *const obj)
 {
-    const ROOM *const room = Room_Get(item->room_num);
-    const SECTOR *const sector =
-        Room_GetWorldSector(room, item->pos.x, item->pos.z);
-    BOX_INFO *const box = Box_GetBox(sector->box);
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = true;
+    obj->save_anim = true;
+}
 
-    if (blocked && (box->overlap_index & BOX_BLOCKABLE) != 0) {
-        box->overlap_index |= BOX_BLOCKED;
-    } else if (!blocked && (box->overlap_index & BOX_BLOCKED) != 0) {
-        box->overlap_index &= ~BOX_BLOCKED;
-    }
+static void M_Setup1(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->control_func = M_Control1;
+}
+
+static void M_Setup2(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->control_func = M_Control2;
 }
 
 void Window_Smash(const int16_t item_num)

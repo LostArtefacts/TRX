@@ -18,23 +18,11 @@ static BITE m_Teeth2B = { .pos = { 71, 10, -1718 }, .mesh_num = 1 };
 static BITE m_Teeth3A = { .pos = { -23, -10, -1718 }, .mesh_num = 0 };
 static BITE m_Teeth3B = { .pos = { 71, -10, -1718 }, .mesh_num = 1 };
 
-static void M_BiteEffect(ITEM *item, BITE *bite);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_BiteEffect(ITEM *item, BITE *bite)
 {
     XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     Spawn_Blood(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_CollisionTrap;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -56,6 +44,14 @@ static void M_Control(const int16_t item_num)
         item->goal_anim_state = TEETH_TRAP_STATE_NICE;
     }
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_CollisionTrap;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_TEETH_TRAP, M_Setup)

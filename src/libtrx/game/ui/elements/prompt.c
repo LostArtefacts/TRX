@@ -19,26 +19,6 @@ typedef struct {
     UI_PROMPT_STATE *state;
 } M_DATA;
 
-static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = UI_MeasureWrapper,
-    .layout = M_Layout,
-    .draw = UI_DrawWrapper,
-};
-
-static void M_MoveCaretLeft(UI_PROMPT_STATE *s);
-static void M_MoveCaretRight(UI_PROMPT_STATE *s);
-static void M_MoveCaretStart(UI_PROMPT_STATE *s);
-static void M_MoveCaretEnd(UI_PROMPT_STATE *s);
-static void M_DeleteCharBack(UI_PROMPT_STATE *s);
-static void M_Confirm(UI_PROMPT_STATE *s);
-static void M_Cancel(UI_PROMPT_STATE *s);
-static void M_Clear(UI_PROMPT_STATE *s);
-
-static void M_HandleKeyDown(const EVENT *event, void *user_data);
-static void M_HandleTextEdit(const EVENT *event, void *user_data);
-
 static void M_Layout(
     UI_NODE *const node, const float x, const float y, const float w,
     const float h)
@@ -48,7 +28,7 @@ static void M_Layout(
     const UI_PROMPT_STATE *const s = data->state;
     UI_NODE *const prompt = node->first_child;
     UI_NODE *const caret = prompt->next_sibling;
-    prompt->ops->layout(prompt, x, y, w, h);
+    prompt->ops.layout(prompt, x, y, w, h);
 
     const char old = s->current_text[s->caret_pos];
     s->current_text[s->caret_pos] = '\0';
@@ -56,7 +36,7 @@ static void M_Layout(
     UI_Label_Measure(s->current_text, &caret_pos, nullptr);
     s->current_text[s->caret_pos] = old;
 
-    caret->ops->layout(caret, x + caret_pos, y, w, h);
+    caret->ops.layout(caret, x + caret_pos, y, w, h);
 }
 
 static void M_MoveCaretLeft(UI_PROMPT_STATE *const s)
@@ -95,18 +75,10 @@ static void M_DeleteCharBack(UI_PROMPT_STATE *const s)
     s->caret_pos--;
 }
 
-static void M_Confirm(UI_PROMPT_STATE *const s)
+static void M_Clear(UI_PROMPT_STATE *const s)
 {
-    if (String_IsEmpty(s->current_text)) {
-        M_Cancel(s);
-        return;
-    }
-    UI_FireEvent((EVENT) {
-        .name = "confirm",
-        .sender = s,
-        .data = s->current_text,
-    });
-    M_Clear(s);
+    strcpy(s->current_text, "");
+    s->caret_pos = 0;
 }
 
 static void M_Cancel(UI_PROMPT_STATE *const s)
@@ -119,10 +91,18 @@ static void M_Cancel(UI_PROMPT_STATE *const s)
     M_Clear(s);
 }
 
-static void M_Clear(UI_PROMPT_STATE *const s)
+static void M_Confirm(UI_PROMPT_STATE *const s)
 {
-    strcpy(s->current_text, "");
-    s->caret_pos = 0;
+    if (String_IsEmpty(s->current_text)) {
+        M_Cancel(s);
+        return;
+    }
+    UI_FireEvent((EVENT) {
+        .name = "confirm",
+        .sender = s,
+        .data = s->current_text,
+    });
+    M_Clear(s);
 }
 
 static void M_HandleKeyDown(const EVENT *const event, void *const user_data)
@@ -206,7 +186,13 @@ void UI_Prompt_Control(UI_PROMPT_STATE *const s)
 
 void UI_Prompt(UI_PROMPT_STATE *const s)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = UI_MeasureWrapper,
+            .layout = M_Layout,
+            .draw = UI_DrawWrapper,
+        },
+        sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->state = s;
     UI_AddChild(node);

@@ -6,12 +6,6 @@
 
 #include <stdlib.h>
 
-static int M_CompareFace4s(const void *a, const void *b);
-static int M_CompareFace4s(const void *a, const void *b);
-static int M_CompareRoomSprites(const void *a, const void *b);
-static void M_SortRoomFaces(void);
-static void M_SortObjectFaces(void);
-
 static int M_CompareFace3s(const void *const a, const void *const b)
 {
     const FACE3 *const face_a = a;

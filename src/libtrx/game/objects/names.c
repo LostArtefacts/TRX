@@ -59,10 +59,6 @@ static M_ALIAS m_ObjectAliases[] = {
     { .target_object_id = NO_OBJECT },
 };
 
-static const M_DEFAULT *M_ResolveDefault(GAME_OBJECT_ID obj_id);
-static M_NAME_ENTRY *M_ResolveNameEntry(GAME_OBJECT_ID obj_id);
-static void M_ClearAllNames(void);
-
 static const M_DEFAULT *M_ResolveDefault(GAME_OBJECT_ID obj_id)
 {
     obj_id = m_AliasResolver[obj_id];

@@ -6,12 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void M_ErrorCallback(void *data, const char *msg, int errnum);
-static int M_StackTrace(
-    void *data, uintptr_t pc, const char *filename, int lineno,
-    const char *func_name);
-static void M_SignalHandler(int sig);
-
 static void M_ErrorCallback(void *data, const char *msg, int errnum)
 {
     LOG_ERROR("%s", msg);

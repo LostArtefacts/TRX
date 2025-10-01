@@ -39,62 +39,6 @@ typedef enum {
 
 static BITE m_LionBite = { .pos = { -2, -10, 132 }, .mesh_num = 21 };
 
-static void M_SetupBase(OBJECT *obj);
-static void M_SetupLion(OBJECT *obj);
-static void M_SetupLioness(OBJECT *obj);
-static void M_SetupPuma(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_SetupBase(OBJECT *const obj)
-{
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->lot_setup = g_LOT_Quadruped;
-    obj->pivot_length = 400;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 19)->rot.y = true;
-}
-
-static void M_SetupLion(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->hit_points = LION_HITPOINTS;
-    obj->radius = LION_RADIUS;
-    obj->smartness = LION_SMARTNESS;
-}
-
-static void M_SetupLioness(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->hit_points = LIONESS_HITPOINTS;
-    obj->radius = LIONESS_RADIUS;
-    obj->smartness = LIONESS_SMARTNESS;
-}
-
-static void M_SetupPuma(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->hit_points = PUMA_HITPOINTS;
-    obj->radius = PUMA_RADIUS;
-    obj->smartness = PUMA_SMARTNESS;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -195,6 +139,56 @@ static void M_Control(const int16_t item_num)
     Creature_Tilt(item, tilt);
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, tilt);
+}
+
+static void M_SetupBase(OBJECT *const obj)
+{
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->lot_setup = g_LOT_Quadruped;
+    obj->pivot_length = 400;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+
+    Object_GetBone(obj, 19)->rot.y = true;
+}
+
+static void M_SetupLion(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->hit_points = LION_HITPOINTS;
+    obj->radius = LION_RADIUS;
+    obj->smartness = LION_SMARTNESS;
+}
+
+static void M_SetupLioness(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->hit_points = LIONESS_HITPOINTS;
+    obj->radius = LIONESS_RADIUS;
+    obj->smartness = LIONESS_SMARTNESS;
+}
+
+static void M_SetupPuma(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->hit_points = PUMA_HITPOINTS;
+    obj->radius = PUMA_RADIUS;
+    obj->smartness = PUMA_SMARTNESS;
 }
 
 REGISTER_OBJECT(O_LION, M_SetupLion)

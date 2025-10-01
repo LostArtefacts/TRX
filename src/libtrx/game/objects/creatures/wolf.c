@@ -53,10 +53,6 @@ typedef enum {
 
 static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
 
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-
 static void M_Initialise(const int16_t item_num)
 {
     Item_Get(item_num)->frame_num = WOLF_SLEEP_FRAME;

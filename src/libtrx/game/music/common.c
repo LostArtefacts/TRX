@@ -23,13 +23,6 @@ static float m_MusicVolume = 0.0f;
 static int32_t m_AudioStreamID = -1;
 static const MUSIC_BACKEND *m_Backend = nullptr;
 
-static const MUSIC_BACKEND *M_FindBackend(void);
-static void M_StopActiveStream(void);
-static void M_StreamFinished(int32_t stream_id, void *user_data);
-static bool M_IsBrokenTrack(MUSIC_TRACK_ID track);
-static bool M_IsAmbientTrack(MUSIC_TRACK_ID track_id);
-static void M_SyncVolume(int32_t audio_stream_id);
-
 static const MUSIC_BACKEND *M_FindBackend(void)
 {
     MUSIC_BACKEND *all_backends[] = {

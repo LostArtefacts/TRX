@@ -11,14 +11,6 @@
 #define ROCKET_RANGE_BASE WALL_L
 #define ROCKET_RANGE SQUARE(ROCKET_RANGE_BASE) // = 1048576
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -93,6 +85,11 @@ static void M_Control(const int16_t effect_num)
     effect->rot.y = lara_item->rot.y;
     effect->speed = lara_item->speed;
     effect->counter = 0;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
 }
 
 REGISTER_OBJECT(O_MISSILE_2, M_Setup)

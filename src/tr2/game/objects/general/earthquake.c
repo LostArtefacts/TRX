@@ -5,10 +5,6 @@
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 
-static void M_Activate(int16_t earth_item_num);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_Activate(const int16_t earth_item_num)
 {
     ITEM *const earth_item = Item_Get(earth_item_num);
@@ -16,13 +12,6 @@ static void M_Activate(const int16_t earth_item_num)
     earth_item->status = IS_ACTIVE;
     earth_item->flags = IF_CODE_BITS;
     earth_item->timer = 0;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -54,6 +43,13 @@ static void M_Control(const int16_t item_num)
         }
         earth_item_num = earth_item->next_item;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_EARTHQUAKE, M_Setup)

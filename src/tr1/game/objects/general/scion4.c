@@ -20,22 +20,9 @@ static const OBJECT_BOUNDS m_Scion4_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Scion4_Bounds;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-    obj->save_flags = true;
-    obj->bounds_func = M_Bounds;
 }
 
 static void M_Control(const int16_t item_num)
@@ -76,6 +63,14 @@ cleanup:
     item->rot.x = rotx;
     item->rot.y = roty;
     item->rot.z = rotz;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->save_flags = true;
+    obj->bounds_func = M_Bounds;
 }
 
 REGISTER_OBJECT(O_SCION_ITEM_4, M_Setup)

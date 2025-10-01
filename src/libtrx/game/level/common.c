@@ -33,21 +33,6 @@
 
 static LEVEL_INFO m_Info = {};
 
-static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
-static void M_FixTrapezoidRatios(FACE4 *face, const XYZ_16 vertices[4]);
-static void M_PremultiplyTexturePage(void *userdata);
-
-static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
-static void M_ReadShade(SHADE *shade, VFILE *file);
-static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
-static void M_ReadFace4(FACE4 *face, VFILE *file);
-static void M_ReadFace3(FACE3 *face, VFILE *file);
-static void M_ReadRoomMesh(
-    int32_t room_num, VFILE *file, INJECTION_MESH_META inj_data);
-static void M_ReadObjectMesh(OBJECT_MESH *mesh, VFILE *file);
-static void M_ReadBounds16(BOUNDS_16 *bounds, VFILE *file);
-static void M_ReadObjectVector(OBJECT_VECTOR *obj, VFILE *file);
-
 static RGBA_8888 M_ARGB1555To8888(const uint16_t argb1555)
 {
     // Extract 5-bit values for each ARGB component

@@ -5,9 +5,6 @@
 #include "game/lara.h"
 #include "game/savegame.h"
 
-static LARA_GUN_TYPE M_DetermineHolsterGun(void);
-static LARA_GUN_TYPE M_DetermineBackGun(void);
-
 static LARA_GUN_TYPE M_DetermineHolsterGun(void)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();

@@ -47,14 +47,6 @@ typedef enum {
 
 static BITE m_CrocodileBite = { .pos = { 5, -21, 467 }, .mesh_num = 9 };
 
-static void M_SetupBase(OBJECT *obj);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_SetupCrocodile(OBJECT *obj);
-static void M_SetupAlligator(OBJECT *obj);
-static void M_UpdateCreatureLOT(const ITEM *item);
-static void M_ControlCrocodile(int16_t item_num);
-static void M_ControlAlligator(int16_t item_num);
-
 static const HYBRID_INFO m_CrocodileInfo = {
     .land.id = O_CROCODILE,
     .land.active_anim = CROCODILE_STATE_EMPTY,
@@ -66,19 +58,15 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .water.death_state = ALLIGATOR_STATE_DEATH,
 };
 
-static void M_SetupBase(OBJECT *const obj)
+static void M_UpdateCreatureLOT(const ITEM *const item)
 {
-    obj->initialise_func = Creature_Initialise;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 3;
-    obj->pivot_length = 600;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->handle_save_func = M_HandleSave;
-    Object_GetBone(obj, 7)->rot.y = true;
+    CREATURE *const creature = (CREATURE *)item->data;
+    if (creature == nullptr) {
+        return;
+    }
+
+    OBJECT *const obj = Object_Get(item->object_id);
+    creature->lot.setup = obj->lot_setup;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -89,42 +77,6 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
             M_UpdateCreatureLOT(item);
         }
     }
-}
-
-static void M_SetupCrocodile(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->control_func = M_ControlCrocodile;
-    obj->hit_points = CROCODILE_HITPOINTS;
-    obj->radius = CROCODILE_RADIUS;
-    obj->smartness = CROCODILE_SMARTNESS;
-}
-
-static void M_SetupAlligator(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->control_func = M_ControlAlligator;
-    obj->hit_points = ALLIGATOR_HITPOINTS;
-    obj->radius = ALLIGATOR_RADIUS;
-    obj->smartness = ALLIGATOR_SMARTNESS;
-    obj->lot_setup = g_LOT_Flyer;
-}
-
-static void M_UpdateCreatureLOT(const ITEM *const item)
-{
-    CREATURE *const creature = (CREATURE *)item->data;
-    if (creature == nullptr) {
-        return;
-    }
-
-    OBJECT *const obj = Object_Get(item->object_id);
-    creature->lot.setup = obj->lot_setup;
 }
 
 static void M_ControlCrocodile(const int16_t item_num)
@@ -344,6 +296,46 @@ static void M_ControlAlligator(const int16_t item_num)
     }
 
     Creature_Animate(item_num, angle, 0);
+}
+
+static void M_SetupBase(OBJECT *const obj)
+{
+    obj->initialise_func = Creature_Initialise;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 3;
+    obj->pivot_length = 600;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->handle_save_func = M_HandleSave;
+    Object_GetBone(obj, 7)->rot.y = true;
+}
+
+static void M_SetupCrocodile(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlCrocodile;
+    obj->hit_points = CROCODILE_HITPOINTS;
+    obj->radius = CROCODILE_RADIUS;
+    obj->smartness = CROCODILE_SMARTNESS;
+}
+
+static void M_SetupAlligator(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlAlligator;
+    obj->hit_points = ALLIGATOR_HITPOINTS;
+    obj->radius = ALLIGATOR_RADIUS;
+    obj->smartness = ALLIGATOR_SMARTNESS;
+    obj->lot_setup = g_LOT_Flyer;
 }
 
 REGISTER_OBJECT(O_ALLIGATOR, M_SetupAlligator)

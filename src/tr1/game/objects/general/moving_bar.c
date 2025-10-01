@@ -5,18 +5,6 @@ typedef enum {
     MOVING_BAR_STATE_ACTIVE = 1,
 } MOVING_BAR_STATE;
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = true;
-    obj->save_anim = true;
-    obj->save_position = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -31,6 +19,15 @@ static void M_Control(const int16_t item_num)
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     Item_UpdateRoom(item_num, room_num);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = true;
+    obj->save_anim = true;
+    obj->save_position = true;
 }
 
 REGISTER_OBJECT(O_MOVING_BAR, M_Setup)

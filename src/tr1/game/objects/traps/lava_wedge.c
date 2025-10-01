@@ -6,18 +6,6 @@
 
 #define LAVA_WEDGE_SPEED 25
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_position = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -76,6 +64,15 @@ static void M_Control(const int16_t item_num)
         g_Camera.target_angle = -DEG_180;
         g_Camera.target_distance = WALL_L * 3;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_position = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_LAVA_WEDGE, M_Setup)

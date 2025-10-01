@@ -13,10 +13,6 @@ typedef struct {
 
 static M_PRIV m_Priv;
 
-static OUTPUT_MESH *M_GenerateShadow(MESH_BUILDER *builder, int32_t fidelity);
-static int32_t M_TransparentSort(
-    const MESH_INSTANCE *inst, const OUTPUT_MESH_FACE *face);
-
 static OUTPUT_MESH *M_GenerateShadow(
     MESH_BUILDER *const builder, const int32_t fidelity)
 {

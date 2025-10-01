@@ -7,23 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static JSON_NUMBER *M_NumberNewInt(int number);
-static JSON_NUMBER *M_NumberNewInt64(int64_t number);
-static JSON_NUMBER *M_NumberNewDouble(double number);
-static void M_NumberFree(JSON_NUMBER *num);
-
-static JSON_STRING *M_StringNew(const char *string);
-static void M_StringFree(JSON_STRING *str);
-
-static JSON_VALUE *M_ValueFromNumber(JSON_NUMBER *const num);
-static const JSON_NUMBER *M_ValueAsNumber(const JSON_VALUE *value);
-static const JSON_STRING *M_ValueAsString(const JSON_VALUE *value);
-static JSON_OBJECT *M_ValueAsObject(JSON_VALUE *const value);
-static JSON_ARRAY *M_ValueAsArray(JSON_VALUE *const value);
-
-static void M_ArrayElementFree(JSON_ARRAY_ELEMENT *element);
-static void M_ObjectElementFree(JSON_OBJECT_ELEMENT *element);
-
 static JSON_NUMBER *M_NumberNewInt(const int number)
 {
     const size_t size = snprintf(nullptr, 0, "%d", number) + 1;

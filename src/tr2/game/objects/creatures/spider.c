@@ -40,10 +40,6 @@ static const BITE m_SpiderBite = {
     .mesh_num = 1,
 };
 
-static void M_Leap(int16_t item_num, int16_t angle);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_Leap(const int16_t item_num, const int16_t angle)
 {
     ITEM *const item = Item_Get(item_num);

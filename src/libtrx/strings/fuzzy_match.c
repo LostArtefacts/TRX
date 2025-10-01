@@ -12,13 +12,6 @@
 #define LETTER_MATCH_SCORE_BONUS 1
 
 static STRING_FUZZY_SCORE M_GetScore(
-    const char *user_input, const char *reference, int32_t weight);
-static void M_DiscardNonFullMatches(VECTOR *matches);
-static void M_DiscardNonWordMatches(VECTOR *matches);
-static void M_SortMatches(VECTOR *matches);
-static void M_DiscardDuplicateMatches(VECTOR *matches);
-
-static STRING_FUZZY_SCORE M_GetScore(
     const char *const user_input, const char *const reference,
     const int32_t weight)
 {

@@ -27,12 +27,6 @@ static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
 static int32_t m_HairWind;
 
-static int16_t M_GetRoom(XYZ_32 pos);
-static void M_CalculateSpheres(const ANIM_FRAME *frame);
-static void M_CalculateSpheres_I(
-    const ANIM_FRAME *frame_1, const ANIM_FRAME *frame_2, int32_t frac,
-    int32_t rate);
-
 static int16_t M_GetRoom(const XYZ_32 pos)
 {
 #if TR_VERSION == 1

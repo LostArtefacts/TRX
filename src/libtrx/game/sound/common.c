@@ -59,52 +59,21 @@ typedef struct M_SAMPLE_ENTRY {
 } M_SAMPLE_ENTRY;
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
-
 static bool m_Initialised = false;
 static float m_MasterVolume = 0.0f;
-
 static M_SAMPLE_DATA_ENTRY *m_SampleDataMap = nullptr;
-static int M_SampleDataEntry_Cmp(
-    const M_SAMPLE_DATA_ENTRY *a, const M_SAMPLE_DATA_ENTRY *b)
-{
-    return a->number - b->number;
-}
 static M_SAMPLE_ENTRY *m_SampleMap = nullptr;
 static int32_t m_DecibelLUT[M_DECIBEL_LUT_SIZE] = {};
-
 static int32_t m_SourceCount = 0;
 static OBJECT_VECTOR *m_Sources = nullptr;
 
-static int32_t M_ConvertVolumeToDecibel(int32_t volume);
-static int32_t M_ConvertPanToDecibel(uint16_t pan);
-static float M_ConvertPitch(int32_t pitch);
+static int M_SampleDataEntry_Cmp(
+    const M_SAMPLE_DATA_ENTRY *const a, const M_SAMPLE_DATA_ENTRY *const b)
+{
+    return a->number - b->number;
+}
 
-static int32_t M_GetDistance(const XYZ_32 *pos);
-static int32_t M_GetVolume(
-    const SAMPLE_INFO *sample, int32_t distance, bool random);
-static int32_t M_GetPitch(const SAMPLE_INFO *sample, uint32_t flags);
-static int32_t M_GetPan(const SAMPLE_INFO *sample, const XYZ_32 *pos);
-
-static M_ACTIVE_SOUND *M_SelectUnusedSound(void);
-static M_ACTIVE_SOUND *M_SelectUsedSound(SAMPLE_ID sample_id);
-static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
-    SAMPLE_ID sample_id, const XYZ_32 *pos);
-
-static void M_ClearAllActiveSounds(void);
-static void M_ClearActiveSound(M_ACTIVE_SOUND *sound);
-static void M_CloseActiveSound(M_ACTIVE_SOUND *sound);
-static void M_ClearActiveSoundHandles(const M_ACTIVE_SOUND *sound);
-static void M_ClearSampleMaps(void);
-
-static bool M_Play(
-    M_ACTIVE_SOUND *sound, const SAMPLE_INFO *sample, int32_t sample_id,
-    int32_t track_id, int32_t volume, int32_t pitch, int32_t pan,
-    const XYZ_32 *pos);
-
-static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *sound);
-static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *sound);
-
-static int32_t M_ConvertVolumeToDecibel(int32_t volume)
+static int32_t M_ConvertVolumeToDecibel(const int32_t volume)
 {
     int32_t idx = volume * g_Config.audio.master_volume * m_MasterVolume
         * M_DECIBEL_LUT_SIZE / M_SOUND_MAX_VOLUME;
@@ -270,19 +239,19 @@ static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
     return nullptr;
 }
 
+static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
+{
+    sound->sample = nullptr;
+    sound->sample_id = SFX_INVALID;
+    sound->handle = AUDIO_NO_SOUND;
+}
+
 static void M_ClearAllActiveSounds(void)
 {
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const sound = &m_ActiveSounds[i];
         M_ClearActiveSound(sound);
     }
-}
-
-static void M_ClearActiveSound(M_ACTIVE_SOUND *const sound)
-{
-    sound->sample = nullptr;
-    sound->sample_id = SFX_INVALID;
-    sound->handle = AUDIO_NO_SOUND;
 }
 
 static void M_CloseActiveSound(M_ACTIVE_SOUND *const sound)

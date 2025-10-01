@@ -14,10 +14,6 @@
 
 static SDL_Window *m_Window = nullptr;
 
-static void M_CreateGameWindow(void);
-static void M_CreateGLContext(void);
-static void M_ShowWindow(void);
-
 static void M_CreateGameWindow(void)
 {
     m_Window = SDL_CreateWindow(

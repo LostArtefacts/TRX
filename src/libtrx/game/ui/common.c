@@ -27,11 +27,6 @@ static struct {
 
 extern void UI_ClearDraw(void);
 
-static UI_INPUT M_TranslateInput(uint32_t system_keycode);
-static void M_MeasureNode(UI_NODE *node);
-static void M_LayoutNode(UI_NODE *node, float x, float y, float w, float h);
-static void M_DrawNode(const UI_NODE *node);
-
 static UI_INPUT M_TranslateInput(const uint32_t system_keycode)
 {
     // clang-format off
@@ -53,8 +48,7 @@ static UI_INPUT M_TranslateInput(const uint32_t system_keycode)
 // Depth-first measure pass
 static void M_MeasureNode(UI_NODE *const node)
 {
-    if (node == nullptr || node->ops == nullptr
-        || node->ops->measure == nullptr) {
+    if (node == nullptr || node->ops.measure == nullptr) {
         return;
     }
 
@@ -65,7 +59,7 @@ static void M_MeasureNode(UI_NODE *const node)
         child = child->next_sibling;
     }
 
-    node->ops->measure(node);
+    node->ops.measure(node);
 }
 
 // Depth-first layout pass
@@ -73,23 +67,22 @@ static void M_LayoutNode(
     UI_NODE *const node, const float x, const float y, const float w,
     const float h)
 {
-    if (node == nullptr || node->ops == nullptr
-        || node->ops->layout == nullptr) {
+    if (node == nullptr || node->ops.layout == nullptr) {
         return;
     }
 
-    node->ops->layout(node, x, y, w, h);
+    node->ops.layout(node, x, y, w, h);
     // Recursing to children is a responsibility of the layout function.
 }
 
 // Depth-first draw pass
 static void M_DrawNode(const UI_NODE *const node)
 {
-    if (node == nullptr || node->ops == nullptr || node->ops->draw == nullptr) {
+    if (node == nullptr || node->ops.draw == nullptr) {
         return;
     }
 
-    node->ops->draw(node);
+    node->ops.draw(node);
     // Recursing to children is a responsibility of the draw function.
 }
 
@@ -101,7 +94,7 @@ UI_NODE *UI_AllocNode(
         Memory_Align(sizeof(UI_NODE)) + Memory_Align(additional_size);
     UI_NODE *const node = Memory_ArenaAlloc(&m_Priv.alloc, size);
     memset(node, 0, size);
-    node->ops = ops;
+    node->ops = *ops;
     node->data = (char *)node + Memory_Align(sizeof(UI_NODE));
     return node;
 }

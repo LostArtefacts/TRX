@@ -37,25 +37,6 @@ static const BITE m_BigEelBite = {
     .mesh_num = 7,
 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = BIG_EEL_HITPOINTS;
-
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -108,6 +89,22 @@ static void M_Control(const int16_t item_num)
     item->data = (void *)(intptr_t)pos;
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = BIG_EEL_HITPOINTS;
+
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_BIG_EEL, M_Setup)

@@ -8,16 +8,6 @@
 
 static int32_t m_FadeTimer = -1;
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -37,6 +27,13 @@ static void M_Control(const int16_t item_num)
         item->status = IS_INVISIBLE;
         m_FadeTimer = -1;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_CUT_SHOTGUN, M_Setup)

@@ -37,17 +37,6 @@ static struct {
     { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
 };
 
-static bool M_IsUsableUnderwater(LARA_GUN_TYPE gun_type);
-static bool M_IsTooSubmerged(LARA_GUN_TYPE gun_type);
-static LARA_GUN_TYPE M_NeedToQuickDraw(void);
-static bool M_QuickDrawWeapon(void);
-static bool M_CanEquip(void);
-static bool M_NeedToDraw(void);
-static bool M_NeedToUndraw(void);
-static void M_DecideRequestedWeapon(void);
-static void M_DrawRequestedWeapon(void);
-static void M_TryUndrawWeapon(void);
-
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
 #if TR_VERSION == 1

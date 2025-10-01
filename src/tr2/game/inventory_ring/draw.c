@@ -21,11 +21,6 @@
 #define M_PASSPORT_FOV 80
 
 static int32_t M_GetFrames(
-    const INV_RING *ring, const INVENTORY_ITEM *inv_item,
-    ANIM_FRAME **out_frame1, ANIM_FRAME **out_frame2, int32_t *out_rate);
-static void M_DrawItem(const INV_RING *ring, const INVENTORY_ITEM *inv_item);
-
-static int32_t M_GetFrames(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
     ANIM_FRAME **const out_frame1, ANIM_FRAME **const out_frame2,
     int32_t *const out_rate)

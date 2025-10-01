@@ -9,14 +9,6 @@
 
 static bool m_DetonateAllMines = false;
 
-static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *room_num);
-static void M_DetonateAll(
-    const ITEM *mine_item, int16_t boat_item_num, int16_t boat_room_num);
-static void M_Explode(ITEM *mine_item);
-static void M_Setup(OBJECT *obj);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Control(int16_t item_num);
-
 static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *const room_num)
 {
     Room_GetSector(pos->x, pos->y, pos->z, room_num);
@@ -85,17 +77,6 @@ static void M_Explode(ITEM *const mine_item)
     mine_item->collidable = 0;
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->handle_save_func = M_HandleSave;
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = true;
-    obj->enable_interpolation = false;
-
-    m_DetonateAllMines = false;
-}
-
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
@@ -130,6 +111,17 @@ static void M_Control(const int16_t item_num)
     }
 
     M_Explode(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = true;
+    obj->enable_interpolation = false;
+
+    m_DetonateAllMines = false;
 }
 
 REGISTER_OBJECT(O_MINE, M_Setup)

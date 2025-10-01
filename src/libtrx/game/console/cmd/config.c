@@ -12,13 +12,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static const char *M_Resolve(const char *option_name);
-static bool M_SameKey(const char *key1, const char *key2);
-static char *M_GetAvailableOptions(const CONFIG_OPTION *option);
-static const CONFIG_OPTION *M_GetOptionFromKey(const char *key);
-
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static const char *M_Resolve(const char *const option_name)
 {
     const char *dot = strrchr(option_name, '.');
@@ -51,6 +44,47 @@ static bool M_SameKey(const char *key1, const char *key2)
         }
     }
     return true;
+}
+
+static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
+{
+    VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
+
+    for (const CONFIG_OPTION *option = Config_GetOptionMap();
+         option->name != nullptr; option++) {
+        STRING_FUZZY_SOURCE source_item = {
+            .key = (const char *)Console_Cmd_Config_NormalizeKey(option->name),
+            .value = (void *)option,
+            .weight = 1,
+        };
+        Vector_Add(source, &source_item);
+    }
+
+    VECTOR *matches = String_FuzzyMatch(key, source);
+    const CONFIG_OPTION *result = nullptr;
+    if (matches->count == 0) {
+        Console_Log(GS(OSD_CONFIG_OPTION_UNKNOWN_OPTION), key);
+    } else if (matches->count == 1) {
+        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, 0);
+        result = match->value;
+    } else if (matches->count == 2) {
+        const STRING_FUZZY_MATCH *const match1 = Vector_Get(matches, 0);
+        const STRING_FUZZY_MATCH *const match2 = Vector_Get(matches, 1);
+        Console_Log(GS(OSD_AMBIGUOUS_INPUT_2), match1->key, match2->key);
+    } else if (matches->count >= 3) {
+        const STRING_FUZZY_MATCH *const match1 = Vector_Get(matches, 0);
+        const STRING_FUZZY_MATCH *const match2 = Vector_Get(matches, 1);
+        Console_Log(GS(OSD_AMBIGUOUS_INPUT_3), match1->key, match2->key);
+    }
+
+    for (int32_t i = 0; i < source->count; i++) {
+        const STRING_FUZZY_SOURCE *const source_item = Vector_Get(source, i);
+        Memory_Free((char *)source_item->key);
+    }
+
+    Vector_Free(matches);
+    Vector_Free(source);
+    return result;
 }
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
@@ -131,47 +165,6 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
     default:
         return nullptr;
     }
-}
-
-static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
-{
-    VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
-
-    for (const CONFIG_OPTION *option = Config_GetOptionMap();
-         option->name != nullptr; option++) {
-        STRING_FUZZY_SOURCE source_item = {
-            .key = (const char *)Console_Cmd_Config_NormalizeKey(option->name),
-            .value = (void *)option,
-            .weight = 1,
-        };
-        Vector_Add(source, &source_item);
-    }
-
-    VECTOR *matches = String_FuzzyMatch(key, source);
-    const CONFIG_OPTION *result = nullptr;
-    if (matches->count == 0) {
-        Console_Log(GS(OSD_CONFIG_OPTION_UNKNOWN_OPTION), key);
-    } else if (matches->count == 1) {
-        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, 0);
-        result = match->value;
-    } else if (matches->count == 2) {
-        const STRING_FUZZY_MATCH *const match1 = Vector_Get(matches, 0);
-        const STRING_FUZZY_MATCH *const match2 = Vector_Get(matches, 1);
-        Console_Log(GS(OSD_AMBIGUOUS_INPUT_2), match1->key, match2->key);
-    } else if (matches->count >= 3) {
-        const STRING_FUZZY_MATCH *const match1 = Vector_Get(matches, 0);
-        const STRING_FUZZY_MATCH *const match2 = Vector_Get(matches, 1);
-        Console_Log(GS(OSD_AMBIGUOUS_INPUT_3), match1->key, match2->key);
-    }
-
-    for (int32_t i = 0; i < source->count; i++) {
-        const STRING_FUZZY_SOURCE *const source_item = Vector_Get(source, i);
-        Memory_Free((char *)source_item->key);
-    }
-
-    Vector_Free(matches);
-    Vector_Free(source);
-    return result;
 }
 
 char *Console_Cmd_Config_NormalizeKey(const char *key)

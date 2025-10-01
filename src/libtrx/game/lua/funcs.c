@@ -6,10 +6,6 @@
 
 #include <lauxlib.h>
 
-static int M_L_GetLaraItem(lua_State *l);
-static int M_L_ConsoleLog(lua_State *l);
-static int M_L_ConsoleEval(lua_State *l);
-
 static int M_L_GetLaraItem(lua_State *l)
 {
     ITEM *item = Lara_GetItem();

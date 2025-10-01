@@ -29,23 +29,198 @@ typedef enum {
     // clang-format on
 } M_CLIMB_RESULT;
 
-static void M_HangTest(ITEM *item, COLL_INFO *coll);
-static bool M_TestLadderRelease(ITEM *item);
-static M_CLIMB_RESULT M_TestClimbUpPos(
-    const ITEM *item, int32_t front, int32_t right, int32_t *shift,
-    int32_t *ledge);
 static M_CLIMB_RESULT M_TestClimbPos(
-    const ITEM *item, int32_t front, int32_t right, int32_t origin,
-    int32_t height, int32_t *shift);
-static bool M_TestClimbStance(ITEM *item, COLL_INFO *coll);
-static bool M_TestLedgeJump(const ITEM *item, const COLL_INFO *coll);
+    const ITEM *const item, const int32_t front, const int32_t right,
+    const int32_t origin, const int32_t item_height, int32_t *const shift)
+{
+    const int32_t y = item->pos.y + origin;
+    int32_t x;
+    int32_t z;
+    int32_t x_front = 0;
+    int32_t z_front = 0;
 
-static void M_Hang(ITEM *item, COLL_INFO *coll);
-static void M_Shimmy(ITEM *item, COLL_INFO *coll);
-static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
-static void M_SideLadder(ITEM *item, COLL_INFO *coll);
-static void M_UpLadder(ITEM *item, COLL_INFO *coll);
-static void M_DownLadder(ITEM *item, COLL_INFO *coll);
+    switch (Math_GetDirection(item->rot.y)) {
+    case DIR_NORTH:
+        x = item->pos.x + right;
+        z = item->pos.z + front;
+        z_front = 2;
+        break;
+
+    case DIR_EAST:
+        x = item->pos.x + front;
+        z = item->pos.z - right;
+        x_front = 2;
+        break;
+
+    case DIR_SOUTH:
+        x = item->pos.x - right;
+        z = item->pos.z - front;
+        z_front = -2;
+        break;
+
+    case DIR_WEST:
+        x = item->pos.x - front;
+        z = item->pos.z + right;
+        x_front = -2;
+        break;
+
+    default:
+        x = front;
+        z = front;
+        break;
+    }
+
+    *shift = 0;
+    bool hang = true;
+    if (!Lara_GetLaraInfo()->climb_status) {
+        return CLIMB_RESULT_NONE;
+    }
+
+    int16_t room_num = item->room_num;
+    const SECTOR *sector = Room_GetSector(x, y - 128, z, &room_num);
+    int32_t height = Room_GetHeight(sector, x, y, z);
+    if (height == NO_HEIGHT) {
+        return CLIMB_RESULT_NONE;
+    }
+
+    height -= y + item_height + STEP_L / 2;
+    if (height < -M_CLIMB_SHIFT) {
+        return CLIMB_RESULT_NONE;
+    }
+    if (height < 0) {
+        *shift = height;
+    }
+
+    int32_t ceiling = Room_GetCeiling(sector, x, y, z) - y;
+    if (ceiling > M_CLIMB_SHIFT) {
+        return CLIMB_RESULT_NONE;
+    }
+    if (ceiling > 0) {
+        if (*shift) {
+            return CLIMB_RESULT_NONE;
+        }
+        *shift = ceiling;
+    }
+
+    if (item_height + height < M_CLIMB_HANG) {
+        hang = false;
+    }
+
+    const int32_t x2 = x + x_front;
+    const int32_t z2 = z + z_front;
+    sector = Room_GetSector(x2, y, z2, &room_num);
+    height = Room_GetHeight(sector, x2, y, z2);
+    if (height != NO_HEIGHT) {
+        height -= y;
+    }
+
+    if (height > M_CLIMB_SHIFT) {
+        ceiling = Room_GetCeiling(sector, x2, y, z2) - y;
+        if (ceiling >= M_CLIMB_HEIGHT) {
+            return CLIMB_RESULT_POS;
+        }
+
+        if (ceiling > M_CLIMB_HEIGHT - M_CLIMB_SHIFT) {
+            if (*shift > 0) {
+                return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
+            }
+            *shift = ceiling - M_CLIMB_HEIGHT;
+            return CLIMB_RESULT_POS;
+        }
+
+        if (ceiling > 0) {
+            return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
+        }
+
+        if (ceiling > -M_CLIMB_SHIFT && hang && *shift <= 0) {
+            if (*shift > ceiling) {
+                *shift = ceiling;
+            }
+
+            return CLIMB_RESULT_NEG;
+        }
+
+        return CLIMB_RESULT_NONE;
+    }
+
+    if (height > 0) {
+        if (*shift < 0) {
+            return CLIMB_RESULT_NONE;
+        }
+        if (height > *shift) {
+            *shift = height;
+        }
+    }
+
+    room_num = item->room_num;
+    sector = Room_GetSector(x, item_height + y, z, &room_num);
+    sector = Room_GetSector(x2, item_height + y, z2, &room_num);
+    ceiling = Room_GetCeiling(sector, x2, item_height + y, z2);
+    if (ceiling == NO_HEIGHT) {
+        return CLIMB_RESULT_POS;
+    }
+
+    ceiling -= y;
+    if (ceiling <= height) {
+        return CLIMB_RESULT_POS;
+    }
+
+    if (ceiling >= M_CLIMB_HEIGHT) {
+        return CLIMB_RESULT_POS;
+    }
+
+    if (ceiling > M_CLIMB_HEIGHT - M_CLIMB_SHIFT) {
+        if (*shift > 0) {
+            return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
+        }
+        *shift = ceiling - M_CLIMB_HEIGHT;
+        return CLIMB_RESULT_POS;
+    }
+
+    return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
+}
+
+static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
+{
+    int32_t shift_r;
+    const M_CLIMB_RESULT result_r = M_TestClimbPos(
+        item, coll->radius, coll->radius + M_CLIMB_WIDTH_RIGHT, -700,
+        STEP_L * 2, &shift_r);
+    if (result_r != CLIMB_RESULT_POS) {
+        return false;
+    }
+
+    int32_t shift_l;
+    const M_CLIMB_RESULT result_l = M_TestClimbPos(
+        item, coll->radius, -(coll->radius + M_CLIMB_WIDTH_LEFT), -700,
+        STEP_L * 2, &shift_l);
+    if (result_l != CLIMB_RESULT_POS) {
+        return false;
+    }
+
+    int32_t shift = 0;
+    if (shift_r) {
+        if (shift_l) {
+            if ((shift_r < 0) != (shift_l < 0)) {
+                return false;
+            }
+            if (shift_r < 0 && shift_l < shift_r) {
+                shift = shift_l;
+            } else if (shift_r > 0 && shift_l > shift_r) {
+                shift = shift_l;
+            } else {
+                shift = shift_r;
+            }
+        } else {
+            shift = shift_r;
+        }
+    } else if (shift_l) {
+        shift = shift_l;
+    }
+
+    item->pos.y += shift;
+    return true;
+}
 
 static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
 {
@@ -301,199 +476,6 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
         return CLIMB_RESULT_POS;
     }
     return CLIMB_RESULT_NONE;
-}
-
-static M_CLIMB_RESULT M_TestClimbPos(
-    const ITEM *const item, const int32_t front, const int32_t right,
-    const int32_t origin, const int32_t item_height, int32_t *const shift)
-{
-    const int32_t y = item->pos.y + origin;
-    int32_t x;
-    int32_t z;
-    int32_t x_front = 0;
-    int32_t z_front = 0;
-
-    switch (Math_GetDirection(item->rot.y)) {
-    case DIR_NORTH:
-        x = item->pos.x + right;
-        z = item->pos.z + front;
-        z_front = 2;
-        break;
-
-    case DIR_EAST:
-        x = item->pos.x + front;
-        z = item->pos.z - right;
-        x_front = 2;
-        break;
-
-    case DIR_SOUTH:
-        x = item->pos.x - right;
-        z = item->pos.z - front;
-        z_front = -2;
-        break;
-
-    case DIR_WEST:
-        x = item->pos.x - front;
-        z = item->pos.z + right;
-        x_front = -2;
-        break;
-
-    default:
-        x = front;
-        z = front;
-        break;
-    }
-
-    *shift = 0;
-    bool hang = true;
-    if (!Lara_GetLaraInfo()->climb_status) {
-        return CLIMB_RESULT_NONE;
-    }
-
-    int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(x, y - 128, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    if (height == NO_HEIGHT) {
-        return CLIMB_RESULT_NONE;
-    }
-
-    height -= y + item_height + STEP_L / 2;
-    if (height < -M_CLIMB_SHIFT) {
-        return CLIMB_RESULT_NONE;
-    }
-    if (height < 0) {
-        *shift = height;
-    }
-
-    int32_t ceiling = Room_GetCeiling(sector, x, y, z) - y;
-    if (ceiling > M_CLIMB_SHIFT) {
-        return CLIMB_RESULT_NONE;
-    }
-    if (ceiling > 0) {
-        if (*shift) {
-            return CLIMB_RESULT_NONE;
-        }
-        *shift = ceiling;
-    }
-
-    if (item_height + height < M_CLIMB_HANG) {
-        hang = false;
-    }
-
-    const int32_t x2 = x + x_front;
-    const int32_t z2 = z + z_front;
-    sector = Room_GetSector(x2, y, z2, &room_num);
-    height = Room_GetHeight(sector, x2, y, z2);
-    if (height != NO_HEIGHT) {
-        height -= y;
-    }
-
-    if (height > M_CLIMB_SHIFT) {
-        ceiling = Room_GetCeiling(sector, x2, y, z2) - y;
-        if (ceiling >= M_CLIMB_HEIGHT) {
-            return CLIMB_RESULT_POS;
-        }
-
-        if (ceiling > M_CLIMB_HEIGHT - M_CLIMB_SHIFT) {
-            if (*shift > 0) {
-                return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
-            }
-            *shift = ceiling - M_CLIMB_HEIGHT;
-            return CLIMB_RESULT_POS;
-        }
-
-        if (ceiling > 0) {
-            return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
-        }
-
-        if (ceiling > -M_CLIMB_SHIFT && hang && *shift <= 0) {
-            if (*shift > ceiling) {
-                *shift = ceiling;
-            }
-
-            return CLIMB_RESULT_NEG;
-        }
-
-        return CLIMB_RESULT_NONE;
-    }
-
-    if (height > 0) {
-        if (*shift < 0) {
-            return CLIMB_RESULT_NONE;
-        }
-        if (height > *shift) {
-            *shift = height;
-        }
-    }
-
-    room_num = item->room_num;
-    sector = Room_GetSector(x, item_height + y, z, &room_num);
-    sector = Room_GetSector(x2, item_height + y, z2, &room_num);
-    ceiling = Room_GetCeiling(sector, x2, item_height + y, z2);
-    if (ceiling == NO_HEIGHT) {
-        return CLIMB_RESULT_POS;
-    }
-
-    ceiling -= y;
-    if (ceiling <= height) {
-        return CLIMB_RESULT_POS;
-    }
-
-    if (ceiling >= M_CLIMB_HEIGHT) {
-        return CLIMB_RESULT_POS;
-    }
-
-    if (ceiling > M_CLIMB_HEIGHT - M_CLIMB_SHIFT) {
-        if (*shift > 0) {
-            return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
-        }
-        *shift = ceiling - M_CLIMB_HEIGHT;
-        return CLIMB_RESULT_POS;
-    }
-
-    return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
-}
-
-static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
-{
-    int32_t shift_r;
-    const M_CLIMB_RESULT result_r = M_TestClimbPos(
-        item, coll->radius, coll->radius + M_CLIMB_WIDTH_RIGHT, -700,
-        STEP_L * 2, &shift_r);
-    if (result_r != CLIMB_RESULT_POS) {
-        return false;
-    }
-
-    int32_t shift_l;
-    const M_CLIMB_RESULT result_l = M_TestClimbPos(
-        item, coll->radius, -(coll->radius + M_CLIMB_WIDTH_LEFT), -700,
-        STEP_L * 2, &shift_l);
-    if (result_l != CLIMB_RESULT_POS) {
-        return false;
-    }
-
-    int32_t shift = 0;
-    if (shift_r) {
-        if (shift_l) {
-            if ((shift_r < 0) != (shift_l < 0)) {
-                return false;
-            }
-            if (shift_r < 0 && shift_l < shift_r) {
-                shift = shift_l;
-            } else if (shift_r > 0 && shift_l > shift_r) {
-                shift = shift_l;
-            } else {
-                shift = shift_r;
-            }
-        } else {
-            shift = shift_r;
-        }
-    } else if (shift_l) {
-        shift = shift_l;
-    }
-
-    item->pos.y += shift;
-    return true;
 }
 
 static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)

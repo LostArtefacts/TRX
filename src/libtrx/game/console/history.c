@@ -12,9 +12,6 @@
 VECTOR *m_History = nullptr;
 static const char *m_Path = "cfg/" PROJECT_NAME "_console_history.json5";
 
-static void M_LoadFromJSON(JSON_VALUE *doc);
-static JSON_VALUE *M_DumpToJSON(void);
-
 static void M_LoadFromJSON(JSON_VALUE *const doc)
 {
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(doc);

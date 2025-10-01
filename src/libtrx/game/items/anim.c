@@ -10,8 +10,6 @@
 
 #define M_SFX_SURF_DISTANCE ((STEP_L * 2) + 1)
 
-static bool M_ShouldPlaySFXAlways(const ITEM *item, bool item_underwater);
-
 static bool M_ShouldPlaySFXAlways(
     const ITEM *const item, const bool item_underwater)
 {

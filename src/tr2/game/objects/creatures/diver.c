@@ -38,14 +38,6 @@ static const BITE m_DiverBite = {
 };
 
 static int32_t M_GetWaterSurface(
-    int32_t x, int32_t y, int32_t z, int16_t room_num);
-static int16_t M_SpawnHarpoon(
-    int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
-    int16_t room_num);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static int32_t M_GetWaterSurface(
     const int32_t x, const int32_t y, const int32_t z, const int16_t room_num)
 {
     const ROOM *room = Room_Get(room_num);
@@ -93,31 +85,6 @@ static int16_t M_SpawnHarpoon(
         Missile_ShootAtLara(effect);
     }
     return effect_num;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = DIVER_HITPOINTS;
-    obj->radius = DIVER_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 50;
-    obj->lot_setup = g_LOT_Flyer;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 10)->rot.y = true;
-    Object_GetBone(obj, 14)->rot.z = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -289,6 +256,31 @@ static void M_Control(const int16_t item_num)
         item->pos.y = water_level - WALL_L / 2;
         break;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = DIVER_HITPOINTS;
+    obj->radius = DIVER_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 50;
+    obj->lot_setup = g_LOT_Flyer;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 10)->rot.y = true;
+    Object_GetBone(obj, 14)->rot.z = true;
 }
 
 REGISTER_OBJECT(O_DIVER, M_Setup)

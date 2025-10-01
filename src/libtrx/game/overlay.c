@@ -39,15 +39,6 @@ typedef struct {
 static UI_OVERLAY_STATE *m_UI = nullptr;
 static DISPLAY_PICKUP m_Pickups[OUTPUT_UI_MAX_PICKUPS] = {};
 
-static float M_Ease(float current, float start, float goal);
-#if TR_VERSION == 2
-static void M_DrawAssaultTimer(void);
-#endif
-static void M_DrawPickup2D(const DISPLAY_PICKUP *pickup);
-static void M_DrawPickup3D(const DISPLAY_PICKUP *pickup);
-static void M_DrawPickups(void);
-static void M_AnimatePickups(int32_t frames);
-
 static bool M_IsSprite(const DISPLAY_PICKUP *const pickup)
 {
     return !g_Config.visuals.enable_3d_pickups

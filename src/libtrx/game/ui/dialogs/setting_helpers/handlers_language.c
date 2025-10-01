@@ -8,10 +8,6 @@
 
 static VECTOR *m_Languages = nullptr;
 
-static void M_Language_Cleanup(void);
-static const VECTOR *M_Language_GetLanguages(void);
-static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *option);
-
 static void M_Language_Cleanup(void)
 {
     // Free the languages vector and its strings.

@@ -9,14 +9,6 @@
 
 #define SPIKE_DAMAGE 15
 
-static void M_Setup(OBJECT *obj);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = M_Collision;
-}
-
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -61,6 +53,11 @@ static void M_Collision(
         lara_item->pos.y = item->pos.y;
         lara_item->gravity = 0;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = M_Collision;
 }
 
 REGISTER_OBJECT(O_SPIKES, M_Setup)

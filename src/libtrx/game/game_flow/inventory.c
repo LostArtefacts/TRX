@@ -14,24 +14,6 @@ static bool m_RemoveMedipacks = false;
 static bool m_RemoveScions = false;
 
 static bool M_ResumeInfo_HasWeapon(
-    const RESUME_INFO *resume, LARA_GUN_TYPE gun_type);
-static void M_ResumeInfo_SetWeapon(
-    RESUME_INFO *resume, LARA_GUN_TYPE gun_type, bool has_weapon);
-static void M_ResumeInfo_AddAmmo(
-    RESUME_INFO *resume, LARA_GUN_TYPE gun_type, int32_t ammo_qty);
-static void M_ResumeInfo_AddItem(
-    RESUME_INFO *resume, GAME_OBJECT_ID object_id, int32_t qty);
-
-static void M_ModifyResumeInfo_GunOrAmmo(
-    RESUME_INFO *resume, LARA_GUN_TYPE gun_type);
-static void M_ModifyResumeInfo_Item(
-    RESUME_INFO *resume, GAME_OBJECT_ID object_id);
-
-static void M_ModifyInventory_GunOrAmmo(
-    GF_INV_TYPE type, LARA_GUN_TYPE gun_type);
-static void M_ModifyInventory_Item(GF_INV_TYPE type, GAME_OBJECT_ID obj_id);
-
-static bool M_ResumeInfo_HasWeapon(
     const RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
 {
     switch (gun_type) {

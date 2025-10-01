@@ -16,9 +16,6 @@ static bool m_IsAssaultTimerDisplay = false;
 static bool m_IsAssaultTimerActive = false;
 static int16_t m_CompletionTimer = 0;
 
-static int32_t M_GetBestTime(void);
-static bool M_StoreAssaultTime(uint32_t time);
-
 static int32_t M_GetBestTime(void)
 {
     const ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;

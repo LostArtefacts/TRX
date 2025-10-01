@@ -18,8 +18,6 @@ static const size_t m_Size4 = 6;
 static const int32_t m_Indices3[] = { 0, 2, 1 };
 static const int32_t m_Indices4[] = { 0, 2, 1, 0, 3, 2 };
 
-static void M_EnsureMesh(MESH_BUILDER *builder);
-
 static void M_EnsureMesh(MESH_BUILDER *const builder)
 {
     if (builder->mesh == nullptr) {

@@ -40,9 +40,6 @@ struct OUTPUT_SHADER {
 };
 
 static void M_UploadMatrix(
-    const OUTPUT_SHADER *shader, M_UNIFORM target, const MATRIX *source);
-
-static void M_UploadMatrix(
     const OUTPUT_SHADER *const shader, const M_UNIFORM target,
     const MATRIX *const source)
 {

@@ -3,9 +3,6 @@
 #include "game/items.h"
 #include "log.h"
 
-static void M_ItemEdits(const INJECTION *injection, int32_t data_count);
-static void M_CameraEdits(const INJECTION *injection, int32_t data_count);
-
 static void M_ItemEdits(
     const INJECTION *const injection, const int32_t data_count)
 {

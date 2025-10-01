@@ -23,12 +23,6 @@ static M_STATIC_BUFFER m_StaticBufferRing[M_MAX_STATIC_BUFFERS] = {};
 static int m_StaticBufNext = 0;
 static bool m_ExitRegistered = false;
 
-static void M_Shutdown(void);
-static void M_EnsureShutdown(void);
-static M_STATIC_BUFFER *M_CycleStaticBuffer(void);
-static void M_AddPage(
-    const char *text, int32_t start_pos, int32_t length, VECTOR *pages);
-
 static void M_Shutdown(void)
 {
     for (int32_t i = 0; i < M_MAX_STATIC_BUFFERS; i++) {

@@ -6,10 +6,6 @@
 
 #define M_DEFAULT_RADIUS 10
 
-static void M_SetupLara(void);
-static void M_SetupSkybox(void);
-static void M_DisableObject(GAME_OBJECT_ID obj_id);
-
 static void M_SetupLara(void)
 {
     OBJECT *const obj = Object_Get(O_LARA);

@@ -19,16 +19,6 @@ typedef enum {
 
 static ANIM_FRAME *m_Frames = nullptr;
 
-static int32_t M_GetAnimFrameCount(int32_t anim_idx, int32_t frame_data_length);
-static OBJECT *M_GetAnimObject(int32_t anim_idx);
-static ANIM_FRAME *M_FindFrameBase(uint32_t frame_ofs);
-static int32_t M_ParseFrame(
-    ANIM_FRAME *frame, const int16_t *data_ptr, int16_t mesh_count,
-    uint8_t frame_size);
-static void M_ParseMeshRotation(XYZ_16 *rot, const int16_t **data);
-static void M_ExtractRotation(
-    XYZ_16 *rot, int16_t rot_val_1, int16_t rot_val_2);
-
 static int32_t M_GetAnimFrameCount(
     const int32_t anim_idx, const int32_t frame_data_length)
 {
@@ -75,37 +65,12 @@ static ANIM_FRAME *M_FindFrameBase(const uint32_t frame_ofs)
     return nullptr;
 }
 
-static int32_t M_ParseFrame(
-    ANIM_FRAME *const frame, const int16_t *data_ptr, int16_t mesh_count,
-    const uint8_t frame_size)
+static void M_ExtractRotation(
+    XYZ_16 *const rot, const int16_t rot_val_1, const int16_t rot_val_2)
 {
-    const int16_t *const frame_start = data_ptr;
-
-    frame->bounds.min.x = *data_ptr++;
-    frame->bounds.max.x = *data_ptr++;
-    frame->bounds.min.y = *data_ptr++;
-    frame->bounds.max.y = *data_ptr++;
-    frame->bounds.min.z = *data_ptr++;
-    frame->bounds.max.z = *data_ptr++;
-    frame->offset.x = *data_ptr++;
-    frame->offset.y = *data_ptr++;
-    frame->offset.z = *data_ptr++;
-#if TR_VERSION == 1
-    mesh_count = *data_ptr++;
-#endif
-
-    frame->mesh_rots =
-        GameBuf_Alloc(sizeof(XYZ_16) * mesh_count, GBUF_ANIM_FRAMES);
-    for (int32_t i = 0; i < mesh_count; i++) {
-        XYZ_16 *const rot = &frame->mesh_rots[i];
-        M_ParseMeshRotation(rot, &data_ptr);
-    }
-
-#if TR_VERSION > 1
-    data_ptr += MAX(0, frame_size - (data_ptr - frame_start));
-#endif
-
-    return data_ptr - frame_start;
+    rot->x = (rot_val_1 & 0x3FF0) << 2;
+    rot->y = (((rot_val_1 & 0xF) << 6) | ((rot_val_2 & 0xFC00) >> 10)) << 6;
+    rot->z = (rot_val_2 & 0x3FF) << 6;
 }
 
 static void M_ParseMeshRotation(XYZ_16 *const rot, const int16_t **data)
@@ -141,12 +106,37 @@ static void M_ParseMeshRotation(XYZ_16 *const rot, const int16_t **data)
     *data = data_ptr;
 }
 
-static void M_ExtractRotation(
-    XYZ_16 *const rot, const int16_t rot_val_1, const int16_t rot_val_2)
+static int32_t M_ParseFrame(
+    ANIM_FRAME *const frame, const int16_t *data_ptr, int16_t mesh_count,
+    const uint8_t frame_size)
 {
-    rot->x = (rot_val_1 & 0x3FF0) << 2;
-    rot->y = (((rot_val_1 & 0xF) << 6) | ((rot_val_2 & 0xFC00) >> 10)) << 6;
-    rot->z = (rot_val_2 & 0x3FF) << 6;
+    const int16_t *const frame_start = data_ptr;
+
+    frame->bounds.min.x = *data_ptr++;
+    frame->bounds.max.x = *data_ptr++;
+    frame->bounds.min.y = *data_ptr++;
+    frame->bounds.max.y = *data_ptr++;
+    frame->bounds.min.z = *data_ptr++;
+    frame->bounds.max.z = *data_ptr++;
+    frame->offset.x = *data_ptr++;
+    frame->offset.y = *data_ptr++;
+    frame->offset.z = *data_ptr++;
+#if TR_VERSION == 1
+    mesh_count = *data_ptr++;
+#endif
+
+    frame->mesh_rots =
+        GameBuf_Alloc(sizeof(XYZ_16) * mesh_count, GBUF_ANIM_FRAMES);
+    for (int32_t i = 0; i < mesh_count; i++) {
+        XYZ_16 *const rot = &frame->mesh_rots[i];
+        M_ParseMeshRotation(rot, &data_ptr);
+    }
+
+#if TR_VERSION > 1
+    data_ptr += MAX(0, frame_size - (data_ptr - frame_start));
+#endif
+
+    return data_ptr - frame_start;
 }
 
 int32_t Anim_GetTotalFrameCount(const int32_t frame_data_length)

@@ -14,8 +14,6 @@ struct VECTOR_PRIV {
     char *items;
 };
 
-static void M_EnsureCapacity(VECTOR *vector, int32_t n);
-
 static void M_EnsureCapacity(VECTOR *const vector, const int32_t n)
 {
     while (vector->count + n > vector->capacity) {

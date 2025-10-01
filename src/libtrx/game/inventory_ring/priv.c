@@ -38,8 +38,6 @@ static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
-static void M_HandleRequestedObject(INV_RING *ring);
-
 static void M_HandleRequestedObject(INV_RING *const ring)
 {
     if (m_RequestedObjectID == NO_OBJECT) {

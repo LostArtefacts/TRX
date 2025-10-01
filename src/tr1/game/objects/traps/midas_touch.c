@@ -27,29 +27,35 @@ static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static bool M_IsUsable(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_KillLara(const ITEM *item);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MidasTouch_Bounds;
+}
+
+static void M_KillLara(const ITEM *const item)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
+
+    lara_item->current_anim_state = LS_DIE_MIDAS;
+    lara_item->goal_anim_state = LS_DIE_MIDAS;
+    lara_item->hit_points = -1;
+    lara_item->gravity = 0;
+    lara->extra_anim = true;
+
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+
+    Camera_InvokeCinematic(lara_item, 0, 0);
 }
 
 static bool M_IsUsable(const int16_t item_num)
 {
     const ITEM *const lara_item = Lara_GetItem();
     return lara_item->current_anim_state != LS_USE_MIDAS;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = M_Collision;
-    obj->draw_func = Object_DrawDummyItem;
-    obj->bounds_func = M_Bounds;
-    obj->is_usable_func = M_IsUsable;
 }
 
 static void M_Collision(
@@ -112,24 +118,12 @@ static void M_Collision(
     }
 }
 
-static void M_KillLara(const ITEM *const item)
+static void M_Setup(OBJECT *const obj)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-
-    Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
-
-    lara_item->current_anim_state = LS_DIE_MIDAS;
-    lara_item->goal_anim_state = LS_DIE_MIDAS;
-    lara_item->hit_points = -1;
-    lara_item->gravity = 0;
-    lara->extra_anim = true;
-
-    lara->air = -1;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->gun_type = LGT_UNARMED;
-
-    Camera_InvokeCinematic(lara_item, 0, 0);
+    obj->collision_func = M_Collision;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->bounds_func = M_Bounds;
+    obj->is_usable_func = M_IsUsable;
 }
 
 REGISTER_OBJECT(O_MIDAS_TOUCH, M_Setup)

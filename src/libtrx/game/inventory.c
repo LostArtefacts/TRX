@@ -7,10 +7,6 @@
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
-static INVENTORY_ITEM *M_GetGunInvItem(LARA_GUN_TYPE gun_type);
-static INVENTORY_ITEM *M_GetAmmoInvItem(LARA_GUN_TYPE gun_type);
-static void M_AddAmmo(LARA_GUN_TYPE gun_type, int32_t qty);
-
 static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off

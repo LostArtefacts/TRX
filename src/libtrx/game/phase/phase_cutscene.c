@@ -10,13 +10,6 @@ typedef struct {
     int32_t level_num;
 } M_PRIV;
 
-static PHASE_CONTROL M_Start(PHASE *phase);
-static void M_End(PHASE *phase);
-static void M_Suspend(PHASE *phase);
-static void M_Resume(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase);
-static void M_Draw(PHASE *phase);
-
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;

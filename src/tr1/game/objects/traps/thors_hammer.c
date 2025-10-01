@@ -11,25 +11,6 @@ typedef enum {
     THOR_HAMMER_STATE_DONE = 3,
 } THOR_HAMMER_STATE;
 
-static void M_SetupHandle(OBJECT *obj);
-static void M_InitialiseHandle(int16_t item_num);
-static void M_ControlHandle(int16_t item_num);
-static void M_CollisionHandle(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
-static void M_SetupHead(OBJECT *obj);
-static void M_CollisionHead(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
-static void M_SetupHandle(OBJECT *const obj)
-{
-    obj->initialise_func = M_InitialiseHandle;
-    obj->control_func = M_ControlHandle;
-    obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = M_CollisionHandle;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_InitialiseHandle(const int16_t item_num)
 {
     ITEM *const hand_item = Item_Get(item_num);
@@ -161,14 +142,6 @@ static void M_CollisionHandle(
     }
 }
 
-static void M_SetupHead(OBJECT *const obj)
-{
-    obj->collision_func = M_CollisionHead;
-    obj->draw_func = Object_DrawUnclippedItem;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_CollisionHead(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -180,6 +153,24 @@ static void M_CollisionHead(
         && item->current_anim_state != THOR_HAMMER_STATE_ACTIVE) {
         Lara_Push(item, coll, false, true);
     }
+}
+
+static void M_SetupHandle(OBJECT *const obj)
+{
+    obj->initialise_func = M_InitialiseHandle;
+    obj->control_func = M_ControlHandle;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = M_CollisionHandle;
+    obj->save_flags = true;
+    obj->save_anim = true;
+}
+
+static void M_SetupHead(OBJECT *const obj)
+{
+    obj->collision_func = M_CollisionHead;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_THORS_HANDLE, M_SetupHandle)

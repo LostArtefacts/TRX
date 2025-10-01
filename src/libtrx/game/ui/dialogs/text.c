@@ -36,10 +36,6 @@ typedef struct UI_TEXT_DIALOG_STATE {
     int32_t current_page;
 } UI_TEXT_DIALOG_STATE;
 
-static bool M_SelectPage(UI_TEXT_DIALOG_STATE *s, int32_t new_page);
-static void M_UpdateTitle(UI_TEXT_DIALOG_STATE *s, const char *title_raw);
-static void M_UpdateText(UI_TEXT_DIALOG_STATE *s, const char *text_raw);
-
 static void M_UpdateTitle(
     UI_TEXT_DIALOG_STATE *const s, const char *const title_raw)
 {

@@ -14,16 +14,6 @@
 
 #define M_FMT_NUM "#%d"
 
-static const char *M_FormatAvailable(void);
-static const char *M_FormatPresent(void);
-static void M_LogInvalid(int32_t idx);
-static COMMAND_RESULT M_TakeSecret(int32_t idx);
-static COMMAND_RESULT M_GiveSecret(int32_t idx);
-static COMMAND_RESULT M_ListSecrets(void);
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-static COMMAND_RESULT M_GiveAllSecrets(void);
-static COMMAND_RESULT M_TakeAllSecrets(void);
-
 static const char *M_FormatAvailable(void)
 {
     RESUME_INFO *const info = Savegame_GetCurrentInfo(Game_GetCurrentLevel());

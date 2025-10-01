@@ -26,19 +26,6 @@ typedef enum {
     // clang-format on
 } BLADE_ANIM;
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     const OBJECT *const obj = Object_Get(O_BLADE);
@@ -69,6 +56,15 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_BLADE, M_Setup)

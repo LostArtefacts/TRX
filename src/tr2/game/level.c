@@ -45,14 +45,6 @@ typedef enum {
     LEVEL_LAYOUT_NUMBER_OF,
 } M_LAYOUT;
 
-static bool M_TryLayout(VFILE *file, M_LAYOUT layout);
-static void M_SkimLevel(VFILE *file, M_LAYOUT layout);
-static M_LAYOUT M_GuessLayout(VFILE *file);
-static int32_t M_CompareSampleOffsets(const void *a, const void *b);
-static void M_LoadFromFile(const GF_LEVEL *level);
-static void M_InitialiseSoundEffects(const char *const file_name);
-static void M_CompleteSetup(const GF_LEVEL *level);
-
 static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 {
     // TODO: clang-format <20 formats this wrongly

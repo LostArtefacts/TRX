@@ -12,11 +12,6 @@
 
 #include <stdio.h>
 
-static bool M_HasIcon(INPUT_ROLE role);
-static void M_Title(PHOTO_MODE current_mode);
-static void M_Inputs(PHOTO_MODE current_mode);
-static void M_Actions(PHOTO_MODE current_mode);
-
 static bool M_HasIcon(const INPUT_ROLE role)
 {
     return Input_GetKeyName(

@@ -14,12 +14,6 @@
 #include "game/viewport.h"
 #include "vector.h"
 
-static void M_GiveAllKeysImpl(void);
-static void M_GiveAllGunsImpl(void);
-static void M_GiveAllMedpacksImpl(void);
-static void M_ReinitialiseGunMeshes(void);
-static void M_ResetGunStatus(void);
-
 static void M_GiveAllKeysImpl(void)
 {
     Inv_AddItem(O_PUZZLE_ITEM_1);

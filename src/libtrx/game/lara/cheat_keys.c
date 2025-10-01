@@ -26,39 +26,6 @@ static LARA_GUN_TYPE m_InitialGunType = LGT_UNARMED;
 static int16_t m_CheatAngle = 0;
 static int32_t m_CheatTurn = 0;
 
-static bool M_ProcessOutcome(const ITEM *lara_item);
-static void M_CompleteLevel(void);
-static void M_GiveItems(void);
-static void M_ExplodeLara(void);
-
-static bool M_ProcessOutcome(const ITEM *const lara_item)
-{
-    if (lara_item->fall_speed <= 0) {
-        return false;
-    }
-
-    const LARA_STATE state = lara_item->current_anim_state;
-#if TR_VERSION == 1
-    const bool gun_status_check = true;
-    const bool explode_status_check = state == LS_SWAN_DIVE;
-#else
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    const bool gun_status_check = m_InitialGunType == LGT_FLARE
-        && lara_info->gun_type == m_InitialGunType;
-    const bool explode_status_check =
-        state == LS_JUMP_FORWARD || state == LS_JUMP_BACK;
-#endif
-
-    if (state == LS_JUMP_FORWARD && gun_status_check) {
-        M_CompleteLevel();
-    } else if (state == LS_JUMP_BACK && gun_status_check) {
-        M_GiveItems();
-    } else if (explode_status_check) {
-        M_ExplodeLara();
-    }
-    return true;
-}
-
 static void M_CompleteLevel(void)
 {
     Game_SetIsLevelComplete(true);
@@ -97,6 +64,34 @@ static void M_ExplodeLara(void)
     Sound_Effect(SFX_EXPLOSION_CHEAT, &lara_item->pos, SPM_NORMAL);
     lara_item->hit_points = 0;
     lara_item->flags |= IF_ONE_SHOT;
+}
+
+static bool M_ProcessOutcome(const ITEM *const lara_item)
+{
+    if (lara_item->fall_speed <= 0) {
+        return false;
+    }
+
+    const LARA_STATE state = lara_item->current_anim_state;
+#if TR_VERSION == 1
+    const bool gun_status_check = true;
+    const bool explode_status_check = state == LS_SWAN_DIVE;
+#else
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const bool gun_status_check = m_InitialGunType == LGT_FLARE
+        && lara_info->gun_type == m_InitialGunType;
+    const bool explode_status_check =
+        state == LS_JUMP_FORWARD || state == LS_JUMP_BACK;
+#endif
+
+    if (state == LS_JUMP_FORWARD && gun_status_check) {
+        M_CompleteLevel();
+    } else if (state == LS_JUMP_BACK && gun_status_check) {
+        M_GiveItems();
+    } else if (explode_status_check) {
+        M_ExplodeLara();
+    }
+    return true;
 }
 
 void Lara_Cheat_CheckKeys(void)

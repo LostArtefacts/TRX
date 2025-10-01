@@ -13,8 +13,6 @@
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220
 
-static void M_ShootAtLara(EFFECT *effect);
-
 static void M_ShootAtLara(EFFECT *const effect)
 {
     const ITEM *const lara_item = Lara_GetItem();

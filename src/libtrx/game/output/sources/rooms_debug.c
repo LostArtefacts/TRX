@@ -39,17 +39,6 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_PrepareRoomTriggers(
-    const M_PRIV *const p, M_ROOM_MESH *mesh, const ROOM *room);
-static void M_PrepareRoomPortals(
-    const M_PRIV *const p, M_ROOM_MESH *mesh, const ROOM *room);
-static void M_PrepareMeshes(M_PRIV *p);
-static void M_FreeBuffers(M_PRIV *p);
-
-static void M_RenderBegin(const SCENE_SOURCE *source);
-static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
-static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
-
-static void M_PrepareRoomTriggers(
     const M_PRIV *const p, M_ROOM_MESH *const mesh, const ROOM *const room)
 {
     mesh->triggers.vertex_start = p->vertices->count;

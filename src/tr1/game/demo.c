@@ -46,10 +46,6 @@ typedef struct {
 static int32_t m_LastDemoNum = 0;
 static M_PRIV m_Priv;
 
-static void M_PrepareConfig(M_PRIV *const p);
-static void M_RestoreConfig(M_PRIV *const p);
-static bool M_ProcessInput(M_PRIV *const p);
-
 static void M_PrepareConfig(M_PRIV *const p)
 {
     // Changing certains settings affects negatively the original game demo

@@ -8,17 +8,6 @@
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->hit_points = 5;
-    obj->save_flags = true;
-    obj->save_hitpoints = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     static int32_t counter = 0;
@@ -58,6 +47,14 @@ static void M_Control(const int16_t item_num)
     if (counter >= LOGIC_FPS * 3) {
         Item_Kill(item_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->hit_points = 5;
+    obj->save_flags = true;
+    obj->save_hitpoints = true;
 }
 
 REGISTER_OBJECT(O_SCION_ITEM_3, M_Setup)

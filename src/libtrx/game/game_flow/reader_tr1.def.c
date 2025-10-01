@@ -4,9 +4,6 @@
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetCameraPosEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent);
 
-static void M_LoadLevelItemDrops(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL *level);
-
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
     // Events without arguments
@@ -102,42 +99,6 @@ static void M_LoadSettings(
     M_LoadCommonSettings(ctx, obj, settings);
 }
 
-static void M_LoadLevelGameSpecifics(
-    const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
-    GF_LEVEL *const level)
-{
-    level->settings = ctx->gf->settings;
-    M_LoadSettings(ctx, jlvl_obj, &level->settings);
-
-    level->unobtainable.pickups =
-        JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
-    level->unobtainable.kills =
-        JSON_ObjectGetInt(jlvl_obj, "unobtainable_kills", 0);
-    level->unobtainable.secrets =
-        JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
-
-    {
-        JSON_VALUE *const tmp = JSON_ObjectGetValue(jlvl_obj, "lara_type");
-        if (tmp == nullptr) {
-            level->lara_type = O_LARA;
-        } else {
-            level->lara_type = M_GetObjectFromJSONValue(tmp);
-        }
-        if (level->lara_type == NO_OBJECT) {
-            Shell_ExitSystemFmt(
-                "%s, level %d: 'lara_type' must be a valid game object id",
-                ctx->script_path, level->num);
-        }
-    }
-
-    M_LoadLevelItemDrops(ctx, jlvl_obj, level);
-}
-
-static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
-{
-    return m_SequenceEventHandlers;
-}
-
 static void M_LoadLevelItemDrops(
     const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
     GF_LEVEL *const level)
@@ -193,6 +154,42 @@ static void M_LoadLevelItemDrops(
             data->object_ids[j] = (int16_t)id;
         }
     }
+}
+
+static void M_LoadLevelGameSpecifics(
+    const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
+    GF_LEVEL *const level)
+{
+    level->settings = ctx->gf->settings;
+    M_LoadSettings(ctx, jlvl_obj, &level->settings);
+
+    level->unobtainable.pickups =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
+    level->unobtainable.kills =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_kills", 0);
+    level->unobtainable.secrets =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
+
+    {
+        JSON_VALUE *const tmp = JSON_ObjectGetValue(jlvl_obj, "lara_type");
+        if (tmp == nullptr) {
+            level->lara_type = O_LARA;
+        } else {
+            level->lara_type = M_GetObjectFromJSONValue(tmp);
+        }
+        if (level->lara_type == NO_OBJECT) {
+            Shell_ExitSystemFmt(
+                "%s, level %d: 'lara_type' must be a valid game object id",
+                ctx->script_path, level->num);
+        }
+    }
+
+    M_LoadLevelItemDrops(ctx, jlvl_obj, level);
+}
+
+static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
+{
+    return m_SequenceEventHandlers;
 }
 
 static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)

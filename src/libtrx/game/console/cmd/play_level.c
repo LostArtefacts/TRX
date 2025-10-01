@@ -4,9 +4,6 @@
 #include "game/game_string.h"
 #include "strings.h"
 
-static const GF_LEVEL *M_FindLevel(const char *user_input);
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static const GF_LEVEL *M_FindLevel(const char *const user_input)
 {
     int32_t level_num = -1;

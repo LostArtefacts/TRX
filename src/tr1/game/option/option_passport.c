@@ -57,28 +57,6 @@ static struct {
     },
 };
 
-static void M_InitRequesters(void);
-static void M_InitText(void);
-static void M_RemoveAllText(void);
-static void M_SyncArrowsVisibility(void);
-static void M_ChangePageTextContent(const char *text);
-static void M_SetPage(int32_t page, PASSPORT_MODE role, bool available);
-static void M_DeterminePages(void);
-static void M_InitSaveRequester(int16_t page_num);
-static void M_InitSelectLevelRequester(void);
-static void M_ShowSaves(PASSPORT_MODE pending_mode);
-static void M_ShowSelectLevel(void);
-static void M_LoadGame(void);
-static void M_SelectLevel(void);
-static void M_SaveGame(void);
-static void M_NewGame(void);
-static void M_Restart(INVENTORY_ITEM *inv_item);
-static void M_FlipLeft(INVENTORY_ITEM *inv_item);
-static void M_FlipRight(INVENTORY_ITEM *inv_item);
-static void M_Close(INVENTORY_ITEM *inv_item);
-static void M_ShowPage(INVENTORY_ITEM *inv_item);
-static void M_HandleFlipInputs(void);
-
 static void M_InitRequesters(void)
 {
     UI_NewGame_Init(&m_State.new_game.state);
@@ -144,6 +122,25 @@ static void M_SetPage(
 {
     m_State.pages[page].role = role;
     m_State.pages[page].available = available;
+}
+
+static void M_InitSaveRequester(const int16_t page_num)
+{
+    int32_t save_slot = g_GameInfo.select_save_slot;
+    if (save_slot == -1) {
+        save_slot = Savegame_GetMostRecentlyUsedSlot();
+    }
+    if (save_slot == -1) {
+        save_slot = Savegame_GetMostRecentlyCreatedSlot();
+    }
+    if (save_slot == -1) {
+        save_slot = 0;
+    }
+
+    const UI_SAVE_SLOT_DIALOG_TYPE dialog_type = page_num == PAGE_1
+        ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
+        : UI_SAVE_SLOT_DIALOG_SAVE_GAME;
+    m_State.save_slot.state = UI_SaveSlotDialog_Init(dialog_type, save_slot);
 }
 
 static void M_DeterminePages(void)
@@ -235,29 +232,26 @@ static void M_DeterminePages(void)
     }
 }
 
-static void M_InitSaveRequester(const int16_t page_num)
-{
-    int32_t save_slot = g_GameInfo.select_save_slot;
-    if (save_slot == -1) {
-        save_slot = Savegame_GetMostRecentlyUsedSlot();
-    }
-    if (save_slot == -1) {
-        save_slot = Savegame_GetMostRecentlyCreatedSlot();
-    }
-    if (save_slot == -1) {
-        save_slot = 0;
-    }
-
-    const UI_SAVE_SLOT_DIALOG_TYPE dialog_type = page_num == PAGE_1
-        ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
-        : UI_SAVE_SLOT_DIALOG_SAVE_GAME;
-    m_State.save_slot.state = UI_SaveSlotDialog_Init(dialog_type, save_slot);
-}
-
 static void M_InitSelectLevelRequester(void)
 {
     m_State.select_level.state =
         UI_SelectLevelDialog_Init(g_GameInfo.select_save_slot);
+}
+
+static void M_ShowSelectLevel(void)
+{
+    const int32_t choice =
+        UI_SelectLevelDialog_Control(m_State.select_level.state);
+    if (choice == UI_SELECT_LEVEL_CHOICE_PLAY_STORY_SO_FAR) {
+        g_GameInfo.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
+    } else if (choice != UI_SELECT_LEVEL_CHOICE_NOOP) {
+        g_GameInfo.select_level_num = choice + GF_GetFirstLevel()->num;
+        g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
+        Savegame_BindSlot(g_GameInfo.select_save_slot);
+    } else {
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
+    }
 }
 
 static void M_ShowSaves(const PASSPORT_MODE pending_mode)
@@ -298,19 +292,16 @@ static void M_ShowSaves(const PASSPORT_MODE pending_mode)
     }
 }
 
-static void M_ShowSelectLevel(void)
+static void M_SelectLevel(void)
 {
-    const int32_t choice =
-        UI_SelectLevelDialog_Control(m_State.select_level.state);
-    if (choice == UI_SELECT_LEVEL_CHOICE_PLAY_STORY_SO_FAR) {
-        g_GameInfo.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
-    } else if (choice != UI_SELECT_LEVEL_CHOICE_NOOP) {
-        g_GameInfo.select_level_num = choice + GF_GetFirstLevel()->num;
-        g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
-        Savegame_BindSlot(g_GameInfo.select_save_slot);
-    } else {
+    if (g_InputDB.menu_left || g_InputDB.menu_back) {
+        M_InitSaveRequester(m_State.active_page);
+        m_State.mode = PASSPORT_MODE_LOAD_GAME;
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
+        M_ShowSaves(PASSPORT_MODE_LOAD_GAME);
+    } else {
+        M_ShowSelectLevel();
     }
 }
 
@@ -328,19 +319,6 @@ static void M_LoadGame(void)
         M_ShowSaves(PASSPORT_MODE_LOAD_GAME);
     } else if (m_State.mode == PASSPORT_MODE_SELECT_LEVEL) {
         M_SelectLevel();
-    }
-}
-
-static void M_SelectLevel(void)
-{
-    if (g_InputDB.menu_left || g_InputDB.menu_back) {
-        M_InitSaveRequester(m_State.active_page);
-        m_State.mode = PASSPORT_MODE_LOAD_GAME;
-        g_Input = (INPUT_STATE) {};
-        g_InputDB = (INPUT_STATE) {};
-        M_ShowSaves(PASSPORT_MODE_LOAD_GAME);
-    } else {
-        M_ShowSelectLevel();
     }
 }
 

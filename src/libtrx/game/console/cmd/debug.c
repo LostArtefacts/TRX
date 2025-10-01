@@ -15,10 +15,6 @@ static bool *const m_AllOptions[] = {
     nullptr,
 };
 
-static void M_Toggle(const bool enable);
-static void M_ShowStatus(void);
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static void M_Toggle(const bool enable)
 {
     for (int32_t i = 0; m_AllOptions[i] != nullptr; i++) {

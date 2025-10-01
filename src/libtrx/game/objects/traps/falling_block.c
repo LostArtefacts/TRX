@@ -4,16 +4,6 @@
 #include "game/rooms.h"
 #include "vector.h"
 
-static int32_t M_GetOrigin(GAME_OBJECT_ID obj_id);
-static void M_DropStack(const ITEM *item);
-static int16_t M_GetFloorHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_AddWalkable(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-
 static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
 {
 #if TR_VERSION == 1
@@ -23,7 +13,7 @@ static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
 #endif
 }
 
-void M_DropStack(const ITEM *const item)
+static void M_DropStack(const ITEM *const item)
 {
     const int32_t origin = M_GetOrigin(item->object_id);
     XYZ_32 drop_pos = {
@@ -60,7 +50,7 @@ static int16_t M_GetCeilingHeight(
     return height;
 }
 
-void M_AddWalkable(const int16_t item_num)
+static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     Walkable_Add(item_num, item->pos);

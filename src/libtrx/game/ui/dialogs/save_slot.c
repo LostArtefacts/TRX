@@ -24,12 +24,6 @@ typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_REQUESTER_STATE req;
 } UI_SAVE_SLOT_DIALOG_STATE;
 
-static bool M_ShowDetails(const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx);
-static void M_NonEmptySlot(
-    const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx,
-    const SAVEGAME_INFO *info);
-static void M_EmptySlot(const UI_SAVE_SLOT_DIALOG_STATE *s, int32_t slot_idx);
-
 static bool M_ShowDetails(
     const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx)
 {

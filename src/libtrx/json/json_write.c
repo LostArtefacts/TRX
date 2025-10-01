@@ -3,32 +3,13 @@
 #include "memory.h"
 
 static int M_GetValueSize_Minified(const JSON_VALUE *value, size_t *size);
-static int M_GetNumberSize(const JSON_NUMBER *number, size_t *size);
-static int M_GetStringSize(const JSON_STRING *string, size_t *size);
-static int M_GetArraySize_Minified(const JSON_ARRAY *array, size_t *size);
-static int M_GetObjectSize_Minified(const JSON_OBJECT *object, size_t *size);
 static char *M_WriteValue_Minified(const JSON_VALUE *value, char *data);
-static char *M_WriteNumber(const JSON_NUMBER *number, char *data);
-static char *M_WriteString(const JSON_STRING *string, char *data);
-static char *M_WriteArray_Minified(const JSON_ARRAY *array, char *data);
-static char *M_WriteObject_Minified(const JSON_OBJECT *object, char *data);
+
 static int M_GetValueSize_Pretty(
     const JSON_VALUE *value, size_t depth, size_t indent_size,
     size_t newline_size, size_t *size);
-static int M_GetArraySize_Pretty(
-    const JSON_ARRAY *array, size_t depth, size_t indent_size,
-    size_t newline_size, size_t *size);
-static int M_GetObjectSize_Pretty(
-    const JSON_OBJECT *object, size_t depth, size_t indent_size,
-    size_t newline_size, size_t *size);
 static char *M_WriteValue_Pretty(
     const JSON_VALUE *value, size_t depth, const char *indent,
-    const char *newline, char *data);
-static char *M_WriteArray_Pretty(
-    const JSON_ARRAY *array, size_t depth, const char *indent,
-    const char *newline, char *data);
-static char *M_WriteObject_Pretty(
-    const JSON_OBJECT *object, size_t depth, const char *indent,
     const char *newline, char *data);
 
 static int M_GetNumberSize(const JSON_NUMBER *number, size_t *size)

@@ -28,8 +28,6 @@ static double m_HeadlessFPS_DT = 0.0;
 static double m_HeadlessOffset = 0.0;
 static double m_HeadlessAnchor = 0.0;
 
-static double M_GetHighPrecisionCounter(void);
-
 static double M_GetHighPrecisionCounter(void)
 {
     if (m_HeadlessFixedFPS) {

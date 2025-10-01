@@ -19,13 +19,6 @@ typedef struct {
     PHASE_PICTURE_ARGS args;
 } M_PRIV;
 
-static void M_FadeOut(M_PRIV *p);
-
-static PHASE_CONTROL M_Start(PHASE *phase);
-static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase);
-static void M_Draw(PHASE *phase);
-
 static void M_FadeOut(M_PRIV *const p)
 {
     p->state = STATE_FADE_OUT;

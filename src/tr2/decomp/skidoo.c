@@ -93,9 +93,6 @@ BITE g_Skidoo_RightGun = {
     .mesh_num = 0,
 };
 
-static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data);
-static bool M_CheckBaddieCollision(ITEM *item, ITEM *skidoo);
-
 static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
 {
     return skidoo_data->track_mesh & SKIDOO_GUN_MESH;

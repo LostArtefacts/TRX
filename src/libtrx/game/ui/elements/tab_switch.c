@@ -10,8 +10,6 @@
 #include "game/ui/elements/stack.h"
 #include "memory.h"
 
-static void M_Draw(const UI_TAB_SWITCH_STATE *s, bool is_focused, bool single);
-
 static void M_Draw(
     const UI_TAB_SWITCH_STATE *const s, const bool is_focused,
     const bool single)

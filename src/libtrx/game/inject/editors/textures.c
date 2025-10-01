@@ -4,9 +4,6 @@
 #include "log.h"
 #include "memory.h"
 
-static void M_TextureEdits(const INJECTION *injection, int32_t data_count);
-static void M_SpriteEdits(const INJECTION *injection, int32_t data_count);
-
 static void M_TextureEdits(
     const INJECTION *const injection, const int32_t data_count)
 {

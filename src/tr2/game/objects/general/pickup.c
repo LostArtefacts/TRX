@@ -45,16 +45,6 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
-static void M_DoPickup(int16_t item_num);
-static void M_DoFlarePickup(int16_t item_num);
-static void M_DoAboveWater(int16_t item, ITEM *lara_item);
-static void M_DoUnderwater(int16_t item, ITEM *lara_item);
-static void M_Setup(OBJECT *obj);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Activate(ITEM *item);
-static void M_Control(int16_t item_num);
-static void M_Draw(const ITEM *item);
-
 static void M_DoPickup(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -198,18 +188,6 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
 
 cleanup:
     item->rot = old_rot;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->handle_save_func = M_HandleSave;
-    obj->activate_func = M_Activate;
-    obj->control_func = M_Control;
-    obj->collision_func = Pickup_Collision;
-    obj->bounds_func = Pickup_Bounds;
-    obj->draw_func = M_Draw;
-    obj->save_position = true;
-    obj->save_flags = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -379,6 +357,18 @@ bool Pickup_Trigger(const int16_t item_num)
 
     item->status = IS_DEACTIVATED;
     return true;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->handle_save_func = M_HandleSave;
+    obj->activate_func = M_Activate;
+    obj->control_func = M_Control;
+    obj->collision_func = Pickup_Collision;
+    obj->bounds_func = Pickup_Bounds;
+    obj->draw_func = M_Draw;
+    obj->save_position = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_FLARES_ITEM, M_Setup)

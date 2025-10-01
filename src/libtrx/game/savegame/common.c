@@ -31,15 +31,6 @@ static int32_t m_BoundSlot = -1;
 static int32_t m_StrategyCount = 0;
 static SAVEGAME_STRATEGY m_Strategies[MAX_STRATEGIES];
 
-static void M_ClearSlot(SAVEGAME_INFO *savegame_info);
-static void M_ClearSlots(void);
-static bool M_FillSlot(
-    SAVEGAME_STRATEGY strategy, int32_t slot_num, const char *path);
-static void M_ScanSavedGamesDir(const char *dir_path);
-static void M_LoadPreprocess(void);
-static void M_LoadPostprocess(void);
-static void M_DetermineLegacyGunTypes(RESUME_INFO *resume);
-
 static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)
 {
     savegame_info->format = SAVEGAME_FORMAT_INVALID;

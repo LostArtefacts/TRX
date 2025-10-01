@@ -19,10 +19,6 @@ static void (*m_StateRoutines[LS_NUMBER_OF])(ITEM *item, COLL_INFO *coll) = {};
 static void (*m_ExtraRoutines[LS_EXTRA_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 
-static bool M_HasResponsiveState(LARA_ANIMATION anim_idx);
-static inline void (*M_GetRoutine(const ITEM *item))(
-    ITEM *item, COLL_INFO *coll);
-
 static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
 {
     const OBJECT *const obj = Object_Get(O_LARA);

@@ -16,19 +16,6 @@ typedef enum {
     DRAWBRIDGE_ANIM_CLOSED = 3,
 } DRAWBRIDGE_ANIM;
 
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
-static int16_t M_GetFloorHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Control(int16_t item_num);
-static void M_AddWalkable(int16_t item_num);
-static void M_Setup(OBJECT *const obj);
-static BOUNDS_16 M_RotateBounds(BOUNDS_16 bounds, int16_t rot_y);
-static void M_DropStack(const ITEM *item);
-static void M_GetSectorPositions(const ITEM *item, VECTOR *sector_pos);
-
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 {
     int32_t ix = item->pos.x >> WALL_SHIFT;
@@ -86,67 +73,7 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
-{
-    const ITEM *const item = Item_Get(item_num);
-    if (item->current_anim_state == DRAWBRIDGE_STATE_CLOSED) {
-        Door_Collision(item_num, lara_item, coll);
-    }
-}
-
-static void M_Control(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (Item_IsTriggerActive(item)) {
-        item->goal_anim_state = DRAWBRIDGE_STATE_OPEN;
-    } else {
-        item->goal_anim_state = DRAWBRIDGE_STATE_CLOSED;
-        if (item->current_anim_state == DRAWBRIDGE_STATE_OPEN) {
-            M_DropStack(item);
-        }
-    }
-
-    Item_Animate(item);
-
-    int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    Item_UpdateRoom(item_num, room_num);
-}
-
-static void M_AddWalkable(const int16_t item_num)
-{
-    const ITEM *const item = Item_Get(item_num);
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
-    M_GetSectorPositions(item, positions);
-    for (int32_t i = 0; i < positions->count; i++) {
-        Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
-    }
-    Vector_Free(positions);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->collision_func = M_Collision;
-    obj->control_func = M_Control;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->add_walkable_func = M_AddWalkable;
-}
-
-void M_DropStack(const ITEM *const item)
-{
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
-    M_GetSectorPositions(item, positions);
-    for (int32_t i = 0; i < positions->count; i++) {
-        MovableBlock_DropStack(
-            *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
-    }
-    Vector_Free(positions);
-}
-
-BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
+static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
 {
     BOUNDS_16 rot_bounds = {};
 
@@ -212,6 +139,66 @@ static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
             Vector_Add(sector_pos, &pos);
         }
     }
+}
+
+static void M_DropStack(const ITEM *const item)
+{
+    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    for (int32_t i = 0; i < positions->count; i++) {
+        MovableBlock_DropStack(
+            *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
+    }
+    Vector_Free(positions);
+}
+
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+{
+    const ITEM *const item = Item_Get(item_num);
+    if (item->current_anim_state == DRAWBRIDGE_STATE_CLOSED) {
+        Door_Collision(item_num, lara_item, coll);
+    }
+}
+
+static void M_Control(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (Item_IsTriggerActive(item)) {
+        item->goal_anim_state = DRAWBRIDGE_STATE_OPEN;
+    } else {
+        item->goal_anim_state = DRAWBRIDGE_STATE_CLOSED;
+        if (item->current_anim_state == DRAWBRIDGE_STATE_OPEN) {
+            M_DropStack(item);
+        }
+    }
+
+    Item_Animate(item);
+
+    int16_t room_num = item->room_num;
+    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Item_UpdateRoom(item_num, room_num);
+}
+
+static void M_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    for (int32_t i = 0; i < positions->count; i++) {
+        Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
+    }
+    Vector_Free(positions);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->add_walkable_func = M_AddWalkable;
 }
 
 REGISTER_OBJECT(O_DRAWBRIDGE, M_Setup)

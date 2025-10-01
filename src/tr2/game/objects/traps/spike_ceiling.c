@@ -8,11 +8,6 @@
 #define SPIKE_CEILING_DAMAGE 20
 #define SPIKE_CEILING_SPEED 1
 
-static void M_Move(int16_t item_num);
-static void M_HitLara(ITEM *item);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_Move(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -42,14 +37,6 @@ static void M_HitLara(ITEM *const item)
     Sound_Effect(SFX_LARA_FLESH_WOUND, &item->pos, SPM_NORMAL);
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_position = true;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -62,6 +49,14 @@ static void M_Control(const int16_t item_num)
     if (item->touch_bits) {
         M_HitLara(item);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_position = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_CEILING_SPIKES, M_Setup)

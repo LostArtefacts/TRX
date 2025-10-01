@@ -27,22 +27,6 @@ typedef struct {
     XYZ_32 shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } M_LIGHTNING;
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Draw(const ITEM *item);
-static void M_DrawBolts(const ITEM *item);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
-    obj->collision_func = M_Collision;
-    obj->save_flags = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     M_LIGHTNING *l = GameBuf_Alloc(sizeof(M_LIGHTNING), GBUF_ITEM_DATA);
@@ -165,31 +149,6 @@ static void M_Collision(
     CLAMPG(lara->hit_frame, 34);
 }
 
-static void M_Draw(const ITEM *const item)
-{
-    const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
-    ANIM_FRAME *frmptr[2];
-    int32_t rate;
-    Item_GetFrames(item, frmptr, &rate);
-
-    Matrix_Push();
-    Matrix_TranslateAbs32(item->interp.result.pos);
-    Matrix_Rot16(item->interp.result.rot);
-    const CLIP clip = Output_CheckBoundsClip(&frmptr[0]->bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        Matrix_Pop();
-        return;
-    }
-
-    Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
-
-    Matrix_TranslateRel16(frmptr[0]->offset);
-    Object_DrawMesh(obj->mesh_idx, clip, false);
-    Matrix_Pop();
-
-    M_DrawBolts(item);
-}
-
 static void M_DrawBolts(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
@@ -298,6 +257,40 @@ static void M_DrawBolts(const ITEM *const item)
             z1 = z2;
         }
     }
+}
+
+static void M_Draw(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
+    ANIM_FRAME *frmptr[2];
+    int32_t rate;
+    Item_GetFrames(item, frmptr, &rate);
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
+    const CLIP clip = Output_CheckBoundsClip(&frmptr[0]->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        Matrix_Pop();
+        return;
+    }
+
+    Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
+
+    Matrix_TranslateRel16(frmptr[0]->offset);
+    Object_DrawMesh(obj->mesh_idx, clip, false);
+    Matrix_Pop();
+
+    M_DrawBolts(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = M_Collision;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_LIGHTNING_EMITTER, M_Setup)

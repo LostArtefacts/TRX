@@ -16,10 +16,6 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static int32_t M_GetMaxRows(void);
-static void M_Init(M_PRIV *p, GAME_OBJECT_ID obj_id);
-static void M_Close(M_PRIV *p);
-
 static int32_t M_GetMaxRows(void)
 {
     const int32_t res_h =

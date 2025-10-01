@@ -14,19 +14,6 @@
 #define M_CAM_ZIPLINE_ANGLE     (70 * DEG_1)                   // = 12740
 // clang-format on
 
-static void M_Compress(ITEM *item, COLL_INFO *coll);
-static void M_UpJump(ITEM *item, COLL_INFO *coll);
-static void M_NeutralJumpRoll(ITEM *item, COLL_INFO *coll);
-static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
-static void M_BackJump(ITEM *item, COLL_INFO *coll);
-static void M_SideJump(ITEM *item, COLL_INFO *coll);
-static void M_FallBack(ITEM *item, COLL_INFO *coll);
-static void M_Reach(ITEM *item, COLL_INFO *coll);
-static void M_SwanDive(ITEM *item, COLL_INFO *coll);
-static void M_FastDive(ITEM *item, COLL_INFO *coll);
-static void M_FastFall(ITEM *item, COLL_INFO *coll);
-static void M_Zipline(ITEM *item, COLL_INFO *coll);
-
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();

@@ -1,9 +1,6 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
 static void M_Control(int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);

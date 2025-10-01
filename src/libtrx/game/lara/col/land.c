@@ -39,32 +39,6 @@
 static int16_t m_OldSlideAngle = 1;
 
 static bool M_TestWall(
-    const ITEM *item, int32_t front, int32_t right, int32_t down);
-static bool M_CanControlDrop(const ITEM *item, const COLL_INFO *coll);
-static bool M_Fallen(ITEM *item, const COLL_INFO *coll);
-static bool M_TestSlide(ITEM *item, COLL_INFO *coll);
-static bool M_DeflectEdge(ITEM *item, COLL_INFO *coll);
-static bool M_TestCeiling(ITEM *item, const COLL_INFO *coll);
-static void M_CollideStop(ITEM *item, const COLL_INFO *coll);
-
-static void M_Default(ITEM *item, COLL_INFO *coll);
-static void M_Walk(ITEM *item, COLL_INFO *coll);
-static void M_WalkBack(ITEM *item, COLL_INFO *coll);
-static void M_SideStep(ITEM *item, COLL_INFO *coll);
-static void M_Run(ITEM *item, COLL_INFO *coll);
-static void M_Stop(ITEM *item, COLL_INFO *coll);
-static void M_FastBack(ITEM *item, COLL_INFO *coll);
-static void M_Turn(ITEM *item, COLL_INFO *coll);
-static void M_Death(ITEM *item, COLL_INFO *coll);
-static void M_Splat(ITEM *item, COLL_INFO *coll);
-static void M_Slide(ITEM *item, COLL_INFO *coll);
-static void M_Roll(ITEM *item, COLL_INFO *coll);
-static void M_RollContinue(ITEM *item, COLL_INFO *coll);
-static void M_Wade(ITEM *item, COLL_INFO *coll);
-static void M_Sprint(ITEM *item, COLL_INFO *coll);
-static void M_SprintRoll(ITEM *item, COLL_INFO *coll);
-
-static bool M_TestWall(
     const ITEM *const item, const int32_t front, const int32_t right,
     const int32_t down)
 {

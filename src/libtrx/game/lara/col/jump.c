@@ -20,23 +20,6 @@ typedef enum {
 } M_EDGE_CATCH;
 
 static M_EDGE_CATCH M_TestEdgeCatch(
-    const ITEM *item, const COLL_INFO *coll, int32_t *edge);
-static bool M_TestHangJump(ITEM *item, COLL_INFO *coll);
-static bool M_TestHangJumpUp(ITEM *item, COLL_INFO *coll);
-static bool M_TestHangSwingIn(const ITEM *item, int16_t angle);
-static void M_SlideEdgeJump(ITEM *item, COLL_INFO *coll);
-
-static void M_Compress(ITEM *item, COLL_INFO *coll);
-static void M_UpJump(ITEM *item, COLL_INFO *coll);
-static void M_ForwardJump(ITEM *item, COLL_INFO *coll);
-static void M_SideBackJump(ITEM *item, COLL_INFO *coll);
-static void M_FallBack(ITEM *item, COLL_INFO *coll);
-static void M_Reach(ITEM *item, COLL_INFO *coll);
-static void M_SwanDive(ITEM *item, COLL_INFO *coll);
-static void M_FastDive(ITEM *item, COLL_INFO *coll);
-static void M_FastFall(ITEM *item, COLL_INFO *coll);
-
-static M_EDGE_CATCH M_TestEdgeCatch(
     const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
 {
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
@@ -59,6 +42,33 @@ static M_EDGE_CATCH M_TestEdgeCatch(
     return ABS(coll->side_left.floor - coll->side_right.floor) < SLOPE_DIF
         ? EDGE_CATCH_POS
         : EDGE_CATCH_NONE;
+}
+
+static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
+{
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_num;
+    switch (angle) {
+    case 0:
+        z += STEP_L;
+        break;
+    case DEG_90:
+        x += STEP_L;
+        break;
+    case -DEG_180:
+        z -= STEP_L;
+        break;
+    case -DEG_90:
+        x -= STEP_L;
+        break;
+    }
+
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    int32_t height = Room_GetHeight(sector, x, y, z);
+    int32_t ceiling = Room_GetCeiling(sector, x, y, z);
+    return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
 }
 
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
@@ -151,33 +161,6 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     lara->gun_status = LGS_HANDS_BUSY;
     return true;
-}
-
-static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
-{
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
-    int16_t room_num = item->room_num;
-    switch (angle) {
-    case 0:
-        z += STEP_L;
-        break;
-    case DEG_90:
-        x += STEP_L;
-        break;
-    case -DEG_180:
-        z -= STEP_L;
-        break;
-    case -DEG_90:
-        x -= STEP_L;
-        break;
-    }
-
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
 }
 
 static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)

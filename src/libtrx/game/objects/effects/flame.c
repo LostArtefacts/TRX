@@ -20,10 +20,6 @@
     #define M_ON_FIRE_DAMAGE 7
 #endif
 
-static void M_DoEffects(const EFFECT *effect);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
 static void M_DoEffects(const EFFECT *const effect)
 {
     if (!Object_Get(O_FLAME)->loaded) {
@@ -51,12 +47,6 @@ static void M_DoEffects(const EFFECT *const effect)
         Output_AddDynamicLight(
             light_pos, M_LIGHT_INTENSITY, M_LIGHT_FALLOFF / 2);
     }
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->semi_transparent = true;
 }
 
 static void M_Control(const int16_t effect_num)
@@ -113,6 +103,12 @@ static void M_Control(const int16_t effect_num)
             lara_info->burn = true;
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->semi_transparent = true;
 }
 
 REGISTER_OBJECT(O_FLAME, M_Setup)

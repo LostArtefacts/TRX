@@ -8,9 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *M_CreateRangeString(void);
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static char *M_CreateRangeString(void)
 {
     size_t buffer_size = 64;

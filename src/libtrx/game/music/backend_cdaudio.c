@@ -25,12 +25,6 @@ typedef struct {
     M_CDAUDIO_TRACK *tracks;
 } M_BACKEND_DATA;
 
-static bool M_Parse(M_BACKEND_DATA *data);
-static bool M_Init(MUSIC_BACKEND *backend);
-static const char *M_Describe(const MUSIC_BACKEND *backend);
-static int32_t M_Play(const MUSIC_BACKEND *backend, int32_t track_id);
-static void M_Shutdown(MUSIC_BACKEND *backend);
-
 static bool M_Parse(M_BACKEND_DATA *const data)
 {
     ASSERT(data != nullptr);

@@ -3,9 +3,6 @@
 
 #include <string.h>
 
-static void M_FrameEdits(const INJECTION *injection, int32_t data_count);
-static void M_FrameReplacements(const INJECTION *injection, int32_t data_count);
-
 static void M_FrameEdits(
     const INJECTION *const injection, const int32_t data_count)
 {

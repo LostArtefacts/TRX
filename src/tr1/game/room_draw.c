@@ -15,12 +15,6 @@
 static int32_t m_RoomNumStack[MAX_ROOMS_TO_DRAW] = {};
 static int32_t m_RoomNumStackIdx = 0;
 
-static void M_PrintDrawStack(void);
-static bool M_SetBounds(const PORTAL *portal, const ROOM *parent);
-static void M_GetBounds(int16_t room_num);
-static void M_PrepareToDraw(int16_t room_num);
-static void M_DrawSkybox(void);
-
 static void M_PrintDrawStack(void)
 {
     for (int i = 0; i < m_RoomNumStackIdx; i++) {
@@ -188,27 +182,6 @@ static void M_GetBounds(int16_t room_num)
     m_RoomNumStackIdx--;
 }
 
-void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
-{
-    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-
-    Room_DrawReset();
-
-    M_PrepareToDraw(base_room);
-    if (!Room_CheckOverlap(base_room, target_room)) {
-        M_PrepareToDraw(target_room);
-    }
-    M_DrawSkybox();
-
-    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
-        Room_DrawSingleRoom(Room_DrawGetRoom(i));
-    }
-    Output_SetupAboveWater(false);
-}
-
 static void M_PrepareToDraw(int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
@@ -254,6 +227,27 @@ static void M_DrawSkybox(void)
     Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
 
     Matrix_Pop();
+}
+
+void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
+{
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+
+    Room_DrawReset();
+
+    M_PrepareToDraw(base_room);
+    if (!Room_CheckOverlap(base_room, target_room)) {
+        M_PrepareToDraw(target_room);
+    }
+    M_DrawSkybox();
+
+    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+        Room_DrawSingleRoom(Room_DrawGetRoom(i));
+    }
+    Output_SetupAboveWater(false);
 }
 
 void Room_DrawSingleRoom(const int16_t room_num)

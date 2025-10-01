@@ -24,13 +24,6 @@ typedef struct {
 static M_PRIV m_Priv;
 
 static void M_GenerateLightningSegment(
-    M_PRIV *p, const LIGHTNING_SEGMENT *segment);
-
-static void M_RenderBegin(const SCENE_SOURCE *source);
-static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
-static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
-
-static void M_GenerateLightningSegment(
     M_PRIV *const p, const LIGHTNING_SEGMENT *const segment)
 {
     const RGBA_8888 blue = { 0, 0, 255, 128 };

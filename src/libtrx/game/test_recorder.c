@@ -19,8 +19,6 @@
 #define M_DEBUG 0
 #define M_MAX_EVENTS 64 // Maximum SDL or custom events per frame
 
-static void M_HandleGameEvent(const EVENT *event, void *user_data);
-
 // Internal event codes for recorder swimlane
 typedef enum {
     M_CUSTOM_EVENT_SCREENSHOT,
@@ -49,14 +47,6 @@ static const struct {
 };
 
 static M_PRIV m_Priv = {};
-
-static int M_CompareConfigOption(const void *a, const void *b);
-static const char *M_DumpEvent(const SDL_Event *event);
-static void M_DumpQueue(M_PRIV *p);
-static void M_DumpHeader(MYFILE *fp);
-static void M_DumpArguments(MYFILE *fp, VECTOR *original_args);
-static void M_DumpConfig(MYFILE *fp);
-static void M_DumpBindings(MYFILE *fp);
 
 static int M_CompareConfigOption(const void *a, const void *b)
 {
@@ -260,6 +250,22 @@ static void M_DumpBindings(MYFILE *const fp)
     File_WriteString(fp, "\n");
 }
 
+// Callback for game events: inject synthetic SDL_USEREVENT into queue
+static void M_HandleGameEvent(const EVENT *const event, void *const user_data)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->file == nullptr || p->queue_size >= M_MAX_EVENTS) {
+        return;
+    }
+    SDL_Event ev = { .type = SDL_USEREVENT };
+    ev.user.code = (strcmp(event->name, GAME_EVENT_SCREENSHOT) == 0)
+        ? M_CUSTOM_EVENT_SCREENSHOT
+        : M_CUSTOM_EVENT_COMMAND;
+    ev.user.data1 = Memory_DupStr(event->data);
+    ev.user.data2 = nullptr;
+    p->queue[p->queue_size++] = ev;
+}
+
 void TestRecorder_Open(const char *path, VECTOR *const original_args)
 {
     M_PRIV *const p = &m_Priv;
@@ -315,22 +321,6 @@ void TestRecorder_EndFrame(void)
         M_DumpQueue(p);
     }
     p->frame_idx++;
-}
-
-// Callback for game events: inject synthetic SDL_USEREVENT into queue
-static void M_HandleGameEvent(const EVENT *const event, void *const user_data)
-{
-    M_PRIV *const p = &m_Priv;
-    if (p->file == nullptr || p->queue_size >= M_MAX_EVENTS) {
-        return;
-    }
-    SDL_Event ev = { .type = SDL_USEREVENT };
-    ev.user.code = (strcmp(event->name, GAME_EVENT_SCREENSHOT) == 0)
-        ? M_CUSTOM_EVENT_SCREENSHOT
-        : M_CUSTOM_EVENT_COMMAND;
-    ev.user.data1 = Memory_DupStr(event->data);
-    ev.user.data2 = nullptr;
-    p->queue[p->queue_size++] = ev;
 }
 
 void TestRecorder_RecordEvent(const SDL_Event *const event)

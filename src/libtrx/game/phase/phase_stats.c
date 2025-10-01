@@ -27,15 +27,6 @@ typedef struct {
     UI_STATS_DIALOG_STATE ui_state;
 } M_PRIV;
 
-static bool M_IsFading(M_PRIV *p);
-static void M_FadeIn(M_PRIV *p);
-static void M_FadeOut(M_PRIV *p, bool force);
-
-static PHASE_CONTROL M_Start(PHASE *phase);
-static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase);
-static void M_Draw(PHASE *phase);
-
 static bool M_IsFading(M_PRIV *const p)
 {
     return Fader_IsActive(&p->top_fader) || Fader_IsActive(&p->back_fader);

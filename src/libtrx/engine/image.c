@@ -40,14 +40,24 @@ typedef struct {
     AVPacket *packet;
 } IMAGE_READER_CONTEXT;
 
-static bool M_Init(const char *path, IMAGE_READER_CONTEXT *ctx);
-static void M_Free(IMAGE_READER_CONTEXT *ctx);
-static IMAGE *M_ConstructImage(
-    IMAGE_READER_CONTEXT *ctx, int32_t target_width, int32_t target_height,
-    IMAGE_FIT_MODE fit_mode);
-static IMAGE_BLIT M_GetBlit(
-    int32_t source_width, int32_t source_height, int32_t target_width,
-    int32_t target_height, IMAGE_FIT_MODE fit_mode);
+static void M_Free(IMAGE_READER_CONTEXT *const ctx)
+{
+    if (ctx->packet != nullptr) {
+        av_packet_free(&ctx->packet);
+    }
+
+    if (ctx->frame != nullptr) {
+        av_frame_free(&ctx->frame);
+    }
+
+    if (ctx->codec_ctx != nullptr) {
+        avcodec_free_context(&ctx->codec_ctx);
+    }
+
+    if (ctx->format_ctx != nullptr) {
+        avformat_close_input(&ctx->format_ctx);
+    }
+}
 
 static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
 {
@@ -162,79 +172,6 @@ finish:
     return true;
 }
 
-static void M_Free(IMAGE_READER_CONTEXT *const ctx)
-{
-    if (ctx->packet != nullptr) {
-        av_packet_free(&ctx->packet);
-    }
-
-    if (ctx->frame != nullptr) {
-        av_frame_free(&ctx->frame);
-    }
-
-    if (ctx->codec_ctx != nullptr) {
-        avcodec_free_context(&ctx->codec_ctx);
-    }
-
-    if (ctx->format_ctx != nullptr) {
-        avformat_close_input(&ctx->format_ctx);
-    }
-}
-
-IMAGE *Image_Create(const int width, const int height)
-{
-    IMAGE *image = Memory_Alloc(sizeof(IMAGE));
-    image->width = width;
-    image->height = height;
-    image->data = Memory_Alloc(width * height * sizeof(IMAGE_PIXEL));
-    return image;
-}
-
-static IMAGE *M_ConstructImage(
-    IMAGE_READER_CONTEXT *const ctx, const int32_t target_width,
-    const int32_t target_height, IMAGE_FIT_MODE fit_mode)
-{
-    ASSERT(ctx != nullptr);
-    ASSERT(target_width > 0);
-    ASSERT(target_height > 0);
-
-    IMAGE_BLIT blit = M_GetBlit(
-        ctx->frame->width, ctx->frame->height, target_width, target_height,
-        fit_mode);
-
-    if (blit.src.y != 0 || blit.src.x != 0) {
-        ctx->frame->crop_top = blit.src.y;
-        ctx->frame->crop_left = blit.src.x;
-        av_frame_apply_cropping(ctx->frame, AV_FRAME_CROP_UNALIGNED);
-    }
-
-    struct SwsContext *const sws_ctx = sws_getContext(
-        blit.src.width, blit.src.height, ctx->frame->format, blit.dst.width,
-        blit.dst.height, AV_PIX_FMT_RGB24, SWS_BILINEAR, nullptr, nullptr,
-        nullptr);
-    if (sws_ctx == nullptr) {
-        LOG_ERROR("Failed to get SWS context");
-        return nullptr;
-    }
-
-    IMAGE *const target_image = Image_Create(target_width, target_height);
-
-    uint8_t *dst_planes[4] = { (uint8_t *)target_image->data
-                                   + (blit.dst.y * target_image->width
-                                      + blit.dst.x)
-                                       * sizeof(IMAGE_PIXEL),
-                               nullptr, nullptr, nullptr };
-    int dst_linesize[4] = { target_image->width * sizeof(IMAGE_PIXEL), 0, 0,
-                            0 };
-
-    sws_scale(
-        sws_ctx, (const uint8_t *const *)ctx->frame->data, ctx->frame->linesize,
-        0, blit.src.height, dst_planes, dst_linesize);
-
-    sws_freeContext(sws_ctx);
-    return target_image;
-}
-
 static IMAGE_BLIT M_GetBlit(
     const int32_t source_width, const int32_t source_height,
     const int32_t target_width, const int32_t target_height,
@@ -313,6 +250,60 @@ static IMAGE_BLIT M_GetBlit(
         break;
     }
     return blit;
+}
+
+static IMAGE *M_ConstructImage(
+    IMAGE_READER_CONTEXT *const ctx, const int32_t target_width,
+    const int32_t target_height, IMAGE_FIT_MODE fit_mode)
+{
+    ASSERT(ctx != nullptr);
+    ASSERT(target_width > 0);
+    ASSERT(target_height > 0);
+
+    IMAGE_BLIT blit = M_GetBlit(
+        ctx->frame->width, ctx->frame->height, target_width, target_height,
+        fit_mode);
+
+    if (blit.src.y != 0 || blit.src.x != 0) {
+        ctx->frame->crop_top = blit.src.y;
+        ctx->frame->crop_left = blit.src.x;
+        av_frame_apply_cropping(ctx->frame, AV_FRAME_CROP_UNALIGNED);
+    }
+
+    struct SwsContext *const sws_ctx = sws_getContext(
+        blit.src.width, blit.src.height, ctx->frame->format, blit.dst.width,
+        blit.dst.height, AV_PIX_FMT_RGB24, SWS_BILINEAR, nullptr, nullptr,
+        nullptr);
+    if (sws_ctx == nullptr) {
+        LOG_ERROR("Failed to get SWS context");
+        return nullptr;
+    }
+
+    IMAGE *const target_image = Image_Create(target_width, target_height);
+
+    uint8_t *dst_planes[4] = { (uint8_t *)target_image->data
+                                   + (blit.dst.y * target_image->width
+                                      + blit.dst.x)
+                                       * sizeof(IMAGE_PIXEL),
+                               nullptr, nullptr, nullptr };
+    int dst_linesize[4] = { target_image->width * sizeof(IMAGE_PIXEL), 0, 0,
+                            0 };
+
+    sws_scale(
+        sws_ctx, (const uint8_t *const *)ctx->frame->data, ctx->frame->linesize,
+        0, blit.src.height, dst_planes, dst_linesize);
+
+    sws_freeContext(sws_ctx);
+    return target_image;
+}
+
+IMAGE *Image_Create(const int width, const int height)
+{
+    IMAGE *image = Memory_Alloc(sizeof(IMAGE));
+    image->width = width;
+    image->height = height;
+    image->data = Memory_Alloc(width * height * sizeof(IMAGE_PIXEL));
+    return image;
 }
 
 IMAGE *Image_CreateFromFile(const char *const path)

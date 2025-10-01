@@ -11,25 +11,6 @@
 static int32_t m_AnchorX = -1;
 static int32_t m_AnchorZ = -1;
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_Draw(const ITEM *item);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
-    obj->collision_func = Creature_Collision;
-    obj->hit_points = LARA_MAX_HITPOINTS;
-    obj->shadow_size = (UNIT_SHADOW * 10) / 16;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     const OBJECT *const lara_obj = Object_Get(O_LARA);
@@ -136,6 +117,20 @@ static void M_Draw(const ITEM *const item)
     for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
         Lara_Mesh_Set(mesh, old_mesh_ptrs[mesh]);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = Creature_Collision;
+    obj->hit_points = LARA_MAX_HITPOINTS;
+    obj->shadow_size = (UNIT_SHADOW * 10) / 16;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 bool BaconLara_InitialiseAnchor(const int32_t room_index)

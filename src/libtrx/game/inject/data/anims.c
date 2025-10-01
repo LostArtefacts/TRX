@@ -5,9 +5,6 @@
 #include "game/objects.h"
 #include "memory.h"
 
-static void M_HandleAnimData(INJECTION_CHUNK chunk);
-static void M_CommandEdits(const INJECTION *injection, int32_t data_count);
-
 static void M_HandleAnimData(const INJECTION_CHUNK chunk)
 {
     LEVEL_INFO *const level_info = Level_GetInfo();

@@ -52,15 +52,6 @@ static const LARA_STATE m_ThrowStates[] = {
     (LARA_STATE)-1,
 };
 
-static void M_InitialiseState(void);
-static void M_DoIgniteEffects(XYZ_32 flare_pos, int16_t room_num);
-static bool M_CanThrowFlare(void);
-static void M_ControlInHand(int32_t flare_age);
-static void M_ControlArmless(void);
-static void M_ControlBusyHands(void);
-static void M_SetArm(int32_t flare_frame);
-static void M_UndrawMeshes(void);
-
 static void M_InitialiseState(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -136,6 +127,28 @@ static void M_ControlInHand(const int32_t flare_age)
     }
 }
 
+static void M_SetArm(const int32_t flare_frame)
+{
+    int16_t anim_idx;
+    if (flare_frame < LF_FL_THROW) {
+        anim_idx = LA_FLARES_HOLD;
+    } else if (flare_frame < LF_FL_DRAW) {
+        anim_idx = LA_FLARES_THROW;
+    } else if (flare_frame < LF_FL_IGNITE) {
+        anim_idx = LA_FLARES_DRAW;
+    } else if (flare_frame < LF_FL_2_HOLD) {
+        anim_idx = LA_FLARES_IGNITE;
+    } else {
+        anim_idx = LA_FLARES_IDLE;
+    }
+
+    const OBJECT *const obj = Object_Get(O_LARA_FLARE);
+    const ANIM *const anim = Object_GetAnim(obj, anim_idx);
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->left_arm.anim_num = obj->anim_idx + anim_idx;
+    lara_info->left_arm.frame_base = anim->frame_ptr;
+}
+
 static void M_ControlArmless(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -170,28 +183,6 @@ static void M_ControlBusyHands(void)
         Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
     M_ControlInHand(lara_info->flare.age);
     M_SetArm(lara_info->left_arm.frame_num);
-}
-
-static void M_SetArm(const int32_t flare_frame)
-{
-    int16_t anim_idx;
-    if (flare_frame < LF_FL_THROW) {
-        anim_idx = LA_FLARES_HOLD;
-    } else if (flare_frame < LF_FL_DRAW) {
-        anim_idx = LA_FLARES_THROW;
-    } else if (flare_frame < LF_FL_IGNITE) {
-        anim_idx = LA_FLARES_DRAW;
-    } else if (flare_frame < LF_FL_2_HOLD) {
-        anim_idx = LA_FLARES_IGNITE;
-    } else {
-        anim_idx = LA_FLARES_IDLE;
-    }
-
-    const OBJECT *const obj = Object_Get(O_LARA_FLARE);
-    const ANIM *const anim = Object_GetAnim(obj, anim_idx);
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->left_arm.anim_num = obj->anim_idx + anim_idx;
-    lara_info->left_arm.frame_base = anim->frame_ptr;
 }
 
 static void M_UndrawMeshes(void)

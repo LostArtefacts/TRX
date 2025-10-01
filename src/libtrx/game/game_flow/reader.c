@@ -36,60 +36,20 @@ typedef struct {
     void *handler_func_arg;
 } M_SEQUENCE_EVENT_HANDLER;
 
-static bool M_ParseRGB888(JSON_VALUE *value, RGB_888 *target);
-
-static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void);
-
 typedef void (*M_LOAD_ARRAY_FUNC)(
     const M_CONTEXT *ctx, JSON_OBJECT *source_elem, void *target_elem,
     size_t target_elem_idx, void *user_arg);
 
 static GAME_OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *value);
 
-static void M_LoadArray(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, const char *key, int32_t *count,
-    void **elements, size_t element_size, M_LOAD_ARRAY_FUNC load_func,
-    void *load_func_arg);
-
-static void M_LoadSettings(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL_SETTINGS *settings);
-
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
-static size_t M_LoadSequenceEvent(
-    const M_CONTEXT *ctx, JSON_OBJECT *event_obj, GF_SEQUENCE_EVENT *event,
-    void *extra_data);
-static void M_LoadSequence(
-    const M_CONTEXT *ctx, JSON_ARRAY *jseq_arr, GF_SEQUENCE *sequence);
 
-static void M_LoadLevelInjections(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL *level);
-static void M_LoadLevelGameSpecifics(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL *level);
-static void M_LoadLevelSequence(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL *level);
-static void M_LoadLevel(
-    const M_CONTEXT *ctx, JSON_OBJECT *jlvl_obj, GF_LEVEL *level, size_t idx,
-    void *user_arg);
-static void M_LoadLevelTable(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, const char *key,
-    GF_LEVEL_TABLE *level_table, GF_LEVEL_TYPE default_level_type);
-
-static void M_LoadLevels(const M_CONTEXT *ctx, JSON_OBJECT *obj);
-static void M_LoadCutscenes(const M_CONTEXT *ctx, JSON_OBJECT *obj);
-static void M_LoadDemos(const M_CONTEXT *ctx, JSON_OBJECT *obj);
-static void M_LoadTitleLevel(const M_CONTEXT *ctx, JSON_OBJECT *obj);
-static void M_LoadFMV(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_FMV *level, size_t idx,
-    void *user_arg);
-static void M_LoadFMVs(const M_CONTEXT *ctx, JSON_OBJECT *obj);
 static void M_LoadGlobalInjections(const M_CONTEXT *ctx, JSON_OBJECT *obj);
 static void M_LoadCommonSettings(
     const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL_SETTINGS *settings);
-static void M_LoadCommonRoot(const M_CONTEXT *ctx, JSON_OBJECT *obj);
-static void M_LoadRoot(const M_CONTEXT *ctx, JSON_OBJECT *obj);
 
 #if TR_VERSION == 1
     #include "./reader_tr1.def.c"

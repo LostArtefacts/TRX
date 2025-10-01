@@ -6,9 +6,6 @@
 
 #include <math.h>
 
-static bool M_ItemIntersectSegment(
-    XYZ_32 start, XYZ_32 target, const ITEM *item, XYZ_32 *out_hit_pos);
-
 // This routine transforms the world-space LOS segment [start,target] into the
 // object's local coordinates (undoing its translation and Y-rotation), then
 // performs a slab intersection test against that local AABB. The first

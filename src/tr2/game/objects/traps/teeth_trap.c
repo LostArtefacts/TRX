@@ -22,23 +22,11 @@ static const BITE m_Teeth[6] = {
     // clang-format on
 };
 
-static void M_Bite(ITEM *item, const BITE *bite);
-static void M_Control(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-
 static void M_Bite(ITEM *const item, const BITE *const bite)
 {
     XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     Spawn_Blood(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -62,6 +50,14 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_TEETH_TRAP, M_Setup)

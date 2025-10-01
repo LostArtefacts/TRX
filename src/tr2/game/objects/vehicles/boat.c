@@ -57,24 +57,6 @@ typedef enum {
     BOAT_STATE_DEATH = 8,
 } BOAT_STATE;
 
-static int32_t M_CheckGetOn(
-    const int16_t item_num, const COLL_INFO *const coll);
-static int32_t M_TestWaterHeight(
-    const ITEM *const item, const int32_t z_off, const int32_t x_off,
-    XYZ_32 *const pos);
-static void M_DoWakeEffect(const ITEM *const boat_item);
-static void M_DoShift(const int32_t boat_num);
-static int32_t M_DoDynamics(
-    const int32_t height, int32_t fall_speed, int32_t *const y);
-static int32_t M_Dynamics(const int16_t boat_num);
-static int32_t M_UserControl(ITEM *const boat_item);
-static void M_Animation(const ITEM *const boat_item, const int32_t collide);
-static void M_Setup(OBJECT *const obj);
-static void M_Initialise(const int16_t item_num);
-static void M_Collision(
-    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll);
-static void M_Control(const int16_t item_num);
-
 static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -569,16 +551,6 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
     }
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     BOAT_INFO *boat_data = GameBuf_Alloc(sizeof(BOAT_INFO), GBUF_ITEM_DATA);
@@ -847,6 +819,16 @@ static void M_Control(const int16_t item_num)
         lara_item->pos.y = pos.y;
         Item_SwitchToAnim(boat_item, 0, 0);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_BOAT, M_Setup)

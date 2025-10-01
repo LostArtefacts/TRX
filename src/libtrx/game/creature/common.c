@@ -29,12 +29,19 @@
 
 static bool m_AlliesHostile = false;
 
-static ITEM *M_ChooseEnemy(const ITEM *item);
-static bool M_SwitchToWater(
-    int16_t item_num, int32_t wh, const HYBRID_INFO *info);
-static bool M_SwitchToLand(
-    int16_t item_num, int32_t wh, const HYBRID_INFO *info);
-static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
+static bool M_TestSwitchOrKill(
+    const int16_t item_num, const GAME_OBJECT_ID target_id)
+{
+    if (Object_Get(target_id)->loaded) {
+        return true;
+    }
+
+    LOG_WARNING(
+        "Object %d is not loaded; item %d cannot be converted.", target_id,
+        item_num);
+    Item_Kill(item_num);
+    return false;
+}
 
 static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
 {
@@ -190,20 +197,6 @@ static bool M_SwitchToLand(
     }
 
     return true;
-}
-
-static bool M_TestSwitchOrKill(
-    const int16_t item_num, const GAME_OBJECT_ID target_id)
-{
-    if (Object_Get(target_id)->loaded) {
-        return true;
-    }
-
-    LOG_WARNING(
-        "Object %d is not loaded; item %d cannot be converted.", target_id,
-        item_num);
-    Item_Kill(item_num);
-    return false;
 }
 
 void Creature_Initialise(const int16_t item_num)

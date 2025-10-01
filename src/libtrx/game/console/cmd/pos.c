@@ -12,8 +12,6 @@
 
 #include <string.h>
 
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (!Game_IsLoaded()) {

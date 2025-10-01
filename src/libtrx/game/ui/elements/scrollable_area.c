@@ -7,9 +7,6 @@
 #include "game/ui/elements/spacer.h"
 #include "game/ui/elements/stack.h"
 
-static void M_UpArrow(const UI_SCROLLABLE *s);
-static void M_DownArrow(const UI_SCROLLABLE *s);
-
 static void M_UpArrow(const UI_SCROLLABLE *const s)
 {
     UI_BeginHide(s->first_item == 0);

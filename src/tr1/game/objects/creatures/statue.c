@@ -9,23 +9,6 @@
 #define CENTAUR_REARING_ANIM 7
 #define CENTAUR_REARING_FRAME 36
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->enable_interpolation = false;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     OBJECT *const obj = Object_Get(O_CENTAUR);
@@ -87,6 +70,19 @@ static void M_Control(const int16_t item_num)
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &item->pos, SPM_NORMAL);
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->enable_interpolation = false;
 }
 
 REGISTER_OBJECT(O_STATUE, M_Setup)

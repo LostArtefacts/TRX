@@ -8,16 +8,6 @@ typedef struct {
     float y;
 } M_DATA;
 
-static void M_Measure(UI_NODE *node);
-static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
-static void M_Draw(const UI_NODE *node);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = M_Measure,
-    .layout = M_Layout,
-    .draw = M_Draw,
-};
-
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = 0.0f;
@@ -44,8 +34,8 @@ static void M_Draw(const UI_NODE *const node)
 {
     const UI_NODE *child = node->first_child;
     while (child != nullptr) {
-        if (child->ops->draw != nullptr) {
-            child->ops->draw(child);
+        if (child->ops.draw != nullptr) {
+            child->ops.draw(child);
         }
         child = child->next_sibling;
     }
@@ -53,7 +43,13 @@ static void M_Draw(const UI_NODE *const node)
 
 void UI_BeginFixed(const float x, const float y)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = M_Measure,
+            .layout = M_Layout,
+            .draw = M_Draw,
+        },
+        sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->x = x;
     data->y = y;

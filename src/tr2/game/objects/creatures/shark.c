@@ -44,35 +44,6 @@ static const BITE m_SharkBite = {
     .mesh_num = 12,
 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = SHARK_HITPOINTS;
-    obj->radius = SHARK_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 200;
-    obj->lot_setup = g_LOT_Flyer;
-    obj->lot_setup.block_mask = BOX_BLOCKABLE;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 9)->rot.y = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -171,6 +142,32 @@ static void M_Control(const int16_t item_num)
             Creature_Underwater(item, SHARK_RADIUS);
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = SHARK_HITPOINTS;
+    obj->radius = SHARK_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 200;
+    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup.block_mask = BOX_BLOCKABLE;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 9)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_SHARK, M_Setup)

@@ -1,8 +1,6 @@
 #include "game/objects/common.h"
 #include "game/objects/traps/propeller.h"
 
-static void M_Setup(OBJECT *obj);
-
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = Propeller_Control;

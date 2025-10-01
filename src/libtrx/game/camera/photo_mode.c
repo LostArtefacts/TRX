@@ -39,23 +39,6 @@ static struct {
 } m_PreviousState;
 static BOUNDS_32 m_WorldBounds = {};
 
-static void M_SetFOV(int32_t fov);
-
-static void M_ResetCamera(bool exiting);
-static int32_t M_GetShiftSpeed(int32_t val);
-static int32_t M_GetRotSpeed(void);
-static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz);
-static void M_ApplyRotation(
-    int32_t d_yaw, int32_t d_pitch, int32_t d_roll, bool respect_roll);
-static void M_RotateCamera(int32_t d_yaw, int32_t d_pitch, int32_t d_roll);
-static void M_RotateTarget(int32_t d_yaw, int32_t d_pitch, int32_t d_roll);
-static void M_ClampCameraPos(void);
-static void M_UpdateCameraRooms(void);
-static bool M_HandleShiftInputs(void);
-static bool M_HandleRotationInputs(void);
-static bool M_HandleTargetRotationInputs(void);
-static bool M_HandleFOVInputs();
-
 // TODO: remove this wrapper when consolidating the viewport API
 static void M_SetFOV(const int32_t fov)
 {

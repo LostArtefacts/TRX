@@ -20,14 +20,6 @@ extern bool CombatEnd_IsWaitingForBoss(void);
 extern GAME_OBJECT_ID CombatEnd_GetBossType(void);
 #endif
 
-static bool M_CanTargetObjectCreature(GAME_OBJECT_ID obj_id);
-static bool M_KillSingleEnemyInRange(int32_t max_dist);
-static int32_t M_KillAllEnemiesInRange(int32_t max_dist);
-static COMMAND_RESULT M_KillAllEnemies(void);
-static COMMAND_RESULT M_KillNearestEnemies(void);
-static COMMAND_RESULT M_KillEnemyType(const char *enemy_name);
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static bool M_CanTargetObjectCreature(const GAME_OBJECT_ID obj_id)
 {
     return (Object_IsType(obj_id, g_EnemyObjects)

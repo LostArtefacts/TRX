@@ -2,8 +2,6 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 
-static bool M_TestItemMeta(const INJECTION *injection);
-
 static bool M_TestItemMeta(const INJECTION *const injection)
 {
     const int32_t item_num = VFile_ReadS32(injection->fp);

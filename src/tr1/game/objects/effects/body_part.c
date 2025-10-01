@@ -5,16 +5,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/game/sound.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->mesh_count = 0;
-    obj->loaded = true;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -72,6 +62,13 @@ static void M_Control(const int16_t effect_num)
     if (room_num != effect->room_num) {
         Effect_NewRoom(effect_num, room_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->mesh_count = 0;
+    obj->loaded = true;
 }
 
 REGISTER_OBJECT(O_BODY_PART, M_Setup)

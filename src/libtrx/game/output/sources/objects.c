@@ -23,25 +23,6 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_AddObjectVerts(
-    MESH_BUILDER *builder, size_t vtx_count, const OBJECT_MESH *obj_mesh,
-    const uint16_t *vertices, uint16_t texture_idx, uint16_t palette_idx,
-    uint16_t flags, const TEXTURE_ZW_F *trapezoid_ratio);
-static void M_AddObjectFace3(
-    MESH_BUILDER *builder, const OBJECT_MESH *obj_mesh, const FACE3 *face,
-    uint16_t flags);
-static void M_AddObjectFace4(
-    MESH_BUILDER *builder, const OBJECT_MESH *obj_mesh, const FACE4 *face,
-    uint16_t flags);
-
-static int32_t *M_PrepareLightIndexMap(
-    const OBJECT_MESH *obj_mesh, int32_t vertex_count);
-static void M_PrepareMeshes(M_PRIV *p);
-static void M_FreeMeshes(M_PRIV *p);
-static void M_UpdateShadesSkybox(MESH_INSTANCE *inst, void *user_data);
-static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data);
-static void M_Stage(const OBJECT_MESH *mesh, bool skybox);
-
-static void M_AddObjectVerts(
     MESH_BUILDER *const builder, const size_t vtx_count,
     const OBJECT_MESH *const obj_mesh, const uint16_t *vertices,
     const uint16_t texture_idx, const uint16_t palette_idx,

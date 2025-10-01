@@ -40,19 +40,6 @@
 extern void Twinkle_SparkleItem(ITEM *item, uint32_t mesh_mask);
 #endif
 
-static void M_UseMidas(ITEM *item, COLL_INFO *coll);
-static void M_DieMidas(ITEM *item, COLL_INFO *coll);
-static void M_Breath(ITEM *item, COLL_INFO *coll);
-static void M_YetiKill(ITEM *item, COLL_INFO *coll);
-static void M_SharkKill(ITEM *item, COLL_INFO *coll);
-static void M_Airlock(ITEM *item, COLL_INFO *coll);
-static void M_GongBong(ITEM *item, COLL_INFO *coll);
-static void M_DinoKill(ITEM *item, COLL_INFO *coll);
-static void M_PullDagger(ITEM *item, COLL_INFO *coll);
-static void M_StartAnim(ITEM *item, COLL_INFO *coll);
-static void M_StartHouse(ITEM *item, COLL_INFO *coll);
-static void M_FinalAnim(ITEM *item, COLL_INFO *coll);
-
 static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
 {
 #if TR_VERSION == 1

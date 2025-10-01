@@ -12,19 +12,6 @@
 // If true, next SDL_TEXT* event should be zeroed out.
 static bool m_ConsoleJustOpened = false;
 
-static void M_HandleQuit(void);
-static void M_HandleKeyDown(const SDL_Event *event);
-static void M_HandleKeyUp(const SDL_Event *event);
-static void M_HandleFocusGained(void);
-static void M_HandleFocusLost(void);
-static void M_HandleWindowShown(void);
-static void M_HandleWindowRestored(void);
-static void M_HandleWindowMinimized(void);
-static void M_HandleWindowMaximized(void);
-static void M_HandleWindowMoved(int32_t x, int32_t y);
-static void M_HandleWindowResized(int32_t width, int32_t height);
-static bool M_ProcessReplayEvent(const SDL_Event *event);
-
 static void M_HandleQuit(void)
 {
     Shell_ScheduleExit();

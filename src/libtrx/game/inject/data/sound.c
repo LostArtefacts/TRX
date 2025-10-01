@@ -3,8 +3,6 @@
 #include "game/sound.h"
 #include "memory.h"
 
-static void M_HandleSFXData(INJECTION_CHUNK chunk);
-
 static void M_HandleSFXData(const INJECTION_CHUNK chunk)
 {
     ASSERT(chunk.num_blocks == 1);

@@ -14,12 +14,6 @@
 
 #define SCREENSHOTS_DIR "screenshots"
 
-static char *M_GetScreenshotTitle(void);
-static char *M_CleanScreenshotTitle(const char *source);
-static char *M_GetScreenshotBaseName(void);
-static const char *M_GetScreenshotFileExt(SCREENSHOT_FORMAT format);
-static char *M_GetScreenshotPath(SCREENSHOT_FORMAT format);
-
 static char *M_CleanScreenshotTitle(const char *const source)
 {
     // Sanitize screenshot title.

@@ -5,15 +5,6 @@
 #include "game/ui/elements/anchor.h"
 #include "game/ui/helpers.h"
 
-static void M_Measure(UI_NODE *node);
-static void M_Draw(const UI_NODE *node);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = M_Measure,
-    .layout = UI_LayoutWrapper,
-    .draw = M_Draw,
-};
-
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = UI_GetCanvasWidth();
@@ -27,7 +18,13 @@ static void M_Draw(const UI_NODE *const node)
 
 void UI_BeginModal(const float x, const float y)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, 0);
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = M_Measure,
+            .layout = UI_LayoutWrapper,
+            .draw = M_Draw,
+        },
+        0);
     UI_AddChild(node);
     UI_PushCurrent(node);
     UI_BeginAnchor(x, y);

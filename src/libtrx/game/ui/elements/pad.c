@@ -10,15 +10,6 @@ typedef struct {
     float l;
 } M_DATA;
 
-static void M_Measure(UI_NODE *node);
-static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = M_Measure,
-    .layout = M_Layout,
-    .draw = UI_DrawWrapper,
-};
-
 static void M_Measure(UI_NODE *const node)
 {
     UI_MeasureWrapper(node);
@@ -35,7 +26,7 @@ static void M_Layout(
     const M_DATA *const data = node->data;
     UI_NODE *child = node->first_child;
     while (child != nullptr) {
-        child->ops->layout(
+        child->ops.layout(
             child, x + data->l, y + data->t, w - data->l - data->r,
             h - data->t - data->d);
         child = child->next_sibling;
@@ -49,7 +40,13 @@ void UI_BeginPad(const float x, const float y)
 
 void UI_BeginPadEx(const float l, const float r, const float t, const float d)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = M_Measure,
+            .layout = M_Layout,
+            .draw = UI_DrawWrapper,
+        },
+        sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->t = t * g_Config.ui.text_scale;
     data->r = r * g_Config.ui.text_scale;

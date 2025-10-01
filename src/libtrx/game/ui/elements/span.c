@@ -3,15 +3,6 @@
 #include "game/ui/helpers.h"
 #include "utils.h"
 
-static void M_Measure(UI_NODE *node);
-static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = UI_MeasureWrapper,
-    .layout = M_Layout,
-    .draw = UI_DrawWrapper,
-};
-
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = 0.0f;
@@ -31,14 +22,20 @@ static void M_Layout(
     UI_LayoutBasic(node, x, y, w, h);
     UI_NODE *child = node->first_child;
     while (child != nullptr) {
-        child->ops->layout(child, x, y, node->measure_w, node->measure_h);
+        child->ops.layout(child, x, y, node->measure_w, node->measure_h);
         child = child->next_sibling;
     }
 }
 
 void UI_BeginSpan(void)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, 0);
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = UI_MeasureWrapper,
+            .layout = M_Layout,
+            .draw = UI_DrawWrapper,
+        },
+        0);
     UI_AddChild(node);
     UI_PushCurrent(node);
 }

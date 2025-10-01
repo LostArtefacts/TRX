@@ -5,19 +5,6 @@
 #include <libtrx/game/output.h>
 #include <libtrx/game/rooms.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    if (obj->loaded) {
-        for (int32_t i = 0; i < -obj->mesh_count; i++) {
-            Output_GetSpriteTexture(obj->mesh_idx + i)->flags = VERT_ABS_SPRITE;
-        }
-    }
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
@@ -47,6 +34,16 @@ static void M_Control(const int16_t effect_num)
     effect->pos.x = x;
     effect->pos.y = y;
     effect->pos.z = z;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    if (obj->loaded) {
+        for (int32_t i = 0; i < -obj->mesh_count; i++) {
+            Output_GetSpriteTexture(obj->mesh_idx + i)->flags = VERT_ABS_SPRITE;
+        }
+    }
 }
 
 REGISTER_OBJECT(O_BUBBLE_1, M_Setup)

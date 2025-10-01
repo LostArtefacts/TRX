@@ -14,10 +14,6 @@ typedef void (*M_LOAD_STRING_FUNC)(const char *, const char *);
 
 static VECTOR *m_GST_Layers = nullptr;
 
-static void M_Apply(const GS_TABLE *table);
-static void M_ApplyLevelTitles(
-    const GS_FILE *gs_file, GF_LEVEL_TABLE_TYPE level_table_type);
-
 static void M_Apply(const GS_TABLE *const table)
 {
     for (const GS_GAME_STRING_ENTRY *cur = table->game_strings;

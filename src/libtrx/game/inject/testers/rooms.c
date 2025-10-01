@@ -1,9 +1,6 @@
 #include "game/inject.h"
 #include "game/rooms.h"
 
-static bool M_TestRoomCount(const INJECTION *injection);
-static bool M_TestRoomMeta(const INJECTION *injection);
-
 static bool M_TestRoomCount(const INJECTION *const injection)
 {
     const int32_t num_rooms = VFile_ReadS32(injection->fp);

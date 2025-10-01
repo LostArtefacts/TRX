@@ -10,8 +10,6 @@
 #include <libtrx/game/output.h>
 #include <libtrx/game/viewport.h>
 
-static void M_DrawMesh(LARA_MESH mesh_idx, CLIP clip, bool interpolated);
-
 static void M_DrawMesh(
     const LARA_MESH mesh_idx, const CLIP clip, const bool interpolated)
 {

@@ -7,13 +7,6 @@
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GF_COMMAND m_OverrideCommand = { .action = GF_NOOP };
 
-static bool M_SkipLevel(const GF_LEVEL *level);
-static void M_FreeSequence(GF_SEQUENCE *sequence);
-static void M_FreeInjections(INJECTION_DATA *injections);
-static void M_FreeLevel(GF_LEVEL *level);
-static void M_FreeLevelTable(GF_LEVEL_TABLE *level_table);
-static void M_FreeFMVs(GAME_FLOW *gf);
-
 static bool M_SkipLevel(const GF_LEVEL *const level)
 {
     return level->type == GFL_DUMMY || level->type == GFL_CURRENT;
