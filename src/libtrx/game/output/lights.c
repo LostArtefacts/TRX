@@ -25,11 +25,6 @@ static M_ROOM_LIGHT_TABLE m_RoomLightTables[M_LIGHT_CYCLE] = {};
 static VECTOR *m_DynamicLights = nullptr;
 
 static void M_CalculateBrightestLight(
-    XYZ_32 pos, const ROOM *room, M_COMMON_LIGHT *brightest_light);
-static int32_t M_CalculateDynamicLight(
-    XYZ_32 pos, M_COMMON_LIGHT *brightest_light);
-
-static void M_CalculateBrightestLight(
     const XYZ_32 pos, const ROOM *const room,
     M_COMMON_LIGHT *const brightest_light)
 {

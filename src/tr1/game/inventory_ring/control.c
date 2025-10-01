@@ -40,19 +40,6 @@ static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static int32_t m_StartLevel;
 static GAME_OBJECT_ID m_InvChosen = NO_OBJECT;
 
-static void M_ShowAmmoQuantity(const char *fmt, int32_t qty);
-
-static void M_RingIsOpen(INV_RING *ring);
-static void M_RingIsNotOpen(INV_RING *ring);
-static void M_RingNotActive(const INVENTORY_ITEM *inv_item);
-static void M_RingActive(INV_RING *ring);
-
-static bool M_AnimateInventoryItem(INVENTORY_ITEM *inv_item);
-
-static GF_COMMAND M_Finish(INV_RING *ring, bool apply_changes);
-static GF_COMMAND M_Control(INV_RING *ring);
-static bool M_CheckDemoTimer(const INV_RING *ring);
-
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
@@ -276,6 +263,23 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     }
 
     return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+static bool M_CheckDemoTimer(const INV_RING *const ring)
+{
+    if (!g_Config.gameplay.enable_demo
+        || GF_GetLevelTable(GFLT_DEMOS)->count == 0) {
+        return false;
+    }
+
+    if (ring->mode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
+        || Console_IsOpened()) {
+        ClockTimer_Sync(&m_DemoTimer);
+        return false;
+    }
+
+    return ring->motion.status == RNG_OPEN
+        && ClockTimer_CheckElapsed(&m_DemoTimer, g_GameFlow.demo_delay);
 }
 
 static GF_COMMAND M_Control(INV_RING *const ring)
@@ -750,23 +754,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
     Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static bool M_CheckDemoTimer(const INV_RING *const ring)
-{
-    if (!g_Config.gameplay.enable_demo
-        || GF_GetLevelTable(GFLT_DEMOS)->count == 0) {
-        return false;
-    }
-
-    if (ring->mode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
-        || Console_IsOpened()) {
-        ClockTimer_Sync(&m_DemoTimer);
-        return false;
-    }
-
-    return ring->motion.status == RNG_OPEN
-        && ClockTimer_CheckElapsed(&m_DemoTimer, g_GameFlow.demo_delay);
 }
 
 void InvRing_RemoveAllText(void)

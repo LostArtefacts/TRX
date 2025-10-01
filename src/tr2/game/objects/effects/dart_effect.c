@@ -3,16 +3,6 @@
 
 #include <libtrx/game/objects.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawSpriteItem;
-    obj->semi_transparent = true;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -26,6 +16,13 @@ static void M_Control(const int16_t effect_num)
             Effect_Kill(effect_num);
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawSpriteItem;
+    obj->semi_transparent = true;
 }
 
 REGISTER_OBJECT(O_DART_EFFECT, M_Setup)

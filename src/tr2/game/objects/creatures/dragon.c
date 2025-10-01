@@ -65,15 +65,6 @@ static const BITE m_DragonMouth = {
     .mesh_num = 12,
 };
 
-static void M_MarkDragonDead(ITEM *dragon_back_item);
-static void M_PushLaraAway(ITEM *lara_item, ITEM *dragon_item, int32_t shift);
-static void M_PullDagger(ITEM *lara_item, ITEM *dragon_back_item);
-static void M_SetupFront(OBJECT *obj);
-static void M_SetupBack(OBJECT *obj);
-static void M_HandleSaveFront(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Control(int16_t item_num);
-
 static void M_MarkDragonDead(ITEM *const dragon_back_item)
 {
     const int16_t dragon_front_item_num = (intptr_t)dragon_back_item->data;
@@ -167,46 +158,6 @@ static void M_Bones(const int16_t item_num)
     bone_front->shade.value_1 = -1;
     Item_Initialise(bone_front_item_num);
     bone_front->mesh_bits = ~0xC00000u;
-}
-
-static void M_SetupFront(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    ASSERT(Object_Get(O_DRAGON_BACK)->loaded);
-    obj->handle_save_func = M_HandleSaveFront;
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-
-    obj->hit_points = DRAGON_HITPOINTS;
-    obj->radius = DRAGON_RADIUS;
-    obj->pivot_length = 300;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 10)->rot.z = true;
-}
-
-static void M_SetupBack(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-
-    obj->radius = DRAGON_RADIUS;
-
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_HandleSaveFront(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -471,6 +422,46 @@ static void M_Control(const int16_t item_num)
     dragon_back_item->rot.y = dragon_front_item->rot.y;
     dragon_back_item->rot.z = dragon_front_item->rot.z;
     Item_UpdateRoom(dragon_back_item_num, dragon_front_item->room_num);
+}
+
+static void M_SetupFront(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    ASSERT(Object_Get(O_DRAGON_BACK)->loaded);
+    obj->handle_save_func = M_HandleSaveFront;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+
+    obj->hit_points = DRAGON_HITPOINTS;
+    obj->radius = DRAGON_RADIUS;
+    obj->pivot_length = 300;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 10)->rot.z = true;
+}
+
+static void M_SetupBack(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+
+    obj->radius = DRAGON_RADIUS;
+
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_DRAGON_FRONT, M_SetupFront)

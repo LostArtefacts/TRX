@@ -38,34 +38,6 @@ typedef enum {
     TREX_ANIM_KILL = 11,
 } TREX_ANIM;
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = TREX_HITPOINTS;
-    obj->radius = TREX_RADIUS;
-    obj->shadow_size = 64;
-    obj->pivot_length = 1800;
-    obj->lot_setup = g_LOT_Beast;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 10)->rot.y = true;
-    Object_GetBone(obj, 11)->rot.y = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -169,6 +141,31 @@ static void M_Control(const int16_t item_num)
     }
 
     Creature_Animate(item_num, angle, tilt);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = TREX_HITPOINTS;
+    obj->radius = TREX_RADIUS;
+    obj->shadow_size = 64;
+    obj->pivot_length = 1800;
+    obj->lot_setup = g_LOT_Beast;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 10)->rot.y = true;
+    Object_GetBone(obj, 11)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_TREX, M_Setup)

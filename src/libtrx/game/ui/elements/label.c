@@ -13,15 +13,7 @@ typedef struct {
     char *text;
 } M_DATA;
 
-static void M_Measure(UI_NODE *node);
-static void M_Draw(const UI_NODE *node);
-
 static UI_LABEL_SETTINGS m_DefaultSettings = { .scale = 1.0f };
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = M_Measure,
-    .layout = UI_LayoutBasic,
-    .draw = M_Draw,
-};
 
 static void M_Measure(UI_NODE *const node)
 {
@@ -58,8 +50,13 @@ void UI_LabelEx(const char *text, const UI_LABEL_SETTINGS settings)
     if (text == nullptr) {
         text = "(null)"; // quality of life for UI development
     }
-    UI_NODE *const node =
-        UI_AllocNode(&m_Ops, sizeof(M_DATA) + strlen(text) + 1);
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = M_Measure,
+            .layout = UI_LayoutBasic,
+            .draw = M_Draw,
+        },
+        sizeof(M_DATA) + strlen(text) + 1);
     M_DATA *const data = node->data;
     data->settings = settings;
     data->text = (char *)node->data + sizeof(M_DATA);

@@ -66,34 +66,6 @@ static const BITE m_YetiBiteR = {
     .mesh_num = 10,
 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = YETI_HITPOINTS;
-    obj->radius = YETI_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 100;
-    obj->lot_setup = g_LOT_Climber;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 6)->rot.y = true;
-    Object_GetBone(obj, 14)->rot.y = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -320,6 +292,31 @@ static void M_Control(const int16_t item_num)
             return;
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = YETI_HITPOINTS;
+    obj->radius = YETI_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 100;
+    obj->lot_setup = g_LOT_Climber;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 6)->rot.y = true;
+    Object_GetBone(obj, 14)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_YETI, M_Setup)

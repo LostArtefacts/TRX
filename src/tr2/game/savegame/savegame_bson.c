@@ -53,41 +53,6 @@ typedef struct {
         value.z = JSON_ObjectGetInt(sub_obj, "z", value.z);                    \
     } while (0)
 
-static void M_SaveRaw(MYFILE *fp, const JSON_VALUE *root, int32_t level_num);
-static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
-static JSON_VALUE *M_ParseFromBuffer(const char *buffer, int32_t *version_out);
-
-static JSON_OBJECT *M_DumpMisc(void);
-static JSON_OBJECT *M_DumpMusic(void);
-static JSON_ARRAY *M_DumpResumeInfo(void);
-static JSON_OBJECT *M_DumpInventory(void);
-static JSON_OBJECT *M_DumpFlipmaps(void);
-static JSON_ARRAY *M_DumpCameras(void);
-static JSON_ARRAY *M_DumpItems(void);
-static JSON_ARRAY *M_DumpEffects(void);
-static JSON_ARRAY *M_DumpFlares(void);
-static JSON_OBJECT *M_DumpLara(void);
-static JSON_OBJECT *M_DumpArm(const LARA_ARM *arm);
-static JSON_OBJECT *M_DumpAmmo(const AMMO_INFO *ammo);
-
-static bool M_LoadMisc(JSON_OBJECT *misc_obj);
-static bool M_LoadMusic(JSON_OBJECT *music_obj, uint16_t header_version);
-static bool M_LoadResumeInfo(JSON_ARRAY *resume_arr);
-static bool M_LoadInventory(JSON_OBJECT *inv_obj);
-static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj);
-static bool M_LoadCameras(JSON_ARRAY *cameras_arr);
-static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version);
-static bool M_LoadEffects(JSON_ARRAY *fx_arr);
-static bool M_LoadFlares(JSON_ARRAY *flares_arr);
-static bool M_LoadLara(JSON_OBJECT *lara_obj);
-static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm);
-static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo);
-
-static int32_t M_ConvertMusicTrack(int32_t track_id, uint16_t header_version);
-static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
-static bool M_IsValidItemObject(
-    GAME_OBJECT_ID saved_obj_id, GAME_OBJECT_ID initial_obj_id);
-
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
@@ -135,27 +100,6 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
-{
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    JSON_OBJECT *const root_obj = JSON_ObjectNew();
-
-    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
-    JSON_ObjectAppendObject(root_obj, "music", M_DumpMusic());
-    JSON_ObjectAppendArray(root_obj, "resume_info", M_DumpResumeInfo());
-    JSON_ObjectAppendObject(root_obj, "inventory", M_DumpInventory());
-    JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
-    JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
-    JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
-    JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
-    JSON_ObjectAppendArray(root_obj, "flares", M_DumpFlares());
-    JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
-
-    JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
-    M_SaveRaw(fp, root, current_level->num);
-    JSON_ValueFree(root);
-}
-
 static void M_SaveRaw(
     MYFILE *const fp, const JSON_VALUE *const root, const int32_t level_num)
 {
@@ -195,77 +139,6 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static bool M_LoadFromFile(MYFILE *const fp)
-{
-    bool result = false;
-
-    int32_t version = -1;
-    JSON_VALUE *const root = M_ReadRaw(fp, &version);
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
-    if (root_obj == nullptr) {
-        LOG_ERROR("Malformed save: cannot parse BSON data");
-        goto cleanup;
-    }
-
-    if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadMusic(JSON_ObjectGetObject(root_obj, "music"), version)) {
-        goto cleanup;
-    }
-
-    if (!M_LoadResumeInfo(JSON_ObjectGetArray(root_obj, "resume_info"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadInventory(JSON_ObjectGetObject(root_obj, "inventory"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadFlipmaps(JSON_ObjectGetObject(root_obj, "flipmap"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadCameras(JSON_ObjectGetArray(root_obj, "cameras"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"), version)) {
-        goto cleanup;
-    }
-
-    if (!M_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadFlares(JSON_ObjectGetArray(root_obj, "flares"))) {
-        goto cleanup;
-    }
-
-    if (!M_LoadLara(JSON_ObjectGetObject(root_obj, "lara"))) {
-        goto cleanup;
-    }
-
-    result = true;
-
-cleanup:
-    JSON_ValueFree(root);
-    return result;
-}
-
-static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
-{
-    const size_t buffer_size = File_Size(fp);
-    char *buffer = Memory_Alloc(buffer_size);
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, buffer_size);
-
-    JSON_VALUE *const result = M_ParseFromBuffer(buffer, version_out);
-    Memory_FreePointer(&buffer);
-    return result;
-}
-
 static JSON_VALUE *M_ParseFromBuffer(
     const char *const buffer, int32_t *const version_out)
 {
@@ -295,6 +168,18 @@ static JSON_VALUE *M_ParseFromBuffer(
     JSON_VALUE *const root = BSON_Parse(uncompressed, uncompressed_size);
     Memory_FreePointer(&uncompressed);
     return root;
+}
+
+static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
+{
+    const size_t buffer_size = File_Size(fp);
+    char *buffer = Memory_Alloc(buffer_size);
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_ReadData(fp, buffer, buffer_size);
+
+    JSON_VALUE *const result = M_ParseFromBuffer(buffer, version_out);
+    Memory_FreePointer(&buffer);
+    return result;
 }
 
 static JSON_OBJECT *M_DumpMisc(void)
@@ -342,6 +227,15 @@ static JSON_OBJECT *M_DumpMusic(void)
     JSON_ObjectAppendObject(music_obj, "current", current_obj);
 
     return music_obj;
+}
+
+static int32_t M_ConvertMusicTrack(
+    const int32_t track_id, const uint16_t header_version)
+{
+    if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
+        return track_id;
+    }
+    return Music_ConvertLegacyTrack(track_id);
 }
 
 static bool M_LoadMusic(
@@ -689,6 +583,20 @@ static bool M_LoadCameras(JSON_ARRAY *const cameras_arr)
     return true;
 }
 
+static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
+{
+    order->count = 0;
+    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
+        order->id_map[i] = -1;
+    }
+
+    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
+         link_num = Effect_Get(link_num)->next_active) {
+        order->id_map[link_num] = order->count;
+        order->count++;
+    }
+}
+
 static JSON_ARRAY *M_DumpItems(void)
 {
     Savegame_ProcessItemsBeforeSave();
@@ -883,6 +791,36 @@ static JSON_ARRAY *M_DumpEffects(void)
     }
 
     return fx_arr;
+}
+
+static bool M_IsValidItemObject(
+    const GAME_OBJECT_ID saved_obj_id, const GAME_OBJECT_ID initial_obj_id)
+{
+    if (saved_obj_id == initial_obj_id) {
+        return true;
+    }
+
+    // clang-format off
+    switch (saved_obj_id) {
+        // used keyholes
+        case O_PUZZLE_DONE_1: return initial_obj_id == O_PUZZLE_HOLE_1;
+        case O_PUZZLE_DONE_2: return initial_obj_id == O_PUZZLE_HOLE_2;
+        case O_PUZZLE_DONE_3: return initial_obj_id == O_PUZZLE_HOLE_3;
+        case O_PUZZLE_DONE_4: return initial_obj_id == O_PUZZLE_HOLE_4;
+        // pickups
+        case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ITEM;
+        case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
+        case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
+        case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
+        case O_HARPOON_AMMO_ITEM: return initial_obj_id == O_HARPOON_ITEM;
+        case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
+        case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_ITEM;
+        // skidoo swaps
+        case O_SKIDOO_FAST: return initial_obj_id == O_SKIDOO_ARMED;
+        // default
+        default: return false;
+    }
+    // clang-format on
 }
 
 static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
@@ -1210,59 +1148,6 @@ static bool M_LoadEffects(JSON_ARRAY *const fx_arr)
     return true;
 }
 
-static int32_t M_ConvertMusicTrack(
-    const int32_t track_id, const uint16_t header_version)
-{
-    if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
-        return track_id;
-    }
-    return Music_ConvertLegacyTrack(track_id);
-}
-
-static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
-{
-    order->count = 0;
-    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
-        order->id_map[i] = -1;
-    }
-
-    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
-         link_num = Effect_Get(link_num)->next_active) {
-        order->id_map[link_num] = order->count;
-        order->count++;
-    }
-}
-
-static bool M_IsValidItemObject(
-    const GAME_OBJECT_ID saved_obj_id, const GAME_OBJECT_ID initial_obj_id)
-{
-    if (saved_obj_id == initial_obj_id) {
-        return true;
-    }
-
-    // clang-format off
-    switch (saved_obj_id) {
-        // used keyholes
-        case O_PUZZLE_DONE_1: return initial_obj_id == O_PUZZLE_HOLE_1;
-        case O_PUZZLE_DONE_2: return initial_obj_id == O_PUZZLE_HOLE_2;
-        case O_PUZZLE_DONE_3: return initial_obj_id == O_PUZZLE_HOLE_3;
-        case O_PUZZLE_DONE_4: return initial_obj_id == O_PUZZLE_HOLE_4;
-        // pickups
-        case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ITEM;
-        case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
-        case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
-        case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
-        case O_HARPOON_AMMO_ITEM: return initial_obj_id == O_HARPOON_ITEM;
-        case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
-        case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_ITEM;
-        // skidoo swaps
-        case O_SKIDOO_FAST: return initial_obj_id == O_SKIDOO_ARMED;
-        // default
-        default: return false;
-    }
-    // clang-format on
-}
-
 static JSON_ARRAY *M_DumpFlares(void)
 {
     JSON_ARRAY *const flares_arr = JSON_ArrayNew();
@@ -1314,6 +1199,26 @@ static bool M_LoadFlares(JSON_ARRAY *const flares_arr)
         item->data = (void *)(intptr_t)flare_age;
     }
     return true;
+}
+
+static JSON_OBJECT *M_DumpArm(const LARA_ARM *const arm)
+{
+    ASSERT(arm != nullptr);
+    JSON_OBJECT *const arm_obj = JSON_ObjectNew();
+    JSON_ObjectAppendInt(arm_obj, "anim_num", arm->anim_num);
+    JSON_ObjectAppendInt(arm_obj, "frame_num", arm->frame_num);
+    JSON_ObjectAppendInt(arm_obj, "lock", arm->lock);
+    JSON_ObjectAppendInt(arm_obj, "flash_gun", arm->flash_gun);
+    DUMP_XYZ(arm_obj, "rot", arm->rot);
+    return arm_obj;
+}
+
+static JSON_OBJECT *M_DumpAmmo(const AMMO_INFO *const ammo)
+{
+    ASSERT(ammo != nullptr);
+    JSON_OBJECT *const ammo_obj = JSON_ObjectNew();
+    JSON_ObjectAppendInt(ammo_obj, "ammo", ammo->ammo);
+    return ammo_obj;
 }
 
 static JSON_OBJECT *M_DumpLara(void)
@@ -1406,6 +1311,35 @@ static JSON_OBJECT *M_DumpLara(void)
         lara_obj, "interact_target.is_moving", lara->interact_target.is_moving);
 
     return lara_obj;
+}
+
+static bool M_LoadArm(JSON_OBJECT *const arm_obj, LARA_ARM *const arm)
+{
+    ASSERT(arm != nullptr);
+    if (arm_obj == nullptr) {
+        LOG_ERROR("Malformed save: invalid or missing arm info");
+        return false;
+    }
+
+    arm->anim_num = JSON_ObjectGetInt(arm_obj, "anim_num", arm->anim_num);
+    arm->frame_num = JSON_ObjectGetInt(arm_obj, "frame_num", arm->frame_num);
+    arm->lock = JSON_ObjectGetInt(arm_obj, "lock", arm->lock);
+    arm->flash_gun = JSON_ObjectGetInt(arm_obj, "flash_gun", arm->flash_gun);
+    LOAD_XYZ(arm_obj, "rot", arm->rot);
+
+    return true;
+}
+
+static bool M_LoadAmmo(JSON_OBJECT *const ammo_obj, AMMO_INFO *const ammo)
+{
+    ASSERT(ammo != nullptr);
+    if (ammo_obj == nullptr) {
+        LOG_ERROR("Malformed save: invalid or missing ammo info");
+        return false;
+    }
+
+    ammo->ammo = JSON_ObjectGetInt(ammo_obj, "ammo", ammo->ammo);
+    return true;
 }
 
 static bool M_LoadLara(JSON_OBJECT *const lara_obj)
@@ -1575,53 +1509,84 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     return true;
 }
 
-static JSON_OBJECT *M_DumpArm(const LARA_ARM *const arm)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
-    ASSERT(arm != nullptr);
-    JSON_OBJECT *const arm_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(arm_obj, "anim_num", arm->anim_num);
-    JSON_ObjectAppendInt(arm_obj, "frame_num", arm->frame_num);
-    JSON_ObjectAppendInt(arm_obj, "lock", arm->lock);
-    JSON_ObjectAppendInt(arm_obj, "flash_gun", arm->flash_gun);
-    DUMP_XYZ(arm_obj, "rot", arm->rot);
-    return arm_obj;
-}
+    bool result = false;
 
-static bool M_LoadArm(JSON_OBJECT *const arm_obj, LARA_ARM *const arm)
-{
-    ASSERT(arm != nullptr);
-    if (arm_obj == nullptr) {
-        LOG_ERROR("Malformed save: invalid or missing arm info");
-        return false;
+    int32_t version = -1;
+    JSON_VALUE *const root = M_ReadRaw(fp, &version);
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    if (root_obj == nullptr) {
+        LOG_ERROR("Malformed save: cannot parse BSON data");
+        goto cleanup;
     }
 
-    arm->anim_num = JSON_ObjectGetInt(arm_obj, "anim_num", arm->anim_num);
-    arm->frame_num = JSON_ObjectGetInt(arm_obj, "frame_num", arm->frame_num);
-    arm->lock = JSON_ObjectGetInt(arm_obj, "lock", arm->lock);
-    arm->flash_gun = JSON_ObjectGetInt(arm_obj, "flash_gun", arm->flash_gun);
-    LOAD_XYZ(arm_obj, "rot", arm->rot);
-
-    return true;
-}
-
-static JSON_OBJECT *M_DumpAmmo(const AMMO_INFO *const ammo)
-{
-    ASSERT(ammo != nullptr);
-    JSON_OBJECT *const ammo_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(ammo_obj, "ammo", ammo->ammo);
-    return ammo_obj;
-}
-
-static bool M_LoadAmmo(JSON_OBJECT *const ammo_obj, AMMO_INFO *const ammo)
-{
-    ASSERT(ammo != nullptr);
-    if (ammo_obj == nullptr) {
-        LOG_ERROR("Malformed save: invalid or missing ammo info");
-        return false;
+    if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"))) {
+        goto cleanup;
     }
 
-    ammo->ammo = JSON_ObjectGetInt(ammo_obj, "ammo", ammo->ammo);
-    return true;
+    if (!M_LoadMusic(JSON_ObjectGetObject(root_obj, "music"), version)) {
+        goto cleanup;
+    }
+
+    if (!M_LoadResumeInfo(JSON_ObjectGetArray(root_obj, "resume_info"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadInventory(JSON_ObjectGetObject(root_obj, "inventory"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadFlipmaps(JSON_ObjectGetObject(root_obj, "flipmap"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadCameras(JSON_ObjectGetArray(root_obj, "cameras"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"), version)) {
+        goto cleanup;
+    }
+
+    if (!M_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadFlares(JSON_ObjectGetArray(root_obj, "flares"))) {
+        goto cleanup;
+    }
+
+    if (!M_LoadLara(JSON_ObjectGetObject(root_obj, "lara"))) {
+        goto cleanup;
+    }
+
+    result = true;
+
+cleanup:
+    JSON_ValueFree(root);
+    return result;
+}
+
+static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
+{
+    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+    JSON_OBJECT *const root_obj = JSON_ObjectNew();
+
+    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
+    JSON_ObjectAppendObject(root_obj, "music", M_DumpMusic());
+    JSON_ObjectAppendArray(root_obj, "resume_info", M_DumpResumeInfo());
+    JSON_ObjectAppendObject(root_obj, "inventory", M_DumpInventory());
+    JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
+    JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
+    JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
+    JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
+    JSON_ObjectAppendArray(root_obj, "flares", M_DumpFlares());
+    JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
+
+    JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
+    M_SaveRaw(fp, root, current_level->num);
+    JSON_ValueFree(root);
 }
 
 REGISTER_SAVEGAME_STRATEGY(m_Strategy)

@@ -12,10 +12,6 @@
 #define M_SPEED 200
 #define M_FALL_SPEED (M_SPEED - 10) // = 190
 
-static void M_Explode(int16_t grenade_item_num, XYZ_32 pos);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 {
     const ITEM *const grenade_item = Item_Get(grenade_item_num);
@@ -30,12 +26,6 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
     }
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     Item_Kill(grenade_item_num);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_position = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -143,6 +133,12 @@ static void M_Control(const int16_t item_num)
     if (explode) {
         M_Explode(item_num, old_pos);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_position = true;
 }
 
 REGISTER_OBJECT(O_GRENADE, M_Setup)

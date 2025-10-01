@@ -43,16 +43,6 @@ static const OBJECT_BOUNDS m_Switch_BoundsUW = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static const OBJECT_BOUNDS *M_BoundsUW(void);
-static void M_Setup(OBJECT *obj);
-static void M_SetupUW(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_CollisionControlled(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     if (g_Config.gameplay.enable_walk_to_items) {
@@ -66,24 +56,6 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
     return &m_Switch_BoundsUW;
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupUW(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = M_CollisionUW;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->bounds_func = M_BoundsUW;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -93,51 +65,6 @@ static void M_Control(const int16_t item_num)
         item->timer = 0;
     }
     Item_Animate(item);
-}
-
-static void M_Collision(
-    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
-{
-    if (g_Config.gameplay.enable_walk_to_items) {
-        M_CollisionControlled(item_num, lara_item, coll);
-        return;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    if (!g_Input.action || item->status != IS_INACTIVE
-        || lara->gun_status != LGS_ARMLESS || lara_item->gravity) {
-        return;
-    }
-
-    if (lara_item->current_anim_state != LS_STOP) {
-        return;
-    }
-
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
-        return;
-    }
-
-    lara_item->rot.y = item->rot.y;
-    if (item->current_anim_state == SWITCH_STATE_ON) {
-        Lara_AnimateUntil(lara_item, LS_SWITCH_ON);
-        lara_item->goal_anim_state = LS_STOP;
-        lara->gun_status = LGS_HANDS_BUSY;
-        item->status = IS_ACTIVE;
-        item->goal_anim_state = SWITCH_STATE_OFF;
-        Item_AddActive(item_num);
-        Item_Animate(item);
-    } else if (item->current_anim_state == SWITCH_STATE_OFF) {
-        Lara_AnimateUntil(lara_item, LS_SWITCH_OFF);
-        lara_item->goal_anim_state = LS_STOP;
-        lara->gun_status = LGS_HANDS_BUSY;
-        item->status = IS_ACTIVE;
-        item->goal_anim_state = SWITCH_STATE_ON;
-        Item_AddActive(item_num);
-        Item_Animate(item);
-    }
 }
 
 static void M_CollisionControlled(
@@ -197,6 +124,51 @@ static void M_CollisionControlled(
     }
 }
 
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    if (g_Config.gameplay.enable_walk_to_items) {
+        M_CollisionControlled(item_num, lara_item, coll);
+        return;
+    }
+
+    ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (!g_Input.action || item->status != IS_INACTIVE
+        || lara->gun_status != LGS_ARMLESS || lara_item->gravity) {
+        return;
+    }
+
+    if (lara_item->current_anim_state != LS_STOP) {
+        return;
+    }
+
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
+        return;
+    }
+
+    lara_item->rot.y = item->rot.y;
+    if (item->current_anim_state == SWITCH_STATE_ON) {
+        Lara_AnimateUntil(lara_item, LS_SWITCH_ON);
+        lara_item->goal_anim_state = LS_STOP;
+        lara->gun_status = LGS_HANDS_BUSY;
+        item->status = IS_ACTIVE;
+        item->goal_anim_state = SWITCH_STATE_OFF;
+        Item_AddActive(item_num);
+        Item_Animate(item);
+    } else if (item->current_anim_state == SWITCH_STATE_OFF) {
+        Lara_AnimateUntil(lara_item, LS_SWITCH_OFF);
+        lara_item->goal_anim_state = LS_STOP;
+        lara->gun_status = LGS_HANDS_BUSY;
+        item->status = IS_ACTIVE;
+        item->goal_anim_state = SWITCH_STATE_ON;
+        Item_AddActive(item_num);
+        Item_Animate(item);
+    }
+}
+
 static void M_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -237,6 +209,24 @@ static void M_CollisionUW(
         Item_AddActive(item_num);
         Item_Animate(item);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->bounds_func = M_Bounds;
+}
+
+static void M_SetupUW(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = M_CollisionUW;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->bounds_func = M_BoundsUW;
 }
 
 bool Switch_Trigger(int16_t item_num, int16_t timer)

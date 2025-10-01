@@ -5,8 +5,6 @@
 #include <lauxlib.h>
 #include <string.h>
 
-static int M_L_ItemIndex(lua_State *l);
-
 static int M_L_ItemIndex(lua_State *const l)
 {
     ITEM *item = *(ITEM **)luaL_checkudata(l, 1, "TRX.ITEM");

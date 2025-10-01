@@ -7,18 +7,6 @@
 
 #define MAX_ROOMIES 2
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -68,6 +56,14 @@ static void M_Control(const int16_t item_num)
         && lara_item->pos.y == item->pos.y) {
         Game_SetIsLevelComplete(true);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_DYING_MONK, M_Setup)

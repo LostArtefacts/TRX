@@ -26,23 +26,11 @@ static SECTOR **m_CachedSectorArray = nullptr;
 static M_MAX_STATS m_LevelMax;
 static bool m_KillableItems[MAX_ITEMS] = {};
 
-static void M_TraverseFloor(void);
-static void M_CheckTriggers(
-    const ROOM *room, int32_t room_num, int32_t z_sector, int32_t x_sector);
-static void M_IncludeKillableItem(int16_t item_num);
-
-static void M_TraverseFloor(void)
+static void M_IncludeKillableItem(int16_t item_num)
 {
-    uint32_t secrets = 0;
-
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        for (int32_t z_sector = 0; z_sector < room->size.z; z_sector++) {
-            for (int32_t x_sector = 0; x_sector < room->size.x; x_sector++) {
-                M_CheckTriggers(room, i, z_sector, x_sector);
-            }
-        }
-    }
+    m_KillableItems[item_num] = true;
+    m_LevelMax.killable_count += 1;
+    m_LevelMax.pickup_count += Carrier_GetItemCount(item_num);
 }
 
 static void M_CheckTriggers(
@@ -107,11 +95,17 @@ static void M_CheckTriggers(
     }
 }
 
-static void M_IncludeKillableItem(int16_t item_num)
+static void M_TraverseFloor(void)
 {
-    m_KillableItems[item_num] = true;
-    m_LevelMax.killable_count += 1;
-    m_LevelMax.pickup_count += Carrier_GetItemCount(item_num);
+    uint32_t secrets = 0;
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        for (int32_t z_sector = 0; z_sector < room->size.z; z_sector++) {
+            for (int32_t x_sector = 0; x_sector < room->size.x; x_sector++) {
+                M_CheckTriggers(room, i, z_sector, x_sector);
+            }
+        }
+    }
 }
 
 void Stats_ComputeFinal(GF_LEVEL_TYPE level_type, FINAL_STATS *final_stats)

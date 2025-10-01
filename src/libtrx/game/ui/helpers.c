@@ -31,8 +31,8 @@ void UI_LayoutWrapper(
     UI_LayoutBasic(node, x, y, w, h);
     UI_NODE *child = node->first_child;
     while (child != nullptr) {
-        if (child->ops->layout != nullptr) {
-            child->ops->layout(child, x, y, w, h);
+        if (child->ops.layout != nullptr) {
+            child->ops.layout(child, x, y, w, h);
         }
         child = child->next_sibling;
     }
@@ -42,8 +42,8 @@ void UI_DrawWrapper(const UI_NODE *const node)
 {
     const UI_NODE *child = node->first_child;
     while (child != nullptr) {
-        if (child->ops->draw != nullptr) {
-            child->ops->draw(child);
+        if (child->ops.draw != nullptr) {
+            child->ops.draw(child);
         }
         child = child->next_sibling;
     }

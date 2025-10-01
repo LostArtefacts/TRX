@@ -11,14 +11,9 @@ typedef struct {
     const char *description;
 } M_BACKEND_DATA;
 
-static const char *m_ExtensionsToTry[] = { ".flac", ".ogg", ".mp3", ".wav",
-                                           nullptr };
-
-static char *M_GetTrackFileName(const char *base_dir, int32_t track);
-static const char *M_Describe(const MUSIC_BACKEND *backend);
-static bool M_Init(MUSIC_BACKEND *backend);
-static int32_t M_Play(const MUSIC_BACKEND *backend, int32_t track_id);
-static void M_Shutdown(MUSIC_BACKEND *backend);
+static const char *m_ExtensionsToTry[] = {
+    ".flac", ".ogg", ".mp3", ".wav", nullptr,
+};
 
 static char *M_GetTrackFileName(const char *base_dir, int32_t track)
 {

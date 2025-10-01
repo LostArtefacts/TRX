@@ -6,54 +6,6 @@
 #include "memory.h"
 #include "utils.h"
 
-static void M_HandleTextureData(INJECTION_CHUNK chunk);
-static void M_HandleTextureInfo(INJECTION_CHUNK chunk);
-static void M_HandlePalette(const INJECTION *injection, int32_t data_count);
-static uint16_t M_RemapRGB8(RGB_888 rgb);
-static void M_HandleTexturePages(
-    const INJECTION *injection, int32_t data_count);
-static void M_HandleSpriteSequences(
-    const INJECTION *injection, int32_t data_count);
-
-static void M_HandleTextureData(const INJECTION_CHUNK chunk)
-{
-    for (int32_t i = 0; i < chunk.num_blocks; i++) {
-        const INJECTION_DATA_TYPE data_type =
-            VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
-
-        switch (data_type) {
-        case IDT_PALETTE:
-            M_HandlePalette(chunk.injection, data_count);
-            break;
-        case IDT_TEXTURE_PAGES:
-            M_HandleTexturePages(chunk.injection, data_count);
-            break;
-        default:
-            LOG_WARNING("Unknown data type: %d", data_type);
-            VFile_Skip(chunk.injection->fp, data_size);
-            break;
-        }
-    }
-}
-
-static void M_HandlePalette(
-    const INJECTION *const injection, const int32_t data_count)
-{
-    uint16_t palette_map[data_count];
-    for (int32_t i = 0; i < data_count; i++) {
-        const RGB_888 rgb = {
-            .r = VFile_ReadU8(injection->fp) * 4,
-            .g = VFile_ReadU8(injection->fp) * 4,
-            .b = VFile_ReadU8(injection->fp) * 4,
-        };
-        palette_map[i] = i == 0 ? 0 : M_RemapRGB8(rgb);
-    }
-
-    Inject_RegisterPaletteMap(palette_map, data_count);
-}
-
 static uint16_t M_RemapRGB8(const RGB_888 rgb)
 {
     const LEVEL_INFO *const level_info = Level_GetInfo();
@@ -72,6 +24,22 @@ static uint16_t M_RemapRGB8(const RGB_888 rgb)
     }
 
     return best_idx;
+}
+
+static void M_HandlePalette(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    uint16_t palette_map[data_count];
+    for (int32_t i = 0; i < data_count; i++) {
+        const RGB_888 rgb = {
+            .r = VFile_ReadU8(injection->fp) * 4,
+            .g = VFile_ReadU8(injection->fp) * 4,
+            .b = VFile_ReadU8(injection->fp) * 4,
+        };
+        palette_map[i] = i == 0 ? 0 : M_RemapRGB8(rgb);
+    }
+
+    Inject_RegisterPaletteMap(palette_map, data_count);
 }
 
 static void M_HandleTexturePages(
@@ -96,6 +64,56 @@ static void M_HandleTexturePages(
 
     Memory_FreePointer(&input_8);
     info->textures.page_count += data_count;
+}
+
+static void M_HandleSpriteSequences(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    LEVEL_INFO *const level_info = Level_GetInfo();
+    for (int32_t i = 0; i < data_count; i++) {
+        const INJECTION_OBJECT_INFO obj_info =
+            Inject_ReadObjectPtr(injection->fp);
+        const int16_t num_meshes = VFile_ReadS16(injection->fp);
+        const int16_t mesh_idx = VFile_ReadS16(injection->fp);
+
+        if (obj_info.type == OBJ_TYPE_OBJECT) {
+            OBJECT *const obj = Object_Get(obj_info.id);
+            obj->mesh_count = num_meshes;
+            obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
+            obj->loaded = true;
+        } else if (obj_info.type == OBJ_TYPE_STATIC2D) {
+            STATIC_OBJECT_2D *const obj = Object_Get2DStatic(obj_info.id);
+            obj->frame_count = ABS(num_meshes);
+            obj->texture_idx = mesh_idx + level_info->textures.sprite_count;
+            obj->loaded = true;
+        } else {
+            LOG_WARNING("Invalid object type %d", obj_info.type);
+        }
+        level_info->textures.sprite_count += ABS(num_meshes);
+    }
+}
+
+static void M_HandleTextureData(const INJECTION_CHUNK chunk)
+{
+    for (int32_t i = 0; i < chunk.num_blocks; i++) {
+        const INJECTION_DATA_TYPE data_type =
+            VFile_ReadS32(chunk.injection->fp);
+        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
+        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        switch (data_type) {
+        case IDT_PALETTE:
+            M_HandlePalette(chunk.injection, data_count);
+            break;
+        case IDT_TEXTURE_PAGES:
+            M_HandleTexturePages(chunk.injection, data_count);
+            break;
+        default:
+            LOG_WARNING("Unknown data type: %d", data_type);
+            VFile_Skip(chunk.injection->fp, data_size);
+            break;
+        }
+    }
 }
 
 static void M_HandleTextureInfo(const INJECTION_CHUNK chunk)
@@ -130,33 +148,6 @@ static void M_HandleTextureInfo(const INJECTION_CHUNK chunk)
             VFile_Skip(chunk.injection->fp, data_size);
             break;
         }
-    }
-}
-
-static void M_HandleSpriteSequences(
-    const INJECTION *const injection, const int32_t data_count)
-{
-    LEVEL_INFO *const level_info = Level_GetInfo();
-    for (int32_t i = 0; i < data_count; i++) {
-        const INJECTION_OBJECT_INFO obj_info =
-            Inject_ReadObjectPtr(injection->fp);
-        const int16_t num_meshes = VFile_ReadS16(injection->fp);
-        const int16_t mesh_idx = VFile_ReadS16(injection->fp);
-
-        if (obj_info.type == OBJ_TYPE_OBJECT) {
-            OBJECT *const obj = Object_Get(obj_info.id);
-            obj->mesh_count = num_meshes;
-            obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
-            obj->loaded = true;
-        } else if (obj_info.type == OBJ_TYPE_STATIC2D) {
-            STATIC_OBJECT_2D *const obj = Object_Get2DStatic(obj_info.id);
-            obj->frame_count = ABS(num_meshes);
-            obj->texture_idx = mesh_idx + level_info->textures.sprite_count;
-            obj->loaded = true;
-        } else {
-            LOG_WARNING("Invalid object type %d", obj_info.type);
-        }
-        level_info->textures.sprite_count += ABS(num_meshes);
     }
 }
 

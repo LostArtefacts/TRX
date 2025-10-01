@@ -10,24 +10,6 @@ typedef enum {
     POD_STATE_EXPLODE = 1,
 } POD_STATE;
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_anim = true;
-    obj->save_flags = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -124,6 +106,19 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_anim = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_PODS, M_Setup)

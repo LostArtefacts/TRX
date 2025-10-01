@@ -33,39 +33,6 @@ typedef enum {
 static BITE m_KidGun1 = { .pos = { 0, 150, 34 }, .mesh_num = 7 };
 static BITE m_KidGun2 = { .pos = { 0, 150, 37 }, .mesh_num = 4 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_Draw(const ITEM *item);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = SKATE_KID_HITPOINTS;
-    obj->radius = SKATE_KID_RADIUS;
-    obj->smartness = SKATE_KID_SMARTNESS;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 0)->rot.y = true;
-
-    if (!Object_Get(O_SKATEBOARD)->loaded) {
-        LOG_WARNING(
-            "Skateboard object (%d) is not loaded and so will not be drawn.",
-            O_SKATEBOARD);
-    }
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
@@ -187,6 +154,34 @@ static void M_Draw(const ITEM *const item)
 
     ((ITEM *)item)->object_id = O_SKATEKID;
     Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = SKATE_KID_HITPOINTS;
+    obj->radius = SKATE_KID_RADIUS;
+    obj->smartness = SKATE_KID_SMARTNESS;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+
+    Object_GetBone(obj, 0)->rot.y = true;
+
+    if (!Object_Get(O_SKATEBOARD)->loaded) {
+        LOG_WARNING(
+            "Skateboard object (%d) is not loaded and so will not be drawn.",
+            O_SKATEBOARD);
+    }
 }
 
 REGISTER_OBJECT(O_SKATEKID, M_Setup)

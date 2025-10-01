@@ -28,15 +28,6 @@ static size_t m_CachedDirLen = 0;
 static char *m_CachedScanPath = nullptr;
 static char *m_LastCandidateName = nullptr;
 
-static IMAGE *M_CreateImageFromPath(const char *path);
-static float M_GetScreenAspectRatio(void);
-static void M_ScanCandidates(const char *path);
-static void M_FreeCandidates(void);
-
-static const M_CANDIDATE *M_PickBestCandidate(float screen_ratio);
-static bool M_LoadCandidate(const M_CANDIDATE *candidate);
-static bool M_LoadMainCandidate(const char *path);
-
 static IMAGE *M_CreateImageFromPath(const char *const path)
 {
     return Image_CreateFromFile(path);

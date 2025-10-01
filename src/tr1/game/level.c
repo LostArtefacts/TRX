@@ -45,13 +45,6 @@ typedef enum {
     LEVEL_LAYOUT_NUMBER_OF,
 } M_LAYOUT;
 
-static bool M_TryLayout(VFILE *file, M_LAYOUT layout);
-static M_LAYOUT M_GuessLayout(VFILE *file);
-static void M_InitialiseSoundEffects(void);
-static void M_LoadFromFile(const GF_LEVEL *level);
-static void M_CompleteSetup(const GF_LEVEL *level);
-static void M_MarkWaterEdgeVertices(void);
-
 static bool M_TryLayout(VFILE *const file, const M_LAYOUT layout)
 {
     // TODO: clang-format <20 formats this wrongly
@@ -269,6 +262,28 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     VFile_Close(file);
 }
 
+static void M_MarkWaterEdgeVertices(void)
+{
+    if (!g_Config.visuals.fix_texture_issues) {
+        return;
+    }
+
+    BENCHMARK benchmark = Benchmark_Start();
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        const int32_t y_test =
+            (room->flags & RF_UNDERWATER) ? room->max_ceiling : room->min_floor;
+        for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
+            ROOM_VERTEX *const vertex = &room->mesh.vertices[j];
+            if (vertex->pos.y == y_test) {
+                vertex->flags |= NO_VERT_MOVE;
+            }
+        }
+    }
+
+    Benchmark_End(&benchmark, nullptr);
+}
+
 static void M_CompleteSetup(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -300,28 +315,6 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
 
     Output_DispatchLevelLoad();
     M_InitialiseSoundEffects();
-
-    Benchmark_End(&benchmark, nullptr);
-}
-
-static void M_MarkWaterEdgeVertices(void)
-{
-    if (!g_Config.visuals.fix_texture_issues) {
-        return;
-    }
-
-    BENCHMARK benchmark = Benchmark_Start();
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        const int32_t y_test =
-            (room->flags & RF_UNDERWATER) ? room->max_ceiling : room->min_floor;
-        for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
-            ROOM_VERTEX *const vertex = &room->mesh.vertices[j];
-            if (vertex->pos.y == y_test) {
-                vertex->flags |= NO_VERT_MOVE;
-            }
-        }
-    }
 
     Benchmark_End(&benchmark, nullptr);
 }

@@ -27,20 +27,6 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static void M_SetSamplerFilter(GLuint sampler, GFX_TEXTURE_FILTER filter);
-static void M_SetupShaderForScene(
-    OUTPUT_SHADER *shader, GFX_TEXTURE_FILTER filter, bool lighting);
-static void M_SetupShaderForUI(
-    OUTPUT_SHADER *shader, GFX_TEXTURE_FILTER filter);
-static void M_BindTextures(const M_PRIV *p);
-static void M_SetBlendModeForScene(bool wireframe);
-static void M_SetBlendModeForUI(void);
-
-static bool M_IsAnySourceDirty(const M_PRIV *p);
-static bool M_IsSourceDirty(const M_PRIV *p, SCENE_PASS pass);
-static void M_RenderSourcePass(const M_PRIV *p, SCENE_PASS pass);
-static void M_RenderScenePasses(const M_PRIV *p);
-
 static void M_SetSamplerFilter(
     const GLuint sampler, const GFX_TEXTURE_FILTER filter)
 {

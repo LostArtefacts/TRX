@@ -10,10 +10,6 @@
 #include <libtrx/game/random.h>
 
 static void M_DrawBodyPart(
-    LARA_MESH mesh, const ANIM_BONE *bone, const XYZ_16 *mesh_rots_1,
-    const XYZ_16 *mesh_rots_2, CLIP clip);
-
-static void M_DrawBodyPart(
     const LARA_MESH mesh, const ANIM_BONE *const bone,
     const XYZ_16 *mesh_rots_1, const XYZ_16 *mesh_rots_2, const CLIP clip)
 {

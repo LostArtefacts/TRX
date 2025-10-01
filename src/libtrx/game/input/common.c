@@ -79,11 +79,6 @@ static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
     [INPUT_LAYOUT_CUSTOM_3] = GS_ID(CONTROLS_CUSTOM_3),
 };
 
-static INPUT_BACKEND_IMPL *M_GetBackend(INPUT_BACKEND backend);
-static bool M_IsPressed(INPUT_STATE input, INPUT_ROLE role);
-static INPUT_STATE M_SetPressed(
-    INPUT_STATE input, INPUT_ROLE role, bool is_pressed);
-
 static INPUT_BACKEND_IMPL *M_GetBackend(const INPUT_BACKEND backend)
 {
     switch (backend) {

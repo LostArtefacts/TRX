@@ -35,17 +35,6 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static void M_ApplyInterpolation(void);
-static void M_RememberLaraPos(M_PRIV *p);
-static void M_RestoreLaraPos(M_PRIV *p);
-static PHASE_CONTROL M_AdvanceFrame(M_PRIV *p);
-
-static bool M_HandleItemPositionInputs(ITEM *item);
-static bool M_HandleItemRotationInputs(ITEM *item);
-
-static void M_HandleEditLaraMode(M_PRIV *p);
-static void M_HandleCameraMode(M_PRIV *p);
-
 static void M_ApplyInterpolation(void)
 {
     Interpolation_CommitLara();

@@ -13,11 +13,6 @@ typedef struct {
     bool taking_screenshot;
 } M_PRIV;
 
-static PHASE_CONTROL M_Start(PHASE *phase);
-static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase);
-static void M_Draw(PHASE *phase);
-
 static PHASE_CONTROL M_Start(PHASE *phase)
 {
     PhotoMode_Start();

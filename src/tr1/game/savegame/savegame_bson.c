@@ -53,45 +53,6 @@ typedef struct {
         value.z = JSON_ObjectGetInt(sub_obj, "z", value.z);                    \
     } while (0)
 
-static void M_SaveRaw(
-    MYFILE *fp, JSON_VALUE *root, int32_t version, int32_t level_num);
-static JSON_VALUE *M_ParseFromBuffer(
-    const char *buffer, size_t buffer_size, int32_t *version_out);
-static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out);
-static bool M_LoadResumeInfo(JSON_ARRAY *levels_arr, uint16_t header_version);
-static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *start_arr);
-static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr);
-static bool M_LoadMisc(JSON_OBJECT *misc_obj, uint16_t header_version);
-static bool M_LoadInventory(JSON_OBJECT *inv_obj);
-static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj);
-static bool M_LoadCameras(JSON_ARRAY *cameras_arr);
-static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version);
-static bool M_LoadEffects(JSON_ARRAY *fx_arr);
-static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm);
-static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo);
-static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot);
-static bool M_LoadLara(
-    JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version);
-static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj, uint16_t header_version);
-static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr);
-static JSON_ARRAY *M_DumpResumeInfo(void);
-static JSON_OBJECT *M_DumpMisc(void);
-static JSON_OBJECT *M_DumpInventory(void);
-static JSON_OBJECT *M_DumpFlipmaps(void);
-static JSON_ARRAY *M_DumpCameras(void);
-static JSON_ARRAY *M_DumpItems(void);
-static JSON_ARRAY *M_DumpEffects(void);
-static JSON_OBJECT *M_DumpArm(LARA_ARM *arm);
-static JSON_OBJECT *M_DumpAmmo(AMMO_INFO *ammo);
-static JSON_OBJECT *M_DumpLOT(LOT_INFO *lot);
-static JSON_OBJECT *M_DumpLara(LARA_INFO *lara);
-static JSON_OBJECT *M_DumpCurrentMusic(void);
-static JSON_ARRAY *M_DumpMusicTrackFlags(void);
-
-static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
-static bool M_IsValidItemObject(
-    GAME_OBJECT_ID saved_obj_id, GAME_OBJECT_ID current_obj_id);
-
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
 static bool M_LoadFromFile(MYFILE *fp);

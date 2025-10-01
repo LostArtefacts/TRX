@@ -36,19 +36,6 @@ static const OBJECT_BOUNDS m_SwitchBoundsUW = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static const OBJECT_BOUNDS *M_BoundsUW(void);
-static void M_AlignLara(ITEM *lara_item, ITEM *switch_item);
-static void M_SwitchOn(ITEM *switch_item, ITEM *lara_item);
-static void M_SwitchOff(ITEM *switch_item, ITEM *lara_item);
-static void M_SetupBase(OBJECT *obj);
-static void M_Setup(OBJECT *obj);
-static void M_SetupPushButton(OBJECT *obj);
-static void M_SetupUW(OBJECT *obj);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Control(int16_t item_num);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_SwitchBounds;
@@ -129,34 +116,6 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
     }
 
     switch_item->goal_anim_state = SWITCH_STATE_ON;
-}
-
-static void M_SetupBase(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    M_SetupBase(obj);
-    obj->collision_func = M_Collision;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupPushButton(OBJECT *const obj)
-{
-    M_Setup(obj);
-    obj->enable_interpolation = false;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupUW(OBJECT *const obj)
-{
-    M_SetupBase(obj);
-    obj->collision_func = M_CollisionUW;
-    obj->bounds_func = M_BoundsUW;
 }
 
 static void M_Collision(
@@ -287,6 +246,34 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         item->status = IS_INACTIVE;
     }
     return true;
+}
+
+static void M_SetupBase(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = true;
+    obj->save_anim = true;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
+}
+
+static void M_SetupPushButton(OBJECT *const obj)
+{
+    M_Setup(obj);
+    obj->enable_interpolation = false;
+    obj->bounds_func = M_Bounds;
+}
+
+static void M_SetupUW(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->collision_func = M_CollisionUW;
+    obj->bounds_func = M_BoundsUW;
 }
 
 REGISTER_OBJECT(O_SWITCH_TYPE_AIRLOCK, M_Setup)

@@ -9,8 +9,6 @@
 static CINE_FRAME *m_CineFrames = nullptr;
 static CINE_DATA m_CineData = {};
 
-static void M_UpdateCutscene(XYZ_32 base_pos, int16_t angle);
-
 static void M_UpdateCutscene(const XYZ_32 base_pos, const int16_t angle)
 {
     const CINE_FRAME *const frame = Camera_GetCurrentCineFrame();

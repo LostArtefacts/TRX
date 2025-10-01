@@ -19,22 +19,6 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_AddRoomVerts(
-    MESH_BUILDER *builder, size_t vtx_count, int32_t texture_idx,
-    const uint16_t *face_vertices, const TEXTURE_ZW_F *trapezoid_ratio,
-    const ROOM_VERTEX *room_verts);
-static void M_AddRoomFace3(
-    MESH_BUILDER *builder, const FACE3 *face, const ROOM *room);
-static void M_AddRoomFace4(
-    MESH_BUILDER *builder, const FACE4 *face, const ROOM *room);
-
-static int16_t M_ShadeCaustics(
-    const M_PRIV *p, const ROOM *room, const bool is_water_effect,
-    int16_t source, int32_t vtx_idx);
-static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data);
-static void M_PrepareMeshes(M_PRIV *p);
-static void M_FreeMeshes(M_PRIV *p);
-
-static void M_AddRoomVerts(
     MESH_BUILDER *const builder, const size_t vtx_count,
     const int32_t texture_idx, const uint16_t *const face_vertices,
     const TEXTURE_ZW_F *const trapezoid_ratio,

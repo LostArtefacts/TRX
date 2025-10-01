@@ -47,9 +47,6 @@ static M_PRIV m_Priv;
 
 static INPUT_STATE m_OldDemoInputDB = {};
 
-static void M_PrepareConfig(M_PRIV *p);
-static void M_RestoreConfig(M_PRIV *p);
-
 static void M_PrepareConfig(M_PRIV *const p)
 {
     p->old_config.config = g_Config;

@@ -103,44 +103,6 @@ static bool m_Conflicts[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {};
 static bool m_ButtonState[SDL_CONTROLLER_BUTTON_MAX] = {};
 static int16_t m_AxisState[SDL_CONTROLLER_AXIS_MAX] = {};
 
-static const char *M_GetButtonName(SDL_GameControllerButton button);
-static const char *M_GetAxisName(SDL_GameControllerAxis axis, int16_t axis_dir);
-
-static bool M_JoyBtn(SDL_GameControllerButton button);
-static int16_t M_JoyAxis(SDL_GameControllerAxis axis);
-static bool M_GetBindState(INPUT_LAYOUT layout, INPUT_ROLE role);
-
-static int16_t M_GetUniqueBind(INPUT_LAYOUT layout, INPUT_ROLE role);
-static int16_t M_GetAssignedButtonType(INPUT_LAYOUT layout, INPUT_ROLE role);
-static int16_t M_GetAssignedBind(INPUT_LAYOUT layout, INPUT_ROLE role);
-static int16_t M_GetAssignedAxisDir(INPUT_LAYOUT layout, INPUT_ROLE role);
-static void M_AssignButton(
-    INPUT_LAYOUT layout, INPUT_ROLE role, int16_t button);
-static void M_AssignAxis(
-    INPUT_LAYOUT layout, INPUT_ROLE role, int16_t axis, int16_t axis_dir);
-static bool M_CheckConflict(
-    INPUT_LAYOUT layout, INPUT_ROLE role1, INPUT_ROLE role2);
-static void M_AssignConflict(
-    INPUT_LAYOUT layout, INPUT_ROLE role, bool conflict);
-static void M_CheckConflicts(INPUT_LAYOUT layout);
-static SDL_GameController *M_FindController(void);
-
-static void M_Init(void);
-static void M_ProcessEvent(const SDL_Event *event);
-static void M_Shutdown(void);
-static void M_Discover(void);
-static bool M_CustomUpdate(INPUT_STATE *result, INPUT_LAYOUT layout);
-static bool M_IsPressed(INPUT_LAYOUT layout, INPUT_ROLE role);
-static bool M_IsRoleConflicted(INPUT_LAYOUT layout, INPUT_ROLE role);
-static const char *M_GetName(INPUT_LAYOUT layout, INPUT_ROLE role);
-static void M_UnassignRole(INPUT_LAYOUT layout, INPUT_ROLE role);
-static bool M_AssignFromJSONObject(
-    INPUT_LAYOUT layout, INPUT_ROLE role, JSON_OBJECT *bind_obj);
-static bool M_AssignToJSONObject(
-    INPUT_LAYOUT layout, INPUT_ROLE role, JSON_OBJECT *bind_obj);
-static void M_ResetLayout(INPUT_LAYOUT layout);
-static bool M_ReadAndAssign(INPUT_LAYOUT layout, INPUT_ROLE role);
-
 static const char *M_GetButtonName(const SDL_GameControllerButton button)
 {
     // First switch: Handle platform-specific deviations from defaults
@@ -299,6 +261,25 @@ static int16_t M_GetUniqueBind(const INPUT_LAYOUT layout, const INPUT_ROLE role)
     return assigned.bind.button;
 }
 
+static bool M_CheckConflict(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role1, const INPUT_ROLE role2)
+{
+    const int16_t bind1 = M_GetUniqueBind(layout, role1);
+    const int16_t bind2 = M_GetUniqueBind(layout, role2);
+    return bind1 == bind2;
+}
+
+static void M_AssignConflict(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const bool conflict)
+{
+    m_Conflicts[layout][role] = conflict;
+}
+
+static void M_CheckConflicts(const INPUT_LAYOUT layout)
+{
+    Input_ConflictHelper(layout, M_CheckConflict, M_AssignConflict);
+}
+
 static int16_t M_GetAssignedButtonType(
     const INPUT_LAYOUT layout, const INPUT_ROLE role)
 {
@@ -341,25 +322,6 @@ static void M_AssignAxis(
     M_CheckConflicts(layout);
 }
 
-static bool M_CheckConflict(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role1, const INPUT_ROLE role2)
-{
-    const int16_t bind1 = M_GetUniqueBind(layout, role1);
-    const int16_t bind2 = M_GetUniqueBind(layout, role2);
-    return bind1 == bind2;
-}
-
-static void M_AssignConflict(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role, const bool conflict)
-{
-    m_Conflicts[layout][role] = conflict;
-}
-
-static void M_CheckConflicts(const INPUT_LAYOUT layout)
-{
-    Input_ConflictHelper(layout, M_CheckConflict, M_AssignConflict);
-}
-
 static SDL_GameController *M_FindController(void)
 {
     if (m_Controller != nullptr) {
@@ -385,6 +347,24 @@ static SDL_GameController *M_FindController(void)
     }
 
     return nullptr;
+}
+
+static void M_ResetLayout(const INPUT_LAYOUT layout)
+{
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        const CONTROLLER_MAP default_btn = m_Layout[INPUT_LAYOUT_DEFAULT][role];
+        m_Layout[layout][role] = default_btn;
+    }
+    M_CheckConflicts(layout);
+}
+
+static void M_Discover(void)
+{
+    if (m_Controller != nullptr) {
+        SDL_GameControllerClose(m_Controller);
+        m_Controller = nullptr;
+    }
+    m_Controller = M_FindController();
 }
 
 static void M_Init(void)
@@ -421,15 +401,6 @@ static void M_Shutdown(void)
         SDL_GameControllerClose(m_Controller);
         m_Controller = nullptr;
     }
-}
-
-static void M_Discover(void)
-{
-    if (m_Controller != nullptr) {
-        SDL_GameControllerClose(m_Controller);
-        m_Controller = nullptr;
-    }
-    m_Controller = M_FindController();
 }
 
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
@@ -565,15 +536,6 @@ static bool M_AssignToJSONObject(
     JSON_ObjectAppendInt(bind_obj, "bind", user_bind);
     JSON_ObjectAppendInt(bind_obj, "axis_dir", user_axis_dir);
     return true;
-}
-
-static void M_ResetLayout(const INPUT_LAYOUT layout)
-{
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        const CONTROLLER_MAP default_btn = m_Layout[INPUT_LAYOUT_DEFAULT][role];
-        m_Layout[layout][role] = default_btn;
-    }
-    M_CheckConflicts(layout);
 }
 
 static bool M_ReadAndAssign(const INPUT_LAYOUT layout, const INPUT_ROLE role)

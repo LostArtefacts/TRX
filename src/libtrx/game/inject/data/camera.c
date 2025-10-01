@@ -2,15 +2,23 @@
 #include "game/camera/cinematic.h"
 #include "game/inject.h"
 
-static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
-static void M_HandleCameraData(INJECTION_CHUNK chunk);
-static void M_HandleCineFrames(const INJECTION *injection, int32_t data_count);
-
 static void M_ReadVertex(XYZ_16 *const vertex, VFILE *const file)
 {
     vertex->x = VFile_ReadS16(file);
     vertex->y = VFile_ReadS16(file);
     vertex->z = VFile_ReadS16(file);
+}
+
+static void M_HandleCineFrames(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        CINE_FRAME *const frame = Camera_GetCineFrame(i);
+        M_ReadVertex(&frame->target.shift, injection->fp);
+        M_ReadVertex(&frame->camera.shift, injection->fp);
+        frame->fov = VFile_ReadS16(injection->fp);
+        frame->roll = VFile_ReadS16(injection->fp);
+    }
 }
 
 static void M_HandleCameraData(const INJECTION_CHUNK chunk)
@@ -30,18 +38,6 @@ static void M_HandleCameraData(const INJECTION_CHUNK chunk)
             VFile_Skip(chunk.injection->fp, data_size);
             break;
         }
-    }
-}
-
-static void M_HandleCineFrames(
-    const INJECTION *const injection, const int32_t data_count)
-{
-    for (int32_t i = 0; i < data_count; i++) {
-        CINE_FRAME *const frame = Camera_GetCineFrame(i);
-        M_ReadVertex(&frame->target.shift, injection->fp);
-        M_ReadVertex(&frame->camera.shift, injection->fp);
-        frame->fov = VFile_ReadS16(injection->fp);
-        frame->roll = VFile_ReadS16(injection->fp);
     }
 }
 

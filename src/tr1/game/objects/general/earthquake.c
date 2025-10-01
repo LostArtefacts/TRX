@@ -4,16 +4,6 @@
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -26,6 +16,13 @@ static void M_Control(const int16_t item_num)
             Sound_Effect(SFX_T_REX_STOMP, nullptr, SPM_NORMAL);
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_EARTHQUAKE, M_Setup)

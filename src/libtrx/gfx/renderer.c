@@ -31,13 +31,6 @@ typedef struct {
     GFX_GL_PROGRAM program;
 } M_CONTEXT;
 
-static void M_Blit(const M_CONTEXT *p, const GFX_GL_FBO *fbo);
-static void M_UpdateFBOSizes(GFX_RENDERER *renderer);
-static void M_SwapBuffers(GFX_RENDERER *renderer);
-static void M_Init(GFX_RENDERER *renderer, const GFX_CONFIG *config);
-static void M_Shutdown(GFX_RENDERER *renderer);
-static void M_Render(GFX_RENDERER *renderer);
-
 static void M_Blit(const M_CONTEXT *const p, const GFX_GL_FBO *const fbo)
 {
     GFX_GL_Texture_Bind(&fbo->texture);
@@ -55,6 +48,51 @@ static void M_UpdateFBOSizes(GFX_RENDERER *renderer)
     GFX_GL_FBO_ResizeIfNeeded(&p->geometry_fbo, rect.width, rect.height);
     rect = Viewport_GetRect(VIEWPORT_UI);
     GFX_GL_FBO_ResizeIfNeeded(&p->ui_fbo, rect.width, rect.height);
+}
+
+static void M_Render(GFX_RENDERER *renderer)
+{
+    ASSERT(renderer != nullptr);
+    M_CONTEXT *const p = renderer->priv;
+    ASSERT(p != nullptr);
+
+    const GLuint filter =
+        p->config->display_filter == GFX_TF_BILINEAR ? GL_LINEAR : GL_NEAREST;
+
+    GFX_GL_FBO_Unbind();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    GFX_GL_CheckError();
+
+    GFX_GL_Program_Bind(&p->program);
+    GFX_GL_Buffer_Bind(&p->buffer);
+    GFX_GL_VertexArray_Bind(&p->vertex_array);
+    glActiveTexture(GL_TEXTURE0);
+    glDisable(GL_DEPTH_TEST);
+
+    GFX_GL_Sampler_Bind(&p->sampler, 0);
+    GFX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MAG_FILTER, filter);
+    GFX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MIN_FILTER, filter);
+
+    VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_TARGET);
+    glViewport(rect.x, rect.y, rect.width, rect.height);
+    GFX_GL_CheckError();
+
+    // Composite geometry FBO (opaque)
+    glDisable(GL_BLEND);
+    M_Blit(p, &p->geometry_fbo);
+
+    // Composite UI FBO (with premultiplied alpha blending)
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    M_Blit(p, &p->ui_fbo);
+    glDisable(GL_BLEND);
+
+    if (GFX_Context_GetScheduledScreenshotPath() != nullptr) {
+        GFX_Context_SwitchToViewport(VIEWPORT_TARGET);
+        GFX_Screenshot_CaptureToFile(GFX_Context_GetScheduledScreenshotPath());
+        GFX_Context_ClearScheduledScreenshotPath();
+    }
 }
 
 static void M_SwapBuffers(GFX_RENDERER *const renderer)
@@ -136,51 +174,6 @@ static void M_Shutdown(GFX_RENDERER *renderer)
     GFX_GL_VertexArray_Close(&p->vertex_array);
 
     Memory_FreePointer(&renderer->priv);
-}
-
-static void M_Render(GFX_RENDERER *renderer)
-{
-    ASSERT(renderer != nullptr);
-    M_CONTEXT *const p = renderer->priv;
-    ASSERT(p != nullptr);
-
-    const GLuint filter =
-        p->config->display_filter == GFX_TF_BILINEAR ? GL_LINEAR : GL_NEAREST;
-
-    GFX_GL_FBO_Unbind();
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    GFX_GL_CheckError();
-
-    GFX_GL_Program_Bind(&p->program);
-    GFX_GL_Buffer_Bind(&p->buffer);
-    GFX_GL_VertexArray_Bind(&p->vertex_array);
-    glActiveTexture(GL_TEXTURE0);
-    glDisable(GL_DEPTH_TEST);
-
-    GFX_GL_Sampler_Bind(&p->sampler, 0);
-    GFX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MAG_FILTER, filter);
-    GFX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MIN_FILTER, filter);
-
-    VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_TARGET);
-    glViewport(rect.x, rect.y, rect.width, rect.height);
-    GFX_GL_CheckError();
-
-    // Composite geometry FBO (opaque)
-    glDisable(GL_BLEND);
-    M_Blit(p, &p->geometry_fbo);
-
-    // Composite UI FBO (with premultiplied alpha blending)
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    M_Blit(p, &p->ui_fbo);
-    glDisable(GL_BLEND);
-
-    if (GFX_Context_GetScheduledScreenshotPath() != nullptr) {
-        GFX_Context_SwitchToViewport(VIEWPORT_TARGET);
-        GFX_Screenshot_CaptureToFile(GFX_Context_GetScheduledScreenshotPath());
-        GFX_Context_ClearScheduledScreenshotPath();
-    }
 }
 
 GFX_RENDERER g_GFX_Renderer = {

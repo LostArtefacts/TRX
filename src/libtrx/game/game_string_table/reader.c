@@ -8,11 +8,6 @@
 
 #include <string.h>
 
-static void M_LoadTableFromJSON(JSON_OBJECT *root_obj, GS_TABLE *out_table);
-static void M_LoadLevelsFromJSON(
-    JSON_OBJECT *obj, GS_FILE *gs_file, const char *key,
-    GF_LEVEL_TABLE_TYPE level_table_type);
-
 static void M_LoadTableFromJSON(
     JSON_OBJECT *const root_obj, GS_TABLE *const out_table)
 {

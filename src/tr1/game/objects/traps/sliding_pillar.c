@@ -26,22 +26,6 @@ typedef enum {
     // clang-format on
 } PILLAR_ANIM;
 
-static void M_SetInitial(ITEM *item);
-static GAME_VECTOR M_GetInitial(const ITEM *item);
-static void M_SetLinked(ITEM *item);
-static GAME_VECTOR M_GetLinked(const ITEM *item);
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
-static int16_t M_GetFloorHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_AddWalkable(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-static void M_HandleFlip(ITEM *item, ROOM_FLIP_STATUS flip_status);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
 static void M_SetInitial(ITEM *const item)
 {
     SLIDING_PILLAR_INFO *const data = item->data;
@@ -136,19 +120,6 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y;
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->control_func = M_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_position = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->add_walkable_func = M_AddWalkable;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -222,6 +193,19 @@ static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     Walkable_Add(item_num, item->pos);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->save_position = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->add_walkable_func = M_AddWalkable;
 }
 
 REGISTER_OBJECT(O_SLIDING_PILLAR, M_Setup)

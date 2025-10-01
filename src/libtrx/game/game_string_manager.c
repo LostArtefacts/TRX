@@ -28,14 +28,6 @@ static VECTOR *m_SourceFiles = nullptr;
 static VECTOR *m_LangEntries = nullptr;
 static EVENT_MANAGER *m_EventManager = nullptr;
 
-static void M_ClearFileEntries(VECTOR *files);
-static void M_ClearManager(void);
-static void M_ClearLanguageEntries(void);
-static M_LANG_ENTRY *M_FindLangEntry(const char *lang);
-static void M_AddPathForLang(const char *lang, char *path, bool load_levels);
-static void M_LoadLanguageNames(void);
-static void M_ReorderLanguages(void);
-
 static void M_ClearFileEntries(VECTOR *const files)
 {
     for (int32_t i = 0; i < files->count; i++) {

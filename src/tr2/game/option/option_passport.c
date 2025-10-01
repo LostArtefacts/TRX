@@ -54,28 +54,6 @@ static struct {
     } save_slot;
 } m_State = { .active_page = -1 };
 
-static void M_InitRequesters(void);
-static void M_FreeRequesters(void);
-static void M_InitText(void);
-static void M_RemoveAllText(void);
-static void M_SyncArrowsVisibility(void);
-static void M_ChangePageTextContent(const char *title);
-static void M_SetPage(int32_t page, M_PAGE_ROLE role, bool available);
-static void M_DeterminePages(void);
-static void M_InitSaveRequester(M_PAGE_ROLE page_role);
-static void M_ShowSaves(INVENTORY_ITEM *inv_item);
-static void M_LoadGame(INVENTORY_ITEM *inv_item);
-static void M_SaveGame(INVENTORY_ITEM *inv_item);
-static void M_NewGame(void);
-static void M_PlayAnyLevel(INVENTORY_ITEM *inv_item);
-static int32_t M_GetCurrentPage(const INVENTORY_ITEM *inv_item);
-static bool M_IsFlipping(const INVENTORY_ITEM *inv_item);
-static void M_FlipLeft(INVENTORY_ITEM *inv_item);
-static void M_FlipRight(INVENTORY_ITEM *inv_item);
-static void M_Close(INVENTORY_ITEM *inv_item);
-static void M_ShowPage(INVENTORY_ITEM *inv_item);
-static void M_HandleFlipInputs(void);
-
 static void M_InitRequesters(void)
 {
     UI_NewGame_Init(&m_State.new_game.state);
@@ -239,6 +217,19 @@ static void M_InitSaveRequester(const M_PAGE_ROLE role)
     m_State.save_slot.state = UI_SaveSlotDialog_Init(dialog_type, save_slot);
 }
 
+static void M_Close(INVENTORY_ITEM *const inv_item)
+{
+    m_State.active_page = -1;
+    M_RemoveAllText();
+    if (m_State.current_page == 2) {
+        inv_item->anim_direction = 1;
+        inv_item->goal_frame = inv_item->frames_total - 1;
+    } else {
+        inv_item->anim_direction = -1;
+        inv_item->goal_frame = 0;
+    }
+}
+
 static void M_ShowSaves(INVENTORY_ITEM *const inv_item)
 {
     if (m_State.save_slot.state == nullptr) {
@@ -368,19 +359,6 @@ static void M_FlipRight(INVENTORY_ITEM *const inv_item)
     inv_item->anim_direction = 1;
     inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
-}
-
-static void M_Close(INVENTORY_ITEM *const inv_item)
-{
-    m_State.active_page = -1;
-    M_RemoveAllText();
-    if (m_State.current_page == 2) {
-        inv_item->anim_direction = 1;
-        inv_item->goal_frame = inv_item->frames_total - 1;
-    } else {
-        inv_item->anim_direction = -1;
-        inv_item->goal_frame = 0;
-    }
 }
 
 static void M_ShowPage(INVENTORY_ITEM *const inv_item)

@@ -16,11 +16,6 @@
 #endif
 
 static char *m_MiniDumpPath = nullptr;
-static char *M_GetMiniDumpPath(const char *log_path);
-static void M_CreateMiniDump(EXCEPTION_POINTERS *ex, const char *path);
-static void M_StackTrace(
-    uint64_t addr, const char *filename, int line_no, const char *func_name,
-    void *context, int column_no);
 
 static char *M_GetMiniDumpPath(const char *const log_path)
 {

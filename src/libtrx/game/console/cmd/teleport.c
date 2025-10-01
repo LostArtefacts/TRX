@@ -19,19 +19,6 @@
 
 static int16_t m_LastTeleportedItemNum = NO_ITEM;
 
-static bool M_CanTargetObject(GAME_OBJECT_ID obj_id);
-static bool M_CanTargetItem(
-    const ITEM *item, const OBJECT_NAME_MATCH *matches, int32_t match_count);
-static const ITEM *M_GetItemToTeleporTo(const char *user_input);
-static bool M_IsFloatRound(float num);
-
-static void M_AlignLaraToItem(const ITEM *item);
-static COMMAND_RESULT M_TeleportToXYZ(float x, float y, float z);
-static COMMAND_RESULT M_TeleportToRoom(int16_t room_num);
-static COMMAND_RESULT M_TeleportToObject(const char *user_input);
-
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
-
 static bool M_ObjectCanBePickedUp(const GAME_OBJECT_ID obj_id)
 {
     if (!Object_IsType(obj_id, g_PickupObjects)) {

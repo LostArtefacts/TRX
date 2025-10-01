@@ -62,51 +62,6 @@ static const BITE m_Worker3Hit = {
     .mesh_num = 10,
 };
 
-static void M_SetupBase(OBJECT *obj);
-static void M_Setup3(OBJECT *obj);
-static void M_Setup4(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_SetupBase(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->radius = WORKER_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-    obj->lot_setup = g_LOT_Climber;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 0)->rot.y = true;
-    Object_GetBone(obj, 4)->rot.y = true;
-}
-
-static void M_Setup3(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    M_SetupBase(obj);
-    obj->hit_points = WORKER_3_HITPOINTS;
-}
-
-static void M_Setup4(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    M_SetupBase(obj);
-    obj->hit_points = WORKER_4_HITPOINTS;
-}
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -328,6 +283,46 @@ static void M_Control(const int16_t item_num)
             return;
         }
     }
+}
+
+static void M_SetupBase(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->radius = WORKER_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+    obj->lot_setup = g_LOT_Climber;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 0)->rot.y = true;
+    Object_GetBone(obj, 4)->rot.y = true;
+}
+
+static void M_Setup3(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    M_SetupBase(obj);
+    obj->hit_points = WORKER_3_HITPOINTS;
+}
+
+static void M_Setup4(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    M_SetupBase(obj);
+    obj->hit_points = WORKER_4_HITPOINTS;
 }
 
 REGISTER_OBJECT(O_WORKER_3, M_Setup3)

@@ -38,15 +38,6 @@ typedef struct {
 
 static M_PRIV m_Priv;
 
-static void M_SealPrimitive(M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range);
-static void M_GenerateSphere(
-    M_PRIV *p, OUTPUT_VERTEX_RANGE *target_range, int32_t subdivisions);
-static void M_DrawScheduled(M_PRIV *p, VECTOR *scheduled);
-
-static void M_RenderBegin(const SCENE_SOURCE *source);
-static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
-static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
-
 static void M_SealPrimitive(
     M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range)
 {

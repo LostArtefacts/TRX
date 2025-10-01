@@ -95,11 +95,6 @@ static RGBA_8888 m_MenuColorMap[C_NUMBER_OF] = {
     // clang-format on
 };
 
-static RGBA_8888 M_GetMenuColor(M_COLOR color);
-static void M_DrawScreenQuad(
-    int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, RGBA_8888 tl,
-    RGBA_8888 tr, RGBA_8888 bl, RGBA_8888 br);
-
 static RGBA_8888 M_GetMenuColor(const M_COLOR color)
 {
     return m_MenuColorMap[color];

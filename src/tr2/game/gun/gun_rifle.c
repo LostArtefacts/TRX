@@ -22,8 +22,6 @@
 static bool m_M16Firing = false;
 bool g_Gun_ReloadHarpoon = false; // TODO: make module-level
 
-static void M_AnimateGun(ITEM *item);
-
 static void M_AnimateGun(ITEM *const item)
 {
     // While the item is drawn in Lara_Draw, it needs a world position for

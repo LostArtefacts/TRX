@@ -45,17 +45,16 @@ typedef struct {
 static int32_t m_SGBufPos = 0;
 static char *m_SGBufPtr = nullptr;
 
-static bool M_ItemHasSaveFlags(const OBJECT *obj, ITEM *item);
-static bool M_ItemHasSaveAnim(const ITEM *item);
-static bool M_ItemHasHitPoints(const ITEM *item);
-static bool M_NeedsBaconLaraFix(char *buffer);
+static void M_Read(void *const ptr, const size_t size)
+{
+    ASSERT(m_SGBufPos + size <= SAVEGAME_LEGACY_MAX_BUFFER_SIZE);
+    ASSERT(m_SGBufPtr != nullptr);
+    m_SGBufPos += size;
+    memcpy(ptr, m_SGBufPtr, size);
+    m_SGBufPtr += size;
+}
 
-static void M_Reset(char *buffer);
-static void M_Skip(size_t size);
-
-static void M_Read(void *pointer, size_t size);
-
-#define SPECIAL_READ(name, type)                                               \
+#define X_SPECIAL_READ(name, type)                                             \
     static type M_Read##name(void)                                             \
     {                                                                          \
         type result;                                                           \
@@ -63,24 +62,17 @@ static void M_Read(void *pointer, size_t size);
         return result;                                                         \
     }
 
-#define SPECIAL_READS                                                          \
-    SPECIAL_READ(S8, int8_t)                                                   \
-    SPECIAL_READ(S16, int16_t)                                                 \
-    SPECIAL_READ(S32, int32_t)                                                 \
-    SPECIAL_READ(U8, uint8_t)                                                  \
-    SPECIAL_READ(U16, uint16_t)                                                \
-    SPECIAL_READ(U32, uint32_t)
+#define L_SPECIAL_READS                                                        \
+    X_SPECIAL_READ(S8, int8_t)                                                 \
+    X_SPECIAL_READ(S16, int16_t)                                               \
+    X_SPECIAL_READ(S32, int32_t)                                               \
+    X_SPECIAL_READ(U8, uint8_t)                                                \
+    X_SPECIAL_READ(U16, uint16_t)                                              \
+    X_SPECIAL_READ(U32, uint32_t)
 
-SPECIAL_READS
-#undef SPECIAL_READ
-#undef SPECIAL_READS
-
-static void M_ReadArm(LARA_ARM *arm);
-static void M_ReadAmmoInfo(AMMO_INFO *ammo_info);
-static void M_ReadLara(LARA_INFO *lara);
-static void M_ReadLOT(LOT_INFO *lot);
-static void M_ReadResumeInfo(RESUME_INFO *resume);
-static void M_ReadResumeInfos(MYFILE *fp);
+L_SPECIAL_READS
+#undef X_SPECIAL_READ
+#undef L_SPECIAL_READS
 
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
@@ -100,6 +92,18 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .update_death_counters_func = nullptr,
     // clang-format on
 };
+
+static void M_Reset(char *buffer)
+{
+    m_SGBufPos = 0;
+    m_SGBufPtr = buffer;
+}
+
+static void M_Skip(const size_t size)
+{
+    m_SGBufPtr += size;
+    m_SGBufPos += size; // missing from OG
+}
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
@@ -227,25 +231,40 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     return result;
 }
 
-static void M_Reset(char *buffer)
+static void M_ReadArm(LARA_ARM *const arm)
 {
-    m_SGBufPos = 0;
-    m_SGBufPtr = buffer;
+    M_Skip(sizeof(int32_t)); // frame_base is superfluous
+    arm->frame_num = M_ReadS16();
+    arm->lock = M_ReadS16();
+    arm->rot.y = M_ReadS16();
+    arm->rot.x = M_ReadS16();
+    arm->rot.z = M_ReadS16();
+    arm->flash_gun = M_ReadS16();
 }
 
-static void M_Skip(const size_t size)
+static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
 {
-    m_SGBufPtr += size;
-    m_SGBufPos += size; // missing from OG
+    ammo_info->ammo = M_ReadS32();
+    M_Skip(sizeof(int32_t)); // Legacy hits value
+    M_Skip(sizeof(int32_t)); // Legacy miss value
 }
 
-static void M_Read(void *const ptr, const size_t size)
+static void M_ReadLOT(LOT_INFO *const lot)
 {
-    ASSERT(m_SGBufPos + size <= SAVEGAME_LEGACY_MAX_BUFFER_SIZE);
-    ASSERT(m_SGBufPtr != nullptr);
-    m_SGBufPos += size;
-    memcpy(ptr, m_SGBufPtr, size);
-    m_SGBufPtr += size;
+    M_Skip(4); // pointer to BOX_NODE
+    lot->head = M_ReadS16();
+    lot->tail = M_ReadS16();
+    lot->search_num = M_ReadU16();
+    lot->setup.block_mask = M_ReadU16();
+    lot->setup.step = M_ReadS16();
+    lot->setup.drop = M_ReadS16();
+    lot->setup.fly = M_ReadS16();
+    lot->zone_count = M_ReadS16();
+    lot->target_box = M_ReadS16();
+    lot->required_box = M_ReadS16();
+    lot->target.x = M_ReadS32();
+    lot->target.y = M_ReadS32();
+    lot->target.z = M_ReadS32();
 }
 
 static void M_ReadLara(LARA_INFO *const lara)
@@ -298,42 +317,6 @@ static void M_ReadLara(LARA_INFO *const lara)
     M_ReadAmmoInfo(&lara->uzi_ammo);
     M_ReadAmmoInfo(&lara->shotgun_ammo);
     M_ReadLOT(&lara->lot);
-}
-
-static void M_ReadArm(LARA_ARM *const arm)
-{
-    M_Skip(sizeof(int32_t)); // frame_base is superfluous
-    arm->frame_num = M_ReadS16();
-    arm->lock = M_ReadS16();
-    arm->rot.y = M_ReadS16();
-    arm->rot.x = M_ReadS16();
-    arm->rot.z = M_ReadS16();
-    arm->flash_gun = M_ReadS16();
-}
-
-static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
-{
-    ammo_info->ammo = M_ReadS32();
-    M_Skip(sizeof(int32_t)); // Legacy hits value
-    M_Skip(sizeof(int32_t)); // Legacy miss value
-}
-
-static void M_ReadLOT(LOT_INFO *const lot)
-{
-    M_Skip(4); // pointer to BOX_NODE
-    lot->head = M_ReadS16();
-    lot->tail = M_ReadS16();
-    lot->search_num = M_ReadU16();
-    lot->setup.block_mask = M_ReadU16();
-    lot->setup.step = M_ReadS16();
-    lot->setup.drop = M_ReadS16();
-    lot->setup.fly = M_ReadS16();
-    lot->zone_count = M_ReadS16();
-    lot->target_box = M_ReadS16();
-    lot->required_box = M_ReadS16();
-    lot->target.x = M_ReadS32();
-    lot->target.y = M_ReadS32();
-    lot->target.z = M_ReadS32();
 }
 
 static void M_ReadResumeInfo(RESUME_INFO *const resume)

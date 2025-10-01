@@ -16,9 +16,6 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static void M_Init(M_PRIV *p);
-static void M_Close(M_PRIV *p);
-
 static void M_Init(M_PRIV *const p)
 {
     p->ui_active = true;

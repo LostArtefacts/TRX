@@ -6,18 +6,6 @@
 
 #define PENDULUM_DAMAGE 100
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_CollisionTrap;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -49,6 +37,15 @@ static void M_Control(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_CollisionTrap;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_PENDULUM_1, M_Setup)

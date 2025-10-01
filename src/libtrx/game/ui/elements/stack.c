@@ -12,19 +12,6 @@ typedef struct {
     UI_STACK_SETTINGS settings;
 } M_DATA;
 
-static float M_CalcChildW(const UI_NODE *node, const UI_NODE *child);
-static float M_CalcChildH(const UI_NODE *node, const UI_NODE *child);
-static float M_CalcStartX(const UI_NODE *node, const UI_NODE *child);
-static float M_CalcStartY(const UI_NODE *node, const UI_NODE *child);
-static void M_Measure(UI_NODE *node);
-static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = M_Measure,
-    .layout = M_Layout,
-    .draw = UI_DrawWrapper,
-};
-
 static float M_CalcChildW(const UI_NODE *const node, const UI_NODE *const child)
 {
     M_DATA *const data = node->data;
@@ -181,7 +168,7 @@ static void M_Layout(
             cy = M_CalcStartY(node, child);
 
             // Lay out the child
-            child->ops->layout(child, cx, cy, cw, ch);
+            child->ops.layout(child, cx, cy, cw, ch);
 
             // Advance cx for the next child
             cx += cw;
@@ -194,7 +181,7 @@ static void M_Layout(
         case UI_STACK_VERTICAL:
             cx = M_CalcStartX(node, child);
 
-            child->ops->layout(child, cx, cy, cw, ch);
+            child->ops.layout(child, cx, cy, cw, ch);
 
             cy += ch;
             if (child->next_sibling != nullptr) {
@@ -209,7 +196,13 @@ static void M_Layout(
 
 UI_NODE *UI_CreateStack(const UI_STACK_SETTINGS settings)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = M_Measure,
+            .layout = M_Layout,
+            .draw = UI_DrawWrapper,
+        },
+        sizeof(M_DATA));
     if (node == nullptr) {
         return nullptr;
     }

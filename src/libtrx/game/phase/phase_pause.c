@@ -34,18 +34,10 @@ typedef struct {
     FADER back_fader;
 } M_PRIV;
 
-static void M_FadeIn(M_PRIV *p);
-static void M_FadeOut(M_PRIV *p);
-static void M_PauseGame(M_PRIV *p);
-static void M_ReturnToGame(M_PRIV *p);
-static void M_ExitToTitle(M_PRIV *p);
-static void M_CreateText(M_PRIV *p);
-static void M_RemoveText(M_PRIV *p);
-
-static PHASE_CONTROL M_Start(PHASE *phase);
-static void M_End(PHASE *phase);
-static PHASE_CONTROL M_Control(PHASE *phase);
-static void M_Draw(PHASE *phase);
+static void M_RemoveText(M_PRIV *const p)
+{
+    Overlay_SetBottomText(nullptr, false);
+}
 
 static void M_FadeIn(M_PRIV *const p)
 {
@@ -90,11 +82,6 @@ static void M_ExitToTitle(M_PRIV *const p)
 static void M_CreateText(M_PRIV *const p)
 {
     Overlay_SetBottomTextPtr(GS_PTR(PAUSE_PAUSED), false);
-}
-
-static void M_RemoveText(M_PRIV *const p)
-{
-    Overlay_SetBottomText(nullptr, false);
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)

@@ -5,16 +5,16 @@
 #include "game/ui/elements/stack.h"
 #include "game/ui/helpers.h"
 
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = UI_MeasureWrapper,
-    .layout = UI_LayoutWrapper,
-    .draw = UI_DrawWrapper,
-};
-
 void UI_BeginRowArrows(
     const bool left_arrow, const bool right_arrow, const int32_t spacing)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(bool));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = UI_MeasureWrapper,
+            .layout = UI_LayoutWrapper,
+            .draw = UI_DrawWrapper,
+        },
+        sizeof(bool));
     *(bool *)node->data = right_arrow;
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,

@@ -30,32 +30,6 @@ typedef enum {
 
 static BITE m_LarsonGun = { .pos = { -60, 170, 0 }, .mesh_num = 14 };
 
-static void M_Setup(OBJECT *obj);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = LARSON_HITPOINTS;
-    obj->radius = LARSON_RADIUS;
-    obj->smartness = LARSON_SMARTNESS;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 6)->rot.y = true;
-}
-
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
@@ -185,6 +159,28 @@ static void M_Control(const int16_t item_num)
     Creature_Head(item, head);
 
     Creature_Animate(item_num, angle, 0);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = LARSON_HITPOINTS;
+    obj->radius = LARSON_RADIUS;
+    obj->smartness = LARSON_SMARTNESS;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+
+    Object_GetBone(obj, 6)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_LARSON, M_Setup)

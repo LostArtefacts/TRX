@@ -6,17 +6,6 @@
 
 #define M_HEIGHT_SURF 700
 
-static bool M_IsWadingEnabled(void);
-static bool M_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
-static bool M_TestWaterClimbOut(ITEM *item, const COLL_INFO *coll);
-static void M_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
-
-static void M_CommonSurface(ITEM *item, COLL_INFO *coll);
-static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
-static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
-static void M_Swim(ITEM *item, COLL_INFO *coll);
-static void M_UWDeath(ITEM *item, COLL_INFO *coll);
-
 static bool M_IsWadingEnabled(void)
 {
 #if TR_VERSION == 1

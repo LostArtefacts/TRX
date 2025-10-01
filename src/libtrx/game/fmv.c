@@ -23,17 +23,6 @@ static const char *m_Extensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
 };
 
-static void *M_AllocateSurface(int32_t width, int32_t height, void *user_data);
-static void M_DeallocateSurface(void *surface, void *user_data);
-static void M_ClearSurface(void *surface, void *user_data);
-static void M_RenderBegin(void *surface, void *user_data);
-static void M_RenderEnd(void *surface, void *user_data);
-static void *M_LockSurface(void *surface, void *user_data);
-static void M_UnlockSurface(void *surface, void *user_data);
-static void M_UploadSurface(void *surface, void *user_data);
-
-static bool M_Play(const char *file_name);
-
 static void *M_AllocateSurface(
     const int32_t width, const int32_t height, void *const user_data)
 {

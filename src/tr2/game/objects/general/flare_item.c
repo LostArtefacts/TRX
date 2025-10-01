@@ -14,27 +14,6 @@
 #define M_FLARE_OLD_AGE (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
 #define M_FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static void M_Draw(const ITEM *item);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = Pickup_Collision;
-    obj->bounds_func = Pickup_Bounds;
-    obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
-    obj->save_position = true;
-    obj->save_flags = true;
-
-    if (obj->loaded) {
-        for (int32_t i = 0; i < obj->mesh_count; i++) {
-            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
-            obj_mesh->depth_adjustment = -0.5;
-        }
-    }
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -201,6 +180,23 @@ bool Flare_GenerateLight(const XYZ_32 pos, const int32_t flare_age)
 int32_t Flare_GetMaxAge(void)
 {
     return M_MAX_FLARE_AGE;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = Pickup_Collision;
+    obj->bounds_func = Pickup_Bounds;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->save_position = true;
+    obj->save_flags = true;
+
+    if (obj->loaded) {
+        for (int32_t i = 0; i < obj->mesh_count; i++) {
+            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
+            obj_mesh->depth_adjustment = -0.5;
+        }
+    }
 }
 
 REGISTER_OBJECT(O_FLARE_ITEM, M_Setup)

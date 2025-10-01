@@ -20,28 +20,6 @@ typedef enum {
     // clang-format on
 } WINSTON_STATE;
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-
-    obj->hit_points = DONT_TARGET;
-    obj->radius = WINSTON_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 4;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -92,6 +70,25 @@ static void M_Control(const int16_t item_num)
     }
 
     Creature_Animate(item_num, angle, 0);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+
+    obj->hit_points = DONT_TARGET;
+    obj->radius = WINSTON_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 4;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_WINSTON, M_Setup)

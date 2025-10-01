@@ -19,12 +19,37 @@ static const OBJECT_BOUNDS m_Bounds = {
     .ignore_rot = true,
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
-static void M_ConsumeKeyItem(ITEM *receptacle_item);
-static void M_CreateGongBonger(ITEM *lara_item);
-static void M_Setup(OBJECT *obj);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_ConsumeKeyItem(ITEM *const receptacle_item)
+{
+    const GAME_OBJECT_ID key_object_id =
+        Object_FindReceptacleKey(receptacle_item->object_id);
+    if (key_object_id != NO_OBJECT) {
+        Inv_RemoveItem(key_object_id);
+    }
+}
+
+static void M_CreateGongBonger(ITEM *const lara_item)
+{
+    const int16_t item_gong_bonger_num = Item_Create();
+    if (item_gong_bonger_num == NO_ITEM) {
+        return;
+    }
+
+    ITEM *const item_gong_bonger = Item_Get(item_gong_bonger_num);
+    item_gong_bonger->object_id = O_GONG_BONGER;
+    item_gong_bonger->pos.x = lara_item->pos.x;
+    item_gong_bonger->pos.y = lara_item->pos.y;
+    item_gong_bonger->pos.z = lara_item->pos.z;
+    item_gong_bonger->rot.x = 0;
+    item_gong_bonger->rot.y = lara_item->rot.y;
+    lara_item->rot.z = 0;
+    item_gong_bonger->room_num = lara_item->room_num;
+
+    Item_Initialise(item_gong_bonger_num);
+    Item_AddActive(item_gong_bonger_num);
+    item_gong_bonger->status = IS_ACTIVE;
+    item_gong_bonger->shade.value_1 = -1;
+}
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
@@ -53,47 +78,9 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     lara->interact_target.item_num = NO_ITEM;
 }
 
-static void M_ConsumeKeyItem(ITEM *const receptacle_item)
-{
-    const GAME_OBJECT_ID key_object_id =
-        Object_FindReceptacleKey(receptacle_item->object_id);
-    if (key_object_id != NO_OBJECT) {
-        Inv_RemoveItem(key_object_id);
-    }
-}
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Bounds;
-}
-
-static void M_CreateGongBonger(ITEM *const lara_item)
-{
-    const int16_t item_gong_bonger_num = Item_Create();
-    if (item_gong_bonger_num == NO_ITEM) {
-        return;
-    }
-
-    ITEM *const item_gong_bonger = Item_Get(item_gong_bonger_num);
-    item_gong_bonger->object_id = O_GONG_BONGER;
-    item_gong_bonger->pos.x = lara_item->pos.x;
-    item_gong_bonger->pos.y = lara_item->pos.y;
-    item_gong_bonger->pos.z = lara_item->pos.z;
-    item_gong_bonger->rot.x = 0;
-    item_gong_bonger->rot.y = lara_item->rot.y;
-    lara_item->rot.z = 0;
-    item_gong_bonger->room_num = lara_item->room_num;
-
-    Item_Initialise(item_gong_bonger_num);
-    Item_AddActive(item_gong_bonger_num);
-    item_gong_bonger->status = IS_ACTIVE;
-    item_gong_bonger->shade.value_1 = -1;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = M_Collision;
-    obj->bounds_func = M_Bounds;
 }
 
 static void M_Collision(
@@ -139,6 +126,12 @@ static void M_Collision(
 
 normal_collision:
     Object_Collision(item_num, lara_item, coll);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = M_Collision;
+    obj->bounds_func = M_Bounds;
 }
 
 REGISTER_OBJECT(O_GONG, M_Setup)

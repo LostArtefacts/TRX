@@ -42,18 +42,6 @@
 static int32_t m_NoInputCounter = 0;
 static GAME_OBJECT_ID m_InvChosen = NO_OBJECT;
 
-static void M_ShowAmmoQuantity(const char *fmt, int32_t qty);
-
-static void M_RingIsOpen(INV_RING *ring);
-static void M_RingIsNotOpen(INV_RING *ring);
-static void M_RingNotActive(const INVENTORY_ITEM *inv_item);
-static void M_RingActive(void);
-
-static bool M_AnimateInventoryItem(INVENTORY_ITEM *inv_item);
-
-static GF_COMMAND M_Finish(INV_RING *ring, bool apply_changes);
-static GF_COMMAND M_Control(INV_RING *ring);
-
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {

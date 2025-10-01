@@ -10,49 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static bool M_GetMarkerSize(size_t *size, const char *key);
-static bool M_GetNullWrappedSize(size_t *size, const char *key);
-static bool M_GetBoolWrappedSize(size_t *size, const char *key);
-static bool M_GetInt32Size(size_t *size);
-static bool M_GetInt32WrappedSize(size_t *size, const char *key);
-static bool M_GetDoubleSize(size_t *size);
-static bool M_GetDoubleWrappedSize(size_t *size, const char *key);
-static bool M_GetNumberWrappedSize(
-    size_t *size, const char *key, const JSON_NUMBER *number);
-static bool M_GetStringSize(size_t *size, const JSON_STRING *string);
-static bool M_GetStringWrappedSize(
-    size_t *size, const char *key, const JSON_STRING *string);
-static bool M_GetArraySize(size_t *size, const JSON_ARRAY *array);
-static bool M_GetArrayWrappedSize(
-    size_t *size, const char *key, const JSON_ARRAY *array);
-static bool M_GetObjectSize(size_t *size, const JSON_OBJECT *object);
-static bool M_GetObjectWrappedSize(
-    size_t *size, const char *key, const JSON_OBJECT *object);
-static bool M_GetValueSize(size_t *size, const JSON_VALUE *value);
 static bool M_GetValueWrappedSize(
     size_t *size, const char *key, const JSON_VALUE *value);
-
-static char *M_WriteMarker(char *data, const char *key, const uint8_t marker);
-static char *M_WriteNullWrapped(char *data, const char *key);
-static char *M_WriteBoolWrapped(char *data, const char *key, bool value);
-static char *M_WriteInt32(char *data, const int32_t value);
-static char *M_WriteInt32Wrapped(
-    char *data, const char *key, const int32_t value);
-static char *M_WriteDouble(char *data, const double value);
-static char *M_WriteDoubleWrapped(
-    char *data, const char *key, const double value);
-static char *M_WriteNumberWrapped(
-    char *data, const char *key, const JSON_NUMBER *number);
-static char *M_WriteString(char *data, const JSON_STRING *string);
-static char *M_WriteStringWrapped(
-    char *data, const char *key, const JSON_STRING *string);
-static char *M_WriteArray(char *data, const JSON_ARRAY *array);
-static char *M_WriteArrayWrapped(
-    char *data, const char *key, const JSON_ARRAY *array);
-static char *M_WriteObject(char *data, const JSON_OBJECT *object);
-static char *M_WriteObjectWrapped(
-    char *data, const char *key, const JSON_OBJECT *object);
-static char *M_WriteValue(char *data, const JSON_VALUE *value);
 static char *M_WriteValueWrapped(
     char *data, const char *key, const JSON_VALUE *value);
 

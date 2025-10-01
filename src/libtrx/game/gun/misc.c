@@ -31,8 +31,6 @@ static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 extern void Window_Smash(int16_t item_num);
 #endif
 
-static void M_SmashItem(int16_t item_num);
-
 static void M_SmashItem(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);

@@ -77,30 +77,6 @@ static bool m_IsInitialised = false;
 extern int32_t g_PhdPersp;
 #endif
 
-static M_SETTINGS M_GetSettings(void);
-static void M_AdjustMusicVolume(bool is_underwater);
-
-static void M_OffsetAdditionalAngle(int16_t delta);
-static void M_OffsetAdditionalElevation(int16_t delta);
-static void M_OffsetReset(void);
-
-static const BOX_INFO *M_GetBox(
-    const SECTOR *sector, int32_t x, int32_t z, bool generate_box);
-static bool M_IsGoodPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
-static const SECTOR *M_GetSector(
-    int32_t x, int32_t y, int32_t z, int16_t room_num);
-
-static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
-static void M_SmartShift(GAME_VECTOR *target, void (*shift)(M_SHIFT_ARGS));
-static void M_Clip(M_SHIFT_ARGS);
-static void M_Shift(M_SHIFT_ARGS);
-static void M_Move(const GAME_VECTOR *target, int32_t speed);
-
-static void M_Chase(const ITEM *item);
-static void M_Combat(const ITEM *item);
-static void M_Fixed(void);
-static void M_Look(const ITEM *item);
-
 static M_SETTINGS M_GetSettings(void)
 {
     return m_CameraSettings[g_Config.visuals.camera_mode];
@@ -163,12 +139,6 @@ static const BOX_INFO *M_GetBox(
     return &m_FixedBox;
 }
 
-static bool M_IsGoodPosition(
-    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
-{
-    return M_GetSector(x, y, z, room_num) != nullptr;
-}
-
 static const SECTOR *M_GetSector(
     const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
 {
@@ -178,8 +148,13 @@ static const SECTOR *M_GetSector(
     if (y > height || y < ceiling) {
         return nullptr;
     }
-
     return sector;
+}
+
+static bool M_IsGoodPosition(
+    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+{
+    return M_GetSector(x, y, z, room_num) != nullptr;
 }
 
 static int32_t M_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)

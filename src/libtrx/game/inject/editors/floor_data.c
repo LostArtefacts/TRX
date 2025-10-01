@@ -9,94 +9,6 @@
 
 #define NULL_FD_INDEX ((uint16_t)(-1))
 
-static void M_FloorDataEdits(const INJECTION *injection, int32_t data_count);
-static void M_TriggerTypeChange(
-    const INJECTION *injection, const SECTOR *sector);
-static void M_TriggerParameterChange(
-    const INJECTION *injection, const SECTOR *sector);
-static void M_SetMusicOneShot(const SECTOR *sector);
-static void M_FixGlideCamera(const INJECTION *injection, const SECTOR *sector);
-static void M_InsertFloorData(const INJECTION *injection, SECTOR *sector);
-static void M_RoomShift(const INJECTION *injection, int16_t room_num);
-static void M_TriggeredItem(const INJECTION *injection);
-static void M_RoomProperties(const INJECTION *injection, int16_t room_num);
-static void M_SectorOverwrite(const INJECTION *injection, SECTOR *sector);
-static void M_FixZones(const INJECTION *injection, const SECTOR *sector);
-static void M_SetSectorPortals(const INJECTION *injection, SECTOR *sector);
-static void M_SetSectorClimbability(const INJECTION *injection, SECTOR *sector);
-
-static void M_FloorDataEdits(
-    const INJECTION *const injection, const int32_t data_count)
-{
-    for (int32_t i = 0; i < data_count; i++) {
-        const int16_t room_num = VFile_ReadS16(injection->fp);
-        const uint16_t x = VFile_ReadU16(injection->fp);
-        const uint16_t z = VFile_ReadU16(injection->fp);
-        const int32_t fd_edit_count = VFile_ReadS32(injection->fp);
-
-        // Verify that the given room and coordinates are accurate.
-        // Individual FD functions must check that sector is actually set.
-        const ROOM *room = nullptr;
-        SECTOR *sector = nullptr;
-        if (room_num < 0 || room_num >= Room_GetCount()) {
-            LOG_WARNING("Room index %d is invalid", room_num);
-        } else {
-            room = Room_Get(room_num);
-            if (x >= room->size.x || z >= room->size.z) {
-                LOG_WARNING(
-                    "Sector [%d,%d] is invalid for room %d", x, z, room_num);
-            } else {
-                sector = Room_GetUnitSector(room, x, z);
-            }
-        }
-
-        for (int32_t j = 0; j < fd_edit_count; j++) {
-            const FLOOR_EDIT_TYPE edit_type = VFile_ReadS32(injection->fp);
-            switch (edit_type) {
-            case FET_TRIGGER_TYPE:
-                M_TriggerTypeChange(injection, sector);
-                break;
-            case FET_TRIGGER_PARAM:
-                M_TriggerParameterChange(injection, sector);
-                break;
-            case FET_MUSIC_ONESHOT:
-                M_SetMusicOneShot(sector);
-                break;
-            case FET_GLIDE_CAMERA:
-                M_FixGlideCamera(injection, sector);
-                break;
-            case FET_FD_INSERT:
-                M_InsertFloorData(injection, sector);
-                break;
-            case FET_ROOM_SHIFT:
-                M_RoomShift(injection, room_num);
-                break;
-            case FET_TRIGGER_ITEM:
-                M_TriggeredItem(injection);
-                break;
-            case FET_ROOM_PROPERTIES:
-                M_RoomProperties(injection, room_num);
-                break;
-            case FET_SECTOR_OVERWRITE:
-                M_SectorOverwrite(injection, sector);
-                break;
-            case FET_ZONE_FIX:
-                M_FixZones(injection, sector);
-                break;
-            case FET_PORTALS:
-                M_SetSectorPortals(injection, sector);
-                break;
-            case FET_CLIMB:
-                M_SetSectorClimbability(injection, sector);
-                break;
-            default:
-                LOG_WARNING("Unknown floor data edit type: %d", edit_type);
-                break;
-            }
-        }
-    }
-}
-
 static void M_TriggerTypeChange(
     const INJECTION *const injection, const SECTOR *const sector)
 {
@@ -357,6 +269,78 @@ static void M_SetSectorClimbability(
     const int32_t direction = VFile_ReadS32(injection->fp);
     if (sector != nullptr) {
         sector->ladder = (LADDER_DIRECTION)(direction & 0xF);
+    }
+}
+
+static void M_FloorDataEdits(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const int16_t room_num = VFile_ReadS16(injection->fp);
+        const uint16_t x = VFile_ReadU16(injection->fp);
+        const uint16_t z = VFile_ReadU16(injection->fp);
+        const int32_t fd_edit_count = VFile_ReadS32(injection->fp);
+
+        // Verify that the given room and coordinates are accurate.
+        // Individual FD functions must check that sector is actually set.
+        const ROOM *room = nullptr;
+        SECTOR *sector = nullptr;
+        if (room_num < 0 || room_num >= Room_GetCount()) {
+            LOG_WARNING("Room index %d is invalid", room_num);
+        } else {
+            room = Room_Get(room_num);
+            if (x >= room->size.x || z >= room->size.z) {
+                LOG_WARNING(
+                    "Sector [%d,%d] is invalid for room %d", x, z, room_num);
+            } else {
+                sector = Room_GetUnitSector(room, x, z);
+            }
+        }
+
+        for (int32_t j = 0; j < fd_edit_count; j++) {
+            const FLOOR_EDIT_TYPE edit_type = VFile_ReadS32(injection->fp);
+            switch (edit_type) {
+            case FET_TRIGGER_TYPE:
+                M_TriggerTypeChange(injection, sector);
+                break;
+            case FET_TRIGGER_PARAM:
+                M_TriggerParameterChange(injection, sector);
+                break;
+            case FET_MUSIC_ONESHOT:
+                M_SetMusicOneShot(sector);
+                break;
+            case FET_GLIDE_CAMERA:
+                M_FixGlideCamera(injection, sector);
+                break;
+            case FET_FD_INSERT:
+                M_InsertFloorData(injection, sector);
+                break;
+            case FET_ROOM_SHIFT:
+                M_RoomShift(injection, room_num);
+                break;
+            case FET_TRIGGER_ITEM:
+                M_TriggeredItem(injection);
+                break;
+            case FET_ROOM_PROPERTIES:
+                M_RoomProperties(injection, room_num);
+                break;
+            case FET_SECTOR_OVERWRITE:
+                M_SectorOverwrite(injection, sector);
+                break;
+            case FET_ZONE_FIX:
+                M_FixZones(injection, sector);
+                break;
+            case FET_PORTALS:
+                M_SetSectorPortals(injection, sector);
+                break;
+            case FET_CLIMB:
+                M_SetSectorClimbability(injection, sector);
+                break;
+            default:
+                LOG_WARNING("Unknown floor data edit type: %d", edit_type);
+                break;
+            }
+        }
     }
 }
 

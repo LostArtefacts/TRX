@@ -16,14 +16,6 @@
 static int16_t m_BossTimer = 0;
 static uint16_t m_BossCount = 0;
 
-static int32_t M_CountAliveEnemies(void);
-static bool M_IsBossDead(void);
-static int16_t M_FindNearestBoss(void);
-static void M_ActivateNearestBoss(void);
-static void M_PrepareCutscene(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static int32_t M_CountAliveEnemies(void)
 {
     int32_t count = 0;
@@ -132,15 +124,6 @@ static void M_PrepareCutscene(const int16_t item_num)
     Camera_InvokeCinematic(item, 428, 0);
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = true;
-
-    m_BossTimer = 0;
-}
-
 static void M_Control(const int16_t item_num)
 {
     const int32_t alive_enemies = M_CountAliveEnemies();
@@ -174,6 +157,15 @@ bool CombatEnd_IsWaitingForBoss(void)
 bool CombatEnd_IsComplete(void)
 {
     return m_BossTimer >= M_CUTSCENE_DELAY;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->save_flags = true;
+
+    m_BossTimer = 0;
 }
 
 REGISTER_OBJECT(O_COMBAT_END, M_Setup)

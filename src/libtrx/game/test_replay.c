@@ -64,10 +64,6 @@ static bool M_ParseBindController(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseArgs(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseConfig(const char *line, M_PARSE_CTX *ctx);
 
-static bool M_ParseEvent(const char *event_str);
-static void M_StripInlineComment(char *line);
-static char *M_SkipWhitespace(char *line);
-
 static const M_HEADER_HANDLER m_HeaderHandlers[] = {
     M_ParseSeedControl,
     M_ParseSeedDraw,

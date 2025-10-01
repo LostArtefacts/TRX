@@ -30,20 +30,6 @@ typedef enum {
     M_ROW_DISTANCE_TRAVELLED,
 } M_ROW_ROLE;
 
-static void M_FormatTime(char *out, int32_t total_frames);
-static void M_FormatDistance(char *const out, int32_t distance);
-static void M_Row(
-    const UI_STATS_DIALOG_STATE *s, const char *key, const char *value);
-static void M_RowFromRole(
-    const UI_STATS_DIALOG_STATE *s, M_ROW_ROLE role, const STATS_COMMON *stats);
-static void M_CommonRows(
-    const UI_STATS_DIALOG_STATE *s, const STATS_COMMON *stats);
-static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *s);
-static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *s);
-static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *s);
-static void M_BeginDialog(const UI_STATS_DIALOG_STATE *s);
-static void M_EndDialog(const UI_STATS_DIALOG_STATE *s);
-
 static void M_FormatTime(char *const out, const int32_t total_frames)
 {
     const int32_t total_seconds = total_frames / LOGIC_FPS;

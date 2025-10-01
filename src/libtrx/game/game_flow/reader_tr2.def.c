@@ -1,9 +1,6 @@
 // NOTE: this is an included file, not a compile unit on its own.
 // This is to avoid exposing symbols.
 
-static GF_COMMAND M_LoadCommand(
-    const M_CONTEXT *ctx, JSON_OBJECT *jcmd, GF_COMMAND fallback);
-
 static GF_LEVEL_SETTINGS m_DefaultSettings = {
     .sfx_path = nullptr,
 };

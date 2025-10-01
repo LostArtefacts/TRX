@@ -8,15 +8,6 @@ typedef struct {
     float y;
 } M_DATA;
 
-static void M_Measure(UI_NODE *node);
-static void M_Layout(UI_NODE *node, float x, float y, float w, float h);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = UI_MeasureWrapper,
-    .layout = M_Layout,
-    .draw = UI_DrawWrapper,
-};
-
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = UI_GetCanvasWidth();
@@ -35,14 +26,20 @@ static void M_Layout(
         const float ch = child->measure_h;
         const float cx = x + (w - cw) * data->x;
         const float cy = y + (h - ch) * data->y;
-        child->ops->layout(child, cx, cy, cw, ch);
+        child->ops.layout(child, cx, cy, cw, ch);
         child = child->next_sibling;
     }
 }
 
 void UI_BeginAnchor(const float x, const float y)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = UI_MeasureWrapper,
+            .layout = M_Layout,
+            .draw = UI_DrawWrapper,
+        },
+        sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->x = x;
     data->y = y;

@@ -70,12 +70,6 @@ static int32_t m_LoadedSamplesCount = 0;
 static AUDIO_SAMPLE m_LoadedSamples[AUDIO_MAX_SAMPLES] = {};
 static AUDIO_SAMPLE_SOUND m_Samples[AUDIO_MAX_ACTIVE_SAMPLES] = {};
 
-static double M_DecibelToMultiplier(double db_gain);
-static bool M_RecalculateChannelVolumes(int32_t sound_id);
-static int32_t M_ReadAVBuffer(void *opaque, uint8_t *dst, int32_t dst_size);
-static int64_t M_SeekAVBuffer(void *opaque, int64_t offset, int32_t whence);
-static bool M_ConvertSample(const int32_t sample_id);
-
 static double M_DecibelToMultiplier(double db_gain)
 {
     return pow(2.0, db_gain / 600.0);

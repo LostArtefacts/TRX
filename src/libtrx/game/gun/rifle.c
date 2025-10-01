@@ -18,13 +18,6 @@ extern bool g_Gun_ReloadHarpoon;
 extern void Lara_GetJointAbsPosition(XYZ_32 *vec, LARA_MESH joint);
 #endif
 
-static void M_FireGeneric(LARA_GUN_TYPE weapon_type);
-#if TR_VERSION == 2
-static void M_FireM16(bool running);
-static void M_FireHarpoon(void);
-static void M_FireGrenade(void);
-#endif
-
 static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
 {
     const ITEM *const lara_item = Lara_GetItem();

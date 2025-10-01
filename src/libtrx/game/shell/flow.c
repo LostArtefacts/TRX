@@ -30,10 +30,6 @@
 
 static const SHELL_ARGS *m_ShellArgs = nullptr;
 
-static void M_HandleConfigChange(const EVENT *const event, void *const data);
-static void M_SetupSDL(void);
-static void M_SetupGL(void);
-
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
     const CONFIG *const old = &g_Config;

@@ -2,8 +2,6 @@
 #include "game/anims.h"
 #include "game/game_buf.h"
 
-static void M_ParseCommand(ANIM_COMMAND *command, const int16_t **data);
-
 static void M_ParseCommand(ANIM_COMMAND *const command, const int16_t **data)
 {
     const int16_t *data_ptr = *data;

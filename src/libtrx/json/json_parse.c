@@ -16,30 +16,9 @@ typedef struct {
     size_t error;
 } M_STATE;
 
-static int M_HexDigit(const char c);
-static int M_HexValue(
-    const char *c, const unsigned long size, unsigned long *result);
-
-static int M_SkipWhitespace(M_STATE *state);
-static int M_SkipCStyleComments(M_STATE *state);
-static int M_SkipAllSkippables(M_STATE *state);
-
 static int M_GetValueSize(M_STATE *state, int is_global_object);
-static int M_GetStringSize(M_STATE *state, size_t is_key);
-static int M_IsValidUnquotedKeyChar(const char c);
-static int M_GetKeySize(M_STATE *state);
-static int M_GetObjectSize(M_STATE *state, int is_global_object);
-static int M_GetArraySize(M_STATE *state);
-static int M_GetNumberSize(M_STATE *state);
-
 static void M_HandleValue(
     M_STATE *state, int is_global_object, JSON_VALUE *value);
-static void M_HandleString(M_STATE *state, JSON_STRING *string);
-static void M_HandleKey(M_STATE *state, JSON_STRING *string);
-static void M_HandleObject(
-    M_STATE *state, int is_global_object, JSON_OBJECT *object);
-static void M_HandleArray(M_STATE *state, JSON_ARRAY *array);
-static void M_HandleNumber(M_STATE *state, JSON_NUMBER *number);
 
 static int M_HexDigit(const char c)
 {

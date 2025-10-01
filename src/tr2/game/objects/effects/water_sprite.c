@@ -4,15 +4,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->semi_transparent = true;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -37,6 +28,12 @@ static void M_Control(const int16_t effect_num)
         effect->pos.y += effect->fall_speed;
         effect->fall_speed += GRAVITY;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->semi_transparent = true;
 }
 
 REGISTER_OBJECT(O_WATER_SPRITE, M_Setup)

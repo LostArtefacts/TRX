@@ -42,10 +42,6 @@ typedef enum {
 
 static BITE m_ApeBite = { .pos = { 0, -19, 75 }, .mesh_num = 15 };
 
-static bool M_Vault(int16_t item_num, int16_t angle);
-static void M_Setup(OBJECT *obj);
-static void M_Control(const int16_t item_num);
-
 static bool M_Vault(int16_t item_num, int16_t angle)
 {
     ITEM *const item = Item_Get(item_num);
@@ -100,29 +96,6 @@ static bool M_Vault(int16_t item_num, int16_t angle)
     Item_UpdateRoom(item_num, room_num);
 
     return true;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = APE_HITPOINTS;
-    obj->pivot_length = 250;
-    obj->radius = APE_RADIUS;
-    obj->smartness = APE_SMARTNESS;
-    obj->lot_setup = g_LOT_Jumper;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 13)->rot.y = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -257,6 +230,29 @@ static void M_Control(const int16_t item_num)
         item->current_anim_state = APE_STATE_VAULT;
         Item_SwitchToAnim(item, APE_VAULT_ANIM, 0);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = APE_HITPOINTS;
+    obj->pivot_length = 250;
+    obj->radius = APE_RADIUS;
+    obj->smartness = APE_SMARTNESS;
+    obj->lot_setup = g_LOT_Jumper;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+
+    Object_GetBone(obj, 13)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_APE, M_Setup)

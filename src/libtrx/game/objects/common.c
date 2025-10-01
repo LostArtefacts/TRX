@@ -24,10 +24,6 @@ static const char *m_ObjectUUIDStrings[O_NUMBER_OF] = {
 #undef OBJ_ID_DEFINE
 };
 
-static bool M_HexCharValue(char c, uint8_t *val);
-static void M_ParseUUIDString(const char *str, UUID *uuid_out);
-static void M_InitUUIDs(void);
-
 static bool M_HexCharValue(const char c, uint8_t *const val)
 {
     if (c >= '0' && c <= '9') {

@@ -18,8 +18,6 @@
 #include <libtrx/game/sound.h>
 #include <libtrx/memory.h>
 
-static void M_InitialiseLara(const GF_LEVEL *level);
-
 static void M_InitialiseLara(const GF_LEVEL *const level)
 {
     const GAME_OBJECT_ID lara_type = level->lara_type;

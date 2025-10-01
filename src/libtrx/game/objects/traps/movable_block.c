@@ -33,64 +33,14 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
     },
 };
 
-// Restores blocks' original texturing in case they have unique textures on each
-// side. The game rotates the block in order to align the block with Lara when
-// she tries to push or pull.
-static void M_UpdateRotation(ITEM *item, int16_t rot_y);
-
-// Indicates if Lara is currently pushing or pulling a block.
-static void M_SetPushPull(ITEM *item, bool enable);
-static bool M_IsPushPull(const ITEM *item);
-
-// Indicates if blocks are being forcefully moved by other objects such as
-// lifts.
-static void M_SetForcedMoving(ITEM *item, bool enable);
-static bool M_IsForcedMoving(const ITEM *item);
-
-// If a stack of multiple blocks need to drop, each subsequently stacked block
-// is delayed by incrementing frames so that higher blocks don't "land" on lower
-// blocks and stop moving.
-static void M_SetGravityFrames(ITEM *item, uint8_t frames);
-static uint16_t M_GetGravityFrames(const ITEM *item);
-
-// Handles the block's initial position and room number for walkables.
-static void M_SetInitial(ITEM *item);
-static GAME_VECTOR M_GetInitial(const ITEM *item);
-
-// Handles the block's linked position and room number for walkables.
-static void M_SetLinked(ITEM *item);
-static GAME_VECTOR M_GetLinked(const ITEM *item);
-
-static bool M_TestCurrentSector(ITEM *item, int32_t block_height);
-static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
-static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
-static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
-static bool M_TestDeathCollision(const ITEM *item, const ITEM *lara);
-static bool M_TestEmbedCollision(const ITEM *item, const ITEM *lara);
-
-static void M_KillLara(const ITEM *item, ITEM *lara);
-static bool M_IsAgainstFloor(const ITEM *item);
-static bool M_IsAgainstCeiling(const ITEM *item);
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
-
-static void M_Setup(OBJECT *obj);
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Draw(const ITEM *item);
-static void M_Initialise(int16_t item_num);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_Control(int16_t item_num);
-static int16_t M_GetFloorHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_AddWalkable(int16_t item_num);
-
 // Collect a stack of blocks.
 static void M_GetStack(
     VECTOR *stack, XYZ_32 stack_pos, int32_t stack_height, int32_t step_y,
     int16_t room_num);
 
+// Restores blocks' original texturing in case they have unique textures on each
+// side. The game rotates the block in order to align the block with Lara when
+// she tries to push or pull.
 static void M_UpdateRotation(ITEM *const item, const int16_t rot_y)
 {
     item->rot.y = rot_y;
@@ -101,6 +51,7 @@ static void M_UpdateRotation(ITEM *const item, const int16_t rot_y)
     data->counter_rot[0] = data->original_rot - rot_y;
 }
 
+// Indicates if Lara is currently pushing or pulling a block.
 static void M_SetPushPull(ITEM *const item, const bool enable)
 {
     MOVABLE_BLOCK_INFO *const data = item->data;
@@ -113,6 +64,8 @@ static bool M_IsPushPull(const ITEM *const item)
     return data != nullptr ? data->is_push_pull : false;
 }
 
+// Indicates if blocks are being forcefully moved by other objects such as
+// lifts.
 static void M_SetForcedMoving(ITEM *const item, const bool enable)
 {
     MOVABLE_BLOCK_INFO *const data = item->data;
@@ -125,6 +78,9 @@ static bool M_IsForcedMoving(const ITEM *const item)
     return data != nullptr ? data->is_forced_moving : false;
 }
 
+// If a stack of multiple blocks need to drop, each subsequently stacked block
+// is delayed by incrementing frames so that higher blocks don't "land" on lower
+// blocks and stop moving.
 static void M_SetGravityFrames(ITEM *const item, const uint8_t frames)
 {
     MOVABLE_BLOCK_INFO *const data = item->data;
@@ -137,6 +93,7 @@ static uint16_t M_GetGravityFrames(const ITEM *const item)
     return data != nullptr ? data->gravity_frames : 0;
 }
 
+// Handles the block's initial position and room number for walkables.
 static void M_SetInitial(ITEM *const item)
 {
     MOVABLE_BLOCK_INFO *const data = item->data;
@@ -150,6 +107,7 @@ static GAME_VECTOR M_GetInitial(const ITEM *const item)
     return data->initial;
 }
 
+// Handles the block's linked position and room number for walkables.
 static void M_SetLinked(ITEM *const item)
 {
     MOVABLE_BLOCK_INFO *const data = item->data;
@@ -348,6 +306,17 @@ static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
         && Lara_TestBoundsCollide(item, 0);
 }
 
+static bool M_IsItemOnTop(
+    const ITEM *const item, const int32_t x, const int32_t z)
+{
+    const int32_t dx = x - item->pos.x;
+    const int32_t dz = z - item->pos.z;
+
+    // Movable blocks' bounds don't match sector so estimate.
+    return (dx >= -WALL_L / 2 && dx < WALL_L / 2)
+        && (dz >= -WALL_L / 2 && dz < WALL_L / 2);
+}
+
 static bool M_TestEmbedCollision(const ITEM *const item, const ITEM *const lara)
 {
     return M_IsItemOnTop(item, lara->pos.x, lara->pos.z)
@@ -414,34 +383,6 @@ static bool M_IsAgainstCeiling(const ITEM *const item)
         Room_GetSkySector(sector, item->pos.x, item->pos.z);
     return sky_sector->ceiling.tilt == 0
         && sky_sector->ceiling.height == item->pos.y - WALL_L;
-}
-
-static bool M_IsItemOnTop(
-    const ITEM *const item, const int32_t x, const int32_t z)
-{
-    const int32_t dx = x - item->pos.x;
-    const int32_t dz = z - item->pos.z;
-
-    // Movable blocks' bounds don't match sector so estimate.
-    return (dx >= -WALL_L / 2 && dx < WALL_L / 2)
-        && (dz >= -WALL_L / 2 && dz < WALL_L / 2);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->bounds_func = M_Bounds;
-    obj->draw_func = M_Draw;
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->collision_func = M_Collision;
-    obj->control_func = M_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->add_walkable_func = M_AddWalkable;
-    obj->base_rot.y = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->save_position = true;
 }
 
 static const OBJECT_BOUNDS *M_Bounds(void)
@@ -861,6 +802,23 @@ static void M_GetStack(
             stack_height += step_y;
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->bounds_func = M_Bounds;
+    obj->draw_func = M_Draw;
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->add_walkable_func = M_AddWalkable;
+    obj->base_rot.y = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->save_position = true;
 }
 
 void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)

@@ -2,8 +2,6 @@
 #include "game/inject.h"
 #include "memory.h"
 
-static void M_HandleMeshData(INJECTION_CHUNK chunk);
-
 static void M_HandleMeshData(const INJECTION_CHUNK chunk)
 {
     int32_t mesh_ptr_count = 0;

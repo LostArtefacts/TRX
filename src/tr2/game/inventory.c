@@ -7,8 +7,6 @@
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 
-static int32_t M_GetFlareQuantity(void);
-
 static int32_t M_GetFlareQuantity(void)
 {
     return Game_IsBonusFlagSet(GBF_JAPANESE) ? FLARE_AMMO_JAPANESE_QTY

@@ -33,16 +33,6 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static VIEWPORT_RECT M_GetPickupRect(const OUTPUT_UI_PICKUP *const pickup);
-static float M_Get3DPickupScale(
-    VIEWPORT_RECT pickup_rect, const ANIM_FRAME *frame);
-static void M_Draw3DPickups(const M_PRIV *p);
-static void M_DrawVertices(const M_PRIV *p);
-
-static void M_RenderBegin(const SCENE_SOURCE *source);
-static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
-static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
-
 VIEWPORT_RECT OutputSource_UI_GetPickupRect(
     const OUTPUT_UI_PICKUP *const pickup)
 {

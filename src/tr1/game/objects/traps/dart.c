@@ -7,17 +7,6 @@
 
 #define DART_DAMAGE 50
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = Object_Collision;
-    obj->control_func = M_Control;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -53,6 +42,14 @@ static void M_Control(const int16_t item_num)
             effect->object_id = O_RICOCHET;
         }
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = Object_Collision;
+    obj->control_func = M_Control;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_DART, M_Setup)

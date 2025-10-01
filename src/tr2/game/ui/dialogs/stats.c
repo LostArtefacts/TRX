@@ -36,20 +36,6 @@ typedef enum {
     M_ROW_DISTANCE_TRAVELLED,
 } M_ROW_ROLE;
 
-static void M_FormatTime(char *out, int32_t total_frames);
-static void M_FormatSecrets(char *out, const LEVEL_STATS *level_stats);
-static void M_FormatDistance(char *const out, int32_t distance);
-static void M_Row(
-    const UI_STATS_DIALOG_STATE *s, const char *key, const char *value);
-static void M_RowFromRole(
-    const UI_STATS_DIALOG_STATE *s, M_ROW_ROLE role, const STATS_COMMON *stats);
-static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *s);
-static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *s);
-static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *s);
-static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *s);
-static void M_BeginDialog(const UI_STATS_DIALOG_STATE *s);
-static void M_EndDialog(const UI_STATS_DIALOG_STATE *s);
-
 static void M_FormatTime(char *const out, const int32_t total_frames)
 {
     const int32_t total_seconds = total_frames / LOGIC_FPS;
@@ -220,6 +206,25 @@ static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
     M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, stats);
 }
 
+static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
+{
+    switch (s->args.mode) {
+    case UI_STATS_DIALOG_MODE_LEVEL:
+        return GF_GetLevel(GFLT_MAIN, s->args.level_num)->title;
+    case UI_STATS_DIALOG_MODE_FINAL: {
+        const GF_LEVEL_TYPE level_type =
+            GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
+        const char *const title = level_type == GFL_BONUS
+            ? GS(STATS_BONUS_STATISTICS)
+            : GS(STATS_FINAL_STATISTICS);
+        return title;
+    }
+    case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
+        return GS(STATS_ASSAULT_TITLE);
+    }
+    return nullptr;
+}
+
 static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
 {
     const ASSAULT_STATS stats = Gym_GetAssaultStats();
@@ -253,25 +258,6 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
         }
     }
     UI_EndRequester(&s->assault_req);
-}
-
-static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
-{
-    switch (s->args.mode) {
-    case UI_STATS_DIALOG_MODE_LEVEL:
-        return GF_GetLevel(GFLT_MAIN, s->args.level_num)->title;
-    case UI_STATS_DIALOG_MODE_FINAL: {
-        const GF_LEVEL_TYPE level_type =
-            GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
-        const char *const title = level_type == GFL_BONUS
-            ? GS(STATS_BONUS_STATISTICS)
-            : GS(STATS_FINAL_STATISTICS);
-        return title;
-    }
-    case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
-        return GS(STATS_ASSAULT_TITLE);
-    }
-    return nullptr;
 }
 
 static void M_BeginDialog(const UI_STATS_DIALOG_STATE *const s)

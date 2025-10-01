@@ -2,8 +2,6 @@
 
 #include "game/clock/common.h"
 
-static double M_GetTime(const CLOCK_TIMER *timer);
-
 static double M_GetTime(const CLOCK_TIMER *const timer)
 {
     return timer->type == CLOCK_TIMER_REAL ? Clock_GetRealTime()

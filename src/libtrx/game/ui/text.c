@@ -91,23 +91,6 @@ static M_GLYPH_INFO m_Glyphs[] = {
 static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
-static float M_ScaleScreen(const float value);
-static float M_ScaleNeutral(const float value);
-static const M_GLYPH_INFO **M_Decompose(
-    const char *content, size_t *out_glyph_count);
-static const M_GLYPH_INFO **M_DecomposeWithCache(
-    const char *content, size_t *out_glyph_count);
-static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph);
-
-static size_t M_WordWrap(
-    const M_GLYPH_INFO **glyphs, size_t glyph_count, float scale_f,
-    float max_width, char *dst);
-void M_Process(
-    const char *text, float *out_w, float *out_h, UI_TEXT_SETTINGS settings,
-    float base_x, float base_y, float (*scale_func)(float),
-    void (*draw_func)(
-        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int16_t));
-
 static float M_ScaleScreen(const float value)
 {
     return Scaler_Calc(value, SCALER_TARGET_TEXT);
@@ -344,7 +327,7 @@ static size_t M_WordWrap(
     return out_len;
 }
 
-void M_Process(
+static void M_Process(
     const char *const text, float *const out_w, float *const out_h,
     const UI_TEXT_SETTINGS settings, const float base_x, const float base_y,
     float (*const scale_func)(float),

@@ -16,13 +16,6 @@
 
 static int16_t m_AnimatingCount = 0;
 
-static ITEM *M_GetCarrier(int16_t item_num);
-static bool M_IsCarrierType(GAME_OBJECT_ID obj_id);
-static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *carrier);
-static void M_AnimateDrop(CARRIED_ITEM *item);
-static void M_InitialiseDataDrops(void);
-static void M_InitialiseGameFlowDrops(const GF_LEVEL *level);
-
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
 #if TR_VERSION == 1
     { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUM_ITEM },

@@ -25,32 +25,6 @@ static BUILTIN_KEYBOARD_LAYOUT m_BuiltinLayout[] = {
 
 static SDL_Scancode m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF];
 
-static const char *M_GetScancodeName(SDL_Scancode scancode);
-
-static bool M_Key(INPUT_LAYOUT layout, INPUT_ROLE role);
-static SDL_Scancode M_GetAssignedScancode(INPUT_LAYOUT layout, INPUT_ROLE role);
-static void M_AssignScancode(
-    INPUT_LAYOUT layout, INPUT_ROLE role, SDL_Scancode scancode);
-static bool M_CheckConflict(
-    INPUT_LAYOUT layout, INPUT_ROLE role1, INPUT_ROLE role2);
-static void M_AssignConflict(
-    INPUT_LAYOUT layout, INPUT_ROLE role, bool conflict);
-static void M_CheckConflicts(INPUT_LAYOUT layout);
-
-static void M_Init(void);
-static void M_ProcessEvent(const SDL_Event *event);
-static bool M_CustomUpdate(INPUT_STATE *result, INPUT_LAYOUT layout);
-static bool M_IsPressed(INPUT_LAYOUT layout, INPUT_ROLE role);
-static bool M_IsRoleConflicted(INPUT_LAYOUT layout, INPUT_ROLE role);
-static const char *M_GetName(INPUT_LAYOUT layout, INPUT_ROLE role);
-static void M_UnassignRole(INPUT_LAYOUT layout, INPUT_ROLE role);
-static bool M_AssignFromJSONObject(
-    INPUT_LAYOUT layout, INPUT_ROLE role, JSON_OBJECT *bind_obj);
-static bool M_AssignToJSONObject(
-    INPUT_LAYOUT layout, INPUT_ROLE role, JSON_OBJECT *bind_obj);
-static void M_ResetLayout(INPUT_LAYOUT layout);
-static bool M_ReadAndAssign(INPUT_LAYOUT layout, INPUT_ROLE role);
-
 // Update internal controller button/axis state from SDL events.
 // @param event     Event to process.
 static void M_ProcessEvent(const SDL_Event *const event)
@@ -354,14 +328,6 @@ static SDL_Scancode M_GetAssignedScancode(INPUT_LAYOUT layout, INPUT_ROLE role)
     return m_Layout[layout][role];
 }
 
-static void M_AssignScancode(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role,
-    const SDL_Scancode scancode)
-{
-    m_Layout[layout][role] = scancode;
-    M_CheckConflicts(layout);
-}
-
 static bool M_CheckConflict(
     const INPUT_LAYOUT layout, const INPUT_ROLE role1, const INPUT_ROLE role2)
 {
@@ -379,6 +345,24 @@ static void M_AssignConflict(
 static void M_CheckConflicts(const INPUT_LAYOUT layout)
 {
     Input_ConflictHelper(layout, M_CheckConflict, M_AssignConflict);
+}
+
+static void M_AssignScancode(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role,
+    const SDL_Scancode scancode)
+{
+    m_Layout[layout][role] = scancode;
+    M_CheckConflicts(layout);
+}
+
+static void M_ResetLayout(const INPUT_LAYOUT layout)
+{
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        const SDL_Scancode scancode =
+            M_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
+        m_Layout[layout][role] = scancode;
+    }
+    M_CheckConflicts(layout);
 }
 
 static void M_Init(void)
@@ -455,16 +439,6 @@ static bool M_AssignToJSONObject(
 
     JSON_ObjectAppendInt(bind_obj, "scancode", user_scancode);
     return true;
-}
-
-static void M_ResetLayout(const INPUT_LAYOUT layout)
-{
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        const SDL_Scancode scancode =
-            M_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
-        m_Layout[layout][role] = scancode;
-    }
-    M_CheckConflicts(layout);
 }
 
 static bool M_ReadAndAssign(const INPUT_LAYOUT layout, const INPUT_ROLE role)

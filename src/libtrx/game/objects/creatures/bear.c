@@ -48,9 +48,6 @@ typedef enum {
 
 static BITE m_BearHeadBite = { .pos = { 0, 96, 335 }, .mesh_num = 14 };
 
-static void M_Control(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {

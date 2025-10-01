@@ -7,9 +7,6 @@
 #include <string.h>
 
 static MEMORY_ARENA_CHUNK *M_ArenaAllocChunk(
-    MEMORY_ARENA_ALLOCATOR *allocator, size_t size);
-
-static MEMORY_ARENA_CHUNK *M_ArenaAllocChunk(
     MEMORY_ARENA_ALLOCATOR *const allocator, const size_t size)
 {
     const size_t new_chunk_size = MAX(allocator->default_chunk_size, size);

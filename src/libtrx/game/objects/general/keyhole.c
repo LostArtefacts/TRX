@@ -23,14 +23,6 @@ static const OBJECT_BOUNDS m_KeyholeBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
-static void M_ConsumeKeyItem(ITEM *receptacle_item);
-static void M_MarkDone(ITEM *receptacle_item);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static bool M_IsUsable(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_KeyholeBounds;

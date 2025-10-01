@@ -21,15 +21,6 @@ static M_STR_TO_ID_ENTRY *m_Str2IdMap = nullptr;
 static M_ID_TO_STR_ENTRY *m_Id2StrMap = nullptr;
 static M_ID_TO_STR_ENTRY *m_Id2NameMap = nullptr;
 
-static void M_ClearId2StrMap(M_ID_TO_STR_ENTRY **map);
-static void M_ClearStr2IdMap(M_STR_TO_ID_ENTRY **map);
-static void M_DefineStr2Id(
-    M_STR_TO_ID_ENTRY **map, const char *enum_type_name, int32_t enum_value,
-    const char *str_value);
-static void M_DefineId2Str(
-    M_ID_TO_STR_ENTRY **map, const char *enum_type_name, int32_t enum_value,
-    const char *str_value);
-
 static void M_ClearStr2IdMap(M_STR_TO_ID_ENTRY **map)
 {
     M_STR_TO_ID_ENTRY *current, *tmp;

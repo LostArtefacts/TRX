@@ -9,9 +9,6 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static void M_Init(M_PRIV *p);
-static void M_Shutdown(M_PRIV *p);
-
 static void M_Init(M_PRIV *const p)
 {
     if (p->ui_state == nullptr) {

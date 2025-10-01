@@ -21,35 +21,7 @@ typedef struct {
     size_t error;
 } M_STATE;
 
-static bool M_GetObjectKeySize(M_STATE *state);
-static bool M_GetNullValueSize(M_STATE *state);
-static bool M_GetBoolValueSize(M_STATE *state);
-static bool M_GetInt32ValueSize(M_STATE *state);
-static bool M_GetDoubleValueSize(M_STATE *state);
-static bool M_GetStringValueSize(M_STATE *state);
-static bool M_GetArrayElementWrappedSize(M_STATE *state);
-static bool M_GetArraySize(M_STATE *state);
-static bool M_GetArrayValueSize(M_STATE *state);
-static bool M_GetObjectElementWrappedSize(M_STATE *state);
-static bool M_GetObjectSize(M_STATE *state);
-static bool M_GetObjectValueSize(M_STATE *state);
 static bool M_GetValueSize(M_STATE *state, uint8_t marker);
-static bool M_GetRootSize(M_STATE *state);
-
-static void M_HandleObjectKey(M_STATE *state, JSON_STRING *string);
-static void M_HandleNullValue(M_STATE *state, JSON_VALUE *value);
-static void M_HandleBoolValue(M_STATE *state, JSON_VALUE *value);
-static void M_HandleInt32Value(M_STATE *state, JSON_VALUE *value);
-static void M_HandleDoubleValue(M_STATE *state, JSON_VALUE *value);
-static void M_HandleStringValue(M_STATE *state, JSON_VALUE *value);
-static void M_HandleArrayElementWrapped(
-    M_STATE *state, JSON_ARRAY_ELEMENT *element);
-static void M_HandleArray(M_STATE *state, JSON_ARRAY *array);
-static void M_HandleArrayValue(M_STATE *state, JSON_VALUE *value);
-static void M_HandleObjectElementWrapped(
-    M_STATE *state, JSON_OBJECT_ELEMENT *element);
-static void M_HandleObject(M_STATE *state, JSON_OBJECT *object);
-static void M_HandleObjectValue(M_STATE *state, JSON_VALUE *value);
 static void M_HandleValue(M_STATE *state, JSON_VALUE *value, uint8_t marker);
 
 static bool M_GetObjectKeySize(M_STATE *state)

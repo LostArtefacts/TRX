@@ -7,12 +7,6 @@
 
 #define M_DISAPPEAR_RANGE STEP_L
 
-static XYZ_32 M_GetTargetPos(const ITEM *item);
-static void M_NudgeTowardsItem(EFFECT *effect, const XYZ_32 *target_pos);
-static bool M_ShouldDisappear(const EFFECT *effect, const XYZ_32 *target_pos);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
 static XYZ_32 M_GetTargetPos(const ITEM *const item)
 {
     XYZ_32 pos = item->pos;
@@ -46,11 +40,6 @@ static bool M_ShouldDisappear(
         && dz < M_DISAPPEAR_RANGE;
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -73,6 +62,11 @@ static void M_Control(const int16_t effect_num)
     if (M_ShouldDisappear(effect, &target_pos)) {
         Effect_Kill(effect_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
 }
 
 REGISTER_OBJECT(O_TWINKLE, M_Setup)

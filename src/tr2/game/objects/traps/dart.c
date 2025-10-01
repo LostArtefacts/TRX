@@ -10,10 +10,6 @@
 
 #define DART_DAMAGE 50
 
-static void M_Hit(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_Hit(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -31,13 +27,6 @@ static void M_Hit(const int16_t item_num)
         effect->counter = 6;
         effect->frame_num = -3 * Random_GetControl() / 0x8000;
     }
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->shadow_size = 128;
 }
 
 static void M_Control(const int16_t item_num)
@@ -65,6 +54,13 @@ static void M_Control(const int16_t item_num)
     if (item->pos.y >= height) {
         M_Hit(item_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->shadow_size = 128;
 }
 
 REGISTER_OBJECT(O_DART, M_Setup)

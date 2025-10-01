@@ -11,14 +11,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static void M_LoadKeyboardLayout(JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
-static void M_LoadControllerLayout(
-    JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
-static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj);
-static void M_DumpKeyboardLayout(JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
-static void M_DumpControllerLayout(
-    JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
-
 static void M_LoadKeyboardLayout(
     JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
 {

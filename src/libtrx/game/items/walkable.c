@@ -10,9 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static SECTOR *M_GetItemPitSector(XYZ_32 pos, int16_t room_num);
-static void M_InsertSorted(WALKABLE **walkables, WALKABLE *node);
-
 static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
 {
     SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);

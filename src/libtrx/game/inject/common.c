@@ -26,24 +26,108 @@ static VECTOR *m_RoomMeta = nullptr;
 static LEVEL_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
 
-static void M_LoadFromFile(INJECTION *injection, const char *file_name);
-static void M_ReadVFile(
-    INJECTION *injection, VFILE *file, const char *file_name);
-static INJECTION_CHUNK M_ReadChunk(const INJECTION *injection);
-static void M_InitialiseBlock(VFILE *file, INJECTION_VERSION version);
-static bool M_IsRelevant(INJECTION_FILE_TYPE type);
-static bool M_IsApplicable(const INJECTION *injection);
-
-static void M_LoadFromFile(
-    INJECTION *const injection, const char *const file_name)
+static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
 {
-    VFILE *const file = VFile_CreateFromPath(file_name);
-    if (file == nullptr) {
-        LOG_WARNING("Could not open %s", file_name);
+    switch (type) {
+    case IFT_GENERAL:
+    case IFT_LARA_ANIMS:
+        return true;
+    case IFT_FLOOR_DATA:
+        return g_Config.gameplay.fix_floor_data_issues;
+    case IFT_ITEM_POSITION:
+        return g_Config.visuals.fix_item_rots;
+    case IFT_TEXTURE_FIX:
+        return g_Config.visuals.fix_texture_issues;
+    case IFT_ALTER_ANIM_SPRITE:
+        return g_Config.visuals.fix_animated_sprites == (TR_VERSION == 2);
+#if TR_VERSION == 1
+    case IFT_SKYBOX:
+        return true;
+    case IFT_BRAID:
+        return g_Config.visuals.enable_braid;
+    case IFT_UZI_SFX:
+        return g_Config.audio.enable_ps_uzi_sfx;
+    case IFT_PS1_ENEMY:
+        return g_Config.gameplay.restore_ps1_enemies;
+    case IFT_PS1_CRYSTAL:
+        return g_Config.gameplay.enable_save_crystals
+            && g_Config.visuals.enable_ps1_crystals;
+#elif TR_VERSION == 2
+    case IFT_BAREFOOT_SFX:
+        return g_Config.audio.enable_barefoot_sfx;
+#endif
+    default:
+        return false;
+    }
+}
+
+static INJECTION_CHUNK M_ReadChunk(const INJECTION *const injection)
+{
+    return (INJECTION_CHUNK) {
+        .injection = injection,
+        .type = VFile_ReadS32(injection->fp),
+        .num_blocks = VFile_ReadS32(injection->fp),
+        .total_size = VFile_ReadS32(injection->fp),
+    };
+}
+
+static void M_InitialiseBlock(
+    VFILE *const file, const INJECTION_VERSION version)
+{
+    const INJECTION_DATA_TYPE data_type = VFile_ReadS32(file);
+    const int32_t data_count = VFile_ReadS32(file);
+    const int32_t data_size = VFile_ReadS32(file);
+    if (data_type >= 0 && data_type < IDT_NUMBER_OF) {
+        m_DataCounts[data_type] += data_count;
+    }
+
+    switch (data_type) {
+    case IDT_ROOM_EDIT_META: {
+        if (m_RoomMeta == nullptr) {
+            m_RoomMeta = Vector_Create(sizeof(INJECTION_MESH_META));
+        }
+        for (int32_t i = 0; i < data_count; i++) {
+            INJECTION_MESH_META meta = {
+                .room_index = VFile_ReadS16(file),
+                .num_vertices = VFile_ReadS16(file),
+                .num_quads = VFile_ReadS16(file),
+                .num_triangles = VFile_ReadS16(file),
+                .num_static_2ds = VFile_ReadS16(file),
+            };
+            if (version >= INJ_VERSION_3) {
+                meta.num_static_3ds = VFile_ReadS16(file);
+            }
+            Vector_Add(m_RoomMeta, &meta);
+        }
+
         return;
     }
 
-    M_ReadVFile(injection, file, file_name);
+    case IDT_SAMPLE_INFOS: {
+        for (int32_t i = 0; i < data_count; i++) {
+            VFile_Skip(file, 3 * sizeof(int16_t));
+            const int16_t flags = VFile_ReadS16(file);
+            const int16_t num_samples = (flags >> 2) & 0xF;
+            m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
+            if (TR_VERSION == 1 || version >= INJ_VERSION_4) {
+                for (int32_t j = 0; j < num_samples; j++) {
+                    const int32_t sample_length = VFile_ReadS32(file);
+                    m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
+                    VFile_Skip(file, sizeof(char) * sample_length);
+                }
+            } else if (TR_VERSION == 2) {
+                VFile_Skip(file, sizeof(uint32_t));
+            }
+        }
+
+        return;
+    }
+
+    default:
+        break;
+    }
+
+    VFile_Skip(file, data_size);
 }
 
 static void M_ReadVFile(
@@ -119,108 +203,16 @@ cleanup:
     VFile_Close(file);
 }
 
-static INJECTION_CHUNK M_ReadChunk(const INJECTION *const injection)
+static void M_LoadFromFile(
+    INJECTION *const injection, const char *const file_name)
 {
-    return (INJECTION_CHUNK) {
-        .injection = injection,
-        .type = VFile_ReadS32(injection->fp),
-        .num_blocks = VFile_ReadS32(injection->fp),
-        .total_size = VFile_ReadS32(injection->fp),
-    };
-}
-
-static void M_InitialiseBlock(
-    VFILE *const file, const INJECTION_VERSION version)
-{
-    const INJECTION_DATA_TYPE data_type = VFile_ReadS32(file);
-    const int32_t data_count = VFile_ReadS32(file);
-    const int32_t data_size = VFile_ReadS32(file);
-    if (data_type >= 0 && data_type < IDT_NUMBER_OF) {
-        m_DataCounts[data_type] += data_count;
-    }
-
-    switch (data_type) {
-    case IDT_ROOM_EDIT_META: {
-        if (m_RoomMeta == nullptr) {
-            m_RoomMeta = Vector_Create(sizeof(INJECTION_MESH_META));
-        }
-        for (int32_t i = 0; i < data_count; i++) {
-            INJECTION_MESH_META meta = {
-                .room_index = VFile_ReadS16(file),
-                .num_vertices = VFile_ReadS16(file),
-                .num_quads = VFile_ReadS16(file),
-                .num_triangles = VFile_ReadS16(file),
-                .num_static_2ds = VFile_ReadS16(file),
-            };
-            if (version >= INJ_VERSION_3) {
-                meta.num_static_3ds = VFile_ReadS16(file);
-            }
-            Vector_Add(m_RoomMeta, &meta);
-        }
-
+    VFILE *const file = VFile_CreateFromPath(file_name);
+    if (file == nullptr) {
+        LOG_WARNING("Could not open %s", file_name);
         return;
     }
 
-    case IDT_SAMPLE_INFOS: {
-        for (int32_t i = 0; i < data_count; i++) {
-            VFile_Skip(file, 3 * sizeof(int16_t));
-            const int16_t flags = VFile_ReadS16(file);
-            const int16_t num_samples = (flags >> 2) & 0xF;
-            m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
-            if (TR_VERSION == 1 || version >= INJ_VERSION_4) {
-                for (int32_t j = 0; j < num_samples; j++) {
-                    const int32_t sample_length = VFile_ReadS32(file);
-                    m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
-                    VFile_Skip(file, sizeof(char) * sample_length);
-                }
-            } else if (TR_VERSION == 2) {
-                VFile_Skip(file, sizeof(uint32_t));
-            }
-        }
-
-        return;
-    }
-
-    default:
-        break;
-    }
-
-    VFile_Skip(file, data_size);
-}
-
-static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
-{
-    switch (type) {
-    case IFT_GENERAL:
-    case IFT_LARA_ANIMS:
-        return true;
-    case IFT_FLOOR_DATA:
-        return g_Config.gameplay.fix_floor_data_issues;
-    case IFT_ITEM_POSITION:
-        return g_Config.visuals.fix_item_rots;
-    case IFT_TEXTURE_FIX:
-        return g_Config.visuals.fix_texture_issues;
-    case IFT_ALTER_ANIM_SPRITE:
-        return g_Config.visuals.fix_animated_sprites == (TR_VERSION == 2);
-#if TR_VERSION == 1
-    case IFT_SKYBOX:
-        return true;
-    case IFT_BRAID:
-        return g_Config.visuals.enable_braid;
-    case IFT_UZI_SFX:
-        return g_Config.audio.enable_ps_uzi_sfx;
-    case IFT_PS1_ENEMY:
-        return g_Config.gameplay.restore_ps1_enemies;
-    case IFT_PS1_CRYSTAL:
-        return g_Config.gameplay.enable_save_crystals
-            && g_Config.visuals.enable_ps1_crystals;
-#elif TR_VERSION == 2
-    case IFT_BAREFOOT_SFX:
-        return g_Config.audio.enable_barefoot_sfx;
-#endif
-    default:
-        return false;
-    }
+    M_ReadVFile(injection, file, file_name);
 }
 
 static bool M_IsApplicable(const INJECTION *const injection)

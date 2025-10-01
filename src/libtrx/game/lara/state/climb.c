@@ -17,12 +17,6 @@
 #define M_CAM_CLIMB_DOWN_ELEVATION   M_CAM_CLIMB_END_ELEVATION  // = -8190
 // clang-format on
 
-static void M_Hang(ITEM *item, COLL_INFO *coll);
-static void M_Shimmy(ITEM *item, COLL_INFO *coll);
-static void M_StanceLadder(ITEM *item, COLL_INFO *coll);
-static void M_SideLadder(ITEM *item, COLL_INFO *coll);
-static void M_UpDownLadder(ITEM *item, COLL_INFO *coll);
-
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {

@@ -17,9 +17,6 @@ static const char *const m_Path = "cfg/poses.json5";
 static VECTOR *m_Poses = nullptr;
 static int32_t m_ActivePose = M_NO_POSE;
 
-static bool M_ReadXYZ16(JSON_VALUE *value, XYZ_16 *target);
-static void M_LoadPoses(void);
-
 static bool M_ReadXYZ16(JSON_VALUE *const value, XYZ_16 *const target)
 {
     JSON_OBJECT *const obj = JSON_ValueAsObject(value);

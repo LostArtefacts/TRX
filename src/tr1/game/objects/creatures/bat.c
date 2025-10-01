@@ -22,11 +22,6 @@ typedef enum {
 
 static BITE m_BatBite = { .pos = { 0, 16, 45 }, .mesh_num = 4 };
 
-static void M_FixEmbeddedPosition(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static void M_Initialise(int16_t item_num);
-
 static void M_FixEmbeddedPosition(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -59,26 +54,6 @@ static void M_FixEmbeddedPosition(int16_t item_num)
     if (item->pos.y < ceiling + bat_height) {
         item->pos.y = ceiling + bat_height;
     }
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = BAT_HITPOINTS;
-    obj->radius = BAT_RADIUS;
-    obj->smartness = BAT_SMARTNESS;
-    obj->lot_setup = g_LOT_Flyer;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -149,6 +124,26 @@ static void M_Initialise(const int16_t item_num)
     // This will move all bats up to the ceiling of their rooms and down
     // by the height of their hanging animation.
     M_FixEmbeddedPosition(item_num);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = BAT_HITPOINTS;
+    obj->radius = BAT_RADIUS;
+    obj->smartness = BAT_SMARTNESS;
+    obj->lot_setup = g_LOT_Flyer;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_BAT, M_Setup)

@@ -32,21 +32,6 @@ static const SECTOR m_BlockedSector = {
 };
 
 static SECTOR *M_GetRoomRelSector(
-    const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz);
-static void M_InitialisePortal(
-    const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz,
-    DOORPOS_DATA *door_pos);
-static bool M_LaraDoorCollision(const SECTOR *sector);
-static void M_Check(DOORPOS_DATA *d);
-static void M_CopySectorProperties(
-    const SECTOR *source_sector, SECTOR *target_sector);
-static void M_Shut(DOORPOS_DATA *d);
-static void M_Open(DOORPOS_DATA *d);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-
-static SECTOR *M_GetRoomRelSector(
     const ROOM *const room, const ITEM *item, const int32_t sector_dx,
     const int32_t sector_dz)
 {
@@ -71,17 +56,6 @@ static bool M_LaraDoorCollision(const SECTOR *const sector)
     return lara_sector == sector;
 }
 
-static void M_Check(DOORPOS_DATA *const d)
-{
-    // Forcefully remove the invisible block if Lara happens to occupy the same
-    // tile. This ensures that Lara doesn't void if a timed door happens to
-    // close right on her, or the player loads the game while standing on a
-    // closed door's block tile.
-    if (M_LaraDoorCollision(d->sector)) {
-        M_Open(d);
-    }
-}
-
 static void M_CopySectorProperties(
     const SECTOR *const source_sector, SECTOR *const target_sector)
 {
@@ -96,20 +70,6 @@ static void M_CopySectorProperties(
     target_sector->portal_room.wall = source_sector->portal_room.wall;
 }
 
-static void M_Shut(DOORPOS_DATA *const d)
-{
-    if (d->sector == nullptr) {
-        return;
-    }
-
-    M_CopySectorProperties(&m_BlockedSector, d->sector);
-
-    const int16_t box_num = d->box_num;
-    if (box_num != NO_BOX) {
-        Box_GetBox(box_num)->overlap_index |= BOX_BLOCKED;
-    }
-}
-
 static void M_Open(DOORPOS_DATA *const d)
 {
     if (d->sector == nullptr) {
@@ -121,6 +81,31 @@ static void M_Open(DOORPOS_DATA *const d)
     const int16_t box_num = d->box_num;
     if (box_num != NO_BOX) {
         Box_GetBox(box_num)->overlap_index &= ~BOX_BLOCKED;
+    }
+}
+
+static void M_Check(DOORPOS_DATA *const d)
+{
+    // Forcefully remove the invisible block if Lara happens to occupy the same
+    // tile. This ensures that Lara doesn't void if a timed door happens to
+    // close right on her, or the player loads the game while standing on a
+    // closed door's block tile.
+    if (M_LaraDoorCollision(d->sector)) {
+        M_Open(d);
+    }
+}
+
+static void M_Shut(DOORPOS_DATA *const d)
+{
+    if (d->sector == nullptr) {
+        return;
+    }
+
+    M_CopySectorProperties(&m_BlockedSector, d->sector);
+
+    const int16_t box_num = d->box_num;
+    if (box_num != NO_BOX) {
+        Box_GetBox(box_num)->overlap_index |= BOX_BLOCKED;
     }
 }
 
@@ -145,16 +130,6 @@ static void M_InitialisePortal(
     }
     door_pos->box_num = box_num;
     door_pos->old_sector = *door_pos->sector;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = Door_Collision;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -242,6 +217,16 @@ static void M_Control(const int16_t item_num)
     M_Check(&door->d1flip);
     M_Check(&door->d2flip);
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = Door_Collision;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 void Door_Collision(

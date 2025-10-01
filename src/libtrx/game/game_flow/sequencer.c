@@ -10,10 +10,6 @@
 #include "game/savegame.h"
 
 static GF_COMMAND M_RunEvent(
-    const GF_LEVEL *level, const GF_SEQUENCE_EVENT *event,
-    GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg);
-
-static GF_COMMAND M_RunEvent(
     const GF_LEVEL *const level, const GF_SEQUENCE_EVENT *const event,
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {

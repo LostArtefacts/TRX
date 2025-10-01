@@ -5,14 +5,6 @@
 
 #define EMBER_DAMAGE 10
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
@@ -35,6 +27,11 @@ static void M_Control(const int16_t effect_num)
     } else if (room_num != effect->room_num) {
         Effect_NewRoom(effect_num, room_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
 }
 
 REGISTER_OBJECT(O_EMBER, M_Setup)

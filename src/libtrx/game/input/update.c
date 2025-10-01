@@ -8,9 +8,6 @@
 #include "game/lara.h"
 
 static void M_UpdateFromBackend(
-    INPUT_STATE *s, const INPUT_BACKEND_IMPL *backend, int32_t layout);
-
-static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
     const int32_t layout)
 {

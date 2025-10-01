@@ -58,18 +58,7 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
-static void M_SpawnPickupAid(const ITEM *item);
-static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item);
-static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Activate(ITEM *item);
-static void M_Control(int16_t item_num);
-static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_CollisionControlled(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_SpawnPickupAid(const ITEM *const item)
 {
@@ -127,166 +116,6 @@ static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item)
         }
         pickup_num = check_item->next_item;
     }
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->draw_func = Object_DrawPickupItem;
-    obj->collision_func = M_Collision;
-    obj->save_flags = true;
-    obj->bounds_func = M_Bounds;
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->activate_func = M_Activate;
-    obj->control_func = M_Control;
-}
-
-static void M_Initialise(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->priv = (void *)(intptr_t)(-1);
-    if (item->status != IS_INVISIBLE) {
-        Item_AddActive(item_num);
-    }
-}
-
-static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
-{
-    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
-            const int16_t item_num = Item_GetIndex(item);
-            Item_RemoveDrawn(item_num);
-        }
-    }
-}
-
-static void M_Activate(ITEM *const item)
-{
-    if (item->status == IS_INVISIBLE) {
-        item->touch_bits = 0;
-        item->status = IS_ACTIVE;
-        const int16_t item_num = Item_GetIndex(item);
-        Item_AddActive(item_num);
-    } else {
-        item->status = IS_INVISIBLE;
-        item->flags |= IF_KILLED;
-    }
-}
-
-static void M_Control(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
-        return;
-    }
-
-    const ITEM *const lara = Lara_GetItem();
-    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
-        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
-        return;
-    }
-
-    const int32_t distance = Item_GetDistance(lara, &item->pos);
-    if (distance < AID_DIST_MIN || distance > AID_DIST_MAX) {
-        return;
-    }
-
-    int32_t timer = (int32_t)(intptr_t)item->priv;
-    if (timer <= 0
-        || (timer < AID_WAIT_MIN && Random_GetDraw() < AID_WAIT_BREAK_CHANCE)) {
-        M_SpawnPickupAid(item);
-        timer = AID_WAIT_MAX;
-    } else {
-        timer--;
-    }
-
-    item->priv = (void *)(intptr_t)(int32_t)timer;
-}
-
-static const OBJECT_BOUNDS *M_Bounds(void)
-{
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->water_status == LWS_UNDERWATER
-        || lara->water_status == LWS_CHEAT) {
-        return &m_PickUpBoundsUW;
-    } else if (g_Config.gameplay.enable_walk_to_items) {
-        return &m_PickUpBoundsControlled;
-    } else {
-        return &m_PickUpBounds;
-    }
-}
-
-static void M_Collision(
-    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
-{
-    if (g_Config.gameplay.enable_walk_to_items) {
-        M_CollisionControlled(item_num, lara_item, coll);
-        return;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
-    int16_t rotx = item->rot.x;
-    int16_t roty = item->rot.y;
-    int16_t rotz = item->rot.z;
-    item->rot.y = lara_item->rot.y;
-    item->rot.z = 0;
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->water_status == LWS_ABOVE_WATER
-        || lara->water_status == LWS_WADE) {
-        item->rot.x = 0;
-        if (!Lara_TestPosition(item, obj->bounds_func())) {
-            goto cleanup;
-        }
-
-        if (lara_item->current_anim_state == LS_PICKUP) {
-            if (!Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
-                goto cleanup;
-            }
-            M_GetAllAtLaraPos(item, lara_item);
-            goto cleanup;
-        }
-
-        if (g_Input.action && lara->gun_status == LGS_ARMLESS
-            && !lara_item->gravity
-            && lara_item->current_anim_state == LS_STOP) {
-            Lara_AlignPosition(item, &m_PickUpPosition);
-            Lara_AnimateUntil(lara_item, LS_PICKUP);
-            lara_item->goal_anim_state = LS_STOP;
-            lara->gun_status = LGS_HANDS_BUSY;
-            goto cleanup;
-        }
-    } else if (
-        lara->water_status == LWS_UNDERWATER
-        || lara->water_status == LWS_CHEAT) {
-        item->rot.x = -25 * DEG_1;
-        if (!Lara_TestPosition(item, obj->bounds_func())) {
-            goto cleanup;
-        }
-
-        if (lara_item->current_anim_state == LS_PICKUP) {
-            if (!Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
-                goto cleanup;
-            }
-            M_GetAllAtLaraPos(item, lara_item);
-            goto cleanup;
-        }
-
-        if (g_Input.action && lara_item->current_anim_state == LS_TREAD) {
-            if (!Lara_MovePosition(item, &m_PickUpPositionUW)) {
-                goto cleanup;
-            }
-            Lara_AnimateUntil(lara_item, LS_PICKUP);
-            lara_item->goal_anim_state = LS_TREAD;
-        }
-    }
-
-cleanup:
-    item->rot.x = rotx;
-    item->rot.y = roty;
-    item->rot.z = rotz;
 }
 
 static void M_CollisionControlled(
@@ -390,6 +219,166 @@ static void M_CollisionControlled(
     item->rot.x = rotx;
     item->rot.y = roty;
     item->rot.z = rotz;
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    if (g_Config.gameplay.enable_walk_to_items) {
+        M_CollisionControlled(item_num, lara_item, coll);
+        return;
+    }
+
+    ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+    int16_t rotx = item->rot.x;
+    int16_t roty = item->rot.y;
+    int16_t rotz = item->rot.z;
+    item->rot.y = lara_item->rot.y;
+    item->rot.z = 0;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_ABOVE_WATER
+        || lara->water_status == LWS_WADE) {
+        item->rot.x = 0;
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
+            goto cleanup;
+        }
+
+        if (lara_item->current_anim_state == LS_PICKUP) {
+            if (!Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
+                goto cleanup;
+            }
+            M_GetAllAtLaraPos(item, lara_item);
+            goto cleanup;
+        }
+
+        if (g_Input.action && lara->gun_status == LGS_ARMLESS
+            && !lara_item->gravity
+            && lara_item->current_anim_state == LS_STOP) {
+            Lara_AlignPosition(item, &m_PickUpPosition);
+            Lara_AnimateUntil(lara_item, LS_PICKUP);
+            lara_item->goal_anim_state = LS_STOP;
+            lara->gun_status = LGS_HANDS_BUSY;
+            goto cleanup;
+        }
+    } else if (
+        lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
+        item->rot.x = -25 * DEG_1;
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
+            goto cleanup;
+        }
+
+        if (lara_item->current_anim_state == LS_PICKUP) {
+            if (!Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
+                goto cleanup;
+            }
+            M_GetAllAtLaraPos(item, lara_item);
+            goto cleanup;
+        }
+
+        if (g_Input.action && lara_item->current_anim_state == LS_TREAD) {
+            if (!Lara_MovePosition(item, &m_PickUpPositionUW)) {
+                goto cleanup;
+            }
+            Lara_AnimateUntil(lara_item, LS_PICKUP);
+            lara_item->goal_anim_state = LS_TREAD;
+        }
+    }
+
+cleanup:
+    item->rot.x = rotx;
+    item->rot.y = roty;
+    item->rot.z = rotz;
+}
+
+static void M_Initialise(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->priv = (void *)(intptr_t)(-1);
+    if (item->status != IS_INVISIBLE) {
+        Item_AddActive(item_num);
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
+}
+
+static void M_Activate(ITEM *const item)
+{
+    if (item->status == IS_INVISIBLE) {
+        item->touch_bits = 0;
+        item->status = IS_ACTIVE;
+        const int16_t item_num = Item_GetIndex(item);
+        Item_AddActive(item_num);
+    } else {
+        item->status = IS_INVISIBLE;
+        item->flags |= IF_KILLED;
+    }
+}
+
+static void M_Control(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
+        Item_RemoveActive(item_num);
+        return;
+    }
+
+    const ITEM *const lara = Lara_GetItem();
+    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
+        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
+        return;
+    }
+
+    const int32_t distance = Item_GetDistance(lara, &item->pos);
+    if (distance < AID_DIST_MIN || distance > AID_DIST_MAX) {
+        return;
+    }
+
+    int32_t timer = (int32_t)(intptr_t)item->priv;
+    if (timer <= 0
+        || (timer < AID_WAIT_MIN && Random_GetDraw() < AID_WAIT_BREAK_CHANCE)) {
+        M_SpawnPickupAid(item);
+        timer = AID_WAIT_MAX;
+    } else {
+        timer--;
+    }
+
+    item->priv = (void *)(intptr_t)(int32_t)timer;
+}
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_CHEAT) {
+        return &m_PickUpBoundsUW;
+    } else if (g_Config.gameplay.enable_walk_to_items) {
+        return &m_PickUpBoundsControlled;
+    } else {
+        return &m_PickUpBounds;
+    }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->draw_func = Object_DrawPickupItem;
+    obj->collision_func = M_Collision;
+    obj->save_flags = true;
+    obj->bounds_func = M_Bounds;
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->activate_func = M_Activate;
+    obj->control_func = M_Control;
 }
 
 bool Pickup_Trigger(int16_t item_num)

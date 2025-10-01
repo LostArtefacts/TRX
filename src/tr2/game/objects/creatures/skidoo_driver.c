@@ -32,15 +32,6 @@ typedef enum {
     SKIDOO_DRIVER_ANIM_DEATH = 10,
 } SKIDOO_DRIVER_ANIM;
 
-static void M_KillDriver(ITEM *driver_item);
-static void M_MakeMountable(ITEM *skidoo_item);
-static void M_ControlDead(ITEM *driver_item, ITEM *skidoo_item);
-static int16_t M_ControlAlive(ITEM *driver_item, ITEM *skidoo_item);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Control(int16_t item_num);
-
 static void M_KillDriver(ITEM *const driver_item)
 {
     const int32_t driver_item_num = Item_GetIndex(driver_item);
@@ -172,23 +163,6 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
     return angle;
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->control_func = M_Control;
-
-    obj->hit_points = 1;
-
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const skidoo_driver = Item_Get(item_num);
@@ -276,6 +250,23 @@ static void M_Control(const int16_t driver_item_num)
         const int16_t frame_num = Item_GetRelativeFrame(skidoo_item);
         Item_SwitchToAnim(driver_item, anim_num, frame_num);
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+
+    obj->hit_points = 1;
+
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_SKIDOO_DRIVER, M_Setup)

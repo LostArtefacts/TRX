@@ -44,29 +44,31 @@ typedef enum {
     TORSO_STATE_KILL = 11,
 } TORSO_STATE;
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static void M_KillLara(const ITEM *item);
-
-static void M_Setup(OBJECT *const obj)
+static void M_KillLara(const ITEM *const item)
 {
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = TORSO_HITPOINTS;
-    obj->radius = TORSO_RADIUS;
-    obj->smartness = TORSO_SMARTNESS;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
+    ITEM *const lara_item = Lara_GetItem();
+    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
 
-    Object_GetBone(obj, 1)->rot.y = true;
+    lara_item->current_anim_state = LS_SPECIAL;
+    lara_item->goal_anim_state = LS_SPECIAL;
+    lara_item->room_num = item->room_num;
+    lara_item->pos.x = item->pos.x;
+    lara_item->pos.y = item->pos.y;
+    lara_item->pos.z = item->pos.z;
+    lara_item->rot.x = 0;
+    lara_item->rot.y = item->rot.y;
+    lara_item->rot.z = 0;
+    lara_item->gravity = 0;
+    lara_item->hit_points = -1;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->extra_anim = true;
+    lara->air = -1;
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+
+    g_Camera.target_distance = WALL_L * 2;
+    g_Camera.flags = CF_FOLLOW_CENTRE;
 }
 
 static void M_Control(const int16_t item_num)
@@ -239,31 +241,25 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static void M_KillLara(const ITEM *const item)
+static void M_Setup(OBJECT *const obj)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 3;
+    obj->hit_points = TORSO_HITPOINTS;
+    obj->radius = TORSO_RADIUS;
+    obj->smartness = TORSO_SMARTNESS;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
 
-    lara_item->current_anim_state = LS_SPECIAL;
-    lara_item->goal_anim_state = LS_SPECIAL;
-    lara_item->room_num = item->room_num;
-    lara_item->pos.x = item->pos.x;
-    lara_item->pos.y = item->pos.y;
-    lara_item->pos.z = item->pos.z;
-    lara_item->rot.x = 0;
-    lara_item->rot.y = item->rot.y;
-    lara_item->rot.z = 0;
-    lara_item->gravity = 0;
-    lara_item->hit_points = -1;
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->extra_anim = true;
-    lara->air = -1;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->gun_type = LGT_UNARMED;
-
-    g_Camera.target_distance = WALL_L * 2;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
+    Object_GetBone(obj, 1)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_TORSO, M_Setup)

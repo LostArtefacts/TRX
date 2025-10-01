@@ -1,7 +1,5 @@
 #include "decomp/skidoo.h"
 
-static void M_Setup(OBJECT *obj);
-
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = Skidoo_Initialise;

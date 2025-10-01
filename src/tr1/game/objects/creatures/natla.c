@@ -38,31 +38,6 @@ typedef enum {
 
 static BITE m_NatlaGun = { .pos = { 5, 220, 7 }, .mesh_num = 4 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->collision_func = Creature_Collision;
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = NATLA_HITPOINTS;
-    obj->radius = NATLA_RADIUS;
-    obj->smartness = NATLA_SMARTNESS;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 2)->rot.x = true;
-    Object_GetBone(obj, 2)->rot.z = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -320,6 +295,28 @@ static void M_Control(const int16_t item_num)
     item->rot.y += facing;
 
     item->priv = (void *)(intptr_t)facing;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->collision_func = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = NATLA_HITPOINTS;
+    obj->radius = NATLA_RADIUS;
+    obj->smartness = NATLA_SMARTNESS;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+
+    Object_GetBone(obj, 2)->rot.x = true;
+    Object_GetBone(obj, 2)->rot.z = true;
 }
 
 REGISTER_OBJECT(O_NATLA, M_Setup)

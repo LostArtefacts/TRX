@@ -24,17 +24,6 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void);
-static bool M_IsUsable(int16_t item_num);
-static void M_Use(ITEM *lara_item, ITEM *receptacle_item);
-static void M_ConsumeKeyItem(ITEM *receptacle_item);
-static void M_MarkDone(ITEM *receptacle_item);
-static void M_SetupEmpty(OBJECT *obj);
-static void M_SetupDone(OBJECT *obj);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-static void M_CollisionDone(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_PuzzleHoleBounds;
@@ -77,22 +66,6 @@ static void M_MarkDone(ITEM *const receptacle_item)
     if (receptacle_item->status == IS_INACTIVE) {
         receptacle_item->status = IS_ACTIVE;
     }
-}
-
-static void M_SetupEmpty(OBJECT *const obj)
-{
-    obj->collision_func = M_Collision;
-    obj->handle_save_func = M_HandleSave;
-    obj->is_usable_func = M_IsUsable;
-    obj->bounds_func = M_Bounds;
-    obj->save_flags = true;
-}
-
-static void M_SetupDone(OBJECT *const obj)
-{
-    obj->collision_func = M_CollisionDone;
-    obj->bounds_func = M_Bounds;
-    obj->save_flags = true;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -155,6 +128,22 @@ static void M_CollisionDone(
 
     // Trying to interact with a complete puzzle hole
     Lara_RefuseInteraction();
+}
+
+static void M_SetupEmpty(OBJECT *const obj)
+{
+    obj->collision_func = M_Collision;
+    obj->handle_save_func = M_HandleSave;
+    obj->is_usable_func = M_IsUsable;
+    obj->bounds_func = M_Bounds;
+    obj->save_flags = true;
+}
+
+static void M_SetupDone(OBJECT *const obj)
+{
+    obj->collision_func = M_CollisionDone;
+    obj->bounds_func = M_Bounds;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_SetupEmpty)

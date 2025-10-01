@@ -34,31 +34,6 @@ typedef enum {
 
 static BITE m_RaptorBite = { .pos = { 0, 66, 318 }, .mesh_num = 22 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = RAPTOR_HITPOINTS;
-    obj->pivot_length = 400;
-    obj->radius = RAPTOR_RADIUS;
-    obj->smartness = RAPTOR_SMARTNESS;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-
-    Object_GetBone(obj, 21)->rot.y = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -178,6 +153,28 @@ static void M_Control(const int16_t item_num)
     Creature_Tilt(item, tilt);
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, tilt);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = RAPTOR_HITPOINTS;
+    obj->pivot_length = 400;
+    obj->radius = RAPTOR_RADIUS;
+    obj->smartness = RAPTOR_SMARTNESS;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+
+    Object_GetBone(obj, 21)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_RAPTOR, M_Setup)

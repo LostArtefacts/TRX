@@ -33,8 +33,6 @@ typedef enum {
     M_PHASE_EXIT,
 } M_PHASE;
 
-static bool M_AreCheatsEnabled(void);
-
 static bool M_AreCheatsEnabled(void)
 {
     return g_Config.gameplay.enable_cheats;

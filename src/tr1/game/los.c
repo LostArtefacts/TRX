@@ -5,11 +5,6 @@
 
 #include <stdint.h>
 
-static int32_t M_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
-static int32_t M_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
-static bool M_ClipTarget(
-    const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR *sector);
-
 static int32_t M_CheckX(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {

@@ -13,10 +13,19 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static void M_Init(M_PRIV *p);
-static void M_Shutdown(M_PRIV *p);
-static void M_HandleLayoutChange(const EVENT *event, void *user_data);
-static void M_HandleKeyChange(const EVENT *event, void *user_data);
+static void M_HandleKeyChange(const EVENT *event, void *user_data)
+{
+    g_Config.dirty = true;
+    Config_Update();
+}
+
+static void M_HandleLayoutChange(const EVENT *event, void *user_data)
+{
+    const M_PRIV *const p = user_data;
+    g_Config.input.layout[p->ui.state.backend] =
+        p->ui.state.editor_state[p->ui.state.backend].active_layout;
+    Config_Update();
+}
 
 static void M_Init(M_PRIV *const p)
 {
@@ -36,20 +45,6 @@ static void M_Shutdown(M_PRIV *const p)
         UI_Controls_Free(&p->ui.state);
         p->ui.is_ready = false;
     }
-}
-
-static void M_HandleLayoutChange(const EVENT *event, void *user_data)
-{
-    const M_PRIV *const p = user_data;
-    g_Config.input.layout[p->ui.state.backend] =
-        p->ui.state.editor_state[p->ui.state.backend].active_layout;
-    Config_Update();
-}
-
-static void M_HandleKeyChange(const EVENT *event, void *user_data)
-{
-    g_Config.dirty = true;
-    Config_Update();
 }
 
 void Option_Controls_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)

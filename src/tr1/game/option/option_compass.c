@@ -24,9 +24,6 @@ static M_PRIV m_Priv = {};
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 
-static void M_Init(M_PRIV *p);
-static void M_Close(M_PRIV *p);
-
 static void M_Init(M_PRIV *const p)
 {
     p->ui.is_ready = true;

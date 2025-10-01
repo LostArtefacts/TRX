@@ -25,19 +25,6 @@ typedef enum {
 } LIFT_ANIM;
 
 static void M_FloorCeiling(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_floor,
-    int32_t *out_ceiling);
-static int16_t M_GetFloorHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
-static void M_GetSectorPositions(const ITEM *item, VECTOR *sector_pos);
-static void M_AddWalkable(int16_t item_num);
-
-static void M_FloorCeiling(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     int32_t *const out_floor, int32_t *const out_ceiling)
 {
@@ -163,16 +150,67 @@ static int16_t M_GetCeilingHeight(
     return new_ceiling;
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_GetSectorPositions(
+    const ITEM *const item, VECTOR *const sector_pos)
 {
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->add_walkable_func = M_AddWalkable;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
+    const XZ_32 lift_tile = {
+        .x = item->pos.x >> WALL_SHIFT,
+        .z = item->pos.z >> WALL_SHIFT,
+    };
+
+    // Orient.
+    const DIRECTION dir = Math_GetDirection(item->rot.y);
+    int32_t dx = 0, dz = 0;
+    switch (dir) {
+    case DIR_NORTH:
+        dx = -1;
+        dz = 1;
+        break;
+    case DIR_EAST:
+        dx = 1;
+        dz = 1;
+        break;
+    case DIR_SOUTH:
+        dx = 1;
+        dz = -1;
+        break;
+    case DIR_WEST:
+        dx = -1;
+        dz = -1;
+        break;
+    default:
+        break;
+    }
+
+    // Collect a 2×2 footprint that lines up with the shaft tiles.
+    for (int32_t ix = 0; ix < 2; ix++) {
+        for (int32_t iz = 0; iz < 2; iz++) {
+            const int32_t sx = lift_tile.x - dx * ix;
+            const int32_t sz = lift_tile.z - dz * iz;
+
+            const XYZ_32 pos = {
+                .x = sx * WALL_L + WALL_L / 2,
+                .y = item->pos.y,
+                .z = sz * WALL_L + WALL_L / 2,
+            };
+            Vector_Add(sector_pos, &pos);
+        }
+    }
+
+    // Collect a 2×2 footprint that lines up with the shaft ceiling tiles.
+    for (int32_t ix = 0; ix < 2; ix++) {
+        for (int32_t iz = 0; iz < 2; iz++) {
+            const int32_t sx = lift_tile.x - dx * ix;
+            const int32_t sz = lift_tile.z - dz * iz;
+
+            const XYZ_32 pos = {
+                .x = sx * WALL_L + WALL_L / 2,
+                .y = item->pos.y - LIFT_HEIGHT,
+                .z = sz * WALL_L + WALL_L / 2,
+            };
+            Vector_Add(sector_pos, &pos);
+        }
+    }
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -272,69 +310,6 @@ static void M_Control(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 }
 
-static void M_GetSectorPositions(
-    const ITEM *const item, VECTOR *const sector_pos)
-{
-    const XZ_32 lift_tile = {
-        .x = item->pos.x >> WALL_SHIFT,
-        .z = item->pos.z >> WALL_SHIFT,
-    };
-
-    // Orient.
-    const DIRECTION dir = Math_GetDirection(item->rot.y);
-    int32_t dx = 0, dz = 0;
-    switch (dir) {
-    case DIR_NORTH:
-        dx = -1;
-        dz = 1;
-        break;
-    case DIR_EAST:
-        dx = 1;
-        dz = 1;
-        break;
-    case DIR_SOUTH:
-        dx = 1;
-        dz = -1;
-        break;
-    case DIR_WEST:
-        dx = -1;
-        dz = -1;
-        break;
-    default:
-        break;
-    }
-
-    // Collect a 2×2 footprint that lines up with the shaft tiles.
-    for (int32_t ix = 0; ix < 2; ix++) {
-        for (int32_t iz = 0; iz < 2; iz++) {
-            const int32_t sx = lift_tile.x - dx * ix;
-            const int32_t sz = lift_tile.z - dz * iz;
-
-            const XYZ_32 pos = {
-                .x = sx * WALL_L + WALL_L / 2,
-                .y = item->pos.y,
-                .z = sz * WALL_L + WALL_L / 2,
-            };
-            Vector_Add(sector_pos, &pos);
-        }
-    }
-
-    // Collect a 2×2 footprint that lines up with the shaft ceiling tiles.
-    for (int32_t ix = 0; ix < 2; ix++) {
-        for (int32_t iz = 0; iz < 2; iz++) {
-            const int32_t sx = lift_tile.x - dx * ix;
-            const int32_t sz = lift_tile.z - dz * iz;
-
-            const XYZ_32 pos = {
-                .x = sx * WALL_L + WALL_L / 2,
-                .y = item->pos.y - LIFT_HEIGHT,
-                .z = sz * WALL_L + WALL_L / 2,
-            };
-            Vector_Add(sector_pos, &pos);
-        }
-    }
-}
-
 static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -344,6 +319,18 @@ static void M_AddWalkable(const int16_t item_num)
         Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
     }
     Vector_Free(positions);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->add_walkable_func = M_AddWalkable;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_LIFT, M_Setup)

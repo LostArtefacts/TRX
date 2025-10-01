@@ -9,15 +9,6 @@
 #include "gfx/context.h"
 #include "utils.h"
 
-static void M_ToggleFullscreen(void);
-static void M_ToggleFPSCounter(void);
-static void M_ToggleBilinearFilter(void);
-static void M_ToggleTrapezoidFilter(void);
-static void M_ToggleWireframe(void);
-static void M_CycleLightingContrast(void);
-static void M_CycleUpscalingFactor(void);
-static void M_CycleBorders(void);
-
 static void M_ToggleFullscreen(void)
 {
     TOGGLE(g_Config.window.is_fullscreen);

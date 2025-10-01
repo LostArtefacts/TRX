@@ -12,19 +12,6 @@
 #define M_MAX_SWIM_SPEED 200
 // clang-format on
 
-static void M_SwimTurn(ITEM *item);
-
-static void M_Tread(ITEM *item, COLL_INFO *coll);
-static void M_Swim(ITEM *item, COLL_INFO *coll);
-static void M_Glide(ITEM *item, COLL_INFO *coll);
-static void M_TreadSurface(ITEM *item, COLL_INFO *coll);
-static void M_ForwardSurface(ITEM *item, COLL_INFO *coll);
-static void M_SideBackSurface(ITEM *item, COLL_INFO *coll);
-static void M_Dive(ITEM *item, COLL_INFO *coll);
-static void M_UWDeath(ITEM *item, COLL_INFO *coll);
-static void M_WaterOut(ITEM *item, COLL_INFO *coll);
-static void M_UWTwist(ITEM *item, COLL_INFO *coll);
-
 static void M_SwimTurn(ITEM *const item)
 {
     if (g_Input.forward) {

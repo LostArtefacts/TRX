@@ -46,11 +46,6 @@ static const BITE m_XianKnightSword = {
     .mesh_num = 15,
 };
 
-static void M_Initialise(int16_t item_num);
-static void M_SparkleTrail(const ITEM *item);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -72,34 +67,6 @@ static void M_SparkleTrail(const ITEM *const item)
         effect->frame_num = 0;
     }
     Sound_Effect(SFX_WARRIOR_HOVER, &item->pos, SPM_NORMAL);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    ASSERT(Object_Get(O_XIAN_KNIGHT_STATUE)->loaded);
-
-    obj->initialise_func = M_Initialise;
-    obj->draw_func = XianWarrior_Draw;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = XIAN_KNIGHT_HITPOINTS;
-    obj->radius = XIAN_KNIGHT_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 6)->rot.y = true;
-    Object_GetBone(obj, 16)->rot.y = true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -269,6 +236,34 @@ static void M_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Neck(item, neck);
     Creature_Animate(item_num, angle, 0);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    ASSERT(Object_Get(O_XIAN_KNIGHT_STATUE)->loaded);
+
+    obj->initialise_func = M_Initialise;
+    obj->draw_func = XianWarrior_Draw;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = XIAN_KNIGHT_HITPOINTS;
+    obj->radius = XIAN_KNIGHT_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 6)->rot.y = true;
+    Object_GetBone(obj, 16)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_XIAN_KNIGHT, M_Setup)

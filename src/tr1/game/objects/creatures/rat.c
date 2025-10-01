@@ -41,13 +41,6 @@ typedef enum {
 
 static BITE m_RatBite = { .pos = { 0, -11, 108 }, .mesh_num = 3 };
 
-static void M_SetupBase(OBJECT *obj);
-static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
-static void M_SetupRat(OBJECT *obj);
-static void M_SetupVole(OBJECT *obj);
-static void M_ControlRat(int16_t item_num);
-static void M_ControlVole(int16_t item_num);
-
 static const HYBRID_INFO m_RatInfo = {
     .land.id = O_RAT,
     .land.active_anim = RAT_STATE_EMPTY,
@@ -58,42 +51,6 @@ static const HYBRID_INFO m_RatInfo = {
     .water.death_anim = VOLE_DIE_ANIM,
     .water.death_state = VOLE_STATE_DEATH,
 };
-
-static void M_SetupBase(OBJECT *const obj)
-{
-    obj->initialise_func = Creature_Initialise;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = RAT_HITPOINTS;
-    obj->pivot_length = 200;
-    obj->radius = RAT_RADIUS;
-    obj->smartness = RAT_SMARTNESS;
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->handle_save_func = M_HandleSave;
-    Object_GetBone(obj, 1)->rot.y = true;
-}
-
-static void M_SetupRat(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->control_func = M_ControlRat;
-}
-
-static void M_SetupVole(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    M_SetupBase(obj);
-    obj->control_func = M_ControlVole;
-}
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
@@ -266,6 +223,42 @@ static void M_ControlVole(const int16_t item_num)
             }
         }
     }
+}
+
+static void M_SetupBase(OBJECT *const obj)
+{
+    obj->initialise_func = Creature_Initialise;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = RAT_HITPOINTS;
+    obj->pivot_length = 200;
+    obj->radius = RAT_RADIUS;
+    obj->smartness = RAT_SMARTNESS;
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_anim = true;
+    obj->save_flags = true;
+    obj->handle_save_func = M_HandleSave;
+    Object_GetBone(obj, 1)->rot.y = true;
+}
+
+static void M_SetupRat(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlRat;
+}
+
+static void M_SetupVole(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlVole;
 }
 
 REGISTER_OBJECT(O_RAT, M_SetupRat)

@@ -4,10 +4,6 @@
 #include <libtrx/game/matrix.h>
 
 static void M_GetJointAbsPosition_I(
-    XYZ_32 *vec, const ANIM_FRAME *frame1, const ANIM_FRAME *frame2,
-    int32_t frac, int32_t rate);
-
-static void M_GetJointAbsPosition_I(
     XYZ_32 *const vec, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {

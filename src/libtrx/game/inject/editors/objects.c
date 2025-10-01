@@ -1,8 +1,6 @@
 #include "game/inject.h"
 #include "game/objects.h"
 
-static void M_ObjectTypeEdits(const INJECTION *injection, int32_t data_count);
-
 static void M_ObjectTypeEdits(
     const INJECTION *const injection, const int32_t data_count)
 {

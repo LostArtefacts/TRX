@@ -6,15 +6,6 @@
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->semi_transparent = true;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -48,6 +39,12 @@ static void M_Control(const int16_t effect_num)
         Effect_NewRoom(effect_num, room_num);
     }
     Sound_Effect(SFX_BOWL_POUR, &effect->pos, SPM_NORMAL);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->semi_transparent = true;
 }
 
 REGISTER_OBJECT(O_HOT_LIQUID, M_Setup)

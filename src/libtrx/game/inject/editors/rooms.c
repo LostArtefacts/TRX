@@ -3,65 +3,25 @@
 #include "game/rooms.h"
 #include "log.h"
 
-static void M_RoomMeshEdits(const INJECTION *injection, int32_t data_count);
-static void M_RoomPortalEdits(const INJECTION *injection, int32_t data_count);
-
-static void M_TextureRoomFace(const INJECTION *injection);
-static void M_MoveRoomFace(const INJECTION *injection);
-static void M_AlterRoomVertex(const INJECTION *injection);
-static void M_SetVertexFlags(const INJECTION *injection);
-static void M_RotateRoomFace(const INJECTION *injection);
-static void M_AddRoomFace(const INJECTION *injection);
-static void M_AddRoomVertex(const INJECTION *injection);
-static void M_AddRoomStatic2D(const INJECTION *injection);
-static void M_AddRoomStatic3D(const INJECTION *injection);
-static void M_EditRoomStatic3D(const INJECTION *injection);
 static uint16_t *M_GetRoomTexture(
-    int16_t room_num, FACE_TYPE face_type, int16_t face_index);
-static uint16_t *M_GetRoomFaceVertices(
-    int16_t room_num, FACE_TYPE face_type, int16_t face_index);
-
-static void M_RoomMeshEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
 {
-    for (int32_t i = 0; i < data_count; i++) {
-        const ROOM_MESH_EDIT_TYPE type = VFile_ReadS32(injection->fp);
-        switch (type) {
-        case RMET_TEXTURE_FACE:
-            M_TextureRoomFace(injection);
-            break;
-        case RMET_MOVE_FACE:
-            M_MoveRoomFace(injection);
-            break;
-        case RMET_ALTER_VERTEX:
-            M_AlterRoomVertex(injection);
-            break;
-        case RMET_VERTEX_FLAGS:
-            M_SetVertexFlags(injection);
-            break;
-        case RMET_ROTATE_FACE:
-            M_RotateRoomFace(injection);
-            break;
-        case RMET_ADD_FACE:
-            M_AddRoomFace(injection);
-            break;
-        case RMET_ADD_VERTEX:
-            M_AddRoomVertex(injection);
-            break;
-        case RMET_ADD_STATIC_2D:
-            M_AddRoomStatic2D(injection);
-            break;
-        case RMET_ADD_STATIC_3D:
-            M_AddRoomStatic3D(injection);
-            break;
-        case RMET_EDIT_STATIC_3D:
-            M_EditRoomStatic3D(injection);
-            break;
-        default:
-            LOG_WARNING("Unrecognised room mesh edit type: %d", type);
-            break;
-        }
+    const ROOM *const room = Room_Get(room_num);
+    if (face_type == FT_TEXTURED_QUAD && face_index < room->mesh.num_face4s) {
+        FACE4 *const face = &room->mesh.face4s[face_index];
+        return &face->texture_idx;
     }
+
+    if (face_type == FT_TEXTURED_TRIANGLE
+        && face_index < room->mesh.num_face3s) {
+        FACE3 *const face = &room->mesh.face3s[face_index];
+        return &face->texture_idx;
+    }
+
+    LOG_WARNING(
+        "Invalid room face lookup: %d, %d, %d", room_num, face_type,
+        face_index);
+    return nullptr;
 }
 
 static void M_TextureRoomFace(const INJECTION *const injection)
@@ -80,6 +40,40 @@ static void M_TextureRoomFace(const INJECTION *const injection)
     if (source_texture != nullptr && target_texture != nullptr) {
         *target_texture = *source_texture;
     }
+}
+
+static uint16_t *M_GetRoomFaceVertices(
+    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
+{
+    if (room_num < 0 || room_num >= Room_GetCount()) {
+        LOG_WARNING("Room index %d is invalid", room_num);
+        return nullptr;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    if (face_type == FT_TEXTURED_QUAD) {
+        if (face_index < 0 || face_index >= room->mesh.num_face4s) {
+            LOG_WARNING(
+                "Face4 index %d, room %d is invalid", face_index, room_num);
+            return nullptr;
+        }
+
+        FACE4 *const face = &room->mesh.face4s[face_index];
+        return (uint16_t *)(void *)&face->vertices;
+    }
+
+    if (face_type == FT_TEXTURED_TRIANGLE) {
+        if (face_index < 0 || face_index >= room->mesh.num_face3s) {
+            LOG_WARNING(
+                "Face3 index %d, room %d is invalid", face_index, room_num);
+            return nullptr;
+        }
+
+        FACE3 *const face = &room->mesh.face3s[face_index];
+        return (uint16_t *)(void *)&face->vertices;
+    }
+
+    return nullptr;
 }
 
 static void M_MoveRoomFace(const INJECTION *const injection)
@@ -330,59 +324,47 @@ static void M_EditRoomStatic3D(const INJECTION *const injection)
 #endif
 }
 
-static uint16_t *M_GetRoomTexture(
-    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
+static void M_RoomMeshEdits(
+    const INJECTION *const injection, const int32_t data_count)
 {
-    const ROOM *const room = Room_Get(room_num);
-    if (face_type == FT_TEXTURED_QUAD && face_index < room->mesh.num_face4s) {
-        FACE4 *const face = &room->mesh.face4s[face_index];
-        return &face->texture_idx;
-    }
-
-    if (face_type == FT_TEXTURED_TRIANGLE
-        && face_index < room->mesh.num_face3s) {
-        FACE3 *const face = &room->mesh.face3s[face_index];
-        return &face->texture_idx;
-    }
-
-    LOG_WARNING(
-        "Invalid room face lookup: %d, %d, %d", room_num, face_type,
-        face_index);
-    return nullptr;
-}
-
-static uint16_t *M_GetRoomFaceVertices(
-    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
-{
-    if (room_num < 0 || room_num >= Room_GetCount()) {
-        LOG_WARNING("Room index %d is invalid", room_num);
-        return nullptr;
-    }
-
-    const ROOM *const room = Room_Get(room_num);
-    if (face_type == FT_TEXTURED_QUAD) {
-        if (face_index < 0 || face_index >= room->mesh.num_face4s) {
-            LOG_WARNING(
-                "Face4 index %d, room %d is invalid", face_index, room_num);
-            return nullptr;
+    for (int32_t i = 0; i < data_count; i++) {
+        const ROOM_MESH_EDIT_TYPE type = VFile_ReadS32(injection->fp);
+        switch (type) {
+        case RMET_TEXTURE_FACE:
+            M_TextureRoomFace(injection);
+            break;
+        case RMET_MOVE_FACE:
+            M_MoveRoomFace(injection);
+            break;
+        case RMET_ALTER_VERTEX:
+            M_AlterRoomVertex(injection);
+            break;
+        case RMET_VERTEX_FLAGS:
+            M_SetVertexFlags(injection);
+            break;
+        case RMET_ROTATE_FACE:
+            M_RotateRoomFace(injection);
+            break;
+        case RMET_ADD_FACE:
+            M_AddRoomFace(injection);
+            break;
+        case RMET_ADD_VERTEX:
+            M_AddRoomVertex(injection);
+            break;
+        case RMET_ADD_STATIC_2D:
+            M_AddRoomStatic2D(injection);
+            break;
+        case RMET_ADD_STATIC_3D:
+            M_AddRoomStatic3D(injection);
+            break;
+        case RMET_EDIT_STATIC_3D:
+            M_EditRoomStatic3D(injection);
+            break;
+        default:
+            LOG_WARNING("Unrecognised room mesh edit type: %d", type);
+            break;
         }
-
-        FACE4 *const face = &room->mesh.face4s[face_index];
-        return (uint16_t *)(void *)&face->vertices;
     }
-
-    if (face_type == FT_TEXTURED_TRIANGLE) {
-        if (face_index < 0 || face_index >= room->mesh.num_face3s) {
-            LOG_WARNING(
-                "Face3 index %d, room %d is invalid", face_index, room_num);
-            return nullptr;
-        }
-
-        FACE3 *const face = &room->mesh.face3s[face_index];
-        return (uint16_t *)(void *)&face->vertices;
-    }
-
-    return nullptr;
 }
 
 static void M_RoomPortalEdits(

@@ -11,9 +11,6 @@ static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectFree = NO_EFFECT;
 static int16_t m_NextEffectActive = NO_EFFECT;
 
-static void M_RemoveActive(const int16_t effect_num);
-static void M_RemoveDrawn(const int16_t effect_num);
-
 static void M_RemoveActive(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);

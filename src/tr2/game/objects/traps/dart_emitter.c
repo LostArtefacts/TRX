@@ -11,10 +11,6 @@ typedef enum {
     // clang-format on
 } DART_EMITTER_STATE;
 
-static void M_CreateDart(ITEM *item);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
 static void M_CreateDart(ITEM *const item)
 {
     const int16_t dart_item_num = Item_Create();
@@ -55,12 +51,6 @@ static void M_CreateDart(ITEM *const item)
     Sound_Effect(SFX_CIRCLE_BLADE, &dart_item->pos, SPM_NORMAL);
 }
 
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -79,6 +69,12 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_DART_EMITTER, M_Setup)

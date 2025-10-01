@@ -71,34 +71,6 @@ typedef struct MESH_BATCHER {
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
-    const MESH_BATCHER *batcher, const OUTPUT_MESH *mesh);
-
-static void M_FillGeometry(M_MESH_GEOM *tex, const OUTPUT_MESH_VERTEX *vertex);
-static void M_FillTexture(
-    M_MESH_TEXTURE *tex, const OUTPUT_MESH_VERTEX *vertex);
-static void M_FillShade(M_MESH_SHADE *shade, const OUTPUT_MESH_VERTEX *vertex);
-static void M_AnimateBinding(
-    const MESH_BATCHER *batcher, const M_MESH_BUF_BINDING *bind);
-static void M_UpdateMeshGeometry(
-    const MESH_BATCHER *batcher, const OUTPUT_MESH *mesh);
-
-static int M_CompareFaceDepth(const void *a, const void *b);
-static void M_SortTransparentFaces(const MESH_BATCHER *batcher);
-
-static void M_OpaquePass(const MESH_BATCHER *batcher, SCENE_PASS pass);
-static void M_TransparentPass(const MESH_BATCHER *batcher);
-
-static void M_DrawOpaqueVertices(
-    const MESH_BATCHER *batcher, const MESH_INSTANCE *inst);
-static void M_DrawOpaqueInstance(
-    const MESH_BATCHER *batcher, MESH_INSTANCE *inst);
-
-static void M_RenderBegin(const SCENE_SOURCE *source);
-static void M_RenderPass(const SCENE_SOURCE *source, SCENE_PASS pass);
-static bool M_IsDirty(const SCENE_SOURCE *source, SCENE_PASS pass);
-static void M_AnimateTextures(const SCENE_SOURCE *source);
-
-static M_MESH_BUF_BINDING *M_GetBinding(
     const MESH_BATCHER *const batcher, const OUTPUT_MESH *const mesh)
 {
     M_MESH_BUF_BINDING *bind = nullptr;
@@ -211,6 +183,50 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
     qsort(buf, n, sizeof(*buf), M_CompareFaceDepth);
 }
 
+static void M_DrawOpaqueVertices(
+    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+{
+    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
+    glDrawElementsBaseVertex(
+        GL_TRIANGLES, inst->mesh->opaque_vertex_indices->count, GL_UNSIGNED_INT,
+        nullptr, bind->vertex_start);
+    GFX_GL_CheckError();
+    g_GFX_Metrics.opaque_vert_count += inst->mesh->opaque_vertex_indices->count;
+}
+
+static void M_DrawOpaqueInstance(
+    const MESH_BATCHER *const batcher, MESH_INSTANCE *const inst)
+{
+    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
+    ASSERT(bind != nullptr);
+
+    Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
+    Output_Shader_UploadTint(batcher->shader, inst->tint);
+
+    if (inst->enable_scissor) {
+        Output_EnableScissor(
+            inst->scissor.x, inst->scissor.y, inst->scissor.width,
+            inst->scissor.height);
+    }
+
+    if (inst->wibble) {
+        Output_Shader_UploadWibbleEffect(batcher->shader, false);
+        glDepthMask(GL_FALSE);
+        M_DrawOpaqueVertices(batcher, inst);
+        glDepthMask(GL_TRUE);
+        Output_Shader_UploadWibbleEffect(batcher->shader, true);
+        M_DrawOpaqueVertices(batcher, inst);
+    } else {
+        Output_Shader_UploadWibbleEffect(batcher->shader, false);
+        M_DrawOpaqueVertices(batcher, inst);
+    }
+
+    if (inst->enable_scissor) {
+        Output_DisableScissor();
+    }
+}
+
 static void M_OpaquePass(
     const MESH_BATCHER *const batcher, const SCENE_PASS pass)
 {
@@ -306,50 +322,6 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
         g_GFX_Metrics.trans_vert_count += sort_ptr->face->vertex_count;
     }
     Output_AdjustDepth(0.0f, 0.0f);
-}
-
-static void M_DrawOpaqueVertices(
-    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
-{
-    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
-    glDrawElementsBaseVertex(
-        GL_TRIANGLES, inst->mesh->opaque_vertex_indices->count, GL_UNSIGNED_INT,
-        nullptr, bind->vertex_start);
-    GFX_GL_CheckError();
-    g_GFX_Metrics.opaque_vert_count += inst->mesh->opaque_vertex_indices->count;
-}
-
-static void M_DrawOpaqueInstance(
-    const MESH_BATCHER *const batcher, MESH_INSTANCE *const inst)
-{
-    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
-    ASSERT(bind != nullptr);
-
-    Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
-    Output_Shader_UploadTint(batcher->shader, inst->tint);
-
-    if (inst->enable_scissor) {
-        Output_EnableScissor(
-            inst->scissor.x, inst->scissor.y, inst->scissor.width,
-            inst->scissor.height);
-    }
-
-    if (inst->wibble) {
-        Output_Shader_UploadWibbleEffect(batcher->shader, false);
-        glDepthMask(GL_FALSE);
-        M_DrawOpaqueVertices(batcher, inst);
-        glDepthMask(GL_TRUE);
-        Output_Shader_UploadWibbleEffect(batcher->shader, true);
-        M_DrawOpaqueVertices(batcher, inst);
-    } else {
-        Output_Shader_UploadWibbleEffect(batcher->shader, false);
-        M_DrawOpaqueVertices(batcher, inst);
-    }
-
-    if (inst->enable_scissor) {
-        Output_DisableScissor();
-    }
 }
 
 static void M_RenderBegin(const SCENE_SOURCE *const source)

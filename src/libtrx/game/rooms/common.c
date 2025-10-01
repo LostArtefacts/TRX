@@ -19,10 +19,6 @@ static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
 
-static void M_AddFlipItems(const ROOM *room);
-static void M_RemoveFlipItems(const ROOM *room);
-static void M_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
-
 static void M_AddFlipItems(const ROOM *const room)
 {
     int16_t item_num = room->item_num;

@@ -56,20 +56,6 @@ static struct {
     [UI_OVERLAY_ARROW_BCR] = { false, "\\{button right}" },
 };
 
-static bool M_LaraHealthBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
-static bool M_LaraAirBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
-static bool M_LaraSprintBar(const UI_OVERLAY_STATE *s, BAR_LOCATION location);
-static bool M_EnemyHealthBar(const BAR_LOCATION location);
-static void M_Arrow(const UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow);
-static void M_DebugPosTopLeft(void);
-static void M_DebugPosTopRight(void);
-static void M_TopLeftRegion(const UI_OVERLAY_STATE *s);
-static void M_TopCenterRegion(const UI_OVERLAY_STATE *s);
-static void M_TopRightRegion(const UI_OVERLAY_STATE *s);
-static void M_BottomLeftRegion(const UI_OVERLAY_STATE *s);
-static void M_BottomCenterRegion(const UI_OVERLAY_STATE *s);
-static void M_BottomRightRegion(const UI_OVERLAY_STATE *s);
-
 static bool M_LaraHealthBar(
     const UI_OVERLAY_STATE *const s, const BAR_LOCATION location)
 {

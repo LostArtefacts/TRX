@@ -4,14 +4,6 @@
 #include <libtrx/game/objects.h>
 #include <libtrx/game/rooms.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t effect_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-}
-
 static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
@@ -51,6 +43,11 @@ static void M_Control(const int16_t effect_num)
         new_effect->frame_num = 0;
         new_effect->object_id = O_MISSILE_1;
     }
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
 }
 
 REGISTER_OBJECT(O_MISSILE_1, M_Setup)

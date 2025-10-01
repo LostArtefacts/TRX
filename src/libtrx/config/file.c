@@ -19,13 +19,6 @@
 #define M_HIDDEN_KEY "hidden_config"
 
 static bool M_ReadFromJSON(
-    const char *def_json, const char *enf_json,
-    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets,
-    VECTOR *const hidden_targets);
-static void M_PreserveEnforcedState(
-    JSON_OBJECT *root_obj, JSON_VALUE *old_root, JSON_VALUE *enf_root);
-
-static bool M_ReadFromJSON(
     const char *const default_path, const char *const enforced_path,
     void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets,
     VECTOR *const hidden_targets)

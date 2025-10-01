@@ -39,8 +39,6 @@ typedef struct {
     const M_LOOK *look;
 } M_DATA;
 
-static RGBA_8888 M_GetColor(uint32_t value);
-static RGBA_8888 M_MixColors(RGBA_8888 c0, RGBA_8888 c1, float percent);
 static void M_DrawBackground(const M_LOOK *look, M_RECT_F rect);
 static void M_DrawBorderPC(const M_LOOK *look, M_RECT_F rect, float border);
 static void M_DrawBorderPS1(const M_LOOK *look, M_RECT_F rect, float border);
@@ -50,15 +48,6 @@ static void M_DrawFillPC(
 static void M_DrawFillPS1(
     const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
     float percent);
-
-static void M_Measure(UI_NODE *node);
-static void M_Draw(const UI_NODE *node);
-
-static const UI_WIDGET_OPS m_Ops = {
-    .measure = M_Measure,
-    .layout = UI_LayoutBasic,
-    .draw = M_Draw,
-};
 
 static const M_LOOK_PC m_LookTR1 = {
     .base = {
@@ -346,7 +335,13 @@ static void M_Draw(const UI_NODE *const node)
 
 void UI_Bar(const UI_BAR_SETTINGS settings)
 {
-    UI_NODE *const node = UI_AllocNode(&m_Ops, sizeof(M_DATA));
+    UI_NODE *const node = UI_AllocNode(
+        &(UI_WIDGET_OPS) {
+            .measure = M_Measure,
+            .layout = UI_LayoutBasic,
+            .draw = M_Draw,
+        },
+        sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->settings = settings;
     data->look = m_Looks[g_Config.ui.bar_look];

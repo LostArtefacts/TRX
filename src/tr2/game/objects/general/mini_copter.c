@@ -4,16 +4,6 @@
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_position = true;
-    obj->save_flags = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -36,6 +26,13 @@ static void M_Control(const int16_t item_num)
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     Item_UpdateRoom(item_num, room_num);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_position = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_MINI_COPTER, M_Setup)

@@ -61,10 +61,6 @@ static const LARA_EXTRA_STATE m_PermittedExtraStates[] = {
     // clang-format on
 };
 
-static void M_Reset(void);
-static bool M_IsLaraIdle(void);
-static bool M_IsStatePermitted(void);
-
 static void M_Reset(void)
 {
     if (g_Camera.type == CAM_LOOK) {

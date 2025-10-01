@@ -47,33 +47,6 @@ static const BITE m_Bandit1Gun = {
     .mesh_num = 17,
 };
 
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = BANDIT_1_HITPOINTS;
-    obj->radius = BANDIT_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    Object_GetBone(obj, 6)->rot.y = true;
-    Object_GetBone(obj, 8)->rot.y = true;
-}
-
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -208,6 +181,30 @@ static void M_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Neck(item, neck);
     Creature_Animate(item_num, angle, 0);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = BANDIT_1_HITPOINTS;
+    obj->radius = BANDIT_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    Object_GetBone(obj, 6)->rot.y = true;
+    Object_GetBone(obj, 8)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_BANDIT_1, M_Setup)

@@ -25,8 +25,6 @@ static const char *m_ModDirs[] = {
     [SHELL_MOD_TR2_CUSTOM_LEVEL] = "cfg/tr2-level",
 };
 
-static void M_ShowHelp(void);
-
 static void M_ShowHelp(void)
 {
     puts("Currently available options:");

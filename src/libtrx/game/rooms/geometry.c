@@ -15,11 +15,6 @@ static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
 static int16_t M_GetFloorTiltHeight(
-    const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
-static int16_t M_GetCeilingTiltHeight(
-    const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
-
-static int16_t M_GetFloorTiltHeight(
     const SECTOR *const sector, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {

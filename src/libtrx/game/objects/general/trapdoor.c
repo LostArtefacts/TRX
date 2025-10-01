@@ -14,48 +14,6 @@ typedef enum {
     TRAPDOOR_ANIM_CLOSED = 0,
 } TRAPDOOR_ANIM;
 
-static int16_t M_GetFloorHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
-static void M_AddWalkable(int16_t item_num);
-static void M_Setup(OBJECT *obj);
-static void M_Control(int16_t item_num);
-static BOUNDS_16 M_RotateBounds(BOUNDS_16 bounds, int16_t rot_y);
-static void M_DropStack(const ITEM *item);
-static void M_GetSectorPositions(const ITEM *item, VECTOR *sector_pos);
-
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
-{
-    if (!M_IsItemOnTop(item, x, z)) {
-        return height;
-    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
-        return height;
-    } else if (y > item->pos.y || item->pos.y > height) {
-        return height;
-    } else {
-        return item->pos.y;
-    }
-}
-
-static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
-{
-    if (!M_IsItemOnTop(item, x, z)) {
-        return height;
-    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
-        return height;
-    } else if (y <= item->pos.y || item->pos.y <= height) {
-        return height;
-    } else {
-        return item->pos.y + STEP_L;
-    }
-}
-
 static bool M_IsItemOnTop(
     const ITEM *const item, const int32_t x, const int32_t z)
 {
@@ -100,57 +58,37 @@ static bool M_IsItemOnTop(
     return false;
 }
 
-static void M_AddWalkable(const int16_t item_num)
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
-    const ITEM *const item = Item_Get(item_num);
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
-    M_GetSectorPositions(item, positions);
-    for (int32_t i = 0; i < positions->count; i++) {
-        Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
-    }
-    Vector_Free(positions);
-    positions = nullptr;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_flags = true;
-    obj->save_anim = true;
-    obj->add_walkable_func = M_AddWalkable;
-}
-
-static void M_Control(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == TRAPDOOR_STATE_CLOSED) {
-            item->goal_anim_state = TRAPDOOR_STATE_OPEN;
-            M_DropStack(item);
-        }
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+        return height;
+    } else if (y > item->pos.y || item->pos.y > height) {
+        return height;
     } else {
-        if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
-            item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
-        }
+        return item->pos.y;
     }
-    Item_Animate(item);
 }
 
-void M_DropStack(const ITEM *const item)
+static int16_t M_GetCeilingHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
-    M_GetSectorPositions(item, positions);
-    for (int32_t i = 0; i < positions->count; i++) {
-        MovableBlock_DropStack(
-            *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
+    if (!M_IsItemOnTop(item, x, z)) {
+        return height;
+    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+        return height;
+    } else if (y <= item->pos.y || item->pos.y <= height) {
+        return height;
+    } else {
+        return item->pos.y + STEP_L;
     }
-    Vector_Free(positions);
-    positions = nullptr;
 }
 
-BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
+static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
 {
     BOUNDS_16 rot_bounds = {};
 
@@ -208,6 +146,56 @@ static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
             Vector_Add(sector_pos, &pos);
         }
     }
+}
+
+static void M_DropStack(const ITEM *const item)
+{
+    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    for (int32_t i = 0; i < positions->count; i++) {
+        MovableBlock_DropStack(
+            *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
+    }
+    Vector_Free(positions);
+    positions = nullptr;
+}
+
+static void M_AddWalkable(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    for (int32_t i = 0; i < positions->count; i++) {
+        Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
+    }
+    Vector_Free(positions);
+    positions = nullptr;
+}
+
+static void M_Control(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (Item_IsTriggerActive(item)) {
+        if (item->current_anim_state == TRAPDOOR_STATE_CLOSED) {
+            item->goal_anim_state = TRAPDOOR_STATE_OPEN;
+            M_DropStack(item);
+        }
+    } else {
+        if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
+            item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
+        }
+    }
+    Item_Animate(item);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->save_flags = true;
+    obj->save_anim = true;
+    obj->add_walkable_func = M_AddWalkable;
 }
 
 REGISTER_OBJECT(O_TRAPDOOR_TYPE_1, M_Setup)

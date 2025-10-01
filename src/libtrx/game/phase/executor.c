@@ -26,9 +26,6 @@ static FADER m_ExitFader;
 static int32_t m_PhaseStackSize = 0;
 static PHASE *m_PhaseStack[M_MAX_PHASES] = {};
 
-static PHASE_CONTROL M_Control(PHASE *phase);
-static void M_Draw(PHASE *phase);
-
 static GF_COMMAND M_HandleOverride(void)
 {
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();

@@ -14,8 +14,6 @@ static Uint64 m_UpdateDebounce = 0;
 static bool m_IgnoreConfigChanges = false;
 static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
 
-static bool M_MustUpdateRendererViewport(void);
-
 static bool M_MustUpdateRendererViewport(void)
 {
     const SHELL_SIZE size = Shell_GetCurrentSize();

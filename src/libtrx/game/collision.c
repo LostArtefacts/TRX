@@ -9,12 +9,6 @@
 
 #define M_HEADROOM 160 // Additional collision space above Lara's head.
 
-static void M_FillSide(
-    const COLL_INFO *coll, COLL_SIDE *side, int32_t x_pos, int32_t z_pos,
-    int32_t y_pos, int32_t obj_height, int16_t *room_num);
-static bool M_IsOnWalkable(
-    const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
-
 static bool M_IsOnWalkable(
     const SECTOR *const sector, const int32_t x, const int32_t y,
     const int32_t z, const int32_t room_height)
