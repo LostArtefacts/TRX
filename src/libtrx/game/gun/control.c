@@ -155,7 +155,8 @@ static bool M_NeedToUndraw(void)
     case LWS_ABOVE_WATER:
         return false;
     case LWS_WADE:
-        return !M_IsTooSubmerged(lara->gun_type);
+        return !M_IsUsableUnderwater(lara->request_gun_type)
+            && !M_IsTooSubmerged(lara->gun_type);
     default:
         return false;
     }
