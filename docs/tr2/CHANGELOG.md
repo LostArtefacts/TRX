@@ -55,8 +55,8 @@
 - fixed dead skidoo drivers not registering with combat end after loading a save (#3966)
 - fixed recordings replaying commands twice (regression from 1.4)
 - fixed the fix for the sticky corner glitch not being optional - now linked to Gameplay → Fixes → Wall glitch mode (#3957, regression from 1.4)
+- fixed Lara shooting rifle-type weapons drawn during wade to float transition (#3986)
 - fixed Lara retaining guns if drawn during wade to float transition (#3979, regression from 1.3)
-- fixed Lara shooting rifle-type weapons drawn during wade to float transition (#3979)
 - fixed Lara instantly holstering harpoon when drawing in 2+ click water (#3980, regression from 1.3)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
