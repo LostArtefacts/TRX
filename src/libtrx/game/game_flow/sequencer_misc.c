@@ -83,6 +83,12 @@ GF_COMMAND GF_DoFrontendSequence(void)
 {
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr) {
+        if (args->level_to_play != nullptr) {
+            Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+            g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
+                Memory_DupStr(args->level_to_play);
+        }
+
         if (args->save_to_load >= 0) {
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
@@ -104,9 +110,6 @@ GF_COMMAND GF_DoFrontendSequence(void)
         }
 
         if (args->level_to_play != nullptr) {
-            Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
-            g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
-                Memory_DupStr(args->level_to_play);
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
                 .param = 0,
