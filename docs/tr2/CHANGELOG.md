@@ -58,6 +58,7 @@
 - fixed Lara shooting rifle-type weapons drawn during wade to float transition (#3986)
 - fixed Lara retaining guns if drawn during wade to float transition (#3979, regression from 1.3)
 - fixed Lara instantly holstering harpoon when drawing in 2+ click water (#3980, regression from 1.3)
+- fixed -s/--save argument no longer working with -l/--level (#3990, regression from 1.4)
 
 ## [1.4.2](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.1...tr2-1.4.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 1.4)

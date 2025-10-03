@@ -44,6 +44,7 @@
 - fixed recordings replaying commands twice (regression from 4.14)
 - fixed the fix for the sticky corner glitch not being optional - now linked to Gameplay → Fixes → Wall glitch mode (#3957, regression from 4.14)
 - fixed Lara retaining guns if drawn during wade to float transition (#3979, regression from 4.13)
+- fixed -s/--save argument no longer working with -l/--level (#3990, regression from 4.14)
 
 ## [4.14.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.1...tr1-4.14.2) - 2025-09-07
 - fixed broken rendering in MacOS releases (#3880, regression from 4.14)
