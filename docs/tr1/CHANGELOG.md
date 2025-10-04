@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...develop) - ××××-××-××
+
+## [4.15](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...tr1-4.15) - 2025-10-04
+Showcase: https://youtu.be/BwZXWL0WULg
 - added an option to use TR2-style UI bars (Graphics → UI → Bars look)
 - added an option to use PS1-style UI bars (Graphics → UI → Bars look) (#1637)
 - added a new `/cls` / `/clear` console command to quickly clear console logs
