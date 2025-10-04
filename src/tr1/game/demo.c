@@ -33,6 +33,7 @@
     X_PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, false);                  \
     X_PROCESS_CONFIG(gameplay.enable_wading, false);                           \
     X_PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                          \
+    X_PROCESS_CONFIG(gameplay.enable_target_change, false);                    \
     X_PROCESS_CONFIG(gameplay.fix_bear_ai, false);                             \
     X_PROCESS_CONFIG(gameplay.wall_glitch_mode, WALL_GLITCH_TR1);              \
     X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_DRAW_ONLY);
