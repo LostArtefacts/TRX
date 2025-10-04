@@ -90,6 +90,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         }
     }
 
+    Lua_FireEvent(LUA_EVENT_LEVEL_START, level->num);
+
     g_GameInfo.ask_for_save = g_Config.gameplay.enable_save_crystals
         && seq_ctx == GFSC_NORMAL
         && GF_GetLevelTableType(level->type) == GFLT_MAIN

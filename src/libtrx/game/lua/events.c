@@ -63,10 +63,14 @@ void LUA_CreateEvents(lua_State *const L)
 
     // EventType enum
     lua_newtable(L);
+    lua_pushinteger(L, LUA_EVENT_LEVEL_START);
+    lua_setfield(L, -2, "LEVEL_START");
     lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
     lua_setfield(L, -2, "LEVEL_LOAD");
     lua_pushinteger(L, LUA_EVENT_PICKUP);
     lua_setfield(L, -2, "PICKUP");
+    lua_pushinteger(L, LUA_EVENT_CONTROL);
+    lua_setfield(L, -2, "CONTROL");
     lua_setfield(L, -2, "EventType");
 
     // Events table

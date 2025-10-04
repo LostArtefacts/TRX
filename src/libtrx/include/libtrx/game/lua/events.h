@@ -6,8 +6,10 @@
 
 // Event types for Lua listeners
 typedef enum {
+    LUA_EVENT_LEVEL_START,
     LUA_EVENT_LEVEL_LOAD,
     LUA_EVENT_PICKUP,
+    LUA_EVENT_CONTROL,
 } LUA_EVENT_TYPE;
 
 // Initialize event API in Lua state

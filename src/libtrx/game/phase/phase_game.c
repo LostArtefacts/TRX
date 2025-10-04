@@ -1,6 +1,7 @@
 #include "game/phase/phase_game.h"
 
 #include "game/game.h"
+#include "game/lua/events.h"
 #include "game/output.h"
 #include "memory.h"
 
@@ -43,6 +44,8 @@ static void M_Resume(PHASE *const phase)
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     const GF_COMMAND gf_cmd = Game_Control(false);
+    // Notify Lua control listeners
+    Lua_FireEvent(LUA_EVENT_CONTROL, 0);
     if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
