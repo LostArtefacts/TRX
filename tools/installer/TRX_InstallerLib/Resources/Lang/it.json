@@ -34,7 +34,7 @@
     "progress_preparing_extract": "Preparazione all'estrazione dell'ISO",
     "progress_copying": "Copia di {0}",
     "progress_skipped": "Copia di {0} - saltato",
-    "progress_init_download": "Inizializzazione download di {0}",
+    "progress_init_download": "Inizializzazione scaricamento di {0}",
     "progress_expansion_undefined": "Nessuno zip di destinazione definito per il pacchetto di espansione di tipo {0}",
     "progress_downloading": "Scaricamento di {0}",
     "progress_opening_zip": "Apertura ZIP incluso",
