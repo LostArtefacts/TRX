@@ -21,6 +21,13 @@ static int M_L_ConsoleLog(lua_State *const L)
     return 0;
 }
 
+// TRX.Console.Clear()
+static int M_L_ConsoleClear(lua_State *const L)
+{
+    Console_Clear();
+    return 0;
+}
+
 // TRX.Console.Eval(cmd)
 static int M_L_ConsoleEval(lua_State *const L)
 {
@@ -51,6 +58,8 @@ void LUA_CreateConsole(lua_State *const L)
     lua_setfield(L, -2, "Log");
     lua_pushcfunction(L, M_L_ConsoleEval);
     lua_setfield(L, -2, "Eval");
+    lua_pushcfunction(L, M_L_ConsoleClear);
+    lua_setfield(L, -2, "Clear");
     lua_setfield(L, -2, "Console");
     lua_pop(L, 1);
 }
