@@ -36,3 +36,14 @@ TRX.Events.Listen(TRX.EventType.PICKUP, function(pickup_item)
   }
 end)
 ```
+
+### Running code every control loop
+
+This will run the provided function once every logical frame, meaning the
+function will always run at 30 FPS regardless of the player's FPS settings.
+
+```lua
+TRX.Events.Listen(TRX.EventType.CONTROL, function(action)
+  -- handle per-frame control logic
+end)
+```

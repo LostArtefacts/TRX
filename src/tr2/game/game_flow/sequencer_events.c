@@ -70,6 +70,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         }
     }
 
+    Lua_FireEvent(LUA_EVENT_LEVEL_START, level->num);
+
     ASSERT(GF_GetCurrentLevel() == level);
     if (level->type == GFL_DEMO) {
         gf_cmd = GF_RunDemo(level->num);
