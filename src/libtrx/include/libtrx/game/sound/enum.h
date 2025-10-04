@@ -13,5 +13,6 @@ typedef enum {
     SPM_UNDERWATER = 1,
     SPM_ALWAYS     = 2,
     SPM_PITCH      = 4,
+    SPM_STATIC_POS = 8,
 } SOUND_PLAY_MODE;
 // clang-format on
