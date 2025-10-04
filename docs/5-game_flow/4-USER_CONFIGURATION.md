@@ -13,9 +13,12 @@ as a result you wish to prevent the player from enabling that option in the
 config tool. To achieve this, open `cfg/tr1/gameflow.json5` in a suitable text
 editor and add the following.
 
-```json
-"enforced_config": {
-  "enable_save_crystals": false,
+```json5
+{
+  // …
+  "enforced_config": {
+    "enable_save_crystals": false,
+  }
 }
 ```
 
@@ -41,11 +44,14 @@ merely enforce their values), you can add a `hidden_config` section in your
 game flow JSON. Any setting listed here will be omitted from the settings
 dialogs. For example:
 
-```json
-"hidden_config": [
-  "enable_legal",
-  "enable_save_crystals",
-]
+```json5
+{
+  // …
+  "hidden_config": [
+    "enable_legal",
+    "enable_save_crystals",
+  ]
+}
 ```
 
 When all settings in a given tab are hidden, that tab will also be removed from
