@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...develop) - ××××-××-××
+
+## [1.5](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.2...tr2-1.5) - 2025-10-04
+Showcase: https://youtu.be/ClkbvsENSvc
 - added an option to use Lara's barefoot sound effects in appropriate levels (Sound options → Barefoot SFX) (#2643)
 - added dev console gradient backdrop, similar to TR1X (#2150)
 - added an option to use smooth bars (Graphics → UI → Smooth bars, default off)
