@@ -28,11 +28,20 @@ static int M_L_ConsoleClear(lua_State *const L)
     return 0;
 }
 
-// TRX.Console.Eval(cmd)
+// TRX.Console.Eval(cmd, { verbose = true })
 static int M_L_ConsoleEval(lua_State *const L)
 {
     const char *cmd = luaL_checkstring(L, 1);
+    bool verbose = false;
+    if (lua_gettop(L) >= 2 && lua_istable(L, 2)) {
+        lua_getfield(L, 2, "verbose");
+        verbose = lua_toboolean(L, -1);
+        lua_pop(L, 1);
+    }
+    const bool old_verbose = Console_IsVerbose();
+    Console_SetVerbose(verbose);
     COMMAND_RESULT res = Console_Eval(cmd);
+    Console_SetVerbose(old_verbose);
     const char *err;
     switch (res) {
     case CR_BAD_INVOCATION:
