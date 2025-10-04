@@ -47,3 +47,23 @@ TRX.Events.Listen(TRX.EventType.CONTROL, function(action)
   -- handle per-frame control logic
 end)
 ```
+
+### Changing water color in concrete rooms
+
+This will change the color to crimson red if Lara is in room 15, and
+demonstrates how to throttle updates to only happen if Lara goes from one room
+to another.
+
+local last_room = 0
+
+TRX.Events.Listen(TRX.EventType.CONTROL, function(action)
+  local lara = TRX.Lara.GetItem()
+  if lara.room ~= last_room then
+    last_room = lara.room
+    if lara.room == 15 then
+      TRX.Config.Set("visuals.water_color", "ff0000")
+    else
+      TRX.Config.Set("visuals.water_color", "0000ff")
+    end
+  end
+end)

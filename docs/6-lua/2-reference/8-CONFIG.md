@@ -1,0 +1,36 @@
+---
+title: Config
+---
+
+## Config module
+
+Module for querying and modifying engine configuration settings.
+
+### Functions
+
+- [lua]`TRX.Config.Get(key)`  
+   Retrieves the current value of the config option specified by `key`.  
+
+- [lua]`TRX.Config.Set(key, value)`  
+    Sets the configuration option identified by `key` to `value`. Returns an
+    error if the option is unknown or the value has an invalid format. All
+    values are currently passed as strings, even for numeric or boolean
+    options. Color settings expect a 6-digit hexadecimal string.
+
+    Note that using this API overrides the player's settings. The old value
+    isn't stored anywhere – the new value immediately becomes the active
+    setting, as if changed directly by the player, and will be remembered
+    across game saves and relaunches globally. Because of this, it's best to
+    mark any options you plan to modify (like water or fog color, view
+    distances, etc.) as frozen or hidden in the gameflow settings.
+
+- [lua]`TRX.Config.List()`  
+   Returns a Lua table mapping each config key to its current value.
+
+   Example - to list all settings and their values in the log file:
+
+   ```lua
+   for opt, val in pairs(TRX.Config.List()) do
+     TRX.Log.Info(opt .. " = " .. val)
+   end
+   ```
