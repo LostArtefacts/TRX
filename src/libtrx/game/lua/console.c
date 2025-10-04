@@ -11,9 +11,14 @@
 static int M_L_ConsoleLog(lua_State *const L)
 {
     int nargs = lua_gettop(L);
-    const char *msg = NULL;
+    const char *msg = nullptr;
     for (int i = 1; i <= nargs; i++) {
-        const char *arg = lua_tostring(L, i);
+        // Convert any Lua value to a string via tostring()
+        lua_getglobal(L, "tostring");
+        lua_pushvalue(L, i);
+        lua_call(L, 1, 1);
+        const char *arg = lua_tostring(L, -1);
+        lua_pop(L, 1);
         msg = (i > 1) ? String_FormatStatic("%s, %s", msg, arg)
                       : String_FormatStatic("%s", arg);
     }
