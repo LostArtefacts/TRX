@@ -64,7 +64,7 @@ The document is organized as follows:
 
 ```json5
 {
-    "levels": {
+    "levels": [
         {
             "title": "City of Vilcabamba",
             "objects": {
@@ -87,7 +87,7 @@ The document is organized as follows:
             },
         },
         // etc
-    },
+    ],
     "objects": {
         "lara": {"name": "Lara"},
         "dog": {"names": ["Dog", "Doberman"]},
