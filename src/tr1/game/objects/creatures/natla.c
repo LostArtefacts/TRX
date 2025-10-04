@@ -9,8 +9,6 @@
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 
-#define NATLA_SHOT_DAMAGE 100
-#define NATLA_NEAR_DEATH 200
 #define NATLA_FLY_MODE 0x8000
 #define NATLA_TIMER 0x7FFF
 #define NATLA_FIRE_ARC (DEG_1 * 30) // = 5460
@@ -18,7 +16,6 @@
 #define NATLA_RUN_TURN (DEG_1 * 6) // = 1092
 #define NATLA_LAND_CHANCE 256
 #define NATLA_DIE_TIME (LOGIC_FPS * 16) // = 480
-#define NATLA_GUN_SPEED 400
 #define NATLA_HITPOINTS 400
 #define NATLA_RADIUS (WALL_L / 5) // = 204
 #define NATLA_SMARTNESS 0x7FFF
@@ -37,6 +34,11 @@ typedef enum {
 } NATLA_STATE;
 
 static BITE m_NatlaGun = { .pos = { 5, 220, 7 }, .mesh_num = 4 };
+
+static int32_t M_GetStage2HitPoints(const ITEM *const item)
+{
+    return item->max_hit_points / 2;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -59,7 +61,7 @@ static void M_Control(const int16_t item_num)
 
     if (item->hit_points <= 0 && item->hit_points > DONT_TARGET) {
         item->goal_anim_state = NATLA_STATE_DEATH;
-    } else if (item->hit_points <= NATLA_NEAR_DEATH) {
+    } else if (item->hit_points <= M_GetStage2HitPoints(item)) {
         natla->lot.setup.step = STEP_L;
         natla->lot.setup.drop = -STEP_L;
         natla->lot.setup.fly = 0;
@@ -137,7 +139,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = NATLA_STATE_STAND;
                 natla->flags = 0;
                 timer = 0;
-                item->hit_points = NATLA_NEAR_DEATH;
+                item->hit_points = M_GetStage2HitPoints(item);
                 Music_Play(MX_NATLA_SPEECH, MPM_TRACKED);
             } else {
                 if (g_Config.gameplay.target_mode == TLM_SEMI
