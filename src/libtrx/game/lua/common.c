@@ -26,6 +26,7 @@ extern void LUA_CreateLara(lua_State *L);
 extern void LUA_CreateLog(lua_State *L);
 extern void LUA_CreateMusic(lua_State *L);
 extern void LUA_CreateSound(lua_State *L);
+extern void LUA_CreateConfig(lua_State *L);
 
 // Shared loader+pcall helper for Eval/EvalFile to capture errors with source
 static LUA_RESULT M_LuaLoadAndRun(
@@ -66,6 +67,7 @@ void LUA_Init(void)
     LUA_CreateLog(L);
     LUA_CreateMusic(L);
     LUA_CreateSound(L);
+    LUA_CreateConfig(L);
 
     M_PRIV *const p = &m_Priv;
     p->state = L;
