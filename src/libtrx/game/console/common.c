@@ -16,6 +16,9 @@
 static bool m_IsOpened = false;
 static UI_CONSOLE_STATE m_UIState = {};
 
+// Controls whether console commands emit log events to the UI console
+static bool m_Verbose = true;
+
 void Console_Init(void)
 {
     UI_Console_Init(&m_UIState);
@@ -75,12 +78,24 @@ void Console_Log(const char *fmt, ...)
 
     LOG_INFO("%s", text);
 
-    UI_FireEvent((EVENT) {
-        .name = "console_log",
-        .sender = nullptr,
-        .data = text,
-    });
+    if (m_Verbose) {
+        UI_FireEvent((EVENT) {
+            .name = "console_log",
+            .sender = nullptr,
+            .data = text,
+        });
+    }
     Memory_FreePointer(&text);
+}
+
+void Console_SetVerbose(const bool verbose)
+{
+    m_Verbose = verbose;
+}
+
+bool Console_IsVerbose(void)
+{
+    return m_Verbose;
 }
 
 void Console_Clear(void)

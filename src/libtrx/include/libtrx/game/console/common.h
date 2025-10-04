@@ -15,5 +15,9 @@ void Console_Log(const char *fmt, ...);
 void Console_Clear(void);
 COMMAND_RESULT Console_Eval(const char *cmdline);
 
+// Controls whether console commands emit log events to the UI console
+void Console_SetVerbose(bool verbose);
+bool Console_IsVerbose(void);
+
 void Console_Control(void);
 void Console_Draw(void);
