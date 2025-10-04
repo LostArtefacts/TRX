@@ -628,7 +628,7 @@
         "SETTING_STAT_DETAIL_MODE": "Détail des statistiques",
         "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "Permet différents niveaux de détail des statistiques.\n- Minimal : indique les ennemis tués, les objets trouvés, les secrets et le temps passé.\n- Détaillé : indique toutes les statistiques de mode minimal ainsi que le nombre total d'objets à trouver et d'ennemis à tuer pour chaque niveau.\n- Complet : indique toutes les statistiques du mode détaillé ainsi que les tirs réussis, les munitions utilisées, les trousses de soin utilisées et la distance parcourue.",
         "SETTING_TARGET_MODE": "Mode de verrouillage",
-        "SETTING_TARGET_MODE_DESCRIPTION": "Modifie le comportement de verrouillage des cibles.\n- Complet : Verrouille la cible même si elle sort du champ de vision ou meurt (TR1).\n- Hybride : Verrouille la cible si elle sort du champ de vision, mais déverrouille si elle meurt.\n- Aucun : Déverrouille la cible si elle sort du champ de vision ou meurt (TR4+).",
+        "SETTING_TARGET_MODE_DESCRIPTION": "Modifie le comportement de verrouillage des cibles.\n- Complet : Verrouille la cible même si elle sort du champ de vision ou meurt (TR1-3).\n- Hybride : Verrouille la cible si elle sort du champ de vision, mais déverrouille si elle meurt.\n- Aucun : Déverrouille la cible si elle sort du champ de vision ou meurt (TR4+).",
         "SETTING_TEXTURE_FILTER": "Filtre des texture",
         "SETTING_TEXTURE_FILTER_DESCRIPTION": "\\{review}Alterne entre des textures ingame lisses et pixelisées.",
         "SETTING_TRAPEZOID_FILTER": "Filtre trapézoïdal",
