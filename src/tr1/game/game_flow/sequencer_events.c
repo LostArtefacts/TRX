@@ -56,6 +56,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         Lara_Initialise(level);
     }
 
+    if (level->music_track != MX_INACTIVE) {
+        Music_Stop();
+    }
+
     Lua_FireEvent(LUA_EVENT_LEVEL_LOAD, level->num);
 
     // post load

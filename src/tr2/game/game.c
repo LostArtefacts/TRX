@@ -32,10 +32,10 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     Camera_Initialise();
     Interpolation_Remember();
 
-    if (level->music_track != MX_INACTIVE) {
-        Music_Play(
-            level->music_track,
-            level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
+    const bool is_cutscene = level->type == GFL_CUTSCENE;
+    if (level->music_track != MX_INACTIVE
+        && (is_cutscene || Music_GetCurrentLoopedTrack() == MX_INACTIVE)) {
+        Music_Play(level->music_track, is_cutscene ? MPM_ALWAYS : MPM_LOOPED);
     }
 
     return true;
