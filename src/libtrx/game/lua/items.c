@@ -44,6 +44,13 @@ static int M_L_ItemIndex(lua_State *const L)
     } else if (strcmp(key, "max_hit_points") == 0) {
         lua_pushinteger(L, item->max_hit_points);
         return 1;
+    } else if (strcmp(key, "name") == 0) {
+        if (item->name != nullptr) {
+            lua_pushstring(L, item->name);
+        } else {
+            lua_pushnil(L);
+        }
+        return 1;
     }
     lua_pushnil(L);
     return 1;
@@ -87,6 +94,12 @@ static int M_L_ItemNewIndex(lua_State *const L)
         item->rot.z = luaL_checkinteger(L, -1);
         lua_pop(L, 1);
         return 0;
+    } else if (strcmp(key, "name") == 0) {
+        const char *const new_name = luaL_checkstring(L, 3);
+        if (!Item_SetName(Item_GetIndex(item), new_name)) {
+            return luaL_error(L, "item name '%s' already in use", new_name);
+        }
+        return 0;
     }
     return luaL_error(L, "Cannot set field '%s' on TRX.Items.ITEM", key);
 }
@@ -114,6 +127,22 @@ static int M_L_ItemsGet(lua_State *const L)
     return 1;
 }
 
+// item = TRX.Items.GetByName(name)
+static int M_L_ItemsGetByName(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    ITEM *const item = Item_GetByName(name);
+    if (item == nullptr) {
+        lua_pushnil(L);
+    } else {
+        ITEM **ud = lua_newuserdata(L, sizeof(ITEM *));
+        *ud = item;
+        luaL_getmetatable(L, "TRX.Items.ITEM");
+        lua_setmetatable(L, -2);
+    }
+    return 1;
+}
+
 void LUA_CreateItems(lua_State *const L)
 {
     luaL_newmetatable(L, "TRX.Items.ITEM");
@@ -127,6 +156,8 @@ void LUA_CreateItems(lua_State *const L)
     lua_newtable(L);
     lua_pushcfunction(L, M_L_ItemsGet);
     lua_setfield(L, -2, "Get");
+    lua_pushcfunction(L, M_L_ItemsGetByName);
+    lua_setfield(L, -2, "GetByName");
     lua_pushcfunction(L, M_L_ItemsCount);
     lua_setfield(L, -2, "Count");
     lua_setfield(L, -2, "Items");
