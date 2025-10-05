@@ -41,6 +41,7 @@ typedef struct {
     void *data;
     void *priv;
     CARRIED_ITEM *carried_item;
+    char *name;
 
     XYZ_32 pos;
     XYZ_16 rot;
