@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...develop) - ××××-××-××
+- fixed a crash on game exit if specifying "ambient_tracks" in the game flow root (regression from 4.11)
 
 ## [4.15](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...tr1-4.15) - 2025-10-04
 Showcase: https://youtu.be/BwZXWL0WULg

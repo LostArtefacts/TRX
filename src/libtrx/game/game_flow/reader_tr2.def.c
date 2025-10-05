@@ -56,10 +56,6 @@ static void M_LoadLevelGameSpecifics(
     const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
     GF_LEVEL *const level)
 {
-    level->settings = ctx->gf->settings;
-#if TR_VERSION == 2
-    level->settings.sfx_path = nullptr;
-#endif
     M_LoadSettings(ctx, jlvl_obj, &level->settings);
 }
 
