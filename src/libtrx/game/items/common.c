@@ -8,7 +8,10 @@
 #include "game/objects/common.h"
 #include "game/output/const.h"
 #include "game/rooms.h"
+#include "memory.h"
 #include "utils.h"
+
+#include <string.h>
 
 static int32_t m_LevelItemCount = 0;
 static int16_t m_MaxUsedItemCount = 0;
@@ -56,6 +59,42 @@ ITEM *Item_Find(const GAME_OBJECT_ID obj_id)
         }
     }
 
+    return nullptr;
+}
+
+bool Item_SetName(const int16_t item_num, const char *const name)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item == nullptr) {
+        return false;
+    }
+    if (name != nullptr) {
+        ITEM *const existing = Item_GetByName(name);
+        if (existing != nullptr && existing != item) {
+            return false;
+        }
+    }
+    if (name != nullptr) {
+        item->name = GameBuf_Alloc(strlen(name) + 1, GBUF_ITEMS);
+        strcpy(item->name, name);
+    } else {
+        item->name = nullptr;
+    }
+    return true;
+}
+
+ITEM *Item_GetByName(const char *const name)
+{
+    if (name == nullptr) {
+        return nullptr;
+    }
+    // search through all items for matching name
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        if (item->name != nullptr && strcmp(item->name, name) == 0) {
+            return item;
+        }
+    }
     return nullptr;
 }
 
@@ -141,6 +180,7 @@ void Item_Initialise(const int16_t item_num)
     item->data = nullptr;
     item->priv = nullptr;
     item->carried_item = nullptr;
+    item->name = nullptr;
 
     item->active = false;
     item->status = IS_INACTIVE;

@@ -21,12 +21,14 @@ Module for controlling all moveables behavior.
     - **`hit_points`**: Integer representing the item's hit points.
     - **`max_hit_points`**: Integer representing the item's hit points.
     - **`object_id`**: Integer ID of the item's object type.
+    - **`name`**: String name of the item, or `nil` if none.
 
     Writable properties:
     - `pos` (updating this also updates `room`)
     - `rot`
     - `hit_points` (updating this also may increase `max_hit_points`)
     - `max_hit_points`
+    - `name` (string identifier; setting duplicates raises an error)
 
 ### Functions
 
@@ -34,4 +36,11 @@ Module for controlling all moveables behavior.
   Returns the total number of allocated items.
 
 - [lua]`TRX.Items.Get(index)`  
-  Retrieves the [lua]`TRX.Items.ITEM` at the given zero-based index, or `nil` if out of range.
+  Retrieves the [lua]`TRX.Items.ITEM` at the given 1-based index, or `nil` if out of range.
+- [lua]`TRX.Items.GetByName(name)`  
+  Retrieves the [lua]`TRX.Items.ITEM` with the given `name`, or `nil` if not found.  
+  Example:
+  ```lua
+  TRX.Lara.GetItem().name = "lara"
+  TRX.Items.GetByName("lara") -- contains Lara item
+  ```
