@@ -160,7 +160,6 @@ static void M_LoadLevelGameSpecifics(
     const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
     GF_LEVEL *const level)
 {
-    level->settings = ctx->gf->settings;
     M_LoadSettings(ctx, jlvl_obj, &level->settings);
 
     level->unobtainable.pickups =
