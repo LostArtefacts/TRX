@@ -57,6 +57,22 @@ static void M_LoadCommonSettings(
     #include "./reader_tr2.def.c"
 #endif
 
+static void M_CopyRootSettingsIntoLevel(
+    const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const dst,
+    const GF_LEVEL_SETTINGS *const src)
+{
+    *dst = *src;
+#if TR_VERSION == 2
+    dst->sfx_path = nullptr;
+#endif
+    if (src->ambient_tracks.is_present) {
+        const GF_AMBIENT_DATA *const root = &src->ambient_tracks;
+        GF_AMBIENT_DATA *const lvl = &dst->ambient_tracks;
+        lvl->ids = Memory_Alloc(sizeof(*lvl->ids) * root->count);
+        memcpy(lvl->ids, root->ids, sizeof(*lvl->ids) * root->count);
+    }
+}
+
 static bool M_ParseRGB888(JSON_VALUE *const value, RGB_888 *const target)
 {
     if (value != nullptr && value->type == JSON_TYPE_ARRAY) {
@@ -520,6 +536,7 @@ static void M_LoadLevel(
         }
     }
 
+    M_CopyRootSettingsIntoLevel(ctx, &level->settings, &ctx->gf->settings);
     M_LoadLevelGameSpecifics(ctx, jlvl_obj, level);
 
     M_LoadLevelSequence(ctx, jlvl_obj, level);
