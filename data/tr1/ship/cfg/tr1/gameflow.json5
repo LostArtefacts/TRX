@@ -3,7 +3,6 @@
     // Lines starting with double slashes are comments and are ignored.
 
     "main_menu_picture": "data/images/title.webp",
-    "main_script": "cfg/tr1/script.lua",
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
     "demo_delay": 16,
@@ -74,7 +73,6 @@
         // Level 1: Caves
         {
             "path": "data/level1.phd",
-            "script": "cfg/tr1/level1.lua",
             "music_track": 57,
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 4},
