@@ -256,10 +256,11 @@ static void M_Setup1A(OBJECT *const obj)
         return;
     }
 
-    const OBJECT *const cult_1_obj = Object_Get(O_CULT_1);
-    ASSERT(cult_1_obj->loaded);
-    obj->frame_base = cult_1_obj->frame_base;
-    obj->anim_idx = cult_1_obj->anim_idx;
+    const OBJECT *const ref_obj = Object_Get(O_CULT_1);
+    if (ref_obj->loaded) {
+        obj->frame_base = ref_obj->frame_base;
+        obj->anim_idx = ref_obj->anim_idx;
+    }
 
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
@@ -285,10 +286,11 @@ static void M_Setup1B(OBJECT *const obj)
         return;
     }
 
-    const OBJECT *const cult_1_obj = Object_Get(O_CULT_1);
-    ASSERT(cult_1_obj->loaded);
-    obj->frame_base = cult_1_obj->frame_base;
-    obj->anim_idx = cult_1_obj->anim_idx;
+    const OBJECT *const ref_obj = Object_Get(O_CULT_1);
+    if (ref_obj->loaded) {
+        obj->frame_base = ref_obj->frame_base;
+        obj->anim_idx = ref_obj->anim_idx;
+    }
 
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
