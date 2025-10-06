@@ -6,10 +6,6 @@
 #include "game/output.h"
 #include "game/output/vars.h"
 
-void Object_DrawDummyItem(const ITEM *const item)
-{
-}
-
 void Object_DrawUnclippedItem(const ITEM *const item)
 {
     const int32_t left = g_PhdLeft;

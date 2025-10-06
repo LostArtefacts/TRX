@@ -121,7 +121,7 @@ static void M_Collision(
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    obj->draw_func = Object_DrawDummyItem;
+    obj->draw_func = nullptr;
     obj->bounds_func = M_Bounds;
     obj->is_usable_func = M_IsUsable;
 }

@@ -15,7 +15,7 @@ static void M_SetupLara(void)
 
     obj->shadow_size = (UNIT_SHADOW / 16) * 10;
     obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
-    obj->draw_func = Object_DrawDummyItem;
+    obj->draw_func = nullptr;
 
     obj->save_position = true;
     obj->save_hitpoints = true;

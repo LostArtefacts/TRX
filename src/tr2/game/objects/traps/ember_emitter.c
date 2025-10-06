@@ -27,7 +27,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
-    obj->draw_func = Object_DrawDummyItem;
+    obj->draw_func = nullptr;
     obj->save_flags = true;
 }
 
