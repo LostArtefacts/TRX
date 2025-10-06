@@ -10,36 +10,6 @@
 #include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
-void Object_DrawAnimatingItem(const ITEM *item)
-{
-    ANIM_FRAME *frames[2];
-    int32_t rate;
-    int32_t frac = Item_GetFrames(item, frames, &rate);
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    if (obj->shadow_size != 0) {
-        Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
-    }
-
-    Matrix_Push();
-    Matrix_TranslateAbs32(item->interp.result.pos);
-    Matrix_Rot16(item->interp.result.rot);
-
-    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        Matrix_Pop();
-        return;
-    }
-
-    Output_CalculateObjectLighting(item, &frames[0]->bounds);
-
-    const int16_t *extra_rotation = item->data;
-
-    Object_DrawInterpolatedObject(
-        obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate);
-    Matrix_Pop();
-}
-
 void Object_DrawSpriteItem(const ITEM *const item)
 {
     SHADE shade = item->shade;

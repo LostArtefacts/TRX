@@ -13,6 +13,7 @@ void Object_DrawMesh(int32_t mesh_idx, CLIP clip, bool interpolated);
 
 void Object_DrawStaticObject(const OBJECT *obj, const ANIM_FRAME *frame);
 
+void Object_DrawAnimatingItem(const ITEM *item);
 void Object_DrawInterpolatedObject(
     const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,
     const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
