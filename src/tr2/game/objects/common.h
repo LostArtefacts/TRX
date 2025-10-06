@@ -9,5 +9,3 @@ void Object_DrawSpriteItem(const ITEM *item);
 
 BOUNDS_16 Object_GetBoundingBox(
     const OBJECT *obj, const ANIM_FRAME *frame, uint32_t mesh_bits);
-
-void Object_DrawMesh(int32_t mesh_idx, CLIP clip, bool interpolated);

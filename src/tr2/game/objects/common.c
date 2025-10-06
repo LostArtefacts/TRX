@@ -145,17 +145,6 @@ BOUNDS_16 Object_GetBoundingBox(
     return new_bounds;
 }
 
-void Object_DrawMesh(
-    const int32_t mesh_idx, const CLIP clip, const bool interpolated)
-{
-    const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
-    if (interpolated) {
-        Output_DrawObjectMesh_I(mesh, clip);
-    } else {
-        Output_DrawObjectMesh(mesh, clip);
-    }
-}
-
 void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
 {
     ASSERT_FAIL();
