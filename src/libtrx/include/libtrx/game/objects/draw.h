@@ -7,7 +7,7 @@
 #include "ids.h"
 #include "types.h"
 
-extern void Object_DrawDummyItem(const ITEM *item);
+void Object_DrawDummyItem(const ITEM *item);
 extern void Object_DrawUnclippedItem(const ITEM *item);
 extern void Object_DrawMesh(int32_t mesh_idx, CLIP clip, bool interpolated);
 
