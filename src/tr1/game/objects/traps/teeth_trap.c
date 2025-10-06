@@ -49,7 +49,7 @@ static void M_Control(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->collision_func = Object_CollisionTrap;
+    obj->collision_func = Object_Collision_Trap;
     obj->save_flags = true;
     obj->save_anim = true;
 }

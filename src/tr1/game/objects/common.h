@@ -4,8 +4,6 @@
 
 #include "global/types.h"
 
-void Object_CollisionTrap(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 void Object_DrawSpriteItem(const ITEM *item);
 void Object_DrawPickupItem(const ITEM *item);
 void Object_DrawAnimatingItem(const ITEM *item);
