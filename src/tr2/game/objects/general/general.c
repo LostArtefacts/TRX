@@ -1,8 +1,7 @@
 #include "game/objects/general/general.h"
 
-#include "game/objects/common.h"
-
 #include <libtrx/game/collision.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/output.h>
 
 typedef enum {

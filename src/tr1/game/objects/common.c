@@ -13,22 +13,6 @@
 #include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
-void Object_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
-{
-    ITEM *const item = Item_Get(item_num);
-
-    if (!Lara_TestBoundsCollide(item, coll->radius)) {
-        return;
-    }
-    if (!Collide_TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, 0, 1);
-    }
-}
-
 void Object_CollisionTrap(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     ITEM *const item = Item_Get(item_num);
