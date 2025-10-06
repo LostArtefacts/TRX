@@ -4,9 +4,30 @@
 #include "game/matrix.h"
 #include "game/objects/common.h"
 #include "game/output.h"
+#include "game/output/vars.h"
 
 void Object_DrawDummyItem(const ITEM *const item)
 {
+}
+
+void Object_DrawUnclippedItem(const ITEM *const item)
+{
+    const int32_t left = g_PhdLeft;
+    const int32_t top = g_PhdTop;
+    const int32_t right = g_PhdRight;
+    const int32_t bottom = g_PhdBottom;
+
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+
+    Object_DrawAnimatingItem(item);
+
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
 }
 
 void Object_DrawStaticObject(
