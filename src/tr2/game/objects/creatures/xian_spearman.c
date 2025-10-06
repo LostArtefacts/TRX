@@ -397,7 +397,10 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
-    ASSERT(Object_Get(O_XIAN_SPEARMAN_STATUE)->loaded);
+    SOFT_ASSERT(
+        Object_Get(O_XIAN_SPEARMAN_STATUE)->loaded,
+        "Xian spearman statue object missing");
+
     obj->initialise_func = M_Initialise;
     obj->draw_func = XianWarrior_Draw;
     obj->control_func = M_Control;

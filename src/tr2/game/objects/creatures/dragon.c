@@ -430,7 +430,8 @@ static void M_SetupFront(OBJECT *const obj)
         return;
     }
 
-    ASSERT(Object_Get(O_DRAGON_BACK)->loaded);
+    SOFT_ASSERT(
+        Object_Get(O_DRAGON_BACK)->loaded, "Dragon back object missing");
     obj->handle_save_func = M_HandleSaveFront;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
