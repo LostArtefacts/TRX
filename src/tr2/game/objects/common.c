@@ -1,14 +1,8 @@
 #include "game/objects/common.h"
 
-#include "global/vars.h"
-
 #include <libtrx/debug.h>
-#include <libtrx/game/collision.h>
-#include <libtrx/game/lara.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
-#include <libtrx/game/viewport.h>
-#include <libtrx/utils.h>
 
 void Object_DrawSpriteItem(const ITEM *const item)
 {
