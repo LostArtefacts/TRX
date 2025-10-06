@@ -10,7 +10,7 @@ static void M_SetupLara(void)
 {
     OBJECT *const obj = Object_Get(O_LARA);
     obj->initialise_func = Lara_InitialiseLoad;
-    obj->draw_func = Object_DrawDummyItem;
+    obj->draw_func = nullptr;
     obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = true;
@@ -36,7 +36,7 @@ static void M_DisableObject(const GAME_OBJECT_ID obj_id)
     obj->initialise_func = nullptr;
     obj->collision_func = nullptr;
     obj->control_func = nullptr;
-    obj->draw_func = Object_DrawDummyItem;
+    obj->draw_func = nullptr;
     obj->floor_height_func = nullptr;
     obj->ceiling_height_func = nullptr;
     obj->add_walkable_func = nullptr;
