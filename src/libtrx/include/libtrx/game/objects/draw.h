@@ -8,7 +8,7 @@
 #include "types.h"
 
 void Object_DrawDummyItem(const ITEM *item);
-extern void Object_DrawUnclippedItem(const ITEM *item);
+void Object_DrawUnclippedItem(const ITEM *item);
 extern void Object_DrawMesh(int32_t mesh_idx, CLIP clip, bool interpolated);
 
 void Object_DrawStaticObject(const OBJECT *obj, const ANIM_FRAME *frame);
