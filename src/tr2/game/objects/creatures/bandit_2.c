@@ -253,9 +253,10 @@ static void M_Setup2B(OBJECT *const obj)
     }
 
     const OBJECT *const ref_obj = Object_Get(O_BANDIT_2);
-    ASSERT(ref_obj->loaded);
-    obj->anim_idx = ref_obj->anim_idx;
-    obj->frame_base = ref_obj->frame_base;
+    if (ref_obj->loaded) {
+        obj->anim_idx = ref_obj->anim_idx;
+        obj->frame_base = ref_obj->frame_base;
+    }
 
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
