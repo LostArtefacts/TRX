@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...develop) - ××××-××-××
 - fixed a crash on game exit if specifying "ambient_tracks" in the game flow root (regression from 1.1)
 - fixed alternate ambient tracks being lost on reload in custom levels (#3997, regression from 1.4)
+- fixed a crash if the game had object bandit 2B (id=50) but was missing bandit 2 (id=49)
 
 ## [1.5](https://github.com/LostArtefacts/TRX/compare/tr2-1.4.2...tr2-1.5) - 2025-10-04
 Showcase: https://youtu.be/ClkbvsENSvc
