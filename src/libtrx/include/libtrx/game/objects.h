@@ -1,5 +1,6 @@
 #pragma once
 
+#include "objects/col.h"
 #include "objects/common.h"
 #include "objects/draw.h"
 #include "objects/ids.h"
