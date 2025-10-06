@@ -5,6 +5,10 @@
 #include "game/objects/common.h"
 #include "game/output.h"
 
+void Object_DrawDummyItem(const ITEM *const item)
+{
+}
+
 void Object_DrawStaticObject(
     const OBJECT *const obj, const ANIM_FRAME *const frame)
 {
