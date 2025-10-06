@@ -192,26 +192,6 @@ void Object_DrawAnimatingItem(const ITEM *const item)
     Matrix_Pop();
 }
 
-void Object_DrawUnclippedItem(const ITEM *const item)
-{
-    int32_t left = g_PhdLeft;
-    int32_t top = g_PhdTop;
-    int32_t right = g_PhdRight;
-    int32_t bottom = g_PhdBottom;
-
-    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-
-    Object_DrawAnimatingItem(item);
-
-    g_PhdLeft = left;
-    g_PhdTop = top;
-    g_PhdRight = right;
-    g_PhdBottom = bottom;
-}
-
 void Object_SetMeshReflective(
     const GAME_OBJECT_ID obj_id, const int32_t mesh_idx, const bool enabled)
 {
