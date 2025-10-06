@@ -10,10 +10,6 @@
 #include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 
-void Object_DrawDummyItem(const ITEM *const item)
-{
-}
-
 void Object_DrawAnimatingItem(const ITEM *item)
 {
     ANIM_FRAME *frames[2];
