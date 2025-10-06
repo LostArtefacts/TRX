@@ -1,8 +1,8 @@
-#include "game/objects/common.h"
-
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/objects.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/utils.h>
 
 #define MAX_ROOMIES 2

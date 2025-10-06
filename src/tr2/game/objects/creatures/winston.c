@@ -1,8 +1,8 @@
 #include "game/creature.h"
-#include "game/objects/common.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/objects.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>

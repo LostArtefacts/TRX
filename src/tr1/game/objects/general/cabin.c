@@ -1,4 +1,5 @@
-#include "game/objects/common.h"
+#include <libtrx/game/objects.h>
+#include <libtrx/game/rooms.h>
 
 typedef enum {
     CABIN_STATE_START = 0,

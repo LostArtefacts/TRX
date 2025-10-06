@@ -1,4 +1,4 @@
-#include "game/objects/common.h"
+#include <libtrx/game/objects.h>
 
 static void M_Control(const int16_t item_num)
 {

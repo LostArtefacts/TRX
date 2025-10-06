@@ -1,5 +1,7 @@
-#include "game/objects/common.h"
 #include "global/vars.h"
+
+#include <libtrx/game/objects.h>
+#include <libtrx/game/rooms.h>
 
 typedef enum {
     BELL_STATE_STOP = 0,

@@ -1,5 +1,6 @@
-#include "game/objects/common.h"
 #include "game/objects/traps/propeller.h"
+
+#include <libtrx/game/objects.h>
 
 static void M_Setup(OBJECT *const obj)
 {
