@@ -64,7 +64,7 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    const DIRECTION quadrant = (uint16_t)(lara_item->rot.y + DEG_45) / DEG_90;
+    const DIRECTION quadrant = Math_GetDirection(lara_item->rot.y);
     switch (quadrant) {
     case DIR_NORTH:
         item->rot.y = 0;
