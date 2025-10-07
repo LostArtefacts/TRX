@@ -194,7 +194,6 @@ sources = [
   'game/objects/setup.c',
   'game/objects/traps/blade.c',
   'game/objects/traps/dart.c',
-  'game/objects/traps/dart_emitter.c',
   'game/objects/traps/dying_monk.c',
   'game/objects/traps/gondola.c',
   'game/objects/traps/hook.c',

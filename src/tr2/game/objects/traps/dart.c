@@ -14,7 +14,7 @@ static void M_Hit(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     Item_Kill(item_num);
-    Sound_Effect(SFX_CIRCLE_BLADE_HIT, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_DARTS_HIT, &item->pos, SPM_NORMAL);
 
     const int16_t effect_num = Effect_Create(item->room_num);
     if (effect_num != NO_EFFECT) {

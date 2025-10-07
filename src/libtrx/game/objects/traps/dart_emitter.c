@@ -1,7 +1,7 @@
+#include "game/const.h"
+#include "game/effects.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
-
-#include <libtrx/game/sound.h>
+#include "game/sound.h"
 
 typedef enum {
     // clang-format off
@@ -9,7 +9,7 @@ typedef enum {
     DART_EMITTER_STATE_FIRE   = 1,
     DART_EMITTER_STATE_RELOAD = 2,
     // clang-format on
-} DART_EMITTER_STATE;
+} M_STATE;
 
 static void M_CreateDart(ITEM *const item)
 {
@@ -29,16 +29,16 @@ static void M_CreateDart(ITEM *const item)
     int32_t z = 0;
     switch (dart_item->rot.y) {
     case 0:
-        z = -412;
+        z = -WALL_L / 2 + 100;
         break;
-    case 16364:
-        x = -412;
+    case DEG_90:
+        x = -WALL_L / 2 + 100;
         break;
-    case -16384:
-        x = 412;
+    case -DEG_180:
+        z = WALL_L / 2 - 100;
         break;
-    case -32768:
-        z = 412;
+    case -DEG_90:
+        x = WALL_L / 2 - 100;
         break;
     }
 
@@ -46,9 +46,21 @@ static void M_CreateDart(ITEM *const item)
     dart_item->pos.z = item->pos.z + z;
     Item_Initialise(dart_item_num);
     Item_AddActive(dart_item_num);
-
     dart_item->status = IS_ACTIVE;
-    Sound_Effect(SFX_CIRCLE_BLADE, &dart_item->pos, SPM_NORMAL);
+
+    if (TR_VERSION == 1) {
+        const int16_t effect_num = Effect_Create(dart_item->room_num);
+        if (effect_num != NO_EFFECT) {
+            EFFECT *const effect = Effect_Get(effect_num);
+            effect->pos = dart_item->pos;
+            effect->rot = dart_item->rot;
+            effect->speed = 0;
+            effect->frame_num = 0;
+            effect->counter = 0;
+            effect->object_id = O_DART_EFFECT;
+        }
+    }
+    Sound_Effect(SFX_DARTS, &dart_item->pos, SPM_NORMAL);
 }
 
 static void M_Control(const int16_t item_num)
