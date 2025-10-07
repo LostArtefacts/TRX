@@ -1,6 +1,6 @@
 #include "game/effects.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
+#include "game/sound.h"
 
 static void M_Control(const int16_t item_num)
 {
@@ -11,14 +11,15 @@ static void M_Control(const int16_t item_num)
             const int32_t flame_num = ((int32_t)(intptr_t)item->data) - 1;
             Effect_Kill(flame_num);
             item->data = nullptr;
+            if (TR_VERSION == 1) {
+                Sound_StopEffect(SFX_LOOP_FOR_SMALL_FIRES);
+            }
         }
     } else if (item->data == nullptr) {
         const int16_t effect_num = Effect_Create(item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
-            effect->pos.x = item->pos.x;
-            effect->pos.y = item->pos.y;
-            effect->pos.z = item->pos.z;
+            effect->pos = item->pos;
             effect->frame_num = 0;
             effect->object_id = O_FLAME;
             effect->counter = 0;
