@@ -39,7 +39,7 @@ int32_t Math_AngleInCone(int32_t angle1, int32_t angle2, int32_t cone)
     return ABS(diff) < cone;
 }
 
-DIRECTION Math_GetDirection(int16_t angle)
+DIRECTION Math_GetDirection(const int16_t angle)
 {
     return (uint16_t)(angle + DEG_45) / DEG_90;
 }

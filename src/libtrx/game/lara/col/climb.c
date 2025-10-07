@@ -235,7 +235,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
 
-    DIRECTION dir = Math_GetDirection(item->rot.y);
+    const DIRECTION dir = Math_GetDirection(item->rot.y);
     switch (dir) {
     case DIR_NORTH:
         item->pos.z += 2;
