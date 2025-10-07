@@ -201,7 +201,6 @@ sources = [
   'game/objects/traps/icicle.c',
   'game/objects/traps/killer_statue.c',
   'game/objects/traps/mine.c',
-  'game/objects/traps/pendulum.c',
   'game/objects/traps/power_saw.c',
   'game/objects/traps/propeller.c',
   'game/objects/traps/rolling_ball.c',
