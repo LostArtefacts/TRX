@@ -21,115 +21,139 @@ static void M_Initialise(const int16_t item_num)
     item->data = data;
 }
 
+static void M_Roll(ITEM *const item)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->pos.y = item->floor;
+#if TR_VERSION == 2
+    if (item->object_id == O_ROLLING_BALL_2) {
+        Sound_Effect(SFX_SNOWBALL_ROLL, &item->pos, SPM_NORMAL);
+    } else if (item->object_id == O_ROLLING_BALL_3) {
+        Sound_Effect(SFX_ROLLING_2, &item->pos, SPM_NORMAL);
+    } else {
+        Sound_Effect(SFX_ROLLING_BALL, &item->pos, SPM_NORMAL);
+    }
+
+    const int32_t dist = Math_Sqrt(
+        (g_Camera.mic_pos.z - item->pos.z) * (g_Camera.mic_pos.z - item->pos.z)
+        + (g_Camera.mic_pos.x - item->pos.x)
+            * (g_Camera.mic_pos.x - item->pos.x));
+    if (dist < M_SHAKE_RANGE) {
+        g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
+    }
+#endif
+}
+
+static bool M_TestStop(const ITEM *const item)
+{
+    int32_t dist;
+    if (TR_VERSION == 1) {
+        dist = WALL_L / 2;
+    } else {
+        dist = item->object_id == O_ROLLING_BALL_1 ? STEP_L * 3 / 2 : WALL_L;
+    }
+
+    int16_t room_num = item->room_num;
+    const int32_t x =
+        item->pos.x + ((dist * Math_Sin(item->rot.y)) >> W2V_SHIFT);
+    const int32_t z =
+        item->pos.z + ((dist * Math_Cos(item->rot.y)) >> W2V_SHIFT);
+    const SECTOR *const sector = Room_GetSector(x, item->pos.y, z, &room_num);
+    return Room_GetHeight(sector, x, item->pos.y, z) < item->pos.y;
+}
+
+static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
+{
+    if (item->object_id == O_ROLLING_BALL_1) {
+        item->status = IS_DEACTIVATED;
+    }
+#if TR_VERSION == 2
+    if (item->object_id == O_ROLLING_BALL_2) {
+        Sound_Effect(SFX_SNOWBALL_STOP, &item->pos, SPM_NORMAL);
+        item->goal_anim_state = TRAP_WORKING;
+    } else if (item->object_id == O_ROLLING_BALL_3) {
+        Sound_Effect(SFX_ROLLING_2_HIT, &item->pos, SPM_NORMAL);
+        item->goal_anim_state = TRAP_WORKING;
+    }
+#endif
+
+    item->pos.x = old_pos.x;
+    item->pos.y = item->floor;
+    item->pos.z = old_pos.z;
+    item->speed = 0;
+    item->fall_speed = 0;
+    item->touch_bits = 0;
+}
+
+static void M_Reset(ITEM *const item)
+{
+    const int16_t item_num = Item_GetIndex(item);
+    const GAME_VECTOR *const data = item->data;
+
+    item->status = IS_INACTIVE;
+    item->pos = data->pos;
+    if (item->room_num != data->room_num) {
+        Item_RemoveDrawn(item_num);
+        ROOM *const room = Room_Get(data->room_num);
+        item->next_item = room->item_num;
+        room->item_num = item_num;
+        item->room_num = data->room_num;
+    }
+
+    item->goal_anim_state = TRAP_SET;
+    item->current_anim_state = TRAP_SET;
+    Item_SwitchToAnim(item, 0, 0);
+    item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
+    item->current_anim_state = item->goal_anim_state;
+    item->required_anim_state = TRAP_SET;
+    Item_RemoveActive(item_num);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->status == IS_ACTIVE) {
-        if (item->goal_anim_state == TRAP_WORKING) {
-            Item_Animate(item);
-            return;
-        }
+    if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
+        M_Reset(item);
+        return;
+    }
 
-        if (item->pos.y < item->floor) {
-            if (!item->gravity) {
-                item->gravity = true;
-                item->fall_speed = -10;
-            }
-        } else if (item->current_anim_state == TRAP_SET) {
-            item->goal_anim_state = TRAP_ACTIVATE;
-        }
+    if (item->status != IS_ACTIVE) {
+        return;
+    }
 
-        const XYZ_32 old_pos = item->pos;
+    if (item->goal_anim_state == TRAP_WORKING) {
         Item_Animate(item);
+        return;
+    }
 
-        int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        Item_UpdateRoom(item_num, room_num);
-
-        item->floor =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-
-        Room_TestTriggers(item);
-
-        if (item->pos.y >= item->floor - STEP_L) {
-            item->gravity = false;
-            item->fall_speed = 0;
-            item->pos.y = item->floor;
-#if TR_VERSION == 2
-            if (item->object_id == O_ROLLING_BALL_2) {
-                Sound_Effect(SFX_SNOWBALL_ROLL, &item->pos, SPM_NORMAL);
-            } else if (item->object_id == O_ROLLING_BALL_3) {
-                Sound_Effect(SFX_ROLLING_2, &item->pos, SPM_NORMAL);
-            } else {
-                Sound_Effect(SFX_ROLLING_BALL, &item->pos, SPM_NORMAL);
-            }
-            const int32_t dist = Math_Sqrt(
-                (g_Camera.mic_pos.z - item->pos.z)
-                    * (g_Camera.mic_pos.z - item->pos.z)
-                + (g_Camera.mic_pos.x - item->pos.x)
-                    * (g_Camera.mic_pos.x - item->pos.x));
-            if (dist < M_SHAKE_RANGE) {
-                g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
-            }
-#endif
+    if (item->pos.y < item->floor) {
+        if (!item->gravity) {
+            item->gravity = true;
+            item->fall_speed = -10;
         }
+    } else if (item->current_anim_state == TRAP_SET) {
+        item->goal_anim_state = TRAP_ACTIVATE;
+    }
 
-        {
-#if TR_VERSION == 1
-            const int32_t dist = WALL_L / 2;
-#else
-            const int32_t dist =
-                item->object_id == O_ROLLING_BALL_1 ? STEP_L * 3 / 2 : WALL_L;
-#endif
-            const int32_t x =
-                item->pos.x + ((dist * Math_Sin(item->rot.y)) >> W2V_SHIFT);
-            const int32_t z =
-                item->pos.z + ((dist * Math_Cos(item->rot.y)) >> W2V_SHIFT);
-            const SECTOR *const sector =
-                Room_GetSector(x, item->pos.y, z, &room_num);
-            if (Room_GetHeight(sector, x, item->pos.y, z) < item->pos.y) {
-                if (item->object_id == O_ROLLING_BALL_1) {
-                    item->status = IS_DEACTIVATED;
-                }
-#if TR_VERSION == 2
-                if (item->object_id == O_ROLLING_BALL_2) {
-                    Sound_Effect(SFX_SNOWBALL_STOP, &item->pos, SPM_NORMAL);
-                    item->goal_anim_state = TRAP_WORKING;
-                } else if (item->object_id == O_ROLLING_BALL_3) {
-                    Sound_Effect(SFX_ROLLING_2_HIT, &item->pos, SPM_NORMAL);
-                    item->goal_anim_state = TRAP_WORKING;
-                }
-#endif
-                item->pos.x = old_pos.x;
-                item->pos.y = item->floor;
-                item->pos.z = old_pos.z;
-                item->speed = 0;
-                item->fall_speed = 0;
-                item->touch_bits = 0;
-            }
-        }
-    } else if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
-        item->status = IS_INACTIVE;
-        const GAME_VECTOR *const data = item->data;
-        item->pos.x = data->x;
-        item->pos.y = data->y;
-        item->pos.z = data->z;
-        if (item->room_num != data->room_num) {
-            Item_RemoveDrawn(item_num);
-            ROOM *const room = Room_Get(data->room_num);
-            item->next_item = room->item_num;
-            room->item_num = item_num;
-            item->room_num = data->room_num;
-        }
-        item->goal_anim_state = TRAP_SET;
-        item->current_anim_state = TRAP_SET;
-        Item_SwitchToAnim(item, 0, 0);
-        item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
-        item->current_anim_state = item->goal_anim_state;
-        item->required_anim_state = TRAP_SET;
-        Item_RemoveActive(item_num);
+    const XYZ_32 old_pos = item->pos;
+    Item_Animate(item);
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Item_UpdateRoom(item_num, room_num);
+
+    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    Room_TestTriggers(item);
+
+    if (item->pos.y >= item->floor - STEP_L) {
+        M_Roll(item);
+    }
+
+    if (M_TestStop(item)) {
+        M_Stop(item, old_pos);
     }
 }
 
@@ -137,6 +161,8 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
             Object_Collision(item_num, lara_item, coll);
@@ -144,7 +170,7 @@ static void M_Collision(
         return;
     }
 
-    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!Collide_TestCollision(item, lara_item)) {
@@ -176,13 +202,15 @@ static void M_Collision(
         lara_item->hit_status = true;
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
+            Item_UpdateRoom(lara->item_num, item->room_num);
 
             lara_item->rot.x = 0;
             lara_item->rot.y = item->rot.y;
             lara_item->rot.z = 0;
 
             Item_SwitchToAnim(lara_item, LA_BOULDER_DEATH, 0);
-            lara_item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
+            lara_item->goal_anim_state =
+                Item_GetAnim(lara_item)->current_anim_state;
             lara_item->current_anim_state = lara_item->goal_anim_state;
 
             g_Camera.flags = CF_FOLLOW_CENTRE;
