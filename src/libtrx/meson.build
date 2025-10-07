@@ -256,6 +256,7 @@ sources = [
   'game/objects/traps/movable_block.c',
   'game/objects/traps/pendulum.c',
   'game/objects/traps/rolling_ball.c',
+  'game/objects/traps/spikes.c',
   'game/objects/vars.c',
   'game/option/common.c',
   'game/option/controls.c',
