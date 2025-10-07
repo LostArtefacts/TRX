@@ -11,6 +11,11 @@
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
+    if (inv_item->action == ACTION_EXAMINE) {
+        Option_Examine_Control(inv_item->object_id, is_busy);
+        return;
+    }
+
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport_Control(inv_item, is_busy);
@@ -57,9 +62,7 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_KEY_OPTION_4:
     case O_PICKUP_OPTION_1:
     case O_PICKUP_OPTION_2:
-        if (inv_item->action == ACTION_EXAMINE) {
-            Option_Examine_Control(inv_item->object_id, is_busy);
-        } else if (!is_busy) {
+        if (!is_busy) {
             g_InputDB.menu_confirm = 1;
         }
         break;
@@ -84,6 +87,11 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 
 void Option_Draw(INVENTORY_ITEM *const inv_item)
 {
+    if (inv_item->action == ACTION_EXAMINE) {
+        Option_Examine_Draw();
+        return;
+    }
+
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport_Draw(inv_item);
@@ -105,24 +113,12 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         break;
     case O_GAMMA_OPTION:
         break;
-    case O_PICKUP_OPTION_1:
-    case O_PICKUP_OPTION_2:
-    case O_PUZZLE_OPTION_1:
-    case O_PUZZLE_OPTION_2:
-    case O_PUZZLE_OPTION_3:
-    case O_PUZZLE_OPTION_4:
-    case O_KEY_OPTION_1:
-    case O_KEY_OPTION_2:
-    case O_KEY_OPTION_3:
-    case O_KEY_OPTION_4:
-        Option_Examine_Draw();
-        break;
     default:
         break;
     }
 }
 
-void Option_Close(INVENTORY_ITEM *const inv_item)
+void Option_Close(const INVENTORY_ITEM *const inv_item)
 {
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
@@ -143,19 +139,8 @@ void Option_Close(INVENTORY_ITEM *const inv_item)
     case O_COMPASS_OPTION:
         Option_Compass_Close();
         break;
-    case O_PICKUP_OPTION_1:
-    case O_PICKUP_OPTION_2:
-    case O_PUZZLE_OPTION_1:
-    case O_PUZZLE_OPTION_2:
-    case O_PUZZLE_OPTION_3:
-    case O_PUZZLE_OPTION_4:
-    case O_KEY_OPTION_1:
-    case O_KEY_OPTION_2:
-    case O_KEY_OPTION_3:
-    case O_KEY_OPTION_4:
-        Option_Examine_Close();
-        break;
     default:
+        Option_Examine_Close();
         break;
     }
 }

@@ -60,10 +60,10 @@ static void M_RingIsNotOpen(INV_RING *const ring)
     InvRing_ShowExamine(false);
 }
 
-static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
+static void M_RingNotActive(
+    const INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
 {
     InvRing_ShowItemName(inv_item);
-    bool enable_examine = false;
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
@@ -124,15 +124,15 @@ static void M_RingNotActive(const INVENTORY_ITEM *const inv_item)
             InvRing_ShowItemQuantity("%d", qty);
         }
 
-        enable_examine = !Option_Examine_IsActive()
-            && Option_Examine_CanExamine(inv_item->object_id);
         break;
 
     default:
         break;
     }
 
-    InvRing_ShowExamine(enable_examine);
+    InvRing_ShowExamine(
+        ring->motion.status == RNG_OPEN
+        && Option_Examine_CanExamine(inv_item->object_id));
 }
 
 static void M_RingActive(void)
@@ -441,9 +441,15 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     g_InvRing_Source[RT_KEYS].items[ring->current_object];
             }
 
-            inv_item->goal_frame = inv_item->open_frame;
-            inv_item->anim_direction = 1;
-            inv_item->action = examine ? ACTION_EXAMINE : ACTION_USE;
+            if (examine) {
+                inv_item->action = ACTION_EXAMINE;
+                inv_item->goal_frame = 0;
+                inv_item->anim_direction = 1;
+            } else {
+                inv_item->action = ACTION_USE;
+                inv_item->goal_frame = inv_item->open_frame;
+                inv_item->anim_direction = 1;
+            }
             InvRing_MotionSetup(ring, RNG_SELECTING, RNG_SELECTED, 16);
             InvRing_MotionRotation(
                 ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
@@ -732,7 +738,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ((!g_Input.menu_left && !g_Input.menu_right)
                 || ring->number_of_objects <= 1)) {
             INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
-            M_RingNotActive(inv_item);
+            M_RingNotActive(ring, inv_item);
         }
         M_RingIsOpen(ring);
     } else {

@@ -51,12 +51,6 @@ bool Option_Examine_CanExamine(const GAME_OBJECT_ID obj_id)
     return Object_GetDescription(obj_id) != nullptr;
 }
 
-bool Option_Examine_IsActive(void)
-{
-    const M_PRIV *const p = &m_Priv;
-    return p->ui.is_ready;
-}
-
 void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
 {
     M_PRIV *const p = &m_Priv;
@@ -69,10 +63,9 @@ void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
     }
     UI_TextDialog_Control(p->ui.state);
 
-    if (g_InputDB.look) {
+    if (g_InputDB.look || g_InputDB.menu_back || g_InputDB.menu_confirm) {
         g_InputDB.menu_back = true;
-    }
-    if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
+        g_InputDB.menu_confirm = false;
         M_Close(p);
     }
 }
