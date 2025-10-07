@@ -154,6 +154,7 @@
     - added the ability for any enemy type to drop items, excluding eels
     - fixed items dropped by flying creatures not falling to the ground
 - fixed Lara shooting rifle-type weapons drawn during wade to float transition
+- fixed discs that spawn from emitters facing East starting too far from the emitters themselves
 
 ## Cheats
 - added a fly cheat

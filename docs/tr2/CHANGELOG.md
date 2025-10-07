@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...develop) - ××××-××-××
+- fixed discs that spawn from emitters facing East starting too far from the emitters themselves (#4007)
 - fixed a crash on game exit if specifying "ambient_tracks" in the game flow root (regression from 1.1)
 - fixed alternate ambient tracks being lost on reload in custom levels (#3997, regression from 1.4)
 - fixed a crash if the game had certain objects (id=17, 18, 41, 43, 50) but was missing their reference objects (id=16, 16, 42, 44, 49, respectively)
