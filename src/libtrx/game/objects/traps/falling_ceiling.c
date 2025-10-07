@@ -1,17 +1,18 @@
 #include "game/lara.h"
-#include "game/objects/common.h"
+#include "game/rooms.h"
 
-#define FALLING_CEILING_DAMAGE 300
+#define M_DAMAGE 300
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
         item->gravity = true;
     } else if (
         item->current_anim_state == TRAP_ACTIVATE && item->touch_bits != 0) {
-        Lara_TakeDamage(FALLING_CEILING_DAMAGE, true);
+        Lara_TakeDamage(M_DAMAGE, true);
     }
 
     Item_Animate(item);
@@ -46,4 +47,6 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_FALLING_CEILING_1, M_Setup)
+#if TR_VERSION == 1
 REGISTER_OBJECT(O_FALLING_CEILING_2, M_Setup)
+#endif
