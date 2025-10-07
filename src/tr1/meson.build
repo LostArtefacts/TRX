@@ -189,7 +189,6 @@ sources = [
   'game/objects/traps/lightning_emitter.c',
   'game/objects/traps/midas_touch.c',
   'game/objects/traps/sliding_pillar.c',
-  'game/objects/traps/teeth_trap.c',
   'game/objects/traps/thors_hammer.c',
   'game/objects/vars.c',
   'game/option/option.c',
