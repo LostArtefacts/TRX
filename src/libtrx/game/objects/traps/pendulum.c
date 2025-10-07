@@ -1,18 +1,31 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
+#include "game/random.h"
+#include "game/rooms.h"
 #include "game/spawn.h"
 
-#include <libtrx/game/lara/common.h>
-#include <libtrx/game/random.h>
-
-#define PENDULUM_DAMAGE 50
+#define M_DAMAGE (TR_VERSION == 1 ? 100 : 50)
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->touch_bits != 0) {
-        Lara_TakeDamage(PENDULUM_DAMAGE, true);
+    const bool working =
+        TR_VERSION != 1 || item->current_anim_state == TRAP_WORKING;
+    if (TR_VERSION == 1) {
+        if (Item_IsTriggerActive(item)) {
+            if (item->current_anim_state == TRAP_SET) {
+                item->goal_anim_state = TRAP_WORKING;
+            }
+        } else {
+            if (item->current_anim_state == TRAP_WORKING) {
+                item->goal_anim_state = TRAP_SET;
+            }
+        }
+    }
+
+    if (working && item->touch_bits != 0) {
+        Lara_TakeDamage(M_DAMAGE, true);
 
         const ITEM *const lara_item = Lara_GetItem();
         const XYZ_32 pos = {
@@ -35,11 +48,14 @@ static void M_Control(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->collision_func = Object_Collision;
-    obj->shadow_size = 128;
+    obj->collision_func =
+        TR_VERSION == 1 ? Object_Collision_Trap : Object_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
     obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_PENDULUM_1, M_Setup)
+#if TR_VERSION == 2
 REGISTER_OBJECT(O_PENDULUM_2, M_Setup)
+#endif
