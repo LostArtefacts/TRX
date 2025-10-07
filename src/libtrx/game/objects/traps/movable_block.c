@@ -471,7 +471,8 @@ static void M_Collision(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const DIRECTION quadrant = ((uint16_t)lara_item->rot.y + DEG_45) / DEG_90;
+    const DIRECTION quadrant =
+        ((uint16_t)(lara_item->rot.y + DEG_45) & 0xC000) / DEG_90;
     if (lara_item->current_anim_state == LS_STOP) {
         if (g_Input.forward || g_Input.back
             || lara->gun_status != LGS_ARMLESS) {
