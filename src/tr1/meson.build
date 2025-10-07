@@ -185,7 +185,6 @@ sources = [
   'game/objects/traps/damocles_sword.c',
   'game/objects/traps/dart.c',
   'game/objects/traps/dart_emitter.c',
-  'game/objects/traps/flame_emitter.c',
   'game/objects/traps/lava_wedge.c',
   'game/objects/traps/lightning_emitter.c',
   'game/objects/traps/midas_touch.c',

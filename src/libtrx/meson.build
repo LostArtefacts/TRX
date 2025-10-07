@@ -252,6 +252,7 @@ sources = [
   'game/objects/traps/ember_emitter.c',
   'game/objects/traps/falling_block.c',
   'game/objects/traps/falling_ceiling.c',
+  'game/objects/traps/flame_emitter.c',
   'game/objects/traps/movable_block.c',
   'game/objects/vars.c',
   'game/option/common.c',
