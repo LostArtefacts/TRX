@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...develop) - ××××-××-××
+- changed the examine dialog to be usable with non-puzzle items (#4009)
 - fixed a crash on game exit if specifying "ambient_tracks" in the game flow root (regression from 4.11)
 - fixed alternate ambient tracks being lost on reload in custom levels (#3997, regression from 4.14)
 - fixed Lara at times not being able to grab pushblocks despite being in the correct position to do so (#4005, regression from 0.9.1)
