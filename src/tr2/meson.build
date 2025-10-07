@@ -205,7 +205,6 @@ sources = [
   'game/objects/traps/propeller.c',
   'game/objects/traps/spike_ceiling.c',
   'game/objects/traps/spike_wall.c',
-  'game/objects/traps/spikes.c',
   'game/objects/traps/spinning_blade.c',
   'game/objects/traps/springboard.c',
   'game/objects/traps/teeth_trap.c',

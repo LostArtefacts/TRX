@@ -1,42 +1,39 @@
+#include "config.h"
+#include "game/lara.h"
+#include "game/random.h"
 #include "game/spawn.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/collision.h>
-#include <libtrx/game/const.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/random.h>
-
-#define SPIKE_DAMAGE 15
+#define M_FALL_SPEED_LIMIT (TR_VERSION == 1 ? 0 : GRAVITY)
+#define M_DAMAGE 15
 
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-
     if (lara_item->hit_points < 0) {
         return;
     }
-    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
+
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 
-    int32_t num = Random_GetControl() / 24576;
+    int32_t blood_spawn_count = Random_GetControl() / 0x6000;
     if (lara_item->gravity) {
-        if (lara_item->fall_speed > GRAVITY
+        if (lara_item->fall_speed > M_FALL_SPEED_LIMIT
             && !g_Config.debug.enable_invulnerability) {
             lara_item->hit_points = -1;
-            num = 20;
+            blood_spawn_count = 20;
         }
     } else if (lara_item->speed < 30) {
         return;
     }
 
-    lara_item->hit_points -= SPIKE_DAMAGE;
-    for (int32_t i = 0; i < num; i++) {
+    lara_item->hit_points -= M_DAMAGE;
+    for (int32_t i = 0; i < blood_spawn_count; i++) {
         const XYZ_32 pos = {
             .x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256,
             .z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256,
