@@ -249,6 +249,7 @@ sources = [
   'game/objects/general/trapdoor.c',
   'game/objects/general/waterfall.c',
   'game/objects/names.c',
+  'game/objects/traps/dart.c',
   'game/objects/traps/dart_emitter.c',
   'game/objects/traps/ember_emitter.c',
   'game/objects/traps/falling_block.c',

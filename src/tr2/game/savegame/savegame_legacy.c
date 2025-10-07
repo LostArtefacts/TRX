@@ -66,7 +66,8 @@ static SAVEGAME_STRATEGY m_Strategy = {
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, const ITEM *const item)
 {
-    return obj->save_flags && item->object_id != O_WATERFALL;
+    return obj->save_flags && item->object_id != O_WATERFALL
+        && item->object_id != O_DART;
 }
 
 static bool M_ItemHasSavePosition(
