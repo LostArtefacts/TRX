@@ -254,6 +254,7 @@ sources = [
   'game/objects/traps/falling_ceiling.c',
   'game/objects/traps/flame_emitter.c',
   'game/objects/traps/movable_block.c',
+  'game/objects/traps/pendulum.c',
   'game/objects/vars.c',
   'game/option/common.c',
   'game/option/controls.c',
