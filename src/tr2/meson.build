@@ -203,7 +203,6 @@ sources = [
   'game/objects/traps/mine.c',
   'game/objects/traps/power_saw.c',
   'game/objects/traps/propeller.c',
-  'game/objects/traps/rolling_ball.c',
   'game/objects/traps/spike_ceiling.c',
   'game/objects/traps/spike_wall.c',
   'game/objects/traps/spikes.c',

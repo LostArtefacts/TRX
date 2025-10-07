@@ -1,20 +1,15 @@
+#include "config.h"
+#include "game/camera.h"
+#include "game/game_buf.h"
+#include "game/lara.h"
+#include "game/objects/common.h"
+#include "game/random.h"
+#include "game/rooms.h"
+#include "game/sound.h"
 #include "game/spawn.h"
-#include "global/vars.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/collision.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/lara/common.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
-
-#define ROLLING_BALL_DAMAGE_AIR 100
-#define ROLL_SHAKE_RANGE (WALL_L * 10) // = 10240
+#define M_DAMAGE_AIR 100
+#define M_SHAKE_RANGE (WALL_L * 10) // = 10240
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -62,6 +57,7 @@ static void M_Control(const int16_t item_num)
             item->gravity = false;
             item->fall_speed = 0;
             item->pos.y = item->floor;
+#if TR_VERSION == 2
             if (item->object_id == O_ROLLING_BALL_2) {
                 Sound_Effect(SFX_SNOWBALL_ROLL, &item->pos, SPM_NORMAL);
             } else if (item->object_id == O_ROLLING_BALL_3) {
@@ -74,15 +70,19 @@ static void M_Control(const int16_t item_num)
                     * (g_Camera.mic_pos.z - item->pos.z)
                 + (g_Camera.mic_pos.x - item->pos.x)
                     * (g_Camera.mic_pos.x - item->pos.x));
-            if (dist < ROLL_SHAKE_RANGE) {
-                g_Camera.bounce =
-                    40 * (dist - ROLL_SHAKE_RANGE) / ROLL_SHAKE_RANGE;
+            if (dist < M_SHAKE_RANGE) {
+                g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
             }
+#endif
         }
 
         {
+#if TR_VERSION == 1
+            const int32_t dist = WALL_L / 2;
+#else
             const int32_t dist =
                 item->object_id == O_ROLLING_BALL_1 ? STEP_L * 3 / 2 : WALL_L;
+#endif
             const int32_t x =
                 item->pos.x + ((dist * Math_Sin(item->rot.y)) >> W2V_SHIFT);
             const int32_t z =
@@ -90,15 +90,18 @@ static void M_Control(const int16_t item_num)
             const SECTOR *const sector =
                 Room_GetSector(x, item->pos.y, z, &room_num);
             if (Room_GetHeight(sector, x, item->pos.y, z) < item->pos.y) {
+                if (item->object_id == O_ROLLING_BALL_1) {
+                    item->status = IS_DEACTIVATED;
+                }
+#if TR_VERSION == 2
                 if (item->object_id == O_ROLLING_BALL_2) {
                     Sound_Effect(SFX_SNOWBALL_STOP, &item->pos, SPM_NORMAL);
                     item->goal_anim_state = TRAP_WORKING;
                 } else if (item->object_id == O_ROLLING_BALL_3) {
                     Sound_Effect(SFX_ROLLING_2_HIT, &item->pos, SPM_NORMAL);
                     item->goal_anim_state = TRAP_WORKING;
-                } else {
-                    item->status = IS_DEACTIVATED;
                 }
+#endif
                 item->pos.x = old_pos.x;
                 item->pos.y = item->floor;
                 item->pos.z = old_pos.z;
@@ -153,7 +156,7 @@ static void M_Collision(
             Lara_Push(item, coll, coll->enable_hit, true);
         }
         if (!g_Config.debug.enable_invulnerability) {
-            lara_item->hit_points -= ROLLING_BALL_DAMAGE_AIR;
+            lara_item->hit_points -= M_DAMAGE_AIR;
         }
 
         // TODO: handle overflows
@@ -170,7 +173,7 @@ static void M_Collision(
             item->pos.z + (dz * WALL_L / 2) / dist, item->speed, item->rot.y,
             item->room_num);
     } else {
-        lara_item->hit_status = 1;
+        lara_item->hit_status = true;
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
 
@@ -179,8 +182,8 @@ static void M_Collision(
             lara_item->rot.z = 0;
 
             Item_SwitchToAnim(lara_item, LA_BOULDER_DEATH, 0);
-            lara_item->current_anim_state = LA_REACH_TO_FREEFALL;
-            lara_item->goal_anim_state = LA_REACH_TO_FREEFALL;
+            lara_item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
+            lara_item->current_anim_state = lara_item->goal_anim_state;
 
             g_Camera.flags = CF_FOLLOW_CENTRE;
             g_Camera.target_angle = 170 * DEG_1;
@@ -210,5 +213,7 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_ROLLING_BALL_1, M_Setup)
+#if TR_VERSION == 2
 REGISTER_OBJECT(O_ROLLING_BALL_2, M_Setup)
 REGISTER_OBJECT(O_ROLLING_BALL_3, M_Setup)
+#endif
