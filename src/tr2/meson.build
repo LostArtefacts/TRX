@@ -207,7 +207,6 @@ sources = [
   'game/objects/traps/spike_wall.c',
   'game/objects/traps/spinning_blade.c',
   'game/objects/traps/springboard.c',
-  'game/objects/traps/teeth_trap.c',
   'game/objects/vars.c',
   'game/objects/vehicles/boat.c',
   'game/objects/vehicles/skidoo_armed.c',

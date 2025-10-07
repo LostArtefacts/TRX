@@ -2,23 +2,26 @@
 #include "game/objects/common.h"
 #include "game/spawn.h"
 
-#include <libtrx/game/collision.h>
-
-#define TEETH_TRAP_DAMAGE 400
+#define M_DAMAGE 400
+#define M_NUM_TEETH 6
 
 typedef enum {
     TEETH_TRAP_STATE_NICE = 0,
     TEETH_TRAP_STATE_NASTY = 1,
 } TEETH_TRAP_STATE;
 
-static BITE m_Teeth1A = { .pos = { -23, 0, -1718 }, .mesh_num = 0 };
-static BITE m_Teeth1B = { .pos = { 71, 0, -1718 }, .mesh_num = 1 };
-static BITE m_Teeth2A = { .pos = { -23, 10, -1718 }, .mesh_num = 0 };
-static BITE m_Teeth2B = { .pos = { 71, 10, -1718 }, .mesh_num = 1 };
-static BITE m_Teeth3A = { .pos = { -23, -10, -1718 }, .mesh_num = 0 };
-static BITE m_Teeth3B = { .pos = { 71, -10, -1718 }, .mesh_num = 1 };
+static const BITE m_Teeth[M_NUM_TEETH] = {
+    // clang-format off
+    { .pos = { .x = -23, .y = 0,   .z = -1718 }, .mesh_num = 0 },
+    { .pos = { .x = 71,  .y = 0,   .z = -1718 }, .mesh_num = 1 },
+    { .pos = { .x = -23, .y = 10,  .z = -1718 }, .mesh_num = 0 },
+    { .pos = { .x = 71,  .y = 10,  .z = -1718 }, .mesh_num = 1 },
+    { .pos = { .x = -23, .y = -10, .z = -1718 }, .mesh_num = 0 },
+    { .pos = { .x = 71,  .y = -10, .z = -1718 }, .mesh_num = 1 },
+    // clang-format on
+};
 
-static void M_BiteEffect(ITEM *item, BITE *bite)
+static void M_Bite(ITEM *const item, const BITE *const bite)
 {
     XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
@@ -28,21 +31,20 @@ static void M_BiteEffect(ITEM *item, BITE *bite)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+
     if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = TEETH_TRAP_STATE_NASTY;
-        if (item->touch_bits
+        if (item->touch_bits != 0
             && item->current_anim_state == TEETH_TRAP_STATE_NASTY) {
-            Lara_TakeDamage(TEETH_TRAP_DAMAGE, true);
-            M_BiteEffect(item, &m_Teeth1A);
-            M_BiteEffect(item, &m_Teeth1B);
-            M_BiteEffect(item, &m_Teeth2A);
-            M_BiteEffect(item, &m_Teeth2B);
-            M_BiteEffect(item, &m_Teeth3A);
-            M_BiteEffect(item, &m_Teeth3B);
+            Lara_TakeDamage(M_DAMAGE, true);
+            for (int32_t i = 0; i < M_NUM_TEETH; i++) {
+                M_Bite(item, &m_Teeth[i]);
+            }
         }
     } else {
         item->goal_anim_state = TEETH_TRAP_STATE_NICE;
     }
+
     Item_Animate(item);
 }
 
