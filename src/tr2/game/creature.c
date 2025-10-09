@@ -13,6 +13,29 @@
 #define M_SHOOT_TARGETING_SPEED 300
 #define M_SHOOT_HIT_CHANCE 0x2000
 
+static void M_CalcShootVectors(
+    const ITEM *const item, const ITEM *const target_item, XYZ_32 *const start,
+    XYZ_32 *const target)
+{
+    start->x = item->pos.x;
+    start->y = item->pos.y - STEP_L * 3;
+    start->z = item->pos.z;
+
+    target->x = target_item->pos.x;
+    target->y = target_item->pos.y - STEP_L * 3;
+    target->z = target_item->pos.z;
+
+    const int16_t angle = XYZ_32_GetYaw((XYZ_32) {
+        .x = target->x - start->x,
+        .y = target->y - start->y,
+        .z = target->z - start->z,
+    });
+
+    const int32_t dist = WALL_L * 2;
+    target->x += (dist * Math_Sin(angle)) >> W2V_SHIFT;
+    target->z += (dist * Math_Cos(angle)) >> W2V_SHIFT;
+}
+
 bool Creature_ShootAtLara(
     ITEM *const item, const AI_INFO *const info, const BITE *const gun,
     const int16_t extra_rotation, const int32_t damage)
@@ -58,21 +81,12 @@ bool Creature_ShootAtLara(
             Item_TakeDamage(target_item, damage / 10, true);
         }
     }
-
     if (effect_num != NO_EFFECT) {
         Effect_Get(effect_num)->rot.y += extra_rotation;
     }
 
-    const XYZ_32 start = {
-        .x = item->pos.x,
-        .y = item->pos.y - STEP_L * 3,
-        .z = item->pos.z,
-    };
-    const XYZ_32 target = {
-        .x = target_item->pos.x,
-        .y = target_item->pos.y - STEP_L * 3,
-        .z = target_item->pos.z,
-    };
+    XYZ_32 start, target;
+    M_CalcShootVectors(item, target_item, &start, &target);
     Gun_SmashItems(start, target, nullptr);
 
     return is_targetable;
