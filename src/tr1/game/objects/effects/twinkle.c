@@ -29,7 +29,7 @@ void Twinkle_SparkleItem(ITEM *const item, uint32_t mesh_mask)
     SPHERE slist[34];
     GAME_VECTOR effect_pos;
 
-    int32_t num = Collide_GetSpheres(item, slist, 1);
+    int32_t num = Collide_GetSpheres(item, slist, true);
     effect_pos.room_num = item->room_num;
     for (int i = 0; i < num; i++) {
         if (mesh_mask & (1 << i)) {
