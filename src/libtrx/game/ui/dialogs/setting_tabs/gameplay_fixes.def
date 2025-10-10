@@ -29,10 +29,10 @@ X_UI_CFG_BOOL(gameplay.fix_water_exit,              SETTING_FIX_WATER_EXIT)
 X_UI_CFG_BOOL(gameplay.fix_qwop_glitch,             SETTING_FIX_QWOP_GLITCH)
 X_UI_CFG_BOOL(gameplay.fix_step_glitch,             SETTING_FIX_STEP_GLITCH, .custom_handler = { .is_available = UI_Settings_FixStepGlitch_IsAvailable })
 X_UI_CFG_BOOL(gameplay.fix_item_duplication_glitch, SETTING_FIX_ITEM_DUPLICATION_GLITCH)
+X_UI_CFG_BOOL(gameplay.fix_lara_pickup_embed,       SETTING_FIX_LARA_PICKUP_EMBED)
 
 #if TR_VERSION == 2
 X_UI_CFG_BOOL(gameplay.fix_free_flare_glitch,       SETTING_FIX_FREE_FLARE_GLITCH)
-X_UI_CFG_BOOL(gameplay.fix_pickup_drift_glitch,     SETTING_FIX_PICKUP_DRIFT_GLITCH)
 #endif
 
 #if TR_VERSION == 1
