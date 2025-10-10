@@ -12,6 +12,7 @@ static void M_SetupLara(void)
 {
     OBJECT *const obj = Object_Get(O_LARA);
     obj->initialise_func = Lara_InitialiseLoad;
+    obj->can_interpolate_func = nullptr;
 
     obj->shadow_size = (UNIT_SHADOW / 16) * 10;
     obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
@@ -45,6 +46,7 @@ void Object_SetupAllObjects(void)
         obj->draw_func = Object_DrawAnimatingItem;
         obj->collision_func = nullptr;
         obj->add_walkable_func = nullptr;
+        obj->can_interpolate_func = Object_CanInterpolate;
         obj->hit_points = DONT_TARGET;
         obj->pivot_length = 0;
         obj->radius = DEFAULT_RADIUS;
