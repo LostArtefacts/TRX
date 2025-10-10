@@ -15,6 +15,7 @@ void Lara_UseItem(GAME_OBJECT_ID obj_id);
 void Lara_SetStartAnimState(LARA_EXTRA_STATE state);
 bool Lara_IsControllable(void);
 void Lara_SetControllable(bool controllable);
+bool Lara_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
 ITEM *Lara_GetDeathCameraTarget(void);
 void Lara_SetDeathCameraTarget(int16_t item_num);
 GAME_OBJECT_ID Lara_GetAnimationObject(void);
