@@ -17,9 +17,28 @@
 #define M_MOVE_ANGLE (2 * DEG_1) // = 364
 #define M_PUSH_TIMEOUT 15
 
+static const LARA_ANIMATION m_InvalidInterpAnims[] = {
+    // clang-format off
+    LA_JUMP_NEUTRAL_ROLL,
+    LA_CONTROLLED_DROP_CONTINUE,
+    LA_HANG_TO_JUMP_BACK,
+    (LARA_ANIMATION)-1, // sentinel
+    // clang-format on
+};
+
 static bool m_Controllable = false;
 static int16_t m_DeathCameraTarget = NO_ITEM;
 static LARA_EXTRA_STATE m_StartAnimState = LS_EXTRA_BREATH;
+
+static bool M_IsInvalidInterpAnim(const LARA_ANIMATION anim_idx)
+{
+    for (int32_t i = 0; m_InvalidInterpAnims[i] != (LARA_ANIMATION)-1; i++) {
+        if (m_InvalidInterpAnims[i] == anim_idx) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void Lara_Initialise(const GF_LEVEL *const level)
 {
@@ -366,6 +385,21 @@ bool Lara_IsControllable(void)
 void Lara_SetControllable(const bool controllable)
 {
     m_Controllable = controllable;
+}
+
+bool Lara_CanInterpolate(
+    const ITEM *const item, const int32_t frame_a, const int32_t frame_b)
+{
+    const int32_t anim_idx = Item_GetRelativeAnim(item);
+    if (!M_IsInvalidInterpAnim(anim_idx)) {
+        return true;
+    }
+
+    // Avoid the flip 180 command having a bad effect on interpolated frames
+    // on rate 1 animations, such as neutral jump twist. TODO: improve this.
+    const ANIM *const anim = Item_GetAnim(item);
+    return !Anim_HasFXCommandBetween(
+        anim, ITEM_ACTION_TURN_180, frame_a, frame_b);
 }
 
 ITEM *Lara_GetDeathCameraTarget(void)
