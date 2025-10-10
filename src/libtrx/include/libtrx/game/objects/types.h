@@ -71,6 +71,8 @@ typedef struct OBJECT {
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
+    bool (*can_interpolate_func)(
+        const ITEM *item, int32_t frame_a, int32_t frame_b);
 
     int16_t anim_idx;
     int16_t hit_points;

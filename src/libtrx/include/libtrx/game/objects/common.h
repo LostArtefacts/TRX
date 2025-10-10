@@ -76,6 +76,8 @@ GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id);
 
 extern void Object_SetReflective(GAME_OBJECT_ID obj_id, bool enabled);
 
+bool Object_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
+
 #define REGISTER_OBJECT(object_id, setup_func_)                                \
     __attribute__((constructor)) static void M_RegisterObject##object_id(void) \
     {                                                                          \

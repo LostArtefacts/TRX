@@ -147,10 +147,10 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
     }
 
     // Invalid state for interpolation
-    if (item != Lara_GetItem()
-        && (!item->active || item->status != IS_ACTIVE
-            || !item->enable_interpolation
-            || !Object_Get(item->object_id)->enable_interpolation)) {
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->can_interpolate_func != nullptr
+        && !obj->can_interpolate_func(
+            item, first_key_frame_num, second_key_frame_num)) {
         *rate = denominator;
         return numerator;
     }
