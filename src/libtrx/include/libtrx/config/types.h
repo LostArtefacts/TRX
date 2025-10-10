@@ -258,6 +258,7 @@ typedef struct {
         bool fix_step_glitch;
         bool fix_item_duplication_glitch;
         bool fix_descending_glitch;
+        bool fix_lara_pickup_embed;
         bool fix_water_exit;
         WALL_GLITCH_MODE wall_glitch_mode;
 #if TR_VERSION == 1
@@ -268,7 +269,6 @@ typedef struct {
 #else
         bool fix_m16_accuracy;
         bool fix_free_flare_glitch;
-        bool fix_pickup_drift_glitch;
         bool fix_flare_throw_priority;
 #endif
         bool fix_walk_run_jump;

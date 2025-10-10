@@ -4,6 +4,7 @@
 - fixed alternate ambient tracks being lost on reload in custom levels (#3997, regression from 4.14)
 - fixed Lara at times not being able to grab pushblocks despite being in the correct position to do so (#4005, regression from 0.9.1)
 - fixed Lara appearing flat for a frame during the neutral twist, controlled drop and ledge jump back animations (#4012, regression from 4.14)
+- fixed the pickup embed glitch when Lara is below a steeply sloped ceiling not being optional (Gameplay → Fixes → Fix pickup embed glitch) (#4020, regression from 4.10)
 
 ## [4.15](https://github.com/LostArtefacts/TRX/compare/tr1-4.14.2...tr1-4.15) - 2025-10-04
 Showcase: https://youtu.be/BwZXWL0WULg

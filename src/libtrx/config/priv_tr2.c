@@ -136,6 +136,15 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             g_Config.audio.fmv_volume = g_Config.audio.music_volume;
         }
     }
+
+    // ..1.5.1
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "fix_pickup_drift_glitch");
+        if (JSON_ValueIsFalse(value)) {
+            g_Config.gameplay.fix_lara_pickup_embed = false;
+        }
+    }
 }
 
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
