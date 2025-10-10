@@ -12,7 +12,7 @@ static void M_SetupLara(void)
 {
     OBJECT *const obj = Object_Get(O_LARA);
     obj->initialise_func = Lara_InitialiseLoad;
-    obj->can_interpolate_func = nullptr;
+    obj->can_interpolate_func = Lara_CanInterpolate;
 
     obj->shadow_size = (UNIT_SHADOW / 16) * 10;
     obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
