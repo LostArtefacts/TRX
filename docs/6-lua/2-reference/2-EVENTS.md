@@ -21,7 +21,9 @@ Lua scripts can listen for game events using the global `Events` API and the
   Fired when a level finishes loading, and after potential savegame data has
   completed loading. Listener receives the level number.
 - [lua]`TRX.EventType.CONTROL`  
-  Fired on every game control loop iteration.
+  Fired before every game control loop iteration.
+- [lua]`TRX.EventType.CONTROL_POST`  
+  Fired after every game control loop iteration.
 - [lua]`TRX.EventType.PICKUP`  
   Fired when the player picks up an item; listener receives the pickup item
   number.
