@@ -322,3 +322,11 @@ int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
 
     return NO_ITEM;
 }
+
+bool Object_CanInterpolate(
+    const ITEM *const item, const int32_t frame_a, const int32_t frame_b)
+{
+    return item->active && item->status == IS_ACTIVE
+        && item->enable_interpolation
+        && Object_Get(item->object_id)->enable_interpolation;
+}
