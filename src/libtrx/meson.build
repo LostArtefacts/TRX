@@ -237,6 +237,7 @@ sources = [
   'game/objects/creatures/bear.c',
   'game/objects/creatures/wolf.c',
   'game/objects/draw.c',
+  'game/objects/effects/blood.c',
   'game/objects/effects/flame.c',
   'game/objects/general/bridge_common.c',
   'game/objects/general/bridge_flat.c',

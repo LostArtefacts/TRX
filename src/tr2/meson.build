@@ -146,7 +146,6 @@ sources = [
   'game/objects/creatures/xian_knight.c',
   'game/objects/creatures/xian_spearman.c',
   'game/objects/creatures/yeti.c',
-  'game/objects/effects/blood.c',
   'game/objects/effects/body_part.c',
   'game/objects/effects/bubble.c',
   'game/objects/effects/dart_effect.c',
