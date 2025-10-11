@@ -161,6 +161,15 @@ static void M_LoadCommonSettings(
             }
         }
     }
+
+    {
+        const int32_t value =
+            JSON_ObjectGetBool(obj, "cold_water", JSON_INVALID_BOOL);
+        if (value != JSON_INVALID_BOOL) {
+            settings->cold_water.is_present = true;
+            settings->cold_water.value = value;
+        }
+    }
 }
 
 static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)

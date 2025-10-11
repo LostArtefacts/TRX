@@ -848,6 +848,8 @@ static bool M_LoadLara(
     lara->air = JSON_ObjectGetInt(lara_obj, "air", lara->air);
     lara->sprint_timer =
         JSON_ObjectGetInt(lara_obj, "sprint_timer", lara->sprint_timer);
+    lara->exposure_timer =
+        JSON_ObjectGetInt(lara_obj, "exposure_timer", lara->exposure_timer);
     lara->dive_timer =
         JSON_ObjectGetInt(lara_obj, "dive_count", lara->dive_timer);
     lara->death_timer =
@@ -1375,6 +1377,7 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "hit_direction", lara->hit_direction);
     JSON_ObjectAppendInt(lara_obj, "air", lara->air);
     JSON_ObjectAppendInt(lara_obj, "sprint_timer", lara->sprint_timer);
+    JSON_ObjectAppendInt(lara_obj, "exposure_timer", lara->exposure_timer);
     JSON_ObjectAppendInt(lara_obj, "dive_count", lara->dive_timer);
     JSON_ObjectAppendInt(lara_obj, "death_count", lara->death_timer);
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);

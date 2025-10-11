@@ -104,6 +104,10 @@ typedef struct {
     char *sfx_path;
 #endif
     GF_AMBIENT_DATA ambient_tracks;
+    struct {
+        bool is_present;
+        bool value;
+    } cold_water;
 } GF_LEVEL_SETTINGS;
 
 #if TR_VERSION == 1

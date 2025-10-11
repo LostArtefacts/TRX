@@ -22,6 +22,8 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_HealthBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AirBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_SprintBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
+    UI_Settings_ExposureBarShowModeEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_EnemyHealthBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[];

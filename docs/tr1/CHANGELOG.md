@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15.1...develop) - ××××-××-××
+- added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10

@@ -60,3 +60,17 @@ const GF_AMBIENT_DATA *Level_GetAmbientData(void)
     }
     return nullptr;
 }
+
+bool Level_HasColdWater(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.cold_water.is_present) {
+        return level->settings.cold_water.value;
+    }
+
+    if (g_GameFlow.settings.cold_water.is_present) {
+        return g_GameFlow.settings.cold_water.value;
+    }
+
+    return false;
+}

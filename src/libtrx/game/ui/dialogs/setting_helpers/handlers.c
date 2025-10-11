@@ -50,6 +50,11 @@ bool UI_Settings_Sprintbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
         && g_Config.ui.lara_sprint_bar.show_mode != BSM_NEVER;
 }
 
+bool UI_Settings_Exposurebar_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.lara_exposure_bar.show_mode != BSM_NEVER;
+}
+
 bool UI_Settings_EnemyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
@@ -84,6 +89,13 @@ bool UI_Settings_SprintbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return UI_Settings_Sprintbar_IsAvailable(option)
+        && g_Config.ui.bar_look != BAR_LOOK_PS1;
+}
+
+bool UI_Settings_ExposurebarColor_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_Exposurebar_IsAvailable(option)
         && g_Config.ui.bar_look != BAR_LOOK_PS1;
 }
 
