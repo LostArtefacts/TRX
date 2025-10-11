@@ -1,17 +1,16 @@
+#include "config.h"
 #include "game/effects.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/output.h>
+#include "game/objects.h"
+#include "game/output.h"
 
 static void M_Control(const int16_t effect_num)
 {
-    EFFECT *effect = Effect_Get(effect_num);
+    EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
     effect->counter++;
     if (effect->counter == 2) {
-        effect->counter = 0;
         effect->frame_num--;
+        effect->counter = 0;
         if (g_Config.visuals.enable_gun_lighting
             && effect->frame_num > obj->mesh_count) {
             Output_AddDynamicLight(effect->pos, 13, 11);
@@ -26,6 +25,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->semi_transparent = TR_VERSION == 2;
 }
 
 REGISTER_OBJECT(O_EXPLOSION_1, M_Setup)
