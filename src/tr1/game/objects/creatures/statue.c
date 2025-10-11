@@ -65,9 +65,9 @@ static void M_Control(const int16_t item_num)
             Item_AddActive(centaur_item_num);
             LOT_EnableBaddieAI(centaur_item_num, 1);
             centaur->status = IS_ACTIVE;
-            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
+            Sound_Effect(SFX_EXPLOSION_1, &centaur->pos, SPM_NORMAL);
         } else {
-            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_EXPLOSION_1, &item->pos, SPM_NORMAL);
         }
     }
 }

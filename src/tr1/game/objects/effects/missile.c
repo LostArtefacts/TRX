@@ -42,7 +42,7 @@ static void M_Control(const int16_t effect_num)
             effect->frame_num = 0;
             effect->speed = 0;
             effect->counter = 0;
-            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &effect->pos, SPM_NORMAL);
+            Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
 
             const int32_t x = effect->pos.x - lara_item->pos.x;
             const int32_t y = effect->pos.y - lara_item->pos.y;
@@ -78,7 +78,7 @@ static void M_Control(const int16_t effect_num)
             lara->hit_effect = effect;
             lara->hit_effect_count = 5;
         }
-        Sound_Effect(SFX_ATLANTEAN_EXPLODE, &effect->pos, SPM_NORMAL);
+        Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
     }
 
     effect->frame_num = 0;
