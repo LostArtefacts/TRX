@@ -3,6 +3,7 @@
 #include "game/effects.h"
 #include "game/random.h"
 #include "game/rooms.h"
+#include "game/sound.h"
 
 void Spawn_Splash(const ITEM *const item)
 {
@@ -25,5 +26,18 @@ void Spawn_Splash(const ITEM *const item)
         effect->rot.y = 2 * Random_GetDraw() + DEG_180;
         effect->speed = Random_GetDraw() / 256;
         effect->frame_num = 0;
+    }
+}
+
+void Spawn_Ricochet(const GAME_VECTOR *const pos)
+{
+    const int16_t effect_num = Effect_Create(pos->room_num);
+    if (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        effect->object_id = O_RICOCHET;
+        effect->pos = pos->pos;
+        effect->counter = 4;
+        effect->frame_num = -3 * Random_GetDraw() / 0x8000;
+        Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
     }
 }

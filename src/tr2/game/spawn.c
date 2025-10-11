@@ -202,16 +202,3 @@ void Spawn_BloodBath(
             z - (Random_GetDraw() << 9) / 0x8000 + 256, speed, y_rot, room_num);
     }
 }
-
-void Spawn_Ricochet(const GAME_VECTOR *const pos)
-{
-    const int16_t effect_num = Effect_Create(pos->room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_RICOCHET;
-        effect->pos = pos->pos;
-        effect->counter = 4;
-        effect->frame_num = -3 * Random_GetDraw() / 0x8000;
-        Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
-    }
-}
