@@ -75,28 +75,6 @@ int16_t Spawn_RocketGun(
     return effect_num;
 }
 
-int16_t Spawn_GunShot(
-    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
-    int16_t room_num)
-{
-    int16_t effect_num = Effect_Create(room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *effect = Effect_Get(effect_num);
-        effect->pos.x = x;
-        effect->pos.y = y;
-        effect->pos.z = z;
-        effect->room_num = room_num;
-        effect->rot.x = 0;
-        effect->rot.y = y_rot;
-        effect->rot.z = 0;
-        effect->counter = 3;
-        effect->frame_num = 0;
-        effect->object_id = O_GUN_FLASH;
-        effect->shade = SHADE_NEUTRAL;
-    }
-    return effect_num;
-}
-
 int16_t Spawn_GunShotHit(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num)
