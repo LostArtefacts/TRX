@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5.1...develop) - ××××-××-××
+
+## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
 - fixed discs that spawn from emitters facing East starting too far from the emitters themselves (#4007)
 - fixed a crash on game exit if specifying "ambient_tracks" in the game flow root (regression from 1.1)
