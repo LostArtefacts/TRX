@@ -3,12 +3,9 @@
 #include "game/effects.h"
 #include "global/types.h"
 
-#include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
 
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220
