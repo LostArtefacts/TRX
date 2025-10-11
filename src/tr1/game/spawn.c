@@ -20,14 +20,14 @@ static void M_ShootAtLara(EFFECT *const effect)
         + (bounds->max.y + (bounds->min.y - bounds->max.y) * 3 / 4);
 
     const int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));
-    effect->rot.x = -(PHD_ANGLE)Math_Atan(dist, y);
+    effect->rot.x = -Math_Atan(dist, y);
     effect->rot.y = Math_Atan(z, x);
     effect->rot.x += (Random_GetControl() - 0x4000) / 0x40;
     effect->rot.y += (Random_GetControl() - 0x4000) / 0x40;
 }
 
 int16_t Spawn_ShardGun(
-    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num)
 {
     int16_t effect_num = Effect_Create(room_num);

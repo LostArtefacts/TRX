@@ -23,8 +23,6 @@
 
 #include <stdint.h>
 
-typedef int16_t PHD_ANGLE;
-
 typedef enum {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
