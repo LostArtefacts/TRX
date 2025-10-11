@@ -153,7 +153,6 @@ sources = [
   'game/objects/effects/missile_harpoon.c',
   'game/objects/effects/missile_knife.c',
   'game/objects/effects/snow_sprite.c',
-  'game/objects/effects/twinkle.c',
   'game/objects/effects/water_sprite.c',
   'game/objects/general/alarm_sound.c',
   'game/objects/general/bell.c',

@@ -180,17 +180,3 @@ void Spawn_Ricochet(const GAME_VECTOR *const pos)
         Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
     }
 }
-
-void Spawn_Twinkle(const GAME_VECTOR *const pos)
-{
-    const int16_t effect_num = Effect_Create(pos->room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->pos.x = pos->x;
-        effect->pos.y = pos->y;
-        effect->pos.z = pos->z;
-        effect->counter = 0;
-        effect->object_id = O_TWINKLE;
-        effect->frame_num = 0;
-    }
-}

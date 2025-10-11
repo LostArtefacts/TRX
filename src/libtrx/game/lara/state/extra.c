@@ -4,6 +4,7 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 #include "game/music.h"
+#include "game/objects/effects/twinkle.h"
 #include "game/overlay.h"
 #include "game/rooms.h"
 #include "game/viewport.h"
@@ -35,10 +36,6 @@
 #define M_CAM_TREX_KILL_ANGLE         (170 * DEG_1) // = 30940
 #define M_CAM_TREX_KILL_ELEVATION     (-25 * DEG_1) // = -4550
 // clang-format on
-
-#if TR_VERSION == 1
-extern void Twinkle_SparkleItem(ITEM *item, uint32_t mesh_mask);
-#endif
 
 static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
 {
