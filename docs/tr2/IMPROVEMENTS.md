@@ -317,6 +317,7 @@
 - added an option to not restore Lara's HP at the beginning of each level
 - added an option to configure how many shots Lara can take with the harpoon gun before reloading, including disabling reloading altogether
 - added support for showing key/puzzle/pickup item descriptions (examining) in the inventory
+- added support for cold water levels, similar to TR3
 - changed the combat end logic (used in Home Sweet Home) to allow using any regular enemy type aside from the boss
 - fixed the lift to work in any cardinal direction in custom levels, not just South
 - fixed the springboard not responding correctly when Lara drives across one on a skidoo

@@ -7,6 +7,7 @@
 #include "game/gym.h"
 #include "game/input.h"
 #include "game/lara.h"
+#include "game/level/settings.h"
 #include "game/music.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
@@ -613,6 +614,36 @@ static void M_HandleSurface(COLL_INFO *const coll)
     Room_TestSectorTrigger(item, sector);
 }
 
+static void M_HandleExposure(void)
+{
+    if (!Level_HasColdWater()) {
+        return;
+    }
+
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    switch (lara_info->water_status) {
+    case LWS_ABOVE_WATER:
+        lara_info->exposure_timer++;
+        CLAMPG(lara_info->exposure_timer, LARA_MAX_EXPOSURE);
+        break;
+    case LWS_WADE:
+        lara_info->exposure_timer--;
+        break;
+    case LWS_UNDERWATER:
+    case LWS_SURFACE:
+        lara_info->exposure_timer -= 2;
+        break;
+    case LWS_CHEAT:
+        lara_info->exposure_timer = LARA_MAX_EXPOSURE;
+        break;
+    }
+
+    if (lara_info->exposure_timer < 0) {
+        lara_info->exposure_timer = -1;
+        Lara_TakeDamage(10, false);
+    }
+}
+
 static void M_HandleEnvironment(void)
 {
     ITEM *const item = Lara_GetItem();
@@ -666,6 +697,8 @@ static void M_HandleEnvironment(void)
     default:
         break;
     }
+
+    M_HandleExposure();
 }
 
 void Lara_Control_Initialise(

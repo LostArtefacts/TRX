@@ -122,6 +122,10 @@ static const M_LOOK_PS1 m_LookPS1 = {
             { 0xC00100, 0xF00100, 0xC00100, 0x900000, 0x600000 },
             { 0xC0B900, 0xF0E800, 0xC0B900, 0x908A00, 0x605A00 },
         },
+        [UI_BAR_LARA_EXPOSURE] = {
+            { 0x000170, 0x090091, 0x000170, 0x000053, 0x00003E },
+            { 0xC00100, 0xF00100, 0xC00100, 0x900000, 0x600000 },
+        },
         [UI_BAR_ENEMY_HP] = {
             { 0xB64C00, 0xED6400, 0xB64C00, 0x843700, 0x6D2D00 },
             { 0xC00100, 0xF00100, 0xC00100, 0x900000, 0x600000 },
@@ -221,6 +225,9 @@ static void M_DrawFillPC(
         break;
     case UI_BAR_LARA_STAMINA:
         color = g_Config.ui.lara_sprint_bar.color;
+        break;
+    case UI_BAR_LARA_EXPOSURE:
+        color = g_Config.ui.lara_exposure_bar.color;
         break;
     case UI_BAR_ENEMY_HP:
         color = g_Config.ui.enemy_health_bar.color;

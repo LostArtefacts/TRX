@@ -17,6 +17,8 @@
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Enemy bar colour",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Colour of the enemy healthbar.",
+        "SETTING_EXPOSUREBAR_COLOR": "Exposure bar colour",
+        "SETTING_EXPOSUREBAR_COLOR_DESCRIPTION": "Colour of the cold water exposure bar.",
         "SETTING_FOG_COLOR_B": "Fog colour (B)",
         "SETTING_FOG_COLOR_B_DESCRIPTION": "Blue component of the fog colour.",
         "SETTING_FOG_COLOR_G": "Fog colour (G)",

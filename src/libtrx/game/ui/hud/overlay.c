@@ -11,6 +11,7 @@
 #include "game/ui/elements/bar.h"
 #include "game/ui/elements/bar_enemy_hp.h"
 #include "game/ui/elements/bar_lara_air.h"
+#include "game/ui/elements/bar_lara_exposure.h"
 #include "game/ui/elements/bar_lara_hp.h"
 #include "game/ui/elements/bar_lara_sprint.h"
 #include "game/ui/elements/fixed.h"
@@ -103,6 +104,21 @@ static bool M_LaraSprintBar(
         return false;
     }
     return UI_LaraSprintBar();
+}
+
+static bool M_LaraExposureBar(
+    const UI_OVERLAY_STATE *const s, const BAR_LOCATION location)
+{
+    if (location != g_Config.ui.lara_exposure_bar.location) {
+        return false;
+    }
+    if (!Lara_IsControllable() || !Game_IsPlaying()) {
+        return false;
+    }
+    if (!g_Config.ui.enable_game_ui) {
+        return false;
+    }
+    return UI_LaraExposureBar(s->blink.state);
 }
 
 static bool M_EnemyHealthBar(const BAR_LOCATION location)
@@ -210,6 +226,7 @@ static bool M_RegionBars(
     bar_shown |= M_LaraHealthBar(s, location);
     bar_shown |= M_LaraAirBar(s, location);
     bar_shown |= M_LaraSprintBar(s, location);
+    bar_shown |= M_LaraExposureBar(s, location);
     bar_shown |= M_EnemyHealthBar(location);
     UI_EndStack();
     return bar_shown;

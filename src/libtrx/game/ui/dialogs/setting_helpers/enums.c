@@ -71,6 +71,14 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_SprintBarShowModeEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_ExposureBarShowModeEnumEntries[] = {
+    { BSM_DEFAULT, GS_ID(ENUM_BAR_MODE_DEFAULT) },
+    { BSM_PS1, GS_ID(ENUM_BAR_MODE_PS1) },
+    { BSM_FLASHING_ONLY, GS_ID(ENUM_BAR_MODE_FLASHING_ONLY) },
+    { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_EnemyHealthBarShowModeEnumEntries[] = {
     { BSM_ALWAYS, GS_ID(ENUM_BAR_MODE_ALWAYS) },
     { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },

@@ -21,6 +21,7 @@ Following are each of the properties available within a level.
     "music_track": 57,
     "lara_type": 0,
     "water_color": [0.7, 0.5, 0.85],
+    "cold_water": true,
     "fog_transparency": false,
     "fog_color": [0, 0, 0],
     "fog_start": 34.0,
@@ -120,6 +121,17 @@ Following are each of the properties available within a level.
     <td><code>music_track</code></td>
     <td>Integer<strong>*</strong></td>
     <td colspan="2">The ambient music track ID.</td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="cold-water"></a>
+      <code>cold_water</code>
+    </td>
+    <td>Boolean</td>
+    <td colspan="2">
+      Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#cold-water">the global property</a>
+      for details.
+    </td>
   </tr>
   <tr valign="top">
     <td><code>fog_transparency</code></td>

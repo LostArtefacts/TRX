@@ -194,5 +194,8 @@
         "enable_fmv",            // TR2G has no FMVs
         "enable_item_examining", // TR2G has no special item descriptions
         "fix_animated_sprites",
+        "exposurebar_color",
+        "exposurebar_location",
+        "exposurebar_show_mode",
     ],
 }
