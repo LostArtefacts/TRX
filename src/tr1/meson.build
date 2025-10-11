@@ -155,7 +155,6 @@ sources = [
   'game/objects/creatures/statue.c',
   'game/objects/creatures/torso.c',
   'game/objects/creatures/trex.c',
-  'game/objects/effects/dart_effect.c',
   'game/objects/effects/ember.c',
   'game/objects/effects/explosion.c',
   'game/objects/effects/gunshot.c',

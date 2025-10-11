@@ -1,7 +1,5 @@
 #include "game/effects.h"
-#include "game/objects/common.h"
-
-#include <libtrx/game/objects.h>
+#include "game/objects.h"
 
 static void M_Control(const int16_t effect_num)
 {
@@ -22,7 +20,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawSpriteItem;
-    obj->semi_transparent = true;
+    obj->semi_transparent = TR_VERSION == 2;
 }
 
 REGISTER_OBJECT(O_DART_EFFECT, M_Setup)
