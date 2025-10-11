@@ -119,3 +119,18 @@ int16_t Spawn_GunHit(
     Sound_Effect(SFX_LARA_BULLETHIT, &lara_item->pos, SPM_NORMAL);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
+
+int16_t Spawn_GunMiss(
+    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
+    const int16_t y_rot, const int16_t room_num)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const GAME_VECTOR pos = {
+        .x = lara_item->pos.x + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
+        .y = lara_item->floor,
+        .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
+        .room_num = lara_item->room_num,
+    };
+    Spawn_Ricochet(&pos);
+    return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
+}

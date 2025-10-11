@@ -25,7 +25,7 @@ bool Creature_ShootAtLara(
     if (is_hit) {
         effect_num = Creature_Effect(item, gun, Spawn_GunHit);
     } else {
-        effect_num = Creature_Effect(item, gun, Spawn_GunShotMiss);
+        effect_num = Creature_Effect(item, gun, Spawn_GunMiss);
     }
 
     if (effect_num != NO_EFFECT) {
