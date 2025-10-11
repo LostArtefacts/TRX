@@ -1,8 +1,6 @@
 #include "game/effects.h"
-
-#include <libtrx/game/math.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/output.h>
+#include "game/objects.h"
+#include "game/output.h"
 
 static void M_Control(const int16_t effect_num)
 {
@@ -10,21 +8,21 @@ static void M_Control(const int16_t effect_num)
     effect->rot.y += 9 * DEG_1;
     effect->rot.x += 13 * DEG_1;
 
-    const int32_t x =
-        effect->pos.x + ((Math_Sin(effect->rot.y) * 11) >> W2V_SHIFT);
-    const int32_t y = effect->pos.y - effect->speed;
-    const int32_t z =
-        effect->pos.z + ((Math_Cos(effect->rot.x) * 8) >> W2V_SHIFT);
+    const XYZ_32 pos = {
+        .x = effect->pos.x + ((Math_Sin(effect->rot.y) * 11) >> W2V_SHIFT),
+        .y = effect->pos.y - effect->speed,
+        .z = effect->pos.z + ((Math_Cos(effect->rot.x) * 8) >> W2V_SHIFT),
+    };
 
     int16_t room_num = effect->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    if (sector == nullptr || !(Room_Get(room_num)->flags & RF_UNDERWATER)) {
+    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    if (sector == nullptr || (Room_Get(room_num)->flags & RF_UNDERWATER) == 0) {
         Effect_Kill(effect_num);
         return;
     }
 
-    const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    if (ceiling == NO_HEIGHT || y <= ceiling) {
+    const int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
+    if (ceiling == NO_HEIGHT || pos.y <= ceiling) {
         Effect_Kill(effect_num);
         return;
     }
@@ -32,9 +30,7 @@ static void M_Control(const int16_t effect_num)
     if (effect->room_num != room_num) {
         Effect_NewRoom(effect_num, room_num);
     }
-    effect->pos.x = x;
-    effect->pos.y = y;
-    effect->pos.z = z;
+    effect->pos = pos;
 }
 
 static void M_Setup(OBJECT *const obj)
