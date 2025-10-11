@@ -1,8 +1,9 @@
 #include "game/effects.h"
 #include "game/lara.h"
+#include "game/rooms.h"
 
-#include <libtrx/game/math.h>
-#include <libtrx/game/objects.h>
+#define M_RANGE 200
+#define M_DAMAGE 10
 
 static void M_Control(const int16_t effect_num)
 {
@@ -10,7 +11,7 @@ static void M_Control(const int16_t effect_num)
     effect->fall_speed += GRAVITY;
     effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
     effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
-    effect->pos.y = effect->pos.y + effect->fall_speed;
+    effect->pos.y += effect->fall_speed;
 
     int16_t room_num = effect->room_num;
     const SECTOR *const sector =
@@ -22,8 +23,8 @@ static void M_Control(const int16_t effect_num)
 
     if (effect->pos.y >= height || effect->pos.y < ceiling) {
         Effect_Kill(effect_num);
-    } else if (Lara_IsNearItem(&effect->pos, 200)) {
-        Lara_TakeDamage(10, true);
+    } else if (Lara_IsNearItem(&effect->pos, M_RANGE)) {
+        Lara_TakeDamage(M_DAMAGE, true);
         Effect_Kill(effect_num);
     } else if (room_num != effect->room_num) {
         Effect_NewRoom(effect_num, room_num);
@@ -33,7 +34,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->semi_transparent = true;
+    obj->semi_transparent = TR_VERSION == 2;
 }
 
 REGISTER_OBJECT(O_EMBER, M_Setup)
