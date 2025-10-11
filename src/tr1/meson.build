@@ -155,7 +155,6 @@ sources = [
   'game/objects/creatures/statue.c',
   'game/objects/creatures/torso.c',
   'game/objects/creatures/trex.c',
-  'game/objects/effects/gunshot.c',
   'game/objects/effects/missile.c',
   'game/objects/effects/natla_gun.c',
   'game/objects/effects/pickup_aid.c',

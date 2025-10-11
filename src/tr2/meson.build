@@ -147,7 +147,6 @@ sources = [
   'game/objects/creatures/xian_spearman.c',
   'game/objects/creatures/yeti.c',
   'game/objects/effects/glow.c',
-  'game/objects/effects/gun_flash.c',
   'game/objects/effects/hot_liquid.c',
   'game/objects/effects/missile_common.c',
   'game/objects/effects/missile_flame.c',
