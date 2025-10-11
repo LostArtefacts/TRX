@@ -99,15 +99,3 @@ int16_t Spawn_Knife(
     Missile_ShootAtLara(effect);
     return effect_num;
 }
-
-void Spawn_BloodBath(
-    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
-    const int16_t y_rot, const int16_t room_num, const int32_t count)
-{
-    for (int32_t i = 0; i < count; i++) {
-        Spawn_Blood(
-            x - (Random_GetDraw() << 9) / 0x8000 + 256,
-            y - (Random_GetDraw() << 9) / 0x8000 + 256,
-            z - (Random_GetDraw() << 9) / 0x8000 + 256, speed, y_rot, room_num);
-    }
-}
