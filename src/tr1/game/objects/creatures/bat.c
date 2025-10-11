@@ -68,7 +68,7 @@ static void M_Control(const int16_t item_num)
     }
 
     CREATURE *bat = item->data;
-    PHD_ANGLE angle = 0;
+    int16_t angle = 0;
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {
             item->gravity = true;
