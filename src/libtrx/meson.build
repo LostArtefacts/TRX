@@ -242,6 +242,7 @@ sources = [
   'game/objects/effects/bubble.c',
   'game/objects/effects/dart_effect.c',
   'game/objects/effects/ember.c',
+  'game/objects/effects/explosion.c',
   'game/objects/effects/flame.c',
   'game/objects/general/bridge_common.c',
   'game/objects/general/bridge_flat.c',
