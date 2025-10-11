@@ -1,9 +1,7 @@
 #include "game/effects.h"
-
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
+#include "game/lara.h"
+#include "game/rooms.h"
+#include "game/sound.h"
 
 static void M_Control(const int16_t effect_num)
 {
@@ -19,8 +17,10 @@ static void M_Control(const int16_t effect_num)
     const SECTOR *const sector =
         Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
 
-    if (!(Room_Get(effect->room_num)->flags & RF_UNDERWATER)
-        && (Room_Get(room_num)->flags & RF_UNDERWATER)) {
+    const ROOM *const current_room = Room_Get(effect->room_num);
+    const ROOM *const next_room = Room_Get(room_num);
+    if ((current_room->flags & RF_UNDERWATER) == 0
+        && (next_room->flags & RF_UNDERWATER) != 0) {
         const int16_t effect_num = Effect_Create(effect->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const splash_fx = Effect_Get(effect_num);
@@ -44,7 +44,7 @@ static void M_Control(const int16_t effect_num)
     const int32_t height =
         Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
     if (effect->pos.y >= height) {
-        if (effect->counter) {
+        if (effect->counter > 0) {
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
@@ -57,10 +57,15 @@ static void M_Control(const int16_t effect_num)
         return;
     }
 
-    if (Lara_IsNearItem(&effect->pos, 2 * effect->counter)) {
-        Lara_TakeDamage(effect->counter, true);
+    const int16_t counter_value =
+        (TR_VERSION == 1) ? ABS(effect->counter) : effect->counter;
+    const bool trigger_explosion =
+        (TR_VERSION == 1) ? (effect->counter > 0) : (effect->counter == 0);
 
-        if (effect->counter == 0) {
+    if (Lara_IsNearItem(&effect->pos, counter_value * 2)) {
+        Lara_TakeDamage(counter_value, true);
+
+        if (trigger_explosion) {
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;

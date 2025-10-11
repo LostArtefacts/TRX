@@ -38,7 +38,7 @@ static void M_Control(const int16_t item_num)
             effect->frame_num = 0;
             effect->object_id = O_EXPLOSION_1;
             effect->counter = 0;
-            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &effect->pos, SPM_NORMAL);
+            Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
             g_Camera.bounce = -200;
         }
     }
