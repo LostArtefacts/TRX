@@ -158,7 +158,6 @@ sources = [
   'game/objects/effects/missile.c',
   'game/objects/effects/natla_gun.c',
   'game/objects/effects/pickup_aid.c',
-  'game/objects/effects/splash.c',
   'game/objects/effects/twinkle.c',
   'game/objects/general/boat.c',
   'game/objects/general/cabin.c',

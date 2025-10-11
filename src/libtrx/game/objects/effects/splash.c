@@ -1,11 +1,10 @@
+#include "game/const.h"
 #include "game/effects.h"
-#include "game/objects/common.h"
-
-#include <libtrx/game/math.h>
+#include "game/objects.h"
 
 static void M_Control(const int16_t effect_num)
 {
-    EFFECT *effect = Effect_Get(effect_num);
+    EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
 
     effect->frame_num--;
@@ -21,6 +20,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->semi_transparent = TR_VERSION == 2;
 }
 
 REGISTER_OBJECT(O_SPLASH_1, M_Setup)
