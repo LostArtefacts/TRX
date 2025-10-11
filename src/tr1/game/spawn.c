@@ -165,18 +165,3 @@ int16_t Spawn_GunShotMiss(
     Spawn_Ricochet(&pos);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
-
-void Spawn_Ricochet(const GAME_VECTOR *const pos)
-{
-    const int16_t effect_num = Effect_Create(pos->room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->pos.x = pos->x;
-        effect->pos.y = pos->y;
-        effect->pos.z = pos->z;
-        effect->counter = 4;
-        effect->object_id = O_RICOCHET;
-        effect->frame_num = -3 * Random_GetDraw() / 0x8000;
-        Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
-    }
-}
