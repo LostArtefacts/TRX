@@ -41,3 +41,22 @@ void Spawn_Ricochet(const GAME_VECTOR *const pos)
         Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
     }
 }
+
+int16_t Spawn_Blood(
+    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
+    const int16_t y_rot, const int16_t room_num)
+{
+    const int16_t effect_num = Effect_Create(room_num);
+    if (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        effect->pos.x = x;
+        effect->pos.y = y;
+        effect->pos.z = z;
+        effect->rot.y = y_rot;
+        effect->speed = speed;
+        effect->frame_num = 0;
+        effect->object_id = O_BLOOD_1;
+        effect->counter = 0;
+    }
+    return effect_num;
+}
