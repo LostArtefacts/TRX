@@ -146,7 +146,6 @@ sources = [
   'game/objects/creatures/xian_knight.c',
   'game/objects/creatures/xian_spearman.c',
   'game/objects/creatures/yeti.c',
-  'game/objects/effects/dart_effect.c',
   'game/objects/effects/ember.c',
   'game/objects/effects/explosion.c',
   'game/objects/effects/glow.c',
