@@ -75,25 +75,6 @@ void Spawn_MysticLight(const int16_t item_num)
     // clang-format on
 }
 
-int16_t Spawn_GunHit(
-    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
-    const int16_t y_rot, const int16_t room_num)
-{
-    const ITEM *const lara_item = Lara_GetItem();
-    XYZ_32 vec = {
-        .x = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
-        .y = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
-        .z = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
-    };
-    Collide_GetJointAbsPosition(
-        lara_item, &vec, Random_GetControl() * LM_NUMBER_OF / 0x7FFF);
-    Spawn_Blood(
-        vec.x, vec.y, vec.z, lara_item->speed, lara_item->rot.y,
-        lara_item->room_num);
-    Sound_Effect(SFX_LARA_BULLETHIT, &lara_item->pos, SPM_NORMAL);
-    return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
-}
-
 int16_t Spawn_GunMiss(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
