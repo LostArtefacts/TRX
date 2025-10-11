@@ -75,20 +75,6 @@ void Spawn_MysticLight(const int16_t item_num)
     // clang-format on
 }
 
-void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
-{
-    const int16_t effect_num = Effect_Create(room_num);
-    if (effect_num == NO_EFFECT) {
-        return;
-    }
-
-    EFFECT *const effect = Effect_Get(effect_num);
-    effect->pos = *pos;
-    effect->object_id = O_BUBBLE_1;
-    effect->frame_num = -((Random_GetDraw() * 3) / 0x8000);
-    effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
-}
-
 int16_t Spawn_GunShot(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
