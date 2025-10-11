@@ -247,6 +247,7 @@ sources = [
   'game/objects/effects/gun_flash.c',
   'game/objects/effects/ricochet.c',
   'game/objects/effects/splash.c',
+  'game/objects/effects/twinkle.c',
   'game/objects/general/bridge_common.c',
   'game/objects/general/bridge_flat.c',
   'game/objects/general/bridge_tilt1.c',
