@@ -1,5 +1,5 @@
 #include "game/effects.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
 
 static void M_Control(const int16_t effect_num)
 {

@@ -152,7 +152,6 @@ sources = [
   'game/objects/effects/missile_flame.c',
   'game/objects/effects/missile_harpoon.c',
   'game/objects/effects/missile_knife.c',
-  'game/objects/effects/ricochet.c',
   'game/objects/effects/snow_sprite.c',
   'game/objects/effects/splash.c',
   'game/objects/effects/twinkle.c',
