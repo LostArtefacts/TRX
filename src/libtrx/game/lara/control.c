@@ -224,6 +224,16 @@ static void M_UpdateEnvironment(void)
         water_height == NO_HEIGHT ? NO_HEIGHT : item->pos.y - water_height;
     lara_info->water_surface_dist = -water_height_diff;
 
+    // Create splash if Lara lands in wading height water. TR3+ feature.
+    if (wading_enabled) {
+        const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+        if (item->pos.y + bounds->min.y <= water_height
+            && item->pos.y + bounds->max.y >= water_height
+            && item->fall_speed > 0 && water_depth < M_SWIM_DEPTH - STEP_L) {
+            Spawn_Splash(item);
+        }
+    }
+
     switch (lara_info->water_status) {
     case LWS_ABOVE_WATER: {
         if (wading_enabled
