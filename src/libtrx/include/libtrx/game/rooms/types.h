@@ -44,6 +44,22 @@ typedef struct WALKABLE {
 } WALKABLE;
 
 typedef struct {
+    SPLIT_TYPE type;
+    uint8_t tilts[4];
+    int8_t h1;
+    int8_t h2;
+} SPLIT;
+
+typedef struct {
+    int16_t height;
+    bool is_split;
+    union {
+        int16_t tilt;
+        SPLIT split;
+    };
+} SURFACE;
+
+typedef struct {
     uint16_t idx;
     int16_t box;
     bool is_death_sector;
@@ -55,10 +71,8 @@ typedef struct {
         int16_t sky;
         int16_t wall;
     } portal_room;
-    struct {
-        int16_t height;
-        int16_t tilt;
-    } floor, ceiling;
+    SURFACE floor;
+    SURFACE ceiling;
 } SECTOR;
 
 typedef struct {

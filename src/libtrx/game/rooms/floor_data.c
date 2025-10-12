@@ -96,6 +96,46 @@ static const int16_t *M_ReadTrigger(
     return data;
 }
 
+static void M_ReadTriangulation(
+    SURFACE *const surface, const int16_t func_data, const int16_t tilt_data)
+{
+    switch (M_ENTRY_TYPE(func_data)) {
+    case FT_FLOOR_NWSE_SOLID:
+    case FT_ROOF_NWSE_SOLID:
+        surface->split.type = SPLIT_NWSE_SOLID;
+        break;
+    case FT_FLOOR_NESW_SOLID:
+    case FT_ROOF_NESW_SOLID:
+        surface->split.type = SPLIT_NESW_SOLID;
+        break;
+    case FT_FLOOR_NWSE_PORTAL_SW:
+    case FT_ROOF_NWSE_PORTAL_SW:
+        surface->split.type = SPLIT_NWSE_PORTAL_SW;
+        break;
+    case FT_FLOOR_NWSE_PORTAL_NE:
+    case FT_ROOF_NWSE_PORTAL_NE:
+        surface->split.type = SPLIT_NWSE_PORTAL_NE;
+        break;
+    case FT_FLOOR_NESW_PORTAL_SE:
+    case FT_ROOF_NESW_PORTAL_SE:
+        surface->split.type = SPLIT_NESW_PORTAL_SE;
+        break;
+    case FT_FLOOR_NESW_PORTAL_NW:
+    case FT_ROOF_NESW_PORTAL_NW:
+        surface->split.type = SPLIT_NESW_PORTAL_NW;
+        break;
+    default:
+        return;
+    }
+
+    surface->is_split = true;
+    surface->split.h1 = (func_data & 0x03E0) >> 5;
+    surface->split.h2 = (func_data & 0x7C00) >> 10;
+    for (int32_t i = 0; i < 4; i++) {
+        surface->split.tilts[i] = (tilt_data >> (i * 4)) & 0xF;
+    }
+}
+
 static bool M_TestLava(const ITEM *const item)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -205,6 +245,10 @@ void Room_PopulateSectorData(
 {
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
+    sector->floor.split.type = SPLIT_NONE;
+    sector->ceiling.split.type = SPLIT_NONE;
+    sector->floor.is_split = false;
+    sector->ceiling.is_split = false;
     sector->portal_room.wall = NO_ROOM;
     sector->is_death_sector = false;
     sector->trigger = nullptr;
@@ -242,6 +286,24 @@ void Room_PopulateSectorData(
 
         case FT_CLIMB:
             sector->ladder = (LADDER_DIRECTION)M_LADDER_TYPE(fd_entry);
+            break;
+
+        case FT_FLOOR_NWSE_SOLID:
+        case FT_FLOOR_NESW_SOLID:
+        case FT_FLOOR_NWSE_PORTAL_SW:
+        case FT_FLOOR_NWSE_PORTAL_NE:
+        case FT_FLOOR_NESW_PORTAL_SE:
+        case FT_FLOOR_NESW_PORTAL_NW:
+            M_ReadTriangulation(&sector->floor, fd_entry, *data++);
+            break;
+
+        case FT_ROOF_NWSE_SOLID:
+        case FT_ROOF_NESW_SOLID:
+        case FT_ROOF_NWSE_PORTAL_SW:
+        case FT_ROOF_NWSE_PORTAL_NE:
+        case FT_ROOF_NESW_PORTAL_NW:
+        case FT_ROOF_NESW_PORTAL_SE:
+            M_ReadTriangulation(&sector->ceiling, fd_entry, *data++);
             break;
 
         default:
