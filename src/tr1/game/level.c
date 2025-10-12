@@ -1,41 +1,16 @@
 #include "game/level.h"
 
-#include "game/effects.h"
-#include "game/game.h"
-#include "game/inventory_ring/vars.h"
-#include "game/lara.h"
 #include "game/objects/creatures/mutant.h"
-#include "game/objects/creatures/pierre.h"
-#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
-#include "global/vars.h"
 
 #include <libtrx/benchmark.h>
 #include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
-#include <libtrx/game/game_string_table.h>
 #include <libtrx/game/inject.h>
-#include <libtrx/game/items/walkable.h>
-#include <libtrx/game/level.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects/traps/movable_block.h>
-#include <libtrx/game/option.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/overlay.h>
-#include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
-#include <libtrx/game/viewport.h>
-#include <libtrx/log.h>
 #include <libtrx/memory.h>
-#include <libtrx/utils.h>
-#include <libtrx/virtual_file.h>
-
-#include <stdio.h>
-#include <string.h>
 
 typedef enum {
     LEVEL_LAYOUT_UNKNOWN = -1,
@@ -197,6 +172,8 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 {
     GameBuf_Reset();
 
+    BENCHMARK benchmark = Benchmark_Start();
+
     VFILE *const file = VFile_CreateFromPath(level->path);
     if (file == nullptr) {
         Shell_ExitSystemFmt("Could not open %s", level->path);
@@ -260,6 +237,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadTexturePages(file);
 
     VFile_Close(file);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 static void M_MarkWaterEdgeVertices(void)
@@ -288,21 +266,25 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
+#if TR_VERSION == 1
     // We inject explosions sprites and sounds, although in the original game,
     // some levels lack them, resulting in no audio or visual effects when
     // killing mutants. This is to maintain that feature.
     Mutant_ToggleExplosions(Object_Get(O_EXPLOSION_1)->loaded);
+#endif
 
     Inject_AllInjections();
 
     Level_LoadAnimFrames();
     Level_LoadAnimCommands();
-
+#if TR_VERSION == 1
     M_MarkWaterEdgeVertices();
 
     // Must be called post-injection to allow for floor data changes.
     Stats_ObserveRoomsLoad();
-
+#else
+    Level_LoadWalkables();
+#endif
     Level_LoadObjectsAndItems();
 
     // Configure enemies who carry and drop items
@@ -313,8 +295,13 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadPalettes();
     Level_LoadFaces();
 
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();
+#if TR_VERSION == 1
     M_InitialiseSoundEffects();
+#else
+    M_InitialiseSoundEffects(level->settings.sfx_path);
+#endif
 
     Benchmark_End(&benchmark, nullptr);
 }
@@ -325,79 +312,9 @@ void Level_Load(const GF_LEVEL *const level)
     BENCHMARK benchmark = Benchmark_Start();
 
     Inject_InitLevel(level);
-
     M_LoadFromFile(level);
     M_CompleteSetup(level);
-
     Inject_Cleanup();
 
-    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
-
     Benchmark_End(&benchmark, nullptr);
-}
-
-void Level_Unload(void)
-{
-    Lara_InitialiseLoad(NO_ITEM);
-    Output_DispatchLevelUnload();
-    Walkable_Reset();
-}
-
-bool Level_Initialise(
-    const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
-{
-    BENCHMARK benchmark = Benchmark_Start();
-    LOG_DEBUG("num=%d (%s)", level->num, level->path);
-    if (level->type == GFL_DEMO) {
-        Random_SeedDraw(0xD371F947);
-        Random_SeedControl(0xD371F947);
-    }
-
-    g_GameInfo.select_level_num = -1;
-
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume != nullptr) {
-        resume->stats.timer = 0;
-        resume->stats.secret_flags = 0;
-        resume->stats.secret_count = 0;
-        resume->stats.pickup_count = 0;
-        resume->stats.kill_count = 0;
-        resume->stats.ammo_hits = 0;
-        resume->stats.ammo_used = 0;
-        resume->stats.medipacks_used = 0;
-        resume->stats.distance_travelled = 0;
-    }
-
-    Game_SetIsLevelComplete(false);
-    Game_FadeToBlack(-1);
-    if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
-        Game_SetCurrentLevel((GF_LEVEL *)level);
-    }
-    GF_SetCurrentLevel((GF_LEVEL *)level);
-
-    Music_ResetTrackFlags();
-
-    Sound_ResetSamples();
-    Object_Reset();
-    Camera_Reset();
-    Pierre_Reset();
-
-    Level_Unload();
-    Level_Load(level);
-    GameStringTable_Apply(level);
-
-    Effect_InitialiseArray();
-    LOT_InitialiseArray();
-
-    Option_Reset();
-    Overlay_Reset();
-    Overlay_SetHealthBarTimer(100);
-
-    Music_SetVolume(g_Config.audio.music_volume);
-    Sound_StopAll();
-
-    Viewport_AlterFOV(-1);
-
-    Benchmark_End(&benchmark, nullptr);
-    return true;
 }

@@ -57,5 +57,7 @@ void Level_LoadWalkables(void);
 
 LEVEL_INFO *Level_GetInfo(void);
 
-extern bool Level_Initialise(
-    const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
+void Level_Unload(void);
+bool Level_Initialise(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
+
+extern void Level_Load(const GF_LEVEL *level);

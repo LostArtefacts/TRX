@@ -1,5 +1,3 @@
-#include "game/objects/creatures/pierre.h"
-
 #include "game/creature.h"
 #include "game/los.h"
 
@@ -260,12 +258,9 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     obj->save_flags = true;
 
-    Object_GetBone(obj, 6)->rot.y = true;
-}
-
-void Pierre_Reset(void)
-{
     m_PierreItemNum = NO_ITEM;
+
+    Object_GetBone(obj, 6)->rot.y = true;
 }
 
 REGISTER_OBJECT(O_PIERRE, M_Setup)

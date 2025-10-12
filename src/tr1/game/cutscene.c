@@ -86,7 +86,6 @@ bool Cutscene_Start(const int32_t level_num)
 void Cutscene_End(void)
 {
     Music_Stop();
-    Sound_StopAll();
 }
 
 GF_COMMAND Cutscene_Control(void)

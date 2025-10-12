@@ -40,9 +40,7 @@ bool Cutscene_Start(const int32_t level_num)
 
 void Cutscene_End(void)
 {
-    Music_SetVolume(g_Config.audio.music_volume);
     Music_Stop();
-    Sound_StopAll();
 }
 
 GF_COMMAND Cutscene_Control(void)

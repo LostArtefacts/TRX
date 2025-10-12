@@ -343,7 +343,6 @@ static void M_Setup2(OBJECT *const obj)
         return;
     }
     *obj = *Object_Get(O_WARRIOR_1);
-    obj->setup_func = M_Setup2;
     obj->initialise_func = M_Initialise2;
     obj->smartness = WARRIOR2_SMARTNESS;
     obj->lot_setup = g_LOT_Default;
@@ -355,7 +354,6 @@ static void M_Setup3(OBJECT *const obj)
         return;
     }
     *obj = *Object_Get(O_WARRIOR_1);
-    obj->setup_func = M_Setup3;
     obj->initialise_func = M_Initialise2;
     obj->lot_setup = g_LOT_Default;
 }

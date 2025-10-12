@@ -44,9 +44,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 void Game_End(void)
 {
     Savegame_PersistGameToCurrentInfo(Game_GetCurrentLevel());
-    Sound_StopAll();
     Music_Stop();
-    Music_SetVolume(g_Config.audio.music_volume);
 }
 
 GF_COMMAND Game_Control(const bool demo_mode)
