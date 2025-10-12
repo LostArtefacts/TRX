@@ -75,14 +75,6 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
     lara->hit_direction = -1;
 }
 
-void InitialiseGameFlags(void)
-{
-    Music_ResetTrackFlags();
-    Output_SetSunsetTimer(0);
-    Game_SetIsLevelComplete(false);
-    Creature_SetAlliesHostile(false);
-}
-
 int32_t DoShift(
     ITEM *const vehicle, const XYZ_32 *const pos, const XYZ_32 *const old)
 {

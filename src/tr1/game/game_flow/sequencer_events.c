@@ -142,16 +142,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     }
     const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
-    // play specific level
-    if (g_GameInfo.select_level_num != -1) {
-        const GF_LEVEL *const select_level =
-            GF_GetLevel(GFLT_MAIN, g_GameInfo.select_level_num);
-        return (GF_COMMAND) {
-            .action = GF_SELECT_GAME,
-            .param = g_GameInfo.select_level_num,
-        };
-    }
-
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }

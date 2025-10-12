@@ -1,35 +1,17 @@
 #include "game/level.h"
 
-#include "decomp/decomp.h"
-#include "game/effects.h"
-#include "game/game.h"
-#include "game/game_flow.h"
-#include "game/lara.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
 
 #include <libtrx/benchmark.h>
-#include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/filesystem.h>
-#include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
-#include <libtrx/game/game_string_table.h>
-#include <libtrx/game/gym.h>
 #include <libtrx/game/inject.h>
-#include <libtrx/game/level.h>
-#include <libtrx/game/objects/traps/movable_block.h>
-#include <libtrx/game/option.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/overlay.h>
-#include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
-#include <libtrx/utils.h>
-#include <libtrx/virtual_file.h>
 
 #define DEFAULT_SFX_PATH "data/main.sfx"
 
@@ -236,7 +218,6 @@ static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
 static void M_InitialiseSoundEffects(const char *file_name)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    LEVEL_INFO *info = nullptr;
     SAMPLE_ENTRY *entries = nullptr;
 
     if (file_name == nullptr) {
@@ -253,7 +234,7 @@ static void M_InitialiseSoundEffects(const char *file_name)
         goto finish;
     }
 
-    info = Level_GetInfo();
+    LEVEL_INFO *const info = Level_GetInfo();
     const int32_t sample_count = info->samples.offset_count;
     entries = Memory_Alloc(sizeof(SAMPLE_ENTRY) * sample_count);
     for (int32_t i = 0; i < sample_count; i++) {
@@ -362,103 +343,57 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
+#if TR_VERSION == 1
+    // We inject explosions sprites and sounds, although in the original game,
+    // some levels lack them, resulting in no audio or visual effects when
+    // killing mutants. This is to maintain that feature.
+    Mutant_ToggleExplosions(Object_Get(O_EXPLOSION_1)->loaded);
+#endif
+
     Inject_AllInjections();
 
     Level_LoadAnimFrames();
     Level_LoadAnimCommands();
+#if TR_VERSION == 1
+    M_MarkWaterEdgeVertices();
+
+    // Must be called post-injection to allow for floor data changes.
+    Stats_ObserveRoomsLoad();
+#else
     Level_LoadWalkables();
+#endif
     Level_LoadObjectsAndItems();
+
+    // Configure enemies who carry and drop items
+    Carrier_InitialiseLevel(level);
 
     Level_LoadTextures();
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
 
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();
-
+#if TR_VERSION == 1
+    M_InitialiseSoundEffects();
+#else
     M_InitialiseSoundEffects(level->settings.sfx_path);
+#endif
 
     Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_Load(const GF_LEVEL *const level)
 {
+    LOG_INFO("%d (%s)", level->num, level->path);
     BENCHMARK benchmark = Benchmark_Start();
 
-    Sound_ResetSamples();
-    Object_Reset();
-
     Inject_InitLevel(level);
-
     M_LoadFromFile(level);
     M_CompleteSetup(level);
-
     Inject_Cleanup();
 
-    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
-
     Benchmark_End(&benchmark, nullptr);
-}
-
-bool Level_Initialise(
-    const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
-{
-    LOG_DEBUG("num=%d type=%d", level->num, level->type);
-    if (level->type == GFL_DEMO) {
-        Random_SeedDraw(0xD371F947);
-        Random_SeedControl(0xD371F947);
-    }
-
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume != nullptr) {
-        resume->stats.timer = 0;
-        resume->stats.secret_flags = 0;
-        resume->stats.secret_count = 0;
-        resume->stats.kill_count = 0;
-        resume->stats.ammo_hits = 0;
-        resume->stats.ammo_used = 0;
-        resume->stats.medipacks_used = 0;
-        resume->stats.distance_travelled = 0;
-    }
-
-    Game_FadeToBlack(-1);
-    if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
-        Gym_SetInventoryOpenEnabled(false);
-    }
-    if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
-        Game_SetCurrentLevel(level);
-    }
-    GF_SetCurrentLevel(level);
-
-    InitialiseGameFlags();
-    Lara_InitialiseLoad(NO_ITEM);
-
-    if (level == nullptr) {
-        return false;
-    }
-
-    Level_Unload();
-    Level_Load(level);
-    GameStringTable_Apply(level);
-
-    Carrier_InitialiseLevel(level);
-
-    Effect_InitialiseArray();
-    LOT_InitialiseArray();
-
-    Option_Reset();
-    Overlay_Reset();
-    Overlay_SetHealthBarTimer(100);
-
-    Gym_ResetAssault();
-    return true;
-}
-
-void Level_Unload(void)
-{
-    Output_DispatchLevelUnload();
-    Camera_Reset();
-    Walkable_Reset();
 }
 
 void Level_Init(void)

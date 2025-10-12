@@ -17,6 +17,7 @@
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/phase.h>
@@ -180,6 +181,7 @@ void Demo_End(void)
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
     Overlay_SetBottomText(nullptr, false);
+    Music_Stop();
 }
 
 void Demo_Pause(void)
