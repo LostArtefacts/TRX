@@ -280,6 +280,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed the panther at times not making a sound when it dies
 - fixed being unable to re-purpose some gym music tracks in custom levels
 - fixed missing door/trapdoor sound effects in Vilcabamba, Tomb of Qualopec, Sanctuary of the Scion, Natla's Mines, Atlantis, Great Pyramid and Atlantean Stronghold
+- fixed missing footstep sound effects when Lara finishes a handstand
 - restored Skate Kid's death SFX
 
 ## Mods
