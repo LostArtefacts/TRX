@@ -46,7 +46,7 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     return item;
 }
 
-static bool M_IsCarrierType(const GAME_OBJECT_ID obj_id)
+static bool M_IsCarrierType(const OBJECT_ID obj_id)
 {
     bool is_enemy = Object_IsType(obj_id, g_EnemyObjects);
 #if TR_VERSION == 2
@@ -316,7 +316,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
             continue;
         }
 
-        GAME_OBJECT_ID obj_id = item->object_id;
+        OBJECT_ID obj_id = item->object_id;
 #if TR_VERSION == 1
         if (g_GameFlow.convert_dropped_guns
             && Object_IsType(obj_id, g_GunObjects) && Inv_RequestItem(obj_id)
@@ -362,7 +362,7 @@ void Carrier_TestLegacyDrops(const int16_t item_num)
     // the OG enemy will still spawn items if Lara hasn't yet collected
     // them by using a test cognate in each case. Ensure also that
     // collected items do not re-spawn now or in future saves.
-    const GAME_OBJECT_ID test_id =
+    const OBJECT_ID test_id =
         Object_GetCognate(carrier->object_id, m_LegacyMap);
     if (test_id == NO_OBJECT) {
         return;

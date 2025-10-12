@@ -22,7 +22,7 @@ void Gun_AddDynamicLight(void)
     Output_AddDynamicLight(pos, 12, 11);
 }
 
-GAME_OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
+OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
 {
     if (TR_VERSION == 1) {
         switch (gun_type) {
@@ -37,7 +37,7 @@ GAME_OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
     return Gun_GetWeaponAnim(gun_type);
 }
 
-GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
+OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
@@ -58,7 +58,7 @@ GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
-LARA_GUN_TYPE Gun_GetType(const GAME_OBJECT_ID obj_id)
+LARA_GUN_TYPE Gun_GetType(const OBJECT_ID obj_id)
 {
     // clang-format off
     switch (obj_id) {
@@ -76,7 +76,7 @@ LARA_GUN_TYPE Gun_GetType(const GAME_OBJECT_ID obj_id)
     // clang-format on
 }
 
-GAME_OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
+OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
@@ -94,7 +94,7 @@ GAME_OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
-GAME_OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
+OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
@@ -170,21 +170,21 @@ bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)
 
 void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_Mesh_SwapSingle(LM_HAND_L, obj_id);
 }
 
 void Gun_SetLaraHandRMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_Mesh_SwapSingle(LM_HAND_R, obj_id);
 }
 
 void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID obj_id =
+    const OBJECT_ID obj_id =
         weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -200,7 +200,7 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
 
 void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_Mesh_SwapSingle(LM_THIGH_L, obj_id);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -209,7 +209,7 @@ void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
 
 void Gun_SetLaraHolsterRMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
+    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
     ASSERT(obj_id != NO_OBJECT);
     Lara_Mesh_SwapSingle(LM_THIGH_R, obj_id);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();

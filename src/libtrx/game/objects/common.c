@@ -106,7 +106,7 @@ __attribute__((constructor)) static void M_InitGameIDReverseMap(void)
 {
     for (int32_t tr_version = 0; tr_version < TR_VERSION_COUNT; tr_version++) {
         int32_t max_game_id = -1;
-        for (GAME_OBJECT_ID object_id = O_FIRST; object_id < O_NUMBER_OF;
+        for (OBJECT_ID object_id = O_FIRST; object_id < O_NUMBER_OF;
              object_id++) {
             const int32_t game_id = m_GameIDMap[tr_version][object_id];
             if (game_id > max_game_id) {
@@ -116,16 +116,16 @@ __attribute__((constructor)) static void M_InitGameIDReverseMap(void)
 
         int32_t size = max_game_id + 1;
         m_GameIDReverseMap[tr_version] =
-            Vector_CreateAtCapacity(sizeof(GAME_OBJECT_ID), size);
+            Vector_CreateAtCapacity(sizeof(OBJECT_ID), size);
 
         // Initialize all entries to NO_OBJECT
-        GAME_OBJECT_ID *const map_data =
+        OBJECT_ID *const map_data =
             Vector_GetData(m_GameIDReverseMap[tr_version]);
         for (int32_t i = 0; i < size; i++) {
             map_data[i] = NO_OBJECT;
         }
         // Populate reverse lookup from game ID to object ID
-        for (GAME_OBJECT_ID object_id = O_FIRST; object_id < O_NUMBER_OF;
+        for (OBJECT_ID object_id = O_FIRST; object_id < O_NUMBER_OF;
              object_id++) {
             const int32_t game_id = m_GameIDMap[tr_version][object_id];
             if (game_id >= 0) {
@@ -158,7 +158,7 @@ void Object_Reset(void)
     M_InitUUIDs();
 }
 
-OBJECT *Object_TryGet(const GAME_OBJECT_ID object_id)
+OBJECT *Object_TryGet(const OBJECT_ID object_id)
 {
     if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
         return nullptr;
@@ -166,7 +166,7 @@ OBJECT *Object_TryGet(const GAME_OBJECT_ID object_id)
     return &m_Objects[object_id];
 }
 
-OBJECT *Object_Get(const GAME_OBJECT_ID object_id)
+OBJECT *Object_Get(const OBJECT_ID object_id)
 {
     ASSERT(object_id >= O_FIRST && object_id < O_NUMBER_OF);
     return &m_Objects[object_id];
@@ -174,7 +174,7 @@ OBJECT *Object_Get(const GAME_OBJECT_ID object_id)
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
 {
-    GAME_OBJECT_ID object_id = Object_UnmapGameID(game_id);
+    OBJECT_ID object_id = Object_UnmapGameID(game_id);
     if (object_id == NO_OBJECT) {
         return nullptr;
     }
@@ -183,7 +183,7 @@ OBJECT *Object_GetByGameID(const int32_t game_id)
 
 OBJECT *Object_GetByUUID(const UUID uuid)
 {
-    GAME_OBJECT_ID object_id = Object_UnmapUUID(uuid);
+    OBJECT_ID object_id = Object_UnmapUUID(uuid);
     if (object_id == NO_OBJECT) {
         return nullptr;
     }
@@ -200,18 +200,18 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
     return &m_StaticObjects2D[static_id];
 }
 
-GAME_OBJECT_ID Object_UnmapGameID(const int32_t game_id)
+OBJECT_ID Object_UnmapGameID(const int32_t game_id)
 {
     const int ver = TR_VERSION - 1;
     VECTOR *vec = m_GameIDReverseMap[ver];
     if (vec == nullptr || game_id < 0 || game_id >= vec->count) {
         return NO_OBJECT;
     }
-    GAME_OBJECT_ID *map_data = Vector_GetData(vec);
+    OBJECT_ID *map_data = Vector_GetData(vec);
     return map_data[game_id];
 }
 
-GAME_OBJECT_ID Object_UnmapUUID(const UUID uuid)
+OBJECT_ID Object_UnmapUUID(const UUID uuid)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         if (memcmp(&m_Objects[i].uuid, &uuid, sizeof(UUID)) == 0) {
@@ -221,7 +221,7 @@ GAME_OBJECT_ID Object_UnmapUUID(const UUID uuid)
     return NO_OBJECT;
 }
 
-int32_t Object_MakeGameID(const GAME_OBJECT_ID object_id)
+int32_t Object_MakeGameID(const OBJECT_ID object_id)
 {
     if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
         return -1;
@@ -229,8 +229,7 @@ int32_t Object_MakeGameID(const GAME_OBJECT_ID object_id)
     return m_GameIDMap[TR_VERSION - 1][object_id];
 }
 
-bool Object_IsType(
-    const GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr)
+bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *test_arr)
 {
     for (int32_t i = 0; test_arr[i] != NO_OBJECT; i++) {
         if (test_arr[i] == object_id) {
@@ -240,8 +239,7 @@ bool Object_IsType(
     return false;
 }
 
-GAME_OBJECT_ID Object_GetCognate(
-    GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
+OBJECT_ID Object_GetCognate(OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
 {
     const GAME_OBJECT_PAIR *pair = &test_map[0];
     while (pair->key_id != NO_OBJECT) {
@@ -254,8 +252,8 @@ GAME_OBJECT_ID Object_GetCognate(
     return NO_OBJECT;
 }
 
-GAME_OBJECT_ID Object_GetCognateInverse(
-    GAME_OBJECT_ID value_id, const GAME_OBJECT_PAIR *test_map)
+OBJECT_ID Object_GetCognateInverse(
+    OBJECT_ID value_id, const GAME_OBJECT_PAIR *test_map)
 {
     const GAME_OBJECT_PAIR *pair = &test_map[0];
     while (pair->key_id != NO_OBJECT) {
@@ -324,7 +322,7 @@ void Object_SetMeshOffset(OBJECT_MESH *const mesh, const int32_t data_offset)
 }
 
 void Object_SwapMesh(
-    const GAME_OBJECT_ID object1_id, const GAME_OBJECT_ID object2_id,
+    const OBJECT_ID object1_id, const OBJECT_ID object2_id,
     const int32_t mesh_num)
 {
     const OBJECT *const obj1 = Object_Get(object1_id);
@@ -348,13 +346,13 @@ ANIM_BONE *Object_GetBone(const OBJECT *const obj, const int32_t bone_idx)
     return Anim_GetBone(obj->bone_idx + bone_idx);
 }
 
-GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id)
+OBJECT_ID Object_FindReceptacleKey(const OBJECT_ID receptacle_obj_id)
 {
     return Object_GetCognateInverse(
         receptacle_obj_id, g_KeyItemToReceptacleMap);
 }
 
-int16_t Object_FindReceptacle(const GAME_OBJECT_ID object_id)
+int16_t Object_FindReceptacle(const OBJECT_ID object_id)
 {
     // Iterate through all matching receptacles
     const GAME_OBJECT_PAIR *const map = g_KeyItemToReceptacleMap;
@@ -364,7 +362,7 @@ int16_t Object_FindReceptacle(const GAME_OBJECT_ID object_id)
         }
 
         // Iterate through all level items that match this receptacle
-        const GAME_OBJECT_ID receptacle_to_check = map[i].value_id;
+        const OBJECT_ID receptacle_to_check = map[i].value_id;
         for (int16_t item_num = 0; item_num < Item_GetLevelCount();
              item_num++) {
             const ITEM *const item = Item_Get(item_num);

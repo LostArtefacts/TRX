@@ -36,7 +36,7 @@ typedef enum {
 static bool m_ShowExamine = false;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
-static GAME_OBJECT_ID m_RequestedObjectID = NO_OBJECT;
+static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
 static void M_HandleRequestedObject(INV_RING *const ring)
 {
@@ -45,7 +45,7 @@ static void M_HandleRequestedObject(INV_RING *const ring)
     }
 
     for (int32_t i = 0; i < ring->number_of_objects; i++) {
-        const GAME_OBJECT_ID item_id = ring->list[i]->object_id;
+        const OBJECT_ID item_id = ring->list[i]->object_id;
         if (item_id == m_RequestedObjectID && Inv_RequestItem(item_id) > 0) {
             ring->current_object = i;
             break;
@@ -73,7 +73,7 @@ void InvRing_AdjustMusicVolume(const INV_RING *const ring)
     Sound_UpdateEffects();
 }
 
-void InvRing_SetRequestedObjectID(const GAME_OBJECT_ID obj_id)
+void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
 {
     m_RequestedObjectID = obj_id;
 }

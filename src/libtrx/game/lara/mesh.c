@@ -71,13 +71,13 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
 #endif
 }
 
-void Lara_Mesh_SwapSingle(const LARA_MESH mesh, const GAME_OBJECT_ID obj_id)
+void Lara_Mesh_SwapSingle(const LARA_MESH mesh, const OBJECT_ID obj_id)
 {
     const OBJECT *const obj = Object_Get(obj_id);
     Lara_Mesh_Set(mesh, Object_GetMesh(obj->mesh_idx + mesh));
 }
 
-void Lara_Mesh_SwapAll(const GAME_OBJECT_ID obj_id)
+void Lara_Mesh_SwapAll(const OBJECT_ID obj_id)
 {
     if (!Object_Get(obj_id)->loaded) {
         return;

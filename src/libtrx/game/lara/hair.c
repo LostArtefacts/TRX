@@ -21,7 +21,7 @@
 #endif
 
 static bool m_IsFirstHair;
-static GAME_OBJECT_ID m_LaraType = O_LARA;
+static OBJECT_ID m_LaraType = O_LARA;
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
@@ -203,7 +203,7 @@ static void M_CalculateSpheres_I(
     Matrix_Interpolate();
 }
 
-void Lara_Hair_SetLaraType(const GAME_OBJECT_ID lara_type)
+void Lara_Hair_SetLaraType(const OBJECT_ID lara_type)
 {
     m_LaraType = lara_type;
 }

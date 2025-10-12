@@ -40,7 +40,7 @@ typedef void (*M_LOAD_ARRAY_FUNC)(
     const M_CONTEXT *ctx, JSON_OBJECT *source_elem, void *target_elem,
     size_t target_elem_idx, void *user_arg);
 
-static GAME_OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *value);
+static OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *value);
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent);
@@ -260,7 +260,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
 {
-    const GAME_OBJECT_ID obj_id =
+    const OBJECT_ID obj_id =
         M_GetObjectFromJSONValue(JSON_ObjectGetValue(event_obj, "object_id"));
     if (obj_id == NO_OBJECT) {
         Shell_ExitSystemFmt(
@@ -278,9 +278,9 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
     return sizeof(GF_ADD_ITEM_DATA);
 }
 
-static GAME_OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
+static OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
 {
-    GAME_OBJECT_ID object_id;
+    OBJECT_ID object_id;
     int32_t game_id = JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
     if (game_id != JSON_INVALID_NUMBER) {
         object_id = Object_UnmapGameID(game_id);

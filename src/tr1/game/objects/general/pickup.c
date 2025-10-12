@@ -64,7 +64,7 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_SpawnPickupAid(const ITEM *const item)
 {
-    const GAME_OBJECT_ID obj_id =
+    const OBJECT_ID obj_id =
         Object_GetCognate(item->object_id, g_ItemToInvObjectMap);
     const OBJECT *const obj = Object_Get(obj_id);
     const ANIM_FRAME *const frame = obj->frame_base;

@@ -165,7 +165,7 @@ static void M_DebugPosTopLeft(void)
         return;
     }
 
-    const GAME_OBJECT_ID obj_id = Lara_GetAnimationObject();
+    const OBJECT_ID obj_id = Lara_GetAnimationObject();
     const ITEM *const vehicle = Lara_Vehicle_GetItem();
     UI_BeginStack(UI_STACK_HORIZONTAL);
     UI_BeginStack(UI_STACK_VERTICAL);

@@ -30,7 +30,7 @@ const GAME_OBJECT_PAIR g_ReceptacleToReceptacleDoneMap[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_ReceptacleObjects[] = {
+const OBJECT_ID g_ReceptacleObjects[] = {
     // clang-format off
     O_KEY_HOLE_1,
     O_KEY_HOLE_2,

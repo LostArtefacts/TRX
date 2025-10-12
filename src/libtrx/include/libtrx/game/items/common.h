@@ -6,7 +6,7 @@
 void Item_InitialiseItems(int32_t num_items);
 ITEM *Item_Get(int16_t num);
 int16_t Item_GetIndex(const ITEM *item);
-ITEM *Item_Find(GAME_OBJECT_ID obj_id);
+ITEM *Item_Find(OBJECT_ID obj_id);
 
 int32_t Item_GetLevelCount(void);
 int32_t Item_GetTotalCount(void);
@@ -17,7 +17,7 @@ void Item_SetPrevActive(int16_t item_num);
 
 int16_t Item_Create(void);
 int16_t Item_CreateLevelItem(void);
-int16_t Item_Spawn(const ITEM *item, GAME_OBJECT_ID obj_id);
+int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 
 void Item_Initialise(int16_t item_num);
 void Item_Control(void);
@@ -28,8 +28,7 @@ void Item_ClearKilled(void);
 void Item_AddActive(int16_t item_num);
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);
 
-int32_t Item_GlobalReplace(
-    GAME_OBJECT_ID src_obj_id, GAME_OBJECT_ID dst_obj_id);
+int32_t Item_GlobalReplace(OBJECT_ID src_obj_id, OBJECT_ID dst_obj_id);
 bool Item_IsTriggerActive(ITEM *item);
 
 // Set the name of the item, storing a copy of the provided string.

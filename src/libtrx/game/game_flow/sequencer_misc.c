@@ -35,13 +35,13 @@ GF_COMMAND GF_ShowInventory(const INVENTORY_MODE mode)
     return gf_cmd;
 }
 
-bool GF_ShowInventoryKeys(const GAME_OBJECT_ID receptacle_type_id)
+bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
 {
     if (!InvRing_IsRingAvailable(RT_KEYS)) {
         return false;
     }
     if (g_Config.gameplay.enable_auto_item_selection) {
-        const GAME_OBJECT_ID obj_id = Object_GetCognateInverse(
+        const OBJECT_ID obj_id = Object_GetCognateInverse(
             receptacle_type_id, g_KeyItemToReceptacleMap);
         InvRing_SetRequestedObjectID(obj_id);
     } else {

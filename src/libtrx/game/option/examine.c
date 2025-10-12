@@ -7,7 +7,7 @@
 #include "game/viewport.h"
 
 typedef struct {
-    GAME_OBJECT_ID object_id;
+    OBJECT_ID object_id;
     struct {
         bool is_ready;
         UI_TEXT_DIALOG_STATE *state;
@@ -29,7 +29,7 @@ static int32_t M_GetMaxRows(void)
     }
 }
 
-static void M_Init(M_PRIV *const p, const GAME_OBJECT_ID obj_id)
+static void M_Init(M_PRIV *const p, const OBJECT_ID obj_id)
 {
     p->object_id = obj_id;
     p->ui.is_ready = true;
@@ -46,12 +46,12 @@ static void M_Close(M_PRIV *const p)
     }
 }
 
-bool Option_Examine_CanExamine(const GAME_OBJECT_ID obj_id)
+bool Option_Examine_CanExamine(const OBJECT_ID obj_id)
 {
     return Object_GetDescription(obj_id) != nullptr;
 }
 
-void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
+void Option_Examine_Control(const OBJECT_ID obj_id, const bool is_busy)
 {
     M_PRIV *const p = &m_Priv;
     if (is_busy) {

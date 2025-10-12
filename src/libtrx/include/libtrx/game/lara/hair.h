@@ -14,7 +14,7 @@ typedef struct {
     } interp;
 } HAIR_SEGMENT;
 
-void Lara_Hair_SetLaraType(GAME_OBJECT_ID lara_type);
+void Lara_Hair_SetLaraType(OBJECT_ID lara_type);
 void Lara_Hair_Initialise(void);
 bool Lara_Hair_IsActive(void);
 void Lara_Hair_Control(bool in_cutscene);

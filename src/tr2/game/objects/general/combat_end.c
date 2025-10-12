@@ -139,7 +139,7 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-GAME_OBJECT_ID CombatEnd_GetBossType(void)
+OBJECT_ID CombatEnd_GetBossType(void)
 {
     return M_BOSS_TYPE;
 }

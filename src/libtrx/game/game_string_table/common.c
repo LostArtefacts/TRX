@@ -29,7 +29,7 @@ static void M_Apply(const GS_TABLE *const table)
 
     for (const GS_OBJECT_ENTRY *cur = table->objects;
          cur != nullptr && cur->key != nullptr; cur++) {
-        const GAME_OBJECT_ID obj_id = Object_IdFromKey(cur->key);
+        const OBJECT_ID obj_id = Object_IdFromKey(cur->key);
         if (obj_id == NO_OBJECT) {
             LOG_ERROR("Invalid object id: %s", cur->key);
         } else if (cur->names == nullptr) {

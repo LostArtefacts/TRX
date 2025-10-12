@@ -14,4 +14,4 @@ typedef enum {
 #undef X_OBJ_ID_DEFINE
     // sentinel
     O_NUMBER_OF,
-} GAME_OBJECT_ID;
+} OBJECT_ID;

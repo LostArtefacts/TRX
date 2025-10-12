@@ -52,8 +52,7 @@ int16_t Item_GetRelativeAnim(const ITEM *const item)
     return Item_GetRelativeObjAnim(item, item->object_id);
 }
 
-int16_t Item_GetRelativeObjAnim(
-    const ITEM *const item, const GAME_OBJECT_ID obj_id)
+int16_t Item_GetRelativeObjAnim(const ITEM *const item, const OBJECT_ID obj_id)
 {
     return item->anim_num - Object_Get(obj_id)->anim_idx;
 }
@@ -71,7 +70,7 @@ void Item_SwitchToAnim(
 
 void Item_SwitchToObjAnim(
     ITEM *const item, const int16_t anim_idx, const int16_t frame,
-    const GAME_OBJECT_ID obj_id)
+    const OBJECT_ID obj_id)
 {
     const OBJECT *const obj = Object_Get(obj_id);
     if (obj->anim_idx == NO_ANIM) {

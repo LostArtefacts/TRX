@@ -20,7 +20,7 @@
 
 static void M_InitialiseLara(const GF_LEVEL *const level)
 {
-    const GAME_OBJECT_ID lara_type = level->lara_type;
+    const OBJECT_ID lara_type = level->lara_type;
     Lara_Hair_SetLaraType(lara_type);
     if (!Lara_Hair_IsActive()) {
         return;

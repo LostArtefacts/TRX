@@ -184,7 +184,7 @@ void Gun_InitialiseNewWeapon(void)
     lara->right_arm.rot.y = 0;
     lara->right_arm.rot.z = 0;
 
-    const GAME_OBJECT_ID anim_type = Gun_GetLaraAnim(lara->gun_type);
+    const OBJECT_ID anim_type = Gun_GetLaraAnim(lara->gun_type);
     const OBJECT *const obj = Object_Get(anim_type);
     lara->left_arm.frame_base = obj->frame_base;
     lara->right_arm.frame_base = obj->frame_base;
@@ -292,7 +292,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
     }
 }
 
-void Gun_UpdateLaraMeshes(const GAME_OBJECT_ID obj_id)
+void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 {
 #if TR_VERSION == 1
     const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM);

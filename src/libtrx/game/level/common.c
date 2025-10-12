@@ -978,8 +978,7 @@ void Level_AppendSpriteTextures(
 void Level_ReadSpriteSequences(VFILE *const file)
 {
     int32_t max_obj_id = -1;
-    for (GAME_OBJECT_ID obj_id = O_FIRST; obj_id <= O_ORIGINAL_NUMBER_OF;
-         obj_id++) {
+    for (OBJECT_ID obj_id = O_FIRST; obj_id <= O_ORIGINAL_NUMBER_OF; obj_id++) {
         max_obj_id = MAX(max_obj_id, Object_MakeGameID(obj_id));
     }
 

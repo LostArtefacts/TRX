@@ -129,7 +129,7 @@ static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
 }
 
 static bool M_IsValidItemObject(
-    const GAME_OBJECT_ID saved_obj_id, const GAME_OBJECT_ID initial_obj_id)
+    const OBJECT_ID saved_obj_id, const OBJECT_ID initial_obj_id)
 {
     if (saved_obj_id == initial_obj_id) {
         return true;
@@ -502,7 +502,7 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        const GAME_OBJECT_ID obj_id =
+        const OBJECT_ID obj_id =
             Object_UnmapGameID(JSON_ObjectGetInt(item_obj, "obj_num", -1));
         if (!M_IsValidItemObject(obj_id, item->object_id)) {
             LOG_ERROR(

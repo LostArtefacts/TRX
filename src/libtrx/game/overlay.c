@@ -29,7 +29,7 @@ typedef enum {
 
 typedef struct {
     DISPLAY_PICKUP_PHASE phase;
-    GAME_OBJECT_ID object_id;
+    OBJECT_ID object_id;
     OUTPUT_UI_PICKUP display;
     int16_t start_rot;
     int32_t elapsed;
@@ -338,7 +338,7 @@ void Overlay_SetBottomTextPtr(const char *const *const ptr, const bool flash)
     }
 }
 
-void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
+void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 {
 #if TR_VERSION == 2
     if (Object_IsType(obj_id, g_SecretObjects)) {
@@ -374,7 +374,7 @@ void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
         if (pickup->phase != DPP_DEAD) {
             continue;
         }
-        const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(obj_id);
+        const OBJECT_ID inv_object_id = Inv_GetItemOption(obj_id);
         const INVENTORY_ITEM *const inv_item = InvRing_GetInvItem(obj_id);
         pickup->phase = DPP_EASE_IN;
         pickup->object_id = obj_id;

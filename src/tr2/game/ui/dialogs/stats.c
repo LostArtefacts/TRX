@@ -63,7 +63,7 @@ static void M_FormatSecrets(
             // Bad:  [ ][ ][secret] – should be just [secret]
             continue;
         }
-        const GAME_OBJECT_ID obj_id = Stats_GetSecretObject(i);
+        const OBJECT_ID obj_id = Stats_GetSecretObject(i);
         ASSERT(obj_id != NO_OBJECT);
         ptr += sprintf(
             ptr, has_secret ? "\\{secret %d}" : "\\{i}\\{secret %d}\\{/i}",

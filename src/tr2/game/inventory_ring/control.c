@@ -40,7 +40,7 @@
 #define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
 
 static int32_t m_NoInputCounter = 0;
-static GAME_OBJECT_ID m_InvChosen = NO_OBJECT;
+static OBJECT_ID m_InvChosen = NO_OBJECT;
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {

@@ -37,7 +37,7 @@ typedef struct {
 
 typedef struct {
     struct {
-        GAME_OBJECT_ID id;
+        OBJECT_ID id;
         int16_t active_anim;
         int16_t death_anim;
         int16_t death_state;

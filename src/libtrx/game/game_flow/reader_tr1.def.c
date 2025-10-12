@@ -64,13 +64,13 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetCameraPosEvent)
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleMeshSwapEvent)
 {
-    const GAME_OBJECT_ID object1_id =
+    const OBJECT_ID object1_id =
         M_GetObjectFromJSONValue(JSON_ObjectGetValue(event_obj, "object1_id"));
     if (object1_id == NO_OBJECT) {
         Shell_ExitSystemFmt("%s: 'object1_id' is invalid", ctx->script_path);
     }
 
-    const GAME_OBJECT_ID object2_id =
+    const OBJECT_ID object2_id =
         M_GetObjectFromJSONValue(JSON_ObjectGetValue(event_obj, "object2_id"));
     if (object2_id == NO_OBJECT) {
         Shell_ExitSystemFmt("%s: 'object2_id' is invalid", ctx->script_path);
@@ -143,7 +143,7 @@ static void M_LoadLevelItemDrops(
         data->count = (signed)object_arr->length;
         data->object_ids = Memory_Alloc(sizeof(int16_t) * data->count);
         for (int32_t j = 0; j < data->count; j++) {
-            const GAME_OBJECT_ID id =
+            const OBJECT_ID id =
                 M_GetObjectFromJSONValue(JSON_ArrayGetValue(object_arr, j));
             if (id == NO_OBJECT) {
                 Shell_ExitSystemFmt(

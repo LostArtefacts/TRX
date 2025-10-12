@@ -49,15 +49,15 @@ typedef enum {
 } GF_INV_TYPE;
 
 typedef struct {
-    GAME_OBJECT_ID object_id;
+    OBJECT_ID object_id;
     GF_INV_TYPE inv_type;
     int32_t quantity;
 } GF_ADD_ITEM_DATA;
 
 #if TR_VERSION == 1
 typedef struct {
-    GAME_OBJECT_ID object1_id;
-    GAME_OBJECT_ID object2_id;
+    OBJECT_ID object1_id;
+    OBJECT_ID object2_id;
     int32_t mesh_num;
 } GF_MESH_SWAP_DATA;
 #endif
@@ -144,7 +144,7 @@ typedef struct {
         GF_DROP_ITEM_DATA *data;
     } item_drops;
 
-    GAME_OBJECT_ID lara_type;
+    OBJECT_ID lara_type;
 #endif
 } GF_LEVEL;
 

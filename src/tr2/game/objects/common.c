@@ -109,7 +109,7 @@ BOUNDS_16 Object_GetBoundingBox(
     return new_bounds;
 }
 
-void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
+void Object_SetReflective(const OBJECT_ID obj_id, const bool enabled)
 {
     ASSERT_FAIL();
 }

@@ -120,7 +120,7 @@ static void M_DumpQueue(M_PRIV *const p)
         File_WriteString(p->file, "noop");
     }
     const ITEM *const lara_item = Lara_GetItem();
-    const GAME_OBJECT_ID obj_id = Lara_GetAnimationObject();
+    const OBJECT_ID obj_id = Lara_GetAnimationObject();
     const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
     if (lara_item != nullptr) {
         File_WriteString(p->file, "\n%*s", indent, "");
