@@ -16,7 +16,7 @@ typedef enum {
 void Gun_FindTargetPoint(const ITEM *item, GAME_VECTOR *target);
 void Gun_AimWeapon(const WEAPON_INFO *weapon, LARA_ARM *arm);
 void Gun_TargetInfo(const WEAPON_INFO *weapon);
-void Gun_UpdateLaraMeshes(GAME_OBJECT_ID obj_id);
+void Gun_UpdateLaraMeshes(OBJECT_ID obj_id);
 
 void Gun_GetNewTarget(const WEAPON_INFO *weapon);
 void Gun_ChangeTarget(const WEAPON_INFO *weapon);

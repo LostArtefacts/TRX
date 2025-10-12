@@ -1,6 +1,6 @@
 #include "game/objects/vars.h"
 
-const GAME_OBJECT_ID g_EnemyObjects[] = {
+const OBJECT_ID g_EnemyObjects[] = {
     // clang-format off
     O_WOLF,
     O_BEAR,
@@ -34,7 +34,7 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_WaterObjects[] = {
+const OBJECT_ID g_WaterObjects[] = {
     // clang-format off
     O_ALLIGATOR,
     O_VOLE,
@@ -43,27 +43,27 @@ const GAME_OBJECT_ID g_WaterObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_AllyObjects[] = {
+const OBJECT_ID g_AllyObjects[] = {
     // clang-format off
     NO_OBJECT,
     // Lara's social skills: still loading...
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_LoyalObjects[] = {
+const OBJECT_ID g_LoyalObjects[] = {
     // clang-format off
     O_LARA,
     NO_OBJECT,
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_AllyTargetingEnemies[] = {
+const OBJECT_ID g_AllyTargetingEnemies[] = {
     // clang-format off
     NO_OBJECT,
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_BossObjects[] = {
+const OBJECT_ID g_BossObjects[] = {
     // clang-format off
     O_TREX,
     O_LARSON,
@@ -77,7 +77,7 @@ const GAME_OBJECT_ID g_BossObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_MovableBlockObjects[] = {
+const OBJECT_ID g_MovableBlockObjects[] = {
     // clang-format off
     O_MOVABLE_BLOCK_1,
     O_MOVABLE_BLOCK_2,
@@ -87,7 +87,7 @@ const GAME_OBJECT_ID g_MovableBlockObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_PlaceholderObjects[] = {
+const OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
     O_STATUE,
     O_PODS,
@@ -96,13 +96,13 @@ const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SecretObjects[] = {
+const OBJECT_ID g_SecretObjects[] = {
     // clang-format off
     NO_OBJECT,
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_PickupObjects[] = {
+const OBJECT_ID g_PickupObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
     O_SHOTGUN_ITEM,
@@ -132,7 +132,7 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SwitchObjects[] = {
+const OBJECT_ID g_SwitchObjects[] = {
     // clang-format off
     O_SWITCH_TYPE_NORMAL,
     O_SWITCH_TYPE_UW,
@@ -140,7 +140,7 @@ const GAME_OBJECT_ID g_SwitchObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_GunObjects[] = {
+const OBJECT_ID g_GunObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
     O_SHOTGUN_ITEM,
@@ -150,7 +150,7 @@ const GAME_OBJECT_ID g_GunObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_DoorObjects[] = {
+const OBJECT_ID g_DoorObjects[] = {
     // clang-format off
     O_DOOR_TYPE_1,
     O_DOOR_TYPE_2,
@@ -164,7 +164,7 @@ const GAME_OBJECT_ID g_DoorObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_TrapdoorObjects[] = {
+const OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format off
     O_TRAPDOOR_TYPE_1,
     O_TRAPDOOR_TYPE_2,
@@ -174,7 +174,7 @@ const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_AnimObjects[] = {
+const OBJECT_ID g_AnimObjects[] = {
     // clang-format off
     O_LARA_PISTOLS,
     O_LARA_SHOTGUN,
@@ -186,7 +186,7 @@ const GAME_OBJECT_ID g_AnimObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_NullObjects[] = {
+const OBJECT_ID g_NullObjects[] = {
     // clang-format off
     O_EXPLOSION_1,
     O_EXPLOSION_2,
@@ -217,7 +217,7 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_InvObjects[] = {
+const OBJECT_ID g_InvObjects[] = {
     // clang-format off
     O_PISTOL_OPTION,
     O_SHOTGUN_OPTION,
@@ -252,7 +252,7 @@ const GAME_OBJECT_ID g_InvObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
+const OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format off
     O_WATERFALL,
     O_SPLASH_1,
@@ -303,13 +303,13 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_ShatterableObjects[] = {
+const OBJECT_ID g_ShatterableObjects[] = {
     // clang-format off
     NO_OBJECT,
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SmashableObjects[] = {
+const OBJECT_ID g_SmashableObjects[] = {
     // clang-format off
     NO_OBJECT,
     // clang-format on

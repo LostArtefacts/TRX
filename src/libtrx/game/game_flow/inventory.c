@@ -72,8 +72,7 @@ static void M_ResumeInfo_AddAmmo(
 }
 
 static void M_ResumeInfo_AddItem(
-    RESUME_INFO *const resume, const GAME_OBJECT_ID object_id,
-    const int32_t qty)
+    RESUME_INFO *const resume, const OBJECT_ID object_id, const int32_t qty)
 {
     switch (object_id) {
     case O_SMALL_MEDIPACK_ITEM:
@@ -99,8 +98,8 @@ static void M_ResumeInfo_AddItem(
 static void M_ModifyResumeInfo_GunOrAmmo(
     RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
 {
-    const GAME_OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
-    const GAME_OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
+    const OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
+    const OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
 
@@ -114,7 +113,7 @@ static void M_ModifyResumeInfo_GunOrAmmo(
 }
 
 static void M_ModifyResumeInfo_Item(
-    RESUME_INFO *const resume, const GAME_OBJECT_ID object_id)
+    RESUME_INFO *const resume, const OBJECT_ID object_id)
 {
     M_ResumeInfo_AddItem(resume, object_id, m_Add2InvItems[object_id]);
 }
@@ -122,8 +121,8 @@ static void M_ModifyResumeInfo_Item(
 static void M_ModifyInventory_GunOrAmmo(
     const GF_INV_TYPE type, const LARA_GUN_TYPE gun_type)
 {
-    const GAME_OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
-    const GAME_OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
+    const OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
+    const OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
 
@@ -164,7 +163,7 @@ static void M_ModifyInventory_GunOrAmmo(
 }
 
 static void M_ModifyInventory_Item(
-    const GF_INV_TYPE type, const GAME_OBJECT_ID obj_id)
+    const GF_INV_TYPE type, const OBJECT_ID obj_id)
 {
     int32_t qty = 0;
     if (type == GF_INV_SECRET) {

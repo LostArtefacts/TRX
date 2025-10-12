@@ -19,7 +19,7 @@
 
 static int16_t m_LastTeleportedItemNum = NO_ITEM;
 
-static bool M_ObjectCanBePickedUp(const GAME_OBJECT_ID obj_id)
+static bool M_ObjectCanBePickedUp(const OBJECT_ID obj_id)
 {
     if (!Object_IsType(obj_id, g_PickupObjects)) {
         return true;
@@ -33,7 +33,7 @@ static bool M_ObjectCanBePickedUp(const GAME_OBJECT_ID obj_id)
     return false;
 }
 
-static bool M_CanTargetObject(const GAME_OBJECT_ID obj_id)
+static bool M_CanTargetObject(const OBJECT_ID obj_id)
 {
     return !Object_IsType(obj_id, g_NullObjects)
         && !Object_IsType(obj_id, g_AnimObjects)

@@ -203,7 +203,7 @@ static bool M_ParseLuaEvent(const char *const event_str)
 static bool M_ParseAssertEvent(const char *const event_str)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const GAME_OBJECT_ID obj_id = Lara_GetAnimationObject();
+    const OBJECT_ID obj_id = Lara_GetAnimationObject();
     const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
     int32_t x, y, z;
     if (sscanf(event_str, "assert lara.pos=%d,%d,%d", &x, &y, &z) == 3) {

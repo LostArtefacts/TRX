@@ -31,7 +31,7 @@ static void M_SetupSkybox(void)
     }
 }
 
-static void M_DisableObject(const GAME_OBJECT_ID obj_id)
+static void M_DisableObject(const OBJECT_ID obj_id)
 {
     OBJECT *const obj = Object_Get(obj_id);
     obj->initialise_func = nullptr;

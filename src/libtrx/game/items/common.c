@@ -50,7 +50,7 @@ int16_t Item_GetIndex(const ITEM *const item)
     return item - Item_Get(0);
 }
 
-ITEM *Item_Find(const GAME_OBJECT_ID obj_id)
+ITEM *Item_Find(const OBJECT_ID obj_id)
 {
     for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
@@ -143,7 +143,7 @@ int16_t Item_CreateLevelItem(void)
     return item_num;
 }
 
-int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
+int16_t Item_Spawn(const ITEM *const item, const OBJECT_ID obj_id)
 {
     const int16_t spawn_num = Item_Create();
     if (spawn_num != NO_ITEM) {
@@ -390,7 +390,7 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
 }
 
 int32_t Item_GlobalReplace(
-    const GAME_OBJECT_ID src_obj_id, const GAME_OBJECT_ID dst_obj_id)
+    const OBJECT_ID src_obj_id, const OBJECT_ID dst_obj_id)
 {
     int32_t changed = 0;
 

@@ -12,7 +12,7 @@
 typedef struct {
     int32_t secret_count;
     uint32_t secret_flags;
-    GAME_OBJECT_ID secret_objects[STATS_MAX_SECRETS];
+    OBJECT_ID secret_objects[STATS_MAX_SECRETS];
 } M_MAX_STATS;
 
 static int32_t m_CachedItemCount = 0;
@@ -68,7 +68,7 @@ void Stats_CalculateStats(void)
     }
 
     struct L_SECRET_ITEM {
-        GAME_OBJECT_ID object_id;
+        OBJECT_ID object_id;
         int32_t index;
     } secrets[STATS_MAX_SECRETS];
     int32_t secret_count = 0;
@@ -104,7 +104,7 @@ void Stats_CalculateStats(void)
     }
 }
 
-uint32_t Stats_ReserveSecretBit(const GAME_OBJECT_ID object_id)
+uint32_t Stats_ReserveSecretBit(const OBJECT_ID object_id)
 {
     uint32_t n = m_LevelMax.secret_flags;
     int32_t position = 0;
@@ -119,7 +119,7 @@ uint32_t Stats_ReserveSecretBit(const GAME_OBJECT_ID object_id)
     return 1 << position;
 }
 
-GAME_OBJECT_ID Stats_GetSecretObject(const int32_t secret_idx)
+OBJECT_ID Stats_GetSecretObject(const int32_t secret_idx)
 {
     ASSERT(secret_idx >= 0 && secret_idx < STATS_MAX_SECRETS);
     return m_LevelMax.secret_objects[secret_idx];

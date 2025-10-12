@@ -9,7 +9,7 @@ typedef struct {
     XYZ_16 rot;
     int16_t room_num;
 #if TR_VERSION == 1
-    GAME_OBJECT_ID object_id;
+    OBJECT_ID object_id;
 #else
     int16_t object_id;
 #endif

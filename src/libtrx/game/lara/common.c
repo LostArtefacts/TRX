@@ -249,7 +249,7 @@ void Lara_RevertToPistolsIfNeeded(void)
     Gun_SetLaraBackMesh(lara_info->back_gun_type);
 }
 
-void Lara_UseItem(const GAME_OBJECT_ID obj_id)
+void Lara_UseItem(const OBJECT_ID obj_id)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
@@ -413,7 +413,7 @@ void Lara_SetDeathCameraTarget(const int16_t item_num)
     m_DeathCameraTarget = item_num;
 }
 
-GAME_OBJECT_ID Lara_GetAnimationObject(void)
+OBJECT_ID Lara_GetAnimationObject(void)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->extra_anim) {

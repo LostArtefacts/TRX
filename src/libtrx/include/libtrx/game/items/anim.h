@@ -6,11 +6,11 @@
 ANIM *Item_GetAnim(const ITEM *item);
 bool Item_TestAnimEqual(const ITEM *item, int16_t anim_idx);
 int16_t Item_GetRelativeAnim(const ITEM *item);
-int16_t Item_GetRelativeObjAnim(const ITEM *item, GAME_OBJECT_ID obj_id);
+int16_t Item_GetRelativeObjAnim(const ITEM *item, OBJECT_ID obj_id);
 int16_t Item_GetRelativeFrame(const ITEM *item);
 void Item_SwitchToAnim(ITEM *item, int16_t anim_idx, int16_t frame);
 void Item_SwitchToObjAnim(
-    ITEM *item, int16_t anim_idx, int16_t frame, GAME_OBJECT_ID obj_id);
+    ITEM *item, int16_t anim_idx, int16_t frame, OBJECT_ID obj_id);
 
 // Tests if the given item's current relative animation frame matches the
 // provided value. If a negative value is passed, the test is performed from the

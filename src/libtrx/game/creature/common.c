@@ -30,7 +30,7 @@
 static bool m_AlliesHostile = false;
 
 static bool M_TestSwitchOrKill(
-    const int16_t item_num, const GAME_OBJECT_ID target_id)
+    const int16_t item_num, const OBJECT_ID target_id)
 {
     if (Object_Get(target_id)->loaded) {
         return true;
@@ -58,7 +58,7 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
         }
 
         ITEM *const target = Item_Get(target_item_num);
-        const GAME_OBJECT_ID obj_id = target->object_id;
+        const OBJECT_ID obj_id = target->object_id;
 #if TR_VERSION == 2
         if (goody && !Creature_IsAllyTargetingEnemy(target)) {
             continue;

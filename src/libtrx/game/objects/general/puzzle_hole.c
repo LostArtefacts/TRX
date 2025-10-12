@@ -48,7 +48,7 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const GAME_OBJECT_ID key_object_id =
+    const OBJECT_ID key_object_id =
         Object_FindReceptacleKey(receptacle_item->object_id);
     if (key_object_id != NO_OBJECT) {
         Inv_RemoveItem(key_object_id);
@@ -58,7 +58,7 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 
 static void M_MarkDone(ITEM *const receptacle_item)
 {
-    const GAME_OBJECT_ID done_obj_id = Object_GetCognate(
+    const OBJECT_ID done_obj_id = Object_GetCognate(
         receptacle_item->object_id, g_ReceptacleToReceptacleDoneMap);
     if (done_obj_id != NO_OBJECT) {
         receptacle_item->object_id = done_obj_id;

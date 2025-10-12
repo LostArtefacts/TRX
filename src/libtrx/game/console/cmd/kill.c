@@ -17,10 +17,10 @@
 
 #if TR_VERSION == 2
 extern bool CombatEnd_IsWaitingForBoss(void);
-extern GAME_OBJECT_ID CombatEnd_GetBossType(void);
+extern OBJECT_ID CombatEnd_GetBossType(void);
 #endif
 
-static bool M_CanTargetObjectCreature(const GAME_OBJECT_ID obj_id)
+static bool M_CanTargetObjectCreature(const OBJECT_ID obj_id)
 {
     return (Object_IsType(obj_id, g_EnemyObjects)
             || Object_IsType(obj_id, g_AllyObjects)

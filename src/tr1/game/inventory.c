@@ -6,9 +6,9 @@
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 
-bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
+bool Inv_AddItem(const OBJECT_ID obj_id)
 {
-    const GAME_OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
+    const OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
     const OBJECT *const object =
         Object_Get(inv_obj_id == NO_OBJECT ? obj_id : inv_obj_id);
     if (!object->loaded) {

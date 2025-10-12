@@ -10,8 +10,7 @@
 #define BOOM_TIME 130
 #define BARTOLI_RANGE (WALL_L * 5) // = 5120
 
-static void M_CreateBoom(
-    const GAME_OBJECT_ID obj_id, const ITEM *const origin_item)
+static void M_CreateBoom(const OBJECT_ID obj_id, const ITEM *const origin_item)
 {
     const int16_t item_num = Item_Create();
     if (item_num == NO_ITEM) {

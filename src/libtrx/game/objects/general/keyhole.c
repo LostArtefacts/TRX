@@ -40,7 +40,7 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 
 static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 {
-    const GAME_OBJECT_ID key_object_id =
+    const OBJECT_ID key_object_id =
         Object_FindReceptacleKey(receptacle_item->object_id);
     if (key_object_id != NO_OBJECT) {
         Inv_RemoveItem(key_object_id);

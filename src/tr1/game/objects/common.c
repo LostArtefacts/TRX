@@ -164,7 +164,7 @@ void Object_DrawPickupItem(const ITEM *const item)
 }
 
 void Object_SetMeshReflective(
-    const GAME_OBJECT_ID obj_id, const int32_t mesh_idx, const bool enabled)
+    const OBJECT_ID obj_id, const int32_t mesh_idx, const bool enabled)
 {
     const OBJECT *const obj = Object_Get(obj_id);
     if (!obj->loaded) {
@@ -188,7 +188,7 @@ void Object_SetMeshReflective(
     Output_DispatchObjectMeshUpdate(obj->mesh_idx + mesh_idx);
 }
 
-void Object_SetReflective(const GAME_OBJECT_ID obj_id, const bool enabled)
+void Object_SetReflective(const OBJECT_ID obj_id, const bool enabled)
 {
     const OBJECT *const obj = Object_Get(obj_id);
     for (int32_t i = 0; i < obj->mesh_count; i++) {

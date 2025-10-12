@@ -50,8 +50,8 @@ static void M_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
 
 void Inv_AddGun(const LARA_GUN_TYPE gun_type)
 {
-    const GAME_OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-    const GAME_OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
+    const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
@@ -76,7 +76,7 @@ void Inv_AddGun(const LARA_GUN_TYPE gun_type)
 
 void Inv_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
-    const GAME_OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     if (Inv_RequestItem(gun_object)) {
         M_AddAmmo(gun_type, ammo_qty);
@@ -85,7 +85,7 @@ void Inv_AddAmmo(const LARA_GUN_TYPE gun_type)
     }
 }
 
-bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
+bool Inv_AddItemNTimes(const OBJECT_ID obj_id, const int32_t qty)
 {
     bool result = false;
     for (int32_t i = 0; i < qty; i++) {
@@ -94,7 +94,7 @@ bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
     return result;
 }
 
-GAME_OBJECT_ID Inv_GetItemOption(const GAME_OBJECT_ID obj_id)
+OBJECT_ID Inv_GetItemOption(const OBJECT_ID obj_id)
 {
     if (Object_IsType(obj_id, g_InvObjects)) {
         return obj_id;
@@ -123,9 +123,9 @@ void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
     source->count++;
 }
 
-bool Inv_RemoveItem(const GAME_OBJECT_ID obj_id)
+bool Inv_RemoveItem(const OBJECT_ID obj_id)
 {
-    const GAME_OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
+    const OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
@@ -156,9 +156,9 @@ bool Inv_RemoveItem(const GAME_OBJECT_ID obj_id)
     return false;
 }
 
-int32_t Inv_RequestItem(const GAME_OBJECT_ID obj_id)
+int32_t Inv_RequestItem(const OBJECT_ID obj_id)
 {
-    const GAME_OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
+    const OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {

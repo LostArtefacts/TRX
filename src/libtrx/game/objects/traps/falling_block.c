@@ -4,7 +4,7 @@
 #include "game/rooms.h"
 #include "vector.h"
 
-static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
+static int32_t M_GetOrigin(const OBJECT_ID obj_id)
 {
 #if TR_VERSION == 1
     return -STEP_L * 2;

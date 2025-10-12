@@ -27,7 +27,7 @@ static const OBJECT_BOUNDS m_Bounds = {
 
 static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 {
-    const GAME_OBJECT_ID key_object_id =
+    const OBJECT_ID key_object_id =
         Object_FindReceptacleKey(receptacle_item->object_id);
     if (key_object_id != NO_OBJECT) {
         Inv_RemoveItem(key_object_id);

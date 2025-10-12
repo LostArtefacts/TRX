@@ -23,7 +23,7 @@ typedef enum {
 } INVENTORY_ITEM_ACTION;
 
 typedef struct {
-    GAME_OBJECT_ID object_id;
+    OBJECT_ID object_id;
     int16_t frames_total;
     int16_t current_frame;
     int16_t goal_frame;

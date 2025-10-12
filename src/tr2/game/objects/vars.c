@@ -2,7 +2,7 @@
 
 #include <libtrx/game/objects/ids.h>
 
-const GAME_OBJECT_ID g_EnemyObjects[] = {
+const OBJECT_ID g_EnemyObjects[] = {
     // clang-format off
     O_DOG,
     O_CULT_1,
@@ -45,7 +45,7 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_WaterObjects[] = {
+const OBJECT_ID g_WaterObjects[] = {
     // clang-format off
     O_SHARK,
     O_EEL,
@@ -59,7 +59,7 @@ const GAME_OBJECT_ID g_WaterObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_AllyObjects[] = {
+const OBJECT_ID g_AllyObjects[] = {
     // clang-format off
     O_MONK_1,
     O_MONK_2,
@@ -69,7 +69,7 @@ const GAME_OBJECT_ID g_AllyObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_LoyalObjects[] = {
+const OBJECT_ID g_LoyalObjects[] = {
     // clang-format off
     O_LARA,
     O_WINSTON,
@@ -77,7 +77,7 @@ const GAME_OBJECT_ID g_LoyalObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_AllyTargetingEnemies[] = {
+const OBJECT_ID g_AllyTargetingEnemies[] = {
     // clang-format off
     O_BANDIT_1,
     O_BANDIT_2,
@@ -85,7 +85,7 @@ const GAME_OBJECT_ID g_AllyTargetingEnemies[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_PickupObjects[] = {
+const OBJECT_ID g_PickupObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
     O_SHOTGUN_ITEM,
@@ -122,7 +122,7 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SwitchObjects[] = {
+const OBJECT_ID g_SwitchObjects[] = {
     // clang-format off
     O_SWITCH_TYPE_AIRLOCK,
     O_SWITCH_TYPE_BUTTON,
@@ -133,7 +133,7 @@ const GAME_OBJECT_ID g_SwitchObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_GunObjects[] = {
+const OBJECT_ID g_GunObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
     O_SHOTGUN_ITEM,
@@ -146,7 +146,7 @@ const GAME_OBJECT_ID g_GunObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SecretObjects[] = {
+const OBJECT_ID g_SecretObjects[] = {
     // clang-format off
     O_SECRET_1,
     O_SECRET_2,
@@ -155,21 +155,21 @@ const GAME_OBJECT_ID g_SecretObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_ShatterableObjects[] = {
+const OBJECT_ID g_ShatterableObjects[] = {
     // clang-format off
     O_WINDOW_1,
     NO_OBJECT,
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_SmashableObjects[] = {
+const OBJECT_ID g_SmashableObjects[] = {
     // clang-format off
     O_BELL,
     NO_OBJECT,
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_DoorObjects[] = {
+const OBJECT_ID g_DoorObjects[] = {
     // clang-format off
     O_DOOR_TYPE_1,
     O_DOOR_TYPE_2,
@@ -183,7 +183,7 @@ const GAME_OBJECT_ID g_DoorObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_TrapdoorObjects[] = {
+const OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format off
     O_TRAPDOOR_TYPE_1,
     O_TRAPDOOR_TYPE_2,
@@ -193,7 +193,7 @@ const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_AnimObjects[] = {
+const OBJECT_ID g_AnimObjects[] = {
     // clang-format off
     O_LARA_PISTOLS,
     O_LARA_HAIR,
@@ -211,7 +211,7 @@ const GAME_OBJECT_ID g_AnimObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_NullObjects[] = {
+const OBJECT_ID g_NullObjects[] = {
     // clang-format off
     O_WATER_SPRITE,
     O_SNOW_SPRITE,
@@ -254,7 +254,7 @@ const GAME_OBJECT_ID g_NullObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_InvObjects[] = {
+const OBJECT_ID g_InvObjects[] = {
     // clang-format off
     O_PISTOL_OPTION,
     O_SHOTGUN_OPTION,
@@ -294,7 +294,7 @@ const GAME_OBJECT_ID g_InvObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
+const OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format off
     O_WATERFALL,
     O_SPLASH_1,
@@ -303,7 +303,7 @@ const GAME_OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_BossObjects[] = {
+const OBJECT_ID g_BossObjects[] = {
     // clang-format off
     O_CULT_3,
     O_DRAGON_FRONT,
@@ -316,7 +316,7 @@ const GAME_OBJECT_ID g_BossObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_PlaceholderObjects[] = {
+const OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
     O_BARTOLI,
     NO_OBJECT,
@@ -336,7 +336,7 @@ const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_MovableBlockObjects[] = {
+const OBJECT_ID g_MovableBlockObjects[] = {
     // clang-format off
     O_MOVABLE_BLOCK_1,
     O_MOVABLE_BLOCK_2,

@@ -22,7 +22,7 @@ static void M_Control(const int16_t item_num)
         g_Camera.bounce = -200;
     }
 
-    GAME_OBJECT_ID obj_id_to_activate;
+    OBJECT_ID obj_id_to_activate;
     const int32_t random = Random_GetControl();
     if (random < 512) {
         obj_id_to_activate = O_FLAME_EMITTER;
