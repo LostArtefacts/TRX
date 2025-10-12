@@ -50,12 +50,8 @@ static void M_SpriteEdits(
         int16_t x1 = VFile_ReadS16(injection->fp);
         int16_t y1 = VFile_ReadS16(injection->fp);
 
-        if (obj_info.id < O_FIRST || obj_info.id >= O_NUMBER_OF) {
-            continue;
-        }
-
-        const OBJECT *const obj = Object_Get(obj_info.id);
-        if (!obj->loaded) {
+        const OBJECT *const obj = Object_TryGet(obj_info.id);
+        if (obj == nullptr || !obj->loaded) {
             continue;
         }
         SPRITE_TEXTURE *const sprite_texture =

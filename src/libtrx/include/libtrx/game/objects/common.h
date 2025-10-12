@@ -14,6 +14,10 @@ void Object_Reset(void);
 // object is a fatal error.
 OBJECT *Object_Get(GAME_OBJECT_ID object_id);
 
+// Retrieve an object by its TRX internal index. Trying to retrieve an invalid
+// object returns nullptr.
+OBJECT *Object_TryGet(GAME_OBJECT_ID object_id);
+
 // Filesystem helper functions ================================================
 // In general, in TRX the objects are identified in three ways:
 // - GAME_OBJECT_ID - a TRX internal ID, essentially an arbitrary linear enum

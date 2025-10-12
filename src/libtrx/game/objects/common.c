@@ -104,6 +104,14 @@ void Object_Reset(void)
     m_UUIDsParsed = false;
 }
 
+OBJECT *Object_TryGet(const GAME_OBJECT_ID object_id)
+{
+    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
+        return nullptr;
+    }
+    return &m_Objects[object_id];
+}
+
 OBJECT *Object_Get(const GAME_OBJECT_ID object_id)
 {
     ASSERT(object_id >= O_FIRST && object_id < O_NUMBER_OF);
