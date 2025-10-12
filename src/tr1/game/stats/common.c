@@ -170,13 +170,6 @@ void Stats_CalculateStats(void)
 
         for (int32_t i = 0; i < m_CachedItemCount; i++) {
             const ITEM *const item = Item_Get(i);
-
-            if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
-                LOG_ERROR(
-                    "Bad Object number (%d) on Item %d", item->object_id, i);
-                continue;
-            }
-
             if (Object_IsType(item->object_id, g_PickupObjects)
                 && !Carrier_IsItemCarried(i)) {
                 m_LevelMax.pickup_count++;

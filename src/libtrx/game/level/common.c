@@ -872,14 +872,11 @@ void Level_ReadObjects(VFILE *const file)
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
-        const int32_t obj_id = VFile_ReadS32(file);
-        const GAME_OBJECT_ID game_obj_id = Object_UnmapGameID(obj_id);
-        if (game_obj_id < O_FIRST || game_obj_id >= O_NUMBER_OF) {
-            Shell_ExitSystemFmt(
-                "Invalid object ID: %d (max=%d)", obj_id, O_NUMBER_OF);
+        const int32_t game_obj_id = VFile_ReadS32(file);
+        OBJECT *const obj = Object_GetByGameID(game_obj_id);
+        if (obj == nullptr) {
+            Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
         }
-
-        OBJECT *const obj = Object_Get(game_obj_id);
         obj->mesh_count = VFile_ReadS16(file);
         obj->mesh_idx = VFile_ReadS16(file);
         obj->bone_idx = VFile_ReadS32(file) / ANIM_BONE_SIZE;
@@ -1151,7 +1148,7 @@ void Level_ReadItems(VFILE *const file)
         ITEM *const item = Item_Get(i);
         const int16_t obj_id = VFile_ReadS16(file);
         item->object_id = Object_UnmapGameID(obj_id);
-        if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
+        if (item->object_id == NO_OBJECT) {
             Shell_ExitSystemFmt("Bad object number (%d) on item %d", obj_id, i);
             goto finish;
         }

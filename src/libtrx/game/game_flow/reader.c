@@ -292,9 +292,6 @@ static GAME_OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
         }
         object_id = Object_IdFromKey(object_key);
     }
-    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
-        return NO_OBJECT;
-    }
     return object_id;
 }
 
