@@ -51,8 +51,8 @@ typedef enum {
 
 typedef enum {
     BAR_LOOK_TR1,
-    BAR_LOOK_TR2,
-    BAR_LOOK_PS1,
+    BAR_LOOK_TR23_PC,
+    BAR_LOOK_TR23_PS1,
 } BAR_LOOK;
 
 typedef enum {

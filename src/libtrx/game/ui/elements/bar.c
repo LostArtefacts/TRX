@@ -75,7 +75,7 @@ static const M_LOOK_PC m_LookTR1 = {
     },
 };
 
-static const M_LOOK_PC m_LookTR2 = {
+static const M_LOOK_PC m_LookTR23PC = {
     .base = {
         .basic_scale = 0.75f,
         .draw_border = M_DrawBorderPC,
@@ -101,7 +101,7 @@ static const M_LOOK_PC m_LookTR2 = {
     },
 };
 
-static const M_LOOK_PS1 m_LookPS1 = {
+static const M_LOOK_PS1 m_LookTR23PS1 = {
     .base = {
         .basic_scale = 1.0f,
         .draw_border = M_DrawBorderPS1,
@@ -144,8 +144,8 @@ static const M_LOOK_PS1 m_LookPS1 = {
 
 static const M_LOOK *m_Looks[] = {
     [BAR_LOOK_TR1] = &m_LookTR1.base,
-    [BAR_LOOK_TR2] = &m_LookTR2.base,
-    [BAR_LOOK_PS1] = &m_LookPS1.base,
+    [BAR_LOOK_TR23_PC] = &m_LookTR23PC.base,
+    [BAR_LOOK_TR23_PS1] = &m_LookTR23PS1.base,
 };
 
 static RGBA_8888 M_GetColor(const uint32_t value)
