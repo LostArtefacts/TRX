@@ -243,6 +243,8 @@ void Room_PopulateSectorData(
     SECTOR *const sector, const int16_t *floor_data, const uint16_t start_index,
     const uint16_t null_index)
 {
+    sector->floor.type = SURFACE_FLOOR;
+    sector->ceiling.type = SURFACE_CEILING;
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
     sector->floor.split.type = SPLIT_NONE;

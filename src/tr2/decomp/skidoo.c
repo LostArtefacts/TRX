@@ -544,8 +544,10 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
     int16_t room_num = skidoo->room_num;
     const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
     const int32_t height = Room_GetHeight(sector, x, y, z);
+    const HEIGHT_TYPE height_type = Room_GetHeightType();
 
-    if (Room_GetHeightType() == HT_BIG_SLOPE || height == NO_HEIGHT) {
+    if (height_type == HT_BIG_SLOPE || height_type == HT_DIAGONAL
+        || height == NO_HEIGHT) {
         return false;
     }
 

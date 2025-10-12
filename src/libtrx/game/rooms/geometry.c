@@ -7,24 +7,25 @@
 #include "game/rooms.h"
 #include "utils.h"
 
-#define M_NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
-#define M_POS_TILT(T, H) ((T * ((WALL_L - 1 - H) & (WALL_L - 1))) >> 2)
+#define M_WALL_MASK (WALL_L - 1)
+#define M_NEG_TILT(T, H) ((T * (H & M_WALL_MASK)) >> 2)
+#define M_POS_TILT(T, H) ((T * ((M_WALL_MASK - H) & M_WALL_MASK)) >> 2)
 
 static int16_t m_AbyssMinHeight = 0;
 static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
-static int16_t M_GetFloorTiltHeight(
-    const SECTOR *const sector, const int32_t x, const int32_t z,
+static int16_t M_GetUnsplitSurfaceHeight(
+    const SURFACE surface, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {
-    int16_t height = sector->floor.height;
-    if (sector->floor.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
+    int16_t height = surface.height;
+    if (surface.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
         return height;
     }
 
-    const int32_t z_off = sector->floor.tilt >> 8;
-    const int32_t x_off = (int8_t)sector->floor.tilt;
+    const int32_t z_off = surface.tilt >> 8;
+    const int32_t x_off = (int8_t)surface.tilt;
 
     const HEIGHT_TYPE slope_type =
         (ABS(z_off) > 2 || ABS(x_off) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
@@ -32,52 +33,196 @@ static int16_t M_GetFloorTiltHeight(
         return height;
     }
 
-    m_HeightType = slope_type;
+    if (surface.type == SURFACE_CEILING) {
+        if (z_off < 0) {
+            height += (int16_t)M_NEG_TILT(z_off, z);
+        } else {
+            height -= (int16_t)M_POS_TILT(z_off, z);
+        }
 
-    if (z_off < 0) {
-        height -= (int16_t)M_NEG_TILT(z_off, z);
+        if (x_off < 0) {
+            height += (int16_t)M_POS_TILT(x_off, x);
+        } else {
+            height -= (int16_t)M_NEG_TILT(x_off, x);
+        }
     } else {
-        height += (int16_t)M_POS_TILT(z_off, z);
-    }
+        m_HeightType = slope_type;
 
-    if (x_off < 0) {
-        height -= (int16_t)M_NEG_TILT(x_off, x);
-    } else {
-        height += (int16_t)M_POS_TILT(x_off, x);
+        if (z_off < 0) {
+            height -= (int16_t)M_NEG_TILT(z_off, z);
+        } else {
+            height += (int16_t)M_POS_TILT(z_off, z);
+        }
+
+        if (x_off < 0) {
+            height -= (int16_t)M_NEG_TILT(x_off, x);
+        } else {
+            height += (int16_t)M_POS_TILT(x_off, x);
+        }
     }
 
     return height;
 }
 
-static int16_t M_GetCeilingTiltHeight(
-    const SECTOR *sector, const int32_t x, const int32_t z,
-    const bool fix_tilts)
+static int16_t M_GetSplitSurfaceHeight(
+    const SURFACE surface, const int32_t x, const int32_t z)
 {
-    int16_t height = sector->ceiling.height;
-    if (sector->ceiling.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
-        return height;
-    }
+    const SPLIT split = surface.split;
+    const bool is_ceiling = surface.type == SURFACE_CEILING;
+    int16_t height = surface.height;
+    const int32_t dx = x & M_WALL_MASK;
+    const int32_t dz = z & M_WALL_MASK;
+    int32_t x_off, z_off;
 
-    const int32_t z_off = sector->ceiling.tilt >> 8;
-    const int32_t x_off = (int8_t)sector->ceiling.tilt;
+    const bool is_nesw =
+        (split.type == SPLIT_NESW_SOLID || split.type == SPLIT_NESW_PORTAL_SE
+         || split.type == SPLIT_NESW_PORTAL_NW);
+    const bool is_first_tri = is_nesw ? (dx <= dz) : (dx <= WALL_L - dz);
+    const int32_t h = is_first_tri ? split.h2 : split.h1;
 
-    if (Camera_IsChunky() && (ABS(z_off) > 2 || ABS(x_off) > 2)) {
-        return height;
-    }
+    const int32_t height_adj = ((h & 0x10) != 0) ? (h | 0xFFF0) : h;
+    height += height_adj << 8;
 
-    if (z_off < 0) {
-        height += (int16_t)M_NEG_TILT(z_off, z);
+    if (is_nesw) {
+        if (is_first_tri) {
+            x_off = split.tilts[is_ceiling ? 1 : 2]
+                - split.tilts[is_ceiling ? 2 : 1];
+            z_off = split.tilts[is_ceiling ? 1 : 3]
+                - split.tilts[is_ceiling ? 0 : 2];
+        } else {
+            x_off = split.tilts[is_ceiling ? 0 : 3]
+                - split.tilts[is_ceiling ? 3 : 0];
+            z_off = split.tilts[is_ceiling ? 2 : 0]
+                - split.tilts[is_ceiling ? 3 : 1];
+        }
     } else {
-        height -= (int16_t)M_POS_TILT(z_off, z);
+        if (is_first_tri) {
+            x_off = split.tilts[is_ceiling ? 1 : 2]
+                - split.tilts[is_ceiling ? 2 : 1];
+            z_off = split.tilts[is_ceiling ? 2 : 0]
+                - split.tilts[is_ceiling ? 3 : 1];
+        } else {
+            x_off = split.tilts[is_ceiling ? 0 : 3]
+                - split.tilts[is_ceiling ? 3 : 0];
+            z_off = split.tilts[is_ceiling ? 1 : 3]
+                - split.tilts[is_ceiling ? 0 : 2];
+        }
     }
 
-    if (x_off < 0) {
-        height += (int16_t)M_POS_TILT(x_off, x);
+    if (!is_ceiling) {
+        m_HeightType = HT_SPLIT_TRI;
+    }
+
+    if (Camera_IsChunky()) {
+        const int32_t h1 = (split.h1 & 0x10) ? (split.h1 | 0xFFF0) : split.h1;
+        const int32_t h2 = (split.h2 & 0x10) ? (split.h2 | 0xFFF0) : split.h2;
+        const int32_t ch1 = surface.height + (h2 << 8);
+        const int32_t ch2 = surface.height + (h1 << 8);
+        if (is_ceiling) {
+            height = (ch1 > ch2) ? ch1 : ch2;
+        } else {
+            height = (ch1 < ch2) ? ch1 : ch2;
+        }
     } else {
-        height -= (int16_t)M_NEG_TILT(x_off, x);
+        if (is_ceiling) {
+            if (x_off < 0) {
+                height += M_NEG_TILT(x_off, z);
+            } else {
+                height -= M_POS_TILT(x_off, z);
+            }
+
+            if (z_off < 0) {
+                height += M_POS_TILT(z_off, x);
+            } else {
+                height -= M_NEG_TILT(z_off, x);
+            }
+        } else {
+            if (ABS(x_off) > 2 || ABS(z_off) > 2) {
+                m_HeightType = HT_DIAGONAL;
+            } else if (m_HeightType != HT_SPLIT_TRI) {
+                m_HeightType = HT_SMALL_SLOPE;
+            }
+
+            if (x_off < 0) {
+                height -= M_NEG_TILT(x_off, z);
+            } else {
+                height += M_POS_TILT(x_off, z);
+            }
+
+            if (z_off < 0) {
+                height -= M_NEG_TILT(z_off, x);
+            } else {
+                height += M_POS_TILT(z_off, x);
+            }
+        }
     }
 
     return height;
+}
+
+static int16_t M_GetSurfaceHeight(
+    const SURFACE surface, const int32_t x, const int32_t z,
+    const bool fix_tilts)
+{
+    return surface.is_split
+        ? M_GetSplitSurfaceHeight(surface, x, z)
+        : M_GetUnsplitSurfaceHeight(surface, x, z, fix_tilts);
+}
+
+static int16_t M_GetSplitTiltType(
+    const SECTOR *const sector, const int32_t x, const int32_t z)
+{
+    const SPLIT split = sector->floor.split;
+    const int32_t dx = x & M_WALL_MASK;
+    const int32_t dz = z & M_WALL_MASK;
+    int32_t x_off;
+    int32_t z_off;
+
+    if (split.type == SPLIT_NWSE_SOLID || split.type == SPLIT_NWSE_PORTAL_SW
+        || split.type == SPLIT_NWSE_PORTAL_NE) {
+        if (dx > WALL_L - dz) {
+            x_off = split.tilts[3] - split.tilts[0];
+            z_off = split.tilts[3] - split.tilts[2];
+        } else {
+            x_off = split.tilts[2] - split.tilts[1];
+            z_off = split.tilts[0] - split.tilts[1];
+        }
+    } else {
+        if (dx > dz) {
+            x_off = split.tilts[3] - split.tilts[0];
+            z_off = split.tilts[0] - split.tilts[1];
+        } else {
+            x_off = split.tilts[2] - split.tilts[1];
+            z_off = split.tilts[3] - split.tilts[2];
+        }
+    }
+
+    return (x_off << 8) | (z_off & 0xFF);
+}
+
+static bool M_IsPortalSolid(
+    const SURFACE surface, const int32_t x, const int32_t z)
+{
+    if (!surface.is_split) {
+        return false;
+    }
+
+    const int32_t dx = x & M_WALL_MASK;
+    const int32_t dz = z & M_WALL_MASK;
+    const bool is_ceiling = surface.type == SURFACE_CEILING;
+
+    switch (surface.split.type) {
+    case SPLIT_NWSE_PORTAL_SW:
+        return dx > WALL_L - dz;
+    case SPLIT_NWSE_PORTAL_NE:
+        return dx <= WALL_L - dz;
+    case SPLIT_NESW_PORTAL_SE:
+        return is_ceiling ? (dx <= dz) : (dx > dz);
+    case SPLIT_NESW_PORTAL_NW:
+        return is_ceiling ? (dx > dz) : (dx <= dz);
+    default:
+        return false;
+    }
 }
 
 BOUNDS_32 Room_GetRoomBounds(const int16_t room_num)
@@ -137,7 +282,8 @@ SECTOR *Room_GetSector(
     ASSERT(sector != nullptr);
 
     if (y >= sector->floor.height) {
-        while (sector->portal_room.pit != NO_ROOM) {
+        while (sector->portal_room.pit != NO_ROOM
+               && !M_IsPortalSolid(sector->floor, x, z)) {
             *room_num = sector->portal_room.pit;
             const ROOM *const room = Room_Get(*room_num);
             sector = Room_GetWorldSector(room, x, z);
@@ -146,7 +292,8 @@ SECTOR *Room_GetSector(
             }
         }
     } else if (y < sector->ceiling.height) {
-        while (sector->portal_room.sky != NO_ROOM) {
+        while (sector->portal_room.sky != NO_ROOM
+               && !M_IsPortalSolid(sector->ceiling, x, z)) {
             *room_num = sector->portal_room.sky;
             const ROOM *const room = Room_Get(sector->portal_room.sky);
             sector = Room_GetWorldSector(room, x, z);
@@ -219,7 +366,8 @@ SECTOR *Room_GetUnitSector(
 SECTOR *Room_GetPitSector(
     const SECTOR *sector, const int32_t x, const int32_t z)
 {
-    while (sector->portal_room.pit != NO_ROOM) {
+    while (sector->portal_room.pit != NO_ROOM
+           && !M_IsPortalSolid(sector->floor, x, z)) {
         const ROOM *const room = Room_Get(sector->portal_room.pit);
         sector = Room_GetWorldSector(room, x, z);
     }
@@ -230,7 +378,8 @@ SECTOR *Room_GetPitSector(
 SECTOR *Room_GetSkySector(
     const SECTOR *sector, const int32_t x, const int32_t z)
 {
-    while (sector->portal_room.sky != NO_ROOM) {
+    while (sector->portal_room.sky != NO_ROOM
+           && !M_IsPortalSolid(sector->ceiling, x, z)) {
         const ROOM *const room = Room_Get(sector->portal_room.sky);
         sector = Room_GetWorldSector(room, x, z);
     }
@@ -267,7 +416,8 @@ int16_t Room_GetTiltType(
         return 0;
     }
 
-    return sector->floor.tilt;
+    return sector->floor.is_split ? M_GetSplitTiltType(sector, x, z)
+                                  : sector->floor.tilt;
 }
 
 int16_t Room_GetHeight(
@@ -289,7 +439,7 @@ int16_t Room_GetHeightEx(
     if (Room_IsAbyssHeight(height)) {
         height = m_AbyssMaxHeight;
     } else {
-        height = M_GetFloorTiltHeight(pit_sector, x, z, fix_tilts);
+        height = M_GetSurfaceHeight(pit_sector->floor, x, z, fix_tilts);
     }
 
     // Climb the stack of walkables.
@@ -331,7 +481,7 @@ int16_t Room_GetCeilingEx(
     const int32_t z, const bool fix_tilts)
 {
     const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
-    int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z, fix_tilts);
+    int16_t height = M_GetSurfaceHeight(sky_sector->ceiling, x, z, fix_tilts);
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
 
@@ -382,19 +532,21 @@ int32_t Room_GetWaterHeight(
     } while (room_num != NO_ROOM);
 
     if (room->flags & RF_UNDERWATER) {
-        while (sector->portal_room.sky != NO_ROOM) {
+        while (sector->portal_room.sky != NO_ROOM
+               && !M_IsPortalSolid(sector->ceiling, x, z)) {
             room = Room_Get(sector->portal_room.sky);
             if ((room->flags & RF_UNDERWATER) == 0) {
                 break;
             }
             sector = Room_GetWorldSector(room, x, z);
         }
-        return M_GetCeilingTiltHeight(sector, x, z, true);
+        return M_GetSurfaceHeight(sector->ceiling, x, z, true);
     } else {
-        while (sector->portal_room.pit != NO_ROOM) {
+        while (sector->portal_room.pit != NO_ROOM
+               && !M_IsPortalSolid(sector->floor, x, z)) {
             room = Room_Get(sector->portal_room.pit);
             if ((room->flags & RF_UNDERWATER) != 0) {
-                return M_GetFloorTiltHeight(sector, x, z, true);
+                return M_GetSurfaceHeight(sector->floor, x, z, true);
             }
             sector = Room_GetWorldSector(room, x, z);
         }

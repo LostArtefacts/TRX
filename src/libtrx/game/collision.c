@@ -57,11 +57,13 @@ static void M_FillSide(
     const bool is_on_walkable =
         M_IsOnWalkable(sector, x_pos, y_top, z_pos, room_height);
     if (!is_on_walkable) {
-        if (coll->slopes_are_walls && side->type == HT_BIG_SLOPE
+        if (coll->slopes_are_walls
+            && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
             && side->floor < 0) {
             side->floor = -32767;
         } else if (
-            coll->slopes_are_pits && side->type == HT_BIG_SLOPE
+            coll->slopes_are_pits
+            && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
             && side->floor > 0) {
             side->floor = STEP_L * 2;
         } else if (
@@ -313,6 +315,7 @@ void Collide_GetCollisionInfo(
     M_FillSide(
         coll, &coll->side_right, x_pos + x_right, z_pos + z_right, y_pos,
         obj_height, &room_num);
+    // TODO: TR3 uses an extra left and right side, purpose to be investigated.
 
     if (Collide_CollideStaticObjects(
             coll, x_pos, y_pos, z_pos, room_num, obj_height)) {
@@ -355,21 +358,27 @@ void Collide_GetCollisionInfo(
     if (coll->side_front.floor > coll->bad_pos
         || coll->side_front.floor < coll->bad_neg
         || coll->side_front.ceiling > coll->bad_ceiling) {
-        switch (coll->quadrant) {
-        case DIR_NORTH:
-        case DIR_SOUTH:
-            coll->shift.x = coll->old.x - x_pos;
-            coll->shift.z = Room_FindGridShift(z_pos + z_front, z_pos);
-            break;
+        if (coll->side_front.type == HT_DIAGONAL
+            || coll->side_front.type == HT_SPLIT_TRI) {
+            coll->shift.x = coll->old.x - x;
+            coll->shift.z = coll->old.z - z;
+        } else {
+            switch (coll->quadrant) {
+            case DIR_NORTH:
+            case DIR_SOUTH:
+                coll->shift.x = coll->old.x - x_pos;
+                coll->shift.z = Room_FindGridShift(z_pos + z_front, z_pos);
+                break;
 
-        case DIR_EAST:
-        case DIR_WEST:
-            coll->shift.x = Room_FindGridShift(x_pos + x_front, x_pos);
-            coll->shift.z = coll->old.z - z_pos;
-            break;
+            case DIR_EAST:
+            case DIR_WEST:
+                coll->shift.x = Room_FindGridShift(x_pos + x_front, x_pos);
+                coll->shift.z = coll->old.z - z_pos;
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
 
         coll->coll_type = COLL_FRONT;
@@ -386,19 +395,26 @@ void Collide_GetCollisionInfo(
 
     if (coll->side_left.floor > coll->bad_pos
         || coll->side_left.floor < coll->bad_neg) {
-        switch (coll->quadrant) {
-        case DIR_NORTH:
-        case DIR_SOUTH:
-            coll->shift.x = Room_FindGridShift(x_pos + x_left, x_pos + x_front);
-            break;
+        if (coll->side_left.type == HT_SPLIT_TRI) {
+            coll->shift.x = coll->old.x - x;
+            coll->shift.z = coll->old.z - z;
+        } else {
+            switch (coll->quadrant) {
+            case DIR_NORTH:
+            case DIR_SOUTH:
+                coll->shift.x =
+                    Room_FindGridShift(x_pos + x_left, x_pos + x_front);
+                break;
 
-        case DIR_EAST:
-        case DIR_WEST:
-            coll->shift.z = Room_FindGridShift(z_pos + z_left, z_pos + z_front);
-            break;
+            case DIR_EAST:
+            case DIR_WEST:
+                coll->shift.z =
+                    Room_FindGridShift(z_pos + z_left, z_pos + z_front);
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
 
         coll->coll_type = COLL_LEFT;
@@ -407,21 +423,26 @@ void Collide_GetCollisionInfo(
 
     if (coll->side_right.floor > coll->bad_pos
         || coll->side_right.floor < coll->bad_neg) {
-        switch (coll->quadrant) {
-        case DIR_NORTH:
-        case DIR_SOUTH:
-            coll->shift.x =
-                Room_FindGridShift(x_pos + x_right, x_pos + x_front);
-            break;
+        if (coll->side_right.type == HT_SPLIT_TRI) {
+            coll->shift.x = coll->old.x - x;
+            coll->shift.z = coll->old.z - z;
+        } else {
+            switch (coll->quadrant) {
+            case DIR_NORTH:
+            case DIR_SOUTH:
+                coll->shift.x =
+                    Room_FindGridShift(x_pos + x_right, x_pos + x_front);
+                break;
 
-        case DIR_EAST:
-        case DIR_WEST:
-            coll->shift.z =
-                Room_FindGridShift(z_pos + z_right, z_pos + z_front);
-            break;
+            case DIR_EAST:
+            case DIR_WEST:
+                coll->shift.z =
+                    Room_FindGridShift(z_pos + z_right, z_pos + z_front);
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
 
         coll->coll_type = COLL_RIGHT;
