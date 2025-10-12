@@ -51,6 +51,7 @@ typedef struct {
 } SPLIT;
 
 typedef struct {
+    SURFACE_TYPE type;
     int16_t height;
     bool is_split;
     union {

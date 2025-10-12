@@ -18,7 +18,7 @@ static bool M_IsWadingEnabled(void)
 static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 {
     if (coll->coll_type == COLL_FRONT || coll->side_mid.type == HT_BIG_SLOPE
-        || coll->side_mid.floor >= 0) {
+        || coll->side_mid.type == HT_DIAGONAL || coll->side_mid.floor >= 0) {
         return false;
     }
 
@@ -182,7 +182,9 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
         item->rot.y -= 5 * DEG_1;
     } else if (
         coll->coll_type != COLL_NONE
-        || (coll->side_mid.floor < 0 && coll->side_mid.type == HT_BIG_SLOPE)) {
+        || (coll->side_mid.floor < 0
+            && (coll->side_mid.type == HT_BIG_SLOPE
+                || coll->side_mid.type == HT_DIAGONAL))) {
         item->fall_speed = 0;
         item->pos = coll->old;
     }

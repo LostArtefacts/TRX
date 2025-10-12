@@ -728,7 +728,8 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     if (M_DeflectEdge(item, coll)) {
         item->rot.z = 0;
         if (g_Config.gameplay.fix_wade_wall_hit
-            && coll->side_front.type == HT_WALL
+            && (coll->side_front.type == HT_WALL
+                || coll->side_front.type == HT_SPLIT_TRI)
             && coll->side_front.floor < -STEP_L * 5 / 2
             && coll->old_anim_state == LS_WADE
             && Item_TestAnimEqual(item, LA_WADE)) {

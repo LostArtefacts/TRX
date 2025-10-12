@@ -4,6 +4,8 @@ typedef enum {
     HT_WALL = 0,
     HT_SMALL_SLOPE = 1,
     HT_BIG_SLOPE = 2,
+    HT_DIAGONAL = 3,
+    HT_SPLIT_TRI = 4,
 } HEIGHT_TYPE;
 
 typedef enum {
@@ -59,6 +61,11 @@ typedef enum {
     SPLIT_NESW_PORTAL_SE,
     SPLIT_NESW_PORTAL_NW,
 } SPLIT_TYPE;
+
+typedef enum {
+    SURFACE_FLOOR,
+    SURFACE_CEILING,
+} SURFACE_TYPE;
 
 typedef enum {
     TO_OBJECT = 0,
