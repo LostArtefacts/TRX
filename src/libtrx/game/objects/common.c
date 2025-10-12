@@ -7,6 +7,8 @@
 #include "game/lara/common.h"
 #include "game/objects/vars.h"
 #include "game/output/common.h"
+#include "memory.h"
+#include "vector.h"
 
 #include <string.h>
 
@@ -15,14 +17,28 @@ static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS_3D] = {};
 static STATIC_OBJECT_2D m_StaticObjects2D[MAX_STATIC_OBJECTS_2D] = {};
 static OBJECT_MESH **m_MeshPointers = nullptr;
 static int32_t m_MeshCount = 0;
-static bool m_UUIDsParsed = false;
 
 static const char *m_ObjectUUIDStrings[O_NUMBER_OF] = {
-#undef OBJ_ID_DEFINE
-#define OBJ_ID_DEFINE(game_id, uuid_str, enum_value) [game_id] = uuid_str,
+#define X_OBJ_ID_DEFINE(uuid_str, enum_value, game1_id, game2_id)              \
+    [enum_value] = uuid_str,
 #include "game/objects/ids.def"
-#undef OBJ_ID_DEFINE
+#undef X_OBJ_ID_DEFINE
 };
+
+static int32_t m_GameIDMap[TR_VERSION_COUNT][O_NUMBER_OF] = {
+    [0] = {
+#define X_OBJ_ID_DEFINE(_u, ev, g1, g2) [ev] = (g1),
+#include "game/objects/ids.def"
+#undef X_OBJ_ID_DEFINE
+    },
+    [1] = {
+#define X_OBJ_ID_DEFINE(_u, ev, g1, g2) [ev] = (g2),
+#include "game/objects/ids.def"
+#undef X_OBJ_ID_DEFINE
+    }
+};
+
+static VECTOR *m_GameIDReverseMap[TR_VERSION_COUNT] = {};
 
 static bool M_HexCharValue(const char c, uint8_t *const val)
 {
@@ -79,15 +95,53 @@ static void M_ParseUUIDString(const char *str, UUID *const uuid_out)
     }
 }
 
-static void M_InitUUIDs(void)
+__attribute__((constructor)) static void M_InitUUIDs(void)
 {
-    if (m_UUIDsParsed) {
-        return;
-    }
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         M_ParseUUIDString(m_ObjectUUIDStrings[i], &m_Objects[i].uuid);
     }
-    m_UUIDsParsed = true;
+}
+
+__attribute__((constructor)) static void M_InitGameIDReverseMap(void)
+{
+    for (int32_t tr_version = 0; tr_version < TR_VERSION_COUNT; tr_version++) {
+        int32_t max_game_id = -1;
+        for (GAME_OBJECT_ID object_id = O_FIRST; object_id < O_NUMBER_OF;
+             object_id++) {
+            const int32_t game_id = m_GameIDMap[tr_version][object_id];
+            if (game_id > max_game_id) {
+                max_game_id = game_id;
+            }
+        }
+
+        int32_t size = max_game_id + 1;
+        m_GameIDReverseMap[tr_version] =
+            Vector_CreateAtCapacity(sizeof(GAME_OBJECT_ID), size);
+
+        // Initialize all entries to NO_OBJECT
+        GAME_OBJECT_ID *const map_data =
+            Vector_GetData(m_GameIDReverseMap[tr_version]);
+        for (int32_t i = 0; i < size; i++) {
+            map_data[i] = NO_OBJECT;
+        }
+        // Populate reverse lookup from game ID to object ID
+        for (GAME_OBJECT_ID object_id = O_FIRST; object_id < O_NUMBER_OF;
+             object_id++) {
+            const int32_t game_id = m_GameIDMap[tr_version][object_id];
+            if (game_id >= 0) {
+                map_data[game_id] = object_id;
+            }
+        }
+        m_GameIDReverseMap[tr_version]->count = size;
+    }
+}
+
+__attribute__((destructor)) static void M_FreeGameIDReverseMap(void)
+{
+    for (int32_t tr_version = 0; tr_version < TR_VERSION_COUNT; tr_version++) {
+        Vector_Free(m_GameIDReverseMap[tr_version]);
+        m_GameIDReverseMap[tr_version] = nullptr;
+    }
 }
 
 void Object_Reset(void)
@@ -101,7 +155,7 @@ void Object_Reset(void)
     for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
         m_StaticObjects2D[i].loaded = false;
     }
-    m_UUIDsParsed = false;
+    M_InitUUIDs();
 }
 
 OBJECT *Object_TryGet(const GAME_OBJECT_ID object_id)
@@ -120,20 +174,20 @@ OBJECT *Object_Get(const GAME_OBJECT_ID object_id)
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
 {
-    GAME_OBJECT_ID obj_id = Object_UnmapGameID(game_id);
-    if (obj_id == NO_OBJECT) {
+    GAME_OBJECT_ID object_id = Object_UnmapGameID(game_id);
+    if (object_id == NO_OBJECT) {
         return nullptr;
     }
-    return &m_Objects[obj_id];
+    return &m_Objects[object_id];
 }
 
 OBJECT *Object_GetByUUID(const UUID uuid)
 {
-    GAME_OBJECT_ID obj_id = Object_UnmapUUID(uuid);
-    if (obj_id == NO_OBJECT) {
+    GAME_OBJECT_ID object_id = Object_UnmapUUID(uuid);
+    if (object_id == NO_OBJECT) {
         return nullptr;
     }
-    return &m_Objects[obj_id];
+    return &m_Objects[object_id];
 }
 
 STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
@@ -148,17 +202,17 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
 
 GAME_OBJECT_ID Object_UnmapGameID(const int32_t game_id)
 {
-    if (game_id < O_FIRST || game_id >= O_NUMBER_OF) {
+    const int ver = TR_VERSION - 1;
+    VECTOR *vec = m_GameIDReverseMap[ver];
+    if (vec == nullptr || game_id < 0 || game_id >= vec->count) {
         return NO_OBJECT;
     }
-    return game_id + O_FIRST;
+    GAME_OBJECT_ID *map_data = Vector_GetData(vec);
+    return map_data[game_id];
 }
 
 GAME_OBJECT_ID Object_UnmapUUID(const UUID uuid)
 {
-    if (!m_UUIDsParsed) {
-        M_InitUUIDs();
-    }
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         if (memcmp(&m_Objects[i].uuid, &uuid, sizeof(UUID)) == 0) {
             return i;
@@ -167,9 +221,12 @@ GAME_OBJECT_ID Object_UnmapUUID(const UUID uuid)
     return NO_OBJECT;
 }
 
-int32_t Object_MakeGameID(const GAME_OBJECT_ID game_id)
+int32_t Object_MakeGameID(const GAME_OBJECT_ID object_id)
 {
-    return game_id - O_FIRST;
+    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
+        return -1;
+    }
+    return m_GameIDMap[TR_VERSION - 1][object_id];
 }
 
 bool Object_IsType(
@@ -297,12 +354,12 @@ GAME_OBJECT_ID Object_FindReceptacleKey(const GAME_OBJECT_ID receptacle_obj_id)
         receptacle_obj_id, g_KeyItemToReceptacleMap);
 }
 
-int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
+int16_t Object_FindReceptacle(const GAME_OBJECT_ID object_id)
 {
     // Iterate through all matching receptacles
     const GAME_OBJECT_PAIR *const map = g_KeyItemToReceptacleMap;
     for (int32_t i = 0; map[i].key_id != NO_OBJECT; i++) {
-        if (map[i].key_id != obj_id) {
+        if (map[i].key_id != object_id) {
             continue;
         }
 

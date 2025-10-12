@@ -9,10 +9,9 @@
 
 typedef enum {
     NO_OBJECT = -1,
-#define OBJ_ID_DEFINE(game_id, uuid_str, enum_value)                           \
-    enum_value = O_FIRST + game_id,
+#define X_OBJ_ID_DEFINE(uuid_str, enum_value, game1_id, game2_id) enum_value,
 #include "./ids.def"
-#undef OBJ_ID_DEFINE
+#undef X_OBJ_ID_DEFINE
     // sentinel
     O_NUMBER_OF,
 } GAME_OBJECT_ID;
