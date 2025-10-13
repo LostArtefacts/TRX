@@ -40,6 +40,7 @@ static void M_SmashItem(const int16_t item_num)
     case O_WINDOW_1:
         Window_Smash(item_num);
         break;
+#endif
 
     case O_BELL:
         if (item->status != IS_ACTIVE) {
@@ -47,7 +48,6 @@ static void M_SmashItem(const int16_t item_num)
             Item_AddActive(item_num);
         }
         break;
-#endif
 
     default:
         break;
@@ -294,13 +294,9 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
 
 void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 {
-#if TR_VERSION == 1
-    const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM);
-#else
     const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM)
         || Inv_RequestItem(O_HARPOON_ITEM) || Inv_RequestItem(O_M16_ITEM)
         || Inv_RequestItem(O_GRENADE_ITEM);
-#endif
     const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
         || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_UZI_ITEM);
 
@@ -362,11 +358,7 @@ void Gun_HitTarget(
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points > 0 && item->hit_points <= damage) {
-#if TR_VERSION == 1
-        const bool skip_stats = false;
-#else
         const bool skip_stats = item->object_id == O_DRAGON_FRONT;
-#endif
 
         if (!skip_stats) {
             Stats_AddKill();
@@ -378,12 +370,8 @@ void Gun_HitTarget(
     Item_TakeDamage(item, damage, true);
 
     if (hit_pos != nullptr) {
-#if TR_VERSION == 1
         const bool make_ricochet = g_Config.visuals.fix_texture_issues
             && item->object_id == O_SCION_ITEM_3;
-#else
-        const bool make_ricochet = false;
-#endif
 
         if (make_ricochet) {
             const GAME_VECTOR pos = {

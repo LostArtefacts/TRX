@@ -56,6 +56,4 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_PENDULUM_1, M_Setup)
-#if TR_VERSION == 2
 REGISTER_OBJECT(O_PENDULUM_2, M_Setup)
-#endif

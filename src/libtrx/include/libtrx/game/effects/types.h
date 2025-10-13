@@ -8,11 +8,7 @@ typedef struct {
     XYZ_32 pos;
     XYZ_16 rot;
     int16_t room_num;
-#if TR_VERSION == 1
     OBJECT_ID object_id;
-#else
-    int16_t object_id;
-#endif
 #if TR_VERSION == 1
     int16_t next_draw;
 #endif

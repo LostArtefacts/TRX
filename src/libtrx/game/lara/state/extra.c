@@ -39,7 +39,6 @@
 
 static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     Twinkle_SparkleItem(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
@@ -51,12 +50,10 @@ static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->interact_target.item_num = NO_ITEM;
     }
-#endif
 }
 
 static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
     item->gravity = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
@@ -138,7 +135,6 @@ static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
     }
 
     Twinkle_SparkleItem(item, lara->mesh_effects);
-#endif
 }
 
 static void M_Breath(ITEM *const item, COLL_INFO *const coll)
@@ -285,10 +281,9 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-#if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_USE_MIDAS,         M_UseMidas)
 REGISTER_LARA_STATE(LS_DIE_MIDAS,         M_DieMidas)
-#else
+#if TR_VERSION >= 2
 REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,      M_Breath)
 REGISTER_LARA_EXTRA(LS_EXTRA_YETI_KILL,   M_YetiKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHARK_KILL,  M_SharkKill)

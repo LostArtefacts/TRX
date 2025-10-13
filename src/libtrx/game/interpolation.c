@@ -57,26 +57,21 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
     int32_t max_xz = 128;
     int32_t max_y = MAX(128, ABS(item->fall_speed) * 2);
     switch (item->object_id) {
-#if TR_VERSION == 1
     case O_BAT:
         max_xz = 0;
         max_y = 0;
         break;
-#endif
 
     case O_DART:
-#if TR_VERSION == 2
     case O_BOAT:
     case O_SKIDOO_ARMED:
     case O_SKIDOO_TRACK:
     case O_SKIDOO_FAST:
     case O_SKIDOO_DRIVER:
     case O_GRENADE:
-#endif
         max_xz = 200;
         break;
 
-#if TR_VERSION == 2
     case O_HARPOON_BOLT:
         max_xz = 150;
         break;
@@ -89,7 +84,6 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
         }
         return M_GetItemMaxDelta(vehicle);
     }
-#endif
 
     default:
         break;
@@ -102,7 +96,6 @@ static XYZ_32 M_GetEffectMaxDelta(const EFFECT *const effect)
     int32_t max_xz = 128;
     int32_t max_y = MAX(128, effect->fall_speed * 2);
     switch (effect->object_id) {
-#if TR_VERSION == 1
     case O_MISSILE_1:
     case O_MISSILE_3:
         max_xz = 220;
@@ -110,7 +103,6 @@ static XYZ_32 M_GetEffectMaxDelta(const EFFECT *const effect)
     case O_MISSILE_2:
         max_xz = 250;
         break;
-#else
     case O_MISSILE_FLAME:
         max_xz = 200;
         break;
@@ -118,7 +110,6 @@ static XYZ_32 M_GetEffectMaxDelta(const EFFECT *const effect)
     case O_MISSILE_HARPOON:
         max_xz = 150;
         break;
-#endif
 
     default:
         break;

@@ -42,11 +42,7 @@ int32_t Item_Explode(
     Matrix_TranslateRel16(best_frame->offset);
     Matrix_Rot16(best_frame->mesh_rots[0]);
 
-#if TR_VERSION == 1
     const int32_t speed_shift = item->object_id == O_TORSO ? 7 : 8;
-#else
-    const int32_t speed_shift = 8;
-#endif
 
     // main mesh
     int32_t bit = 1;

@@ -291,9 +291,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 
     M_ModifyResumeInfo_Item(resume, O_SMALL_MEDIPACK_ITEM);
     M_ModifyResumeInfo_Item(resume, O_LARGE_MEDIPACK_ITEM);
-#if TR_VERSION == 2
     M_ModifyResumeInfo_Item(resume, O_FLARE_ITEM);
-#endif
 }
 
 void GF_InventoryModifier_Apply(
@@ -333,18 +331,13 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_KEY_ITEM_2);
     M_ModifyInventory_Item(type, O_KEY_ITEM_3);
     M_ModifyInventory_Item(type, O_KEY_ITEM_4);
-#if TR_VERSION == 1
     M_ModifyInventory_Item(type, O_LEADBAR_ITEM);
     M_ModifyInventory_Item(type, O_SCION_ITEM_1);
     M_ModifyInventory_Item(type, O_SCION_ITEM_2);
-#endif
 
     if (type == GF_INV_SECRET) {
         M_ModifyInventory_Item(type, O_SMALL_MEDIPACK_ITEM);
         M_ModifyInventory_Item(type, O_LARGE_MEDIPACK_ITEM);
-
-#if TR_VERSION == 2
         M_ModifyInventory_Item(type, O_FLARE_ITEM);
-#endif
     }
 }

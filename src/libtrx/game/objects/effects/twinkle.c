@@ -27,7 +27,6 @@ static void M_SpawnTwinkle(const GAME_VECTOR *const pos)
 static XYZ_32 M_GetTargetPos(const ITEM *const item)
 {
     XYZ_32 pos = item->pos;
-#if TR_VERSION == 2
     if (item->object_id == O_DRAGON_FRONT) {
         const int32_t c = Math_Cos(item->rot.y);
         const int32_t s = Math_Sin(item->rot.y);
@@ -35,7 +34,6 @@ static XYZ_32 M_GetTargetPos(const ITEM *const item)
         pos.z += (c * 490 - s * 1100) >> W2V_SHIFT;
         pos.y -= 540;
     }
-#endif
     return pos;
 }
 

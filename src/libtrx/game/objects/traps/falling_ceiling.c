@@ -47,6 +47,4 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_FALLING_CEILING_1, M_Setup)
-#if TR_VERSION == 1
 REGISTER_OBJECT(O_FALLING_CEILING_2, M_Setup)
-#endif
