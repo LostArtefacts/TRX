@@ -73,7 +73,7 @@ static void M_Control(const int16_t item_num)
 
         if (item->hit_points < SKATE_KID_SPEECH_HITPOINTS
             && !(item->flags & SKATE_KID_SPEECH_STARTED)) {
-            Music_Play(MX_SKATEKID_SPEECH, MPM_TRACKED);
+            Music_PlayMX(MX_SKATEKID_SPEECH, MPM_TRACKED);
             item->flags |= SKATE_KID_SPEECH_STARTED;
         }
 

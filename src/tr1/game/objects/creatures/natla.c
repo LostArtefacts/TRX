@@ -140,7 +140,7 @@ static void M_Control(const int16_t item_num)
                 natla->flags = 0;
                 timer = 0;
                 item->hit_points = M_GetStage2HitPoints(item);
-                Music_Play(MX_NATLA_SPEECH, MPM_TRACKED);
+                Music_PlayMX(MX_NATLA_SPEECH, MPM_TRACKED);
             } else {
                 if (g_Config.gameplay.target_mode == TLM_SEMI
                     || g_Config.gameplay.target_mode == TLM_NONE) {

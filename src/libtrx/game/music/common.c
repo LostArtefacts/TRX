@@ -11,13 +11,13 @@
 
 static bool m_Initialised = false;
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
-static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
-static MUSIC_TRACK_ID m_TrackDelayed = MX_INACTIVE;
-static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
+static int32_t m_TrackCurrent = MX_INACTIVE;
+static int32_t m_TrackDelayed = MX_INACTIVE;
+static int32_t m_TrackLooped = MX_INACTIVE;
 // Remember the last played track, whether normal or looped, to prevent
 // immediately restarting it if Lara remains on the same trigger.
-static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
-static MUSIC_TRACK_ID m_TrackLastLooped = MX_INACTIVE;
+static int32_t m_TrackLastPlayed = MX_INACTIVE;
+static int32_t m_TrackLastLooped = MX_INACTIVE;
 
 static float m_MusicVolume = 0.0f;
 static int32_t m_AudioStreamID = -1;
@@ -80,16 +80,19 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
     }
 }
 
-static bool M_IsBrokenTrack(const MUSIC_TRACK_ID track)
+static bool M_IsBrokenTrack(const int32_t track_id)
 {
-#if TR_VERSION == 1
+    if (track_id < 0) {
+        return true;
+    }
+    if (TR_VERSION > 1) {
+        return false;
+    }
+    const int32_t track = Music_UnmapTrackID(track_id);
     return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
-#else
-    return false;
-#endif
 }
 
-static bool M_IsAmbientTrack(const MUSIC_TRACK_ID track_id)
+static bool M_IsAmbientTrack(const int32_t track_id)
 {
     const GF_AMBIENT_DATA *const ambient_data = Level_GetAmbientData();
     if (ambient_data == nullptr) {
@@ -141,7 +144,7 @@ void Music_Shutdown(void)
     Audio_Shutdown();
 }
 
-bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
+bool Music_Play(const int32_t track_id, const MUSIC_PLAY_MODE mode)
 {
     if (!m_Initialised) {
         return false;
@@ -170,17 +173,17 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
     }
 
 #if TR_VERSION == 1
+    const MUSIC_TRACK track = Music_UnmapTrackID(track_id);
     // TODO: utilise secondary audio stream to allow playing high fidelity
     // versions of these sounds.
-    if (g_Config.audio.fix_secrets_killing_music && track_id == MX_SECRET
+    if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
         && Sound_IsAvailable(SFX_SECRET)) {
         return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
     }
 
-    if (g_Config.audio.fix_speeches_killing_music && track_id >= MX_BALDY_SPEECH
-        && track_id <= MX_SKATEKID_SPEECH) {
-        const SAMPLE_ID speech_id =
-            SFX_BALDY_SPEECH + track_id - MX_BALDY_SPEECH;
+    if (g_Config.audio.fix_speeches_killing_music && track >= MX_BALDY_SPEECH
+        && track <= MX_SKATEKID_SPEECH) {
+        const SAMPLE_ID speech_id = SFX_BALDY_SPEECH + track - MX_BALDY_SPEECH;
         if (Sound_IsAvailable(speech_id)) {
             return Sound_Effect(speech_id, nullptr, SPM_ALWAYS);
         }
@@ -223,6 +226,12 @@ finish:
     return true;
 }
 
+bool Music_PlayMX(const MUSIC_TRACK track, const MUSIC_PLAY_MODE mode)
+{
+    const int32_t track_id = Music_GetTrackID(track);
+    return Music_Play(track_id, mode);
+}
+
 void Music_Stop(void)
 {
     m_TrackCurrent = MX_INACTIVE;
@@ -233,7 +242,7 @@ void Music_Stop(void)
     M_StopActiveStream();
 }
 
-void Music_StopTrack(const MUSIC_TRACK_ID track)
+void Music_StopTrack(const int32_t track)
 {
     if (track != m_TrackCurrent || M_IsBrokenTrack(track)) {
         return;
@@ -287,17 +296,17 @@ bool Music_SyncTimestamp(const double timestamp)
     return Audio_Stream_SyncTimestamp(m_AudioStreamID, timestamp);
 }
 
-MUSIC_TRACK_ID Music_GetDelayedTrack(void)
+int32_t Music_GetDelayedTrack(void)
 {
     return m_TrackDelayed;
 }
 
-MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void)
+int32_t Music_GetCurrentPlayingTrack(void)
 {
     return m_TrackCurrent == MX_INACTIVE ? m_TrackLooped : m_TrackCurrent;
 }
 
-MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
+int32_t Music_GetCurrentLoopedTrack(void)
 {
     return m_TrackLooped;
 }

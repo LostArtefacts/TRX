@@ -80,7 +80,7 @@ typedef struct {
 typedef struct {
     bool is_present;
     int32_t count;
-    MUSIC_TRACK_ID *ids;
+    int32_t *ids;
 } GF_AMBIENT_DATA;
 
 typedef struct {
@@ -126,7 +126,7 @@ typedef struct {
     // Path to a Lua script executed when this level loads
     char *script_path;
 
-    MUSIC_TRACK_ID music_track;
+    int32_t music_track;
     GF_SEQUENCE sequence;
     INJECTION_DATA injections;
 
@@ -210,7 +210,7 @@ typedef struct {
 
     // music
     struct {
-        MUSIC_TRACK_ID secret_track;
+        int32_t secret_track;
     };
 #endif
 

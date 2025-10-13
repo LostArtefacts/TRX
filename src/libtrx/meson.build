@@ -232,6 +232,7 @@ sources = [
   'game/music/backend_cdaudio.c',
   'game/music/backend_files.c',
   'game/music/common.c',
+  'game/music/ids.c',
   'game/objects/col.c',
   'game/objects/common.c',
   'game/objects/creatures/ape.c',
