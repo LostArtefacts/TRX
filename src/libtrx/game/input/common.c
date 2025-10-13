@@ -261,7 +261,6 @@ bool Input_AssignFromJSONObject(
 {
     INPUT_ROLE role = (INPUT_ROLE)-1;
 
-#if TR_VERSION == 1
     // TR1X <=4.5, TR2X <=0.5
     const int32_t role_idx = JSON_ObjectGetInt(bind_obj, "role", -1);
     // clang-format off
@@ -318,7 +317,6 @@ bool Input_AssignFromJSONObject(
     case 50: role = INPUT_ROLE_TOGGLE_FULLSCREEN; break;
     }
     // clang-format on
-#endif
 
     // TR1X >= 4.6, TR2X >= 0.6
     if (role == (INPUT_ROLE)-1) {

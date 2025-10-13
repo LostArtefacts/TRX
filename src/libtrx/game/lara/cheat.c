@@ -26,9 +26,7 @@ static void M_GiveAllKeysImpl(void)
     Inv_AddItem(O_KEY_ITEM_4);
     Inv_AddItem(O_PICKUP_ITEM_1);
     Inv_AddItem(O_PICKUP_ITEM_2);
-#if TR_VERSION == 1
     Inv_AddItem(O_LEADBAR_ITEM);
-#endif
 }
 
 static void M_GiveAllGunsImpl(void)
@@ -54,9 +52,7 @@ static void M_GiveAllGunsImpl(void)
 
 static void M_GiveAllMedpacksImpl(void)
 {
-#if TR_VERSION >= 2
     Inv_AddItemNTimes(O_FLARES_ITEM, 10);
-#endif
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 10);
 }

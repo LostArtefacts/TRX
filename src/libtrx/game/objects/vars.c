@@ -10,12 +10,9 @@ const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[] = {
     { O_PUZZLE_OPTION_2, O_PUZZLE_HOLE_2 },
     { O_PUZZLE_OPTION_3, O_PUZZLE_HOLE_3 },
     { O_PUZZLE_OPTION_4, O_PUZZLE_HOLE_4 },
-    #if TR_VERSION == 1
     { O_LEADBAR_OPTION, O_MIDAS_TOUCH },
-    #elif TR_VERSION == 2
     { O_KEY_OPTION_2, O_GONG },
     { O_KEY_OPTION_2, O_DETONATOR_BOX },
-    #endif
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
 };
@@ -44,12 +41,9 @@ const OBJECT_ID g_ReceptacleObjects[] = {
     O_PUZZLE_DONE_2,
     O_PUZZLE_DONE_3,
     O_PUZZLE_DONE_4,
-#if TR_VERSION == 1
     O_MIDAS_TOUCH,
-#elif TR_VERSION == 2
     O_GONG,
     O_DETONATOR_BOX,
-#endif
     NO_OBJECT,
     // clang-format on
 };

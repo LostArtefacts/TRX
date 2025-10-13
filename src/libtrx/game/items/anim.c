@@ -17,11 +17,9 @@ static bool M_ShouldPlaySFXAlways(
         return true;
     }
 
-#if TR_VERSION >= 2
     if (item->object_id == O_LARA_HARPOON) {
         return true;
     }
-#endif
 
     int16_t room_num = item->room_num;
     if (room_num == NO_ROOM) {

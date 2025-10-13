@@ -256,7 +256,6 @@ void Room_TestTriggers(const ITEM *const item)
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
 
     Room_TestSectorTrigger(item, sector);
-#if TR_VERSION == 1
     if (item->object_id != O_TORSO) {
         return;
     }
@@ -274,7 +273,6 @@ void Room_TestTriggers(const ITEM *const item)
             Room_TestSectorTrigger(item, sector);
         }
     }
-#endif
 }
 
 void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)

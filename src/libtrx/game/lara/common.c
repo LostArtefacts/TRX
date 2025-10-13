@@ -337,16 +337,13 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_PUZZLE_OPTION_3:
     case O_PUZZLE_ITEM_4:
     case O_PUZZLE_OPTION_4:
-#if TR_VERSION == 1
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
     case O_SCION_ITEM_1:
     case O_SCION_ITEM_2:
     case O_SCION_ITEM_3:
     case O_SCION_ITEM_4:
-    case O_SCION_OPTION:
-#endif
-    {
+    case O_SCION_OPTION: {
         const int16_t receptacle_item_num = Object_FindReceptacle(obj_id);
         if (receptacle_item_num == NO_ITEM
             || lara_info->interact_target.item_num != NO_ITEM) {
@@ -720,7 +717,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         .z = ref_item->pos.z + shift.z,
     };
 
-#if TR_VERSION == 2
+#if TR_VERSION >= 2
     if (ref_item->object_id == O_FLARE_ITEM) {
         int16_t room_num = lara_item->room_num;
         const SECTOR *const sector =

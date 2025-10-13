@@ -4,19 +4,13 @@
 
 bool Lara_Flare_IsMeshActive(void)
 {
-#if TR_VERSION == 1
-    return false;
-#else
     const OBJECT *const obj = Object_Get(O_LARA_FLARE);
     return obj->loaded
         && Lara_Mesh_Get(LM_HAND_L)
         == Object_GetMesh(obj->mesh_idx + LM_HAND_L);
-#endif
 }
 
 void Lara_Flare_DrawMeshes(void)
 {
-#if TR_VERSION >= 2
     Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_FLARE);
-#endif
 }

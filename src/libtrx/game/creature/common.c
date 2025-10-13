@@ -837,15 +837,12 @@ bool Creature_Animate(
                 Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
             int32_t min_y = bounds->min.y;
             switch (item->object_id) {
-#if TR_VERSION == 1
             case O_ALLIGATOR:
                 min_y = 0;
                 break;
-#elif TR_VERSION == 2
             case O_SHARK:
                 min_y = 128;
                 break;
-#endif
             default:
                 break;
             }
@@ -958,7 +955,6 @@ void Creature_Die(const int16_t item_num, const bool explode)
     ITEM *const item = Item_Get(item_num);
 
     switch (item->object_id) {
-#if TR_VERSION == 2
     case O_DRAGON_FRONT:
         item->hit_points = 0;
         return;
@@ -972,7 +968,6 @@ void Creature_Die(const int16_t item_num, const bool explode)
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
         vehicle_item->hit_points = 0;
         return;
-#endif
 
     default:
         break;
