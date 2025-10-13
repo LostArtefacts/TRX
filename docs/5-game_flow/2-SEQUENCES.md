@@ -236,7 +236,7 @@ default game flow for examples.
     <td>Sets the camera's angle.</td>
   </tr>
   <tr valign="top">
-    <td><code>setup_bacon_lara</code><strong>¹</strong></td>
+    <td><code>setup_bacon_lara</code></td>
     <td><code>anchor_room</code></td>
     <td>Integer</td>
     <td>

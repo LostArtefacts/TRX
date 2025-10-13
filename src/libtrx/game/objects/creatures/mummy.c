@@ -1,14 +1,13 @@
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/game.h"
+#include "game/game_buf.h"
+#include "game/lara.h"
+#include "game/math.h"
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-
-#include <libtrx/game/carrier.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define MUMMY_HITPOINTS 18
 

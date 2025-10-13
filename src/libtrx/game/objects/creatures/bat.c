@@ -1,9 +1,9 @@
 #include "game/creature.h"
 #include "game/lara.h"
+#include "game/pathing.h"
+#include "game/rooms.h"
 #include "game/spawn.h"
-#include "global/types.h"
-
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define BAT_ATTACK_DAMAGE 2
 #define BAT_TURN (20 * DEG_1) // = 3640

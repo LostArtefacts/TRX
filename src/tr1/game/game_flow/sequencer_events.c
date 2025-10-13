@@ -1,6 +1,5 @@
 #include "game/game.h"
 #include "game/lara.h"
-#include "game/objects/creatures/bacon_lara.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -19,7 +18,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap);
 static DECLARE_GF_EVENT_HANDLER(M_HandleMeshSwap);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
@@ -31,7 +29,6 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_FLIP_MAP]         = M_HandleFlipMap,
     [GFS_MESH_SWAP]        = M_HandleMeshSwap,
-    [GFS_SETUP_BACON_LARA] = M_HandleSetupBaconLara,
     // clang-format on
 };
 
@@ -204,18 +201,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleMeshSwap)
         const GF_MESH_SWAP_DATA *const swap_data = event->data;
         Object_SwapMesh(
             swap_data->object1_id, swap_data->object2_id, swap_data->mesh_num);
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
-{
-    if (seq_ctx != GFSC_STORY) {
-        const int32_t anchor_room = (int32_t)(intptr_t)event->data;
-        if (!BaconLara_InitialiseAnchor(anchor_room)) {
-            LOG_ERROR("Could not anchor Bacon Lara to room %d", anchor_room);
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        }
     }
     return (GF_COMMAND) { .action = GF_NOOP };
 }

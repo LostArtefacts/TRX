@@ -1,4 +1,4 @@
-#include "game/objects/common.h"
+#include "game/objects.h"
 
 static void M_Setup(OBJECT *const obj)
 {

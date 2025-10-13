@@ -8,8 +8,11 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/output/scene_compositor.h>
+#include <libtrx/game/output/state.h>
 #include <libtrx/game/output/textures.h>
 #include <libtrx/game/overlay.h>
+#include <libtrx/game/rooms.h>
+#include <libtrx/game/viewport.h>
 
 void Game_Draw(bool draw_overlay)
 {

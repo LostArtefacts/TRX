@@ -3,7 +3,9 @@
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 

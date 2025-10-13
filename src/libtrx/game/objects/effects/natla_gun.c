@@ -1,8 +1,7 @@
 #include "game/effects.h"
-
-#include <libtrx/game/math.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/rooms.h>
+#include "game/math.h"
+#include "game/objects.h"
+#include "game/rooms.h"
 
 static void M_Control(const int16_t effect_num)
 {

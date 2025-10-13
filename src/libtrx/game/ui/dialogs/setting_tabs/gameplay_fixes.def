@@ -35,10 +35,7 @@ X_UI_CFG_BOOL(gameplay.fix_lara_pickup_embed,       SETTING_FIX_LARA_PICKUP_EMBE
 X_UI_CFG_BOOL(gameplay.fix_free_flare_glitch,       SETTING_FIX_FREE_FLARE_GLITCH)
 #endif
 
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.fix_alligator_ai,            SETTING_FIX_ALLIGATOR_AI)
-#endif
-
 X_UI_CFG_BOOL(gameplay.fix_bear_ai,                 SETTING_FIX_BEAR_AI)
 
 #if TR_VERSION == 1

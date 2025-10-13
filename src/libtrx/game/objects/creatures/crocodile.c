@@ -1,10 +1,11 @@
+#include "config.h"
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/lara.h"
+#include "game/pathing.h"
+#include "game/rooms.h"
 #include "game/spawn.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/carrier.h>
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define CROCODILE_BITE_DAMAGE 100
 #define CROCODILE_BITE_RANGE SQUARE(435) // = 189225

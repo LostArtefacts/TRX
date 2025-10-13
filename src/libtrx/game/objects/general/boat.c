@@ -1,4 +1,4 @@
-#include <libtrx/game/objects.h>
+#include "game/objects.h"
 
 typedef enum {
     BOAT_STATE_EMPTY = 0,

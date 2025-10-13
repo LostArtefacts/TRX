@@ -1,13 +1,13 @@
 #include "game/objects/traps/sliding_pillar.h"
 
-#include <libtrx/game/const.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/items/walkable.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/objects/traps/movable_block.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/utils.h>
-#include <libtrx/vector.h>
+#include "game/const.h"
+#include "game/game_buf.h"
+#include "game/items/walkable.h"
+#include "game/objects.h"
+#include "game/objects/traps/movable_block.h"
+#include "game/rooms.h"
+#include "utils.h"
+#include "vector.h"
 
 typedef enum {
     // clang-format off
