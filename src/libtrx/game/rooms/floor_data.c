@@ -154,7 +154,7 @@ static bool M_TestLava(const ITEM *const item)
 
 static void M_TriggerMusicTrack(int16_t track_id, const TRIGGER *const trigger)
 {
-    if (track_id == Music_GetTrackID(MX_UNUSED_0)
+    if (track_id == 0
         && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER)) {
         Music_Stop();
         return;

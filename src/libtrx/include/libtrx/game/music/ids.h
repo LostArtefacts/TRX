@@ -4,9 +4,9 @@
 
 typedef enum {
     MX_INACTIVE = -1,
-#define X_MUSIC_TRACK_DEFINE(name, game1_id, game2_id) name,
-#include "./ids.def"
-#undef X_MUSIC_TRACK_DEFINE
+#define X_CATALOG_ID(uuid_str, enum_value) enum_value,
+#include "../catalog_music.def"
+#undef X_CATALOG_ID
     MX_NUMBER_OF,
 } MUSIC_TRACK;
 

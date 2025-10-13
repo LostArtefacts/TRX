@@ -1,6 +1,7 @@
 #include "game/catalog.h"
 
 #include "filesystem.h"
+#include "game/music/ids.h"
 #include "game/objects/ids.h"
 #include "log.h"
 #include "memory.h"
@@ -16,6 +17,10 @@ typedef struct {
 } M_ENTRY;
 
 static const M_ENTRY m_CatalogEntryDefs[] = {
+#define X_CATALOG_ID(uuid_str, enum_value)                                     \
+    { CATALOG_MUSIC, enum_value, uuid_str },
+#include "game/catalog_music.def"
+#undef X_CATALOG_ID
 #define X_CATALOG_ID(uuid_str, enum_value)                                     \
     { CATALOG_OBJECTS, enum_value, uuid_str },
 #include "game/catalog_objects.def"
