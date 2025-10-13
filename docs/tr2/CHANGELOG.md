@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5.1...develop) - ××××-××-××
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
+- added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)

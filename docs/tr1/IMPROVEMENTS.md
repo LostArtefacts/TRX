@@ -199,6 +199,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - added optional dynamic lighting for gun flashes and explosions, similar to TR2+
 - added optional dynamic lighting for flames
 - added an option to toggle between TR1 and TR2 camera modes
+- added a splash effect when Lara jumps in wading depth water, similar to TR3+
 - changed the Scion in The Great Pyramid from spawning blood when hit to a ricochet effect
 - changed waterfall objects to always be drawn when active rather than only when Lara is within a 10 sector range
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
