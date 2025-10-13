@@ -8,6 +8,7 @@
 // Context discriminator for separate catalog namespaces
 typedef enum CATALOG_CONTEXT {
     CATALOG_OBJECTS,
+    CATALOG_MUSIC,
     CATALOG_CONTEXT_MAX,
 } CATALOG_CONTEXT;
 

@@ -1,34 +1,20 @@
-#include "game/music/ids.h"
-
-#include "utils.h"
-
-static int32_t m_GameIDMap[TR_VERSION_COUNT][MX_NUMBER_OF] = {
-    [0] = {
-#define X_MUSIC_TRACK_DEFINE(name, g1, g2) [name] = (g1),
-#include "game/music/ids.def"
-#undef X_MUSIC_TRACK_DEFINE
-    },
-    [1] = {
-#define X_MUSIC_TRACK_DEFINE(name, g1, g2) [name] = (g2),
-#include "game/music/ids.def"
-#undef X_MUSIC_TRACK_DEFINE
-    }
-};
+#include "game/catalog.h"
+#include "game/music.h"
 
 int32_t Music_GetTrackID(const MUSIC_TRACK music_track)
 {
-    if (music_track < 0 || music_track >= MX_NUMBER_OF) {
-        return -1;
+    int32_t out;
+    if (Catalog_EnumToGameID(CATALOG_MUSIC, music_track, &out)) {
+        return out;
     }
-    return m_GameIDMap[TR_VERSION - 1][music_track];
+    return -1;
 }
 
 MUSIC_TRACK Music_UnmapTrackID(const int32_t track_id)
 {
-    for (MUSIC_TRACK track = 0; track < MX_NUMBER_OF; track++) {
-        if (m_GameIDMap[TR_VERSION - 1][track] == track_id) {
-            return track;
-        }
+    CATALOG_ID out;
+    if (Catalog_GameIDToEnum(CATALOG_MUSIC, track_id, &out)) {
+        return out;
     }
     return MX_INACTIVE;
 }
