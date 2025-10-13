@@ -1,13 +1,3 @@
-#if TR_VERSION == 1
-#define X_OBJ_ID_DEFINE(uuid_str, enum_value, game1_id, game2_id)                           \
-    ENUM_MAP_DEFINE_SELF(GAME_OBJECT_ID, game1_id);
-#elif TR_VERSION == 2
-#define X_OBJ_ID_DEFINE(uuid_str, enum_value, game1_id, game2_id)                           \
-    ENUM_MAP_DEFINE_SELF(GAME_OBJECT_ID, game2_id);
-#endif
-#include <libtrx/game/objects/ids.def>
-#undef X_OBJ_ID_DEFINE
-
 #define X_INPUT_ROLE(role_name, state_name)                               \
     ENUM_MAP_DEFINE(INPUT_ROLE, role_name, #state_name)
 #include <libtrx/game/input/roles.def>

@@ -91,7 +91,6 @@ typedef struct OBJECT {
     bool save_flags;
     bool save_anim;
     bool semi_transparent;
-    UUID uuid;
 } OBJECT;
 
 typedef struct {
