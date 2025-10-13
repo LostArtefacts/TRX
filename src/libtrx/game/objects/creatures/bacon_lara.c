@@ -2,9 +2,10 @@
 
 #include "game/creature.h"
 #include "game/lara.h"
-#include "game/objects/common.h"
-
-#include <libtrx/game/lara/const.h>
+#include "game/lara/const.h"
+#include "game/lara/draw.h"
+#include "game/objects.h"
+#include "game/rooms.h"
 
 #define M_SMASH_JUMP_FRAME 1
 

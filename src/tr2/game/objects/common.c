@@ -1,5 +1,8 @@
 #include "game/objects/common.h"
 
+#include "game/inventory.h"
+
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
@@ -19,6 +22,99 @@ void Object_DrawSpriteItem(const ITEM *const item)
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
         Output_GetLightAdder() + SHADE_NEUTRAL, (RGB_F) { 1.0f, 1.0f, 1.0f });
+}
+
+void Object_DrawPickupItem(const ITEM *const item)
+{
+    if (item->flags & IF_INVISIBLE) {
+        return;
+    }
+
+    if (!g_Config.visuals.enable_3d_pickups
+        || !Object_Get(item->object_id)->loaded) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
+    // Convert item to menu display item.
+    const OBJECT_ID inv_object_id = Inv_GetItemOption(item->object_id);
+    if (inv_object_id == NO_OBJECT) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
+    const OBJECT *const obj = Object_Get(inv_object_id);
+    if (!obj->loaded || obj->mesh_count < 0) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
+    // Get the first frame of the first animation, and its bounding box.
+    int16_t offset;
+    BOUNDS_16 bounds;
+    const ANIM_FRAME *frame = nullptr;
+
+    // Some items, such as the Prayer Wheel in Barkhang Monastery, do not have
+    // animations, and for such items we need to calculate this information
+    // manually.
+    if (obj->anim_idx != -1) {
+        frame = obj->frame_base;
+        bounds = frame->bounds;
+        const int16_t y_off = frame->offset.y - bounds.max.y;
+        bounds.max.y -= bounds.max.y;
+        bounds.min.y -= bounds.max.y;
+        offset = item->interp.result.pos.y + y_off;
+    } else {
+        bounds = Object_GetBoundingBox(obj, nullptr, item->mesh_bits);
+        offset = item->pos.y - (bounds.max.y - bounds.min.y) / 2;
+    }
+
+    Matrix_Push();
+    Matrix_TranslateAbs(
+        item->interp.result.pos.x, offset, item->interp.result.pos.z);
+    Matrix_Rot16(item->interp.result.rot);
+
+    Output_CalculateLight(item->pos, item->room_num);
+
+    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
+        int32_t bit = 1;
+
+        const XYZ_16 *const mesh_rots =
+            frame != nullptr ? frame->mesh_rots : nullptr;
+        if (mesh_rots != nullptr) {
+            Matrix_Rot16(mesh_rots[0]);
+        }
+
+        if (item->mesh_bits & bit) {
+            Object_DrawMesh(obj->mesh_idx, clip, false);
+        }
+
+        for (int i = 1; i < obj->mesh_count; i++) {
+            const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
+            if (bone->matrix_pop) {
+                Matrix_Pop();
+            }
+
+            if (bone->matrix_push) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel32(bone->pos);
+            if (mesh_rots != nullptr) {
+                Matrix_Rot16(mesh_rots[i]);
+            }
+
+            // Extra rotation is ignored in this case as it's not needed.
+
+            bit <<= 1;
+            if (item->mesh_bits & bit) {
+                Object_DrawMesh(obj->mesh_idx + i, clip, false);
+            }
+        }
+    }
+
+    Matrix_Pop();
 }
 
 BOUNDS_16 Object_GetBoundingBox(

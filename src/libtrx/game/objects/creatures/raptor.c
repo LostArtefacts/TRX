@@ -1,9 +1,9 @@
 #include "game/creature.h"
 #include "game/lara.h"
+#include "game/pathing.h"
+#include "game/random.h"
 #include "game/spawn.h"
-
-#include <libtrx/game/random.h>
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define RAPTOR_ATTACK_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
 #define RAPTOR_BITE_DAMAGE 100

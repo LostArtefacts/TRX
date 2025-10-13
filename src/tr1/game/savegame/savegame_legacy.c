@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/objects/traps/sliding_pillar.h"
 #include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -14,6 +13,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

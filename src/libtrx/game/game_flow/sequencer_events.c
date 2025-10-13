@@ -4,6 +4,7 @@
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/sequencer_priv.h"
 #include "game/game_flow/vars.h"
+#include "game/objects/creatures/bacon_lara.h"
 #include "game/phase.h"
 #include "log.h"
 
@@ -14,6 +15,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture);
 static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats);
 static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats);
+static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
@@ -34,6 +36,7 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_DISPLAY_PICTURE]   = M_HandlePicture,
     [GFS_LEVEL_STATS]       = M_HandleLevelStats,
     [GFS_TOTAL_STATS]       = M_HandleTotalStats,
+    [GFS_SETUP_BACON_LARA]  = M_HandleSetupBaconLara,
     // clang-format on
 };
 
@@ -163,6 +166,19 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats)
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);
     return gf_cmd;
+}
+
+static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
+{
+    // TODO: move me to lua!
+    if (seq_ctx != GFSC_STORY) {
+        const int32_t anchor_room = (int32_t)(intptr_t)event->data;
+        if (!BaconLara_InitialiseAnchor(anchor_room)) {
+            LOG_ERROR("Could not anchor Bacon Lara to room %d", anchor_room);
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+    }
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 void GF_SetSequenceEventHandler(

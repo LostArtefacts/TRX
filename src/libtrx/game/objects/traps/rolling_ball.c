@@ -2,7 +2,7 @@
 #include "game/camera.h"
 #include "game/game_buf.h"
 #include "game/lara.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
 #include "game/random.h"
 #include "game/rooms.h"
 #include "game/sound.h"

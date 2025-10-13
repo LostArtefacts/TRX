@@ -188,8 +188,8 @@ typedef struct {
         bool disable_shotgun;
         bool enable_deaths_counter;
         bool enable_pickup_aids;
-        bool enable_save_crystals;
 #endif
+        bool enable_save_crystals;
         bool enable_enhanced_saves;
 
         bool enable_cheats;
@@ -261,11 +261,11 @@ typedef struct {
         bool fix_lara_pickup_embed;
         bool fix_water_exit;
         WALL_GLITCH_MODE wall_glitch_mode;
-#if TR_VERSION == 1
         bool fix_alligator_ai;
+        bool disable_trex_collision;
+#if TR_VERSION == 1
         bool fix_shotgun_targeting;
         bool change_pierre_spawn;
-        bool disable_trex_collision;
 #else
         bool fix_m16_accuracy;
         bool fix_free_flare_glitch;

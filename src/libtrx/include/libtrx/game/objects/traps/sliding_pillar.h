@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/game/types.h>
+#include "../types.h"
 
 #include <stdint.h>
 

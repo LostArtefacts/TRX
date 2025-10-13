@@ -6,6 +6,7 @@
 #include "game/objects/general/lift.h"
 #include "game/objects/vars.h"
 #include "game/savegame.h"
+#include "global/types_decomp.h"
 #include "global/vars.h"
 
 #include <libtrx/bson.h>
@@ -16,7 +17,9 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/stats.h>
@@ -686,6 +689,13 @@ static JSON_ARRAY *M_DumpItems(void)
                 DUMP_XYZ(data_obj, "linked", data->linked);
                 JSON_ObjectAppendObject(item_obj, "data", data_obj);
             }
+
+            if (item->object_id == O_SLIDING_PILLAR && item->data != nullptr) {
+                SLIDING_PILLAR_INFO *const data = item->data;
+                JSON_OBJECT *const data_obj = JSON_ObjectNew();
+                DUMP_XYZ(data_obj, "linked", data->linked);
+                JSON_ObjectAppendObject(item_obj, "data", data_obj);
+            }
         }
 
         JSON_ARRAY *const carried_items_arr = JSON_ArrayNew();
@@ -980,6 +990,27 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
             } else if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
                 // For old saves, guess linked sector is at item position.
                 MOVABLE_BLOCK_INFO *const data = item->data;
+                data->linked.pos = item->pos;
+                data->linked.room_num = item->room_num;
+            }
+
+            if (header_version >= VERSION_12
+                && item->object_id == O_SLIDING_PILLAR
+                && item->data != nullptr) {
+                JSON_OBJECT *const data_obj =
+                    JSON_ObjectGetObject(item_obj, "data");
+                if (data_obj == nullptr) {
+                    LOG_ERROR(
+                        "Malformed save: missing sliding pillar data for item "
+                        "%d",
+                        i);
+                    return false;
+                }
+                SLIDING_PILLAR_INFO *const data = item->data;
+                LOAD_XYZ(data_obj, "linked", data->linked);
+            } else if (item->object_id == O_SLIDING_PILLAR) {
+                // For old saves, guess linked sector is at item position.
+                SLIDING_PILLAR_INFO *const data = item->data;
                 data->linked.pos = item->pos;
                 data->linked.room_num = item->room_num;
             }

@@ -1,9 +1,9 @@
 #include "game/creature.h"
 #include "game/lara.h"
+#include "game/pathing.h"
+#include "game/random.h"
 #include "game/spawn.h"
-
-#include <libtrx/game/random.h>
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define APE_ATTACK_DAMAGE 200
 #define APE_TOUCH 0xFF00

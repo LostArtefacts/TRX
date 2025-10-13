@@ -1,7 +1,7 @@
+#include "game/lara.h"
 #include "game/objects/common.h"
-
-#include <libtrx/game/lara.h>
-#include <libtrx/utils.h>
+#include "game/pathing.h"
+#include "utils.h"
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
 

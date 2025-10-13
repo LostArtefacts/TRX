@@ -1,12 +1,11 @@
 // The Great Pyramid shootable Scion.
 
+#include "game/camera.h"
 #include "game/effects.h"
-
-#include <libtrx/game/camera.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
+#include "game/objects.h"
+#include "game/random.h"
+#include "game/rooms.h"
+#include "game/sound.h"
 
 static void M_Control(const int16_t item_num)
 {

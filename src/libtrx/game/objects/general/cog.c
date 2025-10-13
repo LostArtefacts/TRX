@@ -1,5 +1,5 @@
-#include <libtrx/game/objects.h>
-#include <libtrx/game/rooms.h>
+#include "game/objects.h"
+#include "game/rooms.h"
 
 typedef enum {
     COG_STATE_INACTIVE = 0,

@@ -4,6 +4,7 @@
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 
 #define ZIPLINE_MAX_SPEED 100

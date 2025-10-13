@@ -1,8 +1,8 @@
+#include "config.h"
+#include "debug.h"
 #include "game/lara.h"
-#include "game/objects/common.h"
-
-#include <libtrx/config.h>
-#include <libtrx/debug.h>
+#include "game/objects.h"
+#include "game/rooms.h"
 
 typedef enum {
     THOR_HAMMER_STATE_SET = 0,

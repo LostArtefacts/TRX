@@ -10,6 +10,7 @@
 void Object_DrawUnclippedItem(const ITEM *item);
 void Object_DrawMesh(int32_t mesh_idx, CLIP clip, bool interpolated);
 extern void Object_DrawSpriteItem(const ITEM *item);
+extern void Object_DrawPickupItem(const ITEM *item);
 void Object_DrawStaticObject(const OBJECT *obj, const ANIM_FRAME *frame);
 
 void Object_DrawAnimatingItem(const ITEM *item);

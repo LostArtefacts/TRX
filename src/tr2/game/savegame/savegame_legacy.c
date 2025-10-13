@@ -7,6 +7,7 @@
 #include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "game/shell.h"
+#include "global/types_decomp.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -14,6 +15,8 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
+#include <libtrx/game/objects/traps/sliding_pillar.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/game/stats.h>
 #include <libtrx/memory.h>
 
@@ -290,6 +293,10 @@ static void M_ReadItems(void)
 
         if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
             MOVABLE_BLOCK_INFO *const data = item->data;
+            data->linked.pos = item->pos;
+            data->linked.room_num = item->room_num;
+        } else if (item->object_id == O_SLIDING_PILLAR) {
+            SLIDING_PILLAR_INFO *const data = item->data;
             data->linked.pos = item->pos;
             data->linked.room_num = item->room_num;
         }

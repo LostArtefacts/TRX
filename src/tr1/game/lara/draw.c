@@ -317,8 +317,8 @@ end:
 }
 
 void Lara_Draw_I(
-    const ITEM *const item, ANIM_FRAME *frame1, ANIM_FRAME *frame2,
-    int32_t frac, int32_t rate)
+    const ITEM *const item, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
     MATRIX saved_matrix;
 

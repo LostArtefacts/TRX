@@ -5,6 +5,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/pathing.h>
 
 #define SKIDOO_ARMED_RADIUS (WALL_L / 3) // = 341
 

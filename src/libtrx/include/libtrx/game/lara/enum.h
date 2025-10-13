@@ -467,7 +467,9 @@ typedef enum {
 // clang-format off
 typedef enum {
     LS_EXTRA_BREATH      = 0,
-#if TR_VERSION == 2
+#if TR_VERSION == 1
+    LS_EXTRA_TREX_KILL   = 1,
+#elif TR_VERSION == 2
     LS_EXTRA_PLUNGER     = 1,
     LS_EXTRA_YETI_KILL   = 2,
     LS_EXTRA_SHARK_KILL  = 3,

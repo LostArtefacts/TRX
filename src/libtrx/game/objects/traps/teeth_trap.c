@@ -1,5 +1,5 @@
 #include "game/lara.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
 #include "game/spawn.h"
 
 #define M_DAMAGE 400

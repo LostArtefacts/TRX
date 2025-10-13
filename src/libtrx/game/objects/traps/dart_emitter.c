@@ -1,6 +1,6 @@
 #include "game/const.h"
 #include "game/effects.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
 #include "game/sound.h"
 
 typedef enum {
