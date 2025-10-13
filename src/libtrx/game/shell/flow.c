@@ -1,6 +1,7 @@
 #include "config.h"
 #include "debug.h"
 #include "enum_map.h"
+#include "game/catalog.h"
 #include "game/clock.h"
 #include "game/console.h"
 #include "game/events.h"
@@ -53,6 +54,16 @@ static void M_SetupGL(void)
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+}
+
+static void M_LoadCatalog(
+    const CATALOG_CONTEXT context, const char *const filename)
+{
+    const char *const path =
+        String_FormatStatic("%s/%s", Shell_GetConfigDir(), filename);
+    if (!Catalog_Load(context, path)) {
+        Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
+    }
 }
 
 const char *Shell_GetConfigDir(void)
@@ -120,6 +131,7 @@ void Shell_ShutdownCommonModules(void)
     GameStringManager_Shutdown();
     GameString_Shutdown();
     GameBuf_Shutdown();
+    Catalog_Shutdown();
 
     Config_Shutdown();
     EnumMap_Shutdown();
@@ -137,6 +149,8 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     if (args->headless && args->test_replay_path == nullptr) {
         Shell_ExitSystem("--headless can only be used with --test-replay");
     }
+
+    M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv");
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);

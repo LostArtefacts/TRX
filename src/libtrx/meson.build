@@ -234,6 +234,7 @@ sources = [
   'game/music/common.c',
   'game/music/ids.c',
   'game/objects/col.c',
+  'game/catalog.c',
   'game/objects/common.c',
   'game/objects/creatures/ape.c',
   'game/objects/creatures/bacon_lara.c',
