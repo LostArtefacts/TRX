@@ -980,9 +980,9 @@ static bool M_LoadCurrentMusic(
         return false;
     }
 
-    const MUSIC_TRACK_ID current_track =
+    const int32_t current_track =
         JSON_ObjectGetInt(music_obj, "current_track", MX_INACTIVE);
-    MUSIC_TRACK_ID ambient_track =
+    int32_t ambient_track =
         JSON_ObjectGetInt(music_obj, "current_ambient", MX_INACTIVE);
     const double timestamp = JSON_ObjectGetDouble(music_obj, "timestamp", -1.0);
 
@@ -1436,8 +1436,8 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
 
 static JSON_OBJECT *M_DumpCurrentMusic(void)
 {
-    const MUSIC_TRACK_ID current_track = Music_GetCurrentPlayingTrack();
-    const MUSIC_TRACK_ID current_ambient = Music_GetCurrentLoopedTrack();
+    const int32_t current_track = Music_GetCurrentPlayingTrack();
+    const int32_t current_ambient = Music_GetCurrentLoopedTrack();
     JSON_OBJECT *const current_music_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(current_music_obj, "current_track", current_track);
     JSON_ObjectAppendInt(current_music_obj, "current_ambient", current_ambient);

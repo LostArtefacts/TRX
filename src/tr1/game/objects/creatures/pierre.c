@@ -42,8 +42,10 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->hit_points <= 0 && (item->flags & IF_ONE_SHOT)) {
-            const uint16_t flags = Music_GetTrackFlags(MX_PIERRE_SPEECH);
-            Music_SetTrackFlags(MX_PIERRE_SPEECH, flags | IF_ONE_SHOT);
+            const uint16_t flags =
+                Music_GetTrackFlags(Music_GetTrackID(MX_PIERRE_SPEECH));
+            Music_SetTrackFlags(
+                Music_GetTrackID(MX_PIERRE_SPEECH), flags | IF_ONE_SHOT);
         }
     }
 }

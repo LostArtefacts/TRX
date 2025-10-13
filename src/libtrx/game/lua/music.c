@@ -6,7 +6,7 @@
 // TRX.Music.GetTrack()
 static int M_L_MusicGetTrack(lua_State *const L)
 {
-    const MUSIC_TRACK_ID track = Music_GetCurrentPlayingTrack();
+    const int32_t track = Music_GetCurrentPlayingTrack();
     if (track < 0) {
         lua_pushnil(L);
     } else {
@@ -25,8 +25,8 @@ static int M_L_MusicPlayTrack(lua_State *const L)
         mode = (MUSIC_PLAY_MODE)luaL_optinteger(L, -1, mode);
         lua_pop(L, 1);
     }
-    if (!Music_Play((MUSIC_TRACK_ID)id, mode)) {
-        return luaL_error(L, "invalid music track or mode: %d", (int)id);
+    if (!Music_Play((int32_t)id, mode)) {
+        return luaL_error(L, "invalid music track or mode: %d", (int32_t)id);
     }
     return 0;
 }

@@ -221,8 +221,8 @@ static JSON_OBJECT *M_DumpMusic(void)
     }
     JSON_ObjectAppendArray(music_obj, "flags", track_arr);
 
-    const MUSIC_TRACK_ID current_track = Music_GetCurrentPlayingTrack();
-    const MUSIC_TRACK_ID current_ambient = Music_GetCurrentLoopedTrack();
+    const int32_t current_track = Music_GetCurrentPlayingTrack();
+    const int32_t current_ambient = Music_GetCurrentLoopedTrack();
     JSON_OBJECT *const current_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(current_obj, "current_track", current_track);
     JSON_ObjectAppendInt(current_obj, "current_ambient", current_ambient);
@@ -273,9 +273,9 @@ static bool M_LoadMusic(
         return true;
     }
 
-    MUSIC_TRACK_ID current_track =
+    int32_t current_track =
         JSON_ObjectGetInt(current_obj, "current_track", MX_INACTIVE);
-    MUSIC_TRACK_ID ambient_track =
+    int32_t ambient_track =
         JSON_ObjectGetInt(current_obj, "current_ambient", MX_INACTIVE);
     const double timestamp =
         JSON_ObjectGetDouble(current_obj, "timestamp", -1.0);

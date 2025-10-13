@@ -154,7 +154,7 @@ static void M_LoadCommonSettings(
             settings->ambient_tracks.is_present = true;
             settings->ambient_tracks.count = tmp_arr->length;
             settings->ambient_tracks.ids =
-                Memory_Alloc(sizeof(MUSIC_TRACK_ID) * tmp_arr->length);
+                Memory_Alloc(sizeof(int32_t) * tmp_arr->length);
             for (size_t i = 0; i < tmp_arr->length; i++) {
                 settings->ambient_tracks.ids[i] =
                     JSON_ArrayGetInt(tmp_arr, i, MX_INACTIVE);

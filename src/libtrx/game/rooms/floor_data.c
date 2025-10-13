@@ -112,20 +112,21 @@ static bool M_TestLava(const ITEM *const item)
     return sector->is_death_sector;
 }
 
-static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
+static void M_TriggerMusicTrack(int16_t track_id, const TRIGGER *const trigger)
 {
-    if (track == MX_UNUSED_0
+    if (track_id == Music_GetTrackID(MX_UNUSED_0)
         && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER)) {
         Music_Stop();
         return;
     }
 
-    if (track <= MX_UNUSED_1 || track >= MAX_MUSIC_TRACKS
-        || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track))) {
+    if (track_id <= Music_GetTrackID(MX_UNUSED_1)
+        || track_id >= MAX_MUSIC_TRACKS
+        || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track_id))) {
         return;
     }
 
-    uint16_t flags = Music_GetTrackFlags(track);
+    uint16_t flags = Music_GetTrackFlags(track_id);
     // TODO: consolidate
 #if TR_VERSION == 1
     if ((flags & IF_ONE_SHOT) != 0) {
@@ -144,9 +145,9 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         if (trigger->one_shot) {
             flags |= IF_ONE_SHOT;
         }
-        Music_Play(track, MPM_TRACKED);
+        Music_Play(track_id, MPM_TRACKED);
     } else {
-        Music_StopTrack(track);
+        Music_StopTrack(track_id);
     }
 #else
     if (trigger->type != TT_SWITCH) {
@@ -160,12 +161,12 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
 
     if (trigger->timer == 0) {
-        Music_Play(track, MPM_TRACKED);
+        Music_Play(track_id, MPM_TRACKED);
         goto finish;
     }
 
-    if (track != Music_GetDelayedTrack()) {
-        Music_Play(track, MPM_DELAYED);
+    if (track_id != Music_GetDelayedTrack()) {
+        Music_Play(track_id, MPM_DELAYED);
         flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
         goto finish;
     }
@@ -177,13 +178,13 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 
     timer--;
     if (timer == 0) {
-        Music_Play(track, MPM_TRACKED);
+        Music_Play(track_id, MPM_TRACKED);
     }
     flags = (flags & 0xFF00) | (timer & 0xFF);
 #endif
 
 finish:
-    Music_SetTrackFlags(track, flags);
+    Music_SetTrackFlags(track_id, flags);
 }
 
 void Room_ParseFloorData(const int16_t *floor_data)
@@ -548,15 +549,17 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             // in TR2, see #2047
             const int16_t secret_num = (int16_t)(intptr_t)cmd->parameter;
             if (Stats_AddSecret(secret_num)) {
-                Music_Play(MX_SECRET, MPM_ALWAYS);
+                Music_PlayMX(MX_SECRET, MPM_ALWAYS);
             }
             break;
         }
+
 #if TR_VERSION == 2
         case TO_BODY_BAG:
             Item_ClearKilled();
             break;
 #endif
+
         default:
             break;
         }
