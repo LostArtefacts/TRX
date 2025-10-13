@@ -1,6 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15.1...develop) - ××××-××-××
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
+- added support for object ID and music ID catalog overrides
+    This lets the builders to choose which slots to use to provide the game with assets the game uses.
+    In the future, this feature can be used to get "hard-coded" TR2 sounds to work in TR1, and vice versa.
+    See [the documentation](../07-CATALOGS.md) for details.
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
@@ -77,7 +81,7 @@ Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
 
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
->Please refer to the [migration guide](../3-MIGRATING.md) to see how to update your levels.
+>Please refer to the [migration guide](../03-MIGRATING.md) to see how to update your levels.
 
 - added lighting contrast option (Graphic options → Rendering → Lighting contrast)
 - added new command switches:
@@ -99,7 +103,7 @@ Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
 - added Russian translation
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)
-- added a new `/lua` console command (for now, [it cannot do much](../8-LUA.md))
+- added a new `/lua` console command (for now, [it cannot do much](../06-lua/))
 - added a new `/restless` console command, which enables or disables infinite sprint
 - added debug room clip feature (`/debug 1`)
 - improved object loading error messages when an invalid object ID is detected
@@ -385,7 +389,7 @@ Showcase: https://www.youtube.com/watch?v=JVtcZoNoeRM
 ## [4.10](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...tr1-4.10) - 2025-04-30
 Showcase: https://www.youtube.com/watch?v=qJPq9obD6Cc
 - added an ability to customize the fog distances (#634)
-- added an ability to customize the water color [see the reference](/docs/WATER_COLORS.md) (#1532)  
+- added an ability to customize the water color [see the reference](../08-WATER_COLORS.md) (#1532)  
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
 - added support for antitriggers, like TR2+ (#2580)
 - added support for aspect ratio-specific images (#1840)
@@ -502,9 +506,9 @@ Showcase: https://www.youtube.com/watch?v=td2Qz3nbRVo
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the game flow file.
 >Please refer to the following documents to see how to update your levels:
->- [Migration guide](../3-MIGRATING.md)
->- [Game flow documentation](../5-game_flow/)
->- [Game strings documentation](../4-GAME_STRINGS.md)
+>- [Migration guide](../03-MIGRATING.md)
+>- [Game flow documentation](../05-game_flow/)
+>- [Game strings documentation](../04-GAME_STRINGS.md)
 
 - added the ability to hold left/right to move through menus more quickly (#2298)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (#2076)
@@ -961,7 +965,7 @@ Showcase: https://www.youtube.com/watch?v=-ED8HSHdHHQ&t=63s
 ## [3.0](https://github.com/LostArtefacts/TRX/compare/tr1-2.16...tr1-3.0) - 2023-11-09
 Showcase: https://www.youtube.com/watch?v=vqvOkZzHx6M
 - renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
-- added developer console (accessible with `/`, see [COMMANDS.md] for details)
+- added developer console (accessible with `/`, see [2-COMMANDS.md] for details)
 - added Linux builds and toolchain
 - added an option to allow Lara to roll while underwater, similar to TR2+ (#993)
 - added an option to turn off Eidos logo entirely through config (#1044)
