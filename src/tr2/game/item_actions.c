@@ -83,7 +83,7 @@ static void M_LaraNormal(ITEM *const item)
 
 static void M_Boiler(ITEM *const item)
 {
-    Sound_Effect(SFX_UNKNOWN_1, nullptr, SPM_NORMAL);
+    Sound_Effect(SFX_BOILER, nullptr, SPM_NORMAL);
     Room_SetFlipEffect(-1);
 }
 

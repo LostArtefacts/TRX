@@ -61,7 +61,7 @@ static void M_ExplodeLara(void)
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
     Item_Explode(lara_info->item_num, -1, 1);
-    Sound_Effect(SFX_EXPLOSION_CHEAT, &lara_item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, SPM_NORMAL);
     lara_item->hit_points = 0;
     lara_item->flags |= IF_ONE_SHOT;
 }

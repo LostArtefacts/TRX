@@ -181,11 +181,32 @@ bool Music_Play(const int32_t track_id, const MUSIC_PLAY_MODE mode)
         return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
     }
 
-    if (g_Config.audio.fix_speeches_killing_music && track >= MX_BALDY_SPEECH
-        && track <= MX_SKATEKID_SPEECH) {
-        const SAMPLE_ID speech_id = SFX_BALDY_SPEECH + track - MX_BALDY_SPEECH;
-        if (Sound_IsAvailable(speech_id)) {
-            return Sound_Effect(speech_id, nullptr, SPM_ALWAYS);
+    if (g_Config.audio.fix_speeches_killing_music) {
+        SAMPLE_ID sample_id = SFX_INVALID;
+        switch (track) {
+        case MX_BALDY_SPEECH:
+            sample_id = SFX_BALDY_SPEECH;
+            break;
+        case MX_COWBOY_SPEECH:
+            sample_id = SFX_COWBOY_SPEECH;
+            break;
+        case MX_LARSON_SPEECH:
+            sample_id = SFX_LARSON_SPEECH;
+            break;
+        case MX_NATLA_SPEECH:
+            sample_id = SFX_NATLA_SPEECH;
+            break;
+        case MX_PIERRE_SPEECH:
+            sample_id = SFX_PIERRE_SPEECH;
+            break;
+        case MX_SKATEKID_SPEECH:
+            sample_id = SFX_SKATEKID_SPEECH;
+            break;
+        default:
+            break;
+        }
+        if (Sound_IsAvailable(sample_id)) {
+            return Sound_Effect(sample_id, nullptr, SPM_ALWAYS);
         }
     }
 #endif
