@@ -6,8 +6,8 @@ title: Music track IDs
 
 ### Tomb Raider 1
 
-| ID | Description |
-| --- | --- |
+| ID   | Description |
+| ---  | --- |
 | `0`  | Null (antipads and antitriggers with this track ID will stop current track) |
 | `1`  | Unused |
 | `2`  | _Tomb Raider Theme_ |
@@ -70,8 +70,10 @@ title: Music track IDs
 | `59` | Windy ambience |
 | `60` | Atlantis ambience |
 
-| ID | Description |
-| --- | --- |
+### Tomb Raider 2
+
+| ID   | Description |
+| ---  | --- |
 | `2`  | Cutscene (The Great Wall) |
 | `3`  | Cutscene (Opera House) |
 | `4`  | Cutscene (Brother Chan) |
