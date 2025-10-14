@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../config/types.h"
+#include "./music/ids.h"
 
 #include <stdint.h>
 
@@ -19,4 +20,4 @@ void Gym_FinishAssault(void);
 
 // Potentially converts the requested track id based on Lara's state. Returns
 // true if the track should be played.
-bool Gym_CanPlayMusicTrack(int16_t *track_id);
+bool Gym_CanPlayMusicTrack(MUSIC_ID *track_id);

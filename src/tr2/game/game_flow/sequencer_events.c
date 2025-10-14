@@ -95,7 +95,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic)
 {
-    Music_Play((int32_t)(intptr_t)event->data, MPM_ALWAYS);
+    Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 

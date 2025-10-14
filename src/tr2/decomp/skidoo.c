@@ -632,11 +632,11 @@ void Skidoo_Animation(
         break;
 
     case LARA_STATE_SKIDOO_STILL: {
-        const int32_t music_track = Music_GetTrackID(
+        const int32_t music_track = Music_ToGameID(
             M_IsArmed(skidoo_data) ? MX_BATTLE_THEME : MX_SKIDOO_THEME);
         const uint16_t music_flags = Music_GetTrackFlags(music_track);
         if (!(music_flags & IF_ONE_SHOT)) {
-            Music_Play(music_track, MPM_ALWAYS);
+            Music_Play_Direct(music_track, MPM_ALWAYS);
             Music_SetTrackFlags(music_track, music_flags | IF_ONE_SHOT);
         }
 

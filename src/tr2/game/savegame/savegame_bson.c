@@ -221,8 +221,8 @@ static JSON_OBJECT *M_DumpMusic(void)
     }
     JSON_ObjectAppendArray(music_obj, "flags", track_arr);
 
-    const int32_t current_track = Music_GetCurrentPlayingTrack();
-    const int32_t current_ambient = Music_GetCurrentLoopedTrack();
+    const MUSIC_ID current_track = Music_GetCurrentPlayingTrack();
+    const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
     JSON_OBJECT *const current_obj = JSON_ObjectNew();
     JSON_ObjectAppendInt(current_obj, "current_track", current_track);
     JSON_ObjectAppendInt(current_obj, "current_ambient", current_ambient);
@@ -232,8 +232,8 @@ static JSON_OBJECT *M_DumpMusic(void)
     return music_obj;
 }
 
-static int32_t M_ConvertMusicTrack(
-    const int32_t track_id, const uint16_t header_version)
+static MUSIC_ID M_ConvertMusicTrack(
+    const MUSIC_ID track_id, const uint16_t header_version)
 {
     if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
         return track_id;
@@ -263,7 +263,7 @@ static bool M_LoadMusic(
     }
 
     for (int32_t i = 0; i < (signed)track_arr->length; i++) {
-        const int32_t track_id = M_ConvertMusicTrack(i, header_version);
+        const MUSIC_ID track_id = M_ConvertMusicTrack(i, header_version);
         Music_SetTrackFlags(track_id, JSON_ArrayGetInt(track_arr, i, 0));
     }
 
@@ -273,9 +273,9 @@ static bool M_LoadMusic(
         return true;
     }
 
-    int32_t current_track =
+    MUSIC_ID current_track =
         JSON_ObjectGetInt(current_obj, "current_track", MX_INACTIVE);
-    int32_t ambient_track =
+    MUSIC_ID ambient_track =
         JSON_ObjectGetInt(current_obj, "current_ambient", MX_INACTIVE);
     const double timestamp =
         JSON_ObjectGetDouble(current_obj, "timestamp", -1.0);
@@ -297,7 +297,7 @@ static bool M_LoadMusic(
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.
-        Music_Play(ambient_track, MPM_LOOPED);
+        Music_Play_Direct(ambient_track, MPM_LOOPED);
     }
 
     if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
@@ -307,7 +307,7 @@ static bool M_LoadMusic(
     const bool is_ambient =
         current_track != MX_INACTIVE && current_track == ambient_track;
     if (!is_ambient && current_track != MX_INACTIVE) {
-        Music_Play(current_track, MPM_ALWAYS);
+        Music_Play_Direct(current_track, MPM_ALWAYS);
     }
 
     const bool load_timestamp =

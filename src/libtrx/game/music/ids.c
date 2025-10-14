@@ -1,20 +1,20 @@
 #include "game/catalog.h"
 #include "game/music.h"
 
-int32_t Music_GetTrackID(const MUSIC_TRACK music_track)
+MUSIC_ID Music_ToGameID(const MUSIC_TRX_ID music_track)
 {
     int32_t out;
     if (Catalog_EnumToGameID(CATALOG_MUSIC, music_track, &out)) {
         return out;
     }
-    return -1;
+    return MX_INACTIVE;
 }
 
-MUSIC_TRACK Music_UnmapTrackID(const int32_t track_id)
+MUSIC_TRX_ID Music_FromGameID(const MUSIC_ID track_id)
 {
     CATALOG_ID out;
     if (Catalog_GameIDToEnum(CATALOG_MUSIC, track_id, &out)) {
         return out;
     }
-    return MX_INACTIVE;
+    return MX_TRX_INVALID;
 }

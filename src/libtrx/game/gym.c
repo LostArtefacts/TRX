@@ -108,22 +108,22 @@ void Gym_FinishAssault(void)
     if (current_best_time <= 0) {
         if (resume->stats.timer < 100 * LOGIC_FPS) {
             // "Gosh! That was my best time yet!"
-            Music_PlayMX(MX_TR2_GYM_HINT_15, MPM_ALWAYS);
+            Music_Play(MX_TR2_GYM_HINT_15, MPM_ALWAYS);
         } else {
             // "Congratulations! You did it! But perhaps I could've been
             // faster."
-            Music_PlayMX(MX_TR2_GYM_HINT_17, MPM_ALWAYS);
+            Music_Play(MX_TR2_GYM_HINT_17, MPM_ALWAYS);
         }
     } else if (resume->stats.timer < (uint32_t)current_best_time) {
         // "Gosh! That was my best time yet!"
-        Music_PlayMX(MX_TR2_GYM_HINT_15, MPM_ALWAYS);
+        Music_Play(MX_TR2_GYM_HINT_15, MPM_ALWAYS);
     } else if (
         resume->stats.timer < (uint32_t)current_best_time + 5 * LOGIC_FPS) {
         // "Almost. Perhaps another try and I might beat it."
-        Music_PlayMX(MX_TR2_GYM_HINT_16, MPM_ALWAYS);
+        Music_Play(MX_TR2_GYM_HINT_16, MPM_ALWAYS);
     } else {
         // "Great. But nowhere near my best time."
-        Music_PlayMX(MX_TR2_GYM_HINT_14, MPM_ALWAYS);
+        Music_Play(MX_TR2_GYM_HINT_14, MPM_ALWAYS);
     }
 
     m_IsAssaultTimerActive = false;
@@ -134,15 +134,15 @@ bool Gym_HasAssaultStats(void)
     return TR_VERSION >= 2;
 }
 
-bool Gym_CanPlayMusicTrack(int16_t *const track_id)
+bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
 {
     const uint16_t flags = Music_GetTrackFlags(*track_id);
     const ITEM *const lara = Lara_GetItem();
-    switch (Music_GetTrackID(*track_id)) {
+    switch (Music_FromGameID(*track_id)) {
     case MX_TR1_GYM_HINT_03:
         if ((flags & IF_ONE_SHOT) != 0
             && lara->current_anim_state == LS_JUMP_UP) {
-            *track_id = Music_GetTrackID(MX_TR1_GYM_HINT_04);
+            *track_id = Music_ToGameID(MX_TR1_GYM_HINT_04);
         }
         break;
 
@@ -160,7 +160,7 @@ bool Gym_CanPlayMusicTrack(int16_t *const track_id)
 
     case MX_TR1_GYM_HINT_17:
         if ((flags & IF_ONE_SHOT) != 0 && lara->current_anim_state == LS_HANG) {
-            *track_id = Music_GetTrackID(MX_TR1_GYM_HINT_18);
+            *track_id = Music_ToGameID(MX_TR1_GYM_HINT_18);
         }
         break;
 
@@ -181,6 +181,9 @@ bool Gym_CanPlayMusicTrack(int16_t *const track_id)
             return false;
         }
         break;
+
+    default:
+        return true;
     }
     return true;
 }

@@ -212,7 +212,7 @@ static void M_DinoKill(ITEM *const item, COLL_INFO *const coll)
 static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_PULLED)) {
-        Music_PlayMX(MX_DAGGER_PULL, MPM_ALWAYS);
+        Music_Play(MX_DAGGER_PULL, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_STORED)) {
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
         Inv_AddItem(O_PUZZLE_ITEM_2);
@@ -236,7 +236,7 @@ static void M_StartAnim(ITEM *const item, COLL_INFO *const coll)
 static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_START_HOUSE_BEGIN)) {
-        Music_PlayMX(MX_REVEAL_2, MPM_ALWAYS);
+        Music_Play(MX_REVEAL_2, MPM_ALWAYS);
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
         Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_DAGGER_STORED)) {
@@ -262,14 +262,14 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
         Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
         Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
-        Music_PlayMX(MX_CUTSCENE_BATH, MPM_ALWAYS);
+        Music_Play(MX_CUTSCENE_BATH, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, M_LF_SHOWER_SHOTGUN_PICKUP)) {
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_SHOTGUN);
     } else if (Item_TestFrameEqual(item, -1)) {
         Game_SetIsLevelComplete(true);
     }
 
-    if (Music_GetCurrentPlayingTrack() == Music_GetTrackID(MX_CUTSCENE_BATH)) {
+    if (Music_GetCurrentPlayingTrack() == Music_ToGameID(MX_CUTSCENE_BATH)) {
         const int32_t frame_num = Item_GetRelativeFrame(item);
         const double ts = (frame_num - M_LF_SHOWER_START) / (double)LOGIC_FPS;
         Music_SyncTimestamp(ts);
