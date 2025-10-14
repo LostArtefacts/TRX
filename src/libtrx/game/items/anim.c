@@ -328,5 +328,5 @@ void Item_PlayAnimSFX(
         play_mode = SPM_UNDERWATER;
     }
 
-    Sound_Effect(data->effect_num, &item->pos, play_mode);
+    Sound_Effect_Direct(data->effect_num, &item->pos, play_mode);
 }

@@ -38,10 +38,17 @@ SAMPLE_INFO *Sound_GetSample(SAMPLE_ID sample_id);
 SAMPLE_INFO *Sound_GetOrCreateSample(SAMPLE_ID sample_id);
 
 // Returns true if a SAMPLE_INFO exists for the given SAMPLE_ID.
-bool Sound_IsAvailable(SAMPLE_ID sample_id);
+bool Sound_IsAvailable_Direct(SAMPLE_ID sample_id);
+bool Sound_IsAvailable(SAMPLE_TRX_ID sample_id);
 
-bool Sound_Effect(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
-void Sound_StopEffect(SAMPLE_ID sfx_num);
+// Play a sample with the given number.
+// pos is an optional argument that takes the world position to play the sound
+// at and can be nullptr.
+bool Sound_Effect_Direct(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+bool Sound_Effect(SAMPLE_TRX_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+
+void Sound_StopEffect_Direct(SAMPLE_ID sfx_num);
+void Sound_StopEffect(SAMPLE_TRX_ID sfx_num);
 
 void Sound_ResetAmbient(void);
 void Sound_UpdateEffects(void);

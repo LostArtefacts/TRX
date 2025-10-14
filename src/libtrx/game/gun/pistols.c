@@ -17,6 +17,18 @@ static bool M_EnableFastSound(const LARA_GUN_TYPE weapon_type)
     return TR_VERSION == 2 && weapon_type == LGT_UZIS;
 }
 
+static void M_FireSound(const SAMPLE_TRX_ID sample_trx_id, const bool alternate)
+{
+    SAMPLE_ID sample_id = Sound_ToGameID(sample_trx_id);
+    if (sample_id == SFX_INVALID) {
+        return;
+    }
+    if (alternate) {
+        sample_id += 1;
+    }
+    Sound_Effect_Direct(sample_id, &Lara_GetItem()->pos, SPM_NORMAL);
+}
+
 void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -147,7 +159,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             frame_r--;
         }
         if (m_SoundRight) {
-            Sound_Effect(weapon->sample_num + 1, &lara_item->pos, SPM_NORMAL);
+            M_FireSound(weapon->sample_num, true);
             m_SoundRight = false;
         }
     } else {
@@ -161,8 +173,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
                         weapon_type, lara->target, lara_item, angles)) {
                     lara->right_arm.flash_gun = weapon->flash_time;
                     if (!sound_already) {
-                        Sound_Effect(
-                            weapon->sample_num, &lara_item->pos, SPM_NORMAL);
+                        M_FireSound(weapon->sample_num, false);
                     }
                     sound_already = true;
                     if (M_EnableFastSound(weapon_type)) {
@@ -171,8 +182,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
                 }
                 frame_r = LF_G_RECOIL_START;
             } else if (m_SoundRight) {
-                Sound_Effect(
-                    weapon->sample_num + 1, &lara_item->pos, SPM_NORMAL);
+                M_FireSound(weapon->sample_num, true);
                 m_SoundRight = false;
             }
         } else if (Anim_TestAbsFrameRange(
@@ -182,7 +192,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
                 frame_r = LF_G_AIM_END;
             }
             if (M_EnableFastSound(weapon_type)) {
-                Sound_Effect(weapon->sample_num, &lara_item->pos, SPM_NORMAL);
+                M_FireSound(weapon->sample_num, false);
                 m_SoundRight = true;
             }
         }
@@ -199,7 +209,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             frame_l--;
         }
         if (m_SoundLeft) {
-            Sound_Effect(weapon->sample_num + 1, &lara_item->pos, SPM_NORMAL);
+            M_FireSound(weapon->sample_num, true);
             m_SoundLeft = false;
         }
     } else if (Anim_TestAbsFrameRange(
@@ -212,8 +222,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
                 lara->left_arm.flash_gun = weapon->flash_time;
                 if (!sound_already) {
-                    Sound_Effect(
-                        weapon->sample_num, &lara_item->pos, SPM_NORMAL);
+                    M_FireSound(weapon->sample_num, false);
                 }
                 if (M_EnableFastSound(weapon_type)) {
                     m_SoundLeft = true;
@@ -221,7 +230,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             }
             frame_l = LF_G_RECOIL_START;
         } else if (m_SoundLeft) {
-            Sound_Effect(weapon->sample_num + 1, &lara_item->pos, SPM_NORMAL);
+            M_FireSound(weapon->sample_num, true);
             m_SoundLeft = false;
         }
     } else if (Anim_TestAbsFrameRange(
@@ -231,7 +240,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             frame_l = LF_G_AIM_END;
         }
         if (M_EnableFastSound(weapon_type)) {
-            Sound_Effect(weapon->sample_num, &lara_item->pos, SPM_NORMAL);
+            M_FireSound(weapon->sample_num, false);
             m_SoundLeft = true;
         }
     }

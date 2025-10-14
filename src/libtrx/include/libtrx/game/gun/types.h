@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../sound/ids.h"
+
 #include <stdint.h>
 
 typedef struct {
@@ -13,5 +15,5 @@ typedef struct {
     int32_t target_dist;
     int16_t recoil_frame;
     int16_t flash_time;
-    int16_t sample_num;
+    SAMPLE_TRX_ID sample_num;
 } WEAPON_INFO;

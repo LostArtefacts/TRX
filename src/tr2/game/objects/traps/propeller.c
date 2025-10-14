@@ -58,7 +58,8 @@ void Propeller_Control(const int16_t item_num)
             Sound_Effect(SFX_AIRPLANE_IDLE, &item->pos, SPM_NORMAL);
         } else if (item->object_id == O_PROPELLER_2) {
             // NOTE: this sound effect is not present in the OG files
-            Sound_Effect(216, &item->pos, SPM_UNDERWATER);
+            // TODO: fix me
+            Sound_Effect_Direct(216, &item->pos, SPM_UNDERWATER);
         }
         item->goal_anim_state = PROPELLER_STATE_OFF;
     }
