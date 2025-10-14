@@ -182,7 +182,7 @@ bool Music_Play(const int32_t track_id, const MUSIC_PLAY_MODE mode)
     }
 
     if (g_Config.audio.fix_speeches_killing_music) {
-        SAMPLE_ID sample_id = SFX_INVALID;
+        SAMPLE_TRX_ID sample_id = SFX_INVALID;
         switch (track) {
         case MX_BALDY_SPEECH:
             sample_id = SFX_BALDY_SPEECH;

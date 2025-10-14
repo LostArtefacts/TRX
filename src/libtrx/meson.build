@@ -358,6 +358,7 @@ sources = [
   'game/shell/main.c',
   'game/shell/platform.c',
   'game/sound/common.c',
+  'game/sound/ids.c',
   'game/spawn.c',
   'game/stats.c',
   'game/test_recorder.c',

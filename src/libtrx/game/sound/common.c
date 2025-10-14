@@ -431,9 +431,14 @@ SAMPLE_INFO *Sound_GetOrCreateSample(const SAMPLE_ID sample_id)
     return &entry->sample;
 }
 
-bool Sound_IsAvailable(SAMPLE_ID sample_id)
+bool Sound_IsAvailable_Direct(const SAMPLE_ID sample_id)
 {
     return Sound_GetSample(sample_id) != nullptr;
+}
+
+bool Sound_IsAvailable(const SAMPLE_TRX_ID sample_id)
+{
+    return Sound_IsAvailable_Direct(Sound_ToGameID(sample_id));
 }
 
 void Sound_InitialiseSources(const int32_t num_sources)
@@ -465,12 +470,12 @@ void Sound_ResetSources(void)
         OBJECT_VECTOR *const source = &m_Sources[i];
         if ((flip_status && (source->flags & SF_FLIP))
             || (!flip_status && (source->flags & SF_UNFLIP))) {
-            Sound_Effect(source->data, &source->pos, SPM_NORMAL);
+            Sound_Effect_Direct(source->data, &source->pos, SPM_NORMAL);
         }
     }
 }
 
-bool Sound_Effect(
+bool Sound_Effect_Direct(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
     if (!Sound_IsInitialised()) {
@@ -578,7 +583,14 @@ bool Sound_Effect(
     return true;
 }
 
-void Sound_StopEffect(const SAMPLE_ID sample_id)
+bool Sound_Effect(
+    const SAMPLE_TRX_ID sample_id, const XYZ_32 *const pos,
+    const uint32_t flags)
+{
+    return Sound_Effect_Direct(Sound_ToGameID(sample_id), pos, flags);
+}
+
+void Sound_StopEffect_Direct(const SAMPLE_ID sample_id)
 {
     if (!Sound_IsInitialised()) {
         return;
@@ -589,6 +601,11 @@ void Sound_StopEffect(const SAMPLE_ID sample_id)
             M_CloseActiveSound(sound);
         }
     }
+}
+
+void Sound_StopEffect(const SAMPLE_TRX_ID sample_id)
+{
+    Sound_StopEffect_Direct(Sound_ToGameID(sample_id));
 }
 
 void Sound_ResetAmbient(void)

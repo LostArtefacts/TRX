@@ -7,7 +7,7 @@
 static int M_L_SoundIsAvailable(lua_State *const L)
 {
     const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
-    lua_pushboolean(L, Sound_IsAvailable(id));
+    lua_pushboolean(L, Sound_IsAvailable_Direct(id));
     return 1;
 }
 
@@ -15,7 +15,7 @@ static int M_L_SoundIsAvailable(lua_State *const L)
 static int M_L_SoundPlay(lua_State *const L)
 {
     const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
-    if (!Sound_IsAvailable(id)) {
+    if (!Sound_IsAvailable_Direct(id)) {
         return luaL_error(L, "invalid sound track: %d", (int)id);
     }
     XYZ_32 pos;
@@ -36,7 +36,7 @@ static int M_L_SoundPlay(lua_State *const L)
         }
         lua_pop(L, 1);
     }
-    Sound_Effect(id, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS);
+    Sound_Effect_Direct(id, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS);
     return 0;
 }
 
@@ -44,7 +44,7 @@ static int M_L_SoundPlay(lua_State *const L)
 static int M_L_SoundStop(lua_State *const L)
 {
     const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
-    Sound_StopEffect(id);
+    Sound_StopEffect_Direct(id);
     return 0;
 }
 
