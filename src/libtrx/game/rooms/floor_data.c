@@ -152,16 +152,15 @@ static bool M_TestLava(const ITEM *const item)
     return sector->is_death_sector;
 }
 
-static void M_TriggerMusicTrack(int16_t track_id, const TRIGGER *const trigger)
+static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
 {
-    if (track_id == 0
+    if (track_id == (MUSIC_ID)0
         && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER)) {
         Music_Stop();
         return;
     }
 
-    if (track_id <= Music_GetTrackID(MX_UNUSED_1)
-        || track_id >= MAX_MUSIC_TRACKS
+    if (track_id <= Music_ToGameID(MX_UNUSED_1) || track_id >= MAX_MUSIC_TRACKS
         || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track_id))) {
         return;
     }
@@ -185,9 +184,9 @@ static void M_TriggerMusicTrack(int16_t track_id, const TRIGGER *const trigger)
         if (trigger->one_shot) {
             flags |= IF_ONE_SHOT;
         }
-        Music_Play(track_id, MPM_TRACKED);
+        Music_Play_Direct(track_id, MPM_TRACKED);
     } else {
-        Music_StopTrack(track_id);
+        Music_StopTrack_Direct(track_id);
     }
 #else
     if (trigger->type != TT_SWITCH) {
@@ -201,12 +200,12 @@ static void M_TriggerMusicTrack(int16_t track_id, const TRIGGER *const trigger)
     }
 
     if (trigger->timer == 0) {
-        Music_Play(track_id, MPM_TRACKED);
+        Music_Play_Direct(track_id, MPM_TRACKED);
         goto finish;
     }
 
     if (track_id != Music_GetDelayedTrack()) {
-        Music_Play(track_id, MPM_DELAYED);
+        Music_Play_Direct(track_id, MPM_DELAYED);
         flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
         goto finish;
     }
@@ -218,7 +217,7 @@ static void M_TriggerMusicTrack(int16_t track_id, const TRIGGER *const trigger)
 
     timer--;
     if (timer == 0) {
-        Music_Play(track_id, MPM_TRACKED);
+        Music_Play_Direct(track_id, MPM_TRACKED);
     }
     flags = (flags & 0xFF00) | (timer & 0xFF);
 #endif
@@ -605,7 +604,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
 
         case TO_CD:
-            M_TriggerMusicTrack((int16_t)(intptr_t)cmd->parameter, trigger);
+            M_TriggerMusicTrack((MUSIC_ID)(intptr_t)cmd->parameter, trigger);
             break;
 
         case TO_SECRET: {
@@ -613,7 +612,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             // in TR2, see #2047
             const int16_t secret_num = (int16_t)(intptr_t)cmd->parameter;
             if (Stats_AddSecret(secret_num)) {
-                Music_PlayMX(MX_SECRET, MPM_ALWAYS);
+                Music_Play(MX_SECRET, MPM_ALWAYS);
             }
             break;
         }

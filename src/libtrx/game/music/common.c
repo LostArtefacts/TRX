@@ -11,13 +11,13 @@
 
 static bool m_Initialised = false;
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
-static int32_t m_TrackCurrent = MX_INACTIVE;
-static int32_t m_TrackDelayed = MX_INACTIVE;
-static int32_t m_TrackLooped = MX_INACTIVE;
+static MUSIC_ID m_TrackCurrent = MX_INACTIVE;
+static MUSIC_ID m_TrackDelayed = MX_INACTIVE;
+static MUSIC_ID m_TrackLooped = MX_INACTIVE;
 // Remember the last played track, whether normal or looped, to prevent
 // immediately restarting it if Lara remains on the same trigger.
-static int32_t m_TrackLastPlayed = MX_INACTIVE;
-static int32_t m_TrackLastLooped = MX_INACTIVE;
+static MUSIC_ID m_TrackLastPlayed = MX_INACTIVE;
+static MUSIC_ID m_TrackLastLooped = MX_INACTIVE;
 
 static float m_MusicVolume = 0.0f;
 static int32_t m_AudioStreamID = -1;
@@ -75,12 +75,12 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
         m_AudioStreamID = -1;
         if (m_TrackLooped >= 0) {
             m_TrackLastLooped = MX_INACTIVE;
-            Music_Play(m_TrackLooped, MPM_LOOPED);
+            Music_Play_Direct(m_TrackLooped, MPM_LOOPED);
         }
     }
 }
 
-static bool M_IsBrokenTrack(const int32_t track_id)
+static bool M_IsBrokenTrack(const MUSIC_ID track_id)
 {
     if (track_id < 0) {
         return true;
@@ -88,11 +88,11 @@ static bool M_IsBrokenTrack(const int32_t track_id)
     if (TR_VERSION > 1) {
         return false;
     }
-    const int32_t track = Music_UnmapTrackID(track_id);
+    const MUSIC_TRX_ID track = Music_FromGameID(track_id);
     return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
 }
 
-static bool M_IsAmbientTrack(const int32_t track_id)
+static bool M_IsAmbientTrack(const MUSIC_ID track_id)
 {
     const GF_AMBIENT_DATA *const ambient_data = Level_GetAmbientData();
     if (ambient_data == nullptr) {
@@ -144,7 +144,7 @@ void Music_Shutdown(void)
     Audio_Shutdown();
 }
 
-bool Music_Play(const int32_t track_id, const MUSIC_PLAY_MODE mode)
+bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
 {
     if (!m_Initialised) {
         return false;
@@ -173,7 +173,7 @@ bool Music_Play(const int32_t track_id, const MUSIC_PLAY_MODE mode)
     }
 
 #if TR_VERSION == 1
-    const MUSIC_TRACK track = Music_UnmapTrackID(track_id);
+    const MUSIC_TRX_ID track = Music_FromGameID(track_id);
     // TODO: utilise secondary audio stream to allow playing high fidelity
     // versions of these sounds.
     if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
@@ -247,10 +247,9 @@ finish:
     return true;
 }
 
-bool Music_PlayMX(const MUSIC_TRACK track, const MUSIC_PLAY_MODE mode)
+bool Music_Play(const MUSIC_TRX_ID track, const MUSIC_PLAY_MODE mode)
 {
-    const int32_t track_id = Music_GetTrackID(track);
-    return Music_Play(track_id, mode);
+    return Music_Play_Direct(Music_ToGameID(track), mode);
 }
 
 void Music_Stop(void)
@@ -263,7 +262,7 @@ void Music_Stop(void)
     M_StopActiveStream();
 }
 
-void Music_StopTrack(const int32_t track)
+void Music_StopTrack_Direct(const MUSIC_ID track)
 {
     if (track != m_TrackCurrent || M_IsBrokenTrack(track)) {
         return;
@@ -273,7 +272,7 @@ void Music_StopTrack(const int32_t track)
     m_TrackCurrent = MX_INACTIVE;
 
     if (m_TrackLooped >= 0) {
-        Music_Play(m_TrackLooped, MPM_LOOPED);
+        Music_Play_Direct(m_TrackLooped, MPM_LOOPED);
     }
 }
 
@@ -317,17 +316,17 @@ bool Music_SyncTimestamp(const double timestamp)
     return Audio_Stream_SyncTimestamp(m_AudioStreamID, timestamp);
 }
 
-int32_t Music_GetDelayedTrack(void)
+MUSIC_ID Music_GetDelayedTrack(void)
 {
     return m_TrackDelayed;
 }
 
-int32_t Music_GetCurrentPlayingTrack(void)
+MUSIC_ID Music_GetCurrentPlayingTrack(void)
 {
     return m_TrackCurrent == MX_INACTIVE ? m_TrackLooped : m_TrackCurrent;
 }
 
-int32_t Music_GetCurrentLoopedTrack(void)
+MUSIC_ID Music_GetCurrentLoopedTrack(void)
 {
     return m_TrackLooped;
 }
@@ -348,17 +347,17 @@ void Music_ResetTrackFlags(void)
     }
 }
 
-uint16_t Music_GetTrackFlags(const int32_t track_idx)
+uint16_t Music_GetTrackFlags(const MUSIC_ID track_id)
 {
-    return m_MusicTrackFlags[track_idx];
+    return m_MusicTrackFlags[track_id];
 }
 
-void Music_SetTrackFlags(const int32_t track, const uint16_t flags)
+void Music_SetTrackFlags(const MUSIC_ID track_id, const uint16_t flags)
 {
-    m_MusicTrackFlags[track] = flags;
+    m_MusicTrackFlags[track_id] = flags;
 }
 
-int32_t Music_ConvertLegacyTrack(const int32_t track_id)
+MUSIC_ID Music_ConvertLegacyTrack(const MUSIC_ID track_id)
 {
 #if TR_VERSION == 1
     return track_id;

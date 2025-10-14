@@ -4,11 +4,15 @@
 
 typedef enum {
     MX_INACTIVE = -1,
+} MUSIC_ID;
+
+typedef enum {
+    MX_TRX_INVALID = -1,
 #define X_CATALOG_ID(uuid_str, enum_value) enum_value,
 #include "../catalog_music.def"
 #undef X_CATALOG_ID
     MX_NUMBER_OF,
-} MUSIC_TRACK;
+} MUSIC_TRX_ID;
 
-int32_t Music_GetTrackID(MUSIC_TRACK music_track);
-MUSIC_TRACK Music_UnmapTrackID(int32_t track_id);
+MUSIC_ID Music_ToGameID(MUSIC_TRX_ID music_track);
+MUSIC_TRX_ID Music_FromGameID(MUSIC_ID track_id);

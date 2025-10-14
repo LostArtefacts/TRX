@@ -342,7 +342,7 @@ void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 {
 #if TR_VERSION == 2
     if (Object_IsType(obj_id, g_SecretObjects)) {
-        Music_Play(g_GameFlow.secret_track, MPM_ALWAYS);
+        Music_Play_Direct(g_GameFlow.secret_track, MPM_ALWAYS);
     }
 #endif
 

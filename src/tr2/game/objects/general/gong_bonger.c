@@ -19,7 +19,7 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
     if (Item_TestFrameEqual(item, GONG_BONGER_STRIKE_FRAME)) {
-        Music_PlayMX(MX_REVEAL_1, MPM_ALWAYS);
+        Music_Play(MX_REVEAL_1, MPM_ALWAYS);
         g_Camera.bounce -= 50;
     }
 
