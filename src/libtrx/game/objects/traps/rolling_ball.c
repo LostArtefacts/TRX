@@ -7,6 +7,7 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "version.h"
 
 #define M_DAMAGE_AIR 100
 #define M_SHAKE_RANGE (WALL_L * 10) // = 10240
@@ -26,7 +27,10 @@ static void M_Roll(ITEM *const item)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y = item->floor;
-#if TR_VERSION == 2
+
+    if (g_TRVersion != 2) {
+        return;
+    }
     if (item->object_id == O_ROLLING_BALL_2) {
         Sound_Effect(SFX_SNOWBALL_ROLL, &item->pos, SPM_NORMAL);
     } else if (item->object_id == O_ROLLING_BALL_3) {
@@ -35,6 +39,7 @@ static void M_Roll(ITEM *const item)
         Sound_Effect(SFX_ROLLING_BALL, &item->pos, SPM_NORMAL);
     }
 
+#if TR_VERSION == 2
     const int32_t dist = Math_Sqrt(
         (g_Camera.mic_pos.z - item->pos.z) * (g_Camera.mic_pos.z - item->pos.z)
         + (g_Camera.mic_pos.x - item->pos.x)
@@ -48,7 +53,7 @@ static void M_Roll(ITEM *const item)
 static bool M_TestStop(const ITEM *const item)
 {
     int32_t dist;
-    if (TR_VERSION == 1) {
+    if (g_TRVersion == 1) {
         dist = WALL_L / 2;
     } else {
         dist = item->object_id == O_ROLLING_BALL_1 ? STEP_L * 3 / 2 : WALL_L;
@@ -68,15 +73,15 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
     if (item->object_id == O_ROLLING_BALL_1) {
         item->status = IS_DEACTIVATED;
     }
-#if TR_VERSION == 2
-    if (item->object_id == O_ROLLING_BALL_2) {
-        Sound_Effect(SFX_SNOWBALL_STOP, &item->pos, SPM_NORMAL);
-        item->goal_anim_state = TRAP_WORKING;
-    } else if (item->object_id == O_ROLLING_BALL_3) {
-        Sound_Effect(SFX_ROLLING_2_HIT, &item->pos, SPM_NORMAL);
-        item->goal_anim_state = TRAP_WORKING;
+    if (g_TRVersion == 2) {
+        if (item->object_id == O_ROLLING_BALL_2) {
+            Sound_Effect(SFX_SNOWBALL_STOP, &item->pos, SPM_NORMAL);
+            item->goal_anim_state = TRAP_WORKING;
+        } else if (item->object_id == O_ROLLING_BALL_3) {
+            Sound_Effect(SFX_ROLLING_2_HIT, &item->pos, SPM_NORMAL);
+            item->goal_anim_state = TRAP_WORKING;
+        }
     }
-#endif
 
     item->pos.x = old_pos.x;
     item->pos.y = item->floor;

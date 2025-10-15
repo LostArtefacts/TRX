@@ -6,19 +6,14 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 #include "utils.h"
+#include "version.h"
 
 #define M_LIGHT_INTENSITY 11
 #define M_LIGHT_FALLOFF 10
 #define M_DAMAGE_PROXIMITY 600
-#if TR_VERSION == 1
-    #define M_IGNITE_PROXIMITY 300
-    #define M_TOO_NEAR_DAMAGE 3
-    #define M_ON_FIRE_DAMAGE 5
-#else
-    #define M_IGNITE_PROXIMITY 450
-    #define M_TOO_NEAR_DAMAGE 5
-    #define M_ON_FIRE_DAMAGE 7
-#endif
+#define M_IGNITE_PROXIMITY (g_TRVersion == 1 ? 300 : 450)
+#define M_TOO_NEAR_DAMAGE (g_TRVersion == 1 ? 3 : 5)
+#define M_ON_FIRE_DAMAGE (g_TRVersion == 1 ? 5 : 7)
 
 static void M_DoEffects(const EFFECT *const effect)
 {

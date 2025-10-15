@@ -393,7 +393,6 @@ static void M_Process(
 
         const int16_t shade = dimmed ? 0x1600 : SHADE_NEUTRAL;
 
-#if TR_VERSION == 2
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
                 Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
@@ -414,7 +413,6 @@ static void M_Process(
             x += glyph->width * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
         }
-#endif
 
         if (glyph->role == GLYPH_COMPOUND && obj->loaded
             && glyph->combine_with.mesh_idx >= 0

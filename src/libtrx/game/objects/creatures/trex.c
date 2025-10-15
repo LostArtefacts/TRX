@@ -165,7 +165,7 @@ static void M_Control(const int16_t item_num)
         case TREX_STATE_ATTACK_2:
             if ((item->touch_bits & TREX_TOUCH_BITS) != 0) {
                 Lara_TakeDamage(TREX_BITE_DAMAGE, true);
-                if (TR_VERSION == 1) {
+                if (g_TRVersion == 1) {
                     item->goal_anim_state = TREX_STATE_KILL;
                     M_KillLara(item);
                 } else {
@@ -190,7 +190,7 @@ static void M_Control(const int16_t item_num)
     }
 
     Creature_Animate(item_num, angle, 0);
-    if (TR_VERSION == 1) {
+    if (g_TRVersion == 1) {
         item->collidable = true;
     }
 }
@@ -201,7 +201,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
-    if (TR_VERSION == 1) {
+    if (g_TRVersion == 1) {
         obj->initialise_func = Creature_Initialise;
     }
     obj->control_func = M_Control;
@@ -209,8 +209,8 @@ static void M_Setup(OBJECT *const obj)
 
     obj->hit_points = TREX_HITPOINTS;
     obj->radius = TREX_RADIUS;
-    obj->shadow_size = TR_VERSION == 1 ? UNIT_SHADOW / 4 : UNIT_SHADOW / 2;
-    obj->pivot_length = TR_VERSION == 1 ? 2000 : 1800;
+    obj->shadow_size = g_TRVersion == 1 ? UNIT_SHADOW / 4 : UNIT_SHADOW / 2;
+    obj->pivot_length = g_TRVersion == 1 ? 2000 : 1800;
     obj->smartness = TREX_SMARTNESS;
     obj->lot_setup = g_LOT_Beast;
 

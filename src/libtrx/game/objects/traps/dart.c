@@ -5,6 +5,7 @@
 #include "game/rooms.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "version.h"
 
 #define M_DAMAGE 50
 #define M_PITCH (DEG_45 / 2)
@@ -13,9 +14,7 @@ static void M_Hit(const int16_t item_num, const XYZ_32 pos)
 {
     const ITEM *const item = Item_Get(item_num);
     Item_Kill(item_num);
-#if TR_VERSION == 2
     Sound_Effect(SFX_DARTS_HIT, &item->pos, SPM_NORMAL);
-#endif
 
     const int16_t effect_num = Effect_Create(item->room_num);
     if (effect_num != NO_EFFECT) {
@@ -53,12 +52,12 @@ static void M_Control(const int16_t item_num)
     const int32_t height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
-    if (TR_VERSION == 2) {
+    if (g_TRVersion == 2) {
         item->rot.x += M_PITCH;
     }
     item->floor = height;
     if (item->pos.y >= height) {
-        M_Hit(item_num, TR_VERSION == 1 ? old_pos : item->pos);
+        M_Hit(item_num, g_TRVersion == 1 ? old_pos : item->pos);
     }
 }
 

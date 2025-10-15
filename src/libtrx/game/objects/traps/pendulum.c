@@ -3,16 +3,17 @@
 #include "game/random.h"
 #include "game/rooms.h"
 #include "game/spawn.h"
+#include "version.h"
 
-#define M_DAMAGE (TR_VERSION == 1 ? 100 : 50)
+#define M_DAMAGE (g_TRVersion == 1 ? 100 : 50)
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
     const bool working =
-        TR_VERSION != 1 || item->current_anim_state == TRAP_WORKING;
-    if (TR_VERSION == 1) {
+        g_TRVersion != 1 || item->current_anim_state == TRAP_WORKING;
+    if (g_TRVersion == 1) {
         if (Item_IsTriggerActive(item)) {
             if (item->current_anim_state == TRAP_SET) {
                 item->goal_anim_state = TRAP_WORKING;
@@ -49,7 +50,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func =
-        TR_VERSION == 1 ? Object_Collision_Trap : Object_Collision;
+        g_TRVersion == 1 ? Object_Collision_Trap : Object_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
     obj->save_anim = true;

@@ -2,6 +2,7 @@
 #include "game/effects.h"
 #include "game/math.h"
 #include "game/objects.h"
+#include "version.h"
 
 static void M_Control(const int16_t effect_num)
 {
@@ -22,7 +23,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->semi_transparent = TR_VERSION == 2;
+    obj->semi_transparent = g_TRVersion == 2;
 }
 
 REGISTER_OBJECT(O_BLOOD_1, M_Setup)

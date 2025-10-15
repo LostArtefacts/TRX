@@ -20,11 +20,7 @@
 #define WOLF_SLEEP_CHANCE  32
 #define WOLF_HOWL_CHANCE   384
 #define WOLF_TOUCH         0x774F
-#if TR_VERSION == 1
-#define WOLF_HITPOINTS     6
-#else
-#define WOLF_HITPOINTS     10
-#endif
+#define WOLF_HITPOINTS     (g_TRVersion == 1 ? 6 : 10)
 #define WOLF_RADIUS        (WALL_L / 3) // = 341
 #define WOLF_SMARTNESS     0x2000
 // clang-format on
