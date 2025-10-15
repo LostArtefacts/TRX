@@ -1098,10 +1098,6 @@
         }
     },
     "game_strings": {
-        "CMD_WINSTON_DEAD": "Tha am butlar agad marbh. 'S tu nad fuamhaire!",
-        "CMD_WINSTON_SPAWNED": "Thàinig Winston faisg air Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Cha do shoirbhich le Winston a ghairm",
-        "CMD_WINSTON_TELEPORTED": "Thàinig Winston faisg air Lara",
         "ENUM_INPUT_ROLE_CAMERA_RESET": "Ath-shuidhich an camara",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Uidheamaich Lannsair Grenèad",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",

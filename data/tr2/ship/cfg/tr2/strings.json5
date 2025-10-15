@@ -1093,10 +1093,6 @@
         }
     },
     "game_strings": {
-        "CMD_WINSTON_DEAD": "Your butler is dead. You monster!",
-        "CMD_WINSTON_SPAWNED": "Summoned Winston near Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Failed to summon Winston",
-        "CMD_WINSTON_TELEPORTED": "Summoned Winston near Lara",
         "ENUM_INPUT_ROLE_CAMERA_RESET": "Camera Reset",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
