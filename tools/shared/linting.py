@@ -107,6 +107,31 @@ def lint_const_primitives(
             yield LintWarning(path, "useless const", line=i)
 
 
+def lint_meson_build_sort_order(
+    context: LintContext, path: Path
+) -> Iterable[LintWarning]:
+    if path.name != 'meson.build' or path.parent.name == 'dwarfstack':
+        return
+    pattern = re.compile(r'\bsources\s*=\s*\[(.*?)\]', re.S)
+    match = pattern.search(path.read_text())
+
+    if not match:
+        yield LintWarning(path, "unable to find sources array")
+    else:
+        block = match.group(1)
+        lines = [l.strip().strip(',') for l in block.splitlines() if l.strip()]
+        if not lines:
+            yield LintWarning(path, "unable to parse sources array")
+        else:
+            clean = [l.strip("'") for l in lines]
+            init = [l for l in clean if l == 'init']
+            resources = [l for l in clean if l == 'resources']
+            middle = [l for l in clean if l not in ('init', 'resources')]
+            is_sorted = clean == init + sorted(middle) + resources
+            if not is_sorted:
+                yield LintWarning(path, "source list is not ordered")
+
+
 def lint_untranslated_game_strings(
     context: LintContext, path: Path
 ) -> Iterable[LintWarning]:
@@ -364,6 +389,7 @@ ALL_FILE_LINTERS: list[
     lint_trailing_whitespace,
     lint_const_primitives,
     lint_untranslated_game_strings,
+    lint_meson_build_sort_order,
 ]
 
 ALL_BULK_LINTERS: list[
