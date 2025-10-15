@@ -1,13 +1,14 @@
-#include "game/creature.h"
 #include "game/game.h"
-#include "game/los.h"
-#include "game/objects/common.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/creature.h>
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/lara/vehicle.h>
+#include <libtrx/game/los.h>
+#include <libtrx/game/objects/common.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/utils.h>
 
 #define M_CUTSCENE_DELAY (5 * LOGIC_FPS) // = 150

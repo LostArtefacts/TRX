@@ -1,5 +1,3 @@
-#include "game/lara.h"
-
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>

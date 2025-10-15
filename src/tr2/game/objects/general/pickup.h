@@ -1,6 +1,5 @@
 #pragma once
 
-#include "global/types.h"
+#include <libtrx/game/objects/general/pickup.h>
 
 void Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-const OBJECT_BOUNDS *Pickup_Bounds(void);

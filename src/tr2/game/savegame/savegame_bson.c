@@ -3,7 +3,6 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/lara.h"
-#include "game/objects/general/lift.h"
 #include "game/savegame.h"
 #include "global/types_decomp.h"
 #include "global/vars.h"
@@ -15,6 +14,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/general/lift.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
