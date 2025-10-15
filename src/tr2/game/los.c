@@ -1,10 +1,9 @@
 #include "game/los.h"
 
-#include "game/objects/vars.h"
-
 #include <libtrx/debug.h>
 #include <libtrx/game/const.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/objects/vars.h>
 #include <libtrx/game/rooms.h>
 #include <libtrx/utils.h>
 

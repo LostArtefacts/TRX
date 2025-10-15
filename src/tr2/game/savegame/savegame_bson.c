@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/general/lift.h"
-#include "game/objects/vars.h"
 #include "game/savegame.h"
 #include "global/types_decomp.h"
 #include "global/vars.h"
@@ -18,6 +17,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
+#include <libtrx/game/objects/vars.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/pathing.h>
 #include <libtrx/game/savegame/bson.h>

@@ -142,7 +142,6 @@ sources = [
   'game/objects/setup.c',
   'game/objects/traps/damocles_sword.c',
   'game/objects/traps/lightning_emitter.c',
-  'game/objects/vars.c',
   'game/option/option.c',
   'game/option/option_compass.c',
   'game/option/option_passport.c',

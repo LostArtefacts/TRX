@@ -4,7 +4,6 @@
 #include "game/game_flow.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/objects/vars.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -13,6 +12,7 @@
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/vars.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>

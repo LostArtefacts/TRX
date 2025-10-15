@@ -2,8 +2,8 @@
 
 #include "game/effects.h"
 #include "game/lara.h"
-#include "game/objects/vars.h"
 
+#include <libtrx/game/objects/vars.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/spawn.h>
 

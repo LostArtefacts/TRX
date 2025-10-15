@@ -3,7 +3,6 @@
 #include "game/game.h"
 #include "game/inventory.h"
 #include "game/objects/common.h"
-#include "game/objects/vars.h"
 #include "game/stats.h"
 
 #include <libtrx/config.h>
@@ -13,6 +12,7 @@
 #include <libtrx/game/lua/common.h>
 #include <libtrx/game/lua/events.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/objects/vars.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 
