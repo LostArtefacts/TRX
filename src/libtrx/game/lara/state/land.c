@@ -541,13 +541,11 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = M_CAM_PICKUP_ELEVATION;
     g_Camera.target_distance = M_CAM_PICKUP_DISTANCE;
 
-#if TR_VERSION >= 2
     if (item->current_anim_state == LS_FLARE_PICKUP
         && Item_TestFrameEqual(item, -1)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->gun_status = LGS_ARMLESS;
     }
-#endif
 }
 
 static void M_SwitchOn(ITEM *const item, COLL_INFO *const coll)
@@ -659,9 +657,6 @@ REGISTER_LARA_STATE(LS_SPECIAL,      M_Special)
 REGISTER_LARA_STATE(LS_WADE,         M_Wade)
 REGISTER_LARA_STATE(LS_SPRINT,       M_Sprint)
 REGISTER_LARA_STATE(LS_SPRINT_ROLL,  M_SprintRoll)
-#if TR_VERSION == 1
 REGISTER_LARA_STATE(LS_CONTROLLED,   M_Default)
-#else
 REGISTER_LARA_STATE(LS_FLARE_PICKUP, M_Pickup)
-#endif
 // clang-format on
