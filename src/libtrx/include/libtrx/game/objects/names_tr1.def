@@ -165,7 +165,7 @@ X_OBJ_NAME_DEFINE(O_BUBBLE_EMITTER,     "bubble_emitter",     X_OBJ_NAMES("Bubbl
 X_OBJ_NAME_DEFINE(O_BLOOD_1,            "blood_1",            X_OBJ_NAMES("Blood 1"))
 X_OBJ_NAME_DEFINE(O_BLOOD_2,            "blood_2",            X_OBJ_NAMES("Blood 2"))
 X_OBJ_NAME_DEFINE(O_DART_EFFECT,        "dart_effect",        X_OBJ_NAMES("Dart Effect"))
-X_OBJ_NAME_DEFINE(O_STATUE,             "statue",             X_OBJ_NAMES("Statue"))
+X_OBJ_NAME_DEFINE(O_CENTAUR_STATUE,     "centaur_statue",     X_OBJ_NAMES("Centaur Statue"))
 X_OBJ_NAME_DEFINE(O_PORTACABIN,         "portacabin",         X_OBJ_NAMES("Portable Cabin"))
 X_OBJ_NAME_DEFINE(O_PODS,               "pods",               X_OBJ_NAMES("Pod"))
 X_OBJ_NAME_DEFINE(O_RICOCHET,           "ricochet",           X_OBJ_NAMES("Ricochet"))

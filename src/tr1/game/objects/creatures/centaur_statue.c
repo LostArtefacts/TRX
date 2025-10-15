@@ -85,4 +85,4 @@ static void M_Setup(OBJECT *const obj)
     obj->enable_interpolation = false;
 }
 
-REGISTER_OBJECT(O_STATUE, M_Setup)
+REGISTER_OBJECT(O_CENTAUR_STATUE, M_Setup)
