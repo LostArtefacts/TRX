@@ -131,7 +131,6 @@ sources = [
   'game/item_actions/turn_180.c',
   'game/lara/common.c',
   'game/lara/draw.c',
-  'game/level.c',
   'game/los.c',
   'game/objects/common.c',
   'game/objects/creatures/cutscene_player.c',

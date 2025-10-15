@@ -39,7 +39,7 @@ void Box_InitialiseBoxes(const int32_t num_boxes)
     }
 
     for (int32_t i = 0; i < 2; i++) {
-        for (int32_t j = 0; j < MAX_ZONES; j++) {
+        for (int32_t j = 0; j < Box_GetZoneCount(); j++) {
             m_GroundZone[j][i] =
                 GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_GROUND_ZONE);
         }
@@ -468,4 +468,9 @@ bool Box_BadFloor(
         return true;
     }
     return false;
+}
+
+int32_t Box_GetZoneCount(void)
+{
+    return g_TRVersion == 1 ? 2 : 4;
 }

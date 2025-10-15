@@ -5,7 +5,6 @@
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara.h"
-#include "game/level.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
@@ -18,6 +17,7 @@
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/level.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>

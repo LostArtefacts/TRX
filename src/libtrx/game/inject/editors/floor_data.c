@@ -193,9 +193,9 @@ static void M_TriggeredItem(const INJECTION *const injection)
     item->pos.z = VFile_ReadS32(injection->fp);
     item->rot.y = VFile_ReadS16(injection->fp);
     item->shade.value_1 = VFile_ReadS16(injection->fp);
-#if TR_VERSION == 2
-    item->shade.value_2 = item->shade.value_1;
-#endif
+    if (g_TRVersion >= 2) {
+        item->shade.value_2 = item->shade.value_1;
+    }
     item->flags = VFile_ReadU16(injection->fp);
 }
 
@@ -233,13 +233,14 @@ static void M_FixZones(
     const INJECTION *const injection, const SECTOR *const sector)
 {
     if (sector == nullptr || sector->box == NO_BOX) {
-        VFile_Skip(injection->fp, 2 * sizeof(int16_t) * (MAX_ZONES + 1));
+        VFile_Skip(
+            injection->fp, 2 * sizeof(int16_t) * (Box_GetZoneCount() + 1));
         return;
     }
 
     const int16_t box_idx = sector->box;
     for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
-        for (int32_t zone_idx = 0; zone_idx < MAX_ZONES; zone_idx++) {
+        for (int32_t zone_idx = 0; zone_idx < Box_GetZoneCount(); zone_idx++) {
             int16_t *const ground_zone =
                 Box_GetGroundZone(flip_status, zone_idx);
             ground_zone[box_idx] = VFile_ReadS16(injection->fp);

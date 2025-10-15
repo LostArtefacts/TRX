@@ -22,3 +22,4 @@ TARGET_TYPE Box_CalculateTarget(
 bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int32_t box_height, int32_t next_height,
     int16_t room_num, const LOT_INFO *lot);
+int32_t Box_GetZoneCount(void);

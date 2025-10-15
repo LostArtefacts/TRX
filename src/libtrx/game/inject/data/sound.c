@@ -2,6 +2,7 @@
 #include "game/inject.h"
 #include "game/sound.h"
 #include "memory.h"
+#include "version.h"
 
 static void M_HandleSFXData(const INJECTION_CHUNK chunk)
 {
@@ -18,42 +19,42 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
         sample_info->volume = VFile_ReadS16(chunk.injection->fp);
         sample_info->randomness = VFile_ReadS16(chunk.injection->fp);
         sample_info->flags.all = VFile_ReadU16(chunk.injection->fp);
-#if TR_VERSION == 1
-        switch (sample_info->flags.mode_bits) {
-        case 0:
-            sample_info->mode = SAMPLE_MODE_WAIT;
-            break;
-        case 1:
-            sample_info->mode = SAMPLE_MODE_RESTART;
-            break;
-        case 2:
-            sample_info->mode = SAMPLE_MODE_LOOPED;
-            break;
-        case 3:
-            LOG_WARNING(
-                "Unexpected sample mode for sample %d. flags=%0X", sfx_id,
-                sample_info->flags);
-            break;
+        if (g_TRVersion == 1) {
+            switch (sample_info->flags.mode_bits) {
+            case 0:
+                sample_info->mode = SAMPLE_MODE_WAIT;
+                break;
+            case 1:
+                sample_info->mode = SAMPLE_MODE_RESTART;
+                break;
+            case 2:
+                sample_info->mode = SAMPLE_MODE_LOOPED;
+                break;
+            case 3:
+                LOG_WARNING(
+                    "Unexpected sample mode for sample %d. flags=%0X", sfx_id,
+                    sample_info->flags);
+                break;
+            }
+        } else {
+            switch (sample_info->flags.mode_bits) {
+            case 0:
+                sample_info->mode = SAMPLE_MODE_NORMAL;
+                break;
+            case 1:
+                sample_info->mode = SAMPLE_MODE_WAIT;
+                break;
+            case 2:
+                sample_info->mode = SAMPLE_MODE_RESTART;
+                break;
+            case 3:
+                sample_info->mode = SAMPLE_MODE_LOOPED;
+                break;
+            }
         }
-#else
-        switch (sample_info->flags.mode_bits) {
-        case 0:
-            sample_info->mode = SAMPLE_MODE_NORMAL;
-            break;
-        case 1:
-            sample_info->mode = SAMPLE_MODE_WAIT;
-            break;
-        case 2:
-            sample_info->mode = SAMPLE_MODE_RESTART;
-            break;
-        case 3:
-            sample_info->mode = SAMPLE_MODE_LOOPED;
-            break;
-        }
-#endif
 
         const int16_t num_samples = sample_info->flags.num_samples;
-        if (TR_VERSION == 1 || chunk.injection->version >= INJ_VERSION_4) {
+        if (g_TRVersion == 1 || chunk.injection->version >= INJ_VERSION_4) {
             sample_info->number = Sound_ReserveSampleData(-1, num_samples);
             for (int32_t j = 0; j < num_samples; j++) {
                 const int32_t sample_length =
@@ -64,7 +65,7 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
                     sample_info->number + j, data, sample_length);
                 Memory_Free(data);
             }
-        } else if (TR_VERSION == 2) {
+        } else if (g_TRVersion == 2) {
             VFile_Skip(chunk.injection->fp, sizeof(int32_t));
         }
     }

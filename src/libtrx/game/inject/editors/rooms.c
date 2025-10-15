@@ -2,6 +2,7 @@
 #include "game/objects.h"
 #include "game/rooms.h"
 #include "log.h"
+#include "version.h"
 
 static uint16_t *M_GetRoomTexture(
     const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
@@ -145,12 +146,12 @@ static void M_SetVertexFlags(const INJECTION *const injection)
     }
 
     ROOM_VERTEX *const vertex = &room->mesh.vertices[target_vertex];
-#if TR_VERSION == 1
-    vertex->flags = flags;
-#else
-    vertex->flags = (flags >> 8);
-    vertex->light_table_value = flags & 0xFF;
-#endif
+    if (g_TRVersion == 1) {
+        vertex->flags = flags;
+    } else {
+        vertex->flags = (flags >> 8);
+        vertex->light_table_value = flags & 0xFF;
+    }
 }
 
 static void M_RotateRoomFace(const INJECTION *const injection)
@@ -291,9 +292,9 @@ static void M_AddRoomStatic3D(const INJECTION *const injection)
     mesh->pos.z = VFile_ReadS32(injection->fp);
     mesh->rot.y = VFile_ReadS16(injection->fp);
     mesh->shade.value_1 = VFile_ReadS16(injection->fp);
-#if TR_VERSION == 2
-    mesh->shade.value_2 = mesh->shade.value_1;
-#endif
+    if (g_TRVersion == 2) {
+        mesh->shade.value_2 = mesh->shade.value_1;
+    }
     mesh->static_num = VFile_ReadS16(injection->fp);
 
     room->num_static_meshes++;
@@ -319,9 +320,9 @@ static void M_EditRoomStatic3D(const INJECTION *const injection)
     mesh->pos.z = VFile_ReadS32(injection->fp);
     mesh->rot.y = VFile_ReadS16(injection->fp);
     mesh->shade.value_1 = VFile_ReadS16(injection->fp);
-#if TR_VERSION == 2
-    mesh->shade.value_2 = mesh->shade.value_1;
-#endif
+    if (g_TRVersion == 2) {
+        mesh->shade.value_2 = mesh->shade.value_1;
+    }
 }
 
 static void M_RoomMeshEdits(
