@@ -1,10 +1,10 @@
 #include "game/inventory.h"
 
 #include "game/inventory_ring/vars.h"
-#include "game/objects/vars.h"
 
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/objects/vars.h>
 
 bool Inv_AddItem(const OBJECT_ID obj_id)
 {
