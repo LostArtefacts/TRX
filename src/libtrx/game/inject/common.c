@@ -8,6 +8,7 @@
 #include "game/rooms.h"
 #include "memory.h"
 #include "vector.h"
+#include "version.h"
 
 #include <string.h>
 #include <zlib.h>
@@ -39,7 +40,7 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
     case IFT_TEXTURE_FIX:
         return g_Config.visuals.fix_texture_issues;
     case IFT_ALTER_ANIM_SPRITE:
-        return g_Config.visuals.fix_animated_sprites == (TR_VERSION == 2);
+        return g_Config.visuals.fix_animated_sprites == (g_TRVersion == 2);
 #if TR_VERSION == 1
     case IFT_SKYBOX:
         return true;
@@ -109,13 +110,13 @@ static void M_InitialiseBlock(
             const int16_t flags = VFile_ReadS16(file);
             const int16_t num_samples = (flags >> 2) & 0xF;
             m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
-            if (TR_VERSION == 1 || version >= INJ_VERSION_4) {
+            if (g_TRVersion == 1 || version >= INJ_VERSION_4) {
                 for (int32_t j = 0; j < num_samples; j++) {
                     const int32_t sample_length = VFile_ReadS32(file);
                     m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
                     VFile_Skip(file, sizeof(char) * sample_length);
                 }
-            } else if (TR_VERSION == 2) {
+            } else if (g_TRVersion == 2) {
                 VFile_Skip(file, sizeof(uint32_t));
             }
         }

@@ -43,6 +43,32 @@
 
 static LEVEL_INFO m_Info = {};
 
+static size_t M_GetObjectCount(const LEVEL_LOADER *const loader)
+{
+    switch (loader->game_version) {
+    case 1:
+        return 191;
+    case 2:
+        return 265;
+    default:
+        ASSERT_FAIL();
+    }
+    return 0;
+}
+
+static size_t M_GetSampleCount(const LEVEL_LOADER *const loader)
+{
+    switch (loader->game_version) {
+    case 1:
+        return 256;
+    case 2:
+        return 370;
+    default:
+        ASSERT_FAIL();
+    }
+    return 0;
+}
+
 static RGBA_8888 M_ARGB1555To8888(const uint16_t argb1555)
 {
     // Extract 5-bit values for each ARGB component
@@ -203,14 +229,15 @@ static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
     pos->z = VFile_ReadS32(file);
 }
 
-static void M_ReadShade(SHADE *const shade, VFILE *const file)
+static void M_ReadShade(
+    const LEVEL_LOADER *const loader, SHADE *const shade, VFILE *const file)
 {
     shade->value_1 = VFile_ReadS16(file);
-#if TR_VERSION == 1
-    shade->value_2 = shade->value_1;
-#else
-    shade->value_2 = VFile_ReadS16(file);
-#endif
+    if (loader->game_version == 1) {
+        shade->value_2 = shade->value_1;
+    } else {
+        shade->value_2 = VFile_ReadS16(file);
+    }
 }
 
 static void M_ReadVertex(XYZ_16 *const vertex, VFILE *const file)
@@ -241,7 +268,7 @@ static void M_ReadFace3(FACE3 *const face, VFILE *const file)
 }
 
 static void M_ReadRoomMesh(
-    const int32_t room_num, VFILE *const file,
+    const LEVEL_LOADER *const loader, const int32_t room_num, VFILE *const file,
     const INJECTION_MESH_META inj_data)
 {
     ROOM *const room = Room_Get(room_num);
@@ -258,14 +285,14 @@ static void M_ReadRoomMesh(
             ROOM_VERTEX *const vertex = &room->mesh.vertices[i];
             M_ReadVertex(&vertex->pos, file);
             vertex->light_base = VFile_ReadS16(file);
-#if TR_VERSION == 1
-            vertex->flags = 0;
-            vertex->light_adder = vertex->light_base;
-#elif TR_VERSION == 2
-            vertex->light_table_value = VFile_ReadU8(file);
-            vertex->flags = VFile_ReadU8(file);
-            vertex->light_adder = VFile_ReadS16(file);
-#endif
+            if (loader->game_version == 1) {
+                vertex->flags = 0;
+                vertex->light_adder = vertex->light_base;
+            } else {
+                vertex->light_table_value = VFile_ReadU8(file);
+                vertex->flags = VFile_ReadU8(file);
+                vertex->light_adder = VFile_ReadS16(file);
+            }
         }
     }
 
@@ -397,7 +424,7 @@ static void M_ReadObjectVector(OBJECT_VECTOR *const obj, VFILE *const file)
     obj->flags = VFile_ReadS16(file);
 }
 
-void Level_ReadPalettes(VFILE *const file)
+void Level_ReadPalettes(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -416,23 +443,23 @@ void Level_ReadPalettes(VFILE *const file)
         col->b = (col->b << 2) | (col->b >> 4);
     }
 
-#if TR_VERSION == 1
-    m_Info.palette.data_32 = nullptr;
-#else
-    RGBA_8888 palette_16[palette_size];
-    m_Info.palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
-    VFile_Read(file, palette_16, sizeof(RGBA_8888) * palette_size);
-    for (int32_t i = 0; i < palette_size; i++) {
-        m_Info.palette.data_32[i].r = palette_16[i].r;
-        m_Info.palette.data_32[i].g = palette_16[i].g;
-        m_Info.palette.data_32[i].b = palette_16[i].b;
+    if (loader->game_version == 1) {
+        m_Info.palette.data_32 = nullptr;
+    } else {
+        RGBA_8888 palette_16[palette_size];
+        m_Info.palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
+        VFile_Read(file, palette_16, sizeof(RGBA_8888) * palette_size);
+        for (int32_t i = 0; i < palette_size; i++) {
+            m_Info.palette.data_32[i].r = palette_16[i].r;
+            m_Info.palette.data_32[i].g = palette_16[i].g;
+            m_Info.palette.data_32[i].b = palette_16[i].b;
+        }
     }
-#endif
 
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadTexturePages(VFILE *const file)
+void Level_ReadTexturePages(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -452,33 +479,33 @@ void Level_ReadTexturePages(VFILE *const file)
     m_Info.textures.pages_32 = Memory_Alloc(texture_size_32_bit);
     RGBA_8888 *output = m_Info.textures.pages_32;
 
-#if TR_VERSION == 1
-    const uint8_t *input = m_Info.textures.pages_24;
-    for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
-        const uint8_t index = *input++;
-        const RGB_888 pix = m_Info.palette.data_24[index];
-        output->r = pix.r;
-        output->g = pix.g;
-        output->b = pix.b;
-        output->a = index == 0 ? 0 : 0xFF;
-        output++;
+    if (loader->game_version == 1) {
+        const uint8_t *input = m_Info.textures.pages_24;
+        for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
+            const uint8_t index = *input++;
+            const RGB_888 pix = m_Info.palette.data_24[index];
+            output->r = pix.r;
+            output->g = pix.g;
+            output->b = pix.b;
+            output->a = index == 0 ? 0 : 0xFF;
+            output++;
+        }
+    } else {
+        const int32_t texture_size_16_bit =
+            num_pages * TEXTURE_PAGE_SIZE * sizeof(uint16_t);
+        uint16_t *input = Memory_Alloc(texture_size_16_bit);
+        uint16_t *input_ptr = input;
+        VFile_Read(file, input, texture_size_16_bit);
+        for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
+            *output++ = M_ARGB1555To8888(*input_ptr++);
+        }
+        Memory_FreePointer(&input);
     }
-#else
-    const int32_t texture_size_16_bit =
-        num_pages * TEXTURE_PAGE_SIZE * sizeof(uint16_t);
-    uint16_t *input = Memory_Alloc(texture_size_16_bit);
-    uint16_t *input_ptr = input;
-    VFile_Read(file, input, texture_size_16_bit);
-    for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
-        *output++ = M_ARGB1555To8888(*input_ptr++);
-    }
-    Memory_FreePointer(&input);
-#endif
 
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadRooms(VFILE *const file)
+void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -501,7 +528,7 @@ void Level_ReadRooms(VFILE *const file)
         room->max_ceiling = VFile_ReadS32(file);
 
         const INJECTION_MESH_META inj_data = Inject_GetRoomMeshMeta(i);
-        M_ReadRoomMesh(i, file, inj_data);
+        M_ReadRoomMesh(loader, i, file, inj_data);
 
         const int16_t num_portals = VFile_ReadS16(file);
         if (num_portals <= 0) {
@@ -544,12 +571,12 @@ void Level_ReadRooms(VFILE *const file)
         }
 
         room->ambient = VFile_ReadS16(file);
-#if TR_VERSION == 1
-        room->light_mode = RLM_NORMAL;
-#else
-        VFile_Skip(file, sizeof(int16_t)); // Unused second ambient
-        room->light_mode = VFile_ReadS16(file);
-#endif
+        if (loader->game_version == 1) {
+            room->light_mode = RLM_NORMAL;
+        } else {
+            VFile_Skip(file, sizeof(int16_t)); // Unused second ambient
+            room->light_mode = VFile_ReadS16(file);
+        }
 
         room->num_lights = VFile_ReadS16(file);
         room->lights = room->num_lights == 0
@@ -558,11 +585,11 @@ void Level_ReadRooms(VFILE *const file)
         for (int32_t i = 0; i < room->num_lights; i++) {
             LIGHT *const light = &room->lights[i];
             M_ReadPosition(&light->pos, file);
-            M_ReadShade(&light->shade, file);
+            M_ReadShade(loader, &light->shade, file);
             light->falloff.value_1 = VFile_ReadS32(file);
-#if TR_VERSION == 2
-            light->falloff.value_2 = VFile_ReadS32(file);
-#endif
+            if (loader->game_version == 2) {
+                light->falloff.value_2 = VFile_ReadS32(file);
+            }
         }
 
         room->num_static_meshes = VFile_ReadS16(file);
@@ -576,7 +603,7 @@ void Level_ReadRooms(VFILE *const file)
             STATIC_MESH *const mesh = &room->static_meshes[i];
             M_ReadPosition(&mesh->pos, file);
             mesh->rot.y = VFile_ReadS16(file);
-            M_ReadShade(&mesh->shade, file);
+            M_ReadShade(loader, &mesh->shade, file);
             mesh->static_num = VFile_ReadS16(file);
         }
 
@@ -857,12 +884,12 @@ void Level_AppendAnimFrames(
         file, &m_Info.anims.frames[base_idx], sizeof(int16_t) * num_frames);
 }
 
-void Level_LoadAnimFrames(void)
+void Level_LoadAnimFrames(const LEVEL_LOADER *const loader)
 {
     const int32_t frame_count =
-        Anim_GetTotalFrameCount(m_Info.anims.frame_count);
+        Anim_GetTotalFrameCount(loader, m_Info.anims.frame_count);
     Anim_InitialiseFrames(frame_count);
-    Anim_LoadFrames(m_Info.anims.frames, m_Info.anims.frame_count);
+    Anim_LoadFrames(loader, m_Info.anims.frames, m_Info.anims.frame_count);
     Memory_FreePointer(&m_Info.anims.frames);
 }
 
@@ -975,10 +1002,12 @@ void Level_AppendSpriteTextures(
     }
 }
 
-void Level_ReadSpriteSequences(VFILE *const file)
+void Level_ReadSpriteSequences(
+    const LEVEL_LOADER *const loader, VFILE *const file)
 {
     int32_t max_obj_id = -1;
-    for (OBJECT_ID obj_id = O_FIRST; obj_id <= O_ORIGINAL_NUMBER_OF; obj_id++) {
+    const int32_t object_count = M_GetObjectCount(loader);
+    for (OBJECT_ID obj_id = O_FIRST; obj_id <= object_count; obj_id++) {
         max_obj_id = MAX(max_obj_id, Object_MakeGameID(obj_id));
     }
 
@@ -1010,24 +1039,24 @@ void Level_ReadSpriteSequences(VFILE *const file)
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadPathingData(VFILE *const file)
+void Level_ReadPathingData(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_boxes = VFile_ReadS32(file);
     Box_InitialiseBoxes(num_boxes);
     for (int32_t i = 0; i < num_boxes; i++) {
         BOX_INFO *const box = Box_GetBox(i);
-#if TR_VERSION == 1
-        box->left = VFile_ReadS32(file);
-        box->right = VFile_ReadS32(file);
-        box->top = VFile_ReadS32(file);
-        box->bottom = VFile_ReadS32(file);
-#else
-        box->left = VFile_ReadU8(file) << WALL_SHIFT;
-        box->right = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
-        box->top = VFile_ReadU8(file) << WALL_SHIFT;
-        box->bottom = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
-#endif
+        if (loader->game_version == 1) {
+            box->left = VFile_ReadS32(file);
+            box->right = VFile_ReadS32(file);
+            box->top = VFile_ReadS32(file);
+            box->bottom = VFile_ReadS32(file);
+        } else {
+            box->left = VFile_ReadU8(file) << WALL_SHIFT;
+            box->right = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
+            box->top = VFile_ReadU8(file) << WALL_SHIFT;
+            box->bottom = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
+        }
         box->height = VFile_ReadS16(file);
         box->overlap_index = VFile_ReadS16(file);
     }
@@ -1037,7 +1066,7 @@ void Level_ReadPathingData(VFILE *const file)
     VFile_Read(file, overlaps, sizeof(int16_t) * num_overlaps);
 
     for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
-        for (int32_t zone_idx = 0; zone_idx < MAX_ZONES; zone_idx++) {
+        for (int32_t zone_idx = 0; zone_idx < Box_GetZoneCount(); zone_idx++) {
             int16_t *const ground_zone =
                 Box_GetGroundZone(flip_status, zone_idx);
             VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);
@@ -1132,7 +1161,7 @@ void Level_ReadCamerasAndSinks(VFILE *const file)
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadItems(VFILE *const file)
+void Level_ReadItems(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_items = VFile_ReadS32(file);
@@ -1155,7 +1184,7 @@ void Level_ReadItems(VFILE *const file)
         item->room_num = VFile_ReadS16(file);
         M_ReadPosition(&item->pos, file);
         item->rot.y = VFile_ReadS16(file);
-        M_ReadShade(&item->shade, file);
+        M_ReadShade(loader, &item->shade, file);
         item->flags = VFile_ReadS16(file);
     }
 
@@ -1190,15 +1219,16 @@ void Level_ReadSoundSources(VFILE *const file)
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadSamples(VFILE *const file)
+void Level_ReadSamples(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-    int16_t *const sample_lut = Memory_Alloc(sizeof(int16_t) * SFX_NUMBER_OF);
+    const int32_t sample_count = M_GetSampleCount(loader);
+    int16_t *const sample_lut = Memory_Alloc(sizeof(int16_t) * sample_count);
     int16_t *const sample_lut_inv =
-        Memory_Alloc(sizeof(int16_t) * SFX_NUMBER_OF);
-    VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
-    for (int32_t i = 0; i < SFX_NUMBER_OF; i++) {
+        Memory_Alloc(sizeof(int16_t) * sample_count);
+    VFile_Read(file, sample_lut, sizeof(int16_t) * sample_count);
+    for (int32_t i = 0; i < sample_count; i++) {
         if (sample_lut[i] != -1) {
             sample_lut_inv[sample_lut[i]] = i;
         }
@@ -1216,50 +1246,50 @@ void Level_ReadSamples(VFILE *const file)
         sample_info->flags.all = VFile_ReadU16(file);
         Sound_ReserveSampleData(
             sample_info->number, sample_info->flags.num_samples);
-#if TR_VERSION == 1
-        switch (sample_info->flags.mode_bits) {
-        case 0:
-            sample_info->mode = SAMPLE_MODE_WAIT;
-            break;
-        case 1:
-            sample_info->mode = SAMPLE_MODE_RESTART;
-            break;
-        case 2:
-            sample_info->mode = SAMPLE_MODE_LOOPED;
-            break;
-        case 3:
-            LOG_WARNING(
-                "Unexpected sample mode for sample %d. flags=%0X", i,
-                sample_info->flags);
-            break;
+        if (loader->game_version == 1) {
+            switch (sample_info->flags.mode_bits) {
+            case 0:
+                sample_info->mode = SAMPLE_MODE_WAIT;
+                break;
+            case 1:
+                sample_info->mode = SAMPLE_MODE_RESTART;
+                break;
+            case 2:
+                sample_info->mode = SAMPLE_MODE_LOOPED;
+                break;
+            case 3:
+                LOG_WARNING(
+                    "Unexpected sample mode for sample %d. flags=%0X", i,
+                    sample_info->flags);
+                break;
+            }
+        } else {
+            switch (sample_info->flags.mode_bits) {
+            case 0:
+                sample_info->mode = SAMPLE_MODE_NORMAL;
+                break;
+            case 1:
+                sample_info->mode = SAMPLE_MODE_WAIT;
+                break;
+            case 2:
+                sample_info->mode = SAMPLE_MODE_RESTART;
+                break;
+            case 3:
+                sample_info->mode = SAMPLE_MODE_LOOPED;
+                break;
+            }
         }
-#else
-        switch (sample_info->flags.mode_bits) {
-        case 0:
-            sample_info->mode = SAMPLE_MODE_NORMAL;
-            break;
-        case 1:
-            sample_info->mode = SAMPLE_MODE_WAIT;
-            break;
-        case 2:
-            sample_info->mode = SAMPLE_MODE_RESTART;
-            break;
-        case 3:
-            sample_info->mode = SAMPLE_MODE_LOOPED;
-            break;
-        }
-#endif
     }
 
-#if TR_VERSION == 1
-    const int32_t data_size = VFile_ReadS32(file);
-    m_Info.samples.data_size = data_size;
-    LOG_INFO("%d sample data size", data_size);
+    if (loader->game_version == 1) {
+        const int32_t data_size = VFile_ReadS32(file);
+        m_Info.samples.data_size = data_size;
+        LOG_INFO("%d sample data size", data_size);
 
-    m_Info.samples.data = GameBuf_Alloc(
-        data_size + Inject_GetDataCount(IDT_SAMPLE_DATA), GBUF_SAMPLES);
-    VFile_Read(file, m_Info.samples.data, sizeof(char) * data_size);
-#endif
+        m_Info.samples.data = GameBuf_Alloc(
+            data_size + Inject_GetDataCount(IDT_SAMPLE_DATA), GBUF_SAMPLES);
+        VFile_Read(file, m_Info.samples.data, sizeof(char) * data_size);
+    }
 
     const int32_t num_offsets = VFile_ReadS32(file);
     LOG_INFO("samples: %d", num_offsets);
@@ -1326,19 +1356,19 @@ void Level_LoadTextures(void)
     }
 }
 
-void Level_LoadTexturePages(void)
+void Level_LoadTexturePages(const LEVEL_LOADER *const loader)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_pages = m_Info.textures.page_count;
-    Output_InitialiseTexturePages(num_pages, TR_VERSION == 2);
+    Output_InitialiseTexturePages(num_pages, loader->game_version == 2);
 
     for (int32_t i = 0; i < num_pages; i++) {
-#if TR_VERSION == 2
-        uint8_t *const target_8 = Output_GetTexturePage8(i);
-        const uint8_t *const source_8 =
-            &m_Info.textures.pages_24[i * TEXTURE_PAGE_SIZE];
-        memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
-#endif
+        if (loader->game_version == 2) {
+            uint8_t *const target_8 = Output_GetTexturePage8(i);
+            const uint8_t *const source_8 =
+                &m_Info.textures.pages_24[i * TEXTURE_PAGE_SIZE];
+            memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
+        }
 
         const RGBA_8888 *const source_32 =
             &m_Info.textures.pages_32[i * TEXTURE_PAGE_SIZE];

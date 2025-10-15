@@ -264,9 +264,9 @@ bool Catalog_Load(const CATALOG_CONTEXT context, const char *const csv_path)
 
         m_CatalogGameIDs[context][id] = game_id;
         if (game_id >= 0) {
-            M_GAME_ID_ENTRY *existing = NULL;
+            M_GAME_ID_ENTRY *existing = nullptr;
             HASH_FIND_INT(m_GameID2EnumMap[context], &game_id, existing);
-            if (existing != NULL) {
+            if (existing != nullptr) {
                 LOG_ERROR(
                     "Duplicate game ID %d for context %d", game_id, context);
             } else {
@@ -284,7 +284,7 @@ bool Catalog_Load(const CATALOG_CONTEXT context, const char *const csv_path)
 bool Catalog_UUIDToEnum(
     const CATALOG_CONTEXT context, const UUID uuid, CATALOG_ID *const out_id)
 {
-    M_UUID_ENTRY *entry = NULL;
+    M_UUID_ENTRY *entry = nullptr;
     HASH_FIND(
         hh, m_UUID2EnumMap[context], uuid.bytes, sizeof(uuid.bytes), entry);
     if (entry != nullptr) {
@@ -322,7 +322,7 @@ bool Catalog_GameIDToEnum(
     const CATALOG_CONTEXT context, const int32_t game_id,
     CATALOG_ID *const out_id)
 {
-    M_GAME_ID_ENTRY *entry = NULL;
+    M_GAME_ID_ENTRY *entry = nullptr;
     HASH_FIND_INT(m_GameID2EnumMap[context], &game_id, entry);
     if (entry != nullptr) {
         *out_id = (CATALOG_ID)entry->enum_value;

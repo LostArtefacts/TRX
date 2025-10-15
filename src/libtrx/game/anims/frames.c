@@ -5,39 +5,39 @@
 #include "game/objects/common.h"
 #include "log.h"
 #include "utils.h"
+#include "version.h"
 
 #include <math.h>
 
-#if TR_VERSION > 1
 typedef enum {
     RPM_ALL = 0,
     RPM_X = 1,
     RPM_Y = 2,
     RPM_Z = 3,
 } ROT_PACK_MODE;
-#endif
 
 static ANIM_FRAME *m_Frames = nullptr;
 
 static int32_t M_GetAnimFrameCount(
-    const int32_t anim_idx, const int32_t frame_data_length)
+    const LEVEL_LOADER *const loader, const int32_t anim_idx,
+    const int32_t frame_data_length)
 {
     const ANIM *const anim = Anim_GetAnim(anim_idx);
-#if TR_VERSION == 1
-    return (int32_t)ceil(
-        ((anim->frame_end - anim->frame_base) / (float)anim->interpolation)
-        + 1);
-#else
-    uint32_t next_ofs = anim_idx == Anim_GetTotalCount() - 1
-        ? (unsigned)(sizeof(int16_t) * frame_data_length)
-        : Anim_GetAnim(anim_idx + 1)->frame_ofs;
-    if (anim->frame_size == 0) {
-        ASSERT(next_ofs - anim->frame_ofs == 0);
-        return 0;
+    if (loader->game_version == 1) {
+        return (int32_t)ceil(
+            ((anim->frame_end - anim->frame_base) / (float)anim->interpolation)
+            + 1);
+    } else {
+        uint32_t next_ofs = anim_idx == Anim_GetTotalCount() - 1
+            ? (unsigned)(sizeof(int16_t) * frame_data_length)
+            : Anim_GetAnim(anim_idx + 1)->frame_ofs;
+        if (anim->frame_size == 0) {
+            ASSERT(next_ofs - anim->frame_ofs == 0);
+            return 0;
+        }
+        return (next_ofs - anim->frame_ofs)
+            / (int32_t)(sizeof(int16_t) * anim->frame_size);
     }
-    return (next_ofs - anim->frame_ofs)
-        / (int32_t)(sizeof(int16_t) * anim->frame_size);
-#endif
 }
 
 static OBJECT *M_GetAnimObject(const int32_t anim_idx)
@@ -73,42 +73,43 @@ static void M_ExtractRotation(
     rot->z = (rot_val_2 & 0x3FF) << 6;
 }
 
-static void M_ParseMeshRotation(XYZ_16 *const rot, const int16_t **data)
+static void M_ParseMeshRotation(
+    const LEVEL_LOADER *const loader, XYZ_16 *const rot, const int16_t **data)
 {
     const int16_t *data_ptr = *data;
-#if TR_VERSION == 1
-    const int16_t rot_val_1 = *data_ptr++;
-    const int16_t rot_val_2 = *data_ptr++;
-    M_ExtractRotation(rot, rot_val_2, rot_val_1);
-#else
-    rot->x = 0;
-    rot->y = 0;
-    rot->z = 0;
-
-    const int16_t rot_val_1 = *data_ptr++;
-    const ROT_PACK_MODE mode = (ROT_PACK_MODE)((rot_val_1 & 0xC000) >> 14);
-    switch (mode) {
-    case RPM_X:
-        rot->x = (rot_val_1 & 0x3FF) << 6;
-        break;
-    case RPM_Y:
-        rot->y = (rot_val_1 & 0x3FF) << 6;
-        break;
-    case RPM_Z:
-        rot->z = (rot_val_1 & 0x3FF) << 6;
-        break;
-    default:
+    if (loader->game_version == 1) {
+        const int16_t rot_val_1 = *data_ptr++;
         const int16_t rot_val_2 = *data_ptr++;
-        M_ExtractRotation(rot, rot_val_1, rot_val_2);
-        break;
+        M_ExtractRotation(rot, rot_val_2, rot_val_1);
+    } else {
+        rot->x = 0;
+        rot->y = 0;
+        rot->z = 0;
+
+        const int16_t rot_val_1 = *data_ptr++;
+        const ROT_PACK_MODE mode = (ROT_PACK_MODE)((rot_val_1 & 0xC000) >> 14);
+        switch (mode) {
+        case RPM_X:
+            rot->x = (rot_val_1 & 0x3FF) << 6;
+            break;
+        case RPM_Y:
+            rot->y = (rot_val_1 & 0x3FF) << 6;
+            break;
+        case RPM_Z:
+            rot->z = (rot_val_1 & 0x3FF) << 6;
+            break;
+        default:
+            const int16_t rot_val_2 = *data_ptr++;
+            M_ExtractRotation(rot, rot_val_1, rot_val_2);
+            break;
+        }
     }
-#endif
     *data = data_ptr;
 }
 
 static int32_t M_ParseFrame(
-    ANIM_FRAME *const frame, const int16_t *data_ptr, int16_t mesh_count,
-    const uint8_t frame_size)
+    const LEVEL_LOADER *const loader, ANIM_FRAME *const frame,
+    const int16_t *data_ptr, int16_t mesh_count, const uint8_t frame_size)
 {
     const int16_t *const frame_start = data_ptr;
 
@@ -121,30 +122,31 @@ static int32_t M_ParseFrame(
     frame->offset.x = *data_ptr++;
     frame->offset.y = *data_ptr++;
     frame->offset.z = *data_ptr++;
-#if TR_VERSION == 1
-    mesh_count = *data_ptr++;
-#endif
+    if (loader->game_version == 1) {
+        mesh_count = *data_ptr++;
+    }
 
     frame->mesh_rots =
         GameBuf_Alloc(sizeof(XYZ_16) * mesh_count, GBUF_ANIM_FRAMES);
     for (int32_t i = 0; i < mesh_count; i++) {
         XYZ_16 *const rot = &frame->mesh_rots[i];
-        M_ParseMeshRotation(rot, &data_ptr);
+        M_ParseMeshRotation(loader, rot, &data_ptr);
     }
 
-#if TR_VERSION > 1
-    data_ptr += MAX(0, frame_size - (data_ptr - frame_start));
-#endif
+    if (loader->game_version > 1) {
+        data_ptr += MAX(0, frame_size - (data_ptr - frame_start));
+    }
 
     return data_ptr - frame_start;
 }
 
-int32_t Anim_GetTotalFrameCount(const int32_t frame_data_length)
+int32_t Anim_GetTotalFrameCount(
+    const LEVEL_LOADER *const loader, const int32_t frame_data_length)
 {
     const int32_t anim_count = Anim_GetTotalCount();
     int32_t total_frame_count = 0;
     for (int32_t i = 0; i < anim_count; i++) {
-        total_frame_count += M_GetAnimFrameCount(i, frame_data_length);
+        total_frame_count += M_GetAnimFrameCount(loader, i, frame_data_length);
     }
     return total_frame_count;
 }
@@ -155,7 +157,9 @@ void Anim_InitialiseFrames(const int32_t num_frames)
     m_Frames = GameBuf_Alloc(sizeof(ANIM_FRAME) * num_frames, GBUF_ANIM_FRAMES);
 }
 
-void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
+void Anim_LoadFrames(
+    const LEVEL_LOADER *const loader, const int16_t *data,
+    const int32_t data_length)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -175,7 +179,7 @@ void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
         }
 
         ANIM *const anim = Anim_GetAnim(i);
-        const int32_t frame_count = M_GetAnimFrameCount(i, data_length);
+        const int32_t frame_count = M_GetAnimFrameCount(loader, i, data_length);
         const int16_t *data_ptr = &data[anim->frame_ofs / sizeof(int16_t)];
         for (int32_t j = 0; j < frame_count; j++) {
             ANIM_FRAME *const frame = &m_Frames[frame_idx++];
@@ -187,7 +191,7 @@ void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
             }
 
             data_ptr += M_ParseFrame(
-                frame, data_ptr, cur_obj->mesh_count, anim->frame_size);
+                loader, frame, data_ptr, cur_obj->mesh_count, anim->frame_size);
         }
     }
 

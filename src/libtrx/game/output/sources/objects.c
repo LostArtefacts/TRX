@@ -7,6 +7,7 @@
 #include "game/output/state.h"
 #include "memory.h"
 #include "utils.h"
+#include "version.h"
 
 typedef struct {
     OUTPUT_MESH *mesh_batch;
@@ -31,11 +32,11 @@ static void M_AddObjectVerts(
     RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
     int16_t uvw_idx = -1;
     if (flags & VERT_FLAT_SHADED) {
-#if TR_VERSION == 1
-        color = Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx));
-#else
-        color = Output_RGB2RGBA(Output_GetPaletteColor16(palette_idx >> 8));
-#endif
+        if (g_TRVersion == 1) {
+            color = Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx));
+        } else {
+            color = Output_RGB2RGBA(Output_GetPaletteColor16(palette_idx >> 8));
+        }
     }
 
     for (size_t i = 0; i < vtx_count; i++) {

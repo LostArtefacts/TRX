@@ -4,6 +4,8 @@
 const char *g_TRXVersion = "TR2X (non-Docker build)";
 #endif
 
+int32_t g_TRVersion = TR_VERSION; // overriden at runtime when loading a level
+
 int32_t g_OverlayFlag = 1;
 
 int32_t g_PhdPersp = 0;

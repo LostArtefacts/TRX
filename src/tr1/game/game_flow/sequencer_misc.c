@@ -3,11 +3,11 @@
 #include "game/game_flow/common.h"
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/vars.h"
-#include "game/level.h"
 #include "game/savegame.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/level.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 

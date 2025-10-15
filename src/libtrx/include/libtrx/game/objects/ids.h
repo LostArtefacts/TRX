@@ -1,11 +1,6 @@
 #pragma once
 
 #define O_FIRST 0
-#if TR_VERSION == 1
-    #define O_ORIGINAL_NUMBER_OF 191
-#else
-    #define O_ORIGINAL_NUMBER_OF 265
-#endif
 
 typedef enum {
     NO_OBJECT = -1,

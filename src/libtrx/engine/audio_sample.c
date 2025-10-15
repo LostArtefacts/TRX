@@ -520,7 +520,10 @@ bool Audio_Sample_UnloadAll(void)
 bool Audio_Sample_Load(
     const int32_t sample_id, const char *const data, const size_t size)
 {
-    ASSERT(data != nullptr);
+    if (data == nullptr || size == 0) {
+        LOG_ERROR("Missing sample data %d", sample_id);
+        return false;
+    }
 
     if (!g_AudioDeviceID) {
         LOG_ERROR("Unitialized audio device");

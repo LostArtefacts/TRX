@@ -100,9 +100,7 @@ typedef struct {
         bool is_present;
         RGB_888 value;
     } water_color;
-#if TR_VERSION == 2
     char *sfx_path;
-#endif
     GF_AMBIENT_DATA ambient_tracks;
     struct {
         bool is_present;
