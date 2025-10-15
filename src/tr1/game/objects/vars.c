@@ -29,7 +29,7 @@ const OBJECT_ID g_EnemyObjects[] = {
     O_COWBOY,
     O_BALDY,
     O_NATLA,
-    O_STATUE,
+    O_CENTAUR_STATUE,
     NO_OBJECT,
     // clang-format on
 };
@@ -89,7 +89,7 @@ const OBJECT_ID g_MovableBlockObjects[] = {
 
 const OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
-    O_STATUE,
+    O_CENTAUR_STATUE,
     O_PODS,
     O_BIG_POD,
     NO_OBJECT,
