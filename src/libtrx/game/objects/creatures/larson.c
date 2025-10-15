@@ -1,11 +1,10 @@
+#include "game/const.h"
 #include "game/creature.h"
-
-#include <libtrx/game/const.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/game/random.h>
-#include <libtrx/utils.h>
+#include "game/music.h"
+#include "game/objects.h"
+#include "game/pathing.h"
+#include "game/random.h"
+#include "utils.h"
 
 #define LARSON_POSE_CHANCE 0x60 // = 96
 #define LARSON_SHOT_DAMAGE 50
@@ -146,8 +145,7 @@ static void M_Control(const int16_t item_num)
         case LARSON_STATE_SHOOT:
             if (!item->required_anim_state) {
                 Creature_ShootAtLara(
-                    item, info.distance, &m_LarsonGun, head,
-                    LARSON_SHOT_DAMAGE);
+                    item, &info, &m_LarsonGun, head, LARSON_SHOT_DAMAGE);
                 item->required_anim_state = LARSON_STATE_AIM;
             }
             if (person->mood == MOOD_ESCAPE) {

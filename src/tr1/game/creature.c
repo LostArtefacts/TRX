@@ -3,20 +3,20 @@
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/objects/vars.h"
-#include "game/spawn.h"
 
 #include <libtrx/game/random.h>
+#include <libtrx/game/spawn.h>
 
 bool Creature_ShootAtLara(
-    ITEM *item, int32_t distance, BITE *gun, int16_t extra_rotation,
-    int16_t damage)
+    ITEM *const item, const AI_INFO *const info, const BITE *const gun,
+    const int16_t extra_rotation, const int32_t damage)
 {
     bool is_hit;
-    if (distance > CREATURE_SHOOT_RANGE) {
+    if (info->distance > CREATURE_SHOOT_RANGE) {
         is_hit = false;
     } else {
         is_hit = Random_GetControl()
-            < ((CREATURE_SHOOT_RANGE - distance)
+            < ((CREATURE_SHOOT_RANGE - info->distance)
                    / (CREATURE_SHOOT_RANGE / 0x7FFF)
                - CREATURE_MISS_CHANCE);
     }

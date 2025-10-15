@@ -263,9 +263,9 @@ typedef struct {
         WALL_GLITCH_MODE wall_glitch_mode;
         bool fix_alligator_ai;
         bool disable_trex_collision;
+        bool change_pierre_spawn;
 #if TR_VERSION == 1
         bool fix_shotgun_targeting;
-        bool change_pierre_spawn;
 #else
         bool fix_m16_accuracy;
         bool fix_free_flare_glitch;

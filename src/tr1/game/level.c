@@ -1,6 +1,5 @@
 #include "game/level.h"
 
-#include "game/objects/creatures/mutant.h"
 #include "game/shell.h"
 #include "game/stats.h"
 
@@ -9,6 +8,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/inject.h>
+#include <libtrx/game/objects/creatures/mutant.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/memory.h>
 

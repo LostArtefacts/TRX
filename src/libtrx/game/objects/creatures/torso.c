@@ -1,13 +1,12 @@
+#include "game/camera.h"
 #include "game/creature.h"
 #include "game/lara.h"
-
-#include <libtrx/game/camera.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
+#include "game/math.h"
+#include "game/pathing.h"
+#include "game/random.h"
+#include "game/rooms.h"
+#include "game/sound.h"
+#include "utils.h"
 
 #define EXTRA_ANIM_TORSO_SLAM 0
 #define TORSO_TURN_L_ANIM 8

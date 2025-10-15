@@ -1,13 +1,13 @@
+#include "config.h"
 #include "game/creature.h"
 #include "game/effects.h"
+#include "game/lara.h"
+#include "game/math.h"
+#include "game/music.h"
+#include "game/pathing.h"
+#include "game/random.h"
+#include "game/sound.h"
 #include "game/spawn.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/sound.h>
 
 #define NATLA_FLY_MODE 0x8000
 #define NATLA_TIMER 0x7FFF
