@@ -3,7 +3,13 @@
 #include "../collision.h"
 #include "../game_flow.h"
 #include "../items.h"
+#include "enum.h"
 #include "types.h"
+
+#define LA(anim) Lara_AnimToGameId(anim)
+#define LA_U(anim) Lara_AnimFromGameId(anim)
+#define LS(state) Lara_StateToGameId(state)
+#define LS_U(state) Lara_StateFromGameId(state)
 
 LARA_INFO *Lara_GetLaraInfo(void);
 ITEM *Lara_GetItem(void);
@@ -30,3 +36,8 @@ bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *bounds);
 void Lara_AlignPosition(const ITEM *item, const XYZ_32 *vec);
 bool Lara_MovePosition(const ITEM *item, const XYZ_32 *vec);
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
+
+LARA_ANIMATION Lara_AnimToGameId(LARA_TRX_ANIMATION anim);
+LARA_STATE Lara_StateToGameId(LARA_TRX_STATE state);
+LARA_TRX_ANIMATION Lara_AnimFromGameId(LARA_ANIMATION anim);
+LARA_TRX_STATE Lara_StateFromGameId(LARA_STATE state);

@@ -90,7 +90,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS_PICKUP) {
+    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
             M_DoPickup(item_num);
         }
@@ -98,7 +98,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara_item->current_anim_state == LS_FLARE_PICKUP) {
+    if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_FLARE)
             && item->object_id == O_FLARE_ITEM && lara->gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
@@ -107,23 +107,23 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     }
 
     if (g_Input.action && !lara_item->gravity
-        && lara_item->current_anim_state == LS_STOP
+        && lara_item->current_anim_state == LS(LS_STOP)
         && lara->gun_status == LGS_ARMLESS
         && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
         if (item->object_id == O_FLARE_ITEM) {
-            lara_item->goal_anim_state = LS_FLARE_PICKUP;
+            lara_item->goal_anim_state = LS(LS_FLARE_PICKUP);
             do {
                 Lara_Animate(lara_item);
-            } while (lara_item->current_anim_state != LS_FLARE_PICKUP);
-            lara_item->goal_anim_state = LS_STOP;
+            } while (lara_item->current_anim_state != LS(LS_FLARE_PICKUP));
+            lara_item->goal_anim_state = LS(LS_STOP);
             lara->gun_status = LGS_HANDS_BUSY;
         } else {
             Lara_AlignPosition(item, &m_PickupPosition);
-            lara_item->goal_anim_state = LS_PICKUP;
+            lara_item->goal_anim_state = LS(LS_PICKUP);
             do {
                 Lara_Animate(lara_item);
-            } while (lara_item->current_anim_state != LS_PICKUP);
-            lara_item->goal_anim_state = LS_STOP;
+            } while (lara_item->current_anim_state != LS(LS_PICKUP));
+            lara_item->goal_anim_state = LS(LS_STOP);
             lara->gun_status = LGS_HANDS_BUSY;
         }
         goto cleanup;
@@ -147,7 +147,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS_PICKUP) {
+    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
             M_DoPickup(item_num);
         }
@@ -155,7 +155,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
     }
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara_item->current_anim_state == LS_FLARE_PICKUP) {
+    if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_FLARE_UW)
             && item->object_id == O_FLARE_ITEM && lara->gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
@@ -164,7 +164,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (g_Input.action && lara_item->current_anim_state == LS_TREAD
+    if (g_Input.action && lara_item->current_anim_state == LS(LS_TREAD)
         && lara->gun_status == LGS_ARMLESS
         && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
         if (!Lara_MovePosition(item, &m_PickupPositionUW)) {
@@ -173,18 +173,18 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
 
         if (item->object_id == O_FLARE_ITEM) {
             lara_item->fall_speed = 0;
-            Item_SwitchToAnim(lara_item, LA_UNDERWATER_FLARE_PICKUP, 0);
-            lara_item->goal_anim_state = LS_TREAD;
-            lara_item->current_anim_state = LS_FLARE_PICKUP;
+            Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_FLARE_PICKUP), 0);
+            lara_item->goal_anim_state = LS(LS_TREAD);
+            lara_item->current_anim_state = LS(LS_FLARE_PICKUP);
         } else {
             if (g_Config.gameplay.fix_lara_pickup_embed) {
                 lara_item->fall_speed = 0;
             }
-            lara_item->goal_anim_state = LS_PICKUP;
+            lara_item->goal_anim_state = LS(LS_PICKUP);
             do {
                 Lara_Animate(lara_item);
-            } while (lara_item->current_anim_state != LS_PICKUP);
-            lara_item->goal_anim_state = LS_TREAD;
+            } while (lara_item->current_anim_state != LS(LS_PICKUP));
+            lara_item->goal_anim_state = LS(LS_TREAD);
         }
         goto cleanup;
     }

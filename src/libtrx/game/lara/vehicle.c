@@ -35,9 +35,9 @@ void Lara_Vehicle_Dismount(void)
     Item_SwitchToAnim(vehicle, 0, 0);
     Lara_Vehicle_SetIndex(NO_ITEM);
 
-    lara_item->current_anim_state = LS_STOP;
-    lara_item->goal_anim_state = LS_STOP;
-    Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+    lara_item->current_anim_state = LS(LS_STOP);
+    lara_item->goal_anim_state = LS(LS_STOP);
+    Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
 
     lara_item->rot.x = 0;
     lara_item->rot.z = 0;

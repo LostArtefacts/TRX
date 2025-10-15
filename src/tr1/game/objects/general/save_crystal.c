@@ -27,11 +27,9 @@ static const OBJECT_BOUNDS m_UW_Bounds = {
     },
 };
 
-static const LARA_STATE m_StopStates[] = {
-    LS_STOP,
-    LS_TREAD,
-    LS_SURF_TREAD,
-    (LARA_STATE)-1,
+static const LARA_TRX_STATE m_StopStates[] = {
+    LS_STOP, LS_TREAD, LS_SURF_TREAD,
+    LS_TRX_INVALID, // sentinel
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void)

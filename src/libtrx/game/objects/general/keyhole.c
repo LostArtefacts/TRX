@@ -32,8 +32,8 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     Lara_AlignPosition(receptacle_item, &m_KeyholePosition);
-    Lara_AnimateUntil(lara_item, LS_USE_KEY);
-    lara_item->goal_anim_state = LS_STOP;
+    Lara_AnimateUntil(lara_item, LS(LS_USE_KEY));
+    lara_item->goal_anim_state = LS(LS_STOP);
     lara->gun_status = LGS_HANDS_BUSY;
     lara->interact_target.is_moving = false;
 }
@@ -61,8 +61,8 @@ static void M_Collision(
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (lara_item->current_anim_state != LS_STOP) {
-        if (lara_item->current_anim_state == LS_USE_KEY
+    if (lara_item->current_anim_state != LS(LS_STOP)) {
+        if (lara_item->current_anim_state == LS(LS_USE_KEY)
             && Lara_TestPosition(item, obj->bounds_func())
             && Item_TestFrameEqual(lara_item, M_LF_USE_KEYHOLE)) {
             M_ConsumeKeyItem(item);
@@ -77,7 +77,7 @@ static void M_Collision(
     }
 
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS_STOP) {
+        || lara_item->current_anim_state != LS(LS_STOP)) {
         return;
     }
 

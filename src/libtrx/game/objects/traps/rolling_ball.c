@@ -213,7 +213,7 @@ static void M_Collision(
             lara_item->rot.y = item->rot.y;
             lara_item->rot.z = 0;
 
-            Item_SwitchToAnim(lara_item, LA_BOULDER_DEATH, 0);
+            Item_SwitchToAnim(lara_item, LA(LA_BOULDER_DEATH), 0);
             lara_item->goal_anim_state =
                 Item_GetAnim(lara_item)->current_anim_state;
             lara_item->current_anim_state = lara_item->goal_anim_state;

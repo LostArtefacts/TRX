@@ -706,9 +706,9 @@ bool Skidoo_CheckGetOff(void)
         } else {
             lara_item->rot.y -= DEG_90;
         }
-        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
-        lara_item->goal_anim_state = LS_STOP;
-        lara_item->current_anim_state = LS_STOP;
+        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
+        lara_item->goal_anim_state = LS(LS_STOP);
+        lara_item->current_anim_state = LS(LS_STOP);
         lara_item->pos.x -=
             (SKIDOO_GET_OFF_DIST * Math_Sin(lara_item->rot.y)) >> W2V_SHIFT;
         lara_item->pos.z -=
@@ -723,7 +723,7 @@ bool Skidoo_CheckGetOff(void)
     if (lara_item->current_anim_state == LARA_STATE_SKIDOO_LET_GO
         && (skidoo->pos.y == skidoo->floor
             || Item_TestFrameEqual(lara_item, LF_SKIDOO_LET_GO_END))) {
-        Item_SwitchToAnim(lara_item, LA_FREEFALL, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_FREEFALL), 0);
         lara_item->current_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
         if (skidoo->pos.y == skidoo->floor) {
             lara_item->goal_anim_state = LARA_STATE_SKIDOO_STILL;

@@ -45,9 +45,9 @@ static void M_Collision(
     }
 
     if (lara_item->hit_points <= 0) {
-        Item_SwitchToAnim(lara_item, LA_SPIKE_DEATH, 0);
-        lara_item->current_anim_state = LS_DEATH;
-        lara_item->goal_anim_state = LS_DEATH;
+        Item_SwitchToAnim(lara_item, LA(LA_SPIKE_DEATH), 0);
+        lara_item->current_anim_state = LS(LS_DEATH);
+        lara_item->goal_anim_state = LS(LS_DEATH);
         lara_item->pos.y = item->pos.y;
         lara_item->gravity = 0;
     }

@@ -7,7 +7,7 @@ static void (*m_CollisionRoutines[LS_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 
 void Lara_Col_Register(
-    const LARA_STATE state,
+    const LARA_TRX_STATE state,
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
     ASSERT(state >= 0 && state < LS_NUMBER_OF);
@@ -16,8 +16,10 @@ void Lara_Col_Register(
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
 {
-    if (m_CollisionRoutines[item->current_anim_state] != nullptr) {
-        m_CollisionRoutines[item->current_anim_state](item, coll);
+    const LARA_TRX_STATE state = LS_U(item->current_anim_state);
+    if (state >= 0 && state < LS_NUMBER_OF
+        && m_CollisionRoutines[state] != nullptr) {
+        m_CollisionRoutines[state](item, coll);
     }
 }
 

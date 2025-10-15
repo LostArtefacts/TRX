@@ -1,6 +1,7 @@
 #include "game/catalog.h"
 
 #include "filesystem.h"
+#include "game/lara/enum.h"
 #include "game/music/ids.h"
 #include "game/objects/ids.h"
 #include "game/sound/ids.h"
@@ -29,6 +30,14 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
 #define X_CATALOG_ID(uuid_str, enum_value)                                     \
     { CATALOG_SAMPLES, enum_value, uuid_str },
 #include "game/catalog_samples.def"
+#undef X_CATALOG_ID
+#define X_CATALOG_ID(uuid_str, enum_value)                                     \
+    { CATALOG_LARA_STATES, enum_value, uuid_str },
+#include "game/catalog_lara_states.def"
+#undef X_CATALOG_ID
+#define X_CATALOG_ID(uuid_str, enum_value)                                     \
+    { CATALOG_LARA_ANIMS, enum_value, uuid_str },
+#include "game/catalog_lara_anims.def"
 #undef X_CATALOG_ID
 };
 

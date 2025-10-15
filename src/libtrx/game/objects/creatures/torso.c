@@ -50,8 +50,8 @@ static void M_KillLara(const ITEM *const item)
     ITEM *const lara_item = Lara_GetItem();
     Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
 
-    lara_item->current_anim_state = LS_SPECIAL;
-    lara_item->goal_anim_state = LS_SPECIAL;
+    lara_item->current_anim_state = LS(LS_SPECIAL);
+    lara_item->goal_anim_state = LS(LS_SPECIAL);
     lara_item->room_num = item->room_num;
     lara_item->pos.x = item->pos.x;
     lara_item->pos.y = item->pos.y;

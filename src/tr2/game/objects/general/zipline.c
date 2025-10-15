@@ -86,7 +86,8 @@ static void M_Control(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 
     ITEM *const lara_item = Lara_GetItem();
-    const bool lara_on_zipline = lara_item->current_anim_state == LS_ZIPLINE;
+    const bool lara_on_zipline =
+        lara_item->current_anim_state == LS(LS_ZIPLINE);
     if (lara_on_zipline) {
         lara_item->pos = item->pos;
     }
@@ -103,7 +104,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (lara_on_zipline) {
-        lara_item->goal_anim_state = LS_JUMP_FORWARD;
+        lara_item->goal_anim_state = LS(LS_JUMP_FORWARD);
         Lara_Animate(lara_item);
         lara_item->gravity = 1;
         lara_item->speed = item->fall_speed;
@@ -120,7 +121,7 @@ static void M_Collision(
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS_STOP) {
+        || lara_item->current_anim_state != LS(LS_STOP)) {
         return;
     }
 
@@ -137,10 +138,10 @@ static void M_Collision(
     Lara_AlignPosition(item, &m_ZiplineHandlePosition);
     lara->gun_status = LGS_HANDS_BUSY;
 
-    lara_item->goal_anim_state = LS_ZIPLINE;
+    lara_item->goal_anim_state = LS(LS_ZIPLINE);
     do {
         Item_Animate(lara_item);
-    } while (lara_item->current_anim_state != LS_PULL_UP);
+    } while (lara_item->current_anim_state != LS(LS_PULL_UP));
 
     if (!item->active) {
         Item_AddActive(item_num);

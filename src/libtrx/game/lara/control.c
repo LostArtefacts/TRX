@@ -246,7 +246,7 @@ static void M_UpdateEnvironment(void)
             if (water_height_diff > M_WADE_DEPTH) {
                 lara_info->water_status = LWS_WADE;
                 if (!item->gravity) {
-                    item->goal_anim_state = LS_STOP;
+                    item->goal_anim_state = LS(LS_STOP);
                 }
             }
         } else if (room_submerged) {
@@ -256,21 +256,21 @@ static void M_UpdateEnvironment(void)
             item->pos.y += 100;
             Lara_UpdateRoomToHeight(0);
             Sound_StopEffect(SFX_LARA_FALL);
-            if (item->current_anim_state == LS_SWAN_DIVE) {
+            if (item->current_anim_state == LS(LS_SWAN_DIVE)) {
                 item->rot.x = -M_DIVE_TILT_MED;
-                item->goal_anim_state = LS_DIVE;
+                item->goal_anim_state = LS(LS_DIVE);
                 Lara_Animate(item);
                 item->fall_speed *= 2;
-            } else if (item->current_anim_state == LS_FAST_DIVE) {
+            } else if (item->current_anim_state == LS(LS_FAST_DIVE)) {
                 item->rot.x = -M_DIVE_TILT_MAX;
-                item->goal_anim_state = LS_DIVE;
+                item->goal_anim_state = LS(LS_DIVE);
                 Lara_Animate(item);
                 item->fall_speed *= 2;
             } else {
                 item->rot.x = -M_DIVE_TILT_MED;
-                Item_SwitchToAnim(item, LA_FREEFALL_TO_UNDERWATER, 0);
-                item->current_anim_state = LS_DIVE;
-                item->goal_anim_state = LS_SWIM;
+                Item_SwitchToAnim(item, LA(LA_FREEFALL_TO_UNDERWATER), 0);
+                item->current_anim_state = LS(LS_DIVE);
+                item->goal_anim_state = LS(LS_SWIM);
                 item->fall_speed = (item->fall_speed * 3) / 2;
             }
             lara_info->head_rot.x = 0;
@@ -290,9 +290,9 @@ static void M_UpdateEnvironment(void)
 
         if (water_depth == NO_HEIGHT || ABS(water_height_diff) >= STEP_L) {
             lara_info->water_status = LWS_ABOVE_WATER;
-            Item_SwitchToAnim(item, LA_FALL_START, 0);
-            item->current_anim_state = LS_JUMP_FORWARD;
-            item->goal_anim_state = LS_JUMP_FORWARD;
+            Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
+            item->current_anim_state = LS(LS_JUMP_FORWARD);
+            item->goal_anim_state = LS(LS_JUMP_FORWARD);
             item->gravity = true;
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
@@ -307,9 +307,9 @@ static void M_UpdateEnvironment(void)
             }
         } else {
             lara_info->water_status = LWS_SURFACE;
-            Item_SwitchToAnim(item, LA_UNDERWATER_TO_ONWATER, 0);
-            item->current_anim_state = LS_SURF_TREAD;
-            item->goal_anim_state = LS_SURF_TREAD;
+            Item_SwitchToAnim(item, LA(LA_UNDERWATER_TO_ONWATER), 0);
+            item->current_anim_state = LS(LS_SURF_TREAD);
+            item->goal_anim_state = LS(LS_SURF_TREAD);
             item->fall_speed = 0;
             item->pos.y += 1 - water_height_diff;
             item->rot.x = 0;
@@ -332,16 +332,16 @@ static void M_UpdateEnvironment(void)
 
         if (wading_enabled && water_height_diff > M_WADE_DEPTH) {
             lara_info->water_status = LWS_WADE;
-            Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
-            item->current_anim_state = LS_STOP;
-            item->goal_anim_state = LS_WADE;
+            Item_SwitchToAnim(item, LA(LA_STAND_IDLE), 0);
+            item->current_anim_state = LS(LS_STOP);
+            item->goal_anim_state = LS(LS_WADE);
             Item_Animate(item);
             item->fall_speed = 0;
         } else {
             lara_info->water_status = LWS_ABOVE_WATER;
-            Item_SwitchToAnim(item, LA_FALL_START, 0);
-            item->current_anim_state = LS_JUMP_FORWARD;
-            item->goal_anim_state = LS_JUMP_FORWARD;
+            Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
+            item->current_anim_state = LS(LS_JUMP_FORWARD);
+            item->goal_anim_state = LS(LS_JUMP_FORWARD);
             item->gravity = true;
             item->speed = item->fall_speed / 4;
             if (TR_VERSION == 1) {
@@ -362,33 +362,33 @@ static void M_UpdateEnvironment(void)
 
         if (water_height_diff < M_WADE_DEPTH) {
             lara_info->water_status = LWS_ABOVE_WATER;
-            if (item->current_anim_state == LS_WADE) {
-                item->goal_anim_state = LS_RUN;
+            if (item->current_anim_state == LS(LS_WADE)) {
+                item->goal_anim_state = LS(LS_RUN);
             }
         } else if (water_height_diff > M_SWIM_DEPTH) {
             lara_info->water_status = LWS_SURFACE;
             item->pos.y += 1 - water_height_diff;
 
             LARA_ANIMATION anim_idx;
-            switch (item->current_anim_state) {
+            switch (LS_U(item->current_anim_state)) {
             case LS_WALK_BACK:
-                item->goal_anim_state = LS_SURF_BACK;
-                anim_idx = LA_ONWATER_IDLE_TO_SWIM_BACK;
+                item->goal_anim_state = LS(LS_SURF_BACK);
+                anim_idx = LA(LA_ONWATER_IDLE_TO_SWIM_BACK);
                 break;
 
             case LS_STEP_RIGHT:
-                item->goal_anim_state = LS_SURF_RIGHT;
-                anim_idx = LA_ONWATER_SWIM_RIGHT;
+                item->goal_anim_state = LS(LS_SURF_RIGHT);
+                anim_idx = LA(LA_ONWATER_SWIM_RIGHT);
                 break;
 
             case LS_STEP_LEFT:
-                item->goal_anim_state = LS_SURF_LEFT;
-                anim_idx = LA_ONWATER_SWIM_LEFT;
+                item->goal_anim_state = LS(LS_SURF_LEFT);
+                anim_idx = LA(LA_ONWATER_SWIM_LEFT);
                 break;
 
             default:
-                item->goal_anim_state = LS_SURF_SWIM;
-                anim_idx = LA_ONWATER_SWIM_FORWARD;
+                item->goal_anim_state = LS(LS_SURF_SWIM);
+                anim_idx = LA(LA_ONWATER_SWIM_FORWARD);
                 break;
             }
 
@@ -660,12 +660,12 @@ static void M_HandleEnvironment(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     COLL_INFO coll = {};
 
-    if (item->current_anim_state != LS_SPRINT) {
+    if (item->current_anim_state != LS(LS_SPRINT)) {
         lara_info->sprint_timer++;
         CLAMPG(lara_info->sprint_timer, LARA_MAX_SPRINT);
     }
-    if (item->current_anim_state != LS_STOP
-        && item->current_anim_state != LS_POSE) {
+    if (item->current_anim_state != LS(LS_STOP)
+        && item->current_anim_state != LS(LS_POSE)) {
         lara_info->idle_timer = 0;
     }
 
@@ -730,14 +730,14 @@ void Lara_Control_Initialise(
     } else if ((Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) != 0) {
         lara_info->water_status = LWS_UNDERWATER;
         lara_item->fall_speed = 0;
-        lara_item->goal_anim_state = LS_TREAD;
-        lara_item->current_anim_state = LS_TREAD;
-        Item_SwitchToAnim(lara_item, LA_UNDERWATER_IDLE, 0);
+        lara_item->goal_anim_state = LS(LS_TREAD);
+        lara_item->current_anim_state = LS(LS_TREAD);
+        Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_IDLE), 0);
     } else {
         lara_info->water_status = LWS_ABOVE_WATER;
-        lara_item->goal_anim_state = LS_STOP;
-        lara_item->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+        lara_item->goal_anim_state = LS(LS_STOP);
+        lara_item->current_anim_state = LS(LS_STOP);
+        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
     }
 }
 

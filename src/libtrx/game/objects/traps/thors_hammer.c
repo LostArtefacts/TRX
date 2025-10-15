@@ -77,9 +77,9 @@ static void M_ControlHandle(const int16_t item_num)
                 lara_item->hit_points = -1;
                 lara_item->pos.y = item->pos.y;
                 lara_item->gravity = 0;
-                lara_item->current_anim_state = LS_SPECIAL;
-                lara_item->goal_anim_state = LS_SPECIAL;
-                Item_SwitchToAnim(lara_item, LA_BOULDER_DEATH, 0);
+                lara_item->current_anim_state = LS(LS_SPECIAL);
+                lara_item->goal_anim_state = LS(LS_SPECIAL);
+                Item_SwitchToAnim(lara_item, LA(LA_BOULDER_DEATH), 0);
             }
         }
         break;

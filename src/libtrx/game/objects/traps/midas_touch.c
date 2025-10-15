@@ -38,8 +38,8 @@ static void M_KillLara(const ITEM *const item)
 
     Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
 
-    lara_item->current_anim_state = LS_DIE_MIDAS;
-    lara_item->goal_anim_state = LS_DIE_MIDAS;
+    lara_item->current_anim_state = LS(LS_DIE_MIDAS);
+    lara_item->goal_anim_state = LS(LS_DIE_MIDAS);
     lara_item->hit_points = -1;
     lara_item->gravity = 0;
     lara->extra_anim = true;
@@ -54,7 +54,7 @@ static void M_KillLara(const ITEM *const item)
 static bool M_IsUsable(const int16_t item_num)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    return lara_item->current_anim_state != LS_USE_MIDAS;
+    return lara_item->current_anim_state != LS(LS_USE_MIDAS);
 }
 
 static void M_Collision(
@@ -81,7 +81,7 @@ static void M_Collision(
         break;
     }
 
-    if (!lara_item->gravity && lara_item->current_anim_state == LS_STOP
+    if (!lara_item->gravity && lara_item->current_anim_state == LS(LS_STOP)
         && lara_item->pos.x > item->pos.x - M_RANGE_H
         && lara_item->pos.x < item->pos.x + M_RANGE_H
         && lara_item->pos.y > item->pos.y - M_RANGE_V
@@ -95,8 +95,8 @@ static void M_Collision(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->interact_target.is_moving
         && lara->interact_target.item_num == item_num) {
-        lara_item->current_anim_state = LS_USE_MIDAS;
-        lara_item->goal_anim_state = LS_USE_MIDAS;
+        lara_item->current_anim_state = LS(LS_USE_MIDAS);
+        lara_item->goal_anim_state = LS(LS_USE_MIDAS);
         Item_SwitchToObjAnim(lara_item, M_ANIM_USE, 0, O_LARA_EXTRA);
         lara->extra_anim = true;
         lara->gun_status = LGS_HANDS_BUSY;
@@ -104,7 +104,7 @@ static void M_Collision(
     }
 
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS_STOP) {
+        || lara_item->current_anim_state != LS(LS_STOP)) {
         return;
     }
 

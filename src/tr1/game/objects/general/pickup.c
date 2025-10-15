@@ -143,7 +143,8 @@ static void M_CollisionControlled(
     if (lara->water_status == LWS_ABOVE_WATER
         || lara->water_status == LWS_WADE) {
         if ((g_Input.action && lara->gun_status == LGS_ARMLESS
-             && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
+             && !lara_item->gravity
+             && lara_item->current_anim_state == LS(LS_STOP)
              && !lara->interact_target.is_moving)
             || (lara->interact_target.is_moving
                 && lara->interact_target.item_num == item_num)) {
@@ -154,8 +155,8 @@ static void M_CollisionControlled(
             if (Lara_TestPosition(item, obj->bounds_func())) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
                 if (Lara_MovePosition(item, &m_PickUpPosition)) {
-                    Item_SwitchToAnim(lara_item, LA_PICKUP, 0);
-                    lara_item->current_anim_state = LS_PICKUP;
+                    Item_SwitchToAnim(lara_item, LA(LA_PICKUP), 0);
+                    lara_item->current_anim_state = LS(LS_PICKUP);
                     have_item = true;
                 }
                 lara->interact_target.item_num = item_num;
@@ -176,7 +177,7 @@ static void M_CollisionControlled(
             }
         } else if (
             lara->interact_target.item_num == item_num
-            && lara_item->current_anim_state == LS_PICKUP) {
+            && lara_item->current_anim_state == LS(LS_PICKUP)) {
             if (Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
                 M_GetAllAtLaraPos(item, lara_item);
                 lara->interact_target.item_num = NO_ITEM;
@@ -187,7 +188,7 @@ static void M_CollisionControlled(
         || lara->water_status == LWS_CHEAT) {
         item->rot.x = -25 * DEG_1;
 
-        if ((g_Input.action && lara_item->current_anim_state == LS_TREAD
+        if ((g_Input.action && lara_item->current_anim_state == LS(LS_TREAD)
              && lara->gun_status == LGS_ARMLESS
              && !lara->interact_target.is_moving)
             || (lara->interact_target.is_moving
@@ -195,10 +196,10 @@ static void M_CollisionControlled(
 
             if (Lara_TestPosition(item, obj->bounds_func())) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
-                    Item_SwitchToAnim(lara_item, LA_UNDERWATER_PICKUP, 0);
-                    lara_item->current_anim_state = LS_PICKUP;
+                    Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_PICKUP), 0);
+                    lara_item->current_anim_state = LS(LS_PICKUP);
 
-                    lara_item->goal_anim_state = LS_TREAD;
+                    lara_item->goal_anim_state = LS(LS_TREAD);
                     lara->interact_target.is_moving = false;
                     lara->gun_status = LGS_HANDS_BUSY;
                 }
@@ -212,7 +213,7 @@ static void M_CollisionControlled(
             }
         } else if (
             lara->interact_target.item_num == item_num
-            && lara_item->current_anim_state == LS_PICKUP
+            && lara_item->current_anim_state == LS(LS_PICKUP)
             && Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
             M_GetAllAtLaraPos(item, lara_item);
             lara->gun_status = LGS_ARMLESS;
@@ -249,7 +250,7 @@ static void M_Collision(
             goto cleanup;
         }
 
-        if (lara_item->current_anim_state == LS_PICKUP) {
+        if (lara_item->current_anim_state == LS(LS_PICKUP)) {
             if (!Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
                 goto cleanup;
             }
@@ -259,10 +260,10 @@ static void M_Collision(
 
         if (g_Input.action && lara->gun_status == LGS_ARMLESS
             && !lara_item->gravity
-            && lara_item->current_anim_state == LS_STOP) {
+            && lara_item->current_anim_state == LS(LS_STOP)) {
             Lara_AlignPosition(item, &m_PickUpPosition);
-            Lara_AnimateUntil(lara_item, LS_PICKUP);
-            lara_item->goal_anim_state = LS_STOP;
+            Lara_AnimateUntil(lara_item, LS(LS_PICKUP));
+            lara_item->goal_anim_state = LS(LS_STOP);
             lara->gun_status = LGS_HANDS_BUSY;
             goto cleanup;
         }
@@ -274,7 +275,7 @@ static void M_Collision(
             goto cleanup;
         }
 
-        if (lara_item->current_anim_state == LS_PICKUP) {
+        if (lara_item->current_anim_state == LS(LS_PICKUP)) {
             if (!Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
                 goto cleanup;
             }
@@ -282,12 +283,12 @@ static void M_Collision(
             goto cleanup;
         }
 
-        if (g_Input.action && lara_item->current_anim_state == LS_TREAD) {
+        if (g_Input.action && lara_item->current_anim_state == LS(LS_TREAD)) {
             if (!Lara_MovePosition(item, &m_PickUpPositionUW)) {
                 goto cleanup;
             }
-            Lara_AnimateUntil(lara_item, LS_PICKUP);
-            lara_item->goal_anim_state = LS_TREAD;
+            Lara_AnimateUntil(lara_item, LS(LS_PICKUP));
+            lara_item->goal_anim_state = LS(LS_TREAD);
         }
     }
 

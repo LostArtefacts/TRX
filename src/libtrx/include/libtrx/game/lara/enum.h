@@ -1,5 +1,29 @@
 #pragma once
 
+typedef enum {
+    LS_INVALID = -1,
+} LARA_STATE;
+
+typedef enum {
+    LS_TRX_INVALID = -1,
+#define X_CATALOG_ID(uuid_str, enum_value) enum_value,
+#include "../catalog_lara_states.def"
+#undef X_CATALOG_ID
+    LS_NUMBER_OF,
+} LARA_TRX_STATE;
+
+typedef enum {
+    LA_INVALID = -1,
+} LARA_ANIMATION;
+
+typedef enum {
+    LA_TRX_INVALID = -1,
+#define X_CATALOG_ID(uuid_str, enum_value) enum_value,
+#include "../catalog_lara_anims.def"
+#undef X_CATALOG_ID
+    LA_NUMBER_OF,
+} LARA_TRX_ANIMATION;
+
 // clang-format off
 typedef enum {
     LWS_ABOVE_WATER  = 0,
@@ -38,22 +62,6 @@ typedef enum {
     LM_NUMBER_OF = 15,
 } LARA_MESH;
 // clang-format on
-
-#define X_ENUM_SELECT(game1_id, game2_id)                                      \
-    ((TR_VERSION == 1) ? game1_id : game2_id)
-#define X_ENUM_DEFINE(enum_value, game1_id, game2_id)                          \
-    enum_value = X_ENUM_SELECT(game1_id, game2_id),
-
-typedef enum {
-#include "./enum_state.def"
-} LARA_STATE;
-
-typedef enum {
-#include "./enum_anim.def"
-} LARA_ANIMATION;
-
-#undef X_ENUM_DEFINE
-#undef X_ENUM_SELECT
 
 // clang-format off
 typedef enum {

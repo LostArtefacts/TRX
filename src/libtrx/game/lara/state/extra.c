@@ -139,9 +139,9 @@ static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Breath(ITEM *const item, COLL_INFO *const coll)
 {
-    Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
-    item->goal_anim_state = LS_STOP;
-    item->current_anim_state = LS_STOP;
+    Item_SwitchToAnim(item, LA(LA_STAND_IDLE), 0);
+    item->goal_anim_state = LS(LS_STOP);
+    item->current_anim_state = LS(LS_STOP);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->extra_anim = false;
     lara->gun_status = LGS_ARMLESS;
