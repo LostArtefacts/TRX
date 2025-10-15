@@ -1,11 +1,10 @@
 #include "game/effects.h"
 #include "game/lara.h"
-
-#include <libtrx/game/math.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
+#include "game/math.h"
+#include "game/random.h"
+#include "game/rooms.h"
+#include "game/sound.h"
+#include "utils.h"
 
 #define SHARD_DAMAGE 30
 #define ROCKET_DAMAGE 100

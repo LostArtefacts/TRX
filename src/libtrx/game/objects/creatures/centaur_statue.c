@@ -1,9 +1,9 @@
+#include "debug.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
-
-#include <libtrx/debug.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
+#include "game/pathing.h"
+#include "game/sound.h"
+#include "utils.h"
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
 #define CENTAUR_REARING_ANIM 7

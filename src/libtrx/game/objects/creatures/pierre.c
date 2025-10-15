@@ -1,14 +1,13 @@
+#include "config.h"
+#include "game/camera.h"
 #include "game/creature.h"
 #include "game/los.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/utils.h>
+#include "game/music.h"
+#include "game/objects.h"
+#include "game/pathing.h"
+#include "game/random.h"
+#include "game/rooms.h"
+#include "utils.h"
 
 #define PIERRE_POSE_CHANCE 0x60 // = 96
 #define PIERRE_SHOT_DAMAGE 50
@@ -190,11 +189,9 @@ static void M_Control(const int16_t item_num)
         case PIERRE_STATE_SHOOT:
             if (!item->required_anim_state) {
                 Creature_ShootAtLara(
-                    item, info.distance, &m_PierreGun1, head,
-                    PIERRE_SHOT_DAMAGE / 2);
+                    item, &info, &m_PierreGun1, head, PIERRE_SHOT_DAMAGE / 2);
                 Creature_ShootAtLara(
-                    item, info.distance, &m_PierreGun2, head,
-                    PIERRE_SHOT_DAMAGE / 2);
+                    item, &info, &m_PierreGun2, head, PIERRE_SHOT_DAMAGE / 2);
                 item->required_anim_state = PIERRE_STATE_AIM;
             }
             if (pierre->mood == MOOD_ESCAPE

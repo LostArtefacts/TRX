@@ -1,9 +1,11 @@
 #include "game/creature.h"
 #include "game/effects.h"
+#include "game/music.h"
+#include "game/objects.h"
+#include "game/pathing.h"
+#include "game/savegame.h"
 #include "game/spawn.h"
-
-#include <libtrx/game/music.h>
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define COWBOY_SHOT_DAMAGE 70
 #define COWBOY_WALK_TURN (DEG_1 * 3) // = 546
@@ -127,13 +129,11 @@ static void M_Control(const int16_t item_num)
         case COWBOY_STATE_SHOOT:
             if (!cowboy->flags) {
                 Creature_ShootAtLara(
-                    item, info.distance, &m_CowboyGun1, head,
-                    COWBOY_SHOT_DAMAGE);
+                    item, &info, &m_CowboyGun1, head, COWBOY_SHOT_DAMAGE);
             } else if (cowboy->flags == 6) {
                 if (Creature_CanTargetEnemy(item, &info)) {
                     Creature_ShootAtLara(
-                        item, info.distance, &m_CowboyGun2, head,
-                        COWBOY_SHOT_DAMAGE);
+                        item, &info, &m_CowboyGun2, head, COWBOY_SHOT_DAMAGE);
                 } else {
                     int16_t effect_num =
                         Creature_Effect(item, &m_CowboyGun2, Spawn_GunShot);

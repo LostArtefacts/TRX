@@ -1,8 +1,9 @@
 #include "game/lara.h"
-#include "game/spawn.h"
 
 #include <libtrx/game/random.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
+#include <libtrx/game/spawn.h>
 #include <libtrx/utils.h>
 
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)

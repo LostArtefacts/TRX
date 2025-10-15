@@ -1,10 +1,10 @@
 #include "game/creature.h"
+#include "game/music.h"
 #include "game/objects/common.h"
-
-#include <libtrx/game/music.h>
-#include <libtrx/game/random.h>
-#include <libtrx/log.h>
-#include <libtrx/utils.h>
+#include "game/pathing.h"
+#include "game/random.h"
+#include "log.h"
+#include "utils.h"
 
 #define SKATE_KID_STOP_SHOT_DAMAGE 50
 #define SKATE_KID_SKATE_SHOT_DAMAGE 40
@@ -114,13 +114,13 @@ static void M_Control(const int16_t item_num)
         case SKATE_KID_STATE_SHOOT_2:
             if (!kid->flags && Creature_CanTargetEnemy(item, &info)) {
                 Creature_ShootAtLara(
-                    item, info.distance, &m_KidGun1, head,
+                    item, &info, &m_KidGun1, head,
                     item->current_anim_state == SKATE_KID_STATE_SHOOT_1
                         ? SKATE_KID_STOP_SHOT_DAMAGE
                         : SKATE_KID_SKATE_SHOT_DAMAGE);
 
                 Creature_ShootAtLara(
-                    item, info.distance, &m_KidGun2, head,
+                    item, &info, &m_KidGun2, head,
                     item->current_anim_state == SKATE_KID_STATE_SHOOT_1
                         ? SKATE_KID_STOP_SHOT_DAMAGE
                         : SKATE_KID_SKATE_SHOT_DAMAGE);

@@ -1,11 +1,11 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/lara.h"
+#include "game/pathing.h"
+#include "game/random.h"
+#include "game/sound.h"
 #include "game/spawn.h"
-
-#include <libtrx/game/random.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
+#include "utils.h"
 
 #define CENTAUR_PART_DAMAGE 100
 #define CENTAUR_REAR_DAMAGE 200

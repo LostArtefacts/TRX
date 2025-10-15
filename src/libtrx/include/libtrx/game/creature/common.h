@@ -42,3 +42,7 @@ int16_t Creature_Effect(
     int16_t (*spawn)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
         int16_t room_num));
+
+bool Creature_ShootAtLara(
+    ITEM *item, const AI_INFO *info, const BITE *gun, int16_t extra_rotation,
+    int32_t damage);

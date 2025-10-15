@@ -1,10 +1,10 @@
+#include "game/const.h"
 #include "game/creature.h"
-
-#include <libtrx/game/const.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/utils.h>
+#include "game/music.h"
+#include "game/objects.h"
+#include "game/pathing.h"
+#include "game/spawn.h"
+#include "utils.h"
 
 #define BALDY_SHOT_DAMAGE 150
 #define BALDY_WALK_TURN (DEG_1 * 3) // = 546
@@ -132,9 +132,9 @@ static void M_Control(const int16_t item_num)
 
         case BALDY_STATE_SHOOT:
             if (!baldy->flags) {
+                info.distance /= 2;
                 Creature_ShootAtLara(
-                    item, info.distance / 2, &m_BaldyGun, head,
-                    BALDY_SHOT_DAMAGE);
+                    item, &info, &m_BaldyGun, head, BALDY_SHOT_DAMAGE);
                 baldy->flags = 1;
             }
             if (baldy->mood == MOOD_ESCAPE) {
