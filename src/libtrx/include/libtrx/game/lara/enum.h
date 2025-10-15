@@ -468,6 +468,13 @@ typedef enum {
 typedef enum {
     LS_EXTRA_BREATH      = 0,
 #if TR_VERSION == 1
+    // TODO: refactor extra animations. Use catalog?
+    LS_EXTRA_PLUNGER     = -1,
+    LS_EXTRA_GONG_BONG   = -1,
+    LS_EXTRA_YETI_KILL   = -1,
+    LS_EXTRA_PULL_DAGGER = -1,
+    LS_EXTRA_SHARK_KILL  = -1,
+    LS_EXTRA_FINAL_ANIM  = -1,
     LS_EXTRA_TREX_KILL   = 1,
 #elif TR_VERSION == 2
     LS_EXTRA_PLUNGER     = 1,
@@ -493,13 +500,11 @@ typedef enum {
     LGT_MAGNUMS = 2,
     LGT_UZIS    = 3,
     LGT_SHOTGUN = 4,
-#if TR_VERSION >= 2
     LGT_M16     = 5,
     LGT_GRENADE = 6,
     LGT_HARPOON = 7,
     LGT_FLARE   = 8,
     LGT_SKIDOO  = 9,
-#endif
     NUM_WEAPONS,
 } LARA_GUN_TYPE;
 // clang-format on

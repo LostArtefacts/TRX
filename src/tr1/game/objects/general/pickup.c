@@ -360,7 +360,7 @@ static void M_Control(int16_t item_num)
     item->priv = (void *)(intptr_t)(int32_t)timer;
 }
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+const OBJECT_BOUNDS *Pickup_Bounds(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->water_status == LWS_UNDERWATER
@@ -378,7 +378,7 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Object_DrawPickupItem;
     obj->collision_func = M_Collision;
     obj->save_flags = true;
-    obj->bounds_func = M_Bounds;
+    obj->bounds_func = Pickup_Bounds;
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->activate_func = M_Activate;

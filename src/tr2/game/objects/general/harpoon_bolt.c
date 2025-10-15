@@ -1,12 +1,11 @@
-#include "game/gun/gun_misc.h"
-#include "game/objects/general/window.h"
-#include "game/spawn.h"
-#include "game/stats.h"
-
+#include <libtrx/game/gun/misc.h>
 #include <libtrx/game/gun/vars.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/rooms.h>
+#include <libtrx/game/spawn.h>
+#include <libtrx/game/stats.h>
 
 static void M_Control(const int16_t item_num)
 {

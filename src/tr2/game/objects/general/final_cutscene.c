@@ -1,7 +1,7 @@
+#include "game/game.h"
 #include "game/objects/general/combat_end.h"
 
 #include <libtrx/game/const.h>
-#include <libtrx/game/game.h>
 #include <libtrx/game/objects.h>
 
 #define M_CUTSCENE_DURATION (11.5 * LOGIC_FPS)

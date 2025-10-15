@@ -1,6 +1,5 @@
 #include "game/item_actions.h"
 
-#include "game/spawn.h"
 #include "game/stats.h"
 
 #include <libtrx/game/camera.h>
@@ -10,6 +9,7 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
+#include <libtrx/game/spawn.h>
 #include <libtrx/game/viewport.h>
 #include <libtrx/utils.h>
 

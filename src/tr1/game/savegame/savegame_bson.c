@@ -13,6 +13,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/general/lift.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
@@ -20,6 +21,7 @@
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 #include <libtrx/utils.h>
 #include <libtrx/version.h>
 
@@ -666,7 +668,7 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
 
         JSON_ARRAY *carried_items =
             JSON_ObjectGetArray(item_obj, "carried_items");
-        if (carried_items) {
+        if (carried_items != nullptr) {
             CARRIED_ITEM *carried_item = item->carried_item;
             for (int j = 0; j < (signed)carried_items->length; j++) {
                 if (!carried_item) {
@@ -708,6 +710,35 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
             Carrier_TestItemDrops(i);
         } else if (header_version < VERSION_4) {
             Carrier_TestLegacyDrops(i);
+        }
+
+        switch (item->object_id) {
+        case O_LIFT: {
+            JSON_OBJECT *const data_obj =
+                JSON_ObjectGetObject(item_obj, "data");
+            if (data_obj == nullptr) {
+                LOG_ERROR("Malformed save: missing lift data for item %d", i);
+                return false;
+            }
+            LIFT_INFO *const data = (LIFT_INFO *)item->data;
+            data->start_height =
+                JSON_ObjectGetInt(data_obj, "start_height", data->start_height);
+            data->wait_time =
+                JSON_ObjectGetInt(data_obj, "wait_time", data->wait_time);
+            if (header_version >= VERSION_12) {
+                data->is_moving =
+                    JSON_ObjectGetBool(data_obj, "is_moving", data->is_moving);
+                for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
+                    const char *const pos_key =
+                        String_FormatStatic("linked_%d", j);
+                    LOAD_XYZ(data_obj, pos_key, data->linked[j]);
+                }
+            }
+            break;
+        }
+
+        default:
+            break;
         }
     }
 
@@ -1282,6 +1313,25 @@ static JSON_ARRAY *M_DumpItems(void)
         }
 
         JSON_ObjectAppendArray(item_obj, "carried_items", carried_items_arr);
+
+        switch (item->object_id) {
+        case O_LIFT: {
+            LIFT_INFO *const data = (LIFT_INFO *)item->data;
+            JSON_OBJECT *const data_obj = JSON_ObjectNew();
+            JSON_ObjectAppendInt(data_obj, "start_height", data->start_height);
+            JSON_ObjectAppendInt(data_obj, "wait_time", data->wait_time);
+            JSON_ObjectAppendBool(data_obj, "is_moving", data->is_moving);
+            for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
+                const char *const pos_key = String_FormatStatic("linked_%d", j);
+                DUMP_XYZ(data_obj, pos_key, data->linked[j]);
+            }
+            JSON_ObjectAppendObject(item_obj, "data", data_obj);
+            break;
+        }
+
+        default:
+            break;
+        }
 
         JSON_ArrayAppendObject(items_arr, item_obj);
     }

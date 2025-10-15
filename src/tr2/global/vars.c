@@ -1,7 +1,5 @@
 #include "global/vars.h"
 
-#include "game/spawn.h"
-
 #ifndef MESON_BUILD
 const char *g_TRXVersion = "TR2X (non-Docker build)";
 #endif
