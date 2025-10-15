@@ -2,6 +2,7 @@
 #include "game/lara.h"
 #include "game/rooms.h"
 #include "game/sound.h"
+#include "version.h"
 
 static void M_Control(const int16_t effect_num)
 {
@@ -58,9 +59,9 @@ static void M_Control(const int16_t effect_num)
     }
 
     const int16_t counter_value =
-        (TR_VERSION == 1) ? ABS(effect->counter) : effect->counter;
+        (g_TRVersion == 1) ? ABS(effect->counter) : effect->counter;
     const bool trigger_explosion =
-        (TR_VERSION == 1) ? (effect->counter > 0) : (effect->counter == 0);
+        (g_TRVersion == 1) ? (effect->counter > 0) : (effect->counter == 0);
 
     if (Lara_IsNearItem(&effect->pos, counter_value * 2)) {
         Lara_TakeDamage(counter_value, true);

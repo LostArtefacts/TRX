@@ -3,14 +3,15 @@
 #include "game/objects/traps/movable_block.h"
 #include "game/rooms.h"
 #include "vector.h"
+#include "version.h"
 
 static int32_t M_GetOrigin(const OBJECT_ID obj_id)
 {
-#if TR_VERSION == 1
-    return -STEP_L * 2;
-#else
-    return obj_id == O_FALLING_BLOCK_3 ? -WALL_L : -STEP_L * 2;
-#endif
+    if (g_TRVersion == 1) {
+        return -STEP_L * 2;
+    } else {
+        return obj_id == O_FALLING_BLOCK_3 ? -WALL_L : -STEP_L * 2;
+    }
 }
 
 static void M_DropStack(const ITEM *const item)

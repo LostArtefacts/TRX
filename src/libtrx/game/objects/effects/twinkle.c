@@ -7,6 +7,7 @@
 #include "game/random.h"
 #include "game/spawn.h"
 #include "utils.h"
+#include "version.h"
 
 #define M_DISAPPEAR_RANGE STEP_L
 
@@ -60,36 +61,36 @@ static void M_Control(const int16_t effect_num)
     EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
 
-#if TR_VERSION == 1
-    effect->counter++;
-    if (effect->counter == 1) {
-        effect->counter = 0;
+    if (g_TRVersion == 1) {
+        effect->counter++;
+        if (effect->counter == 1) {
+            effect->counter = 0;
+            effect->frame_num--;
+            if (effect->frame_num <= obj->mesh_count) {
+                Effect_Kill(effect_num);
+            }
+        }
+    } else {
         effect->frame_num--;
         if (effect->frame_num <= obj->mesh_count) {
+            effect->frame_num = 0;
+        }
+
+        if (effect->counter < 0) {
+            effect->counter++;
+            if (effect->counter == 0) {
+                Effect_Kill(effect_num);
+            }
+            return;
+        }
+
+        const ITEM *const item = Item_Get(effect->counter);
+        const XYZ_32 target_pos = M_GetTargetPos(item);
+        M_NudgeTowardsItem(effect, &target_pos);
+        if (M_ShouldDisappear(effect, &target_pos)) {
             Effect_Kill(effect_num);
         }
     }
-#else
-    effect->frame_num--;
-    if (effect->frame_num <= obj->mesh_count) {
-        effect->frame_num = 0;
-    }
-
-    if (effect->counter < 0) {
-        effect->counter++;
-        if (effect->counter == 0) {
-            Effect_Kill(effect_num);
-        }
-        return;
-    }
-
-    const ITEM *const item = Item_Get(effect->counter);
-    const XYZ_32 target_pos = M_GetTargetPos(item);
-    M_NudgeTowardsItem(effect, &target_pos);
-    if (M_ShouldDisappear(effect, &target_pos)) {
-        Effect_Kill(effect_num);
-    }
-#endif
 }
 
 static void M_Setup(OBJECT *const obj)

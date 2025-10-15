@@ -3,6 +3,7 @@
 #include "game/output.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "version.h"
 
 #define M_RANGE (WALL_L * 10) // = 10240
 
@@ -15,7 +16,7 @@ static void M_Control(const int16_t item_num)
 
     const ITEM *const lara_item = Lara_GetItem();
     Output_CalculateLight(item->pos, item->room_num);
-    if (TR_VERSION == 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
+    if (g_TRVersion == 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
         Sound_Effect(SFX_WATERFALL_LOOP, &item->pos, SPM_NORMAL);
     }
 

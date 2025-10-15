@@ -5,6 +5,7 @@
 #include "game/random.h"
 #include "game/spawn.h"
 #include "utils.h"
+#include "version.h"
 
 // clang-format off
 #define BEAR_CHARGE_DAMAGE 3
@@ -22,11 +23,7 @@
 #define BEAR_RUN_TURN      (5 * DEG_1) // = 910
 #define BEAR_WALK_TURN     (2 * DEG_1) // = 364
 #define BEAR_EAT_RANGE     SQUARE(WALL_L * 3 / 4) // = 589824
-#if TR_VERSION == 1
-#define BEAR_HITPOINTS     20
-#else
-#define BEAR_HITPOINTS     30
-#endif
+#define BEAR_HITPOINTS     (g_TRVersion == 1 ? 20 : 30)
 #define BEAR_RADIUS        (WALL_L / 3) // = 341
 #define BEAR_SMARTNESS     0x4000
 // clang-format on

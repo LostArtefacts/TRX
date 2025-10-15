@@ -1,6 +1,7 @@
 #include "game/effects.h"
 #include "game/objects.h"
 #include "game/sound.h"
+#include "version.h"
 
 static void M_Control(const int16_t item_num)
 {
@@ -11,7 +12,7 @@ static void M_Control(const int16_t item_num)
             const int32_t flame_num = ((int32_t)(intptr_t)item->data) - 1;
             Effect_Kill(flame_num);
             item->data = nullptr;
-            if (TR_VERSION == 1) {
+            if (g_TRVersion == 1) {
                 Sound_StopEffect(SFX_LOOP_FOR_SMALL_FIRES);
             }
         }

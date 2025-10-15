@@ -2,6 +2,7 @@
 #include "game/effects.h"
 #include "game/objects.h"
 #include "game/sound.h"
+#include "version.h"
 
 typedef enum {
     // clang-format off
@@ -48,7 +49,7 @@ static void M_CreateDart(ITEM *const item)
     Item_AddActive(dart_item_num);
     dart_item->status = IS_ACTIVE;
 
-    if (TR_VERSION == 1) {
+    if (g_TRVersion == 1) {
         const int16_t effect_num = Effect_Create(dart_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);

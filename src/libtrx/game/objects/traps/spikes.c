@@ -2,8 +2,9 @@
 #include "game/lara.h"
 #include "game/random.h"
 #include "game/spawn.h"
+#include "version.h"
 
-#define M_FALL_SPEED_LIMIT (TR_VERSION == 1 ? 0 : GRAVITY)
+#define M_FALL_SPEED_LIMIT (g_TRVersion == 1 ? 0 : GRAVITY)
 #define M_DAMAGE 15
 
 static void M_Collision(
