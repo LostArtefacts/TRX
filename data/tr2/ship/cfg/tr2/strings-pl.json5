@@ -1066,10 +1066,6 @@
         }
     },
     "game_strings": {
-        "CMD_WINSTON_DEAD": "Twój lokaj jest martwy. Ty potworze!",
-        "CMD_WINSTON_SPAWNED": "Przywołano Winstona w pobliżu Lary",
-        "CMD_WINSTON_SPAWN_FAILED": "Nie udało się przywołać Winstona",
-        "CMD_WINSTON_TELEPORTED": "Przywołano Winstona w pobliżu Lary",
         "ENUM_INPUT_ROLE_CAMERA_RESET": "Reset kamery",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Wyposaż wyrzutnię granatów",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Wyposaż wyrzutnię harpunów",

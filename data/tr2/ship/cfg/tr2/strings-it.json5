@@ -1093,10 +1093,6 @@
         }
     },
     "game_strings": {
-        "CMD_WINSTON_DEAD": "Il tuo maggiordomo è morto. Sei un mostro!",
-        "CMD_WINSTON_SPAWNED": "Winston è stato convocato vicino a Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Impossibile convocare Winston",
-        "CMD_WINSTON_TELEPORTED": "Winston è stato teletrasportato vicino a Lara",
         "ENUM_INPUT_ROLE_CAMERA_RESET": "Ripristina Telecamera",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equipaggia Lanciagranate",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",

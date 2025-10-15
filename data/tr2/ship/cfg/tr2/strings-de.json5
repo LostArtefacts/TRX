@@ -1099,10 +1099,6 @@
         }
     },
     "game_strings": {
-        "CMD_WINSTON_DEAD": "Der Butler ist tot. Du Monster!",
-        "CMD_WINSTON_SPAWNED": "Winston herbeigerufen, nahe Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Herbeirufen von Winston fehlgeschlagen",
-        "CMD_WINSTON_TELEPORTED": "Winston herbeigerufen, nahe Lara",
         "ENUM_INPUT_ROLE_CAMERA_RESET": "Kamera zurücksetzen",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",

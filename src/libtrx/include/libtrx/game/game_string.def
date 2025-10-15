@@ -630,6 +630,11 @@ GS_DEFINE(CMD_IMMUNE_SWITCHED_OFF, "Lara is now vulnerable")
 GS_DEFINE(CMD_INF_SPRINT_SWITCHED_ON,  "Lara can now sprint forever")
 GS_DEFINE(CMD_INF_SPRINT_SWITCHED_OFF, "Lara can no longer sprint forever")
 
+GS_DEFINE(CMD_WINSTON_SPAWNED,      "Summoned Winston near Lara")
+GS_DEFINE(CMD_WINSTON_SPAWN_FAILED, "Failed to summon Winston")
+GS_DEFINE(CMD_WINSTON_TELEPORTED,   "Summoned Winston near Lara")
+GS_DEFINE(CMD_WINSTON_DEAD,         "Your butler is dead. You monster!")
+
 GS_DEFINE(CONSOLE_CMD_HELP_LIST,      "Available commands:")
 GS_DEFINE(CONSOLE_HELP_BRAID,         "Toggles Lara's braid.")
 GS_DEFINE(CONSOLE_HELP_CHEATS,        "Toggles in-game cheats on or off.")

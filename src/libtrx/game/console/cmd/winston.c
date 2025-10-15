@@ -1,17 +1,17 @@
-#include <libtrx/game/console/common.h>
-#include <libtrx/game/console/registry.h>
-#include <libtrx/game/const.h>
-#include <libtrx/game/creature.h>
-#include <libtrx/game/game.h>
-#include <libtrx/game/game_string.h>
-#include <libtrx/game/items.h>
-#include <libtrx/game/lara/common.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects/vars.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/memory.h>
-#include <libtrx/strings.h>
+#include "game/console/common.h"
+#include "game/console/registry.h"
+#include "game/const.h"
+#include "game/creature.h"
+#include "game/game.h"
+#include "game/game_string.h"
+#include "game/items.h"
+#include "game/lara/common.h"
+#include "game/music.h"
+#include "game/objects/vars.h"
+#include "game/pathing.h"
+#include "game/rooms.h"
+#include "memory.h"
+#include "strings.h"
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
 {
