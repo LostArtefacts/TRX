@@ -10,6 +10,7 @@
 - changed the bar appearance labels to better align with expectations (#4025)
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
+- fixed ambient music not playing in demo levels (#4046, regression from 4.13)
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
