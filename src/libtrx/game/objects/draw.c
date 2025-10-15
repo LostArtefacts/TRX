@@ -1,5 +1,6 @@
 #include "game/objects/draw.h"
 
+#include "config.h"
 #include "debug.h"
 #include "game/matrix.h"
 #include "game/objects/common.h"
@@ -85,6 +86,9 @@ void Object_DrawAnimatingItem(const ITEM *item)
 
     Object_DrawInterpolatedObject(
         obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate);
+    if (g_Config.debug.enable_debug_cuboids) {
+        Output_DrawCuboid(&frames[0]->bounds);
+    }
     Matrix_Pop();
 }
 

@@ -151,11 +151,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const CLIP clip)
 {
     OutputSource_Objects_StageObjectMesh(mesh);
     if (g_Config.debug.enable_debug_spheres) {
-        Matrix_Push();
-        Matrix_TranslateRel16(mesh->center);
-        Matrix_Scale(mesh->radius << W2V_SHIFT);
-        OutputSource_Misc_StageSphere();
-        Matrix_Pop();
+        Output_DrawSphere(mesh->center, mesh->radius);
     }
 }
 
@@ -417,4 +413,36 @@ void Output_DrawScreenFrame(
     M_DrawScreenQuad(x0 - e, y1,     x1 + e, y1 + e, 0, cd, cd, cd, cd);
     M_DrawScreenQuad(x0 - e, y1 - e, x1,     y1,     0, cl, cl, cl, cl);
     // clang-format on
+}
+
+void Output_DrawSphere(const XYZ_16 center, const int32_t radius)
+{
+    Matrix_Push();
+    Matrix_TranslateRel16(center);
+    Matrix_Scale(radius << W2V_SHIFT);
+    OutputSource_Misc_StageSphere();
+    Matrix_Pop();
+}
+
+void Output_DrawCuboid(const BOUNDS_16 *const bounds)
+{
+    const int32_t x0 = bounds->min.x;
+    const int32_t x1 = bounds->max.x;
+    const int32_t y0 = bounds->min.y;
+    const int32_t y1 = bounds->max.y;
+    const int32_t z0 = bounds->min.z;
+    const int32_t z1 = bounds->max.z;
+    const int32_t x_mid = (x0 + x1) / 2;
+    const int32_t y_mid = (y0 + y1) / 2;
+    const int32_t z_mid = (z0 + z1) / 2;
+    const int32_t x_size = (x1 - x0) / 2;
+    const int32_t y_size = (y1 - y0) / 2;
+    const int32_t z_size = (z1 - z0) / 2;
+    Matrix_Push();
+    Matrix_TranslateRel32((XYZ_32) { x_mid, y_mid, z_mid });
+    Matrix_ScaleX(x_size << W2V_SHIFT);
+    Matrix_ScaleY(y_size << W2V_SHIFT);
+    Matrix_ScaleZ(z_size << W2V_SHIFT);
+    OutputSource_Misc_StageCuboid();
+    Matrix_Pop();
 }
