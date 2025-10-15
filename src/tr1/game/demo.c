@@ -146,6 +146,10 @@ bool Demo_Start(const int32_t level_num)
         return false;
     }
 
+    if (p->level->music_track != MX_INACTIVE) {
+        Music_Play_Direct(p->level->music_track, MPM_LOOPED);
+    }
+
     g_OverlayFlag = 1;
     Camera_Initialise();
     p->demo_ptr = data;
