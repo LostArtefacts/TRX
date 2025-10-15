@@ -43,3 +43,6 @@ void Output_DrawScreenGradientBox(
 void Output_DrawScreenCentreGradientBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
     RGBA_8888 center_h, RGBA_8888 center_v, float thickness);
+
+void Output_DrawSphere(XYZ_16 center, int32_t radius);
+void Output_DrawCuboid(const BOUNDS_16 *bounds);

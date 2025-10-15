@@ -11,6 +11,7 @@ static bool *const m_AllOptions[] = {
     &g_Config.debug.enable_debug_room_clip,
     &g_Config.debug.enable_debug_triggers,
     &g_Config.debug.enable_debug_spheres,
+    &g_Config.debug.enable_debug_cuboids,
     &g_Config.debug.enable_debug_pos,
     nullptr,
 };
