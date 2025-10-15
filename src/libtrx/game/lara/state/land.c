@@ -77,7 +77,7 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
@@ -92,40 +92,40 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Input.forward) {
         if (lara->water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
+            item->goal_anim_state = LS(LS_WADE);
         } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
+            item->goal_anim_state = LS(LS_WALK);
         } else {
             if (g_Config.gameplay.fix_walk_run_jump) {
                 m_JumpPermitted = true;
             }
-            item->goal_anim_state = LS_RUN;
+            item->goal_anim_state = LS(LS_RUN);
         }
     } else {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 }
 
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_DEATH;
+        item->goal_anim_state = LS(LS_DEATH);
         return;
     }
 
     if (g_Input.roll) {
-        item->current_anim_state = LS_ROLL;
-        item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
+        item->current_anim_state = LS(LS_ROLL);
+        item->goal_anim_state = LS(LS_STOP);
+        Item_SwitchToAnim(item, LA(LA_ROLL_START), M_LF_ROLL);
         return;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.sprint && g_Config.gameplay.enable_sprint
-        && item->current_anim_state == LS_RUN && lara->sprint_timer > 0
+        && item->current_anim_state == LS(LS_RUN) && lara->sprint_timer > 0
         && (g_Config.gameplay.enable_responsive_sprint
             || lara->sprint_timer == LARA_MAX_SPRINT)) {
-        item->goal_anim_state = LS_SPRINT;
+        item->goal_anim_state = LS(LS_SPRINT);
         return;
     }
 
@@ -150,10 +150,10 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     if (responsive_jumping) {
         const int16_t unlock_frame =
             m_JumpLockFrames[g_Config.gameplay.jump_lock_mode];
-        if (Item_TestAnimEqual(item, LA_RUN_START)) {
+        if (Item_TestAnimEqual(item, LA(LA_RUN_START))) {
             m_JumpPermitted = false;
         } else if (
-            !Item_TestAnimEqual(item, LA_RUN)
+            !Item_TestAnimEqual(item, LA(LA_RUN))
             || Item_TestFrameEqual(item, unlock_frame)) {
             m_JumpPermitted = true;
         }
@@ -164,27 +164,27 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.jump && m_JumpPermitted && !item->gravity) {
 #if TR_VERSION == 1
         item->goal_anim_state =
-            responsive_jumping ? LS_RESPONSIVE : LS_JUMP_FORWARD;
+            LS(responsive_jumping ? LS_RESPONSIVE : LS_JUMP_FORWARD);
 #else
-        item->goal_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS(LS_JUMP_FORWARD);
 #endif
     } else if (g_Input.forward) {
         if (lara->water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
+            item->goal_anim_state = LS(LS_WADE);
         } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
+            item->goal_anim_state = LS(LS_WALK);
         } else {
-            item->goal_anim_state = LS_RUN;
+            item->goal_anim_state = LS(LS_RUN);
         }
     } else {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 }
 
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
@@ -204,27 +204,27 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Input.forward) {
         if (lara->water_status != LWS_ABOVE_WATER) {
-            item->goal_anim_state = LS_WADE;
+            item->goal_anim_state = LS(LS_WADE);
         } else {
-            item->goal_anim_state = LS_RUN;
+            item->goal_anim_state = LS(LS_RUN);
         }
     } else {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 }
 
 static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.back && (g_Input.slow || lara->water_status == LWS_WADE)) {
-        item->goal_anim_state = LS_WALK_BACK;
+        item->goal_anim_state = LS(LS_WALK_BACK);
     } else {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 
     if (g_Input.left) {
@@ -239,7 +239,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_DEATH;
+        item->goal_anim_state = LS(LS_DEATH);
         return;
     }
 
@@ -250,20 +250,20 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Input.roll && lara->water_status != LWS_WADE) {
         if (g_Input.jump && g_Config.gameplay.enable_neutral_twists
-            && Item_TestAnimEqual(item, LA_STAND_IDLE)
+            && Item_TestAnimEqual(item, LA(LA_STAND_IDLE))
             && Lara_State_IsResponsive(LA_STAND_TO_JUMP)) {
-            item->current_anim_state = LS_NEUTRAL_ROLL;
-            item->goal_anim_state = LS_STOP;
-            Item_SwitchToAnim(item, LA_JUMP_NEUTRAL_ROLL, 0);
+            item->current_anim_state = LS(LS_NEUTRAL_ROLL);
+            item->goal_anim_state = LS(LS_STOP);
+            Item_SwitchToAnim(item, LA(LA_JUMP_NEUTRAL_ROLL), 0);
         } else if (!g_Input.jump || !g_Config.gameplay.enable_neutral_twists) {
-            item->current_anim_state = LS_ROLL;
-            item->goal_anim_state = LS_STOP;
-            Item_SwitchToAnim(item, LA_ROLL_START, M_LF_ROLL);
+            item->current_anim_state = LS(LS_ROLL);
+            item->goal_anim_state = LS(LS_STOP);
+            Item_SwitchToAnim(item, LA(LA_ROLL_START), M_LF_ROLL);
         }
         return;
     }
 
-    item->goal_anim_state = LS_STOP;
+    item->goal_anim_state = LS(LS_STOP);
     if (g_Input.look) {
         Lara_Look_UpDown();
         if (g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED) {
@@ -273,18 +273,18 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.step_left) {
-        item->goal_anim_state = LS_STEP_LEFT;
+        item->goal_anim_state = LS(LS_STEP_LEFT);
     } else if (g_Input.step_right) {
-        item->goal_anim_state = LS_STEP_RIGHT;
+        item->goal_anim_state = LS(LS_STEP_RIGHT);
     } else if (g_Input.left) {
-        item->goal_anim_state = LS_TURN_LEFT;
+        item->goal_anim_state = LS(LS_TURN_LEFT);
     } else if (g_Input.right) {
-        item->goal_anim_state = LS_TURN_RIGHT;
+        item->goal_anim_state = LS(LS_TURN_RIGHT);
     }
 
     if (lara->water_status == LWS_WADE) {
         if (g_Input.jump) {
-            item->goal_anim_state = LS_COMPRESS;
+            item->goal_anim_state = LS(LS_COMPRESS);
         }
 
         if (g_Input.forward) {
@@ -297,7 +297,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             M_WalkBack(item, coll);
         }
     } else if (g_Input.jump) {
-        item->goal_anim_state = LS_COMPRESS;
+        item->goal_anim_state = LS(LS_COMPRESS);
     } else if (g_Input.forward) {
         if (g_Input.slow) {
             M_Walk(item, coll);
@@ -308,18 +308,18 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         if (g_Input.slow) {
             M_WalkBack(item, coll);
         } else {
-            item->goal_anim_state = LS_FAST_BACK;
+            item->goal_anim_state = LS(LS_FAST_BACK);
         }
     }
 
-    if (item->goal_anim_state == LS_STOP && M_CanPose()) {
+    if (item->goal_anim_state == LS(LS_STOP) && M_CanPose()) {
         lara->idle_timer++;
         const int32_t timeout = g_Config.gameplay.idle_pose_timeout * LOGIC_FPS;
         CLAMPG(lara->idle_timer, timeout);
         if (lara->idle_timer == timeout) {
             lara->idle_timer = 0;
             item->goal_anim_state =
-                (Random_GetControl() < 0x4000) ? LS_POSE_LEFT : LS_POSE_RIGHT;
+                LS(Random_GetControl() < 0x4000 ? LS_POSE_LEFT : LS_POSE_RIGHT);
         }
     } else {
         lara->idle_timer = 0;
@@ -329,7 +329,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 static void M_Pose(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_DEATH;
+        item->goal_anim_state = LS(LS_DEATH);
         return;
     }
 
@@ -343,24 +343,24 @@ static void M_Pose(ITEM *const item, COLL_INFO *const coll)
 
     bool cancel_camera = false;
     if (g_Input.roll && !g_Input.jump) {
-        item->goal_anim_state = LS_ROLL;
+        item->goal_anim_state = LS(LS_ROLL);
         cancel_camera = true;
-    } else if (item->current_anim_state == LS_POSE) {
+    } else if (item->current_anim_state == LS(LS_POSE)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->idle_timer++;
         if (M_ShouldStopPosing()
             || (lara->idle_timer >= M_CANCEL_POSE_TIME
                 && Random_GetControl() < M_CANCEL_POSE_CHANCE)) {
-            item->goal_anim_state = LS_STOP;
+            item->goal_anim_state = LS(LS_STOP);
             cancel_camera = true;
         }
     }
 
     if (g_Config.gameplay.enable_idle_pose_camera) {
-        if (item->current_anim_state == LS_POSE_START
+        if (item->current_anim_state == LS(LS_POSE_START)
             && Item_TestFrameEqual(item, -1) && g_Camera.type == CAM_CHASE) {
             g_Camera.additional_angle =
-                Item_TestAnimEqual(item, LA_POSE_RIGHT_START)
+                Item_TestAnimEqual(item, LA(LA_POSE_RIGHT_START))
                 ? M_CAM_POSE_RIGHT_ANGLE
                 : M_CAM_POSE_LEFT_ANGLE;
         } else if (cancel_camera) {
@@ -371,7 +371,7 @@ static void M_Pose(ITEM *const item, COLL_INFO *const coll)
 
 static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
 {
-    item->goal_anim_state = LS_STOP;
+    item->goal_anim_state = LS(LS_STOP);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
@@ -385,16 +385,16 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
 static void M_Turn(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
     if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
-    const bool left_turn = item->current_anim_state == LS_TURN_LEFT;
+    const bool left_turn = item->current_anim_state == LS(LS_TURN_LEFT);
     const bool turn_input = left_turn ? g_Input.left : g_Input.right;
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -405,43 +405,43 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (lara->gun_status == LGS_READY) {
-        item->goal_anim_state = LS_FAST_TURN;
+        item->goal_anim_state = LS(LS_FAST_TURN);
     } else if (left_turn && lara->turn_rate < -LARA_SLOW_TURN) {
         if (g_Input.slow) {
             lara->turn_rate = -LARA_SLOW_TURN;
         } else {
-            item->goal_anim_state = LS_FAST_TURN;
+            item->goal_anim_state = LS(LS_FAST_TURN);
         }
     } else if (!left_turn && lara->turn_rate > LARA_SLOW_TURN) {
         if (g_Input.slow) {
             lara->turn_rate = LARA_SLOW_TURN;
         } else {
-            item->goal_anim_state = LS_FAST_TURN;
+            item->goal_anim_state = LS(LS_FAST_TURN);
         }
     }
 
     if (g_Input.forward) {
         if (lara->water_status == LWS_WADE) {
-            item->goal_anim_state = LS_WADE;
+            item->goal_anim_state = LS(LS_WADE);
         } else if (g_Input.slow) {
-            item->goal_anim_state = LS_WALK;
+            item->goal_anim_state = LS(LS_WALK);
         } else {
-            item->goal_anim_state = LS_RUN;
+            item->goal_anim_state = LS(LS_RUN);
         }
     } else if (!turn_input) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 }
 
 static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
     if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
@@ -449,12 +449,12 @@ static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
     if (lara->turn_rate >= 0) {
         lara->turn_rate = M_FAST_TURN;
         if (!g_Input.right) {
-            item->goal_anim_state = LS_STOP;
+            item->goal_anim_state = LS(LS_STOP);
         }
     } else {
         lara->turn_rate = -M_FAST_TURN;
         if (!g_Input.left) {
-            item->goal_anim_state = LS_STOP;
+            item->goal_anim_state = LS(LS_STOP);
         }
     }
 }
@@ -463,15 +463,15 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
-    const bool step_input = item->current_anim_state == LS_STEP_LEFT
+    const bool step_input = item->current_anim_state == LS(LS_STEP_LEFT)
         ? g_Input.step_left
         : g_Input.step_right;
     if (!step_input) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 
     if (g_Input.left) {
@@ -485,7 +485,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 {
-    const bool sliding_forward = item->current_anim_state == LS_SLIDE;
+    const bool sliding_forward = item->current_anim_state == LS(LS_SLIDE);
     bool opposite_input;
     if (sliding_forward) {
         g_Camera.flags = CF_NO_CHUNKY;
@@ -495,20 +495,20 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         opposite_input = g_Input.forward;
     }
 
-    if (Item_TestAnimEqual(item, LA_SLIDE_FORWARD_TO_RUN)) {
+    if (Item_TestAnimEqual(item, LA(LA_SLIDE_FORWARD_TO_RUN))) {
         item->goal_anim_state =
-            g_Input.sprint && g_Config.gameplay.enable_sprint ? LS_SPRINT
-                                                              : LS_RUN;
+            LS(g_Input.sprint && g_Config.gameplay.enable_sprint ? LS_SPRINT
+                                                                 : LS_RUN);
     } else if (
         sliding_forward && g_Config.gameplay.enable_slide_to_run
-        && item->goal_anim_state == LS_STOP && g_Input.forward
+        && item->goal_anim_state == LS(LS_STOP) && g_Input.forward
         && Lara_State_IsResponsive(LA_SLIDE_FORWARD)) {
-        item->goal_anim_state = LS_RESPONSIVE;
+        item->goal_anim_state = LS(LS_RESPONSIVE);
     } else if (
         g_Input.jump
         && (!g_Config.gameplay.enable_jump_twists || !opposite_input)) {
         item->goal_anim_state =
-            sliding_forward ? LS_JUMP_FORWARD : LS_JUMP_BACK;
+            LS(sliding_forward ? LS_JUMP_FORWARD : LS_JUMP_BACK);
     }
 }
 
@@ -530,7 +530,7 @@ static void M_PPReady(ITEM *const item, COLL_INFO *const coll)
     M_Default(item, coll);
     g_Camera.target_angle = M_CAM_PP_READY_ANGLE;
     if (!g_Input.action) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 }
 
@@ -541,7 +541,7 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = M_CAM_PICKUP_ELEVATION;
     g_Camera.target_distance = M_CAM_PICKUP_DISTANCE;
 
-    if (item->current_anim_state == LS_FLARE_PICKUP
+    if (item->current_anim_state == LS(LS_FLARE_PICKUP)
         && Item_TestFrameEqual(item, -1)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->gun_status = LGS_ARMLESS;
@@ -586,7 +586,7 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points <= 0 || lara->sprint_timer <= 0 || !g_Input.sprint
         || lara->water_status == LWS_WADE) {
-        item->goal_anim_state = LS_RUN;
+        item->goal_anim_state = LS(LS_RUN);
         return;
     }
 
@@ -607,20 +607,21 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.jump && !item->gravity) {
-        item->goal_anim_state = LS_SPRINT_ROLL;
+        item->goal_anim_state = LS(LS_SPRINT_ROLL);
     } else if (g_Input.forward) {
-        item->goal_anim_state = g_Input.slow ? LS_WALK : LS_SPRINT;
+        item->goal_anim_state = LS(g_Input.slow ? LS_WALK : LS_SPRINT);
     } else if (!g_Input.left && !g_Input.right) {
-        item->goal_anim_state = LS_STOP;
+        item->goal_anim_state = LS(LS_STOP);
     }
 }
 
 static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
 {
-    if (item->goal_anim_state != LS_DEATH && item->goal_anim_state != LS_STOP
-        && item->goal_anim_state != LS_RUN
+    if (item->goal_anim_state != LS(LS_DEATH)
+        && item->goal_anim_state != LS(LS_STOP)
+        && item->goal_anim_state != LS(LS_RUN)
         && item->fall_speed > M_FAST_FALL_SPEED) {
-        item->goal_anim_state = LS_FAST_FALL;
+        item->goal_anim_state = LS(LS_FAST_FALL);
     }
 }
 

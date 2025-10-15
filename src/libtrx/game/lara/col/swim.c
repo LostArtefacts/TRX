@@ -23,17 +23,17 @@ static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor < -STEP_L / 2) {
-        item->current_anim_state = LS_WATER_OUT;
-        item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ONWATER_TO_WADE, 0);
-    } else if (item->goal_anim_state == LS_SURF_LEFT) {
-        item->goal_anim_state = LS_STEP_LEFT;
-    } else if (item->goal_anim_state == LS_SURF_RIGHT) {
-        item->goal_anim_state = LS_STEP_RIGHT;
+        item->current_anim_state = LS(LS_WATER_OUT);
+        item->goal_anim_state = LS(LS_STOP);
+        Item_SwitchToAnim(item, LA(LA_ONWATER_TO_WADE), 0);
+    } else if (item->goal_anim_state == LS(LS_SURF_LEFT)) {
+        item->goal_anim_state = LS(LS_STEP_LEFT);
+    } else if (item->goal_anim_state == LS(LS_SURF_RIGHT)) {
+        item->goal_anim_state = LS(LS_STEP_RIGHT);
     } else {
-        item->current_anim_state = LS_WADE;
-        item->goal_anim_state = LS_WADE;
-        Item_SwitchToAnim(item, LA_WADE, 0);
+        item->current_anim_state = LS(LS_WADE);
+        item->goal_anim_state = LS(LS_WADE);
+        Item_SwitchToAnim(item, LA(LA_WADE), 0);
     }
 
     item->pos.y += coll->side_front.floor + M_HEIGHT_SURF - 5;
@@ -109,15 +109,15 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
     }
 
     if (lara_hdif < -STEP_L / 2) {
-        Item_SwitchToAnim(item, LA_ONWATER_TO_STAND_HIGH, 0);
+        Item_SwitchToAnim(item, LA(LA_ONWATER_TO_STAND_HIGH), 0);
     } else if (lara_hdif < STEP_L / 2) {
-        Item_SwitchToAnim(item, LA_ONWATER_TO_STAND_MEDIUM, 0);
+        Item_SwitchToAnim(item, LA(LA_ONWATER_TO_STAND_MEDIUM), 0);
     } else {
-        Item_SwitchToAnim(item, LA_ONWATER_TO_WADE_LOW, 0);
+        Item_SwitchToAnim(item, LA(LA_ONWATER_TO_WADE_LOW), 0);
     }
 
-    item->current_anim_state = LS_WATER_OUT;
-    item->goal_anim_state = LS_STOP;
+    item->current_anim_state = LS(LS_WATER_OUT);
+    item->goal_anim_state = LS(LS_STOP);
     item->rot.y = Math_DirectionToAngle(dir);
     item->rot.x = 0;
     item->rot.z = 0;
@@ -147,9 +147,9 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
         return;
     }
 
-    Item_SwitchToAnim(item, LA_UNDERWATER_TO_STAND, 0);
-    item->current_anim_state = LS_WATER_OUT;
-    item->goal_anim_state = LS_STOP;
+    Item_SwitchToAnim(item, LA(LA_UNDERWATER_TO_STAND), 0);
+    item->current_anim_state = LS(LS_WATER_OUT);
+    item->goal_anim_state = LS(LS_STOP);
     item->rot.x = 0;
     item->rot.z = 0;
     item->gravity = false;
@@ -192,9 +192,9 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
     const int32_t water_height = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
     if (water_height - item->pos.y <= -100) {
-        item->current_anim_state = LS_DIVE;
-        item->goal_anim_state = LS_SWIM;
-        Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
+        item->current_anim_state = LS(LS_DIVE);
+        item->goal_anim_state = LS(LS_SWIM);
+        Item_SwitchToAnim(item, LA(LA_ONWATER_DIVE), 0);
         item->rot.x = -45 * DEG_1;
         item->fall_speed = 80;
         lara->water_status = LWS_UNDERWATER;
@@ -222,7 +222,7 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
 static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
 {
     int32_t angle = 0;
-    switch (item->current_anim_state) {
+    switch (LS_U(item->current_anim_state)) {
     case LS_SURF_BACK:
         angle = -DEG_180;
         break;
@@ -231,6 +231,8 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
         break;
     case LS_SURF_RIGHT:
         angle = DEG_90;
+        break;
+    default:
         break;
     }
 

@@ -2,12 +2,7 @@
 
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
-
-typedef enum {
-    SWITCH_STATE_OFF = 0,
-    SWITCH_STATE_ON = 1,
-    SWITCH_STATE_LINK = 2,
-} SWITCH_STATE;
+#include <libtrx/game/objects/general/switch.h>
 
 static XYZ_32 g_SmallSwitchPosition = { .x = 0, .y = 0, .z = 362 };
 static XYZ_32 g_PushSwitchPosition = { .x = 0, .y = 0, .z = 292 };
@@ -71,25 +66,25 @@ static void M_SwitchOn(ITEM *const switch_item, ITEM *const lara_item)
 {
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_SMALL:
-        Item_SwitchToAnim(lara_item, LA_SWITCH_SMALL_DOWN, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_SWITCH_SMALL_DOWN), 0);
         break;
 
     case O_SWITCH_TYPE_BUTTON:
-        Item_SwitchToAnim(lara_item, LA_BUTTON_PUSH, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_BUTTON_PUSH), 0);
         break;
 
     default:
-        Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_DOWN, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_WALL_SWITCH_DOWN), 0);
         break;
     }
 
-    lara_item->current_anim_state = LS_SWITCH_ON;
+    lara_item->current_anim_state = LS(LS_SWITCH_ON);
     switch_item->goal_anim_state = SWITCH_STATE_OFF;
 }
 
 static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
 {
-    lara_item->current_anim_state = LS_SWITCH_OFF;
+    lara_item->current_anim_state = LS(LS_SWITCH_OFF);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     switch (switch_item->object_id) {
@@ -103,15 +98,15 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
         break;
 
     case O_SWITCH_TYPE_SMALL:
-        Item_SwitchToAnim(lara_item, LA_SWITCH_SMALL_UP, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_SWITCH_SMALL_UP), 0);
         break;
 
     case O_SWITCH_TYPE_BUTTON:
-        Item_SwitchToAnim(lara_item, LA_BUTTON_PUSH, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_BUTTON_PUSH), 0);
         break;
 
     default:
-        Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_UP, 0);
+        Item_SwitchToAnim(lara_item, LA(LA_WALL_SWITCH_UP), 0);
         break;
     }
 
@@ -127,7 +122,7 @@ static void M_Collision(
 
     if (!g_Input.action || item->status != IS_INACTIVE
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS_STOP
+        || lara_item->current_anim_state != LS(LS_STOP)
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
@@ -146,7 +141,7 @@ static void M_Collision(
     }
 
     if (!lara->extra_anim) {
-        lara_item->goal_anim_state = LS_STOP;
+        lara_item->goal_anim_state = LS(LS_STOP);
     }
     lara->gun_status = LGS_HANDS_BUSY;
 
@@ -166,7 +161,7 @@ static void M_CollisionUW(
         || (lara->water_status != LWS_UNDERWATER
             && lara->water_status != LWS_CHEAT)
         || lara->gun_status != LGS_ARMLESS
-        || lara_item->current_anim_state != LS_TREAD) {
+        || lara_item->current_anim_state != LS(LS_TREAD)) {
         return;
     }
 
@@ -184,11 +179,11 @@ static void M_CollisionUW(
     }
 
     lara_item->fall_speed = 0;
-    lara_item->goal_anim_state = LS_SWITCH_ON;
+    lara_item->goal_anim_state = LS(LS_SWITCH_ON);
     do {
         Lara_Animate(lara_item);
-    } while (lara_item->current_anim_state != LS_SWITCH_ON);
-    lara_item->goal_anim_state = LS_TREAD;
+    } while (lara_item->current_anim_state != LS(LS_SWITCH_ON));
+    lara_item->goal_anim_state = LS(LS_TREAD);
     lara->gun_status = LGS_HANDS_BUSY;
 
     if (item->current_anim_state == SWITCH_STATE_ON) {

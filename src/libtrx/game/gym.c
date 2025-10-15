@@ -141,31 +141,32 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
     switch (Music_FromGameID(*track_id)) {
     case MX_TR1_GYM_HINT_03:
         if ((flags & IF_ONE_SHOT) != 0
-            && lara->current_anim_state == LS_JUMP_UP) {
+            && lara->current_anim_state == LS(LS_JUMP_UP)) {
             *track_id = Music_ToGameID(MX_TR1_GYM_HINT_04);
         }
         break;
 
     case MX_TR1_GYM_HINT_12:
-        if (lara->current_anim_state != LS_HANG) {
+        if (lara->current_anim_state != LS(LS_HANG)) {
             return false;
         }
         break;
 
     case MX_TR1_GYM_HINT_16:
-        if (lara->current_anim_state != LS_HANG) {
+        if (lara->current_anim_state != LS(LS_HANG)) {
             return false;
         }
         break;
 
     case MX_TR1_GYM_HINT_17:
-        if ((flags & IF_ONE_SHOT) != 0 && lara->current_anim_state == LS_HANG) {
+        if ((flags & IF_ONE_SHOT) != 0
+            && lara->current_anim_state == LS(LS_HANG)) {
             *track_id = Music_ToGameID(MX_TR1_GYM_HINT_18);
         }
         break;
 
     case MX_TR1_GYM_HINT_24:
-        if (lara->current_anim_state != LS_SURF_TREAD) {
+        if (lara->current_anim_state != LS(LS_SURF_TREAD)) {
             return false;
         }
         break;
@@ -177,7 +178,7 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
                 Game_SetIsLevelComplete(true);
                 m_CompletionTimer = 0;
             }
-        } else if (lara->current_anim_state != LS_WATER_OUT) {
+        } else if (lara->current_anim_state != LS(LS_WATER_OUT)) {
             return false;
         }
         break;

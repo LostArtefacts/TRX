@@ -153,6 +153,8 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
     M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv");
     M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv");
     M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv");
+    M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv");
+    M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv");
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);

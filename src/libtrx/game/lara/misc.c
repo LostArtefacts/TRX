@@ -226,7 +226,7 @@ void Lara_Extinguish(void)
     }
 }
 
-bool Lara_HasState(const LARA_STATE *const test_arr)
+bool Lara_HasState(const LARA_TRX_STATE *const test_arr)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->extra_anim) {
@@ -234,8 +234,8 @@ bool Lara_HasState(const LARA_STATE *const test_arr)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    for (int32_t i = 0; test_arr[i] != (LARA_STATE)-1; i++) {
-        if (test_arr[i] == (LARA_STATE)lara_item->current_anim_state) {
+    for (int32_t i = 0; test_arr[i] != LS_TRX_INVALID; i++) {
+        if (test_arr[i] == LS_U(lara_item->current_anim_state)) {
             return true;
         }
     }

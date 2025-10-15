@@ -61,7 +61,7 @@ static void M_Collision(
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS_PICKUP) {
+    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUPSCION)) {
             Overlay_AddDisplayPickup(item->object_id);
             Inv_AddItem(item->object_id);
@@ -73,10 +73,10 @@ static void M_Collision(
         }
     } else if (
         g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
-        && lara_item->current_anim_state == LS_STOP) {
+        && lara_item->current_anim_state == LS(LS_STOP)) {
         Lara_AlignPosition(item, &m_Scion1_Position);
-        lara_item->current_anim_state = LS_PICKUP;
-        lara_item->goal_anim_state = LS_PICKUP;
+        lara_item->current_anim_state = LS(LS_PICKUP);
+        lara_item->goal_anim_state = LS(LS_PICKUP);
         Item_SwitchToObjAnim(
             lara_item, EXTRA_ANIM_PEDESTAL_SCION, 0, O_LARA_EXTRA);
         lara->gun_status = LGS_HANDS_BUSY;

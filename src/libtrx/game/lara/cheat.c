@@ -251,9 +251,9 @@ bool Lara_Cheat_EnterFlyMode(void)
     if (lara_info->water_status != LWS_UNDERWATER
         || lara_item->hit_points <= 0) {
         lara_item->pos.y -= STEP_L;
-        lara_item->current_anim_state = LS_SWIM;
-        lara_item->goal_anim_state = LS_SWIM;
-        Item_SwitchToAnim(lara_item, LA_UNDERWATER_SWIM_FORWARD_DRIFT, 0);
+        lara_item->current_anim_state = LS(LS_SWIM);
+        lara_item->goal_anim_state = LS(LS_SWIM);
+        Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_SWIM_FORWARD_DRIFT), 0);
         lara_item->gravity = 0;
         lara_item->rot.x = 30 * DEG_1;
         lara_item->fall_speed = 30;
@@ -301,9 +301,9 @@ bool Lara_Cheat_ExitFlyMode(void)
         lara_info->water_status = LWS_UNDERWATER;
     } else {
         lara_info->water_status = LWS_ABOVE_WATER;
-        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
-        lara_item->goal_anim_state = LS_STOP;
-        lara_item->current_anim_state = LS_STOP;
+        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
+        lara_item->goal_anim_state = LS(LS_STOP);
+        lara_item->current_anim_state = LS(LS_STOP);
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         lara_info->head_rot.x = 0;
@@ -365,14 +365,15 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
 
         if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
             lara_info->water_status = LWS_UNDERWATER;
-            lara_item->current_anim_state = LS_SWIM;
-            lara_item->goal_anim_state = LS_SWIM;
-            Item_SwitchToAnim(lara_item, LA_UNDERWATER_SWIM_FORWARD_DRIFT, 0);
+            lara_item->current_anim_state = LS(LS_SWIM);
+            lara_item->goal_anim_state = LS(LS_SWIM);
+            Item_SwitchToAnim(
+                lara_item, LA(LA_UNDERWATER_SWIM_FORWARD_DRIFT), 0);
         } else {
             lara_info->water_status = LWS_ABOVE_WATER;
-            lara_item->current_anim_state = LS_STOP;
-            lara_item->goal_anim_state = LS_STOP;
-            Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+            lara_item->current_anim_state = LS(LS_STOP);
+            lara_item->goal_anim_state = LS(LS_STOP);
+            Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;
             lara_info->head_rot.x = 0;

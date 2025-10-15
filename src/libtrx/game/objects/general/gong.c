@@ -102,7 +102,7 @@ static void M_Collision(
 
     if (item->status != IS_INACTIVE || !g_Input.action
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS_STOP) {
+        || lara_item->current_anim_state != LS(LS_STOP)) {
         goto normal_collision;
     }
 

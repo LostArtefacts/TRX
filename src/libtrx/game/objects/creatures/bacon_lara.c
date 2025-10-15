@@ -63,9 +63,9 @@ static void M_Control(const int16_t item_num)
         Item_UpdateRoom(item_num, lara_item->room_num);
 
         if (h >= lh + WALL_L && !lara_item->gravity) {
-            item->current_anim_state = LS_FAST_FALL;
-            item->goal_anim_state = LS_FAST_FALL;
-            Item_SwitchToAnim(item, LA_SMASH_JUMP, M_SMASH_JUMP_FRAME);
+            item->current_anim_state = LS(LS_FAST_FALL);
+            item->goal_anim_state = LS(LS_FAST_FALL);
+            Item_SwitchToAnim(item, LA(LA_SMASH_JUMP), M_SMASH_JUMP_FRAME);
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity = true;
@@ -93,15 +93,15 @@ static void M_Control(const int16_t item_num)
             Room_TestTriggers(item);
             item->gravity = false;
             item->fall_speed = 0;
-            item->goal_anim_state = LS_DEATH;
-            item->required_anim_state = LS_DEATH;
+            item->goal_anim_state = LS(LS_DEATH);
+            item->required_anim_state = LS(LS_DEATH);
         }
     }
 }
 
 static void M_Draw(const ITEM *const item)
 {
-    if (item->current_anim_state == LS_DEATH) {
+    if (item->current_anim_state == LS(LS_DEATH)) {
         Object_DrawAnimatingItem(item);
         return;
     }

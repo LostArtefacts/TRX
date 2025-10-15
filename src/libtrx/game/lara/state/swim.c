@@ -45,7 +45,7 @@ static void M_SwimTurn(ITEM *const item)
 static void M_Tread(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
+        item->goal_anim_state = LS(LS_UW_DEATH);
         return;
     }
 
@@ -54,8 +54,8 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
 #endif
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->current_anim_state = LS_WATER_ROLL;
-        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
+        item->current_anim_state = LS(LS_WATER_ROLL);
+        Item_SwitchToAnim(item, LA(LA_UNDERWATER_ROLL_START), 0);
         return;
     }
 
@@ -65,7 +65,7 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
 
     M_SwimTurn(item);
     if (g_Input.jump) {
-        item->goal_anim_state = LS_SWIM;
+        item->goal_anim_state = LS(LS_SWIM);
     }
     item->fall_speed -= M_FRICTION;
     CLAMPL(item->fall_speed, 0);
@@ -79,7 +79,7 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
 static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
+        item->goal_anim_state = LS(LS_UW_DEATH);
         return;
     }
 
@@ -88,8 +88,8 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 #endif
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->current_anim_state = LS_WATER_ROLL;
-        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
+        item->current_anim_state = LS(LS_WATER_ROLL);
+        Item_SwitchToAnim(item, LA(LA_UNDERWATER_ROLL_START), 0);
         return;
     }
 
@@ -104,12 +104,13 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 
     if (!g_Input.jump) {
 #if TR_VERSION == 1
-        item->goal_anim_state = g_Config.gameplay.enable_tr2_swim_cancel
-                && Lara_State_IsResponsive(LA_UNDERWATER_SWIM_FORWARD)
-            ? LS_RESPONSIVE
-            : LS_GLIDE;
+        item->goal_anim_state =
+            LS(g_Config.gameplay.enable_tr2_swim_cancel
+                       && Lara_State_IsResponsive(LA_UNDERWATER_SWIM_FORWARD)
+                   ? LS_RESPONSIVE
+                   : LS_GLIDE);
 #else
-        item->goal_anim_state = LS_GLIDE;
+        item->goal_anim_state = LS(LS_GLIDE);
 #endif
     }
 }
@@ -117,7 +118,7 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 static void M_Glide(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
+        item->goal_anim_state = LS(LS_UW_DEATH);
         return;
     }
 
@@ -125,19 +126,19 @@ static void M_Glide(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
 #endif
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
-        item->current_anim_state = LS_WATER_ROLL;
-        Item_SwitchToAnim(item, LA_UNDERWATER_ROLL_START, 0);
+        item->current_anim_state = LS(LS_WATER_ROLL);
+        Item_SwitchToAnim(item, LA(LA_UNDERWATER_ROLL_START), 0);
         return;
     }
 
     M_SwimTurn(item);
     if (g_Input.jump) {
-        item->goal_anim_state = LS_SWIM;
+        item->goal_anim_state = LS(LS_SWIM);
     }
     item->fall_speed -= M_FRICTION;
     CLAMPL(item->fall_speed, 0);
     if (item->fall_speed <= M_MAX_SWIM_SPEED * 2 / 3) {
-        item->goal_anim_state = LS_TREAD;
+        item->goal_anim_state = LS(LS_TREAD);
     }
 }
 
@@ -147,7 +148,7 @@ static void M_TreadSurface(ITEM *const item, COLL_INFO *const coll)
     CLAMPL(item->fall_speed, 0);
 
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
+        item->goal_anim_state = LS(LS_UW_DEATH);
         return;
     }
 
@@ -167,24 +168,24 @@ static void M_TreadSurface(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.forward) {
-        item->goal_anim_state = LS_SURF_SWIM;
+        item->goal_anim_state = LS(LS_SURF_SWIM);
     } else if (g_Input.back) {
-        item->goal_anim_state = LS_SURF_BACK;
+        item->goal_anim_state = LS(LS_SURF_BACK);
     }
 
     if (g_Input.step_left) {
-        item->goal_anim_state = LS_SURF_LEFT;
+        item->goal_anim_state = LS(LS_SURF_LEFT);
     } else if (g_Input.step_right) {
-        item->goal_anim_state = LS_SURF_RIGHT;
+        item->goal_anim_state = LS(LS_SURF_RIGHT);
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.jump) {
         lara->dive_timer++;
         if (lara->dive_timer == LARA_DIVE_WAIT) {
-            Item_SwitchToAnim(item, LA_ONWATER_DIVE, 0);
-            item->goal_anim_state = LS_SWIM;
-            item->current_anim_state = LS_DIVE;
+            Item_SwitchToAnim(item, LA(LA_ONWATER_DIVE), 0);
+            item->goal_anim_state = LS(LS_SWIM);
+            item->current_anim_state = LS(LS_DIVE);
             item->rot.x = -45 * DEG_1;
             item->fall_speed = 80;
             lara->water_status = LWS_UNDERWATER;
@@ -197,7 +198,7 @@ static void M_TreadSurface(ITEM *const item, COLL_INFO *const coll)
 static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
+        item->goal_anim_state = LS(LS_UW_DEATH);
         return;
     }
 
@@ -214,7 +215,7 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
         }
     }
     if (!g_Input.forward || g_Input.jump) {
-        item->goal_anim_state = LS_SURF_TREAD;
+        item->goal_anim_state = LS(LS_SURF_TREAD);
     }
     item->fall_speed += 8;
     CLAMPG(item->fall_speed, M_MAX_SURF_SPEED);
@@ -223,7 +224,7 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
 static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
-        item->goal_anim_state = LS_UW_DEATH;
+        item->goal_anim_state = LS(LS_UW_DEATH);
         return;
     }
 
@@ -241,7 +242,7 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
         }
 
         bool stop = false;
-        switch (item->current_anim_state) {
+        switch (LS_U(item->current_anim_state)) {
         case LS_SURF_BACK:
             stop = !g_Input.back;
             break;
@@ -256,7 +257,7 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
         }
 
         if (stop) {
-            item->goal_anim_state = LS_SURF_TREAD;
+            item->goal_anim_state = LS(LS_SURF_TREAD);
         }
     }
 
@@ -299,7 +300,7 @@ static void M_WaterOut(ITEM *const item, COLL_INFO *const coll)
 static void M_UWTwist(ITEM *const item, COLL_INFO *const coll)
 {
     item->fall_speed = 0;
-    item->goal_anim_state = LS_TREAD;
+    item->goal_anim_state = LS(LS_TREAD);
 }
 
 // clang-format off

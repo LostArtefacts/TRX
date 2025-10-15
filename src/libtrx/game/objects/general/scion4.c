@@ -48,10 +48,10 @@ static void M_Collision(
     }
 
     if (g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
-        && lara_item->current_anim_state == LS_STOP) {
+        && lara_item->current_anim_state == LS(LS_STOP)) {
         Lara_AlignPosition(item, &m_Scion4_Position);
-        lara_item->current_anim_state = LS_PICKUP;
-        lara_item->goal_anim_state = LS_PICKUP;
+        lara_item->current_anim_state = LS(LS_PICKUP);
+        lara_item->goal_anim_state = LS(LS_PICKUP);
         Item_SwitchToObjAnim(
             lara_item, EXTRA_ANIM_HOLDER_SCION, 0, O_LARA_EXTRA);
         lara->gun_status = LGS_HANDS_BUSY;

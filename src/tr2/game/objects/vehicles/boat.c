@@ -789,9 +789,9 @@ static void M_Control(const int16_t item_num)
             lara_item->rot.y += DEG_90;
         }
 
-        Item_SwitchToAnim(lara_item, LA_JUMP_FORWARD, 0);
-        lara_item->goal_anim_state = LS_JUMP_FORWARD;
-        lara_item->current_anim_state = LS_JUMP_FORWARD;
+        Item_SwitchToAnim(lara_item, LA(LA_JUMP_FORWARD), 0);
+        lara_item->goal_anim_state = LS(LS_JUMP_FORWARD);
+        lara_item->current_anim_state = LS(LS_JUMP_FORWARD);
         lara_item->gravity = 1;
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;

@@ -180,7 +180,7 @@ static void M_DecideRequestedWeapon(void)
         } else if (
             Inv_RequestItem(O_FLARES_ITEM)
             && (!g_Config.gameplay.fix_free_flare_glitch
-                || lara_item->current_anim_state != LS_PICKUP)) {
+                || lara_item->current_anim_state != LS(LS_PICKUP))) {
             lara->request_gun_type = LGT_FLARE;
         }
     }

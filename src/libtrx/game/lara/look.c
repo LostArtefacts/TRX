@@ -22,14 +22,14 @@
 #define M_MIN_HEAD_TILT_SURF         (-M_MAX_HEAD_TILT_SURF) // = -7280
 // clang-format on
 
-static const LARA_STATE m_StopStates[] = {
+static const LARA_TRX_STATE m_StopStates[] = {
     LS_STOP,
     LS_SURF_TREAD,
     LS_POSE,
-    (LARA_STATE)-1,
+    LS_TRX_INVALID,
 };
 
-static const LARA_STATE m_BlockingStates[] = {
+static const LARA_TRX_STATE m_BlockingStates[] = {
     // clang-format off
     LS_JUMP_RIGHT,
     LS_JUMP_LEFT,
@@ -47,7 +47,7 @@ static const LARA_STATE m_BlockingStates[] = {
     LS_USE_KEY,
     LS_USE_PUZZLE,
     LS_NEUTRAL_ROLL,
-    (LARA_STATE)-1,
+    LS_TRX_INVALID,
     // clang-format on
 };
 

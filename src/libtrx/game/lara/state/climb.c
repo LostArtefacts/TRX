@@ -28,9 +28,9 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_angle = M_CAM_HANG_ANGLE;
     g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
     if (g_Input.left || g_Input.step_left) {
-        item->goal_anim_state = LS_SHIMMY_LEFT;
+        item->goal_anim_state = LS(LS_SHIMMY_LEFT);
     } else if (g_Input.right || g_Input.step_right) {
-        item->goal_anim_state = LS_SHIMMY_RIGHT;
+        item->goal_anim_state = LS(LS_SHIMMY_RIGHT);
     }
 }
 
@@ -41,11 +41,11 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_angle = M_CAM_HANG_ANGLE;
     g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
 
-    const bool stop = item->current_anim_state == LS_SHIMMY_LEFT
+    const bool stop = item->current_anim_state == LS(LS_SHIMMY_LEFT)
         ? (!g_Input.left && !g_Input.step_left)
         : (!g_Input.right && !g_Input.step_right);
     if (stop) {
-        item->goal_anim_state = LS_HANG;
+        item->goal_anim_state = LS(LS_HANG);
     }
 }
 
@@ -60,11 +60,11 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.left || g_Input.step_left) {
-        item->goal_anim_state = LS_CLIMB_LEFT;
+        item->goal_anim_state = LS(LS_CLIMB_LEFT);
     } else if (g_Input.right || g_Input.step_right) {
-        item->goal_anim_state = LS_CLIMB_RIGHT;
+        item->goal_anim_state = LS(LS_CLIMB_RIGHT);
     } else if (g_Input.jump) {
-        item->goal_anim_state = LS_JUMP_BACK;
+        item->goal_anim_state = LS(LS_JUMP_BACK);
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->gun_status = LGS_ARMLESS;
         lara->move_angle = item->rot.y + DEG_180;
@@ -75,17 +75,17 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    if (item->current_anim_state == LS_CLIMB_LEFT) {
+    if (item->current_anim_state == LS(LS_CLIMB_LEFT)) {
         g_Camera.target_angle = M_CAM_CLIMB_LEFT_ANGLE;
         g_Camera.target_elevation = M_CAM_CLIMB_LEFT_ELEVATION;
         if (!g_Input.left && !g_Input.step_left) {
-            item->goal_anim_state = LS_CLIMB_STANCE;
+            item->goal_anim_state = LS(LS_CLIMB_STANCE);
         }
     } else {
         g_Camera.target_angle = M_CAM_CLIMB_RIGHT_ANGLE;
         g_Camera.target_elevation = M_CAM_CLIMB_RIGHT_ELEVATION;
         if (!g_Input.right && !g_Input.step_right) {
-            item->goal_anim_state = LS_CLIMB_STANCE;
+            item->goal_anim_state = LS(LS_CLIMB_STANCE);
         }
     }
 }
@@ -94,7 +94,7 @@ static void M_UpDownLadder(ITEM *const item, COLL_INFO *const coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
-    switch (item->current_anim_state) {
+    switch (LS_U(item->current_anim_state)) {
     case LS_CLIMBING:
         g_Camera.target_elevation = M_CAM_CLIMBING_ELEVATION;
         break;

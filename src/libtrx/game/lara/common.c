@@ -1,6 +1,7 @@
 #include "game/lara/common.h"
 
 #include "config.h"
+#include "game/catalog.h"
 #include "game/gun.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
@@ -17,12 +18,12 @@
 #define M_MOVE_ANGLE (2 * DEG_1) // = 364
 #define M_PUSH_TIMEOUT 15
 
-static const LARA_ANIMATION m_InvalidInterpAnims[] = {
+static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
     // clang-format off
     LA_JUMP_NEUTRAL_ROLL,
     LA_CONTROLLED_DROP_CONTINUE,
     LA_HANG_TO_JUMP_BACK,
-    (LARA_ANIMATION)-1, // sentinel
+    LA_TRX_INVALID, // sentinel
     // clang-format on
 };
 
@@ -30,9 +31,9 @@ static bool m_Controllable = false;
 static int16_t m_DeathCameraTarget = NO_ITEM;
 static LARA_EXTRA_STATE m_StartAnimState = LS_EXTRA_BREATH;
 
-static bool M_IsInvalidInterpAnim(const LARA_ANIMATION anim_idx)
+static bool M_IsInvalidInterpAnim(const LARA_TRX_ANIMATION anim_idx)
 {
-    for (int32_t i = 0; m_InvalidInterpAnims[i] != (LARA_ANIMATION)-1; i++) {
+    for (int32_t i = 0; m_InvalidInterpAnims[i] != LA_TRX_INVALID; i++) {
         if (m_InvalidInterpAnims[i] == anim_idx) {
             return true;
         }
@@ -388,8 +389,8 @@ void Lara_SetControllable(const bool controllable)
 bool Lara_CanInterpolate(
     const ITEM *const item, const int32_t frame_a, const int32_t frame_b)
 {
-    const int32_t anim_idx = Item_GetRelativeAnim(item);
-    if (!M_IsInvalidInterpAnim(anim_idx)) {
+    const LARA_ANIMATION anim_idx = Item_GetRelativeAnim(item);
+    if (!M_IsInvalidInterpAnim(LA_U(anim_idx))) {
         return true;
     }
 
@@ -551,10 +552,10 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
     // clang-format off
     LARA_ANIMATION anim_idx;
     switch (lara->hit_direction) {
-    case DIR_EAST:  anim_idx = LA_HIT_LEFT; break;
-    case DIR_SOUTH: anim_idx = LA_HIT_BACK; break;
-    case DIR_WEST:  anim_idx = LA_HIT_RIGHT; break;
-    default:        anim_idx = LA_HIT_FRONT; break;
+    case DIR_EAST:  anim_idx = LA(LA_HIT_LEFT); break;
+    case DIR_SOUTH: anim_idx = LA(LA_HIT_BACK); break;
+    case DIR_WEST:  anim_idx = LA(LA_HIT_RIGHT); break;
+    default:        anim_idx = LA(LA_HIT_FRONT); break;
     }
     // clang-format on
 
@@ -752,16 +753,16 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         && !lara_info->interact_target.is_moving) {
         if (lara_info->water_status != LWS_UNDERWATER) {
             const int16_t step_to_anim_num[4] = {
-                LA_SIDE_STEP_LEFT,
-                LA_WALK_FORWARD,
-                LA_SIDE_STEP_RIGHT,
-                LA_WALK_BACK,
+                LA(LA_SIDE_STEP_LEFT),
+                LA(LA_WALK_FORWARD),
+                LA(LA_SIDE_STEP_RIGHT),
+                LA(LA_WALK_BACK),
             };
             const int16_t step_to_anim_state[4] = {
-                LS_STEP_LEFT,
-                LS_WALK,
-                LS_STEP_RIGHT,
-                LS_WALK_BACK,
+                LS(LS_STEP_LEFT),
+                LS(LS_WALK),
+                LS(LS_STEP_RIGHT),
+                LS(LS_WALK_BACK),
             };
 
             const int32_t dx = lara_item->pos.x - new_pos.x;
@@ -882,4 +883,40 @@ void Lara_Push(
         lara_info->interact_target.is_moving = false;
         lara_info->gun_status = LGS_ARMLESS;
     }
+}
+
+LARA_ANIMATION Lara_AnimToGameId(const LARA_TRX_ANIMATION anim)
+{
+    int32_t out;
+    if (!Catalog_EnumToGameID(CATALOG_LARA_ANIMS, anim, &out)) {
+        out = -1;
+    }
+    return out;
+}
+
+LARA_STATE Lara_StateToGameId(const LARA_TRX_STATE state)
+{
+    int32_t out;
+    if (!Catalog_EnumToGameID(CATALOG_LARA_STATES, state, &out)) {
+        out = -1;
+    }
+    return out;
+}
+
+LARA_TRX_ANIMATION Lara_AnimFromGameId(const LARA_ANIMATION anim)
+{
+    int32_t out;
+    if (!Catalog_GameIDToEnum(CATALOG_LARA_ANIMS, anim, &out)) {
+        out = -1;
+    }
+    return out;
+}
+
+LARA_TRX_STATE Lara_StateFromGameId(const LARA_STATE state)
+{
+    int32_t out;
+    if (!Catalog_GameIDToEnum(CATALOG_LARA_STATES, state, &out)) {
+        out = -1;
+    }
+    return out;
 }

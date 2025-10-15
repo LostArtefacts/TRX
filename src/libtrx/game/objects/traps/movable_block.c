@@ -323,8 +323,8 @@ static bool M_TestEmbedCollision(const ITEM *const item, const ITEM *const lara)
         && lara->pos.y <= item->pos.y && lara->pos.y > item->pos.y - WALL_L
         && !item->gravity && !lara->gravity
         && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL
-        && lara->current_anim_state != LS_PULL_BLOCK
-        && lara->current_anim_state != LS_PUSH_BLOCK;
+        && lara->current_anim_state != LS(LS_PULL_BLOCK)
+        && lara->current_anim_state != LS(LS_PUSH_BLOCK);
 }
 
 static void M_KillLara(const ITEM *const item, ITEM *const lara)
@@ -341,9 +341,9 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
     lara->rot.x = 0;
     lara->rot.z = 0;
     lara->enable_shadow = false;
-    lara->current_anim_state = LS_SPECIAL;
-    lara->goal_anim_state = LS_SPECIAL;
-    Item_SwitchToAnim(lara, LA_BOULDER_DEATH, 0);
+    lara->current_anim_state = LS(LS_SPECIAL);
+    lara->goal_anim_state = LS(LS_SPECIAL);
+    Item_SwitchToAnim(lara, LA(LA_BOULDER_DEATH), 0);
 
     for (int32_t i = 0; i < 15; i++) {
         const int32_t x = lara->pos.x + (Random_GetControl() - 0x4000) / 256;
@@ -472,7 +472,7 @@ static void M_Collision(
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const DIRECTION quadrant = Math_GetDirection(lara_item->rot.y);
-    if (lara_item->current_anim_state == LS_STOP) {
+    if (lara_item->current_anim_state == LS(LS_STOP)) {
         if (g_Input.forward || g_Input.back
             || lara->gun_status != LGS_ARMLESS) {
             return;
@@ -526,14 +526,14 @@ static void M_Collision(
         }
 
         lara_item->rot.y = item->rot.y;
-        lara_item->goal_anim_state = LS_PP_READY;
+        lara_item->goal_anim_state = LS(LS_PP_READY);
 
         Lara_Animate(lara_item);
 
-        if (lara_item->current_anim_state == LS_PP_READY) {
+        if (lara_item->current_anim_state == LS(LS_PP_READY)) {
             lara->gun_status = LGS_HANDS_BUSY;
         }
-    } else if (Item_TestAnimEqual(lara_item, LA_PUSHABLE_GRAB)) {
+    } else if (Item_TestAnimEqual(lara_item, LA(LA_PUSHABLE_GRAB))) {
         if (!Item_TestFrameEqual(lara_item, LF_PPREADY)) {
             return;
         }
@@ -547,13 +547,13 @@ static void M_Collision(
                 return;
             }
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PUSH;
-            lara_item->goal_anim_state = LS_PUSH_BLOCK;
+            lara_item->goal_anim_state = LS(LS_PUSH_BLOCK);
         } else if (g_Input.back) {
             if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PULL;
-            lara_item->goal_anim_state = LS_PULL_BLOCK;
+            lara_item->goal_anim_state = LS(LS_PULL_BLOCK);
         } else {
             return;
         }

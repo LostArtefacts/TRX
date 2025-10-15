@@ -4,7 +4,7 @@
 #include "./enum.h"
 
 void Lara_Col_Register(
-    LARA_STATE state, void (*handle_func)(ITEM *item, COLL_INFO *coll));
+    LARA_TRX_STATE state, void (*handle_func)(ITEM *item, COLL_INFO *coll));
 void Lara_Col_Update(ITEM *item, COLL_INFO *coll);
 void Lara_Col_GetInfo(const ITEM *item, COLL_INFO *coll);
 void Lara_Col_Shift(COLL_INFO *coll);

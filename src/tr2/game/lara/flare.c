@@ -39,17 +39,15 @@ typedef enum {
     LF_FL_DRAW_GOT_IT = (LF_FL_DRAW + 13), // = 46
 } M_LARA_FLARE_FRAME;
 
-static const LARA_STATE m_HoldStates[] = {
+static const LARA_TRX_STATE m_HoldStates[] = {
     LS_WALK,      LS_STOP,      LS_POSE,       LS_TURN_RIGHT,  LS_TURN_LEFT,
     LS_WALK_BACK, LS_FAST_TURN, LS_STEP_LEFT,  LS_STEP_RIGHT,  LS_WADE,
-    LS_PICKUP,    LS_SWITCH_ON, LS_SWITCH_OFF, (LARA_STATE)-1,
+    LS_PICKUP,    LS_SWITCH_ON, LS_SWITCH_OFF, LS_TRX_INVALID, // sentinel
 };
 
-static const LARA_STATE m_ThrowStates[] = {
-    LS_FAST_FALL,
-    LS_SWAN_DIVE,
-    LS_FAST_DIVE,
-    (LARA_STATE)-1,
+static const LARA_TRX_STATE m_ThrowStates[] = {
+    LS_FAST_FALL, LS_SWAN_DIVE, LS_FAST_DIVE,
+    LS_TRX_INVALID, // sentinel
 };
 
 static void M_InitialiseState(void)
@@ -205,8 +203,8 @@ void Lara_Flare_Draw(void)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
-    if (lara_item->current_anim_state == LS_FLARE_PICKUP
-        || lara_item->current_anim_state == LS_PICKUP) {
+    if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)
+        || lara_item->current_anim_state == LS(LS_PICKUP)) {
         M_ControlInHand(lara_info->flare.age);
         lara_info->flare.control = false;
         lara_info->left_arm.frame_num = LF_FL_2_HOLD - 2;
@@ -248,17 +246,18 @@ void Lara_Flare_Undraw(void)
 
     lara_info->flare.control = true;
 
-    if (lara_item->goal_anim_state == LS_STOP && !Lara_Vehicle_IsMounted()) {
-        if (Item_TestAnimEqual(lara_item, LA_STAND_IDLE)) {
-            Item_SwitchToAnim(lara_item, LA_FLARE_THROW, frame_num_1);
+    if (lara_item->goal_anim_state == LS(LS_STOP)
+        && !Lara_Vehicle_IsMounted()) {
+        if (Item_TestAnimEqual(lara_item, LA(LA_STAND_IDLE))) {
+            Item_SwitchToAnim(lara_item, LA(LA_FLARE_THROW), frame_num_1);
             lara_info->flare.frame_num = lara_item->frame_num;
             frame_num_2 = lara_item->frame_num;
         }
 
-        if (Item_TestAnimEqual(lara_item, LA_FLARE_THROW)) {
+        if (Item_TestAnimEqual(lara_item, LA(LA_FLARE_THROW))) {
             lara_info->flare.control = false;
 
-            if (frame_num_2 >= Anim_GetAnim(LA_FLARE_THROW)->frame_base
+            if (frame_num_2 >= Anim_GetAnim(LA(LA_FLARE_THROW))->frame_base
                     + LF_FL_THROW_FT - 1) {
                 lara_info->gun_type = lara_info->last_gun_type;
                 lara_info->request_gun_type = lara_info->last_gun_type;
@@ -267,17 +266,18 @@ void Lara_Flare_Undraw(void)
                 lara_info->target = nullptr;
                 lara_info->right_arm.lock = 0;
                 lara_info->left_arm.lock = 0;
-                Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+                Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
                 lara_info->flare.frame_num = lara_item->frame_num;
-                lara_item->current_anim_state = LS_STOP;
-                lara_item->goal_anim_state = LS_STOP;
+                lara_item->current_anim_state = LS(LS_STOP);
+                lara_item->goal_anim_state = LS(LS_STOP);
                 return;
             }
             lara_info->flare.frame_num = frame_num_2 + 1;
         }
     } else if (
-        lara_item->current_anim_state == LS_STOP && !Lara_Vehicle_IsMounted()) {
-        Item_SwitchToAnim(lara_item, LA_STAND_STILL, 0);
+        lara_item->current_anim_state == LS(LS_STOP)
+        && !Lara_Vehicle_IsMounted()) {
+        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
     }
 
     if (frame_num_1 == LF_FL_HOLD) {

@@ -386,7 +386,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 return;
             }
             const ITEM *const switch_item = Item_Get(trigger->item_index);
-            switch_off = switch_item->current_anim_state == LS_RUN;
+            switch_off = switch_item->current_anim_state == SWITCH_STATE_OFF;
             break;
         }
 
