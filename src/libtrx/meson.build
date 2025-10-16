@@ -202,6 +202,7 @@ sources = [
   'game/lara/col/swim.c',
   'game/lara/common.c',
   'game/lara/control.c',
+  'game/lara/draw.c',
   'game/lara/flare.c',
   'game/lara/hair.c',
   'game/lara/look.c',

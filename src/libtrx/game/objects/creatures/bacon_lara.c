@@ -2,8 +2,6 @@
 
 #include "game/creature.h"
 #include "game/lara.h"
-#include "game/lara/const.h"
-#include "game/lara/draw.h"
 #include "game/objects.h"
 #include "game/rooms.h"
 

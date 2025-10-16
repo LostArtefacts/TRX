@@ -1,7 +1,6 @@
 #include "game/room_draw.h"
 
 #include "game/effects.h"
-#include "game/lara/draw.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
