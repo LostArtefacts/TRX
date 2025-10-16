@@ -35,12 +35,11 @@ Module for controlling all moveables behavior.
 - [lua]`TRX.Items.Count()`  
   Returns the total number of allocated items.
 
-- [lua]`TRX.Items.Get(index)`  
-  Retrieves the [lua]`TRX.Items.ITEM` at the given 1-based index, or `nil` if out of range.
-- [lua]`TRX.Items.GetByName(name)`  
-  Retrieves the [lua]`TRX.Items.ITEM` with the given `name`, or `nil` if not found.  
+- [lua]`TRX.Items.Get(arg)`  
+  Retrieves the [lua]`TRX.Items.ITEM` at the given 1-based index or with the given `name`, or `nil` if out of range/not found.  
   Example:
   ```lua
-  TRX.Lara.GetItem().name = "lara"
-  TRX.Items.GetByName("lara") -- contains Lara item
+  local item = TRX.Items.Get(1)
+  item.name = "lara"
+  local lara = TRX.Items.Get("lara")
   ```
