@@ -16,7 +16,7 @@ typedef struct {
 static lua_State *m_L = nullptr;
 static VECTOR *m_Listeners = nullptr;
 
-// id = TRX.Events.Listen(eventType, callback)
+// id = trx.events.listen(event_type, callback)
 static int32_t M_L_EventsListen(lua_State *const L)
 {
     const LUA_EVENT_TYPE ev = luaL_checkinteger(L, 1);
@@ -36,7 +36,7 @@ static int32_t M_L_EventsListen(lua_State *const L)
     return 1;
 }
 
-// TRX.Events.Unlisten(id)
+// trx.events.unlisten(id)
 static int32_t M_L_EventsUnlisten(lua_State *const L)
 {
     int32_t id = luaL_checkinteger(L, 1);
@@ -52,38 +52,6 @@ static int32_t M_L_EventsUnlisten(lua_State *const L)
         }
     }
     return 0;
-}
-
-// Initialize EventType and Events in Lua
-void LUA_CreateEvents(lua_State *const L)
-{
-    m_L = L;
-
-    lua_getglobal(L, "TRX");
-
-    // EventType enum
-    lua_newtable(L);
-    lua_pushinteger(L, LUA_EVENT_LEVEL_START);
-    lua_setfield(L, -2, "LEVEL_START");
-    lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
-    lua_setfield(L, -2, "LEVEL_LOAD");
-    lua_pushinteger(L, LUA_EVENT_PICKUP);
-    lua_setfield(L, -2, "PICKUP");
-    lua_pushinteger(L, LUA_EVENT_CONTROL_PRE);
-    lua_setfield(L, -2, "CONTROL");
-    lua_pushinteger(L, LUA_EVENT_CONTROL_POST);
-    lua_setfield(L, -2, "CONTROL_POST");
-    lua_setfield(L, -2, "EventType");
-
-    // Events table
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_EventsListen);
-    lua_setfield(L, -2, "Listen");
-    lua_pushcfunction(L, M_L_EventsUnlisten);
-    lua_setfield(L, -2, "Unlisten");
-    lua_setfield(L, -2, "Events");
-
-    lua_pop(L, 1);
 }
 
 void Lua_ClearLevelListeners(void)
@@ -124,4 +92,35 @@ void Lua_FireEvent(LUA_EVENT_TYPE ev, int32_t arg)
             lua_pop(L, 1);
         }
     }
+}
+
+void LUA_CreateEvents(lua_State *const L)
+{
+    m_L = L;
+
+    lua_getglobal(L, "trx");
+
+    // EventType enum
+    lua_newtable(L);
+    lua_pushinteger(L, LUA_EVENT_LEVEL_START);
+    lua_setfield(L, -2, "LEVEL_START");
+    lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
+    lua_setfield(L, -2, "LEVEL_LOAD");
+    lua_pushinteger(L, LUA_EVENT_PICKUP);
+    lua_setfield(L, -2, "PICKUP");
+    lua_pushinteger(L, LUA_EVENT_CONTROL_PRE);
+    lua_setfield(L, -2, "CONTROL");
+    lua_pushinteger(L, LUA_EVENT_CONTROL_POST);
+    lua_setfield(L, -2, "CONTROL_POST");
+    lua_setfield(L, -2, "event_type");
+
+    // Events table
+    lua_newtable(L);
+    lua_pushcfunction(L, M_L_EventsListen);
+    lua_setfield(L, -2, "listen");
+    lua_pushcfunction(L, M_L_EventsUnlisten);
+    lua_setfield(L, -2, "unlisten");
+    lua_setfield(L, -2, "events");
+
+    lua_pop(L, 1);
 }

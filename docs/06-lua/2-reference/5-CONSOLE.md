@@ -8,10 +8,10 @@ Module for interacting with the developer console.
 
 ### Functions
 
-- [lua]`TRX.Console.Log("string1")`  
+- [lua]`trx.console.log("string1")`  
     Logs a line to the developer console.
 
-- [lua]`TRX.Console.Eval("string"[, opts])`  
+- [lua]`trx.console.eval("string"[, opts])`  
    Evaluates a given string as a developer console command.
 
    By default, output from commands is silenced and only appears in the
@@ -19,9 +19,9 @@ Module for interacting with the developer console.
 
    Example:
    > ```lua
-   > TRX.Console.Eval("play 1", { verbose = true })
+   > trx.console.eval("play 1", { verbose = true })
    > ```
    will play the first level and show an according message in the console log.
 
-- [lua]`TRX.Console.Clear()`  
+- [lua]`trx.console.clear()`  
     Clears the console.

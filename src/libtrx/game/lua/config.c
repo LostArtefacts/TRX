@@ -3,7 +3,7 @@
 
 #include <lauxlib.h>
 
-// TRX.Config.Get(key)
+// trx.config.get(key)
 static int M_L_ConfigGet(lua_State *const L)
 {
     const char *const key = luaL_checkstring(L, 1);
@@ -16,7 +16,7 @@ static int M_L_ConfigGet(lua_State *const L)
     return 1;
 }
 
-// TRX.Config.Set(key, value)
+// trx.config.set(key, value)
 static int M_L_ConfigSet(lua_State *const L)
 {
     const char *const key = luaL_checkstring(L, 1);
@@ -33,7 +33,7 @@ static int M_L_ConfigSet(lua_State *const L)
     return 0;
 }
 
-// TRX.Config.List()
+// trx.config.list()
 static int M_L_ConfigList(lua_State *const L)
 {
     lua_newtable(L);
@@ -49,14 +49,14 @@ static int M_L_ConfigList(lua_State *const L)
 
 void LUA_CreateConfig(lua_State *const L)
 {
-    lua_getglobal(L, "TRX");
+    lua_getglobal(L, "trx");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_ConfigGet);
-    lua_setfield(L, -2, "Get");
+    lua_setfield(L, -2, "get");
     lua_pushcfunction(L, M_L_ConfigSet);
-    lua_setfield(L, -2, "Set");
+    lua_setfield(L, -2, "set");
     lua_pushcfunction(L, M_L_ConfigList);
-    lua_setfield(L, -2, "List");
-    lua_setfield(L, -2, "Config");
+    lua_setfield(L, -2, "list");
+    lua_setfield(L, -2, "config");
     lua_pop(L, 1);
 }

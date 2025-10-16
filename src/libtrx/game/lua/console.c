@@ -7,7 +7,7 @@
 
 #include <lauxlib.h>
 
-// TRX.Console.Log(...)
+// trx.console.log(...)
 static int M_L_ConsoleLog(lua_State *const L)
 {
     int nargs = lua_gettop(L);
@@ -26,14 +26,14 @@ static int M_L_ConsoleLog(lua_State *const L)
     return 0;
 }
 
-// TRX.Console.Clear()
+// trx.console.clear()
 static int M_L_ConsoleClear(lua_State *const L)
 {
     Console_Clear();
     return 0;
 }
 
-// TRX.Console.Eval(cmd, { verbose = true })
+// trx.console.eval(cmd, { verbose = true })
 static int M_L_ConsoleEval(lua_State *const L)
 {
     const char *cmd = luaL_checkstring(L, 1);
@@ -66,14 +66,14 @@ static int M_L_ConsoleEval(lua_State *const L)
 
 void LUA_CreateConsole(lua_State *const L)
 {
-    lua_getglobal(L, "TRX");
+    lua_getglobal(L, "trx");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_ConsoleLog);
-    lua_setfield(L, -2, "Log");
+    lua_setfield(L, -2, "log");
     lua_pushcfunction(L, M_L_ConsoleEval);
-    lua_setfield(L, -2, "Eval");
+    lua_setfield(L, -2, "eval");
     lua_pushcfunction(L, M_L_ConsoleClear);
-    lua_setfield(L, -2, "Clear");
-    lua_setfield(L, -2, "Console");
+    lua_setfield(L, -2, "clear");
+    lua_setfield(L, -2, "console");
     lua_pop(L, 1);
 }

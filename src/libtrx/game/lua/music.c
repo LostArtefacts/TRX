@@ -3,7 +3,7 @@
 
 #include <lauxlib.h>
 
-// TRX.Music.GetTrack()
+// trx.music.get_track()
 static int M_L_MusicGetTrack(lua_State *const L)
 {
     const MUSIC_ID track = Music_GetCurrentPlayingTrack();
@@ -15,7 +15,7 @@ static int M_L_MusicGetTrack(lua_State *const L)
     return 1;
 }
 
-// TRX.Music.PlayTrack(id[, opts])
+// trx.music.play_track(id[, opts])
 static int M_L_MusicPlayTrack(lua_State *const L)
 {
     const lua_Integer id = luaL_checkinteger(L, 1);
@@ -31,21 +31,21 @@ static int M_L_MusicPlayTrack(lua_State *const L)
     return 0;
 }
 
-// TRX.Music.Pause()
+// trx.music.pause()
 static int M_L_MusicPause(lua_State *const L)
 {
     Music_Pause();
     return 0;
 }
 
-// TRX.Music.Unpause()
+// trx.music.unpause()
 static int M_L_MusicUnpause(lua_State *const L)
 {
     Music_Unpause();
     return 0;
 }
 
-// TRX.Music.Stop()
+// trx.music.stop()
 static int M_L_MusicStop(lua_State *const L)
 {
     Music_Stop();
@@ -54,7 +54,7 @@ static int M_L_MusicStop(lua_State *const L)
 
 void LUA_CreateMusic(lua_State *const L)
 {
-    lua_getglobal(L, "TRX");
+    lua_getglobal(L, "trx");
     lua_newtable(L);
     lua_pushinteger(L, MPM_ALWAYS);
     lua_setfield(L, -2, "MPM_ALWAYS");
@@ -65,17 +65,17 @@ void LUA_CreateMusic(lua_State *const L)
     lua_pushinteger(L, MPM_TRACKED);
     lua_setfield(L, -2, "MPM_TRACKED");
     lua_pushcfunction(L, M_L_MusicGetTrack);
-    lua_setfield(L, -2, "GetTrack");
+    lua_setfield(L, -2, "get_track");
     lua_pushcfunction(L, M_L_MusicPlayTrack);
-    lua_setfield(L, -2, "PlayTrack");
+    lua_setfield(L, -2, "play_track");
     lua_pushcfunction(L, M_L_MusicPlayTrack);
-    lua_setfield(L, -2, "Play");
+    lua_setfield(L, -2, "play");
     lua_pushcfunction(L, M_L_MusicPause);
-    lua_setfield(L, -2, "Pause");
+    lua_setfield(L, -2, "pause");
     lua_pushcfunction(L, M_L_MusicUnpause);
-    lua_setfield(L, -2, "Unpause");
+    lua_setfield(L, -2, "unpause");
     lua_pushcfunction(L, M_L_MusicStop);
-    lua_setfield(L, -2, "Stop");
-    lua_setfield(L, -2, "Music");
+    lua_setfield(L, -2, "stop");
+    lua_setfield(L, -2, "music");
     lua_pop(L, 1);
 }
