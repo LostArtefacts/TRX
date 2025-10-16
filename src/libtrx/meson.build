@@ -54,7 +54,7 @@ dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
 dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
-dep_luajit = dependency('luajit', static: staticdeps)
+dep_lua = dependency('lua', static: staticdeps)
 c_compiler.check_header('uthash.h', required: true)
 
 dep_zlib = null_dep
@@ -231,7 +231,6 @@ sources = [
   'game/lua/lara.c',
   'game/lua/log.c',
   'game/lua/music.c',
-  'game/lua/polyfill.c',
   'game/lua/sound.c',
   'game/math/trig.c',
   'game/math/util.c',
@@ -546,7 +545,7 @@ dependencies = [
   dep_backtrace,
   dep_swresample,
   dep_swscale,
-  dep_luajit,
+  dep_lua,
   dep_zlib,
   dep_opengl,
 ]

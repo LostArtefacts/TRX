@@ -28,6 +28,11 @@ extern void LUA_CreateMusic(lua_State *L);
 extern void LUA_CreateSound(lua_State *L);
 extern void LUA_CreateConfig(lua_State *L);
 
+static int M_LoadFile(lua_State *const L, const char *const path)
+{
+    return luaL_loadfile(L, path);
+}
+
 // Shared loader+pcall helper for Eval/EvalFile to capture errors with source
 static LUA_RESULT M_LuaLoadAndRun(
     lua_State *const L, int (*const loader)(lua_State *, const char *),
@@ -101,7 +106,10 @@ LUA_RESULT Lua_Eval(const char *const code)
 LUA_RESULT Lua_EvalFile(const char *const path)
 {
     M_PRIV *const p = &m_Priv;
-    return M_LuaLoadAndRun(p->state, luaL_loadfile, path);
+    char *real_path = File_GetFullPath(path);
+    const LUA_RESULT result = M_LuaLoadAndRun(p->state, M_LoadFile, real_path);
+    Memory_FreePointer(&real_path);
+    return result;
 }
 
 void Lua_FreeResult(LUA_RESULT *const result)
