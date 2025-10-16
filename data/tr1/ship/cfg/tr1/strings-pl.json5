@@ -734,6 +734,9 @@
                 "Literki",
                 "Alfabet",
             ]
+        },
+        "winston": {
+            "name": "Winston",
         }
     },
     "game_strings": {

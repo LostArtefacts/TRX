@@ -28,6 +28,7 @@
         "data/injections/font.bin",
         "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
+        "data/injections/winston_model.bin",
     ],
 
     "levels": [

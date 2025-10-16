@@ -743,6 +743,9 @@
         },
         "alphabet": {
             "name": "Alphabet",
+        },
+        "winston": {
+            "name": "Winston",
         }
     },
     "game_strings": {

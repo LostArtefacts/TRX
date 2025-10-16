@@ -195,3 +195,4 @@ X_OBJ_NAME_DEFINE(O_TEMP_8,             "temp_8",             X_OBJ_NAMES("Temp 
 X_OBJ_NAME_DEFINE(O_TEMP_9,             "temp_9",             X_OBJ_NAMES("Temp 9"))
 X_OBJ_NAME_DEFINE(O_LARA_HAIR,          "lara_hair",          X_OBJ_NAMES("Lara's Braid"))
 X_OBJ_NAME_DEFINE(O_ALPHABET,           "alphabet",           X_OBJ_NAMES("Alphabet"))
+X_OBJ_NAME_DEFINE(O_WINSTON,            "winston",            X_OBJ_NAMES("Winston"))

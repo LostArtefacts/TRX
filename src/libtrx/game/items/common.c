@@ -5,7 +5,7 @@
 #include "game/game_buf.h"
 #include "game/game_flow.h"
 #include "game/lara/common.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
 #include "game/output/const.h"
 #include "game/rooms.h"
 #include "memory.h"
@@ -259,15 +259,8 @@ void Item_Kill(const int16_t item_num)
         lara->target = nullptr;
     }
 
-#if TR_VERSION == 1
-    item->hit_points = -1;
     item->flags |= IF_KILLED;
-#else
-    // NOTE: if changing this, test if GS(CMD_WINSTON_DEAD) works as expected
-    if (item_num < m_LevelItemCount) {
-        item->flags |= IF_KILLED;
-    }
-#endif
+
     if (item_num >= m_LevelItemCount) {
         item->next_item = m_NextItemFree;
         m_NextItemFree = item_num;

@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15.1...develop) - ××××-××-××
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
+- added a new easter egg command
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)
 - added support for object ID, music ID, sound ID, state ID and animation ID catalog overrides
     This lets the builders to choose which slots to use to provide the game with assets the game uses.
@@ -10,6 +11,7 @@
 - changed the bar appearance labels to better align with expectations (#4025)
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
+- fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
 - fixed ambient music not playing in demo levels (#4046, regression from 4.13)
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10

@@ -7,8 +7,9 @@
 #include "utils.h"
 
 // clang-format off
-#define WINSTON_RADIUS     (WALL_L / 10) // = 102
-#define WINSTON_STOP_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
+#define M_RADIUS     (WALL_L / 10) // = 102
+#define M_STOP_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
+#define M_SMARTNESS  0x7fff
 // clang-format on
 
 typedef enum {
@@ -17,7 +18,7 @@ typedef enum {
     WINSTON_STATE_STOP  = 1,
     WINSTON_STATE_WALK  = 2,
     // clang-format on
-} WINSTON_STATE;
+} M_STATE;
 
 static void M_Control(const int16_t item_num)
 {
@@ -39,11 +40,11 @@ static void M_Control(const int16_t item_num)
 
     if (item->current_anim_state == WINSTON_STATE_STOP) {
         if (item->goal_anim_state != WINSTON_STATE_WALK
-            && (info.distance > WINSTON_STOP_RANGE || info.ahead == 0)) {
+            && (info.distance > M_STOP_RANGE || info.ahead == 0)) {
             item->goal_anim_state = WINSTON_STATE_WALK;
             Sound_Effect(SFX_WINSTON_GRUNT_2, &item->pos, SPM_NORMAL);
         }
-    } else if (info.distance < WINSTON_STOP_RANGE) {
+    } else if (info.distance < M_STOP_RANGE) {
         if (info.ahead != 0) {
             item->goal_anim_state = WINSTON_STATE_STOP;
             if ((creature->flags & 1) != 0) {
@@ -81,8 +82,9 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
 
     obj->hit_points = DONT_TARGET;
-    obj->radius = WINSTON_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 4;
+    obj->smartness = M_SMARTNESS;
 
     obj->intelligent = true;
     obj->save_position = true;

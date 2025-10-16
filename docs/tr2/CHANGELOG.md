@@ -9,6 +9,7 @@
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
+- fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
 - fixed ambient music not playing in demo levels (#4046, regression from 1.3)
 
 ## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10

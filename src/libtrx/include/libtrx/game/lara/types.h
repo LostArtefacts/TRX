@@ -81,6 +81,7 @@ typedef struct {
     bool extra_anim;
     bool burn;
     bool climb_status;
+    bool killed_loyal_item;
 
     struct {
         int32_t item_num;

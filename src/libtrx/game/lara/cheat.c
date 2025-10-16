@@ -158,6 +158,11 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
         return false;
     }
 
+    if (Object_IsType(item->object_id, g_LoyalObjects)) {
+        LARA_INFO *const lara_info = Lara_GetLaraInfo();
+        lara_info->killed_loyal_item = true;
+    }
+
     Sound_Effect(SFX_EXPLOSION_1, &item->pos, SPM_NORMAL);
     Creature_Die(item_num, true);
     return true;
