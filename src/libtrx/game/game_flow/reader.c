@@ -283,7 +283,7 @@ static OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
     OBJECT_ID object_id;
     int32_t game_id = JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
     if (game_id != JSON_INVALID_NUMBER) {
-        object_id = Object_UnmapGameID(game_id);
+        object_id = Object_FromGameID(game_id);
     } else {
         const char *const object_key =
             JSON_ValueGetString(value, JSON_INVALID_STRING);

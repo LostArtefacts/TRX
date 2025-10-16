@@ -16,12 +16,9 @@ Before TR1X 4.16 and TR2X 1.6, all object IDs and music tracks were hardcoded.
 Now, builders can freely re‑assign those IDs however they want. In the future,
 the original lists will allow extensions by including objects from other games!
 
-Under the hood, every entity has a unique UUID that never changes. Entities
-shared across games (like the small medipack, Lara's braid object, or the
-secret music track) all share the same UUID, since they represent the same
-thing. The catalog maps numeric slots to these UUIDs, so when the engine
-references an entity, it can grab the correct sample or resource tied to that
-slot.
+Under the hood, each entity is identified by its stable name string. The catalog
+maps numeric slots to these name keys, so when the engine references an entity,
+it can grab the correct sample or resource tied to that slot.
 
 Catalogs are just comma‑separated value (CSV) files you can edit with any text
 editor, including Notepad or Excel. They live in the `cfg/` folder and must be

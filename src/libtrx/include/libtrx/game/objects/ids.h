@@ -4,7 +4,7 @@
 
 typedef enum {
     NO_OBJECT = -1,
-#define X_CATALOG_ID(uuid_str, enum_value) enum_value,
+#define X_CATALOG_ID(enum_value) enum_value,
 #include "../catalog_objects.def"
 #undef X_CATALOG_ID
     // sentinel

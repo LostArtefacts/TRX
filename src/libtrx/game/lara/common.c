@@ -886,7 +886,7 @@ void Lara_Push(
     }
 }
 
-LARA_ANIMATION Lara_AnimToGameId(const LARA_TRX_ANIMATION anim)
+LARA_ANIMATION Lara_AnimToGameID(const LARA_TRX_ANIMATION anim)
 {
     int32_t out;
     if (!Catalog_EnumToGameID(CATALOG_LARA_ANIMS, anim, &out)) {
@@ -895,7 +895,7 @@ LARA_ANIMATION Lara_AnimToGameId(const LARA_TRX_ANIMATION anim)
     return out;
 }
 
-LARA_STATE Lara_StateToGameId(const LARA_TRX_STATE state)
+LARA_STATE Lara_StateToGameID(const LARA_TRX_STATE state)
 {
     int32_t out;
     if (!Catalog_EnumToGameID(CATALOG_LARA_STATES, state, &out)) {
@@ -904,7 +904,7 @@ LARA_STATE Lara_StateToGameId(const LARA_TRX_STATE state)
     return out;
 }
 
-LARA_TRX_ANIMATION Lara_AnimFromGameId(const LARA_ANIMATION anim)
+LARA_TRX_ANIMATION Lara_AnimFromGameID(const LARA_ANIMATION anim)
 {
     int32_t out;
     if (!Catalog_GameIDToEnum(CATALOG_LARA_ANIMS, anim, &out)) {
@@ -913,7 +913,7 @@ LARA_TRX_ANIMATION Lara_AnimFromGameId(const LARA_ANIMATION anim)
     return out;
 }
 
-LARA_TRX_STATE Lara_StateFromGameId(const LARA_STATE state)
+LARA_TRX_STATE Lara_StateFromGameID(const LARA_STATE state)
 {
     int32_t out;
     if (!Catalog_GameIDToEnum(CATALOG_LARA_STATES, state, &out)) {

@@ -614,7 +614,7 @@ static JSON_ARRAY *M_DumpItems(void)
         const OBJECT *const obj = Object_Get(item->object_id);
 
         JSON_ObjectAppendInt(
-            item_obj, "obj_num", Object_MakeGameID(item->object_id));
+            item_obj, "obj_num", Object_ToGameID(item->object_id));
 
         if (obj->save_position) {
             DUMP_XYZ(item_obj, "pos", item->pos);
@@ -704,7 +704,7 @@ static JSON_ARRAY *M_DumpItems(void)
         while (drop_item != nullptr) {
             JSON_OBJECT *drop_obj = JSON_ObjectNew();
             JSON_ObjectAppendInt(
-                drop_obj, "object_id", Object_MakeGameID(drop_item->object_id));
+                drop_obj, "object_id", Object_ToGameID(drop_item->object_id));
             DUMP_XYZ(drop_obj, "pos", drop_item->pos);
             JSON_ObjectAppendInt(drop_obj, "y_rot", drop_item->rot.y);
             JSON_ObjectAppendInt(drop_obj, "room_num", drop_item->room_num);
@@ -793,7 +793,7 @@ static JSON_ARRAY *M_DumpEffects(void)
         DUMP_XYZ(fx_obj, "rot", effect->rot);
         JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
         JSON_ObjectAppendInt(
-            fx_obj, "object_number", Object_MakeGameID(effect->object_id));
+            fx_obj, "object_number", Object_ToGameID(effect->object_id));
         JSON_ObjectAppendInt(fx_obj, "speed", effect->speed);
         JSON_ObjectAppendInt(fx_obj, "fall_speed", effect->fall_speed);
         JSON_ObjectAppendInt(fx_obj, "frame_number", effect->frame_num);
@@ -863,7 +863,7 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
         const OBJECT *const obj = Object_Get(item->object_id);
 
         const OBJECT_ID obj_id =
-            Object_UnmapGameID(JSON_ObjectGetInt(item_obj, "obj_num", -1));
+            Object_FromGameID(JSON_ObjectGetInt(item_obj, "obj_num", -1));
         if (!M_IsValidItemObject(obj_id, item->object_id)) {
             LOG_ERROR(
                 "Malformed save: expected object %d, got %d", item->object_id,
@@ -1028,7 +1028,7 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
                     JSON_OBJECT *const carried_item_obj =
                         JSON_ArrayGetObject(carried_items, j);
                     carried_item->object_id =
-                        Object_UnmapGameID(JSON_ObjectGetInt(
+                        Object_FromGameID(JSON_ObjectGetInt(
                             carried_item_obj, "object_id",
                             carried_item->object_id));
                     LOAD_XYZ(carried_item_obj, "pos", carried_item->pos);
@@ -1170,7 +1170,7 @@ static bool M_LoadEffects(JSON_ARRAY *const fx_arr)
             LOAD_XYZ(fx_obj, "pos", effect->pos);
             LOAD_XYZ(fx_obj, "rot", effect->rot);
             effect->room_num = room_num;
-            effect->object_id = Object_UnmapGameID(
+            effect->object_id = Object_FromGameID(
                 JSON_ObjectGetInt(fx_obj, "object_number", NO_OBJECT));
             effect->speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
             effect->fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
@@ -1284,7 +1284,7 @@ static JSON_OBJECT *M_DumpLara(void)
     JSON_ObjectAppendInt(
         lara_obj, "vehicle_item_number", Lara_Vehicle_GetIndex());
     JSON_ObjectAppendInt(
-        lara_obj, "back_gun_obj_id", Object_MakeGameID(lara->back_gun_obj_id));
+        lara_obj, "back_gun_obj_id", Object_ToGameID(lara->back_gun_obj_id));
     JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare.frame_num);
     JSON_ObjectAppendInt(lara_obj, "mesh_effects", lara->mesh_effects);
     JSON_ObjectAppendInt(
@@ -1328,7 +1328,7 @@ static JSON_OBJECT *M_DumpLara(void)
         JSON_OBJECT *const weapon_obj = JSON_ObjectNew();
         const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         JSON_ObjectAppendInt(
-            weapon_obj, "obj_id", Object_MakeGameID(weapon_item->object_id));
+            weapon_obj, "obj_id", Object_ToGameID(weapon_item->object_id));
         JSON_ObjectAppendInt(weapon_obj, "anim_num", weapon_item->anim_num);
         JSON_ObjectAppendInt(weapon_obj, "frame_num", weapon_item->frame_num);
         JSON_ObjectAppendInt(
@@ -1421,7 +1421,7 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     lara->hit_effect_count =
         JSON_ObjectGetInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     lara->flare.age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare.age);
-    lara->back_gun_obj_id = Object_UnmapGameID(
+    lara->back_gun_obj_id = Object_FromGameID(
         JSON_ObjectGetInt(lara_obj, "back_gun_obj_id", lara->back_gun_obj_id));
     lara->flare.frame_num =
         JSON_ObjectGetInt(lara_obj, "flare_frame", lara->flare.frame_num);
@@ -1522,7 +1522,7 @@ static bool M_LoadLara(JSON_OBJECT *const lara_obj)
     if (weapon_obj != nullptr) {
         lara->gun_item_num = Item_Create();
         ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        weapon_item->object_id = Object_UnmapGameID(
+        weapon_item->object_id = Object_FromGameID(
             JSON_ObjectGetInt(weapon_obj, "obj_id", weapon_item->object_id));
         weapon_item->anim_num =
             JSON_ObjectGetInt(weapon_obj, "anim_num", weapon_item->anim_num);

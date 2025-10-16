@@ -6,10 +6,10 @@
 #include "enum.h"
 #include "types.h"
 
-#define LA(anim) Lara_AnimToGameId(anim)
-#define LA_U(anim) Lara_AnimFromGameId(anim)
-#define LS(state) Lara_StateToGameId(state)
-#define LS_U(state) Lara_StateFromGameId(state)
+#define LA(anim) Lara_AnimToGameID(anim)
+#define LA_U(anim) Lara_AnimFromGameID(anim)
+#define LS(state) Lara_StateToGameID(state)
+#define LS_U(state) Lara_StateFromGameID(state)
 
 LARA_INFO *Lara_GetLaraInfo(void);
 ITEM *Lara_GetItem(void);
@@ -37,7 +37,7 @@ void Lara_AlignPosition(const ITEM *item, const XYZ_32 *vec);
 bool Lara_MovePosition(const ITEM *item, const XYZ_32 *vec);
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
 
-LARA_ANIMATION Lara_AnimToGameId(LARA_TRX_ANIMATION anim);
-LARA_STATE Lara_StateToGameId(LARA_TRX_STATE state);
-LARA_TRX_ANIMATION Lara_AnimFromGameId(LARA_ANIMATION anim);
-LARA_TRX_STATE Lara_StateFromGameId(LARA_STATE state);
+LARA_ANIMATION Lara_AnimToGameID(LARA_TRX_ANIMATION anim);
+LARA_STATE Lara_StateToGameID(LARA_TRX_STATE state);
+LARA_TRX_ANIMATION Lara_AnimFromGameID(LARA_ANIMATION anim);
+LARA_TRX_STATE Lara_StateFromGameID(LARA_STATE state);
