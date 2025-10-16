@@ -1,7 +1,7 @@
 CWD := `pwd`
 HOST_USER_UID := `id -u`
 HOST_USER_GID := `id -g`
-DOCKER_IMAGE_VERSION := "20251017"
+DOCKER_IMAGE_VERSION := "20251017.rev1"
 
 default: (tr1-build-win "debug") (tr2-build-win "debug")
 

@@ -150,31 +150,19 @@ RUN mkdir -p /ext/lib \
     && make install
 RUN sed -i "s/Cflags: .*/\\0 -DGLEW_STATIC/" /ext/lib/pkgconfig/glew.pc
 
+## Lua
+FROM mingw AS lua
+RUN apt-get update && apt-get install -y wget build-essential
+RUN wget https://www.lua.org/ftp/lua-5.4.8.tar.gz \
+    && tar xzf lua-5.4.8.tar.gz \
+    && cd lua-5.4.8 \
+    && make mingw CROSS=i686-w64-mingw32- CC="i686-w64-mingw32-gcc" \
+    && make INSTALL_TOP=/ext TO_BIN="lua.exe luac.exe" install
 
+# Provide pkg-config file for Lua
+RUN mkdir -p /ext/lib/pkgconfig
+COPY tools/shared/docker/lua.pc /ext/lib/pkgconfig/lua.pc
 
-# LuaJIT
-FROM mingw AS luajit
-RUN apt-get update && apt-get install -y gcc-multilib
-RUN git clone https://github.com/LuaJIT/LuaJIT.git \
-    && cd LuaJIT \
-    && make amalg PREFIX=/ext HOST_CC='gcc -m32' CROSS=i686-w64-mingw32- TARGET_SYS=Windows BUILDMODE=static -j4
-RUN cd LuaJIT \
-    && mkdir -p /ext/bin \
-    && mkdir -p /ext/lib \
-    && mkdir -p /ext/include/luajit-2.1 \
-    && mkdir -p /ext/lib/pkgconfig \
-    && cp src/libluajit.a /ext/lib/libluajit-5.1.a \
-    && cp src/lauxlib.h /ext/include/luajit-2.1/ \
-    && cp src/lua.h /ext/include/luajit-2.1/ \
-    && cp src/lua.hpp /ext/include/luajit-2.1/ \
-    && cp src/luaconf.h /ext/include/luajit-2.1/ \
-    && cp src/luajit.h /ext/include/luajit-2.1/ \
-    && cp src/lualib.h /ext/include/luajit-2.1/ \
-    && cp etc/luajit.pc /ext/lib/pkgconfig/ \
-    && sed -i 's/\/usr\/local/\/ext/' /ext/lib/pkgconfig/luajit.pc \
-    && sed -i '/Libs\.private/d' /ext/lib/pkgconfig/luajit.pc
-# COPY luajit.pc /ext/lib/pkgconfig/luajit.pc
-ENTRYPOINT /bin/bash
 
 
 
@@ -198,13 +186,13 @@ RUN apt-get install -y \
         meson \
         ninja
 
+COPY --from=lua /ext/ /ext/
 COPY --from=pcre2 /ext/ /ext/
 COPY --from=zlib /ext/ /ext/
 COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 COPY --from=uthash /ext/ /ext/
 COPY --from=glew /ext/ /ext/
-COPY --from=luajit /ext/ /ext/
 
 ENV PKG_CONFIG_LIBDIR=/ext/lib/
 ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/

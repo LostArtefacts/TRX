@@ -120,15 +120,20 @@ RUN mkdir -p /ext/lib \
     && make install
 RUN sed -i "s/Cflags: .*/\\0 -DGLEW_STATIC /" /ext/lib/pkgconfig/glew.pc
 
+## Lua
+FROM base AS lua
+RUN apt-get update && apt-get install -y wget build-essential libreadline-dev
+RUN wget https://www.lua.org/ftp/lua-5.4.8.tar.gz \
+    && tar xzf lua-5.4.8.tar.gz \
+    && cd lua-5.4.8 \
+    && make linux \
+    && make INSTALL_TOP=/ext install
+
+# Provide pkg-config file for Lua
+RUN mkdir -p /ext/lib/pkgconfig
+COPY tools/shared/docker/lua.pc /ext/lib/pkgconfig/lua.pc
 
 
-# LuaJIT
-FROM base AS luajit
-RUN apt-get install -y git gcc \
-    && git clone https://github.com/LuaJIT/LuaJIT.git \
-    && cd LuaJIT \
-    && make PREFIX=/ext -j4 \
-    && make install PREFIX=/ext
 
 
 
@@ -159,16 +164,16 @@ RUN apt-get install -y \
         ninja
 # Regular dependencies
 RUN apt-get install -y \
-        upx \
-        uthash-dev
+    upx \
+    uthash-dev
 
-# manually built dependencies
+## manually built dependencies
+COPY --from=lua /ext/ /ext/
 COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 COPY --from=backtrace /ext/ /ext/
 COPY --from=pcre2 /ext/ /ext/
 COPY --from=glew /ext/ /ext/
-COPY --from=luajit /ext/ /ext/
 
 ENV PYTHONPATH=/app/tools/
 ENTRYPOINT ["/app/tools/shared/docker/game-linux/entrypoint.sh"]

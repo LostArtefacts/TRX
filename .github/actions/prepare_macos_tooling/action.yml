@@ -71,10 +71,10 @@ runs:
       shell: bash
       run: sudo port -N install libsdl2 +universal
 
-    - name: "Build dependency: luajit (universal)"
+    - name: "Build dependency: lua (universal)"
       if: steps.restore-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: sudo port -N install luajit +universal
+      run: sudo port -N install lua +universal
 
     - name: "Build dependency: uthash (universal)"
       if: steps.restore-cache.outputs.cache-hit != 'true'

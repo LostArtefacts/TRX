@@ -1,6 +1,5 @@
 #include "game/items.h"
 #include "game/lua/common.h"
-#include "game/lua/polyfill.h"
 #include "game/rooms.h"
 #include "utils.h"
 
