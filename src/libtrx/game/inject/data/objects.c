@@ -46,7 +46,7 @@ static void M_ReadObject(const INJECTION_CHUNK chunk)
 {
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
     const INJECTION_OBJECT_INFO obj_info =
-        Inject_ReadObjectPtr(chunk.injection->fp);
+        Inject_ReadObjectPtr(chunk.injection);
     OBJECT *const obj = Object_Get(obj_info.id);
 
     const int16_t num_meshes = VFile_ReadS16(chunk.injection->fp);

@@ -8,8 +8,7 @@ static void M_FrameEdits(
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const INJECTION_OBJECT_INFO obj_info =
-            Inject_ReadObjectPtr(injection->fp);
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const int32_t anim_idx = VFile_ReadS32(injection->fp);
         const int32_t packed_rot = VFile_ReadS32(injection->fp);
 
@@ -31,8 +30,7 @@ static void M_FrameReplacements(
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const INJECTION_OBJECT_INFO obj_info =
-            Inject_ReadObjectPtr(injection->fp);
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const OBJECT *const obj = Object_Get(obj_info.id);
         const int32_t num_anims = VFile_ReadS32(injection->fp);
         for (int32_t j = 0; j < num_anims; j++) {
