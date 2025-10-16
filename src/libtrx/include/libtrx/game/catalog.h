@@ -1,7 +1,5 @@
 #pragma once
 
-#include "uuid.h"
-
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -18,18 +16,15 @@ typedef enum CATALOG_CONTEXT {
 typedef int32_t CATALOG_ID;
 
 // Load mappings for a specific context from a CSV file of the form:
-// uuid,game_id[,comment]
+// game_id,name[,comment]
 // A game_id of -1 indicates no mapping for that entry.
 // Returns true on success.
 bool Catalog_Load(CATALOG_CONTEXT context, const char *csv_path);
 
-// Convert a UUID to its CATALOG_ID within a context.
+// Convert an item name to its CATALOG_ID within a context.
 // Returns false if not found.
-bool Catalog_UUIDToEnum(CATALOG_CONTEXT context, UUID uuid, CATALOG_ID *out_id);
-
-// Convert a CATALOG_ID to its UUID within a context.
-// Returns nullptr if invalid.
-const UUID *Catalog_EnumToUUID(CATALOG_CONTEXT context, CATALOG_ID id);
+bool Catalog_NameToEnum(
+    CATALOG_CONTEXT context, const char *name, CATALOG_ID *out_id);
 
 // Convert a CATALOG_ID to its game-specific ID within a context.
 // Returns false if unmapped.

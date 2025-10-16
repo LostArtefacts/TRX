@@ -8,7 +8,7 @@ typedef enum {
 
 typedef enum {
     MX_TRX_INVALID = -1,
-#define X_CATALOG_ID(uuid_str, enum_value) enum_value,
+#define X_CATALOG_ID(enum_value) enum_value,
 #include "../catalog_music.def"
 #undef X_CATALOG_ID
     MX_NUMBER_OF,

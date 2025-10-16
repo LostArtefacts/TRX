@@ -9,34 +9,32 @@
 #include "memory.h"
 
 #include <ctype.h>
+#include <string.h>
 #include <uthash.h>
 
-// Compile-time table of catalog IDs and their UUID strings
+// Compile-time table of catalog IDs and their name strings
 typedef struct {
     CATALOG_CONTEXT context;
     CATALOG_ID id;
-    const char *uuid_str;
+    const char *name_str;
 } M_ENTRY;
 
 static const M_ENTRY m_CatalogEntryDefs[] = {
-#define X_CATALOG_ID(uuid_str, enum_value)                                     \
-    { CATALOG_MUSIC, enum_value, uuid_str },
+#define X_CATALOG_ID(enum_value) { CATALOG_MUSIC, enum_value, #enum_value },
 #include "game/catalog_music.def"
 #undef X_CATALOG_ID
-#define X_CATALOG_ID(uuid_str, enum_value)                                     \
-    { CATALOG_OBJECTS, enum_value, uuid_str },
+#define X_CATALOG_ID(enum_value) { CATALOG_OBJECTS, enum_value, #enum_value },
 #include "game/catalog_objects.def"
 #undef X_CATALOG_ID
-#define X_CATALOG_ID(uuid_str, enum_value)                                     \
-    { CATALOG_SAMPLES, enum_value, uuid_str },
+#define X_CATALOG_ID(enum_value) { CATALOG_SAMPLES, enum_value, #enum_value },
 #include "game/catalog_samples.def"
 #undef X_CATALOG_ID
-#define X_CATALOG_ID(uuid_str, enum_value)                                     \
-    { CATALOG_LARA_STATES, enum_value, uuid_str },
+#define X_CATALOG_ID(enum_value)                                               \
+    { CATALOG_LARA_STATES, enum_value, #enum_value },
 #include "game/catalog_lara_states.def"
 #undef X_CATALOG_ID
-#define X_CATALOG_ID(uuid_str, enum_value)                                     \
-    { CATALOG_LARA_ANIMS, enum_value, uuid_str },
+#define X_CATALOG_ID(enum_value)                                               \
+    { CATALOG_LARA_ANIMS, enum_value, #enum_value },
 #include "game/catalog_lara_anims.def"
 #undef X_CATALOG_ID
 };
@@ -45,13 +43,13 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
 static const size_t m_CatalogEntryCount =
     sizeof(m_CatalogEntryDefs) / sizeof(m_CatalogEntryDefs[0]);
 
-// Internal map from UUID to CATALOG_ID
+// Internal map from name to CATALOG_ID
 typedef struct {
-    UUID uuid;
+    const char *name_str;
     int32_t enum_value;
     UT_hash_handle hh;
-} M_UUID_ENTRY;
-static M_UUID_ENTRY *m_UUID2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
+} M_NAME_ENTRY;
+static M_NAME_ENTRY *m_Name2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
 // Internal map from game ID to CATALOG_ID
 typedef struct {
@@ -61,23 +59,11 @@ typedef struct {
 } M_GAME_ID_ENTRY;
 static M_GAME_ID_ENTRY *m_GameID2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
-// Parsed UUIDs and game IDs arrays (dynamically sized)
-static UUID **m_CatalogUUIDs = nullptr;
+// Parsed game IDs arrays (dynamically sized)
 static int32_t **m_CatalogGameIDs = nullptr;
 
 // State flag
 static bool m_Initialized = false;
-
-// Helper: clear UUID->enum map
-static void M_ClearUUIDMap(M_UUID_ENTRY **const map)
-{
-    M_UUID_ENTRY *cur, *tmp;
-    HASH_ITER(hh, *map, cur, tmp)
-    {
-        HASH_DEL(*map, cur);
-        Memory_Free(cur);
-    }
-}
 
 // Helper: clear game_id->enum map
 static void M_ClearGameIDMap(M_GAME_ID_ENTRY **const map)
@@ -90,60 +76,14 @@ static void M_ClearGameIDMap(M_GAME_ID_ENTRY **const map)
     }
 }
 
-// Parse a single hex digit
-static bool M_HexCharValue(const char c, uint8_t *const val)
+// Helper: clear name->enum map
+static void M_ClearNameMap(M_NAME_ENTRY **const map)
 {
-    if (c >= '0' && c <= '9') {
-        *val = c - '0';
-        return true;
-    }
-    if (c >= 'a' && c <= 'f') {
-        *val = c - 'a' + 10;
-        return true;
-    }
-    if (c >= 'A' && c <= 'F') {
-        *val = c - 'A' + 10;
-        return true;
-    }
-    return false;
-}
-
-// Parse UUID string into binary format
-static void M_ParseUUIDString(const char *str, UUID *const uuid_out)
-{
-    if (str == nullptr || *str == '\0') {
-        memset(uuid_out->bytes, 0, 16);
-        return;
-    }
-
-    // UUID field sizes
-    const int32_t field_sizes[] = { 4, 2, 2, 2, 6 };
-    uint8_t *byte_ptr = uuid_out->bytes;
-
-    for (int32_t field = 0; field < 5; field++) {
-        const int32_t num_bytes = field_sizes[field];
-
-        for (int32_t i = 0; i < num_bytes; i++) {
-            while (*str == '-') {
-                str++;
-            }
-
-            uint8_t hi, lo;
-            if (!M_HexCharValue(*str++, &hi) || !M_HexCharValue(*str++, &lo)) {
-                memset(uuid_out->bytes, 0, 16);
-                return;
-            }
-
-            // For fields 0, 1, and 2, handle endianness swap
-            if (field < 3) {
-                byte_ptr[num_bytes - 1 - i] = (hi << 4) | lo;
-            } else {
-                byte_ptr[i] = (hi << 4) | lo;
-            }
-        }
-
-        // Move the pointer forward for each field size
-        byte_ptr += num_bytes;
+    M_NAME_ENTRY *cur, *tmp;
+    HASH_ITER(hh, *map, cur, tmp)
+    {
+        HASH_DEL(*map, cur);
+        Memory_Free(cur);
     }
 }
 
@@ -202,29 +142,23 @@ static void M_ParseCSVField(
 // Build initial maps on first load
 static void M_Initialize(void)
 {
-    size_t count = m_CatalogEntryCount;
-    m_CatalogUUIDs =
-        Memory_Alloc(sizeof(*m_CatalogUUIDs) * CATALOG_CONTEXT_MAX);
+    const size_t count = m_CatalogEntryCount;
     m_CatalogGameIDs =
         Memory_Alloc(sizeof(*m_CatalogGameIDs) * CATALOG_CONTEXT_MAX);
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
-        m_CatalogUUIDs[ctx] =
-            Memory_Alloc(sizeof(*m_CatalogUUIDs[ctx]) * count);
         m_CatalogGameIDs[ctx] =
             Memory_Alloc(sizeof(*m_CatalogGameIDs[ctx]) * count);
     }
     for (size_t idx = 0; idx < count; idx++) {
-        CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
-        CATALOG_ID id = m_CatalogEntryDefs[idx].id;
-        M_ParseUUIDString(
-            m_CatalogEntryDefs[idx].uuid_str, &m_CatalogUUIDs[ctx][id]);
+        const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
+        const CATALOG_ID id = m_CatalogEntryDefs[idx].id;
         m_CatalogGameIDs[ctx][id] = -1;
-        M_UUID_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
-        entry->uuid = m_CatalogUUIDs[ctx][id];
+        M_NAME_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
+        entry->name_str = m_CatalogEntryDefs[idx].name_str;
         entry->enum_value = id;
-        HASH_ADD(
-            hh, m_UUID2EnumMap[ctx], uuid.bytes, sizeof(entry->uuid.bytes),
-            entry);
+        HASH_ADD_KEYPTR(
+            hh, m_Name2EnumMap[ctx], entry->name_str,
+            (uint32_t)strlen(entry->name_str), entry);
     }
     m_Initialized = true;
 }
@@ -256,18 +190,16 @@ bool Catalog_Load(const CATALOG_CONTEXT context, const char *const csv_path)
             continue;
         }
         const char *p = line;
-        char uuid_buf[64];
         char id_buf[32];
-        M_ParseCSVField(&p, uuid_buf, sizeof(uuid_buf));
+        char name_buf[64];
         M_ParseCSVField(&p, id_buf, sizeof(id_buf));
-        char *const uuid_str = M_StrTrim(uuid_buf);
+        M_ParseCSVField(&p, name_buf, sizeof(name_buf));
         char *const id_str = M_StrTrim(id_buf);
-        int32_t game_id = (int32_t)strtol(id_str, nullptr, 10);
-        UUID uuid;
-        M_ParseUUIDString(uuid_str, &uuid);
+        char *const name_str = M_StrTrim(name_buf);
+        const int32_t game_id = (int32_t)strtol(id_str, nullptr, 10);
 
         CATALOG_ID id;
-        if (!Catalog_UUIDToEnum(context, uuid, &id)) {
+        if (!Catalog_NameToEnum(context, name_str, &id)) {
             continue;
         }
 
@@ -290,26 +222,16 @@ bool Catalog_Load(const CATALOG_CONTEXT context, const char *const csv_path)
     return true;
 }
 
-bool Catalog_UUIDToEnum(
-    const CATALOG_CONTEXT context, const UUID uuid, CATALOG_ID *const out_id)
+bool Catalog_NameToEnum(
+    const CATALOG_CONTEXT context, const char *name, CATALOG_ID *const out_id)
 {
-    M_UUID_ENTRY *entry = nullptr;
-    HASH_FIND(
-        hh, m_UUID2EnumMap[context], uuid.bytes, sizeof(uuid.bytes), entry);
+    M_NAME_ENTRY *entry = nullptr;
+    HASH_FIND_STR(m_Name2EnumMap[context], name, entry);
     if (entry != nullptr) {
         *out_id = (CATALOG_ID)entry->enum_value;
         return true;
     }
     return false;
-}
-
-const UUID *Catalog_EnumToUUID(
-    const CATALOG_CONTEXT context, const CATALOG_ID id)
-{
-    if (id < 0 || (size_t)id >= m_CatalogEntryCount) {
-        return nullptr;
-    }
-    return &m_CatalogUUIDs[context][id];
 }
 
 bool Catalog_EnumToGameID(
@@ -347,13 +269,10 @@ void Catalog_Shutdown(void)
     }
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
-        M_ClearUUIDMap(&m_UUID2EnumMap[ctx]);
-        Memory_Free(m_CatalogUUIDs[ctx]);
+        M_ClearNameMap(&m_Name2EnumMap[ctx]);
         Memory_Free(m_CatalogGameIDs[ctx]);
     }
-    Memory_Free(m_CatalogUUIDs);
     Memory_Free(m_CatalogGameIDs);
-    m_CatalogUUIDs = nullptr;
     m_CatalogGameIDs = nullptr;
     m_Initialized = false;
 }

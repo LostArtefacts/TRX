@@ -6,13 +6,11 @@ INJECTION_OBJECT_INFO Inject_ReadObjectPtr(VFILE *const fp)
 {
     INJECTION_OBJECT_INFO obj_info = {
         .type = VFile_ReadS32(fp),
-        .id = VFile_ReadS32(fp),
+        .id = Object_FromGameID(VFile_ReadS32(fp)),
     };
 
     if (obj_info.type == OBJ_TYPE_OBJECT) {
-        UUID uuid;
-        VFile_Read(fp, uuid.bytes, sizeof(UUID));
-        obj_info.id = Object_UnmapUUID(uuid);
+        VFile_Skip(fp, 16);
     }
 
     return obj_info;

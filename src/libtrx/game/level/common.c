@@ -1008,7 +1008,7 @@ void Level_ReadSpriteSequences(
     int32_t max_obj_id = -1;
     const int32_t object_count = M_GetObjectCount(loader);
     for (OBJECT_ID obj_id = O_FIRST; obj_id <= object_count; obj_id++) {
-        max_obj_id = MAX(max_obj_id, Object_MakeGameID(obj_id));
+        max_obj_id = MAX(max_obj_id, Object_ToGameID(obj_id));
     }
 
     BENCHMARK benchmark = Benchmark_Start();
@@ -1175,7 +1175,7 @@ void Level_ReadItems(const LEVEL_LOADER *const loader, VFILE *const file)
     for (int32_t i = 0; i < num_items; i++) {
         ITEM *const item = Item_Get(i);
         const int16_t obj_id = VFile_ReadS16(file);
-        item->object_id = Object_UnmapGameID(obj_id);
+        item->object_id = Object_FromGameID(obj_id);
         if (item->object_id == NO_OBJECT) {
             Shell_ExitSystemFmt("Bad object number (%d) on item %d", obj_id, i);
             goto finish;

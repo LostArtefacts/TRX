@@ -48,16 +48,7 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
 {
-    OBJECT_ID object_id = Object_UnmapGameID(game_id);
-    if (object_id == NO_OBJECT) {
-        return nullptr;
-    }
-    return &m_Objects[object_id];
-}
-
-OBJECT *Object_GetByUUID(const UUID uuid)
-{
-    OBJECT_ID object_id = Object_UnmapUUID(uuid);
+    OBJECT_ID object_id = Object_FromGameID(game_id);
     if (object_id == NO_OBJECT) {
         return nullptr;
     }
@@ -74,7 +65,7 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
     return &m_StaticObjects2D[static_id];
 }
 
-OBJECT_ID Object_UnmapGameID(const int32_t game_id)
+OBJECT_ID Object_FromGameID(const int32_t game_id)
 {
     int32_t out;
     if (Catalog_GameIDToEnum(CATALOG_OBJECTS, game_id, &out)) {
@@ -83,16 +74,7 @@ OBJECT_ID Object_UnmapGameID(const int32_t game_id)
     return NO_OBJECT;
 }
 
-OBJECT_ID Object_UnmapUUID(const UUID uuid)
-{
-    CATALOG_ID out;
-    if (Catalog_UUIDToEnum(CATALOG_OBJECTS, uuid, &out)) {
-        return (OBJECT_ID)out;
-    }
-    return NO_OBJECT;
-}
-
-int32_t Object_MakeGameID(const OBJECT_ID object_id)
+int32_t Object_ToGameID(const OBJECT_ID object_id)
 {
     int32_t out;
     if (Catalog_EnumToGameID(CATALOG_OBJECTS, object_id, &out)) {

@@ -2,9 +2,9 @@
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)
-- added support for object ID, music ID, sound ID, state ID and animation ID catalog overrides
-    This lets the builders to choose which slots to use to provide the game with assets the game uses.
-    In the future, this feature can be used to get "hard-coded" TR2 sounds to work in TR1, and vice versa.
+- added support for object, music, sound, Lara state, and Lara animation slots overrides through CSV catalogs  
+    Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
+    This feature is experimental — complex objects such as the dragon or Skidoos may not behave correctly. Please report any bugs encountered.  
     See [the documentation](../07-CATALOGS.md) for details.
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
