@@ -12,8 +12,8 @@ This will adjust all bats starting HP to be 20 hitpoints.
 local O_BAT = 9;
 
 trx.events.listen(trx.event_type.LEVEL_LOAD, function(level)
-  for i = 1, trx.items.count() do
-    local item = trx.items.get(i)
+  for i = 1, #trx.items do
+    local item = trx.items[i]
     if item.object_id == O_BAT then
       item.hit_points = 20
       item.max_hit_points = 20

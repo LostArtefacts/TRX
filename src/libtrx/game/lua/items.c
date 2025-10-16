@@ -5,6 +5,7 @@
 #include "utils.h"
 
 #include <lauxlib.h>
+#include <string.h>
 
 // Registry-based getters/setters for trx.items.Item
 // Define C getters and setters for each field and register in init
@@ -196,14 +197,14 @@ static int M_L_ItemNewIndex(lua_State *const L)
     return luaL_error(L, "Cannot set field '%s' on trx.items.Item", key);
 }
 
-// item_count = trx.items.count()
+// item_count = #trx.items
 static int M_L_ItemsCount(lua_State *const L)
 {
     lua_pushinteger(L, Item_GetTotalCount());
     return 1;
 }
 
-// item = trx.items.get(idx) or trx.items.get(name)
+// item = trx.items.fn.get(idx) or trx.items.fn.get(name)
 static int M_L_ItemsGet(lua_State *const L)
 {
     const ITEM *item = nullptr;
@@ -222,6 +223,29 @@ static int M_L_ItemsGet(lua_State *const L)
         luaL_getmetatable(L, "trx.items.Item");
         lua_setmetatable(L, -2);
     }
+    return 1;
+}
+
+// Lua metamethod: __index for trx.items (items table)
+static int M_L_ItemsIndex(lua_State *const L)
+{
+    int type = lua_type(L, 2);
+    if (type == LUA_TSTRING) {
+        const char *key = luaL_checkstring(L, 2);
+        if (strcmp(key, "fn") == 0) {
+            luaL_getsubtable(L, LUA_REGISTRYINDEX, "trx.items.methods");
+            return 1;
+        }
+    }
+    if (type == LUA_TNUMBER || type == LUA_TSTRING) {
+        lua_pushcfunction(L, M_L_ItemsGet);
+        lua_pushvalue(L, 2);
+        lua_call(L, 1, 1);
+        return 1;
+    }
+    luaL_getsubtable(L, LUA_REGISTRYINDEX, "trx.items.methods");
+    lua_pushvalue(L, 2);
+    lua_rawget(L, -2);
     return 1;
 }
 
@@ -244,11 +268,33 @@ void LUA_CreateItems(lua_State *const L)
     lua_pop(L, 1);
 
     lua_getglobal(L, "trx");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_ItemsGet);
-    lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, M_L_ItemsCount);
-    lua_setfield(L, -2, "count");
+
+    // create metatable for items object
+    if (luaL_newmetatable(L, "trx.items")) {
+        // register methods table in registry
+        lua_newtable(L);
+        lua_pushcfunction(L, M_L_ItemsGet);
+        lua_setfield(L, -2, "get");
+        lua_setfield(L, LUA_REGISTRYINDEX, "trx.items.methods");
+
+        // __len metamethod for #trx.items
+        lua_pushcfunction(L, M_L_ItemsCount);
+        lua_setfield(L, -2, "__len");
+
+        // __index metamethod for trx.items
+        lua_pushcfunction(L, M_L_ItemsIndex);
+        lua_setfield(L, -2, "__index");
+    }
+    lua_pop(L, 1);
+
+    // now create userdata instance
+    lua_newuserdata(L, 0);
+    luaL_getmetatable(L, "trx.items");
+    lua_setmetatable(L, -2);
+
+    // attach it into trx
     lua_setfield(L, -2, "items");
+
+    // leave stack clean
     lua_pop(L, 1);
 }

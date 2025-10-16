@@ -32,14 +32,26 @@ Module for controlling all moveables behavior.
 
 ### Functions
 
-- [lua]`trx.items.count()`  
+-- Uses Lua length operator on the items table:
+- [lua]`#trx.items`  
   Returns the total number of allocated items.
 
-- [lua]`trx.items.get(arg)`  
+- [lua]`trx.items[num]`  
+  [lua]`trx.items["name"]`  
   Retrieves the [lua]`trx.items.Item` at the given 1-based index or with the given `name`, or `nil` if out of range/not found.  
+
   Example:
-```lua
-local item = trx.items.get(1)
-item.name = "lara"
-local lara = trx.items.get("lara")
-```
+  ```lua
+  local item = trx.items[1]
+  item.name = "lara"
+  local lara = trx.items["lara"]
+  ```
+
+- [lua]`trx.items.fn.get(arg)`  
+  Alias of `trx.items[arg]`.
+
+  Example:
+  ```lua
+  local item_hp = trx.items.fn.get(17).hit_points
+  local lara_hp = trx.items.fn.get("lara").hit_points
+  ```
