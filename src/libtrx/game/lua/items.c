@@ -203,31 +203,21 @@ static int M_L_ItemsCount(lua_State *const L)
     return 1;
 }
 
-// item = TRX.Items.Get(idx)
+// item = TRX.Items.Get(idx) or TRX.Items.Get(name)
 static int M_L_ItemsGet(lua_State *const L)
 {
-    int idx = luaL_checkinteger(L, 1);
-    const ITEM *const item = Item_Get(idx - 1);
+    const ITEM *item = nullptr;
+    if (lua_type(L, 1) == LUA_TNUMBER) {
+        const int idx = luaL_checkinteger(L, 1);
+        item = Item_Get(idx - 1);
+    } else {
+        const char *const name = luaL_checkstring(L, 1);
+        item = Item_GetByName(name);
+    }
     if (item == nullptr) {
         lua_pushnil(L);
     } else {
         const ITEM **ud = lua_newuserdata(L, sizeof(ITEM *));
-        *ud = item;
-        luaL_getmetatable(L, "TRX.Items.ITEM");
-        lua_setmetatable(L, -2);
-    }
-    return 1;
-}
-
-// item = TRX.Items.GetByName(name)
-static int M_L_ItemsGetByName(lua_State *const L)
-{
-    const char *const name = luaL_checkstring(L, 1);
-    ITEM *const item = Item_GetByName(name);
-    if (item == nullptr) {
-        lua_pushnil(L);
-    } else {
-        ITEM **ud = lua_newuserdata(L, sizeof(ITEM *));
         *ud = item;
         luaL_getmetatable(L, "TRX.Items.ITEM");
         lua_setmetatable(L, -2);
@@ -257,8 +247,6 @@ void LUA_CreateItems(lua_State *const L)
     lua_newtable(L);
     lua_pushcfunction(L, M_L_ItemsGet);
     lua_setfield(L, -2, "Get");
-    lua_pushcfunction(L, M_L_ItemsGetByName);
-    lua_setfield(L, -2, "GetByName");
     lua_pushcfunction(L, M_L_ItemsCount);
     lua_setfield(L, -2, "Count");
     lua_setfield(L, -2, "Items");
