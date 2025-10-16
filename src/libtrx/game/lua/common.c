@@ -57,7 +57,7 @@ void LUA_Init(void)
     luaL_openlibs(L);
 
     lua_newtable(L);
-    lua_setglobal(L, "TRX");
+    lua_setglobal(L, "trx");
 
     // Initialize internal modules
     LUA_CreateConsole(L);

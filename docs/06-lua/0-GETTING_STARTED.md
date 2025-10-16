@@ -28,8 +28,8 @@ Create a file `data/scripts/level1.lua` folder in your project and put the
 following content:
 
 ```lua
-TRX.Events.Listen(TRX.EventType.LEVEL_LOAD, function(level)
-  TRX.Log.Info("hello from level 1!")
+trx.events.listen(trx.EventType.LEVEL_LOAD, function(level)
+  trx.log.info("hello from level 1!")
 end)
 ```
 

@@ -45,18 +45,18 @@ static int M_L_LogDebug(lua_State *const L)
 
 void LUA_CreateLog(lua_State *const L)
 {
-    lua_getglobal(L, "TRX");
+    lua_getglobal(L, "trx");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_LogInfo);
-    lua_setfield(L, -2, "Info");
+    lua_setfield(L, -2, "info");
     lua_pushcfunction(L, M_L_LogWarning);
-    lua_setfield(L, -2, "Warn");
+    lua_setfield(L, -2, "warn");
     lua_pushcfunction(L, M_L_LogWarning);
-    lua_setfield(L, -2, "Warning");
+    lua_setfield(L, -2, "warning");
     lua_pushcfunction(L, M_L_LogError);
-    lua_setfield(L, -2, "Error");
+    lua_setfield(L, -2, "error");
     lua_pushcfunction(L, M_L_LogDebug);
-    lua_setfield(L, -2, "Debug");
-    lua_setfield(L, -2, "Log");
+    lua_setfield(L, -2, "debug");
+    lua_setfield(L, -2, "log");
     lua_pop(L, 1);
 }

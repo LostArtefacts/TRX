@@ -8,7 +8,7 @@ Module for controlling all moveables behavior.
 
 ### Structures
 
-- [lua]`TRX.Items.ITEM`
+- [lua]`trx.items.Item`
 
     Represents an item, also known as a moveable.
 
@@ -32,14 +32,14 @@ Module for controlling all moveables behavior.
 
 ### Functions
 
-- [lua]`TRX.Items.Count()`  
+- [lua]`trx.items.count()`  
   Returns the total number of allocated items.
 
-- [lua]`TRX.Items.Get(arg)`  
-  Retrieves the [lua]`TRX.Items.ITEM` at the given 1-based index or with the given `name`, or `nil` if out of range/not found.  
+- [lua]`trx.items.get(arg)`  
+  Retrieves the [lua]`trx.items.Item` at the given 1-based index or with the given `name`, or `nil` if out of range/not found.  
   Example:
-  ```lua
-  local item = TRX.Items.Get(1)
-  item.name = "lara"
-  local lara = TRX.Items.Get("lara")
-  ```
+```lua
+local item = trx.items.get(1)
+item.name = "lara"
+local lara = trx.items.get("lara")
+```

@@ -11,20 +11,20 @@ results are logged to the standard output in the console as well as the
 
 ### Functions
 
-- [lua]`TRX.Log.Info(message)`  
+- [lua]`trx.log.info(message)`  
   Logs an information to the terminal output and the log file.
 
-- [lua]`TRX.Log.Warn(message)`  
+- [lua]`trx.log.warn(message)`  
   Logs a warning to the terminal output and the log file.
 
-- [lua]`TRX.Log.Error(message)`  
+- [lua]`trx.log.error(message)`  
   Logs an error to the terminal output and the log file.
 
-- [lua]`TRX.Log.Debug(message)`  
+- [lua]`trx.log.debug(message)`  
   Logs a debug message to the terminal output and the log file.
 
 ### Examples
 
 ```lua
-TRX.Log.Info("hello from lua")
+trx.log.info("hello from lua")
 ```
