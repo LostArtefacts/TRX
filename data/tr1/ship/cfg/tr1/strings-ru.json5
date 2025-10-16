@@ -743,6 +743,9 @@
         },
         "alphabet": {
             "name": "Алфавит",
+        },
+        "winston": {
+            "name": "\\{review}Уинстон",
         }
     },
     "game_strings": {

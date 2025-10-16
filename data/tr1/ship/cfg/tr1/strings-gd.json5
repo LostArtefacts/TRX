@@ -752,6 +752,12 @@
         },
         "alphabet": {
             "name": "Aibidil",
+        },
+        "winston": {
+            "names": [
+                "Uinnsdean",
+                "Winston",
+            ]
         }
     },
     "game_strings": {

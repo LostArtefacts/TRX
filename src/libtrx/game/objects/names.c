@@ -221,6 +221,9 @@ OBJECT_NAME_MATCH *Object_IdsFromName(
                 continue;
             }
             const M_DEFAULT *const def = M_ResolveDefault(obj_id);
+            if (def == nullptr) {
+                continue;
+            }
             for (const char **name = def->default_names; *name != nullptr;
                  name++) {
                 // Add primary compile-time default name if it passes the filter

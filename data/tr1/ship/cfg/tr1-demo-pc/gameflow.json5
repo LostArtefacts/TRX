@@ -21,6 +21,7 @@
         "data/injections/sprite_alignment.bin",
         "data/injections/pda_model.bin",
         "data/injections/font.bin",
+        "data/injections/winston_model.bin",
     ],
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
