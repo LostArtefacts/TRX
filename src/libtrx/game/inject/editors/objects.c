@@ -6,9 +6,9 @@ static void M_ObjectTypeEdits(
 {
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO base_obj_info =
-            Inject_ReadObjectPtr(injection->fp);
+            Inject_ReadObjectPtr(injection);
         const INJECTION_OBJECT_INFO target_obj_info =
-            Inject_ReadObjectPtr(injection->fp);
+            Inject_ReadObjectPtr(injection);
 
         OBJECT *const base_obj = Object_TryGet(base_obj_info.id);
         const OBJECT *const target_obj = Object_TryGet(target_obj_info.id);

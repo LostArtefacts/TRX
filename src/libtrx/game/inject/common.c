@@ -13,7 +13,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define M_INJECTION_CURRENT_VERSION 4
+#define M_INJECTION_CURRENT_VERSION 5
 #define M_VIRTUAL_NAME "virtual_injection"
 
 static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};

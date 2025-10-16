@@ -43,8 +43,7 @@ static void M_SpriteEdits(
     const INJECTION *const injection, const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const INJECTION_OBJECT_INFO obj_info =
-            Inject_ReadObjectPtr(injection->fp);
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         int16_t x0 = VFile_ReadS16(injection->fp);
         int16_t y0 = VFile_ReadS16(injection->fp);
         int16_t x1 = VFile_ReadS16(injection->fp);

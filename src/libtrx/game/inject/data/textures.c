@@ -71,8 +71,7 @@ static void M_HandleSpriteSequences(
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const INJECTION_OBJECT_INFO obj_info =
-            Inject_ReadObjectPtr(injection->fp);
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const int16_t num_meshes = VFile_ReadS16(injection->fp);
         const int16_t mesh_idx = VFile_ReadS16(injection->fp);
 

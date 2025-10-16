@@ -162,7 +162,7 @@ static void M_MeshEdits(
 {
     for (int32_t i = 0; i < data_count; i++) {
         MESH_EDIT edit = {
-            .obj_info = Inject_ReadObjectPtr(injection->fp),
+            .obj_info = Inject_ReadObjectPtr(injection),
             .mesh_idx = VFile_ReadS16(injection->fp),
             .centre_shift.x = VFile_ReadS16(injection->fp),
             .centre_shift.y = VFile_ReadS16(injection->fp),
@@ -175,7 +175,7 @@ static void M_MeshEdits(
             Memory_Alloc(sizeof(FACE_EDIT) * edit.face_edit_count);
         for (int32_t j = 0; j < edit.face_edit_count; j++) {
             FACE_EDIT *const face_edit = &edit.face_edits[j];
-            face_edit->obj_info = Inject_ReadObjectPtr(injection->fp);
+            face_edit->obj_info = Inject_ReadObjectPtr(injection);
             face_edit->source_identifier = VFile_ReadS16(injection->fp);
             face_edit->face_type = VFile_ReadS32(injection->fp);
             face_edit->face_index = VFile_ReadS16(injection->fp);
