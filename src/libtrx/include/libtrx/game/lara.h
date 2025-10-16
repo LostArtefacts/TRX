@@ -6,6 +6,7 @@
 #include "lara/common.h"
 #include "lara/const.h"
 #include "lara/control.h"
+#include "lara/draw.h"
 #include "lara/enum.h"
 #include "lara/flare.h"
 #include "lara/hair.h"

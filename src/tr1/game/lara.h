@@ -1,7 +1,5 @@
 #pragma once
 
-#include "game/lara/draw.h"
-
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/lara/mesh.h>
