@@ -149,6 +149,7 @@
 - fixed Lara hang climbing up a movable block used as a ladder piece
 - fixed dead skidoo drivers not registering with combat end after loading a save
 - fixed pushblocks becoming unusable when on the same sector as a door that does not sit on a room portal
+- fixed ricochets embedding in walls
 - improved the animation of Lara's braid
 - improved handling of items that are dropped by enemies
     - added the ability for any enemy type to drop items, excluding eels

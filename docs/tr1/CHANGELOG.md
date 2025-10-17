@@ -8,7 +8,8 @@
     This feature is experimental — complex objects such as the dragon or Skidoos may not behave correctly. Please report any bugs encountered.  
     See [the documentation](../07-CATALOGS.md) for details.
 - improved ricochets placement
-    - fixed dart ricochets being placed mid-air
+    - fixed dart ricochets being placed mid-air (#4063)
+    - fixed ricochets not showing on slopes
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
