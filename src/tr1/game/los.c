@@ -3,7 +3,8 @@
 #include <libtrx/game/rooms.h>
 #include <libtrx/utils.h>
 
-#include <stdint.h>
+#define M_CLIP_1 8
+#define M_CLIP_2 8
 
 static int32_t M_CheckX(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
@@ -177,41 +178,79 @@ static int32_t M_CheckZ(
     return 1;
 }
 
-static bool M_ClipTarget(
-    const GAME_VECTOR *const start, GAME_VECTOR *const target,
-    const SECTOR *const sector)
+static int32_t M_ClipTarget(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
-    int32_t dx = target->x - start->x;
-    int32_t dy = target->y - start->y;
-    int32_t dz = target->z - start->z;
+    int16_t room_num = target->room_num;
+    const SECTOR *sector =
+        Room_GetSector(target->x, target->y, target->z, &room_num);
 
-    const int32_t height =
-        Room_GetHeight(sector, target->x, target->y, target->z);
-    if (target->y > height && start->y < height) {
-        target->y = height;
-        target->x = start->x + dx * (height - start->y) / dy;
-        target->z = start->z + dz * (height - start->y) / dy;
-        return false;
+    if (target->y > Room_GetHeight(sector, target->x, target->y, target->z)) {
+        const XYZ_32 origin = {
+            .x =
+                start->x + ((M_CLIP_1 - 1) * (target->x - start->x) / M_CLIP_1),
+            .y =
+                start->y + ((M_CLIP_1 - 1) * (target->y - start->y) / M_CLIP_1),
+            .z =
+                start->z + ((M_CLIP_1 - 1) * (target->z - start->z) / M_CLIP_1),
+        };
+        int32_t dx, dy, dz;
+        for (int32_t i = M_CLIP_2 - 1; i > 0; i--) {
+            dx = origin.x + (i * (target->x - origin.x) / M_CLIP_2);
+            dy = origin.y + (i * (target->y - origin.y) / M_CLIP_2);
+            dz = origin.z + (i * (target->z - origin.z) / M_CLIP_2);
+            sector = Room_GetSector(dx, dy, dz, &room_num);
+            if (dy < Room_GetHeight(sector, dx, dy, dz)) {
+                break;
+            }
+        }
+
+        target->x = dx;
+        target->y = dy;
+        target->z = dz;
+        target->room_num = room_num;
+        return 0;
     }
 
-    const int32_t ceiling =
-        Room_GetCeiling(sector, target->x, target->y, target->z);
-    if (target->y < ceiling && start->y > ceiling) {
-        target->y = ceiling;
-        target->x = start->x + dx * (ceiling - start->y) / dy;
-        target->z = start->z + dz * (ceiling - start->y) / dy;
-        return false;
+    if (target->y < Room_GetCeiling(sector, target->x, target->y, target->z)) {
+        const XYZ_32 origin = {
+            .x =
+                start->x + ((M_CLIP_1 - 1) * (target->x - start->x) / M_CLIP_1),
+            .y =
+                start->y + ((M_CLIP_1 - 1) * (target->y - start->y) / M_CLIP_1),
+            .z =
+                start->z + ((M_CLIP_1 - 1) * (target->z - start->z) / M_CLIP_1),
+        };
+        int32_t dx, dy, dz;
+        for (int32_t i = M_CLIP_2 - 1; i > 0; i--) {
+            dx = origin.x + (i * (target->x - origin.x) / M_CLIP_2);
+            dy = origin.y + (i * (target->y - origin.y) / M_CLIP_2);
+            dz = origin.z + (i * (target->z - origin.z) / M_CLIP_2);
+
+            sector = Room_GetSector(dx, dy, dz, &room_num);
+            if (dy > Room_GetCeiling(sector, dx, dy, dz)) {
+                break;
+            }
+        }
+
+        target->x = dx;
+        target->y = dy;
+        target->z = dz;
+        target->room_num = room_num;
+        return 0;
     }
 
-    return true;
+    return 1;
 }
 
 bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
+    const int32_t dx = ABS(target->x - start->x);
+    const int32_t dz = ABS(target->z - start->z);
+
     int32_t los1;
     int32_t los2;
-
-    if (ABS(target->z - start->z) > ABS(target->x - start->x)) {
+    if (dz > dx) {
         los1 = M_CheckX(start, target);
         los2 = M_CheckZ(start, target);
     } else {
@@ -223,8 +262,5 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
         return false;
     }
 
-    const SECTOR *const sector =
-        Room_GetSector(target->x, target->y, target->z, &target->room_num);
-
-    return M_ClipTarget(start, target, sector) && los1 == 1 && los2 == 1;
+    return M_ClipTarget(start, target) && los1 == 1 && los2 == 1;
 }
