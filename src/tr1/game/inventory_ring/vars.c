@@ -755,7 +755,7 @@ INVENTORY_ITEM g_InvRing_Item_Photo = {
 };
 
 INVENTORY_ITEM g_InvRing_Item_NatlasPDA = {
-    .object_id = O_MAP_OPTION,
+    .object_id = O_PDA_OPTION,
     .frames_total = 39,
     .current_frame = 0,
     .goal_frame = 0,
