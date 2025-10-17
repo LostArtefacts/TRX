@@ -657,7 +657,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 if (ring->mode == INV_TITLE_MODE
                     && (inv_item->object_id == O_DETAIL_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
-                        || inv_item->object_id == O_COMPASS_ITEM
+                        || inv_item->object_id == O_PDA_OPTION
                         || inv_item->object_id == O_CONTROL_OPTION
                         || inv_item->object_id == O_GAMMA_OPTION)) {
                     InvRing_MotionSetup(
