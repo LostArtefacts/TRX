@@ -28,7 +28,7 @@ This will teleport Lara back to the starting point in TR1 Caves.
 
 ```lua
 trx.events.on_pickup(function(pickup_item)
-  local lara = trx.lara.get_item()
+  local lara = trx.lara.item
   lara.pos = {
     x = 73.5 * 1024,
     y = 3 * 1024,
@@ -57,7 +57,7 @@ to another.
 local last_room = 0
 
 trx.events.on_control(function()
-  local lara = trx.lara.get_item()
+  local lara = trx.lara.item
   if lara.room ~= last_room then
     last_room = lara.room
     if lara.room == 15 then

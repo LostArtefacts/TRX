@@ -5,15 +5,14 @@ local lara = {}
 -- Item proxy metatable
 local getters = {
   exposure_bar = raw.get_exposure_bar,
+  item = function()
+    return trx.items[raw.get_item()]
+  end,
 }
 
 local setters = {
   exposure_bar = raw.set_exposure_bar,
 }
-
-function lara.get_item()
-  return trx.items[raw.get_item()]
-end
 
 local lara_mt = {
   __index = function(self, key)
