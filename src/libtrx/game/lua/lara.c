@@ -19,12 +19,32 @@ static int M_L_GetLaraItem(lua_State *const L)
     return 1;
 }
 
+// trxc.lara.get_exposure_bar() → int
+static int M_L_LaraGetExposureBar(lua_State *const L)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lua_pushinteger(L, lara->exposure_timer);
+    return 1;
+}
+
+// trxc.lara.set_exposure_bar(timer)
+static int M_L_LaraSetExposureBar(lua_State *const L)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->exposure_timer = luaL_checkinteger(L, 1);
+    return 0;
+}
+
 void LUA_CreateLara(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_GetLaraItem);
     lua_setfield(L, -2, "get_item");
+    lua_pushcfunction(L, M_L_LaraGetExposureBar);
+    lua_setfield(L, -2, "get_exposure_bar");
+    lua_pushcfunction(L, M_L_LaraSetExposureBar);
+    lua_setfield(L, -2, "set_exposure_bar");
     lua_setfield(L, -2, "lara");
     lua_pop(L, 1);
 }
