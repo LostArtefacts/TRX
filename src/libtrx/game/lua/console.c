@@ -7,7 +7,7 @@
 
 #include <lauxlib.h>
 
-// trx.console.log(...)
+// trxc.console.log(...)
 static int M_L_ConsoleLog(lua_State *const L)
 {
     int nargs = lua_gettop(L);
@@ -26,14 +26,14 @@ static int M_L_ConsoleLog(lua_State *const L)
     return 0;
 }
 
-// trx.console.clear()
+// trxc.console.clear()
 static int M_L_ConsoleClear(lua_State *const L)
 {
     Console_Clear();
     return 0;
 }
 
-// trx.console.eval(cmd, { verbose = true })
+// trxc.console.eval(cmd, { verbose = bool })
 static int M_L_ConsoleEval(lua_State *const L)
 {
     const char *cmd = luaL_checkstring(L, 1);
@@ -66,7 +66,7 @@ static int M_L_ConsoleEval(lua_State *const L)
 
 void LUA_CreateConsole(lua_State *const L)
 {
-    lua_getglobal(L, "trx");
+    lua_getglobal(L, "trxc");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_ConsoleLog);
     lua_setfield(L, -2, "log");

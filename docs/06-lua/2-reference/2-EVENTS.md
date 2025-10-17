@@ -4,46 +4,65 @@ title: Events
 
 ## Events module
 
-Lua scripts can listen for game events using the global `events` API and the
-`trx.EventType` enum.
+Lua scripts can listen for game events using the global `events` API.
 
-### Functions
+### API
 
-- [lua]`trx.events.Listen(event_type, callback)`  
-  Trigger the `callback` function on a specific item.
+- [lua]`trx.events.on_level_start(callback)`  
+- [lua]`trx.events.on_level_load(callback)`  
+- [lua]`trx.events.on_pickup(callback)`  
+- [lua]`trx.events.on_control(callback)`  
+- [lua]`trx.events.on_control_post(callback)`  
+  Register a handler for a game event. Returns `listener_id`.
+- [lua]`trx.events.detach(listener_id)`  
+  Remove a previously registered event handler.
 
-### Supported events
+### Events
 
-- [lua]`trx.EventType.LEVEL_LOAD`  
-  Fired when a level finishes loading, but prior to loading a potential
-  savegame. Listener receives the level number.
-- [lua]`trx.EventType.LEVEL_START`  
-  Fired when a level finishes loading, and after potential savegame data has
-  completed loading. Listener receives the level number.
-- [lua]`trx.EventType.CONTROL`  
-  Fired before every game control loop iteration.
-- [lua]`trx.EventType.CONTROL_POST`  
-  Fired after every game control loop iteration.
-- [lua]`trx.EventType.PICKUP`  
-  Fired when the player picks up an item; listener receives the pickup item
-  number.
+#### `on_level_start`
+Happens after the level finishes loading, prior to loading information from a
+savegame.
 
-### Example usage
+Arguments:
+- `level_num`
 
-Register listeners in Lua as follows:
+#### `on_level_load`
+Happens after the level finishes loading, after loading information from a
+savegame. If the game is started normally, this duplicates `on_level_start`.
+
+Arguments:
+- `level_num`
+
+#### `on_pickup`
+Happens just after Lara picks up an item.
+
+Arguments:
+- `item_num`
+
+#### `on_control`
+Happens on every logical game frame, before executing main game logic.
+
+Arguments: none  
+
+#### `on_control_post`
+Happens on every logical game frame, after executing main game logic.
+
+Arguments: none  
+
+### Examples
+
 ```lua
-trx.events.listen(trx.EventType.LEVEL_LOAD, function(level)
+trx.events.on_level_load(function(level_num)
   -- handle level load
-end)
+end
 
-trx.events.listen(trx.EventType.PICKUP, function(item)
-  -- handle pickup event
-end)
- 
-trx.events.listen(trx.EventType.CONTROL, function(action)
+trx.events.on_pickup(function(item_num)
+  trx.console.log(trx.items[item_num].object_id)
+end
+
+local control_handler = trx.events.on_control(function()
   -- handle control loop event
-end)
+end
+-- detach a handler
+trx.events.detach(control_handler)
 ```
-
-Listeners declared in level scripts are automatically removed when the level
-unloads.

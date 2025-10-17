@@ -16,8 +16,8 @@ typedef struct {
 static lua_State *m_L = nullptr;
 static VECTOR *m_Listeners = nullptr;
 
-// id = trx.events.listen(event_type, callback)
-static int32_t M_L_EventsListen(lua_State *const L)
+// trxc.events.attach(event_type, callback) → id
+static int32_t M_L_EventsAttach(lua_State *const L)
 {
     const LUA_EVENT_TYPE ev = luaL_checkinteger(L, 1);
     luaL_checktype(L, 2, LUA_TFUNCTION);
@@ -36,8 +36,8 @@ static int32_t M_L_EventsListen(lua_State *const L)
     return 1;
 }
 
-// trx.events.unlisten(id)
-static int32_t M_L_EventsUnlisten(lua_State *const L)
+// trxc.events.detach(id)
+static int32_t M_L_EventsDetach(lua_State *const L)
 {
     int32_t id = luaL_checkinteger(L, 1);
     if (m_Listeners == nullptr) {
@@ -97,10 +97,14 @@ void Lua_FireEvent(LUA_EVENT_TYPE ev, int32_t arg)
 void LUA_CreateEvents(lua_State *const L)
 {
     m_L = L;
+    lua_getglobal(L, "trxc");
+    lua_newtable(L);
 
-    lua_getglobal(L, "trx");
+    lua_pushcfunction(L, M_L_EventsAttach);
+    lua_setfield(L, -2, "attach");
+    lua_pushcfunction(L, M_L_EventsDetach);
+    lua_setfield(L, -2, "detach");
 
-    // EventType enum
     lua_newtable(L);
     lua_pushinteger(L, LUA_EVENT_LEVEL_START);
     lua_setfield(L, -2, "LEVEL_START");
@@ -112,15 +116,8 @@ void LUA_CreateEvents(lua_State *const L)
     lua_setfield(L, -2, "CONTROL");
     lua_pushinteger(L, LUA_EVENT_CONTROL_POST);
     lua_setfield(L, -2, "CONTROL_POST");
-    lua_setfield(L, -2, "event_type");
+    lua_setfield(L, -2, "EventType");
 
-    // Events table
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_EventsListen);
-    lua_setfield(L, -2, "listen");
-    lua_pushcfunction(L, M_L_EventsUnlisten);
-    lua_setfield(L, -2, "unlisten");
     lua_setfield(L, -2, "events");
-
     lua_pop(L, 1);
 }
