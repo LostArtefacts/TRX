@@ -32,7 +32,6 @@ Module for controlling all moveables behavior.
 
 ### Functions
 
--- Uses Lua length operator on the items table:
 - [lua]`#trx.items`  
   Returns the total number of allocated items.
 

@@ -1,0 +1,38 @@
+---
+title: Game
+---
+
+## Game module
+
+Module for retrieving game version and level tables.
+
+### Structures
+
+- [lua]`trx.game.Level`
+
+    Represents a level entry.
+
+    Properties:
+
+    - **`num`**: Integer ordinal number of the level.
+    - **`name`**: String title of the level.
+    - **`path`**: String file path of the level data.
+    - **`type`**: Integer type identifier of the level.
+
+### Functions
+
+- [lua]`trx.game.version`  
+  Returns the current game version integer. This is guessed from the level data.
+- [lua]`trx.game.trx_version`  
+  Returns the current TRX version string.
+
+- [lua]`#trx.game.levels`  
+  [lua]`#trx.game.demos`  
+  [lua]`#trx.game.cutscenes`  
+  Returns the number of levels of the specific type.
+
+- [lua]`trx.game.levels[num]`  
+  [lua]`trx.game.demos[num]`  
+  [lua]`trx.game.cutscenes[num]`  
+  Retrieves the [lua]`trx.game.Level` of the specific type at the given index,
+  or `nil` if out of range.
