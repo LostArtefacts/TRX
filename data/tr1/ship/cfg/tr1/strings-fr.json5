@@ -421,6 +421,12 @@
         "dart_emitter": {
             "name": "Émetteur de flèches",
         },
+        "disc": {
+            "name": "\\{review}Disque",
+        },
+        "disc_emitter": {
+            "name": "\\{review}Émetteur de Disque",
+        },
         "drawbridge": {
             "name": "Pont-levis",
         },

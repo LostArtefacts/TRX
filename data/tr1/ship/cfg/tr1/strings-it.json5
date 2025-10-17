@@ -441,6 +441,12 @@
         "dart_emitter": {
             "name": "Emettitore di Dardi",
         },
+        "disc": {
+            "name": "Disco",
+        },
+        "disc_emitter": {
+            "name": "Emettitore di Dischi",
+        },
         "drawbridge": {
             "name": "Ponte Levatoio",
         },

@@ -652,12 +652,6 @@
                 "Rolling Ball",
             ]
         },
-        "dart": {
-            "name": "Disc",
-        },
-        "dart_emitter": {
-            "name": "Disc Emitter",
-        },
         "drawbridge": {
             "name": "Drawbridge",
         },

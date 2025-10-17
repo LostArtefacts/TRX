@@ -1,3 +1,8 @@
+X_OBJ_NAME_DEFINE(O_DART,                  "dart",                  X_OBJ_NAMES("Dart"))
+X_OBJ_NAME_DEFINE(O_DART_EMITTER,          "dart_emitter",          X_OBJ_NAMES("Dart Emitter"))
+X_OBJ_NAME_DEFINE(O_DISC,                  "disc",                  X_OBJ_NAMES("Disc"))
+X_OBJ_NAME_DEFINE(O_DISC_EMITTER,          "disc_emitter",          X_OBJ_NAMES("Disc Emitter"))
+
 #if TR_VERSION == 1
 #include "names_tr1.def"
 #elif TR_VERSION == 2

@@ -628,9 +628,15 @@
             "name": "Głaz 1",
         },
         "dart": {
-            "name": "Dysk",
+            "name": "Strzała",
         },
         "dart_emitter": {
+            "name": "Wyzwalacz strzał",
+        },
+        "disc": {
+            "name": "Dysk",
+        },
+        "disc_emitter": {
             "name": "Emiter dysków",
         },
         "drawbridge": {
