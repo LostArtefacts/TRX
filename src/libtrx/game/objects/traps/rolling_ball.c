@@ -28,15 +28,16 @@ static void M_Roll(ITEM *const item)
     item->fall_speed = 0;
     item->pos.y = item->floor;
 
-    if (g_TRVersion != 2) {
+    if (g_TRVersion == 1) {
         return;
     }
-    if (item->object_id == O_ROLLING_BALL_2) {
-        Sound_Effect(SFX_SNOWBALL_ROLL, &item->pos, SPM_NORMAL);
+
+    if (item->object_id == O_ROLLING_BALL_1) {
+        Sound_Effect(SFX_ROLLING_BALL_1_ROLL, &item->pos, SPM_NORMAL);
+    } else if (item->object_id == O_ROLLING_BALL_2) {
+        Sound_Effect(SFX_ROLLING_BALL_2_ROLL, &item->pos, SPM_NORMAL);
     } else if (item->object_id == O_ROLLING_BALL_3) {
-        Sound_Effect(SFX_ROLLING_2, &item->pos, SPM_NORMAL);
-    } else {
-        Sound_Effect(SFX_ROLLING_BALL, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_ROLLING_BALL_3_ROLL, &item->pos, SPM_NORMAL);
     }
 
 #if TR_VERSION == 2
@@ -71,16 +72,14 @@ static bool M_TestStop(const ITEM *const item)
 static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
 {
     if (item->object_id == O_ROLLING_BALL_1) {
+        Sound_Effect(SFX_ROLLING_BALL_1_STOP, &item->pos, SPM_NORMAL);
         item->status = IS_DEACTIVATED;
-    }
-    if (g_TRVersion == 2) {
-        if (item->object_id == O_ROLLING_BALL_2) {
-            Sound_Effect(SFX_SNOWBALL_STOP, &item->pos, SPM_NORMAL);
-            item->goal_anim_state = TRAP_WORKING;
-        } else if (item->object_id == O_ROLLING_BALL_3) {
-            Sound_Effect(SFX_ROLLING_2_HIT, &item->pos, SPM_NORMAL);
-            item->goal_anim_state = TRAP_WORKING;
-        }
+    } else if (item->object_id == O_ROLLING_BALL_2) {
+        Sound_Effect(SFX_ROLLING_BALL_2_STOP, &item->pos, SPM_NORMAL);
+        item->goal_anim_state = TRAP_WORKING;
+    } else if (item->object_id == O_ROLLING_BALL_3) {
+        Sound_Effect(SFX_ROLLING_BALL_3_STOP, &item->pos, SPM_NORMAL);
+        item->goal_anim_state = TRAP_WORKING;
     }
 
     item->pos.x = old_pos.x;

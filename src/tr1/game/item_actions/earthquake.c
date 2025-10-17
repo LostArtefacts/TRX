@@ -11,7 +11,7 @@ void ItemAction_Earthquake(ITEM *item)
         Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
         g_Camera.bounce = -250;
     } else if (flip_timer == 3) {
-        Sound_Effect(SFX_ROLLING_BALL, nullptr, SPM_NORMAL);
+        Sound_Effect(SFX_ROLLING_BALL_1_ROLL, nullptr, SPM_NORMAL);
     } else if (flip_timer == 35) {
         Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
     } else if (flip_timer == 20 || flip_timer == 50 || flip_timer == 70) {
