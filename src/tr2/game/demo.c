@@ -30,6 +30,7 @@
     X_PROCESS_CONFIG(gameplay.enable_tr2_swimming, true);                      \
     X_PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                          \
     X_PROCESS_CONFIG(gameplay.enable_target_change, false);                    \
+    X_PROCESS_CONFIG(gameplay.enable_walk_to_items, false);                    \
     X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_DRAW_ONLY);             \
     X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);
 

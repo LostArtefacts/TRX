@@ -691,14 +691,12 @@ bool Lara_IsNearItem(const XYZ_32 *const pos, const int32_t distance)
 bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-#if TR_VERSION == 1
-    const int32_t velocity = g_Config.gameplay.enable_walk_to_items
-            && lara_info->water_status != LWS_UNDERWATER
+    const bool walk_to_items = g_Config.gameplay.enable_walk_to_items
+        && ref_item->object_id != O_FLARE_ITEM;
+    const int32_t velocity =
+        walk_to_items && lara_info->water_status != LWS_UNDERWATER
         ? M_MOVE_ANIM_VELOCITY
         : M_MOVE_SPEED;
-#else
-    const int32_t velocity = M_MOVE_SPEED;
-#endif
 
     ITEM *const lara_item = Lara_GetItem();
     const XYZ_16 new_rot = ref_item->rot;
@@ -719,7 +717,6 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         .z = ref_item->pos.z + shift.z,
     };
 
-#if TR_VERSION >= 2
     if (ref_item->object_id == O_FLARE_ITEM) {
         int16_t room_num = lara_item->room_num;
         const SECTOR *const sector =
@@ -733,7 +730,6 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
             return true;
         }
     }
-#endif
 
     const XYZ_32 dpos = {
         .x = new_pos.x - lara_item->pos.x,
@@ -749,9 +745,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         lara_item->pos.z += velocity * dpos.z / dist;
     }
 
-#if TR_VERSION == 1
-    if (g_Config.gameplay.enable_walk_to_items
-        && !lara_info->interact_target.is_moving) {
+    if (walk_to_items && !lara_info->interact_target.is_moving) {
         if (lara_info->water_status != LWS_UNDERWATER) {
             const int16_t step_to_anim_num[4] = {
                 LA(LA_SIDE_STEP_LEFT),
@@ -784,7 +778,6 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         lara_info->interact_target.is_moving = true;
         lara_info->interact_target.move_count = 0;
     }
-#endif
 
     const int16_t rotation = M_MOVE_ANGLE;
     ITEM_ADJUST_ROT(lara_item->rot.x, new_rot.x, rotation);

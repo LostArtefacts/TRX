@@ -230,8 +230,8 @@ typedef struct {
         bool enable_auto_item_selection;
         bool enable_item_examining;
         bool enable_target_change;
-#if TR_VERSION == 1
         bool enable_walk_to_items;
+#if TR_VERSION == 1
         bool restore_ps1_enemies;
 #else
         bool enable_ally_targeting;

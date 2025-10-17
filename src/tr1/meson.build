@@ -133,7 +133,6 @@ sources = [
   'game/objects/common.c',
   'game/objects/creatures/cutscene_player.c',
   'game/objects/general/earthquake.c',
-  'game/objects/general/pickup.c',
   'game/objects/general/save_crystal.c',
   'game/objects/general/switch.c',
   'game/objects/setup.c',

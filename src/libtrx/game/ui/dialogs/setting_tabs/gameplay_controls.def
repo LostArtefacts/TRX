@@ -1,9 +1,5 @@
 X_UI_CFG_BOOL(input.enable_responsive_passport,    SETTING_ENABLE_RESPONSIVE_PASSPORT)
-
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       SETTING_ENABLE_WALK_TO_ITEMS)
-#endif
-
 X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          SETTING_ENABLE_TR3_SIDESTEPS)
 X_UI_CFG_ENUM(input.quick_guns_mode,               SETTING_QUICK_GUNS_MODE, .misc = UI_Settings_QuickGunsModeEnumEntries)
 X_UI_CFG_ENUM(gameplay.look_mode,                  SETTING_LOOK_MODE, .misc = UI_Settings_LookModeEnumEntries)
