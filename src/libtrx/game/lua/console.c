@@ -28,7 +28,6 @@ static int M_L_ConsoleLog(lua_State *const L)
                       : String_FormatStatic("%s", arg);
     }
 
-    Console_LogEx("%s", msg);
     lua_Debug ar;
     const char *src = "?";
     const char *func = "?";
@@ -38,7 +37,7 @@ static int M_L_ConsoleLog(lua_State *const L)
         func = ar.name ? ar.name : "?";
         line = ar.currentline;
     }
-    Log_Message(log_level, src, line, func, "%s", msg);
+    Console_LogEx(log_level, src, line, func, "%s", msg);
     return 0;
 }
 
