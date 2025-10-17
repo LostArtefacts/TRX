@@ -60,7 +60,9 @@ bool Console_IsOpened(void)
     return m_IsOpened;
 }
 
-void Console_LogEx(const char *const fmt, ...)
+void Console_LogEx(
+    const LOG_LEVEL level, const char *file, int line, const char *func,
+    const char *const fmt, ...)
 {
     ASSERT(fmt != nullptr);
 
@@ -75,6 +77,8 @@ void Console_LogEx(const char *const fmt, ...)
 
     vsnprintf(text, text_length + 1, fmt, va_copy);
     va_end(va_copy);
+
+    Log_Message(level, file, line, func, "%s", text);
 
     if (m_Verbose) {
         UI_FireEvent((EVENT) {
