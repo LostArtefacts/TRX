@@ -349,6 +349,7 @@ sources = [
   'game/objects/general/scion4.c',
   'game/objects/general/scion_holder.c',
   'game/objects/general/sphere_of_doom.c',
+  'game/objects/general/switch.c',
   'game/objects/general/trapdoor.c',
   'game/objects/general/waterfall.c',
   'game/objects/general/window.c',

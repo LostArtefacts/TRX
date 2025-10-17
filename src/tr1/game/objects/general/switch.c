@@ -224,24 +224,5 @@ static void M_SetupUW(OBJECT *const obj)
     obj->bounds_func = M_BoundsUW;
 }
 
-bool Switch_Trigger(int16_t item_num, int16_t timer)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_DEACTIVATED) {
-        return false;
-    }
-    if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
-        item->timer = timer;
-        if (timer != 1) {
-            item->timer *= LOGIC_FPS;
-        }
-        item->status = IS_ACTIVE;
-    } else {
-        Item_RemoveActive(item_num);
-        item->status = IS_INACTIVE;
-    }
-    return true;
-}
-
 REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
 REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
