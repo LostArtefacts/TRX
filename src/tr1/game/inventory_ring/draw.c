@@ -65,7 +65,7 @@ fallback:
 }
 
 static void M_DrawItem(
-    const INV_RING *const ring, INVENTORY_ITEM *const inv_item)
+    const INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
 {
     if (ring->motion.status != RNG_FADING_OUT && ring->motion.status != RNG_DONE
         && inv_item == ring->list[ring->current_object] && !ring->rotating) {
@@ -78,7 +78,7 @@ static void M_DrawItem(
     Matrix_RotY(inv_item->y_rot);
     Matrix_RotX(inv_item->x_rot);
 
-    OBJECT *const obj = Object_Get(inv_item->object_id);
+    const OBJECT *const obj = Object_Get(inv_item->object_id);
     if (!obj->loaded || obj->mesh_count < 0) {
         return;
     }
@@ -143,7 +143,7 @@ void InvRing_Draw(INV_RING *const ring)
 
     if (ring->mode == INV_TITLE_MODE) {
         Interpolation_Interpolate();
-    } else {
+    } else if (TR_VERSION == 1) { // TODO: allow players choosing background
         Matrix_LookAt(
             g_InvRing_OldCamera.pos.x,
             g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,

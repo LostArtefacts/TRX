@@ -2,9 +2,9 @@
 
 #include "game/game.h"
 #include "game/inventory_ring/control.h"
+#include "game/inventory_ring/vars.h"
 #include "game/option/option.h"
 #include "game/savegame.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/console.h>
@@ -143,6 +143,21 @@ void InvRing_Draw(INV_RING *const ring)
 
     if (ring->mode == INV_TITLE_MODE) {
         Interpolation_Interpolate();
+    } else if (TR_VERSION == 1) { // TODO: allow players choosing background
+        Matrix_LookAt(
+            g_InvRing_OldCamera.pos.x,
+            g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
+            g_InvRing_OldCamera.pos.z, g_InvRing_OldCamera.target.x,
+            g_InvRing_OldCamera.target.y, g_InvRing_OldCamera.target.z, 0);
+
+        Interpolation_Disable();
+        Game_Draw(false);
+        Interpolation_Enable();
+
+        Fader_Draw(&ring->back_fader);
+        SceneCompositor_Flush();
+
+        Viewport_Init(-1, -1, -1, -1);
     }
 
     const int16_t old_fov = Viewport_GetSystemFOV();

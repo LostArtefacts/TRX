@@ -11,7 +11,7 @@
 
 #define NO_TIME (-1)
 
-static bool m_IsInventoryOpenEnabled = true;
+static bool m_IsInventoryOpenEnabled = TR_VERSION == 2;
 static bool m_IsAssaultTimerDisplay = false;
 static bool m_IsAssaultTimerActive = false;
 static int16_t m_CompletionTimer = 0;

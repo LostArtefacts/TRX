@@ -1,8 +1,7 @@
 #include "game/savegame.h"
 
-#include "global/vars.h"
-
 #include <libtrx/config.h>
+#include <libtrx/game/option/passport.h>
 
 int32_t Savegame_GetSlotCount(void)
 {
@@ -11,5 +10,5 @@ int32_t Savegame_GetSlotCount(void)
 
 void Savegame_HighlightNewestSlot(void)
 {
-    g_GameInfo.select_save_slot = Savegame_GetMostRecentlyCreatedSlot();
+    g_Passport.select_save_slot = Savegame_GetMostRecentlyCreatedSlot();
 }

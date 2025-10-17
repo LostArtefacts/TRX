@@ -13,5 +13,3 @@ int32_t g_PhdLeft = 0;
 int32_t g_PhdBottom = 0;
 int32_t g_PhdRight = 0;
 int32_t g_PhdTop = 0;
-
-GAME_INFO g_GameInfo = { .select_save_slot = -1, .select_level_num = -1 };

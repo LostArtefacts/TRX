@@ -15,6 +15,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/clock.h>
+#include <libtrx/game/console.h>
 #include <libtrx/game/gun/const.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/input.h>
@@ -26,6 +27,7 @@
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/option/compass.h>
 #include <libtrx/game/option/examine.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/sound.h>
@@ -34,13 +36,16 @@
 
 #include <stdio.h>
 
-#define M_TITLE_RING_OBJECTS 5
+#define M_TITLE_RING_OBJECTS 6
 #define M_OPTION_RING_OBJECTS 5
 #define M_INV_RING_FADE_TIME_FAST                                              \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
 #define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
+#define M_RING_SWITCH_FRAMES (96 / 2)
+#define M_SELECTING_FRAMES (32 / 2)
 
-static int32_t m_NoInputCounter = 0;
+static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
+static int32_t m_StartLevel;
 static OBJECT_ID m_InvChosen = NO_OBJECT;
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
@@ -87,17 +92,16 @@ static void M_RingNotActive(
     case O_GRENADE_OPTION:
         M_ShowAmmoQuantity("%5d", lara->grenade_ammo.ammo);
         break;
+
     case O_SHOTGUN_AMMO_OPTION:
         M_ShowAmmoQuantity("%d", SHOTGUN_SHELL_COUNT * qty);
         break;
-
     case O_MAGNUM_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:
     case O_HARPOON_AMMO_OPTION:
     case O_M16_AMMO_OPTION:
         M_ShowAmmoQuantity("%d", 2 * qty);
         break;
-
     case O_GRENADE_AMMO_OPTION:
     case O_FLARES_OPTION:
         M_ShowAmmoQuantity("%d", qty);
@@ -121,10 +125,11 @@ static void M_RingNotActive(
     case O_KEY_OPTION_4:
     case O_PICKUP_OPTION_1:
     case O_PICKUP_OPTION_2:
+    case O_LEADBAR_OPTION:
+    case O_SCION_OPTION:
         if (qty > 1) {
             InvRing_ShowItemQuantity("%d", qty);
         }
-
         break;
 
     default:
@@ -170,30 +175,27 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     // TODO: Make this function not have any side effects.
     // Consider adding new GF_ constants, but research other solutions first.
 
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-
     if (Shell_IsExiting()) {
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     } else if (GF_GetOverrideCommand().action != GF_NOOP) {
         return GF_GetOverrideCommand();
     } else if (ring->is_demo_needed) {
         return (GF_COMMAND) { .action = GF_START_DEMO, .param = -1 };
-    } else if (m_InvChosen == NO_OBJECT) {
-        return (GF_COMMAND) { .action = GF_NOOP };
     }
 
     switch (m_InvChosen) {
     case O_PASSPORT_OPTION:
-        if (g_Inv_ExtraData[0] == 0) {
+        switch (g_Passport.passport_page) {
+        case 0:
             // first passport page: load game.
             if (apply_changes) {
                 Inv_RemoveAllItems();
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
-                .param = g_Inv_ExtraData[1],
+                .param = g_Passport.select_save_slot,
             };
-        } else if (g_Inv_ExtraData[0] == 1) {
+        case 1:
             // second passport page:
             if (ring->mode == INV_TITLE_MODE) {
                 // title mode - new game or select level.
@@ -201,7 +203,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 if (g_GameFlow.play_any_level) {
                     return (GF_COMMAND) {
                         .action = GF_SELECT_GAME,
-                        .param = g_Inv_ExtraData[1],
+                        .param = g_Passport.select_save_slot,
                     };
                 } else {
                     if (apply_changes) {
@@ -223,7 +225,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                         Savegame_BindSlot(-1);
                         return (GF_COMMAND) {
                             .action = GF_SELECT_GAME,
-                            .param = g_Inv_ExtraData[1],
+                            .param = g_Passport.select_save_slot,
                         };
                     } else {
                         return (GF_COMMAND) {
@@ -234,12 +236,12 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 } else {
                     if (apply_changes) {
                         Music_Unpause();
-                        Savegame_Save(g_Inv_ExtraData[1]);
+                        Savegame_Save(g_Passport.select_save_slot);
                     }
                     return (GF_COMMAND) { .action = GF_NOOP };
                 }
             }
-        } else {
+        case 2:
             // third passport page:
             if (ring->mode == INV_TITLE_MODE) {
                 // title mode - exit the game
@@ -252,6 +254,9 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         break;
 
     case O_PHOTO_OPTION:
+        if (apply_changes) {
+            Savegame_UnbindSlot();
+        }
         if (GF_GetGymLevel() != nullptr) {
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
@@ -278,6 +283,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_PUZZLE_OPTION_2:
     case O_PUZZLE_OPTION_3:
     case O_PUZZLE_OPTION_4:
+    case O_LEADBAR_OPTION:
+    case O_SCION_OPTION:
         if (apply_changes) {
             Lara_UseItem(m_InvChosen);
         }
@@ -290,6 +297,23 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
+static bool M_CheckDemoTimer(const INV_RING *const ring)
+{
+    if (!g_Config.gameplay.enable_demo
+        || GF_GetLevelTable(GFLT_DEMOS)->count == 0) {
+        return false;
+    }
+
+    if (ring->mode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
+        || Console_IsOpened()) {
+        ClockTimer_Sync(&m_DemoTimer);
+        return false;
+    }
+
+    return ring->motion.status == RNG_OPEN
+        && ClockTimer_CheckElapsed(&m_DemoTimer, g_GameFlow.demo_delay);
+}
+
 static GF_COMMAND M_Control(INV_RING *const ring)
 {
     if (ring->motion.status == RNG_OPENING) {
@@ -299,6 +323,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             return (GF_COMMAND) { .action = GF_NOOP };
         }
 
+        ClockTimer_Sync(&m_DemoTimer);
         if (!ring->has_spun_out) {
             Sound_Effect(SFX_MENU_SPININ, nullptr, SPM_ALWAYS);
             ring->has_spun_out = true;
@@ -339,19 +364,14 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
 
     Input_Update();
+    // Do the demo inactivity check prior to postprocessing of the inputs.
+    if (M_CheckDemoTimer(ring)) {
+        ring->is_demo_needed = true;
+    }
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    if (ring->mode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
-        m_NoInputCounter = 0;
-    } else if (
-        g_Config.gameplay.enable_demo && GF_GetLevelTable(GFLT_DEMOS)->count > 0
-        && ring->motion.status == RNG_OPEN) {
-        m_NoInputCounter++;
-        if (m_NoInputCounter > g_GameFlow.demo_delay * LOGIC_FPS) {
-            ring->is_demo_needed = true;
-        }
-    }
+    m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_level_num : -1;
 
     if (g_Config.gameplay.enable_timer_in_inventory
         && !(TR_VERSION >= 2 && Game_IsInGym())) {
@@ -398,9 +418,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             break;
         }
 
-        if (ring->is_demo_needed
-            || ((g_InputDB.option || g_InputDB.menu_back)
-                && ring->mode != INV_TITLE_MODE)) {
+        if (m_StartLevel != -1 || ring->is_demo_needed
+            || (g_InputDB.menu_back && ring->mode != INV_TITLE_MODE)) {
             Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
             m_InvChosen = NO_OBJECT;
 
@@ -438,20 +457,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 ring->is_pass_open = true;
             }
 
-            INVENTORY_ITEM *inv_item;
-            if (ring->type == RT_MAIN) {
-                g_InvRing_Source[RT_MAIN].current = ring->current_object;
-                inv_item =
-                    g_InvRing_Source[RT_MAIN].items[ring->current_object];
-            } else if (ring->type == RT_OPTION) {
-                g_InvRing_Source[RT_OPTION].current = ring->current_object;
-                inv_item =
-                    g_InvRing_Source[RT_OPTION].items[ring->current_object];
-            } else {
-                g_InvRing_Source[RT_KEYS].current = ring->current_object;
-                inv_item =
-                    g_InvRing_Source[RT_KEYS].items[ring->current_object];
-            }
+            g_InvRing_Source[ring->type].current = ring->current_object;
+            INVENTORY_ITEM *const inv_item =
+                g_InvRing_Source[ring->type].items[ring->current_object];
 
             if (examine) {
                 inv_item->action = ACTION_EXAMINE;
@@ -462,7 +470,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 inv_item->goal_frame = inv_item->open_frame;
                 inv_item->anim_direction = 1;
             }
-            InvRing_MotionSetup(ring, RNG_SELECTING, RNG_SELECTED, 16);
+            InvRing_MotionSetup(
+                ring, RNG_SELECTING, RNG_SELECTED, M_SELECTING_FRAMES);
             InvRing_MotionRotation(
                 ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
             InvRing_MotionItemSelect(ring, inv_item);
@@ -500,20 +509,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (g_InputDB.menu_up && ring->mode != INV_TITLE_MODE
             && ring->mode != INV_KEYS_MODE) {
-            if (ring->type == RT_OPTION) {
-                if (g_InvRing_Source[RT_MAIN].count > 0) {
-                    InvRing_MotionSetup(ring, RNG_CLOSING, RNG_OPTION2MAIN, 24);
-                    InvRing_MotionRadius(ring, 0);
-                    InvRing_MotionRotation(
-                        ring, INV_RING_CLOSE_ROTATION,
-                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
-                    InvRing_MotionCameraPitch(ring, 0x2000);
-                    ring->motion.misc = 0x2000;
-                }
-                g_InputDB = (INPUT_STATE) {};
-            } else if (ring->type == RT_MAIN) {
+            if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_KEYS].count > 0) {
-                    InvRing_MotionSetup(ring, RNG_CLOSING, RNG_MAIN2KEYS, 24);
+                    InvRing_MotionSetup(
+                        ring, RNG_CLOSING, RNG_MAIN2KEYS,
+                        M_RING_SWITCH_FRAMES / 2);
                     InvRing_MotionRadius(ring, 0);
                     InvRing_MotionRotation(
                         ring, INV_RING_CLOSE_ROTATION,
@@ -522,14 +522,43 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     ring->motion.misc = 0x2000;
                 }
                 g_Input = (INPUT_STATE) {};
+                g_InputDB = (INPUT_STATE) {};
+            } else if (ring->type == RT_OPTION) {
+                if (g_InvRing_Source[RT_MAIN].count > 0) {
+                    InvRing_MotionSetup(
+                        ring, RNG_CLOSING, RNG_OPTION2MAIN,
+                        M_RING_SWITCH_FRAMES / 2);
+                    InvRing_MotionRadius(ring, 0);
+                    InvRing_MotionRotation(
+                        ring, INV_RING_CLOSE_ROTATION,
+                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
+                    InvRing_MotionCameraPitch(ring, 0x2000);
+                    ring->motion.misc = 0x2000;
+                }
                 g_InputDB = (INPUT_STATE) {};
             }
         } else if (
             g_InputDB.menu_down && ring->mode != INV_TITLE_MODE
             && ring->mode != INV_KEYS_MODE) {
-            if (ring->type == RT_KEYS) {
+            if (ring->type == RT_MAIN) {
+                if (g_InvRing_Source[RT_OPTION].count > 0
+                    && !InvRing_IsOptionLockedOut()) {
+                    InvRing_MotionSetup(
+                        ring, RNG_CLOSING, RNG_MAIN2OPTION,
+                        M_RING_SWITCH_FRAMES / 2);
+                    InvRing_MotionRadius(ring, 0);
+                    InvRing_MotionRotation(
+                        ring, INV_RING_CLOSE_ROTATION,
+                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
+                    InvRing_MotionCameraPitch(ring, -0x2000);
+                    ring->motion.misc = -0x2000;
+                }
+                g_InputDB = (INPUT_STATE) {};
+            } else if (ring->type == RT_KEYS) {
                 if (g_InvRing_Source[RT_MAIN].count > 0) {
-                    InvRing_MotionSetup(ring, RNG_CLOSING, RNG_KEYS2MAIN, 24);
+                    InvRing_MotionSetup(
+                        ring, RNG_CLOSING, RNG_KEYS2MAIN,
+                        M_RING_SWITCH_FRAMES / 2);
                     InvRing_MotionRadius(ring, 0);
                     InvRing_MotionRotation(
                         ring, INV_RING_CLOSE_ROTATION,
@@ -538,33 +567,23 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     ring->motion.misc = -0x2000;
                 }
                 g_Input = (INPUT_STATE) {};
-                g_InputDB = (INPUT_STATE) {};
-            } else if (ring->type == RT_MAIN) {
-                if (g_InvRing_Source[RT_OPTION].count > 0
-                    && !InvRing_IsOptionLockedOut()) {
-                    InvRing_MotionSetup(ring, RNG_CLOSING, RNG_MAIN2OPTION, 24);
-                    InvRing_MotionRadius(ring, 0);
-                    InvRing_MotionRotation(
-                        ring, INV_RING_CLOSE_ROTATION,
-                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
-                    InvRing_MotionCameraPitch(ring, -0x2000);
-                    ring->motion.misc = -0x2000;
-                }
                 g_InputDB = (INPUT_STATE) {};
             }
         }
         break;
 
     case RNG_MAIN2OPTION:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, 24);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -(int16_t)(ring->motion.misc);
-        ring->motion.camera_pitch_rate = ring->motion.misc / 24;
+        ring->camera_pitch = -ring->motion.misc;
+        ring->motion.camera_pitch_rate =
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         ring->motion.camera_pitch_target = 0;
-        ring->list = g_InvRing_Source[RT_OPTION].items;
-        ring->type = RT_OPTION;
         g_InvRing_Source[RT_MAIN].current = ring->current_object;
         g_InvRing_Source[RT_MAIN].count = ring->number_of_objects;
+        ring->type = RT_OPTION;
+        ring->list = g_InvRing_Source[RT_OPTION].items;
         ring->number_of_objects = g_InvRing_Source[RT_OPTION].count;
         ring->current_object = g_InvRing_Source[RT_OPTION].current;
         InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
@@ -576,15 +595,17 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_MAIN2KEYS:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, 24);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
+        ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_target = 0;
-        ring->camera_pitch = -(int16_t)(ring->motion.misc);
-        ring->motion.camera_pitch_rate = ring->motion.misc / 24;
+        ring->motion.camera_pitch_rate =
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         g_InvRing_Source[RT_MAIN].current = ring->current_object;
         g_InvRing_Source[RT_MAIN].count = ring->number_of_objects;
-        ring->list = g_InvRing_Source[RT_KEYS].items;
         ring->type = RT_KEYS;
+        ring->list = g_InvRing_Source[RT_KEYS].items;
         ring->number_of_objects = g_InvRing_Source[RT_KEYS].count;
         ring->current_object = g_InvRing_Source[RT_KEYS].current;
         InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
@@ -596,14 +617,16 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_KEYS2MAIN:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, 24);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -(int16_t)(ring->motion.misc);
-        ring->motion.camera_pitch_rate = ring->motion.misc / 24;
+        ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_target = 0;
-        ring->list = g_InvRing_Source[RT_MAIN].items;
-        ring->type = RT_MAIN;
+        ring->motion.camera_pitch_rate =
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         g_InvRing_Source[RT_KEYS].current = ring->current_object;
+        ring->type = RT_MAIN;
+        ring->list = g_InvRing_Source[RT_MAIN].items;
         ring->number_of_objects = g_InvRing_Source[RT_MAIN].count;
         ring->current_object = g_InvRing_Source[RT_MAIN].current;
         InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
@@ -615,15 +638,17 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_OPTION2MAIN:
-        InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, 24);
+        InvRing_MotionSetup(
+            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
         InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -(int16_t)(ring->motion.misc);
-        ring->motion.camera_pitch_rate = ring->motion.misc / 24;
-        g_InvRing_Source[RT_OPTION].current = ring->current_object;
-        g_InvRing_Source[RT_OPTION].count = ring->number_of_objects;
+        ring->camera_pitch = -ring->motion.misc;
         ring->motion.camera_pitch_target = 0;
-        ring->list = g_InvRing_Source[RT_MAIN].items;
+        ring->motion.camera_pitch_rate =
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
+        g_InvRing_Source[RT_OPTION].count = ring->number_of_objects;
+        g_InvRing_Source[RT_OPTION].current = ring->current_object;
         ring->type = RT_MAIN;
+        ring->list = g_InvRing_Source[RT_MAIN].items;
         ring->number_of_objects = g_InvRing_Source[RT_MAIN].count;
         ring->current_object = g_InvRing_Source[RT_MAIN].current;
         InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
@@ -671,6 +696,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 } else {
                     g_InvRing_Source[RT_OPTION].current = ring->current_object;
                 }
+
                 if (ring->mode == INV_TITLE_MODE
                     && (inv_item->object_id == O_DETAIL_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
@@ -694,7 +720,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         Option_Close(inv_item);
         Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
-        InvRing_MotionSetup(ring, RNG_DESELECTING, RNG_OPEN, 16);
+        InvRing_MotionSetup(
+            ring, RNG_DESELECTING, RNG_OPEN, M_SELECTING_FRAMES);
         InvRing_MotionRotation(
             ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
         g_Input = (INPUT_STATE) {};
@@ -711,7 +738,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     inv_item->current_frame = 0;
                 }
 
-                ring->motion.count = 16;
+                ring->motion.count = M_SELECTING_FRAMES;
                 ring->motion.status = ring->motion.status_target;
                 InvRing_MotionItemDeselect(ring, inv_item);
                 break;
@@ -788,56 +815,57 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         return nullptr;
     }
 
-    Clock_SyncTick();
-
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
     g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     m_InvChosen = NO_OBJECT;
 
+    g_InvRing_OldCamera = g_Camera;
+    m_StartLevel = -1;
+
     if (mode == INV_TITLE_MODE) {
         g_InvRing_Source[RT_OPTION].count = M_TITLE_RING_OBJECTS;
-        if (GF_GetGymLevel() != nullptr) {
-            g_InvRing_Source[RT_OPTION].count++;
-        }
         InvRing_ShowVersionText();
+        Savegame_ScanSavedGames();
     } else {
         g_InvRing_Source[RT_OPTION].count = M_OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();
-    }
-
-    for (int32_t i = 0; i < 8; i++) {
-        g_Inv_ExtraData[i] = -1;
     }
 
     g_InvRing_Source[RT_MAIN].current = 0;
     for (int32_t i = 0; i < g_InvRing_Source[RT_MAIN].count; i++) {
         InvRing_InitInvItem(g_InvRing_Source[RT_MAIN].items[i]);
     }
+
+    g_InvRing_Source[RT_OPTION].current = 0;
     for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
         g_InvRing_Source[RT_OPTION].qtys[i] = 1;
         InvRing_InitInvItem(g_InvRing_Source[RT_OPTION].items[i]);
     }
 
-    g_InvRing_Source[RT_OPTION].current = 0;
-    if (mode == INV_TITLE_MODE) {
-        if (GF_GetGymLevel() == nullptr) {
-            Inv_RemoveItem(O_PHOTO_OPTION);
-        } else if (Gym_IsInventoryOpenEnabled()) {
-            for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
-                if (g_InvRing_Source[RT_OPTION].items[i]->object_id
-                    == O_PHOTO_OPTION) {
-                    g_InvRing_Source[RT_OPTION].current = i;
-                }
+    if (GF_GetGymLevel() == nullptr) {
+        Inv_RemoveItem(O_PHOTO_OPTION);
+    }
+
+    if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr
+        && Gym_IsInventoryOpenEnabled()) {
+        for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
+            if (g_InvRing_Source[RT_OPTION].items[i]->object_id
+                == O_PHOTO_OPTION) {
+                g_InvRing_Source[RT_OPTION].current = i;
             }
         }
+    }
+
+    if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {
+        Music_Pause();
+        Sound_PauseAll();
     }
 
     INV_RING *const ring = Memory_Alloc(sizeof(INV_RING));
     ring->mode = mode;
     ring->old_fov = Viewport_GetSystemFOV();
-    m_NoInputCounter = 0;
 
     switch (mode) {
     case INV_TITLE_MODE:
@@ -880,16 +908,20 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             M_INV_RING_FADE_TIME_FAST);
     } else {
+#if TR_VERSION == 1
+        Output_UnloadBackground();
+        Fader_Init(
+            &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
+            M_INV_RING_FADE_TIME_FAST);
+#elif TR_VERSION == 2
         Output_LoadBackgroundFromObject(
             g_Config.ui.inventory_background_style == BK_PATTERN_WAVE);
+#endif
     }
 
-    if (!g_Config.audio.enable_music_in_inventory && mode != INV_TITLE_MODE) {
-        Music_Pause();
-        Sound_PauseAll();
-    }
-
+#if TR_VERSION == 2
     Viewport_AlterFOV(80 * DEG_1);
+#endif
 
     return ring;
 }
@@ -910,9 +942,11 @@ void InvRing_Close(INV_RING *const ring)
         Sound_StopAll();
     }
     Output_UnloadBackground();
+
     // enable buffering
     g_OldInputDB = (INPUT_STATE) {};
 
+    m_InvChosen = NO_OBJECT;
     Viewport_AlterFOV(ring->old_fov);
     Memory_Free(ring);
 }

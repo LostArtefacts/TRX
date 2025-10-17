@@ -126,7 +126,7 @@ static void M_SetPage(
 
 static void M_InitSaveRequester(const int16_t page_num)
 {
-    int32_t save_slot = g_GameInfo.select_save_slot;
+    int32_t save_slot = g_Passport.select_save_slot;
     if (save_slot == -1) {
         save_slot = Savegame_GetMostRecentlyUsedSlot();
     }
@@ -235,7 +235,7 @@ static void M_DeterminePages(void)
 static void M_InitSelectLevelRequester(void)
 {
     m_State.select_level.state =
-        UI_SelectLevelDialog_Init(g_GameInfo.select_save_slot);
+        UI_SelectLevelDialog_Init(g_Passport.select_save_slot);
 }
 
 static void M_ShowSelectLevel(void)
@@ -243,11 +243,11 @@ static void M_ShowSelectLevel(void)
     const int32_t choice =
         UI_SelectLevelDialog_Control(m_State.select_level.state);
     if (choice == UI_SELECT_LEVEL_CHOICE_PLAY_STORY_SO_FAR) {
-        g_GameInfo.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
+        g_Passport.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
     } else if (choice != UI_SELECT_LEVEL_CHOICE_NOOP) {
-        g_GameInfo.select_level_num = choice + GF_GetFirstLevel()->num;
-        g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
-        Savegame_BindSlot(g_GameInfo.select_save_slot);
+        g_Passport.select_level_num = choice + GF_GetFirstLevel()->num;
+        g_Passport.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
+        Savegame_BindSlot(g_Passport.select_save_slot);
     } else {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
@@ -276,7 +276,7 @@ static void M_ShowSaves(const PASSPORT_MODE pending_mode)
         break;
 
     case UI_SAVE_SLOT_DIALOG_DETAILS:
-        g_GameInfo.select_save_slot = choice.slot_num;
+        g_Passport.select_save_slot = choice.slot_num;
         M_InitSelectLevelRequester();
         m_State.mode = PASSPORT_MODE_SELECT_LEVEL;
         g_Input = (INPUT_STATE) {};
@@ -286,8 +286,8 @@ static void M_ShowSaves(const PASSPORT_MODE pending_mode)
 
     case UI_SAVE_SLOT_DIALOG_CONFIRM:
         m_State.mode = PASSPORT_MODE_BROWSE;
-        g_GameInfo.select_save_slot = choice.slot_num;
-        g_GameInfo.passport_selection = pending_mode;
+        g_Passport.select_save_slot = choice.slot_num;
+        g_Passport.passport_selection = pending_mode;
         break;
     }
 }
@@ -350,7 +350,7 @@ static void M_NewGame(void)
             m_State.new_game.is_ready = true;
         } else {
             Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
-            g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
+            g_Passport.passport_selection = PASSPORT_MODE_NEW_GAME;
         }
     } else if (m_State.mode == PASSPORT_MODE_NEW_GAME) {
         const int32_t choice = UI_NewGame_Control(&m_State.new_game.state);
@@ -380,7 +380,7 @@ static void M_NewGame(void)
                 Game_SetBonusFlag(GBF_NONE);
                 break;
             }
-            g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
+            g_Passport.passport_selection = PASSPORT_MODE_NEW_GAME;
             Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
         }
     }
@@ -392,7 +392,7 @@ static void M_Restart(INVENTORY_ITEM *inv_item)
 
     if (Savegame_RestartAvailable(Savegame_GetBoundSlot())) {
         if (g_InputDB.menu_confirm) {
-            g_GameInfo.passport_selection = PASSPORT_MODE_RESTART;
+            g_Passport.passport_selection = PASSPORT_MODE_RESTART;
         }
     } else {
         inv_item->anim_direction = 1;
@@ -459,14 +459,14 @@ static void M_ShowPage(INVENTORY_ITEM *const inv_item)
     case PASSPORT_MODE_EXIT_TITLE:
         M_ChangePageTextContent(GS(PASSPORT_EXIT_TO_TITLE));
         if (g_InputDB.menu_confirm) {
-            g_GameInfo.passport_selection = PASSPORT_MODE_EXIT_TITLE;
+            g_Passport.passport_selection = PASSPORT_MODE_EXIT_TITLE;
         }
         break;
 
     case PASSPORT_MODE_EXIT_GAME:
         M_ChangePageTextContent(GS(PASSPORT_EXIT_GAME));
         if (g_InputDB.menu_confirm) {
-            g_GameInfo.passport_selection = PASSPORT_MODE_EXIT_GAME;
+            g_Passport.passport_selection = PASSPORT_MODE_EXIT_GAME;
         }
         break;
 
