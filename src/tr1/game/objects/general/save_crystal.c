@@ -4,6 +4,7 @@
 #include <libtrx/config.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/rooms.h>
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {

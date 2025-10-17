@@ -3,11 +3,11 @@
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"
-#include "global/types.h"
 
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>
 

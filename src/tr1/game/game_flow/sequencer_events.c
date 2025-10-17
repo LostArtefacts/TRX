@@ -10,6 +10,7 @@
 #include <libtrx/game/lua.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/option/passport.h>
+#include <libtrx/game/rooms.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);

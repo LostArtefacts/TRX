@@ -6,6 +6,7 @@
 #include "game/stats.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/const.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/game/ui/elements/anchor.h>
 #include <libtrx/game/ui/elements/frame.h>

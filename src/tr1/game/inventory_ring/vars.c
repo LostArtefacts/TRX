@@ -1,7 +1,5 @@
 #include "game/inventory_ring/vars.h"
 
-#include "global/types.h"
-
 #include <stdint.h>
 
 INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {

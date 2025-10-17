@@ -3,6 +3,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/lara/hair.h>
+#include <libtrx/game/pathing.h>
 
 #define M_DEFAULT_RADIUS 10
 

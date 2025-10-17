@@ -11,6 +11,12 @@
 
 #define M_MAX_BOUND_ROOMS 128
 
+typedef struct {
+    int32_t xv;
+    int32_t yv;
+    int32_t zv;
+} M_PORTAL_VBUF;
+
 static int32_t m_Outside;
 static int32_t m_OutsideRight;
 static int32_t m_OutsideLeft;
@@ -116,11 +122,11 @@ void Room_SetBounds(
     int32_t bottom = parent->test_top;
     int32_t top = parent->test_bottom;
 
-    PORTAL_VBUF portal_vbuf[4];
+    M_PORTAL_VBUF portal_vbuf[4];
     int32_t z_behind = 0;
 
     for (int32_t i = 0; i < 4; i++) {
-        PORTAL_VBUF *const dvbuf = &portal_vbuf[i];
+        M_PORTAL_VBUF *const dvbuf = &portal_vbuf[i];
         const XYZ_16 *const dvtx = &portal->vertex[i];
         const int32_t xv =
             dvtx->x * m->_00 + dvtx->y * m->_01 + dvtx->z * m->_02 + m->_03;
@@ -167,8 +173,8 @@ void Room_SetBounds(
     }
 
     if (z_behind > 0) {
-        const PORTAL_VBUF *dest = &portal_vbuf[0];
-        const PORTAL_VBUF *last = &portal_vbuf[3];
+        const M_PORTAL_VBUF *dest = &portal_vbuf[0];
+        const M_PORTAL_VBUF *last = &portal_vbuf[3];
 
         for (int32_t i = 0; i < 4; i++, last = dest++) {
             if ((dest->zv < 0) == (last->zv < 0)) {
