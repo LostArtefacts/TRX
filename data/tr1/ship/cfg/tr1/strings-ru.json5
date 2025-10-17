@@ -746,6 +746,9 @@
         },
         "winston": {
             "name": "\\{review}Уинстон",
+        },
+        "stopwatch": {
+            "name": "\\{review}Статистика",
         }
     },
     "game_strings": {

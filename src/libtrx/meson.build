@@ -383,6 +383,7 @@ sources = [
   'game/objects/traps/thors_hammer.c',
   'game/objects/vars.c',
   'game/option/common.c',
+  'game/option/compass.c',
   'game/option/controls.c',
   'game/option/examine.c',
   'game/option/gameplay.c',

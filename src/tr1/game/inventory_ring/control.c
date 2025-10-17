@@ -6,7 +6,6 @@
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara.h"
-#include "game/option/option_compass.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/stats.h"
@@ -21,6 +20,7 @@
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/option.h>
+#include <libtrx/game/option/compass.h>
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
@@ -346,10 +346,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         Stats_UpdateTimer();
     }
 
-    if (ring->rotating) {
-        return (GF_COMMAND) { .action = GF_NOOP };
-    }
-
     if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_SAVE_CRYSTAL_MODE
          || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
         && !ring->is_pass_open) {
@@ -366,6 +362,10 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 Option_Compass_UpdateNeedle(inv_item);
             }
         }
+    }
+
+    if (ring->rotating) {
+        return (GF_COMMAND) { .action = GF_NOOP };
     }
 
     switch (ring->motion.status) {
@@ -460,6 +460,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             case O_SHOTGUN_OPTION:
             case O_MAGNUM_OPTION:
             case O_UZI_OPTION:
+            case O_HARPOON_OPTION:
+            case O_M16_OPTION:
+            case O_GRENADE_OPTION:
                 Sound_Effect(SFX_MENU_GUNS, nullptr, SPM_ALWAYS);
                 break;
 

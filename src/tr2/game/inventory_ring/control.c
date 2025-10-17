@@ -24,6 +24,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/names.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/option/compass.h>
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
@@ -368,6 +369,17 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         g_InputDB = (INPUT_STATE) { .menu_confirm = 1 };
     }
 
+    if (ring->mode != INV_TITLE_MODE && !Fader_IsActive(&ring->back_fader)
+        && !Fader_IsActive(&ring->top_fader)
+        && ring->motion.status != RNG_OPENING) {
+        for (int i = 0; i < ring->number_of_objects; i++) {
+            INVENTORY_ITEM *const inv_item = ring->list[i];
+            if (inv_item->object_id == O_COMPASS_OPTION) {
+                Option_Compass_UpdateNeedle(inv_item);
+            }
+        }
+    }
+
     if (ring->rotating) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
@@ -459,10 +471,15 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
             switch (inv_item->object_id) {
             case O_COMPASS_OPTION:
+                Sound_Effect(SFX_MENU_COMPASS, nullptr, SPM_ALWAYS);
                 break;
 
             case O_PHOTO_OPTION:
                 Sound_Effect(SFX_MENU_LARA_HOME, nullptr, SPM_ALWAYS);
+                break;
+
+            case O_CONTROL_OPTION:
+                Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_ALWAYS);
                 break;
 
             case O_PISTOL_OPTION:

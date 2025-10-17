@@ -1095,6 +1095,12 @@
         },
         "earthquake": {
             "name": "Crith-thalmhainn",
+        },
+        "stopwatch": {
+            "name": "\\{review}Staitistig",
+        },
+        "gamma": {
+            "name": "\\{review}Gamma",
         }
     },
     "game_strings": {

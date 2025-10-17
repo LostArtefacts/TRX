@@ -1096,6 +1096,12 @@
         },
         "earthquake": {
             "name": "Erdbeben",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statistiken",
+        },
+        "gamma": {
+            "name": "\\{review}Gamma",
         }
     },
     "game_strings": {

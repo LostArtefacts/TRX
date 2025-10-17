@@ -1063,6 +1063,12 @@
         },
         "pda": {
             "name": "Rozgrywka",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statystyki",
+        },
+        "gamma": {
+            "name": "\\{review}Gamma",
         }
     },
     "game_strings": {
