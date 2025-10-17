@@ -1,7 +1,5 @@
 #include "game/effects.h"
 
-#include "global/types.h"
-
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/vars.h>

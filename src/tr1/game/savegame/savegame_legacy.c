@@ -15,6 +15,7 @@
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

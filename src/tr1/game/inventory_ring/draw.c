@@ -2,7 +2,6 @@
 
 #include "game/game.h"
 #include "game/inventory_ring.h"
-#include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 
@@ -11,6 +10,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/option.h>
 #include <libtrx/game/option/compass.h>
 #include <libtrx/game/output.h>

@@ -1,6 +1,8 @@
 #include "game/objects/common.h"
 
 #include <libtrx/game/camera.h>
+#include <libtrx/game/items.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
 

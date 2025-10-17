@@ -5,7 +5,6 @@
 #include "game/game_flow.h"
 #include "game/lara.h"
 #include "game/shell.h"
-#include "global/types.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>

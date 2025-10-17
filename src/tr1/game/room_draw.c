@@ -8,9 +8,16 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/lara/draw.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/viewport.h>
 #include <libtrx/log.h>
+
+typedef struct {
+    int32_t xv;
+    int32_t yv;
+    int32_t zv;
+} M_PORTAL_VBUF;
 
 static int32_t m_RoomNumStack[MAX_ROOMS_TO_DRAW] = {};
 static int32_t m_RoomNumStackIdx = 0;
@@ -34,7 +41,7 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
         return false;
     }
 
-    DOOR_VBUF door_vbuf[4];
+    M_PORTAL_VBUF portal_vbuf[4];
     int32_t left = parent->bound_right;
     int32_t right = parent->bound_left;
     int32_t top = parent->bound_bottom;
@@ -54,9 +61,9 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
         int32_t zv = mptr->_20 * portal->vertex[i].x
             + mptr->_21 * portal->vertex[i].y + mptr->_22 * portal->vertex[i].z
             + mptr->_23;
-        door_vbuf[i].xv = xv;
-        door_vbuf[i].yv = yv;
-        door_vbuf[i].zv = zv;
+        portal_vbuf[i].xv = xv;
+        portal_vbuf[i].yv = yv;
+        portal_vbuf[i].zv = zv;
 
         if (zv > 0) {
             if (zv > Output_GetFarZ()) {
@@ -95,8 +102,8 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
     }
 
     if (z_behind > 0) {
-        DOOR_VBUF *dest = &door_vbuf[0];
-        DOOR_VBUF *last = &door_vbuf[3];
+        M_PORTAL_VBUF *dest = &portal_vbuf[0];
+        M_PORTAL_VBUF *last = &portal_vbuf[3];
         for (int i = 0; i < 4; i++) {
             if ((dest->zv < 0) ^ (last->zv < 0)) {
                 if (dest->xv < 0 && last->xv < 0) {
