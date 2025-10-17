@@ -24,7 +24,7 @@ static int M_L_ConsoleLog(lua_State *const L)
         lua_call(L, 1, 1);
         const char *arg = lua_tostring(L, -1);
         lua_pop(L, 1);
-        msg = (i > 2) ? String_FormatStatic("%s, %s", msg, arg)
+        msg = (i > 2) ? String_FormatStatic("%s %s", msg, arg)
                       : String_FormatStatic("%s", arg);
     }
 
