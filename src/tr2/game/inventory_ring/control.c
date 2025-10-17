@@ -4,7 +4,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/inventory_ring/draw.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara.h"
 #include "game/option/option.h"
@@ -20,6 +19,7 @@
 #include <libtrx/game/gym.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
+#include <libtrx/game/inventory_ring/draw.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/music.h>

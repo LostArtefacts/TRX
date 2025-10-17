@@ -111,7 +111,6 @@ sources = [
   'game/gun/gun_rifle.c',
   'game/inventory.c',
   'game/inventory_ring/control.c',
-  'game/inventory_ring/draw.c',
   'game/inventory_ring/vars.c',
   'game/item_actions.c',
   'game/item_actions/bubbles.c',
