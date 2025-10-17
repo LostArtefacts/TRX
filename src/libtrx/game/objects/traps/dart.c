@@ -1,5 +1,6 @@
 #include "game/effects.h"
 #include "game/lara.h"
+#include "game/los.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/rooms.h"
@@ -31,6 +32,12 @@ static void M_Hit(const int16_t item_num, const XYZ_32 pos)
     }
 }
 
+static XYZ_32 M_GetHitPos(const GAME_VECTOR start, GAME_VECTOR hit_pos)
+{
+    LOS_Check(&start, &hit_pos);
+    return hit_pos.pos;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -42,7 +49,8 @@ static void M_Control(const int16_t item_num)
             lara_item->rot.y, lara_item->room_num);
     }
 
-    const XYZ_32 old_pos = item->pos;
+    const GAME_VECTOR old_pos = { .pos = item->pos,
+                                  .room_num = item->room_num };
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
@@ -56,8 +64,10 @@ static void M_Control(const int16_t item_num)
         item->rot.x += M_PITCH;
     }
     item->floor = height;
+    const GAME_VECTOR new_pos = { .pos = item->pos,
+                                  .room_num = item->room_num };
     if (item->pos.y >= height) {
-        M_Hit(item_num, item->object_id == O_DART ? old_pos : item->pos);
+        M_Hit(item_num, M_GetHitPos(old_pos, new_pos));
     }
 }
 
