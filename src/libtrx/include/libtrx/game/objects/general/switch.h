@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../collision.h"
+#include <stdint.h>
 
 typedef enum {
     SWITCH_STATE_OFF = 0,
@@ -9,9 +9,3 @@ typedef enum {
 } SWITCH_STATE;
 
 bool Switch_Trigger(int16_t item_num, int16_t timer);
-
-// TODO: make private
-extern void Switch_Collision(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-extern void Switch_CollisionUW(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);

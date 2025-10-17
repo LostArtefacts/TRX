@@ -6,7 +6,8 @@
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — complex objects such as the dragon or Skidoos may not behave correctly. Please report any bugs encountered.  
     See [the documentation](../07-CATALOGS.md) for details.
-- added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (#4057)
+- added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphics → Visuals → Pickup aids) (#4057)
+- added an option for animated interactions with pickups and switches (Gameplay → Controls → Animated interactions) (#4067)
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)
     - fixed ricochets not showing on slopes
