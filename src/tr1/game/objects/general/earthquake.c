@@ -8,10 +8,10 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
-        if (Random_GetDraw() < 0x100) {
+        if (Random_GetDraw() < 256) {
             g_Camera.bounce = -150;
-            Sound_Effect(SFX_ROLLING_BALL, nullptr, SPM_NORMAL);
-        } else if (Random_GetControl() < 0x400) {
+            Sound_Effect(SFX_ROLLING_BALL_1_ROLL, nullptr, SPM_NORMAL);
+        } else if (Random_GetControl() < 1024) {
             g_Camera.bounce = 50;
             Sound_Effect(SFX_T_REX_STOMP, nullptr, SPM_NORMAL);
         }
