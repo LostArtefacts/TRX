@@ -9,38 +9,6 @@ static XYZ_32 g_PushSwitchPosition = { .x = 0, .y = 0, .z = 292 };
 static XYZ_32 m_AirlockPosition = { .x = 0, .y = 0, .z = 212 };
 static XYZ_32 m_SwitchUWPosition = { .x = 0, .y = 0, .z = 108 };
 
-static const OBJECT_BOUNDS m_SwitchBounds = {
-    .shift = {
-        .min = { .x = -220, .y = +0, .z = +WALL_L / 2 - 220, },
-        .max = { .x = +220, .y = +0, .z = +WALL_L / 2, },
-    },
-    .rot = {
-        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
-        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
-    },
-};
-
-static const OBJECT_BOUNDS m_SwitchBoundsUW = {
-    .shift = {
-        .min = { .x = -WALL_L, .y = -WALL_L, .z = -WALL_L, },
-        .max = { .x = +WALL_L, .y = +WALL_L, .z = +WALL_L / 2, },
-    },
-    .rot = {
-        .min = { .x = -80 * DEG_1, .y = -80 * DEG_1, .z = -80 * DEG_1, },
-        .max = { .x = +80 * DEG_1, .y = +80 * DEG_1, .z = +80 * DEG_1, },
-    },
-};
-
-static const OBJECT_BOUNDS *M_Bounds(void)
-{
-    return &m_SwitchBounds;
-}
-
-static const OBJECT_BOUNDS *M_BoundsUW(void)
-{
-    return &m_SwitchBoundsUW;
-}
-
 static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
 {
     lara_item->rot.y = switch_item->rot.y;
@@ -195,48 +163,3 @@ void Switch_CollisionUW(
     Item_AddActive(item_num);
     Item_Animate(item);
 }
-
-static void M_Control(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->flags |= IF_CODE_BITS;
-    if (!Item_IsTriggerActive(item)) {
-        item->goal_anim_state = SWITCH_STATE_ON;
-        item->timer = 0;
-    }
-    Item_Animate(item);
-}
-
-static void M_SetupBase(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->save_flags = true;
-    obj->save_anim = true;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    M_SetupBase(obj);
-    obj->collision_func = Switch_Collision;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupPushButton(OBJECT *const obj)
-{
-    M_Setup(obj);
-    obj->enable_interpolation = false;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupUW(OBJECT *const obj)
-{
-    M_SetupBase(obj);
-    obj->collision_func = Switch_CollisionUW;
-    obj->bounds_func = M_BoundsUW;
-}
-
-REGISTER_OBJECT(O_SWITCH_TYPE_AIRLOCK, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_BUTTON, M_SetupPushButton)
-REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
