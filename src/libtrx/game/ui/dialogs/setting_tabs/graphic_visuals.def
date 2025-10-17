@@ -29,9 +29,9 @@ X_UI_CFG_BOOL(visuals.enable_skybox,        SETTING_ENABLE_SKYBOX)
 X_UI_CFG_BOOL(visuals.enable_braid,         SETTING_ENABLE_BRAID)
 X_UI_CFG_BOOL(visuals.enable_breeze,        SETTING_ENABLE_BREEZE, .custom_handler = { .is_available = UI_Settings_EnableBreeze_IsAvailable })
 X_UI_CFG_BOOL(visuals.enable_3d_pickups,    SETTING_ENABLE_3D_PICKUPS)
+X_UI_CFG_BOOL(gameplay.enable_pickup_aids,  SETTING_ENABLE_PICKUP_AIDS)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(gameplay.enable_pickup_aids,  SETTING_ENABLE_PICKUP_AIDS)
 X_UI_CFG_BOOL(visuals.enable_ps1_crystals,  SETTING_ENABLE_PS1_CRYSTALS, .custom_handler = { .is_available = UI_Settings_EnablePS1Crystals_IsAvailable })
 #endif
 

@@ -83,6 +83,10 @@ static void M_SpawnPickupAid(const ITEM *const item)
 {
     const OBJECT_ID obj_id =
         Object_GetCognate(item->object_id, g_ItemToInvObjectMap);
+    if (obj_id == NO_OBJECT) {
+        return;
+    }
+
     const OBJECT *const obj = Object_Get(obj_id);
     const ANIM_FRAME *const frame = obj->frame_base;
 
@@ -98,9 +102,7 @@ static void M_SpawnPickupAid(const ITEM *const item)
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->room_num = pos.room_num;
-        effect->pos.x = pos.x;
-        effect->pos.y = pos.y;
-        effect->pos.z = pos.z;
+        effect->pos = pos.pos;
         effect->counter = 0;
         effect->object_id = O_PICKUP_AID;
         effect->frame_num = 0;
@@ -114,7 +116,7 @@ static void M_Control(int16_t item_num)
         Item_RemoveActive(item_num);
         return;
     }
-#if TR_VERSION == 1
+
     const ITEM *const lara = Lara_GetItem();
     if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
         || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
@@ -137,7 +139,6 @@ static void M_Control(int16_t item_num)
     }
 
     item->priv = (void *)(intptr_t)(int32_t)timer;
-#endif
 }
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
