@@ -29,6 +29,7 @@ extern void LUA_CreateLog(lua_State *L);
 extern void LUA_CreateMusic(lua_State *L);
 extern void LUA_CreateSound(lua_State *L);
 extern void LUA_CreateConfig(lua_State *L);
+extern void LUA_CreateGame(lua_State *L);
 
 static int M_LoadFile(lua_State *const L, const char *const path)
 {
@@ -163,6 +164,7 @@ void LUA_Init(void)
     M_LoadTRXCModule(L, LUA_CreateMusic);
     M_LoadTRXCModule(L, LUA_CreateSound);
     M_LoadTRXCModule(L, LUA_CreateConfig);
+    M_LoadTRXCModule(L, LUA_CreateGame);
 
     M_PRIV *const p = &m_Priv;
     p->state = L;
@@ -175,6 +177,7 @@ void LUA_Init(void)
     M_LoadTRXModule(L, "log.lua");
     M_LoadTRXModule(L, "sound.lua");
     M_LoadTRXModule(L, "music.lua");
+    M_LoadTRXModule(L, "game.lua");
 }
 
 void LUA_Shutdown(void)

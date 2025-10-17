@@ -227,6 +227,7 @@ sources = [
   'game/lua/config.c',
   'game/lua/console.c',
   'game/lua/events.c',
+  'game/lua/game.c',
   'game/lua/items.c',
   'game/lua/lara.c',
   'game/lua/log.c',
