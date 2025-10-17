@@ -354,7 +354,8 @@ PROJECTILE_HIT Gun_SmashItems(
 }
 
 void Gun_HitTarget(
-    ITEM *const item, const GAME_VECTOR *const hit_pos, const int32_t damage)
+    ITEM *const item, const GAME_VECTOR *const start,
+    const GAME_VECTOR *const hit_pos, const int32_t damage)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points > 0 && item->hit_points <= damage) {
@@ -378,7 +379,7 @@ void Gun_HitTarget(
                 .pos = hit_pos->pos,
                 .room_num = item->room_num,
             };
-            Spawn_Ricochet(&pos);
+            Spawn_RicochetRay(*start, pos);
         } else {
             Spawn_Blood(
                 hit_pos->x, hit_pos->y, hit_pos->z, item->speed, item->rot.y,

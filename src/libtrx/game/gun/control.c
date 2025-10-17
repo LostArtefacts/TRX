@@ -505,7 +505,7 @@ int32_t Gun_FireWeapon(
             Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         }
         if (!object_on_los) {
-            Spawn_Ricochet(&hit_pos);
+            Spawn_RicochetRay(start, hit_pos);
         }
         return -1;
     } else {
@@ -519,7 +519,7 @@ int32_t Gun_FireWeapon(
         Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
         Gun_HitTarget(
-            target, &hit_pos,
+            target, &start, &hit_pos,
             weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
         return 1;
     }
