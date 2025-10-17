@@ -1,48 +1,50 @@
 local raw = trxc.game
 
+local function make_level(table_type, i)
+  return {
+    num = raw.get_level_num(table_type, i),
+    name = raw.get_level_name(table_type, i),
+    path = raw.get_level_path(table_type, i),
+    type = raw.get_level_type(table_type, i),
+  }
+end
+
 local function make_levels(table_type)
+  local count = raw.count_levels(table_type)
   local levels = {}
-  local count = trxc.game.count_levels(table_type)
   for i = 1, count do
-    levels[i] = {
-      num = trxc.game.get_level_num(table_type, i),
-      name = trxc.game.get_level_name(table_type, i),
-      path = trxc.game.get_level_path(table_type, i),
-      type = trxc.game.get_level_type(table_type, i),
-    }
+    levels[i] = make_level(table_type, i)
   end
   return levels
 end
 
+local table_map = {
+  levels = raw.LevelTable.MAIN,
+  demos = raw.LevelTable.DEMOS,
+  cutscenes = raw.LevelTable.CUTSCENES,
+}
+
+local dynamic_getters = {
+  current_level = function()
+    return make_level(raw.get_current_level_table(), raw.get_current_level_idx())
+  end,
+  version = raw.get_version,
+  trx_version = raw.get_trx_version,
+}
+
 trx.game = setmetatable({
-  LevelTable = trxc.game.LevelTable,
-  LevelType = trxc.game.LevelType,
+  LevelTable = raw.LevelTable,
+  LevelType = raw.LevelType,
 }, {
   __index = function(self, key)
-    local t
-    if key == "levels" then
-      t = make_levels(trxc.game.LevelTable.MAIN)
-    elseif key == "demos" then
-      t = make_levels(trxc.game.LevelTable.DEMOS)
-    elseif key == "cutscenes" then
-      t = make_levels(trxc.game.LevelTable.CUTSCENES)
-    elseif key == "current_level" then
-      local table_type = trxc.game.get_current_level_table()
-      local i = trxc.game.get_current_level_idx()
-      return {
-        num = trxc.game.get_level_num(table_type, i),
-        name = trxc.game.get_level_name(table_type, i),
-        path = trxc.game.get_level_path(table_type, i),
-        type = trxc.game.get_level_type(table_type, i),
-      }
-    elseif key == "version" then
-      return trxc.game.get_version()
-    elseif key == "trx_version" then
-      return trxc.game.get_trx_version()
-    else
-      return nil
+    local table_type = table_map[key]
+    if table_type then
+      local t = make_levels(table_type)
+      rawset(self, key, t)
+      return t
     end
-    rawset(self, key, t)
-    return t
+
+    local getter = dynamic_getters[key]
+    return getter and getter() or nil
   end,
 })
