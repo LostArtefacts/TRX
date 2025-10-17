@@ -155,21 +155,21 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
     }
 
     if (mode != MPM_ALWAYS && track_id == m_TrackCurrent) {
-        return false;
+        return true;
     }
 
     if (mode == MPM_TRACKED && track_id == m_TrackLastPlayed) {
-        return false;
+        return true;
     }
 
     const bool is_looped = mode == MPM_LOOPED || M_IsAmbientTrack(track_id);
     if (is_looped && track_id == m_TrackLastLooped) {
-        return false;
+        return true;
     }
 
     if (mode == MPM_DELAYED) {
         m_TrackDelayed = track_id;
-        return false;
+        return true;
     }
 
 #if TR_VERSION == 1
