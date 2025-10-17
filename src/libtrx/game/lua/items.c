@@ -1,5 +1,6 @@
 #include "game/items.h"
 #include "game/lua/common.h"
+#include "game/objects.h"
 #include "game/rooms.h"
 #include "utils.h"
 
@@ -52,7 +53,7 @@ static int M_L_ItemGet_status(lua_State *const L)
 static int M_L_ItemGet_object_id(lua_State *const L)
 {
     const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
-    lua_pushinteger(L, item->object_id);
+    lua_pushinteger(L, Object_ToGameID(item->object_id));
     return 1;
 }
 
