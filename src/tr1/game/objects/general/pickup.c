@@ -386,16 +386,6 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
 }
 
-bool Pickup_Trigger(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
-        return false;
-    }
-    item->status = IS_DEACTIVATED;
-    return true;
-}
-
 REGISTER_OBJECT(O_EXPLOSIVE_ITEM, M_Setup)
 REGISTER_OBJECT(O_FLARES_ITEM, M_Setup)
 REGISTER_OBJECT(O_GRENADE_AMMO_ITEM, M_Setup)

@@ -342,6 +342,7 @@ sources = [
   'game/objects/general/lift.c',
   'game/objects/general/mini_copter.c',
   'game/objects/general/moving_bar.c',
+  'game/objects/general/pickup.c',
   'game/objects/general/puzzle_hole.c',
   'game/objects/general/scion1.c',
   'game/objects/general/scion3.c',

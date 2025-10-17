@@ -254,17 +254,6 @@ void Pickup_Collision(
     }
 }
 
-bool Pickup_Trigger(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
-        return false;
-    }
-
-    item->status = IS_DEACTIVATED;
-    return true;
-}
-
 static void M_Setup(OBJECT *const obj)
 {
     obj->handle_save_func = M_HandleSave;
