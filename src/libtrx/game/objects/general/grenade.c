@@ -119,7 +119,7 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        Gun_HitTarget(target_item, nullptr, 30);
+        Gun_HitTarget(target_item, nullptr, nullptr, 30);
         Stats_AddAmmoHits();
 
         if (target_item->hit_points <= 0) {

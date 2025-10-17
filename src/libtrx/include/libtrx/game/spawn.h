@@ -3,8 +3,11 @@
 #include "./items/types.h"
 #include "./types.h"
 
+XYZ_32 Spawn_GetRayPos(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t dist);
+
 void Spawn_Splash(const ITEM *item);
-void Spawn_Ricochet(const GAME_VECTOR *pos);
+void Spawn_Ricochet(GAME_VECTOR pos);
+void Spawn_RicochetRay(GAME_VECTOR start, GAME_VECTOR hit_pos);
 
 void Spawn_Bubble(const XYZ_32 *pos, int16_t room_num);
 

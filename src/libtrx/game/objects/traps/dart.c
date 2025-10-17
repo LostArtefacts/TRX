@@ -1,6 +1,5 @@
 #include "game/effects.h"
 #include "game/lara.h"
-#include "game/los.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/rooms.h"
@@ -21,21 +20,11 @@ static void M_Hit(const int16_t item_num, const XYZ_32 pos)
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->object_id = O_RICOCHET;
-        effect->pos.x = pos.x;
-        effect->pos.y = item->pos.y;
-        effect->pos.z = pos.z;
+        effect->pos = pos;
         effect->rot = item->rot;
-        effect->room_num = item->room_num;
-        effect->speed = 0;
         effect->counter = 6;
         effect->frame_num = -3 * Random_GetControl() / 0x8000;
     }
-}
-
-static XYZ_32 M_GetHitPos(const GAME_VECTOR start, GAME_VECTOR hit_pos)
-{
-    LOS_Check(&start, &hit_pos);
-    return hit_pos.pos;
 }
 
 static void M_Control(const int16_t item_num)
@@ -67,7 +56,7 @@ static void M_Control(const int16_t item_num)
     const GAME_VECTOR new_pos = { .pos = item->pos,
                                   .room_num = item->room_num };
     if (item->pos.y >= height) {
-        M_Hit(item_num, M_GetHitPos(old_pos, new_pos));
+        M_Hit(item_num, Spawn_GetRayPos(old_pos, new_pos, STEP_L / 12));
     }
 }
 

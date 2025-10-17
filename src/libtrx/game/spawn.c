@@ -3,6 +3,7 @@
 #include "game/collision.h"
 #include "game/effects.h"
 #include "game/lara.h"
+#include "game/los.h"
 #include "game/math.h"
 #include "game/output.h"
 #include "game/random.h"
@@ -31,6 +32,24 @@ static void M_ShootAtLara(EFFECT *const effect)
     effect->rot.y += (Random_GetControl() - 0x4000) / 64;
 }
 
+XYZ_32 Spawn_GetRayPos(
+    const GAME_VECTOR start, GAME_VECTOR hit_pos, const int32_t dist)
+{
+    // Get the position at wall
+    LOS_Check(&start, &hit_pos);
+
+    // Retract a bit
+    const int16_t angle = XYZ_32_GetYaw((XYZ_32) {
+        .x = hit_pos.x - start.x,
+        .y = hit_pos.y - start.y,
+        .z = hit_pos.z - start.z,
+    });
+    hit_pos.pos.x -= (dist * Math_Sin(angle)) >> W2V_SHIFT;
+    hit_pos.pos.z -= (dist * Math_Cos(angle)) >> W2V_SHIFT;
+
+    return hit_pos.pos;
+}
+
 void Spawn_Splash(const ITEM *const item)
 {
     const int32_t water_height = Room_GetWaterHeight(
@@ -55,17 +74,23 @@ void Spawn_Splash(const ITEM *const item)
     }
 }
 
-void Spawn_Ricochet(const GAME_VECTOR *const pos)
+void Spawn_Ricochet(const GAME_VECTOR pos)
 {
-    const int16_t effect_num = Effect_Create(pos->room_num);
+    const int16_t effect_num = Effect_Create(pos.room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->object_id = O_RICOCHET;
-        effect->pos = pos->pos;
+        effect->pos = pos.pos;
         effect->counter = 4;
         effect->frame_num = -3 * Random_GetDraw() / 0x8000;
         Sound_Effect(SFX_LARA_RICOCHET, &effect->pos, SPM_NORMAL);
     }
+}
+
+void Spawn_RicochetRay(const GAME_VECTOR start, GAME_VECTOR hit_pos)
+{
+    hit_pos.pos = Spawn_GetRayPos(start, hit_pos, STEP_L / 12);
+    Spawn_Ricochet(hit_pos);
 }
 
 void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
@@ -167,7 +192,7 @@ int16_t Spawn_GunMiss(
         .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
         .room_num = lara_item->room_num,
     };
-    Spawn_Ricochet(&pos);
+    Spawn_Ricochet(pos);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
 
