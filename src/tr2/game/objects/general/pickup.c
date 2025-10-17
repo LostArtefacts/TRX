@@ -56,7 +56,7 @@ static void M_DoPickup(const int16_t item_num)
     Overlay_AddDisplayPickup(item->object_id);
     Inv_AddPickup(item);
     // Notify Lua pickup listeners
-    Lua_FireEvent(LUA_EVENT_PICKUP, item_num);
+    Lua_FireEvent(LUA_EVENT_PICKUP, item_num); // LUA uses 1-indexing
 
     item->status = IS_INVISIBLE;
     item->flags |= IF_KILLED;

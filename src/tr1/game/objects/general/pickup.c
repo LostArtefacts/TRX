@@ -102,7 +102,7 @@ static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item)
 
     Stats_AddPickup();
     // Notify Lua pickup listeners
-    Lua_FireEvent(LUA_EVENT_PICKUP, item_num);
+    Lua_FireEvent(LUA_EVENT_PICKUP, item_num + 1); // LUA uses 1-indexing
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
