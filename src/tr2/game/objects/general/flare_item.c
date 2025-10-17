@@ -1,9 +1,8 @@
 #include "game/objects/general/flare_item.h"
 
-#include "game/objects/general/pickup.h"
-
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects.h>
+#include <libtrx/game/objects/general/pickup.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
