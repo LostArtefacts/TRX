@@ -5,63 +5,6 @@
 #include <libtrx/game/input.h>
 #include <libtrx/game/objects/general/switch.h>
 
-static const OBJECT_BOUNDS m_Switch_Bounds = {
-    .shift = {
-        .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
-        .max = { .x = +200, .y = +0, .z = +WALL_L / 2, },
-    },
-    .rot = {
-        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
-        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
-    },
-};
-
-static OBJECT_BOUNDS m_Switch_BoundsControlled = {
-    .shift = {
-        .min = { .x = +0, .y = +0, .z = +0, },
-        .max = { .x = +0, .y = +0, .z = +0, },
-    },
-    .rot = {
-        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
-        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
-    },
-};
-
-static const OBJECT_BOUNDS m_Switch_BoundsUW = {
-    .shift = {
-        .min = { .x = -WALL_L, .y = -WALL_L, .z = -WALL_L, },
-        .max = { .x = +WALL_L, .y = +WALL_L, .z = +WALL_L / 2, },
-    },
-    .rot = {
-        .min = { .x = -80 * DEG_1, .y = -80 * DEG_1, .z = -80 * DEG_1, },
-        .max = { .x = +80 * DEG_1, .y = +80 * DEG_1, .z = +80 * DEG_1, },
-    },
-};
-
-static const OBJECT_BOUNDS *M_Bounds(void)
-{
-    if (g_Config.gameplay.enable_walk_to_items) {
-        return &m_Switch_BoundsControlled;
-    }
-    return &m_Switch_Bounds;
-}
-
-static const OBJECT_BOUNDS *M_BoundsUW(void)
-{
-    return &m_Switch_BoundsUW;
-}
-
-static void M_Control(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->flags |= IF_CODE_BITS;
-    if (!Item_IsTriggerActive(item)) {
-        item->goal_anim_state = SWITCH_STATE_ON;
-        item->timer = 0;
-    }
-    Item_Animate(item);
-}
-
 static void M_CollisionControlled(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -75,14 +18,15 @@ static void M_CollisionControlled(
             && lara->interact_target.item_num == item_num)) {
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
-        m_Switch_BoundsControlled.shift.min.x = bounds->min.x - 256;
-        m_Switch_BoundsControlled.shift.max.x = bounds->max.x + 256;
-        m_Switch_BoundsControlled.shift.min.z = bounds->min.z - 200;
-        m_Switch_BoundsControlled.shift.max.z = bounds->max.z + 200;
+        OBJECT_BOUNDS col_bounds = *Object_Get(item->object_id)->bounds_func();
+        col_bounds.shift.min.x = bounds->min.x - 256;
+        col_bounds.shift.max.x = bounds->max.x + 256;
+        col_bounds.shift.min.z = bounds->min.z - 200;
+        col_bounds.shift.max.z = bounds->max.z + 200;
 
         XYZ_32 move_vector = { 0, 0, bounds->min.z - 64 };
 
-        if (Lara_TestPosition(item, &m_Switch_BoundsControlled)) {
+        if (Lara_TestPosition(item, &col_bounds)) {
             if (Lara_MovePosition(item, &move_vector)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
                     Item_SwitchToAnim(lara_item, LA(LA_WALL_SWITCH_DOWN), 0);
@@ -205,24 +149,3 @@ void Switch_CollisionUW(
         Item_Animate(item);
     }
 }
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Switch_Collision;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->bounds_func = M_Bounds;
-}
-
-static void M_SetupUW(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->collision_func = Switch_CollisionUW;
-    obj->save_anim = true;
-    obj->save_flags = true;
-    obj->bounds_func = M_BoundsUW;
-}
-
-REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
