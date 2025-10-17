@@ -13,7 +13,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         if (Music_Play_Direct(track_to_play, MPM_ALWAYS)) {
             Console_Log(GS(OSD_PLAY_MUSIC_TRACK), track_to_play);
         } else {
-            Console_Log(GS(OSD_INVALID_MUSIC_TRACK));
+            Console_LogError(GS(OSD_INVALID_MUSIC_TRACK));
         }
         return CR_SUCCESS;
     } else {

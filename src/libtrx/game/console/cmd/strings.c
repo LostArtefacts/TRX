@@ -7,7 +7,11 @@
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     const bool success = GameStringManager_ReloadLanguage(g_Config.language);
-    Console_Log(success ? GS(OSD_STRINGS_RELOADED) : GS(OSD_STRINGS_FAILED));
+    if (success) {
+        Console_Log("%s", GS(OSD_STRINGS_RELOADED));
+    } else {
+        Console_LogError("%s", GS(OSD_STRINGS_FAILED));
+    }
     return success ? CR_SUCCESS : CR_FAILURE;
 }
 

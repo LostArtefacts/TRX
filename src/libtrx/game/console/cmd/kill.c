@@ -93,7 +93,7 @@ static COMMAND_RESULT M_KillAllEnemies(void)
     }
 
     if (num_killed == 0) {
-        Console_Log(GS(OSD_KILL_ALL_FAIL));
+        Console_LogError(GS(OSD_KILL_ALL_FAIL));
         return CR_FAILURE;
     }
 
@@ -111,7 +111,7 @@ static COMMAND_RESULT M_KillNearestEnemies(void)
 
     if (kill_count == 0) {
         // No enemies killed
-        Console_Log(GS(OSD_KILL_FAIL));
+        Console_LogError(GS(OSD_KILL_FAIL));
         return CR_FAILURE;
     } else {
         // At least one enemy was killed.
@@ -150,11 +150,11 @@ static COMMAND_RESULT M_KillEnemyType(const char *const enemy_name)
     Memory_FreePointer(&matches);
 
     if (!matches_found) {
-        Console_Log(GS(OSD_INVALID_OBJECT), enemy_name);
+        Console_LogError(GS(OSD_INVALID_OBJECT), enemy_name);
         return CR_FAILURE;
     }
     if (num_killed == 0) {
-        Console_Log(GS(OSD_OBJECT_NOT_FOUND), enemy_name);
+        Console_LogError(GS(OSD_OBJECT_NOT_FOUND), enemy_name);
         return CR_FAILURE;
     }
     Console_Log(GS(OSD_KILL_ALL), num_killed);

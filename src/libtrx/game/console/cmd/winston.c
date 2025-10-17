@@ -36,7 +36,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
         .z = lara_item->pos.z + STEP_L,
     };
     if (!Room_FindValidPos(&target_pos, &target_room_num)) {
-        Console_Log(GS(CMD_WINSTON_SPAWN_FAILED));
+        Console_LogError(GS(CMD_WINSTON_SPAWN_FAILED));
         return CR_FAILURE;
     }
 

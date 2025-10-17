@@ -3,7 +3,7 @@
 #include <lauxlib.h>
 #include <lua.h>
 
-// trxc.log.generic(level, msg)
+// trxc.log.log(level, msg)
 static int M_L_LogGeneric(lua_State *const L)
 {
     const LOG_LEVEL level = luaL_checkinteger(L, 1);
@@ -27,7 +27,7 @@ void LUA_CreateLog(lua_State *const L)
     lua_newtable(L);
 
     lua_pushcfunction(L, M_L_LogGeneric);
-    lua_setfield(L, -2, "generic");
+    lua_setfield(L, -2, "log");
 
     lua_newtable(L);
     lua_pushinteger(L, LOG_LEVEL_INFO);

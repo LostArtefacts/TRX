@@ -9,14 +9,12 @@ typedef enum {
     LOG_LEVEL_MAX = -1,
 } LOG_LEVEL;
 
-#define LOG_INFO(...)                                                          \
-    Log_Message(LOG_LEVEL_INFO, __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_WARNING(...)                                                       \
-    Log_Message(LOG_LEVEL_WARNING, __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_ERROR(...)                                                         \
-    Log_Message(LOG_LEVEL_ERROR, __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_DEBUG(...)                                                         \
-    Log_Message(LOG_LEVEL_DEBUG, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_GENERIC(level, ...)                                                \
+    Log_Message(level, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_INFO(...) LOG_GENERIC(LOG_LEVEL_INFO, __VA_ARGS__)
+#define LOG_WARNING(...) LOG_GENERIC(LOG_LEVEL_WARNING, __VA_ARGS__)
+#define LOG_ERROR(...) LOG_GENERIC(LOG_LEVEL_ERROR, __VA_ARGS__)
+#define LOG_DEBUG(...) LOG_GENERIC(LOG_LEVEL_DEBUG, __VA_ARGS__)
 #define LOG_TRACE(...)
 // disable by default
 
