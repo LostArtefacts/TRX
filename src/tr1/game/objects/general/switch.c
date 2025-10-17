@@ -119,7 +119,7 @@ static void M_CollisionControlled(
     }
 }
 
-static void M_Collision(
+void Switch_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.enable_walk_to_items) {
@@ -164,7 +164,7 @@ static void M_Collision(
     }
 }
 
-static void M_CollisionUW(
+void Switch_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -209,7 +209,7 @@ static void M_CollisionUW(
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
+    obj->collision_func = Switch_Collision;
     obj->save_anim = true;
     obj->save_flags = true;
     obj->bounds_func = M_Bounds;
@@ -218,7 +218,7 @@ static void M_Setup(OBJECT *const obj)
 static void M_SetupUW(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->collision_func = M_CollisionUW;
+    obj->collision_func = Switch_CollisionUW;
     obj->save_anim = true;
     obj->save_flags = true;
     obj->bounds_func = M_BoundsUW;
