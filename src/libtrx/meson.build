@@ -232,6 +232,7 @@ sources = [
   'game/lua/lara.c',
   'game/lua/log.c',
   'game/lua/music.c',
+  'game/lua/rooms.c',
   'game/lua/sound.c',
   'game/math/trig.c',
   'game/math/util.c',

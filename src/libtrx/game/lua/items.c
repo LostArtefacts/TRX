@@ -85,7 +85,7 @@ static int M_L_ItemGetRoom(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    lua_pushinteger(L, item->room_num);
+    lua_pushinteger(L, item->room_num + 1);
     return 1;
 }
 

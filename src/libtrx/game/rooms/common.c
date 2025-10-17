@@ -82,6 +82,9 @@ ROOM *Room_Get(const int32_t room_num)
     if (m_Rooms == nullptr) {
         return nullptr;
     }
+    if (room_num < 0 || room_num >= Room_GetCount()) {
+        return nullptr;
+    }
     return &m_Rooms[room_num];
 }
 
