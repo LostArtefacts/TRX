@@ -6,6 +6,7 @@
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — complex objects such as the dragon or Skidoos may not behave correctly. Please report any bugs encountered.  
     See [the documentation](../07-CATALOGS.md) for details.
+- added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (#4057)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)

@@ -46,6 +46,7 @@
         "data/injections/font.bin",
         "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
+        "data/injections/pickup_aid.bin",
         "data/injections/winston_model.bin",
     ],
 
@@ -69,6 +70,7 @@
                 "data/injections/lara_gym_guns.bin",
                 "data/injections/lara_animations.bin",
                 "data/injections/pda_model.bin",
+                "data/injections/pickup_aid.bin",
             ],
         },
 

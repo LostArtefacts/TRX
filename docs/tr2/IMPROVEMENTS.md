@@ -203,6 +203,7 @@
 - added the ability to use `.avi`, `.mkv`, `.mp4`, `.mpeg`, and `.webm` files for FMVs
 - added an option to animate the algae in 40 Fathoms, Wreck of the Maria Doria and The Deck
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+
+- added optional pickup aids when Lara is near items
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode

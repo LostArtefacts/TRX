@@ -187,8 +187,8 @@ typedef struct {
         bool disable_uzis;
         bool disable_shotgun;
         bool enable_deaths_counter;
-        bool enable_pickup_aids;
 #endif
+        bool enable_pickup_aids;
         bool enable_save_crystals;
         bool enable_enhanced_saves;
 
