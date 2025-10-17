@@ -1,18 +1,12 @@
-#include "game/game.h"
-#include "game/inventory.h"
-#include "game/objects/common.h"
-#include "game/stats.h"
-
 #include <libtrx/config.h>
 #include <libtrx/game/gun.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/lua/common.h>
 #include <libtrx/game/lua/events.h>
-#include <libtrx/game/matrix.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/objects/general/pickup.h>
-#include <libtrx/game/objects/vars.h>
-#include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 
 #define LF_PICKUP_ERASE 42
@@ -170,37 +164,6 @@ cleanup:
     item->rot = old_rot;
 }
 
-static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
-{
-    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
-            const int16_t item_num = Item_GetIndex(item);
-            Item_RemoveDrawn(item_num);
-        }
-    }
-}
-
-static void M_Activate(ITEM *const item)
-{
-    if (item->status == IS_INVISIBLE) {
-        item->touch_bits = 0;
-        item->status = IS_ACTIVE;
-        const int16_t item_num = Item_GetIndex(item);
-        Item_AddActive(item_num);
-    } else {
-        item->status = IS_INVISIBLE;
-        item->flags |= IF_KILLED;
-    }
-}
-
-static void M_Control(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
-    }
-}
-
 void Pickup_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -219,49 +182,3 @@ void Pickup_Collision(
         M_DoUnderwater(item_num, lara_item);
     }
 }
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->handle_save_func = M_HandleSave;
-    obj->activate_func = M_Activate;
-    obj->control_func = M_Control;
-    obj->collision_func = Pickup_Collision;
-    obj->bounds_func = Pickup_Bounds;
-    obj->draw_func = Object_DrawPickupItem;
-    obj->save_position = true;
-    obj->save_flags = true;
-}
-
-REGISTER_OBJECT(O_EXPLOSIVE_ITEM, M_Setup)
-REGISTER_OBJECT(O_FLARES_ITEM, M_Setup)
-REGISTER_OBJECT(O_GRENADE_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_GRENADE_ITEM, M_Setup)
-REGISTER_OBJECT(O_HARPOON_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_HARPOON_ITEM, M_Setup)
-REGISTER_OBJECT(O_KEY_ITEM_1, M_Setup)
-REGISTER_OBJECT(O_KEY_ITEM_2, M_Setup)
-REGISTER_OBJECT(O_KEY_ITEM_3, M_Setup)
-REGISTER_OBJECT(O_KEY_ITEM_4, M_Setup)
-REGISTER_OBJECT(O_LARGE_MEDIPACK_ITEM, M_Setup)
-REGISTER_OBJECT(O_LEADBAR_ITEM, M_Setup)
-REGISTER_OBJECT(O_M16_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_M16_ITEM, M_Setup)
-REGISTER_OBJECT(O_MAGNUM_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_MAGNUM_ITEM, M_Setup)
-REGISTER_OBJECT(O_PICKUP_ITEM_1, M_Setup)
-REGISTER_OBJECT(O_PICKUP_ITEM_2, M_Setup)
-REGISTER_OBJECT(O_PISTOL_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_PISTOL_ITEM, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_ITEM_1, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_ITEM_2, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_ITEM_3, M_Setup)
-REGISTER_OBJECT(O_PUZZLE_ITEM_4, M_Setup)
-REGISTER_OBJECT(O_SCION_ITEM_2, M_Setup)
-REGISTER_OBJECT(O_SECRET_1, M_Setup)
-REGISTER_OBJECT(O_SECRET_2, M_Setup)
-REGISTER_OBJECT(O_SECRET_3, M_Setup)
-REGISTER_OBJECT(O_SHOTGUN_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_SHOTGUN_ITEM, M_Setup)
-REGISTER_OBJECT(O_SMALL_MEDIPACK_ITEM, M_Setup)
-REGISTER_OBJECT(O_UZI_AMMO_ITEM, M_Setup)
-REGISTER_OBJECT(O_UZI_ITEM, M_Setup)

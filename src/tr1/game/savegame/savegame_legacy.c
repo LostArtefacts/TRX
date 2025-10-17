@@ -11,6 +11,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/level.h>
+#include <libtrx/game/objects/general/pickup.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
@@ -134,6 +135,12 @@ static bool M_ItemHasHitPoints(const ITEM *const item)
     return obj->save_hitpoints && item->object_id != O_SCION_ITEM_3;
 }
 
+static bool M_ItemHasSavePosition(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    return obj->save_position && obj->collision_func != Pickup_Collision;
+}
+
 static bool M_NeedsBaconLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
@@ -187,7 +194,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
 
         ITEM tmp_item = {};
 
-        if (obj->save_position) {
+        if (M_ItemHasSavePosition(item)) {
             tmp_item.pos.x = M_ReadS32();
             tmp_item.pos.y = M_ReadS32();
             tmp_item.pos.z = M_ReadS32();
@@ -501,7 +508,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (obj->save_position) {
+        if (M_ItemHasSavePosition(item)) {
             item->pos.x = M_ReadS32();
             item->pos.y = M_ReadS32();
             item->pos.z = M_ReadS32();
