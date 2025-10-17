@@ -119,8 +119,7 @@ GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type)
         return GFLT_DEMOS;
 
     case GFL_TITLE:
-        // this needs to be handled separately
-        return GFLT_UNKNOWN;
+        return GFLT_TITLE;
     }
 
     ASSERT_FAIL();
@@ -232,6 +231,9 @@ const GF_LEVEL *GF_GetLastLevel(void)
 const GF_LEVEL *GF_GetLevel(
     const GF_LEVEL_TABLE_TYPE level_table_type, const int32_t num)
 {
+    if (level_table_type == GFLT_TITLE) {
+        return GF_GetTitleLevel();
+    }
     const GF_LEVEL_TABLE *const level_table =
         GF_GetLevelTable(level_table_type);
     ASSERT(level_table != nullptr);

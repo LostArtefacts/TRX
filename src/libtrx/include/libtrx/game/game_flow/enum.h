@@ -2,6 +2,7 @@
 
 typedef enum {
     GFLT_UNKNOWN = -1,
+    GFLT_TITLE,
     GFLT_MAIN,
     GFLT_CUTSCENES,
     GFLT_DEMOS,

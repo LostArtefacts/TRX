@@ -73,6 +73,21 @@ static int M_L_GameLevelGetType(lua_State *const L)
     return 1;
 }
 
+static int M_L_GameLevelGetCurrentLevelTable(lua_State *const L)
+{
+    const GF_LEVEL *const lvl = GF_GetCurrentLevel();
+    lua_pushinteger(
+        L, lvl != nullptr ? GF_GetLevelTableType(lvl->type) : GFLT_UNKNOWN);
+    return 1;
+}
+
+static int M_L_GameLevelGetCurrentLevelIndex(lua_State *const L)
+{
+    const GF_LEVEL *const lvl = GF_GetCurrentLevel();
+    lua_pushinteger(L, lvl != nullptr ? lvl->num : -1);
+    return 1;
+}
+
 void LUA_CreateGame(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
@@ -92,6 +107,10 @@ void LUA_CreateGame(lua_State *const L)
     lua_setfield(L, -2, "get_level_path");
     lua_pushcfunction(L, M_L_GameLevelGetType);
     lua_setfield(L, -2, "get_level_type");
+    lua_pushcfunction(L, M_L_GameLevelGetCurrentLevelTable);
+    lua_setfield(L, -2, "get_current_level_table");
+    lua_pushcfunction(L, M_L_GameLevelGetCurrentLevelIndex);
+    lua_setfield(L, -2, "get_current_level_idx");
 
     lua_newtable(L);
     lua_pushinteger(L, GFLT_MAIN);

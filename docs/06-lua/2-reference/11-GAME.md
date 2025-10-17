@@ -26,6 +26,9 @@ Module for retrieving game version and level tables.
 - [lua]`trx.game.trx_version`  
   Returns the current TRX version string.
 
+- [lua]`trx.game.current_level`  
+  Retrieves the [lua]`trx.game.Level` that's currently loaded or `nil`.
+
 - [lua]`#trx.game.levels`  
   [lua]`#trx.game.demos`  
   [lua]`#trx.game.cutscenes`  

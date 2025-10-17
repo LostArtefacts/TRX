@@ -26,6 +26,15 @@ trx.game = setmetatable({
       t = make_levels(trxc.game.LevelTable.DEMOS)
     elseif key == "cutscenes" then
       t = make_levels(trxc.game.LevelTable.CUTSCENES)
+    elseif key == "current_level" then
+      local table_type = trxc.game.get_current_level_table()
+      local i = trxc.game.get_current_level_idx()
+      return {
+        num = trxc.game.get_level_num(table_type, i),
+        name = trxc.game.get_level_name(table_type, i),
+        path = trxc.game.get_level_path(table_type, i),
+        type = trxc.game.get_level_type(table_type, i),
+      }
     elseif key == "version" then
       return trxc.game.get_version()
     elseif key == "trx_version" then
