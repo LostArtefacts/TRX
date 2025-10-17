@@ -402,6 +402,7 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
     }
 
     case O_COMPASS_OPTION:
+    case O_STOPWATCH_OPTION:
         if (inv_item->current_frame == 0 || inv_item->current_frame >= 18) {
             inv_item->meshes_drawn = inv_item->meshes_sel;
         } else {

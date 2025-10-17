@@ -57,7 +57,7 @@ INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
 };
 
 INVENTORY_ITEM g_InvRing_Item_Stopwatch = {
-    .object_id = O_COMPASS_OPTION,
+    .object_id = O_STOPWATCH_OPTION,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,

@@ -296,7 +296,7 @@
             "name": "Gamma",
         },
         "pda": {
-            "name": "Gameplay",
+            "name": "\\{review}Jouabilité",
         },
         "lara": {
             "name": "Lara",
@@ -699,6 +699,9 @@
         },
         "winston": {
             "name": "Winston",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statistiques",
         }
     },
     "game_strings": {

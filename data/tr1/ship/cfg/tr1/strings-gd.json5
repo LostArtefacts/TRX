@@ -758,6 +758,9 @@
                 "Uinnsdean",
                 "Winston",
             ]
+        },
+        "stopwatch": {
+            "name": "\\{review}Staitistig",
         }
     },
     "game_strings": {

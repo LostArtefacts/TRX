@@ -1090,6 +1090,12 @@
         },
         "earthquake": {
             "name": "Terremoto",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statistiche",
+        },
+        "gamma": {
+            "name": "\\{review}Gamma",
         }
     },
     "game_strings": {

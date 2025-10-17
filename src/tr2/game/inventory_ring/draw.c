@@ -13,6 +13,7 @@
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/common.h>
+#include <libtrx/game/option/compass.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
@@ -87,6 +88,12 @@ static void M_DrawItem(
     ANIM_FRAME *frame2;
     const int32_t frac = M_GetFrames(ring, inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_id == O_COMPASS_OPTION) {
+        const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
+        Object_GetBone(obj, 0)->rot.y = true;
+        Object_DrawInterpolatedObject(
+            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
+            rate);
+    } else if (inv_item->object_id == O_STOPWATCH_OPTION) {
         const RESUME_INFO *const current_info =
             Savegame_GetCurrentInfo(Game_GetCurrentLevel());
         const int32_t total_seconds = current_info->stats.timer / LOGIC_FPS;

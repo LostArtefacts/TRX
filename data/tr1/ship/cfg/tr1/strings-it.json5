@@ -746,6 +746,9 @@
         },
         "winston": {
             "name": "Winston",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statistiche",
         }
     },
     "game_strings": {

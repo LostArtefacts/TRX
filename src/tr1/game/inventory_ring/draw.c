@@ -3,7 +3,7 @@
 #include "game/game.h"
 #include "game/inventory_ring.h"
 #include "game/objects/common.h"
-#include "game/option/option_compass.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 
 #include <libtrx/config.h>
@@ -12,6 +12,7 @@
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/option.h>
+#include <libtrx/game/option/compass.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/ui.h>
@@ -89,6 +90,21 @@ static void M_DrawItem(
     if (inv_item->object_id == O_COMPASS_OPTION) {
         const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
         Object_GetBone(obj, 0)->rot.y = true;
+        Object_DrawInterpolatedObject(
+            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
+            rate);
+    } else if (inv_item->object_id == O_STOPWATCH_OPTION) {
+        const RESUME_INFO *const current_info =
+            Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+        const int32_t total_seconds = current_info->stats.timer / LOGIC_FPS;
+        const int32_t hours = (total_seconds % 43200) * DEG_1 * -360 / 43200;
+        const int32_t minutes = (total_seconds % 3600) * DEG_1 * -360 / 3600;
+        const int32_t seconds = (total_seconds % 60) * DEG_1 * -360 / 60;
+
+        const int16_t extra_rotation[3] = { hours, minutes, seconds };
+        Object_GetBone(obj, 3)->rot.z = true;
+        Object_GetBone(obj, 4)->rot.z = true;
+        Object_GetBone(obj, 5)->rot.z = true;
         Object_DrawInterpolatedObject(
             obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
             rate);

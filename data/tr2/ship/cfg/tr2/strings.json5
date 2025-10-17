@@ -415,6 +415,9 @@
             "name": "Pickup Item 2",
         },
         "compass": {
+            "name": "Compass",
+        },
+        "stopwatch": {
             "name": "Statistics",
         },
         "passport": {
@@ -431,6 +434,9 @@
         },
         "sound": {
             "name": "Sound",
+        },
+        "gamma": {
+            "name": "Gamma",
         },
         "pda": {
             "name": "Gameplay",

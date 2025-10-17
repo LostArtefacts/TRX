@@ -277,6 +277,9 @@
         "compass": {
             "name": "Compass",
         },
+        "stopwatch": {
+            "name": "Statistics",
+        },
         "passport": {
             "name": "Game",
         },

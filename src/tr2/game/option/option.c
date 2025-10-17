@@ -21,6 +21,7 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         Option_Passport_Control(inv_item, is_busy);
         break;
     case O_COMPASS_OPTION:
+    case O_STOPWATCH_OPTION:
         Option_Compass_Control(inv_item, is_busy);
         break;
     case O_PDA_OPTION:
@@ -97,6 +98,7 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         Option_Passport_Draw(inv_item);
         break;
     case O_COMPASS_OPTION:
+    case O_STOPWATCH_OPTION:
         Option_Compass_Draw();
         break;
     case O_PDA_OPTION:
@@ -137,6 +139,7 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         Option_Controls_Close();
         break;
     case O_COMPASS_OPTION:
+    case O_STOPWATCH_OPTION:
         Option_Compass_Close();
         break;
     default:
