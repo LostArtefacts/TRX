@@ -1,41 +1,46 @@
 CWD := `pwd`
 HOST_USER_UID := `id -u`
 HOST_USER_GID := `id -g`
+DOCKER_IMAGE_VERSION := "20251017"
 
 default: (tr1-build-win "debug") (tr2-build-win "debug")
 
 _docker_push tag:
-    docker push {{tag}}
+    docker push {{tag}}:{{DOCKER_IMAGE_VERSION}}
 
 _docker_build dockerfile tag force="0":
     #!/usr/bin/env sh
+    full_tag="{{tag}}:{{DOCKER_IMAGE_VERSION}}"
     if [ "{{force}}" = "0" ]; then
-        docker images --format '{''{.Repository}}' | grep '^{{tag}}$' >/dev/null
+        docker images --format '{''{.Repository}}:{''{.Tag}}' | grep '^'"$full_tag"'$' >/dev/null
         if [ $? -eq 0 ]; then
-            echo "Docker image {{tag}} found"
+            echo "Docker image $full_tag found"
             exit 0
         fi
-        echo "Docker image {{tag}} not found, trying to download from DockerHub"
-        if docker pull {{tag}}; then
-            echo "Docker image {{tag}} downloaded from DockerHub"
+        echo "Docker image $full_tag not found, trying to download from DockerHub"
+        if docker pull $full_tag; then
+            echo "Docker image $full_tag downloaded from DockerHub"
             exit 0
         fi
-        echo "Docker image {{tag}} not found, trying to build"
+        echo "Docker image $full_tag not found, trying to build"
     fi
 
-    echo "Building Docker image: {{dockerfile}} → {{tag}}"
+    echo "Building Docker image: {{dockerfile}} → $full_tag"
     docker build \
         . \
         -f {{dockerfile}} \
-        -t {{tag}}
+        -t $full_tag
 
-_docker_run *args:
-    @echo "Running docker image: {{args}}"
+_docker_run tag *args:
+    #!/usr/bin/env sh
+    full_tag="{{tag}}:{{DOCKER_IMAGE_VERSION}}"
+    echo "Running docker image: $full_tag {{args}}"
     docker run \
         --rm \
         --user \
         {{HOST_USER_UID}}:{{HOST_USER_GID}} \
         -v {{CWD}}:/app/ \
+        $full_tag \
         {{args}}
 
 image-win force="1": (_docker_build "tools/shared/docker/game-win/Dockerfile" "rrdash/trx-win" force)
