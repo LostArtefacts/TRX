@@ -16,12 +16,12 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     const int32_t slot_idx = slot_num - 1; // convert 1-indexing to 0-indexing
 
     if (slot_idx < 0 || slot_idx >= Savegame_GetSlotCount()) {
-        Console_Log(GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT), slot_num);
+        Console_LogError(GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT), slot_num);
         return CR_FAILURE;
     }
 
     if (Savegame_IsSlotFree(slot_idx)) {
-        Console_Log(GS(OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT), slot_num);
+        Console_LogError(GS(OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT), slot_num);
         return CR_FAILURE;
     }
 

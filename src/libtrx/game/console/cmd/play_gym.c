@@ -9,7 +9,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     if (String_IsEmpty(ctx->args)) {
         const GF_LEVEL *const level = GF_GetGymLevel();
         if (level == nullptr) {
-            Console_Log(GS(OSD_INVALID_LEVEL));
+            Console_LogError(GS(OSD_INVALID_LEVEL));
             return CR_FAILURE;
         }
         GF_OverrideCommand((GF_COMMAND) {

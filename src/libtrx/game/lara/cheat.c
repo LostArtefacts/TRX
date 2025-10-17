@@ -214,7 +214,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
         Console_Log(opened > 0 ? GS(OSD_DOOR_OPEN) : GS(OSD_DOOR_CLOSE));
         return true;
     }
-    Console_Log(GS(OSD_DOOR_OPEN_FAIL));
+    Console_LogError(GS(OSD_DOOR_OPEN_FAIL));
     return false;
 }
 

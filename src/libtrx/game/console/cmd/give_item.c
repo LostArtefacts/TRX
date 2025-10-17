@@ -70,7 +70,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     Memory_FreePointer(&matches);
 
     if (!found) {
-        Console_Log(GS(OSD_INVALID_ITEM), args);
+        Console_LogError(GS(OSD_INVALID_ITEM), args);
         return CR_FAILURE;
     }
 

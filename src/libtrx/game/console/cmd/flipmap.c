@@ -25,7 +25,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     if (Room_GetFlipStatus() == new_state) {
-        Console_Log(
+        Console_LogWarning(
             new_state ? GS(OSD_FLIPMAP_FAIL_ALREADY_ON)
                       : GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
         return CR_SUCCESS;

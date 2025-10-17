@@ -65,7 +65,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     if (!Sound_IsAvailable_Direct(sfx_id)) {
-        Console_Log(GS(OSD_INVALID_SAMPLE), sfx_id);
+        Console_LogError(GS(OSD_INVALID_SAMPLE), sfx_id);
         return CR_FAILURE;
     }
 

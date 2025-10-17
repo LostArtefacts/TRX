@@ -1,21 +1,24 @@
 local raw = trxc.log
+local LogLevel = trxc.log.LogLevel
 
-local log = {}
-
+local log = { LogLevel = LogLevel }
+function log.generic(level, ...)
+  raw.log(level, ...)
+end
 function log.info(...)
-  raw.generic(raw.LogLevel.INFO, ...)
+  raw.log(LogLevel.INFO, ...)
 end
 function log.warn(...)
-  raw.generic(raw.LogLevel.WARNING, ...)
+  raw.log(LogLevel.WARNING, ...)
 end
 function log.warning(...)
-  raw.generic(raw.LogLevel.WARNING, ...)
+  raw.log(LogLevel.WARNING, ...)
 end
 function log.error(...)
-  raw.generic(raw.LogLevel.ERROR, ...)
+  raw.log(LogLevel.ERROR, ...)
 end
 function log.debug(...)
-  raw.generic(raw.LogLevel.DEBUG, ...)
+  raw.log(LogLevel.DEBUG, ...)
 end
 
 trx.log = log

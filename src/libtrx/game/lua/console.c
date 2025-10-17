@@ -10,19 +10,35 @@
 // trxc.console.log(...)
 static int M_L_ConsoleLog(lua_State *const L)
 {
-    int nargs = lua_gettop(L);
+    int num_args = lua_gettop(L);
+    if (num_args < 2) {
+        return 0;
+    }
+
+    const LOG_LEVEL log_level = (int)lua_tointeger(L, 1);
     const char *msg = nullptr;
-    for (int i = 1; i <= nargs; i++) {
-        // Convert any Lua value to a string via tostring()
+
+    for (int32_t i = 2; i <= num_args; i++) {
         lua_getglobal(L, "tostring");
         lua_pushvalue(L, i);
         lua_call(L, 1, 1);
         const char *arg = lua_tostring(L, -1);
         lua_pop(L, 1);
-        msg = (i > 1) ? String_FormatStatic("%s, %s", msg, arg)
+        msg = (i > 2) ? String_FormatStatic("%s, %s", msg, arg)
                       : String_FormatStatic("%s", arg);
     }
-    Console_Log("%s", msg);
+
+    Console_LogEx("%s", msg);
+    lua_Debug ar;
+    const char *src = "?";
+    const char *func = "?";
+    int line = 0;
+    if (lua_getstack(L, 2, &ar) && lua_getinfo(L, "nSl", &ar)) {
+        src = ar.short_src;
+        func = ar.name ? ar.name : "?";
+        line = ar.currentline;
+    }
+    Log_Message(log_level, src, line, func, "%s", msg);
     return 0;
 }
 

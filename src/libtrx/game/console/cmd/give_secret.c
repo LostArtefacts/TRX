@@ -53,7 +53,7 @@ static const char *M_FormatPresent(void)
 
 static void M_LogInvalid(const int32_t idx)
 {
-    Console_Log(
+    Console_LogError(
         GS(CMD_INVALID_SECRET), String_FormatStatic(M_FMT_NUM, idx + 1),
         M_FormatAvailable());
 }

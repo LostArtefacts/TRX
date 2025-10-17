@@ -63,7 +63,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     if (level == nullptr || level->type == GFL_DUMMY
         || level->type == GFL_CURRENT) {
-        Console_Log(GS(OSD_INVALID_LEVEL));
+        Console_LogError(GS(OSD_INVALID_LEVEL));
         return CR_FAILURE;
     }
 

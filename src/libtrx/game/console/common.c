@@ -5,7 +5,6 @@
 #include "game/console/registry.h"
 #include "game/game_string.h"
 #include "game/ui.h"
-#include "log.h"
 #include "memory.h"
 #include "strings.h"
 
@@ -61,22 +60,21 @@ bool Console_IsOpened(void)
     return m_IsOpened;
 }
 
-void Console_Log(const char *fmt, ...)
+void Console_LogEx(const char *const fmt, ...)
 {
     ASSERT(fmt != nullptr);
 
     va_list va;
-
     va_start(va, fmt);
+    va_list va_copy;
+    va_copy(va_copy, va);
+
     const size_t text_length = vsnprintf(nullptr, 0, fmt, va);
     char *text = Memory_Alloc(text_length + 1);
     va_end(va);
 
-    va_start(va, fmt);
-    vsnprintf(text, text_length + 1, fmt, va);
-    va_end(va);
-
-    LOG_INFO("%s", text);
+    vsnprintf(text, text_length + 1, fmt, va_copy);
+    va_end(va_copy);
 
     if (m_Verbose) {
         UI_FireEvent((EVENT) {
@@ -85,6 +83,7 @@ void Console_Log(const char *fmt, ...)
             .data = text,
         });
     }
+
     Memory_FreePointer(&text);
 }
 
@@ -111,7 +110,7 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
     const CONSOLE_COMMAND *const matching_cmd = Console_Registry_Get(cmdline);
     if (matching_cmd == nullptr) {
-        Console_Log(GS(OSD_UNKNOWN_COMMAND), cmdline);
+        Console_LogError(GS(OSD_UNKNOWN_COMMAND), cmdline);
         return CR_BAD_INVOCATION;
     }
 
@@ -134,11 +133,11 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
     switch (result) {
     case CR_BAD_INVOCATION:
-        Console_Log(GS(OSD_COMMAND_BAD_INVOCATION), cmdline);
+        Console_LogError(GS(OSD_COMMAND_BAD_INVOCATION), cmdline);
         break;
 
     case CR_UNAVAILABLE:
-        Console_Log(GS(OSD_COMMAND_UNAVAILABLE));
+        Console_LogError(GS(OSD_COMMAND_UNAVAILABLE));
         break;
 
     case CR_SUCCESS:

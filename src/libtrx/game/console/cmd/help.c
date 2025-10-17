@@ -40,7 +40,7 @@ static COMMAND_RESULT M_ShowSpecificCommand(const char *const cmd_name)
 {
     const CONSOLE_COMMAND *cmd = Console_Registry_Get(cmd_name);
     if (cmd == nullptr || cmd->help_id == nullptr) {
-        Console_Log(GS(OSD_UNKNOWN_COMMAND), cmd_name);
+        Console_LogError(GS(OSD_UNKNOWN_COMMAND), cmd_name);
         return CR_FAILURE;
     }
     const char *const help = GameString_Get(cmd->help_id);
