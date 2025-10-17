@@ -10,10 +10,10 @@ static void M_Control(const int16_t item_num)
     if (Item_IsTriggerActive(item)) {
         if (Random_GetDraw() < 256) {
             g_Camera.bounce = -150;
-            Sound_Effect(SFX_ROLLING_BALL_1_ROLL, nullptr, SPM_NORMAL);
+            Sound_Effect(SFX_EARTHQUAKE_1, nullptr, SPM_NORMAL);
         } else if (Random_GetControl() < 1024) {
             g_Camera.bounce = 50;
-            Sound_Effect(SFX_T_REX_STOMP, nullptr, SPM_NORMAL);
+            Sound_Effect(SFX_EARTHQUAKE_2, nullptr, SPM_NORMAL);
         }
     }
 }
