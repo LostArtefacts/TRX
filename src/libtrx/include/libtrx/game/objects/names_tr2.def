@@ -32,7 +32,7 @@ X_OBJ_NAME_DEFINE(O_PICKUP_ITEM_1,         "pickup_1",              X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PICKUP_ITEM_2,         "pickup_2",              X_OBJ_NAMES("Pickup Item 2"))
 
 // inventory ring
-X_OBJ_NAME_DEFINE(O_COMPASS_ITEM,          "pda",                   X_OBJ_NAMES("Gameplay"))
+X_OBJ_NAME_DEFINE(O_PDA_OPTION,            "pda",                   X_OBJ_NAMES("Gameplay"))
 X_OBJ_NAME_DEFINE(O_COMPASS_OPTION,        "compass",               X_OBJ_NAMES("Statistics"))
 X_OBJ_NAME_DEFINE(O_PASSPORT_OPTION,       "passport",              X_OBJ_NAMES("Game"))
 X_OBJ_NAME_DEFINE(O_PHOTO_OPTION,          "photo",                 X_OBJ_NAMES("Lara's Home"))

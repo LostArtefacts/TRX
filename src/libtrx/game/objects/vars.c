@@ -439,7 +439,6 @@ const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
 
 const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format off
-    { O_COMPASS_ITEM, O_COMPASS_OPTION },
     { O_PISTOL_ITEM, O_PISTOL_OPTION },
     { O_SHOTGUN_ITEM, O_SHOTGUN_OPTION },
     { O_MAGNUM_ITEM, O_MAGNUM_OPTION },
