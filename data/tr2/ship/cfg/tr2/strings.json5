@@ -414,9 +414,6 @@
         "pickup_2": {
             "name": "Pickup Item 2",
         },
-        "pda": {
-            "name": "Gameplay",
-        },
         "compass": {
             "name": "Statistics",
         },
@@ -434,6 +431,9 @@
         },
         "sound": {
             "name": "Sound",
+        },
+        "pda": {
+            "name": "Gameplay",
         },
         "lara": {
             "name": "Lara",
