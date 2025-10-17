@@ -1,10 +1,10 @@
 #include "game/creature.h"
 
 #include "game/gun/gun_misc.h"
-#include "game/los.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/los.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/spawn.h>
