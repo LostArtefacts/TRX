@@ -41,3 +41,8 @@ repos:
     pass_filenames: false
     additional_dependencies:
       - pyjson5
+
+- repo: https://github.com/JohnnyMorganz/StyLua
+  rev: v2.3.0
+  hooks:
+    - id: stylua-github

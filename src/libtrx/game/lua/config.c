@@ -3,7 +3,7 @@
 
 #include <lauxlib.h>
 
-// trx.config.get(key)
+// trxc.config.get(key)
 static int M_L_ConfigGet(lua_State *const L)
 {
     const char *const key = luaL_checkstring(L, 1);
@@ -16,7 +16,7 @@ static int M_L_ConfigGet(lua_State *const L)
     return 1;
 }
 
-// trx.config.set(key, value)
+// trxc.config.set(key, value)
 static int M_L_ConfigSet(lua_State *const L)
 {
     const char *const key = luaL_checkstring(L, 1);
@@ -33,7 +33,7 @@ static int M_L_ConfigSet(lua_State *const L)
     return 0;
 }
 
-// trx.config.list()
+// trxc.config.list()
 static int M_L_ConfigList(lua_State *const L)
 {
     lua_newtable(L);
@@ -49,7 +49,7 @@ static int M_L_ConfigList(lua_State *const L)
 
 void LUA_CreateConfig(lua_State *const L)
 {
-    lua_getglobal(L, "trx");
+    lua_getglobal(L, "trxc");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_ConfigGet);
     lua_setfield(L, -2, "get");

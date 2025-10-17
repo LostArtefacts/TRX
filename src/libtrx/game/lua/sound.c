@@ -3,7 +3,7 @@
 
 #include <lauxlib.h>
 
-// trx.sound.is_available(id)
+// trxc.sound.is_available(id)
 static int M_L_SoundIsAvailable(lua_State *const L)
 {
     const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
@@ -11,7 +11,7 @@ static int M_L_SoundIsAvailable(lua_State *const L)
     return 1;
 }
 
-// trx.sound.play(id[, opts])
+// trxc.sound.play(id[, opts])
 static int M_L_SoundPlay(lua_State *const L)
 {
     const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
@@ -40,7 +40,7 @@ static int M_L_SoundPlay(lua_State *const L)
     return 0;
 }
 
-// trx.sound.stop(id)
+// trxc.sound.stop(id)
 static int M_L_SoundStop(lua_State *const L)
 {
     const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
@@ -48,7 +48,7 @@ static int M_L_SoundStop(lua_State *const L)
     return 0;
 }
 
-// trx.sound.stop_all()
+// trxc.sound.stop_all()
 static int M_L_SoundStopAll(lua_State *const L)
 {
     Sound_StopAll();
@@ -57,7 +57,7 @@ static int M_L_SoundStopAll(lua_State *const L)
 
 void LUA_CreateSound(lua_State *const L)
 {
-    lua_getglobal(L, "trx");
+    lua_getglobal(L, "trxc");
     lua_newtable(L);
     lua_pushcfunction(L, M_L_SoundIsAvailable);
     lua_setfield(L, -2, "is_available");

@@ -5,14 +5,48 @@
 #include "utils.h"
 
 #include <lauxlib.h>
-#include <string.h>
 
-// Registry-based getters/setters for trx.items.Item
-// Define C getters and setters for each field and register in init
-
-static int M_L_ItemGet_pos(lua_State *const L)
+// trxc.items.item_count() → int
+static int M_L_ItemsCount(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    lua_pushinteger(L, Item_GetTotalCount());
+    return 1;
+}
+
+// trxc.items.get(index or name) → int (1-based) or nil
+static int M_L_ItemsGet(lua_State *const L)
+{
+    int result = 0;
+    if (lua_type(L, 1) == LUA_TNUMBER) {
+        const int idx = luaL_checkinteger(L, 1);
+        const ITEM *const item = Item_Get(idx - 1);
+        if (item != nullptr) {
+            result = idx;
+        }
+    } else {
+        const char *const name = luaL_checkstring(L, 1);
+        const ITEM *const item = Item_GetByName(name);
+        if (item != nullptr) {
+            result = Item_GetIndex(item) + 1;
+        }
+    }
+    if (result) {
+        lua_pushinteger(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+// trxc.items.get_pos(index) → {x, y, z} or nil
+static int M_L_ItemGetPos(lua_State *const L)
+{
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_newtable(L);
     lua_pushinteger(L, item->pos.x);
     lua_setfield(L, -2, "x");
@@ -23,9 +57,15 @@ static int M_L_ItemGet_pos(lua_State *const L)
     return 1;
 }
 
-static int M_L_ItemGet_rot(lua_State *const L)
+// trxc.items.get_rot(index) → {x, y, z} or nil
+static int M_L_ItemGetRot(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_newtable(L);
     lua_pushinteger(L, item->rot.x);
     lua_setfield(L, -2, "x");
@@ -36,55 +76,89 @@ static int M_L_ItemGet_rot(lua_State *const L)
     return 1;
 }
 
-static int M_L_ItemGet_room(lua_State *const L)
+// trxc.items.get_room(index) → int or nil
+static int M_L_ItemGetRoom(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_pushinteger(L, item->room_num);
     return 1;
 }
 
-static int M_L_ItemGet_status(lua_State *const L)
+// trxc.items.get_status(index) → int or nil
+static int M_L_ItemGetStatus(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_pushinteger(L, (int)item->status);
     return 1;
 }
 
-static int M_L_ItemGet_object_id(lua_State *const L)
+// trxc.items.get_object_id(index) → int or nil
+static int M_L_ItemGetObjectId(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_pushinteger(L, Object_ToGameID(item->object_id));
     return 1;
 }
 
-static int M_L_ItemGet_hit_points(lua_State *const L)
+// trxc.items.get_hit_points(index) → int or nil
+static int M_L_ItemGetHitPoints(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_pushinteger(L, item->hit_points);
     return 1;
 }
 
-static int M_L_ItemGet_max_hit_points(lua_State *const L)
+// trxc.items.get_max_hit_points(index) → int or nil
+static int M_L_ItemGetMaxHitPoints(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
     lua_pushinteger(L, item->max_hit_points);
     return 1;
 }
 
-static int M_L_ItemGet_name(lua_State *const L)
+// trxc.items.get_name(index) → string or nil
+static int M_L_ItemGetName(lua_State *const L)
 {
-    const ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
-    if (item->name != nullptr) {
-        lua_pushstring(L, item->name);
-    } else {
+    const int idx = luaL_checkinteger(L, 1);
+    const ITEM *const item = Item_Get(idx - 1);
+    if (item == nullptr || item->name == nullptr) {
         lua_pushnil(L);
+    } else {
+        lua_pushstring(L, item->name);
     }
     return 1;
 }
 
-static int M_L_ItemSet_pos(lua_State *const L)
+// trxc.items.set_pos(index, {x,y,z})
+static int M_L_ItemSetPos(lua_State *const L)
 {
-    ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    ITEM *const item = Item_Get(idx - 1);
     luaL_checktype(L, 2, LUA_TTABLE);
     lua_getfield(L, 2, "x");
     item->pos.x = luaL_checkinteger(L, -1);
@@ -100,24 +174,30 @@ static int M_L_ItemSet_pos(lua_State *const L)
     return 0;
 }
 
-static int M_L_ItemSet_hit_points(lua_State *const L)
+// trxc.items.set_hit_points(index, hp)
+static int M_L_ItemSetHitPoints(lua_State *const L)
 {
-    ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    ITEM *const item = Item_Get(idx - 1);
     item->hit_points = luaL_checkinteger(L, 2);
     item->max_hit_points = MAX(item->hit_points, item->max_hit_points);
     return 0;
 }
 
-static int M_L_ItemSet_max_hit_points(lua_State *const L)
+// trxc.items.set_max_hit_points(index, max_hp)
+static int M_L_ItemSetMaxHitPoints(lua_State *const L)
 {
-    ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    ITEM *const item = Item_Get(idx - 1);
     item->max_hit_points = luaL_checkinteger(L, 2);
     return 0;
 }
 
-static int M_L_ItemSet_rot(lua_State *const L)
+// trxc.items.set_rot(index, {x,y,z})
+static int M_L_ItemSetRot(lua_State *const L)
 {
-    ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    ITEM *const item = Item_Get(idx - 1);
     luaL_checktype(L, 2, LUA_TTABLE);
     lua_getfield(L, 2, "x");
     item->rot.x = luaL_checkinteger(L, -1);
@@ -131,9 +211,11 @@ static int M_L_ItemSet_rot(lua_State *const L)
     return 0;
 }
 
-static int M_L_ItemSet_name(lua_State *const L)
+// trxc.items.set_name(index, name)
+static int M_L_ItemSetName(lua_State *const L)
 {
-    ITEM *const item = *(ITEM **)luaL_checkudata(L, 1, "trx.items.Item");
+    const int idx = luaL_checkinteger(L, 1);
+    ITEM *const item = Item_Get(idx - 1);
     const char *const new_name = luaL_checkstring(L, 2);
     if (!Item_SetName(Item_GetIndex(item), new_name)) {
         return luaL_error(L, "item name '%s' already in use", new_name);
@@ -141,160 +223,41 @@ static int M_L_ItemSet_name(lua_State *const L)
     return 0;
 }
 
-static const luaL_Reg m_ItemGetters[] = {
-    { "pos", M_L_ItemGet_pos },
-    { "rot", M_L_ItemGet_rot },
-    { "room", M_L_ItemGet_room },
-    { "status", M_L_ItemGet_status },
-    { "object_id", M_L_ItemGet_object_id },
-    { "hit_points", M_L_ItemGet_hit_points },
-    { "max_hit_points", M_L_ItemGet_max_hit_points },
-    { "name", M_L_ItemGet_name },
-    { nullptr, nullptr }
-};
-
-static const luaL_Reg m_ItemSetters[] = {
-    { "pos", M_L_ItemSet_pos },
-    { "hit_points", M_L_ItemSet_hit_points },
-    { "max_hit_points", M_L_ItemSet_max_hit_points },
-    { "rot", M_L_ItemSet_rot },
-    { "name", M_L_ItemSet_name },
-    { nullptr, nullptr }
-};
-
-// Lua metamethod: __index for trx.items.Item read fields
-static int M_L_ItemIndex(lua_State *const L)
-{
-    const char *const key = luaL_checkstring(L, 2);
-    luaL_getsubtable(L, LUA_REGISTRYINDEX, "trx.item_getters");
-    lua_pushstring(L, key);
-    lua_rawget(L, -2);
-    lua_remove(L, -2);
-    if (lua_isfunction(L, -1)) {
-        lua_pushvalue(L, 1);
-        lua_call(L, 1, 1);
-        return 1;
-    }
-    lua_pop(L, 1);
-    lua_pushnil(L);
-    return 1;
-}
-
-// Lua metamethod: __newindex for writable trx.items.Item fields
-static int M_L_ItemNewIndex(lua_State *const L)
-{
-    const char *const key = luaL_checkstring(L, 2);
-    luaL_getsubtable(L, LUA_REGISTRYINDEX, "trx.item_setters");
-    lua_pushstring(L, key);
-    lua_rawget(L, -2);
-    lua_remove(L, -2);
-    if (lua_isfunction(L, -1)) {
-        lua_pushvalue(L, 1);
-        lua_pushvalue(L, 3);
-        lua_call(L, 2, 0);
-        return 0;
-    }
-    return luaL_error(L, "Cannot set field '%s' on trx.items.Item", key);
-}
-
-// item_count = #trx.items
-static int M_L_ItemsCount(lua_State *const L)
-{
-    lua_pushinteger(L, Item_GetTotalCount());
-    return 1;
-}
-
-// item = trx.items.fn.get(idx) or trx.items.fn.get(name)
-static int M_L_ItemsGet(lua_State *const L)
-{
-    const ITEM *item = nullptr;
-    if (lua_type(L, 1) == LUA_TNUMBER) {
-        const int idx = luaL_checkinteger(L, 1);
-        item = Item_Get(idx - 1);
-    } else {
-        const char *const name = luaL_checkstring(L, 1);
-        item = Item_GetByName(name);
-    }
-    if (item == nullptr) {
-        lua_pushnil(L);
-    } else {
-        const ITEM **ud = lua_newuserdata(L, sizeof(ITEM *));
-        *ud = item;
-        luaL_getmetatable(L, "trx.items.Item");
-        lua_setmetatable(L, -2);
-    }
-    return 1;
-}
-
-// Lua metamethod: __index for trx.items (items table)
-static int M_L_ItemsIndex(lua_State *const L)
-{
-    int type = lua_type(L, 2);
-    if (type == LUA_TSTRING) {
-        const char *key = luaL_checkstring(L, 2);
-        if (strcmp(key, "fn") == 0) {
-            luaL_getsubtable(L, LUA_REGISTRYINDEX, "trx.items.methods");
-            return 1;
-        }
-    }
-    if (type == LUA_TNUMBER || type == LUA_TSTRING) {
-        lua_pushcfunction(L, M_L_ItemsGet);
-        lua_pushvalue(L, 2);
-        lua_call(L, 1, 1);
-        return 1;
-    }
-    luaL_getsubtable(L, LUA_REGISTRYINDEX, "trx.items.methods");
-    lua_pushvalue(L, 2);
-    lua_rawget(L, -2);
-    return 1;
-}
-
 void LUA_CreateItems(lua_State *const L)
 {
-    // Register getter and setter functions in the Lua registry
-    lua_newtable(L);
-    luaL_setfuncs(L, m_ItemGetters, 0);
-    lua_setfield(L, LUA_REGISTRYINDEX, "trx.item_getters");
+    lua_getglobal(L, "trxc");
 
     lua_newtable(L);
-    luaL_setfuncs(L, m_ItemSetters, 0);
-    lua_setfield(L, LUA_REGISTRYINDEX, "trx.item_setters");
-
-    luaL_newmetatable(L, "trx.items.Item");
-    lua_pushcfunction(L, M_L_ItemIndex);
-    lua_setfield(L, -2, "__index");
-    lua_pushcfunction(L, M_L_ItemNewIndex);
-    lua_setfield(L, -2, "__newindex");
-    lua_pop(L, 1);
-
-    lua_getglobal(L, "trx");
-
-    // create metatable for items object
-    if (luaL_newmetatable(L, "trx.items")) {
-        // register methods table in registry
-        lua_newtable(L);
-        lua_pushcfunction(L, M_L_ItemsGet);
-        lua_setfield(L, -2, "get");
-        lua_setfield(L, LUA_REGISTRYINDEX, "trx.items.methods");
-
-        // __len metamethod for #trx.items
-        lua_pushcfunction(L, M_L_ItemsCount);
-        lua_setfield(L, -2, "__len");
-
-        // __index metamethod for trx.items
-        lua_pushcfunction(L, M_L_ItemsIndex);
-        lua_setfield(L, -2, "__index");
-    }
-    lua_pop(L, 1);
-
-    // now create userdata instance
-    lua_newuserdata(L, 0);
-    luaL_getmetatable(L, "trx.items");
-    lua_setmetatable(L, -2);
-
-    // attach it into trx
+    lua_pushcfunction(L, M_L_ItemsCount);
+    lua_setfield(L, -2, "count");
+    lua_pushcfunction(L, M_L_ItemsGet);
+    lua_setfield(L, -2, "get");
+    lua_pushcfunction(L, M_L_ItemGetPos);
+    lua_setfield(L, -2, "get_pos");
+    lua_pushcfunction(L, M_L_ItemGetRot);
+    lua_setfield(L, -2, "get_rot");
+    lua_pushcfunction(L, M_L_ItemGetRoom);
+    lua_setfield(L, -2, "get_room");
+    lua_pushcfunction(L, M_L_ItemGetStatus);
+    lua_setfield(L, -2, "get_status");
+    lua_pushcfunction(L, M_L_ItemGetObjectId);
+    lua_setfield(L, -2, "get_object_id");
+    lua_pushcfunction(L, M_L_ItemGetHitPoints);
+    lua_setfield(L, -2, "get_hit_points");
+    lua_pushcfunction(L, M_L_ItemGetMaxHitPoints);
+    lua_setfield(L, -2, "get_max_hit_points");
+    lua_pushcfunction(L, M_L_ItemGetName);
+    lua_setfield(L, -2, "get_name");
+    lua_pushcfunction(L, M_L_ItemSetPos);
+    lua_setfield(L, -2, "set_pos");
+    lua_pushcfunction(L, M_L_ItemSetHitPoints);
+    lua_setfield(L, -2, "set_hit_points");
+    lua_pushcfunction(L, M_L_ItemSetMaxHitPoints);
+    lua_setfield(L, -2, "set_max_hit_points");
+    lua_pushcfunction(L, M_L_ItemSetRot);
+    lua_setfield(L, -2, "set_rot");
+    lua_pushcfunction(L, M_L_ItemSetName);
+    lua_setfield(L, -2, "set_name");
     lua_setfield(L, -2, "items");
-
-    // leave stack clean
     lua_pop(L, 1);
 }
