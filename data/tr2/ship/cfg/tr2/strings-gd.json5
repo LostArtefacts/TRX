@@ -647,9 +647,15 @@
             ]
         },
         "dart": {
-            "name": "Sgian-cruinnte",
+            "name": "Dàrt",
         },
         "dart_emitter": {
+            "name": "Sgaoiladair Dàrt",
+        },
+        "disc": {
+            "name": "Sgian-cruinnte",
+        },
+        "disc_emitter": {
             "name": "Sgaoiladair Sgian-cruinnte",
         },
         "drawbridge": {

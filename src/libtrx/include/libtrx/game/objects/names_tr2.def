@@ -133,8 +133,6 @@ X_OBJ_NAME_DEFINE(O_FALLING_BLOCK_3,       "falling_block_3",       X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PENDULUM_1,            "pendulum_1",            X_OBJ_NAMES("Sandbag"))
 X_OBJ_NAME_DEFINE(O_SPIKES,                "spikes",                X_OBJ_NAMES("Spikes"))
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_1,        "rolling_ball_1",        X_OBJ_NAMES("Boulder 1", "Rolling Ball"))
-X_OBJ_NAME_DEFINE(O_DART,                  "dart",                  X_OBJ_NAMES("Disc"))
-X_OBJ_NAME_DEFINE(O_DART_EMITTER,          "dart_emitter",          X_OBJ_NAMES("Disc Emitter"))
 X_OBJ_NAME_DEFINE(O_DRAWBRIDGE,            "drawbridge",            X_OBJ_NAMES("Drawbridge"))
 X_OBJ_NAME_DEFINE(O_TEETH_TRAP,            "teeth_trap",            X_OBJ_NAMES("Teeth Trap"))
 X_OBJ_NAME_DEFINE(O_LIFT,                  "lift",                  X_OBJ_NAMES("Lift"))

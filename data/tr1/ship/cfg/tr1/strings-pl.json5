@@ -448,6 +448,12 @@
         "dart_emitter": {
             "name": "Wyzwalacz strzał",
         },
+        "disc": {
+            "name": "Dysk",
+        },
+        "disc_emitter": {
+            "name": "Emiter dysków",
+        },
         "drawbridge": {
             "name": "Most zwodzony",
         },

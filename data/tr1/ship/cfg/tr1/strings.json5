@@ -438,12 +438,6 @@
                 "Rolling Ball",
             ]
         },
-        "dart": {
-            "name": "Dart",
-        },
-        "dart_emitter": {
-            "name": "Dart Emitter",
-        },
         "drawbridge": {
             "name": "Drawbridge",
         },

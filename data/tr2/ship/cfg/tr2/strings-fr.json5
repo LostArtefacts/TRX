@@ -647,9 +647,15 @@
             ]
         },
         "dart": {
-            "name": "\\{review}Disque",
+            "name": "Flèche",
         },
         "dart_emitter": {
+            "name": "Émetteur de flèches",
+        },
+        "disc": {
+            "name": "\\{review}Disque",
+        },
+        "disc_emitter": {
             "name": "\\{review}Émetteur de Disque",
         },
         "drawbridge": {

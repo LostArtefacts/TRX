@@ -152,7 +152,7 @@ title: Sample IDs
 | `148` | SFX_LAVA_LOOP             |
 | `149` | SFX_LAVA_FOUNTAIN         |
 | `150` | SFX_LOOP_FOR_SMALL_FIRES  |
-| `151` | SFX_DARTS                 |
+| `151` | SFX_DART                  |
 | `152` | SFX_METAL_DOOR_CLOSE      |
 | `153` | SFX_METAL_DOOR_OPEN       |
 | `154` | SFX_ALTAR_LOOP            |
@@ -455,11 +455,11 @@ title: Sample IDs
 | `251` | SFX_ENEMY_FIRE_SEMIAUTO |
 | `252` | SFX_ENEMY_DEATH_3 |
 | `253` | SFX_ENEMY_DEATH_4 |
-| `254` | SFX_DARTS |
+| `254` | SFX_DISC |
 | `255` | SFX_KNIFETHROWER_FEET |
 | `256` | SFX_MONK_OYE |
 | `257` | SFX_MONK_AWEH |
-| `258` | SFX_DARTS_HIT |
+| `258` | SFX_PROJECTILE_HIT |
 | `259` | SFX_KNIFETHROWER_WARRIOR_FEET |
 | `260` | SFX_WARRIOR_BLADE_SWING_1 |
 | `261` | SFX_WARRIOR_BLADE_SWING_2 |

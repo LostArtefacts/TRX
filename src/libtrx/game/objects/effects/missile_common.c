@@ -41,7 +41,7 @@ void Missile_Control(const int16_t effect_num)
             effect->frame_num = Random_GetControl() / -11000;
             effect->speed = 0;
             effect->counter = 6;
-            Sound_Effect(SFX_DARTS_HIT, &effect->pos, SPM_NORMAL);
+            Sound_Effect(SFX_PROJECTILE_HIT, &effect->pos, SPM_NORMAL);
         } else if (effect->object_id == O_MISSILE_FLAME) {
             Output_AddDynamicLight(effect->pos, 14, 11);
             Effect_Kill(effect_num);

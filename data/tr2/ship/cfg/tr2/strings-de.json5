@@ -647,9 +647,15 @@
             ]
         },
         "dart": {
-            "name": "Scheibe",
+            "name": "Pfeil",
         },
         "dart_emitter": {
+            "name": "Pfeilerzeuger",
+        },
+        "disc": {
+            "name": "Scheibe",
+        },
+        "disc_emitter": {
             "name": "Scheiben-Erzeuger",
         },
         "drawbridge": {

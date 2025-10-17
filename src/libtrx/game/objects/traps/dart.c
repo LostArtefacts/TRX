@@ -14,7 +14,7 @@ static void M_Hit(const int16_t item_num, const XYZ_32 pos)
 {
     const ITEM *const item = Item_Get(item_num);
     Item_Kill(item_num);
-    Sound_Effect(SFX_DARTS_HIT, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_PROJECTILE_HIT, &item->pos, SPM_NORMAL);
 
     const int16_t effect_num = Effect_Create(item->room_num);
     if (effect_num != NO_EFFECT) {
@@ -52,12 +52,12 @@ static void M_Control(const int16_t item_num)
     const int32_t height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
-    if (g_TRVersion == 2) {
+    if (item->object_id == O_DISC) {
         item->rot.x += M_PITCH;
     }
     item->floor = height;
     if (item->pos.y >= height) {
-        M_Hit(item_num, g_TRVersion == 1 ? old_pos : item->pos);
+        M_Hit(item_num, item->object_id == O_DART ? old_pos : item->pos);
     }
 }
 
@@ -70,3 +70,4 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_DART, M_Setup)
+REGISTER_OBJECT(O_DISC, M_Setup)
