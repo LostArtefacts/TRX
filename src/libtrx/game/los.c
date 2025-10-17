@@ -370,7 +370,39 @@ static int32_t M_CheckZ(
     return 1;
 }
 
-static int32_t M_ClipTarget(
+static int32_t M_ClipTargetSimple(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target)
+{
+    const SECTOR *sector =
+        Room_GetSector(target->x, target->y, target->z, &target->room_num);
+
+    // This function exists because of issue #4070.
+    int32_t dx = target->x - start->x;
+    int32_t dy = target->y - start->y;
+    int32_t dz = target->z - start->z;
+
+    const int32_t height =
+        Room_GetHeight(sector, target->x, target->y, target->z);
+    if (target->y > height && start->y < height) {
+        target->y = height;
+        target->x = start->x + dx * (height - start->y) / dy;
+        target->z = start->z + dz * (height - start->y) / dy;
+        return false;
+    }
+
+    const int32_t ceiling =
+        Room_GetCeiling(sector, target->x, target->y, target->z);
+    if (target->y < ceiling && start->y > ceiling) {
+        target->y = ceiling;
+        target->x = start->x + dx * (ceiling - start->y) / dy;
+        target->z = start->z + dz * (ceiling - start->y) / dy;
+        return false;
+    }
+
+    return true;
+}
+
+static int32_t M_ClipTargetWithSlopes(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     int16_t room_num = target->room_num;
@@ -435,7 +467,9 @@ static int32_t M_ClipTarget(
     return 1;
 }
 
-bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
+bool LOS_Check(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target,
+    const bool use_slope_clipping)
 {
     const int32_t dx = ABS(target->x - start->x);
     const int32_t dz = ABS(target->z - start->z);
@@ -458,5 +492,8 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
         target->room_num = start->room_num;
     }
 
-    return M_ClipTarget(start, target) && los1 == 1 && los2 == 1;
+    const bool clip_result =
+        (use_slope_clipping ? M_ClipTargetWithSlopes(start, target)
+                            : M_ClipTargetSimple(start, target));
+    return clip_result && los1 == 1 && los2 == 1;
 }

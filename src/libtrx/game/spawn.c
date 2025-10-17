@@ -36,7 +36,7 @@ XYZ_32 Spawn_GetRayPos(
     const GAME_VECTOR start, GAME_VECTOR hit_pos, const int32_t dist)
 {
     // Get the position at wall
-    LOS_Check(&start, &hit_pos);
+    LOS_Check(&start, &hit_pos, true);
 
     // Retract a bit
     const int16_t angle = XYZ_32_GetYaw((XYZ_32) {

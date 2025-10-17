@@ -74,7 +74,7 @@ static int16_t M_FindNearestBoss(void)
             .room_num = item->room_num,
         };
 
-        if (!LOS_Check(&start, &target)) {
+        if (!LOS_Check(&start, &target, true)) {
             const int32_t dx = (lara_item->pos.x - item->pos.x) >> 6;
             const int32_t dy = (lara_item->pos.y - item->pos.y) >> 6;
             const int32_t dz = (lara_item->pos.z - item->pos.z) >> 6;

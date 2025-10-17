@@ -499,7 +499,7 @@ int32_t Gun_FireWeapon(
             .room_num = start.room_num,
         };
         Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
-        const bool object_on_los = LOS_Check(&start, &hit_pos);
+        const bool object_on_los = LOS_Check(&start, &hit_pos, true);
         if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
             == PROJECTILE_HIT_STOP) {
             Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);

@@ -590,7 +590,7 @@ bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
     target.pos.z = enemy->pos.z;
     target.room_num = enemy->room_num;
 
-    return LOS_Check(&start, &target);
+    return LOS_Check(&start, &target, true);
 }
 
 bool Creature_CheckBaddieOverlap(const int16_t item_num)
