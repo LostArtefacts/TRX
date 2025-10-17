@@ -57,11 +57,12 @@ static void M_SetupGL(void)
 }
 
 static void M_LoadCatalog(
-    const CATALOG_CONTEXT context, const char *const filename)
+    const CATALOG_CONTEXT context, const char *const filename,
+    const bool allow_duplicates)
 {
     const char *const path =
         String_FormatStatic("%s/%s", Shell_GetConfigDir(), filename);
-    if (!Catalog_Load(context, path)) {
+    if (!Catalog_Load(context, path, allow_duplicates)) {
         Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
     }
 }
@@ -150,11 +151,11 @@ const SHELL_ARGS *Shell_CommonInit(const SHELL_ARGS *const args)
         Shell_ExitSystem("--headless can only be used with --test-replay");
     }
 
-    M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv");
-    M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv");
-    M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv");
-    M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv");
-    M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv");
+    M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
+    M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
+    M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true);
+    M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false);
+    M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false);
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);

@@ -163,7 +163,9 @@ static void M_Initialize(void)
     m_Initialized = true;
 }
 
-bool Catalog_Load(const CATALOG_CONTEXT context, const char *const csv_path)
+bool Catalog_Load(
+    const CATALOG_CONTEXT context, const char *const csv_path,
+    const bool allow_duplicates)
 {
     if (!m_Initialized) {
         M_Initialize();
@@ -207,14 +209,14 @@ bool Catalog_Load(const CATALOG_CONTEXT context, const char *const csv_path)
         if (game_id >= 0) {
             M_GAME_ID_ENTRY *existing = nullptr;
             HASH_FIND_INT(m_GameID2EnumMap[context], &game_id, existing);
-            if (existing != nullptr) {
-                LOG_ERROR(
-                    "Duplicate game ID %d for context %d", game_id, context);
-            } else {
+            if (existing == nullptr) {
                 M_GAME_ID_ENTRY *gentry = Memory_Alloc(sizeof(*gentry));
                 gentry->game_id = game_id;
                 gentry->enum_value = id;
                 HASH_ADD_INT(m_GameID2EnumMap[context], game_id, gentry);
+            } else if (!allow_duplicates) {
+                LOG_ERROR(
+                    "Duplicate game ID %d for context %d", game_id, context);
             }
         }
     }

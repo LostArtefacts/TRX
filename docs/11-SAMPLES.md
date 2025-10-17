@@ -75,6 +75,8 @@ title: Sample IDs
 | `68`  | SFX_ROCK_FALL_LAND        |
 | `69`  | SFX_T_REX_DEATH           |
 | `70`  | SFX_T_REX_STOMP           |
+| `70`  | SFX_PUSHBLOCK_LAND        |
+| `70`  | SFX_EARTHQUAKE_2          |
 | `71`  | SFX_T_REX_ROAR            |
 | `72`  | SFX_T_REX_ATTACK          |
 | `73`  | SFX_RAPTOR_ROAR           |
@@ -149,6 +151,7 @@ title: Sample IDs
 | `145` | SFX_LARA_SPIKE_DEATH      |
 | `146` | SFX_LARA_DEATH_3          |
 | `147` | SFX_ROLLING_BALL_1_ROLL   |
+| `147` | SFX_EARTHQUAKE_1          |
 | `148` | SFX_LAVA_LOOP             |
 | `149` | SFX_LAVA_FOUNTAIN         |
 | `150` | SFX_LOOP_FOR_SMALL_FIRES  |
@@ -491,6 +494,7 @@ title: Sample IDs
 | `296` | SFX_BIRD_MONSTER_SCRAPE |
 | `297` | SFX_HELICOPTER_LOOP |
 | `298` | SFX_DRAGON_FEET |
+| `298` | SFX_EARTHQUAKE_1 |
 | `299` | SFX_DRAGON_GROWL_1 |
 | `300` | SFX_DRAGON_GROWL_2 |
 | `301` | SFX_DRAGON_FALL |
@@ -517,6 +521,8 @@ title: Sample IDs
 | `323` | SFX_BIG_SPIDER_DEATH |
 | `324` | SFX_T_REX_ROAR |
 | `325` | SFX_T_REX_STOMP |
+| `325` | SFX_PUSHBLOCK_LAND |
+| `325` | SFX_EARTHQUAKE_2 |
 | `326` | SFX_T_REX_GROWL_1 |
 | `327` | SFX_T_REX_DEATH |
 | `329` | SFX_DRIPS_REVERB |

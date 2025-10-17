@@ -11,11 +11,11 @@ void ItemAction_Earthquake(ITEM *item)
         Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
         g_Camera.bounce = -250;
     } else if (flip_timer == 3) {
-        Sound_Effect(SFX_ROLLING_BALL_1_ROLL, nullptr, SPM_NORMAL);
+        Sound_Effect(SFX_EARTHQUAKE_1, nullptr, SPM_NORMAL);
     } else if (flip_timer == 35) {
         Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
     } else if (flip_timer == 20 || flip_timer == 50 || flip_timer == 70) {
-        Sound_Effect(SFX_T_REX_STOMP, nullptr, SPM_NORMAL);
+        Sound_Effect(SFX_EARTHQUAKE_2, nullptr, SPM_NORMAL);
     }
 
     if (flip_timer == 104) {

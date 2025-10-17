@@ -648,7 +648,7 @@ static void M_Control(const int16_t item_num)
         item->pos.y = under_block_height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
-        Sound_Effect(SFX_T_REX_STOMP, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_PUSHBLOCK_LAND, &item->pos, SPM_NORMAL);
     } else if (
         // If block is at/under floor height, no gravity, and isn't being
         // pushed/pulled anymore. Prevents blocks from getting stuck in
