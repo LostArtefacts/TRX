@@ -1,5 +1,3 @@
-#include "game/objects/general/pickup.h"
-
 #include "game/game.h"
 #include "game/inventory.h"
 #include "game/objects/common.h"
@@ -12,6 +10,7 @@
 #include <libtrx/game/lua/common.h>
 #include <libtrx/game/lua/events.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/objects/general/pickup.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>

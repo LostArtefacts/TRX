@@ -28,8 +28,6 @@
 static XYZ_32 m_PickUpPosition = { 0, 0, -100 };
 static XYZ_32 m_PickUpPositionUW = { 0, -200, -350 };
 
-static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
 static void M_SpawnPickupAid(const ITEM *const item)
 {
     const OBJECT_ID obj_id =
@@ -83,7 +81,7 @@ static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item)
         ITEM *const check_item = Item_Get(pickup_num);
         if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
             && Object_Get(check_item->object_id)->collision_func
-                == M_Collision) {
+                == Pickup_Collision) {
             M_GetItem(pickup_num, check_item, lara_item);
         }
         pickup_num = check_item->next_item;
@@ -194,7 +192,82 @@ static void M_CollisionControlled(
     item->rot.z = rotz;
 }
 
-static void M_Collision(
+static void M_Initialise(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->priv = (void *)(intptr_t)(-1);
+    if (item->status != IS_INVISIBLE) {
+        Item_AddActive(item_num);
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
+}
+
+static void M_Activate(ITEM *const item)
+{
+    if (item->status == IS_INVISIBLE) {
+        item->touch_bits = 0;
+        item->status = IS_ACTIVE;
+        const int16_t item_num = Item_GetIndex(item);
+        Item_AddActive(item_num);
+    } else {
+        item->status = IS_INVISIBLE;
+        item->flags |= IF_KILLED;
+    }
+}
+
+static void M_Control(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
+        Item_RemoveActive(item_num);
+        return;
+    }
+
+    const ITEM *const lara = Lara_GetItem();
+    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
+        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
+        return;
+    }
+
+    const int32_t distance = Item_GetDistance(lara, &item->pos);
+    if (distance < AID_DIST_MIN || distance > AID_DIST_MAX) {
+        return;
+    }
+
+    int32_t timer = (int32_t)(intptr_t)item->priv;
+    if (timer <= 0
+        || (timer < AID_WAIT_MIN && Random_GetDraw() < AID_WAIT_BREAK_CHANCE)) {
+        M_SpawnPickupAid(item);
+        timer = AID_WAIT_MAX;
+    } else {
+        timer--;
+    }
+
+    item->priv = (void *)(intptr_t)(int32_t)timer;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->draw_func = Object_DrawPickupItem;
+    obj->collision_func = Pickup_Collision;
+    obj->save_flags = true;
+    obj->bounds_func = Pickup_Bounds;
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->activate_func = M_Activate;
+    obj->control_func = M_Control;
+}
+
+void Pickup_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.enable_walk_to_items) {
@@ -264,81 +337,6 @@ cleanup:
     item->rot.x = rotx;
     item->rot.y = roty;
     item->rot.z = rotz;
-}
-
-static void M_Initialise(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->priv = (void *)(intptr_t)(-1);
-    if (item->status != IS_INVISIBLE) {
-        Item_AddActive(item_num);
-    }
-}
-
-static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
-{
-    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
-            const int16_t item_num = Item_GetIndex(item);
-            Item_RemoveDrawn(item_num);
-        }
-    }
-}
-
-static void M_Activate(ITEM *const item)
-{
-    if (item->status == IS_INVISIBLE) {
-        item->touch_bits = 0;
-        item->status = IS_ACTIVE;
-        const int16_t item_num = Item_GetIndex(item);
-        Item_AddActive(item_num);
-    } else {
-        item->status = IS_INVISIBLE;
-        item->flags |= IF_KILLED;
-    }
-}
-
-static void M_Control(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
-        return;
-    }
-
-    const ITEM *const lara = Lara_GetItem();
-    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
-        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
-        return;
-    }
-
-    const int32_t distance = Item_GetDistance(lara, &item->pos);
-    if (distance < AID_DIST_MIN || distance > AID_DIST_MAX) {
-        return;
-    }
-
-    int32_t timer = (int32_t)(intptr_t)item->priv;
-    if (timer <= 0
-        || (timer < AID_WAIT_MIN && Random_GetDraw() < AID_WAIT_BREAK_CHANCE)) {
-        M_SpawnPickupAid(item);
-        timer = AID_WAIT_MAX;
-    } else {
-        timer--;
-    }
-
-    item->priv = (void *)(intptr_t)(int32_t)timer;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->draw_func = Object_DrawPickupItem;
-    obj->collision_func = M_Collision;
-    obj->save_flags = true;
-    obj->bounds_func = Pickup_Bounds;
-    obj->initialise_func = M_Initialise;
-    obj->handle_save_func = M_HandleSave;
-    obj->activate_func = M_Activate;
-    obj->control_func = M_Control;
 }
 
 REGISTER_OBJECT(O_EXPLOSIVE_ITEM, M_Setup)
