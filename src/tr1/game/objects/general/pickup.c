@@ -12,6 +12,7 @@
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/lua/common.h>
 #include <libtrx/game/lua/events.h>
+#include <libtrx/game/objects/general/pickup.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/random.h>
@@ -26,39 +27,6 @@
 
 static XYZ_32 m_PickUpPosition = { 0, 0, -100 };
 static XYZ_32 m_PickUpPositionUW = { 0, -200, -350 };
-
-static const OBJECT_BOUNDS m_PickUpBounds = {
-    .shift = {
-        .min = { .x = -256, .y = -100, .z = -256, },
-        .max = { .x = +256, .y = +100, .z = +256, },
-    },
-    .rot = {
-        .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
-        .max = { .x = +10 * DEG_1, .y = 0, .z = 0, },
-    },
-};
-
-static const OBJECT_BOUNDS m_PickUpBoundsControlled = {
-    .shift = {
-        .min = { .x = -256, .y = -200, .z = -256, },
-        .max = { .x = +256, .y = +200, .z = +256, },
-    },
-    .rot = {
-        .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
-        .max = { .x = +10 * DEG_1, .y = 0, .z = 0, },
-    },
-};
-
-static const OBJECT_BOUNDS m_PickUpBoundsUW = {
-    .shift = {
-        .min = { .x = -512, .y = -512, .z = -512, },
-        .max = { .x = +512, .y = +512, .z = +512, },
-    },
-    .rot = {
-        .min = { .x = -45 * DEG_1, .y = -45 * DEG_1, .z = -45 * DEG_1, },
-        .max = { .x = +45 * DEG_1, .y = +45 * DEG_1, .z = +45 * DEG_1, },
-    },
-};
 
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
@@ -359,19 +327,6 @@ static void M_Control(int16_t item_num)
     }
 
     item->priv = (void *)(intptr_t)(int32_t)timer;
-}
-
-const OBJECT_BOUNDS *Pickup_Bounds(void)
-{
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->water_status == LWS_UNDERWATER
-        || lara->water_status == LWS_CHEAT) {
-        return &m_PickUpBoundsUW;
-    } else if (g_Config.gameplay.enable_walk_to_items) {
-        return &m_PickUpBoundsControlled;
-    } else {
-        return &m_PickUpBounds;
-    }
 }
 
 static void M_Setup(OBJECT *const obj)
