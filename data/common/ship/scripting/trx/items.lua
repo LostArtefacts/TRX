@@ -4,7 +4,10 @@ local raw = trxc.items
 local getters = {
   pos = raw.get_pos,
   rot = raw.get_rot,
-  room = raw.get_room,
+  room_num = raw.get_room,
+  room = function(idx)
+    return trx.rooms[raw.get_room(idx)]
+  end,
   status = raw.get_status,
   object_id = raw.get_object_id,
   hit_points = raw.get_hit_points,
