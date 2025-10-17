@@ -8,4 +8,4 @@ typedef enum {
     SWITCH_STATE_LINK = 2,
 } SWITCH_STATE;
 
-extern bool Switch_Trigger(int16_t item_num, int16_t timer);
+bool Switch_Trigger(int16_t item_num, int16_t timer);
