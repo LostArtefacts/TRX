@@ -202,7 +202,7 @@ static int32_t M_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
 
 static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 {
-    LOS_Check(&g_Camera.target, target);
+    LOS_Check(&g_Camera.target, target, false);
 
     const ROOM *room = Room_Get(g_Camera.target.room_num);
     const SECTOR *sector =
@@ -382,9 +382,9 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 
     if (settings.test_shift_pair) {
         if (prefer_a) {
-            prefer_a = LOS_Check(&g_Camera.target, &target_a);
+            prefer_a = LOS_Check(&g_Camera.target, &target_a, false);
         } else {
-            prefer_a = !LOS_Check(&g_Camera.target, &target_b);
+            prefer_a = !LOS_Check(&g_Camera.target, &target_b, false);
         }
     }
 
@@ -513,7 +513,7 @@ static void M_Move(const GAME_VECTOR *const target, const int32_t speed)
 
     height -= STEP_L;
     if (pos.y >= height && target->y >= height) {
-        LOS_Check(&g_Camera.target, &pos);
+        LOS_Check(&g_Camera.target, &pos, false);
         sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
         height = Room_GetHeight(sector, pos.x, pos.y, pos.z) - STEP_L;
     }
@@ -658,7 +658,7 @@ static void M_Fixed(void)
         .room_num = fixed->data,
     };
 #if TR_VERSION >= 2
-    if (!LOS_Check(&g_Camera.target, &target)) {
+    if (!LOS_Check(&g_Camera.target, &target, false)) {
         M_ShiftClamp(&target, STEP_L);
     }
 #endif

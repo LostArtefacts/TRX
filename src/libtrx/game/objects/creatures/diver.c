@@ -103,7 +103,7 @@ static void M_Control(const int16_t item_num)
             .z = lara_item->pos.z,
             .room_num = lara_item->room_num,
         };
-        shoot = LOS_Check(&start, &target);
+        shoot = LOS_Check(&start, &target, true);
 
         if (shoot) {
             creature->target.x = lara_item->pos.x;
@@ -127,7 +127,7 @@ static void M_Control(const int16_t item_num)
             .z = lara_item->pos.z,
             .room_num = lara_item->room_num,
         };
-        shoot = LOS_Check(&start, &target);
+        shoot = LOS_Check(&start, &target, true);
     } else {
         shoot = false;
     }

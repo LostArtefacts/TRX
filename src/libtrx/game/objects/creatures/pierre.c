@@ -218,7 +218,7 @@ static void M_Control(const int16_t item_num)
         start.z = g_Camera.pos.z;
         start.room_num = g_Camera.pos.room_num;
 
-        if (LOS_Check(&start, &target)) {
+        if (LOS_Check(&start, &target, true)) {
             pierre->flags = 1;
         } else if (pierre->flags > PIERRE_DISAPPEAR) {
             item->hit_points = DONT_TARGET;

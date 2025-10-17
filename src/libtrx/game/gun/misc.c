@@ -134,7 +134,7 @@ void Gun_TargetInfo(const WEAPON_INFO *const weapon)
     angles[0] -= lara_item->rot.y;
     angles[1] -= lara_item->rot.x;
 
-    if (!LOS_Check(&start, &target)) {
+    if (!LOS_Check(&start, &target, true)) {
         lara->left_arm.lock = 0;
         lara->right_arm.lock = 0;
     } else if (
@@ -490,7 +490,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
         GAME_VECTOR target;
         Gun_FindTargetPoint(item, &target);
-        if (!LOS_Check(&start, &target)) {
+        if (!LOS_Check(&start, &target, true)) {
             continue;
         }
 
