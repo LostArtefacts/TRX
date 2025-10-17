@@ -1,5 +1,7 @@
 #include "game/inventory_ring/vars.h"
 
+CAMERA_INFO g_InvRing_OldCamera = {};
+
 const INVENTORY_ITEM *g_InvRing_Items[] = {
     // Items
     &g_InvRing_Item_SmallMedi,

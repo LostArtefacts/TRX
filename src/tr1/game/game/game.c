@@ -19,6 +19,7 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/level.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/sound.h>
@@ -89,10 +90,10 @@ GF_COMMAND Game_Control(const bool demo_mode)
 {
     ASSERT(!demo_mode);
 
-    if (g_GameInfo.ask_for_save) {
+    if (g_Passport.ask_for_save) {
         // ask for a save at the start of a level for the save crystals mode
         const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
-        g_GameInfo.ask_for_save = false;
+        g_Passport.ask_for_save = false;
         if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }

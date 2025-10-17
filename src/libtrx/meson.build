@@ -391,6 +391,7 @@ sources = [
   'game/option/examine.c',
   'game/option/gameplay.c',
   'game/option/graphics.c',
+  'game/option/passport.c',
   'game/option/sound.c',
   'game/output/background.c',
   'game/output/common.c',

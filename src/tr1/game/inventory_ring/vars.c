@@ -4,8 +4,6 @@
 
 #include <stdint.h>
 
-CAMERA_INFO g_InvRing_OldCamera = {};
-
 INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
     [RT_KEYS] = {
         .current = 0,

@@ -3,10 +3,12 @@
 #include "global/vars.h"
 
 #include <libtrx/game/input.h>
+#include <libtrx/game/option/compass.h>
 #include <libtrx/game/option/controls.h>
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/option/gameplay.h>
 #include <libtrx/game/option/graphics.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/option/sound.h>
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)

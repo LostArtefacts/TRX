@@ -59,19 +59,6 @@ typedef enum {
     SHAPE_FBOX = 4
 } SHAPE;
 
-typedef enum {
-    PASSPORT_MODE_BROWSE = 0,
-    PASSPORT_MODE_LOAD_GAME = 1,
-    PASSPORT_MODE_SELECT_LEVEL = 2,
-    PASSPORT_MODE_STORY_SO_FAR = 3,
-    PASSPORT_MODE_SAVE_GAME = 4,
-    PASSPORT_MODE_NEW_GAME = 5,
-    PASSPORT_MODE_RESTART = 6,
-    PASSPORT_MODE_EXIT_TITLE = 7,
-    PASSPORT_MODE_EXIT_GAME = 8,
-    PASSPORT_MODE_UNAVAILABLE = 9,
-} PASSPORT_MODE;
-
 typedef struct {
     int width;
     int height;
@@ -92,13 +79,6 @@ typedef struct {
         float tex_coord[4];
     };
 } PHD_VBUF;
-
-typedef struct {
-    PASSPORT_MODE passport_selection;
-    int32_t select_save_slot;
-    int32_t select_level_num;
-    bool ask_for_save;
-} GAME_INFO;
 
 typedef struct {
     int32_t xv;

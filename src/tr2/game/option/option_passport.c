@@ -11,6 +11,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/game/ui.h>
@@ -446,8 +447,8 @@ void Option_Passport_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         M_SyncArrowsVisibility();
         M_ShowPage(inv_item);
         if (g_InputDB.menu_confirm) {
-            g_Inv_ExtraData[0] = m_State.active_page;
-            g_Inv_ExtraData[1] = m_State.selection;
+            g_Passport.passport_page = m_State.active_page;
+            g_Passport.select_save_slot = m_State.selection;
             M_Close(inv_item);
         } else if (g_InputDB.menu_back) {
             if (g_Inv_Mode == INV_DEATH_MODE) {

@@ -2,7 +2,6 @@
 
 #include "global/vars.h"
 
-int32_t g_Inv_ExtraData[8];
 int32_t g_Inv_NFrames = 2;
 
 INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
