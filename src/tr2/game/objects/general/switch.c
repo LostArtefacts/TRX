@@ -113,7 +113,7 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
     switch_item->goal_anim_state = SWITCH_STATE_ON;
 }
 
-static void M_Collision(
+void Switch_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -150,7 +150,7 @@ static void M_Collision(
     Item_Animate(item);
 }
 
-static void M_CollisionUW(
+void Switch_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -217,7 +217,7 @@ static void M_SetupBase(OBJECT *const obj)
 static void M_Setup(OBJECT *const obj)
 {
     M_SetupBase(obj);
-    obj->collision_func = M_Collision;
+    obj->collision_func = Switch_Collision;
     obj->bounds_func = M_Bounds;
 }
 
@@ -231,7 +231,7 @@ static void M_SetupPushButton(OBJECT *const obj)
 static void M_SetupUW(OBJECT *const obj)
 {
     M_SetupBase(obj);
-    obj->collision_func = M_CollisionUW;
+    obj->collision_func = Switch_CollisionUW;
     obj->bounds_func = M_BoundsUW;
 }
 
