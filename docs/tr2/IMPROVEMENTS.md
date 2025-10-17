@@ -54,6 +54,7 @@
 - added missing end of level statistic screens to Home Sweet Home and Kingdom
 - added an option to control whether or not Lara reverts to pistols when going from one level to another
 - added ability for falling movable blocks to kill Lara outright if one lands directly on her
+- added an option for animated interactions with pickups and switches
 - changed inventory to pause the music rather than muting it
 - fixed flare count getting corrupt on save/load if Lara had more than 255 flares
 - fixed killing the T-Rex with a grenade launcher crashing the game
