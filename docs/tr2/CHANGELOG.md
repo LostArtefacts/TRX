@@ -14,6 +14,7 @@
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
+- changed the debug position UI to no longer be hidden in photo mode
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
 - fixed ambient music not playing in demo levels (#4046, regression from 1.3)
