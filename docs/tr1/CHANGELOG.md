@@ -15,6 +15,7 @@
 - changed the bar appearance labels to better align with expectations (#4025)
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
 - changed LOS algorithm to TR2+ implementation
+- changed the debug position UI to no longer be hidden in photo mode
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
 - fixed ambient music not playing in demo levels (#4046, regression from 4.13)

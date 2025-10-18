@@ -239,7 +239,7 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
         M_Arrow(s, UI_OVERLAY_ARROW_TL);
     }
     if (g_Config.ui.enable_game_ui) {
-        if (Game_IsPlaying() && g_Config.debug.enable_debug_pos) {
+        if (g_Config.debug.enable_debug_pos) {
             M_DebugPosTopLeft();
         }
         if (g_Config.ui.enable_fps_counter) {
@@ -275,11 +275,13 @@ static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
     if (!M_RegionBars(s, BL_TOP_RIGHT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_TR);
     }
-    if (Game_IsPlaying() && g_Config.ui.enable_game_ui) {
+    if (g_Config.ui.enable_game_ui) {
         if (g_Config.debug.enable_debug_pos) {
             M_DebugPosTopRight();
         }
-        UI_AmmoLabel();
+        if (Game_IsPlaying()) {
+            UI_AmmoLabel();
+        }
     }
     UI_EndOverlayRegion();
 }
