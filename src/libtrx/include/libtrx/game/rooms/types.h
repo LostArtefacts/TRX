@@ -150,7 +150,7 @@ typedef struct {
     struct {
         bool underwater;
         bool outside;
-        bool not_inside;
+        bool wind;
         bool inside;
         bool dynamic_lit;
     } flags;
