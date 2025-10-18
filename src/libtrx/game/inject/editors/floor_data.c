@@ -208,7 +208,7 @@ static void M_RoomProperties(
     room->flags.underwater  = (flags & 0x01) != 0;
     room->flags.outside     = (flags & 0x08) != 0;
     room->flags.dynamic_lit = (flags & 0x10) != 0;
-    room->flags.not_inside  = (flags & 0x20) != 0;
+    room->flags.wind        = (flags & 0x20) != 0;
     room->flags.inside      = (flags & 0x40) != 0;
     // clang-format on
 }
