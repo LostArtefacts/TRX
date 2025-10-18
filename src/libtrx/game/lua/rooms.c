@@ -46,11 +46,27 @@ static int M_L_RoomGetUnderwater(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.get_wind(index) → bool or nil
+static int M_L_RoomGetWind(lua_State *const L)
+{
+    M_ROOM_GETTER(L);
+    lua_pushboolean(L, room->flags.wind);
+    return 1;
+}
+
 // trxc.rooms.set_underwater(index, bool)
 static int M_L_RoomSetUnderwater(lua_State *const L)
 {
     M_ROOM_SETTER(L);
     room->flags.underwater = lua_toboolean(L, 2);
+    return 1;
+}
+
+// trxc.rooms.set_wind(index, bool)
+static int M_L_RoomSetWind(lua_State *const L)
+{
+    M_ROOM_SETTER(L);
+    room->flags.wind = lua_toboolean(L, 2);
     return 1;
 }
 
@@ -64,8 +80,12 @@ void LUA_CreateRooms(lua_State *const L)
     lua_setfield(L, -2, "get");
     lua_pushcfunction(L, M_L_RoomGetUnderwater);
     lua_setfield(L, -2, "get_underwater");
+    lua_pushcfunction(L, M_L_RoomGetWind);
+    lua_setfield(L, -2, "get_wind");
     lua_pushcfunction(L, M_L_RoomSetUnderwater);
     lua_setfield(L, -2, "set_underwater");
+    lua_pushcfunction(L, M_L_RoomSetWind);
+    lua_setfield(L, -2, "set_wind");
     lua_setfield(L, -2, "rooms");
     lua_pop(L, 1);
 }

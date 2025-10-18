@@ -14,9 +14,11 @@ Module for inspecting all rooms in the current level.
 
     Properties:
     - **`underwater`**: Whether the room is underwater or not.
+    - **`wind`**: Whether the room has breeze enabled or not. (Requires the player to have breeze enabled in the game settings).
 
     Writable properties:
     - `underwater`
+    - `wind`
 
 ### Functions
 

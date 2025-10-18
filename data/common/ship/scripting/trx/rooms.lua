@@ -3,10 +3,12 @@ local raw = trxc.rooms
 -- Room proxy metatable
 local getters = {
   underwater = raw.get_underwater,
+  wind = raw.get_wind,
 }
 
 local setters = {
   underwater = raw.set_underwater,
+  wind = raw.set_wind,
 }
 
 local Room = {}
