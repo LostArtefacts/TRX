@@ -16,6 +16,8 @@ Module for controlling all moveables behavior.
 
     - **`pos`**: A table with fields `x`, `y`, `z` representing position.
     - **`rot`**: A table with fields `x`, `y`, `z` representing rotation.
+    - **`anim`**: Current animation number (0-indexed).
+    - **`frame`**: Current frame number (0-indexed).
     - **`room_num`**: room number.
     - **`room`**: [`trx.rooms.Room`] object for the room containing this item.
     - **`status`**: Integer representing the item's status.
@@ -27,6 +29,8 @@ Module for controlling all moveables behavior.
     Writable properties:
     - `pos` (updating this also updates `room` and `room_num`)
     - `rot`
+    - `anim`
+    - `frame`
     - `hit_points` (updating this also may increase `max_hit_points`)
     - `max_hit_points`
     - `name` (string identifier; setting duplicates raises an error)

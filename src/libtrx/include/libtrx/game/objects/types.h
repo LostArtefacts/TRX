@@ -74,6 +74,7 @@ typedef struct OBJECT {
         const ITEM *item, int32_t frame_a, int32_t frame_b);
 
     int16_t anim_idx;
+    int16_t anim_count;
     int16_t hit_points;
     int16_t pivot_length;
     int16_t radius;
