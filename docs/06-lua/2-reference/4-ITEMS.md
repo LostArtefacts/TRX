@@ -13,7 +13,6 @@ Module for controlling all moveables behavior.
     Represents an item, also known as a moveable.
 
     Properties:
-
     - **`pos`**: A table with fields `x`, `y`, `z` representing position.
     - **`rot`**: A table with fields `x`, `y`, `z` representing rotation.
     - **`anim`**: Current animation number (0-indexed).

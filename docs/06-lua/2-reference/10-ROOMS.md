@@ -13,8 +13,10 @@ Module for inspecting all rooms in the current level.
     Represents a room.
 
     Properties:
+    - **`underwater`**: Whether the room is underwater or not.
 
-    - **`flags`**: Integer bitflags for the room.
+    Writable properties:
+    - `underwater`
 
 ### Functions
 

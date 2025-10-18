@@ -2,7 +2,11 @@ local raw = trxc.rooms
 
 -- Room proxy metatable
 local getters = {
-  flags = raw.get_flags,
+  underwater = raw.get_underwater,
+}
+
+local setters = {
+  underwater = raw.set_underwater,
 }
 
 local Room = {}
@@ -10,6 +14,14 @@ local Room = {}
 Room.__index = function(self, key)
   local getter = getters[key]
   return getter and getter(self.idx) or nil
+end
+Room.__newindex = function(self, key, value)
+  local setter = setters[key]
+  if setter then
+    setter(self.idx, value)
+    return
+  end
+  error("Cannot set field '" .. key .. "' on trx.items.Room")
 end
 
 -- rooms metatable - functions

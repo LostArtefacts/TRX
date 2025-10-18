@@ -70,7 +70,7 @@ static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
     Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
     const ROOM *const room = Room_Get(room_num);
     const SOUND_PLAY_MODE mode =
-        (room->flags & RF_UNDERWATER) != 0 ? SPM_UNDERWATER : SPM_NORMAL;
+        room->flags.underwater ? SPM_UNDERWATER : SPM_NORMAL;
     Sound_Effect(SFX_LARA_FLARE_IGNITE, &flare_pos, mode);
 }
 

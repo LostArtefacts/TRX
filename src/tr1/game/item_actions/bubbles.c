@@ -14,7 +14,7 @@ void ItemAction_Bubbles(ITEM *const item)
 
     // XXX: until we get RoboLara, it makes sense for her to breathe underwater
     if (lara->water_status == LWS_CHEAT
-        && !(Room_Get(lara_item->room_num)->flags & RF_UNDERWATER)) {
+        && !Room_Get(lara_item->room_num)->flags.underwater) {
         return;
     }
 

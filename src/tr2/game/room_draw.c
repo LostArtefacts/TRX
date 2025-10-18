@@ -53,12 +53,12 @@ void Room_GetBounds(void)
         if (!(room->bound_active & 1)) {
             Room_MarkToBeDrawn(room_num);
             room->bound_active |= 1;
-            if (room->flags & RF_OUTSIDE) {
-                m_Outside = RF_OUTSIDE;
+            if (room->flags.outside) {
+                m_Outside = 1;
             }
         }
 
-        if (!(room->flags & RF_INSIDE) || (room->flags & RF_OUTSIDE)) {
+        if (!room->flags.inside || room->flags.outside) {
             if (room->bound_left < m_OutsideLeft) {
                 m_OutsideLeft = room->bound_left;
             }
@@ -245,7 +245,7 @@ void Room_SetBounds(
 void Room_DrawSingleRoomGeometry(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
-    if ((room->flags & RF_UNDERWATER) != 0) {
+    if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
     } else {
         Output_SetupAboveWater(g_Camera.underwater);
@@ -271,7 +271,7 @@ void Room_DrawSingleRoomObjects(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
 
-    if ((room->flags & RF_UNDERWATER) != 0) {
+    if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
     } else {
         Output_SetupAboveWater(g_Camera.underwater);
@@ -384,7 +384,7 @@ void Room_DrawAllRooms(const int16_t current_room)
     m_BoundEnd = 1;
 
     Room_DrawReset();
-    m_Outside = room->flags & RF_OUTSIDE;
+    m_Outside = room->flags.outside;
 
     if (m_Outside) {
         m_OutsideLeft = Viewport_GetMinX(VIEWPORT_GAME);
@@ -414,7 +414,7 @@ void Room_DrawAllRooms(const int16_t current_room)
     const ITEM *const lara_item = Lara_GetItem();
     if (Object_Get(O_LARA)->loaded && !(lara_item->flags & IF_ONE_SHOT)) {
         const ROOM *const lara_room = Room_Get(lara_item->room_num);
-        if ((lara_room->flags & RF_UNDERWATER) != 0) {
+        if (lara_room->flags.underwater) {
             Output_SetupBelowWater(g_Camera.underwater);
         } else {
             Output_SetupAboveWater(g_Camera.underwater);

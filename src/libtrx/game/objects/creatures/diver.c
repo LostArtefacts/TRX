@@ -43,10 +43,10 @@ static int32_t M_GetWaterSurface(
     const ROOM *room = Room_Get(room_num);
     const SECTOR *sector = Room_GetWorldSector(room, x, z);
 
-    if ((room->flags & RF_UNDERWATER)) {
+    if (room->flags.underwater) {
         while (sector->portal_room.sky != NO_ROOM) {
             room = Room_Get(sector->portal_room.sky);
-            if (!(room->flags & RF_UNDERWATER)) {
+            if (!room->flags.underwater) {
                 return sector->ceiling.height;
             }
             sector = Room_GetWorldSector(room, x, z);
@@ -54,7 +54,7 @@ static int32_t M_GetWaterSurface(
     } else {
         while (sector->portal_room.pit != NO_ROOM) {
             room = Room_Get(sector->portal_room.pit);
-            if ((room->flags & RF_UNDERWATER)) {
+            if (room->flags.underwater) {
                 return sector->floor.height;
             }
             sector = Room_GetWorldSector(room, x, z);

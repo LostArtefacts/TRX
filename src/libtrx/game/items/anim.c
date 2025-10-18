@@ -30,7 +30,7 @@ static bool M_ShouldPlaySFXAlways(
         item_underwater ? -M_SFX_SURF_DISTANCE : +M_SFX_SURF_DISTANCE;
     Room_GetSector(item->pos.x, item->pos.y + dist, item->pos.z, &room_num);
     const ROOM *const nearby_room = Room_Get(room_num);
-    const bool near_underwater = (nearby_room->flags & RF_UNDERWATER) != 0;
+    const bool near_underwater = nearby_room->flags.underwater;
     return item_underwater != near_underwater;
 }
 
@@ -299,8 +299,8 @@ void Item_PlayAnimSFX(
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const bool item_underwater = item->room_num != NO_ROOM
-        && (Room_Get(item->room_num)->flags & RF_UNDERWATER) != 0;
+    const bool item_underwater =
+        item->room_num != NO_ROOM && Room_Get(item->room_num)->flags.underwater;
     const ANIM_COMMAND_ENVIRONMENT mode = data->environment;
 
     if (mode != ACE_ALL && item->room_num != NO_ROOM) {

@@ -151,7 +151,7 @@ static void M_MarkWaterEdgeVertices(void)
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         const int32_t y_test =
-            (room->flags & RF_UNDERWATER) ? room->max_ceiling : room->min_floor;
+            room->flags.underwater ? room->max_ceiling : room->min_floor;
         for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
             ROOM_VERTEX *const vertex = &room->mesh.vertices[j];
             if (vertex->pos.y == y_test) {

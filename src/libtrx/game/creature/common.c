@@ -901,8 +901,7 @@ bool Creature_Animate(
         // water, its effects behave still as though in a dry room.
         Room_GetSector(
             item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z, &room_num);
-        if (TR_VERSION >= 2
-            && (Room_Get(room_num)->flags & RF_UNDERWATER) != 0) {
+        if (TR_VERSION >= 2 && Room_Get(room_num)->flags.underwater) {
             item->hit_points = 0;
         }
     }

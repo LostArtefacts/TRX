@@ -204,7 +204,13 @@ static void M_RoomProperties(
 {
     const uint16_t flags = VFile_ReadU16(injection->fp);
     ROOM *const room = Room_Get(room_num);
-    room->flags = flags;
+    // clang-format off
+    room->flags.underwater  = (flags & 0x01) != 0;
+    room->flags.outside     = (flags & 0x08) != 0;
+    room->flags.dynamic_lit = (flags & 0x10) != 0;
+    room->flags.not_inside  = (flags & 0x20) != 0;
+    room->flags.inside      = (flags & 0x40) != 0;
+    // clang-format on
 }
 
 static void M_SectorOverwrite(

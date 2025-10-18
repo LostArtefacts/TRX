@@ -608,7 +608,15 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         }
 
         room->flipped_room = VFile_ReadS16(file);
-        room->flags = VFile_ReadU16(file);
+
+        const uint16_t flags = VFile_ReadU16(file);
+        // clang-format off
+        room->flags.underwater  = (flags & 0x01) != 0;
+        room->flags.outside     = (flags & 0x08) != 0;
+        room->flags.dynamic_lit = (flags & 0x10) != 0;
+        room->flags.not_inside  = (flags & 0x20) != 0;
+        room->flags.inside      = (flags & 0x40) != 0;
+        // clang-format on
 
         room->bound_active = 0;
         room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);

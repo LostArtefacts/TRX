@@ -32,7 +32,7 @@ static void M_Control(const int16_t item_num)
     item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
     item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
 
-    if (Room_Get(item->room_num)->flags & RF_UNDERWATER) {
+    if (Room_Get(item->room_num)->flags.underwater) {
         item->fall_speed += (5 - item->fall_speed) / 2;
         item->speed = item->speed + (5 - item->speed) / 2;
     } else {
@@ -132,7 +132,7 @@ void Flare_GenerateEffects(
     const XYZ_32 sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
     Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
-    if ((Room_Get(room_num)->flags & RF_UNDERWATER) != 0) {
+    if (Room_Get(room_num)->flags.underwater) {
         Sound_Effect(SFX_LARA_FLARE_BURN, &sound_pos, SPM_UNDERWATER);
         if (Random_GetDraw() < 0x4000) {
             Spawn_Bubble(&flare_pos, room_num);

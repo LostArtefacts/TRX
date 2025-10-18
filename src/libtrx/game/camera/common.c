@@ -895,7 +895,7 @@ void Camera_EnsureEnvironment(void)
     }
 
     const ROOM *const room = Room_Get(g_Camera.pos.room_num);
-    if ((room->flags & RF_UNDERWATER) != 0) {
+    if (room->flags.underwater) {
         M_AdjustMusicVolume(true);
         Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
         g_Camera.underwater = true;

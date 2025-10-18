@@ -14,7 +14,7 @@ void Missile_Control(const int16_t effect_num)
     EFFECT *const effect = Effect_Get(effect_num);
 
     if (effect->object_id == O_MISSILE_HARPOON
-        && !(Room_Get(effect->room_num)->flags & RF_UNDERWATER)) {
+        && !Room_Get(effect->room_num)->flags.underwater) {
         if (effect->rot.x > -0x3000) {
             effect->rot.x -= DEG_1;
         }
@@ -76,7 +76,7 @@ void Missile_Control(const int16_t effect_num)
     }
 
     if (effect->object_id == O_MISSILE_HARPOON
-        && (Room_Get(effect->room_num)->flags & RF_UNDERWATER)) {
+        && Room_Get(effect->room_num)->flags.underwater) {
         Spawn_Bubble(&effect->pos, effect->room_num);
     } else if (effect->object_id == O_MISSILE_FLAME) {
         if (!effect->counter--) {

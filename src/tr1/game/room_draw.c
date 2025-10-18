@@ -260,7 +260,7 @@ void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
 void Room_DrawSingleRoom(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
-    if (room->flags & RF_UNDERWATER) {
+    if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
     } else {
         Output_SetupAboveWater(g_Camera.underwater);

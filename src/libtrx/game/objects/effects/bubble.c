@@ -16,7 +16,7 @@ static void M_Control(const int16_t effect_num)
 
     int16_t room_num = effect->room_num;
     const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
-    if (sector == nullptr || (Room_Get(room_num)->flags & RF_UNDERWATER) == 0) {
+    if (sector == nullptr || !Room_Get(room_num)->flags.underwater) {
         Effect_Kill(effect_num);
         return;
     }
