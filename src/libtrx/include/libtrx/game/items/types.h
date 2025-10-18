@@ -54,8 +54,8 @@ typedef struct {
     bool hit_status;
     bool collidable;
     bool looked_at;
-#if TR_VERSION == 2
     bool dynamic_light;
+#if TR_VERSION == 2
     bool killed;
 #endif
 

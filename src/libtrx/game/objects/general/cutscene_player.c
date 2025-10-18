@@ -1,9 +1,38 @@
+#include "game/camera.h"
+#include "game/collision.h"
 #include "game/cutscene.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
+#include "game/output.h"
+#include "game/rooms.h"
+#include "version.h"
 
-#include <libtrx/game/collision.h>
+static void M_InitialiseTR1(const int16_t item_num)
+{
+    Item_AddActive(item_num);
 
-static void M_Initialise(const int16_t item_num)
+    ITEM *const item = Item_Get(item_num);
+    if (item->object_id == O_PLAYER_1) {
+        g_Camera.pos.room_num = item->room_num;
+        CINE_DATA *const cine_data = Camera_GetCineData();
+        cine_data->position.pos = item->pos;
+        cine_data->position.rot.y = 0;
+    }
+    item->rot.y = 0;
+}
+
+static void M_ControlTR1(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->status = IS_ACTIVE;
+    if (item->object_id != O_PLAYER_4) {
+        CINE_DATA *const cine_data = Camera_GetCineData();
+        item->rot.y = cine_data->position.rot.y;
+        item->pos = cine_data->position.pos;
+    }
+    Item_Animate(item);
+}
+
+static void M_InitialiseTR2(const int16_t item_num)
 {
     Item_AddActive(item_num);
     ITEM *const item = Item_Get(item_num);
@@ -11,7 +40,7 @@ static void M_Initialise(const int16_t item_num)
     item->dynamic_light = false;
 }
 
-static void M_Control(const int16_t item_num)
+static void M_ControlTR2(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->status = IS_ACTIVE;
@@ -42,8 +71,8 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
+    obj->initialise_func = g_TRVersion == 1 ? M_InitialiseTR1 : M_InitialiseTR2;
+    obj->control_func = g_TRVersion == 1 ? M_ControlTR1 : M_ControlTR2;
     obj->hit_points = 1;
 }
 
