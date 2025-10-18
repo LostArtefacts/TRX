@@ -4,6 +4,8 @@ local raw = trxc.items
 local getters = {
   pos = raw.get_pos,
   rot = raw.get_rot,
+  anim = raw.get_anim,
+  frame = raw.get_frame,
   room_num = raw.get_room,
   room = function(idx)
     return trx.rooms[raw.get_room(idx)]
@@ -18,6 +20,8 @@ local getters = {
 local setters = {
   pos = raw.set_pos,
   rot = raw.set_rot,
+  anim = raw.set_anim,
+  frame = raw.set_frame,
   hit_points = raw.set_hit_points,
   max_hit_points = raw.set_max_hit_points,
   name = raw.set_name,

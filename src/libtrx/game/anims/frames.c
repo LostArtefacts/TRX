@@ -172,6 +172,7 @@ void Anim_LoadFrames(
         const bool obj_changed = next_obj != nullptr;
         if (obj_changed) {
             cur_obj = next_obj;
+            cur_obj->anim_count = 0;
         }
 
         if (cur_obj == nullptr) {
@@ -179,6 +180,7 @@ void Anim_LoadFrames(
         }
 
         ANIM *const anim = Anim_GetAnim(i);
+        cur_obj->anim_count++;
         const int32_t frame_count = M_GetAnimFrameCount(loader, i, data_length);
         const int16_t *data_ptr = &data[anim->frame_ofs / sizeof(int16_t)];
         for (int32_t j = 0; j < frame_count; j++) {
