@@ -134,3 +134,8 @@ void Cutscene_Draw(void)
 {
     Game_Draw(true);
 }
+
+CAMERA_INFO *Cutscene_GetCamera(void)
+{
+    return nullptr;
+}

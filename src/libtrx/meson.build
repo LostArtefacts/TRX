@@ -331,6 +331,7 @@ sources = [
   'game/objects/general/clock_chimes.c',
   'game/objects/general/cog.c',
   'game/objects/general/copter.c',
+  'game/objects/general/cutscene_player.c',
   'game/objects/general/detonator_box.c',
   'game/objects/general/ding_dong.c',
   'game/objects/general/door.c',
