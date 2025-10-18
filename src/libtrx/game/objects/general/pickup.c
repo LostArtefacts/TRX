@@ -131,9 +131,13 @@ static void M_Control(int16_t item_num)
         return;
     }
 
+    if (!g_Config.gameplay.enable_pickup_aids || item->room_num == NO_ROOM) {
+        return;
+    }
+
     const ITEM *const lara = Lara_GetItem();
-    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
-        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
+    if (item->fall_speed != 0 || lara == nullptr
+        || !Object_Get(O_PICKUP_AID)->loaded) {
         return;
     }
 
