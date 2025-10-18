@@ -9,14 +9,6 @@ typedef enum {
 } HEIGHT_TYPE;
 
 typedef enum {
-    RF_UNDERWATER = 0x01,
-    RF_OUTSIDE = 0x08,
-    RF_DYNAMIC_LIT = 0x10,
-    RF_NOT_INSIDE = 0x20,
-    RF_INSIDE = 0x40,
-} ROOM_FLAG;
-
-typedef enum {
     RLM_NORMAL = 0,
     RLM_FLICKER = 1,
     RLM_GLOW = 2,

@@ -225,12 +225,12 @@ void Output_LightRoom(ROOM *const room)
 {
     if (room->light_mode != RLM_NORMAL) {
         Output_LightRoomVertices(room);
-    } else if (room->flags & RF_DYNAMIC_LIT) {
+    } else if (room->flags.dynamic_lit) {
         for (int32_t i = 0; i < room->mesh.num_vertices; i++) {
             ROOM_VERTEX *const vtx = &room->mesh.vertices[i];
             vtx->light_adder = vtx->light_base;
         }
-        room->flags &= ~RF_DYNAMIC_LIT;
+        room->flags.dynamic_lit = false;
     }
 
     const int32_t x_min = WALL_L;
@@ -249,7 +249,7 @@ void Output_LightRoom(ROOM *const room)
             continue;
         }
 
-        room->flags |= RF_DYNAMIC_LIT;
+        room->flags.dynamic_lit = true;
 
         for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
             ROOM_VERTEX *const v = &room->mesh.vertices[j];

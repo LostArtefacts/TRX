@@ -482,10 +482,13 @@ bool Sound_Effect_Direct(
         return false;
     }
 
-    if (flags != SPM_ALWAYS
-        && ((flags & SPM_UNDERWATER)
-            != (Room_Get(g_Camera.pos.room_num)->flags & RF_UNDERWATER))) {
-        return false;
+    if (flags != SPM_ALWAYS) {
+        const bool play_underwater = (flags & SPM_UNDERWATER) != 0;
+        const bool room_submerged =
+            Room_Get(g_Camera.pos.room_num)->flags.underwater;
+        if (play_underwater != room_submerged) {
+            return false;
+        }
     }
 
     const SAMPLE_INFO *const sample = Sound_GetSample(sample_id);

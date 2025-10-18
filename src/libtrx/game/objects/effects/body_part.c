@@ -20,8 +20,7 @@ static void M_Control(const int16_t effect_num)
 
     const ROOM *const current_room = Room_Get(effect->room_num);
     const ROOM *const next_room = Room_Get(room_num);
-    if ((current_room->flags & RF_UNDERWATER) == 0
-        && (next_room->flags & RF_UNDERWATER) != 0) {
+    if (!current_room->flags.underwater && next_room->flags.underwater) {
         const int16_t effect_num = Effect_Create(effect->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const splash_fx = Effect_Get(effect_num);

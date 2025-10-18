@@ -21,7 +21,7 @@ static void M_Bubbles(ITEM *const item)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
     if (lara->water_status == LWS_CHEAT
-        && !(Room_Get(lara_item->room_num)->flags & RF_UNDERWATER)) {
+        && !Room_Get(lara_item->room_num)->flags.underwater) {
         return;
     }
 

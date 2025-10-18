@@ -215,7 +215,7 @@ static void M_UpdateEnvironment(void)
 #endif
 
     const ROOM *const room = Room_Get(item->room_num);
-    const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
+    const bool room_submerged = room->flags.underwater;
     const int32_t water_depth = Lara_GetWaterDepth(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
     const int32_t water_height = Room_GetWaterHeight(
@@ -727,7 +727,7 @@ void Lara_Control_Initialise(
         Lara_Animate(lara_item);
         lara_info->extra_anim = true;
         Camera_InvokeCinematic(lara_item, 0, 0);
-    } else if ((Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) != 0) {
+    } else if (Room_Get(lara_item->room_num)->flags.underwater) {
         lara_info->water_status = LWS_UNDERWATER;
         lara_item->fall_speed = 0;
         lara_item->goal_anim_state = LS(LS_TREAD);

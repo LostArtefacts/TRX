@@ -10,7 +10,7 @@
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    if (Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) {
+    if (Room_Get(lara_item->room_num)->flags.underwater) {
         return;
     }
 

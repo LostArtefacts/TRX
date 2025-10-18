@@ -19,9 +19,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     if (String_Equivalent(ctx->prefix, "flood")) {
-        Room_Get(room_num)->flags |= RF_UNDERWATER;
+        Room_Get(room_num)->flags.underwater = true;
     } else if (String_Equivalent(ctx->prefix, "drain")) {
-        Room_Get(room_num)->flags &= ~RF_UNDERWATER;
+        Room_Get(room_num)->flags.underwater = false;
     } else {
         return CR_UNAVAILABLE;
     }

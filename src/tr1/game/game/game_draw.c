@@ -22,7 +22,7 @@ void Game_Draw(bool draw_overlay)
         Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
 
         ITEM *const lara_item = Lara_GetItem();
-        if (Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) {
+        if (Room_Get(lara_item->room_num)->flags.underwater) {
             Output_SetupBelowWater(g_Camera.underwater);
         } else {
             Output_SetupAboveWater(g_Camera.underwater);

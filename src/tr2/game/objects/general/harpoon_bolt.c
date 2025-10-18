@@ -12,7 +12,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const XYZ_32 old_pos = item->pos;
 
-    if (!(Room_Get(item->room_num)->flags & RF_UNDERWATER)) {
+    if (!Room_Get(item->room_num)->flags.underwater) {
         item->fall_speed += GRAVITY / 2;
     }
 
@@ -101,7 +101,7 @@ static void M_Control(const int16_t item_num)
 
     if (hit) {
         Item_Kill(item_num);
-    } else if (Room_Get(item->room_num)->flags & RF_UNDERWATER) {
+    } else if (Room_Get(item->room_num)->flags.underwater) {
         Spawn_Bubble(&item->pos, item->room_num);
     }
 }
