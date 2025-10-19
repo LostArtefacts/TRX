@@ -25,6 +25,7 @@ local setters = {
   hit_points = raw.set_hit_points,
   max_hit_points = raw.set_max_hit_points,
   name = raw.set_name,
+  object_id = raw.set_object_id,
 }
 
 local Item = {}

@@ -9,10 +9,7 @@ X_UI_CFG_BOOL(gameplay.enable_loading_screens,     SETTING_ENABLE_LOADING_SCREEN
 #endif
 
 X_UI_CFG_BOOL(gameplay.enable_game_modes,          SETTING_ENABLE_GAME_MODES)
-
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_save_crystals,       SETTING_ENABLE_SAVE_CRYSTALS)
-#endif
 
 X_UI_CFG_BOOL(gameplay.enable_auto_item_selection, SETTING_ENABLE_AUTO_ITEM_SELECTION)
 X_UI_CFG_BOOL(gameplay.enable_item_examining,      SETTING_ENABLE_ITEM_EXAMINING)

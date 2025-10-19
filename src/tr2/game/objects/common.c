@@ -204,8 +204,3 @@ BOUNDS_16 Object_GetBoundingBox(
     Matrix_Pop();
     return new_bounds;
 }
-
-void Object_SetReflective(const OBJECT_ID obj_id, const bool enabled)
-{
-    ASSERT_FAIL();
-}

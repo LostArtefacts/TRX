@@ -91,9 +91,7 @@ typedef struct {
 #endif
         bool enable_round_shadow;
         bool enable_skybox;
-#if TR_VERSION == 1
         bool enable_ps1_crystals;
-#endif
 
         bool fix_item_rots;
         bool fix_animated_sprites;

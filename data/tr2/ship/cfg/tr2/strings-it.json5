@@ -384,6 +384,9 @@
         "grenade_launcher_ammo": {
             "name": "Granate",
         },
+        "save_crystal": {
+            "name": "Cristallo di Salvataggio",
+        },
         "key_1": {
             "name": "Chiave 1",
         },

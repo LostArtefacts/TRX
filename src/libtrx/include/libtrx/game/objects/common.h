@@ -63,7 +63,8 @@ int16_t Object_FindReceptacle(OBJECT_ID obj_id);
 // Given a receptacle object ID, find a matching key/puzzle object ID.
 OBJECT_ID Object_FindReceptacleKey(const OBJECT_ID receptacle_obj_id);
 
-extern void Object_SetReflective(OBJECT_ID obj_id, bool enabled);
+void Object_SetReflective(OBJECT_ID obj_id, bool enabled);
+void Object_SetMeshReflective(OBJECT_ID obj_id, int32_t mesh_idx, bool enabled);
 
 bool Object_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
 

@@ -158,6 +158,11 @@ static void M_DeterminePages(void)
         }
         break;
 
+    case INV_SAVE_CRYSTAL_MODE:
+        m_State.mode = M_MODE_BROWSE;
+        M_SetPage(1, M_ROLE_SAVE_GAME, true);
+        break;
+
     case INV_SAVE_MODE:
         m_State.mode = M_MODE_BROWSE;
         M_SetPage(1, M_ROLE_SAVE_GAME, true);
@@ -248,8 +253,8 @@ static void M_ShowSaves(INVENTORY_ITEM *const inv_item)
         break;
 
     case UI_SAVE_SLOT_DIALOG_CANCEL:
-        if (g_Inv_Mode != INV_SAVE_MODE && g_Inv_Mode != INV_LOAD_MODE
-            && g_Inv_Mode != INV_DEATH_MODE) {
+        if (g_Inv_Mode != INV_SAVE_MODE && g_Inv_Mode != INV_SAVE_CRYSTAL_MODE
+            && g_Inv_Mode != INV_LOAD_MODE && g_Inv_Mode != INV_DEATH_MODE) {
             M_Close(inv_item);
         }
         break;

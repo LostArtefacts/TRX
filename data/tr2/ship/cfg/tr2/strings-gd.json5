@@ -384,6 +384,9 @@
         "grenade_launcher_ammo": {
             "name": "Grenèadan",
         },
+        "save_crystal": {
+            "name": "Criostal Geama Sàbhalaidh",
+        },
         "key_1": {
             "name": "Iuchair 1",
         },

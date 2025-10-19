@@ -483,6 +483,9 @@
                 "Doberman",
             ]
         },
+        "save_crystal": {
+            "name": "Kryształ do zapisu",
+        },
         "cult_1": {
             "name": "Zamaskowany zbir 1",
         },
@@ -1047,7 +1050,7 @@
             "name": "Dzwonek do drzwi",
         },
         "lara_alarm": {
-            "name": "Dzwon alarmowy",
+            "name": "Alarm",
         },
         "mini_copter": {
             "name": "Helikopter 2",
