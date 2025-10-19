@@ -175,6 +175,13 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     // TODO: Make this function not have any side effects.
     // Consider adding new GF_ constants, but research other solutions first.
 
+    if (m_StartLevel != -1) {
+        return (GF_COMMAND) {
+            .action = GF_SELECT_GAME,
+            .param = m_StartLevel,
+        };
+    }
+
     if (Shell_IsExiting()) {
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     } else if (GF_GetOverrideCommand().action != GF_NOOP) {
@@ -382,8 +389,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     }
 
-    if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_LOAD_MODE
-         || ring->mode == INV_DEATH_MODE)
+    if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_SAVE_CRYSTAL_MODE
+         || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
         && !ring->is_pass_open) {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) { .menu_confirm = 1 };
@@ -451,8 +458,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         const bool examine = g_InputDB.look && InvRing_CanExamine();
         if (g_InputDB.menu_confirm || examine) {
-            if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_LOAD_MODE
-                 || ring->mode == INV_DEATH_MODE)
+            if ((ring->mode == INV_SAVE_MODE
+                 || ring->mode == INV_SAVE_CRYSTAL_MODE
+                 || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
                 && !ring->is_pass_open) {
                 ring->is_pass_open = true;
             }
@@ -680,8 +688,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
-                if (ring->mode == INV_LOAD_MODE
-                    || ring->mode == INV_SAVE_MODE) {
+                if (ring->mode == INV_LOAD_MODE || ring->mode == INV_SAVE_MODE
+                    || ring->mode == INV_SAVE_CRYSTAL_MODE) {
                     InvRing_MotionSetup(
                         ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                     g_Input = (INPUT_STATE) {};
@@ -870,6 +878,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     switch (mode) {
     case INV_TITLE_MODE:
     case INV_SAVE_MODE:
+    case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
     case INV_DEATH_MODE:
         InvRing_InitRing(
@@ -943,8 +952,14 @@ void InvRing_Close(INV_RING *const ring)
     }
     Output_UnloadBackground();
 
-    // enable buffering
+// enable buffering
+#if TR_VERSION == 1
+    if (g_Config.input.enable_buffering) {
+        g_OldInputDB = (INPUT_STATE) {};
+    }
+#else
     g_OldInputDB = (INPUT_STATE) {};
+#endif
 
     m_InvChosen = NO_OBJECT;
     Viewport_AlterFOV(ring->old_fov);
@@ -969,5 +984,9 @@ bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
 
 bool InvRing_IsOptionLockedOut(void)
 {
+#if TR_VERSION >= 2
     return g_GameFlow.lockout_option_ring;
+#else
+    return false;
+#endif
 }

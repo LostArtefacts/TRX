@@ -200,6 +200,7 @@ X_OBJ_NAME_DEFINE(O_PLAYER_7,              "player_7",              X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PLAYER_8,              "player_8",              X_OBJ_NAMES("Cutscene Actor 8"))
 X_OBJ_NAME_DEFINE(O_PLAYER_9,              "player_9",              X_OBJ_NAMES("Cutscene Actor 9"))
 X_OBJ_NAME_DEFINE(O_PLAYER_10,             "player_10",             X_OBJ_NAMES("Cutscene Actor 10"))
+X_OBJ_NAME_DEFINE(O_SAVEGAME_ITEM,         "save_crystal",          X_OBJ_NAMES("Savegame Crystal"))
 X_OBJ_NAME_DEFINE(O_KEY_HOLE_1,            "key_hole_1",            X_OBJ_NAMES("Keyhole 1"))
 X_OBJ_NAME_DEFINE(O_KEY_HOLE_2,            "key_hole_2",            X_OBJ_NAMES("Keyhole 2"))
 X_OBJ_NAME_DEFINE(O_KEY_HOLE_3,            "key_hole_3",            X_OBJ_NAMES("Keyhole 3"))

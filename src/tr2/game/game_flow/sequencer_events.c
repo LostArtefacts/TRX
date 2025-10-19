@@ -8,6 +8,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/lua.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
@@ -75,6 +76,11 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     Lua_FireEvent(LUA_EVENT_LEVEL_START, level->num);
+
+    g_Passport.ask_for_save = g_Config.gameplay.enable_save_crystals
+        && seq_ctx == GFSC_NORMAL
+        && GF_GetLevelTableType(level->type) == GFLT_MAIN
+        && level != GF_GetFirstLevel() && level != GF_GetGymLevel();
 
     ASSERT(GF_GetCurrentLevel() == level);
     if (level->type == GFL_DEMO) {

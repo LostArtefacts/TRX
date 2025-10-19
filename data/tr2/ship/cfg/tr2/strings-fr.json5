@@ -1016,6 +1016,9 @@
         "twinkle": {
             "name": "\\{review}Paillettes",
         },
+        "save_crystal": {
+            "name": "Cristal de Sauvegarde",
+        },
         "gun_flash": {
             "name": "\\{review}Éclair de pistolet",
         },

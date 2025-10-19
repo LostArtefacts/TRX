@@ -201,5 +201,8 @@
         "exposurebar_location",
         "exposurebar_show_mode",
         "change_pierre_spawn",
+        "enable_save_crystals",
+        "enable_ps1_crystals",
+        "enable_reflections",
     ],
 }

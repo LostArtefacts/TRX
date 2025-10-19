@@ -881,6 +881,9 @@
         "player_10": {
             "name": "Cutscene Actor 10",
         },
+        "save_crystal": {
+            "name": "Savegame Crystal",
+        },
         "key_hole_1": {
             "name": "Keyhole 1",
         },

@@ -47,6 +47,7 @@
         "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
         "data/injections/pickup_aid.bin",
+        "data/injections/purple_crystal.bin",
         "data/injections/winston_model.bin",
     ],
 
@@ -647,5 +648,8 @@
         "exposurebar_location",
         "exposurebar_show_mode",
         "change_pierre_spawn",
+        "enable_save_crystals",
+        "enable_ps1_crystals",
+        "enable_reflections",
     ],
 }

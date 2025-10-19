@@ -869,6 +869,9 @@
         "player_4": {
             "name": "Zwischensequenz-Schauspieler 4",
         },
+        "save_crystal": {
+            "name": "Speicherkristall",
+        },
         "player_5": {
             "name": "Zwischensequenz-Schauspieler 5",
         },

@@ -2,10 +2,8 @@
 
 #include "game/ui/dialogs/settings.h"
 
-#if TR_VERSION == 1
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
     const UI_SETTINGS_OPTION *option);
-#endif
 
 bool UI_Settings_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *option);

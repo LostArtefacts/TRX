@@ -30,6 +30,7 @@
         "data/injections/pda_model.bin",
         "data/injections/pickup_aid.bin",
         "data/injections/winston_model.bin",
+        "data/injections/purple_crystal.bin",
     ],
 
     "levels": [

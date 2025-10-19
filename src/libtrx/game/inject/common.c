@@ -41,6 +41,9 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
         return g_Config.visuals.fix_texture_issues;
     case IFT_ALTER_ANIM_SPRITE:
         return g_Config.visuals.fix_animated_sprites == (g_TRVersion == 2);
+    case IFT_PS1_CRYSTAL:
+        return g_Config.gameplay.enable_save_crystals
+            && g_Config.visuals.enable_ps1_crystals;
 #if TR_VERSION == 1
     case IFT_SKYBOX:
         return true;
@@ -50,9 +53,6 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
         return g_Config.audio.enable_ps_uzi_sfx;
     case IFT_PS1_ENEMY:
         return g_Config.gameplay.restore_ps1_enemies;
-    case IFT_PS1_CRYSTAL:
-        return g_Config.gameplay.enable_save_crystals
-            && g_Config.visuals.enable_ps1_crystals;
 #elif TR_VERSION == 2
     case IFT_BAREFOOT_SFX:
         return g_Config.audio.enable_barefoot_sfx;

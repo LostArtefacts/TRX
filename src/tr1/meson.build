@@ -131,7 +131,6 @@ sources = [
   'game/lara/common.c',
   'game/objects/common.c',
   'game/objects/general/earthquake.c',
-  'game/objects/general/save_crystal.c',
   'game/objects/setup.c',
   'game/objects/traps/damocles_sword.c',
   'game/objects/traps/lightning_emitter.c',

@@ -347,6 +347,7 @@ sources = [
   'game/objects/general/moving_bar.c',
   'game/objects/general/pickup.c',
   'game/objects/general/puzzle_hole.c',
+  'game/objects/general/save_crystal.c',
   'game/objects/general/scion1.c',
   'game/objects/general/scion3.c',
   'game/objects/general/scion4.c',

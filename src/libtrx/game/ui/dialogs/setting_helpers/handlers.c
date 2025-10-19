@@ -4,13 +4,11 @@
 #include "game/music.h"
 #include "game/sound.h"
 
-#if TR_VERSION == 1
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.gameplay.enable_save_crystals;
 }
-#endif
 
 bool UI_Settings_EnableExitFadeEffects_IsAvailable(
     const UI_SETTINGS_OPTION *const option)

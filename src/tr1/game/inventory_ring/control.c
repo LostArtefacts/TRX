@@ -918,9 +918,14 @@ void InvRing_Close(INV_RING *const ring)
     }
     Output_UnloadBackground();
 
+// enable buffering
+#if TR_VERSION == 1
     if (g_Config.input.enable_buffering) {
         g_OldInputDB = (INPUT_STATE) {};
     }
+#else
+    g_OldInputDB = (INPUT_STATE) {};
+#endif
 
     m_InvChosen = NO_OBJECT;
     Viewport_AlterFOV(ring->old_fov);
@@ -945,5 +950,9 @@ bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
 
 bool InvRing_IsOptionLockedOut(void)
 {
+#if TR_VERSION >= 2
+    return g_GameFlow.lockout_option_ring;
+#else
     return false;
+#endif
 }

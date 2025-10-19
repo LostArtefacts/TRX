@@ -1,15 +1,13 @@
 #pragma once
 
 typedef enum {
-    INV_GAME_MODE = 0,
-    INV_TITLE_MODE = 1,
-    INV_KEYS_MODE = 2,
-    INV_SAVE_MODE = 3,
-    INV_LOAD_MODE = 4,
-    INV_DEATH_MODE = 5,
-#if TR_VERSION == 1
-    INV_SAVE_CRYSTAL_MODE = 6,
-#endif
+    INV_GAME_MODE,
+    INV_TITLE_MODE,
+    INV_KEYS_MODE,
+    INV_SAVE_MODE,
+    INV_LOAD_MODE,
+    INV_DEATH_MODE,
+    INV_SAVE_CRYSTAL_MODE,
 } INVENTORY_MODE;
 
 typedef enum {

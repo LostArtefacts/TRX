@@ -20,6 +20,7 @@
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/sound.h>
@@ -50,6 +51,15 @@ void Game_End(void)
 
 GF_COMMAND Game_Control(const bool demo_mode)
 {
+    if (g_Passport.ask_for_save) {
+        // ask for a save at the start of a level for the save crystals mode
+        const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
+        g_Passport.ask_for_save = false;
+        if (gf_cmd.action != GF_NOOP) {
+            return gf_cmd;
+        }
+    }
+
     Interpolation_Remember();
     if (g_GameFlow.cheat_keys) {
         Lara_Cheat_CheckKeys();
@@ -161,6 +171,9 @@ void Game_Draw(bool draw_overlay)
         Overlay_DrawGameInfo();
     }
     SceneCompositor_Flush();
+    if (g_Config.visuals.enable_reflections) {
+        Output_Textures_UpdateEnvironmentMap();
+    }
     Game_DrawFade();
 }
 
