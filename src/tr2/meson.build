@@ -110,7 +110,6 @@ sources = [
   'game/objects/common.c',
   'game/objects/creatures/skidoo_driver.c',
   'game/objects/general/combat_end.c',
-  'game/objects/general/earthquake.c',
   'game/objects/general/final_cutscene.c',
   'game/objects/general/flare_item.c',
   'game/objects/general/harpoon_bolt.c',
