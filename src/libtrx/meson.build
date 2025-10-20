@@ -191,6 +191,7 @@ sources = [
   'game/inventory_ring/vars.c',
   'game/items/actions/common.c',
   'game/items/actions/ids.c',
+  'game/items/actions/lara.c',
   'game/items/anim.c',
   'game/items/col.c',
   'game/items/common.c',

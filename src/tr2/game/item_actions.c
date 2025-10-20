@@ -75,15 +75,6 @@ static void M_FloorShake(ITEM *const item)
     }
 }
 
-static void M_LaraNormal(ITEM *const item)
-{
-    item->current_anim_state = LS(LS_STOP);
-    item->goal_anim_state = LS(LS_STOP);
-    Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
-    g_Camera.type = CAM_CHASE;
-    Viewport_AlterFOV(-1);
-}
-
 static void M_Boiler(ITEM *const item)
 {
     Sound_Effect(SFX_BOILER, nullptr, SPM_NORMAL);
@@ -266,7 +257,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         // clang-format off
         [ITEM_ACTION_TURN_180]                     = M_Turn180,
         [ITEM_ACTION_FLOOR_SHAKE]                  = M_FloorShake,
-        [ITEM_ACTION_LARA_NORMAL]                  = M_LaraNormal,
         [ITEM_ACTION_BUBBLES]                      = M_Bubbles,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
         [ITEM_ACTION_FLOOD]                        = M_Flood,
