@@ -56,5 +56,16 @@ static void M_Flood(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
+static void M_Explosion(ITEM *const item)
+{
+    // TODO: unify
+    Sound_Effect(
+        g_TRVersion == 1 ? SFX_EXPLOSION_FX : SFX_EXPLOSION_1, nullptr,
+        SPM_NORMAL);
+    g_Camera.bounce = -75;
+    Room_SetFlipEffect(-1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
+REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
