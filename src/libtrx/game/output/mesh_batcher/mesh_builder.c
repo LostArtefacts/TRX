@@ -101,12 +101,11 @@ void MeshBuilder_AddFace(
             face.vertex_indices[i] = start + indices[i];
         }
         Vector_Add(builder->mesh->transparent_faces, &face);
-    } else {
-        for (size_t i = 0; i < idx_count; i++) {
-            Vector_Add(
-                builder->mesh->opaque_vertex_indices,
-                &(uint32_t) { start + indices[i] });
-        }
+    }
+    for (size_t i = 0; i < idx_count; i++) {
+        Vector_Add(
+            builder->mesh->all_vertex_indices,
+            &(uint32_t) { start + indices[i] });
     }
     builder->pending_vertex_count = 0;
 }

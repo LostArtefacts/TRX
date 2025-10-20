@@ -27,6 +27,7 @@ typedef enum {
     M_UNIFORM_VIEW_MATRIX,
     M_UNIFORM_VIEW_MODEL_MATRIX,
     M_UNIFORM_WIBBLE_EFFECT,
+    M_UNIFORM_ALPHA_DISCARD,
     M_UNIFORM_BILLBOARD_LOCK_MODE,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
@@ -36,6 +37,7 @@ struct OUTPUT_SHADER {
     GLint uniforms[M_UNIFORM_NUMBER_OF];
 
     bool is_wibble_effect;
+    bool is_alpha_discard_enabled;
     RGB_F tint;
 };
 
@@ -97,6 +99,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_VIEW_MATRIX] = "uMatView",
         [M_UNIFORM_VIEW_MODEL_MATRIX] = "uMatModelView",
         [M_UNIFORM_WIBBLE_EFFECT] = "uWibbleEffect",
+        [M_UNIFORM_ALPHA_DISCARD] = "uDiscardAlpha",
         [M_UNIFORM_BILLBOARD_LOCK_MODE] = "uBillboardLockMode",
     };
     for (int32_t i = 0; i < M_UNIFORM_NUMBER_OF; i++) {
@@ -190,6 +193,17 @@ void Output_Shader_UploadOrthoProjectionMatrix(
     GFX_TRACK_UNIFORM(
         glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
         GL_TRUE, &projection[0][0]);
+}
+
+void Output_Shader_UploadAlphaDiscard(
+    OUTPUT_SHADER *const shader, const bool is_enabled)
+{
+    if (is_enabled == shader->is_alpha_discard_enabled) {
+        return;
+    }
+    GFX_TRACK_UNIFORM(
+        glUniform1i, shader->uniforms[M_UNIFORM_ALPHA_DISCARD], is_enabled);
+    shader->is_alpha_discard_enabled = is_enabled;
 }
 
 void Output_Shader_UploadWibbleEffect(
