@@ -186,7 +186,6 @@ typedef struct {
     // flow commands
     struct {
         GF_COMMAND cmd_init;
-        GF_COMMAND cmd_title;
     };
 
     // global settings

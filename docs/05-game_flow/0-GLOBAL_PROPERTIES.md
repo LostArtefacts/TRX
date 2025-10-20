@@ -281,7 +281,6 @@ remains distinct for each game.
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "cmd_init":           {"action": "exit_to_title"},
-    "cmd_title":          {"action": "noop"},
 
     "cheat_keys": true,
     "load_save_disabled": false,
@@ -363,10 +362,6 @@ remains distinct for each game.
       The command to run when the game is first launched. See <a
       href="#game-flow-commands">Game flow commands</a> for full details.
     </td>
-  </tr>
-  <tr valign="top">
-    <td><code>cmd_title</code></td>
-    <td>The command to run when the main menu is to be shown.</td>
   </tr>
   <tr valign="top">
     <td><code>cheat_keys</code></td>

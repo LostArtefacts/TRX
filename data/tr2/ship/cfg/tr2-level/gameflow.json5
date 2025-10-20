@@ -6,7 +6,6 @@
     "savegame_fmt_bson": "save_tr2_custom_%02d.dat",
 
     "cmd_init":           {"action": "exit_to_title"},
-    "cmd_title":          {"action": "noop"},
 
     "cheat_keys": true,
     "load_save_disabled": false,
