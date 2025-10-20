@@ -8,6 +8,10 @@
 
 static void M_Normal(ITEM *const item)
 {
+    if (item == nullptr) {
+        return;
+    }
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->extra_anim = false;
     item->current_anim_state = LS(LS_STOP);
@@ -27,6 +31,10 @@ static void M_DrawGun(
     ITEM *const item, const LARA_MESH thigh_mesh_idx,
     const LARA_MESH hand_mesh_idx)
 {
+    if (item == nullptr) {
+        return;
+    }
+
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, thigh_mesh_idx);
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, hand_mesh_idx);
     Lara_Mesh_SwapSingle(thigh_mesh_idx, item->object_id);
