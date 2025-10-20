@@ -113,7 +113,6 @@ sources = [
   'game/inventory_ring/vars.c',
   'game/item_actions.c',
   'game/item_actions/finish_level.c',
-  'game/item_actions/flicker.c',
   'game/item_actions/flipmap.c',
   'game/item_actions/floor_shake.c',
   'game/item_actions/powerup.c',
