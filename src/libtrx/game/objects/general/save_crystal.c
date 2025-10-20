@@ -105,6 +105,11 @@ static void M_Collision(
         return;
     }
 
+    if (g_GameFlow.load_save_disabled) {
+        Lara_RefuseInteraction();
+        return;
+    }
+
     int16_t room_num = lara_item->room_num;
     const XYZ_32 pos = lara_item->pos;
     const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
