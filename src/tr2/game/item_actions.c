@@ -24,16 +24,6 @@ static void M_FlipMap(ITEM *const item)
     Room_FlipMap();
 }
 
-static void M_DynamicLightOn(ITEM *const item)
-{
-    item->dynamic_light = true;
-}
-
-static void M_DynamicLightOff(ITEM *const item)
-{
-    item->dynamic_light = false;
-}
-
 static void M_AssaultStart(ITEM *const item)
 {
     Gym_StartAssault();
@@ -64,8 +54,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         // clang-format off
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
-        [ITEM_ACTION_DYNAMIC_LIGHT_ON]             = M_DynamicLightOn,
-        [ITEM_ACTION_DYNAMIC_LIGHT_OFF]            = M_DynamicLightOff,
         [ITEM_ACTION_ASSAULT_RESET]                = M_AssaultReset,
         [ITEM_ACTION_ASSAULT_STOP]                 = M_AssaultStop,
         [ITEM_ACTION_ASSAULT_START]                = M_AssaultStart,
