@@ -1,5 +1,4 @@
 #include "game/item_actions/earthquake.h"
-#include "game/item_actions/explosion.h"
 #include "game/item_actions/finish_level.h"
 #include "game/item_actions/flicker.h"
 #include "game/item_actions/flipmap.h"
@@ -26,7 +25,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_STAIRS_TO_SLOPE] = ItemAction_Stairs2Slope,
         [ITEM_ACTION_DROP_SAND] = ItemAction_DropSand,
         [ITEM_ACTION_POWER_UP] = ItemAction_PowerUp,
-        [ITEM_ACTION_EXPLOSION] = ItemAction_Explosion,
         [ITEM_ACTION_FLIP_MAP] = ItemAction_FlipMap,
         [ITEM_ACTION_FLICKER] = ItemAction_Flicker,
     };

@@ -68,13 +68,6 @@ static void M_Chandelier(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
-static void M_Explosion(ITEM *const item)
-{
-    Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
-    g_Camera.bounce = -75;
-    Room_SetFlipEffect(-1);
-}
-
 static void M_Piston(ITEM *const item)
 {
     Sound_Effect(SFX_PULLEY_CRANE, nullptr, SPM_NORMAL);
@@ -187,7 +180,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_PISTON]                       = M_Piston,
         [ITEM_ACTION_CURTAIN]                      = M_Curtain,
         [ITEM_ACTION_SET_CHANGE]                   = M_SetChange,
-        [ITEM_ACTION_EXPLOSION]                    = M_Explosion,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_1] = M_SwapMeshesWithMeshSwap1,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_2] = M_SwapMeshesWithMeshSwap2,
