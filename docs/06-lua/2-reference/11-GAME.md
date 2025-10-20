@@ -25,9 +25,11 @@ Module for retrieving game version and level tables.
 
     Properties:
     - **`lockout_option_ring`**: Whether to disallow the player from using the option ring in-game.
+    - **`load_save_disabled`**: Whether to disable saving and loading the game.
 
     Writable properties:
     - `lockout_option_ring`
+    - `load_save_disabled`
 
 ### Functions
 
