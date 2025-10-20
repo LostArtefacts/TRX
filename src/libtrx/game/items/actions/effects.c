@@ -66,6 +66,27 @@ static void M_Explosion(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
+static void M_Earthquake(ITEM *const item)
+{
+    const int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer == 0) {
+        Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
+        g_Camera.bounce = -250;
+    } else if (flip_timer == 3) {
+        Sound_Effect(SFX_EARTHQUAKE_1, nullptr, SPM_NORMAL);
+    } else if (flip_timer == 35) {
+        Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
+    } else if (flip_timer == 20 || flip_timer == 50 || flip_timer == 70) {
+        Sound_Effect(SFX_EARTHQUAKE_2, nullptr, SPM_NORMAL);
+    }
+
+    if (flip_timer == 104) {
+        Room_SetFlipEffect(-1);
+    }
+    Room_IncrementFlipTimer(1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
+REGISTER_ITEM_ACTION(ITEM_ACTION_EARTHQUAKE, M_Earthquake)
