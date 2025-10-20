@@ -19,10 +19,6 @@
       "$ref": "#/definitions/command",
       "description": "Command to run when the game is first launched."
     },
-    "cmd_title": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when the main menu is shown."
-    },
     "cheat_keys": {
       "type": "boolean",
       "description": "Whether to enable original in-game cheat keys."
