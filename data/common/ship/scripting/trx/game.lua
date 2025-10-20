@@ -27,10 +27,12 @@ local table_map = {
 -- settings system
 local settings_getters = {
   lockout_option_ring = raw.get_lockout_option_ring,
+  load_save_disabled = raw.get_load_save_disabled,
 }
 
 local settings_setters = {
   lockout_option_ring = raw.set_lockout_option_ring,
+  load_save_disabled = raw.set_load_save_disabled,
 }
 
 local Settings = setmetatable({}, {

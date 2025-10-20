@@ -1,6 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-1.5.1...develop) - ××××-××-××
 - added LUA scripting engine
-    Supports basic events, item interactions, teleporting and more.
+    Supports basic events, item interactions, teleporting and much more.
     See [the documentation](../06-lua) for details.
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
