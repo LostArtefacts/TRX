@@ -173,29 +173,25 @@ typedef struct {
         char *savegame_fmt_bson;
     };
 
-#if TR_VERSION == 1
     // global settings
     struct {
         float demo_delay;
         char *main_menu_background_path;
+        bool enable_killer_pushblocks;
+        bool lockout_option_ring;
+#if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
-        bool enable_killer_pushblocks;
-    };
 #elif TR_VERSION == 2
-    // global settings
-    struct {
-        float demo_delay;
-        char *main_menu_background_path;
-        bool enable_killer_pushblocks;
         bool is_demo_version;
         bool play_any_level;
-        bool lockout_option_ring;
         bool cheat_keys;
         bool load_save_disabled;
         int32_t single_level;
+#endif
     };
 
+#if TR_VERSION == 2
     // music
     struct {
         MUSIC_ID secret_track;
