@@ -129,7 +129,6 @@ sources = [
   'game/item_actions/turn_180.c',
   'game/lara/common.c',
   'game/objects/common.c',
-  'game/objects/general/earthquake.c',
   'game/objects/setup.c',
   'game/option/option.c',
   'game/option/option_compass.c',
