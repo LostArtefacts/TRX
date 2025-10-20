@@ -170,6 +170,10 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             g_Config.audio.fmv_volume = g_Config.audio.music_volume;
         }
     }
+
+    // ..4.16
+    READ_FALLBACK_BOOL(
+        g_Config.audio.fix_chainblock_secret_sound, "fix_tihocan_secret_sound");
 }
 
 static void M_DumpKeyboardLayout(

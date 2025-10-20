@@ -1,13 +1,12 @@
-#include "game/item_actions/chain_block.h"
+#include "config.h"
+#include "game/items.h"
+#include "game/rooms.h"
+#include "game/sound.h"
 
-#include <libtrx/config.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
-
-void ItemAction_ChainBlock(ITEM *item)
+static void M_ChainBlock(ITEM *const item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();
-    if (g_Config.audio.fix_tihocan_secret_sound) {
+    if (g_Config.audio.fix_chainblock_secret_sound) {
         if (flip_timer == 0) {
             Sound_Effect(SFX_CHAINBLOCK_FX, nullptr, SPM_NORMAL);
             Room_SetFlipTimer(1);
@@ -25,3 +24,5 @@ void ItemAction_ChainBlock(ITEM *item)
     }
     Room_IncrementFlipTimer(1);
 }
+
+REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
