@@ -189,7 +189,6 @@ typedef struct {
         GF_COMMAND cmd_title;
         GF_COMMAND cmd_death_demo_mode;
         GF_COMMAND cmd_death_in_game;
-        GF_COMMAND cmd_demo_interrupt;
         GF_COMMAND cmd_demo_end;
     };
 
