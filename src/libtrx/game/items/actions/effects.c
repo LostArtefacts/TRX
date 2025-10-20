@@ -86,7 +86,22 @@ static void M_Earthquake(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
+static void M_Flicker(ITEM *const item)
+{
+    const int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > 125) {
+        Room_FlipMap();
+        Room_SetFlipEffect(-1);
+    } else if (
+        flip_timer == 90 || flip_timer == 92 || flip_timer == 105
+        || flip_timer == 107) {
+        Room_FlipMap();
+    }
+    Room_IncrementFlipTimer(1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EARTHQUAKE, M_Earthquake)
+REGISTER_ITEM_ACTION(ITEM_ACTION_FLICKER, M_Flicker)
