@@ -2,7 +2,6 @@
 
 #include "../game/viewport.h"
 #include "./2d/2d_renderer.h"
-#include "./3d/3d_renderer.h"
 #include "./common.h"
 #include "./renderer.h"
 
