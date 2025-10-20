@@ -5,6 +5,7 @@
 #include "game/stats.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/camera.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/gun.h>
 #include <libtrx/game/input.h>
@@ -75,10 +76,13 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
     Gun_AimWeapon(weapon, &lara->left_arm);
 
     if (lara->left_arm.lock) {
-        lara->head_rot.x = 0;
-        lara->head_rot.y = 0;
         lara->torso_rot.x = lara->left_arm.rot.x;
         lara->torso_rot.y = lara->left_arm.rot.y;
+        if (g_Config.gameplay.look_mode != LOOK_MODE_UNRESTRICTED
+            || g_Camera.type != CAM_LOOK) {
+            lara->head_rot.x = 0;
+            lara->head_rot.y = 0;
+        }
     }
 
     Gun_Rifle_Animate(weapon_type);

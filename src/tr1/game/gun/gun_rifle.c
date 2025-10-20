@@ -133,7 +133,8 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
     if (lara->left_arm.lock) {
         lara->torso_rot.y = lara->left_arm.rot.y / 2;
         lara->torso_rot.x = lara->left_arm.rot.x / 2;
-        if (g_Camera.type != CAM_LOOK) {
+        if (g_Config.gameplay.look_mode != LOOK_MODE_UNRESTRICTED
+            || g_Camera.type != CAM_LOOK) {
             lara->head_rot.x = 0;
             lara->head_rot.y = 0;
         }
