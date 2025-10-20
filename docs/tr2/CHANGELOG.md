@@ -19,6 +19,7 @@
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
 - changed the debug position UI to no longer be hidden in photo mode
+- changed the unrestricted look mode option to include Lara being able to look freely while shooting an enemy (#4090)
 - removed the "cmd_*" game flow options
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)

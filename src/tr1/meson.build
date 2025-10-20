@@ -107,7 +107,6 @@ sources = [
   'game/game_flow/sequencer_events.c',
   'game/game_flow/sequencer_misc.c',
   'game/game_string.c',
-  'game/gun/gun_pistols.c',
   'game/gun/gun_rifle.c',
   'game/inventory.c',
   'game/inventory_ring/vars.c',
