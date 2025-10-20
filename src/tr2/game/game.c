@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/room_draw.h"
@@ -150,7 +149,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Lara_Control();
     Lara_Hair_Control(false);
     Camera_Update();
-    ItemAction_RunActive();
+    Item_ActionRunActive();
     Sound_UpdateEffects();
     Overlay_Animate(1);
     Output_AnimateTextures(1);

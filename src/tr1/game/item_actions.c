@@ -1,5 +1,3 @@
-#include "game/item_actions.h"
-
 #include "game/item_actions/bubbles.h"
 #include "game/item_actions/chain_block.h"
 #include "game/item_actions/earthquake.h"
@@ -16,11 +14,12 @@
 #include "game/item_actions/stairs2slope.h"
 #include "game/item_actions/turn_180.h"
 
+#include <libtrx/game/items.h>
 #include <libtrx/game/rooms.h>
 
 typedef void (*M_FUNC)(ITEM *item);
 
-void ItemAction_Run(int16_t action_id, ITEM *item)
+void Item_ActionRun(ITEM_TRX_ACTION action_id, ITEM *item)
 {
     static M_FUNC m_Actions[] = {
         [ITEM_ACTION_TURN_180] = ItemAction_Turn180,
@@ -42,15 +41,16 @@ void ItemAction_Run(int16_t action_id, ITEM *item)
         [ITEM_ACTION_FLICKER] = ItemAction_Flicker,
     };
 
-    if (m_Actions[action_id] != nullptr) {
+    if (action_id >= 0 && action_id < ITEM_ACTION_NUMBER_OF
+        && m_Actions[action_id] != nullptr) {
         m_Actions[action_id](item);
     }
 }
 
-void ItemAction_RunActive(void)
+void Item_ActionRunActive(void)
 {
     const int32_t flip_effect = Room_GetFlipEffect();
     if (flip_effect != -1) {
-        ItemAction_Run(flip_effect, nullptr);
+        Item_ActionRunDirect(flip_effect, nullptr);
     }
 }

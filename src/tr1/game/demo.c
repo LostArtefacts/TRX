@@ -4,7 +4,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/savegame.h"
 #include "game/shell.h"
@@ -265,7 +264,7 @@ GF_COMMAND Demo_Control(void)
     Lara_Hair_Control(false);
 
     Camera_Update();
-    ItemAction_RunActive();
+    Item_ActionRunActive();
     Sound_UpdateEffects();
     Output_AnimateTextures(1);
 
