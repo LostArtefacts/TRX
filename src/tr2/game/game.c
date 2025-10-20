@@ -101,9 +101,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
         if (Game_IsInGym()) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
-        if (g_GameFlow.cmd_death_in_game.action != GF_NOOP) {
-            return g_GameFlow.cmd_death_in_game;
-        }
         if (g_OverlayFlag == 2) {
             g_OverlayFlag = 1;
             const GF_COMMAND gf_cmd = GF_ShowInventory(INV_DEATH_MODE);
