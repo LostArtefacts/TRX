@@ -24,6 +24,30 @@ local table_map = {
   cutscenes = raw.LevelTable.CUTSCENES,
 }
 
+-- settings system
+local settings_getters = {
+  lockout_option_ring = raw.get_lockout_option_ring,
+}
+
+local settings_setters = {
+  lockout_option_ring = raw.set_lockout_option_ring,
+}
+
+local Settings = setmetatable({}, {
+  __index = function(_, key)
+    local getter = settings_getters[key]
+    return getter and getter() or nil
+  end,
+  __newindex = function(_, key, value)
+    local setter = settings_setters[key]
+    if setter then
+      setter(value)
+      return
+    end
+    error("Cannot set field '" .. key .. "' on Settings")
+  end,
+})
+
 local dynamic_getters = {
   current_level = function()
     return make_level(raw.get_current_level_table(), raw.get_current_level_idx())
@@ -35,6 +59,7 @@ local dynamic_getters = {
 trx.game = setmetatable({
   LevelTable = raw.LevelTable,
   LevelType = raw.LevelType,
+  settings = Settings,
 }, {
   __index = function(self, key)
     local table_type = table_map[key]
@@ -46,5 +71,8 @@ trx.game = setmetatable({
 
     local getter = dynamic_getters[key]
     return getter and getter() or nil
+  end,
+  __newindex = function(self, key, value)
+    error("Cannot set field '" .. key .. "' on trx.game")
   end,
 })

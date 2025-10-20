@@ -1,5 +1,4 @@
-// Lua binding for game module
-#include "game/game_flow/common.h"
+#include "game/game_flow.h"
 #include "game/lua/common.h"
 #include "version.h"
 
@@ -88,6 +87,18 @@ static int M_L_GameLevelGetCurrentLevelIndex(lua_State *const L)
     return 1;
 }
 
+static int M_L_GameGetLockoutOptionRing(lua_State *const L)
+{
+    lua_pushinteger(L, g_GameFlow.lockout_option_ring);
+    return 1;
+}
+
+static int M_L_GameSetLockoutOptionRing(lua_State *const L)
+{
+    g_GameFlow.lockout_option_ring = lua_toboolean(L, 1);
+    return 1;
+}
+
 void LUA_CreateGame(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
@@ -111,6 +122,10 @@ void LUA_CreateGame(lua_State *const L)
     lua_setfield(L, -2, "get_current_level_table");
     lua_pushcfunction(L, M_L_GameLevelGetCurrentLevelIndex);
     lua_setfield(L, -2, "get_current_level_idx");
+    lua_pushcfunction(L, M_L_GameGetLockoutOptionRing);
+    lua_setfield(L, -2, "get_lockout_option_ring");
+    lua_pushcfunction(L, M_L_GameSetLockoutOptionRing);
+    lua_setfield(L, -2, "set_lockout_option_ring");
 
     lua_newtable(L);
     lua_pushinteger(L, GFLT_MAIN);
