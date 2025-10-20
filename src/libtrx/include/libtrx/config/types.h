@@ -153,8 +153,8 @@ typedef struct {
         float cutscene_volume;
         float fmv_volume;
 
+        bool fix_chainblock_secret_sound;
 #if TR_VERSION == 1
-        bool fix_tihocan_secret_sound;
         bool fix_secrets_killing_music;
         bool fix_speeches_killing_music;
 #else
