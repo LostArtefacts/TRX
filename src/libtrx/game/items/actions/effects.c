@@ -122,6 +122,22 @@ static void M_RaisingBlock(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
+static void M_PowerUp(ITEM *const item)
+{
+    const int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > LOGIC_FPS * 4) {
+        Room_SetFlipEffect(-1);
+    } else {
+        const XYZ_32 pos = {
+            .x = g_Camera.target.x,
+            .y = g_Camera.target.y + flip_timer * 100,
+            .z = g_Camera.target.z,
+        };
+        Sound_Effect(SFX_POWERUP_FX, &pos, SPM_NORMAL);
+    }
+    Room_IncrementFlipTimer(1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
@@ -129,3 +145,4 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_EARTHQUAKE, M_Earthquake)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLICKER, M_Flicker)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOR_SHAKE, M_FloorShake)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RAISING_BLOCK, M_RaisingBlock)
+REGISTER_ITEM_ACTION(ITEM_ACTION_POWER_UP, M_PowerUp)

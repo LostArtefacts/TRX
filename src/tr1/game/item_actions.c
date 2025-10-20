@@ -1,6 +1,5 @@
 #include "game/item_actions/finish_level.h"
 #include "game/item_actions/flipmap.h"
-#include "game/item_actions/powerup.h"
 #include "game/item_actions/sand.h"
 #include "game/item_actions/stairs2slope.h"
 #include "game/item_actions/turn_180.h"
@@ -17,7 +16,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_FINISH_LEVEL] = ItemAction_FinishLevel,
         [ITEM_ACTION_STAIRS_TO_SLOPE] = ItemAction_Stairs2Slope,
         [ITEM_ACTION_DROP_SAND] = ItemAction_DropSand,
-        [ITEM_ACTION_POWER_UP] = ItemAction_PowerUp,
         [ITEM_ACTION_FLIP_MAP] = ItemAction_FlipMap,
     };
 
