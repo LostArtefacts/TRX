@@ -138,6 +138,16 @@ static void M_PowerUp(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
+static void M_Stairs2Slope(ITEM *const item)
+{
+    const int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer == 5) {
+        Sound_Effect(SFX_STAIRS_2_SLOPE_FX, nullptr, SPM_NORMAL);
+        Room_SetFlipEffect(-1);
+    }
+    Room_IncrementFlipTimer(1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
@@ -146,3 +156,4 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_FLICKER, M_Flicker)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOR_SHAKE, M_FloorShake)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RAISING_BLOCK, M_RaisingBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_POWER_UP, M_PowerUp)
+REGISTER_ITEM_ACTION(ITEM_ACTION_STAIRS_TO_SLOPE, M_Stairs2Slope)
