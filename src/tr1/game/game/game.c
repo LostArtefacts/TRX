@@ -167,7 +167,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         Lara_Hair_Control(false);
 
         Camera_Update();
-        Item_ActionRunActive();
+        ItemAction_RunActive();
         Sound_UpdateEffects();
         Overlay_Animate(1);
         Output_AnimateTextures(1);
