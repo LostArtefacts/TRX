@@ -1,5 +1,6 @@
 #include "game/lara/draw.h"
 
+#include "config.h"
 #include "game/gun/misc.h"
 #include "game/lara.h"
 #include "game/lara/pose.h"
@@ -46,6 +47,10 @@ static void M_Draw_I(
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
+    }
+
+    if (g_Config.debug.enable_debug_cuboids) {
+        Output_DrawCuboid(&frame1->bounds);
     }
 
     Matrix_Push();
@@ -308,6 +313,10 @@ void Lara_Draw(const ITEM *const item)
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return;
+    }
+
+    if (g_Config.debug.enable_debug_cuboids) {
+        Output_DrawCuboid(&frame->bounds);
     }
 
     Matrix_Push();
