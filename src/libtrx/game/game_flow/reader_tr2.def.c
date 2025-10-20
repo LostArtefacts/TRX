@@ -102,7 +102,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 
     // clang-format off
     ctx->gf->demo_delay = JSON_ObjectGetInt(obj, "demo_delay", 30);
-    ctx->gf->load_save_disabled = JSON_ObjectGetBool(obj, "load_save_disabled", false);
     ctx->gf->cheat_keys = JSON_ObjectGetBool(obj, "cheat_keys", true);
     ctx->gf->play_any_level = JSON_ObjectGetBool(obj, "play_any_level", false);
     ctx->gf->single_level = JSON_ObjectGetInt(obj, "single_level", -1);

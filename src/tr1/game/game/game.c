@@ -38,11 +38,20 @@
 
 void Game_ProcessInput(void)
 {
+    if (GF_GetCurrentLevel()->type == GFL_DEMO) {
+        return;
+    }
+
     if (g_InputDB.use_small_medi && Inv_RequestItem(O_SMALL_MEDIPACK_OPTION)) {
         Lara_UseItem(O_SMALL_MEDIPACK_OPTION);
-    } else if (
-        g_InputDB.use_big_medi && Inv_RequestItem(O_LARGE_MEDIPACK_OPTION)) {
+    }
+    if (g_InputDB.use_big_medi && Inv_RequestItem(O_LARGE_MEDIPACK_OPTION)) {
         Lara_UseItem(O_LARGE_MEDIPACK_OPTION);
+    }
+
+    if (g_GameFlow.load_save_disabled) {
+        g_Input.save = 0;
+        g_Input.load = 0;
     }
 
     if (g_Config.input.enable_buffering && Game_IsPlaying()) {
@@ -127,12 +136,15 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
-    if ((g_InputDB.option || g_Input.save || g_Input.load || g_OverlayFlag <= 0)
+    if ((g_InputDB.option || g_InputDB.save || g_InputDB.load
+         || g_OverlayFlag <= 0)
         && !lara->death_timer) {
         if (g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {
-            if (g_Input.save) {
+            if (g_GameFlow.load_save_disabled) {
+                g_OverlayFlag = 0;
+            } else if (g_Input.save) {
                 g_OverlayFlag = -2;
             } else if (g_Input.load) {
                 g_OverlayFlag = -1;

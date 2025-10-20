@@ -223,6 +223,16 @@ static void M_DeterminePages(void)
         break;
     }
 
+    // disable save & load
+    if (g_GameFlow.load_save_disabled) {
+        for (int32_t i = 0; i < 3; i++) {
+            if (m_State.pages[i].role == PASSPORT_MODE_LOAD_GAME
+                || m_State.pages[i].role == PASSPORT_MODE_SAVE_GAME) {
+                m_State.pages[i].available = false;
+            }
+        }
+    }
+
     // select first available page
     for (int32_t i = 0; i < 3; i++) {
         if (m_State.pages[i].available) {

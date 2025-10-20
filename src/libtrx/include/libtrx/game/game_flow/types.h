@@ -179,6 +179,7 @@ typedef struct {
         char *main_menu_background_path;
         bool enable_killer_pushblocks;
         bool lockout_option_ring;
+        bool load_save_disabled;
 #if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
@@ -186,7 +187,6 @@ typedef struct {
         bool is_demo_version;
         bool play_any_level;
         bool cheat_keys;
-        bool load_save_disabled;
         int32_t single_level;
 #endif
     };

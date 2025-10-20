@@ -14,6 +14,7 @@
     - fixed dart ricochets being placed mid-air (#4063)
     - fixed ricochets not showing on slopes
 - added `lockout_option_ring` game flow option
+- added `load_save_disabled` game flow option
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
