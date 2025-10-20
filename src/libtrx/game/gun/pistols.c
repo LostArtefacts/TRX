@@ -1,8 +1,10 @@
 #include "game/gun/pistols.h"
 
 #include "config.h"
+#include "game/camera.h"
 #include "game/gun/common.h"
 #include "game/gun/control.h"
+#include "game/gun/misc.h"
 #include "game/gun/vars.h"
 #include "game/lara/common.h"
 #include "game/sound.h"
@@ -60,6 +62,160 @@ static void M_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
     arm->anim_num = obj->anim_idx + anim_idx;
     arm->frame_num = frame;
     arm->frame_base = anim->frame_ptr;
+}
+
+static void M_Animate(const LARA_GUN_TYPE weapon_type)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const ITEM *const lara_item = Lara_GetItem();
+
+    bool sound_already = false;
+    int16_t angles[2];
+
+    int32_t frame_r = lara->right_arm.frame_num;
+    if (!lara->right_arm.lock && (!g_Input.action || lara->target != nullptr)) {
+        if (Anim_TestAbsFrameRange(
+                frame_r, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+            frame_r = LF_G_AIM_END;
+        } else if (Anim_TestAbsFrameRange(
+                       frame_r, LF_G_AIM_BEND, LF_G_AIM_END)) {
+            frame_r--;
+        }
+        if (m_SoundRight) {
+            M_FireSound(weapon->sample_num, true);
+            m_SoundRight = false;
+        }
+    } else {
+        if (Anim_TestAbsFrameRange(frame_r, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
+            frame_r++;
+        } else if (frame_r == LF_G_AIM_END) {
+            if (g_Input.action) {
+                angles[0] = lara->right_arm.rot.y + lara_item->rot.y;
+                angles[1] = lara->right_arm.rot.x;
+                if (Gun_FireWeapon(
+                        weapon_type, lara->target, lara_item, angles)) {
+                    lara->right_arm.flash_gun = weapon->flash_time;
+                    if (!sound_already) {
+                        M_FireSound(weapon->sample_num, false);
+                    }
+                    sound_already = true;
+                    if (M_EnableFastSound(weapon_type)) {
+                        m_SoundRight = true;
+                    }
+                }
+                frame_r = LF_G_RECOIL_START;
+            } else if (m_SoundRight) {
+                M_FireSound(weapon->sample_num, true);
+                m_SoundRight = false;
+            }
+        } else if (Anim_TestAbsFrameRange(
+                       frame_r, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+            frame_r++;
+            if (frame_r == LF_G_RECOIL_START + weapon->recoil_frame) {
+                frame_r = LF_G_AIM_END;
+            }
+            if (M_EnableFastSound(weapon_type)) {
+                M_FireSound(weapon->sample_num, false);
+                m_SoundRight = true;
+            }
+        }
+    }
+    M_SetArmInfo(&lara->right_arm, frame_r);
+
+    int16_t frame_l = lara->left_arm.frame_num;
+    if (!lara->left_arm.lock && (!g_Input.action || lara->target != nullptr)) {
+        if (Anim_TestAbsFrameRange(
+                frame_l, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+            frame_l = LF_G_AIM_END;
+        } else if (Anim_TestAbsFrameRange(
+                       frame_l, LF_G_AIM_BEND, LF_G_AIM_END)) {
+            frame_l--;
+        }
+        if (m_SoundLeft) {
+            M_FireSound(weapon->sample_num, true);
+            m_SoundLeft = false;
+        }
+    } else if (Anim_TestAbsFrameRange(
+                   frame_l, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
+        frame_l++;
+    } else if (frame_l == LF_G_AIM_END) {
+        if (g_Input.action) {
+            angles[0] = lara->left_arm.rot.y + lara_item->rot.y;
+            angles[1] = lara->left_arm.rot.x;
+            if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
+                lara->left_arm.flash_gun = weapon->flash_time;
+                if (!sound_already) {
+                    M_FireSound(weapon->sample_num, false);
+                }
+                if (M_EnableFastSound(weapon_type)) {
+                    m_SoundLeft = true;
+                }
+            }
+            frame_l = LF_G_RECOIL_START;
+        } else if (m_SoundLeft) {
+            M_FireSound(weapon->sample_num, true);
+            m_SoundLeft = false;
+        }
+    } else if (Anim_TestAbsFrameRange(
+                   frame_l, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+        frame_l++;
+        if (frame_l == LF_G_RECOIL_START + weapon->recoil_frame) {
+            frame_l = LF_G_AIM_END;
+        }
+        if (M_EnableFastSound(weapon_type)) {
+            M_FireSound(weapon->sample_num, false);
+            m_SoundLeft = true;
+        }
+    }
+    M_SetArmInfo(&lara->left_arm, frame_l);
+}
+
+void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
+{
+    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    Gun_GetNewTarget(weapon);
+    if (g_InputDB.change_target && g_Config.gameplay.enable_target_change) {
+        Gun_ChangeTarget(weapon);
+    }
+
+    Gun_AimWeapon(weapon, &lara->left_arm);
+    Gun_AimWeapon(weapon, &lara->right_arm);
+
+    const bool lock_head = g_Config.gameplay.look_mode != LOOK_MODE_UNRESTRICTED
+        || g_Camera.type != CAM_LOOK;
+    if (lara->left_arm.lock && !lara->right_arm.lock) {
+        if (lock_head) {
+            lara->head_rot.x = lara->left_arm.rot.x / 2;
+            lara->head_rot.y = lara->left_arm.rot.y / 2;
+        }
+        lara->torso_rot.x = lara->left_arm.rot.x / 2;
+        lara->torso_rot.y = lara->left_arm.rot.y / 2;
+    } else if (!lara->left_arm.lock && lara->right_arm.lock) {
+        if (lock_head) {
+            lara->head_rot.x = lara->right_arm.rot.x / 2;
+            lara->head_rot.y = lara->right_arm.rot.y / 2;
+        }
+        lara->torso_rot.x = lara->right_arm.rot.x / 2;
+        lara->torso_rot.y = lara->right_arm.rot.y / 2;
+    } else if (lara->right_arm.lock) {
+        if (lock_head) {
+            lara->head_rot.x =
+                (lara->right_arm.rot.x + lara->left_arm.rot.x) / 4;
+            lara->head_rot.y =
+                (lara->right_arm.rot.y + lara->left_arm.rot.y) / 4;
+        }
+        lara->torso_rot.x = (lara->right_arm.rot.x + lara->left_arm.rot.x) / 4;
+        lara->torso_rot.y = (lara->right_arm.rot.y + lara->left_arm.rot.y) / 4;
+    }
+
+    M_Animate(weapon_type);
+
+    if (lara->left_arm.flash_gun || lara->right_arm.flash_gun) {
+        Gun_AddDynamicLight();
+    }
 }
 
 void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
@@ -171,113 +327,6 @@ void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
         lara->torso_rot.x = 0;
         lara->torso_rot.y = 0;
     }
-}
-
-void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
-    const ITEM *const lara_item = Lara_GetItem();
-
-    bool sound_already = false;
-    int16_t angles[2];
-
-    int32_t frame_r = lara->right_arm.frame_num;
-    if (!lara->right_arm.lock && (!g_Input.action || lara->target != nullptr)) {
-        if (Anim_TestAbsFrameRange(
-                frame_r, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
-            frame_r = LF_G_AIM_END;
-        } else if (Anim_TestAbsFrameRange(
-                       frame_r, LF_G_AIM_BEND, LF_G_AIM_END)) {
-            frame_r--;
-        }
-        if (m_SoundRight) {
-            M_FireSound(weapon->sample_num, true);
-            m_SoundRight = false;
-        }
-    } else {
-        if (Anim_TestAbsFrameRange(frame_r, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
-            frame_r++;
-        } else if (frame_r == LF_G_AIM_END) {
-            if (g_Input.action) {
-                angles[0] = lara->right_arm.rot.y + lara_item->rot.y;
-                angles[1] = lara->right_arm.rot.x;
-                if (Gun_FireWeapon(
-                        weapon_type, lara->target, lara_item, angles)) {
-                    lara->right_arm.flash_gun = weapon->flash_time;
-                    if (!sound_already) {
-                        M_FireSound(weapon->sample_num, false);
-                    }
-                    sound_already = true;
-                    if (M_EnableFastSound(weapon_type)) {
-                        m_SoundRight = true;
-                    }
-                }
-                frame_r = LF_G_RECOIL_START;
-            } else if (m_SoundRight) {
-                M_FireSound(weapon->sample_num, true);
-                m_SoundRight = false;
-            }
-        } else if (Anim_TestAbsFrameRange(
-                       frame_r, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
-            frame_r++;
-            if (frame_r == LF_G_RECOIL_START + weapon->recoil_frame) {
-                frame_r = LF_G_AIM_END;
-            }
-            if (M_EnableFastSound(weapon_type)) {
-                M_FireSound(weapon->sample_num, false);
-                m_SoundRight = true;
-            }
-        }
-    }
-    M_SetArmInfo(&lara->right_arm, frame_r);
-
-    int16_t frame_l = lara->left_arm.frame_num;
-    if (!lara->left_arm.lock && (!g_Input.action || lara->target != nullptr)) {
-        if (Anim_TestAbsFrameRange(
-                frame_l, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
-            frame_l = LF_G_AIM_END;
-        } else if (Anim_TestAbsFrameRange(
-                       frame_l, LF_G_AIM_BEND, LF_G_AIM_END)) {
-            frame_l--;
-        }
-        if (m_SoundLeft) {
-            M_FireSound(weapon->sample_num, true);
-            m_SoundLeft = false;
-        }
-    } else if (Anim_TestAbsFrameRange(
-                   frame_l, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
-        frame_l++;
-    } else if (frame_l == LF_G_AIM_END) {
-        if (g_Input.action) {
-            angles[0] = lara->left_arm.rot.y + lara_item->rot.y;
-            angles[1] = lara->left_arm.rot.x;
-            if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
-                lara->left_arm.flash_gun = weapon->flash_time;
-                if (!sound_already) {
-                    M_FireSound(weapon->sample_num, false);
-                }
-                if (M_EnableFastSound(weapon_type)) {
-                    m_SoundLeft = true;
-                }
-            }
-            frame_l = LF_G_RECOIL_START;
-        } else if (m_SoundLeft) {
-            M_FireSound(weapon->sample_num, true);
-            m_SoundLeft = false;
-        }
-    } else if (Anim_TestAbsFrameRange(
-                   frame_l, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
-        frame_l++;
-        if (frame_l == LF_G_RECOIL_START + weapon->recoil_frame) {
-            frame_l = LF_G_AIM_END;
-        }
-        if (M_EnableFastSound(weapon_type)) {
-            M_FireSound(weapon->sample_num, false);
-            m_SoundLeft = true;
-        }
-    }
-    M_SetArmInfo(&lara->left_arm, frame_l);
 }
 
 void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
