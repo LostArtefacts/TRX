@@ -112,7 +112,6 @@ sources = [
   'game/inventory.c',
   'game/inventory_ring/control.c',
   'game/inventory_ring/vars.c',
-  'game/item_actions.c',
   'game/lara/common.c',
   'game/objects/common.c',
   'game/objects/general/earthquake.c',
