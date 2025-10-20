@@ -238,7 +238,7 @@ void Item_Animate(ITEM *const item)
             const ANIM_COMMAND_EFFECT_DATA *const data =
                 (ANIM_COMMAND_EFFECT_DATA *)command->data;
             if (item->frame_num == data->frame_num) {
-                Item_ActionRunDirect(data->effect_num, item);
+                ItemAction_RunDirect(data->effect_num, item);
             }
             break;
 
