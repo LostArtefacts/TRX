@@ -41,12 +41,6 @@ static void M_Statue(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
-static void M_SetChange(ITEM *const item)
-{
-    Sound_Effect(SFX_STAGE_BACKDROP, nullptr, SPM_NORMAL);
-    Room_SetFlipEffect(-1);
-}
-
 static void M_FlipMap(ITEM *const item)
 {
     Room_FlipMap();
@@ -129,7 +123,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         // clang-format off
         [ITEM_ACTION_TURN_180]                     = M_Turn180,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
-        [ITEM_ACTION_SET_CHANGE]                   = M_SetChange,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_1] = M_SwapMeshesWithMeshSwap1,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_2] = M_SwapMeshesWithMeshSwap2,
