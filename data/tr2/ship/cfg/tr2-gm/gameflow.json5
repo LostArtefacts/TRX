@@ -6,8 +6,6 @@
     "savegame_fmt_legacy": "savegame_gm.%d",
     "savegame_fmt_bson": "save_trgm_%02d.dat",
 
-    "cmd_init":           {"action": "exit_to_title"},
-
     "cheat_keys": true,
     "load_save_disabled": false,
     "play_any_level": false,

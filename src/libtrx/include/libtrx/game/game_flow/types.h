@@ -183,11 +183,6 @@ typedef struct {
         bool enable_killer_pushblocks;
     };
 #elif TR_VERSION == 2
-    // flow commands
-    struct {
-        GF_COMMAND cmd_init;
-    };
-
     // global settings
     struct {
         float demo_delay;

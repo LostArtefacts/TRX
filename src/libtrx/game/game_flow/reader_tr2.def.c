@@ -95,10 +95,6 @@ static GF_COMMAND M_LoadCommand(
 
 static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 {
-    ctx->gf->cmd_init = M_LoadCommand(
-        ctx, JSON_ObjectGetObject(obj, "cmd_init"),
-        (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
-
     ctx->gf->is_demo_version = JSON_ObjectGetBool(obj, "demo_version", false);
 
     ctx->gf->settings = m_DefaultSettings;
