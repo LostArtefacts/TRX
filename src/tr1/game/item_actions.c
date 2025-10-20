@@ -24,7 +24,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
     static M_FUNC m_Actions[] = {
         [ITEM_ACTION_TURN_180] = ItemAction_Turn180,
         [ITEM_ACTION_FLOOR_SHAKE] = ItemAction_FloorShake,
-        [ITEM_ACTION_LARA_NORMAL] = ItemAction_LaraNormal,
         [ITEM_ACTION_BUBBLES] = ItemAction_Bubbles,
         [ITEM_ACTION_FINISH_LEVEL] = ItemAction_FinishLevel,
         [ITEM_ACTION_EARTHQUAKE] = ItemAction_Earthquake,
