@@ -7,19 +7,19 @@
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
-        .min = { .x = -STEP_L, .y = -100, .z = -STEP_L, },
-        .max = { .x = +STEP_L, .y = +WALL_L, .z = +STEP_L, },
+        .min = { .x = -STEP_L*3/2, .y = -100, .z = -STEP_L*3/2, },
+        .max = { .x = +STEP_L*3/2, .y = +WALL_L, .z = +STEP_L*3/2, },
     },
     .rot = {
-        .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
-        .max = { .x = +10 * DEG_1, .y = 0, .z = 0, },
+        .min = { .x = -DEG_45, .y = 0, .z = 0, },
+        .max = { .x = +DEG_45, .y = 0, .z = 0, },
     },
 };
 
 static const OBJECT_BOUNDS m_UW_Bounds = {
     .shift = {
-        .min = { .x = -STEP_L, .y = -WALL_L, .z = -STEP_L, },
-        .max = { .x = +STEP_L, .y = +WALL_L, .z = +STEP_L, },
+        .min = { .x = -STEP_L*3/2, .y = -WALL_L, .z = -STEP_L*3/2, },
+        .max = { .x = +STEP_L*3/2, .y = +WALL_L, .z = +STEP_L*3/2, },
     },
     .rot = {
         .min = { .x = -DEG_90, .y = 0, .z = 0, },
