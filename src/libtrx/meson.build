@@ -360,6 +360,7 @@ sources = [
   'game/objects/general/window.c',
   'game/objects/names.c',
   'game/objects/traps/blade.c',
+  'game/objects/traps/damocles_sword.c',
   'game/objects/traps/dart.c',
   'game/objects/traps/dart_emitter.c',
   'game/objects/traps/dying_monk.c',
