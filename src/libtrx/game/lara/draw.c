@@ -169,16 +169,11 @@ static void M_Draw_I(
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
         Matrix_InterpolateArm();
         Matrix_Rot16(lara->right_arm.interp.result.rot);
-#if TR_VERSION == 1
-        mesh_rots_1 =
-            lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
-#else
         const ANIM *anim = Anim_GetAnim(lara->right_arm.anim_num);
         mesh_rots_1 =
             lara->right_arm
                 .frame_base[lara->right_arm.frame_num - anim->frame_base]
                 .mesh_rots;
-#endif
         Matrix_Rot16(mesh_rots_1[LM_UARM_R]);
         Output_DrawObjectMesh(lara->mesh_ptrs[LM_UARM_R], clip);
 
@@ -194,16 +189,11 @@ static void M_Draw_I(
         Matrix_TranslateRel32_I(bone[LM_UARM_L - 1].pos);
         Matrix_InterpolateArm();
         Matrix_Rot16(lara->left_arm.interp.result.rot);
-#if TR_VERSION == 1
-        mesh_rots_1 =
-            lara->left_arm.frame_base[lara->left_arm.frame_num].mesh_rots;
-#else
         anim = Anim_GetAnim(lara->left_arm.anim_num);
         mesh_rots_1 =
             lara->left_arm
                 .frame_base[lara->left_arm.frame_num - anim->frame_base]
                 .mesh_rots;
-#endif
         Matrix_Rot16(mesh_rots_1[LM_UARM_L]);
         Output_DrawObjectMesh(lara->mesh_ptrs[LM_UARM_L], clip);
 
@@ -439,16 +429,11 @@ void Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_22 = item_matrix._22;
         Matrix_Rot16(lara->right_arm.interp.result.rot);
         if (pose == nullptr) {
-#if TR_VERSION == 1
-            mesh_rots =
-                lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
-#else
             const ANIM *const anim = Anim_GetAnim(lara->right_arm.anim_num);
             mesh_rots =
                 lara->right_arm
                     .frame_base[lara->right_arm.frame_num - anim->frame_base]
                     .mesh_rots;
-#endif
         }
         Matrix_Rot16(mesh_rots[LM_UARM_R]);
         Output_DrawObjectMesh(lara->mesh_ptrs[LM_UARM_R], clip);
@@ -474,16 +459,11 @@ void Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_22 = item_matrix._22;
         Matrix_Rot16(lara->left_arm.interp.result.rot);
         if (pose == nullptr) {
-#if TR_VERSION == 1
-            mesh_rots =
-                lara->left_arm.frame_base[lara->left_arm.frame_num].mesh_rots;
-#else
             const ANIM *const anim = Anim_GetAnim(lara->left_arm.anim_num);
             mesh_rots =
                 lara->left_arm
                     .frame_base[lara->left_arm.frame_num - anim->frame_base]
                     .mesh_rots;
-#endif
         }
         Matrix_Rot16(mesh_rots[LM_UARM_L]);
         Output_DrawObjectMesh(lara->mesh_ptrs[LM_UARM_L], clip);

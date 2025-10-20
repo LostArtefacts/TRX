@@ -804,6 +804,7 @@ static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm)
         return false;
     }
 
+    arm->anim_num = JSON_ObjectGetInt(arm_obj, "anim_num", arm->anim_num);
     arm->frame_num = JSON_ObjectGetInt(arm_obj, "frame_num", arm->frame_num);
     arm->lock = JSON_ObjectGetInt(arm_obj, "lock", arm->lock);
     arm->rot.x = JSON_ObjectGetInt(arm_obj, "x_rot", arm->rot.x);
@@ -1374,6 +1375,7 @@ static JSON_OBJECT *M_DumpArm(LARA_ARM *arm)
 {
     ASSERT(arm != nullptr);
     JSON_OBJECT *arm_obj = JSON_ObjectNew();
+    JSON_ObjectAppendInt(arm_obj, "anim_num", arm->anim_num);
     JSON_ObjectAppendInt(arm_obj, "frame_num", arm->frame_num);
     JSON_ObjectAppendInt(arm_obj, "lock", arm->lock);
     JSON_ObjectAppendInt(arm_obj, "x_rot", arm->rot.x);
