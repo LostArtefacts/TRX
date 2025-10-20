@@ -197,5 +197,6 @@
         "enable_save_crystals",
         "enable_ps1_crystals",
         "enable_reflections",
+        "fix_chainblock_secret_sound",
     ],
 }
