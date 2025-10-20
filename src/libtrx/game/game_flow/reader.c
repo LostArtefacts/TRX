@@ -206,6 +206,9 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
             ctx->gf->main_script_path = Memory_DupStr(tmp_s);
         }
     }
+
+    ctx->gf->lockout_option_ring =
+        JSON_ObjectGetBool(obj, "lockout_option_ring", true);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)

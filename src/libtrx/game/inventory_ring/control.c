@@ -1054,9 +1054,5 @@ bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
 
 bool InvRing_IsOptionLockedOut(void)
 {
-#if TR_VERSION >= 2
     return g_GameFlow.lockout_option_ring;
-#else
-    return false;
-#endif
 }
