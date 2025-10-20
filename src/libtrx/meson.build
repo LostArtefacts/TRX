@@ -337,6 +337,7 @@ sources = [
   'game/objects/general/camera_target.c',
   'game/objects/general/clock_chimes.c',
   'game/objects/general/cog.c',
+  'game/objects/general/combat_end.c',
   'game/objects/general/copter.c',
   'game/objects/general/cutscene_player.c',
   'game/objects/general/detonator_box.c',
