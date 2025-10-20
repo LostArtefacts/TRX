@@ -7,7 +7,6 @@
 #include "game/item_actions/flipmap.h"
 #include "game/item_actions/flood.h"
 #include "game/item_actions/floor_shake.h"
-#include "game/item_actions/lara_effects.h"
 #include "game/item_actions/powerup.h"
 #include "game/item_actions/raising_block.h"
 #include "game/item_actions/sand.h"
@@ -34,7 +33,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_POWER_UP] = ItemAction_PowerUp,
         [ITEM_ACTION_EXPLOSION] = ItemAction_Explosion,
         [ITEM_ACTION_FLIP_MAP] = ItemAction_FlipMap,
-        [ITEM_ACTION_LARA_DRAW_RIGHT_GUN] = ItemAction_LaraDrawRightGun,
         [ITEM_ACTION_CHAIN_BLOCK] = ItemAction_ChainBlock,
         [ITEM_ACTION_FLICKER] = ItemAction_Flicker,
     };

@@ -153,14 +153,6 @@ static void M_FlipMap(ITEM *const item)
     Room_FlipMap();
 }
 
-static void M_LaraDrawRightGun(ITEM *const item)
-{
-    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_R);
-    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_R);
-    Lara_Mesh_SwapSingle(LM_THIGH_R, item->object_id);
-    Lara_Mesh_SwapSingle(LM_HAND_R, item->object_id);
-}
-
 static void M_LaraDrawLeftGun(ITEM *const item)
 {
     Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_L);
@@ -261,7 +253,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_SET_CHANGE]                   = M_SetChange,
         [ITEM_ACTION_EXPLOSION]                    = M_Explosion,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
-        [ITEM_ACTION_LARA_DRAW_RIGHT_GUN]          = M_LaraDrawRightGun,
         [ITEM_ACTION_LARA_DRAW_LEFT_GUN]           = M_LaraDrawLeftGun,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_1] = M_SwapMeshesWithMeshSwap1,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_2] = M_SwapMeshesWithMeshSwap2,
