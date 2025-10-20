@@ -13,4 +13,11 @@ static void M_Normal(ITEM *const item)
     Viewport_AlterFOV(-1);
 }
 
+static void M_HandsFree(ITEM *const item)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->gun_status = LGS_ARMLESS;
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_NORMAL, M_Normal)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_HANDS_FREE, M_HandsFree)
