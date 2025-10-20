@@ -19,5 +19,14 @@ static void M_HandsFree(ITEM *const item)
     lara->gun_status = LGS_ARMLESS;
 }
 
+static void M_DrawRightGun(ITEM *const item)
+{
+    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_THIGH_R);
+    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, LM_HAND_R);
+    Lara_Mesh_SwapSingle(LM_THIGH_R, item->object_id);
+    Lara_Mesh_SwapSingle(LM_HAND_R, item->object_id);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_NORMAL, M_Normal)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_HANDS_FREE, M_HandsFree)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_RIGHT_GUN, M_DrawRightGun)

@@ -121,7 +121,6 @@ sources = [
   'game/item_actions/flipmap.c',
   'game/item_actions/flood.c',
   'game/item_actions/floor_shake.c',
-  'game/item_actions/lara_effects.c',
   'game/item_actions/powerup.c',
   'game/item_actions/raising_block.c',
   'game/item_actions/sand.c',
