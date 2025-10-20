@@ -29,12 +29,6 @@ static void M_Turn180(ITEM *const item)
     }
 }
 
-static void M_Boiler(ITEM *const item)
-{
-    Sound_Effect(SFX_BOILER, nullptr, SPM_NORMAL);
-    Room_SetFlipEffect(-1);
-}
-
 static void M_FlipMap(ITEM *const item)
 {
     Room_FlipMap();
@@ -125,7 +119,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_INVISIBILITY_OFF]             = M_InvisibilityOff,
         [ITEM_ACTION_DYNAMIC_LIGHT_ON]             = M_DynamicLightOn,
         [ITEM_ACTION_DYNAMIC_LIGHT_OFF]            = M_DynamicLightOff,
-        [ITEM_ACTION_BOILER]                       = M_Boiler,
         [ITEM_ACTION_ASSAULT_RESET]                = M_AssaultReset,
         [ITEM_ACTION_ASSAULT_STOP]                 = M_AssaultStop,
         [ITEM_ACTION_ASSAULT_START]                = M_AssaultStart,
