@@ -109,7 +109,6 @@ sources = [
   'game/level.c',
   'game/objects/common.c',
   'game/objects/creatures/skidoo_driver.c',
-  'game/objects/general/final_cutscene.c',
   'game/objects/general/flare_item.c',
   'game/objects/general/harpoon_bolt.c',
   'game/objects/general/zipline.c',
