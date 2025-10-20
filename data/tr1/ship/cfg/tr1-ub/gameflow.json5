@@ -6,6 +6,7 @@
     "savegame_fmt_legacy": "saveuba.%d",
     "savegame_fmt_bson": "save_trub_%02d.dat",
     "demo_delay": 16,
+    "lockout_option_ring": false,
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",
@@ -20,6 +21,7 @@
         "data/injections/font.bin",
         "data/injections/winston_model.bin",
     ],
+
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
     "enable_killer_pushblocks": true,

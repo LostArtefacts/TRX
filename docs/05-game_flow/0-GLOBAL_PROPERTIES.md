@@ -19,6 +19,7 @@ remains distinct for each game.
     "main_menu_picture": "data/titleh.png",
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
+    "lockout_option_ring": false,
     "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
     "fog_transparency": false,
@@ -83,6 +84,11 @@ remains distinct for each game.
     <td>
       Enables an exposure meter for Lara when she is in cold water.
     </td>
+  </tr>
+  <tr valign="top">
+    <td><code>lockout_option_ring</code></td>
+    <td>Boolean</td>
+    <td>Whether to disallow the players to use control ring while ingame.</td>
   </tr>
   <tr valign="top">
     <td>
