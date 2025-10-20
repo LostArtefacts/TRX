@@ -167,6 +167,16 @@ static void M_DropSand(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
+static void M_Chandelier(ITEM *const item)
+{
+    const int32_t flip_timer = Room_GetFlipTimer();
+    Sound_Effect(SFX_CHAIN_PULLEY, nullptr, SPM_NORMAL);
+    if (flip_timer >= LOGIC_FPS) {
+        Room_SetFlipEffect(-1);
+    }
+    Room_IncrementFlipTimer(1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
@@ -177,3 +187,4 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_RAISING_BLOCK, M_RaisingBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_POWER_UP, M_PowerUp)
 REGISTER_ITEM_ACTION(ITEM_ACTION_STAIRS_TO_SLOPE, M_Stairs2Slope)
 REGISTER_ITEM_ACTION(ITEM_ACTION_DROP_SAND, M_DropSand)
+REGISTER_ITEM_ACTION(ITEM_ACTION_CHANDELIER, M_Chandelier)
