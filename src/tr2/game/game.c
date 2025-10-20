@@ -82,7 +82,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     if (demo_mode) {
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-            return g_GameFlow.cmd_demo_interrupt;
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         if (!Demo_GetInput()) {
             g_Input = (INPUT_STATE) {};
