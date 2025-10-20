@@ -264,7 +264,7 @@ GF_COMMAND Demo_Control(void)
     Lara_Hair_Control(false);
 
     Camera_Update();
-    Item_ActionRunActive();
+    ItemAction_RunActive();
     Sound_UpdateEffects();
     Output_AnimateTextures(1);
 

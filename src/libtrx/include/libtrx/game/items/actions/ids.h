@@ -14,5 +14,5 @@ typedef enum {
     ITEM_ACTION_NUMBER_OF,
 } ITEM_TRX_ACTION;
 
-ITEM_ACTION Item_ActionToGameID(ITEM_TRX_ACTION action);
-ITEM_TRX_ACTION Item_ActionFromGameID(ITEM_ACTION action);
+ITEM_ACTION ItemAction_ToGameID(ITEM_TRX_ACTION action);
+ITEM_TRX_ACTION ItemAction_FromGameID(ITEM_ACTION action);

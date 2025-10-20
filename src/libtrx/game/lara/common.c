@@ -506,7 +506,7 @@ void Lara_Animate(ITEM *const item)
                 break;
             }
 
-            Item_ActionRunDirect(data->effect_num, item);
+            ItemAction_RunDirect(data->effect_num, item);
             break;
         }
 
