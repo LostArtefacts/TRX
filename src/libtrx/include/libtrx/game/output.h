@@ -10,3 +10,4 @@
 #include "./output/state.h"
 #include "./output/textures.h"
 #include "./output/types.h"
+#include "./output/vars.h"

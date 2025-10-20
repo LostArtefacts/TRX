@@ -29,6 +29,8 @@ bool Game_IsLevelComplete(void);
 void Game_FadeToBlack(int32_t duration);
 void Game_DrawFade(void);
 
+extern void Game_ProcessInput(void);
+
 extern bool Game_Start(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
 extern void Game_End(void);
 extern GF_COMMAND Game_Control(bool demo_mode);
