@@ -4,8 +4,11 @@
     "main_menu_picture": "data/images/title.webp",
     "savegame_fmt_legacy": "save_tmp.%d",
     "savegame_fmt_bson": "save_tmp_%02d.dat",
+
     "demo_delay": 0,
     "lockout_option_ring": false,
+    "load_save_disabled": false,
+
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",

@@ -19,6 +19,10 @@
       "type": "string",
       "description": "Path pattern to look for the savegame files."
     },
+    "load_save_disabled": {
+      "type": "boolean",
+      "description": "Whether to disable saving and loading the game."
+    },
     "lockout_option_ring": {
       "type": "boolean",
       "description": "Whether to disallow the player from using the option ring in-game."
