@@ -95,10 +95,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         || (lara->death_timer > DEATH_WAIT_INPUT
             && (g_InputDB.menu_confirm || g_InputDB.menu_back))
         || g_OverlayFlag == 2) {
-        if (demo_mode) {
-            return g_GameFlow.cmd_death_demo_mode;
-        }
-        if (Game_IsInGym()) {
+        if (demo_mode || Game_IsInGym()) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         if (g_OverlayFlag == 2) {
