@@ -38,12 +38,6 @@ static void M_Bubbles(ITEM *const item)
     }
 }
 
-static void M_LaraHandsFree(ITEM *const item)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->gun_status = LGS_ARMLESS;
-}
-
 static void M_FinishLevel(ITEM *const item)
 {
     Game_SetIsLevelComplete(true);
@@ -266,7 +260,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_CURTAIN]                      = M_Curtain,
         [ITEM_ACTION_SET_CHANGE]                   = M_SetChange,
         [ITEM_ACTION_EXPLOSION]                    = M_Explosion,
-        [ITEM_ACTION_LARA_HANDS_FREE]              = M_LaraHandsFree,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
         [ITEM_ACTION_LARA_DRAW_RIGHT_GUN]          = M_LaraDrawRightGun,
         [ITEM_ACTION_LARA_DRAW_LEFT_GUN]           = M_LaraDrawLeftGun,
