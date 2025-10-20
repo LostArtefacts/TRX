@@ -260,7 +260,7 @@ static void M_AssaultFinished(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
-void Item_ActionRun(ITEM_TRX_ACTION action_id, ITEM *item)
+void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
 {
     static M_FUNC m_Actions[] = {
         // clang-format off
