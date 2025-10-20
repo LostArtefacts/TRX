@@ -11,9 +11,7 @@
 typedef struct {
     ANIM_FRAME *frame_base;
     int16_t frame_num;
-#if TR_VERSION >= 2
     int16_t anim_num;
-#endif
     int16_t lock;
     XYZ_16 rot;
     int16_t flash_gun;

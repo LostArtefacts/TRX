@@ -31,6 +31,11 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
     }
     lara->left_arm.frame_num = ani;
     lara->right_arm.frame_num = ani;
+
+    // TODO: handle fully like in TR2
+    const OBJECT *const obj = Object_Get(O_LARA_SHOTGUN);
+    lara->right_arm.anim_num = obj->anim_idx;
+    lara->left_arm.anim_num = obj->anim_idx;
 }
 
 void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)

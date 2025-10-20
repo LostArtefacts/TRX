@@ -7,11 +7,6 @@
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 
-void Gun_Pistols_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
-{
-    arm->frame_num = frame;
-}
-
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
     WEAPON_INFO *const weapon = &g_Weapons[weapon_type];

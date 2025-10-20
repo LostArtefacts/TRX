@@ -9,6 +9,15 @@
 
 #define M_ENABLE_FAST_UZI (TR_VERSION == 2)
 
+typedef enum {
+    // clang-format off
+    LA_PISTOLS_AIM    = 0,
+    LA_PISTOLS_UNDRAW = 1,
+    LA_PISTOLS_DRAW   = 2,
+    LA_PISTOLS_RECOIL = 3,
+    // clang-format on
+} LARA_PISTOLS_ANIMATION;
+
 static bool m_SoundRight = false;
 static bool m_SoundLeft = false;
 
@@ -29,6 +38,30 @@ static void M_FireSound(const SAMPLE_TRX_ID sample_trx_id, const bool alternate)
     Sound_Effect_Direct(sample_id, &Lara_GetItem()->pos, SPM_NORMAL);
 }
 
+static void M_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
+{
+    int16_t anim_idx;
+    if (Anim_TestAbsFrameRange(frame, LF_G_AIM_START, LF_G_AIM_END)) {
+        anim_idx = LA_PISTOLS_AIM;
+    } else if (Anim_TestAbsFrameRange(
+                   frame, LF_G_UNDRAW_START, LF_G_UNDRAW_END)) {
+        anim_idx = LA_PISTOLS_UNDRAW;
+    } else if (Anim_TestAbsFrameRange(frame, LF_G_DRAW_START, LF_G_DRAW_END)) {
+        anim_idx = LA_PISTOLS_DRAW;
+    } else if (Anim_TestAbsFrameRange(
+                   frame, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+        anim_idx = LA_PISTOLS_RECOIL;
+    } else {
+        return;
+    }
+
+    const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
+    const ANIM *const anim = Object_GetAnim(obj, anim_idx);
+    arm->anim_num = obj->anim_idx + anim_idx;
+    arm->frame_num = frame;
+    arm->frame_base = anim->frame_ptr;
+}
+
 void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -44,8 +77,8 @@ void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
         frame = LF_G_AIM_START;
     }
 
-    Gun_Pistols_SetArmInfo(&lara->right_arm, frame);
-    Gun_Pistols_SetArmInfo(&lara->left_arm, frame);
+    M_SetArmInfo(&lara->right_arm, frame);
+    M_SetArmInfo(&lara->left_arm, frame);
 }
 
 void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
@@ -71,7 +104,7 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
                    frame_l, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         frame_l--;
     }
-    Gun_Pistols_SetArmInfo(&lara->left_arm, frame_l);
+    M_SetArmInfo(&lara->left_arm, frame_l);
 
     int16_t frame_r = lara->right_arm.frame_num;
     if (Anim_TestAbsFrameRange(frame_r, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
@@ -92,7 +125,7 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
                    frame_r, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         frame_r--;
     }
-    Gun_Pistols_SetArmInfo(&lara->right_arm, frame_r);
+    M_SetArmInfo(&lara->right_arm, frame_r);
 
     if (Anim_TestAbsFrameEqual(frame_l, LF_G_UNDRAW_START)
         && Anim_TestAbsFrameEqual(frame_r, LF_G_UNDRAW_START)) {
@@ -197,7 +230,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             }
         }
     }
-    Gun_Pistols_SetArmInfo(&lara->right_arm, frame_r);
+    M_SetArmInfo(&lara->right_arm, frame_r);
 
     int16_t frame_l = lara->left_arm.frame_num;
     if (!lara->left_arm.lock && (!g_Input.action || lara->target != nullptr)) {
@@ -244,7 +277,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
             m_SoundLeft = true;
         }
     }
-    Gun_Pistols_SetArmInfo(&lara->left_arm, frame_l);
+    M_SetArmInfo(&lara->left_arm, frame_l);
 }
 
 void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
