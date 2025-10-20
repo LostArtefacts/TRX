@@ -14,11 +14,6 @@
 
 typedef void (*M_FUNC)(ITEM *item);
 
-static void M_FlipMap(ITEM *const item)
-{
-    Room_FlipMap();
-}
-
 static void M_AssaultStart(ITEM *const item)
 {
     Gym_StartAssault();
@@ -47,7 +42,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
 {
     static M_FUNC m_Actions[] = {
         // clang-format off
-        [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
         [ITEM_ACTION_ASSAULT_RESET]                = M_AssaultReset,
         [ITEM_ACTION_ASSAULT_STOP]                 = M_AssaultStop,
         [ITEM_ACTION_ASSAULT_START]                = M_AssaultStart,
