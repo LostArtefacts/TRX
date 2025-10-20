@@ -114,7 +114,6 @@ sources = [
   'game/objects/common.c',
   'game/objects/general/earthquake.c',
   'game/objects/setup.c',
-  'game/objects/traps/lightning_emitter.c',
   'game/option/option.c',
   'game/option/option_compass.c',
   'game/option/option_passport.c',

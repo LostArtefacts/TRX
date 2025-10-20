@@ -379,6 +379,7 @@ sources = [
   'game/objects/traps/icicle.c',
   'game/objects/traps/killer_statue.c',
   'game/objects/traps/lava_wedge.c',
+  'game/objects/traps/lightning_emitter.c',
   'game/objects/traps/midas_touch.c',
   'game/objects/traps/mine.c',
   'game/objects/traps/movable_block.c',

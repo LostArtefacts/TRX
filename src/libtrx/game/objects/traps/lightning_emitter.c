@@ -1,18 +1,17 @@
+#include "game/collision.h"
 #include "game/game.h"
+#include "game/game_buf.h"
 #include "game/lara.h"
+#include "game/matrix.h"
+#include "game/output.h"
+#include "game/random.h"
+#include "game/sound.h"
+#include "game/viewport.h"
 
-#include <libtrx/game/collision.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/game/viewport.h>
-
-#define LIGHTNING_DAMAGE 400
-#define LIGHTNING_STEPS 8
-#define LIGHTNING_RND 64
-#define LIGHTNING_SHOOTS 2
+#define M_DAMAGE 400
+#define M_STEPS 8
+#define M_RND 64
+#define M_SHOOTS 2
 
 typedef struct {
     bool active;
@@ -20,11 +19,11 @@ typedef struct {
     bool zapped;
     bool no_target;
     XYZ_32 target;
-    int32_t start[LIGHTNING_SHOOTS];
-    XYZ_32 end[LIGHTNING_SHOOTS];
-    XYZ_32 main[LIGHTNING_STEPS];
-    XYZ_32 wibble[LIGHTNING_STEPS];
-    XYZ_32 shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
+    int32_t start[M_SHOOTS];
+    XYZ_32 end[M_SHOOTS];
+    XYZ_32 main[M_STEPS];
+    XYZ_32 wibble[M_STEPS];
+    XYZ_32 shoot[M_SHOOTS][M_STEPS];
 } M_LIGHTNING;
 
 static void M_Initialise(const int16_t item_num)
@@ -80,7 +79,7 @@ static void M_Control(const int16_t item_num)
         l->active = true;
         l->count = 20;
 
-        for (int32_t i = 0; i < LIGHTNING_STEPS; i++) {
+        for (int32_t i = 0; i < M_STEPS; i++) {
             l->wibble[i].x = 0;
             l->wibble[i].y = 0;
             l->wibble[i].z = 0;
@@ -93,7 +92,7 @@ static void M_Control(const int16_t item_num)
             l->target.y = lara_item->pos.y;
             l->target.z = lara_item->pos.z;
 
-            Lara_TakeDamage(LIGHTNING_DAMAGE, true);
+            Lara_TakeDamage(M_DAMAGE, true);
 
             l->zapped = true;
         } else if (l->no_target) {
@@ -114,13 +113,13 @@ static void M_Control(const int16_t item_num)
             l->zapped = false;
         }
 
-        for (int32_t i = 0; i < LIGHTNING_SHOOTS; i++) {
-            l->start[i] = Random_GetControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
+        for (int32_t i = 0; i < M_SHOOTS; i++) {
+            l->start[i] = Random_GetControl() * (M_STEPS - 1) / 0x7FFF;
             l->end[i].x = l->target.x + (Random_GetControl() * WALL_L) / 0x7FFF;
             l->end[i].y = l->target.y;
             l->end[i].z = l->target.z + (Random_GetControl() * WALL_L) / 0x7FFF;
 
-            for (int32_t j = 0; j < LIGHTNING_STEPS; j++) {
+            for (int32_t j = 0; j < M_STEPS; j++) {
                 l->shoot[i][j].x = 0;
                 l->shoot[i][j].y = 0;
                 l->shoot[i][j].z = 0;
@@ -170,18 +169,18 @@ static void M_DrawBolts(const ITEM *const item)
     int32_t y2 = l->target.y;
     int32_t z2 = l->target.z;
 
-    int32_t dx = (x2 - x1) / LIGHTNING_STEPS;
-    int32_t dy = (y2 - y1) / LIGHTNING_STEPS;
-    int32_t dz = (z2 - z1) / LIGHTNING_STEPS;
+    int32_t dx = (x2 - x1) / M_STEPS;
+    int32_t dy = (y2 - y1) / M_STEPS;
+    int32_t dz = (z2 - z1) / M_STEPS;
 
-    for (int32_t i = 0; i < LIGHTNING_STEPS; i++) {
+    for (int32_t i = 0; i < M_STEPS; i++) {
         XYZ_32 *pos = &l->wibble[i];
         if (Game_IsPlaying()) {
-            pos->x += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
-            pos->y += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
-            pos->z += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
+            pos->x += (Random_GetDraw() - 0x4000) * M_RND / 0x8000;
+            pos->y += (Random_GetDraw() - 0x4000) * M_RND / 0x8000;
+            pos->z += (Random_GetDraw() - 0x4000) * M_RND / 0x8000;
         }
-        if (i == LIGHTNING_STEPS - 1) {
+        if (i == M_STEPS - 1) {
             pos->y = 0;
         }
 
@@ -210,7 +209,7 @@ static void M_DrawBolts(const ITEM *const item)
         l->main[i].z = z2;
     }
 
-    for (int32_t i = 0; i < LIGHTNING_SHOOTS; i++) {
+    for (int32_t i = 0; i < M_SHOOTS; i++) {
         int32_t j = l->start[i];
         x1 = l->main[j].x;
         y1 = l->main[j].y;
@@ -220,7 +219,7 @@ static void M_DrawBolts(const ITEM *const item)
         y2 = l->end[i].y;
         z2 = l->end[i].z;
 
-        int32_t steps = LIGHTNING_STEPS - j;
+        int32_t steps = M_STEPS - j;
         dx = (x2 - x1) / steps;
         dy = (y2 - y1) / steps;
         dz = (z2 - z1) / steps;
@@ -228,9 +227,9 @@ static void M_DrawBolts(const ITEM *const item)
         for (int32_t k = 0; k < steps; k++) {
             XYZ_32 *pos = &l->shoot[i][k];
             if (Game_IsPlaying()) {
-                pos->x += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
-                pos->y += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
-                pos->z += (Random_GetDraw() - 0x4000) * LIGHTNING_RND / 0x8000;
+                pos->x += (Random_GetDraw() - 0x4000) * M_RND / 0x8000;
+                pos->y += (Random_GetDraw() - 0x4000) * M_RND / 0x8000;
+                pos->z += (Random_GetDraw() - 0x4000) * M_RND / 0x8000;
             }
             if (k == steps - 1) {
                 pos->y = 0;
