@@ -51,31 +51,6 @@ static void M_Boiler(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
-static void M_Flood(ITEM *const item)
-{
-    const int32_t flip_timer = Room_GetFlipTimer();
-    if (flip_timer > 4 * LOGIC_FPS) {
-        Room_SetFlipEffect(-1);
-        Room_IncrementFlipTimer(1);
-        return;
-    }
-
-    const ITEM *const lara_item = Lara_GetItem();
-    XYZ_32 pos = {
-        .x = lara_item->pos.x,
-        .y = g_Camera.target.pos.y,
-        .z = lara_item->pos.z,
-    };
-    if (flip_timer >= LOGIC_FPS) {
-        pos.y += 100 * (flip_timer - LOGIC_FPS);
-    } else {
-        pos.y += 100 * (LOGIC_FPS - flip_timer);
-    }
-
-    Sound_Effect(SFX_WATERFALL_LOOP, &pos, SPM_NORMAL);
-    Room_IncrementFlipTimer(1);
-}
-
 static void M_Rubble(ITEM *const item)
 {
     Sound_Effect(SFX_MASSIVE_CRASH, nullptr, SPM_NORMAL);
@@ -207,7 +182,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_TURN_180]                     = M_Turn180,
         [ITEM_ACTION_FLOOR_SHAKE]                  = M_FloorShake,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
-        [ITEM_ACTION_FLOOD]                        = M_Flood,
         [ITEM_ACTION_CHANDELIER]                   = M_Chandelier,
         [ITEM_ACTION_RUBBLE]                       = M_Rubble,
         [ITEM_ACTION_PISTON]                       = M_Piston,
