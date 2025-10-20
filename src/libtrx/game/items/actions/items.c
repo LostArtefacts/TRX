@@ -8,7 +8,8 @@ static void M_Turn180(ITEM *const item)
 
     item->rot.x = -item->rot.x;
     item->rot.y += DEG_180;
-    if (item == Lara_GetItem()) {
+    if (item == Lara_GetItem()
+        && item->current_anim_state != LS(LS_ROLL_CONT)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->move_angle += DEG_180;
     }
