@@ -86,7 +86,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
         if (!Demo_GetInput()) {
             g_Input = (INPUT_STATE) {};
-            return g_GameFlow.cmd_demo_end;
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
     }
 
