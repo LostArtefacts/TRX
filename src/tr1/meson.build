@@ -115,7 +115,6 @@ sources = [
   'game/item_actions.c',
   'game/item_actions/finish_level.c',
   'game/item_actions/flipmap.c',
-  'game/item_actions/powerup.c',
   'game/item_actions/sand.c',
   'game/item_actions/stairs2slope.c',
   'game/item_actions/turn_180.c',
