@@ -149,11 +149,11 @@ void main(void) {
         if (texColor.a <= 0.0) {
             discard;
         }
-        if (uDiscardAlpha && texColor.a < 0.9 && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u) {
+        if (uDiscardAlpha && texColor.a < 0.99 && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u) {
             discard;
         }
     } else {
-        if (uDiscardAlpha && texColor.a < 0.9 && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u) {
+        if (uDiscardAlpha && texColor.a < 0.99 && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u) {
             discard;
         }
         texColor.rgb *= texColor.a;
