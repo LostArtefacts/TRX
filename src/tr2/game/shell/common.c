@@ -171,12 +171,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 
         case GF_EXIT_TO_TITLE:
             if (g_GameFlow.title_level == nullptr) {
-                gf_cmd = g_GameFlow.cmd_title;
-                if (gf_cmd.action == GF_NOOP
-                    || gf_cmd.action == GF_EXIT_TO_TITLE) {
-                    Shell_ExitSystem("Title disabled & no replacement");
-                    return 1;
-                }
+                Shell_ExitSystem("Missing title level");
             } else {
                 gf_cmd = GF_RunTitle();
             }
