@@ -200,11 +200,6 @@ static void M_DynamicLightOff(ITEM *const item)
     item->dynamic_light = false;
 }
 
-static void M_ResetHair(ITEM *const item)
-{
-    Lara_Hair_Initialise();
-}
-
 static void M_AssaultStart(ITEM *const item)
 {
     Gym_StartAssault();
@@ -253,7 +248,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_DYNAMIC_LIGHT_ON]             = M_DynamicLightOn,
         [ITEM_ACTION_DYNAMIC_LIGHT_OFF]            = M_DynamicLightOff,
         [ITEM_ACTION_STATUE]                       = M_Statue,
-        [ITEM_ACTION_RESET_HAIR]                   = M_ResetHair,
         [ITEM_ACTION_BOILER]                       = M_Boiler,
         [ITEM_ACTION_ASSAULT_RESET]                = M_AssaultReset,
         [ITEM_ACTION_ASSAULT_STOP]                 = M_AssaultStop,
