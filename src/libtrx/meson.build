@@ -192,6 +192,7 @@ sources = [
   'game/items/actions/common.c',
   'game/items/actions/effects.c',
   'game/items/actions/ids.c',
+  'game/items/actions/items.c',
   'game/items/actions/lara.c',
   'game/items/anim.c',
   'game/items/col.c',

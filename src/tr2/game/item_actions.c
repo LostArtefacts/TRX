@@ -19,16 +19,6 @@ static void M_FinishLevel(ITEM *const item)
     Game_SetIsLevelComplete(true);
 }
 
-static void M_Turn180(ITEM *const item)
-{
-    item->rot.x = -item->rot.x;
-    item->rot.y += DEG_180;
-    if (item == Lara_GetItem()) {
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->move_angle += DEG_180;
-    }
-}
-
 static void M_FlipMap(ITEM *const item)
 {
     Room_FlipMap();
@@ -109,7 +99,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
 {
     static M_FUNC m_Actions[] = {
         // clang-format off
-        [ITEM_ACTION_TURN_180]                     = M_Turn180,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
         [ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_1] = M_SwapMeshesWithMeshSwap1,
