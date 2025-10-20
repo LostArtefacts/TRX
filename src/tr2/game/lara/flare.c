@@ -1,6 +1,5 @@
 #include "game/lara/flare.h"
 
-#include "game/gun/gun_misc.h"
 #include "game/lara/misc.h"
 #include "game/objects/general/flare_item.h"
 

@@ -1,7 +1,5 @@
 #include "game/gun/gun_rifle.h"
 
-#include "game/gun/gun_misc.h"
-
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/gun.h>
