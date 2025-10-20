@@ -302,11 +302,3 @@ void Item_ActionRun(ITEM_TRX_ACTION action_id, ITEM *item)
         m_Actions[action_id](item);
     }
 }
-
-void Item_ActionRunActive(void)
-{
-    const int32_t flip_effect = Room_GetFlipEffect();
-    if (flip_effect != -1) {
-        Item_ActionRunDirect(flip_effect, nullptr);
-    }
-}
