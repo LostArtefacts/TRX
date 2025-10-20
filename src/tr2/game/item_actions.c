@@ -35,12 +35,6 @@ static void M_Boiler(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
-static void M_Piston(ITEM *const item)
-{
-    Sound_Effect(SFX_PULLEY_CRANE, nullptr, SPM_NORMAL);
-    Room_SetFlipEffect(-1);
-}
-
 static void M_Curtain(ITEM *const item)
 {
     Sound_Effect(SFX_CURTAIN, nullptr, SPM_NORMAL);
@@ -141,7 +135,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         // clang-format off
         [ITEM_ACTION_TURN_180]                     = M_Turn180,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
-        [ITEM_ACTION_PISTON]                       = M_Piston,
         [ITEM_ACTION_CURTAIN]                      = M_Curtain,
         [ITEM_ACTION_SET_CHANGE]                   = M_SetChange,
         [ITEM_ACTION_FLIP_MAP]                     = M_FlipMap,
