@@ -27,10 +27,6 @@
       "$ref": "#/definitions/command",
       "description": "Command to run when Lara dies during a demo."
     },
-    "cmd_death_in_game": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when Lara dies in game."
-    },
     "cheat_keys": {
       "type": "boolean",
       "description": "Whether to enable original in-game cheat keys."
