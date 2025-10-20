@@ -8,8 +8,11 @@
     // path to the savegame file
     "savegame_fmt_legacy": "save_demo_pc.%d",
     "savegame_fmt_bson": "save_demo_pc_%02d.dat",
+
     "demo_delay": 16,
     "lockout_option_ring": false,
+    "load_save_disabled": false,
+
     "injections": [
         "data/injections/backpack.bin",
         "data/injections/braid.bin",
