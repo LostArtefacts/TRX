@@ -3,12 +3,13 @@
 #define SHADE_NEUTRAL 0x1000
 #define SHADE_MAX 0x1FFF
 
-#define VERT_NO_CAUSTICS 0x01u
-#define VERT_FLAT_SHADED 0x02u
-#define VERT_REFLECTIVE  0x04u
-#define VERT_NO_LIGHTING 0x08u
-#define VERT_BILLBOARD   0x10u
-#define VERT_ABS_SPRITE  0x20u
+#define VERT_NO_CAUSTICS      0x01u
+#define VERT_FLAT_SHADED      0x02u
+#define VERT_REFLECTIVE       0x04u
+#define VERT_NO_LIGHTING      0x08u
+#define VERT_BILLBOARD        0x10u
+#define VERT_ABS_SPRITE       0x20u
+#define VERT_NO_ALPHA_DISCARD 0x40u
 
 #define LIGHTING_MODE_OFF         0
 #define LIGHTING_MODE_ONLY_SHADES 1

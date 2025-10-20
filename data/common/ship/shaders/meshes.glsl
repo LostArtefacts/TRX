@@ -122,6 +122,7 @@ uniform bool uReflectionsEnabled;
 uniform vec3 uGlobalTint;
 uniform vec2 uFogDistance; // x = fog start, y = fog end
 uniform vec4 uFogColor;
+uniform bool uDiscardAlpha;
 
 in vec4 gEyePos;
 in vec3 gNormal;
@@ -148,7 +149,13 @@ void main(void) {
         if (texColor.a <= 0.0) {
             discard;
         }
+        if (uDiscardAlpha && texColor.a < 0.99 && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u) {
+            discard;
+        }
     } else {
+        if (uDiscardAlpha && texColor.a < 0.99 && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u) {
+            discard;
+        }
         texColor.rgb *= texColor.a;
     }
 

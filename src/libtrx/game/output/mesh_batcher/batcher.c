@@ -189,10 +189,10 @@ static void M_DrawOpaqueVertices(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
     glDrawElementsBaseVertex(
-        GL_TRIANGLES, inst->mesh->opaque_vertex_indices->count, GL_UNSIGNED_INT,
+        GL_TRIANGLES, inst->mesh->all_vertex_indices->count, GL_UNSIGNED_INT,
         nullptr, bind->vertex_start);
     GFX_GL_CheckError();
-    g_GFX_Metrics.opaque_vert_count += inst->mesh->opaque_vertex_indices->count;
+    g_GFX_Metrics.opaque_vert_count += inst->mesh->all_vertex_indices->count;
 }
 
 static void M_DrawOpaqueInstance(
@@ -258,7 +258,7 @@ static void M_OpaquePass(
                 bind->vertex_count * sizeof(M_MESH_SHADE), bind->shade_data);
         }
 
-        if (inst->mesh->opaque_vertex_indices->count != 0) {
+        if (inst->mesh->all_vertex_indices->count != 0) {
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
             M_DrawOpaqueInstance(batcher, inst);
         }
@@ -617,8 +617,8 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
         GFX_TRACK_DATA(
             glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-            bind->mesh->opaque_vertex_indices->count * sizeof(uint32_t),
-            Vector_GetData(bind->mesh->opaque_vertex_indices), GL_STATIC_DRAW);
+            bind->mesh->all_vertex_indices->count * sizeof(uint32_t),
+            Vector_GetData(bind->mesh->all_vertex_indices), GL_STATIC_DRAW);
     }
 }
 
