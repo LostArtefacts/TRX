@@ -134,6 +134,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed a missing transition animation between Lara jumping forward and entering freefall
 - fixed pushblocks becoming unusable when on the same sector as a door that does not sit on a room portal
 - fixed ricochets embedding in walls or spawning midair
+- fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger
 
 ## Cheats
 - added a fly cheat

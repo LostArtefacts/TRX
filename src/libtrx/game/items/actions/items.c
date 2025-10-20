@@ -2,6 +2,10 @@
 
 static void M_Turn180(ITEM *const item)
 {
+    if (item == nullptr) {
+        return;
+    }
+
     item->rot.x = -item->rot.x;
     item->rot.y += DEG_180;
     if (item == Lara_GetItem()) {
@@ -12,26 +16,38 @@ static void M_Turn180(ITEM *const item)
 
 static void M_InvisibilityOn(ITEM *const item)
 {
-    item->status = IS_INVISIBLE;
+    if (item != nullptr) {
+        item->status = IS_INVISIBLE;
+    }
 }
 
 static void M_InvisibilityOff(ITEM *const item)
 {
-    item->status = IS_ACTIVE;
+    if (item != nullptr) {
+        item->status = IS_ACTIVE;
+    }
 }
 
 static void M_DynamicLightOn(ITEM *const item)
 {
-    item->dynamic_light = true;
+    if (item != nullptr) {
+        item->dynamic_light = true;
+    }
 }
 
 static void M_DynamicLightOff(ITEM *const item)
 {
-    item->dynamic_light = false;
+    if (item != nullptr) {
+        item->dynamic_light = false;
+    }
 }
 
 static void M_SwapMeshes(ITEM *const item, const OBJECT_ID swap_id)
 {
+    if (item == nullptr) {
+        return;
+    }
+
     const OBJECT *const obj_1 = Object_Get(item->object_id);
     const bool target_lara = swap_id == O_LARA_SWAP && item == Lara_GetItem();
     for (int32_t mesh_idx = 0; mesh_idx < obj_1->mesh_count; mesh_idx++) {
