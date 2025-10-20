@@ -143,6 +143,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         shader, g_Config.rendering.texture_filter,
         g_Config.rendering.enable_lighting);
     M_SetBlendModeForScene(wireframe);
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     glDisable(GL_DEPTH_TEST);
     if (M_IsSourceDirty(p, SCENE_PASS_BACKGROUND)) {
@@ -161,8 +162,12 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     if (M_IsSourceDirty(p, SCENE_PASS_MESHES)
         || M_IsSourceDirty(p, SCENE_PASS_TRANSPARENT)) {
         glEnable(GL_CULL_FACE);
+        Output_Shader_UploadAlphaDiscard(shader, true);
         M_RenderSourcePass(p, SCENE_PASS_MESHES);
+        Output_Shader_UploadAlphaDiscard(shader, false);
+        glDepthMask(GL_FALSE);
         M_RenderSourcePass(p, SCENE_PASS_TRANSPARENT);
+        glDepthMask(GL_TRUE);
         glDisable(GL_CULL_FACE);
     }
 
