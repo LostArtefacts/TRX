@@ -14,30 +14,6 @@
 
 typedef void (*M_FUNC)(ITEM *item);
 
-static void M_Bubbles(ITEM *const item)
-{
-    // XXX: until we get RoboLara, it makes sense for her to breathe underwater
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara->water_status == LWS_CHEAT
-        && !Room_Get(lara_item->room_num)->flags.underwater) {
-        return;
-    }
-
-    const int32_t count = (Random_GetDraw() * 3) / 0x8000;
-    if (count == 0) {
-        return;
-    }
-
-    Sound_Effect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
-
-    XYZ_32 offset = { .x = 0, .y = 0, .z = 50 };
-    Collide_GetJointAbsPosition(item, &offset, LM_HEAD);
-    for (int32_t i = 0; i < count; i++) {
-        Spawn_Bubble(&offset, item->room_num);
-    }
-}
-
 static void M_FinishLevel(ITEM *const item)
 {
     Game_SetIsLevelComplete(true);
@@ -230,7 +206,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         // clang-format off
         [ITEM_ACTION_TURN_180]                     = M_Turn180,
         [ITEM_ACTION_FLOOR_SHAKE]                  = M_FloorShake,
-        [ITEM_ACTION_BUBBLES]                      = M_Bubbles,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
         [ITEM_ACTION_FLOOD]                        = M_Flood,
         [ITEM_ACTION_CHANDELIER]                   = M_Chandelier,
