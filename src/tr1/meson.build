@@ -112,7 +112,6 @@ sources = [
   'game/inventory.c',
   'game/inventory_ring/vars.c',
   'game/item_actions.c',
-  'game/item_actions/bubbles.c',
   'game/item_actions/chain_block.c',
   'game/item_actions/earthquake.c',
   'game/item_actions/explosion.c',
