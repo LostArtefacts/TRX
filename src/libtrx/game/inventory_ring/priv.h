@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../math/types.h"
-#include "./types.h"
+#include "game/inventory_ring/types.h"
+#include "game/math/types.h"
 
 #define INV_RING_FRAMES 2
 #define INV_RING_CLOSE_FRAMES 32

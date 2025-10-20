@@ -1,40 +1,32 @@
 #include "game/inventory_ring/control.h"
 
-#include "game/demo.h"
+#include "config.h"
+#include "game/camera.h"
+#include "game/console.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/game_string.h"
+#include "game/gun/const.h"
+#include "game/gym.h"
+#include "game/input.h"
+#include "game/interpolation.h"
 #include "game/inventory.h"
+#include "game/inventory_ring/priv.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara.h"
-#include "game/option/option.h"
+#include "game/music.h"
+#include "game/option.h"
+#include "game/option/compass.h"
+#include "game/option/examine.h"
+#include "game/option/passport.h"
+#include "game/output.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/shell.h"
+#include "game/sound.h"
 #include "game/stats.h"
-#include "global/vars.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/clock.h>
-#include <libtrx/game/console.h>
-#include <libtrx/game/gun/const.h>
-#include <libtrx/game/gym.h>
-#include <libtrx/game/input.h>
-#include <libtrx/game/interpolation.h>
-#include <libtrx/game/inventory_ring/draw.h>
-#include <libtrx/game/inventory_ring/priv.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects/names.h>
-#include <libtrx/game/objects/vars.h>
-#include <libtrx/game/option/compass.h>
-#include <libtrx/game/option/examine.h>
-#include <libtrx/game/option/passport.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/overlay.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/game/viewport.h>
-#include <libtrx/memory.h>
-
-#include <stdio.h>
+#include "game/viewport.h"
+#include "memory.h"
 
 #define M_TITLE_RING_OBJECTS 6
 #define M_OPTION_RING_OBJECTS 5
@@ -73,7 +65,29 @@ static void M_RingNotActive(
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
+
     switch (inv_item->object_id) {
+#if TR_VERSION == 1
+    case O_SHOTGUN_OPTION:
+        M_ShowAmmoQuantity(
+            "%5d \\{ammo shotgun}",
+            lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+        break;
+    case O_MAGNUM_OPTION:
+        M_ShowAmmoQuantity("%5d \\{ammo magnums}", lara->magnum_ammo.ammo);
+        break;
+    case O_UZI_OPTION:
+        M_ShowAmmoQuantity("%5d \\{ammo uzis}", lara->uzi_ammo.ammo);
+        break;
+
+    case O_SHOTGUN_AMMO_OPTION:
+        InvRing_ShowItemQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
+        break;
+    case O_MAGNUM_AMMO_OPTION:
+    case O_UZI_AMMO_OPTION:
+        InvRing_ShowItemQuantity("%d", qty * 2);
+        break;
+#else
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity("%5d", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
@@ -106,6 +120,7 @@ static void M_RingNotActive(
     case O_FLARES_OPTION:
         M_ShowAmmoQuantity("%d", qty);
         break;
+#endif
 
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
@@ -192,6 +207,60 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
 
     switch (m_InvChosen) {
     case O_PASSPORT_OPTION:
+#if TR_VERSION == 1
+        switch (g_Passport.passport_selection) {
+        case PASSPORT_MODE_LOAD_GAME:
+            return (GF_COMMAND) {
+                .action = GF_START_SAVED_GAME,
+                .param = g_Passport.select_save_slot,
+            };
+
+        case PASSPORT_MODE_SELECT_LEVEL:
+            return (GF_COMMAND) {
+                .action = GF_SELECT_GAME,
+                .param = g_Passport.select_level_num,
+            };
+
+        case PASSPORT_MODE_STORY_SO_FAR:
+            return (GF_COMMAND) {
+                .action = GF_STORY_SO_FAR,
+                .param = g_Passport.select_save_slot,
+            };
+
+        case PASSPORT_MODE_NEW_GAME:
+            if (apply_changes) {
+                Savegame_InitCurrentInfo();
+                Savegame_UnbindSlot();
+            }
+            return (GF_COMMAND) {
+                .action = GF_START_GAME,
+                .param = GF_GetFirstLevel()->num,
+            };
+
+        case PASSPORT_MODE_SAVE_GAME:
+            if (apply_changes) {
+                Savegame_Save(g_Passport.select_save_slot);
+            }
+            return (GF_COMMAND) { .action = GF_NOOP };
+
+        case PASSPORT_MODE_RESTART:
+            return (GF_COMMAND) {
+                .action = GF_RESTART_GAME,
+                .param = Game_GetCurrentLevel()->num,
+            };
+
+        case PASSPORT_MODE_EXIT_TITLE:
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+
+        case PASSPORT_MODE_EXIT_GAME:
+            return (GF_COMMAND) { .action = GF_EXIT_GAME };
+
+        case PASSPORT_MODE_BROWSE:
+        case PASSPORT_MODE_UNAVAILABLE:
+        default:
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+#else
         switch (g_Passport.passport_page) {
         case 0:
             // first passport page: load game.
@@ -258,6 +327,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
             }
         }
+#endif
         break;
 
     case O_PHOTO_OPTION:
