@@ -148,6 +148,25 @@ static void M_Stairs2Slope(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
+static void M_DropSand(ITEM *const item)
+{
+    const int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > LOGIC_FPS * 4) {
+        Room_SetFlipEffect(-1);
+    } else {
+        if (flip_timer == 0) {
+            Sound_Effect(SFX_TRAPDOOR_OPEN, nullptr, SPM_NORMAL);
+        }
+        const XYZ_32 pos = {
+            .x = g_Camera.target.x,
+            .y = g_Camera.target.y + flip_timer * 100,
+            .z = g_Camera.target.z,
+        };
+        Sound_Effect(SFX_SAND_FX, &pos, SPM_NORMAL);
+    }
+    Room_IncrementFlipTimer(1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
@@ -157,3 +176,4 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOR_SHAKE, M_FloorShake)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RAISING_BLOCK, M_RaisingBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_POWER_UP, M_PowerUp)
 REGISTER_ITEM_ACTION(ITEM_ACTION_STAIRS_TO_SLOPE, M_Stairs2Slope)
+REGISTER_ITEM_ACTION(ITEM_ACTION_DROP_SAND, M_DropSand)
