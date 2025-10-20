@@ -1,11 +1,10 @@
-#include "game/item_actions.h"
-
 #include "game/stats.h"
 
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/gym.h>
+#include <libtrx/game/items/actions/ids.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/sound.h>
@@ -261,7 +260,7 @@ static void M_AssaultFinished(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
-void ItemAction_Run(int16_t action_id, ITEM *item)
+void Item_ActionRun(ITEM_TRX_ACTION action_id, ITEM *item)
 {
     static M_FUNC m_Actions[] = {
         // clang-format off
@@ -298,15 +297,16 @@ void ItemAction_Run(int16_t action_id, ITEM *item)
         // clang-format on
     };
 
-    if (m_Actions[action_id] != nullptr) {
+    if (action_id >= 0 && action_id < ITEM_ACTION_NUMBER_OF
+        && m_Actions[action_id] != nullptr) {
         m_Actions[action_id](item);
     }
 }
 
-void ItemAction_RunActive(void)
+void Item_ActionRunActive(void)
 {
     const int32_t flip_effect = Room_GetFlipEffect();
     if (flip_effect != -1) {
-        ItemAction_Run(flip_effect, nullptr);
+        Item_ActionRunDirect(flip_effect, nullptr);
     }
 }

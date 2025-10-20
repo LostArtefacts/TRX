@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/item_actions.h"
+#include <libtrx/game/items.h>
 
 void ItemAction_LaraNormal(ITEM *item);
 void ItemAction_LaraHandsFree(ITEM *item);

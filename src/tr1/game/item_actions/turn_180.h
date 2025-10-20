@@ -1,5 +1,5 @@
 #pragma once
 
-#include "game/item_actions.h"
+#include <libtrx/game/items.h>
 
 void ItemAction_Turn180(ITEM *item);

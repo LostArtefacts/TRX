@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/interpolation.h"
-#include "game/item_actions.h"
 #include "game/lara/common.h"
 #include "game/objects.h"
 #include "game/rooms.h"
@@ -239,7 +238,7 @@ void Item_Animate(ITEM *const item)
             const ANIM_COMMAND_EFFECT_DATA *const data =
                 (ANIM_COMMAND_EFFECT_DATA *)command->data;
             if (item->frame_num == data->frame_num) {
-                ItemAction_Run(data->effect_num, item);
+                Item_ActionRunDirect(data->effect_num, item);
             }
             break;
 
