@@ -100,8 +100,25 @@ static void M_Flicker(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
+static void M_FloorShake(ITEM *const item)
+{
+    const int32_t max_dist = WALL_L * 16; // = 0x4000
+    const int32_t max_bounce = 100;
+
+    const int32_t dx = item->pos.x - g_Camera.pos.x;
+    const int32_t dy = item->pos.y - g_Camera.pos.y;
+    const int32_t dz = item->pos.z - g_Camera.pos.z;
+    const int32_t dist = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
+
+    if (ABS(dx) < max_dist && ABS(dy) < max_dist && ABS(dz) < max_dist) {
+        g_Camera.bounce =
+            max_bounce * (SQUARE(WALL_L) - dist / 256) / SQUARE(WALL_L);
+    }
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EARTHQUAKE, M_Earthquake)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLICKER, M_Flicker)
+REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOR_SHAKE, M_FloorShake)

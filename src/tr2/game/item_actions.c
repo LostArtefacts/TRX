@@ -29,22 +29,6 @@ static void M_Turn180(ITEM *const item)
     }
 }
 
-static void M_FloorShake(ITEM *const item)
-{
-    const int32_t max_dist = WALL_L * 16; // = 0x4000
-    const int32_t max_bounce = 100;
-
-    const int32_t dx = item->pos.x - g_Camera.pos.pos.x;
-    const int32_t dy = item->pos.y - g_Camera.pos.pos.y;
-    const int32_t dz = item->pos.z - g_Camera.pos.pos.z;
-    const int32_t dist = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
-
-    if (ABS(dx) < max_dist && ABS(dy) < max_dist && ABS(dz) < max_dist) {
-        g_Camera.bounce =
-            max_bounce * (SQUARE(WALL_L) - dist / 256) / SQUARE(WALL_L);
-    }
-}
-
 static void M_Boiler(ITEM *const item)
 {
     Sound_Effect(SFX_BOILER, nullptr, SPM_NORMAL);
@@ -173,7 +157,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
     static M_FUNC m_Actions[] = {
         // clang-format off
         [ITEM_ACTION_TURN_180]                     = M_Turn180,
-        [ITEM_ACTION_FLOOR_SHAKE]                  = M_FloorShake,
         [ITEM_ACTION_FINISH_LEVEL]                 = M_FinishLevel,
         [ITEM_ACTION_CHANDELIER]                   = M_Chandelier,
         [ITEM_ACTION_RUBBLE]                       = M_Rubble,
