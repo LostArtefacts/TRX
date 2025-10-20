@@ -33,7 +33,6 @@ void Item_ActionRunLegacy(ITEM_TRX_ACTION action_id, ITEM *item)
         [ITEM_ACTION_DROP_SAND] = ItemAction_DropSand,
         [ITEM_ACTION_POWER_UP] = ItemAction_PowerUp,
         [ITEM_ACTION_EXPLOSION] = ItemAction_Explosion,
-        [ITEM_ACTION_LARA_HANDS_FREE] = ItemAction_LaraHandsFree,
         [ITEM_ACTION_FLIP_MAP] = ItemAction_FlipMap,
         [ITEM_ACTION_LARA_DRAW_RIGHT_GUN] = ItemAction_LaraDrawRightGun,
         [ITEM_ACTION_CHAIN_BLOCK] = ItemAction_ChainBlock,
