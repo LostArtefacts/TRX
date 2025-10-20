@@ -21,8 +21,9 @@
 - changed the bar appearance labels to better align with expectations (#4025)
 - changed the debug position UI to no longer be hidden in photo mode
 - changed the unrestricted look mode option to include Lara being able to look freely while shooting an enemy (#4090)
-- removed the "cmd_*" game flow options
 - changed the `ambient_tracks` property to be only available on the root level
+- removed the "cmd_*" game flow options
+- fixed the new game modes dialog requiring the Action key to show up (TR2 dialogs don't need this.)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object

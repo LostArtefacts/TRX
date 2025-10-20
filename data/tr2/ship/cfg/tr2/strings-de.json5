@@ -1121,7 +1121,6 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Automatik-Pistolen ausrüsten",
         "ENUM_INPUT_ROLE_USE_FLARE": "Fackel",
         "MISC_NONE": "None",
-        "PASSPORT_EXIT_DEMO": "Demo beenden",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",

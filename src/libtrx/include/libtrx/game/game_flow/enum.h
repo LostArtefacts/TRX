@@ -42,13 +42,9 @@ typedef enum {
     GF_LEVEL_COMPLETE,
     GF_EXIT_GAME,
     GF_START_SAVED_GAME,
-#if TR_VERSION == 1
     GF_RESTART_GAME,
-#endif
     GF_SELECT_GAME,
-#if TR_VERSION == 1
     GF_STORY_SO_FAR,
-#endif
 } GF_ACTION;
 
 typedef enum {

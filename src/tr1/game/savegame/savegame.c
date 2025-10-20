@@ -10,5 +10,5 @@ int32_t Savegame_GetSlotCount(void)
 
 void Savegame_HighlightNewestSlot(void)
 {
-    g_Passport.select_save_slot = Savegame_GetMostRecentlyCreatedSlot();
+    g_Passport.select_slot = Savegame_GetMostRecentlyCreatedSlot();
 }

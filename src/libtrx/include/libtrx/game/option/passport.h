@@ -2,29 +2,20 @@
 
 #include "../inventory_ring/types.h"
 
-#if TR_VERSION == 1
 typedef enum {
-    PASSPORT_MODE_BROWSE = 0,
-    PASSPORT_MODE_LOAD_GAME = 1,
-    PASSPORT_MODE_SELECT_LEVEL = 2,
-    PASSPORT_MODE_STORY_SO_FAR = 3,
-    PASSPORT_MODE_SAVE_GAME = 4,
-    PASSPORT_MODE_NEW_GAME = 5,
-    PASSPORT_MODE_RESTART = 6,
-    PASSPORT_MODE_EXIT_TITLE = 7,
-    PASSPORT_MODE_EXIT_GAME = 8,
-    PASSPORT_MODE_UNAVAILABLE = 9,
-} PASSPORT_MODE;
-#endif
+    PASSPORT_ROLE_LOAD_GAME,
+    PASSPORT_ROLE_SELECT_LEVEL,
+    PASSPORT_ROLE_STORY_SO_FAR,
+    PASSPORT_ROLE_SAVE_GAME,
+    PASSPORT_ROLE_NEW_GAME,
+    PASSPORT_ROLE_RESTART,
+    PASSPORT_ROLE_EXIT_TITLE,
+    PASSPORT_ROLE_EXIT_GAME,
+} PASSPORT_ROLE;
 
 typedef struct {
-#if TR_VERSION == 1
-    PASSPORT_MODE passport_selection;
-#else
-    int32_t passport_page;
-#endif
-    int32_t select_save_slot;
-    int32_t select_level_num;
+    PASSPORT_ROLE select_role;
+    int32_t select_slot;
     bool ask_for_save;
 } PASSPORT;
 
