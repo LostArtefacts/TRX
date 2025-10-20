@@ -6,7 +6,7 @@
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
 - added a new easter egg command
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)
-- added support for object, music, sound, Lara state, and Lara animation slots overrides through CSV catalogs  
+- added support for object, music, sound, flip effects, Lara state, and Lara animation slots overrides through CSV catalogs  
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — complex objects such as the dragon or Skidoos may not behave correctly. Please report any bugs encountered.  
     See [the documentation](../07-CATALOGS.md) for details.
@@ -24,6 +24,7 @@
 - changed the debug position UI to no longer be hidden in photo mode
 - changed save crystal collision to make them easier to activate
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
+- fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
 - fixed ambient music not playing in demo levels (#4046, regression from 4.13)
 
