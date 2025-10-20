@@ -1,6 +1,5 @@
 
 #include "game/option/option_compass.h"
-#include "game/option/option_passport.h"
 
 #include <libtrx/game/input.h>
 #include <libtrx/game/option.h>
@@ -8,6 +7,7 @@
 #include <libtrx/game/option/examine.h>
 #include <libtrx/game/option/gameplay.h>
 #include <libtrx/game/option/graphics.h>
+#include <libtrx/game/option/passport.h>
 #include <libtrx/game/option/sound.h>
 
 void Option_Close(const INVENTORY_ITEM *const inv_item)

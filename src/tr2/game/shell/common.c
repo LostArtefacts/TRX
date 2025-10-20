@@ -156,6 +156,16 @@ int32_t Shell_Main(const SHELL_ARGS *args)
             break;
         }
 
+        case GF_RESTART_GAME: {
+            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, gf_cmd.param);
+            gf_cmd = GF_InterpretSequence(level, GFSC_RESTART, nullptr);
+            break;
+        }
+
+        case GF_STORY_SO_FAR:
+            Shell_ExitSystem("Not implemented");
+            break;
+
         case GF_START_CINE:
             gf_cmd = GF_DoCutsceneSequence(gf_cmd.param);
             break;

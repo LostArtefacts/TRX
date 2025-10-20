@@ -7,6 +7,11 @@
 #include "game/ui/elements/modal.h"
 #include "game/ui/elements/pad.h"
 #include "game/ui/elements/requester.h"
+#include "memory.h"
+
+typedef struct UI_NEW_GAME_STATE {
+    UI_REQUESTER_STATE req;
+} UI_NEW_GAME_STATE;
 
 static const GAME_STRING_ID m_Options[] = {
     GS_ID(PASSPORT_MODE_NEW_GAME),
@@ -16,14 +21,16 @@ static const GAME_STRING_ID m_Options[] = {
     nullptr,
 };
 
-void UI_NewGame_Init(UI_NEW_GAME_STATE *const s)
+UI_NEW_GAME_STATE *UI_NewGame_Init(void)
 {
+    UI_NEW_GAME_STATE *const s = Memory_Alloc(sizeof(UI_NEW_GAME_STATE));
     int32_t option_count = 0;
     for (int32_t i = 0; m_Options[i] != nullptr; i++) {
         option_count++;
     }
 
     UI_Requester_Init(&s->req, option_count, option_count, true);
+    return s;
 }
 
 void UI_NewGame_Free(UI_NEW_GAME_STATE *const s)

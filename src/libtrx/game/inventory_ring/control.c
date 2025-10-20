@@ -207,127 +207,58 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
 
     switch (m_InvChosen) {
     case O_PASSPORT_OPTION:
-#if TR_VERSION == 1
-        switch (g_Passport.passport_selection) {
-        case PASSPORT_MODE_LOAD_GAME:
+        switch (g_Passport.select_role) {
+        case PASSPORT_ROLE_LOAD_GAME:
+#if TR_VERSION == 2
+            if (apply_changes) {
+                Inv_RemoveAllItems();
+            }
+#endif
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
-                .param = g_Passport.select_save_slot,
+                .param = g_Passport.select_slot,
             };
 
-        case PASSPORT_MODE_SELECT_LEVEL:
-            return (GF_COMMAND) {
-                .action = GF_SELECT_GAME,
-                .param = g_Passport.select_level_num,
-            };
-
-        case PASSPORT_MODE_STORY_SO_FAR:
-            return (GF_COMMAND) {
-                .action = GF_STORY_SO_FAR,
-                .param = g_Passport.select_save_slot,
-            };
-
-        case PASSPORT_MODE_NEW_GAME:
+        case PASSPORT_ROLE_NEW_GAME:
             if (apply_changes) {
                 Savegame_InitCurrentInfo();
-                Savegame_UnbindSlot();
             }
+            Savegame_UnbindSlot();
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
                 .param = GF_GetFirstLevel()->num,
             };
 
-        case PASSPORT_MODE_SAVE_GAME:
+        case PASSPORT_ROLE_SAVE_GAME:
             if (apply_changes) {
-                Savegame_Save(g_Passport.select_save_slot);
+                Savegame_Save(g_Passport.select_slot);
             }
             return (GF_COMMAND) { .action = GF_NOOP };
 
-        case PASSPORT_MODE_RESTART:
+        case PASSPORT_ROLE_RESTART:
             return (GF_COMMAND) {
                 .action = GF_RESTART_GAME,
                 .param = Game_GetCurrentLevel()->num,
             };
 
-        case PASSPORT_MODE_EXIT_TITLE:
+        case PASSPORT_ROLE_EXIT_TITLE:
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
 
-        case PASSPORT_MODE_EXIT_GAME:
+        case PASSPORT_ROLE_EXIT_GAME:
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
 
-        case PASSPORT_MODE_BROWSE:
-        case PASSPORT_MODE_UNAVAILABLE:
-        default:
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        }
-#else
-        switch (g_Passport.passport_page) {
-        case 0:
-            // first passport page: load game.
-            if (apply_changes) {
-                Inv_RemoveAllItems();
-            }
+        case PASSPORT_ROLE_SELECT_LEVEL:
             return (GF_COMMAND) {
-                .action = GF_START_SAVED_GAME,
-                .param = g_Passport.select_save_slot,
+                .action = GF_SELECT_GAME,
+                .param = g_Passport.select_slot,
             };
-        case 1:
-            // second passport page:
-            if (ring->mode == INV_TITLE_MODE) {
-                // title mode - new game or select level.
-                Savegame_BindSlot(-1);
-                if (g_GameFlow.play_any_level) {
-                    return (GF_COMMAND) {
-                        .action = GF_SELECT_GAME,
-                        .param = g_Passport.select_save_slot,
-                    };
-                } else {
-                    if (apply_changes) {
-                        Savegame_InitCurrentInfo();
-                    }
-                    return (GF_COMMAND) {
-                        .action = GF_START_GAME,
-                        .param = GF_GetFirstLevel()->num,
-                    };
-                }
-            } else {
-                // game mode - save game (or start the game if in Lara's
-                // Home)
-                if (Game_IsInGym()) {
-                    if (apply_changes) {
-                        Savegame_InitCurrentInfo();
-                    }
-                    if (g_GameFlow.play_any_level) {
-                        Savegame_BindSlot(-1);
-                        return (GF_COMMAND) {
-                            .action = GF_SELECT_GAME,
-                            .param = g_Passport.select_save_slot,
-                        };
-                    } else {
-                        return (GF_COMMAND) {
-                            .action = GF_START_GAME,
-                            .param = GF_GetFirstLevel()->num,
-                        };
-                    }
-                } else {
-                    if (apply_changes) {
-                        Music_Unpause();
-                        Savegame_Save(g_Passport.select_save_slot);
-                    }
-                    return (GF_COMMAND) { .action = GF_NOOP };
-                }
-            }
-        case 2:
-            // third passport page:
-            if (ring->mode == INV_TITLE_MODE) {
-                // title mode - exit the game
-                return (GF_COMMAND) { .action = GF_EXIT_GAME };
-            } else {
-                // game mode - exit to title
-                return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-            }
+
+        case PASSPORT_ROLE_STORY_SO_FAR:
+            return (GF_COMMAND) {
+                .action = GF_STORY_SO_FAR,
+                .param = g_Passport.select_slot,
+            };
         }
-#endif
         break;
 
     case O_PHOTO_OPTION:
@@ -448,7 +379,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_level_num : -1;
+    m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_slot : -1;
 
     if (g_Config.gameplay.enable_timer_in_inventory
         && !(TR_VERSION >= 2 && Game_IsInGym())) {

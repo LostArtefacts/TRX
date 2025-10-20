@@ -116,7 +116,6 @@ sources = [
   'game/objects/vehicles/skidoo_fast.c',
   'game/option/option.c',
   'game/option/option_compass.c',
-  'game/option/option_passport.c',
   'game/room_draw.c',
   'game/savegame/common.c',
   'game/savegame/savegame_bson.c',

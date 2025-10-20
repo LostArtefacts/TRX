@@ -48,9 +48,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         }
     }
 
-    // clear the save slot information so that /play starts with a fresh state
-    g_Passport.select_save_slot = -1;
-
     if (Lara_GetItem() != nullptr) {
         Lara_Initialise(level);
     }
@@ -76,6 +73,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     default:
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }

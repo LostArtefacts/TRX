@@ -31,6 +31,7 @@
 - fixed ambient music not playing in demo levels (#4046, regression from 4.13)
 - fixed caustics stopping after spending roughly 12 minutes in a level (#4109, regression from 4.10)
 - fixed legacy UB crashing the game (#4113, regression from 4.12)
+- fixed select level feature to also be available to games started with `/play`
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)

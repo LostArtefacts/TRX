@@ -1088,7 +1088,6 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż pistolety automatyczne",
         "ENUM_INPUT_ROLE_USE_FLARE": "Flara",
         "MISC_NONE": "Brak",
-        "PASSPORT_EXIT_DEMO": "Wyjdź z dema",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Przywraca brakującą animację glonów w podwodnych poziomach.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
