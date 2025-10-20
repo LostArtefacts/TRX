@@ -9,7 +9,6 @@
     "cmd_title":          {"action": "noop"},
     "cmd_death_in_demo":  {"action": "exit_to_title"},
     "cmd_death_in_game":  {"action": "noop"},
-    "cmd_demo_interrupt": {"action": "exit_to_title"},
     "cmd_demo_end":       {"action": "exit_to_title"},
 
     "cheat_keys": true,

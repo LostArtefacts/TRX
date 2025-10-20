@@ -31,10 +31,6 @@
       "$ref": "#/definitions/command",
       "description": "Command to run when Lara dies in game."
     },
-    "cmd_demo_interrupt": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when the player interrupts a demo."
-    },
     "cmd_demo_end": {
       "$ref": "#/definitions/command",
       "description": "Command to run when a demo finishes playback."

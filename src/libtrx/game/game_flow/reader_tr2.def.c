@@ -107,9 +107,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     ctx->gf->cmd_death_in_game = M_LoadCommand(
         ctx, JSON_ObjectGetObject(obj, "cmd_death_in_game"),
         (GF_COMMAND) { .action = GF_NOOP });
-    ctx->gf->cmd_demo_interrupt = M_LoadCommand(
-        ctx, JSON_ObjectGetObject(obj, "cmd_demo_interrupt"),
-        (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
     ctx->gf->cmd_demo_end = M_LoadCommand(
         ctx, JSON_ObjectGetObject(obj, "cmd_demo_end"),
         (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
