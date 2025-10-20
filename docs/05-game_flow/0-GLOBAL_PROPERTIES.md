@@ -280,8 +280,6 @@ remains distinct for each game.
     "savegame_fmt_legacy": "savegame.%d",
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
-    "cmd_init":           {"action": "exit_to_title"},
-
     "cheat_keys": true,
     "load_save_disabled": false,
     "play_any_level": false,
@@ -354,14 +352,6 @@ remains distinct for each game.
     <th>Property</th>
     <th>Type</th>
     <th>Description</th>
-  </tr>
-  <tr valign="top">
-    <td><code>cmd_init</code></td>
-    <td rowspan="6">Object</td>
-    <td>
-      The command to run when the game is first launched. See <a
-      href="#game-flow-commands">Game flow commands</a> for full details.
-    </td>
   </tr>
   <tr valign="top">
     <td><code>cheat_keys</code></td>
