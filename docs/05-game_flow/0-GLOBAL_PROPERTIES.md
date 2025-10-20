@@ -282,7 +282,6 @@ remains distinct for each game.
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},
-    "cmd_death_in_demo":  {"action": "exit_to_title"},
 
     "cheat_keys": true,
     "load_save_disabled": false,
@@ -368,10 +367,6 @@ remains distinct for each game.
   <tr valign="top">
     <td><code>cmd_title</code></td>
     <td>The command to run when the main menu is to be shown.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>cmd_death_in_demo</code></td>
-    <td>The command to run when Lara dies during a demo (not used in the original game).</td>
   </tr>
   <tr valign="top">
     <td><code>cheat_keys</code></td>

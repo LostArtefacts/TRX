@@ -101,9 +101,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     ctx->gf->cmd_title = M_LoadCommand(
         ctx, JSON_ObjectGetObject(obj, "cmd_title"),
         (GF_COMMAND) { .action = GF_NOOP });
-    ctx->gf->cmd_death_demo_mode = M_LoadCommand(
-        ctx, JSON_ObjectGetObject(obj, "cmd_death_demo_mode"),
-        (GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
 
     ctx->gf->is_demo_version = JSON_ObjectGetBool(obj, "demo_version", false);
 

@@ -7,7 +7,6 @@
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},
-    "cmd_death_in_demo":  {"action": "exit_to_title"},
 
     "cheat_keys": true,
     "load_save_disabled": false,
