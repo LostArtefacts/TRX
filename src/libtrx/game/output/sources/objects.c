@@ -26,11 +26,15 @@ static M_PRIV m_Priv = {};
 static void M_AddObjectVerts(
     MESH_BUILDER *const builder, const size_t vtx_count,
     const OBJECT_MESH *const obj_mesh, const uint16_t *vertices,
-    const uint16_t texture_idx, const uint16_t palette_idx,
-    const uint16_t flags, const TEXTURE_ZW_F *const trapezoid_ratio)
+    const uint16_t texture_idx, const uint16_t palette_idx, uint16_t flags,
+    const TEXTURE_ZW_F *const trapezoid_ratio)
 {
     RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
     int16_t uvw_idx = -1;
+    if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
+        flags |= VERT_NO_ALPHA_DISCARD;
+    }
+
     if (flags & VERT_FLAT_SHADED) {
         if (g_TRVersion == 1) {
             color = Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx));
