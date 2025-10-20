@@ -1,5 +1,6 @@
 #pragma once
 
+#include "items/actions.h"
 #include "items/anim.h"
 #include "items/col.h"
 #include "items/common.h"

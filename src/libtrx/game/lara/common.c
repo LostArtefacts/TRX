@@ -4,7 +4,6 @@
 #include "game/catalog.h"
 #include "game/gun.h"
 #include "game/inventory.h"
-#include "game/item_actions.h"
 #include "game/lara.h"
 #include "game/matrix.h"
 #include "game/pathing.h"
@@ -507,7 +506,7 @@ void Lara_Animate(ITEM *const item)
                 break;
             }
 
-            ItemAction_Run(data->effect_num, item);
+            Item_ActionRunDirect(data->effect_num, item);
             break;
         }
 

@@ -4,7 +4,6 @@
 #include "game/camera.h"
 #include "game/game_buf.h"
 #include "game/input.h"
-#include "game/item_actions.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/objects.h"
@@ -647,7 +646,7 @@ static void M_Control(const int16_t item_num)
         item->fall_speed = 0;
         item->pos.y = under_block_height;
         item->status = IS_DEACTIVATED;
-        ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
+        Item_ActionRun(ITEM_ACTION_FLOOR_SHAKE, item);
         Sound_Effect(SFX_PUSHBLOCK_LAND, &item->pos, SPM_NORMAL);
     } else if (
         // If block is at/under floor height, no gravity, and isn't being
