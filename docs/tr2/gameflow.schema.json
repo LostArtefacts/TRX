@@ -23,10 +23,6 @@
       "$ref": "#/definitions/command",
       "description": "Command to run when the main menu is shown."
     },
-    "cmd_death_in_demo": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when Lara dies during a demo."
-    },
     "cheat_keys": {
       "type": "boolean",
       "description": "Whether to enable original in-game cheat keys."

@@ -187,7 +187,6 @@ typedef struct {
     struct {
         GF_COMMAND cmd_init;
         GF_COMMAND cmd_title;
-        GF_COMMAND cmd_death_demo_mode;
     };
 
     // global settings
