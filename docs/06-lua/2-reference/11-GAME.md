@@ -19,6 +19,16 @@ Module for retrieving game version and level tables.
     - **`path`**: String file path of the level data.
     - **`type`**: Integer type identifier of the level.
 
+- [lua]`trx.game.Settings`
+
+    Represents global engine settings.
+
+    Properties:
+    - **`lockout_option_ring`**: Whether to disallow the player from using the option ring in-game.
+
+    Writable properties:
+    - `lockout_option_ring`
+
 ### Functions
 
 - [lua]`trx.game.version`  
@@ -28,6 +38,9 @@ Module for retrieving game version and level tables.
 
 - [lua]`trx.game.current_level`  
   Retrieves the [lua]`trx.game.Level` that's currently loaded or `nil`.
+
+- [lua]`#trx.game.settings`  
+  Accesses the global engine settings.
 
 - [lua]`#trx.game.levels`  
   [lua]`#trx.game.demos`  
