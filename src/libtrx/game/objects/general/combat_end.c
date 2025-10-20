@@ -1,15 +1,14 @@
+#include "game/camera.h"
+#include "game/creature.h"
 #include "game/game.h"
-
-#include <libtrx/game/camera.h>
-#include <libtrx/game/creature.h>
-#include <libtrx/game/gun.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/lara/vehicle.h>
-#include <libtrx/game/los.h>
-#include <libtrx/game/objects/common.h>
-#include <libtrx/game/objects/vars.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/utils.h>
+#include "game/gun.h"
+#include "game/lara.h"
+#include "game/lara/vehicle.h"
+#include "game/los.h"
+#include "game/objects/common.h"
+#include "game/objects/vars.h"
+#include "game/pathing.h"
+#include "utils.h"
 
 #define M_CUTSCENE_DELAY (5 * LOGIC_FPS) // = 150
 #define M_BOSS_TYPE O_CULT_3
@@ -107,11 +106,13 @@ static void M_ActivateNearestBoss(void)
 static void M_PrepareCutscene(const int16_t item_num)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
+#if TR_VERSION == 2
     if (lara->gun_type == LGT_FLARE) {
         Lara_Flare_Undraw();
         lara->flare.control = false;
         lara->left_arm.lock = false;
     }
+#endif
 
     Lara_Vehicle_Dismount();
     Gun_SetLaraHandLMesh(LGT_UNARMED);
