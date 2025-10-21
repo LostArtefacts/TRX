@@ -708,6 +708,7 @@ bool Savegame_Save(const int32_t slot_idx)
         if (fp != nullptr) {
             strategy.save_to_file_func(fp, savegame_info);
             savegame_info->format = strategy.format;
+            strategy.fill_info_func(fp, savegame_info);
             Memory_FreePointer(&savegame_info->full_path);
             savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
             savegame_info->counter = m_SaveCounter;
