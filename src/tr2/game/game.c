@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/lara.h"
 #include "game/level.h"
 #include "game/room_draw.h"
 #include "game/savegame.h"

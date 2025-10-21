@@ -1,4 +1,3 @@
-#include "game/lara.h"
 #include "game/objects/common.h"
 #include "global/types.h"
 #include "global/vars.h"

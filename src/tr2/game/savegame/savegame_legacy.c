@@ -2,7 +2,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/inventory.h"
-#include "game/lara.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "global/types_decomp.h"

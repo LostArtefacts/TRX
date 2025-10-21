@@ -4,7 +4,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
-#include "game/lara.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "global/vars.h"
