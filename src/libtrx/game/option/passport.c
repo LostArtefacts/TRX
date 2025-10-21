@@ -333,6 +333,7 @@ static void M_ShowStorySoFar(void)
     const int32_t choice =
         UI_SelectLevelDialog_Control(m_Priv.select_level.state);
     if (choice == UI_SELECT_LEVEL_CHOICE_PLAY_STORY_SO_FAR) {
+        m_Priv.selection = m_Priv.outer_selection;
         m_Priv.pages[m_Priv.active_page].role = PASSPORT_ROLE_STORY_SO_FAR;
     } else if (choice != UI_SELECT_LEVEL_CHOICE_NOOP) {
         m_Priv.selection = choice + GF_GetFirstLevel()->num;

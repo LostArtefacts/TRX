@@ -56,10 +56,6 @@ static bool M_FillSlot(
     const char *const path)
 {
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
-    if (strategy.format <= savegame_info->format) {
-        return true;
-    }
-
     bool result = false;
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
     if (fp != nullptr) {
@@ -74,6 +70,17 @@ static bool M_FillSlot(
         File_Close(fp);
     }
     return result;
+}
+
+static bool M_TryFillSlot(
+    const SAVEGAME_STRATEGY strategy, const int32_t slot_num,
+    const char *const path)
+{
+    SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    if (strategy.format <= savegame_info->format) {
+        return true;
+    }
+    return M_FillSlot(strategy, slot_num, path);
 }
 
 static void M_ScanSavedGamesDir(const char *const dir_path)
@@ -108,7 +115,7 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
 
             if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
                 char *file_path = String_Format("%s/%s", dir_path, file_name);
-                M_FillSlot(strategy, slot, file_path);
+                M_TryFillSlot(strategy, slot, file_path);
                 Memory_FreePointer(&file_path);
             }
         }
@@ -707,16 +714,11 @@ bool Savegame_Save(const int32_t slot_idx)
         MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
         if (fp != nullptr) {
             strategy.save_to_file_func(fp, savegame_info);
-            savegame_info->format = strategy.format;
-            strategy.fill_info_func(fp, savegame_info);
-            Memory_FreePointer(&savegame_info->full_path);
-            savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
-            savegame_info->counter = m_SaveCounter;
-            savegame_info->level_num = current_level->num;
-            savegame_info->level_title =
-                level_title != nullptr ? Memory_DupStr(level_title) : nullptr;
             File_Close(fp);
             result = true;
+        }
+        if (result) {
+            M_FillSlot(strategy, slot_idx, full_path);
         }
 
         Memory_FreePointer(&file_name);
