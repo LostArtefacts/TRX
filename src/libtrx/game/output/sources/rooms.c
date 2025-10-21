@@ -7,6 +7,7 @@
 #include "game/random.h"
 #include "memory.h"
 #include "utils.h"
+#include "version.h"
 
 typedef struct {
     MESH_BATCHER *batcher;
@@ -28,8 +29,14 @@ static void M_AddRoomVerts(
         const ROOM_VERTEX *const room_vert = &room_verts[face_vertices[i]];
 
         uint16_t flags = 0;
-        if (room_vert->flags & NO_VERT_MOVE) {
-            flags |= VERT_NO_CAUSTICS;
+        if (g_TRVersion == 1) { // TODO: unify
+            if (room_vert->flags & NO_VERT_MOVE) {
+                flags |= VERT_NO_CAUSTICS;
+            }
+        } else {
+            if (room_vert->flags != 0) {
+                flags |= VERT_NO_CAUSTICS;
+            }
         }
         if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
             flags |= VERT_NO_ALPHA_DISCARD;
