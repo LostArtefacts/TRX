@@ -355,7 +355,7 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
 static void M_ReadResumeInfos(MYFILE *const fp)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < 22; i++) {
+    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
             M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
