@@ -86,7 +86,7 @@ typedef struct {
     XYZ_16 pos;
     int16_t light_base;
     int16_t light_adder;
-    uint16_t flags;
+    bool is_wibble_disabled;
     uint8_t light_table_value;
 } ROOM_VERTEX;
 
