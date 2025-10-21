@@ -1,19 +1,21 @@
 #include "game/objects/general/flare_item.h"
 
-#include <libtrx/game/matrix.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/objects/general/pickup.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/game/spawn.h>
-#include <libtrx/utils.h>
+#include "game/matrix.h"
+#include "game/objects.h"
+#include "game/objects/general/pickup.h"
+#include "game/output.h"
+#include "game/random.h"
+#include "game/sound.h"
+#include "game/spawn.h"
+#include "utils.h"
 
+// clang-format off
 #define M_FLARE_INTENSITY 12
-#define M_FLARE_FALL_OFF 11
-#define M_MAX_FLARE_AGE (60 * LOGIC_FPS) // = 1800
-#define M_FLARE_OLD_AGE (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
-#define M_FLARE_YOUNG_AGE (LOGIC_FPS) // = 30
+#define M_FLARE_FALL_OFF  11
+#define M_MAX_FLARE_AGE   (60 * LOGIC_FPS)                  // = 1800
+#define M_FLARE_OLD_AGE   (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
+#define M_FLARE_YOUNG_AGE (LOGIC_FPS)                       // = 30
+// clang-format off
 
 static void M_Control(const int16_t item_num)
 {

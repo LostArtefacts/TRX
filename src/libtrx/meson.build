@@ -346,6 +346,7 @@ sources = [
   'game/objects/general/drawbridge.c',
   'game/objects/general/earthquake.c',
   'game/objects/general/final_cutscene.c',
+  'game/objects/general/flare_item.c',
   'game/objects/general/general.c',
   'game/objects/general/gong.c',
   'game/objects/general/gong_bonger.c',
