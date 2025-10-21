@@ -1,11 +1,11 @@
 #include "game/game.h"
-#include "game/lara.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/lua.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/option/passport.h>
