@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "engine/audio.h"
+#include "game/game_flow.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/music/backend_cdaudio.h"
@@ -94,17 +95,15 @@ static bool M_IsBrokenTrack(const MUSIC_ID track_id)
 
 static bool M_IsAmbientTrack(const MUSIC_ID track_id)
 {
-    const GF_AMBIENT_DATA *const ambient_data = Level_GetAmbientData();
+    const GF_AMBIENT_DATA *const ambient_data = &g_GameFlow.ambient_tracks;
     if (ambient_data == nullptr) {
         return false;
     }
-
     for (int32_t i = 0; i < ambient_data->count; i++) {
         if (ambient_data->ids[i] == track_id) {
             return true;
         }
     }
-
     return false;
 }
 

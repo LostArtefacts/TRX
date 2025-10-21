@@ -24,6 +24,7 @@
 - changed the debug position UI to no longer be hidden in photo mode
 - changed save crystal collision to make them easier to activate
 - changed the unrestricted look mode option to include Lara being able to look freely while shooting an enemy (#4090)
+- changed the `ambient_tracks` property to be only available on the root level
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object

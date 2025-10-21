@@ -33,7 +33,6 @@ Following are each of the properties available within a level.
         "data/level_injection1.bin",
         "data/level_injection2.bin",
     ],
-    "ambient_tracks": [30, 31, 32, 33],
     "item_drops": [
         {"enemy_num": 17, "object_ids": [86]},
         {"enemy_num": 50, "object_ids": [87]},
@@ -232,14 +231,6 @@ Following are each of the properties available within a level.
     <td>Float array or hex string</td>
     <td colspan="2">
       Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#water-color">the global property</a> for
-      details.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>ambient_tracks</code></td>
-    <td>Integer array</td>
-    <td colspan="2">
-      Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#ambient-tracks">the global property</a> for
       details.
     </td>
   </tr>
