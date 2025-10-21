@@ -334,7 +334,9 @@ void Savegame_Shutdown(void)
 RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 {
     ASSERT(m_ResumeInfo != nullptr);
-    ASSERT(level != nullptr);
+    if (level == nullptr) {
+        return nullptr;
+    }
     if (GF_GetLevelTableType(level->type) == GFLT_MAIN) {
         return &m_ResumeInfo[level->num];
     } else if (level->type == GFL_DEMO) {
@@ -389,12 +391,17 @@ void Savegame_CarryCurrentInfoToNextLevel(
         dst_level->num);
     RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
     RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
-    memcpy(dst_resume, src_resume, sizeof(RESUME_INFO));
+    if (src_resume != nullptr && dst_resume != nullptr) {
+        memcpy(dst_resume, src_resume, sizeof(RESUME_INFO));
+    }
 }
 
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume == nullptr) {
+        return;
+    }
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
 
