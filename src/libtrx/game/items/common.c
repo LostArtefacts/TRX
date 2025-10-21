@@ -376,10 +376,15 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
         }
     }
 
-    room = Room_Get(room_num);
-    item->room_num = room_num;
-    item->next_item = room->item_num;
-    room->item_num = item_num;
+    if (room_num == NO_ROOM) {
+        Item_RemoveDrawn(item_num);
+        item->room_num = NO_ROOM;
+    } else {
+        room = Room_Get(room_num);
+        item->room_num = room_num;
+        item->next_item = room->item_num;
+        room->item_num = item_num;
+    }
 }
 
 int32_t Item_GlobalReplace(

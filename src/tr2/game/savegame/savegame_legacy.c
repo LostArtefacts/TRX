@@ -26,6 +26,7 @@
 #define M_SAVE_CREATURE (1 << 7)
 #define M_SAVEGAME_LEGACY_TOTAL_SIZE (1170 + 6272) // header + OG buffer size
 #define M_SAVEGAME_LEGACY_TITLE_SIZE 75
+#define M_LEGACY_NO_ROOM 255
 #define M_LEGACY_MAX_MUSIC_TRACKS 64
 
 #define M_SPECIAL_READ_WRITES                                                  \
@@ -128,6 +129,15 @@ static void M_Skip(const size_t size)
     m_BufPtr += size;
 }
 
+static int16_t M_ReadRoomNum(void)
+{
+    const int16_t room_num = M_ReadS16();
+    if (room_num == M_LEGACY_NO_ROOM) {
+        return NO_ROOM;
+    }
+    return room_num;
+}
+
 static void M_ReadStats(LEVEL_STATS *const stats)
 {
     stats->timer = M_ReadU32();
@@ -203,7 +213,7 @@ static void M_ReadItems(void)
             item->rot.x = M_ReadS16();
             item->rot.y = M_ReadS16();
             item->rot.z = M_ReadS16();
-            int16_t room_num = M_ReadS16();
+            int16_t room_num = M_ReadRoomNum();
             item->speed = M_ReadS16();
             item->fall_speed = M_ReadS16();
 
@@ -409,7 +419,7 @@ static void M_ReadFlares(void)
         item->rot.x = M_ReadS16();
         item->rot.y = M_ReadS16();
         item->rot.z = M_ReadS16();
-        item->room_num = M_ReadS16();
+        item->room_num = M_ReadRoomNum();
         item->speed = M_ReadS16();
         item->fall_speed = M_ReadS16();
         Item_Initialise(item_num);
@@ -492,7 +502,8 @@ static void M_WriteItems(void)
             M_WriteS16(item->rot.x);
             M_WriteS16(item->rot.y);
             M_WriteS16(item->rot.z);
-            M_WriteS16(item->room_num);
+            M_WriteS16(
+                item->room_num == NO_ROOM ? M_LEGACY_NO_ROOM : item->room_num);
             M_WriteS16(item->speed);
             M_WriteS16(item->fall_speed);
         }
@@ -659,7 +670,8 @@ static void M_WriteFlares(void)
             M_WriteS16(item->rot.x);
             M_WriteS16(item->rot.y);
             M_WriteS16(item->rot.z);
-            M_WriteS16(item->room_num);
+            M_WriteS16(
+                item->room_num == NO_ROOM ? M_LEGACY_NO_ROOM : item->room_num);
             M_WriteS16(item->speed);
             M_WriteS16(item->fall_speed);
             const int32_t flare_age = (intptr_t)item->data;
