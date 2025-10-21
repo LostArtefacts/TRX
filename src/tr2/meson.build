@@ -105,7 +105,6 @@ sources = [
   'game/inventory_ring/vars.c',
   'game/lara/common.c',
   'game/lara/flare.c',
-  'game/lara/misc.c',
   'game/level.c',
   'game/objects/common.c',
   'game/objects/creatures/skidoo_driver.c',

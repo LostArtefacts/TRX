@@ -3,6 +3,7 @@
 #include "../collision.h"
 #include "./enum.h"
 
+void Lara_GetJointAbsPosition(XYZ_32 *vec, LARA_MESH joint);
 void Lara_RefuseInteraction(void);
 void Lara_TakeHit(ITEM *lara_item, int32_t dx, int32_t dz);
 void Lara_Extinguish(void);

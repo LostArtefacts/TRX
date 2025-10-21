@@ -1,6 +1,5 @@
 #include "game/gun/gun_rifle.h"
 
-#include "game/lara/misc.h"
 #include "game/stats.h"
 
 #include <libtrx/config.h>
