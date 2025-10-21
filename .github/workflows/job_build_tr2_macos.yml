@@ -67,6 +67,20 @@ jobs:
         shell: bash
         run: |
           sudo rsync -arvq /tmp/opt_local/ /opt/local/
+          sudo dscl . -create /Groups/macports
+          sudo dscl . -create /Groups/macports RealName "MacPorts"
+          sudo dscl . -create /Groups/macports PrimaryGroupID 501
+          sudo dscl . -create /Groups/macports GeneratedUID 172D097F-351A-4579-BBD1-430D99BC4ABF
+          sudo dscl . -append /Groups/macports GroupMembership macports
+
+          sudo dscl . -create /Users/macports
+          sudo dscl . -create /Users/macports RealName "MacPorts"
+          sudo dscl . -create /Users/macports UniqueID 502
+          sudo dscl . -create /Users/macports PrimaryGroupID 501
+          sudo dscl . -create /Users/macports UserShell /usr/bin/false
+          sudo dscl . -create /Users/macports NFSHomeDirectory /opt/local/var/macports/home
+          sudo mkdir -p /opt/local/var/macports/home
+          sudo chown -R macports:macports /opt/local/var/macports
 
       - name: Setup CA
         run: |
