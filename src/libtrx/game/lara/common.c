@@ -28,6 +28,8 @@ static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
     // clang-format on
 };
 
+static LARA_INFO m_Lara = {};
+static ITEM *m_LaraItem = nullptr;
 static bool m_Controllable = false;
 static int16_t m_DeathCameraTarget = NO_ITEM;
 static LARA_EXTRA_STATE m_StartAnimState = LS_EXTRA_BREATH;
@@ -40,6 +42,26 @@ static bool M_IsInvalidInterpAnim(const LARA_TRX_ANIMATION anim_idx)
         }
     }
     return false;
+}
+
+LARA_INFO *Lara_GetLaraInfo(void)
+{
+    return &m_Lara;
+}
+
+ITEM *Lara_GetItem(void)
+{
+    return m_LaraItem;
+}
+
+void Lara_InitialiseLoad(int16_t item_num)
+{
+    m_Lara.item_num = item_num;
+    if (item_num == NO_ITEM) {
+        m_LaraItem = nullptr;
+    } else {
+        m_LaraItem = Item_Get(item_num);
+    }
 }
 
 void Lara_Initialise(const GF_LEVEL *const level)
