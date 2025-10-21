@@ -64,7 +64,6 @@ void Savegame_SetDefaultStats(const GF_LEVEL *level, STATS_COMMON stats);
 STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);
 
 extern int32_t Savegame_GetSlotCount(void);
-extern void Savegame_HighlightNewestSlot(void);
 
 #define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
     __attribute__((__constructor__)) static void M_Register(void)              \

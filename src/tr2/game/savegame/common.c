@@ -7,7 +7,3 @@ int32_t Savegame_GetSlotCount(void)
 {
     return MAX_SAVE_SLOTS;
 }
-
-void Savegame_HighlightNewestSlot(void)
-{
-}

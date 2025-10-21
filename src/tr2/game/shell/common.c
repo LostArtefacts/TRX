@@ -115,7 +115,6 @@ int32_t Shell_Main(const SHELL_ARGS *args)
     Savegame_Init();
     Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
-    Savegame_HighlightNewestSlot();
 
     Level_Init();
 

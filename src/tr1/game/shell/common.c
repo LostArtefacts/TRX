@@ -65,7 +65,6 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Savegame_Shutdown();
         Savegame_Init();
         Savegame_ScanSavedGames();
-        Savegame_HighlightNewestSlot();
     }
 #undef L_CHANGED
 }
@@ -101,7 +100,6 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 
     Savegame_Init();
     Savegame_ScanSavedGames();
-    Savegame_HighlightNewestSlot();
 
     // Execute global Lua script if provided
     if (g_GameFlow.main_script_path != nullptr) {

@@ -199,8 +199,10 @@ static void M_SetPage(
 
 static void M_DeterminePages(void)
 {
-    const bool has_saves =
-        Savegame_GetTotalCount() > 0 && Savegame_GetSlotCount() > 0;
+    const bool can_restart = Savegame_RestartAvailable(Savegame_GetBoundSlot());
+    const bool saving_enabled =
+        Savegame_GetSlotCount() > 0 && !g_GameFlow.load_save_disabled;
+    const bool has_saves = Savegame_GetTotalCount() > 0 && saving_enabled;
 
     m_Priv.selection = -1;
     m_Priv.outer_selection = -1;
@@ -226,46 +228,40 @@ static void M_DeterminePages(void)
 
     case INV_GAME_MODE:
         m_Priv.mode = M_IMMEDIATE ? M_MODE_PICK_OPTION : M_MODE_BROWSE;
-        M_SetPage(PAGE_1, PASSPORT_ROLE_LOAD_GAME, has_saves);
-        M_SetPage(PAGE_2, PASSPORT_ROLE_SAVE_GAME, true);
+        if (!saving_enabled) {
+            M_SetPage(PAGE_2, PASSPORT_ROLE_RESTART, can_restart);
+        } else {
+            M_SetPage(PAGE_1, PASSPORT_ROLE_LOAD_GAME, has_saves);
+            M_SetPage(PAGE_2, PASSPORT_ROLE_SAVE_GAME, true);
+        }
         M_SetPage(PAGE_3, PASSPORT_ROLE_EXIT_TITLE, true);
         break;
 
     case INV_LOAD_MODE:
         m_Priv.mode = M_MODE_PICK_OPTION;
-        if (has_saves) {
-            M_SetPage(
-                PAGE_1,
-                TR_VERSION == 2 || Savegame_GetSlotCount() > 0
-                    ? PASSPORT_ROLE_LOAD_GAME
-                    : PASSPORT_ROLE_RESTART,
-                true);
+        if (!saving_enabled) {
+            M_SetPage(PAGE_2, PASSPORT_ROLE_RESTART, can_restart);
+        } else if (has_saves) {
+            M_SetPage(PAGE_1, PASSPORT_ROLE_LOAD_GAME, true);
         } else {
-            M_SetPage(
-                PAGE_2,
-                TR_VERSION == 2 || Savegame_GetSlotCount() > 0
-                    ? PASSPORT_ROLE_SAVE_GAME
-                    : PASSPORT_ROLE_RESTART,
-                true);
+            M_SetPage(PAGE_2, PASSPORT_ROLE_SAVE_GAME, true);
         }
         break;
 
     case INV_SAVE_MODE:
     case INV_SAVE_CRYSTAL_MODE:
         m_Priv.mode = M_MODE_PICK_OPTION;
-        M_SetPage(PAGE_2, PASSPORT_ROLE_SAVE_GAME, true);
-        if (g_Config.gameplay.enable_save_crystals) {
-            // TODO: remove me after implementing restart level in TR2
-            M_SetPage(PAGE_3, PASSPORT_ROLE_EXIT_TITLE, true);
+        if (!saving_enabled) {
+            M_SetPage(PAGE_2, PASSPORT_ROLE_RESTART, can_restart);
+        } else {
+            M_SetPage(PAGE_2, PASSPORT_ROLE_SAVE_GAME, true);
         }
         break;
 
     case INV_DEATH_MODE:
         m_Priv.mode = M_IMMEDIATE ? M_MODE_PICK_OPTION : M_MODE_BROWSE;
         M_SetPage(PAGE_1, PASSPORT_ROLE_LOAD_GAME, has_saves);
-        if (TR_VERSION == 1) {
-            M_SetPage(PAGE_2, PASSPORT_ROLE_RESTART, true);
-        }
+        M_SetPage(PAGE_2, PASSPORT_ROLE_RESTART, can_restart);
         M_SetPage(PAGE_3, PASSPORT_ROLE_EXIT_TITLE, true);
         break;
 
@@ -273,12 +269,12 @@ static void M_DeterminePages(void)
         ASSERT_FAIL();
     }
 
-    // disable saves in gym, restart
+    // Disable saves in gym, restart
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
         if (m_Priv.pages[i].role != PASSPORT_ROLE_SAVE_GAME) {
             continue;
         }
-        if (Game_IsInGym() || Savegame_GetSlotCount() <= 0) {
+        if (Game_IsInGym()) {
 #if TR_VERSION == 1
             m_Priv.pages[i].role = PASSPORT_ROLE_NEW_GAME;
 #else
@@ -289,7 +285,7 @@ static void M_DeterminePages(void)
         } else if (
             g_Config.gameplay.enable_save_crystals
             && g_Inv_Mode != INV_SAVE_CRYSTAL_MODE) {
-            if (TR_VERSION == 1) {
+            if (can_restart) {
                 m_Priv.pages[i].role = PASSPORT_ROLE_RESTART;
             } else {
                 m_Priv.pages[i].available = false;
@@ -297,17 +293,7 @@ static void M_DeterminePages(void)
         }
     }
 
-    // disable save & load
-    if (g_GameFlow.load_save_disabled) {
-        for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
-            if (m_Priv.pages[i].role == PASSPORT_ROLE_LOAD_GAME
-                || m_Priv.pages[i].role == PASSPORT_ROLE_SAVE_GAME) {
-                m_Priv.pages[i].available = false;
-            }
-        }
-    }
-
-    // select first available page
+    // Select first available page
     m_Priv.active_page = PAGE_UNDETERMINED;
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
         if (m_Priv.pages[i].available) {
@@ -510,11 +496,6 @@ static void M_NewGame(INVENTORY_ITEM *const inv_item)
 static void M_Restart(INVENTORY_ITEM *const inv_item)
 {
     M_ChangePageTextContent(GS(PASSPORT_RESTART_LEVEL));
-
-    if (!Savegame_RestartAvailable(Savegame_GetBoundSlot())) {
-        inv_item->anim_direction = 1;
-        g_InputDB = (INPUT_STATE) { .menu_right = 1 };
-    }
 }
 
 static void M_ShowPage(INVENTORY_ITEM *const inv_item)

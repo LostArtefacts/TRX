@@ -7,8 +7,3 @@ int32_t Savegame_GetSlotCount(void)
 {
     return g_Config.gameplay.maximum_save_slots;
 }
-
-void Savegame_HighlightNewestSlot(void)
-{
-    g_Passport.select_slot = Savegame_GetMostRecentlyCreatedSlot();
-}
