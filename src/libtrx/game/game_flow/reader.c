@@ -65,12 +65,6 @@ static void M_CopyRootSettingsIntoLevel(
 #if TR_VERSION == 2
     dst->sfx_path = nullptr;
 #endif
-    if (src->ambient_tracks.is_present) {
-        const GF_AMBIENT_DATA *const root = &src->ambient_tracks;
-        GF_AMBIENT_DATA *const lvl = &dst->ambient_tracks;
-        lvl->ids = Memory_Alloc(sizeof(*lvl->ids) * root->count);
-        memcpy(lvl->ids, root->ids, sizeof(*lvl->ids) * root->count);
-    }
 }
 
 static bool M_ParseRGB888(JSON_VALUE *const value, RGB_888 *const target)
@@ -148,21 +142,6 @@ static void M_LoadCommonSettings(
     }
 
     {
-        const JSON_ARRAY *const tmp_arr =
-            JSON_ObjectGetArray(obj, "ambient_tracks");
-        if (tmp_arr != nullptr && tmp_arr->length != 0) {
-            settings->ambient_tracks.is_present = true;
-            settings->ambient_tracks.count = tmp_arr->length;
-            settings->ambient_tracks.ids =
-                Memory_Alloc(sizeof(MUSIC_ID) * tmp_arr->length);
-            for (size_t i = 0; i < tmp_arr->length; i++) {
-                settings->ambient_tracks.ids[i] =
-                    JSON_ArrayGetInt(tmp_arr, i, MX_INACTIVE);
-            }
-        }
-    }
-
-    {
         const int32_t value =
             JSON_ObjectGetBool(obj, "cold_water", JSON_INVALID_BOOL);
         if (value != JSON_INVALID_BOOL) {
@@ -204,6 +183,21 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
             JSON_ObjectGetString(obj, "main_script", JSON_INVALID_STRING);
         if (tmp_s != JSON_INVALID_STRING) {
             ctx->gf->main_script_path = Memory_DupStr(tmp_s);
+        }
+    }
+
+    {
+        const JSON_ARRAY *const tmp_arr =
+            JSON_ObjectGetArray(obj, "ambient_tracks");
+        if (tmp_arr != nullptr && tmp_arr->length != 0) {
+            ctx->gf->ambient_tracks.is_present = true;
+            ctx->gf->ambient_tracks.count = tmp_arr->length;
+            ctx->gf->ambient_tracks.ids =
+                Memory_Alloc(sizeof(MUSIC_ID) * tmp_arr->length);
+            for (size_t i = 0; i < tmp_arr->length; i++) {
+                ctx->gf->ambient_tracks.ids[i] =
+                    JSON_ArrayGetInt(tmp_arr, i, MX_INACTIVE);
+            }
         }
     }
 

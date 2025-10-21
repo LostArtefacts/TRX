@@ -49,18 +49,6 @@ float Level_GetFogEnd(void)
     return g_Config.visuals.fog_end;
 }
 
-const GF_AMBIENT_DATA *Level_GetAmbientData(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.ambient_tracks.is_present) {
-        return &level->settings.ambient_tracks;
-    }
-    if (g_GameFlow.settings.ambient_tracks.is_present) {
-        return &g_GameFlow.settings.ambient_tracks;
-    }
-    return nullptr;
-}
-
 bool Level_HasColdWater(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();

@@ -217,12 +217,6 @@
             "type": "string"
           }
         },
-        "ambient_tracks": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        },
         "item_drops": {
           "type": "array",
           "items": {

@@ -220,12 +220,6 @@
           "items": {
             "type": "string"
           }
-        },
-        "ambient_tracks": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
         }
       },
       "anyOf": [

@@ -101,7 +101,6 @@ typedef struct {
         RGB_888 value;
     } water_color;
     char *sfx_path;
-    GF_AMBIENT_DATA ambient_tracks;
     struct {
         bool is_present;
         bool value;
@@ -189,6 +188,7 @@ typedef struct {
         bool cheat_keys;
         int32_t single_level;
 #endif
+        GF_AMBIENT_DATA ambient_tracks;
     };
 
 #if TR_VERSION == 2
