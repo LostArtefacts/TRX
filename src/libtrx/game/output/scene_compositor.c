@@ -143,7 +143,6 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         shader, g_Config.rendering.texture_filter,
         g_Config.rendering.enable_lighting);
     M_SetBlendModeForScene(wireframe);
-    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     glDisable(GL_DEPTH_TEST);
     if (M_IsSourceDirty(p, SCENE_PASS_BACKGROUND)) {

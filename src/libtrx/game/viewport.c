@@ -65,8 +65,8 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 
     game->x = x;
     game->y = y;
-    game->width = width / 0.5; // g_Config.rendering.upscaling_factor;
-    game->height = height / 0.5; // g_Config.rendering.upscaling_factor;
+    game->width = width / g_Config.rendering.upscaling_factor;
+    game->height = height / g_Config.rendering.upscaling_factor;
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
