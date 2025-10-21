@@ -14,9 +14,9 @@ X_UI_CFG_BOOL(visuals.fix_glide_cameras,            SETTING_FIX_GLIDE_CAMERAS)
 #endif
 
 X_UI_CFG_BOOL(gameplay.fix_walk_run_jump,           SETTING_FIX_WALK_RUN_JUMP)
+X_UI_CFG_BOOL(gameplay.fix_flare_throw_priority,    SETTING_FIX_FLARE_THROW_PRIORITY)
 
 #if TR_VERSION == 2
-X_UI_CFG_BOOL(gameplay.fix_flare_throw_priority,    SETTING_FIX_FLARE_THROW_PRIORITY)
 X_UI_CFG_BOOL(gameplay.fix_m16_accuracy,            SETTING_FIX_M16_ACCURACY)
 #endif
 
