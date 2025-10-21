@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/game/math.h>
+#include "../../math.h"
 
 void Flare_GenerateEffects(
     XYZ_32 sound_pos, XYZ_32 flare_pos, int16_t room_num);

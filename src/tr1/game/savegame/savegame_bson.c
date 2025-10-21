@@ -852,6 +852,37 @@ static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot)
     return true;
 }
 
+static bool M_LoadFlares(JSON_ARRAY *const flares_arr)
+{
+    if (flares_arr == nullptr) {
+        return true;
+    }
+
+    for (int32_t i = 0; i < (signed)flares_arr->length; i++) {
+        JSON_OBJECT *const flare_obj = JSON_ArrayGetObject(flares_arr, i);
+        if (flare_obj == nullptr) {
+            LOG_ERROR("Malformed save: invalid flare data");
+            return false;
+        }
+
+        const int16_t item_num = Item_Create();
+        ITEM *const item = Item_Get(item_num);
+        item->object_id = O_FLARE_ITEM;
+        LOAD_XYZ(flare_obj, "pos", item->pos);
+        LOAD_XYZ(flare_obj, "rot", item->rot);
+        item->room_num =
+            JSON_ObjectGetInt(flare_obj, "room_num", item->room_num);
+        item->speed = JSON_ObjectGetInt(flare_obj, "speed", item->speed);
+        item->fall_speed =
+            JSON_ObjectGetInt(flare_obj, "fall_speed", item->fall_speed);
+        Item_Initialise(item_num);
+        Item_AddActive(item_num);
+        const int32_t flare_age = JSON_ObjectGetInt(flare_obj, "age", 0);
+        item->data = (void *)(intptr_t)flare_age;
+    }
+    return true;
+}
+
 static bool M_LoadLara(
     JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version)
 {
@@ -1414,6 +1445,27 @@ static JSON_OBJECT *M_DumpLOT(LOT_INFO *lot)
     return lot_obj;
 }
 
+static JSON_ARRAY *M_DumpFlares(void)
+{
+    JSON_ARRAY *const flares_arr = JSON_ArrayNew();
+    for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
+        const ITEM *const item = Item_Get(item_num);
+        if (!item->active || item->object_id != O_FLARE_ITEM) {
+            continue;
+        }
+
+        JSON_OBJECT *const flare_obj = JSON_ObjectNew();
+        DUMP_XYZ(flare_obj, "pos", item->pos);
+        DUMP_XYZ(flare_obj, "rot", item->rot);
+        JSON_ObjectAppendInt(flare_obj, "room_num", item->room_num);
+        JSON_ObjectAppendInt(flare_obj, "speed", item->speed);
+        JSON_ObjectAppendInt(flare_obj, "fall_speed", item->fall_speed);
+        JSON_ObjectAppendInt(flare_obj, "age", (intptr_t)item->data);
+        JSON_ArrayAppendObject(flares_arr, flare_obj);
+    }
+    return flares_arr;
+}
+
 static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
 {
     ASSERT(lara != nullptr);
@@ -1611,6 +1663,10 @@ static bool M_LoadFromFile(MYFILE *const fp)
         }
     }
 
+    if (!M_LoadFlares(JSON_ObjectGetArray(root_obj, "flares"))) {
+        goto cleanup;
+    }
+
     if (!M_LoadLara(
             JSON_ObjectGetObject(root_obj, "lara"), Lara_GetLaraInfo(),
             version)) {
@@ -1687,6 +1743,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
+    JSON_ObjectAppendArray(root_obj, "flares", M_DumpFlares());
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
     JSON_ObjectAppendObject(root_obj, "music", M_DumpCurrentMusic());
     JSON_ObjectAppendArray(
