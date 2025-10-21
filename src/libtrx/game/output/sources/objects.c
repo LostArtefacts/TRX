@@ -31,9 +31,6 @@ static void M_AddObjectVerts(
 {
     RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
     int16_t uvw_idx = -1;
-    if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
-        flags |= VERT_NO_ALPHA_DISCARD;
-    }
 
     if (flags & VERT_FLAT_SHADED) {
         if (g_TRVersion == 1) {
@@ -41,6 +38,8 @@ static void M_AddObjectVerts(
         } else {
             color = Output_RGB2RGBA(Output_GetPaletteColor16(palette_idx >> 8));
         }
+    } else if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
+        flags |= VERT_NO_ALPHA_DISCARD;
     }
 
     for (size_t i = 0; i < vtx_count; i++) {
