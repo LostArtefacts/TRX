@@ -83,13 +83,11 @@ static void M_ResumeInfo_AddItem(
     case O_LARGE_MEDIPACK_OPTION:
         resume->large_medipacks += qty;
         break;
-#if TR_VERSION >= 2
     case O_FLARES_ITEM:
     case O_FLARES_OPTION:
     case O_FLARE_ITEM:
         resume->flares += qty;
         break;
-#endif
     default:
         break;
     }
@@ -266,12 +264,12 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->num_scions = 0;
         m_RemoveScions = false;
     }
-#else
+#endif
+
     if (m_RemoveFlares) {
         resume->flares = 0;
         m_RemoveFlares = false;
     }
-#endif
 
     if (m_RemoveMedipacks) {
         resume->large_medipacks = 0;

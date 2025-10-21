@@ -11,9 +11,7 @@ extern const INVENTORY_ITEM *g_InvRing_Items[];
 // Items
 extern INVENTORY_ITEM g_InvRing_Item_SmallMedi;
 extern INVENTORY_ITEM g_InvRing_Item_LargeMedi;
-#if TR_VERSION >= 2
 extern INVENTORY_ITEM g_InvRing_Item_Flare;
-#endif
 
 // Pickups
 extern INVENTORY_ITEM g_InvRing_Item_Pickup1;

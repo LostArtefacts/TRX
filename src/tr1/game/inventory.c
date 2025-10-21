@@ -2,9 +2,16 @@
 
 #include "game/inventory_ring/vars.h"
 
+#include <libtrx/game/game.h>
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/objects/vars.h>
+
+static int32_t M_GetFlareQuantity(void)
+{
+    return Game_IsBonusFlagSet(GBF_JAPANESE) ? FLARE_AMMO_JAPANESE_QTY
+                                             : FLARE_AMMO_QTY;
+}
 
 bool Inv_AddItem(const OBJECT_ID obj_id)
 {
@@ -148,6 +155,17 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     case O_SCION_ITEM_2:
     case O_SCION_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Scion);
+        return true;
+
+    case O_FLARES_ITEM:
+    case O_FLARES_OPTION:
+        for (int32_t i = 0; i < M_GetFlareQuantity(); i++) {
+            Inv_AddItem(O_FLARE_ITEM);
+        }
+        return true;
+
+    case O_FLARE_ITEM:
+        Inv_InsertItem(&g_InvRing_Item_Flare);
         return true;
 
     default:

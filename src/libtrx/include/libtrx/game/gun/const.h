@@ -9,6 +9,9 @@
 #define SHOTGUN_AMMO_CLIP 6
 #define SHOTGUN_AMMO_QTY (SHOTGUN_AMMO_CLIP * SHOTGUN_SHELL_COUNT) // = 12
 
+#define FLARE_AMMO_QTY 6
+#define FLARE_AMMO_JAPANESE_QTY 8
+
 #if TR_VERSION == 1
     #define MAGNUM_AMMO_CLIP 25
     #define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 50
@@ -32,7 +35,4 @@
     #define GRENADE_AMMO_CLIP 1
     #define GRENADE_AMMO_QTY (GRENADE_AMMO_CLIP * 2) // = 2
     #define GRENADE_SPEED 200
-
-    #define FLARE_AMMO_QTY 6
-    #define FLARE_AMMO_JAPANESE_QTY 8
 #endif

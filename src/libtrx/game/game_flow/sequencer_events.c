@@ -31,8 +31,8 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_LOADING_SCREEN]    = M_HandlePicture,
 #else
     [GFS_ADD_SECRET_REWARD] = M_HandleInventoryModifier,
-    [GFS_REMOVE_FLARES]     = M_HandleInventoryModifier,
 #endif
+    [GFS_REMOVE_FLARES]     = M_HandleInventoryModifier,
     [GFS_DISPLAY_PICTURE]   = M_HandlePicture,
     [GFS_LEVEL_STATS]       = M_HandleLevelStats,
     [GFS_TOTAL_STATS]       = M_HandleTotalStats,
