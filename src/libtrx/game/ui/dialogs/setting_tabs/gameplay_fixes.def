@@ -30,10 +30,7 @@ X_UI_CFG_BOOL(gameplay.fix_qwop_glitch,             SETTING_FIX_QWOP_GLITCH)
 X_UI_CFG_BOOL(gameplay.fix_step_glitch,             SETTING_FIX_STEP_GLITCH, .custom_handler = { .is_available = UI_Settings_FixStepGlitch_IsAvailable })
 X_UI_CFG_BOOL(gameplay.fix_item_duplication_glitch, SETTING_FIX_ITEM_DUPLICATION_GLITCH)
 X_UI_CFG_BOOL(gameplay.fix_lara_pickup_embed,       SETTING_FIX_LARA_PICKUP_EMBED)
-
-#if TR_VERSION == 2
 X_UI_CFG_BOOL(gameplay.fix_free_flare_glitch,       SETTING_FIX_FREE_FLARE_GLITCH)
-#endif
 
 X_UI_CFG_BOOL(gameplay.fix_alligator_ai,            SETTING_FIX_ALLIGATOR_AI)
 X_UI_CFG_BOOL(gameplay.fix_bear_ai,                 SETTING_FIX_BEAR_AI)

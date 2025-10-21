@@ -79,11 +79,9 @@ static bool M_QuickDrawWeapon(void)
 static bool M_CanEquip(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION >= 2
     if (lara->request_gun_type == LGT_FLARE) {
         return true;
     }
-#endif
     if (Lara_Vehicle_IsMounted()) {
         return false;
     }
@@ -173,7 +171,6 @@ static void M_DecideRequestedWeapon(void)
         return;
     }
 
-#if TR_VERSION >= 2
     if (g_Input.use_flare) {
         if (lara->gun_type == LGT_FLARE) {
             lara->gun_status = LGS_UNDRAW;
@@ -184,25 +181,22 @@ static void M_DecideRequestedWeapon(void)
             lara->request_gun_type = LGT_FLARE;
         }
     }
-#endif
 }
 
 static void M_DrawRequestedWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (M_CanEquip()) {
-#if TR_VERSION >= 2
         if (lara->gun_type == LGT_FLARE) {
             Lara_Flare_Dispose(false);
         }
-#endif
+
         lara->gun_type = lara->request_gun_type;
         Gun_InitialiseNewWeapon();
         lara->gun_status = LGS_DRAW;
         lara->right_arm.frame_num = 0;
         lara->left_arm.frame_num = 0;
     } else {
-#if TR_VERSION >= 2
         if (lara->request_gun_type != LGT_FLARE
             && lara->request_gun_type != LGT_UNARMED) {
             lara->last_gun_type = lara->request_gun_type;
@@ -212,23 +206,15 @@ static void M_DrawRequestedWeapon(void)
         } else {
             lara->gun_type = lara->request_gun_type;
         }
-#else
-        if (lara->request_gun_type != LGT_UNARMED) {
-            lara->last_gun_type = lara->request_gun_type;
-        }
-        lara->gun_type = lara->request_gun_type;
-#endif
     }
 }
 
 static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION >= 2
     if (g_Input.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
         lara->request_gun_type = LGT_FLARE;
     }
-#endif
     if (M_NeedToUndraw()) {
         lara->gun_status = LGS_UNDRAW;
     }
@@ -278,23 +264,15 @@ void Gun_Control(void)
     switch (lara->gun_status) {
     case LGS_ARMLESS:
     case LGS_HANDS_BUSY:
-#if TR_VERSION >= 2
         if (lara->gun_type == LGT_FLARE) {
             Lara_Flare_Control();
         }
-#endif
         break;
 
     case LGS_DRAW:
-#if TR_VERSION >= 2
         if (lara->gun_type != LGT_FLARE && lara->gun_type != LGT_UNARMED) {
             lara->last_gun_type = lara->gun_type;
         }
-#else
-        if (lara->gun_type != LGT_UNARMED) {
-            lara->last_gun_type = lara->gun_type;
-        }
-#endif
 
         switch (lara->gun_type) {
         case LGT_PISTOLS:
@@ -318,11 +296,9 @@ void Gun_Control(void)
             Gun_Rifle_Draw(lara->gun_type);
             break;
 
-#if TR_VERSION >= 2
         case LGT_FLARE:
             Lara_Flare_Draw();
             break;
-#endif
 
         default:
             lara->gun_status = LGS_ARMLESS;
@@ -349,11 +325,9 @@ void Gun_Control(void)
             Gun_Rifle_Undraw(lara->gun_type);
             break;
 
-#if TR_VERSION >= 2
         case LGT_FLARE:
             Lara_Flare_Undraw();
             break;
-#endif
 
         default:
             return;
@@ -407,11 +381,9 @@ void Gun_Control(void)
         }
         break;
 
-#if TR_VERSION >= 2
     case LGS_SPECIAL:
         Lara_Flare_Draw();
         break;
-#endif
 
     default:
         return;

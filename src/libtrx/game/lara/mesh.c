@@ -64,11 +64,9 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
         Gun_SetLaraBackMesh(back_gun);
     }
 
-#if TR_VERSION >= 2
     if (resume->equipped_gun_type == LGT_FLARE) {
         Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_FLARE);
     }
-#endif
 }
 
 void Lara_Mesh_SwapSingle(const LARA_MESH mesh, const OBJECT_ID obj_id)

@@ -71,12 +71,10 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
         return false;
     }
 
-#if TR_VERSION >= 2
     if (lara->gun_status != LGS_ARMLESS
         && (lara->gun_status != LGS_READY || lara->gun_type != LGT_FLARE)) {
         return false;
     }
-#endif
 
     const int32_t lara_hdif = coll->side_front.floor + M_HEIGHT_SURF;
     if (lara_hdif <= -STEP_L * 2 || lara_hdif > M_HEIGHT_SURF - STEPUP_HEIGHT) {
