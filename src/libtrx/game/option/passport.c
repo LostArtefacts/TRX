@@ -450,13 +450,13 @@ static void M_SaveGame(INVENTORY_ITEM *const inv_item)
 static void M_NewGame(INVENTORY_ITEM *const inv_item)
 {
     M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
-    m_Priv.selection = GF_GetFirstLevel()->num;
     if (m_Priv.mode == M_MODE_BROWSE) {
         if (g_InputDB.menu_confirm
             && (g_Config.gameplay.enable_game_modes
                 || g_Config.profile.new_game_plus_unlock)) {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
+            m_Priv.selection = GF_GetFirstLevel()->num;
             m_Priv.mode = M_MODE_PICK_OPTION;
         }
     } else if (m_Priv.mode == M_MODE_PICK_OPTION) {
