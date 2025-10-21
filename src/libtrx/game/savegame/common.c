@@ -55,6 +55,7 @@ static bool M_FillSlot(
     const SAVEGAME_STRATEGY strategy, const int32_t slot_num,
     const char *const path)
 {
+    ASSERT(slot_num >= 0);
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
     bool result = false;
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
@@ -76,6 +77,7 @@ static bool M_TryFillSlot(
     const SAVEGAME_STRATEGY strategy, const int32_t slot_num,
     const char *const path)
 {
+    ASSERT(slot_num >= 0);
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
     if (strategy.format <= savegame_info->format) {
         return true;
@@ -256,11 +258,17 @@ int32_t Savegame_GetBoundSlot(void)
 
 int32_t Savegame_GetLevelNumber(const int32_t slot_num)
 {
+    if (slot_num == -1) {
+        return -1;
+    }
     return m_SavegameInfo[slot_num].level_num;
 }
 
 bool Savegame_IsSlotFree(const int32_t slot_num)
 {
+    if (slot_num < 0) {
+        return -1;
+    }
     return m_SavegameInfo[slot_num].level_num == -1;
 }
 
@@ -277,20 +285,6 @@ int32_t Savegame_GetTotalCount(void)
 int32_t Savegame_GetMostRecentlyCreatedSlot(void)
 {
     return m_MostRecentlyCreatedSlot;
-}
-
-bool Savegame_RestartAvailable(const int32_t slot_num)
-{
-#if TR_VERSION == 1
-    if (slot_num == -1) {
-        return true;
-    }
-
-    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
-    return savegame_info->features.restart;
-#else
-    return false;
-#endif
 }
 
 void Savegame_RegisterStrategy(const SAVEGAME_STRATEGY strategy)
@@ -362,6 +356,7 @@ void Savegame_SetCurrentInfo(const int32_t current_slot, const int32_t src_slot)
 
 const SAVEGAME_INFO *Savegame_GetSavegameInfo(const int32_t slot_num)
 {
+    ASSERT(slot_num >= 0);
     return &m_SavegameInfo[slot_num];
 }
 
@@ -730,7 +725,6 @@ bool Savegame_Save(const int32_t slot_idx)
         if (was_slot_empty) {
             m_SavedGames++;
         }
-        Savegame_HighlightNewestSlot();
     } else {
         m_SaveCounter--;
     }
@@ -790,8 +784,9 @@ bool Savegame_UpdateDeathCounters(
     return ret;
 }
 
-bool Savegame_LoadOnlyResumeInfo(int32_t slot_num)
+bool Savegame_LoadOnlyResumeInfo(const int32_t slot_num)
 {
+    ASSERT(slot_num >= 0);
     const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
     ASSERT(savegame_info->format != SAVEGAME_FORMAT_INVALID);
 
@@ -812,4 +807,13 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num)
 
     Savegame_SetInitialVersion(m_SavegameInfo[slot_num].initial_version);
     return ret;
+}
+
+bool Savegame_RestartAvailable(const int32_t slot_num)
+{
+    if (slot_num == -1) {
+        return true;
+    }
+    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    return savegame_info->features.restart;
 }

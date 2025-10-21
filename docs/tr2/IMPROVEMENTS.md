@@ -30,6 +30,7 @@
 - added options to quiet or mute music while underwater
 - added combined support for The Golden Mask
 - added NG+, Japanese, and Japanese NG+ game mode options to the New Game page in the passport
+- added ability to restart level on death
 - added graphics effects, waterfalls to the savegame so that they now persist on load
 - added a pickup overlay display when Lara pulls the dagger from the dragon
 - added an option to use Lara's neutral jump-twist from early TR1 betas
