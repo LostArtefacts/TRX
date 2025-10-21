@@ -23,8 +23,8 @@ typedef struct {
     uint16_t m16_ammo;
     uint16_t grenade_ammo;
     uint16_t harpoon_ammo;
-    uint16_t flares;
 #endif
+    uint16_t flares;
 
     struct {
         bool available;

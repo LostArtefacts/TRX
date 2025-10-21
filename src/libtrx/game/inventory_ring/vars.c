@@ -6,9 +6,7 @@ const INVENTORY_ITEM *g_InvRing_Items[] = {
     // Items
     &g_InvRing_Item_SmallMedi,
     &g_InvRing_Item_LargeMedi,
-#if TR_VERSION >= 2
     &g_InvRing_Item_Flare,
-#endif
 
     // Pickups
     &g_InvRing_Item_Pickup1,

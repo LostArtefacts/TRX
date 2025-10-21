@@ -236,6 +236,7 @@ static bool M_LoadResumeInfo(
         resume->small_medipacks = JSON_ObjectGetInt(resume_obj, "num_medis", 0);
         resume->large_medipacks =
             JSON_ObjectGetInt(resume_obj, "num_big_medis", 0);
+        resume->flares = JSON_ObjectGetInt(resume_obj, "num_flares", 0);
         resume->num_scions = JSON_ObjectGetInt(resume_obj, "num_scions", 0);
         resume->gun_status = JSON_ObjectGetInt(resume_obj, "gun_status", 0);
         resume->equipped_gun_type =
@@ -931,6 +932,12 @@ static bool M_LoadLara(
         ? Effect_Get(hit_effect)
         : nullptr;
 
+    lara->flare.age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare.age);
+    lara->flare.frame_num =
+        JSON_ObjectGetInt(lara_obj, "flare_frame", lara->flare.frame_num);
+    lara->flare.control =
+        JSON_ObjectGetBool(lara_obj, "flare_control_left", lara->flare.control);
+
     lara->mesh_effects =
         JSON_ObjectGetInt(lara_obj, "mesh_effects", lara->mesh_effects);
 
@@ -1127,6 +1134,7 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         JSON_ObjectAppendInt(resume_obj, "num_medis", resume->small_medipacks);
         JSON_ObjectAppendInt(
             resume_obj, "num_big_medis", resume->large_medipacks);
+        JSON_ObjectAppendInt(resume_obj, "num_flares", resume->flares);
         JSON_ObjectAppendInt(resume_obj, "num_scions", resume->num_scions);
         JSON_ObjectAppendInt(resume_obj, "gun_status", resume->gun_status);
         JSON_ObjectAppendInt(resume_obj, "gun_type", resume->equipped_gun_type);
@@ -1493,6 +1501,10 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(
         lara_obj, "hit_effect",
         lara->hit_effect ? Effect_GetNum(lara->hit_effect) : 0);
+
+    JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare.age);
+    JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare.frame_num);
+    JSON_ObjectAppendBool(lara_obj, "flare_control_left", lara->flare.control);
 
     JSON_ObjectAppendInt(lara_obj, "mesh_effects", lara->mesh_effects);
     JSON_ARRAY *lara_meshes_arr = JSON_ArrayNew();

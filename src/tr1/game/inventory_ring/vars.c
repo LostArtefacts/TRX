@@ -125,6 +125,31 @@ INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
     .inv_pos = 6,
 };
 
+INVENTORY_ITEM g_InvRing_Item_Flare = {
+    .object_id = O_FLARES_OPTION,
+    .frames_total = 31,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 30,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = 0,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -8192,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 8,
+};
+
 INVENTORY_ITEM g_InvRing_Item_LeadBar = {
     .object_id = O_LEADBAR_OPTION,
     .frames_total = 1,
