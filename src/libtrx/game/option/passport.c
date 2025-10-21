@@ -208,8 +208,6 @@ static void M_DeterminePages(void)
         m_Priv.pages[i].available = false;
     }
 
-    LOG_VAR(g_Inv_Mode);
-
     switch (g_Inv_Mode) {
     case INV_TITLE_MODE:
         m_Priv.mode = M_IMMEDIATE ? M_MODE_PICK_OPTION : M_MODE_BROWSE;
@@ -310,11 +308,22 @@ static void M_DeterminePages(void)
     }
 
     // select first available page
+    m_Priv.active_page = PAGE_UNDETERMINED;
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
         if (m_Priv.pages[i].available) {
             m_Priv.active_page = i;
             break;
         }
+    }
+
+    // Guard: if no pages are available, force-add exit game or exit to title
+    if (m_Priv.active_page == PAGE_UNDETERMINED) {
+        M_SetPage(
+            PAGE_3,
+            g_Inv_Mode == INV_TITLE_MODE ? PASSPORT_ROLE_EXIT_GAME
+                                         : PASSPORT_ROLE_EXIT_TITLE,
+            true);
+        m_Priv.active_page = PAGE_3;
     }
 
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
