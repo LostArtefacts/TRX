@@ -293,9 +293,12 @@ static void M_ReadItems(void)
             M_Read(item->data, sizeof(SKIDOO_INFO));
             break;
 
-        case O_LIFT:
-            M_Read(item->data, sizeof(LIFT_INFO));
+        case O_LIFT: {
+            LIFT_INFO *data = item->data;
+            data->start_height = M_ReadS32();
+            data->wait_time = M_ReadS32();
             break;
+        }
 
         default:
             break;
