@@ -246,6 +246,9 @@ const GF_LEVEL *GF_GetLevel(
 
 const GF_LEVEL *GF_GetLevelAfter(const GF_LEVEL *const level)
 {
+    if (level == nullptr) {
+        return nullptr;
+    }
     const GF_LEVEL_TABLE_TYPE level_table_type =
         GF_GetLevelTableType(level->type);
     const GF_LEVEL_TABLE *const level_table =
@@ -261,6 +264,9 @@ const GF_LEVEL *GF_GetLevelAfter(const GF_LEVEL *const level)
 
 const GF_LEVEL *GF_GetLevelBefore(const GF_LEVEL *const level)
 {
+    if (level == nullptr) {
+        return nullptr;
+    }
     const GF_LEVEL_TABLE_TYPE level_table_type =
         GF_GetLevelTableType(level->type);
     const GF_LEVEL_TABLE *const level_table =

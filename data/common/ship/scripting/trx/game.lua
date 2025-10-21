@@ -62,6 +62,9 @@ trx.game = setmetatable({
   LevelTable = raw.LevelTable,
   LevelType = raw.LevelType,
   settings = Settings,
+  play_level = raw.play_level,
+  play_cutscene = raw.play_cutscene,
+  play_demo = raw.play_demo,
 }, {
   __index = function(self, key)
     local table_type = table_map[key]

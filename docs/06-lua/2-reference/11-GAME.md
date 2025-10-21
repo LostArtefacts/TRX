@@ -54,3 +54,11 @@ Module for retrieving game version and level tables.
   [lua]`trx.game.cutscenes[num]`  
   Retrieves the [lua]`trx.game.Level` of the specific type at the given index,
   or `nil` if out of range.
+
+- [lua]`trx.game.play_level(num)`  
+  Plays the specified level via game flow override or errors if invalid.
+  If the Gym level is available, it's the level 1.
+- [lua]`trx.game.play_cutscene(num)`  
+  Plays the specified cutscene via game flow override or errors if invalid.
+- [lua]`trx.game.play_demo(num)`  
+  Plays the specified demo via game flow override or errors if invalid.

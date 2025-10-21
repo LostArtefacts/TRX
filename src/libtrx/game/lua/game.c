@@ -1,5 +1,6 @@
 #include "game/game_flow.h"
 #include "game/lua/common.h"
+#include "game/savegame.h"
 #include "version.h"
 
 #include <lauxlib.h>
@@ -111,6 +112,59 @@ static int M_L_GameSetLoadSaveDisabled(lua_State *const L)
     return 1;
 }
 
+// trxc.game.play_level(num) → nil
+static int M_L_GamePlayLevel(lua_State *const L)
+{
+    const int32_t level_idx = luaL_checkinteger(L, 1) - 1;
+    const int32_t count = GF_GetLevelCount(GFLT_MAIN);
+    if (level_idx < 0 || level_idx >= count) {
+        return luaL_error(L, "invalid level number: %d", level_idx);
+    }
+    // XXX: big hack – write the resume info to the level just before, so that
+    // game_flow/sequencer.c can copy the right data in its call to
+    // Savegame_CarryCurrentInfoToNextLevel().
+    // This system needs rewriting to support non-linear gameplay better!
+    if (GF_GetCurrentLevel() != nullptr) {
+        Savegame_PersistGameToCurrentInfo(
+            GF_GetLevelBefore(GF_GetLevel(GFLT_MAIN, level_idx)));
+    }
+    GF_OverrideCommand((GF_COMMAND) {
+        .action = GF_START_GAME,
+        .param = level_idx,
+    });
+    return 0;
+}
+
+// trxc.game.play_cutscene(num) → nil
+static int M_L_GamePlayCutscene(lua_State *const L)
+{
+    const int32_t idx = luaL_checkinteger(L, 1) - 1;
+    const int32_t count = GF_GetLevelCount(GFLT_CUTSCENES);
+    if (idx < 0 || idx >= count) {
+        return luaL_error(L, "invalid cutscene number: %d", idx);
+    }
+    GF_OverrideCommand((GF_COMMAND) {
+        .action = GF_START_CINE,
+        .param = idx,
+    });
+    return 0;
+}
+
+// trxc.game.play_demo(num) → nil
+static int M_L_GamePlayDemo(lua_State *const L)
+{
+    const int32_t idx = luaL_checkinteger(L, 1) - 1;
+    const int32_t count = GF_GetLevelCount(GFLT_DEMOS);
+    if (idx < 0 || idx >= count) {
+        return luaL_error(L, "invalid demo number: %d", idx);
+    }
+    GF_OverrideCommand((GF_COMMAND) {
+        .action = GF_START_DEMO,
+        .param = idx,
+    });
+    return 0;
+}
+
 void LUA_CreateGame(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
@@ -142,6 +196,13 @@ void LUA_CreateGame(lua_State *const L)
     lua_setfield(L, -2, "get_load_save_disabled");
     lua_pushcfunction(L, M_L_GameSetLoadSaveDisabled);
     lua_setfield(L, -2, "set_load_save_disabled");
+
+    lua_pushcfunction(L, M_L_GamePlayLevel);
+    lua_setfield(L, -2, "play_level");
+    lua_pushcfunction(L, M_L_GamePlayCutscene);
+    lua_setfield(L, -2, "play_cutscene");
+    lua_pushcfunction(L, M_L_GamePlayDemo);
+    lua_setfield(L, -2, "play_demo");
 
     lua_newtable(L);
     lua_pushinteger(L, GFLT_MAIN);
