@@ -28,6 +28,7 @@
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
 - fixed ambient music not playing in demo levels (#4046, regression from 4.13)
+- fixed caustics stopping after spending roughly 12 minutes in a level (#4109, regression from 4.10)
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
