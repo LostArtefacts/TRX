@@ -111,7 +111,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
          || g_OverlayFlag <= 0)
         && lara->death_timer == 0 && !lara->extra_anim) {
         if (g_OverlayFlag > 0) {
-            if (g_GameFlow.load_save_disabled) {
+            if (g_GameFlow.lockout_option_ring
+                && g_GameFlow.load_save_disabled) {
                 g_OverlayFlag = 0;
             } else if (g_Input.save) {
                 g_OverlayFlag = -2;
@@ -180,11 +181,6 @@ void Game_ProcessInput(void)
     }
     if (g_InputDB.use_big_medi && Inv_RequestItem(O_LARGE_MEDIPACK_OPTION)) {
         Lara_UseItem(O_LARGE_MEDIPACK_OPTION);
-    }
-
-    if (g_GameFlow.load_save_disabled) {
-        g_Input.save = 0;
-        g_Input.load = 0;
     }
 
     if (g_InputDB.toggle_ui) {

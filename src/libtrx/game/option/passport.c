@@ -214,15 +214,7 @@ static void M_DeterminePages(void)
     case INV_TITLE_MODE:
         m_Priv.mode = M_IMMEDIATE ? M_MODE_PICK_OPTION : M_MODE_BROWSE;
         M_SetPage(PAGE_1, PASSPORT_ROLE_LOAD_GAME, has_saves);
-#if TR_VERSION == 1
         M_SetPage(PAGE_2, PASSPORT_ROLE_NEW_GAME, true);
-#else
-        M_SetPage(
-            PAGE_2,
-            g_GameFlow.play_any_level ? PASSPORT_ROLE_SELECT_LEVEL
-                                      : PASSPORT_ROLE_NEW_GAME,
-            true);
-#endif
         M_SetPage(PAGE_3, PASSPORT_ROLE_EXIT_GAME, true);
         break;
 
@@ -269,19 +261,14 @@ static void M_DeterminePages(void)
         ASSERT_FAIL();
     }
 
-    // Disable saves in gym, restart
+    // Disable saves in gym and save crystals mode.
+    // Offer New Game or Restart instead.
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
         if (m_Priv.pages[i].role != PASSPORT_ROLE_SAVE_GAME) {
             continue;
         }
         if (Game_IsInGym()) {
-#if TR_VERSION == 1
             m_Priv.pages[i].role = PASSPORT_ROLE_NEW_GAME;
-#else
-            m_Priv.pages[i].role = g_GameFlow.play_any_level
-                ? PASSPORT_ROLE_SELECT_LEVEL
-                : PASSPORT_ROLE_NEW_GAME;
-#endif
         } else if (
             g_Config.gameplay.enable_save_crystals
             && g_Inv_Mode != INV_SAVE_CRYSTAL_MODE) {
@@ -292,6 +279,17 @@ static void M_DeterminePages(void)
             }
         }
     }
+
+// If play any level is enabled, replace New Game with Play Any Level.
+#if TR_VERSION == 2
+    if (g_GameFlow.play_any_level) {
+        for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
+            if (m_Priv.pages[i].role == PASSPORT_ROLE_NEW_GAME) {
+                m_Priv.pages[i].role = PASSPORT_ROLE_SELECT_LEVEL;
+            }
+        }
+    }
+#endif
 
     // Select first available page
     m_Priv.active_page = PAGE_UNDETERMINED;
