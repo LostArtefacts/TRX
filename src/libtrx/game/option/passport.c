@@ -381,7 +381,11 @@ static void M_ShowSaves(INVENTORY_ITEM *const inv_item)
         UI_SaveSlotDialog_Control(m_Priv.save_slot.state);
     switch (choice.action) {
     case UI_SAVE_SLOT_DIALOG_NO_CHOICE:
-        if (!M_IMMEDIATE) {
+        if (M_IMMEDIATE) {
+            // Make sure it's not possible to confirm empty slots
+            g_Input.menu_confirm = false;
+            g_InputDB.menu_confirm = false;
+        } else {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
         }
