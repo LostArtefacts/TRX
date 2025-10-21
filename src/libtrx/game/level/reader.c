@@ -155,7 +155,7 @@ static void M_MarkWaterEdgeVertices(void)
         for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
             ROOM_VERTEX *const vertex = &room->mesh.vertices[j];
             if (vertex->pos.y == y_test) {
-                vertex->flags |= NO_VERT_MOVE;
+                vertex->is_wibble_disabled = true;
             }
         }
     }

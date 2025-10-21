@@ -286,11 +286,12 @@ static void M_ReadRoomMesh(
             M_ReadVertex(&vertex->pos, file);
             vertex->light_base = VFile_ReadS16(file);
             if (loader->game_version == 1) {
-                vertex->flags = 0;
+                vertex->is_wibble_disabled = false;
                 vertex->light_adder = vertex->light_base;
             } else {
                 vertex->light_table_value = VFile_ReadU8(file);
-                vertex->flags = VFile_ReadU8(file);
+                const uint8_t flags = VFile_ReadU8(file);
+                vertex->is_wibble_disabled = (flags & 0x80u) != 0u;
                 vertex->light_adder = VFile_ReadS16(file);
             }
         }

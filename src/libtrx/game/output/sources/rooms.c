@@ -1,7 +1,6 @@
 #include "game/output/sources/rooms.h"
 
 #include "config.h"
-#include "game/level/const.h"
 #include "game/output.h"
 #include "game/output/mesh_batcher/mesh_builder.h"
 #include "game/random.h"
@@ -29,14 +28,8 @@ static void M_AddRoomVerts(
         const ROOM_VERTEX *const room_vert = &room_verts[face_vertices[i]];
 
         uint16_t flags = 0;
-        if (g_TRVersion == 1) { // TODO: unify
-            if (room_vert->flags & NO_VERT_MOVE) {
-                flags |= VERT_NO_CAUSTICS;
-            }
-        } else {
-            if (room_vert->flags != 0) {
-                flags |= VERT_NO_CAUSTICS;
-            }
+        if (room_vert->is_wibble_disabled) {
+            flags |= VERT_NO_CAUSTICS;
         }
         if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
             flags |= VERT_NO_ALPHA_DISCARD;
