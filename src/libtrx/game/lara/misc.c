@@ -42,14 +42,12 @@ static void M_GetJointAbsPosition_I(
     if (lara_info->gun_type == LGT_FLARE) {
         Matrix_Interpolate();
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
-#if TR_VERSION >= 2
         if (lara_info->flare.control) {
             const LARA_ARM *const arm = &lara_info->left_arm;
             const ANIM *const anim = Anim_GetAnim(arm->anim_num);
             mesh_rots_1 =
                 arm->frame_base[arm->frame_num - anim->frame_base].mesh_rots;
         }
-#endif
         Matrix_Rot16(mesh_rots_1[LM_UARM_L]);
 
         Matrix_TranslateRel32(bone[LM_LARM_L - 1].pos);
@@ -123,14 +121,12 @@ void Lara_GetJointAbsPosition(XYZ_32 *const vec, const LARA_MESH joint)
 
     if (lara_info->gun_type == LGT_FLARE) {
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
-#if TR_VERSION >= 2
         if (lara_info->flare.control) {
             const LARA_ARM *const arm = &lara_info->left_arm;
             const ANIM *const anim = Anim_GetAnim(arm->anim_num);
             mesh_rots =
                 arm->frame_base[arm->frame_num - anim->frame_base].mesh_rots;
         }
-#endif
         Matrix_Rot16(mesh_rots[LM_UARM_L]);
 
         Matrix_TranslateRel32(bone[LM_LARM_L - 1].pos);

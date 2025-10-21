@@ -106,13 +106,11 @@ static void M_ActivateNearestBoss(void)
 static void M_PrepareCutscene(const int16_t item_num)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION == 2
     if (lara->gun_type == LGT_FLARE) {
         Lara_Flare_Undraw();
         lara->flare.control = false;
         lara->left_arm.lock = false;
     }
-#endif
 
     Lara_Vehicle_Dismount();
     Gun_SetLaraHandLMesh(LGT_UNARMED);

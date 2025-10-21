@@ -1,4 +1,3 @@
 X_INPUT_ROLE(INPUT_ROLE_EQUIP_HARPOON,               equip_harpoon)
 X_INPUT_ROLE(INPUT_ROLE_EQUIP_M16,                   equip_m16)
 X_INPUT_ROLE(INPUT_ROLE_EQUIP_GRENADE_LAUNCHER,      equip_grenade_launcher)
-X_INPUT_ROLE(INPUT_ROLE_USE_FLARE,                   use_flare)

@@ -64,9 +64,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .header_gs = GS_ID(CONTROLS_SECTION_ITEMS),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
-#if TR_VERSION >= 2
                 { .role = INPUT_ROLE_USE_FLARE },
-#endif
                 { .role = INPUT_ROLE_USE_SMALL_MEDI },
                 { .role = INPUT_ROLE_USE_BIG_MEDI },
                 { .role = INPUT_ROLE_EQUIP_PISTOLS },

@@ -39,9 +39,7 @@ static const LARA_TRX_STATE m_BlockingStates[] = {
     LS_PUSH_BLOCK,
     LS_PULL_BLOCK,
     LS_PICKUP,
-#if TR_VERSION >= 2
     LS_FLARE_PICKUP,
-#endif
     LS_SWITCH_ON,
     LS_SWITCH_OFF,
     LS_USE_KEY,

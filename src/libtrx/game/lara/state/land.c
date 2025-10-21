@@ -51,14 +51,10 @@ static bool M_CanPose(void)
     }
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    bool result = !g_Input.draw && !g_Input.look
-        && lara->hit_direction == DIR_UNKNOWN && lara->gun_status == LGS_ARMLESS
-        && lara->water_status == LWS_ABOVE_WATER;
-#if TR_VERSION >= 2
-    result &=
-        !g_Input.use_flare && !lara->flare.control && !Lara_Vehicle_IsMounted();
-#endif
-    return result;
+    return !g_Input.draw && !g_Input.look && lara->hit_direction == DIR_UNKNOWN
+        && lara->gun_status == LGS_ARMLESS
+        && lara->water_status == LWS_ABOVE_WATER && !g_Input.use_flare
+        && !lara->flare.control && !Lara_Vehicle_IsMounted();
 }
 
 static bool M_ShouldStopPosing(void)

@@ -41,6 +41,7 @@ X_INPUT_ROLE(INPUT_ROLE_EQUIP_MAGNUMS,           equip_magnums)
 X_INPUT_ROLE(INPUT_ROLE_EQUIP_UZIS,              equip_uzis)
 X_INPUT_ROLE(INPUT_ROLE_USE_SMALL_MEDI,          use_small_medi)
 X_INPUT_ROLE(INPUT_ROLE_USE_BIG_MEDI,            use_big_medi)
+X_INPUT_ROLE(INPUT_ROLE_USE_FLARE,               use_flare)
 
 X_INPUT_ROLE(INPUT_ROLE_PAUSE,                   pause)
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_PHOTO_MODE,       toggle_photo_mode)

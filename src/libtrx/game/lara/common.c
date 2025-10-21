@@ -313,12 +313,12 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_GRENADE_OPTION:
         request_gun_type = LGT_GRENADE;
         break;
+#endif
 
     case O_FLARES_ITEM:
     case O_FLARES_OPTION:
         lara_info->request_gun_type = LGT_FLARE;
         break;
-#endif
 
     case O_SMALL_MEDIPACK_ITEM:
     case O_SMALL_MEDIPACK_OPTION:

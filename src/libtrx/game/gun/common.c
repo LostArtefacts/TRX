@@ -51,8 +51,8 @@ OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
     case LGT_M16:     return O_LARA_M16;
     case LGT_GRENADE: return O_LARA_GRENADE;
     case LGT_HARPOON: return O_LARA_HARPOON;
-    case LGT_FLARE:   return O_LARA_FLARE;
 #endif
+    case LGT_FLARE:   return O_LARA_FLARE;
     default:          return NO_OBJECT;
     }
     // clang-format on

@@ -71,7 +71,6 @@ static void M_ReinitialiseGunMeshes(void)
 
 static void M_ResetGunStatus(void)
 {
-#if TR_VERSION >= 2
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool has_flare = Lara_Flare_IsMeshActive();
@@ -83,7 +82,9 @@ static void M_ResetGunStatus(void)
     lara_info->gun_status = LGS_ARMLESS;
     lara_info->gun_type = LGT_UNARMED;
     lara_info->request_gun_type = LGT_UNARMED;
+#if TR_VERSION >= 2
     lara_info->gun_item_num = NO_ITEM;
+#endif
     lara_info->gun_status = LGS_ARMLESS;
     lara_info->left_arm.frame_num = 0;
     lara_info->left_arm.lock = 0;
@@ -95,7 +96,6 @@ static void M_ResetGunStatus(void)
     const ANIM *const anim = Item_GetAnim(lara_item);
     lara_info->left_arm.frame_base = anim->frame_ptr;
     lara_info->right_arm.frame_base = anim->frame_ptr;
-#endif
 }
 
 bool Lara_Cheat_GiveAllKeys(void)

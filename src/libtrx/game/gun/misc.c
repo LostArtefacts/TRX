@@ -206,11 +206,9 @@ void Gun_InitialiseNewWeapon(void)
             Gun_Rifle_DrawMeshes(lara->gun_type);
             break;
 
-#if TR_VERSION >= 2
         case LGT_FLARE:
             Lara_Flare_DrawMeshes();
             break;
-#endif
 
         default:
             break;
@@ -264,6 +262,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
             Object_DrawMesh(obj->mesh_idx, clip, false);
         }
         return;
+#endif
 
     case LGT_FLARE:
         Matrix_TranslateRel(11, 32, 80);
@@ -272,8 +271,6 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         Output_CalculateStaticLight(2048);
         Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
         return;
-
-#endif
 
     default:
         shade = SHADE_LOW;

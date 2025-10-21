@@ -135,7 +135,6 @@ static void M_Draw_I(
 
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_L - 1].pos);
-#if TR_VERSION >= 2
         if (lara->flare.control) {
             const ANIM *const anim = Anim_GetAnim(lara->left_arm.anim_num);
             mesh_rots_1 =
@@ -144,7 +143,6 @@ static void M_Draw_I(
                     .mesh_rots;
             mesh_rots_2 = mesh_rots_1;
         }
-#endif
 
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_L], mesh_rots_2[LM_UARM_L]);
         Output_DrawObjectMesh_I(lara->mesh_ptrs[LM_UARM_L], clip);
@@ -388,7 +386,6 @@ void Lara_Draw(const ITEM *const item)
 
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
-#if TR_VERSION >= 2
         if (lara->flare.control && pose == nullptr) {
             const ANIM *const anim = Anim_GetAnim(lara->left_arm.anim_num);
             mesh_rots =
@@ -396,7 +393,6 @@ void Lara_Draw(const ITEM *const item)
                     .frame_base[lara->left_arm.frame_num - anim->frame_base]
                     .mesh_rots;
         }
-#endif
 
         Matrix_Rot16(mesh_rots[LM_UARM_L]);
         Output_DrawObjectMesh(lara->mesh_ptrs[LM_UARM_L], clip);
@@ -404,11 +400,9 @@ void Lara_Draw(const ITEM *const item)
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
 
-#if TR_VERSION >= 2
         if (lara->gun_type == LGT_FLARE && lara->left_arm.flash_gun) {
             Gun_DrawFlash(LGT_FLARE, clip);
         }
-#endif
 
         Matrix_Pop();
         break;
