@@ -261,8 +261,6 @@ remains distinct for each game.
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "demo_version": false,
-    "single_level": -1,
-
     "secret_track": 43,
 
     "title": {
@@ -332,11 +330,6 @@ remains distinct for each game.
     <td><code>demo_version</code></td>
     <td>Boolean</td>
     <td>Legacy setting scheduled for removal at a later time.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>single_level</code></td>
-    <td>Integer</td>
-    <td>Force the player to only play this one level.</td>
   </tr>
   <tr valign="top">
     <td><code>main_menu_picture</code></td>

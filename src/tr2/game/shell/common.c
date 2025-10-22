@@ -129,9 +129,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         switch (gf_cmd.action) {
         case GF_START_GAME:
         case GF_SELECT_GAME: {
-            const int32_t level_num = g_GameFlow.single_level >= 0
-                ? g_GameFlow.single_level
-                : gf_cmd.param;
+            const int32_t level_num = gf_cmd.param;
             const GF_SEQUENCE_CONTEXT seq_ctx =
                 gf_cmd.action == GF_SELECT_GAME ? GFSC_SELECT : GFSC_NORMAL;
             const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
