@@ -313,5 +313,6 @@ typedef struct {
         bool load_save_disabled;
         bool play_any_level;
         float demo_delay;
+        bool cheat_keys;
     } flow;
 } CONFIG;

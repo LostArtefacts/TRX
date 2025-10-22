@@ -1,6 +1,5 @@
 #include "game/game.h"
 
-#include "decomp/decomp.h"
 #include "game/demo.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
@@ -59,7 +58,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     }
 
     Interpolation_Remember();
-    if (g_GameFlow.cheat_keys) {
+    if (g_Config.flow.cheat_keys) {
         Lara_Cheat_CheckKeys();
     }
 

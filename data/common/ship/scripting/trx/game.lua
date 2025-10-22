@@ -42,6 +42,7 @@ local Settings = (function()
     load_save_disabled = config_entry("flow.load_save_disabled"),
     play_any_level = config_entry("flow.play_any_level"),
     demo_delay = config_entry("flow.demo_delay"),
+    cheat_keys = config_entry("flow.cheat_keys"),
   }
 
   return setmetatable({}, {
