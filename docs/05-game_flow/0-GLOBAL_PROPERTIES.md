@@ -281,7 +281,6 @@ remains distinct for each game.
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "cheat_keys": true,
-    "play_any_level": false,
     "demo_version": false,
     "single_level": -1,
 
@@ -357,14 +356,6 @@ remains distinct for each game.
     <td>
       Whether to enable original game cheats (the ones where Lara turns around
       three times).
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>play_any_level</code></td>
-    <td>Boolean</td>
-    <td>
-      Whether to show a full list of all levels in place of the New Game
-      passport page.
     </td>
   </tr>
   <tr valign="top">

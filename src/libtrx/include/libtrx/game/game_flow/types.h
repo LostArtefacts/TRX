@@ -177,7 +177,6 @@ typedef struct {
         float demo_delay;
         char *main_menu_background_path;
         bool enable_killer_pushblocks;
-        bool play_any_level;
 #if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;

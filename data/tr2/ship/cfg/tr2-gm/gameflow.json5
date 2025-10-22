@@ -7,7 +7,6 @@
     "savegame_fmt_bson": "save_trgm_%02d.dat",
 
     "cheat_keys": true,
-    "play_any_level": false,
     "demo_version": false,
     "single_level": -1,
 
