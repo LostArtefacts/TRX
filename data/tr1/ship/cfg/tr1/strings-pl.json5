@@ -211,6 +211,12 @@
         "large_medipack": {
             "name": "Duża apteczka",
         },
+        "flare": {
+            "name": "Flara",
+        },
+        "flares_box": {
+            "name": "Pudełko z flarami",
+        },
         "pistols": {
             "name": "Pistolety",
         },
@@ -312,6 +318,9 @@
         },
         "lara_uzis": {
             "name": "Animacja uzi",
+        },
+        "lara_flare": {
+            "name": "Animacja flary",
         },
         "lara_extra": {
             "name": "Dodatkowa animacja Lary",
@@ -746,6 +755,9 @@
         },
         "stopwatch": {
             "name": "\\{review}Statystyki",
+        },
+        "flare_fire": {
+            "name": "Iskry flary",
         }
     },
     "game_strings": {

@@ -211,6 +211,12 @@
         "large_medipack": {
             "name": "Großes Medi-Pack",
         },
+        "flare": {
+            "name": "Fackel",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
         "pistols": {
             "name": "Pistolen",
         },
@@ -312,6 +318,9 @@
         },
         "lara_uzis": {
             "name": "Uzi-Animation",
+        },
+        "lara_flare": {
+            "name": "Fackel-Animation",
         },
         "lara_extra": {
             "name": "Laras Extra-Animation",
@@ -755,6 +764,9 @@
         },
         "stopwatch": {
             "name": "\\{review}Statistiken",
+        },
+        "flare_fire": {
+            "name": "Fackel-Funken",
         }
     },
     "game_strings": {

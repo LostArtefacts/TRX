@@ -162,6 +162,7 @@
         "ENUM_INPUT_ROLE_TURBO_CHEAT": "Luas Turbo",
         "ENUM_INPUT_ROLE_UP": "Ruith",
         "ENUM_INPUT_ROLE_USE_BIG_MEDI": "Pasgan Mòr",
+        "ENUM_INPUT_ROLE_USE_FLARE": "Cleachd Lòchran",
         "ENUM_INPUT_ROLE_USE_SMALL_MEDI": "Pasgan Beag",
         "ENUM_JUMP_LOCK_DISABLED": "Dheth",
         "ENUM_JUMP_LOCK_LEGACY": "Dualchasach",

@@ -1113,7 +1113,6 @@
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equipaggia M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Pistole Automatiche",
-        "ENUM_INPUT_ROLE_USE_FLARE": "Bengala",
         "MISC_NONE": "Nessuno",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Risolve i problemi preesistenti nei livelli 'In Profondità', 'Relitto della Maria Doria' e 'Sul Ponte' per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",

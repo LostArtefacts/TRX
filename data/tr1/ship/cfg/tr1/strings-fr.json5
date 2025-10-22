@@ -211,6 +211,12 @@
         "large_medipack": {
             "name": "Grande trousse de soins",
         },
+        "flare": {
+            "name": "\\{review}Fusée éclairante",
+        },
+        "flares_box": {
+            "name": "\\{review}Boîte de fusées éclairantes",
+        },
         "pistols": {
             "name": "Pistolets",
         },
@@ -312,6 +318,9 @@
         },
         "lara_uzis": {
             "name": "Animations pour uzis",
+        },
+        "lara_flare": {
+            "name": "\\{review}Animation de la torche",
         },
         "lara_extra": {
             "name": "Animations supplémentaires de Lara",
@@ -708,6 +717,9 @@
         },
         "stopwatch": {
             "name": "\\{review}Statistiques",
+        },
+        "flare_fire": {
+            "name": "\\{review}Étincelles de fusée éclairante",
         }
     },
     "game_strings": {

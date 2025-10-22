@@ -211,6 +211,12 @@
         "large_medipack": {
             "name": "Large Medi Pack",
         },
+        "flare": {
+            "name": "Flare",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
         "pistols": {
             "name": "Pistols",
         },
@@ -315,6 +321,9 @@
         },
         "lara_uzis": {
             "name": "Uzis Animation",
+        },
+        "lara_flare": {
+            "name": "Flare Animation",
         },
         "lara_extra": {
             "name": "Lara's Extra Animation",
@@ -729,12 +738,6 @@
         "glow": {
             "name": "Glow",
         },
-        "temp_8": {
-            "name": "Temp 8",
-        },
-        "temp_9": {
-            "name": "Temp 9",
-        },
         "lara_hair": {
             "name": "Lara's Braid",
         },
@@ -743,6 +746,9 @@
         },
         "winston": {
             "name": "Winston",
+        },
+        "flare_fire": {
+            "name": "Flare sparks",
         }
     },
     "game_strings": {

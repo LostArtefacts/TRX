@@ -162,6 +162,7 @@
         "ENUM_INPUT_ROLE_TURBO_CHEAT": "Velocità Turbo",
         "ENUM_INPUT_ROLE_UP": "Corri",
         "ENUM_INPUT_ROLE_USE_BIG_MEDI": "Kit Medico Grande",
+        "ENUM_INPUT_ROLE_USE_FLARE": "Bengala",
         "ENUM_INPUT_ROLE_USE_SMALL_MEDI": "Kit Medico Piccolo",
         "ENUM_JUMP_LOCK_DISABLED": "Disattivato",
         "ENUM_JUMP_LOCK_LEGACY": "Originale",
