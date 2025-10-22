@@ -253,9 +253,9 @@ void Lara_Flare_Undraw(void)
 
         if (Item_TestAnimEqual(lara_item, LA(LA_FLARE_THROW))) {
             lara_info->flare.control = false;
-
-            if (frame_num_2 >= Anim_GetAnim(LA(LA_FLARE_THROW))->frame_base
-                    + LF_FL_THROW_FT - 1) {
+            const OBJECT *const obj = Object_Get(O_LARA);
+            const ANIM *const anim = Object_GetAnim(obj, LA(LA_FLARE_THROW));
+            if (frame_num_2 >= anim->frame_base + LF_FL_THROW_FT - 1) {
                 lara_info->gun_type = lara_info->last_gun_type;
                 lara_info->request_gun_type = lara_info->last_gun_type;
                 lara_info->gun_status = LGS_ARMLESS;
