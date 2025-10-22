@@ -41,7 +41,6 @@ static struct {
     M_PAGE_NUMBER active_page;
     int32_t selection;
     int32_t outer_selection; // multi-level navigation: load game→story so far
-    bool is_ready;
     struct {
         UI_NEW_GAME_STATE *state;
     } new_game;
@@ -63,11 +62,6 @@ static struct {
 PASSPORT g_Passport = {
     .select_slot = -1,
 };
-
-static void M_FreeRequesters(void)
-{
-    m_Priv.is_ready = false;
-}
 
 static void M_InitText(void)
 {
@@ -97,7 +91,6 @@ static void M_RemoveAllText(void)
         UI_NewGame_Free(m_Priv.new_game.state);
         m_Priv.new_game.state = nullptr;
     }
-    M_FreeRequesters();
 }
 
 static void M_SyncArrowsVisibility(void)
@@ -152,9 +145,20 @@ static void M_FlipRight(INVENTORY_ITEM *const inv_item)
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
 }
 
-static void M_NavigateInto(const int16_t slot_num)
+static void M_NavigateInto(const int16_t slot_num, const PASSPORT_ROLE role)
 {
     m_Priv.outer_selection = slot_num;
+    m_Priv.pages[m_Priv.active_page].role = role;
+    g_Input = (INPUT_STATE) {};
+    g_InputDB = (INPUT_STATE) {};
+}
+
+static void M_NavigateOut(const PASSPORT_ROLE role)
+{
+    m_Priv.outer_selection = -1;
+    m_Priv.pages[m_Priv.active_page].role = role;
+    g_Input = (INPUT_STATE) {};
+    g_InputDB = (INPUT_STATE) {};
 }
 
 static void M_Close(INVENTORY_ITEM *const inv_item)
@@ -336,27 +340,6 @@ static void M_ShowStorySoFar(void)
     }
 }
 
-static void M_PlayAnyLevel(INVENTORY_ITEM *const inv_item)
-{
-    M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
-    if (m_Priv.mode == M_MODE_BROWSE) {
-        if (g_InputDB.menu_confirm) {
-            g_Input = (INPUT_STATE) {};
-            g_InputDB = (INPUT_STATE) {};
-            m_Priv.mode = M_MODE_PICK_OPTION;
-            return;
-        }
-    }
-    if (m_Priv.play_any_level.state == nullptr) {
-        m_Priv.play_any_level.state = UI_PlayAnyLevelDialog_Init();
-    }
-    const int32_t choice =
-        UI_PlayAnyLevelDialog_Control(m_Priv.play_any_level.state);
-    if (choice != UI_PLAY_ANY_LEVEL_CHOICE_NO_CHOICE) {
-        m_Priv.selection = choice;
-    }
-}
-
 static void M_InitLoadSaveRequester(const PASSPORT_ROLE role)
 {
     int32_t save_slot = m_Priv.selection;
@@ -400,11 +383,7 @@ static void M_ShowSaves(INVENTORY_ITEM *const inv_item)
         break;
 
     case UI_SAVE_SLOT_DIALOG_DETAILS:
-        M_NavigateInto(choice.slot_num);
-        m_Priv.pages[m_Priv.active_page].role = PASSPORT_ROLE_STORY_SO_FAR;
-        g_Input = (INPUT_STATE) {};
-        g_InputDB = (INPUT_STATE) {};
-        M_ShowStorySoFar();
+        M_NavigateInto(choice.slot_num, PASSPORT_ROLE_STORY_SO_FAR);
         break;
 
     case UI_SAVE_SLOT_DIALOG_CONFIRM:
@@ -420,7 +399,6 @@ static void M_StorySoFar(INVENTORY_ITEM *const inv_item)
         m_Priv.select_level.state = nullptr;
         m_Priv.pages[m_Priv.active_page].role = PASSPORT_ROLE_LOAD_GAME;
         m_Priv.selection = m_Priv.outer_selection;
-        M_InitLoadSaveRequester(m_Priv.pages[m_Priv.active_page].role);
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
         M_ShowSaves(PASSPORT_ROLE_LOAD_GAME);
@@ -433,7 +411,6 @@ static void M_LoadSaveGame(INVENTORY_ITEM *const inv_item)
 {
     if (m_Priv.mode == M_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
-            M_InitLoadSaveRequester(m_Priv.pages[m_Priv.active_page].role);
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
             m_Priv.mode = M_MODE_PICK_OPTION;
@@ -464,8 +441,9 @@ static void M_NewGame(INVENTORY_ITEM *const inv_item)
                 || g_Config.profile.new_game_plus_unlock)) {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
-            m_Priv.selection = GF_GetFirstLevel()->num;
             m_Priv.mode = M_MODE_PICK_OPTION;
+        } else {
+            m_Priv.selection = GF_GetFirstLevel()->num;
         }
     } else if (m_Priv.mode == M_MODE_PICK_OPTION) {
         if (m_Priv.new_game.state == nullptr) {
@@ -478,8 +456,20 @@ static void M_NewGame(INVENTORY_ITEM *const inv_item)
                 g_InputDB = (INPUT_STATE) {};
             }
         } else if (choice == UI_REQUESTER_CANCEL) {
-            M_SoftClose(inv_item);
+            if (m_Priv.outer_selection != -1) {
+                M_NavigateOut(PASSPORT_ROLE_SELECT_LEVEL);
+            } else {
+                M_SoftClose(inv_item);
+            }
         } else {
+            if (m_Priv.outer_selection != -1) {
+                m_Priv.selection = m_Priv.outer_selection;
+                m_Priv.pages[m_Priv.active_page].role =
+                    PASSPORT_ROLE_SELECT_LEVEL;
+            } else {
+                m_Priv.selection = GF_GetFirstLevel()->num;
+            }
+            LOG_INFO("%d", m_Priv.selection);
             switch (choice) {
             case 0:
                 Game_SetBonusFlag(GBF_NONE);
@@ -497,6 +487,38 @@ static void M_NewGame(INVENTORY_ITEM *const inv_item)
                 Game_SetBonusFlag(GBF_NONE);
                 break;
             }
+        }
+    }
+}
+
+static void M_PlayAnyLevel(INVENTORY_ITEM *const inv_item)
+{
+    M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
+    if (m_Priv.mode == M_MODE_BROWSE) {
+        if (g_InputDB.menu_confirm) {
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+            m_Priv.mode = M_MODE_PICK_OPTION;
+        }
+    } else {
+        if (m_Priv.play_any_level.state == nullptr) {
+            m_Priv.play_any_level.state = UI_PlayAnyLevelDialog_Init();
+        }
+        const int32_t choice =
+            UI_PlayAnyLevelDialog_Control(m_Priv.play_any_level.state);
+        if (choice == UI_REQUESTER_NO_CHOICE) {
+            if (!M_IMMEDIATE) {
+                g_Input = (INPUT_STATE) {};
+                g_InputDB = (INPUT_STATE) {};
+            }
+        } else if (choice == UI_REQUESTER_CANCEL) {
+            M_SoftClose(inv_item);
+        } else if (
+            g_Config.gameplay.enable_game_modes
+            || g_Config.profile.new_game_plus_unlock) {
+            M_NavigateInto(choice, PASSPORT_ROLE_NEW_GAME);
+        } else {
+            m_Priv.selection = choice;
         }
     }
 }
@@ -604,7 +626,6 @@ void Option_Passport_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
     } else {
-        m_Priv.is_ready = true;
         M_SyncArrowsVisibility();
         M_ShowPage(inv_item);
         if (g_InputDB.menu_confirm) {
@@ -651,7 +672,7 @@ void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
 
     case PASSPORT_ROLE_LOAD_GAME:
     case PASSPORT_ROLE_SAVE_GAME:
-        if (m_Priv.is_ready && m_Priv.save_slot.state != nullptr) {
+        if (m_Priv.save_slot.state != nullptr) {
             UI_SaveSlotDialog(m_Priv.save_slot.state);
         }
         break;

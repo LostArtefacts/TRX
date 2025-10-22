@@ -3,6 +3,7 @@
     Supports basic events, item interactions, teleporting and much more.
     See [the documentation](../06-lua) for details.
 - added restart level option when Lara dies (#1555)
+- added game mode selection to the play any level feature
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)
@@ -17,9 +18,10 @@
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)
     - fixed ricochets not showing on slopes
-- changed the game flow `lockout_option_ring` to a hidden setting, `flow.lockout_option_ring`
-- changed the game flow `load_save_disabled` to a hidden setting, `flow.load_save_disabled`
-- changed the game flow `play_any_level` to a hidden setting, `flow.play_any_level`
+- changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
+    - `flow.lockout_option_ring`
+    - `flow.load_save_disabled`
+    - `flow.play_any_level`
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
