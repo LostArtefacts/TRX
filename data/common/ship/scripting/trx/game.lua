@@ -25,38 +25,38 @@ local table_map = {
 }
 
 -- settings system
-local settings_getters = {
-  lockout_option_ring = function()
-    return trx.config.get("flow.lockout_option_ring")
-  end,
-  load_save_disabled = function()
-    return trx.config.get("flow.load_save_disabled")
-  end,
-}
+local Settings = (function()
+  local function config_entry(path)
+    return {
+      get = function()
+        return trx.config.get(path)
+      end,
+      set = function(value)
+        trx.config.set(path, value)
+      end,
+    }
+  end
 
-local settings_setters = {
-  lockout_option_ring = function(value)
-    trx.config.set("flow.lockout_option_ring", value)
-  end,
-  load_save_disabled = function(value)
-    trx.config.set("flow.load_save_disabled", value)
-  end,
-}
+  local registry = {
+    lockout_option_ring = config_entry("flow.lockout_option_ring"),
+    load_save_disabled = config_entry("flow.load_save_disabled"),
+    play_any_level = config_entry("flow.play_any_level"),
+  }
 
-local Settings = setmetatable({}, {
-  __index = function(_, key)
-    local getter = settings_getters[key]
-    return getter and getter() or nil
-  end,
-  __newindex = function(_, key, value)
-    local setter = settings_setters[key]
-    if setter then
-      setter(value)
-      return
-    end
-    error("Cannot set field '" .. key .. "' on Settings")
-  end,
-})
+  return setmetatable({}, {
+    __index = function(_, key)
+      local r = registry[key]
+      return r and r.get() or nil
+    end,
+    __newindex = function(_, key, value)
+      local r = registry[key]
+      if not r then
+        error("Cannot set field '" .. key .. "' on Settings")
+      end
+      r.set(value)
+    end,
+  })
+end)()
 
 local dynamic_getters = {
   current_level = function()

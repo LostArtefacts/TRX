@@ -26,10 +26,12 @@ Module for retrieving game version and level tables.
     Properties:
     - **`lockout_option_ring`**: Whether to disallow the player from using the option ring in-game.
     - **`load_save_disabled`**: Whether to disable saving and loading the game.
+    - **`play_any_level`**: Whether to show a full list of all levels in place of the New Game passport page.
 
     Writable properties:
     - `lockout_option_ring`
     - `load_save_disabled`
+    - `play_any_level`
 
 ### Functions
 
