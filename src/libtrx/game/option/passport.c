@@ -280,16 +280,14 @@ static void M_DeterminePages(void)
         }
     }
 
-// If play any level is enabled, replace New Game with Play Any Level.
-#if TR_VERSION == 2
-    if (g_GameFlow.play_any_level) {
+    // If play any level is enabled, replace New Game with Play Any Level.
+    if (g_Config.flow.play_any_level) {
         for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
             if (m_Priv.pages[i].role == PASSPORT_ROLE_NEW_GAME) {
                 m_Priv.pages[i].role = PASSPORT_ROLE_SELECT_LEVEL;
             }
         }
     }
-#endif
 
     // Select first available page
     m_Priv.active_page = PAGE_UNDETERMINED;
@@ -341,6 +339,14 @@ static void M_ShowStorySoFar(void)
 static void M_PlayAnyLevel(INVENTORY_ITEM *const inv_item)
 {
     M_ChangePageTextContent(GS(PASSPORT_NEW_GAME));
+    if (m_Priv.mode == M_MODE_BROWSE) {
+        if (g_InputDB.menu_confirm) {
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+            m_Priv.mode = M_MODE_PICK_OPTION;
+            return;
+        }
+    }
     if (m_Priv.play_any_level.state == nullptr) {
         m_Priv.play_any_level.state = UI_PlayAnyLevelDialog_Init();
     }

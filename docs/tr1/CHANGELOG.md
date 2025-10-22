@@ -16,6 +16,7 @@
     - fixed ricochets not showing on slopes
 - added `flow.lockout_option_ring` hidden setting
 - added `flow.load_save_disabled` hidden setting
+- added `flow.play_any_level` hidden setting
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)
