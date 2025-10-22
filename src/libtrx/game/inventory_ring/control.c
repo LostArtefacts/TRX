@@ -226,7 +226,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             Savegame_UnbindSlot();
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
-                .param = GF_GetFirstLevel()->num,
+                .param = g_Passport.select_slot,
             };
 
         case PASSPORT_ROLE_SAVE_GAME:
