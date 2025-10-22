@@ -43,6 +43,12 @@ If you install everything correctly, your game directory should look more or les
 │   ├── base_strings-pl.json5
 │   ├── base_strings-ru.json5
 │   ├── base_strings.json5
+│   ├── catalog_item_actions.csv
+│   ├── catalog_lara_anims.csv
+│   ├── catalog_lara_states.csv
+│   ├── catalog_music.csv
+│   ├── catalog_objects.csv
+│   ├── catalog_samples.csv
 │   ├── poses.json5
 │   ├── tr2
 │   │   ├── gameflow.json5
@@ -252,7 +258,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── palace_textures.bin
 │   │   ├── pda_model.bin
 │   │   ├── photo.bin
+│   │   ├── pickup_aid.bin
 │   │   ├── portcullis_sfx.bin
+│   │   ├── purple_crystal.bin
 │   │   ├── rig_itemrots.bin
 │   │   ├── rig_music_tracks.bin
 │   │   ├── rig_pickup_meshes.bin
@@ -381,6 +389,18 @@ If you install everything correctly, your game directory should look more or les
 │   ├── 59.mp3
 │   ├── 60.mp3
 │   └── 61.mp3
+├── scripting
+│   └── trx
+│       ├── config.lua
+│       ├── console.lua
+│       ├── events.lua
+│       ├── game.lua
+│       ├── items.lua
+│       ├── lara.lua
+│       ├── log.lua
+│       ├── music.lua
+│       ├── rooms.lua
+│       └── sound.lua
 ├── shaders
 │   ├── 2d.glsl
 │   ├── common.glsl
@@ -426,6 +446,12 @@ If you install everything correctly, your game directory should look more or les
         │   ├── base_strings-pl.json5
         │   ├── base_strings-ru.json5
         │   ├── base_strings.json5
+        │   ├── catalog_item_actions.csv
+        │   ├── catalog_lara_anims.csv
+        │   ├── catalog_lara_states.csv
+        │   ├── catalog_music.csv
+        │   ├── catalog_objects.csv
+        │   ├── catalog_samples.csv
         │   ├── poses.json5
         │   ├── tr2
         │   │   ├── gameflow.json5
@@ -634,7 +660,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── palace_textures.bin
         │   │   ├── pda_model.bin
         │   │   ├── photo.bin
+        │   │   ├── pickup_aid.bin
         │   │   ├── portcullis_sfx.bin
+        │   │   ├── purple_crystal.bin
         │   │   ├── rig_itemrots.bin
         │   │   ├── rig_music_tracks.bin
         │   │   ├── rig_pickup_meshes.bin
@@ -764,6 +792,18 @@ If you install everything correctly, your game directory should look more or les
         │   ├── 59.mp3
         │   ├── 60.mp3
         │   └── 61.mp3
+        ├── scripting
+        │   └── trx
+        │       ├── config.lua
+        │       ├── console.lua
+        │       ├── events.lua
+        │       ├── game.lua
+        │       ├── items.lua
+        │       ├── lara.lua
+        │       ├── log.lua
+        │       ├── music.lua
+        │       ├── rooms.lua
+        │       └── sound.lua
         └── shaders
             ├── 2d.glsl
             ├── common.glsl
