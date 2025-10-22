@@ -47,6 +47,8 @@ static const LARA_TRX_STATE m_ThrowStates[] = {
     LS_TRX_INVALID, // sentinel
 };
 
+static XYZ_32 m_IgnitePos = {};
+
 static void M_InitialiseState(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -64,11 +66,12 @@ static void M_InitialiseState(void)
 
 static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
 {
-    Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
+    m_IgnitePos = flare_pos;
+    Room_GetSector(m_IgnitePos.x, m_IgnitePos.y, m_IgnitePos.z, &room_num);
     const ROOM *const room = Room_Get(room_num);
     const SOUND_PLAY_MODE mode =
         room->flags.underwater ? SPM_UNDERWATER : SPM_NORMAL;
-    Sound_Effect(SFX_LARA_FLARE_IGNITE, &flare_pos, mode);
+    Sound_Effect(SFX_LARA_FLARE_IGNITE, &m_IgnitePos, mode);
 }
 
 static bool M_CanThrowFlare(void)
@@ -116,7 +119,7 @@ static void M_ControlInHand(const int32_t flare_age)
 
     if (lara_info->flare.age < Flare_GetMaxAge()) {
         lara_info->flare.age++;
-        Flare_GenerateEffects(lara_item->pos, vec, lara_item->room_num);
+        Flare_GenerateEffects(&lara_item->pos, vec, lara_item->room_num);
     } else if (M_CanThrowFlare()) {
         lara_info->gun_status = LGS_UNDRAW;
     }

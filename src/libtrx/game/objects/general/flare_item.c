@@ -88,7 +88,7 @@ static void M_Control(const int16_t item_num)
 
     if (Flare_GenerateLight(item->pos, flare_age)) {
         flare_age |= 0x8000u;
-        Flare_GenerateEffects(item->pos, item->pos, item->room_num);
+        Flare_GenerateEffects(&item->pos, item->pos, item->room_num);
     }
 
     item->data = (void *)(intptr_t)flare_age;
@@ -131,16 +131,16 @@ static void M_Draw(const ITEM *const item)
 }
 
 void Flare_GenerateEffects(
-    const XYZ_32 sound_pos, const XYZ_32 flare_pos, int16_t room_num)
+    const XYZ_32 *const sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
     Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
     if (Room_Get(room_num)->flags.underwater) {
-        Sound_Effect(SFX_LARA_FLARE_BURN, &sound_pos, SPM_UNDERWATER);
+        Sound_Effect(SFX_LARA_FLARE_BURN, sound_pos, SPM_UNDERWATER);
         if (Random_GetDraw() < 0x4000) {
             Spawn_Bubble(&flare_pos, room_num);
         }
     } else {
-        Sound_Effect(SFX_LARA_FLARE_BURN, &sound_pos, SPM_NORMAL);
+        Sound_Effect(SFX_LARA_FLARE_BURN, sound_pos, SPM_NORMAL);
     }
 }
 
