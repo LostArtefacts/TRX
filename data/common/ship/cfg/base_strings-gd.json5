@@ -432,6 +432,8 @@
         "SETTING_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Airson ìrean gnàthaichte — leigidh seo le tuairisgeulan nì a nochdadh san t-seilbh ma bheir ùghdar na h-ìre dàta freagarrach.",
         "SETTING_ENABLE_JUMP_TWISTS": "Snìomh leum",
         "SETTING_ENABLE_JUMP_TWISTS_DESCRIPTION": "Cuiridh seo snìomh is leth-chasach TR2+ an comas — m.e. brùth rolla rè leum neo dàibheadh.",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS": "\\{review}Cuir comas air blocaichean putadh marbhach",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS_DESCRIPTION": "\\{review}Ma tha seo comasach, nuair a thuiteas bloc putadh bhon adhar agus a thig air Lara, marbhidh e i gu dìreach. Mura h-eil, bidh Lara a' dol troimh air a' bhloc agus a' mairsinn.",
         "SETTING_ENABLE_LARA_MIC": "Micreofon ri taobh Lara",
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Cuiridh seo am micreofon aig suidheachadh Lara. Ma thèid seo air a chur dheth, bidh e aig suidheachadh a' chamara.",
         "SETTING_ENABLE_LEAN_JUMPING": "Leum le claonadh",

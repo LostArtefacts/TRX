@@ -300,7 +300,7 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
 
 static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
 {
-    return g_GameFlow.enable_killer_pushblocks
+    return g_Config.gameplay.enable_killer_pushblocks
         && !g_Config.debug.enable_invulnerability && item->gravity
         && Lara_TestBoundsCollide(item, 0);
 }

@@ -432,6 +432,8 @@
         "SETTING_ENABLE_ITEM_EXAMINING_DESCRIPTION": "For custom levels - allows item descriptions to be displayed in the inventory where the level author has provided suitable data.",
         "SETTING_ENABLE_JUMP_TWISTS": "Jump twists",
         "SETTING_ENABLE_JUMP_TWISTS_DESCRIPTION": "Enables jump twists and somersaults i.e. press roll during jump and swan dive animations.",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS": "Enable killer pushblocks",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS_DESCRIPTION": "If enabled, when a pushblock falls from the air and lands on Lara, it will kill her outright. Otherwise, Lara will clip on top of the block and survive.",
         "SETTING_ENABLE_LARA_MIC": "Microphone near Lara",
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position.",
         "SETTING_ENABLE_LEAN_JUMPING": "Lean jumping",

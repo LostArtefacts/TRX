@@ -10,7 +10,6 @@
     "single_level": -1,
 
     "secret_track": 43,
-    "enable_killer_pushblocks": true,
 
     "title": {
         "path": "data/title_gm.tr2",

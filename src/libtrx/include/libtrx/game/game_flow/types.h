@@ -175,7 +175,6 @@ typedef struct {
     // global settings
     struct {
         char *main_menu_background_path;
-        bool enable_killer_pushblocks;
 #if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;

@@ -432,6 +432,8 @@
         "SETTING_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Pozwala na wyświetlanie opisów przedmiotów w ekwipunku w niestandardowych poziomach, gdzie autor poziomu dostarczył odpowiednie dane.",
         "SETTING_ENABLE_JUMP_TWISTS": "Przewroty w powietrzu",
         "SETTING_ENABLE_JUMP_TWISTS_DESCRIPTION": "Włącza możliwość przewrotu podczas skakania.",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS": "Zabójcze bloki",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS_DESCRIPTION": "Kiedy ta opcja jest włączona, spadające z wysokości bloki natychmiast zabijają Larę. W przeciwnym razie Lara stanie na powierzchni bloku i przeżyje (tak jak w oryginalnych grach).",
         "SETTING_ENABLE_LARA_MIC": "Mikrofon przy Larze",
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Ustawia mikrofon na pozycji Lary. Domyślnie mikrofon jest na pozycji kamery. Wpływa to głównie na głośność efektów – czy przy kamerach daleko od Lary będą one cicho, czy głośno.",
         "SETTING_ENABLE_LEAN_JUMPING": "Dalekie skoki w miejscu",

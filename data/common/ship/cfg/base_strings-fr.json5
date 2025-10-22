@@ -432,6 +432,8 @@
         "SETTING_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Pour les niveaux personnalisés - permet d'afficher les descriptions des objets dans l'inventaire lorsque le créateur du niveau a fourni ces informations.",
         "SETTING_ENABLE_JUMP_TWISTS": "Sauts périlleux",
         "SETTING_ENABLE_JUMP_TWISTS_DESCRIPTION": "\\{review}Activer les demi-tours en plein saut et les cabrioles.",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS": "\\{review}Activer les blocs-poussoirs mortels",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS_DESCRIPTION": "\\{review}Si activé, lorsqu'un bloc-poussoir tombe de l'air et atterrit sur Lara, il la tuera immédiatement. Sinon, Lara se retrouvera coincée sur le dessus du bloc et survivra.",
         "SETTING_ENABLE_LARA_MIC": "Micro sur Lara",
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Place le micro au niveau de Lara. Si cette option est désactivée, le micro sera placé au niveau de la caméra.",
         "SETTING_ENABLE_LEAN_JUMPING": "Contrôle du saut sur place",
