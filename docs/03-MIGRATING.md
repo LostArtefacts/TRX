@@ -6,6 +6,14 @@ title: Migrating levels
 
 ## TR1X
 
+### Version 4.15 to 4.16
+
+1. **Game flow options moved to the config module**:
+    Certain settings are no longer part of the game flow spec and instead
+    became hidden player settings. To change them, put them in the
+    `enforced_config` section. List of the affected settings:
+    - `demo_delay`
+
 ### Version 4.13 to 4.14
 
 1. **Update file paths**  
@@ -39,7 +47,6 @@ title: Migrating levels
     If you wish to give the player agency to change the fog:
     - Remove `draw_distance_fade` and `draw_distance_max`
 
-
 ### Version 4.7 to 4.8
 
 1. **Rename basic keys**  
@@ -71,7 +78,28 @@ title: Migrating levels
    all `"strings"` keys can be safely removed from the game flow. Refer to
    [game strings documentation](4-GAME_STRINGS.md) for more details.
 
+
+
 ## TR2X
+
+### Version 1.5 to 1.6
+
+1. **Game flow options moved to the config module**:
+    Certain settings are no longer part of the game flow spec and instead
+    became hidden player settings. To change them, put them in the
+    `enforced_config` section. List of the affected settings:
+    - `lockout_option_ring`
+    - `load_save_disabled`
+    - `play_any_level`
+    - `demo_delay`
+2. **Removed game flow settings**
+    The following game flow features were removed and are no longer available:
+    - `cmd_init`
+    - `cmd_title`
+    - `cmd_death_in_demo`
+    - `cmd_death_in_game`
+    - `cmd_demo_end`
+    - `cmd_demo_interrupt`
 
 ### Version 1.3 to 1.4
 
