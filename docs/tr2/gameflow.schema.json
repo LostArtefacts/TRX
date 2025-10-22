@@ -19,17 +19,9 @@
       "type": "boolean",
       "description": "Whether to enable original in-game cheat keys."
     },
-    "load_save_disabled": {
-      "type": "boolean",
-      "description": "Whether to disable saving and loading the game."
-    },
     "play_any_level": {
       "type": "boolean",
       "description": "Whether to show a full list of all levels in place of the New Game screen."
-    },
-    "lockout_option_ring": {
-      "type": "boolean",
-      "description": "Whether to disallow the player from using the option ring in-game."
     },
     "demo_version": {
       "type": "boolean",

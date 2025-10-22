@@ -19,8 +19,6 @@ remains distinct for each game.
     "main_menu_picture": "data/titleh.png",
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
-    "lockout_option_ring": false,
-    "load_save_disabled": false,
     "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
     "fog_transparency": false,
@@ -85,16 +83,6 @@ remains distinct for each game.
     <td>
       Enables an exposure meter for Lara when she is in cold water.
     </td>
-  </tr>
-  <tr valign="top">
-    <td><code>lockout_option_ring</code></td>
-    <td>Boolean</td>
-    <td>Whether to disallow the players to use control ring while ingame.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>load_save_disabled</code></td>
-    <td>Boolean</td>
-    <td>Whether to disable saving and loading the game.</td>
   </tr>
   <tr valign="top">
     <td>
@@ -293,9 +281,7 @@ remains distinct for each game.
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "cheat_keys": true,
-    "load_save_disabled": false,
     "play_any_level": false,
-    "lockout_option_ring": false,
     "demo_version": false,
     "single_level": -1,
 
@@ -374,22 +360,12 @@ remains distinct for each game.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>load_save_disabled</code></td>
-    <td>Boolean</td>
-    <td>Whether to disable saving and loading the game.</td>
-  </tr>
-  <tr valign="top">
     <td><code>play_any_level</code></td>
     <td>Boolean</td>
     <td>
       Whether to show a full list of all levels in place of the New Game
       passport page.
     </td>
-  </tr>
-  <tr valign="top">
-    <td><code>lockout_option_ring</code></td>
-    <td>Boolean</td>
-    <td>Whether to disallow the players to use control ring while ingame.</td>
   </tr>
   <tr valign="top">
     <td><code>demo_version</code></td>

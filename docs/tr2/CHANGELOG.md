@@ -17,6 +17,8 @@
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)
     - fixed ricochets not showing on slopes
+- changed the game flow `lockout_option_ring` to a hidden setting, `flow.lockout_option_ring`
+- changed the game flow `load_save_disabled` to a hidden setting, `flow.load_save_disabled`
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)

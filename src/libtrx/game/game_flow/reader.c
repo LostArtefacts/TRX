@@ -200,11 +200,6 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
             }
         }
     }
-
-    ctx->gf->lockout_option_ring =
-        JSON_ObjectGetBool(obj, "lockout_option_ring", true);
-    ctx->gf->load_save_disabled =
-        JSON_ObjectGetBool(obj, "load_save_disabled", false);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)

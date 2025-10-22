@@ -985,5 +985,5 @@ bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
 
 bool InvRing_IsOptionLockedOut(void)
 {
-    return g_GameFlow.lockout_option_ring;
+    return g_Config.flow.lockout_option_ring;
 }

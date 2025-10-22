@@ -177,14 +177,12 @@ typedef struct {
         float demo_delay;
         char *main_menu_background_path;
         bool enable_killer_pushblocks;
-        bool lockout_option_ring;
-        bool load_save_disabled;
+        bool play_any_level;
 #if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
 #elif TR_VERSION == 2
         bool is_demo_version;
-        bool play_any_level;
         bool cheat_keys;
         int32_t single_level;
 #endif
