@@ -173,7 +173,7 @@ static void M_Close(INVENTORY_ITEM *const inv_item)
 static void M_SoftClose(INVENTORY_ITEM *const inv_item)
 {
     if (g_Inv_Mode == INV_DEATH_MODE) {
-        if (m_Priv.mode != M_MODE_BROWSE) {
+        if (!M_IMMEDIATE && m_Priv.mode != M_MODE_BROWSE) {
             m_Priv.mode = M_MODE_BROWSE;
         }
         g_Input = (INPUT_STATE) {};
