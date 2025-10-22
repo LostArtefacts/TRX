@@ -162,6 +162,7 @@
         "ENUM_INPUT_ROLE_TURBO_CHEAT": "Турбо скорость",
         "ENUM_INPUT_ROLE_UP": "Вперёд",
         "ENUM_INPUT_ROLE_USE_BIG_MEDI": "Большая аптечка",
+        "ENUM_INPUT_ROLE_USE_FLARE": "\\{review}Вспышка",
         "ENUM_INPUT_ROLE_USE_SMALL_MEDI": "Малая аптечка",
         "ENUM_JUMP_LOCK_DISABLED": "Отключена",
         "ENUM_JUMP_LOCK_LEGACY": "Оригинал",

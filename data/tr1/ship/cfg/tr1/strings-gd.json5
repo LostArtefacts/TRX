@@ -211,6 +211,12 @@
         "large_medipack": {
             "name": "Pasgan Mòr Slàinte",
         },
+        "flare": {
+            "name": "Lòchran",
+        },
+        "flares_box": {
+            "name": "Bogsa Lòchrain",
+        },
         "pistols": {
             "name": "Piostalan",
         },
@@ -312,6 +318,9 @@
         },
         "lara_uzis": {
             "name": "Beòthalachd Uzis",
+        },
+        "lara_flare": {
+            "name": "Beòthalachd Lòchran",
         },
         "lara_extra": {
             "name": "Beòthalachd Eile Lara",
@@ -767,6 +776,9 @@
         },
         "stopwatch": {
             "name": "\\{review}Staitistig",
+        },
+        "flare_fire": {
+            "name": "Teinntreach Lòchran",
         }
     },
     "game_strings": {

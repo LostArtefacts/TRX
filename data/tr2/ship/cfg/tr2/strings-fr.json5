@@ -1113,7 +1113,6 @@
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Équiper le harpon",
         "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Équiper le M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "\\{review}Équiper les pistolets automatiques",
-        "ENUM_INPUT_ROLE_USE_FLARE": "\\{review}Flare",
         "MISC_NONE": "\\{review}Aucun",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",

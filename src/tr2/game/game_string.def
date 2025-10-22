@@ -4,7 +4,6 @@ GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER, "Equip Grenade Launcher")
 GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_HARPOON, "Equip Harpoon Gun")
 GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_M16, "Equip M16")
 GS_DEFINE(ENUM_INPUT_ROLE_EQUIP_MAGNUMS, "Equip Automatic Pistols")
-GS_DEFINE(ENUM_INPUT_ROLE_USE_FLARE, "Flare")
 
 // Setting descriptions
 GS_DEFINE(SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION,  "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.")
