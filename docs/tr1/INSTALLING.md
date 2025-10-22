@@ -60,6 +60,12 @@ If you install everything correctly, your game directory should look more or les
 │   ├── base_strings-pl.json5
 │   ├── base_strings-ru.json5
 │   ├── base_strings.json5
+│   ├── catalog_item_actions.csv
+│   ├── catalog_lara_anims.csv
+│   ├── catalog_lara_states.csv
+│   ├── catalog_music.csv
+│   ├── catalog_objects.csv
+│   ├── catalog_samples.csv
 │   ├── poses.json5
 │   ├── tr1
 │   │   ├── gameflow.json5
@@ -186,6 +192,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── khamoon_mummy.bin
 │   │   ├── khamoon_textures.bin
 │   │   ├── lara_animations.bin
+│   │   ├── lara_flares.bin
+│   │   ├── lara_gym_flares.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── midas_itemrots.bin
 │   │   ├── midas_textures.bin
@@ -233,7 +241,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── valley_textures.bin
 │   │   ├── vilcabamba_door_sfx.bin
 │   │   ├── vilcabamba_itemrots.bin
-│   │   └── vilcabamba_textures.bin
+│   │   ├── vilcabamba_textures.bin
+│   │   └── winston_model.bin
 │   ├── level1.phd
 │   ├── level2.phd
 │   ├── level3a.phd
@@ -322,6 +331,18 @@ If you install everything correctly, your game directory should look more or les
 │   ├── track58.flac
 │   ├── track59.flac
 │   └── track60.flac
+├── scripting
+│   └── trx
+│       ├── config.lua
+│       ├── console.lua
+│       ├── events.lua
+│       ├── game.lua
+│       ├── items.lua
+│       ├── lara.lua
+│       ├── log.lua
+│       ├── music.lua
+│       ├── rooms.lua
+│       └── sound.lua
 ├── shaders
 │   ├── 2d.glsl
 │   ├── common.glsl
@@ -367,6 +388,12 @@ If you install everything correctly, your game directory should look more or les
         │   ├── base_strings-pl.json5
         │   ├── base_strings-ru.json5
         │   ├── base_strings.json5
+        │   ├── catalog_item_actions.csv
+        │   ├── catalog_lara_anims.csv
+        │   ├── catalog_lara_states.csv
+        │   ├── catalog_music.csv
+        │   ├── catalog_objects.csv
+        │   ├── catalog_samples.csv
         │   ├── poses.json5
         │   ├── tr1
         │   │   ├── gameflow.json5
@@ -492,6 +519,8 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── khamoon_mummy.bin
         │   │   ├── khamoon_textures.bin
         │   │   ├── lara_animations.bin
+        │   │   ├── lara_flares.bin
+        │   │   ├── lara_gym_flares.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── midas_itemrots.bin
         │   │   ├── midas_textures.bin
@@ -539,7 +568,8 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── valley_textures.bin
         │   │   ├── vilcabamba_door_sfx.bin
         │   │   ├── vilcabamba_itemrots.bin
-        │   │   └── vilcabamba_textures.bin
+        │   │   ├── vilcabamba_textures.bin
+        │   │   └── winston_model.bin
         │   ├── level1.phd
         │   ├── level2.phd
         │   ├── level3a.phd
@@ -629,6 +659,18 @@ If you install everything correctly, your game directory should look more or les
         │   ├── track58.flac
         │   ├── track59.flac
         │   └── track60.flac
+        ├── scripting
+        │   └── trx
+        │       ├── config.lua
+        │       ├── console.lua
+        │       ├── events.lua
+        │       ├── game.lua
+        │       ├── items.lua
+        │       ├── lara.lua
+        │       ├── log.lua
+        │       ├── music.lua
+        │       ├── rooms.lua
+        │       └── sound.lua
         └── shaders
             ├── 2d.glsl
             ├── common.glsl

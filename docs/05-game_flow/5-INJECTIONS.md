@@ -211,6 +211,7 @@ provided with the game achieves.
   <tr valign="top">
     <td>
       <code>lara_animations.bin</code>
+      <code>lara_flares.bin</code>
     </td>
     <td>TR1, TR2</td>
     <td>
