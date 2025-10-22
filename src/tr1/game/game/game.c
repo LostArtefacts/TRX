@@ -135,8 +135,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
         if (g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {
-            if (g_GameFlow.lockout_option_ring
-                && g_GameFlow.load_save_disabled) {
+            if (g_Config.flow.lockout_option_ring
+                && g_Config.flow.load_save_disabled) {
                 g_OverlayFlag = 0;
             } else if (g_Input.save) {
                 g_OverlayFlag = -2;

@@ -307,4 +307,9 @@ typedef struct {
         bool enable_invulnerability;
         bool enable_endless_sprint;
     } debug;
+
+    struct {
+        bool lockout_option_ring;
+        bool load_save_disabled;
+    } flow;
 } CONFIG;

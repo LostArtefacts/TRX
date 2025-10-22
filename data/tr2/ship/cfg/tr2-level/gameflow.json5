@@ -6,9 +6,7 @@
     "savegame_fmt_bson": "save_tr2_custom_%02d.dat",
 
     "cheat_keys": true,
-    "load_save_disabled": false,
     "play_any_level": false,
-    "lockout_option_ring": false,
     "demo_version": false,
     "single_level": 0,
 

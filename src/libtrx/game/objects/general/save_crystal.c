@@ -1,5 +1,4 @@
 #include "config.h"
-#include "game/game_flow.h"
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
@@ -105,7 +104,7 @@ static void M_Collision(
         return;
     }
 
-    if (g_GameFlow.load_save_disabled) {
+    if (g_Config.flow.load_save_disabled) {
         Lara_RefuseInteraction();
         return;
     }

@@ -26,13 +26,21 @@ local table_map = {
 
 -- settings system
 local settings_getters = {
-  lockout_option_ring = raw.get_lockout_option_ring,
-  load_save_disabled = raw.get_load_save_disabled,
+  lockout_option_ring = function()
+    return trx.config.get("flow.lockout_option_ring")
+  end,
+  load_save_disabled = function()
+    return trx.config.get("flow.load_save_disabled")
+  end,
 }
 
 local settings_setters = {
-  lockout_option_ring = raw.set_lockout_option_ring,
-  load_save_disabled = raw.set_load_save_disabled,
+  lockout_option_ring = function(value)
+    trx.config.set("flow.lockout_option_ring", value)
+  end,
+  load_save_disabled = function(value)
+    trx.config.set("flow.load_save_disabled", value)
+  end,
 }
 
 local Settings = setmetatable({}, {

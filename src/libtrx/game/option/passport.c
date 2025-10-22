@@ -201,7 +201,7 @@ static void M_DeterminePages(void)
 {
     const bool can_restart = Savegame_RestartAvailable(Savegame_GetBoundSlot());
     const bool saving_enabled =
-        Savegame_GetSlotCount() > 0 && !g_GameFlow.load_save_disabled;
+        Savegame_GetSlotCount() > 0 && !g_Config.flow.load_save_disabled;
     const bool has_saves = Savegame_GetTotalCount() > 0 && saving_enabled;
 
     m_Priv.selection = -1;
