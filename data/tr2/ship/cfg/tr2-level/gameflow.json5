@@ -5,7 +5,6 @@
     "savegame_fmt_legacy": "savegame_custom.%d",
     "savegame_fmt_bson": "save_tr2_custom_%02d.dat",
 
-    "cheat_keys": true,
     "demo_version": false,
     "single_level": 0,
 

@@ -15,6 +15,7 @@
     - `flow.lockout_option_ring`
     - `flow.load_save_disabled`
     - `flow.play_any_level`
+    - `flow.cheat_keys`
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.demo_delay`
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth

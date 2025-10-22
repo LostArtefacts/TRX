@@ -28,12 +28,14 @@ Module for retrieving game version and level tables.
     - **`load_save_disabled`**: Whether to disable saving and loading the game.
     - **`play_any_level`**: Whether to show a full list of all levels in place of the New Game passport page.
     - **`demo_delay`**: The number of seconds to pass in the main menu before playing the demo.
+    - **`cheat_keys`**: Whether to enable original game cheats (the ones where Lara turns around three times).
 
     Writable properties:
     - `lockout_option_ring`
     - `load_save_disabled`
     - `play_any_level`
     - `demo_delay`
+    - `cheat_keys`
 
 ### Functions
 

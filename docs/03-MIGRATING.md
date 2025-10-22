@@ -92,6 +92,7 @@ title: Migrating levels
     - `load_save_disabled`
     - `play_any_level`
     - `demo_delay`
+    - `cheat_keys`
 2. **Removed game flow settings**
     The following game flow features were removed and are no longer available:
     - `cmd_init`

@@ -181,7 +181,6 @@ typedef struct {
         bool convert_dropped_guns;
 #elif TR_VERSION == 2
         bool is_demo_version;
-        bool cheat_keys;
         int32_t single_level;
 #endif
         GF_AMBIENT_DATA ambient_tracks;

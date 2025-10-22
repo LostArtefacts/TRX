@@ -104,7 +104,10 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Interpolation_Remember();
     Stats_UpdateTimer();
 
-    Lara_Cheat_CheckKeys();
+    if (g_Config.flow.cheat_keys) {
+        Lara_Cheat_CheckKeys();
+    }
+
     if (Game_IsLevelComplete()) {
         Sound_StopAll();
         Music_Stop();

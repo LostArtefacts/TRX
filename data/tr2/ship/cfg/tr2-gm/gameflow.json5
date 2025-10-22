@@ -6,7 +6,6 @@
     "savegame_fmt_legacy": "savegame_gm.%d",
     "savegame_fmt_bson": "save_trgm_%02d.dat",
 
-    "cheat_keys": true,
     "demo_version": false,
     "single_level": -1,
 

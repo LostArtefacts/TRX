@@ -272,7 +272,6 @@ remains distinct for each game.
     "savegame_fmt_legacy": "savegame.%d",
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
-    "cheat_keys": true,
     "demo_version": false,
     "single_level": -1,
 
@@ -340,14 +339,6 @@ remains distinct for each game.
     <th>Property</th>
     <th>Type</th>
     <th>Description</th>
-  </tr>
-  <tr valign="top">
-    <td><code>cheat_keys</code></td>
-    <td>Boolean</td>
-    <td>
-      Whether to enable original game cheats (the ones where Lara turns around
-      three times).
-    </td>
   </tr>
   <tr valign="top">
     <td><code>demo_version</code></td>
