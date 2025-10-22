@@ -50,10 +50,6 @@
       "type": "boolean",
       "description": "Forces enemies who are placed in the same position as pickup items to carry those items and drop them when killed, similar to TR2+."
     },
-    "enable_killer_pushblocks": {
-      "type": "boolean",
-      "description": "If enabled, when a pushblock falls from the air and lands on Lara, it will kill her outright."
-    },
     "enforced_config": {
       "type": "object",
       "description": "Overrides for any regular game config settings.",

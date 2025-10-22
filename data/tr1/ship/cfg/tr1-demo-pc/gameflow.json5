@@ -27,7 +27,6 @@
 
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
-    "enable_killer_pushblocks": true,
 
     "title": {
         "path": "data_demo_pc/title.phd",

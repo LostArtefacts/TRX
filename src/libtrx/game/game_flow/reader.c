@@ -176,8 +176,6 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     }
     ctx->gf->savegame_fmt_bson = Memory_DupStr(tmp_s);
 
-    ctx->gf->enable_killer_pushblocks =
-        JSON_ObjectGetBool(obj, "enable_killer_pushblocks", true);
     {
         const char *tmp_s =
             JSON_ObjectGetString(obj, "main_script", JSON_INVALID_STRING);

@@ -235,6 +235,7 @@ typedef struct {
         bool enable_ally_targeting;
 #endif
         bool enable_enemy_rotation;
+        bool enable_killer_pushblocks;
 
         bool enable_timer_in_inventory;
         LOOK_MODE look_mode;

@@ -432,6 +432,8 @@
         "SETTING_ENABLE_ITEM_EXAMINING_DESCRIPTION": "Für benutzergenerierte Level - erlaubt die Anzeige von Item-Beschreibungen im Inventar, wenn der Ersteller des Levels die nötigen Daten zur Verfügung gestellt hat.",
         "SETTING_ENABLE_JUMP_TWISTS": "Sprungdrehungen",
         "SETTING_ENABLE_JUMP_TWISTS_DESCRIPTION": "Aktiviert TR2+-artige Sprungdrehungen und Purzelbäume, das heißt: Drücke Rolle während des Sprungs und Kopfsprung-Animationen.",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS": "\\{review}Tödliche Schiebeblöcke aktivieren",
+        "SETTING_ENABLE_KILLER_PUSHBLOCKS_DESCRIPTION": "\\{review}Wenn aktiviert, wird Lara sofort getötet, wenn ein Schiebeblock aus der Luft fällt und auf sie landet. Andernfalls wird Lara oben auf dem Block hängen bleiben und überleben.",
         "SETTING_ENABLE_LARA_MIC": "Mikrofon nah an Lara",
         "SETTING_ENABLE_LARA_MIC_DESCRIPTION": "Setzt das Mikrofon auf Laras Position. Wenn deaktiviert, wird das Mikrofon auf der Position der Kamera gesetzt.",
         "SETTING_ENABLE_LEAN_JUMPING": "Schmales Springen",

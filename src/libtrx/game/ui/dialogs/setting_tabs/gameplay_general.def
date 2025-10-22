@@ -36,6 +36,7 @@ X_UI_CFG_BOOL(gameplay.restore_ps1_enemies,        SETTING_RESTORE_PS1_ENEMIES)
 X_UI_CFG_BOOL(gameplay.change_pierre_spawn,        SETTING_CHANGE_PIERRE_SPAWN)
 X_UI_CFG_BOOL(gameplay.disable_trex_collision,     SETTING_DISABLE_TREX_COLLISION)
 X_UI_CFG_BOOL(gameplay.enable_enemy_rotation,      SETTING_ENABLE_ENEMY_ROTATION)
+X_UI_CFG_BOOL(gameplay.enable_killer_pushblocks,   SETTING_ENABLE_KILLER_PUSHBLOCKS)
 
 #if TR_VERSION == 2
 X_UI_CFG_BOOL(gameplay.enable_ally_targeting,      SETTING_ENABLE_ALLY_TARGETING)

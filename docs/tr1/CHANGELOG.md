@@ -18,6 +18,7 @@
     - `flow.cheat_keys`
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.demo_delay`
+    - `gameplay.enable_killer_pushblocks`
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed dart ricochets being placed mid-air (#4063)

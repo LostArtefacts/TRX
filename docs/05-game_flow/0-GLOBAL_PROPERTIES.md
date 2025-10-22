@@ -147,18 +147,6 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td>
-      <a name="enable-killer-pushblocks"></a>
-      <code>enable_killer_pushblocks</code>
-    </td>
-    <td>Boolean</td>
-    <td>
-      If enabled, when a pushblock falls from the air and lands on Lara, it will
-      kill her outright. Otherwise, Lara will clip on top of the block and
-      survive.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
       <a name="enable-tr2-item-drops"></a>
       <code>enable_tr2_item_drops</code>
     </td>
@@ -415,18 +403,6 @@ remains distinct for each game.
     <td>
       The distance (in tiles) at which objects and the world are clipped away.
       The default value in OG TR2 is hardcoded to 20.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
-      <a name="enable-killer-pushblocks"></a>
-      <code>enable_killer_pushblocks</code>
-    </td>
-    <td>Boolean</td>
-    <td>
-      If enabled, when a pushblock falls from the air and lands on Lara, it will
-      kill her outright. Otherwise, Lara will clip on top of the block and
-      survive.
     </td>
   </tr>
   <tr valign="top">
