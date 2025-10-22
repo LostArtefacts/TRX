@@ -19,10 +19,6 @@
       "type": "string",
       "description": "Path pattern to look for the savegame files."
     },
-    "demo_delay": {
-      "type": "number",
-      "description": "Number of seconds to pass in the main menu before playing the demo."
-    },
     "water_color": {
       "description": "Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0 or `00` means completely black color.",
       "type": "array",
@@ -108,7 +104,6 @@
     "main_menu_picture",
     "savegame_fmt_legacy",
     "savegame_fmt_bson",
-    "demo_delay",
     "levels"
   ],
   "additionalProperties": false,

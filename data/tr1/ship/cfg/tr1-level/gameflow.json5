@@ -21,7 +21,6 @@
         "data/injections/winston_model.bin",
     ],
 
-    "demo_delay": 0,
     "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
     "enable_killer_pushblocks": true,

@@ -319,7 +319,7 @@ static bool M_CheckDemoTimer(const INV_RING *const ring)
     }
 
     return ring->motion.status == RNG_OPEN
-        && ClockTimer_CheckElapsed(&m_DemoTimer, g_GameFlow.demo_delay);
+        && ClockTimer_CheckElapsed(&m_DemoTimer, g_Config.flow.demo_delay);
 }
 
 static GF_COMMAND M_Control(INV_RING *const ring)

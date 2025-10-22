@@ -22,6 +22,7 @@
     - `flow.lockout_option_ring`
     - `flow.load_save_disabled`
     - `flow.play_any_level`
+    - `flow.demo_delay`
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)

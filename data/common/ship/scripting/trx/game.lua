@@ -41,6 +41,7 @@ local Settings = (function()
     lockout_option_ring = config_entry("flow.lockout_option_ring"),
     load_save_disabled = config_entry("flow.load_save_disabled"),
     play_any_level = config_entry("flow.play_any_level"),
+    demo_delay = config_entry("flow.demo_delay"),
   }
 
   return setmetatable({}, {

@@ -312,5 +312,6 @@ typedef struct {
         bool lockout_option_ring;
         bool load_save_disabled;
         bool play_any_level;
+        float demo_delay;
     } flow;
 } CONFIG;

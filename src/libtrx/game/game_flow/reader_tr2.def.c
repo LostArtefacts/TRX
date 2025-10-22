@@ -101,7 +101,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     M_LoadSettings(ctx, obj, &ctx->gf->settings);
 
     // clang-format off
-    ctx->gf->demo_delay = JSON_ObjectGetInt(obj, "demo_delay", 30);
     ctx->gf->cheat_keys = JSON_ObjectGetBool(obj, "cheat_keys", true);
     ctx->gf->single_level = JSON_ObjectGetInt(obj, "single_level", -1);
     // clang-format on
