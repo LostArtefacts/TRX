@@ -101,6 +101,7 @@ title: Migrating levels
     - `cmd_death_in_game`
     - `cmd_demo_end`
     - `cmd_demo_interrupt`
+    - `single_level`
 
 ### Version 1.3 to 1.4
 

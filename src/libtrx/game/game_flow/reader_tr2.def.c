@@ -100,10 +100,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     ctx->gf->settings = m_DefaultSettings;
     M_LoadSettings(ctx, obj, &ctx->gf->settings);
 
-    // clang-format off
-    ctx->gf->single_level = JSON_ObjectGetInt(obj, "single_level", -1);
-    // clang-format on
-
     ctx->gf->secret_track = JSON_ObjectGetInt(obj, "secret_track", MX_INACTIVE);
 
     M_LoadGlobalInjections(ctx, obj);

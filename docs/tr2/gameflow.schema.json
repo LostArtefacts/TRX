@@ -19,10 +19,6 @@
       "type": "boolean",
       "description": "Legacy demo version flag (scheduled for removal)."
     },
-    "single_level": {
-      "type": "integer",
-      "description": "Force the player to only play this one level."
-    },
     "secret_track": {
       "type": "integer",
       "description": "Music track to play when a secret is found. -1 to disable."

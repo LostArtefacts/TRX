@@ -32,14 +32,8 @@ GF_COMMAND GF_DoLevelSequence(
         const GF_COMMAND gf_cmd =
             GF_InterpretSequence(current_level, seq_ctx, nullptr);
 
-        if (g_GameFlow.single_level >= 0) {
-            return gf_cmd;
-        }
         if (gf_cmd.action != GF_NOOP && gf_cmd.action != GF_LEVEL_COMPLETE) {
             return gf_cmd;
-        }
-        if (g_GameFlow.is_demo_version && g_GameFlow.single_level) {
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         if (Game_IsInGym()) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
