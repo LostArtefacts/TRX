@@ -16,8 +16,9 @@
 #include "game/viewport.h"
 #include "memory.h"
 #include "utils.h"
+#include "version.h"
 
-#include <stdio.h>
+#define M_IMMEDIATE (g_TRVersion >= 2)
 
 typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_SAVE_SLOT_DIALOG_TYPE type;
@@ -33,9 +34,6 @@ static bool M_ShowDetails(
     if (!UI_Requester_IsRowSelected(&s->req, slot_idx)) {
         return false;
     }
-    if (TR_VERSION == 2) {
-        return false;
-    }
     return !Savegame_IsSlotFree(slot_idx);
 }
 
@@ -43,7 +41,7 @@ static void M_NonEmptySlot(
     const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx,
     const SAVEGAME_INFO *const info)
 {
-    const bool show_details = M_ShowDetails(s, slot_idx);
+    const bool show_details = M_ShowDetails(s, slot_idx) && !M_IMMEDIATE;
 
     if (show_details) {
         UI_BeginStackEx((UI_STACK_SETTINGS) {
@@ -54,11 +52,11 @@ static void M_NonEmptySlot(
         UI_BeginHide(true);
         UI_Label("\\{button right}");
         UI_EndHide();
-        if (TR_VERSION == 1) {
+        if (g_TRVersion == 1) {
             UI_BeginStack(UI_STACK_HORIZONTAL);
         }
     } else {
-        if (TR_VERSION == 1) {
+        if (g_TRVersion == 1) {
             UI_BeginAnchor(0.5f, 0.5f);
             UI_BeginStack(UI_STACK_HORIZONTAL);
         } else {
@@ -77,7 +75,7 @@ static void M_NonEmptySlot(
     }
 
     if (show_details) {
-        if (TR_VERSION == 1) {
+        if (g_TRVersion == 1) {
             UI_EndStack();
         }
         UI_BeginOffset(0.0f, -1.0f);
@@ -86,7 +84,7 @@ static void M_NonEmptySlot(
         UI_EndStack();
     } else {
         UI_EndStack();
-        if (TR_VERSION == 1) {
+        if (g_TRVersion == 1) {
             UI_EndAnchor();
         }
     }
@@ -123,7 +121,8 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
 {
     UI_BasePassportDialog_Control(&s->req);
     const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
-    if (M_ShowDetails(s, sel_row) && g_InputDB.menu_right) {
+    if (M_ShowDetails(s, sel_row)
+        && (M_IMMEDIATE ? g_InputDB.look : g_InputDB.menu_right)) {
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
             .action = UI_SAVE_SLOT_DIALOG_DETAILS,
             .slot_num = sel_row,

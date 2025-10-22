@@ -3,6 +3,7 @@
     Supports basic events, item interactions, teleporting and much more.
     See [the documentation](../06-lua) for details.
 - added restart level option when Lara dies (#1555)
+- added select level option (available under Look button – no UI for this yet, see #545)
 - added game mode selection to the play any level feature
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)

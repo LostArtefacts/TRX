@@ -14,7 +14,7 @@
 #include "game/ui.h"
 #include "version.h"
 
-#define M_IMMEDIATE (g_TRVersion == 2)
+#define M_IMMEDIATE (g_TRVersion >= 2)
 
 typedef enum {
     PAGE_UNDETERMINED = -1,
