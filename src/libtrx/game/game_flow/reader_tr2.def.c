@@ -65,38 +65,8 @@ static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
     return m_SequenceEventHandlers;
 }
 
-static GF_COMMAND M_LoadCommand(
-    const M_CONTEXT *const ctx, JSON_OBJECT *const jcmd,
-    const GF_COMMAND fallback)
-{
-    if (jcmd == nullptr) {
-        return fallback;
-    }
-
-    const char *const action_str =
-        JSON_ObjectGetString(jcmd, "action", JSON_INVALID_STRING);
-    const int32_t param = JSON_ObjectGetInt(jcmd, "param", -1);
-    if (action_str == JSON_INVALID_STRING) {
-        Shell_ExitSystemFmt(
-            "%s: Unknown game flow action: %s", ctx->script_path, action_str);
-        return fallback;
-    }
-
-    const GF_ACTION action =
-        ENUM_MAP_GET(GF_ACTION, action_str, (GF_ACTION)-1234);
-    if (action == (GF_ACTION)-1234) {
-        Shell_ExitSystemFmt(
-            "%s: Unknown game flow action: %s", ctx->script_path, action_str);
-        return fallback;
-    }
-
-    return (GF_COMMAND) { .action = action, .param = param };
-}
-
 static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 {
-    ctx->gf->is_demo_version = JSON_ObjectGetBool(obj, "demo_version", false);
-
     ctx->gf->settings = m_DefaultSettings;
     M_LoadSettings(ctx, obj, &ctx->gf->settings);
 
