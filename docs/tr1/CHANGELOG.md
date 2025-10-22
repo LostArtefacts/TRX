@@ -15,6 +15,8 @@
     - `flow.lockout_option_ring`
     - `flow.load_save_disabled`
     - `flow.play_any_level`
+- changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
+    - `flow.demo_delay`
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed dart ricochets being placed mid-air (#4063)

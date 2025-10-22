@@ -197,13 +197,6 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     double tmp_d;
     JSON_ARRAY *tmp_arr;
 
-    tmp_d = JSON_ObjectGetDouble(obj, "demo_delay", -1.0);
-    if (tmp_d < 0.0) {
-        Shell_ExitSystemFmt(
-            "%s: 'demo_delay' must be a positive number", ctx->script_path);
-    }
-    ctx->gf->demo_delay = tmp_d;
-
     M_LoadSettings(ctx, obj, &ctx->gf->settings);
 
     ctx->gf->enable_tr2_item_drops =

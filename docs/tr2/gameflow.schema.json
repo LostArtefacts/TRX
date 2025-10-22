@@ -27,10 +27,6 @@
       "type": "integer",
       "description": "Force the player to only play this one level."
     },
-    "demo_delay": {
-      "type": "number",
-      "description": "Number of seconds to pass in the main menu before playing the demo."
-    },
     "secret_track": {
       "type": "integer",
       "description": "Music track to play when a secret is found. -1 to disable."

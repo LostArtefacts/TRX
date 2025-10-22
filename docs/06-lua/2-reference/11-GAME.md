@@ -27,11 +27,13 @@ Module for retrieving game version and level tables.
     - **`lockout_option_ring`**: Whether to disallow the player from using the option ring in-game.
     - **`load_save_disabled`**: Whether to disable saving and loading the game.
     - **`play_any_level`**: Whether to show a full list of all levels in place of the New Game passport page.
+    - **`demo_delay`**: The number of seconds to pass in the main menu before playing the demo.
 
     Writable properties:
     - `lockout_option_ring`
     - `load_save_disabled`
     - `play_any_level`
+    - `demo_delay`
 
 ### Functions
 

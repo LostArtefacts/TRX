@@ -174,7 +174,6 @@ typedef struct {
 
     // global settings
     struct {
-        float demo_delay;
         char *main_menu_background_path;
         bool enable_killer_pushblocks;
 #if TR_VERSION == 1

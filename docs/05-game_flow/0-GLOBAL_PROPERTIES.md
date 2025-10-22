@@ -19,7 +19,6 @@ remains distinct for each game.
     "main_menu_picture": "data/titleh.png",
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
-    "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
     "fog_transparency": false,
     "fog_color": [0.0, 0.0, 0.0],
@@ -94,13 +93,6 @@ remains distinct for each game.
       Forces guns dropped by enemies to be converted to the equivalent ammo
       if Lara already has the gun. See
       <a href="./1-levels/4-ITEM_DROPS.md">Item drops</a> for full details.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>demo_delay</code></td>
-    <td>Double<strong>*</strong></td>
-    <td>
-      The number of seconds to pass in the main menu before playing the demo.
     </td>
   </tr>
   <tr valign="top">
@@ -284,7 +276,6 @@ remains distinct for each game.
     "demo_version": false,
     "single_level": -1,
 
-    "demo_delay": 30,
     "secret_track": 43,
 
     "title": {
@@ -367,13 +358,6 @@ remains distinct for each game.
     <td><code>single_level</code></td>
     <td>Integer</td>
     <td>Force the player to only play this one level.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>demo_delay</code></td>
-    <td>Double</td>
-    <td>
-      The number of seconds to pass in the main menu before playing the demo.
-    </td>
   </tr>
   <tr valign="top">
     <td><code>main_menu_picture</code></td>
