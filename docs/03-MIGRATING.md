@@ -102,6 +102,7 @@ title: Migrating levels
     - `cmd_demo_end`
     - `cmd_demo_interrupt`
     - `single_level`
+    - `is_demo_version`
 
 ### Version 1.3 to 1.4
 

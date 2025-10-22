@@ -178,8 +178,6 @@ typedef struct {
 #if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
-#elif TR_VERSION == 2
-        bool is_demo_version;
 #endif
         GF_AMBIENT_DATA ambient_tracks;
     };

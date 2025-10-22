@@ -560,15 +560,7 @@ static void M_ShowPage(INVENTORY_ITEM *const inv_item)
         break;
 
     case PASSPORT_ROLE_EXIT_TITLE:
-#if TR_VERSION == 2
-        if (g_GameFlow.is_demo_version) {
-            M_ChangePageTextContent(GS(PASSPORT_EXIT_DEMO));
-        } else {
-            M_ChangePageTextContent(GS(PASSPORT_EXIT_TO_TITLE));
-        }
-#else
         M_ChangePageTextContent(GS(PASSPORT_EXIT_TO_TITLE));
-#endif
         break;
 
     default:
