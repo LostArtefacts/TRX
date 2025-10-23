@@ -73,24 +73,9 @@ void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
         if (UI_Requester_IsRowVisible(&s->req, i)) {
             const M_ROW *const row = Vector_Get(s->rows, i);
             UI_BeginRequesterRow(&s->req, i);
-            if (UI_Requester_IsRowSelected(&s->req, i)) {
-                UI_BeginStackEx((UI_STACK_SETTINGS) {
-                    .orientation = UI_STACK_HORIZONTAL,
-                    .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE } });
-                UI_BeginOffset(0.0f, -1.0f);
-                UI_Label("\\{button left}");
-                UI_EndOffset();
-                UI_Label(row->text);
-                // balance both sides so that the row text appears centered
-                UI_BeginHide(true);
-                UI_Label("\\{button left}");
-                UI_EndHide();
-                UI_EndStack();
-            } else {
-                UI_BeginAnchor(0.5f, 0.5f);
-                UI_Label(row->text);
-                UI_EndAnchor();
-            }
+            UI_BeginAnchor(0.5f, 0.5f);
+            UI_Label(row->text);
+            UI_EndAnchor();
             UI_EndRequesterRow(&s->req, i);
         }
     }

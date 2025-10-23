@@ -97,6 +97,10 @@ GF_COMMAND GF_InterpretSequence(
                 Savegame_ApplyLogicToCurrentInfo(level);
                 GF_InventoryModifier_Scan(level);
                 GF_InventoryModifier_ApplyToResumeInfo(level);
+            } else {
+                Savegame_ApplyLogicToCurrentInfo(level);
+                GF_InventoryModifier_Scan(level);
+                GF_InventoryModifier_ApplyToResumeInfo(level);
             }
         } else {
             // console /play level feature

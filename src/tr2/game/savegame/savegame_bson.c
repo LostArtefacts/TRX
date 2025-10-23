@@ -59,6 +59,7 @@ static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
 static bool M_LoadFromFile(MYFILE *fp);
+static bool M_LoadOnlyResumeInfo(MYFILE *fp);
 
 static SAVEGAME_STRATEGY m_Strategy = {
     // clang-format off
@@ -69,7 +70,7 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .fill_info_func = M_FillInfo,
     .load_from_file_func = M_LoadFromFile,
     .save_to_file_func = M_SaveToFile,
-    .load_only_resume_info_func = nullptr,
+    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
     .update_death_counters_func = nullptr,
     // clang-format on
 };
@@ -1603,6 +1604,25 @@ static bool M_LoadFromFile(MYFILE *const fp)
 cleanup:
     JSON_ValueFree(root);
     return result;
+}
+
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
+{
+    bool ret = false;
+
+    int32_t version;
+    JSON_VALUE *root = M_ReadRaw(fp, &version);
+    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
+    if (root_obj == nullptr) {
+        LOG_ERROR("Malformed save: cannot parse BSON data");
+        goto cleanup;
+    }
+
+    ret = M_LoadResumeInfo(JSON_ObjectGetArray(root_obj, "resume_info"));
+
+cleanup:
+    JSON_ValueFree(root);
+    return ret;
 }
 
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)

@@ -34,6 +34,7 @@ typedef enum {
 typedef struct {
     GAME_STRING_ID title;
     bool (*func)(INVENTORY_ITEM *inv_item);
+    bool flat;
 } M_PAGE_HANDLER;
 
 typedef enum {
@@ -638,6 +639,10 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
     const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(save_slot);
     if (!info->features.select_level) {
         m_Priv.error_msg = GS_ID(PASSPORT_SAVE_SLOT_UNSUPPORTED);
+        if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
+            M_NavigateOut(inv_item);
+            return true;
+        }
         return false;
     }
     M_NAV_FRAME *const frame = page->nav.current;
@@ -710,32 +715,77 @@ static bool M_HandleExitToTitle(INVENTORY_ITEM *const inv_item)
 
 static bool M_ShowPage(INVENTORY_ITEM *const inv_item)
 {
-    // clang-format off
     static M_PAGE_HANDLER m_PageHandlers[] = {
-#define X(a, b, c) [a] = { .title = b, .func = c }
-        X(M_ROLE_LOAD_GAME,                    GS_ID(PASSPORT_LOAD_GAME),            M_HandleLoadGame),
-        X(M_ROLE_SAVE_GAME,                    GS_ID(PASSPORT_SAVE_GAME),            M_HandleSaveGame),
-        X(M_ROLE_NEW_GAME,                     GS_ID(PASSPORT_NEW_GAME),             M_HandleNewGame),
-        X(M_ROLE_PLAY_ANY_LEVEL_SELECT_LEVEL,  GS_ID(PASSPORT_SELECT_LEVEL),         M_HandlePlayAnyLevel),
-        X(M_ROLE_PLAY_ANY_LEVEL_SELECT_MODE,   GS_ID(PASSPORT_SELECT_LEVEL),         M_HandlePlayAnyLevelSelectMode),
-        X(M_ROLE_PLAY_PREV_LEVEL_SELECT_SLOT,  GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS), M_HandlePlayPrevLevelSelectSlot),
-        X(M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL, GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS), M_HandlePlayPrevLevelSelectLevel),
-        X(M_ROLE_RESTART_LEVEL,                GS_ID(PASSPORT_RESTART_LEVEL),        M_HandleRestartLevel),
-        X(M_ROLE_EXIT_GAME,                    GS_ID(PASSPORT_EXIT_GAME),            M_HandleExitGame),
-        X(M_ROLE_EXIT_TO_TITLE,                GS_ID(PASSPORT_EXIT_TO_TITLE),        M_HandleExitToTitle),
-        X(M_ROLE_STORY_SO_FAR,                 GS_ID(PASSPORT_STORY_SO_FAR),         M_HandleStorySoFar),
-        X(M_ROLE_STORY_SO_FAR_CONFIRM,         GS_ID(PASSPORT_STORY_SO_FAR),         M_HandleStorySoFarConfirm),
-#undef X
+        [M_ROLE_LOAD_GAME] = {
+            .title = GS_ID(PASSPORT_LOAD_GAME),
+            .func = M_HandleLoadGame,
+            .flat = false,
+        },
+        [M_ROLE_SAVE_GAME] = {
+            .title = GS_ID(PASSPORT_SAVE_GAME),
+            .func = M_HandleSaveGame,
+            .flat = false,
+        },
+        [M_ROLE_NEW_GAME] = {
+            .title = GS_ID(PASSPORT_NEW_GAME),
+            .func = M_HandleNewGame,
+            .flat = false,
+        },
+        [M_ROLE_PLAY_ANY_LEVEL_SELECT_LEVEL] = {
+            .title = GS_ID(PASSPORT_SELECT_LEVEL),
+            .func = M_HandlePlayAnyLevel,
+            .flat = false,
+        },
+        [M_ROLE_PLAY_ANY_LEVEL_SELECT_MODE] = {
+            .title = GS_ID( PASSPORT_SELECT_LEVEL),
+            .func = M_HandlePlayAnyLevelSelectMode,
+            .flat = false,
+        },
+        [M_ROLE_PLAY_PREV_LEVEL_SELECT_SLOT] = {
+            .title = GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS),
+            .func = M_HandlePlayPrevLevelSelectSlot,
+            .flat = false,
+        },
+        [M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL] = {
+            .title = GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS),
+            .func = M_HandlePlayPrevLevelSelectLevel,
+            .flat = false,
+        },
+        [M_ROLE_RESTART_LEVEL] = {
+            .title = GS_ID(PASSPORT_RESTART_LEVEL),
+            .func = M_HandleRestartLevel,
+            .flat = true,
+        },
+        [M_ROLE_EXIT_GAME] = {
+            .title = GS_ID(PASSPORT_EXIT_GAME),
+            .func = M_HandleExitGame,
+            .flat = true,
+        },
+        [M_ROLE_EXIT_TO_TITLE] = {
+            .title = GS_ID(PASSPORT_EXIT_TO_TITLE),
+            .func = M_HandleExitToTitle,
+            .flat = true,
+        },
+        [M_ROLE_STORY_SO_FAR] = {
+            .title = GS_ID(PASSPORT_STORY_SO_FAR),
+            .func = M_HandleStorySoFar,
+            .flat = false,
+        },
+        [M_ROLE_STORY_SO_FAR_CONFIRM] = {
+            .title = GS_ID(PASSPORT_STORY_SO_FAR),
+            .func = M_HandleStorySoFarConfirm,
+            .flat = false,
+        },
     };
-    // clang-format on
 
     M_PAGE *const page = M_TryGetActivePage();
     if (page == nullptr) {
         return false;
     }
-    M_ChangePageTextContent(
-        GameString_Get(m_PageHandlers[page->nav.current->role].title));
-    if (m_Priv.mode == M_MODE_BROWSE) {
+    const M_PAGE_HANDLER *const handler =
+        &m_PageHandlers[page->nav.current->role];
+    M_ChangePageTextContent(GameString_Get(handler->title));
+    if (m_Priv.mode == M_MODE_BROWSE && !handler->flat) {
         if (g_InputDB.menu_confirm) {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
@@ -744,7 +794,7 @@ static bool M_ShowPage(INVENTORY_ITEM *const inv_item)
         }
         return false;
     }
-    return m_PageHandlers[page->nav.current->role].func(inv_item);
+    return handler->func(inv_item);
 }
 
 static void M_HandleFlipInputs(void)
