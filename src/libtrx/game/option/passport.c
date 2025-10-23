@@ -491,9 +491,11 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
     if (!g_Config.gameplay.enable_game_modes
         && !g_Config.profile.new_game_plus_unlock
         && !g_Config.gameplay.enable_play_previous_levels) {
-        M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
-        g_InputDB.menu_confirm = true;
-        M_Close(inv_item);
+        if (!M_IMMEDIATE || g_InputDB.menu_confirm) {
+            M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
+            g_InputDB.menu_confirm = true;
+            M_Close(inv_item);
+        }
         return true;
     }
 

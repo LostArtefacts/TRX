@@ -88,6 +88,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
         && !g_Config.gameplay.enable_loading_screens) {
         return gf_cmd;
     }
+    if (event->type == GFS_LOADING_SCREEN && seq_ctx == GFSC_STORY) {
+        return gf_cmd;
+    }
 #endif
     if (seq_ctx == GFSC_SAVED) {
         return gf_cmd;
