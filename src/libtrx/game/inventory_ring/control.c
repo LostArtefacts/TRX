@@ -117,10 +117,13 @@ static void M_RingNotActive(
         M_ShowAmmoQuantity("%d", 2 * qty);
         break;
     case O_GRENADE_AMMO_OPTION:
-    case O_FLARES_OPTION:
         M_ShowAmmoQuantity("%d", qty);
         break;
 #endif
+
+    case O_FLARES_OPTION:
+        M_ShowAmmoQuantity("%d", qty);
+        break;
 
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
