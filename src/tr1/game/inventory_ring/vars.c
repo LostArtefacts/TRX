@@ -27,6 +27,7 @@ INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {
         .qtys = { 1, 1, 1, 1, 1, 1, 1, 1 },
         .items = {
             &g_InvRing_Item_Compass,
+            &g_InvRing_Item_Flare,
             &g_InvRing_Item_Pistols,
             &g_InvRing_Item_Shotgun,
             &g_InvRing_Item_Magnums,
@@ -97,7 +98,7 @@ INVENTORY_ITEM g_InvRing_Item_SmallMedi = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 7,
+    .inv_pos = 8,
 };
 
 INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
@@ -122,7 +123,7 @@ INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 6,
+    .inv_pos = 7,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Flare = {
@@ -147,7 +148,7 @@ INVENTORY_ITEM g_InvRing_Item_Flare = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 8,
+    .inv_pos = 6,
 };
 
 INVENTORY_ITEM g_InvRing_Item_LeadBar = {
