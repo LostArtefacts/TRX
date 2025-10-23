@@ -784,7 +784,6 @@
     "game_strings": {
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnums",
         "MISC_EMPTY_SLOT_FMT": "- SLOT FALAMH %d -",
-        "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n- GÙ Iapanach: bidh na h-armachd ag adhbhrachadh milleadh dùbailte.\n- GÙ+ Iapanach: measgachadh de GÙ+ is GÙ Iapanach.",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Cuiridh seo solais fiùghantach ri losgadh armachd is spreadhaidhean, coltach ri TR2+.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Càraichidh bugan san t-Siasarn is Uaigh Tihocan far nach gluais planntrais anns an uisge.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Càraichidh seo ionnsaigh a' mhathain gus nach caill e Lara.",
