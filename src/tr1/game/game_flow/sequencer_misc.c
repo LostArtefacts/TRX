@@ -51,6 +51,9 @@ GF_COMMAND GF_PlayAvailableStory(const int32_t slot_num)
 
 bool GF_HasAvailableStory(const int32_t slot_num)
 {
+    if (Savegame_IsSlotFree(slot_num)) {
+        return false;
+    }
     const int32_t savegame_level = Savegame_GetLevelNumber(slot_num);
 
     // Check intro FMVs and cutscenes in frontend sequence (skip legal FMVs)
