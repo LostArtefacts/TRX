@@ -54,6 +54,9 @@ static const M_OPTION m_Options[] = {
 static M_FEATURES M_CheckFeatures(void)
 {
     M_FEATURES features = {};
+    if (g_Config.flow.load_save_disabled) {
+        return features;
+    }
     for (int32_t slot_num = 0; slot_num < Savegame_GetSlotCount(); slot_num++) {
         if (Savegame_IsSlotFree(slot_num)) {
             continue;
