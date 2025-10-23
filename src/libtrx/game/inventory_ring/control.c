@@ -210,8 +210,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
 
     switch (m_InvChosen) {
     case O_PASSPORT_OPTION:
-        switch (g_Passport.select_role) {
-        case PASSPORT_ROLE_LOAD_GAME:
+        switch (g_Passport.select_action) {
+        case PASSPORT_ACTION_LOAD_GAME:
 #if TR_VERSION == 2
             if (apply_changes) {
                 Inv_RemoveAllItems();
@@ -222,7 +222,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 .param = g_Passport.select_slot,
             };
 
-        case PASSPORT_ROLE_NEW_GAME:
+        case PASSPORT_ACTION_NEW_GAME:
             if (apply_changes) {
                 Savegame_InitCurrentInfo();
             }
@@ -232,31 +232,31 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 .param = g_Passport.select_slot,
             };
 
-        case PASSPORT_ROLE_SAVE_GAME:
+        case PASSPORT_ACTION_SAVE_GAME:
             if (apply_changes) {
                 Savegame_Save(g_Passport.select_slot);
             }
             return (GF_COMMAND) { .action = GF_NOOP };
 
-        case PASSPORT_ROLE_RESTART:
+        case PASSPORT_ACTION_RESTART:
             return (GF_COMMAND) {
                 .action = GF_RESTART_GAME,
                 .param = Game_GetCurrentLevel()->num,
             };
 
-        case PASSPORT_ROLE_EXIT_TITLE:
+        case PASSPORT_ACTION_EXIT_TO_TITLE:
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
 
-        case PASSPORT_ROLE_EXIT_GAME:
+        case PASSPORT_ACTION_EXIT_GAME:
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
 
-        case PASSPORT_ROLE_SELECT_LEVEL:
+        case PASSPORT_ACTION_SELECT_LEVEL:
             return (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
                 .param = g_Passport.select_slot,
             };
 
-        case PASSPORT_ROLE_STORY_SO_FAR:
+        case PASSPORT_ACTION_STORY_SO_FAR:
             return (GF_COMMAND) {
                 .action = GF_STORY_SO_FAR,
                 .param = g_Passport.select_slot,

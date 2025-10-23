@@ -25,46 +25,18 @@ typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_REQUESTER_STATE req;
 } UI_SAVE_SLOT_DIALOG_STATE;
 
-static bool M_ShowDetails(
-    const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx)
-{
-    if (s->type != UI_SAVE_SLOT_DIALOG_LOAD_GAME) {
-        return false;
-    }
-    if (!UI_Requester_IsRowSelected(&s->req, slot_idx)) {
-        return false;
-    }
-    return !Savegame_IsSlotFree(slot_idx);
-}
-
 static void M_NonEmptySlot(
     const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx,
     const SAVEGAME_INFO *const info)
 {
-    const bool show_details = M_ShowDetails(s, slot_idx) && !M_IMMEDIATE;
-
-    if (show_details) {
+    if (g_TRVersion == 1) {
+        UI_BeginAnchor(0.5f, 0.5f);
+        UI_BeginStack(UI_STACK_HORIZONTAL);
+    } else {
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         });
-        // Balance both sides so that the row text appears centered
-        UI_BeginHide(true);
-        UI_Label("\\{button right}");
-        UI_EndHide();
-        if (g_TRVersion == 1) {
-            UI_BeginStack(UI_STACK_HORIZONTAL);
-        }
-    } else {
-        if (g_TRVersion == 1) {
-            UI_BeginAnchor(0.5f, 0.5f);
-            UI_BeginStack(UI_STACK_HORIZONTAL);
-        } else {
-            UI_BeginStackEx((UI_STACK_SETTINGS) {
-                .orientation = UI_STACK_HORIZONTAL,
-                .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
-            });
-        }
     }
 
     // Level title with the save counter
@@ -74,19 +46,9 @@ static void M_NonEmptySlot(
         UI_LabelFmt("%d", info->counter);
     }
 
-    if (show_details) {
-        if (g_TRVersion == 1) {
-            UI_EndStack();
-        }
-        UI_BeginOffset(0.0f, -1.0f);
-        UI_Label("\\{button right}");
-        UI_EndOffset();
-        UI_EndStack();
-    } else {
-        UI_EndStack();
-        if (g_TRVersion == 1) {
-            UI_EndAnchor();
-        }
+    UI_EndStack();
+    if (g_TRVersion == 1) {
+        UI_EndAnchor();
     }
 }
 
@@ -121,13 +83,6 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
 {
     UI_BasePassportDialog_Control(&s->req);
     const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
-    if (M_ShowDetails(s, sel_row)
-        && (M_IMMEDIATE ? g_InputDB.look : g_InputDB.menu_right)) {
-        return (UI_SAVE_SLOT_DIALOG_CHOICE) {
-            .action = UI_SAVE_SLOT_DIALOG_DETAILS,
-            .slot_num = sel_row,
-        };
-    }
     const int32_t choice = UI_Requester_Control(&s->req);
     if (choice == UI_REQUESTER_CANCEL) {
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
@@ -150,9 +105,18 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
 void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
     UI_BeginBasePassportDialog();
-    const char *const title = (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME)
-        ? GS(PASSPORT_SAVE_GAME)
-        : GS(PASSPORT_LOAD_GAME);
+    const char *title;
+    switch (s->type) {
+    case UI_SAVE_SLOT_DIALOG_SAVE_GAME:
+        title = GS(PASSPORT_SAVE_GAME);
+        break;
+    case UI_SAVE_SLOT_DIALOG_LOAD_GAME:
+        title = GS(PASSPORT_LOAD_GAME);
+        break;
+    case UI_SAVE_SLOT_DIALOG_GENERIC:
+        title = GS(PASSPORT_SELECT_SAVE);
+        break;
+    }
     UI_BeginRequester(&s->req, title);
 
     const int32_t first = UI_Requester_GetFirstRow(&s->req);
