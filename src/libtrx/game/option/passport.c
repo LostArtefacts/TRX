@@ -140,23 +140,43 @@ static void M_RemoveAllText(void)
     Overlay_SetBottomText(nullptr, false);
 }
 
-static void M_SyncArrowsVisibility(void)
+static M_PAGE *M_TryGetActivePage(void)
+{
+    if (m_Priv.active_page < 0 || m_Priv.active_page >= PAGE_COUNT) {
+        return nullptr;
+    }
+    return &m_Priv.pages[m_Priv.active_page];
+}
+
+static M_PAGE *M_GetActivePage(void)
+{
+    M_PAGE *const page = M_TryGetActivePage();
+    ASSERT(page != nullptr);
+    return page;
+}
+
+static bool M_IsArrowVisible(int32_t direction)
 {
     if (m_Priv.mode == M_MODE_PICK_OPTION && !M_IMMEDIATE) {
-        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
-        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
-    } else {
-        bool has_pages_to_left = false;
-        bool has_pages_to_right = false;
-        for (M_PAGE_NUMBER page = PAGE_1; page < PAGE_COUNT; page++) {
-            has_pages_to_left |=
-                (page < m_Priv.active_page) && m_Priv.pages[page].available;
-            has_pages_to_right |=
-                (page > m_Priv.active_page) && m_Priv.pages[page].available;
-        }
-        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, has_pages_to_left);
-        Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, has_pages_to_right);
+        return false;
     }
+    const M_PAGE *const page = M_TryGetActivePage();
+    if (page != nullptr && page->nav.depth > 0) {
+        return false;
+    }
+    for (M_PAGE_NUMBER i = m_Priv.active_page + direction;
+         i >= PAGE_1 && i < PAGE_COUNT; i += direction) {
+        if (m_Priv.pages[i].available) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void M_SyncArrowsVisibility(void)
+{
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, M_IsArrowVisible(-1));
+    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, M_IsArrowVisible(1));
 }
 
 static void M_ChangePageTextContent(const char *const content)
@@ -224,21 +244,6 @@ static void M_SoftClose(INVENTORY_ITEM *const inv_item)
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
     }
-}
-
-static M_PAGE *M_TryGetActivePage(void)
-{
-    if (m_Priv.active_page < 0 || m_Priv.active_page >= PAGE_COUNT) {
-        return nullptr;
-    }
-    return &m_Priv.pages[m_Priv.active_page];
-}
-
-static M_PAGE *M_GetActivePage(void)
-{
-    M_PAGE *const page = M_TryGetActivePage();
-    ASSERT(page != nullptr);
-    return page;
 }
 
 static void M_NavigateInto(const M_PAGE_ROLE role, const int16_t selection)
@@ -802,7 +807,7 @@ static bool M_ShowPage(INVENTORY_ITEM *const inv_item)
 static void M_HandleFlipInputs(void)
 {
     bool flipped = false;
-    if (g_InputDB.menu_left) {
+    if (g_InputDB.menu_left && M_IsArrowVisible(-1)) {
         for (M_PAGE_NUMBER page = m_Priv.active_page - 1; page >= PAGE_1;
              page--) {
             if (m_Priv.pages[page].available) {
@@ -811,7 +816,7 @@ static void M_HandleFlipInputs(void)
                 break;
             }
         }
-    } else if (g_InputDB.menu_right) {
+    } else if (g_InputDB.menu_right && M_IsArrowVisible(1)) {
         for (M_PAGE_NUMBER page = m_Priv.active_page + 1; page < PAGE_COUNT;
              page++) {
             if (m_Priv.pages[page].available) {
