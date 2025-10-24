@@ -49,6 +49,7 @@
 - fixed twists not adhering to original game movement (#4078, regression from 1.4)
 - fixed legacy saves in Opera House and Vegas crashing the game (#4103, regression from 1.5)
 - fixed caustics stopping after spending roughly 12 minutes in a level (#4109, regression from 1.4)
+- fixed Lara being able to push blocks through toggle opacity 1 portals (#4129, regression from 1.5)
 
 ## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)

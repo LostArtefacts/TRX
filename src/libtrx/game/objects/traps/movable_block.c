@@ -503,6 +503,13 @@ static void M_Collision(
             return;
         }
 
+        int16_t room_num = lara_item->room_num;
+        Room_GetSector(
+            item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+        if (room_num != item->room_num) {
+            return;
+        }
+
         switch (quadrant) {
         case DIR_NORTH:
             lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
