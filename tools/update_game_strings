@@ -6,7 +6,6 @@ from pathlib import Path
 
 from shared.json_utils import (
     JSONPointers,
-    load_json5,
     load_json5_from_string,
     write_json_to_string,
 )
@@ -192,6 +191,12 @@ def main() -> None:
         vfs,
         review_tracker,
         CommonPaths.include_dir / "game/game_string.def",
+        CommonPaths.shipped_data_dir,
+    )
+    process_object_names(
+        vfs,
+        review_tracker,
+        CommonPaths.include_dir / f"game/objects/names.def",
         CommonPaths.shipped_data_dir,
     )
     for game, project_paths in PROJECT_PATHS.items():

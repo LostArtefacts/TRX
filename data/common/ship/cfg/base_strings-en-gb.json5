@@ -1,6 +1,6 @@
 {
     // For usage, refer to the documentation here:
-    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
     "language_name": "English (British)",
     "extends": "en",
     "game_strings": {
@@ -38,5 +38,6 @@
         "SETTING_WATER_COLOR_G_DESCRIPTION": "Green component of the water colour.",
         "SETTING_WATER_COLOR_R": "Water colour (R)",
         "SETTING_WATER_COLOR_R_DESCRIPTION": "Red component of the water colour.",
-    }
+    },
+    "objects": {}
 }
