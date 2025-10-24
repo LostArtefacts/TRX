@@ -3,15 +3,13 @@
 #include "debug.h"
 #include "memory.h"
 #include "strings.h"
+#include "utils.h"
+#include "version.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#if TR_VERSION == 1
-    #define M_BASE_MOD SHELL_MOD_TR1_OG
-#elif TR_VERSION == 2
-    #define M_BASE_MOD SHELL_MOD_TR2_OG
-#endif
+#define M_BASE_MOD (g_TRVersion == 1 ? SHELL_MOD_TR1_OG : SHELL_MOD_TR2_OG)
 
 static const char *const m_CommonStringsPath = "cfg/base_strings.json5";
 
@@ -29,12 +27,12 @@ static void M_ShowHelp(void)
 {
     puts("Currently available options:");
     puts("");
-#if TR_VERSION == 1
-    puts("-g/--gold: launch The Unfinished Business expansion pack.");
-    puts("   --demo-pc: launch the PC demo level file.");
-#elif TR_VERSION == 2
-    puts("-g/--gold: launch The Golden Mask expansion pack.");
-#endif
+    if (g_TRVersion == 1) {
+        puts("-g/--gold: launch The Unfinished Business expansion pack.");
+        puts("   --demo-pc: launch the PC demo level file.");
+    } else if (g_TRVersion == 2) {
+        puts("-g/--gold: launch The Golden Mask expansion pack.");
+    }
     puts("-l/--level <PATH>: launch a specific level file.");
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
     puts("--test-record <PATH>: record gameplay events to file.");
@@ -49,6 +47,17 @@ static void M_ShowHelp(void)
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 {
+    for (int32_t i = 0; i < args->count; i++) {
+        const char *const arg = *(char **)Vector_Get(args, i);
+        const char *const next_arg =
+            i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
+        if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
+            String_ParseInteger(next_arg, &g_TRVersion);
+            CLAMP(g_TRVersion, 1, 2);
+            i++;
+        }
+    }
+
     SHELL_ARGS *out_args = Memory_Alloc(sizeof(SHELL_ARGS));
     out_args->mod = M_BASE_MOD;
     out_args->save_to_load = -1;
@@ -63,6 +72,10 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
 
+        if (!strcmp(arg, "-e") || !strcmp(arg, "-engine")) {
+            i++;
+        }
+
         if (!strcmp(arg, "-h") || !strcmp(arg, "--help")) {
             M_ShowHelp();
             Memory_FreePointer(&out_args);
@@ -71,13 +84,12 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         if (!strcmp(arg, "-g") || !strcmp(arg, "--gold")
             || !strcmp(arg, "-gold")) {
             out_args->mod =
-                TR_VERSION == 1 ? SHELL_MOD_TR1_UB : SHELL_MOD_TR2_GM;
+                g_TRVersion == 1 ? SHELL_MOD_TR1_UB : SHELL_MOD_TR2_GM;
         }
-#if TR_VERSION == 1
-        if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
+        if (g_TRVersion == 1
+            && (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc"))) {
             out_args->mod = SHELL_MOD_TR1_DEMO_PC;
         }
-#endif
         if ((!strcmp(arg, "-l") || !strcmp(arg, "--level"))
             && next_arg != nullptr) {
             int32_t lvnum = -1;
@@ -85,8 +97,8 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 out_args->level_to_select = lvnum;
             } else {
                 out_args->level_to_play = next_arg;
-                out_args->mod = TR_VERSION == 1 ? SHELL_MOD_TR1_CUSTOM_LEVEL
-                                                : SHELL_MOD_TR2_CUSTOM_LEVEL;
+                out_args->mod = g_TRVersion == 1 ? SHELL_MOD_TR1_CUSTOM_LEVEL
+                                                 : SHELL_MOD_TR2_CUSTOM_LEVEL;
             }
             i++;
         }
