@@ -4,6 +4,7 @@
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/sequencer_priv.h"
 #include "game/game_flow/vars.h"
+#include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/phase.h"
 #include "log.h"
@@ -26,9 +27,9 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_REMOVE_WEAPONS]    = M_HandleInventoryModifier,
     [GFS_REMOVE_AMMO]       = M_HandleInventoryModifier,
     [GFS_REMOVE_MEDIPACKS]  = M_HandleInventoryModifier,
+    [GFS_LOADING_SCREEN]    = M_HandlePicture,
 #if TR_VERSION == 1
     [GFS_REMOVE_SCIONS]     = M_HandleInventoryModifier,
-    [GFS_LOADING_SCREEN]    = M_HandlePicture,
 #else
     [GFS_ADD_SECRET_REWARD] = M_HandleInventoryModifier,
 #endif
@@ -83,15 +84,15 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV)
 static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
-#if TR_VERSION == 1
-    if (event->type == GFS_LOADING_SCREEN
-        && !g_Config.gameplay.enable_loading_screens) {
-        return gf_cmd;
+    if (event->type == GFS_LOADING_SCREEN) {
+        if (!g_Config.gameplay.enable_loading_screens) {
+            return gf_cmd;
+        }
+        if (seq_ctx == GFSC_STORY) {
+            return gf_cmd;
+        }
+        Music_Stop();
     }
-    if (event->type == GFS_LOADING_SCREEN && seq_ctx == GFSC_STORY) {
-        return gf_cmd;
-    }
-#endif
     if (seq_ctx == GFSC_SAVED) {
         return gf_cmd;
     }
