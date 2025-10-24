@@ -43,7 +43,7 @@ typedef union {
     };
 } M_GRADIENT_FILL;
 
-static M_GRADIENT_FILL m_GradientFills[] = {
+static const M_GRADIENT_FILL m_GradientFills[] = {
     // clang-format off
     [TS_BACKGROUND]       = { .edge = C_BACKGROUND_E, .center = C_BACKGROUND_C },
     [TS_BACKGROUND_HEAVY] = { .edge = C_BACKGROUND_HEAVY_E, .center = C_BACKGROUND_HEAVY_C },
@@ -53,7 +53,7 @@ static M_GRADIENT_FILL m_GradientFills[] = {
     // clang-format on
 };
 
-static RGBA_8888 m_MenuColorMap[TR_VERSION_COUNT][C_NUMBER_OF] = {
+static const RGBA_8888 m_MenuColorMap[TR_VERSION_COUNT][C_NUMBER_OF] = {
     // clang-format off
     [0] = {
         [C_BACKGROUND_C]           = { 0x00, 0x00, 0x40, 0x80 },
@@ -222,8 +222,8 @@ static void M_DrawScreenCentreGradientBox(
     const RGBA_8888 center_v, const float thickness)
 {
     const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
-    const float xm = (x0 + x1) / 2.0f;
-    const float ym = (y0 + y1) / 2.0f;
+    const int32_t xm = (x0 + x1) / 2;
+    const int32_t ym = (y0 + y1) / 2;
     const RGBA_8888 ch = center_h;
     const RGBA_8888 cv = center_v;
     const RGBA_8888 ce = edge;
@@ -313,9 +313,11 @@ static void M_DrawTextOutline(
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BR), M_OUTLINE_THICKNESS);
     } else if (text_style == TS_LINE) {
+        const float e = Scaler_Calc(M_OUTLINE_THICKNESS, SCALER_TARGET_TEXT);
+        const float ym = (y0 + y1) / 2;
         M_DrawScreenQuad(
-            x0, y0, x1, y1, z, M_GetMenuColor(C_BACKGROUND_OUTLINE_TL),
-            M_GetMenuColor(C_BACKGROUND_OUTLINE_TR),
+            x0, ym - e, x1, ym + e, z, M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
+            M_GetMenuColor(C_BACKGROUND_OUTLINE_BR),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BR));
     } else if (text_style == TS_REQUESTED) {
