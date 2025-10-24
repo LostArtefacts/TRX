@@ -503,6 +503,7 @@ sources = [
   'game/ui/elements/fps_counter.c',
   'game/ui/elements/frame.c',
   'game/ui/elements/hide.c',
+  'game/ui/elements/horizontal_line.c',
   'game/ui/elements/label.c',
   'game/ui/elements/modal.c',
   'game/ui/elements/offset.c',

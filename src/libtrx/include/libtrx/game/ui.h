@@ -27,6 +27,7 @@
 #include "./ui/elements/flash.h"
 #include "./ui/elements/fps_counter.h"
 #include "./ui/elements/frame.h"
+#include "./ui/elements/horizontal_line.h"
 #include "./ui/elements/label.h"
 #include "./ui/elements/modal.h"
 #include "./ui/elements/offset.h"

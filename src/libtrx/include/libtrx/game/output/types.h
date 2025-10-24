@@ -17,6 +17,7 @@ typedef enum {
     TS_BACKGROUND,
     TS_BACKGROUND_HEAVY,
     TS_REQUESTED,
+    TS_LINE,
 } TEXT_STYLE;
 
 typedef enum {

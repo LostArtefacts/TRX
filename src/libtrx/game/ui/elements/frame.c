@@ -41,7 +41,6 @@ void UI_BeginFrame(UI_FRAME_STYLE style)
         sizeof(M_DATA));
     M_DATA *const data = node->data;
 
-    data->ui_style = UI_STYLE_PC;
     data->ui_style = g_Config.ui.menu_style;
 
     switch (style) {

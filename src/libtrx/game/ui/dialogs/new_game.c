@@ -7,6 +7,7 @@
 #include "game/ui.h"
 #include "memory.h"
 #include "vector.h"
+#include "version.h"
 
 typedef struct {
     bool play_prev_levels;
@@ -128,13 +129,29 @@ void UI_NewGame(UI_NEW_GAME_STATE *const s)
     UI_BeginModal(0.5f, 2.0f / 3.0f);
     UI_BeginRequester(&s->req, GS(PASSPORT_SELECT_MODE));
 
+    bool line_drawn = false;
     for (int32_t i = 0; i < s->options->count; i++) {
         const M_OPTION *const opt = Vector_Get(s->options, i);
+        UI_BeginStackEx((UI_STACK_SETTINGS) {
+            .orientation = UI_STACK_VERTICAL,
+            { .h = UI_STACK_H_ALIGN_SPAN },
+        });
+        if (i > 0 && !line_drawn
+            && (opt->choice == UI_NEW_GAME_CHOICE_PLAY_PREV_LEVELS
+                || opt->choice == UI_NEW_GAME_CHOICE_STORY_SO_FAR)) {
+            // TODO: do not hardcode the numbers (they come from
+            // UI_BeginWindowBody)
+            UI_BeginPad(g_TRVersion == 2 ? -7.0f : -10.0f, 4.0f);
+            UI_HorizontalLine();
+            UI_EndPad();
+            line_drawn = true;
+        }
         UI_BeginRequesterRow(&s->req, i);
         UI_BeginAnchor(0.5f, 0.5f);
         UI_Label(GameString_Get(opt->label_id));
         UI_EndAnchor();
         UI_EndRequesterRow(&s->req, i);
+        UI_EndStack();
     }
 
     UI_EndRequester(&s->req);
