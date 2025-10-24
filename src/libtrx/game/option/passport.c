@@ -493,15 +493,19 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
 {
     M_PAGE *const page = M_GetActivePage();
     M_NAV_FRAME *const frame = page->nav.current;
+
+    // If no options – start the game already
     if (!g_Config.gameplay.enable_game_modes
         && !g_Config.profile.new_game_plus_unlock
         && !g_Config.gameplay.enable_play_previous_levels) {
-        if (!M_IMMEDIATE || g_InputDB.menu_confirm) {
+        // But only if in title mode
+        if (g_InputDB.menu_confirm
+            || (!M_IMMEDIATE && g_Inv_Mode == INV_TITLE_MODE)) {
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
             g_InputDB.menu_confirm = true;
             M_Close(inv_item);
         }
-        return true;
+        return false;
     }
 
     if (frame->ui.new_game == nullptr) {
