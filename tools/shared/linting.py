@@ -20,6 +20,7 @@ from translation_utils import (
     find_base_file,
     is_translation_file,
     should_skip_object_name,
+    format_strings_file,
 )
 
 SHARED_PROJECT = "libtrx"
@@ -176,6 +177,30 @@ def lint_untranslated_game_strings(
             continue
         if ptr not in base_set:
             yield LintWarning(path, f"extra translation key '{ptr}'")
+
+def lint_remove_undefined_object_translations(
+    context: LintContext, path: Path
+) -> Iterable[LintWarning]:
+    # Remove translations under "objects" not defined in base file
+    if not is_translation_file(path):
+        return
+    base_file = find_base_file(path)
+    base_data = load_json5(base_file)
+    trans_data = load_json5(path)
+    base_objects = list(base_data.get("objects", {}).keys())
+    trans_objects = list(trans_data.get("objects", {}).keys())
+    to_remove = set(trans_objects) - set(base_objects)
+    if not to_remove:
+        return
+    for ptr in to_remove:
+        del trans_data["objects"][ptr]
+    # Write updated translation file
+    content = format_strings_file(trans_data)
+    path.write_text(content, encoding="utf-8")
+    yield LintWarning(
+        path,
+        f"removed undefined object translations: {', '.join(to_remove)}"
+    )
 
 
 def get_relevant_project(context: LintContext, path: Path) -> str:
@@ -389,6 +414,7 @@ ALL_FILE_LINTERS: list[
     lint_trailing_whitespace,
     lint_const_primitives,
     lint_untranslated_game_strings,
+    lint_remove_undefined_object_translations,
     lint_meson_build_sort_order,
 ]
 
