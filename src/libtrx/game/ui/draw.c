@@ -172,7 +172,7 @@ void UI_ShutdownDraw(void)
 {
     M_PRIV *const p = &m_Priv;
     Memory_ArenaFree(&p->alloc);
-    if (p->ops == nullptr) {
+    if (p->ops != nullptr) {
         Vector_Free(p->ops);
         p->ops = nullptr;
     }
