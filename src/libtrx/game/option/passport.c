@@ -161,7 +161,7 @@ static bool M_IsArrowVisible(int32_t direction)
         return false;
     }
     const M_PAGE *const page = M_TryGetActivePage();
-    if (page != nullptr && page->nav.depth > 0) {
+    if (page == nullptr || page->nav.depth > 0) {
         return false;
     }
     for (M_PAGE_NUMBER i = m_Priv.active_page + direction;
