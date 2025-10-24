@@ -27,7 +27,7 @@ static void M_HandsFree(ITEM *const item)
     lara->gun_status = LGS_ARMLESS;
 }
 
-static void M_DrawGun(
+static void M_ToggleGun(
     ITEM *const item, const LARA_MESH thigh_mesh_idx,
     const LARA_MESH hand_mesh_idx)
 {
@@ -35,20 +35,47 @@ static void M_DrawGun(
         return;
     }
 
-    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, thigh_mesh_idx);
-    Object_SwapMesh(item->object_id, O_LARA_PISTOLS, hand_mesh_idx);
-    Lara_Mesh_SwapSingle(thigh_mesh_idx, item->object_id);
-    Lara_Mesh_SwapSingle(hand_mesh_idx, item->object_id);
+    const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
+    const OBJECT_MESH *const mesh =
+        Object_GetMesh(obj->mesh_idx + thigh_mesh_idx);
+    const bool armed = Lara_Mesh_Get(thigh_mesh_idx) != mesh;
+
+    if (armed) {
+        Lara_Mesh_SwapSingle(thigh_mesh_idx, O_LARA_PISTOLS);
+        Lara_Mesh_SwapSingle(hand_mesh_idx, O_LARA);
+    } else {
+        Lara_Mesh_SwapSingle(thigh_mesh_idx, O_LARA);
+        Lara_Mesh_SwapSingle(hand_mesh_idx, O_LARA_PISTOLS);
+    }
 }
 
-static void M_DrawRightGun(ITEM *const item)
+static void M_ToggleRightGun(ITEM *const item)
 {
-    M_DrawGun(item, LM_THIGH_R, LM_HAND_R);
+    M_ToggleGun(item, LM_THIGH_R, LM_HAND_R);
 }
 
-static void M_DrawLeftGun(ITEM *const item)
+static void M_ToggleLeftGun(ITEM *const item)
 {
-    M_DrawGun(item, LM_THIGH_L, LM_HAND_L);
+    M_ToggleGun(item, LM_THIGH_L, LM_HAND_L);
+}
+
+static void M_ToggleLaraMeshSwap(ITEM *const item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    const OBJECT *const obj = Object_Get(O_LARA_SWAP);
+    const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + LM_HIPS);
+    const bool swapped = Lara_Mesh_Get(LM_HIPS) == mesh;
+
+    if (swapped) {
+        Lara_Mesh_SwapAll(O_LARA);
+        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_PISTOLS);
+        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_PISTOLS);
+    } else {
+        Lara_Mesh_SwapAll(O_LARA_SWAP);
+    }
 }
 
 static void M_ResetHair(ITEM *const item)
@@ -82,7 +109,9 @@ static void M_Bubbles(ITEM *const item)
 
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_NORMAL, M_Normal)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_HANDS_FREE, M_HandsFree)
-REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_RIGHT_GUN, M_DrawRightGun)
-REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_LEFT_GUN, M_DrawLeftGun)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_RIGHT_GUN, M_ToggleRightGun)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_LEFT_GUN, M_ToggleLeftGun)
+REGISTER_ITEM_ACTION(
+    ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_3, M_ToggleLaraMeshSwap)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RESET_HAIR, M_ResetHair)
 REGISTER_ITEM_ACTION(ITEM_ACTION_BUBBLES, M_Bubbles)

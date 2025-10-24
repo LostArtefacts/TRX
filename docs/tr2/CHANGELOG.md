@@ -55,11 +55,14 @@
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
+- fixed Lara's pistols not being removed from holsters when she equips during a cutscene (#4136)
+- fixed Lara not having holstered pistols after she changes costumes in the Diving Area cutscene (#4142)
 - fixed ambient music not playing in demo levels (#4046, regression from 1.3)
 - fixed twists not adhering to original game movement (#4078, regression from 1.4)
 - fixed legacy saves in Opera House and Vegas crashing the game (#4103, regression from 1.5)
 - fixed caustics stopping after spending roughly 12 minutes in a level (#4109, regression from 1.4)
 - fixed Lara being able to push blocks through toggle opacity 1 portals (#4129, regression from 1.5)
+- fixed pistols disappearing from Lara's holsters in the cutscene following The Great Wall (#4145, regression from 0.9)
 
 ## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
