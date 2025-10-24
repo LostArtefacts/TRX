@@ -87,7 +87,7 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
-    <td rowspan="4"><code>loading_screen</code><strong>¹</strong></td>
+    <td rowspan="4"><code>loading_screen</code></td>
     <td><code>path</code></td>
     <td>String</td>
     <td rowspan="4">
