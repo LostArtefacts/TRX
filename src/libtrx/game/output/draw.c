@@ -15,6 +15,7 @@
 #include "game/output/state.h"
 #include "game/scaler.h"
 #include "game/shell.h"
+#include "version.h"
 
 #define M_OUTLINE_THICKNESS 0.75f
 
@@ -58,47 +59,55 @@ static M_GRADIENT_FILL m_GradientFills[] = {
     // clang-format on
 };
 
-static RGBA_8888 m_MenuColorMap[C_NUMBER_OF] = {
-// clang-format off
-#if TR_VERSION == 1
-    [C_BACKGROUND_C]           = { 0x00, 0x00, 0x40, 0x80 },
-    [C_BACKGROUND_E]           = { 0x00, 0x00, 0x00, 0x80 },
-    [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x00, 0x00, 0xE0 },
-    [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
-    [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
-    [C_HEADING_C]              = { 0x80, 0x38, 0x10, 0x80 },
-    [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
-    [C_REQUESTED_C]            = { 0x80, 0x38, 0xDC, 0x80 },
-    //[C_REQUESTED_C]            = { 0x40, 0x1C, 0x78, 0x80 },
-    [C_REQUESTED_OUTLINE_CH]   = { 0xC8, 0xC8, 0xC8, 0xFF },
-    [C_REQUESTED_OUTLINE_CV]   = { 0xC8, 0xC8, 0xC8, 0xFF },
-    [C_REQUESTED_OUTLINE_E]    = { 0x28, 0x28, 0x28, 0xFF },
-#elif TR_VERSION == 2
-    [C_BACKGROUND_E]           = { 0x00, 0x20, 0x00, 0x80 },
-    [C_BACKGROUND_C]           = { 0x00, 0x60, 0x00, 0x80 },
-    [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
-    [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x20, 0x00, 0xE0 },
-    [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
-    [C_HEADING_C]              = { 0x10, 0x80, 0x38, 0x80 },
-    [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
-    [C_REQUESTED_C]            = { 0x38, 0xF0, 0x80, 0x80 },
-    [C_REQUESTED_OUTLINE_CH]   = { 0xFF, 0xFF, 0xFF, 0xFF },
-    [C_REQUESTED_OUTLINE_CV]   = { 0x38, 0xF0, 0x80, 0xFF },
-    [C_REQUESTED_OUTLINE_E]    = { 0x00, 0x00, 0x00, 0xFF },
-#endif
-    [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
-    [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
-    [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
-    [C_BACKGROUND_OUTLINE_BR]  = { 0x00, 0x00, 0x00, 0xFF },
-    [C_HEADING_OUTLINE]        = { 0x00, 0x00, 0x00, 0xFF },
-    [C_GENERIC_OUTLINE_LIGHT]  = { 0xE8, 0xC0, 0x70, 0xFF },
-    [C_GENERIC_OUTLINE_DARK]   = { 0x8C, 0x70, 0x38, 0xFF },
+static RGBA_8888 m_MenuColorMap[TR_VERSION_COUNT][C_NUMBER_OF] = {
+    // clang-format off
+    [0] = {
+        [C_BACKGROUND_C]           = { 0x00, 0x00, 0x40, 0x80 },
+        [C_BACKGROUND_E]           = { 0x00, 0x00, 0x00, 0x80 },
+        [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x00, 0x00, 0xE0 },
+        [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
+        [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
+        [C_HEADING_C]              = { 0x80, 0x38, 0x10, 0x80 },
+        [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
+        [C_REQUESTED_C]            = { 0x80, 0x38, 0xDC, 0x80 },
+        //[C_REQUESTED_C]            = { 0x40, 0x1C, 0x78, 0x80 },
+        [C_REQUESTED_OUTLINE_CH]   = { 0xC8, 0xC8, 0xC8, 0xFF },
+        [C_REQUESTED_OUTLINE_CV]   = { 0xC8, 0xC8, 0xC8, 0xFF },
+        [C_REQUESTED_OUTLINE_E]    = { 0x28, 0x28, 0x28, 0xFF },
+        [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
+        [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
+        [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
+        [C_BACKGROUND_OUTLINE_BR]  = { 0x00, 0x00, 0x00, 0xFF },
+        [C_HEADING_OUTLINE]        = { 0x00, 0x00, 0x00, 0xFF },
+        [C_GENERIC_OUTLINE_LIGHT]  = { 0xE8, 0xC0, 0x70, 0xFF },
+        [C_GENERIC_OUTLINE_DARK]   = { 0x8C, 0x70, 0x38, 0xFF },
+    },
+    [1] = {
+        [C_BACKGROUND_E]           = { 0x00, 0x20, 0x00, 0x80 },
+        [C_BACKGROUND_C]           = { 0x00, 0x60, 0x00, 0x80 },
+        [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
+        [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x20, 0x00, 0xE0 },
+        [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
+        [C_HEADING_C]              = { 0x10, 0x80, 0x38, 0x80 },
+        [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
+        [C_REQUESTED_C]            = { 0x38, 0xF0, 0x80, 0x80 },
+        [C_REQUESTED_OUTLINE_CH]   = { 0xFF, 0xFF, 0xFF, 0xFF },
+        [C_REQUESTED_OUTLINE_CV]   = { 0x38, 0xF0, 0x80, 0xFF },
+        [C_REQUESTED_OUTLINE_E]    = { 0x00, 0x00, 0x00, 0xFF },
+        [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
+        [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
+        [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
+        [C_BACKGROUND_OUTLINE_BR]  = { 0x00, 0x00, 0x00, 0xFF },
+        [C_HEADING_OUTLINE]        = { 0x00, 0x00, 0x00, 0xFF },
+        [C_GENERIC_OUTLINE_LIGHT]  = { 0xE8, 0xC0, 0x70, 0xFF },
+        [C_GENERIC_OUTLINE_DARK]   = { 0x8C, 0x70, 0x38, 0xFF },
+    },
     // clang-format on
 };
 
 static RGBA_8888 M_GetMenuColor(const M_COLOR color)
 {
-    return m_MenuColorMap[color];
+    return m_MenuColorMap[g_TRVersion - 1][color];
 }
 
 static void M_DrawScreenQuad(
@@ -265,8 +274,7 @@ void Output_DrawTextOutline(
     const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
     const int32_t z, int32_t w, int32_t h, const TEXT_STYLE text_style)
 {
-#if TR_VERSION == 2
-    if (ui_style == UI_STYLE_PC) {
+    if (g_TRVersion == 2 && ui_style == UI_STYLE_PC) {
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
 
         const int32_t offset = text_style == TS_LINE ? 0 : 4;
@@ -305,8 +313,8 @@ void Output_DrawTextOutline(
         }
         return;
     }
-#else
-    if (ui_style == UI_STYLE_PC) {
+
+    if (g_TRVersion == 1 && ui_style == UI_STYLE_PC) {
         const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
         const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
         const float thickness = M_OUTLINE_THICKNESS;
@@ -320,7 +328,6 @@ void Output_DrawTextOutline(
         }
         return;
     }
-#endif
 
     if (text_style == TS_HEADING) {
         Output_DrawScreenGradientBox(
