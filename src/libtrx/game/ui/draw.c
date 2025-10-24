@@ -9,9 +9,14 @@
 #include "vector.h"
 #include "version.h"
 
-#include <string.h>
-
 #define M_OUTLINE_THICKNESS 0.75f
+#define M_SCHEDULE_OP(draw_func, type, ...)                                    \
+    do {                                                                       \
+        type *const op = M_ArenaAlloc(sizeof(type));                           \
+        *op = (type) { __VA_ARGS__ };                                          \
+        op->base.draw = (M_DRAW_OP_FUNC)draw_func;                             \
+        M_ScheduleOp((M_DRAW_OP *)op);                                         \
+    } while (0);
 
 typedef enum {
     C_BACKGROUND_E,
@@ -98,47 +103,42 @@ static const RGBA_8888 m_MenuColorMap[TR_VERSION_COUNT][C_NUMBER_OF] = {
     // clang-format on
 };
 
-// Draw operation types for deferred UI rendering.
-typedef enum {
-    UI_DRAW_OP_TEXT_BACKGROUND,
-    UI_DRAW_OP_TEXT_OUTLINE,
-    UI_DRAW_OP_SCREEN_SPRITE,
-    UI_DRAW_OP_FLAT_QUAD,
-    UI_DRAW_OP_GRADIENT_QUAD,
-    UI_DRAW_OP_HORZ_LINE,
-    UI_DRAW_OP_FADER_DRAW,
-} M_DRAW_OP_TYPE;
+struct M_DRAW_OP;
+typedef void (*M_DRAW_OP_FUNC)(const struct M_DRAW_OP *);
 
-// Deferred draw operation node.
-typedef struct {
-    M_DRAW_OP_TYPE type;
-    union {
-        struct {
-            UI_STYLE ui_style;
-            int32_t x0, x1, y, z;
-        } horz_line;
-        struct {
-            UI_STYLE ui_style;
-            int32_t x0, y0, x1, y1, z;
-            TEXT_STYLE text_style;
-        } text;
-        struct {
-            int32_t sx, sy, z, scale_h, scale_v, sprite_idx;
-            int16_t shade;
-        } sprite;
-        struct {
-            FADER *fader;
-        } fader;
-        struct {
-            int32_t sx, sy, z, w, h;
-            RGBA_8888 color;
-        } flat_quad;
-        struct {
-            int32_t sx, sy, z, w, h;
-            RGBA_8888 tl, tr, bl, br;
-        } gradient_quad;
-    } data;
+typedef struct M_DRAW_OP {
+    M_DRAW_OP_FUNC draw;
 } M_DRAW_OP;
+
+typedef struct {
+    M_DRAW_OP base;
+    UI_STYLE ui_style;
+    int32_t x0, x1, y, z;
+} M_DRAW_OP_HORZ_LINE;
+
+typedef struct {
+    M_DRAW_OP base;
+    UI_STYLE ui_style;
+    int32_t x0, y0, x1, y1, z;
+    TEXT_STYLE text_style;
+} M_DRAW_OP_TEXT_RECT;
+
+typedef struct {
+    M_DRAW_OP base;
+    int32_t sx, sy, z, scale_h, scale_v, sprite_idx;
+    int16_t shade;
+} M_DRAW_OP_SPRITE;
+
+typedef struct {
+    M_DRAW_OP base;
+    int32_t x0, y0, x1, y1, z;
+    RGBA_8888 tl, tr, bl, br;
+} M_DRAW_OP_QUAD;
+
+typedef struct {
+    M_DRAW_OP base;
+    FADER *fader;
+} M_DRAW_OP_FADER;
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
@@ -193,33 +193,6 @@ static void M_DrawScreenGradientBox(
     M_DrawScreenQuad(x1 - e, y0 - e, x1 + e, y1 + e, z, tr, tr, br, br);
 }
 
-static void M_DrawTextBackground(
-    const UI_STYLE ui_style, const int32_t x0, const int32_t y0,
-    const int32_t x1, const int32_t y1, const int32_t z,
-    const TEXT_STYLE text_style)
-{
-    if (ui_style == UI_STYLE_PC) {
-        const uint8_t a = text_style == TS_BACKGROUND_HEAVY ? 224 : 128;
-        const RGBA_8888 cb = { 0, 0, 0, a };
-        M_DrawScreenQuad(x0, y0, x1, y1, z, cb, cb, cb, cb);
-        return;
-    }
-
-    const int32_t xm = (x0 + x1) / 2;
-    const int32_t ym = (y0 + y1) / 2;
-    const M_GRADIENT_FILL *const fill = &m_GradientFills[text_style];
-#define L_DRAW(x0, y0, x1, y1, tl, tr, bl, br)                                 \
-    M_DrawScreenQuad(                                                          \
-        x0, y0, x1, y1, z, M_GetMenuColor(fill->colors[tl]),                   \
-        M_GetMenuColor(fill->colors[tr]), M_GetMenuColor(fill->colors[bl]),    \
-        M_GetMenuColor(fill->colors[br]));
-    L_DRAW(xm, y0, x0, ym, 0, 0, 1, 0);
-    L_DRAW(x1, y0, xm, ym, 0, 0, 0, 1);
-    L_DRAW(xm, ym, x0, y1, 1, 0, 0, 0);
-    L_DRAW(x1, ym, xm, y1, 0, 1, 0, 0);
-#undef L_DRAW
-}
-
 static void M_DrawScreenCentreGradientBox(
     const int32_t x0, const int32_t y0, const int32_t x1, const int32_t y1,
     const int32_t z, const RGBA_8888 edge, const RGBA_8888 center_h,
@@ -244,43 +217,67 @@ static void M_DrawScreenCentreGradientBox(
     // clang-format on
 }
 
-static void M_DrawHorizontalLine(const M_DRAW_OP *const op)
+static void M_DrawOp_TextBackground(const M_DRAW_OP_TEXT_RECT *const op)
 {
-    const UI_STYLE ui_style = op->data.horz_line.ui_style;
-    const int32_t x0 = op->data.horz_line.x0;
-    const int32_t x1 = op->data.horz_line.x1;
-    const int32_t y = op->data.horz_line.y;
-    const int32_t z = op->data.horz_line.z;
+    if (op->ui_style == UI_STYLE_PC) {
+        const uint8_t a = op->text_style == TS_BACKGROUND_HEAVY ? 224 : 128;
+        const RGBA_8888 cb = { 0, 0, 0, a };
+        M_DrawScreenQuad(op->x0, op->y0, op->x1, op->y1, op->z, cb, cb, cb, cb);
+        return;
+    }
+
+    const int32_t xm = (op->x0 + op->x1) / 2;
+    const int32_t ym = (op->y0 + op->y1) / 2;
+    const M_GRADIENT_FILL *const fill = &m_GradientFills[op->text_style];
+#define L_DRAW(x0, y0, x1, y1, tl, tr, bl, br)                                 \
+    M_DrawScreenQuad(                                                          \
+        x0, y0, x1, y1, op->z, M_GetMenuColor(fill->colors[tl]),               \
+        M_GetMenuColor(fill->colors[tr]), M_GetMenuColor(fill->colors[bl]),    \
+        M_GetMenuColor(fill->colors[br]));
+    L_DRAW(xm, op->y0, op->x0, ym, 0, 0, 1, 0);
+    L_DRAW(op->x1, op->y0, xm, ym, 0, 0, 0, 1);
+    L_DRAW(xm, ym, op->x0, op->y1, 1, 0, 0, 0);
+    L_DRAW(op->x1, ym, xm, op->y1, 0, 1, 0, 0);
+#undef L_DRAW
+}
+
+static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
+{
     const float thickness = M_OUTLINE_THICKNESS;
     const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
-    if (g_TRVersion == 1 && ui_style == UI_STYLE_PC) {
+    if (g_TRVersion == 1 && op->ui_style == UI_STYLE_PC) {
         const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
         const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
-        M_DrawScreenQuad(x0, y - e, x1, y, 0, cl, cl, cl, cl);
-        M_DrawScreenQuad(x0, y, x1, y + e, 0, cd, cd, cd, cd);
-    } else if (g_TRVersion == 2 && ui_style == UI_STYLE_PC) {
+        M_DrawScreenQuad(
+            op->x0, op->y - e, op->x1, op->y, op->z, cl, cl, cl, cl);
+        M_DrawScreenQuad(
+            op->x0, op->y, op->x1, op->y + e, op->z, cd, cd, cd, cd);
+    } else if (g_TRVersion == 2 && op->ui_style == UI_STYLE_PC) {
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
         M_DrawScreenSprite(
-            x0, y, z, (x1 - x0) * PHD_ONE / 8, PHD_ONE, mesh_idx + 4,
-            SHADE_NEUTRAL);
+            op->x0, op->y, op->z, (op->x1 - op->x0) * PHD_ONE / 8, PHD_ONE,
+            mesh_idx + 4, SHADE_NEUTRAL);
     } else {
         const float e = Scaler_Calc(M_OUTLINE_THICKNESS, SCALER_TARGET_TEXT);
         M_DrawScreenQuad(
-            x0, y - e, x1, y + e, z, M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
+            op->x0, op->y - e, op->x1, op->y + e, op->z,
+            M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BR),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BR));
     }
 }
 
-static void M_DrawTextOutline(
-    const UI_STYLE ui_style, int32_t x0, int32_t y0, int32_t x1, int32_t y1,
-    const int32_t z, const TEXT_STYLE text_style)
+static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
 {
-    if (g_TRVersion == 2 && ui_style == UI_STYLE_PC) {
+    int32_t x0 = op->x0;
+    int32_t x1 = op->x1;
+    int32_t y0 = op->y0;
+    int32_t y1 = op->y1;
+    if (g_TRVersion == 2 && op->ui_style == UI_STYLE_PC) {
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
 
-        const int32_t offset = text_style == 4;
+        const int32_t offset = 4;
         x0 += offset;
         y0 += offset;
         x1 -= offset;
@@ -292,23 +289,27 @@ static void M_DrawTextOutline(
 
         // Corners
         M_DrawScreenSprite(
-            x0, y0, z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL);
+            x0, y0, op->z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL);
         M_DrawScreenSprite(
-            x1, y0, z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL);
+            x1, y0, op->z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL);
         M_DrawScreenSprite(
-            x1, y1, z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL);
+            x1, y1, op->z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL);
         M_DrawScreenSprite(
-            x0, y1, z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL);
+            x0, y1, op->z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL);
 
         // Lines
-        M_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL);
-        M_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL);
-        M_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL);
-        M_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL);
+        M_DrawScreenSprite(
+            x0, y0, op->z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL);
+        M_DrawScreenSprite(
+            x1, y0, op->z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL);
+        M_DrawScreenSprite(
+            x0, y1, op->z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL);
+        M_DrawScreenSprite(
+            x0, y0, op->z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL);
         return;
     }
 
-    if (g_TRVersion == 1 && ui_style == UI_STYLE_PC) {
+    if (g_TRVersion == 1 && op->ui_style == UI_STYLE_PC) {
         const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
         const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
         const float thickness = M_OUTLINE_THICKNESS;
@@ -316,36 +317,58 @@ static void M_DrawTextOutline(
         return;
     }
 
-    if (text_style == TS_HEADING) {
+    switch (op->text_style) {
+    case TS_BACKGROUND:
+    case TS_BACKGROUND_HEAVY:
         M_DrawScreenGradientBox(
-            x0, y0, x1, y1, z, M_GetMenuColor(C_HEADING_OUTLINE),
-            M_GetMenuColor(C_HEADING_OUTLINE),
-            M_GetMenuColor(C_HEADING_OUTLINE),
-            M_GetMenuColor(C_HEADING_OUTLINE), M_OUTLINE_THICKNESS);
-    } else if (
-        text_style == TS_BACKGROUND || text_style == TS_BACKGROUND_HEAVY) {
-        M_DrawScreenGradientBox(
-            x0, y0, x1, y1, z, M_GetMenuColor(C_BACKGROUND_OUTLINE_TL),
+            x0, y0, x1, y1, op->z, M_GetMenuColor(C_BACKGROUND_OUTLINE_TL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_TR),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BR), M_OUTLINE_THICKNESS);
-    } else if (text_style == TS_REQUESTED) {
+        break;
+    case TS_HEADING:
+        M_DrawScreenGradientBox(
+            x0, y0, x1, y1, op->z, M_GetMenuColor(C_HEADING_OUTLINE),
+            M_GetMenuColor(C_HEADING_OUTLINE),
+            M_GetMenuColor(C_HEADING_OUTLINE),
+            M_GetMenuColor(C_HEADING_OUTLINE), M_OUTLINE_THICKNESS);
+        break;
+    case TS_REQUESTED:
         M_DrawScreenCentreGradientBox(
-            x0, y0, x1, y1, z, M_GetMenuColor(C_REQUESTED_OUTLINE_E),
+            x0, y0, x1, y1, op->z, M_GetMenuColor(C_REQUESTED_OUTLINE_E),
             M_GetMenuColor(C_REQUESTED_OUTLINE_CH),
             M_GetMenuColor(C_REQUESTED_OUTLINE_CV), M_OUTLINE_THICKNESS);
+        break;
     }
 }
 
-// Allocate a new deferred draw operation in the arena.
-static M_DRAW_OP *M_AllocDrawOp(void)
+static void M_DrawOp_Sprite(const M_DRAW_OP_SPRITE *const op)
 {
-    M_DRAW_OP *const op = Memory_ArenaAlloc(&m_Priv.alloc, sizeof(*op));
-    memset(op, 0, sizeof(*op));
-    return op;
+    Output_DrawScreenSprite(
+        op->sx, op->sy, op->z, op->scale_h, op->scale_v, op->sprite_idx,
+        op->shade);
 }
 
-static void M_ScheduleOp(M_DRAW_OP *const op)
+static void M_DrawOp_Quad(const M_DRAW_OP_QUAD *const op)
+{
+    M_DrawScreenQuad(
+        op->x0, op->y0, op->x1, op->y1, op->z, op->tl, op->tr, op->bl, op->br);
+}
+
+static void M_DrawOp_Fader(const M_DRAW_OP_FADER *const op)
+{
+    Fader_Draw(op->fader);
+}
+
+// Allocate a new deferred draw operation in the arena.
+static inline void *M_ArenaAlloc(const size_t sz)
+{
+    void *p = Memory_ArenaAlloc(&m_Priv.alloc, sz);
+    memset(p, 0, sz);
+    return p;
+}
+
+static inline void M_ScheduleOp(M_DRAW_OP *const op)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Add(p->ops, &op);
@@ -356,16 +379,10 @@ void UI_ScheduleDrawTextBackground(
     const int32_t z, const int32_t w, const int32_t h,
     const TEXT_STYLE text_style)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_TEXT_BACKGROUND;
-    op->data.text.ui_style = ui_style;
-    op->data.text.x0 = sx;
-    op->data.text.y0 = sy;
-    op->data.text.x1 = sx + w;
-    op->data.text.y1 = sy + h;
-    op->data.text.z = z;
-    op->data.text.text_style = text_style;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(
+        M_DrawOp_TextBackground, M_DRAW_OP_TEXT_RECT, .ui_style = ui_style,
+        .x0 = sx, .y0 = sy, .x1 = sx + w, .y1 = sy + h, .z = z,
+        .text_style = text_style, );
 }
 
 void UI_ScheduleDrawTextOutline(
@@ -373,47 +390,30 @@ void UI_ScheduleDrawTextOutline(
     const int32_t z, const int32_t w, const int32_t h,
     const TEXT_STYLE text_style)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_TEXT_OUTLINE;
-    op->data.text.ui_style = ui_style;
-    op->data.text.x0 = sx;
-    op->data.text.y0 = sy;
-    op->data.text.x1 = sx + w;
-    op->data.text.y1 = sy + h;
-    op->data.text.z = z;
-    op->data.text.text_style = text_style;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(
+        M_DrawOp_TextOutline, M_DRAW_OP_TEXT_RECT, .ui_style = ui_style,
+        .x0 = sx, .y0 = sy, .x1 = sx + w, .y1 = sy + h, .z = z,
+        .text_style = text_style);
 }
 
 void UI_ScheduleDrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
     const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_SCREEN_SPRITE;
-    op->data.sprite.sx = sx;
-    op->data.sprite.sy = sy;
-    op->data.sprite.z = z;
-    op->data.sprite.scale_h = scale_h;
-    op->data.sprite.scale_v = scale_v;
-    op->data.sprite.sprite_idx = sprite_idx;
-    op->data.sprite.shade = shade;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(
+        M_DrawOp_Sprite, M_DRAW_OP_SPRITE, .sx = sx, .sy = sy, .z = z,
+        .scale_h = scale_h, .scale_v = scale_v, .sprite_idx = sprite_idx,
+        .shade = shade);
 }
 
 void UI_ScheduleDrawScreenFlatQuad(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
     const int32_t h, const RGBA_8888 color)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_FLAT_QUAD;
-    op->data.flat_quad.sx = sx;
-    op->data.flat_quad.sy = sy;
-    op->data.flat_quad.z = z;
-    op->data.flat_quad.w = w;
-    op->data.flat_quad.h = h;
-    op->data.flat_quad.color = color;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(
+        M_DrawOp_Quad, M_DRAW_OP_QUAD, .x0 = sx, .y0 = sy, .x1 = sx + w,
+        .y1 = sy + h, .z = z, .tl = color, .tr = color, .bl = color,
+        .br = color);
 }
 
 void UI_ScheduleDrawScreenGradientQuad(
@@ -421,40 +421,23 @@ void UI_ScheduleDrawScreenGradientQuad(
     const int32_t h, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
     const RGBA_8888 br)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_GRADIENT_QUAD;
-    op->data.gradient_quad.sx = sx;
-    op->data.gradient_quad.sy = sy;
-    op->data.gradient_quad.z = z;
-    op->data.gradient_quad.w = w;
-    op->data.gradient_quad.h = h;
-    op->data.gradient_quad.tl = tl;
-    op->data.gradient_quad.tr = tr;
-    op->data.gradient_quad.bl = bl;
-    op->data.gradient_quad.br = br;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(
+        M_DrawOp_Quad, M_DRAW_OP_QUAD, .x0 = sx, .y0 = sy, .x1 = sx + w,
+        .y1 = sy + h, .z = z, .tl = tl, .tr = tr, .bl = bl, .br = br);
 }
 
 void UI_ScheduleDrawHorizontalLine(
     const UI_STYLE ui_style, const int32_t x0, const int32_t x1,
     const int32_t y, const int32_t z)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_HORZ_LINE;
-    op->data.horz_line.ui_style = ui_style;
-    op->data.horz_line.x0 = x0;
-    op->data.horz_line.x1 = x1;
-    op->data.horz_line.y = y;
-    op->data.horz_line.z = z;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(
+        M_DrawOp_HorizontalLine, M_DRAW_OP_HORZ_LINE, .ui_style = ui_style,
+        .x0 = x0, .x1 = x1, .y = y, .z = z);
 }
 
 void UI_ScheduleFaderDraw(FADER *const fader)
 {
-    M_DRAW_OP *const op = M_AllocDrawOp();
-    op->type = UI_DRAW_OP_FADER_DRAW;
-    op->data.fader.fader = fader;
-    M_ScheduleOp(op);
+    M_SCHEDULE_OP(M_DrawOp_Fader, M_DRAW_OP_FADER, .fader = fader);
 }
 
 void UI_InitDraw(void)
@@ -485,53 +468,8 @@ void UI_ClearDraw(void)
 void UI_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
-    for (int32_t i = 0; i < p->ops->count; i++) {
-        const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(p->ops, i);
-        switch (op->type) {
-        case UI_DRAW_OP_HORZ_LINE:
-            M_DrawHorizontalLine(op);
-            break;
-
-        case UI_DRAW_OP_TEXT_BACKGROUND:
-            M_DrawTextBackground(
-                op->data.text.ui_style, op->data.text.x0, op->data.text.y0,
-                op->data.text.x1, op->data.text.y1, op->data.text.z,
-                op->data.text.text_style);
-            break;
-
-        case UI_DRAW_OP_TEXT_OUTLINE:
-            M_DrawTextOutline(
-                op->data.text.ui_style, op->data.text.x0, op->data.text.y0,
-                op->data.text.x1, op->data.text.y1, op->data.text.z,
-                op->data.text.text_style);
-            break;
-
-        case UI_DRAW_OP_SCREEN_SPRITE:
-            M_DrawScreenSprite(
-                op->data.sprite.sx, op->data.sprite.sy, op->data.sprite.z,
-                op->data.sprite.scale_h, op->data.sprite.scale_v,
-                op->data.sprite.sprite_idx, op->data.sprite.shade);
-            break;
-
-        case UI_DRAW_OP_FLAT_QUAD:
-            Output_DrawScreenFlatQuad(
-                op->data.flat_quad.sx, op->data.flat_quad.sy,
-                op->data.flat_quad.z, op->data.flat_quad.w,
-                op->data.flat_quad.h, op->data.flat_quad.color);
-            break;
-
-        case UI_DRAW_OP_GRADIENT_QUAD:
-            Output_DrawScreenGradientQuad(
-                op->data.gradient_quad.sx, op->data.gradient_quad.sy,
-                op->data.gradient_quad.z, op->data.gradient_quad.w,
-                op->data.gradient_quad.h, op->data.gradient_quad.tl,
-                op->data.gradient_quad.tr, op->data.gradient_quad.bl,
-                op->data.gradient_quad.br);
-            break;
-
-        case UI_DRAW_OP_FADER_DRAW:
-            Fader_Draw(op->data.fader.fader);
-            break;
-        }
+    for (int32_t i = 0; i < m_Priv.ops->count; i++) {
+        const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(m_Priv.ops, i);
+        op->draw(op);
     }
 }
