@@ -8,9 +8,9 @@
 static void M_Draw(const UI_NODE *node)
 {
     // UI_DrawWrapper(node);
-    UI_ScheduleDrawTextOutline(
-        g_Config.ui.menu_style, UI_ScaleX(node->x), UI_ScaleY(node->y), 0,
-        UI_ScaleX(node->w), UI_ScaleX(node->h), TS_LINE);
+    UI_ScheduleDrawHorizontalLine(
+        g_Config.ui.menu_style, UI_ScaleX(node->x),
+        UI_ScaleX(node->x + node->w), UI_ScaleY(node->y + node->h / 2.0f), 0);
 }
 
 static void M_Measure(UI_NODE *const node)
