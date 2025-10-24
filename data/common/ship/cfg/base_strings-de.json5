@@ -1,6 +1,6 @@
 {
     // For usage, refer to the documentation here:
-    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
     "language_name": "Deutsch",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Untersuchen",
@@ -689,5 +689,967 @@
         "STATS_BONUS_STATISTICS": "Bonusstatistiken",
         "STATS_DETAIL_FMT": "%d von %d",
         "STATS_FINAL_STATISTICS": "Finale Statistiken",
+    },
+    "objects": {
+        "flare": {
+            "name": "Fackel",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
+        "grenade": {
+            "name": "Granate",
+        },
+        "pistols": {
+            "name": "Pistolen",
+        },
+        "shotgun": {
+            "name": "Schrotflinte",
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "shotgun_ammo": {
+            "name": "Schrot-Munition",
+        },
+        "uzis_ammo": {
+            "name": "Uzi-Munition",
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2",
+        },
+        "key_1": {
+            "name": "Key 1",
+        },
+        "key_2": {
+            "name": "Key 2",
+        },
+        "key_3": {
+            "name": "Key 3",
+        },
+        "key_4": {
+            "name": "Key 4",
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4",
+        },
+        "lead_bar": {
+            "name": "Bleibarren",
+        },
+        "scion": {
+            "name": "Scion",
+        },
+        "compass": {
+            "name": "Statistiken",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statistiken",
+        },
+        "passport": {
+            "name": "Spiel",
+        },
+        "photo": {
+            "name": "Laras Haus",
+        },
+        "graphics": {
+            "name": "Grafikeinstellungen",
+        },
+        "controls": {
+            "name": "Steuerung",
+        },
+        "sound": {
+            "name": "Sound",
+        },
+        "gamma": {
+            "name": "\\{review}Gamma",
+        },
+        "pda": {
+            "name": "Gameplay",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_hair": {
+            "name": "Laras Zopf",
+        },
+        "lara_pistols": {
+            "name": "Pistolen-Animation",
+        },
+        "lara_shotgun": {
+            "name": "Schrotflinten-Animation",
+        },
+        "lara_magnums": {
+            "name": "Magnum-Animation",
+        },
+        "lara_uzis": {
+            "name": "Uzi-Animation",
+        },
+        "lara_flare": {
+            "name": "Fackel-Animation",
+        },
+        "lara_extra": {
+            "name": "Laras Extra Animation",
+        },
+        "boat": {
+            "name": "Boot",
+        },
+        "bacon_lara": {
+            "name": "Schinken Lara",
+        },
+        "wolf": {
+            "name": "Wolf",
+        },
+        "bear": {
+            "name": "Bär",
+        },
+        "bat": {
+            "name": "Fledermaus",
+        },
+        "crocodile": {
+            "name": "Krokodil",
+        },
+        "alligator": {
+            "name": "Alligator",
+        },
+        "lion": {
+            "name": "Löwe",
+        },
+        "lioness": {
+            "names": [
+                "Löwin",
+                "Löwe",
+            ]
+        },
+        "puma": {
+            "name": "Puma",
+        },
+        "ape": {
+            "name": "Affe",
+        },
+        "rat": {
+            "names": [
+                "Ratte",
+                "Landratte",
+            ]
+        },
+        "vole": {
+            "names": [
+                "Wühlmaus",
+                "Wasserratte",
+            ]
+        },
+        "trex": {
+            "name": "T-Rex",
+        },
+        "raptor": {
+            "name": "Raptor",
+        },
+        "mutant_1": {
+            "name": "Mutant 1",
+        },
+        "mutant_2": {
+            "name": "Mutant 2",
+        },
+        "mutant_3": {
+            "name": "Mutant 3",
+        },
+        "centaur": {
+            "name": "Zentaur",
+        },
+        "mummy": {
+            "name": "Mumie",
+        },
+        "dino_mutant": {
+            "name": "Dino Mutant",
+        },
+        "fish_mutant": {
+            "name": "Fisch Mutant",
+        },
+        "larson": {
+            "name": "Larson",
+        },
+        "pierre": {
+            "name": "Pierre",
+        },
+        "skateboard": {
+            "name": "Skateboard",
+        },
+        "skate_kid": {
+            "name": "Skate Kid",
+        },
+        "cowboy": {
+            "name": "Cowboy",
+        },
+        "baldy": {
+            "name": "Glatzkopf",
+        },
+        "natla": {
+            "name": "Natla",
+        },
+        "torso": {
+            "names": [
+                "Torso",
+                "Adam",
+                "Riesenmutant",
+            ]
+        },
+        "centaur_statue": {
+            "name": "Statue",
+        },
+        "pods": {
+            "name": "Pod",
+        },
+        "big_pod": {
+            "name": "Big Pod",
+        },
+        "damocles_sword": {
+            "name": "Schwert des Damokles",
+        },
+        "dart": {
+            "name": "Pfeil",
+        },
+        "dart_emitter": {
+            "name": "Pfeilerzeuger",
+        },
+        "disc": {
+            "name": "Scheibe",
+        },
+        "disc_emitter": {
+            "name": "Scheiben-Erzeuger",
+        },
+        "ember": {
+            "name": "Glut",
+        },
+        "ember_emitter": {
+            "name": "Gluterzeuger",
+        },
+        "falling_block_1": {
+            "names": [
+                "Fallender Block 1",
+                "Zerbrechbarer Boden 1",
+                "Zerbrechbare Kacheln 1",
+            ]
+        },
+        "falling_ceiling_1": {
+            "name": "Falling Ceiling 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Fallende Decke 2",
+        },
+        "flame": {
+            "names": [
+                "Flamme",
+                "Feuer",
+            ]
+        },
+        "flame_emitter": {
+            "names": [
+                "Flamenerzeuger",
+                "Feuererzeuger",
+            ]
+        },
+        "lava_wedge": {
+            "name": "Lava-Keil",
+        },
+        "lightning_emitter": {
+            "name": "Blitzerzeuger",
+        },
+        "midas_touch": {
+            "name": "Hand des Midas",
+        },
+        "pendulum_1": {
+            "name": "Sandsack",
+        },
+        "rolling_ball_1": {
+            "names": [
+                "Fels 1",
+                "Rollender Ball",
+            ]
+        },
+        "spikes": {
+            "name": "Stacheln",
+        },
+        "teeth_trap": {
+            "name": "Zahn-Falle",
+        },
+        "thors_handle": {
+            "name": "Thors Hammer Griff",
+        },
+        "thors_head": {
+            "name": "Thors Hammer",
+        },
+        "bridge_flat": {
+            "name": "Brücke Flach",
+        },
+        "bridge_tilt_1": {
+            "name": "Brücke Tilt 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Brücke Tilt 2",
+        },
+        "cog_1": {
+            "name": "Zahnrad 1",
+        },
+        "cog_2": {
+            "name": "Zahnrad 2",
+        },
+        "cog_3": {
+            "name": "Zahnrad 3",
+        },
+        "door_1": {
+            "name": "Tür 1",
+        },
+        "door_2": {
+            "name": "Tür 2",
+        },
+        "door_3": {
+            "name": "Tür 3",
+        },
+        "door_4": {
+            "name": "Tür 4",
+        },
+        "door_5": {
+            "name": "Tür 5",
+        },
+        "door_6": {
+            "name": "Tür 6",
+        },
+        "door_7": {
+            "name": "Tür 7",
+        },
+        "door_8": {
+            "name": "Tür 8",
+        },
+        "drawbridge": {
+            "name": "Zugbrücke",
+        },
+        "key_hole_1": {
+            "name": "Keyhole 1",
+        },
+        "key_hole_2": {
+            "name": "Keyhole 2",
+        },
+        "key_hole_3": {
+            "name": "Keyhole 3",
+        },
+        "key_hole_4": {
+            "name": "Keyhole 4",
+        },
+        "movable_block_1": {
+            "names": [
+                "Drückbarer Block 1",
+                "Bewegbarer Block 1",
+            ]
+        },
+        "movable_block_2": {
+            "names": [
+                "Drückbarer Block 2",
+                "Bewegbarer Block 2",
+            ]
+        },
+        "movable_block_3": {
+            "names": [
+                "Drückbarer Block 3",
+                "Bewegbarer Block 3",
+            ]
+        },
+        "movable_block_4": {
+            "names": [
+                "Drückbarer Block 4",
+                "Bewegbarer Block 4",
+            ]
+        },
+        "moving_bar": {
+            "name": "Moving Bar",
+        },
+        "portacabin": {
+            "name": "Portable Cabin",
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Hole 2 (Done)",
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Hole 3 (Done)",
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Hole 4 (Done)",
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Hole 2 (Empty)",
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Hole 3 (Empty)",
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Hole 4 (Empty)",
+        },
+        "save_crystal": {
+            "name": "Speicherkristall",
+        },
+        "scion_holder": {
+            "name": "Scion-Halter",
+        },
+        "sliding_pillar": {
+            "name": "Sliding Pillar",
+        },
+        "switch_type_normal": {
+            "names": [
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_uw": {
+            "names": [
+                "Underwater Lever",
+                "Underwater Switch",
+            ]
+        },
+        "trapdoor_1": {
+            "name": "Falltür 1",
+        },
+        "trapdoor_2": {
+            "name": "Falltür 2",
+        },
+        "trapdoor_3": {
+            "name": "Falltür 3",
+        },
+        "alphabet": {
+            "name": "Alphabet",
+        },
+        "blood_1": {
+            "name": "Blut 1",
+        },
+        "blood_2": {
+            "name": "Blut 2",
+        },
+        "body_part": {
+            "name": "Körperteil",
+        },
+        "bubble_1": {
+            "name": "Blase 1",
+        },
+        "bubble_2": {
+            "name": "Blase 2",
+        },
+        "bubble_emitter": {
+            "name": "Blasenerzeuger",
+        },
+        "camera_target": {
+            "name": "Kamera-Ziel",
+        },
+        "dart_effect": {
+            "name": "Pfeil-Effekt",
+        },
+        "dust": {
+            "name": "Staub",
+        },
+        "earthquake": {
+            "name": "Erdbeben",
+        },
+        "explosion_1": {
+            "name": "Explosion 1",
+        },
+        "explosion_2": {
+            "name": "Explosion 2",
+        },
+        "flare_fire": {
+            "name": "Fackel-Funken",
+        },
+        "glow": {
+            "name": "Glühen",
+        },
+        "gun_flash": {
+            "name": "Waffen Blitz",
+        },
+        "missile_1": {
+            "name": "Rakete 1",
+        },
+        "missile_2": {
+            "name": "Rakete 2",
+        },
+        "missile_3": {
+            "name": "Rakete 3",
+        },
+        "missile_4": {
+            "name": "Rakete 4",
+        },
+        "missile_5": {
+            "name": "Rakete 5",
+        },
+        "pickup_aid": {
+            "name": "Pickup-Hilfe",
+        },
+        "player_1": {
+            "name": "Zwischensequenz-Schauspieler 1",
+        },
+        "player_2": {
+            "name": "Zwischensequenz-Schauspieler 2",
+        },
+        "player_3": {
+            "name": "Zwischensequenz-Schauspieler 3",
+        },
+        "player_4": {
+            "name": "Zwischensequenz-Schauspieler 4",
+        },
+        "ricochet": {
+            "name": "Querschläger",
+        },
+        "skybox": {
+            "name": "Skybox",
+        },
+        "splash_1": {
+            "name": "Wasserkräuselungen 1",
+        },
+        "splash_2": {
+            "name": "Water-Kräuseln 2",
+        },
+        "twinkle": {
+            "name": "Funken",
+        },
+        "waterfall": {
+            "name": "Wasserfall Nebel",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "harpoon_gun": {
+            "name": "Harpune",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "grenade_launcher": {
+            "name": "Granatenwerfer",
+        },
+        "pistols_ammo": {
+            "name": "Pistolen Munition",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Pfeile",
+        },
+        "m16_ammo": {
+            "name": "M16-Munition",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Granaten",
+        },
+        "secret_1": {
+            "name": "Geheimnis 1",
+        },
+        "secret_2": {
+            "name": "Geheimnis 2",
+        },
+        "secret_3": {
+            "name": "Geheimnis 3",
+        },
+        "lara_m16": {
+            "name": "M16-Animation",
+        },
+        "lara_grenade": {
+            "name": "Grantenwerfer-Animation",
+        },
+        "lara_harpoon": {
+            "name": "Harpunen-Animation",
+        },
+        "lara_skidoo": {
+            "name": "Schneeemobil-Animation",
+        },
+        "lara_boat": {
+            "name": "Boots-Animation",
+        },
+        "skidoo_fast": {
+            "name": "Rotes Schneemobil",
+        },
+        "dog": {
+            "names": [
+                "Hund",
+                "Dobermann",
+            ]
+        },
+        "cult_1": {
+            "name": "Maskierter Schläger 1",
+        },
+        "cult_1a": {
+            "name": "Maskierter Schläger 2",
+        },
+        "cult_1b": {
+            "name": "Maskierter Schläger 3",
+        },
+        "cult_2": {
+            "name": "Messerwerfer",
+        },
+        "cult_3": {
+            "name": "Schrotflinten Schläger",
+        },
+        "mouse": {
+            "name": "Ratte",
+        },
+        "dragon_front": {
+            "name": "Drache Vorderseite",
+        },
+        "dragon_back": {
+            "name": "Drachen Hinterseite",
+        },
+        "shark": {
+            "name": "Hai",
+        },
+        "eel": {
+            "name": "Aal",
+        },
+        "big_eel": {
+            "name": "Großer Aal",
+        },
+        "barracuda": {
+            "name": "Barrakuda",
+        },
+        "diver": {
+            "name": "Taucher",
+        },
+        "worker_1": {
+            "name": "Schläger Schütze 1",
+        },
+        "worker_2": {
+            "name": "Schläger Schütze 2",
+        },
+        "worker_3": {
+            "name": "Schlagstock schwingender Schläger 1",
+        },
+        "worker_4": {
+            "name": "Schlagstock schwingender Schläger 2",
+        },
+        "worker_5": {
+            "name": "Typ mit Flammenwerfer",
+        },
+        "jelly": {
+            "name": "Qualle",
+        },
+        "spider": {
+            "name": "Spinne",
+        },
+        "big_spider": {
+            "name": "Riesen-Spider",
+        },
+        "crow": {
+            "name": "Krähe",
+        },
+        "tiger": {
+            "name": "Tiger",
+        },
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "xian_spearman": {
+            "name": "Xian Speerträger",
+        },
+        "xian_spearman_statue": {
+            "name": "Xian Speerträger Statue",
+        },
+        "xian_knight": {
+            "name": "Xian Ritter",
+        },
+        "xian_knight_statue": {
+            "name": "Xian Ritter Statue",
+        },
+        "yeti": {
+            "name": "Yeti",
+        },
+        "bird_guardian": {
+            "name": "Vogel-Monster",
+        },
+        "eagle": {
+            "name": "Adler",
+        },
+        "bandit_1": {
+            "names": [
+                "Söldner 1",
+                "Masked Goon 1",
+            ]
+        },
+        "bandit_2": {
+            "names": [
+                "Söldner 2",
+                "Maskierter Schläger 2",
+            ]
+        },
+        "bandit_2b": {
+            "names": [
+                "Söldner 3",
+                "Maskierter Schläger 3",
+            ]
+        },
+        "skidoo_armed": {
+            "name": "Schwarzes Schneemobil",
+        },
+        "skidoo_driver": {
+            "name": "Fahrer schwarzes Schneemobil",
+        },
+        "monk_1": {
+            "name": "Mönch 1",
+        },
+        "monk_2": {
+            "name": "Mönch 2",
+        },
+        "blade": {
+            "name": "Wall-mounted Blade",
+        },
+        "ceiling_spikes": {
+            "name": "Spiky Ceiling",
+        },
+        "falling_block_2": {
+            "names": [
+                "Fallender Block 2",
+                "Zerbrechbarer Boden 2",
+                "Zerbrechbare Kacheln 2",
+            ]
+        },
+        "falling_block_3": {
+            "names": [
+                "Fallender Block 3",
+                "Zerbrechbarer Boden 3",
+                "Zerbrechbare Kacheln 3",
+                "Lose Bretter",
+            ]
+        },
+        "gondola": {
+            "name": "Gondel",
+        },
+        "hook": {
+            "name": "Hook",
+        },
+        "icicle": {
+            "name": "Icicles",
+        },
+        "killer_statue": {
+            "name": "Statue with Sword",
+        },
+        "mine": {
+            "name": "Wassermine",
+        },
+        "pendulum_2": {
+            "name": "Swinging Box",
+        },
+        "power_saw": {
+            "name": "Power Saw",
+        },
+        "propeller_1": {
+            "name": "Airplane Propeller",
+        },
+        "propeller_2": {
+            "name": "Underwater Propeller",
+        },
+        "propeller_3": {
+            "name": "Air Fan",
+        },
+        "rolling_ball_2": {
+            "names": [
+                "Boulder 2",
+                "Rolling Ball 2",
+            ]
+        },
+        "rolling_ball_3": {
+            "names": [
+                "Boulder 3",
+                "Rolling Ball 3",
+            ]
+        },
+        "spike_wall": {
+            "name": "Spike Wall",
+        },
+        "spinning_blade": {
+            "name": "Spinning Blade",
+        },
+        "bell": {
+            "name": "Bell",
+        },
+        "big_bowl": {
+            "name": "Lava-Schüssel",
+        },
+        "general": {
+            "name": "Mini U-Boot",
+        },
+        "lift": {
+            "name": "Aufzug",
+        },
+        "springboard": {
+            "name": "Springboard",
+        },
+        "switch_type_airlock": {
+            "name": "Airlock Switch",
+        },
+        "switch_type_button": {
+            "names": [
+                "Button",
+                "Push Button",
+                "Switch",
+            ]
+        },
+        "switch_type_small": {
+            "name": "Small Switch",
+        },
+        "window_1": {
+            "name": "Breakable Window 1",
+        },
+        "window_2": {
+            "name": "Breakable Window 2",
+        },
+        "window_3": {
+            "name": "Breakable Window 3",
+        },
+        "window_4": {
+            "name": "Breakable Window 4",
+        },
+        "zipline_handle": {
+            "name": "Zipline Handle",
+        },
+        "alarm_sound": {
+            "name": "Alarm",
+        },
+        "assault_digits": {
+            "name": "Assault Digits",
+        },
+        "bird_tweeter_1": {
+            "name": "Dripping Water",
+        },
+        "bird_tweeter_2": {
+            "name": "Singing Birds",
+        },
+        "boat_bits": {
+            "name": "Boots-Einzelteile",
+        },
+        "clock_chimes": {
+            "name": "Bartoli Hideout clock",
+        },
+        "combat_end": {
+            "name": "Kampf Ende",
+        },
+        "copter": {
+            "name": "Helikopter",
+        },
+        "cut_shotgun": {
+            "name": "Schrotflinten Dusch Animation",
+        },
+        "detonator_box": {
+            "name": "Zünder",
+        },
+        "ding_dong": {
+            "name": "Türklingel",
+        },
+        "dragon_bones_1": {
+            "name": "Platzhalter",
+        },
+        "dragon_bones_2": {
+            "name": "Drachen-Knochen Vorn",
+        },
+        "dragon_bones_3": {
+            "name": "Drachen-Knochen Hinten",
+        },
+        "dying_monk": {
+            "name": "sterbender Mönch",
+        },
+        "fx_reserved": {
+            "name": "Gray disk",
+        },
+        "glow_reserved": {
+            "name": "Karten-Glühen",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "gong_bonger": {
+            "name": "Gong Schlegel",
+        },
+        "harpoon_bolt": {
+            "name": "Harpunen Pfeil",
+        },
+        "hot_liquid": {
+            "name": "Extra Feuer",
+        },
+        "inv_background": {
+            "name": "Menü Hintergrund",
+        },
+        "lara_alarm": {
+            "name": "Alarmglocke",
+        },
+        "lara_swap": {
+            "name": "Lara Mesh Swap",
+        },
+        "m16_flash": {
+            "name": "M16 Blitz",
+        },
+        "mesh_swap_1": {
+            "name": "Mesh Swap 1",
+        },
+        "mesh_swap_2": {
+            "name": "Mesh Swap 2",
+        },
+        "mini_copter": {
+            "name": "Helikopter 2",
+        },
+        "missile_flame": {
+            "name": "Raketen Flamme",
+        },
+        "missile_harpoon": {
+            "name": "Raketen Harpune",
+        },
+        "missile_knife": {
+            "name": "Raketen-Messer",
+        },
+        "player_5": {
+            "name": "Zwischensequenz-Schauspieler 5",
+        },
+        "player_6": {
+            "name": "Zwischensequenz-Schauspieler 6",
+        },
+        "player_7": {
+            "name": "Zwischensequenz-Schauspieler 7",
+        },
+        "player_8": {
+            "name": "Zwischensequenz-Schauspieler 8",
+        },
+        "player_9": {
+            "name": "Zwischensequenz-Schauspieler 9",
+        },
+        "player_10": {
+            "name": "Zwischensequenz-Schauspieler 10",
+        },
+        "skidoo_track": {
+            "name": "Snowmobile Track",
+        },
+        "snow_sprite": {
+            "name": "Snowmobile Wake",
+        },
+        "sphere_of_doom_1": {
+            "name": "Dragon Explosion 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Dragon Explosion 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Dragon Explosion 3",
+        },
+        "text_box": {
+            "name": "UI Frame",
+        },
+        "water_sprite": {
+            "name": "Boat Wake",
+        }
     }
 }

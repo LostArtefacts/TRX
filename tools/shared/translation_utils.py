@@ -77,7 +77,7 @@ def format_strings_file(source: Any) -> str:
     content = (
         """{
     // For usage, refer to the documentation here:
-    // https://github.com/LostArtefacts/TRX/blob/stable/docs/GAME_STRINGS.md
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
     """
         + content[1:].strip()
         + "\n"
