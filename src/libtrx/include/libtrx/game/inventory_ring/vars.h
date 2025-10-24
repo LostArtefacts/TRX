@@ -24,39 +24,30 @@ extern INVENTORY_ITEM g_InvRing_Item_Key1;
 extern INVENTORY_ITEM g_InvRing_Item_Key2;
 extern INVENTORY_ITEM g_InvRing_Item_Key3;
 extern INVENTORY_ITEM g_InvRing_Item_Key4;
-#if TR_VERSION == 1
 extern INVENTORY_ITEM g_InvRing_Item_LeadBar;
 extern INVENTORY_ITEM g_InvRing_Item_Scion;
-#endif
 
 // Weapons
 extern INVENTORY_ITEM g_InvRing_Item_Pistols;
 extern INVENTORY_ITEM g_InvRing_Item_Shotgun;
 extern INVENTORY_ITEM g_InvRing_Item_Magnums;
 extern INVENTORY_ITEM g_InvRing_Item_Uzis;
-#if TR_VERSION >= 2
 extern INVENTORY_ITEM g_InvRing_Item_Harpoon;
 extern INVENTORY_ITEM g_InvRing_Item_M16;
 extern INVENTORY_ITEM g_InvRing_Item_Grenade;
-#endif
 
 // Ammo
 extern INVENTORY_ITEM g_InvRing_Item_PistolAmmo;
 extern INVENTORY_ITEM g_InvRing_Item_ShotgunAmmo;
 extern INVENTORY_ITEM g_InvRing_Item_MagnumAmmo;
 extern INVENTORY_ITEM g_InvRing_Item_UziAmmo;
-#if TR_VERSION >= 2
 extern INVENTORY_ITEM g_InvRing_Item_HarpoonAmmo;
 extern INVENTORY_ITEM g_InvRing_Item_M16Ammo;
 extern INVENTORY_ITEM g_InvRing_Item_GrenadeAmmo;
-#endif
 
 // Options, etc.
-#if TR_VERSION == 1
 extern INVENTORY_ITEM g_InvRing_Item_Compass;
-#else
 extern INVENTORY_ITEM g_InvRing_Item_Stopwatch;
-#endif
 extern INVENTORY_ITEM g_InvRing_Item_Passport;
 extern INVENTORY_ITEM g_InvRing_Item_Graphics;
 extern INVENTORY_ITEM g_InvRing_Item_Sound;
