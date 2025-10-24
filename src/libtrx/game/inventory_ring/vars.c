@@ -2,6 +2,1039 @@
 
 CAMERA_INFO g_InvRing_OldCamera = {};
 
+INVENTORY_ITEM g_InvRing_Item_SmallMedi = {
+    .object_id = O_SMALL_MEDIPACK_OPTION,
+    .frames_total = 26,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 25,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4032,
+    .x_rot_pt = 0,
+    .x_rot_sel = -7296,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -4096,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 216,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 11,
+};
+
+INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
+    .object_id = O_LARGE_MEDIPACK_OPTION,
+    .frames_total = 20,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 19,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3616,
+    .x_rot_pt = 0,
+    .x_rot_sel = -8160,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -4096,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 352,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 10,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Flare = {
+    .object_id = O_FLARES_OPTION,
+    .frames_total = 31,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 30,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = 0,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -8192,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 8,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Pistols = {
+    .object_id = O_PISTOL_OPTION,
+    .frames_total = 12,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 11,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = -3808,
+#else
+    .x_rot_sel = 2848,
+#endif
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+#if TR_VERSION == 1
+    .y_rot_sel = 0,
+#else
+    .y_rot_sel = -32768,
+#endif
+    .y_rot = 0,
+#if TR_VERSION == 1
+    .y_trans_sel = 0,
+#else
+    .y_trans_sel = 38,
+#endif
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 296,
+#else
+    .z_trans_sel = 352,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 1,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Shotgun = {
+    .object_id = O_SHOTGUN_OPTION,
+    .frames_total = 13,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 12,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = 0,
+#else
+    .x_rot_sel = 5120,
+#endif
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+#if TR_VERSION == 1
+    .y_rot_sel = -8192,
+#else
+    .y_rot_sel = 30720,
+#endif
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 296,
+#else
+    .z_trans_sel = 228,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 2,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Magnums = {
+    .object_id = O_MAGNUM_OPTION,
+    .frames_total = 12,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 11,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = -3808,
+#else
+    .x_rot_sel = 3360,
+#endif
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+#if TR_VERSION == 1
+    .y_rot_sel = 0,
+#else
+    .y_rot_sel = -32768,
+#endif
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 296,
+#else
+    .z_trans_sel = 362,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 3,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Uzis = {
+    .object_id = O_UZI_OPTION,
+    .frames_total = 13,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 12,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = -3808,
+#else
+    .x_rot_sel = 2336,
+#endif
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+#if TR_VERSION == 1
+    .y_rot_sel = 0,
+#else
+    .y_rot_sel = -32768,
+#endif
+    .y_rot = 0,
+#if TR_VERSION == 1
+    .y_trans_sel = 0,
+#else
+    .y_trans_sel = 56,
+#endif
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 296,
+#else
+    .z_trans_sel = 322,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 4,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Harpoon = {
+    .object_id = O_HARPOON_OPTION,
+    .frames_total = 12,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 11,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -736,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -19456,
+    .y_rot = 0,
+    .y_trans_sel = 58,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 7,
+};
+
+INVENTORY_ITEM g_InvRing_Item_M16 = {
+    .object_id = O_M16_OPTION,
+    .frames_total = 12,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 11,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -224,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -18432,
+    .y_rot = 0,
+    .y_trans_sel = 84,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 5,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Grenade = {
+    .object_id = O_GRENADE_OPTION,
+    .frames_total = 12,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 11,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -224,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 14336,
+    .y_rot = 0,
+    .y_trans_sel = 56,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 6,
+};
+
+INVENTORY_ITEM g_InvRing_Item_PistolAmmo = {
+    .object_id = O_PISTOL_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 1,
+};
+
+INVENTORY_ITEM g_InvRing_Item_ShotgunAmmo = {
+    .object_id = O_SHOTGUN_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 2,
+};
+
+INVENTORY_ITEM g_InvRing_Item_MagnumAmmo = {
+    .object_id = O_MAGNUM_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 3,
+};
+
+INVENTORY_ITEM g_InvRing_Item_UziAmmo = {
+    .object_id = O_UZI_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 4,
+};
+
+INVENTORY_ITEM g_InvRing_Item_HarpoonAmmo = {
+    .object_id = O_HARPOON_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 7,
+};
+
+INVENTORY_ITEM g_InvRing_Item_M16Ammo = {
+    .object_id = O_M16_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 5,
+};
+
+INVENTORY_ITEM g_InvRing_Item_GrenadeAmmo = {
+    .object_id = O_GRENADE_AMMO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -3808,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 296,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 6,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Scion = {
+    .object_id = O_SCION_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 109,
+};
+
+INVENTORY_ITEM g_InvRing_Item_LeadBar = {
+    .object_id = O_LEADBAR_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 3616,
+    .x_rot_pt = 0,
+    .x_rot_sel = -8160,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = -4096,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 352,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 100,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Pickup1 = {
+    .object_id = O_PICKUP_OPTION_1,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 111,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Pickup2 = {
+    .object_id = O_PICKUP_OPTION_2,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 110,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Puzzle1 = {
+    .object_id = O_PUZZLE_OPTION_1,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 108,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Puzzle2 = {
+    .object_id = O_PUZZLE_OPTION_2,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 107,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Puzzle3 = {
+    .object_id = O_PUZZLE_OPTION_3,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 106,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Puzzle4 = {
+    .object_id = O_PUZZLE_OPTION_4,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 105,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Key1 = {
+    .object_id = O_KEY_OPTION_1,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 101,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Key2 = {
+    .object_id = O_KEY_OPTION_2,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 102,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Key3 = {
+    .object_id = O_KEY_OPTION_3,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 103,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Key4 = {
+    .object_id = O_KEY_OPTION_4,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 7200,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4352,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 256,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 104,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Stopwatch = {
+    .object_id = O_STOPWATCH_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4352,
+    .x_rot_pt = 0,
+    .x_rot_sel = -1536,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = -170,
+    .y_trans = 0,
+    .z_trans_sel = 320,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 0,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Compass = {
+    .object_id = O_COMPASS_OPTION,
+    .frames_total = 25,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 10,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4352,
+    .x_rot_pt = 0,
+    .x_rot_sel = -8192,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 456,
+    .z_trans = 0,
+    .meshes_sel = 0b00000101,
+    .meshes_drawn = 0b00000101,
+    .inv_pos = 0,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Passport = {
+    .object_id = O_PASSPORT_CLOSED,
+    .frames_total = 30,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 14,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4640,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4320,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 384,
+    .z_trans = 0,
+    .meshes_sel = 0b00010011,
+    .meshes_drawn = 0b00010011,
+    .inv_pos = 0,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Graphics = {
+    .object_id = O_DETAIL_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4224,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = -6720,
+#else
+    .x_rot_sel = -7232,
+#endif
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+#if TR_VERSION == 1
+    .y_trans_sel = 0,
+#else
+    .y_trans_sel = 16,
+#endif
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 424,
+#else
+    .z_trans_sel = 444,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 1,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Sound = {
+    .object_id = O_SOUND_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4832,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = -2336,
+#else
+    .x_rot_sel = -5408,
+#endif
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+#if TR_VERSION == 1
+    .y_rot_sel = 0,
+#else
+    .y_rot_sel = -3072,
+#endif
+    .y_rot = 0,
+#if TR_VERSION == 1
+    .y_trans_sel = 0,
+#else
+    .y_trans_sel = -2,
+#endif
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 368,
+#else
+    .z_trans_sel = 350,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 2,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Controls = {
+    .object_id = O_CONTROL_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 5504,
+    .x_rot_pt = 0,
+#if TR_VERSION == 1
+    .x_rot_sel = 1536,
+#else
+    .x_rot_sel = -2560,
+#endif
+#if TR_VERSION == 1
+    .x_rot_nosel = 0,
+#else
+    .x_rot_nosel = 5632,
+#endif
+#if TR_VERSION == 1
+    .x_rot = 0,
+#else
+    .x_rot = 5632,
+#endif
+#if TR_VERSION == 1
+    .y_rot_sel = 0,
+#else
+    .y_rot_sel = 13312,
+#endif
+    .y_rot = 0,
+#if TR_VERSION == 1
+    .y_trans_sel = 0,
+#else
+    .y_trans_sel = 46,
+#endif
+    .y_trans = 0,
+#if TR_VERSION == 1
+    .z_trans_sel = 352,
+#else
+    .z_trans_sel = 508,
+#endif
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 3,
+};
+
+INVENTORY_ITEM g_InvRing_Item_Photo = {
+    .object_id = O_PHOTO_OPTION,
+    .frames_total = 1,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 0,
+    .anim_direction = 1,
+    .anim_speed = 1,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4640,
+    .x_rot_pt = 0,
+    .x_rot_sel = -4320,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 384,
+    .z_trans = 0,
+    .meshes_sel = -1,
+    .meshes_drawn = -1,
+    .inv_pos = 5,
+};
+
+INVENTORY_ITEM g_InvRing_Item_NatlasPDA = {
+    .object_id = O_PDA_OPTION,
+    .frames_total = 39,
+    .current_frame = 0,
+    .goal_frame = 0,
+    .open_frame = 19,
+    .anim_direction = 1,
+    .anim_speed = 0,
+    .anim_count = 0,
+    .x_rot_pt_sel = 4640,
+    .x_rot_pt = 0,
+    .x_rot_sel = 0,
+    .x_rot_nosel = 0,
+    .x_rot = 0,
+    .y_rot_sel = 0,
+    .y_rot = 0,
+    .y_trans_sel = 0,
+    .y_trans = 0,
+    .z_trans_sel = 384,
+    .z_trans = 0,
+    .meshes_sel = 0b00000011,
+    .meshes_drawn = 0b00000011,
+    .inv_pos = 4,
+};
+
 const INVENTORY_ITEM *g_InvRing_Items[] = {
     // Items
     &g_InvRing_Item_SmallMedi,
@@ -19,31 +1052,25 @@ const INVENTORY_ITEM *g_InvRing_Items[] = {
     &g_InvRing_Item_Key2,
     &g_InvRing_Item_Key3,
     &g_InvRing_Item_Key4,
-#if TR_VERSION == 1
     &g_InvRing_Item_LeadBar,
     &g_InvRing_Item_Scion,
-#endif
 
     &g_InvRing_Item_Pistols,
     &g_InvRing_Item_Shotgun,
     &g_InvRing_Item_Magnums,
     &g_InvRing_Item_Uzis,
-#if TR_VERSION >= 2
     &g_InvRing_Item_Harpoon,
     &g_InvRing_Item_M16,
     &g_InvRing_Item_Grenade,
-#endif
 
     // Ammo
     &g_InvRing_Item_PistolAmmo,
     &g_InvRing_Item_ShotgunAmmo,
     &g_InvRing_Item_MagnumAmmo,
     &g_InvRing_Item_UziAmmo,
-#if TR_VERSION >= 2
     &g_InvRing_Item_HarpoonAmmo,
     &g_InvRing_Item_M16Ammo,
     &g_InvRing_Item_GrenadeAmmo,
-#endif
 
     // Options, etc.
     &g_InvRing_Item_Passport,
@@ -52,11 +1079,8 @@ const INVENTORY_ITEM *g_InvRing_Items[] = {
     &g_InvRing_Item_Controls,
     &g_InvRing_Item_Photo,
     &g_InvRing_Item_NatlasPDA,
-#if TR_VERSION == 1
     &g_InvRing_Item_Compass,
-#else
     &g_InvRing_Item_Stopwatch,
-#endif
 
     nullptr,
 };
