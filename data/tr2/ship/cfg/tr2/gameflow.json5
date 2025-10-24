@@ -43,6 +43,7 @@
             "path": "data/assault.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
@@ -65,6 +66,7 @@
             "path": "data/wall.tr2",
             "music_track": 29,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "give_item", "object_id": "shotgun"},
                 {"type": "give_item", "object_id": "small_medipack"},
@@ -94,6 +96,7 @@
             "path": "data/boat.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
@@ -114,6 +117,7 @@
             "path": "data/venice.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "enable_sunset"},
                 {"type": "add_secret_reward", "object_id": "shotgun_ammo", "quantity": 4},
                 {"type": "loop_game"},
@@ -135,6 +139,7 @@
             "path": "data/opera.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "uzis"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "loop_game"},
@@ -161,6 +166,7 @@
             "path": "data/rig.tr2",
             "music_track": 54,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/rig.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "set_lara_start_anim", "anim": 8},
                 {"type": "remove_weapons"},
@@ -185,6 +191,7 @@
             "path": "data/platform.tr2",
             "music_track": 54,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/rig.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "give_item", "object_id": "pistols", "quantity": 1},
                 {"type": "loop_game"},
@@ -209,6 +216,7 @@
             "path": "data/unwater.tr2",
             "music_track": 30,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "add_secret_reward", "object_id": "harpoon_gun_ammo", "quantity": 4},
                 {"type": "loop_game"},
@@ -232,6 +240,7 @@
             "path": "data/keel.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "loop_game"},
@@ -258,6 +267,7 @@
             "path": "data/living.tr2",
             "music_track": 30,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
@@ -282,6 +292,7 @@
             "path": "data/deck.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
@@ -309,6 +320,7 @@
             "path": "data/skidoo.tr2",
             "music_track": 29,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 5},
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
@@ -331,6 +343,7 @@
             "path": "data/monastry.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 4},
                 {"type": "loop_game"},
@@ -353,6 +366,7 @@
             "path": "data/catacomb.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 2},
                 {"type": "loop_game"},
@@ -376,6 +390,7 @@
             "path": "data/icecave.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
@@ -400,6 +415,7 @@
             "path": "data/emprtomb.tr2",
             "music_track": 55,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 6},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 8},
                 {"type": "loop_game"},
@@ -425,6 +441,7 @@
             "path": "data/floating.tr2",
             "music_track": 55,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 9728},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 8},
                 {"type": "loop_game"},
@@ -446,6 +463,7 @@
             "path": "data/xian.tr2",
             "music_track": 55,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
@@ -467,6 +485,7 @@
             "path": "data/house.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "key_1"},
                 {"type": "set_lara_start_anim", "anim": 9},
                 {"type": "remove_weapons"},

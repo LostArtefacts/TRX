@@ -5,6 +5,9 @@
 - added support for more accented characters
 - added fade effects to displayed images
 - added customizability to health bar and air bars
+- added an option to use PS1 loading screens  
+    Tomb Raider II 3×2 upscales done by Arsunt.  
+    Tomb Raider II: The Golden Mask images done by Lito Perezito.
 - added a wireframe mode
 - added sunglasses for graphic options
 - added enemy health bars

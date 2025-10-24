@@ -41,6 +41,7 @@
             "path": "data/level1.tr2",
             "music_track": 29,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/gm_level1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "shotgun"},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
@@ -67,6 +68,7 @@
             "path": "data/level2.tr2",
             "music_track": 54,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/gm_level2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
@@ -88,6 +90,7 @@
             "path": "data/level3.tr2",
             "music_track": 55,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/gm_level3.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
@@ -108,6 +111,7 @@
             "path": "data/level4.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/gm_level4.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_1"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 48},
@@ -142,6 +146,7 @@
             "type": "bonus",
             "music_track": 30,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/gm_level5.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_weapons"},
                 {"type": "remove_ammo"},
                 {"type": "remove_flares"},
