@@ -29,7 +29,10 @@ static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
 static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
 
-void Room_GetBounds(void)
+static void M_SetBounds(
+    const int16_t *obj_ptr, int32_t room_num, const ROOM *parent);
+
+static void M_GetBounds(void)
 {
     while (m_BoundStart != m_BoundEnd) {
         const int16_t room_num =
@@ -95,14 +98,15 @@ void Room_GetBounds(void)
                 continue;
             }
 
-            Room_SetBounds(&portal->normal.x, portal->room_num, room);
+            M_SetBounds(&portal->normal.x, portal->room_num, room);
         }
         Matrix_Pop();
     }
 }
 
-void Room_SetBounds(
-    const int16_t *obj_ptr, int32_t room_num, const ROOM *parent)
+static void M_SetBounds(
+    const int16_t *const obj_ptr, const int32_t room_num,
+    const ROOM *const parent)
 {
     ROOM *const room = Room_Get(room_num);
     const PORTAL *const portal = (const PORTAL *)(obj_ptr - 1);
@@ -243,7 +247,33 @@ void Room_SetBounds(
     }
 }
 
-void Room_DrawSingleRoomGeometry(const int16_t room_num)
+static void M_DrawSkybox(void)
+{
+    if (!Output_IsSkyboxEnabled()) {
+        return;
+    }
+
+    g_PhdLeft = m_OutsideLeft;
+    g_PhdRight = m_OutsideRight;
+    g_PhdBottom = m_OutsideBottom;
+    g_PhdTop = m_OutsideTop;
+
+    const OBJECT *const skybox = Object_Get(O_SKYBOX);
+    if (skybox->loaded) {
+        Output_SetupAboveWater(g_Camera.underwater);
+        Matrix_Push();
+        g_MatrixPtr->_03 = 0;
+        g_MatrixPtr->_13 = 0;
+        g_MatrixPtr->_23 = 0;
+        Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
+        Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
+        Matrix_Pop();
+    } else {
+        m_Outside = -1;
+    }
+}
+
+static void M_DrawSingleRoom(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
     if (room->flags.underwater) {
@@ -266,11 +296,6 @@ void Room_DrawSingleRoomGeometry(const int16_t room_num)
     Matrix_TranslateAbs32(room->pos);
     Output_LightRoom(room);
     Output_DrawRoom(room, false);
-}
-
-void Room_DrawSingleRoomObjects(const int16_t room_num)
-{
-    ROOM *const room = Room_Get(room_num);
 
     if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
@@ -340,32 +365,6 @@ void Room_DrawSingleRoomObjects(const int16_t room_num)
     room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
 }
 
-static void M_DrawSkybox(void)
-{
-    if (!Output_IsSkyboxEnabled()) {
-        return;
-    }
-
-    g_PhdLeft = m_OutsideLeft;
-    g_PhdRight = m_OutsideRight;
-    g_PhdBottom = m_OutsideBottom;
-    g_PhdTop = m_OutsideTop;
-
-    const OBJECT *const skybox = Object_Get(O_SKYBOX);
-    if (skybox->loaded) {
-        Output_SetupAboveWater(g_Camera.underwater);
-        Matrix_Push();
-        g_MatrixPtr->_03 = 0;
-        g_MatrixPtr->_13 = 0;
-        g_MatrixPtr->_23 = 0;
-        Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
-        Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
-        Matrix_Pop();
-    } else {
-        m_Outside = -1;
-    }
-}
-
 void Room_DrawAllRooms(const int16_t current_room)
 {
     ROOM *const room = Room_Get(current_room);
@@ -399,16 +398,14 @@ void Room_DrawAllRooms(const int16_t current_room)
         m_OutsideRight = Viewport_GetMinX(VIEWPORT_GAME);
     }
 
-    Room_GetBounds();
+    M_GetBounds();
 
     if (m_Outside || g_TRVersion == 1) {
         M_DrawSkybox();
     }
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
-        const int16_t room_num = Room_DrawGetRoom(i);
-        Room_DrawSingleRoomGeometry(room_num);
-        Room_DrawSingleRoomObjects(room_num);
+        M_DrawSingleRoom(Room_DrawGetRoom(i));
     }
 
     m_MidSort = 0;
@@ -420,11 +417,11 @@ void Room_DrawAllRooms(const int16_t current_room)
         } else {
             Output_SetupAboveWater(g_Camera.underwater);
         }
+        Lara_Draw(lara_item);
         m_MidSort = lara_room->bound_active >> 8;
         if (m_MidSort) {
             m_MidSort--;
         }
-        Lara_Draw(lara_item);
     }
 
     Output_SetupAboveWater(false);
