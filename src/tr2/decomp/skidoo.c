@@ -4,6 +4,7 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/objects/common.h"
+#include "game/objects/vehicles/common.h"
 #include "game/objects/vehicles/skidoo_armed.h"
 
 #include <libtrx/game/collision.h>
@@ -40,6 +41,8 @@
 #define SKIDOO_TURN (DEG_1 / 2 + SKIDOO_UNDO_TURN) // = 455
 #define SKIDOO_MOMENTUM_TURN (DEG_1 * 3) // = 546
 #define SKIDOO_MAX_MOMENTUM_TURN (DEG_1 * 150) // = 27300
+#define SKIDOO_MIN_BOUNCE 50
+#define SKIDOO_MAX_KICK -80
 
 #define LF_SKIDOO_EXIT_END 59
 #define LF_SKIDOO_LET_GO_END 17
@@ -90,6 +93,24 @@ BITE g_Skidoo_RightGun = {
     .pos = { .x = -235, .y = -71, .z = SKIDOO_FRONT },
     .mesh_num = 0,
 };
+
+static int32_t M_DoDynamics(
+    const int32_t height, const int32_t fall_speed, int32_t *const out_y)
+{
+    if (height > *out_y) {
+        *out_y += fall_speed;
+        if (*out_y > height - SKIDOO_MIN_BOUNCE) {
+            *out_y = height;
+            return 0;
+        }
+        return fall_speed + GRAVITY;
+    }
+
+    int32_t kick = 4 * (height - *out_y);
+    CLAMPL(kick, SKIDOO_MAX_KICK);
+    CLAMPG(*out_y, height);
+    return fall_speed + ((kick - fall_speed) >> 3);
+}
 
 static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
 {
@@ -390,22 +411,22 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
     const int32_t hbl =
         Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, -SKIDOO_SIDE, &bl);
     if (hbl < bl_old.y - STEP_L) {
-        rot = DoShift(skidoo, &bl, &bl_old);
+        rot = Vehicle_DoShift(skidoo, &bl, &bl_old);
     }
     const int32_t hbr =
         Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, SKIDOO_SIDE, &br);
     if (hbr < br_old.y - STEP_L) {
-        rot += DoShift(skidoo, &br, &br_old);
+        rot += Vehicle_DoShift(skidoo, &br, &br_old);
     }
     const int32_t hfl =
         Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl);
     if (hfl < fl_old.y - STEP_L) {
-        rot += DoShift(skidoo, &fl, &fl_old);
+        rot += Vehicle_DoShift(skidoo, &fl, &fl_old);
     }
     const int32_t hfr =
         Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr);
     if (hfr < fr_old.y - STEP_L) {
-        rot += DoShift(skidoo, &fr, &fr_old);
+        rot += Vehicle_DoShift(skidoo, &fr, &fr_old);
     }
 
     int16_t room_num = skidoo->room_num;
@@ -414,12 +435,12 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
     const int32_t height =
         Room_GetHeight(sector, skidoo->pos.x, skidoo->pos.y, skidoo->pos.z);
     if (height < skidoo->pos.y - STEP_L) {
-        DoShift(skidoo, &skidoo->pos, &old);
+        Vehicle_DoShift(skidoo, &skidoo->pos, &old);
     }
 
     skidoo_data->extra_rotation = rot;
 
-    int32_t collide = GetCollisionAnim(skidoo, &moved);
+    int32_t collide = Vehicle_GetCollisionAnim(skidoo, &moved);
     if (collide != 0) {
         const int32_t c = Math_Cos(skidoo_data->momentum_angle);
         const int32_t s = Math_Sin(skidoo_data->momentum_angle);
@@ -853,10 +874,11 @@ bool Skidoo_Control(void)
     skidoo->floor = height;
 
     skidoo_data->left_fallspeed =
-        DoDynamics(hfl, skidoo_data->left_fallspeed, &fl.y);
+        M_DoDynamics(hfl, skidoo_data->left_fallspeed, &fl.y);
     skidoo_data->right_fallspeed =
-        DoDynamics(hfr, skidoo_data->right_fallspeed, &fr.y);
-    skidoo->fall_speed = DoDynamics(height, skidoo->fall_speed, &skidoo->pos.y);
+        M_DoDynamics(hfr, skidoo_data->right_fallspeed, &fr.y);
+    skidoo->fall_speed =
+        M_DoDynamics(height, skidoo->fall_speed, &skidoo->pos.y);
 
     height = (fr.y + fl.y) / 2;
     const int16_t x_rot = Math_Atan(SKIDOO_FRONT, skidoo->pos.y - height);
