@@ -18,6 +18,10 @@ typedef struct {
 static int32_t m_CachedItemCount = 0;
 static M_MAX_STATS m_LevelMax = {};
 
+void Stats_ObserveRoomsLoad(void)
+{
+}
+
 void Stats_UpdateTimer(void)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
