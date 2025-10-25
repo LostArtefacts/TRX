@@ -174,6 +174,10 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     // ..4.16
     READ_FALLBACK_BOOL(
         g_Config.audio.fix_chainblock_secret_sound, "fix_tihocan_secret_sound");
+    READ_FALLBACK_BOOL(
+        g_Config.input.enable_buffering_inventory, "enable_buffering");
+    READ_FALLBACK_BOOL(
+        g_Config.input.enable_buffering_func_keys, "enable_buffering");
 }
 
 static void M_DumpKeyboardLayout(
