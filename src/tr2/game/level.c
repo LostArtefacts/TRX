@@ -89,6 +89,9 @@ static void M_SkimLevel(const LEVEL_LOADER *const loader, VFILE *const file)
 // TODO: refactor me
 void Level_Init(void)
 {
+    if (g_TRVersion == 1) {
+        return;
+    }
     BENCHMARK benchmark = Benchmark_Start();
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
