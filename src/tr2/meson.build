@@ -89,9 +89,7 @@ endif
 
 sources = [
   init,
-  'decomp/decomp.c',
   'game/creature.c',
-  'game/cutscene.c',
   'game/demo.c',
   'game/effects.c',
   'game/game.c',
