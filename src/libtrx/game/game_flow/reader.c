@@ -327,9 +327,16 @@ static size_t M_LoadSequenceEvent(
     const GF_SEQUENCE_EVENT_TYPE type =
         ENUM_MAP_GET(GF_SEQUENCE_EVENT_TYPE, type_str, -1);
     if (type == (GF_SEQUENCE_EVENT_TYPE)-1) {
+#if DEBUG
+        LOG_ERROR(
+            "%s: Unknown game flow sequence event type: '%s'", ctx->script_path,
+            type_str);
+        return 0;
+#else
         Shell_ExitSystemFmt(
             "%s: Unknown game flow sequence event type: '%s'", ctx->script_path,
             type_str);
+#endif
     }
 
     const M_SEQUENCE_EVENT_HANDLER *handler = M_GetSequenceEventHandlers();
