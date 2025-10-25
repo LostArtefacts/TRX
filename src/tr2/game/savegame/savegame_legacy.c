@@ -3,7 +3,6 @@
 #include "game/game_string.h"
 #include "game/inventory.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -17,6 +16,7 @@
 #include <libtrx/game/objects/vehicles/boat.h>
 #include <libtrx/game/objects/vehicles/skidoo_common.h>
 #include <libtrx/game/pathing.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/game/stats.h>
 #include <libtrx/memory.h>
 

@@ -5,7 +5,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
@@ -19,6 +18,7 @@
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/phase.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/log.h>
 
