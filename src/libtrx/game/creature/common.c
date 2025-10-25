@@ -1092,14 +1092,10 @@ bool Creature_IsAllyTargetingEnemy(const ITEM *const item)
 
 bool Creature_IsTargetable(const ITEM *const item)
 {
-#if TR_VERSION == 1
-    return true;
-#else
     return item->hit_points != DONT_TARGET
         && (!Object_Get(item->object_id)->intelligent
             || item->status == IS_ACTIVE)
         && (g_Config.gameplay.enable_ally_targeting || !Creature_IsAlly(item));
-#endif
 }
 
 int16_t Creature_Effect(
