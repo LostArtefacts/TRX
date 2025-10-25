@@ -50,6 +50,10 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     }
 
     switch (obj_id) {
+    case O_COMPASS_OPTION:
+        Inv_InsertItem(&g_InvRing_Item_Compass);
+        return true;
+
     case O_STOPWATCH_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Stopwatch);
         return true;

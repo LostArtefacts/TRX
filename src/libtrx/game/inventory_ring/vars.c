@@ -855,7 +855,7 @@ INVENTORY_ITEM g_InvRing_Item_Passport = {
     .z_trans = 0,
     .meshes_sel = 0b00010011,
     .meshes_drawn = 0b00010011,
-    .inv_pos = 0,
+    .inv_pos = 200,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Graphics = {
@@ -892,7 +892,7 @@ INVENTORY_ITEM g_InvRing_Item_Graphics = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 1,
+    .inv_pos = 201,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Sound = {
@@ -933,7 +933,7 @@ INVENTORY_ITEM g_InvRing_Item_Sound = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 2,
+    .inv_pos = 202,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Controls = {
@@ -982,7 +982,7 @@ INVENTORY_ITEM g_InvRing_Item_Controls = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 3,
+    .inv_pos = 203,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Photo = {
@@ -1007,7 +1007,7 @@ INVENTORY_ITEM g_InvRing_Item_Photo = {
     .z_trans = 0,
     .meshes_sel = -1,
     .meshes_drawn = -1,
-    .inv_pos = 5,
+    .inv_pos = 205,
 };
 
 INVENTORY_ITEM g_InvRing_Item_NatlasPDA = {
@@ -1032,7 +1032,7 @@ INVENTORY_ITEM g_InvRing_Item_NatlasPDA = {
     .z_trans = 0,
     .meshes_sel = 0b00000011,
     .meshes_drawn = 0b00000011,
-    .inv_pos = 4,
+    .inv_pos = 204,
 };
 
 const INVENTORY_ITEM *g_InvRing_Items[] = {
@@ -1084,3 +1084,5 @@ const INVENTORY_ITEM *g_InvRing_Items[] = {
 
     nullptr,
 };
+
+INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {};

@@ -48,6 +48,17 @@ static void M_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
     CLAMPG(ammo->ammo, MAX_QTY);
 }
 
+static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
+{
+    if (inv_item->inv_pos < 100) {
+        return RT_MAIN;
+    } else if (inv_item->inv_pos < 200) {
+        return RT_KEYS;
+    } else {
+        return RT_OPTION;
+    }
+}
+
 void Inv_AddGun(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
@@ -104,8 +115,7 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID obj_id)
 
 void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
 {
-    INV_RING_SOURCE *const source =
-        &g_InvRing_Source[inv_item->inv_pos < 100 ? RT_MAIN : RT_KEYS];
+    INV_RING_SOURCE *const source = &g_InvRing_Source[M_GetRingType(inv_item)];
 
     int32_t n;
     for (n = 0; n < source->count; n++) {
@@ -162,7 +172,8 @@ int32_t Inv_RequestItem(const OBJECT_ID obj_id)
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i]->object_id == inv_obj_id) {
+            if (source->items[i] != nullptr
+                && source->items[i]->object_id == inv_obj_id) {
                 return source->qtys[i];
             }
         }
@@ -178,8 +189,12 @@ void Inv_ClearSelection(void)
 
 void Inv_RemoveAllItems(void)
 {
-    // leave only the first item, which is the compass / stopwatch
-    g_InvRing_Source[RT_MAIN].count = 1;
+    g_InvRing_Source[RT_MAIN].count = 0;
     g_InvRing_Source[RT_KEYS].count = 0;
+
+    // Reset main ring
+    Inv_AddItem(O_STOPWATCH_OPTION);
+    Inv_AddItem(O_COMPASS_OPTION);
+
     Inv_ClearSelection();
 }
