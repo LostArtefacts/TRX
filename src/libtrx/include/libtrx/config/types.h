@@ -151,10 +151,9 @@ typedef struct {
         float fmv_volume;
 
         bool fix_chainblock_secret_sound;
-#if TR_VERSION == 1
         bool fix_secrets_killing_music;
         bool fix_speeches_killing_music;
-#else
+#if TR_VERSION > 1
         bool enable_lara_mic;
 #endif
         bool enable_music_in_menu;
