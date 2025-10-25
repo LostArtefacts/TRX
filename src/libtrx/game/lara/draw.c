@@ -101,7 +101,9 @@ static void M_Draw_I(
     Output_DrawObjectMesh_I(lara->mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
-    Lara_Hair_Draw();
+    if (item == Lara_GetItem()) {
+        Lara_Hair_Draw();
+    }
     Matrix_Pop_I();
 
 #if TR_VERSION >= 2
@@ -261,6 +263,12 @@ static void M_Draw_I(
 
 void Lara_Draw(const ITEM *const item)
 {
+    const bool is_lara = item == Lara_GetItem();
+    if (is_lara
+        && (item->status == IS_INVISIBLE || (item->flags & IF_ONE_SHOT) != 0)) {
+        return;
+    }
+
     const int32_t top = g_PhdTop;
     const int32_t left = g_PhdLeft;
     const int32_t right = g_PhdRight;
@@ -350,7 +358,9 @@ void Lara_Draw(const ITEM *const item)
     Output_DrawObjectMesh(lara->mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
-    Lara_Hair_Draw();
+    if (is_lara) {
+        Lara_Hair_Draw();
+    }
 
     Matrix_Pop();
 
