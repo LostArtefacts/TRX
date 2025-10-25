@@ -137,12 +137,10 @@ typedef struct {
     int16_t bound_top;
     int16_t bound_bottom;
     uint16_t bound_active;
-#if TR_VERSION == 2
     int16_t test_left;
     int16_t test_right;
     int16_t test_top;
     int16_t test_bottom;
-#endif
     int16_t item_num;
     int16_t effect_num;
     int16_t flipped_room;
