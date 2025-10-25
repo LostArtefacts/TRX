@@ -3,6 +3,8 @@
 #include "./game/enum.h"
 #include "./game_flow/types.h"
 
+extern int32_t g_OverlayFlag;
+
 // Sets the game's playing state, which in turn toggles random draw lock, and
 // certain overlay displays/animations, such as bars and pickups.
 void Game_SetIsPlaying(bool is_playing);

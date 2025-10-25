@@ -101,7 +101,6 @@ sources = [
   'game/cutscene.c',
   'game/demo.c',
   'game/effects.c',
-  'game/game/game.c',
   'game/game/game_draw.c',
   'game/game_flow/common.c',
   'game/game_flow/sequencer_events.c',
