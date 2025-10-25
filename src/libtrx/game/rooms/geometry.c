@@ -228,6 +228,7 @@ static bool M_IsPortalSolid(
 BOUNDS_32 Room_GetRoomBounds(const int16_t room_num)
 {
     const ROOM *const room = Room_Get(room_num);
+    ASSERT(room != nullptr);
     return (BOUNDS_32) {
         .min = {
             .x = room->pos.x,

@@ -22,10 +22,11 @@ void Room_SetFlipSlotFlags(int32_t slot_idx, int32_t flags);
 int32_t Room_GetAdjoiningRooms(
     int16_t init_room_num, int16_t out_room_nums[], int32_t max_room_num_count);
 
-int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
+int16_t Room_GetIndexFromPos(XYZ_32 pos);
 int32_t Room_GetFlippedBaseRoom(int32_t room_num);
 BOUNDS_32 Room_GetWorldBounds(void);
 
+bool Room_PointInside(const ROOM *room, XYZ_32 point);
 bool Room_CheckOverlap(int16_t room_num_0, int16_t room_num_1);
 void Room_GetNearbyRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);

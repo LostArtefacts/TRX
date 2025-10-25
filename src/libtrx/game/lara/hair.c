@@ -25,7 +25,7 @@ static int32_t m_HairWind;
 static int16_t M_GetRoom(const XYZ_32 pos)
 {
     if (g_TRVersion == 1) {
-        const int16_t room_num = Room_GetIndexFromPos(pos.x, pos.y, pos.z);
+        const int16_t room_num = Room_GetIndexFromPos(pos);
         if (room_num != NO_ROOM) {
             return room_num;
         }
