@@ -12,6 +12,8 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/clock.h>
+#include <libtrx/game/demo.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
@@ -22,8 +24,9 @@
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/game/ui.h>
+#include <libtrx/version.h>
 
-#define FRAME_BUFFER(key)                                                      \
+#define M_FRAME_BUFFER(key)                                                    \
     do {                                                                       \
         Shell_ProcessEvents();                                                 \
         Output_BeginScene();                                                   \
@@ -47,15 +50,17 @@ void Game_ProcessInput(void)
         Lara_UseItem(O_LARGE_MEDIPACK_OPTION);
     }
 
+#if TR_VERSION == 1
     if (g_Config.input.enable_buffering && Game_IsPlaying()) {
         if (g_Input.toggle_bilinear_filter) {
-            FRAME_BUFFER(toggle_bilinear_filter);
+            M_FRAME_BUFFER(toggle_bilinear_filter);
         } else if (g_Input.toggle_trapezoid_filter) {
-            FRAME_BUFFER(toggle_trapezoid_filter);
+            M_FRAME_BUFFER(toggle_trapezoid_filter);
         } else if (g_Input.toggle_fps_counter) {
-            FRAME_BUFFER(toggle_fps_counter);
+            M_FRAME_BUFFER(toggle_fps_counter);
         }
     }
+#endif
 
     if (g_InputDB.toggle_ui) {
         UI_ToggleState(&g_Config.ui.enable_game_ui);
@@ -65,7 +70,9 @@ void Game_ProcessInput(void)
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
+#if TR_VERSION == 1
     Game_FadeToBlack(-1);
+#endif
 
     g_OverlayFlag = 1;
     Camera_Initialise();
@@ -90,8 +97,6 @@ void Game_End(void)
 
 GF_COMMAND Game_Control(const bool demo_mode)
 {
-    ASSERT(!demo_mode);
-
     if (g_Passport.ask_for_save) {
         // ask for a save at the start of a level for the save crystals mode
         const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
@@ -101,9 +106,12 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     Interpolation_Remember();
-    Stats_UpdateTimer();
-
+    if (!Game_IsInGym() || Gym_IsAssaultTimerActive()
+        || !Object_Get(O_ASSAULT_DIGITS)->loaded) {
+        Stats_UpdateTimer();
+    }
     if (g_Config.flow.cheat_keys) {
         Lara_Cheat_CheckKeys();
     }
@@ -118,12 +126,32 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_InputDB.toggle_photo_mode) {
+        return GF_EnterPhotoMode();
+    } else if (g_InputDB.pause && lara->death_timer == 0) {
+        return GF_PauseGame();
+    }
+
+#if TR_VERSION == 2
+    if (demo_mode) {
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+        if (!Demo_GetInput()) {
+            g_Input = (INPUT_STATE) {};
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+    }
+#endif
+
     if (lara->death_timer > DEATH_WAIT
         || (lara->death_timer > DEATH_WAIT_INPUT
             && (g_InputDB.menu_confirm || g_InputDB.menu_back)
             && !g_Input.fly_cheat)
         || g_OverlayFlag == 2) {
+        if (demo_mode || (g_TRVersion == 2 && Game_IsInGym())) {
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
         if (g_OverlayFlag == 2) {
             g_OverlayFlag = 1;
             return GF_ShowInventory(INV_DEATH_MODE);
@@ -132,10 +160,10 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
-    if ((g_InputDB.option || g_InputDB.save || g_InputDB.load
+    if ((g_InputDB.option || g_InputDB.load || g_InputDB.save
          || g_OverlayFlag <= 0)
-        && !lara->death_timer) {
-        if (g_Camera.type == CAM_CINEMATIC) {
+        && lara->death_timer == 0 && !lara->extra_anim) {
+        if (g_TRVersion == 1 && g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {
             if (g_Config.flow.lockout_option_ring
@@ -158,29 +186,25 @@ GF_COMMAND Game_Control(const bool demo_mode)
                 gf_cmd = GF_ShowInventory(INV_GAME_MODE);
             }
             g_OverlayFlag = 1;
-            return gf_cmd;
+            if (gf_cmd.action != GF_NOOP) {
+                return gf_cmd;
+            }
         }
     }
 
-    if (!lara->death_timer && g_InputDB.pause) {
-        return GF_PauseGame();
-    } else if (g_InputDB.toggle_photo_mode) {
-        return GF_EnterPhotoMode();
-    } else {
-        Output_ResetDynamicLights();
+    Output_ResetDynamicLights();
 
-        Sound_ResetAmbient();
-        Item_Control();
-        Effect_Control();
+    Sound_ResetAmbient();
+    Item_Control();
+    Effect_Control();
 
-        Lara_Control();
-        Lara_Hair_Control(false);
+    Lara_Control();
+    Lara_Hair_Control(false);
 
-        Camera_Update();
-        ItemAction_RunActive();
-        Sound_UpdateEffects();
-        Overlay_Animate(1);
-        Output_AnimateTextures(1);
-    }
+    Camera_Update();
+    ItemAction_RunActive();
+    Sound_UpdateEffects();
+    Overlay_Animate(1);
+    Output_AnimateTextures(1);
     return (GF_COMMAND) { .action = GF_NOOP };
 }
