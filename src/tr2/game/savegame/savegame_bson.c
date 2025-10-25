@@ -2,8 +2,9 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
+#include "game/objects/vehicles/boat.h"
+#include "game/objects/vehicles/skidoo_common.h"
 #include "game/savegame.h"
-#include "global/types_decomp.h"
 
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
