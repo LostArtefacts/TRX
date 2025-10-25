@@ -5,7 +5,6 @@
 #include "game/game_flow.h"
 #include "game/level.h"
 #include "game/room_draw.h"
-#include "game/shell.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
@@ -15,6 +14,7 @@
 #include <libtrx/game/lara/hair.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 
