@@ -107,11 +107,8 @@ void Camera_UpdateCutscene(void)
         return;
     }
 
-#if TR_VERSION == 1
-    M_UpdateCutscene(cine_data->position.pos, cine_data->position.rot.y);
-#else
     const ITEM *const lara_item = Lara_GetItem();
     M_UpdateCutscene(lara_item->pos, g_Camera.target_angle);
-#endif
+
     Camera_EnsureEnvironment();
 }

@@ -133,7 +133,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 
     Lara_Control_Initialise(level->type, m_StartAnimState);
 
-    if (g_TRVersion == 2 && level->type == GFL_CUTSCENE) {
+    if (level->type == GFL_CUTSCENE) {
         for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
             Lara_Mesh_SwapSingle(i, O_LARA);
         }
@@ -437,16 +437,12 @@ OBJECT_ID Lara_GetAnimationObject(void)
     if (lara_info->extra_anim) {
         return O_LARA_EXTRA;
     }
-#if TR_VERSION == 1
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    return level->lara_type;
-#else
+
     const ITEM *const vehicle = Lara_Vehicle_GetItem();
     if (vehicle != nullptr) {
         return vehicle->object_id == O_BOAT ? O_LARA_BOAT : O_LARA_SKIDOO;
     }
     return O_LARA;
-#endif
 }
 
 void Lara_Animate(ITEM *const item)

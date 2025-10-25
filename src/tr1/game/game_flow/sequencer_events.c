@@ -172,7 +172,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos)
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle)
 {
     if (seq_ctx != GFSC_STORY) {
-        Camera_GetCineData()->position.rot.y = (int32_t)(intptr_t)event->data;
+        Camera_GetCineData()->position.target_angle =
+            (int32_t)(intptr_t)event->data;
     }
     return (GF_COMMAND) { .action = GF_NOOP };
 }

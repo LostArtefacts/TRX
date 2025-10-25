@@ -3,6 +3,7 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/room_draw.h"
 #include "game/shell.h"
 
 #include <libtrx/debug.h>
@@ -16,38 +17,58 @@
 #include <libtrx/game/sound.h>
 #include <libtrx/memory.h>
 
+static CAMERA_INFO m_LocalCamera = {};
+
+static void M_ControlLara(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    CAMERA_INFO *const camera = Cutscene_GetCamera();
+    item->rot.y = camera->target_angle;
+    item->pos = camera->pos.pos;
+
+    XYZ_32 pos = {};
+    Collide_GetJointAbsPosition(item, &pos, 0);
+
+    int16_t room_num = Room_GetIndexFromPos(pos.x, pos.y, pos.z);
+    if (room_num != NO_ROOM) {
+        Item_UpdateRoom(item_num, room_num);
+        const SECTOR *const sector =
+            Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+        item->floor = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    }
+
+    Lara_Animate(item);
+}
+
 static void M_InitialiseLara(const GF_LEVEL *const level)
 {
-    const OBJECT_ID lara_type = level->lara_type;
-    Lara_Hair_SetLaraType(lara_type);
-    if (!Lara_Hair_IsActive()) {
-        return;
-    }
+    OBJECT *const obj = Object_Get(O_LARA);
+    obj->draw_func = Lara_Draw;
+    obj->control_func = M_ControlLara;
 
-    if (lara_type == O_LARA) {
-        return;
-    }
+    const int16_t item_num = Item_GetIndex(Lara_GetItem());
+    Item_AddActive(item_num);
+    ITEM *const item = Item_Get(item_num);
 
-    int16_t lara_item_num = NO_ITEM;
-    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
-        if (Item_Get(i)->object_id == lara_type) {
-            lara_item_num = i;
-            break;
-        }
-    }
+    Camera_GetCineData()->position.target_angle = item->rot.y;
+    g_Camera.target_angle = item->rot.y;
 
-    if (lara_item_num == NO_ITEM) {
-        return;
-    }
+    g_Camera.pos.room_num = item->room_num;
+    CINE_DATA *const cine_data = Camera_GetCineData();
+    cine_data->position.pos = item->pos;
+    CAMERA_INFO *const camera = Cutscene_GetCamera();
+    camera->pos.pos = item->pos;
+    camera->pos.room_num = item->room_num;
+    camera->target_angle = item->rot.y;
 
-    Lara_InitialiseLoad(lara_item_num);
-    Lara_Initialise(level);
+    item->rot.y = 0;
+    item->dynamic_light = false;
+    Item_SwitchToAnim(item, 0, 0);
+    item->goal_anim_state = 0;
+    item->current_anim_state = 0;
 
-    ITEM *const lara_item = Lara_GetItem();
-    Item_SwitchToObjAnim(lara_item, 0, 0, lara_type);
-    const ANIM *const cut_anim = Item_GetAnim(lara_item);
-    lara_item->current_anim_state = lara_item->goal_anim_state =
-        lara_item->required_anim_state = cut_anim->current_anim_state;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->hit_direction = DIR_UNKNOWN;
 }
 
 bool Cutscene_Start(const int32_t level_num)
@@ -136,5 +157,5 @@ void Cutscene_Draw(void)
 
 CAMERA_INFO *Cutscene_GetCamera(void)
 {
-    return nullptr;
+    return &m_LocalCamera;
 }
