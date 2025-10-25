@@ -1,4 +1,4 @@
-#include "decomp/skidoo.h"
+#include "game/objects/vehicles/skidoo_common.h"
 
 static void M_Setup(OBJECT *const obj)
 {

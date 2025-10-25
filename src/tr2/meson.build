@@ -90,7 +90,6 @@ endif
 sources = [
   init,
   'decomp/decomp.c',
-  'decomp/skidoo.c',
   'game/creature.c',
   'game/cutscene.c',
   'game/demo.c',
@@ -111,6 +110,7 @@ sources = [
   'game/objects/vehicles/boat.c',
   'game/objects/vehicles/common.c',
   'game/objects/vehicles/skidoo_armed.c',
+  'game/objects/vehicles/skidoo_common.c',
   'game/objects/vehicles/skidoo_fast.c',
   'game/option/option.c',
   'game/option/option_compass.c',
