@@ -5,7 +5,7 @@
 #include <libtrx/game/math.h>
 #include <libtrx/game/pathing.h>
 
-#define SKIDOO_ARMED_RADIUS (WALL_L / 3) // = 341
+#define M_ARMED_RADIUS (WALL_L / 3) // = 341
 
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
@@ -80,7 +80,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = M_Collision;
 
     obj->hit_points = SKIDOO_DRIVER_HITPOINTS;
-    obj->radius = SKIDOO_ARMED_RADIUS;
+    obj->radius = M_ARMED_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
     obj->lot_setup = g_LOT_Jumper;
