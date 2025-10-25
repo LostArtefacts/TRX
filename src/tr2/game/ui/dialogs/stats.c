@@ -7,6 +7,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/const.h>
 #include <libtrx/game/gym.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/game/ui/elements/anchor.h>

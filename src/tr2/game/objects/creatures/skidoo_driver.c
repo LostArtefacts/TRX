@@ -6,6 +6,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/utils.h>
 

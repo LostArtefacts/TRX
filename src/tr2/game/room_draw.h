@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global/types.h"
+#include <libtrx/game/rooms/types.h>
 
 void Room_GetBounds(void);
 void Room_SetBounds(

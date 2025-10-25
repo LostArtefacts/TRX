@@ -1,6 +1,8 @@
 #include "game/creature.h"
 
 #include <libtrx/game/collision.h>
+#include <libtrx/game/creature.h>
+#include <libtrx/game/effects.h>
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara/common.h>
 #include <libtrx/game/los.h>

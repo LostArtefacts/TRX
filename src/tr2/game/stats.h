@@ -1,8 +1,7 @@
 #pragma once
 
-#include "global/types.h"
-
 #include <libtrx/game/game_flow.h>
+#include <libtrx/game/items/types.h>
 #include <libtrx/game/stats.h>
 
 void Stats_CalculateStats(void);

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "global/types.h"
-
 #include <stdint.h>
 
 // TODO: This is a placeholder file containing functions that originated from
