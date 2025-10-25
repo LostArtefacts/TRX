@@ -15,6 +15,14 @@ Module for inspecting all rooms in the current level.
     Properties:
     - **`underwater`**: Whether the room is underwater or not.
     - **`wind`**: Whether the room has breeze enabled or not. (Requires the player to have breeze enabled in the game settings).
+    - **`bounds`**: a table with world-coordinate bounds of the room. The table contains:
+      - **`min_x`**: minimum x coordinate.
+      - **`min_y`**: minimum y coordinate.
+      - **`min_z`**: minimum z coordinate.
+      - **`max_x`**: maximum x coordinate.
+      - **`max_y`**: maximum y coordinate.
+      - **`max_z`**: maximum z coordinate.
+    - **`internal_bounds`**: similar to `bounds`, but excludes the outer sector.
 
     Writable properties:
     - `underwater`
