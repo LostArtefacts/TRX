@@ -113,7 +113,6 @@ sources = [
   'game/option/option.c',
   'game/option/option_compass.c',
   'game/room_draw.c',
-  'game/savegame/savegame.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   'game/shell/common.c',

@@ -21,9 +21,9 @@ X_UI_CFG_BOOL(gameplay.enable_timer_in_inventory,   SETTING_ENABLE_TIMER_IN_INVE
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_deaths_counter,       SETTING_ENABLE_DEATHS_COUNTER)
-X_UI_CFG_INT32(gameplay.maximum_save_slots,         SETTING_MAXIMUM_SAVE_SLOTS, .min_value = 1, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)
 #endif
 
+X_UI_CFG_INT32(gameplay.maximum_save_slots,         SETTING_MAXIMUM_SAVE_SLOTS, .min_value = 1, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)
 X_UI_CFG_BOOL(gameplay.enable_enhanced_saves,       SETTING_ENABLE_ENHANCED_SAVES)
 X_UI_CFG_BOOL_INV(gameplay.revert_to_pistols,       SETTING_REMEMBER_GUNS_BETWEEN_LEVELS)
 
