@@ -1,9 +1,9 @@
 #pragma once
 
-#include <libtrx/game/collision.h>
-#include <libtrx/game/creature/types.h>
-#include <libtrx/game/items/types.h>
-#include <libtrx/game/objects/types.h>
+#include "../../collision.h"
+#include "../../creature/types.h"
+#include "../../items/types.h"
+#include "../types.h"
 
 #define SKIDOO_MIN_SPEED 15
 #define SKIDOO_MAX_SPEED 100

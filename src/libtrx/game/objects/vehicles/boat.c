@@ -1,24 +1,22 @@
 #include "game/objects/vehicles/boat.h"
 
-#include "decomp/decomp.h"
+#include "config.h"
+#include "game/camera.h"
+#include "game/collision.h"
 #include "game/effects.h"
+#include "game/game_buf.h"
+#include "game/input.h"
+#include "game/lara.h"
+#include "game/math.h"
+#include "game/matrix.h"
 #include "game/objects/common.h"
+#include "game/objects/traps/gondola.h"
 #include "game/objects/vehicles/common.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/collision.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/input.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/game/objects/traps/gondola.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/game/spawn.h>
-#include <libtrx/utils.h>
+#include "game/output.h"
+#include "game/random.h"
+#include "game/sound.h"
+#include "game/spawn.h"
+#include "utils.h"
 
 #define BOAT_FALL_ANIM 15
 #define BOAT_DEATH_ANIM 18
@@ -159,8 +157,11 @@ static void M_DoWakeEffect(const ITEM *const boat_item)
     g_MatrixPtr->_23 = 0;
     Output_CalculateLight(boat_item->pos, boat_item->room_num);
 
-    const int16_t frame =
-        (Random_GetDraw() * Object_Get(O_WATER_SPRITE)->mesh_count) >> 15;
+    const OBJECT *const obj = Object_Get(O_WATER_SPRITE);
+    if (!obj->loaded) {
+        return;
+    }
+    const int16_t frame = (Random_GetDraw() * obj->mesh_count) >> 15;
 
     for (int32_t i = 0; i < 3; i++) {
         const int16_t effect_num = Effect_Create(boat_item->room_num);

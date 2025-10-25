@@ -700,10 +700,7 @@
             "name": "Flares Box",
         },
         "grenade": {
-            "names": [
-                "Grenade",
-                "Grenade",
-            ]
+            "name": "Grenade",
         },
         "pistols": {
             "name": "Pistols",
@@ -856,10 +853,7 @@
             "name": "Red Snowmobile",
         },
         "boat": {
-            "names": [
-                "Boat",
-                "Boat",
-            ]
+            "name": "Boat",
         },
         "bacon_lara": {
             "name": "Bacon Lara",

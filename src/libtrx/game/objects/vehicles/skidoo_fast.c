@@ -1,6 +1,5 @@
+#include "game/objects.h"
 #include "game/objects/vehicles/skidoo_common.h"
-
-#include <libtrx/game/objects.h>
 
 static void M_Setup(OBJECT *const obj)
 {

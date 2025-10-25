@@ -1,9 +1,8 @@
+#include "game/collision.h"
+#include "game/lara.h"
+#include "game/math.h"
 #include "game/objects/creatures/skidoo_driver.h"
-
-#include <libtrx/game/collision.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/pathing.h>
+#include "game/pathing.h"
 
 #define M_ARMED_RADIUS (WALL_L / 3) // = 341
 

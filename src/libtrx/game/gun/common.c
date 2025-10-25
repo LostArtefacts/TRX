@@ -146,8 +146,8 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     case LGT_HARPOON: return &lara_info->harpoon_ammo;
     case LGT_M16:     return &lara_info->m16_ammo;
     case LGT_GRENADE: return &lara_info->grenade_ammo;
-    case LGT_SKIDOO:  return &lara_info->pistol_ammo;
 #endif
+    case LGT_SKIDOO:  return &lara_info->pistol_ammo;
     default:          return nullptr;
     }
     // clang-format on
