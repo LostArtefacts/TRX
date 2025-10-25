@@ -15,7 +15,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
 
@@ -25,7 +24,6 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_PLAY_MUSIC]       = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
     [GFS_ENABLE_SUNSET]    = M_HandleEnableSunset,
-    [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_SET_START_ANIM]   = M_HandleSetStartAnim,
     // clang-format on
@@ -146,16 +144,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle)
-{
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_SAVED) {
-        Camera_GetCineData()->position.target_angle =
-            (int16_t)(intptr_t)event->data;
-    }
-    return gf_cmd;
-}
-
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
@@ -181,7 +169,6 @@ void GF_PreSequenceHook(
     Output_SetSunsetEnabled(false);
     Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
-    Camera_GetCineData()->position.target_angle = DEG_90;
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }

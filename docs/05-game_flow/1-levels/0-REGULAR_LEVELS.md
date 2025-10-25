@@ -19,7 +19,6 @@ Following are each of the properties available within a level.
     // Optional level Lua script file
     "script": "data/scripts/level1.lua",
     "music_track": 57,
-    "lara_type": 0,
     "water_color": [0.7, 0.5, 0.85],
     "cold_water": true,
     "fog_transparency": false,
@@ -187,14 +186,6 @@ Following are each of the properties available within a level.
     <td colspan="2">
       Instructions to allocate items to enemies who will drop those items when
       killed. See <a href="./4-ITEM_DROPS.md">Item drops</a> for full details.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>lara_type</code><strong>¹</strong></td>
-    <td>Integer / string</td>
-    <td colspan="2">
-      Used only in cutscene levels to link the braid (if enabled) to the
-      relevant cutscene actor object ID.
     </td>
   </tr>
   <tr valign="top">

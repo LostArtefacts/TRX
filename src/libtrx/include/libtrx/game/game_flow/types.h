@@ -36,13 +36,6 @@ typedef struct {
     float fade_out_time;
 } GF_DISPLAY_PICTURE_DATA;
 
-typedef struct {
-    struct {
-        bool set;
-        int32_t value;
-    } x, y, z;
-} GF_SET_CAMERA_POS_DATA;
-
 typedef enum {
     GF_INV_REGULAR,
     GF_INV_SECRET,
@@ -53,14 +46,6 @@ typedef struct {
     GF_INV_TYPE inv_type;
     int32_t quantity;
 } GF_ADD_ITEM_DATA;
-
-#if TR_VERSION == 1
-typedef struct {
-    OBJECT_ID object1_id;
-    OBJECT_ID object2_id;
-    int32_t mesh_num;
-} GF_MESH_SWAP_DATA;
-#endif
 
 // ----------------------------------------------------------------------------
 // Game flow level structures
@@ -140,8 +125,6 @@ typedef struct {
         int count;
         GF_DROP_ITEM_DATA *data;
     } item_drops;
-
-    OBJECT_ID lara_type;
 #endif
 } GF_LEVEL;
 
