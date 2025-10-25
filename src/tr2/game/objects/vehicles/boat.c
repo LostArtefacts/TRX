@@ -1,6 +1,7 @@
 #include "decomp/decomp.h"
 #include "game/effects.h"
 #include "game/objects/common.h"
+#include "game/objects/vehicles/common.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
@@ -325,35 +326,35 @@ static int32_t M_Dynamics(const int16_t boat_num)
     const int32_t hbl =
         M_TestWaterHeight(boat_item, -BOAT_FRONT, -BOAT_SIDE, &bl);
     if (hbl < bl_old.y - STEP_L / 2) {
-        rot = DoShift(boat_item, &bl, &bl_old);
+        rot = Vehicle_DoShift(boat_item, &bl, &bl_old);
     }
 
     XYZ_32 br;
     const int32_t hbr =
         M_TestWaterHeight(boat_item, -BOAT_FRONT, BOAT_SIDE, &br);
     if (hbr < br_old.y - STEP_L / 2) {
-        rot += DoShift(boat_item, &br, &br_old);
+        rot += Vehicle_DoShift(boat_item, &br, &br_old);
     }
 
     XYZ_32 fl;
     const int32_t hfl =
         M_TestWaterHeight(boat_item, BOAT_FRONT, -BOAT_SIDE, &fl);
     if (hfl < fl_old.y - STEP_L / 2) {
-        rot += DoShift(boat_item, &fl, &fl_old);
+        rot += Vehicle_DoShift(boat_item, &fl, &fl_old);
     }
 
     XYZ_32 fr;
     const int32_t hfr =
         M_TestWaterHeight(boat_item, BOAT_FRONT, BOAT_SIDE, &fr);
     if (hfr < fr_old.y - STEP_L / 2) {
-        rot += DoShift(boat_item, &fr, &fr_old);
+        rot += Vehicle_DoShift(boat_item, &fr, &fr_old);
     }
 
     if (!slip) {
         XYZ_32 f;
         const int32_t hf = M_TestWaterHeight(boat_item, BOAT_TIP, 0, &f);
         if (hf < f_old.y - STEP_L / 2) {
-            DoShift(boat_item, &f, &f_old);
+            Vehicle_DoShift(boat_item, &f, &f_old);
         }
     }
 
@@ -367,12 +368,12 @@ static int32_t M_Dynamics(const int16_t boat_num)
             sector, boat_item->pos.x, boat_item->pos.y, boat_item->pos.z);
     }
     if (height < boat_item->pos.y - STEP_L / 2) {
-        DoShift(boat_item, &boat_item->pos, &old);
+        Vehicle_DoShift(boat_item, &boat_item->pos, &old);
     }
 
     boat_data->extra_rotation = rot;
 
-    const int32_t collide = GetCollisionAnim(boat_item, &moved);
+    const int32_t collide = Vehicle_GetCollisionAnim(boat_item, &moved);
     if (slip || collide) {
         // clang-format off
         const int32_t new_speed = (

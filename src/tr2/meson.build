@@ -109,6 +109,7 @@ sources = [
   'game/objects/general/zipline.c',
   'game/objects/setup.c',
   'game/objects/vehicles/boat.c',
+  'game/objects/vehicles/common.c',
   'game/objects/vehicles/skidoo_armed.c',
   'game/objects/vehicles/skidoo_fast.c',
   'game/option/option.c',
