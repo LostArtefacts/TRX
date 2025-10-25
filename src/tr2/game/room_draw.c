@@ -365,7 +365,7 @@ static void M_DrawSingleRoom(const int16_t room_num)
     room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
 }
 
-void Room_DrawAllRooms(const int16_t current_room)
+void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 {
     ROOM *const room = Room_Get(current_room);
     room->test_left = Viewport_GetMinX(VIEWPORT_GAME);
