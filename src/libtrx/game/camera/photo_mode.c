@@ -164,13 +164,9 @@ static void M_ClampCameraPos(void)
     g_Camera.target.z += (g_Camera.pos.z - prev_cam_pos.z);
 }
 
-static bool M_CameraOutsideRoom(const XYZ_32 pos, const int16_t room_num)
+static bool M_CameraInsideRoom(const XYZ_32 pos, const int16_t room_num)
 {
-    const BOUNDS_32 bounds = Room_GetRoomBounds(room_num);
-    return (
-        pos.x < bounds.min.x + WALL_L || pos.y < bounds.min.y
-        || pos.z < bounds.min.z + WALL_L || pos.x > bounds.max.x - WALL_L
-        || pos.y > bounds.max.y || pos.z > bounds.max.z - WALL_L);
+    return Room_PointInside(Room_Get(room_num), pos);
 }
 
 static void M_UpdateCameraRooms(void)
@@ -181,29 +177,25 @@ static void M_UpdateCameraRooms(void)
         g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
         &g_Camera.target.room_num);
 
-    if (!M_CameraOutsideRoom(g_Camera.pos.pos, g_Camera.pos.room_num)
-        && !M_CameraOutsideRoom(
-            g_Camera.target.pos, g_Camera.target.room_num)) {
-        return;
-    }
+    if (!M_CameraInsideRoom(g_Camera.pos.pos, g_Camera.pos.room_num)
+        || !M_CameraInsideRoom(g_Camera.target.pos, g_Camera.target.room_num)) {
+        const int16_t pos_room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
+        const int16_t tar_room_num = Room_GetIndexFromPos(g_Camera.target.pos);
 
-    const int16_t pos_room_num =
-        Room_GetIndexFromPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
-    const int16_t tar_room_num = Room_GetIndexFromPos(
-        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z);
-
-    if (pos_room_num != NO_ROOM) {
-        g_Camera.pos.room_num = pos_room_num;
-        if (tar_room_num == NO_ROOM) {
-            g_Camera.target.room_num = pos_room_num;
+        if (pos_room_num != NO_ROOM) {
+            g_Camera.pos.room_num = pos_room_num;
+            if (tar_room_num == NO_ROOM) {
+                g_Camera.target.room_num = pos_room_num;
+            }
+        }
+        if (tar_room_num != NO_ROOM) {
+            g_Camera.target.room_num = tar_room_num;
+            if (pos_room_num == NO_ROOM) {
+                g_Camera.pos.room_num = tar_room_num;
+            }
         }
     }
-    if (tar_room_num != NO_ROOM) {
-        g_Camera.target.room_num = tar_room_num;
-        if (pos_room_num == NO_ROOM) {
-            g_Camera.pos.room_num = tar_room_num;
-        }
-    }
+
     Camera_EnsureEnvironment();
 }
 

@@ -220,20 +220,39 @@ int32_t Room_GetAdjoiningRooms(
     return count;
 }
 
-int16_t Room_GetIndexFromPos(const int32_t x, const int32_t y, const int32_t z)
+bool Room_PointInside(const ROOM *const room, const XYZ_32 point)
+{
+    const int16_t room_num = Room_GetNumber(room);
+    if (room_num == NO_ROOM) {
+        return false;
+    }
+    const BOUNDS_32 bounds = Room_GetRoomBounds(room_num);
+    const int32_t x1 = bounds.min.x + WALL_L;
+    const int32_t y1 = bounds.min.y;
+    const int32_t z1 = bounds.min.z + WALL_L;
+    const int32_t x2 = bounds.max.x - WALL_L;
+    const int32_t y2 = bounds.max.y;
+    const int32_t z2 = bounds.max.z - WALL_L;
+    if (point.x >= x1 && point.x < x2 && point.y >= y1 && point.y <= y2
+        && point.z >= z1 && point.z < z2) {
+        const SECTOR *sector = Room_GetWorldSector(room, point.x, point.z);
+        const int32_t height =
+            Room_GetHeight(sector, point.x, point.y, point.z);
+        if (height != NO_HEIGHT) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int16_t Room_GetIndexFromPos(const XYZ_32 point)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         if (room->flip_status == RFS_FLIPPED) {
             continue;
         }
-        const int32_t x1 = room->pos.x + WALL_L;
-        const int32_t x2 = room->pos.x + (room->size.x - 1) * WALL_L;
-        const int32_t y1 = room->max_ceiling;
-        const int32_t y2 = room->min_floor;
-        const int32_t z1 = room->pos.z + WALL_L;
-        const int32_t z2 = room->pos.z + (room->size.z - 1) * WALL_L;
-        if (x >= x1 && x < x2 && y >= y1 && y <= y2 && z >= z1 && z < z2) {
+        if (Room_PointInside(room, point)) {
             return i;
         }
     }
@@ -312,12 +331,9 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
     ASSERT(out_pos != nullptr);
     ASSERT(out_room_num != nullptr);
     XYZ_32 initial_pos = *out_pos;
-    int32_t x = out_pos->x;
-    int32_t y = out_pos->y;
-    int32_t z = out_pos->z;
     int16_t room_num = *out_room_num;
     if (room_num == NO_ROOM) {
-        room_num = Room_GetIndexFromPos(x, y, z);
+        room_num = Room_GetIndexFromPos(*out_pos);
     }
     if (room_num == NO_ROOM) {
         return false;
@@ -331,6 +347,9 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
         }
     }
 
+    int32_t x = out_pos->x;
+    int32_t y = out_pos->y;
+    int32_t z = out_pos->z;
     const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
     int16_t height = Room_GetHeight(sector, x, y, z);
 

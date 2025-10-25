@@ -599,8 +599,8 @@ static void M_Control(const int16_t item_num)
     // Check if the block is floating, on a walkable, or on the pit floor.
     // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
     // sector.
-    int16_t room_num = Room_GetIndexFromPos(
-        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z);
+    int16_t room_num = Room_GetIndexFromPos((XYZ_32) {
+        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z });
     if (room_num == NO_ROOM) {
         room_num = item->room_num;
     }
@@ -617,7 +617,7 @@ static void M_Control(const int16_t item_num)
 
         // Query floor at previous y position.
         room_num = Room_GetIndexFromPos(
-            item->pos.x, ROUND_TO_HALF_CLICK(y_prev), item->pos.z);
+            (XYZ_32) { item->pos.x, ROUND_TO_HALF_CLICK(y_prev), item->pos.z });
         if (room_num == NO_ROOM) {
             room_num = item->room_num;
         }
