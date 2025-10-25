@@ -28,9 +28,8 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_REMOVE_AMMO]       = M_HandleInventoryModifier,
     [GFS_REMOVE_MEDIPACKS]  = M_HandleInventoryModifier,
     [GFS_LOADING_SCREEN]    = M_HandlePicture,
-#if TR_VERSION == 1
     [GFS_REMOVE_SCIONS]     = M_HandleInventoryModifier,
-#else
+#if TR_VERSION > 1
     [GFS_ADD_SECRET_REWARD] = M_HandleInventoryModifier,
 #endif
     [GFS_REMOVE_FLARES]     = M_HandleInventoryModifier,

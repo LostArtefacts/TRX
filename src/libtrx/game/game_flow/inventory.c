@@ -259,12 +259,10 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 #endif
     }
 
-#if TR_VERSION == 1
     if (m_RemoveScions) {
         resume->num_scions = 0;
         m_RemoveScions = false;
     }
-#endif
 
     if (m_RemoveFlares) {
         resume->flares = 0;

@@ -341,6 +341,7 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         JSON_ObjectAppendInt(
             resume_obj, "num_big_medis", resume->large_medipacks);
         JSON_ObjectAppendInt(resume_obj, "num_flares", resume->flares);
+        JSON_ObjectAppendInt(resume_obj, "num_scions", resume->num_scions);
         JSON_ObjectAppendInt(resume_obj, "gun_status", resume->gun_status);
         JSON_ObjectAppendInt(resume_obj, "gun_type", resume->equipped_gun_type);
         JSON_ObjectAppendInt(
@@ -417,6 +418,7 @@ static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
         resume->large_medipacks =
             JSON_ObjectGetInt(resume_obj, "num_big_medis", 0);
         resume->flares = JSON_ObjectGetInt(resume_obj, "num_flares", 0);
+        resume->num_scions = JSON_ObjectGetInt(resume_obj, "num_scions", 0);
         resume->gun_status =
             JSON_ObjectGetInt(resume_obj, "gun_status", LGS_ARMLESS);
         resume->equipped_gun_type =

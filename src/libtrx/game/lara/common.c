@@ -193,9 +193,8 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
         Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
         Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
-#if TR_VERSION == 1
         Inv_AddItemNTimes(O_SCION_ITEM_1, resume->num_scions);
-#else
+#if TR_VERSION > 1
         if (resume->flags.has_m16) {
             Inv_AddItem(O_M16_ITEM);
             lara_info->m16_ammo.ammo = resume->m16_ammo;

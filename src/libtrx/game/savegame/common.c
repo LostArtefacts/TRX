@@ -453,9 +453,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
-#if TR_VERSION == 1
     resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
-#elif TR_VERSION == 2
+#if TR_VERSION > 1
     if (Inv_RequestItem(O_M16_ITEM)) {
         resume->flags.has_m16 = true;
         resume->m16_ammo = lara->m16_ammo.ammo;
@@ -523,9 +522,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
         resume->uzi_ammo = 0;
-#if TR_VERSION == 1
         resume->num_scions = 0;
-#else
+#if TR_VERSION > 1
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
@@ -555,9 +553,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
         resume->uzi_ammo = 0;
-#if TR_VERSION == 1
         resume->num_scions = 0;
-#else
+#if TR_VERSION > 1
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
