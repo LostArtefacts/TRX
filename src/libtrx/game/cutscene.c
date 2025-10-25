@@ -41,9 +41,16 @@ static void M_InitialisePlayer(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     CAMERA_INFO *const camera = Cutscene_GetCamera();
     Camera_GetCineData()->position.target_angle = item->rot.y;
+    g_Camera.pos.room_num = item->room_num;
     g_Camera.target_angle = item->rot.y;
+
+    CINE_DATA *const cine_data = Camera_GetCineData();
+    cine_data->position.pos = item->pos;
+
     camera->pos.pos = item->pos;
-    camera->pos.room_num = item->room_num;
+    if (item->room_num != NO_ROOM) {
+        camera->pos.room_num = item->room_num;
+    }
     camera->target_angle = item->rot.y;
 
     item->rot.y = 0;
