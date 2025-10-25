@@ -1,19 +1,17 @@
-#include "decomp/decomp.h"
+#include "config.h"
+#include "game/camera.h"
+#include "game/collision.h"
 #include "game/cutscene.h"
+#include "game/game.h"
 #include "game/game_flow.h"
+#include "game/game_string_table.h"
+#include "game/lara.h"
 #include "game/level.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/collision.h>
-#include <libtrx/game/game.h>
-#include <libtrx/game/game_string_table.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/objects/vars.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/viewport.h>
-#include <libtrx/utils.h>
+#include "game/music.h"
+#include "game/objects/vars.h"
+#include "game/output.h"
+#include "game/viewport.h"
+#include "utils.h"
 
 typedef enum {
     LA_VEHICLE_HIT_LEFT = 11,

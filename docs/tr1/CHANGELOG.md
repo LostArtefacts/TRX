@@ -9,7 +9,7 @@
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)
 - added support for object, music, sound, flip effects, Lara state, and Lara animation slots overrides through CSV catalogs  
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
-    This feature is experimental — complex objects such as the dragon or Skidoos may not behave correctly. Please report any bugs encountered.  
+    This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
     See [the documentation](../07-CATALOGS.md) for details.
 - added new hidden settings (available via LUA and the `/set` command):
     - `flow.lockout_option_ring`

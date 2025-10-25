@@ -2,8 +2,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/inventory.h"
-#include "game/objects/vehicles/boat.h"
-#include "game/objects/vehicles/skidoo_common.h"
 #include "game/savegame.h"
 
 #include <libtrx/bson.h>
@@ -17,6 +15,8 @@
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/objects/vehicles/boat.h>
+#include <libtrx/game/objects/vehicles/skidoo_common.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/pathing.h>
 #include <libtrx/game/savegame/bson.h>

@@ -34,9 +34,7 @@
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
-#if TR_VERSION >= 2
 extern bool Skidoo_Control(void);
-#endif
 
 static SECTOR *M_GetCurrentSector(void)
 {
@@ -209,10 +207,13 @@ static void M_UpdateEnvironment(void)
     const bool wading_enabled = g_Config.gameplay.enable_wading;
 #else
     const bool wading_enabled = true;
-    if (Lara_Vehicle_IsMounted() || lara_info->extra_anim) {
+    if (lara_info->extra_anim) {
         return;
     }
 #endif
+    if (Lara_Vehicle_IsMounted()) {
+        return;
+    }
 
     const ROOM *const room = Room_Get(item->room_num);
     const bool room_submerged = room->flags.underwater;
@@ -302,7 +303,7 @@ static void M_UpdateEnvironment(void)
             lara_info->head_rot.y = 0;
             lara_info->torso_rot.x = 0;
             lara_info->torso_rot.y = 0;
-            if (TR_VERSION == 1) {
+            if (g_TRVersion == 1) {
                 lara_info->gun_status = LGS_ARMLESS;
             }
         } else {
@@ -344,7 +345,7 @@ static void M_UpdateEnvironment(void)
             item->goal_anim_state = LS(LS_JUMP_FORWARD);
             item->gravity = true;
             item->speed = item->fall_speed / 4;
-            if (TR_VERSION == 1) {
+            if (g_TRVersion == 1) {
                 lara_info->gun_status = LGS_ARMLESS;
             }
         }
@@ -434,7 +435,6 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     Lara_Look_Update();
 
     const ITEM *const vehicle = Lara_Vehicle_GetItem();
-#if TR_VERSION >= 2
     if (vehicle != nullptr) {
         if (vehicle->object_id == O_SKIDOO_FAST) {
             // TODO: make this Object_Get(O_SKIDOO_FAST)->control
@@ -446,7 +446,6 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
             return;
         }
     }
-#endif
 
     Lara_State_Update(item, coll);
 
@@ -470,7 +469,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     Lara_Animate(item);
     const SECTOR *const sector = M_GetCurrentSector();
 
-    if ((TR_VERSION == 1 || !lara_info->extra_anim)
+    if ((g_TRVersion == 1 || !lara_info->extra_anim)
         && lara_info->water_status != LWS_CHEAT) {
         M_ObjectCollision(coll);
         if (!Lara_Vehicle_IsMounted()) {
@@ -548,7 +547,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         >> W2V_SHIFT;
 
     const SECTOR *const sector = M_GetCurrentSector();
-    if (TR_VERSION == 1 || !lara_info->extra_anim) {
+    if (g_TRVersion == 1 || !lara_info->extra_anim) {
         M_ObjectCollision(coll);
     }
 
@@ -561,7 +560,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         }
     }
 
-    if (TR_VERSION == 1 || !lara_info->extra_anim) {
+    if (g_TRVersion == 1 || !lara_info->extra_anim) {
         Lara_Col_Update(item, coll);
     }
 
@@ -580,7 +579,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
     coll->radius = M_RADIUS_SURF;
 
     coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = TR_VERSION == 1 ? -100 : -STEP_L / 2;
+    coll->bad_neg = g_TRVersion == 1 ? -100 : -STEP_L / 2;
     coll->bad_ceiling = 100;
 
     coll->slopes_are_walls = 0;
@@ -752,7 +751,7 @@ void Lara_Control(void)
 
     M_Cheat();
 
-    if (TR_VERSION == 1 && lara_info->interact_target.is_moving
+    if (g_TRVersion == 1 && lara_info->interact_target.is_moving
         && lara_info->interact_target.move_count++ > M_MOVE_TIMEOUT) {
         lara_info->interact_target.is_moving = false;
         lara_info->gun_status = LGS_ARMLESS;

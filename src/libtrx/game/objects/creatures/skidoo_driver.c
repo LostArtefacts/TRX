@@ -1,14 +1,13 @@
 #include "game/objects/creatures/skidoo_driver.h"
 
+#include "debug.h"
+#include "game/carrier.h"
 #include "game/creature.h"
+#include "game/lara.h"
 #include "game/objects/vehicles/skidoo_common.h"
-
-#include <libtrx/debug.h>
-#include <libtrx/game/carrier.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/pathing.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/utils.h>
+#include "game/pathing.h"
+#include "game/sound.h"
+#include "utils.h"
 
 #define SKIDOO_DRIVER_MIN_TURN (SKIDOO_MAX_TURN / 3) // = 364
 #define SKIDOO_DRIVER_TARGET_ANGLE (DEG_1 * 15) // = 2730
