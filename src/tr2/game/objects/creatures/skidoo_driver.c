@@ -1,7 +1,7 @@
 #include "game/objects/creatures/skidoo_driver.h"
 
-#include "decomp/skidoo.h"
 #include "game/creature.h"
+#include "game/objects/vehicles/skidoo_common.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/carrier.h>
