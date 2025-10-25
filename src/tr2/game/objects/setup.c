@@ -1,6 +1,5 @@
 #include "game/objects/common.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/lara.h>

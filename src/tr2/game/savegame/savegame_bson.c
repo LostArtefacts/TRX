@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/savegame.h"
 #include "global/types_decomp.h"
-#include "global/vars.h"
 
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
