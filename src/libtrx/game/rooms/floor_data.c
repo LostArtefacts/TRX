@@ -167,60 +167,61 @@ static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
 
     uint16_t flags = Music_GetTrackFlags(track_id);
     // TODO: consolidate
-#if TR_VERSION == 1
-    if ((flags & IF_ONE_SHOT) != 0) {
-        return;
-    }
-
-    if (trigger->type == TT_SWITCH) {
-        flags ^= trigger->mask;
-    } else if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
-        flags &= -1 - trigger->mask;
-    } else if (trigger->mask) {
-        flags |= trigger->mask;
-    }
-
-    if ((flags & IF_CODE_BITS) == IF_CODE_BITS) {
-        if (trigger->one_shot) {
-            flags |= IF_ONE_SHOT;
-        }
-        Music_Play_Direct(track_id, MPM_TRACKED);
-    } else {
-        Music_StopTrack_Direct(track_id);
-    }
-#else
-    if (trigger->type != TT_SWITCH) {
-        const int32_t code = trigger->mask;
-        if ((flags & code) != 0) {
+    if (g_TRVersion == 1) {
+        if ((flags & IF_ONE_SHOT) != 0) {
             return;
         }
-        if (trigger->one_shot) {
-            flags |= code;
+
+        if (trigger->type == TT_SWITCH) {
+            flags ^= trigger->mask;
+        } else if (
+            trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
+            flags &= -1 - trigger->mask;
+        } else if (trigger->mask) {
+            flags |= trigger->mask;
         }
-    }
 
-    if (trigger->timer == 0) {
-        Music_Play_Direct(track_id, MPM_TRACKED);
-        goto finish;
-    }
+        if ((flags & IF_CODE_BITS) == IF_CODE_BITS) {
+            if (trigger->one_shot) {
+                flags |= IF_ONE_SHOT;
+            }
+            Music_Play_Direct(track_id, MPM_TRACKED);
+        } else {
+            Music_StopTrack_Direct(track_id);
+        }
+    } else {
+        if (trigger->type != TT_SWITCH) {
+            const int32_t code = trigger->mask;
+            if ((flags & code) != 0) {
+                return;
+            }
+            if (trigger->one_shot) {
+                flags |= code;
+            }
+        }
 
-    if (track_id != Music_GetDelayedTrack()) {
-        Music_Play_Direct(track_id, MPM_DELAYED);
-        flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
-        goto finish;
-    }
+        if (trigger->timer == 0) {
+            Music_Play_Direct(track_id, MPM_TRACKED);
+            goto finish;
+        }
 
-    int32_t timer = flags & 0xFF;
-    if (timer == 0) {
-        goto finish;
-    }
+        if (track_id != Music_GetDelayedTrack()) {
+            Music_Play_Direct(track_id, MPM_DELAYED);
+            flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
+            goto finish;
+        }
 
-    timer--;
-    if (timer == 0) {
-        Music_Play_Direct(track_id, MPM_TRACKED);
+        int32_t timer = flags & 0xFF;
+        if (timer == 0) {
+            goto finish;
+        }
+
+        timer--;
+        if (timer == 0) {
+            Music_Play_Direct(track_id, MPM_TRACKED);
+        }
+        flags = (flags & 0xFF00) | (timer & 0xFF);
     }
-    flags = (flags & 0xFF00) | (timer & 0xFF);
-#endif
 
 finish:
     Music_SetTrackFlags(track_id, flags);
