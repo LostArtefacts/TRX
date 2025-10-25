@@ -87,6 +87,33 @@ static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
     return result;
 }
 
+// Builds a source list of all options and returns fuzzy-match results.
+// Caller must free the result vector with Vector_Free().
+static VECTOR *M_GetOptionsFuzzy(const char *const key)
+{
+    VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
+
+    for (const CONFIG_OPTION *option = Config_GetOptionMap();
+         option->name != nullptr; option++) {
+        STRING_FUZZY_SOURCE source_item = {
+            .key = (const char *)Console_Cmd_Config_NormalizeKey(option->name),
+            .value = (void *)option,
+            .weight = 1,
+        };
+        Vector_Add(source, &source_item);
+    }
+
+    VECTOR *matches = String_FuzzyMatch(key, source);
+
+    for (int32_t i = 0; i < source->count; i++) {
+        const STRING_FUZZY_SOURCE *const source_item = Vector_Get(source, i);
+        Memory_Free((char *)source_item->key);
+    }
+
+    Vector_Free(source);
+    return matches;
+}
+
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     COMMAND_RESULT result = CR_BAD_INVOCATION;
@@ -232,6 +259,11 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
 cleanup:
     Memory_FreePointer(&normalized_name);
     return result;
+}
+
+VECTOR *Console_Cmd_Config_GetOptionsFromKey(const char *const key)
+{
+    return M_GetOptionsFuzzy(key);
 }
 
 REGISTER_CONSOLE_COMMAND("set", M_Entrypoint, GS_ID(CONSOLE_HELP_SET))

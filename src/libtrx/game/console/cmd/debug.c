@@ -6,61 +6,143 @@
 #include "memory.h"
 #include "strings.h"
 
-static bool *const m_AllOptions[] = {
-    &g_Config.debug.enable_debug_portals,
-    &g_Config.debug.enable_debug_room_clip,
-    &g_Config.debug.enable_debug_triggers,
-    &g_Config.debug.enable_debug_spheres,
-    &g_Config.debug.enable_debug_cuboids,
-    &g_Config.debug.enable_debug_pos,
-    nullptr,
+typedef struct {
+    bool *target;
+    const CONFIG_OPTION *option;
+} DEBUG_OPTION_ENTRY;
+
+static DEBUG_OPTION_ENTRY m_AllOptions[] = {
+    { &g_Config.debug.enable_debug_portals, nullptr },
+    { &g_Config.debug.enable_debug_room_clip, nullptr },
+    { &g_Config.debug.enable_debug_triggers, nullptr },
+    { &g_Config.debug.enable_debug_spheres, nullptr },
+    { &g_Config.debug.enable_debug_cuboids, nullptr },
+    { &g_Config.debug.enable_debug_pos, nullptr },
+    { nullptr, nullptr }
 };
 
-static void M_Toggle(const bool enable)
+static void M_InitOptions(void)
 {
-    for (int32_t i = 0; m_AllOptions[i] != nullptr; i++) {
-        void *const target = m_AllOptions[i];
-        const CONFIG_OPTION *const option =
-            Console_Cmd_Config_GetOptionFromTarget(target);
-        char *const name = Console_Cmd_Config_NormalizeKey(option->name);
-        *(bool *)target = enable;
-        const char *const value_str = Config_GetOptionValueAsString(option);
-        ASSERT(value_str != nullptr);
-        Console_Log(GS(OSD_CONFIG_OPTION_SET), name, value_str);
-        Memory_Free(name);
+    for (int32_t i = 0; m_AllOptions[i].target; i++) {
+        m_AllOptions[i].option =
+            Console_Cmd_Config_GetOptionFromTarget(m_AllOptions[i].target);
+    }
+}
+
+static VECTOR *M_BuildMatches(const char *const key)
+{
+    VECTOR *const matches = Console_Cmd_Config_GetOptionsFromKey(key);
+    VECTOR *const filtered = Vector_Create(sizeof(STRING_FUZZY_MATCH));
+
+    for (int32_t i = 0; i < matches->count; i++) {
+        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
+        const CONFIG_OPTION *const option = match->value;
+        for (int32_t j = 0; m_AllOptions[j].target; j++) {
+            if (option == m_AllOptions[j].option) {
+                Vector_Add(filtered, match);
+                break;
+            }
+        }
+    }
+
+    Vector_Free(matches);
+    return filtered;
+}
+
+static void M_LogOption(const CONFIG_OPTION *const option)
+{
+    char *const name = Console_Cmd_Config_NormalizeKey(option->name);
+    Console_Log(
+        GS(OSD_CONFIG_OPTION_SET), name, Config_GetOptionValueAsString(option));
+    Memory_Free(name);
+}
+
+static void M_ShowOption(const CONFIG_OPTION *const option)
+{
+    char *const name = Console_Cmd_Config_NormalizeKey(option->name);
+    Console_Log(
+        GS(OSD_CONFIG_OPTION_GET), name, Config_GetOptionValueAsString(option));
+    Memory_Free(name);
+}
+
+static void M_UpdateOption(const CONFIG_OPTION *const option, const bool enable)
+{
+    *(bool *)option->target = enable;
+    M_LogOption(option);
+}
+
+static void M_UpdateAll(const bool enable)
+{
+    for (int32_t i = 0; m_AllOptions[i].target != nullptr; i++) {
+        M_UpdateOption(m_AllOptions[i].option, enable);
     }
 }
 
 static void M_ShowStatus(void)
 {
-    for (int32_t i = 0; m_AllOptions[i] != nullptr; i++) {
-        void *const target = m_AllOptions[i];
-        const CONFIG_OPTION *const option =
-            Console_Cmd_Config_GetOptionFromTarget(target);
-        char *const name = Console_Cmd_Config_NormalizeKey(option->name);
-        const char *const value_str = Config_GetOptionValueAsString(option);
-        ASSERT(value_str != nullptr);
-        Console_Log(GS(OSD_CONFIG_OPTION_GET), name, value_str);
-        Memory_Free(name);
+    for (int32_t i = 0; m_AllOptions[i].target != nullptr; i++) {
+        M_ShowOption(m_AllOptions[i].option);
     }
 }
 
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
 {
-    if (String_Match(ctx->args, "^(on|true|1)$")) {
-        M_Toggle(true);
-        Config_Update();
-        return CR_SUCCESS;
-    } else if (String_Match(ctx->args, "^(off|false|0)$")) {
-        M_Toggle(false);
-        Config_Update();
-        return CR_SUCCESS;
-    } else if (String_IsEmpty(ctx->args)) {
+    if (m_AllOptions[0].option == nullptr) {
+        M_InitOptions();
+    }
+
+    if (String_IsEmpty(ctx->args)) {
         M_ShowStatus();
         return CR_SUCCESS;
-    } else {
+    }
+
+    char *args = Memory_DupStr(ctx->args);
+    char *space = strchr(args, ' ');
+    char *key = args;
+    char *val = nullptr;
+
+    if (space) {
+        *space = '\0';
+        val = space + 1;
+    }
+    if (val != nullptr && strchr(val, ' ') != nullptr) {
+        Memory_Free(args);
         return CR_BAD_INVOCATION;
     }
+
+    bool use_set = false;
+    bool explicit_enable = false;
+    if (val == nullptr && String_ParseBool(key, &explicit_enable)) {
+        M_UpdateAll(explicit_enable);
+        Config_Update();
+        Memory_Free(args);
+        return CR_SUCCESS;
+    } else if (val != nullptr && String_ParseBool(val, &explicit_enable)) {
+        use_set = true;
+    } else if (val != nullptr) {
+        Memory_Free(args);
+        return CR_BAD_INVOCATION;
+    }
+
+    VECTOR *const matches = M_BuildMatches(key);
+    if (!matches->count) {
+        Console_LogError(GS(OSD_CONFIG_OPTION_UNKNOWN_OPTION), key);
+        Vector_Free(matches);
+        Memory_Free(args);
+        return CR_FAILURE;
+    }
+
+    for (int32_t i = 0; i < matches->count; i++) {
+        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
+        const CONFIG_OPTION *const option = match->value;
+        M_UpdateOption(
+            option, use_set ? explicit_enable : !*(bool *)option->target);
+    }
+
+    Config_Update();
+    Vector_Free(matches);
+    Memory_Free(args);
+    return CR_SUCCESS;
 }
 
 REGISTER_CONSOLE_COMMAND("debug", M_Entrypoint, GS_ID(CONSOLE_HELP_DEBUG))

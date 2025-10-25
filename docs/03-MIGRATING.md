@@ -13,6 +13,7 @@ title: Migrating levels
     became hidden player settings. To change them, put them in the
     `enforced_config` section. List of the affected settings:
     - `demo_delay`
+    - `enable_killer_pushblocks`
 
 ### Version 4.13 to 4.14
 
@@ -93,6 +94,7 @@ title: Migrating levels
     - `play_any_level`
     - `demo_delay`
     - `cheat_keys`
+    - `enable_killer_pushblocks`
 2. **Removed game flow settings**
     The following game flow features were removed and are no longer available:
     - `cmd_init`
