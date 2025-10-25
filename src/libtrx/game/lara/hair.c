@@ -7,18 +7,14 @@
 #include "game/random.h"
 #include "game/rooms.h"
 #include "utils.h"
+#include "version.h"
 
 #define M_HAIR_SEGMENTS 6
 #define M_HAIR_SPHERES 5
 // TODO: allow defining these values externally (#110)
 #define M_HAIR_OFFSET_X 0
-#if TR_VERSION == 1
-    #define M_HAIR_OFFSET_Y 20
-    #define M_HAIR_OFFSET_Z (-45)
-#else
-    #define M_HAIR_OFFSET_Y (-23)
-    #define M_HAIR_OFFSET_Z (-55)
-#endif
+#define M_HAIR_OFFSET_Y (g_TRVersion == 1 ? 20 : -23)
+#define M_HAIR_OFFSET_Z (g_TRVersion == 1 ? -45 : -55)
 
 static bool m_IsFirstHair;
 static OBJECT_ID m_LaraType = O_LARA;
@@ -29,12 +25,12 @@ static int32_t m_HairWind;
 
 static int16_t M_GetRoom(const XYZ_32 pos)
 {
-#if TR_VERSION == 1
-    const int16_t room_num = Room_GetIndexFromPos(pos.x, pos.y, pos.z);
-    if (room_num != NO_ROOM) {
-        return room_num;
+    if (g_TRVersion == 1) {
+        const int16_t room_num = Room_GetIndexFromPos(pos.x, pos.y, pos.z);
+        if (room_num != NO_ROOM) {
+            return room_num;
+        }
     }
-#endif
     return Lara_GetItem()->room_num;
 }
 

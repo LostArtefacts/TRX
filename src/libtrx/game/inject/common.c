@@ -44,11 +44,11 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
     case IFT_PS1_CRYSTAL:
         return g_Config.gameplay.enable_save_crystals
             && g_Config.visuals.enable_ps1_crystals;
-#if TR_VERSION == 1
     case IFT_SKYBOX:
         return true;
     case IFT_BRAID:
         return g_Config.visuals.enable_braid;
+#if TR_VERSION == 1
     case IFT_UZI_SFX:
         return g_Config.audio.enable_ps_uzi_sfx;
     case IFT_PS1_ENEMY:
