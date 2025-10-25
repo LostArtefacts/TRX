@@ -10,6 +10,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // Events without arguments
     { GFS_ENABLE_SUNSET,     nullptr, nullptr },
     { GFS_REMOVE_WEAPONS,    nullptr, nullptr },
+    { GFS_REMOVE_SCIONS,     nullptr, nullptr },
     { GFS_REMOVE_AMMO,       nullptr, nullptr },
     { GFS_REMOVE_FLARES,     nullptr, nullptr },
     { GFS_REMOVE_MEDIPACKS,  nullptr, nullptr },

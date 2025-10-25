@@ -286,6 +286,9 @@
           "$ref": "#/definitions/seq_remove_medipacks"
         },
         {
+          "$ref": "#/definitions/seq_remove_scions"
+        },
+        {
           "$ref": "#/definitions/seq_remove_flares"
         },
         {
@@ -567,6 +570,19 @@
       "properties": {
         "type": {
           "const": "remove_medipacks"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_remove_scions": {
+      "type": "object",
+      "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
+      "properties": {
+        "type": {
+          "const": "remove_scions"
         }
       },
       "required": [
